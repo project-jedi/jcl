@@ -55,18 +55,18 @@ uses
 
 type
 
-  TJclIntfIntfEntry = record
+  TJclIntfIntfSortedEntry = record
     Key: IInterface;
     Value: IInterface;
   end;
 
-  TJclIntfIntfEntryArray = array of TJclIntfIntfEntry;
+  TJclIntfIntfSortedEntryArray = array of TJclIntfIntfSortedEntry;
 
   TJclIntfIntfSortedMap = class(TJclIntfAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,
     IJclIntfIntfMap, IJclIntfIntfSortedMap)
   private
-    FEntries: TJclIntfIntfEntryArray;
+    FEntries: TJclIntfIntfSortedEntryArray;
     function BinarySearch(const Key: IInterface): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -106,18 +106,18 @@ type
   end;
 
 
-  TJclAnsiStrIntfEntry = record
+  TJclAnsiStrIntfSortedEntry = record
     Key: AnsiString;
     Value: IInterface;
   end;
 
-  TJclAnsiStrIntfEntryArray = array of TJclAnsiStrIntfEntry;
+  TJclAnsiStrIntfSortedEntryArray = array of TJclAnsiStrIntfSortedEntry;
 
   TJclAnsiStrIntfSortedMap = class(TJclAnsiStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclAnsiStrContainer,
     IJclAnsiStrIntfMap, IJclAnsiStrIntfSortedMap)
   private
-    FEntries: TJclAnsiStrIntfEntryArray;
+    FEntries: TJclAnsiStrIntfSortedEntryArray;
     function BinarySearch(const Key: AnsiString): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -157,18 +157,18 @@ type
   end;
 
 
-  TJclIntfAnsiStrEntry = record
+  TJclIntfAnsiStrSortedEntry = record
     Key: IInterface;
     Value: AnsiString;
   end;
 
-  TJclIntfAnsiStrEntryArray = array of TJclIntfAnsiStrEntry;
+  TJclIntfAnsiStrSortedEntryArray = array of TJclIntfAnsiStrSortedEntry;
 
   TJclIntfAnsiStrSortedMap = class(TJclAnsiStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclAnsiStrContainer,
     IJclIntfAnsiStrMap, IJclIntfAnsiStrSortedMap)
   private
-    FEntries: TJclIntfAnsiStrEntryArray;
+    FEntries: TJclIntfAnsiStrSortedEntryArray;
     function BinarySearch(const Key: IInterface): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -208,18 +208,18 @@ type
   end;
 
 
-  TJclAnsiStrAnsiStrEntry = record
+  TJclAnsiStrAnsiStrSortedEntry = record
     Key: AnsiString;
     Value: AnsiString;
   end;
 
-  TJclAnsiStrAnsiStrEntryArray = array of TJclAnsiStrAnsiStrEntry;
+  TJclAnsiStrAnsiStrSortedEntryArray = array of TJclAnsiStrAnsiStrSortedEntry;
 
   TJclAnsiStrAnsiStrSortedMap = class(TJclAnsiStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclAnsiStrContainer,
     IJclAnsiStrAnsiStrMap, IJclAnsiStrAnsiStrSortedMap)
   private
-    FEntries: TJclAnsiStrAnsiStrEntryArray;
+    FEntries: TJclAnsiStrAnsiStrSortedEntryArray;
     function BinarySearch(const Key: AnsiString): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -259,18 +259,18 @@ type
   end;
 
 
-  TJclWideStrIntfEntry = record
+  TJclWideStrIntfSortedEntry = record
     Key: WideString;
     Value: IInterface;
   end;
 
-  TJclWideStrIntfEntryArray = array of TJclWideStrIntfEntry;
+  TJclWideStrIntfSortedEntryArray = array of TJclWideStrIntfSortedEntry;
 
   TJclWideStrIntfSortedMap = class(TJclWideStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclWideStrContainer,
     IJclWideStrIntfMap, IJclWideStrIntfSortedMap)
   private
-    FEntries: TJclWideStrIntfEntryArray;
+    FEntries: TJclWideStrIntfSortedEntryArray;
     function BinarySearch(const Key: WideString): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -310,18 +310,18 @@ type
   end;
 
 
-  TJclIntfWideStrEntry = record
+  TJclIntfWideStrSortedEntry = record
     Key: IInterface;
     Value: WideString;
   end;
 
-  TJclIntfWideStrEntryArray = array of TJclIntfWideStrEntry;
+  TJclIntfWideStrSortedEntryArray = array of TJclIntfWideStrSortedEntry;
 
   TJclIntfWideStrSortedMap = class(TJclWideStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclWideStrContainer,
     IJclIntfWideStrMap, IJclIntfWideStrSortedMap)
   private
-    FEntries: TJclIntfWideStrEntryArray;
+    FEntries: TJclIntfWideStrSortedEntryArray;
     function BinarySearch(const Key: IInterface): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -361,18 +361,18 @@ type
   end;
 
 
-  TJclWideStrWideStrEntry = record
+  TJclWideStrWideStrSortedEntry = record
     Key: WideString;
     Value: WideString;
   end;
 
-  TJclWideStrWideStrEntryArray = array of TJclWideStrWideStrEntry;
+  TJclWideStrWideStrSortedEntryArray = array of TJclWideStrWideStrSortedEntry;
 
   TJclWideStrWideStrSortedMap = class(TJclWideStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclWideStrContainer,
     IJclWideStrWideStrMap, IJclWideStrWideStrSortedMap)
   private
-    FEntries: TJclWideStrWideStrEntryArray;
+    FEntries: TJclWideStrWideStrSortedEntryArray;
     function BinarySearch(const Key: WideString): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -423,18 +423,18 @@ type
   {$ENDIF CONTAINER_WIDESTR}
 
 
-  TJclSingleIntfEntry = record
+  TJclSingleIntfSortedEntry = record
     Key: Single;
     Value: IInterface;
   end;
 
-  TJclSingleIntfEntryArray = array of TJclSingleIntfEntry;
+  TJclSingleIntfSortedEntryArray = array of TJclSingleIntfSortedEntry;
 
   TJclSingleIntfSortedMap = class(TJclSingleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclSingleContainer,
     IJclSingleIntfMap, IJclSingleIntfSortedMap)
   private
-    FEntries: TJclSingleIntfEntryArray;
+    FEntries: TJclSingleIntfSortedEntryArray;
     function BinarySearch(const Key: Single): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -474,18 +474,18 @@ type
   end;
 
 
-  TJclIntfSingleEntry = record
+  TJclIntfSingleSortedEntry = record
     Key: IInterface;
     Value: Single;
   end;
 
-  TJclIntfSingleEntryArray = array of TJclIntfSingleEntry;
+  TJclIntfSingleSortedEntryArray = array of TJclIntfSingleSortedEntry;
 
   TJclIntfSingleSortedMap = class(TJclSingleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclSingleContainer,
     IJclIntfSingleMap, IJclIntfSingleSortedMap)
   private
-    FEntries: TJclIntfSingleEntryArray;
+    FEntries: TJclIntfSingleSortedEntryArray;
     function BinarySearch(const Key: IInterface): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -525,18 +525,18 @@ type
   end;
 
 
-  TJclSingleSingleEntry = record
+  TJclSingleSingleSortedEntry = record
     Key: Single;
     Value: Single;
   end;
 
-  TJclSingleSingleEntryArray = array of TJclSingleSingleEntry;
+  TJclSingleSingleSortedEntryArray = array of TJclSingleSingleSortedEntry;
 
   TJclSingleSingleSortedMap = class(TJclSingleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclSingleContainer,
     IJclSingleSingleMap, IJclSingleSingleSortedMap)
   private
-    FEntries: TJclSingleSingleEntryArray;
+    FEntries: TJclSingleSingleSortedEntryArray;
     function BinarySearch(const Key: Single): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -576,18 +576,18 @@ type
   end;
 
 
-  TJclDoubleIntfEntry = record
+  TJclDoubleIntfSortedEntry = record
     Key: Double;
     Value: IInterface;
   end;
 
-  TJclDoubleIntfEntryArray = array of TJclDoubleIntfEntry;
+  TJclDoubleIntfSortedEntryArray = array of TJclDoubleIntfSortedEntry;
 
   TJclDoubleIntfSortedMap = class(TJclDoubleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclDoubleContainer,
     IJclDoubleIntfMap, IJclDoubleIntfSortedMap)
   private
-    FEntries: TJclDoubleIntfEntryArray;
+    FEntries: TJclDoubleIntfSortedEntryArray;
     function BinarySearch(const Key: Double): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -627,18 +627,18 @@ type
   end;
 
 
-  TJclIntfDoubleEntry = record
+  TJclIntfDoubleSortedEntry = record
     Key: IInterface;
     Value: Double;
   end;
 
-  TJclIntfDoubleEntryArray = array of TJclIntfDoubleEntry;
+  TJclIntfDoubleSortedEntryArray = array of TJclIntfDoubleSortedEntry;
 
   TJclIntfDoubleSortedMap = class(TJclDoubleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclDoubleContainer,
     IJclIntfDoubleMap, IJclIntfDoubleSortedMap)
   private
-    FEntries: TJclIntfDoubleEntryArray;
+    FEntries: TJclIntfDoubleSortedEntryArray;
     function BinarySearch(const Key: IInterface): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -678,18 +678,18 @@ type
   end;
 
 
-  TJclDoubleDoubleEntry = record
+  TJclDoubleDoubleSortedEntry = record
     Key: Double;
     Value: Double;
   end;
 
-  TJclDoubleDoubleEntryArray = array of TJclDoubleDoubleEntry;
+  TJclDoubleDoubleSortedEntryArray = array of TJclDoubleDoubleSortedEntry;
 
   TJclDoubleDoubleSortedMap = class(TJclDoubleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclDoubleContainer,
     IJclDoubleDoubleMap, IJclDoubleDoubleSortedMap)
   private
-    FEntries: TJclDoubleDoubleEntryArray;
+    FEntries: TJclDoubleDoubleSortedEntryArray;
     function BinarySearch(const Key: Double): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -729,18 +729,18 @@ type
   end;
 
 
-  TJclExtendedIntfEntry = record
+  TJclExtendedIntfSortedEntry = record
     Key: Extended;
     Value: IInterface;
   end;
 
-  TJclExtendedIntfEntryArray = array of TJclExtendedIntfEntry;
+  TJclExtendedIntfSortedEntryArray = array of TJclExtendedIntfSortedEntry;
 
   TJclExtendedIntfSortedMap = class(TJclExtendedAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclExtendedContainer,
     IJclExtendedIntfMap, IJclExtendedIntfSortedMap)
   private
-    FEntries: TJclExtendedIntfEntryArray;
+    FEntries: TJclExtendedIntfSortedEntryArray;
     function BinarySearch(const Key: Extended): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -780,18 +780,18 @@ type
   end;
 
 
-  TJclIntfExtendedEntry = record
+  TJclIntfExtendedSortedEntry = record
     Key: IInterface;
     Value: Extended;
   end;
 
-  TJclIntfExtendedEntryArray = array of TJclIntfExtendedEntry;
+  TJclIntfExtendedSortedEntryArray = array of TJclIntfExtendedSortedEntry;
 
   TJclIntfExtendedSortedMap = class(TJclExtendedAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclExtendedContainer,
     IJclIntfExtendedMap, IJclIntfExtendedSortedMap)
   private
-    FEntries: TJclIntfExtendedEntryArray;
+    FEntries: TJclIntfExtendedSortedEntryArray;
     function BinarySearch(const Key: IInterface): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -831,18 +831,18 @@ type
   end;
 
 
-  TJclExtendedExtendedEntry = record
+  TJclExtendedExtendedSortedEntry = record
     Key: Extended;
     Value: Extended;
   end;
 
-  TJclExtendedExtendedEntryArray = array of TJclExtendedExtendedEntry;
+  TJclExtendedExtendedSortedEntryArray = array of TJclExtendedExtendedSortedEntry;
 
   TJclExtendedExtendedSortedMap = class(TJclExtendedAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclExtendedContainer,
     IJclExtendedExtendedMap, IJclExtendedExtendedSortedMap)
   private
-    FEntries: TJclExtendedExtendedEntryArray;
+    FEntries: TJclExtendedExtendedSortedEntryArray;
     function BinarySearch(const Key: Extended): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -898,18 +898,18 @@ type
   {$ENDIF MATH_SINGLE_PRECISION}
 
 
-  TJclIntegerIntfEntry = record
+  TJclIntegerIntfSortedEntry = record
     Key: Integer;
     Value: IInterface;
   end;
 
-  TJclIntegerIntfEntryArray = array of TJclIntegerIntfEntry;
+  TJclIntegerIntfSortedEntryArray = array of TJclIntegerIntfSortedEntry;
 
   TJclIntegerIntfSortedMap = class(TJclIntegerAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,
     IJclIntegerIntfMap, IJclIntegerIntfSortedMap)
   private
-    FEntries: TJclIntegerIntfEntryArray;
+    FEntries: TJclIntegerIntfSortedEntryArray;
     function BinarySearch(Key: Integer): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -949,18 +949,18 @@ type
   end;
 
 
-  TJclIntfIntegerEntry = record
+  TJclIntfIntegerSortedEntry = record
     Key: IInterface;
     Value: Integer;
   end;
 
-  TJclIntfIntegerEntryArray = array of TJclIntfIntegerEntry;
+  TJclIntfIntegerSortedEntryArray = array of TJclIntfIntegerSortedEntry;
 
   TJclIntfIntegerSortedMap = class(TJclIntegerAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,
     IJclIntfIntegerMap, IJclIntfIntegerSortedMap)
   private
-    FEntries: TJclIntfIntegerEntryArray;
+    FEntries: TJclIntfIntegerSortedEntryArray;
     function BinarySearch(const Key: IInterface): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1000,18 +1000,18 @@ type
   end;
 
 
-  TJclIntegerIntegerEntry = record
+  TJclIntegerIntegerSortedEntry = record
     Key: Integer;
     Value: Integer;
   end;
 
-  TJclIntegerIntegerEntryArray = array of TJclIntegerIntegerEntry;
+  TJclIntegerIntegerSortedEntryArray = array of TJclIntegerIntegerSortedEntry;
 
   TJclIntegerIntegerSortedMap = class(TJclIntegerAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,
     IJclIntegerIntegerMap, IJclIntegerIntegerSortedMap)
   private
-    FEntries: TJclIntegerIntegerEntryArray;
+    FEntries: TJclIntegerIntegerSortedEntryArray;
     function BinarySearch(Key: Integer): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1051,18 +1051,18 @@ type
   end;
 
 
-  TJclCardinalIntfEntry = record
+  TJclCardinalIntfSortedEntry = record
     Key: Cardinal;
     Value: IInterface;
   end;
 
-  TJclCardinalIntfEntryArray = array of TJclCardinalIntfEntry;
+  TJclCardinalIntfSortedEntryArray = array of TJclCardinalIntfSortedEntry;
 
   TJclCardinalIntfSortedMap = class(TJclCardinalAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,
     IJclCardinalIntfMap, IJclCardinalIntfSortedMap)
   private
-    FEntries: TJclCardinalIntfEntryArray;
+    FEntries: TJclCardinalIntfSortedEntryArray;
     function BinarySearch(Key: Cardinal): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1102,18 +1102,18 @@ type
   end;
 
 
-  TJclIntfCardinalEntry = record
+  TJclIntfCardinalSortedEntry = record
     Key: IInterface;
     Value: Cardinal;
   end;
 
-  TJclIntfCardinalEntryArray = array of TJclIntfCardinalEntry;
+  TJclIntfCardinalSortedEntryArray = array of TJclIntfCardinalSortedEntry;
 
   TJclIntfCardinalSortedMap = class(TJclCardinalAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,
     IJclIntfCardinalMap, IJclIntfCardinalSortedMap)
   private
-    FEntries: TJclIntfCardinalEntryArray;
+    FEntries: TJclIntfCardinalSortedEntryArray;
     function BinarySearch(const Key: IInterface): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1153,18 +1153,18 @@ type
   end;
 
 
-  TJclCardinalCardinalEntry = record
+  TJclCardinalCardinalSortedEntry = record
     Key: Cardinal;
     Value: Cardinal;
   end;
 
-  TJclCardinalCardinalEntryArray = array of TJclCardinalCardinalEntry;
+  TJclCardinalCardinalSortedEntryArray = array of TJclCardinalCardinalSortedEntry;
 
   TJclCardinalCardinalSortedMap = class(TJclCardinalAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,
     IJclCardinalCardinalMap, IJclCardinalCardinalSortedMap)
   private
-    FEntries: TJclCardinalCardinalEntryArray;
+    FEntries: TJclCardinalCardinalSortedEntryArray;
     function BinarySearch(Key: Cardinal): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1204,18 +1204,18 @@ type
   end;
 
 
-  TJclInt64IntfEntry = record
+  TJclInt64IntfSortedEntry = record
     Key: Int64;
     Value: IInterface;
   end;
 
-  TJclInt64IntfEntryArray = array of TJclInt64IntfEntry;
+  TJclInt64IntfSortedEntryArray = array of TJclInt64IntfSortedEntry;
 
   TJclInt64IntfSortedMap = class(TJclInt64AbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,
     IJclInt64IntfMap, IJclInt64IntfSortedMap)
   private
-    FEntries: TJclInt64IntfEntryArray;
+    FEntries: TJclInt64IntfSortedEntryArray;
     function BinarySearch(const Key: Int64): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1255,18 +1255,18 @@ type
   end;
 
 
-  TJclIntfInt64Entry = record
+  TJclIntfInt64SortedEntry = record
     Key: IInterface;
     Value: Int64;
   end;
 
-  TJclIntfInt64EntryArray = array of TJclIntfInt64Entry;
+  TJclIntfInt64SortedEntryArray = array of TJclIntfInt64SortedEntry;
 
   TJclIntfInt64SortedMap = class(TJclInt64AbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,
     IJclIntfInt64Map, IJclIntfInt64SortedMap)
   private
-    FEntries: TJclIntfInt64EntryArray;
+    FEntries: TJclIntfInt64SortedEntryArray;
     function BinarySearch(const Key: IInterface): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1306,18 +1306,18 @@ type
   end;
 
 
-  TJclInt64Int64Entry = record
+  TJclInt64Int64SortedEntry = record
     Key: Int64;
     Value: Int64;
   end;
 
-  TJclInt64Int64EntryArray = array of TJclInt64Int64Entry;
+  TJclInt64Int64SortedEntryArray = array of TJclInt64Int64SortedEntry;
 
   TJclInt64Int64SortedMap = class(TJclInt64AbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,
     IJclInt64Int64Map, IJclInt64Int64SortedMap)
   private
-    FEntries: TJclInt64Int64EntryArray;
+    FEntries: TJclInt64Int64SortedEntryArray;
     function BinarySearch(const Key: Int64): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1358,18 +1358,18 @@ type
 
   {$IFNDEF CLR}
 
-  TJclPtrIntfEntry = record
+  TJclPtrIntfSortedEntry = record
     Key: Pointer;
     Value: IInterface;
   end;
 
-  TJclPtrIntfEntryArray = array of TJclPtrIntfEntry;
+  TJclPtrIntfSortedEntryArray = array of TJclPtrIntfSortedEntry;
 
   TJclPtrIntfSortedMap = class(TJclPtrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,
     IJclPtrIntfMap, IJclPtrIntfSortedMap)
   private
-    FEntries: TJclPtrIntfEntryArray;
+    FEntries: TJclPtrIntfSortedEntryArray;
     function BinarySearch(Key: Pointer): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1409,18 +1409,18 @@ type
   end;
 
 
-  TJclIntfPtrEntry = record
+  TJclIntfPtrSortedEntry = record
     Key: IInterface;
     Value: Pointer;
   end;
 
-  TJclIntfPtrEntryArray = array of TJclIntfPtrEntry;
+  TJclIntfPtrSortedEntryArray = array of TJclIntfPtrSortedEntry;
 
   TJclIntfPtrSortedMap = class(TJclPtrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,
     IJclIntfPtrMap, IJclIntfPtrSortedMap)
   private
-    FEntries: TJclIntfPtrEntryArray;
+    FEntries: TJclIntfPtrSortedEntryArray;
     function BinarySearch(const Key: IInterface): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1460,18 +1460,18 @@ type
   end;
 
 
-  TJclPtrPtrEntry = record
+  TJclPtrPtrSortedEntry = record
     Key: Pointer;
     Value: Pointer;
   end;
 
-  TJclPtrPtrEntryArray = array of TJclPtrPtrEntry;
+  TJclPtrPtrSortedEntryArray = array of TJclPtrPtrSortedEntry;
 
   TJclPtrPtrSortedMap = class(TJclPtrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,
     IJclPtrPtrMap, IJclPtrPtrSortedMap)
   private
-    FEntries: TJclPtrPtrEntryArray;
+    FEntries: TJclPtrPtrSortedEntryArray;
     function BinarySearch(Key: Pointer): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1512,18 +1512,18 @@ type
   {$ENDIF ~CLR}
 
 
-  TJclIntfEntry = record
+  TJclIntfSortedEntry = record
     Key: IInterface;
     Value: TObject;
   end;
 
-  TJclIntfEntryArray = array of TJclIntfEntry;
+  TJclIntfSortedEntryArray = array of TJclIntfSortedEntry;
 
   TJclIntfSortedMap = class(TJclIntfAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclValueOwner,
     IJclIntfMap, IJclIntfSortedMap)
   private
-    FEntries: TJclIntfEntryArray;
+    FEntries: TJclIntfSortedEntryArray;
     FOwnsValues: Boolean;
     function BinarySearch(const Key: IInterface): Integer;
   protected
@@ -1567,18 +1567,18 @@ type
   end;
 
 
-  TJclAnsiStrEntry = record
+  TJclAnsiStrSortedEntry = record
     Key: AnsiString;
     Value: TObject;
   end;
 
-  TJclAnsiStrEntryArray = array of TJclAnsiStrEntry;
+  TJclAnsiStrSortedEntryArray = array of TJclAnsiStrSortedEntry;
 
   TJclAnsiStrSortedMap = class(TJclAnsiStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclAnsiStrContainer, IJclValueOwner,
     IJclAnsiStrMap, IJclAnsiStrSortedMap)
   private
-    FEntries: TJclAnsiStrEntryArray;
+    FEntries: TJclAnsiStrSortedEntryArray;
     FOwnsValues: Boolean;
     function BinarySearch(const Key: AnsiString): Integer;
   protected
@@ -1622,18 +1622,18 @@ type
   end;
 
 
-  TJclWideStrEntry = record
+  TJclWideStrSortedEntry = record
     Key: WideString;
     Value: TObject;
   end;
 
-  TJclWideStrEntryArray = array of TJclWideStrEntry;
+  TJclWideStrSortedEntryArray = array of TJclWideStrSortedEntry;
 
   TJclWideStrSortedMap = class(TJclWideStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclWideStrContainer, IJclValueOwner,
     IJclWideStrMap, IJclWideStrSortedMap)
   private
-    FEntries: TJclWideStrEntryArray;
+    FEntries: TJclWideStrSortedEntryArray;
     FOwnsValues: Boolean;
     function BinarySearch(const Key: WideString): Integer;
   protected
@@ -1684,18 +1684,18 @@ type
   {$ENDIF CONTAINER_WIDESTR}
 
 
-  TJclSingleEntry = record
+  TJclSingleSortedEntry = record
     Key: Single;
     Value: TObject;
   end;
 
-  TJclSingleEntryArray = array of TJclSingleEntry;
+  TJclSingleSortedEntryArray = array of TJclSingleSortedEntry;
 
   TJclSingleSortedMap = class(TJclSingleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclSingleContainer, IJclValueOwner,
     IJclSingleMap, IJclSingleSortedMap)
   private
-    FEntries: TJclSingleEntryArray;
+    FEntries: TJclSingleSortedEntryArray;
     FOwnsValues: Boolean;
     function BinarySearch(const Key: Single): Integer;
   protected
@@ -1739,18 +1739,18 @@ type
   end;
 
 
-  TJclDoubleEntry = record
+  TJclDoubleSortedEntry = record
     Key: Double;
     Value: TObject;
   end;
 
-  TJclDoubleEntryArray = array of TJclDoubleEntry;
+  TJclDoubleSortedEntryArray = array of TJclDoubleSortedEntry;
 
   TJclDoubleSortedMap = class(TJclDoubleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclDoubleContainer, IJclValueOwner,
     IJclDoubleMap, IJclDoubleSortedMap)
   private
-    FEntries: TJclDoubleEntryArray;
+    FEntries: TJclDoubleSortedEntryArray;
     FOwnsValues: Boolean;
     function BinarySearch(const Key: Double): Integer;
   protected
@@ -1794,18 +1794,18 @@ type
   end;
 
 
-  TJclExtendedEntry = record
+  TJclExtendedSortedEntry = record
     Key: Extended;
     Value: TObject;
   end;
 
-  TJclExtendedEntryArray = array of TJclExtendedEntry;
+  TJclExtendedSortedEntryArray = array of TJclExtendedSortedEntry;
 
   TJclExtendedSortedMap = class(TJclExtendedAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclExtendedContainer, IJclValueOwner,
     IJclExtendedMap, IJclExtendedSortedMap)
   private
-    FEntries: TJclExtendedEntryArray;
+    FEntries: TJclExtendedSortedEntryArray;
     FOwnsValues: Boolean;
     function BinarySearch(const Key: Extended): Integer;
   protected
@@ -1859,18 +1859,18 @@ type
   {$ENDIF MATH_SINGLE_PRECISION}
 
 
-  TJclIntegerEntry = record
+  TJclIntegerSortedEntry = record
     Key: Integer;
     Value: TObject;
   end;
 
-  TJclIntegerEntryArray = array of TJclIntegerEntry;
+  TJclIntegerSortedEntryArray = array of TJclIntegerSortedEntry;
 
   TJclIntegerSortedMap = class(TJclIntegerAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclValueOwner,
     IJclIntegerMap, IJclIntegerSortedMap)
   private
-    FEntries: TJclIntegerEntryArray;
+    FEntries: TJclIntegerSortedEntryArray;
     FOwnsValues: Boolean;
     function BinarySearch(Key: Integer): Integer;
   protected
@@ -1914,18 +1914,18 @@ type
   end;
 
 
-  TJclCardinalEntry = record
+  TJclCardinalSortedEntry = record
     Key: Cardinal;
     Value: TObject;
   end;
 
-  TJclCardinalEntryArray = array of TJclCardinalEntry;
+  TJclCardinalSortedEntryArray = array of TJclCardinalSortedEntry;
 
   TJclCardinalSortedMap = class(TJclCardinalAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclValueOwner,
     IJclCardinalMap, IJclCardinalSortedMap)
   private
-    FEntries: TJclCardinalEntryArray;
+    FEntries: TJclCardinalSortedEntryArray;
     FOwnsValues: Boolean;
     function BinarySearch(Key: Cardinal): Integer;
   protected
@@ -1969,18 +1969,18 @@ type
   end;
 
 
-  TJclInt64Entry = record
+  TJclInt64SortedEntry = record
     Key: Int64;
     Value: TObject;
   end;
 
-  TJclInt64EntryArray = array of TJclInt64Entry;
+  TJclInt64SortedEntryArray = array of TJclInt64SortedEntry;
 
   TJclInt64SortedMap = class(TJclInt64AbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclValueOwner,
     IJclInt64Map, IJclInt64SortedMap)
   private
-    FEntries: TJclInt64EntryArray;
+    FEntries: TJclInt64SortedEntryArray;
     FOwnsValues: Boolean;
     function BinarySearch(const Key: Int64): Integer;
   protected
@@ -2025,18 +2025,18 @@ type
 
   {$IFNDEF CLR}
 
-  TJclPtrEntry = record
+  TJclPtrSortedEntry = record
     Key: Pointer;
     Value: TObject;
   end;
 
-  TJclPtrEntryArray = array of TJclPtrEntry;
+  TJclPtrSortedEntryArray = array of TJclPtrSortedEntry;
 
   TJclPtrSortedMap = class(TJclPtrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclValueOwner,
     IJclPtrMap, IJclPtrSortedMap)
   private
-    FEntries: TJclPtrEntryArray;
+    FEntries: TJclPtrSortedEntryArray;
     FOwnsValues: Boolean;
     function BinarySearch(Key: Pointer): Integer;
   protected
@@ -2081,18 +2081,18 @@ type
   {$ENDIF ~CLR}
 
 
-  TJclEntry = record
+  TJclSortedEntry = record
     Key: TObject;
     Value: TObject;
   end;
 
-  TJclEntryArray = array of TJclEntry;
+  TJclSortedEntryArray = array of TJclSortedEntry;
 
   TJclSortedMap = class(TJclAbstractContainerBase, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclKeyOwner, IJclValueOwner,
     IJclMap, IJclSortedMap)
   private
-    FEntries: TJclEntryArray;
+    FEntries: TJclSortedEntryArray;
     FOwnsKeys: Boolean;
     FOwnsValues: Boolean;
     function BinarySearch(Key: TObject): Integer;
@@ -2141,18 +2141,18 @@ type
 
   {$IFDEF SUPPORTS_GENERICS}
 
-  TJclEntry<TKey,TValue> = record
+  TJclSortedEntry<TKey,TValue> = record
     Key: TKey;
     Value: TValue;
   end;
 
-  TJclEntryArray<TKey,TValue> = array of TJclEntry<TKey,TValue>;
+  TJclSortedEntryArray<TKey,TValue> = array of TJclSortedEntry<TKey,TValue>;
 
   TJclSortedMap<TKey,TValue> = class(TJclAbstractContainerBase, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclPairOwner<TKey,TValue>,
     IJclMap<TKey,TValue>, IJclSortedMap<TKey,TValue>)
   private
-    FEntries: TJclEntryArray<TKey,TValue>;
+    FEntries: TJclSortedEntryArray<TKey,TValue>;
     FOwnsKeys: Boolean;
     FOwnsValues: Boolean;
     function BinarySearch(const Key: TKey): Integer;
@@ -3693,6 +3693,8 @@ begin
   Result := Value;
   Value := '';
 end;
+
+
 
 function TJclIntfAnsiStrSortedMap.GetValue(const Key: IInterface): AnsiString;
 var
@@ -5518,8 +5520,6 @@ begin
   Result := Value;
   Value := '';
 end;
-
-
 
 function TJclIntfWideStrSortedMap.GetValue(const Key: IInterface): WideString;
 var
@@ -16480,6 +16480,8 @@ begin
   Result := Value;
   Value := 0;
 end;
+
+
 
 function TJclIntfInt64SortedMap.GetValue(const Key: IInterface): Int64;
 var

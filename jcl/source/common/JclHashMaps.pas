@@ -60,17 +60,17 @@ type
   TJclHashFunction = function(Key, Range: Integer): Integer;
 
 
-  TJclIntfIntfEntry = record
+  TJclIntfIntfHashEntry = record
     Key: IInterface;
     Value: IInterface;
   end;
 
-  TJclIntfIntfEntryArray = array of TJclIntfIntfEntry;
+  TJclIntfIntfHashEntryArray = array of TJclIntfIntfHashEntry;
 
   TJclIntfIntfBucket = class
   public
     Size: Integer;
-    Entries: TJclIntfIntfEntryArray;
+    Entries: TJclIntfIntfHashEntryArray;
   end;
 
   TJclIntfIntfBucketArray = array of TJclIntfIntfBucket;
@@ -84,7 +84,7 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclIntfIntfEntryArray; FromIndex, ToIndex, Count: Integer);
+    procedure MoveArray(var List: TJclIntfIntfHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -116,17 +116,17 @@ type
   end;
 
 
-  TJclAnsiStrIntfEntry = record
+  TJclAnsiStrIntfHashEntry = record
     Key: AnsiString;
     Value: IInterface;
   end;
 
-  TJclAnsiStrIntfEntryArray = array of TJclAnsiStrIntfEntry;
+  TJclAnsiStrIntfHashEntryArray = array of TJclAnsiStrIntfHashEntry;
 
   TJclAnsiStrIntfBucket = class
   public
     Size: Integer;
-    Entries: TJclAnsiStrIntfEntryArray;
+    Entries: TJclAnsiStrIntfHashEntryArray;
   end;
 
   TJclAnsiStrIntfBucketArray = array of TJclAnsiStrIntfBucket;
@@ -140,7 +140,7 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclAnsiStrIntfEntryArray; FromIndex, ToIndex, Count: Integer);
+    procedure MoveArray(var List: TJclAnsiStrIntfHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -172,17 +172,17 @@ type
   end;
 
 
-  TJclIntfAnsiStrEntry = record
+  TJclIntfAnsiStrHashEntry = record
     Key: IInterface;
     Value: AnsiString;
   end;
 
-  TJclIntfAnsiStrEntryArray = array of TJclIntfAnsiStrEntry;
+  TJclIntfAnsiStrHashEntryArray = array of TJclIntfAnsiStrHashEntry;
 
   TJclIntfAnsiStrBucket = class
   public
     Size: Integer;
-    Entries: TJclIntfAnsiStrEntryArray;
+    Entries: TJclIntfAnsiStrHashEntryArray;
   end;
 
   TJclIntfAnsiStrBucketArray = array of TJclIntfAnsiStrBucket;
@@ -196,7 +196,7 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclIntfAnsiStrEntryArray; FromIndex, ToIndex, Count: Integer);
+    procedure MoveArray(var List: TJclIntfAnsiStrHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -229,17 +229,17 @@ type
   end;
 
 
-  TJclAnsiStrAnsiStrEntry = record
+  TJclAnsiStrAnsiStrHashEntry = record
     Key: AnsiString;
     Value: AnsiString;
   end;
 
-  TJclAnsiStrAnsiStrEntryArray = array of TJclAnsiStrAnsiStrEntry;
+  TJclAnsiStrAnsiStrHashEntryArray = array of TJclAnsiStrAnsiStrHashEntry;
 
   TJclAnsiStrAnsiStrBucket = class
   public
     Size: Integer;
-    Entries: TJclAnsiStrAnsiStrEntryArray;
+    Entries: TJclAnsiStrAnsiStrHashEntryArray;
   end;
 
   TJclAnsiStrAnsiStrBucketArray = array of TJclAnsiStrAnsiStrBucket;
@@ -253,7 +253,7 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclAnsiStrAnsiStrEntryArray; FromIndex, ToIndex, Count: Integer);
+    procedure MoveArray(var List: TJclAnsiStrAnsiStrHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -285,17 +285,17 @@ type
   end;
 
 
-  TJclWideStrIntfEntry = record
+  TJclWideStrIntfHashEntry = record
     Key: WideString;
     Value: IInterface;
   end;
 
-  TJclWideStrIntfEntryArray = array of TJclWideStrIntfEntry;
+  TJclWideStrIntfHashEntryArray = array of TJclWideStrIntfHashEntry;
 
   TJclWideStrIntfBucket = class
   public
     Size: Integer;
-    Entries: TJclWideStrIntfEntryArray;
+    Entries: TJclWideStrIntfHashEntryArray;
   end;
 
   TJclWideStrIntfBucketArray = array of TJclWideStrIntfBucket;
@@ -309,7 +309,7 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclWideStrIntfEntryArray; FromIndex, ToIndex, Count: Integer);
+    procedure MoveArray(var List: TJclWideStrIntfHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -341,17 +341,17 @@ type
   end;
 
 
-  TJclIntfWideStrEntry = record
+  TJclIntfWideStrHashEntry = record
     Key: IInterface;
     Value: WideString;
   end;
 
-  TJclIntfWideStrEntryArray = array of TJclIntfWideStrEntry;
+  TJclIntfWideStrHashEntryArray = array of TJclIntfWideStrHashEntry;
 
   TJclIntfWideStrBucket = class
   public
     Size: Integer;
-    Entries: TJclIntfWideStrEntryArray;
+    Entries: TJclIntfWideStrHashEntryArray;
   end;
 
   TJclIntfWideStrBucketArray = array of TJclIntfWideStrBucket;
@@ -365,7 +365,7 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclIntfWideStrEntryArray; FromIndex, ToIndex, Count: Integer);
+    procedure MoveArray(var List: TJclIntfWideStrHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -398,17 +398,17 @@ type
   end;
 
 
-  TJclWideStrWideStrEntry = record
+  TJclWideStrWideStrHashEntry = record
     Key: WideString;
     Value: WideString;
   end;
 
-  TJclWideStrWideStrEntryArray = array of TJclWideStrWideStrEntry;
+  TJclWideStrWideStrHashEntryArray = array of TJclWideStrWideStrHashEntry;
 
   TJclWideStrWideStrBucket = class
   public
     Size: Integer;
-    Entries: TJclWideStrWideStrEntryArray;
+    Entries: TJclWideStrWideStrHashEntryArray;
   end;
 
   TJclWideStrWideStrBucketArray = array of TJclWideStrWideStrBucket;
@@ -422,7 +422,7 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclWideStrWideStrEntryArray; FromIndex, ToIndex, Count: Integer);
+    procedure MoveArray(var List: TJclWideStrWideStrHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -465,17 +465,17 @@ type
   {$ENDIF CONTAINER_WIDESTR}
 
 
-  TJclSingleIntfEntry = record
+  TJclSingleIntfHashEntry = record
     Key: Single;
     Value: IInterface;
   end;
 
-  TJclSingleIntfEntryArray = array of TJclSingleIntfEntry;
+  TJclSingleIntfHashEntryArray = array of TJclSingleIntfHashEntry;
 
   TJclSingleIntfBucket = class
   public
     Size: Integer;
-    Entries: TJclSingleIntfEntryArray;
+    Entries: TJclSingleIntfHashEntryArray;
   end;
 
   TJclSingleIntfBucketArray = array of TJclSingleIntfBucket;
@@ -489,7 +489,7 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclSingleIntfEntryArray; FromIndex, ToIndex, Count: Integer);
+    procedure MoveArray(var List: TJclSingleIntfHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -521,17 +521,17 @@ type
   end;
 
 
-  TJclIntfSingleEntry = record
+  TJclIntfSingleHashEntry = record
     Key: IInterface;
     Value: Single;
   end;
 
-  TJclIntfSingleEntryArray = array of TJclIntfSingleEntry;
+  TJclIntfSingleHashEntryArray = array of TJclIntfSingleHashEntry;
 
   TJclIntfSingleBucket = class
   public
     Size: Integer;
-    Entries: TJclIntfSingleEntryArray;
+    Entries: TJclIntfSingleHashEntryArray;
   end;
 
   TJclIntfSingleBucketArray = array of TJclIntfSingleBucket;
@@ -545,7 +545,7 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclIntfSingleEntryArray; FromIndex, ToIndex, Count: Integer);
+    procedure MoveArray(var List: TJclIntfSingleHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -578,17 +578,17 @@ type
   end;
 
 
-  TJclSingleSingleEntry = record
+  TJclSingleSingleHashEntry = record
     Key: Single;
     Value: Single;
   end;
 
-  TJclSingleSingleEntryArray = array of TJclSingleSingleEntry;
+  TJclSingleSingleHashEntryArray = array of TJclSingleSingleHashEntry;
 
   TJclSingleSingleBucket = class
   public
     Size: Integer;
-    Entries: TJclSingleSingleEntryArray;
+    Entries: TJclSingleSingleHashEntryArray;
   end;
 
   TJclSingleSingleBucketArray = array of TJclSingleSingleBucket;
@@ -602,7 +602,7 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclSingleSingleEntryArray; FromIndex, ToIndex, Count: Integer);
+    procedure MoveArray(var List: TJclSingleSingleHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -634,17 +634,17 @@ type
   end;
 
 
-  TJclDoubleIntfEntry = record
+  TJclDoubleIntfHashEntry = record
     Key: Double;
     Value: IInterface;
   end;
 
-  TJclDoubleIntfEntryArray = array of TJclDoubleIntfEntry;
+  TJclDoubleIntfHashEntryArray = array of TJclDoubleIntfHashEntry;
 
   TJclDoubleIntfBucket = class
   public
     Size: Integer;
-    Entries: TJclDoubleIntfEntryArray;
+    Entries: TJclDoubleIntfHashEntryArray;
   end;
 
   TJclDoubleIntfBucketArray = array of TJclDoubleIntfBucket;
@@ -658,7 +658,7 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclDoubleIntfEntryArray; FromIndex, ToIndex, Count: Integer);
+    procedure MoveArray(var List: TJclDoubleIntfHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -690,17 +690,17 @@ type
   end;
 
 
-  TJclIntfDoubleEntry = record
+  TJclIntfDoubleHashEntry = record
     Key: IInterface;
     Value: Double;
   end;
 
-  TJclIntfDoubleEntryArray = array of TJclIntfDoubleEntry;
+  TJclIntfDoubleHashEntryArray = array of TJclIntfDoubleHashEntry;
 
   TJclIntfDoubleBucket = class
   public
     Size: Integer;
-    Entries: TJclIntfDoubleEntryArray;
+    Entries: TJclIntfDoubleHashEntryArray;
   end;
 
   TJclIntfDoubleBucketArray = array of TJclIntfDoubleBucket;
@@ -714,7 +714,7 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclIntfDoubleEntryArray; FromIndex, ToIndex, Count: Integer);
+    procedure MoveArray(var List: TJclIntfDoubleHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -747,17 +747,17 @@ type
   end;
 
 
-  TJclDoubleDoubleEntry = record
+  TJclDoubleDoubleHashEntry = record
     Key: Double;
     Value: Double;
   end;
 
-  TJclDoubleDoubleEntryArray = array of TJclDoubleDoubleEntry;
+  TJclDoubleDoubleHashEntryArray = array of TJclDoubleDoubleHashEntry;
 
   TJclDoubleDoubleBucket = class
   public
     Size: Integer;
-    Entries: TJclDoubleDoubleEntryArray;
+    Entries: TJclDoubleDoubleHashEntryArray;
   end;
 
   TJclDoubleDoubleBucketArray = array of TJclDoubleDoubleBucket;
@@ -771,7 +771,7 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclDoubleDoubleEntryArray; FromIndex, ToIndex, Count: Integer);
+    procedure MoveArray(var List: TJclDoubleDoubleHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -803,17 +803,17 @@ type
   end;
 
 
-  TJclExtendedIntfEntry = record
+  TJclExtendedIntfHashEntry = record
     Key: Extended;
     Value: IInterface;
   end;
 
-  TJclExtendedIntfEntryArray = array of TJclExtendedIntfEntry;
+  TJclExtendedIntfHashEntryArray = array of TJclExtendedIntfHashEntry;
 
   TJclExtendedIntfBucket = class
   public
     Size: Integer;
-    Entries: TJclExtendedIntfEntryArray;
+    Entries: TJclExtendedIntfHashEntryArray;
   end;
 
   TJclExtendedIntfBucketArray = array of TJclExtendedIntfBucket;
@@ -827,7 +827,7 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclExtendedIntfEntryArray; FromIndex, ToIndex, Count: Integer);
+    procedure MoveArray(var List: TJclExtendedIntfHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -859,17 +859,17 @@ type
   end;
 
 
-  TJclIntfExtendedEntry = record
+  TJclIntfExtendedHashEntry = record
     Key: IInterface;
     Value: Extended;
   end;
 
-  TJclIntfExtendedEntryArray = array of TJclIntfExtendedEntry;
+  TJclIntfExtendedHashEntryArray = array of TJclIntfExtendedHashEntry;
 
   TJclIntfExtendedBucket = class
   public
     Size: Integer;
-    Entries: TJclIntfExtendedEntryArray;
+    Entries: TJclIntfExtendedHashEntryArray;
   end;
 
   TJclIntfExtendedBucketArray = array of TJclIntfExtendedBucket;
@@ -883,7 +883,7 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclIntfExtendedEntryArray; FromIndex, ToIndex, Count: Integer);
+    procedure MoveArray(var List: TJclIntfExtendedHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -916,17 +916,17 @@ type
   end;
 
 
-  TJclExtendedExtendedEntry = record
+  TJclExtendedExtendedHashEntry = record
     Key: Extended;
     Value: Extended;
   end;
 
-  TJclExtendedExtendedEntryArray = array of TJclExtendedExtendedEntry;
+  TJclExtendedExtendedHashEntryArray = array of TJclExtendedExtendedHashEntry;
 
   TJclExtendedExtendedBucket = class
   public
     Size: Integer;
-    Entries: TJclExtendedExtendedEntryArray;
+    Entries: TJclExtendedExtendedHashEntryArray;
   end;
 
   TJclExtendedExtendedBucketArray = array of TJclExtendedExtendedBucket;
@@ -940,7 +940,7 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclExtendedExtendedEntryArray; FromIndex, ToIndex, Count: Integer);
+    procedure MoveArray(var List: TJclExtendedExtendedHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -988,17 +988,17 @@ type
   {$ENDIF MATH_SINGLE_PRECISION}
 
 
-  TJclIntegerIntfEntry = record
+  TJclIntegerIntfHashEntry = record
     Key: Integer;
     Value: IInterface;
   end;
 
-  TJclIntegerIntfEntryArray = array of TJclIntegerIntfEntry;
+  TJclIntegerIntfHashEntryArray = array of TJclIntegerIntfHashEntry;
 
   TJclIntegerIntfBucket = class
   public
     Size: Integer;
-    Entries: TJclIntegerIntfEntryArray;
+    Entries: TJclIntegerIntfHashEntryArray;
   end;
 
   TJclIntegerIntfBucketArray = array of TJclIntegerIntfBucket;
@@ -1012,7 +1012,7 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclIntegerIntfEntryArray; FromIndex, ToIndex, Count: Integer);
+    procedure MoveArray(var List: TJclIntegerIntfHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1044,17 +1044,17 @@ type
   end;
 
 
-  TJclIntfIntegerEntry = record
+  TJclIntfIntegerHashEntry = record
     Key: IInterface;
     Value: Integer;
   end;
 
-  TJclIntfIntegerEntryArray = array of TJclIntfIntegerEntry;
+  TJclIntfIntegerHashEntryArray = array of TJclIntfIntegerHashEntry;
 
   TJclIntfIntegerBucket = class
   public
     Size: Integer;
-    Entries: TJclIntfIntegerEntryArray;
+    Entries: TJclIntfIntegerHashEntryArray;
   end;
 
   TJclIntfIntegerBucketArray = array of TJclIntfIntegerBucket;
@@ -1068,7 +1068,7 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclIntfIntegerEntryArray; FromIndex, ToIndex, Count: Integer);
+    procedure MoveArray(var List: TJclIntfIntegerHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1101,17 +1101,17 @@ type
   end;
 
 
-  TJclIntegerIntegerEntry = record
+  TJclIntegerIntegerHashEntry = record
     Key: Integer;
     Value: Integer;
   end;
 
-  TJclIntegerIntegerEntryArray = array of TJclIntegerIntegerEntry;
+  TJclIntegerIntegerHashEntryArray = array of TJclIntegerIntegerHashEntry;
 
   TJclIntegerIntegerBucket = class
   public
     Size: Integer;
-    Entries: TJclIntegerIntegerEntryArray;
+    Entries: TJclIntegerIntegerHashEntryArray;
   end;
 
   TJclIntegerIntegerBucketArray = array of TJclIntegerIntegerBucket;
@@ -1125,7 +1125,7 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclIntegerIntegerEntryArray; FromIndex, ToIndex, Count: Integer);
+    procedure MoveArray(var List: TJclIntegerIntegerHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1157,17 +1157,17 @@ type
   end;
 
 
-  TJclCardinalIntfEntry = record
+  TJclCardinalIntfHashEntry = record
     Key: Cardinal;
     Value: IInterface;
   end;
 
-  TJclCardinalIntfEntryArray = array of TJclCardinalIntfEntry;
+  TJclCardinalIntfHashEntryArray = array of TJclCardinalIntfHashEntry;
 
   TJclCardinalIntfBucket = class
   public
     Size: Integer;
-    Entries: TJclCardinalIntfEntryArray;
+    Entries: TJclCardinalIntfHashEntryArray;
   end;
 
   TJclCardinalIntfBucketArray = array of TJclCardinalIntfBucket;
@@ -1181,7 +1181,7 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclCardinalIntfEntryArray; FromIndex, ToIndex, Count: Integer);
+    procedure MoveArray(var List: TJclCardinalIntfHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1213,17 +1213,17 @@ type
   end;
 
 
-  TJclIntfCardinalEntry = record
+  TJclIntfCardinalHashEntry = record
     Key: IInterface;
     Value: Cardinal;
   end;
 
-  TJclIntfCardinalEntryArray = array of TJclIntfCardinalEntry;
+  TJclIntfCardinalHashEntryArray = array of TJclIntfCardinalHashEntry;
 
   TJclIntfCardinalBucket = class
   public
     Size: Integer;
-    Entries: TJclIntfCardinalEntryArray;
+    Entries: TJclIntfCardinalHashEntryArray;
   end;
 
   TJclIntfCardinalBucketArray = array of TJclIntfCardinalBucket;
@@ -1237,7 +1237,7 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclIntfCardinalEntryArray; FromIndex, ToIndex, Count: Integer);
+    procedure MoveArray(var List: TJclIntfCardinalHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1270,17 +1270,17 @@ type
   end;
 
 
-  TJclCardinalCardinalEntry = record
+  TJclCardinalCardinalHashEntry = record
     Key: Cardinal;
     Value: Cardinal;
   end;
 
-  TJclCardinalCardinalEntryArray = array of TJclCardinalCardinalEntry;
+  TJclCardinalCardinalHashEntryArray = array of TJclCardinalCardinalHashEntry;
 
   TJclCardinalCardinalBucket = class
   public
     Size: Integer;
-    Entries: TJclCardinalCardinalEntryArray;
+    Entries: TJclCardinalCardinalHashEntryArray;
   end;
 
   TJclCardinalCardinalBucketArray = array of TJclCardinalCardinalBucket;
@@ -1294,7 +1294,7 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclCardinalCardinalEntryArray; FromIndex, ToIndex, Count: Integer);
+    procedure MoveArray(var List: TJclCardinalCardinalHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1326,17 +1326,17 @@ type
   end;
 
 
-  TJclInt64IntfEntry = record
+  TJclInt64IntfHashEntry = record
     Key: Int64;
     Value: IInterface;
   end;
 
-  TJclInt64IntfEntryArray = array of TJclInt64IntfEntry;
+  TJclInt64IntfHashEntryArray = array of TJclInt64IntfHashEntry;
 
   TJclInt64IntfBucket = class
   public
     Size: Integer;
-    Entries: TJclInt64IntfEntryArray;
+    Entries: TJclInt64IntfHashEntryArray;
   end;
 
   TJclInt64IntfBucketArray = array of TJclInt64IntfBucket;
@@ -1350,7 +1350,7 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclInt64IntfEntryArray; FromIndex, ToIndex, Count: Integer);
+    procedure MoveArray(var List: TJclInt64IntfHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1382,17 +1382,17 @@ type
   end;
 
 
-  TJclIntfInt64Entry = record
+  TJclIntfInt64HashEntry = record
     Key: IInterface;
     Value: Int64;
   end;
 
-  TJclIntfInt64EntryArray = array of TJclIntfInt64Entry;
+  TJclIntfInt64HashEntryArray = array of TJclIntfInt64HashEntry;
 
   TJclIntfInt64Bucket = class
   public
     Size: Integer;
-    Entries: TJclIntfInt64EntryArray;
+    Entries: TJclIntfInt64HashEntryArray;
   end;
 
   TJclIntfInt64BucketArray = array of TJclIntfInt64Bucket;
@@ -1406,7 +1406,7 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclIntfInt64EntryArray; FromIndex, ToIndex, Count: Integer);
+    procedure MoveArray(var List: TJclIntfInt64HashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1439,17 +1439,17 @@ type
   end;
 
 
-  TJclInt64Int64Entry = record
+  TJclInt64Int64HashEntry = record
     Key: Int64;
     Value: Int64;
   end;
 
-  TJclInt64Int64EntryArray = array of TJclInt64Int64Entry;
+  TJclInt64Int64HashEntryArray = array of TJclInt64Int64HashEntry;
 
   TJclInt64Int64Bucket = class
   public
     Size: Integer;
-    Entries: TJclInt64Int64EntryArray;
+    Entries: TJclInt64Int64HashEntryArray;
   end;
 
   TJclInt64Int64BucketArray = array of TJclInt64Int64Bucket;
@@ -1463,7 +1463,7 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclInt64Int64EntryArray; FromIndex, ToIndex, Count: Integer);
+    procedure MoveArray(var List: TJclInt64Int64HashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1496,17 +1496,17 @@ type
 
   {$IFNDEF CLR}
 
-  TJclPtrIntfEntry = record
+  TJclPtrIntfHashEntry = record
     Key: Pointer;
     Value: IInterface;
   end;
 
-  TJclPtrIntfEntryArray = array of TJclPtrIntfEntry;
+  TJclPtrIntfHashEntryArray = array of TJclPtrIntfHashEntry;
 
   TJclPtrIntfBucket = class
   public
     Size: Integer;
-    Entries: TJclPtrIntfEntryArray;
+    Entries: TJclPtrIntfHashEntryArray;
   end;
 
   TJclPtrIntfBucketArray = array of TJclPtrIntfBucket;
@@ -1520,7 +1520,7 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclPtrIntfEntryArray; FromIndex, ToIndex, Count: Integer);
+    procedure MoveArray(var List: TJclPtrIntfHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1552,17 +1552,17 @@ type
   end;
 
 
-  TJclIntfPtrEntry = record
+  TJclIntfPtrHashEntry = record
     Key: IInterface;
     Value: Pointer;
   end;
 
-  TJclIntfPtrEntryArray = array of TJclIntfPtrEntry;
+  TJclIntfPtrHashEntryArray = array of TJclIntfPtrHashEntry;
 
   TJclIntfPtrBucket = class
   public
     Size: Integer;
-    Entries: TJclIntfPtrEntryArray;
+    Entries: TJclIntfPtrHashEntryArray;
   end;
 
   TJclIntfPtrBucketArray = array of TJclIntfPtrBucket;
@@ -1576,7 +1576,7 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclIntfPtrEntryArray; FromIndex, ToIndex, Count: Integer);
+    procedure MoveArray(var List: TJclIntfPtrHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1609,17 +1609,17 @@ type
   end;
 
 
-  TJclPtrPtrEntry = record
+  TJclPtrPtrHashEntry = record
     Key: Pointer;
     Value: Pointer;
   end;
 
-  TJclPtrPtrEntryArray = array of TJclPtrPtrEntry;
+  TJclPtrPtrHashEntryArray = array of TJclPtrPtrHashEntry;
 
   TJclPtrPtrBucket = class
   public
     Size: Integer;
-    Entries: TJclPtrPtrEntryArray;
+    Entries: TJclPtrPtrHashEntryArray;
   end;
 
   TJclPtrPtrBucketArray = array of TJclPtrPtrBucket;
@@ -1633,7 +1633,7 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclPtrPtrEntryArray; FromIndex, ToIndex, Count: Integer);
+    procedure MoveArray(var List: TJclPtrPtrHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1666,17 +1666,17 @@ type
   {$ENDIF ~CLR}
 
 
-  TJclIntfEntry = record
+  TJclIntfHashEntry = record
     Key: IInterface;
     Value: TObject;
   end;
 
-  TJclIntfEntryArray = array of TJclIntfEntry;
+  TJclIntfHashEntryArray = array of TJclIntfHashEntry;
 
   TJclIntfBucket = class
   public
     Size: Integer;
-    Entries: TJclIntfEntryArray;
+    Entries: TJclIntfHashEntryArray;
   end;
 
   TJclIntfBucketArray = array of TJclIntfBucket;
@@ -1691,7 +1691,7 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclIntfEntryArray; FromIndex, ToIndex, Count: Integer);
+    procedure MoveArray(var List: TJclIntfHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1727,17 +1727,17 @@ type
   end;
 
 
-  TJclAnsiStrEntry = record
+  TJclAnsiStrHashEntry = record
     Key: AnsiString;
     Value: TObject;
   end;
 
-  TJclAnsiStrEntryArray = array of TJclAnsiStrEntry;
+  TJclAnsiStrHashEntryArray = array of TJclAnsiStrHashEntry;
 
   TJclAnsiStrBucket = class
   public
     Size: Integer;
-    Entries: TJclAnsiStrEntryArray;
+    Entries: TJclAnsiStrHashEntryArray;
   end;
 
   TJclAnsiStrBucketArray = array of TJclAnsiStrBucket;
@@ -1752,7 +1752,7 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclAnsiStrEntryArray; FromIndex, ToIndex, Count: Integer);
+    procedure MoveArray(var List: TJclAnsiStrHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1787,17 +1787,17 @@ type
   end;
 
 
-  TJclWideStrEntry = record
+  TJclWideStrHashEntry = record
     Key: WideString;
     Value: TObject;
   end;
 
-  TJclWideStrEntryArray = array of TJclWideStrEntry;
+  TJclWideStrHashEntryArray = array of TJclWideStrHashEntry;
 
   TJclWideStrBucket = class
   public
     Size: Integer;
-    Entries: TJclWideStrEntryArray;
+    Entries: TJclWideStrHashEntryArray;
   end;
 
   TJclWideStrBucketArray = array of TJclWideStrBucket;
@@ -1812,7 +1812,7 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclWideStrEntryArray; FromIndex, ToIndex, Count: Integer);
+    procedure MoveArray(var List: TJclWideStrHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1854,17 +1854,17 @@ type
   {$ENDIF CONTAINER_WIDESTR}
 
 
-  TJclSingleEntry = record
+  TJclSingleHashEntry = record
     Key: Single;
     Value: TObject;
   end;
 
-  TJclSingleEntryArray = array of TJclSingleEntry;
+  TJclSingleHashEntryArray = array of TJclSingleHashEntry;
 
   TJclSingleBucket = class
   public
     Size: Integer;
-    Entries: TJclSingleEntryArray;
+    Entries: TJclSingleHashEntryArray;
   end;
 
   TJclSingleBucketArray = array of TJclSingleBucket;
@@ -1879,7 +1879,7 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclSingleEntryArray; FromIndex, ToIndex, Count: Integer);
+    procedure MoveArray(var List: TJclSingleHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1914,17 +1914,17 @@ type
   end;
 
 
-  TJclDoubleEntry = record
+  TJclDoubleHashEntry = record
     Key: Double;
     Value: TObject;
   end;
 
-  TJclDoubleEntryArray = array of TJclDoubleEntry;
+  TJclDoubleHashEntryArray = array of TJclDoubleHashEntry;
 
   TJclDoubleBucket = class
   public
     Size: Integer;
-    Entries: TJclDoubleEntryArray;
+    Entries: TJclDoubleHashEntryArray;
   end;
 
   TJclDoubleBucketArray = array of TJclDoubleBucket;
@@ -1939,7 +1939,7 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclDoubleEntryArray; FromIndex, ToIndex, Count: Integer);
+    procedure MoveArray(var List: TJclDoubleHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1974,17 +1974,17 @@ type
   end;
 
 
-  TJclExtendedEntry = record
+  TJclExtendedHashEntry = record
     Key: Extended;
     Value: TObject;
   end;
 
-  TJclExtendedEntryArray = array of TJclExtendedEntry;
+  TJclExtendedHashEntryArray = array of TJclExtendedHashEntry;
 
   TJclExtendedBucket = class
   public
     Size: Integer;
-    Entries: TJclExtendedEntryArray;
+    Entries: TJclExtendedHashEntryArray;
   end;
 
   TJclExtendedBucketArray = array of TJclExtendedBucket;
@@ -1999,7 +1999,7 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclExtendedEntryArray; FromIndex, ToIndex, Count: Integer);
+    procedure MoveArray(var List: TJclExtendedHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -2044,17 +2044,17 @@ type
   {$ENDIF MATH_SINGLE_PRECISION}
 
 
-  TJclIntegerEntry = record
+  TJclIntegerHashEntry = record
     Key: Integer;
     Value: TObject;
   end;
 
-  TJclIntegerEntryArray = array of TJclIntegerEntry;
+  TJclIntegerHashEntryArray = array of TJclIntegerHashEntry;
 
   TJclIntegerBucket = class
   public
     Size: Integer;
-    Entries: TJclIntegerEntryArray;
+    Entries: TJclIntegerHashEntryArray;
   end;
 
   TJclIntegerBucketArray = array of TJclIntegerBucket;
@@ -2069,7 +2069,7 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclIntegerEntryArray; FromIndex, ToIndex, Count: Integer);
+    procedure MoveArray(var List: TJclIntegerHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -2104,17 +2104,17 @@ type
   end;
 
 
-  TJclCardinalEntry = record
+  TJclCardinalHashEntry = record
     Key: Cardinal;
     Value: TObject;
   end;
 
-  TJclCardinalEntryArray = array of TJclCardinalEntry;
+  TJclCardinalHashEntryArray = array of TJclCardinalHashEntry;
 
   TJclCardinalBucket = class
   public
     Size: Integer;
-    Entries: TJclCardinalEntryArray;
+    Entries: TJclCardinalHashEntryArray;
   end;
 
   TJclCardinalBucketArray = array of TJclCardinalBucket;
@@ -2129,7 +2129,7 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclCardinalEntryArray; FromIndex, ToIndex, Count: Integer);
+    procedure MoveArray(var List: TJclCardinalHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -2164,17 +2164,17 @@ type
   end;
 
 
-  TJclInt64Entry = record
+  TJclInt64HashEntry = record
     Key: Int64;
     Value: TObject;
   end;
 
-  TJclInt64EntryArray = array of TJclInt64Entry;
+  TJclInt64HashEntryArray = array of TJclInt64HashEntry;
 
   TJclInt64Bucket = class
   public
     Size: Integer;
-    Entries: TJclInt64EntryArray;
+    Entries: TJclInt64HashEntryArray;
   end;
 
   TJclInt64BucketArray = array of TJclInt64Bucket;
@@ -2189,7 +2189,7 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclInt64EntryArray; FromIndex, ToIndex, Count: Integer);
+    procedure MoveArray(var List: TJclInt64HashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -2225,17 +2225,17 @@ type
 
   {$IFNDEF CLR}
 
-  TJclPtrEntry = record
+  TJclPtrHashEntry = record
     Key: Pointer;
     Value: TObject;
   end;
 
-  TJclPtrEntryArray = array of TJclPtrEntry;
+  TJclPtrHashEntryArray = array of TJclPtrHashEntry;
 
   TJclPtrBucket = class
   public
     Size: Integer;
-    Entries: TJclPtrEntryArray;
+    Entries: TJclPtrHashEntryArray;
   end;
 
   TJclPtrBucketArray = array of TJclPtrBucket;
@@ -2250,7 +2250,7 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclPtrEntryArray; FromIndex, ToIndex, Count: Integer);
+    procedure MoveArray(var List: TJclPtrHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -2286,17 +2286,17 @@ type
   {$ENDIF ~CLR}
 
 
-  TJclEntry = record
+  TJclHashEntry = record
     Key: TObject;
     Value: TObject;
   end;
 
-  TJclEntryArray = array of TJclEntry;
+  TJclHashEntryArray = array of TJclHashEntry;
 
   TJclBucket = class
   public
     Size: Integer;
-    Entries: TJclEntryArray;
+    Entries: TJclHashEntryArray;
   end;
 
   TJclBucketArray = array of TJclBucket;
@@ -2312,7 +2312,7 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclEntryArray; FromIndex, ToIndex, Count: Integer);
+    procedure MoveArray(var List: TJclHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -2352,17 +2352,17 @@ type
 
   {$IFDEF SUPPORTS_GENERICS}
 
-  TJclEntry<TKey,TValue> = record
+  TJclHashEntry<TKey,TValue> = record
     Key: TKey;
     Value: TValue;
   end;
 
-  TJclEntryArray<TKey,TValue> = array of TJclEntry<TKey,TValue>;
+  TJclHashEntryArray<TKey,TValue> = array of TJclHashEntry<TKey,TValue>;
 
   TJclBucket<TKey,TValue> = class
   public
     Size: Integer;
-    Entries: TJclEntryArray<TKey,TValue>;
+    Entries: TJclHashEntryArray<TKey,TValue>;
   end;
 
   TJclBucketArray<TKey,TValue> = array of TJclBucket<TKey,TValue>;
@@ -2378,7 +2378,7 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclEntryArray<TKey,TValue>; FromIndex, ToIndex, Count: Integer);
+    procedure MoveArray(var List: TJclHashEntryArray<TKey,TValue>; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -2822,7 +2822,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntfIntfHashMap.MoveArray(var List: TJclIntfIntfEntryArray; FromIndex, ToIndex, Count: Integer);
+procedure TJclIntfIntfHashMap.MoveArray(var List: TJclIntfIntfHashEntryArray; FromIndex, ToIndex, Count: Integer);
 {$IFDEF CLR}
 var
   I: Integer;
@@ -3388,7 +3388,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclAnsiStrIntfHashMap.MoveArray(var List: TJclAnsiStrIntfEntryArray; FromIndex, ToIndex, Count: Integer);
+procedure TJclAnsiStrIntfHashMap.MoveArray(var List: TJclAnsiStrIntfHashEntryArray; FromIndex, ToIndex, Count: Integer);
 {$IFDEF CLR}
 var
   I: Integer;
@@ -3956,7 +3956,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntfAnsiStrHashMap.MoveArray(var List: TJclIntfAnsiStrEntryArray; FromIndex, ToIndex, Count: Integer);
+procedure TJclIntfAnsiStrHashMap.MoveArray(var List: TJclIntfAnsiStrHashEntryArray; FromIndex, ToIndex, Count: Integer);
 {$IFDEF CLR}
 var
   I: Integer;
@@ -4519,7 +4519,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclAnsiStrAnsiStrHashMap.MoveArray(var List: TJclAnsiStrAnsiStrEntryArray; FromIndex, ToIndex, Count: Integer);
+procedure TJclAnsiStrAnsiStrHashMap.MoveArray(var List: TJclAnsiStrAnsiStrHashEntryArray; FromIndex, ToIndex, Count: Integer);
 {$IFDEF CLR}
 var
   I: Integer;
@@ -5085,7 +5085,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclWideStrIntfHashMap.MoveArray(var List: TJclWideStrIntfEntryArray; FromIndex, ToIndex, Count: Integer);
+procedure TJclWideStrIntfHashMap.MoveArray(var List: TJclWideStrIntfHashEntryArray; FromIndex, ToIndex, Count: Integer);
 {$IFDEF CLR}
 var
   I: Integer;
@@ -5655,7 +5655,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntfWideStrHashMap.MoveArray(var List: TJclIntfWideStrEntryArray; FromIndex, ToIndex, Count: Integer);
+procedure TJclIntfWideStrHashMap.MoveArray(var List: TJclIntfWideStrHashEntryArray; FromIndex, ToIndex, Count: Integer);
 {$IFDEF CLR}
 var
   I: Integer;
@@ -6221,7 +6221,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclWideStrWideStrHashMap.MoveArray(var List: TJclWideStrWideStrEntryArray; FromIndex, ToIndex, Count: Integer);
+procedure TJclWideStrWideStrHashMap.MoveArray(var List: TJclWideStrWideStrHashEntryArray; FromIndex, ToIndex, Count: Integer);
 {$IFDEF CLR}
 var
   I: Integer;
@@ -6787,7 +6787,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclSingleIntfHashMap.MoveArray(var List: TJclSingleIntfEntryArray; FromIndex, ToIndex, Count: Integer);
+procedure TJclSingleIntfHashMap.MoveArray(var List: TJclSingleIntfHashEntryArray; FromIndex, ToIndex, Count: Integer);
 {$IFDEF CLR}
 var
   I: Integer;
@@ -7357,7 +7357,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntfSingleHashMap.MoveArray(var List: TJclIntfSingleEntryArray; FromIndex, ToIndex, Count: Integer);
+procedure TJclIntfSingleHashMap.MoveArray(var List: TJclIntfSingleHashEntryArray; FromIndex, ToIndex, Count: Integer);
 {$IFDEF CLR}
 var
   I: Integer;
@@ -7923,7 +7923,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclSingleSingleHashMap.MoveArray(var List: TJclSingleSingleEntryArray; FromIndex, ToIndex, Count: Integer);
+procedure TJclSingleSingleHashMap.MoveArray(var List: TJclSingleSingleHashEntryArray; FromIndex, ToIndex, Count: Integer);
 {$IFDEF CLR}
 var
   I: Integer;
@@ -8489,7 +8489,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclDoubleIntfHashMap.MoveArray(var List: TJclDoubleIntfEntryArray; FromIndex, ToIndex, Count: Integer);
+procedure TJclDoubleIntfHashMap.MoveArray(var List: TJclDoubleIntfHashEntryArray; FromIndex, ToIndex, Count: Integer);
 {$IFDEF CLR}
 var
   I: Integer;
@@ -9059,7 +9059,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntfDoubleHashMap.MoveArray(var List: TJclIntfDoubleEntryArray; FromIndex, ToIndex, Count: Integer);
+procedure TJclIntfDoubleHashMap.MoveArray(var List: TJclIntfDoubleHashEntryArray; FromIndex, ToIndex, Count: Integer);
 {$IFDEF CLR}
 var
   I: Integer;
@@ -9625,7 +9625,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclDoubleDoubleHashMap.MoveArray(var List: TJclDoubleDoubleEntryArray; FromIndex, ToIndex, Count: Integer);
+procedure TJclDoubleDoubleHashMap.MoveArray(var List: TJclDoubleDoubleHashEntryArray; FromIndex, ToIndex, Count: Integer);
 {$IFDEF CLR}
 var
   I: Integer;
@@ -10191,7 +10191,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclExtendedIntfHashMap.MoveArray(var List: TJclExtendedIntfEntryArray; FromIndex, ToIndex, Count: Integer);
+procedure TJclExtendedIntfHashMap.MoveArray(var List: TJclExtendedIntfHashEntryArray; FromIndex, ToIndex, Count: Integer);
 {$IFDEF CLR}
 var
   I: Integer;
@@ -10761,7 +10761,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntfExtendedHashMap.MoveArray(var List: TJclIntfExtendedEntryArray; FromIndex, ToIndex, Count: Integer);
+procedure TJclIntfExtendedHashMap.MoveArray(var List: TJclIntfExtendedHashEntryArray; FromIndex, ToIndex, Count: Integer);
 {$IFDEF CLR}
 var
   I: Integer;
@@ -11327,7 +11327,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclExtendedExtendedHashMap.MoveArray(var List: TJclExtendedExtendedEntryArray; FromIndex, ToIndex, Count: Integer);
+procedure TJclExtendedExtendedHashMap.MoveArray(var List: TJclExtendedExtendedHashEntryArray; FromIndex, ToIndex, Count: Integer);
 {$IFDEF CLR}
 var
   I: Integer;
@@ -11893,7 +11893,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntegerIntfHashMap.MoveArray(var List: TJclIntegerIntfEntryArray; FromIndex, ToIndex, Count: Integer);
+procedure TJclIntegerIntfHashMap.MoveArray(var List: TJclIntegerIntfHashEntryArray; FromIndex, ToIndex, Count: Integer);
 {$IFDEF CLR}
 var
   I: Integer;
@@ -12463,7 +12463,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntfIntegerHashMap.MoveArray(var List: TJclIntfIntegerEntryArray; FromIndex, ToIndex, Count: Integer);
+procedure TJclIntfIntegerHashMap.MoveArray(var List: TJclIntfIntegerHashEntryArray; FromIndex, ToIndex, Count: Integer);
 {$IFDEF CLR}
 var
   I: Integer;
@@ -13029,7 +13029,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntegerIntegerHashMap.MoveArray(var List: TJclIntegerIntegerEntryArray; FromIndex, ToIndex, Count: Integer);
+procedure TJclIntegerIntegerHashMap.MoveArray(var List: TJclIntegerIntegerHashEntryArray; FromIndex, ToIndex, Count: Integer);
 {$IFDEF CLR}
 var
   I: Integer;
@@ -13595,7 +13595,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclCardinalIntfHashMap.MoveArray(var List: TJclCardinalIntfEntryArray; FromIndex, ToIndex, Count: Integer);
+procedure TJclCardinalIntfHashMap.MoveArray(var List: TJclCardinalIntfHashEntryArray; FromIndex, ToIndex, Count: Integer);
 {$IFDEF CLR}
 var
   I: Integer;
@@ -14165,7 +14165,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntfCardinalHashMap.MoveArray(var List: TJclIntfCardinalEntryArray; FromIndex, ToIndex, Count: Integer);
+procedure TJclIntfCardinalHashMap.MoveArray(var List: TJclIntfCardinalHashEntryArray; FromIndex, ToIndex, Count: Integer);
 {$IFDEF CLR}
 var
   I: Integer;
@@ -14731,7 +14731,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclCardinalCardinalHashMap.MoveArray(var List: TJclCardinalCardinalEntryArray; FromIndex, ToIndex, Count: Integer);
+procedure TJclCardinalCardinalHashMap.MoveArray(var List: TJclCardinalCardinalHashEntryArray; FromIndex, ToIndex, Count: Integer);
 {$IFDEF CLR}
 var
   I: Integer;
@@ -15297,7 +15297,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclInt64IntfHashMap.MoveArray(var List: TJclInt64IntfEntryArray; FromIndex, ToIndex, Count: Integer);
+procedure TJclInt64IntfHashMap.MoveArray(var List: TJclInt64IntfHashEntryArray; FromIndex, ToIndex, Count: Integer);
 {$IFDEF CLR}
 var
   I: Integer;
@@ -15867,7 +15867,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntfInt64HashMap.MoveArray(var List: TJclIntfInt64EntryArray; FromIndex, ToIndex, Count: Integer);
+procedure TJclIntfInt64HashMap.MoveArray(var List: TJclIntfInt64HashEntryArray; FromIndex, ToIndex, Count: Integer);
 {$IFDEF CLR}
 var
   I: Integer;
@@ -16433,7 +16433,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclInt64Int64HashMap.MoveArray(var List: TJclInt64Int64EntryArray; FromIndex, ToIndex, Count: Integer);
+procedure TJclInt64Int64HashMap.MoveArray(var List: TJclInt64Int64HashEntryArray; FromIndex, ToIndex, Count: Integer);
 {$IFDEF CLR}
 var
   I: Integer;
@@ -17000,7 +17000,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclPtrIntfHashMap.MoveArray(var List: TJclPtrIntfEntryArray; FromIndex, ToIndex, Count: Integer);
+procedure TJclPtrIntfHashMap.MoveArray(var List: TJclPtrIntfHashEntryArray; FromIndex, ToIndex, Count: Integer);
 {$IFDEF CLR}
 var
   I: Integer;
@@ -17570,7 +17570,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntfPtrHashMap.MoveArray(var List: TJclIntfPtrEntryArray; FromIndex, ToIndex, Count: Integer);
+procedure TJclIntfPtrHashMap.MoveArray(var List: TJclIntfPtrHashEntryArray; FromIndex, ToIndex, Count: Integer);
 {$IFDEF CLR}
 var
   I: Integer;
@@ -18136,7 +18136,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclPtrPtrHashMap.MoveArray(var List: TJclPtrPtrEntryArray; FromIndex, ToIndex, Count: Integer);
+procedure TJclPtrPtrHashMap.MoveArray(var List: TJclPtrPtrHashEntryArray; FromIndex, ToIndex, Count: Integer);
 {$IFDEF CLR}
 var
   I: Integer;
@@ -18720,7 +18720,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntfHashMap.MoveArray(var List: TJclIntfEntryArray; FromIndex, ToIndex, Count: Integer);
+procedure TJclIntfHashMap.MoveArray(var List: TJclIntfHashEntryArray; FromIndex, ToIndex, Count: Integer);
 {$IFDEF CLR}
 var
   I: Integer;
@@ -19299,7 +19299,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclAnsiStrHashMap.MoveArray(var List: TJclAnsiStrEntryArray; FromIndex, ToIndex, Count: Integer);
+procedure TJclAnsiStrHashMap.MoveArray(var List: TJclAnsiStrHashEntryArray; FromIndex, ToIndex, Count: Integer);
 {$IFDEF CLR}
 var
   I: Integer;
@@ -19878,7 +19878,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclWideStrHashMap.MoveArray(var List: TJclWideStrEntryArray; FromIndex, ToIndex, Count: Integer);
+procedure TJclWideStrHashMap.MoveArray(var List: TJclWideStrHashEntryArray; FromIndex, ToIndex, Count: Integer);
 {$IFDEF CLR}
 var
   I: Integer;
@@ -20457,7 +20457,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclSingleHashMap.MoveArray(var List: TJclSingleEntryArray; FromIndex, ToIndex, Count: Integer);
+procedure TJclSingleHashMap.MoveArray(var List: TJclSingleHashEntryArray; FromIndex, ToIndex, Count: Integer);
 {$IFDEF CLR}
 var
   I: Integer;
@@ -21036,7 +21036,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclDoubleHashMap.MoveArray(var List: TJclDoubleEntryArray; FromIndex, ToIndex, Count: Integer);
+procedure TJclDoubleHashMap.MoveArray(var List: TJclDoubleHashEntryArray; FromIndex, ToIndex, Count: Integer);
 {$IFDEF CLR}
 var
   I: Integer;
@@ -21615,7 +21615,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclExtendedHashMap.MoveArray(var List: TJclExtendedEntryArray; FromIndex, ToIndex, Count: Integer);
+procedure TJclExtendedHashMap.MoveArray(var List: TJclExtendedHashEntryArray; FromIndex, ToIndex, Count: Integer);
 {$IFDEF CLR}
 var
   I: Integer;
@@ -22194,7 +22194,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntegerHashMap.MoveArray(var List: TJclIntegerEntryArray; FromIndex, ToIndex, Count: Integer);
+procedure TJclIntegerHashMap.MoveArray(var List: TJclIntegerHashEntryArray; FromIndex, ToIndex, Count: Integer);
 {$IFDEF CLR}
 var
   I: Integer;
@@ -22773,7 +22773,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclCardinalHashMap.MoveArray(var List: TJclCardinalEntryArray; FromIndex, ToIndex, Count: Integer);
+procedure TJclCardinalHashMap.MoveArray(var List: TJclCardinalHashEntryArray; FromIndex, ToIndex, Count: Integer);
 {$IFDEF CLR}
 var
   I: Integer;
@@ -23352,7 +23352,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclInt64HashMap.MoveArray(var List: TJclInt64EntryArray; FromIndex, ToIndex, Count: Integer);
+procedure TJclInt64HashMap.MoveArray(var List: TJclInt64HashEntryArray; FromIndex, ToIndex, Count: Integer);
 {$IFDEF CLR}
 var
   I: Integer;
@@ -23932,7 +23932,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclPtrHashMap.MoveArray(var List: TJclPtrEntryArray; FromIndex, ToIndex, Count: Integer);
+procedure TJclPtrHashMap.MoveArray(var List: TJclPtrHashEntryArray; FromIndex, ToIndex, Count: Integer);
 {$IFDEF CLR}
 var
   I: Integer;
@@ -24529,7 +24529,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclHashMap.MoveArray(var List: TJclEntryArray; FromIndex, ToIndex, Count: Integer);
+procedure TJclHashMap.MoveArray(var List: TJclHashEntryArray; FromIndex, ToIndex, Count: Integer);
 {$IFDEF CLR}
 var
   I: Integer;
@@ -25114,7 +25114,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclHashMap<TKey, TValue>.MoveArray(var List: TJclEntryArray<TKey, TValue>; FromIndex, ToIndex, Count: Integer);
+procedure TJclHashMap<TKey, TValue>.MoveArray(var List: TJclHashEntryArray<TKey, TValue>; FromIndex, ToIndex, Count: Integer);
 {$IFDEF CLR}
 var
   I: Integer;
