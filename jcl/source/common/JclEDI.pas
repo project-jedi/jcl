@@ -89,7 +89,11 @@ type
   TEDIObject = class(TObject); // Base EDI Object
   TEDIObjectArray = array of TEDIObject;
 
-  EJclEDIError = EJclError;
+  EJclEDIError = class(EJclError)
+  public
+    constructor CreateID(ID: Integer);
+    constructor CreateIDFmt(ID: Integer; const Args: array of const);
+  end;
 
   //  EDI Forward Class Declarations
   TEDIDataObject = class;
@@ -529,6 +533,26 @@ begin
     Inc(SearchIndex);
     Inc(ReplaceIndex);
   end;
+end;
+
+//=== { EJclEDIError } =======================================================
+
+constructor EJclEDIError.CreateID(ID: Integer);
+begin
+  {$IFDEF CLR}
+  Create(RsEDIErrors[ID]);
+  {$ELSE ~CLR}
+  CreateRes(RsEDIErrors[ID]);
+  {$ENDIF ~CLR}
+end;
+
+constructor EJclEDIError.CreateIDFmt(ID: Integer; const Args: array of const);
+begin
+  {$IFDEF CLR}
+  Create(Format(RsEDIErrors[ID], Args));
+  {$ELSE ~CLR}
+  CreateResFmt(RsEDIErrors[ID], Args);
+  {$ENDIF ~CLR}
 end;
 
 //=== { TEDIDelimiters } =====================================================
