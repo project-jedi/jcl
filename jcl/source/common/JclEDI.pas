@@ -257,13 +257,13 @@ type
     FCurrentItem: TEDIObjectListItem;
     function GetEDIObject(Index: Integer): TEDIObject;
     procedure SetEDIObject(Index: Integer; const Value: TEDIObject);
-    function CreateListItem(PriorItem: TEDIObjectListItem;
-      EDIObject: TEDIObject = nil): TEDIObjectListItem; virtual;
   public
     constructor Create(OwnsObjects: Boolean = True);
     destructor Destroy; override;
     procedure Add(Item: TEDIObjectListItem; Name: string = ''); overload;
     function Add(EDIObject: TEDIObject; Name: string = ''): TEDIObjectListItem; overload;
+    function CreateListItem(PriorItem: TEDIObjectListItem;
+      EDIObject: TEDIObject = nil): TEDIObjectListItem; virtual;
     function Find(Item: TEDIObjectListItem): TEDIObjectListItem; overload;
     function Find(EDIObject: TEDIObject): TEDIObjectListItem; overload;
     function FindEDIObject(EDIObject: TEDIObject): TEDIObject;

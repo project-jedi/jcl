@@ -421,6 +421,9 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
+    {$IFDEF CLR}
+    Result := DEFAULTVALUE;
+    {$ENDIF CLR}
     if (Index >= 0) and (Index < FSize) then
     begin
       Result := RELEASERNAME(FElementData[Index]);

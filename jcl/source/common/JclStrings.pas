@@ -69,6 +69,7 @@ uses
   Classes, SysUtils,
   {$IFDEF CLR}
   System.Text,
+  System.IO,
   {$ELSE}
   JclWideStrings,
   {$ENDIF CLR}
@@ -164,7 +165,9 @@ const
 function StrIsAlpha(const S: string): Boolean;
 function StrIsAlphaNum(const S: string): Boolean;
 function StrIsAlphaNumUnderscore(const S: string): Boolean;
+{$IFNDEF CLR}
 function StrContainsChars(const S: string; Chars: TSysCharSet; CheckAll: Boolean): Boolean;
+{$ENDIF ~CLR}
 function StrConsistsOfNumberChars(const S: string): Boolean;
 function StrIsDigit(const S: string): Boolean;
 {$IFNDEF CLR}
@@ -861,6 +864,7 @@ begin
  end;
 end;
 
+{$IFNDEF CLR}
 function StrContainsChars(const S: string; Chars: TSysCharSet; CheckAll: Boolean): Boolean;
 var
   I: Integer;
@@ -894,6 +898,7 @@ begin
     end;
   end;
 end;
+{$ENDIF ~CLR}
 
 function StrIsAlphaNumUnderscore(const S: string): Boolean;
 var

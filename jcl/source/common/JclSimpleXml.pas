@@ -49,6 +49,7 @@ uses
   {$ENDIF MSWINDOWS}
   {$IFDEF CLR}
   System.Text,
+  System.IO,
   {$ENDIF CLR}
   SysUtils, Classes,
   {$IFDEF HAS_UNIT_VARIANTS}

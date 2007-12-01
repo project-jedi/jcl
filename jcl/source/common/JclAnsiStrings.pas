@@ -68,6 +68,7 @@ uses
   Classes, SysUtils,
   {$IFDEF CLR}
   System.Text,
+  System.IO,
   {$ELSE}
   JclWideStrings,
   {$ENDIF CLR}

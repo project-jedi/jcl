@@ -182,21 +182,24 @@ type
   TEDISegmentArray = array of TEDISegment;
 
   TEDIMessageSegment = class(TEDISegment)
+  protected
+    function InternalAssignDelimiters: TEDIDelimiters; override;
   public
     constructor Create(Parent: TEDIDataObject; ElementCount: Integer = 0); reintroduce;
-    function InternalAssignDelimiters: TEDIDelimiters; override;
   end;
 
   TEDIFunctionalGroupSegment = class(TEDISegment)
+  protected
+    function InternalAssignDelimiters: TEDIDelimiters; override;
   public
     constructor Create(Parent: TEDIDataObject; ElementCount: Integer = 0); reintroduce;
-    function InternalAssignDelimiters: TEDIDelimiters; override;
   end;
 
   TEDIInterchangeControlSegment = class(TEDISegment)
+  protected
+    function InternalAssignDelimiters: TEDIDelimiters; override;
   public
     constructor Create(Parent: TEDIDataObject; ElementCount: Integer = 0); reintroduce;
-    function InternalAssignDelimiters: TEDIDelimiters; override;
   end;
 
   //  EDI Transaction Set Loop

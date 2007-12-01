@@ -193,21 +193,24 @@ type
   TEDISegmentArray = array of TEDISegment;
 
   TEDITransactionSetSegment = class(TEDISegment)
+  protected
+    function InternalAssignDelimiters: TEDIDelimiters; override;
   public
     constructor Create(Parent: TEDIDataObject; ElementCount: Integer = 0); reintroduce;
-    function InternalAssignDelimiters: TEDIDelimiters; override;
   end;
 
   TEDIFunctionalGroupSegment = class(TEDISegment)
+  protected
+    function InternalAssignDelimiters: TEDIDelimiters; override;
   public
     constructor Create(Parent: TEDIDataObject; ElementCount: Integer = 0); reintroduce;
-    function InternalAssignDelimiters: TEDIDelimiters; override;
   end;
 
   TEDIInterchangeControlSegment = class(TEDISegment)
+  protected
+    function InternalAssignDelimiters: TEDIDelimiters; override;
   public
     constructor Create(Parent: TEDIDataObject; ElementCount: Integer = 0); reintroduce;
-    function InternalAssignDelimiters: TEDIDelimiters; override;
   end;
 
   //  EDI Segment Specification Classes
@@ -223,12 +226,13 @@ type
     FOwnerLoopId: string;
     FParentLoopId: string;
     function GetReservedData: TStrings;
+  protected
+    function InternalCreateElement: TEDIElement; override;
   public
     constructor Create(Parent: TEDIDataObject; ElementCount: Integer = 0); reintroduce;
     destructor Destroy; override;
     procedure AssembleReservedData(ReservedData: TStrings); virtual;
     procedure DisassembleReservedData(ReservedData: TStrings); virtual;
-    function InternalCreateElement: TEDIElement; override;
     function Assemble: string; override;
     procedure Disassemble; override;
     procedure ValidateElementIndexPositions;
@@ -246,9 +250,10 @@ type
   end;
 
   TEDITransactionSetSegmentSpec = class(TEDISegmentSpec)
+  protected
+    function InternalAssignDelimiters: TEDIDelimiters; override;
   public
     constructor Create(Parent: TEDIDataObject; ElementCount: Integer = 0); reintroduce;
-    function InternalAssignDelimiters: TEDIDelimiters; override;
   end;
 
   TEDITransactionSetSegmentSTSpec = class(TEDITransactionSetSegmentSpec)
@@ -259,9 +264,10 @@ type
   end;
 
   TEDIFunctionalGroupSegmentSpec = class(TEDISegmentSpec)
+  protected
+    function InternalAssignDelimiters: TEDIDelimiters; override;
   public
     constructor Create(Parent: TEDIDataObject; ElementCount: Integer = 0); reintroduce;
-    function InternalAssignDelimiters: TEDIDelimiters; override;
   end;
 
   TEDIFunctionalGroupSegmentGSSpec = class(TEDIFunctionalGroupSegmentSpec)
@@ -272,9 +278,10 @@ type
   end;
 
   TEDIInterchangeControlSegmentSpec = class(TEDISegmentSpec)
+  protected
+    function InternalAssignDelimiters: TEDIDelimiters; override;
   public
     constructor Create(Parent: TEDIDataObject; ElementCount: Integer = 0); reintroduce;
-    function InternalAssignDelimiters: TEDIDelimiters; override;
   end;
 
   TEDIInterchangeControlSegmentISASpec = class(TEDIInterchangeControlSegmentSpec)
@@ -337,9 +344,10 @@ type
   private
     FTransactionSetId: string;
     FTSDescription: string;
-  public
+  protected
     procedure InternalCreateHeaderTrailerSegments; override;
     function InternalCreateSegment: TEDISegment; override;
+  public
     procedure ValidateSegmentIndexPositions;
   published
     property Id: string read FTransactionSetId write FTransactionSetId;
@@ -472,9 +480,10 @@ type
     FFGDescription: string;
     FAgencyCodeId: string;
     FVersionReleaseId: string;
-  public
+  protected
     procedure InternalCreateHeaderTrailerSegments; override;
     function InternalCreateTransactionSet: TEDITransactionSet; override;
+  public
     function FindTransactionSetSpec(TransactionSetId: string): TEDITransactionSetSpec;
   published
     property Id: string read FFunctionalGroupId write FFunctionalGroupId;
@@ -540,9 +549,10 @@ type
     FStandardId: string;
     FVersionId: string;
     FICDescription: string;
-  public
+  protected
     procedure InternalCreateHeaderTrailerSegments; override;
     function InternalCreateFunctionalGroup: TEDIFunctionalGroup; override;
+  public
     function FindFunctionalGroupSpec(FunctionalGroupId, AgencyCodeId,
       VersionReleaseId: string): TEDIFunctionalGroupSpec;
     function FindTransactionSetSpec(FunctionalGroupId, AgencyCodeId, VersionReleaseId,
@@ -614,6 +624,9 @@ type
 
   //  EDI File Specification
   TEDIFileSpec = class(TEDIFile)
+  protected
+    procedure InternalDelimitersDetection(StartPos: Integer); override;
+    function InternalCreateInterchangeControl: TEDIInterchangeControl; override;
   public
     constructor Create(Parent: TEDIDataObject; InterchangeCount: Integer = 0); reintroduce;
     function FindTransactionSetSpec(StandardId, VersionId, FunctionalGroupId, AgencyCodeId,
@@ -621,8 +634,6 @@ type
     function FindFunctionalGroupSpec(StandardId, VersionId, FunctionalGroupId, AgencyCodeId,
       VersionReleaseId: string): TEDIFunctionalGroupSpec;
     function FindInterchangeControlSpec(StandardId, VersionId: string): TEDIInterchangeControlSpec;
-    procedure InternalDelimitersDetection(StartPos: Integer); override;
-    function InternalCreateInterchangeControl: TEDIInterchangeControl; override;
   end;
 
 {$IFNDEF EDI_WEAK_PACKAGE_UNITS}

@@ -2886,6 +2886,9 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
+    {$IFDEF CLR}
+    Result := nil;
+    {$ENDIF CLR}
     if (Index >= 0) and (Index < FSize) then
     begin
       Result := FreeObject(FElementData[Index]);
@@ -3450,6 +3453,9 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
+    {$IFDEF CLR}
+    Result := '';
+    {$ENDIF CLR}
     if (Index >= 0) and (Index < FSize) then
     begin
       Result := FreeString(FElementData[Index]);
@@ -4014,6 +4020,9 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
+    {$IFDEF CLR}
+    Result := '';
+    {$ENDIF CLR}
     if (Index >= 0) and (Index < FSize) then
     begin
       Result := FreeString(FElementData[Index]);
@@ -4578,6 +4587,9 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
+    {$IFDEF CLR}
+    Result := 0.0;
+    {$ENDIF CLR}
     if (Index >= 0) and (Index < FSize) then
     begin
       Result := FreeSingle(FElementData[Index]);
@@ -5142,6 +5154,9 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
+    {$IFDEF CLR}
+    Result := 0.0;
+    {$ENDIF CLR}
     if (Index >= 0) and (Index < FSize) then
     begin
       Result := FreeDouble(FElementData[Index]);
@@ -5706,6 +5721,9 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
+    {$IFDEF CLR}
+    Result := 0.0;
+    {$ENDIF CLR}
     if (Index >= 0) and (Index < FSize) then
     begin
       Result := FreeExtended(FElementData[Index]);
@@ -6270,6 +6288,9 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
+    {$IFDEF CLR}
+    Result := 0;
+    {$ENDIF CLR}
     if (Index >= 0) and (Index < FSize) then
     begin
       Result := FreeInteger(FElementData[Index]);
@@ -6834,6 +6855,9 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
+    {$IFDEF CLR}
+    Result := 0;
+    {$ENDIF CLR}
     if (Index >= 0) and (Index < FSize) then
     begin
       Result := FreeCardinal(FElementData[Index]);
@@ -7398,6 +7422,9 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
+    {$IFDEF CLR}
+    Result := 0;
+    {$ENDIF CLR}
     if (Index >= 0) and (Index < FSize) then
     begin
       Result := FreeInt64(FElementData[Index]);
@@ -7963,6 +7990,9 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
+    {$IFDEF CLR}
+    Result := nil;
+    {$ENDIF CLR}
     if (Index >= 0) and (Index < FSize) then
     begin
       Result := FreePointer(FElementData[Index]);
@@ -8528,6 +8558,9 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
+    {$IFDEF CLR}
+    Result := nil;
+    {$ENDIF CLR}
     if (Index >= 0) and (Index < FSize) then
     begin
       Result := FreeObject(FElementData[Index]);
@@ -9088,6 +9121,9 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
+    {$IFDEF CLR}
+    Result := Default(T);
+    {$ENDIF CLR}
     if (Index >= 0) and (Index < FSize) then
     begin
       Result := FreeItem(FElementData[Index]);

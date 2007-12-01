@@ -296,11 +296,11 @@ type
     FText: string;
     function GetData: string;
     procedure SetData(const Value: string);
-    function Assemble: string; virtual;
-    procedure Disassemble; virtual;
   public
     constructor Create;
     destructor Destroy; override;
+    function Assemble: string; virtual;
+    procedure Disassemble; virtual;
   published
     property Data: string read GetData write SetData;
     property WhereLocation: TStrings read GetWhereLocation;

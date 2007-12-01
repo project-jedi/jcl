@@ -203,11 +203,12 @@ type
   TEDIXMLElement = class(TEDIXMLDataObject)
   private
     FCData: Boolean;
-  public
-    constructor Create(Parent: TEDIXMLDataObject); reintroduce;
+  protected
     function InternalAssignDelimiters: TEDIXMLDelimiters; virtual;
     function Assemble: string; override;
     procedure Disassemble; override;
+  public
+    constructor Create(Parent: TEDIXMLDataObject); reintroduce;
     function GetIndexPositionFromParent: Integer;
   published
     property CData: Boolean read FCData write FCData;
@@ -254,13 +255,16 @@ type
     FElements: TEDIXMLElementArray;
     function GetElement(Index: Integer): TEDIXMLElement;
     procedure SetElement(Index: Integer; Element: TEDIXMLElement);
+  protected
+    function InternalAssignDelimiters: TEDIXMLDelimiters; virtual;
+    function InternalCreateElement: TEDIXMLElement; virtual;
+    //
+    function Assemble: string; override;
+    procedure Disassemble; override;
   public
     constructor Create(Parent: TEDIXMLDataObject); reintroduce; overload;
     constructor Create(Parent: TEDIXMLDataObject; ElementCount: Integer); reintroduce; overload;
     destructor Destroy; override;
-    //
-    function InternalAssignDelimiters: TEDIXMLDelimiters; virtual;
-    function InternalCreateElement: TEDIXMLElement; virtual;
     //
     function AddElement: Integer;
     function AppendElement(Element: TEDIXMLElement): Integer;
@@ -277,8 +281,6 @@ type
     procedure DeleteElements; overload;
     procedure DeleteElements(Index, Count: Integer); overload;
     //
-    function Assemble: string; override;
-    procedure Disassemble; override;
     function GetIndexPositionFromParent: Integer;
     property Element[Index: Integer]: TEDIXMLElement read GetElement write SetElement; default;
     property Elements: TEDIXMLElementArray read FElements write FElements;
@@ -289,37 +291,41 @@ type
   TEDIXMLSegmentArray = array of TEDIXMLSegment;  
 
   TEDIXMLTransactionSetSegment = class(TEDIXMLSegment)
+  protected
+    function InternalAssignDelimiters: TEDIXMLDelimiters; override;  
   public
     constructor Create(Parent: TEDIXMLDataObject); reintroduce; overload;
     constructor Create(Parent: TEDIXMLDataObject; ElementCount: Integer); reintroduce; overload;
-    function InternalAssignDelimiters: TEDIXMLDelimiters; override;
   end;
 
   TEDIXMLFunctionalGroupSegment = class(TEDIXMLSegment)
+  protected
+    function InternalAssignDelimiters: TEDIXMLDelimiters; override;
   public
     constructor Create(Parent: TEDIXMLDataObject); reintroduce; overload;
     constructor Create(Parent: TEDIXMLDataObject; ElementCount: Integer); reintroduce; overload;
-    function InternalAssignDelimiters: TEDIXMLDelimiters; override;
   end;
 
   TEDIXMLInterchangeControlSegment = class(TEDIXMLSegment)
+  protected
+    function InternalAssignDelimiters: TEDIXMLDelimiters; override;
   public
     constructor Create(Parent: TEDIXMLDataObject); reintroduce; overload;
     constructor Create(Parent: TEDIXMLDataObject; ElementCount: Integer); reintroduce; overload;
-    function InternalAssignDelimiters: TEDIXMLDelimiters; override;
   end;
 
   //  EDI Transaction Set Loop
   TEDIXMLTransactionSetLoop = class(TEDIXMLDataObjectGroup)
   private
     FParentTransactionSet: TEDIXMLTransactionSet;
-  public
-    constructor Create(Parent: TEDIXMLDataObject); reintroduce;
-    destructor Destroy; override;
+  protected
     function InternalAssignDelimiters: TEDIXMLDelimiters; override;
     function InternalCreateDataObjectGroup: TEDIXMLDataObjectGroup; override;
     function Assemble: string; override;
     procedure Disassemble; override;
+  public
+    constructor Create(Parent: TEDIXMLDataObject); reintroduce;
+    destructor Destroy; override;
   published
     property ParentTransactionSet: TEDIXMLTransactionSet read FParentTransactionSet
       write FParentTransactionSet;
@@ -330,13 +336,14 @@ type
   private
     FSTSegment: TEDIXMLSegment;
     FSESegment: TEDIXMLSegment;
-  public
-    constructor Create(Parent: TEDIXMLDataObject); reintroduce;
-    destructor Destroy; override;
+  protected
     function InternalAssignDelimiters: TEDIXMLDelimiters; override;
     function InternalCreateDataObjectGroup: TEDIXMLDataObjectGroup; override;
     function Assemble: string; override;
     procedure Disassemble; override;
+  public
+    constructor Create(Parent: TEDIXMLDataObject); reintroduce;
+    destructor Destroy; override;
   published
     property SegmentST: TEDIXMLSegment read FSTSegment write FSTSegment;
     property SegmentSE: TEDIXMLSegment read FSESegment write FSESegment;
@@ -347,13 +354,14 @@ type
   private
     FGSSegment: TEDIXMLSegment;
     FGESegment: TEDIXMLSegment;
-  public
-    constructor Create(Parent: TEDIXMLDataObject); reintroduce;
-    destructor Destroy; override;
+  protected
     function InternalAssignDelimiters: TEDIXMLDelimiters; override;
     function InternalCreateDataObjectGroup: TEDIXMLDataObjectGroup; override;
     function Assemble: string; override;
     procedure Disassemble; override;
+  public
+    constructor Create(Parent: TEDIXMLDataObject); reintroduce;
+    destructor Destroy; override;
   published
     property SegmentGS: TEDIXMLSegment read FGSSegment write FGSSegment;
     property SegmentGE: TEDIXMLSegment read FGESegment write FGESegment;
@@ -364,13 +372,14 @@ type
   private
     FISASegment: TEDIXMLSegment;
     FIEASegment: TEDIXMLSegment;
-  public
-    constructor Create(Parent: TEDIXMLDataObject); reintroduce;
-    destructor Destroy; override;
+  protected
     function InternalAssignDelimiters: TEDIXMLDelimiters; override;
     function InternalCreateDataObjectGroup: TEDIXMLDataObjectGroup; override;
     function Assemble: string; override;
     procedure Disassemble; override;
+  public
+    constructor Create(Parent: TEDIXMLDataObject); reintroduce;
+    destructor Destroy; override;
   published
     property SegmentISA: TEDIXMLSegment read FISASegment write FISASegment;
     property SegmentIEA: TEDIXMLSegment read FIEASegment write FIEASegment;
@@ -405,20 +414,19 @@ type
     FFileName: string;
     FEDIXMLFileHeader: TEDIXMLFileHeader;
     procedure InternalLoadFromFile;
+  protected
+    function InternalAssignDelimiters: TEDIXMLDelimiters; override;
+    function InternalCreateDataObjectGroup: TEDIXMLDataObjectGroup; override;
+    function Assemble: string; override;
+    procedure Disassemble; override;
   public
     constructor Create(Parent: TEDIXMLDataObject); reintroduce;
     destructor Destroy; override;
-
-    function InternalAssignDelimiters: TEDIXMLDelimiters; override;
-    function InternalCreateDataObjectGroup: TEDIXMLDataObjectGroup; override;
 
     procedure LoadFromFile(const FileName: string);
     procedure ReLoadFromFile;
     procedure SaveToFile;
     procedure SaveAsToFile(const FileName: string);
-
-    function Assemble: string; override;
-    procedure Disassemble; override;
   published
     property FileID: Integer read FFileID write FFileID;
     property FileName: string read FFileName write FFileName;
