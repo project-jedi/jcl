@@ -26,6 +26,7 @@
 {   Jean-Fabien Connault (cycocrew)                                                                }
 {   John C Molyneux                                                                                }
 {   Leonard Wennekers                                                                              }
+{   Martin Bestebroer                                                                              }
 {   Martin Kimmings                                                                                }
 {   Martin Kubecka                                                                                 }
 {   Massimo Maria Ghisalberti                                                                      }
@@ -481,6 +482,97 @@ function DotNetFormat(const Fmt: string; const Arg0, Arg1: Variant): string; ove
 function DotNetFormat(const Fmt: string; const Arg0, Arg1, Arg2: Variant): string; overload;
 
 {$ENDIF CLR}
+
+// TJclTabSet
+type
+  TJclTabSet = class {$IFNDEF CLR}(TInterfacedObject, IToString){$ENDIF}
+  private
+    FStops: TDynIntegerArray;
+    FRealWidth: Integer;
+    FWidth: Integer;
+    FZeroBased: Boolean;
+    procedure CalcRealWidth;
+    function GetCount: Integer;
+    function GetStops(Index: Integer): Integer;
+    function GetTabWidth: Integer;
+    function GetZeroBased: Boolean;
+    procedure SetStops(Index, Value: Integer);
+    procedure SetTabWidth(Value: Integer);
+    procedure SetZeroBased(Value: Boolean);
+  protected
+    function FindStop(Column: Integer): Integer;
+    function InternalTabStops: TDynIntegerArray;
+    function InternalTabWidth: Integer;
+    procedure RemoveAt(Index: Integer);
+  public
+    constructor Create; overload;
+    constructor Create(TabWidth: Integer); overload;
+    constructor Create(Tabstops: array of Integer; ZeroBased: Boolean); overload;
+    constructor Create(Tabstops: array of Integer; ZeroBased: Boolean; TabWidth: Integer); overload;
+
+    // Tab stops manipulation
+    function Add(Column: Integer): Integer;
+    function Delete(Column: Integer): Integer;
+
+    // Usage
+    function Expand(S: string): string; overload;
+    function Expand(S: string; Column: Integer): string; overload;
+    procedure OptimalFillInfo(StartColumn, TargetColumn: Integer; out TabsNeeded, SpacesNeeded: Integer);
+    function Optimize(S: string): string; overload;
+    function Optimize(S: string; Column: Integer): string; overload;
+    function StartColumn: Integer;
+    function TabFrom(Column: Integer): Integer;
+    function UpdatePosition(S: string): Integer; overload;
+    function UpdatePosition(S: string; Column: Integer): Integer; overload;
+    function UpdatePosition(S: string; var Column, Line: Integer): Integer; overload;
+
+    // Conversions
+    class function FromString(S: string): TJclTabSet; {$IFDEF SUPPORTS_STATIC}static; {$ENDIF}
+    function ToString: string; {$IFDEF CLR}override; {$ENDIF}overload;
+    function ToString(FormattingOptions: Integer): string; overload;
+
+    // Properties
+    property ActualTabWidth: Integer read InternalTabWidth;
+    property Count: Integer read GetCount;
+    property TabStops[&Index: Integer]: Integer read GetStops write SetStops; default;
+    property TabWidth: Integer read GetTabWidth write SetTabWidth;
+    property ZeroBased: Boolean read GetZeroBased write SetZeroBased;
+  end;
+
+// Formatting constants
+const
+  TabSetFormatting_SurroundStopsWithBrackets = 1;
+  TabSetFormatting_EmptyBracketsIfNoStops = 2;
+  TabSetFormatting_NoTabStops = 4;
+  TabSetFormatting_NoTabWidth = 8;
+  TabSetFormatting_AutoTabWidth = 16;
+  // common combinations
+  TabSetFormatting_Default = 0;
+  TabSetFormatting_AlwaysUseBrackets =  TabSetFormatting_SurroundStopsWithBrackets or
+                                        TabSetFormatting_EmptyBracketsIfNoStops;
+  TabSetFormatting_Full = TabSetFormatting_AlwaysUseBrackets or TabSetFormatting_AutoTabWidth;
+  // aliases
+  TabSetFormatting_StopsOnly = TabSetFormatting_NoTabWidth;
+  TabSetFormatting_TabWidthOnly = TabSetFormatting_NoTabStops;
+  TabSetFormatting_StopsWithoutBracketsAndTabWidth = TabSetFormatting_Default;
+
+// Tab expansion routines
+function StrExpandTabs(S: string): string; {$IFDEF SUPPORTS_INLINE}inline; {$ENDIF}overload;
+function StrExpandTabs(S: string; TabWidth: Integer): string; {$IFDEF SUPPORTS_INLINE}inline; {$ENDIF}overload;
+function StrExpandTabs(S: string; TabSet: TJclTabSet): string; {$IFDEF SUPPORTS_INLINE}inline; {$ENDIF}overload;
+// Tab optimization routines
+function StrOptimizeTabs(S: string): string; {$IFDEF SUPPORTS_INLINE}inline; {$ENDIF}overload;
+function StrOptimizeTabs(S: string; TabWidth: Integer): string; {$IFDEF SUPPORTS_INLINE}inline; {$ENDIF}overload;
+function StrOptimizeTabs(S: string; TabSet: TJclTabSet): string; {$IFDEF SUPPORTS_INLINE}inline; {$ENDIF}overload;
+
+{$IFNDEF CLR}
+// move to JclBase?
+type
+  NullReferenceException = class (EJclError)
+  public
+    constructor Create; overload;
+  end;
+{$ENDIF ~CLR}
 
 // Exceptions
 type
@@ -5022,6 +5114,728 @@ begin
   Result := Self;
 end;
 {$ENDIF CLR}
+
+function StrExpandTabs(S: string): string;
+begin
+  // use an empty tab set, which will default to a tab width of 2
+  Result := TJclTabSet(nil).Expand(s);
+end;
+
+function StrExpandTabs(S: string; TabWidth: Integer): string;
+var
+  TabSet: TJclTabSet;
+begin
+  // create a tab set with no tab stops and the given tab width
+  TabSet := TJclTabSet.Create(TabWidth);
+  try
+    Result := TabSet.Expand(S);
+  finally
+    TabSet.Free;
+  end;
+end;
+
+function StrExpandTabs(S: string; TabSet: TJclTabSet): string;
+begin
+  // use the provided tab set to perform the expansion
+  Result := TabSet.Expand(S);
+end;
+
+function StrOptimizeTabs(S: string): string;
+begin
+  // use an empty tab set, which will default to a tab width of 2
+  Result := TJclTabSet(nil).Optimize(s);
+end;
+
+function StrOptimizeTabs(S: string; TabWidth: Integer): string;
+var
+  TabSet: TJclTabSet;
+begin
+  // create a tab set with no tab stops and the given tab width
+  TabSet := TJclTabSet.Create(TabWidth);
+  try
+    Result := TabSet.Optimize(S);
+  finally
+    TabSet.Free;
+  end;
+end;
+
+function StrOptimizeTabs(S: string; TabSet: TJclTabSet): string;
+begin
+  // use the provided tab set to perform the optimization
+  Result := TabSet.Optimize(S);
+end;
+
+//=== { TJclTabSet } =====================================================
+
+constructor TJclTabSet.Create;
+begin
+  // no tab stops, tab width set to auto
+  Create([], True, 0);
+end;
+
+constructor TJclTabSet.Create(TabWidth: Integer);
+begin
+  // no tab stops, specified tab width
+  Create([], True, TabWidth);
+end;
+
+constructor TJclTabSet.Create(Tabstops: array of Integer; ZeroBased: Boolean);
+begin
+  // specified tab stops, tab width equal to distance between last two tab stops
+  Create(Tabstops, ZeroBased, 0);
+end;
+
+constructor TJclTabSet.Create(Tabstops: array of Integer; ZeroBased: Boolean; TabWidth: Integer);
+var
+  idx: Integer;
+begin
+  inherited Create;
+  for idx := 0 to High(Tabstops) do
+    Add(Tabstops[idx]);
+  FWidth := TabWidth;
+  FZeroBased := ZeroBased;
+  CalcRealWidth;
+end;
+
+function TJclTabSet.Add(Column: Integer): Integer;
+begin
+  if Self = nil then
+    raise NullReferenceException.Create;
+  if Column < StartColumn then
+    raise ArgumentOutOfRangeException.Create('Column');
+  Result := FindStop(Column);
+  if Result < 0 then
+  begin
+    // the column doesn't exist; invert the result of FindStop to get the correct index position
+    Result := not Result;
+    // increase the tab stop array
+    SetLength(FStops, Length(FStops) + 1);
+    // make room at the insert position
+    MoveArray(FStops, Result, Result + 1, High(FStops) - Result);
+    // add the tab stop at the correct location
+    FStops[Result] := Column;
+    CalcRealWidth;
+  end
+  else
+  begin
+    {$IFDEF CLR}
+    raise EJclStringError.Create(RsTabs_DuplicatesNotAllowed);
+    {$ELSE}
+    raise EJclStringError.CreateRes(@RsTabs_DuplicatesNotAllowed);
+    {$ENDIF}
+  end;
+end;
+
+procedure TJclTabSet.CalcRealWidth;
+begin
+  if FWidth < 1 then
+  begin
+    if Length(FStops) > 1 then
+      FRealWidth := FStops[High(FStops)] - FStops[Pred(High(FStops))]
+    else
+    if Length(FStops) = 1 then
+      FRealWidth := FStops[0]
+    else
+      FRealWidth := 2;
+  end
+  else
+    FRealWidth := FWidth;
+end;
+
+function TJclTabSet.Delete(Column: Integer): Integer;
+begin
+  Result := FindStop(Column);
+  if Result >= 0 then
+    RemoveAt(Result);
+end;
+
+function TJclTabSet.Expand(S: string): string;
+begin
+  Result := Expand(s, StartColumn);
+end;
+
+function TJclTabSet.Expand(S: string; Column: Integer): string;
+var
+  sb: TStringBuilder;
+  head: PChar;
+  cur: PChar;
+begin
+  if Column < StartColumn then
+    raise ArgumentOutOfRangeException.Create('Column');
+  sb := TStringBuilder.Create(Length(S));
+  try
+    cur := PChar(S);
+    while cur^ <> #0 do
+    begin
+      head := cur;
+      while (cur^<> #0) and (cur^ <> #9) do
+      begin
+        if cur^ in [#10, #13] then
+          Column := StartColumn
+        else
+          Inc(Column);
+        Inc(cur);
+      end;
+      if cur > head then
+        sb.Append(head, 0, cur - head);
+      if cur^ = #9 then
+      begin
+        sb.Append(' ', TabFrom(Column) - Column);
+        Column := TabFrom(Column);
+        Inc(cur);
+      end;
+    end;
+    Result := sb.ToString;
+  finally
+    sb.Free;
+  end;
+end;
+
+function TJclTabSet.FindStop(Column: Integer): Integer;
+begin
+  if Self <> nil then
+  begin
+    Result := High(FStops);
+    while (Result >= 0) and (FStops[Result] > Column) do
+      Dec(Result);
+    if (Result >= 0) and (FStops[Result] <> Column) then
+      Result := not Succ(Result);
+  end
+  else
+    Result := -1;
+end;
+
+class function TJclTabSet.FromString(S: string): TJclTabSet;
+var
+  cur: PChar;
+
+  procedure SkipWhiteSpace;
+  begin
+    while CharIsWhiteSpace(cur^) do
+      Inc(cur);
+  end;
+
+  function ParseNumber: Integer;
+  var
+    head: PChar;
+  begin
+    SkipWhiteSpace;
+    head := cur;
+    while cur^ in ['0'..'9'] do
+      Inc(cur);
+    if (cur <= head) or not TryStrToInt(Copy(head, 1, cur - head), Result) then
+      Result := -1;
+  end;
+
+  procedure ParseStops;
+  var
+    openBracket: Boolean;
+    num: Integer;
+    hadComma: Boolean;
+  begin
+    SkipWhiteSpace;
+    openBracket := cur^ = '[';
+    hadComma := False;
+    if openBracket then
+      Inc(cur);
+    repeat
+      num := ParseNumber;
+      if (num < 0) and hadComma then
+        {$IFDEF CLR}
+        raise EJclStringError.Create(RsTabs_StopExpected)
+        {$ELSE}
+        raise EJclStringError.CreateRes(@RsTabs_StopExpected)
+        {$ENDIF}
+      else
+      if num >= 0 then
+        Result.Add(num);
+      SkipWhiteSpace;
+      hadComma := cur^ = ',';
+      if hadComma then
+        Inc(cur);
+    until (cur^ in [#0, '+', ']']);
+    if hadComma then
+      {$IFDEF CLR}
+      raise EJclStringError.Create(RsTabs_StopExpected)
+      {$ELSE}
+      raise EJclStringError.CreateRes(@RsTabs_StopExpected)
+      {$ENDIF}
+    else
+    if openBracket and (cur^ <> ']') then
+      {$IFDEF CLR}
+      raise EJclStringError.Create(RsTabs_CloseBracketExpected)
+      {$ELSE}
+      raise EJclStringError.CreateRes(@RsTabs_CloseBracketExpected)
+      {$ENDIF}
+  end;
+
+  procedure ParseTabWidth;
+  var
+    num: Integer;
+  begin
+    SkipWhiteSpace;
+    if cur^ = '+' then
+    begin
+      Inc(cur);
+      SkipWhiteSpace;
+      num := ParseNumber;
+      if (num < 0) then
+        {$IFDEF CLR}
+        raise EJclStringError.Create(RsTabs_TabWidthExpected)
+        {$ELSE}
+        raise EJclStringError.CreateRes(@RsTabs_TabWidthExpected)
+        {$ENDIF}
+      else
+        Result.TabWidth := num;
+    end;
+  end;
+
+  procedure ParseZeroBasedFlag;
+  begin
+    SkipWhiteSpace;
+    if cur^ = '0' then
+    begin
+      Inc(cur);
+      if CharIsWhiteSpace(cur^) or (cur^ in [#0, '[']) then
+      begin
+        Result.ZeroBased := True;
+        SkipWhiteSpace;
+      end
+      else
+        Dec(cur);
+    end;
+  end;
+
+begin
+  Result := TJclTabSet.Create;
+  try
+    Result.ZeroBased := False;
+    cur := PChar(S);
+    ParseZeroBasedFlag;
+    ParseStops;
+    ParseTabWidth;
+  except
+    // clean up the partially complete instance (to avoid memory leaks)...
+    Result.Free;
+    // ... and re-raise the exception
+    raise;
+  end;
+end;
+
+function TJclTabSet.GetCount: Integer;
+begin
+  if Self <> nil then
+    Result := Length(FStops)
+  else
+    Result := 0;
+end;
+
+function TJclTabSet.GetStops(Index: Integer): Integer;
+begin
+  if Self <> nil then
+  begin
+    if (Index < 0) or (Index >= Length(FStops)) then
+    begin
+      {$IFDEF CLR}
+      raise EJclStringError.Create(RsArgumentOutOfRange);
+      {$ELSE}
+      raise EJclStringError.CreateRes(@RsArgumentOutOfRange);
+      {$ENDIF CLR}
+    end
+    else
+      Result := FStops[Index]
+  end
+  else
+  begin
+    {$IFDEF CLR}
+    raise EJclStringError.Create(RsArgumentOutOfRange);
+    {$ELSE}
+    raise EJclStringError.CreateRes(@RsArgumentOutOfRange);
+    {$ENDIF CLR}
+  end;
+end;
+
+function TJclTabSet.GetTabWidth: Integer;
+begin
+  if Self <> nil then
+    Result := FWidth
+  else
+    Result := 0;
+end;
+
+function TJclTabSet.GetZeroBased: Boolean;
+begin
+  Result := (Self = nil) or FZeroBased;
+end;
+
+procedure TJclTabSet.OptimalFillInfo(StartColumn, TargetColumn: Integer; out TabsNeeded, SpacesNeeded: Integer);
+var
+  nextTab: Integer;
+begin
+  if StartColumn < Self.StartColumn then  // starting column less than 1 or 0 (depending on ZeroBased state)
+    raise ArgumentOutOfRangeException.Create('StartColumn');
+  if (TargetColumn < StartColumn) then    // target lies before the starting column
+    raise ArgumentOutOfRangeException.Create('TargetColumn');
+  TabsNeeded := 0;
+  repeat
+    nextTab := TabFrom(StartColumn);
+    if nextTab <= TargetColumn then
+    begin
+      Inc(TabsNeeded);
+      StartColumn := nextTab;
+    end;
+  until nextTab > TargetColumn;
+  SpacesNeeded := TargetColumn - StartColumn;
+end;
+
+function TJclTabSet.Optimize(S: string): string;
+begin
+  Result := Optimize(S, StartColumn);
+end;
+
+function TJclTabSet.Optimize(S: string; Column: Integer): string;
+var
+  sb: TStringBuilder;
+  head: PChar;
+  cur: PChar;
+  tgt: Integer;
+
+  procedure AppendOptimalWhiteSpace(Target: Integer);
+  var
+    tabCount: Integer;
+    spaceCount: Integer;
+  begin
+    if cur > head then
+    begin
+      OptimalFillInfo(Column, Target, tabCount, spaceCount);
+      if tabCount > 0 then
+        sb.Append(#9, tabCount);
+      if spaceCount > 0 then
+        sb.Append(' ', spaceCount);
+    end;
+  end;
+
+begin
+  if Column < StartColumn then
+    raise ArgumentOutOfRangeException.Create('Column');
+  sb := TStringBuilder.Create(Length(S));
+  try
+    cur := PChar(s);
+    while cur^<> #0 do
+    begin
+      // locate first whitespace character
+      head := cur;
+      while (cur^ <> #0) and not CharIsWhiteSpace(cur^) do
+        Inc(cur);
+      // output non whitespace characters
+      if cur > head then
+        sb.Append(head, 0, cur - head);
+      // advance column
+      Inc(Column, cur - head);
+      // initialize target column indexer
+      tgt := Column;
+      // locate end of whitespace sequence
+      while CharIsWhiteSpace(cur^) do
+      begin
+        if cur^ in [AnsiLineFeed, AnsiCarriageReturn] then
+        begin
+          // append optimized whitespace sequence...
+          AppendOptimalWhiteSpace(tgt);
+          // ...set the column back to the start of the line...
+          Column := StartColumn;
+          // ...reset target column indexer...
+          tgt := Column;
+          // ...add the line break character...
+          sb.Append(cur^);
+        end
+        else
+        if cur^ = #9 then
+          tgt := TabFrom(tgt)       // expand the tab
+        else
+          Inc(tgt);                 // a normal whitespace; taking up 1 column
+        Inc(cur);
+      end;
+      AppendOptimalWhiteSpace(tgt); // append optimized whitespace sequence...
+      Column := tgt;                // ...and memorize the column for the next iteration
+    end;
+    Result := sb.ToString;          // convert result to a string
+  finally
+    sb.Free;
+  end;
+end;
+
+procedure TJclTabSet.RemoveAt(Index: Integer);
+begin
+  if Self <> nil then
+  begin
+    MoveArray(FStops, Succ(Index), Index, High(FStops) - Index);
+    SetLength(FStops, High(FStops));
+    CalcRealWidth;
+  end
+  else
+    raise NullReferenceException.Create;
+end;
+
+procedure TJclTabSet.SetStops(Index, Value: Integer);
+var
+  temp: Integer;
+begin
+  if Self <> nil then
+  begin
+    if (Index < 0) or (Index >= Length(FStops)) then
+    begin
+      {$IFDEF CLR}
+      raise ArgumentOutOfRangeException.Create;
+      {$ELSE}
+      raise ArgumentOutOfRangeException.CreateRes(@RsArgumentOutOfRange);
+      {$ENDIF CLR}
+    end
+    else
+    begin
+      temp := FindStop(Value);
+      if temp < 0 then
+      begin
+        // remove existing tab stop...
+        RemoveAt(Index);
+        // now add the new tab stop
+        Add(Value);
+      end
+      else
+      if temp <> Index then
+      begin
+        // new tab stop already present at another index
+        {$IFDEF CLR}
+        raise EJclStringError.Create(RsTabs_DuplicatesNotAllowed);
+        {$ELSE}
+        raise EJclStringError.CreateRes(@RsTabs_DuplicatesNotAllowed);
+        {$ENDIF}
+      end;
+    end;
+  end
+  else
+    raise NullReferenceException.Create;
+end;
+
+procedure TJclTabSet.SetTabWidth(Value: Integer);
+begin
+  if Self <> nil then
+  begin
+    FWidth := Value;
+    CalcRealWidth;
+  end
+  else
+    raise NullReferenceException.Create;
+end;
+
+procedure TJclTabSet.SetZeroBased(Value: Boolean);
+var
+  shift: Integer;
+  idx: Integer;
+begin
+  if Self <> nil then
+  begin
+    if Value <> FZeroBased then
+    begin
+      FZeroBased := Value;
+      if Value then
+        shift := -1
+      else
+        shift := 1;
+      for idx := 0 to High(FStops) do
+        FStops[idx] := FStops[idx] + shift;
+    end;
+  end
+  else
+    raise NullReferenceException.Create;
+end;
+
+function TJclTabSet.InternalTabStops: TDynIntegerArray;
+begin
+  if Self <> nil then
+    Result := FStops
+  else
+    Result := nil;
+end;
+
+function TJclTabSet.InternalTabWidth: Integer;
+begin
+  if Self <> nil then
+    Result := FRealWidth
+  else
+    Result := 2;
+end;
+
+function TJclTabSet.StartColumn: Integer;
+begin
+  if GetZeroBased then
+    Result := 0
+  else
+    Result := 1;
+end;
+
+function TJclTabSet.TabFrom(Column: Integer): Integer;
+begin
+  if Column < StartColumn then
+    raise ArgumentOutOfRangeException.Create('Column');
+  Result := FindStop(Column);
+  if Result < 0 then
+    Result := not Result
+  else
+    Inc(Result);
+  if Result >= GetCount then
+  begin
+    if GetCount > 0 then
+      Result := FStops[High(FStops)]
+    else
+      Result := StartColumn;
+    while Result <= Column do
+      Inc(Result, ActualTabWidth);
+  end
+  else
+    Result := FStops[Result];
+end;
+
+function TJclTabSet.ToString: string;
+begin
+  Result := ToString(TabSetFormatting_Full);
+end;
+
+function TJclTabSet.ToString(FormattingOptions: Integer): string;
+var
+  sb: TStringBuilder;
+  idx: Integer;
+
+  function WantBrackets: Boolean;
+  begin
+    Result := (TabSetFormatting_SurroundStopsWithBrackets and FormattingOptions) <> 0;
+  end;
+
+  function EmptyBrackets: Boolean;
+  begin
+    Result := (TabSetFormatting_EmptyBracketsIfNoStops and FormattingOptions) <> 0;
+  end;
+
+  function IncludeAutoWidth: Boolean;
+  begin
+    Result := (TabSetFormatting_AutoTabWidth and FormattingOptions) <> 0;  
+  end;
+
+  function IncludeTabWidth: Boolean;
+  begin
+    Result := (TabSetFormatting_NoTabWidth and FormattingOptions) = 0;
+  end;
+
+  function IncludeStops: Boolean;
+  begin
+    Result := (TabSetFormatting_NoTabStops and FormattingOptions) = 0;
+  end;
+
+begin
+  sb := TStringBuilder.Create;
+  try
+    // output the fixed tabulation positions if requested...
+    if IncludeStops then
+    begin
+      // output each individual tabulation position
+      for idx := 0 to GetCount - 1 do
+      begin
+        sb.Append(TabStops[idx]);
+        sb.Append(',');
+      end;
+      // remove the final comma if any tabulation positions where outputted
+      if sb.Length <> 0 then
+        sb.Remove(sb.Length - 1, 1);
+      // bracket the tabulation positions if requested
+      if WantBrackets and (EmptyBrackets or (sb.Length > 0)) then
+      begin
+        sb.Insert(0, '[');
+        sb.Append(']');
+      end;
+    end;
+    // output the tab width if requested....
+    if IncludeTabWidth and (IncludeAutoWidth or (TabWidth > 0)) then
+    begin
+      // separate the tab width from any outputted tabulation positions with a whitespace
+      if sb.Length > 0 then
+        sb.Append(' ');
+      // flag tab width
+      sb.Append('+');
+      // finally, output the tab width
+      sb.Append(ActualTabWidth);
+    end;
+    // flag zero-based tabset by outputting a 0 (zero) as the first character.
+    if ZeroBased then
+      sb.Insert(0, '0 ');
+    Result := StrTrimCharRight(sb.ToString, ' ');
+  finally
+    sb.Free;
+  end;
+end;
+
+function TJclTabSet.UpdatePosition(S: string): Integer;
+var
+  lines: Integer;
+begin
+  Result := StartColumn;
+  UpdatePosition(S, Result, lines);
+end;
+
+function TJclTabSet.UpdatePosition(S: string; Column: Integer): Integer;
+var
+  lines: Integer;
+begin
+  if Column < StartColumn then
+    raise ArgumentOutOfRangeException.Create('Column');
+  Result := Column;
+  UpdatePosition(S, Result, lines);
+end;
+
+function TJclTabSet.UpdatePosition(S: string; var Column, Line: Integer): Integer;
+var
+  prevChar: Char;
+  cur: PChar;
+begin
+  if Column < StartColumn then
+    raise ArgumentOutOfRangeException.Create('Column');
+  // initialize loop
+  cur := PChar(S);
+  // iterate until end of string (the Null-character)
+  while cur^ <> #0 do
+  begin
+    // check for line-breaking characters
+    if cur^ in [#10, #13] then
+    begin
+      // Column moves back all the way to the left
+      Column := StartColumn;
+      // If this is the first line-break character or the same line-break character, increment the Line parameter
+      Inc(Line);
+      // check if it's the first of a two-character line-break
+      prevChar := cur^;
+      Inc(cur);
+      // if it isn't a two-character line-break, undo the previous advancement
+      if not (cur^ in [#10, #13]) or (cur^ = prevChar) then
+        Dec(cur);
+    end
+    else // check for tab character and expand it
+    if cur^ = #9 then
+      Column := TabFrom(Column)
+    else // a normal character; increment column
+      Inc(Column);
+    // advance pointer
+    Inc(cur);
+  end;
+  // set the result to the newly calculated column
+  Result := Column;
+end;
+
+{$IFNDEF CLR}
+{ NullReferenceException }
+
+constructor NullReferenceException.Create;
+begin
+  CreateRes(@RsArg_NullReferenceException);
+end;
+{$ENDIF ~CLR}
 
 {$IFDEF CLR}
 {$IFDEF UNITVERSIONING}

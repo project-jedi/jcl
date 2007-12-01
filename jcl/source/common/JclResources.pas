@@ -1700,6 +1700,14 @@ resourcestring
   RsArgumentIsNull          = 'Argument %d is null';
   RsDotNetFormatArgumentNotSupported = 'Argument type of %d is not supported';
   RsArgumentOutOfRange      = 'Argument out of range';
+  RsTabs_DuplicatesNotAllowed = 'Duplicate tab stops are not allowed.';
+  RsTabs_StopExpected = 'A tab stop was expected but not found.';
+  RsTabs_CloseBracketExpected = 'Closing bracket expected.';
+  RsTabs_TabWidthExpected = 'Tab width expected.';
+{$IFNDEF CLR}
+  // Default text for the NullReferenceException in .NET
+  RsArg_NullReferenceException = 'Object reference not set to an instance of an object.';
+{$ENDIF ~CLR}
 
 //=== JclStructStorage =======================================================
 resourcestring
