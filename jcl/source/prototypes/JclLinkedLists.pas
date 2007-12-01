@@ -165,6 +165,9 @@ implementation
 uses
   SysUtils;
 
+type
+  TItrStart = (isFirst, isLast);
+
 {$JPPDEFINEMACRO ITEMFREE(Item)Item := nil}
 (*$JPPEXPANDMACRO JCLLINKEDLISTITR(TIntfItr,IJclIntfIterator,IJclIntfList,IJclIntfEqualityComparer,TJclIntfLinkedListItem,IInterface,const AInterface: IInterface,AInterface,nil,GetObject,SetObject)*)
 {$JPPUNDEFMACRO ITEMFREE(Item)}

@@ -674,6 +674,9 @@ implementation
 uses
   SysUtils;
 
+type
+  TItrStart = (isFirst, isLast);
+
 
 //=== { TIntfItr } ===============================================================
 
@@ -682,6 +685,7 @@ type
     IJclIntfCloneable, IJclCloneable)
   private
     FCursor: Integer;
+    FStart: TItrStart;
     FOwnList: IJclIntfList;
   protected
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
@@ -700,19 +704,21 @@ type
     function Previous: IInterface;
     function PreviousIndex: Integer;
     procedure Remove;
+    procedure Reset;
     procedure SetObject(const AInterface: IInterface);
     {$IFDEF SUPPORTS_FOR_IN}
     function MoveNext: Boolean;
     property Current: IInterface read GetObject;
     {$ENDIF SUPPORTS_FOR_IN}
   public
-    constructor Create(const AOwnList: IJclIntfList; ACursor: Integer; AValid: Boolean);
+    constructor Create(const AOwnList: IJclIntfList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
   end;
 
-constructor TIntfItr.Create(const AOwnList: IJclIntfList; ACursor: Integer; AValid: Boolean);
+constructor TIntfItr.Create(const AOwnList: IJclIntfList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(AOwnList, AValid);
   FOwnList := AOwnList;
+  FStart := AStart;
   FCursor := ACursor;
 end;
 
@@ -731,12 +737,13 @@ begin
     ADest := TIntfItr(Dest);
     ADest.FOwnList := FOwnList;
     ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
   end;
 end;
 
 function TIntfItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := TIntfItr.Create(FOwnList, FCursor, Valid);
+  Result := TIntfItr.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
 function TIntfItr.Equals(const AIterator: IJclIntfIterator): Boolean;
@@ -835,6 +842,17 @@ begin
   FOwnList.Delete(FCursor);
 end;
 
+procedure TIntfItr.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnList.Size - 1;
+  end;
+end;
+
 procedure TIntfItr.SetObject(const AInterface: IInterface);
 begin
   CheckValid;
@@ -848,6 +866,7 @@ type
     IJclIntfCloneable, IJclCloneable)
   private
     FCursor: Integer;
+    FStart: TItrStart;
     FOwnList: IJclAnsiStrList;
   protected
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
@@ -866,19 +885,21 @@ type
     function Previous: AnsiString;
     function PreviousIndex: Integer;
     procedure Remove;
+    procedure Reset;
     procedure SetString(const AString: AnsiString);
     {$IFDEF SUPPORTS_FOR_IN}
     function MoveNext: Boolean;
     property Current: AnsiString read GetString;
     {$ENDIF SUPPORTS_FOR_IN}
   public
-    constructor Create(const AOwnList: IJclAnsiStrList; ACursor: Integer; AValid: Boolean);
+    constructor Create(const AOwnList: IJclAnsiStrList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
   end;
 
-constructor TAnsiStrItr.Create(const AOwnList: IJclAnsiStrList; ACursor: Integer; AValid: Boolean);
+constructor TAnsiStrItr.Create(const AOwnList: IJclAnsiStrList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(AOwnList, AValid);
   FOwnList := AOwnList;
+  FStart := AStart;
   FCursor := ACursor;
 end;
 
@@ -897,12 +918,13 @@ begin
     ADest := TAnsiStrItr(Dest);
     ADest.FOwnList := FOwnList;
     ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
   end;
 end;
 
 function TAnsiStrItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := TAnsiStrItr.Create(FOwnList, FCursor, Valid);
+  Result := TAnsiStrItr.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
 function TAnsiStrItr.Equals(const AIterator: IJclAnsiStrIterator): Boolean;
@@ -1001,6 +1023,17 @@ begin
   FOwnList.Delete(FCursor);
 end;
 
+procedure TAnsiStrItr.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnList.Size - 1;
+  end;
+end;
+
 procedure TAnsiStrItr.SetString(const AString: AnsiString);
 begin
   CheckValid;
@@ -1014,6 +1047,7 @@ type
     IJclIntfCloneable, IJclCloneable)
   private
     FCursor: Integer;
+    FStart: TItrStart;
     FOwnList: IJclWideStrList;
   protected
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
@@ -1032,19 +1066,21 @@ type
     function Previous: WideString;
     function PreviousIndex: Integer;
     procedure Remove;
+    procedure Reset;
     procedure SetString(const AString: WideString);
     {$IFDEF SUPPORTS_FOR_IN}
     function MoveNext: Boolean;
     property Current: WideString read GetString;
     {$ENDIF SUPPORTS_FOR_IN}
   public
-    constructor Create(const AOwnList: IJclWideStrList; ACursor: Integer; AValid: Boolean);
+    constructor Create(const AOwnList: IJclWideStrList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
   end;
 
-constructor TWideStrItr.Create(const AOwnList: IJclWideStrList; ACursor: Integer; AValid: Boolean);
+constructor TWideStrItr.Create(const AOwnList: IJclWideStrList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(AOwnList, AValid);
   FOwnList := AOwnList;
+  FStart := AStart;
   FCursor := ACursor;
 end;
 
@@ -1063,12 +1099,13 @@ begin
     ADest := TWideStrItr(Dest);
     ADest.FOwnList := FOwnList;
     ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
   end;
 end;
 
 function TWideStrItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := TWideStrItr.Create(FOwnList, FCursor, Valid);
+  Result := TWideStrItr.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
 function TWideStrItr.Equals(const AIterator: IJclWideStrIterator): Boolean;
@@ -1167,6 +1204,17 @@ begin
   FOwnList.Delete(FCursor);
 end;
 
+procedure TWideStrItr.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnList.Size - 1;
+  end;
+end;
+
 procedure TWideStrItr.SetString(const AString: WideString);
 begin
   CheckValid;
@@ -1180,6 +1228,7 @@ type
     IJclIntfCloneable, IJclCloneable)
   private
     FCursor: Integer;
+    FStart: TItrStart;
     FOwnList: IJclSingleList;
   protected
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
@@ -1198,19 +1247,21 @@ type
     function Previous: Single;
     function PreviousIndex: Integer;
     procedure Remove;
+    procedure Reset;
     procedure SetValue(const AValue: Single);
     {$IFDEF SUPPORTS_FOR_IN}
     function MoveNext: Boolean;
     property Current: Single read GetValue;
     {$ENDIF SUPPORTS_FOR_IN}
   public
-    constructor Create(const AOwnList: IJclSingleList; ACursor: Integer; AValid: Boolean);
+    constructor Create(const AOwnList: IJclSingleList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
   end;
 
-constructor TSingleItr.Create(const AOwnList: IJclSingleList; ACursor: Integer; AValid: Boolean);
+constructor TSingleItr.Create(const AOwnList: IJclSingleList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(AOwnList, AValid);
   FOwnList := AOwnList;
+  FStart := AStart;
   FCursor := ACursor;
 end;
 
@@ -1229,12 +1280,13 @@ begin
     ADest := TSingleItr(Dest);
     ADest.FOwnList := FOwnList;
     ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
   end;
 end;
 
 function TSingleItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := TSingleItr.Create(FOwnList, FCursor, Valid);
+  Result := TSingleItr.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
 function TSingleItr.Equals(const AIterator: IJclSingleIterator): Boolean;
@@ -1333,6 +1385,17 @@ begin
   FOwnList.Delete(FCursor);
 end;
 
+procedure TSingleItr.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnList.Size - 1;
+  end;
+end;
+
 procedure TSingleItr.SetValue(const AValue: Single);
 begin
   CheckValid;
@@ -1346,6 +1409,7 @@ type
     IJclIntfCloneable, IJclCloneable)
   private
     FCursor: Integer;
+    FStart: TItrStart;
     FOwnList: IJclDoubleList;
   protected
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
@@ -1364,19 +1428,21 @@ type
     function Previous: Double;
     function PreviousIndex: Integer;
     procedure Remove;
+    procedure Reset;
     procedure SetValue(const AValue: Double);
     {$IFDEF SUPPORTS_FOR_IN}
     function MoveNext: Boolean;
     property Current: Double read GetValue;
     {$ENDIF SUPPORTS_FOR_IN}
   public
-    constructor Create(const AOwnList: IJclDoubleList; ACursor: Integer; AValid: Boolean);
+    constructor Create(const AOwnList: IJclDoubleList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
   end;
 
-constructor TDoubleItr.Create(const AOwnList: IJclDoubleList; ACursor: Integer; AValid: Boolean);
+constructor TDoubleItr.Create(const AOwnList: IJclDoubleList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(AOwnList, AValid);
   FOwnList := AOwnList;
+  FStart := AStart;
   FCursor := ACursor;
 end;
 
@@ -1395,12 +1461,13 @@ begin
     ADest := TDoubleItr(Dest);
     ADest.FOwnList := FOwnList;
     ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
   end;
 end;
 
 function TDoubleItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := TDoubleItr.Create(FOwnList, FCursor, Valid);
+  Result := TDoubleItr.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
 function TDoubleItr.Equals(const AIterator: IJclDoubleIterator): Boolean;
@@ -1499,6 +1566,17 @@ begin
   FOwnList.Delete(FCursor);
 end;
 
+procedure TDoubleItr.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnList.Size - 1;
+  end;
+end;
+
 procedure TDoubleItr.SetValue(const AValue: Double);
 begin
   CheckValid;
@@ -1512,6 +1590,7 @@ type
     IJclIntfCloneable, IJclCloneable)
   private
     FCursor: Integer;
+    FStart: TItrStart;
     FOwnList: IJclExtendedList;
   protected
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
@@ -1530,19 +1609,21 @@ type
     function Previous: Extended;
     function PreviousIndex: Integer;
     procedure Remove;
+    procedure Reset;
     procedure SetValue(const AValue: Extended);
     {$IFDEF SUPPORTS_FOR_IN}
     function MoveNext: Boolean;
     property Current: Extended read GetValue;
     {$ENDIF SUPPORTS_FOR_IN}
   public
-    constructor Create(const AOwnList: IJclExtendedList; ACursor: Integer; AValid: Boolean);
+    constructor Create(const AOwnList: IJclExtendedList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
   end;
 
-constructor TExtendedItr.Create(const AOwnList: IJclExtendedList; ACursor: Integer; AValid: Boolean);
+constructor TExtendedItr.Create(const AOwnList: IJclExtendedList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(AOwnList, AValid);
   FOwnList := AOwnList;
+  FStart := AStart;
   FCursor := ACursor;
 end;
 
@@ -1561,12 +1642,13 @@ begin
     ADest := TExtendedItr(Dest);
     ADest.FOwnList := FOwnList;
     ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
   end;
 end;
 
 function TExtendedItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := TExtendedItr.Create(FOwnList, FCursor, Valid);
+  Result := TExtendedItr.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
 function TExtendedItr.Equals(const AIterator: IJclExtendedIterator): Boolean;
@@ -1665,6 +1747,17 @@ begin
   FOwnList.Delete(FCursor);
 end;
 
+procedure TExtendedItr.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnList.Size - 1;
+  end;
+end;
+
 procedure TExtendedItr.SetValue(const AValue: Extended);
 begin
   CheckValid;
@@ -1678,6 +1771,7 @@ type
     IJclIntfCloneable, IJclCloneable)
   private
     FCursor: Integer;
+    FStart: TItrStart;
     FOwnList: IJclIntegerList;
   protected
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
@@ -1696,19 +1790,21 @@ type
     function Previous: Integer;
     function PreviousIndex: Integer;
     procedure Remove;
+    procedure Reset;
     procedure SetValue(AValue: Integer);
     {$IFDEF SUPPORTS_FOR_IN}
     function MoveNext: Boolean;
     property Current: Integer read GetValue;
     {$ENDIF SUPPORTS_FOR_IN}
   public
-    constructor Create(const AOwnList: IJclIntegerList; ACursor: Integer; AValid: Boolean);
+    constructor Create(const AOwnList: IJclIntegerList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
   end;
 
-constructor TIntegerItr.Create(const AOwnList: IJclIntegerList; ACursor: Integer; AValid: Boolean);
+constructor TIntegerItr.Create(const AOwnList: IJclIntegerList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(AOwnList, AValid);
   FOwnList := AOwnList;
+  FStart := AStart;
   FCursor := ACursor;
 end;
 
@@ -1727,12 +1823,13 @@ begin
     ADest := TIntegerItr(Dest);
     ADest.FOwnList := FOwnList;
     ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
   end;
 end;
 
 function TIntegerItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := TIntegerItr.Create(FOwnList, FCursor, Valid);
+  Result := TIntegerItr.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
 function TIntegerItr.Equals(const AIterator: IJclIntegerIterator): Boolean;
@@ -1831,6 +1928,17 @@ begin
   FOwnList.Delete(FCursor);
 end;
 
+procedure TIntegerItr.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnList.Size - 1;
+  end;
+end;
+
 procedure TIntegerItr.SetValue(AValue: Integer);
 begin
   CheckValid;
@@ -1844,6 +1952,7 @@ type
     IJclIntfCloneable, IJclCloneable)
   private
     FCursor: Integer;
+    FStart: TItrStart;
     FOwnList: IJclCardinalList;
   protected
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
@@ -1862,19 +1971,21 @@ type
     function Previous: Cardinal;
     function PreviousIndex: Integer;
     procedure Remove;
+    procedure Reset;
     procedure SetValue(AValue: Cardinal);
     {$IFDEF SUPPORTS_FOR_IN}
     function MoveNext: Boolean;
     property Current: Cardinal read GetValue;
     {$ENDIF SUPPORTS_FOR_IN}
   public
-    constructor Create(const AOwnList: IJclCardinalList; ACursor: Integer; AValid: Boolean);
+    constructor Create(const AOwnList: IJclCardinalList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
   end;
 
-constructor TCardinalItr.Create(const AOwnList: IJclCardinalList; ACursor: Integer; AValid: Boolean);
+constructor TCardinalItr.Create(const AOwnList: IJclCardinalList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(AOwnList, AValid);
   FOwnList := AOwnList;
+  FStart := AStart;
   FCursor := ACursor;
 end;
 
@@ -1893,12 +2004,13 @@ begin
     ADest := TCardinalItr(Dest);
     ADest.FOwnList := FOwnList;
     ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
   end;
 end;
 
 function TCardinalItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := TCardinalItr.Create(FOwnList, FCursor, Valid);
+  Result := TCardinalItr.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
 function TCardinalItr.Equals(const AIterator: IJclCardinalIterator): Boolean;
@@ -1997,6 +2109,17 @@ begin
   FOwnList.Delete(FCursor);
 end;
 
+procedure TCardinalItr.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnList.Size - 1;
+  end;
+end;
+
 procedure TCardinalItr.SetValue(AValue: Cardinal);
 begin
   CheckValid;
@@ -2010,6 +2133,7 @@ type
     IJclIntfCloneable, IJclCloneable)
   private
     FCursor: Integer;
+    FStart: TItrStart;
     FOwnList: IJclInt64List;
   protected
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
@@ -2028,19 +2152,21 @@ type
     function Previous: Int64;
     function PreviousIndex: Integer;
     procedure Remove;
+    procedure Reset;
     procedure SetValue(const AValue: Int64);
     {$IFDEF SUPPORTS_FOR_IN}
     function MoveNext: Boolean;
     property Current: Int64 read GetValue;
     {$ENDIF SUPPORTS_FOR_IN}
   public
-    constructor Create(const AOwnList: IJclInt64List; ACursor: Integer; AValid: Boolean);
+    constructor Create(const AOwnList: IJclInt64List; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
   end;
 
-constructor TInt64Itr.Create(const AOwnList: IJclInt64List; ACursor: Integer; AValid: Boolean);
+constructor TInt64Itr.Create(const AOwnList: IJclInt64List; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(AOwnList, AValid);
   FOwnList := AOwnList;
+  FStart := AStart;
   FCursor := ACursor;
 end;
 
@@ -2059,12 +2185,13 @@ begin
     ADest := TInt64Itr(Dest);
     ADest.FOwnList := FOwnList;
     ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
   end;
 end;
 
 function TInt64Itr.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := TInt64Itr.Create(FOwnList, FCursor, Valid);
+  Result := TInt64Itr.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
 function TInt64Itr.Equals(const AIterator: IJclInt64Iterator): Boolean;
@@ -2163,6 +2290,17 @@ begin
   FOwnList.Delete(FCursor);
 end;
 
+procedure TInt64Itr.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnList.Size - 1;
+  end;
+end;
+
 procedure TInt64Itr.SetValue(const AValue: Int64);
 begin
   CheckValid;
@@ -2177,6 +2315,7 @@ type
     IJclIntfCloneable, IJclCloneable)
   private
     FCursor: Integer;
+    FStart: TItrStart;
     FOwnList: IJclPtrList;
   protected
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
@@ -2195,19 +2334,21 @@ type
     function Previous: Pointer;
     function PreviousIndex: Integer;
     procedure Remove;
+    procedure Reset;
     procedure SetPtr(APtr: Pointer);
     {$IFDEF SUPPORTS_FOR_IN}
     function MoveNext: Boolean;
     property Current: Pointer read GetPtr;
     {$ENDIF SUPPORTS_FOR_IN}
   public
-    constructor Create(const AOwnList: IJclPtrList; ACursor: Integer; AValid: Boolean);
+    constructor Create(const AOwnList: IJclPtrList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
   end;
 
-constructor TPtrItr.Create(const AOwnList: IJclPtrList; ACursor: Integer; AValid: Boolean);
+constructor TPtrItr.Create(const AOwnList: IJclPtrList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(AOwnList, AValid);
   FOwnList := AOwnList;
+  FStart := AStart;
   FCursor := ACursor;
 end;
 
@@ -2226,12 +2367,13 @@ begin
     ADest := TPtrItr(Dest);
     ADest.FOwnList := FOwnList;
     ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
   end;
 end;
 
 function TPtrItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := TPtrItr.Create(FOwnList, FCursor, Valid);
+  Result := TPtrItr.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
 function TPtrItr.Equals(const AIterator: IJclPtrIterator): Boolean;
@@ -2330,6 +2472,17 @@ begin
   FOwnList.Delete(FCursor);
 end;
 
+procedure TPtrItr.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnList.Size - 1;
+  end;
+end;
+
 procedure TPtrItr.SetPtr(APtr: Pointer);
 begin
   CheckValid;
@@ -2344,6 +2497,7 @@ type
     IJclIntfCloneable, IJclCloneable)
   private
     FCursor: Integer;
+    FStart: TItrStart;
     FOwnList: IJclList;
   protected
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
@@ -2362,19 +2516,21 @@ type
     function Previous: TObject;
     function PreviousIndex: Integer;
     procedure Remove;
+    procedure Reset;
     procedure SetObject(AObject: TObject);
     {$IFDEF SUPPORTS_FOR_IN}
     function MoveNext: Boolean;
     property Current: TObject read GetObject;
     {$ENDIF SUPPORTS_FOR_IN}
   public
-    constructor Create(const AOwnList: IJclList; ACursor: Integer; AValid: Boolean);
+    constructor Create(const AOwnList: IJclList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
   end;
 
-constructor TItr.Create(const AOwnList: IJclList; ACursor: Integer; AValid: Boolean);
+constructor TItr.Create(const AOwnList: IJclList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(AOwnList, AValid);
   FOwnList := AOwnList;
+  FStart := AStart;
   FCursor := ACursor;
 end;
 
@@ -2393,12 +2549,13 @@ begin
     ADest := TItr(Dest);
     ADest.FOwnList := FOwnList;
     ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
   end;
 end;
 
 function TItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := TItr.Create(FOwnList, FCursor, Valid);
+  Result := TItr.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
 function TItr.Equals(const AIterator: IJclIterator): Boolean;
@@ -2497,6 +2654,17 @@ begin
   FOwnList.Delete(FCursor);
 end;
 
+procedure TItr.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnList.Size - 1;
+  end;
+end;
+
 procedure TItr.SetObject(AObject: TObject);
 begin
   CheckValid;
@@ -2512,6 +2680,7 @@ type
     IJclIntfCloneable, IJclCloneable)
   private
     FCursor: Integer;
+    FStart: TItrStart;
     FOwnList: IJclList<T>;
   protected
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
@@ -2530,19 +2699,21 @@ type
     function Previous: T;
     function PreviousIndex: Integer;
     procedure Remove;
+    procedure Reset;
     procedure SetItem(const AItem: T);
     {$IFDEF SUPPORTS_FOR_IN}
     function MoveNext: Boolean;
     property Current: T read GetItem;
     {$ENDIF SUPPORTS_FOR_IN}
   public
-    constructor Create(const AOwnList: IJclList<T>; ACursor: Integer; AValid: Boolean);
+    constructor Create(const AOwnList: IJclList<T>; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
   end;
 
-constructor TItr<T>.Create(const AOwnList: IJclList<T>; ACursor: Integer; AValid: Boolean);
+constructor TItr<T>.Create(const AOwnList: IJclList<T>; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(AOwnList, AValid);
   FOwnList := AOwnList;
+  FStart := AStart;
   FCursor := ACursor;
 end;
 
@@ -2561,12 +2732,13 @@ begin
     ADest := TItr<T>(Dest);
     ADest.FOwnList := FOwnList;
     ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
   end;
 end;
 
 function TItr<T>.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := TItr<T>.Create(FOwnList, FCursor, Valid);
+  Result := TItr<T>.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
 function TItr<T>.Equals(const AIterator: IJclIterator<T>): Boolean;
@@ -2663,6 +2835,17 @@ begin
   CheckValid;
   Valid := False;
   FOwnList.Delete(FCursor);
+end;
+
+procedure TItr<T>.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnList.Size - 1;
+  end;
 end;
 
 procedure TItr<T>.SetItem(const AItem: T);
@@ -2934,13 +3117,13 @@ end;
 
 function TJclIntfArrayList.First: IJclIntfIterator;
 begin
-  Result := TIntfItr.Create(Self, 0, False);
+  Result := TIntfItr.Create(Self, 0, False, isFirst);
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
 function TJclIntfArrayList.GetEnumerator: IJclIntfIterator;
 begin
-  Result := TIntfItr.Create(Self, 0, False);
+  Result := TIntfItr.Create(Self, 0, False, isFirst);
 end;
 {$ENDIF SUPPORTS_FOR_IN}
 
@@ -3059,7 +3242,7 @@ end;
 
 function TJclIntfArrayList.Last: IJclIntfIterator;
 begin
-  Result := TIntfItr.Create(Self, FSize - 1, False);
+  Result := TIntfItr.Create(Self, FSize - 1, False, isLast);
 end;
 
 function TJclIntfArrayList.LastIndexOf(const AInterface: IInterface): Integer;
@@ -3501,13 +3684,13 @@ end;
 
 function TJclAnsiStrArrayList.First: IJclAnsiStrIterator;
 begin
-  Result := TAnsiStrItr.Create(Self, 0, False);
+  Result := TAnsiStrItr.Create(Self, 0, False, isFirst);
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
 function TJclAnsiStrArrayList.GetEnumerator: IJclAnsiStrIterator;
 begin
-  Result := TAnsiStrItr.Create(Self, 0, False);
+  Result := TAnsiStrItr.Create(Self, 0, False, isFirst);
 end;
 {$ENDIF SUPPORTS_FOR_IN}
 
@@ -3626,7 +3809,7 @@ end;
 
 function TJclAnsiStrArrayList.Last: IJclAnsiStrIterator;
 begin
-  Result := TAnsiStrItr.Create(Self, FSize - 1, False);
+  Result := TAnsiStrItr.Create(Self, FSize - 1, False, isLast);
 end;
 
 function TJclAnsiStrArrayList.LastIndexOf(const AString: AnsiString): Integer;
@@ -4068,13 +4251,13 @@ end;
 
 function TJclWideStrArrayList.First: IJclWideStrIterator;
 begin
-  Result := TWideStrItr.Create(Self, 0, False);
+  Result := TWideStrItr.Create(Self, 0, False, isFirst);
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
 function TJclWideStrArrayList.GetEnumerator: IJclWideStrIterator;
 begin
-  Result := TWideStrItr.Create(Self, 0, False);
+  Result := TWideStrItr.Create(Self, 0, False, isFirst);
 end;
 {$ENDIF SUPPORTS_FOR_IN}
 
@@ -4193,7 +4376,7 @@ end;
 
 function TJclWideStrArrayList.Last: IJclWideStrIterator;
 begin
-  Result := TWideStrItr.Create(Self, FSize - 1, False);
+  Result := TWideStrItr.Create(Self, FSize - 1, False, isLast);
 end;
 
 function TJclWideStrArrayList.LastIndexOf(const AString: WideString): Integer;
@@ -4635,13 +4818,13 @@ end;
 
 function TJclSingleArrayList.First: IJclSingleIterator;
 begin
-  Result := TSingleItr.Create(Self, 0, False);
+  Result := TSingleItr.Create(Self, 0, False, isFirst);
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
 function TJclSingleArrayList.GetEnumerator: IJclSingleIterator;
 begin
-  Result := TSingleItr.Create(Self, 0, False);
+  Result := TSingleItr.Create(Self, 0, False, isFirst);
 end;
 {$ENDIF SUPPORTS_FOR_IN}
 
@@ -4760,7 +4943,7 @@ end;
 
 function TJclSingleArrayList.Last: IJclSingleIterator;
 begin
-  Result := TSingleItr.Create(Self, FSize - 1, False);
+  Result := TSingleItr.Create(Self, FSize - 1, False, isLast);
 end;
 
 function TJclSingleArrayList.LastIndexOf(const AValue: Single): Integer;
@@ -5202,13 +5385,13 @@ end;
 
 function TJclDoubleArrayList.First: IJclDoubleIterator;
 begin
-  Result := TDoubleItr.Create(Self, 0, False);
+  Result := TDoubleItr.Create(Self, 0, False, isFirst);
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
 function TJclDoubleArrayList.GetEnumerator: IJclDoubleIterator;
 begin
-  Result := TDoubleItr.Create(Self, 0, False);
+  Result := TDoubleItr.Create(Self, 0, False, isFirst);
 end;
 {$ENDIF SUPPORTS_FOR_IN}
 
@@ -5327,7 +5510,7 @@ end;
 
 function TJclDoubleArrayList.Last: IJclDoubleIterator;
 begin
-  Result := TDoubleItr.Create(Self, FSize - 1, False);
+  Result := TDoubleItr.Create(Self, FSize - 1, False, isLast);
 end;
 
 function TJclDoubleArrayList.LastIndexOf(const AValue: Double): Integer;
@@ -5769,13 +5952,13 @@ end;
 
 function TJclExtendedArrayList.First: IJclExtendedIterator;
 begin
-  Result := TExtendedItr.Create(Self, 0, False);
+  Result := TExtendedItr.Create(Self, 0, False, isFirst);
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
 function TJclExtendedArrayList.GetEnumerator: IJclExtendedIterator;
 begin
-  Result := TExtendedItr.Create(Self, 0, False);
+  Result := TExtendedItr.Create(Self, 0, False, isFirst);
 end;
 {$ENDIF SUPPORTS_FOR_IN}
 
@@ -5894,7 +6077,7 @@ end;
 
 function TJclExtendedArrayList.Last: IJclExtendedIterator;
 begin
-  Result := TExtendedItr.Create(Self, FSize - 1, False);
+  Result := TExtendedItr.Create(Self, FSize - 1, False, isLast);
 end;
 
 function TJclExtendedArrayList.LastIndexOf(const AValue: Extended): Integer;
@@ -6336,13 +6519,13 @@ end;
 
 function TJclIntegerArrayList.First: IJclIntegerIterator;
 begin
-  Result := TIntegerItr.Create(Self, 0, False);
+  Result := TIntegerItr.Create(Self, 0, False, isFirst);
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
 function TJclIntegerArrayList.GetEnumerator: IJclIntegerIterator;
 begin
-  Result := TIntegerItr.Create(Self, 0, False);
+  Result := TIntegerItr.Create(Self, 0, False, isFirst);
 end;
 {$ENDIF SUPPORTS_FOR_IN}
 
@@ -6461,7 +6644,7 @@ end;
 
 function TJclIntegerArrayList.Last: IJclIntegerIterator;
 begin
-  Result := TIntegerItr.Create(Self, FSize - 1, False);
+  Result := TIntegerItr.Create(Self, FSize - 1, False, isLast);
 end;
 
 function TJclIntegerArrayList.LastIndexOf(AValue: Integer): Integer;
@@ -6903,13 +7086,13 @@ end;
 
 function TJclCardinalArrayList.First: IJclCardinalIterator;
 begin
-  Result := TCardinalItr.Create(Self, 0, False);
+  Result := TCardinalItr.Create(Self, 0, False, isFirst);
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
 function TJclCardinalArrayList.GetEnumerator: IJclCardinalIterator;
 begin
-  Result := TCardinalItr.Create(Self, 0, False);
+  Result := TCardinalItr.Create(Self, 0, False, isFirst);
 end;
 {$ENDIF SUPPORTS_FOR_IN}
 
@@ -7028,7 +7211,7 @@ end;
 
 function TJclCardinalArrayList.Last: IJclCardinalIterator;
 begin
-  Result := TCardinalItr.Create(Self, FSize - 1, False);
+  Result := TCardinalItr.Create(Self, FSize - 1, False, isLast);
 end;
 
 function TJclCardinalArrayList.LastIndexOf(AValue: Cardinal): Integer;
@@ -7470,13 +7653,13 @@ end;
 
 function TJclInt64ArrayList.First: IJclInt64Iterator;
 begin
-  Result := TInt64Itr.Create(Self, 0, False);
+  Result := TInt64Itr.Create(Self, 0, False, isFirst);
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
 function TJclInt64ArrayList.GetEnumerator: IJclInt64Iterator;
 begin
-  Result := TInt64Itr.Create(Self, 0, False);
+  Result := TInt64Itr.Create(Self, 0, False, isFirst);
 end;
 {$ENDIF SUPPORTS_FOR_IN}
 
@@ -7595,7 +7778,7 @@ end;
 
 function TJclInt64ArrayList.Last: IJclInt64Iterator;
 begin
-  Result := TInt64Itr.Create(Self, FSize - 1, False);
+  Result := TInt64Itr.Create(Self, FSize - 1, False, isLast);
 end;
 
 function TJclInt64ArrayList.LastIndexOf(const AValue: Int64): Integer;
@@ -8038,13 +8221,13 @@ end;
 
 function TJclPtrArrayList.First: IJclPtrIterator;
 begin
-  Result := TPtrItr.Create(Self, 0, False);
+  Result := TPtrItr.Create(Self, 0, False, isFirst);
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
 function TJclPtrArrayList.GetEnumerator: IJclPtrIterator;
 begin
-  Result := TPtrItr.Create(Self, 0, False);
+  Result := TPtrItr.Create(Self, 0, False, isFirst);
 end;
 {$ENDIF SUPPORTS_FOR_IN}
 
@@ -8163,7 +8346,7 @@ end;
 
 function TJclPtrArrayList.Last: IJclPtrIterator;
 begin
-  Result := TPtrItr.Create(Self, FSize - 1, False);
+  Result := TPtrItr.Create(Self, FSize - 1, False, isLast);
 end;
 
 function TJclPtrArrayList.LastIndexOf(APtr: Pointer): Integer;
@@ -8606,13 +8789,13 @@ end;
 
 function TJclArrayList.First: IJclIterator;
 begin
-  Result := TItr.Create(Self, 0, False);
+  Result := TItr.Create(Self, 0, False, isFirst);
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
 function TJclArrayList.GetEnumerator: IJclIterator;
 begin
-  Result := TItr.Create(Self, 0, False);
+  Result := TItr.Create(Self, 0, False, isFirst);
 end;
 {$ENDIF SUPPORTS_FOR_IN}
 
@@ -8731,7 +8914,7 @@ end;
 
 function TJclArrayList.Last: IJclIterator;
 begin
-  Result := TItr.Create(Self, FSize - 1, False);
+  Result := TItr.Create(Self, FSize - 1, False, isLast);
 end;
 
 function TJclArrayList.LastIndexOf(AObject: TObject): Integer;
@@ -9169,13 +9352,13 @@ end;
 
 function TJclArrayList<T>.First: IJclIterator<T>;
 begin
-  Result := TItr<T>.Create(Self, 0, False);
+  Result := TItr<T>.Create(Self, 0, False, isFirst);
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
 function TJclArrayList<T>.GetEnumerator: IJclIterator<T>;
 begin
-  Result := TItr<T>.Create(Self, 0, False);
+  Result := TItr<T>.Create(Self, 0, False, isFirst);
 end;
 {$ENDIF SUPPORTS_FOR_IN}
 
@@ -9294,7 +9477,7 @@ end;
 
 function TJclArrayList<T>.Last: IJclIterator<T>;
 begin
-  Result := TItr<T>.Create(Self, FSize - 1, False);
+  Result := TItr<T>.Create(Self, FSize - 1, False, isLast);
 end;
 
 function TJclArrayList<T>.LastIndexOf(const AItem: T): Integer;

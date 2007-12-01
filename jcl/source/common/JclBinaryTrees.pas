@@ -783,6 +783,9 @@ implementation
 uses
   SysUtils;
 
+type
+  TItrStart = (isFirst, isLast, isRoot);
+
 
 //=== { TIntfItr } ===========================================================
 
@@ -790,6 +793,7 @@ type
   TIntfItr = class(TJclAbstractIterator, IJclIntfIterator, IJclIntfTreeIterator, IJclIntfBinaryTreeIterator)
   protected
     FCursor: TJclIntfBinaryNode;
+    FStart: TItrStart;
     FOwnList: IJclIntfCollection;
     FEqualityComparer: IJclIntfEqualityComparer;
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
@@ -807,6 +811,7 @@ type
     function Previous: IInterface;
     function PreviousIndex: Integer;
     procedure Remove;
+    procedure Reset;
     procedure SetObject(const AInterface: IInterface);
     {$IFDEF SUPPORTS_FOR_IN}
     function MoveNext: Boolean;
@@ -830,13 +835,14 @@ type
     function Left: IInterface;
     function Right: IInterface;
   public
-    constructor Create(const OwnList: IJclIntfCollection; Start: TJclIntfBinaryNode; AValid: Boolean);
+    constructor Create(const OwnList: IJclIntfCollection; ACursor: TJclIntfBinaryNode; AValid: Boolean; AStart: TItrStart);
   end;
 
-constructor TIntfItr.Create(const OwnList: IJclIntfCollection; Start: TJclIntfBinaryNode; AValid: Boolean);
+constructor TIntfItr.Create(const OwnList: IJclIntfCollection; ACursor: TJclIntfBinaryNode; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(OwnList, AValid);
-  FCursor := Start;
+  FCursor := ACursor;
+  FStart := AStart;
   FOwnList := OwnList;
   FEqualityComparer := FOwnList as IJclIntfEqualityComparer;
 end;
@@ -862,6 +868,7 @@ begin
     ADest.FCursor := FCursor;
     ADest.FOwnList := FOwnList;
     ADest.FEqualityComparer := FEqualityComparer;
+    ADest.FStart := FStart;
   end;
 end;
 
@@ -1241,6 +1248,49 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+procedure TIntfItr.Reset;
+var
+  NewCursor: TJclIntfBinaryNode;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Valid := False;
+    case FStart of
+      isFirst:
+        begin
+          NewCursor := FCursor;
+          while NewCursor <> nil do
+          begin
+            NewCursor := GetPreviousCursor;
+            if NewCursor <> nil then
+              FCursor := NewCursor;
+          end;
+        end;
+      isLast:
+        begin
+          NewCursor := FCursor;
+          while NewCursor <> nil do
+          begin
+            NewCursor := GetNextCursor;
+            if NewCursor <> nil then
+              FCursor := NewCursor;
+          end;
+        end;
+      isRoot:
+        begin
+          while (FCursor <> nil) and (FCursor.Parent <> nil) do
+            FCursor := FCursor.Parent;
+        end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TIntfItr.Right: IInterface;
 begin
   {$IFDEF THREADSAFE}
@@ -1287,7 +1337,7 @@ type
 
 function TPreOrderIntfItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := TPreOrderIntfItr.Create(FOwnList, FCursor, Valid);
+  Result := TPreOrderIntfItr.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
 function TPreOrderIntfItr.GetNextCursor: TJclIntfBinaryNode;
@@ -1354,7 +1404,7 @@ type
 
 function TInOrderIntfItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := TInOrderIntfItr.Create(FOwnList, FCursor, Valid);
+  Result := TInOrderIntfItr.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
 function TInOrderIntfItr.GetNextCursor: TJclIntfBinaryNode;
@@ -1422,7 +1472,7 @@ type
 
 function TPostOrderIntfItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := TPostOrderIntfItr.Create(FOwnList, FCursor, Valid);
+  Result := TPostOrderIntfItr.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
 function TPostOrderIntfItr.GetNextCursor: TJclIntfBinaryNode;
@@ -1479,6 +1529,7 @@ type
   TAnsiStrItr = class(TJclAbstractIterator, IJclAnsiStrIterator, IJclAnsiStrTreeIterator, IJclAnsiStrBinaryTreeIterator)
   protected
     FCursor: TJclAnsiStrBinaryNode;
+    FStart: TItrStart;
     FOwnList: IJclAnsiStrCollection;
     FEqualityComparer: IJclAnsiStrEqualityComparer;
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
@@ -1496,6 +1547,7 @@ type
     function Previous: AnsiString;
     function PreviousIndex: Integer;
     procedure Remove;
+    procedure Reset;
     procedure SetString(const AString: AnsiString);
     {$IFDEF SUPPORTS_FOR_IN}
     function MoveNext: Boolean;
@@ -1519,13 +1571,14 @@ type
     function Left: AnsiString;
     function Right: AnsiString;
   public
-    constructor Create(const OwnList: IJclAnsiStrCollection; Start: TJclAnsiStrBinaryNode; AValid: Boolean);
+    constructor Create(const OwnList: IJclAnsiStrCollection; ACursor: TJclAnsiStrBinaryNode; AValid: Boolean; AStart: TItrStart);
   end;
 
-constructor TAnsiStrItr.Create(const OwnList: IJclAnsiStrCollection; Start: TJclAnsiStrBinaryNode; AValid: Boolean);
+constructor TAnsiStrItr.Create(const OwnList: IJclAnsiStrCollection; ACursor: TJclAnsiStrBinaryNode; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(OwnList, AValid);
-  FCursor := Start;
+  FCursor := ACursor;
+  FStart := AStart;
   FOwnList := OwnList;
   FEqualityComparer := FOwnList as IJclAnsiStrEqualityComparer;
 end;
@@ -1551,6 +1604,7 @@ begin
     ADest.FCursor := FCursor;
     ADest.FOwnList := FOwnList;
     ADest.FEqualityComparer := FEqualityComparer;
+    ADest.FStart := FStart;
   end;
 end;
 
@@ -1930,6 +1984,49 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+procedure TAnsiStrItr.Reset;
+var
+  NewCursor: TJclAnsiStrBinaryNode;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Valid := False;
+    case FStart of
+      isFirst:
+        begin
+          NewCursor := FCursor;
+          while NewCursor <> nil do
+          begin
+            NewCursor := GetPreviousCursor;
+            if NewCursor <> nil then
+              FCursor := NewCursor;
+          end;
+        end;
+      isLast:
+        begin
+          NewCursor := FCursor;
+          while NewCursor <> nil do
+          begin
+            NewCursor := GetNextCursor;
+            if NewCursor <> nil then
+              FCursor := NewCursor;
+          end;
+        end;
+      isRoot:
+        begin
+          while (FCursor <> nil) and (FCursor.Parent <> nil) do
+            FCursor := FCursor.Parent;
+        end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TAnsiStrItr.Right: AnsiString;
 begin
   {$IFDEF THREADSAFE}
@@ -1976,7 +2073,7 @@ type
 
 function TPreOrderAnsiStrItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := TPreOrderAnsiStrItr.Create(FOwnList, FCursor, Valid);
+  Result := TPreOrderAnsiStrItr.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
 function TPreOrderAnsiStrItr.GetNextCursor: TJclAnsiStrBinaryNode;
@@ -2043,7 +2140,7 @@ type
 
 function TInOrderAnsiStrItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := TInOrderAnsiStrItr.Create(FOwnList, FCursor, Valid);
+  Result := TInOrderAnsiStrItr.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
 function TInOrderAnsiStrItr.GetNextCursor: TJclAnsiStrBinaryNode;
@@ -2111,7 +2208,7 @@ type
 
 function TPostOrderAnsiStrItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := TPostOrderAnsiStrItr.Create(FOwnList, FCursor, Valid);
+  Result := TPostOrderAnsiStrItr.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
 function TPostOrderAnsiStrItr.GetNextCursor: TJclAnsiStrBinaryNode;
@@ -2168,6 +2265,7 @@ type
   TWideStrItr = class(TJclAbstractIterator, IJclWideStrIterator, IJclWideStrTreeIterator, IJclWideStrBinaryTreeIterator)
   protected
     FCursor: TJclWideStrBinaryNode;
+    FStart: TItrStart;
     FOwnList: IJclWideStrCollection;
     FEqualityComparer: IJclWideStrEqualityComparer;
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
@@ -2185,6 +2283,7 @@ type
     function Previous: WideString;
     function PreviousIndex: Integer;
     procedure Remove;
+    procedure Reset;
     procedure SetString(const AString: WideString);
     {$IFDEF SUPPORTS_FOR_IN}
     function MoveNext: Boolean;
@@ -2208,13 +2307,14 @@ type
     function Left: WideString;
     function Right: WideString;
   public
-    constructor Create(const OwnList: IJclWideStrCollection; Start: TJclWideStrBinaryNode; AValid: Boolean);
+    constructor Create(const OwnList: IJclWideStrCollection; ACursor: TJclWideStrBinaryNode; AValid: Boolean; AStart: TItrStart);
   end;
 
-constructor TWideStrItr.Create(const OwnList: IJclWideStrCollection; Start: TJclWideStrBinaryNode; AValid: Boolean);
+constructor TWideStrItr.Create(const OwnList: IJclWideStrCollection; ACursor: TJclWideStrBinaryNode; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(OwnList, AValid);
-  FCursor := Start;
+  FCursor := ACursor;
+  FStart := AStart;
   FOwnList := OwnList;
   FEqualityComparer := FOwnList as IJclWideStrEqualityComparer;
 end;
@@ -2240,6 +2340,7 @@ begin
     ADest.FCursor := FCursor;
     ADest.FOwnList := FOwnList;
     ADest.FEqualityComparer := FEqualityComparer;
+    ADest.FStart := FStart;
   end;
 end;
 
@@ -2619,6 +2720,49 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+procedure TWideStrItr.Reset;
+var
+  NewCursor: TJclWideStrBinaryNode;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Valid := False;
+    case FStart of
+      isFirst:
+        begin
+          NewCursor := FCursor;
+          while NewCursor <> nil do
+          begin
+            NewCursor := GetPreviousCursor;
+            if NewCursor <> nil then
+              FCursor := NewCursor;
+          end;
+        end;
+      isLast:
+        begin
+          NewCursor := FCursor;
+          while NewCursor <> nil do
+          begin
+            NewCursor := GetNextCursor;
+            if NewCursor <> nil then
+              FCursor := NewCursor;
+          end;
+        end;
+      isRoot:
+        begin
+          while (FCursor <> nil) and (FCursor.Parent <> nil) do
+            FCursor := FCursor.Parent;
+        end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TWideStrItr.Right: WideString;
 begin
   {$IFDEF THREADSAFE}
@@ -2665,7 +2809,7 @@ type
 
 function TPreOrderWideStrItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := TPreOrderWideStrItr.Create(FOwnList, FCursor, Valid);
+  Result := TPreOrderWideStrItr.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
 function TPreOrderWideStrItr.GetNextCursor: TJclWideStrBinaryNode;
@@ -2732,7 +2876,7 @@ type
 
 function TInOrderWideStrItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := TInOrderWideStrItr.Create(FOwnList, FCursor, Valid);
+  Result := TInOrderWideStrItr.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
 function TInOrderWideStrItr.GetNextCursor: TJclWideStrBinaryNode;
@@ -2800,7 +2944,7 @@ type
 
 function TPostOrderWideStrItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := TPostOrderWideStrItr.Create(FOwnList, FCursor, Valid);
+  Result := TPostOrderWideStrItr.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
 function TPostOrderWideStrItr.GetNextCursor: TJclWideStrBinaryNode;
@@ -2857,6 +3001,7 @@ type
   TSingleItr = class(TJclAbstractIterator, IJclSingleIterator, IJclSingleTreeIterator, IJclSingleBinaryTreeIterator)
   protected
     FCursor: TJclSingleBinaryNode;
+    FStart: TItrStart;
     FOwnList: IJclSingleCollection;
     FEqualityComparer: IJclSingleEqualityComparer;
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
@@ -2874,6 +3019,7 @@ type
     function Previous: Single;
     function PreviousIndex: Integer;
     procedure Remove;
+    procedure Reset;
     procedure SetValue(const AValue: Single);
     {$IFDEF SUPPORTS_FOR_IN}
     function MoveNext: Boolean;
@@ -2897,13 +3043,14 @@ type
     function Left: Single;
     function Right: Single;
   public
-    constructor Create(const OwnList: IJclSingleCollection; Start: TJclSingleBinaryNode; AValid: Boolean);
+    constructor Create(const OwnList: IJclSingleCollection; ACursor: TJclSingleBinaryNode; AValid: Boolean; AStart: TItrStart);
   end;
 
-constructor TSingleItr.Create(const OwnList: IJclSingleCollection; Start: TJclSingleBinaryNode; AValid: Boolean);
+constructor TSingleItr.Create(const OwnList: IJclSingleCollection; ACursor: TJclSingleBinaryNode; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(OwnList, AValid);
-  FCursor := Start;
+  FCursor := ACursor;
+  FStart := AStart;
   FOwnList := OwnList;
   FEqualityComparer := FOwnList as IJclSingleEqualityComparer;
 end;
@@ -2929,6 +3076,7 @@ begin
     ADest.FCursor := FCursor;
     ADest.FOwnList := FOwnList;
     ADest.FEqualityComparer := FEqualityComparer;
+    ADest.FStart := FStart;
   end;
 end;
 
@@ -3308,6 +3456,49 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+procedure TSingleItr.Reset;
+var
+  NewCursor: TJclSingleBinaryNode;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Valid := False;
+    case FStart of
+      isFirst:
+        begin
+          NewCursor := FCursor;
+          while NewCursor <> nil do
+          begin
+            NewCursor := GetPreviousCursor;
+            if NewCursor <> nil then
+              FCursor := NewCursor;
+          end;
+        end;
+      isLast:
+        begin
+          NewCursor := FCursor;
+          while NewCursor <> nil do
+          begin
+            NewCursor := GetNextCursor;
+            if NewCursor <> nil then
+              FCursor := NewCursor;
+          end;
+        end;
+      isRoot:
+        begin
+          while (FCursor <> nil) and (FCursor.Parent <> nil) do
+            FCursor := FCursor.Parent;
+        end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TSingleItr.Right: Single;
 begin
   {$IFDEF THREADSAFE}
@@ -3354,7 +3545,7 @@ type
 
 function TPreOrderSingleItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := TPreOrderSingleItr.Create(FOwnList, FCursor, Valid);
+  Result := TPreOrderSingleItr.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
 function TPreOrderSingleItr.GetNextCursor: TJclSingleBinaryNode;
@@ -3421,7 +3612,7 @@ type
 
 function TInOrderSingleItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := TInOrderSingleItr.Create(FOwnList, FCursor, Valid);
+  Result := TInOrderSingleItr.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
 function TInOrderSingleItr.GetNextCursor: TJclSingleBinaryNode;
@@ -3489,7 +3680,7 @@ type
 
 function TPostOrderSingleItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := TPostOrderSingleItr.Create(FOwnList, FCursor, Valid);
+  Result := TPostOrderSingleItr.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
 function TPostOrderSingleItr.GetNextCursor: TJclSingleBinaryNode;
@@ -3546,6 +3737,7 @@ type
   TDoubleItr = class(TJclAbstractIterator, IJclDoubleIterator, IJclDoubleTreeIterator, IJclDoubleBinaryTreeIterator)
   protected
     FCursor: TJclDoubleBinaryNode;
+    FStart: TItrStart;
     FOwnList: IJclDoubleCollection;
     FEqualityComparer: IJclDoubleEqualityComparer;
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
@@ -3563,6 +3755,7 @@ type
     function Previous: Double;
     function PreviousIndex: Integer;
     procedure Remove;
+    procedure Reset;
     procedure SetValue(const AValue: Double);
     {$IFDEF SUPPORTS_FOR_IN}
     function MoveNext: Boolean;
@@ -3586,13 +3779,14 @@ type
     function Left: Double;
     function Right: Double;
   public
-    constructor Create(const OwnList: IJclDoubleCollection; Start: TJclDoubleBinaryNode; AValid: Boolean);
+    constructor Create(const OwnList: IJclDoubleCollection; ACursor: TJclDoubleBinaryNode; AValid: Boolean; AStart: TItrStart);
   end;
 
-constructor TDoubleItr.Create(const OwnList: IJclDoubleCollection; Start: TJclDoubleBinaryNode; AValid: Boolean);
+constructor TDoubleItr.Create(const OwnList: IJclDoubleCollection; ACursor: TJclDoubleBinaryNode; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(OwnList, AValid);
-  FCursor := Start;
+  FCursor := ACursor;
+  FStart := AStart;
   FOwnList := OwnList;
   FEqualityComparer := FOwnList as IJclDoubleEqualityComparer;
 end;
@@ -3618,6 +3812,7 @@ begin
     ADest.FCursor := FCursor;
     ADest.FOwnList := FOwnList;
     ADest.FEqualityComparer := FEqualityComparer;
+    ADest.FStart := FStart;
   end;
 end;
 
@@ -3997,6 +4192,49 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+procedure TDoubleItr.Reset;
+var
+  NewCursor: TJclDoubleBinaryNode;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Valid := False;
+    case FStart of
+      isFirst:
+        begin
+          NewCursor := FCursor;
+          while NewCursor <> nil do
+          begin
+            NewCursor := GetPreviousCursor;
+            if NewCursor <> nil then
+              FCursor := NewCursor;
+          end;
+        end;
+      isLast:
+        begin
+          NewCursor := FCursor;
+          while NewCursor <> nil do
+          begin
+            NewCursor := GetNextCursor;
+            if NewCursor <> nil then
+              FCursor := NewCursor;
+          end;
+        end;
+      isRoot:
+        begin
+          while (FCursor <> nil) and (FCursor.Parent <> nil) do
+            FCursor := FCursor.Parent;
+        end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TDoubleItr.Right: Double;
 begin
   {$IFDEF THREADSAFE}
@@ -4043,7 +4281,7 @@ type
 
 function TPreOrderDoubleItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := TPreOrderDoubleItr.Create(FOwnList, FCursor, Valid);
+  Result := TPreOrderDoubleItr.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
 function TPreOrderDoubleItr.GetNextCursor: TJclDoubleBinaryNode;
@@ -4110,7 +4348,7 @@ type
 
 function TInOrderDoubleItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := TInOrderDoubleItr.Create(FOwnList, FCursor, Valid);
+  Result := TInOrderDoubleItr.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
 function TInOrderDoubleItr.GetNextCursor: TJclDoubleBinaryNode;
@@ -4178,7 +4416,7 @@ type
 
 function TPostOrderDoubleItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := TPostOrderDoubleItr.Create(FOwnList, FCursor, Valid);
+  Result := TPostOrderDoubleItr.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
 function TPostOrderDoubleItr.GetNextCursor: TJclDoubleBinaryNode;
@@ -4235,6 +4473,7 @@ type
   TExtendedItr = class(TJclAbstractIterator, IJclExtendedIterator, IJclExtendedTreeIterator, IJclExtendedBinaryTreeIterator)
   protected
     FCursor: TJclExtendedBinaryNode;
+    FStart: TItrStart;
     FOwnList: IJclExtendedCollection;
     FEqualityComparer: IJclExtendedEqualityComparer;
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
@@ -4252,6 +4491,7 @@ type
     function Previous: Extended;
     function PreviousIndex: Integer;
     procedure Remove;
+    procedure Reset;
     procedure SetValue(const AValue: Extended);
     {$IFDEF SUPPORTS_FOR_IN}
     function MoveNext: Boolean;
@@ -4275,13 +4515,14 @@ type
     function Left: Extended;
     function Right: Extended;
   public
-    constructor Create(const OwnList: IJclExtendedCollection; Start: TJclExtendedBinaryNode; AValid: Boolean);
+    constructor Create(const OwnList: IJclExtendedCollection; ACursor: TJclExtendedBinaryNode; AValid: Boolean; AStart: TItrStart);
   end;
 
-constructor TExtendedItr.Create(const OwnList: IJclExtendedCollection; Start: TJclExtendedBinaryNode; AValid: Boolean);
+constructor TExtendedItr.Create(const OwnList: IJclExtendedCollection; ACursor: TJclExtendedBinaryNode; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(OwnList, AValid);
-  FCursor := Start;
+  FCursor := ACursor;
+  FStart := AStart;
   FOwnList := OwnList;
   FEqualityComparer := FOwnList as IJclExtendedEqualityComparer;
 end;
@@ -4307,6 +4548,7 @@ begin
     ADest.FCursor := FCursor;
     ADest.FOwnList := FOwnList;
     ADest.FEqualityComparer := FEqualityComparer;
+    ADest.FStart := FStart;
   end;
 end;
 
@@ -4686,6 +4928,49 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+procedure TExtendedItr.Reset;
+var
+  NewCursor: TJclExtendedBinaryNode;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Valid := False;
+    case FStart of
+      isFirst:
+        begin
+          NewCursor := FCursor;
+          while NewCursor <> nil do
+          begin
+            NewCursor := GetPreviousCursor;
+            if NewCursor <> nil then
+              FCursor := NewCursor;
+          end;
+        end;
+      isLast:
+        begin
+          NewCursor := FCursor;
+          while NewCursor <> nil do
+          begin
+            NewCursor := GetNextCursor;
+            if NewCursor <> nil then
+              FCursor := NewCursor;
+          end;
+        end;
+      isRoot:
+        begin
+          while (FCursor <> nil) and (FCursor.Parent <> nil) do
+            FCursor := FCursor.Parent;
+        end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TExtendedItr.Right: Extended;
 begin
   {$IFDEF THREADSAFE}
@@ -4732,7 +5017,7 @@ type
 
 function TPreOrderExtendedItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := TPreOrderExtendedItr.Create(FOwnList, FCursor, Valid);
+  Result := TPreOrderExtendedItr.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
 function TPreOrderExtendedItr.GetNextCursor: TJclExtendedBinaryNode;
@@ -4799,7 +5084,7 @@ type
 
 function TInOrderExtendedItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := TInOrderExtendedItr.Create(FOwnList, FCursor, Valid);
+  Result := TInOrderExtendedItr.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
 function TInOrderExtendedItr.GetNextCursor: TJclExtendedBinaryNode;
@@ -4867,7 +5152,7 @@ type
 
 function TPostOrderExtendedItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := TPostOrderExtendedItr.Create(FOwnList, FCursor, Valid);
+  Result := TPostOrderExtendedItr.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
 function TPostOrderExtendedItr.GetNextCursor: TJclExtendedBinaryNode;
@@ -4924,6 +5209,7 @@ type
   TIntegerItr = class(TJclAbstractIterator, IJclIntegerIterator, IJclIntegerTreeIterator, IJclIntegerBinaryTreeIterator)
   protected
     FCursor: TJclIntegerBinaryNode;
+    FStart: TItrStart;
     FOwnList: IJclIntegerCollection;
     FEqualityComparer: IJclIntegerEqualityComparer;
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
@@ -4941,6 +5227,7 @@ type
     function Previous: Integer;
     function PreviousIndex: Integer;
     procedure Remove;
+    procedure Reset;
     procedure SetValue(AValue: Integer);
     {$IFDEF SUPPORTS_FOR_IN}
     function MoveNext: Boolean;
@@ -4964,13 +5251,14 @@ type
     function Left: Integer;
     function Right: Integer;
   public
-    constructor Create(const OwnList: IJclIntegerCollection; Start: TJclIntegerBinaryNode; AValid: Boolean);
+    constructor Create(const OwnList: IJclIntegerCollection; ACursor: TJclIntegerBinaryNode; AValid: Boolean; AStart: TItrStart);
   end;
 
-constructor TIntegerItr.Create(const OwnList: IJclIntegerCollection; Start: TJclIntegerBinaryNode; AValid: Boolean);
+constructor TIntegerItr.Create(const OwnList: IJclIntegerCollection; ACursor: TJclIntegerBinaryNode; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(OwnList, AValid);
-  FCursor := Start;
+  FCursor := ACursor;
+  FStart := AStart;
   FOwnList := OwnList;
   FEqualityComparer := FOwnList as IJclIntegerEqualityComparer;
 end;
@@ -4996,6 +5284,7 @@ begin
     ADest.FCursor := FCursor;
     ADest.FOwnList := FOwnList;
     ADest.FEqualityComparer := FEqualityComparer;
+    ADest.FStart := FStart;
   end;
 end;
 
@@ -5375,6 +5664,49 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+procedure TIntegerItr.Reset;
+var
+  NewCursor: TJclIntegerBinaryNode;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Valid := False;
+    case FStart of
+      isFirst:
+        begin
+          NewCursor := FCursor;
+          while NewCursor <> nil do
+          begin
+            NewCursor := GetPreviousCursor;
+            if NewCursor <> nil then
+              FCursor := NewCursor;
+          end;
+        end;
+      isLast:
+        begin
+          NewCursor := FCursor;
+          while NewCursor <> nil do
+          begin
+            NewCursor := GetNextCursor;
+            if NewCursor <> nil then
+              FCursor := NewCursor;
+          end;
+        end;
+      isRoot:
+        begin
+          while (FCursor <> nil) and (FCursor.Parent <> nil) do
+            FCursor := FCursor.Parent;
+        end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TIntegerItr.Right: Integer;
 begin
   {$IFDEF THREADSAFE}
@@ -5421,7 +5753,7 @@ type
 
 function TPreOrderIntegerItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := TPreOrderIntegerItr.Create(FOwnList, FCursor, Valid);
+  Result := TPreOrderIntegerItr.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
 function TPreOrderIntegerItr.GetNextCursor: TJclIntegerBinaryNode;
@@ -5488,7 +5820,7 @@ type
 
 function TInOrderIntegerItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := TInOrderIntegerItr.Create(FOwnList, FCursor, Valid);
+  Result := TInOrderIntegerItr.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
 function TInOrderIntegerItr.GetNextCursor: TJclIntegerBinaryNode;
@@ -5556,7 +5888,7 @@ type
 
 function TPostOrderIntegerItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := TPostOrderIntegerItr.Create(FOwnList, FCursor, Valid);
+  Result := TPostOrderIntegerItr.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
 function TPostOrderIntegerItr.GetNextCursor: TJclIntegerBinaryNode;
@@ -5613,6 +5945,7 @@ type
   TCardinalItr = class(TJclAbstractIterator, IJclCardinalIterator, IJclCardinalTreeIterator, IJclCardinalBinaryTreeIterator)
   protected
     FCursor: TJclCardinalBinaryNode;
+    FStart: TItrStart;
     FOwnList: IJclCardinalCollection;
     FEqualityComparer: IJclCardinalEqualityComparer;
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
@@ -5630,6 +5963,7 @@ type
     function Previous: Cardinal;
     function PreviousIndex: Integer;
     procedure Remove;
+    procedure Reset;
     procedure SetValue(AValue: Cardinal);
     {$IFDEF SUPPORTS_FOR_IN}
     function MoveNext: Boolean;
@@ -5653,13 +5987,14 @@ type
     function Left: Cardinal;
     function Right: Cardinal;
   public
-    constructor Create(const OwnList: IJclCardinalCollection; Start: TJclCardinalBinaryNode; AValid: Boolean);
+    constructor Create(const OwnList: IJclCardinalCollection; ACursor: TJclCardinalBinaryNode; AValid: Boolean; AStart: TItrStart);
   end;
 
-constructor TCardinalItr.Create(const OwnList: IJclCardinalCollection; Start: TJclCardinalBinaryNode; AValid: Boolean);
+constructor TCardinalItr.Create(const OwnList: IJclCardinalCollection; ACursor: TJclCardinalBinaryNode; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(OwnList, AValid);
-  FCursor := Start;
+  FCursor := ACursor;
+  FStart := AStart;
   FOwnList := OwnList;
   FEqualityComparer := FOwnList as IJclCardinalEqualityComparer;
 end;
@@ -5685,6 +6020,7 @@ begin
     ADest.FCursor := FCursor;
     ADest.FOwnList := FOwnList;
     ADest.FEqualityComparer := FEqualityComparer;
+    ADest.FStart := FStart;
   end;
 end;
 
@@ -6064,6 +6400,49 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+procedure TCardinalItr.Reset;
+var
+  NewCursor: TJclCardinalBinaryNode;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Valid := False;
+    case FStart of
+      isFirst:
+        begin
+          NewCursor := FCursor;
+          while NewCursor <> nil do
+          begin
+            NewCursor := GetPreviousCursor;
+            if NewCursor <> nil then
+              FCursor := NewCursor;
+          end;
+        end;
+      isLast:
+        begin
+          NewCursor := FCursor;
+          while NewCursor <> nil do
+          begin
+            NewCursor := GetNextCursor;
+            if NewCursor <> nil then
+              FCursor := NewCursor;
+          end;
+        end;
+      isRoot:
+        begin
+          while (FCursor <> nil) and (FCursor.Parent <> nil) do
+            FCursor := FCursor.Parent;
+        end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TCardinalItr.Right: Cardinal;
 begin
   {$IFDEF THREADSAFE}
@@ -6110,7 +6489,7 @@ type
 
 function TPreOrderCardinalItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := TPreOrderCardinalItr.Create(FOwnList, FCursor, Valid);
+  Result := TPreOrderCardinalItr.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
 function TPreOrderCardinalItr.GetNextCursor: TJclCardinalBinaryNode;
@@ -6177,7 +6556,7 @@ type
 
 function TInOrderCardinalItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := TInOrderCardinalItr.Create(FOwnList, FCursor, Valid);
+  Result := TInOrderCardinalItr.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
 function TInOrderCardinalItr.GetNextCursor: TJclCardinalBinaryNode;
@@ -6245,7 +6624,7 @@ type
 
 function TPostOrderCardinalItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := TPostOrderCardinalItr.Create(FOwnList, FCursor, Valid);
+  Result := TPostOrderCardinalItr.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
 function TPostOrderCardinalItr.GetNextCursor: TJclCardinalBinaryNode;
@@ -6302,6 +6681,7 @@ type
   TInt64Itr = class(TJclAbstractIterator, IJclInt64Iterator, IJclInt64TreeIterator, IJclInt64BinaryTreeIterator)
   protected
     FCursor: TJclInt64BinaryNode;
+    FStart: TItrStart;
     FOwnList: IJclInt64Collection;
     FEqualityComparer: IJclInt64EqualityComparer;
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
@@ -6319,6 +6699,7 @@ type
     function Previous: Int64;
     function PreviousIndex: Integer;
     procedure Remove;
+    procedure Reset;
     procedure SetValue(const AValue: Int64);
     {$IFDEF SUPPORTS_FOR_IN}
     function MoveNext: Boolean;
@@ -6342,13 +6723,14 @@ type
     function Left: Int64;
     function Right: Int64;
   public
-    constructor Create(const OwnList: IJclInt64Collection; Start: TJclInt64BinaryNode; AValid: Boolean);
+    constructor Create(const OwnList: IJclInt64Collection; ACursor: TJclInt64BinaryNode; AValid: Boolean; AStart: TItrStart);
   end;
 
-constructor TInt64Itr.Create(const OwnList: IJclInt64Collection; Start: TJclInt64BinaryNode; AValid: Boolean);
+constructor TInt64Itr.Create(const OwnList: IJclInt64Collection; ACursor: TJclInt64BinaryNode; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(OwnList, AValid);
-  FCursor := Start;
+  FCursor := ACursor;
+  FStart := AStart;
   FOwnList := OwnList;
   FEqualityComparer := FOwnList as IJclInt64EqualityComparer;
 end;
@@ -6374,6 +6756,7 @@ begin
     ADest.FCursor := FCursor;
     ADest.FOwnList := FOwnList;
     ADest.FEqualityComparer := FEqualityComparer;
+    ADest.FStart := FStart;
   end;
 end;
 
@@ -6753,6 +7136,49 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+procedure TInt64Itr.Reset;
+var
+  NewCursor: TJclInt64BinaryNode;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Valid := False;
+    case FStart of
+      isFirst:
+        begin
+          NewCursor := FCursor;
+          while NewCursor <> nil do
+          begin
+            NewCursor := GetPreviousCursor;
+            if NewCursor <> nil then
+              FCursor := NewCursor;
+          end;
+        end;
+      isLast:
+        begin
+          NewCursor := FCursor;
+          while NewCursor <> nil do
+          begin
+            NewCursor := GetNextCursor;
+            if NewCursor <> nil then
+              FCursor := NewCursor;
+          end;
+        end;
+      isRoot:
+        begin
+          while (FCursor <> nil) and (FCursor.Parent <> nil) do
+            FCursor := FCursor.Parent;
+        end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TInt64Itr.Right: Int64;
 begin
   {$IFDEF THREADSAFE}
@@ -6799,7 +7225,7 @@ type
 
 function TPreOrderInt64Itr.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := TPreOrderInt64Itr.Create(FOwnList, FCursor, Valid);
+  Result := TPreOrderInt64Itr.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
 function TPreOrderInt64Itr.GetNextCursor: TJclInt64BinaryNode;
@@ -6866,7 +7292,7 @@ type
 
 function TInOrderInt64Itr.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := TInOrderInt64Itr.Create(FOwnList, FCursor, Valid);
+  Result := TInOrderInt64Itr.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
 function TInOrderInt64Itr.GetNextCursor: TJclInt64BinaryNode;
@@ -6934,7 +7360,7 @@ type
 
 function TPostOrderInt64Itr.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := TPostOrderInt64Itr.Create(FOwnList, FCursor, Valid);
+  Result := TPostOrderInt64Itr.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
 function TPostOrderInt64Itr.GetNextCursor: TJclInt64BinaryNode;
@@ -6992,6 +7418,7 @@ type
   TPtrItr = class(TJclAbstractIterator, IJclPtrIterator, IJclPtrTreeIterator, IJclPtrBinaryTreeIterator)
   protected
     FCursor: TJclPtrBinaryNode;
+    FStart: TItrStart;
     FOwnList: IJclPtrCollection;
     FEqualityComparer: IJclPtrEqualityComparer;
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
@@ -7009,6 +7436,7 @@ type
     function Previous: Pointer;
     function PreviousIndex: Integer;
     procedure Remove;
+    procedure Reset;
     procedure SetPtr(APtr: Pointer);
     {$IFDEF SUPPORTS_FOR_IN}
     function MoveNext: Boolean;
@@ -7032,13 +7460,14 @@ type
     function Left: Pointer;
     function Right: Pointer;
   public
-    constructor Create(const OwnList: IJclPtrCollection; Start: TJclPtrBinaryNode; AValid: Boolean);
+    constructor Create(const OwnList: IJclPtrCollection; ACursor: TJclPtrBinaryNode; AValid: Boolean; AStart: TItrStart);
   end;
 
-constructor TPtrItr.Create(const OwnList: IJclPtrCollection; Start: TJclPtrBinaryNode; AValid: Boolean);
+constructor TPtrItr.Create(const OwnList: IJclPtrCollection; ACursor: TJclPtrBinaryNode; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(OwnList, AValid);
-  FCursor := Start;
+  FCursor := ACursor;
+  FStart := AStart;
   FOwnList := OwnList;
   FEqualityComparer := FOwnList as IJclPtrEqualityComparer;
 end;
@@ -7064,6 +7493,7 @@ begin
     ADest.FCursor := FCursor;
     ADest.FOwnList := FOwnList;
     ADest.FEqualityComparer := FEqualityComparer;
+    ADest.FStart := FStart;
   end;
 end;
 
@@ -7443,6 +7873,49 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+procedure TPtrItr.Reset;
+var
+  NewCursor: TJclPtrBinaryNode;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Valid := False;
+    case FStart of
+      isFirst:
+        begin
+          NewCursor := FCursor;
+          while NewCursor <> nil do
+          begin
+            NewCursor := GetPreviousCursor;
+            if NewCursor <> nil then
+              FCursor := NewCursor;
+          end;
+        end;
+      isLast:
+        begin
+          NewCursor := FCursor;
+          while NewCursor <> nil do
+          begin
+            NewCursor := GetNextCursor;
+            if NewCursor <> nil then
+              FCursor := NewCursor;
+          end;
+        end;
+      isRoot:
+        begin
+          while (FCursor <> nil) and (FCursor.Parent <> nil) do
+            FCursor := FCursor.Parent;
+        end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TPtrItr.Right: Pointer;
 begin
   {$IFDEF THREADSAFE}
@@ -7489,7 +7962,7 @@ type
 
 function TPreOrderPtrItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := TPreOrderPtrItr.Create(FOwnList, FCursor, Valid);
+  Result := TPreOrderPtrItr.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
 function TPreOrderPtrItr.GetNextCursor: TJclPtrBinaryNode;
@@ -7556,7 +8029,7 @@ type
 
 function TInOrderPtrItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := TInOrderPtrItr.Create(FOwnList, FCursor, Valid);
+  Result := TInOrderPtrItr.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
 function TInOrderPtrItr.GetNextCursor: TJclPtrBinaryNode;
@@ -7624,7 +8097,7 @@ type
 
 function TPostOrderPtrItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := TPostOrderPtrItr.Create(FOwnList, FCursor, Valid);
+  Result := TPostOrderPtrItr.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
 function TPostOrderPtrItr.GetNextCursor: TJclPtrBinaryNode;
@@ -7682,6 +8155,7 @@ type
   TItr = class(TJclAbstractIterator, IJclIterator, IJclTreeIterator, IJclBinaryTreeIterator)
   protected
     FCursor: TJclBinaryNode;
+    FStart: TItrStart;
     FOwnList: IJclCollection;
     FEqualityComparer: IJclEqualityComparer;
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
@@ -7699,6 +8173,7 @@ type
     function Previous: TObject;
     function PreviousIndex: Integer;
     procedure Remove;
+    procedure Reset;
     procedure SetObject(AObject: TObject);
     {$IFDEF SUPPORTS_FOR_IN}
     function MoveNext: Boolean;
@@ -7722,13 +8197,14 @@ type
     function Left: TObject;
     function Right: TObject;
   public
-    constructor Create(const OwnList: IJclCollection; Start: TJclBinaryNode; AValid: Boolean);
+    constructor Create(const OwnList: IJclCollection; ACursor: TJclBinaryNode; AValid: Boolean; AStart: TItrStart);
   end;
 
-constructor TItr.Create(const OwnList: IJclCollection; Start: TJclBinaryNode; AValid: Boolean);
+constructor TItr.Create(const OwnList: IJclCollection; ACursor: TJclBinaryNode; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(OwnList, AValid);
-  FCursor := Start;
+  FCursor := ACursor;
+  FStart := AStart;
   FOwnList := OwnList;
   FEqualityComparer := FOwnList as IJclEqualityComparer;
 end;
@@ -7754,6 +8230,7 @@ begin
     ADest.FCursor := FCursor;
     ADest.FOwnList := FOwnList;
     ADest.FEqualityComparer := FEqualityComparer;
+    ADest.FStart := FStart;
   end;
 end;
 
@@ -8133,6 +8610,49 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+procedure TItr.Reset;
+var
+  NewCursor: TJclBinaryNode;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Valid := False;
+    case FStart of
+      isFirst:
+        begin
+          NewCursor := FCursor;
+          while NewCursor <> nil do
+          begin
+            NewCursor := GetPreviousCursor;
+            if NewCursor <> nil then
+              FCursor := NewCursor;
+          end;
+        end;
+      isLast:
+        begin
+          NewCursor := FCursor;
+          while NewCursor <> nil do
+          begin
+            NewCursor := GetNextCursor;
+            if NewCursor <> nil then
+              FCursor := NewCursor;
+          end;
+        end;
+      isRoot:
+        begin
+          while (FCursor <> nil) and (FCursor.Parent <> nil) do
+            FCursor := FCursor.Parent;
+        end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TItr.Right: TObject;
 begin
   {$IFDEF THREADSAFE}
@@ -8179,7 +8699,7 @@ type
 
 function TPreOrderItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := TPreOrderItr.Create(FOwnList, FCursor, Valid);
+  Result := TPreOrderItr.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
 function TPreOrderItr.GetNextCursor: TJclBinaryNode;
@@ -8246,7 +8766,7 @@ type
 
 function TInOrderItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := TInOrderItr.Create(FOwnList, FCursor, Valid);
+  Result := TInOrderItr.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
 function TInOrderItr.GetNextCursor: TJclBinaryNode;
@@ -8314,7 +8834,7 @@ type
 
 function TPostOrderItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := TPostOrderItr.Create(FOwnList, FCursor, Valid);
+  Result := TPostOrderItr.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
 function TPostOrderItr.GetNextCursor: TJclBinaryNode;
@@ -8372,6 +8892,7 @@ type
   TItr<T> = class(TJclAbstractIterator, IJclIterator<T>, IJclTreeIterator<T>, IJclBinaryTreeIterator<T>)
   protected
     FCursor: TJclBinaryNode<T>;
+    FStart: TItrStart;
     FOwnList: IJclCollection<T>;
     FEqualityComparer: IJclEqualityComparer<T>;
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
@@ -8389,6 +8910,7 @@ type
     function Previous: T;
     function PreviousIndex: Integer;
     procedure Remove;
+    procedure Reset;
     procedure SetItem(const AItem: T);
     {$IFDEF SUPPORTS_FOR_IN}
     function MoveNext: Boolean;
@@ -8412,13 +8934,14 @@ type
     function Left: T;
     function Right: T;
   public
-    constructor Create(const OwnList: IJclCollection<T>; Start: TJclBinaryNode<T>; AValid: Boolean);
+    constructor Create(const OwnList: IJclCollection<T>; ACursor: TJclBinaryNode<T>; AValid: Boolean; AStart: TItrStart);
   end;
 
-constructor TItr<T>.Create(const OwnList: IJclCollection<T>; Start: TJclBinaryNode<T>; AValid: Boolean);
+constructor TItr<T>.Create(const OwnList: IJclCollection<T>; ACursor: TJclBinaryNode<T>; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(OwnList, AValid);
-  FCursor := Start;
+  FCursor := ACursor;
+  FStart := AStart;
   FOwnList := OwnList;
   FEqualityComparer := FOwnList as IJclEqualityComparer<T>;
 end;
@@ -8444,6 +8967,7 @@ begin
     ADest.FCursor := FCursor;
     ADest.FOwnList := FOwnList;
     ADest.FEqualityComparer := FEqualityComparer;
+    ADest.FStart := FStart;
   end;
 end;
 
@@ -8823,6 +9347,49 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+procedure TItr<T>.Reset;
+var
+  NewCursor: TJclBinaryNode<T>;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Valid := False;
+    case FStart of
+      isFirst:
+        begin
+          NewCursor := FCursor;
+          while NewCursor <> nil do
+          begin
+            NewCursor := GetPreviousCursor;
+            if NewCursor <> nil then
+              FCursor := NewCursor;
+          end;
+        end;
+      isLast:
+        begin
+          NewCursor := FCursor;
+          while NewCursor <> nil do
+          begin
+            NewCursor := GetNextCursor;
+            if NewCursor <> nil then
+              FCursor := NewCursor;
+          end;
+        end;
+      isRoot:
+        begin
+          while (FCursor <> nil) and (FCursor.Parent <> nil) do
+            FCursor := FCursor.Parent;
+        end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TItr<T>.Right: T;
 begin
   {$IFDEF THREADSAFE}
@@ -8869,7 +9436,7 @@ type
 
 function TPreOrderItr<T>.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := TPreOrderItr<T>.Create(FOwnList, FCursor, Valid);
+  Result := TPreOrderItr<T>.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
 function TPreOrderItr<T>.GetNextCursor: TJclBinaryNode<T>;
@@ -8936,7 +9503,7 @@ type
 
 function TInOrderItr<T>.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := TInOrderItr<T>.Create(FOwnList, FCursor, Valid);
+  Result := TInOrderItr<T>.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
 function TInOrderItr<T>.GetNextCursor: TJclBinaryNode<T>;
@@ -9004,7 +9571,7 @@ type
 
 function TPostOrderItr<T>.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := TPostOrderItr<T>.Create(FOwnList, FCursor, Valid);
+  Result := TPostOrderItr<T>.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
 function TPostOrderItr<T>.GetNextCursor: TJclBinaryNode<T>;
@@ -9372,13 +9939,13 @@ begin
     Start := FRoot;
     case GetTraverseOrder of
       toPreOrder:
-        Result := TPreOrderIntfItr.Create(Self, Start, False);
+        Result := TPreOrderIntfItr.Create(Self, Start, False, isFirst);
       toOrder:
         begin
           if Start <> nil then
             while Start.Left <> nil do
               Start := Start.Left;
-          Result := TInOrderIntfItr.Create(Self, Start, False);
+          Result := TInOrderIntfItr.Create(Self, Start, False, isFirst);
         end;
       toPostOrder:
         begin
@@ -9390,7 +9957,7 @@ begin
             else
               Start := Start.Right;
           end;
-          Result := TPostOrderIntfItr.Create(Self, Start, False);
+          Result := TPostOrderIntfItr.Create(Self, Start, False, isFirst);
         end;
     else
       Result := nil;
@@ -9417,11 +9984,11 @@ begin
   {$ENDIF THREADSAFE}
     case GetTraverseOrder of
       toPreOrder:
-        Result := TPreOrderIntfItr.Create(Self, FRoot, False);
+        Result := TPreOrderIntfItr.Create(Self, FRoot, False, isRoot);
       toOrder:
-        Result := TInOrderIntfItr.Create(Self, FRoot, False);
+        Result := TInOrderIntfItr.Create(Self, FRoot, False, isRoot);
       toPostOrder:
-        Result := TPostOrderIntfItr.Create(Self, FRoot, False);
+        Result := TPostOrderIntfItr.Create(Self, FRoot, False, isRoot);
     else
       Result := nil;
     end;
@@ -9462,17 +10029,17 @@ begin
             else
               Start := Start.Left;
           end;
-          Result := TPreOrderIntfItr.Create(Self, Start, False);
+          Result := TPreOrderIntfItr.Create(Self, Start, False, isLast);
         end;
       toOrder:
         begin
           if Start <> nil then
             while Start.Right <> nil do
               Start := Start.Right;
-          Result := TInOrderIntfItr.Create(Self, Start, False);
+          Result := TInOrderIntfItr.Create(Self, Start, False, isLast);
         end;
       toPostOrder:
-        Result := TPostOrderIntfItr.Create(Self, Start, False);
+        Result := TPostOrderIntfItr.Create(Self, Start, False, isLast);
     else
       Result := nil;
     end;
@@ -10066,13 +10633,13 @@ begin
     Start := FRoot;
     case GetTraverseOrder of
       toPreOrder:
-        Result := TPreOrderAnsiStrItr.Create(Self, Start, False);
+        Result := TPreOrderAnsiStrItr.Create(Self, Start, False, isFirst);
       toOrder:
         begin
           if Start <> nil then
             while Start.Left <> nil do
               Start := Start.Left;
-          Result := TInOrderAnsiStrItr.Create(Self, Start, False);
+          Result := TInOrderAnsiStrItr.Create(Self, Start, False, isFirst);
         end;
       toPostOrder:
         begin
@@ -10084,7 +10651,7 @@ begin
             else
               Start := Start.Right;
           end;
-          Result := TPostOrderAnsiStrItr.Create(Self, Start, False);
+          Result := TPostOrderAnsiStrItr.Create(Self, Start, False, isFirst);
         end;
     else
       Result := nil;
@@ -10111,11 +10678,11 @@ begin
   {$ENDIF THREADSAFE}
     case GetTraverseOrder of
       toPreOrder:
-        Result := TPreOrderAnsiStrItr.Create(Self, FRoot, False);
+        Result := TPreOrderAnsiStrItr.Create(Self, FRoot, False, isRoot);
       toOrder:
-        Result := TInOrderAnsiStrItr.Create(Self, FRoot, False);
+        Result := TInOrderAnsiStrItr.Create(Self, FRoot, False, isRoot);
       toPostOrder:
-        Result := TPostOrderAnsiStrItr.Create(Self, FRoot, False);
+        Result := TPostOrderAnsiStrItr.Create(Self, FRoot, False, isRoot);
     else
       Result := nil;
     end;
@@ -10156,17 +10723,17 @@ begin
             else
               Start := Start.Left;
           end;
-          Result := TPreOrderAnsiStrItr.Create(Self, Start, False);
+          Result := TPreOrderAnsiStrItr.Create(Self, Start, False, isLast);
         end;
       toOrder:
         begin
           if Start <> nil then
             while Start.Right <> nil do
               Start := Start.Right;
-          Result := TInOrderAnsiStrItr.Create(Self, Start, False);
+          Result := TInOrderAnsiStrItr.Create(Self, Start, False, isLast);
         end;
       toPostOrder:
-        Result := TPostOrderAnsiStrItr.Create(Self, Start, False);
+        Result := TPostOrderAnsiStrItr.Create(Self, Start, False, isLast);
     else
       Result := nil;
     end;
@@ -10760,13 +11327,13 @@ begin
     Start := FRoot;
     case GetTraverseOrder of
       toPreOrder:
-        Result := TPreOrderWideStrItr.Create(Self, Start, False);
+        Result := TPreOrderWideStrItr.Create(Self, Start, False, isFirst);
       toOrder:
         begin
           if Start <> nil then
             while Start.Left <> nil do
               Start := Start.Left;
-          Result := TInOrderWideStrItr.Create(Self, Start, False);
+          Result := TInOrderWideStrItr.Create(Self, Start, False, isFirst);
         end;
       toPostOrder:
         begin
@@ -10778,7 +11345,7 @@ begin
             else
               Start := Start.Right;
           end;
-          Result := TPostOrderWideStrItr.Create(Self, Start, False);
+          Result := TPostOrderWideStrItr.Create(Self, Start, False, isFirst);
         end;
     else
       Result := nil;
@@ -10805,11 +11372,11 @@ begin
   {$ENDIF THREADSAFE}
     case GetTraverseOrder of
       toPreOrder:
-        Result := TPreOrderWideStrItr.Create(Self, FRoot, False);
+        Result := TPreOrderWideStrItr.Create(Self, FRoot, False, isRoot);
       toOrder:
-        Result := TInOrderWideStrItr.Create(Self, FRoot, False);
+        Result := TInOrderWideStrItr.Create(Self, FRoot, False, isRoot);
       toPostOrder:
-        Result := TPostOrderWideStrItr.Create(Self, FRoot, False);
+        Result := TPostOrderWideStrItr.Create(Self, FRoot, False, isRoot);
     else
       Result := nil;
     end;
@@ -10850,17 +11417,17 @@ begin
             else
               Start := Start.Left;
           end;
-          Result := TPreOrderWideStrItr.Create(Self, Start, False);
+          Result := TPreOrderWideStrItr.Create(Self, Start, False, isLast);
         end;
       toOrder:
         begin
           if Start <> nil then
             while Start.Right <> nil do
               Start := Start.Right;
-          Result := TInOrderWideStrItr.Create(Self, Start, False);
+          Result := TInOrderWideStrItr.Create(Self, Start, False, isLast);
         end;
       toPostOrder:
-        Result := TPostOrderWideStrItr.Create(Self, Start, False);
+        Result := TPostOrderWideStrItr.Create(Self, Start, False, isLast);
     else
       Result := nil;
     end;
@@ -11454,13 +12021,13 @@ begin
     Start := FRoot;
     case GetTraverseOrder of
       toPreOrder:
-        Result := TPreOrderSingleItr.Create(Self, Start, False);
+        Result := TPreOrderSingleItr.Create(Self, Start, False, isFirst);
       toOrder:
         begin
           if Start <> nil then
             while Start.Left <> nil do
               Start := Start.Left;
-          Result := TInOrderSingleItr.Create(Self, Start, False);
+          Result := TInOrderSingleItr.Create(Self, Start, False, isFirst);
         end;
       toPostOrder:
         begin
@@ -11472,7 +12039,7 @@ begin
             else
               Start := Start.Right;
           end;
-          Result := TPostOrderSingleItr.Create(Self, Start, False);
+          Result := TPostOrderSingleItr.Create(Self, Start, False, isFirst);
         end;
     else
       Result := nil;
@@ -11499,11 +12066,11 @@ begin
   {$ENDIF THREADSAFE}
     case GetTraverseOrder of
       toPreOrder:
-        Result := TPreOrderSingleItr.Create(Self, FRoot, False);
+        Result := TPreOrderSingleItr.Create(Self, FRoot, False, isRoot);
       toOrder:
-        Result := TInOrderSingleItr.Create(Self, FRoot, False);
+        Result := TInOrderSingleItr.Create(Self, FRoot, False, isRoot);
       toPostOrder:
-        Result := TPostOrderSingleItr.Create(Self, FRoot, False);
+        Result := TPostOrderSingleItr.Create(Self, FRoot, False, isRoot);
     else
       Result := nil;
     end;
@@ -11544,17 +12111,17 @@ begin
             else
               Start := Start.Left;
           end;
-          Result := TPreOrderSingleItr.Create(Self, Start, False);
+          Result := TPreOrderSingleItr.Create(Self, Start, False, isLast);
         end;
       toOrder:
         begin
           if Start <> nil then
             while Start.Right <> nil do
               Start := Start.Right;
-          Result := TInOrderSingleItr.Create(Self, Start, False);
+          Result := TInOrderSingleItr.Create(Self, Start, False, isLast);
         end;
       toPostOrder:
-        Result := TPostOrderSingleItr.Create(Self, Start, False);
+        Result := TPostOrderSingleItr.Create(Self, Start, False, isLast);
     else
       Result := nil;
     end;
@@ -12148,13 +12715,13 @@ begin
     Start := FRoot;
     case GetTraverseOrder of
       toPreOrder:
-        Result := TPreOrderDoubleItr.Create(Self, Start, False);
+        Result := TPreOrderDoubleItr.Create(Self, Start, False, isFirst);
       toOrder:
         begin
           if Start <> nil then
             while Start.Left <> nil do
               Start := Start.Left;
-          Result := TInOrderDoubleItr.Create(Self, Start, False);
+          Result := TInOrderDoubleItr.Create(Self, Start, False, isFirst);
         end;
       toPostOrder:
         begin
@@ -12166,7 +12733,7 @@ begin
             else
               Start := Start.Right;
           end;
-          Result := TPostOrderDoubleItr.Create(Self, Start, False);
+          Result := TPostOrderDoubleItr.Create(Self, Start, False, isFirst);
         end;
     else
       Result := nil;
@@ -12193,11 +12760,11 @@ begin
   {$ENDIF THREADSAFE}
     case GetTraverseOrder of
       toPreOrder:
-        Result := TPreOrderDoubleItr.Create(Self, FRoot, False);
+        Result := TPreOrderDoubleItr.Create(Self, FRoot, False, isRoot);
       toOrder:
-        Result := TInOrderDoubleItr.Create(Self, FRoot, False);
+        Result := TInOrderDoubleItr.Create(Self, FRoot, False, isRoot);
       toPostOrder:
-        Result := TPostOrderDoubleItr.Create(Self, FRoot, False);
+        Result := TPostOrderDoubleItr.Create(Self, FRoot, False, isRoot);
     else
       Result := nil;
     end;
@@ -12238,17 +12805,17 @@ begin
             else
               Start := Start.Left;
           end;
-          Result := TPreOrderDoubleItr.Create(Self, Start, False);
+          Result := TPreOrderDoubleItr.Create(Self, Start, False, isLast);
         end;
       toOrder:
         begin
           if Start <> nil then
             while Start.Right <> nil do
               Start := Start.Right;
-          Result := TInOrderDoubleItr.Create(Self, Start, False);
+          Result := TInOrderDoubleItr.Create(Self, Start, False, isLast);
         end;
       toPostOrder:
-        Result := TPostOrderDoubleItr.Create(Self, Start, False);
+        Result := TPostOrderDoubleItr.Create(Self, Start, False, isLast);
     else
       Result := nil;
     end;
@@ -12842,13 +13409,13 @@ begin
     Start := FRoot;
     case GetTraverseOrder of
       toPreOrder:
-        Result := TPreOrderExtendedItr.Create(Self, Start, False);
+        Result := TPreOrderExtendedItr.Create(Self, Start, False, isFirst);
       toOrder:
         begin
           if Start <> nil then
             while Start.Left <> nil do
               Start := Start.Left;
-          Result := TInOrderExtendedItr.Create(Self, Start, False);
+          Result := TInOrderExtendedItr.Create(Self, Start, False, isFirst);
         end;
       toPostOrder:
         begin
@@ -12860,7 +13427,7 @@ begin
             else
               Start := Start.Right;
           end;
-          Result := TPostOrderExtendedItr.Create(Self, Start, False);
+          Result := TPostOrderExtendedItr.Create(Self, Start, False, isFirst);
         end;
     else
       Result := nil;
@@ -12887,11 +13454,11 @@ begin
   {$ENDIF THREADSAFE}
     case GetTraverseOrder of
       toPreOrder:
-        Result := TPreOrderExtendedItr.Create(Self, FRoot, False);
+        Result := TPreOrderExtendedItr.Create(Self, FRoot, False, isRoot);
       toOrder:
-        Result := TInOrderExtendedItr.Create(Self, FRoot, False);
+        Result := TInOrderExtendedItr.Create(Self, FRoot, False, isRoot);
       toPostOrder:
-        Result := TPostOrderExtendedItr.Create(Self, FRoot, False);
+        Result := TPostOrderExtendedItr.Create(Self, FRoot, False, isRoot);
     else
       Result := nil;
     end;
@@ -12932,17 +13499,17 @@ begin
             else
               Start := Start.Left;
           end;
-          Result := TPreOrderExtendedItr.Create(Self, Start, False);
+          Result := TPreOrderExtendedItr.Create(Self, Start, False, isLast);
         end;
       toOrder:
         begin
           if Start <> nil then
             while Start.Right <> nil do
               Start := Start.Right;
-          Result := TInOrderExtendedItr.Create(Self, Start, False);
+          Result := TInOrderExtendedItr.Create(Self, Start, False, isLast);
         end;
       toPostOrder:
-        Result := TPostOrderExtendedItr.Create(Self, Start, False);
+        Result := TPostOrderExtendedItr.Create(Self, Start, False, isLast);
     else
       Result := nil;
     end;
@@ -13536,13 +14103,13 @@ begin
     Start := FRoot;
     case GetTraverseOrder of
       toPreOrder:
-        Result := TPreOrderIntegerItr.Create(Self, Start, False);
+        Result := TPreOrderIntegerItr.Create(Self, Start, False, isFirst);
       toOrder:
         begin
           if Start <> nil then
             while Start.Left <> nil do
               Start := Start.Left;
-          Result := TInOrderIntegerItr.Create(Self, Start, False);
+          Result := TInOrderIntegerItr.Create(Self, Start, False, isFirst);
         end;
       toPostOrder:
         begin
@@ -13554,7 +14121,7 @@ begin
             else
               Start := Start.Right;
           end;
-          Result := TPostOrderIntegerItr.Create(Self, Start, False);
+          Result := TPostOrderIntegerItr.Create(Self, Start, False, isFirst);
         end;
     else
       Result := nil;
@@ -13581,11 +14148,11 @@ begin
   {$ENDIF THREADSAFE}
     case GetTraverseOrder of
       toPreOrder:
-        Result := TPreOrderIntegerItr.Create(Self, FRoot, False);
+        Result := TPreOrderIntegerItr.Create(Self, FRoot, False, isRoot);
       toOrder:
-        Result := TInOrderIntegerItr.Create(Self, FRoot, False);
+        Result := TInOrderIntegerItr.Create(Self, FRoot, False, isRoot);
       toPostOrder:
-        Result := TPostOrderIntegerItr.Create(Self, FRoot, False);
+        Result := TPostOrderIntegerItr.Create(Self, FRoot, False, isRoot);
     else
       Result := nil;
     end;
@@ -13626,17 +14193,17 @@ begin
             else
               Start := Start.Left;
           end;
-          Result := TPreOrderIntegerItr.Create(Self, Start, False);
+          Result := TPreOrderIntegerItr.Create(Self, Start, False, isLast);
         end;
       toOrder:
         begin
           if Start <> nil then
             while Start.Right <> nil do
               Start := Start.Right;
-          Result := TInOrderIntegerItr.Create(Self, Start, False);
+          Result := TInOrderIntegerItr.Create(Self, Start, False, isLast);
         end;
       toPostOrder:
-        Result := TPostOrderIntegerItr.Create(Self, Start, False);
+        Result := TPostOrderIntegerItr.Create(Self, Start, False, isLast);
     else
       Result := nil;
     end;
@@ -14230,13 +14797,13 @@ begin
     Start := FRoot;
     case GetTraverseOrder of
       toPreOrder:
-        Result := TPreOrderCardinalItr.Create(Self, Start, False);
+        Result := TPreOrderCardinalItr.Create(Self, Start, False, isFirst);
       toOrder:
         begin
           if Start <> nil then
             while Start.Left <> nil do
               Start := Start.Left;
-          Result := TInOrderCardinalItr.Create(Self, Start, False);
+          Result := TInOrderCardinalItr.Create(Self, Start, False, isFirst);
         end;
       toPostOrder:
         begin
@@ -14248,7 +14815,7 @@ begin
             else
               Start := Start.Right;
           end;
-          Result := TPostOrderCardinalItr.Create(Self, Start, False);
+          Result := TPostOrderCardinalItr.Create(Self, Start, False, isFirst);
         end;
     else
       Result := nil;
@@ -14275,11 +14842,11 @@ begin
   {$ENDIF THREADSAFE}
     case GetTraverseOrder of
       toPreOrder:
-        Result := TPreOrderCardinalItr.Create(Self, FRoot, False);
+        Result := TPreOrderCardinalItr.Create(Self, FRoot, False, isRoot);
       toOrder:
-        Result := TInOrderCardinalItr.Create(Self, FRoot, False);
+        Result := TInOrderCardinalItr.Create(Self, FRoot, False, isRoot);
       toPostOrder:
-        Result := TPostOrderCardinalItr.Create(Self, FRoot, False);
+        Result := TPostOrderCardinalItr.Create(Self, FRoot, False, isRoot);
     else
       Result := nil;
     end;
@@ -14320,17 +14887,17 @@ begin
             else
               Start := Start.Left;
           end;
-          Result := TPreOrderCardinalItr.Create(Self, Start, False);
+          Result := TPreOrderCardinalItr.Create(Self, Start, False, isLast);
         end;
       toOrder:
         begin
           if Start <> nil then
             while Start.Right <> nil do
               Start := Start.Right;
-          Result := TInOrderCardinalItr.Create(Self, Start, False);
+          Result := TInOrderCardinalItr.Create(Self, Start, False, isLast);
         end;
       toPostOrder:
-        Result := TPostOrderCardinalItr.Create(Self, Start, False);
+        Result := TPostOrderCardinalItr.Create(Self, Start, False, isLast);
     else
       Result := nil;
     end;
@@ -14924,13 +15491,13 @@ begin
     Start := FRoot;
     case GetTraverseOrder of
       toPreOrder:
-        Result := TPreOrderInt64Itr.Create(Self, Start, False);
+        Result := TPreOrderInt64Itr.Create(Self, Start, False, isFirst);
       toOrder:
         begin
           if Start <> nil then
             while Start.Left <> nil do
               Start := Start.Left;
-          Result := TInOrderInt64Itr.Create(Self, Start, False);
+          Result := TInOrderInt64Itr.Create(Self, Start, False, isFirst);
         end;
       toPostOrder:
         begin
@@ -14942,7 +15509,7 @@ begin
             else
               Start := Start.Right;
           end;
-          Result := TPostOrderInt64Itr.Create(Self, Start, False);
+          Result := TPostOrderInt64Itr.Create(Self, Start, False, isFirst);
         end;
     else
       Result := nil;
@@ -14969,11 +15536,11 @@ begin
   {$ENDIF THREADSAFE}
     case GetTraverseOrder of
       toPreOrder:
-        Result := TPreOrderInt64Itr.Create(Self, FRoot, False);
+        Result := TPreOrderInt64Itr.Create(Self, FRoot, False, isRoot);
       toOrder:
-        Result := TInOrderInt64Itr.Create(Self, FRoot, False);
+        Result := TInOrderInt64Itr.Create(Self, FRoot, False, isRoot);
       toPostOrder:
-        Result := TPostOrderInt64Itr.Create(Self, FRoot, False);
+        Result := TPostOrderInt64Itr.Create(Self, FRoot, False, isRoot);
     else
       Result := nil;
     end;
@@ -15014,17 +15581,17 @@ begin
             else
               Start := Start.Left;
           end;
-          Result := TPreOrderInt64Itr.Create(Self, Start, False);
+          Result := TPreOrderInt64Itr.Create(Self, Start, False, isLast);
         end;
       toOrder:
         begin
           if Start <> nil then
             while Start.Right <> nil do
               Start := Start.Right;
-          Result := TInOrderInt64Itr.Create(Self, Start, False);
+          Result := TInOrderInt64Itr.Create(Self, Start, False, isLast);
         end;
       toPostOrder:
-        Result := TPostOrderInt64Itr.Create(Self, Start, False);
+        Result := TPostOrderInt64Itr.Create(Self, Start, False, isLast);
     else
       Result := nil;
     end;
@@ -15619,13 +16186,13 @@ begin
     Start := FRoot;
     case GetTraverseOrder of
       toPreOrder:
-        Result := TPreOrderPtrItr.Create(Self, Start, False);
+        Result := TPreOrderPtrItr.Create(Self, Start, False, isFirst);
       toOrder:
         begin
           if Start <> nil then
             while Start.Left <> nil do
               Start := Start.Left;
-          Result := TInOrderPtrItr.Create(Self, Start, False);
+          Result := TInOrderPtrItr.Create(Self, Start, False, isFirst);
         end;
       toPostOrder:
         begin
@@ -15637,7 +16204,7 @@ begin
             else
               Start := Start.Right;
           end;
-          Result := TPostOrderPtrItr.Create(Self, Start, False);
+          Result := TPostOrderPtrItr.Create(Self, Start, False, isFirst);
         end;
     else
       Result := nil;
@@ -15664,11 +16231,11 @@ begin
   {$ENDIF THREADSAFE}
     case GetTraverseOrder of
       toPreOrder:
-        Result := TPreOrderPtrItr.Create(Self, FRoot, False);
+        Result := TPreOrderPtrItr.Create(Self, FRoot, False, isRoot);
       toOrder:
-        Result := TInOrderPtrItr.Create(Self, FRoot, False);
+        Result := TInOrderPtrItr.Create(Self, FRoot, False, isRoot);
       toPostOrder:
-        Result := TPostOrderPtrItr.Create(Self, FRoot, False);
+        Result := TPostOrderPtrItr.Create(Self, FRoot, False, isRoot);
     else
       Result := nil;
     end;
@@ -15709,17 +16276,17 @@ begin
             else
               Start := Start.Left;
           end;
-          Result := TPreOrderPtrItr.Create(Self, Start, False);
+          Result := TPreOrderPtrItr.Create(Self, Start, False, isLast);
         end;
       toOrder:
         begin
           if Start <> nil then
             while Start.Right <> nil do
               Start := Start.Right;
-          Result := TInOrderPtrItr.Create(Self, Start, False);
+          Result := TInOrderPtrItr.Create(Self, Start, False, isLast);
         end;
       toPostOrder:
-        Result := TPostOrderPtrItr.Create(Self, Start, False);
+        Result := TPostOrderPtrItr.Create(Self, Start, False, isLast);
     else
       Result := nil;
     end;
@@ -16314,13 +16881,13 @@ begin
     Start := FRoot;
     case GetTraverseOrder of
       toPreOrder:
-        Result := TPreOrderItr.Create(Self, Start, False);
+        Result := TPreOrderItr.Create(Self, Start, False, isFirst);
       toOrder:
         begin
           if Start <> nil then
             while Start.Left <> nil do
               Start := Start.Left;
-          Result := TInOrderItr.Create(Self, Start, False);
+          Result := TInOrderItr.Create(Self, Start, False, isFirst);
         end;
       toPostOrder:
         begin
@@ -16332,7 +16899,7 @@ begin
             else
               Start := Start.Right;
           end;
-          Result := TPostOrderItr.Create(Self, Start, False);
+          Result := TPostOrderItr.Create(Self, Start, False, isFirst);
         end;
     else
       Result := nil;
@@ -16359,11 +16926,11 @@ begin
   {$ENDIF THREADSAFE}
     case GetTraverseOrder of
       toPreOrder:
-        Result := TPreOrderItr.Create(Self, FRoot, False);
+        Result := TPreOrderItr.Create(Self, FRoot, False, isRoot);
       toOrder:
-        Result := TInOrderItr.Create(Self, FRoot, False);
+        Result := TInOrderItr.Create(Self, FRoot, False, isRoot);
       toPostOrder:
-        Result := TPostOrderItr.Create(Self, FRoot, False);
+        Result := TPostOrderItr.Create(Self, FRoot, False, isRoot);
     else
       Result := nil;
     end;
@@ -16404,17 +16971,17 @@ begin
             else
               Start := Start.Left;
           end;
-          Result := TPreOrderItr.Create(Self, Start, False);
+          Result := TPreOrderItr.Create(Self, Start, False, isLast);
         end;
       toOrder:
         begin
           if Start <> nil then
             while Start.Right <> nil do
               Start := Start.Right;
-          Result := TInOrderItr.Create(Self, Start, False);
+          Result := TInOrderItr.Create(Self, Start, False, isLast);
         end;
       toPostOrder:
-        Result := TPostOrderItr.Create(Self, Start, False);
+        Result := TPostOrderItr.Create(Self, Start, False, isLast);
     else
       Result := nil;
     end;
@@ -17004,13 +17571,13 @@ begin
     Start := FRoot;
     case GetTraverseOrder of
       toPreOrder:
-        Result := TPreOrderItr<T>.Create(Self, Start, False);
+        Result := TPreOrderItr<T>.Create(Self, Start, False, isFirst);
       toOrder:
         begin
           if Start <> nil then
             while Start.Left <> nil do
               Start := Start.Left;
-          Result := TInOrderItr<T>.Create(Self, Start, False);
+          Result := TInOrderItr<T>.Create(Self, Start, False, isFirst);
         end;
       toPostOrder:
         begin
@@ -17022,7 +17589,7 @@ begin
             else
               Start := Start.Right;
           end;
-          Result := TPostOrderItr<T>.Create(Self, Start, False);
+          Result := TPostOrderItr<T>.Create(Self, Start, False, isFirst);
         end;
     else
       Result := nil;
@@ -17049,11 +17616,11 @@ begin
   {$ENDIF THREADSAFE}
     case GetTraverseOrder of
       toPreOrder:
-        Result := TPreOrderItr<T>.Create(Self, FRoot, False);
+        Result := TPreOrderItr<T>.Create(Self, FRoot, False, isRoot);
       toOrder:
-        Result := TInOrderItr<T>.Create(Self, FRoot, False);
+        Result := TInOrderItr<T>.Create(Self, FRoot, False, isRoot);
       toPostOrder:
-        Result := TPostOrderItr<T>.Create(Self, FRoot, False);
+        Result := TPostOrderItr<T>.Create(Self, FRoot, False, isRoot);
     else
       Result := nil;
     end;
@@ -17094,17 +17661,17 @@ begin
             else
               Start := Start.Left;
           end;
-          Result := TPreOrderItr<T>.Create(Self, Start, False);
+          Result := TPreOrderItr<T>.Create(Self, Start, False, isLast);
         end;
       toOrder:
         begin
           if Start <> nil then
             while Start.Right <> nil do
               Start := Start.Right;
-          Result := TInOrderItr<T>.Create(Self, Start, False);
+          Result := TInOrderItr<T>.Create(Self, Start, False, isLast);
         end;
       toPostOrder:
-        Result := TPostOrderItr<T>.Create(Self, Start, False);
+        Result := TPostOrderItr<T>.Create(Self, Start, False, isLast);
     else
       Result := nil;
     end;

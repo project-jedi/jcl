@@ -56,6 +56,7 @@ type
     IJclIntfCloneable, IJclCloneable)
   private
     FCursor: ITEMCLASSNAME;
+    FStart: TItrStart;
     FOwnList: LISTINTERFACENAME;
     FEqualityComparer: EQUALITYCOMPARERINTERFACENAME;
   public
@@ -73,6 +74,7 @@ type
     function Previous: DATATYPENAME;
     function PreviousIndex: Integer;
     procedure Remove;
+    procedure Reset;
     procedure SETTERNAME(PARAMETERDECLARATION);
     {$IFDEF SUPPORTS_FOR_IN}
     function MoveNext: Boolean;
@@ -81,14 +83,15 @@ type
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
-    constructor Create(const AOwnList: LISTINTERFACENAME; Start: ITEMCLASSNAME; AValid: Boolean);
+    constructor Create(const AOwnList: LISTINTERFACENAME; ACursor: ITEMCLASSNAME; AValid: Boolean; AStart: TItrStart);
   end;
 
-constructor SELFCLASSNAME.Create(const AOwnList: LISTINTERFACENAME; Start: ITEMCLASSNAME; AValid: Boolean);
+constructor SELFCLASSNAME.Create(const AOwnList: LISTINTERFACENAME; ACursor: ITEMCLASSNAME; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(AOwnList, AValid);
-  FCursor := Start;
+  FCursor := ACursor;
   FOwnList := AOwnList;
+  FStart := AStart;
   FEqualityComparer := AOwnList as EQUALITYCOMPARERINTERFACENAME;
 end;
 
@@ -108,12 +111,13 @@ begin
     ADest.FCursor := FCursor;
     ADest.FOwnList := FOwnList;
     ADest.FEqualityComparer := FEqualityComparer;
+    ADest.FStart := FStart;
   end;
 end;
 
 function SELFCLASSNAME.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := SELFCLASSNAME.Create(FOwnList, FCursor, Valid);
+  Result := SELFCLASSNAME.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
 function SELFCLASSNAME.Equals(const AIterator: ITRINTERFACENAME): Boolean;
@@ -322,6 +326,32 @@ begin
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure SELFCLASSNAME.Reset;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Valid := False;
+    case FStart of
+      isFirst:
+        begin
+          while (FCursor <> nil) and (FCursor.Previous <> nil) do
+            FCursor := FCursor.Previous;
+        end;
+      isLast:
+        begin
+          while (FCursor <> nil) and (FCursor.Next <> nil) do
+            FCursor := FCursor.Next;
+        end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -636,13 +666,13 @@ end;
 
 function SELFCLASSNAME.First: ITRINTERFACENAME;
 begin
-  Result := ITRCLASSNAME.Create(Self, FStart, False);
+  Result := ITRCLASSNAME.Create(Self, FStart, False, isFirst);
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
 function SELFCLASSNAME.GetEnumerator: ITRINTERFACENAME;
 begin
-  Result := ITRCLASSNAME.Create(Self, FStart, False);
+  Result := ITRCLASSNAME.Create(Self, FStart, False, isFirst);
 end;
 {$ENDIF SUPPORTS_FOR_IN}
 
@@ -924,7 +954,7 @@ end;
 
 function SELFCLASSNAME.Last: ITRINTERFACENAME;
 begin
-  Result := ITRCLASSNAME.Create(Self, FEnd, False);
+  Result := ITRCLASSNAME.Create(Self, FEnd, False, isLast);
 end;
 
 function SELFCLASSNAME.LastIndexOf(PARAMETERDECLARATION): Integer;

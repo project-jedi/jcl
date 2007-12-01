@@ -166,6 +166,9 @@ implementation
 uses
   SysUtils;
 
+type
+  TItrStart = (isFirst, isLast);
+
 (*$JPPEXPANDMACRO JCLVECTORITR(TIntfItr,IJclIntfIterator,IJclIntfList,const AInterface: IInterface,AInterface,IInterface,GetObject,SetObject)*)
 
 (*$JPPEXPANDMACRO JCLVECTORITR(TAnsiStrItr,IJclAnsiStrIterator,IJclAnsiStrList,const AString: AnsiString,AString,AnsiString,GetString,SetString)*)

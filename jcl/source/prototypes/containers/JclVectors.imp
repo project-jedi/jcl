@@ -52,6 +52,7 @@ type
     IJclIntfCloneable, IJclCloneable)
   private
     FCursor: Integer;
+    FStart: TItrStart;
     FOwnList: LISTINTERFACENAME;
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
@@ -70,20 +71,22 @@ type
     function Previous: DATATYPENAME;
     function PreviousIndex: Integer;
     procedure Remove;
+    procedure Reset;
     procedure SETTERNAME(PARAMETERDECLARATION);
     {$IFDEF SUPPORTS_FOR_IN}
     function MoveNext: Boolean;
     property Current: DATATYPENAME read GETTERNAME;
     {$ENDIF SUPPORTS_FOR_IN}
   public
-    constructor Create(const OwnList: LISTINTERFACENAME; ACursor: Integer; AValid: Boolean);
+    constructor Create(const OwnList: LISTINTERFACENAME; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
   end;
 
-constructor SELFCLASSNAME.Create(const OwnList: LISTINTERFACENAME; ACursor: Integer; AValid: Boolean);
+constructor SELFCLASSNAME.Create(const OwnList: LISTINTERFACENAME; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(OwnList, AValid);
   FOwnList := OwnList;
   FCursor := ACursor;
+  FStart := AStart;
 end;
 
 function SELFCLASSNAME.Add(PARAMETERDECLARATION): Boolean;
@@ -101,12 +104,13 @@ begin
     ADest := SELFCLASSNAME(Dest);
     ADest.FOwnList := FOwnList;
     ADest.FCursor := FCursor;
+    ADest.FStart := FStart;
   end;
 end;
 
 function SELFCLASSNAME.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := SELFCLASSNAME.Create(FOwnList, FCursor, Valid);
+  Result := SELFCLASSNAME.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
 function SELFCLASSNAME.Equals(const AIterator: ITRINTERFACENAME): Boolean;
@@ -203,6 +207,17 @@ begin
   CheckValid;
   Valid := False;
   FOwnList.Delete(FCursor);
+end;
+
+procedure SELFCLASSNAME.Reset;
+begin
+  Valid := False;
+  case FStart of
+    isFirst:
+      FCursor := 0;
+    isLast:
+      FCursor := FOwnList.Size - 1;
+  end;
 end;
 
 procedure SELFCLASSNAME.SETTERNAME(PARAMETERDECLARATION);
@@ -417,13 +432,13 @@ end;
 
 function SELFCLASSNAME.First: ITRINTERFACENAME;
 begin
-  Result := ITRCLASSNAME.Create(Self, 0, False);
+  Result := ITRCLASSNAME.Create(Self, 0, False, isFirst);
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
 function SELFCLASSNAME.GetEnumerator: ITRINTERFACENAME;
 begin
-  Result := ITRCLASSNAME.Create(Self, 0, False);
+  Result := ITRCLASSNAME.Create(Self, 0, False, isFirst);
 end;
 {$ENDIF SUPPORTS_FOR_IN}
 
@@ -539,7 +554,7 @@ end;
 
 function SELFCLASSNAME.Last: ITRINTERFACENAME;
 begin
-  Result := ITRCLASSNAME.Create(Self, FSize - 1, False);
+  Result := ITRCLASSNAME.Create(Self, FSize - 1, False, isLast);
 end;
 
 function SELFCLASSNAME.LastIndexOf(PARAMETERDECLARATION): Integer;

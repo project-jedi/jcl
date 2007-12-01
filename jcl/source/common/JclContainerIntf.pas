@@ -633,6 +633,7 @@ type
     function Previous: IInterface;
     function PreviousIndex: Integer;
     procedure Remove;
+    procedure Reset;
     procedure SetObject(const AInterface: IInterface);
     {$IFDEF SUPPORTS_FOR_IN}
     function MoveNext: Boolean;
@@ -653,6 +654,7 @@ type
     function Previous: AnsiString;
     function PreviousIndex: Integer;
     procedure Remove;
+    procedure Reset;
     procedure SetString(const AString: AnsiString);
     {$IFDEF SUPPORTS_FOR_IN}
     function MoveNext: Boolean;
@@ -673,6 +675,7 @@ type
     function Previous: WideString;
     function PreviousIndex: Integer;
     procedure Remove;
+    procedure Reset;
     procedure SetString(const AString: WideString);
     {$IFDEF SUPPORTS_FOR_IN}
     function MoveNext: Boolean;
@@ -700,6 +703,7 @@ type
     function Previous: Single;
     function PreviousIndex: Integer;
     procedure Remove;
+    procedure Reset;
     procedure SetValue(const AValue: Single);
     {$IFDEF SUPPORTS_FOR_IN}
     function MoveNext: Boolean;
@@ -720,6 +724,7 @@ type
     function Previous: Double;
     function PreviousIndex: Integer;
     procedure Remove;
+    procedure Reset;
     procedure SetValue(const AValue: Double);
     {$IFDEF SUPPORTS_FOR_IN}
     function MoveNext: Boolean;
@@ -740,6 +745,7 @@ type
     function Previous: Extended;
     function PreviousIndex: Integer;
     procedure Remove;
+    procedure Reset;
     procedure SetValue(const AValue: Extended);
     {$IFDEF SUPPORTS_FOR_IN}
     function MoveNext: Boolean;
@@ -770,6 +776,7 @@ type
     function Previous: Integer;
     function PreviousIndex: Integer;
     procedure Remove;
+    procedure Reset;
     procedure SetValue(AValue: Integer);
     {$IFDEF SUPPORTS_FOR_IN}
     function MoveNext: Boolean;
@@ -790,6 +797,7 @@ type
     function Previous: Cardinal;
     function PreviousIndex: Integer;
     procedure Remove;
+    procedure Reset;
     procedure SetValue(AValue: Cardinal);
     {$IFDEF SUPPORTS_FOR_IN}
     function MoveNext: Boolean;
@@ -810,6 +818,7 @@ type
     function Previous: Int64;
     function PreviousIndex: Integer;
     procedure Remove;
+    procedure Reset;
     procedure SetValue(const AValue: Int64);
     {$IFDEF SUPPORTS_FOR_IN}
     function MoveNext: Boolean;
@@ -831,6 +840,7 @@ type
     function Previous: Pointer;
     function PreviousIndex: Integer;
     procedure Remove;
+    procedure Reset;
     procedure SetPtr(APtr: Pointer);
     {$IFDEF SUPPORTS_FOR_IN}
     function MoveNext: Boolean;
@@ -852,6 +862,7 @@ type
     function Previous: TObject;
     function PreviousIndex: Integer;
     procedure Remove;
+    procedure Reset;
     procedure SetObject(AObject: TObject);
     {$IFDEF SUPPORTS_FOR_IN}
     function MoveNext: Boolean;
@@ -873,6 +884,7 @@ type
     function Previous: T;
     function PreviousIndex: Integer;
     procedure Remove;
+    procedure Reset;
     procedure SetItem(const AItem: T);
     {$IFDEF SUPPORTS_FOR_IN}
     function MoveNext: Boolean;

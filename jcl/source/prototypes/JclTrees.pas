@@ -163,6 +163,9 @@ implementation
 uses
   SysUtils;
 
+type
+  TItrStart = (isFirst, isLast, isRoot);
+
 {$JPPEXPANDMACRO JCLTREEITR(TIntfItr,TPreOrderIntfItr,TPostOrderIntfItr,TJclIntfTreeNode,TJclIntfTree,IJclIntfIterator,IJclIntfTreeIterator,IJclIntfEqualityComparer,IInterface,AInterface,const AInterface: IInterface,nil,GetObject,SetObject,FreeObject)}
 {$JPPEXPANDMACRO JCLTREEITR(TAnsiStrItr,TPreOrderAnsiStrItr,TPostOrderAnsiStrItr,TJclAnsiStrTreeNode,TJclAnsiStrTree,IJclAnsiStrIterator,IJclAnsiStrTreeIterator,IJclAnsiStrEqualityComparer,AnsiString,AString,const AString: AnsiString,'',GetString,SetString,FreeString)}
 {$JPPEXPANDMACRO JCLTREEITR(TWideStrItr,TPreOrderWideStrItr,TPostOrderWideStrItr,TJclWideStrTreeNode,TJclWideStrTree,IJclWideStrIterator,IJclWideStrTreeIterator,IJclWideStrEqualityComparer,WideString,AString,const AString: WideString,'',GetString,SetString,FreeString)}

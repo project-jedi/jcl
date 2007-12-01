@@ -67,6 +67,7 @@ type
   BASEITRCLASSNAME = class(TJclAbstractIterator, STDITRINTERFACENAME, TREEITRINTERFACENAME)
   protected
     FCursor: NODETYPENAME;
+    FStart: TItrStart;
     FOwnTree: TREECLASSNAME;
     FEqualityComparer: EQUALITYCOMPARERINTERFACENAME; // keep a reference  of tree interface
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
@@ -86,6 +87,7 @@ type
     function Previous: PARAMETERTYPE;
     function PreviousIndex: Integer;
     procedure Remove;
+    procedure Reset;
     procedure SETTERNAME(PARAMETERDECLARATION);
     {$IFDEF SUPPORTS_FOR_IN}
     function MoveNext: Boolean;
@@ -104,14 +106,15 @@ type
     function Parent: PARAMETERTYPE;
     procedure SetChild(Index: Integer; PARAMETERDECLARATION);
   public
-    constructor Create(OwnTree: TREECLASSNAME; Start: NODETYPENAME; AValid: Boolean);
+    constructor Create(OwnTree: TREECLASSNAME; ACursor: NODETYPENAME; AValid: Boolean; AStart: TItrStart);
   end;
 
-constructor BASEITRCLASSNAME.Create(OwnTree: TREECLASSNAME; Start: NODETYPENAME; AValid: Boolean);
+constructor BASEITRCLASSNAME.Create(OwnTree: TREECLASSNAME; ACursor: NODETYPENAME; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(OwnTree, AValid);
-  FCursor := Start;
+  FCursor := ACursor;
   FOwnTree := OwnTree;
+  FStart := AStart;
   FEqualityComparer := OwnTree as EQUALITYCOMPARERINTERFACENAME;
 end;
 
@@ -195,6 +198,7 @@ begin
     ADest.FCursor := FCursor;
     ADest.FOwnTree := FOwnTree;
     ADest.FEqualityComparer := FEqualityComparer;
+    ADest.FStart := FStart;
   end;
 end;
 
@@ -603,6 +607,49 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+procedure BASEITRCLASSNAME.Reset;
+var
+  NewCursor: NODETYPENAME;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Valid := False;
+    case FStart of
+      isFirst:
+        begin
+          NewCursor := FCursor;
+          while NewCursor <> nil do
+          begin
+            NewCursor := GetPreviousCursor;
+            if NewCursor <> nil then
+              FCursor := NewCursor;
+          end;
+        end;
+      isLast:
+        begin
+          NewCursor := FCursor;
+          while NewCursor <> nil do
+          begin
+            NewCursor := GetNextCursor;
+            if NewCursor <> nil then
+              FCursor := NewCursor;
+          end;
+        end;
+      isRoot:
+        begin
+          while (FCursor <> nil) and (FCursor.Parent <> nil) do
+            FCursor := FCursor.Parent;
+        end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 procedure BASEITRCLASSNAME.SetChild(Index: Integer; PARAMETERDECLARATION);
 begin
   {$IFDEF THREADSAFE}
@@ -655,7 +702,7 @@ type
 
 function PREORDERITRCLASSNAME.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := PREORDERITRCLASSNAME.Create(FOwnTree, FCursor, Valid);
+  Result := PREORDERITRCLASSNAME.Create(FOwnTree, FCursor, Valid, FStart);
 end;
 
 function PREORDERITRCLASSNAME.GetNextCursor: NODETYPENAME;
@@ -734,7 +781,7 @@ type
 
 function POSTORDERITRCLASSNAME.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := POSTORDERITRCLASSNAME.Create(FOwnTree, FCursor, Valid);
+  Result := POSTORDERITRCLASSNAME.Create(FOwnTree, FCursor, Valid, FStart);
 end;
 
 function POSTORDERITRCLASSNAME.GetNextCursor: NODETYPENAME;
@@ -1080,13 +1127,13 @@ begin
     Start := FRoot;
     case GetTraverseOrder of
       toPreOrder:
-        Result := PREORDERITRCLASSNAME.Create(Self, Start, False);
+        Result := PREORDERITRCLASSNAME.Create(Self, Start, False, isFirst);
       toPostOrder:
         begin
           if Start <> nil then
             while (Start.ChildrenCount > 0) do
               Start := NODETYPENAME(Start.Children[0]);
-          Result := POSTORDERITRCLASSNAME.Create(Self, Start, False);
+          Result := POSTORDERITRCLASSNAME.Create(Self, Start, False, isFirst);
         end;
     else
       Result := nil;
@@ -1113,9 +1160,9 @@ begin
   {$ENDIF THREADSAFE}
     case GetTraverseOrder of
       toPreOrder:
-        Result := PREORDERITRCLASSNAME.Create(Self, FRoot, False);
+        Result := PREORDERITRCLASSNAME.Create(Self, FRoot, False, isRoot);
       toPostOrder:
-        Result := POSTORDERITRCLASSNAME.Create(Self, FRoot, False);
+        Result := POSTORDERITRCLASSNAME.Create(Self, FRoot, False, isRoot);
     else
       Result := nil;
     end;
@@ -1151,10 +1198,10 @@ begin
           if Start <> nil then
             while Start.ChildrenCount > 0 do
               Start := NODETYPENAME(Start.Children[Start.ChildrenCount - 1]);
-          Result := PREORDERITRCLASSNAME.Create(Self, Start, False);
+          Result := PREORDERITRCLASSNAME.Create(Self, Start, False, isLast);
         end;
       toPostOrder:
-        Result := POSTORDERITRCLASSNAME.Create(Self, Start, False);
+        Result := POSTORDERITRCLASSNAME.Create(Self, Start, False, isLast);
     else
       Result := nil;
     end;
