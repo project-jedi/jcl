@@ -53,6 +53,11 @@
 <TITLE String Transformation Routines>
 <TOPICORDER 1100>
 --------------------------------------------------------------------------------
+@@StringManipulation.Tabulation
+<GROUP StringManipulation>
+<TITLE Tabulation>
+<TOPICORDER 1150>
+--------------------------------------------------------------------------------
 @@StringManipulation.TStringsManipulation
 <GROUP StringManipulation>
 <TITLE TStrings Manipulation>
@@ -2770,3 +2775,1018 @@ Platforms:
   Windows 95/98: Requires Windows 95 or later.
 Donator:
   Jean-Fabien Connault
+--------------------------------------------------------------------------------
+@@StrExpandTabs@string
+<GROUP StringManipulation.Tabulation>
+Summary:
+  Expands tabs to spaces in the provided string.
+Description:
+  StrExpandTabs expands tab characters in the provided string into sequences of
+  spaces while preserving the formatting. StrExpandTabs will assume a tab width
+  of 2.
+
+  Multi-line strings, ie. strings containing one or more newline sequences (eg.
+  CrLf, but also single Cr of Lf characters are treated as newlines), are
+  handled properly.
+
+  The reverse operation (collapse sequences of spaces into tab characters) can
+  be achieved by the <LINK StrOptimizeTabs@string, StrOptimizeTabs> method.
+Parameters:
+  S - The string to expand tabs in.
+Result:
+  If S contains tabs, they will have been converted to 1 or more space characters,
+  depending on the column the tab character is in. Otherwise, the string is
+  unmodified.
+Example:
+  <code>x := StrExpandTabs('Abc'#9'de'#9'fg');</code>
+  The above call will result in <i>x</i> containing the string (· represents a
+  space character): <c>Abc·····de······fg</c>. In this case the first tab
+  character (ASCII code 9) was  transformed into a single space and the second
+  tab character into two spaces.
+See also:
+  TJclTabSet
+  StrExpandTabs@string@Integer
+  StrExpandTabs@string@TJclTabSet
+Donator:
+  Marcel Bestebroer
+--------------------------------------------------------------------------------
+@@StrExpandTabs@string@Integer
+<GROUP StringManipulation.Tabulation>
+Summary:
+  Expands tabs to spaces in the provided string.
+Description:
+  StrExpandTabs expands tab characters in the provided string into sequences of
+  spaces while preserving the formatting. StrExpandTabs will use the provided
+  tab width.
+
+  Multi-line strings, ie. strings containing one or more newline sequences (eg.
+  CrLf, but also single Cr of Lf characters are treated as newlines), are
+  handled properly.
+
+  The reverse operation (collapse sequences of spaces into tab characters) can
+  be achieved by the <LINK StrOptimizeTabs@string@Integer, StrOptimizeTabs>
+  method.
+Parameters:
+  S - The string to expand tabs in.
+  TabWidth - The width of each tab.
+Result:
+  If S contains tabs, they will have been converted to 1 or more space characters,
+  depending on the column the tab character is in. Otherwise, the string is
+  unmodified.
+Example:
+  <code>x := StrExpandTabs('Abc'#9'de'#9'fg', 8);</code>
+  The above call will result in <i>x</i> containing the string (· represents a
+  space character): <c>Abc·····de······fg</c>. In this case the first tab
+  character (ASCII code 9) was transformed into five spaces and the second tab
+  character into six spaces.
+See also:
+  TJclTabSet
+  StrExpandTabs@string
+  StrExpandTabs@string@TJclTabSet
+Donator:
+  Marcel Bestebroer
+--------------------------------------------------------------------------------
+@@StrExpandTabs@string@TJclTabSet
+<GROUP StringManipulation.Tabulation>
+Summary:
+  Expands tabs to spaces in the provided string.
+Description:
+  StrExpandTabs expands tab characters in the provided string into sequences of
+  spaces while preserving the formatting. StrExpandTabs will use the provided
+  tab set.
+
+  Multi-line strings, ie. strings containing one or more newline sequences (eg.
+  CrLf, but also single Cr of Lf characters are treated as newlines), are
+  handled properly.
+
+  The reverse operation (collapse sequences of spaces into tab characters) can
+  be achieved by the <LINK StrOptimizeTabs@string@TJclTabSet, StrOptimizeTabs>
+  method.
+Parameters:
+  S - The string to expand tabs in.
+  TabSet - The tab set to use.
+Result:
+  If S contains tabs, they will have been converted to 1 or more space characters,
+  depending on the column the tab character is in. Otherwise, the string is
+  unmodified.
+Example:
+<code>
+  <i>// initiate a tab set with (zero-based) stops at 15, 20 and 30, and a tab width of 2 for
+  // tabs beyond the column 30</i>
+  tabs := TJclTabSet.Create([15, 20, 30], True, 2);
+  <b>try</b>
+    x := StrExpandTabs('MyLabel:'#9'LD'#9'A,(HL)'#9'; Initialize A register', tabs);
+  <b>finally</b>
+    tabs.Free;
+  <b>end</b>;
+</code>
+  The above snippet will result in <i>x</i> containing the string (· represents a
+  space character): <c>MyLabel:·······LD···A,(HL)····;·Initialize·A·register</c>.
+  In this case the first tab character (ASCII code 9) was transformed into seven
+  spaces, the second tab character into three spaces and the third tab character
+  into four spaces.
+See also:
+  TJclTabSet
+  StrExpandTabs@string
+  StrExpandTabs@string@Integer
+Donator:
+  Marcel Bestebroer
+--------------------------------------------------------------------------------
+@@StrOptimizeTabs@string
+<GROUP StringManipulation.Tabulation>
+Summary:
+  Collapses a string to the optimal tab and space character sequences.
+Description:
+  StrOptimizeTabs reduces tab and space character sequences in the provided
+  string into an optimized (shortest) sequences of tab and space characters
+  while preserving the formatting. A tab width of 2 is assumed.
+
+  Multi-line strings, ie. strings containing one or more newline sequences (eg.
+  CrLf, but also single Cr of Lf characters are treated as newlines), are
+  handled properly.
+
+  The reverse operation (expand sequences of tab characters into spaces) can
+  be achieved by the <LINK StrExpandTabs@string, StrExpandTabs> method.
+Parameters:
+  S - The string to collapse tabs and spaces in.
+Result:
+  Any tab and/or space character sequences in S will have been reduced to their
+  shortest form; no other item in the string is modified.
+See also:
+  TJclTabSet
+  StrOptimizeTabs@string@Integer
+  StrOptimizeTabs@string@TJclTabSet
+Donator:
+  Marcel Bestebroer
+--------------------------------------------------------------------------------
+@@StrOptimizeTabs@string@Integer
+<GROUP StringManipulation.Tabulation>
+Summary:
+  Collapses a string to the optimal tab and space character sequences.
+Description:
+  StrOptimizeTabs reduces tab and space character sequences in the provided
+  string into an optimized (shortest) sequences of tab and space characters
+  while preserving the formatting. The provided tab width is used.
+
+  Multi-line strings, ie. strings containing one or more newline sequences (eg.
+  CrLf, but also single Cr of Lf characters are treated as newlines), are
+  handled properly.
+
+  The reverse operation (expand sequences of tab characters into spaces) can
+  be achieved by the <LINK StrExpandTabs@string@Integer, StrExpandTabs> method.
+Parameters:
+  S - The string to collapse tabs and spaces in.
+  TabWidth - The tab width to use
+Result:
+  Any tab and/or space character sequences in S will have been reduced to their
+  shortest form; no other item in the string is modified.
+See also:
+  TJclTabSet
+  StrOptimizeTabs@string
+  StrOptimizeTabs@string@TJclTabSet
+Donator:
+  Marcel Bestebroer
+--------------------------------------------------------------------------------
+@@StrOptimizeTabs@string@TJclTabSet
+<GROUP StringManipulation.Tabulation>
+Summary:
+  Collapses a string to the optimal tab and space character sequences.
+Description:
+  StrOptimizeTabs reduces tab and space character sequences in the provided
+  string into an optimized (shortest) sequences of tab and space characters
+  while preserving the formatting. The provided tab width is used.
+
+  Multi-line strings, ie. strings containing one or more newline sequences (eg.
+  CrLf, but also single Cr of Lf characters are treated as newlines), are
+  handled properly.
+
+  The reverse operation (expand sequences of tab characters into spaces) can
+  be achieved by the <LINK StrExpandTabs@string@TJclTabSet, StrExpandTabs>
+  method.
+Parameters:
+  S - The string to collapse tabs and spaces in.
+  TabSet - The tab set to use
+Result:
+  Any tab and/or space character sequences in S will have been reduced to their
+  shortest form; no other item in the string is modified.
+See also:
+  TJclTabSet
+  StrOptimizeTabs@string
+  StrOptimizeTabs@string@Integer
+Donator:
+  Marcel Bestebroer
+--------------------------------------------------------------------------------
+@@TabSetFormattingOptions
+<GROUP StringManipulation.Tabulation>
+<TITLE TJclTabSet string formatting options>
+<ALIASOF TabSetFormatting_SurroundStopsWithBrackets,TabSetFormatting_EmptyBracketsIfNoStops>
+<ALIASOF TabSetFormatting_NoTabStops,TabSetFormatting_NoTabWidth,TabSetFormatting_AlwaysUseBrackets>
+<ALIASOF TabSetFormatting_Default,TabSetFormatting_StopsWithoutBracketsAndTabWidth>
+<ALIASOF TabSetFormatting_StopsOnly,TabSetFormatting_TabWidthOnly>
+<ALIASOF TabSetFormatting_Full,TabSetFormatting_AutoTabWidth>
+Summary:
+  Available formatting options for the
+  <LINK TJclTabSet.ToString@Integer, TJclTabSet.ToString> method.
+Description
+  The <LINK TJclTabSet.ToString@Integer, TJclTabSet.ToString@Integer> method
+  allows for a number of formatting options to be specified. Options can be
+  or'd with each other to specify exact formatting. Below is the list of
+  available formatting options:
+
+  <TABLE>
+    Constant                                          Meaning
+    --------                                          -------
+    TabSetFormatting_SurroundStopsWithBrackets        The fixed tabulation positions are surrounded with brackets
+    TabSetFormatting_EmptyBracketsIfNoStops           If no fixed tabulation positions are specified, but the
+                                                        TabSetFormatting_SurroundStopsWithBrackets option is specified,
+                                                        output the opening and closing brackets anyway.
+    TabSetFormatting_NoTabStops                       Do not output the fixed tabulation positions.
+    TabSetFormatting_NoTabWidth                       Do not output the additional tab width.
+    TabSetFormatting_AutoTabWidth                     Include tab width even if its determined by the tabulation
+                                                        positions.
+     
+    TabSetFormatting_AlwaysUseBrackets                Combines the TabSetFormatting_SurroundStopsWithBrackets and
+                                                        TabSetFormatting_EmptyBracketsIfNoStops options.
+    TabSetFormatting_Default                          Specifies none of the formatting options.
+    TabSetFormatting_Full                             Combines the TabSetFormatting_SurroundStopsWithBrackets,
+                                                        TabSetFormatting_EmptyBracketsIfNoStops and
+                                                        TabSetFormatting_AutoTabWidth options.
+     
+    TabSetFormatting_StopsWithoutBracketsAndTabWidth  An alias for the TabSetFormatting_Default option.
+    TabSetFormatting_StopsOnly                        An alias for the TabSetFormatting_NoTabWidth option.
+    TabSetFormatting_TabWidthOnly                     An alias for the TabSetFormatting_NoTabStops option.
+  </TABLE>
+--------------------------------------------------------------------------------
+@@TJclTabSet
+<GROUP StringManipulation.Tabulation>
+Summary:
+  Represents a tab set that can be used to expand tabs to spaces, or vice versa.
+Description:
+  The TJclTabSet class represents tabulation information. Each instance can
+  specify:
+  * Whether the column positions are <LINK TJclTabSet.ZeroBased, zero-based>
+  * Individual <LINK TJclTabSet.TabStops, tabulation positions>
+  * <LINK TJclTabSet.TabWidth, Tabulation width> for columns beyond those
+    specified by the individual tabulation positions.
+
+  The class then provides functionality to:
+  * Determine the <LINK TJclTabSet.TabFrom, next tabulation position> from a
+    given starting column
+  * Determine the
+    <LINK TJclTabSet.OptimalFillInfo, optimal tab and space characters needed>
+    to get from one column to another
+  * <LINK TJclTabSet.Expand@string, Expand> tab characters into a sequence of
+    spaces, optionally
+    <LINK TJclTabSet.Expand@string@Integer, starting at an arbitrary column>
+  * <LINK TJclTabSet.Optimize@string, Collapse> a sequence of space and tab
+    characters into an optimized sequence of tab and space characters,
+    optionally
+    <LINK TJclTabSet.Optimize@string@Integer, starting at an arbitrary column>
+
+  The class contains logic to allow automatic tab width determination by setting
+  the <LINK TJclTabSet.TabWidth, tabulation width> to zero or a negative value;
+  in this case the tab width is determined by the provided
+  <LINK TJclTabSet.TabStops, tabulation positions> in the following manner:
+
+  <TABLE>
+  Situation                                 ActualTabWidth
+  ----------                                --------------------------
+  No tabulation positions defined           2
+  One tabulation position defined           the defined tabulation position
+  Two or more tabulation positions defined  the distance between the last
+                                              two tabulation positions
+  </TABLE>
+
+* nil - safety *
+  The public methods and properties that do not modify the tab set are
+  <i><b>nil</b>-safe</i>, meaning they will work when used on a <b>nil</b>
+  reference. A <b>nil</b> tab set will behave as if explicitly set to:
+
+  * assume <LINK TJclTabSet.ZeroBased, zero-based> column positions
+  * no defined <LINK TJclTabSet.TabStops, tabulation positions>
+  * a <LINK TJclTabSet.TabWidth, tabulation width> of 2
+
+  Note that reading any of the public properties on a <b>nil</b> instance will
+  work properly.
+Example:
+<code>
+  <i>// initiate a tab set with (zero-based) stops at 15, 20 and 30, and a tab width of 2 for
+  // tabs beyond the column 30</i>
+  tabs := TJclTabSet.Create([15, 20, 30], True, 2);
+  <b>try</b>
+    x := tabs.Expand('MyLabel:'#9'LD'#9'A,(HL)'#9'; Initialize A register');
+  <b>finally</b>
+    tabs.Free;
+  <b>end;</b>
+</code>
+  The above snippet will result in <i>x</i> containing the string (· represents a
+  space character): <c>MyLabel:·······LD···A,(HL)····;·Initialize·A·register</c>.
+  In this case the first tab character (ASCII code 9) was transformed into seven
+  spaces, the second tab character into three spaces and the third tab character
+  into four spaces.
+Donator:
+  Marcel Bestebroer
+--------------------------------------------------------------------------------
+@@TJclTabSet.ActualTabWidth
+Summary:
+  Indicates the actual tabulation width being used.
+Description:
+  ActualTabWidth indicates the actual tabulation width being used for columns
+  beyond those specified by the <LINK TJclTabSet.TabStops, TabStops> property.
+
+  If the <LINK TJclTabSet.TabWidth, TabWidth> property is set to a positive,
+  non-zero value, ActualTabWidth will hold the same value as TabWidth; otherwise
+  it will hold a value calculated according to the following table:
+
+  <TABLE>
+  Situation                                 ActualWidthActualTabWidth
+  ----------                                --------------------------
+  No tabulation positions defined           2
+  One tabulation position defined           the defined tabulation position
+  Two or more tabulation positions defined  the distance between the last
+                                              two tabulation positions
+  </TABLE>
+Notes:
+  This property is <i><b>nil</b>-safe</i>; when read from on a
+  <b>nil</b>-reference, this property will return 2.
+See also:
+  TJclTabSet.Count
+  TJclTabSet.TabStops
+  TJclTabSet.TabWidth
+Donator:
+  Marcel Bestebroer
+--------------------------------------------------------------------------------
+@@TJclTabSet.Add@Integer
+Summary:
+  Adds a fixed tabulation position.
+Description:
+  Add will add a fixed tabulation position to the tab set. The provided
+  tabulation position is inserted at the correct index in the TabStops array.
+
+  Duplicate tabulation positions are not allowed and will result in an
+  EJclStringError.
+Parameters:
+  Column - The column to add to the tab set.
+Result:
+  The index at which the tabulation position was inserted into the TabStops
+  array
+Exceptions:
+  <TABLE>
+  NullReferenceException  Add was called on a <b>nil</b>-reference.
+  EJclStringError         The specified Column already existed in the TabStops
+                            array.
+  </TABLE>
+See also:
+  TJclTabSet
+  TJclTabSet.Delete
+  TJclTabSet.TabStops
+Donator:
+  Marcel Bestebroer
+--------------------------------------------------------------------------------
+@@TJclTabSet.Count
+Summary:
+  Indicates the number of tabulation positions specified.
+Description:
+  Count indicates the number of <LINK TJclTabSet.TabStops, tabulation positions>
+  that are defined on this instance.
+Notes:
+  This property is <i><b>nil</b>-safe</i>. When read from on a
+  <b>nil</b>-reference, this property will return 0.
+See also:
+  TJclTabSet.TabStops
+Donator:
+  Marcel Bestebroer
+--------------------------------------------------------------------------------
+@@TJclTabSet.Create
+Summary:
+  Initializes a new, empty tab set instance.
+Description:
+  The constructor initializes a new instance of the TJclTabSet class. The
+  parameterless overload simply initializes it to a zero-based tab set, with
+  automatic tab width calculation.
+Donator:
+  Marcel Bestebroer
+--------------------------------------------------------------------------------
+@@TJclTabSet.Create@Integer
+Summary:
+  Initializes a new tab set instance with the specified tab width.
+Description:
+  The constructor initializes a new instance of the TJclTabSet class, setting the
+  TabWidth property to the specified tab width.
+Parameters:
+  \TabWidth - The value to initialize the TabWidth property to.
+Donator:
+  Marcel Bestebroer
+--------------------------------------------------------------------------------
+@@TJclTabSet.Create@array of Integer@Boolean
+Summary:
+  Initializes a new tab set instance with the specified fixed tabulation
+  positions and automatic tab width calculation.
+Description:
+  The constructor initializes a new instance of the TJclTabSet class, adding the
+  specified tab stops to the TabStops array.
+Parameters:
+  \Tabstops - The fixed tabulation position(s) to initialize the tab set to.
+  \ZeroBased - The value to initialize the ZeroBased property to.
+Donator:
+  Marcel Bestebroer
+--------------------------------------------------------------------------------
+@@TJclTabSet.Create@array of Integer@Boolean@Integer
+Summary:
+  Initializes a new tab set instance with the specified fixed tabulation
+  positions and tab width.
+Description:
+  The constructor initializes a new instance of the TJclTabSet class, adding the
+  specified tab stops to the TabStops array and setting the TabWidth property to
+  the specified tab width.
+Parameters:
+  \Tabstops - The fixed tabulation position(s) to initialize the tab set to.
+  \ZeroBased - The value to initialize the ZeroBased property to.
+  \TabWidth - The value to initialize the TabWidth property to.
+Donator:
+  Marcel Bestebroer
+--------------------------------------------------------------------------------
+@@TJclTabSet.Delete@Integer
+Summary:
+  Removes a fixed tabulation position.
+Description:
+  Delete will remove the specified column from the list of fixed tabulation
+  positions.
+Parameters:
+  Column - The column to remove from the tab set.
+Result:
+  The index from which the tabulation position was removed from the TabStops
+  array<p>
+   <i>- or -</i><p>
+  A negative value if the tabulation position was not found
+Exceptions:
+  <TABLE>
+  NullReferenceException  Delete was called on a <b>nil</b>-reference.
+  </TABLE>
+See also:
+  TJclTabSet
+  TJclTabSet.Add
+  TJclTabSet.TabStops
+Donator:
+  Marcel Bestebroer
+--------------------------------------------------------------------------------
+@@TJclTabSet.Expand@string
+Summary:
+  Expands tabs to spaces in the provided string.
+Description:
+  Expand expands tab characters in the provided string into sequences of
+  spaces while preserving the formatting. Expand will assume the string starts
+  at column 0 (<LINK TJclTabSet.ZeroBased, zero-based> set to <c>True</c>) or 1
+  (<LINK TJclTabSet.ZeroBased, zero-based> set to <c>False</c>).
+
+  Multi-line strings, ie. strings containing one or more newline sequences (eg.
+  CrLf, but also single Cr of Lf characters are treated as newlines), are
+  handled properly, with each line starting at column 0
+  (<LINK TJclTabSet.ZeroBased, zero-based> set to <c>True</c>) or 1
+  (<LINK TJclTabSet.ZeroBased, zero-based> set to <c>False</c>).
+
+  The reverse operation (collapse sequences of spaces into tab characters) can
+  be achieved by the <LINK TJclTabSet.Optimize@string, Optimize> method.
+Parameters:
+  S - The string to expand tabs in.
+Result:
+  If S contains tabs, they will have been converted to 1 or more space characters,
+  depending on the column the tab character is in. Otherwise, the string is
+  unmodified.
+Notes:
+  This method is <i><b>nil</b>-safe</i>; when invoked on a
+  <b>nil</b>-reference, this method will assume a tab width of two on a
+  zero-based tab set.
+Example:
+  See the <LINK TJclTabSet, TJclTabSet> help for an example.
+See also:
+  TJclTabSet
+  TJclTabSet.Expand@string@Integer
+Donator:
+  Marcel Bestebroer
+--------------------------------------------------------------------------------
+@@TJclTabSet.Expand@string@Integer
+Summary:
+  Expands tabs to spaces in the provided string.
+Description:
+  Expand expands tab characters in the provided string into sequences of
+  spaces while preserving the formatting. Expand will assume the string starts
+  at the provided column.
+
+  Multi-line strings, ie. strings containing one or more newline sequences (eg.
+  CrLf, but also single Cr of Lf characters are treated as newlines), are
+  handled properly, with all but the first line starting at column 0
+  (<LINK TJclTabSet.ZeroBased, zero-based> set to <c>True</c>) or 1
+  (<LINK TJclTabSet.ZeroBased, zero-based> set to <c>False</c>).
+
+  The reverse operation (collapse sequences of spaces into tab characters) can
+  be achieved by the <LINK TJclTabSet.Optimize@string@Integer, Optimize> method.
+Parameters:
+  S - The string to expand tabs in.
+  Column - The starting column to use when expanding the tabs.
+Result:
+  If S contains tab character, they will have been converted to 1 or more space
+  characters, depending on the column the tab character is in. Otherwise, the
+  string is unmodified.
+Notes:
+  This method is <i><b>nil</b>-safe</i>; when invoked on a
+  <b>nil</b>-reference, this method will assume a tab width of two on a
+  zero-based tab set.
+Example:
+  See the <LINK TJclTabSet, TJclTabSet> help for an example.
+See also:
+  TJclTabSet
+  TJclTabSet.Expand@string
+  TJclTabSet.TabFrom
+Donator:
+  Marcel Bestebroer
+--------------------------------------------------------------------------------
+@@TJclTabSet.FindStop
+Summary:
+  Locates a tabulation position in the TabStops array.
+Description:
+  FindStop returns the index in the TabStops array of the specified column. If
+  the specified column does not exist the 2-complement of the index at which
+  it should've been found will be returned, resulting in a negative value. You
+  could use the <b>not</b>-operator to determine the actual index.
+Parameters:
+  Column - The tabulation column to locate.
+Returns:
+  The index of the column specified by the <i>Column</i> parameter in the
+  TabStops array<p>
+   <i>- or -</i><p>
+  <b>A negative value</b> if the specified column could not be found. Use the
+  <b>not</b>-operator to retrieve the index at which it should've been found.
+Exceptions:
+  <TABLE>
+    ArgumentOutOfRangeException   The <i>Column</i> parameter is less than
+                                    0 (<LINK TJclTabSet.ZeroBased, zero-based>)
+                                    or 1 (not zero-based).
+  </TABLE>
+Donator:
+  Marcel Bestebroer
+--------------------------------------------------------------------------------
+@@TJclTabSet.FromString
+Summary
+  Converts a string into a tab set.
+Description
+  The FromString class method returns a tab set setup according to the provided
+  string represention.
+
+  The string should be formatted according to the same rules as outlined in the
+  <LINK TJclTabSet.ToString, ToString> method documentation:
+  <TABLE>
+    '0'                             Optional: flag to set the tab set to
+                                      zero-based mode.
+    '['                             Optional: opening bracket for the fixed
+                                      tabulation positions. When present, the
+                                      closing bracket must be present or an
+                                      exception will be raised.
+    comma-separated list of         Optional: The individual fixed tabulation
+      tabulation positions            positions of this tab set. <b>Note:</b>
+                                      if the zero-based flag is present but no
+                                      opening bracket, an exception will be
+                                      raised.
+    ']'                             Closing bracket for the fixed tabulation
+                                      positions. Required if an opening bracket
+                                      is present earlier.
+    '+'                             Optional: indicates the following number as
+                                      the tab width property.
+    tab width                       Optional: the tab width property. Required if
+                                      the plus character is present.
+  </TABLE>
+Parameters
+  S -  A string describing the tab set. It should be formatted according to the
+        rules outlined in the <LINK TJclTabSet.ToString, ToString>
+        documentation. 
+Returns:
+  A TJclTabSet representated by the string parameter.
+--------------------------------------------------------------------------------
+@@TJclTabSet.InternalTabStops
+Summary:
+  Provides <b>nil</b>-safe access to the tab stops array.
+Description:
+  InternalTabStops provides <b>nil</b>-safe access to the actual tab stops
+  array.
+Returns:
+  A TDynIntegerArray holding each individual tab position<p>
+   <i>- or -</i><p>
+  <b>nil</b> if the method is called on a <b>nil</b>-reference
+Donator:
+  Marcel Bestebroer
+--------------------------------------------------------------------------------
+@@TJclTabSet.InternalTabWidth
+Summary:
+  Provides <b>nil</b>-safe access to the specified tab width.
+Description:
+  InternalTabWidth provides <b>nil</b>-safe access to the specified tab width
+  (not to be confused with the actual tab width).
+Returns:
+  The value of the TabWidth property<p>
+   <i>- or -</i><p>
+  <b>2</b> if the method is called on a <b>nil</b>-reference
+Donator:
+  Marcel Bestebroer
+--------------------------------------------------------------------------------
+@@TJclTabSet.OptimalFillInfo
+Summary:
+  Determines the optimal number of tab and space characters needed to fill the
+  room between two columns.
+Description:
+  OptimalFillInfo will determine the ideal amount of tab characters and/or
+  space characters required to get from the first provided column to the second.
+Parameters:
+  \StartColumn -  The starting column to use.
+  TargetColumn -  The required column to end at.
+  TabsNeeded -    Will hold the amount of tab characters needed to get to the
+                  destination column.
+  SpacesNeeded -  Will hold the amount of space characters needed to get to the
+                  destination column.
+Exceptions:
+  <TABLE>
+    ArgumentOutOfRangeException   The <i>\StartColumn</i> parameter is less than
+                                    0 (<LINK TJclTabSet.ZeroBased, zero-based>)
+                                    or 1 (not zero-based).<p>
+                                    <i> - or -</i><p>                                    
+                                    The <i>TargetColumn</i> parameter is less
+                                    than the <i>\StartColumn</i> parameter.
+  </TABLE>
+Example:
+  <b>Note:</b>This example assumes a tab set instance set up as in the example
+  given in the <LINK TJclTabSet, TJclTabSet> help.
+
+<CODE>
+  tabs.OptimalFillInfo(5, 21, TabsNeeded, SpacesNeeded);
+  <i>// TabsNeeded will be 2 (taking us only to column 20), SpacesNeeded will be 1.</i>
+</CODE>
+See also:
+  TJclTabSet
+  TJclTabSet.Optimize@string
+Donator:
+  Marcel Bestebroer
+--------------------------------------------------------------------------------
+@@TJclTabSet.Optimize@string
+Summary:
+  Collapses a string to the optimal tab and space character sequences.
+Description:
+  Optimize reduces tab and space character sequences in the provided string into
+  an optimized (shortest) sequences of tab and space characters while preserving
+  the formatting. Optimize will assume the string starts at column 0
+  (<LINK TJclTabSet.ZeroBased, zero-based> set to <c>True</c>) or 1
+  (<LINK TJclTabSet.ZeroBased, zero-based> set to <c>False</c>).
+
+  Multi-line strings, ie. strings containing one or more newline sequences (eg.
+  CrLf, but also single Cr of Lf characters are treated as newlines), are
+  handled properly, with each line starting at column 0
+  (<LINK TJclTabSet.ZeroBased, zero-based> set to <c>True</c>) or 1
+  (<LINK TJclTabSet.ZeroBased, zero-based> set to <c>False</c>).
+
+  The reverse operation (expand sequences of tab characters into spaces) can
+  be achieved by the <LINK TJclTabSet.Expand@string, Expand> method.
+Parameters:
+  S - The string to collapse tabs and spaces in.
+Result:
+  Any tab and/or space character sequences in S will have been reduced to their
+  shortest form; no other item in the string is modified.
+Notes:
+  This method is <i><b>nil</b>-safe</i>; when invoked on a
+  <b>nil</b>-reference, this method will assume a tab width of two on a
+  zero-based tab set.
+See also:
+  TJclTabSet
+  TJclTabSet.OptimalFillInfo
+  TJclTabSet.Optimize@string@Integer
+Donator:
+  Marcel Bestebroer
+--------------------------------------------------------------------------------
+@@TJclTabSet.Optimize@string@Integer
+Summary:
+  Expands tabs to spaces in the provided string.
+Description:
+  Optimize reduces tab and space character sequences in the provided string into
+  an optimized (shortest) sequences of tab and space characters while preserving
+  the formatting. Optimize will assume the string starts at the provided column.
+
+  Multi-line strings, ie. strings containing one or more newline sequences (eg.
+  CrLf, but also single Cr of Lf characters are treated as newlines), are
+  handled properly, with all but the first line starting at column 0
+  (<LINK TJclTabSet.ZeroBased, zero-based> set to <c>True</c>) or 1
+  (<LINK TJclTabSet.ZeroBased, zero-based> set to <c>False</c>).
+
+  The reverse operation (expand sequences of tab characters into spaces) can
+  be achieved by the <LINK TJclTabSet.Expand@string@Integer, Expand> method.
+Parameters:
+  S - The string to expand tabs in.
+  Column - The starting column to use when expanding the tabs.
+Result:
+  Any tab and/or space character sequences in S will have been reduced to their
+  shortest form; no other item in the string is modified.
+Notes:
+  This method is <i><b>nil</b>-safe</i>; when invoked on a
+  <b>nil</b>-reference, this method will assume a tab width of two on a
+  zero-based tab set.
+See also:
+  TJclTabSet
+  TJclTabSet.OptimalFillInfo
+  TJclTabSet.Optimize@string
+Donator:
+  Marcel Bestebroer
+--------------------------------------------------------------------------------
+@@TJclTabSet.StartColumn
+Summary:
+  Indicates the starting column used when none is specified.
+Description:
+  StartColumn indicates which column is used as the start of a line.
+Returns:
+  <b>0</b> if ZeroBased is set to <c>True</c> or if this method is called on a
+  <b>nil</b>-reference
+   <i>- or -</i><p>
+  <b>1</b> if ZeroBased is set to <c>False</c>
+Donator:
+  Marcel Bestebroer
+--------------------------------------------------------------------------------
+@@TJclTabSet.TabFrom
+Summary:
+  Determines the next column when tabbing from the specified column.
+Description:
+  TabFrom will determine the next column if a tab character would occur at the
+  specified column.
+Parameters:
+  Column - The starting column to use when determine the next column.
+Result:
+  An Integer representing the next tabulation position.
+Exceptions:
+  <TABLE>
+    ArgumentOutOfRangeException   The <i>Column</i> parameter is less than
+                                    0 (<LINK TJclTabSet.ZeroBased, zero-based>)
+                                    or 1 (not zero-based).
+  </TABLE>
+Example:
+  <b>Note:</b>This example assumes a tab set instance set up as in the example
+  given in the <LINK TJclTabSet, TJclTabSet> help.
+
+<CODE>
+  a := tabs.TabFrom(0);   <i>// a will be 15</i>
+  b := tabs.TabFrom(24);  <i>// b will be 30</i>
+  c := tabs.TabFrom(34);  <i>// c will be 36</i>
+  d := tabs.TabFrom(35);  <i>// d will be 36</i>
+</CODE>
+See also:
+  TJclTabSet
+  TJclTabSet.Expand@string
+Donator:
+  Marcel Bestebroer
+--------------------------------------------------------------------------------
+@@TJclTabSet.TabStops
+Summary:
+  Specifies the tabulation positions to use.
+Description:
+  TabStops indicates which fixed tabulation positions this set will use. The
+  array is guaranteed in column order, with the smallest tabulation position
+  being at index 0. As a consequence, writing a new value at any index of the
+  array is internally handled as a <LINK TJclTabSet.Delete, delete>, followed
+  by an <TLINK TJclTabSet.Add, add> operation, to preserve this ordered
+  property.
+Notes:
+  This property is <i><b>nil</b>-safe</i>. However, since a <b>nil</b> tab set
+  has no fixed tabulation positions, any read or write operation will result in
+  an EJclStringError (argument out of range).
+See also:
+  TJclTabSet.ActualTabWidth
+  TJclTabSet.Count
+  TJclTabSet.TabStops
+  TJclTabSet.TabWidth
+Donator:
+  Marcel Bestebroer
+--------------------------------------------------------------------------------
+@@TJclTabSet.TabWidth
+Summary:
+  Specifies the tabulation width this instance will use.
+Description:
+  TabWidth indicates the tabulation width to use for columns beyond those
+  specified by the <LINK TJclTabSet.TabStops, TabStops> property.
+
+  If this property is set to zero or a negative value, the instance will
+  calculate the <LINK TJclTabSet.ActualTabWidth, actual tabulation width> to use
+  according to the following table:
+
+  <TABLE>
+  Situation                                 ActualTabWidth
+  ----------                                --------------------------
+  No tabulation positions defined           2
+  One tabulation position defined           the defined tabulation position
+  Two or more tabulation positions defined  the distance between the last
+                                              two tabulation positions
+  </TABLE>
+Notes:
+  This property is <i><b>nil</b>-safe</i>. When read from on a
+  <b>nil</b>-reference, this property will return 2. When written to on a
+  <b>nil</b>-reference, a NullReferenceException will be raised.
+See also:
+  TJclTabSet.ActualTabWidth
+  TJclTabSet.Count
+  TJclTabSet.TabStops
+Donator:
+  Marcel Bestebroer
+--------------------------------------------------------------------------------
+@@TJclTabSet.ToString
+Summary
+  Converts the tab set into its string representation.
+Description
+  The ToString method returns a string representing this tab set, containing
+  each individual tabulation position and the tab width used beyond those
+  fixed positions.
+
+  Using this overload is the same as using the one with the
+  <LINK TJclTabSet.ToString@Integer, formatting options>, specifying the
+  TabSetFormatting_Full option.
+
+  The resulting string will be composed of the following items:
+  <TABLE>
+    '0'                             Outputted only when the tabset is zero-based.
+    0 or more whitespaces           Used to separate the zero-based flag from
+                                      the tabulation positions; at least one
+                                      whitespace is used if no opening bracket is
+                                      used.
+    '['                             Opening bracket for the fixed tabulation
+                                      positions.
+    comma-separated list of         The individual fixed tabulation positions of
+      tabulation positions            this tab set.
+    ']'                             Closing bracket for the fixed tabulation
+                                      positions.
+    0 or more whitespaces           Used to separate the zero-based flag and/or
+                                      tabulation positions from the tab width.
+    '+'                             Outputted to mark the tab width property.
+    Value of ActualTabWidth         The tab width.
+  </TABLE>
+Returns:
+  A string representation of this tab set.
+Notes:
+  This method is <i><b>nil</b>-safe</i>.
+--------------------------------------------------------------------------------
+@@TJclTabSet.ToString@Integer
+Summary
+  Converts the tab set into its string representation using the specified
+  formatting.
+Description
+  The ToString method returns a string representing this tab set, containing
+  each individual tabulation position and the tab width used beyond those
+  fixed positions.
+
+  The FormattingOptions parameter indicates whether and how the tabulation
+  positions are handled and whether the tab width will be in the string.
+
+  The resulting string will be composed of the following items:
+  <TABLE>
+    '0'                             Outputted only when the tabset is zero-based.
+    0 or more whitespaces           Used to separate the zero-based flag from
+                                      the tabulation positions; at least one
+                                      whitespace is used if no opening bracket is
+                                      used.
+    '['                             Opening bracket for the fixed tabulation
+                                      positions, outputted when the formatting
+                                      options specify it.
+    comma-separated list of         The individual fixed tabulation positions of
+      tabulation positions            this tab set, outputted when tab stops are
+                                      not disabled by the options.
+    ']'                             Closing bracket for the fixed tabulation
+                                      positions, outputted when the formatting
+                                      options specify it.
+    0 or more whitespaces           Used to separate the zero-based flag and/or
+                                      tabulation positions from the tab width.
+    '+'                             Outputted to mark the tab width property.
+    Value of ActualTabWidth         The tab width.
+  </TABLE>
+Parameters:
+  FormattingOptions - the formatting options to use. See
+  <LINK TabSetFormattingOptions, TJclTabSet formatting options> for the
+  available options.
+Returns:
+  A string representation of this tab set, formatted according to the provided
+  formatting options.
+Notes:
+  This method is <i><b>nil</b>-safe</i>.
+--------------------------------------------------------------------------------
+@@TJclTabSet.UpdatePosition@string
+Summary:
+  Calculates the ending column after expanding tabs in the provided
+  string.
+Description:
+  Calculate will simulate the Expand method, calculating the ending column
+  only.
+
+  Multi-line strings, ie. strings containing one or more newline sequences (eg.
+  CrLf, but also single Cr of Lf characters are treated as newlines), are
+  handled properly, with all but the first line starting at column 0
+  (<LINK TJclTabSet.ZeroBased, zero-based> set to <c>True</c>) or 1
+  (<LINK TJclTabSet.ZeroBased, zero-based> set to <c>False</c>).
+Parameters:
+  S - The string to expand tabs in.
+Result:
+  The ending column after expanding tabs in the provided string.
+Notes:
+  This method is <i><b>nil</b>-safe</i>; when invoked on a
+  <b>nil</b>-reference, this method will assume a tab width of two on a
+  zero-based tab set.
+Example:
+  See the <LINK TJclTabSet, TJclTabSet> help for an example.
+See also:
+  TJclTabSet
+  TJclTabSet.Expand@string@Integer
+  TJclTabSet.TabFrom
+Donator:
+  Marcel Bestebroer
+--------------------------------------------------------------------------------
+@@TJclTabSet.UpdatePosition@string@Integer
+Summary:
+  Calculates the ending column after expanding tabs in the provided
+  string.
+Description:
+  Calculate will simulate the Expand method, calculating the ending column
+  only.
+
+  Multi-line strings, ie. strings containing one or more newline sequences (eg.
+  CrLf, but also single Cr of Lf characters are treated as newlines), are
+  handled properly, with all but the first line starting at column 0
+  (<LINK TJclTabSet.ZeroBased, zero-based> set to <c>True</c>) or 1
+  (<LINK TJclTabSet.ZeroBased, zero-based> set to <c>False</c>).
+Parameters:
+  S - The string to expand tabs in.
+  Column - The starting column to use when expanding the tabs.
+Result:
+  The ending column after expanding tabs in the provided string.
+Notes:
+  This method is <i><b>nil</b>-safe</i>; when invoked on a
+  <b>nil</b>-reference, this method will assume a tab width of two on a
+  zero-based tab set.
+Example:
+  See the <LINK TJclTabSet, TJclTabSet> help for an example.
+See also:
+  TJclTabSet
+  TJclTabSet.Expand@string@Integer
+  TJclTabSet.TabFrom
+Donator:
+  Marcel Bestebroer
+--------------------------------------------------------------------------------
+@@TJclTabSet.UpdatePosition@string@Integer@Integer
+Summary:
+  Calculates the ending line and column after expanding tabs in the provided
+  string.
+Description:
+  Calculate will simulate the Expand method, updating the line and column
+  variables only. For convenience, the ending column is also the method's result
+  value.
+
+  Multi-line strings, ie. strings containing one or more newline sequences (eg.
+  CrLf, but also single Cr of Lf characters are treated as newlines), are
+  handled properly, with all but the first line starting at column 0
+  (<LINK TJclTabSet.ZeroBased, zero-based> set to <c>True</c>) or 1
+  (<LINK TJclTabSet.ZeroBased, zero-based> set to <c>False</c>).
+Parameters:
+  S - The string to expand tabs in.
+  Column - On entry: The starting column to use when expanding the tabs.
+            On return: The ending column after expanding the tabs.
+  Line - On entry: The starting line to use when expanding the tabs.
+          On return: The ending line after expanding the tabs.
+Result:
+  The ending column after expanding tabs in the provided string.
+Notes:
+  This method is <i><b>nil</b>-safe</i>; when invoked on a
+  <b>nil</b>-reference, this method will assume a tab width of two on a
+  zero-based tab set.
+Example:
+  See the <LINK TJclTabSet, TJclTabSet> help for an example.
+See also:
+  TJclTabSet
+  TJclTabSet.Expand@string@Integer
+  TJclTabSet.TabFrom
+Donator:
+  Marcel Bestebroer
+--------------------------------------------------------------------------------
+@@TJclTabSet.ZeroBased
+Summary:
+  Specifies whether the columns are zero-based.
+Description:
+  ZeroBased indicates whether specified
+  <LINK TJclTabSet.TabStops, tabulation positions> and other column references
+  are zero based.
+
+  If this property is set to <c>True</c>, all columns are considered to be
+  zero-based (the first column index is zero); otherwise columns references are
+  one-based (the first column index is one).
+
+  If this flag is toggled, any stored
+  <LINK TJclTabSet.TabStops, tabulation positions> are automatically converted
+  to the new state (ie. values are incremented when setting to <c>False</c> or
+  decremented when setting to <c>True</c>).
+Notes:
+  This property is <i><b>nil</b>-safe</i>. When read from on a
+  <b>nil</b>-reference, this property will return <c>True</c>. When written to
+  on a <b>nil</b>-reference, a NullReferenceException will be raised.
+See also:
+  TJclTabSet.Expand@string@Integer
+  TJclTabSet.TabStops
+  TJclTabSet.TabFrom
+Donator:
+  Marcel Bestebroer
+
