@@ -152,6 +152,24 @@ type
     procedure _StrRestOf;
   end;
 
+  { TJclStringTabSet }
+  TJclStringTabSet = class(TTestCase)
+  published
+    procedure _CalculatedTabWidth;
+    procedure _Expand;
+    procedure _FromString;
+    procedure _NilSet;
+    procedure _OptimalFill;
+    procedure _Optimize;
+    procedure _TabFrom;
+    procedure _TabStopAdding;
+    procedure _TabStopDeleting;
+    procedure _TabStopModifying;
+    procedure _ToString;
+    procedure _UpdatePosition;
+    procedure _ZeroBased;
+end;
+
 implementation
 
 {$IFDEF LINUX}
@@ -2124,12 +2142,411 @@ end;
 
 *)
 
+//==================================================================================================
+// TabSet
+//==================================================================================================
+
+procedure TJclStringTabSet._CalculatedTabWidth;
+var
+  tabs1: TJclTabSet;
+  tabs2: TJclTabSet;
+begin
+  tabs1 := TJclTabSet.Create([4,8], True);
+  try
+    CheckEquals(0, tabs1.TabWidth, 'tabs1.TabWidth');
+    CheckEquals(4, tabs1.ActualTabWidth, 'tabs1.ActualTabWidth');
+  finally
+    FreeAndNil(tabs1);
+  end;
+
+  tabs2 := TJclTabSet.Create([4,7], False, -1);
+  try
+    CheckEquals(-1, tabs2.TabWidth, 'tabs2.TabWidth');
+    CheckEquals(3, tabs2.ActualTabWidth, 'tabs2.ActualTabWidth');
+  finally
+    FreeAndNil(tabs2);
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclStringTabSet._Expand;
+var
+  tabs: TJclTabSet;
+  inp: string;
+  exp: string;
+begin
+  tabs := TJclTabSet.Create([17, 22, 32], False, 4);
+  try
+    inp :=  'Test:'#9'LD'#9'A,(HL)'#9'; Read from memory'#13#10+
+            #9'LD'#9'B, 100'#13#10 +
+            #9'CALL'#9'Test2'#13#10+
+            #9#9#9'; another comment';
+    exp :=  'Test:           LD   A,(HL)    ; Read from memory'#13#10 +
+            '                LD   B, 100'#13#10 +
+            '                CALL Test2'#13#10+
+            '                               ; another comment';
+    CheckEqualsString(exp, tabs.Expand(inp));
+  finally
+    FreeAndNil(tabs);
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclStringTabSet._FromString;
+var
+  tabs: TJclTabSet;
+begin
+  // just a tab width
+  tabs := TJclTabSet.FromString('+4');
+  try
+    CheckEquals(0, tabs.Count, 'FromString(''+4'').Count');
+    CheckEquals(False, tabs.ZeroBased, 'FromString(''+4'').ZeroBased');
+    CheckEquals(4, tabs.ActualTabWidth, 'FromString(''+4'').ActualTabWidth');
+    CheckEquals(4, tabs.TabWidth, 'FromString(''+4'').TabWidth');
+  finally
+    FreeAndNil(tabs);
+  end;
+
+  // stops and tab width; with excessive whitespace, including tab
+  tabs := TJclTabSet.FromString('4,   7   ' + #9 + '+4');
+  try
+    CheckEquals(2, tabs.Count, 'FromString(''4,   7   '' + #9 + ''+4'').Count');
+    CheckEquals(4, tabs[0], 'FromString(''4,   7   '' + #9 + ''+4'').tabs[0]');
+    CheckEquals(7, tabs[1], 'FromString(''4,   7   '' + #9 + ''+4'').tabs[1]');
+    CheckEquals(False, tabs.ZeroBased, 'FromString(''4,   7   '' + #9 + ''+4'').ZeroBased');
+    CheckEquals(4, tabs.ActualTabWidth, 'FromString(''4,   7   '' + #9 + ''+4'').ActualTabWidth');
+    CheckEquals(4, tabs.TabWidth, 'FromString(''4,   7   '' + #9 + ''+4'').TabWidth');
+  finally
+    FreeAndNil(tabs);
+  end;
+
+  // zero-based, bracketed stops, auto width
+  tabs := TJclTabSet.FromString('0[4,7]');
+  try
+    CheckEquals(2, tabs.Count, 'FromString(''0[4,7]'').Count');
+    CheckEquals(4, tabs[0], 'FromString(''0[4,7]'').tabs[0]');
+    CheckEquals(7, tabs[1], 'FromString(''0[4,7]'').tabs[1]');
+    CheckEquals(True, tabs.ZeroBased, 'FromString(''0[4,7]'').ZeroBased');
+    CheckEquals(3, tabs.ActualTabWidth, 'FromString(''0[4,7]'').ActualTabWidth');
+    CheckTrue(tabs.TabWidth < 1, 'FromString(''0[4,7]'').TabWidth');
+  finally
+    FreeAndNil(tabs);
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclStringTabSet._NilSet;
+var
+  tabs: TJclTabSet;
+begin
+  // simplify nil tabset access
+  tabs := nil;
+
+  // nil tabset should be zero based
+  CheckTrue(tabs.ZeroBased, 'Nil tabset.ZeroBased');
+
+  // nil tabset should have no tab stops
+  CheckEquals(0, tabs.Count, 'Nil tabset.Count');
+
+  // nil tabset should have an actual tabwidth of 2
+  CheckEquals(2, tabs.ActualTabWidth, 'Nil tabset.ActualTabWidth');
+
+  // nil tabset should have a set tabwidth of <1 or 2
+  CheckTrue((tabs.TabWidth = 2) or (tabs.TabWidth < 1), 'Nil tabset.TabWidth');
+
+  // nil tabset expand test
+  CheckEquals('A bc  de', tabs.Expand('A'#9'bc'#9'de'), 'Nil tabset.Expand')
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclStringTabSet._OptimalFill;
+var
+  tabs: TJclTabSet;
+  tabCount: Integer;
+  spaceCount: Integer;
+begin
+  tabs := TJclTabSet.Create([17, 22, 32], False, 4);
+  try
+    // test 1: tabs and spaces to get from column 1 to column 17
+    tabs.OptimalFillInfo(1, 17, tabCount, spaceCount);
+    CheckEquals(1, tabCount, 'tabCount for column 1->17');
+    CheckEquals(0, spaceCount, 'spaceCount for column 1->17');
+
+    // test 2: tabs and spaces to get from column 1 to column 4
+    tabs.OptimalFillInfo(1, 4, tabCount, spaceCount);
+    CheckEquals(0, tabCount, 'tabCount for column 1->4');
+    CheckEquals(3, spaceCount, 'spaceCount for column 1->4');
+
+    // test 3: tabs and spaces to get from column 1 to column 34
+    tabs.OptimalFillInfo(1, 34, tabCount, spaceCount);
+    CheckEquals(3, tabCount, 'tabCount for column 1->34');
+    CheckEquals(2, spaceCount, 'spaceCount for column 1->34');
+  finally
+    FreeAndNil(tabs);
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclStringTabSet._Optimize;
+var
+  tabs: TJclTabSet;
+  inp: string;
+  exp: string;
+begin
+  tabs := TJclTabSet.Create([17, 22, 32], False, 4);
+  try
+    inp := '   '#9'   test                          second';
+    exp := #9'   test'#9#9#9#9#9'  second';
+    CheckEquals(exp, tabs.Optimize(inp));
+  finally
+    FreeAndNil(tabs);
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclStringTabSet._TabFrom;
+var
+  tabs: TJclTabSet;
+  idx: Integer;
+begin
+  tabs := TJclTabSet.Create([15, 20, 30], True, 2);
+  try
+    // test first fixed stop
+    // columns 0 through 14 will tab to column 15
+    for idx := 0 to 14 do
+      CheckEquals(15, tabs.TabFrom(idx), 'set=[15,20,30]+2; TabFrom(' + IntToStr(idx) + ')');
+
+    // test second fixed stop
+    // columns 15 through 19 will tab to column 20
+    for idx := 15 to 19 do
+      CheckEquals(20, tabs.TabFrom(idx), 'set=[15,20,30]+2; TabFrom(' + IntToStr(idx) + ')');
+
+    // test third and final fixed stop
+    // columns 20 through 29 will tab to column 30
+    for idx := 20 to 29 do
+      CheckEquals(30, tabs.TabFrom(idx), 'set=[15,20,30]+2; TabFrom(' + IntToStr(idx) + ')');
+
+    // test tab width beyond fixed positions
+    // columns 30 through 39 will tab to column 32 (30-31), 34 (32-33), 36 (34-35), 38 (36-37) or 40 (38-39)
+    for idx := 30 to 39 do
+      CheckEquals(2 * Succ(idx div 2), tabs.TabFrom(idx), 'set=[15,20,30]+2; TabFrom(' + IntToStr(idx) + ')');
+  finally
+    FreeAndNil(tabs);
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclStringTabSet._TabStopAdding;
+var
+  tabs: TJclTabSet;
+  x: Integer;
+  failed: Boolean;
+begin
+  tabs := TJclTabSet.Create([15, 30], True);
+  try
+    // Add column 20 and check if the index=1
+    CheckEquals(1, tabs.Add(20), 'Index of Add(20)');
+    // We should have three stops
+    CheckEquals(3, tabs.Count, 'Count after Add(20)');
+    // The first should be 15
+    CheckEquals(15, tabs[0], 'tabs[0]');
+    // The second should be 20
+    CheckEquals(20, tabs[1], 'tabs[1]');
+    // The third should be 30
+    CheckEquals(30, tabs[2], 'tabs[2]');
+    // Adding a duplicate should fail...
+    begin
+      try
+        x := tabs.Add(30);
+        failed := True;
+      except
+        failed := False;
+        x := 0; // make compiler happy
+      end;
+      if failed then
+        Fail('tabs.Add(30) returned ' + IntToStr(x) + '; should''ve resulted in an exception.');
+    end;
+    // Adding anything less than StartColumn should fail...
+    begin
+      try
+        x := tabs.Add(tabs.StartColumn - 1);
+        failed := True;
+      except
+        failed := False;
+        x := 0;
+      end;
+      if failed then
+        Fail('tabs.Add(' + IntToStr(tabs.StartColumn - 1) + ') returned ' + IntToStr(x) + '; should''ve resulted in an exception.');
+    end;
+  finally
+    FreeAndNil(tabs);
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclStringTabSet._TabStopDeleting;
+var
+  tabs: TJclTabSet;
+  x: Integer;
+begin
+  tabs := TJclTabSet.Create([15, 17, 20, 30], True, 2);
+  try
+    CheckEquals(1, tabs.Delete(17), 'Index of Delete(17)');
+    // We should have three stops
+    CheckEquals(3, tabs.Count, 'Count after Add(20)');
+    // The first should be 15
+    CheckEquals(15, tabs[0], 'tabs[0]');
+    // The second should be 20
+    CheckEquals(20, tabs[1], 'tabs[1]');
+    // The third should be 30
+    CheckEquals(30, tabs[2], 'tabs[2]');
+    // Deleting a non-existing tab stop should result in a negative value
+    x := tabs.Delete(24);
+    CheckTrue(x < 0, 'tabs.Delete(24) returned ' + IntToStr(x) + '; should''ve returned a negative value.');
+  finally
+    FreeAndNil(tabs);
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclStringTabSet._TabStopModifying;
+var
+  tabs: TJclTabSet;
+begin
+  tabs := TJclTabSet.Create([15, 17, 2, 30], True, 2);
+  try
+    // check tabs array before overwriting the first tab stop...
+    CheckEquals(2, tabs[0], 'tabs[0] before modify.');
+    CheckEquals(15, tabs[1], 'tabs[1] before modify.');
+    CheckEquals(17, tabs[2], 'tabs[2] before modify.');
+    CheckEquals(30, tabs[3], 'tabs[3] before modify.');
+    // overwrite the first tab stop
+    tabs[0] := 20;
+    // check tabs array after overwriting the first tab stop...
+    CheckEquals(15, tabs[0], 'tabs[0] after modify.');
+    CheckEquals(17, tabs[1], 'tabs[1] after modify.');
+    CheckEquals(20, tabs[2], 'tabs[2] after modify.');
+    CheckEquals(30, tabs[3], 'tabs[3] after modify.');
+  finally
+    FreeAndNil(tabs);
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclStringTabSet._ToString;
+var
+  tabs: TJclTabSet;
+begin
+  tabs := nil;
+  CheckEquals('0 [] +2', tabs.ToString, 'nil-set, full');
+  CheckEquals('0', tabs.ToString(TabSetFormatting_Default), 'nil-set, default');
+
+  tabs := TJclTabSet.Create([15, 17, 20, 30], True, 4);
+  try
+    CheckEquals('0 [15,17,20,30] +4', tabs.ToString, 'zero-based, full');
+    CheckEquals('0 15,17,20,30 +4', tabs.ToString(TabSetFormatting_Default), 'zero-based, default');
+    tabs.ZeroBased := False;
+    CheckEquals('[16,18,21,31] +4', tabs.ToString, 'one-based, full');
+    CheckEquals('16,18,21,31 +4', tabs.ToString(TabSetFormatting_Default), 'one-based, default');
+  finally
+    tabs.Free;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclStringTabSet._UpdatePosition;
+var
+  tabs: TJclTabSet;
+  column: Integer;
+  line: Integer;
+begin
+  tabs := TJclTabSet.Create([17, 22, 32], False, 4);
+  try
+    column := tabs.StartColumn;
+    line := 1;
+    tabs.UpdatePosition(
+      'Label1:'#9'LD'#9'A,0'#9'; init A'#13#10+
+      #9'LD'#9'B, 100'#9'; loop counter'#13#10+
+      #13#10+
+      'lp1:'#9'ADD'#9'(HL)'#9'; add data'#13+
+      #9'JR'#9'NC,nxt'#9'; no carry=>skip to nxt'#13+
+      #13+
+      #9'RRCA'#10+
+      #10+
+      'nxt:'#9'INC'#9'H'#9'; next scanline'#13#10+
+      #9'DJNZ'#9'lp1', column, line);
+    CheckEquals(10, line, 'line');
+    CheckEquals(25, column, 'column');
+  finally
+    tabs.Free;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclStringTabSet._ZeroBased;
+var
+  tabs: TJclTabSet;
+  x: Integer;
+  failed: Boolean;
+begin
+  tabs := TJclTabSet.Create([15, 20, 30], True, 2);
+  try
+    // make sure it's actually zero-based
+    CheckTrue(tabs.ZeroBased, 'tabset should be zero based.');
+    // can we tab from column 0?
+    CheckEquals(15, tabs.TabFrom(0), 'tabs.TabFrom(0) in zero-based mode.');
+    // we should have three stops
+    CheckEquals(3, tabs.Count, 'tabs.Count (zero-based)');
+    // are they 15, 20 and 30 respectively?
+    CheckEquals(15, tabs[0], 'tabs[0] (zero-based)');
+    CheckEquals(20, tabs[1], 'tabs[1] (zero-based)');
+    CheckEquals(30, tabs[2], 'tabs[2] (zero-based)');
+
+    // switch to not zero-based
+    tabs.ZeroBased := False;
+    // make sure it's no longer zero-based
+    CheckFalse(tabs.ZeroBased, 'tabset shouldn''t be zero based.');
+    // we still should have three stops
+    CheckEquals(3, tabs.Count, 'tabs.Count (not zero-based)');
+    // are they 16, 21 and 31 respectively?
+    CheckEquals(16, tabs[0], 'tabs[0] (not zero-based)');
+    CheckEquals(21, tabs[1], 'tabs[1] (not zero-based)');
+    CheckEquals(31, tabs[2], 'tabs[2] (not zero-based)');
+    // we shouldn't be able to tab from column 0?
+    try
+      x := tabs.TabFrom(0);
+      failed := False;
+    except
+      // swallow exception
+      failed := True;
+      x := 0; // make compiler happy
+    end;
+    if not failed then
+      Fail('tab.TabFrom(0) resulted in ' + IntToStr(x) + '; should''ve resulted in an exception when not in zero-based mode.');
+  finally
+    FreeAndNil(tabs);
+  end;
+end;
+
 initialization
   RegisterTest('JCLStrings', TJclStringTransormation.Suite);
   RegisterTest('JCLStrings', TJclStringManagment.Suite);
   RegisterTest('JCLStrings', TJclStringSearchandReplace.Suite);
   RegisterTest('JCLStrings', TJclStringCharacterTestRoutines.Suite);
   RegisterTest('JCLStrings', TJclStringExtraction.Suite);
+  RegisterTest('JCLStrings', TJclStringTabSet.Suite);
 
 // History:
 //
