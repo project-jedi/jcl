@@ -57,7 +57,11 @@ type
   TJclIntfTreeNode = class
   public
     Value: IInterface;
+    {$IFDEF BCB}
     Children: TDynObjectArray;
+    {$ELSE ~BCB}
+    Children: array of TJclIntfTreeNode;
+    {$ENDIF ~BCB}
     ChildrenCount: Integer;
     Parent: TJclIntfTreeNode;
     function IndexOfChild(AChild: TJclIntfTreeNode): Integer;
@@ -112,7 +116,11 @@ type
   TJclAnsiStrTreeNode = class
   public
     Value: AnsiString;
+    {$IFDEF BCB}
     Children: TDynObjectArray;
+    {$ELSE ~BCB}
+    Children: array of TJclAnsiStrTreeNode;
+    {$ENDIF ~BCB}
     ChildrenCount: Integer;
     Parent: TJclAnsiStrTreeNode;
     function IndexOfChild(AChild: TJclAnsiStrTreeNode): Integer;
@@ -167,7 +175,11 @@ type
   TJclWideStrTreeNode = class
   public
     Value: WideString;
+    {$IFDEF BCB}
     Children: TDynObjectArray;
+    {$ELSE ~BCB}
+    Children: array of TJclWideStrTreeNode;
+    {$ENDIF ~BCB}
     ChildrenCount: Integer;
     Parent: TJclWideStrTreeNode;
     function IndexOfChild(AChild: TJclWideStrTreeNode): Integer;
@@ -229,7 +241,11 @@ type
   TJclSingleTreeNode = class
   public
     Value: Single;
+    {$IFDEF BCB}
     Children: TDynObjectArray;
+    {$ELSE ~BCB}
+    Children: array of TJclSingleTreeNode;
+    {$ENDIF ~BCB}
     ChildrenCount: Integer;
     Parent: TJclSingleTreeNode;
     function IndexOfChild(AChild: TJclSingleTreeNode): Integer;
@@ -284,7 +300,11 @@ type
   TJclDoubleTreeNode = class
   public
     Value: Double;
+    {$IFDEF BCB}
     Children: TDynObjectArray;
+    {$ELSE ~BCB}
+    Children: array of TJclDoubleTreeNode;
+    {$ENDIF ~BCB}
     ChildrenCount: Integer;
     Parent: TJclDoubleTreeNode;
     function IndexOfChild(AChild: TJclDoubleTreeNode): Integer;
@@ -339,7 +359,11 @@ type
   TJclExtendedTreeNode = class
   public
     Value: Extended;
+    {$IFDEF BCB}
     Children: TDynObjectArray;
+    {$ELSE ~BCB}
+    Children: array of TJclExtendedTreeNode;
+    {$ENDIF ~BCB}
     ChildrenCount: Integer;
     Parent: TJclExtendedTreeNode;
     function IndexOfChild(AChild: TJclExtendedTreeNode): Integer;
@@ -404,7 +428,11 @@ type
   TJclIntegerTreeNode = class
   public
     Value: Integer;
+    {$IFDEF BCB}
     Children: TDynObjectArray;
+    {$ELSE ~BCB}
+    Children: array of TJclIntegerTreeNode;
+    {$ENDIF ~BCB}
     ChildrenCount: Integer;
     Parent: TJclIntegerTreeNode;
     function IndexOfChild(AChild: TJclIntegerTreeNode): Integer;
@@ -459,7 +487,11 @@ type
   TJclCardinalTreeNode = class
   public
     Value: Cardinal;
+    {$IFDEF BCB}
     Children: TDynObjectArray;
+    {$ELSE ~BCB}
+    Children: array of TJclCardinalTreeNode;
+    {$ENDIF ~BCB}
     ChildrenCount: Integer;
     Parent: TJclCardinalTreeNode;
     function IndexOfChild(AChild: TJclCardinalTreeNode): Integer;
@@ -514,7 +546,11 @@ type
   TJclInt64TreeNode = class
   public
     Value: Int64;
+    {$IFDEF BCB}
     Children: TDynObjectArray;
+    {$ELSE ~BCB}
+    Children: array of TJclInt64TreeNode;
+    {$ENDIF ~BCB}
     ChildrenCount: Integer;
     Parent: TJclInt64TreeNode;
     function IndexOfChild(AChild: TJclInt64TreeNode): Integer;
@@ -570,7 +606,11 @@ type
   TJclPtrTreeNode = class
   public
     Value: Pointer;
+    {$IFDEF BCB}
     Children: TDynObjectArray;
+    {$ELSE ~BCB}
+    Children: array of TJclPtrTreeNode;
+    {$ENDIF ~BCB}
     ChildrenCount: Integer;
     Parent: TJclPtrTreeNode;
     function IndexOfChild(AChild: TJclPtrTreeNode): Integer;
@@ -626,7 +666,11 @@ type
   TJclTreeNode = class
   public
     Value: TObject;
+    {$IFDEF BCB}
     Children: TDynObjectArray;
+    {$ELSE ~BCB}
+    Children: array of TJclTreeNode;
+    {$ENDIF ~BCB}
     ChildrenCount: Integer;
     Parent: TJclTreeNode;
     function IndexOfChild(AChild: TJclTreeNode): Integer;
@@ -682,7 +726,11 @@ type
   TJclTreeNode<T> = class
   public
     Value: T;
+    {$IFDEF BCB}
     Children: TDynObjectArray;
+    {$ELSE ~BCB}
+    Children: array of TJclTreeNode<T>;
+    {$ENDIF ~BCB}
     ChildrenCount: Integer;
     Parent: TJclTreeNode<T>;
     function IndexOfChild(AChild: TJclTreeNode<T>): Integer;
@@ -956,7 +1004,11 @@ begin
     if FCursor <> nil then
     begin
       for Index := FCursor.ChildrenCount - 1 downto 0 do
+        {$IFDEF BCB}
         FOwnTree.ClearNode(TJclIntfTreeNode(FCursor.Children[Index]));
+        {$ELSE ~BCB}
+        FOwnTree.ClearNode(FCursor.Children[Index]);
+        {$ENDIF ~BCB}
       SetLength(FCursor.Children, 0);
       FCursor.ChildrenCount := 0;
     end;
@@ -974,7 +1026,11 @@ begin
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
+      {$IFDEF BCB}
       FOwnTree.ClearNode(TJclIntfTreeNode(FCursor.Children[Index]))
+      {$ELSE ~BCB}
+      FOwnTree.ClearNode(FCursor.Children[Index])
+      {$ENDIF ~BCB}
     else
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
@@ -1682,7 +1738,11 @@ begin
     if FCursor <> nil then
     begin
       for Index := FCursor.ChildrenCount - 1 downto 0 do
+        {$IFDEF BCB}
         FOwnTree.ClearNode(TJclAnsiStrTreeNode(FCursor.Children[Index]));
+        {$ELSE ~BCB}
+        FOwnTree.ClearNode(FCursor.Children[Index]);
+        {$ENDIF ~BCB}
       SetLength(FCursor.Children, 0);
       FCursor.ChildrenCount := 0;
     end;
@@ -1700,7 +1760,11 @@ begin
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
+      {$IFDEF BCB}
       FOwnTree.ClearNode(TJclAnsiStrTreeNode(FCursor.Children[Index]))
+      {$ELSE ~BCB}
+      FOwnTree.ClearNode(FCursor.Children[Index])
+      {$ENDIF ~BCB}
     else
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
@@ -2408,7 +2472,11 @@ begin
     if FCursor <> nil then
     begin
       for Index := FCursor.ChildrenCount - 1 downto 0 do
+        {$IFDEF BCB}
         FOwnTree.ClearNode(TJclWideStrTreeNode(FCursor.Children[Index]));
+        {$ELSE ~BCB}
+        FOwnTree.ClearNode(FCursor.Children[Index]);
+        {$ENDIF ~BCB}
       SetLength(FCursor.Children, 0);
       FCursor.ChildrenCount := 0;
     end;
@@ -2426,7 +2494,11 @@ begin
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
+      {$IFDEF BCB}
       FOwnTree.ClearNode(TJclWideStrTreeNode(FCursor.Children[Index]))
+      {$ELSE ~BCB}
+      FOwnTree.ClearNode(FCursor.Children[Index])
+      {$ENDIF ~BCB}
     else
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
@@ -3134,7 +3206,11 @@ begin
     if FCursor <> nil then
     begin
       for Index := FCursor.ChildrenCount - 1 downto 0 do
+        {$IFDEF BCB}
         FOwnTree.ClearNode(TJclSingleTreeNode(FCursor.Children[Index]));
+        {$ELSE ~BCB}
+        FOwnTree.ClearNode(FCursor.Children[Index]);
+        {$ENDIF ~BCB}
       SetLength(FCursor.Children, 0);
       FCursor.ChildrenCount := 0;
     end;
@@ -3152,7 +3228,11 @@ begin
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
+      {$IFDEF BCB}
       FOwnTree.ClearNode(TJclSingleTreeNode(FCursor.Children[Index]))
+      {$ELSE ~BCB}
+      FOwnTree.ClearNode(FCursor.Children[Index])
+      {$ENDIF ~BCB}
     else
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
@@ -3860,7 +3940,11 @@ begin
     if FCursor <> nil then
     begin
       for Index := FCursor.ChildrenCount - 1 downto 0 do
+        {$IFDEF BCB}
         FOwnTree.ClearNode(TJclDoubleTreeNode(FCursor.Children[Index]));
+        {$ELSE ~BCB}
+        FOwnTree.ClearNode(FCursor.Children[Index]);
+        {$ENDIF ~BCB}
       SetLength(FCursor.Children, 0);
       FCursor.ChildrenCount := 0;
     end;
@@ -3878,7 +3962,11 @@ begin
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
+      {$IFDEF BCB}
       FOwnTree.ClearNode(TJclDoubleTreeNode(FCursor.Children[Index]))
+      {$ELSE ~BCB}
+      FOwnTree.ClearNode(FCursor.Children[Index])
+      {$ENDIF ~BCB}
     else
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
@@ -4586,7 +4674,11 @@ begin
     if FCursor <> nil then
     begin
       for Index := FCursor.ChildrenCount - 1 downto 0 do
+        {$IFDEF BCB}
         FOwnTree.ClearNode(TJclExtendedTreeNode(FCursor.Children[Index]));
+        {$ELSE ~BCB}
+        FOwnTree.ClearNode(FCursor.Children[Index]);
+        {$ENDIF ~BCB}
       SetLength(FCursor.Children, 0);
       FCursor.ChildrenCount := 0;
     end;
@@ -4604,7 +4696,11 @@ begin
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
+      {$IFDEF BCB}
       FOwnTree.ClearNode(TJclExtendedTreeNode(FCursor.Children[Index]))
+      {$ELSE ~BCB}
+      FOwnTree.ClearNode(FCursor.Children[Index])
+      {$ENDIF ~BCB}
     else
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
@@ -5312,7 +5408,11 @@ begin
     if FCursor <> nil then
     begin
       for Index := FCursor.ChildrenCount - 1 downto 0 do
+        {$IFDEF BCB}
         FOwnTree.ClearNode(TJclIntegerTreeNode(FCursor.Children[Index]));
+        {$ELSE ~BCB}
+        FOwnTree.ClearNode(FCursor.Children[Index]);
+        {$ENDIF ~BCB}
       SetLength(FCursor.Children, 0);
       FCursor.ChildrenCount := 0;
     end;
@@ -5330,7 +5430,11 @@ begin
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
+      {$IFDEF BCB}
       FOwnTree.ClearNode(TJclIntegerTreeNode(FCursor.Children[Index]))
+      {$ELSE ~BCB}
+      FOwnTree.ClearNode(FCursor.Children[Index])
+      {$ENDIF ~BCB}
     else
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
@@ -6038,7 +6142,11 @@ begin
     if FCursor <> nil then
     begin
       for Index := FCursor.ChildrenCount - 1 downto 0 do
+        {$IFDEF BCB}
         FOwnTree.ClearNode(TJclCardinalTreeNode(FCursor.Children[Index]));
+        {$ELSE ~BCB}
+        FOwnTree.ClearNode(FCursor.Children[Index]);
+        {$ENDIF ~BCB}
       SetLength(FCursor.Children, 0);
       FCursor.ChildrenCount := 0;
     end;
@@ -6056,7 +6164,11 @@ begin
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
+      {$IFDEF BCB}
       FOwnTree.ClearNode(TJclCardinalTreeNode(FCursor.Children[Index]))
+      {$ELSE ~BCB}
+      FOwnTree.ClearNode(FCursor.Children[Index])
+      {$ENDIF ~BCB}
     else
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
@@ -6764,7 +6876,11 @@ begin
     if FCursor <> nil then
     begin
       for Index := FCursor.ChildrenCount - 1 downto 0 do
+        {$IFDEF BCB}
         FOwnTree.ClearNode(TJclInt64TreeNode(FCursor.Children[Index]));
+        {$ELSE ~BCB}
+        FOwnTree.ClearNode(FCursor.Children[Index]);
+        {$ENDIF ~BCB}
       SetLength(FCursor.Children, 0);
       FCursor.ChildrenCount := 0;
     end;
@@ -6782,7 +6898,11 @@ begin
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
+      {$IFDEF BCB}
       FOwnTree.ClearNode(TJclInt64TreeNode(FCursor.Children[Index]))
+      {$ELSE ~BCB}
+      FOwnTree.ClearNode(FCursor.Children[Index])
+      {$ENDIF ~BCB}
     else
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
@@ -7491,7 +7611,11 @@ begin
     if FCursor <> nil then
     begin
       for Index := FCursor.ChildrenCount - 1 downto 0 do
+        {$IFDEF BCB}
         FOwnTree.ClearNode(TJclPtrTreeNode(FCursor.Children[Index]));
+        {$ELSE ~BCB}
+        FOwnTree.ClearNode(FCursor.Children[Index]);
+        {$ENDIF ~BCB}
       SetLength(FCursor.Children, 0);
       FCursor.ChildrenCount := 0;
     end;
@@ -7509,7 +7633,11 @@ begin
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
+      {$IFDEF BCB}
       FOwnTree.ClearNode(TJclPtrTreeNode(FCursor.Children[Index]))
+      {$ELSE ~BCB}
+      FOwnTree.ClearNode(FCursor.Children[Index])
+      {$ENDIF ~BCB}
     else
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
@@ -8218,7 +8346,11 @@ begin
     if FCursor <> nil then
     begin
       for Index := FCursor.ChildrenCount - 1 downto 0 do
+        {$IFDEF BCB}
         FOwnTree.ClearNode(TJclTreeNode(FCursor.Children[Index]));
+        {$ELSE ~BCB}
+        FOwnTree.ClearNode(FCursor.Children[Index]);
+        {$ENDIF ~BCB}
       SetLength(FCursor.Children, 0);
       FCursor.ChildrenCount := 0;
     end;
@@ -8236,7 +8368,11 @@ begin
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
+      {$IFDEF BCB}
       FOwnTree.ClearNode(TJclTreeNode(FCursor.Children[Index]))
+      {$ELSE ~BCB}
+      FOwnTree.ClearNode(FCursor.Children[Index])
+      {$ENDIF ~BCB}
     else
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
@@ -8945,7 +9081,11 @@ begin
     if FCursor <> nil then
     begin
       for Index := FCursor.ChildrenCount - 1 downto 0 do
+        {$IFDEF BCB}
         FOwnTree.ClearNode(TJclTreeNode<T>(FCursor.Children[Index]));
+        {$ELSE ~BCB}
+        FOwnTree.ClearNode(FCursor.Children[Index]);
+        {$ENDIF ~BCB}
       SetLength(FCursor.Children, 0);
       FCursor.ChildrenCount := 0;
     end;
@@ -8963,7 +9103,11 @@ begin
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
+      {$IFDEF BCB}
       FOwnTree.ClearNode(TJclTreeNode<T>(FCursor.Children[Index]))
+      {$ELSE ~BCB}
+      FOwnTree.ClearNode(FCursor.Children[Index])
+      {$ENDIF ~BCB}
     else
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
@@ -9672,7 +9816,11 @@ var
   Parent: TJclIntfTreeNode;
 begin
   for Index := ANode.ChildrenCount - 1 downto 0 do
+    {$IFDEF BCB}
     ClearNode(TJclIntfTreeNode(ANode.Children[Index]));
+    {$ELSE ~BCB}
+    ClearNode(ANode.Children[Index]);
+    {$ENDIF ~BCB}
   FreeObject(ANode.Value);
   Parent := ANode.Parent;
   if Parent <> nil then
@@ -10151,7 +10299,11 @@ var
   Parent: TJclAnsiStrTreeNode;
 begin
   for Index := ANode.ChildrenCount - 1 downto 0 do
+    {$IFDEF BCB}
     ClearNode(TJclAnsiStrTreeNode(ANode.Children[Index]));
+    {$ELSE ~BCB}
+    ClearNode(ANode.Children[Index]);
+    {$ENDIF ~BCB}
   FreeString(ANode.Value);
   Parent := ANode.Parent;
   if Parent <> nil then
@@ -10630,7 +10782,11 @@ var
   Parent: TJclWideStrTreeNode;
 begin
   for Index := ANode.ChildrenCount - 1 downto 0 do
+    {$IFDEF BCB}
     ClearNode(TJclWideStrTreeNode(ANode.Children[Index]));
+    {$ELSE ~BCB}
+    ClearNode(ANode.Children[Index]);
+    {$ENDIF ~BCB}
   FreeString(ANode.Value);
   Parent := ANode.Parent;
   if Parent <> nil then
@@ -11109,7 +11265,11 @@ var
   Parent: TJclSingleTreeNode;
 begin
   for Index := ANode.ChildrenCount - 1 downto 0 do
+    {$IFDEF BCB}
     ClearNode(TJclSingleTreeNode(ANode.Children[Index]));
+    {$ELSE ~BCB}
+    ClearNode(ANode.Children[Index]);
+    {$ENDIF ~BCB}
   FreeSingle(ANode.Value);
   Parent := ANode.Parent;
   if Parent <> nil then
@@ -11588,7 +11748,11 @@ var
   Parent: TJclDoubleTreeNode;
 begin
   for Index := ANode.ChildrenCount - 1 downto 0 do
+    {$IFDEF BCB}
     ClearNode(TJclDoubleTreeNode(ANode.Children[Index]));
+    {$ELSE ~BCB}
+    ClearNode(ANode.Children[Index]);
+    {$ENDIF ~BCB}
   FreeDouble(ANode.Value);
   Parent := ANode.Parent;
   if Parent <> nil then
@@ -12067,7 +12231,11 @@ var
   Parent: TJclExtendedTreeNode;
 begin
   for Index := ANode.ChildrenCount - 1 downto 0 do
+    {$IFDEF BCB}
     ClearNode(TJclExtendedTreeNode(ANode.Children[Index]));
+    {$ELSE ~BCB}
+    ClearNode(ANode.Children[Index]);
+    {$ENDIF ~BCB}
   FreeExtended(ANode.Value);
   Parent := ANode.Parent;
   if Parent <> nil then
@@ -12546,7 +12714,11 @@ var
   Parent: TJclIntegerTreeNode;
 begin
   for Index := ANode.ChildrenCount - 1 downto 0 do
+    {$IFDEF BCB}
     ClearNode(TJclIntegerTreeNode(ANode.Children[Index]));
+    {$ELSE ~BCB}
+    ClearNode(ANode.Children[Index]);
+    {$ENDIF ~BCB}
   FreeInteger(ANode.Value);
   Parent := ANode.Parent;
   if Parent <> nil then
@@ -13025,7 +13197,11 @@ var
   Parent: TJclCardinalTreeNode;
 begin
   for Index := ANode.ChildrenCount - 1 downto 0 do
+    {$IFDEF BCB}
     ClearNode(TJclCardinalTreeNode(ANode.Children[Index]));
+    {$ELSE ~BCB}
+    ClearNode(ANode.Children[Index]);
+    {$ENDIF ~BCB}
   FreeCardinal(ANode.Value);
   Parent := ANode.Parent;
   if Parent <> nil then
@@ -13504,7 +13680,11 @@ var
   Parent: TJclInt64TreeNode;
 begin
   for Index := ANode.ChildrenCount - 1 downto 0 do
+    {$IFDEF BCB}
     ClearNode(TJclInt64TreeNode(ANode.Children[Index]));
+    {$ELSE ~BCB}
+    ClearNode(ANode.Children[Index]);
+    {$ENDIF ~BCB}
   FreeInt64(ANode.Value);
   Parent := ANode.Parent;
   if Parent <> nil then
@@ -13984,7 +14164,11 @@ var
   Parent: TJclPtrTreeNode;
 begin
   for Index := ANode.ChildrenCount - 1 downto 0 do
+    {$IFDEF BCB}
     ClearNode(TJclPtrTreeNode(ANode.Children[Index]));
+    {$ELSE ~BCB}
+    ClearNode(ANode.Children[Index]);
+    {$ENDIF ~BCB}
   FreePointer(ANode.Value);
   Parent := ANode.Parent;
   if Parent <> nil then
@@ -14464,7 +14648,11 @@ var
   Parent: TJclTreeNode;
 begin
   for Index := ANode.ChildrenCount - 1 downto 0 do
+    {$IFDEF BCB}
     ClearNode(TJclTreeNode(ANode.Children[Index]));
+    {$ELSE ~BCB}
+    ClearNode(ANode.Children[Index]);
+    {$ENDIF ~BCB}
   FreeObject(ANode.Value);
   Parent := ANode.Parent;
   if Parent <> nil then
@@ -14944,7 +15132,11 @@ var
   Parent: TJclTreeNode<T>;
 begin
   for Index := ANode.ChildrenCount - 1 downto 0 do
+    {$IFDEF BCB}
     ClearNode(TJclTreeNode<T>(ANode.Children[Index]));
+    {$ELSE ~BCB}
+    ClearNode(ANode.Children[Index]);
+    {$ENDIF ~BCB}
   FreeItem(ANode.Value);
   Parent := ANode.Parent;
   if Parent <> nil then

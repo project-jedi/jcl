@@ -5,7 +5,11 @@
   NODETYPENAME = class
   public
     Value: PARAMETERTYPE;
+    {$IFDEF BCB}
     Children: TDynObjectArray;
+    {$ELSE ~BCB}
+    Children: array of NODETYPENAME;
+    {$ENDIF ~BCB}
     ChildrenCount: Integer;
     Parent: NODETYPENAME;
     function IndexOfChild(AChild: NODETYPENAME): Integer;
@@ -222,7 +226,11 @@ begin
     if FCursor <> nil then
     begin
       for Index := FCursor.ChildrenCount - 1 downto 0 do
+        {$IFDEF BCB}
         FOwnTree.ClearNode(NODETYPENAME(FCursor.Children[Index]));
+        {$ELSE ~BCB}
+        FOwnTree.ClearNode(FCursor.Children[Index]);
+        {$ENDIF ~BCB}
       SetLength(FCursor.Children, 0);
       FCursor.ChildrenCount := 0;
     end;
@@ -240,7 +248,11 @@ begin
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
+      {$IFDEF BCB}
       FOwnTree.ClearNode(NODETYPENAME(FCursor.Children[Index]))
+      {$ELSE ~BCB}
+      FOwnTree.ClearNode(FCursor.Children[Index])
+      {$ENDIF ~BCB}
     else
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
@@ -950,7 +962,11 @@ var
   Parent: NODETYPENAME;
 begin
   for Index := ANode.ChildrenCount - 1 downto 0 do
+    {$IFDEF BCB}
     ClearNode(NODETYPENAME(ANode.Children[Index]));
+    {$ELSE ~BCB}
+    ClearNode(ANode.Children[Index]);
+    {$ENDIF ~BCB}
   RELEASERNAME(ANode.Value);
   Parent := ANode.Parent;
   if Parent <> nil then
