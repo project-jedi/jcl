@@ -26,7 +26,7 @@
 {   Jean-Fabien Connault (cycocrew)                                                                }
 {   John C Molyneux                                                                                }
 {   Leonard Wennekers                                                                              }
-{   Martin Bestebroer                                                                              }
+{   Marcel Bestebroer                                                                              }
 {   Martin Kimmings                                                                                }
 {   Martin Kubecka                                                                                 }
 {   Massimo Maria Ghisalberti                                                                      }
