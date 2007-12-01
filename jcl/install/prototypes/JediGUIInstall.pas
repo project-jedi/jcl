@@ -716,16 +716,19 @@ var
   ANode: TTreeNode;
 begin
   ANode := GetNode(Id);
-  if Assigned(ANode) then
+  while Assigned(ANode) do
   begin
     ANode.ImageIndex := IcoNotInstalled;
     ANode.SelectedIndex := IcoNotInstalled;
+    ANode := ANode.Parent;
   end;
 end;
 
 procedure TInstallFrame.MarkOptionEnd(Id: Integer; Failed: Boolean);
 var
-  ANode: TTreeNode;
+  ANode, BNode: TTreeNode;
+  Index: Integer;
+  ChangeIcon: Boolean;
 begin
   {$IFDEF VCL}
   if Assigned(FFormCompile) then
@@ -738,22 +741,52 @@ begin
   end;
   {$ENDIF VCL}
   ANode := GetNode(Id);
-  if Assigned(ANode) and GetNodeChecked(ANode) then
+  while Assigned(ANode) and GetNodeChecked(ANode) do
   begin
-    if Failed then
+    ChangeIcon := (ANode.Count = 0) or Failed;
+    if not ChangeIcon then
     begin
-      ANode.ImageIndex := IcoFailed;
-      ANode.SelectedIndex := IcoFailed;
+      ChangeIcon := True;
+      for Index := 0 to ANode.Count - 1 do
+      begin
+        BNode := ANode.Item[Index];
+        case BNode.ImageIndex of
+          IcoNotInstalled:
+            begin
+              ChangeIcon := False;
+              Break;
+            end;
+          IcoFailed:
+            begin
+              Failed := True;
+              Break;
+            end;
+          IcoInstalled: ;
+        else
+          ChangeIcon := ChangeIcon and not GetNodeChecked(BNode);
+        end;
+      end;
+    end;
+    if ChangeIcon then
+    begin
+      if Failed then
+      begin
+        ANode.ImageIndex := IcoFailed;
+        ANode.SelectedIndex := IcoFailed;
+      end
+      else
+      begin
+        ANode.ImageIndex := IcoInstalled;
+        ANode.SelectedIndex := IcoInstalled;
+      end;
     end
     else
-    begin
-      ANode.ImageIndex := IcoInstalled;
-      ANode.SelectedIndex := IcoInstalled;
-    end;
-    Inc(FInstallCount);
-    if FCheckedCount > 0 then
-      SetProgress(100 * FInstallCount div FCheckedCount);
+      Break;
+    ANode := ANode.Parent;
   end;
+  Inc(FInstallCount);
+  if FCheckedCount > 0 then
+    SetProgress(100 * FInstallCount div FCheckedCount);
 end;
 
 procedure TInstallFrame.EndInstall;
