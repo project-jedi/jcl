@@ -534,7 +534,7 @@ type
     // Properties
     property ActualTabWidth: Integer read InternalTabWidth;
     property Count: Integer read GetCount;
-    property TabStops[&Index: Integer]: Integer read GetStops write SetStops; default;
+    property TabStops[Index: Integer]: Integer read GetStops write SetStops; default;
     property TabWidth: Integer read GetTabWidth write SetTabWidth;
     property ZeroBased: Boolean read GetZeroBased write SetZeroBased;
   end;
