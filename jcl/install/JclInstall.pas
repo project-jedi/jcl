@@ -1137,9 +1137,9 @@ procedure TJclInstallation.Init;
 
   procedure AddPackageOptions(Parent: TJclOption);
   begin
-    if RuntimeInstallation and Target.SupportsVCL then
+    if (CLRVersion = '') and RuntimeInstallation and Target.SupportsVCL then
       AddOption(joVclPackage, [goChecked], Parent);
-    if RuntimeInstallation and Target.SupportsVisualCLX then
+    if (CLRVersion = '') and RuntimeInstallation and Target.SupportsVisualCLX then
       AddOption(joClxPackage, [goChecked], Parent);
     if (bpBCBuilder32 in Target.Personalities) and RunTimeInstallation and (CLRVersion = '') then
     begin
