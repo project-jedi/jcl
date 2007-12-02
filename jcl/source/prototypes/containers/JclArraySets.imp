@@ -28,10 +28,7 @@ function SELFCLASSNAME.Add(PARAMETERDECLARATION): Boolean;
 var
   Idx: Integer;
 begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEBEGIN}
     Result := FAllowDefaultElements or not ItemsEqual(PARAMETERNAME, DEFAULTVALUE);
     if Result then
     begin
@@ -43,32 +40,21 @@ begin
       if Result then
         Result := inherited Insert(Idx + 1, PARAMETERNAME);
     end;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEEND}
 end;
 
 function SELFCLASSNAME.AddAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;
 var
   It: ITRINTERFACENAME;
 begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEBEGIN}
     Result := False;
     if ACollection = nil then
       Exit;
     It := ACollection.First;
     while It.HasNext do
       Result := Add(It.Next) and Result;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEEND}
 end;
 
 function SELFCLASSNAME.BinarySearch(PARAMETERDECLARATION): Integer;
@@ -76,10 +62,7 @@ var
   HiPos, LoPos, CompPos: Integer;
   Comp: Integer;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READBEGIN}
     LoPos := 0;
     HiPos := Size - 1;
     CompPos := (HiPos + LoPos) div 2;
@@ -99,31 +82,20 @@ begin
       CompPos := (HiPos + LoPos) div 2;
     end;
     Result := HiPos;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READEND}
 end;
 
 function SELFCLASSNAME.Contains(PARAMETERDECLARATION): Boolean;
 var
   Idx: Integer;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READBEGIN}
     Idx := BinarySearch(PARAMETERNAME);
     if Idx >= 0 then
       Result := ItemsEqual(GETTERNAME(Idx), PARAMETERNAME)
     else
       Result := False;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READEND}
 end;
 
 {$JPPEXPANDMACRO CREATEEMPTYCONTAINER}

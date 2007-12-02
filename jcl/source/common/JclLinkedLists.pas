@@ -29,7 +29,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -775,7 +775,7 @@ type
 
 constructor TIntfItr.Create(const AOwnList: IJclIntfList; ACursor: TJclIntfLinkedListItem; AValid: Boolean; AStart: TItrStart);
 begin
-  inherited Create(AOwnList, AValid);
+  inherited Create(AValid);
   FCursor := ACursor;
   FOwnList := AOwnList;
   FStart := AStart;
@@ -837,7 +837,7 @@ end;
 function TIntfItr.HasNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -846,7 +846,7 @@ begin
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -854,7 +854,7 @@ end;
 function TIntfItr.HasPrevious: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -863,7 +863,7 @@ begin
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -872,8 +872,10 @@ function TIntfItr.Insert(const AInterface: IInterface): Boolean;
 var
   NewCursor: TJclIntfLinkedListItem;
 begin
+  if FOwnList.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnList.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -910,7 +912,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnList.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -919,7 +921,7 @@ end;
 function TIntfItr.MoveNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid and (FCursor <> nil) then
@@ -929,7 +931,7 @@ begin
     Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -938,7 +940,7 @@ end;
 function TIntfItr.Next: IInterface;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid and (FCursor <> nil) then
@@ -951,7 +953,7 @@ begin
       Result := nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -965,7 +967,7 @@ end;
 function TIntfItr.Previous: IInterface;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid and (FCursor <> nil) then
@@ -978,7 +980,7 @@ begin
       Result := nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -993,8 +995,10 @@ procedure TIntfItr.Remove;
 var
   OldCursor: TJclIntfLinkedListItem;
 begin
+  if FOwnList.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnList.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -1012,7 +1016,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnList.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1020,7 +1024,7 @@ end;
 procedure TIntfItr.Reset;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Valid := False;
@@ -1038,15 +1042,17 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
 
 procedure TIntfItr.SetObject(const AInterface: IInterface);
 begin
+  if FOwnList.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnList.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -1054,7 +1060,7 @@ begin
     FCursor.Value := AInterface;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnList.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1099,7 +1105,7 @@ type
 
 constructor TAnsiStrItr.Create(const AOwnList: IJclAnsiStrList; ACursor: TJclAnsiStrLinkedListItem; AValid: Boolean; AStart: TItrStart);
 begin
-  inherited Create(AOwnList, AValid);
+  inherited Create(AValid);
   FCursor := ACursor;
   FOwnList := AOwnList;
   FStart := AStart;
@@ -1161,7 +1167,7 @@ end;
 function TAnsiStrItr.HasNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -1170,7 +1176,7 @@ begin
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1178,7 +1184,7 @@ end;
 function TAnsiStrItr.HasPrevious: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -1187,7 +1193,7 @@ begin
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1196,8 +1202,10 @@ function TAnsiStrItr.Insert(const AString: AnsiString): Boolean;
 var
   NewCursor: TJclAnsiStrLinkedListItem;
 begin
+  if FOwnList.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnList.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -1234,7 +1242,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnList.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1243,7 +1251,7 @@ end;
 function TAnsiStrItr.MoveNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid and (FCursor <> nil) then
@@ -1253,7 +1261,7 @@ begin
     Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1262,7 +1270,7 @@ end;
 function TAnsiStrItr.Next: AnsiString;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid and (FCursor <> nil) then
@@ -1275,7 +1283,7 @@ begin
       Result := '';
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1289,7 +1297,7 @@ end;
 function TAnsiStrItr.Previous: AnsiString;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid and (FCursor <> nil) then
@@ -1302,7 +1310,7 @@ begin
       Result := '';
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1317,8 +1325,10 @@ procedure TAnsiStrItr.Remove;
 var
   OldCursor: TJclAnsiStrLinkedListItem;
 begin
+  if FOwnList.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnList.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -1336,7 +1346,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnList.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1344,7 +1354,7 @@ end;
 procedure TAnsiStrItr.Reset;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Valid := False;
@@ -1362,15 +1372,17 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
 
 procedure TAnsiStrItr.SetString(const AString: AnsiString);
 begin
+  if FOwnList.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnList.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -1378,7 +1390,7 @@ begin
     FCursor.Value := AString;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnList.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1423,7 +1435,7 @@ type
 
 constructor TWideStrItr.Create(const AOwnList: IJclWideStrList; ACursor: TJclWideStrLinkedListItem; AValid: Boolean; AStart: TItrStart);
 begin
-  inherited Create(AOwnList, AValid);
+  inherited Create(AValid);
   FCursor := ACursor;
   FOwnList := AOwnList;
   FStart := AStart;
@@ -1485,7 +1497,7 @@ end;
 function TWideStrItr.HasNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -1494,7 +1506,7 @@ begin
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1502,7 +1514,7 @@ end;
 function TWideStrItr.HasPrevious: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -1511,7 +1523,7 @@ begin
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1520,8 +1532,10 @@ function TWideStrItr.Insert(const AString: WideString): Boolean;
 var
   NewCursor: TJclWideStrLinkedListItem;
 begin
+  if FOwnList.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnList.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -1558,7 +1572,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnList.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1567,7 +1581,7 @@ end;
 function TWideStrItr.MoveNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid and (FCursor <> nil) then
@@ -1577,7 +1591,7 @@ begin
     Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1586,7 +1600,7 @@ end;
 function TWideStrItr.Next: WideString;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid and (FCursor <> nil) then
@@ -1599,7 +1613,7 @@ begin
       Result := '';
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1613,7 +1627,7 @@ end;
 function TWideStrItr.Previous: WideString;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid and (FCursor <> nil) then
@@ -1626,7 +1640,7 @@ begin
       Result := '';
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1641,8 +1655,10 @@ procedure TWideStrItr.Remove;
 var
   OldCursor: TJclWideStrLinkedListItem;
 begin
+  if FOwnList.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnList.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -1660,7 +1676,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnList.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1668,7 +1684,7 @@ end;
 procedure TWideStrItr.Reset;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Valid := False;
@@ -1686,15 +1702,17 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
 
 procedure TWideStrItr.SetString(const AString: WideString);
 begin
+  if FOwnList.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnList.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -1702,7 +1720,7 @@ begin
     FCursor.Value := AString;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnList.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1747,7 +1765,7 @@ type
 
 constructor TSingleItr.Create(const AOwnList: IJclSingleList; ACursor: TJclSingleLinkedListItem; AValid: Boolean; AStart: TItrStart);
 begin
-  inherited Create(AOwnList, AValid);
+  inherited Create(AValid);
   FCursor := ACursor;
   FOwnList := AOwnList;
   FStart := AStart;
@@ -1809,7 +1827,7 @@ end;
 function TSingleItr.HasNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -1818,7 +1836,7 @@ begin
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1826,7 +1844,7 @@ end;
 function TSingleItr.HasPrevious: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -1835,7 +1853,7 @@ begin
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1844,8 +1862,10 @@ function TSingleItr.Insert(const AValue: Single): Boolean;
 var
   NewCursor: TJclSingleLinkedListItem;
 begin
+  if FOwnList.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnList.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -1882,7 +1902,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnList.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1891,7 +1911,7 @@ end;
 function TSingleItr.MoveNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid and (FCursor <> nil) then
@@ -1901,7 +1921,7 @@ begin
     Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1910,7 +1930,7 @@ end;
 function TSingleItr.Next: Single;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid and (FCursor <> nil) then
@@ -1923,7 +1943,7 @@ begin
       Result := 0.0;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1937,7 +1957,7 @@ end;
 function TSingleItr.Previous: Single;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid and (FCursor <> nil) then
@@ -1950,7 +1970,7 @@ begin
       Result := 0.0;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1965,8 +1985,10 @@ procedure TSingleItr.Remove;
 var
   OldCursor: TJclSingleLinkedListItem;
 begin
+  if FOwnList.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnList.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -1984,7 +2006,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnList.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1992,7 +2014,7 @@ end;
 procedure TSingleItr.Reset;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Valid := False;
@@ -2010,15 +2032,17 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
 
 procedure TSingleItr.SetValue(const AValue: Single);
 begin
+  if FOwnList.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnList.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -2026,7 +2050,7 @@ begin
     FCursor.Value := AValue;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnList.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2071,7 +2095,7 @@ type
 
 constructor TDoubleItr.Create(const AOwnList: IJclDoubleList; ACursor: TJclDoubleLinkedListItem; AValid: Boolean; AStart: TItrStart);
 begin
-  inherited Create(AOwnList, AValid);
+  inherited Create(AValid);
   FCursor := ACursor;
   FOwnList := AOwnList;
   FStart := AStart;
@@ -2133,7 +2157,7 @@ end;
 function TDoubleItr.HasNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -2142,7 +2166,7 @@ begin
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2150,7 +2174,7 @@ end;
 function TDoubleItr.HasPrevious: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -2159,7 +2183,7 @@ begin
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2168,8 +2192,10 @@ function TDoubleItr.Insert(const AValue: Double): Boolean;
 var
   NewCursor: TJclDoubleLinkedListItem;
 begin
+  if FOwnList.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnList.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -2206,7 +2232,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnList.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2215,7 +2241,7 @@ end;
 function TDoubleItr.MoveNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid and (FCursor <> nil) then
@@ -2225,7 +2251,7 @@ begin
     Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2234,7 +2260,7 @@ end;
 function TDoubleItr.Next: Double;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid and (FCursor <> nil) then
@@ -2247,7 +2273,7 @@ begin
       Result := 0.0;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2261,7 +2287,7 @@ end;
 function TDoubleItr.Previous: Double;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid and (FCursor <> nil) then
@@ -2274,7 +2300,7 @@ begin
       Result := 0.0;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2289,8 +2315,10 @@ procedure TDoubleItr.Remove;
 var
   OldCursor: TJclDoubleLinkedListItem;
 begin
+  if FOwnList.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnList.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -2308,7 +2336,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnList.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2316,7 +2344,7 @@ end;
 procedure TDoubleItr.Reset;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Valid := False;
@@ -2334,15 +2362,17 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
 
 procedure TDoubleItr.SetValue(const AValue: Double);
 begin
+  if FOwnList.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnList.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -2350,7 +2380,7 @@ begin
     FCursor.Value := AValue;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnList.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2395,7 +2425,7 @@ type
 
 constructor TExtendedItr.Create(const AOwnList: IJclExtendedList; ACursor: TJclExtendedLinkedListItem; AValid: Boolean; AStart: TItrStart);
 begin
-  inherited Create(AOwnList, AValid);
+  inherited Create(AValid);
   FCursor := ACursor;
   FOwnList := AOwnList;
   FStart := AStart;
@@ -2457,7 +2487,7 @@ end;
 function TExtendedItr.HasNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -2466,7 +2496,7 @@ begin
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2474,7 +2504,7 @@ end;
 function TExtendedItr.HasPrevious: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -2483,7 +2513,7 @@ begin
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2492,8 +2522,10 @@ function TExtendedItr.Insert(const AValue: Extended): Boolean;
 var
   NewCursor: TJclExtendedLinkedListItem;
 begin
+  if FOwnList.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnList.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -2530,7 +2562,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnList.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2539,7 +2571,7 @@ end;
 function TExtendedItr.MoveNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid and (FCursor <> nil) then
@@ -2549,7 +2581,7 @@ begin
     Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2558,7 +2590,7 @@ end;
 function TExtendedItr.Next: Extended;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid and (FCursor <> nil) then
@@ -2571,7 +2603,7 @@ begin
       Result := 0.0;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2585,7 +2617,7 @@ end;
 function TExtendedItr.Previous: Extended;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid and (FCursor <> nil) then
@@ -2598,7 +2630,7 @@ begin
       Result := 0.0;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2613,8 +2645,10 @@ procedure TExtendedItr.Remove;
 var
   OldCursor: TJclExtendedLinkedListItem;
 begin
+  if FOwnList.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnList.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -2632,7 +2666,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnList.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2640,7 +2674,7 @@ end;
 procedure TExtendedItr.Reset;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Valid := False;
@@ -2658,15 +2692,17 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
 
 procedure TExtendedItr.SetValue(const AValue: Extended);
 begin
+  if FOwnList.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnList.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -2674,7 +2710,7 @@ begin
     FCursor.Value := AValue;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnList.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2719,7 +2755,7 @@ type
 
 constructor TIntegerItr.Create(const AOwnList: IJclIntegerList; ACursor: TJclIntegerLinkedListItem; AValid: Boolean; AStart: TItrStart);
 begin
-  inherited Create(AOwnList, AValid);
+  inherited Create(AValid);
   FCursor := ACursor;
   FOwnList := AOwnList;
   FStart := AStart;
@@ -2781,7 +2817,7 @@ end;
 function TIntegerItr.HasNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -2790,7 +2826,7 @@ begin
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2798,7 +2834,7 @@ end;
 function TIntegerItr.HasPrevious: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -2807,7 +2843,7 @@ begin
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2816,8 +2852,10 @@ function TIntegerItr.Insert(AValue: Integer): Boolean;
 var
   NewCursor: TJclIntegerLinkedListItem;
 begin
+  if FOwnList.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnList.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -2854,7 +2892,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnList.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2863,7 +2901,7 @@ end;
 function TIntegerItr.MoveNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid and (FCursor <> nil) then
@@ -2873,7 +2911,7 @@ begin
     Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2882,7 +2920,7 @@ end;
 function TIntegerItr.Next: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid and (FCursor <> nil) then
@@ -2895,7 +2933,7 @@ begin
       Result := 0;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2909,7 +2947,7 @@ end;
 function TIntegerItr.Previous: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid and (FCursor <> nil) then
@@ -2922,7 +2960,7 @@ begin
       Result := 0;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2937,8 +2975,10 @@ procedure TIntegerItr.Remove;
 var
   OldCursor: TJclIntegerLinkedListItem;
 begin
+  if FOwnList.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnList.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -2956,7 +2996,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnList.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2964,7 +3004,7 @@ end;
 procedure TIntegerItr.Reset;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Valid := False;
@@ -2982,15 +3022,17 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
 
 procedure TIntegerItr.SetValue(AValue: Integer);
 begin
+  if FOwnList.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnList.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -2998,7 +3040,7 @@ begin
     FCursor.Value := AValue;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnList.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3043,7 +3085,7 @@ type
 
 constructor TCardinalItr.Create(const AOwnList: IJclCardinalList; ACursor: TJclCardinalLinkedListItem; AValid: Boolean; AStart: TItrStart);
 begin
-  inherited Create(AOwnList, AValid);
+  inherited Create(AValid);
   FCursor := ACursor;
   FOwnList := AOwnList;
   FStart := AStart;
@@ -3105,7 +3147,7 @@ end;
 function TCardinalItr.HasNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -3114,7 +3156,7 @@ begin
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3122,7 +3164,7 @@ end;
 function TCardinalItr.HasPrevious: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -3131,7 +3173,7 @@ begin
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3140,8 +3182,10 @@ function TCardinalItr.Insert(AValue: Cardinal): Boolean;
 var
   NewCursor: TJclCardinalLinkedListItem;
 begin
+  if FOwnList.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnList.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -3178,7 +3222,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnList.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3187,7 +3231,7 @@ end;
 function TCardinalItr.MoveNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid and (FCursor <> nil) then
@@ -3197,7 +3241,7 @@ begin
     Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3206,7 +3250,7 @@ end;
 function TCardinalItr.Next: Cardinal;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid and (FCursor <> nil) then
@@ -3219,7 +3263,7 @@ begin
       Result := 0;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3233,7 +3277,7 @@ end;
 function TCardinalItr.Previous: Cardinal;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid and (FCursor <> nil) then
@@ -3246,7 +3290,7 @@ begin
       Result := 0;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3261,8 +3305,10 @@ procedure TCardinalItr.Remove;
 var
   OldCursor: TJclCardinalLinkedListItem;
 begin
+  if FOwnList.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnList.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -3280,7 +3326,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnList.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3288,7 +3334,7 @@ end;
 procedure TCardinalItr.Reset;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Valid := False;
@@ -3306,15 +3352,17 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
 
 procedure TCardinalItr.SetValue(AValue: Cardinal);
 begin
+  if FOwnList.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnList.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -3322,7 +3370,7 @@ begin
     FCursor.Value := AValue;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnList.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3367,7 +3415,7 @@ type
 
 constructor TInt64Itr.Create(const AOwnList: IJclInt64List; ACursor: TJclInt64LinkedListItem; AValid: Boolean; AStart: TItrStart);
 begin
-  inherited Create(AOwnList, AValid);
+  inherited Create(AValid);
   FCursor := ACursor;
   FOwnList := AOwnList;
   FStart := AStart;
@@ -3429,7 +3477,7 @@ end;
 function TInt64Itr.HasNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -3438,7 +3486,7 @@ begin
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3446,7 +3494,7 @@ end;
 function TInt64Itr.HasPrevious: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -3455,7 +3503,7 @@ begin
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3464,8 +3512,10 @@ function TInt64Itr.Insert(const AValue: Int64): Boolean;
 var
   NewCursor: TJclInt64LinkedListItem;
 begin
+  if FOwnList.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnList.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -3502,7 +3552,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnList.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3511,7 +3561,7 @@ end;
 function TInt64Itr.MoveNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid and (FCursor <> nil) then
@@ -3521,7 +3571,7 @@ begin
     Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3530,7 +3580,7 @@ end;
 function TInt64Itr.Next: Int64;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid and (FCursor <> nil) then
@@ -3543,7 +3593,7 @@ begin
       Result := 0;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3557,7 +3607,7 @@ end;
 function TInt64Itr.Previous: Int64;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid and (FCursor <> nil) then
@@ -3570,7 +3620,7 @@ begin
       Result := 0;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3585,8 +3635,10 @@ procedure TInt64Itr.Remove;
 var
   OldCursor: TJclInt64LinkedListItem;
 begin
+  if FOwnList.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnList.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -3604,7 +3656,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnList.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3612,7 +3664,7 @@ end;
 procedure TInt64Itr.Reset;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Valid := False;
@@ -3630,15 +3682,17 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
 
 procedure TInt64Itr.SetValue(const AValue: Int64);
 begin
+  if FOwnList.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnList.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -3646,7 +3700,7 @@ begin
     FCursor.Value := AValue;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnList.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3692,7 +3746,7 @@ type
 
 constructor TPtrItr.Create(const AOwnList: IJclPtrList; ACursor: TJclPtrLinkedListItem; AValid: Boolean; AStart: TItrStart);
 begin
-  inherited Create(AOwnList, AValid);
+  inherited Create(AValid);
   FCursor := ACursor;
   FOwnList := AOwnList;
   FStart := AStart;
@@ -3754,7 +3808,7 @@ end;
 function TPtrItr.HasNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -3763,7 +3817,7 @@ begin
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3771,7 +3825,7 @@ end;
 function TPtrItr.HasPrevious: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -3780,7 +3834,7 @@ begin
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3789,8 +3843,10 @@ function TPtrItr.Insert(AValue: Pointer): Boolean;
 var
   NewCursor: TJclPtrLinkedListItem;
 begin
+  if FOwnList.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnList.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -3827,7 +3883,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnList.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3836,7 +3892,7 @@ end;
 function TPtrItr.MoveNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid and (FCursor <> nil) then
@@ -3846,7 +3902,7 @@ begin
     Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3855,7 +3911,7 @@ end;
 function TPtrItr.Next: Pointer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid and (FCursor <> nil) then
@@ -3868,7 +3924,7 @@ begin
       Result := nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3882,7 +3938,7 @@ end;
 function TPtrItr.Previous: Pointer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid and (FCursor <> nil) then
@@ -3895,7 +3951,7 @@ begin
       Result := nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3910,8 +3966,10 @@ procedure TPtrItr.Remove;
 var
   OldCursor: TJclPtrLinkedListItem;
 begin
+  if FOwnList.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnList.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -3929,7 +3987,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnList.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3937,7 +3995,7 @@ end;
 procedure TPtrItr.Reset;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Valid := False;
@@ -3955,15 +4013,17 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
 
 procedure TPtrItr.SetPtr(AValue: Pointer);
 begin
+  if FOwnList.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnList.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -3971,7 +4031,7 @@ begin
     FCursor.Value := AValue;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnList.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4017,7 +4077,7 @@ type
 
 constructor TItr.Create(const AOwnList: IJclList; ACursor: TJclLinkedListItem; AValid: Boolean; AStart: TItrStart);
 begin
-  inherited Create(AOwnList, AValid);
+  inherited Create(AValid);
   FCursor := ACursor;
   FOwnList := AOwnList;
   FStart := AStart;
@@ -4079,7 +4139,7 @@ end;
 function TItr.HasNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -4088,7 +4148,7 @@ begin
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4096,7 +4156,7 @@ end;
 function TItr.HasPrevious: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -4105,7 +4165,7 @@ begin
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4114,8 +4174,10 @@ function TItr.Insert(AObject: TObject): Boolean;
 var
   NewCursor: TJclLinkedListItem;
 begin
+  if FOwnList.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnList.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -4152,7 +4214,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnList.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4161,7 +4223,7 @@ end;
 function TItr.MoveNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid and (FCursor <> nil) then
@@ -4171,7 +4233,7 @@ begin
     Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4180,7 +4242,7 @@ end;
 function TItr.Next: TObject;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid and (FCursor <> nil) then
@@ -4193,7 +4255,7 @@ begin
       Result := nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4207,7 +4269,7 @@ end;
 function TItr.Previous: TObject;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid and (FCursor <> nil) then
@@ -4220,7 +4282,7 @@ begin
       Result := nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4235,8 +4297,10 @@ procedure TItr.Remove;
 var
   OldCursor: TJclLinkedListItem;
 begin
+  if FOwnList.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnList.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -4254,7 +4318,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnList.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4262,7 +4326,7 @@ end;
 procedure TItr.Reset;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Valid := False;
@@ -4280,15 +4344,17 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
 
 procedure TItr.SetObject(AObject: TObject);
 begin
+  if FOwnList.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnList.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -4296,7 +4362,7 @@ begin
     FCursor.Value := AObject;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnList.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4343,7 +4409,7 @@ type
 
 constructor TItr<T>.Create(const AOwnList: IJclList<T>; ACursor: TJclLinkedListItem<T>; AValid: Boolean; AStart: TItrStart);
 begin
-  inherited Create(AOwnList, AValid);
+  inherited Create(AValid);
   FCursor := ACursor;
   FOwnList := AOwnList;
   FStart := AStart;
@@ -4405,7 +4471,7 @@ end;
 function TItr<T>.HasNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -4414,7 +4480,7 @@ begin
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4422,7 +4488,7 @@ end;
 function TItr<T>.HasPrevious: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -4431,7 +4497,7 @@ begin
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4440,8 +4506,10 @@ function TItr<T>.Insert(const AItem: T): Boolean;
 var
   NewCursor: TJclLinkedListItem<T>;
 begin
+  if FOwnList.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnList.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -4478,7 +4546,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnList.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4487,7 +4555,7 @@ end;
 function TItr<T>.MoveNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid and (FCursor <> nil) then
@@ -4497,7 +4565,7 @@ begin
     Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4506,7 +4574,7 @@ end;
 function TItr<T>.Next: T;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid and (FCursor <> nil) then
@@ -4519,7 +4587,7 @@ begin
       Result := Default(T);
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4533,7 +4601,7 @@ end;
 function TItr<T>.Previous: T;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid and (FCursor <> nil) then
@@ -4546,7 +4614,7 @@ begin
       Result := Default(T);
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4561,8 +4629,10 @@ procedure TItr<T>.Remove;
 var
   OldCursor: TJclLinkedListItem<T>;
 begin
+  if FOwnList.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnList.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -4580,7 +4650,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnList.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4588,7 +4658,7 @@ end;
 procedure TItr<T>.Reset;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnList.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Valid := False;
@@ -4606,15 +4676,17 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnList.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
 
 procedure TItr<T>.SetItem(const AItem: T);
 begin
+  if FOwnList.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnList.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -4622,19 +4694,21 @@ begin
     FCursor.Value := AItem;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnList.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
 
+
 {$ENDIF SUPPORTS_GENERICS}
+
 
 
 //=== { TJclLinkedList<T> } ==================================================
 
 constructor TJclIntfLinkedList.Create(const ACollection: IJclIntfCollection);
 begin
-  inherited Create(nil);
+  inherited Create();
   FStart := nil;
   FEnd := nil;
   if ACollection <> nil then
@@ -4643,6 +4717,7 @@ end;
 
 destructor TJclIntfLinkedList.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -4651,6 +4726,8 @@ function TJclIntfLinkedList.Add(const AInterface: IInterface): Boolean;
 var
   NewItem: TJclIntfLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4704,6 +4781,8 @@ var
   AddItem: Boolean;
   NewItem: TJclIntfLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4776,6 +4855,8 @@ procedure TJclIntfLinkedList.Clear;
 var
   Old, Current: TJclIntfLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4858,6 +4939,8 @@ function TJclIntfLinkedList.Delete(Index: Integer): IInterface;
 var
   Current: TJclIntfLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4992,6 +5075,8 @@ function TJclIntfLinkedList.Insert(Index: Integer; const AInterface: IInterface)
 var
   Current, NewItem: TJclIntfLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5070,6 +5155,8 @@ var
   AddItem: Boolean;
   Item: IInterface;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5250,6 +5337,8 @@ function TJclIntfLinkedList.Remove(const AInterface: IInterface): Boolean;
 var
   Current: TJclIntfLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5288,6 +5377,8 @@ function TJclIntfLinkedList.RemoveAll(const ACollection: IJclIntfCollection): Bo
 var
   It: IJclIntfIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5309,6 +5400,8 @@ function TJclIntfLinkedList.RetainAll(const ACollection: IJclIntfCollection): Bo
 var
   It: IJclIntfIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5333,6 +5426,8 @@ var
   Current: TJclIntfLinkedListItem;
   ReplaceItem: Boolean;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5412,11 +5507,13 @@ begin
 end;
 
 
+
+
 //=== { TJclLinkedList<T> } ==================================================
 
 constructor TJclAnsiStrLinkedList.Create(const ACollection: IJclAnsiStrCollection);
 begin
-  inherited Create(nil);
+  inherited Create();
   FStart := nil;
   FEnd := nil;
   if ACollection <> nil then
@@ -5425,6 +5522,7 @@ end;
 
 destructor TJclAnsiStrLinkedList.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -5433,6 +5531,8 @@ function TJclAnsiStrLinkedList.Add(const AString: AnsiString): Boolean;
 var
   NewItem: TJclAnsiStrLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5486,6 +5586,8 @@ var
   AddItem: Boolean;
   NewItem: TJclAnsiStrLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5558,6 +5660,8 @@ procedure TJclAnsiStrLinkedList.Clear;
 var
   Old, Current: TJclAnsiStrLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5640,6 +5744,8 @@ function TJclAnsiStrLinkedList.Delete(Index: Integer): AnsiString;
 var
   Current: TJclAnsiStrLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5774,6 +5880,8 @@ function TJclAnsiStrLinkedList.Insert(Index: Integer; const AString: AnsiString)
 var
   Current, NewItem: TJclAnsiStrLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5852,6 +5960,8 @@ var
   AddItem: Boolean;
   Item: AnsiString;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6032,6 +6142,8 @@ function TJclAnsiStrLinkedList.Remove(const AString: AnsiString): Boolean;
 var
   Current: TJclAnsiStrLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6070,6 +6182,8 @@ function TJclAnsiStrLinkedList.RemoveAll(const ACollection: IJclAnsiStrCollectio
 var
   It: IJclAnsiStrIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6091,6 +6205,8 @@ function TJclAnsiStrLinkedList.RetainAll(const ACollection: IJclAnsiStrCollectio
 var
   It: IJclAnsiStrIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6115,6 +6231,8 @@ var
   Current: TJclAnsiStrLinkedListItem;
   ReplaceItem: Boolean;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6194,11 +6312,13 @@ begin
 end;
 
 
+
+
 //=== { TJclLinkedList<T> } ==================================================
 
 constructor TJclWideStrLinkedList.Create(const ACollection: IJclWideStrCollection);
 begin
-  inherited Create(nil);
+  inherited Create();
   FStart := nil;
   FEnd := nil;
   if ACollection <> nil then
@@ -6207,6 +6327,7 @@ end;
 
 destructor TJclWideStrLinkedList.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -6215,6 +6336,8 @@ function TJclWideStrLinkedList.Add(const AString: WideString): Boolean;
 var
   NewItem: TJclWideStrLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6268,6 +6391,8 @@ var
   AddItem: Boolean;
   NewItem: TJclWideStrLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6340,6 +6465,8 @@ procedure TJclWideStrLinkedList.Clear;
 var
   Old, Current: TJclWideStrLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6422,6 +6549,8 @@ function TJclWideStrLinkedList.Delete(Index: Integer): WideString;
 var
   Current: TJclWideStrLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6556,6 +6685,8 @@ function TJclWideStrLinkedList.Insert(Index: Integer; const AString: WideString)
 var
   Current, NewItem: TJclWideStrLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6634,6 +6765,8 @@ var
   AddItem: Boolean;
   Item: WideString;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6814,6 +6947,8 @@ function TJclWideStrLinkedList.Remove(const AString: WideString): Boolean;
 var
   Current: TJclWideStrLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6852,6 +6987,8 @@ function TJclWideStrLinkedList.RemoveAll(const ACollection: IJclWideStrCollectio
 var
   It: IJclWideStrIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6873,6 +7010,8 @@ function TJclWideStrLinkedList.RetainAll(const ACollection: IJclWideStrCollectio
 var
   It: IJclWideStrIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6897,6 +7036,8 @@ var
   Current: TJclWideStrLinkedListItem;
   ReplaceItem: Boolean;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6980,7 +7121,7 @@ end;
 
 constructor TJclSingleLinkedList.Create(const ACollection: IJclSingleCollection);
 begin
-  inherited Create(nil);
+  inherited Create();
   FStart := nil;
   FEnd := nil;
   if ACollection <> nil then
@@ -6989,6 +7130,7 @@ end;
 
 destructor TJclSingleLinkedList.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -6997,6 +7139,8 @@ function TJclSingleLinkedList.Add(const AValue: Single): Boolean;
 var
   NewItem: TJclSingleLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7050,6 +7194,8 @@ var
   AddItem: Boolean;
   NewItem: TJclSingleLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7122,6 +7268,8 @@ procedure TJclSingleLinkedList.Clear;
 var
   Old, Current: TJclSingleLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7204,6 +7352,8 @@ function TJclSingleLinkedList.Delete(Index: Integer): Single;
 var
   Current: TJclSingleLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7338,6 +7488,8 @@ function TJclSingleLinkedList.Insert(Index: Integer; const AValue: Single): Bool
 var
   Current, NewItem: TJclSingleLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7416,6 +7568,8 @@ var
   AddItem: Boolean;
   Item: Single;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7596,6 +7750,8 @@ function TJclSingleLinkedList.Remove(const AValue: Single): Boolean;
 var
   Current: TJclSingleLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7634,6 +7790,8 @@ function TJclSingleLinkedList.RemoveAll(const ACollection: IJclSingleCollection)
 var
   It: IJclSingleIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7655,6 +7813,8 @@ function TJclSingleLinkedList.RetainAll(const ACollection: IJclSingleCollection)
 var
   It: IJclSingleIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7679,6 +7839,8 @@ var
   Current: TJclSingleLinkedListItem;
   ReplaceItem: Boolean;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7758,11 +7920,13 @@ begin
 end;
 
 
+
+
 //=== { TJclLinkedList<T> } ==================================================
 
 constructor TJclDoubleLinkedList.Create(const ACollection: IJclDoubleCollection);
 begin
-  inherited Create(nil);
+  inherited Create();
   FStart := nil;
   FEnd := nil;
   if ACollection <> nil then
@@ -7771,6 +7935,7 @@ end;
 
 destructor TJclDoubleLinkedList.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -7779,6 +7944,8 @@ function TJclDoubleLinkedList.Add(const AValue: Double): Boolean;
 var
   NewItem: TJclDoubleLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7832,6 +7999,8 @@ var
   AddItem: Boolean;
   NewItem: TJclDoubleLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7904,6 +8073,8 @@ procedure TJclDoubleLinkedList.Clear;
 var
   Old, Current: TJclDoubleLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7986,6 +8157,8 @@ function TJclDoubleLinkedList.Delete(Index: Integer): Double;
 var
   Current: TJclDoubleLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8120,6 +8293,8 @@ function TJclDoubleLinkedList.Insert(Index: Integer; const AValue: Double): Bool
 var
   Current, NewItem: TJclDoubleLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8198,6 +8373,8 @@ var
   AddItem: Boolean;
   Item: Double;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8378,6 +8555,8 @@ function TJclDoubleLinkedList.Remove(const AValue: Double): Boolean;
 var
   Current: TJclDoubleLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8416,6 +8595,8 @@ function TJclDoubleLinkedList.RemoveAll(const ACollection: IJclDoubleCollection)
 var
   It: IJclDoubleIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8437,6 +8618,8 @@ function TJclDoubleLinkedList.RetainAll(const ACollection: IJclDoubleCollection)
 var
   It: IJclDoubleIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8461,6 +8644,8 @@ var
   Current: TJclDoubleLinkedListItem;
   ReplaceItem: Boolean;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8540,11 +8725,13 @@ begin
 end;
 
 
+
+
 //=== { TJclLinkedList<T> } ==================================================
 
 constructor TJclExtendedLinkedList.Create(const ACollection: IJclExtendedCollection);
 begin
-  inherited Create(nil);
+  inherited Create();
   FStart := nil;
   FEnd := nil;
   if ACollection <> nil then
@@ -8553,6 +8740,7 @@ end;
 
 destructor TJclExtendedLinkedList.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -8561,6 +8749,8 @@ function TJclExtendedLinkedList.Add(const AValue: Extended): Boolean;
 var
   NewItem: TJclExtendedLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8614,6 +8804,8 @@ var
   AddItem: Boolean;
   NewItem: TJclExtendedLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8686,6 +8878,8 @@ procedure TJclExtendedLinkedList.Clear;
 var
   Old, Current: TJclExtendedLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8768,6 +8962,8 @@ function TJclExtendedLinkedList.Delete(Index: Integer): Extended;
 var
   Current: TJclExtendedLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8902,6 +9098,8 @@ function TJclExtendedLinkedList.Insert(Index: Integer; const AValue: Extended): 
 var
   Current, NewItem: TJclExtendedLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8980,6 +9178,8 @@ var
   AddItem: Boolean;
   Item: Extended;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -9160,6 +9360,8 @@ function TJclExtendedLinkedList.Remove(const AValue: Extended): Boolean;
 var
   Current: TJclExtendedLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -9198,6 +9400,8 @@ function TJclExtendedLinkedList.RemoveAll(const ACollection: IJclExtendedCollect
 var
   It: IJclExtendedIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -9219,6 +9423,8 @@ function TJclExtendedLinkedList.RetainAll(const ACollection: IJclExtendedCollect
 var
   It: IJclExtendedIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -9243,6 +9449,8 @@ var
   Current: TJclExtendedLinkedListItem;
   ReplaceItem: Boolean;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -9322,11 +9530,13 @@ begin
 end;
 
 
+
+
 //=== { TJclLinkedList<T> } ==================================================
 
 constructor TJclIntegerLinkedList.Create(const ACollection: IJclIntegerCollection);
 begin
-  inherited Create(nil);
+  inherited Create();
   FStart := nil;
   FEnd := nil;
   if ACollection <> nil then
@@ -9335,6 +9545,7 @@ end;
 
 destructor TJclIntegerLinkedList.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -9343,6 +9554,8 @@ function TJclIntegerLinkedList.Add(AValue: Integer): Boolean;
 var
   NewItem: TJclIntegerLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -9396,6 +9609,8 @@ var
   AddItem: Boolean;
   NewItem: TJclIntegerLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -9468,6 +9683,8 @@ procedure TJclIntegerLinkedList.Clear;
 var
   Old, Current: TJclIntegerLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -9550,6 +9767,8 @@ function TJclIntegerLinkedList.Delete(Index: Integer): Integer;
 var
   Current: TJclIntegerLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -9684,6 +9903,8 @@ function TJclIntegerLinkedList.Insert(Index: Integer; AValue: Integer): Boolean;
 var
   Current, NewItem: TJclIntegerLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -9762,6 +9983,8 @@ var
   AddItem: Boolean;
   Item: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -9942,6 +10165,8 @@ function TJclIntegerLinkedList.Remove(AValue: Integer): Boolean;
 var
   Current: TJclIntegerLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -9980,6 +10205,8 @@ function TJclIntegerLinkedList.RemoveAll(const ACollection: IJclIntegerCollectio
 var
   It: IJclIntegerIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -10001,6 +10228,8 @@ function TJclIntegerLinkedList.RetainAll(const ACollection: IJclIntegerCollectio
 var
   It: IJclIntegerIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -10025,6 +10254,8 @@ var
   Current: TJclIntegerLinkedListItem;
   ReplaceItem: Boolean;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -10108,7 +10339,7 @@ end;
 
 constructor TJclCardinalLinkedList.Create(const ACollection: IJclCardinalCollection);
 begin
-  inherited Create(nil);
+  inherited Create();
   FStart := nil;
   FEnd := nil;
   if ACollection <> nil then
@@ -10117,6 +10348,7 @@ end;
 
 destructor TJclCardinalLinkedList.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -10125,6 +10357,8 @@ function TJclCardinalLinkedList.Add(AValue: Cardinal): Boolean;
 var
   NewItem: TJclCardinalLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -10178,6 +10412,8 @@ var
   AddItem: Boolean;
   NewItem: TJclCardinalLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -10250,6 +10486,8 @@ procedure TJclCardinalLinkedList.Clear;
 var
   Old, Current: TJclCardinalLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -10332,6 +10570,8 @@ function TJclCardinalLinkedList.Delete(Index: Integer): Cardinal;
 var
   Current: TJclCardinalLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -10466,6 +10706,8 @@ function TJclCardinalLinkedList.Insert(Index: Integer; AValue: Cardinal): Boolea
 var
   Current, NewItem: TJclCardinalLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -10544,6 +10786,8 @@ var
   AddItem: Boolean;
   Item: Cardinal;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -10724,6 +10968,8 @@ function TJclCardinalLinkedList.Remove(AValue: Cardinal): Boolean;
 var
   Current: TJclCardinalLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -10762,6 +11008,8 @@ function TJclCardinalLinkedList.RemoveAll(const ACollection: IJclCardinalCollect
 var
   It: IJclCardinalIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -10783,6 +11031,8 @@ function TJclCardinalLinkedList.RetainAll(const ACollection: IJclCardinalCollect
 var
   It: IJclCardinalIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -10807,6 +11057,8 @@ var
   Current: TJclCardinalLinkedListItem;
   ReplaceItem: Boolean;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -10890,7 +11142,7 @@ end;
 
 constructor TJclInt64LinkedList.Create(const ACollection: IJclInt64Collection);
 begin
-  inherited Create(nil);
+  inherited Create();
   FStart := nil;
   FEnd := nil;
   if ACollection <> nil then
@@ -10899,6 +11151,7 @@ end;
 
 destructor TJclInt64LinkedList.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -10907,6 +11160,8 @@ function TJclInt64LinkedList.Add(const AValue: Int64): Boolean;
 var
   NewItem: TJclInt64LinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -10960,6 +11215,8 @@ var
   AddItem: Boolean;
   NewItem: TJclInt64LinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -11032,6 +11289,8 @@ procedure TJclInt64LinkedList.Clear;
 var
   Old, Current: TJclInt64LinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -11114,6 +11373,8 @@ function TJclInt64LinkedList.Delete(Index: Integer): Int64;
 var
   Current: TJclInt64LinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -11248,6 +11509,8 @@ function TJclInt64LinkedList.Insert(Index: Integer; const AValue: Int64): Boolea
 var
   Current, NewItem: TJclInt64LinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -11326,6 +11589,8 @@ var
   AddItem: Boolean;
   Item: Int64;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -11506,6 +11771,8 @@ function TJclInt64LinkedList.Remove(const AValue: Int64): Boolean;
 var
   Current: TJclInt64LinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -11544,6 +11811,8 @@ function TJclInt64LinkedList.RemoveAll(const ACollection: IJclInt64Collection): 
 var
   It: IJclInt64Iterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -11565,6 +11834,8 @@ function TJclInt64LinkedList.RetainAll(const ACollection: IJclInt64Collection): 
 var
   It: IJclInt64Iterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -11589,6 +11860,8 @@ var
   Current: TJclInt64LinkedListItem;
   ReplaceItem: Boolean;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -11673,7 +11946,7 @@ end;
 
 constructor TJclPtrLinkedList.Create(const ACollection: IJclPtrCollection);
 begin
-  inherited Create(nil);
+  inherited Create();
   FStart := nil;
   FEnd := nil;
   if ACollection <> nil then
@@ -11682,6 +11955,7 @@ end;
 
 destructor TJclPtrLinkedList.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -11690,6 +11964,8 @@ function TJclPtrLinkedList.Add(APtr: Pointer): Boolean;
 var
   NewItem: TJclPtrLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -11743,6 +12019,8 @@ var
   AddItem: Boolean;
   NewItem: TJclPtrLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -11815,6 +12093,8 @@ procedure TJclPtrLinkedList.Clear;
 var
   Old, Current: TJclPtrLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -11897,6 +12177,8 @@ function TJclPtrLinkedList.Delete(Index: Integer): Pointer;
 var
   Current: TJclPtrLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -12031,6 +12313,8 @@ function TJclPtrLinkedList.Insert(Index: Integer; APtr: Pointer): Boolean;
 var
   Current, NewItem: TJclPtrLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -12109,6 +12393,8 @@ var
   AddItem: Boolean;
   Item: Pointer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -12289,6 +12575,8 @@ function TJclPtrLinkedList.Remove(APtr: Pointer): Boolean;
 var
   Current: TJclPtrLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -12327,6 +12615,8 @@ function TJclPtrLinkedList.RemoveAll(const ACollection: IJclPtrCollection): Bool
 var
   It: IJclPtrIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -12348,6 +12638,8 @@ function TJclPtrLinkedList.RetainAll(const ACollection: IJclPtrCollection): Bool
 var
   It: IJclPtrIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -12372,6 +12664,8 @@ var
   Current: TJclPtrLinkedListItem;
   ReplaceItem: Boolean;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -12456,7 +12750,7 @@ end;
 
 constructor TJclLinkedList.Create(const ACollection: IJclCollection; AOwnsObjects: Boolean);
 begin
-  inherited Create(nil, AOwnsObjects);
+  inherited Create(AOwnsObjects);
   FStart := nil;
   FEnd := nil;
   if ACollection <> nil then
@@ -12465,6 +12759,7 @@ end;
 
 destructor TJclLinkedList.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -12473,6 +12768,8 @@ function TJclLinkedList.Add(AObject: TObject): Boolean;
 var
   NewItem: TJclLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -12526,6 +12823,8 @@ var
   AddItem: Boolean;
   NewItem: TJclLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -12598,6 +12897,8 @@ procedure TJclLinkedList.Clear;
 var
   Old, Current: TJclLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -12680,6 +12981,8 @@ function TJclLinkedList.Delete(Index: Integer): TObject;
 var
   Current: TJclLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -12814,6 +13117,8 @@ function TJclLinkedList.Insert(Index: Integer; AObject: TObject): Boolean;
 var
   Current, NewItem: TJclLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -12892,6 +13197,8 @@ var
   AddItem: Boolean;
   Item: TObject;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -13072,6 +13379,8 @@ function TJclLinkedList.Remove(AObject: TObject): Boolean;
 var
   Current: TJclLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -13110,6 +13419,8 @@ function TJclLinkedList.RemoveAll(const ACollection: IJclCollection): Boolean;
 var
   It: IJclIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -13131,6 +13442,8 @@ function TJclLinkedList.RetainAll(const ACollection: IJclCollection): Boolean;
 var
   It: IJclIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -13155,6 +13468,8 @@ var
   Current: TJclLinkedListItem;
   ReplaceItem: Boolean;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -13240,7 +13555,7 @@ end;
 
 constructor TJclLinkedList<T>.Create(const ACollection: IJclCollection<T>; AOwnsItems: Boolean);
 begin
-  inherited Create(nil, AOwnsItems);
+  inherited Create(AOwnsItems);
   FStart := nil;
   FEnd := nil;
   if ACollection <> nil then
@@ -13249,6 +13564,7 @@ end;
 
 destructor TJclLinkedList<T>.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -13257,6 +13573,8 @@ function TJclLinkedList<T>.Add(const AItem: T): Boolean;
 var
   NewItem: TJclLinkedListItem<T>;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -13310,6 +13628,8 @@ var
   AddItem: Boolean;
   NewItem: TJclLinkedListItem<T>;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -13382,6 +13702,8 @@ procedure TJclLinkedList<T>.Clear;
 var
   Old, Current: TJclLinkedListItem<T>;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -13459,6 +13781,8 @@ function TJclLinkedList<T>.Delete(Index: Integer): T;
 var
   Current: TJclLinkedListItem<T>;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -13593,6 +13917,8 @@ function TJclLinkedList<T>.Insert(Index: Integer; const AItem: T): Boolean;
 var
   Current, NewItem: TJclLinkedListItem<T>;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -13671,6 +13997,8 @@ var
   AddItem: Boolean;
   Item: T;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -13851,6 +14179,8 @@ function TJclLinkedList<T>.Remove(const AItem: T): Boolean;
 var
   Current: TJclLinkedListItem<T>;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -13889,6 +14219,8 @@ function TJclLinkedList<T>.RemoveAll(const ACollection: IJclCollection<T>): Bool
 var
   It: IJclIterator<T>;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -13910,6 +14242,8 @@ function TJclLinkedList<T>.RetainAll(const ACollection: IJclCollection<T>): Bool
 var
   It: IJclIterator<T>;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -13934,6 +14268,8 @@ var
   Current: TJclLinkedListItem<T>;
   ReplaceItem: Boolean;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try

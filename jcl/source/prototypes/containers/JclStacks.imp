@@ -29,12 +29,13 @@
 
 constructor SELFCLASSNAME.Create(ACapacity: IntegerOWNERSHIPDECLARATION);
 begin
-  inherited Create(nilOWNERSHIPPARAMETER);
+  inherited Create(OWNERSHIPPARAMETER);
   SetCapacity(ACapacity);
 end;
 
 destructor SELFCLASSNAME.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -60,28 +61,18 @@ procedure SELFCLASSNAME.Clear;
 var
   I: Integer;
 begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEBEGIN}
     for I := 0 to FSize - 1 do
       RELEASERNAME(FElements[I]);
     FSize := 0;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEEND}
 end;
 
 function SELFCLASSNAME.Contains(PARAMETERDECLARATION): Boolean;
 var
   I: Integer;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READBEGIN}
     Result := False;
     for I := 0 to FSize - 1 do
       if ItemsEqual(FElements[I], PARAMETERNAME) then
@@ -89,11 +80,7 @@ begin
         Result := True;
         Break;
       end;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READEND}
 end;
 
 {$JPPEXPANDMACRO CREATEEMPTYCONTAINER}
@@ -104,29 +91,19 @@ end;
 
 function SELFCLASSNAME.Peek: DATATYPENAME;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READBEGIN}
     Result := DEFAULTVALUE;
     if FSize > 0 then
       Result := FElements[FSize - 1]
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READEND}
 end;
 
 function SELFCLASSNAME.Pop: DATATYPENAME;
 begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEBEGIN}
     Result := DEFAULTVALUE;
     if FSize > 0 then
     begin
@@ -138,19 +115,12 @@ begin
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
     AutoPack;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEEND}
 end;
 
 function SELFCLASSNAME.Push(PARAMETERDECLARATION): Boolean;
 begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEBEGIN}
     if FSize = FCapacity then
       AutoGrow;
     Result := FSize < FCapacity;
@@ -159,28 +129,17 @@ begin
       FElements[FSize] := PARAMETERNAME;
       Inc(FSize);
     end;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEEND}
 end;
 
 procedure SELFCLASSNAME.SetCapacity(Value: Integer);
 begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEBEGIN}
     if Value < FSize then
       raise EJclOutOfBoundsError.Create;
     SetLength(FElements, Value);
     inherited SetCapacity(Value);
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEEND}
 end;
 
 function SELFCLASSNAME.Size: Integer;

@@ -28,7 +28,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -892,7 +892,7 @@ type
 
 constructor TIntfItr.Create(OwnTree: TJclIntfTree; ACursor: TJclIntfTreeNode; AValid: Boolean; AStart: TItrStart);
 begin
-  inherited Create(OwnTree, AValid);
+  inherited Create(AValid);
   FCursor := ACursor;
   FOwnTree := OwnTree;
   FStart := AStart;
@@ -903,8 +903,10 @@ function TIntfItr.Add(const AInterface: IInterface): Boolean;
 var
   ParentNode, NewNode: TJclIntfTreeNode;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     // add sibling or, if FCursor is root node, behave like TJclIntfTree.Add
@@ -931,7 +933,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -940,8 +942,10 @@ function TIntfItr.AddChild(const AInterface: IInterface): Boolean;
 var
   NewNode: TJclIntfTreeNode;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := (FCursor <> nil) and (FOwnTree.AllowDefaultElements or not FEqualityComparer.ItemsEqual(AInterface, nil))
@@ -963,7 +967,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -986,7 +990,7 @@ end;
 function TIntfItr.ChildrenCount: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if FCursor <> nil then
@@ -995,7 +999,7 @@ begin
       Result := 0;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1004,8 +1008,10 @@ procedure TIntfItr.ClearChildren;
 var
   Index: Integer;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     if FCursor <> nil then
@@ -1021,15 +1027,17 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
 
 procedure TIntfItr.DeleteChild(Index: Integer);
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
@@ -1042,7 +1050,7 @@ begin
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1066,7 +1074,7 @@ end;
 function TIntfItr.GetChild(Index: Integer): IInterface;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := nil;
@@ -1079,7 +1087,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1087,7 +1095,7 @@ end;
 function TIntfItr.GetObject: IInterface;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -1099,7 +1107,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1107,13 +1115,13 @@ end;
 function TIntfItr.HasChild(Index: Integer): Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount);
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1121,7 +1129,7 @@ end;
 function TIntfItr.HasNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -1130,7 +1138,7 @@ begin
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1138,13 +1146,13 @@ end;
 function TIntfItr.HasParent: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := (FCursor <> nil) and (FCursor.Parent <> nil);
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1152,7 +1160,7 @@ end;
 function TIntfItr.HasPrevious: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -1161,7 +1169,7 @@ begin
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1169,7 +1177,7 @@ end;
 function TIntfItr.IndexOfChild(const AInterface: IInterface): Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if FCursor <> nil then
@@ -1178,7 +1186,7 @@ begin
       Result := -1;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1188,8 +1196,10 @@ var
   ParentNode, NewNode: TJclIntfTreeNode;
   Index, I: Integer;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     // insert sibling or, if FCursor is root node, behave like TJclIntfTree.Insert
@@ -1227,7 +1237,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1237,8 +1247,10 @@ var
   NewNode: TJclIntfTreeNode;
   I: Integer;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     // insert sibling or, if FCursor is root node, behave like TJclIntfTree.Insert
@@ -1263,7 +1275,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1272,7 +1284,7 @@ end;
 function TIntfItr.MoveNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -1282,7 +1294,7 @@ begin
     Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1291,7 +1303,7 @@ end;
 function TIntfItr.Next: IInterface;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -1306,7 +1318,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1320,7 +1332,7 @@ end;
 function TIntfItr.Parent: IInterface;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := nil;
@@ -1333,7 +1345,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1341,7 +1353,7 @@ end;
 function TIntfItr.Previous: IInterface;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -1356,7 +1368,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1371,8 +1383,10 @@ procedure TIntfItr.Remove;
 var
   OldCursor: TJclIntfTreeNode;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -1383,7 +1397,7 @@ begin
       FOwnTree.ClearNode(OldCursor);
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1393,7 +1407,7 @@ var
   NewCursor: TJclIntfTreeNode;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Valid := False;
@@ -1426,15 +1440,17 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
 
 procedure TIntfItr.SetChild(Index: Integer; const AInterface: IInterface);
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
@@ -1443,15 +1459,17 @@ begin
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
 
 procedure TIntfItr.SetObject(const AInterface: IInterface);
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -1462,7 +1480,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1673,7 +1691,7 @@ type
 
 constructor TAnsiStrItr.Create(OwnTree: TJclAnsiStrTree; ACursor: TJclAnsiStrTreeNode; AValid: Boolean; AStart: TItrStart);
 begin
-  inherited Create(OwnTree, AValid);
+  inherited Create(AValid);
   FCursor := ACursor;
   FOwnTree := OwnTree;
   FStart := AStart;
@@ -1684,8 +1702,10 @@ function TAnsiStrItr.Add(const AString: AnsiString): Boolean;
 var
   ParentNode, NewNode: TJclAnsiStrTreeNode;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     // add sibling or, if FCursor is root node, behave like TJclAnsiStrTree.Add
@@ -1712,7 +1732,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1721,8 +1741,10 @@ function TAnsiStrItr.AddChild(const AString: AnsiString): Boolean;
 var
   NewNode: TJclAnsiStrTreeNode;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := (FCursor <> nil) and (FOwnTree.AllowDefaultElements or not FEqualityComparer.ItemsEqual(AString, ''))
@@ -1744,7 +1766,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1767,7 +1789,7 @@ end;
 function TAnsiStrItr.ChildrenCount: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if FCursor <> nil then
@@ -1776,7 +1798,7 @@ begin
       Result := 0;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1785,8 +1807,10 @@ procedure TAnsiStrItr.ClearChildren;
 var
   Index: Integer;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     if FCursor <> nil then
@@ -1802,15 +1826,17 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
 
 procedure TAnsiStrItr.DeleteChild(Index: Integer);
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
@@ -1823,7 +1849,7 @@ begin
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1847,7 +1873,7 @@ end;
 function TAnsiStrItr.GetChild(Index: Integer): AnsiString;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := '';
@@ -1860,7 +1886,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1868,7 +1894,7 @@ end;
 function TAnsiStrItr.GetString: AnsiString;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -1880,7 +1906,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1888,13 +1914,13 @@ end;
 function TAnsiStrItr.HasChild(Index: Integer): Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount);
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1902,7 +1928,7 @@ end;
 function TAnsiStrItr.HasNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -1911,7 +1937,7 @@ begin
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1919,13 +1945,13 @@ end;
 function TAnsiStrItr.HasParent: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := (FCursor <> nil) and (FCursor.Parent <> nil);
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1933,7 +1959,7 @@ end;
 function TAnsiStrItr.HasPrevious: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -1942,7 +1968,7 @@ begin
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1950,7 +1976,7 @@ end;
 function TAnsiStrItr.IndexOfChild(const AString: AnsiString): Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if FCursor <> nil then
@@ -1959,7 +1985,7 @@ begin
       Result := -1;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1969,8 +1995,10 @@ var
   ParentNode, NewNode: TJclAnsiStrTreeNode;
   Index, I: Integer;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     // insert sibling or, if FCursor is root node, behave like TJclAnsiStrTree.Insert
@@ -2008,7 +2036,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2018,8 +2046,10 @@ var
   NewNode: TJclAnsiStrTreeNode;
   I: Integer;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     // insert sibling or, if FCursor is root node, behave like TJclAnsiStrTree.Insert
@@ -2044,7 +2074,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2053,7 +2083,7 @@ end;
 function TAnsiStrItr.MoveNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -2063,7 +2093,7 @@ begin
     Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2072,7 +2102,7 @@ end;
 function TAnsiStrItr.Next: AnsiString;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -2087,7 +2117,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2101,7 +2131,7 @@ end;
 function TAnsiStrItr.Parent: AnsiString;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := '';
@@ -2114,7 +2144,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2122,7 +2152,7 @@ end;
 function TAnsiStrItr.Previous: AnsiString;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -2137,7 +2167,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2152,8 +2182,10 @@ procedure TAnsiStrItr.Remove;
 var
   OldCursor: TJclAnsiStrTreeNode;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -2164,7 +2196,7 @@ begin
       FOwnTree.ClearNode(OldCursor);
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2174,7 +2206,7 @@ var
   NewCursor: TJclAnsiStrTreeNode;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Valid := False;
@@ -2207,15 +2239,17 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
 
 procedure TAnsiStrItr.SetChild(Index: Integer; const AString: AnsiString);
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
@@ -2224,15 +2258,17 @@ begin
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
 
 procedure TAnsiStrItr.SetString(const AString: AnsiString);
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -2243,7 +2279,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2454,7 +2490,7 @@ type
 
 constructor TWideStrItr.Create(OwnTree: TJclWideStrTree; ACursor: TJclWideStrTreeNode; AValid: Boolean; AStart: TItrStart);
 begin
-  inherited Create(OwnTree, AValid);
+  inherited Create(AValid);
   FCursor := ACursor;
   FOwnTree := OwnTree;
   FStart := AStart;
@@ -2465,8 +2501,10 @@ function TWideStrItr.Add(const AString: WideString): Boolean;
 var
   ParentNode, NewNode: TJclWideStrTreeNode;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     // add sibling or, if FCursor is root node, behave like TJclWideStrTree.Add
@@ -2493,7 +2531,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2502,8 +2540,10 @@ function TWideStrItr.AddChild(const AString: WideString): Boolean;
 var
   NewNode: TJclWideStrTreeNode;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := (FCursor <> nil) and (FOwnTree.AllowDefaultElements or not FEqualityComparer.ItemsEqual(AString, ''))
@@ -2525,7 +2565,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2548,7 +2588,7 @@ end;
 function TWideStrItr.ChildrenCount: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if FCursor <> nil then
@@ -2557,7 +2597,7 @@ begin
       Result := 0;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2566,8 +2606,10 @@ procedure TWideStrItr.ClearChildren;
 var
   Index: Integer;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     if FCursor <> nil then
@@ -2583,15 +2625,17 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
 
 procedure TWideStrItr.DeleteChild(Index: Integer);
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
@@ -2604,7 +2648,7 @@ begin
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2628,7 +2672,7 @@ end;
 function TWideStrItr.GetChild(Index: Integer): WideString;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := '';
@@ -2641,7 +2685,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2649,7 +2693,7 @@ end;
 function TWideStrItr.GetString: WideString;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -2661,7 +2705,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2669,13 +2713,13 @@ end;
 function TWideStrItr.HasChild(Index: Integer): Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount);
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2683,7 +2727,7 @@ end;
 function TWideStrItr.HasNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -2692,7 +2736,7 @@ begin
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2700,13 +2744,13 @@ end;
 function TWideStrItr.HasParent: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := (FCursor <> nil) and (FCursor.Parent <> nil);
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2714,7 +2758,7 @@ end;
 function TWideStrItr.HasPrevious: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -2723,7 +2767,7 @@ begin
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2731,7 +2775,7 @@ end;
 function TWideStrItr.IndexOfChild(const AString: WideString): Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if FCursor <> nil then
@@ -2740,7 +2784,7 @@ begin
       Result := -1;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2750,8 +2794,10 @@ var
   ParentNode, NewNode: TJclWideStrTreeNode;
   Index, I: Integer;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     // insert sibling or, if FCursor is root node, behave like TJclWideStrTree.Insert
@@ -2789,7 +2835,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2799,8 +2845,10 @@ var
   NewNode: TJclWideStrTreeNode;
   I: Integer;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     // insert sibling or, if FCursor is root node, behave like TJclWideStrTree.Insert
@@ -2825,7 +2873,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2834,7 +2882,7 @@ end;
 function TWideStrItr.MoveNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -2844,7 +2892,7 @@ begin
     Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2853,7 +2901,7 @@ end;
 function TWideStrItr.Next: WideString;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -2868,7 +2916,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2882,7 +2930,7 @@ end;
 function TWideStrItr.Parent: WideString;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := '';
@@ -2895,7 +2943,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2903,7 +2951,7 @@ end;
 function TWideStrItr.Previous: WideString;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -2918,7 +2966,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2933,8 +2981,10 @@ procedure TWideStrItr.Remove;
 var
   OldCursor: TJclWideStrTreeNode;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -2945,7 +2995,7 @@ begin
       FOwnTree.ClearNode(OldCursor);
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2955,7 +3005,7 @@ var
   NewCursor: TJclWideStrTreeNode;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Valid := False;
@@ -2988,15 +3038,17 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
 
 procedure TWideStrItr.SetChild(Index: Integer; const AString: WideString);
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
@@ -3005,15 +3057,17 @@ begin
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
 
 procedure TWideStrItr.SetString(const AString: WideString);
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -3024,7 +3078,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3235,7 +3289,7 @@ type
 
 constructor TSingleItr.Create(OwnTree: TJclSingleTree; ACursor: TJclSingleTreeNode; AValid: Boolean; AStart: TItrStart);
 begin
-  inherited Create(OwnTree, AValid);
+  inherited Create(AValid);
   FCursor := ACursor;
   FOwnTree := OwnTree;
   FStart := AStart;
@@ -3246,8 +3300,10 @@ function TSingleItr.Add(const AValue: Single): Boolean;
 var
   ParentNode, NewNode: TJclSingleTreeNode;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     // add sibling or, if FCursor is root node, behave like TJclSingleTree.Add
@@ -3274,7 +3330,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3283,8 +3339,10 @@ function TSingleItr.AddChild(const AValue: Single): Boolean;
 var
   NewNode: TJclSingleTreeNode;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := (FCursor <> nil) and (FOwnTree.AllowDefaultElements or not FEqualityComparer.ItemsEqual(AValue, 0.0))
@@ -3306,7 +3364,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3329,7 +3387,7 @@ end;
 function TSingleItr.ChildrenCount: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if FCursor <> nil then
@@ -3338,7 +3396,7 @@ begin
       Result := 0;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3347,8 +3405,10 @@ procedure TSingleItr.ClearChildren;
 var
   Index: Integer;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     if FCursor <> nil then
@@ -3364,15 +3424,17 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
 
 procedure TSingleItr.DeleteChild(Index: Integer);
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
@@ -3385,7 +3447,7 @@ begin
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3409,7 +3471,7 @@ end;
 function TSingleItr.GetChild(Index: Integer): Single;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := 0.0;
@@ -3422,7 +3484,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3430,7 +3492,7 @@ end;
 function TSingleItr.GetValue: Single;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -3442,7 +3504,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3450,13 +3512,13 @@ end;
 function TSingleItr.HasChild(Index: Integer): Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount);
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3464,7 +3526,7 @@ end;
 function TSingleItr.HasNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -3473,7 +3535,7 @@ begin
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3481,13 +3543,13 @@ end;
 function TSingleItr.HasParent: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := (FCursor <> nil) and (FCursor.Parent <> nil);
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3495,7 +3557,7 @@ end;
 function TSingleItr.HasPrevious: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -3504,7 +3566,7 @@ begin
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3512,7 +3574,7 @@ end;
 function TSingleItr.IndexOfChild(const AValue: Single): Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if FCursor <> nil then
@@ -3521,7 +3583,7 @@ begin
       Result := -1;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3531,8 +3593,10 @@ var
   ParentNode, NewNode: TJclSingleTreeNode;
   Index, I: Integer;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     // insert sibling or, if FCursor is root node, behave like TJclSingleTree.Insert
@@ -3570,7 +3634,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3580,8 +3644,10 @@ var
   NewNode: TJclSingleTreeNode;
   I: Integer;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     // insert sibling or, if FCursor is root node, behave like TJclSingleTree.Insert
@@ -3606,7 +3672,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3615,7 +3681,7 @@ end;
 function TSingleItr.MoveNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -3625,7 +3691,7 @@ begin
     Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3634,7 +3700,7 @@ end;
 function TSingleItr.Next: Single;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -3649,7 +3715,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3663,7 +3729,7 @@ end;
 function TSingleItr.Parent: Single;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := 0.0;
@@ -3676,7 +3742,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3684,7 +3750,7 @@ end;
 function TSingleItr.Previous: Single;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -3699,7 +3765,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3714,8 +3780,10 @@ procedure TSingleItr.Remove;
 var
   OldCursor: TJclSingleTreeNode;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -3726,7 +3794,7 @@ begin
       FOwnTree.ClearNode(OldCursor);
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3736,7 +3804,7 @@ var
   NewCursor: TJclSingleTreeNode;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Valid := False;
@@ -3769,15 +3837,17 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
 
 procedure TSingleItr.SetChild(Index: Integer; const AValue: Single);
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
@@ -3786,15 +3856,17 @@ begin
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
 
 procedure TSingleItr.SetValue(const AValue: Single);
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -3805,7 +3877,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4016,7 +4088,7 @@ type
 
 constructor TDoubleItr.Create(OwnTree: TJclDoubleTree; ACursor: TJclDoubleTreeNode; AValid: Boolean; AStart: TItrStart);
 begin
-  inherited Create(OwnTree, AValid);
+  inherited Create(AValid);
   FCursor := ACursor;
   FOwnTree := OwnTree;
   FStart := AStart;
@@ -4027,8 +4099,10 @@ function TDoubleItr.Add(const AValue: Double): Boolean;
 var
   ParentNode, NewNode: TJclDoubleTreeNode;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     // add sibling or, if FCursor is root node, behave like TJclDoubleTree.Add
@@ -4055,7 +4129,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4064,8 +4138,10 @@ function TDoubleItr.AddChild(const AValue: Double): Boolean;
 var
   NewNode: TJclDoubleTreeNode;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := (FCursor <> nil) and (FOwnTree.AllowDefaultElements or not FEqualityComparer.ItemsEqual(AValue, 0.0))
@@ -4087,7 +4163,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4110,7 +4186,7 @@ end;
 function TDoubleItr.ChildrenCount: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if FCursor <> nil then
@@ -4119,7 +4195,7 @@ begin
       Result := 0;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4128,8 +4204,10 @@ procedure TDoubleItr.ClearChildren;
 var
   Index: Integer;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     if FCursor <> nil then
@@ -4145,15 +4223,17 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
 
 procedure TDoubleItr.DeleteChild(Index: Integer);
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
@@ -4166,7 +4246,7 @@ begin
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4190,7 +4270,7 @@ end;
 function TDoubleItr.GetChild(Index: Integer): Double;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := 0.0;
@@ -4203,7 +4283,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4211,7 +4291,7 @@ end;
 function TDoubleItr.GetValue: Double;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -4223,7 +4303,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4231,13 +4311,13 @@ end;
 function TDoubleItr.HasChild(Index: Integer): Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount);
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4245,7 +4325,7 @@ end;
 function TDoubleItr.HasNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -4254,7 +4334,7 @@ begin
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4262,13 +4342,13 @@ end;
 function TDoubleItr.HasParent: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := (FCursor <> nil) and (FCursor.Parent <> nil);
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4276,7 +4356,7 @@ end;
 function TDoubleItr.HasPrevious: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -4285,7 +4365,7 @@ begin
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4293,7 +4373,7 @@ end;
 function TDoubleItr.IndexOfChild(const AValue: Double): Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if FCursor <> nil then
@@ -4302,7 +4382,7 @@ begin
       Result := -1;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4312,8 +4392,10 @@ var
   ParentNode, NewNode: TJclDoubleTreeNode;
   Index, I: Integer;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     // insert sibling or, if FCursor is root node, behave like TJclDoubleTree.Insert
@@ -4351,7 +4433,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4361,8 +4443,10 @@ var
   NewNode: TJclDoubleTreeNode;
   I: Integer;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     // insert sibling or, if FCursor is root node, behave like TJclDoubleTree.Insert
@@ -4387,7 +4471,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4396,7 +4480,7 @@ end;
 function TDoubleItr.MoveNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -4406,7 +4490,7 @@ begin
     Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4415,7 +4499,7 @@ end;
 function TDoubleItr.Next: Double;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -4430,7 +4514,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4444,7 +4528,7 @@ end;
 function TDoubleItr.Parent: Double;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := 0.0;
@@ -4457,7 +4541,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4465,7 +4549,7 @@ end;
 function TDoubleItr.Previous: Double;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -4480,7 +4564,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4495,8 +4579,10 @@ procedure TDoubleItr.Remove;
 var
   OldCursor: TJclDoubleTreeNode;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -4507,7 +4593,7 @@ begin
       FOwnTree.ClearNode(OldCursor);
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4517,7 +4603,7 @@ var
   NewCursor: TJclDoubleTreeNode;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Valid := False;
@@ -4550,15 +4636,17 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
 
 procedure TDoubleItr.SetChild(Index: Integer; const AValue: Double);
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
@@ -4567,15 +4655,17 @@ begin
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
 
 procedure TDoubleItr.SetValue(const AValue: Double);
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -4586,7 +4676,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4797,7 +4887,7 @@ type
 
 constructor TExtendedItr.Create(OwnTree: TJclExtendedTree; ACursor: TJclExtendedTreeNode; AValid: Boolean; AStart: TItrStart);
 begin
-  inherited Create(OwnTree, AValid);
+  inherited Create(AValid);
   FCursor := ACursor;
   FOwnTree := OwnTree;
   FStart := AStart;
@@ -4808,8 +4898,10 @@ function TExtendedItr.Add(const AValue: Extended): Boolean;
 var
   ParentNode, NewNode: TJclExtendedTreeNode;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     // add sibling or, if FCursor is root node, behave like TJclExtendedTree.Add
@@ -4836,7 +4928,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4845,8 +4937,10 @@ function TExtendedItr.AddChild(const AValue: Extended): Boolean;
 var
   NewNode: TJclExtendedTreeNode;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := (FCursor <> nil) and (FOwnTree.AllowDefaultElements or not FEqualityComparer.ItemsEqual(AValue, 0.0))
@@ -4868,7 +4962,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4891,7 +4985,7 @@ end;
 function TExtendedItr.ChildrenCount: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if FCursor <> nil then
@@ -4900,7 +4994,7 @@ begin
       Result := 0;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4909,8 +5003,10 @@ procedure TExtendedItr.ClearChildren;
 var
   Index: Integer;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     if FCursor <> nil then
@@ -4926,15 +5022,17 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
 
 procedure TExtendedItr.DeleteChild(Index: Integer);
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
@@ -4947,7 +5045,7 @@ begin
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4971,7 +5069,7 @@ end;
 function TExtendedItr.GetChild(Index: Integer): Extended;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := 0.0;
@@ -4984,7 +5082,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4992,7 +5090,7 @@ end;
 function TExtendedItr.GetValue: Extended;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -5004,7 +5102,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -5012,13 +5110,13 @@ end;
 function TExtendedItr.HasChild(Index: Integer): Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount);
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -5026,7 +5124,7 @@ end;
 function TExtendedItr.HasNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -5035,7 +5133,7 @@ begin
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -5043,13 +5141,13 @@ end;
 function TExtendedItr.HasParent: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := (FCursor <> nil) and (FCursor.Parent <> nil);
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -5057,7 +5155,7 @@ end;
 function TExtendedItr.HasPrevious: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -5066,7 +5164,7 @@ begin
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -5074,7 +5172,7 @@ end;
 function TExtendedItr.IndexOfChild(const AValue: Extended): Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if FCursor <> nil then
@@ -5083,7 +5181,7 @@ begin
       Result := -1;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -5093,8 +5191,10 @@ var
   ParentNode, NewNode: TJclExtendedTreeNode;
   Index, I: Integer;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     // insert sibling or, if FCursor is root node, behave like TJclExtendedTree.Insert
@@ -5132,7 +5232,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -5142,8 +5242,10 @@ var
   NewNode: TJclExtendedTreeNode;
   I: Integer;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     // insert sibling or, if FCursor is root node, behave like TJclExtendedTree.Insert
@@ -5168,7 +5270,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -5177,7 +5279,7 @@ end;
 function TExtendedItr.MoveNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -5187,7 +5289,7 @@ begin
     Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -5196,7 +5298,7 @@ end;
 function TExtendedItr.Next: Extended;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -5211,7 +5313,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -5225,7 +5327,7 @@ end;
 function TExtendedItr.Parent: Extended;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := 0.0;
@@ -5238,7 +5340,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -5246,7 +5348,7 @@ end;
 function TExtendedItr.Previous: Extended;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -5261,7 +5363,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -5276,8 +5378,10 @@ procedure TExtendedItr.Remove;
 var
   OldCursor: TJclExtendedTreeNode;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -5288,7 +5392,7 @@ begin
       FOwnTree.ClearNode(OldCursor);
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -5298,7 +5402,7 @@ var
   NewCursor: TJclExtendedTreeNode;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Valid := False;
@@ -5331,15 +5435,17 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
 
 procedure TExtendedItr.SetChild(Index: Integer; const AValue: Extended);
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
@@ -5348,15 +5454,17 @@ begin
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
 
 procedure TExtendedItr.SetValue(const AValue: Extended);
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -5367,7 +5475,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -5578,7 +5686,7 @@ type
 
 constructor TIntegerItr.Create(OwnTree: TJclIntegerTree; ACursor: TJclIntegerTreeNode; AValid: Boolean; AStart: TItrStart);
 begin
-  inherited Create(OwnTree, AValid);
+  inherited Create(AValid);
   FCursor := ACursor;
   FOwnTree := OwnTree;
   FStart := AStart;
@@ -5589,8 +5697,10 @@ function TIntegerItr.Add(AValue: Integer): Boolean;
 var
   ParentNode, NewNode: TJclIntegerTreeNode;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     // add sibling or, if FCursor is root node, behave like TJclIntegerTree.Add
@@ -5617,7 +5727,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -5626,8 +5736,10 @@ function TIntegerItr.AddChild(AValue: Integer): Boolean;
 var
   NewNode: TJclIntegerTreeNode;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := (FCursor <> nil) and (FOwnTree.AllowDefaultElements or not FEqualityComparer.ItemsEqual(AValue, 0))
@@ -5649,7 +5761,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -5672,7 +5784,7 @@ end;
 function TIntegerItr.ChildrenCount: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if FCursor <> nil then
@@ -5681,7 +5793,7 @@ begin
       Result := 0;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -5690,8 +5802,10 @@ procedure TIntegerItr.ClearChildren;
 var
   Index: Integer;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     if FCursor <> nil then
@@ -5707,15 +5821,17 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
 
 procedure TIntegerItr.DeleteChild(Index: Integer);
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
@@ -5728,7 +5844,7 @@ begin
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -5752,7 +5868,7 @@ end;
 function TIntegerItr.GetChild(Index: Integer): Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := 0;
@@ -5765,7 +5881,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -5773,7 +5889,7 @@ end;
 function TIntegerItr.GetValue: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -5785,7 +5901,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -5793,13 +5909,13 @@ end;
 function TIntegerItr.HasChild(Index: Integer): Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount);
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -5807,7 +5923,7 @@ end;
 function TIntegerItr.HasNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -5816,7 +5932,7 @@ begin
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -5824,13 +5940,13 @@ end;
 function TIntegerItr.HasParent: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := (FCursor <> nil) and (FCursor.Parent <> nil);
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -5838,7 +5954,7 @@ end;
 function TIntegerItr.HasPrevious: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -5847,7 +5963,7 @@ begin
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -5855,7 +5971,7 @@ end;
 function TIntegerItr.IndexOfChild(AValue: Integer): Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if FCursor <> nil then
@@ -5864,7 +5980,7 @@ begin
       Result := -1;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -5874,8 +5990,10 @@ var
   ParentNode, NewNode: TJclIntegerTreeNode;
   Index, I: Integer;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     // insert sibling or, if FCursor is root node, behave like TJclIntegerTree.Insert
@@ -5913,7 +6031,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -5923,8 +6041,10 @@ var
   NewNode: TJclIntegerTreeNode;
   I: Integer;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     // insert sibling or, if FCursor is root node, behave like TJclIntegerTree.Insert
@@ -5949,7 +6069,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -5958,7 +6078,7 @@ end;
 function TIntegerItr.MoveNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -5968,7 +6088,7 @@ begin
     Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -5977,7 +6097,7 @@ end;
 function TIntegerItr.Next: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -5992,7 +6112,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -6006,7 +6126,7 @@ end;
 function TIntegerItr.Parent: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := 0;
@@ -6019,7 +6139,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -6027,7 +6147,7 @@ end;
 function TIntegerItr.Previous: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -6042,7 +6162,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -6057,8 +6177,10 @@ procedure TIntegerItr.Remove;
 var
   OldCursor: TJclIntegerTreeNode;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -6069,7 +6191,7 @@ begin
       FOwnTree.ClearNode(OldCursor);
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -6079,7 +6201,7 @@ var
   NewCursor: TJclIntegerTreeNode;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Valid := False;
@@ -6112,15 +6234,17 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
 
 procedure TIntegerItr.SetChild(Index: Integer; AValue: Integer);
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
@@ -6129,15 +6253,17 @@ begin
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
 
 procedure TIntegerItr.SetValue(AValue: Integer);
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -6148,7 +6274,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -6359,7 +6485,7 @@ type
 
 constructor TCardinalItr.Create(OwnTree: TJclCardinalTree; ACursor: TJclCardinalTreeNode; AValid: Boolean; AStart: TItrStart);
 begin
-  inherited Create(OwnTree, AValid);
+  inherited Create(AValid);
   FCursor := ACursor;
   FOwnTree := OwnTree;
   FStart := AStart;
@@ -6370,8 +6496,10 @@ function TCardinalItr.Add(AValue: Cardinal): Boolean;
 var
   ParentNode, NewNode: TJclCardinalTreeNode;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     // add sibling or, if FCursor is root node, behave like TJclCardinalTree.Add
@@ -6398,7 +6526,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -6407,8 +6535,10 @@ function TCardinalItr.AddChild(AValue: Cardinal): Boolean;
 var
   NewNode: TJclCardinalTreeNode;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := (FCursor <> nil) and (FOwnTree.AllowDefaultElements or not FEqualityComparer.ItemsEqual(AValue, 0))
@@ -6430,7 +6560,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -6453,7 +6583,7 @@ end;
 function TCardinalItr.ChildrenCount: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if FCursor <> nil then
@@ -6462,7 +6592,7 @@ begin
       Result := 0;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -6471,8 +6601,10 @@ procedure TCardinalItr.ClearChildren;
 var
   Index: Integer;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     if FCursor <> nil then
@@ -6488,15 +6620,17 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
 
 procedure TCardinalItr.DeleteChild(Index: Integer);
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
@@ -6509,7 +6643,7 @@ begin
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -6533,7 +6667,7 @@ end;
 function TCardinalItr.GetChild(Index: Integer): Cardinal;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := 0;
@@ -6546,7 +6680,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -6554,7 +6688,7 @@ end;
 function TCardinalItr.GetValue: Cardinal;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -6566,7 +6700,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -6574,13 +6708,13 @@ end;
 function TCardinalItr.HasChild(Index: Integer): Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount);
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -6588,7 +6722,7 @@ end;
 function TCardinalItr.HasNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -6597,7 +6731,7 @@ begin
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -6605,13 +6739,13 @@ end;
 function TCardinalItr.HasParent: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := (FCursor <> nil) and (FCursor.Parent <> nil);
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -6619,7 +6753,7 @@ end;
 function TCardinalItr.HasPrevious: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -6628,7 +6762,7 @@ begin
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -6636,7 +6770,7 @@ end;
 function TCardinalItr.IndexOfChild(AValue: Cardinal): Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if FCursor <> nil then
@@ -6645,7 +6779,7 @@ begin
       Result := -1;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -6655,8 +6789,10 @@ var
   ParentNode, NewNode: TJclCardinalTreeNode;
   Index, I: Integer;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     // insert sibling or, if FCursor is root node, behave like TJclCardinalTree.Insert
@@ -6694,7 +6830,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -6704,8 +6840,10 @@ var
   NewNode: TJclCardinalTreeNode;
   I: Integer;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     // insert sibling or, if FCursor is root node, behave like TJclCardinalTree.Insert
@@ -6730,7 +6868,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -6739,7 +6877,7 @@ end;
 function TCardinalItr.MoveNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -6749,7 +6887,7 @@ begin
     Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -6758,7 +6896,7 @@ end;
 function TCardinalItr.Next: Cardinal;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -6773,7 +6911,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -6787,7 +6925,7 @@ end;
 function TCardinalItr.Parent: Cardinal;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := 0;
@@ -6800,7 +6938,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -6808,7 +6946,7 @@ end;
 function TCardinalItr.Previous: Cardinal;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -6823,7 +6961,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -6838,8 +6976,10 @@ procedure TCardinalItr.Remove;
 var
   OldCursor: TJclCardinalTreeNode;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -6850,7 +6990,7 @@ begin
       FOwnTree.ClearNode(OldCursor);
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -6860,7 +7000,7 @@ var
   NewCursor: TJclCardinalTreeNode;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Valid := False;
@@ -6893,15 +7033,17 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
 
 procedure TCardinalItr.SetChild(Index: Integer; AValue: Cardinal);
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
@@ -6910,15 +7052,17 @@ begin
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
 
 procedure TCardinalItr.SetValue(AValue: Cardinal);
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -6929,7 +7073,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -7140,7 +7284,7 @@ type
 
 constructor TInt64Itr.Create(OwnTree: TJclInt64Tree; ACursor: TJclInt64TreeNode; AValid: Boolean; AStart: TItrStart);
 begin
-  inherited Create(OwnTree, AValid);
+  inherited Create(AValid);
   FCursor := ACursor;
   FOwnTree := OwnTree;
   FStart := AStart;
@@ -7151,8 +7295,10 @@ function TInt64Itr.Add(const AValue: Int64): Boolean;
 var
   ParentNode, NewNode: TJclInt64TreeNode;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     // add sibling or, if FCursor is root node, behave like TJclInt64Tree.Add
@@ -7179,7 +7325,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -7188,8 +7334,10 @@ function TInt64Itr.AddChild(const AValue: Int64): Boolean;
 var
   NewNode: TJclInt64TreeNode;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := (FCursor <> nil) and (FOwnTree.AllowDefaultElements or not FEqualityComparer.ItemsEqual(AValue, 0))
@@ -7211,7 +7359,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -7234,7 +7382,7 @@ end;
 function TInt64Itr.ChildrenCount: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if FCursor <> nil then
@@ -7243,7 +7391,7 @@ begin
       Result := 0;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -7252,8 +7400,10 @@ procedure TInt64Itr.ClearChildren;
 var
   Index: Integer;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     if FCursor <> nil then
@@ -7269,15 +7419,17 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
 
 procedure TInt64Itr.DeleteChild(Index: Integer);
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
@@ -7290,7 +7442,7 @@ begin
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -7314,7 +7466,7 @@ end;
 function TInt64Itr.GetChild(Index: Integer): Int64;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := 0;
@@ -7327,7 +7479,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -7335,7 +7487,7 @@ end;
 function TInt64Itr.GetValue: Int64;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -7347,7 +7499,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -7355,13 +7507,13 @@ end;
 function TInt64Itr.HasChild(Index: Integer): Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount);
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -7369,7 +7521,7 @@ end;
 function TInt64Itr.HasNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -7378,7 +7530,7 @@ begin
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -7386,13 +7538,13 @@ end;
 function TInt64Itr.HasParent: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := (FCursor <> nil) and (FCursor.Parent <> nil);
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -7400,7 +7552,7 @@ end;
 function TInt64Itr.HasPrevious: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -7409,7 +7561,7 @@ begin
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -7417,7 +7569,7 @@ end;
 function TInt64Itr.IndexOfChild(const AValue: Int64): Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if FCursor <> nil then
@@ -7426,7 +7578,7 @@ begin
       Result := -1;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -7436,8 +7588,10 @@ var
   ParentNode, NewNode: TJclInt64TreeNode;
   Index, I: Integer;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     // insert sibling or, if FCursor is root node, behave like TJclInt64Tree.Insert
@@ -7475,7 +7629,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -7485,8 +7639,10 @@ var
   NewNode: TJclInt64TreeNode;
   I: Integer;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     // insert sibling or, if FCursor is root node, behave like TJclInt64Tree.Insert
@@ -7511,7 +7667,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -7520,7 +7676,7 @@ end;
 function TInt64Itr.MoveNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -7530,7 +7686,7 @@ begin
     Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -7539,7 +7695,7 @@ end;
 function TInt64Itr.Next: Int64;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -7554,7 +7710,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -7568,7 +7724,7 @@ end;
 function TInt64Itr.Parent: Int64;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := 0;
@@ -7581,7 +7737,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -7589,7 +7745,7 @@ end;
 function TInt64Itr.Previous: Int64;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -7604,7 +7760,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -7619,8 +7775,10 @@ procedure TInt64Itr.Remove;
 var
   OldCursor: TJclInt64TreeNode;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -7631,7 +7789,7 @@ begin
       FOwnTree.ClearNode(OldCursor);
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -7641,7 +7799,7 @@ var
   NewCursor: TJclInt64TreeNode;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Valid := False;
@@ -7674,15 +7832,17 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
 
 procedure TInt64Itr.SetChild(Index: Integer; const AValue: Int64);
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
@@ -7691,15 +7851,17 @@ begin
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
 
 procedure TInt64Itr.SetValue(const AValue: Int64);
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -7710,7 +7872,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -7922,7 +8084,7 @@ type
 
 constructor TPtrItr.Create(OwnTree: TJclPtrTree; ACursor: TJclPtrTreeNode; AValid: Boolean; AStart: TItrStart);
 begin
-  inherited Create(OwnTree, AValid);
+  inherited Create(AValid);
   FCursor := ACursor;
   FOwnTree := OwnTree;
   FStart := AStart;
@@ -7933,8 +8095,10 @@ function TPtrItr.Add(APtr: Pointer): Boolean;
 var
   ParentNode, NewNode: TJclPtrTreeNode;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     // add sibling or, if FCursor is root node, behave like TJclPtrTree.Add
@@ -7961,7 +8125,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -7970,8 +8134,10 @@ function TPtrItr.AddChild(APtr: Pointer): Boolean;
 var
   NewNode: TJclPtrTreeNode;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := (FCursor <> nil) and (FOwnTree.AllowDefaultElements or not FEqualityComparer.ItemsEqual(APtr, nil))
@@ -7993,7 +8159,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -8016,7 +8182,7 @@ end;
 function TPtrItr.ChildrenCount: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if FCursor <> nil then
@@ -8025,7 +8191,7 @@ begin
       Result := 0;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -8034,8 +8200,10 @@ procedure TPtrItr.ClearChildren;
 var
   Index: Integer;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     if FCursor <> nil then
@@ -8051,15 +8219,17 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
 
 procedure TPtrItr.DeleteChild(Index: Integer);
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
@@ -8072,7 +8242,7 @@ begin
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -8096,7 +8266,7 @@ end;
 function TPtrItr.GetChild(Index: Integer): Pointer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := nil;
@@ -8109,7 +8279,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -8117,7 +8287,7 @@ end;
 function TPtrItr.GetPtr: Pointer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -8129,7 +8299,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -8137,13 +8307,13 @@ end;
 function TPtrItr.HasChild(Index: Integer): Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount);
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -8151,7 +8321,7 @@ end;
 function TPtrItr.HasNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -8160,7 +8330,7 @@ begin
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -8168,13 +8338,13 @@ end;
 function TPtrItr.HasParent: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := (FCursor <> nil) and (FCursor.Parent <> nil);
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -8182,7 +8352,7 @@ end;
 function TPtrItr.HasPrevious: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -8191,7 +8361,7 @@ begin
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -8199,7 +8369,7 @@ end;
 function TPtrItr.IndexOfChild(APtr: Pointer): Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if FCursor <> nil then
@@ -8208,7 +8378,7 @@ begin
       Result := -1;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -8218,8 +8388,10 @@ var
   ParentNode, NewNode: TJclPtrTreeNode;
   Index, I: Integer;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     // insert sibling or, if FCursor is root node, behave like TJclPtrTree.Insert
@@ -8257,7 +8429,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -8267,8 +8439,10 @@ var
   NewNode: TJclPtrTreeNode;
   I: Integer;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     // insert sibling or, if FCursor is root node, behave like TJclPtrTree.Insert
@@ -8293,7 +8467,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -8302,7 +8476,7 @@ end;
 function TPtrItr.MoveNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -8312,7 +8486,7 @@ begin
     Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -8321,7 +8495,7 @@ end;
 function TPtrItr.Next: Pointer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -8336,7 +8510,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -8350,7 +8524,7 @@ end;
 function TPtrItr.Parent: Pointer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := nil;
@@ -8363,7 +8537,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -8371,7 +8545,7 @@ end;
 function TPtrItr.Previous: Pointer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -8386,7 +8560,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -8401,8 +8575,10 @@ procedure TPtrItr.Remove;
 var
   OldCursor: TJclPtrTreeNode;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -8413,7 +8589,7 @@ begin
       FOwnTree.ClearNode(OldCursor);
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -8423,7 +8599,7 @@ var
   NewCursor: TJclPtrTreeNode;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Valid := False;
@@ -8456,15 +8632,17 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
 
 procedure TPtrItr.SetChild(Index: Integer; APtr: Pointer);
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
@@ -8473,15 +8651,17 @@ begin
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
 
 procedure TPtrItr.SetPtr(APtr: Pointer);
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -8492,7 +8672,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -8704,7 +8884,7 @@ type
 
 constructor TItr.Create(OwnTree: TJclTree; ACursor: TJclTreeNode; AValid: Boolean; AStart: TItrStart);
 begin
-  inherited Create(OwnTree, AValid);
+  inherited Create(AValid);
   FCursor := ACursor;
   FOwnTree := OwnTree;
   FStart := AStart;
@@ -8715,8 +8895,10 @@ function TItr.Add(AObject: TObject): Boolean;
 var
   ParentNode, NewNode: TJclTreeNode;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     // add sibling or, if FCursor is root node, behave like TJclTree.Add
@@ -8743,7 +8925,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -8752,8 +8934,10 @@ function TItr.AddChild(AObject: TObject): Boolean;
 var
   NewNode: TJclTreeNode;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := (FCursor <> nil) and (FOwnTree.AllowDefaultElements or not FEqualityComparer.ItemsEqual(AObject, nil))
@@ -8775,7 +8959,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -8798,7 +8982,7 @@ end;
 function TItr.ChildrenCount: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if FCursor <> nil then
@@ -8807,7 +8991,7 @@ begin
       Result := 0;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -8816,8 +9000,10 @@ procedure TItr.ClearChildren;
 var
   Index: Integer;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     if FCursor <> nil then
@@ -8833,15 +9019,17 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
 
 procedure TItr.DeleteChild(Index: Integer);
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
@@ -8854,7 +9042,7 @@ begin
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -8878,7 +9066,7 @@ end;
 function TItr.GetChild(Index: Integer): TObject;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := nil;
@@ -8891,7 +9079,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -8899,7 +9087,7 @@ end;
 function TItr.GetObject: TObject;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -8911,7 +9099,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -8919,13 +9107,13 @@ end;
 function TItr.HasChild(Index: Integer): Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount);
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -8933,7 +9121,7 @@ end;
 function TItr.HasNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -8942,7 +9130,7 @@ begin
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -8950,13 +9138,13 @@ end;
 function TItr.HasParent: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := (FCursor <> nil) and (FCursor.Parent <> nil);
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -8964,7 +9152,7 @@ end;
 function TItr.HasPrevious: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -8973,7 +9161,7 @@ begin
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -8981,7 +9169,7 @@ end;
 function TItr.IndexOfChild(AObject: TObject): Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if FCursor <> nil then
@@ -8990,7 +9178,7 @@ begin
       Result := -1;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -9000,8 +9188,10 @@ var
   ParentNode, NewNode: TJclTreeNode;
   Index, I: Integer;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     // insert sibling or, if FCursor is root node, behave like TJclTree.Insert
@@ -9039,7 +9229,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -9049,8 +9239,10 @@ var
   NewNode: TJclTreeNode;
   I: Integer;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     // insert sibling or, if FCursor is root node, behave like TJclTree.Insert
@@ -9075,7 +9267,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -9084,7 +9276,7 @@ end;
 function TItr.MoveNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -9094,7 +9286,7 @@ begin
     Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -9103,7 +9295,7 @@ end;
 function TItr.Next: TObject;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -9118,7 +9310,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -9132,7 +9324,7 @@ end;
 function TItr.Parent: TObject;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := nil;
@@ -9145,7 +9337,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -9153,7 +9345,7 @@ end;
 function TItr.Previous: TObject;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -9168,7 +9360,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -9183,8 +9375,10 @@ procedure TItr.Remove;
 var
   OldCursor: TJclTreeNode;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -9195,7 +9389,7 @@ begin
       FOwnTree.ClearNode(OldCursor);
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -9205,7 +9399,7 @@ var
   NewCursor: TJclTreeNode;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Valid := False;
@@ -9238,15 +9432,17 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
 
 procedure TItr.SetChild(Index: Integer; AObject: TObject);
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
@@ -9255,15 +9451,17 @@ begin
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
 
 procedure TItr.SetObject(AObject: TObject);
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -9274,7 +9472,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -9486,7 +9684,7 @@ type
 
 constructor TItr<T>.Create(OwnTree: TJclTree<T>; ACursor: TJclTreeNode<T>; AValid: Boolean; AStart: TItrStart);
 begin
-  inherited Create(OwnTree, AValid);
+  inherited Create(AValid);
   FCursor := ACursor;
   FOwnTree := OwnTree;
   FStart := AStart;
@@ -9497,8 +9695,10 @@ function TItr<T>.Add(const AItem: T): Boolean;
 var
   ParentNode, NewNode: TJclTreeNode<T>;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     // add sibling or, if FCursor is root node, behave like TJclTree<T>.Add
@@ -9525,7 +9725,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -9534,8 +9734,10 @@ function TItr<T>.AddChild(const AItem: T): Boolean;
 var
   NewNode: TJclTreeNode<T>;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := (FCursor <> nil) and (FOwnTree.AllowDefaultElements or not FEqualityComparer.ItemsEqual(AItem, Default(T)))
@@ -9557,7 +9759,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -9580,7 +9782,7 @@ end;
 function TItr<T>.ChildrenCount: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if FCursor <> nil then
@@ -9589,7 +9791,7 @@ begin
       Result := 0;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -9598,8 +9800,10 @@ procedure TItr<T>.ClearChildren;
 var
   Index: Integer;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     if FCursor <> nil then
@@ -9615,15 +9819,17 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
 
 procedure TItr<T>.DeleteChild(Index: Integer);
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
@@ -9636,7 +9842,7 @@ begin
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -9660,7 +9866,7 @@ end;
 function TItr<T>.GetChild(Index: Integer): T;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := Default(T);
@@ -9673,7 +9879,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -9681,7 +9887,7 @@ end;
 function TItr<T>.GetItem: T;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -9693,7 +9899,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -9701,13 +9907,13 @@ end;
 function TItr<T>.HasChild(Index: Integer): Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount);
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -9715,7 +9921,7 @@ end;
 function TItr<T>.HasNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -9724,7 +9930,7 @@ begin
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -9732,13 +9938,13 @@ end;
 function TItr<T>.HasParent: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := (FCursor <> nil) and (FCursor.Parent <> nil);
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -9746,7 +9952,7 @@ end;
 function TItr<T>.HasPrevious: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -9755,7 +9961,7 @@ begin
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -9763,7 +9969,7 @@ end;
 function TItr<T>.IndexOfChild(const AItem: T): Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if FCursor <> nil then
@@ -9772,7 +9978,7 @@ begin
       Result := -1;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -9782,8 +9988,10 @@ var
   ParentNode, NewNode: TJclTreeNode<T>;
   Index, I: Integer;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     // insert sibling or, if FCursor is root node, behave like TJclTree<T>.Insert
@@ -9821,7 +10029,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -9831,8 +10039,10 @@ var
   NewNode: TJclTreeNode<T>;
   I: Integer;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     // insert sibling or, if FCursor is root node, behave like TJclTree<T>.Insert
@@ -9857,7 +10067,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -9866,7 +10076,7 @@ end;
 function TItr<T>.MoveNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -9876,7 +10086,7 @@ begin
     Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -9885,7 +10095,7 @@ end;
 function TItr<T>.Next: T;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -9900,7 +10110,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -9914,7 +10124,7 @@ end;
 function TItr<T>.Parent: T;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := Default(T);
@@ -9927,7 +10137,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -9935,7 +10145,7 @@ end;
 function TItr<T>.Previous: T;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     if Valid then
@@ -9950,7 +10160,7 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -9965,8 +10175,10 @@ procedure TItr<T>.Remove;
 var
   OldCursor: TJclTreeNode<T>;
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -9977,7 +10189,7 @@ begin
       FOwnTree.ClearNode(OldCursor);
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -9987,7 +10199,7 @@ var
   NewCursor: TJclTreeNode<T>;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FOwnTree.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Valid := False;
@@ -10020,15 +10232,17 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FOwnTree.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
 
 procedure TItr<T>.SetChild(Index: Integer; const AItem: T);
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
@@ -10037,15 +10251,17 @@ begin
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
 
 procedure TItr<T>.SetItem(const AItem: T);
 begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FOwnTree.WriteLock;
   try
   {$ENDIF THREADSAFE}
     CheckValid;
@@ -10056,7 +10272,7 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FOwnTree.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -10242,12 +10458,13 @@ end;
 
 constructor TJclIntfTree.Create();
 begin
-  inherited Create(nil);
+  inherited Create();
   FTraverseOrder := toPreOrder;
 end;
 
 destructor TJclIntfTree.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -10256,6 +10473,8 @@ function TJclIntfTree.Add(const AInterface: IInterface): Boolean;
 var
   NewNode: TJclIntfTreeNode;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -10302,6 +10521,8 @@ function TJclIntfTree.AddAll(const ACollection: IJclIntfCollection): Boolean;
 var
   It: IJclIntfIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -10363,6 +10584,8 @@ end;
 
 procedure TJclIntfTree.Clear;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -10601,6 +10824,8 @@ procedure TJclIntfTree.Pack;
       PackNode(TJclIntfTreeNode(ANode.Children[Index]));
   end;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -10618,6 +10843,8 @@ function TJclIntfTree.Remove(const AInterface: IInterface): Boolean;
 var
   It: IJclIntfIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -10645,6 +10872,8 @@ function TJclIntfTree.RemoveAll(const ACollection: IJclIntfCollection): Boolean;
 var
   It: IJclIntfIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -10667,6 +10896,8 @@ function TJclIntfTree.RetainAll(const ACollection: IJclIntfCollection): Boolean;
 var
   It: IJclIntfIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -10725,12 +10956,13 @@ end;
 
 constructor TJclAnsiStrTree.Create();
 begin
-  inherited Create(nil);
+  inherited Create();
   FTraverseOrder := toPreOrder;
 end;
 
 destructor TJclAnsiStrTree.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -10739,6 +10971,8 @@ function TJclAnsiStrTree.Add(const AString: AnsiString): Boolean;
 var
   NewNode: TJclAnsiStrTreeNode;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -10785,6 +11019,8 @@ function TJclAnsiStrTree.AddAll(const ACollection: IJclAnsiStrCollection): Boole
 var
   It: IJclAnsiStrIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -10846,6 +11082,8 @@ end;
 
 procedure TJclAnsiStrTree.Clear;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -11084,6 +11322,8 @@ procedure TJclAnsiStrTree.Pack;
       PackNode(TJclAnsiStrTreeNode(ANode.Children[Index]));
   end;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -11101,6 +11341,8 @@ function TJclAnsiStrTree.Remove(const AString: AnsiString): Boolean;
 var
   It: IJclAnsiStrIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -11128,6 +11370,8 @@ function TJclAnsiStrTree.RemoveAll(const ACollection: IJclAnsiStrCollection): Bo
 var
   It: IJclAnsiStrIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -11150,6 +11394,8 @@ function TJclAnsiStrTree.RetainAll(const ACollection: IJclAnsiStrCollection): Bo
 var
   It: IJclAnsiStrIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -11208,12 +11454,13 @@ end;
 
 constructor TJclWideStrTree.Create();
 begin
-  inherited Create(nil);
+  inherited Create();
   FTraverseOrder := toPreOrder;
 end;
 
 destructor TJclWideStrTree.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -11222,6 +11469,8 @@ function TJclWideStrTree.Add(const AString: WideString): Boolean;
 var
   NewNode: TJclWideStrTreeNode;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -11268,6 +11517,8 @@ function TJclWideStrTree.AddAll(const ACollection: IJclWideStrCollection): Boole
 var
   It: IJclWideStrIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -11329,6 +11580,8 @@ end;
 
 procedure TJclWideStrTree.Clear;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -11567,6 +11820,8 @@ procedure TJclWideStrTree.Pack;
       PackNode(TJclWideStrTreeNode(ANode.Children[Index]));
   end;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -11584,6 +11839,8 @@ function TJclWideStrTree.Remove(const AString: WideString): Boolean;
 var
   It: IJclWideStrIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -11611,6 +11868,8 @@ function TJclWideStrTree.RemoveAll(const ACollection: IJclWideStrCollection): Bo
 var
   It: IJclWideStrIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -11633,6 +11892,8 @@ function TJclWideStrTree.RetainAll(const ACollection: IJclWideStrCollection): Bo
 var
   It: IJclWideStrIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -11691,12 +11952,13 @@ end;
 
 constructor TJclSingleTree.Create();
 begin
-  inherited Create(nil);
+  inherited Create();
   FTraverseOrder := toPreOrder;
 end;
 
 destructor TJclSingleTree.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -11705,6 +11967,8 @@ function TJclSingleTree.Add(const AValue: Single): Boolean;
 var
   NewNode: TJclSingleTreeNode;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -11751,6 +12015,8 @@ function TJclSingleTree.AddAll(const ACollection: IJclSingleCollection): Boolean
 var
   It: IJclSingleIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -11812,6 +12078,8 @@ end;
 
 procedure TJclSingleTree.Clear;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -12050,6 +12318,8 @@ procedure TJclSingleTree.Pack;
       PackNode(TJclSingleTreeNode(ANode.Children[Index]));
   end;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -12067,6 +12337,8 @@ function TJclSingleTree.Remove(const AValue: Single): Boolean;
 var
   It: IJclSingleIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -12094,6 +12366,8 @@ function TJclSingleTree.RemoveAll(const ACollection: IJclSingleCollection): Bool
 var
   It: IJclSingleIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -12116,6 +12390,8 @@ function TJclSingleTree.RetainAll(const ACollection: IJclSingleCollection): Bool
 var
   It: IJclSingleIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -12174,12 +12450,13 @@ end;
 
 constructor TJclDoubleTree.Create();
 begin
-  inherited Create(nil);
+  inherited Create();
   FTraverseOrder := toPreOrder;
 end;
 
 destructor TJclDoubleTree.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -12188,6 +12465,8 @@ function TJclDoubleTree.Add(const AValue: Double): Boolean;
 var
   NewNode: TJclDoubleTreeNode;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -12234,6 +12513,8 @@ function TJclDoubleTree.AddAll(const ACollection: IJclDoubleCollection): Boolean
 var
   It: IJclDoubleIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -12295,6 +12576,8 @@ end;
 
 procedure TJclDoubleTree.Clear;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -12533,6 +12816,8 @@ procedure TJclDoubleTree.Pack;
       PackNode(TJclDoubleTreeNode(ANode.Children[Index]));
   end;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -12550,6 +12835,8 @@ function TJclDoubleTree.Remove(const AValue: Double): Boolean;
 var
   It: IJclDoubleIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -12577,6 +12864,8 @@ function TJclDoubleTree.RemoveAll(const ACollection: IJclDoubleCollection): Bool
 var
   It: IJclDoubleIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -12599,6 +12888,8 @@ function TJclDoubleTree.RetainAll(const ACollection: IJclDoubleCollection): Bool
 var
   It: IJclDoubleIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -12657,12 +12948,13 @@ end;
 
 constructor TJclExtendedTree.Create();
 begin
-  inherited Create(nil);
+  inherited Create();
   FTraverseOrder := toPreOrder;
 end;
 
 destructor TJclExtendedTree.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -12671,6 +12963,8 @@ function TJclExtendedTree.Add(const AValue: Extended): Boolean;
 var
   NewNode: TJclExtendedTreeNode;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -12717,6 +13011,8 @@ function TJclExtendedTree.AddAll(const ACollection: IJclExtendedCollection): Boo
 var
   It: IJclExtendedIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -12778,6 +13074,8 @@ end;
 
 procedure TJclExtendedTree.Clear;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -13016,6 +13314,8 @@ procedure TJclExtendedTree.Pack;
       PackNode(TJclExtendedTreeNode(ANode.Children[Index]));
   end;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -13033,6 +13333,8 @@ function TJclExtendedTree.Remove(const AValue: Extended): Boolean;
 var
   It: IJclExtendedIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -13060,6 +13362,8 @@ function TJclExtendedTree.RemoveAll(const ACollection: IJclExtendedCollection): 
 var
   It: IJclExtendedIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -13082,6 +13386,8 @@ function TJclExtendedTree.RetainAll(const ACollection: IJclExtendedCollection): 
 var
   It: IJclExtendedIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -13140,12 +13446,13 @@ end;
 
 constructor TJclIntegerTree.Create();
 begin
-  inherited Create(nil);
+  inherited Create();
   FTraverseOrder := toPreOrder;
 end;
 
 destructor TJclIntegerTree.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -13154,6 +13461,8 @@ function TJclIntegerTree.Add(AValue: Integer): Boolean;
 var
   NewNode: TJclIntegerTreeNode;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -13200,6 +13509,8 @@ function TJclIntegerTree.AddAll(const ACollection: IJclIntegerCollection): Boole
 var
   It: IJclIntegerIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -13261,6 +13572,8 @@ end;
 
 procedure TJclIntegerTree.Clear;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -13499,6 +13812,8 @@ procedure TJclIntegerTree.Pack;
       PackNode(TJclIntegerTreeNode(ANode.Children[Index]));
   end;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -13516,6 +13831,8 @@ function TJclIntegerTree.Remove(AValue: Integer): Boolean;
 var
   It: IJclIntegerIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -13543,6 +13860,8 @@ function TJclIntegerTree.RemoveAll(const ACollection: IJclIntegerCollection): Bo
 var
   It: IJclIntegerIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -13565,6 +13884,8 @@ function TJclIntegerTree.RetainAll(const ACollection: IJclIntegerCollection): Bo
 var
   It: IJclIntegerIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -13623,12 +13944,13 @@ end;
 
 constructor TJclCardinalTree.Create();
 begin
-  inherited Create(nil);
+  inherited Create();
   FTraverseOrder := toPreOrder;
 end;
 
 destructor TJclCardinalTree.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -13637,6 +13959,8 @@ function TJclCardinalTree.Add(AValue: Cardinal): Boolean;
 var
   NewNode: TJclCardinalTreeNode;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -13683,6 +14007,8 @@ function TJclCardinalTree.AddAll(const ACollection: IJclCardinalCollection): Boo
 var
   It: IJclCardinalIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -13744,6 +14070,8 @@ end;
 
 procedure TJclCardinalTree.Clear;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -13982,6 +14310,8 @@ procedure TJclCardinalTree.Pack;
       PackNode(TJclCardinalTreeNode(ANode.Children[Index]));
   end;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -13999,6 +14329,8 @@ function TJclCardinalTree.Remove(AValue: Cardinal): Boolean;
 var
   It: IJclCardinalIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -14026,6 +14358,8 @@ function TJclCardinalTree.RemoveAll(const ACollection: IJclCardinalCollection): 
 var
   It: IJclCardinalIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -14048,6 +14382,8 @@ function TJclCardinalTree.RetainAll(const ACollection: IJclCardinalCollection): 
 var
   It: IJclCardinalIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -14106,12 +14442,13 @@ end;
 
 constructor TJclInt64Tree.Create();
 begin
-  inherited Create(nil);
+  inherited Create();
   FTraverseOrder := toPreOrder;
 end;
 
 destructor TJclInt64Tree.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -14120,6 +14457,8 @@ function TJclInt64Tree.Add(const AValue: Int64): Boolean;
 var
   NewNode: TJclInt64TreeNode;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -14166,6 +14505,8 @@ function TJclInt64Tree.AddAll(const ACollection: IJclInt64Collection): Boolean;
 var
   It: IJclInt64Iterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -14227,6 +14568,8 @@ end;
 
 procedure TJclInt64Tree.Clear;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -14465,6 +14808,8 @@ procedure TJclInt64Tree.Pack;
       PackNode(TJclInt64TreeNode(ANode.Children[Index]));
   end;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -14482,6 +14827,8 @@ function TJclInt64Tree.Remove(const AValue: Int64): Boolean;
 var
   It: IJclInt64Iterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -14509,6 +14856,8 @@ function TJclInt64Tree.RemoveAll(const ACollection: IJclInt64Collection): Boolea
 var
   It: IJclInt64Iterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -14531,6 +14880,8 @@ function TJclInt64Tree.RetainAll(const ACollection: IJclInt64Collection): Boolea
 var
   It: IJclInt64Iterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -14590,12 +14941,13 @@ end;
 
 constructor TJclPtrTree.Create();
 begin
-  inherited Create(nil);
+  inherited Create();
   FTraverseOrder := toPreOrder;
 end;
 
 destructor TJclPtrTree.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -14604,6 +14956,8 @@ function TJclPtrTree.Add(APtr: Pointer): Boolean;
 var
   NewNode: TJclPtrTreeNode;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -14650,6 +15004,8 @@ function TJclPtrTree.AddAll(const ACollection: IJclPtrCollection): Boolean;
 var
   It: IJclPtrIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -14711,6 +15067,8 @@ end;
 
 procedure TJclPtrTree.Clear;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -14949,6 +15307,8 @@ procedure TJclPtrTree.Pack;
       PackNode(TJclPtrTreeNode(ANode.Children[Index]));
   end;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -14966,6 +15326,8 @@ function TJclPtrTree.Remove(APtr: Pointer): Boolean;
 var
   It: IJclPtrIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -14993,6 +15355,8 @@ function TJclPtrTree.RemoveAll(const ACollection: IJclPtrCollection): Boolean;
 var
   It: IJclPtrIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -15015,6 +15379,8 @@ function TJclPtrTree.RetainAll(const ACollection: IJclPtrCollection): Boolean;
 var
   It: IJclPtrIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -15074,12 +15440,13 @@ end;
 
 constructor TJclTree.Create(AOwnsObjects: Boolean);
 begin
-  inherited Create(nil, AOwnsObjects);
+  inherited Create(AOwnsObjects);
   FTraverseOrder := toPreOrder;
 end;
 
 destructor TJclTree.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -15088,6 +15455,8 @@ function TJclTree.Add(AObject: TObject): Boolean;
 var
   NewNode: TJclTreeNode;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -15134,6 +15503,8 @@ function TJclTree.AddAll(const ACollection: IJclCollection): Boolean;
 var
   It: IJclIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -15195,6 +15566,8 @@ end;
 
 procedure TJclTree.Clear;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -15433,6 +15806,8 @@ procedure TJclTree.Pack;
       PackNode(TJclTreeNode(ANode.Children[Index]));
   end;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -15450,6 +15825,8 @@ function TJclTree.Remove(AObject: TObject): Boolean;
 var
   It: IJclIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -15477,6 +15854,8 @@ function TJclTree.RemoveAll(const ACollection: IJclCollection): Boolean;
 var
   It: IJclIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -15499,6 +15878,8 @@ function TJclTree.RetainAll(const ACollection: IJclCollection): Boolean;
 var
   It: IJclIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -15558,12 +15939,13 @@ end;
 
 constructor TJclTree<T>.Create(AOwnsItems: Boolean);
 begin
-  inherited Create(nil, AOwnsItems);
+  inherited Create(AOwnsItems);
   FTraverseOrder := toPreOrder;
 end;
 
 destructor TJclTree<T>.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -15572,6 +15954,8 @@ function TJclTree<T>.Add(const AItem: T): Boolean;
 var
   NewNode: TJclTreeNode<T>;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -15618,6 +16002,8 @@ function TJclTree<T>.AddAll(const ACollection: IJclCollection<T>): Boolean;
 var
   It: IJclIterator<T>;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -15679,6 +16065,8 @@ end;
 
 procedure TJclTree<T>.Clear;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -15912,6 +16300,8 @@ procedure TJclTree<T>.Pack;
       PackNode(TJclTreeNode<T>(ANode.Children[Index]));
   end;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -15929,6 +16319,8 @@ function TJclTree<T>.Remove(const AItem: T): Boolean;
 var
   It: IJclIterator<T>;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -15956,6 +16348,8 @@ function TJclTree<T>.RemoveAll(const ACollection: IJclCollection<T>): Boolean;
 var
   It: IJclIterator<T>;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -15978,6 +16372,8 @@ function TJclTree<T>.RetainAll(const ACollection: IJclCollection<T>): Boolean;
 var
   It: IJclIterator<T>;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try

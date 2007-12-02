@@ -55,12 +55,13 @@
 
 constructor SELFCLASSNAME.Create(ACapacity: IntegerVALUEOWNERSHIPDECLARATIONKEYOWNERSHIPDECLARATION);
 begin
-  inherited Create(nil);OWNERSHIPASSIGNMENTS
+  inherited Create();OWNERSHIPASSIGNMENTS
   SetCapacity(ACapacity);
 end;
 
 destructor SELFCLASSNAME.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -84,10 +85,7 @@ var
   HiPos, LoPos, CompPos: Integer;
   Comp: Integer;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READBEGIN}
     LoPos := 0;
     HiPos := FSize - 1;
     CompPos := (HiPos + LoPos) div 2;
@@ -107,21 +105,14 @@ begin
       CompPos := (HiPos + LoPos) div 2;
     end;
     Result := HiPos;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READEND}
 end;
 
 procedure SELFCLASSNAME.Clear;
 var
   Index: Integer;
 begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEBEGIN}
     for Index := 0 to FSize - 1 do
     begin
       FreeKey(FEntries[Index].Key);
@@ -129,38 +120,24 @@ begin
     end;
     FSize := 0;
     AutoPack;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEEND}
 end;
 
 function SELFCLASSNAME.ContainsKey(KEYPARAMETERDECLARATION): Boolean;
 var
   Index: Integer;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READBEGIN}
     Index := BinarySearch(Key);
     Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READEND}
 end;
 
 function SELFCLASSNAME.ContainsValue(VALUEPARAMETERDECLARATION): Boolean;
 var
   Index: Integer;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READBEGIN}
     Result := False;
     for Index := 0 to FSize - 1 do
       if ValuesCompare(FEntries[Index].Value, Value) = 0 then
@@ -168,11 +145,7 @@ begin
       Result := True;
       Break;
     end;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READEND}
 end;
 
 {$JPPEXPANDMACRO CREATEEMPTYCONTAINER}
@@ -182,10 +155,7 @@ var
   Index: Integer;
   AKey: KEYTYPENAME;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READBEGIN}
     Result := False;
     if AMap = nil then
       Exit;
@@ -203,30 +173,19 @@ begin
       Inc(Index);
     end;
     Result := True;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READEND}
 end;
 
 function SELFCLASSNAME.FirstKey: KEYTYPENAME;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READBEGIN}
     Result := KEYDEFAULT;
     if FSize > 0 then
       Result := FEntries[0].Key
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READEND}
 end;
 
 {$JPPEXPANDMACRO FREEKEY}
@@ -237,21 +196,14 @@ function SELFCLASSNAME.GetValue(KEYPARAMETERDECLARATION): VALUETYPENAME;
 var
   Index: Integer;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READBEGIN}
     Index := BinarySearch(Key);
     Result := VALUEDEFAULT;
     if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
       Result := FEntries[Index].Value
     else if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READEND}
 end;
 
 function SELFCLASSNAME.HeadMap(HEADMAPPARAMETERDECLARATION): SORTEDMAPINTERFACENAME;
@@ -259,10 +211,7 @@ var
   ToIndex: Integer;
   NewMap: SELFCLASSNAME;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READBEGIN}
     NewMap := CreateEmptyContainer as SELFCLASSNAME;
     ToIndex := BinarySearch(ToKey);
     if ToIndex >= 0 then
@@ -276,25 +225,14 @@ begin
       end;
     end;
     Result := NewMap;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READEND}
 end;
 
 function SELFCLASSNAME.IsEmpty: Boolean;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READBEGIN}
     Result := FSize = 0;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READEND}
 end;
 
 function SELFCLASSNAME.KeyOfValue(VALUEPARAMETERDECLARATION): KEYTYPENAME;
@@ -302,11 +240,8 @@ var
   Index: Integer;
   Found: Boolean;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
-    Found := False;
+  {$JPPEXPANDMACRO READBEGIN}
+   Found := False;
     Result := KEYDEFAULT;
     for Index := 0 to FSize - 1 do
       if ValuesCompare(FEntries[Index].Value, Value) = 0 then
@@ -318,11 +253,7 @@ begin
 
     if (not Found) and (not FReturnDefaultElements) then
       raise EJclNoSuchElementError.Create('');
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READEND}
 end;
 
 {$JPPEXPANDMACRO KEYSCOMPARE}
@@ -330,37 +261,23 @@ function SELFCLASSNAME.KeySet: KEYSETINTERFACENAME;
 var
   Index: Integer;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READBEGIN}
     Result := {$JPPEXPANDMACRO CREATEEMPTYARRAYSET(FSize)};
     for Index := 0 to FSize - 1 do
       Result.Add(FEntries[Index].Key);
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READEND}
 end;
 
 function SELFCLASSNAME.LastKey: KEYTYPENAME;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READBEGIN}
     Result := KEYDEFAULT;
     if FSize > 0 then
       Result := FEntries[FSize - 1].Key
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READEND}
 end;
 
 procedure SELFCLASSNAME.MoveArray(FromIndex, ToIndex, Count: Integer);
@@ -438,10 +355,7 @@ var
   It: KEYITRINTERFACENAME;
   Key: KEYTYPENAME;
 begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEBEGIN}
     if AMap = nil then
       Exit;
     It := AMap.KeySet.First;
@@ -450,21 +364,14 @@ begin
       Key := It.Next;
       PutValue(Key, AMap.GetValue(Key));
     end;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEEND}
 end;
 
 procedure SELFCLASSNAME.PutValue(KEYPARAMETERDECLARATION; VALUEPARAMETERDECLARATION);
 var
   Index: Integer;
 begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEBEGIN}
     if FAllowDefaultElements or ((KeysCompare(Key, KEYDEFAULT) <> 0) and (ValuesCompare(Value, VALUEDEFAULT) <> 0)) then
     begin
       Index := BinarySearch(Key);
@@ -489,21 +396,14 @@ begin
         end;
       end;
     end;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEEND}
 end;
 
 function SELFCLASSNAME.Remove(KEYPARAMETERDECLARATION): VALUETYPENAME;
 var
   Index: Integer;
 begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEBEGIN}
     Index := BinarySearch(Key);
     if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
     begin
@@ -516,19 +416,12 @@ begin
     end
     else
       Result := VALUEDEFAULT;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEEND}
 end;
 
 procedure SELFCLASSNAME.SetCapacity(Value: Integer);
 begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEBEGIN}
     if FSize <= Value then
     begin
       SetLength(FEntries, Value);
@@ -536,11 +429,7 @@ begin
     end
     else
       raise EJclOperationNotSupportedError.Create;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEEND}
 end;
 
 function SELFCLASSNAME.Size: Integer;
@@ -553,10 +442,7 @@ var
   FromIndex, ToIndex: Integer;
   NewMap: SELFCLASSNAME;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READBEGIN}
     NewMap := CreateEmptyContainer as SELFCLASSNAME;
     FromIndex := BinarySearch(FromKey);
     if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
@@ -573,11 +459,7 @@ begin
       end;
     end;
     Result := NewMap;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READEND}
 end;
 
 function SELFCLASSNAME.TailMap(TAILMAPPARAMETERDECLARATION): SORTEDMAPINTERFACENAME;
@@ -585,10 +467,7 @@ var
   FromIndex, Index: Integer;
   NewMap: SELFCLASSNAME;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READBEGIN}
     NewMap := CreateEmptyContainer as SELFCLASSNAME;
     FromIndex := BinarySearch(FromKey);
     if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
@@ -605,29 +484,18 @@ begin
       end;
     end;
     Result := NewMap;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READEND}
 end;
 
 function SELFCLASSNAME.Values: VALUECOLLECTIONINTERFACENAME;
 var
   Index: Integer;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READBEGIN}
     Result := {$JPPEXPANDMACRO CREATEEMPTYARRAYLIST(FSize)};
     for Index := 0 to FSize - 1 do
       Result.Add(FEntries[Index].Value);
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READEND}
 end;
 
 {$JPPEXPANDMACRO VALUESCOMPARE}*)

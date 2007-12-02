@@ -88,7 +88,7 @@ type
 
 constructor SELFCLASSNAME.Create(const AOwnList: LISTINTERFACENAME; ACursor: ITEMCLASSNAME; AValid: Boolean; AStart: TItrStart);
 begin
-  inherited Create(AOwnList, AValid);
+  inherited Create(AValid);
   FCursor := ACursor;
   FOwnList := AOwnList;
   FStart := AStart;
@@ -149,46 +149,29 @@ end;
 
 function SELFCLASSNAME.HasNext: Boolean;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEREADBEGIN(FOwnList)}
     if Valid then
       Result := (FCursor <> nil) and (FCursor.Next <> nil)
     else
       Result := FCursor <> nil;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEREADEND(FOwnList)}
 end;
 
 function SELFCLASSNAME.HasPrevious: Boolean;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEREADBEGIN(FOwnList)}
     if Valid then
       Result := (FCursor <> nil) and (FCursor.Next <> nil)
     else
       Result := FCursor <> nil;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEREADEND(FOwnList)}
 end;
 
 function SELFCLASSNAME.Insert(PARAMETERDECLARATION): Boolean;
 var
   NewCursor: ITEMCLASSNAME;
 begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEWRITEBEGIN(FOwnList)}
     CheckValid;
     Result := FCursor <> nil;
     if Result then
@@ -221,39 +204,25 @@ begin
         end;
       end;
     end;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEWRITEEND(FOwnList)}
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
 function SELFCLASSNAME.MoveNext: Boolean;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEREADBEGIN(FOwnList)}
     if Valid and (FCursor <> nil) then
       FCursor := FCursor.Next
     else
       Valid := True;
     Result := FCursor <> nil;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEREADEND(FOwnList)}
 end;
 {$ENDIF SUPPORTS_FOR_IN}
 
 function SELFCLASSNAME.Next: DATATYPENAME;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEREADBEGIN(FOwnList)}
     if Valid and (FCursor <> nil) then
       FCursor := FCursor.Next
     else
@@ -262,11 +231,7 @@ begin
       Result := FCursor.Value
     else
       Result := DEFAULTVALUE;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEREADEND(FOwnList)}
 end;
 
 function SELFCLASSNAME.NextIndex: Integer;
@@ -277,10 +242,7 @@ end;
 
 function SELFCLASSNAME.Previous: DATATYPENAME;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEREADBEGIN(FOwnList)}
     if Valid and (FCursor <> nil) then
       FCursor := FCursor.Previous
     else
@@ -289,11 +251,7 @@ begin
       Result := FCursor.Value
     else
       Result := DEFAULTVALUE;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEREADEND(FOwnList)}
 end;
 
 function SELFCLASSNAME.PreviousIndex: Integer;
@@ -306,10 +264,7 @@ procedure SELFCLASSNAME.Remove;
 var
   OldCursor: ITEMCLASSNAME;
 begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEWRITEBEGIN(FOwnList)}
     CheckValid;
     Valid := False;
     if FCursor <> nil then
@@ -323,19 +278,12 @@ begin
       FCursor := FCursor.Next;
       OldCursor.Free;
     end;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEWRITEEND(FOwnList)}
 end;
 
 procedure SELFCLASSNAME.Reset;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEREADBEGIN(FOwnList)}
     Valid := False;
     case FStart of
       isFirst:
@@ -349,27 +297,16 @@ begin
             FCursor := FCursor.Next;
         end;
     end;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEREADEND(FOwnList)}
 end;
 
 procedure SELFCLASSNAME.SETTERNAME(PARAMETERDECLARATION);
 begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEWRITEBEGIN(FOwnList)}
     CheckValid;
     {$JPPEXPANDMACRO ITEMFREE(FCursor.Value)};
     FCursor.Value := PARAMETERNAME;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEWRITEEND(FOwnList)}
 end;*)
 (*$JPPDEFINEMACRO JCLLINKEDLISTIMP(SELFCLASSNAME, DATATYPENAME, ITEMCLASSNAME, COLLECTIONINTERFACENAME, LISTINTERFACENAME, ITRINTERFACENAME, ITRCLASSNAME,
   OWNERSHIPDECLARATION, OWNERSHIPPARAMETER,
@@ -378,7 +315,7 @@ end;*)
 
 constructor SELFCLASSNAME.Create(const ACollection: COLLECTIONINTERFACENAMEOWNERSHIPDECLARATION);
 begin
-  inherited Create(nilOWNERSHIPPARAMETER);
+  inherited Create(OWNERSHIPPARAMETER);
   FStart := nil;
   FEnd := nil;
   if ACollection <> nil then
@@ -387,6 +324,7 @@ end;
 
 destructor SELFCLASSNAME.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -395,10 +333,7 @@ function SELFCLASSNAME.Add(PARAMETERDECLARATION): Boolean;
 var
   NewItem: ITEMCLASSNAME;
 begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEBEGIN}
     Result := FAllowDefaultElements or not ItemsEqual(PARAMETERNAME, DEFAULTVALUE);
     if Result then
     begin
@@ -434,11 +369,7 @@ begin
         Inc(FSize);
       end;
     end;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEEND}
 end;
 
 function SELFCLASSNAME.AddAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;
@@ -448,10 +379,7 @@ var
   AddItem: Boolean;
   NewItem: ITEMCLASSNAME;
 begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEBEGIN}
     Result := False;
     if ACollection = nil then
       Exit;
@@ -497,11 +425,7 @@ begin
       end;
       Result := AddItem and Result;
     end;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEEND}
 end;
 
 procedure SELFCLASSNAME.AssignDataTo(Dest: TJclAbstractContainerBase);
@@ -520,10 +444,7 @@ procedure SELFCLASSNAME.Clear;
 var
   Old, Current: ITEMCLASSNAME;
 begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEBEGIN}
     Current := FStart;
     while Current <> nil do
     begin
@@ -537,21 +458,14 @@ begin
     //Daniele Teti 27/12/2004
     FStart := nil;
     FEnd := nil;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEEND}
 end;
 
 function SELFCLASSNAME.Contains(PARAMETERDECLARATION): Boolean;
 var
   Current: ITEMCLASSNAME;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READBEGIN}
     Result := False;
     Current := FStart;
     while Current <> nil do
@@ -563,21 +477,14 @@ begin
       end;
       Current := Current.Next;
     end;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READEND}
 end;
 
 function SELFCLASSNAME.ContainsAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;
 var
   It: ITRINTERFACENAME;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READBEGIN}
     Result := False;
     if ACollection = nil then
       Exit;
@@ -585,11 +492,7 @@ begin
     It := ACollection.First;
     while Result and It.HasNext do
       Result := Contains(It.Next);
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READEND}
 end;
 
 {$JPPEXPANDMACRO CREATEEMPTYCONTAINER}
@@ -597,10 +500,7 @@ function SELFCLASSNAME.Delete(Index: Integer): DATATYPENAME;
 var
   Current: ITEMCLASSNAME;
 begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEBEGIN}
     Result := DEFAULTVALUE;
     if (Index >= 0) and (Index < FSize) then
     begin
@@ -628,21 +528,14 @@ begin
     end
     else
       raise EJclOutOfBoundsError.Create;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEEND}
 end;
 
 function SELFCLASSNAME.Equals(const ACollection: COLLECTIONINTERFACENAME): Boolean;
 var
   It, ItSelf: ITRINTERFACENAME;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READBEGIN}
     Result := False;
     if ACollection = nil then
       Exit;
@@ -657,11 +550,7 @@ begin
         Result := False;
         Break;
       end;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READEND}
 end;
 
 function SELFCLASSNAME.First: ITRINTERFACENAME;
@@ -680,10 +569,7 @@ function SELFCLASSNAME.GETTERNAME(Index: Integer): DATATYPENAME;
 var
   Current: ITEMCLASSNAME;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READBEGIN}
     Result := DEFAULTVALUE;
     Current := FStart;
     while (Current <> nil) and (Index > 0) do
@@ -696,21 +582,14 @@ begin
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READEND}
 end;
 
 function SELFCLASSNAME.IndexOf(PARAMETERDECLARATION): Integer;
 var
   Current: ITEMCLASSNAME;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READBEGIN}
     Current := FStart;
     Result := 0;
     while (Current <> nil) and not ItemsEqual(Current.Value, PARAMETERNAME) do
@@ -720,21 +599,14 @@ begin
     end;
     if Current = nil then
       Result := -1;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READEND}
 end;
 
 function SELFCLASSNAME.Insert(Index: Integer; PARAMETERDECLARATION): Boolean;
 var
   Current, NewItem: ITEMCLASSNAME;
 begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEBEGIN}
     Result := FAllowDefaultElements or not ItemsEqual(PARAMETERNAME, DEFAULTVALUE);
     if (Index < 0) or (Index > FSize) then
       raise EJclOutOfBoundsError.Create;
@@ -795,11 +667,7 @@ begin
         end;
       end;
     end;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEEND}
 end;
 
 function SELFCLASSNAME.InsertAll(Index: Integer; const ACollection: COLLECTIONINTERFACENAME): Boolean;
@@ -809,10 +677,7 @@ var
   AddItem: Boolean;
   Item: DATATYPENAME;
 begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEBEGIN}
     Result := False;
     if (Index < 0) or (Index > FSize) then
       raise EJclOutOfBoundsError.Create;
@@ -940,11 +805,7 @@ begin
         end;
       end;
     end;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEEND}
 end;
 
 function SELFCLASSNAME.IsEmpty: Boolean;
@@ -961,10 +822,7 @@ function SELFCLASSNAME.LastIndexOf(PARAMETERDECLARATION): Integer;
 var
   Current: ITEMCLASSNAME;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READBEGIN}
     Result := -1;
     if FEnd <> nil then
     begin
@@ -978,21 +836,14 @@ begin
       if Current = nil then
         Result := -1;
     end;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READEND}
 end;
 
 function SELFCLASSNAME.Remove(PARAMETERDECLARATION): Boolean;
 var
   Current: ITEMCLASSNAME;
 begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEBEGIN}
     Result := False;
     Current := FStart;
     while Current <> nil do
@@ -1016,42 +867,28 @@ begin
       end;
       Current := Current.Next;
     end;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEEND}
 end;
 
 function SELFCLASSNAME.RemoveAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;
 var
   It: ITRINTERFACENAME;
 begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEBEGIN}
     Result := True;
     if ACollection = nil then
       Exit;
     It := ACollection.First;
     while It.HasNext do
       Result := Remove(It.Next) and Result;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEEND}
 end;
 
 function SELFCLASSNAME.RetainAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;
 var
   It: ITRINTERFACENAME;
 begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEBEGIN}
     Result := False;
     if ACollection = nil then
       Exit;
@@ -1060,11 +897,7 @@ begin
     while It.HasNext do
       if not ACollection.Contains(It.Next) then
         It.Remove;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEEND}
 end;
 
 procedure SELFCLASSNAME.SETTERNAME(Index: Integer; PARAMETERDECLARATION);
@@ -1072,10 +905,7 @@ var
   Current: ITEMCLASSNAME;
   ReplaceItem: Boolean;
 begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEBEGIN}
     ReplaceItem := FAllowDefaultElements or not ItemsEqual(PARAMETERNAME, DEFAULTVALUE);
     if ReplaceItem then
     begin
@@ -1110,11 +940,7 @@ begin
     end;
     if not ReplaceItem then
       Delete(Index);
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEEND}
 end;
 
 function SELFCLASSNAME.Size: Integer;
@@ -1126,10 +952,7 @@ function SELFCLASSNAME.SubList(First, Count: Integer): LISTINTERFACENAME;
 var
   Current: ITEMCLASSNAME;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READBEGIN}
     Result := CreateEmptyContainer as LISTINTERFACENAME;
     Current := FStart;
     while (Current <> nil) and (First > 0) do
@@ -1143,9 +966,5 @@ begin
       Dec(Count);
       Current := Current.Next;
     end;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READEND}
 end;*)

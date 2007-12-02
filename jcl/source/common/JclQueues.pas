@@ -481,7 +481,7 @@ uses
 
 constructor TJclIntfQueue.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   FHead := 0;
   FTail := 0;
   SetCapacity(ACapacity);
@@ -489,6 +489,7 @@ end;
 
 destructor TJclIntfQueue.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -519,6 +520,8 @@ procedure TJclIntfQueue.Clear;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -576,6 +579,8 @@ end;
 
 function TJclIntfQueue.Dequeue: IInterface;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -616,6 +621,8 @@ end;
 
 function TJclIntfQueue.Enqueue(const AInterface: IInterface): Boolean;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -639,6 +646,8 @@ end;
 
 procedure TJclIntfQueue.Pack;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -674,6 +683,8 @@ procedure TJclIntfQueue.SetCapacity(Value: Integer);
 var
   NewHead: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -736,7 +747,7 @@ end;
 
 constructor TJclAnsiStrQueue.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   FHead := 0;
   FTail := 0;
   SetCapacity(ACapacity);
@@ -744,6 +755,7 @@ end;
 
 destructor TJclAnsiStrQueue.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -774,6 +786,8 @@ procedure TJclAnsiStrQueue.Clear;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -831,6 +845,8 @@ end;
 
 function TJclAnsiStrQueue.Dequeue: AnsiString;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -871,6 +887,8 @@ end;
 
 function TJclAnsiStrQueue.Enqueue(const AString: AnsiString): Boolean;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -894,6 +912,8 @@ end;
 
 procedure TJclAnsiStrQueue.Pack;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -929,6 +949,8 @@ procedure TJclAnsiStrQueue.SetCapacity(Value: Integer);
 var
   NewHead: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -991,7 +1013,7 @@ end;
 
 constructor TJclWideStrQueue.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   FHead := 0;
   FTail := 0;
   SetCapacity(ACapacity);
@@ -999,6 +1021,7 @@ end;
 
 destructor TJclWideStrQueue.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -1029,6 +1052,8 @@ procedure TJclWideStrQueue.Clear;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1086,6 +1111,8 @@ end;
 
 function TJclWideStrQueue.Dequeue: WideString;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1126,6 +1153,8 @@ end;
 
 function TJclWideStrQueue.Enqueue(const AString: WideString): Boolean;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1149,6 +1178,8 @@ end;
 
 procedure TJclWideStrQueue.Pack;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1184,6 +1215,8 @@ procedure TJclWideStrQueue.SetCapacity(Value: Integer);
 var
   NewHead: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1246,7 +1279,7 @@ end;
 
 constructor TJclSingleQueue.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   FHead := 0;
   FTail := 0;
   SetCapacity(ACapacity);
@@ -1254,6 +1287,7 @@ end;
 
 destructor TJclSingleQueue.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -1284,6 +1318,8 @@ procedure TJclSingleQueue.Clear;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1341,6 +1377,8 @@ end;
 
 function TJclSingleQueue.Dequeue: Single;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1381,6 +1419,8 @@ end;
 
 function TJclSingleQueue.Enqueue(const AValue: Single): Boolean;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1404,6 +1444,8 @@ end;
 
 procedure TJclSingleQueue.Pack;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1439,6 +1481,8 @@ procedure TJclSingleQueue.SetCapacity(Value: Integer);
 var
   NewHead: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1501,7 +1545,7 @@ end;
 
 constructor TJclDoubleQueue.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   FHead := 0;
   FTail := 0;
   SetCapacity(ACapacity);
@@ -1509,6 +1553,7 @@ end;
 
 destructor TJclDoubleQueue.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -1539,6 +1584,8 @@ procedure TJclDoubleQueue.Clear;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1596,6 +1643,8 @@ end;
 
 function TJclDoubleQueue.Dequeue: Double;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1636,6 +1685,8 @@ end;
 
 function TJclDoubleQueue.Enqueue(const AValue: Double): Boolean;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1659,6 +1710,8 @@ end;
 
 procedure TJclDoubleQueue.Pack;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1694,6 +1747,8 @@ procedure TJclDoubleQueue.SetCapacity(Value: Integer);
 var
   NewHead: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1756,7 +1811,7 @@ end;
 
 constructor TJclExtendedQueue.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   FHead := 0;
   FTail := 0;
   SetCapacity(ACapacity);
@@ -1764,6 +1819,7 @@ end;
 
 destructor TJclExtendedQueue.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -1794,6 +1850,8 @@ procedure TJclExtendedQueue.Clear;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1851,6 +1909,8 @@ end;
 
 function TJclExtendedQueue.Dequeue: Extended;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1891,6 +1951,8 @@ end;
 
 function TJclExtendedQueue.Enqueue(const AValue: Extended): Boolean;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1914,6 +1976,8 @@ end;
 
 procedure TJclExtendedQueue.Pack;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1949,6 +2013,8 @@ procedure TJclExtendedQueue.SetCapacity(Value: Integer);
 var
   NewHead: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -2011,7 +2077,7 @@ end;
 
 constructor TJclIntegerQueue.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   FHead := 0;
   FTail := 0;
   SetCapacity(ACapacity);
@@ -2019,6 +2085,7 @@ end;
 
 destructor TJclIntegerQueue.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -2049,6 +2116,8 @@ procedure TJclIntegerQueue.Clear;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -2106,6 +2175,8 @@ end;
 
 function TJclIntegerQueue.Dequeue: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -2146,6 +2217,8 @@ end;
 
 function TJclIntegerQueue.Enqueue(AValue: Integer): Boolean;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -2169,6 +2242,8 @@ end;
 
 procedure TJclIntegerQueue.Pack;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -2204,6 +2279,8 @@ procedure TJclIntegerQueue.SetCapacity(Value: Integer);
 var
   NewHead: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -2266,7 +2343,7 @@ end;
 
 constructor TJclCardinalQueue.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   FHead := 0;
   FTail := 0;
   SetCapacity(ACapacity);
@@ -2274,6 +2351,7 @@ end;
 
 destructor TJclCardinalQueue.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -2304,6 +2382,8 @@ procedure TJclCardinalQueue.Clear;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -2361,6 +2441,8 @@ end;
 
 function TJclCardinalQueue.Dequeue: Cardinal;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -2401,6 +2483,8 @@ end;
 
 function TJclCardinalQueue.Enqueue(AValue: Cardinal): Boolean;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -2424,6 +2508,8 @@ end;
 
 procedure TJclCardinalQueue.Pack;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -2459,6 +2545,8 @@ procedure TJclCardinalQueue.SetCapacity(Value: Integer);
 var
   NewHead: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -2521,7 +2609,7 @@ end;
 
 constructor TJclInt64Queue.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   FHead := 0;
   FTail := 0;
   SetCapacity(ACapacity);
@@ -2529,6 +2617,7 @@ end;
 
 destructor TJclInt64Queue.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -2559,6 +2648,8 @@ procedure TJclInt64Queue.Clear;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -2616,6 +2707,8 @@ end;
 
 function TJclInt64Queue.Dequeue: Int64;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -2656,6 +2749,8 @@ end;
 
 function TJclInt64Queue.Enqueue(const AValue: Int64): Boolean;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -2679,6 +2774,8 @@ end;
 
 procedure TJclInt64Queue.Pack;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -2714,6 +2811,8 @@ procedure TJclInt64Queue.SetCapacity(Value: Integer);
 var
   NewHead: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -2777,7 +2876,7 @@ end;
 
 constructor TJclPtrQueue.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   FHead := 0;
   FTail := 0;
   SetCapacity(ACapacity);
@@ -2785,6 +2884,7 @@ end;
 
 destructor TJclPtrQueue.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -2815,6 +2915,8 @@ procedure TJclPtrQueue.Clear;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -2872,6 +2974,8 @@ end;
 
 function TJclPtrQueue.Dequeue: Pointer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -2912,6 +3016,8 @@ end;
 
 function TJclPtrQueue.Enqueue(APtr: Pointer): Boolean;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -2935,6 +3041,8 @@ end;
 
 procedure TJclPtrQueue.Pack;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -2970,6 +3078,8 @@ procedure TJclPtrQueue.SetCapacity(Value: Integer);
 var
   NewHead: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3033,7 +3143,7 @@ end;
 
 constructor TJclQueue.Create(ACapacity: Integer; AOwnsObjects: Boolean);
 begin
-  inherited Create(nil, AOwnsObjects);
+  inherited Create(AOwnsObjects);
   FHead := 0;
   FTail := 0;
   SetCapacity(ACapacity);
@@ -3041,6 +3151,7 @@ end;
 
 destructor TJclQueue.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -3071,6 +3182,8 @@ procedure TJclQueue.Clear;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3128,6 +3241,8 @@ end;
 
 function TJclQueue.Dequeue: TObject;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3168,6 +3283,8 @@ end;
 
 function TJclQueue.Enqueue(AObject: TObject): Boolean;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3191,6 +3308,8 @@ end;
 
 procedure TJclQueue.Pack;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3226,6 +3345,8 @@ procedure TJclQueue.SetCapacity(Value: Integer);
 var
   NewHead: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3290,7 +3411,7 @@ end;
 
 constructor TJclQueue<T>.Create(ACapacity: Integer; AOwnsItems: Boolean);
 begin
-  inherited Create(nil, AOwnsItems);
+  inherited Create(AOwnsItems);
   FHead := 0;
   FTail := 0;
   SetCapacity(ACapacity);
@@ -3298,6 +3419,7 @@ end;
 
 destructor TJclQueue<T>.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -3328,6 +3450,8 @@ procedure TJclQueue<T>.Clear;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3377,8 +3501,11 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+
 function TJclQueue<T>.Dequeue: T;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3419,6 +3546,8 @@ end;
 
 function TJclQueue<T>.Enqueue(const AItem: T): Boolean;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3442,6 +3571,8 @@ end;
 
 procedure TJclQueue<T>.Pack;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3477,6 +3608,8 @@ procedure TJclQueue<T>.SetCapacity(Value: Integer);
 var
   NewHead: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try

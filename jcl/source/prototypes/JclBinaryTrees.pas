@@ -48,6 +48,7 @@ uses
   {$ENDIF CLR}
   {$ENDIF SUPPORTS_GENERICS}
   JclBase, JclAbstractContainers, JclAlgorithms, JclContainerIntf;
+{$I containers\JclContainerCommon.imp}
 {$I containers\JclBinaryTrees.imp}
 type
 (*$JPPEXPANDMACRO JCLBINARYTREEINT(TJclIntfBinaryNode,TJclIntfBinaryTree,TJclIntfAbstractContainer,IJclIntfCollection,IJclIntfTree,IJclIntfIterator,IJclIntfTreeIterator, IJclIntfEqualityComparer\, IJclIntfComparer\,,,
@@ -308,13 +309,13 @@ begin
 end;
 }
 (*$JPPEXPANDMACRO JCLBINARYTREEIMP(TJclBinaryTree,TJclBinaryNode,TPreOrderItr,TInOrderItr,TPostOrderItr,IJclCollection,IJclIterator,IJclTreeIterator,ACompare: TCompare; AOwnsObjects: Boolean,
-  SetCompare(ACompare);,\, AOwnsObjects,AObject: TObject,AObject,nil,FreeObject)*)
+  SetCompare(ACompare);,AOwnsObjects,AObject: TObject,AObject,nil,FreeObject)*)
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 
 {$IFDEF SUPPORTS_GENERICS}
 
 {$JPPDEFINEMACRO CREATEEMPTYCONTAINER}
-(*$JPPEXPANDMACRO JCLBINARYTREEIMP(TJclBinaryTree<T>,TJclBinaryNode<T>,TPreOrderItr<T>,TInOrderItr<T>,TPostOrderItr<T>,IJclCollection<T>,IJclIterator<T>,IJclTreeIterator<T>,AOwnsItems: Boolean,,\, AOwnsItems,const AItem: T,AItem,Default(T),FreeItem)*)
+(*$JPPEXPANDMACRO JCLBINARYTREEIMP(TJclBinaryTree<T>,TJclBinaryNode<T>,TPreOrderItr<T>,TInOrderItr<T>,TPostOrderItr<T>,IJclCollection<T>,IJclIterator<T>,IJclTreeIterator<T>,AOwnsItems: Boolean,,AOwnsItems,const AItem: T,AItem,Default(T),FreeItem)*)
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 
 //=== { TJclBinaryTreeE<T> } =================================================

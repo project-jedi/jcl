@@ -1,4 +1,4 @@
-{**************************************************************************************************}
+﻿{**************************************************************************************************}
 {                                                                                                  }
 { Project JEDI Code Library (JCL)                                                                  }
 {                                                                                                  }
@@ -60,30 +60,44 @@ const
   DefaultContainerCapacity = 16;
 
 type
-  IJclAbstractIterator = interface
+  IJclLockable = interface
+    ['{524AD65E-AE1B-4BC6-91C8-8181F0198BA9}']
+    procedure ReadLock;
+    procedure ReadUnlock;
+    procedure WriteLock;
+    procedure WriteUnlock;
+  end;
+
+  IJclAbstractIterator = interface{$IFDEF THREADSAFE}(IJclLockable){$ENDIF THREADSAFE}
     ['{1064D0B4-D9FC-475D-88BE-520490013B46}']
     procedure Assign(const Source: IJclAbstractIterator);
     procedure AssignTo(const Dest: IJclAbstractIterator);
     function GetIteratorReference: TObject;
   end;
 
-  IJclContainer = interface
+  IJclContainer = interface{$IFDEF THREADSAFE}(IJclLockable){$ENDIF THREADSAFE}
     ['{C517175A-028E-486A-BF27-5EF7FC3101D9}']
     procedure Assign(const Source: IJclContainer);
     procedure AssignTo(const Dest: IJclContainer);
     function GetAllowDefaultElements: Boolean;
     function GetContainerReference: TObject;
     function GetDuplicates: TDuplicates;
+    function GetReadOnly: Boolean;
     function GetRemoveSingleElement: Boolean;
     function GetReturnDefaultElements: Boolean;
+    function GetThreadSafe: Boolean;
     procedure SetAllowDefaultElements(Value: Boolean);
     procedure SetDuplicates(Value: TDuplicates);
+    procedure SetReadOnly(Value: Boolean);
     procedure SetRemoveSingleElement(Value: Boolean);
     procedure SetReturnDefaultElements(Value: Boolean);
+    procedure SetThreadSafe(Value: Boolean);
     property AllowDefaultElements: Boolean read GetAllowDefaultElements write SetAllowDefaultElements;
     property Duplicates: TDuplicates read GetDuplicates write SetDuplicates;
+    property ReadOnly: Boolean read GetReadOnly write SetReadOnly;
     property RemoveSingleElement: Boolean read GetRemoveSingleElement write SetRemoveSingleElement;
     property ReturnDefaultElements: Boolean read GetReturnDefaultElements write SetReturnDefaultElements;
+    property ThreadSafe: Boolean read GetThreadSafe write SetThreadSafe;
   end;
 
   IJclStrContainer = interface(IJclContainer)
@@ -525,14 +539,6 @@ type
   IJclCloneable = interface
     ['{D224AE70-2C93-4998-9479-1D513D75F2B2}']
     function Clone: TObject;
-  end;
-
-  IJclLockable = interface
-    ['{524AD65E-AE1B-4BC6-91C8-8181F0198BA9}']
-    procedure ReadLock;
-    procedure ReadUnlock;
-    procedure WriteLock;
-    procedure WriteUnlock;
   end;
 
   TJclAutoPackStrategy = (apsDisabled, apsAgressive, apsProportional, apsIncremental);
@@ -3775,6 +3781,12 @@ type
     constructor Create;
   end;
 
+  EJclReadOnlyError = class(EJclContainerError)
+  public
+    // RsEReadOnlyError
+    constructor Create;
+  end;
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -3909,6 +3921,17 @@ begin
   inherited Create(RsEAssignError);
   {$ELSE ~CLR}
   inherited CreateRes(@RsEAssignError);
+  {$ENDIF ~CLR}
+end;
+
+//=== { EJclReadOnlyError } ==================================================
+
+constructor EJclReadOnlyError.Create;
+begin
+  {$IFDEF CLR}
+  inherited Create(RsEReadOnlyError);
+  {$ELSE ~CLR}
+  inherited CreateRes(@RsEReadOnlyError);
   {$ENDIF ~CLR}
 end;
 

@@ -83,7 +83,7 @@ type
 
 constructor SELFCLASSNAME.Create(const OwnList: LISTINTERFACENAME; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
-  inherited Create(OwnList, AValid);
+  inherited Create(AValid);
   FOwnList := OwnList;
   FCursor := ACursor;
   FStart := AStart;
@@ -232,12 +232,13 @@ end;*)
 
 constructor SELFCLASSNAME.Create(ACapacity: IntegerOWNERSHIPDECLARATION);
 begin
-  inherited Create(nilOWNERSHIPPARAMETER);
+  inherited Create(OWNERSHIPPARAMETER);
   SetCapacity(ACapacity);
 end;
 
 destructor SELFCLASSNAME.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -246,10 +247,7 @@ function SELFCLASSNAME.Add(PARAMETERDECLARATION): Boolean;
 var
   I: Integer;
 begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEBEGIN}
     Result := FAllowDefaultElements or not ItemsEqual(PARAMETERNAME, DEFAULTVALUE);
     if Result then
     begin
@@ -272,21 +270,14 @@ begin
         end;
       end;
     end;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEEND}
 end;
 
 function SELFCLASSNAME.AddAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;
 var
   It: ITRINTERFACENAME;
 begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEBEGIN}
     Result := False;
     if ACollection = nil then
       Exit;
@@ -294,11 +285,7 @@ begin
     It := ACollection.First;
     while It.HasNext do
       Result := Add(It.Next) and Result;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEEND}
 end;
 
 procedure SELFCLASSNAME.AssignDataTo(Dest: TJclAbstractContainerBase);
@@ -318,28 +305,18 @@ procedure SELFCLASSNAME.Clear;
 var
   I: Integer;
 begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEBEGIN}
     for I := 0 to FSize - 1 do
       RELEASERNAME(FItems[I]);
     FSize := 0;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEEND}
 end;
 
 function SELFCLASSNAME.Contains(PARAMETERDECLARATION): Boolean;
 var
   I: Integer;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READBEGIN}
     Result := False;
     for I := 0 to FSize - 1 do
       if ItemsEqual(Items[I], PARAMETERNAME) then
@@ -347,41 +324,27 @@ begin
         Result := True;
         Break;
       end;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READEND}
 end;
 
 function SELFCLASSNAME.ContainsAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;
 var
   It: ITRINTERFACENAME;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READBEGIN}
     Result := True;
     if ACollection = nil then
       Exit;
     It := ACollection.First;
     while Result and It.HasNext do
       Result := Contains(It.Next);
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READEND}
 end;
 
 {$JPPEXPANDMACRO CREATEEMPTYCONTAINER}
 function SELFCLASSNAME.Delete(Index: Integer): DATATYPENAME;
 begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEBEGIN}
     {$IFDEF CLR}
     Result := DEFAULTVALUE;
     {$ENDIF CLR}
@@ -394,11 +357,7 @@ begin
     end
     else
       raise EJclOutOfBoundsError.Create;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEEND}
 end;
 
 function SELFCLASSNAME.Equals(const ACollection: COLLECTIONINTERFACENAME): Boolean;
@@ -406,10 +365,7 @@ var
   I: Integer;
   It: ITRINTERFACENAME;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READBEGIN}
     Result := False;
     if ACollection = nil then
       Exit;
@@ -423,11 +379,7 @@ begin
         Result := False;
         Break;
       end;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READEND}
 end;
 
 function SELFCLASSNAME.First: ITRINTERFACENAME;
@@ -444,31 +396,21 @@ end;
 
 function SELFCLASSNAME.GETTERNAME(Index: Integer): DATATYPENAME;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READBEGIN}
     Result := DEFAULTVALUE;
     if (Index >= 0) or (Index < FSize) then
       Result := Items[Index]
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READEND}
 end;
 
 function SELFCLASSNAME.IndexOf(PARAMETERDECLARATION): Integer;
 var
   I: Integer;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READBEGIN}
     Result := -1;
     for I := 0 to FSize - 1 do
       if ItemsEqual(Items[I], PARAMETERNAME) then
@@ -476,21 +418,14 @@ begin
         Result := I;
         Break;
       end;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READEND}
 end;
 
 function SELFCLASSNAME.Insert(Index: Integer; PARAMETERDECLARATION): Boolean;
 var
   I: Integer;
 begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEBEGIN}
     Result := FAllowDefaultElements or not ItemsEqual(PARAMETERNAME, DEFAULTVALUE);
     if (Index < 0) or (Index > FSize) then
       raise EJclOutOfBoundsError.Create;
@@ -516,21 +451,14 @@ begin
         end;
       end;
     end;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEEND}
 end;
 
 function SELFCLASSNAME.InsertAll(Index: Integer; const ACollection: COLLECTIONINTERFACENAME): Boolean;
 var
   It: ITRINTERFACENAME;
 begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEBEGIN}
     Result := False;
     if (Index < 0) or (Index > FSize) then
       raise EJclOutOfBoundsError.Create;
@@ -540,11 +468,7 @@ begin
     It := ACollection.Last;
     while It.HasPrevious do
       Result := Insert(Index, It.Previous) and Result;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEEND}
 end;
 
 function SELFCLASSNAME.IsEmpty: Boolean;
@@ -561,10 +485,7 @@ function SELFCLASSNAME.LastIndexOf(PARAMETERDECLARATION): Integer;
 var
   I: Integer;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READBEGIN}
     Result := -1;
     for I := FSize - 1 downto 0 do
       if ItemsEqual(Items[I], PARAMETERNAME) then
@@ -572,21 +493,14 @@ begin
         Result := I;
         Break;
       end;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READEND}
 end;
 
 function SELFCLASSNAME.Remove(PARAMETERDECLARATION): Boolean;
 var
   I: Integer;
 begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEBEGIN}
     Result := False;
     for I := FSize - 1 downto 0 do
       if ItemsEqual(FItems[I], PARAMETERNAME) then
@@ -598,21 +512,14 @@ begin
         if FRemoveSingleElement then
           Break;
       end;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEEND}
 end;
 
 function SELFCLASSNAME.RemoveAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;
 var
   It: ITRINTERFACENAME;
 begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEBEGIN}
     Result := False;
     if ACollection = nil then
       Exit;
@@ -620,21 +527,14 @@ begin
     It := ACollection.First;
     while It.HasNext do
       Result := Remove(It.Next) and Result;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEEND}
 end;
 
 function SELFCLASSNAME.RetainAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;
 var
   I: Integer;
 begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEBEGIN}
     Result := False;
     if ACollection = nil then
       Exit;
@@ -642,28 +542,17 @@ begin
     for I := FSize - 1 downto 0 do
       if not ACollection.Contains(Items[I]) then
         Delete(I);
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEEND}
 end;
 
 procedure SELFCLASSNAME.SetCapacity(Value: Integer);
 begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEBEGIN}
     if Value < FSize then
       raise EJclOutOfBoundsError.Create;
     SetLength(FItems, Value);
     inherited SetCapacity(Value);
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEEND}
 end;
 
 procedure SELFCLASSNAME.SETTERNAME(Index: Integer; PARAMETERDECLARATION);
@@ -671,10 +560,7 @@ var
   ReplaceItem: Boolean;
   I: Integer;
 begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEBEGIN}
     ReplaceItem := FAllowDefaultElements or not ItemsEqual(PARAMETERNAME, DEFAULTVALUE);
     if (Index < 0) or (Index >= FSize) then
       raise EJclOutOfBoundsError.Create;
@@ -695,11 +581,7 @@ begin
     end;
     if not ReplaceItem then
       Delete(Index);
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEEND}
 end;
 
 function SELFCLASSNAME.Size: Integer;
@@ -712,19 +594,12 @@ var
   I: Integer;
   Last: Integer;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READBEGIN}
     Last := First + Count - 1;
     if Last >= FSize then
       Last := FSize - 1;
     Result := CreateEmptyContainer as LISTINTERFACENAME;
     for I := First to Last do
       Result.Add(Items[I]);
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READEND}
 end;*)

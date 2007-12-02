@@ -418,6 +418,8 @@ function TJclIntfArraySet.Add(const AInterface: IInterface): Boolean;
 var
   Idx: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -444,6 +446,8 @@ function TJclIntfArraySet.AddAll(const ACollection: IJclIntfCollection): Boolean
 var
   It: IJclIntfIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -549,6 +553,8 @@ function TJclAnsiStrArraySet.Add(const AString: AnsiString): Boolean;
 var
   Idx: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -575,6 +581,8 @@ function TJclAnsiStrArraySet.AddAll(const ACollection: IJclAnsiStrCollection): B
 var
   It: IJclAnsiStrIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -680,6 +688,8 @@ function TJclWideStrArraySet.Add(const AString: WideString): Boolean;
 var
   Idx: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -706,6 +716,8 @@ function TJclWideStrArraySet.AddAll(const ACollection: IJclWideStrCollection): B
 var
   It: IJclWideStrIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -811,6 +823,8 @@ function TJclSingleArraySet.Add(const AValue: Single): Boolean;
 var
   Idx: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -837,6 +851,8 @@ function TJclSingleArraySet.AddAll(const ACollection: IJclSingleCollection): Boo
 var
   It: IJclSingleIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -942,6 +958,8 @@ function TJclDoubleArraySet.Add(const AValue: Double): Boolean;
 var
   Idx: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -968,6 +986,8 @@ function TJclDoubleArraySet.AddAll(const ACollection: IJclDoubleCollection): Boo
 var
   It: IJclDoubleIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1073,6 +1093,8 @@ function TJclExtendedArraySet.Add(const AValue: Extended): Boolean;
 var
   Idx: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1099,6 +1121,8 @@ function TJclExtendedArraySet.AddAll(const ACollection: IJclExtendedCollection):
 var
   It: IJclExtendedIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1204,6 +1228,8 @@ function TJclIntegerArraySet.Add(AValue: Integer): Boolean;
 var
   Idx: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1230,6 +1256,8 @@ function TJclIntegerArraySet.AddAll(const ACollection: IJclIntegerCollection): B
 var
   It: IJclIntegerIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1335,6 +1363,8 @@ function TJclCardinalArraySet.Add(AValue: Cardinal): Boolean;
 var
   Idx: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1361,6 +1391,8 @@ function TJclCardinalArraySet.AddAll(const ACollection: IJclCardinalCollection):
 var
   It: IJclCardinalIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1466,6 +1498,8 @@ function TJclInt64ArraySet.Add(const AValue: Int64): Boolean;
 var
   Idx: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1492,6 +1526,8 @@ function TJclInt64ArraySet.AddAll(const ACollection: IJclInt64Collection): Boole
 var
   It: IJclInt64Iterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1598,6 +1634,8 @@ function TJclPtrArraySet.Add(APtr: Pointer): Boolean;
 var
   Idx: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1624,6 +1662,8 @@ function TJclPtrArraySet.AddAll(const ACollection: IJclPtrCollection): Boolean;
 var
   It: IJclPtrIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1730,6 +1770,8 @@ function TJclArraySet.Add(AObject: TObject): Boolean;
 var
   Idx: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1756,6 +1798,8 @@ function TJclArraySet.AddAll(const ACollection: IJclCollection): Boolean;
 var
   It: IJclIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1862,6 +1906,8 @@ function TJclArraySet<T>.Add(const AItem: T): Boolean;
 var
   Idx: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1888,6 +1934,8 @@ function TJclArraySet<T>.AddAll(const ACollection: IJclCollection<T>): Boolean;
 var
   It: IJclIterator<T>;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1959,7 +2007,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
 
 procedure TJclArraySet<T>.Insert(Index: Integer; const AItem: T);
 begin

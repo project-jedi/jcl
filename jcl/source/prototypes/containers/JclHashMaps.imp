@@ -59,13 +59,14 @@
 
 constructor SELFCLASSNAME.Create(ACapacity: IntegerVALUEOWNERSHIPDECLARATIONKEYOWNERSHIPDECLARATION);
 begin
-  inherited Create(nil);OWNERSHIPASSIGNMENTS
+  inherited Create;OWNERSHIPASSIGNMENTS
   SetCapacity(ACapacity);
   FHashFunction := HashMul;
 end;
 
 destructor SELFCLASSNAME.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -77,14 +78,11 @@ var
   ADest: SELFCLASSNAME;
   AMap: MAPINTERFACENAME;
 begin
-  inherited AssignDataTo(Dest);
-  if Dest is SELFCLASSNAME then
-  begin
-    ADest := SELFCLASSNAME(Dest);
-    {$IFDEF THREADSAFE}
-    ReadLock;
-    try
-    {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READBEGIN}
+    inherited AssignDataTo(Dest);
+    if Dest is SELFCLASSNAME then
+    begin
+      ADest := SELFCLASSNAME(Dest);
       ADest.Clear;
       for I := 0 to FCapacity - 1 do
       begin
@@ -102,18 +100,14 @@ begin
           ADest.FBuckets[I] := NewBucket;
         end;
       end;
-    {$IFDEF THREADSAFE}
-    finally
-      ReadUnlock;
+    end
+    else
+    if Supports(IInterface(Dest), MAPINTERFACENAME, AMap) then
+    begin
+      AMap.Clear;
+      AMap.PutAll(Self);
     end;
-    {$ENDIF THREADSAFE}
-  end
-  else
-  if Supports(IInterface(Dest), MAPINTERFACENAME, AMap) then
-  begin
-    AMap.Clear;
-    AMap.PutAll(Self);
-  end;
+  {$JPPEXPANDMACRO READEND}
 end;
 
 procedure SELFCLASSNAME.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
@@ -128,10 +122,7 @@ var
   I, J: Integer;
   Bucket: BUCKETTYPENAME;
 begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEBEGIN}
     for I := 0 to FCapacity - 1 do
     begin
       Bucket := FBuckets[I];
@@ -146,11 +137,7 @@ begin
       end;
     end;
     FSize := 0;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEEND}
 end;
 
 function SELFCLASSNAME.ContainsKey(KEYPARAMETERDECLARATION): Boolean;
@@ -158,10 +145,7 @@ var
   I: Integer;
   Bucket: BUCKETTYPENAME;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READBEGIN}
     Result := False;
     Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
@@ -171,11 +155,7 @@ begin
           Result := True;
           Break;
         end;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READEND}
 end;
 
 function SELFCLASSNAME.ContainsValue(VALUEPARAMETERDECLARATION): Boolean;
@@ -183,10 +163,7 @@ var
   I, J: Integer;
   Bucket: BUCKETTYPENAME;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READBEGIN}
     Result := False;
     for J := 0 to FCapacity - 1 do
     begin
@@ -199,11 +176,7 @@ begin
             Break;
           end;
     end;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READEND}
 end;
 
 {$JPPEXPANDMACRO CREATEEMPTYCONTAINER}
@@ -212,10 +185,7 @@ var
   I, J: Integer;
   Bucket: BUCKETTYPENAME;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READBEGIN}
     Result := False;
     if AMap = nil then
       Exit;
@@ -235,11 +205,7 @@ begin
             Exit;
     end;
     Result := True;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READEND}
 end;
 
 {$JPPEXPANDMACRO FREEKEY}
@@ -252,10 +218,7 @@ var
   Bucket: BUCKETTYPENAME;
   Found: Boolean;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READBEGIN}
     Found := False;
     Result := VALUEDEFAULT;
     Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
@@ -269,11 +232,7 @@ begin
         end;
     if (not Found) and (not FReturnDefaultElements) then
       raise EJclNoSuchElementError.Create('');
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READEND}
 end;
 
 {$JPPEXPANDMACRO HASH}
@@ -288,10 +247,7 @@ var
   Bucket: BUCKETTYPENAME;
   Found: Boolean;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READBEGIN}
     Found := False;
     Result := KEYDEFAULT;
     for J := 0 to FCapacity - 1 do
@@ -308,11 +264,7 @@ begin
     end;
     if (not Found) and (not FReturnDefaultElements) then
       raise EJclNoSuchElementError.Create('');
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READEND}
 end;
 
 {$JPPEXPANDMACRO KEYSEQUAL}
@@ -321,10 +273,7 @@ var
   I, J: Integer;
   Bucket: BUCKETTYPENAME;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READBEGIN}
     Result := {$JPPEXPANDMACRO CREATEEMPTYARRAYSET(FSize)};
     for I := 0 to FCapacity - 1 do
     begin
@@ -333,11 +282,7 @@ begin
         for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Key);
     end;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READEND}
 end;
 
 procedure SELFCLASSNAME.MoveArray(var List: ENTRYARRAYTYPENAME; FromIndex, ToIndex, Count: Integer);
@@ -415,10 +360,7 @@ var
   I: Integer;
   Bucket: BUCKETTYPENAME;
 begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEBEGIN}
     for I := 0 to FCapacity - 1 do
     begin
       Bucket := FBuckets[I];
@@ -430,11 +372,7 @@ begin
           FreeAndNil(FBuckets[I]);
       end;
     end;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEEND}
 end;
 
 procedure SELFCLASSNAME.PutAll(const AMap: MAPINTERFACENAME);
@@ -442,10 +380,7 @@ var
   It: KEYITRINTERFACENAME;
   Key: KEYTYPENAME;
 begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEBEGIN}
     if AMap = nil then
       Exit;
     It := AMap.KeySet.First;
@@ -454,11 +389,7 @@ begin
       Key := It.Next;
       PutValue(Key, AMap.GetValue(Key));
     end;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEEND}
 end;
 
 procedure SELFCLASSNAME.PutValue(KEYPARAMETERDECLARATION; VALUEPARAMETERDECLARATION);
@@ -467,10 +398,7 @@ var
   Bucket: BUCKETTYPENAME;
   I: Integer;
 begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEBEGIN}
     if FAllowDefaultElements or (not KeysEqual(Key, KEYDEFAULT) and not ValuesEqual(Value, VALUEDEFAULT)) then
     begin
       Index := FHashFunction(Hash(Key), FCapacity);
@@ -503,11 +431,7 @@ begin
         Inc(FSize);
       end;
     end;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEEND}
 end;
 
 function SELFCLASSNAME.Remove(KEYPARAMETERDECLARATION): VALUETYPENAME;
@@ -515,10 +439,7 @@ var
   Bucket: BUCKETTYPENAME;
   I, NewCapacity: Integer;
 begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEBEGIN}
     Result := VALUEDEFAULT;
     Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
@@ -539,19 +460,12 @@ begin
       if NewCapacity < Length(Bucket.Entries) then
         SetLength(Bucket.Entries, NewCapacity);
     end;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEEND}
 end;
 
 procedure SELFCLASSNAME.SetCapacity(Value: Integer);
 begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEBEGIN}
     if FSize = 0 then
     begin
       SetLength(FBuckets, Value);
@@ -559,11 +473,7 @@ begin
     end
     else
       raise EJclOperationNotSupportedError.Create;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEEND}
 end;
 
 function SELFCLASSNAME.Size: Integer;
@@ -576,10 +486,7 @@ var
   I, J: Integer;
   Bucket: BUCKETTYPENAME;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READBEGIN}
     Result := {$JPPEXPANDMACRO CREATEEMPTYARRAYLIST(FSize)};
     for I := 0 to FCapacity - 1 do
     begin
@@ -588,11 +495,7 @@ begin
         for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Value);
     end;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READEND}
 end;
 
 {$JPPEXPANDMACRO VALUESEQUAL}*)

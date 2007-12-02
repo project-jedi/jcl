@@ -48,6 +48,7 @@ uses
   JclAlgorithms,
   {$ENDIF SUPPORTS_GENERICS}
   JclBase, JclAbstractContainers, JclContainerIntf;
+{$I containers\JclContainerCommon.imp}
 {$I containers\JclQueues.imp}
 type
 (*$JPPEXPANDMACRO JCLQUEUEINT(TJclIntfQueue,IJclIntfQueue,TJclIntfAbstractContainer,IInterface,JclBase.TDynIInterfaceArray, IJclIntfEqualityComparer\,,,
@@ -269,13 +270,13 @@ begin
   AssignPropertiesTo(Result);
 end;
 }
-(*$JPPEXPANDMACRO JCLQUEUEIMP(TJclQueue,; AOwnsObjects: Boolean,\, AOwnsObjects,AObject: TObject,AObject,TObject,nil,JclBase.MoveArray,FreeObject)*)
+(*$JPPEXPANDMACRO JCLQUEUEIMP(TJclQueue,; AOwnsObjects: Boolean,AOwnsObjects,AObject: TObject,AObject,TObject,nil,JclBase.MoveArray,FreeObject)*)
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 
 {$IFDEF SUPPORTS_GENERICS}
 
 {$JPPDEFINEMACRO CREATEEMPTYCONTAINER}
-(*$JPPEXPANDMACRO JCLQUEUEIMP(TJclQueue<T>,; AOwnsItems: Boolean,\, AOwnsItems,const AItem: T,AItem,T,Default(T),TJclBase<T>.MoveArray,FreeItem)*)
+(*$JPPEXPANDMACRO JCLQUEUEIMP(TJclQueue<T>,; AOwnsItems: Boolean,AOwnsItems,const AItem: T,AItem,T,Default(T),TJclBase<T>.MoveArray,FreeItem)*)
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 //=== { TJclQueueE<T> } ======================================================
 

@@ -24,7 +24,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -48,6 +48,7 @@ uses
   JclAlgorithms,
   {$ENDIF SUPPORTS_GENERICS}
   JclBase, JclAbstractContainers, JclContainerIntf;
+{$I containers\JclContainerCommon.imp}
 {$I containers\JclTrees.imp}
 type
 {$JPPEXPANDMACRO JCLTREEINT(TJclIntfTreeNode,TJclIntfTree,TJclIntfAbstractContainer,IJclIntfEqualityComparer,IJclIntfCollection,IJclIntfTree,IJclIntfIterator,IJclIntfTreeIterator,,,
@@ -292,12 +293,12 @@ begin
   AssignPropertiesTo(Result);
 end;
 }
-{$JPPEXPANDMACRO JCLTREEIMP(TJclTreeNode,TJclTree,TPreOrderItr,TPostOrderItr,IJclCollection,IJclIterator,IJclTreeIterator,IJclEqualityComparer,AOwnsObjects: Boolean,\, AOwnsObjects,TObject,AObject,AObject: TObject,nil,FreeObject)}
+{$JPPEXPANDMACRO JCLTREEIMP(TJclTreeNode,TJclTree,TPreOrderItr,TPostOrderItr,IJclCollection,IJclIterator,IJclTreeIterator,IJclEqualityComparer,AOwnsObjects: Boolean,AOwnsObjects,TObject,AObject,AObject: TObject,nil,FreeObject)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 
 {$IFDEF SUPPORTS_GENERICS}
 {$JPPDEFINEMACRO CREATEEMPTYCONTAINER}
-{$JPPEXPANDMACRO JCLTREEIMP(TJclTreeNode<T>,TJclTree<T>,TPreOrderItr<T>,TPostOrderItr<T>,IJclCollection<T>,IJclIterator<T>,IJclTreeIterator<T>,IJclEqualityComparer<T>,AOwnsItems: Boolean,\, AOwnsItems,T,AItem,const AItem: T,Default(T),FreeItem)}
+{$JPPEXPANDMACRO JCLTREEIMP(TJclTreeNode<T>,TJclTree<T>,TPreOrderItr<T>,TPostOrderItr<T>,IJclCollection<T>,IJclIterator<T>,IJclTreeIterator<T>,IJclEqualityComparer<T>,AOwnsItems: Boolean,AOwnsItems,T,AItem,const AItem: T,Default(T),FreeItem)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 
 //=== { TJclTreeE<T> } =======================================================

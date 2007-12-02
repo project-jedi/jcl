@@ -53,7 +53,6 @@ uses
   JclAlgorithms,
   {$ENDIF SUPPORTS_GENERICS}
   JclBase, JclAbstractContainers, JclContainerIntf;
-
 type
   // Hash Function
   // Result must be in 0..Range-1
@@ -2522,13 +2521,14 @@ end;
 
 constructor TJclIntfIntfHashMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create;
   SetCapacity(ACapacity);
   FHashFunction := HashMul;
 end;
 
 destructor TJclIntfIntfHashMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -2540,14 +2540,14 @@ var
   ADest: TJclIntfIntfHashMap;
   AMap: IJclIntfIntfMap;
 begin
-  inherited AssignDataTo(Dest);
-  if Dest is TJclIntfIntfHashMap then
-  begin
-    ADest := TJclIntfIntfHashMap(Dest);
-    {$IFDEF THREADSAFE}
-    ReadLock;
-    try
-    {$ENDIF THREADSAFE}
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    inherited AssignDataTo(Dest);
+    if Dest is TJclIntfIntfHashMap then
+    begin
+      ADest := TJclIntfIntfHashMap(Dest);
       ADest.Clear;
       for I := 0 to FCapacity - 1 do
       begin
@@ -2565,18 +2565,18 @@ begin
           ADest.FBuckets[I] := NewBucket;
         end;
       end;
-    {$IFDEF THREADSAFE}
-    finally
-      ReadUnlock;
+    end
+    else
+    if Supports(IInterface(Dest), IJclIntfIntfMap, AMap) then
+    begin
+      AMap.Clear;
+      AMap.PutAll(Self);
     end;
-    {$ENDIF THREADSAFE}
-  end
-  else
-  if Supports(IInterface(Dest), IJclIntfIntfMap, AMap) then
-  begin
-    AMap.Clear;
-    AMap.PutAll(Self);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 procedure TJclIntfIntfHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
@@ -2591,6 +2591,8 @@ var
   I, J: Integer;
   Bucket: TJclIntfIntfBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -2897,6 +2899,8 @@ var
   I: Integer;
   Bucket: TJclIntfIntfBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -2924,6 +2928,8 @@ var
   It: IJclIntfIterator;
   Key: IInterface;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -2949,6 +2955,8 @@ var
   Bucket: TJclIntfIntfBucket;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -2997,6 +3005,8 @@ var
   Bucket: TJclIntfIntfBucket;
   I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3030,6 +3040,8 @@ end;
 
 procedure TJclIntfIntfHashMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3088,13 +3100,14 @@ end;
 
 constructor TJclAnsiStrIntfHashMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create;
   SetCapacity(ACapacity);
   FHashFunction := HashMul;
 end;
 
 destructor TJclAnsiStrIntfHashMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -3106,14 +3119,14 @@ var
   ADest: TJclAnsiStrIntfHashMap;
   AMap: IJclAnsiStrIntfMap;
 begin
-  inherited AssignDataTo(Dest);
-  if Dest is TJclAnsiStrIntfHashMap then
-  begin
-    ADest := TJclAnsiStrIntfHashMap(Dest);
-    {$IFDEF THREADSAFE}
-    ReadLock;
-    try
-    {$ENDIF THREADSAFE}
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    inherited AssignDataTo(Dest);
+    if Dest is TJclAnsiStrIntfHashMap then
+    begin
+      ADest := TJclAnsiStrIntfHashMap(Dest);
       ADest.Clear;
       for I := 0 to FCapacity - 1 do
       begin
@@ -3131,18 +3144,18 @@ begin
           ADest.FBuckets[I] := NewBucket;
         end;
       end;
-    {$IFDEF THREADSAFE}
-    finally
-      ReadUnlock;
+    end
+    else
+    if Supports(IInterface(Dest), IJclAnsiStrIntfMap, AMap) then
+    begin
+      AMap.Clear;
+      AMap.PutAll(Self);
     end;
-    {$ENDIF THREADSAFE}
-  end
-  else
-  if Supports(IInterface(Dest), IJclAnsiStrIntfMap, AMap) then
-  begin
-    AMap.Clear;
-    AMap.PutAll(Self);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 procedure TJclAnsiStrIntfHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
@@ -3157,6 +3170,8 @@ var
   I, J: Integer;
   Bucket: TJclAnsiStrIntfBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3463,6 +3478,8 @@ var
   I: Integer;
   Bucket: TJclAnsiStrIntfBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3490,6 +3507,8 @@ var
   It: IJclAnsiStrIterator;
   Key: AnsiString;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3515,6 +3534,8 @@ var
   Bucket: TJclAnsiStrIntfBucket;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3563,6 +3584,8 @@ var
   Bucket: TJclAnsiStrIntfBucket;
   I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3596,6 +3619,8 @@ end;
 
 procedure TJclAnsiStrIntfHashMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3654,13 +3679,14 @@ end;
 
 constructor TJclIntfAnsiStrHashMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create;
   SetCapacity(ACapacity);
   FHashFunction := HashMul;
 end;
 
 destructor TJclIntfAnsiStrHashMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -3672,14 +3698,14 @@ var
   ADest: TJclIntfAnsiStrHashMap;
   AMap: IJclIntfAnsiStrMap;
 begin
-  inherited AssignDataTo(Dest);
-  if Dest is TJclIntfAnsiStrHashMap then
-  begin
-    ADest := TJclIntfAnsiStrHashMap(Dest);
-    {$IFDEF THREADSAFE}
-    ReadLock;
-    try
-    {$ENDIF THREADSAFE}
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    inherited AssignDataTo(Dest);
+    if Dest is TJclIntfAnsiStrHashMap then
+    begin
+      ADest := TJclIntfAnsiStrHashMap(Dest);
       ADest.Clear;
       for I := 0 to FCapacity - 1 do
       begin
@@ -3697,18 +3723,18 @@ begin
           ADest.FBuckets[I] := NewBucket;
         end;
       end;
-    {$IFDEF THREADSAFE}
-    finally
-      ReadUnlock;
+    end
+    else
+    if Supports(IInterface(Dest), IJclIntfAnsiStrMap, AMap) then
+    begin
+      AMap.Clear;
+      AMap.PutAll(Self);
     end;
-    {$ENDIF THREADSAFE}
-  end
-  else
-  if Supports(IInterface(Dest), IJclIntfAnsiStrMap, AMap) then
-  begin
-    AMap.Clear;
-    AMap.PutAll(Self);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 procedure TJclIntfAnsiStrHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
@@ -3723,6 +3749,8 @@ var
   I, J: Integer;
   Bucket: TJclIntfAnsiStrBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3853,6 +3881,8 @@ begin
   Result := Value;
   Value := '';
 end;
+
+
 
 function TJclIntfAnsiStrHashMap.GetValue(const Key: IInterface): AnsiString;
 var
@@ -4031,6 +4061,8 @@ var
   I: Integer;
   Bucket: TJclIntfAnsiStrBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4058,6 +4090,8 @@ var
   It: IJclIntfIterator;
   Key: IInterface;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4083,6 +4117,8 @@ var
   Bucket: TJclIntfAnsiStrBucket;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4131,6 +4167,8 @@ var
   Bucket: TJclIntfAnsiStrBucket;
   I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4164,6 +4202,8 @@ end;
 
 procedure TJclIntfAnsiStrHashMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4222,13 +4262,14 @@ end;
 
 constructor TJclAnsiStrAnsiStrHashMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create;
   SetCapacity(ACapacity);
   FHashFunction := HashMul;
 end;
 
 destructor TJclAnsiStrAnsiStrHashMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -4240,14 +4281,14 @@ var
   ADest: TJclAnsiStrAnsiStrHashMap;
   AMap: IJclAnsiStrAnsiStrMap;
 begin
-  inherited AssignDataTo(Dest);
-  if Dest is TJclAnsiStrAnsiStrHashMap then
-  begin
-    ADest := TJclAnsiStrAnsiStrHashMap(Dest);
-    {$IFDEF THREADSAFE}
-    ReadLock;
-    try
-    {$ENDIF THREADSAFE}
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    inherited AssignDataTo(Dest);
+    if Dest is TJclAnsiStrAnsiStrHashMap then
+    begin
+      ADest := TJclAnsiStrAnsiStrHashMap(Dest);
       ADest.Clear;
       for I := 0 to FCapacity - 1 do
       begin
@@ -4265,18 +4306,18 @@ begin
           ADest.FBuckets[I] := NewBucket;
         end;
       end;
-    {$IFDEF THREADSAFE}
-    finally
-      ReadUnlock;
+    end
+    else
+    if Supports(IInterface(Dest), IJclAnsiStrAnsiStrMap, AMap) then
+    begin
+      AMap.Clear;
+      AMap.PutAll(Self);
     end;
-    {$ENDIF THREADSAFE}
-  end
-  else
-  if Supports(IInterface(Dest), IJclAnsiStrAnsiStrMap, AMap) then
-  begin
-    AMap.Clear;
-    AMap.PutAll(Self);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 procedure TJclAnsiStrAnsiStrHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
@@ -4291,6 +4332,8 @@ var
   I, J: Integer;
   Bucket: TJclAnsiStrAnsiStrBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4422,6 +4465,8 @@ begin
   Value := '';
 end;
 
+
+
 function TJclAnsiStrAnsiStrHashMap.GetValue(const Key: AnsiString): AnsiString;
 var
   I: Integer;
@@ -4451,6 +4496,7 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
+
 
 function TJclAnsiStrAnsiStrHashMap.IsEmpty: Boolean;
 begin
@@ -4594,6 +4640,8 @@ var
   I: Integer;
   Bucket: TJclAnsiStrAnsiStrBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4621,6 +4669,8 @@ var
   It: IJclAnsiStrIterator;
   Key: AnsiString;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4646,6 +4696,8 @@ var
   Bucket: TJclAnsiStrAnsiStrBucket;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4694,6 +4746,8 @@ var
   Bucket: TJclAnsiStrAnsiStrBucket;
   I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4727,6 +4781,8 @@ end;
 
 procedure TJclAnsiStrAnsiStrHashMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4785,13 +4841,14 @@ end;
 
 constructor TJclWideStrIntfHashMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create;
   SetCapacity(ACapacity);
   FHashFunction := HashMul;
 end;
 
 destructor TJclWideStrIntfHashMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -4803,14 +4860,14 @@ var
   ADest: TJclWideStrIntfHashMap;
   AMap: IJclWideStrIntfMap;
 begin
-  inherited AssignDataTo(Dest);
-  if Dest is TJclWideStrIntfHashMap then
-  begin
-    ADest := TJclWideStrIntfHashMap(Dest);
-    {$IFDEF THREADSAFE}
-    ReadLock;
-    try
-    {$ENDIF THREADSAFE}
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    inherited AssignDataTo(Dest);
+    if Dest is TJclWideStrIntfHashMap then
+    begin
+      ADest := TJclWideStrIntfHashMap(Dest);
       ADest.Clear;
       for I := 0 to FCapacity - 1 do
       begin
@@ -4828,18 +4885,18 @@ begin
           ADest.FBuckets[I] := NewBucket;
         end;
       end;
-    {$IFDEF THREADSAFE}
-    finally
-      ReadUnlock;
+    end
+    else
+    if Supports(IInterface(Dest), IJclWideStrIntfMap, AMap) then
+    begin
+      AMap.Clear;
+      AMap.PutAll(Self);
     end;
-    {$ENDIF THREADSAFE}
-  end
-  else
-  if Supports(IInterface(Dest), IJclWideStrIntfMap, AMap) then
-  begin
-    AMap.Clear;
-    AMap.PutAll(Self);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 procedure TJclWideStrIntfHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
@@ -4854,6 +4911,8 @@ var
   I, J: Integer;
   Bucket: TJclWideStrIntfBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5160,6 +5219,8 @@ var
   I: Integer;
   Bucket: TJclWideStrIntfBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5187,6 +5248,8 @@ var
   It: IJclWideStrIterator;
   Key: WideString;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5212,6 +5275,8 @@ var
   Bucket: TJclWideStrIntfBucket;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5260,6 +5325,8 @@ var
   Bucket: TJclWideStrIntfBucket;
   I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5293,6 +5360,8 @@ end;
 
 procedure TJclWideStrIntfHashMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5351,13 +5420,14 @@ end;
 
 constructor TJclIntfWideStrHashMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create;
   SetCapacity(ACapacity);
   FHashFunction := HashMul;
 end;
 
 destructor TJclIntfWideStrHashMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -5369,14 +5439,14 @@ var
   ADest: TJclIntfWideStrHashMap;
   AMap: IJclIntfWideStrMap;
 begin
-  inherited AssignDataTo(Dest);
-  if Dest is TJclIntfWideStrHashMap then
-  begin
-    ADest := TJclIntfWideStrHashMap(Dest);
-    {$IFDEF THREADSAFE}
-    ReadLock;
-    try
-    {$ENDIF THREADSAFE}
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    inherited AssignDataTo(Dest);
+    if Dest is TJclIntfWideStrHashMap then
+    begin
+      ADest := TJclIntfWideStrHashMap(Dest);
       ADest.Clear;
       for I := 0 to FCapacity - 1 do
       begin
@@ -5394,18 +5464,18 @@ begin
           ADest.FBuckets[I] := NewBucket;
         end;
       end;
-    {$IFDEF THREADSAFE}
-    finally
-      ReadUnlock;
+    end
+    else
+    if Supports(IInterface(Dest), IJclIntfWideStrMap, AMap) then
+    begin
+      AMap.Clear;
+      AMap.PutAll(Self);
     end;
-    {$ENDIF THREADSAFE}
-  end
-  else
-  if Supports(IInterface(Dest), IJclIntfWideStrMap, AMap) then
-  begin
-    AMap.Clear;
-    AMap.PutAll(Self);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 procedure TJclIntfWideStrHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
@@ -5420,6 +5490,8 @@ var
   I, J: Integer;
   Bucket: TJclIntfWideStrBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5730,6 +5802,8 @@ var
   I: Integer;
   Bucket: TJclIntfWideStrBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5757,6 +5831,8 @@ var
   It: IJclIntfIterator;
   Key: IInterface;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5782,6 +5858,8 @@ var
   Bucket: TJclIntfWideStrBucket;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5830,6 +5908,8 @@ var
   Bucket: TJclIntfWideStrBucket;
   I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5863,6 +5943,8 @@ end;
 
 procedure TJclIntfWideStrHashMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5921,13 +6003,14 @@ end;
 
 constructor TJclWideStrWideStrHashMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create;
   SetCapacity(ACapacity);
   FHashFunction := HashMul;
 end;
 
 destructor TJclWideStrWideStrHashMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -5939,14 +6022,14 @@ var
   ADest: TJclWideStrWideStrHashMap;
   AMap: IJclWideStrWideStrMap;
 begin
-  inherited AssignDataTo(Dest);
-  if Dest is TJclWideStrWideStrHashMap then
-  begin
-    ADest := TJclWideStrWideStrHashMap(Dest);
-    {$IFDEF THREADSAFE}
-    ReadLock;
-    try
-    {$ENDIF THREADSAFE}
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    inherited AssignDataTo(Dest);
+    if Dest is TJclWideStrWideStrHashMap then
+    begin
+      ADest := TJclWideStrWideStrHashMap(Dest);
       ADest.Clear;
       for I := 0 to FCapacity - 1 do
       begin
@@ -5964,18 +6047,18 @@ begin
           ADest.FBuckets[I] := NewBucket;
         end;
       end;
-    {$IFDEF THREADSAFE}
-    finally
-      ReadUnlock;
+    end
+    else
+    if Supports(IInterface(Dest), IJclWideStrWideStrMap, AMap) then
+    begin
+      AMap.Clear;
+      AMap.PutAll(Self);
     end;
-    {$ENDIF THREADSAFE}
-  end
-  else
-  if Supports(IInterface(Dest), IJclWideStrWideStrMap, AMap) then
-  begin
-    AMap.Clear;
-    AMap.PutAll(Self);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 procedure TJclWideStrWideStrHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
@@ -5990,6 +6073,8 @@ var
   I, J: Integer;
   Bucket: TJclWideStrWideStrBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6296,6 +6381,8 @@ var
   I: Integer;
   Bucket: TJclWideStrWideStrBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6323,6 +6410,8 @@ var
   It: IJclWideStrIterator;
   Key: WideString;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6348,6 +6437,8 @@ var
   Bucket: TJclWideStrWideStrBucket;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6396,6 +6487,8 @@ var
   Bucket: TJclWideStrWideStrBucket;
   I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6429,6 +6522,8 @@ end;
 
 procedure TJclWideStrWideStrHashMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6487,13 +6582,14 @@ end;
 
 constructor TJclSingleIntfHashMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create;
   SetCapacity(ACapacity);
   FHashFunction := HashMul;
 end;
 
 destructor TJclSingleIntfHashMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -6505,14 +6601,14 @@ var
   ADest: TJclSingleIntfHashMap;
   AMap: IJclSingleIntfMap;
 begin
-  inherited AssignDataTo(Dest);
-  if Dest is TJclSingleIntfHashMap then
-  begin
-    ADest := TJclSingleIntfHashMap(Dest);
-    {$IFDEF THREADSAFE}
-    ReadLock;
-    try
-    {$ENDIF THREADSAFE}
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    inherited AssignDataTo(Dest);
+    if Dest is TJclSingleIntfHashMap then
+    begin
+      ADest := TJclSingleIntfHashMap(Dest);
       ADest.Clear;
       for I := 0 to FCapacity - 1 do
       begin
@@ -6530,18 +6626,18 @@ begin
           ADest.FBuckets[I] := NewBucket;
         end;
       end;
-    {$IFDEF THREADSAFE}
-    finally
-      ReadUnlock;
+    end
+    else
+    if Supports(IInterface(Dest), IJclSingleIntfMap, AMap) then
+    begin
+      AMap.Clear;
+      AMap.PutAll(Self);
     end;
-    {$ENDIF THREADSAFE}
-  end
-  else
-  if Supports(IInterface(Dest), IJclSingleIntfMap, AMap) then
-  begin
-    AMap.Clear;
-    AMap.PutAll(Self);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 procedure TJclSingleIntfHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
@@ -6556,6 +6652,8 @@ var
   I, J: Integer;
   Bucket: TJclSingleIntfBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6862,6 +6960,8 @@ var
   I: Integer;
   Bucket: TJclSingleIntfBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6889,6 +6989,8 @@ var
   It: IJclSingleIterator;
   Key: Single;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6914,6 +7016,8 @@ var
   Bucket: TJclSingleIntfBucket;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6962,6 +7066,8 @@ var
   Bucket: TJclSingleIntfBucket;
   I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6995,6 +7101,8 @@ end;
 
 procedure TJclSingleIntfHashMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7053,13 +7161,14 @@ end;
 
 constructor TJclIntfSingleHashMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create;
   SetCapacity(ACapacity);
   FHashFunction := HashMul;
 end;
 
 destructor TJclIntfSingleHashMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -7071,14 +7180,14 @@ var
   ADest: TJclIntfSingleHashMap;
   AMap: IJclIntfSingleMap;
 begin
-  inherited AssignDataTo(Dest);
-  if Dest is TJclIntfSingleHashMap then
-  begin
-    ADest := TJclIntfSingleHashMap(Dest);
-    {$IFDEF THREADSAFE}
-    ReadLock;
-    try
-    {$ENDIF THREADSAFE}
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    inherited AssignDataTo(Dest);
+    if Dest is TJclIntfSingleHashMap then
+    begin
+      ADest := TJclIntfSingleHashMap(Dest);
       ADest.Clear;
       for I := 0 to FCapacity - 1 do
       begin
@@ -7096,18 +7205,18 @@ begin
           ADest.FBuckets[I] := NewBucket;
         end;
       end;
-    {$IFDEF THREADSAFE}
-    finally
-      ReadUnlock;
+    end
+    else
+    if Supports(IInterface(Dest), IJclIntfSingleMap, AMap) then
+    begin
+      AMap.Clear;
+      AMap.PutAll(Self);
     end;
-    {$ENDIF THREADSAFE}
-  end
-  else
-  if Supports(IInterface(Dest), IJclIntfSingleMap, AMap) then
-  begin
-    AMap.Clear;
-    AMap.PutAll(Self);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 procedure TJclIntfSingleHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
@@ -7122,6 +7231,8 @@ var
   I, J: Integer;
   Bucket: TJclIntfSingleBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7432,6 +7543,8 @@ var
   I: Integer;
   Bucket: TJclIntfSingleBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7459,6 +7572,8 @@ var
   It: IJclIntfIterator;
   Key: IInterface;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7484,6 +7599,8 @@ var
   Bucket: TJclIntfSingleBucket;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7532,6 +7649,8 @@ var
   Bucket: TJclIntfSingleBucket;
   I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7565,6 +7684,8 @@ end;
 
 procedure TJclIntfSingleHashMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7623,13 +7744,14 @@ end;
 
 constructor TJclSingleSingleHashMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create;
   SetCapacity(ACapacity);
   FHashFunction := HashMul;
 end;
 
 destructor TJclSingleSingleHashMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -7641,14 +7763,14 @@ var
   ADest: TJclSingleSingleHashMap;
   AMap: IJclSingleSingleMap;
 begin
-  inherited AssignDataTo(Dest);
-  if Dest is TJclSingleSingleHashMap then
-  begin
-    ADest := TJclSingleSingleHashMap(Dest);
-    {$IFDEF THREADSAFE}
-    ReadLock;
-    try
-    {$ENDIF THREADSAFE}
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    inherited AssignDataTo(Dest);
+    if Dest is TJclSingleSingleHashMap then
+    begin
+      ADest := TJclSingleSingleHashMap(Dest);
       ADest.Clear;
       for I := 0 to FCapacity - 1 do
       begin
@@ -7666,18 +7788,18 @@ begin
           ADest.FBuckets[I] := NewBucket;
         end;
       end;
-    {$IFDEF THREADSAFE}
-    finally
-      ReadUnlock;
+    end
+    else
+    if Supports(IInterface(Dest), IJclSingleSingleMap, AMap) then
+    begin
+      AMap.Clear;
+      AMap.PutAll(Self);
     end;
-    {$ENDIF THREADSAFE}
-  end
-  else
-  if Supports(IInterface(Dest), IJclSingleSingleMap, AMap) then
-  begin
-    AMap.Clear;
-    AMap.PutAll(Self);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 procedure TJclSingleSingleHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
@@ -7692,6 +7814,8 @@ var
   I, J: Integer;
   Bucket: TJclSingleSingleBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7998,6 +8122,8 @@ var
   I: Integer;
   Bucket: TJclSingleSingleBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8025,6 +8151,8 @@ var
   It: IJclSingleIterator;
   Key: Single;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8050,6 +8178,8 @@ var
   Bucket: TJclSingleSingleBucket;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8098,6 +8228,8 @@ var
   Bucket: TJclSingleSingleBucket;
   I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8131,6 +8263,8 @@ end;
 
 procedure TJclSingleSingleHashMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8189,13 +8323,14 @@ end;
 
 constructor TJclDoubleIntfHashMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create;
   SetCapacity(ACapacity);
   FHashFunction := HashMul;
 end;
 
 destructor TJclDoubleIntfHashMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -8207,14 +8342,14 @@ var
   ADest: TJclDoubleIntfHashMap;
   AMap: IJclDoubleIntfMap;
 begin
-  inherited AssignDataTo(Dest);
-  if Dest is TJclDoubleIntfHashMap then
-  begin
-    ADest := TJclDoubleIntfHashMap(Dest);
-    {$IFDEF THREADSAFE}
-    ReadLock;
-    try
-    {$ENDIF THREADSAFE}
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    inherited AssignDataTo(Dest);
+    if Dest is TJclDoubleIntfHashMap then
+    begin
+      ADest := TJclDoubleIntfHashMap(Dest);
       ADest.Clear;
       for I := 0 to FCapacity - 1 do
       begin
@@ -8232,18 +8367,18 @@ begin
           ADest.FBuckets[I] := NewBucket;
         end;
       end;
-    {$IFDEF THREADSAFE}
-    finally
-      ReadUnlock;
+    end
+    else
+    if Supports(IInterface(Dest), IJclDoubleIntfMap, AMap) then
+    begin
+      AMap.Clear;
+      AMap.PutAll(Self);
     end;
-    {$ENDIF THREADSAFE}
-  end
-  else
-  if Supports(IInterface(Dest), IJclDoubleIntfMap, AMap) then
-  begin
-    AMap.Clear;
-    AMap.PutAll(Self);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 procedure TJclDoubleIntfHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
@@ -8258,6 +8393,8 @@ var
   I, J: Integer;
   Bucket: TJclDoubleIntfBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8564,6 +8701,8 @@ var
   I: Integer;
   Bucket: TJclDoubleIntfBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8591,6 +8730,8 @@ var
   It: IJclDoubleIterator;
   Key: Double;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8616,6 +8757,8 @@ var
   Bucket: TJclDoubleIntfBucket;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8664,6 +8807,8 @@ var
   Bucket: TJclDoubleIntfBucket;
   I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8697,6 +8842,8 @@ end;
 
 procedure TJclDoubleIntfHashMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8755,13 +8902,14 @@ end;
 
 constructor TJclIntfDoubleHashMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create;
   SetCapacity(ACapacity);
   FHashFunction := HashMul;
 end;
 
 destructor TJclIntfDoubleHashMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -8773,14 +8921,14 @@ var
   ADest: TJclIntfDoubleHashMap;
   AMap: IJclIntfDoubleMap;
 begin
-  inherited AssignDataTo(Dest);
-  if Dest is TJclIntfDoubleHashMap then
-  begin
-    ADest := TJclIntfDoubleHashMap(Dest);
-    {$IFDEF THREADSAFE}
-    ReadLock;
-    try
-    {$ENDIF THREADSAFE}
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    inherited AssignDataTo(Dest);
+    if Dest is TJclIntfDoubleHashMap then
+    begin
+      ADest := TJclIntfDoubleHashMap(Dest);
       ADest.Clear;
       for I := 0 to FCapacity - 1 do
       begin
@@ -8798,18 +8946,18 @@ begin
           ADest.FBuckets[I] := NewBucket;
         end;
       end;
-    {$IFDEF THREADSAFE}
-    finally
-      ReadUnlock;
+    end
+    else
+    if Supports(IInterface(Dest), IJclIntfDoubleMap, AMap) then
+    begin
+      AMap.Clear;
+      AMap.PutAll(Self);
     end;
-    {$ENDIF THREADSAFE}
-  end
-  else
-  if Supports(IInterface(Dest), IJclIntfDoubleMap, AMap) then
-  begin
-    AMap.Clear;
-    AMap.PutAll(Self);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 procedure TJclIntfDoubleHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
@@ -8824,6 +8972,8 @@ var
   I, J: Integer;
   Bucket: TJclIntfDoubleBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -9134,6 +9284,8 @@ var
   I: Integer;
   Bucket: TJclIntfDoubleBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -9161,6 +9313,8 @@ var
   It: IJclIntfIterator;
   Key: IInterface;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -9186,6 +9340,8 @@ var
   Bucket: TJclIntfDoubleBucket;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -9234,6 +9390,8 @@ var
   Bucket: TJclIntfDoubleBucket;
   I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -9267,6 +9425,8 @@ end;
 
 procedure TJclIntfDoubleHashMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -9325,13 +9485,14 @@ end;
 
 constructor TJclDoubleDoubleHashMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create;
   SetCapacity(ACapacity);
   FHashFunction := HashMul;
 end;
 
 destructor TJclDoubleDoubleHashMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -9343,14 +9504,14 @@ var
   ADest: TJclDoubleDoubleHashMap;
   AMap: IJclDoubleDoubleMap;
 begin
-  inherited AssignDataTo(Dest);
-  if Dest is TJclDoubleDoubleHashMap then
-  begin
-    ADest := TJclDoubleDoubleHashMap(Dest);
-    {$IFDEF THREADSAFE}
-    ReadLock;
-    try
-    {$ENDIF THREADSAFE}
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    inherited AssignDataTo(Dest);
+    if Dest is TJclDoubleDoubleHashMap then
+    begin
+      ADest := TJclDoubleDoubleHashMap(Dest);
       ADest.Clear;
       for I := 0 to FCapacity - 1 do
       begin
@@ -9368,18 +9529,18 @@ begin
           ADest.FBuckets[I] := NewBucket;
         end;
       end;
-    {$IFDEF THREADSAFE}
-    finally
-      ReadUnlock;
+    end
+    else
+    if Supports(IInterface(Dest), IJclDoubleDoubleMap, AMap) then
+    begin
+      AMap.Clear;
+      AMap.PutAll(Self);
     end;
-    {$ENDIF THREADSAFE}
-  end
-  else
-  if Supports(IInterface(Dest), IJclDoubleDoubleMap, AMap) then
-  begin
-    AMap.Clear;
-    AMap.PutAll(Self);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 procedure TJclDoubleDoubleHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
@@ -9394,6 +9555,8 @@ var
   I, J: Integer;
   Bucket: TJclDoubleDoubleBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -9700,6 +9863,8 @@ var
   I: Integer;
   Bucket: TJclDoubleDoubleBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -9727,6 +9892,8 @@ var
   It: IJclDoubleIterator;
   Key: Double;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -9752,6 +9919,8 @@ var
   Bucket: TJclDoubleDoubleBucket;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -9800,6 +9969,8 @@ var
   Bucket: TJclDoubleDoubleBucket;
   I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -9833,6 +10004,8 @@ end;
 
 procedure TJclDoubleDoubleHashMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -9891,13 +10064,14 @@ end;
 
 constructor TJclExtendedIntfHashMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create;
   SetCapacity(ACapacity);
   FHashFunction := HashMul;
 end;
 
 destructor TJclExtendedIntfHashMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -9909,14 +10083,14 @@ var
   ADest: TJclExtendedIntfHashMap;
   AMap: IJclExtendedIntfMap;
 begin
-  inherited AssignDataTo(Dest);
-  if Dest is TJclExtendedIntfHashMap then
-  begin
-    ADest := TJclExtendedIntfHashMap(Dest);
-    {$IFDEF THREADSAFE}
-    ReadLock;
-    try
-    {$ENDIF THREADSAFE}
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    inherited AssignDataTo(Dest);
+    if Dest is TJclExtendedIntfHashMap then
+    begin
+      ADest := TJclExtendedIntfHashMap(Dest);
       ADest.Clear;
       for I := 0 to FCapacity - 1 do
       begin
@@ -9934,18 +10108,18 @@ begin
           ADest.FBuckets[I] := NewBucket;
         end;
       end;
-    {$IFDEF THREADSAFE}
-    finally
-      ReadUnlock;
+    end
+    else
+    if Supports(IInterface(Dest), IJclExtendedIntfMap, AMap) then
+    begin
+      AMap.Clear;
+      AMap.PutAll(Self);
     end;
-    {$ENDIF THREADSAFE}
-  end
-  else
-  if Supports(IInterface(Dest), IJclExtendedIntfMap, AMap) then
-  begin
-    AMap.Clear;
-    AMap.PutAll(Self);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 procedure TJclExtendedIntfHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
@@ -9960,6 +10134,8 @@ var
   I, J: Integer;
   Bucket: TJclExtendedIntfBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -10266,6 +10442,8 @@ var
   I: Integer;
   Bucket: TJclExtendedIntfBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -10293,6 +10471,8 @@ var
   It: IJclExtendedIterator;
   Key: Extended;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -10318,6 +10498,8 @@ var
   Bucket: TJclExtendedIntfBucket;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -10366,6 +10548,8 @@ var
   Bucket: TJclExtendedIntfBucket;
   I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -10399,6 +10583,8 @@ end;
 
 procedure TJclExtendedIntfHashMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -10457,13 +10643,14 @@ end;
 
 constructor TJclIntfExtendedHashMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create;
   SetCapacity(ACapacity);
   FHashFunction := HashMul;
 end;
 
 destructor TJclIntfExtendedHashMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -10475,14 +10662,14 @@ var
   ADest: TJclIntfExtendedHashMap;
   AMap: IJclIntfExtendedMap;
 begin
-  inherited AssignDataTo(Dest);
-  if Dest is TJclIntfExtendedHashMap then
-  begin
-    ADest := TJclIntfExtendedHashMap(Dest);
-    {$IFDEF THREADSAFE}
-    ReadLock;
-    try
-    {$ENDIF THREADSAFE}
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    inherited AssignDataTo(Dest);
+    if Dest is TJclIntfExtendedHashMap then
+    begin
+      ADest := TJclIntfExtendedHashMap(Dest);
       ADest.Clear;
       for I := 0 to FCapacity - 1 do
       begin
@@ -10500,18 +10687,18 @@ begin
           ADest.FBuckets[I] := NewBucket;
         end;
       end;
-    {$IFDEF THREADSAFE}
-    finally
-      ReadUnlock;
+    end
+    else
+    if Supports(IInterface(Dest), IJclIntfExtendedMap, AMap) then
+    begin
+      AMap.Clear;
+      AMap.PutAll(Self);
     end;
-    {$ENDIF THREADSAFE}
-  end
-  else
-  if Supports(IInterface(Dest), IJclIntfExtendedMap, AMap) then
-  begin
-    AMap.Clear;
-    AMap.PutAll(Self);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 procedure TJclIntfExtendedHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
@@ -10526,6 +10713,8 @@ var
   I, J: Integer;
   Bucket: TJclIntfExtendedBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -10836,6 +11025,8 @@ var
   I: Integer;
   Bucket: TJclIntfExtendedBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -10863,6 +11054,8 @@ var
   It: IJclIntfIterator;
   Key: IInterface;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -10888,6 +11081,8 @@ var
   Bucket: TJclIntfExtendedBucket;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -10936,6 +11131,8 @@ var
   Bucket: TJclIntfExtendedBucket;
   I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -10969,6 +11166,8 @@ end;
 
 procedure TJclIntfExtendedHashMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -11027,13 +11226,14 @@ end;
 
 constructor TJclExtendedExtendedHashMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create;
   SetCapacity(ACapacity);
   FHashFunction := HashMul;
 end;
 
 destructor TJclExtendedExtendedHashMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -11045,14 +11245,14 @@ var
   ADest: TJclExtendedExtendedHashMap;
   AMap: IJclExtendedExtendedMap;
 begin
-  inherited AssignDataTo(Dest);
-  if Dest is TJclExtendedExtendedHashMap then
-  begin
-    ADest := TJclExtendedExtendedHashMap(Dest);
-    {$IFDEF THREADSAFE}
-    ReadLock;
-    try
-    {$ENDIF THREADSAFE}
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    inherited AssignDataTo(Dest);
+    if Dest is TJclExtendedExtendedHashMap then
+    begin
+      ADest := TJclExtendedExtendedHashMap(Dest);
       ADest.Clear;
       for I := 0 to FCapacity - 1 do
       begin
@@ -11070,18 +11270,18 @@ begin
           ADest.FBuckets[I] := NewBucket;
         end;
       end;
-    {$IFDEF THREADSAFE}
-    finally
-      ReadUnlock;
+    end
+    else
+    if Supports(IInterface(Dest), IJclExtendedExtendedMap, AMap) then
+    begin
+      AMap.Clear;
+      AMap.PutAll(Self);
     end;
-    {$ENDIF THREADSAFE}
-  end
-  else
-  if Supports(IInterface(Dest), IJclExtendedExtendedMap, AMap) then
-  begin
-    AMap.Clear;
-    AMap.PutAll(Self);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 procedure TJclExtendedExtendedHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
@@ -11096,6 +11296,8 @@ var
   I, J: Integer;
   Bucket: TJclExtendedExtendedBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -11402,6 +11604,8 @@ var
   I: Integer;
   Bucket: TJclExtendedExtendedBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -11429,6 +11633,8 @@ var
   It: IJclExtendedIterator;
   Key: Extended;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -11454,6 +11660,8 @@ var
   Bucket: TJclExtendedExtendedBucket;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -11502,6 +11710,8 @@ var
   Bucket: TJclExtendedExtendedBucket;
   I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -11535,6 +11745,8 @@ end;
 
 procedure TJclExtendedExtendedHashMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -11593,13 +11805,14 @@ end;
 
 constructor TJclIntegerIntfHashMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create;
   SetCapacity(ACapacity);
   FHashFunction := HashMul;
 end;
 
 destructor TJclIntegerIntfHashMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -11611,14 +11824,14 @@ var
   ADest: TJclIntegerIntfHashMap;
   AMap: IJclIntegerIntfMap;
 begin
-  inherited AssignDataTo(Dest);
-  if Dest is TJclIntegerIntfHashMap then
-  begin
-    ADest := TJclIntegerIntfHashMap(Dest);
-    {$IFDEF THREADSAFE}
-    ReadLock;
-    try
-    {$ENDIF THREADSAFE}
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    inherited AssignDataTo(Dest);
+    if Dest is TJclIntegerIntfHashMap then
+    begin
+      ADest := TJclIntegerIntfHashMap(Dest);
       ADest.Clear;
       for I := 0 to FCapacity - 1 do
       begin
@@ -11636,18 +11849,18 @@ begin
           ADest.FBuckets[I] := NewBucket;
         end;
       end;
-    {$IFDEF THREADSAFE}
-    finally
-      ReadUnlock;
+    end
+    else
+    if Supports(IInterface(Dest), IJclIntegerIntfMap, AMap) then
+    begin
+      AMap.Clear;
+      AMap.PutAll(Self);
     end;
-    {$ENDIF THREADSAFE}
-  end
-  else
-  if Supports(IInterface(Dest), IJclIntegerIntfMap, AMap) then
-  begin
-    AMap.Clear;
-    AMap.PutAll(Self);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 procedure TJclIntegerIntfHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
@@ -11662,6 +11875,8 @@ var
   I, J: Integer;
   Bucket: TJclIntegerIntfBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -11968,6 +12183,8 @@ var
   I: Integer;
   Bucket: TJclIntegerIntfBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -11995,6 +12212,8 @@ var
   It: IJclIntegerIterator;
   Key: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -12020,6 +12239,8 @@ var
   Bucket: TJclIntegerIntfBucket;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -12068,6 +12289,8 @@ var
   Bucket: TJclIntegerIntfBucket;
   I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -12101,6 +12324,8 @@ end;
 
 procedure TJclIntegerIntfHashMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -12159,13 +12384,14 @@ end;
 
 constructor TJclIntfIntegerHashMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create;
   SetCapacity(ACapacity);
   FHashFunction := HashMul;
 end;
 
 destructor TJclIntfIntegerHashMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -12177,14 +12403,14 @@ var
   ADest: TJclIntfIntegerHashMap;
   AMap: IJclIntfIntegerMap;
 begin
-  inherited AssignDataTo(Dest);
-  if Dest is TJclIntfIntegerHashMap then
-  begin
-    ADest := TJclIntfIntegerHashMap(Dest);
-    {$IFDEF THREADSAFE}
-    ReadLock;
-    try
-    {$ENDIF THREADSAFE}
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    inherited AssignDataTo(Dest);
+    if Dest is TJclIntfIntegerHashMap then
+    begin
+      ADest := TJclIntfIntegerHashMap(Dest);
       ADest.Clear;
       for I := 0 to FCapacity - 1 do
       begin
@@ -12202,18 +12428,18 @@ begin
           ADest.FBuckets[I] := NewBucket;
         end;
       end;
-    {$IFDEF THREADSAFE}
-    finally
-      ReadUnlock;
+    end
+    else
+    if Supports(IInterface(Dest), IJclIntfIntegerMap, AMap) then
+    begin
+      AMap.Clear;
+      AMap.PutAll(Self);
     end;
-    {$ENDIF THREADSAFE}
-  end
-  else
-  if Supports(IInterface(Dest), IJclIntfIntegerMap, AMap) then
-  begin
-    AMap.Clear;
-    AMap.PutAll(Self);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 procedure TJclIntfIntegerHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
@@ -12228,6 +12454,8 @@ var
   I, J: Integer;
   Bucket: TJclIntfIntegerBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -12538,6 +12766,8 @@ var
   I: Integer;
   Bucket: TJclIntfIntegerBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -12565,6 +12795,8 @@ var
   It: IJclIntfIterator;
   Key: IInterface;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -12590,6 +12822,8 @@ var
   Bucket: TJclIntfIntegerBucket;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -12638,6 +12872,8 @@ var
   Bucket: TJclIntfIntegerBucket;
   I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -12671,6 +12907,8 @@ end;
 
 procedure TJclIntfIntegerHashMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -12729,13 +12967,14 @@ end;
 
 constructor TJclIntegerIntegerHashMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create;
   SetCapacity(ACapacity);
   FHashFunction := HashMul;
 end;
 
 destructor TJclIntegerIntegerHashMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -12747,14 +12986,14 @@ var
   ADest: TJclIntegerIntegerHashMap;
   AMap: IJclIntegerIntegerMap;
 begin
-  inherited AssignDataTo(Dest);
-  if Dest is TJclIntegerIntegerHashMap then
-  begin
-    ADest := TJclIntegerIntegerHashMap(Dest);
-    {$IFDEF THREADSAFE}
-    ReadLock;
-    try
-    {$ENDIF THREADSAFE}
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    inherited AssignDataTo(Dest);
+    if Dest is TJclIntegerIntegerHashMap then
+    begin
+      ADest := TJclIntegerIntegerHashMap(Dest);
       ADest.Clear;
       for I := 0 to FCapacity - 1 do
       begin
@@ -12772,18 +13011,18 @@ begin
           ADest.FBuckets[I] := NewBucket;
         end;
       end;
-    {$IFDEF THREADSAFE}
-    finally
-      ReadUnlock;
+    end
+    else
+    if Supports(IInterface(Dest), IJclIntegerIntegerMap, AMap) then
+    begin
+      AMap.Clear;
+      AMap.PutAll(Self);
     end;
-    {$ENDIF THREADSAFE}
-  end
-  else
-  if Supports(IInterface(Dest), IJclIntegerIntegerMap, AMap) then
-  begin
-    AMap.Clear;
-    AMap.PutAll(Self);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 procedure TJclIntegerIntegerHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
@@ -12798,6 +13037,8 @@ var
   I, J: Integer;
   Bucket: TJclIntegerIntegerBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -13104,6 +13345,8 @@ var
   I: Integer;
   Bucket: TJclIntegerIntegerBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -13131,6 +13374,8 @@ var
   It: IJclIntegerIterator;
   Key: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -13156,6 +13401,8 @@ var
   Bucket: TJclIntegerIntegerBucket;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -13204,6 +13451,8 @@ var
   Bucket: TJclIntegerIntegerBucket;
   I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -13237,6 +13486,8 @@ end;
 
 procedure TJclIntegerIntegerHashMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -13295,13 +13546,14 @@ end;
 
 constructor TJclCardinalIntfHashMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create;
   SetCapacity(ACapacity);
   FHashFunction := HashMul;
 end;
 
 destructor TJclCardinalIntfHashMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -13313,14 +13565,14 @@ var
   ADest: TJclCardinalIntfHashMap;
   AMap: IJclCardinalIntfMap;
 begin
-  inherited AssignDataTo(Dest);
-  if Dest is TJclCardinalIntfHashMap then
-  begin
-    ADest := TJclCardinalIntfHashMap(Dest);
-    {$IFDEF THREADSAFE}
-    ReadLock;
-    try
-    {$ENDIF THREADSAFE}
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    inherited AssignDataTo(Dest);
+    if Dest is TJclCardinalIntfHashMap then
+    begin
+      ADest := TJclCardinalIntfHashMap(Dest);
       ADest.Clear;
       for I := 0 to FCapacity - 1 do
       begin
@@ -13338,18 +13590,18 @@ begin
           ADest.FBuckets[I] := NewBucket;
         end;
       end;
-    {$IFDEF THREADSAFE}
-    finally
-      ReadUnlock;
+    end
+    else
+    if Supports(IInterface(Dest), IJclCardinalIntfMap, AMap) then
+    begin
+      AMap.Clear;
+      AMap.PutAll(Self);
     end;
-    {$ENDIF THREADSAFE}
-  end
-  else
-  if Supports(IInterface(Dest), IJclCardinalIntfMap, AMap) then
-  begin
-    AMap.Clear;
-    AMap.PutAll(Self);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 procedure TJclCardinalIntfHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
@@ -13364,6 +13616,8 @@ var
   I, J: Integer;
   Bucket: TJclCardinalIntfBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -13670,6 +13924,8 @@ var
   I: Integer;
   Bucket: TJclCardinalIntfBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -13697,6 +13953,8 @@ var
   It: IJclCardinalIterator;
   Key: Cardinal;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -13722,6 +13980,8 @@ var
   Bucket: TJclCardinalIntfBucket;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -13770,6 +14030,8 @@ var
   Bucket: TJclCardinalIntfBucket;
   I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -13803,6 +14065,8 @@ end;
 
 procedure TJclCardinalIntfHashMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -13861,13 +14125,14 @@ end;
 
 constructor TJclIntfCardinalHashMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create;
   SetCapacity(ACapacity);
   FHashFunction := HashMul;
 end;
 
 destructor TJclIntfCardinalHashMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -13879,14 +14144,14 @@ var
   ADest: TJclIntfCardinalHashMap;
   AMap: IJclIntfCardinalMap;
 begin
-  inherited AssignDataTo(Dest);
-  if Dest is TJclIntfCardinalHashMap then
-  begin
-    ADest := TJclIntfCardinalHashMap(Dest);
-    {$IFDEF THREADSAFE}
-    ReadLock;
-    try
-    {$ENDIF THREADSAFE}
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    inherited AssignDataTo(Dest);
+    if Dest is TJclIntfCardinalHashMap then
+    begin
+      ADest := TJclIntfCardinalHashMap(Dest);
       ADest.Clear;
       for I := 0 to FCapacity - 1 do
       begin
@@ -13904,18 +14169,18 @@ begin
           ADest.FBuckets[I] := NewBucket;
         end;
       end;
-    {$IFDEF THREADSAFE}
-    finally
-      ReadUnlock;
+    end
+    else
+    if Supports(IInterface(Dest), IJclIntfCardinalMap, AMap) then
+    begin
+      AMap.Clear;
+      AMap.PutAll(Self);
     end;
-    {$ENDIF THREADSAFE}
-  end
-  else
-  if Supports(IInterface(Dest), IJclIntfCardinalMap, AMap) then
-  begin
-    AMap.Clear;
-    AMap.PutAll(Self);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 procedure TJclIntfCardinalHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
@@ -13930,6 +14195,8 @@ var
   I, J: Integer;
   Bucket: TJclIntfCardinalBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -14240,6 +14507,8 @@ var
   I: Integer;
   Bucket: TJclIntfCardinalBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -14267,6 +14536,8 @@ var
   It: IJclIntfIterator;
   Key: IInterface;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -14292,6 +14563,8 @@ var
   Bucket: TJclIntfCardinalBucket;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -14340,6 +14613,8 @@ var
   Bucket: TJclIntfCardinalBucket;
   I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -14373,6 +14648,8 @@ end;
 
 procedure TJclIntfCardinalHashMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -14431,13 +14708,14 @@ end;
 
 constructor TJclCardinalCardinalHashMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create;
   SetCapacity(ACapacity);
   FHashFunction := HashMul;
 end;
 
 destructor TJclCardinalCardinalHashMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -14449,14 +14727,14 @@ var
   ADest: TJclCardinalCardinalHashMap;
   AMap: IJclCardinalCardinalMap;
 begin
-  inherited AssignDataTo(Dest);
-  if Dest is TJclCardinalCardinalHashMap then
-  begin
-    ADest := TJclCardinalCardinalHashMap(Dest);
-    {$IFDEF THREADSAFE}
-    ReadLock;
-    try
-    {$ENDIF THREADSAFE}
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    inherited AssignDataTo(Dest);
+    if Dest is TJclCardinalCardinalHashMap then
+    begin
+      ADest := TJclCardinalCardinalHashMap(Dest);
       ADest.Clear;
       for I := 0 to FCapacity - 1 do
       begin
@@ -14474,18 +14752,18 @@ begin
           ADest.FBuckets[I] := NewBucket;
         end;
       end;
-    {$IFDEF THREADSAFE}
-    finally
-      ReadUnlock;
+    end
+    else
+    if Supports(IInterface(Dest), IJclCardinalCardinalMap, AMap) then
+    begin
+      AMap.Clear;
+      AMap.PutAll(Self);
     end;
-    {$ENDIF THREADSAFE}
-  end
-  else
-  if Supports(IInterface(Dest), IJclCardinalCardinalMap, AMap) then
-  begin
-    AMap.Clear;
-    AMap.PutAll(Self);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 procedure TJclCardinalCardinalHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
@@ -14500,6 +14778,8 @@ var
   I, J: Integer;
   Bucket: TJclCardinalCardinalBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -14806,6 +15086,8 @@ var
   I: Integer;
   Bucket: TJclCardinalCardinalBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -14833,6 +15115,8 @@ var
   It: IJclCardinalIterator;
   Key: Cardinal;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -14858,6 +15142,8 @@ var
   Bucket: TJclCardinalCardinalBucket;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -14906,6 +15192,8 @@ var
   Bucket: TJclCardinalCardinalBucket;
   I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -14939,6 +15227,8 @@ end;
 
 procedure TJclCardinalCardinalHashMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -14997,13 +15287,14 @@ end;
 
 constructor TJclInt64IntfHashMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create;
   SetCapacity(ACapacity);
   FHashFunction := HashMul;
 end;
 
 destructor TJclInt64IntfHashMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -15015,14 +15306,14 @@ var
   ADest: TJclInt64IntfHashMap;
   AMap: IJclInt64IntfMap;
 begin
-  inherited AssignDataTo(Dest);
-  if Dest is TJclInt64IntfHashMap then
-  begin
-    ADest := TJclInt64IntfHashMap(Dest);
-    {$IFDEF THREADSAFE}
-    ReadLock;
-    try
-    {$ENDIF THREADSAFE}
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    inherited AssignDataTo(Dest);
+    if Dest is TJclInt64IntfHashMap then
+    begin
+      ADest := TJclInt64IntfHashMap(Dest);
       ADest.Clear;
       for I := 0 to FCapacity - 1 do
       begin
@@ -15040,18 +15331,18 @@ begin
           ADest.FBuckets[I] := NewBucket;
         end;
       end;
-    {$IFDEF THREADSAFE}
-    finally
-      ReadUnlock;
+    end
+    else
+    if Supports(IInterface(Dest), IJclInt64IntfMap, AMap) then
+    begin
+      AMap.Clear;
+      AMap.PutAll(Self);
     end;
-    {$ENDIF THREADSAFE}
-  end
-  else
-  if Supports(IInterface(Dest), IJclInt64IntfMap, AMap) then
-  begin
-    AMap.Clear;
-    AMap.PutAll(Self);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 procedure TJclInt64IntfHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
@@ -15066,6 +15357,8 @@ var
   I, J: Integer;
   Bucket: TJclInt64IntfBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -15372,6 +15665,8 @@ var
   I: Integer;
   Bucket: TJclInt64IntfBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -15399,6 +15694,8 @@ var
   It: IJclInt64Iterator;
   Key: Int64;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -15424,6 +15721,8 @@ var
   Bucket: TJclInt64IntfBucket;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -15472,6 +15771,8 @@ var
   Bucket: TJclInt64IntfBucket;
   I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -15505,6 +15806,8 @@ end;
 
 procedure TJclInt64IntfHashMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -15563,13 +15866,14 @@ end;
 
 constructor TJclIntfInt64HashMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create;
   SetCapacity(ACapacity);
   FHashFunction := HashMul;
 end;
 
 destructor TJclIntfInt64HashMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -15581,14 +15885,14 @@ var
   ADest: TJclIntfInt64HashMap;
   AMap: IJclIntfInt64Map;
 begin
-  inherited AssignDataTo(Dest);
-  if Dest is TJclIntfInt64HashMap then
-  begin
-    ADest := TJclIntfInt64HashMap(Dest);
-    {$IFDEF THREADSAFE}
-    ReadLock;
-    try
-    {$ENDIF THREADSAFE}
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    inherited AssignDataTo(Dest);
+    if Dest is TJclIntfInt64HashMap then
+    begin
+      ADest := TJclIntfInt64HashMap(Dest);
       ADest.Clear;
       for I := 0 to FCapacity - 1 do
       begin
@@ -15606,18 +15910,18 @@ begin
           ADest.FBuckets[I] := NewBucket;
         end;
       end;
-    {$IFDEF THREADSAFE}
-    finally
-      ReadUnlock;
+    end
+    else
+    if Supports(IInterface(Dest), IJclIntfInt64Map, AMap) then
+    begin
+      AMap.Clear;
+      AMap.PutAll(Self);
     end;
-    {$ENDIF THREADSAFE}
-  end
-  else
-  if Supports(IInterface(Dest), IJclIntfInt64Map, AMap) then
-  begin
-    AMap.Clear;
-    AMap.PutAll(Self);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 procedure TJclIntfInt64HashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
@@ -15632,6 +15936,8 @@ var
   I, J: Integer;
   Bucket: TJclIntfInt64Bucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -15942,6 +16248,8 @@ var
   I: Integer;
   Bucket: TJclIntfInt64Bucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -15969,6 +16277,8 @@ var
   It: IJclIntfIterator;
   Key: IInterface;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -15994,6 +16304,8 @@ var
   Bucket: TJclIntfInt64Bucket;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -16042,6 +16354,8 @@ var
   Bucket: TJclIntfInt64Bucket;
   I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -16075,6 +16389,8 @@ end;
 
 procedure TJclIntfInt64HashMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -16133,13 +16449,14 @@ end;
 
 constructor TJclInt64Int64HashMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create;
   SetCapacity(ACapacity);
   FHashFunction := HashMul;
 end;
 
 destructor TJclInt64Int64HashMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -16151,14 +16468,14 @@ var
   ADest: TJclInt64Int64HashMap;
   AMap: IJclInt64Int64Map;
 begin
-  inherited AssignDataTo(Dest);
-  if Dest is TJclInt64Int64HashMap then
-  begin
-    ADest := TJclInt64Int64HashMap(Dest);
-    {$IFDEF THREADSAFE}
-    ReadLock;
-    try
-    {$ENDIF THREADSAFE}
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    inherited AssignDataTo(Dest);
+    if Dest is TJclInt64Int64HashMap then
+    begin
+      ADest := TJclInt64Int64HashMap(Dest);
       ADest.Clear;
       for I := 0 to FCapacity - 1 do
       begin
@@ -16176,18 +16493,18 @@ begin
           ADest.FBuckets[I] := NewBucket;
         end;
       end;
-    {$IFDEF THREADSAFE}
-    finally
-      ReadUnlock;
+    end
+    else
+    if Supports(IInterface(Dest), IJclInt64Int64Map, AMap) then
+    begin
+      AMap.Clear;
+      AMap.PutAll(Self);
     end;
-    {$ENDIF THREADSAFE}
-  end
-  else
-  if Supports(IInterface(Dest), IJclInt64Int64Map, AMap) then
-  begin
-    AMap.Clear;
-    AMap.PutAll(Self);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 procedure TJclInt64Int64HashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
@@ -16202,6 +16519,8 @@ var
   I, J: Integer;
   Bucket: TJclInt64Int64Bucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -16508,6 +16827,8 @@ var
   I: Integer;
   Bucket: TJclInt64Int64Bucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -16535,6 +16856,8 @@ var
   It: IJclInt64Iterator;
   Key: Int64;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -16560,6 +16883,8 @@ var
   Bucket: TJclInt64Int64Bucket;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -16608,6 +16933,8 @@ var
   Bucket: TJclInt64Int64Bucket;
   I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -16641,6 +16968,8 @@ end;
 
 procedure TJclInt64Int64HashMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -16700,13 +17029,14 @@ end;
 
 constructor TJclPtrIntfHashMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create;
   SetCapacity(ACapacity);
   FHashFunction := HashMul;
 end;
 
 destructor TJclPtrIntfHashMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -16718,14 +17048,14 @@ var
   ADest: TJclPtrIntfHashMap;
   AMap: IJclPtrIntfMap;
 begin
-  inherited AssignDataTo(Dest);
-  if Dest is TJclPtrIntfHashMap then
-  begin
-    ADest := TJclPtrIntfHashMap(Dest);
-    {$IFDEF THREADSAFE}
-    ReadLock;
-    try
-    {$ENDIF THREADSAFE}
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    inherited AssignDataTo(Dest);
+    if Dest is TJclPtrIntfHashMap then
+    begin
+      ADest := TJclPtrIntfHashMap(Dest);
       ADest.Clear;
       for I := 0 to FCapacity - 1 do
       begin
@@ -16743,18 +17073,18 @@ begin
           ADest.FBuckets[I] := NewBucket;
         end;
       end;
-    {$IFDEF THREADSAFE}
-    finally
-      ReadUnlock;
+    end
+    else
+    if Supports(IInterface(Dest), IJclPtrIntfMap, AMap) then
+    begin
+      AMap.Clear;
+      AMap.PutAll(Self);
     end;
-    {$ENDIF THREADSAFE}
-  end
-  else
-  if Supports(IInterface(Dest), IJclPtrIntfMap, AMap) then
-  begin
-    AMap.Clear;
-    AMap.PutAll(Self);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 procedure TJclPtrIntfHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
@@ -16769,6 +17099,8 @@ var
   I, J: Integer;
   Bucket: TJclPtrIntfBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -17075,6 +17407,8 @@ var
   I: Integer;
   Bucket: TJclPtrIntfBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -17102,6 +17436,8 @@ var
   It: IJclPtrIterator;
   Key: Pointer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -17127,6 +17463,8 @@ var
   Bucket: TJclPtrIntfBucket;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -17175,6 +17513,8 @@ var
   Bucket: TJclPtrIntfBucket;
   I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -17208,6 +17548,8 @@ end;
 
 procedure TJclPtrIntfHashMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -17266,13 +17608,14 @@ end;
 
 constructor TJclIntfPtrHashMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create;
   SetCapacity(ACapacity);
   FHashFunction := HashMul;
 end;
 
 destructor TJclIntfPtrHashMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -17284,14 +17627,14 @@ var
   ADest: TJclIntfPtrHashMap;
   AMap: IJclIntfPtrMap;
 begin
-  inherited AssignDataTo(Dest);
-  if Dest is TJclIntfPtrHashMap then
-  begin
-    ADest := TJclIntfPtrHashMap(Dest);
-    {$IFDEF THREADSAFE}
-    ReadLock;
-    try
-    {$ENDIF THREADSAFE}
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    inherited AssignDataTo(Dest);
+    if Dest is TJclIntfPtrHashMap then
+    begin
+      ADest := TJclIntfPtrHashMap(Dest);
       ADest.Clear;
       for I := 0 to FCapacity - 1 do
       begin
@@ -17309,18 +17652,18 @@ begin
           ADest.FBuckets[I] := NewBucket;
         end;
       end;
-    {$IFDEF THREADSAFE}
-    finally
-      ReadUnlock;
+    end
+    else
+    if Supports(IInterface(Dest), IJclIntfPtrMap, AMap) then
+    begin
+      AMap.Clear;
+      AMap.PutAll(Self);
     end;
-    {$ENDIF THREADSAFE}
-  end
-  else
-  if Supports(IInterface(Dest), IJclIntfPtrMap, AMap) then
-  begin
-    AMap.Clear;
-    AMap.PutAll(Self);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 procedure TJclIntfPtrHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
@@ -17335,6 +17678,8 @@ var
   I, J: Integer;
   Bucket: TJclIntfPtrBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -17645,6 +17990,8 @@ var
   I: Integer;
   Bucket: TJclIntfPtrBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -17672,6 +18019,8 @@ var
   It: IJclIntfIterator;
   Key: IInterface;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -17697,6 +18046,8 @@ var
   Bucket: TJclIntfPtrBucket;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -17745,6 +18096,8 @@ var
   Bucket: TJclIntfPtrBucket;
   I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -17778,6 +18131,8 @@ end;
 
 procedure TJclIntfPtrHashMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -17836,13 +18191,14 @@ end;
 
 constructor TJclPtrPtrHashMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create;
   SetCapacity(ACapacity);
   FHashFunction := HashMul;
 end;
 
 destructor TJclPtrPtrHashMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -17854,14 +18210,14 @@ var
   ADest: TJclPtrPtrHashMap;
   AMap: IJclPtrPtrMap;
 begin
-  inherited AssignDataTo(Dest);
-  if Dest is TJclPtrPtrHashMap then
-  begin
-    ADest := TJclPtrPtrHashMap(Dest);
-    {$IFDEF THREADSAFE}
-    ReadLock;
-    try
-    {$ENDIF THREADSAFE}
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    inherited AssignDataTo(Dest);
+    if Dest is TJclPtrPtrHashMap then
+    begin
+      ADest := TJclPtrPtrHashMap(Dest);
       ADest.Clear;
       for I := 0 to FCapacity - 1 do
       begin
@@ -17879,18 +18235,18 @@ begin
           ADest.FBuckets[I] := NewBucket;
         end;
       end;
-    {$IFDEF THREADSAFE}
-    finally
-      ReadUnlock;
+    end
+    else
+    if Supports(IInterface(Dest), IJclPtrPtrMap, AMap) then
+    begin
+      AMap.Clear;
+      AMap.PutAll(Self);
     end;
-    {$ENDIF THREADSAFE}
-  end
-  else
-  if Supports(IInterface(Dest), IJclPtrPtrMap, AMap) then
-  begin
-    AMap.Clear;
-    AMap.PutAll(Self);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 procedure TJclPtrPtrHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
@@ -17905,6 +18261,8 @@ var
   I, J: Integer;
   Bucket: TJclPtrPtrBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -18211,6 +18569,8 @@ var
   I: Integer;
   Bucket: TJclPtrPtrBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -18238,6 +18598,8 @@ var
   It: IJclPtrIterator;
   Key: Pointer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -18263,6 +18625,8 @@ var
   Bucket: TJclPtrPtrBucket;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -18311,6 +18675,8 @@ var
   Bucket: TJclPtrPtrBucket;
   I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -18344,6 +18710,8 @@ end;
 
 procedure TJclPtrPtrHashMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -18403,7 +18771,7 @@ end;
 
 constructor TJclIntfHashMap.Create(ACapacity: Integer; AOwnsValues: Boolean);
 begin
-  inherited Create(nil);
+  inherited Create;
   FOwnsValues := AOwnsValues;
   SetCapacity(ACapacity);
   FHashFunction := HashMul;
@@ -18411,6 +18779,7 @@ end;
 
 destructor TJclIntfHashMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -18422,14 +18791,14 @@ var
   ADest: TJclIntfHashMap;
   AMap: IJclIntfMap;
 begin
-  inherited AssignDataTo(Dest);
-  if Dest is TJclIntfHashMap then
-  begin
-    ADest := TJclIntfHashMap(Dest);
-    {$IFDEF THREADSAFE}
-    ReadLock;
-    try
-    {$ENDIF THREADSAFE}
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    inherited AssignDataTo(Dest);
+    if Dest is TJclIntfHashMap then
+    begin
+      ADest := TJclIntfHashMap(Dest);
       ADest.Clear;
       for I := 0 to FCapacity - 1 do
       begin
@@ -18447,18 +18816,18 @@ begin
           ADest.FBuckets[I] := NewBucket;
         end;
       end;
-    {$IFDEF THREADSAFE}
-    finally
-      ReadUnlock;
+    end
+    else
+    if Supports(IInterface(Dest), IJclIntfMap, AMap) then
+    begin
+      AMap.Clear;
+      AMap.PutAll(Self);
     end;
-    {$ENDIF THREADSAFE}
-  end
-  else
-  if Supports(IInterface(Dest), IJclIntfMap, AMap) then
-  begin
-    AMap.Clear;
-    AMap.PutAll(Self);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 procedure TJclIntfHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
@@ -18473,6 +18842,8 @@ var
   I, J: Integer;
   Bucket: TJclIntfBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -18795,6 +19166,8 @@ var
   I: Integer;
   Bucket: TJclIntfBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -18822,6 +19195,8 @@ var
   It: IJclIntfIterator;
   Key: IInterface;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -18847,6 +19222,8 @@ var
   Bucket: TJclIntfBucket;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -18895,6 +19272,8 @@ var
   Bucket: TJclIntfBucket;
   I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -18928,6 +19307,8 @@ end;
 
 procedure TJclIntfHashMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -18986,7 +19367,7 @@ end;
 
 constructor TJclAnsiStrHashMap.Create(ACapacity: Integer; AOwnsValues: Boolean);
 begin
-  inherited Create(nil);
+  inherited Create;
   FOwnsValues := AOwnsValues;
   SetCapacity(ACapacity);
   FHashFunction := HashMul;
@@ -18994,6 +19375,7 @@ end;
 
 destructor TJclAnsiStrHashMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -19005,14 +19387,14 @@ var
   ADest: TJclAnsiStrHashMap;
   AMap: IJclAnsiStrMap;
 begin
-  inherited AssignDataTo(Dest);
-  if Dest is TJclAnsiStrHashMap then
-  begin
-    ADest := TJclAnsiStrHashMap(Dest);
-    {$IFDEF THREADSAFE}
-    ReadLock;
-    try
-    {$ENDIF THREADSAFE}
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    inherited AssignDataTo(Dest);
+    if Dest is TJclAnsiStrHashMap then
+    begin
+      ADest := TJclAnsiStrHashMap(Dest);
       ADest.Clear;
       for I := 0 to FCapacity - 1 do
       begin
@@ -19030,18 +19412,18 @@ begin
           ADest.FBuckets[I] := NewBucket;
         end;
       end;
-    {$IFDEF THREADSAFE}
-    finally
-      ReadUnlock;
+    end
+    else
+    if Supports(IInterface(Dest), IJclAnsiStrMap, AMap) then
+    begin
+      AMap.Clear;
+      AMap.PutAll(Self);
     end;
-    {$ENDIF THREADSAFE}
-  end
-  else
-  if Supports(IInterface(Dest), IJclAnsiStrMap, AMap) then
-  begin
-    AMap.Clear;
-    AMap.PutAll(Self);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 procedure TJclAnsiStrHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
@@ -19056,6 +19438,8 @@ var
   I, J: Integer;
   Bucket: TJclAnsiStrBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -19374,6 +19758,8 @@ var
   I: Integer;
   Bucket: TJclAnsiStrBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -19401,6 +19787,8 @@ var
   It: IJclAnsiStrIterator;
   Key: AnsiString;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -19426,6 +19814,8 @@ var
   Bucket: TJclAnsiStrBucket;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -19474,6 +19864,8 @@ var
   Bucket: TJclAnsiStrBucket;
   I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -19507,6 +19899,8 @@ end;
 
 procedure TJclAnsiStrHashMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -19565,7 +19959,7 @@ end;
 
 constructor TJclWideStrHashMap.Create(ACapacity: Integer; AOwnsValues: Boolean);
 begin
-  inherited Create(nil);
+  inherited Create;
   FOwnsValues := AOwnsValues;
   SetCapacity(ACapacity);
   FHashFunction := HashMul;
@@ -19573,6 +19967,7 @@ end;
 
 destructor TJclWideStrHashMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -19584,14 +19979,14 @@ var
   ADest: TJclWideStrHashMap;
   AMap: IJclWideStrMap;
 begin
-  inherited AssignDataTo(Dest);
-  if Dest is TJclWideStrHashMap then
-  begin
-    ADest := TJclWideStrHashMap(Dest);
-    {$IFDEF THREADSAFE}
-    ReadLock;
-    try
-    {$ENDIF THREADSAFE}
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    inherited AssignDataTo(Dest);
+    if Dest is TJclWideStrHashMap then
+    begin
+      ADest := TJclWideStrHashMap(Dest);
       ADest.Clear;
       for I := 0 to FCapacity - 1 do
       begin
@@ -19609,18 +20004,18 @@ begin
           ADest.FBuckets[I] := NewBucket;
         end;
       end;
-    {$IFDEF THREADSAFE}
-    finally
-      ReadUnlock;
+    end
+    else
+    if Supports(IInterface(Dest), IJclWideStrMap, AMap) then
+    begin
+      AMap.Clear;
+      AMap.PutAll(Self);
     end;
-    {$ENDIF THREADSAFE}
-  end
-  else
-  if Supports(IInterface(Dest), IJclWideStrMap, AMap) then
-  begin
-    AMap.Clear;
-    AMap.PutAll(Self);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 procedure TJclWideStrHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
@@ -19635,6 +20030,8 @@ var
   I, J: Integer;
   Bucket: TJclWideStrBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -19953,6 +20350,8 @@ var
   I: Integer;
   Bucket: TJclWideStrBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -19980,6 +20379,8 @@ var
   It: IJclWideStrIterator;
   Key: WideString;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -20005,6 +20406,8 @@ var
   Bucket: TJclWideStrBucket;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -20053,6 +20456,8 @@ var
   Bucket: TJclWideStrBucket;
   I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -20086,6 +20491,8 @@ end;
 
 procedure TJclWideStrHashMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -20144,7 +20551,7 @@ end;
 
 constructor TJclSingleHashMap.Create(ACapacity: Integer; AOwnsValues: Boolean);
 begin
-  inherited Create(nil);
+  inherited Create;
   FOwnsValues := AOwnsValues;
   SetCapacity(ACapacity);
   FHashFunction := HashMul;
@@ -20152,6 +20559,7 @@ end;
 
 destructor TJclSingleHashMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -20163,14 +20571,14 @@ var
   ADest: TJclSingleHashMap;
   AMap: IJclSingleMap;
 begin
-  inherited AssignDataTo(Dest);
-  if Dest is TJclSingleHashMap then
-  begin
-    ADest := TJclSingleHashMap(Dest);
-    {$IFDEF THREADSAFE}
-    ReadLock;
-    try
-    {$ENDIF THREADSAFE}
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    inherited AssignDataTo(Dest);
+    if Dest is TJclSingleHashMap then
+    begin
+      ADest := TJclSingleHashMap(Dest);
       ADest.Clear;
       for I := 0 to FCapacity - 1 do
       begin
@@ -20188,18 +20596,18 @@ begin
           ADest.FBuckets[I] := NewBucket;
         end;
       end;
-    {$IFDEF THREADSAFE}
-    finally
-      ReadUnlock;
+    end
+    else
+    if Supports(IInterface(Dest), IJclSingleMap, AMap) then
+    begin
+      AMap.Clear;
+      AMap.PutAll(Self);
     end;
-    {$ENDIF THREADSAFE}
-  end
-  else
-  if Supports(IInterface(Dest), IJclSingleMap, AMap) then
-  begin
-    AMap.Clear;
-    AMap.PutAll(Self);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 procedure TJclSingleHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
@@ -20214,6 +20622,8 @@ var
   I, J: Integer;
   Bucket: TJclSingleBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -20532,6 +20942,8 @@ var
   I: Integer;
   Bucket: TJclSingleBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -20559,6 +20971,8 @@ var
   It: IJclSingleIterator;
   Key: Single;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -20584,6 +20998,8 @@ var
   Bucket: TJclSingleBucket;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -20632,6 +21048,8 @@ var
   Bucket: TJclSingleBucket;
   I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -20665,6 +21083,8 @@ end;
 
 procedure TJclSingleHashMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -20723,7 +21143,7 @@ end;
 
 constructor TJclDoubleHashMap.Create(ACapacity: Integer; AOwnsValues: Boolean);
 begin
-  inherited Create(nil);
+  inherited Create;
   FOwnsValues := AOwnsValues;
   SetCapacity(ACapacity);
   FHashFunction := HashMul;
@@ -20731,6 +21151,7 @@ end;
 
 destructor TJclDoubleHashMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -20742,14 +21163,14 @@ var
   ADest: TJclDoubleHashMap;
   AMap: IJclDoubleMap;
 begin
-  inherited AssignDataTo(Dest);
-  if Dest is TJclDoubleHashMap then
-  begin
-    ADest := TJclDoubleHashMap(Dest);
-    {$IFDEF THREADSAFE}
-    ReadLock;
-    try
-    {$ENDIF THREADSAFE}
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    inherited AssignDataTo(Dest);
+    if Dest is TJclDoubleHashMap then
+    begin
+      ADest := TJclDoubleHashMap(Dest);
       ADest.Clear;
       for I := 0 to FCapacity - 1 do
       begin
@@ -20767,18 +21188,18 @@ begin
           ADest.FBuckets[I] := NewBucket;
         end;
       end;
-    {$IFDEF THREADSAFE}
-    finally
-      ReadUnlock;
+    end
+    else
+    if Supports(IInterface(Dest), IJclDoubleMap, AMap) then
+    begin
+      AMap.Clear;
+      AMap.PutAll(Self);
     end;
-    {$ENDIF THREADSAFE}
-  end
-  else
-  if Supports(IInterface(Dest), IJclDoubleMap, AMap) then
-  begin
-    AMap.Clear;
-    AMap.PutAll(Self);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 procedure TJclDoubleHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
@@ -20793,6 +21214,8 @@ var
   I, J: Integer;
   Bucket: TJclDoubleBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -21111,6 +21534,8 @@ var
   I: Integer;
   Bucket: TJclDoubleBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -21138,6 +21563,8 @@ var
   It: IJclDoubleIterator;
   Key: Double;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -21163,6 +21590,8 @@ var
   Bucket: TJclDoubleBucket;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -21211,6 +21640,8 @@ var
   Bucket: TJclDoubleBucket;
   I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -21244,6 +21675,8 @@ end;
 
 procedure TJclDoubleHashMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -21302,7 +21735,7 @@ end;
 
 constructor TJclExtendedHashMap.Create(ACapacity: Integer; AOwnsValues: Boolean);
 begin
-  inherited Create(nil);
+  inherited Create;
   FOwnsValues := AOwnsValues;
   SetCapacity(ACapacity);
   FHashFunction := HashMul;
@@ -21310,6 +21743,7 @@ end;
 
 destructor TJclExtendedHashMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -21321,14 +21755,14 @@ var
   ADest: TJclExtendedHashMap;
   AMap: IJclExtendedMap;
 begin
-  inherited AssignDataTo(Dest);
-  if Dest is TJclExtendedHashMap then
-  begin
-    ADest := TJclExtendedHashMap(Dest);
-    {$IFDEF THREADSAFE}
-    ReadLock;
-    try
-    {$ENDIF THREADSAFE}
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    inherited AssignDataTo(Dest);
+    if Dest is TJclExtendedHashMap then
+    begin
+      ADest := TJclExtendedHashMap(Dest);
       ADest.Clear;
       for I := 0 to FCapacity - 1 do
       begin
@@ -21346,18 +21780,18 @@ begin
           ADest.FBuckets[I] := NewBucket;
         end;
       end;
-    {$IFDEF THREADSAFE}
-    finally
-      ReadUnlock;
+    end
+    else
+    if Supports(IInterface(Dest), IJclExtendedMap, AMap) then
+    begin
+      AMap.Clear;
+      AMap.PutAll(Self);
     end;
-    {$ENDIF THREADSAFE}
-  end
-  else
-  if Supports(IInterface(Dest), IJclExtendedMap, AMap) then
-  begin
-    AMap.Clear;
-    AMap.PutAll(Self);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 procedure TJclExtendedHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
@@ -21372,6 +21806,8 @@ var
   I, J: Integer;
   Bucket: TJclExtendedBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -21690,6 +22126,8 @@ var
   I: Integer;
   Bucket: TJclExtendedBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -21717,6 +22155,8 @@ var
   It: IJclExtendedIterator;
   Key: Extended;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -21742,6 +22182,8 @@ var
   Bucket: TJclExtendedBucket;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -21790,6 +22232,8 @@ var
   Bucket: TJclExtendedBucket;
   I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -21823,6 +22267,8 @@ end;
 
 procedure TJclExtendedHashMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -21881,7 +22327,7 @@ end;
 
 constructor TJclIntegerHashMap.Create(ACapacity: Integer; AOwnsValues: Boolean);
 begin
-  inherited Create(nil);
+  inherited Create;
   FOwnsValues := AOwnsValues;
   SetCapacity(ACapacity);
   FHashFunction := HashMul;
@@ -21889,6 +22335,7 @@ end;
 
 destructor TJclIntegerHashMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -21900,14 +22347,14 @@ var
   ADest: TJclIntegerHashMap;
   AMap: IJclIntegerMap;
 begin
-  inherited AssignDataTo(Dest);
-  if Dest is TJclIntegerHashMap then
-  begin
-    ADest := TJclIntegerHashMap(Dest);
-    {$IFDEF THREADSAFE}
-    ReadLock;
-    try
-    {$ENDIF THREADSAFE}
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    inherited AssignDataTo(Dest);
+    if Dest is TJclIntegerHashMap then
+    begin
+      ADest := TJclIntegerHashMap(Dest);
       ADest.Clear;
       for I := 0 to FCapacity - 1 do
       begin
@@ -21925,18 +22372,18 @@ begin
           ADest.FBuckets[I] := NewBucket;
         end;
       end;
-    {$IFDEF THREADSAFE}
-    finally
-      ReadUnlock;
+    end
+    else
+    if Supports(IInterface(Dest), IJclIntegerMap, AMap) then
+    begin
+      AMap.Clear;
+      AMap.PutAll(Self);
     end;
-    {$ENDIF THREADSAFE}
-  end
-  else
-  if Supports(IInterface(Dest), IJclIntegerMap, AMap) then
-  begin
-    AMap.Clear;
-    AMap.PutAll(Self);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 procedure TJclIntegerHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
@@ -21951,6 +22398,8 @@ var
   I, J: Integer;
   Bucket: TJclIntegerBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -22269,6 +22718,8 @@ var
   I: Integer;
   Bucket: TJclIntegerBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -22296,6 +22747,8 @@ var
   It: IJclIntegerIterator;
   Key: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -22321,6 +22774,8 @@ var
   Bucket: TJclIntegerBucket;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -22369,6 +22824,8 @@ var
   Bucket: TJclIntegerBucket;
   I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -22402,6 +22859,8 @@ end;
 
 procedure TJclIntegerHashMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -22460,7 +22919,7 @@ end;
 
 constructor TJclCardinalHashMap.Create(ACapacity: Integer; AOwnsValues: Boolean);
 begin
-  inherited Create(nil);
+  inherited Create;
   FOwnsValues := AOwnsValues;
   SetCapacity(ACapacity);
   FHashFunction := HashMul;
@@ -22468,6 +22927,7 @@ end;
 
 destructor TJclCardinalHashMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -22479,14 +22939,14 @@ var
   ADest: TJclCardinalHashMap;
   AMap: IJclCardinalMap;
 begin
-  inherited AssignDataTo(Dest);
-  if Dest is TJclCardinalHashMap then
-  begin
-    ADest := TJclCardinalHashMap(Dest);
-    {$IFDEF THREADSAFE}
-    ReadLock;
-    try
-    {$ENDIF THREADSAFE}
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    inherited AssignDataTo(Dest);
+    if Dest is TJclCardinalHashMap then
+    begin
+      ADest := TJclCardinalHashMap(Dest);
       ADest.Clear;
       for I := 0 to FCapacity - 1 do
       begin
@@ -22504,18 +22964,18 @@ begin
           ADest.FBuckets[I] := NewBucket;
         end;
       end;
-    {$IFDEF THREADSAFE}
-    finally
-      ReadUnlock;
+    end
+    else
+    if Supports(IInterface(Dest), IJclCardinalMap, AMap) then
+    begin
+      AMap.Clear;
+      AMap.PutAll(Self);
     end;
-    {$ENDIF THREADSAFE}
-  end
-  else
-  if Supports(IInterface(Dest), IJclCardinalMap, AMap) then
-  begin
-    AMap.Clear;
-    AMap.PutAll(Self);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 procedure TJclCardinalHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
@@ -22530,6 +22990,8 @@ var
   I, J: Integer;
   Bucket: TJclCardinalBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -22848,6 +23310,8 @@ var
   I: Integer;
   Bucket: TJclCardinalBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -22875,6 +23339,8 @@ var
   It: IJclCardinalIterator;
   Key: Cardinal;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -22900,6 +23366,8 @@ var
   Bucket: TJclCardinalBucket;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -22948,6 +23416,8 @@ var
   Bucket: TJclCardinalBucket;
   I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -22981,6 +23451,8 @@ end;
 
 procedure TJclCardinalHashMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -23039,7 +23511,7 @@ end;
 
 constructor TJclInt64HashMap.Create(ACapacity: Integer; AOwnsValues: Boolean);
 begin
-  inherited Create(nil);
+  inherited Create;
   FOwnsValues := AOwnsValues;
   SetCapacity(ACapacity);
   FHashFunction := HashMul;
@@ -23047,6 +23519,7 @@ end;
 
 destructor TJclInt64HashMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -23058,14 +23531,14 @@ var
   ADest: TJclInt64HashMap;
   AMap: IJclInt64Map;
 begin
-  inherited AssignDataTo(Dest);
-  if Dest is TJclInt64HashMap then
-  begin
-    ADest := TJclInt64HashMap(Dest);
-    {$IFDEF THREADSAFE}
-    ReadLock;
-    try
-    {$ENDIF THREADSAFE}
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    inherited AssignDataTo(Dest);
+    if Dest is TJclInt64HashMap then
+    begin
+      ADest := TJclInt64HashMap(Dest);
       ADest.Clear;
       for I := 0 to FCapacity - 1 do
       begin
@@ -23083,18 +23556,18 @@ begin
           ADest.FBuckets[I] := NewBucket;
         end;
       end;
-    {$IFDEF THREADSAFE}
-    finally
-      ReadUnlock;
+    end
+    else
+    if Supports(IInterface(Dest), IJclInt64Map, AMap) then
+    begin
+      AMap.Clear;
+      AMap.PutAll(Self);
     end;
-    {$ENDIF THREADSAFE}
-  end
-  else
-  if Supports(IInterface(Dest), IJclInt64Map, AMap) then
-  begin
-    AMap.Clear;
-    AMap.PutAll(Self);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 procedure TJclInt64HashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
@@ -23109,6 +23582,8 @@ var
   I, J: Integer;
   Bucket: TJclInt64Bucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -23427,6 +23902,8 @@ var
   I: Integer;
   Bucket: TJclInt64Bucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -23454,6 +23931,8 @@ var
   It: IJclInt64Iterator;
   Key: Int64;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -23479,6 +23958,8 @@ var
   Bucket: TJclInt64Bucket;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -23527,6 +24008,8 @@ var
   Bucket: TJclInt64Bucket;
   I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -23560,6 +24043,8 @@ end;
 
 procedure TJclInt64HashMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -23619,7 +24104,7 @@ end;
 
 constructor TJclPtrHashMap.Create(ACapacity: Integer; AOwnsValues: Boolean);
 begin
-  inherited Create(nil);
+  inherited Create;
   FOwnsValues := AOwnsValues;
   SetCapacity(ACapacity);
   FHashFunction := HashMul;
@@ -23627,6 +24112,7 @@ end;
 
 destructor TJclPtrHashMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -23638,14 +24124,14 @@ var
   ADest: TJclPtrHashMap;
   AMap: IJclPtrMap;
 begin
-  inherited AssignDataTo(Dest);
-  if Dest is TJclPtrHashMap then
-  begin
-    ADest := TJclPtrHashMap(Dest);
-    {$IFDEF THREADSAFE}
-    ReadLock;
-    try
-    {$ENDIF THREADSAFE}
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    inherited AssignDataTo(Dest);
+    if Dest is TJclPtrHashMap then
+    begin
+      ADest := TJclPtrHashMap(Dest);
       ADest.Clear;
       for I := 0 to FCapacity - 1 do
       begin
@@ -23663,18 +24149,18 @@ begin
           ADest.FBuckets[I] := NewBucket;
         end;
       end;
-    {$IFDEF THREADSAFE}
-    finally
-      ReadUnlock;
+    end
+    else
+    if Supports(IInterface(Dest), IJclPtrMap, AMap) then
+    begin
+      AMap.Clear;
+      AMap.PutAll(Self);
     end;
-    {$ENDIF THREADSAFE}
-  end
-  else
-  if Supports(IInterface(Dest), IJclPtrMap, AMap) then
-  begin
-    AMap.Clear;
-    AMap.PutAll(Self);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 procedure TJclPtrHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
@@ -23689,6 +24175,8 @@ var
   I, J: Integer;
   Bucket: TJclPtrBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -24007,6 +24495,8 @@ var
   I: Integer;
   Bucket: TJclPtrBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -24034,6 +24524,8 @@ var
   It: IJclPtrIterator;
   Key: Pointer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -24059,6 +24551,8 @@ var
   Bucket: TJclPtrBucket;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -24107,6 +24601,8 @@ var
   Bucket: TJclPtrBucket;
   I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -24140,6 +24636,8 @@ end;
 
 procedure TJclPtrHashMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -24199,7 +24697,7 @@ end;
 
 constructor TJclHashMap.Create(ACapacity: Integer; AOwnsValues: Boolean; AOwnsKeys: Boolean);
 begin
-  inherited Create(nil);
+  inherited Create;
   FOwnsKeys := AOwnsKeys;
   FOwnsValues := AOwnsValues;
   SetCapacity(ACapacity);
@@ -24208,6 +24706,7 @@ end;
 
 destructor TJclHashMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -24219,14 +24718,14 @@ var
   ADest: TJclHashMap;
   AMap: IJclMap;
 begin
-  inherited AssignDataTo(Dest);
-  if Dest is TJclHashMap then
-  begin
-    ADest := TJclHashMap(Dest);
-    {$IFDEF THREADSAFE}
-    ReadLock;
-    try
-    {$ENDIF THREADSAFE}
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    inherited AssignDataTo(Dest);
+    if Dest is TJclHashMap then
+    begin
+      ADest := TJclHashMap(Dest);
       ADest.Clear;
       for I := 0 to FCapacity - 1 do
       begin
@@ -24244,18 +24743,18 @@ begin
           ADest.FBuckets[I] := NewBucket;
         end;
       end;
-    {$IFDEF THREADSAFE}
-    finally
-      ReadUnlock;
+    end
+    else
+    if Supports(IInterface(Dest), IJclMap, AMap) then
+    begin
+      AMap.Clear;
+      AMap.PutAll(Self);
     end;
-    {$ENDIF THREADSAFE}
-  end
-  else
-  if Supports(IInterface(Dest), IJclMap, AMap) then
-  begin
-    AMap.Clear;
-    AMap.PutAll(Self);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 procedure TJclHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
@@ -24270,6 +24769,8 @@ var
   I, J: Integer;
   Bucket: TJclBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -24604,6 +25105,8 @@ var
   I: Integer;
   Bucket: TJclBucket;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -24631,6 +25134,8 @@ var
   It: IJclIterator;
   Key: TObject;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -24656,6 +25161,8 @@ var
   Bucket: TJclBucket;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -24704,6 +25211,8 @@ var
   Bucket: TJclBucket;
   I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -24737,6 +25246,8 @@ end;
 
 procedure TJclHashMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -24797,7 +25308,7 @@ end;
 
 constructor TJclHashMap<TKey, TValue>.Create(ACapacity: Integer; AOwnsValues: Boolean; AOwnsKeys: Boolean);
 begin
-  inherited Create(nil);
+  inherited Create;
   FOwnsKeys := AOwnsKeys;
   FOwnsValues := AOwnsValues;
   SetCapacity(ACapacity);
@@ -24806,6 +25317,7 @@ end;
 
 destructor TJclHashMap<TKey, TValue>.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -24817,14 +25329,14 @@ var
   ADest: TJclHashMap<TKey, TValue>;
   AMap: IJclMap<TKey, TValue>;
 begin
-  inherited AssignDataTo(Dest);
-  if Dest is TJclHashMap<TKey, TValue> then
-  begin
-    ADest := TJclHashMap<TKey, TValue>(Dest);
-    {$IFDEF THREADSAFE}
-    ReadLock;
-    try
-    {$ENDIF THREADSAFE}
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    inherited AssignDataTo(Dest);
+    if Dest is TJclHashMap<TKey, TValue> then
+    begin
+      ADest := TJclHashMap<TKey, TValue>(Dest);
       ADest.Clear;
       for I := 0 to FCapacity - 1 do
       begin
@@ -24842,18 +25354,18 @@ begin
           ADest.FBuckets[I] := NewBucket;
         end;
       end;
-    {$IFDEF THREADSAFE}
-    finally
-      ReadUnlock;
+    end
+    else
+    if Supports(IInterface(Dest), IJclMap<TKey, TValue>, AMap) then
+    begin
+      AMap.Clear;
+      AMap.PutAll(Self);
     end;
-    {$ENDIF THREADSAFE}
-  end
-  else
-  if Supports(IInterface(Dest), IJclMap<TKey, TValue>, AMap) then
-  begin
-    AMap.Clear;
-    AMap.PutAll(Self);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 procedure TJclHashMap<TKey, TValue>.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
@@ -24868,6 +25380,8 @@ var
   I, J: Integer;
   Bucket: TJclBucket<TKey, TValue>;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -25189,6 +25703,8 @@ var
   I: Integer;
   Bucket: TJclBucket<TKey, TValue>;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -25216,6 +25732,8 @@ var
   It: IJclIterator<TKey>;
   Key: TKey;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -25241,6 +25759,8 @@ var
   Bucket: TJclBucket<TKey, TValue>;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -25289,6 +25809,8 @@ var
   Bucket: TJclBucket<TKey, TValue>;
   I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -25322,6 +25844,8 @@ end;
 
 procedure TJclHashMap<TKey, TValue>.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try

@@ -81,12 +81,16 @@ type
     { IJclContainer }
     function GetAllowDefaultElements: Boolean; override;
     function GetDuplicates: TDuplicates; override;
+    function GetReadOnly: Boolean; override;
     function GetRemoveSingleElement: Boolean; override;
     function GetReturnDefaultElements: Boolean; override;
+    function GetThreadSafe: Boolean; override;
     procedure SetAllowDefaultElements(Value: Boolean); override;
     procedure SetDuplicates(Value: TDuplicates); override;
+    procedure SetReadOnly(Value: Boolean); override;
     procedure SetRemoveSingleElement(Value: Boolean); override;
     procedure SetReturnDefaultElements(Value: Boolean); override;
+    procedure SetThreadSafe(Value: Boolean); override;
     { IJclIntfCollection }
     function Add(const AInterface: IInterface): Boolean;
     function AddAll(const ACollection: IJclIntfCollection): Boolean;
@@ -136,12 +140,16 @@ type
     { IJclContainer }
     function GetAllowDefaultElements: Boolean; override;
     function GetDuplicates: TDuplicates; override;
+    function GetReadOnly: Boolean; override;
     function GetRemoveSingleElement: Boolean; override;
     function GetReturnDefaultElements: Boolean; override;
+    function GetThreadSafe: Boolean; override;
     procedure SetAllowDefaultElements(Value: Boolean); override;
     procedure SetDuplicates(Value: TDuplicates); override;
+    procedure SetReadOnly(Value: Boolean); override;
     procedure SetRemoveSingleElement(Value: Boolean); override;
     procedure SetReturnDefaultElements(Value: Boolean); override;
+    procedure SetThreadSafe(Value: Boolean); override;
     { IJclAnsiStrCollection }
     function Add(const AString: AnsiString): Boolean; override;
     function AddAll(const ACollection: IJclAnsiStrCollection): Boolean; override;
@@ -197,12 +205,16 @@ type
     { IJclContainer }
     function GetAllowDefaultElements: Boolean; override;
     function GetDuplicates: TDuplicates; override;
+    function GetReadOnly: Boolean; override;
     function GetRemoveSingleElement: Boolean; override;
     function GetReturnDefaultElements: Boolean; override;
+    function GetThreadSafe: Boolean; override;
     procedure SetAllowDefaultElements(Value: Boolean); override;
     procedure SetDuplicates(Value: TDuplicates); override;
+    procedure SetReadOnly(Value: Boolean); override;
     procedure SetRemoveSingleElement(Value: Boolean); override;
     procedure SetReturnDefaultElements(Value: Boolean); override;
+    procedure SetThreadSafe(Value: Boolean); override;
     { IJclWideStrCollection }
     function Add(const AString: WideString): Boolean; override;
     function AddAll(const ACollection: IJclWideStrCollection): Boolean; override;
@@ -265,12 +277,16 @@ type
     { IJclContainer }
     function GetAllowDefaultElements: Boolean; override;
     function GetDuplicates: TDuplicates; override;
+    function GetReadOnly: Boolean; override;
     function GetRemoveSingleElement: Boolean; override;
     function GetReturnDefaultElements: Boolean; override;
+    function GetThreadSafe: Boolean; override;
     procedure SetAllowDefaultElements(Value: Boolean); override;
     procedure SetDuplicates(Value: TDuplicates); override;
+    procedure SetReadOnly(Value: Boolean); override;
     procedure SetRemoveSingleElement(Value: Boolean); override;
     procedure SetReturnDefaultElements(Value: Boolean); override;
+    procedure SetThreadSafe(Value: Boolean); override;
     { IJclSingleCollection }
     function Add(const AValue: Single): Boolean;
     function AddAll(const ACollection: IJclSingleCollection): Boolean;
@@ -323,12 +339,16 @@ type
     { IJclContainer }
     function GetAllowDefaultElements: Boolean; override;
     function GetDuplicates: TDuplicates; override;
+    function GetReadOnly: Boolean; override;
     function GetRemoveSingleElement: Boolean; override;
     function GetReturnDefaultElements: Boolean; override;
+    function GetThreadSafe: Boolean; override;
     procedure SetAllowDefaultElements(Value: Boolean); override;
     procedure SetDuplicates(Value: TDuplicates); override;
+    procedure SetReadOnly(Value: Boolean); override;
     procedure SetRemoveSingleElement(Value: Boolean); override;
     procedure SetReturnDefaultElements(Value: Boolean); override;
+    procedure SetThreadSafe(Value: Boolean); override;
     { IJclDoubleCollection }
     function Add(const AValue: Double): Boolean;
     function AddAll(const ACollection: IJclDoubleCollection): Boolean;
@@ -381,12 +401,16 @@ type
     { IJclContainer }
     function GetAllowDefaultElements: Boolean; override;
     function GetDuplicates: TDuplicates; override;
+    function GetReadOnly: Boolean; override;
     function GetRemoveSingleElement: Boolean; override;
     function GetReturnDefaultElements: Boolean; override;
+    function GetThreadSafe: Boolean; override;
     procedure SetAllowDefaultElements(Value: Boolean); override;
     procedure SetDuplicates(Value: TDuplicates); override;
+    procedure SetReadOnly(Value: Boolean); override;
     procedure SetRemoveSingleElement(Value: Boolean); override;
     procedure SetReturnDefaultElements(Value: Boolean); override;
+    procedure SetThreadSafe(Value: Boolean); override;
     { IJclExtendedCollection }
     function Add(const AValue: Extended): Boolean;
     function AddAll(const ACollection: IJclExtendedCollection): Boolean;
@@ -449,12 +473,16 @@ type
     { IJclContainer }
     function GetAllowDefaultElements: Boolean; override;
     function GetDuplicates: TDuplicates; override;
+    function GetReadOnly: Boolean; override;
     function GetRemoveSingleElement: Boolean; override;
     function GetReturnDefaultElements: Boolean; override;
+    function GetThreadSafe: Boolean; override;
     procedure SetAllowDefaultElements(Value: Boolean); override;
     procedure SetDuplicates(Value: TDuplicates); override;
+    procedure SetReadOnly(Value: Boolean); override;
     procedure SetRemoveSingleElement(Value: Boolean); override;
     procedure SetReturnDefaultElements(Value: Boolean); override;
+    procedure SetThreadSafe(Value: Boolean); override;
     { IJclIntegerCollection }
     function Add(AValue: Integer): Boolean;
     function AddAll(const ACollection: IJclIntegerCollection): Boolean;
@@ -504,12 +532,16 @@ type
     { IJclContainer }
     function GetAllowDefaultElements: Boolean; override;
     function GetDuplicates: TDuplicates; override;
+    function GetReadOnly: Boolean; override;
     function GetRemoveSingleElement: Boolean; override;
     function GetReturnDefaultElements: Boolean; override;
+    function GetThreadSafe: Boolean; override;
     procedure SetAllowDefaultElements(Value: Boolean); override;
     procedure SetDuplicates(Value: TDuplicates); override;
+    procedure SetReadOnly(Value: Boolean); override;
     procedure SetRemoveSingleElement(Value: Boolean); override;
     procedure SetReturnDefaultElements(Value: Boolean); override;
+    procedure SetThreadSafe(Value: Boolean); override;
     { IJclCardinalCollection }
     function Add(AValue: Cardinal): Boolean;
     function AddAll(const ACollection: IJclCardinalCollection): Boolean;
@@ -559,12 +591,16 @@ type
     { IJclContainer }
     function GetAllowDefaultElements: Boolean; override;
     function GetDuplicates: TDuplicates; override;
+    function GetReadOnly: Boolean; override;
     function GetRemoveSingleElement: Boolean; override;
     function GetReturnDefaultElements: Boolean; override;
+    function GetThreadSafe: Boolean; override;
     procedure SetAllowDefaultElements(Value: Boolean); override;
     procedure SetDuplicates(Value: TDuplicates); override;
+    procedure SetReadOnly(Value: Boolean); override;
     procedure SetRemoveSingleElement(Value: Boolean); override;
     procedure SetReturnDefaultElements(Value: Boolean); override;
+    procedure SetThreadSafe(Value: Boolean); override;
     { IJclInt64Collection }
     function Add(const AValue: Int64): Boolean;
     function AddAll(const ACollection: IJclInt64Collection): Boolean;
@@ -615,12 +651,16 @@ type
     { IJclContainer }
     function GetAllowDefaultElements: Boolean; override;
     function GetDuplicates: TDuplicates; override;
+    function GetReadOnly: Boolean; override;
     function GetRemoveSingleElement: Boolean; override;
     function GetReturnDefaultElements: Boolean; override;
+    function GetThreadSafe: Boolean; override;
     procedure SetAllowDefaultElements(Value: Boolean); override;
     procedure SetDuplicates(Value: TDuplicates); override;
+    procedure SetReadOnly(Value: Boolean); override;
     procedure SetRemoveSingleElement(Value: Boolean); override;
     procedure SetReturnDefaultElements(Value: Boolean); override;
+    procedure SetThreadSafe(Value: Boolean); override;
     { IJclPtrCollection }
     function Add(AValue: Pointer): Boolean;
     function AddAll(const ACollection: IJclPtrCollection): Boolean;
@@ -671,12 +711,16 @@ type
     { IJclContainer }
     function GetAllowDefaultElements: Boolean; override;
     function GetDuplicates: TDuplicates; override;
+    function GetReadOnly: Boolean; override;
     function GetRemoveSingleElement: Boolean; override;
     function GetReturnDefaultElements: Boolean; override;
+    function GetThreadSafe: Boolean; override;
     procedure SetAllowDefaultElements(Value: Boolean); override;
     procedure SetDuplicates(Value: TDuplicates); override;
+    procedure SetReadOnly(Value: Boolean); override;
     procedure SetRemoveSingleElement(Value: Boolean); override;
     procedure SetReturnDefaultElements(Value: Boolean); override;
+    procedure SetThreadSafe(Value: Boolean); override;
     { IJclCollection }
     function Add(AObject: TObject): Boolean;
     function AddAll(const ACollection: IJclCollection): Boolean;
@@ -731,12 +775,16 @@ type
     { IJclContainer }
     function GetAllowDefaultElements: Boolean; override;
     function GetDuplicates: TDuplicates; override;
+    function GetReadOnly: Boolean; override;
     function GetRemoveSingleElement: Boolean; override;
     function GetReturnDefaultElements: Boolean; override;
+    function GetThreadSafe: Boolean; override;
     procedure SetAllowDefaultElements(Value: Boolean); override;
     procedure SetDuplicates(Value: TDuplicates); override;
+    procedure SetReadOnly(Value: Boolean); override;
     procedure SetRemoveSingleElement(Value: Boolean); override;
     procedure SetReturnDefaultElements(Value: Boolean); override;
+    procedure SetThreadSafe(Value: Boolean); override;
     { IJclCollection<T> }
     function Add(const AItem: T): Boolean;
     function AddAll(const ACollection: IJclCollection<T>): Boolean;
@@ -846,7 +894,7 @@ end;
 
 constructor TJclIntfHashSet.Create(const AMap: IJclIntfMap);
 begin
-  inherited Create(AMap);
+  inherited Create();
   FMap := AMap;
 end;
 
@@ -857,15 +905,16 @@ end;
 
 destructor TJclIntfHashSet.Destroy;
 begin
-  Clear;
   FMap := nil;
   inherited Destroy;
 end;
 
 function TJclIntfHashSet.Add(const AInterface: IInterface): Boolean;
 begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := not FMap.ContainsKey(AInterface);
@@ -873,7 +922,7 @@ begin
       FMap.PutValue(AInterface, RefUnique);
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -882,8 +931,10 @@ function TJclIntfHashSet.AddAll(const ACollection: IJclIntfCollection): Boolean;
 var
   It: IJclIntfIterator;
 begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -895,7 +946,7 @@ begin
       Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -922,7 +973,7 @@ var
   It: IJclIntfIterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FMap.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -934,7 +985,7 @@ begin
       Result := FMap.ContainsKey(It.Next);
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FMap.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -950,7 +1001,7 @@ var
   It, ItMap: IJclIntfIterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FMap.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -969,7 +1020,7 @@ begin
       end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FMap.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1011,6 +1062,12 @@ begin
 end;
 {$ENDIF SUPPORTS_FOR_IN}
 
+
+function TJclIntfHashSet.GetReadOnly: Boolean;
+begin
+  Result := FMap.ReadOnly;
+end;
+
 function TJclIntfHashSet.GetRemoveSingleElement: Boolean;
 begin
   Result := FMap.RemoveSingleElement;
@@ -1019,6 +1076,11 @@ end;
 function TJclIntfHashSet.GetReturnDefaultElements: Boolean;
 begin
   Result := FMap.ReturnDefaultElements;
+end;
+
+function TJclIntfHashSet.GetThreadSafe: Boolean;
+begin
+  Result := FMap.ThreadSafe;
 end;
 
 procedure TJclIntfHashSet.Intersect(const ACollection: IJclIntfCollection);
@@ -1051,8 +1113,10 @@ var
   It: IJclIntfIterator;
   ARefUnique: TRefUnique;
 begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -1065,7 +1129,7 @@ begin
       Result := (FMap.Remove(It.Next) = ARefUnique) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1074,8 +1138,10 @@ function TJclIntfHashSet.RetainAll(const ACollection: IJclIntfCollection): Boole
 var
   ItMap: IJclIntfIterator;
 begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -1088,7 +1154,7 @@ begin
         ItMap.Remove;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1118,6 +1184,11 @@ begin
   FMap.Duplicates := Value;
 end;
 
+procedure TJclIntfHashSet.SetReadOnly(Value: Boolean);
+begin
+  FMap.ReadOnly := Value;
+end;
+
 procedure TJclIntfHashSet.SetRemoveSingleElement(Value: Boolean);
 begin
   FMap.RemoveSingleElement := Value;
@@ -1126,6 +1197,11 @@ end;
 procedure TJclIntfHashSet.SetReturnDefaultElements(Value: Boolean);
 begin
   FMap.ReturnDefaultElements := Value;
+end;
+
+procedure TJclIntfHashSet.SetThreadSafe(Value: Boolean);
+begin
+  FMap.ThreadSafe := Value;
 end;
 
 function TJclIntfHashSet.Size: Integer;
@@ -1149,7 +1225,7 @@ end;
 
 constructor TJclAnsiStrHashSet.Create(const AMap: IJclAnsiStrMap);
 begin
-  inherited Create(AMap);
+  inherited Create();
   FMap := AMap;
 end;
 
@@ -1160,15 +1236,16 @@ end;
 
 destructor TJclAnsiStrHashSet.Destroy;
 begin
-  Clear;
   FMap := nil;
   inherited Destroy;
 end;
 
 function TJclAnsiStrHashSet.Add(const AString: AnsiString): Boolean;
 begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := not FMap.ContainsKey(AString);
@@ -1176,7 +1253,7 @@ begin
       FMap.PutValue(AString, RefUnique);
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1185,8 +1262,10 @@ function TJclAnsiStrHashSet.AddAll(const ACollection: IJclAnsiStrCollection): Bo
 var
   It: IJclAnsiStrIterator;
 begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -1198,7 +1277,7 @@ begin
       Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1225,7 +1304,7 @@ var
   It: IJclAnsiStrIterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FMap.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -1237,7 +1316,7 @@ begin
       Result := FMap.ContainsKey(It.Next);
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FMap.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1253,7 +1332,7 @@ var
   It, ItMap: IJclAnsiStrIterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FMap.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -1272,7 +1351,7 @@ begin
       end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FMap.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1314,6 +1393,12 @@ begin
 end;
 {$ENDIF SUPPORTS_FOR_IN}
 
+
+function TJclAnsiStrHashSet.GetReadOnly: Boolean;
+begin
+  Result := FMap.ReadOnly;
+end;
+
 function TJclAnsiStrHashSet.GetRemoveSingleElement: Boolean;
 begin
   Result := FMap.RemoveSingleElement;
@@ -1322,6 +1407,11 @@ end;
 function TJclAnsiStrHashSet.GetReturnDefaultElements: Boolean;
 begin
   Result := FMap.ReturnDefaultElements;
+end;
+
+function TJclAnsiStrHashSet.GetThreadSafe: Boolean;
+begin
+  Result := FMap.ThreadSafe;
 end;
 
 function TJclAnsiStrHashSet.GetCaseSensitive: Boolean;
@@ -1364,8 +1454,10 @@ var
   It: IJclAnsiStrIterator;
   ARefUnique: TRefUnique;
 begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -1378,7 +1470,7 @@ begin
       Result := (FMap.Remove(It.Next) = ARefUnique) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1387,8 +1479,10 @@ function TJclAnsiStrHashSet.RetainAll(const ACollection: IJclAnsiStrCollection):
 var
   ItMap: IJclAnsiStrIterator;
 begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -1401,7 +1495,7 @@ begin
         ItMap.Remove;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1431,6 +1525,11 @@ begin
   FMap.Duplicates := Value;
 end;
 
+procedure TJclAnsiStrHashSet.SetReadOnly(Value: Boolean);
+begin
+  FMap.ReadOnly := Value;
+end;
+
 procedure TJclAnsiStrHashSet.SetRemoveSingleElement(Value: Boolean);
 begin
   FMap.RemoveSingleElement := Value;
@@ -1439,6 +1538,11 @@ end;
 procedure TJclAnsiStrHashSet.SetReturnDefaultElements(Value: Boolean);
 begin
   FMap.ReturnDefaultElements := Value;
+end;
+
+procedure TJclAnsiStrHashSet.SetThreadSafe(Value: Boolean);
+begin
+  FMap.ThreadSafe := Value;
 end;
 
 procedure TJclAnsiStrHashSet.SetCaseSensitive(Value: Boolean);
@@ -1472,7 +1576,7 @@ end;
 
 constructor TJclWideStrHashSet.Create(const AMap: IJclWideStrMap);
 begin
-  inherited Create(AMap);
+  inherited Create();
   FMap := AMap;
 end;
 
@@ -1483,15 +1587,16 @@ end;
 
 destructor TJclWideStrHashSet.Destroy;
 begin
-  Clear;
   FMap := nil;
   inherited Destroy;
 end;
 
 function TJclWideStrHashSet.Add(const AString: WideString): Boolean;
 begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := not FMap.ContainsKey(AString);
@@ -1499,7 +1604,7 @@ begin
       FMap.PutValue(AString, RefUnique);
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1508,8 +1613,10 @@ function TJclWideStrHashSet.AddAll(const ACollection: IJclWideStrCollection): Bo
 var
   It: IJclWideStrIterator;
 begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -1521,7 +1628,7 @@ begin
       Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1548,7 +1655,7 @@ var
   It: IJclWideStrIterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FMap.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -1560,7 +1667,7 @@ begin
       Result := FMap.ContainsKey(It.Next);
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FMap.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1576,7 +1683,7 @@ var
   It, ItMap: IJclWideStrIterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FMap.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -1595,7 +1702,7 @@ begin
       end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FMap.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1639,6 +1746,12 @@ end;
 {$ENDIF SUPPORTS_FOR_IN}
 
 
+
+function TJclWideStrHashSet.GetReadOnly: Boolean;
+begin
+  Result := FMap.ReadOnly;
+end;
+
 function TJclWideStrHashSet.GetRemoveSingleElement: Boolean;
 begin
   Result := FMap.RemoveSingleElement;
@@ -1647,6 +1760,11 @@ end;
 function TJclWideStrHashSet.GetReturnDefaultElements: Boolean;
 begin
   Result := FMap.ReturnDefaultElements;
+end;
+
+function TJclWideStrHashSet.GetThreadSafe: Boolean;
+begin
+  Result := FMap.ThreadSafe;
 end;
 
 function TJclWideStrHashSet.GetCaseSensitive: Boolean;
@@ -1689,8 +1807,10 @@ var
   It: IJclWideStrIterator;
   ARefUnique: TRefUnique;
 begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -1703,7 +1823,7 @@ begin
       Result := (FMap.Remove(It.Next) = ARefUnique) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1712,8 +1832,10 @@ function TJclWideStrHashSet.RetainAll(const ACollection: IJclWideStrCollection):
 var
   ItMap: IJclWideStrIterator;
 begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -1726,7 +1848,7 @@ begin
         ItMap.Remove;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1756,6 +1878,11 @@ begin
   FMap.Duplicates := Value;
 end;
 
+procedure TJclWideStrHashSet.SetReadOnly(Value: Boolean);
+begin
+  FMap.ReadOnly := Value;
+end;
+
 procedure TJclWideStrHashSet.SetRemoveSingleElement(Value: Boolean);
 begin
   FMap.RemoveSingleElement := Value;
@@ -1764,6 +1891,11 @@ end;
 procedure TJclWideStrHashSet.SetReturnDefaultElements(Value: Boolean);
 begin
   FMap.ReturnDefaultElements := Value;
+end;
+
+procedure TJclWideStrHashSet.SetThreadSafe(Value: Boolean);
+begin
+  FMap.ThreadSafe := Value;
 end;
 
 procedure TJclWideStrHashSet.SetCaseSensitive(Value: Boolean);
@@ -1797,7 +1929,7 @@ end;
 
 constructor TJclSingleHashSet.Create(const AMap: IJclSingleMap);
 begin
-  inherited Create(AMap);
+  inherited Create();
   FMap := AMap;
 end;
 
@@ -1808,15 +1940,16 @@ end;
 
 destructor TJclSingleHashSet.Destroy;
 begin
-  Clear;
   FMap := nil;
   inherited Destroy;
 end;
 
 function TJclSingleHashSet.Add(const AValue: Single): Boolean;
 begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := not FMap.ContainsKey(AValue);
@@ -1824,7 +1957,7 @@ begin
       FMap.PutValue(AValue, RefUnique);
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1833,8 +1966,10 @@ function TJclSingleHashSet.AddAll(const ACollection: IJclSingleCollection): Bool
 var
   It: IJclSingleIterator;
 begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -1846,7 +1981,7 @@ begin
       Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1873,7 +2008,7 @@ var
   It: IJclSingleIterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FMap.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -1885,7 +2020,7 @@ begin
       Result := FMap.ContainsKey(It.Next);
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FMap.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1901,7 +2036,7 @@ var
   It, ItMap: IJclSingleIterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FMap.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -1920,7 +2055,7 @@ begin
       end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FMap.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1929,6 +2064,7 @@ function TJclSingleHashSet.First: IJclSingleIterator;
 begin
   Result := FMap.KeySet.First;
 end;
+
 
 function TJclSingleHashSet.GetAutoPackParameter: Integer;
 begin
@@ -1962,6 +2098,13 @@ begin
 end;
 {$ENDIF SUPPORTS_FOR_IN}
 
+
+
+function TJclSingleHashSet.GetReadOnly: Boolean;
+begin
+  Result := FMap.ReadOnly;
+end;
+
 function TJclSingleHashSet.GetRemoveSingleElement: Boolean;
 begin
   Result := FMap.RemoveSingleElement;
@@ -1970,6 +2113,11 @@ end;
 function TJclSingleHashSet.GetReturnDefaultElements: Boolean;
 begin
   Result := FMap.ReturnDefaultElements;
+end;
+
+function TJclSingleHashSet.GetThreadSafe: Boolean;
+begin
+  Result := FMap.ThreadSafe;
 end;
 
 function TJclSingleHashSet.GetPrecision: Single;
@@ -2007,8 +2155,10 @@ var
   It: IJclSingleIterator;
   ARefUnique: TRefUnique;
 begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -2021,7 +2171,7 @@ begin
       Result := (FMap.Remove(It.Next) = ARefUnique) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2030,8 +2180,10 @@ function TJclSingleHashSet.RetainAll(const ACollection: IJclSingleCollection): B
 var
   ItMap: IJclSingleIterator;
 begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -2044,7 +2196,7 @@ begin
         ItMap.Remove;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2074,6 +2226,11 @@ begin
   FMap.Duplicates := Value;
 end;
 
+procedure TJclSingleHashSet.SetReadOnly(Value: Boolean);
+begin
+  FMap.ReadOnly := Value;
+end;
+
 procedure TJclSingleHashSet.SetRemoveSingleElement(Value: Boolean);
 begin
   FMap.RemoveSingleElement := Value;
@@ -2082,6 +2239,11 @@ end;
 procedure TJclSingleHashSet.SetReturnDefaultElements(Value: Boolean);
 begin
   FMap.ReturnDefaultElements := Value;
+end;
+
+procedure TJclSingleHashSet.SetThreadSafe(Value: Boolean);
+begin
+  FMap.ThreadSafe := Value;
 end;
 
 procedure TJclSingleHashSet.SetPrecision(const Value: Single);
@@ -2110,7 +2272,7 @@ end;
 
 constructor TJclDoubleHashSet.Create(const AMap: IJclDoubleMap);
 begin
-  inherited Create(AMap);
+  inherited Create();
   FMap := AMap;
 end;
 
@@ -2121,15 +2283,16 @@ end;
 
 destructor TJclDoubleHashSet.Destroy;
 begin
-  Clear;
   FMap := nil;
   inherited Destroy;
 end;
 
 function TJclDoubleHashSet.Add(const AValue: Double): Boolean;
 begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := not FMap.ContainsKey(AValue);
@@ -2137,7 +2300,7 @@ begin
       FMap.PutValue(AValue, RefUnique);
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2146,8 +2309,10 @@ function TJclDoubleHashSet.AddAll(const ACollection: IJclDoubleCollection): Bool
 var
   It: IJclDoubleIterator;
 begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -2159,7 +2324,7 @@ begin
       Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2186,7 +2351,7 @@ var
   It: IJclDoubleIterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FMap.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -2198,7 +2363,7 @@ begin
       Result := FMap.ContainsKey(It.Next);
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FMap.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2214,7 +2379,7 @@ var
   It, ItMap: IJclDoubleIterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FMap.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -2233,7 +2398,7 @@ begin
       end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FMap.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2242,6 +2407,7 @@ function TJclDoubleHashSet.First: IJclDoubleIterator;
 begin
   Result := FMap.KeySet.First;
 end;
+
 
 function TJclDoubleHashSet.GetAutoPackParameter: Integer;
 begin
@@ -2275,6 +2441,13 @@ begin
 end;
 {$ENDIF SUPPORTS_FOR_IN}
 
+
+
+function TJclDoubleHashSet.GetReadOnly: Boolean;
+begin
+  Result := FMap.ReadOnly;
+end;
+
 function TJclDoubleHashSet.GetRemoveSingleElement: Boolean;
 begin
   Result := FMap.RemoveSingleElement;
@@ -2283,6 +2456,11 @@ end;
 function TJclDoubleHashSet.GetReturnDefaultElements: Boolean;
 begin
   Result := FMap.ReturnDefaultElements;
+end;
+
+function TJclDoubleHashSet.GetThreadSafe: Boolean;
+begin
+  Result := FMap.ThreadSafe;
 end;
 
 function TJclDoubleHashSet.GetPrecision: Double;
@@ -2320,8 +2498,10 @@ var
   It: IJclDoubleIterator;
   ARefUnique: TRefUnique;
 begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -2334,7 +2514,7 @@ begin
       Result := (FMap.Remove(It.Next) = ARefUnique) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2343,8 +2523,10 @@ function TJclDoubleHashSet.RetainAll(const ACollection: IJclDoubleCollection): B
 var
   ItMap: IJclDoubleIterator;
 begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -2357,7 +2539,7 @@ begin
         ItMap.Remove;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2387,6 +2569,11 @@ begin
   FMap.Duplicates := Value;
 end;
 
+procedure TJclDoubleHashSet.SetReadOnly(Value: Boolean);
+begin
+  FMap.ReadOnly := Value;
+end;
+
 procedure TJclDoubleHashSet.SetRemoveSingleElement(Value: Boolean);
 begin
   FMap.RemoveSingleElement := Value;
@@ -2395,6 +2582,11 @@ end;
 procedure TJclDoubleHashSet.SetReturnDefaultElements(Value: Boolean);
 begin
   FMap.ReturnDefaultElements := Value;
+end;
+
+procedure TJclDoubleHashSet.SetThreadSafe(Value: Boolean);
+begin
+  FMap.ThreadSafe := Value;
 end;
 
 procedure TJclDoubleHashSet.SetPrecision(const Value: Double);
@@ -2423,7 +2615,7 @@ end;
 
 constructor TJclExtendedHashSet.Create(const AMap: IJclExtendedMap);
 begin
-  inherited Create(AMap);
+  inherited Create();
   FMap := AMap;
 end;
 
@@ -2434,15 +2626,16 @@ end;
 
 destructor TJclExtendedHashSet.Destroy;
 begin
-  Clear;
   FMap := nil;
   inherited Destroy;
 end;
 
 function TJclExtendedHashSet.Add(const AValue: Extended): Boolean;
 begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := not FMap.ContainsKey(AValue);
@@ -2450,7 +2643,7 @@ begin
       FMap.PutValue(AValue, RefUnique);
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2459,8 +2652,10 @@ function TJclExtendedHashSet.AddAll(const ACollection: IJclExtendedCollection): 
 var
   It: IJclExtendedIterator;
 begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -2472,7 +2667,7 @@ begin
       Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2499,7 +2694,7 @@ var
   It: IJclExtendedIterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FMap.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -2511,7 +2706,7 @@ begin
       Result := FMap.ContainsKey(It.Next);
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FMap.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2527,7 +2722,7 @@ var
   It, ItMap: IJclExtendedIterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FMap.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -2546,7 +2741,7 @@ begin
       end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FMap.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2590,6 +2785,12 @@ end;
 {$ENDIF SUPPORTS_FOR_IN}
 
 
+
+function TJclExtendedHashSet.GetReadOnly: Boolean;
+begin
+  Result := FMap.ReadOnly;
+end;
+
 function TJclExtendedHashSet.GetRemoveSingleElement: Boolean;
 begin
   Result := FMap.RemoveSingleElement;
@@ -2598,6 +2799,11 @@ end;
 function TJclExtendedHashSet.GetReturnDefaultElements: Boolean;
 begin
   Result := FMap.ReturnDefaultElements;
+end;
+
+function TJclExtendedHashSet.GetThreadSafe: Boolean;
+begin
+  Result := FMap.ThreadSafe;
 end;
 
 function TJclExtendedHashSet.GetPrecision: Extended;
@@ -2635,8 +2841,10 @@ var
   It: IJclExtendedIterator;
   ARefUnique: TRefUnique;
 begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -2649,7 +2857,7 @@ begin
       Result := (FMap.Remove(It.Next) = ARefUnique) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2658,8 +2866,10 @@ function TJclExtendedHashSet.RetainAll(const ACollection: IJclExtendedCollection
 var
   ItMap: IJclExtendedIterator;
 begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -2672,7 +2882,7 @@ begin
         ItMap.Remove;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2702,6 +2912,11 @@ begin
   FMap.Duplicates := Value;
 end;
 
+procedure TJclExtendedHashSet.SetReadOnly(Value: Boolean);
+begin
+  FMap.ReadOnly := Value;
+end;
+
 procedure TJclExtendedHashSet.SetRemoveSingleElement(Value: Boolean);
 begin
   FMap.RemoveSingleElement := Value;
@@ -2710,6 +2925,11 @@ end;
 procedure TJclExtendedHashSet.SetReturnDefaultElements(Value: Boolean);
 begin
   FMap.ReturnDefaultElements := Value;
+end;
+
+procedure TJclExtendedHashSet.SetThreadSafe(Value: Boolean);
+begin
+  FMap.ThreadSafe := Value;
 end;
 
 procedure TJclExtendedHashSet.SetPrecision(const Value: Extended);
@@ -2738,7 +2958,7 @@ end;
 
 constructor TJclIntegerHashSet.Create(const AMap: IJclIntegerMap);
 begin
-  inherited Create(AMap);
+  inherited Create();
   FMap := AMap;
 end;
 
@@ -2749,15 +2969,16 @@ end;
 
 destructor TJclIntegerHashSet.Destroy;
 begin
-  Clear;
   FMap := nil;
   inherited Destroy;
 end;
 
 function TJclIntegerHashSet.Add(AValue: Integer): Boolean;
 begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := not FMap.ContainsKey(AValue);
@@ -2765,7 +2986,7 @@ begin
       FMap.PutValue(AValue, RefUnique);
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2774,8 +2995,10 @@ function TJclIntegerHashSet.AddAll(const ACollection: IJclIntegerCollection): Bo
 var
   It: IJclIntegerIterator;
 begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -2787,7 +3010,7 @@ begin
       Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2814,7 +3037,7 @@ var
   It: IJclIntegerIterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FMap.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -2826,7 +3049,7 @@ begin
       Result := FMap.ContainsKey(It.Next);
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FMap.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2842,7 +3065,7 @@ var
   It, ItMap: IJclIntegerIterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FMap.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -2861,7 +3084,7 @@ begin
       end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FMap.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2905,6 +3128,12 @@ end;
 {$ENDIF SUPPORTS_FOR_IN}
 
 
+
+function TJclIntegerHashSet.GetReadOnly: Boolean;
+begin
+  Result := FMap.ReadOnly;
+end;
+
 function TJclIntegerHashSet.GetRemoveSingleElement: Boolean;
 begin
   Result := FMap.RemoveSingleElement;
@@ -2913,6 +3142,11 @@ end;
 function TJclIntegerHashSet.GetReturnDefaultElements: Boolean;
 begin
   Result := FMap.ReturnDefaultElements;
+end;
+
+function TJclIntegerHashSet.GetThreadSafe: Boolean;
+begin
+  Result := FMap.ThreadSafe;
 end;
 
 
@@ -2946,8 +3180,10 @@ var
   It: IJclIntegerIterator;
   ARefUnique: TRefUnique;
 begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -2960,7 +3196,7 @@ begin
       Result := (FMap.Remove(It.Next) = ARefUnique) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2969,8 +3205,10 @@ function TJclIntegerHashSet.RetainAll(const ACollection: IJclIntegerCollection):
 var
   ItMap: IJclIntegerIterator;
 begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -2983,7 +3221,7 @@ begin
         ItMap.Remove;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3013,6 +3251,11 @@ begin
   FMap.Duplicates := Value;
 end;
 
+procedure TJclIntegerHashSet.SetReadOnly(Value: Boolean);
+begin
+  FMap.ReadOnly := Value;
+end;
+
 procedure TJclIntegerHashSet.SetRemoveSingleElement(Value: Boolean);
 begin
   FMap.RemoveSingleElement := Value;
@@ -3021,6 +3264,11 @@ end;
 procedure TJclIntegerHashSet.SetReturnDefaultElements(Value: Boolean);
 begin
   FMap.ReturnDefaultElements := Value;
+end;
+
+procedure TJclIntegerHashSet.SetThreadSafe(Value: Boolean);
+begin
+  FMap.ThreadSafe := Value;
 end;
 
 
@@ -3045,7 +3293,7 @@ end;
 
 constructor TJclCardinalHashSet.Create(const AMap: IJclCardinalMap);
 begin
-  inherited Create(AMap);
+  inherited Create();
   FMap := AMap;
 end;
 
@@ -3056,15 +3304,16 @@ end;
 
 destructor TJclCardinalHashSet.Destroy;
 begin
-  Clear;
   FMap := nil;
   inherited Destroy;
 end;
 
 function TJclCardinalHashSet.Add(AValue: Cardinal): Boolean;
 begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := not FMap.ContainsKey(AValue);
@@ -3072,7 +3321,7 @@ begin
       FMap.PutValue(AValue, RefUnique);
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3081,8 +3330,10 @@ function TJclCardinalHashSet.AddAll(const ACollection: IJclCardinalCollection): 
 var
   It: IJclCardinalIterator;
 begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -3094,7 +3345,7 @@ begin
       Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3121,7 +3372,7 @@ var
   It: IJclCardinalIterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FMap.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -3133,7 +3384,7 @@ begin
       Result := FMap.ContainsKey(It.Next);
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FMap.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3149,7 +3400,7 @@ var
   It, ItMap: IJclCardinalIterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FMap.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -3168,7 +3419,7 @@ begin
       end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FMap.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3212,6 +3463,12 @@ end;
 {$ENDIF SUPPORTS_FOR_IN}
 
 
+
+function TJclCardinalHashSet.GetReadOnly: Boolean;
+begin
+  Result := FMap.ReadOnly;
+end;
+
 function TJclCardinalHashSet.GetRemoveSingleElement: Boolean;
 begin
   Result := FMap.RemoveSingleElement;
@@ -3220,6 +3477,11 @@ end;
 function TJclCardinalHashSet.GetReturnDefaultElements: Boolean;
 begin
   Result := FMap.ReturnDefaultElements;
+end;
+
+function TJclCardinalHashSet.GetThreadSafe: Boolean;
+begin
+  Result := FMap.ThreadSafe;
 end;
 
 
@@ -3253,8 +3515,10 @@ var
   It: IJclCardinalIterator;
   ARefUnique: TRefUnique;
 begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -3267,7 +3531,7 @@ begin
       Result := (FMap.Remove(It.Next) = ARefUnique) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3276,8 +3540,10 @@ function TJclCardinalHashSet.RetainAll(const ACollection: IJclCardinalCollection
 var
   ItMap: IJclCardinalIterator;
 begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -3290,7 +3556,7 @@ begin
         ItMap.Remove;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3320,6 +3586,11 @@ begin
   FMap.Duplicates := Value;
 end;
 
+procedure TJclCardinalHashSet.SetReadOnly(Value: Boolean);
+begin
+  FMap.ReadOnly := Value;
+end;
+
 procedure TJclCardinalHashSet.SetRemoveSingleElement(Value: Boolean);
 begin
   FMap.RemoveSingleElement := Value;
@@ -3328,6 +3599,11 @@ end;
 procedure TJclCardinalHashSet.SetReturnDefaultElements(Value: Boolean);
 begin
   FMap.ReturnDefaultElements := Value;
+end;
+
+procedure TJclCardinalHashSet.SetThreadSafe(Value: Boolean);
+begin
+  FMap.ThreadSafe := Value;
 end;
 
 
@@ -3352,7 +3628,7 @@ end;
 
 constructor TJclInt64HashSet.Create(const AMap: IJclInt64Map);
 begin
-  inherited Create(AMap);
+  inherited Create();
   FMap := AMap;
 end;
 
@@ -3363,15 +3639,16 @@ end;
 
 destructor TJclInt64HashSet.Destroy;
 begin
-  Clear;
   FMap := nil;
   inherited Destroy;
 end;
 
 function TJclInt64HashSet.Add(const AValue: Int64): Boolean;
 begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := not FMap.ContainsKey(AValue);
@@ -3379,7 +3656,7 @@ begin
       FMap.PutValue(AValue, RefUnique);
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3388,8 +3665,10 @@ function TJclInt64HashSet.AddAll(const ACollection: IJclInt64Collection): Boolea
 var
   It: IJclInt64Iterator;
 begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -3401,7 +3680,7 @@ begin
       Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3428,7 +3707,7 @@ var
   It: IJclInt64Iterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FMap.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -3440,7 +3719,7 @@ begin
       Result := FMap.ContainsKey(It.Next);
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FMap.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3456,7 +3735,7 @@ var
   It, ItMap: IJclInt64Iterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FMap.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -3475,7 +3754,7 @@ begin
       end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FMap.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3519,6 +3798,12 @@ end;
 {$ENDIF SUPPORTS_FOR_IN}
 
 
+
+function TJclInt64HashSet.GetReadOnly: Boolean;
+begin
+  Result := FMap.ReadOnly;
+end;
+
 function TJclInt64HashSet.GetRemoveSingleElement: Boolean;
 begin
   Result := FMap.RemoveSingleElement;
@@ -3527,6 +3812,11 @@ end;
 function TJclInt64HashSet.GetReturnDefaultElements: Boolean;
 begin
   Result := FMap.ReturnDefaultElements;
+end;
+
+function TJclInt64HashSet.GetThreadSafe: Boolean;
+begin
+  Result := FMap.ThreadSafe;
 end;
 
 
@@ -3560,8 +3850,10 @@ var
   It: IJclInt64Iterator;
   ARefUnique: TRefUnique;
 begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -3574,7 +3866,7 @@ begin
       Result := (FMap.Remove(It.Next) = ARefUnique) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3583,8 +3875,10 @@ function TJclInt64HashSet.RetainAll(const ACollection: IJclInt64Collection): Boo
 var
   ItMap: IJclInt64Iterator;
 begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -3597,7 +3891,7 @@ begin
         ItMap.Remove;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3627,6 +3921,11 @@ begin
   FMap.Duplicates := Value;
 end;
 
+procedure TJclInt64HashSet.SetReadOnly(Value: Boolean);
+begin
+  FMap.ReadOnly := Value;
+end;
+
 procedure TJclInt64HashSet.SetRemoveSingleElement(Value: Boolean);
 begin
   FMap.RemoveSingleElement := Value;
@@ -3635,6 +3934,11 @@ end;
 procedure TJclInt64HashSet.SetReturnDefaultElements(Value: Boolean);
 begin
   FMap.ReturnDefaultElements := Value;
+end;
+
+procedure TJclInt64HashSet.SetThreadSafe(Value: Boolean);
+begin
+  FMap.ThreadSafe := Value;
 end;
 
 
@@ -3660,7 +3964,7 @@ end;
 
 constructor TJclPtrHashSet.Create(const AMap: IJclPtrMap);
 begin
-  inherited Create(AMap);
+  inherited Create();
   FMap := AMap;
 end;
 
@@ -3671,15 +3975,16 @@ end;
 
 destructor TJclPtrHashSet.Destroy;
 begin
-  Clear;
   FMap := nil;
   inherited Destroy;
 end;
 
 function TJclPtrHashSet.Add(AValue: Pointer): Boolean;
 begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := not FMap.ContainsKey(AValue);
@@ -3687,7 +3992,7 @@ begin
       FMap.PutValue(AValue, RefUnique);
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3696,8 +4001,10 @@ function TJclPtrHashSet.AddAll(const ACollection: IJclPtrCollection): Boolean;
 var
   It: IJclPtrIterator;
 begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -3709,7 +4016,7 @@ begin
       Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3736,7 +4043,7 @@ var
   It: IJclPtrIterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FMap.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -3748,7 +4055,7 @@ begin
       Result := FMap.ContainsKey(It.Next);
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FMap.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3764,7 +4071,7 @@ var
   It, ItMap: IJclPtrIterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FMap.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -3783,7 +4090,7 @@ begin
       end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FMap.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3827,6 +4134,12 @@ end;
 {$ENDIF SUPPORTS_FOR_IN}
 
 
+
+function TJclPtrHashSet.GetReadOnly: Boolean;
+begin
+  Result := FMap.ReadOnly;
+end;
+
 function TJclPtrHashSet.GetRemoveSingleElement: Boolean;
 begin
   Result := FMap.RemoveSingleElement;
@@ -3835,6 +4148,11 @@ end;
 function TJclPtrHashSet.GetReturnDefaultElements: Boolean;
 begin
   Result := FMap.ReturnDefaultElements;
+end;
+
+function TJclPtrHashSet.GetThreadSafe: Boolean;
+begin
+  Result := FMap.ThreadSafe;
 end;
 
 
@@ -3868,8 +4186,10 @@ var
   It: IJclPtrIterator;
   ARefUnique: TRefUnique;
 begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -3882,7 +4202,7 @@ begin
       Result := (FMap.Remove(It.Next) = ARefUnique) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3891,8 +4211,10 @@ function TJclPtrHashSet.RetainAll(const ACollection: IJclPtrCollection): Boolean
 var
   ItMap: IJclPtrIterator;
 begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -3905,7 +4227,7 @@ begin
         ItMap.Remove;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3935,6 +4257,11 @@ begin
   FMap.Duplicates := Value;
 end;
 
+procedure TJclPtrHashSet.SetReadOnly(Value: Boolean);
+begin
+  FMap.ReadOnly := Value;
+end;
+
 procedure TJclPtrHashSet.SetRemoveSingleElement(Value: Boolean);
 begin
   FMap.RemoveSingleElement := Value;
@@ -3943,6 +4270,11 @@ end;
 procedure TJclPtrHashSet.SetReturnDefaultElements(Value: Boolean);
 begin
   FMap.ReturnDefaultElements := Value;
+end;
+
+procedure TJclPtrHashSet.SetThreadSafe(Value: Boolean);
+begin
+  FMap.ThreadSafe := Value;
 end;
 
 
@@ -3968,7 +4300,7 @@ end;
 
 constructor TJclHashSet.Create(const AMap: IJclMap);
 begin
-  inherited Create(AMap, False);
+  inherited Create(False);
   FMap := AMap;
 end;
 
@@ -3979,15 +4311,16 @@ end;
 
 destructor TJclHashSet.Destroy;
 begin
-  Clear;
   FMap := nil;
   inherited Destroy;
 end;
 
 function TJclHashSet.Add(AObject: TObject): Boolean;
 begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := not FMap.ContainsKey(AObject);
@@ -3995,7 +4328,7 @@ begin
       FMap.PutValue(AObject, RefUnique);
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4004,8 +4337,10 @@ function TJclHashSet.AddAll(const ACollection: IJclCollection): Boolean;
 var
   It: IJclIterator;
 begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -4017,7 +4352,7 @@ begin
       Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4044,7 +4379,7 @@ var
   It: IJclIterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FMap.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -4056,7 +4391,7 @@ begin
       Result := FMap.ContainsKey(It.Next);
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FMap.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4072,7 +4407,7 @@ var
   It, ItMap: IJclIterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FMap.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -4091,7 +4426,7 @@ begin
       end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FMap.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4143,6 +4478,12 @@ begin
   Result := (FMap as IJclKeyOwner).GetOwnsKeys;
 end;
 
+
+function TJclHashSet.GetReadOnly: Boolean;
+begin
+  Result := FMap.ReadOnly;
+end;
+
 function TJclHashSet.GetRemoveSingleElement: Boolean;
 begin
   Result := FMap.RemoveSingleElement;
@@ -4151,6 +4492,11 @@ end;
 function TJclHashSet.GetReturnDefaultElements: Boolean;
 begin
   Result := FMap.ReturnDefaultElements;
+end;
+
+function TJclHashSet.GetThreadSafe: Boolean;
+begin
+  Result := FMap.ThreadSafe;
 end;
 
 
@@ -4184,8 +4530,10 @@ var
   It: IJclIterator;
   ARefUnique: TRefUnique;
 begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -4198,7 +4546,7 @@ begin
       Result := (FMap.Remove(It.Next) = ARefUnique) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4207,8 +4555,10 @@ function TJclHashSet.RetainAll(const ACollection: IJclCollection): Boolean;
 var
   ItMap: IJclIterator;
 begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -4221,7 +4571,7 @@ begin
         ItMap.Remove;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4251,6 +4601,11 @@ begin
   FMap.Duplicates := Value;
 end;
 
+procedure TJclHashSet.SetReadOnly(Value: Boolean);
+begin
+  FMap.ReadOnly := Value;
+end;
+
 procedure TJclHashSet.SetRemoveSingleElement(Value: Boolean);
 begin
   FMap.RemoveSingleElement := Value;
@@ -4259,6 +4614,11 @@ end;
 procedure TJclHashSet.SetReturnDefaultElements(Value: Boolean);
 begin
   FMap.ReturnDefaultElements := Value;
+end;
+
+procedure TJclHashSet.SetThreadSafe(Value: Boolean);
+begin
+  FMap.ThreadSafe := Value;
 end;
 
 
@@ -4278,29 +4638,42 @@ begin
 end;
 
 
+
+
+
+
+
+
 {$IFDEF SUPPORTS_GENERICS}
+
+
+
+
+
+
 
 
 //=== { TJclHashSet<T> } =====================================================
 
 constructor TJclHashSet<T>.Create(const AMap: IJclMap<T, TRefUnique>);
 begin
-  inherited Create(AMap, False);
+  inherited Create(False);
   FMap := AMap;
 end;
 
 
 destructor TJclHashSet<T>.Destroy;
 begin
-  Clear;
   FMap := nil;
   inherited Destroy;
 end;
 
 function TJclHashSet<T>.Add(const AItem: T): Boolean;
 begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := not FMap.ContainsKey(AItem);
@@ -4308,7 +4681,7 @@ begin
       FMap.PutValue(AItem, RefUnique);
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4317,8 +4690,10 @@ function TJclHashSet<T>.AddAll(const ACollection: IJclCollection<T>): Boolean;
 var
   It: IJclIterator<T>;
 begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -4330,7 +4705,7 @@ begin
       Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4357,7 +4732,7 @@ var
   It: IJclIterator<T>;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FMap.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -4369,7 +4744,7 @@ begin
       Result := FMap.ContainsKey(It.Next);
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FMap.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4380,7 +4755,7 @@ var
   It, ItMap: IJclIterator<T>;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  FMap.ReadLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -4399,7 +4774,7 @@ begin
       end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    FMap.ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4451,6 +4826,12 @@ begin
   Result := (FMap as IJclPairOwner<T, TRefUnique>).GetOwnsKeys;
 end;
 
+
+function TJclHashSet<T>.GetReadOnly: Boolean;
+begin
+  Result := FMap.ReadOnly;
+end;
+
 function TJclHashSet<T>.GetRemoveSingleElement: Boolean;
 begin
   Result := FMap.RemoveSingleElement;
@@ -4459,6 +4840,11 @@ end;
 function TJclHashSet<T>.GetReturnDefaultElements: Boolean;
 begin
   Result := FMap.ReturnDefaultElements;
+end;
+
+function TJclHashSet<T>.GetThreadSafe: Boolean;
+begin
+  Result := FMap.ThreadSafe;
 end;
 
 
@@ -4492,8 +4878,10 @@ var
   It: IJclIterator<T>;
   ARefUnique: TRefUnique;
 begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -4506,7 +4894,7 @@ begin
       Result := (FMap.Remove(It.Next) = ARefUnique) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4515,8 +4903,10 @@ function TJclHashSet<T>.RetainAll(const ACollection: IJclCollection<T>): Boolean
 var
   ItMap: IJclIterator<T>;
 begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -4529,7 +4919,7 @@ begin
         ItMap.Remove;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4559,6 +4949,11 @@ begin
   FMap.Duplicates := Value;
 end;
 
+procedure TJclHashSet<T>.SetReadOnly(Value: Boolean);
+begin
+  FMap.ReadOnly := Value;
+end;
+
 procedure TJclHashSet<T>.SetRemoveSingleElement(Value: Boolean);
 begin
   FMap.RemoveSingleElement := Value;
@@ -4567,6 +4962,11 @@ end;
 procedure TJclHashSet<T>.SetReturnDefaultElements(Value: Boolean);
 begin
   FMap.ReturnDefaultElements := Value;
+end;
+
+procedure TJclHashSet<T>.SetThreadSafe(Value: Boolean);
+begin
+  FMap.ThreadSafe := Value;
 end;
 
 

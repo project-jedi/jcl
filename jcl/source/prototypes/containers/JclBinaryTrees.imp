@@ -62,7 +62,7 @@ type
   protected
     FCursor: NODETYPENAME;
     FStart: TItrStart;
-    FOwnList: COLLECTIONINTERFACENAME;
+    FOwnTree: COLLECTIONINTERFACENAME;
     FEqualityComparer: EQUALITYCOMPARERINTERFACENAME;
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function GetNextCursor: NODETYPENAME; virtual; abstract;
@@ -103,21 +103,21 @@ type
     function Left: PARAMETERTYPE;
     function Right: PARAMETERTYPE;
   public
-    constructor Create(const OwnList: COLLECTIONINTERFACENAME; ACursor: NODETYPENAME; AValid: Boolean; AStart: TItrStart);
+    constructor Create(const AOwnTree: COLLECTIONINTERFACENAME; ACursor: NODETYPENAME; AValid: Boolean; AStart: TItrStart);
   end;
 
-constructor BASEITRCLASSNAME.Create(const OwnList: COLLECTIONINTERFACENAME; ACursor: NODETYPENAME; AValid: Boolean; AStart: TItrStart);
+constructor BASEITRCLASSNAME.Create(const AOwnTree: COLLECTIONINTERFACENAME; ACursor: NODETYPENAME; AValid: Boolean; AStart: TItrStart);
 begin
-  inherited Create(OwnList, AValid);
+  inherited Create(AValid);
   FCursor := ACursor;
   FStart := AStart;
-  FOwnList := OwnList;
-  FEqualityComparer := FOwnList as EQUALITYCOMPARERINTERFACENAME;
+  FOwnTree := AOwnTree;
+  FEqualityComparer := AOwnTree as EQUALITYCOMPARERINTERFACENAME;
 end;
 
 function BASEITRCLASSNAME.Add(PARAMETERDECLARATION): Boolean;
 begin
-  Result := FOwnList.Add(PARAMETERNAME);
+  Result := FOwnTree.Add(PARAMETERNAME);
 end;
 
 function BASEITRCLASSNAME.AddChild(PARAMETERDECLARATION): Boolean;
@@ -134,7 +134,7 @@ begin
   begin
     ADest := BASEITRCLASSNAME(Dest);
     ADest.FCursor := FCursor;
-    ADest.FOwnList := FOwnList;
+    ADest.FOwnTree := FOwnTree;
     ADest.FEqualityComparer := FEqualityComparer;
     ADest.FStart := FStart;
   end;
@@ -142,10 +142,7 @@ end;
 
 function BASEITRCLASSNAME.ChildrenCount: Integer;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEREADBEGIN(FOwnTree)}
     Result := 0;
     if FCursor <> nil then
     begin
@@ -154,11 +151,7 @@ begin
       if FCursor.Right <> nil then
         Inc(Result);
     end;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEREADEND(FOwnTree)}
 end;
 
 procedure BASEITRCLASSNAME.ClearChildren;
@@ -183,16 +176,13 @@ begin
   if Obj is BASEITRCLASSNAME then
   begin
     ItrObj := BASEITRCLASSNAME(Obj);
-    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
   end;
 end;
 
 function BASEITRCLASSNAME.GetChild(Index: Integer): PARAMETERTYPE;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEREADBEGIN(FOwnTree)}
     Result := DEFAULTVALUE;
     if (FCursor <> nil) and (Index = 0) and (FCursor.Left <> nil) then
       FCursor := FCursor.Left
@@ -207,41 +197,27 @@ begin
     if FCursor <> nil then
       Result := FCursor.Value
     else
-    if not FOwnList.ReturnDefaultElements then
+    if not FOwnTree.ReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEREADEND(FOwnTree)}
 end;
 
 function BASEITRCLASSNAME.GETTERNAME: PARAMETERTYPE;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEREADBEGIN(FOwnTree)}
     CheckValid;
     Result := DEFAULTVALUE;
     if FCursor <> nil then
       Result := FCursor.Value
     else
-    if not FOwnList.ReturnDefaultElements then
+    if not FOwnTree.ReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEREADEND(FOwnTree)}
 end;
 
 function BASEITRCLASSNAME.HasChild(Index: Integer): Boolean;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEREADBEGIN(FOwnTree)}
     if (FCursor <> nil) and (Index = 0) then
       Result := (FCursor.Left <> nil) or (FCursor.Right <> nil)
     else
@@ -249,95 +225,53 @@ begin
       Result := (FCursor.Left <> nil) and (FCursor.Right <> nil)
     else
       Result := False;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEREADEND(FOwnTree)}
 end;
 
 function BASEITRCLASSNAME.HasLeft: Boolean;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEREADBEGIN(FOwnTree)}
     Result := (FCursor <> nil) and (FCursor.Left <> nil);
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEREADEND(FOwnTree)}
 end;
 
 function BASEITRCLASSNAME.HasNext: Boolean;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEREADBEGIN(FOwnTree)}
     if Valid then
       Result := GetNextCursor <> nil
     else
       Result := FCursor <> nil;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEREADEND(FOwnTree)}
 end;
 
 function BASEITRCLASSNAME.HasParent: Boolean;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEREADBEGIN(FOwnTree)}
     Result := (FCursor <> nil) and (FCursor.Parent <> nil);
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEREADEND(FOwnTree)}
 end;
 
 function BASEITRCLASSNAME.HasPrevious: Boolean;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEREADBEGIN(FOwnTree)}
     if Valid then
       Result := GetPreviousCursor <> nil
     else
       Result := FCursor <> nil;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEREADEND(FOwnTree)}
 end;
 
 function BASEITRCLASSNAME.HasRight: Boolean;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEREADBEGIN(FOwnTree)}
     Result := (FCursor <> nil) and (FCursor.Right <> nil);
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEREADEND(FOwnTree)}
 end;
 
 function BASEITRCLASSNAME.IndexOfChild(PARAMETERDECLARATION): Integer;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEREADBEGIN(FOwnTree)}
     Result := -1;
     if FCursor <> nil then
     begin
@@ -353,11 +287,7 @@ begin
       if (FCursor.Right <> nil) and FEqualityComparer.ItemsEqual(FCursor.Right.Value, PARAMETERNAME) then
         Result := 0;
     end;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEREADEND(FOwnTree)}
 end;
 
 function BASEITRCLASSNAME.Insert(PARAMETERDECLARATION): Boolean;
@@ -372,51 +302,34 @@ end;
 
 function BASEITRCLASSNAME.Left: PARAMETERTYPE;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEREADBEGIN(FOwnTree)}
     Result := DEFAULTVALUE;
     if FCursor <> nil then
       FCursor := FCursor.Left;
     if FCursor <> nil then
       Result := FCursor.Value
     else
-    if not FOwnList.ReturnDefaultElements then
+    if not FOwnTree.ReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEREADEND(FOwnTree)}
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
 function BASEITRCLASSNAME.MoveNext: Boolean;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEREADBEGIN(FOwnTree)}
     if Valid then
       FCursor := GetNextCursor
     else
       Valid := True;
     Result := FCursor <> nil;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEREADEND(FOwnTree)}
 end;
 {$ENDIF SUPPORTS_FOR_IN}
 
 function BASEITRCLASSNAME.Next: PARAMETERTYPE;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEREADBEGIN(FOwnTree)}
     if Valid then
       FCursor := GetNextCursor
     else
@@ -425,13 +338,9 @@ begin
     if FCursor <> nil then
       Result := FCursor.Value
     else
-    if not FOwnList.ReturnDefaultElements then
+    if not FOwnTree.ReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEREADEND(FOwnTree)}
 end;
 
 function BASEITRCLASSNAME.NextIndex: Integer;
@@ -442,31 +351,21 @@ end;
 
 function BASEITRCLASSNAME.Parent: PARAMETERTYPE;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEREADBEGIN(FOwnTree)}
     Result := DEFAULTVALUE;
     if FCursor <> nil then
       FCursor := FCursor.Parent;
     if FCursor <> nil then
       Result := FCursor.Value
     else
-    if not FOwnList.ReturnDefaultElements then
+    if not FOwnTree.ReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEREADEND(FOwnTree)}
 end;
 
 function BASEITRCLASSNAME.Previous: PARAMETERTYPE;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEREADBEGIN(FOwnTree)}
     if Valid then
       FCursor := GetPreviousCursor
     else
@@ -475,13 +374,9 @@ begin
     if FCursor <> nil then
       Result := FCursor.Value
     else
-    if not FOwnList.ReturnDefaultElements then
+    if not FOwnTree.ReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEREADEND(FOwnTree)}
 end;
 
 function BASEITRCLASSNAME.PreviousIndex: Integer;
@@ -494,10 +389,7 @@ procedure BASEITRCLASSNAME.Remove;
 var
   OldCursor: NODETYPENAME;
 begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEWRITEBEGIN(FOwnTree)}
     CheckValid;
     Valid := False;
     OldCursor := FCursor;
@@ -505,25 +397,18 @@ begin
     begin
       repeat
         FCursor := GetNextCursor;
-      until (FCursor = nil) or FOwnList.RemoveSingleElement
+      until (FCursor = nil) or FOwnTree.RemoveSingleElement
         or (not FEqualityComparer.ItemsEqual(OldCursor.Value, FCursor.Value));
-      FOwnList.Remove(OldCursor.Value);
+      FOwnTree.Remove(OldCursor.Value);
     end;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEWRITEEND(FOwnTree)}
 end;
 
 procedure BASEITRCLASSNAME.Reset;
 var
   NewCursor: NODETYPENAME;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEREADBEGIN(FOwnTree)}
     Valid := False;
     case FStart of
       isFirst:
@@ -552,32 +437,21 @@ begin
             FCursor := FCursor.Parent;
         end;
     end;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEREADEND(FOwnTree)}
 end;
 
 function BASEITRCLASSNAME.Right: PARAMETERTYPE;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEREADBEGIN(FOwnTree)}
     Result := DEFAULTVALUE;
     if FCursor <> nil then
       FCursor := FCursor.Right;
     if FCursor <> nil then
       Result := FCursor.Value
     else
-    if not FOwnList.ReturnDefaultElements then
+    if not FOwnTree.ReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEREADEND(FOwnTree)}
 end;
 
 procedure BASEITRCLASSNAME.SetChild(Index: Integer; PARAMETERDECLARATION);
@@ -605,7 +479,7 @@ type
 
 function PREORDERITRCLASSNAME.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := PREORDERITRCLASSNAME.Create(FOwnList, FCursor, Valid, FStart);
+  Result := PREORDERITRCLASSNAME.Create(FOwnTree, FCursor, Valid, FStart);
 end;
 
 function PREORDERITRCLASSNAME.GetNextCursor: NODETYPENAME;
@@ -672,7 +546,7 @@ type
 
 function INORDERITRCLASSNAME.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := INORDERITRCLASSNAME.Create(FOwnList, FCursor, Valid, FStart);
+  Result := INORDERITRCLASSNAME.Create(FOwnTree, FCursor, Valid, FStart);
 end;
 
 function INORDERITRCLASSNAME.GetNextCursor: NODETYPENAME;
@@ -740,7 +614,7 @@ type
 
 function POSTORDERITRCLASSNAME.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := POSTORDERITRCLASSNAME.Create(FOwnList, FCursor, Valid, FStart);
+  Result := POSTORDERITRCLASSNAME.Create(FOwnTree, FCursor, Valid, FStart);
 end;
 
 function POSTORDERITRCLASSNAME.GetNextCursor: NODETYPENAME;
@@ -797,7 +671,7 @@ end;*)
 
 constructor SELFCLASSNAME.Create(CONSTRUCTORPARAMETERS);
 begin
-  inherited Create(nilOWNERSHIPPARAMETER);
+  inherited Create(OWNERSHIPPARAMETER);
   FTraverseOrder := toOrder;
   FMaxDepth := 0;
   FAutoPackParameter := 2;CONSTRUCTORASSIGNMENTS
@@ -805,6 +679,7 @@ end;
 
 destructor SELFCLASSNAME.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -814,10 +689,7 @@ var
   NewNode, Current, Save: NODETYPENAME;
   Comp, Depth: Integer;
 begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEBEGIN}
     // Insert into right place
     if FAllowDefaultElements or not ItemsEqual(PARAMETERNAME, DEFAULTVALUE) then
     begin
@@ -865,21 +737,14 @@ begin
     end
     else
       Result := False;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEEND}
 end;
 
 function SELFCLASSNAME.AddAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;
 var
   It: STDITRINTERFACENAME;
 begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEBEGIN}
     Result := False;
     if ACollection = nil then
       Exit;
@@ -887,11 +752,7 @@ begin
     It := ACollection.First;
     while It.HasNext do
       Result := Add(It.Next) and Result;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEEND}
 end;
 
 procedure SELFCLASSNAME.AssignDataTo(Dest: TJclAbstractContainerBase);
@@ -951,10 +812,7 @@ procedure SELFCLASSNAME.Clear;
 var
   Current, Parent: NODETYPENAME;
 begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEBEGIN}
     // postorder
     Current := FRoot;
     if Current = nil then
@@ -1001,11 +859,7 @@ begin
     FRoot := nil;
     FSize := 0;
     FMaxDepth := 0;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEEND}
 end;
 
 function SELFCLASSNAME.Contains(PARAMETERDECLARATION): Boolean;
@@ -1013,10 +867,7 @@ var
   Comp: Integer;
   Current: NODETYPENAME;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READBEGIN}
     Result := False;
     Current := FRoot;
     while Current <> nil do
@@ -1033,32 +884,21 @@ begin
       else
         Current := Current.Right;
     end;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READEND}
 end;
 
 function SELFCLASSNAME.ContainsAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;
 var
   It: STDITRINTERFACENAME;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READBEGIN}
     Result := True;
     if ACollection = nil then
       Exit;
     It := ACollection.First;
     while Result and It.HasNext do
       Result := Contains(It.Next);
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READEND}
 end;
 
 {$JPPEXPANDMACRO CREATEEMPTYCONTAINER}
@@ -1066,10 +906,7 @@ function SELFCLASSNAME.Equals(const ACollection: COLLECTIONINTERFACENAME): Boole
 var
   It, ItSelf: STDITRINTERFACENAME;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READBEGIN}
     Result := False;
     if ACollection = nil then
       Exit;
@@ -1084,21 +921,14 @@ begin
         Result := False;
         Break;
       end;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READEND}
 end;
 
 function SELFCLASSNAME.First: STDITRINTERFACENAME;
 var
   Start: NODETYPENAME;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READBEGIN}
     Start := FRoot;
     case GetTraverseOrder of
       toPreOrder:
@@ -1125,11 +955,7 @@ begin
     else
       Result := nil;
     end;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READEND}
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
@@ -1141,10 +967,7 @@ end;
 
 function SELFCLASSNAME.GetRoot: TREEITRINTERFACENAME;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READBEGIN}
     case GetTraverseOrder of
       toPreOrder:
         Result := PREORDERITRCLASSNAME.Create(Self, FRoot, False, isRoot);
@@ -1155,11 +978,7 @@ begin
     else
       Result := nil;
     end;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READEND}
 end;
 
 function SELFCLASSNAME.GetTraverseOrder: TJclTraverseOrder;
@@ -1176,10 +995,7 @@ function SELFCLASSNAME.Last: STDITRINTERFACENAME;
 var
   Start: NODETYPENAME;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READBEGIN}
     Start := FRoot;
     case FTraverseOrder of
       toPreOrder:
@@ -1206,11 +1022,7 @@ begin
     else
       Result := nil;
     end;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO READEND}
 end;
 
 procedure SELFCLASSNAME.Pack;
@@ -1239,54 +1051,56 @@ var
   ANode, BNode: NODETYPENAME;
   Index: Integer;
 begin
-  SetLength(Leafarray, FSize);
-  try
-    // in order enumeration of nodes
-    ANode := FRoot;
-    if ANode <> nil then
-    begin
-      // find first node
-      while ANode.Left <> nil do
-        ANode := ANode.Left;
-
-      Index := 0;
-      while ANode <> nil do
+  {$JPPEXPANDMACRO WRITEBEGIN}
+    SetLength(Leafarray, FSize);
+    try
+      // in order enumeration of nodes
+      ANode := FRoot;
+      if ANode <> nil then
       begin
-        LeafArray[Index] := ANode;
-        Inc(Index);
-        if ANode.Right <> nil then
+        // find first node
+        while ANode.Left <> nil do
+          ANode := ANode.Left;
+
+        Index := 0;
+        while ANode <> nil do
         begin
-          ANode := ANode.Right;
-          while (ANode.Left <> nil) do
-            ANode := ANode.Left;
-        end
-        else
-        begin
-          BNode := ANode;
-          ANode := ANode.Parent;
-          while (ANode <> nil) and (ANode.Right = BNode) do
+          LeafArray[Index] := ANode;
+          Inc(Index);
+          if ANode.Right <> nil then
+          begin
+            ANode := ANode.Right;
+            while (ANode.Left <> nil) do
+              ANode := ANode.Left;
+          end
+          else
           begin
             BNode := ANode;
             ANode := ANode.Parent;
+            while (ANode <> nil) and (ANode.Right = BNode) do
+            begin
+              BNode := ANode;
+              ANode := ANode.Parent;
+            end;
           end;
         end;
-      end;
 
-      Index := FSize shr 1;
-      FRoot := LeafArray[Index];
-      FRoot.Parent := nil;
-      if Index > 0 then
-        FRoot.Left := BuildTree(LeafArray, 0, Index - 1, FRoot, 0)
-      else
-        FRoot.Left := nil;
-      if Index < (FSize - 1) then
-        FRoot.Right := BuildTree(LeafArray, Index + 1, FSize - 1, FRoot, 1)
-      else
-        FRoot.Right := nil;
+        Index := FSize shr 1;
+        FRoot := LeafArray[Index];
+        FRoot.Parent := nil;
+        if Index > 0 then
+          FRoot.Left := BuildTree(LeafArray, 0, Index - 1, FRoot, 0)
+        else
+          FRoot.Left := nil;
+        if Index < (FSize - 1) then
+          FRoot.Right := BuildTree(LeafArray, Index + 1, FSize - 1, FRoot, 1)
+        else
+          FRoot.Right := nil;
+      end;
+    finally
+      SetLength(LeafArray, 0);
     end;
-  finally
-    SetLength(LeafArray, 0);
-  end;
+  {$JPPEXPANDMACRO WRITEEND}
 end;
 
 function SELFCLASSNAME.Remove(PARAMETERDECLARATION): Boolean;
@@ -1294,10 +1108,7 @@ var
   Current, Successor: NODETYPENAME;
   Comp: Integer;
 begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEBEGIN}
     Result := False;
     // locate PARAMETERNAME in the tree
     Current := FRoot;
@@ -1413,21 +1224,14 @@ begin
       Current := Successor;
     until FRemoveSingleElement or (Current = nil);
     AutoPack;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEEND}
 end;
 
 function SELFCLASSNAME.RemoveAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;
 var
   It: STDITRINTERFACENAME;
 begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEBEGIN}
     Result := False;
     if ACollection = nil then
       Exit;
@@ -1435,21 +1239,14 @@ begin
     It := ACollection.First;
     while It.HasNext do
       Result := Remove(It.Next) and Result;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEEND}
 end;
 
 function SELFCLASSNAME.RetainAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;
 var
   It: STDITRINTERFACENAME;
 begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEBEGIN}
     Result := False;
     if ACollection = nil then
       Exit;
@@ -1458,11 +1255,7 @@ begin
     while It.HasNext do
       if not ACollection.Contains(It.Next) then
         It.Remove;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO WRITEEND}
 end;
 
 procedure SELFCLASSNAME.SetCapacity(Value: Integer);

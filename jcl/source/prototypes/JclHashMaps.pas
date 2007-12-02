@@ -49,7 +49,7 @@ uses
   JclAlgorithms,
   {$ENDIF SUPPORTS_GENERICS}
   JclBase, JclAbstractContainers, JclContainerIntf;
-
+{$I containers\JclContainerCommon.imp}
 {$I containers\JclHashMaps.imp}
 type
   // Hash Function

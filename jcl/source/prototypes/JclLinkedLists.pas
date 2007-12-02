@@ -25,7 +25,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -49,6 +49,7 @@ uses
   {$ENDIF SUPPORTS_GENERICS}
   Classes,
   JclBase, JclAbstractContainers, JclContainerIntf;
+{$I containers\JclContainerCommon.imp}
 {$I containers\JclLinkedLists.imp}
 type
 (*$JPPEXPANDMACRO JCLLINKEDLISTINT(IInterface,TJclIntfLinkedListItem,TJclIntfLinkedList,TJclIntfAbstractContainer,IJclIntfCollection,IJclIntfList,IJclIntfIterator, IJclIntfEqualityComparer\,,,
@@ -331,13 +332,13 @@ begin
   AssignPropertiesTo(Result);
 end;
 }
-{$JPPEXPANDMACRO JCLLINKEDLISTIMP(TJclLinkedList,TObject,TJclLinkedListItem,IJclCollection,IJclList,IJclIterator,TItr,; AOwnsObjects: Boolean,\, AOwnsObjects,AObject: TObject,AObject,nil,GetObject,SetObject,FreeObject)}
+{$JPPEXPANDMACRO JCLLINKEDLISTIMP(TJclLinkedList,TObject,TJclLinkedListItem,IJclCollection,IJclList,IJclIterator,TItr,; AOwnsObjects: Boolean,AOwnsObjects,AObject: TObject,AObject,nil,GetObject,SetObject,FreeObject)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 
 {$IFDEF SUPPORTS_GENERICS}
 
 {$JPPDEFINEMACRO CREATEEMPTYCONTAINER}
-{$JPPEXPANDMACRO JCLLINKEDLISTIMP(TJclLinkedList<T>,T,TJclLinkedListItem<T>,IJclCollection<T>,IJclList<T>,IJclIterator<T>,TItr<T>,; AOwnsItems: Boolean,\, AOwnsItems,const AItem: T,AItem,Default(T),GetItem,SetItem,FreeItem)}
+{$JPPEXPANDMACRO JCLLINKEDLISTIMP(TJclLinkedList<T>,T,TJclLinkedListItem<T>,IJclCollection<T>,IJclList<T>,IJclIterator<T>,TItr<T>,; AOwnsItems: Boolean,AOwnsItems,const AItem: T,AItem,Default(T),GetItem,SetItem,FreeItem)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 
 //=== { TJclLinkedListE<T> } =================================================

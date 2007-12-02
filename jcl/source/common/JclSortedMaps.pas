@@ -52,7 +52,6 @@ uses
   JclAlgorithms,
   {$ENDIF SUPPORTS_GENERICS}
   JclBase, JclAbstractContainers, JclContainerIntf;
-
 type
 
   TJclIntfIntfSortedEntry = record
@@ -2287,12 +2286,13 @@ uses
 
 constructor TJclIntfIntfSortedMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   SetCapacity(ACapacity);
 end;
 
 destructor TJclIntfIntfSortedMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -2350,6 +2350,8 @@ procedure TJclIntfIntfSortedMap.Clear;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -2553,7 +2555,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
+   Found := False;
     Result := nil;
     for Index := 0 to FSize - 1 do
       if ValuesCompare(FEntries[Index].Value, Value) = 0 then
@@ -2689,6 +2691,8 @@ var
   It: IJclIntfIterator;
   Key: IInterface;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -2712,6 +2716,8 @@ procedure TJclIntfIntfSortedMap.PutValue(const Key: IInterface; const Value: IIn
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -2751,6 +2757,8 @@ function TJclIntfIntfSortedMap.Remove(const Key: IInterface): IInterface;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -2776,6 +2784,8 @@ end;
 
 procedure TJclIntfIntfSortedMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -2892,12 +2902,13 @@ end;
 
 constructor TJclAnsiStrIntfSortedMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   SetCapacity(ACapacity);
 end;
 
 destructor TJclAnsiStrIntfSortedMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -2955,6 +2966,8 @@ procedure TJclAnsiStrIntfSortedMap.Clear;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3158,7 +3171,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
+   Found := False;
     Result := '';
     for Index := 0 to FSize - 1 do
       if ValuesCompare(FEntries[Index].Value, Value) = 0 then
@@ -3294,6 +3307,8 @@ var
   It: IJclAnsiStrIterator;
   Key: AnsiString;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3317,6 +3332,8 @@ procedure TJclAnsiStrIntfSortedMap.PutValue(const Key: AnsiString; const Value: 
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3356,6 +3373,8 @@ function TJclAnsiStrIntfSortedMap.Remove(const Key: AnsiString): IInterface;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3381,6 +3400,8 @@ end;
 
 procedure TJclAnsiStrIntfSortedMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3503,12 +3524,13 @@ end;
 
 constructor TJclIntfAnsiStrSortedMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   SetCapacity(ACapacity);
 end;
 
 destructor TJclIntfAnsiStrSortedMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -3566,6 +3588,8 @@ procedure TJclIntfAnsiStrSortedMap.Clear;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3769,7 +3793,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
+   Found := False;
     Result := nil;
     for Index := 0 to FSize - 1 do
       if ValuesCompare(FEntries[Index].Value, Value) = 0 then
@@ -3911,6 +3935,8 @@ var
   It: IJclIntfIterator;
   Key: IInterface;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3934,6 +3960,8 @@ procedure TJclIntfAnsiStrSortedMap.PutValue(const Key: IInterface; const Value: 
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3973,6 +4001,8 @@ function TJclIntfAnsiStrSortedMap.Remove(const Key: IInterface): AnsiString;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3998,6 +4028,8 @@ end;
 
 procedure TJclIntfAnsiStrSortedMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4114,12 +4146,13 @@ end;
 
 constructor TJclAnsiStrAnsiStrSortedMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   SetCapacity(ACapacity);
 end;
 
 destructor TJclAnsiStrAnsiStrSortedMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -4177,6 +4210,8 @@ procedure TJclAnsiStrAnsiStrSortedMap.Clear;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4380,7 +4415,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
+   Found := False;
     Result := '';
     for Index := 0 to FSize - 1 do
       if ValuesCompare(FEntries[Index].Value, Value) = 0 then
@@ -4516,6 +4551,8 @@ var
   It: IJclAnsiStrIterator;
   Key: AnsiString;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4539,6 +4576,8 @@ procedure TJclAnsiStrAnsiStrSortedMap.PutValue(const Key: AnsiString; const Valu
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4578,6 +4617,8 @@ function TJclAnsiStrAnsiStrSortedMap.Remove(const Key: AnsiString): AnsiString;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4603,6 +4644,8 @@ end;
 
 procedure TJclAnsiStrAnsiStrSortedMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4719,12 +4762,13 @@ end;
 
 constructor TJclWideStrIntfSortedMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   SetCapacity(ACapacity);
 end;
 
 destructor TJclWideStrIntfSortedMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -4782,6 +4826,8 @@ procedure TJclWideStrIntfSortedMap.Clear;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4985,7 +5031,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
+   Found := False;
     Result := '';
     for Index := 0 to FSize - 1 do
       if ValuesCompare(FEntries[Index].Value, Value) = 0 then
@@ -5121,6 +5167,8 @@ var
   It: IJclWideStrIterator;
   Key: WideString;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5144,6 +5192,8 @@ procedure TJclWideStrIntfSortedMap.PutValue(const Key: WideString; const Value: 
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5183,6 +5233,8 @@ function TJclWideStrIntfSortedMap.Remove(const Key: WideString): IInterface;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5208,6 +5260,8 @@ end;
 
 procedure TJclWideStrIntfSortedMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5330,12 +5384,13 @@ end;
 
 constructor TJclIntfWideStrSortedMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   SetCapacity(ACapacity);
 end;
 
 destructor TJclIntfWideStrSortedMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -5393,6 +5448,8 @@ procedure TJclIntfWideStrSortedMap.Clear;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5521,6 +5578,8 @@ begin
   Value := '';
 end;
 
+
+
 function TJclIntfWideStrSortedMap.GetValue(const Key: IInterface): WideString;
 var
   Index: Integer;
@@ -5594,7 +5653,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
+   Found := False;
     Result := nil;
     for Index := 0 to FSize - 1 do
       if ValuesCompare(FEntries[Index].Value, Value) = 0 then
@@ -5736,6 +5795,8 @@ var
   It: IJclIntfIterator;
   Key: IInterface;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5759,6 +5820,8 @@ procedure TJclIntfWideStrSortedMap.PutValue(const Key: IInterface; const Value: 
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5798,6 +5861,8 @@ function TJclIntfWideStrSortedMap.Remove(const Key: IInterface): WideString;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5823,6 +5888,8 @@ end;
 
 procedure TJclIntfWideStrSortedMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5939,12 +6006,13 @@ end;
 
 constructor TJclWideStrWideStrSortedMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   SetCapacity(ACapacity);
 end;
 
 destructor TJclWideStrWideStrSortedMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -6002,6 +6070,8 @@ procedure TJclWideStrWideStrSortedMap.Clear;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6205,7 +6275,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
+   Found := False;
     Result := '';
     for Index := 0 to FSize - 1 do
       if ValuesCompare(FEntries[Index].Value, Value) = 0 then
@@ -6341,6 +6411,8 @@ var
   It: IJclWideStrIterator;
   Key: WideString;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6364,6 +6436,8 @@ procedure TJclWideStrWideStrSortedMap.PutValue(const Key: WideString; const Valu
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6403,6 +6477,8 @@ function TJclWideStrWideStrSortedMap.Remove(const Key: WideString): WideString;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6428,6 +6504,8 @@ end;
 
 procedure TJclWideStrWideStrSortedMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6544,12 +6622,13 @@ end;
 
 constructor TJclSingleIntfSortedMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   SetCapacity(ACapacity);
 end;
 
 destructor TJclSingleIntfSortedMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -6607,6 +6686,8 @@ procedure TJclSingleIntfSortedMap.Clear;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6810,7 +6891,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
+   Found := False;
     Result := 0.0;
     for Index := 0 to FSize - 1 do
       if ValuesCompare(FEntries[Index].Value, Value) = 0 then
@@ -6946,6 +7027,8 @@ var
   It: IJclSingleIterator;
   Key: Single;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6969,6 +7052,8 @@ procedure TJclSingleIntfSortedMap.PutValue(const Key: Single; const Value: IInte
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7008,6 +7093,8 @@ function TJclSingleIntfSortedMap.Remove(const Key: Single): IInterface;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7033,6 +7120,8 @@ end;
 
 procedure TJclSingleIntfSortedMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7155,12 +7244,13 @@ end;
 
 constructor TJclIntfSingleSortedMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   SetCapacity(ACapacity);
 end;
 
 destructor TJclIntfSingleSortedMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -7218,6 +7308,8 @@ procedure TJclIntfSingleSortedMap.Clear;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7421,7 +7513,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
+   Found := False;
     Result := nil;
     for Index := 0 to FSize - 1 do
       if ValuesCompare(FEntries[Index].Value, Value) = 0 then
@@ -7563,6 +7655,8 @@ var
   It: IJclIntfIterator;
   Key: IInterface;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7586,6 +7680,8 @@ procedure TJclIntfSingleSortedMap.PutValue(const Key: IInterface; const Value: S
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7625,6 +7721,8 @@ function TJclIntfSingleSortedMap.Remove(const Key: IInterface): Single;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7650,6 +7748,8 @@ end;
 
 procedure TJclIntfSingleSortedMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7766,12 +7866,13 @@ end;
 
 constructor TJclSingleSingleSortedMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   SetCapacity(ACapacity);
 end;
 
 destructor TJclSingleSingleSortedMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -7829,6 +7930,8 @@ procedure TJclSingleSingleSortedMap.Clear;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8032,7 +8135,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
+   Found := False;
     Result := 0.0;
     for Index := 0 to FSize - 1 do
       if ValuesCompare(FEntries[Index].Value, Value) = 0 then
@@ -8168,6 +8271,8 @@ var
   It: IJclSingleIterator;
   Key: Single;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8191,6 +8296,8 @@ procedure TJclSingleSingleSortedMap.PutValue(const Key: Single; const Value: Sin
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8230,6 +8337,8 @@ function TJclSingleSingleSortedMap.Remove(const Key: Single): Single;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8255,6 +8364,8 @@ end;
 
 procedure TJclSingleSingleSortedMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8371,12 +8482,13 @@ end;
 
 constructor TJclDoubleIntfSortedMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   SetCapacity(ACapacity);
 end;
 
 destructor TJclDoubleIntfSortedMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -8434,6 +8546,8 @@ procedure TJclDoubleIntfSortedMap.Clear;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8637,7 +8751,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
+   Found := False;
     Result := 0.0;
     for Index := 0 to FSize - 1 do
       if ValuesCompare(FEntries[Index].Value, Value) = 0 then
@@ -8773,6 +8887,8 @@ var
   It: IJclDoubleIterator;
   Key: Double;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8796,6 +8912,8 @@ procedure TJclDoubleIntfSortedMap.PutValue(const Key: Double; const Value: IInte
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8835,6 +8953,8 @@ function TJclDoubleIntfSortedMap.Remove(const Key: Double): IInterface;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8860,6 +8980,8 @@ end;
 
 procedure TJclDoubleIntfSortedMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8982,12 +9104,13 @@ end;
 
 constructor TJclIntfDoubleSortedMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   SetCapacity(ACapacity);
 end;
 
 destructor TJclIntfDoubleSortedMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -9045,6 +9168,8 @@ procedure TJclIntfDoubleSortedMap.Clear;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -9248,7 +9373,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
+   Found := False;
     Result := nil;
     for Index := 0 to FSize - 1 do
       if ValuesCompare(FEntries[Index].Value, Value) = 0 then
@@ -9390,6 +9515,8 @@ var
   It: IJclIntfIterator;
   Key: IInterface;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -9413,6 +9540,8 @@ procedure TJclIntfDoubleSortedMap.PutValue(const Key: IInterface; const Value: D
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -9452,6 +9581,8 @@ function TJclIntfDoubleSortedMap.Remove(const Key: IInterface): Double;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -9477,6 +9608,8 @@ end;
 
 procedure TJclIntfDoubleSortedMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -9593,12 +9726,13 @@ end;
 
 constructor TJclDoubleDoubleSortedMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   SetCapacity(ACapacity);
 end;
 
 destructor TJclDoubleDoubleSortedMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -9656,6 +9790,8 @@ procedure TJclDoubleDoubleSortedMap.Clear;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -9859,7 +9995,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
+   Found := False;
     Result := 0.0;
     for Index := 0 to FSize - 1 do
       if ValuesCompare(FEntries[Index].Value, Value) = 0 then
@@ -9995,6 +10131,8 @@ var
   It: IJclDoubleIterator;
   Key: Double;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -10018,6 +10156,8 @@ procedure TJclDoubleDoubleSortedMap.PutValue(const Key: Double; const Value: Dou
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -10057,6 +10197,8 @@ function TJclDoubleDoubleSortedMap.Remove(const Key: Double): Double;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -10082,6 +10224,8 @@ end;
 
 procedure TJclDoubleDoubleSortedMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -10198,12 +10342,13 @@ end;
 
 constructor TJclExtendedIntfSortedMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   SetCapacity(ACapacity);
 end;
 
 destructor TJclExtendedIntfSortedMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -10261,6 +10406,8 @@ procedure TJclExtendedIntfSortedMap.Clear;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -10464,7 +10611,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
+   Found := False;
     Result := 0.0;
     for Index := 0 to FSize - 1 do
       if ValuesCompare(FEntries[Index].Value, Value) = 0 then
@@ -10600,6 +10747,8 @@ var
   It: IJclExtendedIterator;
   Key: Extended;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -10623,6 +10772,8 @@ procedure TJclExtendedIntfSortedMap.PutValue(const Key: Extended; const Value: I
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -10662,6 +10813,8 @@ function TJclExtendedIntfSortedMap.Remove(const Key: Extended): IInterface;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -10687,6 +10840,8 @@ end;
 
 procedure TJclExtendedIntfSortedMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -10809,12 +10964,13 @@ end;
 
 constructor TJclIntfExtendedSortedMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   SetCapacity(ACapacity);
 end;
 
 destructor TJclIntfExtendedSortedMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -10872,6 +11028,8 @@ procedure TJclIntfExtendedSortedMap.Clear;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -11075,7 +11233,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
+   Found := False;
     Result := nil;
     for Index := 0 to FSize - 1 do
       if ValuesCompare(FEntries[Index].Value, Value) = 0 then
@@ -11217,6 +11375,8 @@ var
   It: IJclIntfIterator;
   Key: IInterface;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -11240,6 +11400,8 @@ procedure TJclIntfExtendedSortedMap.PutValue(const Key: IInterface; const Value:
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -11279,6 +11441,8 @@ function TJclIntfExtendedSortedMap.Remove(const Key: IInterface): Extended;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -11304,6 +11468,8 @@ end;
 
 procedure TJclIntfExtendedSortedMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -11420,12 +11586,13 @@ end;
 
 constructor TJclExtendedExtendedSortedMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   SetCapacity(ACapacity);
 end;
 
 destructor TJclExtendedExtendedSortedMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -11483,6 +11650,8 @@ procedure TJclExtendedExtendedSortedMap.Clear;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -11686,7 +11855,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
+   Found := False;
     Result := 0.0;
     for Index := 0 to FSize - 1 do
       if ValuesCompare(FEntries[Index].Value, Value) = 0 then
@@ -11822,6 +11991,8 @@ var
   It: IJclExtendedIterator;
   Key: Extended;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -11845,6 +12016,8 @@ procedure TJclExtendedExtendedSortedMap.PutValue(const Key: Extended; const Valu
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -11884,6 +12057,8 @@ function TJclExtendedExtendedSortedMap.Remove(const Key: Extended): Extended;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -11909,6 +12084,8 @@ end;
 
 procedure TJclExtendedExtendedSortedMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -12025,12 +12202,13 @@ end;
 
 constructor TJclIntegerIntfSortedMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   SetCapacity(ACapacity);
 end;
 
 destructor TJclIntegerIntfSortedMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -12088,6 +12266,8 @@ procedure TJclIntegerIntfSortedMap.Clear;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -12291,7 +12471,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
+   Found := False;
     Result := 0;
     for Index := 0 to FSize - 1 do
       if ValuesCompare(FEntries[Index].Value, Value) = 0 then
@@ -12427,6 +12607,8 @@ var
   It: IJclIntegerIterator;
   Key: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -12450,6 +12632,8 @@ procedure TJclIntegerIntfSortedMap.PutValue(Key: Integer; const Value: IInterfac
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -12489,6 +12673,8 @@ function TJclIntegerIntfSortedMap.Remove(Key: Integer): IInterface;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -12514,6 +12700,8 @@ end;
 
 procedure TJclIntegerIntfSortedMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -12636,12 +12824,13 @@ end;
 
 constructor TJclIntfIntegerSortedMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   SetCapacity(ACapacity);
 end;
 
 destructor TJclIntfIntegerSortedMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -12699,6 +12888,8 @@ procedure TJclIntfIntegerSortedMap.Clear;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -12902,7 +13093,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
+   Found := False;
     Result := nil;
     for Index := 0 to FSize - 1 do
       if ValuesCompare(FEntries[Index].Value, Value) = 0 then
@@ -13044,6 +13235,8 @@ var
   It: IJclIntfIterator;
   Key: IInterface;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -13067,6 +13260,8 @@ procedure TJclIntfIntegerSortedMap.PutValue(const Key: IInterface; Value: Intege
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -13106,6 +13301,8 @@ function TJclIntfIntegerSortedMap.Remove(const Key: IInterface): Integer;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -13131,6 +13328,8 @@ end;
 
 procedure TJclIntfIntegerSortedMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -13247,12 +13446,13 @@ end;
 
 constructor TJclIntegerIntegerSortedMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   SetCapacity(ACapacity);
 end;
 
 destructor TJclIntegerIntegerSortedMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -13310,6 +13510,8 @@ procedure TJclIntegerIntegerSortedMap.Clear;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -13513,7 +13715,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
+   Found := False;
     Result := 0;
     for Index := 0 to FSize - 1 do
       if ValuesCompare(FEntries[Index].Value, Value) = 0 then
@@ -13649,6 +13851,8 @@ var
   It: IJclIntegerIterator;
   Key: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -13672,6 +13876,8 @@ procedure TJclIntegerIntegerSortedMap.PutValue(Key: Integer; Value: Integer);
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -13711,6 +13917,8 @@ function TJclIntegerIntegerSortedMap.Remove(Key: Integer): Integer;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -13736,6 +13944,8 @@ end;
 
 procedure TJclIntegerIntegerSortedMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -13852,12 +14062,13 @@ end;
 
 constructor TJclCardinalIntfSortedMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   SetCapacity(ACapacity);
 end;
 
 destructor TJclCardinalIntfSortedMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -13915,6 +14126,8 @@ procedure TJclCardinalIntfSortedMap.Clear;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -14118,7 +14331,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
+   Found := False;
     Result := 0;
     for Index := 0 to FSize - 1 do
       if ValuesCompare(FEntries[Index].Value, Value) = 0 then
@@ -14254,6 +14467,8 @@ var
   It: IJclCardinalIterator;
   Key: Cardinal;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -14277,6 +14492,8 @@ procedure TJclCardinalIntfSortedMap.PutValue(Key: Cardinal; const Value: IInterf
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -14316,6 +14533,8 @@ function TJclCardinalIntfSortedMap.Remove(Key: Cardinal): IInterface;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -14341,6 +14560,8 @@ end;
 
 procedure TJclCardinalIntfSortedMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -14463,12 +14684,13 @@ end;
 
 constructor TJclIntfCardinalSortedMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   SetCapacity(ACapacity);
 end;
 
 destructor TJclIntfCardinalSortedMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -14526,6 +14748,8 @@ procedure TJclIntfCardinalSortedMap.Clear;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -14729,7 +14953,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
+   Found := False;
     Result := nil;
     for Index := 0 to FSize - 1 do
       if ValuesCompare(FEntries[Index].Value, Value) = 0 then
@@ -14871,6 +15095,8 @@ var
   It: IJclIntfIterator;
   Key: IInterface;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -14894,6 +15120,8 @@ procedure TJclIntfCardinalSortedMap.PutValue(const Key: IInterface; Value: Cardi
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -14933,6 +15161,8 @@ function TJclIntfCardinalSortedMap.Remove(const Key: IInterface): Cardinal;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -14958,6 +15188,8 @@ end;
 
 procedure TJclIntfCardinalSortedMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -15074,12 +15306,13 @@ end;
 
 constructor TJclCardinalCardinalSortedMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   SetCapacity(ACapacity);
 end;
 
 destructor TJclCardinalCardinalSortedMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -15137,6 +15370,8 @@ procedure TJclCardinalCardinalSortedMap.Clear;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -15340,7 +15575,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
+   Found := False;
     Result := 0;
     for Index := 0 to FSize - 1 do
       if ValuesCompare(FEntries[Index].Value, Value) = 0 then
@@ -15476,6 +15711,8 @@ var
   It: IJclCardinalIterator;
   Key: Cardinal;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -15499,6 +15736,8 @@ procedure TJclCardinalCardinalSortedMap.PutValue(Key: Cardinal; Value: Cardinal)
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -15538,6 +15777,8 @@ function TJclCardinalCardinalSortedMap.Remove(Key: Cardinal): Cardinal;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -15563,6 +15804,8 @@ end;
 
 procedure TJclCardinalCardinalSortedMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -15679,12 +15922,13 @@ end;
 
 constructor TJclInt64IntfSortedMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   SetCapacity(ACapacity);
 end;
 
 destructor TJclInt64IntfSortedMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -15742,6 +15986,8 @@ procedure TJclInt64IntfSortedMap.Clear;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -15945,7 +16191,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
+   Found := False;
     Result := 0;
     for Index := 0 to FSize - 1 do
       if ValuesCompare(FEntries[Index].Value, Value) = 0 then
@@ -16081,6 +16327,8 @@ var
   It: IJclInt64Iterator;
   Key: Int64;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -16104,6 +16352,8 @@ procedure TJclInt64IntfSortedMap.PutValue(const Key: Int64; const Value: IInterf
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -16143,6 +16393,8 @@ function TJclInt64IntfSortedMap.Remove(const Key: Int64): IInterface;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -16168,6 +16420,8 @@ end;
 
 procedure TJclInt64IntfSortedMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -16290,12 +16544,13 @@ end;
 
 constructor TJclIntfInt64SortedMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   SetCapacity(ACapacity);
 end;
 
 destructor TJclIntfInt64SortedMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -16353,6 +16608,8 @@ procedure TJclIntfInt64SortedMap.Clear;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -16556,7 +16813,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
+   Found := False;
     Result := nil;
     for Index := 0 to FSize - 1 do
       if ValuesCompare(FEntries[Index].Value, Value) = 0 then
@@ -16698,6 +16955,8 @@ var
   It: IJclIntfIterator;
   Key: IInterface;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -16721,6 +16980,8 @@ procedure TJclIntfInt64SortedMap.PutValue(const Key: IInterface; const Value: In
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -16760,6 +17021,8 @@ function TJclIntfInt64SortedMap.Remove(const Key: IInterface): Int64;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -16785,6 +17048,8 @@ end;
 
 procedure TJclIntfInt64SortedMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -16901,12 +17166,13 @@ end;
 
 constructor TJclInt64Int64SortedMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   SetCapacity(ACapacity);
 end;
 
 destructor TJclInt64Int64SortedMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -16964,6 +17230,8 @@ procedure TJclInt64Int64SortedMap.Clear;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -17167,7 +17435,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
+   Found := False;
     Result := 0;
     for Index := 0 to FSize - 1 do
       if ValuesCompare(FEntries[Index].Value, Value) = 0 then
@@ -17303,6 +17571,8 @@ var
   It: IJclInt64Iterator;
   Key: Int64;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -17326,6 +17596,8 @@ procedure TJclInt64Int64SortedMap.PutValue(const Key: Int64; const Value: Int64)
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -17365,6 +17637,8 @@ function TJclInt64Int64SortedMap.Remove(const Key: Int64): Int64;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -17390,6 +17664,8 @@ end;
 
 procedure TJclInt64Int64SortedMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -17507,12 +17783,13 @@ end;
 
 constructor TJclPtrIntfSortedMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   SetCapacity(ACapacity);
 end;
 
 destructor TJclPtrIntfSortedMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -17570,6 +17847,8 @@ procedure TJclPtrIntfSortedMap.Clear;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -17773,7 +18052,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
+   Found := False;
     Result := nil;
     for Index := 0 to FSize - 1 do
       if ValuesCompare(FEntries[Index].Value, Value) = 0 then
@@ -17909,6 +18188,8 @@ var
   It: IJclPtrIterator;
   Key: Pointer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -17932,6 +18213,8 @@ procedure TJclPtrIntfSortedMap.PutValue(Key: Pointer; const Value: IInterface);
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -17971,6 +18254,8 @@ function TJclPtrIntfSortedMap.Remove(Key: Pointer): IInterface;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -17996,6 +18281,8 @@ end;
 
 procedure TJclPtrIntfSortedMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -18118,12 +18405,13 @@ end;
 
 constructor TJclIntfPtrSortedMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   SetCapacity(ACapacity);
 end;
 
 destructor TJclIntfPtrSortedMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -18181,6 +18469,8 @@ procedure TJclIntfPtrSortedMap.Clear;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -18384,7 +18674,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
+   Found := False;
     Result := nil;
     for Index := 0 to FSize - 1 do
       if ValuesCompare(FEntries[Index].Value, Value) = 0 then
@@ -18526,6 +18816,8 @@ var
   It: IJclIntfIterator;
   Key: IInterface;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -18549,6 +18841,8 @@ procedure TJclIntfPtrSortedMap.PutValue(const Key: IInterface; Value: Pointer);
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -18588,6 +18882,8 @@ function TJclIntfPtrSortedMap.Remove(const Key: IInterface): Pointer;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -18613,6 +18909,8 @@ end;
 
 procedure TJclIntfPtrSortedMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -18729,12 +19027,13 @@ end;
 
 constructor TJclPtrPtrSortedMap.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   SetCapacity(ACapacity);
 end;
 
 destructor TJclPtrPtrSortedMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -18792,6 +19091,8 @@ procedure TJclPtrPtrSortedMap.Clear;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -18995,7 +19296,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
+   Found := False;
     Result := nil;
     for Index := 0 to FSize - 1 do
       if ValuesCompare(FEntries[Index].Value, Value) = 0 then
@@ -19131,6 +19432,8 @@ var
   It: IJclPtrIterator;
   Key: Pointer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -19154,6 +19457,8 @@ procedure TJclPtrPtrSortedMap.PutValue(Key: Pointer; Value: Pointer);
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -19193,6 +19498,8 @@ function TJclPtrPtrSortedMap.Remove(Key: Pointer): Pointer;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -19218,6 +19525,8 @@ end;
 
 procedure TJclPtrPtrSortedMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -19335,13 +19644,14 @@ end;
 
 constructor TJclIntfSortedMap.Create(ACapacity: Integer; AOwnsValues: Boolean);
 begin
-  inherited Create(nil);
+  inherited Create();
   FOwnsValues := AOwnsValues;
   SetCapacity(ACapacity);
 end;
 
 destructor TJclIntfSortedMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -19399,6 +19709,8 @@ procedure TJclIntfSortedMap.Clear;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -19614,7 +19926,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
+   Found := False;
     Result := nil;
     for Index := 0 to FSize - 1 do
       if ValuesCompare(FEntries[Index].Value, Value) = 0 then
@@ -19756,6 +20068,8 @@ var
   It: IJclIntfIterator;
   Key: IInterface;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -19779,6 +20093,8 @@ procedure TJclIntfSortedMap.PutValue(const Key: IInterface; Value: TObject);
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -19818,6 +20134,8 @@ function TJclIntfSortedMap.Remove(const Key: IInterface): TObject;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -19843,6 +20161,8 @@ end;
 
 procedure TJclIntfSortedMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -19965,13 +20285,14 @@ end;
 
 constructor TJclAnsiStrSortedMap.Create(ACapacity: Integer; AOwnsValues: Boolean);
 begin
-  inherited Create(nil);
+  inherited Create();
   FOwnsValues := AOwnsValues;
   SetCapacity(ACapacity);
 end;
 
 destructor TJclAnsiStrSortedMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -20029,6 +20350,8 @@ procedure TJclAnsiStrSortedMap.Clear;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -20244,7 +20567,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
+   Found := False;
     Result := '';
     for Index := 0 to FSize - 1 do
       if ValuesCompare(FEntries[Index].Value, Value) = 0 then
@@ -20380,6 +20703,8 @@ var
   It: IJclAnsiStrIterator;
   Key: AnsiString;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -20403,6 +20728,8 @@ procedure TJclAnsiStrSortedMap.PutValue(const Key: AnsiString; Value: TObject);
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -20442,6 +20769,8 @@ function TJclAnsiStrSortedMap.Remove(const Key: AnsiString): TObject;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -20467,6 +20796,8 @@ end;
 
 procedure TJclAnsiStrSortedMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -20589,13 +20920,14 @@ end;
 
 constructor TJclWideStrSortedMap.Create(ACapacity: Integer; AOwnsValues: Boolean);
 begin
-  inherited Create(nil);
+  inherited Create();
   FOwnsValues := AOwnsValues;
   SetCapacity(ACapacity);
 end;
 
 destructor TJclWideStrSortedMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -20653,6 +20985,8 @@ procedure TJclWideStrSortedMap.Clear;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -20868,7 +21202,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
+   Found := False;
     Result := '';
     for Index := 0 to FSize - 1 do
       if ValuesCompare(FEntries[Index].Value, Value) = 0 then
@@ -21004,6 +21338,8 @@ var
   It: IJclWideStrIterator;
   Key: WideString;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -21027,6 +21363,8 @@ procedure TJclWideStrSortedMap.PutValue(const Key: WideString; Value: TObject);
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -21066,6 +21404,8 @@ function TJclWideStrSortedMap.Remove(const Key: WideString): TObject;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -21091,6 +21431,8 @@ end;
 
 procedure TJclWideStrSortedMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -21213,13 +21555,14 @@ end;
 
 constructor TJclSingleSortedMap.Create(ACapacity: Integer; AOwnsValues: Boolean);
 begin
-  inherited Create(nil);
+  inherited Create();
   FOwnsValues := AOwnsValues;
   SetCapacity(ACapacity);
 end;
 
 destructor TJclSingleSortedMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -21277,6 +21620,8 @@ procedure TJclSingleSortedMap.Clear;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -21492,7 +21837,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
+   Found := False;
     Result := 0.0;
     for Index := 0 to FSize - 1 do
       if ValuesCompare(FEntries[Index].Value, Value) = 0 then
@@ -21628,6 +21973,8 @@ var
   It: IJclSingleIterator;
   Key: Single;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -21651,6 +21998,8 @@ procedure TJclSingleSortedMap.PutValue(const Key: Single; Value: TObject);
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -21690,6 +22039,8 @@ function TJclSingleSortedMap.Remove(const Key: Single): TObject;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -21715,6 +22066,8 @@ end;
 
 procedure TJclSingleSortedMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -21837,13 +22190,14 @@ end;
 
 constructor TJclDoubleSortedMap.Create(ACapacity: Integer; AOwnsValues: Boolean);
 begin
-  inherited Create(nil);
+  inherited Create();
   FOwnsValues := AOwnsValues;
   SetCapacity(ACapacity);
 end;
 
 destructor TJclDoubleSortedMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -21901,6 +22255,8 @@ procedure TJclDoubleSortedMap.Clear;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -22116,7 +22472,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
+   Found := False;
     Result := 0.0;
     for Index := 0 to FSize - 1 do
       if ValuesCompare(FEntries[Index].Value, Value) = 0 then
@@ -22252,6 +22608,8 @@ var
   It: IJclDoubleIterator;
   Key: Double;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -22275,6 +22633,8 @@ procedure TJclDoubleSortedMap.PutValue(const Key: Double; Value: TObject);
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -22314,6 +22674,8 @@ function TJclDoubleSortedMap.Remove(const Key: Double): TObject;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -22339,6 +22701,8 @@ end;
 
 procedure TJclDoubleSortedMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -22461,13 +22825,14 @@ end;
 
 constructor TJclExtendedSortedMap.Create(ACapacity: Integer; AOwnsValues: Boolean);
 begin
-  inherited Create(nil);
+  inherited Create();
   FOwnsValues := AOwnsValues;
   SetCapacity(ACapacity);
 end;
 
 destructor TJclExtendedSortedMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -22525,6 +22890,8 @@ procedure TJclExtendedSortedMap.Clear;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -22740,7 +23107,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
+   Found := False;
     Result := 0.0;
     for Index := 0 to FSize - 1 do
       if ValuesCompare(FEntries[Index].Value, Value) = 0 then
@@ -22876,6 +23243,8 @@ var
   It: IJclExtendedIterator;
   Key: Extended;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -22899,6 +23268,8 @@ procedure TJclExtendedSortedMap.PutValue(const Key: Extended; Value: TObject);
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -22938,6 +23309,8 @@ function TJclExtendedSortedMap.Remove(const Key: Extended): TObject;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -22963,6 +23336,8 @@ end;
 
 procedure TJclExtendedSortedMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -23085,13 +23460,14 @@ end;
 
 constructor TJclIntegerSortedMap.Create(ACapacity: Integer; AOwnsValues: Boolean);
 begin
-  inherited Create(nil);
+  inherited Create();
   FOwnsValues := AOwnsValues;
   SetCapacity(ACapacity);
 end;
 
 destructor TJclIntegerSortedMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -23149,6 +23525,8 @@ procedure TJclIntegerSortedMap.Clear;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -23364,7 +23742,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
+   Found := False;
     Result := 0;
     for Index := 0 to FSize - 1 do
       if ValuesCompare(FEntries[Index].Value, Value) = 0 then
@@ -23500,6 +23878,8 @@ var
   It: IJclIntegerIterator;
   Key: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -23523,6 +23903,8 @@ procedure TJclIntegerSortedMap.PutValue(Key: Integer; Value: TObject);
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -23562,6 +23944,8 @@ function TJclIntegerSortedMap.Remove(Key: Integer): TObject;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -23587,6 +23971,8 @@ end;
 
 procedure TJclIntegerSortedMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -23709,13 +24095,14 @@ end;
 
 constructor TJclCardinalSortedMap.Create(ACapacity: Integer; AOwnsValues: Boolean);
 begin
-  inherited Create(nil);
+  inherited Create();
   FOwnsValues := AOwnsValues;
   SetCapacity(ACapacity);
 end;
 
 destructor TJclCardinalSortedMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -23773,6 +24160,8 @@ procedure TJclCardinalSortedMap.Clear;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -23988,7 +24377,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
+   Found := False;
     Result := 0;
     for Index := 0 to FSize - 1 do
       if ValuesCompare(FEntries[Index].Value, Value) = 0 then
@@ -24124,6 +24513,8 @@ var
   It: IJclCardinalIterator;
   Key: Cardinal;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -24147,6 +24538,8 @@ procedure TJclCardinalSortedMap.PutValue(Key: Cardinal; Value: TObject);
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -24186,6 +24579,8 @@ function TJclCardinalSortedMap.Remove(Key: Cardinal): TObject;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -24211,6 +24606,8 @@ end;
 
 procedure TJclCardinalSortedMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -24333,13 +24730,14 @@ end;
 
 constructor TJclInt64SortedMap.Create(ACapacity: Integer; AOwnsValues: Boolean);
 begin
-  inherited Create(nil);
+  inherited Create();
   FOwnsValues := AOwnsValues;
   SetCapacity(ACapacity);
 end;
 
 destructor TJclInt64SortedMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -24397,6 +24795,8 @@ procedure TJclInt64SortedMap.Clear;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -24612,7 +25012,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
+   Found := False;
     Result := 0;
     for Index := 0 to FSize - 1 do
       if ValuesCompare(FEntries[Index].Value, Value) = 0 then
@@ -24748,6 +25148,8 @@ var
   It: IJclInt64Iterator;
   Key: Int64;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -24771,6 +25173,8 @@ procedure TJclInt64SortedMap.PutValue(const Key: Int64; Value: TObject);
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -24810,6 +25214,8 @@ function TJclInt64SortedMap.Remove(const Key: Int64): TObject;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -24835,6 +25241,8 @@ end;
 
 procedure TJclInt64SortedMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -24958,13 +25366,14 @@ end;
 
 constructor TJclPtrSortedMap.Create(ACapacity: Integer; AOwnsValues: Boolean);
 begin
-  inherited Create(nil);
+  inherited Create();
   FOwnsValues := AOwnsValues;
   SetCapacity(ACapacity);
 end;
 
 destructor TJclPtrSortedMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -25022,6 +25431,8 @@ procedure TJclPtrSortedMap.Clear;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -25237,7 +25648,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
+   Found := False;
     Result := nil;
     for Index := 0 to FSize - 1 do
       if ValuesCompare(FEntries[Index].Value, Value) = 0 then
@@ -25373,6 +25784,8 @@ var
   It: IJclPtrIterator;
   Key: Pointer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -25396,6 +25809,8 @@ procedure TJclPtrSortedMap.PutValue(Key: Pointer; Value: TObject);
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -25435,6 +25850,8 @@ function TJclPtrSortedMap.Remove(Key: Pointer): TObject;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -25460,6 +25877,8 @@ end;
 
 procedure TJclPtrSortedMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -25583,7 +26002,7 @@ end;
 
 constructor TJclSortedMap.Create(ACapacity: Integer; AOwnsValues: Boolean; AOwnsKeys: Boolean);
 begin
-  inherited Create(nil);
+  inherited Create();
   FOwnsKeys := AOwnsKeys;
   FOwnsValues := AOwnsValues;
   SetCapacity(ACapacity);
@@ -25591,6 +26010,7 @@ end;
 
 destructor TJclSortedMap.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -25648,6 +26068,8 @@ procedure TJclSortedMap.Clear;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -25875,7 +26297,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
+   Found := False;
     Result := nil;
     for Index := 0 to FSize - 1 do
       if ValuesCompare(FEntries[Index].Value, Value) = 0 then
@@ -26017,6 +26439,8 @@ var
   It: IJclIterator;
   Key: TObject;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -26040,6 +26464,8 @@ procedure TJclSortedMap.PutValue(Key: TObject; Value: TObject);
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -26079,6 +26505,8 @@ function TJclSortedMap.Remove(Key: TObject): TObject;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -26104,6 +26532,8 @@ end;
 
 procedure TJclSortedMap.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -26228,7 +26658,7 @@ end;
 
 constructor TJclSortedMap<TKey,TValue>.Create(ACapacity: Integer; AOwnsValues: Boolean; AOwnsKeys: Boolean);
 begin
-  inherited Create(nil);
+  inherited Create();
   FOwnsKeys := AOwnsKeys;
   FOwnsValues := AOwnsValues;
   SetCapacity(ACapacity);
@@ -26236,6 +26666,7 @@ end;
 
 destructor TJclSortedMap<TKey,TValue>.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -26293,6 +26724,8 @@ procedure TJclSortedMap<TKey,TValue>.Clear;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -26515,7 +26948,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
+   Found := False;
     Result := Default(TKey);
     for Index := 0 to FSize - 1 do
       if ValuesCompare(FEntries[Index].Value, Value) = 0 then
@@ -26647,6 +27080,8 @@ var
   It: IJclIterator<TKey>;
   Key: TKey;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -26670,6 +27105,8 @@ procedure TJclSortedMap<TKey,TValue>.PutValue(const Key: TKey; const Value: TVal
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -26709,6 +27146,8 @@ function TJclSortedMap<TKey,TValue>.Remove(const Key: TKey): TValue;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -26734,6 +27173,8 @@ end;
 
 procedure TJclSortedMap<TKey,TValue>.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try

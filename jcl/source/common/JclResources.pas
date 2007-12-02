@@ -822,6 +822,7 @@ resourcestring
   RsENoComparer            = 'Item comparer is not assigned';
   RsENoHashConverter       = 'Hash converter is not assigned';
   RsEAssignError           = 'Assignation error';
+  RsEReadOnlyError         = 'Container is read-only';
 
 //=== JclCounter =============================================================
 resourcestring

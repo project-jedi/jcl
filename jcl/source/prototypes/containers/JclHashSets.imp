@@ -19,12 +19,16 @@
     { IJclContainer }
     function GetAllowDefaultElements: Boolean; override;
     function GetDuplicates: TDuplicates; override;
+    function GetReadOnly: Boolean; override;
     function GetRemoveSingleElement: Boolean; override;
     function GetReturnDefaultElements: Boolean; override;
+    function GetThreadSafe: Boolean; override;
     procedure SetAllowDefaultElements(Value: Boolean); override;
     procedure SetDuplicates(Value: TDuplicates); override;
+    procedure SetReadOnly(Value: Boolean); override;
     procedure SetRemoveSingleElement(Value: Boolean); override;
     procedure SetReturnDefaultElements(Value: Boolean); override;
+    procedure SetThreadSafe(Value: Boolean); override;
     { COLLECTIONINTERFACENAME }
     function Add(PARAMETERDECLARATION): Boolean;COLLECTIONFLAGS
     function AddAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;COLLECTIONFLAGS
@@ -57,42 +61,31 @@
 
 constructor SELFCLASSNAME.Create(const AMap: MAPINTERFACENAME);
 begin
-  inherited Create(AMapOWNERSHIPPARAMETER);
+  inherited Create(OWNERSHIPPARAMETER);
   FMap := AMap;
 end;
 
 {$JPPEXPANDMACRO CONSTRUCTORADDITIONAL}
 destructor SELFCLASSNAME.Destroy;
 begin
-  Clear;
   FMap := nil;
   inherited Destroy;
 end;
 
 function SELFCLASSNAME.Add(PARAMETERDECLARATION): Boolean;
 begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEWRITEBEGIN(FMap)}
     Result := not FMap.ContainsKey(PARAMETERNAME);
     if Result then
       FMap.PutValue(PARAMETERNAME, RefUnique);
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEWRITEEND(FMap)}
 end;
 
 function SELFCLASSNAME.AddAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;
 var
   It: ITRINTERFACENAME;
 begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEWRITEBEGIN(FMap)}
     Result := False;
     if ACollection = nil then
       Exit;
@@ -100,11 +93,7 @@ begin
     It := ACollection.First;
     while It.HasNext do
       Result := Add(It.Next) and Result;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEWRITEEND(FMap)}
 end;
 
 procedure SELFCLASSNAME.AssignDataTo(Dest: TJclAbstractContainerBase);
@@ -128,10 +117,7 @@ function SELFCLASSNAME.ContainsAll(const ACollection: COLLECTIONINTERFACENAME): 
 var
   It: ITRINTERFACENAME;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEREADBEGIN(FMap)}
     Result := False;
     if ACollection = nil then
       Exit;
@@ -139,11 +125,7 @@ begin
     It := ACollection.First;
     while Result and It.HasNext do
       Result := FMap.ContainsKey(It.Next);
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEREADEND(FMap)}
 end;
 
 {$JPPEXPANDMACRO CREATEEMPTYCONTAINER}
@@ -151,10 +133,7 @@ function SELFCLASSNAME.Equals(const ACollection: COLLECTIONINTERFACENAME): Boole
 var
   It, ItMap: ITRINTERFACENAME;
 begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEREADBEGIN(FMap)}
     Result := False;
     if ACollection = nil then
       Exit;
@@ -169,11 +148,7 @@ begin
         Result := False;
         Exit;
       end;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEREADEND(FMap)}
 end;
 
 function SELFCLASSNAME.First: ITRINTERFACENAME;
@@ -215,6 +190,12 @@ end;
 {$ENDIF SUPPORTS_FOR_IN}
 
 {$JPPEXPANDMACRO GETOWNSITEMS}
+
+function SELFCLASSNAME.GetReadOnly: Boolean;
+begin
+  Result := FMap.ReadOnly;
+end;
+
 function SELFCLASSNAME.GetRemoveSingleElement: Boolean;
 begin
   Result := FMap.RemoveSingleElement;
@@ -223,6 +204,11 @@ end;
 function SELFCLASSNAME.GetReturnDefaultElements: Boolean;
 begin
   Result := FMap.ReturnDefaultElements;
+end;
+
+function SELFCLASSNAME.GetThreadSafe: Boolean;
+begin
+  Result := FMap.ThreadSafe;
 end;
 
 {$JPPEXPANDMACRO GETTERADDITIONAL}
@@ -256,10 +242,7 @@ var
   It: ITRINTERFACENAME;
   ARefUnique: TRefUnique;
 begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEWRITEBEGIN(FMap)}
     Result := False;
     if ACollection = nil then
       Exit;
@@ -268,21 +251,14 @@ begin
     It := ACollection.First;
     while It.HasNext do
       Result := (FMap.Remove(It.Next) = ARefUnique) and Result;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEWRITEEND(FMap)}
 end;
 
 function SELFCLASSNAME.RetainAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;
 var
   ItMap: ITRINTERFACENAME;
 begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEWRITEBEGIN(FMap)}
     Result := False;
     if ACollection = nil then
       Exit;
@@ -291,11 +267,7 @@ begin
     while ItMap.HasNext do
       if not ACollection.Contains(ItMap.Next) then
         ItMap.Remove;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  {$JPPEXPANDMACRO DELEGATEWRITEEND(FMap)}
 end;
 
 procedure SELFCLASSNAME.SetAutoPackParameter(Value: Integer);
@@ -323,6 +295,11 @@ begin
   FMap.Duplicates := Value;
 end;
 
+procedure SELFCLASSNAME.SetReadOnly(Value: Boolean);
+begin
+  FMap.ReadOnly := Value;
+end;
+
 procedure SELFCLASSNAME.SetRemoveSingleElement(Value: Boolean);
 begin
   FMap.RemoveSingleElement := Value;
@@ -331,6 +308,11 @@ end;
 procedure SELFCLASSNAME.SetReturnDefaultElements(Value: Boolean);
 begin
   FMap.ReturnDefaultElements := Value;
+end;
+
+procedure SELFCLASSNAME.SetThreadSafe(Value: Boolean);
+begin
+  FMap.ThreadSafe := Value;
 end;
 
 {$JPPEXPANDMACRO SETTERADDITIONAL}

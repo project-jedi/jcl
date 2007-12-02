@@ -32,7 +32,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -715,7 +715,7 @@ type
 
 constructor TIntfItr.Create(const OwnList: IJclIntfList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
-  inherited Create(OwnList, AValid);
+  inherited Create(AValid);
   FOwnList := OwnList;
   FCursor := ACursor;
   FStart := AStart;
@@ -897,7 +897,7 @@ type
 
 constructor TAnsiStrItr.Create(const OwnList: IJclAnsiStrList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
-  inherited Create(OwnList, AValid);
+  inherited Create(AValid);
   FOwnList := OwnList;
   FCursor := ACursor;
   FStart := AStart;
@@ -1079,7 +1079,7 @@ type
 
 constructor TWideStrItr.Create(const OwnList: IJclWideStrList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
-  inherited Create(OwnList, AValid);
+  inherited Create(AValid);
   FOwnList := OwnList;
   FCursor := ACursor;
   FStart := AStart;
@@ -1261,7 +1261,7 @@ type
 
 constructor TSingleItr.Create(const OwnList: IJclSingleList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
-  inherited Create(OwnList, AValid);
+  inherited Create(AValid);
   FOwnList := OwnList;
   FCursor := ACursor;
   FStart := AStart;
@@ -1443,7 +1443,7 @@ type
 
 constructor TDoubleItr.Create(const OwnList: IJclDoubleList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
-  inherited Create(OwnList, AValid);
+  inherited Create(AValid);
   FOwnList := OwnList;
   FCursor := ACursor;
   FStart := AStart;
@@ -1625,7 +1625,7 @@ type
 
 constructor TExtendedItr.Create(const OwnList: IJclExtendedList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
-  inherited Create(OwnList, AValid);
+  inherited Create(AValid);
   FOwnList := OwnList;
   FCursor := ACursor;
   FStart := AStart;
@@ -1807,7 +1807,7 @@ type
 
 constructor TIntegerItr.Create(const OwnList: IJclIntegerList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
-  inherited Create(OwnList, AValid);
+  inherited Create(AValid);
   FOwnList := OwnList;
   FCursor := ACursor;
   FStart := AStart;
@@ -1989,7 +1989,7 @@ type
 
 constructor TCardinalItr.Create(const OwnList: IJclCardinalList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
-  inherited Create(OwnList, AValid);
+  inherited Create(AValid);
   FOwnList := OwnList;
   FCursor := ACursor;
   FStart := AStart;
@@ -2171,7 +2171,7 @@ type
 
 constructor TInt64Itr.Create(const OwnList: IJclInt64List; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
-  inherited Create(OwnList, AValid);
+  inherited Create(AValid);
   FOwnList := OwnList;
   FCursor := ACursor;
   FStart := AStart;
@@ -2354,7 +2354,7 @@ type
 
 constructor TPtrItr.Create(const OwnList: IJclPtrList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
-  inherited Create(OwnList, AValid);
+  inherited Create(AValid);
   FOwnList := OwnList;
   FCursor := ACursor;
   FStart := AStart;
@@ -2537,7 +2537,7 @@ type
 
 constructor TItr.Create(const OwnList: IJclList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
-  inherited Create(OwnList, AValid);
+  inherited Create(AValid);
   FOwnList := OwnList;
   FCursor := ACursor;
   FStart := AStart;
@@ -2721,7 +2721,7 @@ type
 
 constructor TItr<T>.Create(const OwnList: IJclList<T>; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
-  inherited Create(OwnList, AValid);
+  inherited Create(AValid);
   FOwnList := OwnList;
   FCursor := ACursor;
   FStart := AStart;
@@ -2871,12 +2871,13 @@ end;
 
 constructor TJclIntfVector.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   SetCapacity(ACapacity);
 end;
 
 destructor TJclIntfVector.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -2885,6 +2886,8 @@ function TJclIntfVector.Add(const AInterface: IInterface): Boolean;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -2922,6 +2925,8 @@ function TJclIntfVector.AddAll(const ACollection: IJclIntfCollection): Boolean;
 var
   It: IJclIntfIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -2957,6 +2962,8 @@ procedure TJclIntfVector.Clear;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3022,6 +3029,8 @@ end;
 
 function TJclIntfVector.Delete(Index: Integer): IInterface;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3131,6 +3140,8 @@ function TJclIntfVector.Insert(Index: Integer; const AInterface: IInterface): Bo
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3171,6 +3182,8 @@ function TJclIntfVector.InsertAll(Index: Integer; const ACollection: IJclIntfCol
 var
   It: IJclIntfIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3227,6 +3240,8 @@ function TJclIntfVector.Remove(const AInterface: IInterface): Boolean;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3253,6 +3268,8 @@ function TJclIntfVector.RemoveAll(const ACollection: IJclIntfCollection): Boolea
 var
   It: IJclIntfIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3275,6 +3292,8 @@ function TJclIntfVector.RetainAll(const ACollection: IJclIntfCollection): Boolea
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3295,6 +3314,8 @@ end;
 
 procedure TJclIntfVector.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3315,6 +3336,8 @@ var
   ReplaceItem: Boolean;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3378,12 +3401,13 @@ end;
 
 constructor TJclAnsiStrVector.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   SetCapacity(ACapacity);
 end;
 
 destructor TJclAnsiStrVector.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -3392,6 +3416,8 @@ function TJclAnsiStrVector.Add(const AString: AnsiString): Boolean;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3429,6 +3455,8 @@ function TJclAnsiStrVector.AddAll(const ACollection: IJclAnsiStrCollection): Boo
 var
   It: IJclAnsiStrIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3464,6 +3492,8 @@ procedure TJclAnsiStrVector.Clear;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3529,6 +3559,8 @@ end;
 
 function TJclAnsiStrVector.Delete(Index: Integer): AnsiString;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3638,6 +3670,8 @@ function TJclAnsiStrVector.Insert(Index: Integer; const AString: AnsiString): Bo
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3678,6 +3712,8 @@ function TJclAnsiStrVector.InsertAll(Index: Integer; const ACollection: IJclAnsi
 var
   It: IJclAnsiStrIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3734,6 +3770,8 @@ function TJclAnsiStrVector.Remove(const AString: AnsiString): Boolean;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3760,6 +3798,8 @@ function TJclAnsiStrVector.RemoveAll(const ACollection: IJclAnsiStrCollection): 
 var
   It: IJclAnsiStrIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3782,6 +3822,8 @@ function TJclAnsiStrVector.RetainAll(const ACollection: IJclAnsiStrCollection): 
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3802,6 +3844,8 @@ end;
 
 procedure TJclAnsiStrVector.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3822,6 +3866,8 @@ var
   ReplaceItem: Boolean;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3885,12 +3931,13 @@ end;
 
 constructor TJclWideStrVector.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   SetCapacity(ACapacity);
 end;
 
 destructor TJclWideStrVector.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -3899,6 +3946,8 @@ function TJclWideStrVector.Add(const AString: WideString): Boolean;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3936,6 +3985,8 @@ function TJclWideStrVector.AddAll(const ACollection: IJclWideStrCollection): Boo
 var
   It: IJclWideStrIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3971,6 +4022,8 @@ procedure TJclWideStrVector.Clear;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4036,6 +4089,8 @@ end;
 
 function TJclWideStrVector.Delete(Index: Integer): WideString;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4145,6 +4200,8 @@ function TJclWideStrVector.Insert(Index: Integer; const AString: WideString): Bo
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4185,6 +4242,8 @@ function TJclWideStrVector.InsertAll(Index: Integer; const ACollection: IJclWide
 var
   It: IJclWideStrIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4241,6 +4300,8 @@ function TJclWideStrVector.Remove(const AString: WideString): Boolean;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4267,6 +4328,8 @@ function TJclWideStrVector.RemoveAll(const ACollection: IJclWideStrCollection): 
 var
   It: IJclWideStrIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4289,6 +4352,8 @@ function TJclWideStrVector.RetainAll(const ACollection: IJclWideStrCollection): 
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4309,6 +4374,8 @@ end;
 
 procedure TJclWideStrVector.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4329,6 +4396,8 @@ var
   ReplaceItem: Boolean;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4392,12 +4461,13 @@ end;
 
 constructor TJclSingleVector.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   SetCapacity(ACapacity);
 end;
 
 destructor TJclSingleVector.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -4406,6 +4476,8 @@ function TJclSingleVector.Add(const AValue: Single): Boolean;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4443,6 +4515,8 @@ function TJclSingleVector.AddAll(const ACollection: IJclSingleCollection): Boole
 var
   It: IJclSingleIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4478,6 +4552,8 @@ procedure TJclSingleVector.Clear;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4543,6 +4619,8 @@ end;
 
 function TJclSingleVector.Delete(Index: Integer): Single;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4652,6 +4730,8 @@ function TJclSingleVector.Insert(Index: Integer; const AValue: Single): Boolean;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4692,6 +4772,8 @@ function TJclSingleVector.InsertAll(Index: Integer; const ACollection: IJclSingl
 var
   It: IJclSingleIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4748,6 +4830,8 @@ function TJclSingleVector.Remove(const AValue: Single): Boolean;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4774,6 +4858,8 @@ function TJclSingleVector.RemoveAll(const ACollection: IJclSingleCollection): Bo
 var
   It: IJclSingleIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4796,6 +4882,8 @@ function TJclSingleVector.RetainAll(const ACollection: IJclSingleCollection): Bo
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4816,6 +4904,8 @@ end;
 
 procedure TJclSingleVector.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4836,6 +4926,8 @@ var
   ReplaceItem: Boolean;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4899,12 +4991,13 @@ end;
 
 constructor TJclDoubleVector.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   SetCapacity(ACapacity);
 end;
 
 destructor TJclDoubleVector.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -4913,6 +5006,8 @@ function TJclDoubleVector.Add(const AValue: Double): Boolean;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4950,6 +5045,8 @@ function TJclDoubleVector.AddAll(const ACollection: IJclDoubleCollection): Boole
 var
   It: IJclDoubleIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4985,6 +5082,8 @@ procedure TJclDoubleVector.Clear;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5050,6 +5149,8 @@ end;
 
 function TJclDoubleVector.Delete(Index: Integer): Double;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5159,6 +5260,8 @@ function TJclDoubleVector.Insert(Index: Integer; const AValue: Double): Boolean;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5199,6 +5302,8 @@ function TJclDoubleVector.InsertAll(Index: Integer; const ACollection: IJclDoubl
 var
   It: IJclDoubleIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5255,6 +5360,8 @@ function TJclDoubleVector.Remove(const AValue: Double): Boolean;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5281,6 +5388,8 @@ function TJclDoubleVector.RemoveAll(const ACollection: IJclDoubleCollection): Bo
 var
   It: IJclDoubleIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5303,6 +5412,8 @@ function TJclDoubleVector.RetainAll(const ACollection: IJclDoubleCollection): Bo
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5323,6 +5434,8 @@ end;
 
 procedure TJclDoubleVector.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5343,6 +5456,8 @@ var
   ReplaceItem: Boolean;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5406,12 +5521,13 @@ end;
 
 constructor TJclExtendedVector.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   SetCapacity(ACapacity);
 end;
 
 destructor TJclExtendedVector.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -5420,6 +5536,8 @@ function TJclExtendedVector.Add(const AValue: Extended): Boolean;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5457,6 +5575,8 @@ function TJclExtendedVector.AddAll(const ACollection: IJclExtendedCollection): B
 var
   It: IJclExtendedIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5492,6 +5612,8 @@ procedure TJclExtendedVector.Clear;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5557,6 +5679,8 @@ end;
 
 function TJclExtendedVector.Delete(Index: Integer): Extended;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5666,6 +5790,8 @@ function TJclExtendedVector.Insert(Index: Integer; const AValue: Extended): Bool
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5706,6 +5832,8 @@ function TJclExtendedVector.InsertAll(Index: Integer; const ACollection: IJclExt
 var
   It: IJclExtendedIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5762,6 +5890,8 @@ function TJclExtendedVector.Remove(const AValue: Extended): Boolean;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5788,6 +5918,8 @@ function TJclExtendedVector.RemoveAll(const ACollection: IJclExtendedCollection)
 var
   It: IJclExtendedIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5810,6 +5942,8 @@ function TJclExtendedVector.RetainAll(const ACollection: IJclExtendedCollection)
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5830,6 +5964,8 @@ end;
 
 procedure TJclExtendedVector.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5850,6 +5986,8 @@ var
   ReplaceItem: Boolean;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5913,12 +6051,13 @@ end;
 
 constructor TJclIntegerVector.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   SetCapacity(ACapacity);
 end;
 
 destructor TJclIntegerVector.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -5927,6 +6066,8 @@ function TJclIntegerVector.Add(AValue: Integer): Boolean;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5964,6 +6105,8 @@ function TJclIntegerVector.AddAll(const ACollection: IJclIntegerCollection): Boo
 var
   It: IJclIntegerIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5999,6 +6142,8 @@ procedure TJclIntegerVector.Clear;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6064,6 +6209,8 @@ end;
 
 function TJclIntegerVector.Delete(Index: Integer): Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6173,6 +6320,8 @@ function TJclIntegerVector.Insert(Index: Integer; AValue: Integer): Boolean;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6213,6 +6362,8 @@ function TJclIntegerVector.InsertAll(Index: Integer; const ACollection: IJclInte
 var
   It: IJclIntegerIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6269,6 +6420,8 @@ function TJclIntegerVector.Remove(AValue: Integer): Boolean;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6295,6 +6448,8 @@ function TJclIntegerVector.RemoveAll(const ACollection: IJclIntegerCollection): 
 var
   It: IJclIntegerIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6317,6 +6472,8 @@ function TJclIntegerVector.RetainAll(const ACollection: IJclIntegerCollection): 
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6337,6 +6494,8 @@ end;
 
 procedure TJclIntegerVector.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6357,6 +6516,8 @@ var
   ReplaceItem: Boolean;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6420,12 +6581,13 @@ end;
 
 constructor TJclCardinalVector.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   SetCapacity(ACapacity);
 end;
 
 destructor TJclCardinalVector.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -6434,6 +6596,8 @@ function TJclCardinalVector.Add(AValue: Cardinal): Boolean;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6471,6 +6635,8 @@ function TJclCardinalVector.AddAll(const ACollection: IJclCardinalCollection): B
 var
   It: IJclCardinalIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6506,6 +6672,8 @@ procedure TJclCardinalVector.Clear;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6571,6 +6739,8 @@ end;
 
 function TJclCardinalVector.Delete(Index: Integer): Cardinal;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6680,6 +6850,8 @@ function TJclCardinalVector.Insert(Index: Integer; AValue: Cardinal): Boolean;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6720,6 +6892,8 @@ function TJclCardinalVector.InsertAll(Index: Integer; const ACollection: IJclCar
 var
   It: IJclCardinalIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6776,6 +6950,8 @@ function TJclCardinalVector.Remove(AValue: Cardinal): Boolean;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6802,6 +6978,8 @@ function TJclCardinalVector.RemoveAll(const ACollection: IJclCardinalCollection)
 var
   It: IJclCardinalIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6824,6 +7002,8 @@ function TJclCardinalVector.RetainAll(const ACollection: IJclCardinalCollection)
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6844,6 +7024,8 @@ end;
 
 procedure TJclCardinalVector.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6864,6 +7046,8 @@ var
   ReplaceItem: Boolean;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6927,12 +7111,13 @@ end;
 
 constructor TJclInt64Vector.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   SetCapacity(ACapacity);
 end;
 
 destructor TJclInt64Vector.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -6941,6 +7126,8 @@ function TJclInt64Vector.Add(const AValue: Int64): Boolean;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6978,6 +7165,8 @@ function TJclInt64Vector.AddAll(const ACollection: IJclInt64Collection): Boolean
 var
   It: IJclInt64Iterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7013,6 +7202,8 @@ procedure TJclInt64Vector.Clear;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7078,6 +7269,8 @@ end;
 
 function TJclInt64Vector.Delete(Index: Integer): Int64;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7187,6 +7380,8 @@ function TJclInt64Vector.Insert(Index: Integer; const AValue: Int64): Boolean;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7227,6 +7422,8 @@ function TJclInt64Vector.InsertAll(Index: Integer; const ACollection: IJclInt64C
 var
   It: IJclInt64Iterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7283,6 +7480,8 @@ function TJclInt64Vector.Remove(const AValue: Int64): Boolean;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7309,6 +7508,8 @@ function TJclInt64Vector.RemoveAll(const ACollection: IJclInt64Collection): Bool
 var
   It: IJclInt64Iterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7331,6 +7532,8 @@ function TJclInt64Vector.RetainAll(const ACollection: IJclInt64Collection): Bool
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7351,6 +7554,8 @@ end;
 
 procedure TJclInt64Vector.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7371,6 +7576,8 @@ var
   ReplaceItem: Boolean;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7436,12 +7643,13 @@ end;
 
 constructor TJclPtrVector.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   SetCapacity(ACapacity);
 end;
 
 destructor TJclPtrVector.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -7450,6 +7658,8 @@ function TJclPtrVector.Add(APtr: Pointer): Boolean;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7487,6 +7697,8 @@ function TJclPtrVector.AddAll(const ACollection: IJclPtrCollection): Boolean;
 var
   It: IJclPtrIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7522,6 +7734,8 @@ procedure TJclPtrVector.Clear;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7587,6 +7801,8 @@ end;
 
 function TJclPtrVector.Delete(Index: Integer): Pointer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7696,6 +7912,8 @@ function TJclPtrVector.Insert(Index: Integer; APtr: Pointer): Boolean;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7736,6 +7954,8 @@ function TJclPtrVector.InsertAll(Index: Integer; const ACollection: IJclPtrColle
 var
   It: IJclPtrIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7792,6 +8012,8 @@ function TJclPtrVector.Remove(APtr: Pointer): Boolean;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7818,6 +8040,8 @@ function TJclPtrVector.RemoveAll(const ACollection: IJclPtrCollection): Boolean;
 var
   It: IJclPtrIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7840,6 +8064,8 @@ function TJclPtrVector.RetainAll(const ACollection: IJclPtrCollection): Boolean;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7860,6 +8086,8 @@ end;
 
 procedure TJclPtrVector.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7880,6 +8108,8 @@ var
   ReplaceItem: Boolean;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7944,12 +8174,13 @@ end;
 
 constructor TJclVector.Create(ACapacity: Integer; AOwnsObjects: Boolean);
 begin
-  inherited Create(nil, AOwnsObjects);
+  inherited Create(AOwnsObjects);
   SetCapacity(ACapacity);
 end;
 
 destructor TJclVector.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -7958,6 +8189,8 @@ function TJclVector.Add(AObject: TObject): Boolean;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7995,6 +8228,8 @@ function TJclVector.AddAll(const ACollection: IJclCollection): Boolean;
 var
   It: IJclIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8030,6 +8265,8 @@ procedure TJclVector.Clear;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8095,6 +8332,8 @@ end;
 
 function TJclVector.Delete(Index: Integer): TObject;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8204,6 +8443,8 @@ function TJclVector.Insert(Index: Integer; AObject: TObject): Boolean;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8244,6 +8485,8 @@ function TJclVector.InsertAll(Index: Integer; const ACollection: IJclCollection)
 var
   It: IJclIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8300,6 +8543,8 @@ function TJclVector.Remove(AObject: TObject): Boolean;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8326,6 +8571,8 @@ function TJclVector.RemoveAll(const ACollection: IJclCollection): Boolean;
 var
   It: IJclIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8348,6 +8595,8 @@ function TJclVector.RetainAll(const ACollection: IJclCollection): Boolean;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8368,6 +8617,8 @@ end;
 
 procedure TJclVector.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8388,6 +8639,8 @@ var
   ReplaceItem: Boolean;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8453,12 +8706,13 @@ end;
 
 constructor TJclVector<T>.Create(ACapacity: Integer; AOwnsItems: Boolean);
 begin
-  inherited Create(nil, AOwnsItems);
+  inherited Create(AOwnsItems);
   SetCapacity(ACapacity);
 end;
 
 destructor TJclVector<T>.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -8467,6 +8721,8 @@ function TJclVector<T>.Add(const AItem: T): Boolean;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8504,6 +8760,8 @@ function TJclVector<T>.AddAll(const ACollection: IJclCollection<T>): Boolean;
 var
   It: IJclIterator<T>;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8539,6 +8797,8 @@ procedure TJclVector<T>.Clear;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8599,6 +8859,8 @@ end;
 
 function TJclVector<T>.Delete(Index: Integer): T;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8708,6 +8970,8 @@ function TJclVector<T>.Insert(Index: Integer; const AItem: T): Boolean;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8748,6 +9012,8 @@ function TJclVector<T>.InsertAll(Index: Integer; const ACollection: IJclCollecti
 var
   It: IJclIterator<T>;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8804,6 +9070,8 @@ function TJclVector<T>.Remove(const AItem: T): Boolean;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8830,6 +9098,8 @@ function TJclVector<T>.RemoveAll(const ACollection: IJclCollection<T>): Boolean;
 var
   It: IJclIterator<T>;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8852,6 +9122,8 @@ function TJclVector<T>.RetainAll(const ACollection: IJclCollection<T>): Boolean;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8872,6 +9144,8 @@ end;
 
 procedure TJclVector<T>.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8892,6 +9166,8 @@ var
   ReplaceItem: Boolean;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try

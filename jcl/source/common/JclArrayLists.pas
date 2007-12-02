@@ -716,7 +716,7 @@ type
 
 constructor TIntfItr.Create(const AOwnList: IJclIntfList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
-  inherited Create(AOwnList, AValid);
+  inherited Create(AValid);
   FOwnList := AOwnList;
   FStart := AStart;
   FCursor := ACursor;
@@ -897,7 +897,7 @@ type
 
 constructor TAnsiStrItr.Create(const AOwnList: IJclAnsiStrList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
-  inherited Create(AOwnList, AValid);
+  inherited Create(AValid);
   FOwnList := AOwnList;
   FStart := AStart;
   FCursor := ACursor;
@@ -1078,7 +1078,7 @@ type
 
 constructor TWideStrItr.Create(const AOwnList: IJclWideStrList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
-  inherited Create(AOwnList, AValid);
+  inherited Create(AValid);
   FOwnList := AOwnList;
   FStart := AStart;
   FCursor := ACursor;
@@ -1259,7 +1259,7 @@ type
 
 constructor TSingleItr.Create(const AOwnList: IJclSingleList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
-  inherited Create(AOwnList, AValid);
+  inherited Create(AValid);
   FOwnList := AOwnList;
   FStart := AStart;
   FCursor := ACursor;
@@ -1440,7 +1440,7 @@ type
 
 constructor TDoubleItr.Create(const AOwnList: IJclDoubleList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
-  inherited Create(AOwnList, AValid);
+  inherited Create(AValid);
   FOwnList := AOwnList;
   FStart := AStart;
   FCursor := ACursor;
@@ -1621,7 +1621,7 @@ type
 
 constructor TExtendedItr.Create(const AOwnList: IJclExtendedList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
-  inherited Create(AOwnList, AValid);
+  inherited Create(AValid);
   FOwnList := AOwnList;
   FStart := AStart;
   FCursor := ACursor;
@@ -1802,7 +1802,7 @@ type
 
 constructor TIntegerItr.Create(const AOwnList: IJclIntegerList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
-  inherited Create(AOwnList, AValid);
+  inherited Create(AValid);
   FOwnList := AOwnList;
   FStart := AStart;
   FCursor := ACursor;
@@ -1983,7 +1983,7 @@ type
 
 constructor TCardinalItr.Create(const AOwnList: IJclCardinalList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
-  inherited Create(AOwnList, AValid);
+  inherited Create(AValid);
   FOwnList := AOwnList;
   FStart := AStart;
   FCursor := ACursor;
@@ -2164,7 +2164,7 @@ type
 
 constructor TInt64Itr.Create(const AOwnList: IJclInt64List; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
-  inherited Create(AOwnList, AValid);
+  inherited Create(AValid);
   FOwnList := AOwnList;
   FStart := AStart;
   FCursor := ACursor;
@@ -2346,7 +2346,7 @@ type
 
 constructor TPtrItr.Create(const AOwnList: IJclPtrList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
-  inherited Create(AOwnList, AValid);
+  inherited Create(AValid);
   FOwnList := AOwnList;
   FStart := AStart;
   FCursor := ACursor;
@@ -2528,7 +2528,7 @@ type
 
 constructor TItr.Create(const AOwnList: IJclList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
-  inherited Create(AOwnList, AValid);
+  inherited Create(AValid);
   FOwnList := AOwnList;
   FStart := AStart;
   FCursor := ACursor;
@@ -2711,7 +2711,7 @@ type
 
 constructor TItr<T>.Create(const AOwnList: IJclList<T>; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
-  inherited Create(AOwnList, AValid);
+  inherited Create(AValid);
   FOwnList := AOwnList;
   FStart := AStart;
   FCursor := ACursor;
@@ -2860,7 +2860,7 @@ end;
 
 constructor TJclIntfArrayList.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   FSize := 0;
   if ACapacity < 0 then
     FCapacity := 0
@@ -2875,12 +2875,16 @@ begin
   // inherited Create;
   if ACollection = nil then
     raise EJclNoCollectionError.Create;
-  Create(ACollection.Size);
+  Create();
+  FSize := 0;
+  FCapacity := ACollection.Size;
+  SetLength(FElementData, FCapacity);
   AddAll(ACollection);
 end;
 
 destructor TJclIntfArrayList.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -2889,6 +2893,8 @@ function TJclIntfArrayList.Add(const AInterface: IInterface): Boolean;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -2930,6 +2936,8 @@ var
   AddItem: Boolean;
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -2998,6 +3006,8 @@ procedure TJclIntfArrayList.Clear;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3065,6 +3075,8 @@ end;
 
 function TJclIntfArrayList.Delete(Index: Integer): IInterface;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3170,6 +3182,8 @@ end;
 
 function TJclIntfArrayList.Insert(Index: Integer; const AInterface: IInterface): Boolean;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3214,6 +3228,8 @@ function TJclIntfArrayList.InsertAll(Index: Integer; const ACollection: IJclIntf
 var
   It: IJclIntfIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3271,6 +3287,8 @@ function TJclIntfArrayList.Remove(const AInterface: IInterface): Boolean;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3299,6 +3317,8 @@ function TJclIntfArrayList.RemoveAll(const ACollection: IJclIntfCollection): Boo
 var
   It: IJclIntfIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3321,6 +3341,8 @@ function TJclIntfArrayList.RetainAll(const ACollection: IJclIntfCollection): Boo
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3341,6 +3363,8 @@ end;
 
 procedure TJclIntfArrayList.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3364,6 +3388,8 @@ var
   ReplaceItem: Boolean;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3427,7 +3453,7 @@ end;
 
 constructor TJclAnsiStrArrayList.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   FSize := 0;
   if ACapacity < 0 then
     FCapacity := 0
@@ -3442,12 +3468,16 @@ begin
   // inherited Create;
   if ACollection = nil then
     raise EJclNoCollectionError.Create;
-  Create(ACollection.Size);
+  Create();
+  FSize := 0;
+  FCapacity := ACollection.Size;
+  SetLength(FElementData, FCapacity);
   AddAll(ACollection);
 end;
 
 destructor TJclAnsiStrArrayList.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -3456,6 +3486,8 @@ function TJclAnsiStrArrayList.Add(const AString: AnsiString): Boolean;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3497,6 +3529,8 @@ var
   AddItem: Boolean;
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3565,6 +3599,8 @@ procedure TJclAnsiStrArrayList.Clear;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3632,6 +3668,8 @@ end;
 
 function TJclAnsiStrArrayList.Delete(Index: Integer): AnsiString;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3737,6 +3775,8 @@ end;
 
 function TJclAnsiStrArrayList.Insert(Index: Integer; const AString: AnsiString): Boolean;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3781,6 +3821,8 @@ function TJclAnsiStrArrayList.InsertAll(Index: Integer; const ACollection: IJclA
 var
   It: IJclAnsiStrIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3838,6 +3880,8 @@ function TJclAnsiStrArrayList.Remove(const AString: AnsiString): Boolean;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3866,6 +3910,8 @@ function TJclAnsiStrArrayList.RemoveAll(const ACollection: IJclAnsiStrCollection
 var
   It: IJclAnsiStrIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3888,6 +3934,8 @@ function TJclAnsiStrArrayList.RetainAll(const ACollection: IJclAnsiStrCollection
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3908,6 +3956,8 @@ end;
 
 procedure TJclAnsiStrArrayList.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3931,6 +3981,8 @@ var
   ReplaceItem: Boolean;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -3994,7 +4046,7 @@ end;
 
 constructor TJclWideStrArrayList.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   FSize := 0;
   if ACapacity < 0 then
     FCapacity := 0
@@ -4009,12 +4061,16 @@ begin
   // inherited Create;
   if ACollection = nil then
     raise EJclNoCollectionError.Create;
-  Create(ACollection.Size);
+  Create();
+  FSize := 0;
+  FCapacity := ACollection.Size;
+  SetLength(FElementData, FCapacity);
   AddAll(ACollection);
 end;
 
 destructor TJclWideStrArrayList.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -4023,6 +4079,8 @@ function TJclWideStrArrayList.Add(const AString: WideString): Boolean;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4064,6 +4122,8 @@ var
   AddItem: Boolean;
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4132,6 +4192,8 @@ procedure TJclWideStrArrayList.Clear;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4199,6 +4261,8 @@ end;
 
 function TJclWideStrArrayList.Delete(Index: Integer): WideString;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4304,6 +4368,8 @@ end;
 
 function TJclWideStrArrayList.Insert(Index: Integer; const AString: WideString): Boolean;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4348,6 +4414,8 @@ function TJclWideStrArrayList.InsertAll(Index: Integer; const ACollection: IJclW
 var
   It: IJclWideStrIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4405,6 +4473,8 @@ function TJclWideStrArrayList.Remove(const AString: WideString): Boolean;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4433,6 +4503,8 @@ function TJclWideStrArrayList.RemoveAll(const ACollection: IJclWideStrCollection
 var
   It: IJclWideStrIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4455,6 +4527,8 @@ function TJclWideStrArrayList.RetainAll(const ACollection: IJclWideStrCollection
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4475,6 +4549,8 @@ end;
 
 procedure TJclWideStrArrayList.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4498,6 +4574,8 @@ var
   ReplaceItem: Boolean;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4561,7 +4639,7 @@ end;
 
 constructor TJclSingleArrayList.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   FSize := 0;
   if ACapacity < 0 then
     FCapacity := 0
@@ -4576,12 +4654,16 @@ begin
   // inherited Create;
   if ACollection = nil then
     raise EJclNoCollectionError.Create;
-  Create(ACollection.Size);
+  Create();
+  FSize := 0;
+  FCapacity := ACollection.Size;
+  SetLength(FElementData, FCapacity);
   AddAll(ACollection);
 end;
 
 destructor TJclSingleArrayList.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -4590,6 +4672,8 @@ function TJclSingleArrayList.Add(const AValue: Single): Boolean;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4631,6 +4715,8 @@ var
   AddItem: Boolean;
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4699,6 +4785,8 @@ procedure TJclSingleArrayList.Clear;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4766,6 +4854,8 @@ end;
 
 function TJclSingleArrayList.Delete(Index: Integer): Single;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4871,6 +4961,8 @@ end;
 
 function TJclSingleArrayList.Insert(Index: Integer; const AValue: Single): Boolean;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4915,6 +5007,8 @@ function TJclSingleArrayList.InsertAll(Index: Integer; const ACollection: IJclSi
 var
   It: IJclSingleIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -4972,6 +5066,8 @@ function TJclSingleArrayList.Remove(const AValue: Single): Boolean;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5000,6 +5096,8 @@ function TJclSingleArrayList.RemoveAll(const ACollection: IJclSingleCollection):
 var
   It: IJclSingleIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5022,6 +5120,8 @@ function TJclSingleArrayList.RetainAll(const ACollection: IJclSingleCollection):
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5042,6 +5142,8 @@ end;
 
 procedure TJclSingleArrayList.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5065,6 +5167,8 @@ var
   ReplaceItem: Boolean;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5128,7 +5232,7 @@ end;
 
 constructor TJclDoubleArrayList.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   FSize := 0;
   if ACapacity < 0 then
     FCapacity := 0
@@ -5143,12 +5247,16 @@ begin
   // inherited Create;
   if ACollection = nil then
     raise EJclNoCollectionError.Create;
-  Create(ACollection.Size);
+  Create();
+  FSize := 0;
+  FCapacity := ACollection.Size;
+  SetLength(FElementData, FCapacity);
   AddAll(ACollection);
 end;
 
 destructor TJclDoubleArrayList.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -5157,6 +5265,8 @@ function TJclDoubleArrayList.Add(const AValue: Double): Boolean;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5198,6 +5308,8 @@ var
   AddItem: Boolean;
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5266,6 +5378,8 @@ procedure TJclDoubleArrayList.Clear;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5333,6 +5447,8 @@ end;
 
 function TJclDoubleArrayList.Delete(Index: Integer): Double;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5438,6 +5554,8 @@ end;
 
 function TJclDoubleArrayList.Insert(Index: Integer; const AValue: Double): Boolean;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5482,6 +5600,8 @@ function TJclDoubleArrayList.InsertAll(Index: Integer; const ACollection: IJclDo
 var
   It: IJclDoubleIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5539,6 +5659,8 @@ function TJclDoubleArrayList.Remove(const AValue: Double): Boolean;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5567,6 +5689,8 @@ function TJclDoubleArrayList.RemoveAll(const ACollection: IJclDoubleCollection):
 var
   It: IJclDoubleIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5589,6 +5713,8 @@ function TJclDoubleArrayList.RetainAll(const ACollection: IJclDoubleCollection):
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5609,6 +5735,8 @@ end;
 
 procedure TJclDoubleArrayList.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5632,6 +5760,8 @@ var
   ReplaceItem: Boolean;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5695,7 +5825,7 @@ end;
 
 constructor TJclExtendedArrayList.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   FSize := 0;
   if ACapacity < 0 then
     FCapacity := 0
@@ -5710,12 +5840,16 @@ begin
   // inherited Create;
   if ACollection = nil then
     raise EJclNoCollectionError.Create;
-  Create(ACollection.Size);
+  Create();
+  FSize := 0;
+  FCapacity := ACollection.Size;
+  SetLength(FElementData, FCapacity);
   AddAll(ACollection);
 end;
 
 destructor TJclExtendedArrayList.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -5724,6 +5858,8 @@ function TJclExtendedArrayList.Add(const AValue: Extended): Boolean;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5765,6 +5901,8 @@ var
   AddItem: Boolean;
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5833,6 +5971,8 @@ procedure TJclExtendedArrayList.Clear;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -5900,6 +6040,8 @@ end;
 
 function TJclExtendedArrayList.Delete(Index: Integer): Extended;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6005,6 +6147,8 @@ end;
 
 function TJclExtendedArrayList.Insert(Index: Integer; const AValue: Extended): Boolean;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6049,6 +6193,8 @@ function TJclExtendedArrayList.InsertAll(Index: Integer; const ACollection: IJcl
 var
   It: IJclExtendedIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6106,6 +6252,8 @@ function TJclExtendedArrayList.Remove(const AValue: Extended): Boolean;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6134,6 +6282,8 @@ function TJclExtendedArrayList.RemoveAll(const ACollection: IJclExtendedCollecti
 var
   It: IJclExtendedIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6156,6 +6306,8 @@ function TJclExtendedArrayList.RetainAll(const ACollection: IJclExtendedCollecti
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6176,6 +6328,8 @@ end;
 
 procedure TJclExtendedArrayList.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6199,6 +6353,8 @@ var
   ReplaceItem: Boolean;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6262,7 +6418,7 @@ end;
 
 constructor TJclIntegerArrayList.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   FSize := 0;
   if ACapacity < 0 then
     FCapacity := 0
@@ -6277,12 +6433,16 @@ begin
   // inherited Create;
   if ACollection = nil then
     raise EJclNoCollectionError.Create;
-  Create(ACollection.Size);
+  Create();
+  FSize := 0;
+  FCapacity := ACollection.Size;
+  SetLength(FElementData, FCapacity);
   AddAll(ACollection);
 end;
 
 destructor TJclIntegerArrayList.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -6291,6 +6451,8 @@ function TJclIntegerArrayList.Add(AValue: Integer): Boolean;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6332,6 +6494,8 @@ var
   AddItem: Boolean;
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6400,6 +6564,8 @@ procedure TJclIntegerArrayList.Clear;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6467,6 +6633,8 @@ end;
 
 function TJclIntegerArrayList.Delete(Index: Integer): Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6572,6 +6740,8 @@ end;
 
 function TJclIntegerArrayList.Insert(Index: Integer; AValue: Integer): Boolean;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6616,6 +6786,8 @@ function TJclIntegerArrayList.InsertAll(Index: Integer; const ACollection: IJclI
 var
   It: IJclIntegerIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6673,6 +6845,8 @@ function TJclIntegerArrayList.Remove(AValue: Integer): Boolean;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6701,6 +6875,8 @@ function TJclIntegerArrayList.RemoveAll(const ACollection: IJclIntegerCollection
 var
   It: IJclIntegerIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6723,6 +6899,8 @@ function TJclIntegerArrayList.RetainAll(const ACollection: IJclIntegerCollection
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6743,6 +6921,8 @@ end;
 
 procedure TJclIntegerArrayList.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6766,6 +6946,8 @@ var
   ReplaceItem: Boolean;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6829,7 +7011,7 @@ end;
 
 constructor TJclCardinalArrayList.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   FSize := 0;
   if ACapacity < 0 then
     FCapacity := 0
@@ -6844,12 +7026,16 @@ begin
   // inherited Create;
   if ACollection = nil then
     raise EJclNoCollectionError.Create;
-  Create(ACollection.Size);
+  Create();
+  FSize := 0;
+  FCapacity := ACollection.Size;
+  SetLength(FElementData, FCapacity);
   AddAll(ACollection);
 end;
 
 destructor TJclCardinalArrayList.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -6858,6 +7044,8 @@ function TJclCardinalArrayList.Add(AValue: Cardinal): Boolean;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6899,6 +7087,8 @@ var
   AddItem: Boolean;
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -6967,6 +7157,8 @@ procedure TJclCardinalArrayList.Clear;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7034,6 +7226,8 @@ end;
 
 function TJclCardinalArrayList.Delete(Index: Integer): Cardinal;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7139,6 +7333,8 @@ end;
 
 function TJclCardinalArrayList.Insert(Index: Integer; AValue: Cardinal): Boolean;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7183,6 +7379,8 @@ function TJclCardinalArrayList.InsertAll(Index: Integer; const ACollection: IJcl
 var
   It: IJclCardinalIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7240,6 +7438,8 @@ function TJclCardinalArrayList.Remove(AValue: Cardinal): Boolean;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7268,6 +7468,8 @@ function TJclCardinalArrayList.RemoveAll(const ACollection: IJclCardinalCollecti
 var
   It: IJclCardinalIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7290,6 +7492,8 @@ function TJclCardinalArrayList.RetainAll(const ACollection: IJclCardinalCollecti
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7310,6 +7514,8 @@ end;
 
 procedure TJclCardinalArrayList.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7333,6 +7539,8 @@ var
   ReplaceItem: Boolean;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7396,7 +7604,7 @@ end;
 
 constructor TJclInt64ArrayList.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   FSize := 0;
   if ACapacity < 0 then
     FCapacity := 0
@@ -7411,12 +7619,16 @@ begin
   // inherited Create;
   if ACollection = nil then
     raise EJclNoCollectionError.Create;
-  Create(ACollection.Size);
+  Create();
+  FSize := 0;
+  FCapacity := ACollection.Size;
+  SetLength(FElementData, FCapacity);
   AddAll(ACollection);
 end;
 
 destructor TJclInt64ArrayList.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -7425,6 +7637,8 @@ function TJclInt64ArrayList.Add(const AValue: Int64): Boolean;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7466,6 +7680,8 @@ var
   AddItem: Boolean;
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7534,6 +7750,8 @@ procedure TJclInt64ArrayList.Clear;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7601,6 +7819,8 @@ end;
 
 function TJclInt64ArrayList.Delete(Index: Integer): Int64;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7706,6 +7926,8 @@ end;
 
 function TJclInt64ArrayList.Insert(Index: Integer; const AValue: Int64): Boolean;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7750,6 +7972,8 @@ function TJclInt64ArrayList.InsertAll(Index: Integer; const ACollection: IJclInt
 var
   It: IJclInt64Iterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7807,6 +8031,8 @@ function TJclInt64ArrayList.Remove(const AValue: Int64): Boolean;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7835,6 +8061,8 @@ function TJclInt64ArrayList.RemoveAll(const ACollection: IJclInt64Collection): B
 var
   It: IJclInt64Iterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7857,6 +8085,8 @@ function TJclInt64ArrayList.RetainAll(const ACollection: IJclInt64Collection): B
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7877,6 +8107,8 @@ end;
 
 procedure TJclInt64ArrayList.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7900,6 +8132,8 @@ var
   ReplaceItem: Boolean;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -7964,7 +8198,7 @@ end;
 
 constructor TJclPtrArrayList.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   FSize := 0;
   if ACapacity < 0 then
     FCapacity := 0
@@ -7979,12 +8213,16 @@ begin
   // inherited Create;
   if ACollection = nil then
     raise EJclNoCollectionError.Create;
-  Create(ACollection.Size);
+  Create();
+  FSize := 0;
+  FCapacity := ACollection.Size;
+  SetLength(FElementData, FCapacity);
   AddAll(ACollection);
 end;
 
 destructor TJclPtrArrayList.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -7993,6 +8231,8 @@ function TJclPtrArrayList.Add(APtr: Pointer): Boolean;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8034,6 +8274,8 @@ var
   AddItem: Boolean;
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8102,6 +8344,8 @@ procedure TJclPtrArrayList.Clear;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8169,6 +8413,8 @@ end;
 
 function TJclPtrArrayList.Delete(Index: Integer): Pointer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8274,6 +8520,8 @@ end;
 
 function TJclPtrArrayList.Insert(Index: Integer; APtr: Pointer): Boolean;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8318,6 +8566,8 @@ function TJclPtrArrayList.InsertAll(Index: Integer; const ACollection: IJclPtrCo
 var
   It: IJclPtrIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8375,6 +8625,8 @@ function TJclPtrArrayList.Remove(APtr: Pointer): Boolean;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8403,6 +8655,8 @@ function TJclPtrArrayList.RemoveAll(const ACollection: IJclPtrCollection): Boole
 var
   It: IJclPtrIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8425,6 +8679,8 @@ function TJclPtrArrayList.RetainAll(const ACollection: IJclPtrCollection): Boole
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8445,6 +8701,8 @@ end;
 
 procedure TJclPtrArrayList.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8468,6 +8726,8 @@ var
   ReplaceItem: Boolean;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8532,7 +8792,7 @@ end;
 
 constructor TJclArrayList.Create(ACapacity: Integer; AOwnsObjects: Boolean);
 begin
-  inherited Create(nil, AOwnsObjects);
+  inherited Create(AOwnsObjects);
   FSize := 0;
   if ACapacity < 0 then
     FCapacity := 0
@@ -8547,12 +8807,16 @@ begin
   // inherited Create;
   if ACollection = nil then
     raise EJclNoCollectionError.Create;
-  Create(ACollection.Size, AOwnsObjects);
+  Create(AOwnsObjects);
+  FSize := 0;
+  FCapacity := ACollection.Size;
+  SetLength(FElementData, FCapacity);
   AddAll(ACollection);
 end;
 
 destructor TJclArrayList.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -8561,6 +8825,8 @@ function TJclArrayList.Add(AObject: TObject): Boolean;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8602,6 +8868,8 @@ var
   AddItem: Boolean;
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8670,6 +8938,8 @@ procedure TJclArrayList.Clear;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8737,6 +9007,8 @@ end;
 
 function TJclArrayList.Delete(Index: Integer): TObject;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8842,6 +9114,8 @@ end;
 
 function TJclArrayList.Insert(Index: Integer; AObject: TObject): Boolean;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8886,6 +9160,8 @@ function TJclArrayList.InsertAll(Index: Integer; const ACollection: IJclCollecti
 var
   It: IJclIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8943,6 +9219,8 @@ function TJclArrayList.Remove(AObject: TObject): Boolean;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8971,6 +9249,8 @@ function TJclArrayList.RemoveAll(const ACollection: IJclCollection): Boolean;
 var
   It: IJclIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -8993,6 +9273,8 @@ function TJclArrayList.RetainAll(const ACollection: IJclCollection): Boolean;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -9013,6 +9295,8 @@ end;
 
 procedure TJclArrayList.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -9036,6 +9320,8 @@ var
   ReplaceItem: Boolean;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -9100,7 +9386,7 @@ end;
 
 constructor TJclArrayList<T>.Create(ACapacity: Integer; AOwnsItems: Boolean);
 begin
-  inherited Create(nil, AOwnsItems);
+  inherited Create(AOwnsItems);
   FSize := 0;
   if ACapacity < 0 then
     FCapacity := 0
@@ -9115,12 +9401,16 @@ begin
   // inherited Create;
   if ACollection = nil then
     raise EJclNoCollectionError.Create;
-  Create(ACollection.Size, AOwnsItems);
+  Create(AOwnsItems);
+  FSize := 0;
+  FCapacity := ACollection.Size;
+  SetLength(FElementData, FCapacity);
   AddAll(ACollection);
 end;
 
 destructor TJclArrayList<T>.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -9129,6 +9419,8 @@ function TJclArrayList<T>.Add(const AItem: T): Boolean;
 var
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -9170,6 +9462,8 @@ var
   AddItem: Boolean;
   Index: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -9238,6 +9532,8 @@ procedure TJclArrayList<T>.Clear;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -9300,6 +9596,8 @@ end;
 
 function TJclArrayList<T>.Delete(Index: Integer): T;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -9405,6 +9703,8 @@ end;
 
 function TJclArrayList<T>.Insert(Index: Integer; const AItem: T): Boolean;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -9449,6 +9749,8 @@ function TJclArrayList<T>.InsertAll(Index: Integer; const ACollection: IJclColle
 var
   It: IJclIterator<T>;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -9506,6 +9808,8 @@ function TJclArrayList<T>.Remove(const AItem: T): Boolean;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -9534,6 +9838,8 @@ function TJclArrayList<T>.RemoveAll(const ACollection: IJclCollection<T>): Boole
 var
   It: IJclIterator<T>;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -9556,6 +9862,8 @@ function TJclArrayList<T>.RetainAll(const ACollection: IJclCollection<T>): Boole
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -9576,6 +9884,8 @@ end;
 
 procedure TJclArrayList<T>.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -9599,6 +9909,8 @@ var
   ReplaceItem: Boolean;
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try

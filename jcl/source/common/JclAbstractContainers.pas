@@ -64,7 +64,7 @@ type
   TJclAbstractLockable = class(TInterfacedObject {$IFDEF THREADSAFE}, IJclLockable {$ENDIF THREADSAFE})
   {$IFDEF THREADSAFE}
   private
-    FLockDelegate: IJclLockable;
+    FThreadSafe: Boolean;
     {$IFDEF CLR}
     FReaderWriterLock: ReaderWriterLock;
     FUpgradedWrite: Boolean;
@@ -80,8 +80,7 @@ type
   public
     destructor Destroy; override;
   {$ENDIF THREADSAFE}
-  public
-    constructor Create(const ALockDelegate: IInterface);
+    constructor Create;
   end;
 
   TJclAbstractContainerBase = class(TJclAbstractLockable, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -91,6 +90,7 @@ type
     FDuplicates: TDuplicates;
     FRemoveSingleElement: Boolean;
     FReturnDefaultElements: Boolean;
+    FReadOnly: Boolean;
     FCapacity: Integer;
     FSize: Integer;
     FAutoGrowParameter: Integer;
@@ -109,12 +109,16 @@ type
     function GetAllowDefaultElements: Boolean; virtual;
     function GetContainerReference: TObject;
     function GetDuplicates: TDuplicates; virtual;
+    function GetReadOnly: Boolean; virtual;
     function GetRemoveSingleElement: Boolean; virtual;
     function GetReturnDefaultElements: Boolean; virtual;
+    function GetThreadSafe: Boolean; virtual;
     procedure SetAllowDefaultElements(Value: Boolean); virtual;
     procedure SetDuplicates(Value: TDuplicates); virtual;
+    procedure SetReadOnly(Value: Boolean); virtual;
     procedure SetRemoveSingleElement(Value: Boolean); virtual;
     procedure SetReturnDefaultElements(Value: Boolean); virtual;
+    procedure SetThreadSafe(Value: Boolean); virtual;
     { IJclCloneable }
     function Clone: TObject;
     { IJclIntfCloneable }
@@ -139,11 +143,13 @@ type
     procedure SetAutoPackStrategy(Value: TJclAutoPackStrategy); virtual;
     procedure SetCapacity(Value: Integer); virtual;
   public
-    constructor Create(const ALockDelegate: IInterface);
+    constructor Create;
     property AllowDefaultElements: Boolean read GetAllowDefaultElements write SetAllowDefaultElements;
     property Duplicates: TDuplicates read GetDuplicates write SetDuplicates;
+    property ReadOnly: Boolean read GetReadOnly write SetReadOnly;
     property RemoveSingleElement: Boolean read GetRemoveSingleElement write SetRemoveSingleElement;
     property ReturnDefaultElements: Boolean read GetReturnDefaultElements write SetReturnDefaultElements;
+    property ThreadSafe: Boolean read GetThreadSafe write SetThreadSafe;
     property AutoGrowParameter: Integer read GetAutoGrowParameter write SetAutoGrowParameter;
     property AutoGrowStrategy: TJclAutoGrowStrategy read GetAutoGrowStrategy write SetAutoGrowStrategy;
     property AutoPackParameter: Integer read GetAutoPackParameter write SetAutoPackParameter;
@@ -168,7 +174,7 @@ type
     function IntfClone: IInterface;
     function IJclIntfCloneable.Clone = IntfClone;
   public
-    constructor Create(const ALockDelegate: IInterface; AValid: Boolean);
+    constructor Create(AValid: Boolean);
     property Valid: Boolean read FValid write FValid;
   end;
 
@@ -528,7 +534,7 @@ type
     procedure SetHashConvert(Value: THashConvert); virtual;
     function Hash(AObject: TObject): Integer; virtual;
   public
-    constructor Create(const ALockDelegate: IInterface; AOwnsObjects: Boolean);
+    constructor Create(AOwnsObjects: Boolean);
     property OwnsObjects: Boolean read FOwnsObjects;
     property EqualityCompare: TEqualityCompare read GetEqualityCompare write SetEqualityCompare;
     property Compare: TCompare read GetCompare write SetCompare;
@@ -563,7 +569,7 @@ type
     procedure SetHashConvert(Value: THashConvert<T>); virtual;
     function Hash(const AItem: T): Integer; virtual;
   public
-    constructor Create(const ALockDelegate: IInterface; AOwnsItems: Boolean);
+    constructor Create(AOwnsItems: Boolean);
     property OwnsItems: Boolean read FOwnsItems;
     property EqualityCompare: TEqualityCompare<T> read GetEqualityCompare write SetEqualityCompare;
     property Compare: TCompare<T> read GetCompare write SetCompare;
@@ -652,17 +658,16 @@ uses
 
 //=== { TJclAbstractLockable } ===============================================
 
-constructor TJclAbstractLockable.Create(const ALockDelegate: IInterface);
+constructor TJclAbstractLockable.Create;
 begin
   inherited Create;
   {$IFDEF THREADSAFE}
-  FLockDelegate := ALockDelegate as IJclLockable;
-  if FLockDelegate = nil then
-    {$IFDEF CLR}
-    FReaderWriterLock := ReaderWriterLock.Create;
-    {$ELSE ~CLR}
-    FCriticalSection := TCriticalSection.Create;
-    {$ENDIF ~CLR}
+  {$IFDEF CLR}
+  FReaderWriterLock := ReaderWriterLock.Create;
+  {$ELSE ~CLR}
+  FCriticalSection := TCriticalSection.Create;
+  {$ENDIF ~CLR}
+  FThreadSafe := True;
   {$ENDIF THREADSAFE}
 end;
 
@@ -674,15 +679,13 @@ begin
   {$ELSE ~CLR}
   FCriticalSection.Free;
   {$ENDIF ~CLR}
-  FLockDelegate := nil;
   inherited Destroy;
 end;
 
 procedure TJclAbstractLockable.ReadLock;
 begin
-  if FLockDelegate <> nil then
-    FLockDelegate.ReadLock
-  else
+  if FThreadSafe then
+  begin
     {$IFDEF CLR}
     // if current thread has write access, no need to request a read access
     if not FReaderWriterLock.IsWriterLockHeld then
@@ -690,13 +693,13 @@ begin
     {$ELSE ~CLR}
     FCriticalSection.Acquire;
     {$ENDIF ~CLR}
+  end;
 end;
 
 procedure TJclAbstractLockable.ReadUnlock;
 begin
-  if FLockDelegate <> nil then
-    FLockDelegate.ReadUnlock
-  else
+  if FThreadSafe then
+  begin
     {$IFDEF CLR}
     // if current thread has write access, no need to release read access
     if not FReaderWriterLock.IsWriterLockHeld then
@@ -704,13 +707,13 @@ begin
     {$ELSE ~CLR}
     FCriticalSection.Release;
     {$ENDIF ~CLR}
+  end;
 end;
 
 procedure TJclAbstractLockable.WriteLock;
 begin
-  if FLockDelegate <> nil then
-    FLockDelegate.WriteLock
-  else
+  if FThreadSafe then
+  begin
     {$IFDEF CLR}
     if FReaderWriterLock.IsReaderLockHeld then
     begin
@@ -722,13 +725,13 @@ begin
     {$ELSE ~CLR}
     FCriticalSection.Acquire;
     {$ENDIF ~CLR}
+  end;
 end;
 
 procedure TJclAbstractLockable.WriteUnlock;
 begin
-  if FLockDelegate <> nil then
-    FLockDelegate.WriteUnlock
-  else
+  if FThreadSafe then
+  begin
     {$IFDEF CLR}
     if FUpgradedWrite then
     begin
@@ -740,14 +743,15 @@ begin
     {$ELSE ~CLR}
     FCriticalSection.Release;
     {$ENDIF ~CLR}
+  end;
 end;
 {$ENDIF THREADSAFE}
 
 //=== { TJclAbstractContainerBase } ==========================================
 
-constructor TJclAbstractContainerBase.Create(const ALockDelegate: IInterface);
+constructor TJclAbstractContainerBase.Create;
 begin
-  inherited Create(ALockDelegate);
+  inherited Create;
 
   FAllowDefaultElements := True;
   FDuplicates := dupAccept;
@@ -767,6 +771,8 @@ end;
 procedure TJclAbstractContainerBase.AssignDataTo(Dest: TJclAbstractContainerBase);
 begin
   // override to customize
+  if Dest.ReadOnly then
+    raise EJclReadOnlyError.Create;
 end;
 
 procedure TJclAbstractContainerBase.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
@@ -925,6 +931,11 @@ begin
   Result := FDuplicates;
 end;
 
+function TJclAbstractContainerBase.GetReadOnly: Boolean;
+begin
+  Result := FReadOnly;
+end;
+
 function TJclAbstractContainerBase.GetRemoveSingleElement: Boolean;
 begin
   Result := FRemoveSingleElement;
@@ -933,6 +944,15 @@ end;
 function TJclAbstractContainerBase.GetReturnDefaultElements: Boolean;
 begin
   Result := FReturnDefaultElements;
+end;
+
+function TJclAbstractContainerBase.GetThreadSafe: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  Result := FThreadSafe;
+  {$ELSE ~THREADSAFE}
+  Result := False;
+  {$ENDIF ~THREADSAFE}
 end;
 
 procedure TJclAbstractContainerBase.Grow;
@@ -1000,6 +1020,11 @@ begin
   FDuplicates := Value;
 end;
 
+procedure TJclAbstractContainerBase.SetReadOnly(Value: Boolean);
+begin
+  FReadOnly := Value;
+end;
+
 procedure TJclAbstractContainerBase.SetRemoveSingleElement(Value: Boolean);
 begin
   FRemoveSingleElement := Value;
@@ -1010,11 +1035,21 @@ begin
   FReturnDefaultElements := Value;
 end;
 
+procedure TJclAbstractContainerBase.SetThreadSafe(Value: Boolean);
+begin
+  {$IFDEF THREADSAFE}
+  FThreadSafe := Value;
+  {$ELSE ~THREADSAFE}
+  if Value then
+    raise EJclOperationNotSupportedError.Create;
+  {$ENDIF ~THREADSAFE}
+end;
+
 //=== { TJclAbstractIterator } ===============================================
 
-constructor TJclAbstractIterator.Create(const ALockDelegate: IInterface; AValid: Boolean);
+constructor TJclAbstractIterator.Create(AValid: Boolean);
 begin
-  inherited Create(ALockDelegate);
+  inherited Create;
   FValid := AValid;
 end;
 
@@ -2077,9 +2112,9 @@ end;
 
 //=== { TJclAbstractContainer } ==============================================
 
-constructor TJclAbstractContainer.Create(const ALockDelegate: IInterface; AOwnsObjects: Boolean);
+constructor TJclAbstractContainer.Create(AOwnsObjects: Boolean);
 begin
-  inherited Create(ALockDelegate);
+  inherited Create;
   FOwnsObjects := AOwnsObjects;
 end;
 
@@ -2182,9 +2217,9 @@ end;
 {$IFDEF SUPPORTS_GENERICS}
 //=== { TJclAbstractContainer<T> } ===========================================
 
-constructor TJclAbstractContainer<T>.Create(const ALockDelegate: IInterface; AOwnsItems: Boolean);
+constructor TJclAbstractContainer<T>.Create(AOwnsItems: Boolean);
 begin
-  inherited Create(ALockDelegate);
+  inherited Create;
   FOwnsItems := AOwnsItems;
 end;
 

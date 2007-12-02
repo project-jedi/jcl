@@ -52,7 +52,6 @@ uses
   JclAlgorithms,
   {$ENDIF SUPPORTS_GENERICS}
   JclBase, JclAbstractContainers, JclContainerIntf;
-
 type
 
   TJclIntfStack = class(TJclIntfAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -448,12 +447,13 @@ uses
 
 constructor TJclIntfStack.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   SetCapacity(ACapacity);
 end;
 
 destructor TJclIntfStack.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -479,6 +479,8 @@ procedure TJclIntfStack.Clear;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -547,6 +549,8 @@ end;
 
 function TJclIntfStack.Pop: IInterface;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -571,6 +575,8 @@ end;
 
 function TJclIntfStack.Push(const AInterface: IInterface): Boolean;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -592,6 +598,8 @@ end;
 
 procedure TJclIntfStack.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -617,12 +625,13 @@ end;
 
 constructor TJclAnsiStrStack.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   SetCapacity(ACapacity);
 end;
 
 destructor TJclAnsiStrStack.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -648,6 +657,8 @@ procedure TJclAnsiStrStack.Clear;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -716,6 +727,8 @@ end;
 
 function TJclAnsiStrStack.Pop: AnsiString;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -740,6 +753,8 @@ end;
 
 function TJclAnsiStrStack.Push(const AString: AnsiString): Boolean;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -761,6 +776,8 @@ end;
 
 procedure TJclAnsiStrStack.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -786,12 +803,13 @@ end;
 
 constructor TJclWideStrStack.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   SetCapacity(ACapacity);
 end;
 
 destructor TJclWideStrStack.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -817,6 +835,8 @@ procedure TJclWideStrStack.Clear;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -885,6 +905,8 @@ end;
 
 function TJclWideStrStack.Pop: WideString;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -909,6 +931,8 @@ end;
 
 function TJclWideStrStack.Push(const AString: WideString): Boolean;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -930,6 +954,8 @@ end;
 
 procedure TJclWideStrStack.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -955,12 +981,13 @@ end;
 
 constructor TJclSingleStack.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   SetCapacity(ACapacity);
 end;
 
 destructor TJclSingleStack.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -986,6 +1013,8 @@ procedure TJclSingleStack.Clear;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1054,6 +1083,8 @@ end;
 
 function TJclSingleStack.Pop: Single;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1078,6 +1109,8 @@ end;
 
 function TJclSingleStack.Push(const AValue: Single): Boolean;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1099,6 +1132,8 @@ end;
 
 procedure TJclSingleStack.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1124,12 +1159,13 @@ end;
 
 constructor TJclDoubleStack.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   SetCapacity(ACapacity);
 end;
 
 destructor TJclDoubleStack.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -1155,6 +1191,8 @@ procedure TJclDoubleStack.Clear;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1223,6 +1261,8 @@ end;
 
 function TJclDoubleStack.Pop: Double;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1247,6 +1287,8 @@ end;
 
 function TJclDoubleStack.Push(const AValue: Double): Boolean;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1268,6 +1310,8 @@ end;
 
 procedure TJclDoubleStack.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1293,12 +1337,13 @@ end;
 
 constructor TJclExtendedStack.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   SetCapacity(ACapacity);
 end;
 
 destructor TJclExtendedStack.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -1324,6 +1369,8 @@ procedure TJclExtendedStack.Clear;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1392,6 +1439,8 @@ end;
 
 function TJclExtendedStack.Pop: Extended;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1416,6 +1465,8 @@ end;
 
 function TJclExtendedStack.Push(const AValue: Extended): Boolean;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1437,6 +1488,8 @@ end;
 
 procedure TJclExtendedStack.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1462,12 +1515,13 @@ end;
 
 constructor TJclIntegerStack.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   SetCapacity(ACapacity);
 end;
 
 destructor TJclIntegerStack.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -1493,6 +1547,8 @@ procedure TJclIntegerStack.Clear;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1561,6 +1617,8 @@ end;
 
 function TJclIntegerStack.Pop: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1585,6 +1643,8 @@ end;
 
 function TJclIntegerStack.Push(AValue: Integer): Boolean;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1606,6 +1666,8 @@ end;
 
 procedure TJclIntegerStack.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1631,12 +1693,13 @@ end;
 
 constructor TJclCardinalStack.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   SetCapacity(ACapacity);
 end;
 
 destructor TJclCardinalStack.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -1662,6 +1725,8 @@ procedure TJclCardinalStack.Clear;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1730,6 +1795,8 @@ end;
 
 function TJclCardinalStack.Pop: Cardinal;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1754,6 +1821,8 @@ end;
 
 function TJclCardinalStack.Push(AValue: Cardinal): Boolean;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1775,6 +1844,8 @@ end;
 
 procedure TJclCardinalStack.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1800,12 +1871,13 @@ end;
 
 constructor TJclInt64Stack.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   SetCapacity(ACapacity);
 end;
 
 destructor TJclInt64Stack.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -1831,6 +1903,8 @@ procedure TJclInt64Stack.Clear;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1899,6 +1973,8 @@ end;
 
 function TJclInt64Stack.Pop: Int64;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1923,6 +1999,8 @@ end;
 
 function TJclInt64Stack.Push(const AValue: Int64): Boolean;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1944,6 +2022,8 @@ end;
 
 procedure TJclInt64Stack.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -1970,12 +2050,13 @@ end;
 
 constructor TJclPtrStack.Create(ACapacity: Integer);
 begin
-  inherited Create(nil);
+  inherited Create();
   SetCapacity(ACapacity);
 end;
 
 destructor TJclPtrStack.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -2001,6 +2082,8 @@ procedure TJclPtrStack.Clear;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -2069,6 +2152,8 @@ end;
 
 function TJclPtrStack.Pop: Pointer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -2093,6 +2178,8 @@ end;
 
 function TJclPtrStack.Push(APtr: Pointer): Boolean;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -2114,6 +2201,8 @@ end;
 
 procedure TJclPtrStack.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -2140,12 +2229,13 @@ end;
 
 constructor TJclStack.Create(ACapacity: Integer; AOwnsObjects: Boolean);
 begin
-  inherited Create(nil, AOwnsObjects);
+  inherited Create(AOwnsObjects);
   SetCapacity(ACapacity);
 end;
 
 destructor TJclStack.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -2171,6 +2261,8 @@ procedure TJclStack.Clear;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -2239,6 +2331,8 @@ end;
 
 function TJclStack.Pop: TObject;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -2263,6 +2357,8 @@ end;
 
 function TJclStack.Push(AObject: TObject): Boolean;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -2284,6 +2380,8 @@ end;
 
 procedure TJclStack.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -2311,12 +2409,13 @@ end;
 
 constructor TJclStack<T>.Create(ACapacity: Integer; AOwnsItems: Boolean);
 begin
-  inherited Create(nil, AOwnsItems);
+  inherited Create(AOwnsItems);
   SetCapacity(ACapacity);
 end;
 
 destructor TJclStack<T>.Destroy;
 begin
+  FReadOnly := False;
   Clear;
   inherited Destroy;
 end;
@@ -2342,6 +2441,8 @@ procedure TJclStack<T>.Clear;
 var
   I: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -2405,6 +2506,8 @@ end;
 
 function TJclStack<T>.Pop: T;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -2429,6 +2532,8 @@ end;
 
 function TJclStack<T>.Push(const AItem: T): Boolean;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try
@@ -2450,6 +2555,8 @@ end;
 
 procedure TJclStack<T>.SetCapacity(Value: Integer);
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   WriteLock;
   try

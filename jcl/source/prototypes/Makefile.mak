@@ -93,8 +93,49 @@ Containers:	..\Common\JclArrayLists.pas \
         echo Win-zlib
 	$(jpp) $(WinOptions) $(ZlibOptions) -uZLIB_DLL $?
 
-{containers}.imp{.}.pas:
-        $(touch) $@
+JclArrayLists.pas: \
+		containers\JclArrayLists.imp containers\JclContainerCommon.imp
+	$(touch) $@
+
+JclArraySets.pas: \
+		containers\JclArraySets.imp containers\JclContainerCommon.imp
+	$(touch) $@
+
+JclBinaryTrees.pas: \
+		containers\JclBinaryTrees.imp containers\JclContainerCommon.imp
+	$(touch) $@
+
+JclHashMaps.pas: \
+		containers\JclHashMaps.imp containers\JclContainerCommon.imp
+	$(touch) $@
+
+JclHashSets.pas: \
+		containers\JclHashSets.imp containers\JclContainerCommon.imp
+	$(touch) $@
+
+JclLinkedLists.pas: \
+		containers\JclLinkedLists.imp containers\JclContainerCommon.imp
+	$(touch) $@
+
+JclQueues.pas: \
+		containers\JclQueues.imp containers\JclContainerCommon.imp
+	$(touch) $@
+
+JclSortedMaps.pas: \
+		containers\JclSortedMaps.imp containers\JclContainerCommon.imp
+	$(touch) $@
+
+JclStacks.pas: \
+		containers\JclStacks.imp containers\JclContainerCommon.imp
+	$(touch) $@
+
+JclTrees.pas: \
+		containers\JclTrees.imp containers\JclContainerCommon.imp
+	$(touch) $@
+
+JclVectors.pas: \
+		containers\JclVectors.imp containers\JclContainerCommon.imp
+	$(touch) $@
 
 {.}.pas{..\common}.pas:
 	$(jpp) $(ContainerOptions) $<

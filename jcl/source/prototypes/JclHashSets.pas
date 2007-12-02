@@ -49,6 +49,7 @@ uses
   JclAlgorithms,
   {$ENDIF SUPPORTS_GENERICS}
   JclBase, JclAbstractContainers, JclContainerIntf, JclHashMaps;
+{$I containers\JclContainerCommon.imp}
 {$I containers\JclHashSets.imp}
 type
   {$IFDEF SUPPORTS_GENERICS}
@@ -575,7 +576,7 @@ begin
   Result := (FMap as IJclKeyOwner).GetOwnsKeys;
 end;
 }
-(*$JPPEXPANDMACRO JCLHASHSETIMP(TJclHashSet,IJclMap,IJclCollection,IJclIterator,\, False,AObject: TObject,AObject)*)
+(*$JPPEXPANDMACRO JCLHASHSETIMP(TJclHashSet,IJclMap,IJclCollection,IJclIterator,False,AObject: TObject,AObject)*)
 {$JPPUNDEFMACRO CONSTRUCTORADDITIONAL}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO GETTERADDITIONAL}
@@ -601,7 +602,7 @@ begin
   Result := (FMap as IJclPairOwner<T, TRefUnique>).GetOwnsKeys;
 end;
 }
-(*$JPPEXPANDMACRO JCLHASHSETIMP(TJclHashSet<T>,IJclMap<T\, TRefUnique>,IJclCollection<T>,IJclIterator<T>,\, False,const AItem: T,AItem)*)
+(*$JPPEXPANDMACRO JCLHASHSETIMP(TJclHashSet<T>,IJclMap<T\, TRefUnique>,IJclCollection<T>,IJclIterator<T>,False,const AItem: T,AItem)*)
 {$JPPUNDEFMACRO CONSTRUCTORADDITIONAL}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO ITEMSEQUAL(ItemA,ItemB)}
