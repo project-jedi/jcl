@@ -312,7 +312,8 @@ type
     procedure WriteExtended(const Value: Extended);
     procedure WriteInt64(Value: Int64); overload;
     procedure WriteInteger(Value: Integer); overload;
-    procedure WriteStringDelimitedByNull(const Value: string);
+    procedure WriteCString(const Value: string);
+    procedure WriteStringDelimitedByNull(const Value: string); {$IFDEF ACCEPT_DEPRECATED}deprecated;{$ENDIF ACCEPT_DEPRECATED}
     procedure WriteShortString(const Value: ShortString);
     procedure WriteSingle(const Value: Single);
     procedure WriteSizedString(const Value: string);
@@ -1568,7 +1569,7 @@ begin
   WriteBuffer(Value, SizeOf(Value));
 end;
 
-procedure TJclEasyStream.WriteStringDelimitedByNull(const Value: string);
+procedure TJclEasyStream.WriteCString(const Value: string);
 {$IFDEF CLR}
 var
   I: Integer;
@@ -1581,6 +1582,11 @@ begin
   {$ELSE ~CLR}
   WriteBuffer(PChar(Value)^, Length(Value) + 1);
   {$ENDIF ~CLR}
+end;
+
+procedure TJclEasyStream.WriteStringDelimitedByNull(const Value: string);
+begin
+  WriteCString(Value);
 end;
 
 procedure TJclEasyStream.WriteShortString(const Value: ShortString);
