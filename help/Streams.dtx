@@ -902,7 +902,28 @@ See also:
 Donator:
   Heinz Zastrau
 --------------------------------------------------------------------------------
-
+@@TJclEasyStream.WriteCString@string
+Description:
+  The WriteCString method writes a C-like string (null-terminated)
+  to this stream.
+Parameters:
+  Value - String value.
+See also:
+  TJclEasyStream.ReadCString
+  TJclEasyStream.WriteBoolean
+  TJclEasyStream.WriteChar
+  TJclEasyStream.WriteCurrency
+  TJclEasyStream.WriteDateTime
+  TJclEasyStream.WriteDouble
+  TJclEasyStream.WriteExtended
+  TJclEasyStream.WriteInt64
+  TJclEasyStream.WriteInteger
+  TJclEasyStream.WriteShortString
+  TJclEasyStream.WriteSingle
+  TJclEasyStream.WriteSizedString
+Donator:
+  Heinz Zastrau
+--------------------------------------------------------------------------------
 @@TJclEasyStream.WriteCurrency@Currency
 Description:
   The WriteCurrency method writes a currency value to this
@@ -1107,6 +1128,9 @@ Description:
   value to this stream (max 2G characters).
 Parameters:
   Value - String value.
+Notes:
+  This method is superseded by the WriteCString method, which was added to
+  provide symmetry to the ReadCString method.
 See also:
   TJclEasyStream.ReadCString
   TJclEasyStream.WriteBoolean
