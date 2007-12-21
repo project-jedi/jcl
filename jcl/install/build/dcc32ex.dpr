@@ -24,6 +24,8 @@ var
   UseJvclSource: Boolean;
   RequireJclVersion: string;
   RequireJvclVersion: string;
+  RuntimePackageRtl: Boolean;
+  RuntimePackageVcl: Boolean;
 
 { Helper functions because no SysUtils unit is used. }
 {******************************************************************************}
@@ -770,6 +772,12 @@ begin
     if SameText('--use-jvcl-source', S) then
       UseJvclSource := True
     else
+    if SameText('--runtime-package-rtl', S) then
+      RuntimePackageRtl := True
+    else
+    if SameText('--runtime-package-vcl', S) then
+      RuntimePackageVcl := True
+    else
       Break;
     Result := CmdLine;
   end;
@@ -853,12 +861,36 @@ begin
   WriteLn(f, '-I"' + Target.LibDirs + '"');
   WriteLn(f, '-R"' + Target.LibDirs + '"');
   WriteLn(f, '-O"' + Target.LibDirs + '"');
+  if (Target.Version = 5) then
+  begin
+    if RuntimePackageRtl or RuntimePackageVcl then
+      WriteLn(f, '-LUvcl50')
+  end
+  else
+  begin
+    if RuntimePackageRtl then
+      WriteLn(f, '-LUrtl');
+    if RuntimePackageVcl then
+      WriteLn(f, '-LUvcl');
+  end;
   CloseFile(f);
   {$I+}
   if IOResult <> 0 then
   begin
     //WriteLn(ErrOutput, 'Failed to write file ', Dcc32Cfg);
     ExtraOpts := ExtraOpts + '-U"' + Target.LibDirs + '" -I"' + Target.LibDirs + '" -R"' + Target.LibDirs + '" -O"' + Target.LibDirs + '" ';
+    if (Target.Version = 5) then
+    begin
+      if RuntimePackageRtl or RuntimePackageVcl then
+        ExtraOpts := ExtraOpts + '-LUvcl50 '
+    end
+    else
+    begin
+      if RuntimePackageRtl then
+        ExtraOpts := ExtraOpts + '-LUrtl ';
+      if RuntimePackageVcl then
+        ExtraOpts := ExtraOpts + '-LUvcl ';
+    end;
     DeleteFile(PChar(Dcc32Cfg));
     Dcc32Cfg := '';
   end;
@@ -903,6 +935,8 @@ begin
     WriteLn('  --requires-jvcl        Requires an installed JVCL');
     WriteLn('  --use-jcl-source       Use the source code instead of the DCUs for the JCL');
     WriteLn('  --use-jvcl-source      Use the source code instead of the DCUs for the JVCL');
+    WriteLn('  --runtime-package-rtl  Link the executable against the rtl package');
+    WriteLn('  --runtime-package-vcl  Link the executable against the vcl package');
     WriteLn;
     WriteLn('Environment variables:');
     WriteLn('  DELPHIVERSION = d11    Prefer this Delphi/BCB/BDS version');

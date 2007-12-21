@@ -16,7 +16,7 @@ if ERRORLEVEL 1 goto FailedCompile
 
 :: compile installer
 
-build\dcc32ex.exe -q -w -dJCLINSTALL -E..\bin -I..\source -U..\source\common;..\source\windows JediInstaller.dpr
+build\dcc32ex.exe --runtime-package-rtl --runtime-package-vcl --preserve-config -q -w -dJCLINSTALL -E..\bin -I..\source -U..\source\common;..\source\windows JediInstaller.dpr
 if ERRORLEVEL 1 goto FailedCompile
 
 
