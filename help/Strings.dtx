@@ -3789,4 +3789,97 @@ See also:
   TJclTabSet.TabFrom
 Donator:
   Marcel Bestebroer
+--------------------------------------------------------------------------------
+@@AnsiCompareNaturalStr
+<GROUP StringManipulation.StringTestRoutines>
+Summary:
+  Compares strings based on the current locale with case sensitivity and using a
+  'natural order' algorithm.
+Description:
+  AnsiCompareNaturalStr implements a case-sensitive, 'natural' comparison
+  between the two supplied strings. It performs identical to the AnsiCompareStr
+  function but compares number components numerically, instead of
+  alphabetically.
+
+  Leading spaces are ignored when comparing numbers, but leading zeroes aren't.
+  This gives more sensible order when comparing and sorting fractional numbers.
+
+  The table below shows the behaviour of both AnsiCompareNaturalStr and
+  AnsiCompareStr:
+   <TABLE>
+S1                  S2                  AnsiCompareNaturalStr   AnsiCompareStr
+------------        ------------        ---------------------   --------------
+Delphi 5            Delphi 2005         negative                positive
+Delphi    5         Delphi 2005         negative                negative
+Delphi    5         Delphi   6          negative                negative
+Delphi   5          Delphi    6         negative                positive
+Delphi Highlander   Delphi 2005         positive                positive
+Delphi Highlander   Delphi  Highlander  positive                positive
+Foobar v0.9.4       Foobar v0.10.3      negative                positive
+Foobar v0.9.4       Foobar V0.9.4       positive                positive
+ 
+0002                1                   negative                negative
+1.5                 1.06                positive                negative
+ 
+0                   -5                  positive                positive
+-5                  +2                  negative                positive
+</TABLE>
+
+Parameters:
+  S1 - First string to compare.
+  S2 - Second string to compare.
+Result:
+  <c>0</c> if S1 is identical to S2
+   <i>- or -</i><p>
+  <c>a negative value</c> if S1 is less than S2
+   <i>- or -</i><p>
+  <c>a positive value</c> if S1 is greater than S2
+Donator:
+  Marcel Bestebroer
+--------------------------------------------------------------------------------
+@@AnsiCompareNaturalText
+<GROUP StringManipulation.StringTestRoutines>
+Summary:
+  Compares strings based on the current locale with case insensitivity and using
+  a 'natural order' algorithm.
+Description:
+  AnsiCompareNaturalText implements a case-insensitive, 'natural' comparison
+  between the two supplied strings. It performs identical to the AnsiCompareText
+  function but compares number components numerically, instead of
+  alphabetically.
+
+  Leading spaces are ignored when comparing numbers, but leading zeroes aren't.
+  This gives more sensible order when comparing and sorting fractional numbers.
+
+  The table below shows the behaviour of both AnsiCompareNaturalText and
+  AnsiCompareText:
+<TABLE>
+S1                  S2                  AnsiCompareNaturalText  AnsiCompareText
+------------        ------------        ----------------------  ---------------
+Delphi 5            Delphi 2005         negative                positive
+Delphi    5         Delphi 2005         negative                negative
+Delphi    5         Delphi   6          negative                negative
+Delphi   5          Delphi    6         negative                positive
+Delphi Highlander   Delphi 2005         positive                positive
+Delphi Highlander   Delphi  Highlander  positive                positive
+Foobar v0.9.4       Foobar v0.10.3      negative                positive
+Foobar v0.9.4       Foobar V0.9.4       zero                    zero
+ 
+0002                1                   negative                negative
+1.5                 1.06                positive                negative
+ 
+0                   -5                  positive                positive
+-5                  +2                  negative                positive
+</TABLE>
+Parameters:
+  S1 - First string to compare.
+  S2 - Second string to compare.
+Result:
+  <c>0</c> if S1 is identical to S2
+   <i>- or -</i><p>
+  <c>a negative value</c> if S1 is less than S2
+   <i>- or -</i><p>
+  <c>a positive value</c> if S1 is greater than S2
+Donator:
+  Marcel Bestebroer
 
