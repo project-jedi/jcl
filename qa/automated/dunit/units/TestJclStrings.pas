@@ -57,7 +57,7 @@ end;
 { TJclStringTransformation }
 
 type
-  TJclStringTransormation = class (TTestCase)
+  TJclStringTransformation = class (TTestCase)
   private
     StringArray : array[0..5000] of string;
     StringArray2 : array[0..5000] of string;
@@ -114,9 +114,16 @@ type
 
   TJclStringSearchandReplace = class (TTestCase)
   private
-    StringArray : array[0..5000] of string;
-    StringArray2 : array[0..5000] of string;
+    StringArray: array[0..5000] of string;
+    StringArray2: array[0..5000] of string;
+    ResultArray: array[0..5000] of Integer;
+    fillIdx: Integer;
+    procedure AddCheck(const s1, s2: string; const res: Integer);
+    function NormalizeCompareResult(res: Integer): Integer;
+    procedure TestCompare(idx: Integer; res: Integer; msgFmt: string);
   published
+    procedure _AnsiCompareNaturalStr;
+    procedure _AnsiCompareNaturalText;
     procedure _StrCharCount;
     procedure _StrCharsCount;
     procedure _StrStrCount;
@@ -362,10 +369,10 @@ begin
 end;
 
 //==================================================================================================
-// TJclStringTransormation
+// TJclStringTransformation
 //==================================================================================================
 
-procedure TJclStringTransormation._StrIsAlpha_StrIsAlpaNum_StrIsAlphaNumUnderscore;
+procedure TJclStringTransformation._StrIsAlpha_StrIsAlpaNum_StrIsAlphaNumUnderscore;
 var
   i: Integer;
   s: String;
@@ -401,14 +408,14 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclStringTransormation._StrContainsChars;
+procedure TJclStringTransformation._StrContainsChars;
 begin
   Fail('TODO: StrContainsChars');
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclStringTransormation._StrSame;
+procedure TJclStringTransformation._StrSame;
 var
   i: Integer;
 
@@ -429,7 +436,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclStringTransormation._StrIsDigit_StrConsistsOfNumberChars_StrIsSubset;
+procedure TJclStringTransformation._StrIsDigit_StrConsistsOfNumberChars_StrIsSubset;
 begin
   // StrIsDigit
   CheckEquals(StrIsDigit('') , False,'StrIsDigit');  // per doc
@@ -443,7 +450,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclStringTransormation._StrCenter;
+procedure TJclStringTransformation._StrCenter;
 var
   i: Integer;
   s, SN: String;
@@ -483,7 +490,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclStringTransormation._StrCharPosLower;
+procedure TJclStringTransformation._StrCharPosLower;
 begin
   CheckEquals('This is a test.', StrCharPosLower('This is a test.', -1));
   CheckEquals('This is a test.', StrCharPosLower('This is a test.', 0));
@@ -492,7 +499,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclStringTransormation._StrCharPosUpper;
+procedure TJclStringTransformation._StrCharPosUpper;
 begin
   CheckEquals('This is a test.', StrCharPosUpper('This is a test.', -1));
   CheckEquals('This is a test.', StrCharPosUpper('This is a test.', 0));
@@ -502,7 +509,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclStringTransormation._StrDoubleQuote;
+procedure TJclStringTransformation._StrDoubleQuote;
 var
   SN, S: string;
   i: Integer;
@@ -528,7 +535,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclStringTransormation._StrEnsurePrefix;
+procedure TJclStringTransformation._StrEnsurePrefix;
 var
   Prefix, s, SN: String;
   I: Integer;
@@ -564,7 +571,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclStringTransormation._StrEnsureSuffix;
+procedure TJclStringTransformation._StrEnsureSuffix;
 var
   Suffix, s, SN: String;
   I: Integer;
@@ -599,7 +606,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclStringTransormation._StrEscapedToString_StrStringToEscaped;
+procedure TJclStringTransformation._StrEscapedToString_StrStringToEscaped;
 var
   s, sn: string;
   i: Integer;
@@ -623,7 +630,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure  TJclStringTransormation._StrLower_StrLowerInPlace_StrLowerBuff;
+procedure  TJclStringTransformation._StrLower_StrLowerInPlace_StrLowerBuff;
 var
  sp: pointer;
  i: Integer;
@@ -658,7 +665,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure  TJclStringTransormation._StrMove;
+procedure  TJclStringTransformation._StrMove;
 var
   Dest: string;
 
@@ -694,7 +701,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclStringTransormation._StrPadLeft;
+procedure TJclStringTransformation._StrPadLeft;
 var
   S, S3: String;
   I, v,t: Integer;
@@ -733,7 +740,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclStringTransormation._StrPadRight;
+procedure TJclStringTransformation._StrPadRight;
 var
   S, S3: String;
   I, v,t: Integer;
@@ -769,7 +776,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclStringTransormation._StrProper_StrProperBuff;
+procedure TJclStringTransformation._StrProper_StrProperBuff;
 var
  s, s3, sn: string;
  i: Integer;
@@ -804,7 +811,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclStringTransormation._StrQuote;
+procedure TJclStringTransformation._StrQuote;
 var
   i: Integer;
   s: string;
@@ -841,7 +848,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclStringTransormation._StrRemoveChars;
+procedure TJclStringTransformation._StrRemoveChars;
 var
   i, t, v: Integer;
   s, s3, sn: string;
@@ -884,7 +891,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclStringTransormation._StrKeepChars;
+procedure TJclStringTransformation._StrKeepChars;
 var
   i, t: Integer;
   s, s3, sn: String;
@@ -925,7 +932,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclStringTransormation._StrReplace;
+procedure TJclStringTransformation._StrReplace;
 var
   s: string;
   
@@ -941,7 +948,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclStringTransormation._StrReplaceChar;
+procedure TJclStringTransformation._StrReplaceChar;
 begin
   CheckEquals(StrReplaceChar('', 'a', 'b'),'','StrReplaceChar');
   CheckEquals(StrReplaceChar('', #0, #0),'','StrReplaceChar');
@@ -952,7 +959,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclStringTransormation._StrReplaceChars;
+procedure TJclStringTransformation._StrReplaceChars;
 begin
   CheckEquals(StrReplaceChars('', ['a'], 'b'),'','StrReplaceChars');
   CheckEquals(StrReplaceChars('', ['a'], 'b'),'','StrReplaceChars');
@@ -962,7 +969,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclStringTransormation._StrReplacebutChars;
+procedure TJclStringTransformation._StrReplacebutChars;
 begin
   CheckEquals(StrReplaceButChars('', ['a'], 'b'),'','StrReplaceButChars');
   CheckEquals(StrReplaceButChars('xabababx', ['a','b'], 'v'),'vabababv','StrReplaceChars');
@@ -971,7 +978,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclStringTransormation._StrRepeat;
+procedure TJclStringTransformation._StrRepeat;
 var
   i,t, v: Integer;
   s, s3: string;
@@ -1004,7 +1011,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclStringTransormation._StrRepeatLength;
+procedure TJclStringTransformation._StrRepeatLength;
 begin
   CheckEquals(StrRepeatLength('Test',0),'','StrRepeatLength');
   CheckEquals(StrRepeatLength('Test',1),'T','StrRepeatLength');
@@ -1019,7 +1026,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclStringTransormation._StrReverse_StrReverseInPlace;
+procedure TJclStringTransformation._StrReverse_StrReverseInPlace;
 var
   i,t: Integer;
    s, s3: string;
@@ -1055,7 +1062,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclStringTransormation._StrSingleQuote;
+procedure TJclStringTransformation._StrSingleQuote;
 var
   i: Integer;
   s: string;
@@ -1075,7 +1082,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclStringTransormation._StrSmartCase;
+procedure TJclStringTransformation._StrSmartCase;
 begin
   CheckEquals(StrSmartCase('',[' ']), '', 'StrSmartCase');
   CheckEquals(StrSmartCase('project jedi',[' ']),'Project Jedi', 'StrSmartCase');
@@ -1087,7 +1094,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclStringTransormation._StrStripNonNumberChars;
+procedure TJclStringTransformation._StrStripNonNumberChars;
 var
   i: Integer;
   s: string;
@@ -1109,7 +1116,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclStringTransormation._StrToHex;
+procedure TJclStringTransformation._StrToHex;
 var
   s, sn: string;
 
@@ -1128,7 +1135,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclStringTransormation._StrTrimCharLeft;
+procedure TJclStringTransformation._StrTrimCharLeft;
 var
   i,t: Integer;
   s, s3, sn: string;
@@ -1162,14 +1169,14 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclStringTransormation._StrTrimCharsLeft;
+procedure TJclStringTransformation._StrTrimCharsLeft;
 begin
   Fail('TODO: StrTrimCharsLeft');
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclStringTransormation._StrTrimCharRight;
+procedure TJclStringTransformation._StrTrimCharRight;
 var
   i,t: Integer;
   s, sn, s3: string;
@@ -1205,14 +1212,14 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclStringTransormation._StrTrimCharsRight;
+procedure TJclStringTransformation._StrTrimCharsRight;
 begin
   Fail('TODO: _StrTrimCharsLeft');
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclStringTransormation._StrTrimQuotes;
+procedure TJclStringTransformation._StrTrimQuotes;
 var
   i: Integer;
   s, s3, s4: string;
@@ -1239,7 +1246,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclStringTransormation._StrUpper_StrUpperInPlace_StrUpperBuff;
+procedure TJclStringTransformation._StrUpper_StrUpperInPlace_StrUpperBuff;
 var
   i: Integer;
   s4, s, s3: string;
@@ -1264,7 +1271,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclStringTransormation._StrOemToAnsi_StrAnsiToOem;
+procedure TJclStringTransformation._StrOemToAnsi_StrAnsiToOem;
 begin
   Fail('TODO: _StrOemToAnsi_StrAnsiToOem');
 end;
@@ -1304,6 +1311,120 @@ end;
 //==================================================================================================
 // String Search and Replace
 //==================================================================================================
+
+procedure TJclStringSearchandReplace.AddCheck(const s1, s2: string; const res: Integer);
+begin
+  StringArray[fillIdx] := s1;
+  StringArray2[fillIdx] := s2;
+  ResultArray[fillIdx] := res;
+  Inc(fillIdx);
+end;
+
+function TJclStringSearchandReplace.NormalizeCompareResult(res: Integer): Integer;
+begin
+  if res < 0 then
+    Result := -1
+  else
+  if res > 0 then
+    Result := 1
+  else
+    Result := 0;
+end;
+
+procedure TJclStringSearchandReplace.TestCompare(idx: Integer; res: Integer; msgFmt: string);
+begin
+  CheckEquals(ResultArray[idx], res, Format('[%d] ' + msgFmt, [idx, QuotedStr(StringArray[idx]), QuotedStr(StringArray2[idx])]));
+end;
+
+procedure TJclStringSearchandReplace._AnsiCompareNaturalStr;
+var
+  idx: Integer;
+  s1: string;
+  s2: string;
+begin
+  fillIdx := 0;
+
+  // mixed strings, whitespace ignoring for number components only
+  AddCheck('Delphi 5',                'Delphi 2005',                -1);
+  AddCheck('Delphi    5',             'Delphi 2005',                -1);
+  AddCheck('Delphi    5',             'Delphi   6',                 -1);
+  AddCheck('Delphi   5',              'Delphi    6',                -1);
+  AddCheck('Delphi Highlander',       'Delphi 2005',                 1);
+  AddCheck('Delphi Highlander',       'Delphi  Highlander',          1);
+  AddCheck('Foobar v0.9.4',           'Foobar v0.10.3',             -1);
+  AddCheck('Foobar v0.9.4',           'Foobar V0.9.4',               1); // case-sensitivity test 
+
+  // version/revision numbering schemes
+  AddCheck('1.2',                     '1.10',                       -1);
+  AddCheck('1.20',                    '1.3a',                        1);
+  AddCheck('1.1.1',                   '1.1',                         1);
+  AddCheck('1.1',                     '1.1a',                       -1);
+  AddCheck('1.1.a',                   '1.1a',                       -1);
+  AddCheck('a',                       '1',                           1);
+  AddCheck('a',                       'b',                          -1);
+  AddCheck('1',                       '2',                          -1);
+
+  // leading zeroes overrule normal number comparisons
+  AddCheck('0002',                    '1',                          -1);
+  AddCheck('1.5',                     '1.06',                        1);
+
+  // hyphen binds looser than period (technically compares a number against a non-number component)
+  AddCheck('1-2',                     '1-1',                         1);
+  AddCheck('1-2',                     '1.2',                        -1);
+
+  // handling of positive/negative number comparisons
+  AddCheck('0',                       '-5',                          1);
+  AddCheck('-5',                      '+2',                         -1);
+
+  for idx := 0 to fillIdx - 1 do
+  begin
+    s1 := StringArray[idx];
+    s2 := StringArray2[idx];
+    TestCompare(idx, NormalizeCompareResult(AnsiCompareNaturalStr(s1, s2)), 'AnsiCompareNaturalStr(%s, %s)');
+  end;
+end;
+
+procedure TJclStringSearchandReplace._AnsiCompareNaturalText;
+var
+  idx: Integer;
+begin
+  fillIdx := 0;
+
+  // mixed strings, whitespace ignoring for number components only
+  AddCheck('Delphi 5',                'Delphi 2005',                -1);
+  AddCheck('Delphi    5',             'Delphi 2005',                -1);
+  AddCheck('Delphi    5',             'Delphi   6',                 -1);
+  AddCheck('Delphi   5',              'Delphi    6',                -1);
+  AddCheck('Delphi Highlander',       'Delphi 2005',                 1);
+  AddCheck('Delphi Highlander',       'Delphi  Highlander',          1);
+  AddCheck('Foobar v0.9.4',           'Foobar v0.10.3',             -1);
+  AddCheck('Foobar v0.9.4',           'Foobar V0.9.4',               0); // case-sensitivity test 
+
+  // version/revision numbering schemes
+  AddCheck('1.2',                     '1.10',                       -1);
+  AddCheck('1.20',                    '1.3a',                        1);
+  AddCheck('1.1.1',                   '1.1',                         1);
+  AddCheck('1.1',                     '1.1a',                       -1);
+  AddCheck('1.1.a',                   '1.1a',                       -1);
+  AddCheck('a',                       '1',                           1);
+  AddCheck('a',                       'b',                          -1);
+  AddCheck('1',                       '2',                          -1);
+
+  // leading zeroes overrule normal number comparisons
+  AddCheck('0002',                    '1',                          -1);
+  AddCheck('1.5',                     '1.06',                        1);
+
+  // hyphen binds looser than period (technically compares a number against a non-number component)
+  AddCheck('1-2',                     '1-1',                         1);
+  AddCheck('1-2',                     '1.2',                        -1);
+
+  // handling of positive/negative number comparisons
+  AddCheck('0',                       '-5',                          1);
+  AddCheck('-5',                      '+2',                         -1);
+
+  for idx := 0 to fillIdx - 1 do
+    TestCompare(idx, NormalizeCompareResult(AnsiCompareNaturalText(StringArray[idx], StringArray2[idx])), 'AnsiCompareNaturalText(%s, %s)');
+end;
 
 procedure TJclStringSearchandReplace._StrCharCount;
 var
@@ -2541,7 +2662,7 @@ begin
 end;
 
 initialization
-  RegisterTest('JCLStrings', TJclStringTransormation.Suite);
+  RegisterTest('JCLStrings', TJclStringTransformation.Suite);
   RegisterTest('JCLStrings', TJclStringManagment.Suite);
   RegisterTest('JCLStrings', TJclStringSearchandReplace.Suite);
   RegisterTest('JCLStrings', TJclStringCharacterTestRoutines.Suite);
