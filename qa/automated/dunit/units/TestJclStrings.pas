@@ -1352,7 +1352,7 @@ begin
   AddCheck('Delphi Highlander',       'Delphi 2005',                 1);
   AddCheck('Delphi Highlander',       'Delphi  Highlander',          1);
   AddCheck('Foobar v0.9.4',           'Foobar v0.10.3',             -1);
-  AddCheck('Foobar v0.9.4',           'Foobar V0.9.4',               1); // case-sensitivity test 
+  AddCheck('Foobar v0.9.4',           'Foobar V0.9.4',              -1); // case-sensitivity test 
 
   // version/revision numbering schemes
   AddCheck('1.2',                     '1.10',                       -1);
