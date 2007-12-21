@@ -574,6 +574,10 @@ type
   end;
 {$ENDIF ~CLR}
 
+
+function AnsiCompareNaturalStr(const S1, S2: string): Integer;
+function AnsiCompareNaturalText(const S1, S2: string): Integer;
+
 // Exceptions
 type
   EJclStringError = EJclError;
@@ -5836,6 +5840,122 @@ begin
   CreateRes(@RsArg_NullReferenceException);
 end;
 {$ENDIF ~CLR}
+
+function AnsiCompareNatural(const S1, S2: string; insensitive: Boolean): Integer;
+var
+  cur1: PAnsiChar;
+  cur2: PAnsiChar;
+
+  procedure NumberCompare;
+  var
+    isReallyNumber: Boolean;
+    firstDiffBreaks: Boolean;
+  begin
+    Result := 0;
+    isReallyNumber := False;
+    // count leading spaces in S1
+    while cur1^ = ' ' do
+    begin
+      Dec(Result);
+      Inc(cur1);
+    end;
+    // count leading spaces in S2 (canceling them out against the ones in S1)
+    while cur2^ = ' ' do
+    begin
+      Inc(Result);
+      Inc(cur2);
+    end;
+
+    // if spaces match, or both strings are actually followed by a numeric character, continue the checks
+    if (Result = 0) or ((cur1^ in ['+', '-', '0' .. '9']) and (cur2^ in ['+', '-', '0' .. '9'])) then
+    begin
+      // Check signed number
+      if (cur1^ = '-') and (cur2^ <> '-') then
+        Result := 1
+      else
+      if (cur2^ = '-') and (cur1^ <> '-') then
+        Result := -1
+      else
+        Result := 0;
+
+      if cur1^ in ['-', '+'] then
+        Inc(cur1);
+      if cur2^ in ['-', '+'] then
+        Inc(cur2);
+
+      firstDiffBreaks := (cur1^ = '0') or (cur2^ = '0');
+      while (cur1^ in ['0' .. '9']) and (cur2^ in ['0' .. '9']) do
+      begin
+        isReallyNumber := True;
+        if (Result = 0) and (cur1^ < cur2^) then
+          Result := -1
+        else
+        if (Result = 0) and (cur1^ > cur2^) then
+          Result := 1;
+        if firstDiffBreaks and (Result <> 0) then
+          Break;
+        Inc(cur1);
+        Inc(cur2);
+      end;
+
+      if isReallyNumber then
+      begin
+        if not firstDiffBreaks then
+        begin
+          if cur1^ in ['0' .. '9'] then
+            Result := 1
+          else
+          if cur2^ in ['0' .. '9'] then
+            Result := -1;
+        end;
+      end;
+    end;
+  end;
+
+begin
+  cur1 := PAnsiChar(S1);
+  cur2 := PAnsiChar(S2);
+  Result := 0;
+  while (Result = 0) do
+  begin
+    if (cur1^ = #0) and (cur2^ = #0) then
+      Break
+    else
+    if (cur1^ = '-') and (cur2^ in ['+','0' .. '9']) then
+      Result := -1
+    else
+    if (cur2^ = '-') and (cur1^ in ['+','0' .. '9']) then
+      Result := 1
+    else
+    if (cur1^ in ['+', '-', ' ', '0' .. '9']) and (cur2^ in ['+', '-', ' ', '0' .. '9']) then
+      NumberCompare
+    else
+    if (cur1^ = #0) and (cur2^ <> #0) then
+      Result := -1
+    else
+    if (cur1^ <> #0) and (cur1^ = #0) then
+      Result := 1
+    else
+    begin
+      if insensitive then
+        Result := StrLIComp(cur1, cur2, 1)
+      else
+        Result := StrLComp(cur1, cur2, 1);
+      Inc(cur1);
+      Inc(cur2);
+    end;
+  end;
+end;
+
+function AnsiCompareNaturalStr(const S1, S2: string): Integer;
+begin
+  Result := AnsiCompareNatural(S1, S2, False);
+end;
+
+function AnsiCompareNaturalText(const S1, S2: string): Integer;
+begin
+  Result := AnsiCompareNatural(S1, S2, True);
+end;
 
 {$IFDEF CLR}
 {$IFDEF UNITVERSIONING}
