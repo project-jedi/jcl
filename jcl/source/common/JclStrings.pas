@@ -5938,9 +5938,9 @@ begin
     else
     begin
       if insensitive then
-        Result := StrLIComp(cur1, cur2, 1)
+        Result := AnsiStrLIComp(cur1, cur2, 1)
       else
-        Result := StrLComp(cur1, cur2, 1);
+        Result := AnsiStrLComp(cur1, cur2, 1);
       Inc(cur1);
       Inc(cur2);
     end;
