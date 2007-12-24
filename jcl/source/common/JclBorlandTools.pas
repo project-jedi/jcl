@@ -3218,6 +3218,7 @@ begin
   {$IFDEF KYLIX}
   FConfigData.UpdateFile; // TMemIniFile.Destroy doesn't call UpdateFile
   {$ENDIF KYLIX}
+  FreeAndNil(FEnvironmentVariables);
   FreeAndNil(FConfigData);
   inherited Destroy;
 end;
