@@ -60,6 +60,16 @@
         <value>*</value>
       </property>
     </setting>
+    <setting path="" mask="*.htm *.HTM *.html *.HTML" recurse="yes" dironly="no">
+      <property name="svn:mime-type">
+        <value>text/html</value>
+      </property>
+    </setting>
+    <setting path="" mask="*.xml *.XML" recurse="yes" dironly="no">
+      <property name="svn:mime-type">
+        <value>text/xml</value>
+      </property>
+    </setting>
 
     <!-- specific properties based on directories -->
     
