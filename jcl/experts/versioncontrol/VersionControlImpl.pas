@@ -36,12 +36,6 @@ interface
 uses
   SysUtils, Classes, Graphics, Controls, Menus, ActnList, Dialogs,
   ToolsAPI,
-{$IFNDEF COMPILER8_UP}
-  Idemenuaction, // dependency walker reports a class TPopupAction in
-  // unit Idemenuaction in designide.bpl used by the IDE to display tool buttons
-  // with a drop down menu, this class seems to have the same interface
-  // as TControlAction defined in Controls.pas for newer versions of Delphi
-{$ENDIF COMPILER8_UP}
   JclOtaUtils, JclVersionCtrlCommonOptions;
 
 type
@@ -228,12 +222,6 @@ type
     function ExecuteAction(const FileName: string;
       const Action: TJclVersionControlAction): Boolean; override;
   end;
-
-{$IFDEF COMPILER8_UP}
-  TDropDownAction = TControlAction;
-{$ELSE COMPILER8_UP}
-  TDropDownAction = TPopupAction;
-{$ENDIF COMPILER8_UP}
 
 // design package entry point
 procedure Register;

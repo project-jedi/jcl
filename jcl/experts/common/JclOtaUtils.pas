@@ -35,6 +35,12 @@ interface
 uses
   SysUtils, Classes, Windows,
   Controls, ComCtrls, ActnList, Menus,
+  {$IFNDEF COMPILER8_UP}
+  Idemenuaction, // dependency walker reports a class TPopupAction in
+  // unit Idemenuaction in designide.bpl used by the IDE to display tool buttons
+  // with a drop down menu, this class seems to have the same interface
+  // as TControlAction defined in Controls.pas for newer versions of Delphi
+  {$ENDIF COMPILER8_UP}
   {$IFDEF MSWINDOWS}
   JclDebug,
   {$ENDIF MSWINDOWS}
@@ -45,6 +51,13 @@ const
   MapFileOptionDetailed = 3;
 
 type
+  // class of actions with a drop down menu on tool bars
+  {$IFDEF COMPILER8_UP}
+  TDropDownAction = TControlAction;
+  {$ELSE COMPILER8_UP}
+  TDropDownAction = TPopupAction;
+  {$ENDIF COMPILER8_UP}
+
 // note to developers
 // to avoid JCL exceptions to be reported as Borland's exceptions in automatic
 // bug reports, all entry points should be protected with this code model:
