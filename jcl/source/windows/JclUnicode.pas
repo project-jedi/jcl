@@ -5279,20 +5279,23 @@ begin
     case SaveFormat of
       sfUTF16LSB :
         begin
-          Stream.WriteBuffer(BOM_UTF16_LSB[0],SizeOf(BOM_UTF16_LSB));
+          if WithBOM then
+            Stream.WriteBuffer(BOM_UTF16_LSB[0],SizeOf(BOM_UTF16_LSB));
           Stream.WriteBuffer(SW[1],Length(SW)*SizeOf(UTF16));
           FSaved := True;
         end;
       sfUTF16MSB :
         begin
-          Stream.WriteBuffer(BOM_UTF16_MSB[0],SizeOf(BOM_UTF16_MSB));
+          if WithBOM then
+            Stream.WriteBuffer(BOM_UTF16_MSB[0],SizeOf(BOM_UTF16_MSB));
           StrSwapByteOrder(PWideChar(SW));
           Stream.WriteBuffer(SW[1],Length(SW)*SizeOf(UTF16));
           FSaved := True;
         end;
       sfUTF8 :
         begin
-          Stream.WriteBuffer(BOM_UTF8[0],SizeOf(BOM_UTF8));
+          if WithBOM then
+            Stream.WriteBuffer(BOM_UTF8[0],SizeOf(BOM_UTF8));
           SA := WideStringToUTF8(SW);
           Stream.WriteBuffer(SA[1],Length(SA)*SizeOf(UTF8));
           FSaved := True;
