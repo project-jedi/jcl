@@ -64,6 +64,8 @@ resourcestring
   RsActionSheet = 'Common\Actions';
   RsENoBitmapResources = 'Unable to load bitmap resource';
   RsENoEnvironmentOptions = 'Environment options are not available';
+  RsELineTooLong = 'Line too long in project file';
+  RsEUnterminatedComment = 'Unterminated comment in project file';
 
 //=== JclExceptionForm.pas ===================================================
 resourcestring
@@ -219,15 +221,24 @@ resourcestring
 resourcestring
   RsENoProjectOptions = 'Project options are not available';
   RsCantInsertToInstalledPackage = 'JCL Debug IDE Expert: Can not insert debug information to installed package' +
-    AnsiLineBreak + '%s' + AnsiLineBreak + 'Would you like to disable inserting JCL Debug data ?';
+    AnsiLineBreak + '%s' + AnsiLineBreak + 'Would you like to disable the insertion of JCL Debug data ?';
+  RsChangeMapFileOption = 'JCL Debug expert: the project "%s" must be configured to generate a detailled MAP file.' +
+    AnsiLineBreak + 'Do you want the expert to change this setting?';
+  RsDisabledDebugExpert = 'JCL Debug expert is disabled';
   RsCompilationAborted = 'JCL Debug data cannot be inserted to installed package' + AnsiLineBreak + 'Compilation aborted';
-  RsInsertDataCaption = 'Insert JCL Debug data';
+  RsDebugExpertCaption = 'JCL Debug expert';
+  RsAlwaysDisabled = 'Always &disabled';
+  RsProjectDisabled = 'D&isabled for this project';
+  RsProjectEnabled = 'E&nabled for this project';
+  RsAlwaysEnabled = 'Always &enabled';
   RsEExecutableNotFound = 'Executable file for project "%s" not found.' +
     'JCL debug data can''t be added to the binary.';
   RsEMapFileNotFound = 'Map file "%s" for project "%s" not found.' +
     'No conversions of debug information were made';
   RsConvertedMapToJdbg = 'Converted MAP file "%s" (%d bytes) to .jdbg (%d bytes)';
   RsInsertedJdbg = 'Converted MAP file "%s" (%d bytes) and inserted debug information (%d bytes) into the binary';
+  RsDeletedMapFile = 'Deleted %s file "%s"';
+  RsEFailedToDeleteMapFile = 'Failed to delete %s file "%s"';
   RsEMapConversion = 'Failed to convert MAP file "%s"';
   RsENoActiveProject = 'No active project';
   RsENoProjectMenuItem = 'Project menu item not found';
@@ -238,12 +249,16 @@ resourcestring
   RsENoBuildAllAction = 'Build All action not found';
   RsENoProjectGroup = 'No project group';
   RsDebugConfigPageCaption = 'Debug info converter';
+  RsEInvalidDebugExpertAction = '%d is not a debug expert action';
 
 //=== JclDebugIdeConfigFrame.pas =============================================
 resourcestring
-  RsDebugEnableExpert = 'Enable debug expert';
+  RsDefaultDisabled = 'D&isabled by default (can be enabled per project)';
+  RsDefaultEnabled = 'E&nabled by default (can be disabled per project)';
   RsDebugGenerateJdbg = 'Generate .jdbg files';
-  RsDebugInsertJdbg = 'Insert data into the binary';
+  RsDebugInsertJdbg = 'Insert JDBG data into the binary';
+  RsDeleteMapFile = 'Delete map files after conversion';
+  RsEInvalidDebugExpertState = '%d is not a valid debug expert state';
 
 //=== JclSIMDView.pas ========================================================
 resourcestring

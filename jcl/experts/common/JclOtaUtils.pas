@@ -41,6 +41,7 @@ uses
   // with a drop down menu, this class seems to have the same interface
   // as TControlAction defined in Controls.pas for newer versions of Delphi
   {$ENDIF COMPILER8_UP}
+  JclBase,
   {$IFDEF MSWINDOWS}
   JclDebug,
   {$ENDIF MSWINDOWS}
@@ -223,6 +224,11 @@ procedure RegisterSplashScreen;
 procedure RegisterAboutBox;
 {$ENDIF BDS}
 
+// properties are stored as "// PropID PropValue" in project file
+// they have to be placed before any identifiers and after comments at the beginning of the file
+function GetProjectProperties(const AProject: IOTAProject; const PropIDs: TDynAnsiStringArray): TDynAnsiStringArray;
+function SetProjectProperties(const AProject: IOTAProject; const PropIDs, PropValues: TDynAnsiStringArray): Integer;
+
 implementation
 
 uses
@@ -312,6 +318,265 @@ begin
 end;
 {$ENDIF BDS}
 
+// result[] > 0: the property was found, result is the position of the first char of the property value
+// result[] <= 0: the property was not found, -result is the position where the property could be inserted
+function InternalLocateProperties(const AReader: IOTAEditReader; const PropIDs: TDynAnsiStringArray): TDynIntegerArray;
+const
+  BufferSize = 4096;
+var
+  Buffer, Line: AnsiString;
+  BufferStart, BufferCount, BufferPosition, LineStart, Position, PropIndex, PropCount, PropMatches: Integer;
+  InsideLineComment, InsideComment, InsideBrace: Boolean;
+  procedure LoadNextBuffer;
+  begin
+    BufferStart := Position;
+    BufferCount := AReader.GetText(BufferStart, PAnsiChar(Buffer), BufferSize);
+    BufferPosition := Position - BufferStart;
+  end;
+begin
+  BufferStart := 0;
+  BufferCount := 0;
+  LineStart := 0;
+  Position := 0;
+  PropMatches := 0;
+  InsideLineComment := False;
+  InsideComment := False;
+  InsideBrace := False;
+  PropCount := Length(PropIDs);
+  SetLength(Result, PropCount);
+  for PropIndex := 0 to PropCount - 1 do
+    Result[PropIndex] := -1;
+
+  SetLength(Buffer, BufferSize);
+  repeat
+    BufferPosition := Position - BufferStart;
+
+    if BufferPosition >= BufferCount then
+      LoadNextBuffer;
+
+    case Buffer[BufferPosition + 1] of
+      AnsiLineFeed,
+      AnsiCarriageReturn:
+        begin
+          if InsideLineComment and not (InsideComment or InsideBrace) then
+          begin
+            // process line
+            InsideLineComment := False;
+            if (LineStart - BufferStart) < 0 then
+              raise EJclExpertException.CreateRes(@RsELineTooLong);
+            Line := Copy(Buffer, LineStart - BufferStart + 1, Position - LineStart);
+            for PropIndex := 0 to PropCount - 1 do
+              if Pos(PropIDs[PropIndex], Line) = 4 then
+            begin
+              Result[PropIndex] := LineStart + Length(PropIDs[PropIndex]) + 4;
+              Inc(PropMatches);
+            end;
+          end;
+          LineStart := Position + 1;
+        end;
+      '/':
+        begin
+          if BufferPosition >= BufferCount then
+            LoadNextBuffer;
+          if (BufferPosition + 1) < BufferCount then
+          begin
+            if not (InsideLineComment or InsideComment or InsideBrace) then
+            begin
+              if (Buffer[BufferPosition + 2] = '/') then
+              begin
+                Inc(Position);
+                InsideLineComment := True;
+              end
+              else
+                // end of comments
+                Break;
+            end;
+          end
+          else
+            // end of file
+            Break;
+        end;
+      '(':
+        begin
+          if BufferPosition >= BufferCount then
+            LoadNextBuffer;
+          if (BufferPosition + 1) < BufferCount then
+          begin
+            if not (InsideLineComment or InsideComment or InsideBrace) then
+            begin
+              if (Buffer[BufferPosition + 2] = '*') then
+              begin
+                Inc(Position);
+                InsideComment := True;
+              end
+              else
+                // end of comments
+                Break;
+            end;
+          end
+          else
+            // end of file
+            Break;
+        end;
+      '*':
+        begin
+          if BufferPosition >= BufferCount then
+            LoadNextBuffer;
+          if (BufferPosition + 1) < BufferCount then
+          begin
+            if InsideComment then
+            begin
+              if (Buffer[BufferPosition + 2] = ')') then
+              begin
+                Inc(Position);
+                InsideComment := False;
+              end;
+            end
+            else
+            if not (InsideLineComment or InsideBrace) then
+              // end of comments
+              Break;
+          end
+          else
+            // end of file
+            Break;
+        end;
+      '{':
+        if not (InsideLineComment or InsideComment or InsideBrace) then
+          InsideBrace := True;
+      '}':
+        if InsideBrace then
+          InsideBrace := False
+        else
+        if not (InsideLineComment or InsideComment) then
+          // end of comments
+          Break;
+    else
+      if not (Buffer[BufferPosition + 1] in AnsiWhiteSpace) and not InsideLineComment
+        and not InsideComment and not InsideBrace then
+        // end of comments
+        Break;
+    end;
+    Inc(Position);
+  until (BufferCount = 0) or (PropMatches = PropCount);
+  if InsideLineComment or InsideComment or InsideBrace then
+    raise EJclExpertException.CreateRes(@RsEUnterminatedComment);
+  for PropIndex := 0 to PropCount - 1 do
+    if Result[PropIndex] = -1 then
+      Result[PropIndex] := -Position;
+end;
+
+function GetProjectProperties(const AProject: IOTAProject; const PropIDs: TDynAnsiStringArray): TDynAnsiStringArray;
+const
+  BufferSize = 4096;
+var
+  FileIndex, PropCount, PropIndex, BufferIndex: Integer;
+  AEditor: IOTAEditor;
+  FileExtension: string;
+  PropLocations: TDynIntegerArray;
+  AReader: IOTAEditReader;
+begin
+  PropCount := Length(PropIDs);
+  SetLength(Result, PropCount);
+  for FileIndex := 0 to AProject.GetModuleFileCount - 1 do
+  begin
+    AEditor := AProject.GetModuleFileEditor(FileIndex);
+    FileExtension := ExtractFileExt(AEditor.FileName);
+    if AnsiSameText(FileExtension, '.dpr') or AnsiSameText(FileExtension, '.dpk')
+      or AnsiSameText(FileExtension, '.bpf') or AnsiSameText(FileExtension, '.cpp') then
+    begin
+      AReader := (AEditor as IOTASourceEditor).CreateReader;
+      try
+        PropLocations := InternalLocateProperties(AReader, PropIDs);
+        for PropIndex := 0 to PropCount - 1 do
+          if PropLocations[PropIndex] > 0 then
+        begin
+          SetLength(Result[PropIndex], BufferSize);
+          SetLength(Result[PropIndex], AReader.GetText(PropLocations[PropIndex], PAnsiChar(Result[PropIndex]), BufferSize));
+          for BufferIndex := 1 to Length(Result[PropIndex]) do
+            if Result[PropIndex][BufferIndex] in [AnsiCarriageReturn, AnsiLineFeed] then
+          begin
+            SetLength(Result[PropIndex], BufferIndex - 1);
+            Break;
+          end;
+        end;
+      finally
+        AReader := nil;
+      end;
+      Break;
+    end;
+  end;
+end;
+
+function SetProjectProperties(const AProject: IOTAProject; const PropIDs, PropValues: TDynAnsiStringArray): Integer;
+const
+  BufferSize = 4096;
+var
+  FileIndex, PropCount, PropIndex, BufferIndex, PropSize: Integer;
+  AEditor: IOTAEditor;
+  ASourceEditor: IOTASourceEditor;
+  FileExtension: string;
+  Buffer: AnsiString;
+  PropLocations: TDynIntegerArray;
+  AReader: IOTAEditReader;
+  AWriter: IOTAEditWriter;
+begin
+  PropCount := Length(PropIDs);
+  Result := 0;
+  for FileIndex := 0 to AProject.GetModuleFileCount - 1 do
+  begin
+    AEditor := AProject.GetModuleFileEditor(FileIndex);
+    FileExtension := ExtractFileExt(AEditor.FileName);
+    if AnsiSameText(FileExtension, '.dpr') or AnsiSameText(FileExtension, '.dpk')
+      or AnsiSameText(FileExtension, '.bpf') or AnsiSameText(FileExtension, '.cpp') then
+    begin
+      ASourceEditor := AEditor as IOTASourceEditor;
+      for PropIndex := 0 to PropCount - 1 do
+      begin
+        PropSize := 0;
+        AReader := ASourceEditor.CreateReader;
+        try
+          PropLocations := InternalLocateProperties(AReader, Copy(PropIDs, PropIndex, 1));
+          if PropLocations[0] > 0 then
+          begin
+            SetLength(Buffer, BufferSize);
+            SetLength(Buffer, AReader.GetText(PropLocations[0], PAnsiChar(Buffer), BufferSize));
+            for BufferIndex := 1 to Length(Buffer) do
+              if Buffer[BufferIndex] in [AnsiCarriageReturn, AnsiLineFeed] then
+            begin
+              PropSize := BufferIndex - 1;
+              Break;
+            end;
+          end;
+        finally
+          // release the reader before allocating the writer
+          AReader := nil;
+        end;
+
+        AWriter := ASourceEditor.CreateUndoableWriter;
+        try
+          if PropLocations[0] > 0 then
+          begin
+            AWriter.CopyTo(PropLocations[0]);
+            AWriter.DeleteTo(PropLocations[0] + PropSize);
+            AWriter.Insert(PAnsiChar(PropValues[PropIndex]));
+          end
+          else
+          begin
+            AWriter.CopyTo(-PropLocations[0]);
+            AWriter.Insert(PAnsiChar(Format('// %s %s%s', [PropIDs[PropIndex], PropValues[PropIndex], AnsiLineBreak])));
+          end;
+        finally
+          // release the writter before allocating the reader
+          AWriter := nil;
+        end;
+        Inc(Result);
+      end;
+      Break;
+    end;
+  end;
+end;
+
 //=== { EJclExpertException } ================================================
 
 constructor EJclExpertException.CreateTrace(const Msg: string);
@@ -330,7 +595,7 @@ begin
 end;
 {$ENDIF MSWINDOWS}
 
-{ TJclOTASettings }
+//=== { TJclOTASettings } ====================================================
 
 constructor TJclOTASettings.Create(ExpertName: string);
 var

@@ -67,21 +67,31 @@ const
   JclConfigureMenuName   = 'JCLConfigureMenu';
 
   //=== Debug Expert =========================================================
-  JclDebugExpertRegKey         = 'JclDebugExpert';
-  JclDebugEnabledRegValue      = 'JclDebugEnabled';
-  JclDebugGenerateJdbgRegValue = 'JclDebugGenerateJdbg';
-  JclDebugInsertJdbgRegValue   = 'JclDebugInsertJdbg';
-  MapFileOptionName            = 'MapFile';
-  OutputDirOptionName          = 'OutputDir';
-  RuntimeOnlyOptionName        = 'RuntimeOnly';
-  PkgDllDirOptionName          = 'PkgDllDir';
-  BPLOutputDirOptionName       = 'PackageDPLOutput';
-  LIBPREFIXOptionName          = 'SOPrefix';
-  LIBSUFFIXOptionName          = 'SOSuffix';
-  ColumnRegName                = 'Column%d';
-  JclDebugMessagePrefix        = 'Jcl Debug Expert';
-  JclInsertDataActionName      = 'JCLInsertDataCommand';
-  JclInsertDataMenuName        = 'JCLInsertDataMenu';
+  JclDebugExpertRegKey          = 'JclDebugExpert';
+  JclDebugEnabledRegValue       = 'JclDebugEnabled';
+  JclDebugGenerateJdbgRegValue  = 'JclDebugGenerateJdbg';
+  JclDebugInsertJdbgRegValue    = 'JclDebugInsertJdbg';
+  JclDebugDeleteMapFileRegValue = 'JclDebugDeleteMapFile';
+  MapFileOptionName             = 'MapFile';
+  OutputDirOptionName           = 'OutputDir';
+  RuntimeOnlyOptionName         = 'RuntimeOnly';
+  PkgDllDirOptionName           = 'PkgDllDir';
+  BPLOutputDirOptionName        = 'PackageDPLOutput';
+  LIBPREFIXOptionName           = 'SOPrefix';
+  LIBSUFFIXOptionName           = 'SOSuffix';
+  ColumnRegName                 = 'Column%d';
+  JclDebugMessagePrefix         = 'Jcl Debug Expert';
+  JclDebugExpertActionName      = 'JCLDebugExpertCommand';
+  JclDebugExpertMenuName        = 'JCLDebugExpertMenu';
+  JclGenerateJdbgActionName     = 'JCLGenerateJdbgCommand';
+  JclGenerateJdbgMenuName       = 'JCLGenerateJdbgMenu';
+  JclInsertJdbgActionName       = 'JCLInsertJdbgCommand';
+  JclInsertJdbgMenuName         = 'JCLInsertJdbgMenu';
+  JclDeleteMapFileActionName    = 'JCLDeleteMapFileCommand';
+  JclDeleteMapFileMenuName      = 'JCLDeleteMapFileMenu';
+  JclDebugGenerateJdbgSetting   = 'JCL_DEBUG_EXPERT_GENERATEJDBG';
+  JclDebugInsertJdbgSetting     = 'JCL_DEBUG_EXPERT_INSERTJDBG';
+  JclDebugDeleteMapfileSetting  = 'JCL_DEBUG_EXPERT_DELETEMAPFILE';
 
   //=== Favorite Folders Expert ==============================================
   JclFavoritesExpertName     = 'JclFavoriteFoldersExpert';

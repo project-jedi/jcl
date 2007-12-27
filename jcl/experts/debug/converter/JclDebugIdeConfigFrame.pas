@@ -30,28 +30,36 @@ unit JclDebugIdeConfigFrame;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, ExtCtrls;
 
 type
+  TDebugExpertState = (deAlwaysDisabled, deProjectDisabled, deProjectEnabled, deAlwaysEnabled);
+
   TJclDebugIdeConfigFrame = class(TFrame)
-    CheckBoxGenerateJdbg: TCheckBox;
-    CheckBoxInsertJdbg: TCheckBox;
-    CheckBoxEnableExpert: TCheckBox;
-    procedure CheckBoxEnableExpertClick(Sender: TObject);
+    RadioGroupGenerateJdbg: TRadioGroup;
+    RadioGroupInsertJdbg: TRadioGroup;
+    RadioGroupDeleteMapFile: TRadioGroup;
   private
-    function GetEnableExpert: Boolean;
-    function GetGenerateJdbg: Boolean;
-    function GetInsertJdbg: Boolean;
-    procedure SetEnableExpert(const Value: Boolean);
-    procedure SetGenerateJdbg(const Value: Boolean);
-    procedure SetInsertJdbg(const Value: Boolean);
+    function GetGenerateJdbgState: TDebugExpertState;
+    function GetInsertJdbgState: TDebugExpertState;
+    function GetDeleteMapFileState: TDebugExpertState;
+    procedure SetGenerateJdbgState(Value: TDebugExpertState);
+    procedure SetInsertJdbgState(Value: TDebugExpertState);
+    procedure SetDeleteMapFileState(Value: TDebugExpertState);
   public
     constructor Create(AOwner: TComponent); override;
 
-    property EnableExpert: Boolean read GetEnableExpert write SetEnableExpert;
-    property GenerateJdbg: Boolean read GetGenerateJdbg write SetGenerateJdbg;
-    property InsertJdbg: Boolean read GetInsertJdbg write SetInsertJdbg;
+    property GenerateJdbgState: TDebugExpertState read GetGenerateJdbgState write SetGenerateJdbgState;
+    property InsertJdbgState: TDebugExpertState read GetInsertJdbgState write SetInsertJdbgState;
+    property DeleteMapFileState: TDebugExpertState read GetDeleteMapFileState write SetDeleteMapFileState;
   end;
+
+function DebugExpertStateToInt(Value: TDebugExpertState): Integer;
+function IntToDebugExpertState(Value: Integer): TDebugExpertState;
+function ToggleDebugExpertState(Value: TDebugExpertState): TDebugExpertState;
+function EnableDebugExpertState(Value: TDebugExpertState): TDebugExpertState;
+function DisableDebugExpertState(Value: TDebugExpertState): TDebugExpertState;
+function ApplyDebugExpertState(GlobalState: TDebugExpertState; LocalEnabled: Boolean): TDebugExpertState;
 
 implementation
 
@@ -60,50 +68,155 @@ implementation
 uses
   JclOtaResources;
 
-procedure TJclDebugIdeConfigFrame.CheckBoxEnableExpertClick(Sender: TObject);
+function DebugExpertStateToInt(Value: TDebugExpertState): Integer;
 begin
-  CheckBoxGenerateJdbg.Enabled := CheckBoxEnableExpert.Checked;
-  CheckBoxInsertJdbg.Enabled := CheckBoxEnableExpert.Checked;
+  case Value of
+    deAlwaysDisabled:
+      Result := 0;
+    deProjectDisabled:
+      Result := 1;
+    deProjectEnabled:
+      Result := 2;
+    deAlwaysEnabled:
+      Result := 3;
+  else
+    raise EConvertError.CreateResFmt(@RsEInvalidDebugExpertState, [Integer(Value)]);
+  end;
 end;
+
+function IntToDebugExpertState(Value: Integer): TDebugExpertState;
+begin
+  case Value of
+    0:
+      Result := deAlwaysDisabled;
+    1:
+      Result := deProjectDisabled;
+    2:
+      Result := deProjectEnabled;
+    3:
+      Result := deAlwaysEnabled;
+  else
+    raise EConvertError.CreateResFmt(@RsEInvalidDebugExpertState, [Value]);
+  end;
+end;
+
+function ToggleDebugExpertState(Value: TDebugExpertState): TDebugExpertState;
+begin
+  case Value of
+    deAlwaysDisabled:
+      Result := deAlwaysEnabled;
+    deProjectDisabled:
+      Result := deProjectEnabled;
+    deProjectEnabled:
+      Result := deProjectDisabled;
+    deAlwaysEnabled:
+      Result := deAlwaysDisabled;
+  else
+    raise EConvertError.CreateResFmt(@RsEInvalidDebugExpertState, [Integer(Value)]);
+  end;
+end;
+
+function EnableDebugExpertState(Value: TDebugExpertState): TDebugExpertState;
+begin
+  case Value of
+    deAlwaysDisabled:
+      Result := deAlwaysEnabled;
+    deProjectDisabled:
+      Result := deProjectEnabled;
+    deProjectEnabled,
+    deAlwaysEnabled:
+      Result := Value;
+  else
+    raise EConvertError.CreateResFmt(@RsEInvalidDebugExpertState, [Integer(Value)]);
+  end;
+end;
+
+function DisableDebugExpertState(Value: TDebugExpertState): TDebugExpertState;
+begin
+  case Value of
+    deAlwaysDisabled,
+    deProjectDisabled:
+      Result := Value;
+    deProjectEnabled:
+      Result := deProjectDisabled;
+    deAlwaysEnabled:
+      Result := deAlwaysDisabled;
+  else
+    raise EConvertError.CreateResFmt(@RsEInvalidDebugExpertState, [Integer(Value)]);
+  end;
+end;
+
+function ApplyDebugExpertState(GlobalState: TDebugExpertState; LocalEnabled: Boolean): TDebugExpertState;
+begin
+  case GlobalState of
+    deAlwaysDisabled:
+      Result := deAlwaysDisabled;
+    deProjectDisabled,
+    deProjectEnabled:
+      if LocalEnabled then
+        Result := deProjectEnabled
+      else
+        Result := deProjectDisabled;
+    deAlwaysEnabled:
+      Result := deAlwaysEnabled;
+  else
+    raise EConvertError.CreateResFmt(@RsEInvalidDebugExpertState, [Integer(GlobalState)]);
+  end;
+end;
+
+//=== { TJclDebugIdeConfigFrame } ============================================
 
 constructor TJclDebugIdeConfigFrame.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  CheckBoxEnableExpert.Caption := RsDebugEnableExpert;
-  CheckBoxGenerateJdbg.Caption := RsDebugGenerateJdbg;
-  CheckBoxInsertJdbg.Caption := RsDebugInsertJdbg;
+
+  RadioGroupGenerateJdbg.Caption := RsDebugGenerateJdbg;
+  RadioGroupGenerateJdbg.Items.Strings[0] := RsAlwaysDisabled;
+  RadioGroupGenerateJdbg.Items.Strings[1] := RsDefaultDisabled;
+  RadioGroupGenerateJdbg.Items.Strings[2] := RsDefaultEnabled;
+  RadioGroupGenerateJdbg.Items.Strings[3] := RsAlwaysEnabled;
+
+  RadioGroupInsertJdbg.Caption := RsDebugInsertJdbg;
+  RadioGroupInsertJdbg.Items.Strings[0] := RsAlwaysDisabled;
+  RadioGroupInsertJdbg.Items.Strings[1] := RsDefaultDisabled;
+  RadioGroupInsertJdbg.Items.Strings[2] := RsDefaultEnabled;
+  RadioGroupInsertJdbg.Items.Strings[3] := RsAlwaysEnabled;
+
+  RadioGroupDeleteMapFile.Caption := RsDeleteMapFile;
+  RadioGroupDeleteMapFile.Items.Strings[0] := RsAlwaysDisabled;
+  RadioGroupDeleteMapFile.Items.Strings[1] := RsDefaultDisabled;
+  RadioGroupDeleteMapFile.Items.Strings[2] := RsDefaultEnabled;
+  RadioGroupDeleteMapFile.Items.Strings[3] := RsAlwaysEnabled;
 end;
 
-function TJclDebugIdeConfigFrame.GetEnableExpert: Boolean;
+function TJclDebugIdeConfigFrame.GetGenerateJdbgState: TDebugExpertState;
 begin
-  Result := CheckBoxEnableExpert.Checked;
+  Result := IntToDebugExpertState(RadioGroupGenerateJdbg.ItemIndex);
 end;
 
-function TJclDebugIdeConfigFrame.GetGenerateJdbg: Boolean;
+function TJclDebugIdeConfigFrame.GetInsertJdbgState: TDebugExpertState;
 begin
-  Result := CheckBoxGenerateJdbg.Checked;
+  Result := IntToDebugExpertState(RadioGroupInsertJdbg.ItemIndex);
 end;
 
-function TJclDebugIdeConfigFrame.GetInsertJdbg: Boolean;
+function TJclDebugIdeConfigFrame.GetDeleteMapFileState: TDebugExpertState;
 begin
-  Result := CheckBoxInsertJdbg.Checked;
+  Result := IntToDebugExpertState(RadioGroupDeleteMapFile.ItemIndex);
 end;
 
-procedure TJclDebugIdeConfigFrame.SetEnableExpert(const Value: Boolean);
+procedure TJclDebugIdeConfigFrame.SetGenerateJdbgState(Value: TDebugExpertState);
 begin
-  CheckBoxEnableExpert.Checked := Value;
-  CheckBoxGenerateJdbg.Enabled := Value;
-  CheckBoxInsertJdbg.Enabled := Value;
+  RadioGroupGenerateJdbg.ItemIndex := DebugExpertStateToInt(Value);
 end;
 
-procedure TJclDebugIdeConfigFrame.SetGenerateJdbg(const Value: Boolean);
+procedure TJclDebugIdeConfigFrame.SetInsertJdbgState(Value: TDebugExpertState);
 begin
-  CheckBoxGenerateJdbg.Checked := Value;
+  RadioGroupInsertJdbg.ItemIndex := DebugExpertStateToInt(Value);
 end;
 
-procedure TJclDebugIdeConfigFrame.SetInsertJdbg(const Value: Boolean);
+procedure TJclDebugIdeConfigFrame.SetDeleteMapFileState(Value: TDebugExpertState);
 begin
-  CheckBoxInsertJdbg.Checked := Value;
+  RadioGroupDeleteMapFile.ItemIndex := DebugExpertStateToInt(Value);
 end;
 
 end.
