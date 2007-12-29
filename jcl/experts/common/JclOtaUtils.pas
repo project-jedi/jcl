@@ -229,6 +229,10 @@ procedure RegisterAboutBox;
 function GetProjectProperties(const AProject: IOTAProject; const PropIDs: TDynAnsiStringArray): TDynAnsiStringArray;
 function SetProjectProperties(const AProject: IOTAProject; const PropIDs, PropValues: TDynAnsiStringArray): Integer;
 
+// set to true to temporary disable experts that alter compiled files after they were compiled
+var
+  JclDisablePostCompilationProcess: Boolean = False;
+
 implementation
 
 uses

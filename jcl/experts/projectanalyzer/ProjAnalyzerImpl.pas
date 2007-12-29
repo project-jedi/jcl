@@ -17,7 +17,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -148,6 +148,8 @@ var
   ProjectName: string;
 begin
   try
+    JclDisablePostCompilationProcess := True;
+
     TempActiveProject := ActiveProject;
     if not Assigned(TempActiveProject) then
       raise EJclExpertException.CreateTrace(RsENoActiveProject);
@@ -204,10 +206,12 @@ begin
       if BuildOK then
         MessageDlg(RsCantFindFiles, mtError, [mbOk], 0);
     end;
+    JclDisablePostCompilationProcess := False;
   except
     on ExceptionObj: TObject do
     begin
       JclExpertShowExceptionDialog(ExceptionObj);
+      JclDisablePostCompilationProcess := False;
       raise;
     end;
   end;

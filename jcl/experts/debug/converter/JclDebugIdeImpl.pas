@@ -17,7 +17,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                       $ }
+{ Last modified: $Date::                                                                      $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -320,7 +320,7 @@ var
   end;
 
 begin
-  if FCurrentProject = nil then
+  if JclDisablePostCompilationProcess or (FCurrentProject = nil) then
     Exit;
 
   EnabledActions := GetProjectActions(FCurrentProject);
@@ -423,7 +423,7 @@ begin
       if MessageDlg(Format(RsCantInsertToInstalledPackage, [Project.FileName]), mtError, [mbYes, mbNo], 0) = mrYes then
       begin
         DisableExpert(Project);
-        MessageDlg(RsDisabledDebugExpert, mtError, [mbOK], 0);
+        MessageDlg(RsDisabledDebugExpert, mtInformation, [mbOK], 0);
       end
       else
       begin
@@ -449,7 +449,7 @@ begin
         else
         begin
           DisableExpert(Project);
-          MessageDlg(RsDisabledDebugExpert, mtError, [mbOK], 0);
+          MessageDlg(RsDisabledDebugExpert, mtInformation, [mbOK], 0);
         end;
       end;
     end;
