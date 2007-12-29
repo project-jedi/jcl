@@ -17,7 +17,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                       $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -73,7 +73,11 @@ type
     FSaveBuildProjectActionExecute: TNotifyEvent;
     FSaveBuildAllProjectsAction: TCustomAction;
     FSaveBuildAllProjectsActionExecute: TNotifyEvent;
-    FNotifierIndex: Integer;
+    FIDENotifierIndex: Integer;
+    {$IFDEF BDS4_UP}
+    ProjectManager: IOTAProjectManager;
+    FProjectManagerNotifierIndex: Integer;
+    {$ENDIF BDS4_UP}
     FConfigFrame: TJclDebugIdeConfigFrame;
     FGlobalStates: array [TDebugExpertAction] of TDebugExpertState;
     procedure DebugExpertActionExecute(Sender: TObject);
@@ -129,14 +133,35 @@ type
   private
     FDebugExtension: TJclDebugExtension;
   protected
-    procedure AfterCompile(Succeeded: Boolean); overload;
-    procedure AfterCompile(Succeeded: Boolean; IsCodeInsight: Boolean); overload;
-    procedure BeforeCompile(const Project: IOTAProject; var Cancel: Boolean); overload;
-    procedure BeforeCompile(const Project: IOTAProject; IsCodeInsight: Boolean; var Cancel: Boolean); overload;
+    { IOTAIDENotifier }
     procedure FileNotification(NotifyCode: TOTAFileNotification; const FileName: string; var Cancel: Boolean);
+    procedure BeforeCompile(const Project: IOTAProject; var Cancel: Boolean); overload;
+    procedure AfterCompile(Succeeded: Boolean); overload;
+    { IOTAIDENotifier50 }
+    procedure BeforeCompile(const Project: IOTAProject; IsCodeInsight: Boolean; var Cancel: Boolean); overload;
+    procedure AfterCompile(Succeeded: Boolean; IsCodeInsight: Boolean); overload;
   public
     constructor Create(ADebugExtension: TJclDebugExtension);
   end;
+
+  {$IFDEF BDS4_UP}
+  TProjectManagerNotifier = class(TNotifierObject, IOTANotifier, INTAProjectMenuCreatorNotifier)
+  private
+    FDebugExtension: TJclDebugExtension;
+    FOTAProjectManager: IOTAProjectManager;
+    FNTAServices: INTAServices;
+    procedure GenerateJdbgSubMenuClick(Sender: TObject);
+    procedure InsertJdbgSubMenuClick(Sender: TObject);
+    procedure DeleteMapFileSubMenuClick(Sender: TObject);
+  protected
+    { INTAProjectMenuCreatorNotifier }
+    function AddMenu(const Ident: string): TMenuItem;
+    function CanHandle(const Ident: string): Boolean;
+  public
+    constructor Create(ADebugExtension: TJclDebugExtension; const ANTAServices: INTAServices;
+      const AOTAProjectManager: IOTAProjectManager);
+  end;
+  {$ENDIF BDS4_UP}
 
 // design package entry point
 procedure Register;
@@ -260,6 +285,10 @@ end;
 constructor TJclDebugExtension.Create;
 begin
   inherited Create(JclDebugExpertRegKey);
+  {$IFDEF BDS4_UP}
+  if not Supports(BorlandIDEServices, IOTAProjectManager, ProjectManager) then
+    raise EJclExpertException.CreateRes(@RsENoProjectManager);
+  {$ENDIF BDS4_UP}
 end;
 
 procedure TJclDebugExtension.AddConfigurationPages(
@@ -291,6 +320,9 @@ var
   end;
 
 begin
+  if FCurrentProject = nil then
+    Exit;
+
   EnabledActions := GetProjectActions(FCurrentProject);
   if EnabledActions <> [] then
   begin
@@ -467,7 +499,9 @@ end;
 
 procedure TJclDebugExtension.DisableExpert(const AProject: IOTAProject);
 begin
-
+  ProjectStates[deGenerateJdbg, AProject] := DisableDebugExpertState(ProjectStates[deGenerateJdbg, AProject]);
+  ProjectStates[deInsertJdbg, AProject] := DisableDebugExpertState(ProjectStates[deInsertJdbg, AProject]);
+  ProjectStates[deDeleteMapFile, AProject] := DisableDebugExpertState(ProjectStates[deDeleteMapFile, AProject]);
 end;
 
 procedure TJclDebugExtension.DisplayResults;
@@ -1316,7 +1350,13 @@ begin
     ImageBmp.Free;
   end;
 
-  FNotifierIndex := Services.AddNotifier(TIdeNotifier.Create(Self));
+  // register notifiers
+  FIDENotifierIndex := Services.AddNotifier(TIdeNotifier.Create(Self));
+  {$IFDEF BDS4_UP}
+  FProjectManagerNotifierIndex := ProjectManager.AddMenuCreatorNotifier(TProjectManagerNotifier.Create(Self,
+    NTAServices, ProjectManager));
+  {$ENDIF BDS4_UP}
+
   LoadExpertValues;
 
   // insert menus
@@ -1379,8 +1419,12 @@ end;
 procedure TJclDebugExtension.UnregisterCommands;
 begin
   inherited UnregisterCommands;
-  if FNotifierIndex <> -1 then
-    Services.RemoveNotifier(FNotifierIndex);
+  {$IFDEF BDS4_UP}
+  if FProjectManagerNotifierIndex <> -1 then
+    ProjectManager.RemoveMenuCreatorNotifier(FProjectManagerNotifierIndex);
+  {$ENDIF BDS4_UP}
+  if FIDENotifierIndex <> -1 then
+    Services.RemoveNotifier(FIDENotifierIndex);
   // save settings
   SaveExpertValues;
 
@@ -1461,5 +1505,208 @@ procedure TIdeNotifier.FileNotification(NotifyCode: TOTAFileNotification;
   const FileName: string; var Cancel: Boolean);
 begin
 end;
+
+{$IFDEF BDS4_UP}
+
+constructor TProjectManagerNotifier.Create(ADebugExtension: TJclDebugExtension;
+  const ANTAServices: INTAServices; const AOTAProjectManager: IOTAProjectManager);
+begin
+  inherited Create;
+  FDebugExtension := ADebugExtension;
+  FNTAServices := ANTAServices;
+  FOTAProjectManager := AOTAProjectManager;
+end;
+
+function TProjectManagerNotifier.AddMenu(const Ident: string): TMenuItem;
+  procedure FillSubMenu(AMenuItem: TMenuItem; const AOnClickEvent: TNotifyEvent; AState: TDebugExpertState);
+  var
+    SubMenuItem: TMenuItem;
+  begin
+    SubMenuItem := TMenuItem.Create(AMenuItem);
+    SubMenuItem.Visible := True;
+    SubMenuItem.Caption := RsAlwaysEnabled;
+    SubMenuItem.RadioItem := True;
+    SubMenuItem.Checked := AState = deAlwaysEnabled;
+    SubMenuItem.Tag := DebugExpertStateToInt(deAlwaysEnabled);
+    SubMenuItem.OnClick := AOnClickEvent;
+    AMenuItem.Add(SubMenuItem);
+
+    SubMenuItem := TMenuItem.Create(AMenuItem);
+    SubMenuItem.Visible := True;
+    SubMenuItem.Caption := RsProjectEnabled;
+    SubMenuItem.RadioItem := True;
+    SubMenuItem.Checked := AState = deProjectEnabled;
+    SubMenuItem.Tag := DebugExpertStateToInt(deProjectEnabled);
+    SubMenuItem.OnClick := AOnClickEvent;
+    AMenuItem.Add(SubMenuItem);
+
+    SubMenuItem := TMenuItem.Create(AMenuItem);
+    SubMenuItem.Visible := True;
+    SubMenuItem.Caption := RsProjectDisabled;
+    SubMenuItem.RadioItem := True;
+    SubMenuItem.Checked := AState = deProjectDisabled;
+    SubMenuItem.Tag := DebugExpertStateToInt(deProjectDisabled);
+    SubMenuItem.OnClick := AOnClickEvent;
+    AMenuItem.Add(SubMenuItem);
+
+    SubMenuItem := TMenuItem.Create(AMenuItem);
+    SubMenuItem.Visible := True;
+    SubMenuItem.Caption := RsAlwaysDisabled;
+    SubMenuItem.RadioItem := True;
+    SubMenuItem.Checked := AState = deAlwaysDisabled;
+    SubMenuItem.Tag := DebugExpertStateToInt(deAlwaysDisabled);
+    SubMenuItem.OnClick := AOnClickEvent;
+    AMenuItem.Add(SubMenuItem);
+  end;
+var
+  SelectedIdent: string;
+  AProject: IOTAProject;
+  ADeleteMapFileState, AGenerateJdbgState, AInsertJdbgState: TDebugExpertState;
+  ActionMenuItem: TMenuItem;
+begin
+  try
+    SelectedIdent := Ident;
+    AProject := FOTAProjectManager.GetCurrentSelection(SelectedIdent);
+    if AProject <> nil then
+    begin
+      ADeleteMapFileState := FDebugExtension.ProjectStates[deDeleteMapFile, AProject];
+      AGenerateJdbgState := FDebugExtension.ProjectStates[deGenerateJdbg, AProject];
+      AInsertJdbgState := FDebugExtension.ProjectStates[deInsertJdbg, AProject];
+
+      // root item
+      Result := TMenuItem.Create(nil);
+      Result.Visible := True;
+      Result.Caption := RsDebugExpertCaption;
+      if (ADeleteMapFileState in [deAlwaysEnabled, deProjectEnabled])
+        or (AGenerateJdbgState in [deAlwaysEnabled, deProjectEnabled])
+        or (AInsertJdbgState in [deAlwaysEnabled, deProjectEnabled]) then
+      begin
+        Result.Checked := True;
+        Result.ImageIndex := FDebugExtension.FDebugImageIndex
+      end
+      else
+        Result.ImageIndex := FDebugExtension.FNoDebugImageIndex;
+      Result.SubMenuImages := FNTAServices.ImageList;
+
+      // actions items
+      ActionMenuItem := TMenuItem.Create(Result);
+      ActionMenuItem.Visible := True;
+      ActionMenuItem.Caption := RsDebugGenerateJdbg;
+      if AGenerateJdbgState in [deAlwaysEnabled, deProjectEnabled] then
+      begin
+        ActionMenuItem.Checked := True;
+        ActionMenuItem.ImageIndex := FDebugExtension.FGenerateJdbgImageIndex;
+      end
+      else
+        ActionMenuItem.ImageIndex := FDebugExtension.FNoGenerateJdbgImageIndex;
+      FillSubMenu(ActionMenuItem, GenerateJdbgSubMenuClick, AGenerateJdbgState);
+      Result.Add(ActionMenuItem);
+
+      ActionMenuItem := TMenuItem.Create(Result);
+      ActionMenuItem.Visible := True;
+      ActionMenuItem.Caption := RsDebugInsertJdbg;
+      if AInsertJdbgState in [deAlwaysEnabled, deProjectEnabled] then
+      begin
+        ActionMenuItem.Checked := True;
+        ActionMenuItem.ImageIndex := FDebugExtension.FInsertJdbgImageIndex;
+      end
+      else
+        ActionMenuItem.ImageIndex := FDebugExtension.FNoInsertJdbgImageIndex;
+      FillSubMenu(ActionMenuItem, InsertJdbgSubMenuClick, AInsertJdbgState);
+      Result.Add(ActionMenuItem);
+
+      ActionMenuItem := TMenuItem.Create(Result);
+      ActionMenuItem.Visible := True;
+      ActionMenuItem.Caption := RsDeleteMapFile;
+      if ADeleteMapFileState in [deAlwaysEnabled, deProjectEnabled] then
+      begin
+        ActionMenuItem.Checked := True;
+        ActionMenuItem.ImageIndex := FDebugExtension.FDeleteMapFileImageIndex;
+      end
+      else
+        ActionMenuItem.ImageIndex := FDebugExtension.FNoDeleteMapFileImageIndex;
+      FillSubMenu(ActionMenuItem, DeleteMapFileSubMenuClick, ADeleteMapFileState);
+      Result.Add(ActionMenuItem);
+    end
+    else
+      raise EJclExpertException.CreateRes(@RsENoActiveProject);
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
+  end;
+end;
+
+function TProjectManagerNotifier.CanHandle(const Ident: string): Boolean;
+begin
+  Result := Ident = sProjectContainer;
+end;
+
+procedure TProjectManagerNotifier.DeleteMapFileSubMenuClick(Sender: TObject);
+var
+  AProject: IOTAProject;
+  Ident: string;
+begin
+  try
+    Ident := '';
+    AProject := FOTAProjectManager.GetCurrentSelection(Ident);
+    if AProject <> nil then
+      FDebugExtension.ProjectStates[deDeleteMapFile, AProject] := IntToDebugExpertState((Sender as TMenuItem).Tag)
+    else
+      raise EJclExpertException.CreateRes(@RsENoActiveProject);
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
+  end;
+end;
+
+procedure TProjectManagerNotifier.GenerateJdbgSubMenuClick(Sender: TObject);
+var
+  AProject: IOTAProject;
+  Ident: string;
+begin
+  try
+    Ident := '';
+    AProject := FOTAProjectManager.GetCurrentSelection(Ident);
+    if AProject <> nil then
+      FDebugExtension.ProjectStates[deGenerateJdbg, AProject] := IntToDebugExpertState((Sender as TMenuItem).Tag)
+    else
+      raise EJclExpertException.CreateRes(@RsENoActiveProject);
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
+  end;
+end;
+
+procedure TProjectManagerNotifier.InsertJdbgSubMenuClick(Sender: TObject);
+var
+  AProject: IOTAProject;
+  Ident: string;
+begin
+  try
+    Ident := '';
+    AProject := FOTAProjectManager.GetCurrentSelection(Ident);
+    if AProject <> nil then
+      FDebugExtension.ProjectStates[deInsertJdbg, AProject] := IntToDebugExpertState((Sender as TMenuItem).Tag)
+    else
+      raise EJclExpertException.CreateRes(@RsENoActiveProject);
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
+  end;
+end;
+
+{$ENDIF BDS4_UP}
 
 end.
