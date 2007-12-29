@@ -17,7 +17,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                      $ }
+{ Last modified: $Date::                                                                     $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -75,7 +75,6 @@ type
     FSaveBuildAllProjectsActionExecute: TNotifyEvent;
     FIDENotifierIndex: Integer;
     {$IFDEF BDS4_UP}
-    ProjectManager: IOTAProjectManager;
     FProjectManagerNotifierIndex: Integer;
     {$ENDIF BDS4_UP}
     FConfigFrame: TJclDebugIdeConfigFrame;
@@ -285,10 +284,6 @@ end;
 constructor TJclDebugExtension.Create;
 begin
   inherited Create(JclDebugExpertRegKey);
-  {$IFDEF BDS4_UP}
-  if not Supports(BorlandIDEServices, IOTAProjectManager, ProjectManager) then
-    raise EJclExpertException.CreateRes(@RsENoProjectManager);
-  {$ENDIF BDS4_UP}
 end;
 
 procedure TJclDebugExtension.AddConfigurationPages(
@@ -1507,6 +1502,8 @@ begin
 end;
 
 {$IFDEF BDS4_UP}
+
+//=== { TProjectManagerNotifier } ============================================
 
 constructor TProjectManagerNotifier.Create(ADebugExtension: TJclDebugExtension;
   const ANTAServices: INTAServices; const AOTAProjectManager: IOTAProjectManager);

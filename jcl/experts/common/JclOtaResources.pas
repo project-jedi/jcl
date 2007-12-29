@@ -20,7 +20,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                       $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -44,6 +44,7 @@ resourcestring
   RsENoWizardServices = 'Unable to get Borland Wizard Services';
   RsENoPackageServices = 'Unable to get Borland Package Services';
   RsENoPersonalityServices = 'Unable to get Borland Personality Services';
+  RsENoProjectManager = 'Unable to get project manager';
   RsENoMessageServices = 'Unable to get Borland Message Services';
   RsENoGalleryCategoryManager = 'Unable to get Borland Gallery Category Manager';
   RsENoModule = 'Unable to get Module';
@@ -250,7 +251,6 @@ resourcestring
   RsENoProjectGroup = 'No project group';
   RsDebugConfigPageCaption = 'Debug info converter';
   RsEInvalidDebugExpertAction = '%d is not a debug expert action';
-  RsENoProjectManager = 'Unable to get project manager';
 
 //=== JclDebugIdeConfigFrame.pas =============================================
 resourcestring

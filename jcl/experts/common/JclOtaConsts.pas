@@ -121,7 +121,7 @@ const
   JclIniFileLocation  = 'experts\useswizard\JediUsesWizard.ini';
 
   //=== Project analyser =====================================================
-  JclProjectAnalyserExpertName = 'JclProjectAnalyzerExpert';
+  JclProjectAnalyzerExpertName = 'JclProjectAnalyzerExpert';
   AnalyzerViewName             = 'AnalyzerView';
   JclProjectAnalyzeActionName  = 'JCLProjectAnalyseCommand';
   JclProjectAnalyzeMenuName    = 'JCLProjectAnalyseMenu';

@@ -140,6 +140,9 @@ type
     {$IFDEF BDS}
     FOTAPersonalityServices: IOTAPersonalityServices;
     {$ENDIF BDS}
+    {$IFDEF BDS4_UP}
+    FProjectManager: IOTAProjectManager;
+    {$ENDIF BDS4_UP}
     FOTAMessageServices: IOTAMessageServices;
     function GetModuleHInstance: Cardinal;
     function GetActiveProject: IOTAProject;
@@ -193,6 +196,9 @@ type
     {$IFDEF BDS}
     property OTAPersonalityServices: IOTAPersonalityServices read FOTAPersonalityServices;
     {$ENDIF BDS}
+    {$IFDEF BDS4_UP}
+    property ProjectManager: IOTAProjectManager read FProjectManager;
+    {$ENDIF BDS4_UP}
     property OTAMessageServices: IOTAMessageServices read FOTAMessageServices;
 
     property ActivePersonality: TJclBorPersonality read GetActivePersonality;
@@ -861,6 +867,11 @@ begin
   if not Assigned(FOTAPersonalityServices) then
     raise EJclExpertException.CreateTrace(RsENoPersonalityServices);
   {$ENDIF BDS}
+
+  {$IFDEF BDS4_UP}
+  if not Supports(BorlandIDEServices, IOTAProjectManager, FProjectManager) then
+    raise EJclExpertException.CreateRes(@RsENoProjectManager);
+  {$ENDIF BDS4_UP}
 
   Supports(BorlandIDEServices, IOTAModuleServices, FOTAModuleServices);
   if not Assigned(FOTAModuleServices) then

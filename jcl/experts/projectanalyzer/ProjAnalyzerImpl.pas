@@ -17,7 +17,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                       $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -38,14 +38,33 @@ type
   private
     FBuildMenuItem: TMenuItem;
     FBuildAction: TAction;
+    {$IFDEF BDS4_UP}
+    FProjectManagerNotifierIndex: Integer;
+    {$ENDIF BDS4_UP}
     procedure ActionExecute(Sender: TObject);
     procedure ActionUpdate(Sender: TObject);
+    procedure AnalyzeProject(const AProject: IOTAProject);
   public
     constructor Create; reintroduce;
     destructor Destroy; override;
     procedure RegisterCommands; override;
     procedure UnregisterCommands; override;
   end;
+
+  {$IFDEF BDS4_UP}
+  TProjectManagerNotifier = class(TNotifierObject, IOTANotifier, INTAProjectMenuCreatorNotifier)
+  private
+    FProjectAnalyser: TJclProjectAnalyzerExpert;
+    FOTAProjectManager: IOTAProjectManager;
+    procedure AnalyzeProjectMenuClick(Sender: TObject);
+  protected
+    { INTAProjectMenuCreatorNotifier }
+    function AddMenu(const Ident: string): TMenuItem;
+    function CanHandle(const Ident: string): Boolean;
+  public
+    constructor Create(AProjectAnalyzer: TJclProjectAnalyzerExpert; const AOTAProjectManager: IOTAProjectManager);
+  end;
+  {$ENDIF BDS4_UP}
 
 // design package entry point
 procedure Register;
@@ -129,7 +148,7 @@ end;
 
 constructor TJclProjectAnalyzerExpert.Create;
 begin
-  inherited Create(JclProjectAnalyserExpertName);
+  inherited Create(JclProjectAnalyzerExpertName);
 end;
 
 destructor TJclProjectAnalyzerExpert.Destroy;
@@ -141,77 +160,17 @@ end;
 procedure TJclProjectAnalyzerExpert.ActionExecute(Sender: TObject);
 var
   TempActiveProject: IOTAProject;
-  BuildOK, Succ: Boolean;
-  ProjOptions: IOTAProjectOptions;
-  SaveMapFile: Variant;
-  OutputDirectory, ProjectFileName, MapFileName, ExecutableFileName: string;
-  ProjectName: string;
 begin
   try
-    JclDisablePostCompilationProcess := True;
-
     TempActiveProject := ActiveProject;
-    if not Assigned(TempActiveProject) then
+    if TempActiveProject <> nil then
+      AnalyzeProject(TempActiveProject)
+    else
       raise EJclExpertException.CreateTrace(RsENoActiveProject);
-
-    ProjectFileName := TempActiveProject.FileName;
-    ProjectName := ExtractFileName(ProjectFileName);
-    Succ := False;
-
-    ProjOptions := TempActiveProject.ProjectOptions;
-    if not Assigned(ProjOptions) then
-      raise EJclExpertException.CreateTrace(RsENoProjectOptions);
-      
-    OutputDirectory := GetOutputDirectory(TempActiveProject);
-    MapFileName := GetMapFileName(TempActiveProject);
-
-    if ProjectAnalyzerForm = nil then
-    begin
-      ProjectAnalyzerForm := TProjectAnalyzerForm.Create(Application, Settings);
-      ProjectAnalyzerForm.Show;
-    end;
-    ProjectAnalyzerForm.ClearContent;
-    ProjectAnalyzerForm.StatusBarText := Format(RsBuildingProject, [ProjectName]);
-
-    SaveMapFile := ProjOptions.Values[MapFileOptionName];
-    ProjOptions.Values[MapFileOptionName] := MapFileOptionDetailed;
-    // workaround for MsBuild, the project has to be saved (seems useless with Delphi 2007 update 1)
-    ProjOptions.ModifiedState := True;
-    //TempActiveProject.Save(False, True);
-
-    BuildOK := TempActiveProject.ProjectBuilder.BuildProject(cmOTABuild, False);
-
-    ProjOptions.Values[MapFileOptionName] := SaveMapFile;
-    // workaround for MsBuild, the project has to be saved (seems useless with Delphi 2007 update 1)
-    ProjOptions.ModifiedState := True;
-    //TempActiveProject.Save(False, True);
-
-    if BuildOK then
-    begin // Build was successful, continue ...
-      Succ := FileExists(MapFileName) and FindExecutableName(MapFileName, OutputDirectory, ExecutableFileName);
-      if Succ then
-      begin // MAP files was created
-        ProjectAnalyzerForm.SetFileName(ExecutableFileName, MapFileName, ProjectName);
-        ProjectAnalyzerForm.Show;
-      end;
-      if Integer(SaveMapFile) <> MapFileOptionDetailed then
-      begin // delete MAP and DRC file
-        DeleteFile(MapFileName);
-        DeleteFile(ChangeFileExt(MapFileName, DrcFileExtension));
-      end;
-    end;
-    if not Succ then
-    begin
-      ProjectAnalyzerForm.StatusBarText := '';
-      if BuildOK then
-        MessageDlg(RsCantFindFiles, mtError, [mbOk], 0);
-    end;
-    JclDisablePostCompilationProcess := False;
   except
     on ExceptionObj: TObject do
     begin
       JclExpertShowExceptionDialog(ExceptionObj);
-      JclDisablePostCompilationProcess := False;
       raise;
     end;
   end;
@@ -241,6 +200,74 @@ begin
   end;
 end;
 
+procedure TJclProjectAnalyzerExpert.AnalyzeProject(const AProject: IOTAProject);
+var
+  BuildOK, Succ: Boolean;
+  ProjOptions: IOTAProjectOptions;
+  SaveMapFile: Variant;
+  OutputDirectory, ProjectFileName, MapFileName, ExecutableFileName: string;
+  ProjectName: string;
+begin
+  try
+    JclDisablePostCompilationProcess := True;
+
+    ProjectFileName := AProject.FileName;
+    ProjectName := ExtractFileName(ProjectFileName);
+    Succ := False;
+
+    ProjOptions := AProject.ProjectOptions;
+    if not Assigned(ProjOptions) then
+      raise EJclExpertException.CreateTrace(RsENoProjectOptions);
+      
+    OutputDirectory := GetOutputDirectory(AProject);
+    MapFileName := GetMapFileName(AProject);
+
+    if ProjectAnalyzerForm = nil then
+    begin
+      ProjectAnalyzerForm := TProjectAnalyzerForm.Create(Application, Settings);
+      ProjectAnalyzerForm.Show;
+    end;
+    ProjectAnalyzerForm.ClearContent;
+    ProjectAnalyzerForm.StatusBarText := Format(RsBuildingProject, [ProjectName]);
+
+    SaveMapFile := ProjOptions.Values[MapFileOptionName];
+    ProjOptions.Values[MapFileOptionName] := MapFileOptionDetailed;
+    // workaround for MsBuild, the project has to be saved (seems useless with Delphi 2007 update 1)
+    ProjOptions.ModifiedState := True;
+    //TempActiveProject.Save(False, True);
+
+    BuildOK := AProject.ProjectBuilder.BuildProject(cmOTABuild, False);
+
+    ProjOptions.Values[MapFileOptionName] := SaveMapFile;
+    // workaround for MsBuild, the project has to be saved (seems useless with Delphi 2007 update 1)
+    ProjOptions.ModifiedState := True;
+    //TempActiveProject.Save(False, True);
+
+    if BuildOK then
+    begin // Build was successful, continue ...
+      Succ := FileExists(MapFileName) and FindExecutableName(MapFileName, OutputDirectory, ExecutableFileName);
+      if Succ then
+      begin // MAP files was created
+        ProjectAnalyzerForm.SetFileName(ExecutableFileName, MapFileName, ProjectName);
+        ProjectAnalyzerForm.Show;
+      end;
+      if Integer(SaveMapFile) <> MapFileOptionDetailed then
+      begin // delete MAP and DRC file
+        DeleteFile(MapFileName);
+        DeleteFile(ChangeFileExt(MapFileName, DrcFileExtension));
+      end;
+    end;
+    if not Succ then
+    begin
+      ProjectAnalyzerForm.StatusBarText := '';
+      if BuildOK then
+        MessageDlg(RsCantFindFiles, mtError, [mbOk], 0);
+    end;
+  finally
+    JclDisablePostCompilationProcess := False;
+  end;
+end;
+
 procedure TJclProjectAnalyzerExpert.RegisterCommands;
 var
   IDEMainMenu: TMainMenu;
@@ -251,6 +278,7 @@ var
 begin
   inherited RegisterCommands;
 
+  // create actions
   FBuildAction := TAction.Create(nil);
   FBuildAction.Caption := Format(RsAnalyzeActionCaption, [RsProjectNone]);
   FBuildAction.Visible := True;
@@ -265,6 +293,13 @@ begin
     ImageBmp.Free;
   end;
 
+  // create project manager notifier
+  {$IFDEF BDS4_UP}
+  FProjectManagerNotifierIndex := ProjectManager.AddMenuCreatorNotifier(TProjectManagerNotifier.Create(Self,
+    ProjectManager));
+  {$ENDIF BDS4_UP}
+
+  // create menu item
   IDEMainMenu := NTAServices.MainMenu;
   IDEProjectItem := nil;
   with IDEMainMenu do
@@ -301,10 +336,82 @@ end;
 procedure TJclProjectAnalyzerExpert.UnregisterCommands;
 begin
   inherited UnregisterCommands;
+  // remove notifier
+  {$IFDEF BDS4_UP}
+  if FProjectManagerNotifierIndex <> -1 then
+    ProjectManager.RemoveMenuCreatorNotifier(FProjectManagerNotifierIndex);
+  {$ENDIF BDS4_UP}
 
   UnregisterAction(FBuildAction);
   FreeAndNil(FBuildMenuItem);
   FreeAndNil(FBuildAction);
 end;
+
+{$IFDEF BDS4_UP}
+
+//=== { TProjectManagerNotifier } ============================================
+
+constructor TProjectManagerNotifier.Create(AProjectAnalyzer: TJclProjectAnalyzerExpert;
+  const AOTAProjectManager: IOTAProjectManager);
+begin
+  inherited Create;
+  FProjectAnalyser := AProjectAnalyzer;
+  FOTAProjectManager := AOTAProjectManager;
+end;
+
+function TProjectManagerNotifier.AddMenu(const Ident: string): TMenuItem;
+var
+  SelectedIdent: string;
+  AProject: IOTAProject;
+begin
+  try
+    SelectedIdent := Ident;
+    AProject := FOTAProjectManager.GetCurrentSelection(SelectedIdent);
+    if AProject <> nil then
+    begin
+      // root item
+      Result := TMenuItem.Create(nil);
+      Result.Visible := True;
+      Result.Caption := Format(RsAnalyzeActionCaption, [ExtractFileName(AProject.FileName)]);
+      Result.OnClick := AnalyzeProjectMenuClick;
+    end
+    else
+      raise EJclExpertException.CreateTrace(RsENoActiveProject);
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
+  end;
+end;
+
+procedure TProjectManagerNotifier.AnalyzeProjectMenuClick(Sender: TObject);
+var
+  TempProject: IOTAProject;
+  SelectedIdent: string;
+begin
+  try
+    SelectedIdent := '';
+    TempProject := FOTAProjectManager.GetCurrentSelection(SelectedIdent);
+    if TempProject <> nil then
+      FProjectAnalyser.AnalyzeProject(TempProject)
+    else
+      raise EJclExpertException.CreateTrace(RsENoActiveProject);
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
+  end;
+end;
+
+function TProjectManagerNotifier.CanHandle(const Ident: string): Boolean;
+begin
+  Result := Ident = sProjectContainer;
+end;
+
+{$ENDIF BDS4_UP}
 
 end.
