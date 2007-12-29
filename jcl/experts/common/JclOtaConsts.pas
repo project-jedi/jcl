@@ -121,9 +121,10 @@ const
   JclIniFileLocation  = 'experts\useswizard\JediUsesWizard.ini';
 
   //=== Project analyser =====================================================
-  AnalyzerViewName            = 'AnalyzerView';
-  JclProjectAnalyzeActionName = 'JCLProjectAnalyseCommand';
-  JclProjectAnalyzeMenuName   = 'JCLProjectAnalyseMenu';
+  JclProjectAnalyserExpertName = 'JclProjectAnalyzerExpert';
+  AnalyzerViewName             = 'AnalyzerView';
+  JclProjectAnalyzeActionName  = 'JCLProjectAnalyseCommand';
+  JclProjectAnalyzeMenuName    = 'JCLProjectAnalyseMenu';
 
   //=== Repository Expert ====================================================
   JclRepositoryCategoryDelphiFiles = {$IFDEF BDS} sCategoryDelphiNewFiles {$ELSE BDS} '' {$ENDIF BDS};

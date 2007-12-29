@@ -129,7 +129,7 @@ end;
 
 constructor TJclProjectAnalyzerExpert.Create;
 begin
-  inherited Create('JclProjectAnalyzerExpert');
+  inherited Create(JclProjectAnalyserExpertName);
 end;
 
 destructor TJclProjectAnalyzerExpert.Destroy;
