@@ -20,7 +20,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                       $ }
+{ Last modified: $Date::                                                                      $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -201,8 +201,8 @@ resourcestring
 //=== ProjAnalyzerFrm.pas ====================================================
 resourcestring
   RsFormCaption = 'Project Analyzer - %s';
-  RsStatusText = 'Units: %d, Forms: %d, Code: %d, Data: %d, Bss: %d, Resources: %d';
-  RsCodeData = '(CODE+DATA)';
+  RsStatusText = 'Units: %d, Forms: %d, Code: %d, ICode: %d, Data: %d, Bss: %d, Resources: %d';
+  RsCodeData = '(CODE+ICODE+DATA)';
 
 //=== JclUsesWizard.pas ======================================================
 resourcestring

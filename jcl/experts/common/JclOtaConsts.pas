@@ -123,6 +123,7 @@ const
   //=== Project analyser =====================================================
   JclProjectAnalyzerExpertName = 'JclProjectAnalyzerExpert';
   AnalyzerViewName             = 'AnalyzerView';
+  AnalyzerShowPackagesName     = 'ShowPackages';
   JclProjectAnalyzeActionName  = 'JCLProjectAnalyseCommand';
   JclProjectAnalyzeMenuName    = 'JCLProjectAnalyseMenu';
 

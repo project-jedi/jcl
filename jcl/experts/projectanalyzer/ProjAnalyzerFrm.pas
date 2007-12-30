@@ -61,7 +61,7 @@ type
     MenuItemDetails: TMenuItem;
     MenuItemSummary: TMenuItem;
     ToolButtonSummary: TToolButton;
-    ToolButtonSeparator: TToolButton;
+    ToolButtonSeparator1: TToolButton;
     ToolButtonCopy: TToolButton;
     ToolButtonSave: TToolButton;
     ActionCopy: TAction;
@@ -76,6 +76,9 @@ type
     ActionShowDfms: TAction;
     ToolButtonDfms: TToolButton;
     MenuItemDfms: TMenuItem;
+    ToolButtonSeparator2: TToolButton;
+    ToolButtonShowPackages: TToolButton;
+    ActionShowPackages: TAction;
     procedure ActionShowDfmsUpdate(Sender: TObject);
     procedure ActionShowSummaryUpdate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -90,8 +93,11 @@ type
     procedure ActionSaveExecute(Sender: TObject);
     procedure ActionShowDfmsExecute(Sender: TObject);
     procedure ActionShowDetailsUpdate(Sender: TObject);
+    procedure ActionShowPackagesExecute(Sender: TObject);
+    procedure ActionShowPackagesUpdate(Sender: TObject);
   private
     FCodeSize: Integer;
+    FICodeSize: Integer;
     FDataSize: Integer;
     FBssSize: Integer;
     FPackageUnits: array of TPackageUnitItem;
@@ -99,6 +105,7 @@ type
     FDfms: array of TUnitItem;
     FUnitsSum: TStringList;
     FSettings: TJclOtaSettings;
+    FShowPackages: Boolean;
     FView: TProjectAnalyserView;
     procedure OnMapSegmentEvent(Sender: TObject; const Address: TJclMapAddress;
       Length: Integer; const ClassName, UnitName: string);
@@ -118,6 +125,7 @@ type
     property StatusBarText: string write SetStatusBarText;
     property Settings: TJclOtaSettings read FSettings;
     property View: TProjectAnalyserView read FView;
+    property ShowPackages: Boolean read FShowPackages;
   end;
 
 var
@@ -140,9 +148,8 @@ begin
   ListView := TListColumns(Column.Collection).Owner as TListView;
   ListView.Columns.BeginUpdate;
   try
-    with ListView.Columns do
-      for I := 0 to Count - 1 do
-        Items[I].ImageIndex := -1;
+    for I := 0 to ListView.Columns.Count - 1 do
+        ListView.Columns.Items[I].ImageIndex := -1;
     if ListView.Tag and $FF = Column.Index then
       ListView.Tag := ListView.Tag xor $100
     else
@@ -282,10 +289,11 @@ begin
             Settings.LoadInteger(JclHeight, Height));
 
   FView := TProjectAnalyserView(Settings.LoadInteger(AnalyzerViewName, Integer(pavDetails)));
+  FShowPackages := Settings.LoadBool(AnalyzerShowPackagesName, True);
 
-  with UnitListView.Columns do
-    for Index := 0 to Count - 1 do
-      Items[Index].Width := Settings.LoadInteger(Format(ColumnRegName, [Index]), Items[Index].Width);
+  for Index := 0 to UnitListView.Columns.Count - 1 do
+    UnitListView.Columns.Items[Index].Width := Settings.LoadInteger(Format(ColumnRegName, [Index]),
+      UnitListView.Columns.Items[Index].Width);
 end;
 
 procedure TProjectAnalyzerForm.FormDestroy(Sender: TObject);
@@ -297,9 +305,9 @@ begin
   Settings.SaveInteger(JclWidth, Width);
   Settings.SaveInteger(JclHeight, Height);
   Settings.SaveInteger(AnalyzerViewName, Integer(FView));
-  with UnitListView.Columns do
-    for Index := 0 to Count - 1 do
-      Settings.SaveInteger(Format(ColumnRegName, [Index]), Items[Index].Width);
+  Settings.SaveBool(AnalyzerShowPackagesName, ShowPackages);
+  for Index := 0 to UnitListView.Columns.Count - 1 do
+    Settings.SaveInteger(Format(ColumnRegName, [Index]), UnitListView.Columns.Items[Index].Width);
 
   FreeAndNil(FUnitsSum);
 end;
@@ -358,7 +366,7 @@ begin
     PackagesList.Free;
   end;
   StatusBarMain.Panels[0].Text := Format(RsStatusText,
-    [FUnitsSum.Count, Length(FDfms), FCodeSize, FDataSize, FBssSize, ResourcesSize]);
+    [FUnitsSum.Count, Length(FDfms), FCodeSize, FICodeSize, FDataSize, FBssSize, ResourcesSize]);
   case View of
     pavDetails:
       ShowDetails;
@@ -372,53 +380,65 @@ end;
 procedure TProjectAnalyzerForm.ShowDetails;
 var
   I: Integer;
+  PackageName: string;
+  AItem: TListItem;
 begin
   FView := pavDetails;
-  with UnitListView do
-  begin
-    Items.BeginUpdate;
-    Items.Clear;
+  UnitListView.Items.BeginUpdate;
+  try
+    UnitListView.Items.Clear;
     for I := 0 to Length(FUnits) - 1 do
-      with Items.Add, FUnits[I] do
+    begin
+      PackageName := FindPackageForUnitName(FUnits[I].Name);
+      if ShowPackages or (PackageName = '') then
       begin
-        Caption := Name;
-        SubItems.Add(Format('%.0n', [IntToExtended(Size)]));
-        SubItems.Add(Group);
-        SubItems.Add(FindPackageForUnitName(Name));
-        case Group[1] of
+        AItem := UnitListView.Items.Add;
+        AItem.Caption := FUnits[I].Name;
+        AItem.SubItems.Add(Format('%.0n', [IntToExtended(FUnits[I].Size)]));
+        AItem.SubItems.Add(FUnits[I].Group);
+        AItem.SubItems.Add(PackageName);
+        case FUnits[I].Group[1] of
           'D':
-            ImageIndex := 3;
+            AItem.ImageIndex := 3;
           'B':
-            ImageIndex := 4;
+            AItem.ImageIndex := 4;
         else
-          ImageIndex := 2;
+          AItem.ImageIndex := 2;
         end;
       end;
-    AlphaSort;
-    Items.EndUpdate;
+    end;
+    UnitListView.AlphaSort;
+  finally
+    UnitListView.Items.EndUpdate;
   end;
 end;
 
 procedure TProjectAnalyzerForm.ShowSummary;
 var
   I: Integer;
+  PackageName: string;
+  AItem: TListItem;
 begin
   FView := pavSummary;
-  with UnitListView do
-  begin
-    Items.BeginUpdate;
-    Items.Clear;
+  UnitListView.Items.BeginUpdate;
+  try
+    UnitListView.Items.Clear;
     for I := 0 to FUnitsSum.Count - 1 do
-      with Items.Add, FUnitsSum do
+    begin
+      PackageName := FindPackageForUnitName(FUnitsSum.Strings[I]);
+      if ShowPackages or (PackageName = '') then
       begin
-        Caption := Strings[I];
-        SubItems.Add(Format('%.0n', [IntToExtended(Integer(Objects[I]))]));
-        SubItems.Add(RsCodeData);
-        SubItems.Add(FindPackageForUnitName(Strings[I]));
-        ImageIndex := 2;
+        AItem := UnitListView.Items.Add;
+        AItem.Caption := FUnitsSum.Strings[I];
+        AItem.SubItems.Add(Format('%.0n', [IntToExtended(Integer(FUnitsSum.Objects[I]))]));
+        AItem.SubItems.Add(RsCodeData);
+        AItem.SubItems.Add(PackageName);
+        AItem.ImageIndex := 2;
       end;
-    AlphaSort;
-    Items.EndUpdate;
+    end;
+    UnitListView.AlphaSort;
+  finally
+    UnitListView.Items.EndUpdate;
   end;
 end;
 
@@ -470,6 +490,8 @@ begin
       Inc(FCodeSize, Length);
     'D':
       Inc(FDataSize, Length);
+    'I':
+      Inc(FICodeSize, Length);
   end;
   C := FUnitsSum.IndexOf(UnitName);
   if C = -1 then
@@ -533,6 +555,30 @@ begin
 
   AAction.Enabled := (Length(FUnits) > 0);
   AAction.Checked := View = pavDfms;
+end;
+
+procedure TProjectAnalyzerForm.ActionShowPackagesExecute(Sender: TObject);
+begin
+  FShowPackages := not FShowPackages;
+  ActionShowPackages.Checked := not ActionShowPackages.Checked;
+  case FView of
+    pavDetails:
+      ShowDetails;
+    pavSummary:
+      ShowSummary;
+    pavDfms:
+      ShowDfms;
+  end;
+end;
+
+procedure TProjectAnalyzerForm.ActionShowPackagesUpdate(Sender: TObject);
+var
+  AAction: TAction;
+begin
+  AAction := Sender as TAction;
+
+  AAction.Enabled := (Length(FUnits) > 0);
+  AAction.Checked := ShowPackages;
 end;
 
 procedure TProjectAnalyzerForm.TextLabelsItemClick(Sender: TObject);
@@ -645,6 +691,7 @@ begin
   FUnits := nil;
   FUnitsSum.Clear;
   FCodeSize := 0;
+  FICodeSize := 0;
   FDataSize := 0;
   FBssSize := 0;
   FPackageUnits := nil;
