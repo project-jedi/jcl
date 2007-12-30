@@ -21,7 +21,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                       $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -186,7 +186,6 @@ type
     procedure IDEVersionCtrlMenuClick(Sender: TObject);
     procedure RefreshIcons;
     procedure RefreshMenu;
-    procedure CleanSubMenus(const AMenuItem: TMenuItem);
     function GetCurrentCache: TJclVersionControlCache;
     function GetCurrentPlugin: TJclVersionControlPlugin;
     function GetCurrentFileName: string;
@@ -1106,20 +1105,6 @@ begin
   end;
 end;
 
-procedure TJclVersionControlExpert.CleanSubMenus(const AMenuItem: TMenuItem);
-var
-  Index: Integer;
-  BMenuItem: TMenuItem;
-begin
-  if Assigned(AMenuItem) then
-    for Index := AMenuItem.Count - 1 downto 0 do
-  begin
-    BMenuItem := AMenuItem.Items[Index];
-    CleanSubMenus(BMenuItem);
-    BMenuItem.Free;
-  end;
-end;
-
 procedure TJclVersionControlExpert.ConfigurationClosed(AControl: TControl;
   SaveChanges: Boolean);
 begin
@@ -1199,7 +1184,7 @@ begin
     APopupMenu := Sender as TPopupMenu;
     AControlAction := TJclVersionControlAction(APopupMenu.Tag);
 
-    CleanSubMenus(APopupMenu.Items);
+    APopupMenu.Items.Clear;
 
     if VersionControlActionInfos[AControlAction].AllPlugins then
     begin
@@ -1211,7 +1196,7 @@ begin
         for IndexSandbox := 0 to AFileCache.SandBoxCount - 1 do
           if AControlAction in AFileCache.SandBoxActions[IndexSandbox] then
         begin
-          AMenuItem := TMenuItem.Create(nil);
+          AMenuItem := TMenuItem.Create(APopupMenu.Items);
           AMenuItem.Caption := Format('%s | %s', [AFileCache.Plugin.Name, AFileCache.SandBoxes[IndexSandbox]]);
           AMenuItem.Tag := APopupMenu.Tag;
           AMenuItem.OnClick := SubItemClick;
@@ -1227,7 +1212,7 @@ begin
         for IndexSandbox := 0 to AFileCache.SandBoxCount - 1 do
           if AControlAction in AFileCache.SandBoxActions[IndexSandbox] then
       begin
-        AMenuItem := TMenuItem.Create(nil);
+        AMenuItem := TMenuItem.Create(APopupMenu.Items);
         AMenuItem.Caption := AFileCache.SandBoxes[IndexSandbox];
         AMenuItem.Tag := APopupMenu.Tag;
         AMenuItem.OnClick := SubItemClick;
@@ -1366,7 +1351,7 @@ begin
         for IndexSandbox := 0 to AFileCache.SandBoxCount - 1 do
           if AControlAction in AFileCache.SandBoxActions[IndexSandbox] then
         begin
-          SubMenuItem := TMenuItem.Create(nil);
+          SubMenuItem := TMenuItem.Create(AMenuItem);
           SubMenuItem.Caption := Format('%s | %s', [AFileCache.Plugin.Name, AFileCache.SandBoxes[IndexSandbox]]);
           SubMenuItem.Tag := Integer(AControlAction);
           SubMenuItem.OnClick := SubItemClick;
@@ -1383,7 +1368,7 @@ begin
         for IndexSandbox := 0 to AFileCache.SandBoxCount - 1 do
           if AControlAction in AFileCache.SandBoxActions[IndexSandbox] then
       begin
-        SubMenuItem := TMenuItem.Create(nil);
+        SubMenuItem := TMenuItem.Create(AMenuItem);
         SubMenuItem.Caption := AFileCache.SandBoxes[IndexSandbox];
         SubMenuItem.Tag := Integer(AControlAction);
         SubMenuItem.OnClick := SubItemClick;
@@ -1600,7 +1585,7 @@ var
   Item, ItemName: string;
   AAction: TCustomAction;
 begin
-  CleanSubMenus(FVersionCtrlMenu);
+  FVersionCtrlMenu.Clear;
 
   if FMenuOrganization.Count > 0 then
   try
@@ -1627,14 +1612,14 @@ begin
 
       if (ActionIndex = -1) or (ItemName = '-') then
       begin
-        SubMenuItem := TMenuItem.Create(nil);
+        SubMenuItem := TMenuItem.Create(FVersionCtrlMenu);
         SubMenuItem.Caption := ItemName;
         SubMenuItem.Tag := -1;
         FVersionCtrlMenu.Add(SubMenuItem);
       end
       else
       begin
-        ActionMenuItem := TMenuItem.Create(nil);
+        ActionMenuItem := TMenuItem.Create(FVersionCtrlMenu);
         AAction := FActions[TJclVersionControlAction(ActionIndex)];
         if VersionControlActionInfos[TJclVersionControlAction(ActionIndex)].Sandbox then
         begin
@@ -1645,7 +1630,7 @@ begin
           ActionMenuItem.OnClick := IDEActionMenuClick;
 
           // to always have the arrow in the parent menu item
-          DummyMenuItem := TMenuItem.Create(nil);
+          DummyMenuItem := TMenuItem.Create(ActionMenuItem);
           DummyMenuItem.Visible := False;
           DummyMenuItem.Tag := -2;
           ActionMenuItem.Add(DummyMenuItem);
@@ -1662,12 +1647,12 @@ begin
         Abort;
       if (ActionIndex = -1) or (ItemName = '-') then
       begin
-        ActionMenuItem := TMenuItem.Create(nil);
+        ActionMenuItem := TMenuItem.Create(FVersionCtrlMenu);
         ActionMenuItem.Caption := ItemName;
       end
       else
       begin
-        ActionMenuItem := TMenuItem.Create(nil);
+        ActionMenuItem := TMenuItem.Create(FVersionCtrlMenu);
         AAction := FActions[TJclVersionControlAction(ActionIndex)];
         if VersionControlActionInfos[TJclVersionControlAction(ActionIndex)].Sandbox then
         begin
@@ -1678,7 +1663,7 @@ begin
           ActionMenuItem.OnClick := IDEActionMenuClick;
 
           // to always have the arrow in the parent menu item
-          DummyMenuItem := TMenuItem.Create(nil);
+          DummyMenuItem := TMenuItem.Create(ActionMenuItem);
           DummyMenuItem.Visible := False;
           DummyMenuItem.Tag := -2;
           ActionMenuItem.Add(DummyMenuItem);
@@ -1904,16 +1889,15 @@ begin
       ADropDownAction := TDropDownAction(FActions[ControlAction]);
       if Assigned(ADropDownAction.DropDownMenu) then
       begin
-        CleanSubMenus(ADropDownAction.DropDownMenu.Items);
+        ADropDownAction.DropDownMenu.Items.Clear;
         ADropDownAction.DropDownMenu.Free;
         ADropDownAction.DropDownMenu := nil;
       end;
     end;
     FreeAndNil(FActions[ControlAction]);
   end;
-  CleanSubMenus(FVersionCtrlMenu);
+  FVersionCtrlMenu.Clear;
   FreeAndNil(FVersionCtrlMenu);
-  FVersionCtrlMenu := nil;
 end;
 
 //=== TJclVersionControlPlugin ===============================================
