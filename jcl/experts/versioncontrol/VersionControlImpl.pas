@@ -21,7 +21,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -80,6 +80,20 @@ type
   );
 
   TJclVersionControlActions = set of TJclVersionControlAction;
+
+  TJclVersionControlStandardAction = class(TCustomAction)
+  private
+    FControlAction: TJclVersionControlAction;
+  public
+    property ControlAction: TJclVersionControlAction read FControlAction write FControlAction;
+  end;
+
+  TJclVersionControlDropDownAction = class(TDropDownAction)
+  private
+    FControlAction: TJclVersionControlAction;
+  public
+    property ControlAction: TJclVersionControlAction read FControlAction write FControlAction;
+  end;
 
   TJclVersionControlExpert = class;
 
@@ -502,6 +516,17 @@ begin
     Result := 0;
 end;
 
+function ActionToControlAction(AAction: TCustomAction): TJclVersionControlAction;
+begin
+  if AAction is TJclVersionControlDropDownAction then
+    Result := TJclVersionControlDropDownAction(AAction).ControlAction
+  else
+  if AAction is TJclVersionControlStandardAction then
+    Result := TJclVersionControlStandardAction(AAction).ControlAction
+  else
+    raise EJclExpertException.CreateTrace('Internal error: invalid action');
+end;
+
 type
   TJclVersionControlActionRec = record
     Sandbox: Boolean;
@@ -783,72 +808,69 @@ procedure TJclVersionControlExpert.ActionExecute(Sender: TObject);
 var
   Index: Integer;
   AAction: TCustomAction;
-  AControlAction: TJclVersionControlAction;
+  ControlAction: TJclVersionControlAction;
   APlugin: TJclVersionControlPlugin;
   AFileName: string;
   AFileCache: TJclVersionControlCache;
 begin
   try
     AAction := Sender as TCustomAction;
-    for AControlAction := Low(TJclVersionControlAction) to High(TJclVersionControlAction) do
-      if FActions[AControlAction] = AAction then
+    ControlAction := ActionToControlAction(AAction);
+
+    if VersionControlActionInfos[ControlAction].Sandbox then
     begin
-      if VersionControlActionInfos[AControlAction].Sandbox then
+      AFileCache := CurrentCache;
+      if not Assigned(AFileCache) or VersionControlActionInfos[ControlAction].AllPlugins then
+        Exit;
+      if ActOnTopSandbox then
       begin
-        AFileCache := CurrentCache;
-        if not Assigned(AFileCache) or VersionControlActionInfos[AControlAction].AllPlugins then
+        for Index := AFileCache.SandboxCount - 1 downto 0 do
+          if ControlAction in AFileCache.SandboxActions[Index] then
+        begin
+          if VersionControlActionInfos[ControlAction].SaveFile then
+            SaveModules(AFileCache.SandBoxes[Index], True);
+          AFileCache.Plugin.ExecuteAction(AFileCache.SandBoxes[Index], ControlAction);
           Exit;
-        if ActOnTopSandbox then
+        end;
+      end
+      else
+      begin
+        for Index := 0 to AFileCache.SandboxCount - 1 do
+          if ControlAction in AFileCache.SandboxActions[Index] then
         begin
-          for Index := AFileCache.SandboxCount - 1 downto 0 do
-            if AControlAction in AFileCache.SandboxActions[Index] then
-          begin
-            if VersionControlActionInfos[AControlAction].SaveFile then
-              SaveModules(AFileCache.SandBoxes[Index], True);
-            AFileCache.Plugin.ExecuteAction(AFileCache.SandBoxes[Index], AControlAction);
-            Exit;
-          end;
-        end
-        else
+          if VersionControlActionInfos[ControlAction].SaveFile then
+            SaveModules(AFileCache.SandBoxes[Index], True);
+          AFileCache.Plugin.ExecuteAction(AFileCache.SandBoxes[Index], ControlAction);
+          Exit;
+        end;
+      end;
+    end
+    else
+    begin
+      AFileName := CurrentFileName;
+      if VersionControlActionInfos[ControlAction].SaveFile then
+        SaveModules(AFileName, False);
+
+      if VersionControlActionInfos[ControlAction].AllPlugins then
+      begin
+        for Index := 0 to FPluginList.Count - 1 do
         begin
-          for Index := 0 to AFileCache.SandboxCount - 1 do
-            if AControlAction in AFileCache.SandboxActions[Index] then
+          AFileCache := GetFileCache(AFileName,
+            TJclVersionControlPlugin(FPluginList.Items[Index]));
+
+          if ControlAction in AFileCache.Actions then
           begin
-            if VersionControlActionInfos[AControlAction].SaveFile then
-              SaveModules(AFileCache.SandBoxes[Index], True);
-            AFileCache.Plugin.ExecuteAction(AFileCache.SandBoxes[Index], AControlAction);
+            AFileCache.Plugin.ExecuteAction(AFileName, ControlAction);
             Exit;
           end;
         end;
       end
       else
       begin
-        AFileName := CurrentFileName;
-        if VersionControlActionInfos[AControlAction].SaveFile then
-          SaveModules(AFileName, False);
-          
-        if VersionControlActionInfos[AControlAction].AllPlugins then
-        begin
-          for Index := 0 to FPluginList.Count - 1 do
-          begin
-            AFileCache := GetFileCache(AFileName,
-              TJclVersionControlPlugin(FPluginList.Items[Index]));
-
-            if AControlAction in AFileCache.Actions then
-            begin
-              AFileCache.Plugin.ExecuteAction(AFileName, AControlAction);
-              Exit;
-            end;
-          end;
-        end
-        else
-        begin
-          APlugin := CurrentPlugin;
-          if Assigned(APlugin) then
-            APlugin.ExecuteAction(AFileName, AControlAction);
-        end;
+        APlugin := CurrentPlugin;
+        if Assigned(APlugin) then
+          APlugin.ExecuteAction(AFileName, ControlAction);
       end;
-      Exit;
     end;
   except
     on ExceptionObj: TObject do
@@ -863,14 +885,15 @@ procedure TJclVersionControlExpert.ActionUpdate(Sender: TObject);
 var
   IndexSandbox, IndexPlugin: Integer;
   AAction: TCustomAction;
-  AControlAction: TJclVersionControlAction;
+  ControlAction: TJclVersionControlAction;
   AFileCache: TJclVersionControlCache;
   AFileName: string;
 begin
   try
     AAction := Sender as TCustomAction;
+    ControlAction := ActionToControlAction(AAction);
     AFileCache := CurrentCache;
-    
+
     if IconType = -1 then
     begin
       if Assigned(AFileCache) then
@@ -879,83 +902,79 @@ begin
         FLastPlugin := nil;
       RefreshIcon(AAction);
     end;
-    
-    for AControlAction := Low(TJclVersionControlAction) to High(TJclVersionControlAction) do
-      if FActions[AControlAction] = AAction then
-    begin
-      if HideActions and not VersionControlActionInfos[AControlAction].AllPlugins then
-        AAction.Visible := Assigned(AFileCache) and Assigned(AFileCache.Plugin)
-          and (AControlAction in AFileCache.Plugin.SupportActions)
-      else
-        AAction.Visible := True;
 
-      if DisableActions then
+    if HideActions and not VersionControlActionInfos[ControlAction].AllPlugins then
+      AAction.Visible := Assigned(AFileCache) and Assigned(AFileCache.Plugin)
+        and (ControlAction in AFileCache.Plugin.SupportActions)
+    else
+      AAction.Visible := True;
+
+    if DisableActions then
+    begin
+      if VersionControlActionInfos[ControlAction].Sandbox then
       begin
-        if VersionControlActionInfos[AControlAction].Sandbox then
+        if VersionControlActionInfos[ControlAction].AllPlugins then
         begin
-          if VersionControlActionInfos[AControlAction].AllPlugins then
+          AFileName := CurrentFileName;
+          for IndexPlugin := 0 to FPluginList.Count - 1 do
           begin
-            AFileName := CurrentFileName;
-            for IndexPlugin := 0 to FPluginList.Count - 1 do
+            AFileCache := GetFileCache(AFileName,
+              TJclVersionControlPlugin(FPluginList.Items[IndexPlugin]));
+            for IndexSandbox := 0 to AFileCache.SandBoxCount - 1 do
+              if ControlAction in AFileCache.SandBoxActions[IndexSandbox] then
             begin
-              AFileCache := GetFileCache(AFileName,
-                TJclVersionControlPlugin(FPluginList.Items[IndexPlugin]));
-              for IndexSandbox := 0 to AFileCache.SandBoxCount - 1 do
-                if AControlAction in AFileCache.SandBoxActions[IndexSandbox] then
-              begin
-                AAction.Enabled := True;
-                Exit;
-              end;
-              AAction.Enabled := False;
+              AAction.Enabled := True;
               Exit;
             end;
-          end
-          else // work for all plugin
-          begin
-            if Assigned(AFileCache) then
-            begin
-              for IndexSandbox := 0 to AFileCache.SandBoxCount - 1 do
-                if AControlAction in AFileCache.SandBoxActions[IndexSandbox] then
-              begin
-                AAction.Enabled := True;
-                Exit;
-              end;
-              AAction.Enabled := False;
-              Exit;
-            end
-            else
-              AAction.Enabled := False;
+            AAction.Enabled := False;
+            Exit;
           end;
-          Exit;
         end
-        else // file
+        else // work for all plugin
         begin
-          if VersionControlActionInfos[AControlAction].AllPlugins then
+          if Assigned(AFileCache) then
           begin
-            AFileName := CurrentFileName;
-            for IndexPlugin := 0 to FPluginList.Count - 1 do
+            for IndexSandbox := 0 to AFileCache.SandBoxCount - 1 do
+              if ControlAction in AFileCache.SandBoxActions[IndexSandbox] then
             begin
-              AFileCache := GetFileCache(AFileName,
-                TJclVersionControlPlugin(FPluginList.Items[IndexPlugin]));
-              if AControlAction in AFileCache.Actions then
-              begin
-                AAction.Enabled := True;
-                Exit;
-              end;
+              AAction.Enabled := True;
+              Exit;
             end;
             AAction.Enabled := False;
             Exit;
           end
-          else // only the current plugin
-          begin
-            AFileCache := CurrentCache;
-            AAction.Enabled := Assigned(AFileCache) and (AControlAction in AFileCache.Actions);
-          end;
+          else
+            AAction.Enabled := False;
         end;
+        Exit;
       end
-      else
-        AAction.Enabled := True;
-    end;
+      else // file
+      begin
+        if VersionControlActionInfos[ControlAction].AllPlugins then
+        begin
+          AFileName := CurrentFileName;
+          for IndexPlugin := 0 to FPluginList.Count - 1 do
+          begin
+            AFileCache := GetFileCache(AFileName,
+              TJclVersionControlPlugin(FPluginList.Items[IndexPlugin]));
+            if ControlAction in AFileCache.Actions then
+            begin
+              AAction.Enabled := True;
+              Exit;
+            end;
+          end;
+          AAction.Enabled := False;
+          Exit;
+        end
+        else // only the current plugin
+        begin
+          AFileCache := CurrentCache;
+          AAction.Enabled := Assigned(AFileCache) and (ControlAction in AFileCache.Actions);
+        end;
+      end;
+    end
+    else
+      AAction.Enabled := True;
   except
     on ExceptionObj: TObject do
     begin
@@ -1480,49 +1499,45 @@ end;
 
 procedure TJclVersionControlExpert.RefreshIcon(const AAction: TCustomAction);
 var
-  ControlAction: TJclVersionControlAction;
+  AControlAction: TJclVersionControlAction;
   IndexPlugin: Integer;
 begin
   if not Assigned(AAction) then
     Exit;
 
-  for ControlAction := Low(TJclVersionControlAction) to High(TJclVersionControlAction) do
-    if FActions[ControlAction] = AAction then
-  begin
-    case IconType of
-      // No icon
-      -3 :
-        AAction.ImageIndex := -1;
-      // JCL icons
-      // TODO: create resources
-      -2 :
-        AAction.ImageIndex := -1;
-      // auto icons
-      -1 :
-        if VersionControlActionInfos[ControlAction].AllPlugins then
+  AControlAction := ActionToControlAction(AAction);
+  case IconType of
+    // No icon
+    -3 :
+      AAction.ImageIndex := -1;
+    // JCL icons
+    // TODO: create resources
+    -2 :
+      AAction.ImageIndex := -1;
+    // auto icons
+    -1 :
+      if VersionControlActionInfos[AControlAction].AllPlugins then
+      begin
+        for IndexPlugin := 0 to FPluginList.Count - 1 do
         begin
-          for IndexPlugin := 0 to FPluginList.Count - 1 do
-          begin
-            AAction.ImageIndex := TJclVersionControlPlugin(FPluginList.Items[IndexPlugin]).Icons[ControlAction];
-            if AAction.ImageIndex > -1 then
-              Break;
-          end;
-        end
-        else
-        begin
-          if Assigned(FLastPlugin) then
-            AAction.ImageIndex := FLastPlugin.GetIcon(ControlAction)
-          else
-            AAction.ImageIndex := -1;
+          AAction.ImageIndex := TJclVersionControlPlugin(FPluginList.Items[IndexPlugin]).Icons[AControlAction];
+          if AAction.ImageIndex > -1 then
+            Break;
         end;
-      // Specific icons
-      0..High(Integer) :
-        if IconType < FPluginList.Count then
-          AAction.ImageIndex := TJclVersionControlPlugin(FPluginList.Items[IconType]).Icons[ControlAction]
+      end
+      else
+      begin
+        if Assigned(FLastPlugin) then
+          AAction.ImageIndex := FLastPlugin.GetIcon(AControlAction)
         else
           AAction.ImageIndex := -1;
-    end;
-    Exit;
+      end;
+    // Specific icons
+    0..High(Integer) :
+      if IconType < FPluginList.Count then
+        AAction.ImageIndex := TJclVersionControlPlugin(FPluginList.Items[IconType]).Icons[AControlAction]
+      else
+        AAction.ImageIndex := -1;
   end;
 end;
 
@@ -1682,8 +1697,9 @@ var
   IDEToolsItem: TMenuItem;
   IDEActionList: TCustomActionList;
   I: Integer;
+  AStandardAction: TJclVersionControlStandardAction;
+  ADropDownAction: TJclVersionControlDropDownAction;
   AAction: TCustomAction;
-  ADropDownAction: TDropDownAction;
   IconTypeStr: string;
   ControlAction: TJclVersionControlAction;
 begin
@@ -1732,7 +1748,8 @@ begin
   begin
     if VersionControlActionInfos[ControlAction].Sandbox then
     begin
-      ADropDownAction := TDropDownAction.Create(nil);
+      ADropDownAction := TJclVersionControlDropDownAction.Create(nil);
+      ADropDownAction.ControlAction := ControlAction;
       ADropDownAction.DropdownMenu := TPopupMenu.Create(nil);
       ADropDownAction.DropdownMenu.AutoPopup := True;
       ADropDownAction.DropdownMenu.AutoHotkeys := maManual;
@@ -1741,7 +1758,11 @@ begin
       AAction := ADropDownAction;
     end
     else
-      AAction := TAction.Create(nil);
+    begin
+      AStandardAction := TJclVersionControlStandardAction.Create(nil);
+      AStandardAction.ControlAction := ControlAction;
+      AAction := AStandardAction;
+    end;
 
     AAction.Caption := VersionControlActionInfos[ControlAction].Caption;
     AAction.Name := VersionControlActionInfos[ControlAction].ActionName;
