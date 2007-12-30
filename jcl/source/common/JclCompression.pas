@@ -3242,7 +3242,7 @@ end;
 destructor TJclSevenzipOutStream.Destroy;
 begin
   ReleaseStream;
-    
+
   inherited Destroy;
 end;
 
@@ -4048,6 +4048,14 @@ function TJclSevenzipExtractCallback.GetStream(Index: Cardinal;
 begin
   FLastStream := Index;
 
+  Assert(askExtractMode in [kExtract, kTest, kSkip]);
+
+  if askExtractMode in [kTest, kSkip] then
+  begin
+    OutStream := nil;
+    Result := S_OK;
+  end
+  else
   if FArchive.Items[Index].ValidateExtraction(Index) then
   begin
     OutStream := TJclSevenzipOutStream.Create(FArchive, Index);
