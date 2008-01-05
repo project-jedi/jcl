@@ -488,6 +488,7 @@ var
 begin
   PropCount := Length(PropIDs);
   SetLength(Result, PropCount);
+  SetLength(PropLocations, 0);
   for FileIndex := 0 to AProject.GetModuleFileCount - 1 do
   begin
     AEditor := AProject.GetModuleFileEditor(FileIndex);
@@ -543,6 +544,7 @@ begin
       ASourceEditor := AEditor as IOTASourceEditor;
       for PropIndex := 0 to PropCount - 1 do
       begin
+        SetLength(PropLocations, 0);
         PropSize := 0;
         AReader := ASourceEditor.CreateReader;
         try
