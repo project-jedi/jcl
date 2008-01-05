@@ -2146,13 +2146,13 @@ begin
     opRemove:
       if Value.Container = Self then  // Only remove if we have it
       begin
-        FElems.Delete(FElems.IndexOfObject(Value));
         if FNamedElems <> nil then
         begin
           NamedIndex := FNamedElems.IndexOf(Value.Name);
           if NamedIndex >= 0 then
-            TJclSimpleXMLNamedElems(FNamedElems[NamedIndex]).FItems.Remove(Value);
+            TJclSimpleXMLNamedElems(FNamedElems.Objects[NamedIndex]).FItems.Remove(Value);
         end;
+        FElems.Delete(FElems.IndexOfObject(Value));
       end;
     opInsert:
       Value.Container := Self;
