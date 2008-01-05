@@ -1578,7 +1578,21 @@ end;
 
 function TJclSimpleXMLNamedElems.GetItem(const Index: Integer): TJclSimpleXMLElem;
 begin
-  Result := TJclSimpleXMLElem(FItems.Items[Index]);
+  if (Index >= 0) then
+  begin
+    While (Index >= Count) do
+      if Assigned(Elems.Parent) and Assigned(Elems.Parent.SimpleXML) and
+         (sxoAutoCreate in Elems.Parent.SimpleXML.Options) then
+        Add
+      else
+        break;
+    if Index < Count then
+      Result := TJclSimpleXMLElem(FItems.Items[Index])
+    else
+      Result := nil;
+  end
+  else
+    Result := nil;
 end;
 
 function TJclSimpleXMLNamedElems.IndexOf(const Value: TJclSimpleXMLElem): Integer;
@@ -1937,7 +1951,7 @@ begin
     Result := TJclSimpleXMLNamedElems.Create(Self, Name);
     FNamedElems.AddObject(Name, Result);
     if FElems <> nil then
-      for NamedIndex := 0 to FElems.Count - 1 do
+      for NamedIndex := 0 to FElems.Count - 1 do                 
         if FElems.Strings[NamedIndex] = Name then
           Result.FItems.Add(FElems.Objects[NamedIndex]);
   end
