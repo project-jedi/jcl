@@ -23,7 +23,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -170,7 +170,6 @@ type
     procedure ConfigureBpr2Mak(const PackageFileName: string);
     {$IFDEF MSWINDOWS}
     function CompileExpert(const Name: string): Boolean;
-    function DeleteExpert(const Option: TJclOption): Boolean;
     {$ENDIF MSWINDOWS}
     
     function GetBplPath: string;
@@ -674,14 +673,16 @@ const
   JclExpertUses           = 'JclUsesExpert';
   JclExpertSimdView       = 'JclSIMDViewExpert';
   JclExpertVersionControl = 'JclVersionControlExpert';
-//  JclExpertBdsExpertDpr   = 'JclBdsExpert';
 
-  ExpertPaths: array[joExperts..joExpertVersionControl] of string =
+  SupportedExperts: array [joExperts..joExpertVersionControl] of string =
     (
       JclExpertBase, '', '', JclExpertDebug, JclExpertAnalyzer,
       JclExpertFavorite, JclExpertRepository, JclExpertThrNames,
       JclExpertUses, JclExpertSimdView, JclExpertVersionControl
-    );            
+    );
+
+  OldExperts: array [0..6] of string =
+    ( 'JclDebugIde', 'ProjectAnalyzer', 'IdeOpenDlgFavorite', 'ThreadNameExpert', 'JediUses', 'JclSIMDView', 'JclVersionControl' );
 
   JclSrcDirWindows  = 'windows';
   JclSrcDirUnix     = 'unix';
@@ -1846,7 +1847,7 @@ var
       // dual packages useless for experts
       if Target.RadToolKind = brBorlandDevStudio then
         TJclBDSInstallation(Target).DualPackageInstallation := False;
-      for Option := Low(ExpertPaths) to High(ExpertPaths) do
+      for Option := Low(SupportedExperts) to High(SupportedExperts) do
         if OptionChecked[Option] then
       begin
         MarkOptionBegin(Option);
@@ -1855,9 +1856,9 @@ var
         else if Option = joExpertsDLL then
           DLLExperts := OptionChecked[Option]
         else if DLLExperts then
-          Result := CompileExpert(FullLibraryFileName(Target, ExpertPaths[Option]))
+          Result := CompileExpert(FullLibraryFileName(Target, SupportedExperts[Option]))
         else
-          Result := CompilePackage(FullPackageFileName(Target,ExpertPaths[Option]));
+          Result := CompilePackage(FullPackageFileName(Target, SupportedExperts[Option]));
         MarkOptionEnd(Option, Result);
         if not Result then
           Break;
@@ -1880,7 +1881,7 @@ var
       // dual packages useless for experts
       if ATarget.RadToolKind = brBorlandDevStudio then
         TJclBDSInstallation(ATarget).DualPackageInstallation := False;
-      for Option := Low(ExpertPaths) to High(ExpertPaths) do
+      for Option := Low(SupportedExperts) to High(SupportedExperts) do
         if OptionChecked[Option] then
       begin
         MarkOptionBegin(Option);
@@ -1890,12 +1891,12 @@ var
           DLLExperts := OptionChecked[Option]
         else if DLLExperts then
         begin
-          ProjectFileName := Distribution.JclPath + FullLibraryFileName(ATarget, ExpertPaths[Option]);
+          ProjectFileName := Distribution.JclPath + FullLibraryFileName(ATarget, SupportedExperts[Option]);
           Result := ATarget.RegisterExpert(ProjectFileName, GetBplPath, PathExtractFileNameNoExt(ProjectFileName));
         end
         else
         begin
-          ProjectFileName := Distribution.JclPath + FullPackageFileName(ATarget,ExpertPaths[Option]);
+          ProjectFileName := Distribution.JclPath + FullPackageFileName(ATarget, SupportedExperts[Option]);
           Result := ATarget.RegisterPackage(ProjectFileName, GetBplPath, PathExtractFileNameNoExt(ProjectFileName));
         end;
         MarkOptionEnd(Option, Result);
@@ -2275,11 +2276,11 @@ function TJclInstallation.Uninstall(AUninstallHelp: Boolean): Boolean;
       end;
       {$ENDIF KYLIX}
       //ioJclPackages
-      ATarget.UnregisterPackage(Distribution.JclPath + FullPackageFileName(ATarget, JclDpk));
+      ATarget.UnregisterPackage(Distribution.JclPath + FullPackageFileName(ATarget, JclDpk), GetBplPath);
       if RuntimeInstallation and ATarget.SupportsVisualCLX then
-        ATarget.UnregisterPackage(Distribution.JclPath + FullPackageFileName(ATarget, JclVClxDpk));
+        ATarget.UnregisterPackage(Distribution.JclPath + FullPackageFileName(ATarget, JclVClxDpk), GetBplPath);
       if RuntimeInstallation and ATarget.SupportsVCL then
-        ATarget.UnregisterPackage(Distribution.JclPath + FullPackageFileName(ATarget, JclVclDpk));
+        ATarget.UnregisterPackage(Distribution.JclPath + FullPackageFileName(ATarget, JclVclDpk), GetBplPath);
       {$IFDEF MSWINDOWS}
       RemoveJediRegInformation(Target.ConfigDataLocation, 'JCL', ATarget.RootKey);
       {$ENDIF MSWINDOWS}
@@ -2299,26 +2300,65 @@ function TJclInstallation.Uninstall(AUninstallHelp: Boolean): Boolean;
   end;
   {$IFDEF MSWINDOWS}
   procedure UnregisterExperts(ATarget: TJclBorRADToolInstallation);
+    procedure UnregisterExpert(const Name: string);
+    var
+      Index: Integer;
+      FileName, ShortFileName: string;
+    begin
+      for Index := ATarget.IdePackages.Count - 1 downto 0 do
+      begin
+        FileName := ATarget.IdePackages.PackageFileNames[Index];
+        ShortFileName := ChangeFileExt(ExtractFileName(FileName), '');
+        if StrMatches(Name, ShortFileName)
+          or StrMatches(Format('%s%s', [Name, ATarget.VersionNumberStr]), ShortFileName)
+          or StrMatches(Format('%s%d', [Name, ATarget.VersionNumber]), ShortFileName)
+          or StrMatches(Format('%s%s0', [Name, ATarget.VersionNumberStr]), ShortFileName)
+          or StrMatches(Format('%s%d0', [Name, ATarget.VersionNumber]), ShortFileName) then
+          ATarget.UnregisterPackage(FileName);
+      end;
+      for Index := ATarget.IdePackages.ExpertCount - 1 downto 0 do
+      begin
+        FileName := ATarget.IdePackages.ExpertFileNames[Index];
+        ShortFileName := ChangeFileExt(ExtractFileName(FileName), '');
+        if StrMatches(Name, ShortFileName)
+          or StrMatches(Format('%s%s', [Name, ATarget.VersionNumberStr]), ShortFileName)
+          or StrMatches(Format('%s%d', [Name, ATarget.VersionNumber]), ShortFileName)
+          or StrMatches(Format('%s%s0', [Name, ATarget.VersionNumberStr]), ShortFileName)
+          or StrMatches(Format('%s%d0', [Name, ATarget.VersionNumber]), ShortFileName) then
+          ATarget.UnregisterExpert(FileName);
+      end;
+    end;
   var
     Option: TJclOption;
+    IndexOldExpert: Integer;
   begin
     if CLRVersion = '' then
     begin
-      for Option := Low(ExpertPaths) to High(ExpertPaths) do
+      for Option := Low(SupportedExperts) to High(SupportedExperts) do
         if not (Option in [joExpertsDsgnPackages, joExpertsDLL]) then
-          ATarget.UnregisterExpert(Distribution.JclPath + FullLibraryFileName(ATarget, ExpertPaths[Option]));
+          UnregisterExpert(SupportedExperts[Option]);
+      for IndexOldExpert := Low(OldExperts) to High(OldExperts) do
+        UnregisterExpert(OldExperts[IndexOldExpert]);
     end;
   end;
 
   procedure DeleteExperts;
   var
     Option: TJclOption;
+    ProjectFileName: string;
   begin
     if CLRVersion = '' then
     begin
-      for Option := Low(ExpertPaths) to High(ExpertPaths) do
+      for Option := Low(SupportedExperts) to High(SupportedExperts) do
         if not (Option in [joExpertsDsgnPackages, joExpertsDLL]) then
-          DeleteExpert(Option);
+      begin
+        ProjectFileName := Distribution.JclPath + FullPackageFileName(Target, SupportedExperts[Option]);
+        if FileExists(ProjectFileName) then
+          Target.UninstallPackage(ProjectFileName, GetBplPath, GetDcpPath);
+        ProjectFileName := Distribution.JclPath + FullLibraryFileName(Target, SupportedExperts[Option]);
+        if FileExists(ProjectFileName) then
+          Result := FileDelete(BinaryFileName(GetBplPath, ProjectFileName));
+      end;
     end;
   end;
 
@@ -3037,51 +3077,6 @@ begin
     WriteLog('...done.')
   else
     WriteLog('... failed ' + ProjectFileName);
-end;
-
-function TJclInstallation.DeleteExpert(const Option: TJclOption): Boolean;
-
-  function OldExpertBPLFileName(const BaseName: string): string;
-  const
-    OldExperts: array[joExpertDebug..joExpertVersionControl] of string =
-      (
-        'JclDebugIde%s0.bpl', 'ProjectAnalyzer%s0.bpl',
-        'IdeOpenDlgFavorite%s0.bpl', 'JclRepositoryExpert',
-        'ThreadNameExpert%s0.bpl', 'JediUses%s0.bpl', 'JclSIMDView%s.bpl',
-        'JclVersionControl'
-      );
-
-  var
-    I: TJclOption;
-  begin
-    with Target do
-      for I := Low(OldExperts) to High(OldExperts) do
-        if BaseName = ExpertPaths[I] then
-    begin
-      Result := PathAddSeparator(GetBPLPath) + Format(OldExperts[I], [VersionNumberStr]);
-      Break;
-    end;
-  end;
-
-var
-  BaseName: string;
-  LibraryFileName: string;
-begin
-  Result := False;
-
-  BaseName := ExpertPaths[Option];
-  LibraryFileName := Distribution.JclPath + FullLibraryFileName(Target, BaseName);
-
-  if FileExists(Distribution.JclPath + LibraryFileName) then
-  begin
-    WriteLog(Format('Removing expert %s', [LibraryFileName]));
-    // delete DLL experts
-    Result := FileDelete(BinaryFileName(GetBplPath, LibraryFileName));
-    if Result then
-      WriteLog('...done.')
-    else
-      WriteLog('...failed');
-  end;
 end;
 {$ENDIF MSWINDOWS}
 
