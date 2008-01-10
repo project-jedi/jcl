@@ -4346,6 +4346,7 @@ var
   CodeDWORD4: DWORD;
   CodeDWORD8: DWORD;
   C4P, C8P: PDWORD;
+  RM1, RM2, RM5: Byte;
 begin
   // First check that the address is within range of our code segment!
   C8P := PDWORD(CodeAddr - 8);
@@ -4359,32 +4360,71 @@ begin
     try
       CodeDWORD8 := PDWORD(C8P)^;
       CodeDWORD4 := PDWORD(C4P)^;
+      // CodeDWORD8 = (ReturnAddr-5):(ReturnAddr-6):(ReturnAddr-7):(ReturnAddr-8)
+      // CodeDWORD4 = (ReturnAddr-1):(ReturnAddr-2):(ReturnAddr-3):(ReturnAddr-4)
+
+      // ModR/M bytes contain the following bits:
+      // Mod        = (76)
+      // Reg/Opcode = (543)
+      // R/M        = (210)
+      RM1 := (CodeDWORD4 shr 24) and $7;
+      RM2 := (CodeDWORD4 shr 16) and $7;
+      //RM3 := (CodeDWORD4 shr 8)  and $7;
+      //RM4 :=  CodeDWORD4         and $7;
+      RM5 := (CodeDWORD8 shr 24) and $7;
+      //RM6 := (CodeDWORD8 shr 16) and $7;
+      //RM7 := (CodeDWORD8 shr 8)  and $7;
 
       // Check the instruction prior to the potential call site.
       // We consider it a valid call site if we find a CALL instruction there
       // Check the most common CALL variants first
-      if ((CodeDWORD8 and $FF000000) = $E8000000) then // 5-byte, CALL [-$1234567]
+      if ((CodeDWORD8 and $FF000000) = $E8000000) then
+        // 5 bytes, "CALL NEAR REL32" (E8 cd)
         CallInstructionSize := 5
       else
-      if ((CodeDWORD4 and $38FF0000) = $10FF0000) then // 2 byte, CALL EAX
+      if ((CodeDWORD4 and $F8FF0000) = $10FF0000) and not (RM1 in [4, 5]) then
+        // 2 bytes, "CALL NEAR [EAX]" (FF /2) where Reg = 010, Mod = 00, R/M <> 100 (1 extra byte)
+        // and R/M <> 101 (4 extra bytes)
         CallInstructionSize := 2
       else
-      if ((CodeDWORD4 and $0038FF00) = $0010FF00) then // 3 byte, CALL [EBP+0x8]
+      if ((CodeDWORD4 and $F8FF0000) = $D0FF0000) then
+        // 2 bytes, "CALL NEAR EAX" (FF /2) where Reg = 010 and Mod = 11
+        CallInstructionSize := 2
+      else
+      if ((CodeDWORD4 and $00FFFF00) = $0014FF00) then
+        // 3 bytes, "CALL NEAR [EAX+EAX*i]" (FF /2) where Reg = 010, Mod = 00 and RM = 100
+        // SIB byte not validated
         CallInstructionSize := 3
       else
-      if ((CodeDWORD4 and $000038FF) = $000010FF) then // 4 byte, CALL ??
+      if ((CodeDWORD4 and $00F8FF00) = $0050FF00) and (RM2 <> 4) then
+        // 3 bytes, "CALL NEAR [EAX+$12]" (FF /2) where Reg = 010, Mod = 01 and RM <> 100 (1 extra byte)
+        CallInstructionSize := 3
+      else
+      if ((CodeDWORD4 and $0000FFFF) = $000054FF) then
+        // 4 bytes, "CALL NEAR [EAX+EAX+$12]" (FF /2) where Reg = 010, Mod = 01 and RM = 100
+        // SIB byte not validated
         CallInstructionSize := 4
       else
-      if ((CodeDWORD8 and $38FF0000) = $10FF0000) then // 6-byte, CALL ??
+      if ((CodeDWORD8 and $FFFF0000) = $15FF0000) then
+        // 6 bytes, "CALL NEAR [$12345678]" (FF /2) where Reg = 010, Mod = 00 and RM = 101
         CallInstructionSize := 6
       else
-      if ((CodeDWORD8 and $0038FF00) = $0010FF00) then // 7-byte, CALL [ESP-0x1234567]
+      if ((CodeDWORD8 and $F8FF0000) = $90FF0000) and (RM5 <> 4) then
+        // 6 bytes, "CALL NEAR [EAX+$12345678]" (FF /2) where Reg = 010, Mod = 10 and RM <> 100 (1 extra byte)
+        CallInstructionSize := 6
+      else
+      if ((CodeDWORD8 and $00FFFF00) = $0094FF00) then
+        // 7 bytes, "CALL NEAR [EAX+EAX+$1234567]" (FF /2) where Reg = 010, Mod = 10 and RM = 100
+        CallInstructionSize := 7
+      else
+      if ((CodeDWORD8 and $0000FF00) = $00009A00) then
+        // 7 bytes, "CALL FAR $1234:12345678" (9A ptr16:32)
         CallInstructionSize := 7
       else
         Result := False;
       // Because we're not doing a complete disassembly, we will potentially report
       // false positives. If there is odd code that uses the CALL 16:32 format, we
-      // can also get false negatives.}
+      // can also get false negatives.
     except
       Result := False;
     end;
