@@ -2,15 +2,6 @@ bzip2.pas
 Jcl8087.pas
 JclBorlandTools.pas
 JclCompression.pas
-JclCounter.pas
-JclEDI.pas
-JclEDISEF.pas
-JclEDITranslators.pas
-JclEDIXML.pas
-JclEDI_ANSIX12.pas
-JclEDI_ANSIX12_Ext.pas
-JclEDI_UNEDIFACT.pas
-JclEDI_UNEDIFACT_Ext.pas
 JclExprEval.pas
 JclMIDI.pas
 JclPCRE.pas
@@ -19,6 +10,5 @@ JclStrHashMap.pas
 JclStringLists.pas
 JclUnitVersioning.pas
 JclUnitVersioningProviders.pas
-JclValidation.pas
 JclWideStrings.pas
 pcre.pas
