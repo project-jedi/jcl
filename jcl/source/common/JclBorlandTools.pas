@@ -4356,7 +4356,7 @@ end;
 
 function TJclBorRADToolInstallation.UninstallBCBPackage(const PackageName, BPLPath, DCPPath: string): Boolean;
 var
-  MAPFileName, TDSFileName,
+  MAPFileName, TDSFileName, TmpBinaryFileName,
   BPIFileName, LIBFileName, BPLFileName: string;
   RunOnly: Boolean;
 begin
@@ -4365,7 +4365,7 @@ begin
   if not IsBCBPackage(PackageName) then
     raise EJclBorRADException.CreateResFmt(@RsENotABCBPackage, [PackageName]);
 
-  GetBPKFileInfo(PackageName, RunOnly, @BinaryFileName);
+  GetBPKFileInfo(PackageName, RunOnly, @TmpBinaryFileName);
 
   BPLFileName := BinaryFileName(BPLPath, PackageName);
 
