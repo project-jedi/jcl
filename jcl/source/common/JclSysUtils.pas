@@ -1017,18 +1017,10 @@ begin
   NewListItem^.Name := Name;
   NewListItem^.Handle := FileMappingHandle;
   NewListItem^.Memory := Pointer(p);
-  NewListItem^.Next := nil;
   NewListItem^.References := 1;
 
-  if MMFHandleList = nil then
-    MMFHandleList := NewListItem
-  else
-  begin
-    Iterate := MMFHandleList;
-    while Iterate^.Next <> nil do
-      Iterate := Iterate^.Next;
-    Iterate^.Next := NewListItem;
-  end;
+  NewListItem^.Next := MMFHandleList;
+  MMFHandleList := NewListItem;
 end;
 
 function SharedAllocMem(const Name: string; Size: Cardinal;
@@ -1073,13 +1065,12 @@ begin
         if n = nil then
           MMFHandleList := Iterate^.Next
         else
-        begin
           n^.Next := Iterate^.Next;
-          Dispose(Iterate);
-          Pointer(p) := nil;
-          Result := True;
-          Break;
-        end;
+
+        Dispose(Iterate);
+        Pointer(p) := nil;
+        Result := True;
+        Break;
       end;
       n := Iterate;
       Iterate := Iterate^.Next;
