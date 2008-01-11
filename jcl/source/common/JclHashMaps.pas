@@ -29,7 +29,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -2673,7 +2673,7 @@ end;
 
 function TJclIntfIntfHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclIntfIntfHashMap.Create(FSize);
+  Result := TJclIntfIntfHashMap.Create(FCapacity);
   AssignPropertiesTo(Result);
 end;
 
@@ -3252,7 +3252,7 @@ end;
 
 function TJclAnsiStrIntfHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclAnsiStrIntfHashMap.Create(FSize);
+  Result := TJclAnsiStrIntfHashMap.Create(FCapacity);
   AssignPropertiesTo(Result);
 end;
 
@@ -3831,7 +3831,7 @@ end;
 
 function TJclIntfAnsiStrHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclIntfAnsiStrHashMap.Create(FSize);
+  Result := TJclIntfAnsiStrHashMap.Create(FCapacity);
   AssignPropertiesTo(Result);
 end;
 
@@ -3881,8 +3881,6 @@ begin
   Result := Value;
   Value := '';
 end;
-
-
 
 function TJclIntfAnsiStrHashMap.GetValue(const Key: IInterface): AnsiString;
 var
@@ -4414,7 +4412,7 @@ end;
 
 function TJclAnsiStrAnsiStrHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclAnsiStrAnsiStrHashMap.Create(FSize);
+  Result := TJclAnsiStrAnsiStrHashMap.Create(FCapacity);
   AssignPropertiesTo(Result);
 end;
 
@@ -4993,7 +4991,7 @@ end;
 
 function TJclWideStrIntfHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclWideStrIntfHashMap.Create(FSize);
+  Result := TJclWideStrIntfHashMap.Create(FCapacity);
   AssignPropertiesTo(Result);
 end;
 
@@ -5572,7 +5570,7 @@ end;
 
 function TJclIntfWideStrHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclIntfWideStrHashMap.Create(FSize);
+  Result := TJclIntfWideStrHashMap.Create(FCapacity);
   AssignPropertiesTo(Result);
 end;
 
@@ -6155,7 +6153,7 @@ end;
 
 function TJclWideStrWideStrHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclWideStrWideStrHashMap.Create(FSize);
+  Result := TJclWideStrWideStrHashMap.Create(FCapacity);
   AssignPropertiesTo(Result);
 end;
 
@@ -6734,7 +6732,7 @@ end;
 
 function TJclSingleIntfHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclSingleIntfHashMap.Create(FSize);
+  Result := TJclSingleIntfHashMap.Create(FCapacity);
   AssignPropertiesTo(Result);
 end;
 
@@ -7313,7 +7311,7 @@ end;
 
 function TJclIntfSingleHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclIntfSingleHashMap.Create(FSize);
+  Result := TJclIntfSingleHashMap.Create(FCapacity);
   AssignPropertiesTo(Result);
 end;
 
@@ -7896,7 +7894,7 @@ end;
 
 function TJclSingleSingleHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclSingleSingleHashMap.Create(FSize);
+  Result := TJclSingleSingleHashMap.Create(FCapacity);
   AssignPropertiesTo(Result);
 end;
 
@@ -8475,7 +8473,7 @@ end;
 
 function TJclDoubleIntfHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclDoubleIntfHashMap.Create(FSize);
+  Result := TJclDoubleIntfHashMap.Create(FCapacity);
   AssignPropertiesTo(Result);
 end;
 
@@ -9054,7 +9052,7 @@ end;
 
 function TJclIntfDoubleHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclIntfDoubleHashMap.Create(FSize);
+  Result := TJclIntfDoubleHashMap.Create(FCapacity);
   AssignPropertiesTo(Result);
 end;
 
@@ -9637,7 +9635,7 @@ end;
 
 function TJclDoubleDoubleHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclDoubleDoubleHashMap.Create(FSize);
+  Result := TJclDoubleDoubleHashMap.Create(FCapacity);
   AssignPropertiesTo(Result);
 end;
 
@@ -10216,7 +10214,7 @@ end;
 
 function TJclExtendedIntfHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclExtendedIntfHashMap.Create(FSize);
+  Result := TJclExtendedIntfHashMap.Create(FCapacity);
   AssignPropertiesTo(Result);
 end;
 
@@ -10795,7 +10793,7 @@ end;
 
 function TJclIntfExtendedHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclIntfExtendedHashMap.Create(FSize);
+  Result := TJclIntfExtendedHashMap.Create(FCapacity);
   AssignPropertiesTo(Result);
 end;
 
@@ -11378,7 +11376,7 @@ end;
 
 function TJclExtendedExtendedHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclExtendedExtendedHashMap.Create(FSize);
+  Result := TJclExtendedExtendedHashMap.Create(FCapacity);
   AssignPropertiesTo(Result);
 end;
 
@@ -11957,7 +11955,7 @@ end;
 
 function TJclIntegerIntfHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclIntegerIntfHashMap.Create(FSize);
+  Result := TJclIntegerIntfHashMap.Create(FCapacity);
   AssignPropertiesTo(Result);
 end;
 
@@ -12536,7 +12534,7 @@ end;
 
 function TJclIntfIntegerHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclIntfIntegerHashMap.Create(FSize);
+  Result := TJclIntfIntegerHashMap.Create(FCapacity);
   AssignPropertiesTo(Result);
 end;
 
@@ -13119,7 +13117,7 @@ end;
 
 function TJclIntegerIntegerHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclIntegerIntegerHashMap.Create(FSize);
+  Result := TJclIntegerIntegerHashMap.Create(FCapacity);
   AssignPropertiesTo(Result);
 end;
 
@@ -13698,7 +13696,7 @@ end;
 
 function TJclCardinalIntfHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclCardinalIntfHashMap.Create(FSize);
+  Result := TJclCardinalIntfHashMap.Create(FCapacity);
   AssignPropertiesTo(Result);
 end;
 
@@ -14277,7 +14275,7 @@ end;
 
 function TJclIntfCardinalHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclIntfCardinalHashMap.Create(FSize);
+  Result := TJclIntfCardinalHashMap.Create(FCapacity);
   AssignPropertiesTo(Result);
 end;
 
@@ -14860,7 +14858,7 @@ end;
 
 function TJclCardinalCardinalHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclCardinalCardinalHashMap.Create(FSize);
+  Result := TJclCardinalCardinalHashMap.Create(FCapacity);
   AssignPropertiesTo(Result);
 end;
 
@@ -15439,7 +15437,7 @@ end;
 
 function TJclInt64IntfHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclInt64IntfHashMap.Create(FSize);
+  Result := TJclInt64IntfHashMap.Create(FCapacity);
   AssignPropertiesTo(Result);
 end;
 
@@ -16018,7 +16016,7 @@ end;
 
 function TJclIntfInt64HashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclIntfInt64HashMap.Create(FSize);
+  Result := TJclIntfInt64HashMap.Create(FCapacity);
   AssignPropertiesTo(Result);
 end;
 
@@ -16601,7 +16599,7 @@ end;
 
 function TJclInt64Int64HashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclInt64Int64HashMap.Create(FSize);
+  Result := TJclInt64Int64HashMap.Create(FCapacity);
   AssignPropertiesTo(Result);
 end;
 
@@ -17181,7 +17179,7 @@ end;
 
 function TJclPtrIntfHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclPtrIntfHashMap.Create(FSize);
+  Result := TJclPtrIntfHashMap.Create(FCapacity);
   AssignPropertiesTo(Result);
 end;
 
@@ -17760,7 +17758,7 @@ end;
 
 function TJclIntfPtrHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclIntfPtrHashMap.Create(FSize);
+  Result := TJclIntfPtrHashMap.Create(FCapacity);
   AssignPropertiesTo(Result);
 end;
 
@@ -18343,7 +18341,7 @@ end;
 
 function TJclPtrPtrHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclPtrPtrHashMap.Create(FSize);
+  Result := TJclPtrPtrHashMap.Create(FCapacity);
   AssignPropertiesTo(Result);
 end;
 
@@ -18924,7 +18922,7 @@ end;
 
 function TJclIntfHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclIntfHashMap.Create(FSize, False);
+  Result := TJclIntfHashMap.Create(FCapacity, False);
   AssignPropertiesTo(Result);
 end;
 
@@ -19520,7 +19518,7 @@ end;
 
 function TJclAnsiStrHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclAnsiStrHashMap.Create(FSize, False);
+  Result := TJclAnsiStrHashMap.Create(FCapacity, False);
   AssignPropertiesTo(Result);
 end;
 
@@ -20112,7 +20110,7 @@ end;
 
 function TJclWideStrHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclWideStrHashMap.Create(FSize, False);
+  Result := TJclWideStrHashMap.Create(FCapacity, False);
   AssignPropertiesTo(Result);
 end;
 
@@ -20704,7 +20702,7 @@ end;
 
 function TJclSingleHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclSingleHashMap.Create(FSize, False);
+  Result := TJclSingleHashMap.Create(FCapacity, False);
   AssignPropertiesTo(Result);
 end;
 
@@ -21296,7 +21294,7 @@ end;
 
 function TJclDoubleHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclDoubleHashMap.Create(FSize, False);
+  Result := TJclDoubleHashMap.Create(FCapacity, False);
   AssignPropertiesTo(Result);
 end;
 
@@ -21888,7 +21886,7 @@ end;
 
 function TJclExtendedHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclExtendedHashMap.Create(FSize, False);
+  Result := TJclExtendedHashMap.Create(FCapacity, False);
   AssignPropertiesTo(Result);
 end;
 
@@ -22480,7 +22478,7 @@ end;
 
 function TJclIntegerHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclIntegerHashMap.Create(FSize, False);
+  Result := TJclIntegerHashMap.Create(FCapacity, False);
   AssignPropertiesTo(Result);
 end;
 
@@ -23072,7 +23070,7 @@ end;
 
 function TJclCardinalHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclCardinalHashMap.Create(FSize, False);
+  Result := TJclCardinalHashMap.Create(FCapacity, False);
   AssignPropertiesTo(Result);
 end;
 
@@ -23664,7 +23662,7 @@ end;
 
 function TJclInt64HashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclInt64HashMap.Create(FSize, False);
+  Result := TJclInt64HashMap.Create(FCapacity, False);
   AssignPropertiesTo(Result);
 end;
 
@@ -24257,7 +24255,7 @@ end;
 
 function TJclPtrHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclPtrHashMap.Create(FSize, False);
+  Result := TJclPtrHashMap.Create(FCapacity, False);
   AssignPropertiesTo(Result);
 end;
 
@@ -24851,7 +24849,7 @@ end;
 
 function TJclHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclHashMap.Create(FSize, False, False);
+  Result := TJclHashMap.Create(FCapacity, False, False);
   AssignPropertiesTo(Result);
 end;
 
@@ -25934,7 +25932,7 @@ end;
 function TJclHashMapE<TKey, TValue>.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
   Result := TJclHashMapE<TKey, TValue>.Create(KeyEqualityComparer, ValueEqualityComparer,
-    KeyComparer, FSize, False, False);
+    KeyComparer, FCapacity, False, False);
   AssignPropertiesTo(Result);
 end;
 
@@ -25999,7 +25997,7 @@ end;
 
 function TJclHashMapF<TKey, TValue>.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclHashMapF<TKey, TValue>.Create(KeyEqualityCompare, KeyHash, ValueEqualityCompare, KeyCompare, FSize,
+  Result := TJclHashMapF<TKey, TValue>.Create(KeyEqualityCompare, KeyHash, ValueEqualityCompare, KeyCompare, FCapacity,
     False, False);
   AssignPropertiesTo(Result);
 end;
@@ -26039,7 +26037,7 @@ end;
 
 function TJclHashMapI<TKey, TValue>.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclHashMapI<TKey, TValue>.Create(FSize, False, False);
+  Result := TJclHashMapI<TKey, TValue>.Create(FCapacity, False, False);
   AssignPropertiesTo(Result);
 end;
 

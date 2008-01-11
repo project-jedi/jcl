@@ -29,7 +29,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -992,7 +992,7 @@ end;
 
 function TJclIntfHashSet.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclIntfHashSet.Create(FMap.Size);
+  Result := TJclIntfHashSet.Create(GetCapacity);
   AssignPropertiesTo(Result);
 end;
 
@@ -1323,7 +1323,7 @@ end;
 
 function TJclAnsiStrHashSet.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclAnsiStrHashSet.Create(FMap.Size);
+  Result := TJclAnsiStrHashSet.Create(GetCapacity);
   AssignPropertiesTo(Result);
 end;
 
@@ -1674,7 +1674,7 @@ end;
 
 function TJclWideStrHashSet.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclWideStrHashSet.Create(FMap.Size);
+  Result := TJclWideStrHashSet.Create(GetCapacity);
   AssignPropertiesTo(Result);
 end;
 
@@ -2027,7 +2027,7 @@ end;
 
 function TJclSingleHashSet.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclSingleHashSet.Create(FMap.Size);
+  Result := TJclSingleHashSet.Create(GetCapacity);
   AssignPropertiesTo(Result);
 end;
 
@@ -2370,7 +2370,7 @@ end;
 
 function TJclDoubleHashSet.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclDoubleHashSet.Create(FMap.Size);
+  Result := TJclDoubleHashSet.Create(GetCapacity);
   AssignPropertiesTo(Result);
 end;
 
@@ -2713,7 +2713,7 @@ end;
 
 function TJclExtendedHashSet.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclExtendedHashSet.Create(FMap.Size);
+  Result := TJclExtendedHashSet.Create(GetCapacity);
   AssignPropertiesTo(Result);
 end;
 
@@ -3056,7 +3056,7 @@ end;
 
 function TJclIntegerHashSet.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclIntegerHashSet.Create(FMap.Size);
+  Result := TJclIntegerHashSet.Create(GetCapacity);
   AssignPropertiesTo(Result);
 end;
 
@@ -3391,7 +3391,7 @@ end;
 
 function TJclCardinalHashSet.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclCardinalHashSet.Create(FMap.Size);
+  Result := TJclCardinalHashSet.Create(GetCapacity);
   AssignPropertiesTo(Result);
 end;
 
@@ -3726,7 +3726,7 @@ end;
 
 function TJclInt64HashSet.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclInt64HashSet.Create(FMap.Size);
+  Result := TJclInt64HashSet.Create(GetCapacity);
   AssignPropertiesTo(Result);
 end;
 
@@ -4062,7 +4062,7 @@ end;
 
 function TJclPtrHashSet.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclPtrHashSet.Create(FMap.Size);
+  Result := TJclPtrHashSet.Create(GetCapacity);
   AssignPropertiesTo(Result);
 end;
 
@@ -4398,7 +4398,7 @@ end;
 
 function TJclHashSet.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclHashSet.Create(FMap.Size, False);
+  Result := TJclHashSet.Create(GetCapacity, False);
   AssignPropertiesTo(Result);
 end;
 
