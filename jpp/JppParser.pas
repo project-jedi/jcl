@@ -438,6 +438,8 @@ begin
   I := ParseMacro(MacroText, MacroName, ParamNames, True);
   if I <= Length(MacroText) then
   begin
+    if Copy(MacroText, I, Length(AnsiLineBreak)) = AnsiLineBreak then
+      Inc(I, Length(AnsiLineBreak));
     J := Length(MacroText);
     if MacroText[J] = ')' then
       Dec(J);
