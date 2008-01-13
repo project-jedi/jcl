@@ -32,7 +32,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                       $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -57,7 +57,6 @@ uses
   Classes,
   JclBase, JclAbstractContainers, JclContainerIntf;
 type
-
   TJclIntfVector = class(TJclIntfAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclIntfEqualityComparer,
     IJclIntfCollection, IJclIntfList, IJclIntfArray)
@@ -102,7 +101,6 @@ type
     property Items: JclBase.TDynIInterfaceArray read FItems;
   end;
 
-
   TJclAnsiStrVector = class(TJclAnsiStrAbstractCollection, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclStrContainer, IJclAnsiStrContainer, IJclAnsiStrFlatContainer, IJclAnsiStrEqualityComparer,
     IJclAnsiStrCollection, IJclAnsiStrList, IJclAnsiStrArray)
@@ -146,7 +144,6 @@ type
     destructor Destroy; override;
     property Items: JclBase.TDynAnsiStringArray read FItems;
   end;
-
 
   TJclWideStrVector = class(TJclWideStrAbstractCollection, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclStrContainer, IJclWideStrContainer, IJclWideStrFlatContainer, IJclWideStrEqualityComparer,
@@ -199,7 +196,6 @@ type
   TJclStrVector = TJclWideStrVector;
   {$ENDIF CONTAINER_WIDESTR}
 
-
   TJclSingleVector = class(TJclSingleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclSingleContainer, IJclSingleEqualityComparer,
     IJclSingleCollection, IJclSingleList, IJclSingleArray)
@@ -244,7 +240,6 @@ type
     property Items: JclBase.TDynSingleArray read FItems;
   end;
 
-
   TJclDoubleVector = class(TJclDoubleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclDoubleContainer, IJclDoubleEqualityComparer,
     IJclDoubleCollection, IJclDoubleList, IJclDoubleArray)
@@ -288,7 +283,6 @@ type
     destructor Destroy; override;
     property Items: JclBase.TDynDoubleArray read FItems;
   end;
-
 
   TJclExtendedVector = class(TJclExtendedAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclExtendedContainer, IJclExtendedEqualityComparer,
@@ -344,7 +338,6 @@ type
   TJclFloatVector = TJclSingleVector;
   {$ENDIF MATH_SINGLE_PRECISION}
 
-
   TJclIntegerVector = class(TJclIntegerAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclIntegerEqualityComparer,
     IJclIntegerCollection, IJclIntegerList, IJclIntegerArray)
@@ -389,7 +382,6 @@ type
     property Items: JclBase.TDynIntegerArray read FItems;
   end;
 
-
   TJclCardinalVector = class(TJclCardinalAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclCardinalEqualityComparer,
     IJclCardinalCollection, IJclCardinalList, IJclCardinalArray)
@@ -433,7 +425,6 @@ type
     destructor Destroy; override;
     property Items: JclBase.TDynCardinalArray read FItems;
   end;
-
 
   TJclInt64Vector = class(TJclInt64AbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclInt64EqualityComparer,
@@ -480,7 +471,6 @@ type
   end;
 
   {$IFNDEF CLR}
-
   TJclPtrVector = class(TJclPtrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclPtrEqualityComparer,
     IJclPtrCollection, IJclPtrList, IJclPtrArray)
@@ -525,7 +515,6 @@ type
     property Items: JclBase.TDynPointerArray read FItems;
   end;
   {$ENDIF ~CLR}
-
 
   TJclVector = class(TJclAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclObjectOwner, IJclEqualityComparer,
@@ -572,7 +561,6 @@ type
   end;
 
   {$IFDEF SUPPORTS_GENERICS}
-
 
   TJclVector<T> = class(TJclAbstractContainer<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclItemOwner<T>, IJclEqualityComparer<T>,
@@ -676,9 +664,6 @@ uses
 type
   TItrStart = (isFirst, isLast);
 
-
-//=== { TIntfItr } ===========================================================
-
 type
   TIntfItr = class(TJclAbstractIterator, IJclIntfIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
@@ -712,6 +697,8 @@ type
   public
     constructor Create(const OwnList: IJclIntfList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
   end;
+
+//=== { TIntfItr } ===========================================================
 
 constructor TIntfItr.Create(const OwnList: IJclIntfList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
@@ -858,9 +845,6 @@ begin
   FOwnList.SetObject(FCursor, AInterface);
 end;
 
-
-//=== { TAnsiStrItr } ===========================================================
-
 type
   TAnsiStrItr = class(TJclAbstractIterator, IJclAnsiStrIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
@@ -894,6 +878,8 @@ type
   public
     constructor Create(const OwnList: IJclAnsiStrList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
   end;
+
+//=== { TAnsiStrItr } ===========================================================
 
 constructor TAnsiStrItr.Create(const OwnList: IJclAnsiStrList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
@@ -1040,9 +1026,6 @@ begin
   FOwnList.SetString(FCursor, AString);
 end;
 
-
-//=== { TWideStrItr } ===========================================================
-
 type
   TWideStrItr = class(TJclAbstractIterator, IJclWideStrIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
@@ -1076,6 +1059,8 @@ type
   public
     constructor Create(const OwnList: IJclWideStrList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
   end;
+
+//=== { TWideStrItr } ===========================================================
 
 constructor TWideStrItr.Create(const OwnList: IJclWideStrList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
@@ -1222,9 +1207,6 @@ begin
   FOwnList.SetString(FCursor, AString);
 end;
 
-
-//=== { TSingleItr } ===========================================================
-
 type
   TSingleItr = class(TJclAbstractIterator, IJclSingleIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
@@ -1258,6 +1240,8 @@ type
   public
     constructor Create(const OwnList: IJclSingleList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
   end;
+
+//=== { TSingleItr } ===========================================================
 
 constructor TSingleItr.Create(const OwnList: IJclSingleList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
@@ -1404,9 +1388,6 @@ begin
   FOwnList.SetValue(FCursor, AValue);
 end;
 
-
-//=== { TDoubleItr } ===========================================================
-
 type
   TDoubleItr = class(TJclAbstractIterator, IJclDoubleIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
@@ -1440,6 +1421,8 @@ type
   public
     constructor Create(const OwnList: IJclDoubleList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
   end;
+
+//=== { TDoubleItr } ===========================================================
 
 constructor TDoubleItr.Create(const OwnList: IJclDoubleList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
@@ -1586,9 +1569,6 @@ begin
   FOwnList.SetValue(FCursor, AValue);
 end;
 
-
-//=== { TExtendedItr } ===========================================================
-
 type
   TExtendedItr = class(TJclAbstractIterator, IJclExtendedIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
@@ -1622,6 +1602,8 @@ type
   public
     constructor Create(const OwnList: IJclExtendedList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
   end;
+
+//=== { TExtendedItr } ===========================================================
 
 constructor TExtendedItr.Create(const OwnList: IJclExtendedList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
@@ -1768,9 +1750,6 @@ begin
   FOwnList.SetValue(FCursor, AValue);
 end;
 
-
-//=== { TIntegerItr } ===========================================================
-
 type
   TIntegerItr = class(TJclAbstractIterator, IJclIntegerIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
@@ -1804,6 +1783,8 @@ type
   public
     constructor Create(const OwnList: IJclIntegerList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
   end;
+
+//=== { TIntegerItr } ===========================================================
 
 constructor TIntegerItr.Create(const OwnList: IJclIntegerList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
@@ -1950,9 +1931,6 @@ begin
   FOwnList.SetValue(FCursor, AValue);
 end;
 
-
-//=== { TCardinalItr } ===========================================================
-
 type
   TCardinalItr = class(TJclAbstractIterator, IJclCardinalIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
@@ -1986,6 +1964,8 @@ type
   public
     constructor Create(const OwnList: IJclCardinalList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
   end;
+
+//=== { TCardinalItr } ===========================================================
 
 constructor TCardinalItr.Create(const OwnList: IJclCardinalList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
@@ -2132,9 +2112,6 @@ begin
   FOwnList.SetValue(FCursor, AValue);
 end;
 
-
-//=== { TInt64Itr } ===========================================================
-
 type
   TInt64Itr = class(TJclAbstractIterator, IJclInt64Iterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
@@ -2168,6 +2145,8 @@ type
   public
     constructor Create(const OwnList: IJclInt64List; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
   end;
+
+//=== { TInt64Itr } ===========================================================
 
 constructor TInt64Itr.Create(const OwnList: IJclInt64List; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
@@ -2315,9 +2294,6 @@ begin
 end;
 
 {$IFNDEF CLR}
-
-//=== { TPtrItr } ===========================================================
-
 type
   TPtrItr = class(TJclAbstractIterator, IJclPtrIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
@@ -2351,6 +2327,8 @@ type
   public
     constructor Create(const OwnList: IJclPtrList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
   end;
+
+//=== { TPtrItr } ===========================================================
 
 constructor TPtrItr.Create(const OwnList: IJclPtrList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
@@ -2498,9 +2476,6 @@ begin
 end;
 {$ENDIF ~CLR}
 
-
-//=== { TItr } ===========================================================
-
 type
   TItr = class(TJclAbstractIterator, IJclIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
@@ -2534,6 +2509,8 @@ type
   public
     constructor Create(const OwnList: IJclList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
   end;
+
+//=== { TItr } ===========================================================
 
 constructor TItr.Create(const OwnList: IJclList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
@@ -2681,10 +2658,6 @@ begin
 end;
 
 {$IFDEF SUPPORTS_GENERICS}
-
-
-//=== { TItr<T> } ===========================================================
-
 type
   TItr<T> = class(TJclAbstractIterator, IJclIterator<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
@@ -2718,6 +2691,8 @@ type
   public
     constructor Create(const OwnList: IJclList<T>; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
   end;
+
+//=== { TItr<T> } ===========================================================
 
 constructor TItr<T>.Create(const OwnList: IJclList<T>; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
@@ -2863,9 +2838,7 @@ begin
   CheckValid;
   FOwnList.SetItem(FCursor, AItem);
 end;
-
 {$ENDIF SUPPORTS_GENERICS}
-
 
 //=== { TJclIntfVector } ======================================================
 
@@ -3396,7 +3369,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-
 //=== { TJclAnsiStrVector } ======================================================
 
 constructor TJclAnsiStrVector.Create(ACapacity: Integer);
@@ -3925,7 +3897,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
 
 //=== { TJclWideStrVector } ======================================================
 
@@ -4456,7 +4427,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-
 //=== { TJclSingleVector } ======================================================
 
 constructor TJclSingleVector.Create(ACapacity: Integer);
@@ -4985,7 +4955,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
 
 //=== { TJclDoubleVector } ======================================================
 
@@ -5516,7 +5485,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-
 //=== { TJclExtendedVector } ======================================================
 
 constructor TJclExtendedVector.Create(ACapacity: Integer);
@@ -6045,7 +6013,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
 
 //=== { TJclIntegerVector } ======================================================
 
@@ -6576,7 +6543,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-
 //=== { TJclCardinalVector } ======================================================
 
 constructor TJclCardinalVector.Create(ACapacity: Integer);
@@ -7105,7 +7071,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
 
 //=== { TJclInt64Vector } ======================================================
 
@@ -7638,7 +7603,6 @@ end;
 
 
 {$IFNDEF CLR}
-
 //=== { TJclPtrVector } ======================================================
 
 constructor TJclPtrVector.Create(ACapacity: Integer);
@@ -8168,7 +8132,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 {$ENDIF ~CLR}
-
 
 //=== { TJclVector } ======================================================
 
@@ -8700,7 +8663,6 @@ begin
 end;
 
 {$IFDEF SUPPORTS_GENERICS}
-
 
 //=== { TJclVector<T> } ======================================================
 

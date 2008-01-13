@@ -25,7 +25,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -51,6 +51,7 @@ uses
   JclBase, JclAbstractContainers, JclContainerIntf, JclHashMaps;
 {$I containers\JclContainerCommon.imp}
 {$I containers\JclHashSets.imp}
+{$I containers\JclHashSets.int}
 type
   {$IFDEF SUPPORTS_GENERICS}
   TRefUnique = class;
@@ -62,7 +63,7 @@ type
 
 (*$JPPEXPANDMACRO JCLHASHSETINT(TJclIntfHashSet,TJclIntfAbstractContainer,IJclIntfCollection,IJclIntfSet,IJclIntfMap,IJclIntfIterator, IJclIntfEqualityComparer\,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,
-    constructor Create(ACapacity: Integer); overload;,const AInterface: IInterface,AInterface,IInterface)*)
+    constructor Create(ACapacity: Integer); overload;,const ,AInterface,IInterface)*)
 
 (*$JPPEXPANDMACRO JCLHASHSETINT(TJclAnsiStrHashSet,TJclAnsiStrAbstractCollection,IJclAnsiStrCollection,IJclAnsiStrSet,IJclAnsiStrMap,IJclAnsiStrIterator, IJclStrContainer\, IJclAnsiStrContainer\, IJclAnsiStrEqualityComparer\,,,
     { IJclStrContainer }
@@ -72,7 +73,7 @@ type
     function GetEncoding: TJclAnsiStrEncoding; override;
     procedure SetEncoding(Value: TJclAnsiStrEncoding); override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;,, override;,
-    constructor Create(ACapacity: Integer); overload;,const AString: AnsiString,AString,AnsiString)*)
+    constructor Create(ACapacity: Integer); overload;,const ,AString,AnsiString)*)
 
 (*$JPPEXPANDMACRO JCLHASHSETINT(TJclWideStrHashSet,TJclWideStrAbstractCollection,IJclWideStrCollection,IJclWideStrSet,IJclWideStrMap,IJclWideStrIterator, IJclStrContainer\, IJclWideStrContainer\, IJclWideStrEqualityComparer\,,,
     { IJclStrContainer }
@@ -82,7 +83,7 @@ type
     function GetEncoding: TJclWideStrEncoding; override;
     procedure SetEncoding(Value: TJclWideStrEncoding); override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;,, override;,
-    constructor Create(ACapacity: Integer); overload;,const AString: WideString,AString,WideString)*)
+    constructor Create(ACapacity: Integer); overload;,const ,AString,WideString)*)
 
   {$IFDEF CONTAINER_ANSISTR}
   TJclStrHashSet = TJclAnsiStrHashSet;
@@ -96,21 +97,21 @@ type
     function GetPrecision: Single; override;
     procedure SetPrecision(const Value: Single); override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,
-    constructor Create(ACapacity: Integer); overload;,const AValue: Single,AValue,Single)*)
+    constructor Create(ACapacity: Integer); overload;,const ,AValue,Single)*)
 
 (*$JPPEXPANDMACRO JCLHASHSETINT(TJclDoubleHashSet,TJclDoubleAbstractContainer,IJclDoubleCollection,IJclDoubleSet,IJclDoubleMap,IJclDoubleIterator, IJclDoubleContainer\, IJclDoubleEqualityComparer\,,,
     { IJclDoubleContainer }
     function GetPrecision: Double; override;
     procedure SetPrecision(const Value: Double); override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,
-    constructor Create(ACapacity: Integer); overload;,const AValue: Double,AValue,Double)*)
+    constructor Create(ACapacity: Integer); overload;,const ,AValue,Double)*)
 
 (*$JPPEXPANDMACRO JCLHASHSETINT(TJclExtendedHashSet,TJclExtendedAbstractContainer,IJclExtendedCollection,IJclExtendedSet,IJclExtendedMap,IJclExtendedIterator, IJclExtendedContainer\, IJclExtendedEqualityComparer\,,,
     { IJclExtendedContainer }
     function GetPrecision: Extended; override;
     procedure SetPrecision(const Value: Extended); override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,
-    constructor Create(ACapacity: Integer); overload;,const AValue: Extended,AValue,Extended)*)
+    constructor Create(ACapacity: Integer); overload;,const ,AValue,Extended)*)
 
   {$IFDEF MATH_EXTENDED_PRECISION}
   TJclFloatHashSet = TJclExtendedHashSet;
@@ -124,20 +125,20 @@ type
 
 (*$JPPEXPANDMACRO JCLHASHSETINT(TJclIntegerHashSet,TJclIntegerAbstractContainer,IJclIntegerCollection,IJclIntegerSet,IJclIntegerMap,IJclIntegerIterator, IJclIntegerEqualityComparer\,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,
-    constructor Create(ACapacity: Integer); overload;,AValue: Integer,AValue,Integer)*)
+    constructor Create(ACapacity: Integer); overload;,,AValue,Integer)*)
 
 (*$JPPEXPANDMACRO JCLHASHSETINT(TJclCardinalHashSet,TJclCardinalAbstractContainer,IJclCardinalCollection,IJclCardinalSet,IJclCardinalMap,IJclCardinalIterator, IJclCardinalEqualityComparer\,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,
-    constructor Create(ACapacity: Integer); overload;,AValue: Cardinal,AValue,Cardinal)*)
+    constructor Create(ACapacity: Integer); overload;,,AValue,Cardinal)*)
 
 (*$JPPEXPANDMACRO JCLHASHSETINT(TJclInt64HashSet,TJclInt64AbstractContainer,IJclInt64Collection,IJclInt64Set,IJclInt64Map,IJclInt64Iterator, IJclInt64EqualityComparer\,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,
-    constructor Create(ACapacity: Integer); overload;,const AValue: Int64,AValue,Int64)*)
+    constructor Create(ACapacity: Integer); overload;,const ,AValue,Int64)*)
 
   {$IFNDEF CLR}
 (*$JPPEXPANDMACRO JCLHASHSETINT(TJclPtrHashSet,TJclPtrAbstractContainer,IJclPtrCollection,IJclPtrSet,IJclPtrMap,IJclPtrIterator, IJclPtrEqualityComparer\,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,
-    constructor Create(ACapacity: Integer); overload;,AValue: Pointer,AValue,Pointer)*)
+    constructor Create(ACapacity: Integer); overload;,,AValue,Pointer)*)
   {$ENDIF ~CLR}
 
 (*$JPPEXPANDMACRO JCLHASHSETINT(TJclHashSet,TJclAbstractContainer,IJclCollection,IJclSet,IJclMap,IJclIterator, IJclObjectOwner\, IJclEqualityComparer\,,,
@@ -145,14 +146,14 @@ type
     function FreeObject(var AObject: TObject): TObject; override;
     function GetOwnsObjects: Boolean; override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,
-    constructor Create(ACapacity: Integer; AOwnsObjects: Boolean); overload;,AObject: TObject,AObject,TObject)*)
+    constructor Create(ACapacity: Integer; AOwnsObjects: Boolean); overload;,,AObject,TObject)*)
 
   {$IFDEF SUPPORTS_GENERICS}
 
 (*$JPPEXPANDMACRO JCLHASHSETINT(TJclHashSet<T>,TJclAbstractContainer<T>,IJclCollection<T>,IJclSet<T>,IJclMap<T\, TRefUnique>,IJclIterator<T>, IJclItemOwner<T>\, IJclEqualityComparer<T>\,,,
     { IJclItemOwner<T> }
     function FreeItem(var AItem: T): T; override;
-    function GetOwnsItems: Boolean; override;,,,,const AItem: T,AItem,T)*)
+    function GetOwnsItems: Boolean; override;,,,,const ,AItem,T)*)
 
   // E = External helper to compare items for equality
   TJclHashSetE<T> = class(TJclHashSet<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -244,7 +245,7 @@ end;
 {$JPPDEFINEMACRO SETTERADDITIONAL}
 {$JPPDEFINEMACRO FREEITEM}
 {$JPPDEFINEMACRO GETOWNSITEMS}
-(*$JPPEXPANDMACRO JCLHASHSETIMP(TJclIntfHashSet,IJclIntfMap,IJclIntfCollection,IJclIntfIterator,,const AInterface: IInterface,AInterface)*)
+(*$JPPEXPANDMACRO JCLHASHSETIMP(TJclIntfHashSet,IJclIntfMap,IJclIntfCollection,IJclIntfIterator,,const ,AInterface,IInterface)*)
 {$JPPUNDEFMACRO CONSTRUCTORADDITIONAL}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO GETTERADDITIONAL}
@@ -289,7 +290,7 @@ end;
 }
 {$JPPDEFINEMACRO FREEITEM}
 {$JPPDEFINEMACRO GETOWNSITEMS}
-(*$JPPEXPANDMACRO JCLHASHSETIMP(TJclAnsiStrHashSet,IJclAnsiStrMap,IJclAnsiStrCollection,IJclAnsiStrIterator,,const AString: AnsiString,AString)*)
+(*$JPPEXPANDMACRO JCLHASHSETIMP(TJclAnsiStrHashSet,IJclAnsiStrMap,IJclAnsiStrCollection,IJclAnsiStrIterator,,const ,AString,AnsiString)*)
 {$JPPUNDEFMACRO CONSTRUCTORADDITIONAL}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO GETTERADDITIONAL}
@@ -334,7 +335,7 @@ end;
 }
 {$JPPDEFINEMACRO FREEITEM}
 {$JPPDEFINEMACRO GETOWNSITEMS}
-(*$JPPEXPANDMACRO JCLHASHSETIMP(TJclWideStrHashSet,IJclWideStrMap,IJclWideStrCollection,IJclWideStrIterator,,const AString: WideString,AString)*)
+(*$JPPEXPANDMACRO JCLHASHSETIMP(TJclWideStrHashSet,IJclWideStrMap,IJclWideStrCollection,IJclWideStrIterator,,const ,AString,WideString)*)
 {$JPPUNDEFMACRO CONSTRUCTORADDITIONAL}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO GETTERADDITIONAL}
@@ -369,7 +370,7 @@ end;
 }
 {$JPPDEFINEMACRO FREEITEM}
 {$JPPDEFINEMACRO GETOWNSITEMS}
-(*$JPPEXPANDMACRO JCLHASHSETIMP(TJclSingleHashSet,IJclSingleMap,IJclSingleCollection,IJclSingleIterator,,const AValue: Single,AValue)*)
+(*$JPPEXPANDMACRO JCLHASHSETIMP(TJclSingleHashSet,IJclSingleMap,IJclSingleCollection,IJclSingleIterator,,const ,AValue,Single)*)
 {$JPPUNDEFMACRO CONSTRUCTORADDITIONAL}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO GETTERADDITIONAL}
@@ -404,7 +405,7 @@ end;
 }
 {$JPPDEFINEMACRO FREEITEM}
 {$JPPDEFINEMACRO GETOWNSITEMS}
-(*$JPPEXPANDMACRO JCLHASHSETIMP(TJclDoubleHashSet,IJclDoubleMap,IJclDoubleCollection,IJclDoubleIterator,,const AValue: Double,AValue)*)
+(*$JPPEXPANDMACRO JCLHASHSETIMP(TJclDoubleHashSet,IJclDoubleMap,IJclDoubleCollection,IJclDoubleIterator,,const ,AValue,Double)*)
 {$JPPUNDEFMACRO CONSTRUCTORADDITIONAL}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO GETTERADDITIONAL}
@@ -439,7 +440,7 @@ end;
 }
 {$JPPDEFINEMACRO FREEITEM}
 {$JPPDEFINEMACRO GETOWNSITEMS}
-(*$JPPEXPANDMACRO JCLHASHSETIMP(TJclExtendedHashSet,IJclExtendedMap,IJclExtendedCollection,IJclExtendedIterator,,const AValue: Extended,AValue)*)
+(*$JPPEXPANDMACRO JCLHASHSETIMP(TJclExtendedHashSet,IJclExtendedMap,IJclExtendedCollection,IJclExtendedIterator,,const ,AValue,Extended)*)
 {$JPPUNDEFMACRO CONSTRUCTORADDITIONAL}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO GETTERADDITIONAL}
@@ -464,7 +465,7 @@ end;
 {$JPPDEFINEMACRO SETTERADDITIONAL}
 {$JPPDEFINEMACRO FREEITEM}
 {$JPPDEFINEMACRO GETOWNSITEMS}
-(*$JPPEXPANDMACRO JCLHASHSETIMP(TJclIntegerHashSet,IJclIntegerMap,IJclIntegerCollection,IJclIntegerIterator,,AValue: Integer,AValue)*)
+(*$JPPEXPANDMACRO JCLHASHSETIMP(TJclIntegerHashSet,IJclIntegerMap,IJclIntegerCollection,IJclIntegerIterator,,,AValue,Integer)*)
 {$JPPUNDEFMACRO CONSTRUCTORADDITIONAL}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO GETTERADDITIONAL}
@@ -489,7 +490,7 @@ end;
 {$JPPDEFINEMACRO SETTERADDITIONAL}
 {$JPPDEFINEMACRO FREEITEM}
 {$JPPDEFINEMACRO GETOWNSITEMS}
-(*$JPPEXPANDMACRO JCLHASHSETIMP(TJclCardinalHashSet,IJclCardinalMap,IJclCardinalCollection,IJclCardinalIterator,,AValue: Cardinal,AValue)*)
+(*$JPPEXPANDMACRO JCLHASHSETIMP(TJclCardinalHashSet,IJclCardinalMap,IJclCardinalCollection,IJclCardinalIterator,,,AValue,Cardinal)*)
 {$JPPUNDEFMACRO CONSTRUCTORADDITIONAL}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO GETTERADDITIONAL}
@@ -514,7 +515,7 @@ end;
 {$JPPDEFINEMACRO SETTERADDITIONAL}
 {$JPPDEFINEMACRO FREEITEM}
 {$JPPDEFINEMACRO GETOWNSITEMS}
-(*$JPPEXPANDMACRO JCLHASHSETIMP(TJclInt64HashSet,IJclInt64Map,IJclInt64Collection,IJclInt64Iterator,,const AValue: Int64,AValue)*)
+(*$JPPEXPANDMACRO JCLHASHSETIMP(TJclInt64HashSet,IJclInt64Map,IJclInt64Collection,IJclInt64Iterator,,const ,AValue,Int64)*)
 {$JPPUNDEFMACRO CONSTRUCTORADDITIONAL}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO GETTERADDITIONAL}
@@ -540,7 +541,7 @@ end;
 {$JPPDEFINEMACRO SETTERADDITIONAL}
 {$JPPDEFINEMACRO FREEITEM}
 {$JPPDEFINEMACRO GETOWNSITEMS}
-(*$JPPEXPANDMACRO JCLHASHSETIMP(TJclPtrHashSet,IJclPtrMap,IJclPtrCollection,IJclPtrIterator,,AValue: Pointer,AValue)*)
+(*$JPPEXPANDMACRO JCLHASHSETIMP(TJclPtrHashSet,IJclPtrMap,IJclPtrCollection,IJclPtrIterator,,,AValue,Pointer)*)
 {$JPPUNDEFMACRO CONSTRUCTORADDITIONAL}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO GETTERADDITIONAL}
@@ -576,7 +577,7 @@ begin
   Result := (FMap as IJclKeyOwner).GetOwnsKeys;
 end;
 }
-(*$JPPEXPANDMACRO JCLHASHSETIMP(TJclHashSet,IJclMap,IJclCollection,IJclIterator,False,AObject: TObject,AObject)*)
+(*$JPPEXPANDMACRO JCLHASHSETIMP(TJclHashSet,IJclMap,IJclCollection,IJclIterator,False,,AObject,TObject)*)
 {$JPPUNDEFMACRO CONSTRUCTORADDITIONAL}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO GETTERADDITIONAL}
@@ -602,7 +603,7 @@ begin
   Result := (FMap as IJclPairOwner<T, TRefUnique>).GetOwnsKeys;
 end;
 }
-(*$JPPEXPANDMACRO JCLHASHSETIMP(TJclHashSet<T>,IJclMap<T\, TRefUnique>,IJclCollection<T>,IJclIterator<T>,False,const AItem: T,AItem)*)
+(*$JPPEXPANDMACRO JCLHASHSETIMP(TJclHashSet<T>,IJclMap<T\, TRefUnique>,IJclCollection<T>,IJclIterator<T>,False,const ,AItem,T)*)
 {$JPPUNDEFMACRO CONSTRUCTORADDITIONAL}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO ITEMSEQUAL(ItemA,ItemB)}

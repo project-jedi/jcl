@@ -29,7 +29,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                       $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -54,7 +54,6 @@ uses
   Classes,
   JclBase, JclAbstractContainers, JclContainerIntf;
 type
-
   TJclIntfLinkedListItem = class
   public
     Value: IInterface;
@@ -104,7 +103,6 @@ type
     destructor Destroy; override;
   end;
 
-
   TJclAnsiStrLinkedListItem = class
   public
     Value: AnsiString;
@@ -153,7 +151,6 @@ type
     constructor Create(const ACollection: IJclAnsiStrCollection);
     destructor Destroy; override;
   end;
-
 
   TJclWideStrLinkedListItem = class
   public
@@ -211,7 +208,6 @@ type
   TJclStrLinkedList = TJclWideStrLinkedList;
   {$ENDIF CONTAINER_WIDESTR}
 
-
   TJclSingleLinkedListItem = class
   public
     Value: Single;
@@ -261,7 +257,6 @@ type
     destructor Destroy; override;
   end;
 
-
   TJclDoubleLinkedListItem = class
   public
     Value: Double;
@@ -310,7 +305,6 @@ type
     constructor Create(const ACollection: IJclDoubleCollection);
     destructor Destroy; override;
   end;
-
 
   TJclExtendedLinkedListItem = class
   public
@@ -371,7 +365,6 @@ type
   TJclFloatLinkedList = TJclSingleLinkedList;
   {$ENDIF MATH_SINGLE_PRECISION}
 
-
   TJclIntegerLinkedListItem = class
   public
     Value: Integer;
@@ -421,7 +414,6 @@ type
     destructor Destroy; override;
   end;
 
-
   TJclCardinalLinkedListItem = class
   public
     Value: Cardinal;
@@ -470,7 +462,6 @@ type
     constructor Create(const ACollection: IJclCardinalCollection);
     destructor Destroy; override;
   end;
-
 
   TJclInt64LinkedListItem = class
   public
@@ -522,7 +513,6 @@ type
   end;
 
 {$IFNDEF CLR}
-
   TJclPtrLinkedListItem = class
   public
     Value: Pointer;
@@ -572,7 +562,6 @@ type
     destructor Destroy; override;
   end;
 {$ENDIF ~CLR}
-
 
   TJclLinkedListItem = class
   public
@@ -624,7 +613,6 @@ type
   end;
 
   {$IFDEF SUPPORTS_GENERICS}
-
   TJclLinkedListItem<T> = class
   public
     Value: T;
@@ -735,9 +723,6 @@ uses
 type
   TItrStart = (isFirst, isLast);
 
-
-//=== { TIntfItr } ============================================================
-
 type
   TIntfItr = class(TJclAbstractIterator, IJclIntfIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
@@ -772,6 +757,8 @@ type
   public
     constructor Create(const AOwnList: IJclIntfList; ACursor: TJclIntfLinkedListItem; AValid: Boolean; AStart: TItrStart);
   end;
+
+//=== { TIntfItr } ============================================================
 
 constructor TIntfItr.Create(const AOwnList: IJclIntfList; ACursor: TJclIntfLinkedListItem; AValid: Boolean; AStart: TItrStart);
 begin
@@ -1065,9 +1052,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-
-//=== { TAnsiStrItr } ============================================================
-
 type
   TAnsiStrItr = class(TJclAbstractIterator, IJclAnsiStrIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
@@ -1102,6 +1086,8 @@ type
   public
     constructor Create(const AOwnList: IJclAnsiStrList; ACursor: TJclAnsiStrLinkedListItem; AValid: Boolean; AStart: TItrStart);
   end;
+
+//=== { TAnsiStrItr } ============================================================
 
 constructor TAnsiStrItr.Create(const AOwnList: IJclAnsiStrList; ACursor: TJclAnsiStrLinkedListItem; AValid: Boolean; AStart: TItrStart);
 begin
@@ -1395,9 +1381,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-
-//=== { TWideStrItr } ============================================================
-
 type
   TWideStrItr = class(TJclAbstractIterator, IJclWideStrIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
@@ -1432,6 +1415,8 @@ type
   public
     constructor Create(const AOwnList: IJclWideStrList; ACursor: TJclWideStrLinkedListItem; AValid: Boolean; AStart: TItrStart);
   end;
+
+//=== { TWideStrItr } ============================================================
 
 constructor TWideStrItr.Create(const AOwnList: IJclWideStrList; ACursor: TJclWideStrLinkedListItem; AValid: Boolean; AStart: TItrStart);
 begin
@@ -1725,9 +1710,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-
-//=== { TSingleItr } ============================================================
-
 type
   TSingleItr = class(TJclAbstractIterator, IJclSingleIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
@@ -1762,6 +1744,8 @@ type
   public
     constructor Create(const AOwnList: IJclSingleList; ACursor: TJclSingleLinkedListItem; AValid: Boolean; AStart: TItrStart);
   end;
+
+//=== { TSingleItr } ============================================================
 
 constructor TSingleItr.Create(const AOwnList: IJclSingleList; ACursor: TJclSingleLinkedListItem; AValid: Boolean; AStart: TItrStart);
 begin
@@ -2055,9 +2039,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-
-//=== { TDoubleItr } ============================================================
-
 type
   TDoubleItr = class(TJclAbstractIterator, IJclDoubleIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
@@ -2092,6 +2073,8 @@ type
   public
     constructor Create(const AOwnList: IJclDoubleList; ACursor: TJclDoubleLinkedListItem; AValid: Boolean; AStart: TItrStart);
   end;
+
+//=== { TDoubleItr } ============================================================
 
 constructor TDoubleItr.Create(const AOwnList: IJclDoubleList; ACursor: TJclDoubleLinkedListItem; AValid: Boolean; AStart: TItrStart);
 begin
@@ -2385,9 +2368,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-
-//=== { TExtendedItr } ============================================================
-
 type
   TExtendedItr = class(TJclAbstractIterator, IJclExtendedIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
@@ -2422,6 +2402,8 @@ type
   public
     constructor Create(const AOwnList: IJclExtendedList; ACursor: TJclExtendedLinkedListItem; AValid: Boolean; AStart: TItrStart);
   end;
+
+//=== { TExtendedItr } ============================================================
 
 constructor TExtendedItr.Create(const AOwnList: IJclExtendedList; ACursor: TJclExtendedLinkedListItem; AValid: Boolean; AStart: TItrStart);
 begin
@@ -2715,9 +2697,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-
-//=== { TIntegerItr } ============================================================
-
 type
   TIntegerItr = class(TJclAbstractIterator, IJclIntegerIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
@@ -2752,6 +2731,8 @@ type
   public
     constructor Create(const AOwnList: IJclIntegerList; ACursor: TJclIntegerLinkedListItem; AValid: Boolean; AStart: TItrStart);
   end;
+
+//=== { TIntegerItr } ============================================================
 
 constructor TIntegerItr.Create(const AOwnList: IJclIntegerList; ACursor: TJclIntegerLinkedListItem; AValid: Boolean; AStart: TItrStart);
 begin
@@ -3045,9 +3026,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-
-//=== { TCardinalItr } ============================================================
-
 type
   TCardinalItr = class(TJclAbstractIterator, IJclCardinalIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
@@ -3082,6 +3060,8 @@ type
   public
     constructor Create(const AOwnList: IJclCardinalList; ACursor: TJclCardinalLinkedListItem; AValid: Boolean; AStart: TItrStart);
   end;
+
+//=== { TCardinalItr } ============================================================
 
 constructor TCardinalItr.Create(const AOwnList: IJclCardinalList; ACursor: TJclCardinalLinkedListItem; AValid: Boolean; AStart: TItrStart);
 begin
@@ -3375,9 +3355,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-
-//=== { TInt64Itr } ============================================================
-
 type
   TInt64Itr = class(TJclAbstractIterator, IJclInt64Iterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
@@ -3412,6 +3389,8 @@ type
   public
     constructor Create(const AOwnList: IJclInt64List; ACursor: TJclInt64LinkedListItem; AValid: Boolean; AStart: TItrStart);
   end;
+
+//=== { TInt64Itr } ============================================================
 
 constructor TInt64Itr.Create(const AOwnList: IJclInt64List; ACursor: TJclInt64LinkedListItem; AValid: Boolean; AStart: TItrStart);
 begin
@@ -3705,10 +3684,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-  {$IFNDEF CLR}
-
-//=== { TPtrItr } ============================================================
-
+{$IFNDEF CLR}
 type
   TPtrItr = class(TJclAbstractIterator, IJclPtrIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
@@ -3743,6 +3719,8 @@ type
   public
     constructor Create(const AOwnList: IJclPtrList; ACursor: TJclPtrLinkedListItem; AValid: Boolean; AStart: TItrStart);
   end;
+
+//=== { TPtrItr } ============================================================
 
 constructor TPtrItr.Create(const AOwnList: IJclPtrList; ACursor: TJclPtrLinkedListItem; AValid: Boolean; AStart: TItrStart);
 begin
@@ -4035,10 +4013,7 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-  {$ENDIF ~CLR}
-
-
-//=== { TItr } ============================================================
+{$ENDIF ~CLR}
 
 type
   TItr = class(TJclAbstractIterator, IJclIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -4074,6 +4049,8 @@ type
   public
     constructor Create(const AOwnList: IJclList; ACursor: TJclLinkedListItem; AValid: Boolean; AStart: TItrStart);
   end;
+
+//=== { TItr } ============================================================
 
 constructor TItr.Create(const AOwnList: IJclList; ACursor: TJclLinkedListItem; AValid: Boolean; AStart: TItrStart);
 begin
@@ -4368,10 +4345,6 @@ begin
 end;
 
 {$IFDEF SUPPORTS_GENERICS}
-
-
-//=== { TItr<T> } ============================================================
-
 type
   TItr<T> = class(TJclAbstractIterator, IJclIterator<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
@@ -4406,6 +4379,8 @@ type
   public
     constructor Create(const AOwnList: IJclList<T>; ACursor: TJclLinkedListItem<T>; AValid: Boolean; AStart: TItrStart);
   end;
+
+//=== { TItr<T> } ============================================================
 
 constructor TItr<T>.Create(const AOwnList: IJclList<T>; ACursor: TJclLinkedListItem<T>; AValid: Boolean; AStart: TItrStart);
 begin
@@ -4699,9 +4674,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-
 {$ENDIF SUPPORTS_GENERICS}
-
 
 
 //=== { TJclLinkedList<T> } ==================================================
@@ -5506,9 +5479,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-
-
-
 //=== { TJclLinkedList<T> } ==================================================
 
 constructor TJclAnsiStrLinkedList.Create(const ACollection: IJclAnsiStrCollection);
@@ -6310,9 +6280,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-
-
 
 //=== { TJclLinkedList<T> } ==================================================
 
@@ -7116,7 +7083,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-
 //=== { TJclLinkedList<T> } ==================================================
 
 constructor TJclSingleLinkedList.Create(const ACollection: IJclSingleCollection);
@@ -7918,9 +7884,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-
-
 
 //=== { TJclLinkedList<T> } ==================================================
 
@@ -8724,9 +8687,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-
-
-
 //=== { TJclLinkedList<T> } ==================================================
 
 constructor TJclExtendedLinkedList.Create(const ACollection: IJclExtendedCollection);
@@ -9528,9 +9488,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-
-
 
 //=== { TJclLinkedList<T> } ==================================================
 
@@ -10334,7 +10291,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-
 //=== { TJclLinkedList<T> } ==================================================
 
 constructor TJclCardinalLinkedList.Create(const ACollection: IJclCardinalCollection);
@@ -11136,7 +11092,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
 
 //=== { TJclLinkedList<T> } ==================================================
 
@@ -11941,7 +11896,6 @@ begin
 end;
 
 {$IFNDEF CLR}
-
 //=== { TJclLinkedList<T> } ==================================================
 
 constructor TJclPtrLinkedList.Create(const ACollection: IJclPtrCollection);
@@ -12744,7 +12698,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 {$ENDIF ~CLR}
-
 
 //=== { TJclLinkedList<T> } ==================================================
 
@@ -13549,7 +13502,6 @@ begin
 end;
 
 {$IFDEF SUPPORTS_GENERICS}
-
 
 //=== { TJclLinkedList<T> } ==================================================
 

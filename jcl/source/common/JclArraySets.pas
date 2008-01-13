@@ -29,7 +29,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -54,7 +54,6 @@ uses
   {$ENDIF SUPPORTS_GENERICS}
   JclBase, JclAbstractContainers, JclContainerIntf, JclArrayLists;
 type
-
   TJclIntfArraySet = class(TJclIntfArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclIntfEqualityComparer, IJclIntfComparer,
     IJclIntfCollection, IJclIntfList, IJclIntfArray, IJclIntfSet)
@@ -77,7 +76,6 @@ type
   public
   end;
 
-
   TJclAnsiStrArraySet = class(TJclAnsiStrArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclStrContainer, IJclAnsiStrContainer, IJclAnsiStrFlatContainer, IJclAnsiStrEqualityComparer, IJclAnsiStrComparer,
     IJclAnsiStrCollection, IJclAnsiStrList, IJclAnsiStrArray, IJclAnsiStrSet)
@@ -99,7 +97,6 @@ type
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
   end;
-
 
   TJclWideStrArraySet = class(TJclWideStrArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclStrContainer, IJclWideStrContainer, IJclWideStrFlatContainer, IJclWideStrEqualityComparer, IJclWideStrComparer,
@@ -130,7 +127,6 @@ type
   TJclStrArraySet = TJclWideStrArraySet;
   {$ENDIF CONTAINER_WIDESTR}
 
-
   TJclSingleArraySet = class(TJclSingleArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclSingleContainer, IJclSingleEqualityComparer, IJclSingleComparer,
     IJclSingleCollection, IJclSingleList, IJclSingleArray, IJclSingleSet)
@@ -153,7 +149,6 @@ type
   public
   end;
 
-
   TJclDoubleArraySet = class(TJclDoubleArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclDoubleContainer, IJclDoubleEqualityComparer, IJclDoubleComparer,
     IJclDoubleCollection, IJclDoubleList, IJclDoubleArray, IJclDoubleSet)
@@ -175,7 +170,6 @@ type
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
   end;
-
 
   TJclExtendedArraySet = class(TJclExtendedArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclExtendedContainer, IJclExtendedEqualityComparer, IJclExtendedComparer,
@@ -209,7 +203,6 @@ type
   TJclFloatArraySet = TJclSingleArraySet;
   {$ENDIF MATH_SINGLE_PRECISION}
 
-
   TJclIntegerArraySet = class(TJclIntegerArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclIntegerEqualityComparer, IJclIntegerComparer,
     IJclIntegerCollection, IJclIntegerList, IJclIntegerArray, IJclIntegerSet)
@@ -232,7 +225,6 @@ type
   public
   end;
 
-
   TJclCardinalArraySet = class(TJclCardinalArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclCardinalEqualityComparer, IJclCardinalComparer,
     IJclCardinalCollection, IJclCardinalList, IJclCardinalArray, IJclCardinalSet)
@@ -254,7 +246,6 @@ type
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
   end;
-
 
   TJclInt64ArraySet = class(TJclInt64ArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclInt64EqualityComparer, IJclInt64Comparer,
@@ -279,7 +270,6 @@ type
   end;
 
   {$IFNDEF CLR}
-
   TJclPtrArraySet = class(TJclPtrArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclPtrEqualityComparer, IJclPtrComparer,
     IJclPtrCollection, IJclPtrList, IJclPtrArray, IJclPtrSet)
@@ -302,7 +292,6 @@ type
   public
   end;
   {$ENDIF ~CLR}
-
 
   TJclArraySet = class(TJclArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclObjectOwner, IJclEqualityComparer, IJclComparer,
@@ -327,7 +316,6 @@ type
   end;
 
   {$IFDEF SUPPORTS_GENERICS}
-
   TJclArraySet<T> = class(TJclArrayList<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclItemOwner<T>, IJclEqualityComparer<T>, IJclComparer<T>,
     IJclCollection<T>, IJclList<T>, IJclArray<T>, IJclSet<T>)
@@ -410,7 +398,6 @@ implementation
 
 uses
   SysUtils;
-
 
 //=== { TJclIntfArraySet } ====================================================
 
@@ -546,7 +533,6 @@ begin
   AddAll(ACollection);
 end;
 
-
 //=== { TJclAnsiStrArraySet } ====================================================
 
 function TJclAnsiStrArraySet.Add(const AString: AnsiString): Boolean;
@@ -680,7 +666,6 @@ procedure TJclAnsiStrArraySet.Union(const ACollection: IJclAnsiStrCollection);
 begin
   AddAll(ACollection);
 end;
-
 
 //=== { TJclWideStrArraySet } ====================================================
 
@@ -816,7 +801,6 @@ begin
   AddAll(ACollection);
 end;
 
-
 //=== { TJclSingleArraySet } ====================================================
 
 function TJclSingleArraySet.Add(const AValue: Single): Boolean;
@@ -950,7 +934,6 @@ procedure TJclSingleArraySet.Union(const ACollection: IJclSingleCollection);
 begin
   AddAll(ACollection);
 end;
-
 
 //=== { TJclDoubleArraySet } ====================================================
 
@@ -1086,7 +1069,6 @@ begin
   AddAll(ACollection);
 end;
 
-
 //=== { TJclExtendedArraySet } ====================================================
 
 function TJclExtendedArraySet.Add(const AValue: Extended): Boolean;
@@ -1220,7 +1202,6 @@ procedure TJclExtendedArraySet.Union(const ACollection: IJclExtendedCollection);
 begin
   AddAll(ACollection);
 end;
-
 
 //=== { TJclIntegerArraySet } ====================================================
 
@@ -1356,7 +1337,6 @@ begin
   AddAll(ACollection);
 end;
 
-
 //=== { TJclCardinalArraySet } ====================================================
 
 function TJclCardinalArraySet.Add(AValue: Cardinal): Boolean;
@@ -1490,7 +1470,6 @@ procedure TJclCardinalArraySet.Union(const ACollection: IJclCardinalCollection);
 begin
   AddAll(ACollection);
 end;
-
 
 //=== { TJclInt64ArraySet } ====================================================
 
@@ -1627,7 +1606,6 @@ begin
 end;
 
 {$IFNDEF CLR}
-
 //=== { TJclPtrArraySet } ====================================================
 
 function TJclPtrArraySet.Add(APtr: Pointer): Boolean;
@@ -1762,7 +1740,6 @@ begin
   AddAll(ACollection);
 end;
 {$ENDIF ~CLR}
-
 
 //=== { TJclArraySet } ====================================================
 
@@ -1899,7 +1876,6 @@ begin
 end;
 
 {$IFDEF SUPPORTS_GENERICS}
-
 //=== { TJclArraySet<T> } ====================================================
 
 function TJclArraySet<T>.Add(const AItem: T): Boolean;
@@ -2007,6 +1983,7 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
+
 
 procedure TJclArraySet<T>.Insert(Index: Integer; const AItem: T);
 begin

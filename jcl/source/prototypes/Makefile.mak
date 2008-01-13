@@ -94,47 +94,47 @@ Containers:	..\Common\JclArrayLists.pas \
 	$(jpp) $(WinOptions) $(ZlibOptions) -uZLIB_DLL $?
 
 JclArrayLists.pas: \
-		containers\JclArrayLists.imp containers\JclContainerCommon.imp
+		containers\JclArrayLists.imp containers\JclArrayLists.int containers\JclContainerCommon.imp
 	$(touch) $@
 
 JclArraySets.pas: \
-		containers\JclArraySets.imp containers\JclContainerCommon.imp
+		containers\JclArraySets.imp containers\JclArraySets.int containers\JclContainerCommon.imp
 	$(touch) $@
 
 JclBinaryTrees.pas: \
-		containers\JclBinaryTrees.imp containers\JclContainerCommon.imp
+		containers\JclBinaryTrees.imp containers\JclBinaryTrees.int containers\JclContainerCommon.imp
 	$(touch) $@
 
 JclHashMaps.pas: \
-		containers\JclHashMaps.imp containers\JclContainerCommon.imp
+		containers\JclHashMaps.imp containers\JclHashMaps.int containers\JclContainerCommon.imp
 	$(touch) $@
 
 JclHashSets.pas: \
-		containers\JclHashSets.imp containers\JclContainerCommon.imp
+		containers\JclHashSets.imp containers\JclHashSets.int containers\JclContainerCommon.imp
 	$(touch) $@
 
 JclLinkedLists.pas: \
-		containers\JclLinkedLists.imp containers\JclContainerCommon.imp
+		containers\JclLinkedLists.imp containers\JclLinkedLists.int containers\JclContainerCommon.imp
 	$(touch) $@
 
 JclQueues.pas: \
-		containers\JclQueues.imp containers\JclContainerCommon.imp
+		containers\JclQueues.imp containers\JclQueues.int containers\JclContainerCommon.imp
 	$(touch) $@
 
 JclSortedMaps.pas: \
-		containers\JclSortedMaps.imp containers\JclContainerCommon.imp
+		containers\JclSortedMaps.imp containers\JclSortedMaps.int containers\JclContainerCommon.imp
 	$(touch) $@
 
 JclStacks.pas: \
-		containers\JclStacks.imp containers\JclContainerCommon.imp
+		containers\JclStacks.imp containers\JclStacks.int containers\JclContainerCommon.imp
 	$(touch) $@
 
 JclTrees.pas: \
-		containers\JclTrees.imp containers\JclContainerCommon.imp
+		containers\JclTrees.imp containers\JclTrees.int containers\JclContainerCommon.imp
 	$(touch) $@
 
 JclVectors.pas: \
-		containers\JclVectors.imp containers\JclContainerCommon.imp
+		containers\JclVectors.imp containers\JclVectors.int containers\JclContainerCommon.imp
 	$(touch) $@
 
 {.}.pas{..\common}.pas:

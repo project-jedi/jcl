@@ -1,110 +1,7 @@
-(*$JPPDEFINEMACRO JCLBINARYTREEINT(NODETYPENAME, SELFCLASSNAME, ANCESTORCLASSNAME, COLLECTIONINTERFACENAME, TREEINTERFACENAME, STDITRINTERFACENAME, TREEITRINTERFACENAME,
-  INTERFACEADDITIONAL, PRIVATEADDITIONAL, PROTECTEDADDITIONAL, PUBLICADDITIONAL, CONSTRUCTORPARAMETERS, COLLECTIONFLAGS,
-  PARAMETERDECLARATION, PARAMETERTYPE)
-  NODETYPENAME = class
-  public
-    Value: PARAMETERTYPE;
-    Left: NODETYPENAME;
-    Right: NODETYPENAME;
-    Parent: NODETYPENAME;
-  end;
-
-  SELFCLASSNAME = class(ANCESTORCLASSNAME, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer,INTERFACEADDITIONAL
-    COLLECTIONINTERFACENAME, TREEINTERFACENAME)
-  private
-    FMaxDepth: Integer;
-    FRoot: NODETYPENAME;
-    FTraverseOrder: TJclTraverseOrder;PRIVATEADDITIONAL
-  protected
-    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
-    procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure AutoPack; override;
-    { IJclPackable }
-    procedure Pack; override;
-    procedure SetCapacity(Value: Integer); override;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    { COLLECTIONINTERFACENAME }
-    function Add(PARAMETERDECLARATION): Boolean;COLLECTIONFLAGS
-    function AddAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;COLLECTIONFLAGS
-    procedure Clear;COLLECTIONFLAGS
-    function Contains(PARAMETERDECLARATION): Boolean;COLLECTIONFLAGS
-    function ContainsAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;COLLECTIONFLAGS
-    function Equals(const ACollection: COLLECTIONINTERFACENAME): Boolean;COLLECTIONFLAGS
-    function First: STDITRINTERFACENAME;COLLECTIONFLAGS
-    function IsEmpty: Boolean;COLLECTIONFLAGS
-    function Last: STDITRINTERFACENAME;COLLECTIONFLAGS
-    function Remove(PARAMETERDECLARATION): Boolean;COLLECTIONFLAGS
-    function RemoveAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;COLLECTIONFLAGS
-    function RetainAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;COLLECTIONFLAGS
-    function Size: Integer;COLLECTIONFLAGS
-    {$IFDEF SUPPORTS_FOR_IN}
-    function GetEnumerator: STDITRINTERFACENAME;COLLECTIONFLAGS
-    {$ENDIF SUPPORTS_FOR_IN}
-    { TREEINTERFACENAME }
-    function GetRoot: TREEITRINTERFACENAME;
-    function GetTraverseOrder: TJclTraverseOrder;
-    procedure SetTraverseOrder(Value: TJclTraverseOrder);PROTECTEDADDITIONAL
-  public
-    constructor Create(CONSTRUCTORPARAMETERS);
-    destructor Destroy; override;PUBLICADDITIONAL
-    property Root: TREEITRINTERFACENAME read GetRoot;
-    property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
-  end;*)
-(*$JPPDEFINEMACRO JCLBINARYTREEITR(BASEITRCLASSNAME, PREORDERITRCLASSNAME, INORDERITRCLASSNAME, POSTORDERITRCLASSNAME,
-  STDITRINTERFACENAME, STDTREEITRINTERFACENAME, BINTREEITRINTERFACENAME, COLLECTIONINTERFACENAME, EQUALITYCOMPARERINTERFACENAME,
-  NODETYPENAME, PARAMETERDECLARATION, PARAMETERTYPE, PARAMETERNAME, DEFAULTVALUE, GETTERNAME, SETTERNAME, RELEASERNAME)
+(*$JPPDEFINEMACRO JCLBINARYTREEITRIMP(BASEITRCLASSNAME, PREORDERITRCLASSNAME, INORDERITRCLASSNAME, POSTORDERITRCLASSNAME,
+  STDITRINTERFACENAME, COLLECTIONINTERFACENAME, EQUALITYCOMPARERINTERFACENAME,
+  NODETYPENAME, CONSTKEYWORD, PARAMETERNAME, TYPENAME, DEFAULTVALUE, GETTERNAME, SETTERNAME, RELEASERNAME)
 //=== { BASEITRCLASSNAME } ===========================================================
-
-type
-  BASEITRCLASSNAME = class(TJclAbstractIterator, STDITRINTERFACENAME, STDTREEITRINTERFACENAME, BINTREEITRINTERFACENAME)
-  protected
-    FCursor: NODETYPENAME;
-    FStart: TItrStart;
-    FOwnTree: COLLECTIONINTERFACENAME;
-    FEqualityComparer: EQUALITYCOMPARERINTERFACENAME;
-    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
-    function GetNextCursor: NODETYPENAME; virtual; abstract;
-    function GetPreviousCursor: NODETYPENAME; virtual; abstract;
-    { STDITRINTERFACENAME }
-    function Add(PARAMETERDECLARATION): Boolean;
-    function Equals(const AIterator: STDITRINTERFACENAME): Boolean;
-    function GETTERNAME: PARAMETERTYPE;
-    function HasNext: Boolean;
-    function HasPrevious: Boolean;
-    function Insert(PARAMETERDECLARATION): Boolean;
-    function Next: PARAMETERTYPE;
-    function NextIndex: Integer;
-    function Previous: PARAMETERTYPE;
-    function PreviousIndex: Integer;
-    procedure Remove;
-    procedure Reset;
-    procedure SETTERNAME(PARAMETERDECLARATION);
-    {$IFDEF SUPPORTS_FOR_IN}
-    function MoveNext: Boolean;
-    property Current: PARAMETERTYPE read GETTERNAME;
-    {$ENDIF SUPPORTS_FOR_IN}
-    { STDTREEITRINTERFACENAME }
-    function AddChild(PARAMETERDECLARATION): Boolean;
-    function ChildrenCount: Integer;
-    procedure ClearChildren;
-    procedure DeleteChild(Index: Integer);
-    function GetChild(Index: Integer): PARAMETERTYPE;
-    function HasChild(Index: Integer): Boolean;
-    function HasParent: Boolean;
-    function IndexOfChild(PARAMETERDECLARATION): Integer;
-    function InsertChild(Index: Integer; PARAMETERDECLARATION): Boolean;
-    function Parent: PARAMETERTYPE;
-    procedure SetChild(Index: Integer; PARAMETERDECLARATION);
-    { BINTREEITRINTERFACENAME }
-    function HasLeft: Boolean;
-    function HasRight: Boolean;
-    function Left: PARAMETERTYPE;
-    function Right: PARAMETERTYPE;
-  public
-    constructor Create(const AOwnTree: COLLECTIONINTERFACENAME; ACursor: NODETYPENAME; AValid: Boolean; AStart: TItrStart);
-  end;
 
 constructor BASEITRCLASSNAME.Create(const AOwnTree: COLLECTIONINTERFACENAME; ACursor: NODETYPENAME; AValid: Boolean; AStart: TItrStart);
 begin
@@ -115,12 +12,12 @@ begin
   FEqualityComparer := AOwnTree as EQUALITYCOMPARERINTERFACENAME;
 end;
 
-function BASEITRCLASSNAME.Add(PARAMETERDECLARATION): Boolean;
+function BASEITRCLASSNAME.Add(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
 begin
   Result := FOwnTree.Add(PARAMETERNAME);
 end;
 
-function BASEITRCLASSNAME.AddChild(PARAMETERDECLARATION): Boolean;
+function BASEITRCLASSNAME.AddChild(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
 end;
@@ -180,7 +77,7 @@ begin
   end;
 end;
 
-function BASEITRCLASSNAME.GetChild(Index: Integer): PARAMETERTYPE;
+function BASEITRCLASSNAME.GetChild(Index: Integer): TYPENAME;
 begin
   {$JPPEXPANDMACRO DELEGATEREADBEGIN(FOwnTree)}
     Result := DEFAULTVALUE;
@@ -202,7 +99,7 @@ begin
   {$JPPEXPANDMACRO DELEGATEREADEND(FOwnTree)}
 end;
 
-function BASEITRCLASSNAME.GETTERNAME: PARAMETERTYPE;
+function BASEITRCLASSNAME.GETTERNAME: TYPENAME;
 begin
   {$JPPEXPANDMACRO DELEGATEREADBEGIN(FOwnTree)}
     CheckValid;
@@ -269,7 +166,7 @@ begin
   {$JPPEXPANDMACRO DELEGATEREADEND(FOwnTree)}
 end;
 
-function BASEITRCLASSNAME.IndexOfChild(PARAMETERDECLARATION): Integer;
+function BASEITRCLASSNAME.IndexOfChild(CONSTKEYWORDPARAMETERNAME: TYPENAME): Integer;
 begin
   {$JPPEXPANDMACRO DELEGATEREADBEGIN(FOwnTree)}
     Result := -1;
@@ -290,17 +187,17 @@ begin
   {$JPPEXPANDMACRO DELEGATEREADEND(FOwnTree)}
 end;
 
-function BASEITRCLASSNAME.Insert(PARAMETERDECLARATION): Boolean;
+function BASEITRCLASSNAME.Insert(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
 end;
 
-function BASEITRCLASSNAME.InsertChild(Index: Integer; PARAMETERDECLARATION): Boolean;
+function BASEITRCLASSNAME.InsertChild(Index: Integer; CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
 end;
 
-function BASEITRCLASSNAME.Left: PARAMETERTYPE;
+function BASEITRCLASSNAME.Left: TYPENAME;
 begin
   {$JPPEXPANDMACRO DELEGATEREADBEGIN(FOwnTree)}
     Result := DEFAULTVALUE;
@@ -327,7 +224,7 @@ begin
 end;
 {$ENDIF SUPPORTS_FOR_IN}
 
-function BASEITRCLASSNAME.Next: PARAMETERTYPE;
+function BASEITRCLASSNAME.Next: TYPENAME;
 begin
   {$JPPEXPANDMACRO DELEGATEREADBEGIN(FOwnTree)}
     if Valid then
@@ -349,7 +246,7 @@ begin
   raise EJclOperationNotSupportedError.Create;
 end;
 
-function BASEITRCLASSNAME.Parent: PARAMETERTYPE;
+function BASEITRCLASSNAME.Parent: TYPENAME;
 begin
   {$JPPEXPANDMACRO DELEGATEREADBEGIN(FOwnTree)}
     Result := DEFAULTVALUE;
@@ -363,7 +260,7 @@ begin
   {$JPPEXPANDMACRO DELEGATEREADEND(FOwnTree)}
 end;
 
-function BASEITRCLASSNAME.Previous: PARAMETERTYPE;
+function BASEITRCLASSNAME.Previous: TYPENAME;
 begin
   {$JPPEXPANDMACRO DELEGATEREADBEGIN(FOwnTree)}
     if Valid then
@@ -440,7 +337,7 @@ begin
   {$JPPEXPANDMACRO DELEGATEREADEND(FOwnTree)}
 end;
 
-function BASEITRCLASSNAME.Right: PARAMETERTYPE;
+function BASEITRCLASSNAME.Right: TYPENAME;
 begin
   {$JPPEXPANDMACRO DELEGATEREADBEGIN(FOwnTree)}
     Result := DEFAULTVALUE;
@@ -454,28 +351,17 @@ begin
   {$JPPEXPANDMACRO DELEGATEREADEND(FOwnTree)}
 end;
 
-procedure BASEITRCLASSNAME.SetChild(Index: Integer; PARAMETERDECLARATION);
+procedure BASEITRCLASSNAME.SetChild(Index: Integer; CONSTKEYWORDPARAMETERNAME: TYPENAME);
 begin
   raise EJclOperationNotSupportedError.Create;
 end;
 
-procedure BASEITRCLASSNAME.SETTERNAME(PARAMETERDECLARATION);
+procedure BASEITRCLASSNAME.SETTERNAME(CONSTKEYWORDPARAMETERNAME: TYPENAME);
 begin
   raise EJclOperationNotSupportedError.Create;
 end;
 
 //=== { PREORDERITRCLASSNAME } ===================================================
-
-type
-  PREORDERITRCLASSNAME = class(BASEITRCLASSNAME, STDITRINTERFACENAME, STDTREEITRINTERFACENAME, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable)
-  protected
-    function CreateEmptyIterator: TJclAbstractIterator; override;
-    function GetNextCursor: NODETYPENAME; override;
-    function GetPreviousCursor: NODETYPENAME; override;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-  end;
 
 function PREORDERITRCLASSNAME.CreateEmptyIterator: TJclAbstractIterator;
 begin
@@ -532,17 +418,6 @@ begin
 end;
 
 //=== { INORDERITRCLASSNAME } ====================================================
-
-type
-  INORDERITRCLASSNAME = class(BASEITRCLASSNAME, STDITRINTERFACENAME, STDTREEITRINTERFACENAME, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable)
-  protected
-    function CreateEmptyIterator: TJclAbstractIterator; override;
-    function GetNextCursor: NODETYPENAME; override;
-    function GetPreviousCursor: NODETYPENAME; override;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-  end;
 
 function INORDERITRCLASSNAME.CreateEmptyIterator: TJclAbstractIterator;
 begin
@@ -601,17 +476,6 @@ end;
 
 //=== { POSTORDERITRCLASSNAME } ==================================================
 
-type
-  POSTORDERITRCLASSNAME = class(BASEITRCLASSNAME, STDITRINTERFACENAME, STDTREEITRINTERFACENAME, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable)
-  protected
-    function CreateEmptyIterator: TJclAbstractIterator; override;
-    function GetNextCursor: NODETYPENAME; override;
-    function GetPreviousCursor: NODETYPENAME; override;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-  end;
-
 function POSTORDERITRCLASSNAME.CreateEmptyIterator: TJclAbstractIterator;
 begin
   Result := POSTORDERITRCLASSNAME.Create(FOwnTree, FCursor, Valid, FStart);
@@ -666,7 +530,7 @@ begin
 end;*)
 (*$JPPDEFINEMACRO JCLBINARYTREEIMP(SELFCLASSNAME, NODETYPENAME, PREORDERITRCLASSNAME, INORDERITRCLASSNAME, POSTORDERITRCLASSNAME,
   COLLECTIONINTERFACENAME, STDITRINTERFACENAME, TREEITRINTERFACENAME,
-  CONSTRUCTORPARAMETERS, CONSTRUCTORASSIGNMENTS, OWNERSHIPPARAMETER, PARAMETERDECLARATION, PARAMETERNAME, DEFAULTVALUE, RELEASERNAME)
+  CONSTRUCTORPARAMETERS, CONSTRUCTORASSIGNMENTS, OWNERSHIPPARAMETER, CONSTKEYWORD, PARAMETERNAME, TYPENAME, DEFAULTVALUE, RELEASERNAME)
 //=== { SELFCLASSNAME } =================================================
 
 constructor SELFCLASSNAME.Create(CONSTRUCTORPARAMETERS);
@@ -684,7 +548,7 @@ begin
   inherited Destroy;
 end;
 
-function SELFCLASSNAME.Add(PARAMETERDECLARATION): Boolean;
+function SELFCLASSNAME.Add(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
 var
   NewNode, Current, Save: NODETYPENAME;
   Comp, Depth: Integer;
@@ -862,7 +726,7 @@ begin
   {$JPPEXPANDMACRO WRITEEND}
 end;
 
-function SELFCLASSNAME.Contains(PARAMETERDECLARATION): Boolean;
+function SELFCLASSNAME.Contains(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
 var
   Comp: Integer;
   Current: NODETYPENAME;
@@ -1103,7 +967,7 @@ begin
   {$JPPEXPANDMACRO WRITEEND}
 end;
 
-function SELFCLASSNAME.Remove(PARAMETERDECLARATION): Boolean;
+function SELFCLASSNAME.Remove(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
 var
   Current, Successor: NODETYPENAME;
   Comp: Integer;

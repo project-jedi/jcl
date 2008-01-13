@@ -28,7 +28,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                       $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -52,8 +52,8 @@ uses
   JclAlgorithms,
   {$ENDIF SUPPORTS_GENERICS}
   JclBase, JclAbstractContainers, JclContainerIntf;
-type
 
+type
   TJclIntfTreeNode = class
   public
     Value: IInterface;
@@ -112,7 +112,6 @@ type
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
 
-
   TJclAnsiStrTreeNode = class
   public
     Value: AnsiString;
@@ -170,7 +169,6 @@ type
     property Root: IJclAnsiStrTreeIterator read GetRoot;
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
-
 
   TJclWideStrTreeNode = class
   public
@@ -237,7 +235,6 @@ type
   TJclStrTree = TJclWideStrTree;
   {$ENDIF CONTAINER_WIDESTR}
 
-
   TJclSingleTreeNode = class
   public
     Value: Single;
@@ -296,7 +293,6 @@ type
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
 
-
   TJclDoubleTreeNode = class
   public
     Value: Double;
@@ -354,7 +350,6 @@ type
     property Root: IJclDoubleTreeIterator read GetRoot;
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
-
 
   TJclExtendedTreeNode = class
   public
@@ -424,7 +419,6 @@ type
   TJclFloatTree = TJclSingleTree;
   {$ENDIF MATH_SINGLE_PRECISION}
 
-
   TJclIntegerTreeNode = class
   public
     Value: Integer;
@@ -483,7 +477,6 @@ type
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
 
-
   TJclCardinalTreeNode = class
   public
     Value: Cardinal;
@@ -541,7 +534,6 @@ type
     property Root: IJclCardinalTreeIterator read GetRoot;
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
-
 
   TJclInt64TreeNode = class
   public
@@ -602,7 +594,6 @@ type
   end;
 
 {$IFNDEF CLR}
-
   TJclPtrTreeNode = class
   public
     Value: Pointer;
@@ -661,7 +652,6 @@ type
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
 {$ENDIF ~CLR}
-
 
   TJclTreeNode = class
   public
@@ -722,7 +712,6 @@ type
   end;
 
 {$IFDEF SUPPORTS_GENERICS}
-
   TJclTreeNode<T> = class
   public
     Value: T;
@@ -841,9 +830,6 @@ uses
 type
   TItrStart = (isFirst, isLast, isRoot);
 
-
-//=== { TIntfItr } ===========================================================
-
 type
   TIntfItr = class(TJclAbstractIterator, IJclIntfIterator, IJclIntfTreeIterator)
   protected
@@ -889,6 +875,30 @@ type
   public
     constructor Create(OwnTree: TJclIntfTree; ACursor: TJclIntfTreeNode; AValid: Boolean; AStart: TItrStart);
   end;
+
+  TPreOrderIntfItr = class(TIntfItr, IJclIntfIterator, IJclIntfTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  protected
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    function GetNextCursor: TJclIntfTreeNode; override;
+    function GetNextSibling: TJclIntfTreeNode; override;
+    function GetPreviousCursor: TJclIntfTreeNode; override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+  end;
+
+  TPostOrderIntfItr = class(TIntfItr, IJclIntfIterator, IJclIntfTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  protected
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    function GetNextCursor: TJclIntfTreeNode; override;
+    function GetNextSibling: TJclIntfTreeNode; override;
+    function GetPreviousCursor: TJclIntfTreeNode; override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+  end;
+
+//=== { TIntfItr } ===========================================================
 
 constructor TIntfItr.Create(OwnTree: TJclIntfTree; ACursor: TJclIntfTreeNode; AValid: Boolean; AStart: TItrStart);
 begin
@@ -1487,18 +1497,6 @@ end;
 
 //=== { TPreOrderIntfItr } ===================================================
 
-type
-  TPreOrderIntfItr = class(TIntfItr, IJclIntfIterator, IJclIntfTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable)
-  protected
-    function CreateEmptyIterator: TJclAbstractIterator; override;
-    function GetNextCursor: TJclIntfTreeNode; override;
-    function GetNextSibling: TJclIntfTreeNode; override;
-    function GetPreviousCursor: TJclIntfTreeNode; override;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-  end;
-
 function TPreOrderIntfItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
   Result := TPreOrderIntfItr.Create(FOwnTree, FCursor, Valid, FStart);
@@ -1566,18 +1564,6 @@ end;
 
 //=== { TPostOrderIntfItr } ==================================================
 
-type
-  TPostOrderIntfItr = class(TIntfItr, IJclIntfIterator, IJclIntfTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable)
-  protected
-    function CreateEmptyIterator: TJclAbstractIterator; override;
-    function GetNextCursor: TJclIntfTreeNode; override;
-    function GetNextSibling: TJclIntfTreeNode; override;
-    function GetPreviousCursor: TJclIntfTreeNode; override;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-  end;
-
 function TPostOrderIntfItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
   Result := TPostOrderIntfItr.Create(FOwnTree, FCursor, Valid, FStart);
@@ -1641,8 +1627,6 @@ begin
   end;
 end;
 
-//=== { TAnsiStrItr } ===========================================================
-
 type
   TAnsiStrItr = class(TJclAbstractIterator, IJclAnsiStrIterator, IJclAnsiStrTreeIterator)
   protected
@@ -1688,6 +1672,30 @@ type
   public
     constructor Create(OwnTree: TJclAnsiStrTree; ACursor: TJclAnsiStrTreeNode; AValid: Boolean; AStart: TItrStart);
   end;
+
+  TPreOrderAnsiStrItr = class(TAnsiStrItr, IJclAnsiStrIterator, IJclAnsiStrTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  protected
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    function GetNextCursor: TJclAnsiStrTreeNode; override;
+    function GetNextSibling: TJclAnsiStrTreeNode; override;
+    function GetPreviousCursor: TJclAnsiStrTreeNode; override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+  end;
+
+  TPostOrderAnsiStrItr = class(TAnsiStrItr, IJclAnsiStrIterator, IJclAnsiStrTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  protected
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    function GetNextCursor: TJclAnsiStrTreeNode; override;
+    function GetNextSibling: TJclAnsiStrTreeNode; override;
+    function GetPreviousCursor: TJclAnsiStrTreeNode; override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+  end;
+
+//=== { TAnsiStrItr } ===========================================================
 
 constructor TAnsiStrItr.Create(OwnTree: TJclAnsiStrTree; ACursor: TJclAnsiStrTreeNode; AValid: Boolean; AStart: TItrStart);
 begin
@@ -2286,18 +2294,6 @@ end;
 
 //=== { TPreOrderAnsiStrItr } ===================================================
 
-type
-  TPreOrderAnsiStrItr = class(TAnsiStrItr, IJclAnsiStrIterator, IJclAnsiStrTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable)
-  protected
-    function CreateEmptyIterator: TJclAbstractIterator; override;
-    function GetNextCursor: TJclAnsiStrTreeNode; override;
-    function GetNextSibling: TJclAnsiStrTreeNode; override;
-    function GetPreviousCursor: TJclAnsiStrTreeNode; override;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-  end;
-
 function TPreOrderAnsiStrItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
   Result := TPreOrderAnsiStrItr.Create(FOwnTree, FCursor, Valid, FStart);
@@ -2365,18 +2361,6 @@ end;
 
 //=== { TPostOrderAnsiStrItr } ==================================================
 
-type
-  TPostOrderAnsiStrItr = class(TAnsiStrItr, IJclAnsiStrIterator, IJclAnsiStrTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable)
-  protected
-    function CreateEmptyIterator: TJclAbstractIterator; override;
-    function GetNextCursor: TJclAnsiStrTreeNode; override;
-    function GetNextSibling: TJclAnsiStrTreeNode; override;
-    function GetPreviousCursor: TJclAnsiStrTreeNode; override;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-  end;
-
 function TPostOrderAnsiStrItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
   Result := TPostOrderAnsiStrItr.Create(FOwnTree, FCursor, Valid, FStart);
@@ -2440,8 +2424,6 @@ begin
   end;
 end;
 
-//=== { TWideStrItr } ===========================================================
-
 type
   TWideStrItr = class(TJclAbstractIterator, IJclWideStrIterator, IJclWideStrTreeIterator)
   protected
@@ -2487,6 +2469,30 @@ type
   public
     constructor Create(OwnTree: TJclWideStrTree; ACursor: TJclWideStrTreeNode; AValid: Boolean; AStart: TItrStart);
   end;
+
+  TPreOrderWideStrItr = class(TWideStrItr, IJclWideStrIterator, IJclWideStrTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  protected
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    function GetNextCursor: TJclWideStrTreeNode; override;
+    function GetNextSibling: TJclWideStrTreeNode; override;
+    function GetPreviousCursor: TJclWideStrTreeNode; override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+  end;
+
+  TPostOrderWideStrItr = class(TWideStrItr, IJclWideStrIterator, IJclWideStrTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  protected
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    function GetNextCursor: TJclWideStrTreeNode; override;
+    function GetNextSibling: TJclWideStrTreeNode; override;
+    function GetPreviousCursor: TJclWideStrTreeNode; override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+  end;
+
+//=== { TWideStrItr } ===========================================================
 
 constructor TWideStrItr.Create(OwnTree: TJclWideStrTree; ACursor: TJclWideStrTreeNode; AValid: Boolean; AStart: TItrStart);
 begin
@@ -3085,18 +3091,6 @@ end;
 
 //=== { TPreOrderWideStrItr } ===================================================
 
-type
-  TPreOrderWideStrItr = class(TWideStrItr, IJclWideStrIterator, IJclWideStrTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable)
-  protected
-    function CreateEmptyIterator: TJclAbstractIterator; override;
-    function GetNextCursor: TJclWideStrTreeNode; override;
-    function GetNextSibling: TJclWideStrTreeNode; override;
-    function GetPreviousCursor: TJclWideStrTreeNode; override;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-  end;
-
 function TPreOrderWideStrItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
   Result := TPreOrderWideStrItr.Create(FOwnTree, FCursor, Valid, FStart);
@@ -3164,18 +3158,6 @@ end;
 
 //=== { TPostOrderWideStrItr } ==================================================
 
-type
-  TPostOrderWideStrItr = class(TWideStrItr, IJclWideStrIterator, IJclWideStrTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable)
-  protected
-    function CreateEmptyIterator: TJclAbstractIterator; override;
-    function GetNextCursor: TJclWideStrTreeNode; override;
-    function GetNextSibling: TJclWideStrTreeNode; override;
-    function GetPreviousCursor: TJclWideStrTreeNode; override;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-  end;
-
 function TPostOrderWideStrItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
   Result := TPostOrderWideStrItr.Create(FOwnTree, FCursor, Valid, FStart);
@@ -3239,8 +3221,6 @@ begin
   end;
 end;
 
-//=== { TSingleItr } ===========================================================
-
 type
   TSingleItr = class(TJclAbstractIterator, IJclSingleIterator, IJclSingleTreeIterator)
   protected
@@ -3286,6 +3266,30 @@ type
   public
     constructor Create(OwnTree: TJclSingleTree; ACursor: TJclSingleTreeNode; AValid: Boolean; AStart: TItrStart);
   end;
+
+  TPreOrderSingleItr = class(TSingleItr, IJclSingleIterator, IJclSingleTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  protected
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    function GetNextCursor: TJclSingleTreeNode; override;
+    function GetNextSibling: TJclSingleTreeNode; override;
+    function GetPreviousCursor: TJclSingleTreeNode; override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+  end;
+
+  TPostOrderSingleItr = class(TSingleItr, IJclSingleIterator, IJclSingleTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  protected
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    function GetNextCursor: TJclSingleTreeNode; override;
+    function GetNextSibling: TJclSingleTreeNode; override;
+    function GetPreviousCursor: TJclSingleTreeNode; override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+  end;
+
+//=== { TSingleItr } ===========================================================
 
 constructor TSingleItr.Create(OwnTree: TJclSingleTree; ACursor: TJclSingleTreeNode; AValid: Boolean; AStart: TItrStart);
 begin
@@ -3884,18 +3888,6 @@ end;
 
 //=== { TPreOrderSingleItr } ===================================================
 
-type
-  TPreOrderSingleItr = class(TSingleItr, IJclSingleIterator, IJclSingleTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable)
-  protected
-    function CreateEmptyIterator: TJclAbstractIterator; override;
-    function GetNextCursor: TJclSingleTreeNode; override;
-    function GetNextSibling: TJclSingleTreeNode; override;
-    function GetPreviousCursor: TJclSingleTreeNode; override;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-  end;
-
 function TPreOrderSingleItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
   Result := TPreOrderSingleItr.Create(FOwnTree, FCursor, Valid, FStart);
@@ -3963,18 +3955,6 @@ end;
 
 //=== { TPostOrderSingleItr } ==================================================
 
-type
-  TPostOrderSingleItr = class(TSingleItr, IJclSingleIterator, IJclSingleTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable)
-  protected
-    function CreateEmptyIterator: TJclAbstractIterator; override;
-    function GetNextCursor: TJclSingleTreeNode; override;
-    function GetNextSibling: TJclSingleTreeNode; override;
-    function GetPreviousCursor: TJclSingleTreeNode; override;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-  end;
-
 function TPostOrderSingleItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
   Result := TPostOrderSingleItr.Create(FOwnTree, FCursor, Valid, FStart);
@@ -4038,8 +4018,6 @@ begin
   end;
 end;
 
-//=== { TDoubleItr } ===========================================================
-
 type
   TDoubleItr = class(TJclAbstractIterator, IJclDoubleIterator, IJclDoubleTreeIterator)
   protected
@@ -4085,6 +4063,30 @@ type
   public
     constructor Create(OwnTree: TJclDoubleTree; ACursor: TJclDoubleTreeNode; AValid: Boolean; AStart: TItrStart);
   end;
+
+  TPreOrderDoubleItr = class(TDoubleItr, IJclDoubleIterator, IJclDoubleTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  protected
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    function GetNextCursor: TJclDoubleTreeNode; override;
+    function GetNextSibling: TJclDoubleTreeNode; override;
+    function GetPreviousCursor: TJclDoubleTreeNode; override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+  end;
+
+  TPostOrderDoubleItr = class(TDoubleItr, IJclDoubleIterator, IJclDoubleTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  protected
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    function GetNextCursor: TJclDoubleTreeNode; override;
+    function GetNextSibling: TJclDoubleTreeNode; override;
+    function GetPreviousCursor: TJclDoubleTreeNode; override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+  end;
+
+//=== { TDoubleItr } ===========================================================
 
 constructor TDoubleItr.Create(OwnTree: TJclDoubleTree; ACursor: TJclDoubleTreeNode; AValid: Boolean; AStart: TItrStart);
 begin
@@ -4683,18 +4685,6 @@ end;
 
 //=== { TPreOrderDoubleItr } ===================================================
 
-type
-  TPreOrderDoubleItr = class(TDoubleItr, IJclDoubleIterator, IJclDoubleTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable)
-  protected
-    function CreateEmptyIterator: TJclAbstractIterator; override;
-    function GetNextCursor: TJclDoubleTreeNode; override;
-    function GetNextSibling: TJclDoubleTreeNode; override;
-    function GetPreviousCursor: TJclDoubleTreeNode; override;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-  end;
-
 function TPreOrderDoubleItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
   Result := TPreOrderDoubleItr.Create(FOwnTree, FCursor, Valid, FStart);
@@ -4762,18 +4752,6 @@ end;
 
 //=== { TPostOrderDoubleItr } ==================================================
 
-type
-  TPostOrderDoubleItr = class(TDoubleItr, IJclDoubleIterator, IJclDoubleTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable)
-  protected
-    function CreateEmptyIterator: TJclAbstractIterator; override;
-    function GetNextCursor: TJclDoubleTreeNode; override;
-    function GetNextSibling: TJclDoubleTreeNode; override;
-    function GetPreviousCursor: TJclDoubleTreeNode; override;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-  end;
-
 function TPostOrderDoubleItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
   Result := TPostOrderDoubleItr.Create(FOwnTree, FCursor, Valid, FStart);
@@ -4837,8 +4815,6 @@ begin
   end;
 end;
 
-//=== { TExtendedItr } ===========================================================
-
 type
   TExtendedItr = class(TJclAbstractIterator, IJclExtendedIterator, IJclExtendedTreeIterator)
   protected
@@ -4884,6 +4860,30 @@ type
   public
     constructor Create(OwnTree: TJclExtendedTree; ACursor: TJclExtendedTreeNode; AValid: Boolean; AStart: TItrStart);
   end;
+
+  TPreOrderExtendedItr = class(TExtendedItr, IJclExtendedIterator, IJclExtendedTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  protected
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    function GetNextCursor: TJclExtendedTreeNode; override;
+    function GetNextSibling: TJclExtendedTreeNode; override;
+    function GetPreviousCursor: TJclExtendedTreeNode; override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+  end;
+
+  TPostOrderExtendedItr = class(TExtendedItr, IJclExtendedIterator, IJclExtendedTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  protected
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    function GetNextCursor: TJclExtendedTreeNode; override;
+    function GetNextSibling: TJclExtendedTreeNode; override;
+    function GetPreviousCursor: TJclExtendedTreeNode; override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+  end;
+
+//=== { TExtendedItr } ===========================================================
 
 constructor TExtendedItr.Create(OwnTree: TJclExtendedTree; ACursor: TJclExtendedTreeNode; AValid: Boolean; AStart: TItrStart);
 begin
@@ -5482,18 +5482,6 @@ end;
 
 //=== { TPreOrderExtendedItr } ===================================================
 
-type
-  TPreOrderExtendedItr = class(TExtendedItr, IJclExtendedIterator, IJclExtendedTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable)
-  protected
-    function CreateEmptyIterator: TJclAbstractIterator; override;
-    function GetNextCursor: TJclExtendedTreeNode; override;
-    function GetNextSibling: TJclExtendedTreeNode; override;
-    function GetPreviousCursor: TJclExtendedTreeNode; override;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-  end;
-
 function TPreOrderExtendedItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
   Result := TPreOrderExtendedItr.Create(FOwnTree, FCursor, Valid, FStart);
@@ -5561,18 +5549,6 @@ end;
 
 //=== { TPostOrderExtendedItr } ==================================================
 
-type
-  TPostOrderExtendedItr = class(TExtendedItr, IJclExtendedIterator, IJclExtendedTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable)
-  protected
-    function CreateEmptyIterator: TJclAbstractIterator; override;
-    function GetNextCursor: TJclExtendedTreeNode; override;
-    function GetNextSibling: TJclExtendedTreeNode; override;
-    function GetPreviousCursor: TJclExtendedTreeNode; override;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-  end;
-
 function TPostOrderExtendedItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
   Result := TPostOrderExtendedItr.Create(FOwnTree, FCursor, Valid, FStart);
@@ -5636,8 +5612,6 @@ begin
   end;
 end;
 
-//=== { TIntegerItr } ===========================================================
-
 type
   TIntegerItr = class(TJclAbstractIterator, IJclIntegerIterator, IJclIntegerTreeIterator)
   protected
@@ -5683,6 +5657,30 @@ type
   public
     constructor Create(OwnTree: TJclIntegerTree; ACursor: TJclIntegerTreeNode; AValid: Boolean; AStart: TItrStart);
   end;
+
+  TPreOrderIntegerItr = class(TIntegerItr, IJclIntegerIterator, IJclIntegerTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  protected
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    function GetNextCursor: TJclIntegerTreeNode; override;
+    function GetNextSibling: TJclIntegerTreeNode; override;
+    function GetPreviousCursor: TJclIntegerTreeNode; override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+  end;
+
+  TPostOrderIntegerItr = class(TIntegerItr, IJclIntegerIterator, IJclIntegerTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  protected
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    function GetNextCursor: TJclIntegerTreeNode; override;
+    function GetNextSibling: TJclIntegerTreeNode; override;
+    function GetPreviousCursor: TJclIntegerTreeNode; override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+  end;
+
+//=== { TIntegerItr } ===========================================================
 
 constructor TIntegerItr.Create(OwnTree: TJclIntegerTree; ACursor: TJclIntegerTreeNode; AValid: Boolean; AStart: TItrStart);
 begin
@@ -6281,18 +6279,6 @@ end;
 
 //=== { TPreOrderIntegerItr } ===================================================
 
-type
-  TPreOrderIntegerItr = class(TIntegerItr, IJclIntegerIterator, IJclIntegerTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable)
-  protected
-    function CreateEmptyIterator: TJclAbstractIterator; override;
-    function GetNextCursor: TJclIntegerTreeNode; override;
-    function GetNextSibling: TJclIntegerTreeNode; override;
-    function GetPreviousCursor: TJclIntegerTreeNode; override;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-  end;
-
 function TPreOrderIntegerItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
   Result := TPreOrderIntegerItr.Create(FOwnTree, FCursor, Valid, FStart);
@@ -6360,18 +6346,6 @@ end;
 
 //=== { TPostOrderIntegerItr } ==================================================
 
-type
-  TPostOrderIntegerItr = class(TIntegerItr, IJclIntegerIterator, IJclIntegerTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable)
-  protected
-    function CreateEmptyIterator: TJclAbstractIterator; override;
-    function GetNextCursor: TJclIntegerTreeNode; override;
-    function GetNextSibling: TJclIntegerTreeNode; override;
-    function GetPreviousCursor: TJclIntegerTreeNode; override;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-  end;
-
 function TPostOrderIntegerItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
   Result := TPostOrderIntegerItr.Create(FOwnTree, FCursor, Valid, FStart);
@@ -6435,8 +6409,6 @@ begin
   end;
 end;
 
-//=== { TCardinalItr } ===========================================================
-
 type
   TCardinalItr = class(TJclAbstractIterator, IJclCardinalIterator, IJclCardinalTreeIterator)
   protected
@@ -6482,6 +6454,30 @@ type
   public
     constructor Create(OwnTree: TJclCardinalTree; ACursor: TJclCardinalTreeNode; AValid: Boolean; AStart: TItrStart);
   end;
+
+  TPreOrderCardinalItr = class(TCardinalItr, IJclCardinalIterator, IJclCardinalTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  protected
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    function GetNextCursor: TJclCardinalTreeNode; override;
+    function GetNextSibling: TJclCardinalTreeNode; override;
+    function GetPreviousCursor: TJclCardinalTreeNode; override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+  end;
+
+  TPostOrderCardinalItr = class(TCardinalItr, IJclCardinalIterator, IJclCardinalTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  protected
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    function GetNextCursor: TJclCardinalTreeNode; override;
+    function GetNextSibling: TJclCardinalTreeNode; override;
+    function GetPreviousCursor: TJclCardinalTreeNode; override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+  end;
+
+//=== { TCardinalItr } ===========================================================
 
 constructor TCardinalItr.Create(OwnTree: TJclCardinalTree; ACursor: TJclCardinalTreeNode; AValid: Boolean; AStart: TItrStart);
 begin
@@ -7080,18 +7076,6 @@ end;
 
 //=== { TPreOrderCardinalItr } ===================================================
 
-type
-  TPreOrderCardinalItr = class(TCardinalItr, IJclCardinalIterator, IJclCardinalTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable)
-  protected
-    function CreateEmptyIterator: TJclAbstractIterator; override;
-    function GetNextCursor: TJclCardinalTreeNode; override;
-    function GetNextSibling: TJclCardinalTreeNode; override;
-    function GetPreviousCursor: TJclCardinalTreeNode; override;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-  end;
-
 function TPreOrderCardinalItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
   Result := TPreOrderCardinalItr.Create(FOwnTree, FCursor, Valid, FStart);
@@ -7159,18 +7143,6 @@ end;
 
 //=== { TPostOrderCardinalItr } ==================================================
 
-type
-  TPostOrderCardinalItr = class(TCardinalItr, IJclCardinalIterator, IJclCardinalTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable)
-  protected
-    function CreateEmptyIterator: TJclAbstractIterator; override;
-    function GetNextCursor: TJclCardinalTreeNode; override;
-    function GetNextSibling: TJclCardinalTreeNode; override;
-    function GetPreviousCursor: TJclCardinalTreeNode; override;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-  end;
-
 function TPostOrderCardinalItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
   Result := TPostOrderCardinalItr.Create(FOwnTree, FCursor, Valid, FStart);
@@ -7234,8 +7206,6 @@ begin
   end;
 end;
 
-//=== { TInt64Itr } ===========================================================
-
 type
   TInt64Itr = class(TJclAbstractIterator, IJclInt64Iterator, IJclInt64TreeIterator)
   protected
@@ -7281,6 +7251,30 @@ type
   public
     constructor Create(OwnTree: TJclInt64Tree; ACursor: TJclInt64TreeNode; AValid: Boolean; AStart: TItrStart);
   end;
+
+  TPreOrderInt64Itr = class(TInt64Itr, IJclInt64Iterator, IJclInt64TreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  protected
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    function GetNextCursor: TJclInt64TreeNode; override;
+    function GetNextSibling: TJclInt64TreeNode; override;
+    function GetPreviousCursor: TJclInt64TreeNode; override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+  end;
+
+  TPostOrderInt64Itr = class(TInt64Itr, IJclInt64Iterator, IJclInt64TreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  protected
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    function GetNextCursor: TJclInt64TreeNode; override;
+    function GetNextSibling: TJclInt64TreeNode; override;
+    function GetPreviousCursor: TJclInt64TreeNode; override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+  end;
+
+//=== { TInt64Itr } ===========================================================
 
 constructor TInt64Itr.Create(OwnTree: TJclInt64Tree; ACursor: TJclInt64TreeNode; AValid: Boolean; AStart: TItrStart);
 begin
@@ -7879,18 +7873,6 @@ end;
 
 //=== { TPreOrderInt64Itr } ===================================================
 
-type
-  TPreOrderInt64Itr = class(TInt64Itr, IJclInt64Iterator, IJclInt64TreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable)
-  protected
-    function CreateEmptyIterator: TJclAbstractIterator; override;
-    function GetNextCursor: TJclInt64TreeNode; override;
-    function GetNextSibling: TJclInt64TreeNode; override;
-    function GetPreviousCursor: TJclInt64TreeNode; override;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-  end;
-
 function TPreOrderInt64Itr.CreateEmptyIterator: TJclAbstractIterator;
 begin
   Result := TPreOrderInt64Itr.Create(FOwnTree, FCursor, Valid, FStart);
@@ -7958,18 +7940,6 @@ end;
 
 //=== { TPostOrderInt64Itr } ==================================================
 
-type
-  TPostOrderInt64Itr = class(TInt64Itr, IJclInt64Iterator, IJclInt64TreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable)
-  protected
-    function CreateEmptyIterator: TJclAbstractIterator; override;
-    function GetNextCursor: TJclInt64TreeNode; override;
-    function GetNextSibling: TJclInt64TreeNode; override;
-    function GetPreviousCursor: TJclInt64TreeNode; override;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-  end;
-
 function TPostOrderInt64Itr.CreateEmptyIterator: TJclAbstractIterator;
 begin
   Result := TPostOrderInt64Itr.Create(FOwnTree, FCursor, Valid, FStart);
@@ -8032,10 +8002,8 @@ begin
       Result := TJclInt64TreeNode(Result.Children[Result.IndexOfChild(LastRet) - 1]);
   end;
 end;
+
 {$IFNDEF CLR}
-
-//=== { TPtrItr } ===========================================================
-
 type
   TPtrItr = class(TJclAbstractIterator, IJclPtrIterator, IJclPtrTreeIterator)
   protected
@@ -8081,6 +8049,30 @@ type
   public
     constructor Create(OwnTree: TJclPtrTree; ACursor: TJclPtrTreeNode; AValid: Boolean; AStart: TItrStart);
   end;
+
+  TPreOrderPtrItr = class(TPtrItr, IJclPtrIterator, IJclPtrTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  protected
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    function GetNextCursor: TJclPtrTreeNode; override;
+    function GetNextSibling: TJclPtrTreeNode; override;
+    function GetPreviousCursor: TJclPtrTreeNode; override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+  end;
+
+  TPostOrderPtrItr = class(TPtrItr, IJclPtrIterator, IJclPtrTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  protected
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    function GetNextCursor: TJclPtrTreeNode; override;
+    function GetNextSibling: TJclPtrTreeNode; override;
+    function GetPreviousCursor: TJclPtrTreeNode; override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+  end;
+
+//=== { TPtrItr } ===========================================================
 
 constructor TPtrItr.Create(OwnTree: TJclPtrTree; ACursor: TJclPtrTreeNode; AValid: Boolean; AStart: TItrStart);
 begin
@@ -8679,18 +8671,6 @@ end;
 
 //=== { TPreOrderPtrItr } ===================================================
 
-type
-  TPreOrderPtrItr = class(TPtrItr, IJclPtrIterator, IJclPtrTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable)
-  protected
-    function CreateEmptyIterator: TJclAbstractIterator; override;
-    function GetNextCursor: TJclPtrTreeNode; override;
-    function GetNextSibling: TJclPtrTreeNode; override;
-    function GetPreviousCursor: TJclPtrTreeNode; override;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-  end;
-
 function TPreOrderPtrItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
   Result := TPreOrderPtrItr.Create(FOwnTree, FCursor, Valid, FStart);
@@ -8758,18 +8738,6 @@ end;
 
 //=== { TPostOrderPtrItr } ==================================================
 
-type
-  TPostOrderPtrItr = class(TPtrItr, IJclPtrIterator, IJclPtrTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable)
-  protected
-    function CreateEmptyIterator: TJclAbstractIterator; override;
-    function GetNextCursor: TJclPtrTreeNode; override;
-    function GetNextSibling: TJclPtrTreeNode; override;
-    function GetPreviousCursor: TJclPtrTreeNode; override;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-  end;
-
 function TPostOrderPtrItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
   Result := TPostOrderPtrItr.Create(FOwnTree, FCursor, Valid, FStart);
@@ -8834,8 +8802,6 @@ begin
 end;
 {$ENDIF ~CLR}
 
-//=== { TItr } ===========================================================
-
 type
   TItr = class(TJclAbstractIterator, IJclIterator, IJclTreeIterator)
   protected
@@ -8881,6 +8847,30 @@ type
   public
     constructor Create(OwnTree: TJclTree; ACursor: TJclTreeNode; AValid: Boolean; AStart: TItrStart);
   end;
+
+  TPreOrderItr = class(TItr, IJclIterator, IJclTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  protected
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    function GetNextCursor: TJclTreeNode; override;
+    function GetNextSibling: TJclTreeNode; override;
+    function GetPreviousCursor: TJclTreeNode; override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+  end;
+
+  TPostOrderItr = class(TItr, IJclIterator, IJclTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  protected
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    function GetNextCursor: TJclTreeNode; override;
+    function GetNextSibling: TJclTreeNode; override;
+    function GetPreviousCursor: TJclTreeNode; override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+  end;
+
+//=== { TItr } ===========================================================
 
 constructor TItr.Create(OwnTree: TJclTree; ACursor: TJclTreeNode; AValid: Boolean; AStart: TItrStart);
 begin
@@ -9479,18 +9469,6 @@ end;
 
 //=== { TPreOrderItr } ===================================================
 
-type
-  TPreOrderItr = class(TItr, IJclIterator, IJclTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable)
-  protected
-    function CreateEmptyIterator: TJclAbstractIterator; override;
-    function GetNextCursor: TJclTreeNode; override;
-    function GetNextSibling: TJclTreeNode; override;
-    function GetPreviousCursor: TJclTreeNode; override;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-  end;
-
 function TPreOrderItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
   Result := TPreOrderItr.Create(FOwnTree, FCursor, Valid, FStart);
@@ -9558,18 +9536,6 @@ end;
 
 //=== { TPostOrderItr } ==================================================
 
-type
-  TPostOrderItr = class(TItr, IJclIterator, IJclTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable)
-  protected
-    function CreateEmptyIterator: TJclAbstractIterator; override;
-    function GetNextCursor: TJclTreeNode; override;
-    function GetNextSibling: TJclTreeNode; override;
-    function GetPreviousCursor: TJclTreeNode; override;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-  end;
-
 function TPostOrderItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
   Result := TPostOrderItr.Create(FOwnTree, FCursor, Valid, FStart);
@@ -9632,10 +9598,8 @@ begin
       Result := TJclTreeNode(Result.Children[Result.IndexOfChild(LastRet) - 1]);
   end;
 end;
+
 {$IFDEF SUPPORTS_GENERICS}
-
-//=== { TItr<T> } ===========================================================
-
 type
   TItr<T> = class(TJclAbstractIterator, IJclIterator<T>, IJclTreeIterator<T>)
   protected
@@ -9681,6 +9645,30 @@ type
   public
     constructor Create(OwnTree: TJclTree<T>; ACursor: TJclTreeNode<T>; AValid: Boolean; AStart: TItrStart);
   end;
+
+  TPreOrderItr<T> = class(TItr<T>, IJclIterator<T>, IJclTreeIterator<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  protected
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    function GetNextCursor: TJclTreeNode<T>; override;
+    function GetNextSibling: TJclTreeNode<T>; override;
+    function GetPreviousCursor: TJclTreeNode<T>; override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+  end;
+
+  TPostOrderItr<T> = class(TItr<T>, IJclIterator<T>, IJclTreeIterator<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  protected
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    function GetNextCursor: TJclTreeNode<T>; override;
+    function GetNextSibling: TJclTreeNode<T>; override;
+    function GetPreviousCursor: TJclTreeNode<T>; override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+  end;
+
+//=== { TItr<T> } ===========================================================
 
 constructor TItr<T>.Create(OwnTree: TJclTree<T>; ACursor: TJclTreeNode<T>; AValid: Boolean; AStart: TItrStart);
 begin
@@ -10279,18 +10267,6 @@ end;
 
 //=== { TPreOrderItr<T> } ===================================================
 
-type
-  TPreOrderItr<T> = class(TItr<T>, IJclIterator<T>, IJclTreeIterator<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable)
-  protected
-    function CreateEmptyIterator: TJclAbstractIterator; override;
-    function GetNextCursor: TJclTreeNode<T>; override;
-    function GetNextSibling: TJclTreeNode<T>; override;
-    function GetPreviousCursor: TJclTreeNode<T>; override;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-  end;
-
 function TPreOrderItr<T>.CreateEmptyIterator: TJclAbstractIterator;
 begin
   Result := TPreOrderItr<T>.Create(FOwnTree, FCursor, Valid, FStart);
@@ -10358,18 +10334,6 @@ end;
 
 //=== { TPostOrderItr<T> } ==================================================
 
-type
-  TPostOrderItr<T> = class(TItr<T>, IJclIterator<T>, IJclTreeIterator<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable)
-  protected
-    function CreateEmptyIterator: TJclAbstractIterator; override;
-    function GetNextCursor: TJclTreeNode<T>; override;
-    function GetNextSibling: TJclTreeNode<T>; override;
-    function GetPreviousCursor: TJclTreeNode<T>; override;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-  end;
-
 function TPostOrderItr<T>.CreateEmptyIterator: TJclAbstractIterator;
 begin
   Result := TPostOrderItr<T>.Create(FOwnTree, FCursor, Valid, FStart);
@@ -10433,7 +10397,6 @@ begin
   end;
 end;
 {$ENDIF SUPPORTS_GENERICS}
-
 
 //=== { TJclIntfTreeNode } =======================================================
 
@@ -10932,7 +10895,6 @@ begin
   Result := FSize;
 end;
 
-
 //=== { TJclAnsiStrTreeNode } =======================================================
 
 function TJclAnsiStrTreeNode.IndexOfChild(AChild: TJclAnsiStrTreeNode): Integer;
@@ -11429,7 +11391,6 @@ function TJclAnsiStrTree.Size: Integer;
 begin
   Result := FSize;
 end;
-
 
 //=== { TJclWideStrTreeNode } =======================================================
 
@@ -11928,7 +11889,6 @@ begin
   Result := FSize;
 end;
 
-
 //=== { TJclSingleTreeNode } =======================================================
 
 function TJclSingleTreeNode.IndexOfChild(AChild: TJclSingleTreeNode): Integer;
@@ -12425,7 +12385,6 @@ function TJclSingleTree.Size: Integer;
 begin
   Result := FSize;
 end;
-
 
 //=== { TJclDoubleTreeNode } =======================================================
 
@@ -12924,7 +12883,6 @@ begin
   Result := FSize;
 end;
 
-
 //=== { TJclExtendedTreeNode } =======================================================
 
 function TJclExtendedTreeNode.IndexOfChild(AChild: TJclExtendedTreeNode): Integer;
@@ -13421,7 +13379,6 @@ function TJclExtendedTree.Size: Integer;
 begin
   Result := FSize;
 end;
-
 
 //=== { TJclIntegerTreeNode } =======================================================
 
@@ -13920,7 +13877,6 @@ begin
   Result := FSize;
 end;
 
-
 //=== { TJclCardinalTreeNode } =======================================================
 
 function TJclCardinalTreeNode.IndexOfChild(AChild: TJclCardinalTreeNode): Integer;
@@ -14417,7 +14373,6 @@ function TJclCardinalTree.Size: Integer;
 begin
   Result := FSize;
 end;
-
 
 //=== { TJclInt64TreeNode } =======================================================
 
@@ -14917,7 +14872,6 @@ begin
 end;
 
 {$IFNDEF CLR}
-
 //=== { TJclPtrTreeNode } =======================================================
 
 function TJclPtrTreeNode.IndexOfChild(AChild: TJclPtrTreeNode): Integer;
@@ -15415,7 +15369,6 @@ begin
   Result := FSize;
 end;
 {$ENDIF ~CLR}
-
 
 //=== { TJclTreeNode } =======================================================
 
@@ -15915,7 +15868,6 @@ begin
 end;
 
 {$IFDEF SUPPORTS_GENERICS}
-
 //=== { TJclTreeNode<T> } =======================================================
 
 function TJclTreeNode<T>.IndexOfChild(AChild: TJclTreeNode<T>): Integer;

@@ -28,7 +28,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -53,7 +53,6 @@ uses
   {$ENDIF SUPPORTS_GENERICS}
   JclBase, JclAbstractContainers, JclContainerIntf;
 type
-
   TJclIntfIntfSortedEntry = record
     Key: IInterface;
     Value: IInterface;
@@ -103,7 +102,6 @@ type
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
   end;
-
 
   TJclAnsiStrIntfSortedEntry = record
     Key: AnsiString;
@@ -155,7 +153,6 @@ type
     destructor Destroy; override;
   end;
 
-
   TJclIntfAnsiStrSortedEntry = record
     Key: IInterface;
     Value: AnsiString;
@@ -205,7 +202,6 @@ type
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
   end;
-
 
   TJclAnsiStrAnsiStrSortedEntry = record
     Key: AnsiString;
@@ -257,7 +253,6 @@ type
     destructor Destroy; override;
   end;
 
-
   TJclWideStrIntfSortedEntry = record
     Key: WideString;
     Value: IInterface;
@@ -308,7 +303,6 @@ type
     destructor Destroy; override;
   end;
 
-
   TJclIntfWideStrSortedEntry = record
     Key: IInterface;
     Value: WideString;
@@ -358,7 +352,6 @@ type
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
   end;
-
 
   TJclWideStrWideStrSortedEntry = record
     Key: WideString;
@@ -421,7 +414,6 @@ type
   TJclStrStrSortedMap = TJclWideStrWideStrSortedMap;
   {$ENDIF CONTAINER_WIDESTR}
 
-
   TJclSingleIntfSortedEntry = record
     Key: Single;
     Value: IInterface;
@@ -471,7 +463,6 @@ type
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
   end;
-
 
   TJclIntfSingleSortedEntry = record
     Key: IInterface;
@@ -523,7 +514,6 @@ type
     destructor Destroy; override;
   end;
 
-
   TJclSingleSingleSortedEntry = record
     Key: Single;
     Value: Single;
@@ -573,7 +563,6 @@ type
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
   end;
-
 
   TJclDoubleIntfSortedEntry = record
     Key: Double;
@@ -625,7 +614,6 @@ type
     destructor Destroy; override;
   end;
 
-
   TJclIntfDoubleSortedEntry = record
     Key: IInterface;
     Value: Double;
@@ -675,7 +663,6 @@ type
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
   end;
-
 
   TJclDoubleDoubleSortedEntry = record
     Key: Double;
@@ -727,7 +714,6 @@ type
     destructor Destroy; override;
   end;
 
-
   TJclExtendedIntfSortedEntry = record
     Key: Extended;
     Value: IInterface;
@@ -778,7 +764,6 @@ type
     destructor Destroy; override;
   end;
 
-
   TJclIntfExtendedSortedEntry = record
     Key: IInterface;
     Value: Extended;
@@ -828,7 +813,6 @@ type
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
   end;
-
 
   TJclExtendedExtendedSortedEntry = record
     Key: Extended;
@@ -896,7 +880,6 @@ type
   TJclFloatFloatSortedMap = TJclSingleSingleSortedMap;
   {$ENDIF MATH_SINGLE_PRECISION}
 
-
   TJclIntegerIntfSortedEntry = record
     Key: Integer;
     Value: IInterface;
@@ -946,7 +929,6 @@ type
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
   end;
-
 
   TJclIntfIntegerSortedEntry = record
     Key: IInterface;
@@ -998,7 +980,6 @@ type
     destructor Destroy; override;
   end;
 
-
   TJclIntegerIntegerSortedEntry = record
     Key: Integer;
     Value: Integer;
@@ -1048,7 +1029,6 @@ type
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
   end;
-
 
   TJclCardinalIntfSortedEntry = record
     Key: Cardinal;
@@ -1100,7 +1080,6 @@ type
     destructor Destroy; override;
   end;
 
-
   TJclIntfCardinalSortedEntry = record
     Key: IInterface;
     Value: Cardinal;
@@ -1150,7 +1129,6 @@ type
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
   end;
-
 
   TJclCardinalCardinalSortedEntry = record
     Key: Cardinal;
@@ -1202,7 +1180,6 @@ type
     destructor Destroy; override;
   end;
 
-
   TJclInt64IntfSortedEntry = record
     Key: Int64;
     Value: IInterface;
@@ -1253,7 +1230,6 @@ type
     destructor Destroy; override;
   end;
 
-
   TJclIntfInt64SortedEntry = record
     Key: IInterface;
     Value: Int64;
@@ -1303,7 +1279,6 @@ type
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
   end;
-
 
   TJclInt64Int64SortedEntry = record
     Key: Int64;
@@ -1356,7 +1331,6 @@ type
   end;
 
   {$IFNDEF CLR}
-
   TJclPtrIntfSortedEntry = record
     Key: Pointer;
     Value: IInterface;
@@ -1406,7 +1380,6 @@ type
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
   end;
-
 
   TJclIntfPtrSortedEntry = record
     Key: IInterface;
@@ -1458,7 +1431,6 @@ type
     destructor Destroy; override;
   end;
 
-
   TJclPtrPtrSortedEntry = record
     Key: Pointer;
     Value: Pointer;
@@ -1509,7 +1481,6 @@ type
     destructor Destroy; override;
   end;
   {$ENDIF ~CLR}
-
 
   TJclIntfSortedEntry = record
     Key: IInterface;
@@ -1565,7 +1536,6 @@ type
     property OwnsValues: Boolean read FOwnsValues;
   end;
 
-
   TJclAnsiStrSortedEntry = record
     Key: AnsiString;
     Value: TObject;
@@ -1619,7 +1589,6 @@ type
     destructor Destroy; override;
     property OwnsValues: Boolean read FOwnsValues;
   end;
-
 
   TJclWideStrSortedEntry = record
     Key: WideString;
@@ -1682,7 +1651,6 @@ type
   TJclStrSortedMap = TJclWideStrSortedMap;
   {$ENDIF CONTAINER_WIDESTR}
 
-
   TJclSingleSortedEntry = record
     Key: Single;
     Value: TObject;
@@ -1737,7 +1705,6 @@ type
     property OwnsValues: Boolean read FOwnsValues;
   end;
 
-
   TJclDoubleSortedEntry = record
     Key: Double;
     Value: TObject;
@@ -1791,7 +1758,6 @@ type
     destructor Destroy; override;
     property OwnsValues: Boolean read FOwnsValues;
   end;
-
 
   TJclExtendedSortedEntry = record
     Key: Extended;
@@ -1857,7 +1823,6 @@ type
   TJclFloatSortedMap = TJclSingleSortedMap;
   {$ENDIF MATH_SINGLE_PRECISION}
 
-
   TJclIntegerSortedEntry = record
     Key: Integer;
     Value: TObject;
@@ -1912,7 +1877,6 @@ type
     property OwnsValues: Boolean read FOwnsValues;
   end;
 
-
   TJclCardinalSortedEntry = record
     Key: Cardinal;
     Value: TObject;
@@ -1966,7 +1930,6 @@ type
     destructor Destroy; override;
     property OwnsValues: Boolean read FOwnsValues;
   end;
-
 
   TJclInt64SortedEntry = record
     Key: Int64;
@@ -2023,7 +1986,6 @@ type
   end;
 
   {$IFNDEF CLR}
-
   TJclPtrSortedEntry = record
     Key: Pointer;
     Value: TObject;
@@ -2078,7 +2040,6 @@ type
     property OwnsValues: Boolean read FOwnsValues;
   end;
   {$ENDIF ~CLR}
-
 
   TJclSortedEntry = record
     Key: TObject;
@@ -2139,7 +2100,6 @@ type
   end;
 
   {$IFDEF SUPPORTS_GENERICS}
-
   TJclSortedEntry<TKey,TValue> = record
     Key: TKey;
     Value: TValue;
@@ -2280,7 +2240,6 @@ uses
   SysUtils,
   JclArrayLists,
   JclArraySets;
-
 
 //=== { TJclIntfIntfSortedMap } ==============================================
 
@@ -2479,8 +2438,6 @@ begin
   Result := Value;
   Value := nil;
 end;
-
-
 
 function TJclIntfIntfSortedMap.GetValue(const Key: IInterface): IInterface;
 var
@@ -2897,7 +2854,6 @@ begin
 end;
 
 
-
 //=== { TJclAnsiStrIntfSortedMap } ==============================================
 
 constructor TJclAnsiStrIntfSortedMap.Create(ACapacity: Integer);
@@ -3095,8 +3051,6 @@ begin
   Result := Value;
   Value := nil;
 end;
-
-
 
 function TJclAnsiStrIntfSortedMap.GetValue(const Key: AnsiString): IInterface;
 var
@@ -3517,7 +3471,6 @@ begin
   else
     Result := 0;
 end;
-
 
 
 //=== { TJclIntfAnsiStrSortedMap } ==============================================
@@ -4141,7 +4094,6 @@ begin
 end;
 
 
-
 //=== { TJclAnsiStrAnsiStrSortedMap } ==============================================
 
 constructor TJclAnsiStrAnsiStrSortedMap.Create(ACapacity: Integer);
@@ -4755,7 +4707,6 @@ function TJclAnsiStrAnsiStrSortedMap.ValuesCompare(const A, B: AnsiString): Inte
 begin
   Result := ItemsCompare(A, B);
 end;
-
 
 
 //=== { TJclWideStrIntfSortedMap } ==============================================
@@ -5379,7 +5330,6 @@ begin
 end;
 
 
-
 //=== { TJclIntfWideStrSortedMap } ==============================================
 
 constructor TJclIntfWideStrSortedMap.Create(ACapacity: Integer);
@@ -6001,7 +5951,6 @@ begin
 end;
 
 
-
 //=== { TJclWideStrWideStrSortedMap } ==============================================
 
 constructor TJclWideStrWideStrSortedMap.Create(ACapacity: Integer);
@@ -6615,7 +6564,6 @@ function TJclWideStrWideStrSortedMap.ValuesCompare(const A, B: WideString): Inte
 begin
   Result := ItemsCompare(A, B);
 end;
-
 
 
 //=== { TJclSingleIntfSortedMap } ==============================================
@@ -7239,7 +7187,6 @@ begin
 end;
 
 
-
 //=== { TJclIntfSingleSortedMap } ==============================================
 
 constructor TJclIntfSingleSortedMap.Create(ACapacity: Integer);
@@ -7861,7 +7808,6 @@ begin
 end;
 
 
-
 //=== { TJclSingleSingleSortedMap } ==============================================
 
 constructor TJclSingleSingleSortedMap.Create(ACapacity: Integer);
@@ -8475,7 +8421,6 @@ function TJclSingleSingleSortedMap.ValuesCompare(const A, B: Single): Integer;
 begin
   Result := ItemsCompare(A, B);
 end;
-
 
 
 //=== { TJclDoubleIntfSortedMap } ==============================================
@@ -9099,7 +9044,6 @@ begin
 end;
 
 
-
 //=== { TJclIntfDoubleSortedMap } ==============================================
 
 constructor TJclIntfDoubleSortedMap.Create(ACapacity: Integer);
@@ -9721,7 +9665,6 @@ begin
 end;
 
 
-
 //=== { TJclDoubleDoubleSortedMap } ==============================================
 
 constructor TJclDoubleDoubleSortedMap.Create(ACapacity: Integer);
@@ -10335,7 +10278,6 @@ function TJclDoubleDoubleSortedMap.ValuesCompare(const A, B: Double): Integer;
 begin
   Result := ItemsCompare(A, B);
 end;
-
 
 
 //=== { TJclExtendedIntfSortedMap } ==============================================
@@ -10959,7 +10901,6 @@ begin
 end;
 
 
-
 //=== { TJclIntfExtendedSortedMap } ==============================================
 
 constructor TJclIntfExtendedSortedMap.Create(ACapacity: Integer);
@@ -11581,7 +11522,6 @@ begin
 end;
 
 
-
 //=== { TJclExtendedExtendedSortedMap } ==============================================
 
 constructor TJclExtendedExtendedSortedMap.Create(ACapacity: Integer);
@@ -12195,7 +12135,6 @@ function TJclExtendedExtendedSortedMap.ValuesCompare(const A, B: Extended): Inte
 begin
   Result := ItemsCompare(A, B);
 end;
-
 
 
 //=== { TJclIntegerIntfSortedMap } ==============================================
@@ -12819,7 +12758,6 @@ begin
 end;
 
 
-
 //=== { TJclIntfIntegerSortedMap } ==============================================
 
 constructor TJclIntfIntegerSortedMap.Create(ACapacity: Integer);
@@ -13441,7 +13379,6 @@ begin
 end;
 
 
-
 //=== { TJclIntegerIntegerSortedMap } ==============================================
 
 constructor TJclIntegerIntegerSortedMap.Create(ACapacity: Integer);
@@ -14055,7 +13992,6 @@ function TJclIntegerIntegerSortedMap.ValuesCompare(A, B: Integer): Integer;
 begin
   Result := ItemsCompare(A, B);
 end;
-
 
 
 //=== { TJclCardinalIntfSortedMap } ==============================================
@@ -14679,7 +14615,6 @@ begin
 end;
 
 
-
 //=== { TJclIntfCardinalSortedMap } ==============================================
 
 constructor TJclIntfCardinalSortedMap.Create(ACapacity: Integer);
@@ -15301,7 +15236,6 @@ begin
 end;
 
 
-
 //=== { TJclCardinalCardinalSortedMap } ==============================================
 
 constructor TJclCardinalCardinalSortedMap.Create(ACapacity: Integer);
@@ -15915,7 +15849,6 @@ function TJclCardinalCardinalSortedMap.ValuesCompare(A, B: Cardinal): Integer;
 begin
   Result := ItemsCompare(A, B);
 end;
-
 
 
 //=== { TJclInt64IntfSortedMap } ==============================================
@@ -16539,7 +16472,6 @@ begin
 end;
 
 
-
 //=== { TJclIntfInt64SortedMap } ==============================================
 
 constructor TJclIntfInt64SortedMap.Create(ACapacity: Integer);
@@ -17161,7 +17093,6 @@ begin
 end;
 
 
-
 //=== { TJclInt64Int64SortedMap } ==============================================
 
 constructor TJclInt64Int64SortedMap.Create(ACapacity: Integer);
@@ -17778,7 +17709,6 @@ end;
 
 
 {$IFNDEF CLR}
-
 //=== { TJclPtrIntfSortedMap } ==============================================
 
 constructor TJclPtrIntfSortedMap.Create(ACapacity: Integer);
@@ -18398,7 +18328,6 @@ begin
   else
     Result := 0;
 end;
-
 
 
 //=== { TJclIntfPtrSortedMap } ==============================================
@@ -19022,7 +18951,6 @@ begin
 end;
 
 
-
 //=== { TJclPtrPtrSortedMap } ==============================================
 
 constructor TJclPtrPtrSortedMap.Create(ACapacity: Integer);
@@ -19638,7 +19566,6 @@ begin
 end;
 
 {$ENDIF ~CLR}
-
 
 //=== { TJclIntfSortedMap } ==============================================
 
@@ -20280,7 +20207,6 @@ begin
 end;
 
 
-
 //=== { TJclAnsiStrSortedMap } ==============================================
 
 constructor TJclAnsiStrSortedMap.Create(ACapacity: Integer; AOwnsValues: Boolean);
@@ -20913,7 +20839,6 @@ begin
   else
     Result := 0;
 end;
-
 
 
 //=== { TJclWideStrSortedMap } ==============================================
@@ -21550,7 +21475,6 @@ begin
 end;
 
 
-
 //=== { TJclSingleSortedMap } ==============================================
 
 constructor TJclSingleSortedMap.Create(ACapacity: Integer; AOwnsValues: Boolean);
@@ -22183,7 +22107,6 @@ begin
   else
     Result := 0;
 end;
-
 
 
 //=== { TJclDoubleSortedMap } ==============================================
@@ -22820,7 +22743,6 @@ begin
 end;
 
 
-
 //=== { TJclExtendedSortedMap } ==============================================
 
 constructor TJclExtendedSortedMap.Create(ACapacity: Integer; AOwnsValues: Boolean);
@@ -23453,7 +23375,6 @@ begin
   else
     Result := 0;
 end;
-
 
 
 //=== { TJclIntegerSortedMap } ==============================================
@@ -24090,7 +24011,6 @@ begin
 end;
 
 
-
 //=== { TJclCardinalSortedMap } ==============================================
 
 constructor TJclCardinalSortedMap.Create(ACapacity: Integer; AOwnsValues: Boolean);
@@ -24723,7 +24643,6 @@ begin
   else
     Result := 0;
 end;
-
 
 
 //=== { TJclInt64SortedMap } ==============================================
@@ -25361,7 +25280,6 @@ end;
 
 
 {$IFNDEF CLR}
-
 //=== { TJclPtrSortedMap } ==============================================
 
 constructor TJclPtrSortedMap.Create(ACapacity: Integer; AOwnsValues: Boolean);
@@ -25996,7 +25914,6 @@ begin
 end;
 
 {$ENDIF ~CLR}
-
 
 //=== { TJclSortedMap } ==============================================
 
@@ -26652,7 +26569,6 @@ end;
 
 
 {$IFDEF SUPPORTS_GENERICS}
-
 
 //=== { TJclSortedMap<TKey,TValue> } ==============================================
 

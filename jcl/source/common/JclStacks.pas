@@ -53,7 +53,6 @@ uses
   {$ENDIF SUPPORTS_GENERICS}
   JclBase, JclAbstractContainers, JclContainerIntf;
 type
-
   TJclIntfStack = class(TJclIntfAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclIntfEqualityComparer,
     IJclIntfStack)
@@ -79,7 +78,6 @@ type
     destructor Destroy; override;
   end;
 
-
   TJclAnsiStrStack = class(TJclAnsiStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclStrContainer, IJclAnsiStrContainer, IJclAnsiStrEqualityComparer,
     IJclAnsiStrStack)
@@ -104,7 +102,6 @@ type
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
   end;
-
 
   TJclWideStrStack = class(TJclWideStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclStrContainer, IJclWideStrContainer, IJclWideStrEqualityComparer,
@@ -138,7 +135,6 @@ type
   TJclStrStack = TJclWideStrStack;
   {$ENDIF CONTAINER_WIDESTR}
 
-
   TJclSingleStack = class(TJclSingleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclSingleContainer, IJclSingleEqualityComparer,
     IJclSingleStack)
@@ -164,7 +160,6 @@ type
     destructor Destroy; override;
   end;
 
-
   TJclDoubleStack = class(TJclDoubleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclDoubleContainer, IJclDoubleEqualityComparer,
     IJclDoubleStack)
@@ -189,7 +184,6 @@ type
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
   end;
-
 
   TJclExtendedStack = class(TJclExtendedAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclExtendedContainer, IJclExtendedEqualityComparer,
@@ -226,7 +220,6 @@ type
   TJclFloatStack = TJclSingleStack;
   {$ENDIF MATH_SINGLE_PRECISION}
 
-
   TJclIntegerStack = class(TJclIntegerAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclIntegerEqualityComparer,
     IJclIntegerStack)
@@ -252,7 +245,6 @@ type
     destructor Destroy; override;
   end;
 
-
   TJclCardinalStack = class(TJclCardinalAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclCardinalEqualityComparer,
     IJclCardinalStack)
@@ -277,7 +269,6 @@ type
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
   end;
-
 
   TJclInt64Stack = class(TJclInt64AbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclInt64EqualityComparer,
@@ -305,7 +296,6 @@ type
   end;
 
   {$IFNDEF CLR}
-
   TJclPtrStack = class(TJclPtrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclPtrEqualityComparer,
     IJclPtrStack)
@@ -331,7 +321,6 @@ type
     destructor Destroy; override;
   end;
   {$ENDIF ~CLR}
-
 
   TJclStack = class(TJclAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclEqualityComparer, IJclObjectOwner,
@@ -359,7 +348,6 @@ type
   end;
 
   {$IFDEF SUPPORTS_GENERICS}
-
 
   TJclStack<T> = class(TJclAbstractContainer<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclEqualityComparer<T>, IJclItemOwner<T>,
@@ -441,7 +429,6 @@ implementation
 
 uses
   SysUtils;
-
 
 //=== { TJclIntfStack } =======================================================
 
@@ -620,7 +607,6 @@ begin
   Result := FSize;
 end;
 
-
 //=== { TJclAnsiStrStack } =======================================================
 
 constructor TJclAnsiStrStack.Create(ACapacity: Integer);
@@ -797,7 +783,6 @@ function TJclAnsiStrStack.Size: Integer;
 begin
   Result := FSize;
 end;
-
 
 //=== { TJclWideStrStack } =======================================================
 
@@ -976,7 +961,6 @@ begin
   Result := FSize;
 end;
 
-
 //=== { TJclSingleStack } =======================================================
 
 constructor TJclSingleStack.Create(ACapacity: Integer);
@@ -1153,7 +1137,6 @@ function TJclSingleStack.Size: Integer;
 begin
   Result := FSize;
 end;
-
 
 //=== { TJclDoubleStack } =======================================================
 
@@ -1332,7 +1315,6 @@ begin
   Result := FSize;
 end;
 
-
 //=== { TJclExtendedStack } =======================================================
 
 constructor TJclExtendedStack.Create(ACapacity: Integer);
@@ -1509,7 +1491,6 @@ function TJclExtendedStack.Size: Integer;
 begin
   Result := FSize;
 end;
-
 
 //=== { TJclIntegerStack } =======================================================
 
@@ -1688,7 +1669,6 @@ begin
   Result := FSize;
 end;
 
-
 //=== { TJclCardinalStack } =======================================================
 
 constructor TJclCardinalStack.Create(ACapacity: Integer);
@@ -1865,7 +1845,6 @@ function TJclCardinalStack.Size: Integer;
 begin
   Result := FSize;
 end;
-
 
 //=== { TJclInt64Stack } =======================================================
 
@@ -2045,7 +2024,6 @@ begin
 end;
 
 {$IFNDEF CLR}
-
 //=== { TJclPtrStack } =======================================================
 
 constructor TJclPtrStack.Create(ACapacity: Integer);
@@ -2223,7 +2201,6 @@ begin
   Result := FSize;
 end;
 {$ENDIF ~CLR}
-
 
 //=== { TJclStack } =======================================================
 
@@ -2403,7 +2380,6 @@ begin
 end;
 
 {$IFDEF SUPPORTS_GENERICS}
-
 
 //=== { TJclStack<T> } =======================================================
 

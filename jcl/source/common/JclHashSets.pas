@@ -29,7 +29,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -61,7 +61,6 @@ type
   {$ELSE ~SUPPORTS_GENERICS}
   TRefUnique = TObject;
   {$ENDIF ~SUPPORTS_GENERICS}
-
 
   TJclIntfHashSet = class(TJclIntfAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclIntfEqualityComparer,
@@ -120,7 +119,6 @@ type
     constructor Create(ACapacity: Integer); overload;
     destructor Destroy; override;
   end;
-
 
   TJclAnsiStrHashSet = class(TJclAnsiStrAbstractCollection, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclStrContainer, IJclAnsiStrContainer, IJclAnsiStrEqualityComparer,
@@ -185,7 +183,6 @@ type
     constructor Create(ACapacity: Integer); overload;
     destructor Destroy; override;
   end;
-
 
   TJclWideStrHashSet = class(TJclWideStrAbstractCollection, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclStrContainer, IJclWideStrContainer, IJclWideStrEqualityComparer,
@@ -258,7 +255,6 @@ type
   TJclStrHashSet = TJclWideStrHashSet;
   {$ENDIF CONTAINER_WIDESTR}
 
-
   TJclSingleHashSet = class(TJclSingleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclSingleContainer, IJclSingleEqualityComparer,
     IJclSingleCollection, IJclSingleSet)
@@ -320,7 +316,6 @@ type
     destructor Destroy; override;
   end;
 
-
   TJclDoubleHashSet = class(TJclDoubleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclDoubleContainer, IJclDoubleEqualityComparer,
     IJclDoubleCollection, IJclDoubleSet)
@@ -381,7 +376,6 @@ type
     constructor Create(ACapacity: Integer); overload;
     destructor Destroy; override;
   end;
-
 
   TJclExtendedHashSet = class(TJclExtendedAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclExtendedContainer, IJclExtendedEqualityComparer,
@@ -454,7 +448,6 @@ type
   TJclFloatHashSet = TJclSingleHashSet;
   {$ENDIF MATH_SINGLE_PRECISION}
 
-
   TJclIntegerHashSet = class(TJclIntegerAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclIntegerEqualityComparer,
     IJclIntegerCollection, IJclIntegerSet)
@@ -513,7 +506,6 @@ type
     destructor Destroy; override;
   end;
 
-
   TJclCardinalHashSet = class(TJclCardinalAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclCardinalEqualityComparer,
     IJclCardinalCollection, IJclCardinalSet)
@@ -571,7 +563,6 @@ type
     constructor Create(ACapacity: Integer); overload;
     destructor Destroy; override;
   end;
-
 
   TJclInt64HashSet = class(TJclInt64AbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclInt64EqualityComparer,
@@ -632,7 +623,6 @@ type
   end;
 
   {$IFNDEF CLR}
-
   TJclPtrHashSet = class(TJclPtrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclPtrEqualityComparer,
     IJclPtrCollection, IJclPtrSet)
@@ -691,7 +681,6 @@ type
     destructor Destroy; override;
   end;
   {$ENDIF ~CLR}
-
 
   TJclHashSet = class(TJclAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclObjectOwner, IJclEqualityComparer,
@@ -755,7 +744,6 @@ type
   end;
 
   {$IFDEF SUPPORTS_GENERICS}
-
 
   TJclHashSet<T> = class(TJclAbstractContainer<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclItemOwner<T>, IJclEqualityComparer<T>,
@@ -888,7 +876,6 @@ begin
     GlobalRefUnique := TRefUnique.Create;
   Result := GlobalRefUnique;
 end;
-
 
 //=== { TJclIntfHashSet } =====================================================
 
@@ -1029,6 +1016,7 @@ function TJclIntfHashSet.First: IJclIntfIterator;
 begin
   Result := FMap.KeySet.First;
 end;
+
 
 function TJclIntfHashSet.GetAutoPackParameter: Integer;
 begin
@@ -1218,7 +1206,6 @@ procedure TJclIntfHashSet.Union(const ACollection: IJclIntfCollection);
 begin
   AddAll(ACollection);
 end;
-
 
 
 //=== { TJclAnsiStrHashSet } =====================================================
@@ -1569,7 +1556,6 @@ procedure TJclAnsiStrHashSet.Union(const ACollection: IJclAnsiStrCollection);
 begin
   AddAll(ACollection);
 end;
-
 
 
 //=== { TJclWideStrHashSet } =====================================================
@@ -1924,7 +1910,6 @@ begin
 end;
 
 
-
 //=== { TJclSingleHashSet } =====================================================
 
 constructor TJclSingleHashSet.Create(const AMap: IJclSingleMap);
@@ -2265,7 +2250,6 @@ procedure TJclSingleHashSet.Union(const ACollection: IJclSingleCollection);
 begin
   AddAll(ACollection);
 end;
-
 
 
 //=== { TJclDoubleHashSet } =====================================================
@@ -2610,7 +2594,6 @@ begin
 end;
 
 
-
 //=== { TJclExtendedHashSet } =====================================================
 
 constructor TJclExtendedHashSet.Create(const AMap: IJclExtendedMap);
@@ -2953,7 +2936,6 @@ begin
 end;
 
 
-
 //=== { TJclIntegerHashSet } =====================================================
 
 constructor TJclIntegerHashSet.Create(const AMap: IJclIntegerMap);
@@ -3286,7 +3268,6 @@ procedure TJclIntegerHashSet.Union(const ACollection: IJclIntegerCollection);
 begin
   AddAll(ACollection);
 end;
-
 
 
 //=== { TJclCardinalHashSet } =====================================================
@@ -3623,7 +3604,6 @@ begin
 end;
 
 
-
 //=== { TJclInt64HashSet } =====================================================
 
 constructor TJclInt64HashSet.Create(const AMap: IJclInt64Map);
@@ -3958,7 +3938,18 @@ begin
 end;
 
 
+
+
+
+
+
+
 {$IFNDEF CLR}
+
+
+
+
+
 
 //=== { TJclPtrHashSet } =====================================================
 
@@ -4293,7 +4284,18 @@ begin
   AddAll(ACollection);
 end;
 
+
+
+
+
+
+
 {$ENDIF ~CLR}
+
+
+
+
+
 
 
 //=== { TJclHashSet } =====================================================
@@ -4645,7 +4647,6 @@ end;
 
 
 {$IFDEF SUPPORTS_GENERICS}
-
 
 
 

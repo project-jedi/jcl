@@ -24,7 +24,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -50,55 +50,56 @@ uses
   JclBase, JclAbstractContainers, JclContainerIntf;
 {$I containers\JclContainerCommon.imp}
 {$I containers\JclSortedMaps.imp}
+{$I containers\JclSortedMaps.int}
 type
-(*$JPPEXPANDMACRO JCLSORTEDMAPINT(IInterface,IInterface,TJclIntfIntfSortedEntry,TJclIntfIntfSortedEntryArray,TJclIntfIntfSortedMap,TJclIntfAbstractContainer,IJclIntfIntfMap,IJclIntfIntfSortedMap,IJclIntfSet,IJclIntfCollection,,,
+(*$JPPEXPANDMACRO JCLSORTEDMAPINT(TJclIntfIntfSortedEntry,TJclIntfIntfSortedEntryArray,TJclIntfIntfSortedMap,TJclIntfAbstractContainer,IJclIntfIntfMap,IJclIntfIntfSortedMap,IJclIntfSet,IJclIntfCollection,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: IInterface): IInterface;
     function FreeValue(var Value: IInterface): IInterface;
     function KeysCompare(const A\, B: IInterface): Integer;
-    function ValuesCompare(const A\, B: IInterface): Integer;,,,,const Key: IInterface,const Value: IInterface,const ToKey: IInterface,const FromKey\, ToKey: IInterface,const FromKey: IInterface)*)
+    function ValuesCompare(const A\, B: IInterface): Integer;,,,,const ,IInterface,const ,IInterface)*)
 
-(*$JPPEXPANDMACRO JCLSORTEDMAPINT(AnsiString,IInterface,TJclAnsiStrIntfSortedEntry,TJclAnsiStrIntfSortedEntryArray,TJclAnsiStrIntfSortedMap,TJclAnsiStrAbstractContainer,IJclAnsiStrIntfMap,IJclAnsiStrIntfSortedMap,IJclAnsiStrSet,IJclIntfCollection, IJclStrContainer\, IJclAnsiStrContainer\,,,
+(*$JPPEXPANDMACRO JCLSORTEDMAPINT(TJclAnsiStrIntfSortedEntry,TJclAnsiStrIntfSortedEntryArray,TJclAnsiStrIntfSortedMap,TJclAnsiStrAbstractContainer,IJclAnsiStrIntfMap,IJclAnsiStrIntfSortedMap,IJclAnsiStrSet,IJclIntfCollection, IJclStrContainer\, IJclAnsiStrContainer\,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: AnsiString): AnsiString;
     function FreeValue(var Value: IInterface): IInterface;
     function KeysCompare(const A\, B: AnsiString): Integer;
-    function ValuesCompare(const A\, B: IInterface): Integer;,,,,const Key: AnsiString,const Value: IInterface,const ToKey: AnsiString,const FromKey\, ToKey: AnsiString,const FromKey: AnsiString)*)
+    function ValuesCompare(const A\, B: IInterface): Integer;,,,,const ,AnsiString,const ,IInterface)*)
 
-(*$JPPEXPANDMACRO JCLSORTEDMAPINT(IInterface,AnsiString,TJclIntfAnsiStrSortedEntry,TJclIntfAnsiStrSortedEntryArray,TJclIntfAnsiStrSortedMap,TJclAnsiStrAbstractContainer,IJclIntfAnsiStrMap,IJclIntfAnsiStrSortedMap,IJclIntfSet,IJclAnsiStrCollection, IJclStrContainer\, IJclAnsiStrContainer\,,,
+(*$JPPEXPANDMACRO JCLSORTEDMAPINT(TJclIntfAnsiStrSortedEntry,TJclIntfAnsiStrSortedEntryArray,TJclIntfAnsiStrSortedMap,TJclAnsiStrAbstractContainer,IJclIntfAnsiStrMap,IJclIntfAnsiStrSortedMap,IJclIntfSet,IJclAnsiStrCollection, IJclStrContainer\, IJclAnsiStrContainer\,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: IInterface): IInterface;
     function FreeValue(var Value: AnsiString): AnsiString;
     function KeysCompare(const A\, B: IInterface): Integer;
-    function ValuesCompare(const A\, B: AnsiString): Integer;,,,,const Key: IInterface,const Value: AnsiString,const ToKey: IInterface,const FromKey\, ToKey: IInterface,const FromKey: IInterface)*)
+    function ValuesCompare(const A\, B: AnsiString): Integer;,,,,const ,IInterface,const ,AnsiString)*)
 
-(*$JPPEXPANDMACRO JCLSORTEDMAPINT(AnsiString,AnsiString,TJclAnsiStrAnsiStrSortedEntry,TJclAnsiStrAnsiStrSortedEntryArray,TJclAnsiStrAnsiStrSortedMap,TJclAnsiStrAbstractContainer,IJclAnsiStrAnsiStrMap,IJclAnsiStrAnsiStrSortedMap,IJclAnsiStrSet,IJclAnsiStrCollection, IJclStrContainer\, IJclAnsiStrContainer\,,,
+(*$JPPEXPANDMACRO JCLSORTEDMAPINT(TJclAnsiStrAnsiStrSortedEntry,TJclAnsiStrAnsiStrSortedEntryArray,TJclAnsiStrAnsiStrSortedMap,TJclAnsiStrAbstractContainer,IJclAnsiStrAnsiStrMap,IJclAnsiStrAnsiStrSortedMap,IJclAnsiStrSet,IJclAnsiStrCollection, IJclStrContainer\, IJclAnsiStrContainer\,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: AnsiString): AnsiString;
     function FreeValue(var Value: AnsiString): AnsiString;
     function KeysCompare(const A\, B: AnsiString): Integer;
-    function ValuesCompare(const A\, B: AnsiString): Integer;,,,,const Key: AnsiString,const Value: AnsiString,const ToKey: AnsiString,const FromKey\, ToKey: AnsiString,const FromKey: AnsiString)*)
+    function ValuesCompare(const A\, B: AnsiString): Integer;,,,,const ,AnsiString,const ,AnsiString)*)
 
-(*$JPPEXPANDMACRO JCLSORTEDMAPINT(WideString,IInterface,TJclWideStrIntfSortedEntry,TJclWideStrIntfSortedEntryArray,TJclWideStrIntfSortedMap,TJclWideStrAbstractContainer,IJclWideStrIntfMap,IJclWideStrIntfSortedMap,IJclWideStrSet,IJclIntfCollection, IJclStrContainer\, IJclWideStrContainer\,,,
+(*$JPPEXPANDMACRO JCLSORTEDMAPINT(TJclWideStrIntfSortedEntry,TJclWideStrIntfSortedEntryArray,TJclWideStrIntfSortedMap,TJclWideStrAbstractContainer,IJclWideStrIntfMap,IJclWideStrIntfSortedMap,IJclWideStrSet,IJclIntfCollection, IJclStrContainer\, IJclWideStrContainer\,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: WideString): WideString;
     function FreeValue(var Value: IInterface): IInterface;
     function KeysCompare(const A\, B: WideString): Integer;
-    function ValuesCompare(const A\, B: IInterface): Integer;,,,,const Key: WideString,const Value: IInterface,const ToKey: WideString,const FromKey\, ToKey: WideString,const FromKey: WideString)*)
+    function ValuesCompare(const A\, B: IInterface): Integer;,,,,const ,WideString,const ,IInterface)*)
 
-(*$JPPEXPANDMACRO JCLSORTEDMAPINT(IInterface,WideString,TJclIntfWideStrSortedEntry,TJclIntfWideStrSortedEntryArray,TJclIntfWideStrSortedMap,TJclWideStrAbstractContainer,IJclIntfWideStrMap,IJclIntfWideStrSortedMap,IJclIntfSet,IJclWideStrCollection, IJclStrContainer\, IJclWideStrContainer\,,,
+(*$JPPEXPANDMACRO JCLSORTEDMAPINT(TJclIntfWideStrSortedEntry,TJclIntfWideStrSortedEntryArray,TJclIntfWideStrSortedMap,TJclWideStrAbstractContainer,IJclIntfWideStrMap,IJclIntfWideStrSortedMap,IJclIntfSet,IJclWideStrCollection, IJclStrContainer\, IJclWideStrContainer\,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: IInterface): IInterface;
     function FreeValue(var Value: WideString): WideString;
     function KeysCompare(const A\, B: IInterface): Integer;
-    function ValuesCompare(const A\, B: WideString): Integer;,,,,const Key: IInterface,const Value: WideString,const ToKey: IInterface,const FromKey\, ToKey: IInterface,const FromKey: IInterface)*)
+    function ValuesCompare(const A\, B: WideString): Integer;,,,,const ,IInterface,const ,WideString)*)
 
-(*$JPPEXPANDMACRO JCLSORTEDMAPINT(WideString,WideString,TJclWideStrWideStrSortedEntry,TJclWideStrWideStrSortedEntryArray,TJclWideStrWideStrSortedMap,TJclWideStrAbstractContainer,IJclWideStrWideStrMap,IJclWideStrWideStrSortedMap,IJclWideStrSet,IJclWideStrCollection, IJclStrContainer\, IJclWideStrContainer\,,,
+(*$JPPEXPANDMACRO JCLSORTEDMAPINT(TJclWideStrWideStrSortedEntry,TJclWideStrWideStrSortedEntryArray,TJclWideStrWideStrSortedMap,TJclWideStrAbstractContainer,IJclWideStrWideStrMap,IJclWideStrWideStrSortedMap,IJclWideStrSet,IJclWideStrCollection, IJclStrContainer\, IJclWideStrContainer\,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: WideString): WideString;
     function FreeValue(var Value: WideString): WideString;
     function KeysCompare(const A\, B: WideString): Integer;
-    function ValuesCompare(const A\, B: WideString): Integer;,,,,const Key: WideString,const Value: WideString,const ToKey: WideString,const FromKey\, ToKey: WideString,const FromKey: WideString)*)
+    function ValuesCompare(const A\, B: WideString): Integer;,,,,const ,WideString,const ,WideString)*)
 
   {$IFDEF CONTAINER_ANSISTR}
   TJclStrIntfSortedMap = TJclAnsiStrIntfSortedMap;
@@ -111,68 +112,68 @@ type
   TJclStrStrSortedMap = TJclWideStrWideStrSortedMap;
   {$ENDIF CONTAINER_WIDESTR}
 
-(*$JPPEXPANDMACRO JCLSORTEDMAPINT(Single,IInterface,TJclSingleIntfSortedEntry,TJclSingleIntfSortedEntryArray,TJclSingleIntfSortedMap,TJclSingleAbstractContainer,IJclSingleIntfMap,IJclSingleIntfSortedMap,IJclSingleSet,IJclIntfCollection, IJclSingleContainer\,,,
+(*$JPPEXPANDMACRO JCLSORTEDMAPINT(TJclSingleIntfSortedEntry,TJclSingleIntfSortedEntryArray,TJclSingleIntfSortedMap,TJclSingleAbstractContainer,IJclSingleIntfMap,IJclSingleIntfSortedMap,IJclSingleSet,IJclIntfCollection, IJclSingleContainer\,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Single): Single;
     function FreeValue(var Value: IInterface): IInterface;
     function KeysCompare(const A\, B: Single): Integer;
-    function ValuesCompare(const A\, B: IInterface): Integer;,,,,const Key: Single,const Value: IInterface,const ToKey: Single,const FromKey\, ToKey: Single,const FromKey: Single)*)
+    function ValuesCompare(const A\, B: IInterface): Integer;,,,,const ,Single,const ,IInterface)*)
 
-(*$JPPEXPANDMACRO JCLSORTEDMAPINT(IInterface,Single,TJclIntfSingleSortedEntry,TJclIntfSingleSortedEntryArray,TJclIntfSingleSortedMap,TJclSingleAbstractContainer,IJclIntfSingleMap,IJclIntfSingleSortedMap,IJclIntfSet,IJclSingleCollection, IJclSingleContainer\,,,
+(*$JPPEXPANDMACRO JCLSORTEDMAPINT(TJclIntfSingleSortedEntry,TJclIntfSingleSortedEntryArray,TJclIntfSingleSortedMap,TJclSingleAbstractContainer,IJclIntfSingleMap,IJclIntfSingleSortedMap,IJclIntfSet,IJclSingleCollection, IJclSingleContainer\,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: IInterface): IInterface;
     function FreeValue(var Value: Single): Single;
     function KeysCompare(const A\, B: IInterface): Integer;
-    function ValuesCompare(const A\, B: Single): Integer;,,,,const Key: IInterface,const Value: Single,const ToKey: IInterface,const FromKey\, ToKey: IInterface,const FromKey: IInterface)*)
+    function ValuesCompare(const A\, B: Single): Integer;,,,,const ,IInterface,const ,Single)*)
 
-(*$JPPEXPANDMACRO JCLSORTEDMAPINT(Single,Single,TJclSingleSingleSortedEntry,TJclSingleSingleSortedEntryArray,TJclSingleSingleSortedMap,TJclSingleAbstractContainer,IJclSingleSingleMap,IJclSingleSingleSortedMap,IJclSingleSet,IJclSingleCollection, IJclSingleContainer\,,,
+(*$JPPEXPANDMACRO JCLSORTEDMAPINT(TJclSingleSingleSortedEntry,TJclSingleSingleSortedEntryArray,TJclSingleSingleSortedMap,TJclSingleAbstractContainer,IJclSingleSingleMap,IJclSingleSingleSortedMap,IJclSingleSet,IJclSingleCollection, IJclSingleContainer\,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Single): Single;
     function FreeValue(var Value: Single): Single;
     function KeysCompare(const A\, B: Single): Integer;
-    function ValuesCompare(const A\, B: Single): Integer;,,,,const Key: Single,const Value: Single,const ToKey: Single,const FromKey\, ToKey: Single,const FromKey: Single)*)
+    function ValuesCompare(const A\, B: Single): Integer;,,,,const ,Single,const ,Single)*)
 
-(*$JPPEXPANDMACRO JCLSORTEDMAPINT(Double,IInterface,TJclDoubleIntfSortedEntry,TJclDoubleIntfSortedEntryArray,TJclDoubleIntfSortedMap,TJclDoubleAbstractContainer,IJclDoubleIntfMap,IJclDoubleIntfSortedMap,IJclDoubleSet,IJclIntfCollection, IJclDoubleContainer\,,,
+(*$JPPEXPANDMACRO JCLSORTEDMAPINT(TJclDoubleIntfSortedEntry,TJclDoubleIntfSortedEntryArray,TJclDoubleIntfSortedMap,TJclDoubleAbstractContainer,IJclDoubleIntfMap,IJclDoubleIntfSortedMap,IJclDoubleSet,IJclIntfCollection, IJclDoubleContainer\,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Double): Double;
     function FreeValue(var Value: IInterface): IInterface;
     function KeysCompare(const A\, B: Double): Integer;
-    function ValuesCompare(const A\, B: IInterface): Integer;,,,,const Key: Double,const Value: IInterface,const ToKey: Double,const FromKey\, ToKey: Double,const FromKey: Double)*)
+    function ValuesCompare(const A\, B: IInterface): Integer;,,,,const ,Double,const ,IInterface)*)
 
-(*$JPPEXPANDMACRO JCLSORTEDMAPINT(IInterface,Double,TJclIntfDoubleSortedEntry,TJclIntfDoubleSortedEntryArray,TJclIntfDoubleSortedMap,TJclDoubleAbstractContainer,IJclIntfDoubleMap,IJclIntfDoubleSortedMap,IJclIntfSet,IJclDoubleCollection, IJclDoubleContainer\,,,
+(*$JPPEXPANDMACRO JCLSORTEDMAPINT(TJclIntfDoubleSortedEntry,TJclIntfDoubleSortedEntryArray,TJclIntfDoubleSortedMap,TJclDoubleAbstractContainer,IJclIntfDoubleMap,IJclIntfDoubleSortedMap,IJclIntfSet,IJclDoubleCollection, IJclDoubleContainer\,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: IInterface): IInterface;
     function FreeValue(var Value: Double): Double;
     function KeysCompare(const A\, B: IInterface): Integer;
-    function ValuesCompare(const A\, B: Double): Integer;,,,,const Key: IInterface,const Value: Double,const ToKey: IInterface,const FromKey\, ToKey: IInterface,const FromKey: IInterface)*)
+    function ValuesCompare(const A\, B: Double): Integer;,,,,const ,IInterface,const ,Double)*)
 
-(*$JPPEXPANDMACRO JCLSORTEDMAPINT(Double,Double,TJclDoubleDoubleSortedEntry,TJclDoubleDoubleSortedEntryArray,TJclDoubleDoubleSortedMap,TJclDoubleAbstractContainer,IJclDoubleDoubleMap,IJclDoubleDoubleSortedMap,IJclDoubleSet,IJclDoubleCollection, IJclDoubleContainer\,,,
+(*$JPPEXPANDMACRO JCLSORTEDMAPINT(TJclDoubleDoubleSortedEntry,TJclDoubleDoubleSortedEntryArray,TJclDoubleDoubleSortedMap,TJclDoubleAbstractContainer,IJclDoubleDoubleMap,IJclDoubleDoubleSortedMap,IJclDoubleSet,IJclDoubleCollection, IJclDoubleContainer\,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Double): Double;
     function FreeValue(var Value: Double): Double;
     function KeysCompare(const A\, B: Double): Integer;
-    function ValuesCompare(const A\, B: Double): Integer;,,,,const Key: Double,const Value: Double,const ToKey: Double,const FromKey\, ToKey: Double,const FromKey: Double)*)
+    function ValuesCompare(const A\, B: Double): Integer;,,,,const ,Double,const ,Double)*)
 
-(*$JPPEXPANDMACRO JCLSORTEDMAPINT(Extended,IInterface,TJclExtendedIntfSortedEntry,TJclExtendedIntfSortedEntryArray,TJclExtendedIntfSortedMap,TJclExtendedAbstractContainer,IJclExtendedIntfMap,IJclExtendedIntfSortedMap,IJclExtendedSet,IJclIntfCollection, IJclExtendedContainer\,,,
+(*$JPPEXPANDMACRO JCLSORTEDMAPINT(TJclExtendedIntfSortedEntry,TJclExtendedIntfSortedEntryArray,TJclExtendedIntfSortedMap,TJclExtendedAbstractContainer,IJclExtendedIntfMap,IJclExtendedIntfSortedMap,IJclExtendedSet,IJclIntfCollection, IJclExtendedContainer\,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Extended): Extended;
     function FreeValue(var Value: IInterface): IInterface;
     function KeysCompare(const A\, B: Extended): Integer;
-    function ValuesCompare(const A\, B: IInterface): Integer;,,,,const Key: Extended,const Value: IInterface,const ToKey: Extended,const FromKey\, ToKey: Extended,const FromKey: Extended)*)
+    function ValuesCompare(const A\, B: IInterface): Integer;,,,,const ,Extended,const ,IInterface)*)
 
-(*$JPPEXPANDMACRO JCLSORTEDMAPINT(IInterface,Extended,TJclIntfExtendedSortedEntry,TJclIntfExtendedSortedEntryArray,TJclIntfExtendedSortedMap,TJclExtendedAbstractContainer,IJclIntfExtendedMap,IJclIntfExtendedSortedMap,IJclIntfSet,IJclExtendedCollection, IJclExtendedContainer\,,,
+(*$JPPEXPANDMACRO JCLSORTEDMAPINT(TJclIntfExtendedSortedEntry,TJclIntfExtendedSortedEntryArray,TJclIntfExtendedSortedMap,TJclExtendedAbstractContainer,IJclIntfExtendedMap,IJclIntfExtendedSortedMap,IJclIntfSet,IJclExtendedCollection, IJclExtendedContainer\,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: IInterface): IInterface;
     function FreeValue(var Value: Extended): Extended;
     function KeysCompare(const A\, B: IInterface): Integer;
-    function ValuesCompare(const A\, B: Extended): Integer;,,,,const Key: IInterface,const Value: Extended,const ToKey: IInterface,const FromKey\, ToKey: IInterface,const FromKey: IInterface)*)
+    function ValuesCompare(const A\, B: Extended): Integer;,,,,const ,IInterface,const ,Extended)*)
 
-(*$JPPEXPANDMACRO JCLSORTEDMAPINT(Extended,Extended,TJclExtendedExtendedSortedEntry,TJclExtendedExtendedSortedEntryArray,TJclExtendedExtendedSortedMap,TJclExtendedAbstractContainer,IJclExtendedExtendedMap,IJclExtendedExtendedSortedMap,IJclExtendedSet,IJclExtendedCollection, IJclExtendedContainer\,,,
+(*$JPPEXPANDMACRO JCLSORTEDMAPINT(TJclExtendedExtendedSortedEntry,TJclExtendedExtendedSortedEntryArray,TJclExtendedExtendedSortedMap,TJclExtendedAbstractContainer,IJclExtendedExtendedMap,IJclExtendedExtendedSortedMap,IJclExtendedSet,IJclExtendedCollection, IJclExtendedContainer\,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Extended): Extended;
     function FreeValue(var Value: Extended): Extended;
     function KeysCompare(const A\, B: Extended): Integer;
-    function ValuesCompare(const A\, B: Extended): Integer;,,,,const Key: Extended,const Value: Extended,const ToKey: Extended,const FromKey\, ToKey: Extended,const FromKey: Extended)*)
+    function ValuesCompare(const A\, B: Extended): Integer;,,,,const ,Extended,const ,Extended)*)
 
   {$IFDEF MATH_EXTENDED_PRECISION}
   TJclFloatIntfSortedMap = TJclExtendedIntfSortedMap;
@@ -190,93 +191,93 @@ type
   TJclFloatFloatSortedMap = TJclSingleSingleSortedMap;
   {$ENDIF MATH_SINGLE_PRECISION}
 
-(*$JPPEXPANDMACRO JCLSORTEDMAPINT(Integer,IInterface,TJclIntegerIntfSortedEntry,TJclIntegerIntfSortedEntryArray,TJclIntegerIntfSortedMap,TJclIntegerAbstractContainer,IJclIntegerIntfMap,IJclIntegerIntfSortedMap,IJclIntegerSet,IJclIntfCollection,,,
+(*$JPPEXPANDMACRO JCLSORTEDMAPINT(TJclIntegerIntfSortedEntry,TJclIntegerIntfSortedEntryArray,TJclIntegerIntfSortedMap,TJclIntegerAbstractContainer,IJclIntegerIntfMap,IJclIntegerIntfSortedMap,IJclIntegerSet,IJclIntfCollection,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Integer): Integer;
     function FreeValue(var Value: IInterface): IInterface;
     function KeysCompare(A\, B: Integer): Integer;
-    function ValuesCompare(const A\, B: IInterface): Integer;,,,,Key: Integer,const Value: IInterface,ToKey: Integer,FromKey\, ToKey: Integer,FromKey: Integer)*)
+    function ValuesCompare(const A\, B: IInterface): Integer;,,,,,Integer,const ,IInterface)*)
 
-(*$JPPEXPANDMACRO JCLSORTEDMAPINT(IInterface,Integer,TJclIntfIntegerSortedEntry,TJclIntfIntegerSortedEntryArray,TJclIntfIntegerSortedMap,TJclIntegerAbstractContainer,IJclIntfIntegerMap,IJclIntfIntegerSortedMap,IJclIntfSet,IJclIntegerCollection,,,
+(*$JPPEXPANDMACRO JCLSORTEDMAPINT(TJclIntfIntegerSortedEntry,TJclIntfIntegerSortedEntryArray,TJclIntfIntegerSortedMap,TJclIntegerAbstractContainer,IJclIntfIntegerMap,IJclIntfIntegerSortedMap,IJclIntfSet,IJclIntegerCollection,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: IInterface): IInterface;
     function FreeValue(var Value: Integer): Integer;
     function KeysCompare(const A\, B: IInterface): Integer;
-    function ValuesCompare(A\, B: Integer): Integer;,,,,const Key: IInterface,Value: Integer,const ToKey: IInterface,const FromKey\, ToKey: IInterface,const FromKey: IInterface)*)
+    function ValuesCompare(A\, B: Integer): Integer;,,,,const ,IInterface,,Integer)*)
 
-(*$JPPEXPANDMACRO JCLSORTEDMAPINT(Integer,Integer,TJclIntegerIntegerSortedEntry,TJclIntegerIntegerSortedEntryArray,TJclIntegerIntegerSortedMap,TJclIntegerAbstractContainer,IJclIntegerIntegerMap,IJclIntegerIntegerSortedMap,IJclIntegerSet,IJclIntegerCollection,,,
+(*$JPPEXPANDMACRO JCLSORTEDMAPINT(TJclIntegerIntegerSortedEntry,TJclIntegerIntegerSortedEntryArray,TJclIntegerIntegerSortedMap,TJclIntegerAbstractContainer,IJclIntegerIntegerMap,IJclIntegerIntegerSortedMap,IJclIntegerSet,IJclIntegerCollection,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Integer): Integer;
     function FreeValue(var Value: Integer): Integer;
     function KeysCompare(A\, B: Integer): Integer;
-    function ValuesCompare(A\, B: Integer): Integer;,,,,Key: Integer,Value: Integer,ToKey: Integer,FromKey\, ToKey: Integer,FromKey: Integer)*)
+    function ValuesCompare(A\, B: Integer): Integer;,,,,,Integer,,Integer)*)
 
-(*$JPPEXPANDMACRO JCLSORTEDMAPINT(Cardinal,IInterface,TJclCardinalIntfSortedEntry,TJclCardinalIntfSortedEntryArray,TJclCardinalIntfSortedMap,TJclCardinalAbstractContainer,IJclCardinalIntfMap,IJclCardinalIntfSortedMap,IJclCardinalSet,IJclIntfCollection,,,
+(*$JPPEXPANDMACRO JCLSORTEDMAPINT(TJclCardinalIntfSortedEntry,TJclCardinalIntfSortedEntryArray,TJclCardinalIntfSortedMap,TJclCardinalAbstractContainer,IJclCardinalIntfMap,IJclCardinalIntfSortedMap,IJclCardinalSet,IJclIntfCollection,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Cardinal): Cardinal;
     function FreeValue(var Value: IInterface): IInterface;
     function KeysCompare(A\, B: Cardinal): Integer;
-    function ValuesCompare(const A\, B: IInterface): Integer;,,,,Key: Cardinal,const Value: IInterface,ToKey: Cardinal,FromKey\, ToKey: Cardinal,FromKey: Cardinal)*)
+    function ValuesCompare(const A\, B: IInterface): Integer;,,,,,Cardinal,const ,IInterface)*)
 
-(*$JPPEXPANDMACRO JCLSORTEDMAPINT(IInterface,Cardinal,TJclIntfCardinalSortedEntry,TJclIntfCardinalSortedEntryArray,TJclIntfCardinalSortedMap,TJclCardinalAbstractContainer,IJclIntfCardinalMap,IJclIntfCardinalSortedMap,IJclIntfSet,IJclCardinalCollection,,,
+(*$JPPEXPANDMACRO JCLSORTEDMAPINT(TJclIntfCardinalSortedEntry,TJclIntfCardinalSortedEntryArray,TJclIntfCardinalSortedMap,TJclCardinalAbstractContainer,IJclIntfCardinalMap,IJclIntfCardinalSortedMap,IJclIntfSet,IJclCardinalCollection,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: IInterface): IInterface;
     function FreeValue(var Value: Cardinal): Cardinal;
     function KeysCompare(const A\, B: IInterface): Integer;
-    function ValuesCompare(A\, B: Cardinal): Integer;,,,,const Key: IInterface,Value: Cardinal,const ToKey: IInterface,const FromKey\, ToKey: IInterface,const FromKey: IInterface)*)
+    function ValuesCompare(A\, B: Cardinal): Integer;,,,,const ,IInterface,,Cardinal)*)
 
-(*$JPPEXPANDMACRO JCLSORTEDMAPINT(Cardinal,Cardinal,TJclCardinalCardinalSortedEntry,TJclCardinalCardinalSortedEntryArray,TJclCardinalCardinalSortedMap,TJclCardinalAbstractContainer,IJclCardinalCardinalMap,IJclCardinalCardinalSortedMap,IJclCardinalSet,IJclCardinalCollection,,,
+(*$JPPEXPANDMACRO JCLSORTEDMAPINT(TJclCardinalCardinalSortedEntry,TJclCardinalCardinalSortedEntryArray,TJclCardinalCardinalSortedMap,TJclCardinalAbstractContainer,IJclCardinalCardinalMap,IJclCardinalCardinalSortedMap,IJclCardinalSet,IJclCardinalCollection,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Cardinal): Cardinal;
     function FreeValue(var Value: Cardinal): Cardinal;
     function KeysCompare(A\, B: Cardinal): Integer;
-    function ValuesCompare(A\, B: Cardinal): Integer;,,,,Key: Cardinal,Value: Cardinal,ToKey: Cardinal,FromKey\, ToKey: Cardinal,FromKey: Cardinal)*)
+    function ValuesCompare(A\, B: Cardinal): Integer;,,,,,Cardinal,,Cardinal)*)
 
-(*$JPPEXPANDMACRO JCLSORTEDMAPINT(Int64,IInterface,TJclInt64IntfSortedEntry,TJclInt64IntfSortedEntryArray,TJclInt64IntfSortedMap,TJclInt64AbstractContainer,IJclInt64IntfMap,IJclInt64IntfSortedMap,IJclInt64Set,IJclIntfCollection,,,
+(*$JPPEXPANDMACRO JCLSORTEDMAPINT(TJclInt64IntfSortedEntry,TJclInt64IntfSortedEntryArray,TJclInt64IntfSortedMap,TJclInt64AbstractContainer,IJclInt64IntfMap,IJclInt64IntfSortedMap,IJclInt64Set,IJclIntfCollection,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Int64): Int64;
     function FreeValue(var Value: IInterface): IInterface;
     function KeysCompare(const A\, B: Int64): Integer;
-    function ValuesCompare(const A\, B: IInterface): Integer;,,,,const Key: Int64,const Value: IInterface,const ToKey: Int64,const FromKey\, ToKey: Int64,const FromKey: Int64)*)
+    function ValuesCompare(const A\, B: IInterface): Integer;,,,,const ,Int64,const ,IInterface)*)
 
-(*$JPPEXPANDMACRO JCLSORTEDMAPINT(IInterface,Int64,TJclIntfInt64SortedEntry,TJclIntfInt64SortedEntryArray,TJclIntfInt64SortedMap,TJclInt64AbstractContainer,IJclIntfInt64Map,IJclIntfInt64SortedMap,IJclIntfSet,IJclInt64Collection,,,
+(*$JPPEXPANDMACRO JCLSORTEDMAPINT(TJclIntfInt64SortedEntry,TJclIntfInt64SortedEntryArray,TJclIntfInt64SortedMap,TJclInt64AbstractContainer,IJclIntfInt64Map,IJclIntfInt64SortedMap,IJclIntfSet,IJclInt64Collection,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: IInterface): IInterface;
     function FreeValue(var Value: Int64): Int64;
     function KeysCompare(const A\, B: IInterface): Integer;
-    function ValuesCompare(const A\, B: Int64): Integer;,,,,const Key: IInterface,const Value: Int64,const ToKey: IInterface,const FromKey\, ToKey: IInterface,const FromKey: IInterface)*)
+    function ValuesCompare(const A\, B: Int64): Integer;,,,,const ,IInterface,const ,Int64)*)
 
-(*$JPPEXPANDMACRO JCLSORTEDMAPINT(Int64,Int64,TJclInt64Int64SortedEntry,TJclInt64Int64SortedEntryArray,TJclInt64Int64SortedMap,TJclInt64AbstractContainer,IJclInt64Int64Map,IJclInt64Int64SortedMap,IJclInt64Set,IJclInt64Collection,,,
+(*$JPPEXPANDMACRO JCLSORTEDMAPINT(TJclInt64Int64SortedEntry,TJclInt64Int64SortedEntryArray,TJclInt64Int64SortedMap,TJclInt64AbstractContainer,IJclInt64Int64Map,IJclInt64Int64SortedMap,IJclInt64Set,IJclInt64Collection,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Int64): Int64;
     function FreeValue(var Value: Int64): Int64;
     function KeysCompare(const A\, B: Int64): Integer;
-    function ValuesCompare(const A\, B: Int64): Integer;,,,,const Key: Int64,const Value: Int64,const ToKey: Int64,const FromKey\, ToKey: Int64,const FromKey: Int64)*)
+    function ValuesCompare(const A\, B: Int64): Integer;,,,,const ,Int64,const ,Int64)*)
 
   {$IFNDEF CLR}
-(*$JPPEXPANDMACRO JCLSORTEDMAPINT(Pointer,IInterface,TJclPtrIntfSortedEntry,TJclPtrIntfSortedEntryArray,TJclPtrIntfSortedMap,TJclPtrAbstractContainer,IJclPtrIntfMap,IJclPtrIntfSortedMap,IJclPtrSet,IJclIntfCollection,,,
+(*$JPPEXPANDMACRO JCLSORTEDMAPINT(TJclPtrIntfSortedEntry,TJclPtrIntfSortedEntryArray,TJclPtrIntfSortedMap,TJclPtrAbstractContainer,IJclPtrIntfMap,IJclPtrIntfSortedMap,IJclPtrSet,IJclIntfCollection,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Pointer): Pointer;
     function FreeValue(var Value: IInterface): IInterface;
     function KeysCompare(A\, B: Pointer): Integer;
-    function ValuesCompare(const A\, B: IInterface): Integer;,,,,Key: Pointer,const Value: IInterface,ToKey: Pointer,FromKey\, ToKey: Pointer,FromKey: Pointer)*)
+    function ValuesCompare(const A\, B: IInterface): Integer;,,,,,Pointer,const ,IInterface)*)
 
-(*$JPPEXPANDMACRO JCLSORTEDMAPINT(IInterface,Pointer,TJclIntfPtrSortedEntry,TJclIntfPtrSortedEntryArray,TJclIntfPtrSortedMap,TJclPtrAbstractContainer,IJclIntfPtrMap,IJclIntfPtrSortedMap,IJclIntfSet,IJclPtrCollection,,,
+(*$JPPEXPANDMACRO JCLSORTEDMAPINT(TJclIntfPtrSortedEntry,TJclIntfPtrSortedEntryArray,TJclIntfPtrSortedMap,TJclPtrAbstractContainer,IJclIntfPtrMap,IJclIntfPtrSortedMap,IJclIntfSet,IJclPtrCollection,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: IInterface): IInterface;
     function FreeValue(var Value: Pointer): Pointer;
     function KeysCompare(const A\, B: IInterface): Integer;
-    function ValuesCompare(A\, B: Pointer): Integer;,,,,const Key: IInterface,Value: Pointer,const ToKey: IInterface,const FromKey\, ToKey: IInterface,const FromKey: IInterface)*)
+    function ValuesCompare(A\, B: Pointer): Integer;,,,,const ,IInterface,,Pointer)*)
 
-(*$JPPEXPANDMACRO JCLSORTEDMAPINT(Pointer,Pointer,TJclPtrPtrSortedEntry,TJclPtrPtrSortedEntryArray,TJclPtrPtrSortedMap,TJclPtrAbstractContainer,IJclPtrPtrMap,IJclPtrPtrSortedMap,IJclPtrSet,IJclPtrCollection,,,
+(*$JPPEXPANDMACRO JCLSORTEDMAPINT(TJclPtrPtrSortedEntry,TJclPtrPtrSortedEntryArray,TJclPtrPtrSortedMap,TJclPtrAbstractContainer,IJclPtrPtrMap,IJclPtrPtrSortedMap,IJclPtrSet,IJclPtrCollection,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Pointer): Pointer;
     function FreeValue(var Value: Pointer): Pointer;
     function KeysCompare(A\, B: Pointer): Integer;
-    function ValuesCompare(A\, B: Pointer): Integer;,,,,Key: Pointer,Value: Pointer,ToKey: Pointer,FromKey\, ToKey: Pointer,FromKey: Pointer)*)
+    function ValuesCompare(A\, B: Pointer): Integer;,,,,,Pointer,,Pointer)*)
   {$ENDIF ~CLR}
 
-(*$JPPEXPANDMACRO JCLSORTEDMAPINT(IInterface,TObject,TJclIntfSortedEntry,TJclIntfSortedEntryArray,TJclIntfSortedMap,TJclIntfAbstractContainer,IJclIntfMap,IJclIntfSortedMap,IJclIntfSet,IJclCollection, IJclValueOwner\,,
+(*$JPPEXPANDMACRO JCLSORTEDMAPINT(TJclIntfSortedEntry,TJclIntfSortedEntryArray,TJclIntfSortedMap,TJclIntfAbstractContainer,IJclIntfMap,IJclIntfSortedMap,IJclIntfSet,IJclCollection, IJclValueOwner\,,
     FOwnsValues: Boolean;,
     { IJclValueOwner }
     function FreeValue(var Value: TObject): TObject;
@@ -285,9 +286,9 @@ type
     function FreeKey(var Key: IInterface): IInterface;
     function KeysCompare(const A\, B: IInterface): Integer;
     function ValuesCompare(A\, B: TObject): Integer;,
-    property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,const Key: IInterface,Value: TObject,const ToKey: IInterface,const FromKey\, ToKey: IInterface,const FromKey: IInterface)*)
+    property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,const ,IInterface,,TObject)*)
 
-(*$JPPEXPANDMACRO JCLSORTEDMAPINT(AnsiString,TObject,TJclAnsiStrSortedEntry,TJclAnsiStrSortedEntryArray,TJclAnsiStrSortedMap,TJclAnsiStrAbstractContainer,IJclAnsiStrMap,IJclAnsiStrSortedMap,IJclAnsiStrSet,IJclCollection, IJclStrContainer\, IJclAnsiStrContainer\, IJclValueOwner\,,
+(*$JPPEXPANDMACRO JCLSORTEDMAPINT(TJclAnsiStrSortedEntry,TJclAnsiStrSortedEntryArray,TJclAnsiStrSortedMap,TJclAnsiStrAbstractContainer,IJclAnsiStrMap,IJclAnsiStrSortedMap,IJclAnsiStrSet,IJclCollection, IJclStrContainer\, IJclAnsiStrContainer\, IJclValueOwner\,,
     FOwnsValues: Boolean;,
     { IJclValueOwner }
     function FreeValue(var Value: TObject): TObject;
@@ -296,9 +297,9 @@ type
     function FreeKey(var Key: AnsiString): AnsiString;
     function KeysCompare(const A\, B: AnsiString): Integer;
     function ValuesCompare(A\, B: TObject): Integer;,
-    property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,const Key: AnsiString,Value: TObject,const ToKey: AnsiString,const FromKey\, ToKey: AnsiString,const FromKey: AnsiString)*)
+    property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,const ,AnsiString,,TObject)*)
 
-(*$JPPEXPANDMACRO JCLSORTEDMAPINT(WideString,TObject,TJclWideStrSortedEntry,TJclWideStrSortedEntryArray,TJclWideStrSortedMap,TJclWideStrAbstractContainer,IJclWideStrMap,IJclWideStrSortedMap,IJclWideStrSet,IJclCollection, IJclStrContainer\, IJclWideStrContainer\, IJclValueOwner\,,
+(*$JPPEXPANDMACRO JCLSORTEDMAPINT(TJclWideStrSortedEntry,TJclWideStrSortedEntryArray,TJclWideStrSortedMap,TJclWideStrAbstractContainer,IJclWideStrMap,IJclWideStrSortedMap,IJclWideStrSet,IJclCollection, IJclStrContainer\, IJclWideStrContainer\, IJclValueOwner\,,
     FOwnsValues: Boolean;,
     { IJclValueOwner }
     function FreeValue(var Value: TObject): TObject;
@@ -307,7 +308,7 @@ type
     function FreeKey(var Key: WideString): WideString;
     function KeysCompare(const A\, B: WideString): Integer;
     function ValuesCompare(A\, B: TObject): Integer;,
-    property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,const Key: WideString,Value: TObject,const ToKey: WideString,const FromKey\, ToKey: WideString,const FromKey: WideString)*)
+    property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,const ,WideString,,TObject)*)
 
   {$IFDEF CONTAINER_ANSISTR}
   TJclStrSortedMap = TJclAnsiStrSortedMap;
@@ -316,7 +317,7 @@ type
   TJclStrSortedMap = TJclWideStrSortedMap;
   {$ENDIF CONTAINER_WIDESTR}
 
-(*$JPPEXPANDMACRO JCLSORTEDMAPINT(Single,TObject,TJclSingleSortedEntry,TJclSingleSortedEntryArray,TJclSingleSortedMap,TJclSingleAbstractContainer,IJclSingleMap,IJclSingleSortedMap,IJclSingleSet,IJclCollection, IJclSingleContainer\, IJclValueOwner\,,
+(*$JPPEXPANDMACRO JCLSORTEDMAPINT(TJclSingleSortedEntry,TJclSingleSortedEntryArray,TJclSingleSortedMap,TJclSingleAbstractContainer,IJclSingleMap,IJclSingleSortedMap,IJclSingleSet,IJclCollection, IJclSingleContainer\, IJclValueOwner\,,
     FOwnsValues: Boolean;,
     { IJclValueOwner }
     function FreeValue(var Value: TObject): TObject;
@@ -325,9 +326,9 @@ type
     function FreeKey(var Key: Single): Single;
     function KeysCompare(const A\, B: Single): Integer;
     function ValuesCompare(A\, B: TObject): Integer;,
-    property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,const Key: Single,Value: TObject,const ToKey: Single,const FromKey\, ToKey: Single,const FromKey: Single)*)
+    property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,const ,Single,,TObject)*)
 
-(*$JPPEXPANDMACRO JCLSORTEDMAPINT(Double,TObject,TJclDoubleSortedEntry,TJclDoubleSortedEntryArray,TJclDoubleSortedMap,TJclDoubleAbstractContainer,IJclDoubleMap,IJclDoubleSortedMap,IJclDoubleSet,IJclCollection, IJclDoubleContainer\, IJclValueOwner\,,
+(*$JPPEXPANDMACRO JCLSORTEDMAPINT(TJclDoubleSortedEntry,TJclDoubleSortedEntryArray,TJclDoubleSortedMap,TJclDoubleAbstractContainer,IJclDoubleMap,IJclDoubleSortedMap,IJclDoubleSet,IJclCollection, IJclDoubleContainer\, IJclValueOwner\,,
     FOwnsValues: Boolean;,
     { IJclValueOwner }
     function FreeValue(var Value: TObject): TObject;
@@ -336,9 +337,9 @@ type
     function FreeKey(var Key: Double): Double;
     function KeysCompare(const A\, B: Double): Integer;
     function ValuesCompare(A\, B: TObject): Integer;,
-    property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,const Key: Double,Value: TObject,const ToKey: Double,const FromKey\, ToKey: Double,const FromKey: Double)*)
+    property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,const ,Double,,TObject)*)
 
-(*$JPPEXPANDMACRO JCLSORTEDMAPINT(Extended,TObject,TJclExtendedSortedEntry,TJclExtendedSortedEntryArray,TJclExtendedSortedMap,TJclExtendedAbstractContainer,IJclExtendedMap,IJclExtendedSortedMap,IJclExtendedSet,IJclCollection, IJclExtendedContainer\, IJclValueOwner\,,
+(*$JPPEXPANDMACRO JCLSORTEDMAPINT(TJclExtendedSortedEntry,TJclExtendedSortedEntryArray,TJclExtendedSortedMap,TJclExtendedAbstractContainer,IJclExtendedMap,IJclExtendedSortedMap,IJclExtendedSet,IJclCollection, IJclExtendedContainer\, IJclValueOwner\,,
     FOwnsValues: Boolean;,
     { IJclValueOwner }
     function FreeValue(var Value: TObject): TObject;
@@ -347,7 +348,7 @@ type
     function FreeKey(var Key: Extended): Extended;
     function KeysCompare(const A\, B: Extended): Integer;
     function ValuesCompare(A\, B: TObject): Integer;,
-    property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,const Key: Extended,Value: TObject,const ToKey: Extended,const FromKey\, ToKey: Extended,const FromKey: Extended)*)
+    property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,const ,Extended,,TObject)*)
 
   {$IFDEF MATH_EXTENDED_PRECISION}
   TJclFloatSortedMap = TJclExtendedSortedMap;
@@ -359,7 +360,7 @@ type
   TJclFloatSortedMap = TJclSingleSortedMap;
   {$ENDIF MATH_SINGLE_PRECISION}
 
-(*$JPPEXPANDMACRO JCLSORTEDMAPINT(Integer,TObject,TJclIntegerSortedEntry,TJclIntegerSortedEntryArray,TJclIntegerSortedMap,TJclIntegerAbstractContainer,IJclIntegerMap,IJclIntegerSortedMap,IJclIntegerSet,IJclCollection, IJclValueOwner\,,
+(*$JPPEXPANDMACRO JCLSORTEDMAPINT(TJclIntegerSortedEntry,TJclIntegerSortedEntryArray,TJclIntegerSortedMap,TJclIntegerAbstractContainer,IJclIntegerMap,IJclIntegerSortedMap,IJclIntegerSet,IJclCollection, IJclValueOwner\,,
     FOwnsValues: Boolean;,
     { IJclValueOwner }
     function FreeValue(var Value: TObject): TObject;
@@ -368,9 +369,9 @@ type
     function FreeKey(var Key: Integer): Integer;
     function KeysCompare(A\, B: Integer): Integer;
     function ValuesCompare(A\, B: TObject): Integer;,
-    property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,Key: Integer,Value: TObject,ToKey: Integer,FromKey\, ToKey: Integer,FromKey: Integer)*)
+    property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,,Integer,,TObject)*)
 
-(*$JPPEXPANDMACRO JCLSORTEDMAPINT(Cardinal,TObject,TJclCardinalSortedEntry,TJclCardinalSortedEntryArray,TJclCardinalSortedMap,TJclCardinalAbstractContainer,IJclCardinalMap,IJclCardinalSortedMap,IJclCardinalSet,IJclCollection, IJclValueOwner\,,
+(*$JPPEXPANDMACRO JCLSORTEDMAPINT(TJclCardinalSortedEntry,TJclCardinalSortedEntryArray,TJclCardinalSortedMap,TJclCardinalAbstractContainer,IJclCardinalMap,IJclCardinalSortedMap,IJclCardinalSet,IJclCollection, IJclValueOwner\,,
     FOwnsValues: Boolean;,
     { IJclValueOwner }
     function FreeValue(var Value: TObject): TObject;
@@ -379,9 +380,9 @@ type
     function FreeKey(var Key: Cardinal): Cardinal;
     function KeysCompare(A\, B: Cardinal): Integer;
     function ValuesCompare(A\, B: TObject): Integer;,
-    property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,Key: Cardinal,Value: TObject,ToKey: Cardinal,FromKey\, ToKey: Cardinal,FromKey: Cardinal)*)
+    property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,,Cardinal,,TObject)*)
 
-(*$JPPEXPANDMACRO JCLSORTEDMAPINT(Int64,TObject,TJclInt64SortedEntry,TJclInt64SortedEntryArray,TJclInt64SortedMap,TJclInt64AbstractContainer,IJclInt64Map,IJclInt64SortedMap,IJclInt64Set,IJclCollection, IJclValueOwner\,,
+(*$JPPEXPANDMACRO JCLSORTEDMAPINT(TJclInt64SortedEntry,TJclInt64SortedEntryArray,TJclInt64SortedMap,TJclInt64AbstractContainer,IJclInt64Map,IJclInt64SortedMap,IJclInt64Set,IJclCollection, IJclValueOwner\,,
     FOwnsValues: Boolean;,
     { IJclValueOwner }
     function FreeValue(var Value: TObject): TObject;
@@ -390,10 +391,10 @@ type
     function FreeKey(var Key: Int64): Int64;
     function KeysCompare(const A\, B: Int64): Integer;
     function ValuesCompare(A\, B: TObject): Integer;,
-    property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,const Key: Int64,Value: TObject,const ToKey: Int64,const FromKey\, ToKey: Int64,const FromKey: Int64)*)
+    property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,const ,Int64,,TObject)*)
 
   {$IFNDEF CLR}
-(*$JPPEXPANDMACRO JCLSORTEDMAPINT(Pointer,TObject,TJclPtrSortedEntry,TJclPtrSortedEntryArray,TJclPtrSortedMap,TJclPtrAbstractContainer,IJclPtrMap,IJclPtrSortedMap,IJclPtrSet,IJclCollection, IJclValueOwner\,,
+(*$JPPEXPANDMACRO JCLSORTEDMAPINT(TJclPtrSortedEntry,TJclPtrSortedEntryArray,TJclPtrSortedMap,TJclPtrAbstractContainer,IJclPtrMap,IJclPtrSortedMap,IJclPtrSet,IJclCollection, IJclValueOwner\,,
     FOwnsValues: Boolean;,
     { IJclValueOwner }
     function FreeValue(var Value: TObject): TObject;
@@ -402,10 +403,10 @@ type
     function FreeKey(var Key: Pointer): Pointer;
     function KeysCompare(A\, B: Pointer): Integer;
     function ValuesCompare(A\, B: TObject): Integer;,
-    property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,Key: Pointer,Value: TObject,ToKey: Pointer,FromKey\, ToKey: Pointer,FromKey: Pointer)*)
+    property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,,Pointer,,TObject)*)
   {$ENDIF ~CLR}
 
-(*$JPPEXPANDMACRO JCLSORTEDMAPINT(TObject,TObject,TJclSortedEntry,TJclSortedEntryArray,TJclSortedMap,TJclAbstractContainerBase,IJclMap,IJclSortedMap,IJclSet,IJclCollection, IJclKeyOwner\, IJclValueOwner\,,
+(*$JPPEXPANDMACRO JCLSORTEDMAPINT(TJclSortedEntry,TJclSortedEntryArray,TJclSortedMap,TJclAbstractContainerBase,IJclMap,IJclSortedMap,IJclSet,IJclCollection, IJclKeyOwner\, IJclValueOwner\,,
     FOwnsKeys: Boolean;
     FOwnsValues: Boolean;,
     { IJclKeyOwner }
@@ -418,10 +419,10 @@ type
     function KeysCompare(A\, B: TObject): Integer;
     function ValuesCompare(A\, B: TObject): Integer;,
     property OwnsKeys: Boolean read FOwnsKeys;
-    property OwnsValues: Boolean read FOwnsValues;,; AOwnsKeys: Boolean,; AOwnsValues: Boolean,Key: TObject,Value: TObject,ToKey: TObject,FromKey\, ToKey: TObject,FromKey: TObject)*)
+    property OwnsValues: Boolean read FOwnsValues;,; AOwnsKeys: Boolean,; AOwnsValues: Boolean,,TObject,,TObject)*)
 
   {$IFDEF SUPPORTS_GENERICS}
-(*$JPPEXPANDMACRO JCLSORTEDMAPINT(TKey,TValue,TJclSortedEntry<TKey\,TValue>,TJclSortedEntryArray<TKey\,TValue>,TJclSortedMap<TKey\,TValue>,TJclAbstractContainerBase,IJclMap<TKey\,TValue>,IJclSortedMap<TKey\,TValue>,IJclSet<TKey>,IJclCollection<TValue>, IJclPairOwner<TKey\,TValue>\,,
+(*$JPPEXPANDMACRO JCLSORTEDMAPINT(TJclSortedEntry<TKey\,TValue>,TJclSortedEntryArray<TKey\,TValue>,TJclSortedMap<TKey\,TValue>,TJclAbstractContainerBase,IJclMap<TKey\,TValue>,IJclSortedMap<TKey\,TValue>,IJclSet<TKey>,IJclCollection<TValue>, IJclPairOwner<TKey\,TValue>\,,
     FOwnsKeys: Boolean;
     FOwnsValues: Boolean;,
     { IJclPairOwner }
@@ -434,7 +435,7 @@ type
     function CreateEmptyArrayList(ACapacity: Integer; AOwnsObjects: Boolean): IJclCollection<TValue>; virtual; abstract;
     function CreateEmptyArraySet(ACapacity: Integer; AOwnsObjects: Boolean): IJclSet<TKey>; virtual; abstract;,
     property OwnsKeys: Boolean read FOwnsKeys;
-    property OwnsValues: Boolean read FOwnsValues;,; AOwnsKeys: Boolean,; AOwnsValues: Boolean,const Key: TKey,const Value: TValue,const ToKey: TKey,const FromKey\, ToKey: TKey,const FromKey: TKey)*)
+    property OwnsValues: Boolean read FOwnsValues;,; AOwnsKeys: Boolean,; AOwnsValues: Boolean,const ,TKey,const ,TValue)*)
 
   // E = external helper to compare items
   TJclSortedMapE<TKey, TValue> = class(TJclSortedMap<TKey,TValue>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -556,7 +557,7 @@ begin
   Result := ItemsCompare(A, B);
 end;
 }
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntfIntfSortedMap,TJclIntfIntfSortedEntry,IJclIntfIntfMap,IJclIntfIntfSortedMap,IJclIntfSet,IJclIntfIterator,IJclIntfCollection,,,,const Key: IInterface,IInterface,nil,const Value: IInterface,IInterface,nil,const ToKey: IInterface,const FromKey\, ToKey: IInterface,const FromKey: IInterface)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntfIntfSortedMap,TJclIntfIntfSortedEntry,IJclIntfIntfMap,IJclIntfIntfSortedMap,IJclIntfSet,IJclIntfIterator,IJclIntfCollection,,,,const ,IInterface,nil,const ,IInterface,nil)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -610,7 +611,7 @@ begin
     Result := 0;
 end;
 }
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclAnsiStrIntfSortedMap,TJclAnsiStrIntfSortedEntry,IJclAnsiStrIntfMap,IJclAnsiStrIntfSortedMap,IJclAnsiStrSet,IJclAnsiStrIterator,IJclIntfCollection,,,,const Key: AnsiString,AnsiString,'',const Value: IInterface,IInterface,nil,const ToKey: AnsiString,const FromKey\, ToKey: AnsiString,const FromKey: AnsiString)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclAnsiStrIntfSortedMap,TJclAnsiStrIntfSortedEntry,IJclAnsiStrIntfMap,IJclAnsiStrIntfSortedMap,IJclAnsiStrSet,IJclAnsiStrIterator,IJclIntfCollection,,,,const ,AnsiString,'',const ,IInterface,nil)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -664,7 +665,7 @@ begin
   Result := ItemsCompare(A, B);
 end;
 }
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntfAnsiStrSortedMap,TJclIntfAnsiStrSortedEntry,IJclIntfAnsiStrMap,IJclIntfAnsiStrSortedMap,IJclIntfSet,IJclIntfIterator,IJclAnsiStrCollection,,,,const Key: IInterface,IInterface,nil,const Value: AnsiString,AnsiString,'',const ToKey: IInterface,const FromKey\, ToKey: IInterface,const FromKey: IInterface)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntfAnsiStrSortedMap,TJclIntfAnsiStrSortedEntry,IJclIntfAnsiStrMap,IJclIntfAnsiStrSortedMap,IJclIntfSet,IJclIntfIterator,IJclAnsiStrCollection,,,,const ,IInterface,nil,const ,AnsiString,'')}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -712,7 +713,7 @@ begin
   Result := ItemsCompare(A, B);
 end;
 }
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclAnsiStrAnsiStrSortedMap,TJclAnsiStrAnsiStrSortedEntry,IJclAnsiStrAnsiStrMap,IJclAnsiStrAnsiStrSortedMap,IJclAnsiStrSet,IJclAnsiStrIterator,IJclAnsiStrCollection,,,,const Key: AnsiString,AnsiString,'',const Value: AnsiString,AnsiString,'',const ToKey: AnsiString,const FromKey\, ToKey: AnsiString,const FromKey: AnsiString)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclAnsiStrAnsiStrSortedMap,TJclAnsiStrAnsiStrSortedEntry,IJclAnsiStrAnsiStrMap,IJclAnsiStrAnsiStrSortedMap,IJclAnsiStrSet,IJclAnsiStrIterator,IJclAnsiStrCollection,,,,const ,AnsiString,'',const ,AnsiString,'')}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -766,7 +767,7 @@ begin
     Result := 0;
 end;
 }
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclWideStrIntfSortedMap,TJclWideStrIntfSortedEntry,IJclWideStrIntfMap,IJclWideStrIntfSortedMap,IJclWideStrSet,IJclWideStrIterator,IJclIntfCollection,,,,const Key: WideString,WideString,'',const Value: IInterface,IInterface,nil,const ToKey: WideString,const FromKey\, ToKey: WideString,const FromKey: WideString)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclWideStrIntfSortedMap,TJclWideStrIntfSortedEntry,IJclWideStrIntfMap,IJclWideStrIntfSortedMap,IJclWideStrSet,IJclWideStrIterator,IJclIntfCollection,,,,const ,WideString,'',const ,IInterface,nil)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -820,7 +821,7 @@ begin
   Result := ItemsCompare(A, B);
 end;
 }
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntfWideStrSortedMap,TJclIntfWideStrSortedEntry,IJclIntfWideStrMap,IJclIntfWideStrSortedMap,IJclIntfSet,IJclIntfIterator,IJclWideStrCollection,,,,const Key: IInterface,IInterface,nil,const Value: WideString,WideString,'',const ToKey: IInterface,const FromKey\, ToKey: IInterface,const FromKey: IInterface)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntfWideStrSortedMap,TJclIntfWideStrSortedEntry,IJclIntfWideStrMap,IJclIntfWideStrSortedMap,IJclIntfSet,IJclIntfIterator,IJclWideStrCollection,,,,const ,IInterface,nil,const ,WideString,'')}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -868,7 +869,7 @@ begin
   Result := ItemsCompare(A, B);
 end;
 }
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclWideStrWideStrSortedMap,TJclWideStrWideStrSortedEntry,IJclWideStrWideStrMap,IJclWideStrWideStrSortedMap,IJclWideStrSet,IJclWideStrIterator,IJclWideStrCollection,,,,const Key: WideString,WideString,'',const Value: WideString,WideString,'',const ToKey: WideString,const FromKey\, ToKey: WideString,const FromKey: WideString)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclWideStrWideStrSortedMap,TJclWideStrWideStrSortedEntry,IJclWideStrWideStrMap,IJclWideStrWideStrSortedMap,IJclWideStrSet,IJclWideStrIterator,IJclWideStrCollection,,,,const ,WideString,'',const ,WideString,'')}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -922,7 +923,7 @@ begin
     Result := 0;
 end;
 }
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclSingleIntfSortedMap,TJclSingleIntfSortedEntry,IJclSingleIntfMap,IJclSingleIntfSortedMap,IJclSingleSet,IJclSingleIterator,IJclIntfCollection,,,,const Key: Single,Single,0.0,const Value: IInterface,IInterface,nil,const ToKey: Single,const FromKey\, ToKey: Single,const FromKey: Single)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclSingleIntfSortedMap,TJclSingleIntfSortedEntry,IJclSingleIntfMap,IJclSingleIntfSortedMap,IJclSingleSet,IJclSingleIterator,IJclIntfCollection,,,,const ,Single,0.0,const ,IInterface,nil)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -976,7 +977,7 @@ begin
   Result := ItemsCompare(A, B);
 end;
 }
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntfSingleSortedMap,TJclIntfSingleSortedEntry,IJclIntfSingleMap,IJclIntfSingleSortedMap,IJclIntfSet,IJclIntfIterator,IJclSingleCollection,,,,const Key: IInterface,IInterface,nil,const Value: Single,Single,0.0,const ToKey: IInterface,const FromKey\, ToKey: IInterface,const FromKey: IInterface)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntfSingleSortedMap,TJclIntfSingleSortedEntry,IJclIntfSingleMap,IJclIntfSingleSortedMap,IJclIntfSet,IJclIntfIterator,IJclSingleCollection,,,,const ,IInterface,nil,const ,Single,0.0)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -1024,7 +1025,7 @@ begin
   Result := ItemsCompare(A, B);
 end;
 }
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclSingleSingleSortedMap,TJclSingleSingleSortedEntry,IJclSingleSingleMap,IJclSingleSingleSortedMap,IJclSingleSet,IJclSingleIterator,IJclSingleCollection,,,,const Key: Single,Single,0.0,const Value: Single,Single,0.0,const ToKey: Single,const FromKey\, ToKey: Single,const FromKey: Single)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclSingleSingleSortedMap,TJclSingleSingleSortedEntry,IJclSingleSingleMap,IJclSingleSingleSortedMap,IJclSingleSet,IJclSingleIterator,IJclSingleCollection,,,,const ,Single,0.0,const ,Single,0.0)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -1078,7 +1079,7 @@ begin
     Result := 0;
 end;
 }
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclDoubleIntfSortedMap,TJclDoubleIntfSortedEntry,IJclDoubleIntfMap,IJclDoubleIntfSortedMap,IJclDoubleSet,IJclDoubleIterator,IJclIntfCollection,,,,const Key: Double,Double,0.0,const Value: IInterface,IInterface,nil,const ToKey: Double,const FromKey\, ToKey: Double,const FromKey: Double)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclDoubleIntfSortedMap,TJclDoubleIntfSortedEntry,IJclDoubleIntfMap,IJclDoubleIntfSortedMap,IJclDoubleSet,IJclDoubleIterator,IJclIntfCollection,,,,const ,Double,0.0,const ,IInterface,nil)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -1132,7 +1133,7 @@ begin
   Result := ItemsCompare(A, B);
 end;
 }
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntfDoubleSortedMap,TJclIntfDoubleSortedEntry,IJclIntfDoubleMap,IJclIntfDoubleSortedMap,IJclIntfSet,IJclIntfIterator,IJclDoubleCollection,,,,const Key: IInterface,IInterface,nil,const Value: Double,Double,0.0,const ToKey: IInterface,const FromKey\, ToKey: IInterface,const FromKey: IInterface)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntfDoubleSortedMap,TJclIntfDoubleSortedEntry,IJclIntfDoubleMap,IJclIntfDoubleSortedMap,IJclIntfSet,IJclIntfIterator,IJclDoubleCollection,,,,const ,IInterface,nil,const ,Double,0.0)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -1180,7 +1181,7 @@ begin
   Result := ItemsCompare(A, B);
 end;
 }
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclDoubleDoubleSortedMap,TJclDoubleDoubleSortedEntry,IJclDoubleDoubleMap,IJclDoubleDoubleSortedMap,IJclDoubleSet,IJclDoubleIterator,IJclDoubleCollection,,,,const Key: Double,Double,0.0,const Value: Double,Double,0.0,const ToKey: Double,const FromKey\, ToKey: Double,const FromKey: Double)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclDoubleDoubleSortedMap,TJclDoubleDoubleSortedEntry,IJclDoubleDoubleMap,IJclDoubleDoubleSortedMap,IJclDoubleSet,IJclDoubleIterator,IJclDoubleCollection,,,,const ,Double,0.0,const ,Double,0.0)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -1234,7 +1235,7 @@ begin
     Result := 0;
 end;
 }
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclExtendedIntfSortedMap,TJclExtendedIntfSortedEntry,IJclExtendedIntfMap,IJclExtendedIntfSortedMap,IJclExtendedSet,IJclExtendedIterator,IJclIntfCollection,,,,const Key: Extended,Extended,0.0,const Value: IInterface,IInterface,nil,const ToKey: Extended,const FromKey\, ToKey: Extended,const FromKey: Extended)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclExtendedIntfSortedMap,TJclExtendedIntfSortedEntry,IJclExtendedIntfMap,IJclExtendedIntfSortedMap,IJclExtendedSet,IJclExtendedIterator,IJclIntfCollection,,,,const ,Extended,0.0,const ,IInterface,nil)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -1288,7 +1289,7 @@ begin
   Result := ItemsCompare(A, B);
 end;
 }
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntfExtendedSortedMap,TJclIntfExtendedSortedEntry,IJclIntfExtendedMap,IJclIntfExtendedSortedMap,IJclIntfSet,IJclIntfIterator,IJclExtendedCollection,,,,const Key: IInterface,IInterface,nil,const Value: Extended,Extended,0.0,const ToKey: IInterface,const FromKey\, ToKey: IInterface,const FromKey: IInterface)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntfExtendedSortedMap,TJclIntfExtendedSortedEntry,IJclIntfExtendedMap,IJclIntfExtendedSortedMap,IJclIntfSet,IJclIntfIterator,IJclExtendedCollection,,,,const ,IInterface,nil,const ,Extended,0.0)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -1336,7 +1337,7 @@ begin
   Result := ItemsCompare(A, B);
 end;
 }
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclExtendedExtendedSortedMap,TJclExtendedExtendedSortedEntry,IJclExtendedExtendedMap,IJclExtendedExtendedSortedMap,IJclExtendedSet,IJclExtendedIterator,IJclExtendedCollection,,,,const Key: Extended,Extended,0.0,const Value: Extended,Extended,0.0,const ToKey: Extended,const FromKey\, ToKey: Extended,const FromKey: Extended)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclExtendedExtendedSortedMap,TJclExtendedExtendedSortedEntry,IJclExtendedExtendedMap,IJclExtendedExtendedSortedMap,IJclExtendedSet,IJclExtendedIterator,IJclExtendedCollection,,,,const ,Extended,0.0,const ,Extended,0.0)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -1390,7 +1391,7 @@ begin
     Result := 0;
 end;
 }
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntegerIntfSortedMap,TJclIntegerIntfSortedEntry,IJclIntegerIntfMap,IJclIntegerIntfSortedMap,IJclIntegerSet,IJclIntegerIterator,IJclIntfCollection,,,,Key: Integer,Integer,0,const Value: IInterface,IInterface,nil,ToKey: Integer,FromKey\, ToKey: Integer,FromKey: Integer)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntegerIntfSortedMap,TJclIntegerIntfSortedEntry,IJclIntegerIntfMap,IJclIntegerIntfSortedMap,IJclIntegerSet,IJclIntegerIterator,IJclIntfCollection,,,,,Integer,0,const ,IInterface,nil)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -1444,7 +1445,7 @@ begin
   Result := ItemsCompare(A, B);
 end;
 }
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntfIntegerSortedMap,TJclIntfIntegerSortedEntry,IJclIntfIntegerMap,IJclIntfIntegerSortedMap,IJclIntfSet,IJclIntfIterator,IJclIntegerCollection,,,,const Key: IInterface,IInterface,nil,Value: Integer,Integer,0,const ToKey: IInterface,const FromKey\, ToKey: IInterface,const FromKey: IInterface)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntfIntegerSortedMap,TJclIntfIntegerSortedEntry,IJclIntfIntegerMap,IJclIntfIntegerSortedMap,IJclIntfSet,IJclIntfIterator,IJclIntegerCollection,,,,const ,IInterface,nil,,Integer,0)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -1492,7 +1493,7 @@ begin
   Result := ItemsCompare(A, B);
 end;
 }
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntegerIntegerSortedMap,TJclIntegerIntegerSortedEntry,IJclIntegerIntegerMap,IJclIntegerIntegerSortedMap,IJclIntegerSet,IJclIntegerIterator,IJclIntegerCollection,,,,Key: Integer,Integer,0,Value: Integer,Integer,0,ToKey: Integer,FromKey\, ToKey: Integer,FromKey: Integer)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntegerIntegerSortedMap,TJclIntegerIntegerSortedEntry,IJclIntegerIntegerMap,IJclIntegerIntegerSortedMap,IJclIntegerSet,IJclIntegerIterator,IJclIntegerCollection,,,,,Integer,0,,Integer,0)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -1546,7 +1547,7 @@ begin
     Result := 0;
 end;
 }
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclCardinalIntfSortedMap,TJclCardinalIntfSortedEntry,IJclCardinalIntfMap,IJclCardinalIntfSortedMap,IJclCardinalSet,IJclCardinalIterator,IJclIntfCollection,,,,Key: Cardinal,Cardinal,0,const Value: IInterface,IInterface,nil,ToKey: Cardinal,FromKey\, ToKey: Cardinal,FromKey: Cardinal)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclCardinalIntfSortedMap,TJclCardinalIntfSortedEntry,IJclCardinalIntfMap,IJclCardinalIntfSortedMap,IJclCardinalSet,IJclCardinalIterator,IJclIntfCollection,,,,,Cardinal,0,const ,IInterface,nil)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -1600,7 +1601,7 @@ begin
   Result := ItemsCompare(A, B);
 end;
 }
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntfCardinalSortedMap,TJclIntfCardinalSortedEntry,IJclIntfCardinalMap,IJclIntfCardinalSortedMap,IJclIntfSet,IJclIntfIterator,IJclCardinalCollection,,,,const Key: IInterface,IInterface,nil,Value: Cardinal,Cardinal,0,const ToKey: IInterface,const FromKey\, ToKey: IInterface,const FromKey: IInterface)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntfCardinalSortedMap,TJclIntfCardinalSortedEntry,IJclIntfCardinalMap,IJclIntfCardinalSortedMap,IJclIntfSet,IJclIntfIterator,IJclCardinalCollection,,,,const ,IInterface,nil,,Cardinal,0)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -1648,7 +1649,7 @@ begin
   Result := ItemsCompare(A, B);
 end;
 }
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclCardinalCardinalSortedMap,TJclCardinalCardinalSortedEntry,IJclCardinalCardinalMap,IJclCardinalCardinalSortedMap,IJclCardinalSet,IJclCardinalIterator,IJclCardinalCollection,,,,Key: Cardinal,Cardinal,0,Value: Cardinal,Cardinal,0,ToKey: Cardinal,FromKey\, ToKey: Cardinal,FromKey: Cardinal)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclCardinalCardinalSortedMap,TJclCardinalCardinalSortedEntry,IJclCardinalCardinalMap,IJclCardinalCardinalSortedMap,IJclCardinalSet,IJclCardinalIterator,IJclCardinalCollection,,,,,Cardinal,0,,Cardinal,0)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -1702,7 +1703,7 @@ begin
     Result := 0;
 end;
 }
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclInt64IntfSortedMap,TJclInt64IntfSortedEntry,IJclInt64IntfMap,IJclInt64IntfSortedMap,IJclInt64Set,IJclInt64Iterator,IJclIntfCollection,,,,const Key: Int64,Int64,0,const Value: IInterface,IInterface,nil,const ToKey: Int64,const FromKey\, ToKey: Int64,const FromKey: Int64)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclInt64IntfSortedMap,TJclInt64IntfSortedEntry,IJclInt64IntfMap,IJclInt64IntfSortedMap,IJclInt64Set,IJclInt64Iterator,IJclIntfCollection,,,,const ,Int64,0,const ,IInterface,nil)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -1756,7 +1757,7 @@ begin
   Result := ItemsCompare(A, B);
 end;
 }
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntfInt64SortedMap,TJclIntfInt64SortedEntry,IJclIntfInt64Map,IJclIntfInt64SortedMap,IJclIntfSet,IJclIntfIterator,IJclInt64Collection,,,,const Key: IInterface,IInterface,nil,const Value: Int64,Int64,0,const ToKey: IInterface,const FromKey\, ToKey: IInterface,const FromKey: IInterface)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntfInt64SortedMap,TJclIntfInt64SortedEntry,IJclIntfInt64Map,IJclIntfInt64SortedMap,IJclIntfSet,IJclIntfIterator,IJclInt64Collection,,,,const ,IInterface,nil,const ,Int64,0)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -1804,7 +1805,7 @@ begin
   Result := ItemsCompare(A, B);
 end;
 }
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclInt64Int64SortedMap,TJclInt64Int64SortedEntry,IJclInt64Int64Map,IJclInt64Int64SortedMap,IJclInt64Set,IJclInt64Iterator,IJclInt64Collection,,,,const Key: Int64,Int64,0,const Value: Int64,Int64,0,const ToKey: Int64,const FromKey\, ToKey: Int64,const FromKey: Int64)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclInt64Int64SortedMap,TJclInt64Int64SortedEntry,IJclInt64Int64Map,IJclInt64Int64SortedMap,IJclInt64Set,IJclInt64Iterator,IJclInt64Collection,,,,const ,Int64,0,const ,Int64,0)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -1859,7 +1860,7 @@ begin
     Result := 0;
 end;
 }
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclPtrIntfSortedMap,TJclPtrIntfSortedEntry,IJclPtrIntfMap,IJclPtrIntfSortedMap,IJclPtrSet,IJclPtrIterator,IJclIntfCollection,,,,Key: Pointer,Pointer,nil,const Value: IInterface,IInterface,nil,ToKey: Pointer,FromKey\, ToKey: Pointer,FromKey: Pointer)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclPtrIntfSortedMap,TJclPtrIntfSortedEntry,IJclPtrIntfMap,IJclPtrIntfSortedMap,IJclPtrSet,IJclPtrIterator,IJclIntfCollection,,,,,Pointer,nil,const ,IInterface,nil)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -1913,7 +1914,7 @@ begin
   Result := ItemsCompare(A, B);
 end;
 }
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntfPtrSortedMap,TJclIntfPtrSortedEntry,IJclIntfPtrMap,IJclIntfPtrSortedMap,IJclIntfSet,IJclIntfIterator,IJclPtrCollection,,,,const Key: IInterface,IInterface,nil,Value: Pointer,Pointer,nil,const ToKey: IInterface,const FromKey\, ToKey: IInterface,const FromKey: IInterface)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntfPtrSortedMap,TJclIntfPtrSortedEntry,IJclIntfPtrMap,IJclIntfPtrSortedMap,IJclIntfSet,IJclIntfIterator,IJclPtrCollection,,,,const ,IInterface,nil,,Pointer,nil)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -1961,7 +1962,7 @@ begin
   Result := ItemsCompare(A, B);
 end;
 }
-{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclPtrPtrSortedMap,TJclPtrPtrSortedEntry,IJclPtrPtrMap,IJclPtrPtrSortedMap,IJclPtrSet,IJclPtrIterator,IJclPtrCollection,,,,Key: Pointer,Pointer,nil,Value: Pointer,Pointer,nil,ToKey: Pointer,FromKey\, ToKey: Pointer,FromKey: Pointer)}
+{$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclPtrPtrSortedMap,TJclPtrPtrSortedEntry,IJclPtrPtrMap,IJclPtrPtrSortedMap,IJclPtrSet,IJclPtrIterator,IJclPtrCollection,,,,,Pointer,nil,,Pointer,nil)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -2036,7 +2037,7 @@ begin
 end;
 }
 {$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntfSortedMap,TJclIntfSortedEntry,IJclIntfMap,IJclIntfSortedMap,IJclIntfSet,IJclIntfIterator,IJclCollection,,; AOwnsValues: Boolean,
-  FOwnsValues := AOwnsValues;,const Key: IInterface,IInterface,nil,Value: TObject,TObject,nil,const ToKey: IInterface,const FromKey\, ToKey: IInterface,const FromKey: IInterface)}
+  FOwnsValues := AOwnsValues;,const ,IInterface,nil,,TObject,nil)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -2104,7 +2105,7 @@ begin
 end;
 }
 {$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclAnsiStrSortedMap,TJclAnsiStrSortedEntry,IJclAnsiStrMap,IJclAnsiStrSortedMap,IJclAnsiStrSet,IJclAnsiStrIterator,IJclCollection,,; AOwnsValues: Boolean,
-  FOwnsValues := AOwnsValues;,const Key: AnsiString,AnsiString,'',Value: TObject,TObject,nil,const ToKey: AnsiString,const FromKey\, ToKey: AnsiString,const FromKey: AnsiString)}
+  FOwnsValues := AOwnsValues;,const ,AnsiString,'',,TObject,nil)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -2172,7 +2173,7 @@ begin
 end;
 }
 {$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclWideStrSortedMap,TJclWideStrSortedEntry,IJclWideStrMap,IJclWideStrSortedMap,IJclWideStrSet,IJclWideStrIterator,IJclCollection,,; AOwnsValues: Boolean,
-  FOwnsValues := AOwnsValues;,const Key: WideString,WideString,'',Value: TObject,TObject,nil,const ToKey: WideString,const FromKey\, ToKey: WideString,const FromKey: WideString)}
+  FOwnsValues := AOwnsValues;,const ,WideString,'',,TObject,nil)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -2240,7 +2241,7 @@ begin
 end;
 }
 {$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclSingleSortedMap,TJclSingleSortedEntry,IJclSingleMap,IJclSingleSortedMap,IJclSingleSet,IJclSingleIterator,IJclCollection,,; AOwnsValues: Boolean,
-  FOwnsValues := AOwnsValues;,const Key: Single,Single,0.0,Value: TObject,TObject,nil,const ToKey: Single,const FromKey\, ToKey: Single,const FromKey: Single)}
+  FOwnsValues := AOwnsValues;,const ,Single,0.0,,TObject,nil)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -2308,7 +2309,7 @@ begin
 end;
 }
 {$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclDoubleSortedMap,TJclDoubleSortedEntry,IJclDoubleMap,IJclDoubleSortedMap,IJclDoubleSet,IJclDoubleIterator,IJclCollection,,; AOwnsValues: Boolean,
-  FOwnsValues := AOwnsValues;,const Key: Double,Double,0.0,Value: TObject,TObject,nil,const ToKey: Double,const FromKey\, ToKey: Double,const FromKey: Double)}
+  FOwnsValues := AOwnsValues;,const ,Double,0.0,,TObject,nil)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -2376,7 +2377,7 @@ begin
 end;
 }
 {$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclExtendedSortedMap,TJclExtendedSortedEntry,IJclExtendedMap,IJclExtendedSortedMap,IJclExtendedSet,IJclExtendedIterator,IJclCollection,,; AOwnsValues: Boolean,
-  FOwnsValues := AOwnsValues;,const Key: Extended,Extended,0.0,Value: TObject,TObject,nil,const ToKey: Extended,const FromKey\, ToKey: Extended,const FromKey: Extended)}
+  FOwnsValues := AOwnsValues;,const ,Extended,0.0,,TObject,nil)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -2444,7 +2445,7 @@ begin
 end;
 }
 {$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntegerSortedMap,TJclIntegerSortedEntry,IJclIntegerMap,IJclIntegerSortedMap,IJclIntegerSet,IJclIntegerIterator,IJclCollection,,; AOwnsValues: Boolean,
-  FOwnsValues := AOwnsValues;,Key: Integer,Integer,0,Value: TObject,TObject,nil,ToKey: Integer,FromKey\, ToKey: Integer,FromKey: Integer)}
+  FOwnsValues := AOwnsValues;,,Integer,0,,TObject,nil)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -2512,7 +2513,7 @@ begin
 end;
 }
 {$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclCardinalSortedMap,TJclCardinalSortedEntry,IJclCardinalMap,IJclCardinalSortedMap,IJclCardinalSet,IJclCardinalIterator,IJclCollection,,; AOwnsValues: Boolean,
-  FOwnsValues := AOwnsValues;,Key: Cardinal,Cardinal,0,Value: TObject,TObject,nil,ToKey: Cardinal,FromKey\, ToKey: Cardinal,FromKey: Cardinal)}
+  FOwnsValues := AOwnsValues;,,Cardinal,0,,TObject,nil)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -2580,7 +2581,7 @@ begin
 end;
 }
 {$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclInt64SortedMap,TJclInt64SortedEntry,IJclInt64Map,IJclInt64SortedMap,IJclInt64Set,IJclInt64Iterator,IJclCollection,,; AOwnsValues: Boolean,
-  FOwnsValues := AOwnsValues;,const Key: Int64,Int64,0,Value: TObject,TObject,nil,const ToKey: Int64,const FromKey\, ToKey: Int64,const FromKey: Int64)}
+  FOwnsValues := AOwnsValues;,const ,Int64,0,,TObject,nil)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -2649,7 +2650,7 @@ begin
 end;
 }
 {$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclPtrSortedMap,TJclPtrSortedEntry,IJclPtrMap,IJclPtrSortedMap,IJclPtrSet,IJclPtrIterator,IJclCollection,,; AOwnsValues: Boolean,
-  FOwnsValues := AOwnsValues;,Key: Pointer,Pointer,nil,Value: TObject,TObject,nil,ToKey: Pointer,FromKey\, ToKey: Pointer,FromKey: Pointer)}
+  FOwnsValues := AOwnsValues;,,Pointer,nil,,TObject,nil)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -2738,7 +2739,7 @@ end;
 }
 {$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclSortedMap,TJclSortedEntry,IJclMap,IJclSortedMap,IJclSet,IJclIterator,IJclCollection,; AOwnsKeys: Boolean,; AOwnsValues: Boolean,
   FOwnsKeys := AOwnsKeys;
-  FOwnsValues := AOwnsValues;,Key: TObject,TObject,nil,Value: TObject,TObject,nil,ToKey: TObject,FromKey\, ToKey: TObject,FromKey: TObject)}
+  FOwnsValues := AOwnsValues;,,TObject,nil,,TObject,nil)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -2800,7 +2801,7 @@ end;
 {$JPPDEFINEMACRO VALUESCOMPARE}
 {$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclSortedMap<TKey\,TValue>,TJclSortedEntry<TKey\,TValue>,IJclMap<TKey\,TValue>,IJclSortedMap<TKey\,TValue>,IJclSet<TKey>,IJclIterator<TKey>,IJclCollection<TValue>,; AOwnsKeys: Boolean,; AOwnsValues: Boolean,
   FOwnsKeys := AOwnsKeys;
-  FOwnsValues := AOwnsValues;,const Key: TKey,TKey,Default(TKey),const Value: TValue,TValue,Default(TValue),const ToKey: TKey,const FromKey\, ToKey: TKey,const FromKey: TKey)}
+  FOwnsValues := AOwnsValues;,const ,TKey,Default(TKey),const ,TValue,Default(TValue))}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}

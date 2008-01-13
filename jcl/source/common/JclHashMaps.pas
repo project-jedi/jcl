@@ -58,7 +58,6 @@ type
   // Result must be in 0..Range-1
   TJclHashFunction = function(Key, Range: Integer): Integer;
 
-
   TJclIntfIntfHashEntry = record
     Key: IInterface;
     Value: IInterface;
@@ -114,7 +113,6 @@ type
     property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
-
   TJclAnsiStrIntfHashEntry = record
     Key: AnsiString;
     Value: IInterface;
@@ -169,7 +167,6 @@ type
     destructor Destroy; override;
     property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
-
 
   TJclIntfAnsiStrHashEntry = record
     Key: IInterface;
@@ -227,7 +224,6 @@ type
     property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
-
   TJclAnsiStrAnsiStrHashEntry = record
     Key: AnsiString;
     Value: AnsiString;
@@ -282,7 +278,6 @@ type
     destructor Destroy; override;
     property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
-
 
   TJclWideStrIntfHashEntry = record
     Key: WideString;
@@ -339,7 +334,6 @@ type
     property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
-
   TJclIntfWideStrHashEntry = record
     Key: IInterface;
     Value: WideString;
@@ -395,7 +389,6 @@ type
     destructor Destroy; override;
     property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
-
 
   TJclWideStrWideStrHashEntry = record
     Key: WideString;
@@ -463,7 +456,6 @@ type
   TJclStrStrHashMap = TJclWideStrWideStrHashMap;
   {$ENDIF CONTAINER_WIDESTR}
 
-
   TJclSingleIntfHashEntry = record
     Key: Single;
     Value: IInterface;
@@ -518,7 +510,6 @@ type
     destructor Destroy; override;
     property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
-
 
   TJclIntfSingleHashEntry = record
     Key: IInterface;
@@ -576,7 +567,6 @@ type
     property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
-
   TJclSingleSingleHashEntry = record
     Key: Single;
     Value: Single;
@@ -632,7 +622,6 @@ type
     property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
-
   TJclDoubleIntfHashEntry = record
     Key: Double;
     Value: IInterface;
@@ -687,7 +676,6 @@ type
     destructor Destroy; override;
     property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
-
 
   TJclIntfDoubleHashEntry = record
     Key: IInterface;
@@ -745,7 +733,6 @@ type
     property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
-
   TJclDoubleDoubleHashEntry = record
     Key: Double;
     Value: Double;
@@ -800,7 +787,6 @@ type
     destructor Destroy; override;
     property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
-
 
   TJclExtendedIntfHashEntry = record
     Key: Extended;
@@ -857,7 +843,6 @@ type
     property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
-
   TJclIntfExtendedHashEntry = record
     Key: IInterface;
     Value: Extended;
@@ -913,7 +898,6 @@ type
     destructor Destroy; override;
     property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
-
 
   TJclExtendedExtendedHashEntry = record
     Key: Extended;
@@ -986,7 +970,6 @@ type
   TJclFloatFloatHashMap = TJclSingleSingleHashMap;
   {$ENDIF MATH_SINGLE_PRECISION}
 
-
   TJclIntegerIntfHashEntry = record
     Key: Integer;
     Value: IInterface;
@@ -1041,7 +1024,6 @@ type
     destructor Destroy; override;
     property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
-
 
   TJclIntfIntegerHashEntry = record
     Key: IInterface;
@@ -1099,7 +1081,6 @@ type
     property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
-
   TJclIntegerIntegerHashEntry = record
     Key: Integer;
     Value: Integer;
@@ -1155,7 +1136,6 @@ type
     property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
-
   TJclCardinalIntfHashEntry = record
     Key: Cardinal;
     Value: IInterface;
@@ -1210,7 +1190,6 @@ type
     destructor Destroy; override;
     property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
-
 
   TJclIntfCardinalHashEntry = record
     Key: IInterface;
@@ -1268,7 +1247,6 @@ type
     property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
-
   TJclCardinalCardinalHashEntry = record
     Key: Cardinal;
     Value: Cardinal;
@@ -1324,7 +1302,6 @@ type
     property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
-
   TJclInt64IntfHashEntry = record
     Key: Int64;
     Value: IInterface;
@@ -1379,7 +1356,6 @@ type
     destructor Destroy; override;
     property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
-
 
   TJclIntfInt64HashEntry = record
     Key: IInterface;
@@ -1437,7 +1413,6 @@ type
     property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
-
   TJclInt64Int64HashEntry = record
     Key: Int64;
     Value: Int64;
@@ -1494,7 +1469,6 @@ type
   end;
 
   {$IFNDEF CLR}
-
   TJclPtrIntfHashEntry = record
     Key: Pointer;
     Value: IInterface;
@@ -1549,7 +1523,6 @@ type
     destructor Destroy; override;
     property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
-
 
   TJclIntfPtrHashEntry = record
     Key: IInterface;
@@ -1607,7 +1580,6 @@ type
     property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
-
   TJclPtrPtrHashEntry = record
     Key: Pointer;
     Value: Pointer;
@@ -1663,7 +1635,6 @@ type
     property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
   {$ENDIF ~CLR}
-
 
   TJclIntfHashEntry = record
     Key: IInterface;
@@ -1725,7 +1696,6 @@ type
     property OwnsValues: Boolean read FOwnsValues;
   end;
 
-
   TJclAnsiStrHashEntry = record
     Key: AnsiString;
     Value: TObject;
@@ -1784,7 +1754,6 @@ type
     property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
     property OwnsValues: Boolean read FOwnsValues;
   end;
-
 
   TJclWideStrHashEntry = record
     Key: WideString;
@@ -1852,7 +1821,6 @@ type
   TJclStrHashMap = TJclWideStrHashMap;
   {$ENDIF CONTAINER_WIDESTR}
 
-
   TJclSingleHashEntry = record
     Key: Single;
     Value: TObject;
@@ -1912,7 +1880,6 @@ type
     property OwnsValues: Boolean read FOwnsValues;
   end;
 
-
   TJclDoubleHashEntry = record
     Key: Double;
     Value: TObject;
@@ -1971,7 +1938,6 @@ type
     property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
     property OwnsValues: Boolean read FOwnsValues;
   end;
-
 
   TJclExtendedHashEntry = record
     Key: Extended;
@@ -2042,7 +2008,6 @@ type
   TJclFloatHashMap = TJclSingleHashMap;
   {$ENDIF MATH_SINGLE_PRECISION}
 
-
   TJclIntegerHashEntry = record
     Key: Integer;
     Value: TObject;
@@ -2102,7 +2067,6 @@ type
     property OwnsValues: Boolean read FOwnsValues;
   end;
 
-
   TJclCardinalHashEntry = record
     Key: Cardinal;
     Value: TObject;
@@ -2161,7 +2125,6 @@ type
     property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
     property OwnsValues: Boolean read FOwnsValues;
   end;
-
 
   TJclInt64HashEntry = record
     Key: Int64;
@@ -2223,7 +2186,6 @@ type
   end;
 
   {$IFNDEF CLR}
-
   TJclPtrHashEntry = record
     Key: Pointer;
     Value: TObject;
@@ -2283,7 +2245,6 @@ type
     property OwnsValues: Boolean read FOwnsValues;
   end;
   {$ENDIF ~CLR}
-
 
   TJclHashEntry = record
     Key: TObject;
@@ -2350,7 +2311,6 @@ type
   end;
 
   {$IFDEF SUPPORTS_GENERICS}
-
   TJclHashEntry<TKey,TValue> = record
     Key: TKey;
     Value: TValue;
@@ -2515,7 +2475,6 @@ const
 begin
   Result := Trunc(Range * (Frac(Key * A)));
 end;
-
 
 //=== { TJclIntfIntfHashMap } ==========================================
 
@@ -2724,8 +2683,6 @@ begin
   Value := nil;
 end;
 
-
-
 function TJclIntfIntfHashMap.GetValue(const Key: IInterface): IInterface;
 var
   I: Integer;
@@ -2755,7 +2712,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
 
 function TJclIntfIntfHashMap.IsEmpty: Boolean;
 begin
@@ -3095,7 +3051,6 @@ begin
 end;
 
 
-
 //=== { TJclAnsiStrIntfHashMap } ==========================================
 
 constructor TJclAnsiStrIntfHashMap.Create(ACapacity: Integer);
@@ -3303,8 +3258,6 @@ begin
   Value := nil;
 end;
 
-
-
 function TJclAnsiStrIntfHashMap.GetValue(const Key: AnsiString): IInterface;
 var
   I: Integer;
@@ -3334,7 +3287,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
 
 function TJclAnsiStrIntfHashMap.IsEmpty: Boolean;
 begin
@@ -3672,7 +3624,6 @@ function TJclAnsiStrIntfHashMap.ValuesEqual(const A, B: IInterface): Boolean;
 begin
   Result := Integer(A) = Integer(B);
 end;
-
 
 
 //=== { TJclIntfAnsiStrHashMap } ==========================================
@@ -4255,7 +4206,6 @@ begin
 end;
 
 
-
 //=== { TJclAnsiStrAnsiStrHashMap } ==========================================
 
 constructor TJclAnsiStrAnsiStrHashMap.Create(ACapacity: Integer);
@@ -4834,7 +4784,6 @@ begin
 end;
 
 
-
 //=== { TJclWideStrIntfHashMap } ==========================================
 
 constructor TJclWideStrIntfHashMap.Create(ACapacity: Integer);
@@ -5411,7 +5360,6 @@ function TJclWideStrIntfHashMap.ValuesEqual(const A, B: IInterface): Boolean;
 begin
   Result := Integer(A) = Integer(B);
 end;
-
 
 
 //=== { TJclIntfWideStrHashMap } ==========================================
@@ -5996,7 +5944,6 @@ begin
 end;
 
 
-
 //=== { TJclWideStrWideStrHashMap } ==========================================
 
 constructor TJclWideStrWideStrHashMap.Create(ACapacity: Integer);
@@ -6575,7 +6522,6 @@ begin
 end;
 
 
-
 //=== { TJclSingleIntfHashMap } ==========================================
 
 constructor TJclSingleIntfHashMap.Create(ACapacity: Integer);
@@ -7152,7 +7098,6 @@ function TJclSingleIntfHashMap.ValuesEqual(const A, B: IInterface): Boolean;
 begin
   Result := Integer(A) = Integer(B);
 end;
-
 
 
 //=== { TJclIntfSingleHashMap } ==========================================
@@ -7737,7 +7682,6 @@ begin
 end;
 
 
-
 //=== { TJclSingleSingleHashMap } ==========================================
 
 constructor TJclSingleSingleHashMap.Create(ACapacity: Integer);
@@ -8316,7 +8260,6 @@ begin
 end;
 
 
-
 //=== { TJclDoubleIntfHashMap } ==========================================
 
 constructor TJclDoubleIntfHashMap.Create(ACapacity: Integer);
@@ -8893,7 +8836,6 @@ function TJclDoubleIntfHashMap.ValuesEqual(const A, B: IInterface): Boolean;
 begin
   Result := Integer(A) = Integer(B);
 end;
-
 
 
 //=== { TJclIntfDoubleHashMap } ==========================================
@@ -9478,7 +9420,6 @@ begin
 end;
 
 
-
 //=== { TJclDoubleDoubleHashMap } ==========================================
 
 constructor TJclDoubleDoubleHashMap.Create(ACapacity: Integer);
@@ -10057,7 +9998,6 @@ begin
 end;
 
 
-
 //=== { TJclExtendedIntfHashMap } ==========================================
 
 constructor TJclExtendedIntfHashMap.Create(ACapacity: Integer);
@@ -10634,7 +10574,6 @@ function TJclExtendedIntfHashMap.ValuesEqual(const A, B: IInterface): Boolean;
 begin
   Result := Integer(A) = Integer(B);
 end;
-
 
 
 //=== { TJclIntfExtendedHashMap } ==========================================
@@ -11219,7 +11158,6 @@ begin
 end;
 
 
-
 //=== { TJclExtendedExtendedHashMap } ==========================================
 
 constructor TJclExtendedExtendedHashMap.Create(ACapacity: Integer);
@@ -11798,7 +11736,6 @@ begin
 end;
 
 
-
 //=== { TJclIntegerIntfHashMap } ==========================================
 
 constructor TJclIntegerIntfHashMap.Create(ACapacity: Integer);
@@ -12375,7 +12312,6 @@ function TJclIntegerIntfHashMap.ValuesEqual(const A, B: IInterface): Boolean;
 begin
   Result := Integer(A) = Integer(B);
 end;
-
 
 
 //=== { TJclIntfIntegerHashMap } ==========================================
@@ -12960,7 +12896,6 @@ begin
 end;
 
 
-
 //=== { TJclIntegerIntegerHashMap } ==========================================
 
 constructor TJclIntegerIntegerHashMap.Create(ACapacity: Integer);
@@ -13539,7 +13474,6 @@ begin
 end;
 
 
-
 //=== { TJclCardinalIntfHashMap } ==========================================
 
 constructor TJclCardinalIntfHashMap.Create(ACapacity: Integer);
@@ -14116,7 +14050,6 @@ function TJclCardinalIntfHashMap.ValuesEqual(const A, B: IInterface): Boolean;
 begin
   Result := Integer(A) = Integer(B);
 end;
-
 
 
 //=== { TJclIntfCardinalHashMap } ==========================================
@@ -14701,7 +14634,6 @@ begin
 end;
 
 
-
 //=== { TJclCardinalCardinalHashMap } ==========================================
 
 constructor TJclCardinalCardinalHashMap.Create(ACapacity: Integer);
@@ -15280,7 +15212,6 @@ begin
 end;
 
 
-
 //=== { TJclInt64IntfHashMap } ==========================================
 
 constructor TJclInt64IntfHashMap.Create(ACapacity: Integer);
@@ -15857,7 +15788,6 @@ function TJclInt64IntfHashMap.ValuesEqual(const A, B: IInterface): Boolean;
 begin
   Result := Integer(A) = Integer(B);
 end;
-
 
 
 //=== { TJclIntfInt64HashMap } ==========================================
@@ -16442,7 +16372,6 @@ begin
 end;
 
 
-
 //=== { TJclInt64Int64HashMap } ==========================================
 
 constructor TJclInt64Int64HashMap.Create(ACapacity: Integer);
@@ -17022,7 +16951,6 @@ end;
 
 
 {$IFNDEF CLR}
-
 //=== { TJclPtrIntfHashMap } ==========================================
 
 constructor TJclPtrIntfHashMap.Create(ACapacity: Integer);
@@ -17599,7 +17527,6 @@ function TJclPtrIntfHashMap.ValuesEqual(const A, B: IInterface): Boolean;
 begin
   Result := Integer(A) = Integer(B);
 end;
-
 
 
 //=== { TJclIntfPtrHashMap } ==========================================
@@ -18184,7 +18111,6 @@ begin
 end;
 
 
-
 //=== { TJclPtrPtrHashMap } ==========================================
 
 constructor TJclPtrPtrHashMap.Create(ACapacity: Integer);
@@ -18763,7 +18689,6 @@ begin
 end;
 
 {$ENDIF ~CLR}
-
 
 //=== { TJclIntfHashMap } ==========================================
 
@@ -19360,7 +19285,6 @@ begin
 end;
 
 
-
 //=== { TJclAnsiStrHashMap } ==========================================
 
 constructor TJclAnsiStrHashMap.Create(ACapacity: Integer; AOwnsValues: Boolean);
@@ -19950,7 +19874,6 @@ function TJclAnsiStrHashMap.ValuesEqual(A, B: TObject): Boolean;
 begin
   Result := Integer(A) = Integer(B);
 end;
-
 
 
 //=== { TJclWideStrHashMap } ==========================================
@@ -20544,7 +20467,6 @@ begin
 end;
 
 
-
 //=== { TJclSingleHashMap } ==========================================
 
 constructor TJclSingleHashMap.Create(ACapacity: Integer; AOwnsValues: Boolean);
@@ -21134,7 +21056,6 @@ function TJclSingleHashMap.ValuesEqual(A, B: TObject): Boolean;
 begin
   Result := Integer(A) = Integer(B);
 end;
-
 
 
 //=== { TJclDoubleHashMap } ==========================================
@@ -21728,7 +21649,6 @@ begin
 end;
 
 
-
 //=== { TJclExtendedHashMap } ==========================================
 
 constructor TJclExtendedHashMap.Create(ACapacity: Integer; AOwnsValues: Boolean);
@@ -22318,7 +22238,6 @@ function TJclExtendedHashMap.ValuesEqual(A, B: TObject): Boolean;
 begin
   Result := Integer(A) = Integer(B);
 end;
-
 
 
 //=== { TJclIntegerHashMap } ==========================================
@@ -22912,7 +22831,6 @@ begin
 end;
 
 
-
 //=== { TJclCardinalHashMap } ==========================================
 
 constructor TJclCardinalHashMap.Create(ACapacity: Integer; AOwnsValues: Boolean);
@@ -23502,7 +23420,6 @@ function TJclCardinalHashMap.ValuesEqual(A, B: TObject): Boolean;
 begin
   Result := Integer(A) = Integer(B);
 end;
-
 
 
 //=== { TJclInt64HashMap } ==========================================
@@ -24097,7 +24014,6 @@ end;
 
 
 {$IFNDEF CLR}
-
 //=== { TJclPtrHashMap } ==========================================
 
 constructor TJclPtrHashMap.Create(ACapacity: Integer; AOwnsValues: Boolean);
@@ -24689,7 +24605,6 @@ begin
 end;
 
 {$ENDIF ~CLR}
-
 
 //=== { TJclHashMap } ==========================================
 
@@ -25300,7 +25215,6 @@ end;
 
 
 {$IFDEF SUPPORTS_GENERICS}
-
 
 //=== { TJclHashMap<TKey, TValue> } ==========================================
 

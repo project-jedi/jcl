@@ -50,16 +50,17 @@ uses
   {$ENDIF SUPPORTS_GENERICS}
   JclBase, JclAbstractContainers, JclContainerIntf;
 {$I containers\JclContainerCommon.imp}
+{$I containers\JclArrayLists.int}
 {$I containers\JclArrayLists.imp}
 type
 {$JPPEXPANDMACRO JCLARRAYLISTINT(TJclIntfArrayList,TJclIntfAbstractContainer,IJclIntfCollection,IJclIntfList,IJclIntfArray,IJclIntfIterator,JclBase.TDynIInterfaceArray, IJclIntfEqualityComparer\,,,
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,,const AInterface: IInterface,IInterface,GetObject,SetObject)}
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,,const ,AInterface,IInterface,GetObject,SetObject)}
 
 {$JPPEXPANDMACRO JCLARRAYLISTINT(TJclAnsiStrArrayList,TJclAnsiStrAbstractCollection,IJclAnsiStrCollection,IJclAnsiStrList,IJclAnsiStrArray,IJclAnsiStrIterator,JclBase.TDynAnsiStringArray, IJclStrContainer\, IJclAnsiStrContainer\, IJclAnsiStrFlatContainer\, IJclAnsiStrEqualityComparer\,,,
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;,, override;,,const AString: AnsiString,AnsiString,GetString,SetString)}
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,, override;,,const ,AString,AnsiString,GetString,SetString)}
 
 {$JPPEXPANDMACRO JCLARRAYLISTINT(TJclWideStrArrayList,TJclWideStrAbstractCollection,IJclWideStrCollection,IJclWideStrList,IJclWideStrArray,IJclWideStrIterator,JclBase.TDynWideStringArray, IJclStrContainer\, IJclWideStrContainer\, IJclWideStrFlatContainer\, IJclWideStrEqualityComparer\,,,
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;,, override;,,const AString: WideString,WideString,GetString,SetString)}
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,, override;,,const ,AString,WideString,GetString,SetString)}
 
   {$IFDEF CONTAINER_ANSISTR}
   TJclStrArrayList = TJclAnsiStrArrayList;
@@ -69,13 +70,13 @@ type
   {$ENDIF CONTAINER_WIDESTR}
 
 {$JPPEXPANDMACRO JCLARRAYLISTINT(TJclSingleArrayList,TJclSingleAbstractContainer,IJclSingleCollection,IJclSingleList,IJclSingleArray,IJclSingleIterator,JclBase.TDynSingleArray, IJclSingleContainer\, IJclSingleEqualityComparer\,,,
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,,const AValue: Single,Single,GetValue,SetValue)}
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,,const ,AValue,Single,GetValue,SetValue)}
 
 {$JPPEXPANDMACRO JCLARRAYLISTINT(TJclDoubleArrayList,TJclDoubleAbstractContainer,IJclDoubleCollection,IJclDoubleList,IJclDoubleArray,IJclDoubleIterator,JclBase.TDynDoubleArray, IJclDoubleContainer\, IJclDoubleEqualityComparer\,,,
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,,const AValue: Double,Double,GetValue,SetValue)}
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,,const ,AValue,Double,GetValue,SetValue)}
 
 {$JPPEXPANDMACRO JCLARRAYLISTINT(TJclExtendedArrayList,TJclExtendedAbstractContainer,IJclExtendedCollection,IJclExtendedList,IJclExtendedArray,IJclExtendedIterator,JclBase.TDynExtendedArray, IJclExtendedContainer\, IJclExtendedEqualityComparer\,,,
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,,const AValue: Extended,Extended,GetValue,SetValue)}
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,,const ,AValue,Extended,GetValue,SetValue)}
 
   {$IFDEF MATH_EXTENDED_PRECISION}
   TJclFloatArrayList = TJclExtendedArrayList;
@@ -88,24 +89,24 @@ type
   {$ENDIF MATH_SINGLE_PRECISION}
 
 {$JPPEXPANDMACRO JCLARRAYLISTINT(TJclIntegerArrayList,TJclIntegerAbstractContainer,IJclIntegerCollection,IJclIntegerList,IJclIntegerArray,IJclIntegerIterator,JclBase.TDynIntegerArray, IJclIntegerEqualityComparer\,,,
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,,AValue: Integer,Integer,GetValue,SetValue)}
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,,,AValue,Integer,GetValue,SetValue)}
 
 {$JPPEXPANDMACRO JCLARRAYLISTINT(TJclCardinalArrayList,TJclCardinalAbstractContainer,IJclCardinalCollection,IJclCardinalList,IJclCardinalArray,IJclCardinalIterator,JclBase.TDynCardinalArray, IJclCardinalEqualityComparer\,,,
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,,AValue: Cardinal,Cardinal,GetValue,SetValue)}
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,,,AValue,Cardinal,GetValue,SetValue)}
 
 {$JPPEXPANDMACRO JCLARRAYLISTINT(TJclInt64ArrayList,TJclInt64AbstractContainer,IJclInt64Collection,IJclInt64List,IJclInt64Array,IJclInt64Iterator,JclBase.TDynInt64Array, IJclInt64EqualityComparer\,,,
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,,const AValue: Int64,Int64,GetValue,SetValue)}
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,,const ,AValue,Int64,GetValue,SetValue)}
 
   {$IFNDEF CLR}
 {$JPPEXPANDMACRO JCLARRAYLISTINT(TJclPtrArrayList,TJclPtrAbstractContainer,IJclPtrCollection,IJclPtrList,IJclPtrArray,IJclPtrIterator,JclBase.TDynPointerArray, IJclPtrEqualityComparer\,,,
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,,APtr: Pointer,Pointer,GetPtr,SetPtr)}
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,,,APtr,Pointer,GetPtr,SetPtr)}
   {$ENDIF ~CLR}
 
 {$JPPEXPANDMACRO JCLARRAYLISTINT(TJclArrayList,TJclAbstractContainer,IJclCollection,IJclList,IJclArray,IJclIterator,JclBase.TDynObjectArray, IJclObjectOwner\, IJclEqualityComparer\,,,
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,; AOwnsObjects: Boolean,AObject: TObject,TObject,GetObject,SetObject)}
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,; AOwnsObjects: Boolean,,AObject,TObject,GetObject,SetObject)}
 
   {$IFDEF SUPPORTS_GENERICS}
-{$JPPEXPANDMACRO JCLARRAYLISTINT(TJclArrayList<T>,TJclAbstractContainer<T>,IJclCollection<T>,IJclList<T>,IJclArray<T>,IJclIterator<T>,TJclBase<T>.TDynArray, IJclItemOwner<T>\, IJclEqualityComparer<T>\,,,,,,; AOwnsItems: Boolean,const AItem: T,T,GetItem,SetItem)}
+{$JPPEXPANDMACRO JCLARRAYLISTINT(TJclArrayList<T>,TJclAbstractContainer<T>,IJclCollection<T>,IJclList<T>,IJclArray<T>,IJclIterator<T>,TJclBase<T>.TDynArray, IJclItemOwner<T>\, IJclEqualityComparer<T>\,,,,,,; AOwnsItems: Boolean,const ,AItem,T,GetItem,SetItem)}
 
   // E = External helper to compare items for equality
   // GetHashCode is not used
@@ -171,22 +172,68 @@ uses
 type
   TItrStart = (isFirst, isLast);
 
-{$JPPEXPANDMACRO JCLARRAYLISTITR(TIntfItr,IJclIntfIterator,IJclIntfList,const AInterface: IInterface,AInterface,IInterface,GetObject,SetObject)}
-{$JPPEXPANDMACRO JCLARRAYLISTITR(TAnsiStrItr,IJclAnsiStrIterator,IJclAnsiStrList,const AString: AnsiString,AString,AnsiString,GetString,SetString)}
-{$JPPEXPANDMACRO JCLARRAYLISTITR(TWideStrItr,IJclWideStrIterator,IJclWideStrList,const AString: WideString,AString,WideString,GetString,SetString)}
-{$JPPEXPANDMACRO JCLARRAYLISTITR(TSingleItr,IJclSingleIterator,IJclSingleList,const AValue: Single,AValue,Single,GetValue,SetValue)}
-{$JPPEXPANDMACRO JCLARRAYLISTITR(TDoubleItr,IJclDoubleIterator,IJclDoubleList,const AValue: Double,AValue,Double,GetValue,SetValue)}
-{$JPPEXPANDMACRO JCLARRAYLISTITR(TExtendedItr,IJclExtendedIterator,IJclExtendedList,const AValue: Extended,AValue,Extended,GetValue,SetValue)}
-{$JPPEXPANDMACRO JCLARRAYLISTITR(TIntegerItr,IJclIntegerIterator,IJclIntegerList,AValue: Integer,AValue,Integer,GetValue,SetValue)}
-{$JPPEXPANDMACRO JCLARRAYLISTITR(TCardinalItr,IJclCardinalIterator,IJclCardinalList,AValue: Cardinal,AValue,Cardinal,GetValue,SetValue)}
-{$JPPEXPANDMACRO JCLARRAYLISTITR(TInt64Itr,IJclInt64Iterator,IJclInt64List,const AValue: Int64,AValue,Int64,GetValue,SetValue)}
+type
+{$JPPEXPANDMACRO JCLARRAYLISTITRINT(TIntfItr,IJclIntfIterator,IJclIntfList,const ,AInterface,IInterface,GetObject,SetObject)}
+
+{$JPPEXPANDMACRO JCLARRAYLISTITRIMP(TIntfItr,IJclIntfIterator,IJclIntfList,const ,AInterface,IInterface,GetObject,SetObject)}
+
+type
+{$JPPEXPANDMACRO JCLARRAYLISTITRINT(TAnsiStrItr,IJclAnsiStrIterator,IJclAnsiStrList,const ,AString,AnsiString,GetString,SetString)}
+
+{$JPPEXPANDMACRO JCLARRAYLISTITRIMP(TAnsiStrItr,IJclAnsiStrIterator,IJclAnsiStrList,const ,AString,AnsiString,GetString,SetString)}
+
+type
+{$JPPEXPANDMACRO JCLARRAYLISTITRINT(TWideStrItr,IJclWideStrIterator,IJclWideStrList,const ,AString,WideString,GetString,SetString)}
+
+{$JPPEXPANDMACRO JCLARRAYLISTITRIMP(TWideStrItr,IJclWideStrIterator,IJclWideStrList,const ,AString,WideString,GetString,SetString)}
+
+type
+{$JPPEXPANDMACRO JCLARRAYLISTITRINT(TSingleItr,IJclSingleIterator,IJclSingleList,const ,AValue,Single,GetValue,SetValue)}
+
+{$JPPEXPANDMACRO JCLARRAYLISTITRIMP(TSingleItr,IJclSingleIterator,IJclSingleList,const ,AValue,Single,GetValue,SetValue)}
+
+type
+{$JPPEXPANDMACRO JCLARRAYLISTITRINT(TDoubleItr,IJclDoubleIterator,IJclDoubleList,const ,AValue,Double,GetValue,SetValue)}
+
+{$JPPEXPANDMACRO JCLARRAYLISTITRIMP(TDoubleItr,IJclDoubleIterator,IJclDoubleList,const ,AValue,Double,GetValue,SetValue)}
+
+type
+{$JPPEXPANDMACRO JCLARRAYLISTITRINT(TExtendedItr,IJclExtendedIterator,IJclExtendedList,const ,AValue,Extended,GetValue,SetValue)}
+
+{$JPPEXPANDMACRO JCLARRAYLISTITRIMP(TExtendedItr,IJclExtendedIterator,IJclExtendedList,const ,AValue,Extended,GetValue,SetValue)}
+
+type
+{$JPPEXPANDMACRO JCLARRAYLISTITRINT(TIntegerItr,IJclIntegerIterator,IJclIntegerList,,AValue,Integer,GetValue,SetValue)}
+
+{$JPPEXPANDMACRO JCLARRAYLISTITRIMP(TIntegerItr,IJclIntegerIterator,IJclIntegerList,,AValue,Integer,GetValue,SetValue)}
+
+type
+{$JPPEXPANDMACRO JCLARRAYLISTITRINT(TCardinalItr,IJclCardinalIterator,IJclCardinalList,,AValue,Cardinal,GetValue,SetValue)}
+
+{$JPPEXPANDMACRO JCLARRAYLISTITRIMP(TCardinalItr,IJclCardinalIterator,IJclCardinalList,,AValue,Cardinal,GetValue,SetValue)}
+
+type
+{$JPPEXPANDMACRO JCLARRAYLISTITRINT(TInt64Itr,IJclInt64Iterator,IJclInt64List,const ,AValue,Int64,GetValue,SetValue)}
+
+{$JPPEXPANDMACRO JCLARRAYLISTITRIMP(TInt64Itr,IJclInt64Iterator,IJclInt64List,const ,AValue,Int64,GetValue,SetValue)}
+
 {$IFNDEF CLR}
-{$JPPEXPANDMACRO JCLARRAYLISTITR(TPtrItr,IJclPtrIterator,IJclPtrList,APtr: Pointer,APtr,Pointer,GetPtr,SetPtr)}
+type
+{$JPPEXPANDMACRO JCLARRAYLISTITRINT(TPtrItr,IJclPtrIterator,IJclPtrList,,APtr,Pointer,GetPtr,SetPtr)}
+
+{$JPPEXPANDMACRO JCLARRAYLISTITRIMP(TPtrItr,IJclPtrIterator,IJclPtrList,,APtr,Pointer,GetPtr,SetPtr)}
 {$ENDIF ~CLR}
-{$JPPEXPANDMACRO JCLARRAYLISTITR(TItr,IJclIterator,IJclList,AObject: TObject,AObject,TObject,GetObject,SetObject)}
+
+type
+{$JPPEXPANDMACRO JCLARRAYLISTITRINT(TItr,IJclIterator,IJclList,,AObject,TObject,GetObject,SetObject)}
+
+{$JPPEXPANDMACRO JCLARRAYLISTITRIMP(TItr,IJclIterator,IJclList,,AObject,TObject,GetObject,SetObject)}
 
 {$IFDEF SUPPORTS_GENERICS}
-{$JPPEXPANDMACRO JCLARRAYLISTITR(TItr<T>,IJclIterator<T>,IJclList<T>,const AItem: T,AItem,T,GetItem,SetItem)}
+type
+{$JPPEXPANDMACRO JCLARRAYLISTITRINT(TItr<T>,IJclIterator<T>,IJclList<T>,const ,AItem,T,GetItem,SetItem)}
+
+{$JPPEXPANDMACRO JCLARRAYLISTITRIMP(TItr<T>,IJclIterator<T>,IJclList<T>,const ,AItem,T,GetItem,SetItem)}
 {$ENDIF SUPPORTS_GENERICS}
 
 {$JPPDEFINEMACRO CREATEEMPTYCONTAINER
@@ -196,7 +243,7 @@ begin
   AssignPropertiesTo(Result);
 end;
 }
-{$JPPEXPANDMACRO JCLARRAYLISTIMP(TJclIntfArrayList,,,IJclIntfCollection,IJclIntfIterator,TIntfItr,IJclIntfList,const AInterface: IInterface,AInterface,GetObject,SetObject,FreeObject,IInterface,nil,JclBase.MoveArray)}
+{$JPPEXPANDMACRO JCLARRAYLISTIMP(TJclIntfArrayList,,,IJclIntfCollection,IJclIntfIterator,TIntfItr,IJclIntfList,const ,AInterface,GetObject,SetObject,FreeObject,IInterface,nil,JclBase.MoveArray)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 
 {$JPPDEFINEMACRO CREATEEMPTYCONTAINER
@@ -206,7 +253,7 @@ begin
   AssignPropertiesTo(Result);
 end;
 }
-{$JPPEXPANDMACRO JCLARRAYLISTIMP(TJclAnsiStrArrayList,,,IJclAnsiStrCollection,IJclAnsiStrIterator,TAnsiStrItr,IJclAnsiStrList,const AString: AnsiString,AString,GetString,SetString,FreeString,AnsiString,'',JclBase.MoveArray)}
+{$JPPEXPANDMACRO JCLARRAYLISTIMP(TJclAnsiStrArrayList,,,IJclAnsiStrCollection,IJclAnsiStrIterator,TAnsiStrItr,IJclAnsiStrList,const ,AString,GetString,SetString,FreeString,AnsiString,'',JclBase.MoveArray)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 
 {$JPPDEFINEMACRO CREATEEMPTYCONTAINER
@@ -216,7 +263,7 @@ begin
   AssignPropertiesTo(Result);
 end;
 }
-{$JPPEXPANDMACRO JCLARRAYLISTIMP(TJclWideStrArrayList,,,IJclWideStrCollection,IJclWideStrIterator,TWideStrItr,IJclWideStrList,const AString: WideString,AString,GetString,SetString,FreeString,WideString,'',JclBase.MoveArray)}
+{$JPPEXPANDMACRO JCLARRAYLISTIMP(TJclWideStrArrayList,,,IJclWideStrCollection,IJclWideStrIterator,TWideStrItr,IJclWideStrList,const ,AString,GetString,SetString,FreeString,WideString,'',JclBase.MoveArray)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 
 {$JPPDEFINEMACRO CREATEEMPTYCONTAINER
@@ -226,7 +273,7 @@ begin
   AssignPropertiesTo(Result);
 end;
 }
-{$JPPEXPANDMACRO JCLARRAYLISTIMP(TJclSingleArrayList,,,IJclSingleCollection,IJclSingleIterator,TSingleItr,IJclSingleList,const AValue: Single,AValue,GetValue,SetValue,FreeSingle,Single,0.0,JclBase.MoveArray)}
+{$JPPEXPANDMACRO JCLARRAYLISTIMP(TJclSingleArrayList,,,IJclSingleCollection,IJclSingleIterator,TSingleItr,IJclSingleList,const ,AValue,GetValue,SetValue,FreeSingle,Single,0.0,JclBase.MoveArray)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 
 {$JPPDEFINEMACRO CREATEEMPTYCONTAINER
@@ -236,7 +283,7 @@ begin
   AssignPropertiesTo(Result);
 end;
 }
-{$JPPEXPANDMACRO JCLARRAYLISTIMP(TJclDoubleArrayList,,,IJclDoubleCollection,IJclDoubleIterator,TDoubleItr,IJclDoubleList,const AValue: Double,AValue,GetValue,SetValue,FreeDouble,Double,0.0,JclBase.MoveArray)}
+{$JPPEXPANDMACRO JCLARRAYLISTIMP(TJclDoubleArrayList,,,IJclDoubleCollection,IJclDoubleIterator,TDoubleItr,IJclDoubleList,const ,AValue,GetValue,SetValue,FreeDouble,Double,0.0,JclBase.MoveArray)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 
 {$JPPDEFINEMACRO CREATEEMPTYCONTAINER
@@ -246,7 +293,7 @@ begin
   AssignPropertiesTo(Result);
 end;
 }
-{$JPPEXPANDMACRO JCLARRAYLISTIMP(TJclExtendedArrayList,,,IJclExtendedCollection,IJclExtendedIterator,TExtendedItr,IJclExtendedList,const AValue: Extended,AValue,GetValue,SetValue,FreeExtended,Extended,0.0,JclBase.MoveArray)}
+{$JPPEXPANDMACRO JCLARRAYLISTIMP(TJclExtendedArrayList,,,IJclExtendedCollection,IJclExtendedIterator,TExtendedItr,IJclExtendedList,const ,AValue,GetValue,SetValue,FreeExtended,Extended,0.0,JclBase.MoveArray)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 
 {$JPPDEFINEMACRO CREATEEMPTYCONTAINER
@@ -256,7 +303,7 @@ begin
   AssignPropertiesTo(Result);
 end;
 }
-{$JPPEXPANDMACRO JCLARRAYLISTIMP(TJclIntegerArrayList,,,IJclIntegerCollection,IJclIntegerIterator,TIntegerItr,IJclIntegerList,AValue: Integer,AValue,GetValue,SetValue,FreeInteger,Integer,0,JclBase.MoveArray)}
+{$JPPEXPANDMACRO JCLARRAYLISTIMP(TJclIntegerArrayList,,,IJclIntegerCollection,IJclIntegerIterator,TIntegerItr,IJclIntegerList,,AValue,GetValue,SetValue,FreeInteger,Integer,0,JclBase.MoveArray)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 
 {$JPPDEFINEMACRO CREATEEMPTYCONTAINER
@@ -266,7 +313,7 @@ begin
   AssignPropertiesTo(Result);
 end;
 }
-{$JPPEXPANDMACRO JCLARRAYLISTIMP(TJclCardinalArrayList,,,IJclCardinalCollection,IJclCardinalIterator,TCardinalItr,IJclCardinalList,AValue: Cardinal,AValue,GetValue,SetValue,FreeCardinal,Cardinal,0,JclBase.MoveArray)}
+{$JPPEXPANDMACRO JCLARRAYLISTIMP(TJclCardinalArrayList,,,IJclCardinalCollection,IJclCardinalIterator,TCardinalItr,IJclCardinalList,,AValue,GetValue,SetValue,FreeCardinal,Cardinal,0,JclBase.MoveArray)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 
 {$JPPDEFINEMACRO CREATEEMPTYCONTAINER
@@ -276,7 +323,7 @@ begin
   AssignPropertiesTo(Result);
 end;
 }
-{$JPPEXPANDMACRO JCLARRAYLISTIMP(TJclInt64ArrayList,,,IJclInt64Collection,IJclInt64Iterator,TInt64Itr,IJclInt64List,const AValue: Int64,AValue,GetValue,SetValue,FreeInt64,Int64,0,JclBase.MoveArray)}
+{$JPPEXPANDMACRO JCLARRAYLISTIMP(TJclInt64ArrayList,,,IJclInt64Collection,IJclInt64Iterator,TInt64Itr,IJclInt64List,const ,AValue,GetValue,SetValue,FreeInt64,Int64,0,JclBase.MoveArray)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 
 {$IFNDEF CLR}
@@ -287,7 +334,7 @@ begin
   AssignPropertiesTo(Result);
 end;
 }
-{$JPPEXPANDMACRO JCLARRAYLISTIMP(TJclPtrArrayList,,,IJclPtrCollection,IJclPtrIterator,TPtrItr,IJclPtrList,APtr: Pointer,APtr,GetPtr,SetPtr,FreePointer,Pointer,nil,JclBase.MoveArray)}
+{$JPPEXPANDMACRO JCLARRAYLISTIMP(TJclPtrArrayList,,,IJclPtrCollection,IJclPtrIterator,TPtrItr,IJclPtrList,,APtr,GetPtr,SetPtr,FreePointer,Pointer,nil,JclBase.MoveArray)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$ENDIF ~CLR}
 
@@ -298,12 +345,12 @@ begin
   AssignPropertiesTo(Result);
 end;
 }
-{$JPPEXPANDMACRO JCLARRAYLISTIMP(TJclArrayList,; AOwnsObjects: Boolean,AOwnsObjects,IJclCollection,IJclIterator,TItr,IJclList,AObject: TObject,AObject,GetObject,SetObject,FreeObject,TObject,nil,JclBase.MoveArray)}
+{$JPPEXPANDMACRO JCLARRAYLISTIMP(TJclArrayList,; AOwnsObjects: Boolean,AOwnsObjects,IJclCollection,IJclIterator,TItr,IJclList,,AObject,GetObject,SetObject,FreeObject,TObject,nil,JclBase.MoveArray)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 
 {$IFDEF SUPPORTS_GENERICS}
 {$JPPDEFINEMACRO CREATEEMPTYCONTAINER}
-{$JPPEXPANDMACRO JCLARRAYLISTIMP(TJclArrayList<T>,; AOwnsItems: Boolean,AOwnsItems,IJclCollection<T>,IJclIterator<T>,TItr<T>,IJclList<T>,const AItem: T,AItem,GetItem,SetItem,FreeItem,T,Default(T),TJclBase<T>.MoveArray)}
+{$JPPEXPANDMACRO JCLARRAYLISTIMP(TJclArrayList<T>,; AOwnsItems: Boolean,AOwnsItems,IJclCollection<T>,IJclIterator<T>,TItr<T>,IJclList<T>,const ,AItem,GetItem,SetItem,FreeItem,T,Default(T),TJclBase<T>.MoveArray)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 
 //=== { TJclArrayListE<T> } ==================================================

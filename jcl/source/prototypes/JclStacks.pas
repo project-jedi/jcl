@@ -50,15 +50,16 @@ uses
   JclBase, JclAbstractContainers, JclContainerIntf;
 {$I containers\JclContainerCommon.imp}
 {$I containers\JclStacks.imp}
+{$I containers\JclStacks.int}
 type
 (*$JPPEXPANDMACRO JCLSTACKINT(TJclIntfStack,IJclIntfStack,TJclIntfAbstractContainer,JclBase.TDynIInterfaceArray, IJclIntfEqualityComparer\,,,
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,const AInterface: IInterface,IInterface)*)
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,const ,AInterface,IInterface)*)
 
 (*$JPPEXPANDMACRO JCLSTACKINT(TJclAnsiStrStack,IJclAnsiStrStack,TJclAnsiStrAbstractContainer,JclBase.TDynAnsiStringArray, IJclStrContainer\, IJclAnsiStrContainer\, IJclAnsiStrEqualityComparer\,,,
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,const AString: AnsiString,AnsiString)*)
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,const ,AString,AnsiString)*)
 
 (*$JPPEXPANDMACRO JCLSTACKINT(TJclWideStrStack,IJclWideStrStack,TJclWideStrAbstractContainer,JclBase.TDynWideStringArray, IJclStrContainer\, IJclWideStrContainer\, IJclWideStrEqualityComparer\,,,
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,const AString: WideString,WideString)*)
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,const ,AString,WideString)*)
 
   {$IFDEF CONTAINER_ANSISTR}
   TJclStrStack = TJclAnsiStrStack;
@@ -68,13 +69,13 @@ type
   {$ENDIF CONTAINER_WIDESTR}
 
 (*$JPPEXPANDMACRO JCLSTACKINT(TJclSingleStack,IJclSingleStack,TJclSingleAbstractContainer,JclBase.TDynSingleArray, IJclSingleContainer\, IJclSingleEqualityComparer\,,,
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,const AValue: Single,Single)*)
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,const ,AValue,Single)*)
 
 (*$JPPEXPANDMACRO JCLSTACKINT(TJclDoubleStack,IJclDoubleStack,TJclDoubleAbstractContainer,JclBase.TDynDoubleArray, IJclDoubleContainer\, IJclDoubleEqualityComparer\,,,
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,const AValue: Double,Double)*)
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,const ,AValue,Double)*)
 
 (*$JPPEXPANDMACRO JCLSTACKINT(TJclExtendedStack,IJclExtendedStack,TJclExtendedAbstractContainer,JclBase.TDynExtendedArray, IJclExtendedContainer\, IJclExtendedEqualityComparer\,,,
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,const AValue: Extended,Extended)*)
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,const ,AValue,Extended)*)
 
   {$IFDEF MATH_EXTENDED_PRECISION}
   TJclFloatStack = TJclExtendedStack;
@@ -87,25 +88,25 @@ type
   {$ENDIF MATH_SINGLE_PRECISION}
 
 (*$JPPEXPANDMACRO JCLSTACKINT(TJclIntegerStack,IJclIntegerStack,TJclIntegerAbstractContainer,JclBase.TDynIntegerArray, IJclIntegerEqualityComparer\,,,
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,AValue: Integer,Integer)*)
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,,AValue,Integer)*)
 
 (*$JPPEXPANDMACRO JCLSTACKINT(TJclCardinalStack,IJclCardinalStack,TJclCardinalAbstractContainer,JclBase.TDynCardinalArray, IJclCardinalEqualityComparer\,,,
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,AValue: Cardinal,Cardinal)*)
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,,AValue,Cardinal)*)
 
 (*$JPPEXPANDMACRO JCLSTACKINT(TJclInt64Stack,IJclInt64Stack,TJclInt64AbstractContainer,JclBase.TDynInt64Array, IJclInt64EqualityComparer\,,,
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,const AValue: Int64,Int64)*)
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,const ,AValue,Int64)*)
 
   {$IFNDEF CLR}
 (*$JPPEXPANDMACRO JCLSTACKINT(TJclPtrStack,IJclPtrStack,TJclPtrAbstractContainer,JclBase.TDynPointerArray, IJclPtrEqualityComparer\,,,
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,APtr: Pointer,Pointer)*)
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,,APtr,Pointer)*)
   {$ENDIF ~CLR}
 
 (*$JPPEXPANDMACRO JCLSTACKINT(TJclStack,IJclStack,TJclAbstractContainer,JclBase.TDynObjectArray, IJclEqualityComparer\, IJclObjectOwner\,,,
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,; AOwnsObjects: Boolean,AObject: TObject,TObject)*)
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,; AOwnsObjects: Boolean,,AObject,TObject)*)
 
   {$IFDEF SUPPORTS_GENERICS}
 
-(*$JPPEXPANDMACRO JCLSTACKINT(TJclStack<T>,IJclStack<T>,TJclAbstractContainer<T>,TJclBase<T>.TDynArray, IJclEqualityComparer<T>\, IJclItemOwner<T>\,,,,,; AOwnsItems: Boolean,const AItem: T,T)*)
+(*$JPPEXPANDMACRO JCLSTACKINT(TJclStack<T>,IJclStack<T>,TJclAbstractContainer<T>,TJclBase<T>.TDynArray, IJclEqualityComparer<T>\, IJclItemOwner<T>\,,,,,; AOwnsItems: Boolean,const ,AItem,T)*)
 
   // E = external helper to compare items for equality
   TJclStackE<T> = class(TJclStack<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -171,7 +172,7 @@ begin
   AssignPropertiesTo(Result);
 end;
 }
-(*$JPPEXPANDMACRO JCLSTACKIMP(TJclIntfStack,,,const AInterface: IInterface,AInterface,IInterface,nil,FreeObject)*)
+(*$JPPEXPANDMACRO JCLSTACKIMP(TJclIntfStack,,,const ,AInterface,IInterface,nil,FreeObject)*)
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 
 {$JPPDEFINEMACRO CREATEEMPTYCONTAINER
@@ -181,7 +182,7 @@ begin
   AssignPropertiesTo(Result);
 end;
 }
-(*$JPPEXPANDMACRO JCLSTACKIMP(TJclAnsiStrStack,,,const AString: AnsiString,AString,AnsiString,'',FreeString)*)
+(*$JPPEXPANDMACRO JCLSTACKIMP(TJclAnsiStrStack,,,const ,AString,AnsiString,'',FreeString)*)
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 
 {$JPPDEFINEMACRO CREATEEMPTYCONTAINER
@@ -191,7 +192,7 @@ begin
   AssignPropertiesTo(Result);
 end;
 }
-(*$JPPEXPANDMACRO JCLSTACKIMP(TJclWideStrStack,,,const AString: WideString,AString,WideString,'',FreeString)*)
+(*$JPPEXPANDMACRO JCLSTACKIMP(TJclWideStrStack,,,const ,AString,WideString,'',FreeString)*)
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 
 {$JPPDEFINEMACRO CREATEEMPTYCONTAINER
@@ -201,7 +202,7 @@ begin
   AssignPropertiesTo(Result);
 end;
 }
-(*$JPPEXPANDMACRO JCLSTACKIMP(TJclSingleStack,,,const AValue: Single,AValue,Single,0.0,FreeSingle)*)
+(*$JPPEXPANDMACRO JCLSTACKIMP(TJclSingleStack,,,const ,AValue,Single,0.0,FreeSingle)*)
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 
 {$JPPDEFINEMACRO CREATEEMPTYCONTAINER
@@ -211,7 +212,7 @@ begin
   AssignPropertiesTo(Result);
 end;
 }
-(*$JPPEXPANDMACRO JCLSTACKIMP(TJclDoubleStack,,,const AValue: Double,AValue,Double,0.0,FreeDouble)*)
+(*$JPPEXPANDMACRO JCLSTACKIMP(TJclDoubleStack,,,const ,AValue,Double,0.0,FreeDouble)*)
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 
 {$JPPDEFINEMACRO CREATEEMPTYCONTAINER
@@ -221,7 +222,7 @@ begin
   AssignPropertiesTo(Result);
 end;
 }
-(*$JPPEXPANDMACRO JCLSTACKIMP(TJclExtendedStack,,,const AValue: Extended,AValue,Extended,0.0,FreeExtended)*)
+(*$JPPEXPANDMACRO JCLSTACKIMP(TJclExtendedStack,,,const ,AValue,Extended,0.0,FreeExtended)*)
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 
 {$JPPDEFINEMACRO CREATEEMPTYCONTAINER
@@ -231,7 +232,7 @@ begin
   AssignPropertiesTo(Result);
 end;
 }
-(*$JPPEXPANDMACRO JCLSTACKIMP(TJclIntegerStack,,,AValue: Integer,AValue,Integer,0,FreeInteger)*)
+(*$JPPEXPANDMACRO JCLSTACKIMP(TJclIntegerStack,,,,AValue,Integer,0,FreeInteger)*)
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 
 {$JPPDEFINEMACRO CREATEEMPTYCONTAINER
@@ -241,7 +242,7 @@ begin
   AssignPropertiesTo(Result);
 end;
 }
-(*$JPPEXPANDMACRO JCLSTACKIMP(TJclCardinalStack,,,AValue: Cardinal,AValue,Cardinal,0,FreeCardinal)*)
+(*$JPPEXPANDMACRO JCLSTACKIMP(TJclCardinalStack,,,,AValue,Cardinal,0,FreeCardinal)*)
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 
 {$JPPDEFINEMACRO CREATEEMPTYCONTAINER
@@ -251,7 +252,7 @@ begin
   AssignPropertiesTo(Result);
 end;
 }
-(*$JPPEXPANDMACRO JCLSTACKIMP(TJclInt64Stack,,,const AValue: Int64,AValue,Int64,0,FreeInt64)*)
+(*$JPPEXPANDMACRO JCLSTACKIMP(TJclInt64Stack,,,const ,AValue,Int64,0,FreeInt64)*)
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 
 {$IFNDEF CLR}
@@ -262,7 +263,7 @@ begin
   AssignPropertiesTo(Result);
 end;
 }
-(*$JPPEXPANDMACRO JCLSTACKIMP(TJclPtrStack,,,APtr: Pointer,APtr,Pointer,nil,FreePointer)*)
+(*$JPPEXPANDMACRO JCLSTACKIMP(TJclPtrStack,,,,APtr,Pointer,nil,FreePointer)*)
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$ENDIF ~CLR}
 
@@ -273,13 +274,13 @@ begin
   AssignPropertiesTo(Result);
 end;
 }
-(*$JPPEXPANDMACRO JCLSTACKIMP(TJclStack,; AOwnsObjects: Boolean,AOwnsObjects,AObject: TObject,AObject,TObject,nil,FreeObject)*)
+(*$JPPEXPANDMACRO JCLSTACKIMP(TJclStack,; AOwnsObjects: Boolean,AOwnsObjects,,AObject,TObject,nil,FreeObject)*)
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 
 {$IFDEF SUPPORTS_GENERICS}
 
 {$JPPDEFINEMACRO CREATEEMPTYCONTAINER}
-(*$JPPEXPANDMACRO JCLSTACKIMP(TJclStack<T>,; AOwnsItems: Boolean,AOwnsItems,const AItem: T,AItem,T,Default(T),FreeItem)*)
+(*$JPPEXPANDMACRO JCLSTACKIMP(TJclStack<T>,; AOwnsItems: Boolean,AOwnsItems,const ,AItem,T,Default(T),FreeItem)*)
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 
 //=== { TJclStackE<T> } ======================================================

@@ -1,90 +1,6 @@
-(*$JPPDEFINEMACRO JCLLINKEDLISTINT(DATATYPENAME, ITEMCLASSNAME, SELFCLASSNAME, ANCESTORCLASSNAME, COLLECTIONINTERFACENAME, LISTINTERFACENAME, ITRINTERFACENAME,
-  INTERFACEADDITIONAL, PRIVATEADDITIONAL, PROTECTEDADDITIONAL, PUBLICADDITIONAL, COLLECTIONFLAGS, OWNERSHIPDECLARATION, PARAMETERDECLARATION, GETTERNAME, SETTERNAME)
-  ITEMCLASSNAME = class
-  public
-    Value: DATATYPENAME;
-    Next: ITEMCLASSNAME;
-    Previous: ITEMCLASSNAME;
-  end;
-
-  SELFCLASSNAME = class(ANCESTORCLASSNAME, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclContainer,INTERFACEADDITIONAL
-    COLLECTIONINTERFACENAME, LISTINTERFACENAME)
-  private
-    FStart: ITEMCLASSNAME;
-    FEnd: ITEMCLASSNAME;PRIVATEADDITIONAL
-  protected
-    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
-    { COLLECTIONINTERFACENAME }
-    function Add(PARAMETERDECLARATION): Boolean;COLLECTIONFLAGS
-    function AddAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;COLLECTIONFLAGS
-    procedure Clear;COLLECTIONFLAGS
-    function Contains(PARAMETERDECLARATION): Boolean;COLLECTIONFLAGS
-    function ContainsAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;COLLECTIONFLAGS
-    function Equals(const ACollection: COLLECTIONINTERFACENAME): Boolean;COLLECTIONFLAGS
-    function First: ITRINTERFACENAME;COLLECTIONFLAGS
-    function IsEmpty: Boolean;COLLECTIONFLAGS
-    function Last: ITRINTERFACENAME;COLLECTIONFLAGS
-    function Remove(PARAMETERDECLARATION): Boolean;COLLECTIONFLAGS
-    function RemoveAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;COLLECTIONFLAGS
-    function RetainAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;COLLECTIONFLAGS
-    function Size: Integer;COLLECTIONFLAGS
-    {$IFDEF SUPPORTS_FOR_IN}
-    function GetEnumerator: ITRINTERFACENAME;COLLECTIONFLAGS
-    {$ENDIF SUPPORTS_FOR_IN}
-    { LISTINTERFACENAME }
-    function Insert(Index: Integer; PARAMETERDECLARATION): Boolean;
-    function InsertAll(Index: Integer; const ACollection: COLLECTIONINTERFACENAME): Boolean;
-    function GETTERNAME(Index: Integer): DATATYPENAME;
-    function IndexOf(PARAMETERDECLARATION): Integer;
-    function LastIndexOf(PARAMETERDECLARATION): Integer;
-    function Delete(Index: Integer): DATATYPENAME; overload;
-    procedure SETTERNAME(Index: Integer; PARAMETERDECLARATION);
-    function SubList(First, Count: Integer): LISTINTERFACENAME;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;PROTECTEDADDITIONAL
-  public
-    constructor Create(const ACollection: COLLECTIONINTERFACENAMEOWNERSHIPDECLARATION);
-    destructor Destroy; override;PUBLICADDITIONAL
-  end;*)
-(*$JPPDEFINEMACRO JCLLINKEDLISTITR(SELFCLASSNAME, ITRINTERFACENAME, LISTINTERFACENAME, EQUALITYCOMPARERINTERFACENAME,
-  ITEMCLASSNAME, DATATYPENAME, PARAMETERDECLARATION, PARAMETERNAME, DEFAULTVALUE, GETTERNAME, SETTERNAME)
+(*$JPPDEFINEMACRO JCLLINKEDLISTITRIMP(SELFCLASSNAME, ITRINTERFACENAME, LISTINTERFACENAME, EQUALITYCOMPARERINTERFACENAME,
+  ITEMCLASSNAME, CONSTKEYWORD, PARAMETERNAME, TYPENAME, DEFAULTVALUE, GETTERNAME, SETTERNAME)
 //=== { SELFCLASSNAME } ============================================================
-
-type
-  SELFCLASSNAME = class(TJclAbstractIterator, ITRINTERFACENAME, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable)
-  private
-    FCursor: ITEMCLASSNAME;
-    FStart: TItrStart;
-    FOwnList: LISTINTERFACENAME;
-    FEqualityComparer: EQUALITYCOMPARERINTERFACENAME;
-  public
-    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
-    function CreateEmptyIterator: TJclAbstractIterator; override;
-    { ITRINTERFACENAME }
-    function Add(PARAMETERDECLARATION): Boolean;
-    function Equals(const AIterator: ITRINTERFACENAME): Boolean;
-    function GETTERNAME: DATATYPENAME;
-    function HasNext: Boolean;
-    function HasPrevious: Boolean;
-    function Insert(PARAMETERDECLARATION): Boolean;
-    function Next: DATATYPENAME;
-    function NextIndex: Integer;
-    function Previous: DATATYPENAME;
-    function PreviousIndex: Integer;
-    procedure Remove;
-    procedure Reset;
-    procedure SETTERNAME(PARAMETERDECLARATION);
-    {$IFDEF SUPPORTS_FOR_IN}
-    function MoveNext: Boolean;
-    property Current: DATATYPENAME read GETTERNAME;
-    {$ENDIF SUPPORTS_FOR_IN}
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-  public
-    constructor Create(const AOwnList: LISTINTERFACENAME; ACursor: ITEMCLASSNAME; AValid: Boolean; AStart: TItrStart);
-  end;
 
 constructor SELFCLASSNAME.Create(const AOwnList: LISTINTERFACENAME; ACursor: ITEMCLASSNAME; AValid: Boolean; AStart: TItrStart);
 begin
@@ -95,7 +11,7 @@ begin
   FEqualityComparer := AOwnList as EQUALITYCOMPARERINTERFACENAME;
 end;
 
-function SELFCLASSNAME.Add(PARAMETERDECLARATION): Boolean;
+function SELFCLASSNAME.Add(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
 begin
   Result := FOwnList.Add(PARAMETERNAME);
 end;
@@ -136,7 +52,7 @@ begin
   end;
 end;
 
-function SELFCLASSNAME.GETTERNAME: DATATYPENAME;
+function SELFCLASSNAME.GETTERNAME: TYPENAME;
 begin
   CheckValid;
   Result := DEFAULTVALUE;
@@ -167,7 +83,7 @@ begin
   {$JPPEXPANDMACRO DELEGATEREADEND(FOwnList)}
 end;
 
-function SELFCLASSNAME.Insert(PARAMETERDECLARATION): Boolean;
+function SELFCLASSNAME.Insert(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
 var
   NewCursor: ITEMCLASSNAME;
 begin
@@ -220,7 +136,7 @@ begin
 end;
 {$ENDIF SUPPORTS_FOR_IN}
 
-function SELFCLASSNAME.Next: DATATYPENAME;
+function SELFCLASSNAME.Next: TYPENAME;
 begin
   {$JPPEXPANDMACRO DELEGATEREADBEGIN(FOwnList)}
     if Valid and (FCursor <> nil) then
@@ -240,7 +156,7 @@ begin
   raise EJclOperationNotSupportedError.Create;
 end;
 
-function SELFCLASSNAME.Previous: DATATYPENAME;
+function SELFCLASSNAME.Previous: TYPENAME;
 begin
   {$JPPEXPANDMACRO DELEGATEREADBEGIN(FOwnList)}
     if Valid and (FCursor <> nil) then
@@ -300,7 +216,7 @@ begin
   {$JPPEXPANDMACRO DELEGATEREADEND(FOwnList)}
 end;
 
-procedure SELFCLASSNAME.SETTERNAME(PARAMETERDECLARATION);
+procedure SELFCLASSNAME.SETTERNAME(CONSTKEYWORDPARAMETERNAME: TYPENAME);
 begin
   {$JPPEXPANDMACRO DELEGATEWRITEBEGIN(FOwnList)}
     CheckValid;
@@ -308,9 +224,9 @@ begin
     FCursor.Value := PARAMETERNAME;
   {$JPPEXPANDMACRO DELEGATEWRITEEND(FOwnList)}
 end;*)
-(*$JPPDEFINEMACRO JCLLINKEDLISTIMP(SELFCLASSNAME, DATATYPENAME, ITEMCLASSNAME, COLLECTIONINTERFACENAME, LISTINTERFACENAME, ITRINTERFACENAME, ITRCLASSNAME,
+(*$JPPDEFINEMACRO JCLLINKEDLISTIMP(SELFCLASSNAME, ITEMCLASSNAME, COLLECTIONINTERFACENAME, LISTINTERFACENAME, ITRINTERFACENAME, ITRCLASSNAME,
   OWNERSHIPDECLARATION, OWNERSHIPPARAMETER,
-  PARAMETERDECLARATION, PARAMETERNAME, DEFAULTVALUE, GETTERNAME, SETTERNAME, RELEASERNAME)
+  CONSTKEYWORD, PARAMETERNAME, TYPENAME, DEFAULTVALUE, GETTERNAME, SETTERNAME, RELEASERNAME)
 //=== { TJclLinkedList<T> } ==================================================
 
 constructor SELFCLASSNAME.Create(const ACollection: COLLECTIONINTERFACENAMEOWNERSHIPDECLARATION);
@@ -329,7 +245,7 @@ begin
   inherited Destroy;
 end;
 
-function SELFCLASSNAME.Add(PARAMETERDECLARATION): Boolean;
+function SELFCLASSNAME.Add(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
 var
   NewItem: ITEMCLASSNAME;
 begin
@@ -375,7 +291,7 @@ end;
 function SELFCLASSNAME.AddAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;
 var
   It: ITRINTERFACENAME;
-  Item: DATATYPENAME;
+  Item: TYPENAME;
   AddItem: Boolean;
   NewItem: ITEMCLASSNAME;
 begin
@@ -461,7 +377,7 @@ begin
   {$JPPEXPANDMACRO WRITEEND}
 end;
 
-function SELFCLASSNAME.Contains(PARAMETERDECLARATION): Boolean;
+function SELFCLASSNAME.Contains(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
 var
   Current: ITEMCLASSNAME;
 begin
@@ -496,7 +412,7 @@ begin
 end;
 
 {$JPPEXPANDMACRO CREATEEMPTYCONTAINER}
-function SELFCLASSNAME.Delete(Index: Integer): DATATYPENAME;
+function SELFCLASSNAME.Delete(Index: Integer): TYPENAME;
 var
   Current: ITEMCLASSNAME;
 begin
@@ -565,7 +481,7 @@ begin
 end;
 {$ENDIF SUPPORTS_FOR_IN}
 
-function SELFCLASSNAME.GETTERNAME(Index: Integer): DATATYPENAME;
+function SELFCLASSNAME.GETTERNAME(Index: Integer): TYPENAME;
 var
   Current: ITEMCLASSNAME;
 begin
@@ -585,7 +501,7 @@ begin
   {$JPPEXPANDMACRO READEND}
 end;
 
-function SELFCLASSNAME.IndexOf(PARAMETERDECLARATION): Integer;
+function SELFCLASSNAME.IndexOf(CONSTKEYWORDPARAMETERNAME: TYPENAME): Integer;
 var
   Current: ITEMCLASSNAME;
 begin
@@ -602,7 +518,7 @@ begin
   {$JPPEXPANDMACRO READEND}
 end;
 
-function SELFCLASSNAME.Insert(Index: Integer; PARAMETERDECLARATION): Boolean;
+function SELFCLASSNAME.Insert(Index: Integer; CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
 var
   Current, NewItem: ITEMCLASSNAME;
 begin
@@ -675,7 +591,7 @@ var
   It: ITRINTERFACENAME;
   Current, NewItem, Test: ITEMCLASSNAME;
   AddItem: Boolean;
-  Item: DATATYPENAME;
+  Item: TYPENAME;
 begin
   {$JPPEXPANDMACRO WRITEBEGIN}
     Result := False;
@@ -818,7 +734,7 @@ begin
   Result := ITRCLASSNAME.Create(Self, FEnd, False, isLast);
 end;
 
-function SELFCLASSNAME.LastIndexOf(PARAMETERDECLARATION): Integer;
+function SELFCLASSNAME.LastIndexOf(CONSTKEYWORDPARAMETERNAME: TYPENAME): Integer;
 var
   Current: ITEMCLASSNAME;
 begin
@@ -839,7 +755,7 @@ begin
   {$JPPEXPANDMACRO READEND}
 end;
 
-function SELFCLASSNAME.Remove(PARAMETERDECLARATION): Boolean;
+function SELFCLASSNAME.Remove(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
 var
   Current: ITEMCLASSNAME;
 begin
@@ -900,7 +816,7 @@ begin
   {$JPPEXPANDMACRO WRITEEND}
 end;
 
-procedure SELFCLASSNAME.SETTERNAME(Index: Integer; PARAMETERDECLARATION);
+procedure SELFCLASSNAME.SETTERNAME(Index: Integer; CONSTKEYWORDPARAMETERNAME: TYPENAME);
 var
   Current: ITEMCLASSNAME;
   ReplaceItem: Boolean;

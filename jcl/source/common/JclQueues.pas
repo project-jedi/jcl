@@ -54,7 +54,6 @@ uses
   JclBase, JclAbstractContainers, JclContainerIntf;
 
 type
-
   TJclIntfQueue = class(TJclIntfAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclIntfEqualityComparer,
     IJclIntfQueue)
@@ -83,7 +82,6 @@ type
     destructor Destroy; override;
   end;
 
-
   TJclAnsiStrQueue = class(TJclAnsiStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclStrContainer, IJclAnsiStrContainer, IJclAnsiStrEqualityComparer,
     IJclAnsiStrQueue)
@@ -111,7 +109,6 @@ type
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
   end;
-
 
   TJclWideStrQueue = class(TJclWideStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclStrContainer, IJclWideStrContainer, IJclWideStrEqualityComparer,
@@ -148,7 +145,6 @@ type
   TJclStrQueue = TJclWideStrQueue;
   {$ENDIF CONTAINER_WIDESTR}
 
-
   TJclSingleQueue = class(TJclSingleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclSingleContainer, IJclSingleEqualityComparer,
     IJclSingleQueue)
@@ -177,7 +173,6 @@ type
     destructor Destroy; override;
   end;
 
-
   TJclDoubleQueue = class(TJclDoubleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclDoubleContainer, IJclDoubleEqualityComparer,
     IJclDoubleQueue)
@@ -205,7 +200,6 @@ type
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
   end;
-
 
   TJclExtendedQueue = class(TJclExtendedAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclExtendedContainer, IJclExtendedEqualityComparer,
@@ -245,7 +239,6 @@ type
   TJclFloatQueue = TJclSingleQueue;
   {$ENDIF MATH_SINGLE_PRECISION}
 
-
   TJclIntegerQueue = class(TJclIntegerAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclIntegerEqualityComparer,
     IJclIntegerQueue)
@@ -274,7 +267,6 @@ type
     destructor Destroy; override;
   end;
 
-
   TJclCardinalQueue = class(TJclCardinalAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclCardinalEqualityComparer,
     IJclCardinalQueue)
@@ -302,7 +294,6 @@ type
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
   end;
-
 
   TJclInt64Queue = class(TJclInt64AbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclInt64EqualityComparer,
@@ -333,7 +324,6 @@ type
   end;
 
   {$IFNDEF CLR}
-
   TJclPtrQueue = class(TJclPtrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclPtrEqualityComparer,
     IJclPtrQueue)
@@ -362,7 +352,6 @@ type
     destructor Destroy; override;
   end;
   {$ENDIF ~CLR}
-
 
   TJclQueue = class(TJclAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclEqualityComparer, IJclObjectOwner,
@@ -393,7 +382,6 @@ type
   end;
 
   {$IFDEF SUPPORTS_GENERICS}
-
 
   TJclQueue<T> = class(TJclAbstractContainer<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclEqualityComparer<T>, IJclItemOwner<T>,
@@ -475,7 +463,6 @@ implementation
 
 uses
   SysUtils;
-
 
 //=== { TJclIntfQueue } =======================================================
 
@@ -742,7 +729,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-
 //=== { TJclAnsiStrQueue } =======================================================
 
 constructor TJclAnsiStrQueue.Create(ACapacity: Integer);
@@ -1007,7 +993,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
 
 //=== { TJclWideStrQueue } =======================================================
 
@@ -1274,7 +1259,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-
 //=== { TJclSingleQueue } =======================================================
 
 constructor TJclSingleQueue.Create(ACapacity: Integer);
@@ -1539,7 +1523,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
 
 //=== { TJclDoubleQueue } =======================================================
 
@@ -1806,7 +1789,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-
 //=== { TJclExtendedQueue } =======================================================
 
 constructor TJclExtendedQueue.Create(ACapacity: Integer);
@@ -2071,7 +2053,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
 
 //=== { TJclIntegerQueue } =======================================================
 
@@ -2338,7 +2319,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-
 //=== { TJclCardinalQueue } =======================================================
 
 constructor TJclCardinalQueue.Create(ACapacity: Integer);
@@ -2603,7 +2583,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
 
 //=== { TJclInt64Queue } =======================================================
 
@@ -2871,7 +2850,6 @@ begin
 end;
 
 {$IFNDEF CLR}
-
 //=== { TJclPtrQueue } =======================================================
 
 constructor TJclPtrQueue.Create(ACapacity: Integer);
@@ -3137,7 +3115,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 {$ENDIF ~CLR}
-
 
 //=== { TJclQueue } =======================================================
 
@@ -3406,7 +3383,6 @@ end;
 
 {$IFDEF SUPPORTS_GENERICS}
 
-
 //=== { TJclQueue<T> } =======================================================
 
 constructor TJclQueue<T>.Create(ACapacity: Integer; AOwnsItems: Boolean);
@@ -3666,6 +3642,7 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
+
 //=== { TJclQueueE<T> } ======================================================
 
 constructor TJclQueueE<T>.Create(const AEqualityComparer: IEqualityComparer<T>;

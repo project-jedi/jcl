@@ -1,34 +1,5 @@
-(*$JPPDEFINEMACRO JCLQUEUEINT(SELFCLASSNAME, QUEUEINTERFACENAME, ANCESTORCLASSNAME, DATATYPENAME, DYNARRAYTYPENAME,
-  INTERFACEADDITIONAL, PRIVATEADDITIONAL, PROTECTEDADDITIONAL, PUBLICADDITIONAL, OWNERSHIPDECLARATION, PARAMETERDECLARATION)
-  SELFCLASSNAME = class(ANCESTORCLASSNAME, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer,INTERFACEADDITIONAL
-    QUEUEINTERFACENAME)
-  private
-    FElements: DYNARRAYTYPENAME;
-    FHead: Integer;
-    FTail: Integer;PRIVATEADDITIONAL
-  protected
-    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
-    { IJclPackable }
-    procedure Pack; override;
-    procedure SetCapacity(Value: Integer); override;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    { QUEUEINTERFACENAME }
-    procedure Clear;
-    function Contains(PARAMETERDECLARATION): Boolean;
-    function Dequeue: DATATYPENAME;
-    function Empty: Boolean;
-    function Enqueue(PARAMETERDECLARATION): Boolean;
-    function Peek: DATATYPENAME;
-    function Size: Integer;PROTECTEDADDITIONAL
-  public
-    constructor Create(ACapacity: IntegerOWNERSHIPDECLARATION);
-    destructor Destroy; override;PUBLICADDITIONAL
-  end;*)
 (*$JPPDEFINEMACRO JCLQUEUEIMP(SELFCLASSNAME,
-  OWNERSHIPDECLARATION, OWNERSHIPPARAMETER, PARAMETERDECLARATION, PARAMETERNAME, DATATYPENAME, DEFAULTVALUE, MOVEARRAY,
-  RELEASERNAME)
+  OWNERSHIPDECLARATION, OWNERSHIPPARAMETER, CONSTKEYWORD, PARAMETERNAME, TYPENAME, DEFAULTVALUE, MOVEARRAY, RELEASERNAME)
 //=== { SELFCLASSNAME } =======================================================
 
 constructor SELFCLASSNAME.Create(ACapacity: IntegerOWNERSHIPDECLARATION);
@@ -86,7 +57,7 @@ begin
   {$JPPEXPANDMACRO WRITEEND}
 end;
 
-function SELFCLASSNAME.Contains(PARAMETERDECLARATION): Boolean;
+function SELFCLASSNAME.Contains(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
 var
   I: Integer;
 begin
@@ -108,7 +79,7 @@ begin
 end;
 
 {$JPPEXPANDMACRO CREATEEMPTYCONTAINER}
-function SELFCLASSNAME.Dequeue: DATATYPENAME;
+function SELFCLASSNAME.Dequeue: TYPENAME;
 begin
   {$JPPEXPANDMACRO WRITEBEGIN}
     Result := DEFAULTVALUE;
@@ -134,7 +105,7 @@ begin
   {$JPPEXPANDMACRO READEND}
 end;
 
-function SELFCLASSNAME.Enqueue(PARAMETERDECLARATION): Boolean;
+function SELFCLASSNAME.Enqueue(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
 begin
   {$JPPEXPANDMACRO WRITEBEGIN}
     if (FTail = (FHead - 1)) or (FTail = (FHead + FCapacity - 1)) then
@@ -157,7 +128,7 @@ begin
   {$JPPEXPANDMACRO WRITEEND}
 end;
 
-function SELFCLASSNAME.Peek: DATATYPENAME;
+function SELFCLASSNAME.Peek: TYPENAME;
 begin
   {$JPPEXPANDMACRO READBEGIN}
     Result := DEFAULTVALUE;

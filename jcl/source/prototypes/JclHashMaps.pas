@@ -51,61 +51,62 @@ uses
   JclBase, JclAbstractContainers, JclContainerIntf;
 {$I containers\JclContainerCommon.imp}
 {$I containers\JclHashMaps.imp}
+{$I containers\JclHashMaps.int}
 type
   // Hash Function
   // Result must be in 0..Range-1
   TJclHashFunction = function(Key, Range: Integer): Integer;
 
-(*$JPPEXPANDMACRO JCLHASHMAPINT(IInterface,IInterface,TJclIntfIntfHashEntry,TJclIntfIntfHashEntryArray,TJclIntfIntfBucket,TJclIntfIntfBucketArray,TJclIntfIntfHashMap,TJclIntfAbstractContainer,IJclIntfIntfMap,IJclIntfSet,IJclIntfCollection,,,
+(*$JPPEXPANDMACRO JCLHASHMAPINT(TJclIntfIntfHashEntry,TJclIntfIntfHashEntryArray,TJclIntfIntfBucket,TJclIntfIntfBucketArray,TJclIntfIntfHashMap,TJclIntfAbstractContainer,IJclIntfIntfMap,IJclIntfSet,IJclIntfCollection,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: IInterface): IInterface;
     function FreeValue(var Value: IInterface): IInterface;
     function KeysEqual(const A\, B: IInterface): Boolean;
-    function ValuesEqual(const A\, B: IInterface): Boolean;,,,,const Key: IInterface,const Value: IInterface)*)
+    function ValuesEqual(const A\, B: IInterface): Boolean;,,,,const ,IInterface,const ,IInterface)*)
 
-(*$JPPEXPANDMACRO JCLHASHMAPINT(AnsiString,IInterface,TJclAnsiStrIntfHashEntry,TJclAnsiStrIntfHashEntryArray,TJclAnsiStrIntfBucket,TJclAnsiStrIntfBucketArray,TJclAnsiStrIntfHashMap,TJclAnsiStrAbstractContainer,IJclAnsiStrIntfMap,IJclAnsiStrSet,IJclIntfCollection, IJclStrContainer\, IJclAnsiStrContainer\,,,
+(*$JPPEXPANDMACRO JCLHASHMAPINT(TJclAnsiStrIntfHashEntry,TJclAnsiStrIntfHashEntryArray,TJclAnsiStrIntfBucket,TJclAnsiStrIntfBucketArray,TJclAnsiStrIntfHashMap,TJclAnsiStrAbstractContainer,IJclAnsiStrIntfMap,IJclAnsiStrSet,IJclIntfCollection, IJclStrContainer\, IJclAnsiStrContainer\,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: AnsiString): AnsiString;
     function FreeValue(var Value: IInterface): IInterface;
     function KeysEqual(const A\, B: AnsiString): Boolean;
-    function ValuesEqual(const A\, B: IInterface): Boolean;,,,,const Key: AnsiString,const Value: IInterface)*)
+    function ValuesEqual(const A\, B: IInterface): Boolean;,,,,const ,AnsiString,const ,IInterface)*)
 
-(*$JPPEXPANDMACRO JCLHASHMAPINT(IInterface,AnsiString,TJclIntfAnsiStrHashEntry,TJclIntfAnsiStrHashEntryArray,TJclIntfAnsiStrBucket,TJclIntfAnsiStrBucketArray,TJclIntfAnsiStrHashMap,TJclAnsiStrAbstractContainer,IJclIntfAnsiStrMap,IJclIntfSet,IJclAnsiStrCollection, IJclStrContainer\, IJclAnsiStrContainer\,,,
+(*$JPPEXPANDMACRO JCLHASHMAPINT(TJclIntfAnsiStrHashEntry,TJclIntfAnsiStrHashEntryArray,TJclIntfAnsiStrBucket,TJclIntfAnsiStrBucketArray,TJclIntfAnsiStrHashMap,TJclAnsiStrAbstractContainer,IJclIntfAnsiStrMap,IJclIntfSet,IJclAnsiStrCollection, IJclStrContainer\, IJclAnsiStrContainer\,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: IInterface): IInterface;
     function FreeValue(var Value: AnsiString): AnsiString;
     function Hash(const AInterface: IInterface): Integer; reintroduce;
     function KeysEqual(const A\, B: IInterface): Boolean;
-    function ValuesEqual(const A\, B: AnsiString): Boolean;,,,,const Key: IInterface,const Value: AnsiString)*)
+    function ValuesEqual(const A\, B: AnsiString): Boolean;,,,,const ,IInterface,const ,AnsiString)*)
 
-(*$JPPEXPANDMACRO JCLHASHMAPINT(AnsiString,AnsiString,TJclAnsiStrAnsiStrHashEntry,TJclAnsiStrAnsiStrHashEntryArray,TJclAnsiStrAnsiStrBucket,TJclAnsiStrAnsiStrBucketArray,TJclAnsiStrAnsiStrHashMap,TJclAnsiStrAbstractContainer,IJclAnsiStrAnsiStrMap,IJclAnsiStrSet,IJclAnsiStrCollection, IJclStrContainer\, IJclAnsiStrContainer\,,,
+(*$JPPEXPANDMACRO JCLHASHMAPINT(TJclAnsiStrAnsiStrHashEntry,TJclAnsiStrAnsiStrHashEntryArray,TJclAnsiStrAnsiStrBucket,TJclAnsiStrAnsiStrBucketArray,TJclAnsiStrAnsiStrHashMap,TJclAnsiStrAbstractContainer,IJclAnsiStrAnsiStrMap,IJclAnsiStrSet,IJclAnsiStrCollection, IJclStrContainer\, IJclAnsiStrContainer\,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: AnsiString): AnsiString;
     function FreeValue(var Value: AnsiString): AnsiString;
     function KeysEqual(const A\, B: AnsiString): Boolean;
-    function ValuesEqual(const A\, B: AnsiString): Boolean;,,,,const Key: AnsiString,const Value: AnsiString)*)
+    function ValuesEqual(const A\, B: AnsiString): Boolean;,,,,const ,AnsiString,const ,AnsiString)*)
 
-(*$JPPEXPANDMACRO JCLHASHMAPINT(WideString,IInterface,TJclWideStrIntfHashEntry,TJclWideStrIntfHashEntryArray,TJclWideStrIntfBucket,TJclWideStrIntfBucketArray,TJclWideStrIntfHashMap,TJclWideStrAbstractContainer,IJclWideStrIntfMap,IJclWideStrSet,IJclIntfCollection, IJclStrContainer\, IJclWideStrContainer\,,,
+(*$JPPEXPANDMACRO JCLHASHMAPINT(TJclWideStrIntfHashEntry,TJclWideStrIntfHashEntryArray,TJclWideStrIntfBucket,TJclWideStrIntfBucketArray,TJclWideStrIntfHashMap,TJclWideStrAbstractContainer,IJclWideStrIntfMap,IJclWideStrSet,IJclIntfCollection, IJclStrContainer\, IJclWideStrContainer\,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: WideString): WideString;
     function FreeValue(var Value: IInterface): IInterface;
     function KeysEqual(const A\, B: WideString): Boolean;
-    function ValuesEqual(const A\, B: IInterface): Boolean;,,,,const Key: WideString,const Value: IInterface)*)
+    function ValuesEqual(const A\, B: IInterface): Boolean;,,,,const ,WideString,const ,IInterface)*)
 
-(*$JPPEXPANDMACRO JCLHASHMAPINT(IInterface,WideString,TJclIntfWideStrHashEntry,TJclIntfWideStrHashEntryArray,TJclIntfWideStrBucket,TJclIntfWideStrBucketArray,TJclIntfWideStrHashMap,TJclWideStrAbstractContainer,IJclIntfWideStrMap,IJclIntfSet,IJclWideStrCollection, IJclStrContainer\, IJclWideStrContainer\,,,
+(*$JPPEXPANDMACRO JCLHASHMAPINT(TJclIntfWideStrHashEntry,TJclIntfWideStrHashEntryArray,TJclIntfWideStrBucket,TJclIntfWideStrBucketArray,TJclIntfWideStrHashMap,TJclWideStrAbstractContainer,IJclIntfWideStrMap,IJclIntfSet,IJclWideStrCollection, IJclStrContainer\, IJclWideStrContainer\,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: IInterface): IInterface;
     function FreeValue(var Value: WideString): WideString;
     function Hash(const AInterface: IInterface): Integer; reintroduce;
     function KeysEqual(const A\, B: IInterface): Boolean;
-    function ValuesEqual(const A\, B: WideString): Boolean;,,,,const Key: IInterface,const Value: WideString)*)
+    function ValuesEqual(const A\, B: WideString): Boolean;,,,,const ,IInterface,const ,WideString)*)
 
-(*$JPPEXPANDMACRO JCLHASHMAPINT(WideString,WideString,TJclWideStrWideStrHashEntry,TJclWideStrWideStrHashEntryArray,TJclWideStrWideStrBucket,TJclWideStrWideStrBucketArray,TJclWideStrWideStrHashMap,TJclWideStrAbstractContainer,IJclWideStrWideStrMap,IJclWideStrSet,IJclWideStrCollection, IJclStrContainer\, IJclWideStrContainer\,,,
+(*$JPPEXPANDMACRO JCLHASHMAPINT(TJclWideStrWideStrHashEntry,TJclWideStrWideStrHashEntryArray,TJclWideStrWideStrBucket,TJclWideStrWideStrBucketArray,TJclWideStrWideStrHashMap,TJclWideStrAbstractContainer,IJclWideStrWideStrMap,IJclWideStrSet,IJclWideStrCollection, IJclStrContainer\, IJclWideStrContainer\,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: WideString): WideString;
     function FreeValue(var Value: WideString): WideString;
     function KeysEqual(const A\, B: WideString): Boolean;
-    function ValuesEqual(const A\, B: WideString): Boolean;,,,,const Key: WideString,const Value: WideString)*)
+    function ValuesEqual(const A\, B: WideString): Boolean;,,,,const ,WideString,const ,WideString)*)
 
   {$IFDEF CONTAINER_ANSISTR}
   TJclStrIntfHashMap = TJclAnsiStrIntfHashMap;
@@ -118,71 +119,71 @@ type
   TJclStrStrHashMap = TJclWideStrWideStrHashMap;
   {$ENDIF CONTAINER_WIDESTR}
 
-(*$JPPEXPANDMACRO JCLHASHMAPINT(Single,IInterface,TJclSingleIntfHashEntry,TJclSingleIntfHashEntryArray,TJclSingleIntfBucket,TJclSingleIntfBucketArray,TJclSingleIntfHashMap,TJclSingleAbstractContainer,IJclSingleIntfMap,IJclSingleSet,IJclIntfCollection, IJclSingleContainer\,,,
+(*$JPPEXPANDMACRO JCLHASHMAPINT(TJclSingleIntfHashEntry,TJclSingleIntfHashEntryArray,TJclSingleIntfBucket,TJclSingleIntfBucketArray,TJclSingleIntfHashMap,TJclSingleAbstractContainer,IJclSingleIntfMap,IJclSingleSet,IJclIntfCollection, IJclSingleContainer\,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Single): Single;
     function FreeValue(var Value: IInterface): IInterface;
     function KeysEqual(const A\, B: Single): Boolean;
-    function ValuesEqual(const A\, B: IInterface): Boolean;,,,,const Key: Single,const Value: IInterface)*)
+    function ValuesEqual(const A\, B: IInterface): Boolean;,,,,const ,Single,const ,IInterface)*)
 
-(*$JPPEXPANDMACRO JCLHASHMAPINT(IInterface,Single,TJclIntfSingleHashEntry,TJclIntfSingleHashEntryArray,TJclIntfSingleBucket,TJclIntfSingleBucketArray,TJclIntfSingleHashMap,TJclSingleAbstractContainer,IJclIntfSingleMap,IJclIntfSet,IJclSingleCollection, IJclSingleContainer\,,,
+(*$JPPEXPANDMACRO JCLHASHMAPINT(TJclIntfSingleHashEntry,TJclIntfSingleHashEntryArray,TJclIntfSingleBucket,TJclIntfSingleBucketArray,TJclIntfSingleHashMap,TJclSingleAbstractContainer,IJclIntfSingleMap,IJclIntfSet,IJclSingleCollection, IJclSingleContainer\,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: IInterface): IInterface;
     function FreeValue(var Value: Single): Single;
     function Hash(const AInterface: IInterface): Integer; reintroduce;
     function KeysEqual(const A\, B: IInterface): Boolean;
-    function ValuesEqual(const A\, B: Single): Boolean;,,,,const Key: IInterface,const Value: Single)*)
+    function ValuesEqual(const A\, B: Single): Boolean;,,,,const ,IInterface,const ,Single)*)
 
-(*$JPPEXPANDMACRO JCLHASHMAPINT(Single,Single,TJclSingleSingleHashEntry,TJclSingleSingleHashEntryArray,TJclSingleSingleBucket,TJclSingleSingleBucketArray,TJclSingleSingleHashMap,TJclSingleAbstractContainer,IJclSingleSingleMap,IJclSingleSet,IJclSingleCollection, IJclSingleContainer\,,,
+(*$JPPEXPANDMACRO JCLHASHMAPINT(TJclSingleSingleHashEntry,TJclSingleSingleHashEntryArray,TJclSingleSingleBucket,TJclSingleSingleBucketArray,TJclSingleSingleHashMap,TJclSingleAbstractContainer,IJclSingleSingleMap,IJclSingleSet,IJclSingleCollection, IJclSingleContainer\,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Single): Single;
     function FreeValue(var Value: Single): Single;
     function KeysEqual(const A\, B: Single): Boolean;
-    function ValuesEqual(const A\, B: Single): Boolean;,,,,const Key: Single,const Value: Single)*)
+    function ValuesEqual(const A\, B: Single): Boolean;,,,,const ,Single,const ,Single)*)
 
-(*$JPPEXPANDMACRO JCLHASHMAPINT(Double,IInterface,TJclDoubleIntfHashEntry,TJclDoubleIntfHashEntryArray,TJclDoubleIntfBucket,TJclDoubleIntfBucketArray,TJclDoubleIntfHashMap,TJclDoubleAbstractContainer,IJclDoubleIntfMap,IJclDoubleSet,IJclIntfCollection, IJclDoubleContainer\,,,
+(*$JPPEXPANDMACRO JCLHASHMAPINT(TJclDoubleIntfHashEntry,TJclDoubleIntfHashEntryArray,TJclDoubleIntfBucket,TJclDoubleIntfBucketArray,TJclDoubleIntfHashMap,TJclDoubleAbstractContainer,IJclDoubleIntfMap,IJclDoubleSet,IJclIntfCollection, IJclDoubleContainer\,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Double): Double;
     function FreeValue(var Value: IInterface): IInterface;
     function KeysEqual(const A\, B: Double): Boolean;
-    function ValuesEqual(const A\, B: IInterface): Boolean;,,,,const Key: Double,const Value: IInterface)*)
+    function ValuesEqual(const A\, B: IInterface): Boolean;,,,,const ,Double,const ,IInterface)*)
 
-(*$JPPEXPANDMACRO JCLHASHMAPINT(IInterface,Double,TJclIntfDoubleHashEntry,TJclIntfDoubleHashEntryArray,TJclIntfDoubleBucket,TJclIntfDoubleBucketArray,TJclIntfDoubleHashMap,TJclDoubleAbstractContainer,IJclIntfDoubleMap,IJclIntfSet,IJclDoubleCollection, IJclDoubleContainer\,,,
+(*$JPPEXPANDMACRO JCLHASHMAPINT(TJclIntfDoubleHashEntry,TJclIntfDoubleHashEntryArray,TJclIntfDoubleBucket,TJclIntfDoubleBucketArray,TJclIntfDoubleHashMap,TJclDoubleAbstractContainer,IJclIntfDoubleMap,IJclIntfSet,IJclDoubleCollection, IJclDoubleContainer\,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: IInterface): IInterface;
     function FreeValue(var Value: Double): Double;
     function Hash(const AInterface: IInterface): Integer; reintroduce;
     function KeysEqual(const A\, B: IInterface): Boolean;
-    function ValuesEqual(const A\, B: Double): Boolean;,,,,const Key: IInterface,const Value: Double)*)
+    function ValuesEqual(const A\, B: Double): Boolean;,,,,const ,IInterface,const ,Double)*)
 
-(*$JPPEXPANDMACRO JCLHASHMAPINT(Double,Double,TJclDoubleDoubleHashEntry,TJclDoubleDoubleHashEntryArray,TJclDoubleDoubleBucket,TJclDoubleDoubleBucketArray,TJclDoubleDoubleHashMap,TJclDoubleAbstractContainer,IJclDoubleDoubleMap,IJclDoubleSet,IJclDoubleCollection, IJclDoubleContainer\,,,
+(*$JPPEXPANDMACRO JCLHASHMAPINT(TJclDoubleDoubleHashEntry,TJclDoubleDoubleHashEntryArray,TJclDoubleDoubleBucket,TJclDoubleDoubleBucketArray,TJclDoubleDoubleHashMap,TJclDoubleAbstractContainer,IJclDoubleDoubleMap,IJclDoubleSet,IJclDoubleCollection, IJclDoubleContainer\,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Double): Double;
     function FreeValue(var Value: Double): Double;
     function KeysEqual(const A\, B: Double): Boolean;
-    function ValuesEqual(const A\, B: Double): Boolean;,,,,const Key: Double,const Value: Double)*)
+    function ValuesEqual(const A\, B: Double): Boolean;,,,,const ,Double,const ,Double)*)
 
-(*$JPPEXPANDMACRO JCLHASHMAPINT(Extended,IInterface,TJclExtendedIntfHashEntry,TJclExtendedIntfHashEntryArray,TJclExtendedIntfBucket,TJclExtendedIntfBucketArray,TJclExtendedIntfHashMap,TJclExtendedAbstractContainer,IJclExtendedIntfMap,IJclExtendedSet,IJclIntfCollection, IJclExtendedContainer\,,,
+(*$JPPEXPANDMACRO JCLHASHMAPINT(TJclExtendedIntfHashEntry,TJclExtendedIntfHashEntryArray,TJclExtendedIntfBucket,TJclExtendedIntfBucketArray,TJclExtendedIntfHashMap,TJclExtendedAbstractContainer,IJclExtendedIntfMap,IJclExtendedSet,IJclIntfCollection, IJclExtendedContainer\,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Extended): Extended;
     function FreeValue(var Value: IInterface): IInterface;
     function KeysEqual(const A\, B: Extended): Boolean;
-    function ValuesEqual(const A\, B: IInterface): Boolean;,,,,const Key: Extended,const Value: IInterface)*)
+    function ValuesEqual(const A\, B: IInterface): Boolean;,,,,const ,Extended,const ,IInterface)*)
 
-(*$JPPEXPANDMACRO JCLHASHMAPINT(IInterface,Extended,TJclIntfExtendedHashEntry,TJclIntfExtendedHashEntryArray,TJclIntfExtendedBucket,TJclIntfExtendedBucketArray,TJclIntfExtendedHashMap,TJclExtendedAbstractContainer,IJclIntfExtendedMap,IJclIntfSet,IJclExtendedCollection, IJclExtendedContainer\,,,
+(*$JPPEXPANDMACRO JCLHASHMAPINT(TJclIntfExtendedHashEntry,TJclIntfExtendedHashEntryArray,TJclIntfExtendedBucket,TJclIntfExtendedBucketArray,TJclIntfExtendedHashMap,TJclExtendedAbstractContainer,IJclIntfExtendedMap,IJclIntfSet,IJclExtendedCollection, IJclExtendedContainer\,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: IInterface): IInterface;
     function FreeValue(var Value: Extended): Extended;
     function Hash(const AInterface: IInterface): Integer; reintroduce;
     function KeysEqual(const A\, B: IInterface): Boolean;
-    function ValuesEqual(const A\, B: Extended): Boolean;,,,,const Key: IInterface,const Value: Extended)*)
+    function ValuesEqual(const A\, B: Extended): Boolean;,,,,const ,IInterface,const ,Extended)*)
 
-(*$JPPEXPANDMACRO JCLHASHMAPINT(Extended,Extended,TJclExtendedExtendedHashEntry,TJclExtendedExtendedHashEntryArray,TJclExtendedExtendedBucket,TJclExtendedExtendedBucketArray,TJclExtendedExtendedHashMap,TJclExtendedAbstractContainer,IJclExtendedExtendedMap,IJclExtendedSet,IJclExtendedCollection, IJclExtendedContainer\,,,
+(*$JPPEXPANDMACRO JCLHASHMAPINT(TJclExtendedExtendedHashEntry,TJclExtendedExtendedHashEntryArray,TJclExtendedExtendedBucket,TJclExtendedExtendedBucketArray,TJclExtendedExtendedHashMap,TJclExtendedAbstractContainer,IJclExtendedExtendedMap,IJclExtendedSet,IJclExtendedCollection, IJclExtendedContainer\,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Extended): Extended;
     function FreeValue(var Value: Extended): Extended;
     function KeysEqual(const A\, B: Extended): Boolean;
-    function ValuesEqual(const A\, B: Extended): Boolean;,,,,const Key: Extended,const Value: Extended)*)
+    function ValuesEqual(const A\, B: Extended): Boolean;,,,,const ,Extended,const ,Extended)*)
 
   {$IFDEF MATH_EXTENDED_PRECISION}
   TJclFloatIntfHashMap = TJclExtendedIntfHashMap;
@@ -200,97 +201,97 @@ type
   TJclFloatFloatHashMap = TJclSingleSingleHashMap;
   {$ENDIF MATH_SINGLE_PRECISION}
 
-(*$JPPEXPANDMACRO JCLHASHMAPINT(Integer,IInterface,TJclIntegerIntfHashEntry,TJclIntegerIntfHashEntryArray,TJclIntegerIntfBucket,TJclIntegerIntfBucketArray,TJclIntegerIntfHashMap,TJclIntegerAbstractContainer,IJclIntegerIntfMap,IJclIntegerSet,IJclIntfCollection,,,
+(*$JPPEXPANDMACRO JCLHASHMAPINT(TJclIntegerIntfHashEntry,TJclIntegerIntfHashEntryArray,TJclIntegerIntfBucket,TJclIntegerIntfBucketArray,TJclIntegerIntfHashMap,TJclIntegerAbstractContainer,IJclIntegerIntfMap,IJclIntegerSet,IJclIntfCollection,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Integer): Integer;
     function FreeValue(var Value: IInterface): IInterface;
     function KeysEqual(A\, B: Integer): Boolean;
-    function ValuesEqual(const A\, B: IInterface): Boolean;,,,,Key: Integer,const Value: IInterface)*)
+    function ValuesEqual(const A\, B: IInterface): Boolean;,,,,,Integer,const ,IInterface)*)
 
-(*$JPPEXPANDMACRO JCLHASHMAPINT(IInterface,Integer,TJclIntfIntegerHashEntry,TJclIntfIntegerHashEntryArray,TJclIntfIntegerBucket,TJclIntfIntegerBucketArray,TJclIntfIntegerHashMap,TJclIntegerAbstractContainer,IJclIntfIntegerMap,IJclIntfSet,IJclIntegerCollection,,,
+(*$JPPEXPANDMACRO JCLHASHMAPINT(TJclIntfIntegerHashEntry,TJclIntfIntegerHashEntryArray,TJclIntfIntegerBucket,TJclIntfIntegerBucketArray,TJclIntfIntegerHashMap,TJclIntegerAbstractContainer,IJclIntfIntegerMap,IJclIntfSet,IJclIntegerCollection,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: IInterface): IInterface;
     function FreeValue(var Value: Integer): Integer;
     function Hash(const AInterface: IInterface): Integer; reintroduce;
     function KeysEqual(const A\, B: IInterface): Boolean;
-    function ValuesEqual(A\, B: Integer): Boolean;,,,,const Key: IInterface,Value: Integer)*)
+    function ValuesEqual(A\, B: Integer): Boolean;,,,,const ,IInterface,,Integer)*)
 
-(*$JPPEXPANDMACRO JCLHASHMAPINT(Integer,Integer,TJclIntegerIntegerHashEntry,TJclIntegerIntegerHashEntryArray,TJclIntegerIntegerBucket,TJclIntegerIntegerBucketArray,TJclIntegerIntegerHashMap,TJclIntegerAbstractContainer,IJclIntegerIntegerMap,IJclIntegerSet,IJclIntegerCollection,,,
+(*$JPPEXPANDMACRO JCLHASHMAPINT(TJclIntegerIntegerHashEntry,TJclIntegerIntegerHashEntryArray,TJclIntegerIntegerBucket,TJclIntegerIntegerBucketArray,TJclIntegerIntegerHashMap,TJclIntegerAbstractContainer,IJclIntegerIntegerMap,IJclIntegerSet,IJclIntegerCollection,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Integer): Integer;
     function FreeValue(var Value: Integer): Integer;
     function KeysEqual(A\, B: Integer): Boolean;
-    function ValuesEqual(A\, B: Integer): Boolean;,,,,Key: Integer,Value: Integer)*)
+    function ValuesEqual(A\, B: Integer): Boolean;,,,,,Integer,,Integer)*)
 
-(*$JPPEXPANDMACRO JCLHASHMAPINT(Cardinal,IInterface,TJclCardinalIntfHashEntry,TJclCardinalIntfHashEntryArray,TJclCardinalIntfBucket,TJclCardinalIntfBucketArray,TJclCardinalIntfHashMap,TJclCardinalAbstractContainer,IJclCardinalIntfMap,IJclCardinalSet,IJclIntfCollection,,,
+(*$JPPEXPANDMACRO JCLHASHMAPINT(TJclCardinalIntfHashEntry,TJclCardinalIntfHashEntryArray,TJclCardinalIntfBucket,TJclCardinalIntfBucketArray,TJclCardinalIntfHashMap,TJclCardinalAbstractContainer,IJclCardinalIntfMap,IJclCardinalSet,IJclIntfCollection,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Cardinal): Cardinal;
     function FreeValue(var Value: IInterface): IInterface;
     function KeysEqual(A\, B: Cardinal): Boolean;
-    function ValuesEqual(const A\, B: IInterface): Boolean;,,,,Key: Cardinal,const Value: IInterface)*)
+    function ValuesEqual(const A\, B: IInterface): Boolean;,,,,,Cardinal,const ,IInterface)*)
 
-(*$JPPEXPANDMACRO JCLHASHMAPINT(IInterface,Cardinal,TJclIntfCardinalHashEntry,TJclIntfCardinalHashEntryArray,TJclIntfCardinalBucket,TJclIntfCardinalBucketArray,TJclIntfCardinalHashMap,TJclCardinalAbstractContainer,IJclIntfCardinalMap,IJclIntfSet,IJclCardinalCollection,,,
+(*$JPPEXPANDMACRO JCLHASHMAPINT(TJclIntfCardinalHashEntry,TJclIntfCardinalHashEntryArray,TJclIntfCardinalBucket,TJclIntfCardinalBucketArray,TJclIntfCardinalHashMap,TJclCardinalAbstractContainer,IJclIntfCardinalMap,IJclIntfSet,IJclCardinalCollection,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: IInterface): IInterface;
     function FreeValue(var Value: Cardinal): Cardinal;
     function Hash(const AInterface: IInterface): Integer; reintroduce;
     function KeysEqual(const A\, B: IInterface): Boolean;
-    function ValuesEqual(A\, B: Cardinal): Boolean;,,,,const Key: IInterface,Value: Cardinal)*)
+    function ValuesEqual(A\, B: Cardinal): Boolean;,,,,const ,IInterface,,Cardinal)*)
 
-(*$JPPEXPANDMACRO JCLHASHMAPINT(Cardinal,Cardinal,TJclCardinalCardinalHashEntry,TJclCardinalCardinalHashEntryArray,TJclCardinalCardinalBucket,TJclCardinalCardinalBucketArray,TJclCardinalCardinalHashMap,TJclCardinalAbstractContainer,IJclCardinalCardinalMap,IJclCardinalSet,IJclCardinalCollection,,,
+(*$JPPEXPANDMACRO JCLHASHMAPINT(TJclCardinalCardinalHashEntry,TJclCardinalCardinalHashEntryArray,TJclCardinalCardinalBucket,TJclCardinalCardinalBucketArray,TJclCardinalCardinalHashMap,TJclCardinalAbstractContainer,IJclCardinalCardinalMap,IJclCardinalSet,IJclCardinalCollection,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Cardinal): Cardinal;
     function FreeValue(var Value: Cardinal): Cardinal;
     function KeysEqual(A\, B: Cardinal): Boolean;
-    function ValuesEqual(A\, B: Cardinal): Boolean;,,,,Key: Cardinal,Value: Cardinal)*)
+    function ValuesEqual(A\, B: Cardinal): Boolean;,,,,,Cardinal,,Cardinal)*)
 
-(*$JPPEXPANDMACRO JCLHASHMAPINT(Int64,IInterface,TJclInt64IntfHashEntry,TJclInt64IntfHashEntryArray,TJclInt64IntfBucket,TJclInt64IntfBucketArray,TJclInt64IntfHashMap,TJclInt64AbstractContainer,IJclInt64IntfMap,IJclInt64Set,IJclIntfCollection,,,
+(*$JPPEXPANDMACRO JCLHASHMAPINT(TJclInt64IntfHashEntry,TJclInt64IntfHashEntryArray,TJclInt64IntfBucket,TJclInt64IntfBucketArray,TJclInt64IntfHashMap,TJclInt64AbstractContainer,IJclInt64IntfMap,IJclInt64Set,IJclIntfCollection,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Int64): Int64;
     function FreeValue(var Value: IInterface): IInterface;
     function KeysEqual(const A\, B: Int64): Boolean;
-    function ValuesEqual(const A\, B: IInterface): Boolean;,,,,const Key: Int64,const Value: IInterface)*)
+    function ValuesEqual(const A\, B: IInterface): Boolean;,,,,const ,Int64,const ,IInterface)*)
 
-(*$JPPEXPANDMACRO JCLHASHMAPINT(IInterface,Int64,TJclIntfInt64HashEntry,TJclIntfInt64HashEntryArray,TJclIntfInt64Bucket,TJclIntfInt64BucketArray,TJclIntfInt64HashMap,TJclInt64AbstractContainer,IJclIntfInt64Map,IJclIntfSet,IJclInt64Collection,,,
+(*$JPPEXPANDMACRO JCLHASHMAPINT(TJclIntfInt64HashEntry,TJclIntfInt64HashEntryArray,TJclIntfInt64Bucket,TJclIntfInt64BucketArray,TJclIntfInt64HashMap,TJclInt64AbstractContainer,IJclIntfInt64Map,IJclIntfSet,IJclInt64Collection,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: IInterface): IInterface;
     function FreeValue(var Value: Int64): Int64;
     function Hash(const AInterface: IInterface): Integer; reintroduce;
     function KeysEqual(const A\, B: IInterface): Boolean;
-    function ValuesEqual(const A\, B: Int64): Boolean;,,,,const Key: IInterface,const Value: Int64)*)
+    function ValuesEqual(const A\, B: Int64): Boolean;,,,,const ,IInterface,const ,Int64)*)
 
-(*$JPPEXPANDMACRO JCLHASHMAPINT(Int64,Int64,TJclInt64Int64HashEntry,TJclInt64Int64HashEntryArray,TJclInt64Int64Bucket,TJclInt64Int64BucketArray,TJclInt64Int64HashMap,TJclInt64AbstractContainer,IJclInt64Int64Map,IJclInt64Set,IJclInt64Collection,,,
+(*$JPPEXPANDMACRO JCLHASHMAPINT(TJclInt64Int64HashEntry,TJclInt64Int64HashEntryArray,TJclInt64Int64Bucket,TJclInt64Int64BucketArray,TJclInt64Int64HashMap,TJclInt64AbstractContainer,IJclInt64Int64Map,IJclInt64Set,IJclInt64Collection,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Int64): Int64;
     function FreeValue(var Value: Int64): Int64;
     function KeysEqual(const A\, B: Int64): Boolean;
-    function ValuesEqual(const A\, B: Int64): Boolean;,,,,const Key: Int64,const Value: Int64)*)
+    function ValuesEqual(const A\, B: Int64): Boolean;,,,,const ,Int64,const ,Int64)*)
 
   {$IFNDEF CLR}
-(*$JPPEXPANDMACRO JCLHASHMAPINT(Pointer,IInterface,TJclPtrIntfHashEntry,TJclPtrIntfHashEntryArray,TJclPtrIntfBucket,TJclPtrIntfBucketArray,TJclPtrIntfHashMap,TJclPtrAbstractContainer,IJclPtrIntfMap,IJclPtrSet,IJclIntfCollection,,,
+(*$JPPEXPANDMACRO JCLHASHMAPINT(TJclPtrIntfHashEntry,TJclPtrIntfHashEntryArray,TJclPtrIntfBucket,TJclPtrIntfBucketArray,TJclPtrIntfHashMap,TJclPtrAbstractContainer,IJclPtrIntfMap,IJclPtrSet,IJclIntfCollection,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Pointer): Pointer;
     function FreeValue(var Value: IInterface): IInterface;
     function KeysEqual(A\, B: Pointer): Boolean;
-    function ValuesEqual(const A\, B: IInterface): Boolean;,,,,Key: Pointer,const Value: IInterface)*)
+    function ValuesEqual(const A\, B: IInterface): Boolean;,,,,,Pointer,const ,IInterface)*)
 
-(*$JPPEXPANDMACRO JCLHASHMAPINT(IInterface,Pointer,TJclIntfPtrHashEntry,TJclIntfPtrHashEntryArray,TJclIntfPtrBucket,TJclIntfPtrBucketArray,TJclIntfPtrHashMap,TJclPtrAbstractContainer,IJclIntfPtrMap,IJclIntfSet,IJclPtrCollection,,,
+(*$JPPEXPANDMACRO JCLHASHMAPINT(TJclIntfPtrHashEntry,TJclIntfPtrHashEntryArray,TJclIntfPtrBucket,TJclIntfPtrBucketArray,TJclIntfPtrHashMap,TJclPtrAbstractContainer,IJclIntfPtrMap,IJclIntfSet,IJclPtrCollection,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: IInterface): IInterface;
     function FreeValue(var Value: Pointer): Pointer;
     function Hash(const AInterface: IInterface): Integer; reintroduce;
     function KeysEqual(const A\, B: IInterface): Boolean;
-    function ValuesEqual(A\, B: Pointer): Boolean;,,,,const Key: IInterface,Value: Pointer)*)
+    function ValuesEqual(A\, B: Pointer): Boolean;,,,,const ,IInterface,,Pointer)*)
 
-(*$JPPEXPANDMACRO JCLHASHMAPINT(Pointer,Pointer,TJclPtrPtrHashEntry,TJclPtrPtrHashEntryArray,TJclPtrPtrBucket,TJclPtrPtrBucketArray,TJclPtrPtrHashMap,TJclPtrAbstractContainer,IJclPtrPtrMap,IJclPtrSet,IJclPtrCollection,,,
+(*$JPPEXPANDMACRO JCLHASHMAPINT(TJclPtrPtrHashEntry,TJclPtrPtrHashEntryArray,TJclPtrPtrBucket,TJclPtrPtrBucketArray,TJclPtrPtrHashMap,TJclPtrAbstractContainer,IJclPtrPtrMap,IJclPtrSet,IJclPtrCollection,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Pointer): Pointer;
     function FreeValue(var Value: Pointer): Pointer;
     function KeysEqual(A\, B: Pointer): Boolean;
-    function ValuesEqual(A\, B: Pointer): Boolean;,,,,Key: Pointer,Value: Pointer)*)
+    function ValuesEqual(A\, B: Pointer): Boolean;,,,,,Pointer,,Pointer)*)
   {$ENDIF ~CLR}
 
-(*$JPPEXPANDMACRO JCLHASHMAPINT(IInterface,TObject,TJclIntfHashEntry,TJclIntfHashEntryArray,TJclIntfBucket,TJclIntfBucketArray,TJclIntfHashMap,TJclAbstractContainerBase,IJclIntfMap,IJclIntfSet,IJclCollection, IJclValueOwner\,,
+(*$JPPEXPANDMACRO JCLHASHMAPINT(TJclIntfHashEntry,TJclIntfHashEntryArray,TJclIntfBucket,TJclIntfBucketArray,TJclIntfHashMap,TJclAbstractContainerBase,IJclIntfMap,IJclIntfSet,IJclCollection, IJclValueOwner\,,
     FOwnsValues: Boolean;,
     { IJclValueOwner }
     function FreeValue(var Value: TObject): TObject;
@@ -300,9 +301,9 @@ type
     function Hash(const AInterface: IInterface): Integer; reintroduce;
     function KeysEqual(const A\, B: IInterface): Boolean;
     function ValuesEqual(A\, B: TObject): Boolean;,
-    property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,const Key: IInterface,Value: TObject)*)
+    property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,const ,IInterface,,TObject)*)
 
-(*$JPPEXPANDMACRO JCLHASHMAPINT(AnsiString,TObject,TJclAnsiStrHashEntry,TJclAnsiStrHashEntryArray,TJclAnsiStrBucket,TJclAnsiStrBucketArray,TJclAnsiStrHashMap,TJclAnsiStrAbstractContainer,IJclAnsiStrMap,IJclAnsiStrSet,IJclCollection, IJclStrContainer\, IJclAnsiStrContainer\, IJclValueOwner\,,
+(*$JPPEXPANDMACRO JCLHASHMAPINT(TJclAnsiStrHashEntry,TJclAnsiStrHashEntryArray,TJclAnsiStrBucket,TJclAnsiStrBucketArray,TJclAnsiStrHashMap,TJclAnsiStrAbstractContainer,IJclAnsiStrMap,IJclAnsiStrSet,IJclCollection, IJclStrContainer\, IJclAnsiStrContainer\, IJclValueOwner\,,
     FOwnsValues: Boolean;,
     { IJclValueOwner }
     function FreeValue(var Value: TObject): TObject;
@@ -311,9 +312,9 @@ type
     function FreeKey(var Key: AnsiString): AnsiString;
     function KeysEqual(const A\, B: AnsiString): Boolean;
     function ValuesEqual(A\, B: TObject): Boolean;,
-    property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,const Key: AnsiString,Value: TObject)*)
+    property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,const ,AnsiString,,TObject)*)
 
-(*$JPPEXPANDMACRO JCLHASHMAPINT(WideString,TObject,TJclWideStrHashEntry,TJclWideStrHashEntryArray,TJclWideStrBucket,TJclWideStrBucketArray,TJclWideStrHashMap,TJclwideStrAbstractContainer,IJclWideStrMap,IJclWideStrSet,IJclCollection, IJclStrContainer\, IJclWideStrContainer\, IJclValueOwner\,,
+(*$JPPEXPANDMACRO JCLHASHMAPINT(TJclWideStrHashEntry,TJclWideStrHashEntryArray,TJclWideStrBucket,TJclWideStrBucketArray,TJclWideStrHashMap,TJclwideStrAbstractContainer,IJclWideStrMap,IJclWideStrSet,IJclCollection, IJclStrContainer\, IJclWideStrContainer\, IJclValueOwner\,,
     FOwnsValues: Boolean;,
     { IJclValueOwner }
     function FreeValue(var Value: TObject): TObject;
@@ -322,7 +323,7 @@ type
     function FreeKey(var Key: WideString): WideString;
     function KeysEqual(const A\, B: WideString): Boolean;
     function ValuesEqual(A\, B: TObject): Boolean;,
-    property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,const Key: WideString,Value: TObject)*)
+    property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,const ,WideString,,TObject)*)
 
   {$IFDEF CONTAINER_ANSISTR}
   TJclStrHashMap = TJclAnsiStrHashMap;
@@ -331,7 +332,7 @@ type
   TJclStrHashMap = TJclWideStrHashMap;
   {$ENDIF CONTAINER_WIDESTR}
 
-(*$JPPEXPANDMACRO JCLHASHMAPINT(Single,TObject,TJclSingleHashEntry,TJclSingleHashEntryArray,TJclSingleBucket,TJclSingleBucketArray,TJclSingleHashMap,TJclSingleAbstractContainer,IJclSingleMap,IJclSingleSet,IJclCollection, IJclSingleContainer\, IJclValueOwner\,,
+(*$JPPEXPANDMACRO JCLHASHMAPINT(TJclSingleHashEntry,TJclSingleHashEntryArray,TJclSingleBucket,TJclSingleBucketArray,TJclSingleHashMap,TJclSingleAbstractContainer,IJclSingleMap,IJclSingleSet,IJclCollection, IJclSingleContainer\, IJclValueOwner\,,
     FOwnsValues: Boolean;,
     { IJclValueOwner }
     function FreeValue(var Value: TObject): TObject;
@@ -340,9 +341,9 @@ type
     function FreeKey(var Key: Single): Single;
     function KeysEqual(const A\, B: Single): Boolean;
     function ValuesEqual(A\, B: TObject): Boolean;,
-    property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,const Key: Single,Value: TObject)*)
+    property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,const ,Single,,TObject)*)
 
-(*$JPPEXPANDMACRO JCLHASHMAPINT(Double,TObject,TJclDoubleHashEntry,TJclDoubleHashEntryArray,TJclDoubleBucket,TJclDoubleBucketArray,TJclDoubleHashMap,TJclDoubleAbstractContainer,IJclDoubleMap,IJclDoubleSet,IJclCollection, IJclDoubleContainer\, IJclValueOwner\,,
+(*$JPPEXPANDMACRO JCLHASHMAPINT(TJclDoubleHashEntry,TJclDoubleHashEntryArray,TJclDoubleBucket,TJclDoubleBucketArray,TJclDoubleHashMap,TJclDoubleAbstractContainer,IJclDoubleMap,IJclDoubleSet,IJclCollection, IJclDoubleContainer\, IJclValueOwner\,,
     FOwnsValues: Boolean;,
     { IJclValueOwner }
     function FreeValue(var Value: TObject): TObject;
@@ -351,9 +352,9 @@ type
     function FreeKey(var Key: Double): Double;
     function KeysEqual(const A\, B: Double): Boolean;
     function ValuesEqual(A\, B: TObject): Boolean;,
-    property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,const Key: Double,Value: TObject)*)
+    property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,const ,Double,,TObject)*)
 
-(*$JPPEXPANDMACRO JCLHASHMAPINT(Extended,TObject,TJclExtendedHashEntry,TJclExtendedHashEntryArray,TJclExtendedBucket,TJclExtendedBucketArray,TJclExtendedHashMap,TJclExtendedAbstractContainer,IJclExtendedMap,IJclExtendedSet,IJclCollection, IJclExtendedContainer\, IJclValueOwner\,,
+(*$JPPEXPANDMACRO JCLHASHMAPINT(TJclExtendedHashEntry,TJclExtendedHashEntryArray,TJclExtendedBucket,TJclExtendedBucketArray,TJclExtendedHashMap,TJclExtendedAbstractContainer,IJclExtendedMap,IJclExtendedSet,IJclCollection, IJclExtendedContainer\, IJclValueOwner\,,
     FOwnsValues: Boolean;,
     { IJclValueOwner }
     function FreeValue(var Value: TObject): TObject;
@@ -362,7 +363,7 @@ type
     function FreeKey(var Key: Extended): Extended;
     function KeysEqual(const A\, B: Extended): Boolean;
     function ValuesEqual(A\, B: TObject): Boolean;,
-    property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,const Key: Extended,Value: TObject)*)
+    property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,const ,Extended,,TObject)*)
 
   {$IFDEF MATH_EXTENDED_PRECISION}
   TJclFloatHashMap = TJclExtendedHashMap;
@@ -374,7 +375,7 @@ type
   TJclFloatHashMap = TJclSingleHashMap;
   {$ENDIF MATH_SINGLE_PRECISION}
 
-(*$JPPEXPANDMACRO JCLHASHMAPINT(Integer,TObject,TJclIntegerHashEntry,TJclIntegerHashEntryArray,TJclIntegerBucket,TJclIntegerBucketArray,TJclIntegerHashMap,TJclIntegerAbstractContainer,IJclIntegerMap,IJclIntegerSet,IJclCollection, IJclValueOwner\,,
+(*$JPPEXPANDMACRO JCLHASHMAPINT(TJclIntegerHashEntry,TJclIntegerHashEntryArray,TJclIntegerBucket,TJclIntegerBucketArray,TJclIntegerHashMap,TJclIntegerAbstractContainer,IJclIntegerMap,IJclIntegerSet,IJclCollection, IJclValueOwner\,,
     FOwnsValues: Boolean;,
     { IJclValueOwner }
     function FreeValue(var Value: TObject): TObject;
@@ -383,9 +384,9 @@ type
     function FreeKey(var Key: Integer): Integer;
     function KeysEqual(A\, B: Integer): Boolean;
     function ValuesEqual(A\, B: TObject): Boolean;,
-    property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,Key: Integer,Value: TObject)*)
+    property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,,Integer,,TObject)*)
 
-(*$JPPEXPANDMACRO JCLHASHMAPINT(Cardinal,TObject,TJclCardinalHashEntry,TJclCardinalHashEntryArray,TJclCardinalBucket,TJclCardinalBucketArray,TJclCardinalHashMap,TJclCardinalAbstractContainer,IJclCardinalMap,IJclCardinalSet,IJclCollection, IJclValueOwner\,,
+(*$JPPEXPANDMACRO JCLHASHMAPINT(TJclCardinalHashEntry,TJclCardinalHashEntryArray,TJclCardinalBucket,TJclCardinalBucketArray,TJclCardinalHashMap,TJclCardinalAbstractContainer,IJclCardinalMap,IJclCardinalSet,IJclCollection, IJclValueOwner\,,
     FOwnsValues: Boolean;,
     { IJclValueOwner }
     function FreeValue(var Value: TObject): TObject;
@@ -394,9 +395,9 @@ type
     function FreeKey(var Key: Cardinal): Cardinal;
     function KeysEqual(A\, B: Cardinal): Boolean;
     function ValuesEqual(A\, B: TObject): Boolean;,
-    property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,Key: Cardinal,Value: TObject)*)
+    property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,,Cardinal,,TObject)*)
 
-(*$JPPEXPANDMACRO JCLHASHMAPINT(Int64,TObject,TJclInt64HashEntry,TJclInt64HashEntryArray,TJclInt64Bucket,TJclInt64BucketArray,TJclInt64HashMap,TJclInt64AbstractContainer,IJclInt64Map,IJclInt64Set,IJclCollection, IJclValueOwner\,,
+(*$JPPEXPANDMACRO JCLHASHMAPINT(TJclInt64HashEntry,TJclInt64HashEntryArray,TJclInt64Bucket,TJclInt64BucketArray,TJclInt64HashMap,TJclInt64AbstractContainer,IJclInt64Map,IJclInt64Set,IJclCollection, IJclValueOwner\,,
     FOwnsValues: Boolean;,
     { IJclValueOwner }
     function FreeValue(var Value: TObject): TObject;
@@ -405,10 +406,10 @@ type
     function FreeKey(var Key: Int64): Int64;
     function KeysEqual(const A\, B: Int64): Boolean;
     function ValuesEqual(A\, B: TObject): Boolean;,
-    property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,const Key: Int64,Value: TObject)*)
+    property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,const ,Int64,,TObject)*)
 
   {$IFNDEF CLR}
-(*$JPPEXPANDMACRO JCLHASHMAPINT(Pointer,TObject,TJclPtrHashEntry,TJclPtrHashEntryArray,TJclPtrBucket,TJclPtrBucketArray,TJclPtrHashMap,TJclPtrAbstractContainer,IJclPtrMap,IJclPtrSet,IJclCollection, IJclValueOwner\,,
+(*$JPPEXPANDMACRO JCLHASHMAPINT(TJclPtrHashEntry,TJclPtrHashEntryArray,TJclPtrBucket,TJclPtrBucketArray,TJclPtrHashMap,TJclPtrAbstractContainer,IJclPtrMap,IJclPtrSet,IJclCollection, IJclValueOwner\,,
     FOwnsValues: Boolean;,
     { IJclValueOwner }
     function FreeValue(var Value: TObject): TObject;
@@ -417,10 +418,10 @@ type
     function FreeKey(var Key: Pointer): Pointer;
     function KeysEqual(A\, B: Pointer): Boolean;
     function ValuesEqual(A\, B: TObject): Boolean;,
-    property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,Key: Pointer,Value: TObject)*)
+    property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,,Pointer,,TObject)*)
   {$ENDIF ~CLR}
 
-(*$JPPEXPANDMACRO JCLHASHMAPINT(TObject,TObject,TJclHashEntry,TJclHashEntryArray,TJclBucket,TJclBucketArray,TJclHashMap,TJclAbstractContainerBase,IJclMap,IJclSet,IJclCollection, IJclKeyOwner\, IJclValueOwner\,,
+(*$JPPEXPANDMACRO JCLHASHMAPINT(TJclHashEntry,TJclHashEntryArray,TJclBucket,TJclBucketArray,TJclHashMap,TJclAbstractContainerBase,IJclMap,IJclSet,IJclCollection, IJclKeyOwner\, IJclValueOwner\,,
     FOwnsKeys: Boolean;
     FOwnsValues: Boolean;,
     { IJclKeyOwner }
@@ -434,10 +435,10 @@ type
     function KeysEqual(A\, B: TObject): Boolean;
     function ValuesEqual(A\, B: TObject): Boolean;,
     property OwnsKeys: Boolean read FOwnsKeys;
-    property OwnsValues: Boolean read FOwnsValues;,; AOwnsKeys: Boolean,; AOwnsValues: Boolean,Key: TObject,Value: TObject)*)
+    property OwnsValues: Boolean read FOwnsValues;,; AOwnsKeys: Boolean,; AOwnsValues: Boolean,,TObject,,TObject)*)
 
   {$IFDEF SUPPORTS_GENERICS}
-(*$JPPEXPANDMACRO JCLHASHMAPINT(TKey,TValue,TJclHashEntry<TKey\,TValue>,TJclHashEntryArray<TKey\,TValue>,TJclBucket<TKey\,TValue>,TJclBucketArray<TKey\,TValue>,TJclHashMap<TKey\,TValue>,TJclAbstractContainerBase,IJclMap<TKey\,TValue>,IJclSet<TKey>,IJclCollection<TValue>, IJclPairOwner<TKey\, TValue>\,,
+(*$JPPEXPANDMACRO JCLHASHMAPINT(TJclHashEntry<TKey\,TValue>,TJclHashEntryArray<TKey\,TValue>,TJclBucket<TKey\,TValue>,TJclBucketArray<TKey\,TValue>,TJclHashMap<TKey\,TValue>,TJclAbstractContainerBase,IJclMap<TKey\,TValue>,IJclSet<TKey>,IJclCollection<TValue>, IJclPairOwner<TKey\, TValue>\,,
     FOwnsKeys: Boolean;
     FOwnsValues: Boolean;,
     { IJclPairOwner }
@@ -451,7 +452,7 @@ type
     function CreateEmptyArrayList(ACapacity: Integer; AOwnsObjects: Boolean): IJclCollection<TValue>; virtual; abstract;
     function CreateEmptyArraySet(ACapacity: Integer; AOwnsObjects: Boolean): IJclSet<TKey>; virtual; abstract;,
     property OwnsKeys: Boolean read FOwnsKeys;
-    property OwnsValues: Boolean read FOwnsValues;,; AOwnsKeys: Boolean,; AOwnsValues: Boolean,const Key: TKey,const Value: TValue)*)
+    property OwnsValues: Boolean read FOwnsValues;,; AOwnsKeys: Boolean,; AOwnsValues: Boolean,const ,TKey,const ,TValue)*)
 
   // E = external helper to compare and hash items
   // KeyComparer is used only when getting KeySet
@@ -592,7 +593,7 @@ begin
   Result := ItemsEqual(A, B);
 end;
 }
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntfIntfHashMap,TJclIntfIntfHashEntryArray,TJclIntfIntfBucket,IJclIntfIntfMap,IJclIntfSet,IJclIntfIterator,IJclIntfCollection,,,,const Key: IInterface,IInterface,nil,const Value: IInterface,IInterface,nil)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntfIntfHashMap,TJclIntfIntfHashEntryArray,TJclIntfIntfBucket,IJclIntfIntfMap,IJclIntfSet,IJclIntfIterator,IJclIntfCollection,,,,const ,IInterface,nil,const ,IInterface,nil)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -642,7 +643,7 @@ begin
   Result := Integer(A) = Integer(B);
 end;
 }
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclAnsiStrIntfHashMap,TJclAnsiStrIntfHashEntryArray,TJclAnsiStrIntfBucket,IJclAnsiStrIntfMap,IJclAnsiStrSet,IJclAnsiStrIterator,IJclIntfCollection,,,,const Key: AnsiString,AnsiString,'',const Value: IInterface,IInterface,nil)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclAnsiStrIntfHashMap,TJclAnsiStrIntfHashEntryArray,TJclAnsiStrIntfBucket,IJclAnsiStrIntfMap,IJclAnsiStrSet,IJclAnsiStrIterator,IJclIntfCollection,,,,const ,AnsiString,'',const ,IInterface,nil)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -697,7 +698,7 @@ begin
   Result := ItemsEqual(A, B);
 end;
 }
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntfAnsiStrHashMap,TJclIntfAnsiStrHashEntryArray,TJclIntfAnsiStrBucket,IJclIntfAnsiStrMap,IJclIntfSet,IJclIntfIterator,IJclAnsiStrCollection,,,,const Key: IInterface,IInterface,nil,const Value: AnsiString,AnsiString,'')}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntfAnsiStrHashMap,TJclIntfAnsiStrHashEntryArray,TJclIntfAnsiStrBucket,IJclIntfAnsiStrMap,IJclIntfSet,IJclIntfIterator,IJclAnsiStrCollection,,,,const ,IInterface,nil,const ,AnsiString,'')}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -747,7 +748,7 @@ begin
   Result := ItemsEqual(A, B);
 end;
 }
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclAnsiStrAnsiStrHashMap,TJclAnsiStrAnsiStrHashEntryArray,TJclAnsiStrAnsiStrBucket,IJclAnsiStrAnsiStrMap,IJclAnsiStrSet,IJclAnsiStrIterator,IJclAnsiStrCollection,,,,const Key: AnsiString,AnsiString,'',const Value: AnsiString,AnsiString,'')}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclAnsiStrAnsiStrHashMap,TJclAnsiStrAnsiStrHashEntryArray,TJclAnsiStrAnsiStrBucket,IJclAnsiStrAnsiStrMap,IJclAnsiStrSet,IJclAnsiStrIterator,IJclAnsiStrCollection,,,,const ,AnsiString,'',const ,AnsiString,'')}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -797,7 +798,7 @@ begin
   Result := Integer(A) = Integer(B);
 end;
 }
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclWideStrIntfHashMap,TJclWideStrIntfHashEntryArray,TJclWideStrIntfBucket,IJclWideStrIntfMap,IJclWideStrSet,IJclWideStrIterator,IJclIntfCollection,,,,const Key: WideString,WideString,'',const Value: IInterface,IInterface,nil)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclWideStrIntfHashMap,TJclWideStrIntfHashEntryArray,TJclWideStrIntfBucket,IJclWideStrIntfMap,IJclWideStrSet,IJclWideStrIterator,IJclIntfCollection,,,,const ,WideString,'',const ,IInterface,nil)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -852,7 +853,7 @@ begin
   Result := ItemsEqual(A, B);
 end;
 }
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntfWideStrHashMap,TJclIntfWideStrHashEntryArray,TJclIntfWideStrBucket,IJclIntfWideStrMap,IJclIntfSet,IJclIntfIterator,IJclWideStrCollection,,,,const Key: IInterface,IInterface,nil,const Value: WideString,WideString,'')}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntfWideStrHashMap,TJclIntfWideStrHashEntryArray,TJclIntfWideStrBucket,IJclIntfWideStrMap,IJclIntfSet,IJclIntfIterator,IJclWideStrCollection,,,,const ,IInterface,nil,const ,WideString,'')}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -902,7 +903,7 @@ begin
   Result := ItemsEqual(A, B);
 end;
 }
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclWideStrWideStrHashMap,TJclWideStrWideStrHashEntryArray,TJclWideStrWideStrBucket,IJclWideStrWideStrMap,IJclWideStrSet,IJclWideStrIterator,IJclWideStrCollection,,,,const Key: WideString,WideString,'',const Value: WideString,WideString,'')}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclWideStrWideStrHashMap,TJclWideStrWideStrHashEntryArray,TJclWideStrWideStrBucket,IJclWideStrWideStrMap,IJclWideStrSet,IJclWideStrIterator,IJclWideStrCollection,,,,const ,WideString,'',const ,WideString,'')}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -952,7 +953,7 @@ begin
   Result := Integer(A) = Integer(B);
 end;
 }
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclSingleIntfHashMap,TJclSingleIntfHashEntryArray,TJclSingleIntfBucket,IJclSingleIntfMap,IJclSingleSet,IJclSingleIterator,IJclIntfCollection,,,,const Key: Single,Single,0.0,const Value: IInterface,IInterface,nil)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclSingleIntfHashMap,TJclSingleIntfHashEntryArray,TJclSingleIntfBucket,IJclSingleIntfMap,IJclSingleSet,IJclSingleIterator,IJclIntfCollection,,,,const ,Single,0.0,const ,IInterface,nil)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -1007,7 +1008,7 @@ begin
   Result := ItemsEqual(A, B);
 end;
 }
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntfSingleHashMap,TJclIntfSingleHashEntryArray,TJclIntfSingleBucket,IJclIntfSingleMap,IJclIntfSet,IJclIntfIterator,IJclSingleCollection,,,,const Key: IInterface,IInterface,nil,const Value: Single,Single,0.0)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntfSingleHashMap,TJclIntfSingleHashEntryArray,TJclIntfSingleBucket,IJclIntfSingleMap,IJclIntfSet,IJclIntfIterator,IJclSingleCollection,,,,const ,IInterface,nil,const ,Single,0.0)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -1057,7 +1058,7 @@ begin
   Result := ItemsEqual(A, B);
 end;
 }
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclSingleSingleHashMap,TJclSingleSingleHashEntryArray,TJclSingleSingleBucket,IJclSingleSingleMap,IJclSingleSet,IJclSingleIterator,IJclSingleCollection,,,,const Key: Single,Single,0.0,const Value: Single,Single,0.0)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclSingleSingleHashMap,TJclSingleSingleHashEntryArray,TJclSingleSingleBucket,IJclSingleSingleMap,IJclSingleSet,IJclSingleIterator,IJclSingleCollection,,,,const ,Single,0.0,const ,Single,0.0)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -1107,7 +1108,7 @@ begin
   Result := Integer(A) = Integer(B);
 end;
 }
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclDoubleIntfHashMap,TJclDoubleIntfHashEntryArray,TJclDoubleIntfBucket,IJclDoubleIntfMap,IJclDoubleSet,IJclDoubleIterator,IJclIntfCollection,,,,const Key: Double,Double,0.0,const Value: IInterface,IInterface,nil)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclDoubleIntfHashMap,TJclDoubleIntfHashEntryArray,TJclDoubleIntfBucket,IJclDoubleIntfMap,IJclDoubleSet,IJclDoubleIterator,IJclIntfCollection,,,,const ,Double,0.0,const ,IInterface,nil)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -1162,7 +1163,7 @@ begin
   Result := ItemsEqual(A, B);
 end;
 }
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntfDoubleHashMap,TJclIntfDoubleHashEntryArray,TJclIntfDoubleBucket,IJclIntfDoubleMap,IJclIntfSet,IJclIntfIterator,IJclDoubleCollection,,,,const Key: IInterface,IInterface,nil,const Value: Double,Double,0.0)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntfDoubleHashMap,TJclIntfDoubleHashEntryArray,TJclIntfDoubleBucket,IJclIntfDoubleMap,IJclIntfSet,IJclIntfIterator,IJclDoubleCollection,,,,const ,IInterface,nil,const ,Double,0.0)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -1212,7 +1213,7 @@ begin
   Result := ItemsEqual(A, B);
 end;
 }
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclDoubleDoubleHashMap,TJclDoubleDoubleHashEntryArray,TJclDoubleDoubleBucket,IJclDoubleDoubleMap,IJclDoubleSet,IJclDoubleIterator,IJclDoubleCollection,,,,const Key: Double,Double,0.0,const Value: Double,Double,0.0)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclDoubleDoubleHashMap,TJclDoubleDoubleHashEntryArray,TJclDoubleDoubleBucket,IJclDoubleDoubleMap,IJclDoubleSet,IJclDoubleIterator,IJclDoubleCollection,,,,const ,Double,0.0,const ,Double,0.0)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -1262,7 +1263,7 @@ begin
   Result := Integer(A) = Integer(B);
 end;
 }
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclExtendedIntfHashMap,TJclExtendedIntfHashEntryArray,TJclExtendedIntfBucket,IJclExtendedIntfMap,IJclExtendedSet,IJclExtendedIterator,IJclIntfCollection,,,,const Key: Extended,Extended,0.0,const Value: IInterface,IInterface,nil)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclExtendedIntfHashMap,TJclExtendedIntfHashEntryArray,TJclExtendedIntfBucket,IJclExtendedIntfMap,IJclExtendedSet,IJclExtendedIterator,IJclIntfCollection,,,,const ,Extended,0.0,const ,IInterface,nil)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -1317,7 +1318,7 @@ begin
   Result := ItemsEqual(A, B);
 end;
 }
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntfExtendedHashMap,TJclIntfExtendedHashEntryArray,TJclIntfExtendedBucket,IJclIntfExtendedMap,IJclIntfSet,IJclIntfIterator,IJclExtendedCollection,,,,const Key: IInterface,IInterface,nil,const Value: Extended,Extended,0.0)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntfExtendedHashMap,TJclIntfExtendedHashEntryArray,TJclIntfExtendedBucket,IJclIntfExtendedMap,IJclIntfSet,IJclIntfIterator,IJclExtendedCollection,,,,const ,IInterface,nil,const ,Extended,0.0)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -1367,7 +1368,7 @@ begin
   Result := ItemsEqual(A, B);
 end;
 }
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclExtendedExtendedHashMap,TJclExtendedExtendedHashEntryArray,TJclExtendedExtendedBucket,IJclExtendedExtendedMap,IJclExtendedSet,IJclExtendedIterator,IJclExtendedCollection,,,,const Key: Extended,Extended,0.0,const Value: Extended,Extended,0.0)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclExtendedExtendedHashMap,TJclExtendedExtendedHashEntryArray,TJclExtendedExtendedBucket,IJclExtendedExtendedMap,IJclExtendedSet,IJclExtendedIterator,IJclExtendedCollection,,,,const ,Extended,0.0,const ,Extended,0.0)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -1417,7 +1418,7 @@ begin
   Result := Integer(A) = Integer(B);
 end;
 }
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntegerIntfHashMap,TJclIntegerIntfHashEntryArray,TJclIntegerIntfBucket,IJclIntegerIntfMap,IJclIntegerSet,IJclIntegerIterator,IJclIntfCollection,,,,Key: Integer,Integer,0,const Value: IInterface,IInterface,nil)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntegerIntfHashMap,TJclIntegerIntfHashEntryArray,TJclIntegerIntfBucket,IJclIntegerIntfMap,IJclIntegerSet,IJclIntegerIterator,IJclIntfCollection,,,,,Integer,0,const ,IInterface,nil)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -1472,7 +1473,7 @@ begin
   Result := ItemsEqual(A, B);
 end;
 }
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntfIntegerHashMap,TJclIntfIntegerHashEntryArray,TJclIntfIntegerBucket,IJclIntfIntegerMap,IJclIntfSet,IJclIntfIterator,IJclIntegerCollection,,,,const Key: IInterface,IInterface,nil,Value: Integer,Integer,0)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntfIntegerHashMap,TJclIntfIntegerHashEntryArray,TJclIntfIntegerBucket,IJclIntfIntegerMap,IJclIntfSet,IJclIntfIterator,IJclIntegerCollection,,,,const ,IInterface,nil,,Integer,0)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -1522,7 +1523,7 @@ begin
   Result := ItemsEqual(A, B);
 end;
 }
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntegerIntegerHashMap,TJclIntegerIntegerHashEntryArray,TJclIntegerIntegerBucket,IJclIntegerIntegerMap,IJclIntegerSet,IJclIntegerIterator,IJclIntegerCollection,,,,Key: Integer,Integer,0,Value: Integer,Integer,0)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntegerIntegerHashMap,TJclIntegerIntegerHashEntryArray,TJclIntegerIntegerBucket,IJclIntegerIntegerMap,IJclIntegerSet,IJclIntegerIterator,IJclIntegerCollection,,,,,Integer,0,,Integer,0)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -1572,7 +1573,7 @@ begin
   Result := Integer(A) = Integer(B);
 end;
 }
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclCardinalIntfHashMap,TJclCardinalIntfHashEntryArray,TJclCardinalIntfBucket,IJclCardinalIntfMap,IJclCardinalSet,IJclCardinalIterator,IJclIntfCollection,,,,Key: Cardinal,Cardinal,0,const Value: IInterface,IInterface,nil)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclCardinalIntfHashMap,TJclCardinalIntfHashEntryArray,TJclCardinalIntfBucket,IJclCardinalIntfMap,IJclCardinalSet,IJclCardinalIterator,IJclIntfCollection,,,,,Cardinal,0,const ,IInterface,nil)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -1627,7 +1628,7 @@ begin
   Result := ItemsEqual(A, B);
 end;
 }
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntfCardinalHashMap,TJclIntfCardinalHashEntryArray,TJclIntfCardinalBucket,IJclIntfCardinalMap,IJclIntfSet,IJclIntfIterator,IJclCardinalCollection,,,,const Key: IInterface,IInterface,nil,Value: Cardinal,Cardinal,0)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntfCardinalHashMap,TJclIntfCardinalHashEntryArray,TJclIntfCardinalBucket,IJclIntfCardinalMap,IJclIntfSet,IJclIntfIterator,IJclCardinalCollection,,,,const ,IInterface,nil,,Cardinal,0)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -1677,7 +1678,7 @@ begin
   Result := ItemsEqual(A, B);
 end;
 }
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclCardinalCardinalHashMap,TJclCardinalCardinalHashEntryArray,TJclCardinalCardinalBucket,IJclCardinalCardinalMap,IJclCardinalSet,IJclCardinalIterator,IJclCardinalCollection,,,,Key: Cardinal,Cardinal,0,Value: Cardinal,Cardinal,0)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclCardinalCardinalHashMap,TJclCardinalCardinalHashEntryArray,TJclCardinalCardinalBucket,IJclCardinalCardinalMap,IJclCardinalSet,IJclCardinalIterator,IJclCardinalCollection,,,,,Cardinal,0,,Cardinal,0)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -1727,7 +1728,7 @@ begin
   Result := Integer(A) = Integer(B);
 end;
 }
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclInt64IntfHashMap,TJclInt64IntfHashEntryArray,TJclInt64IntfBucket,IJclInt64IntfMap,IJclInt64Set,IJclInt64Iterator,IJclIntfCollection,,,,const Key: Int64,Int64,0,const Value: IInterface,IInterface,nil)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclInt64IntfHashMap,TJclInt64IntfHashEntryArray,TJclInt64IntfBucket,IJclInt64IntfMap,IJclInt64Set,IJclInt64Iterator,IJclIntfCollection,,,,const ,Int64,0,const ,IInterface,nil)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -1782,7 +1783,7 @@ begin
   Result := ItemsEqual(A, B);
 end;
 }
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntfInt64HashMap,TJclIntfInt64HashEntryArray,TJclIntfInt64Bucket,IJclIntfInt64Map,IJclIntfSet,IJclIntfIterator,IJclInt64Collection,,,,const Key: IInterface,IInterface,nil,const Value: Int64,Int64,0)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntfInt64HashMap,TJclIntfInt64HashEntryArray,TJclIntfInt64Bucket,IJclIntfInt64Map,IJclIntfSet,IJclIntfIterator,IJclInt64Collection,,,,const ,IInterface,nil,const ,Int64,0)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -1832,7 +1833,7 @@ begin
   Result := ItemsEqual(A, B);
 end;
 }
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclInt64Int64HashMap,TJclInt64Int64HashEntryArray,TJclInt64Int64Bucket,IJclInt64Int64Map,IJclInt64Set,IJclInt64Iterator,IJclInt64Collection,,,,const Key: Int64,Int64,0,const Value: Int64,Int64,0)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclInt64Int64HashMap,TJclInt64Int64HashEntryArray,TJclInt64Int64Bucket,IJclInt64Int64Map,IJclInt64Set,IJclInt64Iterator,IJclInt64Collection,,,,const ,Int64,0,const ,Int64,0)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -1883,7 +1884,7 @@ begin
   Result := Integer(A) = Integer(B);
 end;
 }
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclPtrIntfHashMap,TJclPtrIntfHashEntryArray,TJclPtrIntfBucket,IJclPtrIntfMap,IJclPtrSet,IJclPtrIterator,IJclIntfCollection,,,,Key: Pointer,Pointer,nil,const Value: IInterface,IInterface,nil)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclPtrIntfHashMap,TJclPtrIntfHashEntryArray,TJclPtrIntfBucket,IJclPtrIntfMap,IJclPtrSet,IJclPtrIterator,IJclIntfCollection,,,,,Pointer,nil,const ,IInterface,nil)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -1938,7 +1939,7 @@ begin
   Result := ItemsEqual(A, B);
 end;
 }
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntfPtrHashMap,TJclIntfPtrHashEntryArray,TJclIntfPtrBucket,IJclIntfPtrMap,IJclIntfSet,IJclIntfIterator,IJclPtrCollection,,,,const Key: IInterface,IInterface,nil,Value: Pointer,Pointer,nil)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntfPtrHashMap,TJclIntfPtrHashEntryArray,TJclIntfPtrBucket,IJclIntfPtrMap,IJclIntfSet,IJclIntfIterator,IJclPtrCollection,,,,const ,IInterface,nil,,Pointer,nil)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -1988,7 +1989,7 @@ begin
   Result := ItemsEqual(A, B);
 end;
 }
-{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclPtrPtrHashMap,TJclPtrPtrHashEntryArray,TJclPtrPtrBucket,IJclPtrPtrMap,IJclPtrSet,IJclPtrIterator,IJclPtrCollection,,,,Key: Pointer,Pointer,nil,Value: Pointer,Pointer,nil)}
+{$JPPEXPANDMACRO JCLHASHMAPIMP(TJclPtrPtrHashMap,TJclPtrPtrHashEntryArray,TJclPtrPtrBucket,IJclPtrPtrMap,IJclPtrSet,IJclPtrIterator,IJclPtrCollection,,,,,Pointer,nil,,Pointer,nil)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -2058,7 +2059,7 @@ begin
 end;
 }
 {$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntfHashMap,TJclIntfHashEntryArray,TJclIntfBucket,IJclIntfMap,IJclIntfSet,IJclIntfIterator,IJclCollection,; AOwnsValues: Boolean,,
-  FOwnsValues := AOwnsValues;,const Key: IInterface,IInterface,nil,Value: TObject,TObject,nil)}
+  FOwnsValues := AOwnsValues;,const ,IInterface,nil,,TObject,nil)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -2122,7 +2123,7 @@ begin
 end;
 }
 {$JPPEXPANDMACRO JCLHASHMAPIMP(TJclAnsiStrHashMap,TJclAnsiStrHashEntryArray,TJclAnsiStrBucket,IJclAnsiStrMap,IJclAnsiStrSet,IJclAnsiStrIterator,IJclCollection,; AOwnsValues: Boolean,,
-  FOwnsValues := AOwnsValues;,const Key: AnsiString,AnsiString,'',Value: TObject,TObject,nil)}
+  FOwnsValues := AOwnsValues;,const ,AnsiString,'',,TObject,nil)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -2186,7 +2187,7 @@ begin
 end;
 }
 {$JPPEXPANDMACRO JCLHASHMAPIMP(TJclWideStrHashMap,TJclWideStrHashEntryArray,TJclWideStrBucket,IJclWideStrMap,IJclWideStrSet,IJclWideStrIterator,IJclCollection,; AOwnsValues: Boolean,,
-  FOwnsValues := AOwnsValues;,const Key: WideString,WideString,'',Value: TObject,TObject,nil)}
+  FOwnsValues := AOwnsValues;,const ,WideString,'',,TObject,nil)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -2250,7 +2251,7 @@ begin
 end;
 }
 {$JPPEXPANDMACRO JCLHASHMAPIMP(TJclSingleHashMap,TJclSingleHashEntryArray,TJclSingleBucket,IJclSingleMap,IJclSingleSet,IJclSingleIterator,IJclCollection,; AOwnsValues: Boolean,,
-  FOwnsValues := AOwnsValues;,const Key: Single,Single,0.0,Value: TObject,TObject,nil)}
+  FOwnsValues := AOwnsValues;,const ,Single,0.0,,TObject,nil)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -2314,7 +2315,7 @@ begin
 end;
 }
 {$JPPEXPANDMACRO JCLHASHMAPIMP(TJclDoubleHashMap,TJclDoubleHashEntryArray,TJclDoubleBucket,IJclDoubleMap,IJclDoubleSet,IJclDoubleIterator,IJclCollection,; AOwnsValues: Boolean,,
-  FOwnsValues := AOwnsValues;,const Key: Double,Double,0.0,Value: TObject,TObject,nil)}
+  FOwnsValues := AOwnsValues;,const ,Double,0.0,,TObject,nil)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -2378,7 +2379,7 @@ begin
 end;
 }
 {$JPPEXPANDMACRO JCLHASHMAPIMP(TJclExtendedHashMap,TJclExtendedHashEntryArray,TJclExtendedBucket,IJclExtendedMap,IJclExtendedSet,IJclExtendedIterator,IJclCollection,; AOwnsValues: Boolean,,
-  FOwnsValues := AOwnsValues;,const Key: Extended,Extended,0.0,Value: TObject,TObject,nil)}
+  FOwnsValues := AOwnsValues;,const ,Extended,0.0,,TObject,nil)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -2442,7 +2443,7 @@ begin
 end;
 }
 {$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntegerHashMap,TJclIntegerHashEntryArray,TJclIntegerBucket,IJclIntegerMap,IJclIntegerSet,IJclIntegerIterator,IJclCollection,; AOwnsValues: Boolean,,
-  FOwnsValues := AOwnsValues;,Key: Integer,Integer,0,Value: TObject,TObject,nil)}
+  FOwnsValues := AOwnsValues;,,Integer,0,,TObject,nil)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -2506,7 +2507,7 @@ begin
 end;
 }
 {$JPPEXPANDMACRO JCLHASHMAPIMP(TJclCardinalHashMap,TJclCardinalHashEntryArray,TJclCardinalBucket,IJclCardinalMap,IJclCardinalSet,IJclCardinalIterator,IJclCollection,; AOwnsValues: Boolean,,
-  FOwnsValues := AOwnsValues;,Key: Cardinal,Cardinal,0,Value: TObject,TObject,nil)}
+  FOwnsValues := AOwnsValues;,,Cardinal,0,,TObject,nil)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -2570,7 +2571,7 @@ begin
 end;
 }
 {$JPPEXPANDMACRO JCLHASHMAPIMP(TJclInt64HashMap,TJclInt64HashEntryArray,TJclInt64Bucket,IJclInt64Map,IJclInt64Set,IJclInt64Iterator,IJclCollection,; AOwnsValues: Boolean,,
-  FOwnsValues := AOwnsValues;,const Key: Int64,Int64,0,Value: TObject,TObject,nil)}
+  FOwnsValues := AOwnsValues;,const ,Int64,0,,TObject,nil)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -2635,7 +2636,7 @@ begin
 end;
 }
 {$JPPEXPANDMACRO JCLHASHMAPIMP(TJclPtrHashMap,TJclPtrHashEntryArray,TJclPtrBucket,IJclPtrMap,IJclPtrSet,IJclPtrIterator,IJclCollection,; AOwnsValues: Boolean,,
-  FOwnsValues := AOwnsValues;,Key: Pointer,Pointer,nil,Value: TObject,TObject,nil)}
+  FOwnsValues := AOwnsValues;,,Pointer,nil,,TObject,nil)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -2719,7 +2720,7 @@ end;
 }
 {$JPPEXPANDMACRO JCLHASHMAPIMP(TJclHashMap,TJclHashEntryArray,TJclBucket,IJclMap,IJclSet,IJclIterator,IJclCollection,; AOwnsKeys: Boolean,; AOwnsValues: Boolean,
   FOwnsKeys := AOwnsKeys;
-  FOwnsValues := AOwnsValues;,Key: TObject,TObject,nil,Value: TObject,TObject,nil)}
+  FOwnsValues := AOwnsValues;,,TObject,nil,,TObject,nil)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
@@ -2783,7 +2784,7 @@ end;
 {$JPPDEFINEMACRO VALUESEQUAL}
 {$JPPEXPANDMACRO JCLHASHMAPIMP(TJclHashMap<TKey\, TValue>,TJclHashEntryArray<TKey\, TValue>,TJclBucket<TKey\, TValue>,IJclMap<TKey\, TValue>,IJclSet<TKey>,IJclIterator<TKey>,IJclCollection<TValue>,; AOwnsKeys: Boolean,; AOwnsValues: Boolean,
   FOwnsKeys := AOwnsKeys;
-  FOwnsValues := AOwnsValues;,const Key: TKey,TKey,Default(TKey),const Value: TValue,TValue,Default(TValue))}
+  FOwnsValues := AOwnsValues;,const ,TKey,Default(TKey),const ,TValue,Default(TValue))}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYSET(Param)}
 {$JPPUNDEFMACRO CREATEEMPTYARRAYLIST(Param)}
