@@ -19,7 +19,7 @@ BEGIN
               VALUE "FileDescription", "JCL Thread Name IDE expert\0"
               VALUE "FileVersion", "1.102.0.2726\0"
               VALUE "InternalName", "JclThreadNameExpert\0"
-              VALUE "LegalCopyright", "Copyright (C) 1999, 2007 Project JEDI\0"
+              VALUE "LegalCopyright", "Copyright (C) 1999, 2008 Project JEDI\0"
               VALUE "OriginalFilename", "JclThreadNameExpert100.bpl\0"
               VALUE "ProductName", "JEDI Code Library\0"
               VALUE "ProductVersion", "1.102 Build 2726\0"

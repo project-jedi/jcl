@@ -153,7 +153,7 @@
       <VersionInfoKeys Name="FileDescription">JCL Integration of version control systems in the IDE</VersionInfoKeys>
       <VersionInfoKeys Name="FileVersion">1.102.0.2726</VersionInfoKeys>
       <VersionInfoKeys Name="InternalName">JclVersionControlExpertDLL</VersionInfoKeys>
-      <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2007 Project JEDI</VersionInfoKeys>
+      <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2008 Project JEDI</VersionInfoKeys>
       <VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
       <VersionInfoKeys Name="OriginalFilename">JclVersionControlExpertDLL100.dll</VersionInfoKeys>
       <VersionInfoKeys Name="ProductName">JEDI Code Library</VersionInfoKeys>

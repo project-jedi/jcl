@@ -56,7 +56,7 @@ uses
 [assembly: AssemblyConfiguration('')]
 [assembly: AssemblyCompany('Project JEDI')]
 [assembly: AssemblyProduct('JEDI Code Library')]
-[assembly: AssemblyCopyright('Copyright (C) 1999, 2007 Project JEDI')]
+[assembly: AssemblyCopyright('Copyright (C) 1999, 2008 Project JEDI')]
 [assembly: AssemblyTrademark('')]
 [assembly: AssemblyCulture('')]
 
