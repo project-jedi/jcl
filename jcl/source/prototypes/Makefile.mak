@@ -38,6 +38,7 @@ zlib:		..\windows\zlibh.pas \
 ContainersProt:	JclArrayLists.pas \
 		JclArraySets.pas \
 		JclBinaryTrees.pas \
+		JclContainerIntf.pas \
 		JclHashMaps.pas \
 		JclHashSets.pas \
 		JclLinkedLists.pas \
@@ -50,6 +51,7 @@ ContainersProt:	JclArrayLists.pas \
 Containers:	..\Common\JclArrayLists.pas \
 		..\Common\JclArraySets.pas \
 		..\Common\JclBinaryTrees.pas \
+		..\Common\JclContainerIntf.pas \
 		..\Common\JclHashMaps.pas \
 		..\Common\JclHashSets.pas \
 		..\Common\JclLinkedLists.pas \
@@ -103,6 +105,10 @@ JclArraySets.pas: \
 
 JclBinaryTrees.pas: \
 		containers\JclBinaryTrees.imp containers\JclBinaryTrees.int containers\JclContainerCommon.imp
+	$(touch) $@
+
+JclContainerIntf.pas: \
+		containers\JclContainerIntf.int
 	$(touch) $@
 
 JclHashMaps.pas: \
