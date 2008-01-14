@@ -73,11 +73,20 @@
   Directive           Description
   ------------------------------------------------------------------------------
   WIN32               Defined when target platform is 32 bit Windows
+  WIN64               Defined when target platform is 64 bit Windows
   MSWINDOWS           Defined when target platform is 32 bit Windows
   LINUX               Defined when target platform is Linux
-  UNIX                Defined when target platform is Linux or Unix
+  UNIX                Defined when target platform is Unix-like (including Linux)
   CLR                 Defined when target platform is .NET
 
+- Architecture directives. These are auto-defined by FPC
+  CPU32 and CPU64 are mostly for generic pointer size dependant differences rather
+  than for a specific architecture.
+
+  CPU386              Defined when target platform is x86 (win32)
+  CPUx86_64           Defined when target platform is x86_64 (win64)
+  CPU32               Defined when target is 32-bit
+  CPU64	              Defined when target is 64-bit
 
 - Visual library Directives
 
@@ -340,9 +349,9 @@
   SUPPORTS_IMPLEMENTS           Compiler supports implements (D4+/BCB4+)
   SUPPORTS_DEPRECATED           Compiler supports the deprecated directive (D6+/BCB6+)
   SUPPORTS_PLATFORM             Compiler supports the platform directive (D6+/BCB6+)
-  SUPPORTS_LIBRARY              Compiler supports the library directive (D6+/BCB6+)
+  SUPPORTS_LIBRARY              Compiler supports the library directive (D6+/BCB6+/FPC)
   SUPPORTS_LOCAL                Compiler supports the local directive (D6+/BCB6+)
-  SUPPORTS_INLINE               Compiler supports the inline directive (D9+)
+  SUPPORTS_INLINE               Compiler supports the inline directive (D9+/FPC)
   SUPPORTS_FOR_IN               Compiler supports for in loops (D9+)
   SUPPORTS_NESTED_CONSTANTS     Compiler supports nested constants (D9+)
   SUPPORTS_NESTED_TYPES         Compiler supports nested types (D9+)
@@ -355,7 +364,7 @@
   SUPPORTS_FINAL                Compiler supports final keyword (D9.NET, D10+)
   SUPPORTS_GENERICS             Compiler supports generic implementations (D11.net)
   ACCEPT_DEPRECATED             Compiler supports or ignores the deprecated directive (D6+/BCB6+/FPC)
-  ACCEPT_PLATFORM               Compiler supports or ignores the platform directive (D6+/BCB6+)
+  ACCEPT_PLATFORM               Compiler supports or ignores the platform directive (D6+/BCB6+/FPC)
   ACCEPT_LIBRARY                Compiler supports or ignores the library directive (D6+/BCB6+)
   SUPPORTS_CUSTOMVARIANTS       Compiler supports custom variants (D6+/BCB6+)
   SUPPORTS_VARARGS              Compiler supports varargs (D6+/BCB6+)
@@ -366,11 +375,12 @@
   SUPPORTS_UNSAFE_WARNINGS      Compiler supports unsafe warnings (D7)
   SUPPORTS_WEAKPACKAGEUNIT      Compiler supports the WEAKPACKAGEUNIT directive
   SUPPORTS_COMPILETIME_MESSAGES Compiler supports the MESSAGE directive
-  HAS_UNIT_LIBC                 Unit Libc exists (Kylix, FPC on Linux)
-  HAS_UNIT_RTLCONSTS            Unit RTLConsts exists (D6+/BCB6+)
-  HAS_UNIT_TYPES                Unit Types exists (D6+/BCB6+)
-  HAS_UNIT_VARIANTS             Unit Variants exists (D6+/BCB6+)
-  HAS_UNIT_STRUTILS             Unit StrUtils exists (D6+/BCB6+)
+  HAS_UNIT_LIBC                 Unit Libc exists (Kylix, FPC on Linux/x86)
+  HAS_UNIT_RTLCONSTS            Unit RTLConsts exists (D6+/BCB6+/FPC)
+  HAS_UNIT_TYPES                Unit Types exists (D6+/BCB6+/FPC)
+  HAS_UNIT_VARIANTS             Unit Variants exists (D6+/BCB6+/FPC)
+  HAS_UNIT_STRUTILS             Unit StrUtils exists (D6+/BCB6+/FPC)
+  HAS_UNIT_DATEUTILS            Unit DateUtils exists (D6+/BCB6+/FPC)
   XPLATFORM_RTL                 The RTL supports crossplatform function names (e.g. RaiseLastOSError) (D6+/BCB6+/FPC)
 
 
@@ -410,12 +420,15 @@
   {$MODE DELPHI}
   {$ASMMODE Intel}
   {$UNDEF BORLAND}
+   // FPC defines CPU* and Unix automatically
 {$ENDIF}
 
 {$IFDEF BORLAND}
   {$IFDEF LINUX}
     {$DEFINE KYLIX}
   {$ENDIF LINUX}
+  {$DEFINE CPU386}  // For Borland compilers select the x86 compat assembler by default
+  {$DEFINE CPU32}   // Assume Borland compilers are 32-bit (rather than 64-bit)
 {$ENDIF BORLAND}
 
 {------------------------------------------------------------------------------}
@@ -880,8 +893,8 @@
     {$DEFINE SUPPORTS_DYNAMICARRAYS}
     {$DEFINE SUPPORTS_DEFAULTPARAMS}
     {$DEFINE SUPPORTS_OVERLOAD}
-    {$DEFINE ACCEPT_DEPRECATED}
-    {$DEFINE ACCEPT_PLATFORM}
+    {$DEFINE ACCEPT_DEPRECATED}  // 2.2 also gives warnings
+    {$DEFINE ACCEPT_PLATFORM}    // 2.2 also gives warnings
     {$DEFINE ACCEPT_LIBRARY}
     {$DEFINE SUPPORTS_EXTSYM}
     {$DEFINE SUPPORTS_NODEFINE}
@@ -895,12 +908,19 @@
     {$DEFINE HAS_UNIT_TYPES}
     {$DEFINE HAS_UNIT_VARIANTS}
     {$DEFINE HAS_UNIT_STRUTILS}
+    {$DEFINE HAS_UNIT_DATEUTILS}
     {$DEFINE HAS_UNIT_RTLCONSTS}
 
     {$DEFINE XPLATFORM_RTL}
 
-    {$UNDEF SUPPORTS_DISPINTERFACE}
-    {$UNDEF SUPPORTS_IMPLEMENTS}
+    {$IFDEF VER2_2}
+      {$DEFINE SUPPORTS_DISPINTERFACE}
+      {$DEFINE SUPPORTS_IMPLEMENTS}
+      {$DEFINE SUPPORTS_DISPID}
+    {$ELSE}
+      {$UNDEF SUPPORTS_DISPINTERFACE}
+      {$UNDEF SUPPORTS_IMPLEMENTS}
+    {$endif}
     {$UNDEF SUPPORTS_UNSAFE_WARNINGS}
   {$ENDIF}
 {$ENDIF FPC}
@@ -1003,6 +1023,7 @@
   {$DEFINE HAS_UNIT_TYPES}
   {$DEFINE HAS_UNIT_VARIANTS}
   {$DEFINE HAS_UNIT_STRUTILS}
+  {$DEFINE HAS_UNIT_DATEUTILS}
   {$DEFINE XPLATFORM_RTL}
 {$ENDIF RTL140_UP}
 
