@@ -35,7 +35,8 @@ Unix:		..\unix\zlibh.pas
 zlib:		..\windows\zlibh.pas \
 		..\unix\zlibh.pas
 
-ContainersProt:	JclArrayLists.pas \
+ContainersProt:	JclAlgorithms.pas \
+		JclArrayLists.pas \
 		JclArraySets.pas \
 		JclBinaryTrees.pas \
 		JclContainerIntf.pas \
@@ -48,7 +49,8 @@ ContainersProt:	JclArrayLists.pas \
                 JclTrees.pas \
 		JclVectors.pas
 
-Containers:	..\Common\JclArrayLists.pas \
+Containers:	..\Common\JclAlgorithms.pas \
+		..\Common\JclArrayLists.pas \
 		..\Common\JclArraySets.pas \
 		..\Common\JclBinaryTrees.pas \
 		..\Common\JclContainerIntf.pas \
@@ -94,6 +96,10 @@ Containers:	..\Common\JclArrayLists.pas \
 		zlibh.pas
         echo Win-zlib
 	$(jpp) $(WinOptions) $(ZlibOptions) -uZLIB_DLL $?
+
+JclAlgorithms.pas: \
+		containers\JclAlgorithms.int containers\JclAlgorithms.imp
+	$(touch) $@
 
 JclArrayLists.pas: \
 		containers\JclArrayLists.imp containers\JclArrayLists.int containers\JclContainerCommon.imp

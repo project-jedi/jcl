@@ -64,6 +64,140 @@ const
   DefaultContainerCapacity = 16;
 
 type
+  // function pointer types
+
+  // apply functions Type -> Type
+  TIntfApplyFunction = function(const AInterface: IInterface): IInterface;
+  TAnsiStrApplyFunction = function(const AString: AnsiString): AnsiString;
+  TWideStrApplyFunction = function(const AString: WideString): WideString;
+  {$IFDEF CONTAINER_ANSISTR}
+  TStrApplyFunction = TAnsiStrApplyFunction;
+  {$ENDIF CONTAINER_ANSISTR}
+  {$IFDEF CONTAINER_WIDESTR}
+  TStrApplyFunction = TWideStrApplyFunction;
+  {$ENDIF CONTAINER_WIDESTR}
+  TSingleApplyFunction = function(const AValue: Single): Single;
+  TDoubleApplyFunction = function(const AValue: Double): Double;
+  TExtendedApplyFunction = function(const AValue: Extended): Extended;
+  {$IFDEF MATH_SINGLE_PRECISION}
+  TFloatApplyFunction = TSingleApplyFunction;
+  {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  TFloatApplyFunction = TDoubleApplyFunction;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  TFloatApplyFunction = TExtendedApplyFunction;
+  {$ENDIF MATH_EXTENDED_PRECISION}
+  TIntegerApplyFunction = function(AValue: Integer): Integer;
+  TCardinalApplyFunction = function(AValue: Cardinal): Cardinal;
+  TInt64ApplyFunction = function(const AValue: Int64): Int64;
+  {$IFNDEF CLR}
+  TPtrApplyFunction = function(APtr: Pointer): Pointer;
+  {$ENDIF ~CLR}
+  TApplyFunction = function(AObject: TObject): TObject;
+  {$IFDEF SUPPORTS_GENERICS}
+  TApplyFunction<T> = function(const AItem: T): T;
+  {$ENDIF SUPPORTS_GENERICS}
+
+  // comparison functions Type -> Type -> Integer
+  TIntfCompare = function(const Obj1, Obj2: IInterface): Integer;
+  TAnsiStrCompare = function(const Obj1, Obj2: AnsiString): Integer;
+  TWideStrCompare = function(const Obj1, Obj2: WideString): Integer;
+  {$IFDEF CONTAINER_ANSISTR}
+  TStrCompare = TAnsiStrCompare;
+  {$ENDIF CONTAINER_ANSISTR}
+  {$IFDEF CONTAINER_WIDESTR}
+  TStrCompare = TWideStrCompare;
+  {$ENDIF CONTAINER_WIDESTR}
+  TSingleCompare = function(const Obj1, Obj2: Single): Integer;
+  TDoubleCompare = function(const Obj1, Obj2: Double): Integer;
+  TExtendedCompare = function(const Obj1, Obj2: Extended): Integer;
+  {$IFDEF MATH_SINGLE_PRECISION}
+  TFloatCompare = TSingleCompare;
+  {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  TFloatCompare = TDoubleCompare;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  TFloatCompare = TExtendedCompare;
+  {$ENDIF MATH_EXTENDED_PRECISION}
+  TIntegerCompare = function(Obj1, Obj2: Integer): Integer;
+  TCardinalCompare = function(Obj1, Obj2: Cardinal): Integer;
+  TInt64Compare = function(Obj1, Obj2: Int64): Integer;
+  {$IFNDEF CLR}
+  TPtrCompare = function(Obj1, Obj2: Pointer): Integer;
+  {$ENDIF ~CLR}
+  TCompare = function(Obj1, Obj2: TObject): Integer;
+  {$IFDEF SUPPORTS_GENERICS}
+  TCompare<T> = function(const Obj1, Obj2: T): Integer;
+  {$ENDIF SUPPORTS_GENERICS}
+
+  // comparison for equality functions Type -> Type -> Boolean
+  TIntfEqualityCompare = function(const Obj1, Obj2: IInterface): Boolean;
+  TAnsiStrEqualityCompare = function(const Obj1, Obj2: AnsiString): Boolean;
+  TWideStrEqualityCompare = function(const Obj1, Obj2: WideString): Boolean;
+  {$IFDEF CONTAINER_ANSISTR}
+  TStrEqualityCompare = TAnsiStrEqualityCompare;
+  {$ENDIF CONTAINER_ANSISTR}
+  {$IFDEF CONTAINER_WIDESTR}
+  TStrEqualityCompare = TWideStrEqualityCompare;
+  {$ENDIF CONTAINER_WIDESTR}
+  TSingleEqualityCompare = function(const Obj1, Obj2: Single): Boolean;
+  TDoubleEqualityCompare = function(const Obj1, Obj2: Double): Boolean;
+  TExtendedEqualityCompare = function(const Obj1, Obj2: Extended): Boolean;
+  {$IFDEF MATH_SINGLE_PRECISION}
+  TFloatEqualityCompare = TSingleEqualityCompare;
+  {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  TFloatEqualityCompare = TDoubleEqualityCompare;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  TFloatEqualityCompare = TExtendedEqualityCompare;
+  {$ENDIF MATH_EXTENDED_PRECISION}
+  TIntegerEqualityCompare = function(Obj1, Obj2: Integer): Boolean;
+  TCardinalEqualityCompare = function(Obj1, Obj2: Cardinal): Boolean;
+  TInt64EqualityCompare = function(const Obj1, Obj2: Int64): Boolean;
+  {$IFNDEF CLR}
+  TPtrEqualityCompare = function(Obj1, Obj2: Pointer): Boolean;
+  {$ENDIF ~CLR}
+  TEqualityCompare = function(Obj1, Obj2: TObject): Boolean;
+  {$IFDEF SUPPORTS_GENERICS}
+  TEqualityCompare<T> = function(const Obj1, Obj2: T): Boolean;
+  {$ENDIF SUPPORTS_GENERICS}
+
+  // hash functions Type -> Integer
+  TIntfHashConvert = function(const AInterface: IInterface): Integer;
+  TAnsiStrHashConvert = function(const AString: AnsiString): Integer;
+  TWideStrHashConvert = function(const AString: WideString): Integer;
+  {$IFDEF CONTAINER_ANSISTR}
+  TStrHashConvert = TAnsiStrHashConvert;
+  {$ENDIF CONTAINER_ANSISTR}
+  {$IFDEF CONTAINER_WIDESTR}
+  TStrHashConvert = TWideStrHashConvert;
+  {$ENDIF CONTAINER_WIDESTR}
+  TSingleHashConvert = function(const AValue: Single): Integer;
+  TDoubleHashConvert = function(const AValue: Double): Integer;
+  TExtendedHashConvert = function(const AValue: Extended): Integer;
+  {$IFDEF MATH_SINGLE_PRECISION}
+  TFloatHashConvert = TSingleHashConvert;
+  {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  TFloatHashConvert = TDoubleHashConvert;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  TFloatHashConvert = TExtendedHashConvert;
+  {$ENDIF MATH_EXTENDED_PRECISION}
+  TIntegerHashConvert = function(AValue: Integer): Integer;
+  TCardinalHashConvert = function(AValue: Cardinal): Integer;
+  TInt64HashConvert = function(const AValue: Int64): Integer;
+  {$IFNDEF CLR}
+  TPtrHashConvert = function(APtr: Pointer): Integer;
+  {$ENDIF ~CLR}
+  THashConvert = function(AObject: TObject): Integer;
+  {$IFDEF SUPPORTS_GENERICS}
+  THashConvert<T> = function(const AItem: T): Integer;
+  {$ENDIF SUPPORTS_GENERICS}
+
   IJclLockable = interface
     ['{524AD65E-AE1B-4BC6-91C8-8181F0198BA9}']
     procedure ReadLock;
@@ -1669,6 +1803,30 @@ type
     function SubList(First, Count: Integer): IJclList<T>;
     property Items[Key: Integer]: T read GetItem write SetItem; default;
   end;
+  {$ENDIF SUPPORTS_GENERICS}
+
+  // Pointer functions for sort algorithms
+  TIntfSortProc = procedure(const AList: IJclIntfList; L, R: Integer; AComparator: TIntfCompare);
+  TAnsiStrSortProc = procedure(const AList: IJclAnsiStrList; L, R: Integer; AComparator: TAnsiStrCompare);
+  TWideStrSortProc = procedure(const AList: IJclWideStrList; L, R: Integer; AComparator: TWideStrCompare);
+  {$IFDEF CONTAINER_ANSISTR}
+  TStrSortProc = TAnsiStrSortProc;
+  {$ENDIF CONTAINER_ANSISTR}
+  {$IFDEF CONTAINER_WIDESTR}
+  TStrSortProc = TWideStrSortProc;
+  {$ENDIF CONTAINER_WIDESTR}
+  TSingleSortProc = procedure(const AList: IJclSingleList; L, R: Integer; AComparator: TSingleCompare);
+  TDoubleSortProc = procedure(const AList: IJclDoubleList; L, R: Integer; AComparator: TDoubleCompare);
+  TExtendedSortProc = procedure(const AList: IJclExtendedList; L, R: Integer; AComparator: TExtendedCompare);
+  TIntegerSortProc = procedure(const AList: IJclIntegerList; L, R: Integer; AComparator: TIntegerCompare);
+  TCardinalSortProc = procedure(const AList: IJclCardinalList; L, R: Integer; AComparator: TCardinalCompare);
+  TInt64SortProc = procedure(const AList: IJclInt64List; L, R: Integer; AComparator: TInt64Compare);
+  {$IFNDEF CLR}
+  TPtrSortProc = procedure(const AList: IJclPtrList; L, R: Integer; AComparator: TPtrCompare);
+  {$ENDIF ~CLR}
+  TSortProc = procedure(const AList: IJclList; L, R: Integer; AComparator: TCompare);
+  {$IFDEF SUPPORTS_GENERICS}
+  TSortProc<T> = procedure(const AList: IJclList<T>; L, R: Integer; AComparator: TCompare<T>);
   {$ENDIF SUPPORTS_GENERICS}
 
   IJclIntfArray = interface(IJclIntfList)

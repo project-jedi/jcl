@@ -60,6 +60,140 @@ const
   DefaultContainerCapacity = 16;
 
 type
+  // function pointer types
+
+  // apply functions Type -> Type
+  {$JPPEXPANDMACRO APPLYFUNCTION(TIntfApplyFunction,const ,AInterface,IInterface)}
+  {$JPPEXPANDMACRO APPLYFUNCTION(TAnsiStrApplyFunction,const ,AString,AnsiString)}
+  {$JPPEXPANDMACRO APPLYFUNCTION(TWideStrApplyFunction,const ,AString,WideString)}
+  {$IFDEF CONTAINER_ANSISTR}
+  TStrApplyFunction = TAnsiStrApplyFunction;
+  {$ENDIF CONTAINER_ANSISTR}
+  {$IFDEF CONTAINER_WIDESTR}
+  TStrApplyFunction = TWideStrApplyFunction;
+  {$ENDIF CONTAINER_WIDESTR}
+  {$JPPEXPANDMACRO APPLYFUNCTION(TSingleApplyFunction,const ,AValue,Single)}
+  {$JPPEXPANDMACRO APPLYFUNCTION(TDoubleApplyFunction,const ,AValue,Double)}
+  {$JPPEXPANDMACRO APPLYFUNCTION(TExtendedApplyFunction,const ,AValue,Extended)}
+  {$IFDEF MATH_SINGLE_PRECISION}
+  TFloatApplyFunction = TSingleApplyFunction;
+  {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  TFloatApplyFunction = TDoubleApplyFunction;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  TFloatApplyFunction = TExtendedApplyFunction;
+  {$ENDIF MATH_EXTENDED_PRECISION}
+  {$JPPEXPANDMACRO APPLYFUNCTION(TIntegerApplyFunction,,AValue,Integer)}
+  {$JPPEXPANDMACRO APPLYFUNCTION(TCardinalApplyFunction,,AValue,Cardinal)}
+  {$JPPEXPANDMACRO APPLYFUNCTION(TInt64ApplyFunction,const ,AValue,Int64)}
+  {$IFNDEF CLR}
+  {$JPPEXPANDMACRO APPLYFUNCTION(TPtrApplyFunction,,APtr,Pointer)}
+  {$ENDIF ~CLR}
+  {$JPPEXPANDMACRO APPLYFUNCTION(TApplyFunction,,AObject,TObject)}
+  {$IFDEF SUPPORTS_GENERICS}
+  {$JPPEXPANDMACRO APPLYFUNCTION(TApplyFunction<T>,const ,AItem,T)}
+  {$ENDIF SUPPORTS_GENERICS}
+
+  // comparison functions Type -> Type -> Integer
+  {$JPPEXPANDMACRO COMPAREFUNCTION(TIntfCompare,const ,IInterface)}
+  {$JPPEXPANDMACRO COMPAREFUNCTION(TAnsiStrCompare,const ,AnsiString)}
+  {$JPPEXPANDMACRO COMPAREFUNCTION(TWideStrCompare,const ,WideString)}
+  {$IFDEF CONTAINER_ANSISTR}
+  TStrCompare = TAnsiStrCompare;
+  {$ENDIF CONTAINER_ANSISTR}
+  {$IFDEF CONTAINER_WIDESTR}
+  TStrCompare = TWideStrCompare;
+  {$ENDIF CONTAINER_WIDESTR}
+  {$JPPEXPANDMACRO COMPAREFUNCTION(TSingleCompare,const ,Single)}
+  {$JPPEXPANDMACRO COMPAREFUNCTION(TDoubleCompare,const ,Double)}
+  {$JPPEXPANDMACRO COMPAREFUNCTION(TExtendedCompare,const ,Extended)}
+  {$IFDEF MATH_SINGLE_PRECISION}
+  TFloatCompare = TSingleCompare;
+  {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  TFloatCompare = TDoubleCompare;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  TFloatCompare = TExtendedCompare;
+  {$ENDIF MATH_EXTENDED_PRECISION}
+  {$JPPEXPANDMACRO COMPAREFUNCTION(TIntegerCompare,,Integer)}
+  {$JPPEXPANDMACRO COMPAREFUNCTION(TCardinalCompare,,Cardinal)}
+  {$JPPEXPANDMACRO COMPAREFUNCTION(TInt64Compare,,Int64)}
+  {$IFNDEF CLR}
+  {$JPPEXPANDMACRO COMPAREFUNCTION(TPtrCompare,,Pointer)}
+  {$ENDIF ~CLR}
+  {$JPPEXPANDMACRO COMPAREFUNCTION(TCompare,,TObject)}
+  {$IFDEF SUPPORTS_GENERICS}
+  {$JPPEXPANDMACRO COMPAREFUNCTION(TCompare<T>,const ,T)}
+  {$ENDIF SUPPORTS_GENERICS}
+
+  // comparison for equality functions Type -> Type -> Boolean
+  {$JPPEXPANDMACRO EQUALITYCOMPAREFUNCTION(TIntfEqualityCompare,const ,IInterface)}
+  {$JPPEXPANDMACRO EQUALITYCOMPAREFUNCTION(TAnsiStrEqualityCompare,const ,AnsiString)}
+  {$JPPEXPANDMACRO EQUALITYCOMPAREFUNCTION(TWideStrEqualityCompare,const ,WideString)}
+  {$IFDEF CONTAINER_ANSISTR}
+  TStrEqualityCompare = TAnsiStrEqualityCompare;
+  {$ENDIF CONTAINER_ANSISTR}
+  {$IFDEF CONTAINER_WIDESTR}
+  TStrEqualityCompare = TWideStrEqualityCompare;
+  {$ENDIF CONTAINER_WIDESTR}
+  {$JPPEXPANDMACRO EQUALITYCOMPAREFUNCTION(TSingleEqualityCompare,const ,Single)}
+  {$JPPEXPANDMACRO EQUALITYCOMPAREFUNCTION(TDoubleEqualityCompare,const ,Double)}
+  {$JPPEXPANDMACRO EQUALITYCOMPAREFUNCTION(TExtendedEqualityCompare,const ,Extended)}
+  {$IFDEF MATH_SINGLE_PRECISION}
+  TFloatEqualityCompare = TSingleEqualityCompare;
+  {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  TFloatEqualityCompare = TDoubleEqualityCompare;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  TFloatEqualityCompare = TExtendedEqualityCompare;
+  {$ENDIF MATH_EXTENDED_PRECISION}
+  {$JPPEXPANDMACRO EQUALITYCOMPAREFUNCTION(TIntegerEqualityCompare,,Integer)}
+  {$JPPEXPANDMACRO EQUALITYCOMPAREFUNCTION(TCardinalEqualityCompare,,Cardinal)}
+  {$JPPEXPANDMACRO EQUALITYCOMPAREFUNCTION(TInt64EqualityCompare,const ,Int64)}
+  {$IFNDEF CLR}
+  {$JPPEXPANDMACRO EQUALITYCOMPAREFUNCTION(TPtrEqualityCompare,,Pointer)}
+  {$ENDIF ~CLR}
+  {$JPPEXPANDMACRO EQUALITYCOMPAREFUNCTION(TEqualityCompare,,TObject)}
+  {$IFDEF SUPPORTS_GENERICS}
+  {$JPPEXPANDMACRO EQUALITYCOMPAREFUNCTION(TEqualityCompare<T>,const ,T)}
+  {$ENDIF SUPPORTS_GENERICS}
+
+  // hash functions Type -> Integer
+  {$JPPEXPANDMACRO HASHFUNCTION(TIntfHashConvert,const ,AInterface,IInterface)}
+  {$JPPEXPANDMACRO HASHFUNCTION(TAnsiStrHashConvert,const ,AString,AnsiString)}
+  {$JPPEXPANDMACRO HASHFUNCTION(TWideStrHashConvert,const ,AString,WideString)}
+  {$IFDEF CONTAINER_ANSISTR}
+  TStrHashConvert = TAnsiStrHashConvert;
+  {$ENDIF CONTAINER_ANSISTR}
+  {$IFDEF CONTAINER_WIDESTR}
+  TStrHashConvert = TWideStrHashConvert;
+  {$ENDIF CONTAINER_WIDESTR}
+  {$JPPEXPANDMACRO HASHFUNCTION(TSingleHashConvert,const ,AValue,Single)}
+  {$JPPEXPANDMACRO HASHFUNCTION(TDoubleHashConvert,const ,AValue,Double)}
+  {$JPPEXPANDMACRO HASHFUNCTION(TExtendedHashConvert,const ,AValue,Extended)}
+  {$IFDEF MATH_SINGLE_PRECISION}
+  TFloatHashConvert = TSingleHashConvert;
+  {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  TFloatHashConvert = TDoubleHashConvert;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  TFloatHashConvert = TExtendedHashConvert;
+  {$ENDIF MATH_EXTENDED_PRECISION}
+  {$JPPEXPANDMACRO HASHFUNCTION(TIntegerHashConvert,,AValue,Integer)}
+  {$JPPEXPANDMACRO HASHFUNCTION(TCardinalHashConvert,,AValue,Cardinal)}
+  {$JPPEXPANDMACRO HASHFUNCTION(TInt64HashConvert,const ,AValue,Int64)}
+  {$IFNDEF CLR}
+  {$JPPEXPANDMACRO HASHFUNCTION(TPtrHashConvert,,APtr,Pointer)}
+  {$ENDIF ~CLR}
+  {$JPPEXPANDMACRO HASHFUNCTION(THashConvert,,AObject,TObject)}
+  {$IFDEF SUPPORTS_GENERICS}
+  {$JPPEXPANDMACRO HASHFUNCTION(THashConvert<T>,const ,AItem,T)}
+  {$ENDIF SUPPORTS_GENERICS}
+
   IJclLockable = interface
     ['{524AD65E-AE1B-4BC6-91C8-8181F0198BA9}']
     procedure ReadLock;
@@ -633,6 +767,30 @@ type
 
   {$IFDEF SUPPORTS_GENERICS}
 {$JPPEXPANDMACRO LIST(IJclList<T>,IJclCollection<T>,3B4BE3D7-8FF7-4163-91DF-3F73AE6935E7,const ,AItem,T,GetItem,SetItem,Items)}
+  {$ENDIF SUPPORTS_GENERICS}
+
+  // Pointer functions for sort algorithms
+  {$JPPEXPANDMACRO SORTPROC(TIntfSortProc,IJclIntfList,TIntfCompare)}
+  {$JPPEXPANDMACRO SORTPROC(TAnsiStrSortProc,IJclAnsiStrList,TAnsiStrCompare)}
+  {$JPPEXPANDMACRO SORTPROC(TWideStrSortProc,IJclWideStrList,TWideStrCompare)}
+  {$IFDEF CONTAINER_ANSISTR}
+  TStrSortProc = TAnsiStrSortProc;
+  {$ENDIF CONTAINER_ANSISTR}
+  {$IFDEF CONTAINER_WIDESTR}
+  TStrSortProc = TWideStrSortProc;
+  {$ENDIF CONTAINER_WIDESTR}
+  {$JPPEXPANDMACRO SORTPROC(TSingleSortProc,IJclSingleList,TSingleCompare)}
+  {$JPPEXPANDMACRO SORTPROC(TDoubleSortProc,IJclDoubleList,TDoubleCompare)}
+  {$JPPEXPANDMACRO SORTPROC(TExtendedSortProc,IJclExtendedList,TExtendedCompare)}
+  {$JPPEXPANDMACRO SORTPROC(TIntegerSortProc,IJclIntegerList,TIntegerCompare)}
+  {$JPPEXPANDMACRO SORTPROC(TCardinalSortProc,IJclCardinalList,TCardinalCompare)}
+  {$JPPEXPANDMACRO SORTPROC(TInt64SortProc,IJclInt64List,TInt64Compare)}
+  {$IFNDEF CLR}
+  {$JPPEXPANDMACRO SORTPROC(TPtrSortProc,IJclPtrList,TPtrCompare)}
+  {$ENDIF ~CLR}
+  {$JPPEXPANDMACRO SORTPROC(TSortProc,IJclList,TCompare)}
+  {$IFDEF SUPPORTS_GENERICS}
+  {$JPPEXPANDMACRO SORTPROC(TSortProc<T>,IJclList<T>,TCompare<T>)}
   {$ENDIF SUPPORTS_GENERICS}
 
 {$JPPEXPANDMACRO ARRAY(IJclIntfArray,IJclIntfList,B055B427-7817-43FC-97D4-AD1845643D63,const ,AInterface,IInterface,GetObject,SetObject,Objects)}
