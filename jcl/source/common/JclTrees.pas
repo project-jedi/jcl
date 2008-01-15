@@ -8019,7 +8019,7 @@ type
     { IJclPtrIterator }
     function Add(APtr: Pointer): Boolean;
     function Equals(const AIterator: IJclPtrIterator): Boolean;
-    function GetPtr: Pointer;
+    function GetPointer: Pointer;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(APtr: Pointer): Boolean;
@@ -8029,10 +8029,10 @@ type
     function PreviousIndex: Integer;
     procedure Remove;
     procedure Reset;
-    procedure SetPtr(APtr: Pointer);
+    procedure SetPointer(APtr: Pointer);
     {$IFDEF SUPPORTS_FOR_IN}
     function MoveNext: Boolean;
-    property Current: Pointer read GetPtr;
+    property Current: Pointer read GetPointer;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclPtrTreeIterator }
     function AddChild(APtr: Pointer): Boolean;
@@ -8276,7 +8276,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TPtrItr.GetPtr: Pointer;
+function TPtrItr.GetPointer: Pointer;
 begin
   {$IFDEF THREADSAFE}
   FOwnTree.ReadLock;
@@ -8648,7 +8648,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TPtrItr.SetPtr(APtr: Pointer);
+procedure TPtrItr.SetPointer(APtr: Pointer);
 begin
   if FOwnTree.ReadOnly then
     raise EJclReadOnlyError.Create;

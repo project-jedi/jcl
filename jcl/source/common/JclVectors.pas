@@ -502,11 +502,11 @@ type
     { IJclPtrList }
     function Insert(Index: Integer; APtr: Pointer): Boolean;
     function InsertAll(Index: Integer; const ACollection: IJclPtrCollection): Boolean;
-    function GetPtr(Index: Integer): Pointer;
+    function GetPointer(Index: Integer): Pointer;
     function IndexOf(APtr: Pointer): Integer;
     function LastIndexOf(APtr: Pointer): Integer;
     function Delete(Index: Integer): Pointer; overload;
-    procedure SetPtr(Index: Integer; APtr: Pointer);
+    procedure SetPointer(Index: Integer; APtr: Pointer);
     function SubList(First, Count: Integer): IJclPtrList;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
@@ -2309,7 +2309,7 @@ type
     { IJclPtrIterator }
     function Add(APtr: Pointer): Boolean;
     function Equals(const AIterator: IJclPtrIterator): Boolean;
-    function GetPtr: Pointer;
+    function GetPointer: Pointer;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(APtr: Pointer): Boolean;
@@ -2319,10 +2319,10 @@ type
     function PreviousIndex: Integer;
     procedure Remove;
     procedure Reset;
-    procedure SetPtr(APtr: Pointer);
+    procedure SetPointer(APtr: Pointer);
     {$IFDEF SUPPORTS_FOR_IN}
     function MoveNext: Boolean;
-    property Current: Pointer read GetPtr;
+    property Current: Pointer read GetPointer;
     {$ENDIF SUPPORTS_FOR_IN}
   public
     constructor Create(const OwnList: IJclPtrList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
@@ -2378,10 +2378,10 @@ begin
   end;
 end;
 
-function TPtrItr.GetPtr: Pointer;
+function TPtrItr.GetPointer: Pointer;
 begin
   CheckValid;
-  Result := FOwnList.GetPtr(FCursor);
+  Result := FOwnList.GetPointer(FCursor);
 end;
 
 function TPtrItr.HasNext: Boolean;
@@ -2423,7 +2423,7 @@ begin
     Inc(FCursor)
   else
     Valid := True;
-  Result := FOwnList.GetPtr(FCursor);
+  Result := FOwnList.GetPointer(FCursor);
 end;
 
 function TPtrItr.NextIndex: Integer;
@@ -2440,7 +2440,7 @@ begin
     Dec(FCursor)
   else
     Valid := True;
-  Result := FOwnList.GetPtr(FCursor);
+  Result := FOwnList.GetPointer(FCursor);
 end;
 
 function TPtrItr.PreviousIndex: Integer;
@@ -2469,10 +2469,10 @@ begin
   end;
 end;
 
-procedure TPtrItr.SetPtr(APtr: Pointer);
+procedure TPtrItr.SetPointer(APtr: Pointer);
 begin
   CheckValid;
-  FOwnList.SetPtr(FCursor, APtr);
+  FOwnList.SetPointer(FCursor, APtr);
 end;
 {$ENDIF ~CLR}
 
@@ -7831,7 +7831,7 @@ begin
 end;
 {$ENDIF SUPPORTS_FOR_IN}
 
-function TJclPtrVector.GetPtr(Index: Integer): Pointer;
+function TJclPtrVector.GetPointer(Index: Integer): Pointer;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
@@ -8067,7 +8067,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclPtrVector.SetPtr(Index: Integer; APtr: Pointer);
+procedure TJclPtrVector.SetPointer(Index: Integer; APtr: Pointer);
 var
   ReplaceItem: Boolean;
   I: Integer;

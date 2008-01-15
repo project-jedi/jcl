@@ -102,7 +102,7 @@ type
 
   {$IFNDEF CLR}
 (*$JPPEXPANDMACRO JCLVECTORINT(TJclPtrVector,TJclPtrAbstractContainer,IJclPtrCollection,IJclPtrList,IJclPtrArray,IJclPtrIterator, IJclPtrEqualityComparer\,,,
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,,,APtr,Pointer,nil,JclBase.TDynPointerArray,GetPtr,SetPtr)*)
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,,,APtr,Pointer,nil,JclBase.TDynPointerArray,GetPointer,SetPointer)*)
   {$ENDIF ~CLR}
 
 (*$JPPEXPANDMACRO JCLVECTORINT(TJclVector,TJclAbstractContainer,IJclCollection,IJclList,IJclArray,IJclIterator, IJclObjectOwner\, IJclEqualityComparer\,,,
@@ -218,9 +218,9 @@ type
 
 {$IFNDEF CLR}
 type
-(*$JPPEXPANDMACRO JCLVECTORITRINT(TPtrItr,IJclPtrIterator,IJclPtrList,,APtr,Pointer,GetPtr,SetPtr)*)
+(*$JPPEXPANDMACRO JCLVECTORITRINT(TPtrItr,IJclPtrIterator,IJclPtrList,,APtr,Pointer,GetPointer,SetPointer)*)
 
-(*$JPPEXPANDMACRO JCLVECTORITRIMP(TPtrItr,IJclPtrIterator,IJclPtrList,,APtr,Pointer,GetPtr,SetPtr)*)
+(*$JPPEXPANDMACRO JCLVECTORITRIMP(TPtrItr,IJclPtrIterator,IJclPtrList,,APtr,Pointer,GetPointer,SetPointer)*)
 {$ENDIF ~CLR}
 
 type
@@ -334,7 +334,7 @@ begin
   AssignPropertiesTo(Result);
 end;
 }
-(*$JPPEXPANDMACRO JCLVECTORIMP(TJclPtrVector,IJclPtrCollection,IJclPtrList,IJclPtrIterator,TPtrItr,,,,APtr,Pointer,nil,GetPtr,SetPtr,FreePointer,JclBase.MoveArray)*)
+(*$JPPEXPANDMACRO JCLVECTORIMP(TJclPtrVector,IJclPtrCollection,IJclPtrList,IJclPtrIterator,TPtrItr,,,,APtr,Pointer,nil,GetPointer,SetPointer,FreePointer,JclBase.MoveArray)*)
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$ENDIF ~CLR}
 

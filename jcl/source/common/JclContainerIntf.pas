@@ -975,7 +975,7 @@ type
     ['{62B5501C-07AA-4D00-A85B-713B39912CDF}']
     function Add(APtr: Pointer): Boolean;
     function Equals(const AIterator: IJclPtrIterator): Boolean;
-    function GetPtr: Pointer;
+    function GetPointer: Pointer;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(APtr: Pointer): Boolean;
@@ -985,10 +985,10 @@ type
     function PreviousIndex: Integer;
     procedure Remove;
     procedure Reset;
-    procedure SetPtr(APtr: Pointer);
+    procedure SetPointer(APtr: Pointer);
     {$IFDEF SUPPORTS_FOR_IN}
     function MoveNext: Boolean;
-    property Current: Pointer read GetPtr;
+    property Current: Pointer read GetPointer;
     {$ENDIF SUPPORTS_FOR_IN}
   end;
   {$ENDIF ~CLR}
@@ -1767,13 +1767,13 @@ type
     ['{2CF5CF1F-C012-480C-A4CE-38BDAFB15D05}']
     function Insert(Index: Integer; APtr: Pointer): Boolean;
     function InsertAll(Index: Integer; const ACollection: IJclPtrCollection): Boolean;
-    function GetPtr(Index: Integer): Pointer;
+    function GetPointer(Index: Integer): Pointer;
     function IndexOf(APtr: Pointer): Integer;
     function LastIndexOf(APtr: Pointer): Integer;
     function Delete(Index: Integer): Pointer;
-    procedure SetPtr(Index: Integer; APtr: Pointer);
+    procedure SetPointer(Index: Integer; APtr: Pointer);
     function SubList(First, Count: Integer): IJclPtrList;
-    property Pointers[Key: Integer]: Pointer read GetPtr write SetPtr; default;
+    property Pointers[Key: Integer]: Pointer read GetPointer write SetPointer; default;
   end;
   {$ENDIF ~CLR}
 
@@ -1931,10 +1931,10 @@ type
   IJclPtrArray = interface(IJclPtrList)
     ['{D43E8D18-26B3-41A2-8D52-ED7EA2FE1AB7}']
     {$IFDEF CLR}
-    function GetPtr(Index: Integer): Pointer;
-    procedure SetPtr(Index: Integer; APtr: Pointer);
+    function GetPointer(Index: Integer): Pointer;
+    procedure SetPointer(Index: Integer; APtr: Pointer);
     {$ENDIF CLR}
-    property Pointers[Index: Integer]: Pointer read GetPtr write SetPtr; default;
+    property Pointers[Index: Integer]: Pointer read GetPointer write SetPointer; default;
   end;
   {$ENDIF ~CLR}
 

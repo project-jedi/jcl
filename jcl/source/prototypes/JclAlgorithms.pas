@@ -533,7 +533,7 @@ end;
 {$JPPEXPANDMACRO APPLYIMP(Apply,IJclInt64Iterator,TInt64ApplyFunction,SetValue)}
 
 {$IFNDEF CLR}
-{$JPPEXPANDMACRO APPLYIMP(Apply,IJclPtrIterator,TPtrApplyFunction,SetPtr)}
+{$JPPEXPANDMACRO APPLYIMP(Apply,IJclPtrIterator,TPtrApplyFunction,SetPointer)}
 {$ENDIF ~CLR}
 
 {$JPPEXPANDMACRO APPLYIMP(Apply,IJclIterator,TApplyFunction,SetObject)}
@@ -649,7 +649,7 @@ end;
 {$JPPEXPANDMACRO COPYIMP(Copy,IJclInt64Iterator,SetValue)}
 
 {$IFNDEF CLR}
-{$JPPEXPANDMACRO COPYIMP(Copy,IJclPtrIterator,SetPtr)}
+{$JPPEXPANDMACRO COPYIMP(Copy,IJclPtrIterator,SetPointer)}
 {$ENDIF ~CLR}
 
 {$JPPEXPANDMACRO COPYIMP(Copy,IJclIterator,SetObject)}
@@ -697,7 +697,7 @@ end;
 {$JPPEXPANDMACRO FILLIMP(Fill,IJclInt64Iterator,const ,AValue,Int64,SetValue)}
 
 {$IFNDEF CLR}
-{$JPPEXPANDMACRO FILLIMP(Fill,IJclPtrIterator,,APtr,Pointer,SetPtr)}
+{$JPPEXPANDMACRO FILLIMP(Fill,IJclPtrIterator,,APtr,Pointer,SetPointer)}
 {$ENDIF ~CLR}
 
 {$JPPEXPANDMACRO FILLIMP(Fill,IJclIterator,,AObject,TObject,SetObject)}
@@ -721,7 +721,7 @@ end;
 {$JPPEXPANDMACRO REVERSEIMP(Reverse,IJclInt64Iterator,Int64,GetValue,SetValue)}
 
 {$IFNDEF CLR}
-{$JPPEXPANDMACRO REVERSEIMP(Reverse,IJclPtrIterator,Pointer,GetPtr,SetPtr)}
+{$JPPEXPANDMACRO REVERSEIMP(Reverse,IJclPtrIterator,Pointer,GetPointer,SetPointer)}
 {$ENDIF ~CLR}
 
 {$JPPEXPANDMACRO REVERSEIMP(Reverse,IJclIterator,TObject,GetObject,SetObject)}
@@ -745,7 +745,7 @@ end;
 {$JPPEXPANDMACRO QUICKSORTIMP(QuickSort,IJclInt64List,L,R,TInt64Compare,Int64,GetValue,SetValue)}
 
 {$IFNDEF CLR}
-{$JPPEXPANDMACRO QUICKSORTIMP(QuickSort,IJclPtrList,L,R,TPtrCompare,Pointer,GetPtr,SetPtr)}
+{$JPPEXPANDMACRO QUICKSORTIMP(QuickSort,IJclPtrList,L,R,TPtrCompare,Pointer,GetPointer,SetPointer)}
 {$ENDIF ~CLR}
 
 {$JPPEXPANDMACRO QUICKSORTIMP(QuickSort,IJclList,L,R,TCompare,TObject,GetObject,SetObject)}

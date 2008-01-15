@@ -548,11 +548,11 @@ type
     { IJclPtrList }
     function Insert(Index: Integer; APtr: Pointer): Boolean;
     function InsertAll(Index: Integer; const ACollection: IJclPtrCollection): Boolean;
-    function GetPtr(Index: Integer): Pointer;
+    function GetPointer(Index: Integer): Pointer;
     function IndexOf(APtr: Pointer): Integer;
     function LastIndexOf(APtr: Pointer): Integer;
     function Delete(Index: Integer): Pointer; overload;
-    procedure SetPtr(Index: Integer; APtr: Pointer);
+    procedure SetPointer(Index: Integer; APtr: Pointer);
     function SubList(First, Count: Integer): IJclPtrList;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
@@ -3699,7 +3699,7 @@ type
     { IJclPtrIterator }
     function Add(AValue: Pointer): Boolean;
     function Equals(const AIterator: IJclPtrIterator): Boolean;
-    function GetPtr: Pointer;
+    function GetPointer: Pointer;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(AValue: Pointer): Boolean;
@@ -3709,10 +3709,10 @@ type
     function PreviousIndex: Integer;
     procedure Remove;
     procedure Reset;
-    procedure SetPtr(AValue: Pointer);
+    procedure SetPointer(AValue: Pointer);
     {$IFDEF SUPPORTS_FOR_IN}
     function MoveNext: Boolean;
-    property Current: Pointer read GetPtr;
+    property Current: Pointer read GetPointer;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
@@ -3772,7 +3772,7 @@ begin
   end;
 end;
 
-function TPtrItr.GetPtr: Pointer;
+function TPtrItr.GetPointer: Pointer;
 begin
   CheckValid;
   Result := nil;
@@ -3996,7 +3996,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TPtrItr.SetPtr(AValue: Pointer);
+procedure TPtrItr.SetPointer(AValue: Pointer);
 begin
   if FOwnList.ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -12212,7 +12212,7 @@ begin
 end;
 {$ENDIF SUPPORTS_FOR_IN}
 
-function TJclPtrLinkedList.GetPtr(Index: Integer): Pointer;
+function TJclPtrLinkedList.GetPointer(Index: Integer): Pointer;
 var
   Current: TJclPtrLinkedListItem;
 begin
@@ -12613,7 +12613,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclPtrLinkedList.SetPtr(Index: Integer; APtr: Pointer);
+procedure TJclPtrLinkedList.SetPointer(Index: Integer; APtr: Pointer);
 var
   Current: TJclPtrLinkedListItem;
   ReplaceItem: Boolean;

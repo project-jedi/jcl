@@ -268,7 +268,7 @@ begin
   AssignPropertiesTo(Result);
 end;
 }
-(*$JPPEXPANDMACRO JCLARRAYSETIMP(TJclPtrArraySet,IJclPtrCollection,IJclPtrIterator,,APtr,Pointer,nil,GetPtr)*)
+(*$JPPEXPANDMACRO JCLARRAYSETIMP(TJclPtrArraySet,IJclPtrCollection,IJclPtrIterator,,APtr,Pointer,nil,GetPointer)*)
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$ENDIF ~CLR}
 

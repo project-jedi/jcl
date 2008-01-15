@@ -220,9 +220,9 @@ type
 
 {$IFNDEF CLR}
 type
-{$JPPEXPANDMACRO JCLBINARYTREEITRINT(TPtrItr,TPreOrderPtrItr,TInOrderPtrItr,TPostOrderPtrItr,IJclPtrIterator,IJclPtrTreeIterator,IJclPtrBinaryTreeIterator,IJclPtrCollection,IJclPtrEqualityComparer,TJclPtrBinaryNode,,APtr,Pointer,GetPtr,SetPtr)}
+{$JPPEXPANDMACRO JCLBINARYTREEITRINT(TPtrItr,TPreOrderPtrItr,TInOrderPtrItr,TPostOrderPtrItr,IJclPtrIterator,IJclPtrTreeIterator,IJclPtrBinaryTreeIterator,IJclPtrCollection,IJclPtrEqualityComparer,TJclPtrBinaryNode,,APtr,Pointer,GetPointer,SetPointer)}
 
-{$JPPEXPANDMACRO JCLBINARYTREEITRIMP(TPtrItr,TPreOrderPtrItr,TInOrderPtrItr,TPostOrderPtrItr,IJclPtrIterator,IJclPtrCollection,IJclPtrEqualityComparer,TJclPtrBinaryNode,,APtr,Pointer,nil,GetPtr,SetPtr,FreePtr)}
+{$JPPEXPANDMACRO JCLBINARYTREEITRIMP(TPtrItr,TPreOrderPtrItr,TInOrderPtrItr,TPostOrderPtrItr,IJclPtrIterator,IJclPtrCollection,IJclPtrEqualityComparer,TJclPtrBinaryNode,,APtr,Pointer,nil,GetPointer,SetPointer,FreePointer)}
 {$ENDIF ~CLR}
 
 type

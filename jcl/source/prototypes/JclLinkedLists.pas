@@ -99,7 +99,7 @@ type
 
 {$IFNDEF CLR}
 (*$JPPEXPANDMACRO JCLLINKEDLISTINT(TJclPtrLinkedListItem,TJclPtrLinkedList,TJclPtrAbstractContainer,IJclPtrCollection,IJclPtrList,IJclPtrIterator, IJclPtrEqualityComparer\,,,
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,,,APtr,Pointer,GetPtr,SetPtr)*)
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,,,APtr,Pointer,GetPointer,SetPointer)*)
 {$ENDIF ~CLR}
 
 (*$JPPEXPANDMACRO JCLLINKEDLISTINT(TJclLinkedListItem,TJclLinkedList,TJclAbstractContainer,IJclCollection,IJclList,IJclIterator, IJclObjectOwner\, IJclEqualityComparer\,,,
@@ -235,10 +235,10 @@ type
 
 {$IFNDEF CLR}
 type
-(*$JPPEXPANDMACRO JCLLINKEDLISTITRINT(TPtrItr,IJclPtrIterator,IJclPtrList,IJclPtrEqualityComparer,TJclPtrLinkedListItem,,AValue,Pointer,nil,GetPtr,SetPtr)*)
+(*$JPPEXPANDMACRO JCLLINKEDLISTITRINT(TPtrItr,IJclPtrIterator,IJclPtrList,IJclPtrEqualityComparer,TJclPtrLinkedListItem,,AValue,Pointer,nil,GetPointer,SetPointer)*)
 
 {$JPPDEFINEMACRO ITEMFREE(Item)Item := nil}
-(*$JPPEXPANDMACRO JCLLINKEDLISTITRIMP(TPtrItr,IJclPtrIterator,IJclPtrList,IJclPtrEqualityComparer,TJclPtrLinkedListItem,,AValue,Pointer,nil,GetPtr,SetPtr)*)
+(*$JPPEXPANDMACRO JCLLINKEDLISTITRIMP(TPtrItr,IJclPtrIterator,IJclPtrList,IJclPtrEqualityComparer,TJclPtrLinkedListItem,,AValue,Pointer,nil,GetPointer,SetPointer)*)
 {$JPPUNDEFMACRO ITEMFREE(Item)}
 {$ENDIF ~CLR}
 
@@ -356,7 +356,7 @@ begin
   AssignPropertiesTo(Result);
 end;
 }
-{$JPPEXPANDMACRO JCLLINKEDLISTIMP(TJclPtrLinkedList,TJclPtrLinkedListItem,IJclPtrCollection,IJclPtrList,IJclPtrIterator,TPtrItr,,,,APtr,Pointer,nil,GetPtr,SetPtr,FreePointer)}
+{$JPPEXPANDMACRO JCLLINKEDLISTIMP(TJclPtrLinkedList,TJclPtrLinkedListItem,IJclPtrCollection,IJclPtrList,IJclPtrIterator,TPtrItr,,,,APtr,Pointer,nil,GetPointer,SetPointer,FreePointer)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$ENDIF ~CLR}
 

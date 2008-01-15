@@ -683,7 +683,7 @@ var
 begin
   for I := Count - 1 downto 0 do
     if First.HasNext then
-      First.SetPtr(F(First.Next))
+      First.SetPointer(F(First.Next))
     else
       Break;
 end;
@@ -1553,7 +1553,7 @@ begin
     if Output.HasNext and First.HasNext then
     begin
       Output.Next;
-      Output.SetPtr(First.Next);
+      Output.SetPointer(First.Next);
     end
     else
       Break;
@@ -1832,7 +1832,7 @@ begin
     if First.HasNext then
     begin
       First.Next;
-      First.SetPtr(APtr);
+      First.SetPointer(APtr);
     end
     else
       Break;
@@ -2020,8 +2020,8 @@ begin
   begin
     Obj := First.Next;
     Last.Previous;
-    First.SetPtr(Last.GetPtr);
-    Last.SetPtr(Obj);
+    First.SetPointer(Last.GetPointer);
+    Last.SetPointer(Obj);
   end;
 end;
 {$ENDIF ~CLR}
@@ -2379,16 +2379,16 @@ begin
     J := R;
     P := (L + R) shr 1;
     repeat
-      Obj := AList.GetPtr(P);
-      while AComparator(AList.GetPtr(I), Obj) < 0 do
+      Obj := AList.GetPointer(P);
+      while AComparator(AList.GetPointer(I), Obj) < 0 do
         Inc(I);
-      while AComparator(AList.GetPtr(J), Obj) > 0 do
+      while AComparator(AList.GetPointer(J), Obj) > 0 do
         Dec(J);
       if I <= J then
       begin
-        Obj := AList.GetPtr(I);
-        AList.SetPtr(I, AList.GetPtr(J));
-        AList.SetPtr(J, Obj);
+        Obj := AList.GetPointer(I);
+        AList.SetPointer(I, AList.GetPointer(J));
+        AList.SetPointer(J, Obj);
         if P = I then
           P := J
         else

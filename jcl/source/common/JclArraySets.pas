@@ -1623,7 +1623,7 @@ begin
     begin
       Idx := BinarySearch(APtr);
       if Idx >= 0 then
-        Result := not ItemsEqual(GetPtr(Idx), APtr) or CheckDuplicate
+        Result := not ItemsEqual(GetPointer(Idx), APtr) or CheckDuplicate
       else
         Result := True;
       if Result then
@@ -1673,7 +1673,7 @@ begin
     CompPos := (HiPos + LoPos) div 2;
     while HiPos >= LoPos do
     begin
-      Comp := ItemsCompare(GetPtr(CompPos), APtr);
+      Comp := ItemsCompare(GetPointer(CompPos), APtr);
       if Comp < 0 then
         LoPos := CompPos + 1
       else
@@ -1704,7 +1704,7 @@ begin
   {$ENDIF THREADSAFE}
     Idx := BinarySearch(APtr);
     if Idx >= 0 then
-      Result := ItemsEqual(GetPtr(Idx), APtr)
+      Result := ItemsEqual(GetPointer(Idx), APtr)
     else
       Result := False;
   {$IFDEF THREADSAFE}

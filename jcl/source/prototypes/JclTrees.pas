@@ -215,9 +215,9 @@ type
 
 {$IFNDEF CLR}
 type
-{$JPPEXPANDMACRO JCLTREEITRINT(TPtrItr,TPreOrderPtrItr,TPostOrderPtrItr,TJclPtrTreeNode,TJclPtrTree,IJclPtrIterator,IJclPtrTreeIterator,IJclPtrEqualityComparer,,APtr,Pointer,nil,GetPtr,SetPtr)}
+{$JPPEXPANDMACRO JCLTREEITRINT(TPtrItr,TPreOrderPtrItr,TPostOrderPtrItr,TJclPtrTreeNode,TJclPtrTree,IJclPtrIterator,IJclPtrTreeIterator,IJclPtrEqualityComparer,,APtr,Pointer,nil,GetPointer,SetPointer)}
 
-{$JPPEXPANDMACRO JCLTREEITRIMP(TPtrItr,TPreOrderPtrItr,TPostOrderPtrItr,TJclPtrTreeNode,TJclPtrTree,IJclPtrIterator,IJclPtrTreeIterator,IJclPtrEqualityComparer,,APtr,Pointer,nil,GetPtr,SetPtr,FreePointer)}
+{$JPPEXPANDMACRO JCLTREEITRIMP(TPtrItr,TPreOrderPtrItr,TPostOrderPtrItr,TJclPtrTreeNode,TJclPtrTree,IJclPtrIterator,IJclPtrTreeIterator,IJclPtrEqualityComparer,,APtr,Pointer,nil,GetPointer,SetPointer,FreePointer)}
 {$ENDIF ~CLR}
 
 type

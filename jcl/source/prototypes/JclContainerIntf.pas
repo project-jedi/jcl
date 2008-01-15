@@ -580,7 +580,7 @@ type
 {$JPPEXPANDMACRO ITERATOR(IJclInt64Iterator,IJclAbstractIterator,573E5A51-BF76-43D7-9F93-46305BED20A8,const ,AValue,Int64,GetValue,SetValue)}
 
   {$IFNDEF CLR}
-{$JPPEXPANDMACRO ITERATOR(IJclPtrIterator,IJclAbstractIterator,62B5501C-07AA-4D00-A85B-713B39912CDF,,APtr,Pointer,GetPtr,SetPtr)}
+{$JPPEXPANDMACRO ITERATOR(IJclPtrIterator,IJclAbstractIterator,62B5501C-07AA-4D00-A85B-713B39912CDF,,APtr,Pointer,GetPointer,SetPointer)}
   {$ENDIF ~CLR}
 
 {$JPPEXPANDMACRO ITERATOR(IJclIterator,IJclAbstractIterator,997DF9B7-9AA2-4239-8B94-14DFFD26D790,,AObject,TObject,GetObject,SetObject)}
@@ -760,7 +760,7 @@ type
 {$JPPEXPANDMACRO LIST(IJclInt64List,IJclInt64Collection,E8D49200-91D3-4BD0-A59B-B93EC7E2074B,const ,AValue,Int64,GetValue,SetValue,Values)}
 
   {$IFNDEF CLR}
-{$JPPEXPANDMACRO LIST(IJclPtrList,IJclPtrCollection,2CF5CF1F-C012-480C-A4CE-38BDAFB15D05,,APtr,Pointer,GetPtr,SetPtr,Pointers)}
+{$JPPEXPANDMACRO LIST(IJclPtrList,IJclPtrCollection,2CF5CF1F-C012-480C-A4CE-38BDAFB15D05,,APtr,Pointer,GetPointer,SetPointer,Pointers)}
   {$ENDIF ~CLR}
 
 {$JPPEXPANDMACRO LIST(IJclList,IJclCollection,8ABC70AC-5C06-43EA-AFE0-D066379BCC28,,AObject,TObject,GetObject,SetObject,Objects)}
@@ -829,7 +829,7 @@ type
 {$JPPEXPANDMACRO ARRAY(IJclInt64Array,IJclInt64List,D947C43D-2D04-442A-A707-39EDE7D96FC9,const ,AValue,Int64,GetValue,SetValue,Values)}
 
   {$IFNDEF CLR}
-{$JPPEXPANDMACRO ARRAY(IJclPtrArray,IJclPtrList,D43E8D18-26B3-41A2-8D52-ED7EA2FE1AB7,,APtr,Pointer,GetPtr,SetPtr,Pointers)}
+{$JPPEXPANDMACRO ARRAY(IJclPtrArray,IJclPtrList,D43E8D18-26B3-41A2-8D52-ED7EA2FE1AB7,,APtr,Pointer,GetPointer,SetPointer,Pointers)}
   {$ENDIF ~CLR}
 
 {$JPPEXPANDMACRO ARRAY(IJclArray,IJclList,A69F6D35-54B2-4361-852E-097ED75E648A,,AObject,TObject,GetObject,SetObject,Objects)}
