@@ -2411,7 +2411,7 @@ type
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclMap<TKey,TValue>, IJclPairOwner<TKey, TValue>)
   private
     FKeyEqualityCompare: TEqualityCompare<TKey>;
-    FKeyHash: THash<TKey>;
+    FKeyHash: THashConvert<TKey>;
     FKeyCompare: TCompare<TKey>;
     FValueEqualityCompare: TEqualityCompare<TValue>;
   protected
@@ -2425,13 +2425,13 @@ type
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
-    constructor Create(AKeyEqualityCompare: TEqualityCompare<TKey>; AKeyHash: THash<TKey>;
+    constructor Create(AKeyEqualityCompare: TEqualityCompare<TKey>; AKeyHash: THashConvert<TKey>;
       AValueEqualityCompare: TEqualityCompare<TValue>; AKeyCompare: TCompare<TKey>;
       ACapacity: Integer; AOwnsValues: Boolean; AOwnsKeys: Boolean);
 
     property KeyEqualityCompare: TEqualityCompare<TKey> read FKeyEqualityCompare write FKeyEqualityCompare;
     property KeyCompare: TCompare<TKey> read FKeyCompare write FKeyCompare;
-    property KeyHash: THash<TKey> read FKeyHash write FKeyHash;
+    property KeyHash: THashConvert<TKey> read FKeyHash write FKeyHash;
     property ValueEqualityCompare: TEqualityCompare<TValue> read FValueEqualityCompare write FValueEqualityCompare;
   end;
 
@@ -25874,7 +25874,7 @@ end;
 //=== { TJclHashMapF<TKey, TValue> } =========================================
 
 constructor TJclHashMapF<TKey, TValue>.Create(AKeyEqualityCompare: TEqualityCompare<TKey>;
-  AKeyHash: THash<TKey>; AValueEqualityCompare: TEqualityCompare<TValue>; AKeyCompare: TCompare<TKey>;
+  AKeyHash: THashConvert<TKey>; AValueEqualityCompare: TEqualityCompare<TValue>; AKeyCompare: TCompare<TKey>;
   ACapacity: Integer; AOwnsValues: Boolean; AOwnsKeys: Boolean);
 begin
   inherited Create(ACapacity, AOwnsKeys, AOwnsValues);
