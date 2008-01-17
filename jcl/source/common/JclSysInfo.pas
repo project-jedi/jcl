@@ -617,7 +617,7 @@ const
   EINTEL_MONITOR = BIT_3;  // Monitor/MWAIT
   EINTEL_DSCPL   = BIT_4;  // CPL Qualified debug Store
   EINTEL_VMX     = BIT_5;  // Virtual Machine Technology
-  EINTEL_BIT_6   = BIT_6;  // Reserved, do not count on value
+  EINTEL_SMX     = BIT_6;  // Safer Mode Extensions
   EINTEL_EST     = BIT_7;  // Enhanced Intel Speedstep technology
   EINTEL_TM2     = BIT_8;  // Thermal monitor 2
   EINTEL_SSSE3   = BIT_9;  // SSSE 3 extensions
@@ -629,7 +629,7 @@ const
   EINTEL_PDCM    = BIT_15; // Perf/Debug Capability MSR
   EINTEL_BIT_16  = BIT_16; // Reserved, do not count on value
   EINTEL_BIT_17  = BIT_17; // Reserved, do not count on value
-  EINTEL_BIT_18  = BIT_18; // Reserved, do not count on value
+  EINTEL_DCA     = BIT_18; // Direct Cache Access
   EINTEL_SSE4_1  = BIT_19; // Streaming SIMD Extensions 4.1
   EINTEL_SSE4_2  = BIT_20; // Streaming SIMD Extensions 4.2
   EINTEL_BIT_21  = BIT_21; // Reserved, do not count on value
@@ -1155,7 +1155,7 @@ const
   MXCSR_FZ  = BIT_15;                 // Flush to Zero
 
 const
-  IntelCacheDescription: array [0..63] of TCacheInfo = (
+  IntelCacheDescription: array [0..64] of TCacheInfo = (
     (D: $00; Family: cfOther;                                                                           I: RsIntelCacheDescr00),
     (D: $01; Family: cfInstructionTLB;     Size: 4;     WaysOfAssoc: 4;                Entries: 32;      I: RsIntelCacheDescr01),
     (D: $02; Family: cfInstructionTLB;     Size: 4096;  WaysOfAssoc: 4;                Entries: 2;       I: RsIntelCacheDescr02),
@@ -1216,6 +1216,7 @@ const
     (D: $86; Family: cfL2Cache;            Size: 512;   WaysOfAssoc: 4;  LineSize: 64;                   I: RsIntelCacheDescr86),
     (D: $87; Family: cfL2Cache;            Size: 1024;  WaysOfAssoc: 8;  LineSize: 64;                   I: RsIntelCacheDescr87),
     (D: $B0; Family: cfInstructionTLB;     Size: 4;     WaysOfAssoc: 4;                 Entries: 128;    I: RsIntelCacheDescrB0),
+    (D: $B1; Family: cfInstructionTLB;     Size: 2048;  WaysOfAssoc: 4;                 Entries: 8;      I: RsIntelCacheDescrB1),
     (D: $B3; Family: cfDataTLB;            Size: 4;     WaysOfAssoc: 4;                 Entries: 128;    I: RsIntelCacheDescrB3),
     (D: $B4; Family: cfDataTLB;            Size: 4;     WaysOfAssoc: 4;                 Entries: 256;    I: RsIntelCacheDescrB4),
     (D: $F0; Family: cfOther;                                                                            I: RsIntelCacheDescrF0),

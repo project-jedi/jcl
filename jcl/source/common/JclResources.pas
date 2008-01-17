@@ -1798,6 +1798,7 @@ resourcestring
   RsIntelCacheDescr86 = '2nd-level cache: 512 KByte, 4-way set associative, 64 byte line size';
   RsIntelCacheDescr87 = '2nd-level cache: 1 MByte, 8-way set associative, 64 byte line size';
   RsIntelCacheDescrB0 = 'Instruction TLB: 4 KByte pages, 4-way set associative, 128 entries';
+  RsIntelCacheDescrB1 = 'Instruction TLB: 2 MByte pages, 4-way, 8 entries or 4 MByte pages, 4-way, 4 entries';
   RsIntelCacheDescrB3 = 'Data TLB: 4 KByte pages, 4-way set associative, 128 entries';
   RsIntelCacheDescrB4 = 'Data TLB1: 4 KByte pages, 4-way set associative, 256 entries';
   RsIntelCacheDescrF0 = '64-Byte Prefetching';
