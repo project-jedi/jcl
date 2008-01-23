@@ -1180,7 +1180,7 @@ begin
       end;
     etNumber:
       begin
-        Result := NodeFactory.LoadConst64(Lexer.TokenAsNumber);
+        Result := NodeFactory.LoadConst(Lexer.TokenAsNumber);
         Lexer.NextTok;
       end;
   else
