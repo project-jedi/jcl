@@ -95,15 +95,9 @@
     <DelphiCompile Include="Jedi.Jcl.dpk">
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
-      <DCCReference Include="..\..\source\common\JclAbstractContainers.pas"/>
-      <DCCReference Include="..\..\source\common\JclAlgorithms.pas"/>
       <DCCReference Include="..\..\source\common\JclAnsiStrings.pas"/>
-      <DCCReference Include="..\..\source\common\JclArrayLists.pas"/>
-      <DCCReference Include="..\..\source\common\JclArraySets.pas"/>
       <DCCReference Include="..\..\source\common\JclBase.pas"/>
-      <DCCReference Include="..\..\source\common\JclBinaryTrees.pas"/>
       <DCCReference Include="..\..\source\common\JclComplex.pas"/>
-      <DCCReference Include="..\..\source\common\JclContainerIntf.pas"/>
       <DCCReference Include="..\..\source\common\JclCounter.pas"/>
       <DCCReference Include="..\..\source\common\JclDateTime.pas"/>
       <DCCReference Include="..\..\source\common\JclEDI.pas"/>
@@ -115,28 +109,20 @@
       <DCCReference Include="..\..\source\common\JclEDI_UNEDIFACT.pas"/>
       <DCCReference Include="..\..\source\common\JclEDI_UNEDIFACT_Ext.pas"/>
       <DCCReference Include="..\..\source\common\JclFileUtils.pas"/>
-      <DCCReference Include="..\..\source\common\JclHashMaps.pas"/>
-      <DCCReference Include="..\..\source\common\JclHashSets.pas"/>
       <DCCReference Include="..\..\source\common\JclIniFiles.pas"/>
-      <DCCReference Include="..\..\source\common\JclLinkedLists.pas"/>
       <DCCReference Include="..\..\source\common\JclLogic.pas"/>
       <DCCReference Include="..\..\source\common\JclMath.pas"/>
       <DCCReference Include="..\..\source\common\JclMime.pas"/>
-      <DCCReference Include="..\..\source\common\JclQueues.pas"/>
       <DCCReference Include="..\..\source\common\JclResources.pas"/>
       <DCCReference Include="..\..\source\common\JclRTTI.pas"/>
       <DCCReference Include="..\..\source\common\JclSimpleXml.pas"/>
-      <DCCReference Include="..\..\source\common\JclSortedMaps.pas"/>
-      <DCCReference Include="..\..\source\common\JclStacks.pas"/>
       <DCCReference Include="..\..\source\common\JclStatistics.pas"/>
       <DCCReference Include="..\..\source\common\JclStreams.pas"/>
       <DCCReference Include="..\..\source\common\JclStrings.pas"/>
       <DCCReference Include="..\..\source\common\JclSysInfo.pas"/>
       <DCCReference Include="..\..\source\common\JclSysUtils.pas"/>
-      <DCCReference Include="..\..\source\common\JclTrees.pas"/>
       <DCCReference Include="..\..\source\common\JclUnitConv.pas"/>
       <DCCReference Include="..\..\source\common\JclValidation.pas"/>
-      <DCCReference Include="..\..\source\common\JclVectors.pas"/>
       <DCCReference Include="..\..\source\windows\JclSynch.pas"/>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />

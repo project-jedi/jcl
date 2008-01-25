@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!-- C++Builder XML Project -->
+<PROJECT>
+  <MACROS>
+    <VERSION value="BCB.06.10"/>
+    <PROJECT value="bplJclContainers69.so.1.102.0"/>
+    <OBJFILES value="
+      ..\..\lib\k3\JclAbstractContainers.obj
+      ..\..\lib\k3\JclAlgorithms.obj
+      ..\..\lib\k3\JclArrayLists.obj
+      ..\..\lib\k3\JclArraySets.obj
+      ..\..\lib\k3\JclBinaryTrees.obj
+      ..\..\lib\k3\JclContainerIntf.obj
+      ..\..\lib\k3\JclHashMaps.obj
+      ..\..\lib\k3\JclHashSets.obj
+      ..\..\lib\k3\JclLinkedLists.obj
+      ..\..\lib\k3\JclQueues.obj
+      ..\..\lib\k3\JclSortedMaps.obj
+      ..\..\lib\k3\JclStacks.obj
+      ..\..\lib\k3\JclTrees.obj
+      ..\..\lib\k3\JclVectors.obj
+    "/>
+    <RESFILES value="JclContainers.res"/>
+    <DEFFILE value=""/>
+    <RESDEPEN value="$(RESFILES)"/>
+    <LIBFILES value="
+    "/>
+    <LIBRARIES value=""/>
+    <SPARELIBS value="
+       rtl.a
+       Jcl.a
+    "/>
+    <PACKAGES value="
+       rtl.bpi 
+       Jcl.bpi 
+    "/>
+    <PATHCPP value=".;"/>
+    <PATHPAS value=".;../../source/visclx"/>
+    <PATHRC value=".;"/>
+    <PATHASM value=".;"/>
+    <DEBUGLIBPATH value="$(BCB)/lib/debug:../../lib/k3/debug"/>
+    <RELEASELIBPATH value="$(BCB)/lib/release:../../lib/k3"/>
+    <LINKER value="ilink"/>
+    <USERDEFINES value=""/>
+    <SYSDEFINES value="USEPACKAGES:_RTLDLL"/>
+    <MAINSOURCE value="JclContainers.bpf"/>
+    <INCLUDEPATH value="../../source:../../source/visclx:$(BCB)/include/stlport:$(BCB)/include:$(BCB)/include/vcl:/usr/include"/>
+    <LIBPATH value="../../source/visclx:../../lib/k3:../../lib/k3:$(BCB)/lib/obj:$(BCB)/lib:/usr/lib:/lib:/usr/X11R6/lib:$(BCB)/bin:$(HOME)/bin"/>
+    <WARNINGS value="-w-par"/>
+    <OTHERFILES value=""/>
+  </MACROS>
+  <OPTIONS>
+    <CFLAG1 value="-tP -VP -O2 -H=$(HOME)/.borland/clx69.csm -Hc -Vx -Ve -X- -a8 -b- -k- -vi 
+      -c"/>
+    <PFLAGS value="-N0../../lib/k3 -N2../../lib/k3 -P -$Y- -$L- -$D- -$A8 -v -JPHNE -M"/>
+    <RFLAGS value=""/>
+    <AFLAGS value="/mx /w2 /zd"/>
+    <LFLAGS value="-l../../lib/k3 -I../../lib/k3 -GB&quot;CJclVClx&quot; -N&quot;&quot; -D&quot;&quot;
+      -b:0x48500000 -aa -Tpp -Gpr -x -Gn -Gl -Gi"/>
+  </OPTIONS>
+  <LINKER>
+    <ALLOBJ value="borinitpkg.o $(PACKAGES) $(OBJFILES)"/>
+    <ALLRES value="$(RESFILES)"/>
+    <ALLLIB value="rtle_pic.a $(LIBFILES) $(LIBRARIES) libborcrtl.so libborstl.so 
+      libborunwind.so libpthread.so libX11.so libc.so libm.so libdl.so"/>
+  </LINKER>
+  <FILELIST>
+      <FILE FILENAME="JclContainers.res" FORMNAME="" UNITNAME="JclContainers.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="JclContainers.bpf" FORMNAME="" UNITNAME="JclContainers" CONTAINERID="BPF" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclAbstractContainers.pas" FORMNAME="" UNITNAME="JclAbstractContainers" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclAlgorithms.pas" FORMNAME="" UNITNAME="JclAlgorithms" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclArrayLists.pas" FORMNAME="" UNITNAME="JclArrayLists" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclArraySets.pas" FORMNAME="" UNITNAME="JclArraySets" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclBinaryTrees.pas" FORMNAME="" UNITNAME="JclBinaryTrees" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclContainerIntf.pas" FORMNAME="" UNITNAME="JclContainerIntf" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclHashMaps.pas" FORMNAME="" UNITNAME="JclHashMaps" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclHashSets.pas" FORMNAME="" UNITNAME="JclHashSets" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclLinkedLists.pas" FORMNAME="" UNITNAME="JclLinkedLists" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclQueues.pas" FORMNAME="" UNITNAME="JclQueues" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclSortedMaps.pas" FORMNAME="" UNITNAME="JclSortedMaps" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclStacks.pas" FORMNAME="" UNITNAME="JclStacks" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclTrees.pas" FORMNAME="" UNITNAME="JclTrees" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclVectors.pas" FORMNAME="" UNITNAME="JclVectors" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="Jcl.bpi" FORMNAME="" UNITNAME="Jcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+  </FILELIST>
+  <BUILDTOOLS>
+  </BUILDTOOLS>
+
+  <IDEOPTIONS>
+[Debugging]
+DebugSourceDirs=
+
+[Parameters]
+RunParams=
+Launcher=/usr/X11R6/bin/xterm -T KylixDebuggerOutput -e bash -i -c %debuggee%
+UseLauncher=0
+DebugCWD=
+HostApplication=
+
+[Compiler]
+ShowInfoMsgs=0
+LinkDebugVcl=0
+
+[Linker]
+LibPrefix=
+LibPrefixDefined=0
+LibSuffix=69
+LibVersion=1.102.0
+  </IDEOPTIONS>
+</PROJECT>

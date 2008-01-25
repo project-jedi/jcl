@@ -659,10 +659,11 @@ const
   VersionDirExp = '\%%s';
   {$ENDIF}
 
-  JclDpk     = 'Jcl';
-  JclVclDpk  = 'JclVcl';
-  JclVClxDpk = 'JclVClx';
-  JediJclDpk = 'Jedi.Jcl';
+  JclDpk           = 'Jcl';
+  JclContainersDpk = 'JclContainers';
+  JclVclDpk        = 'JclVcl';
+  JclVClxDpk       = 'JclVClx';
+  JediJclDpk       = 'Jedi.Jcl';
 
   JclExpertBase           = 'JclBaseExpert';
   JclExpertDebug          = 'JclDebugExpert';
@@ -1779,7 +1780,8 @@ var
       MarkOptionBegin(joPackages);
       if CLRVersion = '' then
       begin
-        Result := CompilePackage(FullPackageFileName(Target, JclDpk));
+        Result := CompilePackage(FullPackageFileName(Target, JclDpk))
+          and CompilePackage(FullPackageFileName(Target, JclContainersDpk));
 
         if Result and OptionChecked[joVclPackage] then
         begin
@@ -2262,21 +2264,28 @@ function TJclInstallation.Uninstall(AUninstallHelp: Boolean): Boolean;
   end;
 
   procedure UnregisterPackages(ATarget: TJclBorRADToolInstallation);
+  {$IFNDEF KYLIX}
+  var
+    ABDSTarget: TJclBDSInstallation;
+  {$ENDIF ~KYLIX}
   begin
     if CLRVersion = '' then
     begin
       {$IFNDEF KYLIX}
       if ATarget.RadToolKind = brBorlandDevStudio then
       begin
-        (ATarget as TJclBDSInstallation).CleanPackageCache(BinaryFileName(GetBPLPath, Distribution.JclPath + FullPackageFileName(ATarget, JclDpk)));
+        ABDSTarget := ATarget as TJclBDSInstallation;
+        ABDSTarget.CleanPackageCache(BinaryFileName(GetBPLPath, Distribution.JclPath + FullPackageFileName(ATarget, JclDpk)));
+        ABDSTarget.CleanPackageCache(BinaryFileName(GetBPLPath, Distribution.JclPath + FullPackageFileName(ATarget, JclContainersDpk)));
         if RuntimeInstallation and ATarget.SupportsVisualCLX then
-          (ATarget as TJclBDSInstallation).CleanPackageCache(BinaryFileName(GetBPLPath, Distribution.JclPath + FullPackageFileName(ATarget, JclVClxDpk)));
+          ABDSTarget.CleanPackageCache(BinaryFileName(GetBPLPath, Distribution.JclPath + FullPackageFileName(ATarget, JclVClxDpk)));
         if RuntimeInstallation and ATarget.SupportsVCL then
-          (ATarget as TJclBDSInstallation).CleanPackageCache(BinaryFileName(GetBPLPath, Distribution.JclPath + FullPackageFileName(ATarget, JclVclDpk)));
+          ABDSTarget.CleanPackageCache(BinaryFileName(GetBPLPath, Distribution.JclPath + FullPackageFileName(ATarget, JclVclDpk)));
       end;
       {$ENDIF KYLIX}
       //ioJclPackages
       ATarget.UnregisterPackage(Distribution.JclPath + FullPackageFileName(ATarget, JclDpk), GetBplPath);
+      ATarget.UnregisterPackage(Distribution.JclPath + FullPackageFileName(ATarget, JclContainersDpk), GetBplPath);
       if RuntimeInstallation and ATarget.SupportsVisualCLX then
         ATarget.UnregisterPackage(Distribution.JclPath + FullPackageFileName(ATarget, JclVClxDpk), GetBplPath);
       if RuntimeInstallation and ATarget.SupportsVCL then
@@ -2292,6 +2301,7 @@ function TJclInstallation.Uninstall(AUninstallHelp: Boolean): Boolean;
     if CLRVersion = '' then
     begin
       DeletePackage(FullPackageFileName(Target, JclDpk));
+      DeletePackage(FullPackageFileName(Target, JclContainersDpk));
       if RuntimeInstallation and Target.SupportsVisualCLX then
         DeletePackage(FullPackageFileName(Target, JclVClxDpk));
       if RuntimeInstallation and Target.SupportsVCL then

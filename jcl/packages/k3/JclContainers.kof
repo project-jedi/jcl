@@ -1,0 +1,3 @@
+[Directories]
+UnitOutputDir=../../lib/k3
+SearchPath=../../source:../../source/common:../../source/visclx

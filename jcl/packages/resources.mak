@@ -4,6 +4,7 @@ ROOTDIR = $(MAKEDIR)\..
 RESFILES = c5\JclBaseExpertC50.res                  \
            c5\JclThreadNameExpertC50.res            \
            c5\JclC50.res                            \
+           c5\JclContainersC50.res                  \
            c5\JclDebugExpertC50.res                 \
            c5\JclFavoriteFoldersExpertC50.res       \
            c5\JclDebugExpertDLLC50.res              \
@@ -20,6 +21,7 @@ RESFILES = c5\JclBaseExpertC50.res                  \
            c5\JclVersionControlExpertC50.res        \
            c5\JclVersionControlExpertDLLC50.res     \
            c6\Jcl.res                               \
+           c6\JclContainers.res                     \
            c6\JclBaseExpert.res                     \
            c6\JclDebugExpert.res                    \
            c6\JclDebugExpertDLL.res                 \
@@ -41,9 +43,11 @@ RESFILES = c5\JclBaseExpertC50.res                  \
            c6\JclVersionControlExpertDLL.res        \
            cs1\Jcl.res                              \
            cs1\JclBaseExpert.res                    \
+           cs1\JclContainers.res                    \
            cs1\JclFavoriteFoldersExpertDLL.res      \
            cs1\JclVersionControlExpertDLL.res       \
            d10\Jcl.res                              \
+           d10\JclContainers.res                    \
            d10\JclBaseExpert.res                    \
            d10\JclDebugExpert.res                   \
            d10\JclDebugExpertDLL.res                \
@@ -61,6 +65,7 @@ RESFILES = c5\JclBaseExpertC50.res                  \
            d10\JclVersionControlExpert.res          \
            d10\JclVersionControlExpertDLL.res       \
            d11\Jcl.res                              \
+           d11\JclContainers.res                    \
            d11\JclBaseExpert.res                    \
            d11\JclDebugExpert.res                   \
            d11\JclDebugExpertDLL.res                \
@@ -80,6 +85,7 @@ RESFILES = c5\JclBaseExpertC50.res                  \
            d5\JclUsesExpertDLLD50.res               \
            d5\JclBaseExpertD50.res                  \
            d5\JclD50.res                            \
+           d5\JclContainersD50.res                  \
            d5\JclDebugExpertD50.res                 \
            d5\JclProjectAnalysisExpertDLLD50.res    \
            d5\JclDebugExpertDLLD50.res              \
@@ -96,6 +102,7 @@ RESFILES = c5\JclBaseExpertC50.res                  \
            d5\JclVersionControlExpertD50.res        \
            d5\JclVersionControlExpertDLLD50.res     \
            d6\Jcl.res                               \
+           d6\JclContainers.res                     \
            d6\JclBaseExpert.res                     \
            d6\JclDebugExpert.res                    \
            d6\JclDebugExpertDLL.res                 \
@@ -116,6 +123,7 @@ RESFILES = c5\JclBaseExpertC50.res                  \
            d6\JclVersionControlExpert.res           \
            d6\JclVersionControlExpertDLL.res        \
            d7\Jcl.res                               \
+           d7\JclContainers.res                     \
            d7\JclBaseExpert.res                     \
            d7\JclDebugExpert.res                    \
            d7\JclDebugExpertDLL.res                 \
@@ -136,11 +144,13 @@ RESFILES = c5\JclBaseExpertC50.res                  \
            d7\JclVersionControlExpert.res           \
            d7\JclVersionControlExpertDLL.res        \
            d8\Jcl.res                               \
+           d8\JclContainers.res                     \
            d8\JclBaseExpert.res                     \
            d8\JclFavoriteFoldersExpertDLL.res       \
            d8\JclVersionControlExpertDLL.res        \
            d9\JclThreadNameExpertDLL.res            \
            d9\Jcl.res                               \
+           d9\JclContainers.res                     \
            d9\JclBaseExpert.res                     \
            d9\JclDebugExpert.res                    \
            d9\JclDebugExpertDLL.res                 \
@@ -157,6 +167,7 @@ RESFILES = c5\JclBaseExpertC50.res                  \
            d9\JclVersionControlExpert.res           \
            d9\JclVersionControlExpertDLL.res        \
            k3\Jcl.res                               \
+           k3\JclContainers.res                     \
            k3\JclVClx.res
 # ---------------------------------------------------------------------------
 !if !$d(BRCC32)

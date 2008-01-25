@@ -179,15 +179,9 @@
     <FileList>
       <File FileName="" ContainerId="" ModuleName="Borland.Delphi"/>
       <File FileName="" ContainerId="" ModuleName="Borland.VclRtl"/>
-      <File FileName="..\..\source\common\JclAbstractContainers.pas" ContainerId="" ModuleName="JclAbstractContainers"/>
-      <File FileName="..\..\source\common\JclAlgorithms.pas" ContainerId="" ModuleName="JclAlgorithms"/>
       <File FileName="..\..\source\common\JclAnsiStrings.pas" ContainerId="" ModuleName="JclAnsiStrings"/>
-      <File FileName="..\..\source\common\JclArrayLists.pas" ContainerId="" ModuleName="JclArrayLists"/>
-      <File FileName="..\..\source\common\JclArraySets.pas" ContainerId="" ModuleName="JclArraySets"/>
       <File FileName="..\..\source\common\JclBase.pas" ContainerId="" ModuleName="JclBase"/>
-      <File FileName="..\..\source\common\JclBinaryTrees.pas" ContainerId="" ModuleName="JclBinaryTrees"/>
       <File FileName="..\..\source\common\JclComplex.pas" ContainerId="" ModuleName="JclComplex"/>
-      <File FileName="..\..\source\common\JclContainerIntf.pas" ContainerId="" ModuleName="JclContainerIntf"/>
       <File FileName="..\..\source\common\JclCounter.pas" ContainerId="" ModuleName="JclCounter"/>
       <File FileName="..\..\source\common\JclDateTime.pas" ContainerId="" ModuleName="JclDateTime"/>
       <File FileName="..\..\source\common\JclEDI.pas" ContainerId="" ModuleName="JclEDI"/>
@@ -199,28 +193,20 @@
       <File FileName="..\..\source\common\JclEDI_UNEDIFACT.pas" ContainerId="" ModuleName="JclEDI_UNEDIFACT"/>
       <File FileName="..\..\source\common\JclEDI_UNEDIFACT_Ext.pas" ContainerId="" ModuleName="JclEDI_UNEDIFACT_Ext"/>
       <File FileName="..\..\source\common\JclFileUtils.pas" ContainerId="" ModuleName="JclFileUtils"/>
-      <File FileName="..\..\source\common\JclHashMaps.pas" ContainerId="" ModuleName="JclHashMaps"/>
-      <File FileName="..\..\source\common\JclHashSets.pas" ContainerId="" ModuleName="JclHashSets"/>
       <File FileName="..\..\source\common\JclIniFiles.pas" ContainerId="" ModuleName="JclIniFiles"/>
-      <File FileName="..\..\source\common\JclLinkedLists.pas" ContainerId="" ModuleName="JclLinkedLists"/>
       <File FileName="..\..\source\common\JclLogic.pas" ContainerId="" ModuleName="JclLogic"/>
       <File FileName="..\..\source\common\JclMath.pas" ContainerId="" ModuleName="JclMath"/>
       <File FileName="..\..\source\common\JclMime.pas" ContainerId="" ModuleName="JclMime"/>
-      <File FileName="..\..\source\common\JclQueues.pas" ContainerId="" ModuleName="JclQueues"/>
       <File FileName="..\..\source\common\JclResources.pas" ContainerId="" ModuleName="JclResources"/>
       <File FileName="..\..\source\common\JclRTTI.pas" ContainerId="" ModuleName="JclRTTI"/>
       <File FileName="..\..\source\common\JclSimpleXml.pas" ContainerId="" ModuleName="JclSimpleXml"/>
-      <File FileName="..\..\source\common\JclSortedMaps.pas" ContainerId="" ModuleName="JclSortedMaps"/>
-      <File FileName="..\..\source\common\JclStacks.pas" ContainerId="" ModuleName="JclStacks"/>
       <File FileName="..\..\source\common\JclStatistics.pas" ContainerId="" ModuleName="JclStatistics"/>
       <File FileName="..\..\source\common\JclStreams.pas" ContainerId="" ModuleName="JclStreams"/>
       <File FileName="..\..\source\common\JclStrings.pas" ContainerId="" ModuleName="JclStrings"/>
       <File FileName="..\..\source\common\JclSysInfo.pas" ContainerId="" ModuleName="JclSysInfo"/>
       <File FileName="..\..\source\common\JclSysUtils.pas" ContainerId="" ModuleName="JclSysUtils"/>
-      <File FileName="..\..\source\common\JclTrees.pas" ContainerId="" ModuleName="JclTrees"/>
       <File FileName="..\..\source\common\JclUnitConv.pas" ContainerId="" ModuleName="JclUnitConv"/>
       <File FileName="..\..\source\common\JclValidation.pas" ContainerId="" ModuleName="JclValidation"/>
-      <File FileName="..\..\source\common\JclVectors.pas" ContainerId="" ModuleName="JclVectors"/>
       <File FileName="..\..\source\windows\JclSynch.pas" ContainerId="" ModuleName="JclSynch"/>
     </FileList>
   </DelphiDotNet.Personality>
