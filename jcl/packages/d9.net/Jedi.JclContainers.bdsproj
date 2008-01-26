@@ -179,6 +179,7 @@
     <FileList>
       <File FileName="" ContainerId="" ModuleName="Borland.Delphi"/>
       <File FileName="" ContainerId="" ModuleName="Borland.VclRtl"/>
+      <File FileName="" ContainerId="" ModuleName="Jedi.Jcl"/>
       <File FileName="..\..\source\common\JclAbstractContainers.pas" ContainerId="" ModuleName="JclAbstractContainers"/>
       <File FileName="..\..\source\common\JclAlgorithms.pas" ContainerId="" ModuleName="JclAlgorithms"/>
       <File FileName="..\..\source\common\JclArrayLists.pas" ContainerId="" ModuleName="JclArrayLists"/>

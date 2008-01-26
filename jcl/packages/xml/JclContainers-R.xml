@@ -19,6 +19,7 @@
     <Package Name="Jcl" Targets="allLibSuffix" Condition=""/>
     <Package Name="Borland.Delphi" Targets="JclDotNet" Condition=""/>
     <Package Name="Borland.VclRtl" Targets="JclDotNet" Condition=""/>
+    <Package Name="Jedi.Jcl" Targets="JclDotNet" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\source\common\JclAbstractContainers.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>

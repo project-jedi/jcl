@@ -659,11 +659,15 @@ const
   VersionDirExp = '\%%s';
   {$ENDIF}
 
+  // native packages
   JclDpk           = 'Jcl';
   JclContainersDpk = 'JclContainers';
   JclVclDpk        = 'JclVcl';
   JclVClxDpk       = 'JclVClx';
-  JediJclDpk       = 'Jedi.Jcl';
+
+  // .net packages
+  JediJclDpk           = 'Jedi.Jcl';
+  JediJclContainersDpk = 'Jedi.JclContainers';
 
   JclExpertBase           = 'JclBaseExpert';
   JclExpertDebug          = 'JclDebugExpert';
@@ -1802,7 +1806,7 @@ var
       {$IFDEF MSWINDOWS}
       else
         // CLR installation
-        Result := CompileCLRPackage(JediJclDpk);
+        Result := CompileCLRPackage(JediJclDpk) and CompileCLRPackage(JediJclContainersDpk);
       {$ENDIF MSWINDOWS}
     end;
   end;

@@ -2,7 +2,8 @@ Package Jedi.JclContainers;
 
 uses
   Borland.Delphi,
-  Borland.VclRtl
+  Borland.VclRtl,
+  Jedi.Jcl
   ,
   JclAbstractContainers in '..\..\source\common\JclAbstractContainers.pas' ,
   JclAlgorithms in '..\..\source\common\JclAlgorithms.pas' ,

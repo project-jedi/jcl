@@ -8,7 +8,7 @@
     <DCC_DCCCompiler>DCCIL</DCC_DCCCompiler>
     <DCC_DependencyCheckOutputName>Jedi.JclContainers.bpl</DCC_DependencyCheckOutputName>
     <DCC_EnabledPackages>true</DCC_EnabledPackages>
-    <DCC_UsePackage>Borland.Delphi;Borland.VclRtl</DCC_UsePackage>
+    <DCC_UsePackage>Borland.Delphi;Borland.VclRtl;Jedi.Jcl</DCC_UsePackage>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Version>7.0</Version>
