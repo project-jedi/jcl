@@ -27,7 +27,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -43,18 +43,10 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF CLR}
-  System.Threading,
-  {$ELSE}
-  {$IFDEF MSWINDOWS}
-  Windows,
-  {$ENDIF MSWINDOWS}
-  {$ENDIF CLR}
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
-  SyncObjs,
-  SysUtils, Classes, JclBase, JclContainerIntf, JclSysUtils;
+  SysUtils, Classes, JclBase, JclContainerIntf, JclSynch, JclSysUtils;
 
 type
   {$IFDEF KEEP_DEPRECATED}
@@ -65,22 +57,16 @@ type
   {$IFDEF THREADSAFE}
   private
     FThreadSafe: Boolean;
-    {$IFDEF CLR}
-    FReaderWriterLock: ReaderWriterLock;
-    FUpgradedWrite: Boolean;
-    FLockCookie: LockCookie;
-    {$ELSE ~CLR}
-    FCriticalSection: TCriticalSection;
-    {$ENDIF ~CLR}
+    SyncReaderWriter: TJclMultiReadExclusiveWrite;
   protected
     procedure ReadLock;
     procedure ReadUnlock;
     procedure WriteLock;
     procedure WriteUnlock;
   public
+    constructor Create;
     destructor Destroy; override;
   {$ENDIF THREADSAFE}
-    constructor Create;
   end;
 
   TJclAbstractContainerBase = class(TJclAbstractLockable, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -658,92 +644,43 @@ uses
 
 //=== { TJclAbstractLockable } ===============================================
 
+{$IFDEF THREADSAFE}
+
 constructor TJclAbstractLockable.Create;
 begin
   inherited Create;
-  {$IFDEF THREADSAFE}
-  {$IFDEF CLR}
-  FReaderWriterLock := ReaderWriterLock.Create;
-  {$ELSE ~CLR}
-  FCriticalSection := TCriticalSection.Create;
-  {$ENDIF ~CLR}
   FThreadSafe := True;
-  {$ENDIF THREADSAFE}
+  SyncReaderWriter := TJclMultiReadExclusiveWrite.Create{$IFNDEF CLR}(mpReaders){$ENDIF ~CLR};
 end;
 
-{$IFDEF THREADSAFE}
 destructor TJclAbstractLockable.Destroy;
 begin
-  {$IFDEF CLR}
-  FReaderWriterLock.Free;
-  {$ELSE ~CLR}
-  FCriticalSection.Free;
-  {$ENDIF ~CLR}
+  SyncReaderWriter.Free;
   inherited Destroy;
 end;
 
 procedure TJclAbstractLockable.ReadLock;
 begin
   if FThreadSafe then
-  begin
-    {$IFDEF CLR}
-    // if current thread has write access, no need to request a read access
-    if not FReaderWriterLock.IsWriterLockHeld then
-      FReaderWriterLock.AcquireReaderLock(-1);
-    {$ELSE ~CLR}
-    FCriticalSection.Acquire;
-    {$ENDIF ~CLR}
-  end;
+    SyncReaderWriter.BeginRead;
 end;
 
 procedure TJclAbstractLockable.ReadUnlock;
 begin
   if FThreadSafe then
-  begin
-    {$IFDEF CLR}
-    // if current thread has write access, no need to release read access
-    if not FReaderWriterLock.IsWriterLockHeld then
-      FReaderWriterLock.ReleaseReaderLock;
-    {$ELSE ~CLR}
-    FCriticalSection.Release;
-    {$ENDIF ~CLR}
-  end;
+    SyncReaderWriter.EndRead;
 end;
 
 procedure TJclAbstractLockable.WriteLock;
 begin
   if FThreadSafe then
-  begin
-    {$IFDEF CLR}
-    if FReaderWriterLock.IsReaderLockHeld then
-    begin
-      FLockCookie := FReaderWriterLock.UpgradeToWriterLock(-1);
-      FUpgradedWrite := True;
-    end
-    else
-      FReaderWriterLock.AcquireWriterLock(-1);
-    {$ELSE ~CLR}
-    FCriticalSection.Acquire;
-    {$ENDIF ~CLR}
-  end;
+    SyncReaderWriter.BeginWrite;
 end;
 
 procedure TJclAbstractLockable.WriteUnlock;
 begin
   if FThreadSafe then
-  begin
-    {$IFDEF CLR}
-    if FUpgradedWrite then
-    begin
-      FUpgradedWrite := False;
-      FReaderWriterLock.DowngradeFromWriterLock(FLockCookie);
-    end
-    else
-      FReaderWriterLock.ReleaseWriterLock;
-    {$ELSE ~CLR}
-    FCriticalSection.Release;
-    {$ENDIF ~CLR}
-  end;
+    SyncReaderWriter.EndWrite;
 end;
 {$ENDIF THREADSAFE}
 
