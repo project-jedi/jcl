@@ -178,15 +178,15 @@ type
   end;
   {$ENDIF ~CLR}
 
-  {$IFNDEF CLR11}
+  {$IFNDEF CLR}
   TJclSemaphore = class(TJclDispatcherObject)
   public
-    constructor Create({$IFNDEF CLR}SecAttr: PSecurityAttributes;{$ENDIF} Initial, Maximum: Longint; const Name: string);
+    constructor Create(SecAttr: PSecurityAttributes; Initial, Maximum: Longint; const Name: string);
     constructor Open(Access: Cardinal; Inheritable: Boolean; const Name: string);
     function Release(ReleaseCount: Longint): Boolean;
     function ReleasePrev(ReleaseCount: Longint; var PrevCount: Longint): Boolean;
   end;
-  {$ENDIF ~CLR11}
+  {$ENDIF ~CLR}
 
   {$IFNDEF CLR11}
   TJclMutex = class(TJclDispatcherObject)
@@ -712,7 +712,7 @@ end;
 
 //== { TJclCriticalSectionEx } ===============================================
 
-{$IFNDEF CLR11}
+{$IFNDEF CLR}
 
 const
   DefaultCritSectSpinCount = 4000;
@@ -770,7 +770,7 @@ begin
   Result := TryEnterCriticalSection(FCriticalSection);
 end;
 
-{$ENDIF ~CLR11}
+{$ENDIF ~CLR}
 
 //== { TJclEvent } ===========================================================
 
@@ -900,7 +900,7 @@ end;
 
 //== { TJclSemaphore } =======================================================
 
-{$IFNDEF CLR11}
+{$IFNDEF CLR}
 constructor TJclSemaphore.Create(SecAttr: PSecurityAttributes;
   Initial, Maximum: Integer; const Name: string);
 begin
@@ -932,7 +932,7 @@ function TJclSemaphore.Release(ReleaseCount: Integer): Boolean;
 begin
   Result := Windows.ReleaseSemaphore(FHandle, ReleaseCount, nil);
 end;
-{$ENDIF ~CLR11}
+{$ENDIF ~CLR}
 
 //=== { TJclMutex } ==========================================================
 
