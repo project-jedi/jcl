@@ -51,7 +51,7 @@ uses
   JclAlgorithms,
   {$ENDIF SUPPORTS_GENERICS}
   Classes,
-  JclBase, JclAbstractContainers, JclContainerIntf;
+  JclBase, JclAbstractContainers, JclContainerIntf, JclSynch;
 {$I containers\JclContainerCommon.imp}
 {$I containers\JclVectors.imp}
 {$I containers\JclVectors.int}

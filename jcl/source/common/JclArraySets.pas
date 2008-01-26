@@ -52,7 +52,7 @@ uses
   {$ENDIF CLR}
   JclAlgorithms,
   {$ENDIF SUPPORTS_GENERICS}
-  JclBase, JclAbstractContainers, JclContainerIntf, JclArrayLists;
+  JclBase, JclAbstractContainers, JclContainerIntf, JclArrayLists, JclSynch;
 type
   TJclIntfArraySet = class(TJclIntfArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclIntfEqualityComparer, IJclIntfComparer,
@@ -408,7 +408,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := FAllowDefaultElements or not ItemsEqual(AInterface, nil);
@@ -424,7 +425,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -436,7 +438,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -447,7 +450,8 @@ begin
       Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -458,7 +462,8 @@ var
   Comp: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     LoPos := 0;
@@ -482,7 +487,8 @@ begin
     Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -492,7 +498,8 @@ var
   Idx: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Idx := BinarySearch(AInterface);
@@ -502,7 +509,8 @@ begin
       Result := False;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -542,7 +550,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := FAllowDefaultElements or not ItemsEqual(AString, '');
@@ -558,7 +567,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -570,7 +580,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -581,7 +592,8 @@ begin
       Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -592,7 +604,8 @@ var
   Comp: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     LoPos := 0;
@@ -616,7 +629,8 @@ begin
     Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -626,7 +640,8 @@ var
   Idx: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Idx := BinarySearch(AString);
@@ -636,7 +651,8 @@ begin
       Result := False;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -676,7 +692,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := FAllowDefaultElements or not ItemsEqual(AString, '');
@@ -692,7 +709,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -704,7 +722,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -715,7 +734,8 @@ begin
       Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -726,7 +746,8 @@ var
   Comp: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     LoPos := 0;
@@ -750,7 +771,8 @@ begin
     Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -760,7 +782,8 @@ var
   Idx: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Idx := BinarySearch(AString);
@@ -770,7 +793,8 @@ begin
       Result := False;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -810,7 +834,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
@@ -826,7 +851,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -838,7 +864,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -849,7 +876,8 @@ begin
       Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -860,7 +888,8 @@ var
   Comp: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     LoPos := 0;
@@ -884,7 +913,8 @@ begin
     Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -894,7 +924,8 @@ var
   Idx: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Idx := BinarySearch(AValue);
@@ -904,7 +935,8 @@ begin
       Result := False;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -944,7 +976,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
@@ -960,7 +993,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -972,7 +1006,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -983,7 +1018,8 @@ begin
       Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -994,7 +1030,8 @@ var
   Comp: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     LoPos := 0;
@@ -1018,7 +1055,8 @@ begin
     Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1028,7 +1066,8 @@ var
   Idx: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Idx := BinarySearch(AValue);
@@ -1038,7 +1077,8 @@ begin
       Result := False;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1078,7 +1118,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
@@ -1094,7 +1135,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1106,7 +1148,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -1117,7 +1160,8 @@ begin
       Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1128,7 +1172,8 @@ var
   Comp: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     LoPos := 0;
@@ -1152,7 +1197,8 @@ begin
     Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1162,7 +1208,8 @@ var
   Idx: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Idx := BinarySearch(AValue);
@@ -1172,7 +1219,8 @@ begin
       Result := False;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1212,7 +1260,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := FAllowDefaultElements or not ItemsEqual(AValue, 0);
@@ -1228,7 +1277,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1240,7 +1290,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -1251,7 +1302,8 @@ begin
       Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1262,7 +1314,8 @@ var
   Comp: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     LoPos := 0;
@@ -1286,7 +1339,8 @@ begin
     Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1296,7 +1350,8 @@ var
   Idx: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Idx := BinarySearch(AValue);
@@ -1306,7 +1361,8 @@ begin
       Result := False;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1346,7 +1402,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := FAllowDefaultElements or not ItemsEqual(AValue, 0);
@@ -1362,7 +1419,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1374,7 +1432,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -1385,7 +1444,8 @@ begin
       Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1396,7 +1456,8 @@ var
   Comp: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     LoPos := 0;
@@ -1420,7 +1481,8 @@ begin
     Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1430,7 +1492,8 @@ var
   Idx: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Idx := BinarySearch(AValue);
@@ -1440,7 +1503,8 @@ begin
       Result := False;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1480,7 +1544,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := FAllowDefaultElements or not ItemsEqual(AValue, 0);
@@ -1496,7 +1561,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1508,7 +1574,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -1519,7 +1586,8 @@ begin
       Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1530,7 +1598,8 @@ var
   Comp: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     LoPos := 0;
@@ -1554,7 +1623,8 @@ begin
     Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1564,7 +1634,8 @@ var
   Idx: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Idx := BinarySearch(AValue);
@@ -1574,7 +1645,8 @@ begin
       Result := False;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1615,7 +1687,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := FAllowDefaultElements or not ItemsEqual(APtr, nil);
@@ -1631,7 +1704,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1643,7 +1717,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -1654,7 +1729,8 @@ begin
       Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1665,7 +1741,8 @@ var
   Comp: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     LoPos := 0;
@@ -1689,7 +1766,8 @@ begin
     Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1699,7 +1777,8 @@ var
   Idx: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Idx := BinarySearch(APtr);
@@ -1709,7 +1788,8 @@ begin
       Result := False;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1750,7 +1830,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := FAllowDefaultElements or not ItemsEqual(AObject, nil);
@@ -1766,7 +1847,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1778,7 +1860,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -1789,7 +1872,8 @@ begin
       Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1800,7 +1884,8 @@ var
   Comp: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     LoPos := 0;
@@ -1824,7 +1909,8 @@ begin
     Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1834,7 +1920,8 @@ var
   Idx: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Idx := BinarySearch(AObject);
@@ -1844,7 +1931,8 @@ begin
       Result := False;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1885,7 +1973,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := FAllowDefaultElements or not ItemsEqual(AItem, Default(T));
@@ -1901,7 +1990,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1913,7 +2003,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -1924,7 +2015,8 @@ begin
       Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1935,7 +2027,8 @@ var
   Comp: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     LoPos := 0;
@@ -1959,7 +2052,8 @@ begin
     Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1969,7 +2063,8 @@ var
   Idx: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Idx := BinarySearch(AItem);
@@ -1979,7 +2074,8 @@ begin
       Result := False;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;

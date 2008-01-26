@@ -51,7 +51,7 @@ uses
   {$ENDIF CLR}
   JclAlgorithms,
   {$ENDIF SUPPORTS_GENERICS}
-  JclBase, JclAbstractContainers, JclContainerIntf;
+  JclBase, JclAbstractContainers, JclContainerIntf, JclSynch;
 type
   TJclIntfStack = class(TJclIntfAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclIntfEqualityComparer,
@@ -469,7 +469,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     for I := 0 to FSize - 1 do
@@ -477,7 +478,8 @@ begin
     FSize := 0;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -487,7 +489,8 @@ var
   I: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -499,7 +502,8 @@ begin
       end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -518,7 +522,8 @@ end;
 function TJclIntfStack.Peek: IInterface;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := nil;
@@ -529,7 +534,8 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -539,7 +545,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := nil;
@@ -555,7 +562,8 @@ begin
     AutoPack;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -565,7 +573,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     if FSize = FCapacity then
@@ -578,7 +587,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -588,7 +598,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     if Value < FSize then
@@ -597,7 +608,8 @@ begin
     inherited SetCapacity(Value);
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -646,7 +658,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     for I := 0 to FSize - 1 do
@@ -654,7 +667,8 @@ begin
     FSize := 0;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -664,7 +678,8 @@ var
   I: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -676,7 +691,8 @@ begin
       end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -695,7 +711,8 @@ end;
 function TJclAnsiStrStack.Peek: AnsiString;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := '';
@@ -706,7 +723,8 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -716,7 +734,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := '';
@@ -732,7 +751,8 @@ begin
     AutoPack;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -742,7 +762,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     if FSize = FCapacity then
@@ -755,7 +776,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -765,7 +787,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     if Value < FSize then
@@ -774,7 +797,8 @@ begin
     inherited SetCapacity(Value);
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -823,7 +847,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     for I := 0 to FSize - 1 do
@@ -831,7 +856,8 @@ begin
     FSize := 0;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -841,7 +867,8 @@ var
   I: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -853,7 +880,8 @@ begin
       end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -872,7 +900,8 @@ end;
 function TJclWideStrStack.Peek: WideString;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := '';
@@ -883,7 +912,8 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -893,7 +923,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := '';
@@ -909,7 +940,8 @@ begin
     AutoPack;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -919,7 +951,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     if FSize = FCapacity then
@@ -932,7 +965,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -942,7 +976,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     if Value < FSize then
@@ -951,7 +986,8 @@ begin
     inherited SetCapacity(Value);
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1000,7 +1036,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     for I := 0 to FSize - 1 do
@@ -1008,7 +1045,8 @@ begin
     FSize := 0;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1018,7 +1056,8 @@ var
   I: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -1030,7 +1069,8 @@ begin
       end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1049,7 +1089,8 @@ end;
 function TJclSingleStack.Peek: Single;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := 0.0;
@@ -1060,7 +1101,8 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1070,7 +1112,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := 0.0;
@@ -1086,7 +1129,8 @@ begin
     AutoPack;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1096,7 +1140,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     if FSize = FCapacity then
@@ -1109,7 +1154,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1119,7 +1165,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     if Value < FSize then
@@ -1128,7 +1175,8 @@ begin
     inherited SetCapacity(Value);
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1177,7 +1225,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     for I := 0 to FSize - 1 do
@@ -1185,7 +1234,8 @@ begin
     FSize := 0;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1195,7 +1245,8 @@ var
   I: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -1207,7 +1258,8 @@ begin
       end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1226,7 +1278,8 @@ end;
 function TJclDoubleStack.Peek: Double;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := 0.0;
@@ -1237,7 +1290,8 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1247,7 +1301,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := 0.0;
@@ -1263,7 +1318,8 @@ begin
     AutoPack;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1273,7 +1329,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     if FSize = FCapacity then
@@ -1286,7 +1343,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1296,7 +1354,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     if Value < FSize then
@@ -1305,7 +1364,8 @@ begin
     inherited SetCapacity(Value);
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1354,7 +1414,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     for I := 0 to FSize - 1 do
@@ -1362,7 +1423,8 @@ begin
     FSize := 0;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1372,7 +1434,8 @@ var
   I: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -1384,7 +1447,8 @@ begin
       end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1403,7 +1467,8 @@ end;
 function TJclExtendedStack.Peek: Extended;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := 0.0;
@@ -1414,7 +1479,8 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1424,7 +1490,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := 0.0;
@@ -1440,7 +1507,8 @@ begin
     AutoPack;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1450,7 +1518,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     if FSize = FCapacity then
@@ -1463,7 +1532,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1473,7 +1543,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     if Value < FSize then
@@ -1482,7 +1553,8 @@ begin
     inherited SetCapacity(Value);
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1531,7 +1603,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     for I := 0 to FSize - 1 do
@@ -1539,7 +1612,8 @@ begin
     FSize := 0;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1549,7 +1623,8 @@ var
   I: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -1561,7 +1636,8 @@ begin
       end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1580,7 +1656,8 @@ end;
 function TJclIntegerStack.Peek: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := 0;
@@ -1591,7 +1668,8 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1601,7 +1679,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := 0;
@@ -1617,7 +1696,8 @@ begin
     AutoPack;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1627,7 +1707,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     if FSize = FCapacity then
@@ -1640,7 +1721,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1650,7 +1732,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     if Value < FSize then
@@ -1659,7 +1742,8 @@ begin
     inherited SetCapacity(Value);
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1708,7 +1792,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     for I := 0 to FSize - 1 do
@@ -1716,7 +1801,8 @@ begin
     FSize := 0;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1726,7 +1812,8 @@ var
   I: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -1738,7 +1825,8 @@ begin
       end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1757,7 +1845,8 @@ end;
 function TJclCardinalStack.Peek: Cardinal;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := 0;
@@ -1768,7 +1857,8 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1778,7 +1868,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := 0;
@@ -1794,7 +1885,8 @@ begin
     AutoPack;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1804,7 +1896,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     if FSize = FCapacity then
@@ -1817,7 +1910,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1827,7 +1921,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     if Value < FSize then
@@ -1836,7 +1931,8 @@ begin
     inherited SetCapacity(Value);
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1885,7 +1981,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     for I := 0 to FSize - 1 do
@@ -1893,7 +1990,8 @@ begin
     FSize := 0;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1903,7 +2001,8 @@ var
   I: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -1915,7 +2014,8 @@ begin
       end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1934,7 +2034,8 @@ end;
 function TJclInt64Stack.Peek: Int64;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := 0;
@@ -1945,7 +2046,8 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1955,7 +2057,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := 0;
@@ -1971,7 +2074,8 @@ begin
     AutoPack;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1981,7 +2085,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     if FSize = FCapacity then
@@ -1994,7 +2099,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2004,7 +2110,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     if Value < FSize then
@@ -2013,7 +2120,8 @@ begin
     inherited SetCapacity(Value);
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2063,7 +2171,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     for I := 0 to FSize - 1 do
@@ -2071,7 +2180,8 @@ begin
     FSize := 0;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2081,7 +2191,8 @@ var
   I: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -2093,7 +2204,8 @@ begin
       end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2112,7 +2224,8 @@ end;
 function TJclPtrStack.Peek: Pointer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := nil;
@@ -2123,7 +2236,8 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2133,7 +2247,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := nil;
@@ -2149,7 +2264,8 @@ begin
     AutoPack;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2159,7 +2275,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     if FSize = FCapacity then
@@ -2172,7 +2289,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2182,7 +2300,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     if Value < FSize then
@@ -2191,7 +2310,8 @@ begin
     inherited SetCapacity(Value);
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2241,7 +2361,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     for I := 0 to FSize - 1 do
@@ -2249,7 +2370,8 @@ begin
     FSize := 0;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2259,7 +2381,8 @@ var
   I: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -2271,7 +2394,8 @@ begin
       end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2290,7 +2414,8 @@ end;
 function TJclStack.Peek: TObject;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := nil;
@@ -2301,7 +2426,8 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2311,7 +2437,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := nil;
@@ -2327,7 +2454,8 @@ begin
     AutoPack;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2337,7 +2465,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     if FSize = FCapacity then
@@ -2350,7 +2479,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2360,7 +2490,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     if Value < FSize then
@@ -2369,7 +2500,8 @@ begin
     inherited SetCapacity(Value);
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2420,7 +2552,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     for I := 0 to FSize - 1 do
@@ -2428,7 +2561,8 @@ begin
     FSize := 0;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2438,7 +2572,8 @@ var
   I: Integer;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -2450,7 +2585,8 @@ begin
       end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2464,7 +2600,8 @@ end;
 function TJclStack<T>.Peek: T;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := Default(T);
@@ -2475,7 +2612,8 @@ begin
       raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2485,7 +2623,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := Default(T);
@@ -2501,7 +2640,8 @@ begin
     AutoPack;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2511,7 +2651,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     if FSize = FCapacity then
@@ -2524,7 +2665,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2534,7 +2676,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     if Value < FSize then
@@ -2543,7 +2686,8 @@ begin
     inherited SetCapacity(Value);
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;

@@ -1,21 +1,25 @@
 (*$JPPDEFINEMACRO READBEGIN {$JPPDEFINEMACRO READLOCK}{$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}*)
 (*$JPPDEFINEMACRO READEND {$JPPEXPANDMACRO READLOCK}{$JPPUNDEFMACRO READLOCK}{$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}*)
 (*$JPPDEFINEMACRO WRITEBEGIN {$JPPDEFINEMACRO WRITELOCK}if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}*)
 (*$JPPDEFINEMACRO WRITEEND {$JPPEXPANDMACRO WRITELOCK}{$JPPUNDEFMACRO WRITELOCK}{$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}*)
 (*$JPPDEFINEMACRO DELEGATEREADBEGIN(CONTAINERNAME){$JPPDEFINEMACRO DELREADLOCK}{$IFDEF THREADSAFE}

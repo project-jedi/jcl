@@ -51,7 +51,7 @@ uses
   System.Collections.Generic,
   {$ENDIF CLR}
   {$ENDIF SUPPORTS_GENERICS}
-  JclBase, JclAbstractContainers, JclAlgorithms, JclContainerIntf;
+  JclBase, JclAbstractContainers, JclAlgorithms, JclContainerIntf, JclSynch;
 
 type
   TJclIntfBinaryNode = class
@@ -9625,7 +9625,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     // Insert into right place
@@ -9677,7 +9678,8 @@ begin
       Result := False;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -9689,7 +9691,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -9701,7 +9704,8 @@ begin
       Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -9766,7 +9770,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     // postorder
@@ -9817,7 +9822,8 @@ begin
     FMaxDepth := 0;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -9828,7 +9834,8 @@ var
   Current: TJclIntfBinaryNode;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -9849,7 +9856,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -9859,7 +9867,8 @@ var
   It: IJclIntfIterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := True;
@@ -9870,7 +9879,8 @@ begin
       Result := Contains(It.Next);
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -9886,7 +9896,8 @@ var
   It, ItSelf: IJclIntfIterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -9905,7 +9916,8 @@ begin
       end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -9915,7 +9927,8 @@ var
   Start: TJclIntfBinaryNode;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Start := FRoot;
@@ -9946,7 +9959,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -9961,7 +9975,8 @@ end;
 function TJclIntfBinaryTree.GetRoot: IJclIntfTreeIterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     case GetTraverseOrder of
@@ -9976,7 +9991,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -9996,7 +10012,8 @@ var
   Start: TJclIntfBinaryNode;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Start := FRoot;
@@ -10027,7 +10044,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -10061,7 +10079,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     SetLength(Leafarray, FSize);
@@ -10114,7 +10133,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -10127,7 +10147,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -10247,7 +10268,8 @@ begin
     AutoPack;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -10259,7 +10281,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -10271,7 +10294,8 @@ begin
       Result := Remove(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -10283,7 +10307,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -10296,7 +10321,8 @@ begin
         It.Remove;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -10342,7 +10368,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     // Insert into right place
@@ -10394,7 +10421,8 @@ begin
       Result := False;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -10406,7 +10434,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -10418,7 +10447,8 @@ begin
       Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -10483,7 +10513,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     // postorder
@@ -10534,7 +10565,8 @@ begin
     FMaxDepth := 0;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -10545,7 +10577,8 @@ var
   Current: TJclAnsiStrBinaryNode;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -10566,7 +10599,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -10576,7 +10610,8 @@ var
   It: IJclAnsiStrIterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := True;
@@ -10587,7 +10622,8 @@ begin
       Result := Contains(It.Next);
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -10603,7 +10639,8 @@ var
   It, ItSelf: IJclAnsiStrIterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -10622,7 +10659,8 @@ begin
       end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -10632,7 +10670,8 @@ var
   Start: TJclAnsiStrBinaryNode;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Start := FRoot;
@@ -10663,7 +10702,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -10678,7 +10718,8 @@ end;
 function TJclAnsiStrBinaryTree.GetRoot: IJclAnsiStrTreeIterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     case GetTraverseOrder of
@@ -10693,7 +10734,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -10713,7 +10755,8 @@ var
   Start: TJclAnsiStrBinaryNode;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Start := FRoot;
@@ -10744,7 +10787,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -10778,7 +10822,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     SetLength(Leafarray, FSize);
@@ -10831,7 +10876,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -10844,7 +10890,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -10964,7 +11011,8 @@ begin
     AutoPack;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -10976,7 +11024,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -10988,7 +11037,8 @@ begin
       Result := Remove(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -11000,7 +11050,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -11013,7 +11064,8 @@ begin
         It.Remove;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -11059,7 +11111,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     // Insert into right place
@@ -11111,7 +11164,8 @@ begin
       Result := False;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -11123,7 +11177,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -11135,7 +11190,8 @@ begin
       Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -11200,7 +11256,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     // postorder
@@ -11251,7 +11308,8 @@ begin
     FMaxDepth := 0;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -11262,7 +11320,8 @@ var
   Current: TJclWideStrBinaryNode;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -11283,7 +11342,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -11293,7 +11353,8 @@ var
   It: IJclWideStrIterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := True;
@@ -11304,7 +11365,8 @@ begin
       Result := Contains(It.Next);
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -11320,7 +11382,8 @@ var
   It, ItSelf: IJclWideStrIterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -11339,7 +11402,8 @@ begin
       end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -11349,7 +11413,8 @@ var
   Start: TJclWideStrBinaryNode;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Start := FRoot;
@@ -11380,7 +11445,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -11395,7 +11461,8 @@ end;
 function TJclWideStrBinaryTree.GetRoot: IJclWideStrTreeIterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     case GetTraverseOrder of
@@ -11410,7 +11477,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -11430,7 +11498,8 @@ var
   Start: TJclWideStrBinaryNode;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Start := FRoot;
@@ -11461,7 +11530,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -11495,7 +11565,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     SetLength(Leafarray, FSize);
@@ -11548,7 +11619,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -11561,7 +11633,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -11681,7 +11754,8 @@ begin
     AutoPack;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -11693,7 +11767,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -11705,7 +11780,8 @@ begin
       Result := Remove(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -11717,7 +11793,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -11730,7 +11807,8 @@ begin
         It.Remove;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -11776,7 +11854,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     // Insert into right place
@@ -11828,7 +11907,8 @@ begin
       Result := False;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -11840,7 +11920,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -11852,7 +11933,8 @@ begin
       Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -11917,7 +11999,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     // postorder
@@ -11968,7 +12051,8 @@ begin
     FMaxDepth := 0;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -11979,7 +12063,8 @@ var
   Current: TJclSingleBinaryNode;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -12000,7 +12085,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -12010,7 +12096,8 @@ var
   It: IJclSingleIterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := True;
@@ -12021,7 +12108,8 @@ begin
       Result := Contains(It.Next);
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -12037,7 +12125,8 @@ var
   It, ItSelf: IJclSingleIterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -12056,7 +12145,8 @@ begin
       end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -12066,7 +12156,8 @@ var
   Start: TJclSingleBinaryNode;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Start := FRoot;
@@ -12097,7 +12188,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -12112,7 +12204,8 @@ end;
 function TJclSingleBinaryTree.GetRoot: IJclSingleTreeIterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     case GetTraverseOrder of
@@ -12127,7 +12220,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -12147,7 +12241,8 @@ var
   Start: TJclSingleBinaryNode;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Start := FRoot;
@@ -12178,7 +12273,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -12212,7 +12308,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     SetLength(Leafarray, FSize);
@@ -12265,7 +12362,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -12278,7 +12376,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -12398,7 +12497,8 @@ begin
     AutoPack;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -12410,7 +12510,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -12422,7 +12523,8 @@ begin
       Result := Remove(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -12434,7 +12536,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -12447,7 +12550,8 @@ begin
         It.Remove;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -12493,7 +12597,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     // Insert into right place
@@ -12545,7 +12650,8 @@ begin
       Result := False;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -12557,7 +12663,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -12569,7 +12676,8 @@ begin
       Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -12634,7 +12742,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     // postorder
@@ -12685,7 +12794,8 @@ begin
     FMaxDepth := 0;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -12696,7 +12806,8 @@ var
   Current: TJclDoubleBinaryNode;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -12717,7 +12828,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -12727,7 +12839,8 @@ var
   It: IJclDoubleIterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := True;
@@ -12738,7 +12851,8 @@ begin
       Result := Contains(It.Next);
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -12754,7 +12868,8 @@ var
   It, ItSelf: IJclDoubleIterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -12773,7 +12888,8 @@ begin
       end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -12783,7 +12899,8 @@ var
   Start: TJclDoubleBinaryNode;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Start := FRoot;
@@ -12814,7 +12931,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -12829,7 +12947,8 @@ end;
 function TJclDoubleBinaryTree.GetRoot: IJclDoubleTreeIterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     case GetTraverseOrder of
@@ -12844,7 +12963,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -12864,7 +12984,8 @@ var
   Start: TJclDoubleBinaryNode;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Start := FRoot;
@@ -12895,7 +13016,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -12929,7 +13051,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     SetLength(Leafarray, FSize);
@@ -12982,7 +13105,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -12995,7 +13119,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -13115,7 +13240,8 @@ begin
     AutoPack;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -13127,7 +13253,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -13139,7 +13266,8 @@ begin
       Result := Remove(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -13151,7 +13279,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -13164,7 +13293,8 @@ begin
         It.Remove;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -13210,7 +13340,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     // Insert into right place
@@ -13262,7 +13393,8 @@ begin
       Result := False;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -13274,7 +13406,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -13286,7 +13419,8 @@ begin
       Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -13351,7 +13485,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     // postorder
@@ -13402,7 +13537,8 @@ begin
     FMaxDepth := 0;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -13413,7 +13549,8 @@ var
   Current: TJclExtendedBinaryNode;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -13434,7 +13571,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -13444,7 +13582,8 @@ var
   It: IJclExtendedIterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := True;
@@ -13455,7 +13594,8 @@ begin
       Result := Contains(It.Next);
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -13471,7 +13611,8 @@ var
   It, ItSelf: IJclExtendedIterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -13490,7 +13631,8 @@ begin
       end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -13500,7 +13642,8 @@ var
   Start: TJclExtendedBinaryNode;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Start := FRoot;
@@ -13531,7 +13674,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -13546,7 +13690,8 @@ end;
 function TJclExtendedBinaryTree.GetRoot: IJclExtendedTreeIterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     case GetTraverseOrder of
@@ -13561,7 +13706,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -13581,7 +13727,8 @@ var
   Start: TJclExtendedBinaryNode;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Start := FRoot;
@@ -13612,7 +13759,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -13646,7 +13794,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     SetLength(Leafarray, FSize);
@@ -13699,7 +13848,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -13712,7 +13862,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -13832,7 +13983,8 @@ begin
     AutoPack;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -13844,7 +13996,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -13856,7 +14009,8 @@ begin
       Result := Remove(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -13868,7 +14022,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -13881,7 +14036,8 @@ begin
         It.Remove;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -13927,7 +14083,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     // Insert into right place
@@ -13979,7 +14136,8 @@ begin
       Result := False;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -13991,7 +14149,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -14003,7 +14162,8 @@ begin
       Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -14068,7 +14228,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     // postorder
@@ -14119,7 +14280,8 @@ begin
     FMaxDepth := 0;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -14130,7 +14292,8 @@ var
   Current: TJclIntegerBinaryNode;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -14151,7 +14314,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -14161,7 +14325,8 @@ var
   It: IJclIntegerIterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := True;
@@ -14172,7 +14337,8 @@ begin
       Result := Contains(It.Next);
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -14188,7 +14354,8 @@ var
   It, ItSelf: IJclIntegerIterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -14207,7 +14374,8 @@ begin
       end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -14217,7 +14385,8 @@ var
   Start: TJclIntegerBinaryNode;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Start := FRoot;
@@ -14248,7 +14417,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -14263,7 +14433,8 @@ end;
 function TJclIntegerBinaryTree.GetRoot: IJclIntegerTreeIterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     case GetTraverseOrder of
@@ -14278,7 +14449,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -14298,7 +14470,8 @@ var
   Start: TJclIntegerBinaryNode;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Start := FRoot;
@@ -14329,7 +14502,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -14363,7 +14537,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     SetLength(Leafarray, FSize);
@@ -14416,7 +14591,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -14429,7 +14605,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -14549,7 +14726,8 @@ begin
     AutoPack;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -14561,7 +14739,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -14573,7 +14752,8 @@ begin
       Result := Remove(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -14585,7 +14765,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -14598,7 +14779,8 @@ begin
         It.Remove;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -14644,7 +14826,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     // Insert into right place
@@ -14696,7 +14879,8 @@ begin
       Result := False;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -14708,7 +14892,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -14720,7 +14905,8 @@ begin
       Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -14785,7 +14971,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     // postorder
@@ -14836,7 +15023,8 @@ begin
     FMaxDepth := 0;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -14847,7 +15035,8 @@ var
   Current: TJclCardinalBinaryNode;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -14868,7 +15057,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -14878,7 +15068,8 @@ var
   It: IJclCardinalIterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := True;
@@ -14889,7 +15080,8 @@ begin
       Result := Contains(It.Next);
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -14905,7 +15097,8 @@ var
   It, ItSelf: IJclCardinalIterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -14924,7 +15117,8 @@ begin
       end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -14934,7 +15128,8 @@ var
   Start: TJclCardinalBinaryNode;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Start := FRoot;
@@ -14965,7 +15160,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -14980,7 +15176,8 @@ end;
 function TJclCardinalBinaryTree.GetRoot: IJclCardinalTreeIterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     case GetTraverseOrder of
@@ -14995,7 +15192,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -15015,7 +15213,8 @@ var
   Start: TJclCardinalBinaryNode;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Start := FRoot;
@@ -15046,7 +15245,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -15080,7 +15280,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     SetLength(Leafarray, FSize);
@@ -15133,7 +15334,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -15146,7 +15348,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -15266,7 +15469,8 @@ begin
     AutoPack;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -15278,7 +15482,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -15290,7 +15495,8 @@ begin
       Result := Remove(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -15302,7 +15508,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -15315,7 +15522,8 @@ begin
         It.Remove;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -15361,7 +15569,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     // Insert into right place
@@ -15413,7 +15622,8 @@ begin
       Result := False;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -15425,7 +15635,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -15437,7 +15648,8 @@ begin
       Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -15502,7 +15714,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     // postorder
@@ -15553,7 +15766,8 @@ begin
     FMaxDepth := 0;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -15564,7 +15778,8 @@ var
   Current: TJclInt64BinaryNode;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -15585,7 +15800,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -15595,7 +15811,8 @@ var
   It: IJclInt64Iterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := True;
@@ -15606,7 +15823,8 @@ begin
       Result := Contains(It.Next);
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -15622,7 +15840,8 @@ var
   It, ItSelf: IJclInt64Iterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -15641,7 +15860,8 @@ begin
       end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -15651,7 +15871,8 @@ var
   Start: TJclInt64BinaryNode;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Start := FRoot;
@@ -15682,7 +15903,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -15697,7 +15919,8 @@ end;
 function TJclInt64BinaryTree.GetRoot: IJclInt64TreeIterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     case GetTraverseOrder of
@@ -15712,7 +15935,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -15732,7 +15956,8 @@ var
   Start: TJclInt64BinaryNode;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Start := FRoot;
@@ -15763,7 +15988,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -15797,7 +16023,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     SetLength(Leafarray, FSize);
@@ -15850,7 +16077,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -15863,7 +16091,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -15983,7 +16212,8 @@ begin
     AutoPack;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -15995,7 +16225,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -16007,7 +16238,8 @@ begin
       Result := Remove(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -16019,7 +16251,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -16032,7 +16265,8 @@ begin
         It.Remove;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -16079,7 +16313,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     // Insert into right place
@@ -16131,7 +16366,8 @@ begin
       Result := False;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -16143,7 +16379,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -16155,7 +16392,8 @@ begin
       Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -16220,7 +16458,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     // postorder
@@ -16271,7 +16510,8 @@ begin
     FMaxDepth := 0;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -16282,7 +16522,8 @@ var
   Current: TJclPtrBinaryNode;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -16303,7 +16544,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -16313,7 +16555,8 @@ var
   It: IJclPtrIterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := True;
@@ -16324,7 +16567,8 @@ begin
       Result := Contains(It.Next);
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -16340,7 +16584,8 @@ var
   It, ItSelf: IJclPtrIterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -16359,7 +16604,8 @@ begin
       end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -16369,7 +16615,8 @@ var
   Start: TJclPtrBinaryNode;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Start := FRoot;
@@ -16400,7 +16647,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -16415,7 +16663,8 @@ end;
 function TJclPtrBinaryTree.GetRoot: IJclPtrTreeIterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     case GetTraverseOrder of
@@ -16430,7 +16679,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -16450,7 +16700,8 @@ var
   Start: TJclPtrBinaryNode;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Start := FRoot;
@@ -16481,7 +16732,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -16515,7 +16767,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     SetLength(Leafarray, FSize);
@@ -16568,7 +16821,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -16581,7 +16835,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -16701,7 +16956,8 @@ begin
     AutoPack;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -16713,7 +16969,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -16725,7 +16982,8 @@ begin
       Result := Remove(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -16737,7 +16995,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -16750,7 +17009,8 @@ begin
         It.Remove;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -16797,7 +17057,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     // Insert into right place
@@ -16849,7 +17110,8 @@ begin
       Result := False;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -16861,7 +17123,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -16873,7 +17136,8 @@ begin
       Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -16938,7 +17202,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     // postorder
@@ -16989,7 +17254,8 @@ begin
     FMaxDepth := 0;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -17000,7 +17266,8 @@ var
   Current: TJclBinaryNode;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -17021,7 +17288,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -17031,7 +17299,8 @@ var
   It: IJclIterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := True;
@@ -17042,7 +17311,8 @@ begin
       Result := Contains(It.Next);
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -17058,7 +17328,8 @@ var
   It, ItSelf: IJclIterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -17077,7 +17348,8 @@ begin
       end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -17087,7 +17359,8 @@ var
   Start: TJclBinaryNode;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Start := FRoot;
@@ -17118,7 +17391,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -17133,7 +17407,8 @@ end;
 function TJclBinaryTree.GetRoot: IJclTreeIterator;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     case GetTraverseOrder of
@@ -17148,7 +17423,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -17168,7 +17444,8 @@ var
   Start: TJclBinaryNode;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Start := FRoot;
@@ -17199,7 +17476,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -17233,7 +17511,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     SetLength(Leafarray, FSize);
@@ -17286,7 +17565,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -17299,7 +17579,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -17419,7 +17700,8 @@ begin
     AutoPack;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -17431,7 +17713,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -17443,7 +17726,8 @@ begin
       Result := Remove(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -17455,7 +17739,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -17468,7 +17753,8 @@ begin
         It.Remove;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -17515,7 +17801,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     // Insert into right place
@@ -17567,7 +17854,8 @@ begin
       Result := False;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -17579,7 +17867,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -17591,7 +17880,8 @@ begin
       Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -17656,7 +17946,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     // postorder
@@ -17707,7 +17998,8 @@ begin
     FMaxDepth := 0;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -17718,7 +18010,8 @@ var
   Current: TJclBinaryNode<T>;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -17739,7 +18032,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -17749,7 +18043,8 @@ var
   It: IJclIterator<T>;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := True;
@@ -17760,7 +18055,8 @@ begin
       Result := Contains(It.Next);
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -17771,7 +18067,8 @@ var
   It, ItSelf: IJclIterator<T>;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -17790,7 +18087,8 @@ begin
       end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -17800,7 +18098,8 @@ var
   Start: TJclBinaryNode<T>;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Start := FRoot;
@@ -17831,7 +18130,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -17846,7 +18146,8 @@ end;
 function TJclBinaryTree<T>.GetRoot: IJclTreeIterator<T>;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     case GetTraverseOrder of
@@ -17861,7 +18162,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -17881,7 +18183,8 @@ var
   Start: TJclBinaryNode<T>;
 begin
   {$IFDEF THREADSAFE}
-  ReadLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
     Start := FRoot;
@@ -17912,7 +18215,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    ReadUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -17946,7 +18250,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     SetLength(Leafarray, FSize);
@@ -17999,7 +18304,8 @@ begin
     end;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -18012,7 +18318,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -18132,7 +18439,8 @@ begin
     AutoPack;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -18144,7 +18452,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -18156,7 +18465,8 @@ begin
       Result := Remove(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -18168,7 +18478,8 @@ begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  WriteLock;
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
@@ -18181,7 +18492,8 @@ begin
         It.Remove;
   {$IFDEF THREADSAFE}
   finally
-    WriteUnlock;
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;

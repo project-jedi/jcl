@@ -47,7 +47,7 @@ uses
   System.Collections.Generic,
   {$ENDIF CLR}
   {$ENDIF SUPPORTS_GENERICS}
-  JclBase, JclAbstractContainers, JclAlgorithms, JclContainerIntf;
+  JclBase, JclAbstractContainers, JclAlgorithms, JclContainerIntf, JclSynch;
 {$I containers\JclContainerCommon.imp}
 {$I containers\JclBinaryTrees.imp}
 {$I containers\JclBinaryTrees.int}

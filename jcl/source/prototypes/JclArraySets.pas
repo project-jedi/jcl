@@ -48,7 +48,7 @@ uses
   {$ENDIF CLR}
   JclAlgorithms,
   {$ENDIF SUPPORTS_GENERICS}
-  JclBase, JclAbstractContainers, JclContainerIntf, JclArrayLists;
+  JclBase, JclAbstractContainers, JclContainerIntf, JclArrayLists, JclSynch;
 {$I containers\JclContainerCommon.imp}
 {$I containers\JclArraySets.int}
 {$I containers\JclArraySets.imp}

@@ -48,7 +48,7 @@ uses
   JclAlgorithms,
   {$ENDIF SUPPORTS_GENERICS}
   Classes,
-  JclBase, JclAbstractContainers, JclContainerIntf;
+  JclBase, JclAbstractContainers, JclContainerIntf, JclSynch;
 {$I containers\JclContainerCommon.imp}
 {$I containers\JclLinkedLists.imp}
 {$I containers\JclLinkedLists.int}

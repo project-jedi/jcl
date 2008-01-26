@@ -52,7 +52,7 @@ uses
   {$ENDIF CLR}
   JclAlgorithms,
   {$ENDIF SUPPORTS_GENERICS}
-  JclBase, JclAbstractContainers, JclContainerIntf, JclHashMaps;
+  JclBase, JclAbstractContainers, JclContainerIntf, JclHashMaps, JclSynch;
 type
   {$IFDEF SUPPORTS_GENERICS}
   TRefUnique = class;
@@ -1051,6 +1051,7 @@ end;
 {$ENDIF SUPPORTS_FOR_IN}
 
 
+
 function TJclIntfHashSet.GetReadOnly: Boolean;
 begin
   Result := FMap.ReadOnly;
@@ -1070,6 +1071,7 @@ function TJclIntfHashSet.GetThreadSafe: Boolean;
 begin
   Result := FMap.ThreadSafe;
 end;
+
 
 procedure TJclIntfHashSet.Intersect(const ACollection: IJclIntfCollection);
 begin
@@ -1191,6 +1193,7 @@ procedure TJclIntfHashSet.SetThreadSafe(Value: Boolean);
 begin
   FMap.ThreadSafe := Value;
 end;
+
 
 function TJclIntfHashSet.Size: Integer;
 begin
@@ -1910,6 +1913,18 @@ begin
 end;
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 //=== { TJclSingleHashSet } =====================================================
 
 constructor TJclSingleHashSet.Create(const AMap: IJclSingleMap);
@@ -2594,6 +2609,18 @@ begin
 end;
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 //=== { TJclExtendedHashSet } =====================================================
 
 constructor TJclExtendedHashSet.Create(const AMap: IJclExtendedMap);
@@ -2936,6 +2963,18 @@ begin
 end;
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 //=== { TJclIntegerHashSet } =====================================================
 
 constructor TJclIntegerHashSet.Create(const AMap: IJclIntegerMap);
@@ -3270,6 +3309,18 @@ begin
 end;
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 //=== { TJclCardinalHashSet } =====================================================
 
 constructor TJclCardinalHashSet.Create(const AMap: IJclCardinalMap);
@@ -3602,6 +3653,18 @@ procedure TJclCardinalHashSet.Union(const ACollection: IJclCardinalCollection);
 begin
   AddAll(ACollection);
 end;
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //=== { TJclInt64HashSet } =====================================================
@@ -4284,19 +4347,7 @@ begin
   AddAll(ACollection);
 end;
 
-
-
-
-
-
-
 {$ENDIF ~CLR}
-
-
-
-
-
-
 
 //=== { TJclHashSet } =====================================================
 
@@ -4640,19 +4691,7 @@ begin
 end;
 
 
-
-
-
-
-
-
 {$IFDEF SUPPORTS_GENERICS}
-
-
-
-
-
-
 
 //=== { TJclHashSet<T> } =====================================================
 

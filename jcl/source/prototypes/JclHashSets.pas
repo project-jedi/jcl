@@ -48,7 +48,7 @@ uses
   {$ENDIF CLR}
   JclAlgorithms,
   {$ENDIF SUPPORTS_GENERICS}
-  JclBase, JclAbstractContainers, JclContainerIntf, JclHashMaps;
+  JclBase, JclAbstractContainers, JclContainerIntf, JclHashMaps, JclSynch;
 {$I containers\JclContainerCommon.imp}
 {$I containers\JclHashSets.imp}
 {$I containers\JclHashSets.int}

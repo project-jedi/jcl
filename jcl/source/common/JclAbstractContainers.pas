@@ -55,10 +55,9 @@ type
 
   TJclAbstractLockable = class(TInterfacedObject {$IFDEF THREADSAFE}, IJclLockable {$ENDIF THREADSAFE})
   {$IFDEF THREADSAFE}
-  private
-    FThreadSafe: Boolean;
-    SyncReaderWriter: TJclMultiReadExclusiveWrite;
   protected
+    FThreadSafe: Boolean;
+    FSyncReaderWriter: TJclMultiReadExclusiveWrite;
     procedure ReadLock;
     procedure ReadUnlock;
     procedure WriteLock;
@@ -66,6 +65,8 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+
+    property SyncReaderWriter: TJclMultiReadExclusiveWrite read FSyncReaderWriter;
   {$ENDIF THREADSAFE}
   end;
 
@@ -650,12 +651,12 @@ constructor TJclAbstractLockable.Create;
 begin
   inherited Create;
   FThreadSafe := True;
-  SyncReaderWriter := TJclMultiReadExclusiveWrite.Create{$IFNDEF CLR}(mpReaders){$ENDIF ~CLR};
+  FSyncReaderWriter := TJclMultiReadExclusiveWrite.Create{$IFNDEF CLR}(mpReaders){$ENDIF ~CLR};
 end;
 
 destructor TJclAbstractLockable.Destroy;
 begin
-  SyncReaderWriter.Free;
+  FSyncReaderWriter.Free;
   inherited Destroy;
 end;
 
