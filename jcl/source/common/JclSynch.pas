@@ -48,7 +48,10 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$IFDEF CLR}
-  System.Threading, System.Security.AccessControl,
+  System.Threading,
+  {$IFDEF CLR20}
+  System.Security.AccessControl,
+  {$ENDIF CLR20}
   {$ENDIF CLR}
   {$IFDEF MSWINDOWS}
   Windows,
@@ -58,7 +61,9 @@ uses
 // Locked Integer manipulation
 //
 // Routines to manipulate simple typed variables in a thread safe manner
+{$IFNDEF CLR11}
 function LockedAdd(var Target: Integer; Value: Integer): Integer;
+{$ENDIF ~CLR11}
 function LockedCompareExchange(var Target: Integer; Exch, Comp: Integer): Integer; overload;
 {$IFDEF CLR}
 function LockedCompareExchange(var Target: TObject; Exch, Comp: TObject): TObject; overload;
@@ -72,7 +77,9 @@ function LockedExchangeDec(var Target: Integer): Integer;
 function LockedExchangeInc(var Target: Integer): Integer;
 function LockedExchangeSub(var Target: Integer; Value: Integer): Integer;
 function LockedInc(var Target: Integer): Integer;
+{$IFNDEF CLR11}
 function LockedSub(var Target: Integer; Value: Integer): Integer;
+{$ENDIF ~CLR11}
 
 // TJclDispatcherObject
 //
@@ -96,8 +103,10 @@ type
     destructor Destroy; override;
     //function MsgWaitFor(const TimeOut: Cardinal): TJclWaitResult; Mask: DWORD): TJclWaitResult;
     //function MsgWaitForEx(const TimeOut: Cardinal): TJclWaitResult; Mask: DWORD): TJclWaitResult;
+    {$IFNDEF CLR11}
     function SignalAndWait(const Obj: TJclDispatcherObject; TimeOut: Cardinal;
       Alertable: Boolean): TJclWaitResult;
+    {$ENDIF CLR11}
     function WaitAlertable(const TimeOut: Cardinal): TJclWaitResult;
     function WaitFor(const TimeOut: Cardinal): TJclWaitResult;
     function WaitForever: TJclWaitResult;
@@ -116,18 +125,20 @@ function WaitAlertableForMultipleObjects(const Objects: array of TJclDispatcherO
   WaitAll: Boolean; TimeOut: Cardinal): Cardinal;
 
 type
-  {$IFNDEF CLR} // todo
   TJclCriticalSection = class(TObject)
   private
     FCriticalSection: TRTLCriticalSection;
   public
     constructor Create; virtual;
     destructor Destroy; override;
+    {$IFNDEF CLR}
     class procedure CreateAndEnter(var CS: TJclCriticalSection);
+    {$ENDIF ~CLR}
     procedure Enter;
     procedure Leave;
   end;
 
+  {$IFNDEF CLR}
   TJclCriticalSectionEx = class(TJclCriticalSection)
   private
     FSpinCount: Cardinal;
@@ -141,11 +152,14 @@ type
     function TryEnter: Boolean;
     property SpinCount: Cardinal read GetSpinCount write SetSpinCount;
   end;
+  {$ENDIF ~CLR}
 
   TJclEvent = class(TJclDispatcherObject)
   public
     constructor Create({$IFNDEF CLR}SecAttr: PSecurityAttributes;{$ENDIF} Manual, Signaled: Boolean; const Name: string);
+    {$IFNDEF CLR}
     constructor Open(Access: Cardinal; Inheritable: Boolean; const Name: string);
+    {$ENDIF ~CLR}
     function Pulse: Boolean;
     function ResetEvent: Boolean;
     function SetEvent: Boolean;
@@ -164,6 +178,7 @@ type
   end;
   {$ENDIF ~CLR}
 
+  {$IFNDEF CLR11}
   TJclSemaphore = class(TJclDispatcherObject)
   public
     constructor Create({$IFNDEF CLR}SecAttr: PSecurityAttributes;{$ENDIF} Initial, Maximum: Longint; const Name: string);
@@ -171,14 +186,17 @@ type
     function Release(ReleaseCount: Longint): Boolean;
     function ReleasePrev(ReleaseCount: Longint; var PrevCount: Longint): Boolean;
   end;
-  {$ENDIF ~CLR} // todo
+  {$ENDIF ~CLR11}
 
+  {$IFNDEF CLR11}
   TJclMutex = class(TJclDispatcherObject)
   public
-    constructor Create(SecAttr: {$IFDEF CLR}MutexSecurity{$ELSE}PSecurityAttributes{$ENDIF}; InitialOwner: Boolean; const Name: string);
+    constructor Create(SecAttr: {$IFDEF CLR}MutexSecurity{$ELSE}PSecurityAttributes{$ENDIF}; InitialOwner: Boolean;
+      const Name: string);
     constructor Open({$IFDEF CLR}Rights: MutexRights;{$ELSE}Access: Cardinal; Inheritable: Boolean;{$ENDIF} const Name: string);
     function Release: Boolean;
   end;
+  {$ENDIF ~CLR11}
 
   {$IFNDEF CLR}
   POptexSharedInfo = ^TOptexSharedInfo;
@@ -220,9 +238,15 @@ type
     Reader: Boolean;         // true if reader, false if writer
   end;
   TMrewThreadInfoArray = array of TMrewThreadInfo;
+  {$ENDIF ~CLR}
 
   TJclMultiReadExclusiveWrite = class(TObject)
   private
+    {$IFDEF CLR}
+    FHandle: ReaderWriterLock;
+    FLockCookie: LockCookie;
+    FUpgradedWrite: Boolean;
+    {$ELSE ~CLR}
     FLock: TJclCriticalSection;
     FPreferred: TMrewPreferred;
     FSemReaders: TJclSemaphore;
@@ -237,8 +261,14 @@ type
     procedure ReleaseWaiters(WasReading: Boolean);
   protected
     procedure Release;
+    {$ENDIF ~CLR}
   public
-    constructor Create(Preferred: TMrewPreferred); virtual;
+    {$IFDEF CLR}
+    constructor Create;
+    {$ELSE ~CLR}
+    constructor Create(Preferred: TMrewPreferred);
+    {$ENDIF ~CLR}
+
     destructor Destroy; override;
     procedure BeginRead;
     procedure BeginWrite;
@@ -246,6 +276,7 @@ type
     procedure EndWrite;
   end;
 
+  {$IFNDEF CLR}
   PMetSectSharedInfo = ^TMetSectSharedInfo;
   TMetSectSharedInfo = record
     Initialized: LongBool;    // Is the metered section initialized?
@@ -356,10 +387,12 @@ const
 // Locked Integer manipulation
 {$IFDEF CLR}
 
+{$IFNDEF CLR11}
 function LockedAdd(var Target: Integer; Value: Integer): Integer;
 begin
   Result := Interlocked.Add(Target, Value);
 end;
+{$ENDIF ~CLR11}
 
 function LockedCompareExchange(var Target: Integer; Exch, Comp: Integer): Integer;
 begin
@@ -406,10 +439,12 @@ begin
   Result := Interlocked.Increment(Target);
 end;
 
+{$IFNDEF CLR11}
 function LockedSub(var Target: Integer; Value: Integer): Integer;
 begin
   Result := Interlocked.Add(Target, -Value);
 end;
+{$ENDIF ~CLR11}
 
 {$ELSE}
 
@@ -536,6 +571,7 @@ end;
 
 { TODO: Use RTDL Version of SignalObjectAndWait }
 
+{$IFNDEF CLR11}
 function TJclDispatcherObject.SignalAndWait(const Obj: TJclDispatcherObject;
   TimeOut: Cardinal; Alertable: Boolean): TJclWaitResult;
 begin
@@ -551,6 +587,7 @@ begin
   Result := MapSignalResult(Cardinal(Windows.SignalObjectAndWait(Obj.Handle, Handle, TimeOut, Alertable)));
   {$ENDIF CLR}
 end;
+{$ENDIF ~CLR11}
 
 function TJclDispatcherObject.WaitAlertable(const TimeOut: Cardinal): TJclWaitResult;
 begin
@@ -634,7 +671,6 @@ begin
   {$ENDIF CLR}
 end;
 
-{$IFNDEF CLR} // todo
 //=== { TJclCriticalSection } ================================================
 
 constructor TJclCriticalSection.Create;
@@ -649,6 +685,7 @@ begin
   inherited Destroy;
 end;
 
+{$IFNDEF CLR}
 class procedure TJclCriticalSection.CreateAndEnter(var CS: TJclCriticalSection);
 var
   NewCritSect: TJclCriticalSection;
@@ -661,6 +698,7 @@ begin
   end;
   CS.Enter;
 end;
+{$ENDIF ~CLR}
 
 procedure TJclCriticalSection.Enter;
 begin
@@ -673,6 +711,8 @@ begin
 end;
 
 //== { TJclCriticalSectionEx } ===============================================
+
+{$IFNDEF CLR11}
 
 const
   DefaultCritSectSpinCount = 4000;
@@ -730,19 +770,29 @@ begin
   Result := TryEnterCriticalSection(FCriticalSection);
 end;
 
+{$ENDIF ~CLR11}
+
 //== { TJclEvent } ===========================================================
 
-constructor TJclEvent.Create(SecAttr: PSecurityAttributes;
+constructor TJclEvent.Create({$IFNDEF CLR} SecAttr: PSecurityAttributes; {$ENDIF ~CLR}
   Manual, Signaled: Boolean; const Name: string);
 begin
   inherited Create;
   FName := Name;
+  {$IFDEF CLR}
+  if Manual then
+    FHandle := ManualResetEvent.Create(Signaled)
+  else
+    FHandle := AutoResetEvent.Create(Signaled);
+  {$ELSE ~CLR}
   FHandle := Windows.CreateEvent(SecAttr, Manual, Signaled, PChar(FName));
   if FHandle = 0 then
     raise EJclEventError.CreateRes(@RsSynchCreateEvent);
   FExisted := GetLastError = ERROR_ALREADY_EXISTS;
+  {$ENDIF ~CLR}
 end;
 
+{$IFNDEF CLR}
 constructor TJclEvent.Open(Access: Cardinal; Inheritable: Boolean;
   const Name: string);
 begin
@@ -752,24 +802,47 @@ begin
   if FHandle = 0 then
     raise EJclEventError.CreateRes(@RsSynchOpenEvent);
 end;
+{$ENDIF ~CLR}
 
 function TJclEvent.Pulse: Boolean;
 begin
+  {$IFDEF CLR}
+  if FHandle is ManualResetEvent then
+    Result := ManualResetEvent(FHandle).&Set and ManualResetEvent(FHandle).Reset
+  else
+    Result := AutoResetEvent(FHandle).&Set and AutoResetEvent(FHandle).Reset;
+  {$ELSE ~CLR}
   Result := Windows.PulseEvent(FHandle);
+  {$ENDIF ~CLR}
 end;
 
 function TJclEvent.ResetEvent: Boolean;
 begin
+  {$IFDEF CLR}
+  if FHandle is ManualResetEvent then
+    Result := ManualResetEvent(FHandle).Reset
+  else
+    Result := AutoResetEvent(FHandle).Reset;
+  {$ELSE ~CLR}
   Result := Windows.ResetEvent(FHandle);
+  {$ENDIF ~CLR}
 end;
 
 function TJclEvent.SetEvent: Boolean;
 begin
+  {$IFDEF CLR}
+  if FHandle is ManualResetEvent then
+    Result := ManualResetEvent(FHandle).&Set
+  else
+    Result := AutoResetEvent(FHandle).&Set;
+  {$ELSE ~CLR}
   Result := Windows.SetEvent(FHandle);
+  {$ENDIF ~CLR}
 end;
 
 //=== { TJclWaitableTimer } ==================================================
 
+{$IFNDEF CLR}
 { TODO: Use RTLD version of CreateWaitableTimer }
 constructor TJclWaitableTimer.Create(SecAttr: PSecurityAttributes;
   Manual: Boolean; const Name: string);
@@ -823,9 +896,11 @@ begin
   // if not Result and (GetLastError = ERROR_CALL_NOT_IMPLEMENTED) then
   //   RaiseLastOSError;
 end;
+{$ENDIF ~CLR}
 
 //== { TJclSemaphore } =======================================================
 
+{$IFNDEF CLR11}
 constructor TJclSemaphore.Create(SecAttr: PSecurityAttributes;
   Initial, Maximum: Integer; const Name: string);
 begin
@@ -857,11 +932,11 @@ function TJclSemaphore.Release(ReleaseCount: Integer): Boolean;
 begin
   Result := Windows.ReleaseSemaphore(FHandle, ReleaseCount, nil);
 end;
-
-{$ENDIF ~CLR} // todo
+{$ENDIF ~CLR11}
 
 //=== { TJclMutex } ==========================================================
 
+{$IFNDEF CLR11}
 constructor TJclMutex.Create(SecAttr: {$IFDEF CLR}MutexSecurity{$ELSE}PSecurityAttributes{$ENDIF};
   InitialOwner: Boolean; const Name: string);
 begin
@@ -902,6 +977,7 @@ begin
   Result := Windows.ReleaseMutex(FHandle);
   {$ENDIF CLR}
 end;
+{$ENDIF ~CLR11}
 
 {$IFNDEF CLR}
 //=== { TJclOptex } ==========================================================
@@ -1041,9 +1117,17 @@ begin
   until ThreadOwnsOptex or (SpinCount <= 0);
   Result := ThreadOwnsOptex;
 end;
+{$ENDIF ~CLR}
 
 //=== { TJclMultiReadExclusiveWrite } ========================================
 
+{$IFDEF CLR}
+constructor TJclMultiReadExclusiveWrite.Create;
+begin
+  inherited Create;
+  FHandle := ReaderWriterLock.Create;
+end;
+{$ELSE ~CLR}
 constructor TJclMultiReadExclusiveWrite.Create(Preferred: TMrewPreferred);
 begin
   inherited Create;
@@ -1056,15 +1140,55 @@ begin
   FWaitingReaders := 0;
   FWaitingWriters := 0;
 end;
+{$ENDIF ~CLR}
 
 destructor TJclMultiReadExclusiveWrite.Destroy;
 begin
+  {$IFDEF CLR}
+  FHandle.Free;
+  {$ELSE ~CLR}
   FreeAndNil(FSemReaders);
   FreeAndNil(FSemWriters);
   FreeAndNil(FLock);
+  {$ENDIF ~CLR}
   inherited Destroy;
 end;
 
+{$IFDEF CLR}
+procedure TJclMultiReadExclusiveWrite.BeginRead;
+begin
+  if not FHandle.IsWriterLockHeld then
+    FHandle.AcquireReaderLock(-1);
+end;
+
+procedure TJclMultiReadExclusiveWrite.BeginWrite;
+begin
+  if FHandle.IsReaderLockHeld then
+  begin
+    FLockCookie := FHandle.UpgradeToWriterLock(-1);
+    FUpgradedWrite := True;
+  end
+  else
+    FHandle.AcquireWriterLock(-1);
+end;
+
+procedure TJclMultiReadExclusiveWrite.EndRead;
+begin
+  if not FHandle.IsWriterLockHeld then
+    FHandle.ReleaseReaderLock;
+end;
+
+procedure TJclMultiReadExclusiveWrite.EndWrite;
+begin
+  if FUpgradedWrite then
+  begin
+    FUpgradedWrite := False;
+    FHandle.DowngradeFromWriterLock(FLockCookie);
+  end
+  else
+    FHandle.ReleaseWriterLock;
+end;
+{$ELSE ~CLR}
 procedure TJclMultiReadExclusiveWrite.AddToThreadList(ThreadId: Longword;
   Reader: Boolean);
 var
@@ -1301,9 +1425,11 @@ begin
   Move(FThreads[Index + 1], FThreads[Index], SizeOf(TMrewThreadInfo) * (L - Index - 1));
   SetLength(FThreads, L - 1);
 end;
+{$ENDIF ~CLR}
 
 //=== { TJclMeteredSection } =================================================
 
+{$IFNDEF CLR}
 const
   MAX_METSECT_NAMELEN = 128;
 

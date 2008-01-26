@@ -3,7 +3,7 @@
   <PersonalityInfo>
     <Option>
       <Option Name="Personality">DelphiDotNet.Personality</Option>
-      <Option Name="ProjectType">Library</Option>
+      <Option Name="ProjectType"></Option>
       <Option Name="Version">2.0</Option>
       <Option Name="GUID">%GUID%</Option>
     </Option>

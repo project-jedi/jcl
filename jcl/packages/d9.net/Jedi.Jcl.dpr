@@ -28,11 +28,11 @@ uses
   JclStatistics in '..\..\source\common\JclStatistics.pas' ,
   JclStreams in '..\..\source\common\JclStreams.pas' ,
   JclStrings in '..\..\source\common\JclStrings.pas' ,
+  JclSynch in '..\..\source\Common\JclSynch.pas' ,
   JclSysInfo in '..\..\source\common\JclSysInfo.pas' ,
   JclSysUtils in '..\..\source\common\JclSysUtils.pas' ,
   JclUnitConv in '..\..\source\common\JclUnitConv.pas' ,
-  JclValidation in '..\..\source\common\JclValidation.pas' ,
-  JclSynch in '..\..\source\windows\JclSynch.pas' 
+  JclValidation in '..\..\source\common\JclValidation.pas' 
   ;
 
 {$LIBSUFFIX '9'}

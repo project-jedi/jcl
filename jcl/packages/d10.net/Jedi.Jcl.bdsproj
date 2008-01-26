@@ -3,7 +3,7 @@
   <PersonalityInfo>
     <Option>
       <Option Name="Personality">DelphiDotNet.Personality</Option>
-      <Option Name="ProjectType">Library</Option>
+      <Option Name="ProjectType"></Option>
       <Option Name="Version">2.0</Option>
       <Option Name="GUID">{44DB645B-C167-410D-9334-38AF9F0C7913}</Option>
     </Option>
@@ -203,11 +203,11 @@
       <File FileName="..\..\source\common\JclStatistics.pas" ContainerId="" ModuleName="JclStatistics"/>
       <File FileName="..\..\source\common\JclStreams.pas" ContainerId="" ModuleName="JclStreams"/>
       <File FileName="..\..\source\common\JclStrings.pas" ContainerId="" ModuleName="JclStrings"/>
+      <File FileName="..\..\source\Common\JclSynch.pas" ContainerId="" ModuleName="JclSynch"/>
       <File FileName="..\..\source\common\JclSysInfo.pas" ContainerId="" ModuleName="JclSysInfo"/>
       <File FileName="..\..\source\common\JclSysUtils.pas" ContainerId="" ModuleName="JclSysUtils"/>
       <File FileName="..\..\source\common\JclUnitConv.pas" ContainerId="" ModuleName="JclUnitConv"/>
       <File FileName="..\..\source\common\JclValidation.pas" ContainerId="" ModuleName="JclValidation"/>
-      <File FileName="..\..\source\windows\JclSynch.pas" ContainerId="" ModuleName="JclSynch"/>
     </FileList>
   </DelphiDotNet.Personality>
 </BorlandProject>

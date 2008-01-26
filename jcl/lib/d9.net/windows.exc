@@ -21,7 +21,6 @@ JclSecurity.pas
 JclShell.pas
 JclStructStorage.pas
 JclSvcCtrl.pas
-JclSynch.pas
 JclTask.pas
 JclTD32.pas
 JclUnicode.pas
