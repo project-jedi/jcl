@@ -48,7 +48,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -393,7 +393,7 @@ function DotNetFormat(const Fmt: string; const Arg0: System.Object): string; ove
 function DotNetFormat(const Fmt: string; const Arg0, Arg1: System.Object): string; overload;
 function DotNetFormat(const Fmt: string; const Arg0, Arg1, Arg2: System.Object): string; overload;
 
-{$ELSE}
+{$ELSE ~CLR}
 
 type
   FormatException = class(EJclError);
@@ -474,14 +474,11 @@ type
     property MaxCapacity: Integer read FMaxCapacity;
   end;
 
-
 // DotNetFormat() uses the .NET format style: "{argX}"
 function DotNetFormat(const Fmt: string; const Args: array of const): string; overload;
 function DotNetFormat(const Fmt: string; const Arg0: Variant): string; overload;
 function DotNetFormat(const Fmt: string; const Arg0, Arg1: Variant): string; overload;
 function DotNetFormat(const Fmt: string; const Arg0, Arg1, Arg2: Variant): string; overload;
-
-{$ENDIF CLR}
 
 // TJclTabSet
 type
@@ -527,10 +524,10 @@ type
     function UpdatePosition(S: string; var Column, Line: Integer): Integer; overload;
 
     // Conversions
-    class function FromString(S: string): TJclTabSet; {$IFDEF SUPPORTS_STATIC}static; {$ENDIF}
-    function ToString: string; {$IFDEF CLR}override; {$ENDIF}overload;
+    function ToString: string; overload;
     function ToString(FormattingOptions: Integer): string; overload;
-
+    class function FromString(S: string): TJclTabSet; {$IFDEF SUPPORTS_STATIC} static; {$ENDIF}
+    
     // Properties
     property ActualTabWidth: Integer read InternalTabWidth;
     property Count: Integer read GetCount;
@@ -565,18 +562,17 @@ function StrOptimizeTabs(S: string): string; {$IFDEF SUPPORTS_INLINE}inline; {$E
 function StrOptimizeTabs(S: string; TabWidth: Integer): string; {$IFDEF SUPPORTS_INLINE}inline; {$ENDIF}overload;
 function StrOptimizeTabs(S: string; TabSet: TJclTabSet): string; {$IFDEF SUPPORTS_INLINE}inline; {$ENDIF}overload;
 
-{$IFNDEF CLR}
 // move to JclBase?
 type
   NullReferenceException = class (EJclError)
   public
     constructor Create; overload;
   end;
-{$ENDIF ~CLR}
-
 
 function AnsiCompareNaturalStr(const S1, S2: string): Integer;
 function AnsiCompareNaturalText(const S1, S2: string): Integer;
+
+{$ENDIF ~CLR}
 
 // Exceptions
 type
@@ -5119,6 +5115,7 @@ begin
 end;
 {$ENDIF CLR}
 
+{$IFNDEF CLR}
 function StrExpandTabs(S: string): string;
 begin
   // use an empty tab set, which will default to a tab width of 2
@@ -5832,14 +5829,12 @@ begin
   Result := Column;
 end;
 
-{$IFNDEF CLR}
-{ NullReferenceException }
+//=== { NullReferenceException } =============================================
 
 constructor NullReferenceException.Create;
 begin
   CreateRes(@RsArg_NullReferenceException);
 end;
-{$ENDIF ~CLR}
 
 function AnsiCompareNatural(const S1, S2: string; insensitive: Boolean): Integer;
 var
@@ -5956,6 +5951,8 @@ function AnsiCompareNaturalText(const S1, S2: string): Integer;
 begin
   Result := AnsiCompareNatural(S1, S2, True);
 end;
+
+{$ENDIF ~CLR}
 
 {$IFDEF CLR}
 {$IFDEF UNITVERSIONING}
