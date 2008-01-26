@@ -213,6 +213,7 @@ experts\debug\threadnames     - IDE expert showing class names for debugged thre
 experts\debug\tools           - Tools for creating files with JCL debug information
 experts\favfolders            - Favorite folders combobox in IDE open/save file dialogs
 experts\projectanalyzer       - Project Analyzer IDE expert
+experts\repository            - Repository expert
 experts\useswizard            - JCL uses wizard
 experts\versioncontrol        - Integration of TortoiseCVS and TortoiseSVN in the IDE
 examples                      - JCL example applications
