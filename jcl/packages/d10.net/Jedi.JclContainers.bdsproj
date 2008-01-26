@@ -114,7 +114,7 @@
       <Linker Name="GenerateDRC">False</Linker>
       <Linker Name="MinStackSize">4096</Linker>
       <Linker Name="MaxStackSize">1048576</Linker>
-      <Linker Name="ImageBase">4194304</Linker>
+      <Linker Name="ImageBase">$48500000</Linker>
       <Linker Name="ExeDescription"></Linker>
       <Linker Name="GenerateHpps">False</Linker>
     </Linker>
