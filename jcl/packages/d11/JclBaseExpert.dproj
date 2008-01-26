@@ -2,7 +2,7 @@
   <PropertyGroup>
     <ProjectGuid></ProjectGuid>
     <MainSource>JclBaseExpert.dpk</MainSource>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
   </PropertyGroup>
@@ -79,12 +79,19 @@
     </BorlandProject>
   </BorlandProject>
   </ProjectExtensions>
-  <ItemGroup />
+  <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
   <ItemGroup>
     <DelphiCompile Include="JclBaseExpert.dpk">
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
     <DCCReference Include="rtl.dcp" />
+    <DCCReference Include="..\..\experts\common\JclOtaUtils.pas" />
+    <DCCReference Include="..\..\experts\common\JclOtaResources.pas" />
+    <DCCReference Include="..\..\experts\common\JclOtaConsts.pas" />
+    <DCCReference Include="..\..\experts\common\JclOtaExceptionForm.pas" />
+    <DCCReference Include="..\..\experts\common\JclOtaConfigurationForm.pas" />
+    <DCCReference Include="..\..\experts\common\JclOtaActionConfigureSheet.pas" />
+    <DCCReference Include="..\..\experts\common\JclOtaWizardForm.pas" />
+    <DCCReference Include="..\..\experts\common\JclOtaWizardFrame.pas" />
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
 </Project>

@@ -2,7 +2,7 @@
   <PropertyGroup>
     <ProjectGuid></ProjectGuid>
     <MainSource>JclVersionControlExpert.dpk</MainSource>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
   </PropertyGroup>
@@ -79,12 +79,15 @@
     </BorlandProject>
   </BorlandProject>
   </ProjectExtensions>
-  <ItemGroup />
+  <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
   <ItemGroup>
     <DelphiCompile Include="JclVersionControlExpert.dpk">
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
     <DCCReference Include="rtl.dcp" />
+    <DCCReference Include="..\..\experts\versioncontrol\VersionControlImpl.pas" />
+    <DCCReference Include="..\..\experts\versioncontrol\JclVersionCtrlCommonOptions.pas" />
+    <DCCReference Include="..\..\experts\versioncontrol\JclVersionCtrlCVSImpl.pas" />
+    <DCCReference Include="..\..\experts\versioncontrol\JclVersionCtrlSVNImpl.pas" />
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
 </Project>

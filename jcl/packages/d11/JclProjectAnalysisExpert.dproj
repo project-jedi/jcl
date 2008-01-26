@@ -2,7 +2,7 @@
   <PropertyGroup>
     <ProjectGuid></ProjectGuid>
     <MainSource>JclProjectAnalysisExpert.dpk</MainSource>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
   </PropertyGroup>
@@ -79,12 +79,13 @@
     </BorlandProject>
   </BorlandProject>
   </ProjectExtensions>
-  <ItemGroup />
+  <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
   <ItemGroup>
     <DelphiCompile Include="JclProjectAnalysisExpert.dpk">
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
     <DCCReference Include="rtl.dcp" />
+    <DCCReference Include="..\..\experts\projectanalyzer\ProjAnalyzerFrm.pas" />
+    <DCCReference Include="..\..\experts\projectanalyzer\ProjAnalyzerImpl.pas" />
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
 </Project>

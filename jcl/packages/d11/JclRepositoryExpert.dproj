@@ -2,7 +2,7 @@
   <PropertyGroup>
     <ProjectGuid></ProjectGuid>
     <MainSource>JclRepositoryExpert.dpk</MainSource>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
   </PropertyGroup>
@@ -79,12 +79,21 @@
     </BorlandProject>
   </BorlandProject>
   </ProjectExtensions>
-  <ItemGroup />
+  <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
   <ItemGroup>
     <DelphiCompile Include="JclRepositoryExpert.dpk">
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
     <DCCReference Include="rtl.dcp" />
+    <DCCReference Include="..\..\experts\repository\JclOtaTemplates.pas" />
+    <DCCReference Include="..\..\experts\repository\JclOtaRepositoryUtils.pas" />
+    <DCCReference Include="..\..\experts\repository\JclOtaExcDlgRepository.pas" />
+    <DCCReference Include="..\..\experts\repository\JclOtaExcDlgWizard.pas" />
+    <DCCReference Include="..\..\experts\repository\JclOtaExcDlgFileFrame.pas" />
+    <DCCReference Include="..\..\experts\repository\JclOtaExcDlgFormFrame.pas" />
+    <DCCReference Include="..\..\experts\repository\JclOtaExcDlgSystemFrame.pas" />
+    <DCCReference Include="..\..\experts\repository\JclOtaExcDlgTraceFrame.pas" />
+    <DCCReference Include="..\..\experts\repository\JclOtaExcDlgIgnoreFrame.pas" />
+    <DCCReference Include="..\..\experts\repository\JclOtaRepositoryReg.pas" />
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
 </Project>

@@ -3,7 +3,7 @@
   <PropertyGroup>
     <ProjectGuid>%GUID%</ProjectGuid>
     <MainSource>%NAME%%SOURCEEXTENSION%</MainSource>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <DCC_DCCCompiler>DCCIL</DCC_DCCCompiler>
     <DCC_DependencyCheckOutputName>%NAME%%BINEXTENSION%</DCC_DependencyCheckOutputName>
@@ -107,6 +107,7 @@
       </BorlandProject>
     </BorlandProject>
   </ProjectExtensions>
+  <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
   <ItemGroup>
     <DelphiCompile Include="%NAME%%SOURCEEXTENSION%">
       <MainSource>MainSource</MainSource>
@@ -115,5 +116,4 @@
       <DCCReference Include="%FILENAME%"/>
 <%%% END FILES %%%>
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
 </Project>

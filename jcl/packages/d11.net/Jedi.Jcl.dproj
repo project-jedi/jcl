@@ -3,7 +3,7 @@
   <PropertyGroup>
     <ProjectGuid>{44DB645B-C167-410D-9334-38AF9F0C7913}</ProjectGuid>
     <MainSource>Jedi.Jcl.dpk</MainSource>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <DCC_DCCCompiler>DCCIL</DCC_DCCCompiler>
     <DCC_DependencyCheckOutputName>Jedi.Jcl.bpl</DCC_DependencyCheckOutputName>
@@ -91,6 +91,7 @@
       </BorlandProject>
     </BorlandProject>
   </ProjectExtensions>
+  <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
   <ItemGroup>
     <DelphiCompile Include="Jedi.Jcl.dpk">
       <MainSource>MainSource</MainSource>
@@ -125,5 +126,4 @@
       <DCCReference Include="..\..\source\common\JclUnitConv.pas"/>
       <DCCReference Include="..\..\source\common\JclValidation.pas"/>
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
 </Project>

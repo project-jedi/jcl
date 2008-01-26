@@ -2,7 +2,7 @@
   <PropertyGroup>
     <ProjectGuid></ProjectGuid>
     <MainSource>JclVcl.dpk</MainSource>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
   </PropertyGroup>
@@ -79,12 +79,15 @@
     </BorlandProject>
   </BorlandProject>
   </ProjectExtensions>
-  <ItemGroup />
+  <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
   <ItemGroup>
     <DelphiCompile Include="JclVcl.dpk">
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
     <DCCReference Include="rtl.dcp" />
+    <DCCReference Include="..\..\source\vcl\JclPrint.pas" />
+    <DCCReference Include="..\..\source\vcl\JclGraphUtils.pas" />
+    <DCCReference Include="..\..\source\vcl\JclGraphics.pas" />
+    <DCCReference Include="..\..\source\vcl\JclFont.pas" />
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
 </Project>

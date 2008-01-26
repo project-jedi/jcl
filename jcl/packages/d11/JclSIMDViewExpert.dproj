@@ -2,7 +2,7 @@
   <PropertyGroup>
     <ProjectGuid></ProjectGuid>
     <MainSource>JclSIMDViewExpert.dpk</MainSource>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
   </PropertyGroup>
@@ -79,12 +79,16 @@
     </BorlandProject>
   </BorlandProject>
   </ProjectExtensions>
-  <ItemGroup />
+  <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
   <ItemGroup>
     <DelphiCompile Include="JclSIMDViewExpert.dpk">
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
     <DCCReference Include="rtl.dcp" />
+    <DCCReference Include="..\..\experts\debug\simdview\JclSIMDViewForm.pas" />
+    <DCCReference Include="..\..\experts\debug\simdview\JclSIMDView.pas" />
+    <DCCReference Include="..\..\experts\debug\simdview\JclSIMDUtils.pas" />
+    <DCCReference Include="..\..\experts\debug\simdview\JclSIMDModifyForm.pas" />
+    <DCCReference Include="..\..\experts\debug\simdview\JclSIMDCpuInfo.pas" />
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
 </Project>
