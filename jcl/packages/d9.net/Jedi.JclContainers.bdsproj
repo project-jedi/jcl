@@ -1,9 +1,9 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <BorlandProject>
   <PersonalityInfo>
     <Option>
       <Option Name="Personality">DelphiDotNet.Personality</Option>
-      <Option Name="ProjectType">Library</Option>
+      <Option Name="ProjectType"></Option>
       <Option Name="Version">2.0</Option>
       <Option Name="GUID">{71D14CDC-6386-44FD-B861-4C4213CFFF08}</Option>
     </Option>
@@ -18,16 +18,16 @@
     <Compiler>
       <Compiler Name="A">0</Compiler>
       <Compiler Name="B">0</Compiler>
-      <Compiler Name="C">1</Compiler>
-      <Compiler Name="D">1</Compiler>
+      <Compiler Name="C">0</Compiler>
+      <Compiler Name="D">0</Compiler>
       <Compiler Name="E">0</Compiler>
       <Compiler Name="F">0</Compiler>
       <Compiler Name="G">1</Compiler>
       <Compiler Name="H">1</Compiler>
-      <Compiler Name="I">1</Compiler>
-      <Compiler Name="J">0</Compiler>
+      <Compiler Name="I">0</Compiler>
+      <Compiler Name="J">1</Compiler>
       <Compiler Name="K">0</Compiler>
-      <Compiler Name="L">1</Compiler>
+      <Compiler Name="L">0</Compiler>
       <Compiler Name="M">0</Compiler>
       <Compiler Name="N">1</Compiler>
       <Compiler Name="O">1</Compiler>
@@ -40,7 +40,7 @@
       <Compiler Name="V">1</Compiler>
       <Compiler Name="W">0</Compiler>
       <Compiler Name="X">1</Compiler>
-      <Compiler Name="Y">1</Compiler>
+      <Compiler Name="Y">0</Compiler>
       <Compiler Name="Z">1</Compiler>
       <Compiler Name="ShowHints">True</Compiler>
       <Compiler Name="ShowWarnings">True</Compiler>
@@ -125,7 +125,7 @@
       <Directories Name="PackageDCPOutputDir">..\..\lib\d9.net</Directories>
       <Directories Name="SearchPath">..\..\lib\d9.net;..\..\source</Directories>
       <Directories Name="Packages"></Directories>
-      <Directories Name="Conditionals"></Directories>
+      <Directories Name="Conditionals">RELEASE</Directories>
       <Directories Name="DebugSourceDirs"></Directories>
       <Directories Name="UsePackages">True</Directories>
     </Directories>
@@ -150,7 +150,7 @@
       <Language Name="RootDir"></Language>
     </Language>
     <VersionInfo>
-      <VersionInfo Name="IncludeVerInfo">False</VersionInfo>
+      <VersionInfo Name="IncludeVerInfo">True</VersionInfo>
       <VersionInfo Name="AutoIncBuild">False</VersionInfo>
       <VersionInfo Name="MajorVer">1</VersionInfo>
       <VersionInfo Name="MinorVer">102</VersionInfo>
@@ -171,7 +171,7 @@
       <VersionInfoKeys Name="InternalName">Jedi.JclContainers</VersionInfoKeys>
       <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2008 Project JEDI</VersionInfoKeys>
       <VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
-      <VersionInfoKeys Name="OriginalFilename">Jedi.JclContainers9.bpl</VersionInfoKeys>
+      <VersionInfoKeys Name="OriginalFilename">Jedi.JclContainers90.bpl</VersionInfoKeys>
       <VersionInfoKeys Name="ProductName">JEDI Code Library</VersionInfoKeys>
       <VersionInfoKeys Name="ProductVersion">1.102 Build 2726</VersionInfoKeys>
       <VersionInfoKeys Name="Comments"></VersionInfoKeys>
