@@ -121,6 +121,7 @@
     <DCCReference Include="..\..\source\Common\JclSynch.pas" />
     <DCCReference Include="..\..\source\common\JclSysInfo.pas" />
     <DCCReference Include="..\..\source\common\JclSysUtils.pas" />
+    <DCCReference Include="..\..\source\Common\JclUnicode.pas" />
     <DCCReference Include="..\..\source\common\JclUnitConv.pas" />
     <DCCReference Include="..\..\source\common\JclUnitVersioning.pas" />
     <DCCReference Include="..\..\source\common\JclUnitVersioningProviders.pas" />
@@ -152,7 +153,6 @@
     <DCCReference Include="..\..\source\windows\JclSvcCtrl.pas" />
     <DCCReference Include="..\..\source\windows\JclTask.pas" />
     <DCCReference Include="..\..\source\windows\JclTD32.pas" />
-    <DCCReference Include="..\..\source\windows\JclUnicode.pas" />
     <DCCReference Include="..\..\source\windows\JclWideFormat.pas" />
     <DCCReference Include="..\..\source\windows\JclWin32.pas" />
     <DCCReference Include="..\..\source\windows\JclWin32Ex.pas" />

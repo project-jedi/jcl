@@ -23,7 +23,6 @@ JclStructStorage.pas
 JclSvcCtrl.pas
 JclTask.pas
 JclTD32.pas
-JclUnicode.pas
 JclWideFormat.pas
 JclWin32.pas
 JclWin32Ex.pas
