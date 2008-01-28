@@ -497,6 +497,8 @@ type
     procedure CheckGetProperty(AProperty: TJclCompressionItemProperty); virtual; abstract;
     procedure CheckSetProperty(AProperty: TJclCompressionItemProperty); virtual; abstract;
     function ValidateExtraction(Index: Integer): Boolean; virtual;
+    function DeleteOutputFile: Boolean;
+    function UpdateFileTimes: Boolean;
     // property getters
     function GetAttributes: Cardinal;
     function GetComment: WideString;
@@ -2374,6 +2376,11 @@ begin
   FPackedIndex := $FFFFFFFF;
 end;
 
+function TJclCompressionItem.DeleteOutputFile: Boolean;
+begin
+  Result := (FFileName <> '') and FileExists(FFileName) and FileDelete(FFileName);
+end;
+
 destructor TJclCompressionItem.Destroy;
 begin
   ReleaseStream;
@@ -2639,6 +2646,39 @@ begin
   FUser := Value;
   Include(FModifiedProperties, ipUser);
   Include(FValidProperties, ipUser);
+end;
+
+function TJclCompressionItem.UpdateFileTimes: Boolean;
+const
+  FILE_WRITE_ATTRIBUTES = $00000100;
+var
+  FileHandle: HFILE;
+  ACreationTime, ALastAccessTime, ALastWriteTime: PFileTime;
+begin
+  ReleaseStream;
+  Result := FFileName <> '';
+  if Result then
+  begin
+    FileHandle := CreateFile(PAnsiChar(FFileName), FILE_WRITE_ATTRIBUTES, FILE_SHARE_READ, nil, OPEN_EXISTING, 0, 0);
+    try
+      if ipCreationTime in FValidProperties then
+        ACreationTime := @FCreationTime
+      else
+        ACreationTime := nil;
+      if ipLastAccessTime in FValidProperties then
+        ALastAccessTime := @FLastAccessTime
+      else
+        ALastAccessTime := nil;
+      if ipLastWriteTime in FValidProperties then
+        ALastWriteTime := @FLastWriteTime
+      else
+        ALastWriteTime := nil;
+      Result := (FileHandle <> INVALID_HANDLE_VALUE) and SetFileTime(FileHandle, ACreationTime, ALastAccessTime,
+        ALastWriteTime);
+    finally
+      CloseHandle(FileHandle);
+    end;    
+  end;
 end;
 
 function TJclCompressionItem.ValidateExtraction(Index: Integer): Boolean;
@@ -4084,18 +4124,34 @@ end;
 
 function TJclSevenzipExtractCallback.SetOperationResult(
   resultEOperationResult: Integer): HRESULT;
+var
+  LastItem: TJclCompressionItem;
 begin
+  LastItem := FArchive.Items[FLastStream];
   case resultEOperationResult of
     kOK:
-      FArchive.Items[FLastStream].OperationSuccess := osOK;
+      begin
+        LastItem.OperationSuccess := osOK;
+        LastItem.UpdateFileTimes;
+      end;
     kUnSupportedMethod:
-      FArchive.Items[FLastStream].OperationSuccess := osUnsupportedMethod;
+      begin
+        LastItem.OperationSuccess := osUnsupportedMethod;
+        LastItem.DeleteOutputFile;
+      end;
     kDataError:
-      FArchive.Items[FLastStream].OperationSuccess := osDataError;
+      begin
+        LastItem.OperationSuccess := osDataError;
+        LastItem.DeleteOutputFile;
+      end;
     kCRCError:
-      FArchive.Items[FLastStream].OperationSuccess := osCRCError;
+      begin
+        LastItem.OperationSuccess := osCRCError;
+        LastItem.DeleteOutputFile;
+      end
   else
-    FArchive.Items[FLastStream].OperationSuccess := osUnknownError;
+    LastItem.OperationSuccess := osUnknownError;
+    LastItem.DeleteOutputFile;
   end;
 
   Result := S_OK;
