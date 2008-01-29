@@ -140,6 +140,12 @@ type
   {$IFNDEF COMPILER7_UP}
   UInt64 = Int64;
   {$ENDIF ~COMPILER7_UP}
+  {$IFNDEF CLR}
+  PWideChar = System.PWideChar;
+  PPWideChar = ^JclBase.PWideChar;
+  PInt64 = type System.PInt64;
+  PPInt64 = ^JclBase.PInt64;
+  {$ENDIF CLR}
 
 // Interface compatibility
 {$IFDEF SUPPORTS_INTERFACE}

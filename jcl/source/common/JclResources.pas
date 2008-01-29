@@ -804,6 +804,22 @@ resourcestring
   RsCompressionBZIP2OutBuffError     = 'bzip2 returned: out buffer is too small';
   RsCompressionBZIP2ConfigError      = 'bzip2 returned: configuration error';
   RsCompressionBZIP2Error            = 'bzip2 returned: unknown error (%d)';
+  RsCompressionUnavailableProperty   = 'Property is not available';
+  RsCompressionCompressingError      = 'Operation is not supported while compressing';
+  RsCompressionDecompressingError    = 'Operation is not supported while decompressing';
+  RsCompressionUnsupportedMethod     = 'Unsupported method';
+  RsCompressionDataError             = 'Data error';
+  RsCompressionCRCError              = 'CRC error';
+  RsCompressionUnknownError          = 'Unknown error';
+  RsCompression7zReturnError         = 'Sevenzip: Error result (%.8x) "%s"';
+  RsCompression7zUnassignedStream    = 'Sevenzip: Stream object is not assigned';
+  RsCompression7zOutArchiveError     = 'Sevenzip: Failed to get out archive interface for class %s';
+  RsCompression7zInArchiveError      = 'Sevenzip: Failed to get in archive interface for class %s';
+  RsCompression7zNoProperties        = 'Sevenzip: Failed to get property setter interface';
+  RsCompression7zUnknownValueType    = 'Sevenzip: Unknown value type (%d) for property ID %d';
+  RsCompression7zOnlyCurrentFile     = 'Sevenzip: Only properties for current file can be retreived';
+  RsCompression7zWindows             = 'Windows';
+  RsCompression7zUnix                = 'Unix';
 
 //=== JclConsole =============================================================
 resourcestring
@@ -1682,6 +1698,7 @@ resourcestring
   RsStreamsCreateError = 'Cannot create file %s';
   RsStreamsOpenError = 'Cannot open file %s';
   RsStreamsSetSizeError = 'Error setting stream size';
+  RsStreamsSeekError = 'Error seeking stream';
   RsStreamsCRCError = 'Cyclic Redundency Check (CRC) error: data are damaged';
 
 //=== JclStrHashMap ==========================================================

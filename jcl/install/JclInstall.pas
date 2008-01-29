@@ -51,6 +51,7 @@ type
         joDefBZip2,
         joDefUnicode,
         joDefContainer,
+        joDef7z,
         joDefThreadSafe,
         joDefDropObsoleteCode,
         joDefUnitVersioning,
@@ -78,6 +79,9 @@ type
         joDefContainerAnsiStr,
         joDefContainerWideStr,
         joDefContainerNoStr,
+        //joDef7zStaticLink,
+        joDef7zLinkDLL,
+        joDef7zLinkOnRequest,
       joEnvironment,
         joEnvLibPath,
         joEnvBrowsingPath,
@@ -374,7 +378,12 @@ resourcestring
   RsCaptionDefContainerAnsiStr = 'Alias AnsiString containers to String containers';
   RsCaptionDefContainerWideStr = 'Alias WideString containers to String containers';
   RsCaptionDefContainerNoStr   = 'Do not alias anything';
-
+  // 7Z options
+  RsCaptionDef7z               = 'Sevenzip options';
+  //RsCaptionDef7zStaticLink     = 'Static link to Sevenzip code (not supported yet)';
+  RsCaptionDef7zLinkDLL        = 'Static bind to 7z.dll';
+  RsCaptionDef7zLinkOnRequest  = 'Late bind to 7z.dll';
+  
   // post compilation
   RsCaptionPdbCreate  = 'Create PDB debug information';
   RsCaptionMapCreate  = 'Create MAP files';
@@ -480,6 +489,11 @@ resourcestring
   RsHintDefContainerAnsiStr   = 'Define TJclStr* containers as alias of TJclAnsiStr* containers';
   RsHintDefContainerWideStr   = 'Define TJclStr* containers as alias of TJclWideStr* containers';
   RsHintDefContainerNoStr     = 'Do not define TJclStr* containers';
+  // 7Z options
+  RsHintDef7z               = 'Sevenzip specific options (sevenzip.pas)';
+  //RsHintDef7zStaticLink     = 'Code from Sevenzip is linked into JCL binaries';
+  RsHintDef7zLinkDLL        = 'JCL binaries require 7z.dll to be present';
+  RsHintDef7zLinkOnRequest  = 'JCL binaries require 7z.dll when calling Sevenzip functions';
 
   // post compilation
   RsHintPdbCreate  = 'Create detailed debug information for libraries';
@@ -577,6 +591,7 @@ var
       (Id: -1; Caption: RsCaptionDefBZip2; Hint: RsHintDefBZip2), // joDefBZip2
       (Id: -1; Caption: RsCaptionDefUnicode; Hint: RsHintDefUnicode), // joDefUnicode
       (Id: -1; Caption: RsCaptionDefContainer; Hint: RsHintDefContainer), // joDefContainer
+      (Id: -1; Caption: RsCaptionDef7z; Hint: RsHintDef7z), // joDef7z
       (Id: -1; Caption: RsCaptionDefThreadSafe; Hint: RsHintDefThreadSafe), // joDefThreadSafe
       (Id: -1; Caption: RsCaptionDefDropObsoleteCode; Hint: RsHintDefDropObsoleteCode), // joDefDropObsoleteCode
       (Id: -1; Caption: RsCaptionDefUnitVersioning; Hint: RsHintDefUnitVersioning), // joDefUnitVersioning
@@ -604,6 +619,9 @@ var
       (Id: -1; Caption: RsCaptionDefContainerAnsiStr; Hint: RsHintDefContainerAnsiStr), // joDefContainerAnsiStr
       (Id: -1; Caption: RsCaptionDefContainerWideStr; Hint: RsHintDefContainerWideStr), // joDefContainerWideStr
       (Id: -1; Caption: RsCaptionDefContainerNoStr; Hint: RsHintDefContainerNoStr), // joDefContainerNoStr
+      //(Id: -1; Caption: RsCaptionDef7zStaticLink; Hint: RsHintDef7zStaticLink), // joDef7zStaticLink
+      (Id: -1; Caption: RsCaptionDef7zLinkDLL; Hint: RsHintDef7zLinkDLL), // joDef7zLinkDLL
+      (Id: -1; Caption: RsCaptionDef7zLinkOnRequest; Hint: RsHintDef7zLinkOnRequest), // joDef7zLinkOnRequest
       (Id: -1; Caption: RsCaptionEnvironment; Hint: RsHintEnvironment), // joEnvironment
       (Id: -1; Caption: RsCaptionEnvLibPath; Hint: RsHintEnvLibPath), // joEnvLibPath
       (Id: -1; Caption: RsCaptionEnvBrowsingPath; Hint: RsHintEnvBrowsingPath), // joEnvBrowsingPath
@@ -1055,6 +1073,11 @@ procedure TJclInstallation.Init;
       AddOption(joDefUnicodeRawData, [goRadioButton, goChecked], joDefUnicode);
       AddOption(joDefUnicodeZLibData, [goRadioButton], joDefUnicode);
       AddOption(joDefUnicodeBZip2Data, [goRadioButton], joDefUnicode);
+      // Sevenzip options
+      AddOption(joDef7z, [goChecked], Parent);
+      //AddOption(joDef7zStaticLink, [goRadioButton], joDef7z);
+      AddOption(joDef7zLinkOnRequest, [goRadioButton, goChecked], joDef7z);
+      AddOption(joDef7zLinkDLL, [goRadioButton], joDef7z);
       {$ENDIF MSWINDOWS}
     end;
   end;
@@ -1512,7 +1535,7 @@ var
     end;
 
   const
-    DefineNames: array [joDefThreadSafe..joDefContainerNoStr] of string =
+    DefineNames: array [joDefThreadSafe..joDef7zLinkOnRequest] of string =
       ( 'THREADSAFE', 'DROP_OBSOLETE_CODE', 'UNITVERSIONING',
         'MATH_SINGLE_PRECISION', 'MATH_DOUBLE_PRECISION', 'MATH_EXTENDED_PRECISION',
         'MATH_EXT_EXTREMEVALUES',  'HOOK_DLL_EXCEPTIONS',
@@ -1521,7 +1544,8 @@ var
         'PCRE_LINKDLL', 'PCRE_LINKONREQUEST', 'BZIP2_STATICLINK',
         'BZIP2_LINKDLL', 'BZIP2_LINKONREQUEST', 'UNICODE_SILENT_FAILURE',
         'UNICODE_RAW_DATA', 'UNICODE_ZLIB_DATA', 'UNICODE_BZIP2_DATA',
-        'CONTAINER_ANSISTR', 'CONTAINER_WIDESTR', 'CONTAINER_NOSTR' );
+        'CONTAINER_ANSISTR', 'CONTAINER_WIDESTR', 'CONTAINER_NOSTR',
+        {'7ZIP_STATICLINK',} '7ZIP_LINKDLL', '7ZIP_LINKONREQUEST' );
   var
     Option: TJclOption;
     Defines: TStrings;

@@ -161,6 +161,7 @@
     <DCCReference Include="..\..\source\windows\mscorlib_TLB.pas" />
     <DCCReference Include="..\..\source\windows\MSHelpServices_TLB.pas" />
     <DCCReference Include="..\..\source\windows\MSTask.pas" />
+    <DCCReference Include="..\..\source\windows\sevenzip.pas" />
     <DCCReference Include="..\..\source\windows\Snmp.pas" />
     <DCCReference Include="..\..\source\windows\zlibh.pas" />
   </ItemGroup>

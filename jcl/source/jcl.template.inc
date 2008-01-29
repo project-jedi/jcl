@@ -63,6 +63,7 @@
 //Support for JclUnitVersioning.pas)
 {.$DEFINE UNITVERSIONING}
 
+
 // debug sources
 // defining these symbols will the debug source to be automatically registered
 {.$DEFINE DEBUG_NO_BINARY}
@@ -71,8 +72,10 @@
 {.$DEFINE DEBUG_NO_EXPORTS}
 {.$DEFINE DEBUG_NO_SYMBOLS}
 
+
 // mark EDI units as weak package units (to avoid conflicts with the EDI package)
 {.$DEFINE EDI_WEAK_PACKAGE_UNITS}
+
 
 // PCRE options, mutually exclusive
 // IMPORTANT: The static link works only for Delphi 2005 and newer
@@ -86,12 +89,14 @@
 {.$DEFINE PCRE_LINKDLL}
 {.$DEFINE PCRE_LINKONREQUEST} // default
 
+
 // BZIP2 options, mutually exclusive
 // IMPORTANT: The static link is still experimental
 
 {.$DEFINE BZIP2_STATICLINK}
 {.$DEFINE BZIP2_LINKDLL}
 {.$DEFINE BZIP2_LINKONREQUEST} // default
+
 
 // Unicode options
 // insert a replacement character if sequence is corrupted rather than raising an exception
@@ -102,8 +107,18 @@
 {.$DEFINE UNICODE_ZLIB_DATA}
 {.$DEFINE UNICODE_BZIP2_DATA}
 
+
 // container options
 // define mapping of TJclStr* containers to TJclAnsiStr* or TJclWideStr* (mutually exclusive)
 {.$DEFINE CONTAINER_ANSISTR} // default
 {.$DEFINE CONTAINER_WIDESTR}
 {.$DEFINE CONTAINER_NOSTR}
+
+
+// 7Zip options, mutually exclusive
+// IMPORTANT: The static link is not supported yet
+
+{.$DEFINE 7ZIP_STATICLINK} // not supported yet
+{.$DEFINE 7ZIP_LINKDLL}
+{.$DEFINE 7ZIP_LINKONREQUEST} // default
+

@@ -31,5 +31,6 @@ mscoree_TLB.pas
 mscorlib_TLB.pas
 MSHelpServices_TLB.pas
 MSTask.pas
+Sevenzip.pas
 Snmp.pas
 zlibh.pas
