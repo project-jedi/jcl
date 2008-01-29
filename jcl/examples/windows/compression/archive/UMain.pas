@@ -503,18 +503,54 @@ begin
 
   Item.Caption := CompressionItem.FileName;
   Item.SubItems.Clear;
-  Item.SubItems.Add(CompressionItem.PackedName);
-  Item.SubItems.Add(IntToStr(CompressionItem.FileSize));
-  Item.SubItems.Add(IntToStr(CompressionItem.PackedSize));
-  Item.SubItems.Add(FileTimeToString(CompressionItem.CreationTime));
-  Item.SubItems.Add(FileTimeToString(CompressionItem.LastAccessTime));
-  Item.SubItems.Add(FileTimeToString(CompressionItem.LastWriteTime));
-  Item.SubItems.Add(CompressionItem.Comment);
-  Item.SubItems.Add(CompressionItem.HostOS);
-  Item.SubItems.Add(CompressionItem.HostFS);
-  Item.SubItems.Add(CompressionItem.User);
-  Item.SubItems.Add(CompressionItem.Group);
-  Item.SubItems.Add(IntToHex(CompressionItem.CRC, 8)); 
+  if ipPackedName in CompressionItem.ValidProperties then
+    Item.SubItems.Add(CompressionItem.PackedName)
+  else
+    Item.SubItems.Add('');
+  if ipFileSize in CompressionItem.ValidProperties then
+    Item.SubItems.Add(IntToStr(CompressionItem.FileSize))
+  else
+    Item.SubItems.Add('');
+  if ipPackedSize in CompressionItem.ValidProperties then
+    Item.SubItems.Add(IntToStr(CompressionItem.PackedSize))
+  else
+    Item.SubItems.Add('');
+  if ipCreationTime in CompressionItem.ValidProperties then
+    Item.SubItems.Add(FileTimeToString(CompressionItem.CreationTime))
+  else
+    Item.SubItems.Add('');
+  if ipLastAccessTime in CompressionItem.ValidProperties then
+    Item.SubItems.Add(FileTimeToString(CompressionItem.LastAccessTime))
+  else
+    Item.SubItems.Add('');
+  if ipLastWriteTime in CompressionItem.ValidProperties then
+    Item.SubItems.Add(FileTimeToString(CompressionItem.LastWriteTime))
+  else
+    Item.SubItems.Add('');
+  if ipComment in CompressionItem.ValidProperties then
+    Item.SubItems.Add(CompressionItem.Comment)
+  else
+    Item.SubItems.Add('');
+  if ipHostOS in CompressionItem.ValidProperties then
+    Item.SubItems.Add(CompressionItem.HostOS)
+  else
+    Item.SubItems.Add('');
+  if ipHostFS in CompressionItem.ValidProperties then
+    Item.SubItems.Add(CompressionItem.HostFS)
+  else
+    Item.SubItems.Add('');
+  if ipUser in CompressionItem.ValidProperties then
+    Item.SubItems.Add(CompressionItem.User)
+  else
+    Item.SubItems.Add('');
+  if ipGroup in CompressionItem.ValidProperties then
+    Item.SubItems.Add(CompressionItem.Group)
+  else
+    Item.SubItems.Add('');
+  if ipCRC in CompressionItem.ValidProperties then
+    Item.SubItems.Add(IntToHex(CompressionItem.CRC, 8))
+  else
+    Item.SubItems.Add('');
 end;
 
 initialization

@@ -525,9 +525,9 @@ type
     function GetStream: TStream;
     function GetUser: WideString;
     // property setters
-    procedure SetAttributes(const Value: Cardinal);
+    procedure SetAttributes(Value: Cardinal);
     procedure SetComment(const Value: WideString);
-    procedure SetCRC(const Value: Cardinal);
+    procedure SetCRC(Value: Cardinal);
     procedure SetCreationTime(const Value: TFileTime);
     procedure SetFileName(const Value: TFileName);
     procedure SetFileSize(const Value: Int64);
@@ -2515,7 +2515,7 @@ begin
     FreeAndNil(FStream);
 end;
 
-procedure TJclCompressionItem.SetAttributes(const Value: Cardinal);
+procedure TJclCompressionItem.SetAttributes(Value: Cardinal);
 begin
   CheckSetProperty(ipAttributes);
   FAttributes := Value;
@@ -2531,7 +2531,7 @@ begin
   Include(FValidProperties, ipComment);
 end;
 
-procedure TJclCompressionItem.SetCRC(const Value: Cardinal);
+procedure TJclCompressionItem.SetCRC(Value: Cardinal);
 begin
   CheckSetProperty(ipCRC);
   FCRC := Value;
@@ -2553,8 +2553,16 @@ var
 begin
   CheckSetProperty(ipFileName);
   FFileName := Value;
-  Include(FModifiedProperties, ipFileName);
-  Include(FValidProperties, ipFileName);
+  if Value <> '' then
+  begin
+    Include(FModifiedProperties, ipFileName);
+    Include(FValidProperties, ipFileName);
+  end
+  else
+  begin
+    Exclude(FModifiedProperties, ipFileName);
+    Exclude(FValidProperties, ipFileName);
+  end;
 
   if (Value <> '') and (FArchive is TJclCompressionArchive)
     and GetFileAttributesEx(PAnsiChar(Value), GetFileExInfoStandard, @AFindData) then
@@ -2676,18 +2684,36 @@ begin
   begin
     FileHandle := CreateFile(PAnsiChar(FFileName), FILE_WRITE_ATTRIBUTES, FILE_SHARE_READ, nil, OPEN_EXISTING, 0, 0);
     try
+      // creation time should be the oldest
       if ipCreationTime in FValidProperties then
         ACreationTime := @FCreationTime
       else
+      if ipLastWriteTime in FValidProperties then
+        ACreationTime := @FLastWriteTime
+      else
+      if ipLastAccessTime in FValidProperties then
+        ACreationTime := @FLastAccessTime
+      else
         ACreationTime := nil;
+
+      // last access time may default to now if not set
       if ipLastAccessTime in FValidProperties then
         ALastAccessTime := @FLastAccessTime
       else
         ALastAccessTime := nil;
+
+      // last write time may, if not set, be the creation time or last access time
       if ipLastWriteTime in FValidProperties then
         ALastWriteTime := @FLastWriteTime
       else
+      if ipCreationTime in FValidProperties then
+        ALastWriteTime := @FCreationTime
+      else
+      if ipLastAccessTime in FValidProperties then
+        ALastWriteTime := @FLastAccessTime
+      else
         ALastWriteTime := nil;
+
       Result := (FileHandle <> INVALID_HANDLE_VALUE) and SetFileTime(FileHandle, ACreationTime, ALastAccessTime,
         ALastWriteTime);
     finally
@@ -3478,8 +3504,14 @@ begin
     raise EJclCompressionError.CreateResFmt(@RsCompression7zReturnError, [Value, SysErrorMessage(Value)]);
 end;
 
+type
+  TWideStringSetter = procedure (const Value: WideString) of object;
+  TCardinalSetter = procedure (Value: Cardinal) of object;
+  TInt64Setter = procedure (const Value: Int64) of object;
+  TFileTimeSetter = procedure (const Value: TFileTime) of object;
+
 function Get7zWideStringProp(const AArchive: IInArchive; ItemIndex: Integer;
-  PropID: Cardinal): WideString;
+  PropID: Cardinal; const Setter: TWideStringSetter): Boolean;
 var
   Value: TPropVariant;
 begin
@@ -3487,14 +3519,21 @@ begin
   SevenzipCheck(AArchive.GetProperty(ItemIndex, PropID, Value));
   case Value.vt of
     VT_EMPTY, VT_NULL:
-      Result := '';
+      Result := False;
     VT_LPSTR:
-      Result := Value.pszVal;
+      begin
+        Result := True;
+        Setter(Value.pszVal);
+      end;
     VT_LPWSTR:
-      Result := Value.pwszVal;
+      begin
+        Result := True;
+        Setter(Value.pwszVal);
+      end;
     VT_BSTR:
       begin
-        Result := Value.bstrVal;
+        Result := True;
+        Setter(Value.bstrVal);
         SysFreeString(Value.bstrVal);
       end;
   else
@@ -3503,7 +3542,7 @@ begin
 end;
 
 function Get7zCardinalProp(const AArchive: IInArchive; ItemIndex: Integer;
-  PropID: Cardinal): Cardinal;
+  PropID: Cardinal; const Setter: TCardinalSetter): Boolean;
 var
   Value: TPropVariant;
 begin
@@ -3511,30 +3550,37 @@ begin
   SevenzipCheck(AArchive.GetProperty(ItemIndex, PropID, Value));
   case Value.vt of
     VT_EMPTY, VT_NULL:
-      Result := 0;
-    VT_I1:
-      Result := Value.iVal;
-    VT_I2:
-      Result := Value.iVal;
-    VT_INT, VT_I4:
-      Result := Value.lVal;
-    VT_I8:
-      Result := Value.hVal.QuadPart;
-    VT_UI1:
-      Result := Value.bVal;
-    VT_UI2:
-      Result := Value.uiVal;
-    VT_UINT, VT_UI4:
-      Result := Value.ulVal;
-    VT_UI8:
-      Result := Value.uhVal.QuadPart;
+      Result := False;
+    VT_I1, VT_I2, VT_INT, VT_I4, VT_I8,
+    VT_UI1, VT_UI2, VT_UINT, VT_UI4, VT_UI8:
+      begin
+        Result := True;
+        case Value.vt of
+          VT_I1:
+            Setter(Value.iVal);
+          VT_I2:
+            Setter(Value.iVal);
+          VT_INT, VT_I4:
+            Setter(Value.lVal);
+          VT_I8:
+            Setter(Value.hVal.QuadPart);
+          VT_UI1:
+            Setter(Value.bVal);
+          VT_UI2:
+            Setter(Value.uiVal);
+          VT_UINT, VT_UI4:
+            Setter(Value.ulVal);
+          VT_UI8:
+            Setter(Value.uhVal.QuadPart);
+        end;
+      end;
   else
     raise EJclCompressionError.CreateResFmt(@RsCompression7zUnknownValueType, [Value.vt, PropID]);
   end;
 end;
 
 function Get7zInt64Prop(const AArchive: IInArchive; ItemIndex: Integer;
-  PropID: Cardinal): Int64;
+  PropID: Cardinal; const Setter: TInt64Setter): Boolean;
 var
   Value: TPropVariant;
 begin
@@ -3542,30 +3588,37 @@ begin
   SevenzipCheck(AArchive.GetProperty(ItemIndex, PropID, Value));
   case Value.vt of
     VT_EMPTY, VT_NULL:
-      Result := 0;
-    VT_I1:
-      Result := Value.iVal;
-    VT_I2:
-      Result := Value.iVal;
-    VT_INT, VT_I4:
-      Result := Value.lVal;
-    VT_I8:
-      Result := Value.hVal.QuadPart;
-    VT_UI1:
-      Result := Value.bVal;
-    VT_UI2:
-      Result := Value.uiVal;
-    VT_UINT, VT_UI4:
-      Result := Value.ulVal;
-    VT_UI8:
-      Result := Value.uhVal.QuadPart;
+      Result := False;
+    VT_I1, VT_I2, VT_INT, VT_I4, VT_I8,
+    VT_UI1, VT_UI2, VT_UINT, VT_UI4, VT_UI8:
+      begin
+        Result := True;
+        case Value.vt of
+          VT_I1:
+            Setter(Value.iVal);
+          VT_I2:
+            Setter(Value.iVal);
+          VT_INT, VT_I4:
+            Setter(Value.lVal);
+          VT_I8:
+            Setter(Value.hVal.QuadPart);
+          VT_UI1:
+            Setter(Value.bVal);
+          VT_UI2:
+            Setter(Value.uiVal);
+          VT_UINT, VT_UI4:
+            Setter(Value.ulVal);
+          VT_UI8:
+            Setter(Value.uhVal.QuadPart);
+        end;
+      end;
   else
     raise EJclCompressionError.CreateResFmt(@RsCompression7zUnknownValueType, [Value.vt, PropID]);
   end;
 end;
 
 function Get7zFileTimeProp(const AArchive: IInArchive; ItemIndex: Integer;
-  PropID: Cardinal): TFileTime;
+  PropID: Cardinal; const Setter: TFileTimeSetter): Boolean;
 var
   Value: TPropVariant;
 begin
@@ -3573,12 +3626,12 @@ begin
   SevenzipCheck(AArchive.GetProperty(ItemIndex, PropID, Value));
   case Value.vt of
     VT_EMPTY, VT_NULL:
-      begin
-        Result.dwLowDateTime := 0;
-        Result.dwHighDateTime := 0;
-      end;
+      Result := False;
     VT_FILETIME:
-      Result := Value.filetime;
+      begin
+        Result := True;
+        Setter(Value.filetime);
+      end;
   else
     raise EJclCompressionError.CreateResFmt(@RsCompression7zUnknownValueType, [Value.vt, PropID]);
   end;
@@ -3587,27 +3640,30 @@ end;
 procedure Load7zFileAttribute(AInArchive: IInArchive; ItemIndex: Integer;
   AItem: TJclCompressionItem);
 begin
-  AItem.PackedName := Get7zWideStringProp(AInArchive, ItemIndex, kpidPath);
-  AItem.FPackedIndex := ItemIndex;
-  AItem.FileName := '';
-  AItem.Stream := nil;
-  AItem.OwnsStream := False;
-  AItem.Attributes := Get7zCardinalProp(AInArchive, ItemIndex, kpidAttributes);
-  AItem.FileSize := Get7zInt64Prop(AInArchive, ItemIndex, kpidSize);
-  AItem.PackedSize := Get7zInt64Prop(AInArchive, ItemIndex, kpidPackedSize);
-  AItem.CreationTime := Get7zFileTimeProp(AInArchive, ItemIndex, kpidCreationTime);
-  AItem.LastAccessTime := Get7zFileTimeProp(AInArchive, ItemIndex, kpidLastAccessTime);
-  AItem.LastWriteTime := Get7zFileTimeProp(AInArchive, ItemIndex, kpidLastWriteTime);
-  AItem.Comment := Get7zWideStringProp(AInArchive, ItemIndex, kpidComment);
-  AItem.HostOS := Get7zWideStringProp(AInArchive, ItemIndex, kpidHostOS);
-  AItem.HostFS := Get7zWideStringProp(AInArchive, ItemIndex, kpidFileSystem);
-  AItem.User := Get7zWideStringProp(AInArchive, ItemIndex, kpidUser);
-  AItem.Group := Get7zWideStringProp(AInArchive, ItemIndex, kpidGroup);
-  AItem.CRC := Get7zCardinalProp(AInArchive, ItemIndex, kpidCRC);
-  AItem.Method := Get7zWideStringProp(AInArchive, ItemIndex, kpidMethod);
+  AItem.FValidProperties := [];
+  if Get7zWideStringProp(AInArchive, ItemIndex, kpidPath, AItem.SetPackedName) then
+  begin
+    AItem.FPackedIndex := ItemIndex;
+    AItem.FileName := '';
+    AItem.Stream := nil;
+    AItem.OwnsStream := False;
+    Get7zCardinalProp(AInArchive, ItemIndex, kpidAttributes, AItem.SetAttributes);
+    Get7zInt64Prop(AInArchive, ItemIndex, kpidSize, AItem.SetFileSize);
+    Get7zInt64Prop(AInArchive, ItemIndex, kpidPackedSize, AItem.SetPackedSize);
+    Get7zFileTimeProp(AInArchive, ItemIndex, kpidCreationTime, AItem.SetCreationTime);
+    Get7zFileTimeProp(AInArchive, ItemIndex, kpidLastAccessTime, AItem.SetLastAccessTime);
+    Get7zFileTimeProp(AInArchive, ItemIndex, kpidLastWriteTime, AItem.SetLastWriteTime);
+    Get7zWideStringProp(AInArchive, ItemIndex, kpidComment, AItem.SetComment);
+    Get7zWideStringProp(AInArchive, ItemIndex, kpidHostOS, AItem.SetHostOS);
+    Get7zWideStringProp(AInArchive, ItemIndex, kpidFileSystem, AItem.SetHostFS);
+    Get7zWideStringProp(AInArchive, ItemIndex, kpidUser, AItem.SetUser);
+    Get7zWideStringProp(AInArchive, ItemIndex, kpidGroup, AItem.SetGroup);
+    Get7zCardinalProp(AInArchive, ItemIndex, kpidCRC, AItem.SetCRC);
+    Get7zWideStringProp(AInArchive, ItemIndex, kpidMethod, AItem.SetMethod);
 
-  // reset modified flags
-  AItem.ModifiedProperties := [];
+    // reset modified flags
+    AItem.ModifiedProperties := [];
+  end;
 end;
 
 //=== { TJclSevenzipOutputCallback } =========================================
