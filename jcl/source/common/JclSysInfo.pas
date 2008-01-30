@@ -81,9 +81,7 @@ uses
   {$ELSE ~CLR}
   {$IFDEF MSWINDOWS}
   Windows, ActiveX,
-  {$IFNDEF FPC}
   ShlObj,
-  {$ENDIF ~FPC}
   {$ENDIF MSWINDOWS}
   {$ENDIF ~CLR}
   Classes,
@@ -1315,7 +1313,7 @@ uses
   {$IFDEF MSWINDOWS}
   Messages, Winsock, Snmp,
   {$IFDEF FPC}
-  ActiveX, JwaTlHelp32, JwaPsApi,
+   JwaTlHelp32, JwaPsApi,
   {$ELSE ~FPC}
   TLHelp32, PsApi,
   JclShell,

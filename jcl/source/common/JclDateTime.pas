@@ -77,10 +77,12 @@ uses
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
   {$IFDEF FPC}
+  {$IFDEF UNIX}
   {$IFNDEF LINUX}
   Unix,
   {$ENDIF ~LINUX}
   {$ENDIF FPC}
+  {$ENDIF}
   SysUtils,
   JclBase, JclResources;
 

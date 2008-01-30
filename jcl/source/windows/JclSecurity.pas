@@ -517,7 +517,7 @@ end;
 
 procedure StringToSID(const SIDString: String; SID: PSID; cbSID: DWORD);
 var
-  ASID: ^_SID;
+  ASID: PSID;
   CurrentPos, TempPos: Integer;
   AuthorityValue, RequiredSize: DWORD;
   Authority: string;

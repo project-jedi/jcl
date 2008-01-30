@@ -472,6 +472,13 @@ begin
   Result := TUnitVersioningModule(FModules[Index]);
 end;
 
+{$UNDEF FPCUNIX}   // Temporary, will move to .inc's in time.
+{$IFDEF FPC}
+ {$IFDEF UNIX}
+ {$DEFIN FPCUNIX}
+{$ENDIF}
+{$ENDIF}
+
 procedure TUnitVersioning.ValidateModules;
 var
   I: Integer;
@@ -480,7 +487,7 @@ begin
   for I := FModules.Count - 1 downto 0 do
   begin
     SetLength(Buffer, 1024);
-    {$IFDEF FPC}
+    {$IFDEF FPCUNIX}
     if dlsym(Pointer(Modules[I].Instance), '_init') = nil then
     {$ELSE}
     if GetModuleFileName(Modules[I].Instance, PChar(Buffer), 1024) = 0 then
