@@ -5766,7 +5766,7 @@ begin
     end;
     // flag zero-based tabset by outputting a 0 (zero) as the first character.
     if ZeroBased then
-      sb.Insert(0, '0 ');
+      sb.Insert(0, string('0 '));
     Result := StrTrimCharRight(sb.ToString, ' ');
   finally
     sb.Free;
