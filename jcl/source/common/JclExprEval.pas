@@ -73,8 +73,8 @@ const
   ExprWhiteSpace = [#1..#32];
 
 type
-  TFloat = Double;
-  PFloat = ^TFloat;
+  TFloat = JclBase.Float;
+  PFloat = JclBase.PFloat;
 
   TFloat32 = Single;
   PFloat32 = ^TFloat32;
