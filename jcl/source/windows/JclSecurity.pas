@@ -517,7 +517,7 @@ end;
 
 procedure StringToSID(const SIDString: String; SID: PSID; cbSID: DWORD);
 var
-  ASID: PSID;
+  {$ifdef FPC} ASID: PSID; {$else} ASID : ^_SID; {$ENDIF}
   CurrentPos, TempPos: Integer;
   AuthorityValue, RequiredSize: DWORD;
   Authority: string;
