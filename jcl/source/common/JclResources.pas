@@ -820,6 +820,44 @@ resourcestring
   RsCompression7zOnlyCurrentFile     = 'Sevenzip: Only properties for current file can be retreived';
   RsCompression7zWindows             = 'Windows';
   RsCompression7zUnix                = 'Unix';
+  RsCompressionZipName               = 'Zip archive';
+  RsCompressionZipExtensions         = '*.zip;*.jar;*.xpi';
+  RsCompressionBZip2Name             = 'BZip2 archive';
+  RsCompressionBZip2Extensions       = '*.bz2;*.bzip2;*.tbz2;*.tbz';
+  RsCompressionRarName               = 'Rar archive';
+  RsCompressionRarExtensions         = '*.rar;*.r00';
+  RsCompressionArjName               = 'Arj archive';
+  RsCompressionArjExtensions         = '*.arj';
+  RsCompressionZName                 = 'Z archive';
+  RsCompressionZExtensions           = '*.z;*.taz';
+  RsCompressionLzhName               = 'Lzh archive';
+  RsCompressionLzhExtensions         = '*.lzh;*.lha';
+  RsCompression7zName                = '7z archive';
+  RsCompression7zExtensions          = '*.7z';
+  RsCompressionCabName               = 'Cab archive';
+  RsCompressionCabExtensions         = '*.cab';
+  RsCompressionNsisName              = 'Nsis archive';
+  RsCompressionNsisExtensions        = '*.nsis';
+  RsCompressionCompoundName          = 'Compound archive';
+  RsCompressionCompoundExtensions    = '*.msi;*.doc;*.xls;*.ppt';
+  RsCompressionWimName               = 'Wim archive';
+  RsCompressionWimExtensions         = '*.wim;*.swm';
+  RsCompressionIsoName               = 'Iso archive';
+  RsCompressionIsoExtensions         = '*.iso';
+  RsCompressionChmName               = 'Chm archive';
+  RsCompressionChmExtensions         = '*.chm;*.chi;*.chq;*.chw;*.hxs;*.hxi;*.hxr;*.hxq;*.hxw;*.lit';
+  RsCompressionSplitName             = 'Split archive';
+  RsCompressionSplitExtensions       = '*.001';
+  RsCompressionRpmName               = 'Rpm archive';
+  RsCompressionRpmExtensions         = '*.rpm';
+  RsCompressionDebName               = 'Deb archive';
+  RsCompressionDebExtensions         = '*.deb';
+  RsCompressionCpioName              = 'Cpio archive';
+  RsCompressionCpioExtensions        = '*.cpio';
+  RsCompressionTarName               = 'Tar archive';
+  RsCompressionTarExtensions         = '*.tar';
+  RsCompressionGZipName              = 'GZip archive';
+  RsCompressionGZipExtensions        = '*.gz;*.gzip;*.tgz;*.tpz';
 
 //=== JclConsole =============================================================
 resourcestring

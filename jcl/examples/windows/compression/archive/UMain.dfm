@@ -11,6 +11,7 @@ object Form1: TForm1
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnCreate = FormCreate
   OnDestroy = FormDestroy
   PixelsPerInch = 96
   TextHeight = 13
@@ -99,7 +100,7 @@ object Form1: TForm1
         Top = 16
         Width = 75
         Height = 25
-        Action = ActionOpen
+        Action = ActionOpenRO
         TabOrder = 0
       end
       object ButtonExtractSelected: TButton
@@ -107,7 +108,7 @@ object Form1: TForm1
         Top = 16
         Width = 96
         Height = 25
-        Action = ActionExtractSelected
+        Action = ActionExtractSelectedRO
         TabOrder = 1
       end
       object ButtonExtractAll: TButton
@@ -115,7 +116,7 @@ object Form1: TForm1
         Top = 16
         Width = 75
         Height = 25
-        Action = ActionExtractAll
+        Action = ActionExtractAllRO
         TabOrder = 2
       end
     end
@@ -127,7 +128,7 @@ object Form1: TForm1
         Top = 16
         Width = 75
         Height = 25
-        Action = ActionNew
+        Action = ActionNewWO
         TabOrder = 0
       end
       object ButtonAddFile: TButton
@@ -179,7 +180,7 @@ object Form1: TForm1
         Top = 16
         Width = 75
         Height = 25
-        Action = ActionDelete
+        Action = ActionDeleteRW
         TabOrder = 2
       end
       object ButtonAddFileRW: TButton
@@ -203,7 +204,7 @@ object Form1: TForm1
         Top = 16
         Width = 92
         Height = 25
-        Action = ActionExtractSelected
+        Action = ActionExtractSelectedRO
         TabOrder = 5
       end
       object ButtonExtractAllRW: TButton
@@ -211,7 +212,7 @@ object Form1: TForm1
         Top = 16
         Width = 75
         Height = 25
-        Action = ActionExtractAll
+        Action = ActionExtractAllRO
         TabOrder = 6
       end
       object ButtonSaveRW: TButton
@@ -227,53 +228,53 @@ object Form1: TForm1
   object ActionList1: TActionList
     Left = 64
     Top = 152
-    object ActionOpen: TAction
+    object ActionOpenRO: TAction
       Category = 'ReadOnly'
       Caption = '&Open'
-      OnExecute = ActionOpenExecute
+      OnExecute = ActionOpenROExecute
       OnUpdate = ActionAlwaysEnabled
     end
-    object ActionExtractSelected: TAction
+    object ActionExtractSelectedRO: TAction
       Category = 'ReadOnly'
       Caption = '&Extract selected'
-      OnExecute = ActionExtractSelectedExecute
-      OnUpdate = ActionExtractSelectedUpdate
+      OnExecute = ActionExtractSelectedROExecute
+      OnUpdate = ActionExtractSelectedROUpdate
     end
-    object ActionExtractAll: TAction
+    object ActionExtractAllRO: TAction
       Category = 'ReadOnly'
       Caption = 'Extract &all'
-      OnExecute = ActionExtractAllExecute
-      OnUpdate = ActionExtractAllUpdate
+      OnExecute = ActionExtractAllROExecute
+      OnUpdate = ActionExtractAllROUpdate
     end
-    object ActionNew: TAction
+    object ActionNewWO: TAction
       Category = 'WriteOnly'
       Caption = '&New'
-      OnExecute = ActionNewExecute
+      OnExecute = ActionNewWOExecute
       OnUpdate = ActionAlwaysEnabled
     end
     object ActionAddFile: TAction
-      Category = 'WriteOnly'
+      Category = 'Write'
       Caption = 'Add &file'
       OnExecute = ActionAddFileExecute
       OnUpdate = ActionAddFileUpdate
     end
     object ActionAddDirectory: TAction
-      Category = 'WriteOnly'
+      Category = 'Write'
       Caption = 'Add &directory'
       OnExecute = ActionAddDirectoryExecute
       OnUpdate = ActionAddDirectoryUpdate
     end
     object ActionSave: TAction
-      Category = 'WriteOnly'
+      Category = 'Write'
       Caption = '&Save'
       OnExecute = ActionSaveExecute
       OnUpdate = ActionSaveUpdate
     end
-    object ActionDelete: TAction
+    object ActionDeleteRW: TAction
       Category = 'ReadWrite'
       Caption = '&Delete'
-      OnExecute = ActionDeleteExecute
-      OnUpdate = ActionDeleteUpdate
+      OnExecute = ActionDeleteRWExecute
+      OnUpdate = ActionDeleteRWUpdate
     end
     object ActionNewRW: TAction
       Category = 'ReadWrite'
@@ -288,27 +289,15 @@ object Form1: TForm1
       OnUpdate = ActionAlwaysEnabled
     end
   end
-  object OpenDialogArchive: TOpenDialog
-    Filter = 
-      'Zip archive (*.zip)|*.zip|BZip2 archive (*.bz2)|*.bz2|Sevenzip a' +
-      'rchive (*.7z)|*.7z|Tar archive (*.tar)|*.tar|GZip archive (*.gz)' +
-      '|*.gz|Rar archive (*.rar)|*.rar|Arj archive (*.arj)|*.arj|Z arch' +
-      'ive (*.z)|*.z|Lzh archive (*.lzh)|*.lzh|Nsis archive (*.nsis)|*.' +
-      'nsis|Iso image (*.iso)|*.iso|Cab archive (*.cab)|*.cab|Chm file ' +
-      '(*.chm)|*.chm|Rpm archive (*.rpm)|*.rpm|Deb archive (*.deb)|*.de' +
-      'b|Cpio archive (*.cpio)|*.cpio|Split archive (*.001)|*.001'
+  object OpenDialogArchiveRO: TOpenDialog
     FilterIndex = 0
     Options = [ofHideReadOnly, ofPathMustExist, ofFileMustExist, ofEnableSizing]
     Title = 'Open an archive for extraction'
     Left = 104
     Top = 152
   end
-  object SaveDialogArchive: TSaveDialog
+  object SaveDialogArchiveWO: TSaveDialog
     DefaultExt = '*.zip'
-    Filter = 
-      'Zip archive (*.zip)|*.zip|BZip2 archive (*.bz2)|*.bz2|Sevenzip a' +
-      'rchive (*.7z)|*.7z|Tar archive (*.tar)|*.tar|GZip archive (*.gz)' +
-      '|*.gz|Splitted archive (*.001)|*.001'
     FilterIndex = 0
     Options = [ofOverwritePrompt, ofHideReadOnly, ofPathMustExist, ofCreatePrompt, ofNoReadOnlyReturn, ofEnableSizing]
     Title = 'Create a new archive'
@@ -319,18 +308,22 @@ object Form1: TForm1
     Filter = 'All files (*.*)|*.*'
     FilterIndex = 0
     Options = [ofHideReadOnly, ofPathMustExist, ofFileMustExist, ofEnableSizing]
-    Left = 104
-    Top = 216
+    Left = 184
+    Top = 152
   end
   object OpenDialogArchiveRW: TOpenDialog
-    Filter = 
-      'Zip archive (*.zip)|*.zip|BZip2 archive (*.bz2)|*.bz2|Sevenzip a' +
-      'rchive (*.7z)|*.7z|Tar archive (*.tar)|*.tar|GZip archive (*.gz)' +
-      '|*.gz|Split archive (*.001)|*.001'
     FilterIndex = 0
     Options = [ofHideReadOnly, ofPathMustExist, ofFileMustExist, ofEnableSizing]
     Title = 'Open an archive for modification'
     Left = 104
+    Top = 184
+  end
+  object SaveDialogArchiveRW: TSaveDialog
+    DefaultExt = '*.zip'
+    FilterIndex = 0
+    Options = [ofOverwritePrompt, ofHideReadOnly, ofPathMustExist, ofCreatePrompt, ofNoReadOnlyReturn, ofEnableSizing]
+    Title = 'Create a new archive'
+    Left = 144
     Top = 184
   end
 end

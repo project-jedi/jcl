@@ -11,16 +11,16 @@ uses
 type
   TForm1 = class(TForm)
     ActionList1: TActionList;
-    ActionOpen: TAction;
-    ActionExtractSelected: TAction;
-    ActionExtractAll: TAction;
-    ActionNew: TAction;
+    ActionOpenRO: TAction;
+    ActionExtractSelectedRO: TAction;
+    ActionExtractAllRO: TAction;
+    ActionNewWO: TAction;
     ActionAddFile: TAction;
     ActionAddDirectory: TAction;
     ActionSave: TAction;
     ListView1: TListView;
-    OpenDialogArchive: TOpenDialog;
-    SaveDialogArchive: TSaveDialog;
+    OpenDialogArchiveRO: TOpenDialog;
+    SaveDialogArchiveWO: TSaveDialog;
     OpenDialogFile: TOpenDialog;
     ProgressBar1: TProgressBar;
     PageControl1: TPageControl;
@@ -34,7 +34,7 @@ type
     ButtonAddFile: TButton;
     ButtonAddDirectory: TButton;
     ButtonSave: TButton;
-    ActionDelete: TAction;
+    ActionDeleteRW: TAction;
     ActionNewRW: TAction;
     ActionOpenRW: TAction;
     ButtonNewRW: TButton;
@@ -46,25 +46,27 @@ type
     ButtonExtractAllRW: TButton;
     ButtonSaveRW: TButton;
     OpenDialogArchiveRW: TOpenDialog;
+    SaveDialogArchiveRW: TSaveDialog;
     procedure ActionAlwaysEnabled(Sender: TObject);
-    procedure ActionExtractSelectedUpdate(Sender: TObject);
-    procedure ActionExtractAllUpdate(Sender: TObject);
+    procedure ActionExtractSelectedROUpdate(Sender: TObject);
+    procedure ActionExtractAllROUpdate(Sender: TObject);
     procedure ActionAddFileUpdate(Sender: TObject);
     procedure ActionAddDirectoryUpdate(Sender: TObject);
     procedure ActionSaveUpdate(Sender: TObject);
-    procedure ActionNewExecute(Sender: TObject);
+    procedure ActionNewWOExecute(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure ActionAddFileExecute(Sender: TObject);
     procedure ActionAddDirectoryExecute(Sender: TObject);
     procedure ActionSaveExecute(Sender: TObject);
-    procedure ActionOpenExecute(Sender: TObject);
+    procedure ActionOpenROExecute(Sender: TObject);
     procedure ListView1Data(Sender: TObject; Item: TListItem);
-    procedure ActionExtractAllExecute(Sender: TObject);
-    procedure ActionExtractSelectedExecute(Sender: TObject);
-    procedure ActionDeleteUpdate(Sender: TObject);
-    procedure ActionDeleteExecute(Sender: TObject);
+    procedure ActionExtractAllROExecute(Sender: TObject);
+    procedure ActionExtractSelectedROExecute(Sender: TObject);
+    procedure ActionDeleteRWUpdate(Sender: TObject);
+    procedure ActionDeleteRWExecute(Sender: TObject);
     procedure ActionNewRWExecute(Sender: TObject);
     procedure ActionOpenRWExecute(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     FArchive: TJclCompressionArchive;
     procedure CloseArchive;
@@ -137,7 +139,7 @@ begin
   (Sender as TAction).Enabled := True;
 end;
 
-procedure TForm1.ActionDeleteExecute(Sender: TObject);
+procedure TForm1.ActionDeleteRWExecute(Sender: TObject);
 var
   Index: Integer;
 begin
@@ -151,12 +153,12 @@ begin
   ListView1.Items.Count := FArchive.ItemCount;
 end;
 
-procedure TForm1.ActionDeleteUpdate(Sender: TObject);
+procedure TForm1.ActionDeleteRWUpdate(Sender: TObject);
 begin
   (Sender as TAction).Enabled := (FArchive is TJclUpdateArchive) and (ListView1.SelCount = 1);
 end;
 
-procedure TForm1.ActionExtractAllExecute(Sender: TObject);
+procedure TForm1.ActionExtractAllROExecute(Sender: TObject);
 var
   Directory: string;
 begin
@@ -170,12 +172,12 @@ begin
   end;
 end;
 
-procedure TForm1.ActionExtractAllUpdate(Sender: TObject);
+procedure TForm1.ActionExtractAllROUpdate(Sender: TObject);
 begin
   (Sender as TAction).Enabled := (FArchive is TJclDecompressArchive) or (FArchive is TJclUpdateArchive);
 end;
 
-procedure TForm1.ActionExtractSelectedExecute(Sender: TObject);
+procedure TForm1.ActionExtractSelectedROExecute(Sender: TObject);
 var
   Directory: string;
   Index: Integer;
@@ -193,185 +195,121 @@ begin
   end;
 end;
 
-procedure TForm1.ActionExtractSelectedUpdate(Sender: TObject);
+procedure TForm1.ActionExtractSelectedROUpdate(Sender: TObject);
 begin
   (Sender as TAction).Enabled := ((FArchive is TJclDecompressArchive) or (FArchive is TJclUpdateArchive))
     and (ListView1.SelCount > 0);
 end;
 
-procedure TForm1.ActionNewExecute(Sender: TObject);
+procedure TForm1.ActionNewWOExecute(Sender: TObject);
 var
-  ArchiveFileName, ArchiveExt, VolumeSizeStr, Password: string;
+  ArchiveFileName, VolumeSizeStr, Password: string;
+  AFormat: TJclCompressArchiveClass;
   VolumeSize: Int64;
   Code: Integer;
 begin
-  if SaveDialogArchive.Execute then
+  if SaveDialogArchiveWO.Execute then
   begin
     CloseArchive;
 
-    ArchiveFileName := SaveDialogArchive.FileName;
-    VolumeSizeStr := '0';
-    repeat
-      if InputQuery('Split archive?', 'Volume size in byte:', VolumeSizeStr) then
-        Val(VolumeSizeStr, VolumeSize, Code)
-      else
-      begin
-        VolumeSize := 0;
-        Code := 0;
-      end;
-    until Code = 0;
+    ArchiveFileName := SaveDialogArchiveWO.FileName;
 
-    InputQuery('Archive password', 'Value', Password);
+    AFormat := GetArchiveFormats.FindCompressFormat(ArchiveFileName);
 
-    ArchiveExt := ExtractFileExt(ArchiveFileName);
-    if VolumeSize <> 0 then
-      ArchiveFileName := ArchiveFileName + '.%d';
-
-    if AnsiSameText(ArchiveExt, '.zip') then
-      FArchive := TJclZipCompressArchive.Create(ArchiveFileName, VolumeSize, VolumeSize <> 0)
-    else
-    if AnsiSameText(ArchiveExt, '.tar') then
-      FArchive := TJclTarCompressArchive.Create(ArchiveFileName, VolumeSize, VolumeSize <> 0)
-    else
-    if AnsiSameText(ArchiveExt, '.7z') then
-      FArchive := TJcl7zCompressArchive.Create(ArchiveFileName, VolumeSize, VolumeSize <> 0)
-    else
-    if AnsiSameText(ArchiveExt, '.bz2') then
-      FArchive := TJclBZ2CompressArchive.Create(ArchiveFileName, VolumeSize, VolumeSize <> 0)
-    else
-    if AnsiSameText(ArchiveExt, '.gz') then
-      FArchive := TJclGZipCompressArchive.Create(ArchiveFileName, VolumeSize, VolumeSize <> 0);
-
-    if Assigned(FArchive) then
+    if AFormat <> nil then
     begin
+      VolumeSizeStr := '0';
+      repeat
+        if InputQuery('Split archive?', 'Volume size in byte:', VolumeSizeStr) then
+          Val(VolumeSizeStr, VolumeSize, Code)
+        else
+        begin
+          VolumeSize := 0;
+          Code := 0;
+        end;
+      until Code = 0;
+
+      InputQuery('Archive password', 'Value', Password);
+
+      if VolumeSize <> 0 then
+        ArchiveFileName := ArchiveFileName + '.%d';
+
+      FArchive := AFormat.Create(ArchiveFileName, VolumeSize, VolumeSize <> 0);
       FArchive.Password := Password;
       FArchive.OnProgress := ArchiveProgress;
-    end;
+    end
+    else
+      ShowMessage('not a supported format');
   end;
 end;
 
 procedure TForm1.ActionNewRWExecute(Sender: TObject);
 var
-  ArchiveFileName, ArchiveExt, VolumeSizeStr, Password: string;
+  ArchiveFileName, VolumeSizeStr, Password: string;
+  AFormat: TJclUpdateArchiveClass;
   VolumeSize: Int64;
   Code: Integer;
 begin
-  if SaveDialogArchive.Execute then
+  if SaveDialogArchiveRW.Execute then
   begin
     CloseArchive;
 
-    ArchiveFileName := SaveDialogArchive.FileName;
-    VolumeSizeStr := '0';
-    repeat
-      if InputQuery('Split archive?', 'Volume size in byte:', VolumeSizeStr) then
-        Val(VolumeSizeStr, VolumeSize, Code)
-      else
-      begin
-        VolumeSize := 0;
-        Code := 0;
-      end;
-    until Code = 0;
+    ArchiveFileName := SaveDialogArchiveRW.FileName;
 
-    InputQuery('Archive password', 'Value', Password);
+    AFormat := GetArchiveFormats.FindUpdateFormat(ArchiveFileName);
 
-    ArchiveExt := ExtractFileExt(ArchiveFileName);
-    if VolumeSize <> 0 then
-      ArchiveFileName := ArchiveFileName + '.%d';
-
-    if AnsiSameText(ArchiveExt, '.zip') then
-      FArchive := TJclZipUpdateArchive.Create(ArchiveFileName, VolumeSize, VolumeSize <> 0)
-    else
-    if AnsiSameText(ArchiveExt, '.tar') then
-      FArchive := TJclTarUpdateArchive.Create(ArchiveFileName, VolumeSize, VolumeSize <> 0)
-    else
-    if AnsiSameText(ArchiveExt, '.7z') then
-      FArchive := TJcl7zUpdateArchive.Create(ArchiveFileName, VolumeSize, VolumeSize <> 0)
-    else
-    if AnsiSameText(ArchiveExt, '.bz2') then
-      FArchive := TJclBZ2UpdateArchive.Create(ArchiveFileName, VolumeSize, VolumeSize <> 0)
-    else
-    if AnsiSameText(ArchiveExt, '.gz') then
-      FArchive := TJclGZipUpdateArchive.Create(ArchiveFileName, VolumeSize, VolumeSize <> 0);
-
-    if Assigned(FArchive) then
+    if AFormat <> nil then
     begin
+      VolumeSizeStr := '0';
+      repeat
+        if InputQuery('Split archive?', 'Volume size in byte:', VolumeSizeStr) then
+          Val(VolumeSizeStr, VolumeSize, Code)
+        else
+        begin
+          VolumeSize := 0;
+          Code := 0;
+        end;
+      until Code = 0;
+
+      InputQuery('Archive password', 'Value', Password);
+
+      if VolumeSize <> 0 then
+        ArchiveFileName := ArchiveFileName + '.%d';
+
+      FArchive := AFormat.Create(ArchiveFileName, VolumeSize, VolumeSize <> 0);
       FArchive.Password := Password;
       FArchive.OnProgress := ArchiveProgress;
-    end;
+    end
+    else
+      ShowMessage('not a supported format');
   end;
 end;
 
-procedure TForm1.ActionOpenExecute(Sender: TObject);
+procedure TForm1.ActionOpenROExecute(Sender: TObject);
 var
-  ArchiveFileName, ArchiveFileExt, Password: string;
+  ArchiveFileName, Password: string;
+  AFormat: TJclDecompressArchiveClass;
   SplitArchive: Boolean;
 begin
-  if OpenDialogArchive.Execute then
+  if OpenDialogArchiveRO.Execute then
   begin
     CloseArchive;
 
-    ArchiveFileName := OpenDialogArchive.FileName;
-    ArchiveFileExt := ExtractFileExt(ArchiveFileName);
-    SplitArchive := AnsiSameText(ArchiveFileExt, '.001');
+    ArchiveFileName := OpenDialogArchiveRO.FileName;
+    SplitArchive := AnsiSameText(ExtractFileExt(ArchiveFileName), '.001');
     if SplitArchive then
-    begin
       ArchiveFileName := ChangeFileExt(ArchiveFileName, '');
-      ArchiveFileExt := ExtractFileExt(ArchiveFileName);
-      ArchiveFileName := ArchiveFileName + '.%d';
-    end;
 
-    InputQuery('Archive password', 'Value', Password);
+    AFormat := GetArchiveFormats.FindDecompressFormat(ArchiveFileName);
 
-    if AnsiSameText(ArchiveFileExt, '.zip') then
-      FArchive := TJclZipDecompressArchive.Create(ArchiveFileName, 0, SplitArchive)
-    else
-    if AnsiSameText(ArchiveFileExt, '.bz2') then
-      FArchive := TJclBZ2DecompressArchive.Create(ArchiveFileName, 0, SplitArchive)
-    else
-    if AnsiSameText(ArchiveFileExt, '.rar') then
-      FArchive := TJclRarDecompressArchive.Create(ArchiveFileName, 0, SplitArchive)
-    else
-    if AnsiSameText(ArchiveFileExt, '.arj') then
-      FArchive := TJclArjDecompressArchive.Create(ArchiveFileName, 0, SplitArchive)
-    else
-    if AnsiSameText(ArchiveFileExt, '.z') then
-      FArchive := TJclZDecompressArchive.Create(ArchiveFileName, 0, SplitArchive)
-    else
-    if AnsiSameText(ArchiveFileExt, '.lzh') then
-      FArchive := TJclLzhDecompressArchive.Create(ArchiveFileName, 0, SplitArchive)
-    else
-    if AnsiSameText(ArchiveFileExt, '.7z') then
-      FArchive := TJcl7zDecompressArchive.Create(ArchiveFileName, 0, SplitArchive)
-    else
-    if AnsiSameText(ArchiveFileExt, '.nsis') then
-      FArchive := TJclNsisDecompressArchive.Create(ArchiveFileName, 0, SplitArchive)
-    else
-    if AnsiSameText(ArchiveFileExt, '.iso') then
-      FArchive := TJclIsoDecompressArchive.Create(ArchiveFileName, 0, SplitArchive)
-    else
-    if AnsiSameText(ArchiveFileExt, '.cab') then
-      FArchive := TJclCabDecompressArchive.Create(ArchiveFileName, 0, SplitArchive)
-    else
-    if AnsiSameText(ArchiveFileExt, '.chm') then
-      FArchive := TJclChmDecompressArchive.Create(ArchiveFileName, 0, SplitArchive)
-    else
-    if AnsiSameText(ArchiveFileExt, '.rpm') then
-      FArchive := TJclRpmDecompressArchive.Create(ArchiveFileName, 0, SplitArchive)
-    else
-    if AnsiSameText(ArchiveFileExt, '.deb') then
-      FArchive := TJclDebDecompressArchive.Create(ArchiveFileName, 0, SplitArchive)
-    else
-    if AnsiSameText(ArchiveFileExt, '.cpio') then
-      FArchive := TJclCpioDecompressArchive.Create(ArchiveFileName, 0, SplitArchive)
-    else
-    if AnsiSameText(ArchiveFileExt, '.tar') then
-      FArchive := TJclTarDecompressArchive.Create(ArchiveFileName, 0, SplitArchive)
-    else
-    if AnsiSameText(ArchiveFileExt, '.gz') then
-      FArchive := TJclGZipDecompressArchive.Create(ArchiveFileName, 0, SplitArchive);
-
-    if Assigned(FArchive) then
+    if AFormat <> nil then
     begin
+      if SplitArchive then
+        ArchiveFileName := ArchiveFileName + '.%d';
+
+      InputQuery('Archive password', 'Value', Password);
+
+      FArchive := AFormat.Create(ArchiveFileName, 0, SplitArchive);
       FArchive.Password := Password;
       FArchive.OnProgress := ArchiveProgress;
 
@@ -388,13 +326,16 @@ begin
       finally
         ListView1.Items.EndUpdate;
       end;
-    end;
+    end
+    else
+      ShowMessage('not a supported format');
   end;
 end;
 
 procedure TForm1.ActionOpenRWExecute(Sender: TObject);
 var
-  ArchiveFileName, ArchiveFileExt, Password: string;
+  ArchiveFileName, Password: string;
+  AFormat: TJclUpdateArchiveClass;
   SplitArchive: Boolean;
 begin
   if OpenDialogArchiveRW.Execute then
@@ -402,34 +343,20 @@ begin
     CloseArchive;
 
     ArchiveFileName := OpenDialogArchiveRW.FileName;
-    ArchiveFileExt := ExtractFileExt(ArchiveFileName);
-    SplitArchive := AnsiSameText(ArchiveFileExt, '.001');
+    SplitArchive := AnsiSameText(ExtractFileExt(ArchiveFileName), '.001');
     if SplitArchive then
-    begin
       ArchiveFileName := ChangeFileExt(ArchiveFileName, '');
-      ArchiveFileExt := ExtractFileExt(ArchiveFileName);
-      ArchiveFileName := ArchiveFileName + '.%d';
-    end;
 
-    InputQuery('Archive password', 'Value', Password);
+    AFormat := GetArchiveFormats.FindUpdateFormat(ArchiveFileName);
 
-    if AnsiSameText(ArchiveFileExt, '.zip') then
-      FArchive := TJclZipUpdateArchive.Create(ArchiveFileName, 0, SplitArchive)
-    else
-    if AnsiSameText(ArchiveFileExt, '.bz2') then
-      FArchive := TJclBZ2UpdateArchive.Create(ArchiveFileName, 0, SplitArchive)
-    else
-    if AnsiSameText(ArchiveFileExt, '.7z') then
-      FArchive := TJcl7zUpdateArchive.Create(ArchiveFileName, 0, SplitArchive)
-    else
-    if AnsiSameText(ArchiveFileExt, '.tar') then
-      FArchive := TJclTarUpdateArchive.Create(ArchiveFileName, 0, SplitArchive)
-    else
-    if AnsiSameText(ArchiveFileExt, '.gz') then
-      FArchive := TJclGZipUpdateArchive.Create(ArchiveFileName, 0, SplitArchive);
-
-    if Assigned(FArchive) then
+    if AFormat <> nil then
     begin
+      if SplitArchive then
+        ArchiveFileName := ArchiveFileName + '.%d';
+
+      InputQuery('Archive password', 'Value', Password);
+
+      FArchive := AFormat.Create(ArchiveFileName, 0, SplitArchive);
       FArchive.Password := Password;
       FArchive.OnProgress := ArchiveProgress;
 
@@ -446,7 +373,9 @@ begin
       finally
         ListView1.Items.EndUpdate;
       end;
-    end;
+    end
+    else
+      ShowMessage('not a supported format');
   end;
 end;
 
@@ -481,6 +410,61 @@ procedure TForm1.CloseArchive;
 begin
   FreeAndNil(FArchive);
   ListView1.Items.Clear;
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+  procedure MergeFilters(var AFilter, AllExtensions: string; AFormat: TJclCompressionArchiveClass);
+  var
+    AName, AExtensions: string;
+  begin
+    AName := AFormat.ArchiveName;
+    AExtensions := AFormat.ArchiveExtensions;
+    if AFilter = '' then
+      AFilter := Format('%0:s (%1:s)|%1:s', [AName, AExtensions])
+    else
+      AFilter := Format('%0:s|%1:s (%2:s)|%2:s', [AFilter, AName, AExtensions]);
+    if AllExtensions = '' then
+      AllExtensions := AExtensions
+    else
+      AllExtensions := Format('%s;%s', [AllExtensions, AExtensions]);
+  end;
+  function AddStandardFilters(const AFilter, AllExtensions: string): string;
+  begin
+    if AFilter = '' then
+      Result := ''
+    else
+      Result := Format('All supported formats|(%0:s)|%1:s', [AllExtensions, AFilter]);
+  end;
+var
+  AFilter, AllExtensions: string;
+  AFormats: TJclCompressionArchiveFormats;
+  Index: Integer;
+begin
+  AFormats := GetArchiveFormats;
+
+  AFilter := '';
+  AllExtensions := '';
+  for Index := 0 to AFormats.CompressFormatCount - 1 do
+    MergeFilters(AFilter, AllExtensions, AFormats.CompressFormats[Index]);
+  SaveDialogArchiveWO.Filter := AFilter;
+
+  AFilter := '';
+  AllExtensions := '';
+  for Index := 0 to AFormats.UpdateFormatCount - 1 do
+    MergeFilters(AFilter, AllExtensions, AFormats.UpdateFormats[Index]);
+  SaveDialogArchiveRW.Filter := AFilter;
+
+  AFilter := '';
+  AllExtensions := '';
+  for Index := 0 to AFormats.DecompressFormatCount - 1 do
+    MergeFilters(AFilter, AllExtensions, AFormats.DecompressFormats[Index]);
+  OpenDialogArchiveRO.Filter := AddStandardFilters(AFilter, AllExtensions);
+
+  AFilter := '';
+  AllExtensions := '';
+  for Index := 0 to AFormats.UpdateFormatCount - 1 do
+    MergeFilters(AFilter, AllExtensions, AFormats.UpdateFormats[Index]);
+  OpenDialogArchiveRW.Filter := AddStandardFilters(AFilter, AllExtensions);
 end;
 
 procedure TForm1.FormDestroy(Sender: TObject);
