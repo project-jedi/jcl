@@ -549,22 +549,21 @@ function Load7Zip: Boolean;
   end;
 begin
   Result := SevenzipLib <> INVALID_MODULEHANDLE_VALUE;
-  if Result then
-    Exit;
-
-  if SevenzipLib = INVALID_MODULEHANDLE_VALUE then
+  if not Result then
+  begin
     {$IFDEF MSWINDOWS}
     SevenzipLib := LoadLibrary(sz7Zip);
     {$ENDIF MSWINDOWS}
     {$IFDEF UNIX}
     SevenzipLib := dlopen(PChar(sz7Zip), RTLD_NOW);
     {$ENDIF UNIX}
-  Result := SevenzipLib <> INVALID_MODULEHANDLE_VALUE;
-  if Result then
-  begin
-    @CreateObject := GetSymbol(CreateObjectExportName);
-    @GetNumberOfFormats := GetSymbol(GetNumberOfFormatsExportName);
-    @GetNumberOfMethods := GetSymbol(GetNumberOfMethodsExportName);
+    Result := SevenzipLib <> INVALID_MODULEHANDLE_VALUE;
+    if Result then
+    begin
+      @CreateObject := GetSymbol(CreateObjectExportName);
+      @GetNumberOfFormats := GetSymbol(GetNumberOfFormatsExportName);
+      @GetNumberOfMethods := GetSymbol(GetNumberOfMethodsExportName);
+    end;
   end;
 end;
 {$ELSE ~7ZIP_LINKONREQUEST}
