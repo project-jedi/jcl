@@ -119,84 +119,8 @@ type
   PByte = IntPtr;
 {$ENDIF CLR}
 
-{$IFDEF FPC}
-// include file for FPC compatibility
-// JclWin32 include file for FPC compatibility
-
-// from unit Windows
-const
-
-  // from WinReg.h
-  HKEY_CLASSES_ROOT     = DWORD($80000000);
-  HKEY_CURRENT_USER     = DWORD($80000001);
-  HKEY_LOCAL_MACHINE    = DWORD($80000002);
-  HKEY_USERS            = DWORD($80000003);
-  HKEY_PERFORMANCE_DATA = DWORD($80000004);
-  HKEY_CURRENT_CONFIG   = DWORD($80000005);
-  HKEY_DYN_DATA         = DWORD($80000006);
-
-  // from WinVer.h
-  VOS__BASE = 0;
-  VOS__WINDOWS16 = 1;
-  VOS__PM16 = 2;
-  VOS__PM32 = 3;
-  VOS__WINDOWS32 = 4;
-
-{ VS_VERSION.dwFileSubtype for VFT_WINDOWS_DRV }
-
-  VFT2_UNKNOWN = 0;
-  VFT2_DRV_PRINTER = 1;
-  VFT2_DRV_KEYBOARD = 2;
-  VFT2_DRV_LANGUAGE = 3;
-  VFT2_DRV_DISPLAY = 4;
-  VFT2_DRV_MOUSE = 5;
-  VFT2_DRV_NETWORK = 6;
-  VFT2_DRV_SYSTEM = 7;
-  VFT2_DRV_INSTALLABLE = 8;
-  VFT2_DRV_SOUND = 9;
-  VFT2_DRV_COMM = 10;
 
 type
-  // from WinBase.h
-  _GET_FILEEX_INFO_LEVELS = (GetFileExInfoStandard, GetFileExMaxInfoLevel);
-  TGetFileExInfoLevels = _GET_FILEEX_INFO_LEVELS;
-  GET_FILEEX_INFO_LEVELS = _GET_FILEEX_INFO_LEVELS;
-
-type
-  PKeyboardState = ^TKeyboardState;
-  TKeyboardState = array [0..255] of Byte;
-
-// from unit AccCtrl
-type
-  SE_OBJECT_TYPE = (
-    SE_UNKNOWN_OBJECT_TYPE,
-    SE_FILE_OBJECT,
-    SE_SERVICE,
-    SE_PRINTER,
-    SE_REGISTRY_KEY,
-    SE_LMSHARE,
-    SE_KERNEL_OBJECT,
-    SE_WINDOW_OBJECT,
-    SE_DS_OBJECT,
-    SE_DS_OBJECT_ALL,
-    SE_PROVIDER_DEFINED_OBJECT,
-    SE_WMIGUID_OBJECT
-  );
-
-// from ActiveX
-const
-  // from OleIdl.h, OleIdl.Idl
-  DROPEFFECT_NONE   = 0;
-  DROPEFFECT_COPY   = 1;
-  DROPEFFECT_MOVE   = 2;
-  DROPEFFECT_LINK   = 4;
-  DROPEFFECT_SCROLL = DWORD($80000000);
-
-
-{$ENDIF FPC}
-
-type
-
 //
 // Unsigned Basics
 //
@@ -1340,22 +1264,6 @@ const
 // Directory format.
 //
 
-{$IFDEF FPC}
-
-type
-  PIMAGE_DATA_DIRECTORY = ^IMAGE_DATA_DIRECTORY;
-  {$EXTERNALSYM PIMAGE_DATA_DIRECTORY}
-  _IMAGE_DATA_DIRECTORY = record
-    VirtualAddress: DWORD;
-    Size: DWORD;
-  end;
-  {$EXTERNALSYM _IMAGE_DATA_DIRECTORY}
-  IMAGE_DATA_DIRECTORY = _IMAGE_DATA_DIRECTORY;
-  {$EXTERNALSYM IMAGE_DATA_DIRECTORY}
-  TImageDataDirectory = IMAGE_DATA_DIRECTORY;
-  PImageDataDirectory = PIMAGE_DATA_DIRECTORY;
-
-{$ENDIF FPC}
 
 const
   IMAGE_NUMBEROF_DIRECTORY_ENTRIES = 16;
@@ -1369,50 +1277,6 @@ type
   PIMAGE_OPTIONAL_HEADER32 = ^IMAGE_OPTIONAL_HEADER32;
   {$EXTERNALSYM PIMAGE_OPTIONAL_HEADER32}
 
-{$IFDEF FPC}
-
-  _IMAGE_OPTIONAL_HEADER = record
-    //
-    // Standard fields.
-    //
-    Magic: Word;
-    MajorLinkerVersion: Byte;
-    MinorLinkerVersion: Byte;
-    SizeOfCode: DWORD;
-    SizeOfInitializedData: DWORD;
-    SizeOfUninitializedData: DWORD;
-    AddressOfEntryPoint: DWORD;
-    BaseOfCode: DWORD;
-    BaseOfData: DWORD;
-    //
-    // NT additional fields.
-    //
-    ImageBase: DWORD;
-    SectionAlignment: DWORD;
-    FileAlignment: DWORD;
-    MajorOperatingSystemVersion: Word;
-    MinorOperatingSystemVersion: Word;
-    MajorImageVersion: Word;
-    MinorImageVersion: Word;
-    MajorSubsystemVersion: Word;
-    MinorSubsystemVersion: Word;
-    Win32VersionValue: DWORD;
-    SizeOfImage: DWORD;
-    SizeOfHeaders: DWORD;
-    CheckSum: DWORD;
-    Subsystem: Word;
-    DllCharacteristics: Word;
-    SizeOfStackReserve: DWORD;
-    SizeOfStackCommit: DWORD;
-    SizeOfHeapReserve: DWORD;
-    SizeOfHeapCommit: DWORD;
-    LoaderFlags: DWORD;
-    NumberOfRvaAndSizes: DWORD;
-    DataDirectory: array [0..IMAGE_NUMBEROF_DIRECTORY_ENTRIES - 1] of IMAGE_DATA_DIRECTORY;
-  end;
-  {$EXTERNALSYM _IMAGE_OPTIONAL_HEADER}
-
-{$ENDIF FPC}
 
   IMAGE_OPTIONAL_HEADER32 = _IMAGE_OPTIONAL_HEADER;
   {$EXTERNALSYM IMAGE_OPTIONAL_HEADER32}
@@ -1540,28 +1404,6 @@ type
   TImageNtHeaders32 = IMAGE_NT_HEADERS32;
   PImageNtHeaders32 = PIMAGE_NT_HEADERS32;
 
-{$IFDEF FPC}
-
-  PIMAGE_ROM_HEADERS = ^IMAGE_ROM_HEADERS;
-  {$EXTERNALSYM PIMAGE_ROM_HEADERS}
-  _IMAGE_ROM_HEADERS = record
-    FileHeader: IMAGE_FILE_HEADER;
-    OptionalHeader: IMAGE_ROM_OPTIONAL_HEADER;
-  end;
-  {$EXTERNALSYM _IMAGE_ROM_HEADERS}
-  IMAGE_ROM_HEADERS = _IMAGE_ROM_HEADERS;
-  {$EXTERNALSYM IMAGE_ROM_HEADERS}
-  TImageRomHeaders = IMAGE_ROM_HEADERS;
-  PImageRomHeaders = PIMAGE_ROM_HEADERS;
-
-  IMAGE_NT_HEADERS = IMAGE_NT_HEADERS32;
-  {$EXTERNALSYM IMAGE_NT_HEADERS}
-  PIMAGE_NT_HEADERS = PIMAGE_NT_HEADERS32;
-  {$EXTERNALSYM PIMAGE_NT_HEADERS}
-
-  PImageNtHeaders = PIMAGE_NT_HEADERS;
-
-{$ENDIF FPC}
 
 // Subsystem Values
 
@@ -1679,35 +1521,6 @@ const
   {$EXTERNALSYM IMAGE_SIZEOF_SHORT_NAME}
 
 type
-{$IFDEF FPC}
-
-  TImgSecHdrMisc = record
-    case Integer of
-      0: (PhysicalAddress: DWORD);
-      1: (VirtualSize: DWORD);
-  end;
-
-  PIMAGE_SECTION_HEADER = ^IMAGE_SECTION_HEADER;
-  {$EXTERNALSYM PIMAGE_SECTION_HEADER}
-  _IMAGE_SECTION_HEADER = record
-    Name: array [0..IMAGE_SIZEOF_SHORT_NAME - 1] of BYTE;
-    Misc: TImgSecHdrMisc;
-    VirtualAddress: DWORD;
-    SizeOfRawData: DWORD;
-    PointerToRawData: DWORD;
-    PointerToRelocations: DWORD;
-    PointerToLinenumbers: DWORD;
-    NumberOfRelocations: WORD;
-    NumberOfLinenumbers: WORD;
-    Characteristics: DWORD;
-  end;
-  {$EXTERNALSYM _IMAGE_SECTION_HEADER}
-  IMAGE_SECTION_HEADER = _IMAGE_SECTION_HEADER;
-  {$EXTERNALSYM IMAGE_SECTION_HEADER}
-  TImageSectionHeader = IMAGE_SECTION_HEADER;
-  PImageSectionHeader = PIMAGE_SECTION_HEADER;
-
-{$ENDIF FPC}
 
   PPImageSectionHeader = ^PImageSectionHeader;
 

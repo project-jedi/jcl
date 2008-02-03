@@ -284,7 +284,7 @@ implementation
 uses
   SysUtils,
   {$IFDEF FPC}
-  JwaAccCtrl,
+//  JwaAccCtrl,
   {$ELSE}
   AccCtrl,
   {$ENDIF FPC}

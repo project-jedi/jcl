@@ -381,6 +381,7 @@
   HAS_UNIT_VARIANTS             Unit Variants exists (D6+/BCB6+/FPC)
   HAS_UNIT_STRUTILS             Unit StrUtils exists (D6+/BCB6+/FPC)
   HAS_UNIT_DATEUTILS            Unit DateUtils exists (D6+/BCB6+/FPC)
+  HAS_UNIT_CONTNRS              Unit contnrs exists (D6+/BCB6+/FPC)
   XPLATFORM_RTL                 The RTL supports crossplatform function names (e.g. RaiseLastOSError) (D6+/BCB6+/FPC)
 
 
@@ -907,6 +908,7 @@
     {$IFDEF LINUX}
       {$DEFINE HAS_UNIT_LIBC}
     {$ENDIF LINUX}
+    {$DEFINE HAS_UNIT_CONTNRS}
     {$DEFINE HAS_UNIT_TYPES}
     {$DEFINE HAS_UNIT_VARIANTS}
     {$DEFINE HAS_UNIT_STRUTILS}
@@ -1028,6 +1030,10 @@
   {$DEFINE HAS_UNIT_DATEUTILS}
   {$DEFINE XPLATFORM_RTL}
 {$ENDIF RTL140_UP}
+
+{$IFDEF RTL130_UP}
+  {$DEFINE HAS_UNIT_CONTNRS}
+{$ENDIF RTL130_UP}
 
 {------------------------------------------------------------------------------}
 { Cross-platform related defines                                               }

@@ -58,9 +58,9 @@ uses
   Windows, ActiveX,
   {$ENDIF MSWINDOWS}
   Classes, SysUtils,
-  {$IFDEF RTL130_UP}
+  {$IFDEF HAS_UNIT_CONTNRS}
   Contnrs,
-  {$ENDIF RTL130_UP}
+  {$ENDIF HAS_UNIT_CONTNRS}
   JclBase, JclWideStrings,
   mscoree_TLB, mscorlib_TLB;
 
