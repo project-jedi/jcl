@@ -39,7 +39,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -3610,7 +3610,7 @@ end;
 function TJclCompressionArchive.TranslateItemPath(const ItemPath, OldBase,
   NewBase: WideString): WideString;
 begin
-  Result := PathGetRelativePath(NewBase, PathGetRelativePath(OldBase, ItemPath));
+  Result := PathCanonicalize(PathAddSeparator(NewBase) + PathGetRelativePath(OldBase, ItemPath));
 end;
 
 procedure TJclCompressionArchive.UnselectAll;
