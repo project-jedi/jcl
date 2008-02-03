@@ -811,6 +811,7 @@ resourcestring
   RsCompressionDataError             = 'Data error';
   RsCompressionCRCError              = 'CRC error';
   RsCompressionUnknownError          = 'Unknown error';
+  RsCompression7zLoadError           = 'Sevenzip: Failed to load 7z.dll';
   RsCompression7zReturnError         = 'Sevenzip: Error result (%.8x) "%s"';
   RsCompression7zUnassignedStream    = 'Sevenzip: Stream object is not assigned';
   RsCompression7zOutArchiveError     = 'Sevenzip: Failed to get out archive interface for class %s';

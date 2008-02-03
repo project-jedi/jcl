@@ -4504,6 +4504,8 @@ var
 begin
   SevenzipCLSID := GetCLSID;
   InterfaceID := Sevenzip.IOutArchive;
+  if (not Is7ZipLoaded) and (not Load7Zip) then
+    raise EJclCompressionError.CreateRes(@RsCompression7zLoadError);
   if (Sevenzip.CreateObject(@SevenzipCLSID, @InterfaceID, FOutArchive) <> ERROR_SUCCESS)
     or not Assigned(FOutArchive) then
     raise EJclCompressionError.CreateResFmt(@RsCompression7zOutArchiveError, [GUIDToString(SevenzipCLSID)]);
@@ -4911,6 +4913,8 @@ var
 begin
   SevenzipCLSID := GetCLSID;
   InterfaceID := Sevenzip.IInArchive;
+  if (not Is7ZipLoaded) and (not Load7Zip) then
+    raise EJclCompressionError.CreateRes(@RsCompression7zLoadError);
   if (Sevenzip.CreateObject(@SevenzipCLSID, @InterfaceID, FInArchive) <> ERROR_SUCCESS)
     or not Assigned(FInArchive) then
     raise EJclCompressionError.CreateResFmt(@RsCompression7zInArchiveError, [GUIDToString(SevenzipCLSID)]);
@@ -5491,6 +5495,8 @@ var
 begin
   SevenzipCLSID := GetCLSID;
   InterfaceID := Sevenzip.IInArchive;
+  if (not Is7ZipLoaded) and (not Load7Zip) then
+    raise EJclCompressionError.CreateRes(@RsCompression7zLoadError);
   if (Sevenzip.CreateObject(@SevenzipCLSID, @InterfaceID, FInArchive) <> ERROR_SUCCESS)
     or not Assigned(FInArchive) then
     raise EJclCompressionError.CreateResFmt(@RsCompression7zInArchiveError, [GUIDToString(SevenzipCLSID)]);
