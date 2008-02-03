@@ -54,9 +54,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, SysUtils,
-  {$IFNDEF FPC}
   ShlObj,
-  {$ENDIF ~FPC}
   JclWin32, JclSysUtils;
 
 // Files and Folders
@@ -214,9 +212,7 @@ implementation
 
 uses
   ActiveX,
-  {$IFNDEF FPC}
   CommCtrl,
-  {$ENDIF ~FPC}
   Messages, ShellApi,
   JclFileUtils, JclStrings, JclSysInfo;
 
@@ -252,21 +248,13 @@ begin
   FillChar(FileOp, SizeOf(FileOp), #0);
   with FileOp do
   begin
-    {$IFDEF FPC}
-    THandle := Parent;
-    {$ELSE}
     Wnd := Parent;
-    {$ENDIF FPC}
     wFunc := FO_DELETE;
     Source := Files + #0#0;
     pFrom := PChar(Source);
     fFlags := DeleteOptionsToCardinal(Options);
   end;
-  {$IFDEF FPC}
-  Result := SHFileOperation(@FileOp) = 0;
-  {$ELSE}
   Result := SHFileOperation(FileOp) = 0;
-  {$ENDIF FPC}
 end;
 
 function SHDeleteFolder(Parent: THandle; const Folder: string;
@@ -297,11 +285,7 @@ begin
   FillChar(FileOp, SizeOf(FileOp), #0);
   with FileOp do
   begin
-    {$IFDEF FPC}
-    THandle := GetDesktopWindow;
-    {$ELSE}
     Wnd := GetDesktopWindow;
-    {$ENDIF FPC}
     wFunc := FO_RENAME;
     Source := Src + #0#0;
     Destination := Dest + #0#0;
@@ -309,11 +293,7 @@ begin
     pTo := PChar(Destination);
     fFlags := RenameOptionsToCardinal(Options);
   end;
-  {$IFDEF FPC}
-  Result := SHFileOperation(@FileOp) = 0;
-  {$ELSE}
   Result := SHFileOperation(FileOp) = 0;
-  {$ENDIF FPC}
 end;
 
 function CopyOptionsToCardinal(Options: TSHCopyOptions): Cardinal;
@@ -335,22 +315,14 @@ var
   Source, Destination: string;
 begin
   FillChar(FileOp,SizeOf(FileOp),0);
-  {$IFDEF FPC}
-  FileOp.THandle := Parent;
-  {$ELSE}
   FileOp.Wnd := Parent;
-  {$ENDIF FPC}
   FileOp.wFunc := FO_COPY;
   Source := Src + #0#0;
   Destination := Dest + #0#0;
   FileOp.pFrom := PChar(Source);
   FileOp.pTo := PChar(Destination);
   FileOp.fFlags := CopyOptionsToCardinal(Options);
-  {$IFDEF FPC}
-  Result := SHFileOperation(@FileOp) = 0;
-  {$ELSE}
   Result := SHFileOperation(FileOp) = 0;
-  {$ENDIF FPC}
 end;
 
 function MoveOptionsToCardinal(Options: TSHMoveOptions): Cardinal;
@@ -372,33 +344,25 @@ var
   Source, Destination: string;
 begin
   FillChar(FileOp,SizeOf(FileOp),0);
-  {$IFDEF FPC}
-  FileOp.THandle := Parent;
-  {$ELSE}
   FileOp.Wnd := Parent;
-  {$ENDIF FPC}
   FileOp.wFunc := FO_MOVE;
   Source := Src + #0#0;
   Destination := Dest + #0#0;
   FileOp.pFrom := PChar(Source);
   FileOp.pTo := PChar(Destination);
   FileOp.fFlags := MoveOptionsToCardinal(Options);
-  {$IFDEF FPC}
-  Result := SHFileOperation(@FileOp) = 0;
-  {$ELSE}
   Result := SHFileOperation(FileOp) = 0;
-  {$ENDIF FPC}
 end;
 
 function EnumFolderFlagsToCardinal(Flags: TEnumFolderFlags): Cardinal;
 begin
   Result := 0;
   if efFolders in Flags then
-    Result := Result or SHCONTF_FOLDERS;
+    Result := Result or ord(SHCONTF_FOLDERS);
   if efNonFolders in Flags then
-    Result := Result or SHCONTF_NONFOLDERS;
+    Result := Result or ord(SHCONTF_NONFOLDERS);
   if efIncludeHidden in Flags then
-    Result := Result or SHCONTF_INCLUDEHIDDEN;
+    Result := Result or ord(SHCONTF_INCLUDEHIDDEN);
 end;
 
 procedure ClearEnumFolderRec(var F: TEnumFolderRec; const Free, Release: Boolean);
@@ -538,7 +502,9 @@ begin
     Wnd := Handle;
     lpVerb := cVerbProperties;
   end;
+  {$T+}  // need this because ShellExecuteEx is overloaded in FPC -A -W
   Result := ShellExecuteEx(@Info);
+  {$T-}
 end;
 
 function DisplayPropDialog(const Handle: THandle; Item: PItemIdList): Boolean;
@@ -555,7 +521,9 @@ begin
     Wnd := Handle;
     lpVerb := cVerbProperties;
   end;
+  {$T+}
   Result := ShellExecuteEx(@Info);
+  {$T-}
 end;
 
 // Window procedure for the callback window created by DisplayContextMenu.
@@ -690,7 +658,9 @@ begin
       lpFile := PChar(Path);
       nShow := SW_SHOWNORMAL;
     end;
+    {$T+}
     Result := ShellExecuteEx(@Sei);
+    {$T-}
   end;
 end;
 
@@ -724,7 +694,9 @@ begin
       else
         lpFile := PChar(PidlToPath(Pidl));
     end;
+    {$T+}
     Result := ShellExecuteEx(@Sei);
+    {$T-}
     Malloc.Free(Pidl);
   end;
 end;
@@ -1345,7 +1317,9 @@ begin
   Sei.lpParameters := PCharOrNil(Parameters);
   Sei.lpVerb := PCharOrNil(Verb);
   Sei.nShow := CmdShow;
+  {$T+}
   Result := ShellExecuteEx(@Sei);
+  {$T-}
 end;
 
 { TODO -cHelp : author Jean-Fabien Connault note, ShellExecEx() above used to be ShellExec()... }
@@ -1372,7 +1346,9 @@ begin
   Sei.lpVerb := PCharOrNil(Verb);
   Sei.nShow := CmdShow;
   Sei.lpDirectory := PCharOrNil(Directory);
+  {$T+}
   Result := ShellExecuteEx(@Sei);
+  {$T-}
   if Result then
   begin
     WaitForInputIdle(Sei.hProcess, INFINITE);
