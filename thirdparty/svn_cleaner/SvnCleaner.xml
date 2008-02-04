@@ -355,5 +355,15 @@
         <value>JclUnicode.rc</value>
       </property>
     </setting>
+
+    <setting path="thirdparty/makedist" mask="" recurse="no" dironly="yes">
+      <property name="svn:ignore">
+        <value>*.exe</value>
+        <value>*.dproj</value>
+        <value>*.local</value>
+        <value>*.identcache</value>
+        <value>*.dcu</value>
+      </property>
+    </setting>
   </setting>
 </svncleaner>
