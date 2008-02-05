@@ -440,6 +440,7 @@ begin
     MemoMessages.Lines.Add(Copy(Text, 2, Length(Text) - 1))
   else
     MemoMessages.Lines.Add(Text);
+  Application.ProcessMessages;
 end;
 
 procedure TMainForm.RefreshConfig;

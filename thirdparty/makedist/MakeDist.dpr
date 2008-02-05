@@ -4,12 +4,14 @@ uses
   SysUtils,
   Windows,
   Forms,
-  JclFileUtils, JclSysUtils,
+  JclFileUtils,
+  JclSysUtils,
   MakeDistGui in 'MakeDistGui.pas' {MainForm},
   MakeDistMain in 'MakeDistMain.pas',
   MakeDistActions in 'MakeDistActions.pas';
 
 {$R *.res}
+{$R ..\..\jcl\source\windows\JclCommCtrlAsInvoker.res}
 
 type
   TDummyClass = class

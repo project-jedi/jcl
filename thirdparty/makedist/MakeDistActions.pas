@@ -193,17 +193,19 @@ type
 
   // retreive a value from an xml file or the xml output of an executable file
   // WorkingDirectory and Arguments are used in case of an executable file
+  // ValidExitCodes is a semicolon-separated list of integer values
   // the xml content is parsed according to the key parameter
   // ie: node1\node2&3\node3\\prop1 will return the value of the "prop1" property
   //   of the node named "node3" located in the third node named "node2" of the root node named "node1"
   // node1\node2\node3 will load the value of the node named "node3" located in the first node named "node2"
   //   of the root node named "node1"
-  // the result is stored in the specificed environment variable 
+  // the result is stored in the specificed environment variable
   TXmlGetter = class(TDistAction)
   private
     FXmlExe: string;
     FWorkingDirectory: string;
     FArguments: string;
+    FValidExitCodes: string;
     FKey: string;
     FEnvironmentVariable: string;
   protected
@@ -217,11 +219,14 @@ type
     function Execute(const AMessageHandler: TTextHandler): Boolean; override;
   end;
 
+  // call the specified program with arguments in a working directory
+  // ValidExitCodes is a semicolon-separated list of integer values
   TCommandLineCaller = class(TDistAction)
   private
     FApplication: string;
     FWorkingDirectory: string;
     FParameters: string;
+    FValidExitCodes: string;
   protected
     function GetCaption: string; override;
     function GetConfigCount: Integer; override;
@@ -233,6 +238,8 @@ type
     function Execute(const AMessageHandler: TTextHandler): Boolean; override;
   end;
 
+  // create an archive, the compressor is determined based on the extension of the archive
+  // all items matching Filter in Directory will be added
   TArchiveMaker = class(TDistAction)
   private
     FDirectory: string;
@@ -249,6 +256,7 @@ type
     function Execute(const AMessageHandler: TTextHandler): Boolean; override;
   end;
 
+  // clean the log
   TLogCleaner = class(TDistAction)
   protected
     function GetCaption: string; override;
@@ -261,6 +269,7 @@ type
     function Execute(const AMessageHandler: TTextHandler): Boolean; override;
   end;
 
+  // save the log to filename, if append is "yes", then the log is appended to the content of the file if any
   TLogSaver = class(TDistAction)
   private
     FFileName: string;
@@ -1236,12 +1245,12 @@ end;
 
 function TXmlGetter.Execute(const AMessageHandler: TTextHandler): Boolean;
 var
-  XmlExe, WorkingDirectory, Arguments, Key, EnvironmentVariable, ProgramOutput, NodeName, PropName: string;
+  XmlExe, WorkingDirectory, Arguments, ValidExitCodes, Key, EnvironmentVariable, ProgramOutput, NodeName, PropName: string;
   XmlContent: TJclSimpleXML;
   Node: TJclSimpleXMLElem;
   Prop: TJclSimpleXMLProp;
   NamedNodes: TJclSimpleXMLNamedElems;
-  Index, AmpPos, NodeIndex: Integer;
+  Index, AmpPos, NodeIndex, ReturnValue: Integer;
   Keys: TStrings;
 begin
   XmlExe := FXmlExe;
@@ -1250,6 +1259,8 @@ begin
   ExpandEnvironmentVar(WorkingDirectory);
   Arguments := FArguments;
   ExpandEnvironmentVar(Arguments);
+  ValidExitCodes := FValidExitCodes;
+  ExpandEnvironmentVar(ValidExitCodes);
   Key := FKey;
   ExpandEnvironmentVar(Key);
   EnvironmentVariable := FEnvironmentVariable;
@@ -1263,12 +1274,16 @@ begin
       AMessageHandler('Executing ' + XmlExe + ' ' + Arguments + ' in ' + WorkingDirectory);
       if WorkingDirectory <> '' then
         SetCurrentDir(WorkingDirectory);
-      Result := JclSysUtils.Execute(XmlExe + ' ' + Arguments, ProgramOutput) = 0;
+      ReturnValue := JclSysUtils.Execute(XmlExe + ' ' + Arguments, ProgramOutput);
+      if ValidExitCodes = '' then
+        Result := ReturnValue = 0
+      else
+        Result := ListItemIndex(ValidExitCodes, ';', IntToStr(ReturnValue)) >= 0;
       if Result then
-        AMessageHandler('Execution success')
+        AMessageHandler('Execution success, return value was: ' + IntToStr(ReturnValue))
       else
       begin
-        AMessageHandler('Execution failure');
+        AMessageHandler('Execution failure, return value was: ' + IntToStr(ReturnValue));
         Exit;
       end;
       XmlContent.LoadFromString(ProgramOutput);
@@ -1389,8 +1404,10 @@ begin
     2:
       Result := 'Arguments';
     3:
-      Result := 'Key';
+      Result := 'Valid exit codes';
     4:
+      Result := 'Key';
+    5:
       Result := 'Environment variable';
   else
     Result := '';
@@ -1399,7 +1416,7 @@ end;
 
 function TXmlGetter.GetConfigCount: Integer;
 begin
-  Result := 5;
+  Result := 6;
 end;
 
 function TXmlGetter.GetConfigValue(Index: Integer): string;
@@ -1412,8 +1429,10 @@ begin
     2:
       Result := FArguments;
     3:
-      Result := FKey;
+      Result := FValidExitCodes;
     4:
+      Result := FKey;
+    5:
       Result := FEnvironmentVariable;
   else
     Result := '';
@@ -1435,8 +1454,10 @@ begin
     2:
       FArguments := Value;
     3:
-      FKey := Value;
+      FValidExitCodes := Value;
     4:
+      FKey := Value;
+    5:
       FEnvironmentVariable := Value;
   end;
 end;
@@ -1445,7 +1466,8 @@ end;
 
 function TCommandLineCaller.Execute(const AMessageHandler: TTextHandler): Boolean;
 var
-  Application, WorkingDirectory, Parameters: string;
+  Application, WorkingDirectory, Parameters, ValidExitCodes: string;
+  ReturnValue: Integer;
 begin
   Application := FApplication;
   ExpandEnvironmentVar(Application);
@@ -1453,15 +1475,21 @@ begin
   ExpandEnvironmentVar(WorkingDirectory);
   Parameters := FParameters;
   ExpandEnvironmentVar(Parameters);
+  ValidExitCodes := FValidExitCodes;
+  ExpandEnvironmentVar(ValidExitCodes);
 
   if WorkingDirectory <> '' then
     SetCurrentDir(WorkingDirectory);
-  AMessageHandler('Executing ' + Application + ' ' + Parameters + ' in directory ' + WorkingDirectory); 
-  Result := JclSysUtils.Execute(Application + ' ' + Parameters, AMessageHandler, False) = 0;
-  if Result then
-    AMessageHandler('Execution success')
+  AMessageHandler('Executing ' + Application + ' ' + Parameters + ' in directory ' + WorkingDirectory);
+  ReturnValue := JclSysUtils.Execute(Application + ' ' + Parameters, AMessageHandler, False);
+  if ValidExitCodes = '' then
+    Result := ReturnValue = 0
   else
-    AMessageHandler('Execution failure');
+    Result := ListItemIndex(ValidExitCodes, ';', IntToStr(ReturnValue)) >= 0;
+  if Result then
+    AMessageHandler('Execution success, return value was: ' + IntToStr(ReturnValue))
+  else
+    AMessageHandler('Execution failure, return value was: ' + IntToStr(ReturnValue));
 end;
 
 function TCommandLineCaller.GetCaption: string;
@@ -1478,6 +1506,8 @@ begin
       Result := 'Working directory';
     2:
       Result := 'Parameters';
+    3:
+      Result := 'Valid exit codes';
   else
     Result := '';
   end;
@@ -1485,7 +1515,7 @@ end;
 
 function TCommandLineCaller.GetConfigCount: Integer;
 begin
-  Result := 3;
+  Result := 4;
 end;
 
 function TCommandLineCaller.GetConfigValue(Index: Integer): string;
@@ -1497,6 +1527,8 @@ begin
       Result := FWorkingDirectory;
     2:
       Result := FParameters;
+    3:
+      Result := FValidExitCodes;
   else
     Result := '';
   end;
@@ -1516,6 +1548,8 @@ begin
       FWorkingDirectory := Value;
     2:
       FParameters := Value;
+    3:
+      FValidExitCodes := Value;
   end;
 end;
 
