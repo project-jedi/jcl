@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <makedist>
-  <task name="Jcl-win.zip" selected="-1">
+  <task name="Jcl-win.zip" selected="0">
+    <action classname="TLogCleaner"/>
     <action classname="TDirectoryCreator">
       <configuration index="0" caption="Directory" value="sandbox"/>
     </action>
@@ -8,6 +9,7 @@
       <configuration index="0" caption="Application" value="%SVN%"/>
       <configuration index="1" caption="Working directory" value="sandbox"/>
       <configuration index="2" caption="Parameters" value="export -rBASE --native-eol CRLF --force ..\..\..\jcl\ ."/>
+      <configuration index="3" caption="Valid exit codes" value=""/>
     </action>
     <action classname="TConstantParser">
       <configuration index="0" caption="Source file" value="sandbox\source\common\JclBase.pas"/>
@@ -33,6 +35,7 @@
       <configuration index="0" caption="Application" value="%ComSpec%"/>
       <configuration index="1" caption="Working directory" value="sandbox\devtools\"/>
       <configuration index="2" caption="Parameters" value="/C included_files.bat"/>
+      <configuration index="3" caption="Valid exit codes" value=""/>
     </action>
     <action classname="TArchiveMaker">
       <configuration index="0" caption="Directory" value="sandbox"/>
@@ -48,7 +51,8 @@
       <configuration index="1" caption="Append" value="no"/>
     </action>
   </task>
-  <task name="Jcl-linux.zip" selected="-1">
+  <task name="Jcl-linux.zip" selected="0">
+    <action classname="TLogCleaner"/>
     <action classname="TDirectoryCreator">
       <configuration index="0" caption="Directory" value="sandbox"/>
     </action>
@@ -56,6 +60,7 @@
       <configuration index="0" caption="Application" value="%SVN%"/>
       <configuration index="1" caption="Working directory" value="sandbox"/>
       <configuration index="2" caption="Parameters" value="export -rBASE --native-eol LF --force ..\..\..\jcl\ ."/>
+      <configuration index="3" caption="Valid exit codes" value=""/>
     </action>
     <action classname="TConstantParser">
       <configuration index="0" caption="Source file" value="sandbox\source\common\JclBase.pas"/>
@@ -81,6 +86,7 @@
       <configuration index="0" caption="Application" value="%ComSpec%"/>
       <configuration index="1" caption="Working directory" value="sandbox\devtools\"/>
       <configuration index="2" caption="Parameters" value="/C included_files.bat"/>
+      <configuration index="3" caption="Valid exit codes" value=""/>
     </action>
     <action classname="TArchiveMaker">
       <configuration index="0" caption="Directory" value="sandbox"/>
@@ -106,7 +112,8 @@
       <configuration index="1" caption="Append" value="no"/>
     </action>
   </task>
-  <task name="Jcl-turbo.zip" selected="-1">
+  <task name="Jcl-turbo.zip" selected="0">
+    <action classname="TLogCleaner"/>
     <action classname="TDirectoryCreator">
       <configuration index="0" caption="Directory" value="sandbox"/>
     </action>
@@ -114,6 +121,7 @@
       <configuration index="0" caption="Application" value="%SVN%"/>
       <configuration index="1" caption="Working directory" value="sandbox"/>
       <configuration index="2" caption="Parameters" value="export -rBASE --native-eol CRLF --force ..\..\..\jcl\ ."/>
+      <configuration index="3" caption="Valid exit codes" value=""/>
     </action>
     <action classname="TConstantParser">
       <configuration index="0" caption="Source file" value="sandbox\source\common\JclBase.pas"/>
@@ -139,26 +147,31 @@
       <configuration index="0" caption="Application" value="%ComSpec%"/>
       <configuration index="1" caption="Working directory" value="sandbox\devtools\"/>
       <configuration index="2" caption="Parameters" value="/C included_files.bat"/>
+      <configuration index="3" caption="Valid exit codes" value=""/>
     </action>
     <action classname="TCommandLineCaller">
       <configuration index="0" caption="Application" value="..\..\devtools\jpp.exe"/>
       <configuration index="1" caption="Working directory" value="sandbox\install"/>
       <configuration index="2" caption="Parameters" value="-c -dVCL -dMSWINDOWS -uVisualCLX -uUnix -uKYLIX -xVclGui\ prototypes\JediGUIMain.pas"/>
+      <configuration index="3" caption="Valid exit codes" value=""/>
     </action>
     <action classname="TCommandLineCaller">
       <configuration index="0" caption="Application" value="..\..\devtools\jpp.exe"/>
       <configuration index="1" caption="Working directory" value="sandbox\install"/>
       <configuration index="2" caption="Parameters" value="-c -dVCL -dMSWINDOWS -uVisualCLX -uUnix -uKYLIX -xVclGui\ prototypes\JediGUIReadme.pas"/>
+      <configuration index="3" caption="Valid exit codes" value=""/>
     </action>
     <action classname="TCommandLineCaller">
       <configuration index="0" caption="Application" value="..\..\devtools\jpp.exe"/>
       <configuration index="1" caption="Working directory" value="sandbox\install"/>
       <configuration index="2" caption="Parameters" value="-c -dVCL -dMSWINDOWS -uVisualCLX -uUnix -uKYLIX -xVclGui\ prototypes\JediGUIInstall.pas"/>
+      <configuration index="3" caption="Valid exit codes" value=""/>
     </action>
     <action classname="TCommandLineCaller">
       <configuration index="0" caption="Application" value="%DCC2006%"/>
       <configuration index="1" caption="Working directory" value="sandbox\install"/>
       <configuration index="2" caption="Parameters" value="-q -w -dJCLINSTALL -E..\bin -I..\source -U..\source\common;..\source\windows JediInstaller.dpr"/>
+      <configuration index="3" caption="Valid exit codes" value=""/>
     </action>
     <action classname="TFileMover">
       <configuration index="0" caption="Old file name" value="sandbox\Install turbo delphi.bat"/>
@@ -175,6 +188,411 @@
     </action>
     <action classname="TLogSaver">
       <configuration index="0" caption="File name" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-turbo.log"/>
+      <configuration index="1" caption="Append" value="no"/>
+    </action>
+  </task>
+  <task name="jcl-html.zip" selected="-1">
+    <action classname="TLogCleaner"/>
+    <action classname="TDirectoryCreator">
+      <configuration index="0" caption="Directory" value="sandbox"/>
+    </action>
+    <action classname="TCommandLineCaller">
+      <configuration index="0" caption="Application" value="%SVN%"/>
+      <configuration index="1" caption="Working directory" value="sandbox"/>
+      <configuration index="2" caption="Parameters" value="export -rBASE --native-eol CRLF --force ..\..\..\ ."/>
+      <configuration index="3" caption="Valid exit codes" value=""/>
+    </action>
+    <action classname="TConstantParser">
+      <configuration index="0" caption="Source file" value="sandbox\jcl\source\common\JclBase.pas"/>
+      <configuration index="1" caption="Constant name" value="JclVersionMajor"/>
+      <configuration index="2" caption="Environment variable" value="VersionMajor"/>
+    </action>
+    <action classname="TConstantParser">
+      <configuration index="0" caption="Source file" value="sandbox\jcl\source\common\JclBase.pas"/>
+      <configuration index="1" caption="Constant name" value="JclVersionMinor"/>
+      <configuration index="2" caption="Environment variable" value="VersionMinor"/>
+    </action>
+    <action classname="TConstantParser">
+      <configuration index="0" caption="Source file" value="sandbox\jcl\source\common\JclBase.pas"/>
+      <configuration index="1" caption="Constant name" value="JclVersionRelease"/>
+      <configuration index="2" caption="Environment variable" value="VersionRelease"/>
+    </action>
+    <action classname="TConstantParser">
+      <configuration index="0" caption="Source file" value="sandbox\jcl\source\common\JclBase.pas"/>
+      <configuration index="1" caption="Constant name" value="JclVersionBuild"/>
+      <configuration index="2" caption="Environment variable" value="VersionBuild"/>
+    </action>
+    <action classname="TCommandLineCaller">
+      <configuration index="0" caption="Application" value="%ComSpec%"/>
+      <configuration index="1" caption="Working directory" value="sandbox\jcl\devtools\"/>
+      <configuration index="2" caption="Parameters" value="/C included_files.bat"/>
+      <configuration index="3" caption="Valid exit codes" value=""/>
+    </action>
+    <action classname="TDirectoryCreator">
+      <configuration index="0" caption="Directory" value="sandbox\jcl\help\html"/>
+    </action>
+    <action classname="TCommandLineCaller">
+      <configuration index="0" caption="Application" value="%DMCC%"/>
+      <configuration index="1" caption="Working directory" value="sandbox\help"/>
+      <configuration index="2" caption="Parameters" value="-config &quot;HTML&quot; -noshow -w3 JclHelp.dox"/>
+      <configuration index="3" caption="Valid exit codes" value="0;20;30"/>
+    </action>
+    <action classname="TArchiveMaker">
+      <configuration index="0" caption="Directory" value="sandbox\jcl"/>
+      <configuration index="1" caption="Filter" value="*help*"/>
+      <configuration index="2" caption="Archive name" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-htmlhelp-win.zip"/>
+    </action>
+    <action classname="TEolConverter">
+      <configuration index="0" caption="Directory" value="sandbox\jcl\help\html"/>
+      <configuration index="1" caption="Filters" value="*.html;*.css;*.js"/>
+      <configuration index="2" caption="New EOL" value="LF"/>
+    </action>
+    <action classname="TArchiveMaker">
+      <configuration index="0" caption="Directory" value="sandbox\jcl"/>
+      <configuration index="1" caption="Filter" value="*help*"/>
+      <configuration index="2" caption="Archive name" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-htmlhelp-linux.tar"/>
+    </action>
+    <action classname="TDirectoryRemover">
+      <configuration index="0" caption="Directory" value="sandbox"/>
+      <configuration index="1" caption="Move to recycle bin" value="no"/>
+    </action>
+    <action classname="TArchiveMaker">
+      <configuration index="0" caption="Directory" value=""/>
+      <configuration index="1" caption="Filter" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-htmlhelp-linux.tar"/>
+      <configuration index="2" caption="Archive name" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-htmlhelp-linux.tar.gz"/>
+    </action>
+    <action classname="TFileRemover">
+      <configuration index="0" caption="Directory" value="."/>
+      <configuration index="1" caption="Filter" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-htmlhelp-linux.tar"/>
+      <configuration index="2" caption="Move to recycle bin" value="no"/>
+    </action>
+    <action classname="TLogSaver">
+      <configuration index="0" caption="File name" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-htmlhelp.log"/>
+      <configuration index="1" caption="Append" value="no"/>
+    </action>
+  </task>
+  <task name="jcl-chm.zip" selected="-1">
+    <action classname="TLogCleaner"/>
+    <action classname="TDirectoryCreator">
+      <configuration index="0" caption="Directory" value="sandbox"/>
+    </action>
+    <action classname="TCommandLineCaller">
+      <configuration index="0" caption="Application" value="%SVN%"/>
+      <configuration index="1" caption="Working directory" value="sandbox"/>
+      <configuration index="2" caption="Parameters" value="export -rBASE --native-eol CRLF --force ..\..\..\ ."/>
+      <configuration index="3" caption="Valid exit codes" value=""/>
+    </action>
+    <action classname="TConstantParser">
+      <configuration index="0" caption="Source file" value="sandbox\jcl\source\common\JclBase.pas"/>
+      <configuration index="1" caption="Constant name" value="JclVersionMajor"/>
+      <configuration index="2" caption="Environment variable" value="VersionMajor"/>
+    </action>
+    <action classname="TConstantParser">
+      <configuration index="0" caption="Source file" value="sandbox\jcl\source\common\JclBase.pas"/>
+      <configuration index="1" caption="Constant name" value="JclVersionMinor"/>
+      <configuration index="2" caption="Environment variable" value="VersionMinor"/>
+    </action>
+    <action classname="TConstantParser">
+      <configuration index="0" caption="Source file" value="sandbox\jcl\source\common\JclBase.pas"/>
+      <configuration index="1" caption="Constant name" value="JclVersionRelease"/>
+      <configuration index="2" caption="Environment variable" value="VersionRelease"/>
+    </action>
+    <action classname="TConstantParser">
+      <configuration index="0" caption="Source file" value="sandbox\jcl\source\common\JclBase.pas"/>
+      <configuration index="1" caption="Constant name" value="JclVersionBuild"/>
+      <configuration index="2" caption="Environment variable" value="VersionBuild"/>
+    </action>
+    <action classname="TCommandLineCaller">
+      <configuration index="0" caption="Application" value="%ComSpec%"/>
+      <configuration index="1" caption="Working directory" value="sandbox\jcl\devtools\"/>
+      <configuration index="2" caption="Parameters" value="/C included_files.bat"/>
+      <configuration index="3" caption="Valid exit codes" value=""/>
+    </action>
+    <action classname="TDirectoryCreator">
+      <configuration index="0" caption="Directory" value="sandbox\jcl\help"/>
+    </action>
+    <action classname="TCommandLineCaller">
+      <configuration index="0" caption="Application" value="%DMCC%"/>
+      <configuration index="1" caption="Working directory" value="sandbox\help"/>
+      <configuration index="2" caption="Parameters" value="-config &quot;CHM&quot; -noshow -w3 JclHelp.dox"/>
+      <configuration index="3" caption="Valid exit codes" value="0;20;30"/>
+    </action>
+    <action classname="TFileRemover">
+      <configuration index="0" caption="Directory" value="sandbox\jcl\help"/>
+      <configuration index="1" caption="Filter" value="*.html;*.css;*.js;*.gif;*.jpg;*.png"/>
+      <configuration index="2" caption="Move to recycle bin" value="no"/>
+    </action>
+    <action classname="TArchiveMaker">
+      <configuration index="0" caption="Directory" value="sandbox\jcl"/>
+      <configuration index="1" caption="Filter" value="*help*"/>
+      <configuration index="2" caption="Archive name" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-chmhelp.zip"/>
+    </action>
+    <action classname="TDirectoryRemover">
+      <configuration index="0" caption="Directory" value="sandbox"/>
+      <configuration index="1" caption="Move to recycle bin" value="no"/>
+    </action>
+    <action classname="TLogSaver">
+      <configuration index="0" caption="File name" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-chmhelp.log"/>
+      <configuration index="1" caption="Append" value="no"/>
+    </action>
+  </task>
+  <task name="jcl-h2.zip" selected="-1">
+    <action classname="TLogCleaner"/>
+    <action classname="TDirectoryCreator">
+      <configuration index="0" caption="Directory" value="sandbox"/>
+    </action>
+    <action classname="TCommandLineCaller">
+      <configuration index="0" caption="Application" value="%SVN%"/>
+      <configuration index="1" caption="Working directory" value="sandbox"/>
+      <configuration index="2" caption="Parameters" value="export -rBASE --native-eol CRLF --force ..\..\..\ ."/>
+      <configuration index="3" caption="Valid exit codes" value=""/>
+    </action>
+    <action classname="TConstantParser">
+      <configuration index="0" caption="Source file" value="sandbox\jcl\source\common\JclBase.pas"/>
+      <configuration index="1" caption="Constant name" value="JclVersionMajor"/>
+      <configuration index="2" caption="Environment variable" value="VersionMajor"/>
+    </action>
+    <action classname="TConstantParser">
+      <configuration index="0" caption="Source file" value="sandbox\jcl\source\common\JclBase.pas"/>
+      <configuration index="1" caption="Constant name" value="JclVersionMinor"/>
+      <configuration index="2" caption="Environment variable" value="VersionMinor"/>
+    </action>
+    <action classname="TConstantParser">
+      <configuration index="0" caption="Source file" value="sandbox\jcl\source\common\JclBase.pas"/>
+      <configuration index="1" caption="Constant name" value="JclVersionRelease"/>
+      <configuration index="2" caption="Environment variable" value="VersionRelease"/>
+    </action>
+    <action classname="TConstantParser">
+      <configuration index="0" caption="Source file" value="sandbox\jcl\source\common\JclBase.pas"/>
+      <configuration index="1" caption="Constant name" value="JclVersionBuild"/>
+      <configuration index="2" caption="Environment variable" value="VersionBuild"/>
+    </action>
+    <action classname="TCommandLineCaller">
+      <configuration index="0" caption="Application" value="%ComSpec%"/>
+      <configuration index="1" caption="Working directory" value="sandbox\jcl\devtools\"/>
+      <configuration index="2" caption="Parameters" value="/C included_files.bat"/>
+      <configuration index="3" caption="Valid exit codes" value=""/>
+    </action>
+    <action classname="TDirectoryCreator">
+      <configuration index="0" caption="Directory" value="sandbox\jcl\help"/>
+    </action>
+    <action classname="TCommandLineCaller">
+      <configuration index="0" caption="Application" value="%DMCC%"/>
+      <configuration index="1" caption="Working directory" value="sandbox\help"/>
+      <configuration index="2" caption="Parameters" value="-config &quot;H2&quot; -noshow -w3 JclHelp.dox"/>
+      <configuration index="3" caption="Valid exit codes" value="0;20;30"/>
+    </action>
+    <action classname="TFileRemover">
+      <configuration index="0" caption="Directory" value="sandbox\jcl\help"/>
+      <configuration index="1" caption="Filter" value="*.html;*.css;*.js;*.gif;*.jpg;*.png"/>
+      <configuration index="2" caption="Move to recycle bin" value="no"/>
+    </action>
+    <action classname="TArchiveMaker">
+      <configuration index="0" caption="Directory" value="sandbox\jcl"/>
+      <configuration index="1" caption="Filter" value="*help*"/>
+      <configuration index="2" caption="Archive name" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-htmlhelp2.zip"/>
+    </action>
+    <action classname="TDirectoryRemover">
+      <configuration index="0" caption="Directory" value="sandbox"/>
+      <configuration index="1" caption="Move to recycle bin" value="no"/>
+    </action>
+    <action classname="TLogSaver">
+      <configuration index="0" caption="File name" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-htmlhelp2.log"/>
+      <configuration index="1" caption="Append" value="no"/>
+    </action>
+  </task>
+  <task name="jcl-hlp.zip" selected="-1">
+    <action classname="TLogCleaner"/>
+    <action classname="TDirectoryCreator">
+      <configuration index="0" caption="Directory" value="sandbox"/>
+    </action>
+    <action classname="TCommandLineCaller">
+      <configuration index="0" caption="Application" value="%SVN%"/>
+      <configuration index="1" caption="Working directory" value="sandbox"/>
+      <configuration index="2" caption="Parameters" value="export -rBASE --native-eol CRLF --force ..\..\..\ ."/>
+      <configuration index="3" caption="Valid exit codes" value=""/>
+    </action>
+    <action classname="TConstantParser">
+      <configuration index="0" caption="Source file" value="sandbox\jcl\source\common\JclBase.pas"/>
+      <configuration index="1" caption="Constant name" value="JclVersionMajor"/>
+      <configuration index="2" caption="Environment variable" value="VersionMajor"/>
+    </action>
+    <action classname="TConstantParser">
+      <configuration index="0" caption="Source file" value="sandbox\jcl\source\common\JclBase.pas"/>
+      <configuration index="1" caption="Constant name" value="JclVersionMinor"/>
+      <configuration index="2" caption="Environment variable" value="VersionMinor"/>
+    </action>
+    <action classname="TConstantParser">
+      <configuration index="0" caption="Source file" value="sandbox\jcl\source\common\JclBase.pas"/>
+      <configuration index="1" caption="Constant name" value="JclVersionRelease"/>
+      <configuration index="2" caption="Environment variable" value="VersionRelease"/>
+    </action>
+    <action classname="TConstantParser">
+      <configuration index="0" caption="Source file" value="sandbox\jcl\source\common\JclBase.pas"/>
+      <configuration index="1" caption="Constant name" value="JclVersionBuild"/>
+      <configuration index="2" caption="Environment variable" value="VersionBuild"/>
+    </action>
+    <action classname="TCommandLineCaller">
+      <configuration index="0" caption="Application" value="%ComSpec%"/>
+      <configuration index="1" caption="Working directory" value="sandbox\jcl\devtools\"/>
+      <configuration index="2" caption="Parameters" value="/C included_files.bat"/>
+      <configuration index="3" caption="Valid exit codes" value=""/>
+    </action>
+    <action classname="TDirectoryCreator">
+      <configuration index="0" caption="Directory" value="sandbox\jcl\help"/>
+    </action>
+    <action classname="TCommandLineCaller">
+      <configuration index="0" caption="Application" value="%DMCC%"/>
+      <configuration index="1" caption="Working directory" value="sandbox\help"/>
+      <configuration index="2" caption="Parameters" value="-config &quot;HLP&quot; -noshow -w3 JclHelp.dox"/>
+      <configuration index="3" caption="Valid exit codes" value="0;20;30"/>
+    </action>
+    <action classname="TFileRemover">
+      <configuration index="0" caption="Directory" value="sandbox\jcl\help"/>
+      <configuration index="1" caption="Filter" value="*.html;*.css;*.js;*.gif;*.jpg;*.png"/>
+      <configuration index="2" caption="Move to recycle bin" value="no"/>
+    </action>
+    <action classname="TArchiveMaker">
+      <configuration index="0" caption="Directory" value="sandbox\jcl"/>
+      <configuration index="1" caption="Filter" value="*help*"/>
+      <configuration index="2" caption="Archive name" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-winhelp.zip"/>
+    </action>
+    <action classname="TDirectoryRemover">
+      <configuration index="0" caption="Directory" value="sandbox"/>
+      <configuration index="1" caption="Move to recycle bin" value="no"/>
+    </action>
+    <action classname="TLogSaver">
+      <configuration index="0" caption="File name" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-winhelp.log"/>
+      <configuration index="1" caption="Append" value="no"/>
+    </action>
+  </task>
+  <task name="jcl-xml.zip" selected="-1">
+    <action classname="TLogCleaner"/>
+    <action classname="TDirectoryCreator">
+      <configuration index="0" caption="Directory" value="sandbox"/>
+    </action>
+    <action classname="TCommandLineCaller">
+      <configuration index="0" caption="Application" value="%SVN%"/>
+      <configuration index="1" caption="Working directory" value="sandbox"/>
+      <configuration index="2" caption="Parameters" value="export -rBASE --native-eol CRLF --force ..\..\..\ ."/>
+      <configuration index="3" caption="Valid exit codes" value=""/>
+    </action>
+    <action classname="TConstantParser">
+      <configuration index="0" caption="Source file" value="sandbox\jcl\source\common\JclBase.pas"/>
+      <configuration index="1" caption="Constant name" value="JclVersionMajor"/>
+      <configuration index="2" caption="Environment variable" value="VersionMajor"/>
+    </action>
+    <action classname="TConstantParser">
+      <configuration index="0" caption="Source file" value="sandbox\jcl\source\common\JclBase.pas"/>
+      <configuration index="1" caption="Constant name" value="JclVersionMinor"/>
+      <configuration index="2" caption="Environment variable" value="VersionMinor"/>
+    </action>
+    <action classname="TConstantParser">
+      <configuration index="0" caption="Source file" value="sandbox\jcl\source\common\JclBase.pas"/>
+      <configuration index="1" caption="Constant name" value="JclVersionRelease"/>
+      <configuration index="2" caption="Environment variable" value="VersionRelease"/>
+    </action>
+    <action classname="TConstantParser">
+      <configuration index="0" caption="Source file" value="sandbox\jcl\source\common\JclBase.pas"/>
+      <configuration index="1" caption="Constant name" value="JclVersionBuild"/>
+      <configuration index="2" caption="Environment variable" value="VersionBuild"/>
+    </action>
+    <action classname="TCommandLineCaller">
+      <configuration index="0" caption="Application" value="%ComSpec%"/>
+      <configuration index="1" caption="Working directory" value="sandbox\jcl\devtools\"/>
+      <configuration index="2" caption="Parameters" value="/C included_files.bat"/>
+      <configuration index="3" caption="Valid exit codes" value=""/>
+    </action>
+    <action classname="TDirectoryCreator">
+      <configuration index="0" caption="Directory" value="sandbox\jcl\help"/>
+    </action>
+    <action classname="TCommandLineCaller">
+      <configuration index="0" caption="Application" value="%DMCC%"/>
+      <configuration index="1" caption="Working directory" value="sandbox\help"/>
+      <configuration index="2" caption="Parameters" value="-config &quot;XML&quot; -noshow -w3 JclHelp.dox"/>
+      <configuration index="3" caption="Valid exit codes" value="0;20;30"/>
+    </action>
+    <action classname="TFileRemover">
+      <configuration index="0" caption="Directory" value="sandbox\jcl\help"/>
+      <configuration index="1" caption="Filter" value="*.html;*.css;*.js;*.gif;*.jpg;*.png"/>
+      <configuration index="2" caption="Move to recycle bin" value="no"/>
+    </action>
+    <action classname="TArchiveMaker">
+      <configuration index="0" caption="Directory" value="sandbox\jcl"/>
+      <configuration index="1" caption="Filter" value="*help*"/>
+      <configuration index="2" caption="Archive name" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-xml.zip"/>
+    </action>
+    <action classname="TDirectoryRemover">
+      <configuration index="0" caption="Directory" value="sandbox"/>
+      <configuration index="1" caption="Move to recycle bin" value="no"/>
+    </action>
+    <action classname="TLogSaver">
+      <configuration index="0" caption="File name" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-xml.log"/>
+      <configuration index="1" caption="Append" value="no"/>
+    </action>
+  </task>
+  <task name="jcl-pdf.zip" selected="-1">
+    <action classname="TLogCleaner"/>
+    <action classname="TDirectoryCreator">
+      <configuration index="0" caption="Directory" value="sandbox"/>
+    </action>
+    <action classname="TCommandLineCaller">
+      <configuration index="0" caption="Application" value="%SVN%"/>
+      <configuration index="1" caption="Working directory" value="sandbox"/>
+      <configuration index="2" caption="Parameters" value="export -rBASE --native-eol CRLF --force ..\..\..\ ."/>
+      <configuration index="3" caption="Valid exit codes" value=""/>
+    </action>
+    <action classname="TConstantParser">
+      <configuration index="0" caption="Source file" value="sandbox\jcl\source\common\JclBase.pas"/>
+      <configuration index="1" caption="Constant name" value="JclVersionMajor"/>
+      <configuration index="2" caption="Environment variable" value="VersionMajor"/>
+    </action>
+    <action classname="TConstantParser">
+      <configuration index="0" caption="Source file" value="sandbox\jcl\source\common\JclBase.pas"/>
+      <configuration index="1" caption="Constant name" value="JclVersionMinor"/>
+      <configuration index="2" caption="Environment variable" value="VersionMinor"/>
+    </action>
+    <action classname="TConstantParser">
+      <configuration index="0" caption="Source file" value="sandbox\jcl\source\common\JclBase.pas"/>
+      <configuration index="1" caption="Constant name" value="JclVersionRelease"/>
+      <configuration index="2" caption="Environment variable" value="VersionRelease"/>
+    </action>
+    <action classname="TConstantParser">
+      <configuration index="0" caption="Source file" value="sandbox\jcl\source\common\JclBase.pas"/>
+      <configuration index="1" caption="Constant name" value="JclVersionBuild"/>
+      <configuration index="2" caption="Environment variable" value="VersionBuild"/>
+    </action>
+    <action classname="TCommandLineCaller">
+      <configuration index="0" caption="Application" value="%ComSpec%"/>
+      <configuration index="1" caption="Working directory" value="sandbox\jcl\devtools\"/>
+      <configuration index="2" caption="Parameters" value="/C included_files.bat"/>
+      <configuration index="3" caption="Valid exit codes" value=""/>
+    </action>
+    <action classname="TDirectoryCreator">
+      <configuration index="0" caption="Directory" value="sandbox\jcl\help"/>
+    </action>
+    <action classname="TCommandLineCaller">
+      <configuration index="0" caption="Application" value="%DMCC%"/>
+      <configuration index="1" caption="Working directory" value="sandbox\help"/>
+      <configuration index="2" caption="Parameters" value="-config &quot;PDF&quot; -noshow -w3 JclHelp.dox"/>
+      <configuration index="3" caption="Valid exit codes" value="0;20;30"/>
+    </action>
+    <action classname="TFileRemover">
+      <configuration index="0" caption="Directory" value="sandbox\jcl\help"/>
+      <configuration index="1" caption="Filter" value="*.html;*.css;*.js;*.gif;*.jpg;*.png"/>
+      <configuration index="2" caption="Move to recycle bin" value="no"/>
+    </action>
+    <action classname="TArchiveMaker">
+      <configuration index="0" caption="Directory" value="sandbox\jcl"/>
+      <configuration index="1" caption="Filter" value="*help*"/>
+      <configuration index="2" caption="Archive name" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-pdf.zip"/>
+    </action>
+    <action classname="TDirectoryRemover">
+      <configuration index="0" caption="Directory" value="sandbox"/>
+      <configuration index="1" caption="Move to recycle bin" value="no"/>
+    </action>
+    <action classname="TLogSaver">
+      <configuration index="0" caption="File name" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-pdf.log"/>
       <configuration index="1" caption="Append" value="no"/>
     </action>
   </task>
