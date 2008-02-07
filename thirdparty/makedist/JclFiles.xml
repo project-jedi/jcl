@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <makedist>
-  <task name="Jcl-win.zip" selected="0">
+  <task name="Jcl-win.zip" selected="-1">
     <action classname="TLogCleaner"/>
     <action classname="TDirectoryCreator">
       <configuration index="0" caption="Directory" value="sandbox"/>
@@ -51,7 +51,7 @@
       <configuration index="1" caption="Append" value="no"/>
     </action>
   </task>
-  <task name="Jcl-linux.zip" selected="0">
+  <task name="Jcl-linux.zip" selected="-1">
     <action classname="TLogCleaner"/>
     <action classname="TDirectoryCreator">
       <configuration index="0" caption="Directory" value="sandbox"/>
@@ -112,7 +112,7 @@
       <configuration index="1" caption="Append" value="no"/>
     </action>
   </task>
-  <task name="Jcl-turbo.zip" selected="0">
+  <task name="Jcl-turbo.zip" selected="-1">
     <action classname="TLogCleaner"/>
     <action classname="TDirectoryCreator">
       <configuration index="0" caption="Directory" value="sandbox"/>
@@ -319,7 +319,7 @@
     </action>
     <action classname="TFileRemover">
       <configuration index="0" caption="Directory" value="sandbox\jcl\help"/>
-      <configuration index="1" caption="Filter" value="*.html;*.css;*.js;*.gif;*.jpg;*.png"/>
+      <configuration index="1" caption="Filter" value="*.html;*.css;*.js;*.gif;*.jpg;*.png;*.c;*.h;*.inc;*.hhc;*.hhk;*.hhp"/>
       <configuration index="2" caption="Move to recycle bin" value="no"/>
     </action>
     <action classname="TArchiveMaker">
@@ -384,7 +384,7 @@
     </action>
     <action classname="TFileRemover">
       <configuration index="0" caption="Directory" value="sandbox\jcl\help"/>
-      <configuration index="1" caption="Filter" value="*.html;*.css;*.js;*.gif;*.jpg;*.png"/>
+      <configuration index="1" caption="Filter" value="*.html;*.css;*.js;*.gif;*.jpg;*.png;*.c;*.h;*.inc"/>
       <configuration index="2" caption="Move to recycle bin" value="no"/>
     </action>
     <action classname="TArchiveMaker">
@@ -447,11 +447,6 @@
       <configuration index="2" caption="Parameters" value="-config &quot;HLP&quot; -noshow -w3 JclHelp.dox"/>
       <configuration index="3" caption="Valid exit codes" value="0;20;30"/>
     </action>
-    <action classname="TFileRemover">
-      <configuration index="0" caption="Directory" value="sandbox\jcl\help"/>
-      <configuration index="1" caption="Filter" value="*.html;*.css;*.js;*.gif;*.jpg;*.png"/>
-      <configuration index="2" caption="Move to recycle bin" value="no"/>
-    </action>
     <action classname="TArchiveMaker">
       <configuration index="0" caption="Directory" value="sandbox\jcl"/>
       <configuration index="1" caption="Filter" value="*help*"/>
@@ -512,11 +507,6 @@
       <configuration index="2" caption="Parameters" value="-config &quot;XML&quot; -noshow -w3 JclHelp.dox"/>
       <configuration index="3" caption="Valid exit codes" value="0;20;30"/>
     </action>
-    <action classname="TFileRemover">
-      <configuration index="0" caption="Directory" value="sandbox\jcl\help"/>
-      <configuration index="1" caption="Filter" value="*.html;*.css;*.js;*.gif;*.jpg;*.png"/>
-      <configuration index="2" caption="Move to recycle bin" value="no"/>
-    </action>
     <action classname="TArchiveMaker">
       <configuration index="0" caption="Directory" value="sandbox\jcl"/>
       <configuration index="1" caption="Filter" value="*help*"/>
@@ -576,11 +566,6 @@
       <configuration index="1" caption="Working directory" value="sandbox\help"/>
       <configuration index="2" caption="Parameters" value="-config &quot;PDF&quot; -noshow -w3 JclHelp.dox"/>
       <configuration index="3" caption="Valid exit codes" value="0;20;30"/>
-    </action>
-    <action classname="TFileRemover">
-      <configuration index="0" caption="Directory" value="sandbox\jcl\help"/>
-      <configuration index="1" caption="Filter" value="*.html;*.css;*.js;*.gif;*.jpg;*.png"/>
-      <configuration index="2" caption="Move to recycle bin" value="no"/>
     </action>
     <action classname="TArchiveMaker">
       <configuration index="0" caption="Directory" value="sandbox\jcl"/>
