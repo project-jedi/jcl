@@ -5266,7 +5266,7 @@ begin
     // call back in case information could be lost
     Run := PWideChar(SW);
     // only ask if there's at least one Unicode character in the text
-    while Run^ in [WideChar(#1)..WideChar(#255)] do
+    while (Run^>#0) and (run^<=#255) do
       Inc(Run);
     // Note: The application can still set FSaveUnicode to True in the callback.
     if Run^ <> WideNull then
