@@ -193,7 +193,7 @@ function PathRemoveExtension(const Path: string): string;
 // if the user specifies such a localized directory like "C:\Benutzer\MyName\Bilder"
 // instead of the physical folder "C:\Users\MyName\Pictures".
 // These two functions allow to convert the user's input from localized to
-// physical paths and vici versa.
+// physical paths and vice versa.
 function PathGetPhysicalPath(const LocalizedPath: string): string;
 function PathGetLocalizedPath(const PhysicalPath: string): string;
 
@@ -2680,6 +2680,187 @@ begin
 end;
 
 {$IFDEF MSWINDOWS}
+{$IFDEF CLR}
+
+[SuppressUnmanagedCodeSecurity, DllImport('shlwapi.dll', CharSet = CharSet.Unicode, SetLastError = True, EntryPoint = 'StrRetToBuf')]
+function StrRetToBuf(var pstr: TStrRet; pidl: IntPtr; pszBuf: StringBuilder; cchBuf: UINT): HRESULT;
+  external;
+
+function SHGetDisplayName(ShellFolder: IShellFolder; PIDL: IntPtr; ForParsing: Boolean): string;
+const
+  Flags: array[Boolean] of DWORD = (SHGDN_NORMAL, SHGDN_FORPARSING);
+var
+  StrRet: TStrRet;
+  sb: StringBuilder;
+begin
+  ShellFolder.GetDisplayNameOf(PIDL, Flags[ForParsing], StrRet);
+  sb := StringBuilder.Create(MAX_PATH);
+  StrRetToBuf(StrRet, pidl, sb, sb.Capacity);
+  Result := sb.ToString;
+end;
+
+function CutFirstDirectory(var Path: string): string;
+var
+  ps: Integer;
+begin
+  ps := Pos(PathDelim, Path);
+  if ps > 0 then
+  begin
+    Result := Copy(Path, 1, ps - 1);
+    Path := Copy(Path, ps + 1, Length(Path));
+  end
+  else
+  begin
+    Result := Path;
+    Path := '';
+  end;
+end;
+
+function PathGetPhysicalPath(const LocalizedPath: string): string;
+var
+  Malloc: IMalloc;
+  DesktopFolder: IShellFolder;
+  RootFolder: IShellFolder;
+  Eaten: Cardinal;
+  Attributes: Cardinal;
+  pidl: array[0..0] of IntPtr;
+  EnumIDL: IEnumIDList;
+  Drive: WideString;
+  Featched: Cardinal;
+  ParsePath: WideString;
+  Path, Name: string;
+  Found: Boolean;
+  IID_IShellFolder: Guid;
+begin
+  if StartsText('\\', LocalizedPath) then
+  begin
+    Result := LocalizedPath;
+    Exit;
+  end;
+
+  Drive := ExtractFileDrive(LocalizedPath);
+  Path := Copy(LocalizedPath, Length(Drive) + 2, Length(LocalizedPath));
+  ParsePath := Drive;
+  OLECheck( SHGetMalloc(Malloc) );
+  try
+    OleCheck( SHGetDesktopFolder(DesktopFolder) );
+    IID_IShellFolder := TypeOf(IShellFolder).GUID;
+    try
+      while Path <> '' do
+      begin
+        Name := CutFirstDirectory(Path);
+        Found := False;
+        pidl[0] := nil;
+        if Succeeded( DesktopFolder.ParseDisplayName(0, IntPtr.Zero, ParsePath, Eaten, pidl[0], Attributes) ) then
+        begin
+          OleCheck( DesktopFolder.BindToObject(pidl[0], IntPtr.Zero, IID_IShellFolder, RootFolder) );
+          Malloc.Free(pidl[0]);
+
+          OleCheck( RootFolder.EnumObjects(0, SHCONTF_FOLDERS or SHCONTF_NONFOLDERS or SHCONTF_INCLUDEHIDDEN, EnumIDL) );
+          try
+            while EnumIDL.Next(1, pidl, Featched) = NOERROR do
+            begin
+              if System.String.Compare(Name, SHGetDisplayName(RootFolder, pidl[0], False), True) = 0 then
+              begin
+                ParsePath := SHGetDisplayName(RootFolder, pidl[0], True);
+                Malloc.Free(pidl[0]);
+                Found := True;
+                Break;
+              end;
+              Malloc.Free(pidl[0]);
+            end;
+            Marshal.ReleaseComObject(EnumIDL);
+          finally
+            Marshal.ReleaseComObject(RootFolder);
+          end;
+        end;
+        if not Found then
+          ParsePath := ParsePath + PathDelim + Name;
+      end;
+    finally
+      Marshal.ReleaseComObject(DesktopFolder);
+    end;
+  finally
+    Marshal.ReleaseComObject(Malloc);
+  end;
+  Result := ParsePath;
+end;
+
+function PathGetLocalizedPath(const PhysicalPath: string): string;
+var
+  Malloc: IMalloc;
+  DesktopFolder: IShellFolder;
+  RootFolder: IShellFolder;
+  Eaten: Cardinal;
+  Attributes: Cardinal;
+  pidl: array[0..0] of IntPtr;
+  EnumIDL: IEnumIDList;
+  Drive: WideString;
+  Featched: Cardinal;
+  ParsePath: WideString;
+  Path, Name, ParseName, DisplayName: string;
+  Found: Boolean;
+  IID_IShellFolder: Guid;
+begin
+  if StartsText('\\', PhysicalPath) then
+  begin
+    Result := PhysicalPath;
+    Exit;
+  end;
+
+  Drive := ExtractFileDrive(PhysicalPath);
+  Path := Copy(PhysicalPath, Length(Drive) + 2, Length(PhysicalPath));
+  ParsePath := Drive;
+  Result := Drive;
+  OLECheck( SHGetMalloc(Malloc) );
+  try
+    OleCheck( SHGetDesktopFolder(DesktopFolder) );
+    IID_IShellFolder := TypeOf(IShellFolder).GUID;
+    try
+      while Path <> '' do
+      begin
+        Name := CutFirstDirectory(Path);
+        Found := False;
+        pidl[0] := nil;
+        if Succeeded( DesktopFolder.ParseDisplayName(0, IntPtr.Zero, ParsePath, Eaten, pidl[0], Attributes) ) then
+        begin
+          OleCheck( DesktopFolder.BindToObject(pidl[0], IntPtr.Zero, IID_IShellFolder, RootFolder) );
+          Malloc.Free(pidl[0]);
+          try
+            OleCheck( RootFolder.EnumObjects(0, SHCONTF_FOLDERS or SHCONTF_NONFOLDERS or SHCONTF_INCLUDEHIDDEN, EnumIDL) );
+            while EnumIDL.Next(1, pidl, Featched) = NOERROR do
+            begin
+              ParseName := SHGetDisplayName(RootFolder, pidl[0], True);
+              DisplayName := SHGetDisplayName(RootFolder, pidl[0], False);
+              Malloc.Free(pidl[0]);
+              if (System.String.Compare(Name, ExtractFileName(ParseName), True) = 0) or
+                 (System.String.Compare(Name, DisplayName, True) = 0) then
+              begin
+                Name := DisplayName;
+                ParsePath := ParseName;
+                Found := True;
+                Break;
+              end;
+            end;
+            Marshal.ReleaseComObject(EnumIDL);
+          finally
+            Marshal.ReleaseComObject(RootFolder);
+          end;
+        end;
+        Result := Result + PathDelim + Name;
+        if not Found then
+          ParsePath := ParsePath + PathDelim + Name;
+      end;
+    finally
+      Marshal.ReleaseComObject(DesktopFolder);
+    end;
+  finally
+    Marshal.ReleaseComObject(Malloc);
+  end;
+end;
+
+{$ELSE} // CLR => not CLR
+
 function SHGetDisplayName(ShellFolder: IShellFolder; PIDL: PItemIDList; ForParsing: Boolean): string;
 const
   Flags: array[Boolean] of DWORD = (SHGDN_NORMAL, SHGDN_FORPARSING);
@@ -2704,7 +2885,7 @@ begin
   Result := Copy(Result, 1, lstrlen(PChar(Result)));
 end;
 
-function CurFirstDirectory(var Path: string): string;
+function CutFirstDirectory(var Path: string): string;
 var
   ps: Integer;
 begin
@@ -2720,10 +2901,8 @@ begin
     Path := '';
   end;
 end;
-{$ENDIF MSWINDOWS}
 
 function PathGetPhysicalPath(const LocalizedPath: string): string;
-{$IFDEF MSWINDOWS}
 var
   Malloc: IMalloc;
   DesktopFolder: IShellFolder;
@@ -2734,7 +2913,7 @@ var
   EnumIDL: IEnumIDList;
   Drive: WideString;
   Featched: Cardinal;
-  RetValue: WideString;
+  ParsePath: WideString;
   Path, Name: string;
   Found: Boolean;
 begin
@@ -2746,15 +2925,15 @@ begin
 
   Drive := ExtractFileDrive(LocalizedPath);
   Path := Copy(LocalizedPath, Length(Drive) + 2, Length(LocalizedPath));
-  RetValue := Drive;
+  ParsePath := Drive;
   OLECheck( SHGetMalloc(Malloc) );
   OleCheck( SHGetDesktopFolder(DesktopFolder) );
-  Name := CurFirstDirectory(Path);
-  while (Name <> '') or (Path <> '') do
+  while Path <> '' do
   begin
+    Name := CutFirstDirectory(Path);
     Found := False;
     pidl := nil;
-    if Succeeded( DesktopFolder.ParseDisplayName(0, nil, PWideChar(RetValue), Eaten, pidl, Attributes) ) then
+    if Succeeded( DesktopFolder.ParseDisplayName(0, nil, PWideChar(ParsePath), Eaten, pidl, Attributes) ) then
     begin
       OleCheck( DesktopFolder.BindToObject(pidl, nil, IShellFolder, RootFolder) );
       Malloc.Free(pidl);
@@ -2762,9 +2941,9 @@ begin
       OleCheck( RootFolder.EnumObjects(0, SHCONTF_FOLDERS or SHCONTF_NONFOLDERS or SHCONTF_INCLUDEHIDDEN, EnumIDL) );
       while EnumIDL.Next(1, pidl, Featched) = NOERROR do
       begin
-        if AnsiSameText(Name, SHGetDisplayName(RootFolder, pidl, False)) then
+        if AnsiCompareText(Name, SHGetDisplayName(RootFolder, pidl, False)) = 0 then
         begin
-          RetValue := SHGetDisplayName(RootFolder, pidl, True);
+          ParsePath := SHGetDisplayName(RootFolder, pidl, True);
           Malloc.Free(pidl);
           Found := True;
           Break;
@@ -2775,19 +2954,12 @@ begin
       RootFolder := nil;
     end;
     if not Found then
-      RetValue := RetValue + DirDelimiter + Name;
-    Name := CurFirstDirectory(Path);
+      ParsePath := ParsePath + DirDelimiter + Name;
   end;
-  Result := RetValue;
+  Result := ParsePath;
 end;
-{$ELSE}
-begin
-  Result := LocalizedPath;
-end;
-{$ENDIF MSWINDOWS}
 
 function PathGetLocalizedPath(const PhysicalPath: string): string;
-{$IFDEF MSWINDOWS}
 var
   Malloc: IMalloc;
   DesktopFolder: IShellFolder;
@@ -2814,9 +2986,9 @@ begin
   Result := Drive;
   OLECheck( SHGetMalloc(Malloc) );
   OleCheck( SHGetDesktopFolder(DesktopFolder) );
-  Name := CurFirstDirectory(Path);
-  while (Name <> '') or (Path <> '') do
+  while Path <> '' do
   begin
+    Name := CutFirstDirectory(Path);
     Found := False;
     pidl := nil;
     if Succeeded( DesktopFolder.ParseDisplayName(0, nil, PWideChar(ParsePath), Eaten, pidl, Attributes) ) then
@@ -2828,27 +3000,16 @@ begin
       while EnumIDL.Next(1, pidl, Featched) = NOERROR do
       begin
         ParseName := SHGetDisplayName(RootFolder, pidl, True);
-        if AnsiSameText(Name, ExtractFileName(ParseName)) then
+        DisplayName := SHGetDisplayName(RootFolder, pidl, False);
+        Malloc.Free(pidl);
+        if (AnsiCompareText(Name, ExtractFileName(ParseName)) = 0) or
+           (AnsiCompareText(Name, DisplayName) = 0) then
         begin
-          Name := SHGetDisplayName(RootFolder, pidl, False);
-          Malloc.Free(pidl);
+          Name := DisplayName;
           ParsePath := ParseName;
           Found := True;
           Break;
-        end
-        else
-        begin
-          DisplayName := SHGetDisplayName(RootFolder, pidl, False);
-          if AnsiSameText(Name, DisplayName) then
-          begin
-            Malloc.Free(pidl);
-            ParsePath := ParseName;
-            Found := True;
-            Break;
-          end;
         end;
-
-        Malloc.Free(pidl);
       end;
       EnumIDL := nil;
       RootFolder := nil;
@@ -2856,10 +3017,17 @@ begin
     Result := Result + DirDelimiter + Name;
     if not Found then
       ParsePath := ParsePath + DirDelimiter + Name;
-    Name := CurFirstDirectory(Path);
   end;
 end;
-{$ELSE}
+{$ENDIF CLR}
+
+{$ELSE} // MSWINDOWS => not MSWINDOWS
+function PathGetPhysicalPath(const LocalizedPath: string): string;
+begin
+  Result := LocalizedPath;
+end;
+
+function PathGetLocalizedPath(const PhysicalPath: string): string;
 begin
   Result := PhysicalPath;
 end;
