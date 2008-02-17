@@ -2750,7 +2750,7 @@ begin
   OLECheck( SHGetMalloc(Malloc) );
   OleCheck( SHGetDesktopFolder(DesktopFolder) );
   Name := CurFirstDirectory(Path);
-  while Name <> '' do
+  while (Name <> '') or (Path <> '') do
   begin
     Found := False;
     pidl := nil;
@@ -2762,7 +2762,7 @@ begin
       OleCheck( RootFolder.EnumObjects(0, SHCONTF_FOLDERS or SHCONTF_NONFOLDERS or SHCONTF_INCLUDEHIDDEN, EnumIDL) );
       while EnumIDL.Next(1, pidl, Featched) = NOERROR do
       begin
-        if Name = SHGetDisplayName(RootFolder, pidl, False) then
+        if AnsiSameText(Name, SHGetDisplayName(RootFolder, pidl, False)) then
         begin
           RetValue := SHGetDisplayName(RootFolder, pidl, True);
           Malloc.Free(pidl);
@@ -2799,7 +2799,7 @@ var
   Drive: WideString;
   Featched: Cardinal;
   ParsePath: WideString;
-  Path, Name, ParseName: string;
+  Path, Name, ParseName, DisplayName: string;
   Found: Boolean;
 begin
   if StrCompareRange('\\', PhysicalPath, 1, 2) = 0 then
@@ -2815,7 +2815,7 @@ begin
   OLECheck( SHGetMalloc(Malloc) );
   OleCheck( SHGetDesktopFolder(DesktopFolder) );
   Name := CurFirstDirectory(Path);
-  while Name <> '' do
+  while (Name <> '') or (Path <> '') do
   begin
     Found := False;
     pidl := nil;
@@ -2828,14 +2828,26 @@ begin
       while EnumIDL.Next(1, pidl, Featched) = NOERROR do
       begin
         ParseName := SHGetDisplayName(RootFolder, pidl, True);
-        if Name = ExtractFileName(ParseName) then
+        if AnsiSameText(Name, ExtractFileName(ParseName)) then
         begin
           Name := SHGetDisplayName(RootFolder, pidl, False);
           Malloc.Free(pidl);
           ParsePath := ParseName;
           Found := True;
           Break;
+        end
+        else
+        begin
+          DisplayName := SHGetDisplayName(RootFolder, pidl, False);
+          if AnsiSameText(Name, DisplayName) then
+          begin
+            Malloc.Free(pidl);
+            ParsePath := ParseName;
+            Found := True;
+            Break;
+          end;
         end;
+
         Malloc.Free(pidl);
       end;
       EnumIDL := nil;
