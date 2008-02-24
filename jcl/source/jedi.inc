@@ -384,6 +384,7 @@
   HAS_UNIT_DATEUTILS            Unit DateUtils exists (D6+/BCB6+/FPC)
   HAS_UNIT_CONTNRS              Unit contnrs exists (D6+/BCB6+/FPC)
   XPLATFORM_RTL                 The RTL supports crossplatform function names (e.g. RaiseLastOSError) (D6+/BCB6+/FPC)
+  SUPPORTS_UNICODE              Compiler supports unicode strings
 
 
 - Compiler Settings
@@ -929,6 +930,16 @@
     {$UNDEF SUPPORTS_UNSAFE_WARNINGS}
   {$ENDIF}
 {$ENDIF FPC}
+
+{$IFDEF CONDITIONALEXPRESSIONS}
+  {$IFDEF CLR}
+    {$DEFINE SUPPORTS_UNICODE}
+  {$ELSE}
+    {$IF SizeOf(Char) > 1}
+      {$DEFINE SUPPORTS_UNICODE}
+    {$IFEND}
+  {$ENDIF CLR}
+{$ENDIF CONDITIONALEXPRESSIONS}
 
 {$IFDEF COMPILER1_UP}
   {$DEFINE SUPPORTS_CONSTPARAMS}

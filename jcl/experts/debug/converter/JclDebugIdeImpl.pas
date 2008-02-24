@@ -185,6 +185,9 @@ implementation
 
 uses
   TypInfo,
+  {$IFDEF HAS_UNIT_VARIANTS}
+  Variants,
+  {$ENDIF HAS_UNIT_VARIANTS}
   JclBase, JclBorlandTools, JclDebug, JclDebugIdeResult,
   JclOtaResources;
 
@@ -433,8 +436,8 @@ begin
       if not Assigned(ProjOptions) then
         raise EJclExpertException.CreateTrace(RsENoProjectOptions);
 
-
-      if ProjOptions.Values[MapFileOptionName] <> MapFileOptionDetailed then
+      // keep EVariantConvert away from us
+      if (VarToStr(ProjOptions.Values[MapFileOptionName]) <> IntToStr(MapFileOptionDetailed)) then
       begin
         if MessageDlg(Format(RsChangeMapFileOption, [ExtractFileName(Project.FileName)]), mtConfirmation, [mbYes, mbNo], 0) = mrYes then
         begin
@@ -1487,7 +1490,7 @@ begin
     on ExceptionObj: TObject do
     begin
       JclExpertShowExceptionDialog(ExceptionObj);
-      raise;
+      //raise; Do not lock out the user from compiling anything
     end;
   end;
 end;

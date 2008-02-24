@@ -235,13 +235,18 @@ function StrAnsiToOem(const S: string): string;
 {$ENDIF WIN32}
 
 {$IFNDEF CLR}
+{$IFNDEF SUPPORTS_UNICODE}
+{$IFDEF KEEP_DEPRECATED}
 // String Management
-procedure StrAddRef(var S: string);
-function StrAllocSize(const S: string): Longint;
-procedure StrDecRef(var S: string);
+procedure StrAddRef(var S: string); {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
+function StrAllocSize(const S: string): Longint; {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
+procedure StrDecRef(var S: string); {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
+function StrLength(const S: string): Longint; {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
+function StrRefCount(const S: string): Longint; {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
+{$ENDIF KEEP_DEPRECATED}
+{$ENDIF ~SUPPORTS_UNICODE}
+
 function StrLen(S: PChar): Integer;
-function StrLength(const S: string): Longint;
-function StrRefCount(const S: string): Longint;
 {$ENDIF ~CLR}
 procedure StrResetLength(var S: string); overload;
 {$IFDEF CLR}
@@ -356,8 +361,8 @@ function AddStringToStrings(const S: string; Strings: TStrings; const Unique: Bo
 {$IFDEF KEEP_DEPRECATED}
 function BooleanToStr(B: Boolean): string;
 {$ENDIF KEEP_DEPRECATED}
-function FileToString(const FileName: string): AnsiString;
-procedure StringToFile(const FileName: string; const Contents: AnsiString; Append: Boolean = False);
+function FileToString(const FileName: string): AnsiString; // AnsiString here because it is binary data
+procedure StringToFile(const FileName: string; const Contents: AnsiString; Append: Boolean = False); // AnsiString here because it is binary data
 function StrToken(var S: string; Separator: Char): string;
 procedure StrTokens(const S: string; const List: TStrings);
 procedure StrTokenToStrings(S: string; Separator: Char; const List: TStrings);
@@ -412,26 +417,26 @@ type
   // System.Text.StringBuilder.
   // It is zero based and the method that allow an TObject (Append, Insert,
   // AppendFormat) are limited to IToString implementors.
+  // This class is not threadsafe. Any instance of TStringBuilder should not
+  // be used in different threads at the same time.
   TStringBuilder = class(TInterfacedObject, IToString)
   private
     FChars: TCharDynArray;
     FLength: Integer;
     FMaxCapacity: Integer;
-    FLock: TJclIntfCriticalSection;
 
     function GetCapacity: Integer;
     procedure SetCapacity(const Value: Integer);
     function GetChars(Index: Integer): Char;
     procedure SetChars(Index: Integer; const Value: Char);
     procedure Set_Length(const Value: Integer);
-
+  protected
     function AppendPChar(Value: PChar; Count: Integer; RepeatCount: Integer = 1): TStringBuilder;
     function InsertPChar(Index: Integer; Value: PChar; Count: Integer; RepeatCount: Integer = 1): TStringBuilder;
   public
     constructor Create(const Value: string; Capacity: Integer = 16); overload;
     constructor Create(Capacity: Integer = 16; MaxCapacity: Integer = MaxInt); overload;
     constructor Create(const Value: string; StartIndex, Length, Capacity: Integer); overload;
-    destructor Destroy; override;
 
     function Append(const Value: string): TStringBuilder; overload;
     function Append(const Value: string; StartIndex, Length: Integer): TStringBuilder; overload;
@@ -597,33 +602,41 @@ uses
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
+  {$IFDEF SUPPORTS_UNICODE}
+  StrUtils,
+  {$ENDIF SUPPORTS_UNICODE}
   JclLogic, JclResources, JclStreams;
 
 //=== Internal ===============================================================
 
 {$IFNDEF CLR}
+
+{$IFNDEF SUPPORTS_UNICODE}
 type
-  TAnsiStrRec = packed record
+  TStrRec = packed record
     AllocSize: Longint;
     RefCount: Longint;
     Length: Longint;
   end;
+{$ENDIF ~SUPPORTS_UNICODE}
 
 const
-  AnsiStrRecSize  = SizeOf(TAnsiStrRec);     // size of the string header rec
-  AnsiCharCount   = Ord(High(Char)) + 1; // # of chars in one set
-  AnsiLoOffset    = AnsiCharCount * 0;       // offset to lower case chars
-  AnsiUpOffset    = AnsiCharCount * 1;       // offset to upper case chars
-  AnsiReOffset    = AnsiCharCount * 2;       // offset to reverse case chars
-  AnsiAlOffset    = 12;                      // offset to AllocSize in StrRec
-  AnsiRfOffset    = 8;                       // offset to RefCount in StrRec
-  AnsiLnOffset    = 4;                       // offset to Length in StrRec
-  AnsiCaseMapSize = AnsiCharCount * 3;       // # of chars is a table
+  MaxStrCharCount   = Ord(High(Char)) + 1;       // # of chars in one set
+  StrLoOffset       = MaxStrCharCount * 0;       // offset to lower case chars
+  StrUpOffset       = MaxStrCharCount * 1;       // offset to upper case chars
+  StrReOffset       = MaxStrCharCount * 2;       // offset to reverse case chars
+  StrCaseMapSize    = MaxStrCharCount * 3;       // # of chars is a table
+  {$IFNDEF SUPPORTS_UNICODE}
+  StrRecSize        = SizeOf(TStrRec);           // size of the string header rec
+  StrAllocOffset    = 12;                        // offset to AllocSize in StrRec
+  StrRefCountOffset = 8;                         // offset to RefCount in StrRec
+  StrLengthOffset   = 4;                         // offset to Length in StrRec
+  {$ENDIF ~SUPPORTS_UNICODE}
 
 var
-  AnsiCaseMap: array [0..AnsiCaseMapSize - 1] of Char; // case mappings
-  AnsiCaseMapReady: Boolean = False;         // true if case map exists
-  AnsiCharTypes: array [Char] of Word;
+  StrCaseMap: array [0..StrCaseMapSize - 1] of Char; // case mappings
+  StrCaseMapReady: Boolean = False;         // true if case map exists
+  StrCharTypes: array [Char] of Word;
 
 procedure LoadCharTypes;
 var
@@ -661,7 +674,7 @@ begin
       CurrType := CurrType or C1_ALPHA;
     {$DEFINE CHAR_TYPES_INITIALIZED}
     {$ENDIF LINUX}
-    AnsiCharTypes[CurrChar] := CurrType;
+    StrCharTypes[CurrChar] := CurrType;
     {$IFNDEF CHAR_TYPES_INITIALIZED}
     Implement case map initialization here
     {$ENDIF ~CHAR_TYPES_INITIALIZED}
@@ -672,7 +685,7 @@ procedure LoadCaseMap;
 var
   CurrChar, UpCaseChar, LoCaseChar, ReCaseChar: Char;
 begin
-  if not AnsiCaseMapReady then
+  if not StrCaseMapReady then
   begin
     for CurrChar := Low(Char) to High(Char) do
     begin
@@ -698,11 +711,11 @@ begin
           ReCaseChar := UpCaseChar
         else
           ReCaseChar := CurrChar;
-      AnsiCaseMap[Ord(CurrChar) + AnsiLoOffset] := LoCaseChar;
-      AnsiCaseMap[Ord(CurrChar) + AnsiUpOffset] := UpCaseChar;
-      AnsiCaseMap[Ord(CurrChar) + AnsiReOffset] := ReCaseChar;
+      StrCaseMap[Ord(CurrChar) + StrLoOffset] := LoCaseChar;
+      StrCaseMap[Ord(CurrChar) + StrUpOffset] := UpCaseChar;
+      StrCaseMap[Ord(CurrChar) + StrReOffset] := ReCaseChar;
     end;
-    AnsiCaseMapReady := True;
+    StrCaseMapReady := True;
   end;
 end;
 {$ENDIF ~CLR}
@@ -712,18 +725,36 @@ end;
 
 {$IFDEF CLR}
 const
-  AnsiLoOffset    = 0;
-  AnsiUpOffset    = 1;
+  StrLoOffset    = 0;
+  StrUpOffset    = 1;
 
 procedure StrCase(var Str: string; const Offset: Integer);
 begin
-  if Offset = AnsiUpOffset then
+  if Offset = StrUpOffset then
     Str := Str.ToUpper
   else
     Str := Str.ToLower;
 end;
 {$ELSE}
-procedure StrCase(var Str: string; const Offset: Integer); register; assembler;
+procedure StrCase(var Str: string; const Offset: Integer);
+{$IFDEF SUPPORTS_UNICODE}
+var
+  Len: Integer;
+  RetValue: string;
+begin
+  Len := Length(Str);
+  SetLength(RetValue, Len);
+  case Offset of
+    StrUpOffset:
+      LCMapString(LOCALE_USER_DEFAULT, LCMAP_UPPERCASE, PChar(Str), Len, PChar(RetValue), Len);
+    StrLoOffset:
+      LCMapString(LOCALE_USER_DEFAULT, LCMAP_LOWERCASE, PChar(Str), Len, PChar(RetValue), Len);
+  else
+    Assert(False, 'StrReOffset not supported');
+  end;
+  Str := RetValue;
+end;
+{$ELSE}
 asm
         // make sure that the string is not null
 
@@ -743,7 +774,7 @@ asm
 
         // get the length, and prepare the counter
 
-        MOV     ECX, [EAX - AnsiStrRecSize].TAnsiStrRec.Length
+        MOV     ECX, [EAX - StrRecSize].TStrRec.Length
         DEC     ECX
         JS      @@StrIsNull
 
@@ -756,9 +787,9 @@ asm
         // load case map and prepare variables }
 
         {$IFDEF PIC}
-        LEA     EBX, [EBX][AnsiCaseMap + EDX]
+        LEA     EBX, [EBX][StrCaseMap + EDX]
         {$ELSE}
-        LEA     EBX, [AnsiCaseMap + EDX]
+        LEA     EBX, [StrCaseMap + EDX]
         {$ENDIF PIC}
         MOV     ESI, EAX
         XOR     EDX, EDX
@@ -816,6 +847,7 @@ asm
 
 @@StrIsNull:
 end;
+{$ENDIF SUPPORTS_UNICODE}
 {$ENDIF CLR}
 
 {$IFNDEF CLR}
@@ -823,7 +855,28 @@ end;
 // Uppercases or Lowercases a give null terminated string depending on the
 // passed offset. (UpOffset or LoOffset)
 
-procedure StrCaseBuff(S: PChar; const Offset: Integer); register; assembler;
+procedure StrCaseBuff(S: PChar; const Offset: Integer);
+{$IFDEF SUPPORTS_UNICODE}
+var
+  Len: Integer;
+  RetValue: string;
+begin
+  if S <> nil then
+  begin
+    Len := StrLen(S);
+    SetLength(RetValue, Len);
+    case Offset of
+      StrUpOffset:
+        LCMapString(LOCALE_USER_DEFAULT, LCMAP_UPPERCASE, S, Len, PChar(RetValue), Len);
+      StrLoOffset:
+        LCMapString(LOCALE_USER_DEFAULT, LCMAP_LOWERCASE, S, Len, PChar(RetValue), Len);
+    else
+      Assert(False, 'StrReOffset not supported');
+    end;
+    Move(PChar(RetValue)^, S^, Len * SizeOf(Char));
+  end;
+end;
+{$ELSE}
 asm
         // make sure the string is not null
 
@@ -838,9 +891,9 @@ asm
         // load case map and prepare variables
 
         {$IFDEF PIC}
-        LEA     EBX, [EBX][AnsiCaseMap + EDX]
+        LEA     EBX, [EBX][StrCaseMap + EDX]
         {$ELSE}
-        LEA     EBX, [AnsiCaseMap + EDX]
+        LEA     EBX, [StrCaseMap + EDX]
         {$ENDIF PIC}
         MOV     ESI, EAX
         XOR     EDX, EDX
@@ -895,18 +948,13 @@ asm
 
 @@StrIsNull:
 end;
+{$ENDIF SUPPORTS_UNICODE}
 
-function StrEndW(Str: PWideChar): PWideChar; assembler;
-// returns a pointer to the end of a null terminated string
-// stolen from JclUnicode
-asm
-       MOV     EDX, EDI
-       MOV     EDI, EAX
-       MOV     ECX, 0FFFFFFFFH
-       XOR     AX, AX
-       REPNE   SCASW
-       LEA     EAX, [EDI - 2]
-       MOV     EDI, EDX
+function StrEndW(Str: PWideChar): PWideChar;
+begin
+  Result := Str;
+  while Result^ <> #0 do
+    Inc(Result);
 end;
 {$ENDIF ~CLR}
 
@@ -1266,14 +1314,13 @@ end;
 procedure StrLowerInPlace(var S: string);
 {$IFDEF PIC}
 begin
-  StrCase(S, AnsiLoOffset);
+  StrCase(S, StrLoOffset);
 end;
 {$ELSE}
-assembler;
 asm
-        // StrCase(S, AnsiLoOffset)
+        // StrCase(S, StrLoOffset)
 
-        XOR     EDX, EDX         // MOV     EDX, LoOffset
+        XOR     EDX, EDX         // MOV     EDX, StrLoOffset
         JMP     StrCase
 end;
 {$ENDIF PIC}
@@ -1282,10 +1329,9 @@ end;
 procedure StrLowerBuff(S: PChar);
 {$IFDEF PIC}
 begin
-  StrCaseBuff(S, AnsiLoOffset);
+  StrCaseBuff(S, StrLoOffset);
 end;
 {$ELSE}
-assembler;
 asm
         // StrCaseBuff(S, LoOffset)
         XOR     EDX, EDX                // MOV     EDX, LoOffset
@@ -1322,7 +1368,7 @@ begin
   {$IFDEF CLR}
   MoveString(Source, FromIndex, Dest, ToIndex, Count);
   {$ELSE}
-  Move(Source[FromIndex], Dest[ToIndex], Count);
+  Move(Source[FromIndex], Dest[ToIndex], Count * SizeOf(Char));
   {$ENDIF CLR}
 end;
 
@@ -1487,7 +1533,7 @@ begin
   if Dest <> nil then
     for Index := 0 to Count - 1 do
   begin
-    Move(Source^, Dest^, Len*SizeOf(Char));
+    Move(Source^, Dest^, Len * SizeOf(Char));
     Inc(Dest,Len*SizeOf(Char));
   end;
 end;
@@ -1533,7 +1579,7 @@ begin
     Dest := PChar(Result);
     while (L > 0) do
     begin
-      Move(S[1],Dest^,Min(L,Len)*SizeOf(Char));
+      Move(S[1], Dest^, Min(L, Len) *SizeOf(Char));
       Inc(Dest,Len);
       Dec(L,Len);
     end;
@@ -1642,7 +1688,7 @@ begin
               ResultPtr := @ResultStr[ResultIndex];
             end;
             { append replace to result and move past the search string in source }
-            Move((@Replace[1])^, ResultPtr^, ReplaceLength);
+            Move((@Replace[1])^, ResultPtr^, ReplaceLength * SizeOf(Char));
           end;
           Inc(SourcePtr, SearchLength);
           Inc(ResultPtr, ReplaceLength);
@@ -2004,12 +2050,12 @@ end;
 procedure StrUpperInPlace(var S: string);
 {$IFDEF PIC}
 begin
-  StrCase(S, AnsiUpOffset);
+  StrCase(S, StrUpOffset);
 end;
 {$ELSE}
 asm
-        // StrCase(Str, AnsiUpOffset)
-        MOV     EDX, AnsiUpOffset
+        // StrCase(Str, StrUpOffset)
+        MOV     EDX, StrUpOffset
         JMP     StrCase
 end;
 {$ENDIF PIC}
@@ -2018,12 +2064,12 @@ end;
 procedure StrUpperBuff(S: PChar);
 {$IFDEF PIC}
 begin
-  StrCaseBuff(S, AnsiUpOffset);
+  StrCaseBuff(S, StrUpOffset);
 end;
 {$ELSE}
 asm
         // StrCaseBuff(S, UpOffset)
-        MOV     EDX, AnsiUpOffset
+        MOV     EDX, StrUpOffset
         JMP     StrCaseBuff
 end;
 {$ENDIF PIC}
@@ -2051,6 +2097,8 @@ end;
 {$IFNDEF CLR}
 //=== String Management ======================================================
 
+{$IFNDEF SUPPORTS_UNICODE}
+{$IFDEF KEEP_DEPRECATED}
 procedure StrAddRef(var S: string);
 var
   Foo: string;
@@ -2071,10 +2119,10 @@ begin
   Result := 0;
   if Pointer(S) <> nil then
   begin
-    P := Pointer(Integer(Pointer(S)) - AnsiRfOffset);
+    P := Pointer(Integer(Pointer(S)) - StrRefCountOffset);
     if Integer(P^) <> -1 then
     begin
-      P := Pointer(Integer(Pointer(S)) - AnsiAlOffset);
+      P := Pointer(Integer(Pointer(S)) - StrAllocOffset);
       Result := Integer(P^);
     end;
   end;
@@ -2096,7 +2144,48 @@ begin
   end;
 end;
 
-function StrLen(S: PChar): Integer; assembler;
+function StrLength(const S: string): Longint;
+var
+  P: Pointer;
+begin
+  Result := 0;
+  if Pointer(S) <> nil then
+  begin
+    P := Pointer(Integer(Pointer(S)) - StrLengthOffset);
+    Result := Longint(P^) and (not $80000000 shr 1);
+  end;
+end;
+
+function StrRefCount(const S: string): Longint;
+var
+  P: Pointer;
+begin
+  Result := 0;
+  if Pointer(S) <> nil then
+  begin
+    P := Pointer(Integer(Pointer(S)) - StrRefCountOffset);
+    Result := Longint(P^);
+  end;
+end;
+{$ENDIF KEEP_DEPRECATED}
+{$ENDIF ~SUPPORTS_UNICODE}
+
+function StrLen(S: PChar): Integer;
+{$IFDEF SUPPORTS_UNICODE}
+var
+  P: PChar;
+begin
+  P := S;
+  if P <> nil then
+  begin
+    while P^ <> #0 do
+      Inc(P);
+    Result := P - S;
+  end
+  else
+    Result := 0;
+end;
+{$ELSE}
 asm
         TEST    EAX, EAX
         JZ      @@EXIT
@@ -2122,30 +2211,8 @@ asm
         DEC     EAX                      // do not include null terminator
 @@EXIT:
 end;
+{$ENDIF SUPPORTS_UNICODE}
 
-function StrLength(const S: string): Longint;
-var
-  P: Pointer;
-begin
-  Result := 0;
-  if Pointer(S) <> nil then
-  begin
-    P := Pointer(Integer(Pointer(S)) - AnsiLnOffset);
-    Result := Integer(P^) and (not $80000000 shr 1);
-  end;
-end;
-
-function StrRefCount(const S: string): Longint;
-var
-  P: Pointer;
-begin
-  Result := 0;
-  if Pointer(S) <> nil then
-  begin
-    P := Pointer(Integer(Pointer(S)) - AnsiRfOffset);
-    Result := Integer(P^);
-  end;
-end;
 {$ENDIF ~CLR}
 
 procedure StrResetLength(var S: string);
@@ -2230,10 +2297,118 @@ begin
   end
 end;
 
-{$IFDEF CLR}
-function StrCompare(const S1, S2: string): Integer;
+{$IFDEF SUPPORTS_UNICODE}
+(*
+{ 1}  Test(StrCompareRange('', '', 1, 5), 0);
+{ 2}  Test(StrCompareRange('A', '', 1, 5), -1);
+{ 3}  Test(StrCompareRange('AB', '', 1, 5), -1);
+{ 4}  Test(StrCompareRange('ABC', '', 1, 5), -1);
+{ 5}  Test(StrCompareRange('', 'A', 1, 5), -1);
+{ 6}  Test(StrCompareRange('', 'AB',  1, 5), -1);
+{ 7}  Test(StrCompareRange('', 'ABC', 1, 5), -1);
+{ 8}  Test(StrCompareRange('A', 'a', 1, 5), -2);
+{ 9}  Test(StrCompareRange('A', 'a', 1, 1), -32);
+{10}  Test(StrCompareRange('aA', 'aB', 1, 1), 0);
+{11}  Test(StrCompareRange('aA', 'aB', 1, 2), -1);
+{12}  Test(StrCompareRange('aB', 'aA', 1, 2), 1);
+{13}  Test(StrCompareRange('aA', 'aa', 1, 2), -32);
+{14}  Test(StrCompareRange('aa', 'aA', 1, 2), 32);
+{15}  Test(StrCompareRange('', '', 1, 0), 0);
+{16}  Test(StrCompareRange('A', 'A', 1, 0), -2);
+{17}  Test(StrCompareRange('Aa', 'A', 1, 0), -2);
+{18}  Test(StrCompareRange('Aa', 'Aa', 1, 2), 0);
+{19}  Test(StrCompareRange('Aa', 'A', 1, 2), 0);
+{20}  Test(StrCompareRange('Ba', 'A', 1, 2), 1);
+*)
+function StrCompareRangeEx(const S1, S2: string; Index, Count: Integer; CaseSensitive: Boolean): Integer;
+var
+  Len1, Len2: Integer;
+  I: Integer;
+  C1, C2: Char;
 begin
-  Result := S1.CompareTo(S2);
+  {$IFDEF CLR}
+  if S1 = S2 then
+  {$ELSE}
+  if Pointer(S1) = Pointer(S2) then
+  {$ENDIF CLR}
+  begin
+    if (Count <= 0) and (S1 <> '') then
+      Result := -2 // no work
+    else
+      Result := 0;
+  end
+  else
+  if (S1 = '') or (S2 = '') then
+    Result := -1 // null string
+  else
+  if Count <= 0 then
+    Result := -2 // no work
+  else
+  begin
+    Len1 := Length(S1);
+    Len2 := Length(S2);
+
+    if (Index - 1) + Count > Len1 then
+      Result := -2
+    else
+    begin
+      if (Index - 1) + Count > Len2 then // strange behaviour, but the assembler code does it
+        Count := Len2 - (Index - 1);
+
+      if CaseSensitive then
+      begin
+        for I := 0 to Count - 1 do
+        begin
+          C1 := S1[Index + I];
+          C2 := S2[Index + I];
+          if C1 <> C2 then
+          begin
+            Result := Ord(C1) - Ord(C2);
+            Exit;
+          end;
+        end;
+      end
+      else
+      begin
+        for I := 0 to Count - 1 do
+        begin
+          C1 := S1[Index + I];
+          C2 := S2[Index + I];
+          if C1 <> C2 then
+          begin
+            C1 := CharLower(C1);
+            C2 := CharLower(C2);
+            if C1 <> C2 then
+            begin
+              Result := Ord(C1) - Ord(C2);
+              Exit;
+            end;
+          end;
+        end;
+      end;
+      Result := 0;
+    end;
+  end;
+end;
+
+function StrCompare(const S1, S2: string): Integer;
+var
+  Len1, Len2: Integer;
+begin
+  {$IFDEF CLR}
+  if S1 = S2 then
+  {$ELSE}
+  if Pointer(S1) = Pointer(S2) then
+  {$ENDIF CLR}
+    Result := 0
+  else
+  begin
+    Len1 := Length(S1);
+    Len2 := Length(S2);
+    Result := Len1 - Len2;
+    if Result = 0 then
+      Result := StrCompareRangeEx(S1, S2, 1, Len1, False);
+  end;
 end;
 {$ELSE}
 {$IFDEF PIC}
@@ -2244,9 +2419,9 @@ begin
   Result := _StrCompare(S1, S2);
 end;
 
-function _StrCompare(const S1, S2: string): Integer; assembler;
+function _StrCompare(const S1, S2: string): Integer;
 {$ELSE}
-function StrCompare(const S1, S2: string): Integer; assembler;
+function StrCompare(const S1, S2: string): Integer;
 {$ENDIF PIC}
 asm
         // check if pointers are equal
@@ -2277,8 +2452,8 @@ asm
 
         // get the length of strings
 
-        MOV     EAX, [ESI-AnsiStrRecSize].TAnsiStrRec.Length
-        MOV     EDX, [EDI-AnsiStrRecSize].TAnsiStrRec.Length
+        MOV     EAX, [ESI-StrRecSize].TStrRec.Length
+        MOV     EDX, [EDI-StrRecSize].TStrRec.Length
 
         // exit if Length(S1) <> Length(S2)
 
@@ -2295,7 +2470,7 @@ asm
 
         // load case map
 
-        LEA     EBX, AnsiCaseMap
+        LEA     EBX, StrCaseMap
 
         // make ECX our loop counter
 
@@ -2372,28 +2547,27 @@ asm
 @@Str1Null:
         // return = - Length(Str2);
 
-        MOV     EDX, [EDX-AnsiStrRecSize].TAnsiStrRec.Length
+        MOV     EDX, [EDX-StrRecSize].TStrRec.Length
         SUB     EAX, EDX
         RET
 
 @@Str2Null:
         // return = Length(Str2);
 
-        MOV     EAX, [EAX-AnsiStrRecSize].TAnsiStrRec.Length
+        MOV     EAX, [EAX-StrRecSize].TStrRec.Length
         RET
 
 @@Equal:
         XOR     EAX, EAX
 end;
-{$ENDIF CLR}
+{$ENDIF SUPPORTS_UNICODE}
 
-{$IFDEF CLR}
 function StrCompareRange(const S1, S2: string; const Index, Count: Integer): Integer;
+{$IFDEF SUPPORTS_UNICODE}
 begin
-  Result := System.String.Compare(S1, Index - 1, S2, Index - 1, Count, False);
+  Result := StrCompareRangeEx(S1, S2, Index, Count, True);
 end;
 {$ELSE}
-function StrCompareRange(const S1, S2: string; const Index, Count: Integer): Integer; assembler;
 asm
         TEST    EAX, EAX
         JZ      @@Str1Null
@@ -2415,7 +2589,7 @@ asm
         MOV     ESI, EAX
         MOV     EDI, EDX
 
-        MOV     EDX, [ESI - AnsiStrRecSize].TAnsiStrRec.Length
+        MOV     EDX, [ESI - StrRecSize].TStrRec.Length
 
         // # of chars in S1 - (Index - 1)
         SUB     EDX, ECX
@@ -2428,7 +2602,7 @@ asm
         // move to index'th char
         ADD     ESI, ECX
 
-        MOV     ECX, [EDI - AnsiStrRecSize].TAnsiStrRec.Length
+        MOV     ECX, [EDI - StrRecSize].TStrRec.Length
         DEC     ECX
         JS      @@NoWork
 
@@ -2485,7 +2659,7 @@ asm
 
 @@Exit:
 end;
-{$ENDIF CLR}
+{$ENDIF SUPPORTS_UNICODE}
 
 function StrFillChar(const C: Char; Count: Integer): string;
 {$IFDEF CLR}
@@ -2504,7 +2678,7 @@ end;
 begin
   SetLength(Result, Count);
   if (Count > 0) then
-    FillChar(Result[1], Count, Ord(C));
+    FillChar(Result[1], Count * SizeOf(Char), Ord(C));
 end;
 {$ENDIF CLR}
 
@@ -2514,7 +2688,12 @@ begin
   Result := System.String(S).ToLower().IndexOf(System.String(SubStr).ToLower(), Index - 1) + 1;
 end;
 {$ELSE}
-function StrFind(const Substr, S: string; const Index: Integer): Integer; assembler;
+function StrFind(const Substr, S: string; const Index: Integer): Integer;
+{$IFDEF SUPPORTS_UNICODE}
+begin
+  Result := PosEx(AnsiLowerCase(SubStr), AnsiLowerCase(S), Index);
+end;
+{$ELSE}
 const
    SearchChar: Byte = 0;
    NumberOfChars: Integer = 0;
@@ -2552,8 +2731,8 @@ asm
 
         // temporary get the length of Substr and Str
 
-        MOV     EBX, [EDI - AnsiStrRecSize].TAnsiStrRec.Length
-        MOV     ECX, [ESI - AnsiStrRecSize].TAnsiStrRec.Length
+        MOV     EBX, [EDI - StrRecSize].TStrRec.Length
+        MOV     ECX, [ESI - StrRecSize].TStrRec.Length
 
         // save the address of Str to compute the result
 
@@ -2582,7 +2761,7 @@ asm
 
         // load case map into EBX, and clear EAX
 
-        LEA     EBX, AnsiCaseMap
+        LEA     EBX, StrCaseMap
         XOR     EAX, EAX
         XOR     EDX, EDX
 
@@ -2644,7 +2823,7 @@ asm
 
         // otherwise try the reverse case. If they still don't match go back to the Find loop
 
-        MOV     AL, [EBX + EAX + AnsiReOffset]
+        MOV     AL, [EBX + EAX + StrReOffset]
         CMP     AL, [EDI + EDX]
         JNE     @@FindNext
 
@@ -2685,6 +2864,7 @@ asm
 @@SubstrIsNull:
 @@Exit:
 end;
+{$ENDIF SUPPORTS_UNICODE}
 {$ENDIF CLR}
 
 function StrHasPrefix(const S: string; const Prefixes: array of string): Boolean;
@@ -2763,10 +2943,17 @@ function StrMatch(const Substr, S: string; const Index: Integer): Integer;
 {$IFDEF CLR}
 begin
   { TODO : StrMatch }
+  Assert(False, 'Not implemented yet');
   Result := 0;
 end;
 {$ELSE}
-assembler;
+{$IFDEF SUPPORTS_UNICODE}
+begin
+  { TODO : StrMatch }
+  Assert(False, 'Not implemented yet');
+  Result := 0;
+end;
+{$ELSE}
 asm
         // make sure that strings are not null
 
@@ -2804,8 +2991,8 @@ asm
 
         // temporary get the length of Substr and Str
 
-        MOV     EBX, [EDI - AnsiStrRecSize].TAnsiStrRec.Length
-        MOV     ECX, [ESI - AnsiStrRecSize].TAnsiStrRec.Length
+        MOV     EBX, [EDI - StrRecSize].TStrRec.Length
+        MOV     ECX, [ESI - StrRecSize].TStrRec.Length
 
         // dec the length of Substr because the first char is brought out of it
 
@@ -2830,7 +3017,7 @@ asm
 
         // load case map into EBX, and clear EAX & ECX
 
-        LEA     EBX, AnsiCaseMap
+        LEA     EBX, StrCaseMap
         XOR     EAX, EAX
         XOR     ECX, ECX
 
@@ -2898,7 +3085,7 @@ asm
         CMP     AL, [ESI + EDX]               // equal to PChar(Str)^ ?
         JE      @@CompareNext
 
-        MOV     AL, [EBX + EAX + AnsiReOffset]  // reverse case?
+        MOV     AL, [EBX + EAX + StrReOffset]  // reverse case?
         CMP     AL, [ESI + EDX]
         JNE     @@FindNext                  // if still no, go back to the main loop
 
@@ -2941,6 +3128,7 @@ asm
 @@SubstrIsNull:
 @@Exit:
 end;
+{$ENDIF SUPPORTS_UNICODE}
 {$ENDIF CLR}
 
 // Derived from "Like" by Michael Winter
@@ -3142,7 +3330,12 @@ begin
   Result := System.String(S).IndexOf(SubStr, Index - 1) + 1;
 end;
 {$ELSE}
-function StrSearch(const Substr, S: string; const Index: Integer): Integer; assembler;
+function StrSearch(const Substr, S: string; const Index: Integer): Integer;
+{$IFDEF SUPPORTS_UNICODE}
+begin
+  Result := PosEx(SubStr, S, Index);
+end;
+{$ELSE}
 asm
         // make sure that strings are not null
 
@@ -3180,8 +3373,8 @@ asm
 
         // temporary get the length of Substr and Str
 
-        MOV     EBX, [EDI-AnsiStrRecSize].TAnsiStrRec.Length
-        MOV     ECX, [ESI-AnsiStrRecSize].TAnsiStrRec.Length
+        MOV     EBX, [EDI-StrRecSize].TStrRec.Length
+        MOV     ECX, [ESI-StrRecSize].TStrRec.Length
 
         // dec the length of Substr because the first char is brought out of it
 
@@ -3297,6 +3490,7 @@ asm
 @@SubstrIsNull:
 @@Exit:
 end;
+{$ENDIF SUPPORTS_UNICODE}
 {$ENDIF CLR}
 
 //=== String Extraction ======================================================
@@ -3381,7 +3575,7 @@ begin
   {$IFDEF CLR}
   Result := System.Char.IsLetter(C);
   {$ELSE}
-  Result := (AnsiCharTypes[C] and C1_ALPHA) <> 0;
+  Result := (StrCharTypes[C] and C1_ALPHA) <> 0;
   {$ENDIF CLR}
 end;
 
@@ -3390,8 +3584,8 @@ begin
   {$IFDEF CLR}
   Result := System.Char.IsLetterOrDigit(C);
   {$ELSE}
-  Result := ((AnsiCharTypes[C] and C1_ALPHA) <> 0) or
-    ((AnsiCharTypes[C] and C1_DIGIT) <> 0);
+  Result := ((StrCharTypes[C] and C1_ALPHA) <> 0) or
+    ((StrCharTypes[C] and C1_DIGIT) <> 0);
   {$ENDIF CLR}
 end;
 
@@ -3400,7 +3594,7 @@ begin
   {$IFDEF CLR}
   Result := System.Char.IsSurrogate(C);
   {$ELSE}
-  Result := ((AnsiCharTypes[C] and C1_BLANK) <> 0);
+  Result := ((StrCharTypes[C] and C1_BLANK) <> 0);
   {$ENDIF CLR}
 end;
 
@@ -3409,7 +3603,7 @@ begin
   {$IFDEF CLR}
   Result := System.Char.IsControl(C);
   {$ELSE}
-  Result := (AnsiCharTypes[C] and C1_CNTRL) <> 0;
+  Result := (StrCharTypes[C] and C1_CNTRL) <> 0;
   {$ENDIF CLR}
 end;
 
@@ -3423,7 +3617,7 @@ begin
   {$IFDEF CLR}
   Result := System.Char.IsDigit(C);
   {$ELSE}
-  Result := (AnsiCharTypes[C] and C1_DIGIT) <> 0;
+  Result := (StrCharTypes[C] and C1_DIGIT) <> 0;
   {$ENDIF CLR}
 end;
 
@@ -3432,7 +3626,7 @@ begin
   {$IFDEF CLR}
   Result := System.Char.IsLower(C);
   {$ELSE}
-  Result := (AnsiCharTypes[C] and C1_LOWER) <> 0;
+  Result := (StrCharTypes[C] and C1_LOWER) <> 0;
   {$ENDIF CLR}
 end;
 
@@ -3441,7 +3635,7 @@ begin
   {$IFDEF CLR}
   Result := System.Char.IsDigit(C) or (C = '+') or (C = '-') or (C = DecimalSeparator);
   {$ELSE}
-  Result := ((AnsiCharTypes[C] and C1_DIGIT) <> 0) or (C in AnsiSigns) or (C = DecimalSeparator);
+  Result := ((StrCharTypes[C] and C1_DIGIT) <> 0) or (C in AnsiSigns) or (C = DecimalSeparator);
   {$ENDIF CLR}
 end;
 
@@ -3455,7 +3649,7 @@ begin
   {$IFDEF CLR}
   Result := System.Char.IsPunctuation(C);
   {$ELSE}
-  Result := ((AnsiCharTypes[C] and C1_PUNCT) <> 0);
+  Result := ((StrCharTypes[C] and C1_PUNCT) <> 0);
   {$ENDIF CLR}
 end;
 
@@ -3469,7 +3663,7 @@ begin
   {$IFDEF CLR}
   Result := System.Char.IsSeparator(C);
   {$ELSE}
-  Result := (AnsiCharTypes[C] and C1_SPACE) <> 0;
+  Result := (StrCharTypes[C] and C1_SPACE) <> 0;
   {$ENDIF CLR}
 end;
 
@@ -3478,7 +3672,7 @@ begin
   {$IFDEF CLR}
   Result := System.Char.IsUpper(C);
   {$ELSE}
-  Result := (AnsiCharTypes[C] and C1_UPPER) <> 0;
+  Result := (StrCharTypes[C] and C1_UPPER) <> 0;
   {$ENDIF CLR}
 end;
 
@@ -3494,7 +3688,7 @@ end;
 {$IFNDEF CLR}
 function CharType(const C: Char): Word;
 begin
-  Result := AnsiCharTypes[C];
+  Result := StrCharTypes[C];
 end;
 
 //=== PCharVector ============================================================
@@ -3602,7 +3796,7 @@ begin
   {$IFDEF CLR}
   Result := System.Char.ToLower(C);
   {$ELSE}
-  Result := AnsiCaseMap[Ord(C) + AnsiLoOffset];
+  Result := StrCaseMap[Ord(C) + StrLoOffset];
   {$ENDIF CLR}
 end;
 
@@ -3617,7 +3811,7 @@ begin
   else
     Result := C;
   {$ELSE}
-  Result := AnsiCaseMap[Ord(C) + AnsiReOffset];
+  Result := StrCaseMap[Ord(C) + StrReOffset];
   {$ENDIF CLR}
 end;
 
@@ -3626,7 +3820,7 @@ begin
   {$IFDEF CLR}
   Result := System.Char.ToUpper(C);
   {$ELSE}
-  Result := AnsiCaseMap[Ord(C) + AnsiUpOffset];
+  Result := StrCaseMap[Ord(C) + StrUpOffset];
   {$ENDIF CLR}
 end;
 
@@ -3663,7 +3857,7 @@ begin
       {$IFDEF CLR}
       if System.Char.ToUpper(S[Result]) = C then
       {$ELSE}
-      if AnsiCaseMap[Ord(S[Result]) + AnsiUpOffset] = C then
+      if StrCaseMap[Ord(S[Result]) + StrUpOffset] = C then
       {$ENDIF CLR}
         Exit;
   end;
@@ -4726,15 +4920,8 @@ end;
 constructor TStringBuilder.Create(Capacity: Integer; MaxCapacity: Integer);
 begin
   inherited Create;
-  FLock := TJclIntfCriticalSection.Create;
   SetLength(FChars, Capacity);
   FMaxCapacity := MaxCapacity;
-end;
-
-destructor TStringBuilder.Destroy;
-begin
-  FLock.Free;
-  inherited Destroy;
 end;
 
 constructor TStringBuilder.Create(const Value: string; Capacity: Integer);
@@ -4798,14 +4985,9 @@ end;
 function TStringBuilder.AppendPChar(Value: PChar; Count: Integer; RepeatCount: Integer): TStringBuilder;
 var
   Capacity: Integer;
-  IsMultiThreaded: Boolean;
-  LockInterface: IInterface;
 begin
   if (Count > 0) and (RepeatCount > 0) then
   begin
-    IsMultiThreaded := IsMultiThread;
-    if IsMultiThreaded then
-      LockInterface := FLock; // automatically freed
     repeat
       Capacity := System.Length(FChars);
       if Capacity + Count > MaxCapacity then
@@ -4827,22 +5009,15 @@ function TStringBuilder.InsertPChar(Index: Integer; Value: PChar; Count,
   RepeatCount: Integer): TStringBuilder;
 var
   Capacity: Integer;
-  IsMultiThreaded: Boolean;
-  LockInterface: IInterface;
 begin
   if (Index < 0) or (Index > FLength) then
     raise ArgumentOutOfRangeException.CreateRes(@RsArgumentOutOfRange);
 
   if Index = FLength then
-  begin
-    AppendPChar(Value, Count, RepeatCount);
-  end
+    AppendPChar(Value, Count, RepeatCount)
   else
   if (Count > 0) and (RepeatCount > 0) then
   begin
-    IsMultiThreaded := IsMultiThread;
-    if IsMultiThreaded then
-      LockInterface := FLock; // automatically freed
     repeat
       Capacity := System.Length(FChars);
       if Capacity + Count > MaxCapacity then
