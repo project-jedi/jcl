@@ -128,7 +128,7 @@ begin
     WriteLn('Usage: MAKEJCLDBG -<J|E> <map filenames>');
     WriteLn('       J - Create .JDBG files');
     WriteLn('       E - Insert debug data into executable files');
-    WriteLn('Executable files must be in the same directory like MAP files');
+    WriteLn('Executable files must be in the same directory as the MAP files');
   end
   else
   if not MakeDebugData(ParamStr(2)) then
