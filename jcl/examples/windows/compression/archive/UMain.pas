@@ -232,7 +232,7 @@ begin
       InputQuery('Archive password', 'Value', Password);
 
       if VolumeSize <> 0 then
-        ArchiveFileName := ArchiveFileName + '.%d';
+        ArchiveFileName := ArchiveFileName + '.%.3d';
 
       FArchive := AFormat.Create(ArchiveFileName, VolumeSize, VolumeSize <> 0);
       FArchive.Password := Password;
@@ -274,7 +274,7 @@ begin
       InputQuery('Archive password', 'Value', Password);
 
       if VolumeSize <> 0 then
-        ArchiveFileName := ArchiveFileName + '.%d';
+        ArchiveFileName := ArchiveFileName + '.%.3d';
 
       FArchive := AFormat.Create(ArchiveFileName, VolumeSize, VolumeSize <> 0);
       FArchive.Password := Password;
@@ -305,7 +305,7 @@ begin
     if AFormat <> nil then
     begin
       if SplitArchive then
-        ArchiveFileName := ArchiveFileName + '.%d';
+        ArchiveFileName := ArchiveFileName + '.%.3d';
 
       InputQuery('Archive password', 'Value', Password);
 
@@ -352,7 +352,7 @@ begin
     if AFormat <> nil then
     begin
       if SplitArchive then
-        ArchiveFileName := ArchiveFileName + '.%d';
+        ArchiveFileName := ArchiveFileName + '.%.3d';
 
       InputQuery('Archive password', 'Value', Password);
 
