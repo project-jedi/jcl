@@ -2924,6 +2924,11 @@ begin
   end;
 
   Drive := ExtractFileDrive(LocalizedPath);
+  if Drive = '' then
+  begin
+    Result := LocalizedPath;
+    Exit;
+  end;
   Path := Copy(LocalizedPath, Length(Drive) + 2, Length(LocalizedPath));
   ParsePath := Drive;
   OLECheck( SHGetMalloc(Malloc) );
@@ -2981,6 +2986,11 @@ begin
   end;
 
   Drive := ExtractFileDrive(PhysicalPath);
+  if Drive = '' then
+  begin
+    Result := PhysicalPath;
+    Exit;
+  end;
   Path := Copy(PhysicalPath, Length(Drive) + 2, Length(PhysicalPath));
   ParsePath := Drive;
   Result := Drive;
