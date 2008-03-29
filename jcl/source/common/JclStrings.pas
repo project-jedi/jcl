@@ -742,13 +742,21 @@ var
   Len: Integer;
   RetValue: string;
 begin
-  Len := Length(Str);
-  SetLength(RetValue, Len);
   case Offset of
     StrUpOffset:
-      LCMapString(LOCALE_USER_DEFAULT, LCMAP_UPPERCASE, PChar(Str), Len, PChar(RetValue), Len);
+      begin
+        Len := LCMapString(LOCALE_USER_DEFAULT, LCMAP_UPPERCASE, PChar(Str), Length(Str), nil, 0);
+        SetLength(RetValue, Len);
+        if Len > 0 then
+          LCMapString(LOCALE_USER_DEFAULT, LCMAP_UPPERCASE, PChar(Str), Length(Str), PChar(RetValue), Len);
+      end;
     StrLoOffset:
-      LCMapString(LOCALE_USER_DEFAULT, LCMAP_LOWERCASE, PChar(Str), Len, PChar(RetValue), Len);
+      begin
+        Len := LCMapString(LOCALE_USER_DEFAULT, LCMAP_LOWERCASE, PChar(Str), Length(Str), nil, 0);
+        SetLength(RetValue, Len);
+        if Len > 0 then
+          LCMapString(LOCALE_USER_DEFAULT, LCMAP_LOWERCASE, PChar(Str), Length(Str), PChar(RetValue), Len);
+      end
   else
     Assert(False, 'StrReOffset not supported');
   end;
@@ -858,18 +866,28 @@ end;
 procedure StrCaseBuff(S: PChar; const Offset: Integer);
 {$IFDEF SUPPORTS_UNICODE}
 var
-  Len: Integer;
+  Len, SLen: Integer;
   RetValue: string;
 begin
   if S <> nil then
   begin
-    Len := StrLen(S);
-    SetLength(RetValue, Len);
+    Len := 0;
+    SLen := StrLen(S);
     case Offset of
       StrUpOffset:
-        LCMapString(LOCALE_USER_DEFAULT, LCMAP_UPPERCASE, S, Len, PChar(RetValue), Len);
+        begin
+          Len := LCMapString(LOCALE_USER_DEFAULT, LCMAP_UPPERCASE, S, SLen, nil, 0);
+          SetLength(RetValue, Len);
+          if Len > 0 then
+            LCMapString(LOCALE_USER_DEFAULT, LCMAP_UPPERCASE, S, SLen, PChar(RetValue), Len);
+        end;
       StrLoOffset:
-        LCMapString(LOCALE_USER_DEFAULT, LCMAP_LOWERCASE, S, Len, PChar(RetValue), Len);
+        begin
+          Len := LCMapString(LOCALE_USER_DEFAULT, LCMAP_LOWERCASE, S, SLen, nil, 0);
+          SetLength(RetValue, Len);
+          if Len > 0 then
+            LCMapString(LOCALE_USER_DEFAULT, LCMAP_LOWERCASE, S, SLen, PChar(RetValue), Len);
+        end
     else
       Assert(False, 'StrReOffset not supported');
     end;
@@ -1456,16 +1474,16 @@ begin
   UniqueString(Result);
   Source := PChar(S);
   Dest := PChar(Result);
-  for Index := 0 to Len-1 do
+  for Index := 0 to Len - 1 do
   begin
     if not (Source^ in Chars) then
     begin
       Dest^ := Source^;
-      Inc(Dest,SizeOf(Char));
+      Inc(Dest);
     end;
-    Inc(Source,SizeOf(Char));
+    Inc(Source);
   end;
-  SetLength(Result, (Longint(Dest) - Longint(PChar(Result))) div SizeOf(Char));
+  SetLength(Result, Dest - PChar(Result));
 end;
 {$ENDIF CLR}
 
@@ -1496,11 +1514,11 @@ begin
     if Source^ in Chars then
     begin
       Dest^ := Source^;
-      Inc(Dest,SizeOf(Char));
+      Inc(Dest);
     end;
-    Inc(Source,SizeOf(Char));
+    Inc(Source);
   end;
-  SetLength(Result, (Longint(Dest) - Longint(PChar(Result))) div SizeOf(Char));
+  SetLength(Result, Dest - PChar(Result));
 end;
 {$ENDIF CLR}
 
@@ -1532,10 +1550,10 @@ begin
   Source := PChar(S);
   if Dest <> nil then
     for Index := 0 to Count - 1 do
-  begin
-    Move(Source^, Dest^, Len * SizeOf(Char));
-    Inc(Dest,Len*SizeOf(Char));
-  end;
+    begin
+      Move(Source^, Dest^, Len * SizeOf(Char));
+      Inc(Dest, Len);
+    end;
 end;
 {$ENDIF CLR}
 
@@ -1579,9 +1597,9 @@ begin
     Dest := PChar(Result);
     while (L > 0) do
     begin
-      Move(S[1], Dest^, Min(L, Len) *SizeOf(Char));
-      Inc(Dest,Len);
-      Dec(L,Len);
+      Move(S[1], Dest^, Min(L, Len) * SizeOf(Char));
+      Inc(Dest, Len);
+      Dec(L, Len);
     end;
   end;
 end;
@@ -1609,6 +1627,7 @@ var
   IgnoreCase: Boolean;
 begin
   if Search = '' then
+  begin
     if S = '' then
     begin
       S := Replace;
@@ -1616,6 +1635,7 @@ begin
     end
     else
       raise EJclStringError.CreateRes(@RsBlankSearchString);
+  end;
 
   if S <> '' then
   begin
@@ -1787,6 +1807,7 @@ begin
 end;
 
 procedure StrReverseInPlace(var S: string);
+{ TODO -oahuser : Warning: This is dangerous for unicode surrogates }
 {$IFDEF CLR}
 var
   I, LenS: Integer;
@@ -2933,7 +2954,7 @@ begin
     end;
   end;
   if Last <> nil then
-    Result := Abs((Longint(PChar(S)) - Longint(Last)) div SizeOf(Char)) + 1;
+    Result := Abs(PChar(S) - Last) + 1;
 end;
 {$ENDIF CLR}
 

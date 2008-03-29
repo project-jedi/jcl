@@ -1239,11 +1239,11 @@ begin
     if not (Source^ in Chars) then
     begin
       Dest^ := Source^;
-      Inc(Dest, SizeOf(AnsiChar));
+      Inc(Dest);
     end;
-    Inc(Source, SizeOf(AnsiChar));
+    Inc(Source);
   end;
-  SetLength(Result, (Longint(Dest) - Longint(PAnsiChar(Result))) div SizeOf(AnsiChar));
+  SetLength(Result, Dest - PAnsiChar(Result));
 end;
 {$ENDIF CLR}
 
@@ -1277,11 +1277,11 @@ begin
     if Source^ in Chars then
     begin
       Dest^ := Source^;
-      Inc(Dest, SizeOf(AnsiChar));
+      Inc(Dest);
     end;
-    Inc(Source, SizeOf(AnsiChar));
+    Inc(Source);
   end;
-  SetLength(Result, (Longint(Dest) - Longint(PAnsiChar(Result))) div SizeOf(AnsiChar));
+  SetLength(Result, Dest - PAnsiChar(Result));
 end;
 {$ENDIF CLR}
 
@@ -1392,6 +1392,7 @@ var
   IgnoreCase: Boolean;
 begin
   if Search = '' then
+  begin
     if S = '' then
     begin
       S := Replace;
@@ -1399,6 +1400,7 @@ begin
     end
     else
       raise EJclStringError.CreateRes(@RsBlankSearchString);
+  end;
 
   if S <> '' then
   begin
