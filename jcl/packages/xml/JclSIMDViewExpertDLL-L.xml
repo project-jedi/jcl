@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JclSIMDViewExpertDLL" Type="L">
   <Description>JCL Debug Window of XMM registers</Description>
-  <GUID/>
+  <GUID>{822DE71C-AFAB-4F52-A076-5140BF31A62E}</GUID>
   <C5PFlags>-LUvcl50 -LUdsnide50 -LUJclC50 -LUJclBaseExpertC50</C5PFlags>
   <C6PFlags>-LUdesignide</C6PFlags>
   <C5Libs/>
   <C6Libs/>
   <ImageBase>58080000</ImageBase>
-  <VersionMajorNumber/>
-  <VersionMinorNumber/>
-  <ReleaseNumber/>
-  <BuildNumber/>
   <Requires>
     <Package Name="rtl" Targets="WinLibSuffix" Condition=""/>
     <Package Name="vcl50" Targets="c5,d5" Condition=""/>

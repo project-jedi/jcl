@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JclVersionControlExpertDLL" Type="L">
   <Description>JCL Integration of version control systems in the IDE</Description>
-  <GUID/>
+  <GUID>{8083ED65-4D9A-441F-B516-CFF42EE9DD0E}</GUID>
   <C5PFlags>-LUvcl50 -LUdsnide50 -LUJclC50 -LUJclBaseExpertC50</C5PFlags>
   <C6PFlags>-LUdesignide</C6PFlags>
   <C5Libs/>
   <C6Libs/>
   <ImageBase>580E0000</ImageBase>
-  <VersionMajorNumber/>
-  <VersionMinorNumber/>
-  <ReleaseNumber/>
-  <BuildNumber/>
   <Requires>
     <Package Name="rtl" Targets="WinLibSuffix" Condition=""/>
     <Package Name="vcl50" Targets="c5,d5" Condition=""/>

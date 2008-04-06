@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JclFavoriteFoldersExpertDLL" Type="L">
   <Description>JCL Open and Save IDE dialogs with favorite folders</Description>
-  <GUID/>
+  <GUID>{DCDB1939-E79B-4AF6-855E-78310CAF8467}</GUID>
   <C5PFlags>-LUvcl50 -LUdsnide50 -LUJclC50 -LUJclBaseExpertC50</C5PFlags>
   <C6PFlags>-LUdesignide</C6PFlags>
   <C5Libs/>
   <C6Libs/>
   <ImageBase>58040000</ImageBase>
-  <VersionMajorNumber/>
-  <VersionMinorNumber/>
-  <ReleaseNumber/>
-  <BuildNumber/>
   <Requires>
     <Package Name="rtl" Targets="WinLibSuffix" Condition=""/>
     <Package Name="vcl50" Targets="c5,d5" Condition=""/>

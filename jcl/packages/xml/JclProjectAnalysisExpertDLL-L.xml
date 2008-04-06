@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JclProjectAnalysisExpertDLL" Type="L">
   <Description>JCL Project Analyzer</Description>
-  <GUID/>
+  <GUID>{6E22E269-A58C-41B6-BB1C-57670E460887}</GUID>
   <C5PFlags>-LUvcl50 -LUdsnide50 -LUJclC50 -LUJclBaseExpertC50</C5PFlags>
   <C6PFlags>-LUdesignide</C6PFlags>
   <C5Libs/>
   <C6Libs/>
   <ImageBase>58060000</ImageBase>
-  <VersionMajorNumber/>
-  <VersionMinorNumber/>
-  <ReleaseNumber/>
-  <BuildNumber/>
   <Requires>
     <Package Name="rtl" Targets="WinLibSuffix" Condition=""/>
     <Package Name="vcl50" Targets="c5,d5" Condition=""/>

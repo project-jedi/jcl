@@ -1,6 +1,6 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <ProjectGuid></ProjectGuid>
+    <ProjectGuid>{36195812-0F7A-45E7-BE07-04EABA463169}</ProjectGuid>
     <MainSource>JclDebugExpertDLL.dpr</MainSource>
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>

@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JclBaseExpert" Design="-1">
   <Description>JCL Package containing common units for JCL Experts</Description>
-  <GUID/>
+  <GUID>{587944EE-7D27-4950-95F5-430FFBFC465C}</GUID>
   <C5PFlags>-LUvcl50 -LUdsnide50 -LUJclC50</C5PFlags>
   <C6PFlags>-LUdesignide</C6PFlags>
   <C5Libs/>
   <C6Libs/>
   <ImageBase>58000000</ImageBase>
-  <VersionMajorNumber/>
-  <VersionMinorNumber/>
-  <ReleaseNumber/>
-  <BuildNumber/>
   <Requires>
     <Package Name="rtl" Targets="WinLibSuffix" Condition=""/>
     <Package Name="vcl50" Targets="c5,d5" Condition=""/>

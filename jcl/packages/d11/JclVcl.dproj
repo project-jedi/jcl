@@ -1,6 +1,6 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <ProjectGuid></ProjectGuid>
+    <ProjectGuid>{EB88BAFD-FD11-4F14-A6F6-9036D67B1F8F}</ProjectGuid>
     <MainSource>JclVcl.dpk</MainSource>
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>

@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JclVClx" Design="0">
   <Description>JEDI Code Library VisualCLX package</Description>
-  <GUID/>
+  <GUID>{CC8AA516-0167-4547-8FEE-4C144E361969}</GUID>
   <C5PFlags/>
   <C6PFlags/>
   <C5Libs/>
   <C6Libs/>
   <ImageBase>48450000</ImageBase>
-  <VersionMajorNumber/>
-  <VersionMinorNumber/>
-  <ReleaseNumber/>
-  <BuildNumber/>
   <Requires>
     <Package Name="rtl" Targets="all" Condition=""/>
     <Package Name="visualclx" Targets="all" Condition=""/>

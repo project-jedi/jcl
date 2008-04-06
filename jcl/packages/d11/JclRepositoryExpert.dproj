@@ -1,6 +1,6 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <ProjectGuid></ProjectGuid>
+    <ProjectGuid>{2B548932-6654-4E44-8B06-3288D7A884C4}</ProjectGuid>
     <MainSource>JclRepositoryExpert.dpk</MainSource>
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>

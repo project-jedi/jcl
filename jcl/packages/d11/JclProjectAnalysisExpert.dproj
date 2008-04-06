@@ -1,6 +1,6 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <ProjectGuid></ProjectGuid>
+    <ProjectGuid>{518D9A98-4B3B-40B4-83EE-BD9D8CED6181}</ProjectGuid>
     <MainSource>JclProjectAnalysisExpert.dpk</MainSource>
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>

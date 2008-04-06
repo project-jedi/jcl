@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JclRepositoryExpert" Design="-1">
   <Description>JCL Package containing repository wizards</Description>
-  <GUID/>
+  <GUID>{2B548932-6654-4E44-8B06-3288D7A884C4}</GUID>
   <C5PFlags>-LUvcl50 -LUdsnide50 -LUJclC50</C5PFlags>
   <C6PFlags>-LUdesignide</C6PFlags>
   <C5Libs/>
