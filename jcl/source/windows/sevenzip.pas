@@ -44,7 +44,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -195,13 +195,18 @@ const
 
 // HandlerOut.cpp
 
-  kCopyMethod = WideString('Copy');
+  kCopyMethodName = WideString('Copy');
   kLZMAMethodName = WideString('LZMA');
   kLZMA2MethodName = WideString('LZMA2');
   kBZip2MethodName = WideString('BZip2');
   kPpmdMethodName = WideString('PPMd');
   kDeflateMethodName = WideString('Deflate');
   kDeflate64MethodName = WideString('Deflate64');
+
+  kAES128MethodName = WideString('AES128');
+  kAES192MethodName = WideString('AES192');
+  kAES256MethodName = WideString('AES256');
+  kZipCryptoMethodName = WideString('ZIPCRYPTO');
 
 // ICoder.h
 type
@@ -485,6 +490,55 @@ type
     function CryptoGetTextPassword2(PasswordIsDefined: PInteger;
       Password: PBStr): HRESULT; stdcall;
   end;
+
+// ZipHandlerOut.cpp
+const
+  kDeflateAlgoX1 = 0;
+  kDeflateAlgoX5 = 1;
+
+  kDeflateNumPassesX1  = 1;
+  kDeflateNumPassesX7  = 3;
+  kDeflateNumPassesX9  = 10;
+
+  kNumFastBytesX1 = 32;
+  kNumFastBytesX7 = 64;
+  kNumFastBytesX9 = 128;
+
+  kBZip2NumPassesX1 = 1;
+  kBZip2NumPassesX7 = 2;
+  kBZip2NumPassesX9 = 7;
+
+  kBZip2DicSizeX1 = 100000;
+  kBZip2DicSizeX3 = 500000;
+  kBZip2DicSizeX5 = 900000;
+
+// HandlerOut.cpp
+const
+  kLzmaAlgoX1 = 0;
+  kLzmaAlgoX5 = 1;
+
+  kLzmaDicSizeX1 = 1 shl 16;
+  kLzmaDicSizeX3 = 1 shl 20;
+  kLzmaDicSizeX5 = 1 shl 24;
+  kLzmaDicSizeX7 = 1 shl 25;
+  kLzmaDicSizeX9 = 1 shl 26;
+
+  kLzmaFastBytesX1 = 32;
+  kLzmaFastBytesX7 = 64;
+
+  kPpmdMemSizeX1 = (1 shl 22);
+  kPpmdMemSizeX5 = (1 shl 24);
+  kPpmdMemSizeX7 = (1 shl 26);
+  kPpmdMemSizeX9 = (192 shl 20);
+
+  kPpmdOrderX1 = 4;
+  kPpmdOrderX5 = 6;
+  kPpmdOrderX7 = 16;
+  kPpmdOrderX9 = 32;
+
+  kDeflateFastBytesX1 = 32;
+  kDeflateFastBytesX7 = 64;
+  kDeflateFastBytesX9 = 128;
 
 {$IFDEF 7ZIP_STATICLINK}
 function CreateObject(ClsID: PGUID; IID: PGUID; out Obj): HRESULT; stdcall;

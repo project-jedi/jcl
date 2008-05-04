@@ -39,7 +39,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                       $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -665,7 +665,8 @@ type
 
   TJclStreamAccess = (saCreate, saReadOnly, saWriteOnly, saReadWrite);
 
-  TJclCompressionArchive = class
+  { TJclCompressionArchive is not ref-counted }
+  TJclCompressionArchive = class(TObject, IInterface)
   private
     FOnProgress: TJclCompressionProgressEvent;
     FOnVolume: TJclCompressionVolumeEvent;
@@ -694,6 +695,11 @@ type
     function NeedVolume(Index: Integer): TStream;
     function NeedVolumeMaxSize(Index: Integer): Int64;
     function GetItemClass: TJclCompressionItemClass; virtual; abstract;
+  public
+    { IInterface }
+    function QueryInterface(const IID: TGUID; out Obj): HResult; stdcall;
+    function _AddRef: Integer; stdcall;
+    function _Release: Integer; stdcall;
   public
     class function MultipleItemContainer: Boolean; virtual;
     class function VolumeAccess: TJclStreamAccess; virtual;
@@ -743,13 +749,123 @@ type
 
   TJclCompressionArchiveClass = class of TJclCompressionArchive;
 
+  IJclArchiveNumberOfThreads = interface
+    ['{9CFAB801-E68E-4A51-AC49-277B297F1141}']
+    function GetNumberOfThreads: Cardinal;
+    procedure SetNumberOfThreads(Value: Cardinal);
+    property NumberOfThreads: Cardinal read GetNumberOfThreads write SetNumberOfThreads;
+  end;
+
+  IJclArchiveCompressionLevel = interface
+    ['{A6A2F55F-2860-4E44-BC20-8C5D3E322AB6}']
+    function GetCompressionLevel: Cardinal;
+    function GetCompressionLevelMax: Cardinal;
+    function GetCompressionLevelMin: Cardinal;
+    procedure SetCompressionLevel(Value: Cardinal);
+    property CompressionLevel: Cardinal read GetCompressionLevel write SetCompressionLevel;
+    property CompressionLevelMax: Cardinal read GetCompressionLevelMax;
+    property CompressionLevelMin: Cardinal read GetCompressionLevelMin;
+  end;
+
+  TJclCompressionMethod = (cmCopy, cmDeflate, cmDeflate64, cmBZip2, cmLZMA, cmLZMA2, cmPPMd);
+  TJclCompressionMethods = set of TJclCompressionMethod;
+
+  IJclArchiveCompressionMethod = interface
+    ['{2818F8E8-7D5F-4C8C-865E-9BA4512BB766}']
+    function GetCompressionMethod: TJclCompressionMethod;
+    function GetSupportedCompressionMethods: TJclCompressionMethods;
+    procedure SetCompressionMethod(Value: TJclCompressionMethod);
+    property CompressionMethod: TJclCompressionMethod read GetCompressionMethod write SetCompressionMethod;
+    property SupportedCompressionMethods: TJclCompressionMethods read GetSupportedCompressionMethods;
+  end;
+
+  TJclEncryptionMethod = (emNone, emAES128, emAES192, emAES256, emZipCrypto);
+  TJclEncryptionMethods = set of TJclEncryptionMethod;
+
+  IJclArchiveEncryptionMethod = interface
+    ['{643485B6-66A1-41C9-A13B-0A8453E9D0C9}']
+    function GetEncryptionMethod: TJclEncryptionMethod;
+    function GetSupportedEncryptionMethods: TJclEncryptionMethods;
+    procedure SetEncryptionMethod(Value: TJclEncryptionMethod);
+    property EncryptionMethod: TJclEncryptionMethod read GetEncryptionMethod write SetEncryptionMethod;
+    property SupportedEncryptionMethods: TJclEncryptionMethods read GetSupportedEncryptionMethods;
+  end;
+
+  IJclArchiveDictionarySize = interface
+    ['{D3949834-9F3B-49BC-8403-FE3CE5FDCF35}']
+    function GetDictionarySize: Cardinal;
+    procedure SetDictionarySize(Value: Cardinal);
+    property DictionarySize: Cardinal read GetDictionarySize write SetDictionarySize;
+  end;
+
+  IJclArchiveNumberOfPasses = interface
+    ['{C61B2814-50CE-4C3C-84A5-BACF8A57E3BC}']
+    function GetNumberOfPasses: Cardinal;
+    procedure SetNumberOfPasses(Value: Cardinal);
+    property NumberOfPasses: Cardinal read GetNumberOfPasses write SetNumberOfPasses;
+  end;
+
+  IJclArchiveRemoveSfxBlock = interface
+    ['{852D050D-734E-4610-902A-8FB845DB32A9}']
+    function GetRemoveSfxBlock: Boolean;
+    procedure SetRemoveSfxBlock(Value: Boolean);
+    property RemoveSfxBlock: Boolean read GetRemoveSfxBlock write SetRemoveSfxBlock;
+  end;
+
+  IJclArchiveCompressHeader = interface
+    ['{22C62A3B-A58E-4F88-9D3F-08586B542639}']
+    function GetCompressHeader: Boolean;
+    function GetCompressHeaderFull: Boolean;
+    procedure SetCompressHeader(Value: Boolean);
+    procedure SetCompressHeaderFull(Value: Boolean);
+    property CompressHeader: Boolean read GetCompressHeader write SetCompressHeader;
+    property CompressHeaderFull: Boolean read GetCompressHeaderFull write SetCompressHeaderFull;
+  end;
+
+  IJclArchiveEncryptHeader = interface
+    ['{7DBA20A8-48A1-4CA2-B9AC-41C219A09A4A}']
+    function GetEncryptHeader: Boolean;
+    procedure SetEncryptHeader(Value: Boolean);
+    property EncryptHeader: Boolean read GetEncryptHeader write SetEncryptHeader;
+  end;
+
+  IJclArchiveSaveCreationDateTime = interface
+    ['{8B212BF9-C13F-4582-A4FA-A40E538EFF65}']
+    function GetSaveCreationDateTime: Boolean;
+    procedure SetSaveCreationDateTime(Value: Boolean);
+    property SaveCreationDateTime: Boolean read GetSaveCreationDateTime write SetSaveCreationDateTime;
+  end;
+
+  IJclArchiveSaveLastAccessDateTime = interface
+    ['{1A4B2906-9DD2-4584-B7A3-3639DA92AFC5}']
+    function GetSaveLastAccessDateTime: Boolean;
+    procedure SetSaveLastAccessDateTime(Value: Boolean);
+    property SaveLastAccessDateTime: Boolean read GetSaveLastAccessDateTime write SetSaveLastAccessDateTime;
+  end;
+
+  IJclArchiveSaveLastWriteDateTime = interface
+    ['{0C1729DC-35E8-43D4-8ECA-54F20CDFF87A}']
+    function GetSaveLastWriteDateTime: Boolean;
+    procedure SetSaveLastWriteDateTime(Value: Boolean);
+    property SaveLastWriteDateTime: Boolean read GetSaveLastWriteDateTime write SetSaveLastWriteDateTime;
+  end;
+
+  IJclArchiveAlgorithm = interface
+    ['{53965F1F-24CC-4548-B9E8-5AE2EB7F142D}']
+    function GetAlgorithm: Cardinal;
+    function GetSupportedAlgorithms: TDynCardinalArray;
+    procedure SetAlgorithm(Value: Cardinal);
+    property Algorithm: Cardinal read GetAlgorithm write SetAlgorithm;
+    property SupportedAlgorithms: TDynCardinalArray read GetSupportedAlgorithms;
+  end;
+
   TJclCompressItem = class(TJclCompressionItem)
   protected
     procedure CheckGetProperty(AProperty: TJclCompressionItemProperty); override;
     procedure CheckSetProperty(AProperty: TJclCompressionItemProperty); override;
   end;
 
-  TJclCompressArchive = class(TJclCompressionArchive)
+  TJclCompressArchive = class(TJclCompressionArchive, IInterface)
   private
     FBaseRelName: WideString;
     FBaseDirName: string;
@@ -787,7 +903,7 @@ type
   TJclCompressionExtractEvent = function (Sender: TObject; Index: Integer;
     var FileName: TFileName; var Stream: TStream; var AOwnsStream: Boolean): Boolean of object;
 
-  TJclDecompressArchive = class(TJclCompressionArchive)
+  TJclDecompressArchive = class(TJclCompressionArchive, IInterface)
   private
     FOnExtract: TJclCompressionExtractEvent;
     FAutoCreateSubDir: Boolean;
@@ -825,7 +941,7 @@ type
     function ValidateExtraction(Index: Integer): Boolean; override;
   end;
 
-  TJclUpdateArchive = class(TJclCompressArchive)
+  TJclUpdateArchive = class(TJclCompressArchive, IInterface)
   private
     FOnExtract: TJclCompressionExtractEvent;
     FAutoCreateSubDir: Boolean;
@@ -896,55 +1012,151 @@ function GetArchiveFormats: TJclCompressionArchiveFormats;
 
 // sevenzip classes for compression
 type
-  TJclSevenzipCompressArchive = class(TJclCompressArchive)
+  TJclSevenzipCompressArchive = class(TJclCompressArchive, IInterface)
   private
     FOutArchive: IOutArchive;
-    FCompressionLevel: Cardinal;
-    procedure SetCompressionLevel(Value: Cardinal);
   protected
     procedure CreateCompressionObject; override;
     procedure FreeCompressionObject; override;
     function GetCLSID: TGUID; virtual; abstract;
-    procedure SetCompressionProperties; virtual;
     function GetItemClass: TJclCompressionItemClass; override;
   public
     procedure Compress; override;
-
-    property CompressionLevel: Cardinal read FCompressionLevel write SetCompressionLevel; // X9
   end;
 
   // file formats
 
-  TJclZipMethod = (zmDeflate, zmDeflate64, zmCopy, zmBZip2);
-
-  TJclZipCompressArchive = class(TJclSevenzipCompressArchive)
+  TJclZipCompressArchive = class(TJclSevenzipCompressArchive, IJclArchiveCompressionLevel, IJclArchiveCompressionMethod,
+    IJclArchiveEncryptionMethod, IJclArchiveDictionarySize, IJclArchiveNumberOfPasses, IJclArchiveNumberOfThreads,
+    IJclArchiveAlgorithm, IInterface)
   private
-    FDefaultMethod: TJclZipMethod;
-    procedure SetDefaultMethod(Value: TJclZipMethod);
+    FNumberOfThreads: Cardinal;
+    FEncryptionMethod: TJclEncryptionMethod;
+    FDictionarySize: Cardinal;
+    FCompressionLevel: Cardinal;
+    FCompressionMethod: TJclCompressionMethod;
+    FNumberOfPasses: Cardinal;
+    FAlgorithm: Cardinal;
   protected
-    procedure CreateCompressionObject; override;
     function GetCLSID: TGUID; override;
-    procedure SetCompressionProperties; override;
+    procedure CreateCompressionObject; override;
   public
     class function MultipleItemContainer: Boolean; override;
     class function ArchiveExtensions: string; override;
     class function ArchiveName: string; override;
-
-    property DefaultMethod: TJclZipMethod read FDefaultMethod write SetDefaultMethod;
+    { IJclArchiveNumberOfThreads }
+    function GetNumberOfThreads: Cardinal;
+    procedure SetNumberOfThreads(Value: Cardinal);
+    { IJclArchiveEncryptionMethod }
+    function GetEncryptionMethod: TJclEncryptionMethod;
+    function GetSupportedEncryptionMethods: TJclEncryptionMethods;
+    procedure SetEncryptionMethod(Value: TJclEncryptionMethod);
+    { IJclArchiveDictionarySize }
+    function GetDictionarySize: Cardinal;
+    procedure SetDictionarySize(Value: Cardinal);
+    { IJclArchiveCompressionLevel }
+    function GetCompressionLevel: Cardinal;
+    function GetCompressionLevelMax: Cardinal;
+    function GetCompressionLevelMin: Cardinal;
+    procedure SetCompressionLevel(Value: Cardinal);
+    { IJclArchiveCompressionMethod }
+    function GetCompressionMethod: TJclCompressionMethod;
+    function GetSupportedCompressionMethods: TJclCompressionMethods;
+    procedure SetCompressionMethod(Value: TJclCompressionMethod);
+    { IJclArchiveNumberOfPasses }
+    function GetNumberOfPasses: Cardinal;
+    procedure SetNumberOfPasses(Value: Cardinal);
+    { IJclArchiveAlgoritm }
+    function GetAlgorithm: Cardinal;
+    function GetSupportedAlgorithms: TDynCardinalArray;
+    procedure SetAlgorithm(Value: Cardinal);
   end;
 
-  TJclBZ2CompressArchive = class(TJclSevenzipCompressArchive)
+  TJclBZ2CompressArchive = class(TJclSevenzipCompressArchive, IJclArchiveCompressionLevel, IJclArchiveDictionarySize,
+    IJclArchiveNumberOfPasses, IJclArchiveNumberOfThreads, IInterface)
+  private
+    FNumberOfThreads: Cardinal;
+    FDictionarySize: Cardinal;
+    FCompressionLevel: Cardinal;
+    FNumberOfPasses: Cardinal;
   protected
-    procedure CreateCompressionObject; override;
     function GetCLSID: TGUID; override;
+    procedure CreateCompressionObject; override;
   public
     class function ArchiveExtensions: string; override;
     class function ArchiveName: string; override;
+    { IJclArchiveNumberOfThreads }
+    function GetNumberOfThreads: Cardinal;
+    procedure SetNumberOfThreads(Value: Cardinal);
+    { IJclArchiveDictionarySize }
+    function GetDictionarySize: Cardinal;
+    procedure SetDictionarySize(Value: Cardinal);
+    { IJclArchiveCompressionLevel }
+    function GetCompressionLevel: Cardinal;
+    function GetCompressionLevelMax: Cardinal;
+    function GetCompressionLevelMin: Cardinal;
+    procedure SetCompressionLevel(Value: Cardinal);
+    { IJclArchiveNumberOfPasses }
+    function GetNumberOfPasses: Cardinal;
+    procedure SetNumberOfPasses(Value: Cardinal);
   end;
 
-  TJcl7zCompressArchive = class(TJclSevenzipCompressArchive)
+  TJcl7zCompressArchive = class(TJclSevenzipCompressArchive, IJclArchiveCompressionLevel, IJclArchiveDictionarySize,
+    IJclArchiveNumberOfThreads, IJclArchiveRemoveSfxBlock, IJclArchiveCompressHeader, IJclArchiveEncryptHeader,
+    IJclArchiveSaveCreationDateTime, IJclArchiveSaveLastAccessDateTime, IJclArchiveSaveLastWriteDateTime, IInterface)
+  private
+    FNumberOfThreads: Cardinal;
+    FEncryptHeader: Boolean;
+    FRemoveSfxBlock: Boolean;
+    FDictionarySize: Cardinal;
+    FCompressionLevel: Cardinal;
+    FCompressHeader: Boolean;
+    FCompressHeaderFull: Boolean;
+    FSaveLastAccessDateTime: Boolean;
+    FSaveCreationDateTime: Boolean;
+    FSaveLastWriteDateTime: Boolean;
   protected
+    function GetCLSID: TGUID; override;
     procedure CreateCompressionObject; override;
+  public
+    class function MultipleItemContainer: Boolean; override;
+    class function ArchiveExtensions: string; override;
+    class function ArchiveName: string; override;
+    { IJclArchiveNumberOfThreads }
+    function GetNumberOfThreads: Cardinal;
+    procedure SetNumberOfThreads(Value: Cardinal);
+    { IJclArchiveEncryptHeader }
+    function GetEncryptHeader: Boolean;
+    procedure SetEncryptHeader(Value: Boolean);
+    { IJclArchiveRemoveSfxBlock }
+    function GetRemoveSfxBlock: Boolean;
+    procedure SetRemoveSfxBlock(Value: Boolean);
+    { IJclArchiveDictionarySize }
+    function GetDictionarySize: Cardinal;
+    procedure SetDictionarySize(Value: Cardinal);
+    { IJclArchiveCompressionLevel }
+    function GetCompressionLevel: Cardinal;
+    function GetCompressionLevelMax: Cardinal;
+    function GetCompressionLevelMin: Cardinal;
+    procedure SetCompressionLevel(Value: Cardinal);
+    { IJclArchiveCompressHeader }
+    function GetCompressHeader: Boolean;
+    function GetCompressHeaderFull: Boolean;
+    procedure SetCompressHeader(Value: Boolean);
+    procedure SetCompressHeaderFull(Value: Boolean);
+    { IJclArchiveSaveLastAccessDateTime }
+    function GetSaveLastAccessDateTime: Boolean;
+    procedure SetSaveLastAccessDateTime(Value: Boolean);
+    { IJclArchiveSaveCreationDateTime }
+    function GetSaveCreationDateTime: Boolean;
+    procedure SetSaveCreationDateTime(Value: Boolean);
+    { IJclArchiveSaveLastWriteDateTime }
+    function GetSaveLastWriteDateTime: Boolean;
+    procedure SetSaveLastWriteDateTime(Value: Boolean);
+  end;
+
+  TJclTarCompressArchive = class(TJclSevenzipCompressArchive, IInterface)
+  protected
     function GetCLSID: TGUID; override;
   public
     class function MultipleItemContainer: Boolean; override;
@@ -952,29 +1164,35 @@ type
     class function ArchiveName: string; override;
   end;
 
-  TJclTarCompressArchive = class(TJclSevenzipCompressArchive)
+  TJclGZipCompressArchive = class(TJclSevenzipCompressArchive, IJclArchiveCompressionLevel, IJclArchiveNumberOfPasses,
+    IJclArchiveAlgorithm, IInterface)
+  private
+    FCompressionLevel: Cardinal;
+    FNumberOfPasses: Cardinal;
+    FAlgorithm: Cardinal;
   protected
-    procedure CreateCompressionObject; override;
     function GetCLSID: TGUID; override;
-    procedure SetCompressionProperties; override;
-  public
-    class function MultipleItemContainer: Boolean; override;
-    class function ArchiveExtensions: string; override;
-    class function ArchiveName: string; override;
-  end;
-
-  TJclGZipCompressArchive = class(TJclSevenzipCompressArchive)
-  protected
     procedure CreateCompressionObject; override;
-    function GetCLSID: TGUID; override;
   public
     class function ArchiveExtensions: string; override;
     class function ArchiveName: string; override;
+    { IJclArchiveCompressionLevel }
+    function GetCompressionLevel: Cardinal;
+    function GetCompressionLevelMax: Cardinal;
+    function GetCompressionLevelMin: Cardinal;
+    procedure SetCompressionLevel(Value: Cardinal);
+    { IJclArchiveNumberOfPasses }
+    function GetNumberOfPasses: Cardinal;
+    procedure SetNumberOfPasses(Value: Cardinal);
+    { IJclArchiveAlgorithm }
+    function GetAlgorithm: Cardinal;
+    function GetSupportedAlgorithms: TDynCardinalArray;
+    procedure SetAlgorithm(Value: Cardinal);
   end;
 
 // sevenzip classes for decompression
 type
-  TJclSevenzipDecompressArchive = class(TJclDecompressArchive)
+  TJclSevenzipDecompressArchive = class(TJclDecompressArchive, IInterface)
   private
     FInArchive: IInArchive;
     FOpened: Boolean;
@@ -994,7 +1212,36 @@ type
 
   // file formats
 
-  TJclZipDecompressArchive = class(TJclSevenzipDecompressArchive)
+  TJclZipDecompressArchive = class(TJclSevenzipDecompressArchive, IJclArchiveNumberOfThreads, IInterface)
+  private
+    FNumberOfThreads: Cardinal;
+  protected
+    function GetCLSID: TGUID; override;
+    procedure CreateCompressionObject; override;
+  public
+    class function MultipleItemContainer: Boolean; override;
+    class function ArchiveExtensions: string; override;
+    class function ArchiveName: string; override;
+    { IJclArchiveNumberOfThreads }
+    function GetNumberOfThreads: Cardinal;
+    procedure SetNumberOfThreads(Value: Cardinal);
+  end;
+
+  TJclBZ2DecompressArchive = class(TJclSevenzipDecompressArchive, IJclArchiveNumberOfThreads, IInterface)
+  private
+    FNumberOfThreads: Cardinal;
+  protected
+    function GetCLSID: TGUID; override;
+    procedure CreateCompressionObject; override;
+  public
+    class function ArchiveExtensions: string; override;
+    class function ArchiveName: string; override;
+    { IJclArchiveNumberOfThreads }
+    function GetNumberOfThreads: Cardinal;
+    procedure SetNumberOfThreads(Value: Cardinal);
+  end;
+
+  TJclRarDecompressArchive = class(TJclSevenzipDecompressArchive, IInterface)
   protected
     function GetCLSID: TGUID; override;
   public
@@ -1003,15 +1250,7 @@ type
     class function ArchiveName: string; override;
   end;
 
-  TJclBZ2DecompressArchive = class(TJclSevenzipDecompressArchive)
-  protected
-    function GetCLSID: TGUID; override;
-  public
-    class function ArchiveExtensions: string; override;
-    class function ArchiveName: string; override;
-  end;
-
-  TJclRarDecompressArchive = class(TJclSevenzipDecompressArchive)
+  TJclArjDecompressArchive = class(TJclSevenzipDecompressArchive, IInterface)
   protected
     function GetCLSID: TGUID; override;
   public
@@ -1020,7 +1259,7 @@ type
     class function ArchiveName: string; override;
   end;
 
-  TJclArjDecompressArchive = class(TJclSevenzipDecompressArchive)
+  TJclZDecompressArchive = class(TJclSevenzipDecompressArchive, IInterface)
   protected
     function GetCLSID: TGUID; override;
   public
@@ -1029,7 +1268,7 @@ type
     class function ArchiveName: string; override;
   end;
 
-  TJclZDecompressArchive = class(TJclSevenzipDecompressArchive)
+  TJclLzhDecompressArchive = class(TJclSevenzipDecompressArchive, IInterface)
   protected
     function GetCLSID: TGUID; override;
   public
@@ -1038,7 +1277,22 @@ type
     class function ArchiveName: string; override;
   end;
 
-  TJclLzhDecompressArchive = class(TJclSevenzipDecompressArchive)
+  TJcl7zDecompressArchive = class(TJclSevenzipDecompressArchive, IJclArchiveNumberOfThreads, IInterface)
+  private
+    FNumberOfThreads: Cardinal;
+  protected
+    function GetCLSID: TGUID; override;
+    procedure CreateCompressionObject; override;
+  public
+    class function MultipleItemContainer: Boolean; override;
+    class function ArchiveExtensions: string; override;
+    class function ArchiveName: string; override;
+    { IJclArchiveNumberOfThreads }
+    function GetNumberOfThreads: Cardinal;
+    procedure SetNumberOfThreads(Value: Cardinal);
+  end;
+
+  TJclCabDecompressArchive = class(TJclSevenzipDecompressArchive, IInterface)
   protected
     function GetCLSID: TGUID; override;
   public
@@ -1047,7 +1301,7 @@ type
     class function ArchiveName: string; override;
   end;
 
-  TJcl7zDecompressArchive = class(TJclSevenzipDecompressArchive)
+  TJclNsisDecompressArchive = class(TJclSevenzipDecompressArchive, IInterface)
   protected
     function GetCLSID: TGUID; override;
   public
@@ -1056,61 +1310,7 @@ type
     class function ArchiveName: string; override;
   end;
 
-  TJclCabDecompressArchive = class(TJclSevenzipDecompressArchive)
-  protected
-    function GetCLSID: TGUID; override;
-  public
-    class function MultipleItemContainer: Boolean; override;
-    class function ArchiveExtensions: string; override;
-    class function ArchiveName: string; override;
-  end;
-
-  TJclNsisDecompressArchive = class(TJclSevenzipDecompressArchive)
-  protected
-    function GetCLSID: TGUID; override;
-  public
-    class function MultipleItemContainer: Boolean; override;
-    class function ArchiveExtensions: string; override;
-    class function ArchiveName: string; override;
-  end;
-
-  {TJclLzmaDecompressArchive = class(TJclSevenzipDecompressArchive)
-  protected
-    function GetCLSID: TGUID; override;
-  public
-    class function MultipleItemContainer: Boolean; override;
-    class function ArchiveExtensions: string; override;
-    class function ArchiveName: string; override;
-  end;}
-
-  TJclCompoundDecompressArchive = class(TJclSevenzipDecompressArchive)
-  protected
-    function GetCLSID: TGUID; override;
-  public
-    class function MultipleItemContainer: Boolean; override;
-    class function ArchiveExtensions: string; override;
-    class function ArchiveName: string; override;
-  end;
-
-  TJclWimDecompressArchive = class(TJclSevenzipDecompressArchive)
-  protected
-    function GetCLSID: TGUID; override;
-  public
-    class function MultipleItemContainer: Boolean; override;
-    class function ArchiveExtensions: string; override;
-    class function ArchiveName: string; override;
-  end;
-
-  TJclIsoDecompressArchive = class(TJclSevenzipDecompressArchive)
-  protected
-    function GetCLSID: TGUID; override;
-  public
-    class function MultipleItemContainer: Boolean; override;
-    class function ArchiveExtensions: string; override;
-    class function ArchiveName: string; override;
-  end;
-
-  {TJclBkfDecompressArchive = class(TJclSevenzipDecompressArchive)
+  {TJclLzmaDecompressArchive = class(TJclSevenzipDecompressArchive, IInterface)
   protected
     function GetCLSID: TGUID; override;
   public
@@ -1119,7 +1319,7 @@ type
     class function ArchiveName: string; override;
   end;}
 
-  TJclChmDecompressArchive = class(TJclSevenzipDecompressArchive)
+  TJclCompoundDecompressArchive = class(TJclSevenzipDecompressArchive, IInterface)
   protected
     function GetCLSID: TGUID; override;
   public
@@ -1128,15 +1328,7 @@ type
     class function ArchiveName: string; override;
   end;
 
-  TJclSplitDecompressArchive = class(TJclSevenzipDecompressArchive)
-  protected
-    function GetCLSID: TGUID; override;
-  public
-    class function ArchiveExtensions: string; override;
-    class function ArchiveName: string; override;
-  end;
-
-  TJclRpmDecompressArchive = class(TJclSevenzipDecompressArchive)
+  TJclWimDecompressArchive = class(TJclSevenzipDecompressArchive, IInterface)
   protected
     function GetCLSID: TGUID; override;
   public
@@ -1145,7 +1337,7 @@ type
     class function ArchiveName: string; override;
   end;
 
-  TJclDebDecompressArchive = class(TJclSevenzipDecompressArchive)
+  TJclIsoDecompressArchive = class(TJclSevenzipDecompressArchive, IInterface)
   protected
     function GetCLSID: TGUID; override;
   public
@@ -1154,7 +1346,16 @@ type
     class function ArchiveName: string; override;
   end;
 
-  TJclCpioDecompressArchive = class(TJclSevenzipDecompressArchive)
+  {TJclBkfDecompressArchive = class(TJclSevenzipDecompressArchive, IInterface)
+  protected
+    function GetCLSID: TGUID; override;
+  public
+    class function MultipleItemContainer: Boolean; override;
+    class function ArchiveExtensions: string; override;
+    class function ArchiveName: string; override;
+  end;}
+
+  TJclChmDecompressArchive = class(TJclSevenzipDecompressArchive, IInterface)
   protected
     function GetCLSID: TGUID; override;
   public
@@ -1163,7 +1364,15 @@ type
     class function ArchiveName: string; override;
   end;
 
-  TJclTarDecompressArchive = class(TJclSevenzipDecompressArchive)
+  TJclSplitDecompressArchive = class(TJclSevenzipDecompressArchive, IInterface)
+  protected
+    function GetCLSID: TGUID; override;
+  public
+    class function ArchiveExtensions: string; override;
+    class function ArchiveName: string; override;
+  end;
+
+  TJclRpmDecompressArchive = class(TJclSevenzipDecompressArchive, IInterface)
   protected
     function GetCLSID: TGUID; override;
   public
@@ -1172,7 +1381,34 @@ type
     class function ArchiveName: string; override;
   end;
 
-  TJclGZipDecompressArchive = class(TJclSevenzipDecompressArchive)
+  TJclDebDecompressArchive = class(TJclSevenzipDecompressArchive, IInterface)
+  protected
+    function GetCLSID: TGUID; override;
+  public
+    class function MultipleItemContainer: Boolean; override;
+    class function ArchiveExtensions: string; override;
+    class function ArchiveName: string; override;
+  end;
+
+  TJclCpioDecompressArchive = class(TJclSevenzipDecompressArchive, IInterface)
+  protected
+    function GetCLSID: TGUID; override;
+  public
+    class function MultipleItemContainer: Boolean; override;
+    class function ArchiveExtensions: string; override;
+    class function ArchiveName: string; override;
+  end;
+
+  TJclTarDecompressArchive = class(TJclSevenzipDecompressArchive, IInterface)
+  protected
+    function GetCLSID: TGUID; override;
+  public
+    class function MultipleItemContainer: Boolean; override;
+    class function ArchiveExtensions: string; override;
+    class function ArchiveName: string; override;
+  end;
+
+  TJclGZipDecompressArchive = class(TJclSevenzipDecompressArchive, IInterface)
   protected
     function GetCLSID: TGUID; override;
   public
@@ -1182,20 +1418,17 @@ type
 
 //sevenzip classes for updates (read and write)
 type
-  TJclSevenzipUpdateArchive = class(TJclUpdateArchive)
+  TJclSevenzipUpdateArchive = class(TJclUpdateArchive, IInterface)
   private
     FInArchive: IInArchive;
     FOutArchive: IOutArchive;
     FOpened: Boolean;
-    FCompressionLevel: Cardinal;
-    procedure SetCompressionLevel(Value: Cardinal);
   protected
     procedure OpenArchive;
     procedure CreateCompressionObject; override;
     procedure FreeCompressionObject; override;
     function GetCLSID: TGUID; virtual; abstract;
     function GetItemClass: TJclCompressionItemClass; override;
-    procedure SetCompressionProperties; virtual;
   public
     procedure ListFiles; override;
     procedure ExtractSelected(const ADestinationDir: string = '';
@@ -1205,38 +1438,139 @@ type
     procedure Compress; override;
     procedure DeleteItem(Index: Integer); override;
     procedure RemoveItem(const PackedName: WideString); override;
-
-    property CompressionLevel: Cardinal read FCompressionLevel write SetCompressionLevel; // X9
   end;
 
-  TJclZipUpdateArchive = class(TJclSevenzipUpdateArchive)
+  TJclZipUpdateArchive = class(TJclSevenzipUpdateArchive, IJclArchiveCompressionLevel, IJclArchiveCompressionMethod,
+    IJclArchiveEncryptionMethod, IJclArchiveDictionarySize, IJclArchiveNumberOfPasses, IJclArchiveNumberOfThreads,
+    IJclArchiveAlgorithm, IInterface)
   private
-    FDefaultMethod: TJclZipMethod;
-    procedure SetDefaultMethod(Value: TJclZipMethod);
+    FNumberOfThreads: Cardinal;
+    FEncryptionMethod: TJclEncryptionMethod;
+    FDictionarySize: Cardinal;
+    FCompressionLevel: Cardinal;
+    FCompressionMethod: TJclCompressionMethod;
+    FNumberOfPasses: Cardinal;
+    FAlgorithm: Cardinal;
   protected
-    procedure CreateCompressionObject; override;
     function GetCLSID: TGUID; override;
-    procedure SetCompressionProperties; override;
+    procedure CreateCompressionObject; override;
   public
     class function MultipleItemContainer: Boolean; override;
     class function ArchiveExtensions: string; override;
     class function ArchiveName: string; override;
-
-    property DefaultMethod: TJclZipMethod read FDefaultMethod write SetDefaultMethod;
+    { IJclArchiveNumberOfThreads }
+    function GetNumberOfThreads: Cardinal;
+    procedure SetNumberOfThreads(Value: Cardinal);
+    { IJclArchiveEncryptionMethod }
+    function GetEncryptionMethod: TJclEncryptionMethod;
+    function GetSupportedEncryptionMethods: TJclEncryptionMethods;
+    procedure SetEncryptionMethod(Value: TJclEncryptionMethod);
+    { IJclArchiveDictionarySize }
+    function GetDictionarySize: Cardinal;
+    procedure SetDictionarySize(Value: Cardinal);
+    { IJclArchiveCompressionLevel }
+    function GetCompressionLevel: Cardinal;
+    function GetCompressionLevelMax: Cardinal;
+    function GetCompressionLevelMin: Cardinal;
+    procedure SetCompressionLevel(Value: Cardinal);
+    { IJclArchiveCompressionMethod }
+    function GetCompressionMethod: TJclCompressionMethod;
+    function GetSupportedCompressionMethods: TJclCompressionMethods;
+    procedure SetCompressionMethod(Value: TJclCompressionMethod);
+    { IJclArchiveNumberOfPasses }
+    function GetNumberOfPasses: Cardinal;
+    procedure SetNumberOfPasses(Value: Cardinal);
+    { IJclArchiveAlgoritm }
+    function GetAlgorithm: Cardinal;
+    function GetSupportedAlgorithms: TDynCardinalArray;
+    procedure SetAlgorithm(Value: Cardinal);
   end;
 
-  TJclBZ2UpdateArchive = class(TJclSevenzipUpdateArchive)
+  TJclBZ2UpdateArchive = class(TJclSevenzipUpdateArchive, IJclArchiveCompressionLevel, IJclArchiveDictionarySize,
+    IJclArchiveNumberOfPasses, IJclArchiveNumberOfThreads, IInterface)
+  private
+    FNumberOfThreads: Cardinal;
+    FDictionarySize: Cardinal;
+    FCompressionLevel: Cardinal;
+    FNumberOfPasses: Cardinal;
   protected
-    procedure CreateCompressionObject; override;
     function GetCLSID: TGUID; override;
+    procedure CreateCompressionObject; override;
   public
     class function ArchiveExtensions: string; override;
     class function ArchiveName: string; override;
+    { IJclArchiveNumberOfThreads }
+    function GetNumberOfThreads: Cardinal;
+    procedure SetNumberOfThreads(Value: Cardinal);
+    { IJclArchiveDictionarySize }
+    function GetDictionarySize: Cardinal;
+    procedure SetDictionarySize(Value: Cardinal);
+    { IJclArchiveCompressionLevel }
+    function GetCompressionLevel: Cardinal;
+    function GetCompressionLevelMax: Cardinal;
+    function GetCompressionLevelMin: Cardinal;
+    procedure SetCompressionLevel(Value: Cardinal);
+    { IJclArchiveNumberOfPasses }
+    function GetNumberOfPasses: Cardinal;
+    procedure SetNumberOfPasses(Value: Cardinal);
   end;
 
-  TJcl7zUpdateArchive = class(TJclSevenzipUpdateArchive)
+  TJcl7zUpdateArchive = class(TJclSevenzipUpdateArchive, IJclArchiveCompressionLevel, IJclArchiveDictionarySize,
+    IJclArchiveNumberOfThreads, IJclArchiveRemoveSfxBlock, IJclArchiveCompressHeader, IJclArchiveEncryptHeader,
+    IJclArchiveSaveCreationDateTime, IJclArchiveSaveLastAccessDateTime, IJclArchiveSaveLastWriteDateTime, IInterface)
+  private
+    FNumberOfThreads: Cardinal;
+    FEncryptHeader: Boolean;
+    FRemoveSfxBlock: Boolean;
+    FDictionarySize: Cardinal;
+    FCompressionLevel: Cardinal;
+    FCompressHeader: Boolean;
+    FCompressHeaderFull: Boolean;
+    FSaveLastAccessDateTime: Boolean;
+    FSaveCreationDateTime: Boolean;
+    FSaveLastWriteDateTime: Boolean;
   protected
+    function GetCLSID: TGUID; override;
     procedure CreateCompressionObject; override;
+  public
+    class function MultipleItemContainer: Boolean; override;
+    class function ArchiveExtensions: string; override;
+    class function ArchiveName: string; override;
+    { IJclArchiveNumberOfThreads }
+    function GetNumberOfThreads: Cardinal;
+    procedure SetNumberOfThreads(Value: Cardinal);
+    { IJclArchiveEncryptHeader }
+    function GetEncryptHeader: Boolean;
+    procedure SetEncryptHeader(Value: Boolean);
+    { IJclArchiveRemoveSfxBlock }
+    function GetRemoveSfxBlock: Boolean;
+    procedure SetRemoveSfxBlock(Value: Boolean);
+    { IJclArchiveDictionarySize }
+    function GetDictionarySize: Cardinal;
+    procedure SetDictionarySize(Value: Cardinal);
+    { IJclArchiveCompressionLevel }
+    function GetCompressionLevel: Cardinal;
+    function GetCompressionLevelMax: Cardinal;
+    function GetCompressionLevelMin: Cardinal;
+    procedure SetCompressionLevel(Value: Cardinal);
+    { IJclArchiveCompressHeader }
+    function GetCompressHeader: Boolean;
+    function GetCompressHeaderFull: Boolean;
+    procedure SetCompressHeader(Value: Boolean);
+    procedure SetCompressHeaderFull(Value: Boolean);
+    { IJclArchiveSaveLastAccessDateTime }
+    function GetSaveLastAccessDateTime: Boolean;
+    procedure SetSaveLastAccessDateTime(Value: Boolean);
+    { IJclArchiveSaveCreationDateTime }
+    function GetSaveCreationDateTime: Boolean;
+    procedure SetSaveCreationDateTime(Value: Boolean);
+    { IJclArchiveSaveLastWriteDateTime }
+    function GetSaveLastWriteDateTime: Boolean;
+    procedure SetSaveLastWriteDateTime(Value: Boolean);
+  end;
+
+  TJclTarUpdateArchive = class(TJclSevenzipUpdateArchive, IInterface)
+  protected
     function GetCLSID: TGUID; override;
   public
     class function MultipleItemContainer: Boolean; override;
@@ -1244,24 +1578,30 @@ type
     class function ArchiveName: string; override;
   end;
 
-  TJclTarUpdateArchive = class(TJclSevenzipUpdateArchive)
+  TJclGZipUpdateArchive = class(TJclSevenzipUpdateArchive, IJclArchiveCompressionLevel, IJclArchiveNumberOfPasses,
+    IJclArchiveAlgorithm, IInterface)
+  private
+    FCompressionLevel: Cardinal;
+    FNumberOfPasses: Cardinal;
+    FAlgorithm: Cardinal;
   protected
-    procedure CreateCompressionObject; override;
     function GetCLSID: TGUID; override;
-    procedure SetCompressionProperties; override;
-  public
-    class function MultipleItemContainer: Boolean; override;
-    class function ArchiveExtensions: string; override;
-    class function ArchiveName: string; override;
-  end;
-
-  TJclGZipUpdateArchive = class(TJclSevenzipUpdateArchive)
-  protected
     procedure CreateCompressionObject; override;
-    function GetCLSID: TGUID; override;
   public
     class function ArchiveExtensions: string; override;
     class function ArchiveName: string; override;
+    { IJclArchiveCompressionLevel }
+    function GetCompressionLevel: Cardinal;
+    function GetCompressionLevelMax: Cardinal;
+    function GetCompressionLevelMin: Cardinal;
+    procedure SetCompressionLevel(Value: Cardinal);
+    { IJclArchiveNumberOfPasses }
+    function GetNumberOfPasses: Cardinal;
+    procedure SetNumberOfPasses(Value: Cardinal);
+    { IJclArchiveAlgorithm }
+    function GetAlgorithm: Cardinal;
+    function GetSupportedAlgorithms: TDynCardinalArray;
+    procedure SetAlgorithm(Value: Cardinal);
   end;
 {$ENDIF MSWINDOWS}
 
@@ -3626,6 +3966,24 @@ begin
   Result := saReadOnly;
 end;
 
+function TJclCompressionArchive._AddRef: Integer;
+begin
+  Result := -1;
+end;
+
+function TJclCompressionArchive._Release: Integer;
+begin
+  Result := -1;
+end;
+
+function TJclCompressionArchive.QueryInterface(const IID: TGUID; out Obj): HResult;
+begin
+  if GetInterface(IID, Obj) then
+    Result := 0
+  else
+    Result := E_NOINTERFACE;
+end;
+
 //=== { TJclCompressItem } ===================================================
 
 procedure TJclCompressItem.CheckGetProperty(
@@ -4275,6 +4633,133 @@ begin
   end;
 end;
 
+procedure SetSevenzipArchiveCompressionProperties(AJclArchive: IInterface; ASevenzipArchive: IInterface);
+var
+  PropertySetter: Sevenzip.ISetProperties;
+  InArchive, OutArchive: Boolean;
+  MultiThreadStrategy: IJclArchiveNumberOfThreads;
+  CompressionLevel: IJclArchiveCompressionLevel;
+  EncryptionMethod: IJclArchiveEncryptionMethod;
+  DictionarySize: IJclArchiveDictionarySize;
+  NumberOfPasses: IJclArchiveNumberOfPasses;
+  RemoveSfxBlock: IJclArchiveRemoveSfxBlock;
+  CompressHeader: IJclArchiveCompressHeader;
+  EncryptHeader: IJclArchiveEncryptHeader;
+  SaveCreationDateTime: IJclArchiveSaveCreationDateTime;
+  SaveLastAccessDateTime: IJclArchiveSaveLastAccessDateTime;
+  SaveLastWriteDateTime: IJclArchiveSaveLastWriteDateTime;
+  Algorithm: IJclArchiveAlgorithm;
+  PropNames: array of PWideChar;
+  PropValues: array of TPropVariant;
+
+  procedure AddProperty(const Name: PWideChar; const Value: TPropVariant);
+  begin
+    SetLength(PropNames, Length(PropNames)+1);
+    PropNames[High(PropNames)] := Name;
+    SetLength(PropValues, Length(PropValues)+1);
+    PropValues[High(PropValues)] := Value;
+  end;
+
+  procedure AddCardinalProperty(const Name: PWideChar; Value: Cardinal);
+  var
+    PropValue: TPropVariant;
+  begin
+    PropValue.vt := VT_UI4;
+    PropValue.ulVal := Value;
+    AddProperty(Name, PropValue);
+  end;
+
+  procedure AddWideStringProperty(const Name: PWideChar; const Value: WideString);
+  var
+    PropValue: TPropVariant;
+  begin
+    PropValue.vt := VT_BSTR;
+    PropValue.bstrVal := SysAllocString(PWideChar(Value));
+    AddProperty(Name, PropValue);
+  end;
+
+  procedure AddBooleanProperty(const Name: PWideChar; Value: Boolean);
+  var
+    PropValue: TPropVariant;
+  const
+    BooleanValues: array [False..True] of WideString = ( 'OFF', 'ON' );
+  begin
+    PropValue.vt := VT_BSTR;
+      PropValue.bstrVal := SysAllocString(PWideChar(BooleanValues[Value]));
+    AddProperty(Name, PropValue);
+  end;
+const
+  EncryptionMethodName: array [TJclEncryptionMethod] of WideString =
+    ( '' {emNone},
+      kAES128MethodName {emAES128},
+      kAES192MethodName {emAES192},
+      kAES256MethodName {emAES256},
+      kZipCryptoMethodName {emZipCrypto} );
+  CompressionMethodNames: array [TJclCompressionMethod] of WideString =
+    ( kCopyMethodName {cmCopy},
+      kDeflateMethodName {cmDeflate},
+      kDeflate64MethodName {cmDeflate64},
+      kBZip2MethodName {cmBZip2},
+      kLZMAMethodName {cmLZMA},
+      kLZMA2MethodName {cmLZMA2},
+      kPPMdMethodName {cmPPMd} );
+begin
+  if Supports(ASevenZipArchive, Sevenzip.ISetProperties, PropertySetter) and Assigned(PropertySetter) then
+  begin
+    Supports(ASevenzipArchive,Sevenzip.IInArchive,InArchive);
+    Supports(ASevenzipArchive,Sevenzip.IOutArchive,OutArchive);
+    if (InArchive or OutArchive) and Supports(AJclArchive, IJclArchiveNumberOfThreads, MultiThreadStrategy)
+      and Assigned(MultiThreadStrategy) and (MultiThreadStrategy.NumberOfThreads > 1) then
+      AddCardinalProperty('MT', MultiThreadStrategy.NumberOfThreads);
+
+    if OutArchive then
+    begin
+      if Supports(AJclArchive, IJclArchiveCompressionLevel, CompressionLevel) and Assigned(CompressionLevel) then
+        AddCardinalProperty('X', CompressionLevel.CompressionLevel);
+
+      if Supports(AJclArchive, IJclArchiveEncryptionMethod, EncryptionMethod) and Assigned(EncryptionMethod)
+        and (EncryptionMethod.EncryptionMethod <> emNone) then
+        AddWideStringProperty('EM', EncryptionMethodName[EncryptionMethod.EncryptionMethod]);
+
+      if Supports(AJclArchive, IJclArchiveDictionarySize, DictionarySize) and Assigned(DictionarySize) then
+        AddCardinalProperty('D', DictionarySize.DictionarySize);
+
+      if Supports(AJclArchive, IJclArchiveNumberOfPasses, NumberOfPasses) and Assigned(NumberOfPasses) then
+        AddCardinalProperty('PASS', NumberOfPasses.NumberOfPasses);
+
+      if Supports(AJclArchive, IJclArchiveRemoveSfxBlock, RemoveSfxBlock) and Assigned(RemoveSfxBlock) then
+        AddBooleanProperty('RSFX', RemoveSfxBlock.RemoveSfxBlock);
+
+      if Supports(AJclArchive, IJclArchiveCompressHeader, CompressHeader) and Assigned(CompressHeader) then
+      begin
+        AddBooleanProperty('HC', CompressHeader.CompressHeader);
+        if CompressHeader.CompressHeaderFull then
+          AddBooleanProperty('HCF', CompressHeader.CompressHeaderFull);
+      end;
+
+      if Supports(AJclArchive, IJclArchiveEncryptHeader, EncryptHeader) and Assigned(EncryptHeader) then
+        AddBooleanProperty('HE', EncryptHeader.EncryptHeader);
+
+      if Supports(AJclArchive, IJclArchiveSaveCreationDateTime, SaveCreationDateTime)
+        and Assigned(SaveCreationDateTime) then
+        AddBooleanProperty('TC', SaveCreationDateTime.SaveCreationDateTime);
+
+      if Supports(AJclArchive, IJclArchiveSaveLastAccessDateTime, SaveLastAccessDateTime)
+        and Assigned(SaveLastAccessDateTime) then
+        AddBooleanProperty('TA', SaveLastAccessDateTime.SaveLastAccessDateTime);
+
+      if Supports(AJclArchive, IJclArchiveSaveLastWriteDateTime, SaveLastWriteDateTime)
+        and Assigned(SaveLastWriteDateTime) then
+        AddBooleanProperty('TM', SaveLastWriteDateTime.SaveLastWriteDateTime);
+
+      if Supports(AJclArchive, IJclArchiveAlgorithm, Algorithm) and Assigned(Algorithm) then
+        AddCardinalProperty('A', Algorithm.Algorithm);
+    end;
+  end
+  else
+    raise EJclCompressionError.CreateRes(@RsCompression7zNoProperties);
+end;
+
 //=== { TJclSevenzipOutputCallback } =========================================
 
 type
@@ -4521,31 +5006,6 @@ begin
   Result := TJclCompressItem;
 end;
 
-procedure TJclSevenzipCompressArchive.SetCompressionLevel(Value: Cardinal);
-begin
-  CheckNotCompressing;
-
-  FCompressionLevel := Value;
-end;
-
-procedure TJclSevenzipCompressArchive.SetCompressionProperties;
-var
-  PropertiesSetter: ISetProperties;
-  PropNames: array [0..0] of PWideChar;
-  PropValues: array [0..0] of TPropVariant;
-begin
-  if Supports(FOutArchive, ISetProperties, PropertiesSetter) and Assigned(PropertiesSetter) then
-  begin
-    PropNames[0] := 'X';
-    PropValues[0].vt := VT_UI4;
-    PropValues[0].ulVal := CompressionLevel;
-
-    SevenzipCheck(PropertiesSetter.SetProperties(@PropNames[0], @PropValues[0], Length(PropNames)));
-  end
-  else
-    raise EJclCompressionError.CreateRes(@RsCompression7zNoProperties);
-end;
-
 procedure TJclSevenzipCompressArchive.Compress;
 var
   OutStream: IOutStream;
@@ -4562,38 +5022,12 @@ begin
     OutStream := TJclSevenzipOutStream.Create(SplitStream, True);
     UpdateCallback := TJclSevenzipUpdateCallback.Create(Self);
 
-    SetCompressionProperties;
+    SetSevenzipArchiveCompressionProperties(Self, FOutArchive);
 
     SevenzipCheck(FOutArchive.UpdateItems(OutStream, ItemCount, UpdateCallback));
   finally
     FCompressing := False;
   end;
-end;
-
-procedure SetZipCompressionProperties(AOutArchive: IOutArchive; ZipMethod: TJclZipMethod;
-  Level: Cardinal);
-var
-  PropertiesSetter: ISetProperties;
-  PropNames: array [0..1] of PWideChar;
-  PropValues: array [0..1] of TPropVariant;
-const
-  CompressionMethodNames: array [TJclZipMethod] of WideString =
-    ( kDeflateMethodName {zmDeflate}, kDeflate64MethodName {zmDeflate64},
-      kCopyMethod {zmCopy}, kBZip2MethodName {zmBZip2} );
-begin
-  if Supports(AOutArchive, ISetProperties, PropertiesSetter) and Assigned(PropertiesSetter) then
-  begin
-    PropNames[0] := 'X';
-    PropValues[0].vt := VT_UI4;
-    PropValues[0].ulVal := Level;
-    PropNames[1] := 'M';
-    PropValues[1].vt := VT_BSTR;
-    PropValues[1].bstrVal := SysAllocString(PWideChar(CompressionMethodNames[ZipMethod]));
-
-    SevenzipCheck(PropertiesSetter.SetProperties(@PropNames[0], @PropValues[0], Length(PropNames)));
-  end
-  else
-    raise EJclCompressionError.CreateRes(@RsCompression7zNoProperties);
 end;
 
 //=== { TJcl7zCompressArchive } ==============================================
@@ -4611,7 +5045,16 @@ end;
 procedure TJcl7zCompressArchive.CreateCompressionObject;
 begin
   inherited CreateCompressionObject;
-  FCompressionLevel := 9;
+  FNumberOfThreads := 1;
+  FEncryptHeader := False;
+  FRemoveSfxBlock := False;
+  FDictionarySize := kLzmaDicSizeX5;
+  FCompressionLevel := 6;
+  FCompressHeader := False;
+  FCompressHeaderFull := False;
+  FSaveLastAccessDateTime := True;
+  FSaveCreationDateTime := True;
+  FSaveLastWriteDateTime := True;
 end;
 
 function TJcl7zCompressArchive.GetCLSID: TGUID;
@@ -4619,9 +5062,147 @@ begin
   Result := CLSID_CFormat7z;
 end;
 
+function TJcl7zCompressArchive.GetCompressHeader: Boolean;
+begin
+  Result := FCompressHeader;
+end;
+
+function TJcl7zCompressArchive.GetCompressHeaderFull: Boolean;
+begin
+  Result := FCompressHeaderFull;
+end;
+
+function TJcl7zCompressArchive.GetCompressionLevel: Cardinal;
+begin
+  Result := FCompressionLevel;
+end;
+
+function TJcl7zCompressArchive.GetCompressionLevelMax: Cardinal;
+begin
+  Result := 9;
+end;
+
+function TJcl7zCompressArchive.GetCompressionLevelMin: Cardinal;
+begin
+  Result := 0;
+end;
+
+function TJcl7zCompressArchive.GetDictionarySize: Cardinal;
+begin
+  Result := FDictionarySize;
+end;
+
+function TJcl7zCompressArchive.GetEncryptHeader: Boolean;
+begin
+  Result := FEncryptHeader;
+end;
+
+function TJcl7zCompressArchive.GetNumberOfThreads: Cardinal;
+begin
+  Result := FNumberOfThreads;
+end;
+
+function TJcl7zCompressArchive.GetRemoveSfxBlock: Boolean;
+begin
+  Result := FRemoveSfxBlock;
+end;
+
+function TJcl7zCompressArchive.GetSaveCreationDateTime: Boolean;
+begin
+  Result := FSaveCreationDateTime;
+end;
+
+function TJcl7zCompressArchive.GetSaveLastAccessDateTime: Boolean;
+begin
+  Result := FSaveLastAccessDateTime;
+end;
+
+function TJcl7zCompressArchive.GetSaveLastWriteDateTime: Boolean;
+begin
+  Result := FSaveLastWriteDateTime;
+end;
+
 class function TJcl7zCompressArchive.MultipleItemContainer: Boolean;
 begin
   Result := True;
+end;
+
+procedure TJcl7zCompressArchive.SetCompressHeader(Value: Boolean);
+begin
+  CheckNotCompressing;
+  FCompressHeader := Value;
+end;
+
+procedure TJcl7zCompressArchive.SetCompressHeaderFull(Value: Boolean);
+begin
+  CheckNotCompressing;
+  FCompressHeaderFull := Value;
+end;
+
+procedure TJcl7zCompressArchive.SetCompressionLevel(Value: Cardinal);
+begin
+  CheckNotCompressing;
+  if Value <= 9 then
+  begin
+    FCompressionLevel := Value;
+    if Value >= 9 then
+      FDictionarySize := kLzmaDicSizeX9
+    else
+    if Value >= 7 then
+      FDictionarySize := kLzmaDicSizeX7
+    else
+    if Value >= 5 then
+      FDictionarySize := kLzmaDicSizeX5
+    else
+    if Value >= 3 then
+      FDictionarySize := kLzmaDicSizeX3
+    else
+      FDictionarySize := kLzmaDicSizeX1;
+  end
+  else
+    raise EJclCompressionError.CreateRes(@RsCompressionUnavailableProperty);
+end;
+
+procedure TJcl7zCompressArchive.SetDictionarySize(Value: Cardinal);
+begin
+  CheckNotCompressing;
+  FDictionarySize := Value;
+end;
+
+procedure TJcl7zCompressArchive.SetEncryptHeader(Value: Boolean);
+begin
+  CheckNotCompressing;
+  FEncryptHeader := Value;
+end;
+
+procedure TJcl7zCompressArchive.SetNumberOfThreads(Value: Cardinal);
+begin
+  CheckNotCompressing;
+  FNumberOfThreads := Value;
+end;
+
+procedure TJcl7zCompressArchive.SetRemoveSfxBlock(Value: Boolean);
+begin
+  CheckNotCompressing;
+  FRemoveSfxBlock := Value;
+end;
+
+procedure TJcl7zCompressArchive.SetSaveCreationDateTime(Value: Boolean);
+begin
+  CheckNotCompressing;
+  FSaveCreationDateTime := Value;
+end;
+
+procedure TJcl7zCompressArchive.SetSaveLastAccessDateTime(Value: Boolean);
+begin
+  CheckNotCompressing;
+  FSaveLastAccessDateTime := Value;
+end;
+
+procedure TJcl7zCompressArchive.SetSaveLastWriteDateTime(Value: Boolean);
+begin
+  CheckNotCompressing;
+  FSaveLastWriteDateTime := Value;
 end;
 
 //=== { TJclZipCompressArchive } =============================================
@@ -4639,7 +5220,18 @@ end;
 procedure TJclZipCompressArchive.CreateCompressionObject;
 begin
   inherited CreateCompressionObject;
-  FCompressionLevel := 9;
+  FNumberOfThreads := 1;
+  FEncryptionMethod := emZipCrypto;
+  FDictionarySize := kBZip2DicSizeX5;
+  FCompressionLevel := 7;
+  FCompressionMethod := cmDeflate;
+  FNumberOfPasses := kDeflateNumPassesX7;
+  FAlgorithm := kDeflateAlgoX5;
+end;
+
+function TJclZipCompressArchive.GetAlgorithm: Cardinal;
+begin
+  Result := FAlgorithm;
 end;
 
 function TJclZipCompressArchive.GetCLSID: TGUID;
@@ -4647,21 +5239,155 @@ begin
   Result := CLSID_CFormatZip;
 end;
 
+function TJclZipCompressArchive.GetCompressionLevel: Cardinal;
+begin
+  Result := FCompressionLevel;
+end;
+
+function TJclZipCompressArchive.GetCompressionLevelMax: Cardinal;
+begin
+  Result := 9;
+end;
+
+function TJclZipCompressArchive.GetCompressionLevelMin: Cardinal;
+begin
+  Result := 0;
+end;
+
+function TJclZipCompressArchive.GetCompressionMethod: TJclCompressionMethod;
+begin
+  Result := FCompressionMethod;
+end;
+
+function TJclZipCompressArchive.GetDictionarySize: Cardinal;
+begin
+  Result := FDictionarySize;
+end;
+
+function TJclZipCompressArchive.GetEncryptionMethod: TJclEncryptionMethod;
+begin
+  Result := FEncryptionMethod;
+end;
+
+function TJclZipCompressArchive.GetNumberOfPasses: Cardinal;
+begin
+  Result := FNumberOfPasses;
+end;
+
+function TJclZipCompressArchive.GetNumberOfThreads: Cardinal;
+begin
+  Result := FNumberOfThreads;
+end;
+
+function TJclZipCompressArchive.GetSupportedAlgorithms: TDynCardinalArray;
+begin
+  SetLength(Result, 2);
+  Result[0] := 0;
+  Result[1] := 1;
+end;
+
+function TJclZipCompressArchive.GetSupportedCompressionMethods: TJclCompressionMethods;
+begin
+  Result := [cmCopy,cmDeflate,cmDeflate64,cmBZip2];
+end;
+
+function TJclZipCompressArchive.GetSupportedEncryptionMethods: TJclEncryptionMethods;
+begin
+  Result := [emNone,emAES128,emAES192,emAES256,emZipCrypto];
+end;
+
 class function TJclZipCompressArchive.MultipleItemContainer: Boolean;
 begin
   Result := True;
 end;
 
-procedure TJclZipCompressArchive.SetCompressionProperties;
-begin
-  SetZipCompressionProperties(FOutArchive, DefaultMethod, CompressionLevel);
-end;
-
-procedure TJclZipCompressArchive.SetDefaultMethod(Value: TJclZipMethod);
+procedure TJclZipCompressArchive.SetAlgorithm(Value: Cardinal);
 begin
   CheckNotCompressing;
+  if (Value = 0) or (Value = 1) then
+    FAlgorithm := Value
+  else
+    raise EJclCompressionError.CreateRes(@RsCompressionUnavailableProperty);
+end;
 
-  FDefaultMethod := Value;
+procedure TJclZipCompressArchive.SetCompressionLevel(Value: Cardinal);
+begin
+  CheckNotCompressing;
+  if Value <= 9 then
+  begin
+    FCompressionLevel := Value;
+    case FCompressionMethod of
+      cmDeflate, cmDeflate64:
+        begin
+          if Value >= 9 then
+            FNumberOfPasses := kDeflateNumPassesX9
+          else
+          if Value >= 7 then
+            FNumberOfPasses := kDeflateNumPassesX7
+          else
+            FNumberOfPasses := kDeflateNumPassesX1;
+          if Value >= 5 then
+            FAlgorithm := kDeflateAlgoX5
+          else
+            FAlgorithm := kDeflateAlgoX1;
+        end;
+      cmBZip2:
+        begin
+          if Value >= 9 then
+            FNumberOfPasses := kBZip2NumPassesX9
+          else
+          if Value >= 7 then
+            FNumberOfPasses := kBZip2NumPassesX7
+          else
+            FNumberOfPasses := kBZip2NumPassesX1;
+          if Value >= 5 then
+            FDictionarySize := kBZip2DicSizeX5
+          else
+          if Value >= 3 then
+            FDictionarySize := kBZip2DicSizeX3
+          else
+            FDictionarySize := kBZip2DicSizeX1;
+        end;
+    end;
+  end
+  else
+    raise EJclCompressionError.CreateRes(@RsCompressionUnavailableProperty);
+end;
+
+procedure TJclZipCompressArchive.SetCompressionMethod(Value: TJclCompressionMethod);
+begin
+  CheckNotCompressing;
+  if Value in GetSupportedCompressionMethods then
+    FCompressionMethod := Value
+  else
+    raise EJclCompressionError.CreateRes(@RsCompressionUnavailableProperty);
+end;
+
+procedure TJclZipCompressArchive.SetDictionarySize(Value: Cardinal);
+begin
+  CheckNotCompressing;
+  FDictionarySize := Value;
+end;
+
+procedure TJclZipCompressArchive.SetEncryptionMethod(Value: TJclEncryptionMethod);
+begin
+  CheckNotCompressing;
+  if Value in GetSupportedEncryptionMethods then
+    FEncryptionMethod := Value
+  else
+    raise EJclCompressionError.CreateRes(@RsCompressionUnavailableProperty);
+end;
+
+procedure TJclZipCompressArchive.SetNumberOfPasses(Value: Cardinal);
+begin
+  CheckNotCompressing;
+  FNumberOfPasses := Value;
+end;
+
+procedure TJclZipCompressArchive.SetNumberOfThreads(Value: Cardinal);
+begin
+  CheckNotCompressing;
+  FNumberOfThreads := Value;
 end;
 
 //=== { TJclBZ2CompressArchive } =============================================
@@ -4679,12 +5405,88 @@ end;
 procedure TJclBZ2CompressArchive.CreateCompressionObject;
 begin
   inherited CreateCompressionObject;
-  FCompressionLevel := 9;
+  FNumberOfThreads := 1;
+  FDictionarySize := kBZip2DicSizeX5;
+  FCompressionLevel := 7;
+  FNumberOfPasses := kBZip2NumPassesX7;
 end;
 
 function TJclBZ2CompressArchive.GetCLSID: TGUID;
 begin
   Result := CLSID_CFormatBZ2;
+end;
+
+function TJclBZ2CompressArchive.GetCompressionLevel: Cardinal;
+begin
+  Result := FCompressionLevel;
+end;
+
+function TJclBZ2CompressArchive.GetCompressionLevelMax: Cardinal;
+begin
+  Result := 9;
+end;
+
+function TJclBZ2CompressArchive.GetCompressionLevelMin: Cardinal;
+begin
+  Result := 0;
+end;
+
+function TJclBZ2CompressArchive.GetDictionarySize: Cardinal;
+begin
+  Result := FDictionarySize;
+end;
+
+function TJclBZ2CompressArchive.GetNumberOfPasses: Cardinal;
+begin
+  Result := FNumberOfPasses;
+end;
+
+function TJclBZ2CompressArchive.GetNumberOfThreads: Cardinal;
+begin
+  Result := FNumberOfThreads;
+end;
+
+procedure TJclBZ2CompressArchive.SetCompressionLevel(Value: Cardinal);
+begin
+  CheckNotCompressing;
+  if Value <= 9 then
+  begin
+    FCompressionLevel := Value;
+    if Value >= 9 then
+      FNumberOfPasses := kBZip2NumPassesX9
+    else
+    if Value >= 7 then
+      FNumberOfPasses := kBZip2NumPassesX7
+    else
+      FNumberOfPasses := kBZip2NumPassesX1;
+    if Value >= 5 then
+      FDictionarySize := kBZip2DicSizeX5
+    else
+    if Value >= 3 then
+      FDictionarySize := kBZip2DicSizeX3
+    else
+      FDictionarySize := kBZip2DicSizeX1;
+  end
+  else
+    raise EJclCompressionError.CreateRes(@RsCompressionUnavailableProperty);
+end;
+
+procedure TJclBZ2CompressArchive.SetDictionarySize(Value: Cardinal);
+begin
+  CheckNotCompressing;
+  FDictionarySize := Value;
+end;
+
+procedure TJclBZ2CompressArchive.SetNumberOfPasses(Value: Cardinal);
+begin
+  CheckNotCompressing;
+  FNumberOfPasses := Value;
+end;
+
+procedure TJclBZ2CompressArchive.SetNumberOfThreads(Value: Cardinal);
+begin
+  CheckNotCompressing;
+  FNumberOfThreads := Value;
 end;
 
 //=== { TJclTarCompressArchive } =============================================
@@ -4699,12 +5501,6 @@ begin
   Result := LoadResString(@RsCompressionTarName);
 end;
 
-procedure TJclTarCompressArchive.CreateCompressionObject;
-begin
-  inherited CreateCompressionObject;
-  FCompressionLevel := 0;
-end;
-
 function TJclTarCompressArchive.GetCLSID: TGUID;
 begin
   Result := CLSID_CFormatTar;
@@ -4713,11 +5509,6 @@ end;
 class function TJclTarCompressArchive.MultipleItemContainer: Boolean;
 begin
   Result := True;
-end;
-
-procedure TJclTarCompressArchive.SetCompressionProperties;
-begin
-  // no properties
 end;
 
 //=== { TJclGZipCompressArchive } ============================================
@@ -4735,12 +5526,79 @@ end;
 procedure TJclGZipCompressArchive.CreateCompressionObject;
 begin
   inherited CreateCompressionObject;
-  FCompressionLevel := 9;
+  FCompressionLevel := 7;
+  FNumberOfPasses := kDeflateNumPassesX7;
+  FAlgorithm := kDeflateAlgoX5;
+end;
+
+function TJclGZipCompressArchive.GetAlgorithm: Cardinal;
+begin
+  Result := FAlgorithm;
 end;
 
 function TJclGZipCompressArchive.GetCLSID: TGUID;
 begin
   Result := CLSID_CFormatGZip;
+end;
+
+function TJclGZipCompressArchive.GetCompressionLevel: Cardinal;
+begin
+  Result := FCompressionLevel;
+end;
+
+function TJclGZipCompressArchive.GetCompressionLevelMax: Cardinal;
+begin
+  Result := 9;
+end;
+
+function TJclGZipCompressArchive.GetCompressionLevelMin: Cardinal;
+begin
+  Result := 0;
+end;
+
+function TJclGZipCompressArchive.GetNumberOfPasses: Cardinal;
+begin
+  Result := FNumberOfPasses;
+end;
+
+function TJclGZipCompressArchive.GetSupportedAlgorithms: TDynCardinalArray;
+begin
+  SetLength(Result,2);
+  Result[0] := 0;
+  Result[1] := 1;
+end;
+
+procedure TJclGZipCompressArchive.SetAlgorithm(Value: Cardinal);
+begin
+  CheckNotCompressing;
+  FAlgorithm := Value;
+end;
+
+procedure TJclGZipCompressArchive.SetCompressionLevel(Value: Cardinal);
+begin
+  CheckNotCompressing;
+  if Value <= 9 then
+  begin
+    if Value >= 9 then
+      FNumberOfPasses := kDeflateNumPassesX9
+    else
+    if Value >= 7 then
+      FNumberOfPasses := kDeflateNumPassesX7
+    else
+      FNumberOfPasses := kDeflateNumPassesX1;
+    if Value >= 5 then
+      FAlgorithm := kDeflateAlgoX5
+    else
+      FAlgorithm := kDeflateAlgoX1;
+  end
+  else
+    raise EJclCompressionError.CreateRes(@RsCompressionUnavailableProperty);
+end;
+
+procedure TJclGZipCompressArchive.SetNumberOfPasses(Value: Cardinal);
+begin
+  CheckNotCompressing;
+  FNumberOfPasses := Value;
 end;
 
 //=== { TJclSevenzipOpenCallback } ===========================================
@@ -5052,6 +5910,8 @@ begin
       AInStream := TJclSevenzipInStream.Create(NeedVolume(0), False);
     OpenCallback := TJclSevenzipOpenCallback.Create(Self);
 
+    SetSevenzipArchiveCompressionProperties(Self, FInArchive);
+
     MaxCheckStartPosition := 1 shl 22;
     SevenzipCheck(FInArchive.Open(AInStream, @MaxCheckStartPosition, OpenCallback));
 
@@ -5071,14 +5931,31 @@ begin
   Result := LoadResString(@RsCompressionZipName);
 end;
 
+procedure TJclZipDecompressArchive.CreateCompressionObject;
+begin
+  inherited CreateCompressionObject;
+  FNumberOfThreads := 1;
+end;
+
 function TJclZipDecompressArchive.GetCLSID: TGUID;
 begin
   Result := CLSID_CFormatZip;
 end;
 
+function TJclZipDecompressArchive.GetNumberOfThreads: Cardinal;
+begin
+  Result := FNumberOfThreads;
+end;
+
 class function TJclZipDecompressArchive.MultipleItemContainer: Boolean;
 begin
   Result := True;
+end;
+
+procedure TJclZipDecompressArchive.SetNumberOfThreads(Value: Cardinal);
+begin
+  CheckNotDecompressing;
+  FNumberOfThreads := Value;
 end;
 
 //=== { TJclBZ2DecompressArchive } ===========================================
@@ -5093,9 +5970,26 @@ begin
   Result := LoadResString(@RsCompressionBZip2Name);
 end;
 
+procedure TJclBZ2DecompressArchive.CreateCompressionObject;
+begin
+  inherited CreateCompressionObject;
+  FNumberOfThreads := 1;
+end;
+
 function TJclBZ2DecompressArchive.GetCLSID: TGUID;
 begin
   Result := CLSID_CFormatBZ2;
+end;
+
+function TJclBZ2DecompressArchive.GetNumberOfThreads: Cardinal;
+begin
+  Result := FNumberOfThreads;
+end;
+
+procedure TJclBZ2DecompressArchive.SetNumberOfThreads(Value: Cardinal);
+begin
+  CheckNotDecompressing;
+  FNumberOfThreads := Value;
 end;
 
 //=== { TJclRarDecompressArchive } ===========================================
@@ -5198,14 +6092,31 @@ begin
   Result := LoadResString(@RsCompression7zName);
 end;
 
+procedure TJcl7zDecompressArchive.CreateCompressionObject;
+begin
+  inherited CreateCompressionObject;
+  FNumberOfThreads := 1;
+end;
+
 function TJcl7zDecompressArchive.GetCLSID: TGUID;
 begin
   Result := CLSID_CFormat7z;
 end;
 
+function TJcl7zDecompressArchive.GetNumberOfThreads: Cardinal;
+begin
+  Result := FNumberOfThreads;
+end;
+
 class function TJcl7zDecompressArchive.MultipleItemContainer: Boolean;
 begin
   Result := True;
+end;
+
+procedure TJcl7zDecompressArchive.SetNumberOfThreads(Value: Cardinal);
+begin
+  CheckNotDecompressing;
+  FNumberOfThreads := Value;
 end;
 
 //=== { TJclCabDecompressArchive } ===========================================
@@ -5481,7 +6392,7 @@ begin
     OutStream := TJclSevenzipOutStream.Create(SplitStream, True);
     UpdateCallback := TJclSevenzipUpdateCallback.Create(Self);
 
-    SetCompressionProperties;
+    SetSevenzipArchiveCompressionProperties(Self, FOutArchive);
 
     SevenzipCheck(FOutArchive.UpdateItems(OutStream, ItemCount, UpdateCallback));
   finally
@@ -5664,6 +6575,8 @@ begin
       AInStream := TJclSevenzipInStream.Create(NeedVolume(0), False);
     OpenCallback := TJclSevenzipOpenCallback.Create(Self);
 
+    SetSevenzipArchiveCompressionProperties(Self, FInArchive);
+
     MaxCheckStartPosition := 1 shl 22;
     SevenzipCheck(FInArchive.Open(AInStream, @MaxCheckStartPosition, OpenCallback));
 
@@ -5703,33 +6616,6 @@ begin
   end;
 end;
 
-
-procedure TJclSevenzipUpdateArchive.SetCompressionLevel(Value: Cardinal);
-begin
-  CheckNotCompressing;
-  CheckNotDecompressing;
-
-  FCompressionLevel := Value;
-end;
-
-procedure TJclSevenzipUpdateArchive.SetCompressionProperties;
-var
-  PropertiesSetter: ISetProperties;
-  PropNames: array [0..0] of PWideChar;
-  PropValues: array [0..0] of TPropVariant;
-begin
-  if Supports(FOutArchive, ISetProperties, PropertiesSetter) and Assigned(PropertiesSetter) then
-  begin
-    PropNames[0] := 'X';
-    PropValues[0].vt := VT_UI4;
-    PropValues[0].ulVal := CompressionLevel;
-
-    SevenzipCheck(PropertiesSetter.SetProperties(@PropNames[0], @PropValues[0], Length(PropNames)));
-  end
-  else
-    raise EJclCompressionError.CreateRes(@RsCompression7zNoProperties);
-end;
-
 //=== { TJclZipUpdateArchive } ===============================================
 
 class function TJclZipUpdateArchive.ArchiveExtensions: string;
@@ -5745,7 +6631,18 @@ end;
 procedure TJclZipUpdateArchive.CreateCompressionObject;
 begin
   inherited CreateCompressionObject;
-  FCompressionLevel := 9;
+  FNumberOfThreads := 1;
+  FEncryptionMethod := emZipCrypto;
+  FDictionarySize := kBZip2DicSizeX5;
+  FCompressionLevel := 7;
+  FCompressionMethod := cmDeflate;
+  FNumberOfPasses := kDeflateNumPassesX7;
+  FAlgorithm := kDeflateAlgoX5;
+end;
+
+function TJclZipUpdateArchive.GetAlgorithm: Cardinal;
+begin
+  Result := FAlgorithm;
 end;
 
 function TJclZipUpdateArchive.GetCLSID: TGUID;
@@ -5753,21 +6650,162 @@ begin
   Result := CLSID_CFormatZip;
 end;
 
+function TJclZipUpdateArchive.GetCompressionLevel: Cardinal;
+begin
+  Result := FCompressionLevel;
+end;
+
+function TJclZipUpdateArchive.GetCompressionLevelMax: Cardinal;
+begin
+  Result := 9;
+end;
+
+function TJclZipUpdateArchive.GetCompressionLevelMin: Cardinal;
+begin
+  Result := 0;
+end;
+
+function TJclZipUpdateArchive.GetCompressionMethod: TJclCompressionMethod;
+begin
+  Result := FCompressionMethod;
+end;
+
+function TJclZipUpdateArchive.GetDictionarySize: Cardinal;
+begin
+  Result := FDictionarySize;
+end;
+
+function TJclZipUpdateArchive.GetEncryptionMethod: TJclEncryptionMethod;
+begin
+  Result := FEncryptionMethod;
+end;
+
+function TJclZipUpdateArchive.GetNumberOfPasses: Cardinal;
+begin
+  Result := FNumberOfPasses;
+end;
+
+function TJclZipUpdateArchive.GetNumberOfThreads: Cardinal;
+begin
+  Result := FNumberOfThreads;
+end;
+
+function TJclZipUpdateArchive.GetSupportedAlgorithms: TDynCardinalArray;
+begin
+  SetLength(Result,2);
+  Result[0] := 0;
+  Result[1] := 1;
+end;
+
+function TJclZipUpdateArchive.GetSupportedCompressionMethods: TJclCompressionMethods;
+begin
+  Result := [cmCopy,cmDeflate,cmDeflate64,cmBZip2];
+end;
+
+function TJclZipUpdateArchive.GetSupportedEncryptionMethods: TJclEncryptionMethods;
+begin
+  Result := [emNone,emAES128,emAES192,emAES256,emZipCrypto];
+end;
+
 class function TJclZipUpdateArchive.MultipleItemContainer: Boolean;
 begin
   Result := True;
 end;
 
-procedure TJclZipUpdateArchive.SetCompressionProperties;
-begin
-  SetZipCompressionProperties(FOutArchive, DefaultMethod, CompressionLevel);
-end;
-
-procedure TJclZipUpdateArchive.SetDefaultMethod(Value: TJclZipMethod);
+procedure TJclZipUpdateArchive.SetAlgorithm(Value: Cardinal);
 begin
   CheckNotCompressing;
+  CheckNotDecompressing;
+  if (Value = 0) or (Value = 1) then
+    FAlgorithm := Value
+  else
+    raise EJclCompressionError.CreateRes(@RsCompressionUnavailableProperty);
+end;
 
-  FDefaultMethod := Value;
+procedure TJclZipUpdateArchive.SetCompressionLevel(Value: Cardinal);
+begin
+  CheckNotCompressing;
+  CheckNotDecompressing;
+  if Value <= 9 then
+  begin
+    FCompressionLevel := Value;
+    case FCompressionMethod of
+      cmDeflate, cmDeflate64:
+        begin
+          if Value >= 9 then
+            FNumberOfPasses := kDeflateNumPassesX9
+          else
+          if Value >= 7 then
+            FNumberOfPasses := kDeflateNumPassesX7
+          else
+            FNumberOfPasses := kDeflateNumPassesX1;
+          if Value >= 5 then
+            FAlgorithm := kDeflateAlgoX5
+          else
+            FAlgorithm := kDeflateAlgoX1;
+        end;
+      cmBZip2:
+        begin
+          if Value >= 9 then
+            FNumberOfPasses := kBZip2NumPassesX9
+          else
+          if Value >= 7 then
+            FNumberOfPasses := kBZip2NumPassesX7
+          else
+            FNumberOfPasses := kBZip2NumPassesX1;
+          if Value >= 5 then
+            FDictionarySize := kBZip2DicSizeX5
+          else
+          if Value >= 3 then
+            FDictionarySize := kBZip2DicSizeX3
+          else
+            FDictionarySize := kBZip2DicSizeX1;
+        end;
+    end;
+  end
+  else
+    raise EJclCompressionError.CreateRes(@RsCompressionUnavailableProperty);
+end;
+
+procedure TJclZipUpdateArchive.SetCompressionMethod(Value: TJclCompressionMethod);
+begin
+  CheckNotCompressing;
+  CheckNotDecompressing;
+  if Value in GetSupportedCompressionMethods then
+    FCompressionMethod := Value
+  else
+    raise EJclCompressionError.CreateRes(@RsCompressionUnavailableProperty);
+end;
+
+procedure TJclZipUpdateArchive.SetDictionarySize(Value: Cardinal);
+begin
+  CheckNotCompressing;
+  CheckNotDecompressing;
+  FDictionarySize := Value;
+end;
+
+procedure TJclZipUpdateArchive.SetEncryptionMethod(Value: TJclEncryptionMethod);
+begin
+  CheckNotCompressing;
+  CheckNotDecompressing;
+  if Value in GetSupportedEncryptionMethods then
+    FEncryptionMethod := Value
+  else
+    raise EJclCompressionError.CreateRes(@RsCompressionUnavailableProperty);
+end;
+
+procedure TJclZipUpdateArchive.SetNumberOfPasses(Value: Cardinal);
+begin
+  CheckNotCompressing;
+  CheckNotDecompressing;
+  FNumberOfPasses := Value;
+end;
+
+procedure TJclZipUpdateArchive.SetNumberOfThreads(Value: Cardinal);
+begin
+  CheckNotCompressing;
+  CheckNotDecompressing;
+  FNumberOfThreads := Value;
 end;
 
 //=== { TJclBZ2UpdateArchive } ===============================================
@@ -5785,12 +6823,92 @@ end;
 procedure TJclBZ2UpdateArchive.CreateCompressionObject;
 begin
   inherited CreateCompressionObject;
-  FCompressionLevel := 9;
+  FNumberOfThreads := 1;
+  FDictionarySize := kBZip2DicSizeX5;
+  FCompressionLevel := 7;
+  FNumberOfPasses := kBZip2NumPassesX7;
 end;
 
 function TJclBZ2UpdateArchive.GetCLSID: TGUID;
 begin
   Result := CLSID_CFormatBZ2;
+end;
+
+function TJclBZ2UpdateArchive.GetCompressionLevel: Cardinal;
+begin
+  Result := FCompressionLevel;
+end;
+
+function TJclBZ2UpdateArchive.GetCompressionLevelMax: Cardinal;
+begin
+  Result := 9;
+end;
+
+function TJclBZ2UpdateArchive.GetCompressionLevelMin: Cardinal;
+begin
+  Result := 0;
+end;
+
+function TJclBZ2UpdateArchive.GetDictionarySize: Cardinal;
+begin
+  Result := FDictionarySize;
+end;
+
+function TJclBZ2UpdateArchive.GetNumberOfPasses: Cardinal;
+begin
+  Result := FNumberOfPasses;
+end;
+
+function TJclBZ2UpdateArchive.GetNumberOfThreads: Cardinal;
+begin
+  Result := FNumberOfThreads;
+end;
+
+procedure TJclBZ2UpdateArchive.SetCompressionLevel(Value: Cardinal);
+begin
+  CheckNotCompressing;
+  CheckNotDecompressing;
+  if Value <= 9 then
+  begin
+    FCompressionLevel := Value;
+    if Value >= 9 then
+      FNumberOfPasses := kBZip2NumPassesX9
+    else
+    if Value >= 7 then
+      FNumberOfPasses := kBZip2NumPassesX7
+    else
+      FNumberOfPasses := kBZip2NumPassesX1;
+    if Value >= 5 then
+      FDictionarySize := kBZip2DicSizeX5
+    else
+    if Value >= 3 then
+      FDictionarySize := kBZip2DicSizeX3
+    else
+      FDictionarySize := kBZip2DicSizeX1;
+  end
+  else
+    raise EJclCompressionError.CreateRes(@RsCompressionUnavailableProperty);
+end;
+
+procedure TJclBZ2UpdateArchive.SetDictionarySize(Value: Cardinal);
+begin
+  CheckNotCompressing;
+  CheckNotDecompressing;
+  FDictionarySize := Value;
+end;
+
+procedure TJclBZ2UpdateArchive.SetNumberOfPasses(Value: Cardinal);
+begin
+  CheckNotCompressing;
+  CheckNotDecompressing;
+  FNumberOfPasses := Value;
+end;
+
+procedure TJclBZ2UpdateArchive.SetNumberOfThreads(Value: Cardinal);
+begin
+  CheckNotCompressing;
+  CheckNotDecompressing;
+  FNumberOfThreads := Value;
 end;
 
 //=== { TJcl7zUpdateArchive } ================================================
@@ -5808,7 +6926,16 @@ end;
 procedure TJcl7zUpdateArchive.CreateCompressionObject;
 begin
   inherited CreateCompressionObject;
-  FCompressionLevel := 9;
+  FNumberOfThreads := 1;
+  FEncryptHeader := False;
+  FRemoveSfxBlock := False;
+  FDictionarySize := kLzmaDicSizeX5;
+  FCompressionLevel := 6;
+  FCompressHeader := False;
+  FCompressHeaderFull := False;
+  FSaveLastAccessDateTime := True;
+  FSaveCreationDateTime := True;
+  FSaveLastWriteDateTime := True;
 end;
 
 function TJcl7zUpdateArchive.GetCLSID: TGUID;
@@ -5816,9 +6943,157 @@ begin
   Result := CLSID_CFormat7z;
 end;
 
+function TJcl7zUpdateArchive.GetCompressHeader: Boolean;
+begin
+  Result := FCompressHeader;
+end;
+
+function TJcl7zUpdateArchive.GetCompressHeaderFull: Boolean;
+begin
+  Result := FCompressHeaderFull;
+end;
+
+function TJcl7zUpdateArchive.GetCompressionLevel: Cardinal;
+begin
+  Result := FCompressionLevel;
+end;
+
+function TJcl7zUpdateArchive.GetCompressionLevelMax: Cardinal;
+begin
+  Result := 9;
+end;
+
+function TJcl7zUpdateArchive.GetCompressionLevelMin: Cardinal;
+begin
+  Result := 0;
+end;
+
+function TJcl7zUpdateArchive.GetDictionarySize: Cardinal;
+begin
+  Result := FDictionarySize;
+end;
+
+function TJcl7zUpdateArchive.GetEncryptHeader: Boolean;
+begin
+  Result := FEncryptHeader;
+end;
+
+function TJcl7zUpdateArchive.GetNumberOfThreads: Cardinal;
+begin
+  Result := FNumberOfThreads;
+end;
+
+function TJcl7zUpdateArchive.GetRemoveSfxBlock: Boolean;
+begin
+  Result := FRemoveSfxBlock;
+end;
+
+function TJcl7zUpdateArchive.GetSaveCreationDateTime: Boolean;
+begin
+  Result := FSaveCreationDateTime;
+end;
+
+function TJcl7zUpdateArchive.GetSaveLastAccessDateTime: Boolean;
+begin
+  Result := FSaveLastAccessDateTime;
+end;
+
+function TJcl7zUpdateArchive.GetSaveLastWriteDateTime: Boolean;
+begin
+  Result := FSaveLastWriteDateTime;
+end;
+
 class function TJcl7zUpdateArchive.MultipleItemContainer: Boolean;
 begin
   Result := True;
+end;
+
+procedure TJcl7zUpdateArchive.SetCompressHeader(Value: Boolean);
+begin
+  CheckNotCompressing;
+  CheckNotDecompressing;
+  FCompressHeader := Value;
+end;
+
+procedure TJcl7zUpdateArchive.SetCompressHeaderFull(Value: Boolean);
+begin
+  CheckNotCompressing;
+  CheckNotDecompressing;
+  FCompressHeaderFull := Value;
+end;
+
+procedure TJcl7zUpdateArchive.SetCompressionLevel(Value: Cardinal);
+begin
+  CheckNotCompressing;
+  CheckNotDecompressing;
+  if Value <= 9 then
+  begin
+    FCompressionLevel := Value;
+    if Value >= 9 then
+      FDictionarySize := kLzmaDicSizeX9
+    else
+    if Value >= 7 then
+      FDictionarySize := kLzmaDicSizeX7
+    else
+    if Value >= 5 then
+      FDictionarySize := kLzmaDicSizeX5
+    else
+    if Value >= 3 then
+      FDictionarySize := kLzmaDicSizeX3
+    else
+      FDictionarySize := kLzmaDicSizeX1;
+  end
+  else
+    raise EJclCompressionError.CreateRes(@RsCompressionUnavailableProperty);
+end;
+
+procedure TJcl7zUpdateArchive.SetDictionarySize(Value: Cardinal);
+begin
+  CheckNotCompressing;
+  CheckNotDecompressing;
+  FDictionarySize := Value;
+end;
+
+procedure TJcl7zUpdateArchive.SetEncryptHeader(Value: Boolean);
+begin
+  CheckNotCompressing;
+  CheckNotDecompressing;
+  FEncryptHeader := Value;
+end;
+
+procedure TJcl7zUpdateArchive.SetNumberOfThreads(Value: Cardinal);
+begin
+  CheckNotCompressing;
+  CheckNotDecompressing;
+  FNumberOfThreads := Value;
+end;
+
+procedure TJcl7zUpdateArchive.SetRemoveSfxBlock(Value: Boolean);
+begin
+  CheckNotCompressing;
+  CheckNotDecompressing;
+  FRemoveSfxBlock := Value;
+end;
+
+procedure TJcl7zUpdateArchive.SetSaveCreationDateTime(Value: Boolean);
+begin
+  CheckNotCompressing;
+  CheckNotDecompressing;
+  FSaveCreationDateTime := Value;
+end;
+
+procedure TJcl7zUpdateArchive.SetSaveLastAccessDateTime(Value: Boolean);
+begin
+  CheckNotCompressing;
+  CheckNotDecompressing;
+  FSaveLastAccessDateTime := Value;
+end;
+
+procedure TJcl7zUpdateArchive.SetSaveLastWriteDateTime(Value: Boolean);
+begin
+  CheckNotCompressing;
+  CheckNotDecompressing;
+  FSaveLastWriteDateTime := Value;
 end;
 
 //=== { TJclTarUpdateArchive } ===============================================
@@ -5833,12 +7108,6 @@ begin
   Result := LoadResString(@RsCompressionTarName);
 end;
 
-procedure TJclTarUpdateArchive.CreateCompressionObject;
-begin
-  inherited CreateCompressionObject;
-  FCompressionLevel := 0;
-end;
-
 function TJclTarUpdateArchive.GetCLSID: TGUID;
 begin
   Result := CLSID_CFormatTar;
@@ -5847,11 +7116,6 @@ end;
 class function TJclTarUpdateArchive.MultipleItemContainer: Boolean;
 begin
   Result := True;
-end;
-
-procedure TJclTarUpdateArchive.SetCompressionProperties;
-begin
-  // no properties
 end;
 
 //=== { TJclGZipUpdateArchive } ==============================================
@@ -5869,12 +7133,82 @@ end;
 procedure TJclGZipUpdateArchive.CreateCompressionObject;
 begin
   inherited CreateCompressionObject;
-  FCompressionLevel := 9;
+  FCompressionLevel := 7;
+  FNumberOfPasses := kDeflateNumPassesX7;
+  FAlgorithm := kDeflateAlgoX5;
+end;
+
+function TJclGZipUpdateArchive.GetAlgorithm: Cardinal;
+begin
+  Result := FAlgorithm;
 end;
 
 function TJclGZipUpdateArchive.GetCLSID: TGUID;
 begin
   Result := CLSID_CFormatGZip;
+end;
+
+function TJclGZipUpdateArchive.GetCompressionLevel: Cardinal;
+begin
+  Result := FCompressionLevel;
+end;
+
+function TJclGZipUpdateArchive.GetCompressionLevelMax: Cardinal;
+begin
+  Result := 9;
+end;
+
+function TJclGZipUpdateArchive.GetCompressionLevelMin: Cardinal;
+begin
+  Result := 0;
+end;
+
+function TJclGZipUpdateArchive.GetNumberOfPasses: Cardinal;
+begin
+  Result := FNumberOfPasses;
+end;
+
+function TJclGZipUpdateArchive.GetSupportedAlgorithms: TDynCardinalArray;
+begin
+  SetLength(Result,2);
+  Result[0] := 0;
+  Result[1] := 1;
+end;
+
+procedure TJclGZipUpdateArchive.SetAlgorithm(Value: Cardinal);
+begin
+  CheckNotCompressing;
+  CheckNotDecompressing;
+  FAlgorithm := Value;
+end;
+
+procedure TJclGZipUpdateArchive.SetCompressionLevel(Value: Cardinal);
+begin
+  CheckNotCompressing;
+  CheckNotDecompressing;
+  if Value <= 9 then
+  begin
+    if Value >= 9 then
+      FNumberOfPasses := kDeflateNumPassesX9
+    else
+    if Value >= 7 then
+      FNumberOfPasses := kDeflateNumPassesX7
+    else
+      FNumberOfPasses := kDeflateNumPassesX1;
+    if Value >= 5 then
+      FAlgorithm := kDeflateAlgoX5
+    else
+      FAlgorithm := kDeflateAlgoX1;
+  end
+  else
+    raise EJclCompressionError.CreateRes(@RsCompressionUnavailableProperty);
+end;
+
+procedure TJclGZipUpdateArchive.SetNumberOfPasses(Value: Cardinal);
+begin
+  CheckNotCompressing;
+  CheckNotDecompressing;
+  FNumberOfPasses := Value;
 end;
 
 {$ENDIF MSWINDOWS}

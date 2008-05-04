@@ -1,9 +1,9 @@
-object Form1: TForm1
+object FormMain: TFormMain
   Left = 0
   Top = 0
-  Caption = 'Form1'
+  Caption = 'FormMain'
   ClientHeight = 301
-  ClientWidth = 691
+  ClientWidth = 771
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -18,7 +18,7 @@ object Form1: TForm1
   object ListView1: TListView
     Left = 0
     Top = 81
-    Width = 691
+    Width = 771
     Height = 204
     Align = alClient
     Columns = <
@@ -80,7 +80,7 @@ object Form1: TForm1
   object ProgressBar1: TProgressBar
     Left = 0
     Top = 285
-    Width = 691
+    Width = 771
     Height = 16
     Align = alBottom
     TabOrder = 1
@@ -88,7 +88,7 @@ object Form1: TForm1
   object PageControl1: TPageControl
     Left = 0
     Top = 0
-    Width = 691
+    Width = 771
     Height = 81
     ActivePage = TabSheetReadOnly
     Align = alTop
@@ -118,6 +118,14 @@ object Form1: TForm1
         Height = 25
         Action = ActionExtractAllRO
         TabOrder = 2
+      end
+      object ButtonROProperties: TButton
+        Left = 280
+        Top = 16
+        Width = 75
+        Height = 25
+        Action = ActionProperties
+        TabOrder = 3
       end
     end
     object TabSheetWriteOnly: TTabSheet
@@ -154,6 +162,14 @@ object Form1: TForm1
         Height = 25
         Action = ActionSave
         TabOrder = 3
+      end
+      object ButtonPropertiesWO: TButton
+        Left = 340
+        Top = 16
+        Width = 75
+        Height = 25
+        Action = ActionProperties
+        TabOrder = 4
       end
     end
     object TabSheetReadWrite: TTabSheet
@@ -223,6 +239,14 @@ object Form1: TForm1
         Action = ActionSave
         TabOrder = 7
       end
+      object ButtonPropertiesRW: TButton
+        Left = 681
+        Top = 16
+        Width = 75
+        Height = 25
+        Action = ActionProperties
+        TabOrder = 8
+      end
     end
   end
   object ActionList1: TActionList
@@ -287,6 +311,12 @@ object Form1: TForm1
       Caption = '&Open'
       OnExecute = ActionOpenRWExecute
       OnUpdate = ActionAlwaysEnabled
+    end
+    object ActionProperties: TAction
+      Category = 'ReadWrite'
+      Caption = '&Properties'
+      OnExecute = ActionPropertiesExecute
+      OnUpdate = ActionPropertiesUpdate
     end
   end
   object OpenDialogArchiveRO: TOpenDialog

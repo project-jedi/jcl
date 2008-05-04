@@ -9,7 +9,7 @@ uses
   Dialogs, StdCtrls, ExtCtrls, ActnList, ComCtrls, ImgList, JclCompression;
 
 type
-  TForm1 = class(TForm)
+  TFormMain = class(TForm)
     ActionList1: TActionList;
     ActionOpenRO: TAction;
     ActionExtractSelectedRO: TAction;
@@ -47,6 +47,10 @@ type
     ButtonSaveRW: TButton;
     OpenDialogArchiveRW: TOpenDialog;
     SaveDialogArchiveRW: TSaveDialog;
+    ButtonROProperties: TButton;
+    ActionProperties: TAction;
+    ButtonPropertiesWO: TButton;
+    ButtonPropertiesRW: TButton;
     procedure ActionAlwaysEnabled(Sender: TObject);
     procedure ActionExtractSelectedROUpdate(Sender: TObject);
     procedure ActionExtractAllROUpdate(Sender: TObject);
@@ -67,22 +71,26 @@ type
     procedure ActionNewRWExecute(Sender: TObject);
     procedure ActionOpenRWExecute(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure ActionPropertiesUpdate(Sender: TObject);
+    procedure ActionPropertiesExecute(Sender: TObject);
   private
     FArchive: TJclCompressionArchive;
+    FArchiveReference: IInterface;
     procedure CloseArchive;
     procedure ArchiveProgress(Sender: TObject; const Value, MaxValue: Int64);
   public
   end;
 
 var
-  Form1: TForm1;
+  FormMain: TFormMain;
 
 implementation
 
 {$R *.dfm}
 
 uses
-  JclAnsiStrings, Sevenzip, FileCtrl;
+  JclAnsiStrings, Sevenzip, FileCtrl,
+  UProperties;
 
 function FileTimeToString(const FileTime: TFileTime): string;
 var
@@ -97,7 +105,7 @@ begin
     Result := '';
 end;
 
-procedure TForm1.ActionAddDirectoryExecute(Sender: TObject);
+procedure TFormMain.ActionAddDirectoryExecute(Sender: TObject);
 var
   Directory: string;
 begin
@@ -114,12 +122,12 @@ begin
   end;
 end;
 
-procedure TForm1.ActionAddDirectoryUpdate(Sender: TObject);
+procedure TFormMain.ActionAddDirectoryUpdate(Sender: TObject);
 begin
   (Sender as TAction).Enabled := (FArchive is TJclCompressArchive) and FArchive.MultipleItemContainer;
 end;
 
-procedure TForm1.ActionAddFileExecute(Sender: TObject);
+procedure TFormMain.ActionAddFileExecute(Sender: TObject);
 begin
   if OpenDialogFile.Execute then
   begin
@@ -128,18 +136,18 @@ begin
   end;
 end;
 
-procedure TForm1.ActionAddFileUpdate(Sender: TObject);
+procedure TFormMain.ActionAddFileUpdate(Sender: TObject);
 begin
   (Sender as TAction).Enabled := (FArchive is TJclCompressArchive)
     and (FArchive.MultipleItemContainer or (ListView1.Items.Count = 0));
 end;
 
-procedure TForm1.ActionAlwaysEnabled(Sender: TObject);
+procedure TFormMain.ActionAlwaysEnabled(Sender: TObject);
 begin
   (Sender as TAction).Enabled := True;
 end;
 
-procedure TForm1.ActionDeleteRWExecute(Sender: TObject);
+procedure TFormMain.ActionDeleteRWExecute(Sender: TObject);
 var
   Index: Integer;
 begin
@@ -153,12 +161,12 @@ begin
   ListView1.Items.Count := FArchive.ItemCount;
 end;
 
-procedure TForm1.ActionDeleteRWUpdate(Sender: TObject);
+procedure TFormMain.ActionDeleteRWUpdate(Sender: TObject);
 begin
   (Sender as TAction).Enabled := (FArchive is TJclUpdateArchive) and (ListView1.SelCount = 1);
 end;
 
-procedure TForm1.ActionExtractAllROExecute(Sender: TObject);
+procedure TFormMain.ActionExtractAllROExecute(Sender: TObject);
 var
   Directory: string;
 begin
@@ -172,12 +180,12 @@ begin
   end;
 end;
 
-procedure TForm1.ActionExtractAllROUpdate(Sender: TObject);
+procedure TFormMain.ActionExtractAllROUpdate(Sender: TObject);
 begin
   (Sender as TAction).Enabled := (FArchive is TJclDecompressArchive) or (FArchive is TJclUpdateArchive);
 end;
 
-procedure TForm1.ActionExtractSelectedROExecute(Sender: TObject);
+procedure TFormMain.ActionExtractSelectedROExecute(Sender: TObject);
 var
   Directory: string;
   Index: Integer;
@@ -195,13 +203,13 @@ begin
   end;
 end;
 
-procedure TForm1.ActionExtractSelectedROUpdate(Sender: TObject);
+procedure TFormMain.ActionExtractSelectedROUpdate(Sender: TObject);
 begin
   (Sender as TAction).Enabled := ((FArchive is TJclDecompressArchive) or (FArchive is TJclUpdateArchive))
     and (ListView1.SelCount > 0);
 end;
 
-procedure TForm1.ActionNewWOExecute(Sender: TObject);
+procedure TFormMain.ActionNewWOExecute(Sender: TObject);
 var
   ArchiveFileName, VolumeSizeStr, Password: string;
   AFormat: TJclCompressArchiveClass;
@@ -235,6 +243,7 @@ begin
         ArchiveFileName := ArchiveFileName + '.%.3d';
 
       FArchive := AFormat.Create(ArchiveFileName, VolumeSize, VolumeSize <> 0);
+      FArchiveReference := FArchive;
       FArchive.Password := Password;
       FArchive.OnProgress := ArchiveProgress;
     end
@@ -243,7 +252,7 @@ begin
   end;
 end;
 
-procedure TForm1.ActionNewRWExecute(Sender: TObject);
+procedure TFormMain.ActionNewRWExecute(Sender: TObject);
 var
   ArchiveFileName, VolumeSizeStr, Password: string;
   AFormat: TJclUpdateArchiveClass;
@@ -277,6 +286,7 @@ begin
         ArchiveFileName := ArchiveFileName + '.%.3d';
 
       FArchive := AFormat.Create(ArchiveFileName, VolumeSize, VolumeSize <> 0);
+      FArchiveReference := FArchive;
       FArchive.Password := Password;
       FArchive.OnProgress := ArchiveProgress;
     end
@@ -285,7 +295,7 @@ begin
   end;
 end;
 
-procedure TForm1.ActionOpenROExecute(Sender: TObject);
+procedure TFormMain.ActionOpenROExecute(Sender: TObject);
 var
   ArchiveFileName, Password: string;
   AFormat: TJclDecompressArchiveClass;
@@ -310,6 +320,7 @@ begin
       InputQuery('Archive password', 'Value', Password);
 
       FArchive := AFormat.Create(ArchiveFileName, 0, SplitArchive);
+      FArchiveReference := FArchive;
       FArchive.Password := Password;
       FArchive.OnProgress := ArchiveProgress;
 
@@ -332,7 +343,7 @@ begin
   end;
 end;
 
-procedure TForm1.ActionOpenRWExecute(Sender: TObject);
+procedure TFormMain.ActionOpenRWExecute(Sender: TObject);
 var
   ArchiveFileName, Password: string;
   AFormat: TJclUpdateArchiveClass;
@@ -357,6 +368,7 @@ begin
       InputQuery('Archive password', 'Value', Password);
 
       FArchive := AFormat.Create(ArchiveFileName, 0, SplitArchive);
+      FArchiveReference := FArchive;
       FArchive.Password := Password;
       FArchive.OnProgress := ArchiveProgress;
 
@@ -379,18 +391,28 @@ begin
   end;
 end;
 
-procedure TForm1.ActionSaveExecute(Sender: TObject);
+procedure TFormMain.ActionPropertiesExecute(Sender: TObject);
+begin
+  TFormArchiveSettings.Execute(FArchive);
+end;
+
+procedure TFormMain.ActionPropertiesUpdate(Sender: TObject);
+begin
+  (Sender as TAction).Enabled := Assigned(FArchive);
+end;
+
+procedure TFormMain.ActionSaveExecute(Sender: TObject);
 begin
   (FArchive as TJclCompressArchive).Compress;
   CloseArchive;
 end;
 
-procedure TForm1.ActionSaveUpdate(Sender: TObject);
+procedure TFormMain.ActionSaveUpdate(Sender: TObject);
 begin
   (Sender as TAction).Enabled := (FArchive is TJclCompressArchive) and (ListView1.Items.Count > 0);
 end;
 
-procedure TForm1.ArchiveProgress(Sender: TObject; const Value, MaxValue: Int64);
+procedure TFormMain.ArchiveProgress(Sender: TObject; const Value, MaxValue: Int64);
 var
   MyValue, MyMaxValue: Int64;
 begin
@@ -406,13 +428,14 @@ begin
   ProgressBar1.Position := MyValue;
 end;
 
-procedure TForm1.CloseArchive;
+procedure TFormMain.CloseArchive;
 begin
-  FreeAndNil(FArchive);
+  FArchiveReference := nil; // free
+  FArchive := nil;
   ListView1.Items.Clear;
 end;
 
-procedure TForm1.FormCreate(Sender: TObject);
+procedure TFormMain.FormCreate(Sender: TObject);
   procedure MergeFilters(var AFilter, AllExtensions: string; AFormat: TJclCompressionArchiveClass);
   var
     AName, AExtensions: string;
@@ -467,12 +490,12 @@ begin
   OpenDialogArchiveRW.Filter := AddStandardFilters(AFilter, AllExtensions);
 end;
 
-procedure TForm1.FormDestroy(Sender: TObject);
+procedure TFormMain.FormDestroy(Sender: TObject);
 begin
   CloseArchive;
 end;
 
-procedure TForm1.ListView1Data(Sender: TObject; Item: TListItem);
+procedure TFormMain.ListView1Data(Sender: TObject; Item: TListItem);
 var
   CompressionItem: TJclCompressionItem;
 begin
