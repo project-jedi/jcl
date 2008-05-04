@@ -372,6 +372,13 @@ function BZ2_bzDecompressEnd; external;
 function BZ2_bzBuffToBuffCompress; external;
 function BZ2_bzBuffToBuffDecompress; external;
 function BZ2_bzlibVersion; external;
+// workaround to make the compiler aware of _BZ2_indexIntoF
+// an external must be declared for this function in order to make the compiler considering
+// the corresponding PUBDEF in bzlib.obj
+// source: CodeGear QA team
+function _BZ2_indexIntoF: PChar;
+  {$IFDEF BZIP2_EXPORT_STDCALL}stdcall;{$ENDIF BZIP2_EXPORT_STDCALL}
+  {$IFDEF BZIP2_EXPORT_CDECL}cdecl;{$ENDIF BZIP2_EXPORT_CDECL} external;
 
 {$LINK ..\windows\obj\bzip2\bzlib.obj}
 {$LINK ..\windows\obj\bzip2\randtable.obj}
@@ -380,8 +387,6 @@ function BZ2_bzlibVersion; external;
 {$LINK ..\windows\obj\bzip2\decompress.obj}
 {$LINK ..\windows\obj\bzip2\huffman.obj}
 {$LINK ..\windows\obj\bzip2\blocksort.obj}
-// strange bug: bzlib.obj has to be listed two times to make BZ2_indexIntoF reachable
-{$LINK ..\windows\obj\bzip2\bzlib.obj}
 
 type
   size_t = Longint;
