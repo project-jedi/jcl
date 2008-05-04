@@ -1564,27 +1564,57 @@ var
         end;
         MarkOptionEnd(joDef, True);
       end;
-      MarkOptionBegin(joMapCreate);
-      Target.MapCreate := OptionChecked[joMapCreate];
-      MarkOptionEnd(joMapCreate, True);
+      if OptionChecked[joMapCreate] then
+      begin
+        MarkOptionBegin(joMapCreate);
+        Target.MapCreate := True;
+        MarkOptionEnd(joMapCreate, True);
+      end
+      else
+        Target.MapCreate := False;
       {$IFDEF MSWINDOWS}
-      MarkOptionBegin(joJdbgCreate);
-      Target.JdbgCreate := OptionChecked[joJdbgCreate];
-      MarkOptionEnd(joJdbgCreate, True);
-      MarkOptionBegin(joJdbgInsert);
-      Target.JdbgInsert := OptionChecked[joJdbgInsert];
-      MarkOptionEnd(joJdbgInsert, True);
-      MarkOptionBegin(joMapDelete);
-      Target.MapDelete := OptionChecked[joMapDelete];
-      MarkOptionEnd(joMapDelete, True);
+      if OptionChecked[joJdbgCreate] then
+      begin
+        MarkOptionBegin(joJdbgCreate);
+        Target.JdbgCreate := True;
+        MarkOptionEnd(joJdbgCreate, True);
+      end
+      else
+        Target.JdbgCreate := False;
+      if OptionChecked[joJdbgInsert] then
+      begin
+        MarkOptionBegin(joJdbgInsert);
+        Target.JdbgInsert := True;
+        MarkOptionEnd(joJdbgInsert, True);
+      end
+      else
+        Target.JdbgInsert := False;
+      if OptionChecked[joMapDelete] then
+      begin
+        MarkOptionBegin(joMapDelete);
+        Target.MapDelete := True;
+        MarkOptionEnd(joMapDelete, True);
+      end
+      else
+        Target.MapDelete := False;
       if Target is TJclBDSInstallation then
       begin
-        MarkOptionBegin(joDualPackages);
-        TJclBDSInstallation(Target).DualPackageInstallation := OptionChecked[joDualPackages];
-        MarkOptionEnd(joDualPackages, True);
-        MarkOptionBegin(joPdbCreate);
-        TJclBDSInstallation(Target).PdbCreate := OptionChecked[joPdbCreate];
-        MarkOptionEnd(joPdbCreate, True);
+        if OptionChecked[joDualPackages] then
+        begin
+          MarkOptionBegin(joDualPackages);
+          TJclBDSInstallation(Target).DualPackageInstallation := True;
+          MarkOptionEnd(joDualPackages, True);
+        end
+        else
+          TJclBDSInstallation(Target).DualPackageInstallation := False;
+        if OptionChecked[joPdbCreate] then
+        begin
+          MarkOptionBegin(joPdbCreate);
+          TJclBDSInstallation(Target).PdbCreate := True;
+          MarkOptionEnd(joPdbCreate, True);
+        end
+        else
+          TJclBDSInstallation(Target).PdbCreate := False;
       end;
       {$ENDIF MSWINDOWS}
 
@@ -1789,11 +1819,12 @@ var
         MarkOptionEnd(joMakeDebug, Result);
       end;
 
-      if OptionChecked[joCheckHppFiles] then
+      if Result and OptionChecked[joCheckHppFiles] then
       begin
         MarkOptionBegin(joCheckHppFiles);
         WriteLog('Checking .hpp files');
         Result := Result and CheckHppFiles;
+        MarkOptionEnd(joCheckHppFiles, Result);
       end;
 
       MarkOptionEnd(joMake, Result);
