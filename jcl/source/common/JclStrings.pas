@@ -246,12 +246,7 @@ function StrRefCount(const S: string): Longint; {$IFDEF SUPPORTS_DEPRECATED} dep
 {$ENDIF KEEP_DEPRECATED}
 {$ENDIF ~SUPPORTS_UNICODE}
 
-function StrLen(S: PChar): Integer;
 {$ENDIF ~CLR}
-procedure StrResetLength(var S: string); overload;
-{$IFDEF CLR}
-procedure StrResetLength(S: StringBuilder); overload;
-{$ENDIF CLR}
 
 // String Search and Replace Routines
 function StrCharCount(const S: string; C: Char): Integer;
@@ -287,18 +282,18 @@ function StrRestOf(const S: string; N: Integer): string;
 function StrRight(const S: string; Count: Integer): string;
 
 // Character Test Routines
-function CharEqualNoCase(const C1, C2: Char): Boolean; {$IFDEF CLR} inline; {$ENDIF}
+function CharEqualNoCase(const C1, C2: Char): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 function CharIsAlpha(const C: Char): Boolean; {$IFDEF CLR} inline; {$ENDIF}
 function CharIsAlphaNum(const C: Char): Boolean; {$IFDEF CLR} inline; {$ENDIF}
 function CharIsBlank(const C: Char): Boolean; {$IFDEF CLR} inline; {$ENDIF}
 function CharIsControl(const C: Char): Boolean; {$IFDEF CLR} inline; {$ENDIF}
-function CharIsDelete(const C: Char): Boolean; {$IFDEF CLR} inline; {$ENDIF}
+function CharIsDelete(const C: Char): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 function CharIsDigit(const C: Char): Boolean; {$IFDEF CLR} inline; {$ENDIF}
 function CharIsLower(const C: Char): Boolean; {$IFDEF CLR} inline; {$ENDIF}
 function CharIsNumberChar(const C: Char): Boolean; {$IFDEF CLR} inline; {$ENDIF}
-function CharIsPrintable(const C: Char): Boolean; {$IFDEF CLR} inline; {$ENDIF}
+function CharIsPrintable(const C: Char): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 function CharIsPunctuation(const C: Char): Boolean; {$IFDEF CLR} inline; {$ENDIF}
-function CharIsReturn(const C: Char): Boolean; {$IFDEF CLR} inline; {$ENDIF}
+function CharIsReturn(const C: Char): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 function CharIsSpace(const C: Char): Boolean; {$IFDEF CLR} inline; {$ENDIF}
 function CharIsUpper(const C: Char): Boolean; {$IFDEF CLR} inline; {$ENDIF}
 function CharIsWhiteSpace(const C: Char): Boolean; {$IFDEF CLR} inline; {$ENDIF}
@@ -391,7 +386,8 @@ function TryStrToCurr(const S: string; out Value: Currency): Boolean;
 
 {$IFDEF CLR}
 type
-  TStringBuilder = System.Text.StringBuilder;
+  TJclStringBuilder = System.Text.StringBuilder;
+  TStringBuilder = TJclStringBuilder;
 
 function DotNetFormat(const Fmt: string; const Args: array of System.Object): string; overload;
 function DotNetFormat(const Fmt: string; const Arg0: System.Object): string; overload;
@@ -419,7 +415,7 @@ type
   // AppendFormat) are limited to IToString implementors.
   // This class is not threadsafe. Any instance of TStringBuilder should not
   // be used in different threads at the same time.
-  TStringBuilder = class(TInterfacedObject, IToString)
+  TJclStringBuilder = class(TInterfacedObject, IToString)
   private
     FChars: TCharDynArray;
     FLength: Integer;
@@ -431,43 +427,43 @@ type
     procedure SetChars(Index: Integer; const Value: Char);
     procedure Set_Length(const Value: Integer);
   protected
-    function AppendPChar(Value: PChar; Count: Integer; RepeatCount: Integer = 1): TStringBuilder;
-    function InsertPChar(Index: Integer; Value: PChar; Count: Integer; RepeatCount: Integer = 1): TStringBuilder;
+    function AppendPChar(Value: PChar; Count: Integer; RepeatCount: Integer = 1): TJclStringBuilder;
+    function InsertPChar(Index: Integer; Value: PChar; Count: Integer; RepeatCount: Integer = 1): TJclStringBuilder;
   public
     constructor Create(const Value: string; Capacity: Integer = 16); overload;
     constructor Create(Capacity: Integer = 16; MaxCapacity: Integer = MaxInt); overload;
     constructor Create(const Value: string; StartIndex, Length, Capacity: Integer); overload;
 
-    function Append(const Value: string): TStringBuilder; overload;
-    function Append(const Value: string; StartIndex, Length: Integer): TStringBuilder; overload;
-    function Append(Value: Boolean): TStringBuilder; overload;
-    function Append(Value: Char; RepeatCount: Integer = 1): TStringBuilder; overload;
-    function Append(const Value: array of Char): TStringBuilder; overload;
-    function Append(const Value: array of Char; StartIndex, Length: Integer): TStringBuilder; overload;
-    function Append(Value: Cardinal): TStringBuilder; overload;
-    function Append(Value: Integer): TStringBuilder; overload;
-    function Append(Value: Double): TStringBuilder; overload;
-    function Append(Value: Int64): TStringBuilder; overload;
-    function Append(Obj: TObject): TStringBuilder; overload;
-    function AppendFormat(const Fmt: string; const Args: array of const): TStringBuilder; overload;
-    function AppendFormat(const Fmt: string; Arg0: Variant): TStringBuilder; overload;
-    function AppendFormat(const Fmt: string; Arg0, Arg1: Variant): TStringBuilder; overload;
-    function AppendFormat(const Fmt: string; Arg0, Arg1, Arg2: Variant): TStringBuilder; overload;
+    function Append(const Value: string): TJclStringBuilder; overload;
+    function Append(const Value: string; StartIndex, Length: Integer): TJclStringBuilder; overload;
+    function Append(Value: Boolean): TJclStringBuilder; overload;
+    function Append(Value: Char; RepeatCount: Integer = 1): TJclStringBuilder; overload;
+    function Append(const Value: array of Char): TJclStringBuilder; overload;
+    function Append(const Value: array of Char; StartIndex, Length: Integer): TJclStringBuilder; overload;
+    function Append(Value: Cardinal): TJclStringBuilder; overload;
+    function Append(Value: Integer): TJclStringBuilder; overload;
+    function Append(Value: Double): TJclStringBuilder; overload;
+    function Append(Value: Int64): TJclStringBuilder; overload;
+    function Append(Obj: TObject): TJclStringBuilder; overload;
+    function AppendFormat(const Fmt: string; const Args: array of const): TJclStringBuilder; overload;
+    function AppendFormat(const Fmt: string; Arg0: Variant): TJclStringBuilder; overload;
+    function AppendFormat(const Fmt: string; Arg0, Arg1: Variant): TJclStringBuilder; overload;
+    function AppendFormat(const Fmt: string; Arg0, Arg1, Arg2: Variant): TJclStringBuilder; overload;
 
-    function Insert(Index: Integer; const Value: string; Count: Integer = 1): TStringBuilder; overload;
-    function Insert(Index: Integer; Value: Boolean): TStringBuilder; overload;
-    function Insert(Index: Integer; const Value: array of Char): TStringBuilder; overload;
-    function Insert(Index: Integer; const Value: array of Char; StartIndex, Length: Integer): TStringBuilder; overload;
-    function Insert(Index: Integer; Value: Cardinal): TStringBuilder; overload;
-    function Insert(Index: Integer; Value: Integer): TStringBuilder; overload;
-    function Insert(Index: Integer; Value: Double): TStringBuilder; overload;
-    function Insert(Index: Integer; Value: Int64): TStringBuilder; overload;
-    function Insert(Index: Integer; Obj: TObject): TStringBuilder; overload;
+    function Insert(Index: Integer; const Value: string; Count: Integer = 1): TJclStringBuilder; overload;
+    function Insert(Index: Integer; Value: Boolean): TJclStringBuilder; overload;
+    function Insert(Index: Integer; const Value: array of Char): TJclStringBuilder; overload;
+    function Insert(Index: Integer; const Value: array of Char; StartIndex, Length: Integer): TJclStringBuilder; overload;
+    function Insert(Index: Integer; Value: Cardinal): TJclStringBuilder; overload;
+    function Insert(Index: Integer; Value: Integer): TJclStringBuilder; overload;
+    function Insert(Index: Integer; Value: Double): TJclStringBuilder; overload;
+    function Insert(Index: Integer; Value: Int64): TJclStringBuilder; overload;
+    function Insert(Index: Integer; Obj: TObject): TJclStringBuilder; overload;
 
-    function Replace(OldChar, NewChar: Char; StartIndex: Integer = 0; Count: Integer = -1): TStringBuilder; overload;
-    function Replace(OldValue, NewValue: string; StartIndex: Integer = 0; Count: Integer = -1): TStringBuilder; overload;
+    function Replace(OldChar, NewChar: Char; StartIndex: Integer = 0; Count: Integer = -1): TJclStringBuilder; overload;
+    function Replace(OldValue, NewValue: string; StartIndex: Integer = 0; Count: Integer = -1): TJclStringBuilder; overload;
 
-    function Remove(StartIndex, Length: Integer): TStringBuilder;
+    function Remove(StartIndex, Length: Integer): TJclStringBuilder;
     function EnsureCapacity(Capacity: Integer): Integer;
 
     function ToString: string;
@@ -478,6 +474,8 @@ type
     property Capacity: Integer read GetCapacity write SetCapacity;
     property MaxCapacity: Integer read FMaxCapacity;
   end;
+
+  TStringBuilder = TJclStringBuilder;
 
 // DotNetFormat() uses the .NET format style: "{argX}"
 function DotNetFormat(const Fmt: string; const Args: array of const): string; overload;
@@ -509,30 +507,30 @@ type
   public
     constructor Create; overload;
     constructor Create(TabWidth: Integer); overload;
-    constructor Create(Tabstops: array of Integer; ZeroBased: Boolean); overload;
-    constructor Create(Tabstops: array of Integer; ZeroBased: Boolean; TabWidth: Integer); overload;
+    constructor Create(const Tabstops: array of Integer; ZeroBased: Boolean); overload;
+    constructor Create(const Tabstops: array of Integer; ZeroBased: Boolean; TabWidth: Integer); overload;
 
     // Tab stops manipulation
     function Add(Column: Integer): Integer;
     function Delete(Column: Integer): Integer;
 
     // Usage
-    function Expand(S: string): string; overload;
-    function Expand(S: string; Column: Integer): string; overload;
+    function Expand(const S: string): string; overload;
+    function Expand(const S: string; Column: Integer): string; overload;
     procedure OptimalFillInfo(StartColumn, TargetColumn: Integer; out TabsNeeded, SpacesNeeded: Integer);
-    function Optimize(S: string): string; overload;
-    function Optimize(S: string; Column: Integer): string; overload;
+    function Optimize(const S: string): string; overload;
+    function Optimize(const S: string; Column: Integer): string; overload;
     function StartColumn: Integer;
     function TabFrom(Column: Integer): Integer;
-    function UpdatePosition(S: string): Integer; overload;
-    function UpdatePosition(S: string; Column: Integer): Integer; overload;
-    function UpdatePosition(S: string; var Column, Line: Integer): Integer; overload;
+    function UpdatePosition(const S: string): Integer; overload;
+    function UpdatePosition(const S: string; Column: Integer): Integer; overload;
+    function UpdatePosition(const S: string; var Column, Line: Integer): Integer; overload;
 
     // Conversions
     function ToString: string; overload;
     function ToString(FormattingOptions: Integer): string; overload;
-    class function FromString(S: string): TJclTabSet; {$IFDEF SUPPORTS_STATIC} static; {$ENDIF}
-    
+    class function FromString(const S: string): TJclTabSet; {$IFDEF SUPPORTS_STATIC} static; {$ENDIF}
+
     // Properties
     property ActualTabWidth: Integer read InternalTabWidth;
     property Count: Integer read GetCount;
@@ -574,10 +572,14 @@ type
     constructor Create; overload;
   end;
 
-function AnsiCompareNaturalStr(const S1, S2: string): Integer;
-function AnsiCompareNaturalText(const S1, S2: string): Integer;
+function AnsiCompareNaturalStr(const S1, S2: AnsiString): Integer;
+function AnsiCompareNaturalText(const S1, S2: AnsiString): Integer;
 
 {$ENDIF ~CLR}
+
+procedure StrResetLength(var S: WideString); overload;
+procedure StrResetLength(var S: AnsiString); overload;
+procedure StrResetLength(S: TJclStringBuilder); overload;
 
 // Exceptions
 type
@@ -646,10 +648,10 @@ var
   Category: System.Globalization.UnicodeCategory;
   {$ENDIF CLR}
 begin
-  for CurrChar := Low(Char) to High(Char) do
+  for CurrChar := Low(CurrChar) to High(CurrChar) do
   begin
     {$IFDEF MSWINDOWS}
-    GetStringTypeExA(LOCALE_USER_DEFAULT, CT_CTYPE1, @CurrChar, SizeOf(Char), CurrType);
+    GetStringTypeEx(LOCALE_USER_DEFAULT, CT_CTYPE1, @CurrChar, 1, CurrType);
     {$DEFINE CHAR_TYPES_INITIALIZED}
     {$ENDIF MSWINDOWS}
     {$IFDEF LINUX}
@@ -759,6 +761,7 @@ begin
       end
   else
     Assert(False, 'StrReOffset not supported');
+    Exit;
   end;
   Str := RetValue;
 end;
@@ -871,7 +874,6 @@ var
 begin
   if S <> nil then
   begin
-    Len := 0;
     SLen := StrLen(S);
     case Offset of
       StrUpOffset:
@@ -890,6 +892,7 @@ begin
         end
     else
       Assert(False, 'StrReOffset not supported');
+      Exit;
     end;
     Move(PChar(RetValue)^, S^, Len * SizeOf(Char));
   end;
@@ -2140,10 +2143,10 @@ begin
   Result := 0;
   if Pointer(S) <> nil then
   begin
-    P := Pointer(Integer(Pointer(S)) - StrRefCountOffset);
+    P := Pointer(INT_PTR(Pointer(S)) - StrRefCountOffset);
     if Integer(P^) <> -1 then
     begin
-      P := Pointer(Integer(Pointer(S)) - StrAllocOffset);
+      P := Pointer(INT_PTR(Pointer(S)) - StrAllocOffset);
       Result := Integer(P^);
     end;
   end;
@@ -2172,7 +2175,7 @@ begin
   Result := 0;
   if Pointer(S) <> nil then
   begin
-    P := Pointer(Integer(Pointer(S)) - StrLengthOffset);
+    P := Pointer(INT_PTR(Pointer(S)) - StrLengthOffset);
     Result := Longint(P^) and (not $80000000 shr 1);
   end;
 end;
@@ -2184,89 +2187,51 @@ begin
   Result := 0;
   if Pointer(S) <> nil then
   begin
-    P := Pointer(Integer(Pointer(S)) - StrRefCountOffset);
+    P := Pointer(INT_PTR(Pointer(S)) - StrRefCountOffset);
     Result := Longint(P^);
   end;
 end;
 {$ENDIF KEEP_DEPRECATED}
 {$ENDIF ~SUPPORTS_UNICODE}
 
-function StrLen(S: PChar): Integer;
-{$IFDEF SUPPORTS_UNICODE}
-var
-  P: PChar;
-begin
-  P := S;
-  if P <> nil then
-  begin
-    while P^ <> #0 do
-      Inc(P);
-    Result := P - S;
-  end
-  else
-    Result := 0;
-end;
-{$ELSE}
-asm
-        TEST    EAX, EAX
-        JZ      @@EXIT
-
-        PUSH    EBX
-        MOV     EDX, EAX                 // save pointer
-@L1:    MOV     EBX, [EAX]               // read 4 bytes
-        ADD     EAX, 4                   // increment pointer
-        LEA     ECX, [EBX-$01010101]     // subtract 1 from each byte
-        NOT     EBX                      // invert all bytes
-        AND     ECX, EBX                 // and these two
-        AND     ECX, $80808080           // test all sign bits
-        JZ      @L1                      // no zero bytes, continue loop
-        TEST    ECX, $00008080           // test first two bytes
-        JZ      @L2
-        SHL     ECX, 16                  // not in the first 2 bytes
-        SUB     EAX, 2
-@L2:    SHL     ECX, 9                   // use carry flag to avoid a branch
-        SBB     EAX, EDX                 // compute length
-        POP     EBX
-
-        JZ      @@EXIT                   // Az: SBB sets zero flag
-        DEC     EAX                      // do not include null terminator
-@@EXIT:
-end;
-{$ENDIF SUPPORTS_UNICODE}
-
 {$ENDIF ~CLR}
 
-procedure StrResetLength(var S: string);
-{$IFDEF CLR}
+procedure StrResetLength(var S: WideString);
 var
   I: Integer;
-{$ENDIF CLR}
 begin
-  {$IFDEF CLR}
-  for I := 1 to Length(S) do
-    if S[I] = #0 then
+  for I := 0 to Length(S) - 1 do
+    if S[I + 1] = #0 then
     begin
       SetLength(S, I);
       Exit;
     end;
-  {$ELSE}
-  SetLength(S, StrLen(PChar(S)));
-  {$ENDIF CLR}
 end;
 
-{$IFDEF CLR}
-procedure StrResetLength(S: StringBuilder);
+procedure StrResetLength(var S: AnsiString);
 var
   I: Integer;
 begin
-  for I := 0 to S.Length - 1 do
-    if S[I] = #0 then
+  for I := 0 to Length(S) - 1 do
+    if S[I + 1] = #0 then
     begin
-      S.Length := I + 1;
+      SetLength(S, I);
       Exit;
     end;
 end;
-{$ENDIF CLR}
+
+procedure StrResetLength(S: TJclStringBuilder);
+var
+  I: Integer;
+begin
+  if S <> nil then
+    for I := 0 to S.Length - 1 do
+      if S[I] = #0 then
+      begin
+        S.Length := I;
+        Exit;
+      end;
+end;
 
 //=== String Search and Replace Routines =====================================
 
@@ -2431,7 +2396,9 @@ begin
       Result := StrCompareRangeEx(S1, S2, 1, Len1, False);
   end;
 end;
-{$ELSE}
+
+{$ELSE} // SUPPORTS_UNICODE
+
 {$IFDEF PIC}
 function _StrCompare(const S1, S2: string): Integer; forward;
 
@@ -3745,7 +3712,7 @@ begin
     while P <> nil do
     begin
       Inc(Result);
-      P := PCharVector(Longint(Source) + (SizeOf(PChar) * Result))^;
+      P := PCharVector(INT_PTR(Source) + (SizeOf(PChar) * Result))^;
     end;
   end;
 end;
@@ -4783,7 +4750,7 @@ var
       {$ENDIF COMPILER5}
       varString:
         Result := string(V.VString);
-        
+
       {varArray,
       varDispatch,
       varError,
@@ -4818,7 +4785,7 @@ var
       vtString:
         Result := V.VString^;
       vtPointer:
-        Result := IntToHex(Cardinal(V.VPointer), 8);
+        Result := IntToHex(DWORD_PTR(V.VPointer), 8);
       vtPChar:
         Result := V.VPChar;
       vtObject:
@@ -5376,13 +5343,13 @@ begin
   Create([], True, TabWidth);
 end;
 
-constructor TJclTabSet.Create(Tabstops: array of Integer; ZeroBased: Boolean);
+constructor TJclTabSet.Create(const Tabstops: array of Integer; ZeroBased: Boolean);
 begin
   // specified tab stops, tab width equal to distance between last two tab stops
   Create(Tabstops, ZeroBased, 0);
 end;
 
-constructor TJclTabSet.Create(Tabstops: array of Integer; ZeroBased: Boolean; TabWidth: Integer);
+constructor TJclTabSet.Create(const Tabstops: array of Integer; ZeroBased: Boolean; TabWidth: Integer);
 var
   idx: Integer;
 begin
@@ -5446,12 +5413,12 @@ begin
     RemoveAt(Result);
 end;
 
-function TJclTabSet.Expand(S: string): string;
+function TJclTabSet.Expand(const S: string): string;
 begin
   Result := Expand(s, StartColumn);
 end;
 
-function TJclTabSet.Expand(S: string; Column: Integer): string;
+function TJclTabSet.Expand(const S: string; Column: Integer): string;
 var
   sb: TStringBuilder;
   head: PChar;
@@ -5502,7 +5469,7 @@ begin
     Result := -1;
 end;
 
-class function TJclTabSet.FromString(S: string): TJclTabSet;
+class function TJclTabSet.FromString(const S: string): TJclTabSet;
 var
   cur: PChar;
 
@@ -5685,12 +5652,12 @@ begin
   SpacesNeeded := TargetColumn - StartColumn;
 end;
 
-function TJclTabSet.Optimize(S: string): string;
+function TJclTabSet.Optimize(const S: string): string;
 begin
   Result := Optimize(S, StartColumn);
 end;
 
-function TJclTabSet.Optimize(S: string; Column: Integer): string;
+function TJclTabSet.Optimize(const S: string; Column: Integer): string;
 var
   sb: TStringBuilder;
   head: PChar;
@@ -5969,7 +5936,7 @@ begin
   end;
 end;
 
-function TJclTabSet.UpdatePosition(S: string): Integer;
+function TJclTabSet.UpdatePosition(const S: string): Integer;
 var
   lines: Integer;
 begin
@@ -5977,7 +5944,7 @@ begin
   UpdatePosition(S, Result, lines);
 end;
 
-function TJclTabSet.UpdatePosition(S: string; Column: Integer): Integer;
+function TJclTabSet.UpdatePosition(const S: string; Column: Integer): Integer;
 var
   lines: Integer;
 begin
@@ -5987,7 +5954,7 @@ begin
   UpdatePosition(S, Result, lines);
 end;
 
-function TJclTabSet.UpdatePosition(S: string; var Column, Line: Integer): Integer;
+function TJclTabSet.UpdatePosition(const S: string; var Column, Line: Integer): Integer;
 var
   prevChar: Char;
   cur: PChar;
@@ -6032,71 +5999,71 @@ begin
   CreateRes(@RsArg_NullReferenceException);
 end;
 
-function AnsiCompareNatural(const S1, S2: string; insensitive: Boolean): Integer;
+function AnsiCompareNatural(const S1, S2: string; CaseInsensitive: Boolean): Integer;
 var
-  cur1: PAnsiChar;
-  cur2: PAnsiChar;
+  Cur1: PChar;
+  Cur2: PChar;
 
   procedure NumberCompare;
   var
-    isReallyNumber: Boolean;
-    firstDiffBreaks: Boolean;
+    IsReallyNumber: Boolean;
+    FirstDiffBreaks: Boolean;
   begin
     Result := 0;
-    isReallyNumber := False;
+    IsReallyNumber := False;
     // count leading spaces in S1
-    while cur1^ = ' ' do
+    while Cur1^ = ' ' do
     begin
       Dec(Result);
-      Inc(cur1);
+      Inc(Cur1);
     end;
     // count leading spaces in S2 (canceling them out against the ones in S1)
-    while cur2^ = ' ' do
+    while Cur2^ = ' ' do
     begin
       Inc(Result);
-      Inc(cur2);
+      Inc(Cur2);
     end;
 
     // if spaces match, or both strings are actually followed by a numeric character, continue the checks
-    if (Result = 0) or ((cur1^ in ['+', '-', '0' .. '9']) and (cur2^ in ['+', '-', '0' .. '9'])) then
+    if (Result = 0) or ((Cur1^ in ['+', '-', '0' .. '9']) and (Cur2^ in ['+', '-', '0' .. '9'])) then
     begin
       // Check signed number
-      if (cur1^ = '-') and (cur2^ <> '-') then
+      if (Cur1^ = '-') and (Cur2^ <> '-') then
         Result := 1
       else
-      if (cur2^ = '-') and (cur1^ <> '-') then
+      if (Cur2^ = '-') and (Cur1^ <> '-') then
         Result := -1
       else
         Result := 0;
 
-      if cur1^ in ['-', '+'] then
-        Inc(cur1);
-      if cur2^ in ['-', '+'] then
-        Inc(cur2);
+      if Cur1^ in ['-', '+'] then
+        Inc(Cur1);
+      if Cur2^ in ['-', '+'] then
+        Inc(Cur2);
 
-      firstDiffBreaks := (cur1^ = '0') or (cur2^ = '0');
-      while (cur1^ in ['0' .. '9']) and (cur2^ in ['0' .. '9']) do
+      FirstDiffBreaks := (Cur1^ = '0') or (Cur2^ = '0');
+      while (Cur1^ in ['0' .. '9']) and (Cur2^ in ['0' .. '9']) do
       begin
-        isReallyNumber := True;
-        if (Result = 0) and (cur1^ < cur2^) then
+        IsReallyNumber := True;
+        if (Result = 0) and (Cur1^ < Cur2^) then
           Result := -1
         else
-        if (Result = 0) and (cur1^ > cur2^) then
+        if (Result = 0) and (Cur1^ > Cur2^) then
           Result := 1;
-        if firstDiffBreaks and (Result <> 0) then
+        if FirstDiffBreaks and (Result <> 0) then
           Break;
-        Inc(cur1);
-        Inc(cur2);
+        Inc(Cur1);
+        Inc(Cur2);
       end;
 
-      if isReallyNumber then
+      if IsReallyNumber then
       begin
-        if not firstDiffBreaks then
+        if not FirstDiffBreaks then
         begin
-          if cur1^ in ['0' .. '9'] then
+          if Cur1^ in ['0' .. '9'] then
             Result := 1
           else
-          if cur2^ in ['0' .. '9'] then
+          if Cur2^ in ['0' .. '9'] then
             Result := -1;
         end;
       end;
@@ -6104,46 +6071,46 @@ var
   end;
 
 begin
-  cur1 := PAnsiChar(S1);
-  cur2 := PAnsiChar(S2);
+  Cur1 := PChar(S1);
+  Cur2 := PChar(S2);
   Result := 0;
   while (Result = 0) do
   begin
-    if (cur1^ = #0) and (cur2^ = #0) then
+    if (Cur1^ = #0) and (Cur2^ = #0) then
       Break
     else
-    if (cur1^ = '-') and (cur2^ in ['+','0' .. '9']) then
+    if (Cur1^ = '-') and (Cur2^ in ['+','0' .. '9']) then
       Result := -1
     else
-    if (cur2^ = '-') and (cur1^ in ['+','0' .. '9']) then
+    if (Cur2^ = '-') and (Cur1^ in ['+','0' .. '9']) then
       Result := 1
     else
-    if (cur1^ in ['+', '-', ' ', '0' .. '9']) and (cur2^ in ['+', '-', ' ', '0' .. '9']) then
+    if (Cur1^ in ['+', '-', ' ', '0' .. '9']) and (Cur2^ in ['+', '-', ' ', '0' .. '9']) then
       NumberCompare
     else
-    if (cur1^ = #0) and (cur2^ <> #0) then
+    if (Cur1^ = #0) and (Cur2^ <> #0) then
       Result := -1
     else
-    if (cur1^ <> #0) and (cur1^ = #0) then
+    if (Cur1^ <> #0) and (Cur1^ = #0) then
       Result := 1
     else
     begin
-      if insensitive then
-        Result := AnsiStrLIComp(cur1, cur2, 1)
+      if CaseInsensitive then
+        Result := AnsiStrLIComp(Cur1, Cur2, 1)
       else
-        Result := AnsiStrLComp(cur1, cur2, 1);
-      Inc(cur1);
-      Inc(cur2);
+        Result := AnsiStrLComp(Cur1, Cur2, 1);
+      Inc(Cur1);
+      Inc(Cur2);
     end;
   end;
 end;
 
-function AnsiCompareNaturalStr(const S1, S2: string): Integer;
+function AnsiCompareNaturalStr(const S1, S2: AnsiString): Integer; overload;
 begin
   Result := AnsiCompareNatural(S1, S2, False);
 end;
 
-function AnsiCompareNaturalText(const S1, S2: string): Integer;
+function AnsiCompareNaturalText(const S1, S2: AnsiString): Integer; overload;
 begin
   Result := AnsiCompareNatural(S1, S2, True);
 end;

@@ -77,6 +77,12 @@ type
   TIntegerSet = set of 0..SizeOf(Integer) * 8 - 1;
   {$ENDIF CLR}
 
+{$IFDEF CLR}
+  UnicodeString = string;
+{$ELSE}
+  UnicodeString = WideString;
+{$ENDIF CLR}
+
 // EJclWin32Error
 {$IFDEF MSWINDOWS}
 type
@@ -311,6 +317,23 @@ function BytesOf(const Value: AnsiChar): TBytes; overload;
 function StringOf(const Bytes: array of Byte): AnsiString; overload;
 function StringOf(const Bytes: Pointer; Size: Cardinal): AnsiString; overload;
 {$ENDIF CLR}
+
+{$IFNDEF COMPILER11_UP}
+type // Definitions for 32 Bit Compilers
+  // From BaseTsd.h
+  INT_PTR = Integer;
+  {$EXTERNALSYM INT_PTR}
+  LONG_PTR = Longint;
+  {$EXTERNALSYM LONG_PTR}
+  UINT_PTR = Cardinal;
+  {$EXTERNALSYM UINT_PTR}
+  ULONG_PTR = LongWord;
+  {$EXTERNALSYM ULONG_PTR}
+  DWORD_PTR = ULONG_PTR;
+  {$EXTERNALSYM DWORD_PTR}
+
+{$ENDIF COMPILER11_UP}
+
 
 type
   TJclAddr64 = Int64;
@@ -1196,14 +1219,14 @@ end;
 function BytesOf(const Value: WideString): TBytes;
 begin
   if Value <> '' then
-    Result := BytesOf(AnsiString(Value))
+    Result := JclBase.BytesOf(AnsiString(Value))
   else
     SetLength(Result, 0);
 end;
 
 function BytesOf(const Value: WideChar): TBytes;
 begin
-  Result := BytesOf(WideString(Value));
+  Result := JclBase.BytesOf(WideString(Value));
 end;
 {$ENDIF COMPILER6_UP}
 

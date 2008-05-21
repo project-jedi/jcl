@@ -173,7 +173,7 @@ type
     procedure SetThunk(Value: Pointer);
   public
     constructor Create(AImage: TJclPeImage; AImportDescriptor: Pointer;
-      AImportKind: TJclPeImportKind; const AName: string; AThunk: Pointer);
+      AImportKind: TJclPeImportKind; const AName: AnsiString; AThunk: Pointer);
     procedure SortList(SortType: TJclPeImportSort; Descending: Boolean = False);
     property Count: Integer read GetCount;
     property FileName: TFileName read GetFileName;
@@ -1416,7 +1416,7 @@ end;
 //=== { TJclPeImportLibItem } ================================================
 
 constructor TJclPeImportLibItem.Create(AImage: TJclPeImage;
-  AImportDescriptor: Pointer; AImportKind: TJclPeImportKind; const AName: string;
+  AImportDescriptor: Pointer; AImportKind: TJclPeImportKind; const AName: AnsiString;
   AThunk: Pointer);
 begin
   inherited Create(AImage);
@@ -1699,7 +1699,7 @@ procedure TJclPeImportList.CreateList;
     while DelayImportDesc^.szName <> nil do
     begin
       LibItem := TJclPeImportLibItem.Create(Image, DelayImportDesc, ikDelayImport,
-        PChar(Image.RvaToVaEx(DWORD(DelayImportDesc^.szName))), Image.RvaToVaEx(DWORD(DelayImportDesc^.pINT)));
+        PAnsiChar(Image.RvaToVaEx(DWORD(DelayImportDesc^.szName))), Image.RvaToVaEx(DWORD(DelayImportDesc^.pINT)));
       Add(LibItem);
       FUniqueNamesList.AddObject(AnsiLowerCase(LibItem.Name), LibItem);
       Inc(DelayImportDesc);
@@ -1713,7 +1713,7 @@ procedure TJclPeImportList.CreateList;
     while DelayImportDesc^.rvaDLLName <> 0 do
     begin
       LibItem := TJclPeImportLibItem.Create(Image, DelayImportDesc, ikDelayImport,
-        PChar(Image.RvaToVa(DelayImportDesc^.rvaDLLName)), Image.RvaToVa(DelayImportDesc^.rvaINT));
+        PAnsiChar(Image.RvaToVa(DelayImportDesc^.rvaDLLName)), Image.RvaToVa(DelayImportDesc^.rvaINT));
       Add(LibItem);
       FUniqueNamesList.AddObject(AnsiLowerCase(LibItem.Name), LibItem);
       Inc(DelayImportDesc);
