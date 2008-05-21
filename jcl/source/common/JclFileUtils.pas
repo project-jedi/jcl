@@ -1031,6 +1031,7 @@ uses
   {$ENDIF Win32API}
   JclSysUtils, JclDateTime, JclResources,
   {$IFDEF CLR}
+  Borland.Vcl.ShlObj, Borland.Vcl.ActiveX, Borland.Vcl.ComObj, Borland.Vcl.StrUtils,
   JclAnsiStrings,
   {$ENDIF CLR}
   JclStrings;
