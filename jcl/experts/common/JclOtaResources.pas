@@ -20,7 +20,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                      $ }
+{ Last modified: $Date::                                                                     $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -250,7 +250,7 @@ resourcestring
   RsENoBuildAllAction = 'Build All action not found';
   RsENoProjectGroup = 'No project group';
   RsDebugConfigPageCaption = 'Debug info converter';
-  RsEInvalidDebugExpertAction = '%d is not a debug expert action';
+  RsEProjectPropertyFailed = 'Unable to save project properties, project file may be read-only';  
 
 //=== JclDebugIdeConfigFrame.pas =============================================
 resourcestring

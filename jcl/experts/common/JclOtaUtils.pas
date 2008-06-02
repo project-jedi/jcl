@@ -531,6 +531,7 @@ var
   PropLocations: TDynIntegerArray;
   AReader: IOTAEditReader;
   AWriter: IOTAEditWriter;
+  ABuffer: IOTAEditBuffer;
 begin
   PropCount := Length(PropIDs);
   Result := 0;
@@ -542,47 +543,51 @@ begin
       or AnsiSameText(FileExtension, '.bpf') or AnsiSameText(FileExtension, '.cpp') then
     begin
       ASourceEditor := AEditor as IOTASourceEditor;
-      for PropIndex := 0 to PropCount - 1 do
+      ABuffer := ASourceEditor as IOTAEditBuffer;
+      if not ABuffer.IsReadOnly then
       begin
-        SetLength(PropLocations, 0);
-        PropSize := 0;
-        AReader := ASourceEditor.CreateReader;
-        try
-          PropLocations := InternalLocateProperties(AReader, Copy(PropIDs, PropIndex, 1));
-          if PropLocations[0] > 0 then
-          begin
-            SetLength(Buffer, BufferSize);
-            SetLength(Buffer, AReader.GetText(PropLocations[0], PAnsiChar(Buffer), BufferSize));
-            for BufferIndex := 1 to Length(Buffer) do
-              if Buffer[BufferIndex] in [AnsiCarriageReturn, AnsiLineFeed] then
+        for PropIndex := 0 to PropCount - 1 do
+        begin
+          SetLength(PropLocations, 0);
+          PropSize := 0;
+          AReader := ASourceEditor.CreateReader;
+          try
+            PropLocations := InternalLocateProperties(AReader, Copy(PropIDs, PropIndex, 1));
+            if PropLocations[0] > 0 then
             begin
-              PropSize := BufferIndex - 1;
-              Break;
+              SetLength(Buffer, BufferSize);
+              SetLength(Buffer, AReader.GetText(PropLocations[0], PAnsiChar(Buffer), BufferSize));
+              for BufferIndex := 1 to Length(Buffer) do
+                if Buffer[BufferIndex] in [AnsiCarriageReturn, AnsiLineFeed] then
+              begin
+                PropSize := BufferIndex - 1;
+                Break;
+              end;
             end;
+          finally
+            // release the reader before allocating the writer
+            AReader := nil;
           end;
-        finally
-          // release the reader before allocating the writer
-          AReader := nil;
-        end;
 
-        AWriter := ASourceEditor.CreateUndoableWriter;
-        try
-          if PropLocations[0] > 0 then
-          begin
-            AWriter.CopyTo(PropLocations[0]);
-            AWriter.DeleteTo(PropLocations[0] + PropSize);
-            AWriter.Insert(PAnsiChar(PropValues[PropIndex]));
-          end
-          else
-          begin
-            AWriter.CopyTo(-PropLocations[0]);
-            AWriter.Insert(PAnsiChar(Format('// %s %s%s', [PropIDs[PropIndex], PropValues[PropIndex], AnsiLineBreak])));
+          AWriter := ASourceEditor.CreateUndoableWriter;
+          try
+            if PropLocations[0] > 0 then
+            begin
+              AWriter.CopyTo(PropLocations[0]);
+              AWriter.DeleteTo(PropLocations[0] + PropSize);
+              AWriter.Insert(PAnsiChar(PropValues[PropIndex]));
+            end
+            else
+            begin
+              AWriter.CopyTo(-PropLocations[0]);
+              AWriter.Insert(PAnsiChar(Format('// %s %s%s', [PropIDs[PropIndex], PropValues[PropIndex], AnsiLineBreak])));
+            end;
+          finally
+            // release the writter before allocating the reader
+            AWriter := nil;
           end;
-        finally
-          // release the writter before allocating the reader
-          AWriter := nil;
+          Inc(Result);
         end;
-        Inc(Result);
       end;
       Break;
     end;

@@ -17,7 +17,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                     $ }
+{ Last modified: $Date::                                                                    $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -120,7 +120,6 @@ type
     procedure AddConfigurationPages(AddPageFunc: TJclOTAAddPageFunc); override;
     procedure ConfigurationClosed(AControl: TControl; SaveChanges: Boolean); override;
     procedure DisableExpert(const AProject: IOTAProject);
-    procedure ChangeProjectAction(const AProject: IOTAProject; AAction: TDebugExpertAction; AEnabled: Boolean);
     property GlobalStates[Index: TDebugExpertAction]: TDebugExpertState read GetGlobalState
       write SetGlobalState;
     property ProjectStates[Index: TDebugExpertAction; const AProject: IOTAProject]: TDebugExpertState
@@ -254,18 +253,6 @@ begin
 end;
 
 //=== { TJclDebugExtension } =================================================
-
-procedure TJclDebugExtension.ChangeProjectAction(const AProject: IOTAProject; AAction: TDebugExpertAction;
-  AEnabled: Boolean);
-var
-  PropIDs, PropValues: TDynAnsiStringArray;
-begin
-  SetLength(PropIDs, 1);
-  PropIDs[0] := DebugActionNames[AAction];
-  SetLength(PropValues, 1);
-  PropValues[0] := DebugActionValues[AEnabled];
-  SetProjectProperties(AProject, PropIDs, PropValues);
-end;
 
 procedure TJclDebugExtension.ConfigurationClosed(AControl: TControl;
   SaveChanges: Boolean);
@@ -1177,7 +1164,8 @@ begin
         PropIDs[0] := DebugActionNames[Index];
         SetLength(PropValues, 1);
         PropValues[0] := DebugActionValues[False];
-        SetProjectProperties(AProject, PropIDs, PropValues);
+        if SetProjectProperties(AProject, PropIDs, PropValues) <> 1 then
+          MessageDlg(RsEProjectPropertyFailed,mtError,[mbAbort],0);
       end;
     deProjectEnabled:
       begin
@@ -1187,7 +1175,8 @@ begin
         PropIDs[0] := DebugActionNames[Index];
         SetLength(PropValues, 1);
         PropValues[0] := DebugActionValues[True];
-        SetProjectProperties(AProject, PropIDs, PropValues);
+        if SetProjectProperties(AProject, PropIDs, PropValues) <> 1 then
+          MessageDlg(RsEProjectPropertyFailed,mtError,[mbAbort],0);
       end;
     deAlwaysEnabled:
       FGlobalStates[Index] := deAlwaysEnabled;
