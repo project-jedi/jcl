@@ -1930,7 +1930,7 @@ begin
     S := Copy(Path, K + 1, Length(Path));
   List := TStringList.Create;
   try
-    StrIToStrings(S, DirDelimiter, List, False);
+    StrIToStrings(S, DirDelimiter, List, True);
     I := 0;
     while I < List.Count do
     begin
@@ -1948,7 +1948,7 @@ begin
       end
       else Inc(I);
     end;
-    Result := StringsToStr(List, DirDelimiter, False);
+    Result := StringsToStr(List, DirDelimiter, True);
   finally
     List.Free;
   end;
