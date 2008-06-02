@@ -2324,7 +2324,8 @@ begin
   if (DestDrive <> '') and ((OrigDrive = '') or ((OrigDrive <> '') and not Equal(OrigDrive, DestDrive))) then
     Result := Destination
   else
-  if (OrigDrive <> '') and (Pos(DirDelimiter, Destination) = 1) then
+  if (OrigDrive <> '') and (Pos(DirDelimiter, Destination) = 1)
+    and not Equal(PathUncPrefix,Copy(Destination,1,Length(PathUncPrefix))) then
     Result := OrigDrive + Destination  // prepend drive part from Origin
   else
   {$ENDIF MSWINDOWS}
