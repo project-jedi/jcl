@@ -23,6 +23,8 @@
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { COLLECTIONINTERFACENAME }
@@ -109,6 +111,8 @@
     function CreateEmptyIterator: TJclAbstractIterator; override;
     function GetNextCursor: NODETYPENAME; override;
     function GetPreviousCursor: NODETYPENAME; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -119,6 +123,8 @@
     function CreateEmptyIterator: TJclAbstractIterator; override;
     function GetNextCursor: NODETYPENAME; override;
     function GetPreviousCursor: NODETYPENAME; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -129,6 +135,8 @@
     function CreateEmptyIterator: TJclAbstractIterator; override;
     function GetNextCursor: NODETYPENAME; override;
     function GetPreviousCursor: NODETYPENAME; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;*)

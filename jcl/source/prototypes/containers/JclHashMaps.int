@@ -44,6 +44,8 @@
     function Remove(KEYCONSTKEYWORDKey: KEYTYPENAME): VALUETYPENAME;
     function Size: Integer;
     function Values: VALUECOLLECTIONINTERFACENAME;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;PROTECTEDADDITIONAL
   public

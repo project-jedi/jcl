@@ -50,6 +50,8 @@
     procedure Intersect(const ACollection: COLLECTIONINTERFACENAME);
     procedure Subtract(const ACollection: COLLECTIONINTERFACENAME);
     procedure Union(const ACollection: COLLECTIONINTERFACENAME);
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;PROTECTEDADDITIONAL
   public

@@ -91,6 +91,8 @@ type
     function LastKey: IInterface;
     function SubMap(const FromKey, ToKey: IInterface): IJclIntfIntfSortedMap;
     function TailMap(const FromKey: IInterface): IJclIntfIntfSortedMap;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -141,6 +143,8 @@ type
     function LastKey: AnsiString;
     function SubMap(const FromKey, ToKey: AnsiString): IJclAnsiStrIntfSortedMap;
     function TailMap(const FromKey: AnsiString): IJclAnsiStrIntfSortedMap;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -191,6 +195,8 @@ type
     function LastKey: IInterface;
     function SubMap(const FromKey, ToKey: IInterface): IJclIntfAnsiStrSortedMap;
     function TailMap(const FromKey: IInterface): IJclIntfAnsiStrSortedMap;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -241,6 +247,8 @@ type
     function LastKey: AnsiString;
     function SubMap(const FromKey, ToKey: AnsiString): IJclAnsiStrAnsiStrSortedMap;
     function TailMap(const FromKey: AnsiString): IJclAnsiStrAnsiStrSortedMap;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -291,6 +299,8 @@ type
     function LastKey: WideString;
     function SubMap(const FromKey, ToKey: WideString): IJclWideStrIntfSortedMap;
     function TailMap(const FromKey: WideString): IJclWideStrIntfSortedMap;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -341,6 +351,8 @@ type
     function LastKey: IInterface;
     function SubMap(const FromKey, ToKey: IInterface): IJclIntfWideStrSortedMap;
     function TailMap(const FromKey: IInterface): IJclIntfWideStrSortedMap;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -391,6 +403,8 @@ type
     function LastKey: WideString;
     function SubMap(const FromKey, ToKey: WideString): IJclWideStrWideStrSortedMap;
     function TailMap(const FromKey: WideString): IJclWideStrWideStrSortedMap;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -452,6 +466,8 @@ type
     function LastKey: Single;
     function SubMap(const FromKey, ToKey: Single): IJclSingleIntfSortedMap;
     function TailMap(const FromKey: Single): IJclSingleIntfSortedMap;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -502,6 +518,8 @@ type
     function LastKey: IInterface;
     function SubMap(const FromKey, ToKey: IInterface): IJclIntfSingleSortedMap;
     function TailMap(const FromKey: IInterface): IJclIntfSingleSortedMap;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -552,6 +570,8 @@ type
     function LastKey: Single;
     function SubMap(const FromKey, ToKey: Single): IJclSingleSingleSortedMap;
     function TailMap(const FromKey: Single): IJclSingleSingleSortedMap;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -602,6 +622,8 @@ type
     function LastKey: Double;
     function SubMap(const FromKey, ToKey: Double): IJclDoubleIntfSortedMap;
     function TailMap(const FromKey: Double): IJclDoubleIntfSortedMap;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -652,6 +674,8 @@ type
     function LastKey: IInterface;
     function SubMap(const FromKey, ToKey: IInterface): IJclIntfDoubleSortedMap;
     function TailMap(const FromKey: IInterface): IJclIntfDoubleSortedMap;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -702,6 +726,8 @@ type
     function LastKey: Double;
     function SubMap(const FromKey, ToKey: Double): IJclDoubleDoubleSortedMap;
     function TailMap(const FromKey: Double): IJclDoubleDoubleSortedMap;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -752,6 +778,8 @@ type
     function LastKey: Extended;
     function SubMap(const FromKey, ToKey: Extended): IJclExtendedIntfSortedMap;
     function TailMap(const FromKey: Extended): IJclExtendedIntfSortedMap;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -802,6 +830,8 @@ type
     function LastKey: IInterface;
     function SubMap(const FromKey, ToKey: IInterface): IJclIntfExtendedSortedMap;
     function TailMap(const FromKey: IInterface): IJclIntfExtendedSortedMap;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -852,6 +882,8 @@ type
     function LastKey: Extended;
     function SubMap(const FromKey, ToKey: Extended): IJclExtendedExtendedSortedMap;
     function TailMap(const FromKey: Extended): IJclExtendedExtendedSortedMap;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -918,6 +950,8 @@ type
     function LastKey: Integer;
     function SubMap(FromKey, ToKey: Integer): IJclIntegerIntfSortedMap;
     function TailMap(FromKey: Integer): IJclIntegerIntfSortedMap;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -968,6 +1002,8 @@ type
     function LastKey: IInterface;
     function SubMap(const FromKey, ToKey: IInterface): IJclIntfIntegerSortedMap;
     function TailMap(const FromKey: IInterface): IJclIntfIntegerSortedMap;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -1018,6 +1054,8 @@ type
     function LastKey: Integer;
     function SubMap(FromKey, ToKey: Integer): IJclIntegerIntegerSortedMap;
     function TailMap(FromKey: Integer): IJclIntegerIntegerSortedMap;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -1068,6 +1106,8 @@ type
     function LastKey: Cardinal;
     function SubMap(FromKey, ToKey: Cardinal): IJclCardinalIntfSortedMap;
     function TailMap(FromKey: Cardinal): IJclCardinalIntfSortedMap;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -1118,6 +1158,8 @@ type
     function LastKey: IInterface;
     function SubMap(const FromKey, ToKey: IInterface): IJclIntfCardinalSortedMap;
     function TailMap(const FromKey: IInterface): IJclIntfCardinalSortedMap;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -1168,6 +1210,8 @@ type
     function LastKey: Cardinal;
     function SubMap(FromKey, ToKey: Cardinal): IJclCardinalCardinalSortedMap;
     function TailMap(FromKey: Cardinal): IJclCardinalCardinalSortedMap;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -1218,6 +1262,8 @@ type
     function LastKey: Int64;
     function SubMap(const FromKey, ToKey: Int64): IJclInt64IntfSortedMap;
     function TailMap(const FromKey: Int64): IJclInt64IntfSortedMap;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -1268,6 +1314,8 @@ type
     function LastKey: IInterface;
     function SubMap(const FromKey, ToKey: IInterface): IJclIntfInt64SortedMap;
     function TailMap(const FromKey: IInterface): IJclIntfInt64SortedMap;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -1318,6 +1366,8 @@ type
     function LastKey: Int64;
     function SubMap(const FromKey, ToKey: Int64): IJclInt64Int64SortedMap;
     function TailMap(const FromKey: Int64): IJclInt64Int64SortedMap;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -1369,6 +1419,8 @@ type
     function LastKey: Pointer;
     function SubMap(FromKey, ToKey: Pointer): IJclPtrIntfSortedMap;
     function TailMap(FromKey: Pointer): IJclPtrIntfSortedMap;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -1419,6 +1471,8 @@ type
     function LastKey: IInterface;
     function SubMap(const FromKey, ToKey: IInterface): IJclIntfPtrSortedMap;
     function TailMap(const FromKey: IInterface): IJclIntfPtrSortedMap;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -1469,6 +1523,8 @@ type
     function LastKey: Pointer;
     function SubMap(FromKey, ToKey: Pointer): IJclPtrPtrSortedMap;
     function TailMap(FromKey: Pointer): IJclPtrPtrSortedMap;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -1521,6 +1577,8 @@ type
     function LastKey: IInterface;
     function SubMap(const FromKey, ToKey: IInterface): IJclIntfSortedMap;
     function TailMap(const FromKey: IInterface): IJclIntfSortedMap;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclValueOwner }
@@ -1575,6 +1633,8 @@ type
     function LastKey: AnsiString;
     function SubMap(const FromKey, ToKey: AnsiString): IJclAnsiStrSortedMap;
     function TailMap(const FromKey: AnsiString): IJclAnsiStrSortedMap;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclValueOwner }
@@ -1629,6 +1689,8 @@ type
     function LastKey: WideString;
     function SubMap(const FromKey, ToKey: WideString): IJclWideStrSortedMap;
     function TailMap(const FromKey: WideString): IJclWideStrSortedMap;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclValueOwner }
@@ -1690,6 +1752,8 @@ type
     function LastKey: Single;
     function SubMap(const FromKey, ToKey: Single): IJclSingleSortedMap;
     function TailMap(const FromKey: Single): IJclSingleSortedMap;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclValueOwner }
@@ -1744,6 +1808,8 @@ type
     function LastKey: Double;
     function SubMap(const FromKey, ToKey: Double): IJclDoubleSortedMap;
     function TailMap(const FromKey: Double): IJclDoubleSortedMap;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclValueOwner }
@@ -1798,6 +1864,8 @@ type
     function LastKey: Extended;
     function SubMap(const FromKey, ToKey: Extended): IJclExtendedSortedMap;
     function TailMap(const FromKey: Extended): IJclExtendedSortedMap;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclValueOwner }
@@ -1862,6 +1930,8 @@ type
     function LastKey: Integer;
     function SubMap(FromKey, ToKey: Integer): IJclIntegerSortedMap;
     function TailMap(FromKey: Integer): IJclIntegerSortedMap;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclValueOwner }
@@ -1916,6 +1986,8 @@ type
     function LastKey: Cardinal;
     function SubMap(FromKey, ToKey: Cardinal): IJclCardinalSortedMap;
     function TailMap(FromKey: Cardinal): IJclCardinalSortedMap;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclValueOwner }
@@ -1970,6 +2042,8 @@ type
     function LastKey: Int64;
     function SubMap(const FromKey, ToKey: Int64): IJclInt64SortedMap;
     function TailMap(const FromKey: Int64): IJclInt64SortedMap;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclValueOwner }
@@ -2025,6 +2099,8 @@ type
     function LastKey: Pointer;
     function SubMap(FromKey, ToKey: Pointer): IJclPtrSortedMap;
     function TailMap(FromKey: Pointer): IJclPtrSortedMap;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclValueOwner }
@@ -2081,6 +2157,8 @@ type
     function LastKey: TObject;
     function SubMap(FromKey, ToKey: TObject): IJclSortedMap;
     function TailMap(FromKey: TObject): IJclSortedMap;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclKeyOwner }
@@ -2140,6 +2218,8 @@ type
     function LastKey: TKey;
     function SubMap(const FromKey, ToKey: TKey): IJclSortedMap<TKey,TValue>;
     function TailMap(const FromKey: TKey): IJclSortedMap<TKey,TValue>;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclPairOwner }
@@ -2172,6 +2252,8 @@ type
     function CreateEmptyArrayList(ACapacity: Integer; AOwnsObjects: Boolean): IJclCollection<TValue>; override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function CreateEmptyArraySet(ACapacity: Integer; AOwnsObjects: Boolean): IJclSet<TKey>; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
@@ -2198,6 +2280,8 @@ type
     function CreateEmptyArrayList(ACapacity: Integer; AOwnsObjects: Boolean): IJclCollection<TValue>; override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function CreateEmptyArraySet(ACapacity: Integer; AOwnsObjects: Boolean): IJclSet<TKey>; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
@@ -2219,6 +2303,8 @@ type
     function CreateEmptyArrayList(ACapacity: Integer; AOwnsObjects: Boolean): IJclCollection<TValue>; override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function CreateEmptyArraySet(ACapacity: Integer; AOwnsObjects: Boolean): IJclSet<TKey>; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -2450,8 +2536,6 @@ begin
   Result := Value;
   Value := nil;
 end;
-
-
 
 function TJclIntfIntfSortedMap.GetValue(const Key: IInterface): IInterface;
 var
@@ -4419,8 +4503,6 @@ begin
   Result := Value;
   Value := '';
 end;
-
-
 
 function TJclAnsiStrAnsiStrSortedMap.GetValue(const Key: AnsiString): AnsiString;
 var
@@ -7043,8 +7125,6 @@ begin
   Result := Value;
   Value := nil;
 end;
-
-
 
 function TJclSingleIntfSortedMap.GetValue(const Key: Single): IInterface;
 var

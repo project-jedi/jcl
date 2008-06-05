@@ -111,6 +111,8 @@ type
     procedure Intersect(const ACollection: IJclIntfCollection);
     procedure Subtract(const ACollection: IJclIntfCollection);
     procedure Union(const ACollection: IJclIntfCollection);
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -169,6 +171,8 @@ type
     procedure Intersect(const ACollection: IJclAnsiStrCollection);
     procedure Subtract(const ACollection: IJclAnsiStrCollection);
     procedure Union(const ACollection: IJclAnsiStrCollection);
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclStrContainer }
@@ -233,6 +237,8 @@ type
     procedure Intersect(const ACollection: IJclWideStrCollection);
     procedure Subtract(const ACollection: IJclWideStrCollection);
     procedure Union(const ACollection: IJclWideStrCollection);
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclStrContainer }
@@ -304,6 +310,8 @@ type
     procedure Intersect(const ACollection: IJclSingleCollection);
     procedure Subtract(const ACollection: IJclSingleCollection);
     procedure Union(const ACollection: IJclSingleCollection);
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclSingleContainer }
@@ -365,6 +373,8 @@ type
     procedure Intersect(const ACollection: IJclDoubleCollection);
     procedure Subtract(const ACollection: IJclDoubleCollection);
     procedure Union(const ACollection: IJclDoubleCollection);
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclDoubleContainer }
@@ -426,6 +436,8 @@ type
     procedure Intersect(const ACollection: IJclExtendedCollection);
     procedure Subtract(const ACollection: IJclExtendedCollection);
     procedure Union(const ACollection: IJclExtendedCollection);
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclExtendedContainer }
@@ -497,6 +509,8 @@ type
     procedure Intersect(const ACollection: IJclIntegerCollection);
     procedure Subtract(const ACollection: IJclIntegerCollection);
     procedure Union(const ACollection: IJclIntegerCollection);
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -555,6 +569,8 @@ type
     procedure Intersect(const ACollection: IJclCardinalCollection);
     procedure Subtract(const ACollection: IJclCardinalCollection);
     procedure Union(const ACollection: IJclCardinalCollection);
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -613,6 +629,8 @@ type
     procedure Intersect(const ACollection: IJclInt64Collection);
     procedure Subtract(const ACollection: IJclInt64Collection);
     procedure Union(const ACollection: IJclInt64Collection);
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -672,6 +690,8 @@ type
     procedure Intersect(const ACollection: IJclPtrCollection);
     procedure Subtract(const ACollection: IJclPtrCollection);
     procedure Union(const ACollection: IJclPtrCollection);
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -731,6 +751,8 @@ type
     procedure Intersect(const ACollection: IJclCollection);
     procedure Subtract(const ACollection: IJclCollection);
     procedure Union(const ACollection: IJclCollection);
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclObjectOwner }
@@ -794,6 +816,8 @@ type
     procedure Intersect(const ACollection: IJclCollection<T>);
     procedure Subtract(const ACollection: IJclCollection<T>);
     procedure Union(const ACollection: IJclCollection<T>);
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclItemOwner<T> }
@@ -814,6 +838,8 @@ type
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function ItemsEqual(const A, B: T): Boolean; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
@@ -830,6 +856,8 @@ type
     IJclItemOwner<T>, IJclEqualityComparer<T>)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
@@ -845,6 +873,8 @@ type
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function ItemsEqual(const A, B: T): Boolean; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
@@ -1017,7 +1047,6 @@ begin
   Result := FMap.KeySet.First;
 end;
 
-
 function TJclIntfHashSet.GetAutoPackParameter: Integer;
 begin
   Result := (FMap as IJclPackable).GetAutoPackParameter;
@@ -1051,7 +1080,6 @@ end;
 {$ENDIF SUPPORTS_FOR_IN}
 
 
-
 function TJclIntfHashSet.GetReadOnly: Boolean;
 begin
   Result := FMap.ReadOnly;
@@ -1071,7 +1099,6 @@ function TJclIntfHashSet.GetThreadSafe: Boolean;
 begin
   Result := FMap.ThreadSafe;
 end;
-
 
 procedure TJclIntfHashSet.Intersect(const ACollection: IJclIntfCollection);
 begin
@@ -1193,7 +1220,6 @@ procedure TJclIntfHashSet.SetThreadSafe(Value: Boolean);
 begin
   FMap.ThreadSafe := Value;
 end;
-
 
 function TJclIntfHashSet.Size: Integer;
 begin
@@ -1913,18 +1939,6 @@ begin
 end;
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 //=== { TJclSingleHashSet } =====================================================
 
 constructor TJclSingleHashSet.Create(const AMap: IJclSingleMap);
@@ -2609,18 +2623,6 @@ begin
 end;
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 //=== { TJclExtendedHashSet } =====================================================
 
 constructor TJclExtendedHashSet.Create(const AMap: IJclExtendedMap);
@@ -2963,18 +2965,6 @@ begin
 end;
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 //=== { TJclIntegerHashSet } =====================================================
 
 constructor TJclIntegerHashSet.Create(const AMap: IJclIntegerMap);
@@ -3307,18 +3297,6 @@ procedure TJclIntegerHashSet.Union(const ACollection: IJclIntegerCollection);
 begin
   AddAll(ACollection);
 end;
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 //=== { TJclCardinalHashSet } =====================================================
@@ -3655,18 +3633,6 @@ begin
 end;
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 //=== { TJclInt64HashSet } =====================================================
 
 constructor TJclInt64HashSet.Create(const AMap: IJclInt64Map);
@@ -4001,19 +3967,7 @@ begin
 end;
 
 
-
-
-
-
-
-
 {$IFNDEF CLR}
-
-
-
-
-
-
 //=== { TJclPtrHashSet } =====================================================
 
 constructor TJclPtrHashSet.Create(const AMap: IJclPtrMap);
@@ -4691,7 +4645,19 @@ begin
 end;
 
 
+
+
+
+
+
+
 {$IFDEF SUPPORTS_GENERICS}
+
+
+
+
+
+
 
 //=== { TJclHashSet<T> } =====================================================
 

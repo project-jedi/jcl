@@ -120,6 +120,8 @@ type
     function ItemsCompare(const A, B: T): Integer; override;
     { IJclEqualityComparer<T> }
     function ItemsEqual(const A, B: T): Boolean; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
@@ -133,6 +135,8 @@ type
     IJclCollection<T>, IJclTree<T>)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
@@ -149,6 +153,8 @@ type
     function ItemsCompare(const A, B: T): Integer; override;
     { IJclEqualityComparer<T> }
     function ItemsEqual(const A, B: T): Boolean; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;

@@ -81,6 +81,8 @@ type
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclIntfCollection }
@@ -139,6 +141,8 @@ type
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclAnsiStrCollection }
@@ -197,6 +201,8 @@ type
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclWideStrCollection }
@@ -262,6 +268,8 @@ type
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclSingleCollection }
@@ -320,6 +328,8 @@ type
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclDoubleCollection }
@@ -378,6 +388,8 @@ type
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclExtendedCollection }
@@ -446,6 +458,8 @@ type
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclIntegerCollection }
@@ -504,6 +518,8 @@ type
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclCardinalCollection }
@@ -562,6 +578,8 @@ type
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclInt64Collection }
@@ -621,6 +639,8 @@ type
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclPtrCollection }
@@ -680,6 +700,8 @@ type
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclCollection }
@@ -739,6 +761,8 @@ type
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclCollection<T> }
@@ -780,6 +804,8 @@ type
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     { IJclEqualityComparer<T> }
     function ItemsEqual(const A, B: T): Boolean; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
@@ -793,6 +819,8 @@ type
     IJclCollection<T>, IJclTree<T>)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
@@ -807,6 +835,8 @@ type
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     { IJclEqualityComparer<T> }
     function ItemsEqual(const A, B: T): Boolean; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -883,6 +913,8 @@ type
     function GetNextCursor: TJclIntfTreeNode; override;
     function GetNextSibling: TJclIntfTreeNode; override;
     function GetPreviousCursor: TJclIntfTreeNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -894,6 +926,8 @@ type
     function GetNextCursor: TJclIntfTreeNode; override;
     function GetNextSibling: TJclIntfTreeNode; override;
     function GetPreviousCursor: TJclIntfTreeNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -1680,6 +1714,8 @@ type
     function GetNextCursor: TJclAnsiStrTreeNode; override;
     function GetNextSibling: TJclAnsiStrTreeNode; override;
     function GetPreviousCursor: TJclAnsiStrTreeNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -1691,6 +1727,8 @@ type
     function GetNextCursor: TJclAnsiStrTreeNode; override;
     function GetNextSibling: TJclAnsiStrTreeNode; override;
     function GetPreviousCursor: TJclAnsiStrTreeNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -2477,6 +2515,8 @@ type
     function GetNextCursor: TJclWideStrTreeNode; override;
     function GetNextSibling: TJclWideStrTreeNode; override;
     function GetPreviousCursor: TJclWideStrTreeNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -2488,6 +2528,8 @@ type
     function GetNextCursor: TJclWideStrTreeNode; override;
     function GetNextSibling: TJclWideStrTreeNode; override;
     function GetPreviousCursor: TJclWideStrTreeNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -3274,6 +3316,8 @@ type
     function GetNextCursor: TJclSingleTreeNode; override;
     function GetNextSibling: TJclSingleTreeNode; override;
     function GetPreviousCursor: TJclSingleTreeNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -3285,6 +3329,8 @@ type
     function GetNextCursor: TJclSingleTreeNode; override;
     function GetNextSibling: TJclSingleTreeNode; override;
     function GetPreviousCursor: TJclSingleTreeNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -4071,6 +4117,8 @@ type
     function GetNextCursor: TJclDoubleTreeNode; override;
     function GetNextSibling: TJclDoubleTreeNode; override;
     function GetPreviousCursor: TJclDoubleTreeNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -4082,6 +4130,8 @@ type
     function GetNextCursor: TJclDoubleTreeNode; override;
     function GetNextSibling: TJclDoubleTreeNode; override;
     function GetPreviousCursor: TJclDoubleTreeNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -4868,6 +4918,8 @@ type
     function GetNextCursor: TJclExtendedTreeNode; override;
     function GetNextSibling: TJclExtendedTreeNode; override;
     function GetPreviousCursor: TJclExtendedTreeNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -4879,6 +4931,8 @@ type
     function GetNextCursor: TJclExtendedTreeNode; override;
     function GetNextSibling: TJclExtendedTreeNode; override;
     function GetPreviousCursor: TJclExtendedTreeNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -5665,6 +5719,8 @@ type
     function GetNextCursor: TJclIntegerTreeNode; override;
     function GetNextSibling: TJclIntegerTreeNode; override;
     function GetPreviousCursor: TJclIntegerTreeNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -5676,6 +5732,8 @@ type
     function GetNextCursor: TJclIntegerTreeNode; override;
     function GetNextSibling: TJclIntegerTreeNode; override;
     function GetPreviousCursor: TJclIntegerTreeNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -6462,6 +6520,8 @@ type
     function GetNextCursor: TJclCardinalTreeNode; override;
     function GetNextSibling: TJclCardinalTreeNode; override;
     function GetPreviousCursor: TJclCardinalTreeNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -6473,6 +6533,8 @@ type
     function GetNextCursor: TJclCardinalTreeNode; override;
     function GetNextSibling: TJclCardinalTreeNode; override;
     function GetPreviousCursor: TJclCardinalTreeNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -7259,6 +7321,8 @@ type
     function GetNextCursor: TJclInt64TreeNode; override;
     function GetNextSibling: TJclInt64TreeNode; override;
     function GetPreviousCursor: TJclInt64TreeNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -7270,6 +7334,8 @@ type
     function GetNextCursor: TJclInt64TreeNode; override;
     function GetNextSibling: TJclInt64TreeNode; override;
     function GetPreviousCursor: TJclInt64TreeNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -8057,6 +8123,8 @@ type
     function GetNextCursor: TJclPtrTreeNode; override;
     function GetNextSibling: TJclPtrTreeNode; override;
     function GetPreviousCursor: TJclPtrTreeNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -8068,6 +8136,8 @@ type
     function GetNextCursor: TJclPtrTreeNode; override;
     function GetNextSibling: TJclPtrTreeNode; override;
     function GetPreviousCursor: TJclPtrTreeNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -8855,6 +8925,8 @@ type
     function GetNextCursor: TJclTreeNode; override;
     function GetNextSibling: TJclTreeNode; override;
     function GetPreviousCursor: TJclTreeNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -8866,6 +8938,8 @@ type
     function GetNextCursor: TJclTreeNode; override;
     function GetNextSibling: TJclTreeNode; override;
     function GetPreviousCursor: TJclTreeNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -9653,6 +9727,8 @@ type
     function GetNextCursor: TJclTreeNode<T>; override;
     function GetNextSibling: TJclTreeNode<T>; override;
     function GetPreviousCursor: TJclTreeNode<T>; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -9664,6 +9740,8 @@ type
     function GetNextCursor: TJclTreeNode<T>; override;
     function GetNextSibling: TJclTreeNode<T>; override;
     function GetPreviousCursor: TJclTreeNode<T>; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;

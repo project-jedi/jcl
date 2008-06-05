@@ -95,6 +95,8 @@ type
     function Delete(Index: Integer): IInterface; overload;
     procedure SetObject(Index: Integer; const AInterface: IInterface);
     function SubList(First, Count: Integer): IJclIntfList;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -144,6 +146,8 @@ type
     function Delete(Index: Integer): AnsiString; overload;
     procedure SetString(Index: Integer; const AString: AnsiString);
     function SubList(First, Count: Integer): IJclAnsiStrList;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -193,6 +197,8 @@ type
     function Delete(Index: Integer): WideString; overload;
     procedure SetString(Index: Integer; const AString: WideString);
     function SubList(First, Count: Integer): IJclWideStrList;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -249,6 +255,8 @@ type
     function Delete(Index: Integer): Single; overload;
     procedure SetValue(Index: Integer; const AValue: Single);
     function SubList(First, Count: Integer): IJclSingleList;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -298,6 +306,8 @@ type
     function Delete(Index: Integer): Double; overload;
     procedure SetValue(Index: Integer; const AValue: Double);
     function SubList(First, Count: Integer): IJclDoubleList;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -347,6 +357,8 @@ type
     function Delete(Index: Integer): Extended; overload;
     procedure SetValue(Index: Integer; const AValue: Extended);
     function SubList(First, Count: Integer): IJclExtendedList;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -406,6 +418,8 @@ type
     function Delete(Index: Integer): Integer; overload;
     procedure SetValue(Index: Integer; AValue: Integer);
     function SubList(First, Count: Integer): IJclIntegerList;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -455,6 +469,8 @@ type
     function Delete(Index: Integer): Cardinal; overload;
     procedure SetValue(Index: Integer; AValue: Cardinal);
     function SubList(First, Count: Integer): IJclCardinalList;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -504,6 +520,8 @@ type
     function Delete(Index: Integer): Int64; overload;
     procedure SetValue(Index: Integer; const AValue: Int64);
     function SubList(First, Count: Integer): IJclInt64List;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -554,6 +572,8 @@ type
     function Delete(Index: Integer): Pointer; overload;
     procedure SetPointer(Index: Integer; APtr: Pointer);
     function SubList(First, Count: Integer): IJclPtrList;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -604,6 +624,8 @@ type
     function Delete(Index: Integer): TObject; overload;
     procedure SetObject(Index: Integer; AObject: TObject);
     function SubList(First, Count: Integer): IJclList;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -654,6 +676,8 @@ type
     function Delete(Index: Integer): T; overload;
     procedure SetItem(Index: Integer; const AItem: T);
     function SubList(First, Count: Integer): IJclList<T>;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
@@ -672,6 +696,8 @@ type
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     function ItemsEqual(const A, B: T): Boolean; override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
@@ -686,6 +712,8 @@ type
     IJclItemOwner<T>)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
@@ -700,6 +728,8 @@ type
   protected
     function ItemsEqual(const A, B: T): Boolean; override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -752,6 +782,8 @@ type
     function MoveNext: Boolean;
     property Current: IInterface read GetObject;
     {$ENDIF SUPPORTS_FOR_IN}
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
@@ -1081,6 +1113,8 @@ type
     function MoveNext: Boolean;
     property Current: AnsiString read GetString;
     {$ENDIF SUPPORTS_FOR_IN}
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
@@ -1410,6 +1444,8 @@ type
     function MoveNext: Boolean;
     property Current: WideString read GetString;
     {$ENDIF SUPPORTS_FOR_IN}
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
@@ -1739,6 +1775,8 @@ type
     function MoveNext: Boolean;
     property Current: Single read GetValue;
     {$ENDIF SUPPORTS_FOR_IN}
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
@@ -2039,6 +2077,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+
 type
   TDoubleItr = class(TJclAbstractIterator, IJclDoubleIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
@@ -2068,11 +2107,14 @@ type
     function MoveNext: Boolean;
     property Current: Double read GetValue;
     {$ENDIF SUPPORTS_FOR_IN}
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
     constructor Create(const AOwnList: IJclDoubleList; ACursor: TJclDoubleLinkedListItem; AValid: Boolean; AStart: TItrStart);
   end;
+
 
 //=== { TDoubleItr } ============================================================
 
@@ -2397,6 +2439,8 @@ type
     function MoveNext: Boolean;
     property Current: Extended read GetValue;
     {$ENDIF SUPPORTS_FOR_IN}
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
@@ -2726,6 +2770,8 @@ type
     function MoveNext: Boolean;
     property Current: Integer read GetValue;
     {$ENDIF SUPPORTS_FOR_IN}
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
@@ -3055,6 +3101,8 @@ type
     function MoveNext: Boolean;
     property Current: Cardinal read GetValue;
     {$ENDIF SUPPORTS_FOR_IN}
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
@@ -3384,6 +3432,8 @@ type
     function MoveNext: Boolean;
     property Current: Int64 read GetValue;
     {$ENDIF SUPPORTS_FOR_IN}
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
@@ -3714,6 +3764,8 @@ type
     function MoveNext: Boolean;
     property Current: Pointer read GetPointer;
     {$ENDIF SUPPORTS_FOR_IN}
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
@@ -4013,7 +4065,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
 {$ENDIF ~CLR}
 
 type
@@ -4045,12 +4096,13 @@ type
     function MoveNext: Boolean;
     property Current: TObject read GetObject;
     {$ENDIF SUPPORTS_FOR_IN}
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
     constructor Create(const AOwnList: IJclList; ACursor: TJclLinkedListItem; AValid: Boolean; AStart: TItrStart);
   end;
-
 
 //=== { TItr } ============================================================
 
@@ -4346,7 +4398,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-
 {$IFDEF SUPPORTS_GENERICS}
 type
   TItr<T> = class(TJclAbstractIterator, IJclIterator<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -4377,12 +4428,13 @@ type
     function MoveNext: Boolean;
     property Current: T read GetItem;
     {$ENDIF SUPPORTS_FOR_IN}
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
     constructor Create(const AOwnList: IJclList<T>; ACursor: TJclLinkedListItem<T>; AValid: Boolean; AStart: TItrStart);
   end;
-
 
 //=== { TItr<T> } ============================================================
 

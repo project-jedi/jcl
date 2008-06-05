@@ -40,6 +40,8 @@
     function LastKey: KEYTYPENAME;
     function SubMap(KEYCONSTKEYWORDFromKey, ToKey: KEYTYPENAME): SORTEDMAPINTERFACENAME;
     function TailMap(KEYCONSTKEYWORDFromKey: KEYTYPENAME): SORTEDMAPINTERFACENAME;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;PROTECTEDADDITIONAL
   public

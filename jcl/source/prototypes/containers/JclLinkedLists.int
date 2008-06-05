@@ -41,6 +41,8 @@
     function Delete(Index: Integer): TYPENAME; overload;
     procedure SETTERNAME(Index: Integer; CONSTKEYWORDPARAMETERNAME: TYPENAME);
     function SubList(First, Count: Integer): LISTINTERFACENAME;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;PROTECTEDADDITIONAL
   public
@@ -77,6 +79,8 @@
     function MoveNext: Boolean;
     property Current: TYPENAME read GETTERNAME;
     {$ENDIF SUPPORTS_FOR_IN}
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public

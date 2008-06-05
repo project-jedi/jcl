@@ -7,6 +7,8 @@
   private
     function BinarySearch(CONSTKEYWORDPARAMETERNAME: TYPENAME): Integer;PRIVATEADDITIONAL
   protected
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { COLLECTIONINTERFACENAME }

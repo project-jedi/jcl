@@ -107,7 +107,8 @@ type
     procedure SetReturnDefaultElements(Value: Boolean); virtual;
     procedure SetThreadSafe(Value: Boolean); virtual;
     { IJclCloneable }
-    function Clone: TObject;
+    function ObjectClone: TObject;
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IntfClone: IInterface;
     function IJclIntfCloneable.Clone = IntfClone;
@@ -156,7 +157,8 @@ type
     procedure AssignTo(const Dest: IJclAbstractIterator);
     function GetIteratorReference: TObject;
     { IJclCloneable }
-    function Clone: TObject;
+    function ObjectClone: TObject;
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IntfClone: IInterface;
     function IJclIntfCloneable.Clone = IntfClone;
@@ -173,6 +175,8 @@ type
     FHashConvert: TIntfHashConvert;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     function FreeObject(var AInterface: IInterface): IInterface;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclIntfEqualityComparer }
@@ -198,6 +202,8 @@ type
   protected
     FCaseSensitive: Boolean;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclStrContainer }
@@ -217,6 +223,8 @@ type
     FHashConvert: TAnsiStrHashConvert;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     function FreeString(var AString: AnsiString): AnsiString;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclAnsiStrContainer }
@@ -251,6 +259,8 @@ type
     FHashConvert: TWideStrHashConvert;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     function FreeString(var AString: WideString): WideString;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclWideStrContainer }
@@ -285,6 +295,8 @@ type
     FHashConvert: TSingleHashConvert;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     function FreeSingle(var AValue: Single): Single;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclSingleEqualityComparer }
@@ -319,6 +331,8 @@ type
     FHashConvert: TDoubleHashConvert;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     function FreeDouble(var AValue: Double): Double;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclDoubleEqualityComparer }
@@ -353,6 +367,8 @@ type
     FHashConvert: TExtendedHashConvert;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     function FreeExtended(var AValue: Extended): Extended;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclExtendedEqualityComparer }
@@ -386,6 +402,8 @@ type
     FHashConvert: TIntegerHashConvert;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     function FreeInteger(var AValue: Integer): Integer;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclIntegerEqualityComparer }
@@ -415,6 +433,8 @@ type
     FHashConvert: TCardinalHashConvert;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     function FreeCardinal(var AValue: Cardinal): Cardinal;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclIntegerEqualityComparer }
@@ -444,6 +464,8 @@ type
     FHashConvert: TInt64HashConvert;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     function FreeInt64(var AValue: Int64): Int64;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclInt64EqualityComparer }
@@ -473,6 +495,8 @@ type
     FHashConvert: TPtrHashConvert;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     function FreePointer(var APtr: Pointer): Pointer;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclPtrEqualityComparer }
@@ -503,6 +527,8 @@ type
     FCompare: TCompare;
     FHashConvert: THashConvert;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclEqualityComparer }
@@ -538,6 +564,8 @@ type
     FCompare: TCompare<T>;
     FHashConvert: THashConvert<T>;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclEqualityComparer<T> }
@@ -569,6 +597,8 @@ type
     IJclStrContainer, IJclAnsiStrContainer, IJclAnsiStrFlatContainer, IJclAnsiStrCollection,
     IJclAnsiStrEqualityComparer, IJclAnsiStrComparer)
   protected
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclAnsiStrCollection }
@@ -604,6 +634,8 @@ type
     IJclStrContainer, IJclWideStrContainer, IJclWideStrFlatContainer, IJclWideStrCollection,
     IJclWideStrEqualityComparer, IJclWideStrComparer)
   protected
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclWideStrCollection }
@@ -811,7 +843,7 @@ begin
   end;
 end;
 
-function TJclAbstractContainerBase.Clone: TObject;
+function TJclAbstractContainerBase.ObjectClone: TObject;
 var
   NewContainer: TJclAbstractContainerBase;
 begin
@@ -1018,7 +1050,7 @@ begin
     raise EJclIllegalStateOperationError.Create;
 end;
 
-function TJclAbstractIterator.Clone: TObject;
+function TJclAbstractIterator.ObjectClone: TObject;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;

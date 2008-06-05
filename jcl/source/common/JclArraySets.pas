@@ -60,6 +60,8 @@ type
   private
     function BinarySearch(const AInterface: IInterface): Integer;
   protected
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclIntfCollection }
@@ -82,6 +84,8 @@ type
   private
     function BinarySearch(const AString: AnsiString): Integer;
   protected
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclAnsiStrCollection }
@@ -104,6 +108,8 @@ type
   private
     function BinarySearch(const AString: WideString): Integer;
   protected
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclWideStrCollection }
@@ -133,6 +139,8 @@ type
   private
     function BinarySearch(const AValue: Single): Integer;
   protected
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclSingleCollection }
@@ -155,6 +163,8 @@ type
   private
     function BinarySearch(const AValue: Double): Integer;
   protected
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclDoubleCollection }
@@ -177,6 +187,8 @@ type
   private
     function BinarySearch(const AValue: Extended): Integer;
   protected
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclExtendedCollection }
@@ -209,6 +221,8 @@ type
   private
     function BinarySearch(AValue: Integer): Integer;
   protected
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclIntegerCollection }
@@ -231,6 +245,8 @@ type
   private
     function BinarySearch(AValue: Cardinal): Integer;
   protected
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclCardinalCollection }
@@ -253,6 +269,8 @@ type
   private
     function BinarySearch(const AValue: Int64): Integer;
   protected
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclInt64Collection }
@@ -276,6 +294,8 @@ type
   private
     function BinarySearch(APtr: Pointer): Integer;
   protected
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclPtrCollection }
@@ -299,6 +319,8 @@ type
   private
     function BinarySearch(AObject: TObject): Integer;
   protected
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclCollection }
@@ -322,6 +344,8 @@ type
   private
     function BinarySearch(const AItem: T): Integer;
   protected
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclCollection<T> }
@@ -348,6 +372,8 @@ type
     function ItemsCompare(const A, B: T): Integer; override;
     function ItemsEqual(const A, B: T): Boolean; override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
@@ -363,6 +389,8 @@ type
     IJclCollection<T>, IJclList<T>, IJclArray<T>, IJclSet<T>)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
@@ -378,6 +406,8 @@ type
     function ItemsCompare(const A, B: T): Integer; override;
     function ItemsEqual(const A, B: T): Boolean; override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;

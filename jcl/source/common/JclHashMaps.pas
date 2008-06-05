@@ -100,6 +100,8 @@ type
     function Remove(const Key: IInterface): IInterface;
     function Size: Integer;
     function Values: IJclIntfCollection;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -155,6 +157,8 @@ type
     function Remove(const Key: AnsiString): IInterface;
     function Size: Integer;
     function Values: IJclIntfCollection;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -210,6 +214,8 @@ type
     function Remove(const Key: IInterface): AnsiString;
     function Size: Integer;
     function Values: IJclAnsiStrCollection;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -266,6 +272,8 @@ type
     function Remove(const Key: AnsiString): AnsiString;
     function Size: Integer;
     function Values: IJclAnsiStrCollection;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -321,6 +329,8 @@ type
     function Remove(const Key: WideString): IInterface;
     function Size: Integer;
     function Values: IJclIntfCollection;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -376,6 +386,8 @@ type
     function Remove(const Key: IInterface): WideString;
     function Size: Integer;
     function Values: IJclWideStrCollection;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -432,6 +444,8 @@ type
     function Remove(const Key: WideString): WideString;
     function Size: Integer;
     function Values: IJclWideStrCollection;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -498,6 +512,8 @@ type
     function Remove(const Key: Single): IInterface;
     function Size: Integer;
     function Values: IJclIntfCollection;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -553,6 +569,8 @@ type
     function Remove(const Key: IInterface): Single;
     function Size: Integer;
     function Values: IJclSingleCollection;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -609,6 +627,8 @@ type
     function Remove(const Key: Single): Single;
     function Size: Integer;
     function Values: IJclSingleCollection;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -664,6 +684,8 @@ type
     function Remove(const Key: Double): IInterface;
     function Size: Integer;
     function Values: IJclIntfCollection;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -719,6 +741,8 @@ type
     function Remove(const Key: IInterface): Double;
     function Size: Integer;
     function Values: IJclDoubleCollection;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -775,6 +799,8 @@ type
     function Remove(const Key: Double): Double;
     function Size: Integer;
     function Values: IJclDoubleCollection;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -830,6 +856,8 @@ type
     function Remove(const Key: Extended): IInterface;
     function Size: Integer;
     function Values: IJclIntfCollection;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -885,6 +913,8 @@ type
     function Remove(const Key: IInterface): Extended;
     function Size: Integer;
     function Values: IJclExtendedCollection;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -941,6 +971,8 @@ type
     function Remove(const Key: Extended): Extended;
     function Size: Integer;
     function Values: IJclExtendedCollection;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -1012,6 +1044,8 @@ type
     function Remove(Key: Integer): IInterface;
     function Size: Integer;
     function Values: IJclIntfCollection;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -1067,6 +1101,8 @@ type
     function Remove(const Key: IInterface): Integer;
     function Size: Integer;
     function Values: IJclIntegerCollection;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -1123,6 +1159,8 @@ type
     function Remove(Key: Integer): Integer;
     function Size: Integer;
     function Values: IJclIntegerCollection;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -1178,6 +1216,8 @@ type
     function Remove(Key: Cardinal): IInterface;
     function Size: Integer;
     function Values: IJclIntfCollection;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -1233,6 +1273,8 @@ type
     function Remove(const Key: IInterface): Cardinal;
     function Size: Integer;
     function Values: IJclCardinalCollection;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -1289,6 +1331,8 @@ type
     function Remove(Key: Cardinal): Cardinal;
     function Size: Integer;
     function Values: IJclCardinalCollection;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -1344,6 +1388,8 @@ type
     function Remove(const Key: Int64): IInterface;
     function Size: Integer;
     function Values: IJclIntfCollection;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -1399,6 +1445,8 @@ type
     function Remove(const Key: IInterface): Int64;
     function Size: Integer;
     function Values: IJclInt64Collection;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -1455,6 +1503,8 @@ type
     function Remove(const Key: Int64): Int64;
     function Size: Integer;
     function Values: IJclInt64Collection;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -1511,6 +1561,8 @@ type
     function Remove(Key: Pointer): IInterface;
     function Size: Integer;
     function Values: IJclIntfCollection;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -1566,6 +1618,8 @@ type
     function Remove(const Key: IInterface): Pointer;
     function Size: Integer;
     function Values: IJclPtrCollection;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -1622,6 +1676,8 @@ type
     function Remove(Key: Pointer): Pointer;
     function Size: Integer;
     function Values: IJclPtrCollection;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -1679,6 +1735,8 @@ type
     function Remove(const Key: IInterface): TObject;
     function Size: Integer;
     function Values: IJclCollection;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclValueOwner }
@@ -1739,6 +1797,8 @@ type
     function Remove(const Key: AnsiString): TObject;
     function Size: Integer;
     function Values: IJclCollection;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclValueOwner }
@@ -1798,6 +1858,8 @@ type
     function Remove(const Key: WideString): TObject;
     function Size: Integer;
     function Values: IJclCollection;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclValueOwner }
@@ -1864,6 +1926,8 @@ type
     function Remove(const Key: Single): TObject;
     function Size: Integer;
     function Values: IJclCollection;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclValueOwner }
@@ -1923,6 +1987,8 @@ type
     function Remove(const Key: Double): TObject;
     function Size: Integer;
     function Values: IJclCollection;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclValueOwner }
@@ -1982,6 +2048,8 @@ type
     function Remove(const Key: Extended): TObject;
     function Size: Integer;
     function Values: IJclCollection;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclValueOwner }
@@ -2051,6 +2119,8 @@ type
     function Remove(Key: Integer): TObject;
     function Size: Integer;
     function Values: IJclCollection;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclValueOwner }
@@ -2110,6 +2180,8 @@ type
     function Remove(Key: Cardinal): TObject;
     function Size: Integer;
     function Values: IJclCollection;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclValueOwner }
@@ -2169,6 +2241,8 @@ type
     function Remove(const Key: Int64): TObject;
     function Size: Integer;
     function Values: IJclCollection;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclValueOwner }
@@ -2229,6 +2303,8 @@ type
     function Remove(Key: Pointer): TObject;
     function Size: Integer;
     function Values: IJclCollection;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclValueOwner }
@@ -2290,6 +2366,8 @@ type
     function Remove(Key: TObject): TObject;
     function Size: Integer;
     function Values: IJclCollection;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclKeyOwner }
@@ -2355,6 +2433,8 @@ type
     function Remove(const Key: TKey): TValue;
     function Size: Integer;
     function Values: IJclCollection<TValue>;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclPairOwner }
@@ -2393,6 +2473,8 @@ type
     function CreateEmptyArrayList(ACapacity: Integer; AOwnsObjects: Boolean): IJclCollection<TValue>; override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function CreateEmptyArraySet(ACapacity: Integer; AOwnsObjects: Boolean): IJclSet<TKey>; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
@@ -2422,6 +2504,8 @@ type
     function CreateEmptyArrayList(ACapacity: Integer; AOwnsObjects: Boolean): IJclCollection<TValue>; override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function CreateEmptyArraySet(ACapacity: Integer; AOwnsObjects: Boolean): IJclSet<TKey>; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
@@ -2446,6 +2530,8 @@ type
     function CreateEmptyArrayList(ACapacity: Integer; AOwnsObjects: Boolean): IJclCollection<TValue>; override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function CreateEmptyArraySet(ACapacity: Integer; AOwnsObjects: Boolean): IJclSet<TKey>; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -2693,6 +2779,8 @@ begin
   Value := nil;
 end;
 
+
+
 function TJclIntfIntfHashMap.GetValue(const Key: IInterface): IInterface;
 var
   I: Integer;
@@ -2724,6 +2812,7 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
+
 
 function TJclIntfIntfHashMap.IsEmpty: Boolean;
 begin
@@ -9977,6 +10066,7 @@ begin
   Result := Value;
   Value := 0.0;
 end;
+
 
 
 function TJclDoubleDoubleHashMap.GetValue(const Key: Double): Double;

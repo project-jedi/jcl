@@ -76,6 +76,8 @@ type
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclIntfCollection }
@@ -129,6 +131,8 @@ type
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclAnsiStrCollection }
@@ -182,6 +186,8 @@ type
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclWideStrCollection }
@@ -242,6 +248,8 @@ type
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclSingleCollection }
@@ -295,6 +303,8 @@ type
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclDoubleCollection }
@@ -348,6 +358,8 @@ type
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclExtendedCollection }
@@ -411,6 +423,8 @@ type
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclIntegerCollection }
@@ -464,6 +478,8 @@ type
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclCardinalCollection }
@@ -517,6 +533,8 @@ type
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclInt64Collection }
@@ -571,6 +589,8 @@ type
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclPtrCollection }
@@ -625,6 +645,8 @@ type
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclCollection }
@@ -679,6 +701,8 @@ type
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclCollection<T> }
@@ -722,6 +746,8 @@ type
     function ItemsCompare(const A, B: T): Integer; override;
     { IJclEqualityComparer<T> }
     function ItemsEqual(const A, B: T): Boolean; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
@@ -735,6 +761,8 @@ type
     IJclCollection<T>, IJclTree<T>)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
@@ -751,6 +779,8 @@ type
     function ItemsCompare(const A, B: T): Integer; override;
     { IJclEqualityComparer<T> }
     function ItemsEqual(const A, B: T): Boolean; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -830,6 +860,8 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     function GetNextCursor: TJclIntfBinaryNode; override;
     function GetPreviousCursor: TJclIntfBinaryNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -840,6 +872,8 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     function GetNextCursor: TJclIntfBinaryNode; override;
     function GetPreviousCursor: TJclIntfBinaryNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -850,6 +884,8 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     function GetNextCursor: TJclIntfBinaryNode; override;
     function GetPreviousCursor: TJclIntfBinaryNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -1565,6 +1601,8 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     function GetNextCursor: TJclAnsiStrBinaryNode; override;
     function GetPreviousCursor: TJclAnsiStrBinaryNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -1575,6 +1613,8 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     function GetNextCursor: TJclAnsiStrBinaryNode; override;
     function GetPreviousCursor: TJclAnsiStrBinaryNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -1585,6 +1625,8 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     function GetNextCursor: TJclAnsiStrBinaryNode; override;
     function GetPreviousCursor: TJclAnsiStrBinaryNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -2300,6 +2342,8 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     function GetNextCursor: TJclWideStrBinaryNode; override;
     function GetPreviousCursor: TJclWideStrBinaryNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -2310,6 +2354,8 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     function GetNextCursor: TJclWideStrBinaryNode; override;
     function GetPreviousCursor: TJclWideStrBinaryNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -2320,6 +2366,8 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     function GetNextCursor: TJclWideStrBinaryNode; override;
     function GetPreviousCursor: TJclWideStrBinaryNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -3035,6 +3083,8 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     function GetNextCursor: TJclSingleBinaryNode; override;
     function GetPreviousCursor: TJclSingleBinaryNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -3045,6 +3095,8 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     function GetNextCursor: TJclSingleBinaryNode; override;
     function GetPreviousCursor: TJclSingleBinaryNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -3055,6 +3107,8 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     function GetNextCursor: TJclSingleBinaryNode; override;
     function GetPreviousCursor: TJclSingleBinaryNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -3770,6 +3824,8 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     function GetNextCursor: TJclDoubleBinaryNode; override;
     function GetPreviousCursor: TJclDoubleBinaryNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -3780,6 +3836,8 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     function GetNextCursor: TJclDoubleBinaryNode; override;
     function GetPreviousCursor: TJclDoubleBinaryNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -3790,6 +3848,8 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     function GetNextCursor: TJclDoubleBinaryNode; override;
     function GetPreviousCursor: TJclDoubleBinaryNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -4505,6 +4565,8 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     function GetNextCursor: TJclExtendedBinaryNode; override;
     function GetPreviousCursor: TJclExtendedBinaryNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -4515,6 +4577,8 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     function GetNextCursor: TJclExtendedBinaryNode; override;
     function GetPreviousCursor: TJclExtendedBinaryNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -4525,6 +4589,8 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     function GetNextCursor: TJclExtendedBinaryNode; override;
     function GetPreviousCursor: TJclExtendedBinaryNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -5240,6 +5306,8 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     function GetNextCursor: TJclIntegerBinaryNode; override;
     function GetPreviousCursor: TJclIntegerBinaryNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -5250,6 +5318,8 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     function GetNextCursor: TJclIntegerBinaryNode; override;
     function GetPreviousCursor: TJclIntegerBinaryNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -5260,6 +5330,8 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     function GetNextCursor: TJclIntegerBinaryNode; override;
     function GetPreviousCursor: TJclIntegerBinaryNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -5975,6 +6047,8 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     function GetNextCursor: TJclCardinalBinaryNode; override;
     function GetPreviousCursor: TJclCardinalBinaryNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -5985,6 +6059,8 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     function GetNextCursor: TJclCardinalBinaryNode; override;
     function GetPreviousCursor: TJclCardinalBinaryNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -5995,6 +6071,8 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     function GetNextCursor: TJclCardinalBinaryNode; override;
     function GetPreviousCursor: TJclCardinalBinaryNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -6710,6 +6788,8 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     function GetNextCursor: TJclInt64BinaryNode; override;
     function GetPreviousCursor: TJclInt64BinaryNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -6720,6 +6800,8 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     function GetNextCursor: TJclInt64BinaryNode; override;
     function GetPreviousCursor: TJclInt64BinaryNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -6730,6 +6812,8 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     function GetNextCursor: TJclInt64BinaryNode; override;
     function GetPreviousCursor: TJclInt64BinaryNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -7446,6 +7530,8 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     function GetNextCursor: TJclPtrBinaryNode; override;
     function GetPreviousCursor: TJclPtrBinaryNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -7456,6 +7542,8 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     function GetNextCursor: TJclPtrBinaryNode; override;
     function GetPreviousCursor: TJclPtrBinaryNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -7466,6 +7554,8 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     function GetNextCursor: TJclPtrBinaryNode; override;
     function GetPreviousCursor: TJclPtrBinaryNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -8182,6 +8272,8 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     function GetNextCursor: TJclBinaryNode; override;
     function GetPreviousCursor: TJclBinaryNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -8192,6 +8284,8 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     function GetNextCursor: TJclBinaryNode; override;
     function GetPreviousCursor: TJclBinaryNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -8202,6 +8296,8 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     function GetNextCursor: TJclBinaryNode; override;
     function GetPreviousCursor: TJclBinaryNode; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -8918,6 +9014,8 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     function GetNextCursor: TJclBinaryNode<T>; override;
     function GetPreviousCursor: TJclBinaryNode<T>; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -8928,6 +9026,8 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     function GetNextCursor: TJclBinaryNode<T>; override;
     function GetPreviousCursor: TJclBinaryNode<T>; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -8938,6 +9038,8 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     function GetNextCursor: TJclBinaryNode<T>; override;
     function GetPreviousCursor: TJclBinaryNode<T>; override;
+    { IJclCloneable }
+    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
