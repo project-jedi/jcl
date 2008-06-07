@@ -1357,6 +1357,9 @@ begin
     if FBufferCurrentSize < 0 then
       FBufferCurrentSize := 0;
   end;
+  // fix from Marcelo Rocha
+  if Stream <> nil then
+    FPosition := Stream.Position;
 end;
 
 function TJclBufferedStream.Write(const Buffer; Count: Longint): Longint;
