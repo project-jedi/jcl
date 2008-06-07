@@ -364,7 +364,7 @@ resourcestring
   RsCaptionDefPCRELinkOnRequest = 'Late bind to pcre.dll';
   // BZip2 options
   RsCaptionDefBZip2              = 'BZip2 options';
-  RsCaptionDefBZip2StaticLink    = 'Static link to BZip2 code (experimental)';
+  RsCaptionDefBZip2StaticLink    = 'Static link to BZip2 code';
   RsCaptionDefBZip2LinkDLL       = 'Static bind to bzip2.dll';
   RsCaptionDefBZip2LinkOnRequest = 'Late bind to bzip2.dll';
   // Unicode options
