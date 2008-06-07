@@ -2500,199 +2500,226 @@ end;
 //=== { TJclDCC32 } ============================================================
 
 procedure TJclDCC32.AddProjectOptions(const ProjectFileName, DCPPath: string);
+
+type
+  TProjectOptions = record
+    UsePackages: Boolean;
+    UnitOutputDir: string;
+    SearchPath: string;
+    DynamicPackages: string;
+    SearchDcpPath: string;
+    Conditionals: string;
+  end;
+
+  function AddDProjOptions(const ProjectFileName: string; var ProjectOptions: TProjectOptions): Boolean;
+  var
+    DProjFileName, ProjectConfiguration, ProjectPlatform, PersonalityName: string;
+    OptionsXmlFile: TJclSimpleXML;
+    ProjectExtensionsNode, PropertyGroupNode, PersonalityNode, ChildNode: TJclSimpleXMLElem;
+    NodeIndex: Integer;
+    ConditionProperty: TJclSimpleXMLProp;
+  begin
+    DProjFileName := ChangeFileExt(ProjectFileName, SourceExtensionDProject);
+    Result := FileExists(DProjFileName) and (Installation.IDEVersionNumber >= 5)
+      and (Installation.RadToolKind = brBorlandDevStudio);
+    if Result then
+    begin
+      OptionsXmlFile := TJclSimpleXML.Create;
+      try
+        OptionsXmlFile.LoadFromFile(DProjFileName);
+        OptionsXmlFile.Options := OptionsXmlFile.Options - [sxoAutoCreate];
+        PersonalityName := '';
+        ProjectExtensionsNode := OptionsXmlFile.Root.Items.ItemNamed[DProjProjectExtensionsNodeName];
+        if Assigned(ProjectExtensionsNode) then
+        begin
+          PersonalityNode := ProjectExtensionsNode.Items.ItemNamed[DProjPersonalityNodeName];
+          if Assigned(PersonalityNode) then
+            PersonalityName := PersonalityNode.Value;
+        end;
+        if AnsiSameText(PersonalityName, DProjDelphiPersonalityValue) or
+          AnsiSameText(PersonalityName, DProjDelphiDotNetPersonalityValue) then
+        begin
+          ProjectConfiguration := '';
+          ProjectPlatform := '';
+          for NodeIndex := 0 to OptionsXmlFile.Root.Items.Count - 1 do
+          begin
+            PropertyGroupNode := OptionsXmlFile.Root.Items.Item[NodeIndex];
+            if AnsiSameText(PropertyGroupNode.Name, DProjPropertyGroupNodeName) then
+            begin
+              ConditionProperty := PropertyGroupNode.Properties.ItemNamed[DProjConditionValueName];
+              if Assigned(ConditionProperty) then
+              begin
+                if (ProjectConfiguration <> '') and (ProjectPlatform <> '') and
+                  (AnsiPos(Format('%s|%s', [ProjectConfiguration, ProjectPlatform]), ConditionProperty.Value) > 0) then
+                begin
+                  // this is the active configuration, check for overrides
+                  ChildNode := PropertyGroupNode.Items.ItemNamed[DProjUsePackageNodeName];
+                  if Assigned(ChildNode) then
+                    ProjectOptions.DynamicPackages := ChildNode.Value;
+                  ProjectOptions.UsePackages := ProjectOptions.DynamicPackages <> '';
+                  ChildNode := PropertyGroupNode.Items.ItemNamed[DProjDcuOutputDirNodeName];
+                  if Assigned(ChildNode) then
+                    ProjectOptions.UnitOutputDir := ChildNode.Value;
+                  ChildNode := PropertyGroupNode.Items.ItemNamed[DProjUnitSearchPathNodeName];
+                  if Assigned(ChildNode) then
+                    ProjectOptions.SearchPath := ChildNode.Value;
+                  ChildNode := PropertyGroupNode.Items.ItemNamed[DProjDefineNodeName];
+                  if Assigned(ChildNode) then
+                    ProjectOptions.Conditionals := ChildNode.Value;
+                end;
+              end
+              else
+              begin
+                // check for default configurations
+                ChildNode := PropertyGroupNode.Items.ItemNamed[DProjConfigurationNodeName];
+                if Assigned(ChildNode) then
+                  ProjectConfiguration := ChildNode.Value;
+                ChildNode := PropertyGroupNode.Items.ItemNamed[DProjPlatformNodeName];
+                if Assigned(ChildNode) then
+                  ProjectPlatform := ChildNode.Value;
+              end;
+            end;
+          end;
+        end;
+      finally
+        OptionsXmlFile.Free;
+      end;
+    end;
+  end;
+
+  function AddBDSProjOptions(const ProjectFileName: string; var ProjectOptions: TProjectOptions): Boolean;
+  var
+    BDSProjFileName, PersonalityName: string;
+    OptionsXmlFile: TJclSimpleXML;
+    PersonalityInfoNode, OptionNode, ChildNode, PersonalityNode, DirectoriesNode: TJclSimpleXMLElem;
+    NodeIndex: Integer;
+    NameProperty: TJclSimpleXMLProp;
+  begin
+    BDSProjFileName := ChangeFileExt(ProjectFileName, SourceExtensionBDSProject);
+    Result := FileExists(BDSProjFileName);
+    if Result then
+    begin
+      OptionsXmlFile := TJclSimpleXML.Create;
+      try
+        OptionsXmlFile.LoadFromFile(BDSProjFileName);
+        OptionsXmlFile.Options := OptionsXmlFile.Options - [sxoAutoCreate];
+        PersonalityInfoNode := OptionsXmlFile.Root.Items.ItemNamed[BDSProjPersonalityInfoNodeName];
+        PersonalityName := '';
+        if Assigned(PersonalityInfoNode) then
+        begin
+          OptionNode := PersonalityInfoNode.Items.ItemNamed[BDSProjOptionNodeName];
+          if Assigned(OptionNode) then
+            for NodeIndex := 0 to OptionNode.Items.Count - 1 do
+            begin
+              ChildNode := OptionNode.Items.Item[NodeIndex];
+              if SameText(ChildNode.Name, BDSProjOptionNodeName) then
+              begin
+                NameProperty := ChildNode.Properties.ItemNamed[BDSProjNameProperty];
+                if Assigned(NameProperty) and SameText(NameProperty.Value, BDSProjPersonalityValue) then
+                begin
+                  PersonalityName := ChildNode.Value;
+                  Break;
+                end;
+              end;
+            end;
+        end;
+        if PersonalityName <> '' then
+        begin
+          PersonalityNode := OptionsXmlFile.Root.Items.ItemNamed[PersonalityName];
+          if Assigned(PersonalityNode) then
+          begin
+            DirectoriesNode := PersonalityNode.Items.ItemNamed[BDSProjDirectoriesNodeName];
+            if Assigned(DirectoriesNode) then
+              for NodeIndex := 0 to DirectoriesNode.Items.Count - 1 do
+              begin
+                ChildNode := DirectoriesNode.Items.Item[NodeIndex];
+                if SameText(ChildNode.Name, BDSProjDirectoriesNodeName) then
+                begin
+                  NameProperty := ChildNode.Properties.ItemNamed[BDSProjNameProperty];
+                  if Assigned(NameProperty) then
+                  begin
+                    if SameText(NameProperty.Value, BDSProjUnitOutputDirValue) then
+                      ProjectOptions.UnitOutputDir := ChildNode.Value
+                    else
+                    if SameText(NameProperty.Value, BDSProjSearchPathValue) then
+                      ProjectOptions.SearchPath := ChildNode.Value
+                    else
+                    if SameText(NameProperty.Value, BDSProjPackagesValue) then
+                      ProjectOptions.DynamicPackages := ChildNode.Value
+                    else
+                    if SameText(NameProperty.Value, BDSProjConditionalsValue) then
+                      ProjectOptions.Conditionals := ChildNode.Value
+                    else
+                    if SameText(NameProperty.Value, BDSProjUsePackagesValue) then
+                      ProjectOptions.UsePackages := StrToBoolean(ChildNode.Value);
+                  end;
+                end;
+              end;
+          end;
+        end;
+      finally
+        OptionsXmlFile.Free;
+      end;
+    end;
+  end;
+
+  function AddDOFOptions(const ProjectFileName: string; var ProjectOptions: TProjectOptions): Boolean;
+  var
+    DOFFileName: string;
+    OptionsFile: TIniFile;
+  begin
+    DOFFileName := ChangeFileExt(ProjectFileName, DelphiOptionsFileExtension);
+    Result := FileExists(DOFFileName);
+    if Result then
+    begin
+      OptionsFile := TIniFile.Create(DOFFileName);
+      try
+        ProjectOptions.SearchPath := OptionsFile.ReadString(DOFDirectoriesSection, DOFSearchPathName, '');
+        ProjectOptions.UnitOutputDir := OptionsFile.ReadString(DOFDirectoriesSection, DOFUnitOutputDirKey, '');
+        ProjectOptions.Conditionals := OptionsFile.ReadString(DOFDirectoriesSection, DOFConditionals, '');
+        ProjectOptions.UsePackages := OptionsFile.ReadString(DOFCompilerSection, DOFPackageNoLinkKey, '') = '1';
+        ProjectOptions.DynamicPackages := OptionsFile.ReadString(DOFLinkerSection, DOFPackagesKey, '');
+      finally
+        OptionsFile.Free;
+      end;
+    end;
+  end;
 var
-  ConfigurationFileName, OptionsFileName, BDSProjFileName, DProjFileName,
-  ProjectConfiguration, ProjectPlatform, PersonalityName, UnitOutputDir,
-  SearchPath, DynamicPackages, SearchDcpPath, AdditionalOptions, Conditionals: string;
-  OptionsFile: TIniFile;
-  OptionsXmlFile: TJclSimpleXML;
-  PersonalityInfoNode, OptionNode, ChildNode, PersonalityNode, DirectoriesNode,
-  ProjectExtensionsNode, PropertyGroupNode: TJclSimpleXMLElem;
-  NameProperty, ConditionProperty: TJclSimpleXMLProp;
-  FoundOptions, UsePackages: Boolean;
-  NodeIndex: Integer;
+  ConfigurationFileName: string;
+  ProjectOptions: TProjectOptions;
 begin
   ConfigurationFileName := ChangeFileExt(ProjectFileName, ConfigurationExtension);
   if FileExists(ConfigurationFileName) then
     FileDelete(ConfigurationFileName);
 
-  FoundOptions := False;
-  UsePackages := False;
-  UnitOutputDir := '';
-  SearchPath := '';
-  DynamicPackages := '';
-  SearchDcpPath := '';
-  Conditionals := '';
-  AdditionalOptions := '';
+  ProjectOptions.UsePackages := False;
+  ProjectOptions.UnitOutputDir := '';
+  ProjectOptions.SearchPath := '';
+  ProjectOptions.DynamicPackages := '';
+  ProjectOptions.SearchDcpPath := '';
+  ProjectOptions.Conditionals := '';
 
-  DProjFileName := ChangeFileExt(ProjectFileName, SourceExtensionDProject);
-  if FileExists(DProjFileName) and (Installation.IDEVersionNumber >= 5) and
-    (Installation.RadToolKind = brBorlandDevStudio) then
+  if AddDProjOptions(ProjectFileName, ProjectOptions) or
+     AddBDSProjOptions(ProjectFileName, ProjectOptions) or
+     AddDOFOptions(ProjectFileName, ProjectOptions) then
   begin
-    OptionsXmlFile := TJclSimpleXML.Create;
-    try
-      OptionsXmlFile.LoadFromFile(DProjFileName);
-      OptionsXmlFile.Options := OptionsXmlFile.Options - [sxoAutoCreate];
-      PersonalityName := '';
-      ProjectExtensionsNode := OptionsXmlFile.Root.Items.ItemNamed[DProjProjectExtensionsNodeName];
-      if Assigned(ProjectExtensionsNode) then
-      begin
-        PersonalityNode := ProjectExtensionsNode.Items.ItemNamed[DProjPersonalityNodeName];
-        if Assigned(PersonalityNode) then
-          PersonalityName := PersonalityNode.Value;
-      end;
-      if AnsiSameText(PersonalityName, DProjDelphiPersonalityValue) or
-        AnsiSameText(PersonalityName, DProjDelphiDotNetPersonalityValue) then
-      begin
-        ProjectConfiguration := '';
-        ProjectPlatform := '';
-        for NodeIndex := 0 to OptionsXmlFile.Root.Items.Count - 1 do
-        begin
-          PropertyGroupNode := OptionsXmlFile.Root.Items.Item[NodeIndex];
-          if AnsiSameText(PropertyGroupNode.Name, DProjPropertyGroupNodeName) then
-          begin
-            ConditionProperty := PropertyGroupNode.Properties.ItemNamed[DProjConditionValueName];
-            if Assigned(ConditionProperty) then
-            begin
-              if (ProjectConfiguration <> '') and (ProjectPlatform <> '') and
-                (AnsiPos(Format('%s|%s', [ProjectConfiguration, ProjectPlatform]), ConditionProperty.Value) > 0) then
-              begin
-                // this is the active configuration, check for overrides
-                ChildNode := PropertyGroupNode.Items.ItemNamed[DProjUsePackageNodeName];
-                if Assigned(ChildNode) then
-                  DynamicPackages := ChildNode.Value;
-                UsePackages := DynamicPackages <> '';
-                ChildNode := PropertyGroupNode.Items.ItemNamed[DProjDcuOutputDirNodeName];
-                if Assigned(ChildNode) then
-                  UnitOutputDir := ChildNode.Value;
-                ChildNode := PropertyGroupNode.Items.ItemNamed[DProjUnitSearchPathNodeName];
-                if Assigned(ChildNode) then
-                  SearchPath := ChildNode.Value;
-                ChildNode := PropertyGroupNode.Items.ItemNamed[DProjDefineNodeName];
-                if Assigned(ChildNode) then
-                  Conditionals := ChildNode.Value;
-              end;
-            end
-            else
-            begin
-              // check for default configurations
-              ChildNode := PropertyGroupNode.Items.ItemNamed[DProjConfigurationNodeName];
-              if Assigned(ChildNode) then
-                ProjectConfiguration := ChildNode.Value;
-              ChildNode := PropertyGroupNode.Items.ItemNamed[DProjPlatformNodeName];
-              if Assigned(ChildNode) then
-                ProjectPlatform := ChildNode.Value;
-            end;
-          end;
-        end;
-      end;
-    finally
-      OptionsXmlFile.Free;
+    if ProjectOptions.UnitOutputDir <> '' then
+      AddPathOption('N', ProjectOptions.UnitOutputDir);
+    if ProjectOptions.SearchPath <> '' then
+    begin
+      AddPathOption('I', ProjectOptions.SearchPath);
+      AddPathOption('R', ProjectOptions.SearchPath);
     end;
-    FoundOptions := True;
+    if ProjectOptions.Conditionals <> '' then
+      Options.Add(Format('-D%s', [ProjectOptions.Conditionals]));
+    if SamePath(DCPPath, Installation.DCPOutputPath) then
+      ProjectOptions.SearchDcpPath := DCPPath
+    else
+      ProjectOptions.SearchDcpPath := StrEnsureSuffix(PathSep, DCPPath) + Installation.DCPOutputPath;
+    AddPathOption('U', StrEnsureSuffix(PathSep, ProjectOptions.SearchDcpPath) + ProjectOptions.SearchPath);
+    if ProjectOptions.UsePackages and (ProjectOptions.DynamicPackages <> '') then
+      Options.Add(Format('-LU"%s"', [ProjectOptions.DynamicPackages]));
   end;
-
-  BDSProjFileName := ChangeFileExt(ProjectFileName, SourceExtensionBDSProject);
-  if FileExists(BDSProjFileName) and not FoundOptions then
-  begin
-    OptionsXmlFile := TJclSimpleXML.Create;
-    try
-      OptionsXmlFile.LoadFromFile(BDSProjFileName);
-      OptionsXmlFile.Options := OptionsXmlFile.Options - [sxoAutoCreate];
-      PersonalityInfoNode := OptionsXmlFile.Root.Items.ItemNamed[BDSProjPersonalityInfoNodeName];
-      PersonalityName := '';
-      if Assigned(PersonalityInfoNode) then
-      begin
-        OptionNode := PersonalityInfoNode.Items.ItemNamed[BDSProjOptionNodeName];
-        if Assigned(OptionNode) then
-          for NodeIndex := 0 to OptionNode.Items.Count - 1 do
-          begin
-            ChildNode := OptionNode.Items.Item[NodeIndex];
-            if SameText(ChildNode.Name, BDSProjOptionNodeName) then
-            begin
-              NameProperty := ChildNode.Properties.ItemNamed[BDSProjNameProperty];
-              if Assigned(NameProperty) and SameText(NameProperty.Value, BDSProjPersonalityValue) then
-              begin
-                PersonalityName := ChildNode.Value;
-                Break;
-              end;
-            end;
-          end;
-      end;
-      if PersonalityName <> '' then
-      begin
-        PersonalityNode := OptionsXmlFile.Root.Items.ItemNamed[PersonalityName];
-        if Assigned(PersonalityNode) then
-        begin
-          DirectoriesNode := PersonalityNode.Items.ItemNamed[BDSProjDirectoriesNodeName];
-          if Assigned(DirectoriesNode) then
-            for NodeIndex := 0 to DirectoriesNode.Items.Count - 1 do
-            begin
-              ChildNode := DirectoriesNode.Items.Item[NodeIndex];
-              if SameText(ChildNode.Name, BDSProjDirectoriesNodeName) then
-              begin
-                NameProperty := ChildNode.Properties.ItemNamed[BDSProjNameProperty];
-                if Assigned(NameProperty) then
-                begin
-                  if SameText(NameProperty.Value, BDSProjUnitOutputDirValue) then
-                    UnitOutputDir := ChildNode.Value
-                  else
-                  if SameText(NameProperty.Value, BDSProjSearchPathValue) then
-                    SearchPath := ChildNode.Value
-                  else
-                  if SameText(NameProperty.Value, BDSProjPackagesValue) then
-                    DynamicPackages := ChildNode.Value
-                  else
-                  if SameText(NameProperty.Value, BDSProjConditionalsValue) then
-                    Conditionals := ChildNode.Value
-                  else
-                  if SameText(NameProperty.Value, BDSProjUsePackagesValue) then
-                    UsePackages := StrToBoolean(ChildNode.Value);
-                end;
-              end;
-            end;
-        end;
-      end;
-    finally
-      OptionsXmlFile.Free;
-    end;
-    FoundOptions := True;
-  end;
-
-  OptionsFileName := ChangeFileExt(ProjectFileName, DelphiOptionsFileExtension);
-  if FileExists(OptionsFileName) and not FoundOptions then
-  begin
-    OptionsFile := TIniFile.Create(OptionsFileName);
-    try
-      SearchPath := OptionsFile.ReadString(DOFDirectoriesSection, DOFSearchPathName, '');
-      UnitOutputDir := OptionsFile.ReadString(DOFDirectoriesSection, DOFUnitOutputDirKey, '');
-      Conditionals := OptionsFile.ReadString(DOFDirectoriesSection, DOFConditionals, '');
-      UsePackages := OptionsFile.ReadString(DOFCompilerSection, DOFPackageNoLinkKey, '') = '1';
-      DynamicPackages := OptionsFile.ReadString(DOFLinkerSection, DOFPackagesKey, '');
-      AdditionalOptions := OptionsFile.ReadString(DOFAdditionalSection, DOFOptionsKey, '');
-    finally
-      OptionsFile.Free;
-    end;
-  end;
-
-  if UnitOutputDir <> '' then
-    AddPathOption('N', UnitOutputDir);
-  if SearchPath <> '' then
-  begin
-    AddPathOption('I', SearchPath);
-    AddPathOption('R', SearchPath);
-  end;
-  if Conditionals <> '' then
-    Options.Add(Format('-D%s', [Conditionals]));
-  if SamePath(DCPPath, Installation.DCPOutputPath) then
-    SearchDcpPath := DCPPath
-  else
-    SearchDcpPath := StrEnsureSuffix(PathSep, DCPPath) + Installation.DCPOutputPath;
-  AddPathOption('U', StrEnsureSuffix(PathSep, SearchDcpPath) + SearchPath);
-  if UsePackages and (DynamicPackages <> '') then
-    Options.Add(Format('-LU"%s"', [DynamicPackages]));
-  if AdditionalOptions <> '' then
-    Options.Add(AdditionalOptions);
 end;
 
 function TJclDCC32.Compile(const ProjectFileName: string): Boolean;
