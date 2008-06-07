@@ -4637,6 +4637,7 @@ procedure SetSevenzipArchiveCompressionProperties(AJclArchive: IInterface; ASeve
 var
   PropertySetter: Sevenzip.ISetProperties;
   InArchive, OutArchive: Boolean;
+  Unused: IInterface;
   MultiThreadStrategy: IJclArchiveNumberOfThreads;
   CompressionLevel: IJclArchiveCompressionLevel;
   EncryptionMethod: IJclArchiveEncryptionMethod;
@@ -4706,8 +4707,8 @@ const
 begin
   if Supports(ASevenZipArchive, Sevenzip.ISetProperties, PropertySetter) and Assigned(PropertySetter) then
   begin
-    Supports(ASevenzipArchive,Sevenzip.IInArchive,InArchive);
-    Supports(ASevenzipArchive,Sevenzip.IOutArchive,OutArchive);
+    InArchive := Supports(ASevenzipArchive,Sevenzip.IInArchive,Unused);
+    OutArchive := Supports(ASevenzipArchive,Sevenzip.IOutArchive,Unused);
     if (InArchive or OutArchive) and Supports(AJclArchive, IJclArchiveNumberOfThreads, MultiThreadStrategy)
       and Assigned(MultiThreadStrategy) and (MultiThreadStrategy.NumberOfThreads > 1) then
       AddCardinalProperty('MT', MultiThreadStrategy.NumberOfThreads);
