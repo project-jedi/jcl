@@ -109,6 +109,17 @@
   </ProjectExtensions>
   <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
   <ItemGroup>
+<%%% START REQUIRES %%%>
+    <Reference Include="%NAME%.dll">
+      <AssemblyName>%NAME%</AssemblyName>
+      <Version>11.0.5000.9245</Version>
+      <HintPath>%NAME%.dll</HintPath>
+      <AssemblyTag>%NAME%.dll</AssemblyTag>
+      <LinkUnits>False</LinkUnits>
+    </Reference>
+<%%% END REQUIRES %%%>
+  </ItemGroup>
+  <ItemGroup>
     <DelphiCompile Include="%NAME%%SOURCEEXTENSION%">
       <MainSource>MainSource</MainSource>
     </DelphiCompile>

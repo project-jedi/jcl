@@ -93,6 +93,22 @@
   </ProjectExtensions>
   <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
   <ItemGroup>
+    <Reference Include="Borland.Delphi.dll">
+      <AssemblyName>Borland.Delphi</AssemblyName>
+      <Version>11.0.5000.9245</Version>
+      <HintPath>Borland.Delphi.dll</HintPath>
+      <AssemblyTag>Borland.Delphi.dll</AssemblyTag>
+      <LinkUnits>False</LinkUnits>
+    </Reference>
+    <Reference Include="Borland.VclRtl.dll">
+      <AssemblyName>Borland.VclRtl</AssemblyName>
+      <Version>11.0.5000.9245</Version>
+      <HintPath>Borland.VclRtl.dll</HintPath>
+      <AssemblyTag>Borland.VclRtl.dll</AssemblyTag>
+      <LinkUnits>False</LinkUnits>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
     <DelphiCompile Include="Jedi.Jcl.dpk">
       <MainSource>MainSource</MainSource>
     </DelphiCompile>

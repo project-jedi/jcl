@@ -5,6 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
+    <DCC_UsePackage>%NOLINKPACKAGELIST%</DCC_UsePackage>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Version>7.0</Version>
@@ -84,7 +85,9 @@
     <DelphiCompile Include="%NAME%%SOURCEEXTENSION%">
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
-    <DCCReference Include="rtl.dcp" />
+<%%% START REQUIRES %%%>
+    <DCCReference Include="%NAME%.dcp" />
+<%%% END REQUIRES %%%>
 <%%% START FILES %%%>
     <DCCReference Include="%FILENAME%" />
 <%%% END FILES %%%>

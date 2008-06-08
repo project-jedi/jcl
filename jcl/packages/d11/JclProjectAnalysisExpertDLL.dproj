@@ -5,6 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
+    <DCC_UsePackage>rtl;vcl;designide;Jcl;JclBaseExpert</DCC_UsePackage>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Version>7.0</Version>
@@ -85,6 +86,10 @@
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
     <DCCReference Include="rtl.dcp" />
+    <DCCReference Include="vcl.dcp" />
+    <DCCReference Include="designide.dcp" />
+    <DCCReference Include="Jcl.dcp" />
+    <DCCReference Include="JclBaseExpert.dcp" />
     <DCCReference Include="..\..\experts\projectanalyzer\ProjAnalyzerFrm.pas" />
     <DCCReference Include="..\..\experts\projectanalyzer\ProjAnalyzerImpl.pas" />
   </ItemGroup>
