@@ -28,6 +28,15 @@
   <Target Name="JclVcl:Make">
     <MSBuild Projects="d11\JclVcl.dproj" Targets="Make" />
   </Target>
+  <Target Name="JclContainers">
+    <MSBuild Projects="d11\JclContainers.dproj" Targets="" />
+  </Target>
+  <Target Name="JclContainers:Clean">
+    <MSBuild Projects="d11\JclContainers.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JclContainers:Make">
+    <MSBuild Projects="d11\JclContainers.dproj" Targets="Make" />
+  </Target>
   <Target Name="JclBaseExpert">
     <MSBuild Projects="d11\JclBaseExpert.dproj" Targets="" />
   </Target>
@@ -83,12 +92,12 @@
     <MSBuild Projects="d11\JclVersionControlExpert.dproj" Targets="Make" />
   </Target>
   <Target Name="Build">
-    <CallTarget Targets="Jcl;JclVcl;JclBaseExpert;JclDebugExpert;JclFavoriteFoldersExpert;JclProjectAnalysisExpert;JclRepositoryExpert;JclVersionControlExpert" />
+    <CallTarget Targets="Jcl;JclVcl;JclContainers;JclBaseExpert;JclDebugExpert;JclFavoriteFoldersExpert;JclProjectAnalysisExpert;JclRepositoryExpert;JclVersionControlExpert" />
   </Target>
   <Target Name="Clean">
-    <CallTarget Targets="Jcl:Clean;JclVcl:Clean;JclBaseExpert:Clean;JclDebugExpert:Clean;JclFavoriteFoldersExpert:Clean;JclProjectAnalysisExpert:Clean;JclRepositoryExpert:Clean;JclVersionControlExpert:Clean" />
+    <CallTarget Targets="Jcl:Clean;JclVcl:Clean;JclContainers:Clean;JclBaseExpert:Clean;JclDebugExpert:Clean;JclFavoriteFoldersExpert:Clean;JclProjectAnalysisExpert:Clean;JclRepositoryExpert:Clean;JclVersionControlExpert:Clean" />
   </Target>
   <Target Name="Make">
-    <CallTarget Targets="Jcl:Make;JclVcl:Make;JclBaseExpert:Make;JclDebugExpert:Make;JclFavoriteFoldersExpert:Make;JclProjectAnalysisExpert:Make;JclRepositoryExpert:Make;JclVersionControlExpert:Make" />
+    <CallTarget Targets="Jcl:Make;JclVcl:Make;JclContainers:Make;JclBaseExpert:Make;JclDebugExpert:Make;JclFavoriteFoldersExpert:Make;JclProjectAnalysisExpert:Make;JclRepositoryExpert:Make;JclVersionControlExpert:Make" />
   </Target>
 </Project>

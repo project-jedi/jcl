@@ -21,14 +21,23 @@
   <Target Name="Jedi_Jcl:Make">
     <MSBuild Projects="d11.net\Jedi.Jcl.dproj" Targets="Make" />
   </Target>
+  <Target Name="Jedi_JclContainers">
+    <MSBuild Projects="d11.net\Jedi.JclContainers.dproj" Targets="" />
+  </Target>
+  <Target Name="Jedi_JclContainers:Clean">
+    <MSBuild Projects="d11.net\Jedi.JclContainers.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="Jedi_JclContainers:Make">
+    <MSBuild Projects="d11.net\Jedi.JclContainers.dproj" Targets="Make" />
+  </Target>
   <Target Name="Build">
-    <CallTarget Targets="Jedi_Jcl" />
+    <CallTarget Targets="Jedi_Jcl;Jedi_JclContainers" />
   </Target>
   <Target Name="Clean">
-    <CallTarget Targets="Jedi_Jcl:Clean" />
+    <CallTarget Targets="Jedi_Jcl:Clean;Jedi_JclContainers:Clean" />
   </Target>
   <Target Name="Make">
-    <CallTarget Targets="Jedi_Jcl:Make" />
+    <CallTarget Targets="Jedi_Jcl:Make;Jedi_JclContainers:Make" />
   </Target>
   <Import Condition="Exists('$(MSBuildBinPath)\Borland.Group.Targets')" Project="$(MSBuildBinPath)\Borland.Group.Targets" />
 </Project>

@@ -9,10 +9,10 @@
     </Option>
   </PersonalityInfo>
   <Default.Personality>
-    
     <Projects>
-      <Projects Name="Jedi.Jcl9.dll">d9.net\Jedi.Jcl.bdsproj</Projects>
-      <Projects Name="Targets">Jedi.Jcl9.dll</Projects>
+      <Projects Name="Jedi.Jcl90.dll">d9.net\Jedi.Jcl.bdsproj</Projects>
+      <Projects Name="Jedi.JclContainers90.dll">d9.net\Jedi.JclContainers.bdsproj</Projects>
+      <Projects Name="Targets">Jedi.Jcl90.dll Jedi.JclContainers90.dll</Projects>
     </Projects>
     <Dependencies/>
   </Default.Personality>

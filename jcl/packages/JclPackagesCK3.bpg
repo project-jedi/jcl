@@ -8,7 +8,8 @@ endif
 MAKE = make -$(MAKEFLAGS) -f$**
 DCC =dcc $<
 #------------------------------------------------------------------------------
-PROJECTS = bplJclK3.so.1.90.0 bplJclVClxK3.so.1.90.0
+PROJECTS = bplJclK3.so.1.90.0 bplJclVClxK3.so.1.90.0 \
+  bplJclContainersK3.so.1.90.0
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -18,6 +19,10 @@ bplCJclK3.so.1.90.0: k3/Jcl.bpk
 	make -$(MAKEFLAGS) -f$(basename $<).mak
 
 bplCJclVClxK3.so.1.90.0: k3/JclVClx.bpk
+	$(ROOT)/bin/bpr2mak $<
+	make -$(MAKEFLAGS) -f$(basename $<).mak
+
+bplCJclContainersK3.so.1.90.0: k3/JclContainers.bpk
 	$(ROOT)/bin/bpr2mak $<
 	make -$(MAKEFLAGS) -f$(basename $<).mak
 

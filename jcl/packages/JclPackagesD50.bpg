@@ -9,15 +9,19 @@ MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
 DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
-PROJECTS = JclD50.bpl JclBaseExpertD50.bpl JclDebugExpertD50.bpl \
-  JclFavoriteFoldersExpertD50.bpl JclProjectAnalysisExpertD50.bpl \
-  JclRepositoryExpertD50.bpl JclSIMDViewExpertD50.bpl JclThreadNameExpertD50.bpl \
-  JclUsesExpertD50.bpl JclVersionControlExpertD50.bpl
+PROJECTS = JclD50.bpl JclContainersD50.bpl JclBaseExpertD50.bpl \
+  JclDebugExpertD50.bpl JclFavoriteFoldersExpertD50.bpl \
+  JclProjectAnalysisExpertD50.bpl JclRepositoryExpertD50.bpl \
+  JclSIMDViewExpertD50.bpl JclThreadNameExpertD50.bpl JclUsesExpertD50.bpl \
+  JclVersionControlExpertD50.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
 
 JclD50.bpl: d5\JclD50.dpk
+  $(DCC)
+
+JclContainersD50.bpl: d5\JclContainersD50.dpk
   $(DCC)
 
 JclBaseExpertD50.bpl: d5\JclBaseExpertD50.dpk
