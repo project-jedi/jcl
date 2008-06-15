@@ -4756,9 +4756,7 @@ begin
       if Supports(AJclArchive, IJclArchiveAlgorithm, Algorithm) and Assigned(Algorithm) then
         AddCardinalProperty('A', Algorithm.Algorithm);
     end;
-  end
-  else
-    raise EJclCompressionError.CreateRes(@RsCompression7zNoProperties);
+  end;
 end;
 
 //=== { TJclSevenzipOutputCallback } =========================================
