@@ -150,19 +150,19 @@
       <configuration index="3" caption="Valid exit codes" value=""/>
     </action>
     <action classname="TCommandLineCaller">
-      <configuration index="0" caption="Application" value="..\..\devtools\jpp.exe"/>
+      <configuration index="0" caption="Application" value="..\devtools\jpp.exe"/>
       <configuration index="1" caption="Working directory" value="sandbox\install"/>
       <configuration index="2" caption="Parameters" value="-c -dVCL -dMSWINDOWS -uVisualCLX -uUnix -uKYLIX -xVclGui\ prototypes\JediGUIMain.pas"/>
       <configuration index="3" caption="Valid exit codes" value=""/>
     </action>
     <action classname="TCommandLineCaller">
-      <configuration index="0" caption="Application" value="..\..\devtools\jpp.exe"/>
+      <configuration index="0" caption="Application" value="..\devtools\jpp.exe"/>
       <configuration index="1" caption="Working directory" value="sandbox\install"/>
       <configuration index="2" caption="Parameters" value="-c -dVCL -dMSWINDOWS -uVisualCLX -uUnix -uKYLIX -xVclGui\ prototypes\JediGUIReadme.pas"/>
       <configuration index="3" caption="Valid exit codes" value=""/>
     </action>
     <action classname="TCommandLineCaller">
-      <configuration index="0" caption="Application" value="..\..\devtools\jpp.exe"/>
+      <configuration index="0" caption="Application" value="..\devtools\jpp.exe"/>
       <configuration index="1" caption="Working directory" value="sandbox\install"/>
       <configuration index="2" caption="Parameters" value="-c -dVCL -dMSWINDOWS -uVisualCLX -uUnix -uKYLIX -xVclGui\ prototypes\JediGUIInstall.pas"/>
       <configuration index="3" caption="Valid exit codes" value=""/>
