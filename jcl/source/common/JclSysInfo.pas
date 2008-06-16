@@ -3779,6 +3779,8 @@ function GetMacAddresses(const Machine: string; const Addresses: TStrings): Inte
       SetLength(MachineName, NCBNAMSZ);
       FillChar(MachineName[NameLen + 1], L, ' ');
     end;
+    // From Junior/RO in NG: Microsoft's implementation limits NETBIOS names to 15 characters
+    MachineName[NCBNAMSZ] := #0;
     FillChar(NCB, SizeOf(NCB), #0);
     NCB.ncb_command := NCBENUM;
     NCB.ncb_buffer := Pointer(@Enum);
