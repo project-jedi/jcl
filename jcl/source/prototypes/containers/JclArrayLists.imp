@@ -321,11 +321,14 @@ end;
 
 {$JPPEXPANDMACRO CREATEEMPTYCONTAINER}
 function SELFCLASSNAME.Delete(Index: Integer): TYPENAME;
+  // fix ambiguous warnings when compiled on Delphi.net and earlier versions of Delphi.win32
+  // complaining about possible unaffected result.
+  function RaiseOutOfBoundsError: TYPENAME;
+  begin
+    raise EJclOutOfBoundsError.Create;
+  end;
 begin
   {$JPPEXPANDMACRO WRITEBEGIN}
-    {$IFDEF CLR}
-    Result := DEFAULTVALUE;
-    {$ENDIF CLR}
     if (Index >= 0) and (Index < FSize) then
     begin
       Result := RELEASERNAME(FElementData[Index]);
@@ -335,7 +338,7 @@ begin
       AutoPack;
     end
     else
-      raise EJclOutOfBoundsError.Create;
+      Result := RaiseOutOfBoundsError;
   {$JPPEXPANDMACRO WRITEEND}
 end;
 

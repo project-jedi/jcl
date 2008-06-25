@@ -56,6 +56,7 @@ uses
   {$ENDIF SUPPORTS_GENERICS}
   Classes,
   JclBase, JclAbstractContainers, JclContainerIntf, JclSynch;
+
 type
   TJclIntfVector = class(TJclIntfAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclIntfEqualityComparer,
@@ -3065,6 +3066,12 @@ begin
 end;
 
 function TJclIntfVector.Delete(Index: Integer): IInterface;
+  // fix ambiguous warnings when compiled on Delphi.net and earlier versions of Delphi.win32
+  // complaining about possible unaffected result.
+  function RaiseOutOfBoundsError: IInterface;
+  begin
+    raise EJclOutOfBoundsError.Create;
+  end;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -3073,9 +3080,6 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    {$IFDEF CLR}
-    Result := nil;
-    {$ENDIF CLR}
     if (Index >= 0) and (Index < FSize) then
     begin
       Result := FreeObject(FItems[Index]);
@@ -3084,7 +3088,7 @@ begin
       AutoPack;
     end
     else
-      raise EJclOutOfBoundsError.Create;
+      Result := RaiseOutOfBoundsError;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -3630,6 +3634,12 @@ begin
 end;
 
 function TJclAnsiStrVector.Delete(Index: Integer): AnsiString;
+  // fix ambiguous warnings when compiled on Delphi.net and earlier versions of Delphi.win32
+  // complaining about possible unaffected result.
+  function RaiseOutOfBoundsError: AnsiString;
+  begin
+    raise EJclOutOfBoundsError.Create;
+  end;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -3638,9 +3648,6 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    {$IFDEF CLR}
-    Result := '';
-    {$ENDIF CLR}
     if (Index >= 0) and (Index < FSize) then
     begin
       Result := FreeString(FItems[Index]);
@@ -3649,7 +3656,7 @@ begin
       AutoPack;
     end
     else
-      raise EJclOutOfBoundsError.Create;
+      Result := RaiseOutOfBoundsError;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -4195,6 +4202,12 @@ begin
 end;
 
 function TJclWideStrVector.Delete(Index: Integer): WideString;
+  // fix ambiguous warnings when compiled on Delphi.net and earlier versions of Delphi.win32
+  // complaining about possible unaffected result.
+  function RaiseOutOfBoundsError: WideString;
+  begin
+    raise EJclOutOfBoundsError.Create;
+  end;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -4203,9 +4216,6 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    {$IFDEF CLR}
-    Result := '';
-    {$ENDIF CLR}
     if (Index >= 0) and (Index < FSize) then
     begin
       Result := FreeString(FItems[Index]);
@@ -4214,7 +4224,7 @@ begin
       AutoPack;
     end
     else
-      raise EJclOutOfBoundsError.Create;
+      Result := RaiseOutOfBoundsError;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -4760,6 +4770,12 @@ begin
 end;
 
 function TJclSingleVector.Delete(Index: Integer): Single;
+  // fix ambiguous warnings when compiled on Delphi.net and earlier versions of Delphi.win32
+  // complaining about possible unaffected result.
+  function RaiseOutOfBoundsError: Single;
+  begin
+    raise EJclOutOfBoundsError.Create;
+  end;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -4768,9 +4784,6 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    {$IFDEF CLR}
-    Result := 0.0;
-    {$ENDIF CLR}
     if (Index >= 0) and (Index < FSize) then
     begin
       Result := FreeSingle(FItems[Index]);
@@ -4779,7 +4792,7 @@ begin
       AutoPack;
     end
     else
-      raise EJclOutOfBoundsError.Create;
+      Result := RaiseOutOfBoundsError;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -5325,6 +5338,12 @@ begin
 end;
 
 function TJclDoubleVector.Delete(Index: Integer): Double;
+  // fix ambiguous warnings when compiled on Delphi.net and earlier versions of Delphi.win32
+  // complaining about possible unaffected result.
+  function RaiseOutOfBoundsError: Double;
+  begin
+    raise EJclOutOfBoundsError.Create;
+  end;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -5333,9 +5352,6 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    {$IFDEF CLR}
-    Result := 0.0;
-    {$ENDIF CLR}
     if (Index >= 0) and (Index < FSize) then
     begin
       Result := FreeDouble(FItems[Index]);
@@ -5344,7 +5360,7 @@ begin
       AutoPack;
     end
     else
-      raise EJclOutOfBoundsError.Create;
+      Result := RaiseOutOfBoundsError;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -5890,6 +5906,12 @@ begin
 end;
 
 function TJclExtendedVector.Delete(Index: Integer): Extended;
+  // fix ambiguous warnings when compiled on Delphi.net and earlier versions of Delphi.win32
+  // complaining about possible unaffected result.
+  function RaiseOutOfBoundsError: Extended;
+  begin
+    raise EJclOutOfBoundsError.Create;
+  end;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -5898,9 +5920,6 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    {$IFDEF CLR}
-    Result := 0.0;
-    {$ENDIF CLR}
     if (Index >= 0) and (Index < FSize) then
     begin
       Result := FreeExtended(FItems[Index]);
@@ -5909,7 +5928,7 @@ begin
       AutoPack;
     end
     else
-      raise EJclOutOfBoundsError.Create;
+      Result := RaiseOutOfBoundsError;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -6455,6 +6474,12 @@ begin
 end;
 
 function TJclIntegerVector.Delete(Index: Integer): Integer;
+  // fix ambiguous warnings when compiled on Delphi.net and earlier versions of Delphi.win32
+  // complaining about possible unaffected result.
+  function RaiseOutOfBoundsError: Integer;
+  begin
+    raise EJclOutOfBoundsError.Create;
+  end;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -6463,9 +6488,6 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    {$IFDEF CLR}
-    Result := 0;
-    {$ENDIF CLR}
     if (Index >= 0) and (Index < FSize) then
     begin
       Result := FreeInteger(FItems[Index]);
@@ -6474,7 +6496,7 @@ begin
       AutoPack;
     end
     else
-      raise EJclOutOfBoundsError.Create;
+      Result := RaiseOutOfBoundsError;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -7020,6 +7042,12 @@ begin
 end;
 
 function TJclCardinalVector.Delete(Index: Integer): Cardinal;
+  // fix ambiguous warnings when compiled on Delphi.net and earlier versions of Delphi.win32
+  // complaining about possible unaffected result.
+  function RaiseOutOfBoundsError: Cardinal;
+  begin
+    raise EJclOutOfBoundsError.Create;
+  end;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -7028,9 +7056,6 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    {$IFDEF CLR}
-    Result := 0;
-    {$ENDIF CLR}
     if (Index >= 0) and (Index < FSize) then
     begin
       Result := FreeCardinal(FItems[Index]);
@@ -7039,7 +7064,7 @@ begin
       AutoPack;
     end
     else
-      raise EJclOutOfBoundsError.Create;
+      Result := RaiseOutOfBoundsError;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -7585,6 +7610,12 @@ begin
 end;
 
 function TJclInt64Vector.Delete(Index: Integer): Int64;
+  // fix ambiguous warnings when compiled on Delphi.net and earlier versions of Delphi.win32
+  // complaining about possible unaffected result.
+  function RaiseOutOfBoundsError: Int64;
+  begin
+    raise EJclOutOfBoundsError.Create;
+  end;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -7593,9 +7624,6 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    {$IFDEF CLR}
-    Result := 0;
-    {$ENDIF CLR}
     if (Index >= 0) and (Index < FSize) then
     begin
       Result := FreeInt64(FItems[Index]);
@@ -7604,7 +7632,7 @@ begin
       AutoPack;
     end
     else
-      raise EJclOutOfBoundsError.Create;
+      Result := RaiseOutOfBoundsError;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -8152,6 +8180,12 @@ begin
 end;
 
 function TJclPtrVector.Delete(Index: Integer): Pointer;
+  // fix ambiguous warnings when compiled on Delphi.net and earlier versions of Delphi.win32
+  // complaining about possible unaffected result.
+  function RaiseOutOfBoundsError: Pointer;
+  begin
+    raise EJclOutOfBoundsError.Create;
+  end;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -8160,9 +8194,6 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    {$IFDEF CLR}
-    Result := nil;
-    {$ENDIF CLR}
     if (Index >= 0) and (Index < FSize) then
     begin
       Result := FreePointer(FItems[Index]);
@@ -8171,7 +8202,7 @@ begin
       AutoPack;
     end
     else
-      raise EJclOutOfBoundsError.Create;
+      Result := RaiseOutOfBoundsError;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -8718,6 +8749,12 @@ begin
 end;
 
 function TJclVector.Delete(Index: Integer): TObject;
+  // fix ambiguous warnings when compiled on Delphi.net and earlier versions of Delphi.win32
+  // complaining about possible unaffected result.
+  function RaiseOutOfBoundsError: TObject;
+  begin
+    raise EJclOutOfBoundsError.Create;
+  end;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -8726,9 +8763,6 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    {$IFDEF CLR}
-    Result := nil;
-    {$ENDIF CLR}
     if (Index >= 0) and (Index < FSize) then
     begin
       Result := FreeObject(FItems[Index]);
@@ -8737,7 +8771,7 @@ begin
       AutoPack;
     end
     else
-      raise EJclOutOfBoundsError.Create;
+      Result := RaiseOutOfBoundsError;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -9280,6 +9314,12 @@ end;
 
 
 function TJclVector<T>.Delete(Index: Integer): T;
+  // fix ambiguous warnings when compiled on Delphi.net and earlier versions of Delphi.win32
+  // complaining about possible unaffected result.
+  function RaiseOutOfBoundsError: T;
+  begin
+    raise EJclOutOfBoundsError.Create;
+  end;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -9288,9 +9328,6 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    {$IFDEF CLR}
-    Result := Default(T);
-    {$ENDIF CLR}
     if (Index >= 0) and (Index < FSize) then
     begin
       Result := FreeItem(FItems[Index]);
@@ -9299,7 +9336,7 @@ begin
       AutoPack;
     end
     else
-      raise EJclOutOfBoundsError.Create;
+      Result := RaiseOutOfBoundsError;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
