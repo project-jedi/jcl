@@ -49,16 +49,6 @@ unit JclWin32;
 
 {$I jcl.inc}
 
-{$DEFINE STRICT}
-{$DEFINE WINVER_0400_UP}
-{$DEFINE WINVER_0500_GREATER}
-{$DEFINE WINVER_0400_GREATER}
-{$DEFINE WINNT}
-{$DEFINE WINNT_0400_UP}
-{$DEFINE WINNT_0400_GREATER}
-{$DEFINE WINNT_0500_GREATER}
-{$DEFINE WINDOWS_0400_GREATER}
-
 {$MINENUMSIZE 4}
 {$ALIGN ON}
 {$WARNINGS OFF}
@@ -123,11 +113,6 @@ type
   PLongWord = ^LongWord;
   PByte = IntPtr;
 {$ENDIF CLR}
-
-{$IFDEF FPC}
-// include file for FPC compatibility
-{$I win32api\fpc.inc}
-{$ENDIF FPC}
 
 {$I win32api\WinDef.int}
 {$I win32api\WinNT.int}

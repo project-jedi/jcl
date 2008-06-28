@@ -1133,23 +1133,6 @@ const
 // Directory format.
 //
 
-{$IFDEF FPC}
-
-type
-  PIMAGE_DATA_DIRECTORY = ^IMAGE_DATA_DIRECTORY;
-  {$EXTERNALSYM PIMAGE_DATA_DIRECTORY}
-  _IMAGE_DATA_DIRECTORY = record
-    VirtualAddress: DWORD;
-    Size: DWORD;
-  end;
-  {$EXTERNALSYM _IMAGE_DATA_DIRECTORY}
-  IMAGE_DATA_DIRECTORY = _IMAGE_DATA_DIRECTORY;
-  {$EXTERNALSYM IMAGE_DATA_DIRECTORY}
-  TImageDataDirectory = IMAGE_DATA_DIRECTORY;
-  PImageDataDirectory = PIMAGE_DATA_DIRECTORY;
-
-{$ENDIF FPC}
-
 const
   IMAGE_NUMBEROF_DIRECTORY_ENTRIES = 16;
   {$EXTERNALSYM IMAGE_NUMBEROF_DIRECTORY_ENTRIES}
@@ -1161,51 +1144,6 @@ const
 type
   PIMAGE_OPTIONAL_HEADER32 = ^IMAGE_OPTIONAL_HEADER32;
   {$EXTERNALSYM PIMAGE_OPTIONAL_HEADER32}
-
-{$IFDEF FPC}
-
-  _IMAGE_OPTIONAL_HEADER = record
-    //
-    // Standard fields.
-    //
-    Magic: Word;
-    MajorLinkerVersion: Byte;
-    MinorLinkerVersion: Byte;
-    SizeOfCode: DWORD;
-    SizeOfInitializedData: DWORD;
-    SizeOfUninitializedData: DWORD;
-    AddressOfEntryPoint: DWORD;
-    BaseOfCode: DWORD;
-    BaseOfData: DWORD;
-    //
-    // NT additional fields.
-    //
-    ImageBase: DWORD;
-    SectionAlignment: DWORD;
-    FileAlignment: DWORD;
-    MajorOperatingSystemVersion: Word;
-    MinorOperatingSystemVersion: Word;
-    MajorImageVersion: Word;
-    MinorImageVersion: Word;
-    MajorSubsystemVersion: Word;
-    MinorSubsystemVersion: Word;
-    Win32VersionValue: DWORD;
-    SizeOfImage: DWORD;
-    SizeOfHeaders: DWORD;
-    CheckSum: DWORD;
-    Subsystem: Word;
-    DllCharacteristics: Word;
-    SizeOfStackReserve: DWORD;
-    SizeOfStackCommit: DWORD;
-    SizeOfHeapReserve: DWORD;
-    SizeOfHeapCommit: DWORD;
-    LoaderFlags: DWORD;
-    NumberOfRvaAndSizes: DWORD;
-    DataDirectory: array [0..IMAGE_NUMBEROF_DIRECTORY_ENTRIES - 1] of IMAGE_DATA_DIRECTORY;
-  end;
-  {$EXTERNALSYM _IMAGE_OPTIONAL_HEADER}
-
-{$ENDIF FPC}
 
   IMAGE_OPTIONAL_HEADER32 = _IMAGE_OPTIONAL_HEADER;
   {$EXTERNALSYM IMAGE_OPTIONAL_HEADER32}
@@ -1333,29 +1271,6 @@ type
   TImageNtHeaders32 = IMAGE_NT_HEADERS32;
   PImageNtHeaders32 = PIMAGE_NT_HEADERS32;
 
-{$IFDEF FPC}
-
-  PIMAGE_ROM_HEADERS = ^IMAGE_ROM_HEADERS;
-  {$EXTERNALSYM PIMAGE_ROM_HEADERS}
-  _IMAGE_ROM_HEADERS = record
-    FileHeader: IMAGE_FILE_HEADER;
-    OptionalHeader: IMAGE_ROM_OPTIONAL_HEADER;
-  end;
-  {$EXTERNALSYM _IMAGE_ROM_HEADERS}
-  IMAGE_ROM_HEADERS = _IMAGE_ROM_HEADERS;
-  {$EXTERNALSYM IMAGE_ROM_HEADERS}
-  TImageRomHeaders = IMAGE_ROM_HEADERS;
-  PImageRomHeaders = PIMAGE_ROM_HEADERS;
-
-  IMAGE_NT_HEADERS = IMAGE_NT_HEADERS32;
-  {$EXTERNALSYM IMAGE_NT_HEADERS}
-  PIMAGE_NT_HEADERS = PIMAGE_NT_HEADERS32;
-  {$EXTERNALSYM PIMAGE_NT_HEADERS}
-
-  PImageNtHeaders = PIMAGE_NT_HEADERS;
-
-{$ENDIF FPC}
-
 // Subsystem Values
 
 const
@@ -1472,36 +1387,6 @@ const
   {$EXTERNALSYM IMAGE_SIZEOF_SHORT_NAME}
 
 type
-{$IFDEF FPC}
-
-  TImgSecHdrMisc = record
-    case Integer of
-      0: (PhysicalAddress: DWORD);
-      1: (VirtualSize: DWORD);
-  end;
-
-  PIMAGE_SECTION_HEADER = ^IMAGE_SECTION_HEADER;
-  {$EXTERNALSYM PIMAGE_SECTION_HEADER}
-  _IMAGE_SECTION_HEADER = record
-    Name: array [0..IMAGE_SIZEOF_SHORT_NAME - 1] of BYTE;
-    Misc: TImgSecHdrMisc;
-    VirtualAddress: DWORD;
-    SizeOfRawData: DWORD;
-    PointerToRawData: DWORD;
-    PointerToRelocations: DWORD;
-    PointerToLinenumbers: DWORD;
-    NumberOfRelocations: WORD;
-    NumberOfLinenumbers: WORD;
-    Characteristics: DWORD;
-  end;
-  {$EXTERNALSYM _IMAGE_SECTION_HEADER}
-  IMAGE_SECTION_HEADER = _IMAGE_SECTION_HEADER;
-  {$EXTERNALSYM IMAGE_SECTION_HEADER}
-  TImageSectionHeader = IMAGE_SECTION_HEADER;
-  PImageSectionHeader = PIMAGE_SECTION_HEADER;
-
-{$ENDIF FPC}
-
   PPImageSectionHeader = ^PImageSectionHeader;
 
 // IMAGE_FIRST_SECTION doesn't need 32/64 versions since the file header is the same either way.

@@ -53,7 +53,6 @@ unit JclWin32;
 
 {$I jcl.inc}
 
-
 {$MINENUMSIZE 4}
 {$ALIGN ON}
 {$WARNINGS OFF}
@@ -119,8 +118,8 @@ type
   PByte = IntPtr;
 {$ENDIF CLR}
 
-
 type
+
 //
 // Unsigned Basics
 //
@@ -1264,7 +1263,6 @@ const
 // Directory format.
 //
 
-
 const
   IMAGE_NUMBEROF_DIRECTORY_ENTRIES = 16;
   {$EXTERNALSYM IMAGE_NUMBEROF_DIRECTORY_ENTRIES}
@@ -1276,7 +1274,6 @@ const
 type
   PIMAGE_OPTIONAL_HEADER32 = ^IMAGE_OPTIONAL_HEADER32;
   {$EXTERNALSYM PIMAGE_OPTIONAL_HEADER32}
-
 
   IMAGE_OPTIONAL_HEADER32 = _IMAGE_OPTIONAL_HEADER;
   {$EXTERNALSYM IMAGE_OPTIONAL_HEADER32}
@@ -1404,7 +1401,6 @@ type
   TImageNtHeaders32 = IMAGE_NT_HEADERS32;
   PImageNtHeaders32 = PIMAGE_NT_HEADERS32;
 
-
 // Subsystem Values
 
 const
@@ -1521,7 +1517,6 @@ const
   {$EXTERNALSYM IMAGE_SIZEOF_SHORT_NAME}
 
 type
-
   PPImageSectionHeader = ^PImageSectionHeader;
 
 // IMAGE_FIRST_SECTION doesn't need 32/64 versions since the file header is the same either way.
@@ -4253,7 +4248,6 @@ const
 {$DEFINE LM_USE_UNICODE}
 {$ENDIF}
 
-
 {$IFDEF FORCE_UNICODE}
 {$DEFINE LM_USE_UNICODE}
 {$ENDIF}
@@ -4277,7 +4271,6 @@ type
   {$EXTERNALSYM LMCSTR}
 
 {$ENDIF}
-
 
 //
 //        Message File Names
