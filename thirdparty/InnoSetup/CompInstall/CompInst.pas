@@ -94,11 +94,17 @@ var
   I: Integer;
   Inst: TJclBorRADToolInstallation;
   VStr: string;
+  ConfigDataLocation: string;
 begin
   Result := Installations.Count;
   for I := 0 to Installations.Count - 1 do
   begin
     Inst := Installations[I];
+
+    ConfigDataLocation := Inst.ConfigDataLocation;
+    if (ConfigDataLocation <> '') and (ConfigDataLocation[1] = PathDelim) then
+      ConfigDataLocation := Copy(ConfigDataLocation, 2, MaxInt); // there is no such thing as am absolute "\Software" registry key
+
     case Inst.RadToolKind of
       brDelphi:
         begin
@@ -106,7 +112,7 @@ begin
           SetEnvironmentVariable(PChar('DELPHI' + VStr), PChar(Inst.RootDir));
           SetEnvironmentVariable(PChar('DELPHI' + VStr + 'BPL'), PChar(Inst.BPLOutputPath));
           SetEnvironmentVariable(PChar('DELPHI' + VStr + 'DCP'), PChar(Inst.DCPOutputPath));
-          SetEnvironmentVariable(PChar('DELPHI' + VStr + 'RegKey'), PChar(Inst.ConfigDataLocation));
+          SetEnvironmentVariable(PChar('DELPHI' + VStr + 'RegKey'), PChar(ConfigDataLocation));
         end;
       brCppBuilder:
         begin
@@ -114,7 +120,7 @@ begin
           SetEnvironmentVariable(PChar('BCB' + VStr), PChar(Inst.RootDir));
           SetEnvironmentVariable(PChar('BCB' + VStr + 'BPL'), PChar(Inst.BPLOutputPath));
           SetEnvironmentVariable(PChar('BCB' + VStr + 'DCP'), PChar(Inst.DCPOutputPath));
-          SetEnvironmentVariable(PChar('BCB' + VStr + 'RegKey'), PChar(Inst.ConfigDataLocation));
+          SetEnvironmentVariable(PChar('BCB' + VStr + 'RegKey'), PChar(ConfigDataLocation));
         end;
       brBorlandDevStudio:
         begin
@@ -124,14 +130,14 @@ begin
             SetEnvironmentVariable(PChar('DELPHI' + VStr), PChar(Inst.RootDir));
             SetEnvironmentVariable(PChar('DELPHI' + VStr + 'BPL'), PChar(Inst.BPLOutputPath));
             SetEnvironmentVariable(PChar('DELPHI' + VStr + 'DCP'), PChar(Inst.DCPOutputPath));
-            SetEnvironmentVariable(PChar('DELPHI' + VStr + 'RegKey'), PChar(Inst.ConfigDataLocation));
+            SetEnvironmentVariable(PChar('DELPHI' + VStr + 'RegKey'), PChar(ConfigDataLocation));
           end;
           if bpBCBuilder32 in Inst.Personalities then
           begin
             SetEnvironmentVariable(PChar('BCB' + VStr), PChar(Inst.RootDir));
             SetEnvironmentVariable(PChar('BCB' + VStr + 'BPL'), PChar(Inst.BPLOutputPath));
             SetEnvironmentVariable(PChar('BCB' + VStr + 'DCP'), PChar(Inst.DCPOutputPath));
-            SetEnvironmentVariable(PChar('BCB' + VStr + 'RegKey'), PChar(Inst.ConfigDataLocation));
+            SetEnvironmentVariable(PChar('BCB' + VStr + 'RegKey'), PChar(ConfigDataLocation));
           end;
         end;
     end;

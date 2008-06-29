@@ -342,7 +342,7 @@ begin
     ExpertList := TStringList.Create;
     IdeExpertList := TStringList.Create;
 
-    ComponentsFilename := ExpandConstant('{app}\unins00c.dat');
+    ComponentsFilename := ExpandConstant('{app}\uninscmp.dat');
 
     if Installing then
       Components.CommaText := WizardSelectedComponents(False)

@@ -1,6 +1,6 @@
 [Components]
 ; IDE selection
-Name: "IDE"; Description: "Install for IDE"
+Name: "IDE"; Description: "Install for Professional/Enterprise/Architect IDE"
 #ifdef Include_Delphi5
 Name: "IDE\Delphi5"; Description: "Install for Delphi 5"; Types: full prefered; Check: IsDelphiInstalled(5)
 #endif
