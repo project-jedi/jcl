@@ -1356,6 +1356,8 @@ var
     end;
   end;
 
+var
+  CurrentStreamPosition: Integer;
 begin
   PrepareNibbleCharMapping;
   I := 1;
@@ -1363,7 +1365,11 @@ begin
   ValueLength := Length(Value);
   RequiredStreamSize := Stream.Position + ValueLength div 2;
   if Stream.Size < RequiredStreamSize then
+  begin
+    CurrentStreamPosition := Stream.Position;
     Stream.Size := RequiredStreamSize;
+    Stream.Seek(CurrentStreamPosition, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
+  end;
   while I < ValueLength do
   begin
     if J = cBufferSize - 1 then //Buffered write to speed up the process a little
