@@ -23,6 +23,7 @@
 {   Rik Barker (rikbarker)                                                                         }
 {   Robert Rossmair (rrossmair)                                                                    }
 {   Warren Postma                                                                                  }
+{   Terry Yapt                                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -186,6 +187,7 @@ type
     FDisplayName: string;
     FDescription: string;
     FFileName: TFileName;
+    FServiceStartName: string;
     FDependentServices: TList;
     FDependentGroups: TList;
     FDependentByServices: TList;
@@ -236,6 +238,7 @@ type
     property DesiredAccess: DWORD read FDesiredAccess;
     property Description: string read FDescription; // Win2K or later
     property FileName: TFileName read FFileName;
+    property ServiceStartName: string read FServiceStartName;
     property DependentServices[const Idx: Integer]: TJclNtService read GetDependentService;
     property DependentServiceCount: Integer read GetDependentServiceCount;
     property DependentGroups[const Idx: Integer]: TJclServiceGroup read GetDependentGroup;
@@ -599,6 +602,7 @@ begin
   begin
     FFileName := lpBinaryPathName;
     FStartType := TJclServiceStartType(dwStartType);
+    FServiceStartName := lpServiceStartName;
     FErrorControlType := TJclServiceErrorControlType(dwErrorControl);
     UpdateLoadOrderGroup;
     UpdateDependencies;
