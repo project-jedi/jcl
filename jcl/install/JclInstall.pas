@@ -1603,6 +1603,11 @@ var
         begin
           MarkOptionBegin(joDualPackages);
           TJclBDSInstallation(Target).DualPackageInstallation := True;
+          if OptionChecked[joCopyPackagesHppFiles] then
+          begin
+            MarkOptionBegin(joCopyPackagesHppFiles);
+            MarkOptionEnd(joCopyPackagesHppFiles, True);
+          end;
           MarkOptionEnd(joDualPackages, True);
         end
         else
@@ -2821,6 +2826,8 @@ begin
         Compiler.AddPathOption('N0', UnitOutputDir); // .dcu files
         //Compiler.AddPathOption('NH', FIncludeDir);   // .hpp files
         Compiler.AddPathOption('NO', UnitOutputDir); // .obj files
+        if TJclBDSInstallation(Target).DualPackageInstallation and OptionChecked[joCopyPackagesHppFiles] then
+          Compiler.AddPathOption('N1',Target.VclIncludeDir);
       end
       else
       begin

@@ -4894,10 +4894,9 @@ begin
     if not (bpBCBuilder32 in Personalities) then
       raise EJclBorRadException.CreateResFmt(@RsEDualPackageNotSupported, [Name]);
 
-    NewOptions := Format('%s -JL -NB"%s" -NO"%s" -N1"%s"',
+    NewOptions := Format('%s -JL -NB"%s" -NO"%s"',
       [ExtraOptions, PathRemoveSeparator(DcpPath),
-       PathRemoveSeparator(DcpPath),
-       PathRemoveSeparator(VclIncludeDir)]);
+       PathRemoveSeparator(DcpPath)]);
   end
   else
     NewOptions := ExtraOptions;
