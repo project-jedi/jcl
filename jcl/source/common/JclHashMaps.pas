@@ -53,6 +53,7 @@ uses
   JclAlgorithms,
   {$ENDIF SUPPORTS_GENERICS}
   JclBase, JclAbstractContainers, JclContainerIntf, JclSynch;
+
 type
   // Hash Function
   // Result must be in 0..Range-1

@@ -53,6 +53,7 @@ uses
   JclAlgorithms,
   {$ENDIF SUPPORTS_GENERICS}
   JclBase, JclAbstractContainers, JclContainerIntf, JclArrayLists, JclSynch;
+
 type
   TJclIntfArraySet = class(TJclIntfArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclIntfEqualityComparer, IJclIntfComparer,
@@ -69,7 +70,7 @@ type
     function AddAll(const ACollection: IJclIntfCollection): Boolean;
     function Contains(const AInterface: IInterface): Boolean;
     { IJclIntfList }
-    procedure Insert(Index: Integer; const AInterface: IInterface); overload;
+    function Insert(Index: Integer; const AInterface: IInterface): Boolean; overload;
     { IJclIntfSet }
     procedure Intersect(const ACollection: IJclIntfCollection);
     procedure Subtract(const ACollection: IJclIntfCollection);
@@ -93,7 +94,7 @@ type
     function AddAll(const ACollection: IJclAnsiStrCollection): Boolean; override;
     function Contains(const AString: AnsiString): Boolean; override;
     { IJclAnsiStrList }
-    procedure Insert(Index: Integer; const AString: AnsiString); overload;
+    function Insert(Index: Integer; const AString: AnsiString): Boolean; overload;
     { IJclAnsiStrSet }
     procedure Intersect(const ACollection: IJclAnsiStrCollection);
     procedure Subtract(const ACollection: IJclAnsiStrCollection);
@@ -117,7 +118,7 @@ type
     function AddAll(const ACollection: IJclWideStrCollection): Boolean; override;
     function Contains(const AString: WideString): Boolean; override;
     { IJclWideStrList }
-    procedure Insert(Index: Integer; const AString: WideString); overload;
+    function Insert(Index: Integer; const AString: WideString): Boolean; overload;
     { IJclWideStrSet }
     procedure Intersect(const ACollection: IJclWideStrCollection);
     procedure Subtract(const ACollection: IJclWideStrCollection);
@@ -148,7 +149,7 @@ type
     function AddAll(const ACollection: IJclSingleCollection): Boolean;
     function Contains(const AValue: Single): Boolean;
     { IJclSingleList }
-    procedure Insert(Index: Integer; const AValue: Single); overload;
+    function Insert(Index: Integer; const AValue: Single): Boolean; overload;
     { IJclSingleSet }
     procedure Intersect(const ACollection: IJclSingleCollection);
     procedure Subtract(const ACollection: IJclSingleCollection);
@@ -172,7 +173,7 @@ type
     function AddAll(const ACollection: IJclDoubleCollection): Boolean;
     function Contains(const AValue: Double): Boolean;
     { IJclDoubleList }
-    procedure Insert(Index: Integer; const AValue: Double); overload;
+    function Insert(Index: Integer; const AValue: Double): Boolean; overload;
     { IJclDoubleSet }
     procedure Intersect(const ACollection: IJclDoubleCollection);
     procedure Subtract(const ACollection: IJclDoubleCollection);
@@ -196,7 +197,7 @@ type
     function AddAll(const ACollection: IJclExtendedCollection): Boolean;
     function Contains(const AValue: Extended): Boolean;
     { IJclExtendedList }
-    procedure Insert(Index: Integer; const AValue: Extended); overload;
+    function Insert(Index: Integer; const AValue: Extended): Boolean; overload;
     { IJclExtendedSet }
     procedure Intersect(const ACollection: IJclExtendedCollection);
     procedure Subtract(const ACollection: IJclExtendedCollection);
@@ -230,7 +231,7 @@ type
     function AddAll(const ACollection: IJclIntegerCollection): Boolean;
     function Contains(AValue: Integer): Boolean;
     { IJclIntegerList }
-    procedure Insert(Index: Integer; AValue: Integer); overload;
+    function Insert(Index: Integer; AValue: Integer): Boolean; overload;
     { IJclIntegerSet }
     procedure Intersect(const ACollection: IJclIntegerCollection);
     procedure Subtract(const ACollection: IJclIntegerCollection);
@@ -254,7 +255,7 @@ type
     function AddAll(const ACollection: IJclCardinalCollection): Boolean;
     function Contains(AValue: Cardinal): Boolean;
     { IJclCardinalList }
-    procedure Insert(Index: Integer; AValue: Cardinal); overload;
+    function Insert(Index: Integer; AValue: Cardinal): Boolean; overload;
     { IJclCardinalSet }
     procedure Intersect(const ACollection: IJclCardinalCollection);
     procedure Subtract(const ACollection: IJclCardinalCollection);
@@ -278,7 +279,7 @@ type
     function AddAll(const ACollection: IJclInt64Collection): Boolean;
     function Contains(const AValue: Int64): Boolean;
     { IJclInt64List }
-    procedure Insert(Index: Integer; const AValue: Int64); overload;
+    function Insert(Index: Integer; const AValue: Int64): Boolean; overload;
     { IJclInt64Set }
     procedure Intersect(const ACollection: IJclInt64Collection);
     procedure Subtract(const ACollection: IJclInt64Collection);
@@ -303,7 +304,7 @@ type
     function AddAll(const ACollection: IJclPtrCollection): Boolean;
     function Contains(APtr: Pointer): Boolean;
     { IJclPtrList }
-    procedure Insert(Index: Integer; APtr: Pointer); overload;
+    function Insert(Index: Integer; APtr: Pointer): Boolean; overload;
     { IJclPtrSet }
     procedure Intersect(const ACollection: IJclPtrCollection);
     procedure Subtract(const ACollection: IJclPtrCollection);
@@ -328,7 +329,7 @@ type
     function AddAll(const ACollection: IJclCollection): Boolean;
     function Contains(AObject: TObject): Boolean;
     { IJclList }
-    procedure Insert(Index: Integer; AObject: TObject); overload;
+    function Insert(Index: Integer; AObject: TObject): Boolean; overload;
     { IJclSet }
     procedure Intersect(const ACollection: IJclCollection);
     procedure Subtract(const ACollection: IJclCollection);
@@ -353,7 +354,7 @@ type
     function AddAll(const ACollection: IJclCollection<T>): Boolean;
     function Contains(const AItem: T): Boolean;
     { IJclList<T> }
-    procedure Insert(Index: Integer; const AItem: T); overload;
+    function Insert(Index: Integer; const AItem: T): Boolean; overload;
     { IJclSet<T> }
     procedure Intersect(const ACollection: IJclCollection<T>);
     procedure Subtract(const ACollection: IJclCollection<T>);
@@ -551,7 +552,7 @@ begin
   AssignPropertiesTo(Result);
 end;
 
-procedure TJclIntfArraySet.Insert(Index: Integer; const AInterface: IInterface);
+function TJclIntfArraySet.Insert(Index: Integer; const AInterface: IInterface): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
 end;
@@ -693,7 +694,7 @@ begin
   AssignPropertiesTo(Result);
 end;
 
-procedure TJclAnsiStrArraySet.Insert(Index: Integer; const AString: AnsiString);
+function TJclAnsiStrArraySet.Insert(Index: Integer; const AString: AnsiString): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
 end;
@@ -835,7 +836,7 @@ begin
   AssignPropertiesTo(Result);
 end;
 
-procedure TJclWideStrArraySet.Insert(Index: Integer; const AString: WideString);
+function TJclWideStrArraySet.Insert(Index: Integer; const AString: WideString): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
 end;
@@ -977,7 +978,7 @@ begin
   AssignPropertiesTo(Result);
 end;
 
-procedure TJclSingleArraySet.Insert(Index: Integer; const AValue: Single);
+function TJclSingleArraySet.Insert(Index: Integer; const AValue: Single): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
 end;
@@ -1119,7 +1120,7 @@ begin
   AssignPropertiesTo(Result);
 end;
 
-procedure TJclDoubleArraySet.Insert(Index: Integer; const AValue: Double);
+function TJclDoubleArraySet.Insert(Index: Integer; const AValue: Double): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
 end;
@@ -1261,7 +1262,7 @@ begin
   AssignPropertiesTo(Result);
 end;
 
-procedure TJclExtendedArraySet.Insert(Index: Integer; const AValue: Extended);
+function TJclExtendedArraySet.Insert(Index: Integer; const AValue: Extended): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
 end;
@@ -1403,7 +1404,7 @@ begin
   AssignPropertiesTo(Result);
 end;
 
-procedure TJclIntegerArraySet.Insert(Index: Integer; AValue: Integer);
+function TJclIntegerArraySet.Insert(Index: Integer; AValue: Integer): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
 end;
@@ -1545,7 +1546,7 @@ begin
   AssignPropertiesTo(Result);
 end;
 
-procedure TJclCardinalArraySet.Insert(Index: Integer; AValue: Cardinal);
+function TJclCardinalArraySet.Insert(Index: Integer; AValue: Cardinal): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
 end;
@@ -1687,7 +1688,7 @@ begin
   AssignPropertiesTo(Result);
 end;
 
-procedure TJclInt64ArraySet.Insert(Index: Integer; const AValue: Int64);
+function TJclInt64ArraySet.Insert(Index: Integer; const AValue: Int64): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
 end;
@@ -1830,7 +1831,7 @@ begin
   AssignPropertiesTo(Result);
 end;
 
-procedure TJclPtrArraySet.Insert(Index: Integer; APtr: Pointer);
+function TJclPtrArraySet.Insert(Index: Integer; APtr: Pointer): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
 end;
@@ -1973,7 +1974,7 @@ begin
   AssignPropertiesTo(Result);
 end;
 
-procedure TJclArraySet.Insert(Index: Integer; AObject: TObject);
+function TJclArraySet.Insert(Index: Integer; AObject: TObject): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
 end;
@@ -2111,7 +2112,7 @@ begin
 end;
 
 
-procedure TJclArraySet<T>.Insert(Index: Integer; const AItem: T);
+function TJclArraySet<T>.Insert(Index: Integer; const AItem: T): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
 end;

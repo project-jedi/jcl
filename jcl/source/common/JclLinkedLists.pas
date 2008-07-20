@@ -53,6 +53,7 @@ uses
   {$ENDIF SUPPORTS_GENERICS}
   Classes,
   JclBase, JclAbstractContainers, JclContainerIntf, JclSynch;
+
 type
   TJclIntfLinkedListItem = class
   public

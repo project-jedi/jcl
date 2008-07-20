@@ -53,6 +53,7 @@ uses
   JclAlgorithms,
   {$ENDIF SUPPORTS_GENERICS}
   JclBase, JclAbstractContainers, JclContainerIntf, JclHashMaps, JclSynch;
+
 type
   {$IFDEF SUPPORTS_GENERICS}
   TRefUnique = class;

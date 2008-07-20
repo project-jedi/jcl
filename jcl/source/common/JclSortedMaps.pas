@@ -52,6 +52,7 @@ uses
   JclAlgorithms,
   {$ENDIF SUPPORTS_GENERICS}
   JclBase, JclAbstractContainers, JclContainerIntf, JclSynch;
+
 type
   TJclIntfIntfSortedEntry = record
     Key: IInterface;

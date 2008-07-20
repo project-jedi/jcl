@@ -53,6 +53,7 @@ uses
   {$ENDIF SUPPORTS_GENERICS}
   JclBase, JclAbstractContainers, JclContainerIntf, JclSynch;
 
+
 type
   TJclIntfTreeNode = class
   public
