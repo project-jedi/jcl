@@ -184,14 +184,6 @@
       <File FileName="..\..\source\common\JclComplex.pas" ContainerId="" ModuleName="JclComplex"/>
       <File FileName="..\..\source\common\JclCounter.pas" ContainerId="" ModuleName="JclCounter"/>
       <File FileName="..\..\source\common\JclDateTime.pas" ContainerId="" ModuleName="JclDateTime"/>
-      <File FileName="..\..\source\common\JclEDI.pas" ContainerId="" ModuleName="JclEDI"/>
-      <File FileName="..\..\source\common\JclEDISEF.pas" ContainerId="" ModuleName="JclEDISEF"/>
-      <File FileName="..\..\source\common\JclEDITranslators.pas" ContainerId="" ModuleName="JclEDITranslators"/>
-      <File FileName="..\..\source\common\JclEDIXML.pas" ContainerId="" ModuleName="JclEDIXML"/>
-      <File FileName="..\..\source\common\JclEDI_ANSIX12.pas" ContainerId="" ModuleName="JclEDI_ANSIX12"/>
-      <File FileName="..\..\source\common\JclEDI_ANSIX12_Ext.pas" ContainerId="" ModuleName="JclEDI_ANSIX12_Ext"/>
-      <File FileName="..\..\source\common\JclEDI_UNEDIFACT.pas" ContainerId="" ModuleName="JclEDI_UNEDIFACT"/>
-      <File FileName="..\..\source\common\JclEDI_UNEDIFACT_Ext.pas" ContainerId="" ModuleName="JclEDI_UNEDIFACT_Ext"/>
       <File FileName="..\..\source\common\JclFileUtils.pas" ContainerId="" ModuleName="JclFileUtils"/>
       <File FileName="..\..\source\common\JclIniFiles.pas" ContainerId="" ModuleName="JclIniFiles"/>
       <File FileName="..\..\source\common\JclLogic.pas" ContainerId="" ModuleName="JclLogic"/>

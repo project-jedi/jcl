@@ -28,14 +28,14 @@
     <File Name="..\..\source\common\JclCompression.pas" Targets="JclDev" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclCounter.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclDateTime.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclEDI.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclEDISEF.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclEDITranslators.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclEDIXML.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclEDI_ANSIX12.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclEDI_ANSIX12_Ext.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclEDI_UNEDIFACT.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclEDI_UNEDIFACT_Ext.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclEDI.pas" Targets="JclDev" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclEDISEF.pas" Targets="JclDev" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclEDITranslators.pas" Targets="JclDev" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclEDIXML.pas" Targets="JclDev" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclEDI_ANSIX12.pas" Targets="JclDev" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclEDI_ANSIX12_Ext.pas" Targets="JclDev" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclEDI_UNEDIFACT.pas" Targets="JclDev" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclEDI_UNEDIFACT_Ext.pas" Targets="JclDev" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclExprEval.pas" Targets="JclDev" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclFileUtils.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclIniFiles.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
