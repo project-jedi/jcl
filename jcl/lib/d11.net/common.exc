@@ -2,6 +2,14 @@ bzip2.pas
 Jcl8087.pas
 JclBorlandTools.pas
 JclCompression.pas
+JclEDI.pas
+JclEDI_ANSIX12.pas
+JclEDI_ANSIX12_Ext.pas
+JclEDI_UNEDIFACT.pas
+JclEDI_UNEDIFACT_Ext.pas
+JclEDISEF.pas
+JclEDITranslators.pas
+JclEDIXML.pas
 JclExprEval.pas
 JclMIDI.pas
 JclPCRE.pas
