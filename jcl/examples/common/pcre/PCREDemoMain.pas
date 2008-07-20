@@ -85,13 +85,16 @@ begin
   if RE = nil then
     acFind.Execute
   else
+  begin
+    Inc(FMatchIndex);
     Match;
+  end;
 end;
 
 procedure TfrmMain.SelectText(Range: TJclAnsiCaptureRange);
 begin
-  reFile.SelStart := Range.FirstPos;
-  reFile.SelLength := Range.LastPos - Range.FirstPos;
+  reFile.SelStart := Range.FirstPos - 1;
+  reFile.SelLength := Range.LastPos - Range.FirstPos + 1;
 end;
 
 procedure TfrmMain.Match;

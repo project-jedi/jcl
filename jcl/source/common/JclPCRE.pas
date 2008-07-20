@@ -78,7 +78,8 @@ type
     roAnchored, roDollarEndOnly, roExtra, roNotBOL, roNotEOL, roUnGreedy,
     roNotEmpty, roUTF8, roNoAutoCapture, roNoUTF8Check, roAutoCallout,
     roPartial, roDfaShortest, roDfaRestart, roDfaFirstLine, roDupNames,
-    roNewLineCR, roNewLineLF, roNewLineCRLF, roNewLineAny);
+    roNewLineCR, roNewLineLF, roNewLineCRLF, roNewLineAny, roBSRAnyCRLF,
+    roBSRUnicode, roJavascriptCompat);
   TJclAnsiRegExOptions = set of TJclAnsiRegExOption;
   TJclAnsiCaptureRange = record
     FirstPos: Integer;
@@ -247,6 +248,10 @@ begin
       PErr := @RsErrDfaRecurse;
     PCRE_ERROR_RECURSIONLIMIT:
       PErr := @RsErrRecursionLimit;
+    PCRE_ERROR_NULLWSLIMIT:
+      PErr := @RsErrNullWsLimit;
+    PCRE_ERROR_BADNEWLINE:
+      PErr := @RsErrBadNewLine;
     JCL_PCRE_ERROR_STUDYFAILED:
       PErr := @RsErrStudyFailed;
     JCL_PCRE_ERROR_CALLOUTERROR:
@@ -292,7 +297,8 @@ begin
   if FPattern = '' then
     raise EPCREError.CreateRes(@RsErrNull, PCRE_ERROR_NULL);
 
-  if Assigned(FCode) then CallPCREFree(FCode);
+  if Assigned(FCode) then
+    CallPCREFree(FCode);
   FCode := pcre_compile2(PChar(FPattern), GetAPIOptions(False),
     @FErrorCode, @ErrMsgPtr, @FErrorOffset, Tables);
   Inc(FErrorOffset);
@@ -335,11 +341,13 @@ const
     PCRE_DOLLAR_ENDONLY, PCRE_EXTRA, 0, 0, PCRE_UNGREEDY, 0, PCRE_UTF8,
     PCRE_NO_AUTO_CAPTURE, PCRE_NO_UTF8_CHECK, PCRE_AUTO_CALLOUT, 0, 0, 0, 0,
     PCRE_DUPNAMES, PCRE_NEWLINE_CR, PCRE_NEWLINE_LF, PCRE_NEWLINE_CRLF,
-    PCRE_NEWLINE_ANY);
+    PCRE_NEWLINE_ANY, PCRE_BSR_ANYCRLF, PCRE_BSR_UNICODE,
+    PCRE_JAVASCRIPT_COMPAT);
   cRunOptions: array [TJclAnsiRegExOption] of Integer =
    (0, 0, 0, 0, 0, 0, 0, PCRE_NOTBOL, PCRE_NOTEOL, 0, PCRE_NOTEMPTY, 0, 0,
    PCRE_NO_UTF8_CHECK, 0, PCRE_PARTIAL, 0, 0, 0, 0, PCRE_NEWLINE_CR,
-   PCRE_NEWLINE_LF, PCRE_NEWLINE_CRLF, PCRE_NEWLINE_ANY);
+   PCRE_NEWLINE_LF, PCRE_NEWLINE_CRLF, PCRE_NEWLINE_ANY, PCRE_BSR_ANYCRLF,
+   PCRE_BSR_UNICODE, PCRE_JAVASCRIPT_COMPAT);
 var
   I: TJclAnsiRegExOption;
 begin

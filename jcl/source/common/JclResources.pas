@@ -1401,6 +1401,8 @@ resourcestring
   RsErrDfaWSSize     = 'DFA WSSize';
   RsErrDfaRecurse    = 'DFA Recurse';
   RsErrRecursionLimit = 'Recursion limit';
+  RsErrNullWsLimit   = 'Null WS limit';
+  RsErrBadNewLine    = 'Bad new line';
   RsErrLibNotLoaded  = 'PCRE library not loaded';
   RsErrMemFuncNotSet = 'PCRE memory management functions not set';
   RsErrStudyFailed   = 'Study failed'; 

@@ -118,6 +118,14 @@ const
   {$EXTERNALSYM PCRE_NEWLINE_CRLF}
   PCRE_NEWLINE_ANY = $00400000;
   {$EXTERNALSYM PCRE_NEWLINE_ANY}
+  PCRE_NEWLINE_ANYCRLF = $00500000;
+  {$EXTERNALSYM PCRE_NEWLINE_ANYCRLF}
+  PCRE_BSR_ANYCRLF = $00800000;
+  {$EXTERNALSYM PCRE_BSR_ANYCRLF}
+  PCRE_BSR_UNICODE = $01000000;
+  {$EXTERNALSYM PCRE_BSR_UNICODE}
+  PCRE_JAVASCRIPT_COMPAT = $02000000;
+  {$EXTERNALSYM PCRE_JAVASCRIPT_COMPAT}
 
   (* Exec-time and get-time error codes *)
 
@@ -163,6 +171,10 @@ const
   {$EXTERNALSYM PCRE_ERROR_DFA_RECURSE}
   PCRE_ERROR_RECURSIONLIMIT = -21;
   {$EXTERNALSYM PCRE_ERROR_RECURSIONLIMIT}
+  PCRE_ERROR_NULLWSLIMIT = -22;  (* No longer actually used *)
+  {$EXTERNALSYM PCRE_ERROR_NULLWSLIMIT}
+  PCRE_ERROR_BADNEWLINE = -23;
+  {$EXTERNALSYM PCRE_ERROR_BADNEWLINE}
 
   (* Request types for pcre_fullinfo() *)
 
@@ -190,6 +202,12 @@ const
   {$EXTERNALSYM PCRE_INFO_STUDYSIZE}
   PCRE_INFO_DEFAULT_TABLES = 11;
   {$EXTERNALSYM PCRE_INFO_DEFAULT_TABLES}
+  PCRE_INFO_OKPARTIAL = 12;
+  {$EXTERNALSYM PCRE_INFO_OKPARTIAL}
+  PCRE_INFO_JCHANGED = 13;
+  {$EXTERNALSYM PCRE_INFO_JCHANGED}
+  PCRE_INFO_HASCRORLF = 14;
+  {$EXTERNALSYM PCRE_INFO_HASCRORLF}
 
   (* Request types for pcre_config() *)
   PCRE_CONFIG_UTF8 = 0;
@@ -208,6 +226,8 @@ const
   {$EXTERNALSYM PCRE_CONFIG_UNICODE_PROPERTIES}
   PCRE_CONFIG_MATCH_LIMIT_RECURSION = 7;
   {$EXTERNALSYM PCRE_CONFIG_MATCH_LIMIT_RECURSION}
+  PCRE_CONFIG_BSR = 8;
+  {$EXTERNALSYM PCRE_CONFIG_BSR}
 
   (* Bit flags for the pcre_extra structure *)
 
@@ -231,7 +251,7 @@ type
   PInteger = ^Integer;
   {$EXTERNALSYM PInteger}
 
-  real_pcre = record
+  real_pcre = packed record
     {magic_number: Longword;
     size: Integer;
     tables: PChar;
@@ -245,7 +265,7 @@ type
   TPCRE = real_pcre;
   PPCRE = ^TPCRE;
 
-  real_pcre_extra = record
+  real_pcre_extra = packed record
     {options: PChar;
     start_bits: array [0..31] of Char;}
     flags: Cardinal;        (* Bits for which fields are set *)
@@ -258,7 +278,7 @@ type
   TPCREExtra = real_pcre_extra;
   PPCREExtra = ^TPCREExtra;
 
-  pcre_callout_block = record
+  pcre_callout_block = packed record
     version: Integer;           (* Identifies version of block *)
   (* ------------------------ Version 0 ------------------------------- *)
     callout_number: Integer;    (* Number compiled into pattern *)
@@ -379,10 +399,10 @@ function pcre_exec(const code: PPCRE; const extra: PPCREExtra; const subject: PC
   length, startoffset, options: Integer; ovector: PInteger; ovecsize: Integer): Integer;
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre_exec}
-procedure pcre_free_substring(var stringptr: PChar);
+procedure pcre_free_substring(stringptr: PChar);
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre_free_substring}
-procedure pcre_free_substring_list(var stringptr: PChar);
+procedure pcre_free_substring_list(stringlistptr: PPChar);
   {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre_free_substring_list}
 function pcre_fullinfo(const code: PPCRE; const extra: PPCREExtra;
@@ -455,10 +475,10 @@ type
     length, startoffset, options: Integer; ovector: PInteger; ovecsize: Integer): Integer;
     {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_exec_func}
-  pcre_free_substring_func = procedure(var stringptr: PChar);
+  pcre_free_substring_func = procedure(stringptr: PChar);
     {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_free_substring_func}
-  pcre_free_substring_list_func = procedure(var stringptr: PChar);
+  pcre_free_substring_list_func = procedure(stringptr: PPChar);
     {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_free_substring_list_func}
   pcre_fullinfo_func = function(const code: PPCRE; const extra: PPCREExtra;
@@ -621,169 +641,71 @@ type
 const
   szMSVCRT = 'MSVCRT.DLL';
 
-function memcpy(dest, src: Pointer; count: size_t): Pointer; cdecl; external szMSVCRT name 'memcpy';
-function _memcpy(dest, src: Pointer; count: size_t): Pointer;
-begin
-  Result := memcpy(dest, src, count);
-end;
-
-function memmove(dest, src: Pointer; count: size_t): Pointer; cdecl; external szMSVCRT name 'memmove';
-function _memmove(dest, src: Pointer; count: size_t): Pointer;
-begin
-  Result := memmove(dest, src, count);
-end;
-
-function memset(dest: Pointer; val: Integer; count: size_t): Pointer; cdecl; external szMSVCRT name 'memset';
-function _memset(dest: Pointer; val: Integer; count: size_t): Pointer;
-begin
-  Result := memset(dest, val, count);
-end;
+function _memcpy(dest, src: Pointer; count: size_t): Pointer; cdecl; external szMSVCRT name 'memcpy';
+function _memmove(dest, src: Pointer; count: size_t): Pointer; cdecl; external szMSVCRT name 'memmove';
+function _memset(dest: Pointer; val: Integer; count: size_t): Pointer; cdecl; external szMSVCRT name 'memset';
+function _strncmp(s1: PAnsiChar; s2: PAnsiChar; n: size_t): Integer; cdecl; external szMSVCRT name 'strncmp';
+function _memcmp(s1: Pointer; s2: Pointer; n: size_t): Integer; cdecl; external szMSVCRT name 'memcmp';
+function _strlen(s: PAnsiChar): size_t; cdecl; external szMSVCRT name 'strlen';
+function __ltolower(__ch: Integer): Integer; cdecl; external szMSVCRT name 'tolower';
+function __ltoupper(__ch: Integer): Integer; cdecl; external szMSVCRT name 'toupper';
+function _isalnum(__ch: Integer): Integer; cdecl; external szMSVCRT name 'isalnum';
+function _isalpha(__ch: Integer): Integer; cdecl; external szMSVCRT name 'isalpha';
+function _iscntrl(__ch: Integer): Integer; cdecl; external szMSVCRT name 'iscntrl';
+function _isdigit(__ch: Integer): Integer; cdecl; external szMSVCRT name 'isdigit';
+function _isgraph(__ch: Integer): Integer; cdecl; external szMSVCRT name 'isgraph';
+function _islower(__ch: Integer): Integer; cdecl; external szMSVCRT name 'islower';
+function _isprint(__ch: Integer): Integer; cdecl; external szMSVCRT name 'isprint';
+function _ispunct(__ch: Integer): Integer; cdecl; external szMSVCRT name 'ispunct';
+function _isspace(__ch: Integer): Integer; cdecl; external szMSVCRT name 'isspace';
+function _isupper(__ch: Integer): Integer; cdecl; external szMSVCRT name 'isupper';
+function _isxdigit(__ch: Integer): Integer; cdecl; external szMSVCRT name 'isxdigit';
+function _strchr(__s: PChar; __c: Integer): PAnsiChar; cdecl; external szMSVCRT name 'strchr';
 
 function malloc(size: size_t): Pointer; cdecl; external szMSVCRT name 'malloc';
-function _malloc(size: size_t): Pointer;
-begin
-  Result := malloc(size);
-end;
 
-procedure free(pBlock: Pointer); cdecl; external szMSVCRT name 'free';
-procedure _free(pBlock: Pointer);
-begin
-  free(pBlock);
-end;
-
-function strncmp(s1: PAnsiChar; s2: PAnsiChar; n: size_t): Integer; cdecl; external szMSVCRT name 'strncmp';
-function _strncmp(s1: PAnsiChar; s2: PAnsiChar; n: size_t): Integer;
-begin
-  Result := strncmp(s1, s2, n);
-end;
-
-function memcmp(s1: Pointer; s2: Pointer; n: size_t): Integer; cdecl; external szMSVCRT name 'memcmp';
-function _memcmp(s1: Pointer; s2: Pointer; n: size_t): Integer;
-begin
-  Result := memcmp(s1, s2, n);
-end;
-
-function strlen(s: PAnsiChar): size_t; cdecl; external szMSVCRT name 'strlen';
-function _strlen(s: PAnsiChar): size_t;
-begin
-  Result := strlen(s);
-end;
-
-function tolower(__ch: Integer): Integer; cdecl; external szMSVCRT name 'tolower';
-function __ltolower(__ch: Integer): Integer;
-begin
-  Result := tolower(__ch);
-end;
-
-function toupper(__ch: Integer): Integer; cdecl; external szMSVCRT name 'toupper';
-function __ltoupper(__ch: Integer): Integer;
-begin
-  Result := toupper(__ch);
-end;
-
-function isalnum(__ch: Integer): Integer; cdecl; external szMSVCRT name 'isalnum';
-function _isalnum(__ch: Integer): Integer;
-begin
-  Result := isalnum(__ch);
-end;
-
-function isalpha(__ch: Integer): Integer; cdecl; external szMSVCRT name 'isalpha';
-function _isalpha(__ch: Integer): Integer;
-begin
-  Result := isalpha(__ch);
-end;
-
-function iscntrl(__ch: Integer): Integer; cdecl; external szMSVCRT name 'iscntrl';
-function _iscntrl(__ch: Integer): Integer;
-begin
-  Result := iscntrl(__ch);
-end;
-
-function isdigit(__ch: Integer): Integer; cdecl; external szMSVCRT name 'isdigit';
-function _isdigit(__ch: Integer): Integer;
-begin
-  Result := isdigit(__ch);
-end;
-
-function isgraph(__ch: Integer): Integer; cdecl; external szMSVCRT name 'isgraph';
-function _isgraph(__ch: Integer): Integer;
-begin
-  Result := isgraph(__ch);
-end;
-
-function islower(__ch: Integer): Integer; cdecl; external szMSVCRT name 'islower';
-function _islower(__ch: Integer): Integer;
-begin
-  Result := islower(__ch);
-end;
-
-function isprint(__ch: Integer): Integer; cdecl; external szMSVCRT name 'isprint';
-function _isprint(__ch: Integer): Integer;
-begin
-  Result := isprint(__ch);
-end;
-
-function ispunct(__ch: Integer): Integer; cdecl; external szMSVCRT name 'ispunct';
-function _ispunct(__ch: Integer): Integer;
-begin
-  Result := ispunct(__ch);
-end;
-
-function isspace(__ch: Integer): Integer; cdecl; external szMSVCRT name 'isspace';
-function _isspace(__ch: Integer): Integer;
-begin
-  Result := isspace(__ch);
-end;
-
-function isupper(__ch: Integer): Integer; cdecl; external szMSVCRT name 'isupper';
-function _isupper(__ch: Integer): Integer;
-begin
-  Result := isupper(__ch);
-end;
-
-function isxdigit(__ch: Integer): Integer; cdecl; external szMSVCRT name 'isxdigit';
-function _isxdigit(__ch: Integer): Integer;
-begin
-  Result := isxdigit(__ch);
-end;
-
-//int _RTLENTRY _EXPFUNC isascii (int __c);
-function strchr(__s: PChar; __c: Integer): PAnsiChar; cdecl; external szMSVCRT name 'strchr';
-function _strchr(__s: PChar; __c: Integer): PAnsiChar;
-begin
-  Result := strchr(__s, __c);
-end;
-
-function pcre_malloc(Size: Integer): Pointer; cdecl;
+function pcre_malloc(Size: Integer): Pointer;
 begin
   if Assigned(pcre_malloc_user) then
     Result := pcre_malloc_user(Size)
   else
-    Result := _malloc(Size);
+    Result := malloc(Size);
 end;
 
-procedure pcre_free(P: Pointer); cdecl;
+function pcre_stack_malloc(Size: Integer): Pointer;
+begin
+  if Assigned(pcre_stack_malloc_user) then
+    Result := pcre_stack_malloc_user(Size)
+  else
+    Result := malloc(Size);
+end;
+
+function _malloc(size: size_t): Pointer;
+begin
+  Result := pcre_malloc(size);
+end;
+
+procedure free(pBlock: Pointer); cdecl; external szMSVCRT name 'free';
+
+procedure pcre_free(P: Pointer);
 begin
   if Assigned(pcre_free_user) then
     pcre_free_user(P)
   else
-    _free(P);
+    free(P);
 end;
 
-function pcre_stack_malloc(Size: Integer): Pointer; cdecl;
-begin
-  if Assigned(pcre_stack_malloc_user) then
-    Result := pcre_stack_malloc_user(Size)
-  else 
-    Result := _malloc(Size);
-end;
-
-procedure pcre_stack_free(P: Pointer); cdecl;
+procedure pcre_stack_free(P: Pointer);
 begin
   if Assigned(pcre_stack_free_user) then
     pcre_stack_free_user(P)
   else
-    _free(P);
+    free(P);
+end;
+
+procedure _free(pBlock: Pointer);
+begin
+  pcre_free(pBlock);
 end;
 
 function pcre_callout(var callout_block: pcre_callout_block): Integer; cdecl;
@@ -806,7 +728,7 @@ type
 
 const
   {$IFDEF MSWINDOWS}
-  libpcremodulename = 'pcre.dll';
+  libpcremodulename = 'pcre3.dll';
   {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
   libpcremodulename = 'libpcre.so.0';
