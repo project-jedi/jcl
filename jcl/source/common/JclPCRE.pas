@@ -153,7 +153,7 @@ type
     property ErrorMessage: AnsiString read FErrorMessage;
     property ErrorOffset: Integer read FErrorOffset;
 
-    property oncallout: TJclAnsiRegExCallout
+    property OnCallout: TJclAnsiRegExCallout
       read FOnCallout write FOnCallout;
   end;
 

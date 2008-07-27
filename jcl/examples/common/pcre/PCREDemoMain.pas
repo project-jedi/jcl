@@ -85,10 +85,7 @@ begin
   if RE = nil then
     acFind.Execute
   else
-  begin
-    Inc(FMatchIndex);
     Match;
-  end;
 end;
 
 procedure TfrmMain.SelectText(Range: TJclAnsiCaptureRange);
@@ -108,7 +105,7 @@ begin
   else
   begin
     SelectText(RE.CaptureRanges[0]);
-    FMatchIndex := RE.CaptureRanges[0].LastPos;
+    FMatchIndex := RE.CaptureRanges[0].LastPos + 1;
   end;
   UpdateUIOptions;
 end;
