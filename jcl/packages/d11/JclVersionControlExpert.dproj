@@ -49,8 +49,8 @@
            <VersionInfo Name="AutoIncBuild">False</VersionInfo>
            <VersionInfo Name="MajorVer">1</VersionInfo>
            <VersionInfo Name="MinorVer">102</VersionInfo>
-           <VersionInfo Name="Release">0</VersionInfo>
-           <VersionInfo Name="Build">2726</VersionInfo>
+           <VersionInfo Name="Release">1</VersionInfo>
+           <VersionInfo Name="Build">3072</VersionInfo>
            <VersionInfo Name="Debug">False</VersionInfo>
            <VersionInfo Name="PreRelease">False</VersionInfo>
            <VersionInfo Name="Special">False</VersionInfo>
@@ -62,13 +62,13 @@
          <VersionInfoKeys>
           <VersionInfoKeys Name="CompanyName">Project JEDI</VersionInfoKeys>
           <VersionInfoKeys Name="FileDescription">JCL Integration of version control systems in the IDE</VersionInfoKeys>
-          <VersionInfoKeys Name="FileVersion">1.102.0.2726</VersionInfoKeys>
+          <VersionInfoKeys Name="FileVersion">1.102.1.3072</VersionInfoKeys>
           <VersionInfoKeys Name="InternalName">JclVersionControlExpert</VersionInfoKeys>
           <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2008 Project JEDI</VersionInfoKeys>
           <VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
           <VersionInfoKeys Name="OriginalFilename">JclVersionControlExpert110.bpl</VersionInfoKeys>
           <VersionInfoKeys Name="ProductName">JEDI Code Library</VersionInfoKeys>
-          <VersionInfoKeys Name="ProductVersion">1.102 Build 2726</VersionInfoKeys>
+          <VersionInfoKeys Name="ProductVersion">1.102 Build 3072</VersionInfoKeys>
          </VersionInfoKeys>
          <Source>
            <Source Name="MainSource">JclVersionControlExpert.dpk</Source>

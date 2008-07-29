@@ -137,8 +137,8 @@
       <ProjectProperties>
         <ProjectProperty name="VersionMajorNumber" value="1"/>
         <ProjectProperty name="VersionMinorNumber" value="102"/>
-        <ProjectProperty name="ReleaseNumber" value="0"/>
-        <ProjectProperty name="BuildNumber" value="2726"/>
+        <ProjectProperty name="ReleaseNumber" value="1"/>
+        <ProjectProperty name="BuildNumber" value="3072"/>
       </ProjectProperties>
     </Model>
   </models>
