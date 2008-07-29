@@ -18,9 +18,9 @@
 
 <h1>JEDI Code Library</h1>
 
-<p>Release 1.101<br>
-Build 2725
-17-August-2007</p>
+<p>Release 1.102<br>
+Build 3072
+29-July-2008</p>
 
 <hr><br>
 
@@ -65,17 +65,17 @@ use the facilities of our Subversion repository at Sourceforge.net&nbsp;
 
 <ul>
 
-  <li>New functions to copy and move directories and to handle command line parameters in JclFileUtils.</li>
-
-  <li>A function for Vista detecting UAC in JclSysInfo.</li>
-
-  <li>JclFont is introduced to initialize a TFont object to standard system fonts.</li>
-
-  <li>JclExprEval now supports operators: and, or, bor (bitwise), not, bnot (bitwise), cmp, xor, bxor(bitwise), div, mod, shl, shr.</li>
-
-  <li>Three new stream classes in JclStream: TJclSectoredStream (class to handle accesses to a sectored storage), TJclCRC16Stream and TJclCRC32Stream (a CRC is added to each sector preventing data corruption).</li>
-
-  <li>Unicode support is updated to version 5.1.0.</li>
+ <li>security update to BZip2 1.0.5;</li>
+ <li>Streams compatible with Delphi.net;</li>
+ <li>container rework (thread safe implementation, new contained types: WideString, Single, Double, Extended..., compatibility with iterators, splitted to a dedicated package);</li>
+ <li>Installation to multiple local user accounts at the same time;</li>
+ <li>updated detection of CPU features;</li>
+ <li>new functions in JclStrings to expand tab to spaces;</li>
+ <li>added properties to TJclSimpleXml to enumerate elements by name;</li>
+ <li>enhanced support for FPC;</li>
+ <li>added archive support (.zip, .rar, .tar, .gz, .bzip, .iso...) based on sevenzip;</li>
+ <li>support for callout in PCRE;</li>
+ <li>added project-wide settings for the debug expert.</li>
 
 </ul>
 

@@ -1,9 +1,9 @@
 --------------------------------------------------------------------------------
 
 JEDI Code Library
-Unstable 1.101
-Build 2725
-17-August-2007
+Unstable 1.102
+Build 3072
+29-July-2008
 
 --------------------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ Getting involved in JCL development
 --------------------------------------------------------------------------------
 
 About this release
-JCL release 1.101 provides an updated support for all targets (including CodeGear
+JCL release 1.102 provides an updated support for all targets (including CodeGear
 RAD Studio 2007).
 
 As always, multiple bugs have been fixed; for detailed change logs, use the
@@ -31,16 +31,20 @@ http://sourceforge.net/projects/jcl/, see below.
 
 Head changes:
 
- - New functions to copy and move directories and to handle command line
-   parameters in JclFileUtils.
- - A function for Vista detecting UAC in JclSysInfo.
- - JclFont is introduced to initialize TFont object to standard system fonts.
- - JclExprEval now supports operators: and, or, bor (bitwise), not, bnot (bitwise),
-   cmp, xor, bxor(bitwise), div, mod, shl, shr.
- - 3 new stream classes: TJclSectoredStream (class to handle accesses to a sectored
-   storage), TJclCRC16Stream and TJclCRC32Stream (a CRC is added to each sector
-   preventing data corruption).
- - Unicode support is updated to version 5.1.0.
+ - security update to BZip2 1.0.5;
+ - Streams compatible with Delphi.net;
+ - container rework (thread safe implementation, new contained types: WideString,
+   Single, Double, Extended..., compatibility with iterators, splitted to a
+   dedicated package);
+ - Installation to multiple local user accounts at the same time;
+ - updated detection of CPU features;
+ - new functions in JclStrings to expand tab to spaces;
+ - added properties to TJclSimpleXml to enumerate elements by name;
+ - enhanced support for FPC;
+ - added archive support (.zip, .rar, .tar, .gz, .bzip, .iso...) based on
+   sevenzip;
+ - support for callout in PCRE;
+ - added project-wide settings for the debug expert.
 
 Important:
 
