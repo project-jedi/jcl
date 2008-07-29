@@ -1,10 +1,10 @@
-unit QNumFormatExampleMain;
+unit NumFormatExampleMain;
 
 interface
 
 uses
   Math, SysUtils, Classes,
-  Qt, QGraphics, QControls, QForms, QStdCtrls, QComCtrls,
+  Windows, Graphics, Controls, Forms, StdCtrls, ComCtrls,
   JclSysUtils;
 
 type
@@ -58,7 +58,7 @@ var
 
 implementation
 
-{$R *.xfm}
+{$R *.dfm}
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin

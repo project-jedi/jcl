@@ -1,9 +1,9 @@
-unit QEnvironmentExampleMain;
+unit EnvironmentExampleMain;
 
 interface
 
 uses
-  SysUtils, Classes, QControls, QForms, QComCtrls, 
+  SysUtils, Classes, Controls, Forms, ComCtrls, 
   JclSysInfo;
 
 type
@@ -25,7 +25,7 @@ var
 
 implementation
 
-{$R *.xfm}
+{$R *.dfm}
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin

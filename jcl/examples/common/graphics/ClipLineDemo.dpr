@@ -1,10 +1,10 @@
-program QRTTIDemo;
+program ClipLineDemo;
 
 {$I jcl.inc}
 
 uses
-  QForms,
-  QRTTIDemoMain in 'QRTTIDemoMain.pas' {Form1};
+  Forms,
+  ClipLineDemoMain in 'ClipLineDemoMain.pas' {Form1};
 
 {$R *.res}
 {$R ..\..\..\source\windows\JclCommCtrlAsInvoker.res}

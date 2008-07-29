@@ -5,16 +5,6 @@ object Form1: TForm1
   Height = 540
   ActiveControl = EnvironmentView
   Caption = 'Environment Variables'
-  Color = clButton
-  Font.CharSet = fcsLatin2
-  Font.Color = clText
-  Font.Height = 12
-  Font.Name = 'MS Sans Serif'
-  Font.Pitch = fpVariable
-  Font.Style = []
-  Font.Weight = 40
-  ParentFont = False
-  Scaled = False
   OnCreate = FormCreate
   PixelsPerInch = 96
   object EnvironmentView: TListView
@@ -38,8 +28,6 @@ object Form1: TForm1
       end>
     RowSelect = True
     ReadOnly = True
-    ShowColumnSortIndicators = True
-    Sorted = True
     TabOrder = 0
     ViewStyle = vsReport
   end

@@ -1,10 +1,10 @@
-program QFileSearchDemo;
+program FileSearchDemo;
 
 {$I jcl.inc}
 
 uses
-  QForms,
-  QFileSearchDemoMain in 'QFileSearchDemoMain.pas' {FileSearchForm};
+  Forms,
+  FileSearchDemoMain in 'FileSearchDemoMain.pas' {FileSearchForm};
 
 {$R *.res}
 {$R ..\..\..\source\windows\JclCommCtrlAsInvoker.res}

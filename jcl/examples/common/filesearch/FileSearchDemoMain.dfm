@@ -1,12 +1,11 @@
 object FileSearchForm: TFileSearchForm
   Left = 258
   Top = 301
-  ClientWidth = 779
-  ClientHeight = 482
+  Width = 855
+  Height = 509
   HorzScrollBar.Range = 378
   VertScrollBar.Range = 252
   ActiveControl = StartBtn
-  AutoScroll = False
   Caption = 'File Search Demo (TJclFileEnumerator)'
   Color = clBtnFace
   Constraints.MinHeight = 279
@@ -18,15 +17,14 @@ object FileSearchForm: TFileSearchForm
   Font.Pitch = fpVariable
   Font.Style = []
   OldCreateOrder = True
-  Position = poDefaultPosOnly
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   PixelsPerInch = 96
   TextHeight = 13
   object StatusBar: TStatusBar
     Left = 0
-    Top = 460
-    Width = 779
+    Top = 461
+    Width = 847
     Height = 21
     Panels = <
       item
@@ -44,8 +42,8 @@ object FileSearchForm: TFileSearchForm
   object FileList: TListView
     Left = 0
     Top = 181
-    Width = 779
-    Height = 279
+    Width = 847
+    Height = 280
     Align = alClient
     Columns = <
       item
@@ -69,12 +67,11 @@ object FileSearchForm: TFileSearchForm
     ReadOnly = True
     TabOrder = 1
     ViewStyle = vsReport
-    OnColumnClick = FileListColumnClick
   end
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 779
+    Width = 847
     Height = 49
     Align = alTop
     BevelOuter = bvNone
@@ -136,11 +133,20 @@ object FileSearchForm: TFileSearchForm
       TabOrder = 0
       Text = '*'
     end
+    object SaveBtn: TButton
+      Left = 760
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = 'Save'
+      TabOrder = 5
+      OnClick = SaveBtnClick
+    end
   end
   object DetailsPanel: TPanel
     Left = 0
     Top = 49
-    Width = 779
+    Width = 847
     Height = 132
     Align = alTop
     BevelOuter = bvNone
@@ -348,5 +354,11 @@ object FileSearchForm: TFileSearchForm
       Caption = 'Case insensitive search'
       TabOrder = 11
     end
+  end
+  object SaveDialog: TSaveDialog
+    DefaultExt = '*.txt'
+    Filter = 'Text files (*.txt)|*.txt|All files (*.*)|*.*'
+    Left = 216
+    Top = 96
   end
 end

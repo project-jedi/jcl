@@ -20,16 +20,9 @@ uses
   {$IFDEF MSWINDOWS}
   Windows, Messages, JPEG, ShellAPI,
   {$ENDIF MSWINDOWS}
-  {$IFDEF VCL}
   Graphics, Controls, Forms,
   Dialogs, ComCtrls, StdCtrls, Menus, ExtCtrls, ExtDlgs,
   JclGraphics,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Qt, QGraphics, QMenus, QTypes, QExtCtrls, QComCtrls, QStdCtrls,
-  QControls, QForms, QDialogs,
-  JclQGraphics,
-  {$ENDIF VisualCLX}
   {$IFDEF HasShellCtrls}
     {$WARN UNIT_PLATFORM OFF} 
   ShellCtrls,

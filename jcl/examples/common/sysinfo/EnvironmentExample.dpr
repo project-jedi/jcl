@@ -1,11 +1,10 @@
-program QClipLineDemo;
+program EnvironmentExample;
 
 {$I jcl.inc}
 
 uses
-  QStyle,
-  QForms,
-  QClipLineDemoMain in 'QClipLineDemoMain.pas' {Form1};
+  Forms,
+  EnvironmentExampleMain in 'EnvironmentExampleMain.pas' {Form1};
 
 {$R *.res}
 {$R ..\..\..\source\windows\JclCommCtrlAsInvoker.res}

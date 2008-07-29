@@ -1,4 +1,4 @@
-unit QClipLineDemoMain;
+unit ClipLineDemoMain;
 
 {$I jcl.inc}
 
@@ -9,12 +9,7 @@ uses
 {$IFDEF MSWINDOWS}
   Windows,
 {$ENDIF}
-{$IFDEF VisualCLX}
-  Qt, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QTypes, JclQGraphUtils,
-{$ENDIF VisualCLX}
-{$IFDEF VCL}
   Graphics, ExtCtrls, Forms, JclGraphUtils,
-{$ENDIF VCL}
   JclBase;
 
 type
@@ -39,11 +34,7 @@ var
 
 implementation
 
-{$IFDEF VisualCLX}
-{$R *.xfm}
-{$ELSE}
 {$R *.dfm}
-{$ENDIF}
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin

@@ -1,7 +1,7 @@
 //
 // Robert Rossmair, 2003
 //
-unit QFileSearchDemoMain;
+unit FileSearchDemoMain;
 
 {$INCLUDE jcl.inc}
 
@@ -9,8 +9,8 @@ interface
 
 uses
   SysUtils, Classes,
-  Types, Qt, QGraphics, QStdCtrls, QControls, QExtCtrls, QComCtrls, QForms, QMask,
-  JclStrings, JclFileUtils, QDialogs;
+  Types, Graphics, StdCtrls, Controls, ExtCtrls, ComCtrls, Forms, Dialogs,
+  JclStrings, JclFileUtils;
 
 type
   TFileSearchForm = class(TForm)
@@ -51,7 +51,6 @@ type
     procedure StopBtnClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure FileListColumnClick(Sender: TObject; Column: TListColumn);
     procedure cbFileAttributeClick(Sender: TObject);
     procedure UpdateIncludeHiddenSubDirs(Sender: TObject);
     procedure IncludeHiddenSubDirsClick(Sender: TObject);
@@ -61,10 +60,8 @@ type
     { Private declarations }
     FFileEnumerator: TJclFileEnumerator;
     FDirCount: Integer;
-    FColumnIndex: Integer;
     FTaskID: TFileSearchTaskID;
     FT0: TDateTime;
-    FSortDirection: TSortDirection;
     FFileListLiveUpdate: Boolean;
     procedure DirectoryEntered(const Directory: string);
     procedure AddFile(const Directory: string; const FileInfo: TSearchRec);
@@ -76,7 +73,7 @@ var
 
 implementation
 
-{$R *.xfm}
+{$R *.dfm}
 
 procedure TFileSearchForm.FormCreate(Sender: TObject);
 begin
@@ -146,7 +143,6 @@ begin
     StatusBar.Panels[2].Text := 'Prematurely aborted.'
   else
     StatusBar.Panels[2].Text := Format('...finished (%f seconds).', [(Now - FT0) * SecsPerDay]);
-  FileList.Sorted := True;
   StartBtn.Enabled := True;
   SaveBtn.Enabled := True;
   StopBtn.Enabled := False;
@@ -184,7 +180,6 @@ begin
   FileList.Items.Clear;
   if not FFileListLiveUpdate then
     FileList.Items.BeginUpdate;
-  FileList.Sorted := False;
 
   FT0 := Now;
   FTaskID := FFileEnumerator.ForEach(AddFile);
@@ -193,19 +188,6 @@ end;
 procedure TFileSearchForm.StopBtnClick(Sender: TObject);
 begin
   FFileEnumerator.StopTask(FTaskID);
-end;
-
-procedure TFileSearchForm.FileListColumnClick(Sender: TObject; Column: TListColumn);
-const
-  SD: array[TSortDirection] of TSortDirection = (sdDescending, sdAscending);
-begin
-  if FColumnIndex = Column.Index then
-  begin
-    FSortDirection := SD[FSortDirection];
-    FileList.SortDirection := FSortDirection;
-  end
-  else
-    FColumnIndex := Column.Index;
 end;
 
 procedure TFileSearchForm.cbFileAttributeClick(Sender: TObject);

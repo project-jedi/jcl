@@ -7,16 +7,6 @@ object MainForm: TMainForm
   HorzScrollBar.Range = 779
   ActiveControl = ValueEdit
   Caption = 'TJclNumericFormat Example'
-  Color = clButton
-  Font.CharSet = fcsLatin2
-  Font.Color = clBlack
-  Font.Height = 12
-  Font.Name = 'MS Sans Serif'
-  Font.Pitch = fpFixed
-  Font.Style = []
-  Font.Weight = 40
-  ParentFont = False
-  Scaled = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   PixelsPerInch = 96

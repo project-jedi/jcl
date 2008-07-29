@@ -1,10 +1,10 @@
-program QNumFormatExample;
+program NumFormatExample;
 
 {$I jcl.inc}
 
 uses
-  QForms,
-  QNumFormatExampleMain in 'QNumFormatExampleMain.pas' {MainForm};
+  Forms,
+  NumFormatExampleMain in 'NumFormatExampleMain.pas' {MainForm};
 
 {$R *.res}
 {$R ..\..\..\source\windows\JclCommCtrlAsInvoker.res}
