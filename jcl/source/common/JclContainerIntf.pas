@@ -1831,28 +1831,22 @@ type
 
   IJclIntfArray = interface(IJclIntfList)
     ['{B055B427-7817-43FC-97D4-AD1845643D63}']
-    {$IFDEF CLR}
     function GetObject(Index: Integer): IInterface;
     procedure SetObject(Index: Integer; const AInterface: IInterface);
-    {$ENDIF CLR}
     property Objects[Index: Integer]: IInterface read GetObject write SetObject; default;
   end;
 
   IJclAnsiStrArray = interface(IJclAnsiStrList)
     ['{4953EA83-9288-4537-9D10-544D1C992B62}']
-    {$IFDEF CLR}
     function GetString(Index: Integer): AnsiString;
     procedure SetString(Index: Integer; const AString: AnsiString);
-    {$ENDIF CLR}
     property Strings[Index: Integer]: AnsiString read GetString write SetString; default;
   end;
 
   IJclWideStrArray = interface(IJclWideStrList)
     ['{3CE09F9A-5CB4-4867-80D5-C2313D278D69}']
-    {$IFDEF CLR}
     function GetString(Index: Integer): WideString;
     procedure SetString(Index: Integer; const AString: WideString);
-    {$ENDIF CLR}
     property Strings[Index: Integer]: WideString read GetString write SetString; default;
   end;
 
@@ -1865,28 +1859,22 @@ type
 
   IJclSingleArray = interface(IJclSingleList)
     ['{B96E2A4D-D750-4B65-B975-C619A05A29F6}']
-    {$IFDEF CLR}
     function GetValue(Index: Integer): Single;
     procedure SetValue(Index: Integer; const AValue: Single);
-    {$ENDIF CLR}
     property Values[Index: Integer]: Single read GetValue write SetValue; default;
   end;
 
   IJclDoubleArray = interface(IJclDoubleList)
     ['{67E66324-9757-4E85-8ECD-53396910FB39}']
-    {$IFDEF CLR}
     function GetValue(Index: Integer): Double;
     procedure SetValue(Index: Integer; const AValue: Double);
-    {$ENDIF CLR}
     property Values[Index: Integer]: Double read GetValue write SetValue; default;
   end;
 
   IJclExtendedArray = interface(IJclExtendedList)
     ['{D43E8D18-26B3-41A2-8D52-ED7EA2FE1AB7}']
-    {$IFDEF CLR}
     function GetValue(Index: Integer): Extended;
     procedure SetValue(Index: Integer; const AValue: Extended);
-    {$ENDIF CLR}
     property Values[Index: Integer]: Extended read GetValue write SetValue; default;
   end;
 
@@ -1902,58 +1890,46 @@ type
 
   IJclIntegerArray = interface(IJclIntegerList)
     ['{2B7C8B33-C0BD-4EC3-9764-63866E174781}']
-    {$IFDEF CLR}
     function GetValue(Index: Integer): Integer;
     procedure SetValue(Index: Integer; AValue: Integer);
-    {$ENDIF CLR}
     property Values[Index: Integer]: Integer read GetValue write SetValue; default;
   end;
 
   IJclCardinalArray = interface(IJclCardinalList)
     ['{C451F2F8-65C6-4C29-99A0-CC9C15356418}']
-    {$IFDEF CLR}
     function GetValue(Index: Integer): Cardinal;
     procedure SetValue(Index: Integer; AValue: Cardinal);
-    {$ENDIF CLR}
     property Values[Index: Integer]: Cardinal read GetValue write SetValue; default;
   end;
 
   IJclInt64Array = interface(IJclInt64List)
     ['{D947C43D-2D04-442A-A707-39EDE7D96FC9}']
-    {$IFDEF CLR}
     function GetValue(Index: Integer): Int64;
     procedure SetValue(Index: Integer; const AValue: Int64);
-    {$ENDIF CLR}
     property Values[Index: Integer]: Int64 read GetValue write SetValue; default;
   end;
 
   {$IFNDEF CLR}
   IJclPtrArray = interface(IJclPtrList)
     ['{D43E8D18-26B3-41A2-8D52-ED7EA2FE1AB7}']
-    {$IFDEF CLR}
     function GetPointer(Index: Integer): Pointer;
     procedure SetPointer(Index: Integer; APtr: Pointer);
-    {$ENDIF CLR}
     property Pointers[Index: Integer]: Pointer read GetPointer write SetPointer; default;
   end;
   {$ENDIF ~CLR}
 
   IJclArray = interface(IJclList)
     ['{A69F6D35-54B2-4361-852E-097ED75E648A}']
-    {$IFDEF CLR}
     function GetObject(Index: Integer): TObject;
     procedure SetObject(Index: Integer; AObject: TObject);
-    {$ENDIF CLR}
     property Objects[Index: Integer]: TObject read GetObject write SetObject; default;
   end;
 
   {$IFDEF SUPPORTS_GENERICS}
   IJclArray<T> = interface(IJclList<T>)
     ['{38810C13-E35E-428A-B84F-D25FB994BE8E}']
-    {$IFDEF CLR}
     function GetItem(Index: Integer): T;
     procedure SetItem(Index: Integer; const AItem: T);
-    {$ENDIF CLR}
     property Items[Index: Integer]: T read GetItem write SetItem; default;
   end;
   {$ENDIF SUPPORTS_GENERICS}
