@@ -6,6 +6,7 @@ object MainForm: TMainForm
   HorzScrollBar.Range = 508
   VertScrollBar.Range = 217
   ActiveControl = btnIntfArrayList
+  AutoScroll = False
   Caption = 'List Example'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET

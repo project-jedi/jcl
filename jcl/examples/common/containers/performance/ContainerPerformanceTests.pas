@@ -172,7 +172,7 @@ begin
     Results[1] := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
     Start := Now;
     for I := 0 to List.Size - 1 do
-      Res := Integer(List.Items[I]);
+      Res := Integer(List.Objects[I]);
     Results[2] := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
     Start := Now;
     for I := 0 to 200 do
@@ -180,9 +180,9 @@ begin
     Results[3] := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
     Start := Now;
     for I := List.Size - 1 downto 20 do
-      List.Items[I - 10] := List.Items[I];
+      List.Objects[I - 10] := List.Objects[I];
     for I := 0 to 10 do
-      List.Items[I + 10] := TObject(I);
+      List.Objects[I + 10] := TObject(I);
     Results[4] := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
     Start := Now;
     List.Clear;

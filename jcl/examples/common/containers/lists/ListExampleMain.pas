@@ -228,7 +228,7 @@ begin
     // Fastest way
     for I := 0 to List.Size - 1 do
     begin
-      MyObject := IIntfMyObject(List.Items[I]);
+      MyObject := IIntfMyObject(List.Objects[I]);
       memResult.Lines.Add(IntToStr(MyObject.Int) + ' ' + MyObject.Str);
     end;
     List.Clear;
@@ -330,7 +330,7 @@ begin
     // Fastest way
     for I := 0 to List.Size - 1 do
     begin
-      MyObject := TMyObject(List.Items[I]);
+      MyObject := TMyObject(List.Objects[I]);
       memResult.Lines.Add(IntToStr(MyObject.Int) + ' ' + MyObject.Str);
     end;
     List.Clear;
@@ -526,7 +526,7 @@ begin
     // Fastest way
     for I := 0 to List.Size - 1 do
     begin
-      S := List.Items[I];
+      S := List.Strings[I];
       memResult.Lines.Add(S);
     end;
     List.Clear;
@@ -561,7 +561,7 @@ begin
     // Fastest way
     for I := 0 to List.Size - 1 do
     begin
-      S := List.Items[I];
+      S := List.Strings[I];
       memResult.Lines.Add(S);
     end;
     List.Clear;
