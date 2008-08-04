@@ -3167,7 +3167,8 @@ end;
 
 procedure TJclInstallation.AddDemo(const Directory: string; const FileInfo: TSearchRec);
 begin
-  FDemoList.Append(Directory + FileInfo.Name);
+  if StrCompare(ExtractFileExt(FileInfo.Name),'.dpr') = 0 then
+    FDemoList.Append(Directory + FileInfo.Name);
 end;
 
 procedure TJclInstallation.AddDemos(const Directory: string);
