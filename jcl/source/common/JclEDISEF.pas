@@ -33,7 +33,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -3974,47 +3974,47 @@ var
   I: Integer;
 begin
   Result := '';
-  Result := Result + SectionTag_VER + AnsiSpace + FEDISEFVer + AnsiCrLf;
-  Result := Result + SectionTag_INI + AnsiCrLf;
-  Result := Result + INI.Text + AnsiCrLf;
+  Result := Result + SectionTag_VER + NativeSpace + FEDISEFVer + NativeLineBreak;
+  Result := Result + SectionTag_INI + NativeLineBreak;
+  Result := Result + INI.Text + NativeLineBreak;
   if STD.Text <> '' then
-    Result := Result + SectionTag_STD + AnsiCrLf;
-  Result := Result + STD.Text + AnsiCrLf;
+    Result := Result + SectionTag_STD + NativeLineBreak;
+  Result := Result + STD.Text + NativeLineBreak;
   if FEDISEFSets.Count > 0 then
   begin
-    Result := Result + SectionTag_SETS + AnsiCrLf;
+    Result := Result + SectionTag_SETS + NativeLineBreak;
     for I := 0 to FEDISEFSets.Count - 1 do
-      Result := Result + FEDISEFSets[I].Assemble + AnsiCrLf;
+      Result := Result + FEDISEFSets[I].Assemble + NativeLineBreak;
   end;
   if FEDISEFSegs.Count > 0 then
   begin
-    Result := Result + SectionTag_SEGS + AnsiCrLf;
+    Result := Result + SectionTag_SEGS + NativeLineBreak;
     for I := 0 to FEDISEFSegs.Count - 1 do
-      Result := Result + FEDISEFSegs[I].Assemble + AnsiCrLf;
+      Result := Result + FEDISEFSegs[I].Assemble + NativeLineBreak;
   end;
   if FEDISEFComs.Count > 0 then
   begin
-    Result := Result + SectionTag_COMS + AnsiCrLf;
+    Result := Result + SectionTag_COMS + NativeLineBreak;
     for I := 0 to FEDISEFComs.Count - 1 do
-      Result := Result + FEDISEFComs[I].Assemble + AnsiCrLf;
+      Result := Result + FEDISEFComs[I].Assemble + NativeLineBreak;
   end;
   if FEDISEFElms.Count > 0 then
   begin
-    Result := Result + SectionTag_ELMS + AnsiCrLf;
+    Result := Result + SectionTag_ELMS + NativeLineBreak;
     for I := 0 to FEDISEFElms.Count - 1 do
-      Result := Result + FEDISEFElms[I].Assemble + AnsiCrLf;
+      Result := Result + FEDISEFElms[I].Assemble + NativeLineBreak;
   end;
   if Codes.Text <> '' then
   begin
-    Result := Result + SectionTag_CODES + AnsiCrLf;
-    Result := Result + Codes.Text + AnsiCrLf;
+    Result := Result + SectionTag_CODES + NativeLineBreak;
+    Result := Result + Codes.Text + NativeLineBreak;
   end;
   if FEDISEFTextSets.Count > 0 then
   begin
-    Result := Result + SectionTag_TEXTSETS + AnsiCrLf;
+    Result := Result + SectionTag_TEXTSETS + NativeLineBreak;
     for I := 0 to FEDISEFTextSets.Count - 1 do
       if TEDISEFText(FEDISEFTextSets[I]).Text <> '' then
-        Result := Result + TEDISEFText(FEDISEFTextSets[I]).Assemble + AnsiCrLf;
+        Result := Result + TEDISEFText(FEDISEFTextSets[I]).Assemble + NativeLineBreak;
   end;
   FData := Result;
 end;
@@ -4094,8 +4094,8 @@ begin
     SearchResult := StrSearch(SectionTag_TEXTSETS, FData, 1);
     if SearchResult > 0 then
     begin
-      SearchResult := SearchResult + Length(SectionTag_TEXTSETS + AnsiCrLf);
-      SearchResult2 := StrSearch(AnsiCrLf + SEFDelimiter_Period, FData, SearchResult + 1);
+      SearchResult := SearchResult + Length(SectionTag_TEXTSETS + NativeLineBreak);
+      SearchResult2 := StrSearch(NativeLineBreak + SEFDelimiter_Period, FData, SearchResult + 1);
       if SearchResult2 <> 0 then
         TempList.Text := Copy(FData, SearchResult, SearchResult2 - SearchResult)
       else
@@ -4122,8 +4122,8 @@ begin
   SearchResult := StrSearch(SectionTag_CODES, FData, 1);
   if SearchResult > 0 then
   begin
-    SearchResult := SearchResult + Length(SectionTag_CODES + AnsiCrLf);
-    SearchResult2 := StrSearch(AnsiCrLf + SEFDelimiter_Period, FData, SearchResult + 1);
+    SearchResult := SearchResult + Length(SectionTag_CODES + NativeLineBreak);
+    SearchResult2 := StrSearch(NativeLineBreak + SEFDelimiter_Period, FData, SearchResult + 1);
     if SearchResult2 <> 0 then
       Codes.Text := Copy(FData, SearchResult, SearchResult2 - SearchResult)
     else
@@ -4143,8 +4143,8 @@ begin
     SearchResult := StrSearch(SectionTag_COMS, FData, 1);
     if SearchResult > 0 then
     begin
-      SearchResult := SearchResult + Length(SectionTag_COMS + AnsiCrLf);
-      SearchResult2 := StrSearch(AnsiCrLf + SEFDelimiter_Period, FData, SearchResult + 1);
+      SearchResult := SearchResult + Length(SectionTag_COMS + NativeLineBreak);
+      SearchResult2 := StrSearch(NativeLineBreak + SEFDelimiter_Period, FData, SearchResult + 1);
       if SearchResult2 <> 0 then
         TempList.Text := Copy(FData, SearchResult, SearchResult2 - SearchResult)
       else
@@ -4176,8 +4176,8 @@ begin
     SearchResult := StrSearch(SectionTag_ELMS, FData, 1);
     if SearchResult > 0 then
     begin
-      SearchResult := SearchResult + Length(SectionTag_ELMS + AnsiCrLf);
-      SearchResult2 := StrSearch(AnsiCrLf + SEFDelimiter_Period, FData, SearchResult + 1);
+      SearchResult := SearchResult + Length(SectionTag_ELMS + NativeLineBreak);
+      SearchResult2 := StrSearch(NativeLineBreak + SEFDelimiter_Period, FData, SearchResult + 1);
       if SearchResult2 <> 0 then
         TempList.Text := Copy(FData, SearchResult, SearchResult2 - SearchResult)
       else
@@ -4210,8 +4210,8 @@ begin
   SearchResult := StrSearch(SectionTag_INI, FData, 1);
   if SearchResult > 0 then
   begin
-    SearchResult := SearchResult + Length(SectionTag_INI + AnsiCrLf);
-    SearchResult2 := StrSearch(AnsiCrLf + SEFDelimiter_Period, FData, SearchResult + 1);
+    SearchResult := SearchResult + Length(SectionTag_INI + NativeLineBreak);
+    SearchResult2 := StrSearch(NativeLineBreak + SEFDelimiter_Period, FData, SearchResult + 1);
     if SearchResult2 <> 0 then
       INI.Text := Copy(FData, SearchResult, SearchResult2 - SearchResult)
     else
@@ -4232,8 +4232,8 @@ begin
     SearchResult := StrSearch(SectionTag_SEGS, FData, 1);
     if SearchResult > 0 then
     begin
-      SearchResult := SearchResult + Length(SectionTag_SEGS + AnsiCrLf);
-      SearchResult2 := StrSearch(AnsiCrLf + SEFDelimiter_Period, FData, SearchResult + 1);
+      SearchResult := SearchResult + Length(SectionTag_SEGS + NativeLineBreak);
+      SearchResult2 := StrSearch(NativeLineBreak + SEFDelimiter_Period, FData, SearchResult + 1);
       if SearchResult2 <> 0 then
         TempList.Text := Copy(FData, SearchResult, SearchResult2 - SearchResult)
       else
@@ -4265,8 +4265,8 @@ begin
     SearchResult := StrSearch(SectionTag_SETS, FData, 1);
     if SearchResult > 0 then
     begin
-      SearchResult := SearchResult + Length(SectionTag_SETS + AnsiCrLf);
-      SearchResult2 := StrSearch(AnsiCrLf + SEFDelimiter_Period, FData, SearchResult + 1);
+      SearchResult := SearchResult + Length(SectionTag_SETS + NativeLineBreak);
+      SearchResult2 := StrSearch(NativeLineBreak + SEFDelimiter_Period, FData, SearchResult + 1);
       if SearchResult2 <> 0 then
         TempList.Text := Copy(FData, SearchResult, SearchResult2 - SearchResult)
       else
@@ -4300,8 +4300,8 @@ begin
   SearchResult := StrSearch(SectionTag_STD, FData, 1);
   if SearchResult > 0 then
   begin
-    SearchResult := SearchResult + Length(SectionTag_STD + AnsiCrLf);
-    SearchResult2 := StrSearch(AnsiCrLf + SEFDelimiter_Period, FData, SearchResult + 1);
+    SearchResult := SearchResult + Length(SectionTag_STD + NativeLineBreak);
+    SearchResult2 := StrSearch(NativeLineBreak + SEFDelimiter_Period, FData, SearchResult + 1);
     if SearchResult2 <> 0 then
     begin
       {$IFDEF COMPILER6_UP}
@@ -4330,7 +4330,7 @@ begin
   if SearchResult > 0 then
   begin
     SearchResult := SearchResult + Length(SectionTag_VER);
-    SearchResult2 := StrSearch(AnsiCrLf + SEFDelimiter_Period, FData, SearchResult + 1);
+    SearchResult2 := StrSearch(NativeLineBreak + SEFDelimiter_Period, FData, SearchResult + 1);
     if SearchResult2 <> 0 then
       FEDISEFVer := Copy(FData, SearchResult + 1, (SearchResult2 - SearchResult) - 1)       
     else
@@ -4596,9 +4596,9 @@ end;
 function TEDISEFText.GetText: string;
 begin
   Result := FText;
-  Result := JclEDI.StringReplace(Result, SEFTextCRLF, AnsiCrLf, [rfReplaceAll]);
-  Result := JclEDI.StringReplace(Result, SEFTextCR, AnsiCarriageReturn, [rfReplaceAll]);
-  Result := JclEDI.StringReplace(Result, SEFTextLF, AnsiLineFeed, [rfReplaceAll]);
+  Result := JclEDI.StringReplace(Result, SEFTextCRLF, NativeLineBreak, [rfReplaceAll]);
+  Result := JclEDI.StringReplace(Result, SEFTextCR, NativeCarriageReturn, [rfReplaceAll]);
+  Result := JclEDI.StringReplace(Result, SEFTextLF, NativeLineFeed, [rfReplaceAll]);
 end;
 
 function TEDISEFText.GetDescription: string;
@@ -4645,9 +4645,9 @@ var
   Temp: string;
 begin
   Temp := Value;
-  Temp := JclEDI.StringReplace(Temp, AnsiCrLf, SEFTextCRLF, [rfReplaceAll]);
-  Temp := JclEDI.StringReplace(Temp, AnsiCarriageReturn, SEFTextCR, [rfReplaceAll]);
-  Temp := JclEDI.StringReplace(Temp, AnsiLineFeed, SEFTextLF, [rfReplaceAll]);
+  Temp := JclEDI.StringReplace(Temp, NativeLineBreak, SEFTextCRLF, [rfReplaceAll]);
+  Temp := JclEDI.StringReplace(Temp, NativeCarriageReturn, SEFTextCR, [rfReplaceAll]);
+  Temp := JclEDI.StringReplace(Temp, NativeLineFeed, SEFTextLF, [rfReplaceAll]);
   FText := Temp;
 end;
 
@@ -4693,7 +4693,7 @@ begin
   begin
     FEDISEFWhereType := twElementOrCompositeElement;
     try
-      if WhereLocation[2][1] in AnsiDecDigits then
+      if CharIsDigit(WhereLocation[2][1]) then
         FWhereElement := StrToInt(WhereLocation[2]);
     except
       // Eat this error if it occurs for now
@@ -4703,7 +4703,7 @@ begin
   begin
     FEDISEFWhereType := twSubElement;
     try
-      if WhereLocation[3][1] in AnsiDecDigits then
+      if CharIsDigit(WhereLocation[3][1]) then
         FWhereSubElement := StrToInt(WhereLocation[3]);
     except
       // Eat this error if it occurs for now

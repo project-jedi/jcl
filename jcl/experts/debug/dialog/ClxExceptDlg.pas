@@ -314,7 +314,7 @@ begin
       SL.Text := Text;
       for I := 0 to SL.Count - 1 do
       begin
-        S := StringOfChar(' ', Indent) + StrEnsureSuffix(AnsiCrLf, TrimRight(SL[I]));
+        S := StringOfChar(' ', Indent) + StrEnsureSuffix(NativeCrLf, TrimRight(SL[I]));
         FileWrite(Integer(FLogFileHandle), Pointer(S)^, Length(S));
       end;
     finally
@@ -342,7 +342,7 @@ begin
   SeparatorLen := Max(SeparatorLen, 20);  
   OpenLog;
   if not FLogWasEmpty then
-    Write(AnsiCrLf);
+    Write(NativeCrLf);
   Write(StrRepeat('=', SeparatorLen));
   Write(Format('= %-*s =', [SeparatorLen - 4, DateTimeToStr(Now)]));
   Write(StrRepeat('=', SeparatorLen));
@@ -596,7 +596,7 @@ end;
 
 function TExceptionDialog.GetReportAsText: string;
 begin
-  Result := StrEnsureSuffix(AnsiCrLf, TextLabel.Text) + AnsiCrLf + DetailsMemo.Text;
+  Result := StrEnsureSuffix(NativeCrLf, TextLabel.Text) + NativeCrLf + DetailsMemo.Text;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -638,11 +638,13 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TExceptionDialog.SetDetailsVisible(const Value: Boolean);
+const
+  DirectionChars: array [0..1] of Char = ( '<', '>' );
 var
   DetailsCaption: string;
 begin
   FDetailsVisible := Value;
-  DetailsCaption := Trim(StrRemoveChars(DetailsBtn.Caption, ['<', '>']));
+  DetailsCaption := Trim(StrRemoveChars(DetailsBtn.Caption, DirectionChars));
   if Value then
   begin
     Constraints.MinHeight := FNonDetailsHeight + 100;

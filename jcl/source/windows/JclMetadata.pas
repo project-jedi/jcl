@@ -26,7 +26,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -2242,7 +2242,7 @@ end;
 
 function TJclClrTableModuleRow.DumpIL: string;
 begin
-  Result := '.module ' + Name + ' // MVID:' + JclGUIDToString(Mvid) + AnsiLineBreak;
+  Result := '.module ' + Name + ' // MVID:' + JclGUIDToString(Mvid) + NativeLineBreak;
 end;
 
 function TJclClrTableModule.GetRow(const Idx: Integer): TJclClrTableModuleRow;
@@ -2265,7 +2265,7 @@ end;
 
 function TJclClrTableModuleRefRow.DumpIL: string;
 begin
-  Result := '.module extern ' + Name + AnsiLineBreak;
+  Result := '.module extern ' + Name + NativeLineBreak;
 end;
 
 function TJclClrTableModuleRefRow.GetName: WideString;
@@ -3821,25 +3821,25 @@ begin
 
   if Assigned(MethodBody) then
   begin
-    Result := Result + AnsiLineBreak + '{' + AnsiLineBreak +
-      '.maxstack ' + IntToStr(MethodBody.MaxStack) + AnsiLineBreak;
+    Result := Result + NativeLineBreak + '{' + NativeLineBreak +
+      '.maxstack ' + IntToStr(MethodBody.MaxStack) + NativeLineBreak;
 
     if MethodBody.LocalVarSignToken <> 0 then
     begin
-      Result := Result + '.locals /* ' + IntToHex(MethodBody.LocalVarSignToken, 8) + ' */ init(' + AnsiLineBreak;
+      Result := Result + '.locals /* ' + IntToHex(MethodBody.LocalVarSignToken, 8) + ' */ init(' + NativeLineBreak;
       for I := 0 to MethodBody.LocalVarSign.LocalVarCount-1 do
       begin
         Result := Format(Result+'  %s V_%d', [LocalVarToString(MethodBody.LocalVarSign.LocalVars[I]), I]);
         if I = MethodBody.LocalVarSign.LocalVarCount-1 then
-          Result := Result + ')' + AnsiLineBreak
+          Result := Result + ')' + NativeLineBreak
         else
-          Result := Result + ',' + AnsiLineBreak;
+          Result := Result + ',' + NativeLineBreak;
       end;
     end;
 
     with TJclClrILGenerator.Create(MethodBody) do
       try
-        Result := Result + AnsiLineBreak + DumpIL(InstructionDumpILAllOption);
+        Result := Result + NativeLineBreak + DumpIL(InstructionDumpILAllOption);
       finally
         Free;
       end;

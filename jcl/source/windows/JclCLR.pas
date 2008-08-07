@@ -27,7 +27,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -1108,7 +1108,7 @@ function TJclClrTable.DumpIL: string;
 var
   I: Integer;
 begin
-  Result := '// Dump ' + ClassName + AnsiLineBreak;
+  Result := '// Dump ' + ClassName + NativeLineBreak;
   {$IFDEF RTL140_UP}
   if Supports(ClassType, ITableCanDumpIL) then
   {$ELSE RTL140_UP}
@@ -1529,7 +1529,7 @@ begin
     if Assigned(FTableStream) then
     begin
       FTableStream.Update;
-      Result := Text + AnsiLineBreak + FTableStream.DumpIL;
+      Result := Text + NativeLineBreak + FTableStream.DumpIL;
     end;
   finally
     Free;
@@ -1763,7 +1763,7 @@ begin
   try
     Add(RsClrCopyright);
     Add(Format('.corflags 0x%.8x', [Header.Flags]));
-    Result := Text + AnsiLineBreak + Metadata.DumpIL;
+    Result := Text + NativeLineBreak + Metadata.DumpIL;
   finally
     Free;
   end;

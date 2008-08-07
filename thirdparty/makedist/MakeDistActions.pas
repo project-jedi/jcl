@@ -339,13 +339,13 @@ begin
   Result := True;
 
   if AnsiSameText(NewEOL, 'CRLF') then
-    EOL := AnsiCrLf
+    EOL := NativeCrLf
   else
   if AnsiSameText(NewEOL, 'CR') then
-    EOL := AnsiCarriageReturn
+    EOL := NativeCarriageReturn
   else
   if AnsiSameText(NewEOL, 'LF') then
-    EOL := AnsiLineFeed
+    EOL := NativeLineFeed
   else
   begin
     AMessageHandler('Invalid EOL configuration');
@@ -1034,17 +1034,17 @@ begin
       begin
         // found constant name
         Inc(LinePos, Length(ConstantName));
-        if (LinePos <= Length(Line)) and not (Line[LinePos] in ['a'..'z', 'A'..'Z', '0'..'9', '_']) then
+        if (LinePos <= Length(Line)) and not CharIsValidIdentifierLetter(Line[LinePos]) then
         begin
           // make sure it's a whole word
-          while (LinePos <= Length(Line)) and (Line[LinePos] in AnsiWhiteSpace) do
+          while (LinePos <= Length(Line)) and CharIsWhiteSpace(Line[LinePos]) do
             Inc(LinePos);
           if (LinePos <= Length(Line)) and (Line[LinePos] = '=') then
           begin
             // is on a constant declaration line
             Inc(LinePos);
             // goto start of constant value
-            while (LinePos <= Length(Line)) and (Line[LinePos] in AnsiWhiteSpace) do
+            while (LinePos <= Length(Line)) and CharIsWhiteSpace(Line[LinePos]) do
               Inc(LinePos);
 
             if (LinePos <= Length(Line)) and (Line[LinePos] in ['0'..'9', '$', '+', '-']) then
@@ -1069,12 +1069,12 @@ begin
               Result := True;
             end
             else
-            if (LinePos <= Length(Line)) and (Line[LinePos] in ['a'..'z', 'A'..'Z', '_']) then
+            if (LinePos <= Length(Line)) and CharIsValidIdentifierLetter(Line[LinePos]) then
             begin
               // identifier
               ConstantStart := LinePos;
               Inc(LinePos);
-              while (LinePos <= Length(Line)) and (Line[LinePos] in ['a'..'z', 'A'..'Z', '_', '0'..'9']) do
+              while (LinePos <= Length(Line)) and CharIsValidIdentifierLetter(Line[LinePos]) do
                 Inc(LinePos);
               Value := Copy(Line, ConstantStart, LinePos - ConstantStart);
               Result := True;
@@ -1300,7 +1300,7 @@ begin
     Keys := TStringList.Create;
     try
       Result := False;
-      StrToStrings(Key, AnsiBackslash, Keys, True);
+      StrToStrings(Key, NativeBackslash, Keys, True);
       if Keys.Count > 0 then
       begin
         Node := XmlContent.Root;

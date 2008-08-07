@@ -547,12 +547,12 @@ begin
     raise EJclSecurityError.CreateRes(@RsInvalidSID);
   if (Length(Authority) = 14) and (Authority[1] = '0') and (Authority[2] = 'x') then
   begin
-    ASID^.IdentifierAuthority.Value[0] := StrToInt(AnsiHexPrefix + Authority[3] + Authority[4]);
-    ASID^.IdentifierAuthority.Value[1] := StrToInt(AnsiHexPrefix + Authority[5] + Authority[6]);
-    ASID^.IdentifierAuthority.Value[2] := StrToInt(AnsiHexPrefix + Authority[7] + Authority[8]);
-    ASID^.IdentifierAuthority.Value[3] := StrToInt(AnsiHexPrefix + Authority[9] + Authority[10]);
-    ASID^.IdentifierAuthority.Value[4] := StrToInt(AnsiHexPrefix + Authority[11] + Authority[12]);
-    ASID^.IdentifierAuthority.Value[5] := StrToInt(AnsiHexPrefix + Authority[13] + Authority[14]);
+    ASID^.IdentifierAuthority.Value[0] := StrToInt(HexPrefix + Authority[3] + Authority[4]);
+    ASID^.IdentifierAuthority.Value[1] := StrToInt(HexPrefix + Authority[5] + Authority[6]);
+    ASID^.IdentifierAuthority.Value[2] := StrToInt(HexPrefix + Authority[7] + Authority[8]);
+    ASID^.IdentifierAuthority.Value[3] := StrToInt(HexPrefix + Authority[9] + Authority[10]);
+    ASID^.IdentifierAuthority.Value[4] := StrToInt(HexPrefix + Authority[11] + Authority[12]);
+    ASID^.IdentifierAuthority.Value[5] := StrToInt(HexPrefix + Authority[13] + Authority[14]);
   end
   else
   begin

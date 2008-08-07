@@ -34,7 +34,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -1475,12 +1475,12 @@ function TEDILoopStack.Debug: string;
 var
   I: Integer;
 begin
-  Result := 'Loop Stack' + AnsiLineBreak;
+  Result := 'Loop Stack' + NativeLineBreak;
   for I := 0 to High(FStack) do
     Result := Result + FStack[I].SegmentId + ', ' +
       FStack[I].OwnerLoopId + ', ' +
       FStack[I].ParentLoopId + ', ' +
-      IntToStr(FStack[I].SpecStartIndex) + AnsiLineBreak;
+      IntToStr(FStack[I].SpecStartIndex) + NativeLineBreak;
 end;
 
 procedure TEDILoopStack.DoAddLoop(StackRecord: TEDILoopStackRecord;

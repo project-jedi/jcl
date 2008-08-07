@@ -830,8 +830,16 @@ end;
 {$ENDIF CLR}
 
 function SimpleXMLEncode(const S: string): string;
-const
-  NoConversion = [#0..#127] - ['"', '&', #39, '<', '>'];
+  function CharIsConverted(const C: Char): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+  begin
+    case C of
+      '"', '&', #39, '<', '>',
+      #128..High(Char):
+        Result := True;
+    else
+      Result := False;
+    end;
+  end;
 var
   I, J, K: Integer;
   tmp: string;
@@ -840,9 +848,7 @@ begin
   J := 1;
   for I := 1 to Length(S) do
   begin
-    if AnsiChar(S[I]) in NoConversion then
-      Result[J] := S[I]
-    else
+    if CharIsConverted(S[I]) then
     begin
       case S[I] of
         '"':
@@ -864,7 +870,9 @@ begin
         Inc(J);
       end;
       Dec(J);
-    end;
+    end
+    else
+      Result[J] := S[I];
     Inc(J);
   end;
   if J > 0 then
@@ -887,7 +895,7 @@ var
     IsHex: Boolean;
   begin
     Inc(ReadIndex, 2);
-    IsHex := (ReadIndex <= StringLength) and (AnsiChar(S[ReadIndex]) in ['x', 'X']);
+    IsHex := (ReadIndex <= StringLength) and ((S[ReadIndex] = 'x') or (S[ReadIndex] = 'X'));
     Inc(ReadIndex, Ord(IsHex));
     I := ReadIndex;
     while ReadIndex <= StringLength do
@@ -910,11 +918,11 @@ var
   begin
     while ReadIndex < StringLength do
     begin
-      if S[ReadIndex] = AnsiCarriageReturn then
-        S[ReadIndex] := AnsiLineFeed
+      if S[ReadIndex] = NativeCarriageReturn then
+        S[ReadIndex] := NativeLineFeed
       else
-      if S[ReadIndex + 1] = AnsiCarriageReturn then
-        S[ReadIndex + 1] := AnsiLineFeed;
+      if S[ReadIndex + 1] = NativeCarriageReturn then
+        S[ReadIndex + 1] := NativeLineFeed;
       if (S[ReadIndex] < #33) and (S[ReadIndex] = S[ReadIndex + 1]) then
         Inc(ReadIndex)
       else
@@ -2023,7 +2031,7 @@ begin
         rsWaitingTag: //We are waiting for a tag and thus avoiding spaces
           begin
             case Ch of
-              ' ', AnsiTab, AnsiCarriageReturn, AnsiLineFeed:
+              NativeSpace, NativeTab, NativeCarriageReturn, NativeLineFeed:
                 begin
                   lContainsWhiteSpace := True;
                 end;
@@ -2065,14 +2073,14 @@ begin
                   St := St + Ch;
                 end;
 
-              ' ', '>', ':': //This should be a classic tag
+              NativeSpace, '>', ':': //This should be a classic tag
                 begin
                   lElem := TJclSimpleXMLElemClassic.Create(Parent);
                   St := St + Ch;
                 end;
             else
               begin
-                if (St <> '<![CDATA') or not (AnsiChar(Ch) in [' ', AnsiTab, AnsiCarriageReturn, AnsiLineFeed]) then
+                if (St <> '<![CDATA') or not CharIsWhiteSpace(Ch) then
                   St := St + Ch;
                 if St = '<![CDATA[' then
                   lElem := TJclSimpleXMLElemCData.Create(Parent)
@@ -2500,7 +2508,7 @@ begin
   lValue := '';
   lNameSpace := '';
   lName := '';
-  lPropStart := ' ';
+  lPropStart := NativeSpace;
   lPos := ptWaiting;
 
   // We read from a stream, thus replacing the existing properties
@@ -2518,7 +2526,7 @@ begin
         ptWaiting: //We are waiting for a property
           begin
             case Ch of
-              ' ', AnsiTab, AnsiCarriageReturn, AnsiLineFeed:
+              NativeSpace, NativeTab, NativeCarriageReturn, NativeLineFeed:
                 begin
                 end;
               'a'..'z', 'A'..'Z', '0'..'9', '-', '_':
@@ -2549,7 +2557,7 @@ begin
               end;
             '=':
               lPos := ptStartingContent;
-            ' ', AnsiTab, AnsiCarriageReturn, AnsiLineFeed:
+            NativeSpace, NativeTab, NativeCarriageReturn, NativeLineFeed:
               lPos := ptSpaceBeforeEqual;
           else
             FmtError(RsEInvalidXMLElementUnexpectedCharacte, [Ch]);
@@ -2557,7 +2565,7 @@ begin
 
         ptStartingContent: //We are going to start a property content
           case Ch of
-            ' ', AnsiTab, AnsiCarriageReturn, AnsiLineFeed:
+            NativeSpace, NativeTab, NativeCarriageReturn, NativeLineFeed:
               ; // ignore white space
             '''', '"':
               begin
@@ -2581,7 +2589,7 @@ begin
             lValue := lValue + Ch;
         ptSpaceBeforeEqual: // We are reading the white space between a property name and the = sign
           case Ch of
-            ' ', AnsiTab, AnsiCarriageReturn, AnsiLineFeed:
+            NativeSpace, NativeTab, NativeCarriageReturn, NativeLineFeed:
               ; // more white space, stay in this state and ignore
             '=':
               lPos := ptStartingContent;
@@ -2745,7 +2753,7 @@ begin
             FmtError(RsEInvalidXMLElementExpectedEndOfTagBu, [Ch]);
       else
         begin
-          if AnsiChar(Ch) in [AnsiTab, AnsiLineFeed, AnsiCarriageReturn, ' ' {, '.'}] then
+          if CharIsWhiteSpace(Ch) then
           begin
             if lPos = 2 then
               Error(RsEInvalidXMLElementMalformedTagFoundn);
@@ -3487,7 +3495,7 @@ begin
         0: //We are waiting for a tag and thus avoiding spaces and any BOM
           begin
             case lBuf[I] of
-              ' ', AnsiTab, AnsiCarriageReturn, AnsiLineFeed, #$00, #$FE, #$FF, #$EF, #$BB, #$BF:
+              NativeSpace, NativeTab, NativeCarriageReturn, NativeLineFeed, #$00, #$FE, #$FF, #$EF, #$BB, #$BF:
                 begin
                 end;
               '<':
@@ -3504,7 +3512,7 @@ begin
             lElem := nil;
             lEnd := False;
 
-            if (St <> '<![CDATA') or not (AnsiChar(lBuf[I]) in [' ', AnsiTab, AnsiCarriageReturn, AnsiLineFeed]) then
+            if (St <> '<![CDATA') or not CharIsWhiteSpace(lBuf[I]) then
               St := St + lBuf[I];
             if St = '<![CDATA[' then
               lEnd := True
@@ -3521,7 +3529,7 @@ begin
             if St = '<!DOCTYPE' then
               lElem := TJclSimpleXMLElemDocType.Create(nil)
             else
-            if (Length(St) > 1) and not (AnsiChar(St[2]) in ['!', '?']) then
+            if (Length(St) > 1) and (St[2] <> '!') and (St[2] <> '?') then
               lEnd := True;
 
             if lEnd then
@@ -3784,13 +3792,10 @@ begin
 end;
 
 procedure TJclSimpleXML.SetIndentString(const Value: string);
-var
-  I: Integer;
 begin
   // test if the new value is only made of spaces or tabs
-  for I := 1 to Length(Value) do
-    if not (AnsiChar(Value[I]) in [AnsiTab, ' ']) then
-      Exit;
+  if StrContainsChars(Value,CharIsWhiteSpace,True) then
+    Exit;
   FIndentString := Value;
 end;
 

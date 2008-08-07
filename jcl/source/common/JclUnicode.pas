@@ -34,7 +34,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -3616,7 +3616,17 @@ end;
 
 function IsSpecial(C: Word): Boolean;
 begin
-  Result := C in [Word('+'), Word('*'), Word('?'), Word('{'), Word('|'), Word(')')];
+  case C of
+    Word('+'),
+    Word('*'),
+    Word('?'),
+    Word('{'),
+    Word('|'),
+    Word(')'):
+      Result := True;
+  else
+    Result := False;
+  end;
 end;
 
 procedure TURESearch.CollectPendingOperations(var State: Cardinal);
@@ -3692,7 +3702,7 @@ begin
           while UnicodeIsWhiteSpace(UCS4(Head^)) do
             Inc(Head);
           S := '';
-          while Head^ in [WideChar('0')..WideChar('9')] do
+          while (Head^ >= WideChar('0')) and (Head^ <= WideChar('9')) do
           begin
             S := S + Head^;
             Inc(Head);
@@ -3716,7 +3726,7 @@ begin
             while UnicodeIsWhiteSpace(UCS4(Head^)) do
               Inc(Head);
             S := '';
-            while Head^ in [WideChar('0')..WideChar('9')] do
+            while (Head^ >= WideChar('0')) and (Head^ <= WideChar('9')) do
             begin
               S := S + Head^;
               Inc(Head);

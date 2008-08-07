@@ -1166,7 +1166,7 @@ begin
     NamesList[ReportKind] := '';
     LabelsWidth := Max(LabelsWidth, Length(TJclEmailRecip.RecipKindToString(ReportKind)));
   end;
-  BreakStr := AnsiCrLf + StringOfChar(' ', LabelsWidth + 2);
+  BreakStr := NativeCrLf + StringOfChar(' ', LabelsWidth + 2);
   for I := 0 to Recipients.Count - 1 do
     with Recipients[I] do
     begin
@@ -1182,15 +1182,15 @@ begin
     for ReportKind := Low(ReportKind) to High(ReportKind) do
       if NamesList[ReportKind] <> '' then
       begin
-        S := StrPadRight(TJclEmailRecip.RecipKindToString(ReportKind), LabelsWidth, AnsiSpace) + ': ' +
+        S := StrPadRight(TJclEmailRecip.RecipKindToString(ReportKind), LabelsWidth, NativeSpace) + ': ' +
           Copy(NamesList[ReportKind], 1, Length(NamesList[ReportKind]) - Length(NameDelimiter));
-        Strings.Add(WrapText(S, BreakStr, [AnsiTab, AnsiSpace], MaxWidth));
+        Strings.Add(WrapText(S, BreakStr, [NativeTab, NativeSpace], MaxWidth));
       end;
     S := RsMapiMailSubject + ': ' + Subject;
-    Strings.Add(WrapText(S, BreakStr, [AnsiTab, AnsiSpace], MaxWidth));
+    Strings.Add(WrapText(S, BreakStr, [NativeTab, NativeSpace], MaxWidth));
     Result := Strings.Count - Cnt;
     Strings.Add('');
-    Strings.Add(WrapText(Body, AnsiCrLf, [AnsiTab, AnsiSpace, '-'], MaxWidth));
+    Strings.Add(WrapText(Body, NativeCrLf, [NativeTab, NativeSpace, '-'], MaxWidth));
   finally
     Strings.EndUpdate;
   end;
@@ -1308,7 +1308,7 @@ begin
   if Value = '' then
     FBody := ''
   else
-    FBody := StrEnsureSuffix(AnsiCrLf, Value);
+    FBody := StrEnsureSuffix(NativeCrLf, Value);
 end;
 
 procedure TJclEmail.SetParentWnd(const Value: THandle);

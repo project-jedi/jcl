@@ -1051,7 +1051,7 @@ end;
 
 class function TJclAbstractMapParser.MapStringToFileName(MapString: PJclMapString): string;
 var
-  PStart, PEnd, PExtension: PChar;
+  PStart, PEnd, PExtension: PJclMapString;
 begin
   if MapString = nil then
   begin
@@ -1059,13 +1059,13 @@ begin
     Exit;
   end;
   PEnd := MapString;
-  while not (PEnd^ in [AnsiCarriageReturn, '=']) do
+  while (PEnd^ <> '=') and not CharIsReturn(PEnd^) do
     Inc(PEnd);
   if (PEnd^ = '=') then
   begin
-    while not (PEnd^ = AnsiSpace) do
+    while not (PEnd^ = NativeSpace) do
       Dec(PEnd);
-    while ((PEnd-1)^ = AnsiSpace) do
+    while ((PEnd-1)^ = NativeSpace) do
       Dec(PEnd);
   end;
   PExtension := PEnd;
@@ -1085,7 +1085,7 @@ end;
 class function TJclAbstractMapParser.MapStringToStr(MapString: PJclMapString;
   IgnoreSpaces: Boolean): string;
 var
-  P: PChar;
+  P: PJclMapString;
 begin
   if MapString = nil then
   begin
@@ -1096,17 +1096,17 @@ begin
   begin
     Inc(MapString);
     P := MapString;
-    while not (P^ in [AnsiCarriageReturn, ')']) do
+    while (P^ <> ')') and not CharIsReturn(P^) do
       Inc(P);
   end
   else
   begin
     P := MapString;
     if IgnoreSpaces then
-      while not (P^ in [AnsiCarriageReturn, '(']) do
+      while (P^ <> '(') and not CharIsReturn(P^) do
         Inc(P)
     else
-      while not (P^ in [AnsiSpace, AnsiCarriageReturn, '(']) do
+      while (P^ <> '(') and not CharIsWhiteSpace(P^) do
         Inc(P);
   end;
   SetString(Result, MapString, P - MapString);
@@ -1121,7 +1121,7 @@ const
   LineNumbersPrefix    = 'Line numbers for';
   ResourceFilesHeader  : array [0..2] of string = ('Bound', 'resource', 'files');
 var
-  CurrPos, EndPos: PChar;
+  CurrPos, EndPos: PJclMapString;
 {$IFNDEF COMPILER9_UP}
   PreviousA,
 {$ENDIF COMPILER9_UP}
@@ -1131,13 +1131,13 @@ var
 
   procedure SkipWhiteSpace;
   begin
-    while CurrPos^ in AnsiWhiteSpace do
+    while CharIsWhiteSpace(CurrPos^) do
       Inc(CurrPos);
   end;
 
   procedure SkipEndLine;
   begin
-    while CurrPos^ <> AnsiLineFeed do
+    while not CharIsWhiteSpace(CurrPos^) do
       Inc(CurrPos);
     SkipWhiteSpace;
   end;
@@ -1149,15 +1149,15 @@ var
 
   function IsDecDigit: Boolean;
   begin
-    Result := CurrPos^ in AnsiDecDigits;
+    Result := CharIsDigit(CurrPos^);
   end;
 
   function ReadTextLine: string;
   var
-    P: PChar;
+    P: PJclMapString;
   begin
     P := CurrPos;
-    while not (CurrPos^ in [AnsiCarriageReturn, AnsiNull]) do
+    while (CurrPos^ <> NativeNull) and not CharIsReturn(CurrPos^) do
       Inc(CurrPos);
     SetString(Result, P, CurrPos - P);
   end;
@@ -1166,7 +1166,7 @@ var
   function ReadDecValue: Integer;
   begin
     Result := 0;
-    while CurrPos^ in AnsiDecDigits do
+    while CharIsDigit(CurrPos^) do
     begin
       Result := Result * 10 + (Ord(CurrPos^) - Ord('0'));
       Inc(CurrPos);
@@ -1224,7 +1224,7 @@ var
   begin
     SkipWhiteSpace;
     Result := CurrPos;
-    while not (CurrPos^ in AnsiWhiteSpace) do
+    while not CharIsWhiteSpace(CurrPos^) do
       Inc(CurrPos);
   end;
 
@@ -1270,7 +1270,7 @@ var
   function SyncToPrefix(const Prefix: string): Boolean;
   var
     I: Integer;
-    P: PChar;
+    P: PJclMapString;
     S: string;
   begin
     if Eof then
@@ -1281,7 +1281,7 @@ var
     SkipWhiteSpace;
     I := Length(Prefix);
     P := CurrPos;
-    while not Eof and (not (P^ in [AnsiCarriageReturn, AnsiNull])) and (I > 0) do
+    while not Eof and (not (P^ in [NativeCarriageReturn, NativeNull])) and (I > 0) do
     begin
       Inc(P);
       Dec(I);
@@ -1781,7 +1781,7 @@ begin
     Inc(B);
     Inc(I);
   until B >= SizeOf(Buffer) - 1;
-  Buffer[B] := AnsiNull;
+  Buffer[B] := NativeNull;
   Result := Buffer;
 end;
 
@@ -1796,7 +1796,7 @@ begin
   else
     StartIndex := 0;
   for I := StartIndex + 1 to Length(S) do
-    if not (S[I] in AnsiValidIdentifierLetters) then
+    if not CharIsValidIdentifierLetter(S[I]) then
     begin
       Result := #1 + SimpleCryptString(S) + #0;
       Exit;

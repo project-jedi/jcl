@@ -44,7 +44,8 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Classes,
-  JclBase;
+  JclBase,
+  JclAnsiStrings;
 
 {$IFDEF BCB6}
 {$DEFINE BUGGY_DEFAULT_INDEXED_PROP}

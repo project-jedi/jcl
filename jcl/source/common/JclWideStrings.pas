@@ -56,19 +56,19 @@ const
   //       classes (like white spaces) as in Unicode are often many code points defined
   //       being in a certain class. Hence your best option is to use the various
   //       UnicodeIs* functions.
-  WideNull = WideChar(#0);
-  WideTabulator = WideChar(#9);
-  WideSpace = WideChar(#32);
+  WideNull               = WideChar(#0);
+  WideTabulator          = WideChar(#9);
+  WideSpace              = WideChar(#32);
 
   // logical line breaks
-  WideLF = WideChar(#10);
-  WideLineFeed = WideChar(#10);
-  WideVerticalTab = WideChar(#11);
-  WideFormFeed = WideChar(#12);
-  WideCR = WideChar(#13);
-  WideCarriageReturn = WideChar(#13);
-  WideCRLF: WideString = #13#10;
-  WideLineSeparator = WideChar($2028);
+  WideLF                 = WideChar(#10);
+  WideLineFeed           = WideChar(#10);
+  WideVerticalTab        = WideChar(#11);
+  WideFormFeed           = WideChar(#12);
+  WideCR                 = WideChar(#13);
+  WideCarriageReturn     = WideChar(#13);
+  WideCRLF: WideString   = #13#10;
+  WideLineSeparator      = WideChar($2028);
   WideParagraphSeparator = WideChar($2029);
 
   BOM_LSB_FIRST = WideChar($FEFF);

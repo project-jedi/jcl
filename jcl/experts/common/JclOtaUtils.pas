@@ -365,8 +365,8 @@ begin
       LoadNextBuffer;
 
     case Buffer[BufferPosition + 1] of
-      AnsiLineFeed,
-      AnsiCarriageReturn:
+      NativeLineFeed,
+      NativeCarriageReturn:
         begin
           if InsideLineComment and not (InsideComment or InsideBrace) then
           begin
@@ -462,7 +462,7 @@ begin
           // end of comments
           Break;
     else
-      if not (Buffer[BufferPosition + 1] in AnsiWhiteSpace) and not InsideLineComment
+      if not CharIsWhiteSpace(Buffer[BufferPosition + 1]) and not InsideLineComment
         and not InsideComment and not InsideBrace then
         // end of comments
         Break;
@@ -505,7 +505,7 @@ begin
           SetLength(Result[PropIndex], BufferSize);
           SetLength(Result[PropIndex], AReader.GetText(PropLocations[PropIndex], PAnsiChar(Result[PropIndex]), BufferSize));
           for BufferIndex := 1 to Length(Result[PropIndex]) do
-            if Result[PropIndex][BufferIndex] in [AnsiCarriageReturn, AnsiLineFeed] then
+            if CharIsWhiteSpace(Result[PropIndex][BufferIndex]) then
           begin
             SetLength(Result[PropIndex], BufferIndex - 1);
             Break;
@@ -558,7 +558,7 @@ begin
               SetLength(Buffer, BufferSize);
               SetLength(Buffer, AReader.GetText(PropLocations[0], PAnsiChar(Buffer), BufferSize));
               for BufferIndex := 1 to Length(Buffer) do
-                if Buffer[BufferIndex] in [AnsiCarriageReturn, AnsiLineFeed] then
+                if CharIsWhiteSpace(Buffer[BufferIndex]) then
               begin
                 PropSize := BufferIndex - 1;
                 Break;
@@ -580,7 +580,7 @@ begin
             else
             begin
               AWriter.CopyTo(-PropLocations[0]);
-              AWriter.Insert(PAnsiChar(Format('// %s %s%s', [PropIDs[PropIndex], PropValues[PropIndex], AnsiLineBreak])));
+              AWriter.Insert(PAnsiChar(Format('// %s %s%s', [PropIDs[PropIndex], PropValues[PropIndex], NativeLineBreak])));
             end;
           finally
             // release the writter before allocating the reader
@@ -624,7 +624,7 @@ begin
   if not Assigned(OTAServices) then
     raise EJclExpertException.CreateTrace(RsENoIDEServices);
 
-  FBaseKeyName := StrEnsureSuffix(AnsiBackSlash, OTAServices.GetBaseRegistryKey);
+  FBaseKeyName := StrEnsureSuffix(NativeBackSlash, OTAServices.GetBaseRegistryKey);
   
   FKeyName := BaseKeyName + RegJclIDEKey + ExpertName;
 end;

@@ -88,11 +88,11 @@ const
   AnsiBell           = AnsiChar(#7);
   AnsiBackspace      = AnsiChar(#8);
   AnsiTab            = AnsiChar(#9);
-  AnsiLineFeed       = JclBase.AnsiLineFeed;
+  AnsiLineFeed       = AnsiChar(#10);
   AnsiVerticalTab    = AnsiChar(#11);
   AnsiFormFeed       = AnsiChar(#12);
-  AnsiCarriageReturn = JclBase.AnsiCarriageReturn;
-  AnsiCrLf           = JclBase.AnsiCrLf;
+  AnsiCarriageReturn = AnsiChar(#13);
+  AnsiCrLf           = AnsiString(#13#10);
   AnsiSo             = AnsiChar(#14);
   AnsiSi             = AnsiChar(#15);
   AnsiDle            = AnsiChar(#16);
@@ -119,20 +119,28 @@ const
   AnsiDoubleQuote = AnsiChar('"');
   AnsiSingleQuote = AnsiChar('''');
 
-  AnsiLineBreak = JclBase.AnsiLineBreak;
+  {$IFDEF MSWINDOWS}
+  AnsiLineBreak = AnsiCrLf;
+  {$ENDIF MSWINDOWS}
+  {$IFDEF UNIX}
+  AnsiLineBreak = AnsiLineFeed;
+  {$ENDIF UNIX}
 
-// Misc. character sets
+  AnsiSignMinus = AnsiChar('-');
+  AnsiSignPlus  = AnsiChar('+');
+
+  // Misc. character sets
 
   AnsiWhiteSpace             = [AnsiTab, AnsiLineFeed, AnsiVerticalTab,
     AnsiFormFeed, AnsiCarriageReturn, AnsiSpace];
-  AnsiSigns                  = ['-', '+'];
-  AnsiUppercaseLetters       = JclBase.AnsiUppercaseLetters;
-  AnsiLowercaseLetters       = JclBase.AnsiLowercaseLetters;
-  AnsiLetters                = JclBase.AnsiLetters;
-  AnsiDecDigits              = JclBase.AnsiDecDigits;
-  AnsiOctDigits              = JclBase.AnsiOctDigits;
-  AnsiHexDigits              = JclBase.AnsiHexDigits;
-  AnsiValidIdentifierLetters = JclBase.AnsiValidIdentifierLetters;
+  AnsiSigns                  = [AnsiSignMinus, AnsiSignPlus];
+  AnsiUppercaseLetters       = ['A'..'Z'];
+  AnsiLowercaseLetters       = ['a'..'z'];
+  AnsiLetters                = ['A'..'Z', 'a'..'z'];
+  AnsiDecDigits              = ['0'..'9'];
+  AnsiOctDigits              = ['0'..'7'];
+  AnsiHexDigits              = ['0'..'9', 'A'..'F', 'a'..'f'];
+  AnsiValidIdentifierLetters = ['0'..'9', 'A'..'Z', 'a'..'z', '_'];
 
 const
   // CharType return values
@@ -219,10 +227,13 @@ procedure StrUpperInPlace(var S: AnsiString);
 {$IFNDEF CLR}
 procedure StrUpperBuff(S: PAnsiChar);
 {$ENDIF ~CLR}
-{$IFDEF WIN32}
+
+{$IFDEF MSWINDOWS}
+{$IFNDEF CLR}
 function StrOemToAnsi(const S: AnsiString): AnsiString;
 function StrAnsiToOem(const S: AnsiString): AnsiString;
-{$ENDIF WIN32}
+{$ENDIF ~CLR}
+{$ENDIF MSWINDOWS}
 
 {$IFNDEF CLR}
 // String Management
@@ -272,21 +283,26 @@ function StrRestOf(const S: AnsiString; N: Integer): AnsiString;
 function StrRight(const S: AnsiString; Count: Integer): AnsiString;
 
 // Character Test Routines
-function CharEqualNoCase(const C1, C2: AnsiChar): Boolean;
-function CharIsAlpha(const C: AnsiChar): Boolean;
-function CharIsAlphaNum(const C: AnsiChar): Boolean;
-function CharIsBlank(const C: AnsiChar): Boolean;
-function CharIsControl(const C: AnsiChar): Boolean;
-function CharIsDelete(const C: AnsiChar): Boolean;
-function CharIsDigit(const C: AnsiChar): Boolean;
-function CharIsLower(const C: AnsiChar): Boolean;
-function CharIsNumberChar(const C: AnsiChar): Boolean;
-function CharIsPrintable(const C: AnsiChar): Boolean;
-function CharIsPunctuation(const C: AnsiChar): Boolean;
-function CharIsReturn(const C: AnsiChar): Boolean;
-function CharIsSpace(const C: AnsiChar): Boolean;
-function CharIsUpper(const C: AnsiChar): Boolean;
-function CharIsWhiteSpace(const C: AnsiChar): Boolean;
+function CharEqualNoCase(const C1, C2: AnsiChar): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+function CharIsAlpha(const C: AnsiChar): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+function CharIsAlphaNum(const C: AnsiChar): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+function CharIsBlank(const C: AnsiChar): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+function CharIsControl(const C: AnsiChar): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+function CharIsDelete(const C: AnsiChar): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+function CharIsDigit(const C: AnsiChar): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+function CharIsFracDigit(const C: AnsiChar): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+function CharIsHexDigit(const C: AnsiChar): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+function CharIsLower(const C: AnsiChar): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+function CharIsNumberChar(const C: AnsiChar): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+function CharIsNumber(const C: AnsiChar): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+function CharIsPrintable(const C: AnsiChar): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+function CharIsPunctuation(const C: AnsiChar): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+function CharIsReturn(const C: AnsiChar): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+function CharIsSpace(const C: AnsiChar): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+function CharIsUpper(const C: AnsiChar): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+function CharIsValidIdentifierLetter(const C: AnsiChar): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+function CharIsWhiteSpace(const C: AnsiChar): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+function CharIsWildcard(const C: AnsiChar): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 function CharType(const C: AnsiChar): Word;
 
 // Character Transformation Routines
@@ -360,9 +376,25 @@ procedure StrNormIndex(const StrLen: Integer; var Index: Integer; var Count: Int
 function ArrayOf(List: TStrings): TDynStringArray; overload;
 {$ENDIF CLR}
 
+function AnsiCompareNaturalStr(const S1, S2: AnsiString): Integer;
+function AnsiCompareNaturalText(const S1, S2: AnsiString): Integer;
+
 // Exceptions
 type
   EJclStringError = EJclError;
+
+// internal structures published to make function inlining working
+const
+  AnsiCharCount   = Ord(High(AnsiChar)) + 1; // # of chars in one set
+  AnsiLoOffset    = AnsiCharCount * 0;       // offset to lower case chars
+  AnsiUpOffset    = AnsiCharCount * 1;       // offset to upper case chars
+  AnsiReOffset    = AnsiCharCount * 2;       // offset to reverse case chars
+  AnsiCaseMapSize = AnsiCharCount * 3;       // # of chars is a table
+
+var
+  AnsiCaseMap: array [0..AnsiCaseMapSize - 1] of AnsiChar; // case mappings
+  AnsiCaseMapReady: Boolean = False;         // true if case map exists
+  AnsiCharTypes: array [AnsiChar] of Word;
 
 {$IFDEF UNITVERSIONING}
 const
@@ -394,25 +426,13 @@ type
     RefCount: Longint;
     Length: Longint;
   end;
-{$ENDIF ~CLR}
 
 const
-  {$IFNDEF CLR}
-  AnsiStrRecSize  = SizeOf(TAnsiStrRec);     // size of the AnsiString header rec
-  {$ENDIF ~CLR}
-  AnsiCharCount   = Ord(High(AnsiChar)) + 1; // # of chars in one set
-  AnsiLoOffset    = AnsiCharCount * 0;       // offset to lower case chars
-  AnsiUpOffset    = AnsiCharCount * 1;       // offset to upper case chars
-  AnsiReOffset    = AnsiCharCount * 2;       // offset to reverse case chars
   AnsiAlOffset    = 12;                      // offset to AllocSize in StrRec
   AnsiRfOffset    = 8;                       // offset to RefCount in StrRec
   AnsiLnOffset    = 4;                       // offset to Length in StrRec
-  AnsiCaseMapSize = AnsiCharCount * 3;       // # of chars is a table
-
-var
-  AnsiCaseMap: array [0..AnsiCaseMapSize - 1] of AnsiChar; // case mappings
-  AnsiCaseMapReady: Boolean = False;         // true if case map exists
-  AnsiCharTypes: array [AnsiChar] of Word;
+  AnsiStrRecSize  = SizeOf(TAnsiStrRec);     // size of the AnsiString header rec
+{$ENDIF ~CLR}
 
 procedure LoadCharTypes;
 var
@@ -1816,22 +1836,21 @@ end;
 {$ENDIF PIC}
 {$ENDIF ~CLR}
 
-{$IFDEF WIN32}
+{$IFDEF MSWINDOWS}
+{$IFNDEF CLR}
 function StrOemToAnsi(const S: AnsiString): AnsiString;
 begin
   SetLength(Result, Length(S));
   OemToAnsiBuff(@S[1], @Result[1], Length(S));
 end;
-{$ENDIF WIN32}
 
-{$IFDEF WIN32}
 function StrAnsiToOem(const S: AnsiString): AnsiString;
 begin
   SetLength(Result, Length(S));
   AnsiToOemBuff(@S[1], @Result[1], Length(S));
 end;
-{$ENDIF WIN32}
-
+{$ENDIF ~CLR}
+{$ENDIF MSWINDOWS}
 
 {$IFNDEF CLR}
 //=== String Management ======================================================
@@ -3162,6 +3181,22 @@ begin
   Result := (AnsiCharTypes[C] and C1_DIGIT) <> 0;
 end;
 
+function CharIsFracDigit(const C: AnsiChar): Boolean;
+begin
+  Result := (C = '.') or ((AnsiCharTypes[C] and C1_DIGIT) <> 0);
+end;
+
+function CharIsHexDigit(const C: AnsiChar): Boolean;
+begin
+  case C of
+    'A'..'F',
+    'a'..'f':
+      Result := True;
+  else
+    Result := ((AnsiCharTypes[C] and C1_DIGIT) <> 0);
+  end;
+end;
+
 function CharIsLower(const C: AnsiChar): Boolean;
 begin
   Result := (AnsiCharTypes[C] and C1_LOWER) <> 0;
@@ -3170,7 +3205,12 @@ end;
 function CharIsNumberChar(const C: AnsiChar): Boolean;
 begin
   Result := ((AnsiCharTypes[C] and C1_DIGIT) <> 0) or
-    (C in AnsiSigns) or (C = DecimalSeparator);
+    (C = AnsiSignMinus) or (C = AnsiSignPlus) or (C = DecimalSeparator);
+end;
+
+function CharIsNumber(const C: AnsiChar): Boolean;
+begin
+  Result := ((AnsiCharTypes[C] and C1_DIGIT) <> 0) or (C = DecimalSeparator);
 end;
 
 function CharIsPrintable(const C: AnsiChar): Boolean;
@@ -3198,9 +3238,31 @@ begin
   Result := (AnsiCharTypes[C] and C1_UPPER) <> 0;
 end;
 
+function CharIsValidIdentifierLetter(const C: AnsiChar): Boolean;
+begin
+  case C of
+    '0'..'9', 'A'..'Z', 'a'..'z', '_':
+      Result := True;
+  else
+    Result := False;
+  end;
+end;
+
 function CharIsWhiteSpace(const C: AnsiChar): Boolean;
 begin
-  Result := C in AnsiWhiteSpace;
+  Result := (C = AnsiTab) or (C = AnsiLineFeed) or (C = AnsiVerticalTab) or
+            (C = AnsiFormFeed) or (C = AnsiCarriageReturn) or (C =AnsiSpace) or
+            ((AnsiCharTypes[C] and C1_SPACE) <> 0);
+end;
+
+function CharIsWildcard(const C: AnsiChar): Boolean;
+begin
+  case C of
+    '*', '?':
+      Result := True;
+  else
+    Result := False;
+  end;
 end;
 
 function CharType(const C: AnsiChar): Word;
@@ -3291,13 +3353,15 @@ end;
 
 function CharHex(const C: AnsiChar): Byte;
 begin
-  Result := $FF;
-  if C in AnsiDecDigits then
-    Result := Ord(CharUpper(C)) - Ord('0')
+  case C of
+    '0'..'9':
+      Result := Ord(C) - Ord('0');
+    'a'..'f':
+      Result := Ord(C) - Ord('a') + 10;
+    'A'..'F':
+      Result := Ord(C) - Ord('A') + 10;
   else
-  begin
-    if C in AnsiHexDigits then
-      Result := Ord(CharUpper(C)) - (Ord('A')) + 10;
+    Result := $FF;
   end;
 end;
 
@@ -3987,6 +4051,137 @@ begin
     Result := nil;
 end;
 {$ENDIF CLR}
+
+function AnsiCompareNatural(const S1, S2: AnsiString; CaseInsensitive: Boolean): Integer;
+var
+  Cur1, Len1,
+  Cur2, Len2: Integer;
+
+  procedure NumberCompare;
+  var
+    IsReallyNumber: Boolean;
+    FirstDiffBreaks: Boolean;
+    Val1, Val2: Integer;
+  begin
+    Result := 0;
+    IsReallyNumber := False;
+    // count leading spaces in S1
+    while CharIsWhiteSpace(S1[Cur1]) do
+    begin
+      Dec(Result);
+      Inc(Cur1);
+    end;
+    // count leading spaces in S2 (canceling them out against the ones in S1)
+    while CharIsWhiteSpace(S2[Cur2]) do
+    begin
+      Inc(Result);
+      Inc(Cur2);
+    end;
+
+    // if spaces match, or both strings are actually followed by a numeric character, continue the checks
+    if (Result = 0) or (CharIsNumberChar(S1[Cur1])) and (CharIsNumberChar(S2[Cur2])) then
+    begin
+      // Check signed number
+      if (S1[Cur1] = '-') and (S2[Cur2] <> '-') then
+        Result := 1
+      else
+      if (S2[Cur2] = '-') and (S1[Cur1] <> '-') then
+        Result := -1
+      else
+        Result := 0;
+
+      if (S1[Cur1] = '-') or (S1[Cur1] = '+') then
+        Inc(Cur1);
+      if (S2[Cur2] = '-') or (S2[Cur2] = '+') then
+        Inc(Cur2);
+
+      FirstDiffBreaks := (S1[Cur1] = '0') or (S2[Cur2] = '0');
+      while CharIsDigit(S1[Cur1]) and CharIsDigit(S2[Cur2]) do
+      begin
+        IsReallyNumber := True;
+        Val1 := StrToInt(S1[Cur1]);
+        Val2 := StrToInt(S2[Cur2]);
+
+        if (Result = 0) and (Val1 < Val2) then
+          Result := -1
+        else
+        if (Result = 0) and (Val1 > Val2) then
+          Result := 1;
+        if FirstDiffBreaks and (Result <> 0) then
+          Break;
+        Inc(Cur1);
+        Inc(Cur2);
+      end;
+
+      if IsReallyNumber then
+      begin
+        if not FirstDiffBreaks then
+        begin
+          if CharIsDigit(S1[Cur1]) then
+            Result := 1
+          else
+          if CharIsDigit(S2[Cur2]) then
+            Result := -1;
+        end;
+      end;
+    end;
+  end;
+
+begin
+  Cur1 := 1;
+  Len1 := Length(S1);
+  Cur2 := 1;
+  Len2 := Length(S2);
+  Result := 0;
+
+  while (Result = 0) do
+  begin
+    if (Cur1 = Len1) and (Cur2 = Len2) then
+      Break
+    else
+    if (S1[Cur1] = '-') and CharIsNumberChar(S2[Cur2]) and (S2[Cur2] <> '-') then
+      Result := -1
+    else
+    if (S2[Cur2] = '-') and CharIsNumberChar(S1[Cur1]) and (S1[Cur1] <> '-') then
+      Result := 1
+    else
+    if CharIsNumberChar(S1[Cur1]) and CharIsNumberChar(S2[Cur2]) then
+      NumberCompare
+    else
+    if (Cur1 = Len1) and (Cur2 < Len2) then
+      Result := -1
+    else
+    if (Cur1 < Len1) and (Cur2 = Len2) then
+      Result := 1
+    else
+    begin
+      Result := CompareText(S1,S2);
+      {$IFDEF CLR}
+      if CaseInsensitive then
+        Result := CompareText(Copy(S1,Cur1,Length(S1)-Cur1+1),Copy(S2,Length(S2)-Cur2+1))
+      else
+        Result := CompareStr(Copy(S1,Cur1,Length(S1)-Cur1+1),Copy(S2,Length(S2)-Cur2+1));
+      {$ELSE ~CLR}
+      if CaseInsensitive then
+        Result := AnsiStrLIComp(@S1[Cur1], @S2[Cur2], 1)
+      else
+        Result := AnsiStrLComp(@S1[Cur1], @S2[Cur2], 1);
+      {$ENDIF ~CLR}
+      Inc(Cur1);
+      Inc(Cur2);
+    end;
+  end;
+end;
+
+function AnsiCompareNaturalStr(const S1, S2: AnsiString): Integer; overload;
+begin
+  Result := AnsiCompareNatural(S1, S2, False);
+end;
+
+function AnsiCompareNaturalText(const S1, S2: AnsiString): Integer; overload;
+begin
+  Result := AnsiCompareNatural(S1, S2, True);
+end;
 
 initialization
   LoadCharTypes;  // this table first

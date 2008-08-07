@@ -402,7 +402,7 @@ var
   SignPos: Integer;
   RealPart, ImagPart: Float;
 begin
-  StrToParse := StrRemoveChars(StrToParse, [' ']);
+  StrToParse := StrRemoveChars(StrToParse, CharIsSpace);
   SignPos := StrFind('+', StrToParse, 2);
   if SignPos = 0 then
     SignPos := StrFind('-', StrToParse, 2);
@@ -465,9 +465,9 @@ var
   Radius, Angle: Float;
 begin
   {$IFDEF CLR}
-  StrToParse := StrRemoveChars(StrToParse, [' ']).toUpper;
+  StrToParse := StrRemoveChars(StrToParse, CharIsSpace).toUpper;
   {$ELSE}
-  StrToParse := AnsiUpperCase(StrRemoveChars(StrToParse, [' ']));
+  StrToParse := AnsiUpperCase(StrRemoveChars(StrToParse, CharIsSpace));
   {$ENDIF CLR}
   AstPos := Pos('*', StrToParse);
   if AstPos = 0 then

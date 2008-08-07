@@ -21,7 +21,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                       $ }
+{ Last modified: $Date::                                                                      $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -248,12 +248,19 @@ function GetItemIndexA(const Item: string): Integer;
 function GetItemIndexB(const Item: string): Integer;
 function GetItemName(const Item: string): string;
 
+function CharIsAmpersand(const C: Char): Boolean;
+
 implementation
 
 uses
   Windows, Forms, TypInfo,
   JclDebug, JclFileUtils, JclRegistry, JclShell, JclStrings,
   JclOtaConsts, JclOtaResources;
+
+function CharIsAmpersand(const C: Char): Boolean;
+begin
+  Result := C = '&';
+end;
 
 //=== VersionControlImpl.pas ===================================================
 const
@@ -450,7 +457,7 @@ var
 begin
   Result := 0;
   for Index := 1 to Length(Item) do
-    if not (Item[Index] in AnsiDecDigits) then
+    if not CharIsDigit(Item[Index]) then
   begin
     Result := StrToInt(Copy(Item, 1, Index - 1));
     Exit;
@@ -464,7 +471,7 @@ var
 begin
   Result := -1;
   for Index := Length(Item) downto 1 do
-    if not (Item[Index] in AnsiDecDigits) then
+    if not CharIsDigit(Item[Index]) then
   begin
     if Index < Length(Item) then
       Result := StrToInt(Copy(Item, Index + 1, Length(Item) - Index));
@@ -477,7 +484,7 @@ var
   Index1, Index2: Integer;
 begin
   for Index1 := 1 to Length(Item) do
-    if not (Item[Index1] in AnsiDecDigits) then
+    if not CharIsDigit(Item[Index1]) then
   begin
     if Index1 = 1 then
       Abort;
@@ -485,7 +492,7 @@ begin
   end;
 
   for Index2 := Length(Item) downto 1 do
-    if not (Item[Index2] in AnsiDecDigits) then
+    if not CharIsDigit(Item[Index2]) then
       Break;
 
   Result := Copy(Item, Index1, Index2 - Index1 + 1);
@@ -1826,7 +1833,7 @@ begin
     else
       Exit;
 
-    Directory := StrRemoveChars(Directory, ['&']);
+    Directory := StrRemoveChars(Directory, CharIsAmpersand);
 
     if VersionControlActionInfos[ControlAction].AllPlugins then
     begin

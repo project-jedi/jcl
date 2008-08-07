@@ -69,9 +69,6 @@ const
 type
   EJclExprEvalError = class(EJclError);
 
-const
-  ExprWhiteSpace = [#1..#32];
-
 type
   TFloat = JclBase.Float;
   PFloat = JclBase.PFloat;
@@ -907,10 +904,11 @@ const
 
 implementation
 
-{$IFDEF MSWINDOWS}
 uses
-  Windows; // inline of AnsiSameText
-{$ENDIF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
+  Windows, // inline of AnsiSameText
+  {$ENDIF MSWINDOWS}
+  JclStrings;
 
 //=== { TExprHashContext } ===================================================
 
@@ -1549,7 +1547,7 @@ begin
   cp := FCurrPos;
 
   { skip whitespace }
-  while cp^ in ExprWhiteSpace do
+  while CharIsWhiteSpace(cp^) do
     Inc(cp);
 
   { determine token type }
@@ -1560,7 +1558,7 @@ begin
       begin
         start := cp;
         Inc(cp);
-        while cp^ in ['0'..'9', 'a'..'z', 'A'..'Z', '_'] do
+        while CharIsValidIdentifierLetter(cp^) do
           Inc(cp);
         SetString(FTokenAsString, start, cp - start);
         FCurrTok := etIdentifier;
@@ -1570,24 +1568,24 @@ begin
         start := cp;
 
         { read in integer part of mantissa }
-        while cp^ in ['0'..'9'] do
+        while CharIsDigit(cp^) do
           Inc(cp);
 
         { check for and read in fraction part of mantissa }
         if (cp^ = '.') or (cp^ = DecimalSeparator) then
         begin
           Inc(cp);
-          while cp^ in ['0'..'9'] do
+          while CharIsDigit(cp^) do
             Inc(cp);
         end;
 
         { check for and read in exponent }
-        if cp^ in ['e', 'E'] then
+        if (cp^ = 'e') or (cp^ = 'E') then
         begin
           Inc(cp);
-          if cp^ in ['+', '-'] then
+          if (cp^ = '+') or (cp^ = '-') then
             Inc(cp);
-          while cp^ in ['0'..'9'] do
+          while CharIsDigit(cp^) do
             Inc(cp);
         end;
 

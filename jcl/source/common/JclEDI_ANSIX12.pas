@@ -33,7 +33,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -1937,21 +1937,21 @@ begin
 
   if foRemoveCrLf in FEDIFileOptions then
     {$IFDEF OPTIMIZED_STRINGREPLACE}
-    FData := JclEDI.StringReplace(FData, AnsiCrLf, '', [rfReplaceAll]);
+    FData := JclEDI.StringReplace(FData, NativeCrLf, '', [rfReplaceAll]);
     {$ELSE}
-    FData := SysUtils.StringReplace(FData, AnsiCrLf, '', [rfReplaceAll]);
+    FData := SysUtils.StringReplace(FData, NativeCrLf, '', [rfReplaceAll]);
     {$ENDIF OPTIMIZED_STRINGREPLACE}
   if foRemoveCr in FEDIFileOptions then
     {$IFDEF OPTIMIZED_STRINGREPLACE}
-    FData := JclEDI.StringReplace(FData, AnsiCarriageReturn, '', [rfReplaceAll]);
+    FData := JclEDI.StringReplace(FData, NativeCarriageReturn, '', [rfReplaceAll]);
     {$ELSE}
-    FData := SysUtils.StringReplace(FData, AnsiCarriageReturn, '', [rfReplaceAll]);
+    FData := SysUtils.StringReplace(FData, NativeCarriageReturn, '', [rfReplaceAll]);
     {$ENDIF OPTIMIZED_STRINGREPLACE}
   if foRemoveLf in FEDIFileOptions then
     {$IFDEF OPTIMIZED_STRINGREPLACE}
-    FData := JclEDI.StringReplace(FData, AnsiLineFeed, '', [rfReplaceAll]);
+    FData := JclEDI.StringReplace(FData, NativeLineFeed, '', [rfReplaceAll]);
     {$ELSE}
-    FData := SysUtils.StringReplace(FData, AnsiLineFeed, '', [rfReplaceAll]);
+    FData := SysUtils.StringReplace(FData, NativeLineFeed, '', [rfReplaceAll]);
     {$ENDIF OPTIMIZED_STRINGREPLACE}
 
   StartPos := 1;
@@ -2153,7 +2153,7 @@ begin
     SearchResult := SearchResult + 1;
   end;                                                            
   FDelimiters.SS := Copy(FData, SearchResult, 1);
-  if Copy(FData, SearchResult + 1, 2) = AnsiCrLf then
+  if Copy(FData, SearchResult + 1, 2) = NativeCrLf then
     FDelimiters.SD := Copy(FData, SearchResult + 1, 2)
   else
     FDelimiters.SD := Copy(FData, SearchResult + 1, 1);
@@ -2167,8 +2167,8 @@ begin
   FDelimiters.ED := Copy(FData, StartPos + Length(ICHSegmentId), 1);
   SearchResult := StrSearch(FGHSegmentId + FDelimiters.ED, FData, SearchResult);
   if SearchResult = 0 then
-    SearchResult := StrSearch(TA1SegmentId + FDelimiters.ED, FData, 1); 
-  if Copy(FData, SearchResult - 2, 2) = AnsiCrLf then
+    SearchResult := StrSearch(TA1SegmentId + FDelimiters.ED, FData, 1);
+  if Copy(FData, SearchResult - 2, 2) = NativeCrLf then
   begin
     FDelimiters.SS := Copy(FData, SearchResult - 3, 1);
     FDelimiters.SD := Copy(FData, SearchResult - 2, 2);

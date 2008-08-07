@@ -23,7 +23,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                       $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -506,15 +506,15 @@ resourcestring
   RsHintEnvironment     = 'Set selected environment items';
   RsHintEnvLibPath      = 'Add JCL precompiled unit directories to library path';
   RsHintEnvBrowsingPath = 'Add JCL source directories to browsing path';
-  RsHintEnvDebugDCUPath = 'This is a prerequisite for using the precompiled JCL debug units by means of the respective' + AnsiLineBreak +
+  RsHintEnvDebugDCUPath = 'This is a prerequisite for using the precompiled JCL debug units by means of the respective' + NativeLineBreak +
     'Project Options|Compiler switch. See "Make library units/Debug" option below.';
 
   // make units
-  RsHintMake            = 'Generate .dcu and .dpu (Kylix only) files.' + AnsiLineBreak + 'Recommended.';
+  RsHintMake            = 'Generate .dcu and .dpu (Kylix only) files.' + NativeLineBreak + 'Recommended.';
   RsHintMakeRelease     = 'Make precompiled units for release, i.e. optimized, w/o debug information.';
   RsHintMakeReleaseVcl  = 'Make precompiled VCL units for release';
   RsHintMakeReleaseVClx = 'Make precompiled Visual CLX units for release';
-  RsHintMakeDebug       = 'Make precompiled units for debugging, i.e.optimization off, debug information included.' + AnsiLineBreak +
+  RsHintMakeDebug       = 'Make precompiled units for debugging, i.e.optimization off, debug information included.' + NativeLineBreak +
     'When installed, available through Project Options|Compiler|Use Debug DCUs.';
   RsHintMakeDebugVcl    = 'Make precompiled VCL units for debugging';
   RsHintMakeDebugVClx   = 'Make precompiled Visual CLX units for debugging';
@@ -1507,10 +1507,10 @@ var
               if Defined or NotDefined then
               begin
                 Inc(DefinePos, Length(DefineText));
-                while IncludeLine[DefinePos] in AnsiWhiteSpace do
+                while CharIsWhiteSpace(IncludeLine[DefinePos]) do
                   Inc(DefinePos);
                 SymbolEnd := DefinePos;
-                while IncludeLine[SymbolEnd] in AnsiValidIdentifierLetters do
+                while CharIsValidIdentifierLetter(IncludeLine[SymbolEnd]) do
                   Inc(SymbolEnd);
                 Symbol := Copy(IncludeLine, DefinePos, SymbolEnd - DefinePos);
                 DefinePos := Defines.IndexOf(Symbol);
@@ -1750,7 +1750,7 @@ var
           Target.BCC32.Options.Add('-DTEST_VCL');
         if OptionChecked[joMakeReleaseVClx] or OptionChecked[joMakeDebugVClx] then
           Target.BCC32.Options.Add('-DTEST_VISCLX');
-        Options := StringsToStr(Target.BCC32.Options, AnsiSpace);
+        Options := StringsToStr(Target.BCC32.Options, NativeSpace);
         Result := Target.BCC32.Execute(Options + ' "jcl_a2z.cpp"')
           and Target.BCC32.Execute(Options + ' "jcl_z2a.cpp"'); 
       finally
@@ -3443,7 +3443,7 @@ function TJclDistribution.GetVersion: string;
         if RevisionText <> '' then
         begin
           Index := Length(RevisionText) - 1; // skip the '.'
-          while (Index > 1) and (RevisionText[Index] in AnsiDecDigits) do
+          while (Index > 1) and CharIsDigit(RevisionText[Index]) do
             Dec(Index);
           Result := StrToIntDef(Copy(RevisionText, Index + 1, Length(RevisionText) - Index - 1), 0);
         end;
@@ -3794,7 +3794,7 @@ begin
         begin
           Result := False;
           if Assigned(GUI) then
-            GUI.Dialog('RegHelper raised an error while executing RegHelp command: ' + AnsiLineBreak + ProgramResult, dtError, [drCancel]);
+            GUI.Dialog('RegHelper raised an error while executing RegHelp command: ' + NativeLineBreak + ProgramResult, dtError, [drCancel]);
         end;
       end;
     finally

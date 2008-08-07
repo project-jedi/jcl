@@ -436,7 +436,7 @@ const
      #16, #17, #18, #19, #20, #21, #22, #23, #24, #25, #26, #27, #28, #29,
      #30, #31, #32, '-');
 {$ELSE}
-  WrapChars = [#0..' ', '-'];
+  WrapChars : TSetOfAnsiChar = [#0..' ', '-'];
 {$ENDIF CLR}
 var
   TmpLines: TStringList;
@@ -445,8 +445,8 @@ var
   EndedInCRLF: Boolean;
   LineBreakLength: Integer;
 begin
-  LineBreakLength := Length(AnsiLineBreak);
-  EndedInCRLF := Copy(CurLine, Length(CurLine) - LineBreakLength + 1, LineBreakLength) = AnsiLineBreak;
+  LineBreakLength := Length(NativeLineBreak);
+  EndedInCRLF := Copy(CurLine, Length(CurLine) - LineBreakLength + 1, LineBreakLength) = NativeLineBreak;
   TmpLines := TStringList.Create;
   try
     TmpLines.Text := CurLine;
@@ -462,7 +462,7 @@ begin
         begin
           TmpLines2.Text := WrapText(
             TmpLines[I],
-            AnsiLineBreak + StringOfChar(' ', 2 * (IndentLevel+1)),
+            NativeLineBreak + StringOfChar(' ', 2 * (IndentLevel+1)),
             WrapChars,
             Wrap);
           TmpLines.Delete(I);
@@ -486,7 +486,7 @@ procedure TJclInfoWriter.DoWriteCompleteLines;
 var
   CRLFPos: Integer;
 begin
-  CRLFPos := StrLastPos(AnsiLineBreak, CurLine);
+  CRLFPos := StrLastPos(NativeLineBreak, CurLine);
   if CRLFPos > 0 then
   begin
     PrimWrite(Copy(CurLine, 1, CRLFPos-1));
@@ -513,7 +513,7 @@ end;
 
 procedure TJclInfoWriter.Writeln(const S: string);
 begin
-  Write(S + AnsiLineBreak);
+  Write(S + NativeLineBreak);
 end;
 
 //=== { TJclInfoStringsWriter } ==============================================
@@ -2658,7 +2658,7 @@ begin
     begin
       S := Names[I];
       if PrefixCut = PREFIX_CUT_LOWERCASE then
-        while (Length(S) > 0) and (S[1] in AnsiLowercaseLetters) do
+        while (Length(S) > 0) and CharIsLower(S[1]) do
           Delete(S, 1, 1);
       if (PrefixCut > 0) and (PrefixCut < MaxPrefixCut) then
         Delete(S, 1, PrefixCut);

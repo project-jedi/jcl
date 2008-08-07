@@ -223,36 +223,31 @@ type
   TDynWideStringArray = array of WideString;
   TDynIInterfaceArray = array of IInterface;
   TDynObjectArray     = array of TObject;
+  TDynCharArray       = array of Char;
+  TDynAnsiCharArray   = array of AnsiChar;
+  TDynWideCharArray   = array of WideChar;
 
 // Cross-Platform Compatibility
 const
-  // (rom) too basic for JclStrings
-  AnsiLineFeed       = AnsiChar(#10);
-  AnsiCarriageReturn = AnsiChar(#13);
-  AnsiCrLf           = AnsiString(#13#10);
+  // line delimiters for a version of Delphi/C++Builder
+  NativeLineFeed       = Char(#10);
+  NativeCarriageReturn = Char(#13);
+  NativeCrLf           = string(#13#10);
+  // default line break for a version of Delphi on a platform
   {$IFDEF MSWINDOWS}
-  AnsiLineBreak = AnsiCrLf;
+  NativeLineBreak      = NativeCrLf;
   {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
-  AnsiLineBreak = AnsiLineFeed;
+  NativeLineBreak      = NativeLineFeed;
   {$ENDIF UNIX}
 
-  AnsiSigns                  = ['-', '+'];
-  AnsiUppercaseLetters       = ['A'..'Z'];
-  AnsiLowercaseLetters       = ['a'..'z'];
-  AnsiLetters                = ['A'..'Z', 'a'..'z'];
-  AnsiDecDigits              = ['0'..'9'];
-  AnsiOctDigits              = ['0'..'7'];
-  AnsiHexDigits              = ['0'..'9', 'A'..'F', 'a'..'f'];
-  AnsiValidIdentifierLetters = ['0'..'9', 'A'..'Z', 'a'..'z', '_'];
-
-  AnsiHexPrefixPascal = AnsiString('$');
-  AnsiHexPrefixC      = AnsiString('0x');
+  HexPrefixPascal = string('$');
+  HexPrefixC      = string('0x');
 
   {$IFDEF BCB}
-  AnsiHexPrefix = AnsiHexPrefixC;
+  HexPrefix = HexPrefixC;
   {$ELSE ~BCB}
-  AnsiHexPrefix = AnsiHexPrefixPascal;
+  HexPrefix = HexPrefixPascal;
   {$ENDIF ~BCB}
 
 // basic set types
@@ -1271,7 +1266,7 @@ begin
   {$ENDIF CLR}
   FLastError := GetLastError;
   FLastErrorMsg := SysErrorMessage(FLastError);
-  inherited CreateFmt(Msg + AnsiLineBreak + RsWin32Prefix, [FLastErrorMsg, FLastError]);
+  inherited CreateFmt(Msg + NativeLineBreak + RsWin32Prefix, [FLastErrorMsg, FLastError]);
 end;
 
 constructor EJclWin32Error.CreateFmt(const Msg: string; const Args: array of const);
@@ -1281,7 +1276,7 @@ begin
   {$ENDIF CLR}
   FLastError := GetLastError;
   FLastErrorMsg := SysErrorMessage(FLastError);
-  inherited CreateFmt(Msg + AnsiLineBreak + Format(RsWin32Prefix, [FLastErrorMsg, FLastError]), Args);
+  inherited CreateFmt(Msg + NativeLineBreak + Format(RsWin32Prefix, [FLastErrorMsg, FLastError]), Args);
 end;
 
 {$IFNDEF CLR}
@@ -1289,7 +1284,7 @@ constructor EJclWin32Error.CreateRes(Ident: Integer);
 begin
   FLastError := GetLastError;
   FLastErrorMsg := SysErrorMessage(FLastError);
-  inherited CreateFmt(LoadStr(Ident) + AnsiLineBreak + RsWin32Prefix, [FLastErrorMsg, FLastError]);
+  inherited CreateFmt(LoadStr(Ident) + NativeLineBreak + RsWin32Prefix, [FLastErrorMsg, FLastError]);
 end;
 
 constructor EJclWin32Error.CreateRes(ResStringRec: PResStringRec);
@@ -1299,7 +1294,7 @@ begin
   {$IFDEF FPC}
   inherited CreateFmt(ResStringRec^ + AnsiLineBreak + RsWin32Prefix, [FLastErrorMsg, FLastError]);
   {$ELSE}
-  inherited CreateFmt(LoadResString(ResStringRec) + AnsiLineBreak + RsWin32Prefix, [FLastErrorMsg, FLastError]);
+  inherited CreateFmt(LoadResString(ResStringRec) + NativeLineBreak + RsWin32Prefix, [FLastErrorMsg, FLastError]);
   {$ENDIF FPC}
 end;
 {$ENDIF ~CLR}
@@ -1346,9 +1341,9 @@ begin
     Result := Value
   else
     {$IFDEF CLR}
-    raise EJclAddr64Exception.CreateFmt(RsCantConvertAddr64, [AnsiHexPrefix, Value]);
+    raise EJclAddr64Exception.CreateFmt(RsCantConvertAddr64, [HexPrefix, Value]);
     {$ELSE ~CLR}
-    raise EJclAddr64Exception.CreateResFmt(@RsCantConvertAddr64, [AnsiHexPrefix, Value]);
+    raise EJclAddr64Exception.CreateResFmt(@RsCantConvertAddr64, [HexPrefix, Value]);
     {$ENDIF ~CLR}
 end;
 

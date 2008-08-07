@@ -1931,24 +1931,8 @@ end;
 
 function TJclNumericFormat.GetDigitValue(Digit: Char): Integer;
 begin
-  Result := -1;
-  {$IFDEF CLR}
-  if System.Char.IsDigit(Digit) then
-  {$ELSE ~CLR}
-  if Digit in AnsiDecDigits then
-  {$ENDIF ~CLR}
-    Result := Ord(Digit) - Ord('0')
-  else
-  begin
-    Digit := UpCase(Digit);
-    {$IFDEF CLR}
-    if (Digit >= 'A') and (Digit <= 'Z') then
-    {$ELSE ~CLR}
-    if Digit in AnsiUppercaseLetters then
-    {$ENDIF ~CLR}
-      Result := Ord(Digit) - Ord('A') + 10;
-  end;
-  if Result >= Base then
+  Result := CharHex(Digit);
+  if (Result = $FF) or (Result >= Base) then
     Result := -1;
 end;
 
@@ -2294,44 +2278,22 @@ var
   C: Char;
 begin
   Result := 0;
-  N := 0;
   I := 1;
   if (Length(Value) >= I)
-  {$IFDEF CLR}
     and ((Value[I] = '+') or (Value[I] = '-')) then
-  {$ELSE ~CLR}
-    and (Value[I] in AnsiSigns) then
-  {$ENDIF ~CLR}
     Inc(I);
   for I := I to Length(Value) do
   begin
     C := Value[I];
-    {$IFDEF CLR}
-    if System.Char.IsDigit(C) then
-    {$ELSE ~CLR}
-    if C in AnsiDecDigits then
-    {$ENDIF ~CLR}
-      N := Ord(C) - Ord('0')
+    if C = DigitBlockSeparator then
+      Continue
     else
     begin
-      C := UpCase(C);
-      {$IFDEF CLR}
-      if (C >= 'A') and (C <= 'Z') then
-      {$ELSE ~CLR}
-      if C in AnsiUppercaseLetters then
-      {$ENDIF ~CLR}
-      begin
-        N := Ord(C) - Ord('A') + 10;
-        if N >= Base then
-          InvalidDigit(C);
-      end
-      else
-        if C = DigitBlockSeparator then
-          Continue
-      else
+      N := CharHex(C);
+      if (N = $FF) or (N >= Base) then
         InvalidDigit(C);
+      Result := Result * Base + N;
     end;
-    Result := Result * Base + N;
   end;
   if Value[1] = '-' then
     Result := -Result;
@@ -2399,12 +2361,12 @@ begin
       SetLength(Result, Length(Result) + Delta);
     C := RawOutput[BufPos];
     case C of
-      AnsiCarriageReturn:
+      NativeCarriageReturn:
         OutPos := LfPos;
-      AnsiLineFeed:
+      NativeLineFeed:
         begin
           OutPos := EndPos;
-          Result[OutPos] := AnsiCarriageReturn;
+          Result[OutPos] := NativeCarriageReturn;
           Inc(OutPos);
           Result[OutPos] := C;
           Inc(OutPos);
@@ -2431,9 +2393,9 @@ var
 
   procedure ProcessLine(LineEnd: Integer);
   begin
-    if RawOutput or (TempOutput[LineEnd] <> AnsiCarriageReturn) then
+    if RawOutput or (TempOutput[LineEnd] <> NativeCarriageReturn) then
     begin
-      while (LineEnd > 0) and (TempOutput[LineEnd] in [AnsiLineFeed, AnsiCarriageReturn]) do
+      while (LineEnd > 0) and CharIsReturn(TempOutput[LineEnd]) do
         Dec(LineEnd);
       OutputLineCallback(Copy(TempOutput, 1, LineEnd));
     end;
@@ -2447,10 +2409,10 @@ var
     TempOutput := TempOutput + Buffer;
     if Assigned(OutputLineCallback) then
     repeat
-      CR := Pos(AnsiCarriageReturn, TempOutput);
+      CR := Pos(NativeCarriageReturn, TempOutput);
       if CR = Length(TempOutput) then
         CR := 0;        // line feed at CR + 1 might be missing
-      LF := Pos(AnsiLineFeed, TempOutput);
+      LF := Pos(NativeLineFeed, TempOutput);
       if (CR > 0) and ((LF > CR + 1) or (LF = 0)) then
         LF := CR;       // accept CR as line end
       if LF > 0 then
@@ -3128,7 +3090,7 @@ begin
       SL.Text := Text;
       for I := 0 to SL.Count - 1 do
       begin
-        S := StringOfChar(' ', Indent) + StrEnsureSuffix(AnsiCrLf, TrimRight(SL[I]));
+        S := StringOfChar(' ', Indent) + StrEnsureSuffix(NativeLineBreak, TrimRight(SL[I]));
         FileWrite(FLogFileHandle, Pointer(S)^, Length(S));
       end;
     finally
@@ -3158,7 +3120,7 @@ begin
       SL.Text := Text;
       for I := 0 to SL.Count - 1 do
       begin
-        S := DateTimeToStr(Now)+' : '+StringOfChar(' ', Indent) + StrEnsureSuffix(AnsiCrLf, TrimRight(SL[I]));
+        S := DateTimeToStr(Now)+' : '+StringOfChar(' ', Indent) + StrEnsureSuffix(NativeLineBreak, TrimRight(SL[I]));
         FileWrite(FLogFileHandle, Pointer(S)^, Length(S));
       end;
     finally
@@ -3181,7 +3143,7 @@ begin
     SeparatorLen := 40;
   OpenLog;
   if not FLogWasEmpty then
-    Write(AnsiCrLf);
+    Write(NativeLineBreak);
   Write(StrRepeat('=', SeparatorLen));
   Write(Format('= %-*s =', [SeparatorLen - 4, DateTimeToStr(Now)]));
   Write(StrRepeat('=', SeparatorLen));

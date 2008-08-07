@@ -41,7 +41,7 @@ uses
 {$ENDIF UNITVERSIONING}
 
 // ISBN: International Standard Book Number
-function IsValidISBN(const ISBN: AnsiString): Boolean;
+function IsValidISBN(const ISBN: string): Boolean;
 
 {$IFDEF UNITVERSIONING}
 const
@@ -55,8 +55,11 @@ const
 
 implementation
 
+uses
+  JclBase;
+  
 { TODO -cDoc : Donator: Ivo Bauer }
-function IsValidISBN(const ISBN: AnsiString): Boolean;
+function IsValidISBN(const ISBN: string): Boolean;
 //
 // References:
 // ===========
@@ -67,10 +70,39 @@ type
   TISBNPartSizes = array [TISBNPart] of Integer;
 const
   ISBNSize = 13;
-  ISBNDigits = ['0'..'9'];
-  ISBNSpecialDigits = ['x', 'X'];
-  ISBNSeparators = [#32, '-'];
-  ISBNCharacters = ISBNDigits + ISBNSpecialDigits + ISBNSeparators;
+
+function CharIsISBNSpecialDigit(const C: Char): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+begin
+  case C of
+    'x', 'X':
+      Result := True;
+  else
+    Result := False;
+  end;
+end;
+
+function CharIsISBNSeparator(const C: Char): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+begin
+  case C of
+    #32, '-':
+      Result := True;
+  else
+    Result := False;
+  end;
+end;
+
+function CharIsISBNCharacter(const C: Char): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+begin
+  case C of
+    '0'..'9',
+    'x', 'X',
+    #32, '-':
+      Result := True;
+  else
+    Result := False;
+  end;
+end;
+
 var
   CurPtr, EndPtr: Integer;
   Accumulator, Counter: Integer;
@@ -101,9 +133,9 @@ begin
 
   while CurPtr <= EndPtr do
   begin
-    if ISBN[CurPtr] in ISBNCharacters then
+    if CharIsISBNCharacter(ISBN[CurPtr]) then
     begin
-      if ISBN[CurPtr] in ISBNSeparators then
+      if CharIsISBNSeparator(ISBN[CurPtr]) then
       begin
         // Switch to the next ISBN part, but take care of two conditions:
         // 1. Do not let Part go beyond its upper bound (ipCheckDigit).
@@ -126,7 +158,7 @@ begin
         end
         else
           // Special check digit is allowed to occur only at the end of ISBN.
-          if ISBN[CurPtr] in ISBNSpecialDigits then
+          if CharIsISBNSpecialDigit(ISBN[CurPtr]) then
             Exit;
 
         // Increment the size of the current ISBN part.
@@ -134,7 +166,7 @@ begin
 
         // Increment the accumulator by current ISBN digit multiplied by a weight.
         // To get more detailed information, please refer to the web site [1].
-        if (CurPtr = EndPtr) and (ISBN[CurPtr] in ISBNSpecialDigits) then
+        if (CurPtr = EndPtr) and CharIsISBNSpecialDigit(ISBN[CurPtr]) then
           Inc(Accumulator, 10 * Counter)
         else
           Inc(Accumulator, (Ord(ISBN[CurPtr]) - Ord('0')) * Counter);

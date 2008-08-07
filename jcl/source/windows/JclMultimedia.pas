@@ -1157,7 +1157,7 @@ constructor EJclMciError.Create(MciErrNo: MCIERROR; const Msg: string);
 begin
   FMciErrorNo := MciErrNo;
   FMciErrorMsg := GetMciErrorMessage(MciErrNo);
-  inherited Create(Msg + AnsiLineBreak + RsMmMciErrorPrefix + FMciErrorMsg);
+  inherited Create(Msg + NativeLineBreak + RsMmMciErrorPrefix + FMciErrorMsg);
 end;
 
 constructor EJclMciError.CreateFmt(MciErrNo: MCIERROR; const Msg: string;
@@ -1165,14 +1165,14 @@ constructor EJclMciError.CreateFmt(MciErrNo: MCIERROR; const Msg: string;
 begin
   FMciErrorNo := MciErrNo;
   FMciErrorMsg := GetMciErrorMessage(MciErrNo);
-  inherited CreateFmt(Msg + AnsiLineBreak + RsMmMciErrorPrefix + FMciErrorMsg, Args);
+  inherited CreateFmt(Msg + NativeLineBreak + RsMmMciErrorPrefix + FMciErrorMsg, Args);
 end;
 
 constructor EJclMciError.CreateRes(MciErrNo: MCIERROR; Ident: Integer);
 begin
   FMciErrorNo := MciErrNo;
   FMciErrorMsg := GetMciErrorMessage(MciErrNo);
-  inherited Create(LoadStr(Ident)+ AnsiLineBreak + RsMmMciErrorPrefix + FMciErrorMsg);
+  inherited Create(LoadStr(Ident)+ NativeLineBreak + RsMmMciErrorPrefix + FMciErrorMsg);
 end;
 
 function GetMciErrorMessage(const MciErrNo: MCIERROR): string;

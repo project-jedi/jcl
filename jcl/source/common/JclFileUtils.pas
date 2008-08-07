@@ -125,7 +125,6 @@ const
   DirSeparator = ':';
   {$ENDIF UNIX}
   {$IFDEF MSWINDOWS}
-  DriveLetters     = ['a'..'z', 'A'..'Z'];
   PathDevicePrefix = '\\.\';
   {$IFDEF KEEP_DEPRECATED}
   PathSeparator    = '\';
@@ -155,6 +154,8 @@ const
 
 type
   TCompactPath = ({cpBegin, }cpCenter, cpEnd);
+
+function CharIsDriveLetter(const C: char): Boolean;
 
 function PathAddSeparator(const Path: string): string;
 function PathAddExtension(const Path, Extension: string): string;
@@ -1032,7 +1033,6 @@ uses
   JclSysUtils, JclDateTime, JclResources,
   {$IFDEF CLR}
   Borland.Vcl.ShlObj, Borland.Vcl.ActiveX, Borland.Vcl.ComObj, Borland.Vcl.StrUtils,
-  JclAnsiStrings,
   {$ENDIF CLR}
   JclStrings;
 
@@ -1544,25 +1544,26 @@ begin
   while P < FEnd do
   begin
     // CRLF, CR, LF and LFCR are seen as valid sets of chars for EOL marker
-    if P^ in [AnsiLineFeed, AnsiCarriageReturn] then
+    if CharIsReturn(P^) then
     begin
       if I and $FFFF = 0 then
         ReallocMem(FIndex, (I + $10000) * SizeOf(Pointer));
       FIndex[I] := LastLineStart;
       Inc(I);
 
-      if P^ = AnsiLineFeed then
-      begin
-        Inc(P);
-        if (P < FEnd) and (P^ = AnsiCarriageReturn) then
-          Inc(P);
-      end
-      else
-      if P^ = AnsiCarriageReturn then
-      begin
-        Inc(P);
-        if (P < FEnd) and (P^ = AnsiLineFeed) then
-          Inc(P);
+      case P^ of
+        NativeLineFeed:
+          begin
+            Inc(P);
+            if (P < FEnd) and (P^ = NativeCarriageReturn) then
+             Inc(P);
+          end;
+        NativeCarriageReturn:
+          begin
+            Inc(P);
+            if (P < FEnd) and (P^ = NativeLineFeed) then
+              Inc(P);
+          end;
       end;
       LastLineStart := P;
     end
@@ -1613,25 +1614,25 @@ begin
       while P < FEnd do
       begin
         case P^ of
-          AnsiLineFeed:
+          NativeLineFeed:
             begin
               Inc(FLineCount);
               Inc(P);
-              if (P < FEnd) and (P^ = AnsiCarriageReturn) then
+              if (P < FEnd) and (P^ = NativeCarriageReturn) then
                 Inc(P);
             end;
-          AnsiCarriageReturn:
+          NativeCarriageReturn:
             begin
               Inc(FLineCount);
               Inc(P);
-              if (P < FEnd) and (P^ = AnsiLineFeed) then
+              if (P < FEnd) and (P^ = NativeLineFeed) then
                 Inc(P);
             end;
         else
           Inc(P);
         end;
       end;
-      if (P = FEnd) and (P > FContent) and not ((P-1)^ in [AnsiCarriageReturn, AnsiLineFeed]) then
+      if (P = FEnd) and (P > FContent) and not CharIsReturn((P-1)^) then
         Inc(FLineCount);
     end;
   end;
@@ -1723,18 +1724,18 @@ begin
       while (Result < FEnd) and (LineOffset > 0) do
       begin
         case Result^ of
-          AnsiLineFeed:
+          NativeLineFeed:
             begin
               Dec(LineOffset);
               Inc(Result);
-              if (Result < FEnd) and (Result^ = AnsiCarriageReturn) then
+              if (Result < FEnd) and (Result^ = NativeCarriageReturn) then
                 Inc(Result);
             end;
-          AnsiCarriageReturn:
+          NativeCarriageReturn:
             begin
               Dec(LineOffset);
               Inc(Result);
-              if (Result < FEnd) and (Result^ = AnsiLineFeed) then
+              if (Result < FEnd) and (Result^ = NativeLineFeed) then
                 Inc(Result);
             end;
         else
@@ -1750,22 +1751,22 @@ begin
       begin
         Dec(Result);
         case Result^ of
-          AnsiLineFeed:
+          NativeLineFeed:
             begin
               Inc(LineOffset);
               if LineOffset >= 1 then
                 Inc(Result)
               else
-              if (Result > FContent) and ((Result-1)^ = AnsiCarriageReturn) then
+              if (Result > FContent) and ((Result-1)^ = NativeCarriageReturn) then
                 Dec(Result);
             end;
-          AnsiCarriageReturn:
+          NativeCarriageReturn:
             begin
               Inc(LineOffset);
               if LineOffset >= 1 then
                 Inc(Result)
               else
-              if (Result > FContent) and ((Result-1)^ = AnsiLineFeed) then
+              if (Result > FContent) and ((Result-1)^ = NativeLineFeed) then
                 Dec(Result);
             end;
         end;
@@ -1806,22 +1807,22 @@ begin
   else
   begin
     P := StartPos;
-    while (P < FEnd) and (not (P^ in [AnsiLineFeed, AnsiCarriageReturn])) do
+    while (P < FEnd) and (not CharIsReturn(P^)) do
       Inc(P);
     SetString(Result, StartPos, P - StartPos);
     if P < FEnd then
     begin
       case P^ of
-        AnsiLineFeed:
+        NativeLineFeed:
           begin
             Inc(P);
-            if (P < FEnd) and (P^ = AnsiCarriageReturn) then
+            if (P < FEnd) and (P^ = NativeCarriageReturn) then
               Inc(P);
           end;
-        AnsiCarriageReturn:
+        NativeCarriageReturn:
           begin
             Inc(P);
-            if (P < FEnd) and (P^ = AnsiLineFeed) then
+            if (P < FEnd) and (P^ = NativeLineFeed) then
               Inc(P);
           end;
       end;
@@ -1831,6 +1832,17 @@ begin
 end;
 
 {$ENDIF ~CLR}
+
+function CharIsDriveLetter(const C: Char): Boolean;
+begin
+  case C of
+    'a'..'z',
+    'A'..'Z':
+      Result := True;
+  else
+    Result := False;
+  end;
+end;
 
 //=== Path manipulation ======================================================
 
@@ -1960,7 +1972,6 @@ begin
 end;
 
 function PathCommonPrefix(const Path1, Path2: string): Integer;
-{$IFDEF CLR}
 var
   Index1, Index2: Integer;
   LastSeparator, LenS1: Integer;
@@ -1997,40 +2008,6 @@ begin
       Result := LastSeparator;
   end;
 end;
-{$ELSE ~CLR}
-var
-  P1, P2: PChar;
-  LastSeparator: Integer;
-begin
-  Result := 0;
-  if (Path1 <> '') and (Path2 <> '') then
-  begin
-    // Initialize P1 to the shortest of the two paths so that the actual comparison loop below can
-    // use the terminating #0 of that string to terminate the loop.
-    if Length(Path1) <= Length(Path2) then
-    begin
-      P1 := @Path1[1];
-      P2 := @Path2[1];
-    end
-    else
-    begin
-      P1 := @Path2[1];
-      P2 := @Path1[1];
-    end;
-    LastSeparator := 0;
-    while (P1^ = P2^) and (P1^ <> #0) do
-    begin
-      Inc(Result);
-      if P1^ in [DirDelimiter, ':'] then
-        LastSeparator := Result;
-      Inc(P1);
-      Inc(P2);
-    end;
-    if (LastSeparator < Result) and (P1^ <> #0) then
-      Result := LastSeparator;
-  end;
-end;
-{$ENDIF ~CLR}
 
 {$IFDEF Win32API}
 function PathCompactPath(const DC: HDC; const Path: string;
@@ -2416,7 +2393,7 @@ begin
       I := 0;
       if PathIsDiskDevice(Path) then
         I := Length(PathDevicePrefix);
-      Result := (Length(Path) > I + 2) and (Path[I + 1] in DriveLetters) and
+      Result := (Length(Path) > I + 2) and CharIsDriveLetter(Path[I + 1]) and
         (Path[I + 2] = ':') and (Path[I + 3] = DirDelimiter);
     end
     else
@@ -2511,6 +2488,28 @@ begin
 end;
 {$ENDIF MSWINDOWS}
 
+function CharIsMachineName(const C: Char): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+begin
+  case C of
+    'a'..'z',
+    'A'..'Z',
+    '-', '_', '.':
+      Result := True;
+  else
+    Result := False;
+  end;
+end;
+
+function CharIsInvalidPathCharacter(const C: Char): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+begin
+  case C of
+    '<', '>', '?', '/', ',', '*', '+', '=', '[', ']', '|', ':', ';', '"', '''':
+      Result := True;
+  else
+    Result := False;
+  end;
+end;
+
 function PathIsUNC(const Path: string): Boolean;
 
 {$IFDEF MSWINDOWS}
@@ -2549,13 +2548,13 @@ var
     {$IFDEF CLR}
     while (Index <= LenPath) and (Path[Index] <> DirDelimiter) do
     begin
-      if AnsiChar(Path[Index]) in ['a'..'z', 'A'..'Z', '-', '_', '.'] then
+      if CharIsMachineName(Path[Index]) then
       begin
         NonDigitFound := True;
         Inc(Index);
       end
       else
-      if AnsiChar(Path[Index]) in AnsiDecDigits then
+      if CharIsDigit(Path[Index]) then
         Inc(Index)
       else
       begin
@@ -2566,13 +2565,13 @@ var
     {$ELSE ~CLR}
     while (P^ <> #0) and (P^ <> DirDelimiter) do
     begin
-      if P^ in ['a'..'z', 'A'..'Z', '-', '_', '.'] then
+      if CharIsMachineName(P^) then
       begin
         NonDigitFound := True;
         Inc(P);
       end
       else
-      if P^ in AnsiDecDigits then
+      if CharIsDigit(P^) then
         Inc(P)
       else
       begin
@@ -2585,9 +2584,6 @@ var
   end;
 
   function AbsorbShareName: Boolean;
-  const
-    InvalidCharacters =
-      ['<', '>', '?', '/', ',', '*', '+', '=', '[', ']', '|', ':', ';', '"', ''''];
   begin
     // a valid share name is a string composed of a set the set !InvalidCharacters note that a
     // leading '$' is valid (indicates a hidden share)
@@ -2595,7 +2591,7 @@ var
     {$IFDEF CLR}
     while (Index <= LenPath) and (Path[Index] <> DirDelimiter) do
     begin
-      if AnsiChar(Path[Index]) in InvalidCharacters then
+      if CharIsInvalidPathCharacter(Path[Index]) then
       begin
         Result := False;
         Break;
@@ -2605,7 +2601,7 @@ var
     {$ELSE ~CLR}
     while (P^ <> #0) and (P^ <> DirDelimiter) do
     begin
-      if P^ in InvalidCharacters then
+      if CharIsInvalidPathCharacter(P^) then
       begin
         Result := False;
         Break;
@@ -3298,11 +3294,10 @@ var
   ErrorMode: Cardinal;
 begin
   Result := False;
-  Assert(Drive in DriveLetters);
-  if Drive in DriveLetters then
+  Assert(CharIsDriveLetter(Drive));
+  if CharIsDriveLetter(Drive) then
   begin
-    if Drive in AnsiLowercaseLetters then
-      Dec(Drive, $20);
+    Drive := CharUpper(Drive);
     { try to access the drive, it doesn't really matter how we access the drive and as such calling
       DiskSize is more or less a random choice. The call to SetErrorMode supresses the system provided
       error dialog if there is no disk in the drive and causes the to DiskSize to fail. }
@@ -3875,7 +3870,7 @@ var
   DriveType: Integer;
   DriveStr: string;
 begin
-  if not (Drive in DriveLetters) then
+  if not CharIsDriveLetter(Drive) then
     raise EJclPathError.CreateResFmt(@RsPathInvalidDrive, [Drive]);
   DriveStr := Drive + ':\';
   DriveType := GetDriveType(PChar(DriveStr));
@@ -5041,7 +5036,7 @@ var
     until I = 0;
     I := 1;
     while I <= Length(Key) do
-      if Key[I] in AnsiHexDigits then
+      if CharIsHexDigit(Key[I]) then
         Inc(I)
       else
         Delete(Key, I, 1);
@@ -5347,8 +5342,6 @@ begin
 end;
 
 procedure TJclFileMaskComparator.CreateMultiMasks;
-const
-  WildChars = ['*', '?'];
 var
   List: TStringList;
   I, N: Integer;
@@ -5379,9 +5372,9 @@ begin
       FNames[I] := NS;
       FExts[I] := ES;
       N := 0;
-      if StrContainsChars(NS, WildChars, False) then
+      if StrContainsChars(NS, CharIsWildcard, False) then
         N := N or 1;
-      if StrContainsChars(ES, WildChars, False) then
+      if StrContainsChars(ES, CharIsWildcard, False) then
         N := N or 2;
       FWildChars[I] := N;
     end;

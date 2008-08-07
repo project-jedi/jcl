@@ -56,9 +56,9 @@ resourcestring
   RsAboutDialogTitle = 'JEDI Code Library';
   RsAboutCopyright = 'Copyright the JCL development team';
   RsAboutTitle = 'JEDI Code Library';
-  RsAboutDescription = 'JEDI Code Library http://jcl.sf.net' + AnsiLineBreak +
-                       'The JCL is a member of the JEDI Project http://www.delphi-jedi.org' + AnsiLineBreak +
-                       'Covered under the Mozilla Public License v1.1 (MPL 1.1)' + AnsiLineBreak +
+  RsAboutDescription = 'JEDI Code Library http://jcl.sf.net' + NativeLineBreak +
+                       'The JCL is a member of the JEDI Project http://www.delphi-jedi.org' + NativeLineBreak +
+                       'Covered under the Mozilla Public License v1.1 (MPL 1.1)' + NativeLineBreak +
                        'License available at http://www.mozilla.org/MPL/MPL-1.1.html';
   RsAboutLicenceStatus = 'MPL 1.1';
   RsJCLOptions = 'JCL Options...';
@@ -71,15 +71,15 @@ resourcestring
 //=== JclExceptionForm.pas ===================================================
 resourcestring
   RsReportFormCaption = 'Exception in an expert of the JCL';
-  RsExceptionDetails = 'An exception was raised in an expert of the JCL.' + AnsiLineBreak +
+  RsExceptionDetails = 'An exception was raised in an expert of the JCL.' + NativeLineBreak +
                        'The JCL development team expects quality and performance for the library.' +
                        'That''s why we highly encourage you to report this exception by quoting ' +
                        'your version of Delphi/BCB/BDS (including patch numbers), by explaining ' +
-                       'steps to reproduce and by copying the call stack displayed in the box below.' + AnsiLineBreak +
-                       'There are several ways to report bugs in the JCL:' + AnsiLineBreak +
-                       ' - issue tracker (recommended),' + AnsiLineBreak +
-                       ' - jedi newsgroups,' + AnsiLineBreak +
-                       ' - mailing list.' + AnsiLineBreak +
+                       'steps to reproduce and by copying the call stack displayed in the box below.' + NativeLineBreak +
+                       'There are several ways to report bugs in the JCL:' + NativeLineBreak +
+                       ' - issue tracker (recommended),' + NativeLineBreak +
+                       ' - jedi newsgroups,' + NativeLineBreak +
+                       ' - mailing list.' + NativeLineBreak +
                        'Details and guidelines for these tools are available at:';
   RsReportURL = 'http://homepages.borland.com/jedi/jcl/page24.html';
   RsReportCaption = 'JCL - Feedback&&Support - Report a bug page';
@@ -222,11 +222,11 @@ resourcestring
 resourcestring
   RsENoProjectOptions = 'Project options are not available';
   RsCantInsertToInstalledPackage = 'JCL Debug IDE Expert: Can not insert debug information to installed package' +
-    AnsiLineBreak + '%s' + AnsiLineBreak + 'Would you like to disable the insertion of JCL Debug data ?';
+    NativeLineBreak + '%s' + NativeLineBreak + 'Would you like to disable the insertion of JCL Debug data ?';
   RsChangeMapFileOption = 'JCL Debug expert: the project "%s" must be configured to generate a detailled MAP file.' +
-    AnsiLineBreak + 'Do you want the expert to change this setting?';
+    NativeLineBreak + 'Do you want the expert to change this setting?';
   RsDisabledDebugExpert = 'JCL Debug expert is disabled';
-  RsCompilationAborted = 'JCL Debug data cannot be inserted to installed package' + AnsiLineBreak + 'Compilation aborted';
+  RsCompilationAborted = 'JCL Debug data cannot be inserted to installed package' + NativeLineBreak + 'Compilation aborted';
   RsDebugExpertCaption = 'JCL Debug expert';
   RsAlwaysDisabled = 'Always &disabled';
   RsProjectDisabled = 'D&isabled for this project';
@@ -277,7 +277,7 @@ resourcestring
   RsLong = '64-bit Core';
 
   RsTrademarks =
-    'MMX is a trademark of Intel Corporation.' + AnsiLineBreak +
+    'MMX is a trademark of Intel Corporation.' + NativeLineBreak +
     '3DNow! is a registered trademark of Advanced Micro Devices.';
 
   RsNoSIMD = 'No SIMD registers found';

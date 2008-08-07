@@ -508,7 +508,7 @@ begin
       else
       begin
         ControlAction := TCustomAction(PopupMenuActions.Items.Items[AAction].Tag);
-        ATreeNode := TreeViewMenu.Items.Add(nil, StrRemoveChars(ControlAction.Caption, ['&']));
+        ATreeNode := TreeViewMenu.Items.Add(nil, StrRemoveChars(ControlAction.Caption, CharIsAmpersand));
         ATreeNode.Data := ControlAction;
         ATreeNode.ImageIndex := ControlAction.ImageIndex;
         ATreeNode.SelectedIndex := ControlAction.ImageIndex;
@@ -530,7 +530,7 @@ begin
       else
       begin
         ControlAction := TCustomAction(PopupMenuActions.Items.Items[AAction].Tag);
-        BTreeNode := TreeViewMenu.Items.AddChild(ATreeNode, StrRemoveChars(ControlAction.Caption, ['&']));
+        BTreeNode := TreeViewMenu.Items.AddChild(ATreeNode, StrRemoveChars(ControlAction.Caption, CharIsAmpersand));
         BTreeNode.ImageIndex := ControlAction.ImageIndex;
         BTreeNode.SelectedIndex := ControlAction.ImageIndex;
         BTreeNode.Data := ControlAction;
@@ -545,10 +545,20 @@ begin
   CheckBoxSaveConfirmation.Checked := Value;
 end;
 
+function CharIsInvalid(const C: Char): Boolean;
+begin
+  case C of
+    '\', '_', '0'..'9':
+      Result := True;
+  else
+    Result := False;
+  end;
+end;
+
 procedure TJclVersionCtrlOptionsFrame.TreeViewMenuEdited(Sender: TObject;
   Node: TTreeNode; var S: string);
 begin
-  if StrContainsChars(S, ['\', '_', '0'..'9'], True) then
+  if StrContainsChars(S, CharIsInvalid, True) then
   begin
     S := Node.Text;
     MessageDlg(RsEInvalidMenuCaption, mtError, [mbAbort], 0);

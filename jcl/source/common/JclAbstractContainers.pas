@@ -46,7 +46,8 @@ uses
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
-  SysUtils, Classes, JclBase, JclContainerIntf, JclSynch, JclSysUtils;
+  SysUtils, Classes,
+  JclBase, JclContainerIntf, JclSynch, JclSysUtils, JclAnsiStrings;
 
 type
   {$IFDEF KEEP_DEPRECATED}

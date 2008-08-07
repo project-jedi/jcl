@@ -1191,9 +1191,12 @@ begin
   Result := FunctionName;
   L := Length(Result);
   // (rom) possible bug. 'A'..'Z' missing from set (better use AnsiValidIdentifierLetters).
-  if (L > 1) and (Result[L] in ['A', 'W']) and
-    (Result[L - 1] in ['a'..'z', '_', '0'..'9']) then
-    Delete(Result, L, 1);
+  if (L > 1) then
+    case Result[L] of
+      'A', 'W':
+        if CharIsValidIdentifierLetter(Result[L - 1]) then
+          Delete(Result, L, 1);
+    end;
 end;
 
 function PeSmartFunctionNameSame(const ComparedName, FunctionName: string;
@@ -4933,8 +4936,8 @@ function PeRebaseImage32(const ImageName: TFileName; NewBase: TJclAddr32;
     if Length(ModuleName) > 0 then
       FirstChar := UpCase(ModuleName[1])
     else
-      FirstChar := AnsiNull;
-    if not (FirstChar in AnsiUppercaseLetters) then
+      FirstChar := NativeNull;
+    if not CharIsUpper(FirstChar) then
       FirstChar := 'A';
     Result := $60000000 + (((Ord(FirstChar) - Ord('A')) div 3) * $1000000);
   end;
@@ -4961,8 +4964,8 @@ function PeRebaseImage64(const ImageName: TFileName; NewBase: TJclAddr64;
     if Length(ModuleName) > 0 then
       FirstChar := UpCase(ModuleName[1])
     else
-      FirstChar := AnsiNull;
-    if not (FirstChar in AnsiUppercaseLetters) then
+      FirstChar := NativeNull;
+    if not CharIsUpper(FirstChar) then
       FirstChar := 'A';
     Result := $60000000 + (((Ord(FirstChar) - Ord('A')) div 3) * $1000000);
     Result := Result shl 32;
@@ -6263,7 +6266,7 @@ var
     SymbolLength: Integer;
   begin
     SymbolLength := 0;
-    while NameP^ in AnsiDecDigits do
+    while CharIsDigit(NameP^) do
     begin
       SymbolLength := SymbolLength * 10 + Ord(NameP^) - 48;
       Inc(NameP);
@@ -6305,7 +6308,7 @@ var
       LinkProcFound := True;
       Inc(NameP);
     end;
-    while NameP^ in AnsiValidIdentifierLetters do
+    while CharIsValidIdentifierLetter(NameP^) do
     begin
       NameU^ := NameP^;
       Inc(NameP);

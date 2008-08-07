@@ -497,7 +497,7 @@ procedure TJCLUsesWizard.LoadSettings;
 var
   DefaultIniFile, DefaultRegKey: string;
 begin
-  DefaultRegKey := StrEnsureSuffix(AnsiBackslash, Services.GetBaseRegistryKey) + RegJclKey;
+  DefaultRegKey := StrEnsureSuffix(NativeBackslash, Services.GetBaseRegistryKey) + RegJclKey;
   DefaultIniFile := RegReadStringDef(HKCU, DefaultRegKey, JclRootDirValueName, '');
   if DefaultIniFile <> '' then
     DefaultIniFile := PathAddSeparator(DefaultIniFile) + JclIniFileLocation;

@@ -2750,16 +2750,28 @@ function TJclDCC32.Execute(const CommandLine: string): Boolean;
         'L':
           if Length(S) >= 3 then
           begin
-            Result := UpCase(S[3]) in ['E', 'N'];
+            case UpCase(S[3]) of
+              'E', 'e',
+              'N', 'n':
+                Result := True;
+            else
+              Result := False;
+            end;
             Len := 3;
           end;
         'N':
           begin
             Result := True;
-            if (Length(S) >= 3) and (S[3] in ['0'..'9', 'H', 'O', 'B']) then
-              Len := 3
-            else
-              Len := 2;
+            if (Length(S) >= 3) then
+            begin
+              case Upcase(S[3]) of
+                '0'..'9',
+                'H', 'O', 'B':
+                  Len := 3;
+              else
+                Len := 2;
+              end;
+            end;
           end;
       end;
   end;
@@ -5067,7 +5079,7 @@ begin
   if IDEVersionNumber < 5 then
     Result := LocStr[0]
   else
-    Result := LocStr[1] + AnsiBackslash + LocStr[2];
+    Result := LocStr[1] + NativeBackslash + LocStr[2];
 
   Result := PathAddSeparator(GetPersonalFolder) + Result;
 end;
@@ -5549,7 +5561,7 @@ var
     if RegKeyExists(HKEY_LOCAL_MACHINE, KeyName) and
       RegGetKeyNames(HKEY_LOCAL_MACHINE, KeyName, VersionNumbers) then
       for I := 0 to VersionNumbers.Count - 1 do
-        if StrIsSubSet(VersionNumbers[I], ['.', '0'..'9']) then
+        if StrIsSubSet(VersionNumbers[I], CharIsFracDigit) then
         begin
           VersionKeyName := KeyName + DirDelimiter + VersionNumbers[I];
           if RegKeyExists(HKEY_LOCAL_MACHINE, VersionKeyName) then

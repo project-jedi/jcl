@@ -37,7 +37,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -510,7 +510,7 @@ begin
   SetBeginTagDelimiter(EDIXML_LessThanSign);
   SetBeginOfEndTagDelimiter(FBeginTagDelimiter + EDIXMLDelimiter_ForwardSlash);
   SetEndTagDelimiter(EDIXML_GreaterThanSign);
-  FSpaceDelimiter := AnsiSpace;
+  FSpaceDelimiter := NativeSpace;
   FAssignmentDelimiter := EDIXMLDelimiter_EqualToSign;
   FSingleQuote := EDIXML_Apostrophe;
   FDoubleQuote := EDIXML_QuotationMark;
@@ -2392,7 +2392,7 @@ begin
     finally
       EDIFileStream.Free;
     end;
-    FData := StringReplace(FData, AnsiCrLf, '', [rfReplaceAll, rfIgnoreCase]);
+    FData := StringReplace(FData, NativeCrLf, '', [rfReplaceAll, rfIgnoreCase]);
   end
   else
     raise EJclEDIError.CreateID(1);

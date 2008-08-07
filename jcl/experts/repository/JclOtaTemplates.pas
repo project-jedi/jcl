@@ -121,7 +121,7 @@ function ApplyTemplate(const Template: string;
     Count: Integer): Integer;
   begin
     Result := Index;
-    while (Result <= Count) and (Str[Result] in AnsiWhiteSpace) do
+    while (Result <= Count) and CharIsWhiteSpace(Str[Result]) do
       Inc(Result);
   end;
   function GetIdentifier(const Str: string; var Index: Integer;
@@ -202,13 +202,13 @@ begin
           case Params.Language of
             bpDelphi32:
               begin
-                StrValue := StringReplace(StrValue, AnsiSingleQuote, AnsiSingleQuote + AnsiSingleQuote, [rfReplaceAll]);
-                StrValue := AnsiSingleQuote + StrValue + AnsiSingleQuote;
+                StrValue := StringReplace(StrValue, NativeSingleQuote, NativeSingleQuote + NativeSingleQuote, [rfReplaceAll]);
+                StrValue := NativeSingleQuote + StrValue + NativeSingleQuote;
               end;
             bpBCBuilder32:
               begin
-                StrValue := StringReplace(StrValue, AnsiDoubleQuote, AnsiBackslash + AnsiDoubleQuote, [rfReplaceAll]);
-                StrValue := AnsiDoubleQuote + StrValue + AnsiDoubleQuote;
+                StrValue := StringReplace(StrValue, NativeDoubleQuote, NativeBackslash + NativeDoubleQuote, [rfReplaceAll]);
+                StrValue := NativeDoubleQuote + StrValue + NativeDoubleQuote;
               end;
           end;
           CopyStr(Result, IndexOutput, CharCountOut, StrValue, 1, Length(StrValue));
@@ -242,7 +242,7 @@ begin
         begin
           RepeatCount := Params.GetIntValue(Symbol);
           StrIndex := TokenPos;
-          while (StrIndex <= CharCountIn) and not (Template[StrIndex] in [AnsiLineFeed, AnsiCarriageReturn]) do
+          while (StrIndex <= CharCountIn) and not CharIsWhiteSpace(Template[StrIndex]) do
             Inc(StrIndex);
           RepeatPattern := Copy(Template, TokenPos, StrIndex - TokenPos);
           TokenPos := StrIndex;
@@ -264,7 +264,7 @@ begin
               StrIndex := Pos('%', StrValue);
             end;
             CopyStr(Result, IndexOutput, CharCountOut, StrValue, 1, Length(StrValue));
-            CopyStr(Result, IndexOutput, CharCountOut, AnsiLineBreak, 1, Length(AnsiLineBreak));
+            CopyStr(Result, IndexOutput, CharCountOut, NativeLineBreak, 1, Length(NativeLineBreak));
             Dec(RepeatCount);
           end;
         end;

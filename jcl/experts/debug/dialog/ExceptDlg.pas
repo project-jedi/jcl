@@ -506,7 +506,7 @@ end;
 
 function TExceptionDialog.GetReportAsText: string;
 begin
-  Result := StrEnsureSuffix(AnsiCrLf, TextLabel.Text) + AnsiCrLf + DetailsMemo.Text;
+  Result := StrEnsureSuffix(NativeCrLf, TextLabel.Text) + NativeCrLf + DetailsMemo.Text;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -538,11 +538,13 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TExceptionDialog.SetDetailsVisible(const Value: Boolean);
+const
+  DirectionChars: array [0..1] of Char = ( '<', '>' );
 var
   DetailsCaption: string;
 begin
   FDetailsVisible := Value;
-  DetailsCaption := Trim(StrRemoveChars(DetailsBtn.Caption, ['<', '>']));
+  DetailsCaption := Trim(StrRemoveChars(DetailsBtn.Caption, DirectionChars));
   if Value then
   begin
     Constraints.MinHeight := FNonDetailsHeight + 100;
