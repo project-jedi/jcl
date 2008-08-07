@@ -12,7 +12,8 @@ BRCC = $(ROOT)\bin\brcc32.exe $**
 PROJECTS = JclD60.bpl JclVclD60.bpl JclVClxD60.bpl JclContainersD60.bpl \
   JclBaseExpertD60.bpl JclDebugExpertD60.bpl JclFavoriteFoldersExpertD60.bpl \
   JclProjectAnalysisExpertD60.bpl JclRepositoryExpertD60.bpl \
-  JclSIMDViewExpertD60.bpl JclThreadNameExpertD60.bpl JclUsesExpertD60.bpl
+  JclSIMDViewExpertD60.bpl JclThreadNameExpertD60.bpl JclUsesExpertD60.bpl \
+  JclVersionControlExpertD60.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -51,6 +52,9 @@ JclVclD60.bpl: d6\JclVcl.dpk
   $(DCC)
 
 JclVClxD60.bpl: d6\JclVClx.dpk
+  $(DCC)
+
+JclVersionControlExpertD60.bpl: d6\JclVersionControlExpert.dpk
   $(DCC)
 
 
