@@ -133,7 +133,7 @@
   DELPHI9             Alias for DELPHI2005
   DELPHI10            Defined when compiling with Delphi Personality of BDS 4.0
   DELPHI2006          Alias for DELPHI10
-  DELPHI11            Defined when compiling with Delphi for Win32 2007 
+  DELPHI11            Defined when compiling with Delphi 2007 for Win32 
   DELPHI2007          Alias for DELPHI11
   DELPHI1_UP          Defined when compiling with Delphi 1 or higher
   DELPHI2_UP          Defined when compiling with Delphi 2 or higher
@@ -147,7 +147,7 @@
   DELPHI9_UP          Alias for DELPHI2005_UP
   DELPHI10_UP         Defined when compiling with Delphi Personality of BDS 4.0 or higher
   DELPHI2006_UP       Alias for DELPHI10_UP
-  DELPHI11_UP         Defined when compiling with Delphi for Win32 2007 or higher
+  DELPHI11_UP         Defined when compiling with Delphi 2007 for Win32 or higher
   DELPHI2007_UP       Alias for DELPHI11_UP
 
 
@@ -181,7 +181,7 @@
   DELPHICOMPILER8      Defined when compiling with Delphi 8
   DELPHICOMPILER9      Defined when compiling with Delphi 2005
   DELPHICOMPILER10     Defined when compiling with Delphi Personality of BDS 4.0
-  DELPHICOMPILER11     Defined when compiling with Delphi for Win32 2007
+  DELPHICOMPILER11     Defined when compiling with Delphi 2007 for Win32
   DELPHICOMPILER1_UP   Defined when compiling with Delphi 1 or higher
   DELPHICOMPILER2_UP   Defined when compiling with Delphi 2 or higher
   DELPHICOMPILER3_UP   Defined when compiling with Delphi 3 or higher
@@ -192,7 +192,7 @@
   DELPHICOMPILER8_UP   Defined when compiling with Delphi 8 or higher
   DELPHICOMPILER9_UP   Defined when compiling with Delphi 2005
   DELPHICOMPILER10_UP  Defined when compiling with Delphi Personality of BDS 4.0 or higher
-  DELPHICOMPILER11_UP  Defined when compiling with Delphi for Win32 2007 or higher
+  DELPHICOMPILER11_UP  Defined when compiling with Delphi 2007 for Win32 or higher
 
 
 - C++ Builder Versions
@@ -261,7 +261,7 @@
   COMPILER8      Defined when compiling with Delphi 8
   COMPILER9      Defined when compiling with Delphi 9
   COMPILER10     Defined when compiling with Delphi or C++ Builder Personalities of BDS 4.0
-  COMPILER11     Defined when compiling with Delphi for Win32 2007
+  COMPILER11     Defined when compiling with Delphi 2007 for Win32
   COMPILER1_UP   Defined when compiling with Delphi 1 or higher
   COMPILER2_UP   Defined when compiling with Delphi 2 or C++ Builder 1 or higher
   COMPILER3_UP   Defined when compiling with Delphi 3 or higher
@@ -273,7 +273,7 @@
   COMPILER8_UP   Defined when compiling with Delphi 8
   COMPILER9_UP   Defined when compiling with Delphi Personalities of BDS 3.0
   COMPILER10_UP  Defined when compiling with Delphi or C++ Builder Personalities of BDS 4.0 or higher
-  COMPILER11_UP  Defined when compiling with Delphi for Win32 2007 ir higher
+  COMPILER11_UP  Defined when compiling with Delphi 2007 for Win32 or higher
 
 
 - RTL Versions
@@ -281,27 +281,27 @@
   Use e.g. following to determine the exact RTL version since version 14.0:
     {$IFDEF CONDITIONALEXPRESSIONS}
       {$IF Declared(RTLVersion) and (RTLVersion >= 14.2)}
-        // code for Delphi 6.02 or later, Kylix 2 or later, C++ Builder 6 or later
+        // code for Delphi 6.02 or higher, Kylix 2 or higher, C++ Builder 6 or higher
         ...
       {$IFEND}
     {$ENDIF}
 
   Directive     Description
   ------------------------------------------------------------------------------
-  RTL80_UP      Defined when compiling with Delphi 1 or later
-  RTL90_UP      Defined when compiling with Delphi 2 or later
-  RTL93_UP      Defined when compiling with C++ Builder 1 or later
-  RTL100_UP     Defined when compiling with Delphi 3 or later
-  RTL110_UP     Defined when compiling with C++ Builder 3 or later
-  RTL120_UP     Defined when compiling with Delphi 4 or later
-  RTL125_UP     Defined when compiling with C++ Builder 4 or later
-  RTL130_UP     Defined when compiling with Delphi 5 or C++ Builder 5 or later
-  RTL140_UP     Defined when compiling with Delphi 6, Kylix 1, 2 or 3 or C++ Builder 6 or later
-  RTL150_UP     Defined when compiling with Delphi 7 or later
-  RTL160_UP     Defined when compiling with Delphi 8 or later
-  RTL170_UP     Defined when compiling with Delphi Personalities of BDS 3.0 or later
-  RTL180_UP     Defined when compiling with Delphi or C++ Builder Personalities of BDS 4.0 or later
-  RTL185_UP     Defined when compiling with Delphi for Win32 2007 or later
+  RTL80_UP      Defined when compiling with Delphi 1 or higher
+  RTL90_UP      Defined when compiling with Delphi 2 or higher
+  RTL93_UP      Defined when compiling with C++ Builder 1 or higher
+  RTL100_UP     Defined when compiling with Delphi 3 or higher
+  RTL110_UP     Defined when compiling with C++ Builder 3 or higher
+  RTL120_UP     Defined when compiling with Delphi 4 or higher
+  RTL125_UP     Defined when compiling with C++ Builder 4 or higher
+  RTL130_UP     Defined when compiling with Delphi 5 or C++ Builder 5 or higher
+  RTL140_UP     Defined when compiling with Delphi 6, Kylix 1, 2 or 3 or C++ Builder 6 or higher
+  RTL150_UP     Defined when compiling with Delphi 7 or higher
+  RTL160_UP     Defined when compiling with Delphi 8 or higher
+  RTL170_UP     Defined when compiling with Delphi Personalities of BDS 3.0 or higher
+  RTL180_UP     Defined when compiling with Delphi or C++ Builder Personalities of BDS 4.0 or higher
+  RTL185_UP     Defined when compiling with Delphi 2007 for Win32 or higher
 
 
 - CLR Versions
@@ -310,11 +310,11 @@
   ------------------------------------------------------------------------------
   CLR            Defined when compiling for .NET
   CLR10          Defined when compiling for .NET 1.0 (may be overriden by FORCE_CLR10)
-  CLR10_UP       Defined when compiling for .NET 1.0 or later
+  CLR10_UP       Defined when compiling for .NET 1.0 or higher
   CLR11          Defined when compiling for .NET 1.1 (may be overriden by FORCE_CLR11)
-  CLR11_UP       Defined when compiling for .NET 1.1 or later
+  CLR11_UP       Defined when compiling for .NET 1.1 or higher
   CLR20          Defined when compiling for .NET 2.0 (may be overriden by FORCE_CLR20)
-  CLR20_UP       Defined when compiling for .NET 2.0 or later
+  CLR20_UP       Defined when compiling for .NET 2.0 or higher
 
 
 - Feature Directives
@@ -592,7 +592,7 @@
       {$UNDEF UNKNOWN_COMPILER_VERSION}
     {$ENDIF}
 
-    {$IFDEF VER190} // Delphi.NET 2007
+    {$IFDEF VER190} // Delphi 2007 for .NET
       {$DEFINE BDS}
       {$DEFINE BDS5}
       {$IFDEF CLR}
@@ -600,7 +600,7 @@
       {$ENDIF CLR}
       {$DEFINE COMPILER11}
       {$DEFINE DELPHI11}
-      {$DEFINE DELPHI2007} // synonym to DELPHI10
+      {$DEFINE DELPHI2007} // synonym to DELPHI11
       {$DEFINE DELPHICOMPILER11}
       {$DEFINE RTL190_UP}
       {$UNDEF UNKNOWN_COMPILER_VERSION}
@@ -868,7 +868,7 @@
 
 {$IFDEF FPC}
   {$IFDEF  VER1_0}
-     Please use FPC 2.0 or later to compile this.
+     Please use FPC 2.0 or higher to compile this.
   {$ELSE}
     {$DEFINE SUPPORTS_OUTPARAMS}
     {$DEFINE SUPPORTS_WIDECHAR}
