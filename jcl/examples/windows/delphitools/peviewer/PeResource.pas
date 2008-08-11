@@ -1363,7 +1363,7 @@ begin
           S := WideCharToStr(PWideChar(Text), lstrlenW(PWideChar(Text)))
         else
           SetString(S, PAnsiChar(Text), StrLen(Text));
-        if StripCrLf then S := StrRemoveChars(S, [AnsiCarriageReturn, AnsiLineFeed]);
+        if StripCrLf then S := StrRemoveChars(S, CharIsReturn);
         Strings.AddObject(S, Pointer(E));
       end;
       Entry := Pointer(PChar(Entry) + Entry^.Length);
@@ -1392,7 +1392,7 @@ begin
       Inc(P);
       ID := ((FResourceItem.ParentItem.Entry^.Name - 1) shl 4) + Cnt;
       S := WideCharToStr(P, Len);
-      if StripCrLf then S := StrRemoveChars(S, [AnsiCarriageReturn, AnsiLineFeed]);
+      if StripCrLf then S := StrRemoveChars(S, CharIsReturn);
       Strings.AddObject(S, Pointer(ID));
       Inc(P, Len);
     end else

@@ -324,7 +324,7 @@ begin
   with Item do
   begin
     Caption := Format('%u', [DWORD(FStringsList.Objects[Index])]);
-    SubItems.Add(StrRemoveChars(FStringsList[Index], [AnsiCarriageReturn, AnsiLineFeed]));
+    SubItems.Add(StrRemoveChars(FStringsList[Index], CharIsReturn));
   end;
 end;
 

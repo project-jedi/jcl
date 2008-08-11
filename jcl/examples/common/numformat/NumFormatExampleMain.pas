@@ -4,7 +4,7 @@ interface
 
 uses
   Math, SysUtils, Classes,
-  Windows, Graphics, Controls, Forms, StdCtrls, ComCtrls,
+  Windows, Graphics, Controls, Forms, StdCtrls, ComCtrls, Spin,
   JclSysUtils;
 
 type
@@ -82,7 +82,7 @@ var
   S, Mantissa: string;
   Exponent: Integer;
   X: Extended;
-  C: TCaretPos;
+  C: TPoint;
 begin
   if not Assigned(FNumFormat) then
     Exit;
@@ -101,8 +101,8 @@ begin
         S := Format('%s %s %d^%d', [Mantissa, FNumFormat.Multiplier, Base, Exponent]);
       Output.Lines.Add(Format('Base %2d: %s', [Base, S]));
     end;
-    C.Line := 0;
-    C.Col := 0;
+    C.X := 0;
+    C.Y := 0;
     Output.CaretPos := C;
   finally
     Output.Lines.EndUpdate;
