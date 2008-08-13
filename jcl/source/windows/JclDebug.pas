@@ -1137,7 +1137,7 @@ var
 
   procedure SkipEndLine;
   begin
-    while not CharIsWhiteSpace(CurrPos^) do
+    while not CharIsReturn(CurrPos^) do
       Inc(CurrPos);
     SkipWhiteSpace;
   end;
