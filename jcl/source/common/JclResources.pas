@@ -1935,7 +1935,6 @@ resourcestring
   RsDecomposedUnicodeChar     = 'decomposed Unicode character > $FFFFFF found';
   RsCombiningClassUnicodeChar = 'combining class for Unicode character > $FFFFFF found';
   RsEUnexpectedEOSeq          = 'Unexpected end of sequence';
-  RsEInvalidUCS2Char          = 'Invalid UCS-2 character %.8x';
 
 //=== JclUnitConv ============================================================
 resourcestring

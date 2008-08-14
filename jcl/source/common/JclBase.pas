@@ -30,7 +30,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -249,6 +249,54 @@ const
   {$ELSE ~BCB}
   HexPrefix = HexPrefixPascal;
   {$ENDIF ~BCB}
+
+const
+  BOM_UTF16_LSB: array [0..1] of Byte = ($FF,$FE);
+  BOM_UTF16_MSB: array [0..1] of Byte = ($FE,$FF);
+  BOM_UTF8: array [0..2] of Byte = ($EF,$BB,$BF);
+  BOM_UTF32_LSB: array [0..3] of Byte = ($FF,$FE,$00,$00);
+  BOM_UTF32_MSB: array [0..3] of Byte = ($00,$00,$FE,$FF);
+//  BOM_UTF7_1: array [0..3] of Byte = ($2B,$2F,$76,$38);
+//  BOM_UTF7_2: array [0..3] of Byte = ($2B,$2F,$76,$39);
+//  BOM_UTF7_3: array [0..3] of Byte = ($2B,$2F,$76,$2B);
+//  BOM_UTF7_4: array [0..3] of Byte = ($2B,$2F,$76,$2F);
+//  BOM_UTF7_5: array [0..3] of Byte = ($2B,$2F,$76,$38,$2D);
+
+type
+  // Unicode transformation formats (UTF) data types
+  PUTF7 = ^UTF7;
+  UTF7 = AnsiChar;
+  PUTF8 = ^UTF8;
+  UTF8 = AnsiChar;
+  PUTF16 = ^UTF16;
+  UTF16 = WideChar;
+  PUTF32 = ^UTF32;
+  UTF32 = Cardinal;
+
+  // UTF conversion schemes (UCS) data types
+  PUCS4 = ^UCS4;
+  UCS4 = Cardinal;
+  PUCS2 = PWideChar;
+  UCS2 = WideChar;
+
+  TUCS2Array = array of UCS2;
+  TUCS4Array = array of UCS4;
+
+  // string types
+  TUTF8String = AnsiString;
+  TUTF16String = WideString;
+  TUCS2String = WideString;
+
+const
+  UCS4ReplacementCharacter: UCS4 = $0000FFFD;
+  MaximumUCS2: UCS4 = $0000FFFF;
+  MaximumUTF16: UCS4 = $0010FFFF;
+  MaximumUCS4: UCS4 = $7FFFFFFF;
+
+  SurrogateHighStart = UCS4($D800);
+  SurrogateHighEnd = UCS4($DBFF);
+  SurrogateLowStart = UCS4($DC00);
+  SurrogateLowEnd = UCS4($DFFF);
 
 // basic set types
 type

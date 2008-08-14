@@ -27,7 +27,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                       $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -505,7 +505,7 @@ implementation
 
 uses
   Math, TypInfo,
-  JclMetadata, JclResources, JclStrings, JclUnicode;
+  JclMetadata, JclResources, JclStrings, JclStringConversions;
 
 const
   MetadataHeaderSignature = $424A5342; // 'BSJB'

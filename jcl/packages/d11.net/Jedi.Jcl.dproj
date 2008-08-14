@@ -127,6 +127,7 @@
       <DCCReference Include="..\..\source\common\JclSimpleXml.pas"/>
       <DCCReference Include="..\..\source\common\JclStatistics.pas"/>
       <DCCReference Include="..\..\source\common\JclStreams.pas"/>
+      <DCCReference Include="..\..\source\common\JclStringConversions.pas"/>
       <DCCReference Include="..\..\source\common\JclStrings.pas"/>
       <DCCReference Include="..\..\source\Common\JclSynch.pas"/>
       <DCCReference Include="..\..\source\common\JclSysInfo.pas"/>

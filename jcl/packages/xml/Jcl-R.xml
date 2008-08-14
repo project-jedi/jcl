@@ -51,6 +51,7 @@
     <File Name="..\..\source\common\JclStatistics.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclStreams.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclStrHashMap.pas" Targets="JclDev" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclStringConversions.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclStrings.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
     <File Name="..\..\source\Common\JclSynch.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclSysInfo.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
