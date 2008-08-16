@@ -27,7 +27,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                       $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -53,7 +53,7 @@ uses
   {$IFDEF HAS_UNIT_CONTNRS}
   Contnrs,
   {$ENDIF HAS_UNIT_CONTNRS}
-  JclBase;
+  JclBase, JclStringConversions;
 
 type
   {$IFDEF COMPILER5}
@@ -394,7 +394,7 @@ type
   // reusing some code from TJclBufferedStream
   TJclSectoredStream = class(TJclBufferedStream)
   protected
-    FSectorOverHead: Integer;
+    FSectorOverHead: Longint;
     function FlatToSectored(const Position: Int64): Int64;
     function SectoredToFlat(const Position: Int64): Int64;
     function GetCalcedSize: Int64; override;
@@ -405,7 +405,7 @@ type
     procedure SetSize({$IFNDEF CLR}const{$ENDIF ~CLR} NewSize: Int64); override;
   public
     constructor Create(AStorageStream: TStream; AOwnsStream: Boolean = False;
-      ASectorOverHead: Integer = 0);
+      ASectorOverHead: Longint = 0);
 
     procedure Flush; override;
   end;
@@ -503,6 +503,41 @@ type
     property VolumeMaxSizes[Index: Integer]: Int64 read GetVolumeMaxSize;
   end;
 
+  TJclStringStream = class(TJclBufferedStream)
+  protected
+    FBOM: array of Byte;
+    FCharacterReader: TJclStreamGetNextCharFunc;
+    FCharacterWriter: TJclStreamSetNextCharFunc;
+    function GetCalcedSize: Int64; override;
+  public
+    constructor Create(AStream: TStream; AOwnsStream: Boolean = False); virtual;
+    function ReadString(var Buffer: string; Start, Count: Longint): Longint;
+    function ReadAnsiString(var Buffer: AnsiString; Start, Count: Longint): Longint;
+    function ReadWideString(var Buffer: WideString; Start, Count: Longint): Longint;
+    function WriteString(const Buffer: string; Start, Count: Longint): Longint;
+    function WriteAnsiString(const Buffer: AnsiString; Start, Count: Longint): Longint;
+    function WriteWideString(const Buffer: WideString; Start, Count: Longint): Longint;
+    function SkipBOM: LongInt;
+    function WriteBOM: Longint;
+  end;
+
+  TJclStringStreamClass = class of TJclStringStream;
+
+  TJclAnsiStream = class(TJclStringStream)
+  public
+    constructor Create(AStream: TStream; AOwnsStream: Boolean = False); override;
+  end;
+
+  TJclUTF8Stream = class(TJclStringStream)
+  public
+    constructor Create(AStream: TStream; AOwnsStream: Boolean = False); override;
+  end;
+
+  TJclUTF16Stream = class(TJclStringStream)
+  public
+    constructor Create(AStream: TStream; AOwnsStream: Boolean = False); override;
+  end;
+
 // call TStream.Seek(Int64,TSeekOrigin) if present (TJclStream or COMPILER6_UP)
 // otherwize call TStream.Seek(LongInt,Word) with range checking
 function StreamSeek(Stream: TStream; const Offset: Int64;
@@ -510,12 +545,18 @@ function StreamSeek(Stream: TStream; const Offset: Int64;
 
 // buffered copy of all available bytes from Source to Dest
 // returns the number of bytes that were copied
-function StreamCopy(Source: TStream; Dest: TStream; BufferSize: Integer = 4096): Int64;
+function StreamCopy(Source: TStream; Dest: TStream; BufferSize: Longint = 4096): Int64;
+
+// buffered copy of all available characters from Source to Dest
+// retuns the number of characters (in specified encoding) that were copied
+function StringStreamCopy(Source, Dest: TJclStringStream; BufferLength: Longint = 4096): Int64;
+function AnsiStringStreamCopy(Source, Dest: TJclStringStream; BufferLength: Longint = 4096): Int64;
+function WideStringStreamCopy(Source, Dest: TJclStringStream; BufferLength: Longint = 4096): Int64;
 
 // compares 2 streams for differencies
-function CompareStreams(A, B : TStream; BufferSize: Integer = 4096): Boolean;
+function CompareStreams(A, B : TStream; BufferSize: Longint = 4096): Boolean;
 // compares 2 files for differencies (calling CompareStreams)
-function CompareFiles(const FileA, FileB: TFileName; BufferSize: Integer = 4096): Boolean;
+function CompareFiles(const FileA, FileB: TFileName; BufferSize: Longint = 4096): Boolean;
 
 {$IFDEF UNITVERSIONING}
 const
@@ -561,38 +602,76 @@ begin
     Result := -1;
 end;
 
-function StreamCopy(Source: TStream; Dest: TStream; BufferSize: Integer): Int64;
+function StreamCopy(Source: TStream; Dest: TStream; BufferSize: Longint): Int64;
 var
   Buffer: array of Byte;
-  ByteCount: Integer;
+  ByteCount: Longint;
 begin
   Result := 0;
   SetLength(Buffer, BufferSize);
-  try
-    repeat
-      {$IFDEF CLR}
-      ByteCount := Source.Read(Buffer, 0, BufferSize);
-      {$ELSE ~CLR}
-      ByteCount := Source.Read(Buffer[0], BufferSize);
-      {$ENDIF ~CLR}
-      Result := Result + ByteCount;
-      {$IFDEF CLR}
-      Dest.WriteBuffer(Buffer, ByteCount);
-      {$ELSE ~CLR}
-      Dest.WriteBuffer(Buffer[0], ByteCount);
-      {$ENDIF ~CLR}
-    until ByteCount < BufferSize;
-  finally
-    SetLength(Buffer, 0);
-  end;
+  repeat
+    {$IFDEF CLR}
+    ByteCount := Source.Read(Buffer, 0, BufferSize);
+    {$ELSE ~CLR}
+    ByteCount := Source.Read(Buffer[0], BufferSize);
+    {$ENDIF ~CLR}
+    Result := Result + ByteCount;
+    {$IFDEF CLR}
+    Dest.WriteBuffer(Buffer, ByteCount);
+    {$ELSE ~CLR}
+    Dest.WriteBuffer(Buffer[0], ByteCount);
+    {$ENDIF ~CLR}
+  until ByteCount < BufferSize;
 end;
 
-function CompareStreams(A, B : TStream; BufferSize: Integer = 4096): Boolean;
+function StringStreamCopy(Source, Dest: TJclStringStream; BufferLength: Longint = 4096): Int64;
+var
+  Buffer: string;
+  CharCount: Longint;
+begin
+  Result := 0;
+  SetLength(Buffer, BufferLength);
+  repeat
+    CharCount := Source.ReadString(Buffer, 1, BufferLength);
+    Result := Result + CharCount;
+    CharCount := Dest.WriteString(Buffer, 1, CharCount);
+  until CharCount = 0;
+end;
+
+function AnsiStringStreamCopy(Source, Dest: TJclStringStream; BufferLength: Longint = 4096): Int64;
+var
+  Buffer: AnsiString;
+  CharCount: Longint;
+begin
+  Result := 0;
+  SetLength(Buffer, BufferLength);
+  repeat
+    CharCount := Source.ReadAnsiString(Buffer, 1, BufferLength);
+    Result := Result + CharCount;
+    CharCount := Dest.WriteAnsiString(Buffer, 1, CharCount);
+  until CharCount = 0;
+end;
+
+function WideStringStreamCopy(Source, Dest: TJclStringStream; BufferLength: Longint = 4096): Int64;
+var
+  Buffer: WideString;
+  CharCount: Longint;
+begin
+  Result := 0;
+  SetLength(Buffer, BufferLength);
+  repeat
+    CharCount := Source.ReadWideString(Buffer, 1, BufferLength);
+    Result := Result + CharCount;
+    CharCount := Dest.WriteWideString(Buffer, 1, CharCount);
+  until CharCount = 0;
+end;
+
+function CompareStreams(A, B : TStream; BufferSize: Longint = 4096): Boolean;
 var
   BufferA, BufferB: array of Byte;
-  ByteCountA, ByteCountB: Integer;
+  ByteCountA, ByteCountB: Longint;
   {$IFDEF CLR}
-  Index: Integer;
+  Index: Longint;
   {$ENDIF CLR}
 begin
   SetLength(BufferA, BufferSize);
@@ -629,7 +708,7 @@ begin
   end;
 end;
 
-function CompareFiles(const FileA, FileB: TFileName; BufferSize: Integer = 4096): Boolean;
+function CompareFiles(const FileA, FileB: TFileName; BufferSize: Longint = 4096): Boolean;
 var
   A, B: TStream;
 begin
@@ -882,7 +961,7 @@ end;
 {$IFDEF CLR}
 function TJclNullStream.Read(var Buffer: array of Byte; Offset, Count: Longint): Longint;
 var
-  Index: Integer;
+  Index: Longint;
 {$ELSE ~CLR}
 function TJclNullStream.Read(var Buffer; Count: Longint): Longint;
 {$ENDIF ~CLR}
@@ -1348,7 +1427,7 @@ function TJclBufferedStream.ReadFromBuffer(var Buffer; Count, Start: Longint): L
 var
   BufPos: Longint;
   {$IFDEF CLR}
-  I: Integer;
+  I: Longint;
   {$ELSE ~CLR}
   P: PAnsiChar;
   {$ENDIF ~CLR}
@@ -1436,7 +1515,7 @@ function TJclBufferedStream.WriteToBuffer(const Buffer; Count, Start: Longint): 
 var
   BufPos: Longint;
   {$IFDEF CLR}
-  I: Integer;
+  I: Longint;
   {$ELSE ~CLR}
   P: PAnsiChar;
   {$ENDIF ~CLR}
@@ -1523,7 +1602,7 @@ end;
 
 function TJclEasyStream.IsEqual(Stream: TStream): Boolean;
 var
-  SavePos, StreamSavePos: Integer;
+  SavePos, StreamSavePos: Int64;
 begin
   SavePos := Position;
   StreamSavePos := Stream.Position;
@@ -1539,12 +1618,20 @@ end;
 
 function TJclEasyStream.ReadBoolean: Boolean;
 begin
+  {$IFDEF CLR}
+  ReadBuffer(Result);
+  {$ELSE ~CLR}
   ReadBuffer(Result, SizeOf(Result));
+  {$ENDIF ~CLR}
 end;
 
 function TJclEasyStream.ReadChar: Char;
 begin
+  {$IFDEF CLR}
+  ReadBuffer(Result);
+  {$ELSE ~CLR}
   ReadBuffer(Result, SizeOf(Result));
+  {$ENDIF ~CLR}
 end;
 
 {$IFNDEF CLR}
@@ -1561,22 +1648,38 @@ end;
 
 function TJclEasyStream.ReadDouble: Double;
 begin
+  {$IFDEF CLR}
+  ReadBuffer(Result);
+  {$ELSE ~CLR}
   ReadBuffer(Result, SizeOf(Result));
+  {$ENDIF ~CLR}
 end;
 
 function TJclEasyStream.ReadExtended: Extended;
 begin
+  {$IFDEF CLR}
+  ReadBuffer(Result);
+  {$ELSE ~CLR}
   ReadBuffer(Result, SizeOf(Result));
+  {$ENDIF ~CLR}
 end;
 
 function TJclEasyStream.ReadInt64: Int64;
 begin
+  {$IFDEF CLR}
+  ReadBuffer(Result);
+  {$ELSE ~CLR}
   ReadBuffer(Result, SizeOf(Result));
+  {$ENDIF ~CLR}
 end;
 
 function TJclEasyStream.ReadInteger: Integer;
 begin
+  {$IFDEF CLR}
+  ReadBuffer(Result);
+  {$ELSE ~CLR}
   ReadBuffer(Result, SizeOf(Result));
+  {$ENDIF ~CLR}
 end;
 
 function TJclEasyStream.ReadCString: string;
@@ -1585,7 +1688,7 @@ var
   SB: System.Text.StringBuilder;
   Ch: Char;
   {$ELSE ~CLR}
-  CurrPos: Integer;
+  CurrPos: Longint;
   StrSize: Integer;
   {$ENDIF ~CLR}
 begin
@@ -1633,7 +1736,11 @@ end;
 
 function TJclEasyStream.ReadSingle: Single;
 begin
+  {$IFDEF CLR}
+  ReadBuffer(Result);
+  {$ELSE ~CLR}
   ReadBuffer(Result, SizeOf(Result));
+  {$ENDIF ~CLR}
 end;
 
 function TJclEasyStream.ReadSizedString: string;
@@ -1660,12 +1767,20 @@ end;
 
 procedure TJclEasyStream.WriteBoolean(Value: Boolean);
 begin
+  {$IFDEF CLR}
+  WriteBuffer(Value);
+  {$ELSE ~CLR}
   WriteBuffer(Value, SizeOf(Value));
+  {$ENDIF ~CLR}
 end;
 
 procedure TJclEasyStream.WriteChar(Value: Char);
 begin
+  {$IFDEF CLR}
+  WriteBuffer(Value);
+  {$ELSE ~CLR}
   WriteBuffer(Value, SizeOf(Value));
+  {$ENDIF ~CLR}
 end;
 
 {$IFNDEF CLR}
@@ -1682,28 +1797,44 @@ end;
 
 procedure TJclEasyStream.WriteDouble(const Value: Double);
 begin
+  {$IFDEF CLR}
+  WriteBuffer(Value);
+  {$ELSE ~CLR}
   WriteBuffer(Value, SizeOf(Value));
+  {$ENDIF ~CLR}
 end;
 
 procedure TJclEasyStream.WriteExtended(const Value: Extended);
 begin
+  {$IFDEF CLR}
+  WriteBuffer(Value);
+  {$ELSE ~CLR}
   WriteBuffer(Value, SizeOf(Value));
+  {$ENDIF ~CLR}
 end;
 
 procedure TJclEasyStream.WriteInt64(Value: Int64);
 begin
+  {$IFDEF CLR}
+  WriteBuffer(Value);
+  {$ELSE ~CLR}
   WriteBuffer(Value, SizeOf(Value));
+  {$ENDIF ~CLR}
 end;
 
 procedure TJclEasyStream.WriteInteger(Value: Integer);
 begin
+  {$IFDEF CLR}
+  WriteBuffer(Value);
+  {$ELSE ~CLR}
   WriteBuffer(Value, SizeOf(Value));
+  {$ENDIF ~CLR}
 end;
 
 procedure TJclEasyStream.WriteCString(const Value: string);
 {$IFDEF CLR}
 var
-  I: Integer;
+  I: Longint;
 {$ENDIF CLR}
 begin
   {$IFDEF CLR}
@@ -1723,7 +1854,7 @@ end;
 procedure TJclEasyStream.WriteShortString(const Value: ShortString);
 {$IFDEF CLR}
 var
-  I: Integer;
+  I: Longint;
 {$ENDIF CLR}
 begin
   {$IFDEF CLR}
@@ -1736,14 +1867,18 @@ end;
 
 procedure TJclEasyStream.WriteSingle(const Value: Single);
 begin
+  {$IFDEF CLR}
+  WriteBuffer(Value);
+  {$ELSE ~CLR}
   WriteBuffer(Value, SizeOf(Value));
+  {$ENDIF ~~ CLR}
 end;
 
 procedure TJclEasyStream.WriteSizedString(const Value: string);
 var
   StrSize: Integer;
   {$IFDEF CLR}
-  I: Integer;
+  I: Longint;
   {$ENDIF CLR}
 begin
   StrSize := Length(Value);
@@ -1966,7 +2101,7 @@ end;
 
 function TJclSectoredStream.LoadBuffer: Boolean;
 var
-  TotalSectorSize: Integer;
+  TotalSectorSize: Longint;
 begin
   Flush;
   TotalSectorSize := FBufferSize + FSectorOverHead;
@@ -2130,7 +2265,7 @@ var
   {$IFNDEF CLR}
   Data: PByte;
   {$ENDIF ~CLR}
-  Total, LoopRead: Integer;
+  Total, LoopRead: Longint;
 begin
   Result := 0;
 
@@ -2292,7 +2427,7 @@ var
   {$IFNDEF CLR}
   Data: PByte;
   {$ENDIF ~CLR}
-  Total, LoopWritten: Integer;
+  Total, LoopWritten: Longint;
 begin
   Result := 0;
 
@@ -2405,6 +2540,220 @@ end;
 function TJclStaticSplitStream.GetVolumeMaxSize(Index: Integer): Int64;
 begin
   Result := TJclSplitVolume(FVolumes.Items[Index]).MaxSize;
+end;
+
+//=== { TJclStringStream } ====================================================
+
+constructor TJclStringStream.Create(AStream: TStream; AOwnsStream: Boolean);
+begin
+  inherited Create(AStream, AOwnsStream);
+end;
+
+function TJclStringStream.GetCalcedSize: Int64;
+begin
+  {$IFDEF CLR}
+  raise EJclStreamError.Create(RsStreamsSeekError);
+  {$ELSE ~CLR}
+  raise EJclStreamError.CreateRes(@RsStreamsSeekError);
+  {$ENDIF ~CLR}
+end;
+
+function TJclStringStream.ReadString(var Buffer: string; Start, Count: Longint): Longint;
+var
+  Index, StrPos: Integer;
+  Ch: UCS4;
+begin
+  Index := Start;
+  while Index < Start + Count - 1 do // avoid overflow on surrogate pairs for WideString
+  begin
+    if FCharacterReader(Self, Ch) then
+    begin
+      StrPos := Index;
+      if StringSetNextChar(Buffer, StrPos, Ch) and (StrPos > 0) then
+        Index := StrPos
+      else
+        Break; // end of string (write)
+    end
+    else
+      Break; // end of stream (read)
+  end;
+  Result := Index - Start;
+end;
+
+function TJclStringStream.ReadAnsiString(var Buffer: AnsiString; Start, Count: Longint): Longint;
+var
+  Index, StrPos: Integer;
+  Ch: UCS4;
+begin
+  Index := Start;
+  while Index < Start + Count do
+  begin
+    if FCharacterReader(Self, Ch) then
+    begin
+      StrPos := Index;
+      if AnsiSetNextChar(Buffer, StrPos, Ch) and (StrPos > 0) then
+        Index := StrPos
+      else
+        Break; // end of string (write)
+    end
+    else
+      Break; // end of stream (read)
+  end;
+  Result := Index - Start;
+end;
+
+function TJclStringStream.ReadWideString(var Buffer: WideString; Start, Count: Longint): Longint;
+var
+  Index, StrPos: Integer;
+  Ch: UCS4;
+begin
+  Index := Start;
+  while Index < Start + Count - 1 do // avoid overflow on surrogate pairs
+  begin
+    if FCharacterReader(Self, Ch) then
+    begin
+      StrPos := Index;
+      if UTF16SetNextChar(Buffer, StrPos, Ch) and (StrPos > 0) then
+        Index := StrPos
+      else
+        Break; // end of string (write)
+    end
+    else
+      Break; // end of stream (read)
+  end;
+  Result := Index - Start;
+end;
+
+function TJclStringStream.SkipBOM: Longint;
+var
+  Pos: Int64;
+  I: Integer;
+  BOM: array of Byte;
+begin
+  if Length(FBOM) > 0 then
+  begin
+    SetLength(BOM, Length(FBOM));
+    Pos := Position;
+    {$IFDEF CLR}
+    Result := Read(BOM, Low(BOM), Length(BOM));
+    {$ELSE ~CLR}
+    Result := Read(BOM[0], Length(BOM) * SizeOf(BOM[0]));
+    {$ENDIF ~CLR}
+    if Result = Length(FBOM) * SizeOf(FBOM[0]) then
+      for I := Low(FBOM) to High(FBOM) do
+        if BOM[I] <> FBOM[I] then
+          Result := 0;
+    if Result <> Length(FBOM) * SizeOf(FBOM[0]) then
+      Position := Pos;
+  end
+  else
+    Result := 0;
+end;
+
+function TJclStringStream.WriteBOM: Longint;
+begin
+  if Length(FBOM) > 0 then
+  begin
+    {$IFDEF CLR}
+    Result := Write(FBOM, Low(FBOM), Length(FBOM));
+    {$ELSE ~CLR}
+    Result := Write(FBOM[0], Length(FBOM) * SizeOf(FBOM[0]));
+    {$ENDIF ~CLR}
+  end
+  else
+    Result := 0;
+end;
+
+function TJclStringStream.WriteString(const Buffer: string; Start, Count: Longint): Longint;
+var
+  Index, StrPos: Integer;
+  Ch: UCS4;
+begin
+  Index := Start;
+  while Index < Start + Count do
+  begin
+    StrPos := Index;
+    Ch := StringGetNextChar(Buffer, StrPos);
+    if (StrPos > 0) and FCharacterWriter(Self, Ch) then
+      Index := StrPos
+    else
+      Break; // end of string (read) or end of stream (write)
+  end;
+  Result := Index - Start;
+end;
+
+function TJclStringStream.WriteAnsiString(const Buffer: AnsiString; Start, Count: Longint): Longint;
+var
+  Index, StrPos: Integer;
+  Ch: UCS4;
+begin
+  Index := Start;
+  while Index < Start + Count do
+  begin
+    StrPos := Index;
+    Ch := AnsiGetNextChar(Buffer, StrPos);
+    if (StrPos > 0) and FCharacterWriter(Self, Ch) then
+      Index := StrPos
+    else
+      Break; // end of string (read) or end of stream (write)
+  end;
+  Result := Index - Start;
+end;
+
+function TJclStringStream.WriteWideString(const Buffer: WideString; Start, Count: Longint): Longint;
+var
+  Index, StrPos: Integer;
+  Ch: UCS4;
+begin
+  Index := Start;
+  while Index < Start + Count do
+  begin
+    StrPos := Index;
+    Ch := UTF16GetNextChar(Buffer, StrPos);
+    if (StrPos > 0) and FCharacterWriter(Self, Ch) then
+      Index := StrPos
+    else
+      Break; // end of string (read) or end of stream (write)
+  end;
+  Result := Index - Start;
+end;
+
+//=== { TJclAnsiStream } ======================================================
+
+constructor TJclAnsiStream.Create(AStream: TStream; AOwnsStream: Boolean);
+begin
+  inherited Create(AStream, AOwnsStream);
+  FCharacterReader := AnsiGetNextChar;
+  FCharacterWriter := AnsiSetNextChar;
+  SetLength(FBOM, 0);
+end;
+
+//=== { TJclUTF8Stream } ======================================================
+
+constructor TJclUTF8Stream.Create(AStream: TStream; AOwnsStream: Boolean);
+var
+  I: Integer;
+begin
+  inherited Create(AStream, AOwnsStream);
+  FCharacterReader := UTF8GetNextChar;
+  FCharacterWriter := UTF8SetNextChar;
+  SetLength(FBOM, Length(BOM_UTF8));
+  for I := Low(BOM_UTF8) to High(BOM_UTF8) do
+    FBOM[I - Low(BOM_UTF8)] := BOM_UTF8[I];
+end;
+
+//=== { TJclUTF16Stream } =====================================================
+
+constructor TJclUTF16Stream.Create(AStream: TStream; AOwnsStream: Boolean);
+var
+  I: Integer;
+begin
+  inherited Create(AStream, AOwnsStream);
+  FCharacterReader := UTF16GetNextChar;
+  FCharacterWriter := UTF16SetNextChar;
+  SetLength(FBOM, Length(BOM_UTF16_LSB));
+  for I := Low(BOM_UTF16_LSB) to High(BOM_UTF16_LSB) do
+    FBOM[I - Low(BOM_UTF16_LSB)] := BOM_UTF16_LSB[I];
 end;
 
 {$IFDEF UNITVERSIONING}

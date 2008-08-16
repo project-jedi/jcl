@@ -36,7 +36,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                       $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -68,6 +68,7 @@ resourcestring
   RsEGetBytesExFmt     = 'GetBytesEx(): Unsupported value type: %s';
   RsESetBytesExFmt     = 'SetBytesEx(): Unsupported value type: %s';
   {$ENDIF CLR}
+  RsEReplacementChar   = 'Failed to get ANSI replacement character';
 
 //=== JclBorlandTools ========================================================
 resourcestring

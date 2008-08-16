@@ -30,7 +30,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                       $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -286,6 +286,9 @@ type
   TUTF8String = AnsiString;
   TUTF16String = WideString;
   TUCS2String = WideString;
+
+var
+  AnsiReplacementCharacter: AnsiChar;
 
 const
   UCS4ReplacementCharacter: UCS4 = $0000FFFD;
@@ -1450,12 +1453,38 @@ end;
 
 {$ENDIF SUPPORTS_GENERICS}
 
-{$IFDEF UNITVERSIONING}
+procedure LoadAnsiReplacementCharacter;
+{$IFDEF MSWINDOWS}
+{$IFDEF CLR}
+begin
+  AnsiReplacementCharacter := '?';
+end;
+{$ELSE ~CLR}
+var
+  CpInfo: TCpInfo;
+begin
+  if GetCPInfo(CP_ACP, CpInfo) and (CpInfo.MaxCharSize = 1) then
+    AnsiReplacementCharacter := Chr(CpInfo.DefaultChar[0])
+  else
+    raise EJclInternalError.CreateRes(@RsEReplacementChar);
+end;
+{$ENDIF ~CLR}
+{$ELSE ~MSWINDOWS}
+begin
+  AnsiReplacementCharacter := '?';
+end;
+{$ENDIF ~MSWINDOWS}
+
 initialization
+
+  LoadAnsiReplacementCharacter;
+  {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
 
 finalization
+  {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
 
 end.
