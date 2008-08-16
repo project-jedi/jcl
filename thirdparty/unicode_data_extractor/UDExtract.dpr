@@ -12,6 +12,7 @@ uses
   JclCompression,
   BZip2,
   ZLibh,
+  JclBase,
   JclUnicode;
 
 type
