@@ -36,7 +36,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// $Id: jcl.template.inc 2328 2008-01-29 16:21:28Z outchy $
+// $Id$
 
 // Math precision selection, mutually exclusive
 {.$DEFINE MATH_EXTENDED_PRECISION} // default

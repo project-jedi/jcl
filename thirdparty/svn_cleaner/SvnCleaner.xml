@@ -13,6 +13,9 @@
     <property name="bugtraq:url">
       <value>http://homepages.codegear.com/jedi/issuetracker/view.php?id=%BUGID%</value>
     </property>
+    <property name="tsvn:projectlanguage">
+      <value>0x0409</value>
+    </property>
 
     <!-- general properties based on extensions -->
     <setting path="" mask="*.pas *.cpp *.h *.dpr *.dpk *.inc *.mak *.fpc *.pl *.cs" recurse="yes" dironly="no">
@@ -290,25 +293,8 @@
       </setting>
 
       <setting path="source" mask="" recurse="no" dironly="yes">
-        <property name="svn:ignore">
-          <value>jclc5.inc</value>
-          <value>jclc6.inc</value>
-          <value>jcld5.inc</value>
-          <value>jcld6.inc</value>
-          <value>jcld7.inc</value>
-          <value>jclcs1.inc</value>
-          <value>jcld8.inc</value>
-          <value>jcld9.inc</value>
-          <value>jcld9.net.inc</value>
-          <value>jcld10.inc</value>
-          <value>jcld10.net.inc</value>
-          <value>jclkd3.inc</value>
-          <value>jclkc3.inc</value>
-          <value>jcld11.inc</value>
-          <value>jcld11.net.inc</value>
-        </property>
 
-        <setting path="" mask="*" recurse="no" dironly="yes">
+        <setting path="" mask="common" recurse="no" dironly="yes">
           <property name="svn:ignore">
             <value>*.~*</value>
             <value>*.hpp</value>
@@ -317,6 +303,86 @@
             <value>*.ppu</value>
             <value>*.rst</value>
             <value>__history</value>
+          </property>
+        </setting>
+
+        <setting path="" mask="prototypes" recurse="no" dironly="yes">
+          <property name="svn:ignore">
+            <value>*.~*</value>
+            <value>*.hpp</value>
+            <value>*.dcu</value>
+            <value>*.o</value>
+            <value>*.ppu</value>
+            <value>*.rst</value>
+            <value>__history</value>
+          </property>
+        </setting>
+
+        <setting path="" mask="unix" recurse="no" dironly="yes">
+          <property name="svn:ignore">
+            <value>*.~*</value>
+            <value>*.hpp</value>
+            <value>*.dcu</value>
+            <value>*.o</value>
+            <value>*.ppu</value>
+            <value>*.rst</value>
+            <value>__history</value>
+          </property>
+        </setting>
+
+        <setting path="" mask="vcl" recurse="no" dironly="yes">
+          <property name="svn:ignore">
+            <value>*.~*</value>
+            <value>*.hpp</value>
+            <value>*.dcu</value>
+            <value>*.o</value>
+            <value>*.ppu</value>
+            <value>*.rst</value>
+            <value>__history</value>
+          </property>
+        </setting>
+
+        <setting path="" mask="visclx" recurse="no" dironly="yes">
+          <property name="svn:ignore">
+            <value>*.~*</value>
+            <value>*.hpp</value>
+            <value>*.dcu</value>
+            <value>*.o</value>
+            <value>*.ppu</value>
+            <value>*.rst</value>
+            <value>__history</value>
+          </property>
+        </setting>
+
+        <setting path="" mask="windows" recurse="no" dironly="yes">
+          <property name="svn:ignore">
+            <value>*.~*</value>
+            <value>*.hpp</value>
+            <value>*.dcu</value>
+            <value>*.o</value>
+            <value>*.ppu</value>
+            <value>*.rst</value>
+            <value>__history</value>
+          </property>
+        </setting>
+
+        <setting path="" mask="include" recurse="no" dironly="yes">
+          <property name="svn:ignore">
+            <value>jclc5.inc</value>
+            <value>jclc6.inc</value>
+            <value>jcld5.inc</value>
+            <value>jcld6.inc</value>
+            <value>jcld7.inc</value>
+            <value>jclcs1.inc</value>
+            <value>jcld8.inc</value>
+            <value>jcld9.inc</value>
+            <value>jcld9.net.inc</value>
+            <value>jcld10.inc</value>
+            <value>jcld10.net.inc</value>
+            <value>jclkd3.inc</value>
+            <value>jclkc3.inc</value>
+            <value>jcld11.inc</value>
+            <value>jcld11.net.inc</value>
           </property>
         </setting>
 
