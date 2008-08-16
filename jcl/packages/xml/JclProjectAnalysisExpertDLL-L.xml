@@ -9,12 +9,11 @@
   <ImageBase>58060000</ImageBase>
   <Requires>
     <Package Name="rtl" Targets="WinLibSuffix" Condition=""/>
-    <Package Name="vcl50" Targets="c5,d5" Condition=""/>
+    <Package Name="vcl50" Targets="noLibSuffix" Condition=""/>
     <Package Name="vcl" Targets="WinLibSuffix" Condition=""/>
-    <Package Name="dsnide50" Targets="c5,d5" Condition=""/>
+    <Package Name="dsnide50" Targets="noLibSuffix" Condition=""/>
     <Package Name="designide" Targets="WinLibSuffix" Condition=""/>
-    <Package Name="Jcl" Targets="WinLibSuffix" Condition=""/>
-    <Package Name="Jcl50" Targets="c5,d5" Condition=""/>
+    <Package Name="Jcl-R" Targets="Windows" Condition=""/>
     <Package Name="JclBaseExpert-D" Targets="Windows" Condition=""/>
   </Requires>
   <Contains>

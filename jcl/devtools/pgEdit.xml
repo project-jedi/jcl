@@ -59,48 +59,6 @@
     be available.
   -->
   <models>
-    <model name="JVCL" prefix="Jv" format="%p%n%e%v%t" clxPrefix="JvQ" packages="..\..\packages" incfile="..\..\common\jvcl%t.inc" incdeffile="..\..\common\jvclbase.inc">
-      <targets>
-        <target name="c5" pname="c5s" pdir="c5std"/>
-        <target name="c6" pname="c6p" pdir="c6per"/>
-        <target name="d5" pname="d5s" pdir="d5std"/>
-        <target name="d6" pname="d6p" pdir="d6per"/>
-        <target name="d7" pname="d7p" pdir="d7per"/>
-        <target name="d7clx" IsClx="1"/>
-        <target name="k3" pname="k3p" pdir="k3per" pathsep="/" IsClx="1"/>
-        <target name="d9" pname="d9p" pdir="d9per"/>
-        <target name="d10" pname="d10p" pdir="d10per"/>
-        <target name="d11"/>
-      </targets>
-      <aliases>
-        <alias name="VCL" value="c5,c5s,d5,d5s,c6,c6p,d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11"/>
-        <alias name="VCLv5" value="c5,c5s,d5,d5s"/>
-        <alias name="VCLv6up" value="c6,c6p,d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11"/>
-        <alias name="D" value="d5,d5s,d6,d6p,d7,d7p,d7clx,d9,d9p,d10,d10p,d11"/>
-        <alias name="Dv5" value="d5,d5s"/>
-        <alias name="Dv6up" value="d6,d6p,d7,d7p,d7clx,d9,d9p,d10,d10p,d11"/>
-        <alias name="C" value="c5,c5s,c6,c6p,d10,d10p,d11"/>
-        <alias name="Cv5" value="c5,c5s"/>
-        <alias name="Cv6up" value="c6,c6p,d10,d10p,d11"/>
-        <alias name="DB" value="c5,d5,c6,d6,d7,d9,d10,d11"/>
-        <alias name="DBv5" value="c5,d5"/>
-        <alias name="DBv6up" value="c6,d6,d7,d9,d10,d11"/>
-        <alias name="DBVCL" value="c5,d5,c6,d6,d7,d9,d10,d11"/>
-        <alias name="DBVCLv5" value="c5,d5"/>
-        <alias name="DBVCLv6up" value="c6,d6,d7,d9,d10,d11"/>
-        <alias name="CLX" value="d7clx,k3,k3p"/>
-        <alias name="DBCLX" value="d7clx,k3"/>
-        <alias name="allv5" value="c5,c5s,d5,d5s"/>
-        <alias name="allv6up" value="c6,c6p,d6,d6p,d7,d7p,d7clx,d9,d9p,d10,d10p,d11"/>
-        <alias name="Windows" value="c5,c5s,c6,c6p,d5,d5s,d6,d6p,d7,d7p,d7clx,d9,d9p,d10,d10p,d11"/>
-        <alias name="Linux" value="k3,k3p"/>
-      </aliases>
-      <ClxReplacements>
-        <replacement original="\run\Jv" replacement="\qrun\JvQ"/>
-        <replacement original="\design\Jv" replacement="\qdesign\JvQ"/>
-        <replacement original="\common\Jv" replacement="\qcommon\JvQ"/>
-      </ClxReplacements>
-    </model>
     <Model format="%p%n" name="JCL" prefix="Jcl" packages="..\packages" incfile="" nolibsuffixformat="%p%n%e%v0" dotnetprefix="Jedi.Jcl">
       <targets>
         <target name="c5"/>
@@ -129,10 +87,12 @@
         <alias name="DelphiDev" value="d5,d6,d7,d8,d9,d10,d11"/>
         <alias name="WinLibSuffix" value="c6,d6,d7,d8,d9,d10,cs1,d11"/>
         <alias name="allLibSuffix" value="c6,d6,d7,d8,d9,d10,k3,cs1,d11"/>
+        <alias name="noLibSuffix" value="c5,d5"/>
         <alias name="Clx" value="c6,d6,d7,k3"/>
         <alias name="Vcl" value="c6,d6,d7,d9,d10,d11"/>
         <alias name="Bds" value="cs1,d8,d9,d10,d11"/>
         <alias name="JclDotNet" value="d9.net,d10.net,d11.net"/>
+        <alias name="OldStyleIDE" value="c5,c6,d5,d6,d7"/>
       </aliases>
       <ProjectProperties>
         <ProjectProperty name="VersionMajorNumber" value="1"/>

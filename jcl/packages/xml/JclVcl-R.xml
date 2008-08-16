@@ -11,9 +11,9 @@
     <Package Name="rtl" Targets="WinLibSuffix" Condition=""/>
     <Package Name="vcl" Targets="WinLibSuffix" Condition=""/>
     <Package Name="vcljpg" Targets="WinLibSuffix" Condition=""/>
-    <Package Name="Jcl" Targets="all" Condition=""/>
-    <Package Name="vcl50" Targets="c5,d5" Condition=""/>
-    <Package Name="vcljpg50" Targets="c5,d5" Condition=""/>
+    <Package Name="Jcl-R" Targets="all" Condition=""/>
+    <Package Name="vcl50" Targets="noLibSuffix" Condition=""/>
+    <Package Name="vcljpg50" Targets="noLibSuffix" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\source\vcl\JclPrint.pas" Targets="Vcl" Formname="" Condition=""/>

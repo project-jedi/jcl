@@ -9,16 +9,15 @@
   <ImageBase>58040000</ImageBase>
   <Requires>
     <Package Name="rtl" Targets="WinLibSuffix" Condition=""/>
-    <Package Name="vcl50" Targets="c5,d5" Condition=""/>
+    <Package Name="vcl50" Targets="noLibSuffix" Condition=""/>
     <Package Name="vcl" Targets="WinLibSuffix" Condition=""/>
-    <Package Name="dsnide50" Targets="c5,d5" Condition=""/>
+    <Package Name="dsnide50" Targets="noLibSuffix" Condition=""/>
     <Package Name="designide" Targets="WinLibSuffix" Condition=""/>
-    <Package Name="Jcl" Targets="WinLibSuffix" Condition=""/>
-    <Package Name="Jcl50" Targets="c5,d5" Condition=""/>
-    <Package Name="JclBaseExpert-D" Targets="Windows,Bds" Condition=""/>
+    <Package Name="Jcl-R" Targets="WinDev" Condition=""/>
+    <Package Name="JclBaseExpert-D" Targets="WinDev" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\experts\favfolders\IdeOpenDlgFavoriteUnit.pas" Targets="Windows,Bds" Formname="" Condition=""/>
-    <File Name="..\..\experts\favfolders\OpenDlgFavAdapter.pas" Targets="Windows,Bds" Formname="" Condition=""/>
+    <File Name="..\..\experts\favfolders\IdeOpenDlgFavoriteUnit.pas" Targets="WinDev" Formname="" Condition=""/>
+    <File Name="..\..\experts\favfolders\OpenDlgFavAdapter.pas" Targets="WinDev" Formname="" Condition=""/>
   </Contains>
 </Package>

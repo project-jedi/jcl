@@ -9,18 +9,17 @@
   <ImageBase>580C0000</ImageBase>
   <Requires>
     <Package Name="rtl" Targets="WinLibSuffix" Condition=""/>
-    <Package Name="vcl50" Targets="c5,d5" Condition=""/>
+    <Package Name="vcl50" Targets="noLibSuffix" Condition=""/>
     <Package Name="vcl" Targets="WinLibSuffix" Condition=""/>
-    <Package Name="dsnide50" Targets="c5,d5" Condition=""/>
+    <Package Name="dsnide50" Targets="noLibSuffix" Condition=""/>
     <Package Name="designide" Targets="WinLibSuffix" Condition=""/>
-    <Package Name="Jcl" Targets="WinLibSuffix" Condition=""/>
-    <Package Name="Jcl50" Targets="c5,d5" Condition=""/>
+    <Package Name="Jcl-R" Targets="Windows" Condition=""/>
     <Package Name="JclBaseExpert-D" Targets="Windows" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\experts\useswizard\JCLUsesWizard.pas" Targets="c5,d5,c6,d6,d7" Formname="" Condition=""/>
-    <File Name="..\..\experts\useswizard\JCLOptionsFrame.pas" Targets="c5,d5,c6,d6,d7" Formname="FrameJclOptions: TFrame" Condition=""/>
-    <File Name="..\..\experts\useswizard\JclUsesDialog.pas" Targets="c5,d5,c6,d6,d7" Formname="FormUsesConfirm" Condition=""/>
-    <File Name="..\..\experts\useswizard\JclParseUses.pas" Targets="c5,d5,c6,d6,d7" Formname="" Condition=""/>
+    <File Name="..\..\experts\useswizard\JCLUsesWizard.pas" Targets="OldStyleIDE" Formname="" Condition=""/>
+    <File Name="..\..\experts\useswizard\JCLOptionsFrame.pas" Targets="OldStyleIDE" Formname="FrameJclOptions: TFrame" Condition=""/>
+    <File Name="..\..\experts\useswizard\JclUsesDialog.pas" Targets="OldStyleIDE" Formname="FormUsesConfirm" Condition=""/>
+    <File Name="..\..\experts\useswizard\JclParseUses.pas" Targets="OldStyleIDE" Formname="" Condition=""/>
   </Contains>
 </Package>

@@ -13,12 +13,10 @@
   <BuildNumber/>
   <Requires>
     <Package Name="rtl" Targets="allLibSuffix" Condition=""/>
-    <Package Name="vcl50" Targets="c5,d5" Condition=""/>
-    <Package Name="JclD50" Targets="d5" Condition=""/>
-    <Package Name="JclC50" Targets="c5" Condition=""/>
-    <Package Name="Jcl" Targets="allLibSuffix" Condition=""/>
+    <Package Name="vcl50" Targets="noLibSuffix" Condition=""/>
     <Package Name="Borland.Delphi" Targets="JclDotNet" Condition=""/>
     <Package Name="Borland.VclRtl" Targets="JclDotNet" Condition=""/>
+    <Package Name="Jcl-R" Targets="JclDev" Condition=""/>
     <Package Name="Jedi.Jcl" Targets="JclDotNet" Condition=""/>
   </Requires>
   <Contains>
