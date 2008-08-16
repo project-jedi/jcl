@@ -1434,7 +1434,7 @@ begin
     with Modules[I] do
       for J := 0 to SegmentCount - 1 do
       begin
-        if (AAddr >= FSegments[J].Offset) and (AAddr - FSegments[J].Offset <= Segment[J].Size) then
+        if (FSegments[J].Flags = 1) and (AAddr >= FSegments[J].Offset) and (AAddr - FSegments[J].Offset <= Segment[J].Size) then
         begin
           Result := True;
           AMod := Modules[I];
