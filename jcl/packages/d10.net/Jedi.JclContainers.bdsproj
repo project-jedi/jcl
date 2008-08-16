@@ -123,7 +123,7 @@
       <Directories Name="UnitOutputDir">..\..\lib\d10.net</Directories>
       <Directories Name="PackageDLLOutputDir"></Directories>
       <Directories Name="PackageDCPOutputDir">..\..\lib\d10.net</Directories>
-      <Directories Name="SearchPath">..\..\lib\d10.net;..\..\source</Directories>
+      <Directories Name="SearchPath">..\..\lib\d10.net;..\..\source\include</Directories>
       <Directories Name="Packages"></Directories>
       <Directories Name="Conditionals">RELEASE</Directories>
       <Directories Name="DebugSourceDirs"></Directories>

@@ -1,6 +1,6 @@
 [Directories]
 UnitOutputDir=..\..\lib\c5
-SearchPath=..\..\source
+SearchPath=..\..\source\include
 Conditionals=BCB
 [Compiler]
 PackageNoLink=1

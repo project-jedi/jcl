@@ -23,7 +23,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                       $ }
+{ Last modified: $Date::                                                                      $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -217,6 +217,7 @@ type
     FLibReleaseDirMask: string;
     FLibDebugDirMask: string;
     FJclSourceDir: string;
+    FJclIncludeDir: string;
     FJclSourcePath: string;
     FJclExamplesDir: string;
     FClxDialogFileName: string;
@@ -277,6 +278,7 @@ type
     property LibReleaseDirMask: string read FLibReleaseDirMask;
     property LibDebugDirMask: string read FLibDebugDirMask;
     property JclSourceDir: string read FJclSourceDir;
+    property JclIncludeDir: string read FJclIncludeDir;
     property JclSourcePath: string read FJclSourcePath;
     property JclExamplesDir: string read FJclExamplesDir;
     property ClxDialogFileName: string read FClxDialogFileName;
@@ -1488,8 +1490,8 @@ var
         CLRSuffix := ''
       else
         CLRSuffix := '.net';
-      TemplateFileName := PathAddSeparator(Distribution.JclSourceDir) + 'jcl.template.inc';
-      IncludeFileName := Format('%sjcl%s%s.inc', [PathAddSeparator(Distribution.JclSourceDir), Target.IDEVersionNumberStr, CLRSuffix]);
+      TemplateFileName := PathAddSeparator(Distribution.JclIncludeDir) + 'jcl.template.inc';
+      IncludeFileName := Format('%sjcl%s%s.inc', [PathAddSeparator(Distribution.JclIncludeDir), Target.IDEVersionNumberStr, CLRSuffix]);
       try
         IncludeFile := TStringList.Create;
         try
@@ -1640,19 +1642,19 @@ var
       if OptionChecked[joEnvLibPath] then
       begin
         MarkOptionBegin(joEnvLibPath);
-        Result := ATarget.AddToLibrarySearchPath(FLibReleaseDir) and ATarget.AddToLibrarySearchPath(Distribution.JclSourceDir);
+        Result := ATarget.AddToLibrarySearchPath(FLibReleaseDir) and ATarget.AddToLibrarySearchPath(Distribution.JclIncludeDir);
         if Result then
         begin
-          WriteLog(Format('Added "%s;%s" to library search path.', [FLibReleaseDir, Distribution.JclSourceDir]));
+          WriteLog(Format('Added "%s;%s" to library search path.', [FLibReleaseDir, Distribution.JclIncludeDir]));
           {$IFDEF MSWINDOWS}
           if (ATarget.RadToolKind = brBorlandDevStudio) and (bpBCBuilder32 in ATarget.Personalities)
             and OptionChecked[joDualPackages] then
             with TJclBDSInstallation(ATarget) do
           begin
-            Result := AddToCppSearchPath(FLibReleaseDir) and AddToCppSearchPath(Distribution.JclSourceDir) and
+            Result := AddToCppSearchPath(FLibReleaseDir) and AddToCppSearchPath(Distribution.JclIncludeDir) and
                       ((IDEVersionNumber < 5) or AddToCppLibraryPath(FLibReleaseDir));
             if Result then
-              WriteLog(Format('Added "%s;%s" to cpp search path.', [FLibReleaseDir, Distribution.JclSourceDir]))
+              WriteLog(Format('Added "%s;%s" to cpp search path.', [FLibReleaseDir, Distribution.JclIncludeDir]))
             else
               WriteLog('Failed to add cpp search paths.');
           end;
@@ -2254,17 +2256,21 @@ function TJclInstallation.Uninstall(AUninstallHelp: Boolean): Boolean;
     //ioJclEnvLibPath
     if CLRVersion = '' then
     begin
-      if ATarget.RemoveFromLibrarySearchPath(FLibReleaseDir) and ATarget.RemoveFromLibrarySearchPath(Distribution.JclSourceDir) then
-        WriteLog(Format('Removed "%s;%s" from library search path.', [FLibReleaseDir, Distribution.JclSourceDir]))
+      if ATarget.RemoveFromLibrarySearchPath(FLibReleaseDir) and
+         ATarget.RemoveFromLibrarySearchPath(Distribution.JclSourceDir) and
+         ATarget.RemoveFromLibrarySearchPath(Distribution.JclIncludeDir) then
+        WriteLog(Format('Removed "%s;%s;%s" from library search path.', [FLibReleaseDir, Distribution.JclSourceDir, Distribution.JclIncludeDir]))
       else
         WriteLog('Failed to remove library search path.');
       {$IFDEF MSWINDOWS}
       if (ATarget.RadToolKind = brBorlandDevStudio) and (bpBCBuilder32 in ATarget.Personalities) then
         with TJclBDSInstallation(ATarget) do
       begin
-        if RemoveFromCppSearchPath(FLibReleaseDir) and RemoveFromCppSearchPath(Distribution.JclSourceDir) and
+        if RemoveFromCppSearchPath(FLibReleaseDir) and
+           RemoveFromCppSearchPath(Distribution.JclSourceDir) and
+           RemoveFromCppSearchPath(Distribution.JclIncludeDir) and
            ((IDEVersionNumber < 5) or RemoveFromCppLibraryPath(FLibReleaseDir)) then
-          WriteLog(Format('Removed "%s;%s" from cpp search path.', [FLibReleaseDir, Distribution.JclSourceDir]))
+          WriteLog(Format('Removed "%s;%s;%s" from cpp search path.', [FLibReleaseDir, Distribution.JclSourceDir, Distribution.JclIncludeDir]))
         else
           WriteLog('Failed to remove cpp search path.');
       end;
@@ -2837,8 +2843,8 @@ begin
       end;
       Compiler.Options.Add('-JPHNE');
       Compiler.Options.Add('--BCB');
-      //Compiler.AddPathOption('O', Format(BCBIncludePath, [Distribution.JclSourceDir, Distribution.JclSourcePath]));
-      //Compiler.AddPathOption('U', Format(BCBObjectPath, [Distribution.JclSourceDir, Distribution.JclSourcePath]));
+      //Compiler.AddPathOption('O', Format(BCBIncludePath, [Distribution.JclIncludeDir, Distribution.JclSourcePath]));
+      //Compiler.AddPathOption('U', Format(BCBObjectPath, [Distribution.JclIncludeDir, Distribution.JclSourcePath]));
     end
     else // Delphi
     begin
@@ -2852,7 +2858,7 @@ begin
         Compiler.Options.Add('--default-namespace:Jedi.Jcl');
 
     end;
-    Compiler.AddPathOption('I', Distribution.JclSourceDir);
+    Compiler.AddPathOption('I', Distribution.JclIncludeDir);
     Compiler.AddPathOption('U', Distribution.JclSourcePath);
     Compiler.AddPathOption('R', Distribution.JclSourcePath);
     
@@ -2977,7 +2983,7 @@ begin
     Target.DCC32.AddPathOption('E', Distribution.JclBinDir);
     Target.DCC32.AddPathOption('N', '.');
     Target.DCC32.AddPathOption('U', FLibReleaseDir + DirSeparator + Distribution.JclSourcePath);
-    Target.DCC32.AddPathOption('I', Distribution.JclSourceDir);
+    Target.DCC32.AddPathOption('I', Distribution.JclIncludeDir);
     Result := Target.DCC32.Execute(FileName);
   finally
     SetCurrentDir(OldDirectory);
@@ -3517,6 +3523,7 @@ procedure TJclDistribution.Init;
     FLibDebugDirMask := FLibReleaseDirMask + DirDelimiter + 'debug';
     FJclBinDir := FJclPath + 'bin';
     FJclSourceDir := FJclPath + 'source';
+    FJclIncludeDir := PathAddSeparator(FJclSourceDir) + 'include';
     FJclExamplesDir := FJclPath + 'examples';
     FJclSourcePath := '';
     for Index := Low(JclSourceDirs) to High(JclSourceDirs) do

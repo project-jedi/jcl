@@ -34,7 +34,7 @@
     <USERDEFINES value=""/>
     <SYSDEFINES value="USEPACKAGES:_RTLDLL"/>
     <MAINSOURCE value="JclVClx.bpf"/>
-    <INCLUDEPATH value="../../source:../../source/visclx:$(BCB)/include/stlport:$(BCB)/include:$(BCB)/include/vcl:/usr/include"/>
+    <INCLUDEPATH value="../../source/include:../../source/visclx:$(BCB)/include/stlport:$(BCB)/include:$(BCB)/include/vcl:/usr/include"/>
     <LIBPATH value="../../source/visclx:../../lib/k3:../../lib/k3:$(BCB)/lib/obj:$(BCB)/lib:/usr/lib:/lib:/usr/X11R6/lib:$(BCB)/bin:$(HOME)/bin"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>

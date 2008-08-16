@@ -123,7 +123,7 @@
 			<Directories Name="UnitOutputDir">..\lib\d10</Directories>
 			<Directories Name="PackageDLLOutputDir"></Directories>
 			<Directories Name="PackageDCPOutputDir"></Directories>
-			<Directories Name="SearchPath">$(BDS)\lib\Debug;..\source;..\source\common;..\source\windows</Directories>
+			<Directories Name="SearchPath">$(BDS)\lib\Debug;..\source\include;..\source\common;..\source\windows</Directories>
 			<Directories Name="Packages"></Directories>
 			<Directories Name="Conditionals">JCLINSTALL</Directories>
 			<Directories Name="DebugSourceDirs"></Directories>

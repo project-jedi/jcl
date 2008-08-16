@@ -1,6 +1,6 @@
 [Directories]
 UnitOutputDir=..\..\lib\d6
-SearchPath=..\..\source;..\..\experts\common
+SearchPath=..\..\source\include;..\..\experts\common
 [Compiler]
 PackageNoLink=1
 [Linker]

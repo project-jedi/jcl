@@ -63,7 +63,7 @@
   <OPTIONS>
     <CFLAG1 value="-Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c -tWM
                   "/>
-    <PFLAGS value="-U..\..\lib\c6 -N0..\..\lib\c6 -N2..\..\lib\c6 -I..\..\source -$YD -$W -$O- -$A8 -v -JPHNE -M
+    <PFLAGS value="-U..\..\lib\c6 -N0..\..\lib\c6 -N2..\..\lib\c6 -I..\..\source\include -$YD -$W -$O- -$A8 -v -JPHNE -M
                    %C6PFLAGS%
                   "/>
     <RFLAGS value=""/>

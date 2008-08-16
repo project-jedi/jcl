@@ -1,7 +1,7 @@
 [Directories]
 OutputDir=..\bin
 UnitOutputDir=.
-SearchPath=..\source;..\source\common;..\source\windows
+SearchPath=..\source\include;..\source\common;..\source\windows
 Conditionals=JCLINSTALL
 [Version Info Keys]
 CompanyName=Project JEDI
