@@ -1,6 +1,6 @@
 [Directories]
 UnitOutputDir=..\..\lib\c6
-SearchPath=..\..\source\include
+SearchPath=..\..\source\include;..\..\source\common-apilib
 Conditionals=BCB
 [Compiler]
 PackageNoLink=1

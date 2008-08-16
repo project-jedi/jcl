@@ -55,16 +55,16 @@
     <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
     <RELEASELIBPATH value="$(BCB)\lib\release"/>
     <LINKER value="ilink32"/>
-    <USERDEFINES value="_DEBUG;BCB"/>
+    <USERDEFINES value="_DEBUG;BCB;PACKAGE_CONDITIONS;JWA_WINDOWS;DYNAMIC_LINK"/>
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="%NAME%.cpp"/>
-    <INCLUDEPATH value="..\..\source\include;..\..\source\windows;..\..\source\vcl;..\..\source\common;..\..\experts\common;$(BCB)\include;$(BCB)\include\vcl"/>
+    <INCLUDEPATH value="..\..\source\include;..\..\source\common-apilib;..\..\source\windows;..\..\source\vcl;..\..\source\common;..\..\experts\common;$(BCB)\include;$(BCB)\include\vcl"/>
     <LIBPATH value="%PATHLIB%..\..\lib\c5;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
-    <IDLCFLAGS value="-I..\..\source\include -I..\..\source\windows -I..\..\source\vcl -I..\..\source\common
+    <IDLCFLAGS value="-I..\..\source\include -I..\..\source\common-apilib -I..\..\source\windows -I..\..\source\vcl -I..\..\source\common
       -I$(BCB)\include -I$(BCB)\include\vcl -src_suffix cpp -D_DEBUG -boa"/>
     <CFLAG1 value="-tWD -tWM- -Od -H=$(BCB)\lib\vcl50.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c"/>
     <PFLAGS value="-N2..\..\lib\c5 -N0..\..\lib\c5 -$YD -$W -$O- -$A8 -v -JPHNE -M

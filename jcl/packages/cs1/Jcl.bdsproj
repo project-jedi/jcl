@@ -121,7 +121,7 @@
       <Directories Name="UnitOutputDir">..\..\lib\cs1</Directories>
       <Directories Name="PackageDLLOutputDir"></Directories>
       <Directories Name="PackageDCPOutputDir">..\..\lib\cs1</Directories>
-      <Directories Name="SearchPath">..\..\lib\cs1;..\..\source\include</Directories>
+      <Directories Name="SearchPath">..\..\lib\cs1;..\..\source\include;..\..\source\common-apilib</Directories>
       <Directories Name="Packages">rtl</Directories>
       <Directories Name="Conditionals"></Directories>
       <Directories Name="DebugSourceDirs"></Directories>

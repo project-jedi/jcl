@@ -1,7 +1,7 @@
 [Directories]
 UnitOutputDir=..\..\lib\c6
-SearchPath=..\..\source\include
-Conditionals=BCB
+SearchPath=..\..\source\include;..\..\source\common-apilib
+Conditionals=BCB;PACKAGE_CONDITIONS;JWA_WINDOWS;DYNAMIC_LINK
 <%%% BEGIN LIBRARYONLY %%%>
 [Compiler]
 PackageNoLink=1

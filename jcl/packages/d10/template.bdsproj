@@ -120,12 +120,12 @@
     </Linker>
     <Directories>
       <Directories Name="UnitOutputDir">..\..\lib\d10</Directories>
-      <Directories Name="SearchPath">..\..\lib\d10;..\..\source\include</Directories>
+      <Directories Name="SearchPath">..\..\lib\d10;..\..\source\include;..\..\source\common-apilib</Directories>
       <Directories Name="OutputDir"></Directories>
       <Directories Name="PackageDLLOutputDir"></Directories>
       <Directories Name="PackageDCPOutputDir">..\..\lib\d10</Directories>
       <Directories Name="Packages">%NOLINKPACKAGELIST%</Directories>
-      <Directories Name="Conditionals"></Directories>
+      <Directories Name="Conditionals">PACKAGE_CONDITIONS;JWA_WINDOWS;DYNAMIC_LINK</Directories>
       <Directories Name="DebugSourceDirs"></Directories>
       <Directories Name="UsePackages">True</Directories>
     </Directories>

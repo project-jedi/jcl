@@ -1,5 +1,16 @@
 rem shell script to create templates
 
+copy ..\source\include\jediapilib.template.inc ..\source\include\jediapilibc5.inc
+copy ..\source\include\jediapilib.template.inc ..\source\include\jediapilibc6.inc
+copy ..\source\include\jediapilib.template.inc ..\source\include\jediapilibd5.inc
+copy ..\source\include\jediapilib.template.inc ..\source\include\jediapilibd6.inc
+copy ..\source\include\jediapilib.template.inc ..\source\include\jediapilibd7.inc
+copy ..\source\include\jediapilib.template.inc ..\source\include\jediapilibcs1.inc
+copy ..\source\include\jediapilib.template.inc ..\source\include\jediapilibd8.inc
+copy ..\source\include\jediapilib.template.inc ..\source\include\jediapilibd9.inc
+copy ..\source\include\jediapilib.template.inc ..\source\include\jediapilibd10.inc
+copy ..\source\include\jediapilib.template.inc ..\source\include\jediapilibd11.inc
+
 copy ..\source\include\jcl.template.inc ..\source\include\jclc5.inc
 copy ..\source\include\jcl.template.inc ..\source\include\jclc6.inc
 copy ..\source\include\jcl.template.inc ..\source\include\jclkc3.inc

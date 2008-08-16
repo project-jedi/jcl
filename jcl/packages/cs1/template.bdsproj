@@ -121,9 +121,9 @@
       <Directories Name="UnitOutputDir">..\..\lib\cs1</Directories>
       <Directories Name="PackageDLLOutputDir"></Directories>
       <Directories Name="PackageDCPOutputDir">..\..\lib\cs1</Directories>
-      <Directories Name="SearchPath">..\..\lib\cs1;..\..\source\include</Directories>
+      <Directories Name="SearchPath">..\..\lib\cs1;..\..\source\include;..\..\source\common-apilib</Directories>
       <Directories Name="Packages">%NOLINKPACKAGELIST%</Directories>
-      <Directories Name="Conditionals"></Directories>
+      <Directories Name="Conditionals">PACKAGE_CONDITIONS;JWA_WINDOWS;DYNAMIC_LINK</Directories>
       <Directories Name="DebugSourceDirs"></Directories>
       <Directories Name="UsePackages">True</Directories>
     </Directories>

@@ -17,10 +17,10 @@
     <DCC_ObjOutput>..\..\lib\d11</DCC_ObjOutput>
     <DCC_HppOutput>..\..\lib\d11</DCC_HppOutput>
     <DCC_DcpOutput>..\..\lib\d11</DCC_DcpOutput>
-    <DCC_UnitSearchPath>..\..\lib\d11;..\..\source\include</DCC_UnitSearchPath>
-    <DCC_ResourcePath>..\..\lib\d11;..\..\source\include</DCC_ResourcePath>
-    <DCC_ObjPath>..\..\lib\d11;..\..\source\include</DCC_ObjPath>
-    <DCC_IncludePath>..\..\lib\d11;..\..\source\include</DCC_IncludePath>
+    <DCC_UnitSearchPath>..\..\lib\d11;..\..\source\include;..\..\source\common-apilib</DCC_UnitSearchPath>
+    <DCC_ResourcePath>..\..\lib\d11;..\..\source\include;..\..\source\common-apilib</DCC_ResourcePath>
+    <DCC_ObjPath>..\..\lib\d11;..\..\source\include;..\..\source\common-apilib</DCC_ObjPath>
+    <DCC_IncludePath>..\..\lib\d11;..\..\source\include;..\..\source\common-apilib</DCC_IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <Version>7.0</Version>
@@ -28,10 +28,10 @@
     <DCC_ObjOutput>..\..\lib\d11\debug</DCC_ObjOutput>
     <DCC_HppOutput>..\..\lib\d11\debug</DCC_HppOutput>
     <DCC_DcpOutput>..\..\lib\d11\debug</DCC_DcpOutput>
-    <DCC_UnitSearchPath>..\..\lib\d11\debug;..\..\source\include</DCC_UnitSearchPath>
-    <DCC_ResourcePath>..\..\lib\d11\debug;..\..\source\include</DCC_ResourcePath>
-    <DCC_ObjPath>..\..\lib\d11\debug;..\..\source\include</DCC_ObjPath>
-    <DCC_IncludePath>..\..\lib\d11\debug;..\..\source\include</DCC_IncludePath>    
+    <DCC_UnitSearchPath>..\..\lib\d11\debug;..\..\source\include;..\..\source\common-apilib</DCC_UnitSearchPath>
+    <DCC_ResourcePath>..\..\lib\d11\debug;..\..\source\include;..\..\source\common-apilib</DCC_ResourcePath>
+    <DCC_ObjPath>..\..\lib\d11\debug;..\..\source\include;..\..\source\common-apilib</DCC_ObjPath>
+    <DCC_IncludePath>..\..\lib\d11\debug;..\..\source\include;..\..\source\common-apilib</DCC_IncludePath>    
   </PropertyGroup>
   <ProjectExtensions>
     <Borland.Personality>Delphi.Personality</Borland.Personality>

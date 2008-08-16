@@ -120,7 +120,7 @@
     </Linker>
     <Directories>
       <Directories Name="UnitOutputDir">..\..\lib\d10</Directories>
-      <Directories Name="SearchPath">..\..\lib\d10;..\..\source\include</Directories>
+      <Directories Name="SearchPath">..\..\lib\d10;..\..\source\include;..\..\source\common-apilib</Directories>
       <Directories Name="OutputDir"></Directories>
       <Directories Name="PackageDLLOutputDir"></Directories>
       <Directories Name="PackageDCPOutputDir">..\..\lib\d10</Directories>

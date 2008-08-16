@@ -1,4 +1,4 @@
 [Directories]
 UnitOutputDir=..\..\lib\d5
-SearchPath=..\..\source\include;..\..\experts\common
+SearchPath=..\..\source\include;..\..\experts\common;..\..\source\common-apilib
 

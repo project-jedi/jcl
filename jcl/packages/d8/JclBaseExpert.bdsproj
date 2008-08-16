@@ -121,7 +121,7 @@
       <Directories Name="UnitOutputDir">..\..\lib\d8</Directories>
       <Directories Name="PackageDLLOutputDir"></Directories>
       <Directories Name="PackageDCPOutputDir">..\..\lib\d8</Directories>
-      <Directories Name="SearchPath">..\..\lib\d8;..\..\source\include</Directories>
+      <Directories Name="SearchPath">..\..\lib\d8;..\..\source\include;..\..\source\common-apilib</Directories>
       <Directories Name="Packages">rtl;vcl;designide;Jcl</Directories>
       <Directories Name="Conditionals"></Directories>
       <Directories Name="DebugSourceDirs"></Directories>

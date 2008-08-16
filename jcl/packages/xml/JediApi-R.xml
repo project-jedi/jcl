@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JediApi" Design="0">
+  <Description>JEDI API Library package</Description>
+  <GUID>{5B236E6A-A923-4D10-B939-E68B5284B53C}</GUID>
+  <C5PFlags>-LUvcl50</C5PFlags>
+  <C6PFlags/>
+  <C5Libs/>
+  <C6Libs/>
+  <ImageBase>38000000</ImageBase>
+  <VersionMajorNumber/>
+  <VersionMinorNumber/>
+  <ReleaseNumber/>
+  <BuildNumber/>
+  <Requires>
+    <Package Name="vcl50" Targets="AllWinNoLibSuffix" Condition=""/>
+    <Package Name="vclie50" Targets="AllWinNoLibSuffix" Condition=""/>
+    <Package Name="rtl" Targets="AllWinLibSuffix" Condition=""/>
+    <Package Name="vcl" Targets="AllWinLibSuffix" Condition=""/>
+    <Package Name="vclie" Targets="AllWinLibSuffix" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\source\apilib\JwaWindows.pas" Targets="AllWin" Formname="" Condition=""/>
+    <File Name="..\..\source\apilib\JwaVista.pas" Targets="AllWin" Formname="" Condition=""/>
+  </Contains>
+</Package>

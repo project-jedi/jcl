@@ -1,7 +1,9 @@
 ROOTDIR = $(MAKEDIR)\..
 
 # ---------------------------------------------------------------------------
-RESFILES = c5\JclBaseExpertC50.res                  \
+RESFILES = c5\JediApiC50.res                        \
+           c5\JediApi_SingleUnitsC50.res            \
+           c5\JclBaseExpertC50.res                  \
            c5\JclThreadNameExpertC50.res            \
            c5\JclC50.res                            \
            c5\JclContainersC50.res                  \
@@ -20,6 +22,8 @@ RESFILES = c5\JclBaseExpertC50.res                  \
            c5\JclUsesExpertDLLC50.res               \
            c5\JclVersionControlExpertC50.res        \
            c5\JclVersionControlExpertDLLC50.res     \
+           c6\JediApi.res                           \
+           c6\JediApi_SingleUnits.res               \
            c6\Jcl.res                               \
            c6\JclContainers.res                     \
            c6\JclBaseExpert.res                     \
@@ -41,11 +45,15 @@ RESFILES = c5\JclBaseExpertC50.res                  \
            c6\JclVClx.res                           \
            c6\JclVcl.res                            \
            c6\JclVersionControlExpertDLL.res        \
+           cs1\JediApi.res                          \
+           cs1\JediApi_SingleUnits.res              \
            cs1\Jcl.res                              \
            cs1\JclBaseExpert.res                    \
            cs1\JclContainers.res                    \
            cs1\JclFavoriteFoldersExpertDLL.res      \
            cs1\JclVersionControlExpertDLL.res       \
+           d10\JediApi.res                          \
+           d10\JediApi_SingleUnits.res              \
            d10\Jcl.res                              \
            d10\JclContainers.res                    \
            d10\JclBaseExpert.res                    \
@@ -64,6 +72,8 @@ RESFILES = c5\JclBaseExpertC50.res                  \
            d10\JclThreadNameExpertDLL.res           \
            d10\JclVersionControlExpert.res          \
            d10\JclVersionControlExpertDLL.res       \
+           d11\JediApi.res                          \
+           d11\JediApi_SingleUnits.res              \
            d11\Jcl.res                              \
            d11\JclContainers.res                    \
            d11\JclBaseExpert.res                    \
@@ -82,6 +92,8 @@ RESFILES = c5\JclBaseExpertC50.res                  \
            d11\JclThreadNameExpertDLL.res           \
            d11\JclVersionControlExpert.res          \
            d11\JclVersionControlExpertDLL.res       \
+           d5\JediApiD50.res                        \
+           d5\JediApi_SingleUnitsD50.res            \
            d5\JclUsesExpertDLLD50.res               \
            d5\JclBaseExpertD50.res                  \
            d5\JclD50.res                            \
@@ -101,6 +113,8 @@ RESFILES = c5\JclBaseExpertC50.res                  \
            d5\JclUsesExpertD50.res                  \
            d5\JclVersionControlExpertD50.res        \
            d5\JclVersionControlExpertDLLD50.res     \
+           d6\JediApi.res                           \
+           d6\JediApi_SingleUnits.res               \
            d6\Jcl.res                               \
            d6\JclContainers.res                     \
            d6\JclBaseExpert.res                     \
@@ -122,6 +136,8 @@ RESFILES = c5\JclBaseExpertC50.res                  \
            d6\JclVClx.res                           \
            d6\JclVersionControlExpert.res           \
            d6\JclVersionControlExpertDLL.res        \
+           d7\JediApi.res                           \
+           d7\JediApi_SingleUnits.res               \
            d7\Jcl.res                               \
            d7\JclContainers.res                     \
            d7\JclBaseExpert.res                     \
@@ -143,11 +159,15 @@ RESFILES = c5\JclBaseExpertC50.res                  \
            d7\JclVClx.res                           \
            d7\JclVersionControlExpert.res           \
            d7\JclVersionControlExpertDLL.res        \
+           d8\JediApi.res                           \
+           d8\JediApi_SingleUnits.res               \
            d8\Jcl.res                               \
            d8\JclContainers.res                     \
            d8\JclBaseExpert.res                     \
            d8\JclFavoriteFoldersExpertDLL.res       \
            d8\JclVersionControlExpertDLL.res        \
+           d9\JediApi.res                           \
+           d9\JediApi_SingleUnits.res               \
            d9\JclThreadNameExpertDLL.res            \
            d9\Jcl.res                               \
            d9\JclContainers.res                     \

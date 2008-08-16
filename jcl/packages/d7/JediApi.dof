@@ -1,0 +1,5 @@
+[Directories]
+UnitOutputDir=..\..\lib\d7
+SearchPath=..\..\source\include;..\..\experts\common;..\..\source\common-apilib
+Conditionals=PACKAGE_CONDITIONS;JWA_WINDOWS;DYNAMIC_LINK
+
