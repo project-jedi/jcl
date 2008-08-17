@@ -27,7 +27,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                       $ }
+{ Last modified: $Date::                                                                      $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -517,6 +517,15 @@ type
     function WriteString(const Buffer: string; Start, Count: Longint): Longint;
     function WriteAnsiString(const Buffer: AnsiString; Start, Count: Longint): Longint;
     function WriteWideString(const Buffer: WideString; Start, Count: Longint): Longint;
+    function PeekChar(var Buffer: Char): Boolean;
+    function PeekAnsiChar(var Buffer: AnsiChar): Boolean;
+    function PeekWideChar(var Buffer: WideChar): Boolean;
+    function ReadChar(var Buffer: Char): Boolean;
+    function ReadAnsiChar(var Buffer: AnsiChar): Boolean;
+    function ReadWideChar(var Buffer: WideChar): Boolean;
+    function WriteChar(Value: Char): Boolean;
+    function WriteAnsiChar(Value: AnsiChar): Boolean;
+    function WriteWideChar(Value: WideChar): Boolean;
     function SkipBOM: LongInt;
     function WriteBOM: Longint;
   end;
@@ -2558,6 +2567,42 @@ begin
   {$ENDIF ~CLR}
 end;
 
+function TJclStringStream.PeekAnsiChar(var Buffer: AnsiChar): Boolean;
+var
+  Pos: Int64;
+  Ch: UCS4;
+begin
+  Pos := FPosition;
+  Result := FCharacterReader(Self, Ch);
+  if Result then
+    Buffer := UCS4ToAnsiChar(Ch);
+  FPosition := Pos;
+end;
+
+function TJclStringStream.PeekChar(var Buffer: Char): Boolean;
+var
+  Pos: Int64;
+  Ch: UCS4;
+begin
+  Pos := FPosition;
+  Result := FCharacterReader(Self, Ch);
+  if Result then
+    Buffer := UCS4ToChar(Ch);
+  FPosition := Pos;
+end;
+
+function TJclStringStream.PeekWideChar(var Buffer: WideChar): Boolean;
+var
+  Pos: Int64;
+  Ch: UCS4;
+begin
+  Pos := FPosition;
+  Result := FCharacterReader(Self, Ch);
+  if Result then
+    Buffer := UCS4ToWideChar(Ch);
+  FPosition := Pos;
+end;
+
 function TJclStringStream.ReadString(var Buffer: string; Start, Count: Longint): Longint;
 var
   Index, StrPos: Integer;
@@ -2580,6 +2625,15 @@ begin
   Result := Index - Start;
 end;
 
+function TJclStringStream.ReadAnsiChar(var Buffer: AnsiChar): Boolean;
+var
+  Ch: UCS4;
+begin
+  Result := FCharacterReader(Self, Ch);
+  if Result then
+    Buffer := UCS4ToAnsiChar(Ch);
+end;
+
 function TJclStringStream.ReadAnsiString(var Buffer: AnsiString; Start, Count: Longint): Longint;
 var
   Index, StrPos: Integer;
@@ -2600,6 +2654,24 @@ begin
       Break; // end of stream (read)
   end;
   Result := Index - Start;
+end;
+
+function TJclStringStream.ReadChar(var Buffer: Char): Boolean;
+var
+  Ch: UCS4;
+begin
+  Result := FCharacterReader(Self, Ch);
+  if Result then
+    Buffer := UCS4ToChar(Ch);
+end;
+
+function TJclStringStream.ReadWideChar(var Buffer: WideChar): Boolean;
+var
+  Ch: UCS4;
+begin
+  Result := FCharacterReader(Self, Ch);
+  if Result then
+    Buffer := UCS4ToWideChar(Ch);
 end;
 
 function TJclStringStream.ReadWideString(var Buffer: WideString; Start, Count: Longint): Longint;
@@ -2664,6 +2736,11 @@ begin
     Result := 0;
 end;
 
+function TJclStringStream.WriteChar(Value: Char): Boolean;
+begin
+  Result := FCharacterWriter(Self, CharToUCS4(Value));
+end;
+
 function TJclStringStream.WriteString(const Buffer: string; Start, Count: Longint): Longint;
 var
   Index, StrPos: Integer;
@@ -2682,6 +2759,11 @@ begin
   Result := Index - Start;
 end;
 
+function TJclStringStream.WriteAnsiChar(Value: AnsiChar): Boolean;
+begin
+  Result := FCharacterWriter(Self, AnsiCharToUCS4(Value));
+end;
+
 function TJclStringStream.WriteAnsiString(const Buffer: AnsiString; Start, Count: Longint): Longint;
 var
   Index, StrPos: Integer;
@@ -2698,6 +2780,11 @@ begin
       Break; // end of string (read) or end of stream (write)
   end;
   Result := Index - Start;
+end;
+
+function TJclStringStream.WriteWideChar(Value: WideChar): Boolean;
+begin
+  Result := FCharacterWriter(Self, WideCharToUCS4(Value));
 end;
 
 function TJclStringStream.WriteWideString(const Buffer: WideString; Start, Count: Longint): Longint;

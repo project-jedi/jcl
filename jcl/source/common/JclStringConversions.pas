@@ -34,7 +34,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                      $ }
+{ Last modified: $Date::                                                                     $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -215,6 +215,14 @@ function UCS4CharCount(const S: TUCS4Array): Integer;
 function GetUCS4CharAt(const UTF8Str: TUTF8String; Index: Integer; out Value: UCS4): Boolean; overload;
 function GetUCS4CharAt(const WideStr: TUTF16String; Index: Integer; out Value: UCS4; IsUTF16: Boolean = True): Boolean; overload;
 function GetUCS4CharAt(const UCS4Str: TUCS4Array; Index: Integer; out Value: UCS4): Boolean; overload;
+
+function UCS4ToAnsiChar(Value: UCS4): AnsiChar;
+function UCS4ToWideChar(Value: UCS4): WideChar;
+function UCS4ToChar(Value: UCS4): Char; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
+
+function AnsiCharToUCS4(Value: AnsiChar): UCS4;
+function WideCharToUCS4(Value: WideChar): UCS4;
+function CharToUCS4(Value: Char): UCS4; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 
 {$IFDEF UNITVERSIONING}
 const
@@ -1037,9 +1045,9 @@ begin
     Result := (StrPos > 0) and (StrPos < (StrLength - 1));
     if Result then
     begin
-      S[StrPos] := AnsiChar($E0 or (ReplacementCharacter shr 12)); // 4 bits
-      S[StrPos + 1] := AnsiChar(((ReplacementCharacter shr 6) and $3F) or $80); // 6 bits
-      S[StrPos + 2] := AnsiChar((ReplacementCharacter and $3F) or $80); // 6 bits
+      S[StrPos] := AnsiChar($E0 or (UCS4ReplacementCharacter shr 12)); // 4 bits
+      S[StrPos + 1] := AnsiChar(((UCS4ReplacementCharacter shr 6) and $3F) or $80); // 6 bits
+      S[StrPos + 2] := AnsiChar((UCS4ReplacementCharacter and $3F) or $80); // 6 bits
       Inc(StrPos, 3);
     end;
     {$ELSE ~UNICODE_SILENT_FAILURE}
@@ -1092,9 +1100,9 @@ begin
   else
     {$IFDEF UNICOLE_SILENT_FAILURE}
     // add ReplacementCharacter
-    Result := StreamWriteByte(S, $E0 or (ReplacementCharacter shr 12))          and // 4 bits
-              StreamWriteByte(S, ((ReplacementCharacter shr 6) and $3F) or $80) and // 6 bits
-              StreamWriteByte(S, (ReplacementCharacter and $3F) or $80); // 6 bits
+    Result := StreamWriteByte(S, $E0 or (UCS4ReplacementCharacter shr 12))          and // 4 bits
+              StreamWriteByte(S, ((UCS4ReplacementCharacter shr 6) and $3F) or $80) and // 6 bits
+              StreamWriteByte(S, (UCS4ReplacementCharacter and $3F) or $80); // 6 bits
     {$ELSE ~UNICODE_SILENT_FAILURE}
     Result := False;
     {$ENDIF ~UNICODE_SILENT_FAILURE}
@@ -1387,7 +1395,7 @@ begin
     Result := (StrPos > 0) and (StrPos <= StrLength);
     if Result then
     begin
-      S[StrPos] := WideChar(ReplacementCharacter);
+      S[StrPos] := WideChar(UCS4ReplacementCharacter);
       Inc(StrPos, 1);
     end;
     {$ELSE ~UNICODE_SILENT_FAILURE}
@@ -1411,7 +1419,7 @@ begin
   begin
     {$IFDEF UNICOLE_SILENT_FAILURE}
     // add ReplacementCharacter
-    Result := StreamWriteWord(S, ReplacementCharacter);
+    Result := StreamWriteWord(S, UCS4ReplacementCharacter);
     {$ELSE ~UNICODE_SILENT_FAILURE}
     Result := False;
     {$ENDIF ~UNICODE_SILENT_FAILURE}
@@ -1972,6 +1980,60 @@ begin
   Result := (Index >= 0) and (Index < Length(UCS4Str));
   if Result then
     Value := UCS4Str[Index];
+end;
+
+function UCS4ToAnsiChar(Value: UCS4): AnsiChar;
+var
+  Buf: WideString;
+  StrPos: Integer;
+begin
+  StrPos := 1;
+  Buf := #0#0;
+  if UTF16SetNextChar(Buf, StrPos, Value) then
+    Result := AnsiString(Buf)[1]
+  else
+    Result := AnsiReplacementCharacter;
+end;
+
+function UCS4ToWideChar(Value: UCS4): WideChar;
+begin
+  if Value <= MaximumUCS2 then
+    Result := WideChar(Value)
+  else
+    Result := WideChar(UCS4ReplacementCharacter);
+end;
+
+function UCS4ToChar(Value: UCS4): Char;
+begin
+  {$IFDEF SUPPORTS_UNICODE}
+  Result := UCS4ToWideChar(Value);
+  {$ELSE ~SUPPORTS_UNICODE}
+  Result := UCS4ToAnsiChar(Value);
+  {$ENDIF ~SUPPORTS_UNICODE}
+end;
+
+function AnsiCharToUCS4(Value: AnsiChar): UCS4;
+var
+  Buf: WideString;
+  StrPos: Integer;
+begin
+  StrPos := 1;
+  Buf := AnsiString(Value);
+  Result := UTF16GetNextChar(Buf, StrPos);
+end;
+
+function WideCharToUCS4(Value: WideChar): UCS4;
+begin
+  Result := UCS4(Value);
+end;
+
+function CharToUCS4(Value: Char): UCS4;
+begin
+  {$IFDEF SUPPORTS_UNICODE}
+  Result := WideCharToUCS4(Value);
+  {$ELSE ~SUPPORTS_UNICODE}
+  Result := AnsiCharToUCS4(Value);
+  {$ENDIF ~SUPPORTS_UNICODE}
 end;
 
 {$IFDEF UNITVERSIONING}
