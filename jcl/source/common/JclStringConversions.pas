@@ -34,7 +34,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                     $ }
+{ Last modified: $Date::                                                                    $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -79,16 +79,16 @@ type
 // if UNICODE_SILENT_FAILURE is defined, invalid sequences will be replaced by ReplacementCharacter
 // otherwise StrPos is set to -1 on return to flag an error (invalid UTF8 sequence)
 // StrPos will be incremented by the number of chars that were read
-function UTF8GetNextChar(const S: TUTF8String; var StrPos: Integer): UCS4; overload;
-function UTF8GetNextChar(S: TStream; var Ch: UCS4): Boolean; overload;
+function UTF8GetNextChar(const S: TUTF8String; var StrPos: Integer): UCS4;
+function UTF8GetNextCharFromStream(S: TStream; var Ch: UCS4): Boolean;
 
 // UTF8SkipChars = skip NbSeq UTF8 sequences starting from StrPos
 // returns False if String is too small
 // if UNICODE_SILENT_FAILURE is not defined StrPos is set to -1 on error (invalid UTF8 sequence)
 // StrPos will be incremented by the number of chars that were skipped
 // On return, NbSeq contains the number of UTF8 sequences that were skipped
-function UTF8SkipChars(const S: TUTF8String; var StrPos: Integer; var NbSeq: Integer): Boolean; overload;
-function UTF8SkipChars(S: TStream; var NbSeq: Integer): Boolean; overload;
+function UTF8SkipChars(const S: TUTF8String; var StrPos: Integer; var NbSeq: Integer): Boolean;
+function UTF8SkipCharsFromStream(S: TStream; var NbSeq: Integer): Boolean;
 
 // UTF8SetNextChar = append an UTF8 sequence at StrPos
 // returns False on error:
@@ -97,29 +97,29 @@ function UTF8SkipChars(S: TStream; var NbSeq: Integer): Boolean; overload;
 //        - if UNICODE_SILENT_FAILURE is not defined, StrPos is set to -1
 //    - StrPos > -1 flags string being too small, callee did nothing, caller is responsible for allocating space
 // StrPos will be incremented by the number of chars that were written
-function UTF8SetNextChar(var S: TUTF8String; var StrPos: Integer; Ch: UCS4): Boolean; overload;
-function UTF8SetNextChar(S: TStream; Ch: UCS4): Boolean; overload;
+function UTF8SetNextChar(var S: TUTF8String; var StrPos: Integer; Ch: UCS4): Boolean;
+function UTF8SetNextCharToStream(S: TStream; Ch: UCS4): Boolean;
 
 // UTF16GetNextChar = read next UTF16 sequence at StrPos
 // if UNICODE_SILENT_FAILURE is defined, invalid sequences will be replaced by ReplacementCharacter
 // otherwise StrPos is set to -1 on return to flag an error (invalid UTF16 sequence)
 // StrPos will be incremented by the number of chars that were read
-function UTF16GetNextChar(const S: TUTF16String; var StrPos: Integer): UCS4; overload;
-function UTF16GetNextChar(S: TStream; var Ch: UCS4): Boolean; overload;
+function UTF16GetNextChar(const S: TUTF16String; var StrPos: Integer): UCS4;
+function UTF16GetNextCharFromStream(S: TStream; var Ch: UCS4): Boolean;
 
 // UTF16GetPreviousChar = read previous UTF16 sequence starting at StrPos-1
 // if UNICODE_SILENT_FAILURE is defined, invalid sequences will be replaced by ReplacementCharacter
 // otherwise StrPos is set to -1 on return to flag an error (invalid UTF16 sequence)
 // StrPos will be decremented by the number of chars that were read
-function UTF16GetPreviousChar(const S: TUTF16String; var StrPos: Integer): UCS4; overload;
+function UTF16GetPreviousChar(const S: TUTF16String; var StrPos: Integer): UCS4;
 
 // UTF16SkipChars = skip NbSeq UTF16 sequences starting from StrPos
 // returns False if String is too small
 // if UNICODE_SILENT_FAILURE is not defined StrPos is set to -1 on error (invalid UTF16 sequence)
 // StrPos will be incremented by the number of chars that were skipped
 // On return, NbChar contains the number of UTF16 sequences that were skipped
-function UTF16SkipChars(const S: TUTF16String; var StrPos: Integer; var NbSeq: Integer): Boolean; overload;
-function UTF16SkipChars(S: TStream; var NbSeq: Integer): Boolean; overload;
+function UTF16SkipChars(const S: TUTF16String; var StrPos: Integer; var NbSeq: Integer): Boolean;
+function UTF16SkipCharsFromStream(S: TStream; var NbSeq: Integer): Boolean;
 
 // UTF16SetNextChar = append an UTF16 sequence at StrPos
 // returns False on error:
@@ -128,20 +128,20 @@ function UTF16SkipChars(S: TStream; var NbSeq: Integer): Boolean; overload;
 //        - if UNICODE_SILENT_FAILURE is not defined, StrPos is set to -1
 //    - StrPos > -1 flags string being too small, callee did nothing and caller is responsible for allocating space
 // StrPos will be incremented by the number of chars that were written
-function UTF16SetNextChar(var S: TUTF16String; var StrPos: Integer; Ch: UCS4): Boolean; overload;
-function UTF16SetNextChar(S: TStream; Ch: UCS4): Boolean; overload;
+function UTF16SetNextChar(var S: TUTF16String; var StrPos: Integer; Ch: UCS4): Boolean;
+function UTF16SetNextCharToStream(S: TStream; Ch: UCS4): Boolean;
 
 // AnsiGetNextChar = read next character at StrPos
 // StrPos will be incremented by the number of chars that were read (1)
-function AnsiGetNextChar(const S: AnsiString; var StrPos: Integer): UCS4; overload;
-function AnsiGetNextChar(S: TStream; var Ch: UCS4): Boolean; overload;
+function AnsiGetNextChar(const S: AnsiString; var StrPos: Integer): UCS4;
+function AnsiGetNextCharFromStream(S: TStream; var Ch: UCS4): Boolean;
 
 // AnsiSkipChars = skip NbSeq characters starting from StrPos
 // returns False if String is too small
 // StrPos will be incremented by the number of chars that were skipped
 // On return, NbChar contains the number of UTF16 sequences that were skipped
-function AnsiSkipChars(const S: AnsiString; var StrPos: Integer; var NbSeq: Integer): Boolean; overload;
-function AnsiSkipChars(S: TStream; var NbSeq: Integer): Boolean; overload;
+function AnsiSkipChars(const S: AnsiString; var StrPos: Integer; var NbSeq: Integer): Boolean;
+function AnsiSkipCharsFromStream(S: TStream; var NbSeq: Integer): Boolean;
 
 // AnsiSetNextChar = append a character at StrPos
 // returns False on error:
@@ -150,8 +150,8 @@ function AnsiSkipChars(S: TStream; var NbSeq: Integer): Boolean; overload;
 //        - if UNICODE_SILENT_FAILURE is not defined, StrPos is set to -1
 //    - StrPos > -1 flags string being too small, callee did nothing and caller is responsible for allocating space
 // StrPos will be incremented by the number of chars that were written (1)
-function AnsiSetNextChar(var S: AnsiString; var StrPos: Integer; Ch: UCS4): Boolean; overload;
-function AnsiSetNextChar(S: TStream; Ch: UCS4): Boolean; overload;
+function AnsiSetNextChar(var S: AnsiString; var StrPos: Integer; Ch: UCS4): Boolean;
+function AnsiSetNextCharToStream(S: TStream; Ch: UCS4): Boolean;
 
 // StringGetNextChar = read next character/sequence at StrPos
 // if UNICODE_SILENT_FAILURE is defined, invalid sequences will be replaced by ReplacementCharacter
@@ -556,7 +556,7 @@ begin
   end;
 end;
 
-function UTF8GetNextChar(S: TStream; var Ch: UCS4): Boolean;
+function UTF8GetNextCharFromStream(S: TStream; var Ch: UCS4): Boolean;
 var
   B: Byte;
 begin
@@ -827,7 +827,7 @@ begin
   NbSeq := Index;
 end;
 
-function UTF8SkipChars(S: TStream; var NbSeq: Integer): Boolean;
+function UTF8SkipCharsFromStream(S: TStream; var NbSeq: Integer): Boolean;
 var
   B: Byte;
   Index: Integer;
@@ -1057,7 +1057,7 @@ begin
   end;
 end;
 
-function UTF8SetNextChar(S: TStream; Ch: UCS4): Boolean;
+function UTF8SetNextCharToStream(S: TStream; Ch: UCS4): Boolean;
 begin
   if Ch <= $7F then
     // 7 bits to store
@@ -1155,7 +1155,7 @@ begin
   end;
 end;
 
-function UTF16GetNextChar(S: TStream; var Ch: UCS4): Boolean;
+function UTF16GetNextCharFromStream(S: TStream; var Ch: UCS4): Boolean;
 var
   W: Word;
 begin
@@ -1319,7 +1319,7 @@ begin
   NbSeq := Index;
 end;
 
-function UTF16SkipChars(S: TStream; var NbSeq: Integer): Boolean;
+function UTF16SkipCharsFromStream(S: TStream; var NbSeq: Integer): Boolean;
 var
   Index: Integer;
   W: Word;
@@ -1405,7 +1405,7 @@ begin
   end;
 end;
 
-function UTF16SetNextChar(S: TStream; Ch: UCS4): Boolean;
+function UTF16SetNextCharToStream(S: TStream; Ch: UCS4): Boolean;
 begin
   if Ch <= MaximumUCS2 then
     // 16 bits to store in place
@@ -1453,7 +1453,7 @@ begin
   end;
 end;
 
-function AnsiGetNextChar(S: TStream; var Ch: UCS4): Boolean;
+function AnsiGetNextCharFromStream(S: TStream; var Ch: UCS4): Boolean;
 var
   B: Byte;
   TmpPos: Integer;
@@ -1502,7 +1502,7 @@ begin
   end;
 end;
 
-function AnsiSkipChars(S: TStream; var NbSeq: Integer): Boolean;
+function AnsiSkipCharsFromStream(S: TStream; var NbSeq: Integer): Boolean;
 var
   Index: Integer;
   B: Byte;
@@ -1568,7 +1568,7 @@ begin
   end;
 end;
 
-function AnsiSetNextChar(S: TStream; Ch: UCS4): Boolean;
+function AnsiSetNextCharToStream(S: TStream; Ch: UCS4): Boolean;
 var
   TmpPos: Integer;
   UTF16Buffer: TUTF16String;

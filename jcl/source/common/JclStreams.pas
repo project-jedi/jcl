@@ -27,7 +27,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                     $ }
+{ Last modified: $Date::                                                                    $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -2811,8 +2811,8 @@ constructor TJclAnsiStream.Create(AStream: TStream; AOwnsStream: Boolean);
 begin
   inherited Create(AStream, AOwnsStream);
   // not adding the @ character causes an internal error in Delphi 5 and C++Builder 5
-  FCharacterReader := {$IFNDEF CLR}@{$ENDIF ~CLR}AnsiGetNextChar;
-  FCharacterWriter := {$IFNDEF CLR}@{$ENDIF ~CLR}AnsiSetNextChar;
+  FCharacterReader := {$IFNDEF CLR}@{$ENDIF ~CLR}AnsiGetNextCharFromStream;
+  FCharacterWriter := {$IFNDEF CLR}@{$ENDIF ~CLR}AnsiSetNextCharToStream;
   SetLength(FBOM, 0);
 end;
 
@@ -2823,8 +2823,8 @@ var
   I: Integer;
 begin
   inherited Create(AStream, AOwnsStream);
-  FCharacterReader := {$IFNDEF CLR}@{$ENDIF ~CLR}UTF8GetNextChar;
-  FCharacterWriter := {$IFNDEF CLR}@{$ENDIF ~CLR}UTF8SetNextChar;
+  FCharacterReader := {$IFNDEF CLR}@{$ENDIF ~CLR}UTF8GetNextCharFromStream;
+  FCharacterWriter := {$IFNDEF CLR}@{$ENDIF ~CLR}UTF8SetNextCharToStream;
   SetLength(FBOM, Length(BOM_UTF8));
   for I := Low(BOM_UTF8) to High(BOM_UTF8) do
     FBOM[I - Low(BOM_UTF8)] := BOM_UTF8[I];
@@ -2837,8 +2837,8 @@ var
   I: Integer;
 begin
   inherited Create(AStream, AOwnsStream);
-  FCharacterReader := {$IFNDEF CLR}@{$ENDIF ~CLR}UTF16GetNextChar;
-  FCharacterWriter := {$IFNDEF CLR}@{$ENDIF ~CLR}UTF16SetNextChar;
+  FCharacterReader := {$IFNDEF CLR}@{$ENDIF ~CLR}UTF16GetNextCharFromStream;
+  FCharacterWriter := {$IFNDEF CLR}@{$ENDIF ~CLR}UTF16SetNextCharToStream;
   SetLength(FBOM, Length(BOM_UTF16_LSB));
   for I := Low(BOM_UTF16_LSB) to High(BOM_UTF16_LSB) do
     FBOM[I - Low(BOM_UTF16_LSB)] := BOM_UTF16_LSB[I];
