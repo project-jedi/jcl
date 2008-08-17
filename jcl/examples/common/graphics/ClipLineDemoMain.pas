@@ -5,7 +5,7 @@ unit ClipLineDemoMain;
 interface
 
 uses
-  SysUtils, Types, Classes,
+  SysUtils, Classes,
 {$IFDEF MSWINDOWS}
   Windows,
 {$ENDIF}

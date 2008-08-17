@@ -3,7 +3,7 @@ unit UProperties;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, JclCompression, ActnList;
 
 type
@@ -166,18 +166,18 @@ var
 begin
   AFormSettings := TFormArchiveSettings.Create(Application);
   try
-    Supports(Archive,IJclArchiveNumberOfThreads,AFormSettings.FNumberOfThreads);
-    Supports(Archive,IJclArchiveCompressionLevel,AFormSettings.FCompressionLevel);
-    Supports(Archive,IJclArchiveCompressionMethod,AFormSettings.FCompressionMethod);
-    Supports(Archive,IJclArchiveEncryptionMethod,AFormSettings.FEncryptionMethod);
-    Supports(Archive,IJclArchiveDictionarySize,AFormSettings.FDictionarySize);
-    Supports(Archive,IJclArchiveNumberOfPasses,AFormSettings.FNumberOfPasses);
-    Supports(Archive,IJclArchiveRemoveSfxBlock,AFormSettings.FRemoveSfxBlock);
-    Supports(Archive,IJclArchiveCompressHeader,AFormSettings.FCompressHeader);
-    Supports(Archive,IJclArchiveEncryptHeader,AFormSettings.FEncryptHeader);
-    Supports(Archive,IJclArchiveSaveCreationDateTime,AFormSettings.FSaveCreationDateTime);
-    Supports(Archive,IJclArchiveSaveLastAccessDateTime,AFormSettings.FSaveLastAccessDateTime);
-    Supports(Archive,IJclArchiveSaveLastWriteDateTime,AFormSettings.FSaveLastWriteDateTime);
+    Supports(IUnknown(Archive),IJclArchiveNumberOfThreads,AFormSettings.FNumberOfThreads);
+    Supports(IUnknown(Archive),IJclArchiveCompressionLevel,AFormSettings.FCompressionLevel);
+    Supports(IUnknown(Archive),IJclArchiveCompressionMethod,AFormSettings.FCompressionMethod);
+    Supports(IUnknown(Archive),IJclArchiveEncryptionMethod,AFormSettings.FEncryptionMethod);
+    Supports(IUnknown(Archive),IJclArchiveDictionarySize,AFormSettings.FDictionarySize);
+    Supports(IUnknown(Archive),IJclArchiveNumberOfPasses,AFormSettings.FNumberOfPasses);
+    Supports(IUnknown(Archive),IJclArchiveRemoveSfxBlock,AFormSettings.FRemoveSfxBlock);
+    Supports(IUnknown(Archive),IJclArchiveCompressHeader,AFormSettings.FCompressHeader);
+    Supports(IUnknown(Archive),IJclArchiveEncryptHeader,AFormSettings.FEncryptHeader);
+    Supports(IUnknown(Archive),IJclArchiveSaveCreationDateTime,AFormSettings.FSaveCreationDateTime);
+    Supports(IUnknown(Archive),IJclArchiveSaveLastAccessDateTime,AFormSettings.FSaveLastAccessDateTime);
+    Supports(IUnknown(Archive),IJclArchiveSaveLastWriteDateTime,AFormSettings.FSaveLastWriteDateTime);
     AFormSettings.FArchive := Archive;
 
     if Assigned(AFormSettings.FCompressionLevel) then

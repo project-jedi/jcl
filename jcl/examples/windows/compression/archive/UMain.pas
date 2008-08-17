@@ -75,7 +75,7 @@ type
     procedure ActionPropertiesExecute(Sender: TObject);
   private
     FArchive: TJclCompressionArchive;
-    FArchiveReference: IInterface;
+    FArchiveReference: IUnknown;
     procedure CloseArchive;
     procedure ArchiveProgress(Sender: TObject; const Value, MaxValue: Int64);
   public

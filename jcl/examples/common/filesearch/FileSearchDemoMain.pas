@@ -9,7 +9,7 @@ interface
 
 uses
   SysUtils, Classes,
-  Types, Graphics, StdCtrls, Controls, ExtCtrls, ComCtrls, Forms, Dialogs,
+  Graphics, StdCtrls, Controls, ExtCtrls, ComCtrls, Forms, Dialogs,
   JclStrings, JclFileUtils;
 
 type

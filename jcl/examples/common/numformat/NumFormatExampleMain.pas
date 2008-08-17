@@ -82,7 +82,9 @@ var
   S, Mantissa: string;
   Exponent: Integer;
   X: Extended;
+  {$IFDEF COMPILER6_UP}
   C: TPoint;
+  {$ENDIF COMPILER6_UP}
 begin
   if not Assigned(FNumFormat) then
     Exit;
@@ -101,9 +103,11 @@ begin
         S := Format('%s %s %d^%d', [Mantissa, FNumFormat.Multiplier, Base, Exponent]);
       Output.Lines.Add(Format('Base %2d: %s', [Base, S]));
     end;
+    {$IFDEF COMPILER6_UP}
     C.X := 0;
     C.Y := 0;
     Output.CaretPos := C;
+    {$ENDIF COMPILER6_UP}
   finally
     Output.Lines.EndUpdate;
   end;

@@ -2810,8 +2810,9 @@ end;
 constructor TJclAnsiStream.Create(AStream: TStream; AOwnsStream: Boolean);
 begin
   inherited Create(AStream, AOwnsStream);
-  FCharacterReader := AnsiGetNextChar;
-  FCharacterWriter := AnsiSetNextChar;
+  // not adding the @ character causes an internal error in Delphi 5 and C++Builder 5
+  FCharacterReader := {$IFNDEF CLR}@{$ENDIF ~CLR}AnsiGetNextChar;
+  FCharacterWriter := {$IFNDEF CLR}@{$ENDIF ~CLR}AnsiSetNextChar;
   SetLength(FBOM, 0);
 end;
 
@@ -2822,8 +2823,8 @@ var
   I: Integer;
 begin
   inherited Create(AStream, AOwnsStream);
-  FCharacterReader := UTF8GetNextChar;
-  FCharacterWriter := UTF8SetNextChar;
+  FCharacterReader := {$IFNDEF CLR}@{$ENDIF ~CLR}UTF8GetNextChar;
+  FCharacterWriter := {$IFNDEF CLR}@{$ENDIF ~CLR}UTF8SetNextChar;
   SetLength(FBOM, Length(BOM_UTF8));
   for I := Low(BOM_UTF8) to High(BOM_UTF8) do
     FBOM[I - Low(BOM_UTF8)] := BOM_UTF8[I];
@@ -2836,8 +2837,8 @@ var
   I: Integer;
 begin
   inherited Create(AStream, AOwnsStream);
-  FCharacterReader := UTF16GetNextChar;
-  FCharacterWriter := UTF16SetNextChar;
+  FCharacterReader := {$IFNDEF CLR}@{$ENDIF ~CLR}UTF16GetNextChar;
+  FCharacterWriter := {$IFNDEF CLR}@{$ENDIF ~CLR}UTF16SetNextChar;
   SetLength(FBOM, Length(BOM_UTF16_LSB));
   for I := Low(BOM_UTF16_LSB) to High(BOM_UTF16_LSB) do
     FBOM[I - Low(BOM_UTF16_LSB)] := BOM_UTF16_LSB[I];
