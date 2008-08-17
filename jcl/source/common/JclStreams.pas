@@ -27,7 +27,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                      $ }
+{ Last modified: $Date::                                                                     $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -2359,7 +2359,7 @@ begin
         RemainingOffset := RemainingOffset + FVolumePosition;
         Result := Result - FVolumePosition;
         FPosition := Result;
-        FVolumePosition := FVolume.Seek(0, soBeginning);
+        FVolumePosition := StreamSeek(FVolume, 0, soBeginning);
         // load previous volume
         InternalLoadVolume(FVolumeIndex - 1);
         if not Assigned(FVolume) then
