@@ -37,7 +37,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -358,11 +358,11 @@ function EnumFolderFlagsToCardinal(Flags: TEnumFolderFlags): Cardinal;
 begin
   Result := 0;
   if efFolders in Flags then
-    Result := Result or ord(SHCONTF_FOLDERS);
+    Result := Result or SHCONTF_FOLDERS;
   if efNonFolders in Flags then
-    Result := Result or ord(SHCONTF_NONFOLDERS);
+    Result := Result or SHCONTF_NONFOLDERS;
   if efIncludeHidden in Flags then
-    Result := Result or ord(SHCONTF_INCLUDEHIDDEN);
+    Result := Result or SHCONTF_INCLUDEHIDDEN;
 end;
 
 procedure ClearEnumFolderRec(var F: TEnumFolderRec; const Free, Release: Boolean);
