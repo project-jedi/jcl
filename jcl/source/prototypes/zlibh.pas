@@ -244,11 +244,11 @@ type
       avail_in: uInt;        // number of bytes available at next_in 
       total_in: uLong;       // total nb of input bytes read so far 
 
-      next_out: PBytef;       // next output byte should be put there 
+      next_out: PBytef;      // next output byte should be put there 
       avail_out:uInt;        // remaining free space at next_out
       total_out:uLong;       // total nb of bytes output so far
 
-      msg:     PChar;        // last error message, NULL if no error
+      msg:     PAnsiChar;    // last error message, NULL if no error
       state:PInternalState;  // not visible by applications 
 
       zalloc:   TFNAllocFunc;// used to allocate the internal state 
@@ -381,7 +381,7 @@ const
                         {* basic functions *}
 
 {$EXTERNALSYM zlibVersion}
-function zlibVersion(): PChar;
+function zlibVersion(): PAnsiChar;
 {$IFDEF ZEXPORT_CDECL} cdecl; {$ENDIF}
 {* The application can compare zlibVersion and ZLIB_VERSION for consistency.
    If the first character differs, the library code actually used is
@@ -1183,7 +1183,7 @@ function uncompress(dest: PBytef;
 type
   gzFile = voidp;
 
-function gzopen(path: PChar; mode: PChar):gzFile;
+function gzopen(path: PAnsiChar; mode: PAnsiChar):gzFile;
 {*
      Opens a gzip (.gz) file for reading or writing. The mode parameter
    is as in fopen ("rb" or "wb") but can also include a compression level
@@ -1200,7 +1200,7 @@ function gzopen(path: PChar; mode: PChar):gzFile;
    can be checked to distinguish the two cases (if errno is zero, the
    zlib error is Z_MEM_ERROR).  *}
 
-function gzdopen(fd: Integer; mode: PChar):gzFile;
+function gzdopen(fd: Integer; mode: PAnsiChar):gzFile;
 {*
      gzdopen() associates a gzFile with the file descriptor fd.  File
    descriptors are obtained from calls like open, dup, creat, pipe or
@@ -1238,7 +1238,7 @@ function gzwrite(file_:gzFile;
    (0 in case of error).
 *}
 
-// function gzprintf(file_:gzFile; format: PChar, ...): Integer;
+// function gzprintf(file_:gzFile; format: PAnsiChar, ...): Integer;
 // No ellipsis in Delphi
 {*
      Converts, formats, and writes the args to the compressed file under
@@ -1252,14 +1252,14 @@ function gzwrite(file_:gzFile;
    because the secure snprintf() or vsnprintf() functions were not available.
 *}
 
-function gzputs(file_:gzFile; s: PChar): Integer;
+function gzputs(file_:gzFile; s: PAnsiChar): Integer;
 (*
       Writes the given null-terminated string to the compressed file, excluding
    the terminating null character.
       gzputs returns the number of characters written, or -1 in case of error.
 *}
 
-function gzgets(file_:gzFile; buf: PChar; len: Integer): PChar;
+function gzgets(file_:gzFile; buf: PAnsiChar; len: Integer): PAnsiChar;
 {*
       Reads bytes from the compressed file until len-1 characters are read, or
    a newline character is read and transferred to buf, or an end-of-file
@@ -1348,7 +1348,7 @@ function gzclose(file_:gzFile): Integer;
    error number (see function gzerror below).
 *}
 
-function gzerror(file_:gzFile; var errnum: Integer): PChar;
+function gzerror(file_:gzFile; var errnum: Integer): PAnsiChar;
 {*
      Returns the error message for the last error which occurred on the
    given compressed file. errnum is set to zlib error number. If an
@@ -1416,13 +1416,13 @@ function crc32 (crc:uLong; {const} buf: PBytef; len:uInt):uLong;
 {$EXTERNALSYM deflateInit_}
 function deflateInit_(var strm:z_stream;
                       level: Integer;
-                      {const} version: PChar;
+                      {const} version: PAnsiChar;
                       stream_size: Integer): Integer;
 {$IFDEF ZEXPORT_CDECL} cdecl; {$ENDIF}
 
 {$EXTERNALSYM inflateInit_}
 function inflateInit_(var strm:z_stream;
-                      {const} version: PChar;
+                      {const} version: PAnsiChar;
                       stream_size: Integer): Integer;
 {$IFDEF ZEXPORT_CDECL} cdecl; {$ENDIF}
 
@@ -1433,14 +1433,14 @@ function deflateInit2_(var strm:z_stream;
                        windowBits: Integer;
                        memLevel: Integer;
                        strategy: Integer;
-                       {const} version: PChar;
+                       {const} version: PAnsiChar;
                        stream_size: Integer): Integer;
 {$IFDEF ZEXPORT_CDECL} cdecl; {$ENDIF}
 
 {$EXTERNALSYM inflateInit2_}
 function inflateInit2_(var strm:z_stream;
                        windowBits: Integer;
-                       {const} version: PChar;
+                       {const} version: PAnsiChar;
                        stream_size: Integer): Integer;
 {$IFDEF ZEXPORT_CDECL} cdecl; {$ENDIF}
 
@@ -1448,12 +1448,12 @@ function inflateInit2_(var strm:z_stream;
 function inflateBackInit_(var strm:z_stream;
                           windowBits: Integer;
                           window: PByte;
-                          {const} version: PChar;
+                          {const} version: PAnsiChar;
                           stream_size: Integer): Integer;
 {$IFDEF ZEXPORT_CDECL} cdecl; {$ENDIF}
 
 {$EXTERNALSYM zError}
-function zError(err: Integer): PChar;
+function zError(err: Integer): PAnsiChar;
 {$IFDEF ZEXPORT_CDECL} cdecl; {$ENDIF}
 
 {$EXTERNALSYM inflateSyncPoint}
@@ -1519,12 +1519,12 @@ begin
   {$ENDIF UNIX}
 end;
 
-function GetFunctionAddress(FunctionName: string): Pointer;
+function GetFunctionAddress(FunctionName: AnsiString): Pointer;
 begin
   {$IFDEF UNIX}
   Result := ZlibModuleHandle;
   if Result <> nil then
-    Result := dlsym(Result, PChar(FunctionName));
+    Result := dlsym(Result, PAnsiChar(FunctionName));
   {$ENDIF UNIX}
 end;
 
@@ -1578,7 +1578,7 @@ function inflateReset;         external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
 {$IFDEF ZLIB_DLL}
 var
   _inflateBackInit_: function (var strm:z_stream; windowBits: Integer;
-    window: PByte; {const} version: PChar; stream_size: Integer): Integer = nil;
+    window: PByte; {const} version: PAnsiChar; stream_size: Integer): Integer = nil;
 
 function inflateBackInit_;      // wrapped by inflateBackInit()
 begin
@@ -1652,20 +1652,20 @@ function _memset(dest: Pointer; val: Integer; count: size_t): Pointer; cdecl; ex
 function _malloc(size: size_t): Pointer; cdecl; external szMSVCRT name 'malloc';
 procedure _free(pBlock: Pointer); cdecl; external szMSVCRT name 'free';
 function ___errno(): Integer; cdecl; external szMSVCRT name '_errno';
-function _fopen(filename: PChar; mode: PChar): Pointer; cdecl; external szMSVCRT name 'fopen';
-function _fdopen(handle: Integer; mode: PChar): Pointer; cdecl; external szMSVCRT name '_fdopen';
-function _fprintf(stream: Pointer; format: PChar {, ...}): Integer; cdecl; external szMSVCRT name 'fprintf';
+function _fopen(filename: PAnsiChar; mode: PAnsiChar): Pointer; cdecl; external szMSVCRT name 'fopen';
+function _fdopen(handle: Integer; mode: PAnsiChar): Pointer; cdecl; external szMSVCRT name '_fdopen';
+function _fprintf(stream: Pointer; format: PAnsiChar {, ...}): Integer; cdecl; external szMSVCRT name 'fprintf';
 function _ftell(stream: Pointer): Longint; cdecl; external szMSVCRT name 'ftell';
-function _sprintf(buffer: PChar; format: PChar {, ...}): Integer; cdecl; external szMSVCRT name 'sprintf';
+function _sprintf(buffer: PAnsiChar; format: PAnsiChar {, ...}): Integer; cdecl; external szMSVCRT name 'sprintf';
 function _fwrite(buffer: Pointer; size: size_t; count: size_t; stream: Pointer): size_t; cdecl; external szMSVCRT name 'fwrite';
 function _fread(buffer: Pointer; size: size_t; count: size_t; stream: Pointer): size_t; cdecl; external szMSVCRT name 'fread';
 function _fclose(stream: Pointer): Integer; cdecl; external szMSVCRT name 'fclose';
-function _vsnprintf(buffer: PChar; count: size_t; format: PChar; argptr:array of const): Integer; cdecl; external szMSVCRT name '_vsnprintf';
+function _vsnprintf(buffer: PAnsiChar; count: size_t; format: PAnsiChar; argptr:array of const): Integer; cdecl; external szMSVCRT name '_vsnprintf';
 function _fflush(stream: Pointer): Integer; cdecl; external szMSVCRT name 'fflush';
 function _fseek(stream: Pointer; offset: Longint; origin: Integer): Integer; cdecl; external szMSVCRT name 'fseek';
 function _fputc(c: Integer; stream: Pointer): Integer; cdecl; external szMSVCRT name 'fputc';
-function _strcat(strDestination: PChar; strSource: PChar): PChar; cdecl; external szMSVCRT name 'strcat';
-function _strlen(str: PChar): size_t; cdecl; external szMSVCRT name 'strlen';
+function _strcat(strDestination: PAnsiChar; strSource: PAnsiChar): PAnsiChar; cdecl; external szMSVCRT name 'strcat';
+function _strlen(str: PAnsiChar): size_t; cdecl; external szMSVCRT name 'strlen';
 procedure _clearerr(stream: Pointer); cdecl; external szMSVCRT name 'clearerr';
 
 {$ENDIF LINK_TO_MSVCRT}

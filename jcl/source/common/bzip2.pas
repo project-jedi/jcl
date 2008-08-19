@@ -231,7 +231,7 @@ function BZ2_bzBuffToBuffDecompress(dest: PByte; destLen: PCardinal; source: PBy
 --*/
 }
 
-function BZ2_bzlibVersion: PChar;
+function BZ2_bzlibVersion: PAnsiChar;
   {$IFDEF BZIP2_EXPORT_STDCALL}stdcall;{$ENDIF BZIP2_EXPORT_STDCALL}
   {$IFDEF BZIP2_EXPORT_CDECL}cdecl;{$ENDIF BZIP2_EXPORT_CDECL}
 
@@ -284,7 +284,7 @@ type
     source: PByte; sourceLen: Cardinal; small, verbosity: Integer): Integer;
     {$IFDEF BZIP2_EXPORT_STDCALL}stdcall;{$ENDIF BZIP2_EXPORT_STDCALL}
     {$IFDEF BZIP2_EXPORT_CDECL}cdecl;{$ENDIF BZIP2_EXPORT_CDECL}
-  BZ2_bzlibVersion_func = function: PChar;
+  BZ2_bzlibVersion_func = function: PAnsiChar;
     {$IFDEF BZIP2_EXPORT_STDCALL}stdcall;{$ENDIF BZIP2_EXPORT_STDCALL}
     {$IFDEF BZIP2_EXPORT_CDECL}cdecl;{$ENDIF BZIP2_EXPORT_CDECL}
 
@@ -376,7 +376,7 @@ function BZ2_bzlibVersion; external;
 // an external must be declared for this function in order to make the compiler considering
 // the corresponding PUBDEF in bzlib.obj
 // source: CodeGear QA team
-function _BZ2_indexIntoF: PChar;
+function _BZ2_indexIntoF: Pointer;
   {$IFDEF BZIP2_EXPORT_STDCALL}stdcall;{$ENDIF BZIP2_EXPORT_STDCALL}
   {$IFDEF BZIP2_EXPORT_CDECL}cdecl;{$ENDIF BZIP2_EXPORT_CDECL} external;
 
@@ -420,13 +420,13 @@ var
 
 function LoadBZip2: Boolean;
 {$IFDEF BZIP2_LINKONREQUEST}
-  function GetSymbol(SymbolName: PChar): Pointer;
+  function GetSymbol(SymbolName: PAnsiChar): Pointer;
   begin
     {$IFDEF MSWINDOWS}
-    Result := GetProcAddress(BZip2Lib, PChar(SymbolName));
+    Result := GetProcAddress(BZip2Lib, SymbolName);
     {$ENDIF MSWINDOWS}
     {$IFDEF UNIX}
-    Result := dlsym(BZip2Lib, PChar(SymbolName));
+    Result := dlsym(BZip2Lib, SymbolName);
     {$ENDIF UNIX}
   end;
 begin
@@ -439,7 +439,7 @@ begin
     BZip2Lib := SafeLoadLibrary(szBZIP2);
     {$ENDIF MSWINDOWS}
     {$IFDEF UNIX}
-    BZip2Lib := dlopen(PChar(szBZIP2), RTLD_NOW);
+    BZip2Lib := dlopen(PAnsiChar(szBZIP2), RTLD_NOW);
     {$ENDIF UNIX}
   Result := BZip2Lib <> INVALID_MODULEHANDLE_VALUE;
   if Result then
