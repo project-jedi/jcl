@@ -1876,6 +1876,8 @@ begin
         TJclSimpleXMLNamedElems(FNamedElems.Objects[NamedIndex]).FItems.Remove(Elem);
     end;
     FElems.Delete(Index);
+    FreeAndNil(Elem);
+    
   end;
 end;
 
