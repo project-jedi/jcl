@@ -13,7 +13,10 @@ uses
   BZip2,
   ZLibh,
   JclBase,
-  JclUnicode;
+  JclAnsiStrings,
+  JclStrings,
+  JclUnicode,
+  JclStreams;
 
 type
   TDecomposition = record
@@ -57,7 +60,7 @@ const
   //       These are:
   //       - Mn, NSM for non-spacing mark
   //       - Zp, B for paragraph separator
-  CategoriesStrings: array[TCharacterCategory] of string = (
+  CategoriesStrings: array[TCharacterCategory] of AnsiString = (
     // normative categories
     'Lu', // letter, upper case
     'Ll', // letter, lower case
@@ -127,7 +130,7 @@ var
   SpecialCasingFileName,
   CaseFoldingFileName,
   DerivedNormalizationPropsFileName,
-  TargetFileName: string;
+  TargetFileName: TFileName;
   Verbose: Boolean;
   ZLibCompress: Boolean;
   BZipCompress: Boolean;
@@ -184,7 +187,7 @@ end;
 function IsHexDigit(C: Char): Boolean;
 
 begin
-  Result := C in ['0'..'9', 'A'..'Z', 'a'..'z'];
+  Result := CharIsHexDigit(C);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -244,7 +247,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure AddRangeToCategories(Start, Stop: Cardinal; CategoryID: string); overload;
+procedure AddRangeToCategories(Start, Stop: Cardinal; CategoryID: AnsiString); overload;
 
 // Adds a range of code points to the categories structure.
 
@@ -336,7 +339,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure AddToCategories(Code: Cardinal; CategoryID: string); overload;
+procedure AddToCategories(Code: Cardinal; CategoryID: AnsiString); overload;
 
 // Adds a range of code points to the categories structure.
 
@@ -634,12 +637,12 @@ begin
   begin
     Tail := Head;
     // look for next semicolon or string end (or comment identifier)
-    while not (Tail^ in [';', '#', #0]) do
+    while (Tail^ <> ';') and (Tail^ <> '#') and (Tail^ <> #0) do
       Inc(Tail);
     SetString(S, Head, Tail - Head);
     Elements.Add(Trim(S));
     // ignore all characters in a comment 
-    if Tail^ in ['#', #0] then
+    if (Tail^ = '#') or (Tail^ = #0) then
       Break;
     Head := Tail + 1;
   end;
@@ -736,10 +739,10 @@ begin
             EndCode := StrToInt('$' + Line[0]);
 
             // register general category
-            AddRangeToCategories(StartCode, EndCode, Line[2]);
+            AddRangeToCategories(StartCode, EndCode, AnsiString(Line[2]));
 
             // register bidirectional category
-            AddRangeToCategories(StartCode, EndCode, Line[4]);
+            AddRangeToCategories(StartCode, EndCode, AnsiString(Line[4]));
 
             // mark the range as containing assigned code points
             AddRangeToCategories(StartCode, EndCode, ccAssigned);
@@ -761,7 +764,7 @@ begin
               if Line.Count < 3 then
                 Continue;
               // 2) categorize the general character class
-              AddToCategories(StartCode, Line[2]);
+              AddToCategories(StartCode, AnsiString(Line[2]));
 
               if Line.Count < 4 then
                 Continue;
@@ -771,7 +774,7 @@ begin
               if Line.Count < 5 then
                 Continue;
               // 4) categorize the bidirectional character class
-              AddToCategories(StartCode, Line[4]);
+              AddToCategories(StartCode, AnsiString(Line[4]));
 
               if Line.Count < 6 then
                 Continue;
@@ -815,7 +818,7 @@ begin
               begin
                 Head := PChar(Line[8]);
                 Tail := Head;
-                while Tail^ in ['+', '-', '0'..'9'] do
+                while CharIsNumberChar(Tail^) do
                   Inc(Tail);
                 SetString(S, Head, Tail - Head);
                 Nominator := StrToInt(S);
@@ -824,7 +827,7 @@ begin
                 begin
                   Inc(Tail);
                   Head := Tail;
-                  while Tail^ in ['+', '-', '0'..'9'] do
+                  while CharIsNumberChar(Tail^) do
                     Inc(Tail);
                   SetString(S, Head, Tail - Head);
                   Denominator := StrToInt(S);
@@ -1207,18 +1210,17 @@ procedure CreateResourceScript;
 // creates the target file using the collected data
 
 var
-  TextStream, ResourceStream, CompressedStream: TStream;
+  TextStream, ResourceStream, CompressedResourceStream: TStream;
   CurrentLine: string;
 
   //--------------- local functions -------------------------------------------
 
-  procedure WriteTextLine(S: string = '');
+  procedure WriteTextLine(S: AnsiString = '');
 
   // writes the given string as line into the resource script
-
   begin
     S := S + #13#10;
-    TextStream.WriteBuffer(PChar(S)^, Length(S));
+    TextStream.WriteBuffer(PAnsiChar(S)^, Length(S));
   end;
 
   //---------------------------------------------------------------------------
@@ -1232,7 +1234,7 @@ var
     CurrentLine := CurrentLine + Format('%.2x ', [Value]);
     if Length(CurrentLine) = 32 * 3 then
     begin
-      WriteTextLine('  ''' + Trim(CurrentLine) + '''');
+      WriteTextLine(AnsiString('  ''' + Trim(CurrentLine) + ''''));
       CurrentLine := '';
     end;
   end;
@@ -1273,12 +1275,12 @@ var
 
   begin
     if ZLibCompress or BZipCompress then
-      CompressedStream := TMemoryStream.Create;
+      CompressedResourceStream := TMemoryStream.Create;
     if ZLibCompress then
-      ResourceStream := TJclZLibCompressStream.Create(CompressedStream, 9)
+      ResourceStream := TJclZLibCompressStream.Create(CompressedResourceStream, 9)
     else
     if BZipCompress then
-      ResourceStream := TJclBZIP2CompressionStream.Create(CompressedStream, 9)
+      ResourceStream := TJclBZIP2CompressionStream.Create(CompressedResourceStream, 9)
     else
       ResourceStream := TMemoryStream.Create;
   end;
@@ -1295,7 +1297,7 @@ var
     begin
       ResourceStream.Free;
 
-      ResourceStream := CompressedStream;
+      ResourceStream := CompressedResourceStream;
     end;
 
     ResourceStream.Seek(0, soFromBeginning);
@@ -1307,7 +1309,7 @@ var
 
     if Length(CurrentLine) > 0 then
     begin
-      WriteTextLine('  ''' + Trim(CurrentLine) + '''');
+      WriteTextLine(AnsiString('  ''' + Trim(CurrentLine) + ''''));
       CurrentLine := '';
     end;
   end;
@@ -1323,16 +1325,16 @@ begin
   TextStream := TFileStream.Create(TargetFileName, fmCreate);
   try
     // 1) template header
-    WriteTextLine('/' + StringOfChar('*', 100));
+    WriteTextLine(AnsiString('/' + StringOfChar('*', 100)));
     WriteTextLine;
     WriteTextLine;
-    WriteTextLine('  ' + TargetFileName);
+    WriteTextLine(AnsiString('  ' + TargetFileName));
     WriteTextLine;
     WriteTextLine;
     WriteTextLine('  Produced by UDExtract written by Dipl. Ing. Mike Lischke, public@lischke-online.de');
     WriteTextLine;
     WriteTextLine;
-    WriteTextLine(StringOfChar('*', 100) + '/');
+    WriteTextLine(AnsiString(StringOfChar('*', 100) + '/'));
     WriteTextLine;
     WriteTextLine;
 
@@ -1510,7 +1512,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure CheckExtension(var FileName: String; const Ext: String);
+procedure CheckExtension(var FileName: TFileName; const Ext: String);
 
 // Checks whether the given file name string contains an extension. If not then Ext is added to FileName.
 
@@ -1549,7 +1551,7 @@ begin
     if SameText(Copy(S, 1, 3), '/c=') then
     begin
       SpecialCasingFileName := Trim(Copy(S, 4, MaxInt));
-      if SpecialCasingFileName[1] in ['''', '"'] then
+      if (SpecialCasingFileName[1] = '''') or (SpecialCasingFileName[1] = '"') then
       begin
         Run := PChar(SpecialCasingFileName);
         SpecialCasingFileName := Trim(AnsiExtractQuotedStr(Run, SpecialCasingFileName[1]));
@@ -1560,7 +1562,7 @@ begin
     if SameText(Copy(S, 1, 3), '/f=') then
     begin
       CaseFoldingFileName := Trim(Copy(S, 4, MaxInt));
-      if CaseFoldingFileName[1] in ['''', '"'] then
+      if (CaseFoldingFileName[1] = '''') and (CaseFoldingFileName = '"') then
       begin
         Run := PChar(CaseFoldingFileName);
         CaseFoldingFileName := Trim(AnsiExtractQuotedStr(Run, CaseFoldingFileName[1]));
@@ -1571,7 +1573,7 @@ begin
     if SameText(Copy(S, 1, 3), '/d=') then
     begin
       DerivedNormalizationPropsFileName := Trim(Copy(S, 4, MaxInt));
-      if DerivedNormalizationPropsFileName[1] in ['''', '"'] then
+      if (DerivedNormalizationPropsFileName[1] = '''') or (DerivedNormalizationPropsFileName[1] = '"') then
       begin
         Run := PChar(DerivedNormalizationPropsFileName);
         DerivedNormalizationPropsFileName := Trim(AnsiExtractQuotedStr(Run, DerivedNormalizationPropsFileName[1]));

@@ -1,7 +1,7 @@
 echo off
 
 rem compile UDExtract.dpr
-dcc32 UDExtract.dpr -U..\..\jcl\source\windows;..\..\jcl\source\common -I..\..\jcl\source -N0. -E.
+dcc32 UDExtract.dpr -U..\..\jcl\source\windows;..\..\jcl\source\common -I..\..\jcl\source\include -N0. -E.
 
 rem execute UDExtract.dpr no compression
 UDExtract.exe UnicodeData.txt ..\..\jcl\source\common\JclUnicode.rc /c=SpecialCasing.txt /f=CaseFolding.txt /d=DerivedNormalizationProps.txt
