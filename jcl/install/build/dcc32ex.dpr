@@ -418,12 +418,12 @@ begin
           JediLibDirs := JediLibDirs + ';' + Dir + ';' + DcpDir
         else
           JediLibDirs := JediLibDirs + ';' + Dir;
-        JediLibDirs := JediLibDirs + ';' + RootDir + '\source';
+        JediLibDirs := JediLibDirs + ';' + RootDir + '\source;' + RootDir + '\source\include';
         Result.InstalledJcl := True;
       end
       else if FileExists(RootDir + '\source\common\JclBase.pas') then
       begin
-        JediLibDirs := ';' + RootDir + '\source;' + RootDir + '\source\common;' + RootDir + '\source\vcl;' + RootDir + '\source\visclx;' +
+        JediLibDirs := ';' + RootDir + '\source;' + RootDir + '\source\include;' + RootDir + '\source\common;' + RootDir + '\source\vcl;' + RootDir + '\source\visclx;' +
                        RootDir + '\source\windows' + JediLibDirs; // JediLibDirs has leading ';'
         Result.InstalledJcl := True;
       end;
