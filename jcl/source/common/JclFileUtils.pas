@@ -51,7 +51,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -3652,19 +3652,18 @@ end;
 {$ELSE ~CLR}
 {$IFDEF MSWINDOWS}
 var
-  SearchRec: TSearchRec;
+  FileAttributesEx: WIN32_FILE_ATTRIBUTE_DATA;
   OldMode: Cardinal;
   Size: TULargeInteger;
 begin
   Result := -1;
   OldMode := SetErrorMode(SEM_FAILCRITICALERRORS);
   try
-    if FindFirst(FileName, faAnyFile, SearchRec) = 0 then
+    if GetFileAttributesEx(PChar(FileName), GetFileExInfoStandard, @FileAttributesEx) then
     begin
-      Size.LowPart := SearchRec.FindData.nFileSizeLow;
-      Size.HighPart := SearchRec.FindData.nFileSizeHigh;
+      Size.LowPart := FileAttributesEx.nFileSizeLow;
+      Size.HighPart := FileAttributesEx.nFileSizeHigh;
       Result := Size.QuadPart;
-      SysUtils.FindClose(SearchRec);
     end;
   finally
     SetErrorMode(OldMode);
@@ -3892,20 +3891,11 @@ end;
 
 function GetFileAgeCoherence(const FileName: string): Boolean;
 var
-  Handle: THandle;
-  FindData: TWin32FindData;
+  FileAttributesEx: WIN32_FILE_ATTRIBUTE_DATA;
 begin
   Result := False;
-  Handle := FindFirstFile(PChar(FileName), FindData);
-  if Handle <> INVALID_HANDLE_VALUE then
-  begin
-    Windows.FindClose(Handle);
-    {$IFDEF FPC}
-    Result := CompareFileTime(@FindData.ftCreationTime, @FindData.ftLastWriteTime) <= 0;
-    {$ELSE ~FPC}
-    Result := CompareFileTime(FindData.ftCreationTime, FindData.ftLastWriteTime) <= 0;
-    {$ENDIF ~FPC}
-  end;
+  if GetFileAttributesEx(PChar(FileName), GetFileExInfoStandard, @FileAttributesEx) then
+    Result := CompareFileTime(FileAttributesEx.ftCreationTime, FileAttributesEx.ftLastWriteTime) <= 0;
 end;
 
 {$ENDIF Win32API}
@@ -4221,17 +4211,14 @@ end;
 {$ELSE ~CLR}
 {$IFDEF MSWINDOWS}
 var
-  Handle: THandle;
-  FindData: TWin32FindData;
+  FileAttributesEx: WIN32_FILE_ATTRIBUTE_DATA;
   Size: TULargeInteger;
 begin
   Result := 0;
-  Handle := FindFirstFile(PChar(FileName), FindData);
-  if Handle <> INVALID_HANDLE_VALUE then
+  if GetFileAttributesEx(PChar(FileName), GetFileExInfoStandard, @FileAttributesEx) then
   begin
-    Windows.FindClose(Handle);
-    Size.LowPart := FindData.nFileSizeLow;
-    Size.HighPart := FindData.nFileSizeHigh;
+    Size.LowPart := FileAttributesEx.nFileSizeLow;
+    Size.HighPart := FileAttributesEx.nFileSizeHigh;
     Result := Size.QuadPart;
   end
   else

@@ -33,7 +33,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -3295,20 +3295,20 @@ function TJclPeImage.GetFileProperties: TJclPeFileProperties;
 const
   faFile = faReadOnly or faHidden or faSysFile or faArchive;
 var
-  Se: TSearchRec;
-  Res: Integer;
+  FileAttributesEx: WIN32_FILE_ATTRIBUTE_DATA;
+  Size: TULargeInteger;
 begin
   FillChar(Result, SizeOf(Result), #0);
-  Res := FindFirst(FileName, faFile, Se);
-  if Res = 0 then
+  if GetFileAttributesEx(PChar(FileName), GetFileExInfoStandard, @FileAttributesEx) then
   begin
-    Result.Size := Se.Size;
-    Result.CreationTime := FileTimeToLocalDateTime(Se.FindData.ftCreationTime);
-    Result.LastAccessTime := FileTimeToLocalDateTime(Se.FindData.ftLastAccessTime);
-    Result.LastWriteTime := FileTimeToLocalDateTime(Se.FindData.ftLastWriteTime);
-    Result.Attributes := Se.Attr;
+    Size.LowPart := FileAttributesEx.nFileSizeLow;
+    Size.HighPart := FileAttributesEx.nFileSizeHigh;
+    Result.Size := Size.QuadPart;
+    Result.CreationTime := FileTimeToLocalDateTime(FileAttributesEx.ftCreationTime);
+    Result.LastAccessTime := FileTimeToLocalDateTime(FileAttributesEx.ftLastAccessTime);
+    Result.LastWriteTime := FileTimeToLocalDateTime(FileAttributesEx.ftLastWriteTime);
+    Result.Attributes := FileAttributesEx.dwFileAttributes;
   end;
-  FindClose(Se);
 end;
 
 function TJclPeImage.GetHeaderValues(Index: TJclPeHeader): string;
