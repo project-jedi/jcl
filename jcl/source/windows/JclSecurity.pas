@@ -32,7 +32,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -162,9 +162,10 @@ var
   TokenInfo: PTokenGroups;
   HaveToken: Boolean;
   I: Integer;
+const SE_GROUP_USE_FOR_DENY_ONLY = $00000010;
 begin
   Result := not IsWinNT;
-  if Result then  // Win9x/ME
+  if Result then // Win9x/ME
     Exit;
   psidAdmin := nil;
   TokenInfo := nil;
@@ -191,7 +192,7 @@ begin
       if GetTokenInformation(Token, TokenGroups, nil, 0, Count) or
        (GetLastError <> ERROR_INSUFFICIENT_BUFFER) then
          RaiseLastOSError;
-      TokenInfo := PTokenGroups(AllocMem(Count));  
+      TokenInfo := PTokenGroups(AllocMem(Count));
       Win32Check(GetTokenInformation(Token, TokenGroups, TokenInfo, Count, Count));
       {$ENDIF FPC}
       for I := 0 to TokenInfo^.GroupCount - 1 do
@@ -202,7 +203,12 @@ begin
         {$RANGECHECKS ON}
         {$ENDIF RANGECHECKS_ON}
         if Result then
+        begin
+          //consider denied ACE with Administrator SID
+          Result := TokenInfo^.Groups[I].Attributes and SE_GROUP_USE_FOR_DENY_ONLY
+              <> SE_GROUP_USE_FOR_DENY_ONLY;
           Break;
+        end;
       end;
     end;
   finally
