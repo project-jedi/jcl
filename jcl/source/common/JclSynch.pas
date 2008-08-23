@@ -1422,7 +1422,8 @@ var
 begin
   // Caller must Lock
   L := Length(FThreads);
-  Move(FThreads[Index + 1], FThreads[Index], SizeOf(TMrewThreadInfo) * (L - Index - 1));
+  if Index < (L - 1) then
+    Move(FThreads[Index + 1], FThreads[Index], SizeOf(TMrewThreadInfo) * (L - Index - 1));
   SetLength(FThreads, L - 1);
 end;
 {$ENDIF ~CLR}
