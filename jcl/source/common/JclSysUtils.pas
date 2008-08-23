@@ -1335,12 +1335,24 @@ end;
 
 function DynArrayCompareCardinal(Item1, Item2: Pointer): Integer;
 begin
-  Result := PInteger(Item1)^ - PInteger(Item2)^;
+  if PCardinal(Item1)^ < PCardinal(Item2)^ then
+    Result := -1
+  else
+  if PCardinal(Item1)^ > PCardinal(Item2)^ then
+    Result := 1
+  else
+    Result := 0;
 end;
 
 function DynArrayCompareInt64(Item1, Item2: Pointer): Integer;
 begin
-  Result := PInt64(Item1)^ - PInt64(Item2)^;
+  if PInt64(Item1)^ < PInt64(Item2)^ then
+    Result := -1
+  else
+  if PInt64(Item1)^ > PInt64(Item2)^ then
+    Result := 1
+  else
+    Result := 0;
 end;
 
 function DynArrayCompareSingle(Item1, Item2: Pointer): Integer;
