@@ -23,7 +23,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                     $ }
+{ Last modified: $Date::                                                                    $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -2692,20 +2692,10 @@ var
   UnitList: TStrings;
   Compiler: TJclDCC32;
 
-  function CompilationOptions: string;
-  begin
-    if FTarget.RADToolKind = brCppBuilder then
-    begin
-      Result := StringsToStr(Compiler.Options, ' ') + ' ';
-      Result := StringReplace(Result, '$(BCB)', Target.RootDir, [rfReplaceAll]);
-    end
-    else
-      Result := '';
-  end;
 
   function CompileUnits: Boolean;
   begin
-    Result := Compiler.Execute({$IFNDEF KYLIX}CompilationOptions + {$ENDIF}StringsToStr(UnitList, ' '));
+    Result := Compiler.Execute(StringsToStr(UnitList, ' '));
   end;
 
   function CopyFiles(Files: TStrings; const TargetDir: string; Overwrite: Boolean = True): Boolean;
