@@ -30,7 +30,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                       $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -76,12 +76,6 @@ type
   DWORD = LongWord;
   TIntegerSet = set of 0..SizeOf(Integer) * 8 - 1;
   {$ENDIF CLR}
-
-{$IFDEF CLR}
-  UnicodeString = string;
-{$ELSE}
-  UnicodeString = WideString;
-{$ENDIF CLR}
 
 // EJclWin32Error
 {$IFDEF MSWINDOWS}
