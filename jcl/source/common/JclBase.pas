@@ -30,7 +30,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -1457,7 +1457,7 @@ end;
 var
   CpInfo: TCpInfo;
 begin
-  if GetCPInfo(CP_ACP, CpInfo) and (CpInfo.MaxCharSize = 1) then
+  if GetCPInfo(CP_ACP, CpInfo) then
     AnsiReplacementCharacter := Chr(CpInfo.DefaultChar[0])
   else
     raise EJclInternalError.CreateRes(@RsEReplacementChar);
