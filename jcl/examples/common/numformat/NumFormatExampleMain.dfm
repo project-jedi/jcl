@@ -3,8 +3,6 @@ object MainForm: TMainForm
   Top = 223
   Width = 800
   Height = 581
-  VertScrollBar.Range = 576
-  HorzScrollBar.Range = 779
   ActiveControl = ValueEdit
   Caption = 'TJclNumericFormat Example'
   OnCreate = FormCreate
@@ -56,11 +54,11 @@ object MainForm: TMainForm
     Top = 8
     Width = 81
     Height = 23
-    Max = 64
-    Min = 1
+    MaxValue = 64
+    MinValue = 1
     TabOrder = 1
     Value = 9
-    OnChanged = PrecisionEditChanged
+    OnChange = PrecisionEditChange
   end
   object Output: TMemo
     Left = 0
@@ -69,13 +67,9 @@ object MainForm: TMainForm
     Height = 461
     Align = alBottom
     Anchors = [akLeft, akTop, akRight, akBottom]
-    Font.CharSet = fcsLatin2
     Font.Color = clBlack
     Font.Height = 16
     Font.Name = 'Courier'
-    Font.Pitch = fpFixed
-    Font.Style = []
-    Font.Weight = 40
     ParentFont = False
     ScrollBars = ssAutoBoth
     TabOrder = 12
@@ -118,7 +112,7 @@ object MainForm: TMainForm
     Height = 23
     TabOrder = 7
     Value = 3
-    OnChanged = BlockSizeEditChanged
+    OnChange = BlockSizeEditChange
   end
   object cbShowPlusSign: TCheckBox
     Left = 100
@@ -141,11 +135,11 @@ object MainForm: TMainForm
     Top = 64
     Width = 81
     Height = 23
-    Max = 12
-    Min = 1
+    MaxValue = 12
+    MinValue = 1
     TabOrder = 3
     Value = 3
-    OnChanged = ExpDivisionEditChanged
+    OnChange = ExpDivisionEditChange
   end
   object WidthEdit: TSpinEdit
     Left = 380
@@ -154,7 +148,7 @@ object MainForm: TMainForm
     Height = 23
     TabOrder = 4
     Value = 4
-    OnChanged = WidthEditChanged
+    OnChange = WidthEditChange
   end
   object Label6: TLabel
     Left = 340
@@ -206,9 +200,9 @@ object MainForm: TMainForm
     Top = 36
     Width = 81
     Height = 23
-    Max = 64
+    MaxValue = 64
     TabOrder = 2
     Value = 6
-    OnChanged = FractionDigitsEditChanged
+    OnChange = FractionDigitsEditChange
   end
 end

@@ -35,15 +35,15 @@ type
     procedure ValueEditChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure BlockSizeEditChanged(Sender: TObject; NewValue: Integer);
+    procedure BlockSizeEditChange(Sender: TObject; NewValue: Integer);
     procedure BlockSeparatorSelectorChange(Sender: TObject);
-    procedure PrecisionEditChanged(Sender: TObject; NewValue: Integer);
+    procedure PrecisionEditChange(Sender: TObject; NewValue: Integer);
     procedure cbShowPlusSignClick(Sender: TObject);
-    procedure ExpDivisionEditChanged(Sender: TObject; NewValue: Integer);
-    procedure WidthEditChanged(Sender: TObject; NewValue: Integer);
+    procedure ExpDivisionEditChange(Sender: TObject; NewValue: Integer);
+    procedure WidthEditChange(Sender: TObject; NewValue: Integer);
     procedure cbZeroPaddingClick(Sender: TObject);
     procedure MultiplierSelectorChange(Sender: TObject);
-    procedure FractionDigitsEditChanged(Sender: TObject;
+    procedure FractionDigitsEditChange(Sender: TObject;
       NewValue: Integer);
   private
     { Private declarations }
@@ -130,7 +130,7 @@ begin
   EvalBtn.Enabled := True;
 end;
 
-procedure TMainForm.BlockSizeEditChanged(Sender: TObject; NewValue: Integer);
+procedure TMainForm.BlockSizeEditChange(Sender: TObject; NewValue: Integer);
 begin
   if Assigned(FNumFormat) then
   begin
@@ -148,7 +148,7 @@ begin
   end;
 end;
 
-procedure TMainForm.PrecisionEditChanged(Sender: TObject; NewValue: Integer);
+procedure TMainForm.PrecisionEditChange(Sender: TObject; NewValue: Integer);
 begin
   if Assigned(FNumFormat) then
   begin
@@ -166,7 +166,7 @@ begin
   end;
 end;
 
-procedure TMainForm.ExpDivisionEditChanged(Sender: TObject;
+procedure TMainForm.ExpDivisionEditChange(Sender: TObject;
   NewValue: Integer);
 begin
   if Assigned(FNumFormat) then
@@ -176,7 +176,7 @@ begin
   end;
 end;
 
-procedure TMainForm.WidthEditChanged(Sender: TObject; NewValue: Integer);
+procedure TMainForm.WidthEditChange(Sender: TObject; NewValue: Integer);
 begin
   if Assigned(FNumFormat) then
   begin
@@ -206,7 +206,7 @@ begin
   end;
 end;
 
-procedure TMainForm.FractionDigitsEditChanged(Sender: TObject;
+procedure TMainForm.FractionDigitsEditChange(Sender: TObject;
   NewValue: Integer);
 begin
   if Assigned(FNumFormat) then
