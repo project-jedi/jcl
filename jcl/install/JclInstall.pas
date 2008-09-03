@@ -1,4 +1,4 @@
-{**************************************************************************************************}
+﻿{**************************************************************************************************}
 {                                                                                                  }
 { Project JEDI Code Library (JCL) extension                                                        }
 {                                                                                                  }
@@ -2734,7 +2734,15 @@ var
     begin
       FileName := UnitList[I] + '.hpp';
       if FileExists(FileName) then
+      begin
         Result := Result and FileCopy(FileName, TargetDir + FileName, True);
+
+        // Always remove once copied because if they are left in place they
+        // will clutter the source folder and might even prevent compilation
+        // when multiple versions of C++ Builder are installed on the same
+        // computer. The easiest way to see this is when checking HPP files.
+        FileDelete(FileName);        
+      end;
     end;
   end;
 
