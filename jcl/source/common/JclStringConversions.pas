@@ -1,4 +1,4 @@
-{**************************************************************************************************}
+﻿{**************************************************************************************************}
 {                                                                                                  }
 { Project JEDI Code Library (JCL)                                                                  }
 {                                                                                                  }
@@ -1652,7 +1652,7 @@ end;
 
 function UTF8ToWideString(const S: TUTF8String): WideString;
 begin
-  Result := UTF8ToWideString(S);
+  Result := UTF8ToUTF16(S);
 end;
 
 function WideStringToUCS4(const S: WideString): TUCS4Array;
