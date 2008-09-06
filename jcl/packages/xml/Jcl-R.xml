@@ -14,7 +14,6 @@
   <Requires>
     <Package Name="rtl" Targets="allLibSuffix" Condition=""/>
     <Package Name="vcl50" Targets="noLibSuffix" Condition=""/>
-    <Package Name="vcljpg50" Targets="noLibSuffix" Condition=""/>
     <Package Name="Borland.Delphi" Targets="JclDotNet" Condition=""/>
     <Package Name="Borland.VclRtl" Targets="JclDotNet" Condition=""/>
   </Requires>
@@ -100,10 +99,6 @@
     <File Name="..\..\source\windows\sevenzip.pas" Targets="WinDev" Formname="" Condition=""/>
     <File Name="..\..\source\windows\Snmp.pas" Targets="WinDev" Formname="" Condition=""/>
     <File Name="..\..\source\windows\zlibh.pas" Targets="WinDev" Formname="" Condition=""/>
-    <File Name="..\..\source\vcl\JclGraphics.pas" Targets="noLibSuffix" Formname="" Condition=""/>
-    <File Name="..\..\source\vcl\JclGraphUtils.pas" Targets="noLibSuffix" Formname="" Condition=""/>
-    <File Name="..\..\source\vcl\JclFont.pas" Targets="noLibSuffix" Formname="" Condition=""/>
-    <File Name="..\..\source\vcl\JclPrint.pas" Targets="noLibSuffix" Formname="" Condition=""/>
     <File Name="..\..\source\unix\zlibh.pas" Targets="Kylix" Formname="" Condition=""/>
   </Contains>
 </Package>

@@ -47,7 +47,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -4316,8 +4316,8 @@ begin
   {$IFDEF KYLIX}
   Result := False;
   {$ELSE ~KYLIX}
-  Result := (RadToolKind = brBorlandDevStudio) or (VersionNumber >= 6) and
-    (FileExists(LibFolderName + VclDcp) or FileExists(ObjFolderName + VclDcp));
+  Result := ((RadToolKind <> brBorlandDevStudio) and (VersionNumber = 5)) or
+    FileExists(LibFolderName + VclDcp) or FileExists(ObjFolderName + VclDcp);
   {$ENDIF ~KYLIX}
 end;
 

@@ -1,0 +1,5 @@
+[Directories]
+UnitOutputDir=..\..\lib\c5
+SearchPath=..\..\source\include
+Conditionals=BCB
+

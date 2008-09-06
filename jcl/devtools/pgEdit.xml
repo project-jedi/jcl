@@ -1,7 +1,22 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Configuration>
   <!-- These are the values stored by jaxStore -->
-  <pgEdit/>
+  <pgEdit>
+    <FormVersion>0</FormVersion>
+    <ShowCmd>1</ShowCmd>
+    <Flags>0</Flags>
+    <PixelsPerInch>96</PixelsPerInch>
+    <MinMaxPos_1400x1050_>-1,-1,-1,-1</MinMaxPos_1400x1050_>
+    <MinMaxPos>-1,-1,-1,-1</MinMaxPos>
+    <NormPos_1400x1050_>288,207,1103,834</NormPos_1400x1050_>
+    <NormPos>288,207,1103,834</NormPos>
+    <pnlList_Width>137</pnlList_Width>
+    <jsgDependencies_Height>165</jsgDependencies_Height>
+    <pnlEdit_Width>668</pnlEdit_Width>
+    <jsgFiles_Height>196</jsgFiles_Height>
+    <odlAddFiles_InitialDir>..\..\run</odlAddFiles_InitialDir>
+    <cmbModel_ItemIndex>0</cmbModel_ItemIndex>
+  </pgEdit>
   <!--
     The nodes below are read by the generation process.
     Packages are generated according to a model. The models are defined
@@ -89,7 +104,7 @@
         <alias name="allLibSuffix" value="c6,d6,d7,d8,d9,d10,k3,cs1,d11"/>
         <alias name="noLibSuffix" value="c5,d5"/>
         <alias name="Clx" value="c6,d6,d7,k3"/>
-        <alias name="Vcl" value="c6,d6,d7,d9,d10,d11"/>
+        <alias name="Vcl" value="c5,d5,c6,d6,d7,d9,d10,d11"/>
         <alias name="Bds" value="cs1,d8,d9,d10,d11"/>
         <alias name="JclDotNet" value="d9.net,d10.net,d11.net"/>
         <alias name="OldStyleIDE" value="c5,c6,d5,d6,d7"/>

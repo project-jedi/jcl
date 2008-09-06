@@ -4,6 +4,7 @@ ROOTDIR = $(MAKEDIR)\..
 RESFILES = c5\JclBaseExpertC50.res                  \
            c5\JclThreadNameExpertC50.res            \
            c5\JclC50.res                            \
+           c5\JclVclC50.res                         \
            c5\JclContainersC50.res                  \
            c5\JclDebugExpertC50.res                 \
            c5\JclFavoriteFoldersExpertC50.res       \
@@ -85,6 +86,7 @@ RESFILES = c5\JclBaseExpertC50.res                  \
            d5\JclUsesExpertDLLD50.res               \
            d5\JclBaseExpertD50.res                  \
            d5\JclD50.res                            \
+           d5\JclVclD50.res                         \
            d5\JclContainersD50.res                  \
            d5\JclDebugExpertD50.res                 \
            d5\JclProjectAnalysisExpertDLLD50.res    \
