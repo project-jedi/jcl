@@ -1,22 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Configuration>
   <!-- These are the values stored by jaxStore -->
-  <pgEdit>
-    <FormVersion>0</FormVersion>
-    <ShowCmd>1</ShowCmd>
-    <Flags>0</Flags>
-    <PixelsPerInch>96</PixelsPerInch>
-    <MinMaxPos_1400x1050_>-1,-1,-1,-1</MinMaxPos_1400x1050_>
-    <MinMaxPos>-1,-1,-1,-1</MinMaxPos>
-    <NormPos_1400x1050_>288,207,1103,834</NormPos_1400x1050_>
-    <NormPos>288,207,1103,834</NormPos>
-    <pnlList_Width>137</pnlList_Width>
-    <jsgDependencies_Height>165</jsgDependencies_Height>
-    <pnlEdit_Width>668</pnlEdit_Width>
-    <jsgFiles_Height>196</jsgFiles_Height>
-    <odlAddFiles_InitialDir>..\..\run</odlAddFiles_InitialDir>
-    <cmbModel_ItemIndex>0</cmbModel_ItemIndex>
-  </pgEdit>
+  <pgEdit/>
   <!--
     The nodes below are read by the generation process.
     Packages are generated according to a model. The models are defined
