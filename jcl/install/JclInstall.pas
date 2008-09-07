@@ -23,7 +23,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                    $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -1064,10 +1064,8 @@ procedure TJclInstallation.Init;
       AddOption(joJCLDefPCRELinkDLL, [goRadioButton], joJCLDefPCRE);
       // BZip2 options
       AddOption(joJCLDefBZip2, [goChecked], Parent);
-      {$IFDEF MSWINDOWS}
-      AddOption(joJCLDefBZip2StaticLink, [goRadioButton], joJCLDefBZip2);
-      {$ENDIF MSWINDOWS}
-      AddOption(joJCLDefBZip2LinkOnRequest, [goRadioButton, goChecked], joJCLDefBZip2);
+      AddOption(joJCLDefBZip2StaticLink, [goRadioButton, goChecked], joJCLDefBZip2);
+      AddOption(joJCLDefBZip2LinkOnRequest, [goRadioButton], joJCLDefBZip2);
       AddOption(joJCLDefBZip2LinkDLL, [goRadioButton], joJCLDefBZip2);
       {$IFDEF MSWINDOWS}
       AddOption(joJCLDefUnicode, [goChecked], Parent);

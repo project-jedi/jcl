@@ -27,7 +27,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -212,7 +212,7 @@ ALERT_jedi_inc_incompatible
 {$IFNDEF BZIP2_STATICLINK}
   {$IFNDEF BZIP2_LINKDLL}
     {$IFNDEF BZIP2_LINKONREQUEST}
-      {$DEFINE BZIP2_LINKONREQUEST}
+      {$DEFINE BZIP2_STATICLINK}
     {$ENDIF ~BZIP2_LINKONREQUEST}
   {$ENDIF ~BZIP2_LINKDLL}
 {$ENDIF ~BZIP2_STATICLINK}
