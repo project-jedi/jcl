@@ -70,7 +70,7 @@ type
     FDriver: PChar;
     FPort: PChar;
     FHandle: THandle;
-    FDeviceMode: PDeviceModeA;
+    FDeviceMode: PDeviceMode;
     FPrinter: Integer;
     FBinArray: PWordArray;
     FNumBins: Byte;

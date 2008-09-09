@@ -1,4 +1,76 @@
-(*$JPPDEFINEMACRO JCLHASHMAPIMP(SELFCLASSNAME, ENTRYARRAYTYPENAME, BUCKETTYPENAME,
+(*$JPPDEFINEMACRO JCLHASHMAPTYPESIMP(BUCKETTYPENAME, KEYDEFAULT, VALUEDEFAULT)
+//=== { BUCKETTYPENAME } ==========================================
+
+procedure BUCKETTYPENAME.MoveArray(FromIndex, ToIndex, Count: Integer);
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        Entries[FromIndex + I].Key := KEYDEFAULT;
+        Entries[FromIndex + I].Value := VALUEDEFAULT;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := KEYDEFAULT;
+        Entries[FromIndex + I].Value := VALUEDEFAULT;
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := KEYDEFAULT;
+        Entries[FromIndex + I].Value := VALUEDEFAULT;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := KEYDEFAULT;
+        Entries[FromIndex + I].Value := VALUEDEFAULT;
+      end;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}*)
+(*$JPPDEFINEMACRO JCLHASHMAPIMP(SELFCLASSNAME, BUCKETTYPENAME,
   MAPINTERFACENAME, KEYSETINTERFACENAME, KEYITRINTERFACENAME, VALUECOLLECTIONINTERFACENAME,
   KEYOWNERSHIPDECLARATION, VALUEOWNERSHIPDECLARATION, OWNERSHIPASSIGNMENTS,
   KEYCONSTKEYWORD, KEYTYPENAME, KEYDEFAULT, VALUECONSTKEYWORD, VALUETYPENAME, VALUEDEFAULT)
@@ -126,8 +198,7 @@ begin
   {$JPPEXPANDMACRO READEND}
 end;
 
-{$JPPEXPANDMACRO CREATEEMPTYCONTAINER}
-function SELFCLASSNAME.Equals(const AMap: MAPINTERFACENAME): Boolean;
+function SELFCLASSNAME.MapEquals(const AMap: MAPINTERFACENAME): Boolean;
 var
   I, J: Integer;
   Bucket: BUCKETTYPENAME;
@@ -155,10 +226,6 @@ begin
   {$JPPEXPANDMACRO READEND}
 end;
 
-{$JPPEXPANDMACRO FREEKEY}
-{$JPPEXPANDMACRO FREEVALUE}
-{$JPPEXPANDMACRO GETOWNSKEYS}
-{$JPPEXPANDMACRO GETOWNSVALUES}
 function SELFCLASSNAME.GetValue(KEYCONSTKEYWORDKey: KEYTYPENAME): VALUETYPENAME;
 var
   I: Integer;
@@ -182,7 +249,6 @@ begin
   {$JPPEXPANDMACRO READEND}
 end;
 
-{$JPPEXPANDMACRO HASH}
 function SELFCLASSNAME.IsEmpty: Boolean;
 begin
   Result := FSize = 0;
@@ -214,7 +280,6 @@ begin
   {$JPPEXPANDMACRO READEND}
 end;
 
-{$JPPEXPANDMACRO KEYSEQUAL}
 function SELFCLASSNAME.KeySet: KEYSETINTERFACENAME;
 var
   I, J: Integer;
@@ -231,76 +296,6 @@ begin
     end;
   {$JPPEXPANDMACRO READEND}
 end;
-
-procedure SELFCLASSNAME.MoveArray(var List: ENTRYARRAYTYPENAME; FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        List[FromIndex + I].Key := KEYDEFAULT;
-        List[FromIndex + I].Value := VALUEDEFAULT;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := KEYDEFAULT;
-        List[FromIndex + I].Value := VALUEDEFAULT;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        List[FromIndex + I].Key := KEYDEFAULT;
-        List[FromIndex + I].Value := VALUEDEFAULT;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := KEYDEFAULT;
-        List[FromIndex + I].Value := VALUEDEFAULT;
-      end;
-  end;
-end;
-{$ELSE}
-begin
-  if Count > 0 then
-  begin
-    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end;
-  end;
-end;
-{$ENDIF CLR}
 
 procedure SELFCLASSNAME.Pack;
 var
@@ -397,7 +392,7 @@ begin
           Result := FreeValue(Bucket.Entries[I].Value);
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -443,6 +438,4 @@ begin
           Result.Add(Bucket.Entries[J].Value);
     end;
   {$JPPEXPANDMACRO READEND}
-end;
-
-{$JPPEXPANDMACRO VALUESEQUAL}*)
+end;*)

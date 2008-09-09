@@ -17,3 +17,5 @@ cp ../source/include/jcl.template.inc ../source/include/jcld10.inc
 cp ../source/include/jcl.template.inc ../source/include/jcld10.net.inc
 cp ../source/include/jcl.template.inc ../source/include/jcld11.inc
 cp ../source/include/jcl.template.inc ../source/include/jcld11.net.inc
+cp ../source/include/jcl.template.inc ../source/include/jcld12.inc
+

@@ -27,7 +27,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -67,12 +67,18 @@ type
   {$JPPEXPANDMACRO APPLYFUNCTION(TIntfApplyFunction,const ,AInterface,IInterface)}
   {$JPPEXPANDMACRO APPLYFUNCTION(TAnsiStrApplyFunction,const ,AString,AnsiString)}
   {$JPPEXPANDMACRO APPLYFUNCTION(TWideStrApplyFunction,const ,AString,WideString)}
+  {$IFDEF SUPPORTS_UNICODE_STRING}
+  {$JPPEXPANDMACRO APPLYFUNCTION(TUnicodeStrApplyFunction,const ,AString,UnicodeString)}
+  {$ENDIF SUPPORTS_UNICODE_STRING}
   {$IFDEF CONTAINER_ANSISTR}
   TStrApplyFunction = TAnsiStrApplyFunction;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
   TStrApplyFunction = TWideStrApplyFunction;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  TStrApplyFunction = TUnicodeStrApplyFunction;
+  {$ENDIF CONTAINER_UNICODESTR}
   {$JPPEXPANDMACRO APPLYFUNCTION(TSingleApplyFunction,const ,AValue,Single)}
   {$JPPEXPANDMACRO APPLYFUNCTION(TDoubleApplyFunction,const ,AValue,Double)}
   {$JPPEXPANDMACRO APPLYFUNCTION(TExtendedApplyFunction,const ,AValue,Extended)}
@@ -100,12 +106,18 @@ type
   {$JPPEXPANDMACRO COMPAREFUNCTION(TIntfCompare,const ,IInterface)}
   {$JPPEXPANDMACRO COMPAREFUNCTION(TAnsiStrCompare,const ,AnsiString)}
   {$JPPEXPANDMACRO COMPAREFUNCTION(TWideStrCompare,const ,WideString)}
+  {$IFDEF SUPPORTS_UNICODE_STRING}
+  {$JPPEXPANDMACRO COMPAREFUNCTION(TUnicodeStrCompare,const ,UnicodeString)}
+  {$ENDIF SUPPORTS_UNICODE_STRING}
   {$IFDEF CONTAINER_ANSISTR}
   TStrCompare = TAnsiStrCompare;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
   TStrCompare = TWideStrCompare;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  TStrCompare = TUnicodeStrCompare;
+  {$ENDIF CONTAINER_UNICODESTR}
   {$JPPEXPANDMACRO COMPAREFUNCTION(TSingleCompare,const ,Single)}
   {$JPPEXPANDMACRO COMPAREFUNCTION(TDoubleCompare,const ,Double)}
   {$JPPEXPANDMACRO COMPAREFUNCTION(TExtendedCompare,const ,Extended)}
@@ -133,12 +145,18 @@ type
   {$JPPEXPANDMACRO EQUALITYCOMPAREFUNCTION(TIntfEqualityCompare,const ,IInterface)}
   {$JPPEXPANDMACRO EQUALITYCOMPAREFUNCTION(TAnsiStrEqualityCompare,const ,AnsiString)}
   {$JPPEXPANDMACRO EQUALITYCOMPAREFUNCTION(TWideStrEqualityCompare,const ,WideString)}
+  {$IFDEF SUPPORTS_UNICODE_STRING}
+  {$JPPEXPANDMACRO EQUALITYCOMPAREFUNCTION(TUnicodeStrEqualityCompare,const ,UnicodeString)}
+  {$ENDIF SUPPORTS_UNICODE_STRING}
   {$IFDEF CONTAINER_ANSISTR}
   TStrEqualityCompare = TAnsiStrEqualityCompare;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
   TStrEqualityCompare = TWideStrEqualityCompare;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  TStrEqualityCompare = TUnicodeStrEqualityCompare;
+  {$ENDIF CONTAINER_UNICODESTR}
   {$JPPEXPANDMACRO EQUALITYCOMPAREFUNCTION(TSingleEqualityCompare,const ,Single)}
   {$JPPEXPANDMACRO EQUALITYCOMPAREFUNCTION(TDoubleEqualityCompare,const ,Double)}
   {$JPPEXPANDMACRO EQUALITYCOMPAREFUNCTION(TExtendedEqualityCompare,const ,Extended)}
@@ -166,12 +184,18 @@ type
   {$JPPEXPANDMACRO HASHFUNCTION(TIntfHashConvert,const ,AInterface,IInterface)}
   {$JPPEXPANDMACRO HASHFUNCTION(TAnsiStrHashConvert,const ,AString,AnsiString)}
   {$JPPEXPANDMACRO HASHFUNCTION(TWideStrHashConvert,const ,AString,WideString)}
+  {$IFDEF SUPPORTS_UNICODE_STRING}
+  {$JPPEXPANDMACRO HASHFUNCTION(TUnicodeStrHashConvert,const ,AString,UnicodeString)}
+  {$ENDIF SUPPORTS_UNICODE_STRING}
   {$IFDEF CONTAINER_ANSISTR}
   TStrHashConvert = TAnsiStrHashConvert;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
   TStrHashConvert = TWideStrHashConvert;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  TStrHashConvert = TUnicodeStrHashConvert;
+  {$ENDIF CONTAINER_UNICODESTR}
   {$JPPEXPANDMACRO HASHFUNCTION(TSingleHashConvert,const ,AValue,Single)}
   {$JPPEXPANDMACRO HASHFUNCTION(TDoubleHashConvert,const ,AValue,Double)}
   {$JPPEXPANDMACRO HASHFUNCTION(TExtendedHashConvert,const ,AValue,Extended)}
@@ -284,6 +308,16 @@ type
     procedure LoadDelimited(const AString: WideString; const Separator: WideString = WideLineBreak);}
   end;
 
+  {$IFDEF SUPPORTS_UNICODE_STRING}
+  IJclUnicodeStrContainer = interface(IJclStrContainer)
+    ['{619BA29F-5E05-464D-B472-1C8453DBC707}']
+  end;
+
+  IJclUnicodeStrFlatContainer = interface(IJclUnicodeStrContainer)
+    ['{3343D73E-4ADC-458E-8289-A4B83D1479D1}']
+  end;
+  {$ENDIF SUPPORTS_UNICODE_STRING}
+
   IJclSingleContainer = interface(IJclContainer)
     ['{22BE88BD-87D1-4B4D-9FAB-F1B6D555C6A9}']
     function GetPrecision: Single;
@@ -321,12 +355,19 @@ type
 
 {$JPPEXPANDMACRO EQUALITYCOMPARER(IJclWideStrEqualityComparer,2E5696C9-8374-4347-9DC9-B3722F47F5FB,TWideStrEqualityCompare,const ,WideString)}
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+{$JPPEXPANDMACRO EQUALITYCOMPARER(IJclUnicodeStrEqualityComparer,EDFCC1C7-79DB-4F58-BD64-5016B44EEAC0,TUnicodeStrEqualityCompare,const ,UnicodeString)}
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrEqualityComparer = IJclAnsiStrEqualityComparer;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
   IJclStrEqualityComparer = IJclWideStrEqualityComparer;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclStrEqualityComparer = IJclUnicodeStrEqualityComparer;
+  {$ENDIF CONTAINER_UNICODESTR}
 
 {$JPPEXPANDMACRO EQUALITYCOMPARER(IJclSingleEqualityComparer,4835BC5B-1A87-4864-BFE1-778F3BAF26B1,TSingleEqualityCompare,const ,Single)}
 
@@ -366,12 +407,19 @@ type
 
 {$JPPEXPANDMACRO COMPARER(IJclWideStrComparer,7A24AEDA-25B1-4E73-B2E9-5D74011E4C9C,TWideStrCompare,const ,WideString)}
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+{$JPPEXPANDMACRO COMPARER(IJclUnicodeStrComparer,E81E2705-0CA0-4DBD-BECC-5F9AA623A6E4,TUnicodeStrCompare,const ,UnicodeString)}
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrComparer = IJclAnsiStrComparer;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
   IJclStrComparer = IJclWideStrComparer;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclStrComparer = IJclUnicodeStrComparer;
+  {$ENDIF CONTAINER_UNICODESTR}
 
 {$JPPEXPANDMACRO COMPARER(IJclSingleComparer,008225CE-075E-4450-B9DE-9863CB6D347C,TSingleCompare,const ,Single)}
 
@@ -411,12 +459,19 @@ type
 
 {$JPPEXPANDMACRO HASHCONVERTER(IJclWideStrHashConverter,2584118F-19AE-443E-939B-0DB18BCD0117,TWideStrHashConvert,const ,AString,WideString)}
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+{$JPPEXPANDMACRO HASHCONVERTER(IJclUnicodeStrHashConverter,08CD8171-DBAF-405F-9802-46D955C8BBE6,TUnicodeStrHashConvert,const ,AString,UnicodeString)}
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrHashConverter = IJclAnsiStrHashConverter;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
   IJclStrHashConverter = IJclWideStrHashConverter;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclStrHashConverter = IJclUnicodeStrHashConverter;
+  {$ENDIF CONTAINER_UNICODESTR}
 
 {$JPPEXPANDMACRO HASHCONVERTER(IJclSingleHashConverter,20F0E481-F1D2-48B6-A95D-FBB56AF119F5,TSingleHashConvert,const ,AValue,Single)}
 
@@ -452,12 +507,12 @@ type
 
   IJclIntfCloneable = interface
     ['{BCF77740-FB60-4306-9BD1-448AADE5FF4E}']
-    function Clone: IInterface;
+    function IntfClone: IInterface;
   end;
 
   IJclCloneable = interface
     ['{D224AE70-2C93-4998-9479-1D513D75F2B2}']
-    function Clone: TObject;
+    function ObjectClone: TObject;
   end;
 
   TJclAutoPackStrategy = (apsDisabled, apsAgressive, apsProportional, apsIncremental);
@@ -551,12 +606,19 @@ type
 
 {$JPPEXPANDMACRO ITERATOR(IJclWideStrIterator,IJclAbstractIterator,F03BC7D4-CCDA-4C4A-AF3A-E51FDCDE8ADE,const ,AString,WideString,GetString,SetString)}
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+{$JPPEXPANDMACRO ITERATOR(IJclUnicodeStrIterator,IJclAbstractIterator,B913FFDC-792A-48FB-B58E-763EFDEBA15C,const ,AString,UnicodeString,GetString,SetString)}
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrIterator = IJclAnsiStrIterator;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
   IJclStrIterator = IJclWideStrIterator;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclStrIterator = IJclUnicodeStrIterator;
+  {$ENDIF CONTAINER_UNICODESTR}
 
 {$JPPEXPANDMACRO ITERATOR(IJclSingleIterator,IJclAbstractIterator,FD1124F8-CB2B-4AD7-B12D-C05702F4204B,const ,AValue,Single,GetValue,SetValue)}
 
@@ -596,12 +658,19 @@ type
 
 {$JPPEXPANDMACRO TREEITERATOR(IJclWideStrTreeIterator,IJclWideStrIterator,B3168A3B-5A90-4ABF-855F-3D2B3AB6EE7F,const ,AString,WideString)}
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+{$JPPEXPANDMACRO TREEITERATOR(IJclUnicodeStrTreeIterator,IJclUnicodeStrIterator,0B0A60DE-0403-4EE1-B1F0-10D849924CF8,const ,AString,UnicodeString)}
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrTreeIterator = IJclAnsiStrTreeIterator;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
   IJclStrTreeIterator = IJclWideStrTreeIterator;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclStrTreeIterator = IJclUnicodeStrTreeIterator;
+  {$ENDIF CONTAINER_UNICODESTR}
 
 {$JPPEXPANDMACRO TREEITERATOR(IJclSingleTreeIterator,IJclSingleIterator,17BFDE9D-DBF7-4DC8-AC74-919C717B4726,const ,AValue,Single)}
 
@@ -641,12 +710,19 @@ type
 
 {$JPPEXPANDMACRO BINTREEITERATOR(IJclWideStrBinaryTreeIterator,IJclWideStrTreeIterator,17C08EB9-6880-469E-878A-8F5EBFE905B1,WideString)}
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+{$JPPEXPANDMACRO BINTREEITERATOR(IJclUnicodeStrBinaryTreeIterator,IJclUnicodeStrTreeIterator,CA32B126-AD4B-4C33-BC47-52B09FE093BE,UnicodeString)}
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrBinaryTreeIterator = IJclAnsiStrBinaryTreeIterator;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
   IJclStrBinaryTreeIterator = IJclWideStrBinaryTreeIterator;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclStrBinaryTreeIterator = IJclUnicodeStrBinaryTreeIterator;
+  {$ENDIF CONTAINER_UNICODESTR}
 
 {$JPPEXPANDMACRO BINTREEITERATOR(IJclSingleBinaryTreeIterator,IJclSingleTreeIterator,BC6FFB13-FA1C-4077-8273-F25A3119168B,Single)}
 
@@ -686,12 +762,19 @@ type
 
 {$JPPEXPANDMACRO COLLECTION(IJclWideStrCollection,IJclWideStrFlatContainer,CDCC0F94-4DD0-4F25-B441-6AE55D5C7466,const ,AString,WideString,IJclWideStrIterator)}
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+{$JPPEXPANDMACRO COLLECTION(IJclUnicodeStrCollection,IJclUnicodeStrFlatContainer,82EA7DDE-4EBF-4E0D-A380-CAF8A24C1A0D,const ,AString,UnicodeString,IJclUnicodeStrIterator)}
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrCollection = IJclAnsiStrCollection;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
   IJclStrCollection = IJclWideStrCollection;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclStrCollection = IJclUnicodeStrCollection;
+  {$ENDIF CONTAINER_UNICODESTR}
 
 {$JPPEXPANDMACRO COLLECTION(IJclSingleCollection,IJclSingleContainer,1D34D474-6588-441E-B2B3-8C021A37ED89,const ,AValue,Single,IJclSingleIterator)}
 
@@ -731,12 +814,19 @@ type
 
 {$JPPEXPANDMACRO LIST(IJclWideStrList,IJclWideStrCollection,C9955874-6AC0-4CE0-8CC0-606A3F1702C6,const ,AString,WideString,GetString,SetString,Strings)}
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+{$JPPEXPANDMACRO LIST(IJclUnicodeStrList,IJclUnicodeStrCollection,F4307EB4-D66E-4656-AC56-50883D0F2C83,const ,AString,UnicodeString,GetString,SetString,Strings)}
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrList = IJclAnsiStrList;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
   IJclStrList = IJclWideStrList;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclStrList = IJclUnicodeStrList;
+  {$ENDIF CONTAINER_UNICODESTR}
 
 {$JPPEXPANDMACRO LIST(IJclSingleList,IJclSingleCollection,D081324C-70A4-4AAC-BA42-7557F0262826,const ,AValue,Single,GetValue,SetValue,Values)}
 
@@ -774,12 +864,18 @@ type
   {$JPPEXPANDMACRO SORTPROC(TIntfSortProc,IJclIntfList,TIntfCompare)}
   {$JPPEXPANDMACRO SORTPROC(TAnsiStrSortProc,IJclAnsiStrList,TAnsiStrCompare)}
   {$JPPEXPANDMACRO SORTPROC(TWideStrSortProc,IJclWideStrList,TWideStrCompare)}
+  {$IFDEF SUPPORTS_UNICODE_STRING}
+  {$JPPEXPANDMACRO SORTPROC(TUnicodeStrSortProc,IJclUnicodeStrList,TUnicodeStrCompare)}
+  {$ENDIF SUPPORTS_UNICODE_STRING}
   {$IFDEF CONTAINER_ANSISTR}
   TStrSortProc = TAnsiStrSortProc;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
   TStrSortProc = TWideStrSortProc;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  TStrSortProc = TUnicodeStrSortProc;
+  {$ENDIF CONTAINER_UNICODESTR}
   {$JPPEXPANDMACRO SORTPROC(TSingleSortProc,IJclSingleList,TSingleCompare)}
   {$JPPEXPANDMACRO SORTPROC(TDoubleSortProc,IJclDoubleList,TDoubleCompare)}
   {$JPPEXPANDMACRO SORTPROC(TExtendedSortProc,IJclExtendedList,TExtendedCompare)}
@@ -800,12 +896,19 @@ type
 
 {$JPPEXPANDMACRO ARRAY(IJclWideStrArray,IJclWideStrList,3CE09F9A-5CB4-4867-80D5-C2313D278D69,const ,AString,WideString,GetString,SetString,Strings)}
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+{$JPPEXPANDMACRO ARRAY(IJclUnicodeStrArray,IJclUnicodeStrList,24312E5B-B61D-485C-9E57-AC36C93D8159,const ,AString,UnicodeString,GetString,SetString,Strings)}
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrArray = IJclAnsiStrArray;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
   IJclStrArray = IJclWideStrArray;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclStrArray = IJclUnicodeStrArray;
+  {$ENDIF CONTAINER_UNICODESTR}
 
 {$JPPEXPANDMACRO ARRAY(IJclSingleArray,IJclSingleList,B96E2A4D-D750-4B65-B975-C619A05A29F6,const ,AValue,Single,GetValue,SetValue,Values)}
 
@@ -845,12 +948,19 @@ type
 
 {$JPPEXPANDMACRO SET(IJclWideStrSet,IJclWideStrCollection,08009E0A-ABDD-46AB-8CEE-407D4723E17C)}
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+{$JPPEXPANDMACRO SET(IJclUnicodeStrSet,IJclUnicodeStrCollection,440E9BCB-341F-40B6-8AED-479B2E98C92A)}
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrSet = IJclAnsiStrSet;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
   IJclStrSet = IJclWideStrSet;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclStrSet = IJclUnicodeStrSet;
+  {$ENDIF CONTAINER_UNICODESTR}
 
 {$JPPEXPANDMACRO SET(IJclSingleSet,IJclSingleCollection,36E34A78-6A29-4503-97D5-4BF53538CEC0)}
 
@@ -892,12 +1002,19 @@ type
 
 {$JPPEXPANDMACRO TREE(IJclWideStrTree,IJclWideStrCollection,E325615A-7A20-4788-87FA-9051002CCD91,IJclWideStrTreeIterator)}
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+{$JPPEXPANDMACRO TREE(IJclUnicodeStrTree,IJclUnicodeStrCollection,A378BC36-1FB1-4330-A335-037DD370E81B,IJclUnicodeStrTreeIterator)}
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrTree = IJclAnsiStrTree;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
   IJclStrTree = IJclWideStrTree;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclStrTree = IJclUnicodeStrTree;
+  {$ENDIF CONTAINER_UNICODESTR}
 
 {$JPPEXPANDMACRO TREE(IJclSingleTree,IJclSingleCollection,A90A51BC-EBD7-40D3-B0A0-C9987E7A83D0,IJclSingleTreeIterator)}
 
@@ -943,16 +1060,27 @@ type
 
 {$JPPEXPANDMACRO MAP(IJclWideStrIntfMap,IJclWideStrContainer,C959AB76-9CF0-4C2C-A2C6-8A1846563FAF,const ,WideString,IJclWideStrSet,const ,IInterface,IJclIntfCollection)}
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+{$JPPEXPANDMACRO MAP(IJclUnicodeStrIntfMap,IJclUnicodeStrContainer,C83D4F5E-8E66-41E9-83F6-338B44F24BE6,const ,UnicodeString,IJclUnicodeStrSet,const ,IInterface,IJclIntfCollection)}
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrIntfMap = IJclAnsiStrIntfMap;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
   IJclStrIntfMap = IJclWideStrIntfMap;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclStrIntfMap = IJclUnicodeStrIntfMap;
+  {$ENDIF CONTAINER_UNICODESTR}
 
 {$JPPEXPANDMACRO MAP(IJclIntfAnsiStrMap,IJclAnsiStrContainer,B10E324A-1D98-42FF-B9B4-7F99044591B2,const ,IInterface,IJclIntfSet,const ,AnsiString,IJclAnsiStrCollection)}
 
 {$JPPEXPANDMACRO MAP(IJclIntfWideStrMap,IJclWideStrContainer,D9FD7887-B840-4636-8A8F-E586663E332C,const ,IInterface,IJclIntfSet,const ,WideString,IJclWideStrCollection)}
+
+{$IFDEF SUPPORTS_UNICODE_STRING}
+{$JPPEXPANDMACRO MAP(IJclIntfUnicodeStrMap,IJclUnicodeStrContainer,40F8B873-B763-4A3C-8EC4-31DB3404BF73,const ,IInterface,IJclIntfSet,const ,UnicodeString,IJclUnicodeStrCollection)}
+{$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF CONTAINER_ANSISTR}
   IJclIntfStrMap = IJclIntfAnsiStrMap;
@@ -960,10 +1088,17 @@ type
   {$IFDEF CONTAINER_WIDESTR}
   IJclIntfStrMap = IJclIntfWideStrMap;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclIntfStrMap = IJclIntfUnicodeStrMap;
+  {$ENDIF CONTAINER_UNICODESTR}
 
 {$JPPEXPANDMACRO MAP(IJclAnsiStrAnsiStrMap,IJclAnsiStrContainer,A4788A96-281A-4924-AA24-03776DDAAD8A,const ,AnsiString,IJclAnsiStrSet,IJclAnsiStrCollection)}
 
 {$JPPEXPANDMACRO MAP(IJclWideStrWideStrMap,IJclWideStrContainer,8E8D2735-C4FB-4F00-8802-B2102BCE3644,const ,WideString,IJclWideStrSet,IJclWideStrCollection)}
+
+{$IFDEF SUPPORTS_UNICODE_STRING}
+{$JPPEXPANDMACRO MAP(IJclUnicodeStrUnicodeStrMap,IJclUnicodeStrContainer,557E1CBD-06AC-41C2-BAED-253709CBD0AE,const ,UnicodeString,IJclUnicodeStrSet,IJclUnicodeStrCollection)}
+{$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrStrMap = IJclAnsiStrAnsiStrMap;
@@ -971,6 +1106,9 @@ type
   {$IFDEF CONTAINER_WIDESTR}
   IJclStrStrMap = IJclWideStrWideStrMap;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclStrStrMap = IJclUnicodeStrUnicodeStrMap;
+  {$ENDIF CONTAINER_UNICODESTR}
 
 {$JPPEXPANDMACRO MAP(IJclSingleIntfMap,IJclSingleContainer,5F5E9E8B-E648-450B-B6C0-0EC65CC2D0BA,const ,Single,IJclSingleSet,const ,IInterface,IJclIntfCollection)}
 
@@ -1038,12 +1176,19 @@ type
 
 {$JPPEXPANDMACRO MAP(IJclWideStrMap,IJclWideStrContainer,ACE8E6B4-5A56-4753-A2C6-BAE195A56B63,const ,WideString,IJclWideStrSet,,TObject,IJclCollection)}
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+{$JPPEXPANDMACRO MAP(IJclUnicodeStrMap,IJclUnicodeStrContainer,4328E033-9B92-40C6-873D-A6982CFC2B95,const ,UnicodeString,IJclUnicodeStrSet,,TObject,IJclCollection)}
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrMap = IJclAnsiStrMap;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
   IJclStrMap = IJclWideStrMap;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclStrMap = IJclUnicodeStrMap;
+  {$ENDIF CONTAINER_UNICODESTR}
 
 {$JPPEXPANDMACRO MAP(IJclSingleMap,IJclSingleContainer,C501920A-F252-4F94-B142-1F05AE06C3D2,const ,Single,IJclSingleSet,,TObject,IJclCollection)}
 
@@ -1087,12 +1232,19 @@ type
 
 {$JPPEXPANDMACRO QUEUE(IJclWideStrQueue,IJclWideStrContainer,058BBFB7-E9B9-44B5-B676-D5B5B9A79BEF,const ,AString,WideString)}
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+{$JPPEXPANDMACRO QUEUE(IJclUnicodeStrQueue,IJclUnicodeStrContainer,94A09E52-424A-486E-846B-9C2C52DC3A8F,const ,AString,UnicodeString)}
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrQueue = IJclAnsiStrQueue;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
   IJclStrQueue = IJclWideStrQueue;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclStrQueue = IJclUnicodeStrQueue;
+  {$ENDIF CONTAINER_UNICODESTR}
 
 {$JPPEXPANDMACRO QUEUE(IJclSingleQueue,IJclSingleContainer,67D74314-9967-4C99-8A48-6E0ADD73EC29,const ,AValue,Single)}
 
@@ -1132,16 +1284,27 @@ type
 
 {$JPPEXPANDMACRO SORTEDMAP(IJclWideStrIntfSortedMap,IJclWideStrIntfMap,299FDCFD-2DB7-4D64-BF18-EE3668316430,const ,WideString)}
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+{$JPPEXPANDMACRO SORTEDMAP(IJclUnicodeStrIntfSortedMap,IJclUnicodeStrIntfMap,25FDE916-730D-449A-BA29-852D8A0470B6,const ,UnicodeString)}
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrIntfSortedMap = IJclAnsiStrIntfSortedMap;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
   IJclStrIntfSortedMap = IJclWideStrIntfSortedMap;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclStrIntfSortedMap = IJclUnicodeStrIntfSortedMap;
+  {$ENDIF CONTAINER_UNICODESTR}
 
 {$JPPEXPANDMACRO SORTEDMAP(IJclIntfAnsiStrSortedMap,IJclIntfAnsiStrMap,96E6AC5E-8C40-4795-9C8A-CFD098B58680,const ,IInterface)}
 
 {$JPPEXPANDMACRO SORTEDMAP(IJclIntfWideStrSortedMap,IJclIntfWideStrMap,FBE3AD2E-2781-4DC0-9E80-027027380E21,const ,IInterface)}
+
+{$IFDEF SUPPORTS_UNICODE_STRING}
+{$JPPEXPANDMACRO SORTEDMAP(IJclIntfUnicodeStrSortedMap,IJclIntfUnicodeStrMap,B0B0CB9B-268B-40D2-94A8-0B8B5BE2E1AC,const ,IInterface)}
+{$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF CONTAINER_ANSISTR}
   IJclIntfStrSortedMap = IJclIntfAnsiStrSortedMap;
@@ -1149,10 +1312,17 @@ type
   {$IFDEF CONTAINER_WIDESTR}
   IJclIntfStrSortedMap = IJclIntfWideStrSortedMap;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclIntfStrSortedMap = IJclIntfUnicodeStrSortedMap;
+  {$ENDIF CONTAINER_UNICODESTR}
 
 {$JPPEXPANDMACRO SORTEDMAP(IJclAnsiStrAnsiStrSortedMap,IJclAnsiStrAnsiStrMap,4F457799-5D03-413D-A46C-067DC4200CC3,const ,AnsiString)}
 
 {$JPPEXPANDMACRO SORTEDMAP(IJclWideStrWideStrSortedMap,IJclWideStrWideStrMap,3B0757B2-2290-4AFA-880D-F9BA600E501E,const ,WideString)}
+
+{$IFDEF SUPPORTS_UNICODE_STRING}
+{$JPPEXPANDMACRO SORTEDMAP(IJclUnicodeStrUnicodeStrSortedMap,IJclUnicodeStrUnicodeStrMap,D8EACC5D-B31E-47A8-9CC9-32B15A79CACA,const ,UnicodeString)}
+{$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrStrSortedMap = IJclAnsiStrAnsiStrSortedMap;
@@ -1160,6 +1330,9 @@ type
   {$IFDEF CONTAINER_WIDESTR}
   IJclStrStrSortedMap = IJclWideStrWideStrSortedMap;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclStrStrSortedMap = IJclUnicodeStrUnicodeStrSortedMap;
+  {$ENDIF CONTAINER_UNICODESTR}
 
 {$JPPEXPANDMACRO SORTEDMAP(IJclSingleIntfSortedMap,IJclSingleIntfMap,83D57068-7B8E-453E-B35B-2AB4B594A7A9,const ,Single)}
 
@@ -1227,12 +1400,19 @@ type
 
 {$JPPEXPANDMACRO SORTEDMAP(IJclWideStrSortedMap,IJclWideStrMap,B3021EFC-DE25-4B4B-A896-ACE823CD5C01,const ,WideString)}
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+{$JPPEXPANDMACRO SORTEDMAP(IJclUnicodeStrSortedMap,IJclUnicodeStrMap,5510B8FC-3439-4211-8D1F-5EDD9A56D3E3,const ,UnicodeString)}
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrSortedMap = IJclAnsiStrSortedMap;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
   IJclStrSortedMap = IJclWideStrSortedMap;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclStrSortedMap = IJclUnicodeStrSortedMap;
+  {$ENDIF CONTAINER_UNICODESTR}
 
 {$JPPEXPANDMACRO SORTEDMAP(IJclSingleSortedMap,IJclSingleMap,8C1A12BE-A7F2-4351-90B7-25DB0AAF5F94,const ,Single)}
 
@@ -1272,12 +1452,19 @@ type
 
 {$JPPEXPANDMACRO SORTEDSET(IJclWideStrSortedSet,IJclWideStrSet,ED9567E2-C1D3-4C00-A1D4-90D5C7E27C2D,const ,WideString)}
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+{$JPPEXPANDMACRO SORTEDSET(IJclUnicodeStrSortedSet,IJclUnicodeStrSet,172BCD6F-D23C-4014-9C8C-A77A27D6E881,const ,UnicodeString)}
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrSortedSet = IJclAnsiStrSortedSet;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
   IJclStrSortedSet = IJclWideStrSortedSet;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclStrSortedSet = IJclUnicodeStrSortedSet;
+  {$ENDIF CONTAINER_UNICODESTR}
 
 {$JPPEXPANDMACRO SORTEDSET(IJclSingleSortedSet,IJclSingleSet,65EDA801-9E04-4119-BF9E-D7DD4AF82144,const ,Single)}
 
@@ -1317,12 +1504,19 @@ type
 
 {$JPPEXPANDMACRO STACK(IJclWideStrStack,IJclWideStrContainer,B2C3B165-33F1-4B7D-A2EC-0B19D12CE33C,const ,AString,WideString)}
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+{$JPPEXPANDMACRO STACK(IJclUnicodeStrStack,IJclUnicodeStrContainer,BC046C3D-E3D2-42BA-A96D-054834A70404,const ,AString,UnicodeString)}
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrStack = IJclAnsiStrStack;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
   IJclStrStack = IJclWideStrStack;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclStrStack = IJclUnicodeStrStack;
+  {$ENDIF CONTAINER_UNICODESTR}
 
 {$JPPEXPANDMACRO STACK(IJclSingleStack,IJclSingleContainer,8DCE45C8-B5B3-43AB-BA08-DAD531CEB9CF,const ,AValue,Single)}
 

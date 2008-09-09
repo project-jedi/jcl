@@ -17,7 +17,7 @@ type
 // Unsigned Basics
 //
 
-  UCHAR = {$IFDEF USE_DELPHI_TYPES}Windows.UCHAR{$ELSE}Char{$ENDIF};
+  UCHAR = {$IFDEF USE_DELPHI_TYPES}Windows.UCHAR{$ELSE}AnsiChar{$ENDIF};
   {$EXTERNALSYM UCHAR}
   USHORT = Word;
   {$EXTERNALSYM USHORT}

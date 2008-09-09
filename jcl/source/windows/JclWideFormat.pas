@@ -749,7 +749,11 @@ function PrepareString(const Format: WideString; const Buffer: PConversionBuffer
   variable (TempWS), and if that were assigned here, then the pointer that this
   function returns would be invalidated when the string goes out of scope. }
 const
-  AllowedStringTypes: TDelphiSet = [vtChar, vtWideChar, vtString, vtPChar, vtPWideChar, vtVariant, vtAnsiString, vtWideString{$IFDEF FORMAT_EXTENSIONS}, vtBoolean, vtClass{$ENDIF}];
+  AllowedStringTypes: TDelphiSet = [
+    vtChar, vtWideChar, vtString, vtPChar, vtPWideChar,
+    vtVariant, vtAnsiString, vtWideString{$IFDEF SUPPORTS_UNICODE_STRING}, vtUnicodeString{$ENDIF SUPPORTS_UNICODE_STRING}
+    {$IFDEF FORMAT_EXTENSIONS}, vtBoolean, vtClass{$ENDIF}
+  ];
 begin
   case Arg^.VType of
     vtChar, vtWideChar:
@@ -763,10 +767,10 @@ begin
         CharCount := Length(Arg^.VString^);
         Result := @Arg^.VString^[1];
       end;
-    vtPChar:
+    vtPChar: // PAnsiChar
       begin
         Result := Arg^.VPChar;
-        CharCount := StrLen(Result);
+        CharCount := StrLen(PAnsiChar(Result));
       end;
     vtPWideChar:
       begin
@@ -791,6 +795,13 @@ begin
         Result := Arg^.VWideString;
         CharCount := Length(WideString(Result))
       end;
+    {$IFDEF SUPPORTS_UNICODE_STRING}
+    vtUnicodeString:
+      begin
+        Result := Arg^.VUnicodeString;
+        CharCount := Length(UnicodeString(Result))
+      end;
+    {$ENDIF SUPPORTS_UNICODE_STRING}
   else
     raise FormatBadArgumentTypeErrorEx(Format, FormatStart, Src, Arg.VType, ArgIndex, AllowedStringTypes);
   end;

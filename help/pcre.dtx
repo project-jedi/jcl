@@ -8,14 +8,7 @@ Description:
   
   Requires pcre.dll for the Windows platform.
   Requires libpcre.so.0 for UNIX and Linux platforms.
-  
-  Use the compiler define PCRE_LINKONREQUEST to switch between static and
-  dynamic linking.
-  
-  {$DEFINE PCRE_LINKONREQUEST}
-  
-  It is set to dynamic by default. To disable the compiler define, simply
-  insert a '.' before the '$' character.
+  The PCRE code can be statically linked as well.
 Notes:
   If you enable static linking of a DLL, this means that the
   pcre.dll *must* be in the users path or an AV will occur at startup.
@@ -66,15 +59,15 @@ Description:
   cannot be located in the search path at run-time.
 
   EPCREError may also be raised when executing methods or accessing
-  properties in TJclAnsiRegEx that result in numeric return values from
+  properties in TJclRegEx that result in numeric return values from
   PCRE.DLL representing an error.
 
 <table>
 Method                  Description
 ----------------------  -----------------------------------------------
-TJclAnsiRegEx.Compile   Raised when the regular expression argument is
+TJclRegEx.Compile       Raised when the regular expression argument is
                         an empty string ('').
-TJclAnsiRegEx.Captures  Raised when the Capture at the requested index
+TJclRegEx.Captures      Raised when the Capture at the requested index
                         cannot be accessed using PCRE.DLL.
 </table>
 
@@ -84,8 +77,8 @@ TJclAnsiRegEx.Captures  Raised when the Capture at the requested index
 See also:
   EPCREError.CreateRes
   EPCREError.ErrorCode
-  TJclAnsiRegEx.Compile
-  TJclAnsiRegEx.Captures
+  TJclRegEx.Compile
+  TJclRegEx.Captures
 --------------------------------------------------------------------------------
 @@EPCREError.ErrorCode
 Summary:
@@ -115,18 +108,18 @@ See also:
   Message
   EPCREError.ErrorCode
 --------------------------------------------------------------------------------
-@@TJclAnsiRegEx
+@@TJclRegEx
 Summary:
   Implements a regular expression engine based on the Perl-compatible
   Regular Expression library.
 Description:
-  TJclAnsiRegEx implements a regular expression engine based on the
+  TJclRegEx implements a regular expression engine based on the
   Perl-compatible Regular Expression library.
 
-  TJclAnsiRegEx requires the header conversions and import routines in
+  TJclRegEx requires the header conversions and import routines in
   pcre.pas, and the PCRE.DLL dynamic link library.
 
-  TJclAnsiRegEx provides properties and methods that act as wrappers to
+  TJclRegEx provides properties and methods that act as wrappers to
   routines in the PCRE.DLL library.
 
   Use Compile to examine, study, and localize a regular expression.
@@ -140,7 +133,7 @@ Description:
   Use Captures to access captured character classes by their
   ordinal position.
 
-  Use CaptureOffset to access the starting and ending positions for
+  Use CaptureRanges to access the starting and ending positions for
   captured character classes by their ordinal position.
 
   Use ErrorMessage to access the description of an error returned from
@@ -152,31 +145,20 @@ Description:
   Use Options read or write values that affect the configuration and
   behavior of the PCRE.DLL library.
 
-  For more information about using TJclAnsiRegEx, please refer to the topic:
+  For more information about using TJclRegEx, please refer to the topic:
   Using the JCL PCRE Classes
 See also:
   Compile
   Match
   CaptureCount
   Captures
-  CaptureOffset
+  CaptureRanges
   ErrorMessage
   ErrorOffset
   Options
   JclPCRE_Using
 --------------------------------------------------------------------------------
-@@TJclAnsiRegEx.Create
-Summary:
-  Constructor for the object instance.
-Description:
-  Create is the Constructor for the object instance.
-
-  Create calls the inherited constructor, and allocates the
-  internal buffer size required for results from the PCRE library.
-See also:
-  Destroy
---------------------------------------------------------------------------------
-@@TJclAnsiRegEx.Compile@AnsiString@Boolean@Boolean
+@@TJclRegEx.Compile@string@Boolean@Boolean
 Summary:
   Converts a regular expression into the form required for the PCRE.DLL library.
 Description:
@@ -248,11 +230,11 @@ Metacharacter   Description
   to calling Compile or Match to control the configuration and behavior
   of the PCRE library.
 
-  Refer to the documentation for TJclAnsiRegExOption for a description of
+  Refer to the documentation for TJclRegExOption for a description of
   the values used in the Options property.
 
   The compiled regular expression representing Pattern is stored
-  internally in TJclAnsiRegEx for subsequent use in the Match method. An
+  internally in TJclRegEx for subsequent use in the Match method. An
   EPCREError exception is raised if Pattern contains an empty string ('').
 
   Compile returns a Boolean value that indicates if the regular
@@ -281,11 +263,11 @@ See also:
   Match
   ErrorMessage
   ErrorOffset
-  TJclAnsiRegExOption
-  TJclAnsiRegExOptions
+  TJclRegExOption
+  TJclRegExOptions
   EPCREError
 --------------------------------------------------------------------------------
-@@TJclAnsiRegEx.Destroy
+@@TJclRegEx.Destroy
 Summary:
   Destructor for object instance.
 Description:
@@ -293,7 +275,7 @@ Description:
 See also:
   Create
 --------------------------------------------------------------------------------
-@@TJclAnsiRegEx.Match@AnsiString@Cardinal
+@@TJclRegEx.Match@string@Cardinal
 Summary:
   Examines a text subject for values that match a compiled regular expression.
 Description:
@@ -316,7 +298,7 @@ Description:
   to calling Compile or Match to control the configuration and behavior
   of the PCRE library.
 
-  Refer to the documentation for TJclAnsiRegExOption for a detailed
+  Refer to the documentation for TJclRegExOption for a detailed
   description of the values used in the Options property.
 
   Use Compile to create the compile regular expression for use in the
@@ -326,7 +308,7 @@ Description:
   are represented using the Captures property. Values in Captures are
   accessed using the ordinal position of character groups or classes from
   the regular expression.  Use CaptureCount to determine the number of
-  strings resulting from the comparison.  Use CaptureOffset to access the
+  strings resulting from the comparison.  Use CaptureRanges to access the
   starting and ending offsets into the Subject where captured character
   classes were detected in the Match method.
 Parameters:
@@ -337,13 +319,13 @@ Result:
 See also:
   Compile
   Captures
-  CaptureOffset
+  CaptureRanges
   CaptureCount
   Options
-  TJclAnsiRegExOption
-  TJclAnsiRegExOptions
+  TJclRegExOption
+  TJclRegExOptions
 --------------------------------------------------------------------------------
-@@TJclAnsiRegEx.CaptureCount
+@@TJclRegEx.CaptureCount
 Summary:
   Number of strings in the result for a comparison performed using the
   Match method.
@@ -360,65 +342,65 @@ Description:
 
   CaptureCount can also be used to determine the range of ordinal
   positions allowed when accessing indexed values in the Captures and
-  CaptureOffset properties.  The range of values is guaranteed to be in
+  CaptureRanges properties.  The range of values is guaranteed to be in
   the range 0 up to CaptureCount-1.
 
   Use Captures to access a result string by its' ordinal position.
 
-  Use CaptureOffset to access the starting and ending offsets into the
+  Use CaptureRanges to access the starting and ending offsets into the
   text subject by its' ordinal position.
 See also:
   Match
   Compile
   Captures
-  CaptureOffset
+  CaptureRanges
 --------------------------------------------------------------------------------
-@@TJclAnsiRegEx.CaptureOffset
+@@TJclRegEx.CaptureRanges
 Summary:
   Indicates the location of a string in a text subject resulting from a
   call to the Match method.
 Description:
-  CaptureOffset is an read-only TJclAnsiCaptureOffset property that
+  CaptureRanges is an read-only CaptureRanges property that
   indicates the location of a string in a text subject resulting from a
-  call to the Match method. CaptureOffset is an indexed property, and
+  call to the Match method. CaptureRanges is an indexed property, and
   provides access to each string in the result by its' ordinal position.
 
   Use CaptureCount to determine the total number of strings in the result
-  from the Match method. The range of values is in CaptureOffset and
+  from the Match method. The range of values is in CaptureRanges and
   Captures is guaranteed to be in the range 0 up to CaptureCount-1.
 
   Use Captures to access the strings resulting from a call to the Match
   method.
 
-  See the documentation in TJclAnsiCaptureOffset for a detailed
+  See the documentation in TJclCaptureRange for a detailed
   description of the members in the structure.
 See also:
   CaptureCount
   Captures
   Match
   Compile
-  TJclAnsiCaptureOffset
+  TJclCaptureRange
 --------------------------------------------------------------------------------
-@@TJclAnsiRegEx.Captures
+@@TJclRegEx.Captures
 Summary:
   Strings resulting from a call to the Match method.
 Description:
-  Captures is a read-only AnsiString property that provides access to
+  Captures is a read-only string property that provides access to
   strings resulting from a call to the Match method. Captures is an
   indexed property that provides access to each string in the result set
   by its' ordinal position. Each string in Captures corresponds to a
   match for metacharacters and character classes specifed in the compiled
   regular expression.
 
-  Use CaptureOffset to access the starting and ending offsets of the
+  Use CaptureRanges to access the starting and ending offsets of the
   Capture string in the text subject.
 
   Use CaptureCount to determine the total number of strings in the result
   from the Match method. The index values used to access the Captures and
-  CaptureOffset properties is guaranteed to be in the range 0 up to
+  CaptureRanges properties is guaranteed to be in the range 0 up to
   CaptureCount-1.
 Notes:
-  The size of the AnsiString returned fro the Capture property is
+  The size of the string returned fro the Capture property is
   limited to 1025 characters (the size of the buffer allocated for string
   retrieval).
 Exceptions:
@@ -426,16 +408,16 @@ Exceptions:
   in the captured results.
 See also:
   CaptureCount
-  CaptureOffset
+  CaptureRanges
   Match
   EPCREError
 --------------------------------------------------------------------------------
-@@TJclAnsiRegEx.ErrorMessage
+@@TJclRegEx.ErrorMessage
 Summary:
   Represents an error message generated when compiling a regular
   expression.
 Description:
-  ErrorMessage is a read-only AnsiString property that represents an
+  ErrorMessage is a read-only String property that represents an
   error message generated when compiling a regular expression.
 
   ErrorMessage represents the inital error found in the semantics or
@@ -511,7 +493,7 @@ See also:
   ErrorOffset
   Compile
 --------------------------------------------------------------------------------
-@@TJclAnsiRegEx.ErrorOffset
+@@TJclRegEx.ErrorOffset
 Summary:
   Represents the location of an error generated when compiling a regular
   expression.
@@ -531,82 +513,82 @@ See also:
   ErrorMessage
   Compile
 --------------------------------------------------------------------------------
-@@TJclAnsiRegEx.Options
+@@TJclRegEx.Options
 Summary:
   Flags for configuring and controlling the run-time behavior of the
   regular expression engine.
 Description:
-  Options is a TJclAnsiRegExOptions property that represents the set of
+  Options is a TJclRegExOptions property that represents the set of
   option flags for configuring and modifying the behavior of the regular
   expression engine.  Options can contain a set of values from the
-  TJclAnsiRegExOption enumeration.
+  TJclRegExOption enumeration.
 
-  See the document in TJclAnsiRegExOption for a detailed description of
+  See the document in TJclRegExOption for a detailed description of
   values in the enumeration.
 
   Values in the Options property are passed to the PCRE library during
   execution of the Compile and Match methods. Set values in the Options
   property prior to calling the Compile or Match methods.
 See also:
-  TJclAnsiRegExOptions
-  TJclAnsiRegExOption
+  TJclRegExOptions
+  TJclRegExOption
   Compile
   Match
 --------------------------------------------------------------------------------
-@@TJclAnsiCaptureOffset
+@@TJclCaptureRange
 Summary:
   Represents the starting and ending offsets for captured string results
-  in the TJclAnsiRegEx class.
+  in the TJclRegEx class.
 Description:
-  TJclAnsiCaptureOffset is a record type with members that represent the
+  TJclCaptureRange is a record type with members that represent the
   starting and ending offsets for captured string results in the
-  TJclAnsiRegEx class.
+  TJclRegEx class.
 
-  TJclAnsiCaptureOffset instances are allocated and updated when reading
-  the indexed values in the TJclAnsiRegEx.Captures property.
+  TJclCaptureRange instances are allocated and updated when reading
+  the indexed values in the TJclRegEx.Captures property.
 
 Notes:
-  At the present time, the values in TJclAnsiCaptureOffset members
+  At the present time, the values in TJclCaptureRange members
   represent zero-based offsets.  Since were dealing with Delphi strings
   in the result(s), this is likely to be changed to Pascal-style
   string offsets where the initial offset into the string is 1 instead of 0.
 See also:
-  TJclAnsiCaptureOffset.FirstPos
-  TJclAnsiCaptureOffset.LastPos
-  TJclAnsiRegEx
-  TJclAnsiRegEx.Captures
+  TJclCaptureRange.FirstPos
+  TJclCaptureRange.LastPos
+  TJclRegEx
+  TJclRegEx.Captures
 --------------------------------------------------------------------------------
-@@TJclAnsiCaptureOffset.FirstPos
+@@TJclCaptureRange.FirstPos
 Summary:
   TODO
 Description:
   FirstPos represents the starting offset into a text subject for a
   captured result string.
 See also:
-  TJclAnsiRegEx.Captures
-  TJclAnsiRegEx.CaptureOffset
+  TJclRegEx.Captures
+  TJclRegEx.CaptureRanges
 --------------------------------------------------------------------------------
-@@TJclAnsiCaptureOffset.LastPos
+@@TJclCaptureRange.LastPos
 Summary:
   TODO
 Description:
   LastPos represents the ending offset into a text subject for a
   captured result string.
 See also:
-  TJclAnsiRegEx.Captures
-  TJclAnsiRegEx.CaptureOffset
+  TJclRegEx.Captures
+  TJclRegEx.CaptureRanges
 --------------------------------------------------------------------------------
-@@TJclAnsiRegExOption
+@@TJclRegExOption
 Summary:
   Represents bit flags used to configure or modify the PCRE regular
   expression engine.
 Description:
-  TJclAnsiRegExOption is an enumerated type that represents bit flags
+  TJclRegExOption is an enumerated type that represents bit flags
   that can be used to configure or modify the behavior of the PCRE
-  regular expression engine.  Values in TJclAnsiRegExOption affect the
-  execution of the TJclAnsiRegEx.Compile and TJclAnsiRegEx.Match methods.
+  regular expression engine.  Values in TJclRegExOption affect the
+  execution of the TJclRegEx.Compile and TJclRegEx.Match methods.
 
-  TJclAnsiRegExOption include the following values (and their PCRE
+  TJclRegExOption include the following values (and their PCRE
   equivalents):
 
 <table>
@@ -632,16 +614,16 @@ roNotEmpty        PCRE_NOTEMPTY
 roUTF8            PCRE_UTF8             Run in UTF-8 mode
 </table>
 
-  Values in TJclAnsiRegExOption can be assigned to the
-  TJclAnsiRegExOptions set type as used in the TJclAnsiRegEx.Options
+  Values in TJclRegExOption can be assigned to the
+  TJclRegExOptions set type as used in the TJclRegEx.Options
   property.
 
 Notes:
   PCRE must be built with UTF-8 support in order to use roUTF8.
 See also:
-  TJclAnsiRegEx.Compile
-  TJclAnsiRegEx.Match
-  TJclAnsiRegEx.Options
+  TJclRegEx.Compile
+  TJclRegEx.Match
+  TJclRegEx.Options
 --------------------------------------------------------------------------------
 @@TPCREIntArray
 Summary:
@@ -659,17 +641,17 @@ Description:
 See also:
   TODO
 --------------------------------------------------------------------------------
-@@TJclAnsiRegExOptions
+@@TJclRegExOptions
 Summary:
   Represents the set of bit flags to use for configuring and
-  controlling the TJclAnsiRegEx regular expression engine.
+  controlling the TJclRegEx regular expression engine.
 Description:
-  Represents the set of TJclAnsiRegExOption bit flags to use for
-  configuring and controlling the TJclAnsiRegEx regular expression
+  Represents the set of TJclRegExOption bit flags to use for
+  configuring and controlling the TJclRegEx regular expression
   engine.
 See also:
-  TJclAnsiRegEx
-  TJclAnsiRegExOption
+  TJclRegEx
+  TJclRegExOption
 --------------------------------------------------------------------------------
 @@JclPCRE_Intro
 <TITLE JclPCRE Introduction>
@@ -699,14 +681,14 @@ Summary:
   Using the JCL PCRE Classes.
 Description:
   The JCL PCRE classes provide access to functions and structures in
-  pcre.dll through the use of TJclAnsiRegEx and TJclAnsiRegExOptions
+  pcre.dll through the use of TJclRegEx and TJclRegExOptions
   classes.
 
-  TJclAnsiRegEx is a class that provides properties and methods
+  TJclRegEx is a class that provides properties and methods
   that act as wrappers for routines and structures found in the
   pcre.dll dynamic link library.
 
-  TJclAnsiRegEx is a non-visual object; it cannot be used on
+  TJclRegEx is a non-visual object; it cannot be used on
   the design surfaces of an IDE. It does not, however, require
   any installation other that being availble in the search path
   for the compiler. Simply add the pas unit to the
@@ -720,34 +702,34 @@ Description:
 </code>
 
   In your program, you would normally allocate an instance of
-  TJclAnsiRegEx and configure its' options in the
-  TJclAnsiRegEx.Options property.
+  TJclRegEx and configure its' options in the
+  TJclRegEx.Options property.
 
 <code>
   var
-    RE: TJclAnsiRegEx;
-    REO: JclAnsiRegExOptions;
+    RE: TJclRegEx;
+    REO: JclRegExOptions;
   ...
 
-  RE := TJclAnsiRegEx.Create;
+  RE := TJclRegEx.Create;
   REO := [roIgnoreCase, roMultiLine, roUnGreedy];
   RE.Options := REO;
 </code>
 
-  TJclAnsiRegEx.Options is used primarily to control the behavior of the
-  regular expression engine during calls to the TJclAnsiRegEx.Compile and
-  TJclAnsiRegEx.Match methods. Values in the JclAnsiRegExOptions set
+  TJclRegEx.Options is used primarily to control the behavior of the
+  regular expression engine during calls to the TJclRegEx.Compile and
+  TJclRegEx.Match methods. Values in the JclRegExOptions set
   reflect the attributes passed or retrieved using routines in pcre.dll.
-  See JclAnsiRegExOptions and JclAnsiRegExOption for a detailed
+  See JclRegExOptions and JclRegExOption for a detailed
   description of values.
 
-  Use the TJclAnsiRegEx.Compile method to specify the
+  Use the TJclRegEx.Compile method to specify the
   Perl-compatible regular expression to use when matching a
-  text subject. TJclAnsiRegEx.Compile is essentially a wrapper
+  text subject. TJclRegEx.Compile is essentially a wrapper
   around the pcre_compile(), pcre_compile2(), pcre_study(), and
   pcre_maketables() functions in pcre.dll.
 
-  See the documentation for the TJclAnsiRegEx.Compile method
+  See the documentation for the TJclRegEx.Compile method
   for more details about arguments to the method.
 
   Perl-compatible Regular Expressions are very flexible and
@@ -756,23 +738,23 @@ Description:
   a detailed description of the syntax and semantics of
   Perl-compatible Regular Expressions.
 
-  Use the TJclAnsiRegEx.ErrorMessage and
-  TJclAnsiRegEx.ErrorOffset properties to examine errors
+  Use the TJclRegEx.ErrorMessage and
+  TJclRegEx.ErrorOffset properties to examine errors
   detected when compiling the regular expression.
 
-  Use the TJclAnsiRegEx.Match method to compare the compiled
+  Use the TJclRegEx.Match method to compare the compiled
   regular expression against a given subject string using a
   matching algorithm that is similar to Perl's. The
-  TJclAnsiRegEx.Match method is a wrapper around the
+  TJclRegEx.Match method is a wrapper around the
   pcre_exec() function in pcre.dll.
 
-  TJclAnsiRegEx.Match returns a boolean value to indicate that
+  TJclRegEx.Match returns a boolean value to indicate that
   elements of the regular expression exist in the subject text.
-  Use the TJclAnsiRegEx.CaptureCount property to find the
+  Use the TJclRegEx.CaptureCount property to find the
   number of matching strings found for the regular expression.
-  Use the TJclAnsiRegEx.Captures property to access the string
+  Use the TJclRegEx.Captures property to access the string
   values by their ordinal position. Use the
-  TJclAnsiRegEx.CaptureOffset property to access the offsets
+  TJclRegEx.CaptureRanges property to access the offsets
   into the subject text where the string match was located.
 
 <code>
@@ -787,19 +769,19 @@ Description:
   else
   begin
     ShowMessage('Found: ' +
-      Copy(memoHTML.Lines.Text, RE.CaptureOffset[0].FirstPos,
-        RE.CaptureOffset[0].LastPos - RE.CaptureOffset[0].FirstPos + 1));
+      Copy(memoHTML.Lines.Text, RE.CaptureRanges[0].FirstPos,
+        RE.CaptureRanges[0].LastPos - RE.CaptureRanges[0].FirstPos + 1));
   end;
 </code>
 
-  TJclAnsiRegEx may raise exceptions when using its' properties
+  TJclRegEx may raise exceptions when using its' properties
   and methods. These exceptions can normally be handled in your
   application code by responding to EPCREError exception
   instances.
 See also:
-  TJclAnsiRegEx
-  TJclAnsiRegExOptions
-  TJclAnsiRegExOption
+  TJclRegEx
+  TJclRegExOptions
+  TJclRegExOption
   EPCREError
   pcrepattern
   pcre_compile

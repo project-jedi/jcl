@@ -216,7 +216,7 @@ const
 
 type
   TRtlCreateUnicodeStringFromAsciiz = function(var destination: UNICODE_STRING;
-    source: PChar): Boolean; stdcall;
+    source: PAnsiChar): Boolean; stdcall;
 
   TZwClose = function(Handle: THandle): NTSTATUS; stdcall;
 

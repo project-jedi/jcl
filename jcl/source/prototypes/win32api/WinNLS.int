@@ -113,9 +113,9 @@ const
 // line 1424
 
 type
-  CALINFO_ENUMPROCEXA = function (lpCalendarInfoString: LPSTR; Calendar: CALID): BOOL; stdcall;
-  {$EXTERNALSYM CALINFO_ENUMPROCEXA}
-  TCalInfoEnumProcExA = CALINFO_ENUMPROCEXA;
+  CALINFO_ENUMPROCEXW = function (lpCalendarInfoString: LPWSTR; Calendar: CALID): BOOL; stdcall;
+  {$EXTERNALSYM CALINFO_ENUMPROCEXW}
+  TCalInfoEnumProcExW = CALINFO_ENUMPROCEXW;
 
 // line 1635
 
@@ -132,9 +132,9 @@ function GetCalendarInfoW(Locale: LCID; Calendar: CALID; CalType: CALTYPE;
 
 // line 1754
 
-function EnumCalendarInfoExA(lpCalInfoEnumProcEx: CALINFO_ENUMPROCEXA;
+function EnumCalendarInfoExW(lpCalInfoEnumProcEx: CALINFO_ENUMPROCEXW;
   Locale: LCID; Calendar: CALID; CalType: CALTYPE): BOOL; stdcall;
-{$EXTERNALSYM EnumCalendarInfoExA}
+{$EXTERNALSYM EnumCalendarInfoExW}
 
 {$ENDIF ~CLR}
 

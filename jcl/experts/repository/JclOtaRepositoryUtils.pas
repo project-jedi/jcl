@@ -34,6 +34,7 @@ interface
 
 uses
   Windows,
+  SysUtils,
   ToolsAPI,
   JclBorlandTools,
   JclOtaUtils;
@@ -119,27 +120,30 @@ type
 
     property Name: string read FName;
   public
-    function CreateForm(const FormAncestor, FormName, FormFileName, FormContent,
-      SourceFileName, SourceContent, HeaderFileName,
-      HeaderContent: string): IOTAModule;
+    function CreateForm(const FormAncestor, FormName: string;
+      const FormFileName: TFileName; const FormContent: string;
+      const SourceFileName: TFileName; const SourceContent: string;
+      const HeaderFileName: TFileName; const HeaderContent: string): IOTAModule;
   end;
 
   TJclOtaFormCreator = class(TInterfacedObject, IOTACreator, IOTAModuleCreator)
   private
-    FFormFileName: string;
+    FFormFileName: TFileName;
     FFormContent: string;
-    FSourceFileName: string;
+    FSourceFileName: TFileName;
     FSourceContent: string;
-    FHeaderFileName: string;
+    FHeaderFileName: TFileName;
     FHeaderContent: string;
     FFormAncestor: string;
     FFormName: string;
     FProjectModule: IOTAProject;
-    procedure SaveFile(const FileName, FileContent: string); 
+    procedure SaveFile(const FileName: TFileName; const FileContent: string);
   public
     constructor Create(const ProjectModule: IOTAProject;
-      FormAncestor, FormName, FormFileName, FormContent, SourceFileName,
-      SourceContent, HeaderFileName, HeaderContent: string); reintroduce;
+      const FormAncestor, FormName: string;
+      const FormFileName: TFileName; const FormContent: string;
+      const SourceFileName: TFileName; const SourceContent: string;
+      const HeaderFileName: TFileName; const HeaderContent: string); reintroduce;
     destructor Destroy; override;
     // IOTACreator
     function GetCreatorType: string;
@@ -175,7 +179,7 @@ type
 implementation
 
 uses
-  SysUtils, Classes, ActiveX,
+  Classes, ActiveX,
   JclDateTime, JclFileUtils, JclOtaResources, JclOtaTemplates;
 
 //=== { TJclOTARepositoryExpert } ============================================
@@ -202,9 +206,10 @@ begin
   {$ENDIF BDS}
 end;
 
-function TJclOTARepositoryExpert.CreateForm(const FormAncestor, FormName,
-  FormFileName, FormContent, SourceFileName, SourceContent, HeaderFileName,
-  HeaderContent: string): IOTAModule;
+function TJclOTARepositoryExpert.CreateForm(const FormAncestor, FormName: string;
+  const FormFileName: TFileName; const FormContent: string;
+  const SourceFileName: TFileName; const SourceContent: string;
+  const HeaderFileName: TFileName; const HeaderContent: string): IOTAModule;
 var
   AModuleCreator: IOTAModuleCreator;
 begin
@@ -389,8 +394,10 @@ end;
 //=== { TJclOtaModuleCreator } ===============================================
 
 constructor TJclOtaFormCreator.Create(const ProjectModule: IOTAProject;
-  FormAncestor, FormName, FormFileName, FormContent, SourceFileName,
-  SourceContent, HeaderFileName, HeaderContent: string);
+  const FormAncestor, FormName: string;
+  const FormFileName: TFileName; const FormContent: string;
+  const SourceFileName: TFileName; const SourceContent: string;
+  const HeaderFileName: TFileName; const HeaderContent: string);
 begin
   inherited Create;
   FProjectModule := ProjectModule;
@@ -521,13 +528,15 @@ begin
     Result := nil;
 end;
 
-procedure TJclOtaFormCreator.SaveFile(const FileName, FileContent: string);
+procedure TJclOtaFormCreator.SaveFile(const FileName: TFileName; const FileContent: string);
 var
   AFileStream: TFileStream;
+  Buffer: AnsiString;
 begin
   AFileStream := TFileStream.Create(FileName, fmCreate);
   try
-    AFileStream.WriteBuffer(FileContent[1], Length(FileContent));
+    Buffer := AnsiString(FileContent);
+    AFileStream.WriteBuffer(Buffer[1], Length(Buffer));
   finally
     AFileStream.Free;
   end;

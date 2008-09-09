@@ -1467,7 +1467,7 @@ end;
 
 procedure TExprSimpleLexer.NextTok;
 const
-  CharToTokenMap: array [Char] of TExprToken =
+  CharToTokenMap: array [AnsiChar] of TExprToken =
   (
     {#0..#31}
     etInvalid, etInvalid, etInvalid, etInvalid, etInvalid, etInvalid, etInvalid, etInvalid,
@@ -1626,7 +1626,7 @@ begin
       end;
   else
     { map character to token }
-    FCurrTok := CharToTokenMap[cp^];
+    FCurrTok := CharToTokenMap[AnsiChar(cp^)];
     Inc(cp);
   end;
 

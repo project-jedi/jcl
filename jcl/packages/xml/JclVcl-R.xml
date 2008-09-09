@@ -10,10 +10,11 @@
   <Requires>
     <Package Name="rtl" Targets="WinLibSuffix" Condition=""/>
     <Package Name="vcl" Targets="WinLibSuffix" Condition=""/>
-    <Package Name="vcljpg" Targets="WinLibSuffix" Condition=""/>
+    <Package Name="vcljpg" Targets="c6,d6,d7,d8,d9,d10,cs1,d11" Condition=""/>
     <Package Name="Jcl-R" Targets="all" Condition=""/>
     <Package Name="vcl50" Targets="noLibSuffix" Condition=""/>
     <Package Name="vcljpg50" Targets="noLibSuffix" Condition=""/>
+    <Package Name="vclimg" Targets="allv12up" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\source\vcl\JclPrint.pas" Targets="Vcl" Formname="" Condition=""/>

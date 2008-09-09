@@ -58,13 +58,11 @@ type
   TJclIntfArraySet = class(TJclIntfArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclIntfEqualityComparer, IJclIntfComparer,
     IJclIntfCollection, IJclIntfList, IJclIntfArray, IJclIntfSet)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
   private
     function BinarySearch(const AInterface: IInterface): Integer;
   protected
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
     { IJclIntfCollection }
     function Add(const AInterface: IInterface): Boolean;
     function AddAll(const ACollection: IJclIntfCollection): Boolean;
@@ -75,20 +73,17 @@ type
     procedure Intersect(const ACollection: IJclIntfCollection);
     procedure Subtract(const ACollection: IJclIntfCollection);
     procedure Union(const ACollection: IJclIntfCollection);
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
   end;
 
   TJclAnsiStrArraySet = class(TJclAnsiStrArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclStrContainer, IJclAnsiStrContainer, IJclAnsiStrFlatContainer, IJclAnsiStrEqualityComparer, IJclAnsiStrComparer,
     IJclAnsiStrCollection, IJclAnsiStrList, IJclAnsiStrArray, IJclAnsiStrSet)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
   private
     function BinarySearch(const AString: AnsiString): Integer;
   protected
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
     { IJclAnsiStrCollection }
     function Add(const AString: AnsiString): Boolean; override;
     function AddAll(const ACollection: IJclAnsiStrCollection): Boolean; override;
@@ -99,20 +94,17 @@ type
     procedure Intersect(const ACollection: IJclAnsiStrCollection);
     procedure Subtract(const ACollection: IJclAnsiStrCollection);
     procedure Union(const ACollection: IJclAnsiStrCollection);
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
   end;
 
   TJclWideStrArraySet = class(TJclWideStrArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclStrContainer, IJclWideStrContainer, IJclWideStrFlatContainer, IJclWideStrEqualityComparer, IJclWideStrComparer,
     IJclWideStrCollection, IJclWideStrList, IJclWideStrArray, IJclWideStrSet)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
   private
     function BinarySearch(const AString: WideString): Integer;
   protected
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
     { IJclWideStrCollection }
     function Add(const AString: WideString): Boolean; override;
     function AddAll(const ACollection: IJclWideStrCollection): Boolean; override;
@@ -123,9 +115,31 @@ type
     procedure Intersect(const ACollection: IJclWideStrCollection);
     procedure Subtract(const ACollection: IJclWideStrCollection);
     procedure Union(const ACollection: IJclWideStrCollection);
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
   end;
+
+{$IFDEF SUPPORTS_UNICODE_STRING}
+  TJclUnicodeStrArraySet = class(TJclUnicodeStrArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclStrContainer, IJclUnicodeStrContainer, IJclUnicodeStrFlatContainer, IJclUnicodeStrEqualityComparer, IJclUnicodeStrComparer,
+    IJclUnicodeStrCollection, IJclUnicodeStrList, IJclUnicodeStrArray, IJclUnicodeStrSet)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+  private
+    function BinarySearch(const AString: UnicodeString): Integer;
+  protected
+    { IJclUnicodeStrCollection }
+    function Add(const AString: UnicodeString): Boolean; override;
+    function AddAll(const ACollection: IJclUnicodeStrCollection): Boolean; override;
+    function Contains(const AString: UnicodeString): Boolean; override;
+    { IJclUnicodeStrList }
+    function Insert(Index: Integer; const AString: UnicodeString): Boolean; overload;
+    { IJclUnicodeStrSet }
+    procedure Intersect(const ACollection: IJclUnicodeStrCollection);
+    procedure Subtract(const ACollection: IJclUnicodeStrCollection);
+    procedure Union(const ACollection: IJclUnicodeStrCollection);
+  public
+  end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF CONTAINER_ANSISTR}
   TJclStrArraySet = TJclAnsiStrArraySet;
@@ -133,17 +147,18 @@ type
   {$IFDEF CONTAINER_WIDESTR}
   TJclStrArraySet = TJclWideStrArraySet;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  TJclStrArraySet = TJclUnicodeStrArraySet;
+  {$ENDIF CONTAINER_UNICODESTR}
 
   TJclSingleArraySet = class(TJclSingleArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclSingleContainer, IJclSingleEqualityComparer, IJclSingleComparer,
     IJclSingleCollection, IJclSingleList, IJclSingleArray, IJclSingleSet)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
   private
     function BinarySearch(const AValue: Single): Integer;
   protected
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
     { IJclSingleCollection }
     function Add(const AValue: Single): Boolean;
     function AddAll(const ACollection: IJclSingleCollection): Boolean;
@@ -154,20 +169,17 @@ type
     procedure Intersect(const ACollection: IJclSingleCollection);
     procedure Subtract(const ACollection: IJclSingleCollection);
     procedure Union(const ACollection: IJclSingleCollection);
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
   end;
 
   TJclDoubleArraySet = class(TJclDoubleArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclDoubleContainer, IJclDoubleEqualityComparer, IJclDoubleComparer,
     IJclDoubleCollection, IJclDoubleList, IJclDoubleArray, IJclDoubleSet)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
   private
     function BinarySearch(const AValue: Double): Integer;
   protected
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
     { IJclDoubleCollection }
     function Add(const AValue: Double): Boolean;
     function AddAll(const ACollection: IJclDoubleCollection): Boolean;
@@ -178,20 +190,17 @@ type
     procedure Intersect(const ACollection: IJclDoubleCollection);
     procedure Subtract(const ACollection: IJclDoubleCollection);
     procedure Union(const ACollection: IJclDoubleCollection);
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
   end;
 
   TJclExtendedArraySet = class(TJclExtendedArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclExtendedContainer, IJclExtendedEqualityComparer, IJclExtendedComparer,
     IJclExtendedCollection, IJclExtendedList, IJclExtendedArray, IJclExtendedSet)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
   private
     function BinarySearch(const AValue: Extended): Integer;
   protected
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
     { IJclExtendedCollection }
     function Add(const AValue: Extended): Boolean;
     function AddAll(const ACollection: IJclExtendedCollection): Boolean;
@@ -202,7 +211,6 @@ type
     procedure Intersect(const ACollection: IJclExtendedCollection);
     procedure Subtract(const ACollection: IJclExtendedCollection);
     procedure Union(const ACollection: IJclExtendedCollection);
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
   end;
 
@@ -219,13 +227,11 @@ type
   TJclIntegerArraySet = class(TJclIntegerArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclIntegerEqualityComparer, IJclIntegerComparer,
     IJclIntegerCollection, IJclIntegerList, IJclIntegerArray, IJclIntegerSet)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
   private
     function BinarySearch(AValue: Integer): Integer;
   protected
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
     { IJclIntegerCollection }
     function Add(AValue: Integer): Boolean;
     function AddAll(const ACollection: IJclIntegerCollection): Boolean;
@@ -236,20 +242,17 @@ type
     procedure Intersect(const ACollection: IJclIntegerCollection);
     procedure Subtract(const ACollection: IJclIntegerCollection);
     procedure Union(const ACollection: IJclIntegerCollection);
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
   end;
 
   TJclCardinalArraySet = class(TJclCardinalArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclCardinalEqualityComparer, IJclCardinalComparer,
     IJclCardinalCollection, IJclCardinalList, IJclCardinalArray, IJclCardinalSet)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
   private
     function BinarySearch(AValue: Cardinal): Integer;
   protected
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
     { IJclCardinalCollection }
     function Add(AValue: Cardinal): Boolean;
     function AddAll(const ACollection: IJclCardinalCollection): Boolean;
@@ -260,20 +263,17 @@ type
     procedure Intersect(const ACollection: IJclCardinalCollection);
     procedure Subtract(const ACollection: IJclCardinalCollection);
     procedure Union(const ACollection: IJclCardinalCollection);
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
   end;
 
   TJclInt64ArraySet = class(TJclInt64ArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclInt64EqualityComparer, IJclInt64Comparer,
     IJclInt64Collection, IJclInt64List, IJclInt64Array, IJclInt64Set)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
   private
     function BinarySearch(const AValue: Int64): Integer;
   protected
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
     { IJclInt64Collection }
     function Add(const AValue: Int64): Boolean;
     function AddAll(const ACollection: IJclInt64Collection): Boolean;
@@ -284,7 +284,6 @@ type
     procedure Intersect(const ACollection: IJclInt64Collection);
     procedure Subtract(const ACollection: IJclInt64Collection);
     procedure Union(const ACollection: IJclInt64Collection);
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
   end;
 
@@ -292,13 +291,11 @@ type
   TJclPtrArraySet = class(TJclPtrArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclPtrEqualityComparer, IJclPtrComparer,
     IJclPtrCollection, IJclPtrList, IJclPtrArray, IJclPtrSet)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
   private
     function BinarySearch(APtr: Pointer): Integer;
   protected
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
     { IJclPtrCollection }
     function Add(APtr: Pointer): Boolean;
     function AddAll(const ACollection: IJclPtrCollection): Boolean;
@@ -309,7 +306,6 @@ type
     procedure Intersect(const ACollection: IJclPtrCollection);
     procedure Subtract(const ACollection: IJclPtrCollection);
     procedure Union(const ACollection: IJclPtrCollection);
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
   end;
   {$ENDIF ~CLR}
@@ -317,13 +313,11 @@ type
   TJclArraySet = class(TJclArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclObjectOwner, IJclEqualityComparer, IJclComparer,
     IJclCollection, IJclList, IJclArray, IJclSet)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
   private
     function BinarySearch(AObject: TObject): Integer;
   protected
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
     { IJclCollection }
     function Add(AObject: TObject): Boolean;
     function AddAll(const ACollection: IJclCollection): Boolean;
@@ -334,7 +328,6 @@ type
     procedure Intersect(const ACollection: IJclCollection);
     procedure Subtract(const ACollection: IJclCollection);
     procedure Union(const ACollection: IJclCollection);
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
   end;
 
@@ -345,10 +338,6 @@ type
   private
     function BinarySearch(const AItem: T): Integer;
   protected
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
     { IJclCollection<T> }
     function Add(const AItem: T): Boolean;
     function AddAll(const ACollection: IJclCollection<T>): Boolean;
@@ -367,21 +356,17 @@ type
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclItemOwner<T>, IJclEqualityComparer<T>, IJclComparer<T>,
     IJclCollection<T>, IJclList<T>, IJclArray<T>, IJclSet<T>)
   private
-    FComparer: IComparer<T>;
+    FComparer: IJclComparer<T>;
   protected
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     function ItemsCompare(const A, B: T): Integer; override;
     function ItemsEqual(const A, B: T): Boolean; override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
   public
-    constructor Create(const AComparer: IComparer<T>; ACapacity: Integer; AOwnsItems: Boolean); overload;
-    constructor Create(const AComparer: IComparer<T>; const ACollection: IJclCollection<T>; AOwnsItems: Boolean); overload;
+    constructor Create(const AComparer: IJclComparer<T>; ACapacity: Integer; AOwnsItems: Boolean); overload;
+    constructor Create(const AComparer: IJclComparer<T>; const ACollection: IJclCollection<T>; AOwnsItems: Boolean); overload;
 
-    property Comparer: IComparer<T> read FComparer write FComparer;
+    property Comparer: IJclComparer<T> read FComparer write FComparer;
   end;
 
   // F = Function to compare items
@@ -390,10 +375,6 @@ type
     IJclCollection<T>, IJclList<T>, IJclArray<T>, IJclSet<T>)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
   public
     constructor Create(const ACompare: TCompare<T>; ACapacity: Integer; AOwnsItems: Boolean); overload;
     constructor Create(const ACompare: TCompare<T>; const ACollection: IJclCollection<T>; AOwnsItems: Boolean); overload;
@@ -407,10 +388,6 @@ type
     function ItemsCompare(const A, B: T): Integer; override;
     function ItemsEqual(const A, B: T): Boolean; override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
   end;
 
   {$ENDIF SUPPORTS_GENERICS}
@@ -546,12 +523,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfArraySet.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclIntfArraySet.Create(Size);
-  AssignPropertiesTo(Result);
-end;
-
 function TJclIntfArraySet.Insert(Index: Integer; const AInterface: IInterface): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
@@ -570,6 +541,12 @@ end;
 procedure TJclIntfArraySet.Union(const ACollection: IJclIntfCollection);
 begin
   AddAll(ACollection);
+end;
+
+function TJclIntfArraySet.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclIntfArraySet.Create(Size);
+  AssignPropertiesTo(Result);
 end;
 
 //=== { TJclAnsiStrArraySet } ====================================================
@@ -688,12 +665,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclAnsiStrArraySet.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclAnsiStrArraySet.Create(Size);
-  AssignPropertiesTo(Result);
-end;
-
 function TJclAnsiStrArraySet.Insert(Index: Integer; const AString: AnsiString): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
@@ -712,6 +683,12 @@ end;
 procedure TJclAnsiStrArraySet.Union(const ACollection: IJclAnsiStrCollection);
 begin
   AddAll(ACollection);
+end;
+
+function TJclAnsiStrArraySet.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclAnsiStrArraySet.Create(Size);
+  AssignPropertiesTo(Result);
 end;
 
 //=== { TJclWideStrArraySet } ====================================================
@@ -830,12 +807,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclWideStrArraySet.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclWideStrArraySet.Create(Size);
-  AssignPropertiesTo(Result);
-end;
-
 function TJclWideStrArraySet.Insert(Index: Integer; const AString: WideString): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
@@ -855,6 +826,156 @@ procedure TJclWideStrArraySet.Union(const ACollection: IJclWideStrCollection);
 begin
   AddAll(ACollection);
 end;
+
+function TJclWideStrArraySet.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclWideStrArraySet.Create(Size);
+  AssignPropertiesTo(Result);
+end;
+
+{$IFDEF SUPPORTS_UNICODE_STRING}
+//=== { TJclUnicodeStrArraySet } ====================================================
+
+function TJclUnicodeStrArraySet.Add(const AString: UnicodeString): Boolean;
+var
+  Idx: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FAllowDefaultElements or not ItemsEqual(AString, '');
+    if Result then
+    begin
+      Idx := BinarySearch(AString);
+      if Idx >= 0 then
+        Result := not ItemsEqual(GetString(Idx), AString) or CheckDuplicate
+      else
+        Result := True;
+      if Result then
+        Result := inherited Insert(Idx + 1, AString);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrArraySet.AddAll(const ACollection: IJclUnicodeStrCollection): Boolean;
+var
+  It: IJclUnicodeStrIterator;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Add(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrArraySet.BinarySearch(const AString: UnicodeString): Integer;
+var
+  HiPos, LoPos, CompPos: Integer;
+  Comp: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    LoPos := 0;
+    HiPos := Size - 1;
+    CompPos := (HiPos + LoPos) div 2;
+    while HiPos >= LoPos do
+    begin
+      Comp := ItemsCompare(GetString(CompPos), AString);
+      if Comp < 0 then
+        LoPos := CompPos + 1
+      else
+      if Comp > 0 then
+        HiPos := CompPos - 1
+      else
+      begin
+        HiPos := CompPos;
+        LoPos := CompPos + 1;
+      end;
+      CompPos := (HiPos + LoPos) div 2;
+    end;
+    Result := HiPos;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrArraySet.Contains(const AString: UnicodeString): Boolean;
+var
+  Idx: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Idx := BinarySearch(AString);
+    if Idx >= 0 then
+      Result := ItemsEqual(GetString(Idx), AString)
+    else
+      Result := False;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrArraySet.Insert(Index: Integer; const AString: UnicodeString): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclUnicodeStrArraySet.Intersect(const ACollection: IJclUnicodeStrCollection);
+begin
+  RetainAll(ACollection);
+end;
+
+procedure TJclUnicodeStrArraySet.Subtract(const ACollection: IJclUnicodeStrCollection);
+begin
+  RemoveAll(ACollection);
+end;
+
+procedure TJclUnicodeStrArraySet.Union(const ACollection: IJclUnicodeStrCollection);
+begin
+  AddAll(ACollection);
+end;
+
+function TJclUnicodeStrArraySet.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclUnicodeStrArraySet.Create(Size);
+  AssignPropertiesTo(Result);
+end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
 
 //=== { TJclSingleArraySet } ====================================================
 
@@ -972,12 +1093,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclSingleArraySet.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclSingleArraySet.Create(Size);
-  AssignPropertiesTo(Result);
-end;
-
 function TJclSingleArraySet.Insert(Index: Integer; const AValue: Single): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
@@ -996,6 +1111,12 @@ end;
 procedure TJclSingleArraySet.Union(const ACollection: IJclSingleCollection);
 begin
   AddAll(ACollection);
+end;
+
+function TJclSingleArraySet.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclSingleArraySet.Create(Size);
+  AssignPropertiesTo(Result);
 end;
 
 //=== { TJclDoubleArraySet } ====================================================
@@ -1114,12 +1235,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclDoubleArraySet.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclDoubleArraySet.Create(Size);
-  AssignPropertiesTo(Result);
-end;
-
 function TJclDoubleArraySet.Insert(Index: Integer; const AValue: Double): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
@@ -1138,6 +1253,12 @@ end;
 procedure TJclDoubleArraySet.Union(const ACollection: IJclDoubleCollection);
 begin
   AddAll(ACollection);
+end;
+
+function TJclDoubleArraySet.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclDoubleArraySet.Create(Size);
+  AssignPropertiesTo(Result);
 end;
 
 //=== { TJclExtendedArraySet } ====================================================
@@ -1256,12 +1377,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclExtendedArraySet.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclExtendedArraySet.Create(Size);
-  AssignPropertiesTo(Result);
-end;
-
 function TJclExtendedArraySet.Insert(Index: Integer; const AValue: Extended): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
@@ -1280,6 +1395,12 @@ end;
 procedure TJclExtendedArraySet.Union(const ACollection: IJclExtendedCollection);
 begin
   AddAll(ACollection);
+end;
+
+function TJclExtendedArraySet.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclExtendedArraySet.Create(Size);
+  AssignPropertiesTo(Result);
 end;
 
 //=== { TJclIntegerArraySet } ====================================================
@@ -1398,12 +1519,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntegerArraySet.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclIntegerArraySet.Create(Size);
-  AssignPropertiesTo(Result);
-end;
-
 function TJclIntegerArraySet.Insert(Index: Integer; AValue: Integer): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
@@ -1422,6 +1537,12 @@ end;
 procedure TJclIntegerArraySet.Union(const ACollection: IJclIntegerCollection);
 begin
   AddAll(ACollection);
+end;
+
+function TJclIntegerArraySet.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclIntegerArraySet.Create(Size);
+  AssignPropertiesTo(Result);
 end;
 
 //=== { TJclCardinalArraySet } ====================================================
@@ -1540,12 +1661,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclCardinalArraySet.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclCardinalArraySet.Create(Size);
-  AssignPropertiesTo(Result);
-end;
-
 function TJclCardinalArraySet.Insert(Index: Integer; AValue: Cardinal): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
@@ -1564,6 +1679,12 @@ end;
 procedure TJclCardinalArraySet.Union(const ACollection: IJclCardinalCollection);
 begin
   AddAll(ACollection);
+end;
+
+function TJclCardinalArraySet.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclCardinalArraySet.Create(Size);
+  AssignPropertiesTo(Result);
 end;
 
 //=== { TJclInt64ArraySet } ====================================================
@@ -1682,12 +1803,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclInt64ArraySet.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclInt64ArraySet.Create(Size);
-  AssignPropertiesTo(Result);
-end;
-
 function TJclInt64ArraySet.Insert(Index: Integer; const AValue: Int64): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
@@ -1706,6 +1821,12 @@ end;
 procedure TJclInt64ArraySet.Union(const ACollection: IJclInt64Collection);
 begin
   AddAll(ACollection);
+end;
+
+function TJclInt64ArraySet.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclInt64ArraySet.Create(Size);
+  AssignPropertiesTo(Result);
 end;
 
 {$IFNDEF CLR}
@@ -1825,12 +1946,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclPtrArraySet.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclPtrArraySet.Create(Size);
-  AssignPropertiesTo(Result);
-end;
-
 function TJclPtrArraySet.Insert(Index: Integer; APtr: Pointer): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
@@ -1849,6 +1964,12 @@ end;
 procedure TJclPtrArraySet.Union(const ACollection: IJclPtrCollection);
 begin
   AddAll(ACollection);
+end;
+
+function TJclPtrArraySet.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclPtrArraySet.Create(Size);
+  AssignPropertiesTo(Result);
 end;
 {$ENDIF ~CLR}
 
@@ -1968,12 +2089,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclArraySet.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclArraySet.Create(Size, False);
-  AssignPropertiesTo(Result);
-end;
-
 function TJclArraySet.Insert(Index: Integer; AObject: TObject): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
@@ -1992,6 +2107,12 @@ end;
 procedure TJclArraySet.Union(const ACollection: IJclCollection);
 begin
   AddAll(ACollection);
+end;
+
+function TJclArraySet.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclArraySet.Create(Size, False);
+  AssignPropertiesTo(Result);
 end;
 
 {$IFDEF SUPPORTS_GENERICS}
@@ -2111,7 +2232,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-
 function TJclArraySet<T>.Insert(Index: Integer; const AItem: T): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
@@ -2134,13 +2254,13 @@ end;
 
 //=== { TJclArraySetE<T> } ===================================================
 
-constructor TJclArraySetE<T>.Create(const AComparer: IComparer<T>; ACapacity: Integer; AOwnsItems: Boolean);
+constructor TJclArraySetE<T>.Create(const AComparer: IJclComparer<T>; ACapacity: Integer; AOwnsItems: Boolean);
 begin
   inherited Create(ACapacity, AOwnsItems);
   FComparer := AComparer;
 end;
 
-constructor TJclArraySetE<T>.Create(const AComparer: IComparer<T>; const ACollection: IJclCollection<T>;
+constructor TJclArraySetE<T>.Create(const AComparer: IJclComparer<T>; const ACollection: IJclCollection<T>;
   AOwnsItems: Boolean);
 begin
   inherited Create(ACollection, AOwnsItems);

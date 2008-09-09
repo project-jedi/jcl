@@ -143,7 +143,7 @@ procedure TMainForm.BlockSeparatorSelectorChange(Sender: TObject);
 begin
   if Assigned(FNumFormat) then
   begin
-    FNumFormat.DigitBlockSeparator := AnsiChar(BlockSeparatorSelector.Text[1]);
+    FNumFormat.DigitBlockSeparator := Char(BlockSeparatorSelector.Text[1]);
     Display;
   end;
 end;

@@ -78,6 +78,7 @@ type
         joJCLDefUnicodeBZip2Data,
         joJCLDefContainerAnsiStr,
         joJCLDefContainerWideStr,
+        joJCLDefContainerUnicodeStr,
         joJCLDefContainerNoStr,
         //joJCLDef7zStaticLink,
         joJCLDef7zLinkDLL,
@@ -376,10 +377,11 @@ resourcestring
   RsCaptionDefUnicodeZLibData      = 'Compressed data using zlib';
   RsCaptionDefUnicodeBZip2Data     = 'Compressed data using bzip2';
   // Container options
-  RsCaptionDefContainer        = 'Container options';
-  RsCaptionDefContainerAnsiStr = 'Alias AnsiString containers to String containers';
-  RsCaptionDefContainerWideStr = 'Alias WideString containers to String containers';
-  RsCaptionDefContainerNoStr   = 'Do not alias anything';
+  RsCaptionDefContainer           = 'Container options';
+  RsCaptionDefContainerAnsiStr    = 'Alias AnsiString containers to String containers';
+  RsCaptionDefContainerWideStr    = 'Alias WideString containers to String containers';
+  RsCaptionDefContainerUnicodeStr = 'Alias UnicodeString containers to String containers (Delphi 2008 only)';
+  RsCaptionDefContainerNoStr      = 'Do not alias anything';
   // 7Z options
   RsCaptionDef7z               = 'Sevenzip options';
   //RsCaptionDef7zStaticLink     = 'Static link to Sevenzip code (not supported yet)';
@@ -487,10 +489,11 @@ resourcestring
   RsHintDefUnicodeZLibData      = 'Link resource containing Unicode data compressed with ZLib';
   RsHintDefUnicodeBZip2Data     = 'Link resource containing Unicode data compressed with BZip2';
   // Container options
-  RsHintDefContainer          = 'Container specific options';
-  RsHintDefContainerAnsiStr   = 'Define TJclStr* containers as alias of TJclAnsiStr* containers';
-  RsHintDefContainerWideStr   = 'Define TJclStr* containers as alias of TJclWideStr* containers';
-  RsHintDefContainerNoStr     = 'Do not define TJclStr* containers';
+  RsHintDefContainer           = 'Container specific options';
+  RsHintDefContainerAnsiStr    = 'Define TJclStr* containers as alias of TJclAnsiStr* containers';
+  RsHintDefContainerWideStr    = 'Define TJclStr* containers as alias of TJclWideStr* containers';
+  RsHintDefContainerUnicodeStr = 'Define TJClStr* containers as alias of TJclUnicodeStr* containers';
+  RsHintDefContainerNoStr      = 'Do not define TJclStr* containers';
   // 7Z options
   RsHintDef7z               = 'Sevenzip specific options (sevenzip.pas)';
   //RsHintDef7zStaticLink     = 'Code from Sevenzip is linked into JCL binaries';
@@ -620,6 +623,7 @@ var
       (Id: -1; Caption: RsCaptionDefUnicodeBZip2Data; Hint: RsHintDefUnicodeBZip2Data), // joDefUnicodeBZip2Data
       (Id: -1; Caption: RsCaptionDefContainerAnsiStr; Hint: RsHintDefContainerAnsiStr), // joDefContainerAnsiStr
       (Id: -1; Caption: RsCaptionDefContainerWideStr; Hint: RsHintDefContainerWideStr), // joDefContainerWideStr
+      (Id: -1; Caption: RsCaptionDefContainerUnicodeStr; Hint: RsHintDefContainerUnicodeStr), // joDefContainerUnicodeStr
       (Id: -1; Caption: RsCaptionDefContainerNoStr; Hint: RsHintDefContainerNoStr), // joDefContainerNoStr
       //(Id: -1; Caption: RsCaptionDef7zStaticLink; Hint: RsHintDef7zStaticLink), // joDef7zStaticLink
       (Id: -1; Caption: RsCaptionDef7zLinkDLL; Hint: RsHintDef7zLinkDLL), // joDef7zLinkDLL
@@ -1025,15 +1029,24 @@ procedure TJclInstallation.Init;
     AddOption(joJCLDefMathExtremeValues, [goChecked], joJCLDefMath);
 
     AddOption(joJCLDefContainer, [goChecked], Parent);
+    if (Target.RadToolKind = brBorlandDevStudio) and (Target.IDEVersionNumber >= 6) then
+    begin
+      AddOption(joJCLDefContainerAnsiStr, [goRadioButton], joJCLDefContainer);
+      AddOption(joJCLDefContainerWideStr, [goRadioButton], joJCLDefContainer);
+      AddOption(joJCLDefContainerUnicodeStr, [goRadioButton, goChecked], joJCLDefContainer);
+    end
+    else
     if CLRVersion = '' then
     begin
       AddOption(joJCLDefContainerAnsiStr, [goRadioButton, goChecked], joJCLDefContainer);
       AddOption(joJCLDefContainerWideStr, [goRadioButton], joJCLDefContainer);
+      AddOption(joJCLDefContainerUnicodeStr, [goRadioButton], joJCLDefContainer);
     end
     else
     begin
       AddOption(joJCLDefContainerAnsiStr, [goRadioButton], joJCLDefContainer);
       AddOption(joJCLDefContainerWideStr, [goRadioButton, goChecked], joJCLDefContainer);
+      AddOption(joJCLDefContainerUnicodeStr, [goRadioButton], joJCLDefContainer);
     end;
     AddOption(joJCLDefContainerNoStr, [goRadioButton], joJCLDefContainer);
 
@@ -1546,8 +1559,9 @@ var
         'PCRE_LINKDLL', 'PCRE_LINKONREQUEST', 'BZIP2_STATICLINK',
         'BZIP2_LINKDLL', 'BZIP2_LINKONREQUEST', 'UNICODE_SILENT_FAILURE',
         'UNICODE_RAW_DATA', 'UNICODE_ZLIB_DATA', 'UNICODE_BZIP2_DATA',
-        'CONTAINER_ANSISTR', 'CONTAINER_WIDESTR', 'CONTAINER_NOSTR',
-        {'7ZIP_STATICLINK',} '7ZIP_LINKDLL', '7ZIP_LINKONREQUEST' );
+        'CONTAINER_ANSISTR', 'CONTAINER_WIDESTR', 'CONTAINER_UNICODESTR',
+        'CONTAINER_NOSTR', {'7ZIP_STATICLINK',} '7ZIP_LINKDLL',
+        '7ZIP_LINKONREQUEST' );
   var
     Option: TInstallerOption;
     Defines: TStrings;
@@ -3171,7 +3185,7 @@ end;
 
 procedure TJclInstallation.AddDemo(const Directory: string; const FileInfo: TSearchRec);
 begin
-  if StrCompare(ExtractFileExt(FileInfo.Name),'.dpr') = 0 then
+  if not StrSame(ExtractFileExt(FileInfo.Name), '.dproj') then
     FDemoList.Append(Directory + FileInfo.Name);
 end;
 
@@ -3359,7 +3373,7 @@ function TJclDistribution.CreateInstall(Target: TJclBorRADToolInstallation): Boo
         Result := Target.VersionNumber in [5, 6];
       brBorlandDevStudio :
         Result := ((Target.VersionNumber in [1, 2]) and (bpDelphi32 in Target.Personalities))
-          or (Target.VersionNumber in [3, 4, 5]);
+          or (Target.VersionNumber in [3, 4, 5, 6]);
       else
         Result := False;
     end;
@@ -3432,7 +3446,7 @@ function TJclDistribution.GetVersion: string;
   function GetRevision: Integer;
   var
     DailyFileName, SvnEntriesFileName, RevisionText: string;
-    TextFile: TJclMappedTextReader;
+    TextFile: TJclAnsiMappedTextReader;
     Index: Integer;
   begin
     Result := 0;
@@ -3441,9 +3455,9 @@ function TJclDistribution.GetVersion: string;
     if FileExists(DailyFileName) then
     begin
       // directory from a daily zip
-      TextFile := TJclMappedTextReader.Create(DailyFileName);
+      TextFile := TJclAnsiMappedTextReader.Create(DailyFileName);
       try
-        RevisionText := TextFile.ReadLn;
+        RevisionText := string(TextFile.ReadLn);
         if RevisionText <> '' then
         begin
           Index := Length(RevisionText) - 1; // skip the '.'
@@ -3464,12 +3478,12 @@ function TJclDistribution.GetVersion: string;
       if FileExists(SvnEntriesFileName) then
       begin
         // directory from subversion
-        TextFile := TJclMappedTextReader.Create(SvnEntriesFileName);
+        TextFile := TJclAnsiMappedTextReader.Create(SvnEntriesFileName);
         try
           TextFile.ReadLn;
           TextFile.ReadLn;
           TextFile.ReadLn;
-          RevisionText := TextFile.ReadLn;
+          RevisionText := string(TextFile.ReadLn);
           Result := StrToIntDef(RevisionText, 0);
         finally
           TextFile.Free;
@@ -3713,7 +3727,7 @@ function TJclDistribution.RegHelpExecuteCommands(DisplayErrors: Boolean): Boolea
 var
   Index: Integer;
   Parameters, LogFileName, ProgramResult, Verb: string;
-  ResultLines: TJclMappedTextReader;
+  ResultLines: TJclAnsiMappedTextReader;
   TargetInstall: TJclInstallation;
 begin
   Result := True;
@@ -3790,11 +3804,11 @@ begin
     if not DisplayErrors then
       Exit;
     Sleep(500); // wait possible antivirus lock
-    ResultLines := TJclMappedTextReader.Create(LogFileName);
+    ResultLines := TJclAnsiMappedTextReader.Create(LogFileName);
     try
       while not ResultLines.Eof do
       begin
-        ProgramResult := ResultLines.ReadLn;
+        ProgramResult := string(ResultLines.ReadLn);
         if AnsiPos('ERROR', AnsiUpperCase(ProgramResult)) > 0 then
         begin
           Result := False;

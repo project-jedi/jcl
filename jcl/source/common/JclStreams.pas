@@ -97,7 +97,7 @@ type
 
   TJclFileStream = class(TJclHandleStream)
   public
-    constructor Create(const FileName: string; Mode: Word; Rights: Cardinal = 0);
+    constructor Create(const FileName: TFileName; Mode: Word; Rights: Cardinal = 0);
     destructor Destroy; override;
   end;
   {$ENDIF ~CLR}
@@ -301,6 +301,8 @@ type
     function IsEqual(Stream: TStream): Boolean;
     function ReadBoolean: Boolean;
     function ReadChar: Char;
+    function ReadAnsiChar: AnsiChar;
+    function ReadWideChar: WideChar;
     {$IFNDEF CLR}
     function ReadCurrency: Currency;
     function ReadDateTime: TDateTime;
@@ -309,12 +311,18 @@ type
     function ReadExtended: Extended;
     function ReadInt64: Int64;
     function ReadInteger: Integer;
-    function ReadCString: string;
+    function ReadCString: string; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    function ReadCAnsiString: AnsiString;
+    function ReadCWideString: WideString;
     function ReadShortString: string;
     function ReadSingle: Single;
-    function ReadSizedString: string;
+    function ReadSizedString: string; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    function ReadSizedAnsiString: AnsiString;
+    function ReadSizedWideString: WideString;
     procedure WriteBoolean(Value: Boolean);
     procedure WriteChar(Value: Char);
+    procedure WriteAnsiChar(Value: AnsiChar);
+    procedure WriteWideChar(Value: WideChar);
     {$IFNDEF CLR}
     procedure WriteCurrency(const Value: Currency);
     procedure WriteDateTime(const Value: TDateTime);
@@ -323,11 +331,15 @@ type
     procedure WriteExtended(const Value: Extended);
     procedure WriteInt64(Value: Int64); overload;
     procedure WriteInteger(Value: Integer); overload;
-    procedure WriteCString(const Value: string);
+    procedure WriteCString(const Value: string); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure WriteCAnsiString(const Value: AnsiString);
+    procedure WriteCWideString(const Value: WideString);
     procedure WriteStringDelimitedByNull(const Value: string); {$IFDEF ACCEPT_DEPRECATED}deprecated;{$ENDIF ACCEPT_DEPRECATED}
     procedure WriteShortString(const Value: ShortString);
     procedure WriteSingle(const Value: Single);
-    procedure WriteSizedString(const Value: string);
+    procedure WriteSizedString(const Value: string); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+    procedure WriteSizedAnsiString(const Value: AnsiString);
+    procedure WriteSizedWideString(const Value: WideString);
   end;
 
   TJclScopedStream = class(TJclStream)
@@ -508,6 +520,7 @@ type
     FBOM: array of Byte;
     FCharacterReader: TJclStreamGetNextCharFunc;
     FCharacterWriter: TJclStreamSetNextCharFunc;
+    FPeekPosition: Int64;
     function GetCalcedSize: Int64; override;
   public
     constructor Create(AStream: TStream; AOwnsStream: Boolean = False); virtual;
@@ -526,8 +539,8 @@ type
     function WriteChar(Value: Char): Boolean;
     function WriteAnsiChar(Value: AnsiChar): Boolean;
     function WriteWideChar(Value: WideChar): Boolean;
-    function SkipBOM: LongInt;
-    function WriteBOM: Longint;
+    function SkipBOM: LongInt; virtual;
+    function WriteBOM: Longint; virtual;
   end;
 
   TJclStringStreamClass = class of TJclStringStream;
@@ -545,6 +558,17 @@ type
   TJclUTF16Stream = class(TJclStringStream)
   public
     constructor Create(AStream: TStream; AOwnsStream: Boolean = False); override;
+  end;
+
+  TJclStringEncoding = (seAnsi, seUTF8, seUTF16, seAuto);
+
+  TJclAutoStream = class(TJclStringStream)
+  private
+    FEncoding: TJclStringEncoding;
+  public
+    constructor Create(AStream: TStream; AOwnsStream: Boolean = False); override;
+    function SkipBOM: LongInt; override;
+    property Encoding: TJclStringEncoding read FEncoding;
   end;
 
 // call TStream.Seek(Int64,TSeekOrigin) if present (TJclStream or COMPILER6_UP)
@@ -858,7 +882,7 @@ end;
 
 //=== { TJclFileStream } =====================================================
 
-constructor TJclFileStream.Create(const FileName: string; Mode: Word; Rights: Cardinal);
+constructor TJclFileStream.Create(const FileName: TFileName; Mode: Word; Rights: Cardinal);
 var
   H: THandle;
 {$IFDEF LINUX}
@@ -1643,6 +1667,24 @@ begin
   {$ENDIF ~CLR}
 end;
 
+function TJclEasyStream.ReadAnsiChar: AnsiChar;
+begin
+  {$IFDEF CLR}
+  ReadBuffer(Result);
+  {$ELSE ~CLR}
+  ReadBuffer(Result, SizeOf(Result));
+  {$ENDIF ~CLR}
+end;
+
+function TJclEasyStream.ReadWideChar: WideChar;
+begin
+  {$IFDEF CLR}
+  ReadBuffer(Result);
+  {$ELSE ~CLR}
+  ReadBuffer(Result, SizeOf(Result));
+  {$ENDIF ~CLR}
+end;
+
 {$IFNDEF CLR}
 function TJclEasyStream.ReadCurrency: Currency;
 begin
@@ -1692,10 +1734,19 @@ begin
 end;
 
 function TJclEasyStream.ReadCString: string;
+begin
+  {$IFDEF SUPPORTS_UNICODE}
+  Result := ReadCWideString;
+  {$ELSE ~SUPPORTS_UNICODE}
+  Result := ReadCAnsiString;
+  {$ENDIF ~SUPPORTS_UNICODE}
+end;
+
+function TJclEasyStream.ReadCAnsiString: AnsiString;
 var
   {$IFDEF CLR}
   SB: System.Text.StringBuilder;
-  Ch: Char;
+  Ch: AnsiChar;
   {$ELSE ~CLR}
   CurrPos: Longint;
   StrSize: Integer;
@@ -1704,19 +1755,49 @@ begin
   {$IFDEF CLR}
   SB := System.Text.StringBuilder.Create;
   repeat
-    Ch := ReadChar;
-    if ReadChar <> #0 then
+    Ch := ReadAnsiChar;
+    if Ch <> #0 then
       SB.Append(Ch);
-  until ReadChar = #0;
+  until Ch = #0;
   Result := SB.ToString;
   {$ELSE ~CLR}
   CurrPos := Position;
   repeat
-  until ReadChar = #0;
+  until ReadAnsiChar = #0;
   StrSize := Position - CurrPos - 1;
-  SetString(Result, PChar(nil), StrSize);
+  SetLength(Result, StrSize);
   Position := CurrPos;
-  ReadBuffer(Pointer(Result)^, StrSize);
+  ReadBuffer(Result[1], StrSize * SizeOf(Result[1]));
+  Position := Position + 1;
+  {$ENDIF ~CLR}
+end;
+
+function TJclEasyStream.ReadCWideString: WideString;
+var
+  {$IFDEF CLR}
+  SB: System.Text.StringBuilder;
+  Ch: WideChar;
+  {$ELSE ~CLR}
+  CurrPos: Integer;
+  StrSize: Integer;
+  {$ENDIF ~CLR}
+begin
+  {$IFDEF CLR}
+  SB := System.Text.StringBuilder.Create;
+  repeat
+    Ch := ReadWideChar;
+    if Ch <> #0 then
+      SB.Append(Ch);
+  until Ch = #0;
+  Result := SB.ToString;
+  {$ELSE ~CLR}
+  CurrPos := Position;
+  repeat
+  until ReadWideChar = #0;
+  StrSize := Position - CurrPos - 1;
+  SetLength(Result, StrSize);
+  Position := CurrPos;
+  ReadBuffer(Result[1], StrSize * SizeOf(Result[1]));
   Position := Position + 1;
   {$ENDIF ~CLR}
 end;
@@ -1753,6 +1834,15 @@ begin
 end;
 
 function TJclEasyStream.ReadSizedString: string;
+begin
+  {$IFDEF SUPPORTS_UNICODE}
+  Result := ReadSizedWideString;
+  {$ELSE ~SUPPORTS_UNICODE}
+  Result := ReadSizedAnsiString;
+  {$ENDIF ~SUPPORTS_UNICODE}
+end;
+
+function TJclEasyStream.ReadSizedAnsiString: AnsiString;
 var
   {$IFDEF CLR}
   SB: System.Text.StringBuilder;
@@ -1764,13 +1854,35 @@ begin
   SB := System.Text.StringBuilder.Create(StrSize);
   while StrSize > 0 do
   begin
-    SB.Append(ReadChar);
+    SB.Append(ReadAnsiChar);
     Dec(StrSize);
   end;
   Result := SB.ToString;
   {$ELSE ~CLR}
-  SetString(Result, PChar(nil), StrSize);
-  ReadBuffer(Pointer(Result)^, StrSize);
+  SetLength(Result, StrSize);
+  ReadBuffer(Result[1], StrSize * SizeOf(Result[1]));
+  {$ENDIF ~CLR}
+end;
+
+function TJclEasyStream.ReadSizedWideString: WideString;
+var
+  {$IFDEF CLR}
+  SB: System.Text.StringBuilder;
+  {$ENDIF CLR}
+  StrSize: Integer;
+begin
+  StrSize := ReadInteger;
+  {$IFDEF CLR}
+  SB := System.Text.StringBuilder.Create(StrSize);
+  while StrSize > 0 do
+  begin
+    SB.Append(ReadWideChar);
+    Dec(StrSize);
+  end;
+  Result := SB.ToString;
+  {$ELSE ~CLR}
+  SetLength(Result, StrSize);
+  ReadBuffer(Result[1], StrSize * SizeOf(Result[1]));
   {$ENDIF ~CLR}
 end;
 
@@ -1784,6 +1896,24 @@ begin
 end;
 
 procedure TJclEasyStream.WriteChar(Value: Char);
+begin
+  {$IFDEF CLR}
+  WriteBuffer(Value);
+  {$ELSE ~CLR}
+  WriteBuffer(Value, SizeOf(Value));
+  {$ENDIF ~CLR}
+end;
+
+procedure TJclEasyStream.WriteAnsiChar(Value: AnsiChar);
+begin
+  {$IFDEF CLR}
+  WriteBuffer(Value);
+  {$ELSE ~CLR}
+  WriteBuffer(Value, SizeOf(Value));
+  {$ENDIF ~CLR}
+end;
+
+procedure TJclEasyStream.WriteWideChar(Value: WideChar);
 begin
   {$IFDEF CLR}
   WriteBuffer(Value);
@@ -1841,17 +1971,45 @@ begin
 end;
 
 procedure TJclEasyStream.WriteCString(const Value: string);
-{$IFDEF CLR}
-var
-  I: Longint;
-{$ENDIF CLR}
 begin
+  {$IFDEF SUPPORTS_UNICODE}
+  WriteCWideString(Value);
+  {$ELSE ~SUPPORTS_UNICODE}
+  WriteCAnsiString(Value);
+  {$ENDIF ~SUPPORTS_UNICODE}
+end;
+
+procedure TJclEasyStream.WriteCAnsiString(const Value: AnsiString);
+var
+  StrSize: Integer;
   {$IFDEF CLR}
-  for I := 1 to Length(Value) do
-    WriteChar(Value[I]);
-  WriteChar(#0);
+  I: Longint;
+  {$ENDIF CLR}
+begin
+  StrSize := Length(Value);
+  {$IFDEF CLR}
+  for I := 1 to StrSize do
+    WriteAnsiChar(Value[I]);
+  WriteAnsiChar(#0);
   {$ELSE ~CLR}
-  WriteBuffer(PChar(Value)^, Length(Value) + 1);
+  WriteBuffer(Value[1], (StrSize + 1) * SizeOf(Value[1]));
+  {$ENDIF ~CLR}
+end;
+
+procedure TJclEasyStream.WriteCWideString(const Value: WideString);
+var
+  StrSize: Integer;
+  {$IFDEF CLR}
+  I: Integer;
+  {$ENDIF CLR}
+begin
+  StrSize := Length(Value);
+  {$IFDEF CLR}
+  for I := 1 to StrSize do
+    WriteWideChar(Value[I]);
+  WriteWideChar(#0);
+  {$ELSE ~CLR}
+  WriteBuffer(Value[1], (StrSize + 1) * SizeOf(Value[1]));
   {$ENDIF ~CLR}
 end;
 
@@ -1884,6 +2042,15 @@ begin
 end;
 
 procedure TJclEasyStream.WriteSizedString(const Value: string);
+begin
+  {$IFDEF SUPPORTS_UNICODE}
+  WriteSizedWideString(Value);
+  {$ELSE ~SUPPORTS_UNICODE}
+  WriteSizedAnsiString(Value);
+  {$ENDIF ~SUPPORTS_UNICODE}
+end;
+
+procedure TJclEasyStream.WriteSizedAnsiString(const Value: AnsiString);
 var
   StrSize: Integer;
   {$IFDEF CLR}
@@ -1893,10 +2060,27 @@ begin
   StrSize := Length(Value);
   WriteInteger(StrSize);
   {$IFDEF CLR}
-  for I := 1 to Length(Value) do
-    WriteChar(Value[I]);
+  for I := 1 to StrSize do
+    WriteAnsiChar(Value[I]);
   {$ELSE ~CLR}
-  WriteBuffer(Pointer(Value)^, StrSize);
+  WriteBuffer(Value[1], StrSize * SizeOf(Value[1]));
+  {$ENDIF ~CLR}
+end;
+
+procedure TJclEasyStream.WriteSizedWideString(const Value: WideString);
+var
+  StrSize: Integer;
+  {$IFDEF CLR}
+  I: Integer;
+  {$ENDIF CLR}
+begin
+  StrSize := Length(Value);
+  WriteInteger(StrSize);
+  {$IFDEF CLR}
+  for I := 1 to StrSize do
+    WriteWideChar(Value[I]);
+  {$ELSE ~CLR}
+  WriteBuffer(Value[1], StrSize * SizeOf(Value[1]));
   {$ENDIF ~CLR}
 end;
 
@@ -2573,10 +2757,12 @@ var
   Ch: UCS4;
 begin
   Pos := FPosition;
+  FPosition := FPeekPosition;
   Result := FCharacterReader(Self, Ch);
   if Result then
     Buffer := UCS4ToAnsiChar(Ch);
   FPosition := Pos;
+  FPeekPosition := FPeekPosition + 1;
 end;
 
 function TJclStringStream.PeekChar(var Buffer: Char): Boolean;
@@ -2585,10 +2771,12 @@ var
   Ch: UCS4;
 begin
   Pos := FPosition;
+  FPosition := FPeekPosition;
   Result := FCharacterReader(Self, Ch);
   if Result then
     Buffer := UCS4ToChar(Ch);
   FPosition := Pos;
+  FPeekPosition := FPeekPosition + 1;
 end;
 
 function TJclStringStream.PeekWideChar(var Buffer: WideChar): Boolean;
@@ -2597,10 +2785,12 @@ var
   Ch: UCS4;
 begin
   Pos := FPosition;
+  FPosition := FPeekPosition;
   Result := FCharacterReader(Self, Ch);
   if Result then
     Buffer := UCS4ToWideChar(Ch);
   FPosition := Pos;
+  FPeekPosition := FPeekPosition + 1;
 end;
 
 function TJclStringStream.ReadString(var Buffer: string; Start, Count: Longint): Longint;
@@ -2623,6 +2813,7 @@ begin
       Break; // end of stream (read)
   end;
   Result := Index - Start;
+  FPeekPosition := FPosition;
 end;
 
 function TJclStringStream.ReadAnsiChar(var Buffer: AnsiChar): Boolean;
@@ -2632,6 +2823,7 @@ begin
   Result := FCharacterReader(Self, Ch);
   if Result then
     Buffer := UCS4ToAnsiChar(Ch);
+  FPeekPosition := FPosition;
 end;
 
 function TJclStringStream.ReadAnsiString(var Buffer: AnsiString; Start, Count: Longint): Longint;
@@ -2654,6 +2846,7 @@ begin
       Break; // end of stream (read)
   end;
   Result := Index - Start;
+  FPeekPosition := FPosition;
 end;
 
 function TJclStringStream.ReadChar(var Buffer: Char): Boolean;
@@ -2663,6 +2856,7 @@ begin
   Result := FCharacterReader(Self, Ch);
   if Result then
     Buffer := UCS4ToChar(Ch);
+  FPeekPosition := FPosition;
 end;
 
 function TJclStringStream.ReadWideChar(var Buffer: WideChar): Boolean;
@@ -2672,6 +2866,7 @@ begin
   Result := FCharacterReader(Self, Ch);
   if Result then
     Buffer := UCS4ToWideChar(Ch);
+  FPeekPosition := FPosition;
 end;
 
 function TJclStringStream.ReadWideString(var Buffer: WideString; Start, Count: Longint): Longint;
@@ -2694,6 +2889,7 @@ begin
       Break; // end of stream (read)
   end;
   Result := Index - Start;
+  FPeekPosition := FPosition;
 end;
 
 function TJclStringStream.SkipBOM: Longint;
@@ -2713,13 +2909,14 @@ begin
     {$ENDIF ~CLR}
     if Result = Length(FBOM) * SizeOf(FBOM[0]) then
       for I := Low(FBOM) to High(FBOM) do
-        if BOM[I] <> FBOM[I] then
+        if BOM[I - Low(FBOM)] <> FBOM[I] then
           Result := 0;
     if Result <> Length(FBOM) * SizeOf(FBOM[0]) then
       Position := Pos;
   end
   else
     Result := 0;
+  FPeekPosition := FPosition;
 end;
 
 function TJclStringStream.WriteBOM: Longint;
@@ -2734,6 +2931,7 @@ begin
   end
   else
     Result := 0;
+  FPeekPosition := FPosition;
 end;
 
 function TJclStringStream.WriteChar(Value: Char): Boolean;
@@ -2757,11 +2955,13 @@ begin
       Break; // end of string (read) or end of stream (write)
   end;
   Result := Index - Start;
+  FPeekPosition := FPosition;
 end;
 
 function TJclStringStream.WriteAnsiChar(Value: AnsiChar): Boolean;
 begin
   Result := FCharacterWriter(Self, AnsiCharToUCS4(Value));
+  FPeekPosition := FPosition;
 end;
 
 function TJclStringStream.WriteAnsiString(const Buffer: AnsiString; Start, Count: Longint): Longint;
@@ -2780,11 +2980,13 @@ begin
       Break; // end of string (read) or end of stream (write)
   end;
   Result := Index - Start;
+  FPeekPosition := FPosition;
 end;
 
 function TJclStringStream.WriteWideChar(Value: WideChar): Boolean;
 begin
   Result := FCharacterWriter(Self, WideCharToUCS4(Value));
+  FPeekPosition := FPosition;
 end;
 
 function TJclStringStream.WriteWideString(const Buffer: WideString; Start, Count: Longint): Longint;
@@ -2803,6 +3005,7 @@ begin
       Break; // end of string (read) or end of stream (write)
   end;
   Result := Index - Start;
+  FPeekPosition := FPosition;
 end;
 
 //=== { TJclAnsiStream } ======================================================
@@ -2842,6 +3045,93 @@ begin
   SetLength(FBOM, Length(BOM_UTF16_LSB));
   for I := Low(BOM_UTF16_LSB) to High(BOM_UTF16_LSB) do
     FBOM[I - Low(BOM_UTF16_LSB)] := BOM_UTF16_LSB[I];
+end;
+
+//=== { TJclAutoStream } ======================================================
+
+constructor TJclAutoStream.Create(AStream: TStream; AOwnsStream: Boolean);
+var
+  Pos: Int64;
+  I, MaxLength, ReadLength: Integer;
+  BOM: array of Byte;
+begin
+  inherited Create(AStream, AOwnsStream);
+  MaxLength := Length(BOM_UTF8);
+  if MaxLength < Length(BOM_UTF16_LSB) then
+    MaxLength := Length(BOM_UTF16_LSB);
+
+  Pos := FPosition;
+
+  SetLength(BOM, MaxLength);
+  {$IFDEF CLR}
+  ReadLength := Read(BOM, Low(BOM), Length(BOM)) div SizeOf(BOM[0]);
+  {$ELSE ~CLR}
+  ReadLength := Read(BOM[0], Length(BOM) * SizeOf(BOM[0])) div SizeOf(BOM[0]);
+  {$ENDIF ~CLR}
+
+  FEncoding := seAuto;
+
+  // try UTF8 BOM
+  if (FEncoding = seAuto) and (ReadLength >= Length(BOM_UTF8) * SizeOf(BOM_UTF8[0])) then
+  begin
+    FEncoding := seUTF8;
+    for I := Low(BOM_UTF8) to High(BOM_UTF8) do
+      if BOM[I - Low(BOM_UTF8)] <> BOM_UTF8[I] then
+    begin
+      FEncoding := seAuto;
+      Break;
+    end;
+  end;
+
+  // try UTF16 BOM
+  if (FEncoding = seAuto) and (ReadLength >= Length(BOM_UTF16_LSB) * SizeOf(BOM_UTF16_LSB[0])) then
+  begin
+    FEncoding := seUTF16;
+    for I := Low(BOM_UTF16_LSB) to High(BOM_UTF16_LSB) do
+      if BOM[I - Low(BOM_UTF8)] <> BOM_UTF16_LSB[I] then
+    begin
+      FEncoding := seAuto;
+      Break;
+    end;
+  end;
+
+  case FEncoding of
+    seUTF8:
+      begin
+        SetLength(FBOM, Length(BOM_UTF8));
+        for I := Low(BOM_UTF8) to High(BOM_UTF8) do
+          FBOM[I - Low(BOM_UTF8)] := BOM_UTF8[I];
+        FCharacterReader := {$IFNDEF CLR}@{$ENDIF ~CLR}UTF8GetNextCharFromStream;
+        FCharacterWriter := {$IFNDEF CLR}@{$ENDIF ~CLR}UTF8SetNextCharToStream;
+        FPosition := Pos + Length(BOM_UTF8) * SizeOf(BOM_UTF8[0]);
+      end;
+    seUTF16:
+      begin
+        SetLength(FBOM, Length(BOM_UTF16_LSB));
+        for I := Low(BOM_UTF16_LSB) to High(BOM_UTF16_LSB) do
+          FBOM[I - Low(BOM_UTF16_LSB)] := BOM_UTF16_LSB[I];
+        FCharacterReader := {$IFNDEF CLR}@{$ENDIF ~CLR}UTF16GetNextCharFromStream;
+        FCharacterWriter := {$IFNDEF CLR}@{$ENDIF ~CLR}UTF16SetNextCharToStream;
+        FPosition := Pos + Length(BOM_UTF16_LSB) * SizeOf(BOM_UTF16_LSB[0]);
+      end;
+    seAuto,
+    seAnsi:
+      begin
+        // defaults to Ansi
+        FEncoding := seAnsi;
+        SetLength(FBOM, 0);
+        FCharacterReader := {$IFNDEF CLR}@{$ENDIF ~CLR}AnsiGetNextCharFromStream;
+        FCharacterWriter := {$IFNDEF CLR}@{$ENDIF ~CLR}AnsiSetNextCharToStream;
+        FPosition := Pos;
+      end;
+  end;
+  FPeekPosition := FPosition;
+end;
+
+function TJclAutoStream.SkipBOM: LongInt;
+begin
+  // already skipped to determine encoding
+  Result := 0;
 end;
 
 {$IFDEF UNITVERSIONING}

@@ -126,7 +126,9 @@ type
     class function CorVersion: WideString;
     class function CorRequiredVersion: WideString;
     class procedure GetClrVersions(VersionNames: TWideStrings); overload;
+    {$IFNDEF SUPPORTS_UNICODE}
     class procedure GetClrVersions(VersionNames: TStrings); overload;
+    {$ENDIF ~SUPPORTS_UNICODE}
     property DefaultInterface: ICorRuntimeHost read FDefaultInterface implements ICorRuntimeHost;
     property AppDomains[const Idx: Integer]: TJclClrAppDomain read GetAppDomain; default;
     property AppDomainCount: Integer read GetAppDomainCount;
@@ -884,6 +886,7 @@ begin
   end;
 end;
 
+{$IFNDEF SUPPORTS_UNICODE}
 class procedure TJclClrHost.GetClrVersions(VersionNames: TStrings);
 var
   AWideStrings: TWideStrings;
@@ -898,6 +901,7 @@ begin
     AWideStrings.Free;
   end;
 end;
+{$ENDIF ~SUPPORTS_UNICODE}
 
 function TJclClrHost.GetCurrentAppDomain: IJclClrAppDomain;
 var

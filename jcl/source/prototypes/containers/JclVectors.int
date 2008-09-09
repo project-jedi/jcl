@@ -1,26 +1,25 @@
 (*$JPPDEFINEMACRO JCLVECTORINT(SELFCLASSNAME, ANCESTORCLASSNAME, COLLECTIONINTERFACENAME, LISTINTERFACENAME, ARRAYINTERFACENAME, ITRINTERFACENAME,
-  INTERFACEADDITIONAL, PRIVATEADDITIONAL, PROTECTEDADDITIONAL, PUBLICADDITIONAL, COLLECTIONFLAGS, OWNERSHIPDECLARATION,
+  INTERFACEADDITIONAL, SECTIONADDITIONAL, COLLECTIONFLAGS, OWNERSHIPDECLARATION,
   CONSTKEYWORD, PARAMETERNAME, TYPENAME, DEFAULTVALUE, DYNARRAYTYPE, GETTERNAME, SETTERNAME)
   SELFCLASSNAME = class(ANCESTORCLASSNAME, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer,INTERFACEADDITIONAL
-    COLLECTIONINTERFACENAME, LISTINTERFACENAME, ARRAYINTERFACENAME)
+    COLLECTIONINTERFACENAME, LISTINTERFACENAME, ARRAYINTERFACENAME)SECTIONADDITIONAL
   private
-    FItems: DYNARRAYTYPE;PRIVATEADDITIONAL
+    FItems: DYNARRAYTYPE;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+    // fix ambiguous warnings when compiled on Delphi.net and earlier versions of Delphi.win32
+    // complaining about possible unaffected result.
+    function RaiseOutOfBoundsError: TYPENAME;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
     { COLLECTIONINTERFACENAME }
     function Add(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;COLLECTIONFLAGS
     function AddAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;COLLECTIONFLAGS
     procedure Clear;COLLECTIONFLAGS
     function Contains(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;COLLECTIONFLAGS
     function ContainsAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;COLLECTIONFLAGS
-    function Equals(const ACollection: COLLECTIONINTERFACENAME): Boolean;COLLECTIONFLAGS
+    function CollectionEquals(const ACollection: COLLECTIONINTERFACENAME): Boolean;COLLECTIONFLAGS
     function First: ITRINTERFACENAME;COLLECTIONFLAGS
     function IsEmpty: Boolean;COLLECTIONFLAGS
     function Last: ITRINTERFACENAME;COLLECTIONFLAGS
@@ -39,10 +38,10 @@
     function LastIndexOf(CONSTKEYWORDPARAMETERNAME: TYPENAME): Integer;
     function Delete(Index: Integer): TYPENAME; overload;
     procedure SETTERNAME(Index: Integer; CONSTKEYWORDPARAMETERNAME: TYPENAME);
-    function SubList(First, Count: Integer): LISTINTERFACENAME;PROTECTEDADDITIONAL
+    function SubList(First, Count: Integer): LISTINTERFACENAME;
   public
     constructor Create(ACapacity: IntegerOWNERSHIPDECLARATION);
-    destructor Destroy; override;PUBLICADDITIONAL
+    destructor Destroy; override;
     property Items: DYNARRAYTYPE read FItems;
   end;*)
 (*$JPPDEFINEMACRO JCLVECTORITRINT(SELFCLASSNAME, ITRINTERFACENAME, LISTINTERFACENAME,
@@ -56,13 +55,9 @@
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
     { ITRINTERFACENAME }
     function Add(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
-    function Equals(const AIterator: ITRINTERFACENAME): Boolean;
+    function IteratorEquals(const AIterator: ITRINTERFACENAME): Boolean;
     function GETTERNAME: TYPENAME;
     function HasNext: Boolean;
     function HasPrevious: Boolean;

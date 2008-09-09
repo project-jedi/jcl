@@ -29,15 +29,15 @@ begin
 end;
 
 var
-  _EnumCalendarInfoExA: Pointer;
+  _EnumCalendarInfoExW: Pointer;
 
-function EnumCalendarInfoExA;
+function EnumCalendarInfoExW;
 begin
-  GetProcedureAddress(_EnumCalendarInfoExA, kernel32, 'EnumCalendarInfoExA');
+  GetProcedureAddress(_EnumCalendarInfoExW, kernel32, 'EnumCalendarInfoExW');
   asm
     mov esp, ebp
     pop ebp
-    jmp [_EnumCalendarInfoExA]
+    jmp [_EnumCalendarInfoExW]
   end;
 end;
 

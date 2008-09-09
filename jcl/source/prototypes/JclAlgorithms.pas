@@ -48,6 +48,9 @@ uses
 {$JPPEXPANDMACRO SIMPLECOMPAREINT(IntfSimpleCompare,const ,IInterface)}
 {$JPPEXPANDMACRO SIMPLECOMPAREINT(AnsiStrSimpleCompare,const ,AnsiString)}
 {$JPPEXPANDMACRO SIMPLECOMPAREINT(WideStrSimpleCompare,const ,WideString)}
+{$IFDEF SUPPORTS_UNICODE_STRING}
+{$JPPEXPANDMACRO SIMPLECOMPAREINT(UnicodeStrSimpleCompare,const ,UnicodeString)}
+{$ENDIF SUPPORTS_UNICODE_STRING}
 {$JPPEXPANDMACRO SIMPLECOMPAREINT(StrSimpleCompare,const ,string)}
 {$JPPEXPANDMACRO SIMPLECOMPAREINT(SingleSimpleCompare,const ,Single)}
 {$JPPEXPANDMACRO SIMPLECOMPAREINT(DoubleSimpleCompare,const ,Double)}
@@ -67,6 +70,9 @@ uses
 {$JPPEXPANDMACRO SIMPLEEQUALITYCOMPAREINT(IntfSimpleEqualityCompare,const ,IInterface)}
 {$JPPEXPANDMACRO SIMPLEEQUALITYCOMPAREINT(AnsiStrSimpleEqualityCompare,const ,AnsiString)}
 {$JPPEXPANDMACRO SIMPLEEQUALITYCOMPAREINT(WideStrSimpleEqualityCompare,const ,WideString)}
+{$IFDEF SUPPORTS_UNICODE_STRING}
+{$JPPEXPANDMACRO SIMPLEEQUALITYCOMPAREINT(UnicodeStrSimpleEqualityCompare,const ,UnicodeString)}
+{$ENDIF SUPPORTS_UNICODE_STRING}
 {$JPPEXPANDMACRO SIMPLEEQUALITYCOMPAREINT(StrSimpleEqualityCompare,const ,string)}
 {$JPPEXPANDMACRO SIMPLEEQUALITYCOMPAREINT(SingleSimpleEqualityCompare,const ,Single)}
 {$JPPEXPANDMACRO SIMPLEEQUALITYCOMPAREINT(DoubleSimpleEqualityCompare,const ,Double)}
@@ -84,6 +90,9 @@ uses
 {$JPPEXPANDMACRO APPLYINT(Apply,IJclIntfIterator,TIntfApplyFunction)} overload;
 {$JPPEXPANDMACRO APPLYINT(Apply,IJclAnsiStrIterator,TAnsiStrApplyFunction)} overload;
 {$JPPEXPANDMACRO APPLYINT(Apply,IJclWideStrIterator,TWideStrApplyFunction)} overload;
+{$IFDEF SUPPORTS_UNICODE_STRING}
+{$JPPEXPANDMACRO APPLYINT(Apply,IJclUnicodeStrIterator,TUnicodeStrApplyFunction)} overload;
+{$ENDIF SUPPORTS_UNICODE_STRING}
 {$JPPEXPANDMACRO APPLYINT(Apply,IJclSingleIterator,TSingleApplyFunction)} overload;
 {$JPPEXPANDMACRO APPLYINT(Apply,IJclDoubleIterator,TDoubleApplyFunction)} overload;
 {$JPPEXPANDMACRO APPLYINT(Apply,IJclExtendedIterator,TExtendedApplyFunction)} overload;
@@ -102,6 +111,10 @@ uses
 {$JPPEXPANDMACRO FINDEQINT(Find,IJclAnsiStrIterator,const ,AString,AnsiString,TAnsiStrEqualityCompare)} overload;
 {$JPPEXPANDMACRO FINDINT(Find,IJclWideStrIterator,const ,AString,WideString,TWideStrCompare)} overload;
 {$JPPEXPANDMACRO FINDEQINT(Find,IJclWideStrIterator,const ,AString,WideString,TWideStrEqualityCompare)} overload;
+{$IFDEF SUPPORTS_UNICODE_STRING}
+{$JPPEXPANDMACRO FINDINT(Find,IJclUnicodeStrIterator,const ,AString,UnicodeString,TUnicodeStrCompare)} overload;
+{$JPPEXPANDMACRO FINDEQINT(Find,IJclUnicodeStrIterator,const ,AString,UnicodeString,TUnicodeStrEqualityCompare)} overload;
+{$ENDIF SUPPORTS_UNICODE_STRING}
 {$JPPEXPANDMACRO FINDINT(Find,IJclSingleIterator,const ,AValue,Single,TSingleCompare)} overload;
 {$JPPEXPANDMACRO FINDEQINT(Find,IJclSingleIterator,const ,AValue,Single,TSingleEqualityCompare)} overload;
 {$JPPEXPANDMACRO FINDINT(Find,IJclDoubleIterator,const ,AValue,Double,TDoubleCompare)} overload;
@@ -128,6 +141,10 @@ uses
 {$JPPEXPANDMACRO COUNTOBJECTEQINT(CountObject,IJclAnsiStrIterator,const ,AString,AnsiString,TAnsiStrEqualityCompare)} overload;
 {$JPPEXPANDMACRO COUNTOBJECTINT(CountObject,IJclWideStrIterator,const ,AString,WideString,TWideStrCompare)} overload;
 {$JPPEXPANDMACRO COUNTOBJECTEQINT(CountObject,IJclWideStrIterator,const ,AString,WideString,TWideStrEqualityCompare)} overload;
+{$IFDEF SUPPORTS_UNICODE_STRING}
+{$JPPEXPANDMACRO COUNTOBJECTINT(CountObject,IJclUnicodeStrIterator,const ,AString,UnicodeString,TUnicodeStrCompare)} overload;
+{$JPPEXPANDMACRO COUNTOBJECTEQINT(CountObject,IJclUnicodeStrIterator,const ,AString,UnicodeString,TUnicodeStrEqualityCompare)} overload;
+{$ENDIF SUPPORTS_UNICODE_STRING}
 {$JPPEXPANDMACRO COUNTOBJECTINT(CountObject,IJclSingleIterator,const ,AValue,Single,TSingleCompare)} overload;
 {$JPPEXPANDMACRO COUNTOBJECTEQINT(CountObject,IJclSingleIterator,const ,AValue,Single,TSingleEqualityCompare)} overload;
 {$JPPEXPANDMACRO COUNTOBJECTINT(CountObject,IJclDoubleIterator,const ,AValue,Double,TDoubleCompare)} overload;
@@ -151,6 +168,9 @@ uses
 {$JPPEXPANDMACRO COPYINT(Copy,IJclIntfIterator)} overload;
 {$JPPEXPANDMACRO COPYINT(Copy,IJclAnsiStrIterator)} overload;
 {$JPPEXPANDMACRO COPYINT(Copy,IJclWideStrIterator)} overload;
+{$IFDEF SUPPORTS_UNICODE_STRING}
+{$JPPEXPANDMACRO COPYINT(Copy,IJclUnicodeStrIterator)} overload;
+{$ENDIF SUPPORTS_UNICODE_STRING}
 {$JPPEXPANDMACRO COPYINT(Copy,IJclSingleIterator)} overload;
 {$JPPEXPANDMACRO COPYINT(Copy,IJclDoubleIterator)} overload;
 {$JPPEXPANDMACRO COPYINT(Copy,IJclExtendedIterator)} overload;
@@ -166,6 +186,9 @@ uses
 {$JPPEXPANDMACRO GENERATEINT(Generate,IJclIntfList,const ,AInterface,IInterface)} overload;
 {$JPPEXPANDMACRO GENERATEINT(Generate,IJclAnsiStrList,const ,AString,AnsiString)} overload;
 {$JPPEXPANDMACRO GENERATEINT(Generate,IJclWideStrList,const ,AString,WideString)} overload;
+{$IFDEF SUPPORTS_UNICODE_STRING}
+{$JPPEXPANDMACRO GENERATEINT(Generate,IJclUnicodeStrList,const ,AString,UnicodeString)} overload;
+{$ENDIF SUPPORTS_UNICODE_STRING}
 {$JPPEXPANDMACRO GENERATEINT(Generate,IJclSingleList,const ,AValue,Single)} overload;
 {$JPPEXPANDMACRO GENERATEINT(Generate,IJclDoubleList,const ,AValue,Double)} overload;
 {$JPPEXPANDMACRO GENERATEINT(Generate,IJclExtendedList,const ,AValue,Extended)} overload;
@@ -181,6 +204,9 @@ uses
 {$JPPEXPANDMACRO FILLINT(Fill,IJclIntfIterator,const ,AInterface,IInterface)} overload;
 {$JPPEXPANDMACRO FILLINT(Fill,IJclAnsiStrIterator,const ,AString,AnsiString)} overload;
 {$JPPEXPANDMACRO FILLINT(Fill,IJclWideStrIterator,const ,AString,WideString)} overload;
+{$IFDEF SUPPORTS_UNICODE_STRING}
+{$JPPEXPANDMACRO FILLINT(Fill,IJclUnicodeStrIterator,const ,AString,UnicodeString)} overload;
+{$ENDIF SUPPORTS_UNICODE_STRING}
 {$JPPEXPANDMACRO FILLINT(Fill,IJclSingleIterator,const ,AValue,Single)} overload;
 {$JPPEXPANDMACRO FILLINT(Fill,IJclDoubleIterator,const ,AValue,Double)} overload;
 {$JPPEXPANDMACRO FILLINT(Fill,IJclExtendedIterator,const ,AValue,Extended)} overload;
@@ -196,6 +222,9 @@ uses
 {$JPPEXPANDMACRO REVERSEINT(Reverse,IJclIntfIterator)} overload;
 {$JPPEXPANDMACRO REVERSEINT(Reverse,IJclAnsiStrIterator)} overload;
 {$JPPEXPANDMACRO REVERSEINT(Reverse,IJclWideStrIterator)} overload;
+{$IFDEF SUPPORTS_UNICODE_STRING}
+{$JPPEXPANDMACRO REVERSEINT(Reverse,IJclUnicodeStrIterator)} overload;
+{$ENDIF SUPPORTS_UNICODE_STRING}
 {$JPPEXPANDMACRO REVERSEINT(Reverse,IJclSingleIterator)} overload;
 {$JPPEXPANDMACRO REVERSEINT(Reverse,IJclDoubleIterator)} overload;
 {$JPPEXPANDMACRO REVERSEINT(Reverse,IJclExtendedIterator)} overload;
@@ -210,6 +239,9 @@ uses
 {$JPPEXPANDMACRO SORTINT(QuickSort,IJclIntfList,L,R,TIntfCompare)} overload;
 {$JPPEXPANDMACRO SORTINT(QuickSort,IJclAnsiStrList,L,R,TAnsiStrCompare)} overload;
 {$JPPEXPANDMACRO SORTINT(QuickSort,IJclWideStrList,L,R,TWideStrCompare)} overload;
+{$IFDEF SUPPORTS_UNICODE_STRING}
+{$JPPEXPANDMACRO SORTINT(QuickSort,IJclUnicodeStrList,L,R,TUnicodeStrCompare)} overload;
+{$ENDIF SUPPORTS_UNICODE_STRING}
 {$JPPEXPANDMACRO SORTINT(QuickSort,IJclSingleList,L,R,TSingleCompare)} overload;
 {$JPPEXPANDMACRO SORTINT(QuickSort,IJclDoubleList,L,R,TDoubleCompare)} overload;
 {$JPPEXPANDMACRO SORTINT(QuickSort,IJclExtendedList,L,R,TExtendedCompare)} overload;
@@ -225,6 +257,9 @@ var
   IntfSortProc: TIntfSortProc = QuickSort;
   AnsiStrSortProc: TAnsiStrSortProc = QuickSort;
   WideStrSortProc: TWideStrSortProc = QuickSort;
+  {$IFDEF SUPPORTS_UNICODE_STRING}
+  UnicodeStrSortProc: TUnicodeStrSortProc = QuickSort;
+  {$ENDIF SUPPORTS_UNICODE_STRING}
   SingleSortProc: TSingleSortProc = QuickSort;
   DoubleSortProc: TDoubleSortProc = QuickSort;
   ExtendedSortProc: TExtendedSortProc = QuickSort;
@@ -240,6 +275,9 @@ var
 {$JPPEXPANDMACRO SORTINT(Sort,IJclIntfList,First,Last,TIntfCompare)} overload;
 {$JPPEXPANDMACRO SORTINT(Sort,IJclAnsiStrList,First,Last,TAnsiStrCompare)} overload;
 {$JPPEXPANDMACRO SORTINT(Sort,IJclWideStrList,First,Last,TWideStrCompare)} overload;
+{$IFDEF SUPPORTS_UNICODE_STRING}
+{$JPPEXPANDMACRO SORTINT(Sort,IJclUnicodeStrList,First,Last,TUnicodeStrCompare)} overload;
+{$ENDIF SUPPORTS_UNICODE_STRING}
 {$JPPEXPANDMACRO SORTINT(Sort,IJclSingleList,First,Last,TSingleCompare)} overload;
 {$JPPEXPANDMACRO SORTINT(Sort,IJclDoubleList,First,Last,TDoubleCompare)} overload;
 {$JPPEXPANDMACRO SORTINT(Sort,IJclExtendedList,First,Last,TExtendedCompare)} overload;
@@ -286,6 +324,9 @@ const
 implementation
 
 uses
+  {$IFDEF HAS_UNIT_ANSISTRINGS}
+  AnsiStrings,
+  {$ENDIF HAS_UNIT_ANSISTRINGS}
   {$IFNDEF RTL140_UP}
   JclWideStrings,
   {$ENDIF ~RTL140_UP}
@@ -314,13 +355,24 @@ begin
   Result := WideCompareStr(Obj1, Obj2);
 end;
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+function UnicodeStrSimpleCompare(const Obj1, Obj2: UnicodeString): Integer;
+begin
+  Result := CompareStr(Obj1, Obj2);
+end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
 function StrSimpleCompare(const Obj1, Obj2: string): Integer;
 begin
   case SizeOf(Obj1[1]) of
     SizeOf(AnsiChar):
       Result := CompareStr(Obj1, Obj2);
     SizeOf(WideChar):
+      {$IFDEF SUPPORTS_UNICODE}
+      Result := CompareStr(Obj1, Obj2);
+      {$ELSE ~SUPPORTS_UNICODE}
       Result := WideCompareStr(Obj1, Obj2);
+      {$ENDIF ~SUPPORTS_UNICODE}
   else
     raise EJclOperationNotSupportedError.Create;
   end;
@@ -455,6 +507,13 @@ begin
   Result := WideCompareStr(Obj1, Obj2) = 0;
 end;
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+function UnicodeStrSimpleEqualityCompare(const Obj1, Obj2: UnicodeString): Boolean;
+begin
+  Result := CompareStr(Obj1, Obj2) = 0;
+end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
 function StrSimpleEqualityCompare(const Obj1, Obj2: string): Boolean;
 begin
   case SizeOf(Obj1[1]) of
@@ -520,6 +579,10 @@ end;
 
 {$JPPEXPANDMACRO APPLYIMP(Apply,IJclWideStrIterator,TWideStrApplyFunction,SetString)}
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+{$JPPEXPANDMACRO APPLYIMP(Apply,IJclUnicodeStrIterator,TUnicodeStrApplyFunction,SetString)}
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
 {$JPPEXPANDMACRO APPLYIMP(Apply,IJclSingleIterator,TSingleApplyFunction,SetValue)}
 
 {$JPPEXPANDMACRO APPLYIMP(Apply,IJclDoubleIterator,TDoubleApplyFunction,SetValue)}
@@ -549,6 +612,12 @@ end;
 {$JPPEXPANDMACRO FINDIMP(Find,IJclWideStrIterator,const ,AString,WideString,TWideStrCompare)}
 
 {$JPPEXPANDMACRO FINDEQIMP(Find,IJclWideStrIterator,const ,AString,WideString,TWideStrEqualityCompare)}
+
+{$IFDEF SUPPORTS_UNICODE_STRING}
+{$JPPEXPANDMACRO FINDIMP(Find,IJclUnicodeStrIterator,const ,AString,UnicodeString,TUnicodeStrCompare)}
+
+{$JPPEXPANDMACRO FINDEQIMP(Find,IJclUnicodeStrIterator,const ,AString,UnicodeString,TUnicodeStrEqualityCompare)}
+{$ENDIF SUPPORTS_UNICODE_STRING}
 
 {$JPPEXPANDMACRO FINDIMP(Find,IJclSingleIterator,const ,AValue,Single,TSingleCompare)}
 
@@ -596,6 +665,12 @@ end;
 
 {$JPPEXPANDMACRO COUNTOBJECTEQIMP(CountObject,IJclWideStrIterator,const ,AString,WideString,TWideStrEqualityCompare)}
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+{$JPPEXPANDMACRO COUNTOBJECTIMP(CountObject,IJclUnicodeStrIterator,const ,AString,UnicodeString,TUnicodeStrCompare)}
+
+{$JPPEXPANDMACRO COUNTOBJECTEQIMP(CountObject,IJclUnicodeStrIterator,const ,AString,UnicodeString,TUnicodeStrEqualityCompare)}
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
 {$JPPEXPANDMACRO COUNTOBJECTIMP(CountObject,IJclSingleIterator,const ,AValue,Single,TSingleCompare)}
 
 {$JPPEXPANDMACRO COUNTOBJECTEQIMP(CountObject,IJclSingleIterator,const ,AValue,Single,TSingleEqualityCompare)}
@@ -636,6 +711,10 @@ end;
 
 {$JPPEXPANDMACRO COPYIMP(Copy,IJclWideStrIterator,SetString)}
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+{$JPPEXPANDMACRO COPYIMP(Copy,IJclUnicodeStrIterator,SetString)}
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
 {$JPPEXPANDMACRO COPYIMP(Copy,IJclSingleIterator,SetValue)}
 
 {$JPPEXPANDMACRO COPYIMP(Copy,IJclDoubleIterator,SetValue)}
@@ -659,6 +738,10 @@ end;
 {$JPPEXPANDMACRO GENERATEIMP(Generate,IJclAnsiStrList,const ,AString,AnsiString)}
 
 {$JPPEXPANDMACRO GENERATEIMP(Generate,IJclWideStrList,const ,AString,WideString)}
+
+{$IFDEF SUPPORTS_UNICODE_STRING}
+{$JPPEXPANDMACRO GENERATEIMP(Generate,IJclUnicodeStrList,const ,AString,UnicodeString)}
+{$ENDIF SUPPORTS_UNICODE_STRING}
 
 {$JPPEXPANDMACRO GENERATEIMP(Generate,IJclSingleList,const ,AValue,Single)}
 
@@ -684,6 +767,10 @@ end;
 
 {$JPPEXPANDMACRO FILLIMP(Fill,IJclWideStrIterator,const ,AString,WideString,SetString)}
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+{$JPPEXPANDMACRO FILLIMP(Fill,IJclUnicodeStrIterator,const ,AString,UnicodeString,SetString)}
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
 {$JPPEXPANDMACRO FILLIMP(Fill,IJclSingleIterator,const ,AValue,Single,SetValue)}
 
 {$JPPEXPANDMACRO FILLIMP(Fill,IJclDoubleIterator,const ,AValue,Double,SetValue)}
@@ -708,6 +795,10 @@ end;
 
 {$JPPEXPANDMACRO REVERSEIMP(Reverse,IJclWideStrIterator,WideString,GetString,SetString)}
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+{$JPPEXPANDMACRO REVERSEIMP(Reverse,IJclUnicodeStrIterator,UnicodeString,GetString,SetString)}
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
 {$JPPEXPANDMACRO REVERSEIMP(Reverse,IJclSingleIterator,Single,GetValue,SetValue)}
 
 {$JPPEXPANDMACRO REVERSEIMP(Reverse,IJclDoubleIterator,Double,GetValue,SetValue)}
@@ -731,6 +822,10 @@ end;
 {$JPPEXPANDMACRO QUICKSORTIMP(QuickSort,IJclAnsiStrList,L,R,TAnsiStrCompare,AnsiString,GetString,SetString)}
 
 {$JPPEXPANDMACRO QUICKSORTIMP(QuickSort,IJclWideStrList,L,R,TWideStrCompare,WideString,GetString,SetString)}
+
+{$IFDEF SUPPORTS_UNICODE_STRING}
+{$JPPEXPANDMACRO QUICKSORTIMP(QuickSort,IJclUnicodeStrList,L,R,TUnicodeStrCompare,UnicodeString,GetString,SetString)}
+{$ENDIF SUPPORTS_UNICODE_STRING}
 
 {$JPPEXPANDMACRO QUICKSORTIMP(QuickSort,IJclSingleList,L,R,TSingleCompare,Single,GetValue,SetValue)}
 
@@ -764,6 +859,13 @@ procedure Sort(const AList: IJclWideStrList; First, Last: Integer; AComparator: 
 begin
   WideStrSortProc(AList, First, Last, AComparator);
 end;
+
+{$IFDEF SUPPORTS_UNICODE_STRING}
+procedure Sort(const AList: IJclUnicodeStrList; First, Last: Integer; AComparator: TUnicodeStrCompare);
+begin
+  UnicodeStrSortProc(AList, First, Last, AComparator);
+end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
 
 procedure Sort(const AList: IJclSingleList; First, Last: Integer; AComparator: TSingleCompare);
 begin

@@ -84,7 +84,7 @@ resourcestring
   RsJCLLink = 'JEDI Code Library;http://delphi-jedi.org/Jedi:CODELIBJCL';
   RsEmailAddress = 'mailto:petr.v@mujmail.cz?subject=[Delphi Tools]';
 
-function StrEmpty(const S: AnsiString): Boolean;
+function StrEmpty(const S: string): Boolean;
 begin
   Result := Length(Trim(S)) = 0;
 end;
@@ -113,7 +113,10 @@ var
 begin
   I := 1;
   while I <= Length(S) do
-    if not (S[I] in ['0'..'9', '-']) then Delete(S, I, 1) else Inc(I);
+    if (not CharIsDigit(S[I])) and (S[I] <> '-') then
+      Delete(S, I, 1)
+    else
+      Inc(I);
   Result := StrToIntDef(S, 0);
 end;
 

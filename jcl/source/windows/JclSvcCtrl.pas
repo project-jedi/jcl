@@ -431,7 +431,7 @@ begin
     until Ret or (GetLastError <> ERROR_INSUFFICIENT_BUFFER);
     Win32Check(Ret);
 
-    FDescription := PSvcDesc.lpDescription;
+    FDescription := string(PSvcDesc.lpDescription);
   finally
     FreeMem(PSvcDesc);
   end;

@@ -111,7 +111,7 @@ var
   It: IJclIterator;
 begin
   memoResult.Lines.Clear;
-  Tree := TJclBinaryTree.Create(JclAlgorithms.IntegerCompare, True);
+  Tree := TJclBinaryTree.Create(JclAlgorithms.IntegerCompare, {OwnsObjects:}False);
   for I := 0 to 17 do
     Tree.Add(TObject(I));
 
@@ -133,7 +133,7 @@ begin
   memoResult.Lines.Clear;
   Tree := TJclAnsiStrBinaryTree.Create(JclAlgorithms.AnsiStrSimpleCompare);
   for I := 0 to 17 do
-    Tree.Add(Format('%.2d', [I]));
+    Tree.Add(AnsiString(Format('%.2d', [I])));
 
   if Tree.Contains('15') then
     memoResult.Lines.Add('contains 15');
@@ -141,7 +141,7 @@ begin
   Tree.TraverseOrder := toOrder;
   It := Tree.First;
   while It.HasNext do
-    memoResult.Lines.Add(It.Next);
+    memoResult.Lines.Add(string(It.Next));
 end;
 
 procedure TMainForm.btnWideStrBinaryTreeClick(Sender: TObject);

@@ -75,22 +75,24 @@
         <target name="d10.net" IsDotNet="1"/>
         <target name="d11" IsBds="1"/>
         <target name="d11.net" IsDotNet="1"/>
+        <target name="d12" IsBds="1"/>
       </targets>
       <aliases>
-        <alias name="Delphi" value="d5,d6,d7,d9,d10,d11"/>
-        <alias name="Bcb" value="c5,c6,d10,d11"/>
+        <alias name="Delphi" value="d5,d6,d7,d9,d10,d11,d12"/>
+        <alias name="Bcb" value="c5,c6,d10,d11,d12"/>
         <alias name="Kylix" value="k3"/>
-        <alias name="Windows" value="c5,c6,d5,d6,d7,d9,d10,d11"/>
+        <alias name="Windows" value="c5,c6,d5,d6,d7,d9,d10,d11,d12"/>
         <alias name="Linux" value="k3"/>
-        <alias name="WinDev" value="c5,c6,d5,d6,d7,d8,d9,d10,cs1,d11"/>
-        <alias name="JclDev" value="c5,c6,d5,d6,d7,d8,d9,d10,k3,cs1,d11"/>
-        <alias name="DelphiDev" value="d5,d6,d7,d8,d9,d10,d11"/>
-        <alias name="WinLibSuffix" value="c6,d6,d7,d8,d9,d10,cs1,d11"/>
-        <alias name="allLibSuffix" value="c6,d6,d7,d8,d9,d10,k3,cs1,d11"/>
+        <alias name="WinDev" value="c5,c6,d5,d6,d7,d8,d9,d10,cs1,d11,d12"/>
+        <alias name="JclDev" value="c5,c6,d5,d6,d7,d8,d9,d10,k3,cs1,d11,d12"/>
+        <alias name="DelphiDev" value="d5,d6,d7,d8,d9,d10,d11,d12"/>
+        <alias name="WinLibSuffix" value="c6,d6,d7,d8,d9,d10,cs1,d11,d12"/>
+        <alias name="allLibSuffix" value="c6,d6,d7,d8,d9,d10,k3,cs1,d11,d12"/>
+        <alias name="allv12up" value="d12"/>
         <alias name="noLibSuffix" value="c5,d5"/>
         <alias name="Clx" value="c6,d6,d7,k3"/>
-        <alias name="Vcl" value="c6,d6,d7,d9,d10,d11"/>
-        <alias name="Bds" value="cs1,d8,d9,d10,d11"/>
+        <alias name="Vcl" value="c6,d6,d7,d9,d10,d11,d12"/>
+        <alias name="Bds" value="cs1,d8,d9,d10,d11,d12"/>
         <alias name="JclDotNet" value="d9.net,d10.net,d11.net"/>
         <alias name="OldStyleIDE" value="c5,c6,d5,d6,d7"/>
       </aliases>
@@ -98,7 +100,7 @@
         <ProjectProperty name="VersionMajorNumber" value="1"/>
         <ProjectProperty name="VersionMinorNumber" value="103"/>
         <ProjectProperty name="ReleaseNumber" value="0"/>
-        <ProjectProperty name="BuildNumber" value="3073"/>
+        <ProjectProperty name="BuildNumber" value="3110"/>
       </ProjectProperties>
     </Model>
   </models>

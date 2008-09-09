@@ -52,7 +52,9 @@ uses
   {$ENDIF CLR}
   JclAlgorithms,
   {$ENDIF SUPPORTS_GENERICS}
-  JclBase, JclAbstractContainers, JclContainerIntf, JclSynch;
+  JclBase, JclSynch,
+  JclContainerIntf, JclAbstractContainers, JclArrayLists, JclArraySets;
+
 
 type
   // Hash Function
@@ -64,26 +66,28 @@ type
     Value: IInterface;
   end;
 
-  TJclIntfIntfHashEntryArray = array of TJclIntfIntfHashEntry;
-
   TJclIntfIntfBucket = class
   public
     Size: Integer;
-    Entries: TJclIntfIntfHashEntryArray;
+    Entries: array of TJclIntfIntfHashEntry;
+    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
-
-  TJclIntfIntfBucketArray = array of TJclIntfIntfBucket;
 
   TJclIntfIntfHashMap = class(TJclIntfAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,
     IJclIntfIntfMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: IInterface): IInterface;
+    function FreeValue(var Value: IInterface): IInterface;
+    function KeysEqual(const A, B: IInterface): Boolean;
+    function ValuesEqual(const A, B: IInterface): Boolean;
   private
-    FBuckets: TJclIntfIntfBucketArray;
+    FBuckets: array of TJclIntfIntfBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclIntfIntfHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -91,7 +95,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function Equals(const AMap: IJclIntfIntfMap): Boolean;
+    function MapEquals(const AMap: IJclIntfIntfMap): Boolean;
     function GetValue(const Key: IInterface): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): IInterface;
@@ -101,15 +105,6 @@ type
     function Remove(const Key: IInterface): IInterface;
     function Size: Integer;
     function Values: IJclIntfCollection;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: IInterface): IInterface;
-    function FreeValue(var Value: IInterface): IInterface;
-    function KeysEqual(const A, B: IInterface): Boolean;
-    function ValuesEqual(const A, B: IInterface): Boolean;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -121,26 +116,28 @@ type
     Value: IInterface;
   end;
 
-  TJclAnsiStrIntfHashEntryArray = array of TJclAnsiStrIntfHashEntry;
-
   TJclAnsiStrIntfBucket = class
   public
     Size: Integer;
-    Entries: TJclAnsiStrIntfHashEntryArray;
+    Entries: array of TJclAnsiStrIntfHashEntry;
+    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
-
-  TJclAnsiStrIntfBucketArray = array of TJclAnsiStrIntfBucket;
 
   TJclAnsiStrIntfHashMap = class(TJclAnsiStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclAnsiStrContainer,
     IJclAnsiStrIntfMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: AnsiString): AnsiString;
+    function FreeValue(var Value: IInterface): IInterface;
+    function KeysEqual(const A, B: AnsiString): Boolean;
+    function ValuesEqual(const A, B: IInterface): Boolean;
   private
-    FBuckets: TJclAnsiStrIntfBucketArray;
+    FBuckets: array of TJclAnsiStrIntfBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclAnsiStrIntfHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -148,7 +145,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: AnsiString): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function Equals(const AMap: IJclAnsiStrIntfMap): Boolean;
+    function MapEquals(const AMap: IJclAnsiStrIntfMap): Boolean;
     function GetValue(const Key: AnsiString): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): AnsiString;
@@ -158,15 +155,6 @@ type
     function Remove(const Key: AnsiString): IInterface;
     function Size: Integer;
     function Values: IJclIntfCollection;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: AnsiString): AnsiString;
-    function FreeValue(var Value: IInterface): IInterface;
-    function KeysEqual(const A, B: AnsiString): Boolean;
-    function ValuesEqual(const A, B: IInterface): Boolean;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -178,26 +166,29 @@ type
     Value: AnsiString;
   end;
 
-  TJclIntfAnsiStrHashEntryArray = array of TJclIntfAnsiStrHashEntry;
-
   TJclIntfAnsiStrBucket = class
   public
     Size: Integer;
-    Entries: TJclIntfAnsiStrHashEntryArray;
+    Entries: array of TJclIntfAnsiStrHashEntry;
+    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
-
-  TJclIntfAnsiStrBucketArray = array of TJclIntfAnsiStrBucket;
 
   TJclIntfAnsiStrHashMap = class(TJclAnsiStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclAnsiStrContainer,
     IJclIntfAnsiStrMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: IInterface): IInterface;
+    function FreeValue(var Value: AnsiString): AnsiString;
+    function Hash(const AInterface: IInterface): Integer; reintroduce;
+    function KeysEqual(const A, B: IInterface): Boolean;
+    function ValuesEqual(const A, B: AnsiString): Boolean;
   private
-    FBuckets: TJclIntfAnsiStrBucketArray;
+    FBuckets: array of TJclIntfAnsiStrBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclIntfAnsiStrHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -205,7 +196,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(const Value: AnsiString): Boolean;
-    function Equals(const AMap: IJclIntfAnsiStrMap): Boolean;
+    function MapEquals(const AMap: IJclIntfAnsiStrMap): Boolean;
     function GetValue(const Key: IInterface): AnsiString;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: AnsiString): IInterface;
@@ -215,16 +206,6 @@ type
     function Remove(const Key: IInterface): AnsiString;
     function Size: Integer;
     function Values: IJclAnsiStrCollection;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: IInterface): IInterface;
-    function FreeValue(var Value: AnsiString): AnsiString;
-    function Hash(const AInterface: IInterface): Integer; reintroduce;
-    function KeysEqual(const A, B: IInterface): Boolean;
-    function ValuesEqual(const A, B: AnsiString): Boolean;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -236,26 +217,28 @@ type
     Value: AnsiString;
   end;
 
-  TJclAnsiStrAnsiStrHashEntryArray = array of TJclAnsiStrAnsiStrHashEntry;
-
   TJclAnsiStrAnsiStrBucket = class
   public
     Size: Integer;
-    Entries: TJclAnsiStrAnsiStrHashEntryArray;
+    Entries: array of TJclAnsiStrAnsiStrHashEntry;
+    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
-
-  TJclAnsiStrAnsiStrBucketArray = array of TJclAnsiStrAnsiStrBucket;
 
   TJclAnsiStrAnsiStrHashMap = class(TJclAnsiStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclAnsiStrContainer,
     IJclAnsiStrAnsiStrMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: AnsiString): AnsiString;
+    function FreeValue(var Value: AnsiString): AnsiString;
+    function KeysEqual(const A, B: AnsiString): Boolean;
+    function ValuesEqual(const A, B: AnsiString): Boolean;
   private
-    FBuckets: TJclAnsiStrAnsiStrBucketArray;
+    FBuckets: array of TJclAnsiStrAnsiStrBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclAnsiStrAnsiStrHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -263,7 +246,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: AnsiString): Boolean;
     function ContainsValue(const Value: AnsiString): Boolean;
-    function Equals(const AMap: IJclAnsiStrAnsiStrMap): Boolean;
+    function MapEquals(const AMap: IJclAnsiStrAnsiStrMap): Boolean;
     function GetValue(const Key: AnsiString): AnsiString;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: AnsiString): AnsiString;
@@ -273,15 +256,6 @@ type
     function Remove(const Key: AnsiString): AnsiString;
     function Size: Integer;
     function Values: IJclAnsiStrCollection;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: AnsiString): AnsiString;
-    function FreeValue(var Value: AnsiString): AnsiString;
-    function KeysEqual(const A, B: AnsiString): Boolean;
-    function ValuesEqual(const A, B: AnsiString): Boolean;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -293,26 +267,28 @@ type
     Value: IInterface;
   end;
 
-  TJclWideStrIntfHashEntryArray = array of TJclWideStrIntfHashEntry;
-
   TJclWideStrIntfBucket = class
   public
     Size: Integer;
-    Entries: TJclWideStrIntfHashEntryArray;
+    Entries: array of TJclWideStrIntfHashEntry;
+    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
-
-  TJclWideStrIntfBucketArray = array of TJclWideStrIntfBucket;
 
   TJclWideStrIntfHashMap = class(TJclWideStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclWideStrContainer,
     IJclWideStrIntfMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: WideString): WideString;
+    function FreeValue(var Value: IInterface): IInterface;
+    function KeysEqual(const A, B: WideString): Boolean;
+    function ValuesEqual(const A, B: IInterface): Boolean;
   private
-    FBuckets: TJclWideStrIntfBucketArray;
+    FBuckets: array of TJclWideStrIntfBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclWideStrIntfHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -320,7 +296,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: WideString): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function Equals(const AMap: IJclWideStrIntfMap): Boolean;
+    function MapEquals(const AMap: IJclWideStrIntfMap): Boolean;
     function GetValue(const Key: WideString): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): WideString;
@@ -330,15 +306,6 @@ type
     function Remove(const Key: WideString): IInterface;
     function Size: Integer;
     function Values: IJclIntfCollection;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: WideString): WideString;
-    function FreeValue(var Value: IInterface): IInterface;
-    function KeysEqual(const A, B: WideString): Boolean;
-    function ValuesEqual(const A, B: IInterface): Boolean;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -350,26 +317,29 @@ type
     Value: WideString;
   end;
 
-  TJclIntfWideStrHashEntryArray = array of TJclIntfWideStrHashEntry;
-
   TJclIntfWideStrBucket = class
   public
     Size: Integer;
-    Entries: TJclIntfWideStrHashEntryArray;
+    Entries: array of TJclIntfWideStrHashEntry;
+    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
-
-  TJclIntfWideStrBucketArray = array of TJclIntfWideStrBucket;
 
   TJclIntfWideStrHashMap = class(TJclWideStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclWideStrContainer,
     IJclIntfWideStrMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: IInterface): IInterface;
+    function FreeValue(var Value: WideString): WideString;
+    function Hash(const AInterface: IInterface): Integer; reintroduce;
+    function KeysEqual(const A, B: IInterface): Boolean;
+    function ValuesEqual(const A, B: WideString): Boolean;
   private
-    FBuckets: TJclIntfWideStrBucketArray;
+    FBuckets: array of TJclIntfWideStrBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclIntfWideStrHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -377,7 +347,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(const Value: WideString): Boolean;
-    function Equals(const AMap: IJclIntfWideStrMap): Boolean;
+    function MapEquals(const AMap: IJclIntfWideStrMap): Boolean;
     function GetValue(const Key: IInterface): WideString;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: WideString): IInterface;
@@ -387,16 +357,6 @@ type
     function Remove(const Key: IInterface): WideString;
     function Size: Integer;
     function Values: IJclWideStrCollection;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: IInterface): IInterface;
-    function FreeValue(var Value: WideString): WideString;
-    function Hash(const AInterface: IInterface): Integer; reintroduce;
-    function KeysEqual(const A, B: IInterface): Boolean;
-    function ValuesEqual(const A, B: WideString): Boolean;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -408,26 +368,28 @@ type
     Value: WideString;
   end;
 
-  TJclWideStrWideStrHashEntryArray = array of TJclWideStrWideStrHashEntry;
-
   TJclWideStrWideStrBucket = class
   public
     Size: Integer;
-    Entries: TJclWideStrWideStrHashEntryArray;
+    Entries: array of TJclWideStrWideStrHashEntry;
+    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
-
-  TJclWideStrWideStrBucketArray = array of TJclWideStrWideStrBucket;
 
   TJclWideStrWideStrHashMap = class(TJclWideStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclWideStrContainer,
     IJclWideStrWideStrMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: WideString): WideString;
+    function FreeValue(var Value: WideString): WideString;
+    function KeysEqual(const A, B: WideString): Boolean;
+    function ValuesEqual(const A, B: WideString): Boolean;
   private
-    FBuckets: TJclWideStrWideStrBucketArray;
+    FBuckets: array of TJclWideStrWideStrBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclWideStrWideStrHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -435,7 +397,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: WideString): Boolean;
     function ContainsValue(const Value: WideString): Boolean;
-    function Equals(const AMap: IJclWideStrWideStrMap): Boolean;
+    function MapEquals(const AMap: IJclWideStrWideStrMap): Boolean;
     function GetValue(const Key: WideString): WideString;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: WideString): WideString;
@@ -445,20 +407,164 @@ type
     function Remove(const Key: WideString): WideString;
     function Size: Integer;
     function Values: IJclWideStrCollection;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: WideString): WideString;
-    function FreeValue(var Value: WideString): WideString;
-    function KeysEqual(const A, B: WideString): Boolean;
-    function ValuesEqual(const A, B: WideString): Boolean;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
     property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
+
+{$IFDEF SUPPORTS_UNICODE_STRING}
+  TJclUnicodeStrIntfHashEntry = record
+    Key: UnicodeString;
+    Value: IInterface;
+  end;
+
+  TJclUnicodeStrIntfBucket = class
+  public
+    Size: Integer;
+    Entries: array of TJclUnicodeStrIntfHashEntry;
+    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+  end;
+
+  TJclUnicodeStrIntfHashMap = class(TJclUnicodeStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclUnicodeStrContainer,
+    IJclUnicodeStrIntfMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: UnicodeString): UnicodeString;
+    function FreeValue(var Value: IInterface): IInterface;
+    function KeysEqual(const A, B: UnicodeString): Boolean;
+    function ValuesEqual(const A, B: IInterface): Boolean;
+  private
+    FBuckets: array of TJclUnicodeStrIntfBucket;
+    FHashFunction: TJclHashFunction;
+  protected
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+    { IJclPackable }
+    procedure Pack; override;
+    procedure SetCapacity(Value: Integer); override;
+    { IJclUnicodeStrIntfMap }
+    procedure Clear;
+    function ContainsKey(const Key: UnicodeString): Boolean;
+    function ContainsValue(const Value: IInterface): Boolean;
+    function MapEquals(const AMap: IJclUnicodeStrIntfMap): Boolean;
+    function GetValue(const Key: UnicodeString): IInterface;
+    function IsEmpty: Boolean;
+    function KeyOfValue(const Value: IInterface): UnicodeString;
+    function KeySet: IJclUnicodeStrSet;
+    procedure PutAll(const AMap: IJclUnicodeStrIntfMap);
+    procedure PutValue(const Key: UnicodeString; const Value: IInterface);
+    function Remove(const Key: UnicodeString): IInterface;
+    function Size: Integer;
+    function Values: IJclIntfCollection;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
+  end;
+
+  TJclIntfUnicodeStrHashEntry = record
+    Key: IInterface;
+    Value: UnicodeString;
+  end;
+
+  TJclIntfUnicodeStrBucket = class
+  public
+    Size: Integer;
+    Entries: array of TJclIntfUnicodeStrHashEntry;
+    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+  end;
+
+  TJclIntfUnicodeStrHashMap = class(TJclUnicodeStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclUnicodeStrContainer,
+    IJclIntfUnicodeStrMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: IInterface): IInterface;
+    function FreeValue(var Value: UnicodeString): UnicodeString;
+    function Hash(const AInterface: IInterface): Integer; reintroduce;
+    function KeysEqual(const A, B: IInterface): Boolean;
+    function ValuesEqual(const A, B: UnicodeString): Boolean;
+  private
+    FBuckets: array of TJclIntfUnicodeStrBucket;
+    FHashFunction: TJclHashFunction;
+  protected
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+    { IJclPackable }
+    procedure Pack; override;
+    procedure SetCapacity(Value: Integer); override;
+    { IJclIntfUnicodeStrMap }
+    procedure Clear;
+    function ContainsKey(const Key: IInterface): Boolean;
+    function ContainsValue(const Value: UnicodeString): Boolean;
+    function MapEquals(const AMap: IJclIntfUnicodeStrMap): Boolean;
+    function GetValue(const Key: IInterface): UnicodeString;
+    function IsEmpty: Boolean;
+    function KeyOfValue(const Value: UnicodeString): IInterface;
+    function KeySet: IJclIntfSet;
+    procedure PutAll(const AMap: IJclIntfUnicodeStrMap);
+    procedure PutValue(const Key: IInterface; const Value: UnicodeString);
+    function Remove(const Key: IInterface): UnicodeString;
+    function Size: Integer;
+    function Values: IJclUnicodeStrCollection;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
+  end;
+
+  TJclUnicodeStrUnicodeStrHashEntry = record
+    Key: UnicodeString;
+    Value: UnicodeString;
+  end;
+
+  TJclUnicodeStrUnicodeStrBucket = class
+  public
+    Size: Integer;
+    Entries: array of TJclUnicodeStrUnicodeStrHashEntry;
+    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+  end;
+
+  TJclUnicodeStrUnicodeStrHashMap = class(TJclUnicodeStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclUnicodeStrContainer,
+    IJclUnicodeStrUnicodeStrMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: UnicodeString): UnicodeString;
+    function FreeValue(var Value: UnicodeString): UnicodeString;
+    function KeysEqual(const A, B: UnicodeString): Boolean;
+    function ValuesEqual(const A, B: UnicodeString): Boolean;
+  private
+    FBuckets: array of TJclUnicodeStrUnicodeStrBucket;
+    FHashFunction: TJclHashFunction;
+  protected
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+    { IJclPackable }
+    procedure Pack; override;
+    procedure SetCapacity(Value: Integer); override;
+    { IJclUnicodeStrUnicodeStrMap }
+    procedure Clear;
+    function ContainsKey(const Key: UnicodeString): Boolean;
+    function ContainsValue(const Value: UnicodeString): Boolean;
+    function MapEquals(const AMap: IJclUnicodeStrUnicodeStrMap): Boolean;
+    function GetValue(const Key: UnicodeString): UnicodeString;
+    function IsEmpty: Boolean;
+    function KeyOfValue(const Value: UnicodeString): UnicodeString;
+    function KeySet: IJclUnicodeStrSet;
+    procedure PutAll(const AMap: IJclUnicodeStrUnicodeStrMap);
+    procedure PutValue(const Key: UnicodeString; const Value: UnicodeString);
+    function Remove(const Key: UnicodeString): UnicodeString;
+    function Size: Integer;
+    function Values: IJclUnicodeStrCollection;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
+  end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF CONTAINER_ANSISTR}
   TJclStrIntfHashMap = TJclAnsiStrIntfHashMap;
@@ -470,32 +576,39 @@ type
   TJclIntfStrHashMap = TJclIntfWideStrHashMap;
   TJclStrStrHashMap = TJclWideStrWideStrHashMap;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  TJclStrIntfHashMap = TJclUnicodeStrIntfHashMap;
+  TJclIntfStrHashMap = TJclIntfUnicodeStrHashMap;
+  TJclStrStrHashMap = TJclUnicodeStrUnicodeStrHashMap;
+  {$ENDIF CONTAINER_UNICODESTR}
 
   TJclSingleIntfHashEntry = record
     Key: Single;
     Value: IInterface;
   end;
 
-  TJclSingleIntfHashEntryArray = array of TJclSingleIntfHashEntry;
-
   TJclSingleIntfBucket = class
   public
     Size: Integer;
-    Entries: TJclSingleIntfHashEntryArray;
+    Entries: array of TJclSingleIntfHashEntry;
+    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
-
-  TJclSingleIntfBucketArray = array of TJclSingleIntfBucket;
 
   TJclSingleIntfHashMap = class(TJclSingleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclSingleContainer,
     IJclSingleIntfMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: Single): Single;
+    function FreeValue(var Value: IInterface): IInterface;
+    function KeysEqual(const A, B: Single): Boolean;
+    function ValuesEqual(const A, B: IInterface): Boolean;
   private
-    FBuckets: TJclSingleIntfBucketArray;
+    FBuckets: array of TJclSingleIntfBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclSingleIntfHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -503,7 +616,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: Single): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function Equals(const AMap: IJclSingleIntfMap): Boolean;
+    function MapEquals(const AMap: IJclSingleIntfMap): Boolean;
     function GetValue(const Key: Single): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): Single;
@@ -513,15 +626,6 @@ type
     function Remove(const Key: Single): IInterface;
     function Size: Integer;
     function Values: IJclIntfCollection;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: Single): Single;
-    function FreeValue(var Value: IInterface): IInterface;
-    function KeysEqual(const A, B: Single): Boolean;
-    function ValuesEqual(const A, B: IInterface): Boolean;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -533,26 +637,29 @@ type
     Value: Single;
   end;
 
-  TJclIntfSingleHashEntryArray = array of TJclIntfSingleHashEntry;
-
   TJclIntfSingleBucket = class
   public
     Size: Integer;
-    Entries: TJclIntfSingleHashEntryArray;
+    Entries: array of TJclIntfSingleHashEntry;
+    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
-
-  TJclIntfSingleBucketArray = array of TJclIntfSingleBucket;
 
   TJclIntfSingleHashMap = class(TJclSingleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclSingleContainer,
     IJclIntfSingleMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: IInterface): IInterface;
+    function FreeValue(var Value: Single): Single;
+    function Hash(const AInterface: IInterface): Integer; reintroduce;
+    function KeysEqual(const A, B: IInterface): Boolean;
+    function ValuesEqual(const A, B: Single): Boolean;
   private
-    FBuckets: TJclIntfSingleBucketArray;
+    FBuckets: array of TJclIntfSingleBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclIntfSingleHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -560,7 +667,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(const Value: Single): Boolean;
-    function Equals(const AMap: IJclIntfSingleMap): Boolean;
+    function MapEquals(const AMap: IJclIntfSingleMap): Boolean;
     function GetValue(const Key: IInterface): Single;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Single): IInterface;
@@ -570,16 +677,6 @@ type
     function Remove(const Key: IInterface): Single;
     function Size: Integer;
     function Values: IJclSingleCollection;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: IInterface): IInterface;
-    function FreeValue(var Value: Single): Single;
-    function Hash(const AInterface: IInterface): Integer; reintroduce;
-    function KeysEqual(const A, B: IInterface): Boolean;
-    function ValuesEqual(const A, B: Single): Boolean;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -591,26 +688,28 @@ type
     Value: Single;
   end;
 
-  TJclSingleSingleHashEntryArray = array of TJclSingleSingleHashEntry;
-
   TJclSingleSingleBucket = class
   public
     Size: Integer;
-    Entries: TJclSingleSingleHashEntryArray;
+    Entries: array of TJclSingleSingleHashEntry;
+    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
-
-  TJclSingleSingleBucketArray = array of TJclSingleSingleBucket;
 
   TJclSingleSingleHashMap = class(TJclSingleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclSingleContainer,
     IJclSingleSingleMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: Single): Single;
+    function FreeValue(var Value: Single): Single;
+    function KeysEqual(const A, B: Single): Boolean;
+    function ValuesEqual(const A, B: Single): Boolean;
   private
-    FBuckets: TJclSingleSingleBucketArray;
+    FBuckets: array of TJclSingleSingleBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclSingleSingleHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -618,7 +717,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: Single): Boolean;
     function ContainsValue(const Value: Single): Boolean;
-    function Equals(const AMap: IJclSingleSingleMap): Boolean;
+    function MapEquals(const AMap: IJclSingleSingleMap): Boolean;
     function GetValue(const Key: Single): Single;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Single): Single;
@@ -628,15 +727,6 @@ type
     function Remove(const Key: Single): Single;
     function Size: Integer;
     function Values: IJclSingleCollection;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: Single): Single;
-    function FreeValue(var Value: Single): Single;
-    function KeysEqual(const A, B: Single): Boolean;
-    function ValuesEqual(const A, B: Single): Boolean;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -648,26 +738,28 @@ type
     Value: IInterface;
   end;
 
-  TJclDoubleIntfHashEntryArray = array of TJclDoubleIntfHashEntry;
-
   TJclDoubleIntfBucket = class
   public
     Size: Integer;
-    Entries: TJclDoubleIntfHashEntryArray;
+    Entries: array of TJclDoubleIntfHashEntry;
+    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
-
-  TJclDoubleIntfBucketArray = array of TJclDoubleIntfBucket;
 
   TJclDoubleIntfHashMap = class(TJclDoubleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclDoubleContainer,
     IJclDoubleIntfMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: Double): Double;
+    function FreeValue(var Value: IInterface): IInterface;
+    function KeysEqual(const A, B: Double): Boolean;
+    function ValuesEqual(const A, B: IInterface): Boolean;
   private
-    FBuckets: TJclDoubleIntfBucketArray;
+    FBuckets: array of TJclDoubleIntfBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclDoubleIntfHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -675,7 +767,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: Double): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function Equals(const AMap: IJclDoubleIntfMap): Boolean;
+    function MapEquals(const AMap: IJclDoubleIntfMap): Boolean;
     function GetValue(const Key: Double): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): Double;
@@ -685,15 +777,6 @@ type
     function Remove(const Key: Double): IInterface;
     function Size: Integer;
     function Values: IJclIntfCollection;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: Double): Double;
-    function FreeValue(var Value: IInterface): IInterface;
-    function KeysEqual(const A, B: Double): Boolean;
-    function ValuesEqual(const A, B: IInterface): Boolean;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -705,26 +788,29 @@ type
     Value: Double;
   end;
 
-  TJclIntfDoubleHashEntryArray = array of TJclIntfDoubleHashEntry;
-
   TJclIntfDoubleBucket = class
   public
     Size: Integer;
-    Entries: TJclIntfDoubleHashEntryArray;
+    Entries: array of TJclIntfDoubleHashEntry;
+    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
-
-  TJclIntfDoubleBucketArray = array of TJclIntfDoubleBucket;
 
   TJclIntfDoubleHashMap = class(TJclDoubleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclDoubleContainer,
     IJclIntfDoubleMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: IInterface): IInterface;
+    function FreeValue(var Value: Double): Double;
+    function Hash(const AInterface: IInterface): Integer; reintroduce;
+    function KeysEqual(const A, B: IInterface): Boolean;
+    function ValuesEqual(const A, B: Double): Boolean;
   private
-    FBuckets: TJclIntfDoubleBucketArray;
+    FBuckets: array of TJclIntfDoubleBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclIntfDoubleHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -732,7 +818,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(const Value: Double): Boolean;
-    function Equals(const AMap: IJclIntfDoubleMap): Boolean;
+    function MapEquals(const AMap: IJclIntfDoubleMap): Boolean;
     function GetValue(const Key: IInterface): Double;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Double): IInterface;
@@ -742,16 +828,6 @@ type
     function Remove(const Key: IInterface): Double;
     function Size: Integer;
     function Values: IJclDoubleCollection;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: IInterface): IInterface;
-    function FreeValue(var Value: Double): Double;
-    function Hash(const AInterface: IInterface): Integer; reintroduce;
-    function KeysEqual(const A, B: IInterface): Boolean;
-    function ValuesEqual(const A, B: Double): Boolean;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -763,26 +839,28 @@ type
     Value: Double;
   end;
 
-  TJclDoubleDoubleHashEntryArray = array of TJclDoubleDoubleHashEntry;
-
   TJclDoubleDoubleBucket = class
   public
     Size: Integer;
-    Entries: TJclDoubleDoubleHashEntryArray;
+    Entries: array of TJclDoubleDoubleHashEntry;
+    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
-
-  TJclDoubleDoubleBucketArray = array of TJclDoubleDoubleBucket;
 
   TJclDoubleDoubleHashMap = class(TJclDoubleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclDoubleContainer,
     IJclDoubleDoubleMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: Double): Double;
+    function FreeValue(var Value: Double): Double;
+    function KeysEqual(const A, B: Double): Boolean;
+    function ValuesEqual(const A, B: Double): Boolean;
   private
-    FBuckets: TJclDoubleDoubleBucketArray;
+    FBuckets: array of TJclDoubleDoubleBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclDoubleDoubleHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -790,7 +868,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: Double): Boolean;
     function ContainsValue(const Value: Double): Boolean;
-    function Equals(const AMap: IJclDoubleDoubleMap): Boolean;
+    function MapEquals(const AMap: IJclDoubleDoubleMap): Boolean;
     function GetValue(const Key: Double): Double;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Double): Double;
@@ -800,15 +878,6 @@ type
     function Remove(const Key: Double): Double;
     function Size: Integer;
     function Values: IJclDoubleCollection;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: Double): Double;
-    function FreeValue(var Value: Double): Double;
-    function KeysEqual(const A, B: Double): Boolean;
-    function ValuesEqual(const A, B: Double): Boolean;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -820,26 +889,28 @@ type
     Value: IInterface;
   end;
 
-  TJclExtendedIntfHashEntryArray = array of TJclExtendedIntfHashEntry;
-
   TJclExtendedIntfBucket = class
   public
     Size: Integer;
-    Entries: TJclExtendedIntfHashEntryArray;
+    Entries: array of TJclExtendedIntfHashEntry;
+    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
-
-  TJclExtendedIntfBucketArray = array of TJclExtendedIntfBucket;
 
   TJclExtendedIntfHashMap = class(TJclExtendedAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclExtendedContainer,
     IJclExtendedIntfMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: Extended): Extended;
+    function FreeValue(var Value: IInterface): IInterface;
+    function KeysEqual(const A, B: Extended): Boolean;
+    function ValuesEqual(const A, B: IInterface): Boolean;
   private
-    FBuckets: TJclExtendedIntfBucketArray;
+    FBuckets: array of TJclExtendedIntfBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclExtendedIntfHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -847,7 +918,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: Extended): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function Equals(const AMap: IJclExtendedIntfMap): Boolean;
+    function MapEquals(const AMap: IJclExtendedIntfMap): Boolean;
     function GetValue(const Key: Extended): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): Extended;
@@ -857,15 +928,6 @@ type
     function Remove(const Key: Extended): IInterface;
     function Size: Integer;
     function Values: IJclIntfCollection;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: Extended): Extended;
-    function FreeValue(var Value: IInterface): IInterface;
-    function KeysEqual(const A, B: Extended): Boolean;
-    function ValuesEqual(const A, B: IInterface): Boolean;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -877,26 +939,29 @@ type
     Value: Extended;
   end;
 
-  TJclIntfExtendedHashEntryArray = array of TJclIntfExtendedHashEntry;
-
   TJclIntfExtendedBucket = class
   public
     Size: Integer;
-    Entries: TJclIntfExtendedHashEntryArray;
+    Entries: array of TJclIntfExtendedHashEntry;
+    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
-
-  TJclIntfExtendedBucketArray = array of TJclIntfExtendedBucket;
 
   TJclIntfExtendedHashMap = class(TJclExtendedAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclExtendedContainer,
     IJclIntfExtendedMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: IInterface): IInterface;
+    function FreeValue(var Value: Extended): Extended;
+    function Hash(const AInterface: IInterface): Integer; reintroduce;
+    function KeysEqual(const A, B: IInterface): Boolean;
+    function ValuesEqual(const A, B: Extended): Boolean;
   private
-    FBuckets: TJclIntfExtendedBucketArray;
+    FBuckets: array of TJclIntfExtendedBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclIntfExtendedHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -904,7 +969,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(const Value: Extended): Boolean;
-    function Equals(const AMap: IJclIntfExtendedMap): Boolean;
+    function MapEquals(const AMap: IJclIntfExtendedMap): Boolean;
     function GetValue(const Key: IInterface): Extended;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Extended): IInterface;
@@ -914,16 +979,6 @@ type
     function Remove(const Key: IInterface): Extended;
     function Size: Integer;
     function Values: IJclExtendedCollection;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: IInterface): IInterface;
-    function FreeValue(var Value: Extended): Extended;
-    function Hash(const AInterface: IInterface): Integer; reintroduce;
-    function KeysEqual(const A, B: IInterface): Boolean;
-    function ValuesEqual(const A, B: Extended): Boolean;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -935,26 +990,28 @@ type
     Value: Extended;
   end;
 
-  TJclExtendedExtendedHashEntryArray = array of TJclExtendedExtendedHashEntry;
-
   TJclExtendedExtendedBucket = class
   public
     Size: Integer;
-    Entries: TJclExtendedExtendedHashEntryArray;
+    Entries: array of TJclExtendedExtendedHashEntry;
+    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
-
-  TJclExtendedExtendedBucketArray = array of TJclExtendedExtendedBucket;
 
   TJclExtendedExtendedHashMap = class(TJclExtendedAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclExtendedContainer,
     IJclExtendedExtendedMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: Extended): Extended;
+    function FreeValue(var Value: Extended): Extended;
+    function KeysEqual(const A, B: Extended): Boolean;
+    function ValuesEqual(const A, B: Extended): Boolean;
   private
-    FBuckets: TJclExtendedExtendedBucketArray;
+    FBuckets: array of TJclExtendedExtendedBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclExtendedExtendedHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -962,7 +1019,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: Extended): Boolean;
     function ContainsValue(const Value: Extended): Boolean;
-    function Equals(const AMap: IJclExtendedExtendedMap): Boolean;
+    function MapEquals(const AMap: IJclExtendedExtendedMap): Boolean;
     function GetValue(const Key: Extended): Extended;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Extended): Extended;
@@ -972,15 +1029,6 @@ type
     function Remove(const Key: Extended): Extended;
     function Size: Integer;
     function Values: IJclExtendedCollection;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: Extended): Extended;
-    function FreeValue(var Value: Extended): Extended;
-    function KeysEqual(const A, B: Extended): Boolean;
-    function ValuesEqual(const A, B: Extended): Boolean;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -1008,26 +1056,28 @@ type
     Value: IInterface;
   end;
 
-  TJclIntegerIntfHashEntryArray = array of TJclIntegerIntfHashEntry;
-
   TJclIntegerIntfBucket = class
   public
     Size: Integer;
-    Entries: TJclIntegerIntfHashEntryArray;
+    Entries: array of TJclIntegerIntfHashEntry;
+    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
-
-  TJclIntegerIntfBucketArray = array of TJclIntegerIntfBucket;
 
   TJclIntegerIntfHashMap = class(TJclIntegerAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,
     IJclIntegerIntfMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: Integer): Integer;
+    function FreeValue(var Value: IInterface): IInterface;
+    function KeysEqual(A, B: Integer): Boolean;
+    function ValuesEqual(const A, B: IInterface): Boolean;
   private
-    FBuckets: TJclIntegerIntfBucketArray;
+    FBuckets: array of TJclIntegerIntfBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclIntegerIntfHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1035,7 +1085,7 @@ type
     procedure Clear;
     function ContainsKey(Key: Integer): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function Equals(const AMap: IJclIntegerIntfMap): Boolean;
+    function MapEquals(const AMap: IJclIntegerIntfMap): Boolean;
     function GetValue(Key: Integer): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): Integer;
@@ -1045,15 +1095,6 @@ type
     function Remove(Key: Integer): IInterface;
     function Size: Integer;
     function Values: IJclIntfCollection;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: Integer): Integer;
-    function FreeValue(var Value: IInterface): IInterface;
-    function KeysEqual(A, B: Integer): Boolean;
-    function ValuesEqual(const A, B: IInterface): Boolean;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -1065,26 +1106,29 @@ type
     Value: Integer;
   end;
 
-  TJclIntfIntegerHashEntryArray = array of TJclIntfIntegerHashEntry;
-
   TJclIntfIntegerBucket = class
   public
     Size: Integer;
-    Entries: TJclIntfIntegerHashEntryArray;
+    Entries: array of TJclIntfIntegerHashEntry;
+    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
-
-  TJclIntfIntegerBucketArray = array of TJclIntfIntegerBucket;
 
   TJclIntfIntegerHashMap = class(TJclIntegerAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,
     IJclIntfIntegerMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: IInterface): IInterface;
+    function FreeValue(var Value: Integer): Integer;
+    function Hash(const AInterface: IInterface): Integer; reintroduce;
+    function KeysEqual(const A, B: IInterface): Boolean;
+    function ValuesEqual(A, B: Integer): Boolean;
   private
-    FBuckets: TJclIntfIntegerBucketArray;
+    FBuckets: array of TJclIntfIntegerBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclIntfIntegerHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1092,7 +1136,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(Value: Integer): Boolean;
-    function Equals(const AMap: IJclIntfIntegerMap): Boolean;
+    function MapEquals(const AMap: IJclIntfIntegerMap): Boolean;
     function GetValue(const Key: IInterface): Integer;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: Integer): IInterface;
@@ -1102,16 +1146,6 @@ type
     function Remove(const Key: IInterface): Integer;
     function Size: Integer;
     function Values: IJclIntegerCollection;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: IInterface): IInterface;
-    function FreeValue(var Value: Integer): Integer;
-    function Hash(const AInterface: IInterface): Integer; reintroduce;
-    function KeysEqual(const A, B: IInterface): Boolean;
-    function ValuesEqual(A, B: Integer): Boolean;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -1123,26 +1157,28 @@ type
     Value: Integer;
   end;
 
-  TJclIntegerIntegerHashEntryArray = array of TJclIntegerIntegerHashEntry;
-
   TJclIntegerIntegerBucket = class
   public
     Size: Integer;
-    Entries: TJclIntegerIntegerHashEntryArray;
+    Entries: array of TJclIntegerIntegerHashEntry;
+    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
-
-  TJclIntegerIntegerBucketArray = array of TJclIntegerIntegerBucket;
 
   TJclIntegerIntegerHashMap = class(TJclIntegerAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,
     IJclIntegerIntegerMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: Integer): Integer;
+    function FreeValue(var Value: Integer): Integer;
+    function KeysEqual(A, B: Integer): Boolean;
+    function ValuesEqual(A, B: Integer): Boolean;
   private
-    FBuckets: TJclIntegerIntegerBucketArray;
+    FBuckets: array of TJclIntegerIntegerBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclIntegerIntegerHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1150,7 +1186,7 @@ type
     procedure Clear;
     function ContainsKey(Key: Integer): Boolean;
     function ContainsValue(Value: Integer): Boolean;
-    function Equals(const AMap: IJclIntegerIntegerMap): Boolean;
+    function MapEquals(const AMap: IJclIntegerIntegerMap): Boolean;
     function GetValue(Key: Integer): Integer;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: Integer): Integer;
@@ -1160,15 +1196,6 @@ type
     function Remove(Key: Integer): Integer;
     function Size: Integer;
     function Values: IJclIntegerCollection;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: Integer): Integer;
-    function FreeValue(var Value: Integer): Integer;
-    function KeysEqual(A, B: Integer): Boolean;
-    function ValuesEqual(A, B: Integer): Boolean;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -1180,26 +1207,28 @@ type
     Value: IInterface;
   end;
 
-  TJclCardinalIntfHashEntryArray = array of TJclCardinalIntfHashEntry;
-
   TJclCardinalIntfBucket = class
   public
     Size: Integer;
-    Entries: TJclCardinalIntfHashEntryArray;
+    Entries: array of TJclCardinalIntfHashEntry;
+    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
-
-  TJclCardinalIntfBucketArray = array of TJclCardinalIntfBucket;
 
   TJclCardinalIntfHashMap = class(TJclCardinalAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,
     IJclCardinalIntfMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: Cardinal): Cardinal;
+    function FreeValue(var Value: IInterface): IInterface;
+    function KeysEqual(A, B: Cardinal): Boolean;
+    function ValuesEqual(const A, B: IInterface): Boolean;
   private
-    FBuckets: TJclCardinalIntfBucketArray;
+    FBuckets: array of TJclCardinalIntfBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclCardinalIntfHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1207,7 +1236,7 @@ type
     procedure Clear;
     function ContainsKey(Key: Cardinal): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function Equals(const AMap: IJclCardinalIntfMap): Boolean;
+    function MapEquals(const AMap: IJclCardinalIntfMap): Boolean;
     function GetValue(Key: Cardinal): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): Cardinal;
@@ -1217,15 +1246,6 @@ type
     function Remove(Key: Cardinal): IInterface;
     function Size: Integer;
     function Values: IJclIntfCollection;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: Cardinal): Cardinal;
-    function FreeValue(var Value: IInterface): IInterface;
-    function KeysEqual(A, B: Cardinal): Boolean;
-    function ValuesEqual(const A, B: IInterface): Boolean;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -1237,26 +1257,29 @@ type
     Value: Cardinal;
   end;
 
-  TJclIntfCardinalHashEntryArray = array of TJclIntfCardinalHashEntry;
-
   TJclIntfCardinalBucket = class
   public
     Size: Integer;
-    Entries: TJclIntfCardinalHashEntryArray;
+    Entries: array of TJclIntfCardinalHashEntry;
+    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
-
-  TJclIntfCardinalBucketArray = array of TJclIntfCardinalBucket;
 
   TJclIntfCardinalHashMap = class(TJclCardinalAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,
     IJclIntfCardinalMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: IInterface): IInterface;
+    function FreeValue(var Value: Cardinal): Cardinal;
+    function Hash(const AInterface: IInterface): Integer; reintroduce;
+    function KeysEqual(const A, B: IInterface): Boolean;
+    function ValuesEqual(A, B: Cardinal): Boolean;
   private
-    FBuckets: TJclIntfCardinalBucketArray;
+    FBuckets: array of TJclIntfCardinalBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclIntfCardinalHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1264,7 +1287,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(Value: Cardinal): Boolean;
-    function Equals(const AMap: IJclIntfCardinalMap): Boolean;
+    function MapEquals(const AMap: IJclIntfCardinalMap): Boolean;
     function GetValue(const Key: IInterface): Cardinal;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: Cardinal): IInterface;
@@ -1274,16 +1297,6 @@ type
     function Remove(const Key: IInterface): Cardinal;
     function Size: Integer;
     function Values: IJclCardinalCollection;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: IInterface): IInterface;
-    function FreeValue(var Value: Cardinal): Cardinal;
-    function Hash(const AInterface: IInterface): Integer; reintroduce;
-    function KeysEqual(const A, B: IInterface): Boolean;
-    function ValuesEqual(A, B: Cardinal): Boolean;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -1295,26 +1308,28 @@ type
     Value: Cardinal;
   end;
 
-  TJclCardinalCardinalHashEntryArray = array of TJclCardinalCardinalHashEntry;
-
   TJclCardinalCardinalBucket = class
   public
     Size: Integer;
-    Entries: TJclCardinalCardinalHashEntryArray;
+    Entries: array of TJclCardinalCardinalHashEntry;
+    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
-
-  TJclCardinalCardinalBucketArray = array of TJclCardinalCardinalBucket;
 
   TJclCardinalCardinalHashMap = class(TJclCardinalAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,
     IJclCardinalCardinalMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: Cardinal): Cardinal;
+    function FreeValue(var Value: Cardinal): Cardinal;
+    function KeysEqual(A, B: Cardinal): Boolean;
+    function ValuesEqual(A, B: Cardinal): Boolean;
   private
-    FBuckets: TJclCardinalCardinalBucketArray;
+    FBuckets: array of TJclCardinalCardinalBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclCardinalCardinalHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1322,7 +1337,7 @@ type
     procedure Clear;
     function ContainsKey(Key: Cardinal): Boolean;
     function ContainsValue(Value: Cardinal): Boolean;
-    function Equals(const AMap: IJclCardinalCardinalMap): Boolean;
+    function MapEquals(const AMap: IJclCardinalCardinalMap): Boolean;
     function GetValue(Key: Cardinal): Cardinal;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: Cardinal): Cardinal;
@@ -1332,15 +1347,6 @@ type
     function Remove(Key: Cardinal): Cardinal;
     function Size: Integer;
     function Values: IJclCardinalCollection;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: Cardinal): Cardinal;
-    function FreeValue(var Value: Cardinal): Cardinal;
-    function KeysEqual(A, B: Cardinal): Boolean;
-    function ValuesEqual(A, B: Cardinal): Boolean;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -1352,26 +1358,28 @@ type
     Value: IInterface;
   end;
 
-  TJclInt64IntfHashEntryArray = array of TJclInt64IntfHashEntry;
-
   TJclInt64IntfBucket = class
   public
     Size: Integer;
-    Entries: TJclInt64IntfHashEntryArray;
+    Entries: array of TJclInt64IntfHashEntry;
+    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
-
-  TJclInt64IntfBucketArray = array of TJclInt64IntfBucket;
 
   TJclInt64IntfHashMap = class(TJclInt64AbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,
     IJclInt64IntfMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: Int64): Int64;
+    function FreeValue(var Value: IInterface): IInterface;
+    function KeysEqual(const A, B: Int64): Boolean;
+    function ValuesEqual(const A, B: IInterface): Boolean;
   private
-    FBuckets: TJclInt64IntfBucketArray;
+    FBuckets: array of TJclInt64IntfBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclInt64IntfHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1379,7 +1387,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: Int64): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function Equals(const AMap: IJclInt64IntfMap): Boolean;
+    function MapEquals(const AMap: IJclInt64IntfMap): Boolean;
     function GetValue(const Key: Int64): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): Int64;
@@ -1389,15 +1397,6 @@ type
     function Remove(const Key: Int64): IInterface;
     function Size: Integer;
     function Values: IJclIntfCollection;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: Int64): Int64;
-    function FreeValue(var Value: IInterface): IInterface;
-    function KeysEqual(const A, B: Int64): Boolean;
-    function ValuesEqual(const A, B: IInterface): Boolean;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -1409,26 +1408,29 @@ type
     Value: Int64;
   end;
 
-  TJclIntfInt64HashEntryArray = array of TJclIntfInt64HashEntry;
-
   TJclIntfInt64Bucket = class
   public
     Size: Integer;
-    Entries: TJclIntfInt64HashEntryArray;
+    Entries: array of TJclIntfInt64HashEntry;
+    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
-
-  TJclIntfInt64BucketArray = array of TJclIntfInt64Bucket;
 
   TJclIntfInt64HashMap = class(TJclInt64AbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,
     IJclIntfInt64Map)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: IInterface): IInterface;
+    function FreeValue(var Value: Int64): Int64;
+    function Hash(const AInterface: IInterface): Integer; reintroduce;
+    function KeysEqual(const A, B: IInterface): Boolean;
+    function ValuesEqual(const A, B: Int64): Boolean;
   private
-    FBuckets: TJclIntfInt64BucketArray;
+    FBuckets: array of TJclIntfInt64Bucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclIntfInt64HashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1436,7 +1438,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(const Value: Int64): Boolean;
-    function Equals(const AMap: IJclIntfInt64Map): Boolean;
+    function MapEquals(const AMap: IJclIntfInt64Map): Boolean;
     function GetValue(const Key: IInterface): Int64;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Int64): IInterface;
@@ -1446,16 +1448,6 @@ type
     function Remove(const Key: IInterface): Int64;
     function Size: Integer;
     function Values: IJclInt64Collection;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: IInterface): IInterface;
-    function FreeValue(var Value: Int64): Int64;
-    function Hash(const AInterface: IInterface): Integer; reintroduce;
-    function KeysEqual(const A, B: IInterface): Boolean;
-    function ValuesEqual(const A, B: Int64): Boolean;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -1467,26 +1459,28 @@ type
     Value: Int64;
   end;
 
-  TJclInt64Int64HashEntryArray = array of TJclInt64Int64HashEntry;
-
   TJclInt64Int64Bucket = class
   public
     Size: Integer;
-    Entries: TJclInt64Int64HashEntryArray;
+    Entries: array of TJclInt64Int64HashEntry;
+    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
-
-  TJclInt64Int64BucketArray = array of TJclInt64Int64Bucket;
 
   TJclInt64Int64HashMap = class(TJclInt64AbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,
     IJclInt64Int64Map)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: Int64): Int64;
+    function FreeValue(var Value: Int64): Int64;
+    function KeysEqual(const A, B: Int64): Boolean;
+    function ValuesEqual(const A, B: Int64): Boolean;
   private
-    FBuckets: TJclInt64Int64BucketArray;
+    FBuckets: array of TJclInt64Int64Bucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclInt64Int64HashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1494,7 +1488,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: Int64): Boolean;
     function ContainsValue(const Value: Int64): Boolean;
-    function Equals(const AMap: IJclInt64Int64Map): Boolean;
+    function MapEquals(const AMap: IJclInt64Int64Map): Boolean;
     function GetValue(const Key: Int64): Int64;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Int64): Int64;
@@ -1504,15 +1498,6 @@ type
     function Remove(const Key: Int64): Int64;
     function Size: Integer;
     function Values: IJclInt64Collection;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: Int64): Int64;
-    function FreeValue(var Value: Int64): Int64;
-    function KeysEqual(const A, B: Int64): Boolean;
-    function ValuesEqual(const A, B: Int64): Boolean;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -1525,26 +1510,28 @@ type
     Value: IInterface;
   end;
 
-  TJclPtrIntfHashEntryArray = array of TJclPtrIntfHashEntry;
-
   TJclPtrIntfBucket = class
   public
     Size: Integer;
-    Entries: TJclPtrIntfHashEntryArray;
+    Entries: array of TJclPtrIntfHashEntry;
+    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
-
-  TJclPtrIntfBucketArray = array of TJclPtrIntfBucket;
 
   TJclPtrIntfHashMap = class(TJclPtrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,
     IJclPtrIntfMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: Pointer): Pointer;
+    function FreeValue(var Value: IInterface): IInterface;
+    function KeysEqual(A, B: Pointer): Boolean;
+    function ValuesEqual(const A, B: IInterface): Boolean;
   private
-    FBuckets: TJclPtrIntfBucketArray;
+    FBuckets: array of TJclPtrIntfBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclPtrIntfHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1552,7 +1539,7 @@ type
     procedure Clear;
     function ContainsKey(Key: Pointer): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function Equals(const AMap: IJclPtrIntfMap): Boolean;
+    function MapEquals(const AMap: IJclPtrIntfMap): Boolean;
     function GetValue(Key: Pointer): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): Pointer;
@@ -1562,15 +1549,6 @@ type
     function Remove(Key: Pointer): IInterface;
     function Size: Integer;
     function Values: IJclIntfCollection;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: Pointer): Pointer;
-    function FreeValue(var Value: IInterface): IInterface;
-    function KeysEqual(A, B: Pointer): Boolean;
-    function ValuesEqual(const A, B: IInterface): Boolean;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -1582,26 +1560,29 @@ type
     Value: Pointer;
   end;
 
-  TJclIntfPtrHashEntryArray = array of TJclIntfPtrHashEntry;
-
   TJclIntfPtrBucket = class
   public
     Size: Integer;
-    Entries: TJclIntfPtrHashEntryArray;
+    Entries: array of TJclIntfPtrHashEntry;
+    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
-
-  TJclIntfPtrBucketArray = array of TJclIntfPtrBucket;
 
   TJclIntfPtrHashMap = class(TJclPtrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,
     IJclIntfPtrMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: IInterface): IInterface;
+    function FreeValue(var Value: Pointer): Pointer;
+    function Hash(const AInterface: IInterface): Integer; reintroduce;
+    function KeysEqual(const A, B: IInterface): Boolean;
+    function ValuesEqual(A, B: Pointer): Boolean;
   private
-    FBuckets: TJclIntfPtrBucketArray;
+    FBuckets: array of TJclIntfPtrBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclIntfPtrHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1609,7 +1590,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(Value: Pointer): Boolean;
-    function Equals(const AMap: IJclIntfPtrMap): Boolean;
+    function MapEquals(const AMap: IJclIntfPtrMap): Boolean;
     function GetValue(const Key: IInterface): Pointer;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: Pointer): IInterface;
@@ -1619,16 +1600,6 @@ type
     function Remove(const Key: IInterface): Pointer;
     function Size: Integer;
     function Values: IJclPtrCollection;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: IInterface): IInterface;
-    function FreeValue(var Value: Pointer): Pointer;
-    function Hash(const AInterface: IInterface): Integer; reintroduce;
-    function KeysEqual(const A, B: IInterface): Boolean;
-    function ValuesEqual(A, B: Pointer): Boolean;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -1640,26 +1611,28 @@ type
     Value: Pointer;
   end;
 
-  TJclPtrPtrHashEntryArray = array of TJclPtrPtrHashEntry;
-
   TJclPtrPtrBucket = class
   public
     Size: Integer;
-    Entries: TJclPtrPtrHashEntryArray;
+    Entries: array of TJclPtrPtrHashEntry;
+    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
-
-  TJclPtrPtrBucketArray = array of TJclPtrPtrBucket;
 
   TJclPtrPtrHashMap = class(TJclPtrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,
     IJclPtrPtrMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: Pointer): Pointer;
+    function FreeValue(var Value: Pointer): Pointer;
+    function KeysEqual(A, B: Pointer): Boolean;
+    function ValuesEqual(A, B: Pointer): Boolean;
   private
-    FBuckets: TJclPtrPtrBucketArray;
+    FBuckets: array of TJclPtrPtrBucket;
     FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclPtrPtrHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1667,7 +1640,7 @@ type
     procedure Clear;
     function ContainsKey(Key: Pointer): Boolean;
     function ContainsValue(Value: Pointer): Boolean;
-    function Equals(const AMap: IJclPtrPtrMap): Boolean;
+    function MapEquals(const AMap: IJclPtrPtrMap): Boolean;
     function GetValue(Key: Pointer): Pointer;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: Pointer): Pointer;
@@ -1677,15 +1650,6 @@ type
     function Remove(Key: Pointer): Pointer;
     function Size: Integer;
     function Values: IJclPtrCollection;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: Pointer): Pointer;
-    function FreeValue(var Value: Pointer): Pointer;
-    function KeysEqual(A, B: Pointer): Boolean;
-    function ValuesEqual(A, B: Pointer): Boolean;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -1698,48 +1662,19 @@ type
     Value: TObject;
   end;
 
-  TJclIntfHashEntryArray = array of TJclIntfHashEntry;
-
   TJclIntfBucket = class
   public
     Size: Integer;
-    Entries: TJclIntfHashEntryArray;
+    Entries: array of TJclIntfHashEntry;
+    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
-
-  TJclIntfBucketArray = array of TJclIntfBucket;
 
   TJclIntfHashMap = class(TJclAbstractContainerBase, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclValueOwner,
     IJclIntfMap)
   private
-    FBuckets: TJclIntfBucketArray;
-    FHashFunction: TJclHashFunction;
     FOwnsValues: Boolean;
   protected
-    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
-    procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclIntfHashEntryArray; FromIndex, ToIndex, Count: Integer);
-    { IJclPackable }
-    procedure Pack; override;
-    procedure SetCapacity(Value: Integer); override;
-    { IJclIntfMap }
-    procedure Clear;
-    function ContainsKey(const Key: IInterface): Boolean;
-    function ContainsValue(Value: TObject): Boolean;
-    function Equals(const AMap: IJclIntfMap): Boolean;
-    function GetValue(const Key: IInterface): TObject;
-    function IsEmpty: Boolean;
-    function KeyOfValue(Value: TObject): IInterface;
-    function KeySet: IJclIntfSet;
-    procedure PutAll(const AMap: IJclIntfMap);
-    procedure PutValue(const Key: IInterface; Value: TObject);
-    function Remove(const Key: IInterface): TObject;
-    function Size: Integer;
-    function Values: IJclCollection;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
     { IJclValueOwner }
     function FreeValue(var Value: TObject): TObject;
     function GetOwnsValues: Boolean;
@@ -1749,10 +1684,34 @@ type
     function KeysEqual(const A, B: IInterface): Boolean;
     function ValuesEqual(A, B: TObject): Boolean;
   public
+    property OwnsValues: Boolean read FOwnsValues;
+  private
+    FBuckets: array of TJclIntfBucket;
+    FHashFunction: TJclHashFunction;
+  protected
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+    { IJclPackable }
+    procedure Pack; override;
+    procedure SetCapacity(Value: Integer); override;
+    { IJclIntfMap }
+    procedure Clear;
+    function ContainsKey(const Key: IInterface): Boolean;
+    function ContainsValue(Value: TObject): Boolean;
+    function MapEquals(const AMap: IJclIntfMap): Boolean;
+    function GetValue(const Key: IInterface): TObject;
+    function IsEmpty: Boolean;
+    function KeyOfValue(Value: TObject): IInterface;
+    function KeySet: IJclIntfSet;
+    procedure PutAll(const AMap: IJclIntfMap);
+    procedure PutValue(const Key: IInterface; Value: TObject);
+    function Remove(const Key: IInterface): TObject;
+    function Size: Integer;
+    function Values: IJclCollection;
+  public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
     destructor Destroy; override;
     property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
-    property OwnsValues: Boolean read FOwnsValues;
   end;
 
   TJclAnsiStrHashEntry = record
@@ -1760,27 +1719,34 @@ type
     Value: TObject;
   end;
 
-  TJclAnsiStrHashEntryArray = array of TJclAnsiStrHashEntry;
-
   TJclAnsiStrBucket = class
   public
     Size: Integer;
-    Entries: TJclAnsiStrHashEntryArray;
+    Entries: array of TJclAnsiStrHashEntry;
+    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
-
-  TJclAnsiStrBucketArray = array of TJclAnsiStrBucket;
 
   TJclAnsiStrHashMap = class(TJclAnsiStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclAnsiStrContainer, IJclValueOwner,
     IJclAnsiStrMap)
   private
-    FBuckets: TJclAnsiStrBucketArray;
-    FHashFunction: TJclHashFunction;
     FOwnsValues: Boolean;
+  protected
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: AnsiString): AnsiString;
+    function KeysEqual(const A, B: AnsiString): Boolean;
+    function ValuesEqual(A, B: TObject): Boolean;
+  public
+    property OwnsValues: Boolean read FOwnsValues;
+  private
+    FBuckets: array of TJclAnsiStrBucket;
+    FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclAnsiStrHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1788,7 +1754,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: AnsiString): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function Equals(const AMap: IJclAnsiStrMap): Boolean;
+    function MapEquals(const AMap: IJclAnsiStrMap): Boolean;
     function GetValue(const Key: AnsiString): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): AnsiString;
@@ -1798,22 +1764,10 @@ type
     function Remove(const Key: AnsiString): TObject;
     function Size: Integer;
     function Values: IJclCollection;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: AnsiString): AnsiString;
-    function KeysEqual(const A, B: AnsiString): Boolean;
-    function ValuesEqual(A, B: TObject): Boolean;
   public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
     destructor Destroy; override;
     property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
-    property OwnsValues: Boolean read FOwnsValues;
   end;
 
   TJclWideStrHashEntry = record
@@ -1821,27 +1775,34 @@ type
     Value: TObject;
   end;
 
-  TJclWideStrHashEntryArray = array of TJclWideStrHashEntry;
-
   TJclWideStrBucket = class
   public
     Size: Integer;
-    Entries: TJclWideStrHashEntryArray;
+    Entries: array of TJclWideStrHashEntry;
+    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
-
-  TJclWideStrBucketArray = array of TJclWideStrBucket;
 
   TJclWideStrHashMap = class(TJclwideStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclWideStrContainer, IJclValueOwner,
     IJclWideStrMap)
   private
-    FBuckets: TJclWideStrBucketArray;
-    FHashFunction: TJclHashFunction;
     FOwnsValues: Boolean;
+  protected
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: WideString): WideString;
+    function KeysEqual(const A, B: WideString): Boolean;
+    function ValuesEqual(A, B: TObject): Boolean;
+  public
+    property OwnsValues: Boolean read FOwnsValues;
+  private
+    FBuckets: array of TJclWideStrBucket;
+    FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclWideStrHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1849,7 +1810,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: WideString): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function Equals(const AMap: IJclWideStrMap): Boolean;
+    function MapEquals(const AMap: IJclWideStrMap): Boolean;
     function GetValue(const Key: WideString): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): WideString;
@@ -1859,23 +1820,69 @@ type
     function Remove(const Key: WideString): TObject;
     function Size: Integer;
     function Values: IJclCollection;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: WideString): WideString;
-    function KeysEqual(const A, B: WideString): Boolean;
-    function ValuesEqual(A, B: TObject): Boolean;
   public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
     destructor Destroy; override;
     property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
-    property OwnsValues: Boolean read FOwnsValues;
   end;
+
+{$IFDEF SUPPORTS_UNICODE_STRING}
+  TJclUnicodeStrHashEntry = record
+    Key: UnicodeString;
+    Value: TObject;
+  end;
+
+  TJclUnicodeStrBucket = class
+  public
+    Size: Integer;
+    Entries: array of TJclUnicodeStrHashEntry;
+    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+  end;
+
+  TJclUnicodeStrHashMap = class(TJclUnicodeStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclUnicodeStrContainer, IJclValueOwner,
+    IJclUnicodeStrMap)
+  private
+    FOwnsValues: Boolean;
+  protected
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: UnicodeString): UnicodeString;
+    function KeysEqual(const A, B: UnicodeString): Boolean;
+    function ValuesEqual(A, B: TObject): Boolean;
+  public
+    property OwnsValues: Boolean read FOwnsValues;
+  private
+    FBuckets: array of TJclUnicodeStrBucket;
+    FHashFunction: TJclHashFunction;
+  protected
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+    { IJclPackable }
+    procedure Pack; override;
+    procedure SetCapacity(Value: Integer); override;
+    { IJclUnicodeStrMap }
+    procedure Clear;
+    function ContainsKey(const Key: UnicodeString): Boolean;
+    function ContainsValue(Value: TObject): Boolean;
+    function MapEquals(const AMap: IJclUnicodeStrMap): Boolean;
+    function GetValue(const Key: UnicodeString): TObject;
+    function IsEmpty: Boolean;
+    function KeyOfValue(Value: TObject): UnicodeString;
+    function KeySet: IJclUnicodeStrSet;
+    procedure PutAll(const AMap: IJclUnicodeStrMap);
+    procedure PutValue(const Key: UnicodeString; Value: TObject);
+    function Remove(const Key: UnicodeString): TObject;
+    function Size: Integer;
+    function Values: IJclCollection;
+  public
+    constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
+    destructor Destroy; override;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
+  end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF CONTAINER_ANSISTR}
   TJclStrHashMap = TJclAnsiStrHashMap;
@@ -1883,33 +1890,43 @@ type
   {$IFDEF CONTAINER_WIDESTR}
   TJclStrHashMap = TJclWideStrHashMap;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  TJclStrHashMap = TJclUnicodeStrHashMap;
+  {$ENDIF CONTAINER_UNICODESTR}
 
   TJclSingleHashEntry = record
     Key: Single;
     Value: TObject;
   end;
 
-  TJclSingleHashEntryArray = array of TJclSingleHashEntry;
-
   TJclSingleBucket = class
   public
     Size: Integer;
-    Entries: TJclSingleHashEntryArray;
+    Entries: array of TJclSingleHashEntry;
+    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
-
-  TJclSingleBucketArray = array of TJclSingleBucket;
 
   TJclSingleHashMap = class(TJclSingleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclSingleContainer, IJclValueOwner,
     IJclSingleMap)
   private
-    FBuckets: TJclSingleBucketArray;
-    FHashFunction: TJclHashFunction;
     FOwnsValues: Boolean;
+  protected
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: Single): Single;
+    function KeysEqual(const A, B: Single): Boolean;
+    function ValuesEqual(A, B: TObject): Boolean;
+  public
+    property OwnsValues: Boolean read FOwnsValues;
+  private
+    FBuckets: array of TJclSingleBucket;
+    FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclSingleHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1917,7 +1934,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: Single): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function Equals(const AMap: IJclSingleMap): Boolean;
+    function MapEquals(const AMap: IJclSingleMap): Boolean;
     function GetValue(const Key: Single): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): Single;
@@ -1927,22 +1944,10 @@ type
     function Remove(const Key: Single): TObject;
     function Size: Integer;
     function Values: IJclCollection;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: Single): Single;
-    function KeysEqual(const A, B: Single): Boolean;
-    function ValuesEqual(A, B: TObject): Boolean;
   public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
     destructor Destroy; override;
     property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
-    property OwnsValues: Boolean read FOwnsValues;
   end;
 
   TJclDoubleHashEntry = record
@@ -1950,27 +1955,34 @@ type
     Value: TObject;
   end;
 
-  TJclDoubleHashEntryArray = array of TJclDoubleHashEntry;
-
   TJclDoubleBucket = class
   public
     Size: Integer;
-    Entries: TJclDoubleHashEntryArray;
+    Entries: array of TJclDoubleHashEntry;
+    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
-
-  TJclDoubleBucketArray = array of TJclDoubleBucket;
 
   TJclDoubleHashMap = class(TJclDoubleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclDoubleContainer, IJclValueOwner,
     IJclDoubleMap)
   private
-    FBuckets: TJclDoubleBucketArray;
-    FHashFunction: TJclHashFunction;
     FOwnsValues: Boolean;
+  protected
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: Double): Double;
+    function KeysEqual(const A, B: Double): Boolean;
+    function ValuesEqual(A, B: TObject): Boolean;
+  public
+    property OwnsValues: Boolean read FOwnsValues;
+  private
+    FBuckets: array of TJclDoubleBucket;
+    FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclDoubleHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1978,7 +1990,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: Double): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function Equals(const AMap: IJclDoubleMap): Boolean;
+    function MapEquals(const AMap: IJclDoubleMap): Boolean;
     function GetValue(const Key: Double): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): Double;
@@ -1988,22 +2000,10 @@ type
     function Remove(const Key: Double): TObject;
     function Size: Integer;
     function Values: IJclCollection;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: Double): Double;
-    function KeysEqual(const A, B: Double): Boolean;
-    function ValuesEqual(A, B: TObject): Boolean;
   public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
     destructor Destroy; override;
     property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
-    property OwnsValues: Boolean read FOwnsValues;
   end;
 
   TJclExtendedHashEntry = record
@@ -2011,27 +2011,34 @@ type
     Value: TObject;
   end;
 
-  TJclExtendedHashEntryArray = array of TJclExtendedHashEntry;
-
   TJclExtendedBucket = class
   public
     Size: Integer;
-    Entries: TJclExtendedHashEntryArray;
+    Entries: array of TJclExtendedHashEntry;
+    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
-
-  TJclExtendedBucketArray = array of TJclExtendedBucket;
 
   TJclExtendedHashMap = class(TJclExtendedAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclExtendedContainer, IJclValueOwner,
     IJclExtendedMap)
   private
-    FBuckets: TJclExtendedBucketArray;
-    FHashFunction: TJclHashFunction;
     FOwnsValues: Boolean;
+  protected
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: Extended): Extended;
+    function KeysEqual(const A, B: Extended): Boolean;
+    function ValuesEqual(A, B: TObject): Boolean;
+  public
+    property OwnsValues: Boolean read FOwnsValues;
+  private
+    FBuckets: array of TJclExtendedBucket;
+    FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclExtendedHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -2039,7 +2046,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: Extended): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function Equals(const AMap: IJclExtendedMap): Boolean;
+    function MapEquals(const AMap: IJclExtendedMap): Boolean;
     function GetValue(const Key: Extended): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): Extended;
@@ -2049,22 +2056,10 @@ type
     function Remove(const Key: Extended): TObject;
     function Size: Integer;
     function Values: IJclCollection;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: Extended): Extended;
-    function KeysEqual(const A, B: Extended): Boolean;
-    function ValuesEqual(A, B: TObject): Boolean;
   public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
     destructor Destroy; override;
     property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
-    property OwnsValues: Boolean read FOwnsValues;
   end;
 
   {$IFDEF MATH_EXTENDED_PRECISION}
@@ -2082,27 +2077,34 @@ type
     Value: TObject;
   end;
 
-  TJclIntegerHashEntryArray = array of TJclIntegerHashEntry;
-
   TJclIntegerBucket = class
   public
     Size: Integer;
-    Entries: TJclIntegerHashEntryArray;
+    Entries: array of TJclIntegerHashEntry;
+    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
-
-  TJclIntegerBucketArray = array of TJclIntegerBucket;
 
   TJclIntegerHashMap = class(TJclIntegerAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclValueOwner,
     IJclIntegerMap)
   private
-    FBuckets: TJclIntegerBucketArray;
-    FHashFunction: TJclHashFunction;
     FOwnsValues: Boolean;
+  protected
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: Integer): Integer;
+    function KeysEqual(A, B: Integer): Boolean;
+    function ValuesEqual(A, B: TObject): Boolean;
+  public
+    property OwnsValues: Boolean read FOwnsValues;
+  private
+    FBuckets: array of TJclIntegerBucket;
+    FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclIntegerHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -2110,7 +2112,7 @@ type
     procedure Clear;
     function ContainsKey(Key: Integer): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function Equals(const AMap: IJclIntegerMap): Boolean;
+    function MapEquals(const AMap: IJclIntegerMap): Boolean;
     function GetValue(Key: Integer): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): Integer;
@@ -2120,22 +2122,10 @@ type
     function Remove(Key: Integer): TObject;
     function Size: Integer;
     function Values: IJclCollection;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: Integer): Integer;
-    function KeysEqual(A, B: Integer): Boolean;
-    function ValuesEqual(A, B: TObject): Boolean;
   public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
     destructor Destroy; override;
     property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
-    property OwnsValues: Boolean read FOwnsValues;
   end;
 
   TJclCardinalHashEntry = record
@@ -2143,27 +2133,34 @@ type
     Value: TObject;
   end;
 
-  TJclCardinalHashEntryArray = array of TJclCardinalHashEntry;
-
   TJclCardinalBucket = class
   public
     Size: Integer;
-    Entries: TJclCardinalHashEntryArray;
+    Entries: array of TJclCardinalHashEntry;
+    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
-
-  TJclCardinalBucketArray = array of TJclCardinalBucket;
 
   TJclCardinalHashMap = class(TJclCardinalAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclValueOwner,
     IJclCardinalMap)
   private
-    FBuckets: TJclCardinalBucketArray;
-    FHashFunction: TJclHashFunction;
     FOwnsValues: Boolean;
+  protected
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: Cardinal): Cardinal;
+    function KeysEqual(A, B: Cardinal): Boolean;
+    function ValuesEqual(A, B: TObject): Boolean;
+  public
+    property OwnsValues: Boolean read FOwnsValues;
+  private
+    FBuckets: array of TJclCardinalBucket;
+    FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclCardinalHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -2171,7 +2168,7 @@ type
     procedure Clear;
     function ContainsKey(Key: Cardinal): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function Equals(const AMap: IJclCardinalMap): Boolean;
+    function MapEquals(const AMap: IJclCardinalMap): Boolean;
     function GetValue(Key: Cardinal): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): Cardinal;
@@ -2181,22 +2178,10 @@ type
     function Remove(Key: Cardinal): TObject;
     function Size: Integer;
     function Values: IJclCollection;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: Cardinal): Cardinal;
-    function KeysEqual(A, B: Cardinal): Boolean;
-    function ValuesEqual(A, B: TObject): Boolean;
   public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
     destructor Destroy; override;
     property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
-    property OwnsValues: Boolean read FOwnsValues;
   end;
 
   TJclInt64HashEntry = record
@@ -2204,27 +2189,34 @@ type
     Value: TObject;
   end;
 
-  TJclInt64HashEntryArray = array of TJclInt64HashEntry;
-
   TJclInt64Bucket = class
   public
     Size: Integer;
-    Entries: TJclInt64HashEntryArray;
+    Entries: array of TJclInt64HashEntry;
+    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
-
-  TJclInt64BucketArray = array of TJclInt64Bucket;
 
   TJclInt64HashMap = class(TJclInt64AbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclValueOwner,
     IJclInt64Map)
   private
-    FBuckets: TJclInt64BucketArray;
-    FHashFunction: TJclHashFunction;
     FOwnsValues: Boolean;
+  protected
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: Int64): Int64;
+    function KeysEqual(const A, B: Int64): Boolean;
+    function ValuesEqual(A, B: TObject): Boolean;
+  public
+    property OwnsValues: Boolean read FOwnsValues;
+  private
+    FBuckets: array of TJclInt64Bucket;
+    FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclInt64HashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -2232,7 +2224,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: Int64): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function Equals(const AMap: IJclInt64Map): Boolean;
+    function MapEquals(const AMap: IJclInt64Map): Boolean;
     function GetValue(const Key: Int64): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): Int64;
@@ -2242,22 +2234,10 @@ type
     function Remove(const Key: Int64): TObject;
     function Size: Integer;
     function Values: IJclCollection;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: Int64): Int64;
-    function KeysEqual(const A, B: Int64): Boolean;
-    function ValuesEqual(A, B: TObject): Boolean;
   public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
     destructor Destroy; override;
     property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
-    property OwnsValues: Boolean read FOwnsValues;
   end;
 
   {$IFNDEF CLR}
@@ -2266,27 +2246,34 @@ type
     Value: TObject;
   end;
 
-  TJclPtrHashEntryArray = array of TJclPtrHashEntry;
-
   TJclPtrBucket = class
   public
     Size: Integer;
-    Entries: TJclPtrHashEntryArray;
+    Entries: array of TJclPtrHashEntry;
+    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
-
-  TJclPtrBucketArray = array of TJclPtrBucket;
 
   TJclPtrHashMap = class(TJclPtrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclValueOwner,
     IJclPtrMap)
   private
-    FBuckets: TJclPtrBucketArray;
-    FHashFunction: TJclHashFunction;
     FOwnsValues: Boolean;
+  protected
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: Pointer): Pointer;
+    function KeysEqual(A, B: Pointer): Boolean;
+    function ValuesEqual(A, B: TObject): Boolean;
+  public
+    property OwnsValues: Boolean read FOwnsValues;
+  private
+    FBuckets: array of TJclPtrBucket;
+    FHashFunction: TJclHashFunction;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclPtrHashEntryArray; FromIndex, ToIndex, Count: Integer);
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -2294,7 +2281,7 @@ type
     procedure Clear;
     function ContainsKey(Key: Pointer): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function Equals(const AMap: IJclPtrMap): Boolean;
+    function MapEquals(const AMap: IJclPtrMap): Boolean;
     function GetValue(Key: Pointer): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): Pointer;
@@ -2304,22 +2291,10 @@ type
     function Remove(Key: Pointer): TObject;
     function Size: Integer;
     function Values: IJclCollection;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: Pointer): Pointer;
-    function KeysEqual(A, B: Pointer): Boolean;
-    function ValuesEqual(A, B: TObject): Boolean;
   public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
     destructor Destroy; override;
     property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
-    property OwnsValues: Boolean read FOwnsValues;
   end;
   {$ENDIF ~CLR}
 
@@ -2328,49 +2303,20 @@ type
     Value: TObject;
   end;
 
-  TJclHashEntryArray = array of TJclHashEntry;
-
   TJclBucket = class
   public
     Size: Integer;
-    Entries: TJclHashEntryArray;
+    Entries: array of TJclHashEntry;
+    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
-
-  TJclBucketArray = array of TJclBucket;
 
   TJclHashMap = class(TJclAbstractContainerBase, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclKeyOwner, IJclValueOwner,
     IJclMap)
   private
-    FBuckets: TJclBucketArray;
-    FHashFunction: TJclHashFunction;
     FOwnsKeys: Boolean;
     FOwnsValues: Boolean;
   protected
-    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
-    procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclHashEntryArray; FromIndex, ToIndex, Count: Integer);
-    { IJclPackable }
-    procedure Pack; override;
-    procedure SetCapacity(Value: Integer); override;
-    { IJclMap }
-    procedure Clear;
-    function ContainsKey(Key: TObject): Boolean;
-    function ContainsValue(Value: TObject): Boolean;
-    function Equals(const AMap: IJclMap): Boolean;
-    function GetValue(Key: TObject): TObject;
-    function IsEmpty: Boolean;
-    function KeyOfValue(Value: TObject): TObject;
-    function KeySet: IJclSet;
-    procedure PutAll(const AMap: IJclMap);
-    procedure PutValue(Key: TObject; Value: TObject);
-    function Remove(Key: TObject): TObject;
-    function Size: Integer;
-    function Values: IJclCollection;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
     { IJclKeyOwner }
     function FreeKey(var Key: TObject): TObject;
     function GetOwnsKeys: Boolean;
@@ -2382,11 +2328,35 @@ type
     function KeysEqual(A, B: TObject): Boolean;
     function ValuesEqual(A, B: TObject): Boolean;
   public
+    property OwnsKeys: Boolean read FOwnsKeys;
+    property OwnsValues: Boolean read FOwnsValues;
+  private
+    FBuckets: array of TJclBucket;
+    FHashFunction: TJclHashFunction;
+  protected
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+    { IJclPackable }
+    procedure Pack; override;
+    procedure SetCapacity(Value: Integer); override;
+    { IJclMap }
+    procedure Clear;
+    function ContainsKey(Key: TObject): Boolean;
+    function ContainsValue(Value: TObject): Boolean;
+    function MapEquals(const AMap: IJclMap): Boolean;
+    function GetValue(Key: TObject): TObject;
+    function IsEmpty: Boolean;
+    function KeyOfValue(Value: TObject): TObject;
+    function KeySet: IJclSet;
+    procedure PutAll(const AMap: IJclMap);
+    procedure PutValue(Key: TObject; Value: TObject);
+    function Remove(Key: TObject): TObject;
+    function Size: Integer;
+    function Values: IJclCollection;
+  public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean; AOwnsKeys: Boolean);
     destructor Destroy; override;
     property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
-    property OwnsKeys: Boolean read FOwnsKeys;
-    property OwnsValues: Boolean read FOwnsValues;
   end;
 
   {$IFDEF SUPPORTS_GENERICS}
@@ -2395,49 +2365,23 @@ type
     Value: TValue;
   end;
 
-  TJclHashEntryArray<TKey,TValue> = array of TJclHashEntry<TKey,TValue>;
-
   TJclBucket<TKey,TValue> = class
   public
     Size: Integer;
-    Entries: TJclHashEntryArray<TKey,TValue>;
+    Entries: array of TJclHashEntry<TKey,TValue>;
+    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
   end;
-
-  TJclBucketArray<TKey,TValue> = array of TJclBucket<TKey,TValue>;
 
   TJclHashMap<TKey,TValue> = class(TJclAbstractContainerBase, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclPairOwner<TKey, TValue>,
     IJclMap<TKey,TValue>)
+  protected
+    type
+      TBucket = TJclBucket<TKey,TValue>;
   private
-    FBuckets: TJclBucketArray<TKey,TValue>;
-    FHashFunction: TJclHashFunction;
     FOwnsKeys: Boolean;
     FOwnsValues: Boolean;
   protected
-    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
-    procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    procedure MoveArray(var List: TJclHashEntryArray<TKey,TValue>; FromIndex, ToIndex, Count: Integer);
-    { IJclPackable }
-    procedure Pack; override;
-    procedure SetCapacity(Value: Integer); override;
-    { IJclMap<TKey,TValue> }
-    procedure Clear;
-    function ContainsKey(const Key: TKey): Boolean;
-    function ContainsValue(const Value: TValue): Boolean;
-    function Equals(const AMap: IJclMap<TKey,TValue>): Boolean;
-    function GetValue(const Key: TKey): TValue;
-    function IsEmpty: Boolean;
-    function KeyOfValue(const Value: TValue): TKey;
-    function KeySet: IJclSet<TKey>;
-    procedure PutAll(const AMap: IJclMap<TKey,TValue>);
-    procedure PutValue(const Key: TKey; const Value: TValue);
-    function Remove(const Key: TKey): TValue;
-    function Size: Integer;
-    function Values: IJclCollection<TValue>;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
     { IJclPairOwner }
     function FreeKey(var Key: TKey): TKey;
     function FreeValue(var Value: TValue): TValue;
@@ -2449,11 +2393,35 @@ type
     function CreateEmptyArrayList(ACapacity: Integer; AOwnsObjects: Boolean): IJclCollection<TValue>; virtual; abstract;
     function CreateEmptyArraySet(ACapacity: Integer; AOwnsObjects: Boolean): IJclSet<TKey>; virtual; abstract;
   public
+    property OwnsKeys: Boolean read FOwnsKeys;
+    property OwnsValues: Boolean read FOwnsValues;
+  private
+    FBuckets: array of TBucket;
+    FHashFunction: TJclHashFunction;
+  protected
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+    { IJclPackable }
+    procedure Pack; override;
+    procedure SetCapacity(Value: Integer); override;
+    { IJclMap<TKey,TValue> }
+    procedure Clear;
+    function ContainsKey(const Key: TKey): Boolean;
+    function ContainsValue(const Value: TValue): Boolean;
+    function MapEquals(const AMap: IJclMap<TKey,TValue>): Boolean;
+    function GetValue(const Key: TKey): TValue;
+    function IsEmpty: Boolean;
+    function KeyOfValue(const Value: TValue): TKey;
+    function KeySet: IJclSet<TKey>;
+    procedure PutAll(const AMap: IJclMap<TKey,TValue>);
+    procedure PutValue(const Key: TKey; const Value: TValue);
+    function Remove(const Key: TKey): TValue;
+    function Size: Integer;
+    function Values: IJclCollection<TValue>;
+  public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean; AOwnsKeys: Boolean);
     destructor Destroy; override;
     property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
-    property OwnsKeys: Boolean read FOwnsKeys;
-    property OwnsValues: Boolean read FOwnsValues;
   end;
 
   // E = external helper to compare and hash items
@@ -2462,10 +2430,15 @@ type
   // GetHashCode of ValueEqualityComparer is not used
   TJclHashMapE<TKey, TValue> = class(TJclHashMap<TKey, TValue>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclMap<TKey,TValue>, IJclPairOwner<TKey, TValue>)
+  protected
+    type
+      TArrayList = TJclArrayListE<TValue>;
+      TArraySet = TJclArraySetE<TKey>;
   private
-    FKeyEqualityComparer: IEqualityComparer<TKey>;
-    FKeyComparer: IComparer<TKey>;
-    FValueEqualityComparer: IEqualityComparer<TValue>;
+    FKeyEqualityComparer: IJclEqualityComparer<TKey>;
+    FKeyHashConverter: IJclHashConverter<TKey>;
+    FKeyComparer: IJclComparer<TKey>;
+    FValueEqualityComparer: IJclEqualityComparer<TValue>;
   protected
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     function Hash(const AKey: TKey): Integer; override;
@@ -2474,24 +2447,25 @@ type
     function CreateEmptyArrayList(ACapacity: Integer; AOwnsObjects: Boolean): IJclCollection<TValue>; override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function CreateEmptyArraySet(ACapacity: Integer; AOwnsObjects: Boolean): IJclSet<TKey>; override;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
   public
-    constructor Create(const AKeyEqualityComparer: IEqualityComparer<TKey>;
-      const AValueEqualityComparer: IEqualityComparer<TValue>;
-      const AKeyComparer: IComparer<TKey>; ACapacity: Integer; AOwnsValues: Boolean; AOwnsKeys: Boolean);
+    constructor Create(const AKeyEqualityComparer: IJclEqualityComparer<TKey>;
+      const AKeyHashConverter: IJclHashConverter<TKey>; const AValueEqualityComparer: IJclEqualityComparer<TValue>;
+      const AKeyComparer: IJclComparer<TKey>; ACapacity: Integer; AOwnsValues: Boolean; AOwnsKeys: Boolean);
 
-    property KeyEqualityComparer: IEqualityComparer<TKey> read FKeyEqualityComparer write FKeyEqualityComparer;
-    property KeyComparer: IComparer<TKey> read FKeyComparer write FKeyComparer;
-    property ValueEqualityComparer: IEqualityComparer<TValue> read FValueEqualityComparer write FValueEqualityComparer;
+    property KeyEqualityComparer: IJclEqualityComparer<TKey> read FKeyEqualityComparer write FKeyEqualityComparer;
+    property KeyHashConverter: IJclHashConverter<TKey> read FKeyHashConverter write FKeyHashConverter;
+    property KeyComparer: IJclComparer<TKey> read FKeyComparer write FKeyComparer;
+    property ValueEqualityComparer: IJclEqualityComparer<TValue> read FValueEqualityComparer write FValueEqualityComparer;
   end;
 
   // F = Functions to compare and hash items
   // KeyComparer is used only when getting KeySet
   TJclHashMapF<TKey, TValue> = class(TJclHashMap<TKey, TValue>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclMap<TKey,TValue>, IJclPairOwner<TKey, TValue>)
+  protected
+    type
+      TArrayList = TJclArrayListF<TValue>;
+      TArraySet = TJclArraySetF<TKey>;
   private
     FKeyEqualityCompare: TEqualityCompare<TKey>;
     FKeyHash: THashConvert<TKey>;
@@ -2505,10 +2479,6 @@ type
     function CreateEmptyArrayList(ACapacity: Integer; AOwnsObjects: Boolean): IJclCollection<TValue>; override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function CreateEmptyArraySet(ACapacity: Integer; AOwnsObjects: Boolean): IJclSet<TKey>; override;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
   public
     constructor Create(AKeyEqualityCompare: TEqualityCompare<TKey>; AKeyHash: THashConvert<TKey>;
       AValueEqualityCompare: TEqualityCompare<TValue>; AKeyCompare: TCompare<TKey>;
@@ -2525,16 +2495,16 @@ type
     {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer,
     IJclMap<TKey,TValue>, IJclPairOwner<TKey, TValue>)
   protected
+    type
+      TArrayList = TJclArrayListI<TValue>;
+      TArraySet = TJclArraySetI<TKey>;
+  protected
     function Hash(const AKey: TKey): Integer; override;
     function KeysEqual(const A, B: TKey): Boolean; override;
     function ValuesEqual(const A, B: TValue): Boolean; override;
     function CreateEmptyArrayList(ACapacity: Integer; AOwnsObjects: Boolean): IJclCollection<TValue>; override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function CreateEmptyArraySet(ACapacity: Integer; AOwnsObjects: Boolean): IJclSet<TKey>; override;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
   end;
   {$ENDIF SUPPORTS_GENERICS}
 
@@ -2554,7 +2524,7 @@ implementation
 
 uses
   SysUtils,
-  JclArrayLists, JclArraySets, JclResources;
+  JclResources;
 
 function HashMul(Key, Range: Integer): Integer;
 const
@@ -2562,6 +2532,78 @@ const
 begin
   Result := Trunc(Range * (Frac(Key * A)));
 end;
+
+//=== { TJclIntfIntfBucket } ==========================================
+
+procedure TJclIntfIntfBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := nil;
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := nil;
+      end;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
 
 //=== { TJclIntfIntfHashMap } ==========================================
 
@@ -2725,13 +2767,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfIntfHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclIntfIntfHashMap.Create(FCapacity);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclIntfIntfHashMap.Equals(const AMap: IJclIntfIntfMap): Boolean;
+function TJclIntfIntfHashMap.MapEquals(const AMap: IJclIntfIntfMap): Boolean;
 var
   I, J: Integer;
   Bucket: TJclIntfIntfBucket;
@@ -2768,20 +2804,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfIntfHashMap.FreeKey(var Key: IInterface): IInterface;
-begin
-  Result := Key;
-  Key := nil;
-end;
-
-function TJclIntfIntfHashMap.FreeValue(var Value: IInterface): IInterface;
-begin
-  Result := Value;
-  Value := nil;
-end;
-
-
-
 function TJclIntfIntfHashMap.GetValue(const Key: IInterface): IInterface;
 var
   I: Integer;
@@ -2813,7 +2835,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
 
 function TJclIntfIntfHashMap.IsEmpty: Boolean;
 begin
@@ -2855,11 +2876,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfIntfHashMap.KeysEqual(const A, B: IInterface): Boolean;
-begin
-  Result := ItemsEqual(A, B);
-end;
-
 function TJclIntfIntfHashMap.KeySet: IJclIntfSet;
 var
   I, J: Integer;
@@ -2885,76 +2901,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-procedure TJclIntfIntfHashMap.MoveArray(var List: TJclIntfIntfHashEntryArray; FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := nil;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := nil;
-      end;
-  end;
-end;
-{$ELSE}
-begin
-  if Count > 0 then
-  begin
-    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end;
-  end;
-end;
-{$ENDIF CLR}
 
 procedure TJclIntfIntfHashMap.Pack;
 var
@@ -3090,7 +3036,7 @@ begin
           Result := FreeValue(Bucket.Entries[I].Value);
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -3163,11 +3109,105 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclIntfIntfHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclIntfIntfHashMap.Create(FCapacity);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclIntfIntfHashMap.FreeKey(var Key: IInterface): IInterface;
+begin
+  Result := Key;
+  Key := nil;
+end;
+
+function TJclIntfIntfHashMap.FreeValue(var Value: IInterface): IInterface;
+begin
+  Result := Value;
+  Value := nil;
+end;
+
+function TJclIntfIntfHashMap.KeysEqual(const A, B: IInterface): Boolean;
+begin
+  Result := ItemsEqual(A, B);
+end;
+
 function TJclIntfIntfHashMap.ValuesEqual(const A, B: IInterface): Boolean;
 begin
   Result := ItemsEqual(A, B);
 end;
 
+//=== { TJclAnsiStrIntfBucket } ==========================================
+
+procedure TJclAnsiStrIntfBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        Entries[FromIndex + I].Key := '';
+        Entries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := '';
+        Entries[FromIndex + I].Value := nil;
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := '';
+        Entries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := '';
+        Entries[FromIndex + I].Value := nil;
+      end;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
 
 //=== { TJclAnsiStrIntfHashMap } ==========================================
 
@@ -3331,13 +3371,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclAnsiStrIntfHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclAnsiStrIntfHashMap.Create(FCapacity);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclAnsiStrIntfHashMap.Equals(const AMap: IJclAnsiStrIntfMap): Boolean;
+function TJclAnsiStrIntfHashMap.MapEquals(const AMap: IJclAnsiStrIntfMap): Boolean;
 var
   I, J: Integer;
   Bucket: TJclAnsiStrIntfBucket;
@@ -3374,20 +3408,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclAnsiStrIntfHashMap.FreeKey(var Key: AnsiString): AnsiString;
-begin
-  Result := Key;
-  Key := '';
-end;
-
-function TJclAnsiStrIntfHashMap.FreeValue(var Value: IInterface): IInterface;
-begin
-  Result := Value;
-  Value := nil;
-end;
-
-
-
 function TJclAnsiStrIntfHashMap.GetValue(const Key: AnsiString): IInterface;
 var
   I: Integer;
@@ -3419,7 +3439,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
 
 function TJclAnsiStrIntfHashMap.IsEmpty: Boolean;
 begin
@@ -3461,11 +3480,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclAnsiStrIntfHashMap.KeysEqual(const A, B: AnsiString): Boolean;
-begin
-  Result := ItemsEqual(A, B);
-end;
-
 function TJclAnsiStrIntfHashMap.KeySet: IJclAnsiStrSet;
 var
   I, J: Integer;
@@ -3491,76 +3505,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-procedure TJclAnsiStrIntfHashMap.MoveArray(var List: TJclAnsiStrIntfHashEntryArray; FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        List[FromIndex + I].Key := '';
-        List[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := '';
-        List[FromIndex + I].Value := nil;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        List[FromIndex + I].Key := '';
-        List[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := '';
-        List[FromIndex + I].Value := nil;
-      end;
-  end;
-end;
-{$ELSE}
-begin
-  if Count > 0 then
-  begin
-    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end;
-  end;
-end;
-{$ENDIF CLR}
 
 procedure TJclAnsiStrIntfHashMap.Pack;
 var
@@ -3696,7 +3640,7 @@ begin
           Result := FreeValue(Bucket.Entries[I].Value);
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -3769,11 +3713,105 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclAnsiStrIntfHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclAnsiStrIntfHashMap.Create(FCapacity);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclAnsiStrIntfHashMap.FreeKey(var Key: AnsiString): AnsiString;
+begin
+  Result := Key;
+  Key := '';
+end;
+
+function TJclAnsiStrIntfHashMap.FreeValue(var Value: IInterface): IInterface;
+begin
+  Result := Value;
+  Value := nil;
+end;
+
+function TJclAnsiStrIntfHashMap.KeysEqual(const A, B: AnsiString): Boolean;
+begin
+  Result := ItemsEqual(A, B);
+end;
+
 function TJclAnsiStrIntfHashMap.ValuesEqual(const A, B: IInterface): Boolean;
 begin
   Result := Integer(A) = Integer(B);
 end;
 
+//=== { TJclIntfAnsiStrBucket } ==========================================
+
+procedure TJclIntfAnsiStrBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := '';
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := '';
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := '';
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := '';
+      end;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
 
 //=== { TJclIntfAnsiStrHashMap } ==========================================
 
@@ -3937,13 +3975,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfAnsiStrHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclIntfAnsiStrHashMap.Create(FCapacity);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclIntfAnsiStrHashMap.Equals(const AMap: IJclIntfAnsiStrMap): Boolean;
+function TJclIntfAnsiStrHashMap.MapEquals(const AMap: IJclIntfAnsiStrMap): Boolean;
 var
   I, J: Integer;
   Bucket: TJclIntfAnsiStrBucket;
@@ -3980,20 +4012,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfAnsiStrHashMap.FreeKey(var Key: IInterface): IInterface;
-begin
-  Result := Key;
-  Key := nil;
-end;
-
-function TJclIntfAnsiStrHashMap.FreeValue(var Value: AnsiString): AnsiString;
-begin
-  Result := Value;
-  Value := '';
-end;
-
-
-
 function TJclIntfAnsiStrHashMap.GetValue(const Key: IInterface): AnsiString;
 var
   I: Integer;
@@ -4024,11 +4042,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclIntfAnsiStrHashMap.Hash(const AInterface: IInterface): Integer;
-begin
-  Result := Integer(AInterface);
 end;
 
 function TJclIntfAnsiStrHashMap.IsEmpty: Boolean;
@@ -4071,11 +4084,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfAnsiStrHashMap.KeysEqual(const A, B: IInterface): Boolean;
-begin
-  Result := Integer(A) = Integer(B);
-end;
-
 function TJclIntfAnsiStrHashMap.KeySet: IJclIntfSet;
 var
   I, J: Integer;
@@ -4101,76 +4109,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-procedure TJclIntfAnsiStrHashMap.MoveArray(var List: TJclIntfAnsiStrHashEntryArray; FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := '';
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := '';
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := '';
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := '';
-      end;
-  end;
-end;
-{$ELSE}
-begin
-  if Count > 0 then
-  begin
-    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end;
-  end;
-end;
-{$ENDIF CLR}
 
 procedure TJclIntfAnsiStrHashMap.Pack;
 var
@@ -4306,7 +4244,7 @@ begin
           Result := FreeValue(Bucket.Entries[I].Value);
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -4379,11 +4317,110 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclIntfAnsiStrHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclIntfAnsiStrHashMap.Create(FCapacity);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclIntfAnsiStrHashMap.FreeKey(var Key: IInterface): IInterface;
+begin
+  Result := Key;
+  Key := nil;
+end;
+
+function TJclIntfAnsiStrHashMap.FreeValue(var Value: AnsiString): AnsiString;
+begin
+  Result := Value;
+  Value := '';
+end;
+
+function TJclIntfAnsiStrHashMap.Hash(const AInterface: IInterface): Integer;
+begin
+  Result := Integer(AInterface);
+end;
+
+function TJclIntfAnsiStrHashMap.KeysEqual(const A, B: IInterface): Boolean;
+begin
+  Result := Integer(A) = Integer(B);
+end;
+
 function TJclIntfAnsiStrHashMap.ValuesEqual(const A, B: AnsiString): Boolean;
 begin
   Result := ItemsEqual(A, B);
 end;
 
+//=== { TJclAnsiStrAnsiStrBucket } ==========================================
+
+procedure TJclAnsiStrAnsiStrBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        Entries[FromIndex + I].Key := '';
+        Entries[FromIndex + I].Value := '';
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := '';
+        Entries[FromIndex + I].Value := '';
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := '';
+        Entries[FromIndex + I].Value := '';
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := '';
+        Entries[FromIndex + I].Value := '';
+      end;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
 
 //=== { TJclAnsiStrAnsiStrHashMap } ==========================================
 
@@ -4547,13 +4584,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclAnsiStrAnsiStrHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclAnsiStrAnsiStrHashMap.Create(FCapacity);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclAnsiStrAnsiStrHashMap.Equals(const AMap: IJclAnsiStrAnsiStrMap): Boolean;
+function TJclAnsiStrAnsiStrHashMap.MapEquals(const AMap: IJclAnsiStrAnsiStrMap): Boolean;
 var
   I, J: Integer;
   Bucket: TJclAnsiStrAnsiStrBucket;
@@ -4590,20 +4621,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclAnsiStrAnsiStrHashMap.FreeKey(var Key: AnsiString): AnsiString;
-begin
-  Result := Key;
-  Key := '';
-end;
-
-function TJclAnsiStrAnsiStrHashMap.FreeValue(var Value: AnsiString): AnsiString;
-begin
-  Result := Value;
-  Value := '';
-end;
-
-
-
 function TJclAnsiStrAnsiStrHashMap.GetValue(const Key: AnsiString): AnsiString;
 var
   I: Integer;
@@ -4635,7 +4652,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
 
 function TJclAnsiStrAnsiStrHashMap.IsEmpty: Boolean;
 begin
@@ -4677,11 +4693,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclAnsiStrAnsiStrHashMap.KeysEqual(const A, B: AnsiString): Boolean;
-begin
-  Result := ItemsEqual(A, B);
-end;
-
 function TJclAnsiStrAnsiStrHashMap.KeySet: IJclAnsiStrSet;
 var
   I, J: Integer;
@@ -4707,76 +4718,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-procedure TJclAnsiStrAnsiStrHashMap.MoveArray(var List: TJclAnsiStrAnsiStrHashEntryArray; FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        List[FromIndex + I].Key := '';
-        List[FromIndex + I].Value := '';
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := '';
-        List[FromIndex + I].Value := '';
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        List[FromIndex + I].Key := '';
-        List[FromIndex + I].Value := '';
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := '';
-        List[FromIndex + I].Value := '';
-      end;
-  end;
-end;
-{$ELSE}
-begin
-  if Count > 0 then
-  begin
-    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end;
-  end;
-end;
-{$ENDIF CLR}
 
 procedure TJclAnsiStrAnsiStrHashMap.Pack;
 var
@@ -4912,7 +4853,7 @@ begin
           Result := FreeValue(Bucket.Entries[I].Value);
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -4985,11 +4926,105 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclAnsiStrAnsiStrHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclAnsiStrAnsiStrHashMap.Create(FCapacity);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclAnsiStrAnsiStrHashMap.FreeKey(var Key: AnsiString): AnsiString;
+begin
+  Result := Key;
+  Key := '';
+end;
+
+function TJclAnsiStrAnsiStrHashMap.FreeValue(var Value: AnsiString): AnsiString;
+begin
+  Result := Value;
+  Value := '';
+end;
+
+function TJclAnsiStrAnsiStrHashMap.KeysEqual(const A, B: AnsiString): Boolean;
+begin
+  Result := ItemsEqual(A, B);
+end;
+
 function TJclAnsiStrAnsiStrHashMap.ValuesEqual(const A, B: AnsiString): Boolean;
 begin
   Result := ItemsEqual(A, B);
 end;
 
+//=== { TJclWideStrIntfBucket } ==========================================
+
+procedure TJclWideStrIntfBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        Entries[FromIndex + I].Key := '';
+        Entries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := '';
+        Entries[FromIndex + I].Value := nil;
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := '';
+        Entries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := '';
+        Entries[FromIndex + I].Value := nil;
+      end;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
 
 //=== { TJclWideStrIntfHashMap } ==========================================
 
@@ -5153,13 +5188,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclWideStrIntfHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclWideStrIntfHashMap.Create(FCapacity);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclWideStrIntfHashMap.Equals(const AMap: IJclWideStrIntfMap): Boolean;
+function TJclWideStrIntfHashMap.MapEquals(const AMap: IJclWideStrIntfMap): Boolean;
 var
   I, J: Integer;
   Bucket: TJclWideStrIntfBucket;
@@ -5196,20 +5225,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclWideStrIntfHashMap.FreeKey(var Key: WideString): WideString;
-begin
-  Result := Key;
-  Key := '';
-end;
-
-function TJclWideStrIntfHashMap.FreeValue(var Value: IInterface): IInterface;
-begin
-  Result := Value;
-  Value := nil;
-end;
-
-
-
 function TJclWideStrIntfHashMap.GetValue(const Key: WideString): IInterface;
 var
   I: Integer;
@@ -5241,7 +5256,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
 
 function TJclWideStrIntfHashMap.IsEmpty: Boolean;
 begin
@@ -5283,11 +5297,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclWideStrIntfHashMap.KeysEqual(const A, B: WideString): Boolean;
-begin
-  Result := ItemsEqual(A, B);
-end;
-
 function TJclWideStrIntfHashMap.KeySet: IJclWideStrSet;
 var
   I, J: Integer;
@@ -5313,76 +5322,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-procedure TJclWideStrIntfHashMap.MoveArray(var List: TJclWideStrIntfHashEntryArray; FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        List[FromIndex + I].Key := '';
-        List[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := '';
-        List[FromIndex + I].Value := nil;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        List[FromIndex + I].Key := '';
-        List[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := '';
-        List[FromIndex + I].Value := nil;
-      end;
-  end;
-end;
-{$ELSE}
-begin
-  if Count > 0 then
-  begin
-    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end;
-  end;
-end;
-{$ENDIF CLR}
 
 procedure TJclWideStrIntfHashMap.Pack;
 var
@@ -5518,7 +5457,7 @@ begin
           Result := FreeValue(Bucket.Entries[I].Value);
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -5591,11 +5530,105 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclWideStrIntfHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclWideStrIntfHashMap.Create(FCapacity);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclWideStrIntfHashMap.FreeKey(var Key: WideString): WideString;
+begin
+  Result := Key;
+  Key := '';
+end;
+
+function TJclWideStrIntfHashMap.FreeValue(var Value: IInterface): IInterface;
+begin
+  Result := Value;
+  Value := nil;
+end;
+
+function TJclWideStrIntfHashMap.KeysEqual(const A, B: WideString): Boolean;
+begin
+  Result := ItemsEqual(A, B);
+end;
+
 function TJclWideStrIntfHashMap.ValuesEqual(const A, B: IInterface): Boolean;
 begin
   Result := Integer(A) = Integer(B);
 end;
 
+//=== { TJclIntfWideStrBucket } ==========================================
+
+procedure TJclIntfWideStrBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := '';
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := '';
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := '';
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := '';
+      end;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
 
 //=== { TJclIntfWideStrHashMap } ==========================================
 
@@ -5759,13 +5792,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfWideStrHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclIntfWideStrHashMap.Create(FCapacity);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclIntfWideStrHashMap.Equals(const AMap: IJclIntfWideStrMap): Boolean;
+function TJclIntfWideStrHashMap.MapEquals(const AMap: IJclIntfWideStrMap): Boolean;
 var
   I, J: Integer;
   Bucket: TJclIntfWideStrBucket;
@@ -5802,20 +5829,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfWideStrHashMap.FreeKey(var Key: IInterface): IInterface;
-begin
-  Result := Key;
-  Key := nil;
-end;
-
-function TJclIntfWideStrHashMap.FreeValue(var Value: WideString): WideString;
-begin
-  Result := Value;
-  Value := '';
-end;
-
-
-
 function TJclIntfWideStrHashMap.GetValue(const Key: IInterface): WideString;
 var
   I: Integer;
@@ -5846,11 +5859,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclIntfWideStrHashMap.Hash(const AInterface: IInterface): Integer;
-begin
-  Result := Integer(AInterface);
 end;
 
 function TJclIntfWideStrHashMap.IsEmpty: Boolean;
@@ -5893,11 +5901,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfWideStrHashMap.KeysEqual(const A, B: IInterface): Boolean;
-begin
-  Result := Integer(A) = Integer(B);
-end;
-
 function TJclIntfWideStrHashMap.KeySet: IJclIntfSet;
 var
   I, J: Integer;
@@ -5923,76 +5926,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-procedure TJclIntfWideStrHashMap.MoveArray(var List: TJclIntfWideStrHashEntryArray; FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := '';
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := '';
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := '';
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := '';
-      end;
-  end;
-end;
-{$ELSE}
-begin
-  if Count > 0 then
-  begin
-    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end;
-  end;
-end;
-{$ENDIF CLR}
 
 procedure TJclIntfWideStrHashMap.Pack;
 var
@@ -6128,7 +6061,7 @@ begin
           Result := FreeValue(Bucket.Entries[I].Value);
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -6201,11 +6134,110 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclIntfWideStrHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclIntfWideStrHashMap.Create(FCapacity);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclIntfWideStrHashMap.FreeKey(var Key: IInterface): IInterface;
+begin
+  Result := Key;
+  Key := nil;
+end;
+
+function TJclIntfWideStrHashMap.FreeValue(var Value: WideString): WideString;
+begin
+  Result := Value;
+  Value := '';
+end;
+
+function TJclIntfWideStrHashMap.Hash(const AInterface: IInterface): Integer;
+begin
+  Result := Integer(AInterface);
+end;
+
+function TJclIntfWideStrHashMap.KeysEqual(const A, B: IInterface): Boolean;
+begin
+  Result := Integer(A) = Integer(B);
+end;
+
 function TJclIntfWideStrHashMap.ValuesEqual(const A, B: WideString): Boolean;
 begin
   Result := ItemsEqual(A, B);
 end;
 
+//=== { TJclWideStrWideStrBucket } ==========================================
+
+procedure TJclWideStrWideStrBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        Entries[FromIndex + I].Key := '';
+        Entries[FromIndex + I].Value := '';
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := '';
+        Entries[FromIndex + I].Value := '';
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := '';
+        Entries[FromIndex + I].Value := '';
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := '';
+        Entries[FromIndex + I].Value := '';
+      end;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
 
 //=== { TJclWideStrWideStrHashMap } ==========================================
 
@@ -6369,13 +6401,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclWideStrWideStrHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclWideStrWideStrHashMap.Create(FCapacity);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclWideStrWideStrHashMap.Equals(const AMap: IJclWideStrWideStrMap): Boolean;
+function TJclWideStrWideStrHashMap.MapEquals(const AMap: IJclWideStrWideStrMap): Boolean;
 var
   I, J: Integer;
   Bucket: TJclWideStrWideStrBucket;
@@ -6412,20 +6438,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclWideStrWideStrHashMap.FreeKey(var Key: WideString): WideString;
-begin
-  Result := Key;
-  Key := '';
-end;
-
-function TJclWideStrWideStrHashMap.FreeValue(var Value: WideString): WideString;
-begin
-  Result := Value;
-  Value := '';
-end;
-
-
-
 function TJclWideStrWideStrHashMap.GetValue(const Key: WideString): WideString;
 var
   I: Integer;
@@ -6457,7 +6469,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
 
 function TJclWideStrWideStrHashMap.IsEmpty: Boolean;
 begin
@@ -6499,11 +6510,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclWideStrWideStrHashMap.KeysEqual(const A, B: WideString): Boolean;
-begin
-  Result := ItemsEqual(A, B);
-end;
-
 function TJclWideStrWideStrHashMap.KeySet: IJclWideStrSet;
 var
   I, J: Integer;
@@ -6529,76 +6535,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-procedure TJclWideStrWideStrHashMap.MoveArray(var List: TJclWideStrWideStrHashEntryArray; FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        List[FromIndex + I].Key := '';
-        List[FromIndex + I].Value := '';
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := '';
-        List[FromIndex + I].Value := '';
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        List[FromIndex + I].Key := '';
-        List[FromIndex + I].Value := '';
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := '';
-        List[FromIndex + I].Value := '';
-      end;
-  end;
-end;
-{$ELSE}
-begin
-  if Count > 0 then
-  begin
-    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end;
-  end;
-end;
-{$ENDIF CLR}
 
 procedure TJclWideStrWideStrHashMap.Pack;
 var
@@ -6734,7 +6670,7 @@ begin
           Result := FreeValue(Bucket.Entries[I].Value);
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -6807,11 +6743,1925 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclWideStrWideStrHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclWideStrWideStrHashMap.Create(FCapacity);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclWideStrWideStrHashMap.FreeKey(var Key: WideString): WideString;
+begin
+  Result := Key;
+  Key := '';
+end;
+
+function TJclWideStrWideStrHashMap.FreeValue(var Value: WideString): WideString;
+begin
+  Result := Value;
+  Value := '';
+end;
+
+function TJclWideStrWideStrHashMap.KeysEqual(const A, B: WideString): Boolean;
+begin
+  Result := ItemsEqual(A, B);
+end;
+
 function TJclWideStrWideStrHashMap.ValuesEqual(const A, B: Widestring): Boolean;
 begin
   Result := ItemsEqual(A, B);
 end;
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+//=== { TJclUnicodeStrIntfBucket } ==========================================
+
+procedure TJclUnicodeStrIntfBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        Entries[FromIndex + I].Key := '';
+        Entries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := '';
+        Entries[FromIndex + I].Value := nil;
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := '';
+        Entries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := '';
+        Entries[FromIndex + I].Value := nil;
+      end;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
+
+//=== { TJclUnicodeStrIntfHashMap } ==========================================
+
+constructor TJclUnicodeStrIntfHashMap.Create(ACapacity: Integer);
+begin
+  inherited Create;
+  SetCapacity(ACapacity);
+  FHashFunction := HashMul;
+end;
+
+destructor TJclUnicodeStrIntfHashMap.Destroy;
+begin
+  FReadOnly := False;
+  Clear;
+  inherited Destroy;
+end;
+
+procedure TJclUnicodeStrIntfHashMap.AssignDataTo(Dest: TJclAbstractContainerBase);
+var
+  I, J: Integer;
+  SelfBucket, NewBucket: TJclUnicodeStrIntfBucket;
+  ADest: TJclUnicodeStrIntfHashMap;
+  AMap: IJclUnicodeStrIntfMap;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    inherited AssignDataTo(Dest);
+    if Dest is TJclUnicodeStrIntfHashMap then
+    begin
+      ADest := TJclUnicodeStrIntfHashMap(Dest);
+      ADest.Clear;
+      for I := 0 to FCapacity - 1 do
+      begin
+        SelfBucket := FBuckets[I];
+        if SelfBucket <> nil then
+        begin
+          NewBucket := TJclUnicodeStrIntfBucket.Create;
+          SetLength(NewBucket.Entries, SelfBucket.Size);
+          for J := 0 to SelfBucket.Size - 1 do
+          begin
+            NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
+            NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
+          end;
+          NewBucket.Size := SelfBucket.Size;
+          ADest.FBuckets[I] := NewBucket;
+        end;
+      end;
+    end
+    else
+    if Supports(IInterface(Dest), IJclUnicodeStrIntfMap, AMap) then
+    begin
+      AMap.Clear;
+      AMap.PutAll(Self);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclUnicodeStrIntfHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
+begin
+  inherited AssignPropertiesto(Dest);
+  if Dest is TJclUnicodeStrIntfHashMap then
+    TJclUnicodeStrIntfHashMap(Dest).HashFunction := HashFunction;
+end;
+
+procedure TJclUnicodeStrIntfHashMap.Clear;
+var
+  I, J: Integer;
+  Bucket: TJclUnicodeStrIntfBucket;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+      begin
+        for J := 0 to Bucket.Size - 1 do
+        begin
+          FreeKey(Bucket.Entries[J].Key);
+          FreeValue(Bucket.Entries[J].Value);
+        end;
+        FreeAndNil(FBuckets[I]);
+      end;
+    end;
+    FSize := 0;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrIntfHashMap.ContainsKey(const Key: UnicodeString): Boolean;
+var
+  I: Integer;
+  Bucket: TJclUnicodeStrIntfBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := True;
+          Break;
+        end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrIntfHashMap.ContainsValue(const Value: IInterface): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclUnicodeStrIntfBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    for J := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[J];
+      if Bucket <> nil then
+        for I := 0 to Bucket.Size - 1 do
+          if ValuesEqual(Bucket.Entries[I].Value, Value) then
+          begin
+            Result := True;
+            Break;
+          end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrIntfHashMap.MapEquals(const AMap: IJclUnicodeStrIntfMap): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclUnicodeStrIntfBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          if AMap.ContainsKey(Bucket.Entries[J].Key) then
+          begin
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
+              Exit;
+          end
+          else
+            Exit;
+    end;
+    Result := True;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrIntfHashMap.GetValue(const Key: UnicodeString): IInterface;
+var
+  I: Integer;
+  Bucket: TJclUnicodeStrIntfBucket;
+  Found: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Found := False;
+    Result := nil;
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := Bucket.Entries[I].Value;
+          Found := True;
+          Break;
+        end;
+    if (not Found) and (not FReturnDefaultElements) then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrIntfHashMap.IsEmpty: Boolean;
+begin
+  Result := FSize = 0;
+end;
+
+function TJclUnicodeStrIntfHashMap.KeyOfValue(const Value: IInterface): UnicodeString;
+var
+  I, J: Integer;
+  Bucket: TJclUnicodeStrIntfBucket;
+  Found: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Found := False;
+    Result := '';
+    for J := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[J];
+      if Bucket <> nil then
+        for I := 0 to Bucket.Size - 1 do
+          if ValuesEqual(Bucket.Entries[I].Value, Value) then
+          begin
+            Result := Bucket.Entries[I].Key;
+            Found := True;
+            Break;
+          end;
+    end;
+    if (not Found) and (not FReturnDefaultElements) then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrIntfHashMap.KeySet: IJclUnicodeStrSet;
+var
+  I, J: Integer;
+  Bucket: TJclUnicodeStrIntfBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclUnicodeStrArraySet.Create(FSize);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Key);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclUnicodeStrIntfHashMap.Pack;
+var
+  I: Integer;
+  Bucket: TJclUnicodeStrIntfBucket;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+      begin
+        if Bucket.Size > 0 then
+          SetLength(Bucket.Entries, Bucket.Size)
+        else
+          FreeAndNil(FBuckets[I]);
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclUnicodeStrIntfHashMap.PutAll(const AMap: IJclUnicodeStrIntfMap);
+var
+  It: IJclUnicodeStrIterator;
+  Key: UnicodeString;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    if AMap = nil then
+      Exit;
+    It := AMap.KeySet.First;
+    while It.HasNext do
+    begin
+      Key := It.Next;
+      PutValue(Key, AMap.GetValue(Key));
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclUnicodeStrIntfHashMap.PutValue(const Key: UnicodeString; const Value: IInterface);
+var
+  Index: Integer;
+  Bucket: TJclUnicodeStrIntfBucket;
+  I: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    if FAllowDefaultElements or (not KeysEqual(Key, '') and not ValuesEqual(Value, nil)) then
+    begin
+      Index := FHashFunction(Hash(Key), FCapacity);
+      Bucket := FBuckets[Index];
+      if Bucket <> nil then
+      begin
+        for I := 0 to Bucket.Size - 1 do
+          if KeysEqual(Bucket.Entries[I].Key, Key) then
+          begin
+            FreeValue(Bucket.Entries[I].Value);
+            Bucket.Entries[I].Value := Value;
+            Exit;
+          end;
+      end
+      else
+      begin
+        Bucket := TJclUnicodeStrIntfBucket.Create;
+        SetLength(Bucket.Entries, 1);
+        FBuckets[Index] := Bucket;
+      end;
+
+      if Bucket.Size = Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, CalcGrowCapacity(Bucket.Size, Bucket.Size));
+
+      if Bucket.Size < Length(Bucket.Entries) then
+      begin
+        Bucket.Entries[Bucket.Size].Key := Key;
+        Bucket.Entries[Bucket.Size].Value := Value;
+        Inc(Bucket.Size);
+        Inc(FSize);
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrIntfHashMap.Remove(const Key: UnicodeString): IInterface;
+var
+  Bucket: TJclUnicodeStrIntfBucket;
+  I, NewCapacity: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := nil;
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
+    begin
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := FreeValue(Bucket.Entries[I].Value);
+          FreeKey(Bucket.Entries[I].Key);
+          if I < Length(Bucket.Entries) - 1 then
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
+          Break;
+        end;
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclUnicodeStrIntfHashMap.SetCapacity(Value: Integer);
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    if FSize = 0 then
+    begin
+      SetLength(FBuckets, Value);
+      inherited SetCapacity(Value);
+    end
+    else
+      raise EJclOperationNotSupportedError.Create;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrIntfHashMap.Size: Integer;
+begin
+  Result := FSize;
+end;
+
+function TJclUnicodeStrIntfHashMap.Values: IJclIntfCollection;
+var
+  I, J: Integer;
+  Bucket: TJclUnicodeStrIntfBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclIntfArrayList.Create(FSize);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Value);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrIntfHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclUnicodeStrIntfHashMap.Create(FCapacity);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclUnicodeStrIntfHashMap.FreeKey(var Key: UnicodeString): UnicodeString;
+begin
+  Result := Key;
+  Key := '';
+end;
+
+function TJclUnicodeStrIntfHashMap.FreeValue(var Value: IInterface): IInterface;
+begin
+  Result := Value;
+  Value := nil;
+end;
+
+function TJclUnicodeStrIntfHashMap.KeysEqual(const A, B: UnicodeString): Boolean;
+begin
+  Result := ItemsEqual(A, B);
+end;
+
+function TJclUnicodeStrIntfHashMap.ValuesEqual(const A, B: IInterface): Boolean;
+begin
+  Result := Integer(A) = Integer(B);
+end;
+
+//=== { TJclIntfUnicodeStrBucket } ==========================================
+
+procedure TJclIntfUnicodeStrBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := '';
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := '';
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := '';
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := '';
+      end;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
+
+//=== { TJclIntfUnicodeStrHashMap } ==========================================
+
+constructor TJclIntfUnicodeStrHashMap.Create(ACapacity: Integer);
+begin
+  inherited Create;
+  SetCapacity(ACapacity);
+  FHashFunction := HashMul;
+end;
+
+destructor TJclIntfUnicodeStrHashMap.Destroy;
+begin
+  FReadOnly := False;
+  Clear;
+  inherited Destroy;
+end;
+
+procedure TJclIntfUnicodeStrHashMap.AssignDataTo(Dest: TJclAbstractContainerBase);
+var
+  I, J: Integer;
+  SelfBucket, NewBucket: TJclIntfUnicodeStrBucket;
+  ADest: TJclIntfUnicodeStrHashMap;
+  AMap: IJclIntfUnicodeStrMap;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    inherited AssignDataTo(Dest);
+    if Dest is TJclIntfUnicodeStrHashMap then
+    begin
+      ADest := TJclIntfUnicodeStrHashMap(Dest);
+      ADest.Clear;
+      for I := 0 to FCapacity - 1 do
+      begin
+        SelfBucket := FBuckets[I];
+        if SelfBucket <> nil then
+        begin
+          NewBucket := TJclIntfUnicodeStrBucket.Create;
+          SetLength(NewBucket.Entries, SelfBucket.Size);
+          for J := 0 to SelfBucket.Size - 1 do
+          begin
+            NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
+            NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
+          end;
+          NewBucket.Size := SelfBucket.Size;
+          ADest.FBuckets[I] := NewBucket;
+        end;
+      end;
+    end
+    else
+    if Supports(IInterface(Dest), IJclIntfUnicodeStrMap, AMap) then
+    begin
+      AMap.Clear;
+      AMap.PutAll(Self);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclIntfUnicodeStrHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
+begin
+  inherited AssignPropertiesto(Dest);
+  if Dest is TJclIntfUnicodeStrHashMap then
+    TJclIntfUnicodeStrHashMap(Dest).HashFunction := HashFunction;
+end;
+
+procedure TJclIntfUnicodeStrHashMap.Clear;
+var
+  I, J: Integer;
+  Bucket: TJclIntfUnicodeStrBucket;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+      begin
+        for J := 0 to Bucket.Size - 1 do
+        begin
+          FreeKey(Bucket.Entries[J].Key);
+          FreeValue(Bucket.Entries[J].Value);
+        end;
+        FreeAndNil(FBuckets[I]);
+      end;
+    end;
+    FSize := 0;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfUnicodeStrHashMap.ContainsKey(const Key: IInterface): Boolean;
+var
+  I: Integer;
+  Bucket: TJclIntfUnicodeStrBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := True;
+          Break;
+        end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfUnicodeStrHashMap.ContainsValue(const Value: UnicodeString): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclIntfUnicodeStrBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    for J := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[J];
+      if Bucket <> nil then
+        for I := 0 to Bucket.Size - 1 do
+          if ValuesEqual(Bucket.Entries[I].Value, Value) then
+          begin
+            Result := True;
+            Break;
+          end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfUnicodeStrHashMap.MapEquals(const AMap: IJclIntfUnicodeStrMap): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclIntfUnicodeStrBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          if AMap.ContainsKey(Bucket.Entries[J].Key) then
+          begin
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
+              Exit;
+          end
+          else
+            Exit;
+    end;
+    Result := True;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfUnicodeStrHashMap.GetValue(const Key: IInterface): UnicodeString;
+var
+  I: Integer;
+  Bucket: TJclIntfUnicodeStrBucket;
+  Found: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Found := False;
+    Result := '';
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := Bucket.Entries[I].Value;
+          Found := True;
+          Break;
+        end;
+    if (not Found) and (not FReturnDefaultElements) then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfUnicodeStrHashMap.IsEmpty: Boolean;
+begin
+  Result := FSize = 0;
+end;
+
+function TJclIntfUnicodeStrHashMap.KeyOfValue(const Value: UnicodeString): IInterface;
+var
+  I, J: Integer;
+  Bucket: TJclIntfUnicodeStrBucket;
+  Found: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Found := False;
+    Result := nil;
+    for J := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[J];
+      if Bucket <> nil then
+        for I := 0 to Bucket.Size - 1 do
+          if ValuesEqual(Bucket.Entries[I].Value, Value) then
+          begin
+            Result := Bucket.Entries[I].Key;
+            Found := True;
+            Break;
+          end;
+    end;
+    if (not Found) and (not FReturnDefaultElements) then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfUnicodeStrHashMap.KeySet: IJclIntfSet;
+var
+  I, J: Integer;
+  Bucket: TJclIntfUnicodeStrBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclIntfArraySet.Create(FSize);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Key);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclIntfUnicodeStrHashMap.Pack;
+var
+  I: Integer;
+  Bucket: TJclIntfUnicodeStrBucket;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+      begin
+        if Bucket.Size > 0 then
+          SetLength(Bucket.Entries, Bucket.Size)
+        else
+          FreeAndNil(FBuckets[I]);
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclIntfUnicodeStrHashMap.PutAll(const AMap: IJclIntfUnicodeStrMap);
+var
+  It: IJclIntfIterator;
+  Key: IInterface;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    if AMap = nil then
+      Exit;
+    It := AMap.KeySet.First;
+    while It.HasNext do
+    begin
+      Key := It.Next;
+      PutValue(Key, AMap.GetValue(Key));
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclIntfUnicodeStrHashMap.PutValue(const Key: IInterface; const Value: UnicodeString);
+var
+  Index: Integer;
+  Bucket: TJclIntfUnicodeStrBucket;
+  I: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    if FAllowDefaultElements or (not KeysEqual(Key, nil) and not ValuesEqual(Value, '')) then
+    begin
+      Index := FHashFunction(Hash(Key), FCapacity);
+      Bucket := FBuckets[Index];
+      if Bucket <> nil then
+      begin
+        for I := 0 to Bucket.Size - 1 do
+          if KeysEqual(Bucket.Entries[I].Key, Key) then
+          begin
+            FreeValue(Bucket.Entries[I].Value);
+            Bucket.Entries[I].Value := Value;
+            Exit;
+          end;
+      end
+      else
+      begin
+        Bucket := TJclIntfUnicodeStrBucket.Create;
+        SetLength(Bucket.Entries, 1);
+        FBuckets[Index] := Bucket;
+      end;
+
+      if Bucket.Size = Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, CalcGrowCapacity(Bucket.Size, Bucket.Size));
+
+      if Bucket.Size < Length(Bucket.Entries) then
+      begin
+        Bucket.Entries[Bucket.Size].Key := Key;
+        Bucket.Entries[Bucket.Size].Value := Value;
+        Inc(Bucket.Size);
+        Inc(FSize);
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfUnicodeStrHashMap.Remove(const Key: IInterface): UnicodeString;
+var
+  Bucket: TJclIntfUnicodeStrBucket;
+  I, NewCapacity: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := '';
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
+    begin
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := FreeValue(Bucket.Entries[I].Value);
+          FreeKey(Bucket.Entries[I].Key);
+          if I < Length(Bucket.Entries) - 1 then
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
+          Break;
+        end;
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclIntfUnicodeStrHashMap.SetCapacity(Value: Integer);
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    if FSize = 0 then
+    begin
+      SetLength(FBuckets, Value);
+      inherited SetCapacity(Value);
+    end
+    else
+      raise EJclOperationNotSupportedError.Create;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfUnicodeStrHashMap.Size: Integer;
+begin
+  Result := FSize;
+end;
+
+function TJclIntfUnicodeStrHashMap.Values: IJclUnicodeStrCollection;
+var
+  I, J: Integer;
+  Bucket: TJclIntfUnicodeStrBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclUnicodeStrArrayList.Create(FSize);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Value);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfUnicodeStrHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclIntfUnicodeStrHashMap.Create(FCapacity);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclIntfUnicodeStrHashMap.FreeKey(var Key: IInterface): IInterface;
+begin
+  Result := Key;
+  Key := nil;
+end;
+
+function TJclIntfUnicodeStrHashMap.FreeValue(var Value: UnicodeString): UnicodeString;
+begin
+  Result := Value;
+  Value := '';
+end;
+
+function TJclIntfUnicodeStrHashMap.Hash(const AInterface: IInterface): Integer;
+begin
+  Result := Integer(AInterface);
+end;
+
+function TJclIntfUnicodeStrHashMap.KeysEqual(const A, B: IInterface): Boolean;
+begin
+  Result := Integer(A) = Integer(B);
+end;
+
+function TJclIntfUnicodeStrHashMap.ValuesEqual(const A, B: UnicodeString): Boolean;
+begin
+  Result := ItemsEqual(A, B);
+end;
+
+//=== { TJclUnicodeStrUnicodeStrBucket } ==========================================
+
+procedure TJclUnicodeStrUnicodeStrBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        Entries[FromIndex + I].Key := '';
+        Entries[FromIndex + I].Value := '';
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := '';
+        Entries[FromIndex + I].Value := '';
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := '';
+        Entries[FromIndex + I].Value := '';
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := '';
+        Entries[FromIndex + I].Value := '';
+      end;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
+
+//=== { TJclUnicodeStrUnicodeStrHashMap } ==========================================
+
+constructor TJclUnicodeStrUnicodeStrHashMap.Create(ACapacity: Integer);
+begin
+  inherited Create;
+  SetCapacity(ACapacity);
+  FHashFunction := HashMul;
+end;
+
+destructor TJclUnicodeStrUnicodeStrHashMap.Destroy;
+begin
+  FReadOnly := False;
+  Clear;
+  inherited Destroy;
+end;
+
+procedure TJclUnicodeStrUnicodeStrHashMap.AssignDataTo(Dest: TJclAbstractContainerBase);
+var
+  I, J: Integer;
+  SelfBucket, NewBucket: TJclUnicodeStrUnicodeStrBucket;
+  ADest: TJclUnicodeStrUnicodeStrHashMap;
+  AMap: IJclUnicodeStrUnicodeStrMap;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    inherited AssignDataTo(Dest);
+    if Dest is TJclUnicodeStrUnicodeStrHashMap then
+    begin
+      ADest := TJclUnicodeStrUnicodeStrHashMap(Dest);
+      ADest.Clear;
+      for I := 0 to FCapacity - 1 do
+      begin
+        SelfBucket := FBuckets[I];
+        if SelfBucket <> nil then
+        begin
+          NewBucket := TJclUnicodeStrUnicodeStrBucket.Create;
+          SetLength(NewBucket.Entries, SelfBucket.Size);
+          for J := 0 to SelfBucket.Size - 1 do
+          begin
+            NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
+            NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
+          end;
+          NewBucket.Size := SelfBucket.Size;
+          ADest.FBuckets[I] := NewBucket;
+        end;
+      end;
+    end
+    else
+    if Supports(IInterface(Dest), IJclUnicodeStrUnicodeStrMap, AMap) then
+    begin
+      AMap.Clear;
+      AMap.PutAll(Self);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclUnicodeStrUnicodeStrHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
+begin
+  inherited AssignPropertiesto(Dest);
+  if Dest is TJclUnicodeStrUnicodeStrHashMap then
+    TJclUnicodeStrUnicodeStrHashMap(Dest).HashFunction := HashFunction;
+end;
+
+procedure TJclUnicodeStrUnicodeStrHashMap.Clear;
+var
+  I, J: Integer;
+  Bucket: TJclUnicodeStrUnicodeStrBucket;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+      begin
+        for J := 0 to Bucket.Size - 1 do
+        begin
+          FreeKey(Bucket.Entries[J].Key);
+          FreeValue(Bucket.Entries[J].Value);
+        end;
+        FreeAndNil(FBuckets[I]);
+      end;
+    end;
+    FSize := 0;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrUnicodeStrHashMap.ContainsKey(const Key: UnicodeString): Boolean;
+var
+  I: Integer;
+  Bucket: TJclUnicodeStrUnicodeStrBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := True;
+          Break;
+        end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrUnicodeStrHashMap.ContainsValue(const Value: UnicodeString): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclUnicodeStrUnicodeStrBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    for J := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[J];
+      if Bucket <> nil then
+        for I := 0 to Bucket.Size - 1 do
+          if ValuesEqual(Bucket.Entries[I].Value, Value) then
+          begin
+            Result := True;
+            Break;
+          end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrUnicodeStrHashMap.MapEquals(const AMap: IJclUnicodeStrUnicodeStrMap): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclUnicodeStrUnicodeStrBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          if AMap.ContainsKey(Bucket.Entries[J].Key) then
+          begin
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
+              Exit;
+          end
+          else
+            Exit;
+    end;
+    Result := True;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrUnicodeStrHashMap.GetValue(const Key: UnicodeString): UnicodeString;
+var
+  I: Integer;
+  Bucket: TJclUnicodeStrUnicodeStrBucket;
+  Found: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Found := False;
+    Result := '';
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := Bucket.Entries[I].Value;
+          Found := True;
+          Break;
+        end;
+    if (not Found) and (not FReturnDefaultElements) then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrUnicodeStrHashMap.IsEmpty: Boolean;
+begin
+  Result := FSize = 0;
+end;
+
+function TJclUnicodeStrUnicodeStrHashMap.KeyOfValue(const Value: UnicodeString): UnicodeString;
+var
+  I, J: Integer;
+  Bucket: TJclUnicodeStrUnicodeStrBucket;
+  Found: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Found := False;
+    Result := '';
+    for J := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[J];
+      if Bucket <> nil then
+        for I := 0 to Bucket.Size - 1 do
+          if ValuesEqual(Bucket.Entries[I].Value, Value) then
+          begin
+            Result := Bucket.Entries[I].Key;
+            Found := True;
+            Break;
+          end;
+    end;
+    if (not Found) and (not FReturnDefaultElements) then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrUnicodeStrHashMap.KeySet: IJclUnicodeStrSet;
+var
+  I, J: Integer;
+  Bucket: TJclUnicodeStrUnicodeStrBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclUnicodeStrArraySet.Create(FSize);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Key);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclUnicodeStrUnicodeStrHashMap.Pack;
+var
+  I: Integer;
+  Bucket: TJclUnicodeStrUnicodeStrBucket;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+      begin
+        if Bucket.Size > 0 then
+          SetLength(Bucket.Entries, Bucket.Size)
+        else
+          FreeAndNil(FBuckets[I]);
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclUnicodeStrUnicodeStrHashMap.PutAll(const AMap: IJclUnicodeStrUnicodeStrMap);
+var
+  It: IJclUnicodeStrIterator;
+  Key: UnicodeString;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    if AMap = nil then
+      Exit;
+    It := AMap.KeySet.First;
+    while It.HasNext do
+    begin
+      Key := It.Next;
+      PutValue(Key, AMap.GetValue(Key));
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclUnicodeStrUnicodeStrHashMap.PutValue(const Key: UnicodeString; const Value: UnicodeString);
+var
+  Index: Integer;
+  Bucket: TJclUnicodeStrUnicodeStrBucket;
+  I: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    if FAllowDefaultElements or (not KeysEqual(Key, '') and not ValuesEqual(Value, '')) then
+    begin
+      Index := FHashFunction(Hash(Key), FCapacity);
+      Bucket := FBuckets[Index];
+      if Bucket <> nil then
+      begin
+        for I := 0 to Bucket.Size - 1 do
+          if KeysEqual(Bucket.Entries[I].Key, Key) then
+          begin
+            FreeValue(Bucket.Entries[I].Value);
+            Bucket.Entries[I].Value := Value;
+            Exit;
+          end;
+      end
+      else
+      begin
+        Bucket := TJclUnicodeStrUnicodeStrBucket.Create;
+        SetLength(Bucket.Entries, 1);
+        FBuckets[Index] := Bucket;
+      end;
+
+      if Bucket.Size = Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, CalcGrowCapacity(Bucket.Size, Bucket.Size));
+
+      if Bucket.Size < Length(Bucket.Entries) then
+      begin
+        Bucket.Entries[Bucket.Size].Key := Key;
+        Bucket.Entries[Bucket.Size].Value := Value;
+        Inc(Bucket.Size);
+        Inc(FSize);
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrUnicodeStrHashMap.Remove(const Key: UnicodeString): UnicodeString;
+var
+  Bucket: TJclUnicodeStrUnicodeStrBucket;
+  I, NewCapacity: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := '';
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
+    begin
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := FreeValue(Bucket.Entries[I].Value);
+          FreeKey(Bucket.Entries[I].Key);
+          if I < Length(Bucket.Entries) - 1 then
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
+          Break;
+        end;
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclUnicodeStrUnicodeStrHashMap.SetCapacity(Value: Integer);
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    if FSize = 0 then
+    begin
+      SetLength(FBuckets, Value);
+      inherited SetCapacity(Value);
+    end
+    else
+      raise EJclOperationNotSupportedError.Create;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrUnicodeStrHashMap.Size: Integer;
+begin
+  Result := FSize;
+end;
+
+function TJclUnicodeStrUnicodeStrHashMap.Values: IJclUnicodeStrCollection;
+var
+  I, J: Integer;
+  Bucket: TJclUnicodeStrUnicodeStrBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclUnicodeStrArrayList.Create(FSize);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Value);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrUnicodeStrHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclUnicodeStrUnicodeStrHashMap.Create(FCapacity);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclUnicodeStrUnicodeStrHashMap.FreeKey(var Key: UnicodeString): UnicodeString;
+begin
+  Result := Key;
+  Key := '';
+end;
+
+function TJclUnicodeStrUnicodeStrHashMap.FreeValue(var Value: UnicodeString): UnicodeString;
+begin
+  Result := Value;
+  Value := '';
+end;
+
+function TJclUnicodeStrUnicodeStrHashMap.KeysEqual(const A, B: UnicodeString): Boolean;
+begin
+  Result := ItemsEqual(A, B);
+end;
+
+function TJclUnicodeStrUnicodeStrHashMap.ValuesEqual(const A, B: Unicodestring): Boolean;
+begin
+  Result := ItemsEqual(A, B);
+end;
+
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
+//=== { TJclSingleIntfBucket } ==========================================
+
+procedure TJclSingleIntfBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0.0;
+        Entries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0.0;
+        Entries[FromIndex + I].Value := nil;
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0.0;
+        Entries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0.0;
+        Entries[FromIndex + I].Value := nil;
+      end;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
 
 //=== { TJclSingleIntfHashMap } ==========================================
 
@@ -6975,13 +8825,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclSingleIntfHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclSingleIntfHashMap.Create(FCapacity);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclSingleIntfHashMap.Equals(const AMap: IJclSingleIntfMap): Boolean;
+function TJclSingleIntfHashMap.MapEquals(const AMap: IJclSingleIntfMap): Boolean;
 var
   I, J: Integer;
   Bucket: TJclSingleIntfBucket;
@@ -7018,20 +8862,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclSingleIntfHashMap.FreeKey(var Key: Single): Single;
-begin
-  Result := Key;
-  Key := 0.0;
-end;
-
-function TJclSingleIntfHashMap.FreeValue(var Value: IInterface): IInterface;
-begin
-  Result := Value;
-  Value := nil;
-end;
-
-
-
 function TJclSingleIntfHashMap.GetValue(const Key: Single): IInterface;
 var
   I: Integer;
@@ -7063,7 +8893,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
 
 function TJclSingleIntfHashMap.IsEmpty: Boolean;
 begin
@@ -7105,11 +8934,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclSingleIntfHashMap.KeysEqual(const A, B: Single): Boolean;
-begin
-  Result := ItemsEqual(A, B);
-end;
-
 function TJclSingleIntfHashMap.KeySet: IJclSingleSet;
 var
   I, J: Integer;
@@ -7135,76 +8959,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-procedure TJclSingleIntfHashMap.MoveArray(var List: TJclSingleIntfHashEntryArray; FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        List[FromIndex + I].Key := 0.0;
-        List[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0.0;
-        List[FromIndex + I].Value := nil;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0.0;
-        List[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0.0;
-        List[FromIndex + I].Value := nil;
-      end;
-  end;
-end;
-{$ELSE}
-begin
-  if Count > 0 then
-  begin
-    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end;
-  end;
-end;
-{$ENDIF CLR}
 
 procedure TJclSingleIntfHashMap.Pack;
 var
@@ -7340,7 +9094,7 @@ begin
           Result := FreeValue(Bucket.Entries[I].Value);
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -7413,11 +9167,105 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclSingleIntfHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclSingleIntfHashMap.Create(FCapacity);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclSingleIntfHashMap.FreeKey(var Key: Single): Single;
+begin
+  Result := Key;
+  Key := 0.0;
+end;
+
+function TJclSingleIntfHashMap.FreeValue(var Value: IInterface): IInterface;
+begin
+  Result := Value;
+  Value := nil;
+end;
+
+function TJclSingleIntfHashMap.KeysEqual(const A, B: Single): Boolean;
+begin
+  Result := ItemsEqual(A, B);
+end;
+
 function TJclSingleIntfHashMap.ValuesEqual(const A, B: IInterface): Boolean;
 begin
   Result := Integer(A) = Integer(B);
 end;
 
+//=== { TJclIntfSingleBucket } ==========================================
+
+procedure TJclIntfSingleBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := 0.0;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := 0.0;
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := 0.0;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := 0.0;
+      end;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
 
 //=== { TJclIntfSingleHashMap } ==========================================
 
@@ -7581,13 +9429,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfSingleHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclIntfSingleHashMap.Create(FCapacity);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclIntfSingleHashMap.Equals(const AMap: IJclIntfSingleMap): Boolean;
+function TJclIntfSingleHashMap.MapEquals(const AMap: IJclIntfSingleMap): Boolean;
 var
   I, J: Integer;
   Bucket: TJclIntfSingleBucket;
@@ -7624,20 +9466,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfSingleHashMap.FreeKey(var Key: IInterface): IInterface;
-begin
-  Result := Key;
-  Key := nil;
-end;
-
-function TJclIntfSingleHashMap.FreeValue(var Value: Single): Single;
-begin
-  Result := Value;
-  Value := 0.0;
-end;
-
-
-
 function TJclIntfSingleHashMap.GetValue(const Key: IInterface): Single;
 var
   I: Integer;
@@ -7668,11 +9496,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclIntfSingleHashMap.Hash(const AInterface: IInterface): Integer;
-begin
-  Result := Integer(AInterface);
 end;
 
 function TJclIntfSingleHashMap.IsEmpty: Boolean;
@@ -7715,11 +9538,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfSingleHashMap.KeysEqual(const A, B: IInterface): Boolean;
-begin
-  Result := Integer(A) = Integer(B);
-end;
-
 function TJclIntfSingleHashMap.KeySet: IJclIntfSet;
 var
   I, J: Integer;
@@ -7745,76 +9563,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-procedure TJclIntfSingleHashMap.MoveArray(var List: TJclIntfSingleHashEntryArray; FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := 0.0;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := 0.0;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := 0.0;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := 0.0;
-      end;
-  end;
-end;
-{$ELSE}
-begin
-  if Count > 0 then
-  begin
-    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end;
-  end;
-end;
-{$ENDIF CLR}
 
 procedure TJclIntfSingleHashMap.Pack;
 var
@@ -7950,7 +9698,7 @@ begin
           Result := FreeValue(Bucket.Entries[I].Value);
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -8023,11 +9771,110 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclIntfSingleHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclIntfSingleHashMap.Create(FCapacity);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclIntfSingleHashMap.FreeKey(var Key: IInterface): IInterface;
+begin
+  Result := Key;
+  Key := nil;
+end;
+
+function TJclIntfSingleHashMap.FreeValue(var Value: Single): Single;
+begin
+  Result := Value;
+  Value := 0.0;
+end;
+
+function TJclIntfSingleHashMap.Hash(const AInterface: IInterface): Integer;
+begin
+  Result := Integer(AInterface);
+end;
+
+function TJclIntfSingleHashMap.KeysEqual(const A, B: IInterface): Boolean;
+begin
+  Result := Integer(A) = Integer(B);
+end;
+
 function TJclIntfSingleHashMap.ValuesEqual(const A, B: Single): Boolean;
 begin
   Result := ItemsEqual(A, B);
 end;
 
+//=== { TJclSingleSingleBucket } ==========================================
+
+procedure TJclSingleSingleBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0.0;
+        Entries[FromIndex + I].Value := 0.0;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0.0;
+        Entries[FromIndex + I].Value := 0.0;
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0.0;
+        Entries[FromIndex + I].Value := 0.0;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0.0;
+        Entries[FromIndex + I].Value := 0.0;
+      end;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
 
 //=== { TJclSingleSingleHashMap } ==========================================
 
@@ -8191,13 +10038,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclSingleSingleHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclSingleSingleHashMap.Create(FCapacity);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclSingleSingleHashMap.Equals(const AMap: IJclSingleSingleMap): Boolean;
+function TJclSingleSingleHashMap.MapEquals(const AMap: IJclSingleSingleMap): Boolean;
 var
   I, J: Integer;
   Bucket: TJclSingleSingleBucket;
@@ -8234,20 +10075,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclSingleSingleHashMap.FreeKey(var Key: Single): Single;
-begin
-  Result := Key;
-  Key := 0.0;
-end;
-
-function TJclSingleSingleHashMap.FreeValue(var Value: Single): Single;
-begin
-  Result := Value;
-  Value := 0.0;
-end;
-
-
-
 function TJclSingleSingleHashMap.GetValue(const Key: Single): Single;
 var
   I: Integer;
@@ -8279,7 +10106,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
 
 function TJclSingleSingleHashMap.IsEmpty: Boolean;
 begin
@@ -8321,11 +10147,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclSingleSingleHashMap.KeysEqual(const A, B: Single): Boolean;
-begin
-  Result := ItemsEqual(A, B);
-end;
-
 function TJclSingleSingleHashMap.KeySet: IJclSingleSet;
 var
   I, J: Integer;
@@ -8351,76 +10172,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-procedure TJclSingleSingleHashMap.MoveArray(var List: TJclSingleSingleHashEntryArray; FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        List[FromIndex + I].Key := 0.0;
-        List[FromIndex + I].Value := 0.0;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0.0;
-        List[FromIndex + I].Value := 0.0;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0.0;
-        List[FromIndex + I].Value := 0.0;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0.0;
-        List[FromIndex + I].Value := 0.0;
-      end;
-  end;
-end;
-{$ELSE}
-begin
-  if Count > 0 then
-  begin
-    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end;
-  end;
-end;
-{$ENDIF CLR}
 
 procedure TJclSingleSingleHashMap.Pack;
 var
@@ -8556,7 +10307,7 @@ begin
           Result := FreeValue(Bucket.Entries[I].Value);
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -8629,11 +10380,105 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclSingleSingleHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclSingleSingleHashMap.Create(FCapacity);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclSingleSingleHashMap.FreeKey(var Key: Single): Single;
+begin
+  Result := Key;
+  Key := 0.0;
+end;
+
+function TJclSingleSingleHashMap.FreeValue(var Value: Single): Single;
+begin
+  Result := Value;
+  Value := 0.0;
+end;
+
+function TJclSingleSingleHashMap.KeysEqual(const A, B: Single): Boolean;
+begin
+  Result := ItemsEqual(A, B);
+end;
+
 function TJclSingleSingleHashMap.ValuesEqual(const A, B: Single): Boolean;
 begin
   Result := ItemsEqual(A, B);
 end;
 
+//=== { TJclDoubleIntfBucket } ==========================================
+
+procedure TJclDoubleIntfBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0.0;
+        Entries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0.0;
+        Entries[FromIndex + I].Value := nil;
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0.0;
+        Entries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0.0;
+        Entries[FromIndex + I].Value := nil;
+      end;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
 
 //=== { TJclDoubleIntfHashMap } ==========================================
 
@@ -8797,13 +10642,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclDoubleIntfHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclDoubleIntfHashMap.Create(FCapacity);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclDoubleIntfHashMap.Equals(const AMap: IJclDoubleIntfMap): Boolean;
+function TJclDoubleIntfHashMap.MapEquals(const AMap: IJclDoubleIntfMap): Boolean;
 var
   I, J: Integer;
   Bucket: TJclDoubleIntfBucket;
@@ -8840,20 +10679,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclDoubleIntfHashMap.FreeKey(var Key: Double): Double;
-begin
-  Result := Key;
-  Key := 0.0;
-end;
-
-function TJclDoubleIntfHashMap.FreeValue(var Value: IInterface): IInterface;
-begin
-  Result := Value;
-  Value := nil;
-end;
-
-
-
 function TJclDoubleIntfHashMap.GetValue(const Key: Double): IInterface;
 var
   I: Integer;
@@ -8885,7 +10710,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
 
 function TJclDoubleIntfHashMap.IsEmpty: Boolean;
 begin
@@ -8927,11 +10751,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclDoubleIntfHashMap.KeysEqual(const A, B: Double): Boolean;
-begin
-  Result := ItemsEqual(A, B);
-end;
-
 function TJclDoubleIntfHashMap.KeySet: IJclDoubleSet;
 var
   I, J: Integer;
@@ -8957,76 +10776,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-procedure TJclDoubleIntfHashMap.MoveArray(var List: TJclDoubleIntfHashEntryArray; FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        List[FromIndex + I].Key := 0.0;
-        List[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0.0;
-        List[FromIndex + I].Value := nil;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0.0;
-        List[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0.0;
-        List[FromIndex + I].Value := nil;
-      end;
-  end;
-end;
-{$ELSE}
-begin
-  if Count > 0 then
-  begin
-    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end;
-  end;
-end;
-{$ENDIF CLR}
 
 procedure TJclDoubleIntfHashMap.Pack;
 var
@@ -9162,7 +10911,7 @@ begin
           Result := FreeValue(Bucket.Entries[I].Value);
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -9235,11 +10984,105 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclDoubleIntfHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclDoubleIntfHashMap.Create(FCapacity);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclDoubleIntfHashMap.FreeKey(var Key: Double): Double;
+begin
+  Result := Key;
+  Key := 0.0;
+end;
+
+function TJclDoubleIntfHashMap.FreeValue(var Value: IInterface): IInterface;
+begin
+  Result := Value;
+  Value := nil;
+end;
+
+function TJclDoubleIntfHashMap.KeysEqual(const A, B: Double): Boolean;
+begin
+  Result := ItemsEqual(A, B);
+end;
+
 function TJclDoubleIntfHashMap.ValuesEqual(const A, B: IInterface): Boolean;
 begin
   Result := Integer(A) = Integer(B);
 end;
 
+//=== { TJclIntfDoubleBucket } ==========================================
+
+procedure TJclIntfDoubleBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := 0.0;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := 0.0;
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := 0.0;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := 0.0;
+      end;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
 
 //=== { TJclIntfDoubleHashMap } ==========================================
 
@@ -9403,13 +11246,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfDoubleHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclIntfDoubleHashMap.Create(FCapacity);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclIntfDoubleHashMap.Equals(const AMap: IJclIntfDoubleMap): Boolean;
+function TJclIntfDoubleHashMap.MapEquals(const AMap: IJclIntfDoubleMap): Boolean;
 var
   I, J: Integer;
   Bucket: TJclIntfDoubleBucket;
@@ -9446,20 +11283,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfDoubleHashMap.FreeKey(var Key: IInterface): IInterface;
-begin
-  Result := Key;
-  Key := nil;
-end;
-
-function TJclIntfDoubleHashMap.FreeValue(var Value: Double): Double;
-begin
-  Result := Value;
-  Value := 0.0;
-end;
-
-
-
 function TJclIntfDoubleHashMap.GetValue(const Key: IInterface): Double;
 var
   I: Integer;
@@ -9490,11 +11313,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclIntfDoubleHashMap.Hash(const AInterface: IInterface): Integer;
-begin
-  Result := Integer(AInterface);
 end;
 
 function TJclIntfDoubleHashMap.IsEmpty: Boolean;
@@ -9537,11 +11355,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfDoubleHashMap.KeysEqual(const A, B: IInterface): Boolean;
-begin
-  Result := Integer(A) = Integer(B);
-end;
-
 function TJclIntfDoubleHashMap.KeySet: IJclIntfSet;
 var
   I, J: Integer;
@@ -9567,76 +11380,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-procedure TJclIntfDoubleHashMap.MoveArray(var List: TJclIntfDoubleHashEntryArray; FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := 0.0;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := 0.0;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := 0.0;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := 0.0;
-      end;
-  end;
-end;
-{$ELSE}
-begin
-  if Count > 0 then
-  begin
-    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end;
-  end;
-end;
-{$ENDIF CLR}
 
 procedure TJclIntfDoubleHashMap.Pack;
 var
@@ -9772,7 +11515,7 @@ begin
           Result := FreeValue(Bucket.Entries[I].Value);
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -9845,11 +11588,110 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclIntfDoubleHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclIntfDoubleHashMap.Create(FCapacity);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclIntfDoubleHashMap.FreeKey(var Key: IInterface): IInterface;
+begin
+  Result := Key;
+  Key := nil;
+end;
+
+function TJclIntfDoubleHashMap.FreeValue(var Value: Double): Double;
+begin
+  Result := Value;
+  Value := 0.0;
+end;
+
+function TJclIntfDoubleHashMap.Hash(const AInterface: IInterface): Integer;
+begin
+  Result := Integer(AInterface);
+end;
+
+function TJclIntfDoubleHashMap.KeysEqual(const A, B: IInterface): Boolean;
+begin
+  Result := Integer(A) = Integer(B);
+end;
+
 function TJclIntfDoubleHashMap.ValuesEqual(const A, B: Double): Boolean;
 begin
   Result := ItemsEqual(A, B);
 end;
 
+//=== { TJclDoubleDoubleBucket } ==========================================
+
+procedure TJclDoubleDoubleBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0.0;
+        Entries[FromIndex + I].Value := 0.0;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0.0;
+        Entries[FromIndex + I].Value := 0.0;
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0.0;
+        Entries[FromIndex + I].Value := 0.0;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0.0;
+        Entries[FromIndex + I].Value := 0.0;
+      end;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
 
 //=== { TJclDoubleDoubleHashMap } ==========================================
 
@@ -10013,13 +11855,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclDoubleDoubleHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclDoubleDoubleHashMap.Create(FCapacity);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclDoubleDoubleHashMap.Equals(const AMap: IJclDoubleDoubleMap): Boolean;
+function TJclDoubleDoubleHashMap.MapEquals(const AMap: IJclDoubleDoubleMap): Boolean;
 var
   I, J: Integer;
   Bucket: TJclDoubleDoubleBucket;
@@ -10056,20 +11892,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclDoubleDoubleHashMap.FreeKey(var Key: Double): Double;
-begin
-  Result := Key;
-  Key := 0.0;
-end;
-
-function TJclDoubleDoubleHashMap.FreeValue(var Value: Double): Double;
-begin
-  Result := Value;
-  Value := 0.0;
-end;
-
-
-
 function TJclDoubleDoubleHashMap.GetValue(const Key: Double): Double;
 var
   I: Integer;
@@ -10101,7 +11923,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
 
 function TJclDoubleDoubleHashMap.IsEmpty: Boolean;
 begin
@@ -10143,11 +11964,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclDoubleDoubleHashMap.KeysEqual(const A, B: Double): Boolean;
-begin
-  Result := ItemsEqual(A, B);
-end;
-
 function TJclDoubleDoubleHashMap.KeySet: IJclDoubleSet;
 var
   I, J: Integer;
@@ -10173,76 +11989,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-procedure TJclDoubleDoubleHashMap.MoveArray(var List: TJclDoubleDoubleHashEntryArray; FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        List[FromIndex + I].Key := 0.0;
-        List[FromIndex + I].Value := 0.0;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0.0;
-        List[FromIndex + I].Value := 0.0;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0.0;
-        List[FromIndex + I].Value := 0.0;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0.0;
-        List[FromIndex + I].Value := 0.0;
-      end;
-  end;
-end;
-{$ELSE}
-begin
-  if Count > 0 then
-  begin
-    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end;
-  end;
-end;
-{$ENDIF CLR}
 
 procedure TJclDoubleDoubleHashMap.Pack;
 var
@@ -10378,7 +12124,7 @@ begin
           Result := FreeValue(Bucket.Entries[I].Value);
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -10451,11 +12197,105 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclDoubleDoubleHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclDoubleDoubleHashMap.Create(FCapacity);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclDoubleDoubleHashMap.FreeKey(var Key: Double): Double;
+begin
+  Result := Key;
+  Key := 0.0;
+end;
+
+function TJclDoubleDoubleHashMap.FreeValue(var Value: Double): Double;
+begin
+  Result := Value;
+  Value := 0.0;
+end;
+
+function TJclDoubleDoubleHashMap.KeysEqual(const A, B: Double): Boolean;
+begin
+  Result := ItemsEqual(A, B);
+end;
+
 function TJclDoubleDoubleHashMap.ValuesEqual(const A, B: Double): Boolean;
 begin
   Result := ItemsEqual(A, B);
 end;
 
+//=== { TJclExtendedIntfBucket } ==========================================
+
+procedure TJclExtendedIntfBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0.0;
+        Entries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0.0;
+        Entries[FromIndex + I].Value := nil;
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0.0;
+        Entries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0.0;
+        Entries[FromIndex + I].Value := nil;
+      end;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
 
 //=== { TJclExtendedIntfHashMap } ==========================================
 
@@ -10619,13 +12459,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclExtendedIntfHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclExtendedIntfHashMap.Create(FCapacity);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclExtendedIntfHashMap.Equals(const AMap: IJclExtendedIntfMap): Boolean;
+function TJclExtendedIntfHashMap.MapEquals(const AMap: IJclExtendedIntfMap): Boolean;
 var
   I, J: Integer;
   Bucket: TJclExtendedIntfBucket;
@@ -10662,20 +12496,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclExtendedIntfHashMap.FreeKey(var Key: Extended): Extended;
-begin
-  Result := Key;
-  Key := 0.0;
-end;
-
-function TJclExtendedIntfHashMap.FreeValue(var Value: IInterface): IInterface;
-begin
-  Result := Value;
-  Value := nil;
-end;
-
-
-
 function TJclExtendedIntfHashMap.GetValue(const Key: Extended): IInterface;
 var
   I: Integer;
@@ -10707,7 +12527,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
 
 function TJclExtendedIntfHashMap.IsEmpty: Boolean;
 begin
@@ -10749,11 +12568,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclExtendedIntfHashMap.KeysEqual(const A, B: Extended): Boolean;
-begin
-  Result := ItemsEqual(A, B);
-end;
-
 function TJclExtendedIntfHashMap.KeySet: IJclExtendedSet;
 var
   I, J: Integer;
@@ -10779,76 +12593,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-procedure TJclExtendedIntfHashMap.MoveArray(var List: TJclExtendedIntfHashEntryArray; FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        List[FromIndex + I].Key := 0.0;
-        List[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0.0;
-        List[FromIndex + I].Value := nil;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0.0;
-        List[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0.0;
-        List[FromIndex + I].Value := nil;
-      end;
-  end;
-end;
-{$ELSE}
-begin
-  if Count > 0 then
-  begin
-    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end;
-  end;
-end;
-{$ENDIF CLR}
 
 procedure TJclExtendedIntfHashMap.Pack;
 var
@@ -10984,7 +12728,7 @@ begin
           Result := FreeValue(Bucket.Entries[I].Value);
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -11057,11 +12801,105 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclExtendedIntfHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclExtendedIntfHashMap.Create(FCapacity);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclExtendedIntfHashMap.FreeKey(var Key: Extended): Extended;
+begin
+  Result := Key;
+  Key := 0.0;
+end;
+
+function TJclExtendedIntfHashMap.FreeValue(var Value: IInterface): IInterface;
+begin
+  Result := Value;
+  Value := nil;
+end;
+
+function TJclExtendedIntfHashMap.KeysEqual(const A, B: Extended): Boolean;
+begin
+  Result := ItemsEqual(A, B);
+end;
+
 function TJclExtendedIntfHashMap.ValuesEqual(const A, B: IInterface): Boolean;
 begin
   Result := Integer(A) = Integer(B);
 end;
 
+//=== { TJclIntfExtendedBucket } ==========================================
+
+procedure TJclIntfExtendedBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := 0.0;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := 0.0;
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := 0.0;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := 0.0;
+      end;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
 
 //=== { TJclIntfExtendedHashMap } ==========================================
 
@@ -11225,13 +13063,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfExtendedHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclIntfExtendedHashMap.Create(FCapacity);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclIntfExtendedHashMap.Equals(const AMap: IJclIntfExtendedMap): Boolean;
+function TJclIntfExtendedHashMap.MapEquals(const AMap: IJclIntfExtendedMap): Boolean;
 var
   I, J: Integer;
   Bucket: TJclIntfExtendedBucket;
@@ -11268,20 +13100,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfExtendedHashMap.FreeKey(var Key: IInterface): IInterface;
-begin
-  Result := Key;
-  Key := nil;
-end;
-
-function TJclIntfExtendedHashMap.FreeValue(var Value: Extended): Extended;
-begin
-  Result := Value;
-  Value := 0.0;
-end;
-
-
-
 function TJclIntfExtendedHashMap.GetValue(const Key: IInterface): Extended;
 var
   I: Integer;
@@ -11312,11 +13130,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclIntfExtendedHashMap.Hash(const AInterface: IInterface): Integer;
-begin
-  Result := Integer(AInterface);
 end;
 
 function TJclIntfExtendedHashMap.IsEmpty: Boolean;
@@ -11359,11 +13172,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfExtendedHashMap.KeysEqual(const A, B: IInterface): Boolean;
-begin
-  Result := Integer(A) = Integer(B);
-end;
-
 function TJclIntfExtendedHashMap.KeySet: IJclIntfSet;
 var
   I, J: Integer;
@@ -11389,76 +13197,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-procedure TJclIntfExtendedHashMap.MoveArray(var List: TJclIntfExtendedHashEntryArray; FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := 0.0;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := 0.0;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := 0.0;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := 0.0;
-      end;
-  end;
-end;
-{$ELSE}
-begin
-  if Count > 0 then
-  begin
-    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end;
-  end;
-end;
-{$ENDIF CLR}
 
 procedure TJclIntfExtendedHashMap.Pack;
 var
@@ -11594,7 +13332,7 @@ begin
           Result := FreeValue(Bucket.Entries[I].Value);
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -11667,11 +13405,110 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclIntfExtendedHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclIntfExtendedHashMap.Create(FCapacity);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclIntfExtendedHashMap.FreeKey(var Key: IInterface): IInterface;
+begin
+  Result := Key;
+  Key := nil;
+end;
+
+function TJclIntfExtendedHashMap.FreeValue(var Value: Extended): Extended;
+begin
+  Result := Value;
+  Value := 0.0;
+end;
+
+function TJclIntfExtendedHashMap.Hash(const AInterface: IInterface): Integer;
+begin
+  Result := Integer(AInterface);
+end;
+
+function TJclIntfExtendedHashMap.KeysEqual(const A, B: IInterface): Boolean;
+begin
+  Result := Integer(A) = Integer(B);
+end;
+
 function TJclIntfExtendedHashMap.ValuesEqual(const A, B: Extended): Boolean;
 begin
   Result := ItemsEqual(A, B);
 end;
 
+//=== { TJclExtendedExtendedBucket } ==========================================
+
+procedure TJclExtendedExtendedBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0.0;
+        Entries[FromIndex + I].Value := 0.0;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0.0;
+        Entries[FromIndex + I].Value := 0.0;
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0.0;
+        Entries[FromIndex + I].Value := 0.0;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0.0;
+        Entries[FromIndex + I].Value := 0.0;
+      end;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
 
 //=== { TJclExtendedExtendedHashMap } ==========================================
 
@@ -11835,13 +13672,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclExtendedExtendedHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclExtendedExtendedHashMap.Create(FCapacity);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclExtendedExtendedHashMap.Equals(const AMap: IJclExtendedExtendedMap): Boolean;
+function TJclExtendedExtendedHashMap.MapEquals(const AMap: IJclExtendedExtendedMap): Boolean;
 var
   I, J: Integer;
   Bucket: TJclExtendedExtendedBucket;
@@ -11878,20 +13709,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclExtendedExtendedHashMap.FreeKey(var Key: Extended): Extended;
-begin
-  Result := Key;
-  Key := 0.0;
-end;
-
-function TJclExtendedExtendedHashMap.FreeValue(var Value: Extended): Extended;
-begin
-  Result := Value;
-  Value := 0.0;
-end;
-
-
-
 function TJclExtendedExtendedHashMap.GetValue(const Key: Extended): Extended;
 var
   I: Integer;
@@ -11923,7 +13740,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
 
 function TJclExtendedExtendedHashMap.IsEmpty: Boolean;
 begin
@@ -11965,11 +13781,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclExtendedExtendedHashMap.KeysEqual(const A, B: Extended): Boolean;
-begin
-  Result := ItemsEqual(A, B);
-end;
-
 function TJclExtendedExtendedHashMap.KeySet: IJclExtendedSet;
 var
   I, J: Integer;
@@ -11995,76 +13806,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-procedure TJclExtendedExtendedHashMap.MoveArray(var List: TJclExtendedExtendedHashEntryArray; FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        List[FromIndex + I].Key := 0.0;
-        List[FromIndex + I].Value := 0.0;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0.0;
-        List[FromIndex + I].Value := 0.0;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0.0;
-        List[FromIndex + I].Value := 0.0;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0.0;
-        List[FromIndex + I].Value := 0.0;
-      end;
-  end;
-end;
-{$ELSE}
-begin
-  if Count > 0 then
-  begin
-    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end;
-  end;
-end;
-{$ENDIF CLR}
 
 procedure TJclExtendedExtendedHashMap.Pack;
 var
@@ -12200,7 +13941,7 @@ begin
           Result := FreeValue(Bucket.Entries[I].Value);
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -12273,11 +14014,105 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclExtendedExtendedHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclExtendedExtendedHashMap.Create(FCapacity);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclExtendedExtendedHashMap.FreeKey(var Key: Extended): Extended;
+begin
+  Result := Key;
+  Key := 0.0;
+end;
+
+function TJclExtendedExtendedHashMap.FreeValue(var Value: Extended): Extended;
+begin
+  Result := Value;
+  Value := 0.0;
+end;
+
+function TJclExtendedExtendedHashMap.KeysEqual(const A, B: Extended): Boolean;
+begin
+  Result := ItemsEqual(A, B);
+end;
+
 function TJclExtendedExtendedHashMap.ValuesEqual(const A, B: Extended): Boolean;
 begin
   Result := ItemsEqual(A, B);
 end;
 
+//=== { TJclIntegerIntfBucket } ==========================================
+
+procedure TJclIntegerIntfBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0;
+        Entries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0;
+        Entries[FromIndex + I].Value := nil;
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0;
+        Entries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0;
+        Entries[FromIndex + I].Value := nil;
+      end;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
 
 //=== { TJclIntegerIntfHashMap } ==========================================
 
@@ -12441,13 +14276,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntegerIntfHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclIntegerIntfHashMap.Create(FCapacity);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclIntegerIntfHashMap.Equals(const AMap: IJclIntegerIntfMap): Boolean;
+function TJclIntegerIntfHashMap.MapEquals(const AMap: IJclIntegerIntfMap): Boolean;
 var
   I, J: Integer;
   Bucket: TJclIntegerIntfBucket;
@@ -12484,20 +14313,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntegerIntfHashMap.FreeKey(var Key: Integer): Integer;
-begin
-  Result := Key;
-  Key := 0;
-end;
-
-function TJclIntegerIntfHashMap.FreeValue(var Value: IInterface): IInterface;
-begin
-  Result := Value;
-  Value := nil;
-end;
-
-
-
 function TJclIntegerIntfHashMap.GetValue(Key: Integer): IInterface;
 var
   I: Integer;
@@ -12529,7 +14344,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
 
 function TJclIntegerIntfHashMap.IsEmpty: Boolean;
 begin
@@ -12571,11 +14385,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntegerIntfHashMap.KeysEqual(A, B: Integer): Boolean;
-begin
-  Result := ItemsEqual(A, B);
-end;
-
 function TJclIntegerIntfHashMap.KeySet: IJclIntegerSet;
 var
   I, J: Integer;
@@ -12601,76 +14410,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-procedure TJclIntegerIntfHashMap.MoveArray(var List: TJclIntegerIntfHashEntryArray; FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        List[FromIndex + I].Key := 0;
-        List[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0;
-        List[FromIndex + I].Value := nil;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0;
-        List[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0;
-        List[FromIndex + I].Value := nil;
-      end;
-  end;
-end;
-{$ELSE}
-begin
-  if Count > 0 then
-  begin
-    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end;
-  end;
-end;
-{$ENDIF CLR}
 
 procedure TJclIntegerIntfHashMap.Pack;
 var
@@ -12806,7 +14545,7 @@ begin
           Result := FreeValue(Bucket.Entries[I].Value);
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -12879,11 +14618,105 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclIntegerIntfHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclIntegerIntfHashMap.Create(FCapacity);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclIntegerIntfHashMap.FreeKey(var Key: Integer): Integer;
+begin
+  Result := Key;
+  Key := 0;
+end;
+
+function TJclIntegerIntfHashMap.FreeValue(var Value: IInterface): IInterface;
+begin
+  Result := Value;
+  Value := nil;
+end;
+
+function TJclIntegerIntfHashMap.KeysEqual(A, B: Integer): Boolean;
+begin
+  Result := ItemsEqual(A, B);
+end;
+
 function TJclIntegerIntfHashMap.ValuesEqual(const A, B: IInterface): Boolean;
 begin
   Result := Integer(A) = Integer(B);
 end;
 
+//=== { TJclIntfIntegerBucket } ==========================================
+
+procedure TJclIntfIntegerBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := 0;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := 0;
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := 0;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := 0;
+      end;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
 
 //=== { TJclIntfIntegerHashMap } ==========================================
 
@@ -13047,13 +14880,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfIntegerHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclIntfIntegerHashMap.Create(FCapacity);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclIntfIntegerHashMap.Equals(const AMap: IJclIntfIntegerMap): Boolean;
+function TJclIntfIntegerHashMap.MapEquals(const AMap: IJclIntfIntegerMap): Boolean;
 var
   I, J: Integer;
   Bucket: TJclIntfIntegerBucket;
@@ -13090,20 +14917,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfIntegerHashMap.FreeKey(var Key: IInterface): IInterface;
-begin
-  Result := Key;
-  Key := nil;
-end;
-
-function TJclIntfIntegerHashMap.FreeValue(var Value: Integer): Integer;
-begin
-  Result := Value;
-  Value := 0;
-end;
-
-
-
 function TJclIntfIntegerHashMap.GetValue(const Key: IInterface): Integer;
 var
   I: Integer;
@@ -13134,11 +14947,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclIntfIntegerHashMap.Hash(const AInterface: IInterface): Integer;
-begin
-  Result := Integer(AInterface);
 end;
 
 function TJclIntfIntegerHashMap.IsEmpty: Boolean;
@@ -13181,11 +14989,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfIntegerHashMap.KeysEqual(const A, B: IInterface): Boolean;
-begin
-  Result := Integer(A) = Integer(B);
-end;
-
 function TJclIntfIntegerHashMap.KeySet: IJclIntfSet;
 var
   I, J: Integer;
@@ -13211,76 +15014,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-procedure TJclIntfIntegerHashMap.MoveArray(var List: TJclIntfIntegerHashEntryArray; FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := 0;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := 0;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := 0;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := 0;
-      end;
-  end;
-end;
-{$ELSE}
-begin
-  if Count > 0 then
-  begin
-    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end;
-  end;
-end;
-{$ENDIF CLR}
 
 procedure TJclIntfIntegerHashMap.Pack;
 var
@@ -13416,7 +15149,7 @@ begin
           Result := FreeValue(Bucket.Entries[I].Value);
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -13489,11 +15222,110 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclIntfIntegerHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclIntfIntegerHashMap.Create(FCapacity);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclIntfIntegerHashMap.FreeKey(var Key: IInterface): IInterface;
+begin
+  Result := Key;
+  Key := nil;
+end;
+
+function TJclIntfIntegerHashMap.FreeValue(var Value: Integer): Integer;
+begin
+  Result := Value;
+  Value := 0;
+end;
+
+function TJclIntfIntegerHashMap.Hash(const AInterface: IInterface): Integer;
+begin
+  Result := Integer(AInterface);
+end;
+
+function TJclIntfIntegerHashMap.KeysEqual(const A, B: IInterface): Boolean;
+begin
+  Result := Integer(A) = Integer(B);
+end;
+
 function TJclIntfIntegerHashMap.ValuesEqual(A, B: Integer): Boolean;
 begin
   Result := ItemsEqual(A, B);
 end;
 
+//=== { TJclIntegerIntegerBucket } ==========================================
+
+procedure TJclIntegerIntegerBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0;
+        Entries[FromIndex + I].Value := 0;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0;
+        Entries[FromIndex + I].Value := 0;
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0;
+        Entries[FromIndex + I].Value := 0;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0;
+        Entries[FromIndex + I].Value := 0;
+      end;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
 
 //=== { TJclIntegerIntegerHashMap } ==========================================
 
@@ -13657,13 +15489,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntegerIntegerHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclIntegerIntegerHashMap.Create(FCapacity);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclIntegerIntegerHashMap.Equals(const AMap: IJclIntegerIntegerMap): Boolean;
+function TJclIntegerIntegerHashMap.MapEquals(const AMap: IJclIntegerIntegerMap): Boolean;
 var
   I, J: Integer;
   Bucket: TJclIntegerIntegerBucket;
@@ -13700,20 +15526,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntegerIntegerHashMap.FreeKey(var Key: Integer): Integer;
-begin
-  Result := Key;
-  Key := 0;
-end;
-
-function TJclIntegerIntegerHashMap.FreeValue(var Value: Integer): Integer;
-begin
-  Result := Value;
-  Value := 0;
-end;
-
-
-
 function TJclIntegerIntegerHashMap.GetValue(Key: Integer): Integer;
 var
   I: Integer;
@@ -13745,7 +15557,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
 
 function TJclIntegerIntegerHashMap.IsEmpty: Boolean;
 begin
@@ -13787,11 +15598,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntegerIntegerHashMap.KeysEqual(A, B: Integer): Boolean;
-begin
-  Result := ItemsEqual(A, B);
-end;
-
 function TJclIntegerIntegerHashMap.KeySet: IJclIntegerSet;
 var
   I, J: Integer;
@@ -13817,76 +15623,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-procedure TJclIntegerIntegerHashMap.MoveArray(var List: TJclIntegerIntegerHashEntryArray; FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        List[FromIndex + I].Key := 0;
-        List[FromIndex + I].Value := 0;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0;
-        List[FromIndex + I].Value := 0;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0;
-        List[FromIndex + I].Value := 0;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0;
-        List[FromIndex + I].Value := 0;
-      end;
-  end;
-end;
-{$ELSE}
-begin
-  if Count > 0 then
-  begin
-    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end;
-  end;
-end;
-{$ENDIF CLR}
 
 procedure TJclIntegerIntegerHashMap.Pack;
 var
@@ -14022,7 +15758,7 @@ begin
           Result := FreeValue(Bucket.Entries[I].Value);
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -14095,11 +15831,105 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclIntegerIntegerHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclIntegerIntegerHashMap.Create(FCapacity);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclIntegerIntegerHashMap.FreeKey(var Key: Integer): Integer;
+begin
+  Result := Key;
+  Key := 0;
+end;
+
+function TJclIntegerIntegerHashMap.FreeValue(var Value: Integer): Integer;
+begin
+  Result := Value;
+  Value := 0;
+end;
+
+function TJclIntegerIntegerHashMap.KeysEqual(A, B: Integer): Boolean;
+begin
+  Result := ItemsEqual(A, B);
+end;
+
 function TJclIntegerIntegerHashMap.ValuesEqual(A, B: Integer): Boolean;
 begin
   Result := ItemsEqual(A, B);
 end;
 
+//=== { TJclCardinalIntfBucket } ==========================================
+
+procedure TJclCardinalIntfBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0;
+        Entries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0;
+        Entries[FromIndex + I].Value := nil;
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0;
+        Entries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0;
+        Entries[FromIndex + I].Value := nil;
+      end;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
 
 //=== { TJclCardinalIntfHashMap } ==========================================
 
@@ -14263,13 +16093,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclCardinalIntfHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclCardinalIntfHashMap.Create(FCapacity);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclCardinalIntfHashMap.Equals(const AMap: IJclCardinalIntfMap): Boolean;
+function TJclCardinalIntfHashMap.MapEquals(const AMap: IJclCardinalIntfMap): Boolean;
 var
   I, J: Integer;
   Bucket: TJclCardinalIntfBucket;
@@ -14306,20 +16130,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclCardinalIntfHashMap.FreeKey(var Key: Cardinal): Cardinal;
-begin
-  Result := Key;
-  Key := 0;
-end;
-
-function TJclCardinalIntfHashMap.FreeValue(var Value: IInterface): IInterface;
-begin
-  Result := Value;
-  Value := nil;
-end;
-
-
-
 function TJclCardinalIntfHashMap.GetValue(Key: Cardinal): IInterface;
 var
   I: Integer;
@@ -14351,7 +16161,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
 
 function TJclCardinalIntfHashMap.IsEmpty: Boolean;
 begin
@@ -14393,11 +16202,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclCardinalIntfHashMap.KeysEqual(A, B: Cardinal): Boolean;
-begin
-  Result := ItemsEqual(A, B);
-end;
-
 function TJclCardinalIntfHashMap.KeySet: IJclCardinalSet;
 var
   I, J: Integer;
@@ -14423,76 +16227,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-procedure TJclCardinalIntfHashMap.MoveArray(var List: TJclCardinalIntfHashEntryArray; FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        List[FromIndex + I].Key := 0;
-        List[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0;
-        List[FromIndex + I].Value := nil;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0;
-        List[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0;
-        List[FromIndex + I].Value := nil;
-      end;
-  end;
-end;
-{$ELSE}
-begin
-  if Count > 0 then
-  begin
-    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end;
-  end;
-end;
-{$ENDIF CLR}
 
 procedure TJclCardinalIntfHashMap.Pack;
 var
@@ -14628,7 +16362,7 @@ begin
           Result := FreeValue(Bucket.Entries[I].Value);
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -14701,11 +16435,105 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclCardinalIntfHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclCardinalIntfHashMap.Create(FCapacity);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclCardinalIntfHashMap.FreeKey(var Key: Cardinal): Cardinal;
+begin
+  Result := Key;
+  Key := 0;
+end;
+
+function TJclCardinalIntfHashMap.FreeValue(var Value: IInterface): IInterface;
+begin
+  Result := Value;
+  Value := nil;
+end;
+
+function TJclCardinalIntfHashMap.KeysEqual(A, B: Cardinal): Boolean;
+begin
+  Result := ItemsEqual(A, B);
+end;
+
 function TJclCardinalIntfHashMap.ValuesEqual(const A, B: IInterface): Boolean;
 begin
   Result := Integer(A) = Integer(B);
 end;
 
+//=== { TJclIntfCardinalBucket } ==========================================
+
+procedure TJclIntfCardinalBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := 0;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := 0;
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := 0;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := 0;
+      end;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
 
 //=== { TJclIntfCardinalHashMap } ==========================================
 
@@ -14869,13 +16697,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfCardinalHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclIntfCardinalHashMap.Create(FCapacity);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclIntfCardinalHashMap.Equals(const AMap: IJclIntfCardinalMap): Boolean;
+function TJclIntfCardinalHashMap.MapEquals(const AMap: IJclIntfCardinalMap): Boolean;
 var
   I, J: Integer;
   Bucket: TJclIntfCardinalBucket;
@@ -14912,20 +16734,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfCardinalHashMap.FreeKey(var Key: IInterface): IInterface;
-begin
-  Result := Key;
-  Key := nil;
-end;
-
-function TJclIntfCardinalHashMap.FreeValue(var Value: Cardinal): Cardinal;
-begin
-  Result := Value;
-  Value := 0;
-end;
-
-
-
 function TJclIntfCardinalHashMap.GetValue(const Key: IInterface): Cardinal;
 var
   I: Integer;
@@ -14956,11 +16764,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclIntfCardinalHashMap.Hash(const AInterface: IInterface): Integer;
-begin
-  Result := Integer(AInterface);
 end;
 
 function TJclIntfCardinalHashMap.IsEmpty: Boolean;
@@ -15003,11 +16806,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfCardinalHashMap.KeysEqual(const A, B: IInterface): Boolean;
-begin
-  Result := Integer(A) = Integer(B);
-end;
-
 function TJclIntfCardinalHashMap.KeySet: IJclIntfSet;
 var
   I, J: Integer;
@@ -15033,76 +16831,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-procedure TJclIntfCardinalHashMap.MoveArray(var List: TJclIntfCardinalHashEntryArray; FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := 0;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := 0;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := 0;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := 0;
-      end;
-  end;
-end;
-{$ELSE}
-begin
-  if Count > 0 then
-  begin
-    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end;
-  end;
-end;
-{$ENDIF CLR}
 
 procedure TJclIntfCardinalHashMap.Pack;
 var
@@ -15238,7 +16966,7 @@ begin
           Result := FreeValue(Bucket.Entries[I].Value);
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -15311,11 +17039,110 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclIntfCardinalHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclIntfCardinalHashMap.Create(FCapacity);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclIntfCardinalHashMap.FreeKey(var Key: IInterface): IInterface;
+begin
+  Result := Key;
+  Key := nil;
+end;
+
+function TJclIntfCardinalHashMap.FreeValue(var Value: Cardinal): Cardinal;
+begin
+  Result := Value;
+  Value := 0;
+end;
+
+function TJclIntfCardinalHashMap.Hash(const AInterface: IInterface): Integer;
+begin
+  Result := Integer(AInterface);
+end;
+
+function TJclIntfCardinalHashMap.KeysEqual(const A, B: IInterface): Boolean;
+begin
+  Result := Integer(A) = Integer(B);
+end;
+
 function TJclIntfCardinalHashMap.ValuesEqual(A, B: Cardinal): Boolean;
 begin
   Result := ItemsEqual(A, B);
 end;
 
+//=== { TJclCardinalCardinalBucket } ==========================================
+
+procedure TJclCardinalCardinalBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0;
+        Entries[FromIndex + I].Value := 0;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0;
+        Entries[FromIndex + I].Value := 0;
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0;
+        Entries[FromIndex + I].Value := 0;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0;
+        Entries[FromIndex + I].Value := 0;
+      end;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
 
 //=== { TJclCardinalCardinalHashMap } ==========================================
 
@@ -15479,13 +17306,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclCardinalCardinalHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclCardinalCardinalHashMap.Create(FCapacity);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclCardinalCardinalHashMap.Equals(const AMap: IJclCardinalCardinalMap): Boolean;
+function TJclCardinalCardinalHashMap.MapEquals(const AMap: IJclCardinalCardinalMap): Boolean;
 var
   I, J: Integer;
   Bucket: TJclCardinalCardinalBucket;
@@ -15522,20 +17343,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclCardinalCardinalHashMap.FreeKey(var Key: Cardinal): Cardinal;
-begin
-  Result := Key;
-  Key := 0;
-end;
-
-function TJclCardinalCardinalHashMap.FreeValue(var Value: Cardinal): Cardinal;
-begin
-  Result := Value;
-  Value := 0;
-end;
-
-
-
 function TJclCardinalCardinalHashMap.GetValue(Key: Cardinal): Cardinal;
 var
   I: Integer;
@@ -15567,7 +17374,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
 
 function TJclCardinalCardinalHashMap.IsEmpty: Boolean;
 begin
@@ -15609,11 +17415,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclCardinalCardinalHashMap.KeysEqual(A, B: Cardinal): Boolean;
-begin
-  Result := ItemsEqual(A, B);
-end;
-
 function TJclCardinalCardinalHashMap.KeySet: IJclCardinalSet;
 var
   I, J: Integer;
@@ -15639,76 +17440,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-procedure TJclCardinalCardinalHashMap.MoveArray(var List: TJclCardinalCardinalHashEntryArray; FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        List[FromIndex + I].Key := 0;
-        List[FromIndex + I].Value := 0;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0;
-        List[FromIndex + I].Value := 0;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0;
-        List[FromIndex + I].Value := 0;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0;
-        List[FromIndex + I].Value := 0;
-      end;
-  end;
-end;
-{$ELSE}
-begin
-  if Count > 0 then
-  begin
-    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end;
-  end;
-end;
-{$ENDIF CLR}
 
 procedure TJclCardinalCardinalHashMap.Pack;
 var
@@ -15844,7 +17575,7 @@ begin
           Result := FreeValue(Bucket.Entries[I].Value);
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -15917,11 +17648,105 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclCardinalCardinalHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclCardinalCardinalHashMap.Create(FCapacity);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclCardinalCardinalHashMap.FreeKey(var Key: Cardinal): Cardinal;
+begin
+  Result := Key;
+  Key := 0;
+end;
+
+function TJclCardinalCardinalHashMap.FreeValue(var Value: Cardinal): Cardinal;
+begin
+  Result := Value;
+  Value := 0;
+end;
+
+function TJclCardinalCardinalHashMap.KeysEqual(A, B: Cardinal): Boolean;
+begin
+  Result := ItemsEqual(A, B);
+end;
+
 function TJclCardinalCardinalHashMap.ValuesEqual(A, B: Cardinal): Boolean;
 begin
   Result := ItemsEqual(A, B);
 end;
 
+//=== { TJclInt64IntfBucket } ==========================================
+
+procedure TJclInt64IntfBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0;
+        Entries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0;
+        Entries[FromIndex + I].Value := nil;
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0;
+        Entries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0;
+        Entries[FromIndex + I].Value := nil;
+      end;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
 
 //=== { TJclInt64IntfHashMap } ==========================================
 
@@ -16085,13 +17910,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclInt64IntfHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclInt64IntfHashMap.Create(FCapacity);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclInt64IntfHashMap.Equals(const AMap: IJclInt64IntfMap): Boolean;
+function TJclInt64IntfHashMap.MapEquals(const AMap: IJclInt64IntfMap): Boolean;
 var
   I, J: Integer;
   Bucket: TJclInt64IntfBucket;
@@ -16128,20 +17947,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclInt64IntfHashMap.FreeKey(var Key: Int64): Int64;
-begin
-  Result := Key;
-  Key := 0;
-end;
-
-function TJclInt64IntfHashMap.FreeValue(var Value: IInterface): IInterface;
-begin
-  Result := Value;
-  Value := nil;
-end;
-
-
-
 function TJclInt64IntfHashMap.GetValue(const Key: Int64): IInterface;
 var
   I: Integer;
@@ -16173,7 +17978,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
 
 function TJclInt64IntfHashMap.IsEmpty: Boolean;
 begin
@@ -16215,11 +18019,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclInt64IntfHashMap.KeysEqual(const A, B: Int64): Boolean;
-begin
-  Result := ItemsEqual(A, B);
-end;
-
 function TJclInt64IntfHashMap.KeySet: IJclInt64Set;
 var
   I, J: Integer;
@@ -16245,76 +18044,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-procedure TJclInt64IntfHashMap.MoveArray(var List: TJclInt64IntfHashEntryArray; FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        List[FromIndex + I].Key := 0;
-        List[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0;
-        List[FromIndex + I].Value := nil;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0;
-        List[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0;
-        List[FromIndex + I].Value := nil;
-      end;
-  end;
-end;
-{$ELSE}
-begin
-  if Count > 0 then
-  begin
-    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end;
-  end;
-end;
-{$ENDIF CLR}
 
 procedure TJclInt64IntfHashMap.Pack;
 var
@@ -16450,7 +18179,7 @@ begin
           Result := FreeValue(Bucket.Entries[I].Value);
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -16523,11 +18252,105 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclInt64IntfHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclInt64IntfHashMap.Create(FCapacity);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclInt64IntfHashMap.FreeKey(var Key: Int64): Int64;
+begin
+  Result := Key;
+  Key := 0;
+end;
+
+function TJclInt64IntfHashMap.FreeValue(var Value: IInterface): IInterface;
+begin
+  Result := Value;
+  Value := nil;
+end;
+
+function TJclInt64IntfHashMap.KeysEqual(const A, B: Int64): Boolean;
+begin
+  Result := ItemsEqual(A, B);
+end;
+
 function TJclInt64IntfHashMap.ValuesEqual(const A, B: IInterface): Boolean;
 begin
   Result := Integer(A) = Integer(B);
 end;
 
+//=== { TJclIntfInt64Bucket } ==========================================
+
+procedure TJclIntfInt64Bucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := 0;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := 0;
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := 0;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := 0;
+      end;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
 
 //=== { TJclIntfInt64HashMap } ==========================================
 
@@ -16691,13 +18514,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfInt64HashMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclIntfInt64HashMap.Create(FCapacity);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclIntfInt64HashMap.Equals(const AMap: IJclIntfInt64Map): Boolean;
+function TJclIntfInt64HashMap.MapEquals(const AMap: IJclIntfInt64Map): Boolean;
 var
   I, J: Integer;
   Bucket: TJclIntfInt64Bucket;
@@ -16734,20 +18551,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfInt64HashMap.FreeKey(var Key: IInterface): IInterface;
-begin
-  Result := Key;
-  Key := nil;
-end;
-
-function TJclIntfInt64HashMap.FreeValue(var Value: Int64): Int64;
-begin
-  Result := Value;
-  Value := 0;
-end;
-
-
-
 function TJclIntfInt64HashMap.GetValue(const Key: IInterface): Int64;
 var
   I: Integer;
@@ -16778,11 +18581,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclIntfInt64HashMap.Hash(const AInterface: IInterface): Integer;
-begin
-  Result := Integer(AInterface);
 end;
 
 function TJclIntfInt64HashMap.IsEmpty: Boolean;
@@ -16825,11 +18623,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfInt64HashMap.KeysEqual(const A, B: IInterface): Boolean;
-begin
-  Result := Integer(A) = Integer(B);
-end;
-
 function TJclIntfInt64HashMap.KeySet: IJclIntfSet;
 var
   I, J: Integer;
@@ -16855,76 +18648,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-procedure TJclIntfInt64HashMap.MoveArray(var List: TJclIntfInt64HashEntryArray; FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := 0;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := 0;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := 0;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := 0;
-      end;
-  end;
-end;
-{$ELSE}
-begin
-  if Count > 0 then
-  begin
-    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end;
-  end;
-end;
-{$ENDIF CLR}
 
 procedure TJclIntfInt64HashMap.Pack;
 var
@@ -17060,7 +18783,7 @@ begin
           Result := FreeValue(Bucket.Entries[I].Value);
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -17133,11 +18856,110 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclIntfInt64HashMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclIntfInt64HashMap.Create(FCapacity);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclIntfInt64HashMap.FreeKey(var Key: IInterface): IInterface;
+begin
+  Result := Key;
+  Key := nil;
+end;
+
+function TJclIntfInt64HashMap.FreeValue(var Value: Int64): Int64;
+begin
+  Result := Value;
+  Value := 0;
+end;
+
+function TJclIntfInt64HashMap.Hash(const AInterface: IInterface): Integer;
+begin
+  Result := Integer(AInterface);
+end;
+
+function TJclIntfInt64HashMap.KeysEqual(const A, B: IInterface): Boolean;
+begin
+  Result := Integer(A) = Integer(B);
+end;
+
 function TJclIntfInt64HashMap.ValuesEqual(const A, B: Int64): Boolean;
 begin
   Result := ItemsEqual(A, B);
 end;
 
+//=== { TJclInt64Int64Bucket } ==========================================
+
+procedure TJclInt64Int64Bucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0;
+        Entries[FromIndex + I].Value := 0;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0;
+        Entries[FromIndex + I].Value := 0;
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0;
+        Entries[FromIndex + I].Value := 0;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0;
+        Entries[FromIndex + I].Value := 0;
+      end;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
 
 //=== { TJclInt64Int64HashMap } ==========================================
 
@@ -17301,13 +19123,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclInt64Int64HashMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclInt64Int64HashMap.Create(FCapacity);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclInt64Int64HashMap.Equals(const AMap: IJclInt64Int64Map): Boolean;
+function TJclInt64Int64HashMap.MapEquals(const AMap: IJclInt64Int64Map): Boolean;
 var
   I, J: Integer;
   Bucket: TJclInt64Int64Bucket;
@@ -17344,20 +19160,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclInt64Int64HashMap.FreeKey(var Key: Int64): Int64;
-begin
-  Result := Key;
-  Key := 0;
-end;
-
-function TJclInt64Int64HashMap.FreeValue(var Value: Int64): Int64;
-begin
-  Result := Value;
-  Value := 0;
-end;
-
-
-
 function TJclInt64Int64HashMap.GetValue(const Key: Int64): Int64;
 var
   I: Integer;
@@ -17389,7 +19191,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
 
 function TJclInt64Int64HashMap.IsEmpty: Boolean;
 begin
@@ -17431,11 +19232,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclInt64Int64HashMap.KeysEqual(const A, B: Int64): Boolean;
-begin
-  Result := ItemsEqual(A, B);
-end;
-
 function TJclInt64Int64HashMap.KeySet: IJclInt64Set;
 var
   I, J: Integer;
@@ -17461,76 +19257,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-procedure TJclInt64Int64HashMap.MoveArray(var List: TJclInt64Int64HashEntryArray; FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        List[FromIndex + I].Key := 0;
-        List[FromIndex + I].Value := 0;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0;
-        List[FromIndex + I].Value := 0;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0;
-        List[FromIndex + I].Value := 0;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0;
-        List[FromIndex + I].Value := 0;
-      end;
-  end;
-end;
-{$ELSE}
-begin
-  if Count > 0 then
-  begin
-    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end;
-  end;
-end;
-{$ENDIF CLR}
 
 procedure TJclInt64Int64HashMap.Pack;
 var
@@ -17666,7 +19392,7 @@ begin
           Result := FreeValue(Bucket.Entries[I].Value);
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -17739,13 +19465,107 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclInt64Int64HashMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclInt64Int64HashMap.Create(FCapacity);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclInt64Int64HashMap.FreeKey(var Key: Int64): Int64;
+begin
+  Result := Key;
+  Key := 0;
+end;
+
+function TJclInt64Int64HashMap.FreeValue(var Value: Int64): Int64;
+begin
+  Result := Value;
+  Value := 0;
+end;
+
+function TJclInt64Int64HashMap.KeysEqual(const A, B: Int64): Boolean;
+begin
+  Result := ItemsEqual(A, B);
+end;
+
 function TJclInt64Int64HashMap.ValuesEqual(const A, B: Int64): Boolean;
 begin
   Result := ItemsEqual(A, B);
 end;
 
-
 {$IFNDEF CLR}
+//=== { TJclPtrIntfBucket } ==========================================
+
+procedure TJclPtrIntfBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := nil;
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := nil;
+      end;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
+
 //=== { TJclPtrIntfHashMap } ==========================================
 
 constructor TJclPtrIntfHashMap.Create(ACapacity: Integer);
@@ -17908,13 +19728,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclPtrIntfHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclPtrIntfHashMap.Create(FCapacity);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclPtrIntfHashMap.Equals(const AMap: IJclPtrIntfMap): Boolean;
+function TJclPtrIntfHashMap.MapEquals(const AMap: IJclPtrIntfMap): Boolean;
 var
   I, J: Integer;
   Bucket: TJclPtrIntfBucket;
@@ -17951,20 +19765,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclPtrIntfHashMap.FreeKey(var Key: Pointer): Pointer;
-begin
-  Result := Key;
-  Key := nil;
-end;
-
-function TJclPtrIntfHashMap.FreeValue(var Value: IInterface): IInterface;
-begin
-  Result := Value;
-  Value := nil;
-end;
-
-
-
 function TJclPtrIntfHashMap.GetValue(Key: Pointer): IInterface;
 var
   I: Integer;
@@ -17996,7 +19796,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
 
 function TJclPtrIntfHashMap.IsEmpty: Boolean;
 begin
@@ -18038,11 +19837,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclPtrIntfHashMap.KeysEqual(A, B: Pointer): Boolean;
-begin
-  Result := ItemsEqual(A, B);
-end;
-
 function TJclPtrIntfHashMap.KeySet: IJclPtrSet;
 var
   I, J: Integer;
@@ -18068,76 +19862,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-procedure TJclPtrIntfHashMap.MoveArray(var List: TJclPtrIntfHashEntryArray; FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := nil;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := nil;
-      end;
-  end;
-end;
-{$ELSE}
-begin
-  if Count > 0 then
-  begin
-    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end;
-  end;
-end;
-{$ENDIF CLR}
 
 procedure TJclPtrIntfHashMap.Pack;
 var
@@ -18273,7 +19997,7 @@ begin
           Result := FreeValue(Bucket.Entries[I].Value);
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -18346,11 +20070,105 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclPtrIntfHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclPtrIntfHashMap.Create(FCapacity);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclPtrIntfHashMap.FreeKey(var Key: Pointer): Pointer;
+begin
+  Result := Key;
+  Key := nil;
+end;
+
+function TJclPtrIntfHashMap.FreeValue(var Value: IInterface): IInterface;
+begin
+  Result := Value;
+  Value := nil;
+end;
+
+function TJclPtrIntfHashMap.KeysEqual(A, B: Pointer): Boolean;
+begin
+  Result := ItemsEqual(A, B);
+end;
+
 function TJclPtrIntfHashMap.ValuesEqual(const A, B: IInterface): Boolean;
 begin
   Result := Integer(A) = Integer(B);
 end;
 
+//=== { TJclIntfPtrBucket } ==========================================
+
+procedure TJclIntfPtrBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := nil;
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := nil;
+      end;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
 
 //=== { TJclIntfPtrHashMap } ==========================================
 
@@ -18514,13 +20332,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfPtrHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclIntfPtrHashMap.Create(FCapacity);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclIntfPtrHashMap.Equals(const AMap: IJclIntfPtrMap): Boolean;
+function TJclIntfPtrHashMap.MapEquals(const AMap: IJclIntfPtrMap): Boolean;
 var
   I, J: Integer;
   Bucket: TJclIntfPtrBucket;
@@ -18557,20 +20369,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfPtrHashMap.FreeKey(var Key: IInterface): IInterface;
-begin
-  Result := Key;
-  Key := nil;
-end;
-
-function TJclIntfPtrHashMap.FreeValue(var Value: Pointer): Pointer;
-begin
-  Result := Value;
-  Value := nil;
-end;
-
-
-
 function TJclIntfPtrHashMap.GetValue(const Key: IInterface): Pointer;
 var
   I: Integer;
@@ -18601,11 +20399,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclIntfPtrHashMap.Hash(const AInterface: IInterface): Integer;
-begin
-  Result := Integer(AInterface);
 end;
 
 function TJclIntfPtrHashMap.IsEmpty: Boolean;
@@ -18648,11 +20441,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfPtrHashMap.KeysEqual(const A, B: IInterface): Boolean;
-begin
-  Result := Integer(A) = Integer(B);
-end;
-
 function TJclIntfPtrHashMap.KeySet: IJclIntfSet;
 var
   I, J: Integer;
@@ -18678,76 +20466,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-procedure TJclIntfPtrHashMap.MoveArray(var List: TJclIntfPtrHashEntryArray; FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := nil;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := nil;
-      end;
-  end;
-end;
-{$ELSE}
-begin
-  if Count > 0 then
-  begin
-    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end;
-  end;
-end;
-{$ENDIF CLR}
 
 procedure TJclIntfPtrHashMap.Pack;
 var
@@ -18883,7 +20601,7 @@ begin
           Result := FreeValue(Bucket.Entries[I].Value);
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -18956,11 +20674,110 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclIntfPtrHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclIntfPtrHashMap.Create(FCapacity);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclIntfPtrHashMap.FreeKey(var Key: IInterface): IInterface;
+begin
+  Result := Key;
+  Key := nil;
+end;
+
+function TJclIntfPtrHashMap.FreeValue(var Value: Pointer): Pointer;
+begin
+  Result := Value;
+  Value := nil;
+end;
+
+function TJclIntfPtrHashMap.Hash(const AInterface: IInterface): Integer;
+begin
+  Result := Integer(AInterface);
+end;
+
+function TJclIntfPtrHashMap.KeysEqual(const A, B: IInterface): Boolean;
+begin
+  Result := Integer(A) = Integer(B);
+end;
+
 function TJclIntfPtrHashMap.ValuesEqual(A, B: Pointer): Boolean;
 begin
   Result := ItemsEqual(A, B);
 end;
 
+//=== { TJclPtrPtrBucket } ==========================================
+
+procedure TJclPtrPtrBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := nil;
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := nil;
+      end;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
 
 //=== { TJclPtrPtrHashMap } ==========================================
 
@@ -19124,13 +20941,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclPtrPtrHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclPtrPtrHashMap.Create(FCapacity);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclPtrPtrHashMap.Equals(const AMap: IJclPtrPtrMap): Boolean;
+function TJclPtrPtrHashMap.MapEquals(const AMap: IJclPtrPtrMap): Boolean;
 var
   I, J: Integer;
   Bucket: TJclPtrPtrBucket;
@@ -19167,20 +20978,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclPtrPtrHashMap.FreeKey(var Key: Pointer): Pointer;
-begin
-  Result := Key;
-  Key := nil;
-end;
-
-function TJclPtrPtrHashMap.FreeValue(var Value: Pointer): Pointer;
-begin
-  Result := Value;
-  Value := nil;
-end;
-
-
-
 function TJclPtrPtrHashMap.GetValue(Key: Pointer): Pointer;
 var
   I: Integer;
@@ -19212,7 +21009,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
 
 function TJclPtrPtrHashMap.IsEmpty: Boolean;
 begin
@@ -19254,11 +21050,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclPtrPtrHashMap.KeysEqual(A, B: Pointer): Boolean;
-begin
-  Result := ItemsEqual(A, B);
-end;
-
 function TJclPtrPtrHashMap.KeySet: IJclPtrSet;
 var
   I, J: Integer;
@@ -19284,76 +21075,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-procedure TJclPtrPtrHashMap.MoveArray(var List: TJclPtrPtrHashEntryArray; FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := nil;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := nil;
-      end;
-  end;
-end;
-{$ELSE}
-begin
-  if Count > 0 then
-  begin
-    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end;
-  end;
-end;
-{$ENDIF CLR}
 
 procedure TJclPtrPtrHashMap.Pack;
 var
@@ -19489,7 +21210,7 @@ begin
           Result := FreeValue(Bucket.Entries[I].Value);
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -19562,12 +21283,106 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclPtrPtrHashMap.ValuesEqual(A, B: Pointer): Boolean;
+function TJclPtrPtrHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclPtrPtrHashMap.Create(FCapacity);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclPtrPtrHashMap.FreeKey(var Key: Pointer): Pointer;
+begin
+  Result := Key;
+  Key := nil;
+end;
+
+function TJclPtrPtrHashMap.FreeValue(var Value: Pointer): Pointer;
+begin
+  Result := Value;
+  Value := nil;
+end;
+
+function TJclPtrPtrHashMap.KeysEqual(A, B: Pointer): Boolean;
 begin
   Result := ItemsEqual(A, B);
 end;
 
+function TJclPtrPtrHashMap.ValuesEqual(A, B: Pointer): Boolean;
+begin
+  Result := ItemsEqual(A, B);
+end;
 {$ENDIF ~CLR}
+
+//=== { TJclIntfBucket } ==========================================
+
+procedure TJclIntfBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := nil;
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := nil;
+      end;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
 
 //=== { TJclIntfHashMap } ==========================================
 
@@ -19732,13 +21547,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclIntfHashMap.Create(FCapacity, False);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclIntfHashMap.Equals(const AMap: IJclIntfMap): Boolean;
+function TJclIntfHashMap.MapEquals(const AMap: IJclIntfMap): Boolean;
 var
   I, J: Integer;
   Bucket: TJclIntfBucket;
@@ -19775,32 +21584,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfHashMap.FreeKey(var Key: IInterface): IInterface;
-begin
-  Result := Key;
-  Key := nil;
-end;
-
-function TJclIntfHashMap.FreeValue(var Value: TObject): TObject;
-begin
-  if FOwnsValues then
-  begin
-    Result := nil;
-    FreeAndNil(Value);
-  end
-  else
-  begin
-    Result := Value;
-    Value := nil;
-  end;
-end;
-
-
-function TJclIntfHashMap.GetOwnsValues: Boolean;
-begin
-  Result := FOwnsValues;
-end;
-
 function TJclIntfHashMap.GetValue(const Key: IInterface): TObject;
 var
   I: Integer;
@@ -19831,11 +21614,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclIntfHashMap.Hash(const AInterface: IInterface): Integer;
-begin
-  Result := Integer(AInterface);
 end;
 
 function TJclIntfHashMap.IsEmpty: Boolean;
@@ -19878,11 +21656,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfHashMap.KeysEqual(const A, B: IInterface): Boolean;
-begin
-  Result := Integer(A) = Integer(B);
-end;
-
 function TJclIntfHashMap.KeySet: IJclIntfSet;
 var
   I, J: Integer;
@@ -19908,76 +21681,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-procedure TJclIntfHashMap.MoveArray(var List: TJclIntfHashEntryArray; FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := nil;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := nil;
-      end;
-  end;
-end;
-{$ELSE}
-begin
-  if Count > 0 then
-  begin
-    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end;
-  end;
-end;
-{$ENDIF CLR}
 
 procedure TJclIntfHashMap.Pack;
 var
@@ -20113,7 +21816,7 @@ begin
           Result := FreeValue(Bucket.Entries[I].Value);
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -20186,11 +21889,123 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclIntfHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclIntfHashMap.Create(FCapacity, False);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclIntfHashMap.FreeKey(var Key: IInterface): IInterface;
+begin
+  Result := Key;
+  Key := nil;
+end;
+
+function TJclIntfHashMap.FreeValue(var Value: TObject): TObject;
+begin
+  if FOwnsValues then
+  begin
+    Result := nil;
+    FreeAndNil(Value);
+  end
+  else
+  begin
+    Result := Value;
+    Value := nil;
+  end;
+end;
+
+function TJclIntfHashMap.GetOwnsValues: Boolean;
+begin
+  Result := FOwnsValues;
+end;
+
+function TJclIntfHashMap.Hash(const AInterface: IInterface): Integer;
+begin
+  Result := Integer(AInterface);
+end;
+
+function TJclIntfHashMap.KeysEqual(const A, B: IInterface): Boolean;
+begin
+  Result := Integer(A) = Integer(B);
+end;
+
 function TJclIntfHashMap.ValuesEqual(A, B: TObject): Boolean;
 begin
   Result := Integer(A) = Integer(B);
 end;
 
+//=== { TJclAnsiStrBucket } ==========================================
+
+procedure TJclAnsiStrBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        Entries[FromIndex + I].Key := '';
+        Entries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := '';
+        Entries[FromIndex + I].Value := nil;
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := '';
+        Entries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := '';
+        Entries[FromIndex + I].Value := nil;
+      end;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
 
 //=== { TJclAnsiStrHashMap } ==========================================
 
@@ -20355,13 +22170,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclAnsiStrHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclAnsiStrHashMap.Create(FCapacity, False);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclAnsiStrHashMap.Equals(const AMap: IJclAnsiStrMap): Boolean;
+function TJclAnsiStrHashMap.MapEquals(const AMap: IJclAnsiStrMap): Boolean;
 var
   I, J: Integer;
   Bucket: TJclAnsiStrBucket;
@@ -20398,32 +22207,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclAnsiStrHashMap.FreeKey(var Key: AnsiString): AnsiString;
-begin
-  Result := Key;
-  Key := '';
-end;
-
-function TJclAnsiStrHashMap.FreeValue(var Value: TObject): TObject;
-begin
-  if FOwnsValues then
-  begin
-    Result := nil;
-    FreeAndNil(Value);
-  end
-  else
-  begin
-    Result := Value;
-    Value := nil;
-  end;
-end;
-
-
-function TJclAnsiStrHashMap.GetOwnsValues: Boolean;
-begin
-  Result := FOwnsValues;
-end;
-
 function TJclAnsiStrHashMap.GetValue(const Key: AnsiString): TObject;
 var
   I: Integer;
@@ -20455,7 +22238,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
 
 function TJclAnsiStrHashMap.IsEmpty: Boolean;
 begin
@@ -20497,11 +22279,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclAnsiStrHashMap.KeysEqual(const A, B: AnsiString): Boolean;
-begin
-  Result := ItemsEqual(A, B);
-end;
-
 function TJclAnsiStrHashMap.KeySet: IJclAnsiStrSet;
 var
   I, J: Integer;
@@ -20527,76 +22304,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-procedure TJclAnsiStrHashMap.MoveArray(var List: TJclAnsiStrHashEntryArray; FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        List[FromIndex + I].Key := '';
-        List[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := '';
-        List[FromIndex + I].Value := nil;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        List[FromIndex + I].Key := '';
-        List[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := '';
-        List[FromIndex + I].Value := nil;
-      end;
-  end;
-end;
-{$ELSE}
-begin
-  if Count > 0 then
-  begin
-    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end;
-  end;
-end;
-{$ENDIF CLR}
 
 procedure TJclAnsiStrHashMap.Pack;
 var
@@ -20732,7 +22439,7 @@ begin
           Result := FreeValue(Bucket.Entries[I].Value);
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -20805,11 +22512,118 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclAnsiStrHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclAnsiStrHashMap.Create(FCapacity, False);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclAnsiStrHashMap.FreeKey(var Key: AnsiString): AnsiString;
+begin
+  Result := Key;
+  Key := '';
+end;
+
+function TJclAnsiStrHashMap.FreeValue(var Value: TObject): TObject;
+begin
+  if FOwnsValues then
+  begin
+    Result := nil;
+    FreeAndNil(Value);
+  end
+  else
+  begin
+    Result := Value;
+    Value := nil;
+  end;
+end;
+
+function TJclAnsiStrHashMap.GetOwnsValues: Boolean;
+begin
+  Result := FOwnsValues;
+end;
+
+function TJclAnsiStrHashMap.KeysEqual(const A, B: AnsiString): Boolean;
+begin
+  Result := ItemsEqual(A, B);
+end;
+
 function TJclAnsiStrHashMap.ValuesEqual(A, B: TObject): Boolean;
 begin
   Result := Integer(A) = Integer(B);
 end;
 
+//=== { TJclWideStrBucket } ==========================================
+
+procedure TJclWideStrBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        Entries[FromIndex + I].Key := '';
+        Entries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := '';
+        Entries[FromIndex + I].Value := nil;
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := '';
+        Entries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := '';
+        Entries[FromIndex + I].Value := nil;
+      end;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
 
 //=== { TJclWideStrHashMap } ==========================================
 
@@ -20974,13 +22788,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclWideStrHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclWideStrHashMap.Create(FCapacity, False);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclWideStrHashMap.Equals(const AMap: IJclWideStrMap): Boolean;
+function TJclWideStrHashMap.MapEquals(const AMap: IJclWideStrMap): Boolean;
 var
   I, J: Integer;
   Bucket: TJclWideStrBucket;
@@ -21017,32 +22825,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclWideStrHashMap.FreeKey(var Key: WideString): WideString;
-begin
-  Result := Key;
-  Key := '';
-end;
-
-function TJclWideStrHashMap.FreeValue(var Value: TObject): TObject;
-begin
-  if FOwnsValues then
-  begin
-    Result := nil;
-    FreeAndNil(Value);
-  end
-  else
-  begin
-    Result := Value;
-    Value := nil;
-  end;
-end;
-
-
-function TJclWideStrHashMap.GetOwnsValues: Boolean;
-begin
-  Result := FOwnsValues;
-end;
-
 function TJclWideStrHashMap.GetValue(const Key: WideString): TObject;
 var
   I: Integer;
@@ -21074,7 +22856,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
 
 function TJclWideStrHashMap.IsEmpty: Boolean;
 begin
@@ -21116,11 +22897,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclWideStrHashMap.KeysEqual(const A, B: WideString): Boolean;
-begin
-  Result := ItemsEqual(A, B);
-end;
-
 function TJclWideStrHashMap.KeySet: IJclWideStrSet;
 var
   I, J: Integer;
@@ -21146,76 +22922,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-procedure TJclWideStrHashMap.MoveArray(var List: TJclWideStrHashEntryArray; FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        List[FromIndex + I].Key := '';
-        List[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := '';
-        List[FromIndex + I].Value := nil;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        List[FromIndex + I].Key := '';
-        List[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := '';
-        List[FromIndex + I].Value := nil;
-      end;
-  end;
-end;
-{$ELSE}
-begin
-  if Count > 0 then
-  begin
-    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end;
-  end;
-end;
-{$ENDIF CLR}
 
 procedure TJclWideStrHashMap.Pack;
 var
@@ -21351,7 +23057,7 @@ begin
           Result := FreeValue(Bucket.Entries[I].Value);
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -21424,11 +23130,738 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclWideStrHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclWideStrHashMap.Create(FCapacity, False);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclWideStrHashMap.FreeKey(var Key: WideString): WideString;
+begin
+  Result := Key;
+  Key := '';
+end;
+
+function TJclWideStrHashMap.FreeValue(var Value: TObject): TObject;
+begin
+  if FOwnsValues then
+  begin
+    Result := nil;
+    FreeAndNil(Value);
+  end
+  else
+  begin
+    Result := Value;
+    Value := nil;
+  end;
+end;
+
+function TJclWideStrHashMap.GetOwnsValues: Boolean;
+begin
+  Result := FOwnsValues;
+end;
+
+function TJclWideStrHashMap.KeysEqual(const A, B: WideString): Boolean;
+begin
+  Result := ItemsEqual(A, B);
+end;
+
 function TJclWideStrHashMap.ValuesEqual(A, B: TObject): Boolean;
 begin
   Result := Integer(A) = Integer(B);
 end;
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+//=== { TJclUnicodeStrBucket } ==========================================
+
+procedure TJclUnicodeStrBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        Entries[FromIndex + I].Key := '';
+        Entries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := '';
+        Entries[FromIndex + I].Value := nil;
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := '';
+        Entries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := '';
+        Entries[FromIndex + I].Value := nil;
+      end;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
+
+//=== { TJclUnicodeStrHashMap } ==========================================
+
+constructor TJclUnicodeStrHashMap.Create(ACapacity: Integer; AOwnsValues: Boolean);
+begin
+  inherited Create;
+  FOwnsValues := AOwnsValues;
+  SetCapacity(ACapacity);
+  FHashFunction := HashMul;
+end;
+
+destructor TJclUnicodeStrHashMap.Destroy;
+begin
+  FReadOnly := False;
+  Clear;
+  inherited Destroy;
+end;
+
+procedure TJclUnicodeStrHashMap.AssignDataTo(Dest: TJclAbstractContainerBase);
+var
+  I, J: Integer;
+  SelfBucket, NewBucket: TJclUnicodeStrBucket;
+  ADest: TJclUnicodeStrHashMap;
+  AMap: IJclUnicodeStrMap;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    inherited AssignDataTo(Dest);
+    if Dest is TJclUnicodeStrHashMap then
+    begin
+      ADest := TJclUnicodeStrHashMap(Dest);
+      ADest.Clear;
+      for I := 0 to FCapacity - 1 do
+      begin
+        SelfBucket := FBuckets[I];
+        if SelfBucket <> nil then
+        begin
+          NewBucket := TJclUnicodeStrBucket.Create;
+          SetLength(NewBucket.Entries, SelfBucket.Size);
+          for J := 0 to SelfBucket.Size - 1 do
+          begin
+            NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
+            NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
+          end;
+          NewBucket.Size := SelfBucket.Size;
+          ADest.FBuckets[I] := NewBucket;
+        end;
+      end;
+    end
+    else
+    if Supports(IInterface(Dest), IJclUnicodeStrMap, AMap) then
+    begin
+      AMap.Clear;
+      AMap.PutAll(Self);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclUnicodeStrHashMap.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
+begin
+  inherited AssignPropertiesto(Dest);
+  if Dest is TJclUnicodeStrHashMap then
+    TJclUnicodeStrHashMap(Dest).HashFunction := HashFunction;
+end;
+
+procedure TJclUnicodeStrHashMap.Clear;
+var
+  I, J: Integer;
+  Bucket: TJclUnicodeStrBucket;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+      begin
+        for J := 0 to Bucket.Size - 1 do
+        begin
+          FreeKey(Bucket.Entries[J].Key);
+          FreeValue(Bucket.Entries[J].Value);
+        end;
+        FreeAndNil(FBuckets[I]);
+      end;
+    end;
+    FSize := 0;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrHashMap.ContainsKey(const Key: UnicodeString): Boolean;
+var
+  I: Integer;
+  Bucket: TJclUnicodeStrBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := True;
+          Break;
+        end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrHashMap.ContainsValue(Value: TObject): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclUnicodeStrBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    for J := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[J];
+      if Bucket <> nil then
+        for I := 0 to Bucket.Size - 1 do
+          if ValuesEqual(Bucket.Entries[I].Value, Value) then
+          begin
+            Result := True;
+            Break;
+          end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrHashMap.MapEquals(const AMap: IJclUnicodeStrMap): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclUnicodeStrBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          if AMap.ContainsKey(Bucket.Entries[J].Key) then
+          begin
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
+              Exit;
+          end
+          else
+            Exit;
+    end;
+    Result := True;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrHashMap.GetValue(const Key: UnicodeString): TObject;
+var
+  I: Integer;
+  Bucket: TJclUnicodeStrBucket;
+  Found: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Found := False;
+    Result := nil;
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := Bucket.Entries[I].Value;
+          Found := True;
+          Break;
+        end;
+    if (not Found) and (not FReturnDefaultElements) then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrHashMap.IsEmpty: Boolean;
+begin
+  Result := FSize = 0;
+end;
+
+function TJclUnicodeStrHashMap.KeyOfValue(Value: TObject): UnicodeString;
+var
+  I, J: Integer;
+  Bucket: TJclUnicodeStrBucket;
+  Found: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Found := False;
+    Result := '';
+    for J := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[J];
+      if Bucket <> nil then
+        for I := 0 to Bucket.Size - 1 do
+          if ValuesEqual(Bucket.Entries[I].Value, Value) then
+          begin
+            Result := Bucket.Entries[I].Key;
+            Found := True;
+            Break;
+          end;
+    end;
+    if (not Found) and (not FReturnDefaultElements) then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrHashMap.KeySet: IJclUnicodeStrSet;
+var
+  I, J: Integer;
+  Bucket: TJclUnicodeStrBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclUnicodeStrArraySet.Create(FSize);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Key);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclUnicodeStrHashMap.Pack;
+var
+  I: Integer;
+  Bucket: TJclUnicodeStrBucket;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+      begin
+        if Bucket.Size > 0 then
+          SetLength(Bucket.Entries, Bucket.Size)
+        else
+          FreeAndNil(FBuckets[I]);
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclUnicodeStrHashMap.PutAll(const AMap: IJclUnicodeStrMap);
+var
+  It: IJclUnicodeStrIterator;
+  Key: UnicodeString;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    if AMap = nil then
+      Exit;
+    It := AMap.KeySet.First;
+    while It.HasNext do
+    begin
+      Key := It.Next;
+      PutValue(Key, AMap.GetValue(Key));
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclUnicodeStrHashMap.PutValue(const Key: UnicodeString; Value: TObject);
+var
+  Index: Integer;
+  Bucket: TJclUnicodeStrBucket;
+  I: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    if FAllowDefaultElements or (not KeysEqual(Key, '') and not ValuesEqual(Value, nil)) then
+    begin
+      Index := FHashFunction(Hash(Key), FCapacity);
+      Bucket := FBuckets[Index];
+      if Bucket <> nil then
+      begin
+        for I := 0 to Bucket.Size - 1 do
+          if KeysEqual(Bucket.Entries[I].Key, Key) then
+          begin
+            FreeValue(Bucket.Entries[I].Value);
+            Bucket.Entries[I].Value := Value;
+            Exit;
+          end;
+      end
+      else
+      begin
+        Bucket := TJclUnicodeStrBucket.Create;
+        SetLength(Bucket.Entries, 1);
+        FBuckets[Index] := Bucket;
+      end;
+
+      if Bucket.Size = Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, CalcGrowCapacity(Bucket.Size, Bucket.Size));
+
+      if Bucket.Size < Length(Bucket.Entries) then
+      begin
+        Bucket.Entries[Bucket.Size].Key := Key;
+        Bucket.Entries[Bucket.Size].Value := Value;
+        Inc(Bucket.Size);
+        Inc(FSize);
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrHashMap.Remove(const Key: UnicodeString): TObject;
+var
+  Bucket: TJclUnicodeStrBucket;
+  I, NewCapacity: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := nil;
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
+    begin
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := FreeValue(Bucket.Entries[I].Value);
+          FreeKey(Bucket.Entries[I].Key);
+          if I < Length(Bucket.Entries) - 1 then
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
+          Break;
+        end;
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclUnicodeStrHashMap.SetCapacity(Value: Integer);
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    if FSize = 0 then
+    begin
+      SetLength(FBuckets, Value);
+      inherited SetCapacity(Value);
+    end
+    else
+      raise EJclOperationNotSupportedError.Create;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrHashMap.Size: Integer;
+begin
+  Result := FSize;
+end;
+
+function TJclUnicodeStrHashMap.Values: IJclCollection;
+var
+  I, J: Integer;
+  Bucket: TJclUnicodeStrBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclArrayList.Create(FSize, False);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Value);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclUnicodeStrHashMap.Create(FCapacity, False);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclUnicodeStrHashMap.FreeKey(var Key: UnicodeString): UnicodeString;
+begin
+  Result := Key;
+  Key := '';
+end;
+
+function TJclUnicodeStrHashMap.FreeValue(var Value: TObject): TObject;
+begin
+  if FOwnsValues then
+  begin
+    Result := nil;
+    FreeAndNil(Value);
+  end
+  else
+  begin
+    Result := Value;
+    Value := nil;
+  end;
+end;
+
+function TJclUnicodeStrHashMap.GetOwnsValues: Boolean;
+begin
+  Result := FOwnsValues;
+end;
+
+function TJclUnicodeStrHashMap.KeysEqual(const A, B: UnicodeString): Boolean;
+begin
+  Result := ItemsEqual(A, B);
+end;
+
+function TJclUnicodeStrHashMap.ValuesEqual(A, B: TObject): Boolean;
+begin
+  Result := Integer(A) = Integer(B);
+end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
+//=== { TJclSingleBucket } ==========================================
+
+procedure TJclSingleBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0.0;
+        Entries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0.0;
+        Entries[FromIndex + I].Value := nil;
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0.0;
+        Entries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0.0;
+        Entries[FromIndex + I].Value := nil;
+      end;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
 
 //=== { TJclSingleHashMap } ==========================================
 
@@ -21593,13 +24026,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclSingleHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclSingleHashMap.Create(FCapacity, False);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclSingleHashMap.Equals(const AMap: IJclSingleMap): Boolean;
+function TJclSingleHashMap.MapEquals(const AMap: IJclSingleMap): Boolean;
 var
   I, J: Integer;
   Bucket: TJclSingleBucket;
@@ -21636,32 +24063,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclSingleHashMap.FreeKey(var Key: Single): Single;
-begin
-  Result := Key;
-  Key := 0.0;
-end;
-
-function TJclSingleHashMap.FreeValue(var Value: TObject): TObject;
-begin
-  if FOwnsValues then
-  begin
-    Result := nil;
-    FreeAndNil(Value);
-  end
-  else
-  begin
-    Result := Value;
-    Value := nil;
-  end;
-end;
-
-
-function TJclSingleHashMap.GetOwnsValues: Boolean;
-begin
-  Result := FOwnsValues;
-end;
-
 function TJclSingleHashMap.GetValue(const Key: Single): TObject;
 var
   I: Integer;
@@ -21693,7 +24094,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
 
 function TJclSingleHashMap.IsEmpty: Boolean;
 begin
@@ -21735,11 +24135,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclSingleHashMap.KeysEqual(const A, B: Single): Boolean;
-begin
-  Result := ItemsEqual(A, B);
-end;
-
 function TJclSingleHashMap.KeySet: IJclSingleSet;
 var
   I, J: Integer;
@@ -21765,76 +24160,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-procedure TJclSingleHashMap.MoveArray(var List: TJclSingleHashEntryArray; FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        List[FromIndex + I].Key := 0.0;
-        List[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0.0;
-        List[FromIndex + I].Value := nil;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0.0;
-        List[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0.0;
-        List[FromIndex + I].Value := nil;
-      end;
-  end;
-end;
-{$ELSE}
-begin
-  if Count > 0 then
-  begin
-    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end;
-  end;
-end;
-{$ENDIF CLR}
 
 procedure TJclSingleHashMap.Pack;
 var
@@ -21970,7 +24295,7 @@ begin
           Result := FreeValue(Bucket.Entries[I].Value);
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -22043,11 +24368,118 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclSingleHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclSingleHashMap.Create(FCapacity, False);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclSingleHashMap.FreeKey(var Key: Single): Single;
+begin
+  Result := Key;
+  Key := 0.0;
+end;
+
+function TJclSingleHashMap.FreeValue(var Value: TObject): TObject;
+begin
+  if FOwnsValues then
+  begin
+    Result := nil;
+    FreeAndNil(Value);
+  end
+  else
+  begin
+    Result := Value;
+    Value := nil;
+  end;
+end;
+
+function TJclSingleHashMap.GetOwnsValues: Boolean;
+begin
+  Result := FOwnsValues;
+end;
+
+function TJclSingleHashMap.KeysEqual(const A, B: Single): Boolean;
+begin
+  Result := ItemsEqual(A, B);
+end;
+
 function TJclSingleHashMap.ValuesEqual(A, B: TObject): Boolean;
 begin
   Result := Integer(A) = Integer(B);
 end;
 
+//=== { TJclDoubleBucket } ==========================================
+
+procedure TJclDoubleBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0.0;
+        Entries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0.0;
+        Entries[FromIndex + I].Value := nil;
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0.0;
+        Entries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0.0;
+        Entries[FromIndex + I].Value := nil;
+      end;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
 
 //=== { TJclDoubleHashMap } ==========================================
 
@@ -22212,13 +24644,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclDoubleHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclDoubleHashMap.Create(FCapacity, False);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclDoubleHashMap.Equals(const AMap: IJclDoubleMap): Boolean;
+function TJclDoubleHashMap.MapEquals(const AMap: IJclDoubleMap): Boolean;
 var
   I, J: Integer;
   Bucket: TJclDoubleBucket;
@@ -22255,32 +24681,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclDoubleHashMap.FreeKey(var Key: Double): Double;
-begin
-  Result := Key;
-  Key := 0.0;
-end;
-
-function TJclDoubleHashMap.FreeValue(var Value: TObject): TObject;
-begin
-  if FOwnsValues then
-  begin
-    Result := nil;
-    FreeAndNil(Value);
-  end
-  else
-  begin
-    Result := Value;
-    Value := nil;
-  end;
-end;
-
-
-function TJclDoubleHashMap.GetOwnsValues: Boolean;
-begin
-  Result := FOwnsValues;
-end;
-
 function TJclDoubleHashMap.GetValue(const Key: Double): TObject;
 var
   I: Integer;
@@ -22312,7 +24712,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
 
 function TJclDoubleHashMap.IsEmpty: Boolean;
 begin
@@ -22354,11 +24753,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclDoubleHashMap.KeysEqual(const A, B: Double): Boolean;
-begin
-  Result := ItemsEqual(A, B);
-end;
-
 function TJclDoubleHashMap.KeySet: IJclDoubleSet;
 var
   I, J: Integer;
@@ -22384,76 +24778,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-procedure TJclDoubleHashMap.MoveArray(var List: TJclDoubleHashEntryArray; FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        List[FromIndex + I].Key := 0.0;
-        List[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0.0;
-        List[FromIndex + I].Value := nil;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0.0;
-        List[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0.0;
-        List[FromIndex + I].Value := nil;
-      end;
-  end;
-end;
-{$ELSE}
-begin
-  if Count > 0 then
-  begin
-    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end;
-  end;
-end;
-{$ENDIF CLR}
 
 procedure TJclDoubleHashMap.Pack;
 var
@@ -22589,7 +24913,7 @@ begin
           Result := FreeValue(Bucket.Entries[I].Value);
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -22662,11 +24986,118 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclDoubleHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclDoubleHashMap.Create(FCapacity, False);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclDoubleHashMap.FreeKey(var Key: Double): Double;
+begin
+  Result := Key;
+  Key := 0.0;
+end;
+
+function TJclDoubleHashMap.FreeValue(var Value: TObject): TObject;
+begin
+  if FOwnsValues then
+  begin
+    Result := nil;
+    FreeAndNil(Value);
+  end
+  else
+  begin
+    Result := Value;
+    Value := nil;
+  end;
+end;
+
+function TJclDoubleHashMap.GetOwnsValues: Boolean;
+begin
+  Result := FOwnsValues;
+end;
+
+function TJclDoubleHashMap.KeysEqual(const A, B: Double): Boolean;
+begin
+  Result := ItemsEqual(A, B);
+end;
+
 function TJclDoubleHashMap.ValuesEqual(A, B: TObject): Boolean;
 begin
   Result := Integer(A) = Integer(B);
 end;
 
+//=== { TJclExtendedBucket } ==========================================
+
+procedure TJclExtendedBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0.0;
+        Entries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0.0;
+        Entries[FromIndex + I].Value := nil;
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0.0;
+        Entries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0.0;
+        Entries[FromIndex + I].Value := nil;
+      end;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
 
 //=== { TJclExtendedHashMap } ==========================================
 
@@ -22831,13 +25262,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclExtendedHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclExtendedHashMap.Create(FCapacity, False);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclExtendedHashMap.Equals(const AMap: IJclExtendedMap): Boolean;
+function TJclExtendedHashMap.MapEquals(const AMap: IJclExtendedMap): Boolean;
 var
   I, J: Integer;
   Bucket: TJclExtendedBucket;
@@ -22874,32 +25299,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclExtendedHashMap.FreeKey(var Key: Extended): Extended;
-begin
-  Result := Key;
-  Key := 0.0;
-end;
-
-function TJclExtendedHashMap.FreeValue(var Value: TObject): TObject;
-begin
-  if FOwnsValues then
-  begin
-    Result := nil;
-    FreeAndNil(Value);
-  end
-  else
-  begin
-    Result := Value;
-    Value := nil;
-  end;
-end;
-
-
-function TJclExtendedHashMap.GetOwnsValues: Boolean;
-begin
-  Result := FOwnsValues;
-end;
-
 function TJclExtendedHashMap.GetValue(const Key: Extended): TObject;
 var
   I: Integer;
@@ -22931,7 +25330,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
 
 function TJclExtendedHashMap.IsEmpty: Boolean;
 begin
@@ -22973,11 +25371,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclExtendedHashMap.KeysEqual(const A, B: Extended): Boolean;
-begin
-  Result := ItemsEqual(A, B);
-end;
-
 function TJclExtendedHashMap.KeySet: IJclExtendedSet;
 var
   I, J: Integer;
@@ -23003,76 +25396,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-procedure TJclExtendedHashMap.MoveArray(var List: TJclExtendedHashEntryArray; FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        List[FromIndex + I].Key := 0.0;
-        List[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0.0;
-        List[FromIndex + I].Value := nil;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0.0;
-        List[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0.0;
-        List[FromIndex + I].Value := nil;
-      end;
-  end;
-end;
-{$ELSE}
-begin
-  if Count > 0 then
-  begin
-    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end;
-  end;
-end;
-{$ENDIF CLR}
 
 procedure TJclExtendedHashMap.Pack;
 var
@@ -23208,7 +25531,7 @@ begin
           Result := FreeValue(Bucket.Entries[I].Value);
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -23281,11 +25604,118 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclExtendedHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclExtendedHashMap.Create(FCapacity, False);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclExtendedHashMap.FreeKey(var Key: Extended): Extended;
+begin
+  Result := Key;
+  Key := 0.0;
+end;
+
+function TJclExtendedHashMap.FreeValue(var Value: TObject): TObject;
+begin
+  if FOwnsValues then
+  begin
+    Result := nil;
+    FreeAndNil(Value);
+  end
+  else
+  begin
+    Result := Value;
+    Value := nil;
+  end;
+end;
+
+function TJclExtendedHashMap.GetOwnsValues: Boolean;
+begin
+  Result := FOwnsValues;
+end;
+
+function TJclExtendedHashMap.KeysEqual(const A, B: Extended): Boolean;
+begin
+  Result := ItemsEqual(A, B);
+end;
+
 function TJclExtendedHashMap.ValuesEqual(A, B: TObject): Boolean;
 begin
   Result := Integer(A) = Integer(B);
 end;
 
+//=== { TJclIntegerBucket } ==========================================
+
+procedure TJclIntegerBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0;
+        Entries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0;
+        Entries[FromIndex + I].Value := nil;
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0;
+        Entries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0;
+        Entries[FromIndex + I].Value := nil;
+      end;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
 
 //=== { TJclIntegerHashMap } ==========================================
 
@@ -23450,13 +25880,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntegerHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclIntegerHashMap.Create(FCapacity, False);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclIntegerHashMap.Equals(const AMap: IJclIntegerMap): Boolean;
+function TJclIntegerHashMap.MapEquals(const AMap: IJclIntegerMap): Boolean;
 var
   I, J: Integer;
   Bucket: TJclIntegerBucket;
@@ -23493,32 +25917,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntegerHashMap.FreeKey(var Key: Integer): Integer;
-begin
-  Result := Key;
-  Key := 0;
-end;
-
-function TJclIntegerHashMap.FreeValue(var Value: TObject): TObject;
-begin
-  if FOwnsValues then
-  begin
-    Result := nil;
-    FreeAndNil(Value);
-  end
-  else
-  begin
-    Result := Value;
-    Value := nil;
-  end;
-end;
-
-
-function TJclIntegerHashMap.GetOwnsValues: Boolean;
-begin
-  Result := FOwnsValues;
-end;
-
 function TJclIntegerHashMap.GetValue(Key: Integer): TObject;
 var
   I: Integer;
@@ -23550,7 +25948,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
 
 function TJclIntegerHashMap.IsEmpty: Boolean;
 begin
@@ -23592,11 +25989,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntegerHashMap.KeysEqual(A, B: Integer): Boolean;
-begin
-  Result := ItemsEqual(A, B);
-end;
-
 function TJclIntegerHashMap.KeySet: IJclIntegerSet;
 var
   I, J: Integer;
@@ -23622,76 +26014,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-procedure TJclIntegerHashMap.MoveArray(var List: TJclIntegerHashEntryArray; FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        List[FromIndex + I].Key := 0;
-        List[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0;
-        List[FromIndex + I].Value := nil;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0;
-        List[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0;
-        List[FromIndex + I].Value := nil;
-      end;
-  end;
-end;
-{$ELSE}
-begin
-  if Count > 0 then
-  begin
-    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end;
-  end;
-end;
-{$ENDIF CLR}
 
 procedure TJclIntegerHashMap.Pack;
 var
@@ -23827,7 +26149,7 @@ begin
           Result := FreeValue(Bucket.Entries[I].Value);
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -23900,11 +26222,118 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclIntegerHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclIntegerHashMap.Create(FCapacity, False);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclIntegerHashMap.FreeKey(var Key: Integer): Integer;
+begin
+  Result := Key;
+  Key := 0;
+end;
+
+function TJclIntegerHashMap.FreeValue(var Value: TObject): TObject;
+begin
+  if FOwnsValues then
+  begin
+    Result := nil;
+    FreeAndNil(Value);
+  end
+  else
+  begin
+    Result := Value;
+    Value := nil;
+  end;
+end;
+
+function TJclIntegerHashMap.GetOwnsValues: Boolean;
+begin
+  Result := FOwnsValues;
+end;
+
+function TJclIntegerHashMap.KeysEqual(A, B: Integer): Boolean;
+begin
+  Result := ItemsEqual(A, B);
+end;
+
 function TJclIntegerHashMap.ValuesEqual(A, B: TObject): Boolean;
 begin
   Result := Integer(A) = Integer(B);
 end;
 
+//=== { TJclCardinalBucket } ==========================================
+
+procedure TJclCardinalBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0;
+        Entries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0;
+        Entries[FromIndex + I].Value := nil;
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0;
+        Entries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0;
+        Entries[FromIndex + I].Value := nil;
+      end;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
 
 //=== { TJclCardinalHashMap } ==========================================
 
@@ -24069,13 +26498,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclCardinalHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclCardinalHashMap.Create(FCapacity, False);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclCardinalHashMap.Equals(const AMap: IJclCardinalMap): Boolean;
+function TJclCardinalHashMap.MapEquals(const AMap: IJclCardinalMap): Boolean;
 var
   I, J: Integer;
   Bucket: TJclCardinalBucket;
@@ -24112,32 +26535,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclCardinalHashMap.FreeKey(var Key: Cardinal): Cardinal;
-begin
-  Result := Key;
-  Key := 0;
-end;
-
-function TJclCardinalHashMap.FreeValue(var Value: TObject): TObject;
-begin
-  if FOwnsValues then
-  begin
-    Result := nil;
-    FreeAndNil(Value);
-  end
-  else
-  begin
-    Result := Value;
-    Value := nil;
-  end;
-end;
-
-
-function TJclCardinalHashMap.GetOwnsValues: Boolean;
-begin
-  Result := FOwnsValues;
-end;
-
 function TJclCardinalHashMap.GetValue(Key: Cardinal): TObject;
 var
   I: Integer;
@@ -24169,7 +26566,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
 
 function TJclCardinalHashMap.IsEmpty: Boolean;
 begin
@@ -24211,11 +26607,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclCardinalHashMap.KeysEqual(A, B: Cardinal): Boolean;
-begin
-  Result := ItemsEqual(A, B);
-end;
-
 function TJclCardinalHashMap.KeySet: IJclCardinalSet;
 var
   I, J: Integer;
@@ -24241,76 +26632,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-procedure TJclCardinalHashMap.MoveArray(var List: TJclCardinalHashEntryArray; FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        List[FromIndex + I].Key := 0;
-        List[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0;
-        List[FromIndex + I].Value := nil;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0;
-        List[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0;
-        List[FromIndex + I].Value := nil;
-      end;
-  end;
-end;
-{$ELSE}
-begin
-  if Count > 0 then
-  begin
-    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end;
-  end;
-end;
-{$ENDIF CLR}
 
 procedure TJclCardinalHashMap.Pack;
 var
@@ -24446,7 +26767,7 @@ begin
           Result := FreeValue(Bucket.Entries[I].Value);
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -24519,11 +26840,118 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclCardinalHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclCardinalHashMap.Create(FCapacity, False);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclCardinalHashMap.FreeKey(var Key: Cardinal): Cardinal;
+begin
+  Result := Key;
+  Key := 0;
+end;
+
+function TJclCardinalHashMap.FreeValue(var Value: TObject): TObject;
+begin
+  if FOwnsValues then
+  begin
+    Result := nil;
+    FreeAndNil(Value);
+  end
+  else
+  begin
+    Result := Value;
+    Value := nil;
+  end;
+end;
+
+function TJclCardinalHashMap.GetOwnsValues: Boolean;
+begin
+  Result := FOwnsValues;
+end;
+
+function TJclCardinalHashMap.KeysEqual(A, B: Cardinal): Boolean;
+begin
+  Result := ItemsEqual(A, B);
+end;
+
 function TJclCardinalHashMap.ValuesEqual(A, B: TObject): Boolean;
 begin
   Result := Integer(A) = Integer(B);
 end;
 
+//=== { TJclInt64Bucket } ==========================================
+
+procedure TJclInt64Bucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0;
+        Entries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0;
+        Entries[FromIndex + I].Value := nil;
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0;
+        Entries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := 0;
+        Entries[FromIndex + I].Value := nil;
+      end;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
 
 //=== { TJclInt64HashMap } ==========================================
 
@@ -24688,13 +27116,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclInt64HashMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclInt64HashMap.Create(FCapacity, False);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclInt64HashMap.Equals(const AMap: IJclInt64Map): Boolean;
+function TJclInt64HashMap.MapEquals(const AMap: IJclInt64Map): Boolean;
 var
   I, J: Integer;
   Bucket: TJclInt64Bucket;
@@ -24731,32 +27153,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclInt64HashMap.FreeKey(var Key: Int64): Int64;
-begin
-  Result := Key;
-  Key := 0;
-end;
-
-function TJclInt64HashMap.FreeValue(var Value: TObject): TObject;
-begin
-  if FOwnsValues then
-  begin
-    Result := nil;
-    FreeAndNil(Value);
-  end
-  else
-  begin
-    Result := Value;
-    Value := nil;
-  end;
-end;
-
-
-function TJclInt64HashMap.GetOwnsValues: Boolean;
-begin
-  Result := FOwnsValues;
-end;
-
 function TJclInt64HashMap.GetValue(const Key: Int64): TObject;
 var
   I: Integer;
@@ -24788,7 +27184,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
 
 function TJclInt64HashMap.IsEmpty: Boolean;
 begin
@@ -24830,11 +27225,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclInt64HashMap.KeysEqual(const A, B: Int64): Boolean;
-begin
-  Result := ItemsEqual(A, B);
-end;
-
 function TJclInt64HashMap.KeySet: IJclInt64Set;
 var
   I, J: Integer;
@@ -24860,76 +27250,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-procedure TJclInt64HashMap.MoveArray(var List: TJclInt64HashEntryArray; FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        List[FromIndex + I].Key := 0;
-        List[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0;
-        List[FromIndex + I].Value := nil;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0;
-        List[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := 0;
-        List[FromIndex + I].Value := nil;
-      end;
-  end;
-end;
-{$ELSE}
-begin
-  if Count > 0 then
-  begin
-    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end;
-  end;
-end;
-{$ENDIF CLR}
 
 procedure TJclInt64HashMap.Pack;
 var
@@ -25065,7 +27385,7 @@ begin
           Result := FreeValue(Bucket.Entries[I].Value);
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -25138,13 +27458,120 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclInt64HashMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclInt64HashMap.Create(FCapacity, False);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclInt64HashMap.FreeKey(var Key: Int64): Int64;
+begin
+  Result := Key;
+  Key := 0;
+end;
+
+function TJclInt64HashMap.FreeValue(var Value: TObject): TObject;
+begin
+  if FOwnsValues then
+  begin
+    Result := nil;
+    FreeAndNil(Value);
+  end
+  else
+  begin
+    Result := Value;
+    Value := nil;
+  end;
+end;
+
+function TJclInt64HashMap.GetOwnsValues: Boolean;
+begin
+  Result := FOwnsValues;
+end;
+
+function TJclInt64HashMap.KeysEqual(const A, B: Int64): Boolean;
+begin
+  Result := ItemsEqual(A, B);
+end;
+
 function TJclInt64HashMap.ValuesEqual(A, B: TObject): Boolean;
 begin
   Result := Integer(A) = Integer(B);
 end;
 
-
 {$IFNDEF CLR}
+//=== { TJclPtrBucket } ==========================================
+
+procedure TJclPtrBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := nil;
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := nil;
+      end;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
+
 //=== { TJclPtrHashMap } ==========================================
 
 constructor TJclPtrHashMap.Create(ACapacity: Integer; AOwnsValues: Boolean);
@@ -25308,13 +27735,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclPtrHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclPtrHashMap.Create(FCapacity, False);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclPtrHashMap.Equals(const AMap: IJclPtrMap): Boolean;
+function TJclPtrHashMap.MapEquals(const AMap: IJclPtrMap): Boolean;
 var
   I, J: Integer;
   Bucket: TJclPtrBucket;
@@ -25351,32 +27772,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclPtrHashMap.FreeKey(var Key: Pointer): Pointer;
-begin
-  Result := Key;
-  Key := nil;
-end;
-
-function TJclPtrHashMap.FreeValue(var Value: TObject): TObject;
-begin
-  if FOwnsValues then
-  begin
-    Result := nil;
-    FreeAndNil(Value);
-  end
-  else
-  begin
-    Result := Value;
-    Value := nil;
-  end;
-end;
-
-
-function TJclPtrHashMap.GetOwnsValues: Boolean;
-begin
-  Result := FOwnsValues;
-end;
-
 function TJclPtrHashMap.GetValue(Key: Pointer): TObject;
 var
   I: Integer;
@@ -25408,7 +27803,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
 
 function TJclPtrHashMap.IsEmpty: Boolean;
 begin
@@ -25450,11 +27844,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclPtrHashMap.KeysEqual(A, B: Pointer): Boolean;
-begin
-  Result := ItemsEqual(A, B);
-end;
-
 function TJclPtrHashMap.KeySet: IJclPtrSet;
 var
   I, J: Integer;
@@ -25480,76 +27869,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-procedure TJclPtrHashMap.MoveArray(var List: TJclPtrHashEntryArray; FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := nil;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := nil;
-      end;
-  end;
-end;
-{$ELSE}
-begin
-  if Count > 0 then
-  begin
-    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end;
-  end;
-end;
-{$ENDIF CLR}
 
 procedure TJclPtrHashMap.Pack;
 var
@@ -25685,7 +28004,7 @@ begin
           Result := FreeValue(Bucket.Entries[I].Value);
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -25758,12 +28077,119 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclPtrHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclPtrHashMap.Create(FCapacity, False);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclPtrHashMap.FreeKey(var Key: Pointer): Pointer;
+begin
+  Result := Key;
+  Key := nil;
+end;
+
+function TJclPtrHashMap.FreeValue(var Value: TObject): TObject;
+begin
+  if FOwnsValues then
+  begin
+    Result := nil;
+    FreeAndNil(Value);
+  end
+  else
+  begin
+    Result := Value;
+    Value := nil;
+  end;
+end;
+
+function TJclPtrHashMap.GetOwnsValues: Boolean;
+begin
+  Result := FOwnsValues;
+end;
+
+function TJclPtrHashMap.KeysEqual(A, B: Pointer): Boolean;
+begin
+  Result := ItemsEqual(A, B);
+end;
+
 function TJclPtrHashMap.ValuesEqual(A, B: TObject): Boolean;
 begin
   Result := Integer(A) = Integer(B);
 end;
-
 {$ENDIF ~CLR}
+
+//=== { TJclBucket } ==========================================
+
+procedure TJclBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := nil;
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := nil;
+        Entries[FromIndex + I].Value := nil;
+      end;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
 
 //=== { TJclHashMap } ==========================================
 
@@ -25929,13 +28355,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclHashMap.Create(FCapacity, False, False);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclHashMap.Equals(const AMap: IJclMap): Boolean;
+function TJclHashMap.MapEquals(const AMap: IJclMap): Boolean;
 var
   I, J: Integer;
   Bucket: TJclBucket;
@@ -25972,44 +28392,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclHashMap.FreeKey(var Key: TObject): TObject;
-begin
-  if FOwnsKeys then
-  begin
-    Result := nil;
-    FreeAndNil(Key);
-  end
-  else
-  begin
-    Result := Key;
-    Key := nil;
-  end;
-end;
-
-function TJclHashMap.FreeValue(var Value: TObject): TObject;
-begin
-  if FOwnsValues then
-  begin
-    Result := nil;
-    FreeAndNil(Value);
-  end
-  else
-  begin
-    Result := Value;
-    Value := nil;
-  end;
-end;
-
-function TJclHashMap.GetOwnsKeys: Boolean;
-begin
-  Result := FOwnsKeys;
-end;
-
-function TJclHashMap.GetOwnsValues: Boolean;
-begin
-  Result := FOwnsValues;
-end;
-
 function TJclHashMap.GetValue(Key: TObject): TObject;
 var
   I: Integer;
@@ -26040,11 +28422,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclHashMap.Hash(AObject: TObject): Integer;
-begin
-  Result := Integer(AObject);
 end;
 
 function TJclHashMap.IsEmpty: Boolean;
@@ -26087,11 +28464,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclHashMap.KeysEqual(A, B: TObject): Boolean;
-begin
-  Result := Integer(A) = Integer(B);
-end;
-
 function TJclHashMap.KeySet: IJclSet;
 var
   I, J: Integer;
@@ -26117,76 +28489,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-procedure TJclHashMap.MoveArray(var List: TJclHashEntryArray; FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := nil;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := nil;
-        List[FromIndex + I].Value := nil;
-      end;
-  end;
-end;
-{$ELSE}
-begin
-  if Count > 0 then
-  begin
-    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end;
-  end;
-end;
-{$ENDIF CLR}
 
 procedure TJclHashMap.Pack;
 var
@@ -26322,7 +28624,7 @@ begin
           Result := FreeValue(Bucket.Entries[I].Value);
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -26395,13 +28697,137 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclHashMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclHashMap.Create(FCapacity, False, False);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclHashMap.FreeKey(var Key: TObject): TObject;
+begin
+  if FOwnsKeys then
+  begin
+    Result := nil;
+    FreeAndNil(Key);
+  end
+  else
+  begin
+    Result := Key;
+    Key := nil;
+  end;
+end;
+
+function TJclHashMap.FreeValue(var Value: TObject): TObject;
+begin
+  if FOwnsValues then
+  begin
+    Result := nil;
+    FreeAndNil(Value);
+  end
+  else
+  begin
+    Result := Value;
+    Value := nil;
+  end;
+end;
+
+function TJclHashMap.GetOwnsKeys: Boolean;
+begin
+  Result := FOwnsKeys;
+end;
+
+function TJclHashMap.GetOwnsValues: Boolean;
+begin
+  Result := FOwnsValues;
+end;
+
+function TJclHashMap.Hash(AObject: TObject): Integer;
+begin
+  Result := Integer(AObject);
+end;
+
+function TJclHashMap.KeysEqual(A, B: TObject): Boolean;
+begin
+  Result := Integer(A) = Integer(B);
+end;
+
 function TJclHashMap.ValuesEqual(A, B: TObject): Boolean;
 begin
   Result := Integer(A) = Integer(B);
 end;
 
-
 {$IFDEF SUPPORTS_GENERICS}
+//=== { TJclBucket<TKey, TValue> } ==========================================
+
+procedure TJclBucket<TKey, TValue>.MoveArray(FromIndex, ToIndex, Count: Integer);
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        Entries[FromIndex + I].Key := Default(TKey);
+        Entries[FromIndex + I].Value := Default(TValue);
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := Default(TKey);
+        Entries[FromIndex + I].Value := Default(TValue);
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      Entries[ToIndex + I] := Entries[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := Default(TKey);
+        Entries[FromIndex + I].Value := Default(TValue);
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        Entries[FromIndex + I].Key := Default(TKey);
+        Entries[FromIndex + I].Value := Default(TValue);
+      end;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(Entries[FromIndex], Entries[ToIndex], Count * SizeOf(Entries[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(Entries[FromIndex], (ToIndex - FromIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(Entries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(Entries[0]), 0)
+      else
+        FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
 
 //=== { TJclHashMap<TKey, TValue> } ==========================================
 
@@ -26424,7 +28850,7 @@ end;
 procedure TJclHashMap<TKey, TValue>.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   I, J: Integer;
-  SelfBucket, NewBucket: TJclBucket<TKey, TValue>;
+  SelfBucket, NewBucket: TBucket;
   ADest: TJclHashMap<TKey, TValue>;
   AMap: IJclMap<TKey, TValue>;
 begin
@@ -26443,7 +28869,7 @@ begin
         SelfBucket := FBuckets[I];
         if SelfBucket <> nil then
         begin
-          NewBucket := TJclBucket<TKey, TValue>.Create;
+          NewBucket := TBucket.Create;
           SetLength(NewBucket.Entries, SelfBucket.Size);
           for J := 0 to SelfBucket.Size - 1 do
           begin
@@ -26479,7 +28905,7 @@ end;
 procedure TJclHashMap<TKey, TValue>.Clear;
 var
   I, J: Integer;
-  Bucket: TJclBucket<TKey, TValue>;
+  Bucket: TBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -26513,7 +28939,7 @@ end;
 function TJclHashMap<TKey, TValue>.ContainsKey(const Key: TKey): Boolean;
 var
   I: Integer;
-  Bucket: TJclBucket<TKey, TValue>;
+  Bucket: TBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -26540,7 +28966,7 @@ end;
 function TJclHashMap<TKey, TValue>.ContainsValue(const Value: TValue): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclBucket<TKey, TValue>;
+  Bucket: TBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -26567,11 +28993,10 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-
-function TJclHashMap<TKey, TValue>.Equals(const AMap: IJclMap<TKey, TValue>): Boolean;
+function TJclHashMap<TKey, TValue>.MapEquals(const AMap: IJclMap<TKey, TValue>): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclBucket<TKey, TValue>;
+  Bucket: TBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -26605,48 +29030,10 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclHashMap<TKey, TValue>.FreeKey(var Key: TKey): TKey;
-begin
-  if FOwnsKeys then
-  begin
-    Result := Default(TKey);
-    FreeAndNil(Key);
-  end
-  else
-  begin
-    Result := Key;
-    Key := Default(TKey);
-  end;
-end;
-
-function TJclHashMap<TKey, TValue>.FreeValue(var Value: TValue): TValue;
-begin
-  if FOwnsValues then
-  begin
-    Result := Default(TValue);
-    FreeAndNil(Value);
-  end
-  else
-  begin
-    Result := Value;
-    Value := Default(TValue);
-  end;
-end;
-
-function TJclHashMap<TKey, TValue>.GetOwnsKeys: Boolean;
-begin
-  Result := FOwnsKeys;
-end;
-
-function TJclHashMap<TKey, TValue>.GetOwnsValues: Boolean;
-begin
-  Result := FOwnsValues;
-end;
-
 function TJclHashMap<TKey, TValue>.GetValue(const Key: TKey): TValue;
 var
   I: Integer;
-  Bucket: TJclBucket<TKey, TValue>;
+  Bucket: TBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -26675,7 +29062,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-
 function TJclHashMap<TKey, TValue>.IsEmpty: Boolean;
 begin
   Result := FSize = 0;
@@ -26684,7 +29070,7 @@ end;
 function TJclHashMap<TKey, TValue>.KeyOfValue(const Value: TValue): TKey;
 var
   I, J: Integer;
-  Bucket: TJclBucket<TKey, TValue>;
+  Bucket: TBucket;
   Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -26716,11 +29102,10 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-
 function TJclHashMap<TKey, TValue>.KeySet: IJclSet<TKey>;
 var
   I, J: Integer;
-  Bucket: TJclBucket<TKey, TValue>;
+  Bucket: TBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -26743,80 +29128,10 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclHashMap<TKey, TValue>.MoveArray(var List: TJclHashEntryArray<TKey, TValue>; FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        List[FromIndex + I].Key := Default(TKey);
-        List[FromIndex + I].Value := Default(TValue);
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := Default(TKey);
-        List[FromIndex + I].Value := Default(TValue);
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        List[FromIndex + I].Key := Default(TKey);
-        List[FromIndex + I].Value := Default(TValue);
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        List[FromIndex + I].Key := Default(TKey);
-        List[FromIndex + I].Value := Default(TValue);
-      end;
-  end;
-end;
-{$ELSE}
-begin
-  if Count > 0 then
-  begin
-    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-    { Keep reference counting working }
-    if FromIndex < ToIndex then
-    begin
-      if (ToIndex - FromIndex) < Count then
-        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end
-    else
-    if FromIndex > ToIndex then
-    begin
-      if (FromIndex - ToIndex) < Count then
-        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
-      else
-        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
-    end;
-  end;
-end;
-{$ENDIF CLR}
-
 procedure TJclHashMap<TKey, TValue>.Pack;
 var
   I: Integer;
-  Bucket: TJclBucket<TKey, TValue>;
+  Bucket: TBucket;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -26875,7 +29190,7 @@ end;
 procedure TJclHashMap<TKey, TValue>.PutValue(const Key: TKey; const Value: TValue);
 var
   Index: Integer;
-  Bucket: TJclBucket<TKey, TValue>;
+  Bucket: TBucket;
   I: Integer;
 begin
   if ReadOnly then
@@ -26901,7 +29216,7 @@ begin
       end
       else
       begin
-        Bucket := TJclBucket<TKey, TValue>.Create;
+        Bucket := TBucket.Create;
         SetLength(Bucket.Entries, 1);
         FBuckets[Index] := Bucket;
       end;
@@ -26927,7 +29242,7 @@ end;
 
 function TJclHashMap<TKey, TValue>.Remove(const Key: TKey): TValue;
 var
-  Bucket: TJclBucket<TKey, TValue>;
+  Bucket: TBucket;
   I, NewCapacity: Integer;
 begin
   if ReadOnly then
@@ -26947,7 +29262,7 @@ begin
           Result := FreeValue(Bucket.Entries[I].Value);
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
           Dec(Bucket.Size);
           Dec(FSize);
           Break;
@@ -26997,7 +29312,7 @@ end;
 function TJclHashMap<TKey, TValue>.Values: IJclCollection<TValue>;
 var
   I, J: Integer;
-  Bucket: TJclBucket<TKey, TValue>;
+  Bucket: TBucket;
 begin
   {$IFDEF THREADSAFE}
   if FThreadSafe then
@@ -27020,16 +29335,53 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclHashMap<TKey, TValue>.FreeKey(var Key: TKey): TKey;
+begin
+  if FOwnsKeys then
+  begin
+    Result := Default(TKey);
+    FreeAndNil(Key);
+  end
+  else
+  begin
+    Result := Key;
+    Key := Default(TKey);
+  end;
+end;
 
+function TJclHashMap<TKey, TValue>.FreeValue(var Value: TValue): TValue;
+begin
+  if FOwnsValues then
+  begin
+    Result := Default(TValue);
+    FreeAndNil(Value);
+  end
+  else
+  begin
+    Result := Value;
+    Value := Default(TValue);
+  end;
+end;
+
+function TJclHashMap<TKey, TValue>.GetOwnsKeys: Boolean;
+begin
+  Result := FOwnsKeys;
+end;
+
+function TJclHashMap<TKey, TValue>.GetOwnsValues: Boolean;
+begin
+  Result := FOwnsValues;
+end;
 
 //=== { TJclHashMapE<TKey, TValue> } =========================================
 
-constructor TJclHashMapE<TKey, TValue>.Create(const AKeyEqualityComparer: IEqualityComparer<TKey>;
-  const AValueEqualityComparer: IEqualityComparer<TValue>; const AKeyComparer: IComparer<TKey>; ACapacity: Integer;
-  AOwnsValues: Boolean; AOwnsKeys: Boolean);
+constructor TJclHashMapE<TKey, TValue>.Create(const AKeyEqualityComparer: IJclEqualityComparer<TKey>;
+  const AKeyHashConverter: IJclHashConverter<TKey>; const AValueEqualityComparer: IJclEqualityComparer<TValue>;
+  const AKeyComparer: IJclComparer<TKey>; ACapacity: Integer; AOwnsValues: Boolean; AOwnsKeys: Boolean);
 begin
   inherited Create(ACapacity, AOwnsKeys, AOwnsValues);
   FKeyEqualityComparer := AKeyEqualityComparer;
+  FKeyHashConverter := AKeyHashConverter;
   FValueEqualityComparer := AValueEqualityComparer;
   FKeyComparer := AKeyComparer;
 end;
@@ -27043,6 +29395,7 @@ begin
   begin
     ADest := TJclHashMapE<TKey, TValue>(Dest);
     ADest.FKeyEqualityComparer := FKeyEqualityComparer;
+    ADest.FKeyHashConverter := FKeyHashConverter;
     ADest.FValueEqualityComparer := FValueEqualityComparer;
     ADest.FKeyComparer := FKeyComparer;
   end;
@@ -27050,17 +29403,17 @@ end;
 
 function TJclHashMapE<TKey, TValue>.CreateEmptyArrayList(ACapacity: Integer; AOwnsObjects: Boolean): IJclCollection<TValue>;
 begin
-  Result := TJclArrayListE<TValue>.Create(ValueEqualityComparer, ACapacity, AOwnsObjects);
+  Result := TArrayList.Create(ValueEqualityComparer, ACapacity, AOwnsObjects);
 end;
 
 function TJclHashMapE<TKey, TValue>.CreateEmptyArraySet(ACapacity: Integer; AOwnsObjects: Boolean): IJclSet<TKey>;
 begin
-  Result := TJclArraySetE<TKey>.Create(KeyComparer, ACapacity, AOwnsObjects);
+  Result := TArraySet.Create(KeyComparer, ACapacity, AOwnsObjects);
 end;
 
 function TJclHashMapE<TKey, TValue>.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclHashMapE<TKey, TValue>.Create(KeyEqualityComparer, ValueEqualityComparer,
+  Result := TJclHashMapE<TKey, TValue>.Create(KeyEqualityComparer, KeyHashConverter, ValueEqualityComparer,
     KeyComparer, FCapacity, False, False);
   AssignPropertiesTo(Result);
 end;
@@ -27069,21 +29422,21 @@ function TJclHashMapE<TKey, TValue>.Hash(const AKey: TKey): Integer;
 begin
   if KeyEqualityComparer = nil then
     raise EJclNoHashConverterError.Create;
-  Result := KeyEqualityComparer.GetHashCode(AKey);
+  Result := KeyHashConverter.Hash(AKey);
 end;
 
 function TJclHashMapE<TKey, TValue>.KeysEqual(const A, B: TKey): Boolean;
 begin
   if KeyEqualityComparer = nil then
     raise EJclNoEqualityComparerError.Create;
-  Result := KeyEqualityComparer.Equals(A, B);
+  Result := KeyEqualityComparer.ItemsEqual(A, B);
 end;
 
 function TJclHashMapE<TKey, TValue>.ValuesEqual(const A, B: TValue): Boolean;
 begin
   if ValueEqualityComparer = nil then
     raise EJclNoEqualityComparerError.Create;
-  Result := ValueEqualityComparer.Equals(A, B);
+  Result := ValueEqualityComparer.ItemsEqual(A, B);
 end;
 
 //=== { TJclHashMapF<TKey, TValue> } =========================================
@@ -27116,12 +29469,12 @@ end;
 
 function TJclHashMapF<TKey, TValue>.CreateEmptyArrayList(ACapacity: Integer; AOwnsObjects: Boolean): IJclCollection<TValue>;
 begin
-  Result := TJclArrayListF<TValue>.Create(ValueEqualityCompare, ACapacity, AOwnsObjects);
+  Result := TArrayList.Create(ValueEqualityCompare, ACapacity, AOwnsObjects);
 end;
 
 function TJclHashMapF<TKey, TValue>.CreateEmptyArraySet(ACapacity: Integer; AOwnsObjects: Boolean): IJclSet<TKey>;
 begin
-  Result := TJclArraySetF<TKey>.Create(KeyCompare, ACapacity, AOwnsObjects);
+  Result := TArraySet.Create(KeyCompare, ACapacity, AOwnsObjects);
 end;
 
 function TJclHashMapF<TKey, TValue>.CreateEmptyContainer: TJclAbstractContainerBase;
@@ -27156,12 +29509,12 @@ end;
 
 function TJclHashMapI<TKey, TValue>.CreateEmptyArrayList(ACapacity: Integer; AOwnsObjects: Boolean): IJclCollection<TValue>;
 begin
-  Result := TJclArrayListI<TValue>.Create(ACapacity, AOwnsObjects);
+  Result := TArrayList.Create(ACapacity, AOwnsObjects);
 end;
 
 function TJclHashMapI<TKey, TValue>.CreateEmptyArraySet(ACapacity: Integer; AOwnsObjects: Boolean): IJclSet<TKey>;
 begin
-  Result := TJclArraySetI<TKey>.Create(ACapacity, AOwnsObjects);
+  Result := TArraySet.Create(ACapacity, AOwnsObjects);
 end;
 
 function TJclHashMapI<TKey, TValue>.CreateEmptyContainer: TJclAbstractContainerBase;

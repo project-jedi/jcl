@@ -9,9 +9,9 @@ type
   PLOADED_IMAGE = ^LOADED_IMAGE;
   {$EXTERNALSYM PLOADED_IMAGE}
   _LOADED_IMAGE = record
-    ModuleName: PChar;
+    ModuleName: PAnsiChar;
     hFile: THandle;
-    MappedAddress: PAnsiChar;  // PUCHAR;
+    MappedAddress: PUCHAR;
     FileHeader: PImageNtHeaders;
     LastRvaSection: PImageSectionHeader;
     NumberOfSections: ULONG;
@@ -60,7 +60,7 @@ function GetImageUnusedHeaderBytes(const LoadedImage: LOADED_IMAGE;
 
 // line 285
 
-function MapAndLoad(ImageName, DllPath: PChar; var LoadedImage: LOADED_IMAGE;
+function MapAndLoad(ImageName, DllPath: PAnsiChar; var LoadedImage: LOADED_IMAGE;
   DotDll: BOOL; ReadOnly: BOOL): BOOL; stdcall;
 {$EXTERNALSYM MapAndLoad}
 
@@ -128,27 +128,120 @@ const
   UNDNAME_NO_SPECIAL_SYMS = ($4000); // Don't undecorate special names (v-table, vcall, vector xxx, metatype, etc)
   {$EXTERNALSYM UNDNAME_NO_SPECIAL_SYMS}
 
-function UnDecorateSymbolName(DecoratedName: {$IFDEF CLR}string{$ELSE}PAnsiChar{$ENDIF};
-  UnDecoratedName: {$IFDEF CLR}string{$ELSE}PAnsiChar{$ENDIF}; UndecoratedLength: DWORD; Flags: DWORD): DWORD; stdcall;
-  {$IFDEF CLR}external 'imagehlp.dll' name 'UnDecorateSymbolName';{$ENDIF}
-{$EXTERNALSYM UnDecorateSymbolName}
-
 // line 1342
 
 type
-  _IMAGEHLP_LINE = packed record
+  {$EXTERNALSYM SYM_TYPE}
+  SYM_TYPE = (
+    SymNone,
+    SymCoff,
+    SymCv,
+    SymPdb,
+    SymExport,
+    SymDeferred,
+    SymSym                  { .sym file }
+  );
+  TSymType = SYM_TYPE;
+
+  { symbol data structure }
+  {$EXTERNALSYM PImagehlpSymbolA}
+  PImagehlpSymbolA = ^TImagehlpSymbolA;
+  {$EXTERNALSYM _IMAGEHLP_SYMBOLA}
+  _IMAGEHLP_SYMBOLA = packed record
+    SizeOfStruct: DWORD;                                { set to sizeof(IMAGEHLP_SYMBOL) }
+    Address: DWORD;                                     { virtual address including dll base address }
+    Size: DWORD;                                        { estimated size of symbol, can be zero }
+    Flags: DWORD;                                       { info about the symbols, see the SYMF defines }
+    MaxNameLength: DWORD;                               { maximum size of symbol name in 'Name' }
+    Name: packed array[0..0] of AnsiChar;               { symbol name (null terminated string) }
+  end;
+  {$EXTERNALSYM IMAGEHLP_SYMBOLA}
+  IMAGEHLP_SYMBOLA = _IMAGEHLP_SYMBOLA;
+  {$EXTERNALSYM TImagehlpSymbolA}
+  TImagehlpSymbolA = _IMAGEHLP_SYMBOLA;
+
+  { symbol data structure }
+  {$EXTERNALSYM PImagehlpSymbolW}
+  PImagehlpSymbolW = ^TImagehlpSymbolW;
+  {$EXTERNALSYM _IMAGEHLP_SYMBOLW}
+  _IMAGEHLP_SYMBOLW = packed record
+    SizeOfStruct: DWORD;                                { set to sizeof(IMAGEHLP_SYMBOL) }
+    Address: DWORD;                                     { virtual address including dll base address }
+    Size: DWORD;                                        { estimated size of symbol, can be zero }
+    Flags: DWORD;                                       { info about the symbols, see the SYMF defines }
+    MaxNameLength: DWORD;                               { maximum size of symbol name in 'Name' }
+    Name: packed array[0..0] of WideChar;               { symbol name (null terminated string) }
+  end;
+  {$EXTERNALSYM IMAGEHLP_SYMBOLW}
+  IMAGEHLP_SYMBOLW = _IMAGEHLP_SYMBOLW;
+  {$EXTERNALSYM TImagehlpSymbolW}
+  TImagehlpSymbolW = _IMAGEHLP_SYMBOLW;
+
+  { module data structure }
+  {$EXTERNALSYM PImagehlpModuleA}
+  PImagehlpModuleA = ^TImagehlpModuleA;
+  {$EXTERNALSYM _IMAGEHLP_MODULEA}
+  _IMAGEHLP_MODULEA = record
+    SizeOfStruct: DWORD;                                { set to sizeof(IMAGEHLP_MODULE) }
+    BaseOfImage: DWORD;                                 { base load address of module }
+    ImageSize: DWORD;                                   { virtual size of the loaded module }
+    TimeDateStamp: DWORD;                               { date/time stamp from pe header }
+    CheckSum: DWORD;                                    { checksum from the pe header }
+    NumSyms: DWORD;                                     { number of symbols in the symbol table }
+    SymType: TSymType;                                  { type of symbols loaded }
+    ModuleName: packed array[0..31] of AnsiChar;        { module name }
+    ImageName: packed array[0..255] of AnsiChar;        { image name }
+    LoadedImageName: packed array[0..255] of AnsiChar;  { symbol file name }
+  end;
+  {$EXTERNALSYM IMAGEHLP_MODULEA}
+  IMAGEHLP_MODULEA = _IMAGEHLP_MODULEA;
+  {$EXTERNALSYM TImagehlpModuleA}
+  TImagehlpModuleA = _IMAGEHLP_MODULEA;
+
+  { module data structure }
+  {$EXTERNALSYM PImagehlpModuleW}
+  PImagehlpModuleW = ^TImagehlpModuleW;
+  {$EXTERNALSYM _IMAGEHLP_MODULEW}
+  _IMAGEHLP_MODULEW = record
+    SizeOfStruct: DWORD;                                { set to sizeof(IMAGEHLP_MODULE) }
+    BaseOfImage: DWORD;                                 { base load address of module }
+    ImageSize: DWORD;                                   { virtual size of the loaded module }
+    TimeDateStamp: DWORD;                               { date/time stamp from pe header }
+    CheckSum: DWORD;                                    { checksum from the pe header }
+    NumSyms: DWORD;                                     { number of symbols in the symbol table }
+    SymType: TSymType;                                  { type of symbols loaded }
+    ModuleName: packed array[0..31] of WideChar;        { module name }
+    ImageName: packed array[0..255] of WideChar;        { image name }
+    LoadedImageName: packed array[0..255] of WideChar;  { symbol file name }
+  end;
+  {$EXTERNALSYM IMAGEHLP_MODULEW}
+  IMAGEHLP_MODULEW = _IMAGEHLP_MODULEW;
+  {$EXTERNALSYM TImagehlpModuleW}
+  TImagehlpModuleW = _IMAGEHLP_MODULEW;
+
+  _IMAGEHLP_LINEA = packed record
     SizeOfStruct: DWORD;           // set to sizeof(IMAGEHLP_LINE)
     Key: Pointer;                  // internal
     LineNumber: DWORD;             // line number in file
-    FileName: PChar;               // full filename
+    FileName: PAnsiChar;           // full filename
     Address: DWORD;                // first instruction of line
   end;
+  IMAGEHLP_LINEA = _IMAGEHLP_LINEA;
+  PIMAGEHLP_LINEA = ^_IMAGEHLP_LINEA;
+  TImageHlpLineA = _IMAGEHLP_LINEA;
+  PImageHlpLineA = PIMAGEHLP_LINEA;
 
-  IMAGEHLP_LINE = _IMAGEHLP_LINE;
-  PIMAGEHLP_LINE = ^_IMAGEHLP_LINE;
-
-  TImageHlpLine = _IMAGEHLP_LINE;
-  PImageHlpLine = PIMAGEHLP_LINE;
+  _IMAGEHLP_LINEW = packed record
+    SizeOfStruct: DWORD;           // set to sizeof(IMAGEHLP_LINE)
+    Key: Pointer;                  // internal
+    LineNumber: DWORD;             // line number in file
+    FileName: PWideChar;           // full filename
+    Address: DWORD;                // first instruction of line
+  end;
+  IMAGEHLP_LINEW = _IMAGEHLP_LINEW;
+  PIMAGEHLP_LINEW = ^_IMAGEHLP_LINEW;
+  TImageHlpLineW = _IMAGEHLP_LINEW;
+  PImageHlpLineW = PIMAGEHLP_LINEW;
 
 // line 1475
 
@@ -158,15 +251,14 @@ type
 //
 
 const
-// defined in ImageHlp.pas
-//  SYMOPT_CASE_INSENSITIVE       = $00000001;
-//  {$EXTERNALSYM SYMOPT_CASE_INSENSITIVE}
-//  SYMOPT_UNDNAME                = $00000002;
-//  {$EXTERNALSYM SYMOPT_UNDNAME}
-//  SYMOPT_DEFERRED_LOADS         = $00000004;
-//  {$EXTERNALSYM SYMOPT_DEFERRED_LOADS}
-//  SYMOPT_NO_CPP                 = $00000008;
-//  {$EXTERNALSYM SYMOPT_NO_CPP}
+  SYMOPT_CASE_INSENSITIVE       = $00000001;
+  {$EXTERNALSYM SYMOPT_CASE_INSENSITIVE}
+  SYMOPT_UNDNAME                = $00000002;
+  {$EXTERNALSYM SYMOPT_UNDNAME}
+  SYMOPT_DEFERRED_LOADS         = $00000004;
+  {$EXTERNALSYM SYMOPT_DEFERRED_LOADS}
+  SYMOPT_NO_CPP                 = $00000008;
+  {$EXTERNALSYM SYMOPT_NO_CPP}
   SYMOPT_LOAD_LINES             = $00000010;
   {$EXTERNALSYM SYMOPT_LOAD_LINES}
   SYMOPT_OMAP_FIND_NEAREST      = $00000020;

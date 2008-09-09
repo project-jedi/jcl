@@ -29,12 +29,12 @@ begin
 end;
 
 function CreateMutex(lpMutexAttributes: PSecurityAttributes; bInitialOwner: DWORD; lpName: PChar): THandle; stdcall;
-  external kernel32 name 'CreateMutexA';
+  external kernel32 name 'CreateMutex' + AWSuffix;
 
 function GetVersionEx(var lpVersionInformation: TOSVersionInfoEx): BOOL; stdcall;
-  external kernel32 name 'GetVersionExA';
+  external kernel32 name 'GetVersionEx' + AWSuffix;
 function GetVersionEx(lpVersionInformation: POSVersionInfoEx): BOOL; stdcall;
-  external kernel32 name 'GetVersionExA';
+  external kernel32 name 'GetVersionEx' + AWSuffix;
 
 var
   _SetWaitableTimer: Pointer;
@@ -127,41 +127,41 @@ begin
 end;
 
 var
-  _SetVolumeMountPoint: Pointer;
+  _SetVolumeMountPointW: Pointer;
 
-function SetVolumeMountPoint;
+function SetVolumeMountPointW;
 begin
-  GetProcedureAddress(_SetVolumeMountPoint, kernel32, 'SetVolumeMountPointA');
+  GetProcedureAddress(_SetVolumeMountPointW, kernel32, 'SetVolumeMountPointW');
   asm
     mov esp, ebp
     pop ebp
-    jmp [_SetVolumeMountPoint]
+    jmp [_SetVolumeMountPointW]
   end;
 end;
 
 var
-  _DeleteVolumeMountPoint: Pointer;
+  _DeleteVolumeMountPointW: Pointer;
 
-function DeleteVolumeMountPoint;
+function DeleteVolumeMountPointW;
 begin
-  GetProcedureAddress(_DeleteVolumeMountPoint, kernel32, 'DeleteVolumeMountPointA');
+  GetProcedureAddress(_DeleteVolumeMountPointW, kernel32, 'DeleteVolumeMountPointW');
   asm
     mov esp, ebp
     pop ebp
-    jmp [_DeleteVolumeMountPoint]
+    jmp [_DeleteVolumeMountPointW]
   end;
 end;
 
 var
-  _GetVolumeNameForVolMountPoint: Pointer;
+  _GetVolumeNameForVolMountPointW: Pointer;
 
-function GetVolumeNameForVolumeMountPoint;
+function GetVolumeNameForVolumeMountPointW;
 begin
-  GetProcedureAddress(_GetVolumeNameForVolMountPoint, kernel32, 'GetVolumeNameForVolumeMountPointA');
+  GetProcedureAddress(_GetVolumeNameForVolMountPointW, kernel32, 'GetVolumeNameForVolumeMountPointW');
   asm
     mov esp, ebp
     pop ebp
-    jmp [_GetVolumeNameForVolMountPoint]
+    jmp [_GetVolumeNameForVolMountPointW]
   end;
 end;
 

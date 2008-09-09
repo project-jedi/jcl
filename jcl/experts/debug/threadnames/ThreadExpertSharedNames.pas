@@ -208,7 +208,7 @@ begin
       for I := Low(Threads) to High(Threads) do
         if Threads[I].ThreadID = ThreadID then
         begin
-          Result := Threads[I].ThreadName;
+          Result := string(Threads[I].ThreadName);
           Break;
         end;
   finally
@@ -243,7 +243,7 @@ begin
         try
           Threads[Slot].ProcessID := FProcessID;
           Threads[Slot].ThreadID := ThreadID;
-          Threads[Slot].ThreadName := ThreadName;
+          Threads[Slot].ThreadName := ShortString(ThreadName);
         finally
           FReadMutex.Release;
         end;
@@ -280,7 +280,7 @@ begin
         for I := Low(Threads) to High(Threads) do
           if Threads[I].ThreadID = ThreadID then
           begin
-            ThreadName := Threads[I].ThreadName;
+            ThreadName := string(Threads[I].ThreadName);
             Break;
           end;
     finally
@@ -325,7 +325,7 @@ begin
         begin
           FReadMutex.WaitForever;
           try
-            SetIdeDebuggerThreadName(Threads[I].ThreadID, Threads[I].ThreadName);
+            SetIdeDebuggerThreadName(Threads[I].ThreadID, string(Threads[I].ThreadName));
           finally
             FReadMutex.Release;
           end;

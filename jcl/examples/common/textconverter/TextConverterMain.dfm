@@ -3,7 +3,7 @@ object Form1: TForm1
   Top = 259
   BorderStyle = bsDialog
   Caption = 'Form1'
-  ClientHeight = 136
+  ClientHeight = 173
   ClientWidth = 375
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -94,6 +94,33 @@ object Form1: TForm1
     Caption = 'UTF16 --> UTF16'
     Enabled = False
     TabOrder = 8
+  end
+  object ButtonAutoToAnsi: TButton
+    Left = 16
+    Top = 136
+    Width = 105
+    Height = 25
+    Caption = 'Auto --> Ansi'
+    TabOrder = 9
+    OnClick = ButtonAutoToAnsiClick
+  end
+  object ButtonAutoToUTF8: TButton
+    Left = 136
+    Top = 136
+    Width = 105
+    Height = 25
+    Caption = 'Auto --> UTF8'
+    TabOrder = 10
+    OnClick = ButtonAutoToUTF8Click
+  end
+  object ButtonAutoToUTF16: TButton
+    Left = 256
+    Top = 136
+    Width = 105
+    Height = 25
+    Caption = 'Auto --> UTF16'
+    TabOrder = 11
+    OnClick = ButtonAutoToUTF16Click
   end
   object OpenDialogTxt: TOpenDialog
     DefaultExt = 'txt'

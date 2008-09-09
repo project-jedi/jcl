@@ -91,10 +91,32 @@ const
   nfAnsiUnicodePair = $02;
 
 function PascalizeName(const Name: string): string;
+  function CharIsValidLeadingChar(const C: Char): Boolean;
+  begin
+    case C of
+      'A'..'Z',
+      'a'..'z':
+        Result := True;
+    else
+      Result := False;
+    end;
+  end;
+  function CharIsStripLeadingChar(const C: Char): Boolean;
+  begin
+    Result := C = '_';
+  end;
+  function CharIsValid(const C: Char): Boolean;
+  begin
+    case C of
+      'A'..'Z',
+      'a'..'z',
+      '0'..'9':
+        Result := True;
+    else
+      Result := False;
+    end;
+  end;
 const
-  ValidLeadingChars = ['A'..'Z', 'a'..'z'];
-  StripLeadingChars = ['_'];
-  ValidChars = ValidLeadingChars + ['0'..'9'];
   InvalidCharReplacement = '_';
   StopChar = '@';
 var
@@ -108,14 +130,14 @@ begin
     C := Name[I];
     if I = 1 then
     begin
-      if C in ValidLeadingChars then
+      if CharIsValidLeadingChar(C) then
         Result := Result + C
       else
-      if not (C in StripLeadingChars) then
+      if not CharIsStripLeadingChar(C) then
         Break; // probably MS C++ or Borland name decoration
     end else
     begin
-      if C in ValidChars then
+      if CharIsValid(C) then
         Result := Result + C
       else
       if C = StopChar then
@@ -140,7 +162,7 @@ const
   AnsiUnicodeSuffixes = ['A', 'W'];
 var
   L1, L2: Integer;
-  Suffix1, Suffix2: Char;
+  Suffix1, Suffix2: AnsiChar;
 begin
   Result := False;
   L1 := Length(Name1);
@@ -156,7 +178,7 @@ end;
 
 function IsDecoratedName(const Name: string): Boolean;
 begin
-  Result := (Length(Name) > 1) and (Name[1] in ['?', '@']);
+  Result := (Length(Name) > 1) and (Name[1] = '?') and (Name[1] = '@');
 end;
 
 

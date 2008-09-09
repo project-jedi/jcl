@@ -1,9 +1,9 @@
 --------------------------------------------------------------------------------
 
 JEDI Code Library
-Unstable 1.102
-Build 3072
-29-July-2008
+Unstable 1.103
+Build 3110
+25-August-2008
 
 --------------------------------------------------------------------------------
 
@@ -22,8 +22,8 @@ Getting involved in JCL development
 --------------------------------------------------------------------------------
 
 About this release
-JCL release 1.102 provides an updated support for all targets (including CodeGear
-RAD Studio 2007).
+JCL release 1.103 provides an updated support for all targets
+(including Delphi 2009 and C++Builder 2009).
 
 As always, multiple bugs have been fixed; for detailed change logs, use the
 facilities of our Subversion repository at Sourceforge.net
@@ -32,7 +32,8 @@ http://sourceforge.net/projects/jcl/, see below.
 Head changes:
 
  - security update to BZip2 1.0.5;
- - Streams compatible with Delphi.net;
+ - Streams compatible with Delphi.net, added new stream classes to encode/decode
+   strings;
  - container rework (thread safe implementation, new contained types: WideString,
    Single, Double, Extended..., compatibility with iterators, splitted to a
    dedicated package);
@@ -50,12 +51,12 @@ Important:
 
  - Note that the package naming has changed: the same package name is used by
    all versions of the compiler supporting suffixes (C++Builder 6, Delphi 6,
-   Delphi 7, C#Builder 1, Delphi 8, Delphi 2005, BDS 2006 and RAD Studio 2007); a different
-   suffix is added for each target to the BPL file name (for BDS 2006, the
-   library file is named jcl100.bpl). The installer tries to remove old
-   packages. 3rd party packages requiring old DJcl* resp. CJcl* packages need to
-   be changed to accomodate the new naming scheme or they will cause conflicts
-   in the IDE at load time.
+   Delphi 7, C#Builder 1, Delphi 8, Delphi 2005, BDS 2006, RAD Studio 2007,
+   Delphi 2009 and C++Builder 2009); a different suffix is added for each target
+   to the BPL file name (for Delphi 2009, the library file is named jcl120.bpl).
+   The installer tries to remove old packages. 3rd party packages requiring old
+   DJcl* resp. CJcl* packages need to be changed to accomodate the new naming
+   scheme or they will cause conflicts in the IDE at load time.
 
  - DCP files are now created in the lib\target subdirectory of the JCL
    installation. 3rd party packages requiring JCL packages need to have this
@@ -75,9 +76,10 @@ informations can be linked into binaries to become JCL debug data or be
 converted to .jdbg files. Once linked MAP files could be deleted. These options
 are subnodes of the "Packages" node.
 
-  For BDS 2006 and RAD Studio 2007, the compiler introduced a new option to make
-  the same packages available in C++, by checking the "Dual packages" option of
-  the "Packages" node, you will be able to call functions of the JCL from C++ code.
+  For BDS 2006, RAD Studio 2007 and C++Builder 2009, the compiler introduced
+a new option to make the same packages available in C++, by checking the
+"Dual packages" option of the "Packages" node, you will be able to call functions
+of the JCL from C++ code.
 
 .net Framework support:
 
@@ -93,18 +95,19 @@ Only runtime support:
  - Kylix 3 (cf Installation notes)
 
 Only design-time support (only experts):
- - C#Builder 1 (cf Installation notes).
+ - C#Builder 1 (cf Installation notes);
  - Delphi 8.net (cf Installation notes).
 
 Both supports (run time and design time):
- - Delphi version 5, 6, 7.
- - C++Builder version 5 & 6.
- - Delphi 2005 (Delphi for Win32 and Delphi.net personalities).
+ - Delphi version 5, 6, 7;
+ - C++Builder version 5 & 6;
+ - Delphi 2005 (Delphi for Win32 and Delphi.net personalities);
  - Borland Developer Studio 2006 (Delphi for Win32, C++Builder for Win32,
-   Delphi.net and C#Builder personalities).
- - Turbo Delphi (explorer and professional - cf Installation notes).
+   Delphi.net and C#Builder personalities);
+ - Turbo Delphi (explorer and professional - cf Installation notes);
  - CodeGear RAD Studio 2007 (Delphi for Win32, C++Builder for Win32 and Delphi.net
-   personalities).
+   personalities);
+ - CodeGear Delphi 2009 and C++Builder 2009.
 
 --------------------------------------------------------------------------------
 
@@ -172,19 +175,20 @@ included file.
 For each tool you want to install the JCL in, repeat the following steps:
 
 1. Open and edit included file to customize options:
- - For Kylix 3 (Delphi): source\jclkd3.inc
- - For Kylix 3 (C++Builder): source\jclkc3.inc
- - For C++Builder 5: source\jclc5.inc
- - For C++Builder 6: source\jclc6.inc
- - For Delphi 5: source\jcld5.inc
- - For Delphi 6: source\jcld6.inc
- - For Delphi 7: source\jcld7.inc
- - For Delphi 2005: source\jcld9.inc
- - For Delphi.net 2005: source\jcld9.net.inc
- - For BDS 2006 (Delphi and C++Builder): source\jcld10.inc
- - For Delphi.net 2006: source\jcld10.net.inc
- - For CodeGear RAD Studio 2007 (Delphi for Win32 and C++Builder): source\jcld11.inc
- - for Delphi.net 2007: source\jcld11.net.inc
+ - For Kylix 3 (Delphi): source\include\jclkd3.inc
+ - For Kylix 3 (C++Builder): source\include\jclkc3.inc
+ - For C++Builder 5: source\include\jclc5.inc
+ - For C++Builder 6: source\include\jclc6.inc
+ - For Delphi 5: source\include\jcld5.inc
+ - For Delphi 6: source\include\jcld6.inc
+ - For Delphi 7: source\include\jcld7.inc
+ - For Delphi 2005: source\include\jcld9.inc
+ - For Delphi.net 2005: source\include\jcld9.net.inc
+ - For BDS 2006 (Delphi and C++Builder): source\include\jcld10.inc
+ - For Delphi.net 2006: source\include\jcld10.net.inc
+ - For CodeGear Delphi 2007 for Win32 and C++Builder 2007: source\include\jcld11.inc
+ - For Delphi.net 2007: source\include\jcld11.net.inc
+ - For Delphi 2009 and C++Builder 2009: source\include\include\jcld12.inc
 
 2. In the IDE, open and compile package Jcl.dpk (or Jcl.bpk for C++Builder)
 located in a subdirectory of the "packages" directory matching your version of

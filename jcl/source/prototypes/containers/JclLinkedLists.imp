@@ -36,7 +36,7 @@ begin
   Result := SELFCLASSNAME.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
-function SELFCLASSNAME.Equals(const AIterator: ITRINTERFACENAME): Boolean;
+function SELFCLASSNAME.IteratorEquals(const AIterator: ITRINTERFACENAME): Boolean;
 var
   Obj: TObject;
   ItrObj: SELFCLASSNAME;
@@ -411,7 +411,6 @@ begin
   {$JPPEXPANDMACRO READEND}
 end;
 
-{$JPPEXPANDMACRO CREATEEMPTYCONTAINER}
 function SELFCLASSNAME.Delete(Index: Integer): TYPENAME;
 var
   Current: ITEMCLASSNAME;
@@ -447,7 +446,7 @@ begin
   {$JPPEXPANDMACRO WRITEEND}
 end;
 
-function SELFCLASSNAME.Equals(const ACollection: COLLECTIONINTERFACENAME): Boolean;
+function SELFCLASSNAME.CollectionEquals(const ACollection: COLLECTIONINTERFACENAME): Boolean;
 var
   It, ItSelf: ITRINTERFACENAME;
 begin

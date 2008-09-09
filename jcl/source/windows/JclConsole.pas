@@ -1184,12 +1184,12 @@ end;
 
 function TJclScreenCharacter.GetCharacter: Char;
 begin
-  Result := FCharInfo.AsciiChar;
+  Result := Char(FCharInfo.AsciiChar);
 end;
 
 procedure TJclScreenCharacter.SetCharacter(const Value: Char);
 begin
-  FCharInfo.AsciiChar := Value;
+  FCharInfo.AsciiChar := AnsiChar(Value);
 end;
 
 function TJclScreenCharacter.GetTextAttribute: Word;

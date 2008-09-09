@@ -7,7 +7,6 @@ begin
   FMap := AMap;
 end;
 
-{$JPPEXPANDMACRO CONSTRUCTORADDITIONAL}
 destructor SELFCLASSNAME.Destroy;
 begin
   FMap := nil;
@@ -42,7 +41,7 @@ procedure SELFCLASSNAME.AssignDataTo(Dest: TJclAbstractContainerBase);
 begin
   inherited AssignDataTo(Dest);
   if Dest is SELFCLASSNAME then
-    SELFCLASSNAME(Dest).FMap := (FMap as IJclIntfCloneable).Clone as MAPINTERFACENAME;
+    SELFCLASSNAME(Dest).FMap := (FMap as IJclIntfCloneable).IntfClone as MAPINTERFACENAME;
 end;
 
 procedure SELFCLASSNAME.Clear;
@@ -70,8 +69,7 @@ begin
   {$JPPEXPANDMACRO DELEGATEREADEND(FMap)}
 end;
 
-{$JPPEXPANDMACRO CREATEEMPTYCONTAINER}
-function SELFCLASSNAME.Equals(const ACollection: COLLECTIONINTERFACENAME): Boolean;
+function SELFCLASSNAME.CollectionEquals(const ACollection: COLLECTIONINTERFACENAME): Boolean;
 var
   It, ItMap: ITRINTERFACENAME;
 begin
@@ -98,7 +96,6 @@ begin
   Result := FMap.KeySet.First;
 end;
 
-{$JPPEXPANDMACRO FREEITEM}
 function SELFCLASSNAME.GetAutoPackParameter: Integer;
 begin
   Result := (FMap as IJclPackable).GetAutoPackParameter;
@@ -131,8 +128,6 @@ begin
 end;
 {$ENDIF SUPPORTS_FOR_IN}
 
-{$JPPEXPANDMACRO GETOWNSITEMS}
-
 function SELFCLASSNAME.GetReadOnly: Boolean;
 begin
   Result := FMap.ReadOnly;
@@ -153,7 +148,6 @@ begin
   Result := FMap.ThreadSafe;
 end;
 
-{$JPPEXPANDMACRO GETTERADDITIONAL}
 procedure SELFCLASSNAME.Intersect(const ACollection: COLLECTIONINTERFACENAME);
 begin
   RetainAll(ACollection);
@@ -257,7 +251,6 @@ begin
   FMap.ThreadSafe := Value;
 end;
 
-{$JPPEXPANDMACRO SETTERADDITIONAL}
 function SELFCLASSNAME.Size: Integer;
 begin
   Result := FMap.Size;

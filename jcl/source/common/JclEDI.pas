@@ -86,7 +86,9 @@ var
 {$ENDIF ENABLE_EDI_DEBUGGING}
 
 type
+  {$M+}
   TEDIObject = class(TObject); // Base EDI Object
+  {$M-}
   TEDIObjectArray = array of TEDIObject;
 
   EJclEDIError = class(EJclError)

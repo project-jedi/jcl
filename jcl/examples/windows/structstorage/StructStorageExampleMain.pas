@@ -525,10 +525,10 @@ begin
       cbSize := sizeof(TMsgBoxParamsA);
       hwndOwner := Handle;
       hInstance := SysInit.hInstance;
-      lpszText := PChar(SAboutMsg);
-      lpszCaption := PChar(SAboutCaption);
+      lpszText := PAnsiChar(AnsiString(SAboutMsg));
+      lpszCaption := PAnsiChar(AnsiString(SAboutCaption));
       dwStyle := MB_OK or MB_USERICON;
-      lpszIcon := PChar('MAINICON');
+      lpszIcon := PAnsiChar('MAINICON');
       dwContextHelpId := 0;
       lpfnMsgBoxCallback := nil;
       dwLanguageId := GetUserDefaultLangID;

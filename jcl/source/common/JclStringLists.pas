@@ -499,15 +499,15 @@ begin
         vtInteger:
           Add(IntToStr(VInteger));
         vtBoolean:
-          Add(BoolToStr[VBoolean]);
+          Add(string(BoolToStr[VBoolean]));
         vtChar:
-          Add(VChar);
+          Add(string(AnsiString(VChar)));
         vtExtended:
           Add(FloatToStr(VExtended^));
         vtString:
-          Add(VString^);
+          Add(string(VString^));
         vtPChar:
-          Add(VPChar);
+          Add(string(AnsiString(VPChar)));
         vtObject:
           Add(VObject.ClassName);
         vtClass:
@@ -579,10 +579,10 @@ begin
   L := Length(AText);
   while I <= L do
   begin
-    while (I <= L) and (AText[I] in ADelims) do
+    while (I <= L) and (AnsiChar(AText[I]) in ADelims) do
       Inc(I);
     X := I;
-    while (I <= L) and not (AText[I] in ADelims) do
+    while (I <= L) and not (AnsiChar(AText[I]) in ADelims) do
       Inc(I);
     if X <> I then
       Add(Copy(AText, X, I - X));
@@ -1349,7 +1349,7 @@ begin
   for I := 1 to ParamCount do
   begin
     S := ParamStr(I);
-    if S[1] in ['-', '/'] then
+    if (S[1] = '-') or (S[1] = '/') then
       {$IFDEF CLR}Borland.Delphi.{$ENDIF}System.Delete(S, 1, 1);
     Add(S);
   end;

@@ -291,12 +291,12 @@ begin
   Map.PutValue('MyKey3', 'MyString3');
   It := Map.KeySet.First;
   while It.HasNext do
-    memResult.Items.Add(It.Next);
+    memResult.Items.Add(string(It.Next));
   It := Map.Values.First;
   while It.HasNext do
-    memResult.Items.Add(It.Next);
+    memResult.Items.Add(string(It.Next));
   Map.PutValue('MyKey2', 'AnotherString2');
-  memResult.Items.Add(Map.GetValue('MyKey2'));
+  memResult.Items.Add(string(Map.GetValue('MyKey2')));
   memResult.Items.Add('--------------------------------------------------------');
 end;
 
@@ -337,7 +337,7 @@ begin
     memResult.Items.Add(IntToStr(MyObject.Int) + ' ' + MyObject.Str);
     It := Map.KeySet.First;
     while It.HasNext do
-      memResult.Items.Add(It.Next);
+      memResult.Items.Add(string(It.Next));
     memResult.Items.Add('--------------------------------------------------------');
   finally
     MyObject.Free;
@@ -378,7 +378,7 @@ begin
   MySet.Add('MyString');
   It := MySet.First;
   while It.HasNext do
-    memResult.Items.Add(It.Next);
+    memResult.Items.Add(string(It.Next));
   memResult.Items.Add(IntToStr(MySet.Size));
   memResult.Items.Add('--------------------------------------------------------');
 end;
@@ -406,14 +406,14 @@ var
 begin
   MySet := TJclAnsiStrArraySet.Create(DefaultContainerCapacity);
   for I := 1 to 8 do
-    MySet.Add(IntToStr(I));
+    MySet.Add(AnsiString(IntToStr(I)));
   for I := 8 downto 1 do
-    MySet.Add(IntToStr(I));
+    MySet.Add(AnsiString(IntToStr(I)));
   MySet.Add('MyString');
   MySet.Add('MyString');
   It := MySet.First;
   while It.HasNext do
-    memResult.Items.Add(It.Next);
+    memResult.Items.Add(string(It.Next));
   memResult.Items.Add(IntToStr(MySet.Size));
   memResult.Items.Add('--------------------------------------------------------');
 end;

@@ -205,8 +205,8 @@ var
   BuildOK, Succ: Boolean;
   ProjOptions: IOTAProjectOptions;
   SaveMapFile: Variant;
-  OutputDirectory, ProjectFileName, MapFileName, ExecutableFileName: string;
-  ProjectName: string;
+  ProjectName, OutputDirectory: string;
+  ProjectFileName, MapFileName, ExecutableFileName: TFileName;
 begin
   try
     JclDisablePostCompilationProcess := True;

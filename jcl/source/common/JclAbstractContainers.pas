@@ -27,7 +27,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                       $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -46,7 +46,7 @@ uses
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
-  SysUtils, Classes,
+  Classes,
   JclBase, JclContainerIntf, JclSynch, JclSysUtils, JclAnsiStrings;
 
 type
@@ -109,10 +109,8 @@ type
     procedure SetThreadSafe(Value: Boolean); virtual;
     { IJclCloneable }
     function ObjectClone: TObject;
-    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IntfClone: IInterface;
-    function IJclIntfCloneable.Clone = IntfClone;
     // IJclGrowable is not in interface list because some descendants won't use this code
     { IJclGrowable }
     function CalcGrowCapacity(ACapacity, ASize: Integer): Integer; virtual;
@@ -159,10 +157,8 @@ type
     function GetIteratorReference: TObject;
     { IJclCloneable }
     function ObjectClone: TObject;
-    function IJclCloneable.Clone = ObjectClone;
     { IJclIntfCloneable }
     function IntfClone: IInterface;
-    function IJclIntfCloneable.Clone = IntfClone;
   public
     constructor Create(AValid: Boolean);
     property Valid: Boolean read FValid write FValid;
@@ -176,10 +172,6 @@ type
     FHashConvert: TIntfHashConvert;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     function FreeObject(var AInterface: IInterface): IInterface;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
     { IJclIntfEqualityComparer }
     function GetEqualityCompare: TIntfEqualityCompare; virtual;
     procedure SetEqualityCompare(Value: TIntfEqualityCompare); virtual;
@@ -203,10 +195,6 @@ type
   protected
     FCaseSensitive: Boolean;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
     { IJclStrContainer }
     function GetCaseSensitive: Boolean; virtual;
     procedure SetCaseSensitive(Value: Boolean); virtual;
@@ -224,10 +212,6 @@ type
     FHashConvert: TAnsiStrHashConvert;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     function FreeString(var AString: AnsiString): AnsiString;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
     { IJclAnsiStrContainer }
     function GetEncoding: TJclAnsiStrEncoding; virtual;
     procedure SetEncoding(Value: TJclAnsiStrEncoding); virtual;
@@ -260,10 +244,6 @@ type
     FHashConvert: TWideStrHashConvert;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     function FreeString(var AString: WideString): WideString;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
     { IJclWideStrContainer }
     function GetEncoding: TJclWideStrEncoding; virtual;
     procedure SetEncoding(Value: TJclWideStrEncoding); virtual;
@@ -286,6 +266,35 @@ type
     property HashConvert: TWideStrHashConvert read GetHashConvert write SetHashConvert;
   end;
 
+  {$IFDEF SUPPORTS_UNICODE_STRING}
+  TJclUnicodeStrAbstractContainer = class(TJclStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclCloneable, IJclIntfCloneable, IJclContainer, IJclStrContainer, IJclUnicodeStrContainer,
+    IJclUnicodeStrEqualityComparer, IJclUnicodeStrComparer, IJclUnicodeStrHashConverter)
+  protected
+    FEqualityCompare: TUnicodeStrEqualityCompare;
+    FCompare: TUnicodeStrCompare;
+    FHashConvert: TUnicodeStrHashConvert;
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+    function FreeString(var AString: UnicodeString): UnicodeString;
+    { IJclUnicodeStrEqualityComparer }
+    function GetEqualityCompare: TUnicodeStrEqualityCompare; virtual;
+    procedure SetEqualityCompare(Value: TUnicodeStrEqualityCompare); virtual;
+    function ItemsEqual(const A, B: UnicodeString): Boolean; virtual;
+    { IJclUnicodeStrComparer }
+    function GetCompare: TUnicodeStrCompare; virtual;
+    procedure SetCompare(Value: TUnicodeStrCompare); virtual;
+    function ItemsCompare(const A, B: UnicodeString): Integer; virtual;
+    { IJclUnicodeStrHashConverter }
+    function GetHashConvert: TUnicodeStrHashConvert; virtual;
+    procedure SetHashConvert(Value: TUnicodeStrHashConvert); virtual;
+    function Hash(const AString: UnicodeString): Integer; virtual;
+  public
+    property EqualityCompare: TUnicodeStrEqualityCompare read GetEqualityCompare write SetEqualityCompare;
+    property Compare: TUnicodeStrCompare read GetCompare write SetCompare;
+    property HashConvert: TUnicodeStrHashConvert read GetHashConvert write SetHashConvert;
+  end;
+  {$ENDIF SUPPORTS_UNICODE_STRING}
+
   TJclSingleAbstractContainer = class(TJclAbstractContainerBase, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclCloneable, IJclIntfCloneable, IJclContainer, IJclSingleContainer, IJclSingleEqualityComparer,
     IJclSingleComparer, IJclSingleHashConverter)
@@ -296,10 +305,6 @@ type
     FHashConvert: TSingleHashConvert;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     function FreeSingle(var AValue: Single): Single;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
     { IJclSingleEqualityComparer }
     function GetEqualityCompare: TSingleEqualityCompare; virtual;
     procedure SetEqualityCompare(Value: TSingleEqualityCompare); virtual;
@@ -332,10 +337,6 @@ type
     FHashConvert: TDoubleHashConvert;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     function FreeDouble(var AValue: Double): Double;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
     { IJclDoubleEqualityComparer }
     function GetEqualityCompare: TDoubleEqualityCompare; virtual;
     procedure SetEqualityCompare(Value: TDoubleEqualityCompare); virtual;
@@ -368,10 +369,6 @@ type
     FHashConvert: TExtendedHashConvert;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     function FreeExtended(var AValue: Extended): Extended;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
     { IJclExtendedEqualityComparer }
     function GetEqualityCompare: TExtendedEqualityCompare; virtual;
     procedure SetEqualityCompare(Value: TExtendedEqualityCompare); virtual;
@@ -403,10 +400,6 @@ type
     FHashConvert: TIntegerHashConvert;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     function FreeInteger(var AValue: Integer): Integer;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
     { IJclIntegerEqualityComparer }
     function GetEqualityCompare: TIntegerEqualityCompare; virtual;
     procedure SetEqualityCompare(Value: TIntegerEqualityCompare); virtual;
@@ -434,10 +427,6 @@ type
     FHashConvert: TCardinalHashConvert;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     function FreeCardinal(var AValue: Cardinal): Cardinal;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
     { IJclIntegerEqualityComparer }
     function GetEqualityCompare: TCardinalEqualityCompare; virtual;
     procedure SetEqualityCompare(Value: TCardinalEqualityCompare); virtual;
@@ -465,10 +454,6 @@ type
     FHashConvert: TInt64HashConvert;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     function FreeInt64(var AValue: Int64): Int64;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
     { IJclInt64EqualityComparer }
     function GetEqualityCompare: TInt64EqualityCompare; virtual;
     procedure SetEqualityCompare(Value: TInt64EqualityCompare); virtual;
@@ -496,10 +481,6 @@ type
     FHashConvert: TPtrHashConvert;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     function FreePointer(var APtr: Pointer): Pointer;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
     { IJclPtrEqualityComparer }
     function GetEqualityCompare: TPtrEqualityCompare; virtual;
     procedure SetEqualityCompare(Value: TPtrEqualityCompare); virtual;
@@ -528,10 +509,6 @@ type
     FCompare: TCompare;
     FHashConvert: THashConvert;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
     { IJclEqualityComparer }
     function GetEqualityCompare: TEqualityCompare; virtual;
     procedure SetEqualityCompare(Value: TEqualityCompare); virtual;
@@ -565,10 +542,6 @@ type
     FCompare: TCompare<T>;
     FHashConvert: THashConvert<T>;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
     { IJclEqualityComparer<T> }
     function GetEqualityCompare: TEqualityCompare<T>; virtual;
     procedure SetEqualityCompare(Value: TEqualityCompare<T>); virtual;
@@ -598,17 +571,13 @@ type
     IJclStrContainer, IJclAnsiStrContainer, IJclAnsiStrFlatContainer, IJclAnsiStrCollection,
     IJclAnsiStrEqualityComparer, IJclAnsiStrComparer)
   protected
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
     { IJclAnsiStrCollection }
     function Add(const AString: AnsiString): Boolean; virtual; abstract;
     function AddAll(const ACollection: IJclAnsiStrCollection): Boolean; virtual; abstract;
     procedure Clear; virtual; abstract;
     function Contains(const AString: AnsiString): Boolean; virtual; abstract;
     function ContainsAll(const ACollection: IJclAnsiStrCollection): Boolean; virtual; abstract;
-    function Equals(const ACollection: IJclAnsiStrCollection): Boolean; virtual; abstract;
+    function CollectionEquals(const ACollection: IJclAnsiStrCollection): Boolean; virtual; abstract;
     function First: IJclAnsiStrIterator; virtual; abstract;
     function IsEmpty: Boolean; virtual; abstract;
     function Last: IJclAnsiStrIterator; virtual; abstract;
@@ -620,11 +589,11 @@ type
     function GetEnumerator: IJclAnsistrIterator; virtual; abstract;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclAnsiStrFlatContainer }
-    procedure LoadFromStrings(Strings: TStrings);
-    procedure SaveToStrings(Strings: TStrings);
-    procedure AppendToStrings(Strings: TStrings);
-    procedure AppendFromStrings(Strings: TStrings);
-    function GetAsStrings: TStrings;
+    procedure LoadFromStrings(Strings: TAnsiStrings);
+    procedure SaveToStrings(Strings: TAnsiStrings);
+    procedure AppendToStrings(Strings: TAnsiStrings);
+    procedure AppendFromStrings(Strings: TAnsiStrings);
+    function GetAsStrings: TAnsiStrings;
     function GetAsDelimited(const Separator: AnsiString = AnsiLineBreak): AnsiString;
     procedure AppendDelimited(const AString: AnsiString; const Separator: AnsiString = AnsiLineBreak);
     procedure LoadDelimited(const AString: AnsiString; const Separator: AnsiString = AnsiLineBreak);
@@ -635,17 +604,13 @@ type
     IJclStrContainer, IJclWideStrContainer, IJclWideStrFlatContainer, IJclWideStrCollection,
     IJclWideStrEqualityComparer, IJclWideStrComparer)
   protected
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
     { IJclWideStrCollection }
     function Add(const AString: WideString): Boolean; virtual; abstract;
     function AddAll(const ACollection: IJclWideStrCollection): Boolean; virtual; abstract;
     procedure Clear; virtual; abstract;
     function Contains(const AString: WideString): Boolean; virtual; abstract;
     function ContainsAll(const ACollection: IJclWideStrCollection): Boolean; virtual; abstract;
-    function Equals(const ACollection: IJclWideStrCollection): Boolean; virtual; abstract;
+    function CollectionEquals(const ACollection: IJclWideStrCollection): Boolean; virtual; abstract;
     function First: IJclWideStrIterator; virtual; abstract;
     function IsEmpty: Boolean; virtual; abstract;
     function Last: IJclWideStrIterator; virtual; abstract;
@@ -659,6 +624,33 @@ type
     { IJclWideStrFlatContainer }
   end;
 
+  {$IFDEF SUPPORTS_UNICODE_STRING}
+  TJclUnicodeStrAbstractCollection = class(TJclUnicodeStrAbstractContainer,
+    {$IFDEF THREADSAFE}IJclLockable,{$ENDIF THREADSAFE} IJclCloneable, IJclIntfCloneable, IJclContainer,
+    IJclStrContainer, IJclUnicodeStrContainer, IJclUnicodeStrFlatContainer, IJclUnicodeStrCollection,
+    IJclUnicodeStrEqualityComparer, IJclUnicodeStrComparer)
+  protected
+    { IJclUnicodeStrCollection }
+    function Add(const AString: UnicodeString): Boolean; virtual; abstract;
+    function AddAll(const ACollection: IJclUnicodeStrCollection): Boolean; virtual; abstract;
+    procedure Clear; virtual; abstract;
+    function Contains(const AString: UnicodeString): Boolean; virtual; abstract;
+    function ContainsAll(const ACollection: IJclUnicodeStrCollection): Boolean; virtual; abstract;
+    function CollectionEquals(const ACollection: IJclUnicodeStrCollection): Boolean; virtual; abstract;
+    function First: IJclUnicodeStrIterator; virtual; abstract;
+    function IsEmpty: Boolean; virtual; abstract;
+    function Last: IJclUnicodeStrIterator; virtual; abstract;
+    function Remove(const AString: UnicodeString): Boolean; overload; virtual; abstract;
+    function RemoveAll(const ACollection: IJclUnicodeStrCollection): Boolean; virtual; abstract;
+    function RetainAll(const ACollection: IJclUnicodeStrCollection): Boolean; virtual; abstract;
+    function Size: Integer; virtual; abstract;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclUnicodeStrIterator; virtual; abstract;
+    {$ENDIF SUPPORTS_FOR_IN}
+    { IJclUnicodeStrFlatContainer }
+  end;
+  {$ENDIF SUPPORTS_UNICODE_STRING}
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -671,10 +663,14 @@ const
 
 implementation
 
-{$IFNDEF RTL140_UP}
 uses
-  JclWideStrings;
-{$ENDIF ~RTL140_UP}
+  {$IFDEF HAS_UNIT_ANSISTRINGS}
+  AnsiStrings,
+  {$ENDIF HAS_UNIT_ANSISTRINGS}
+  {$IFNDEF RTL140_UP}
+  JclWideStrings,
+  {$ENDIF ~RTL140_UP}
+  SysUtils;
 
 //=== { TJclAbstractLockable } ===============================================
 
@@ -1443,6 +1439,103 @@ procedure TJclWideStrAbstractContainer.SetHashConvert(Value: TWideStrHashConvert
 begin
   FHashConvert := Value;
 end;
+
+{$IFDEF SUPPORTS_UNICODE_STRING}
+//=== { TJclUnicodeStrContainer } ===============================================
+
+procedure TJclUnicodeStrAbstractContainer.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
+var
+  ADest: TJclUnicodeStrAbstractContainer;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclUnicodeStrAbstractContainer then
+  begin
+    ADest := TJclUnicodeStrAbstractContainer(Dest);
+    ADest.EqualityCompare := EqualityCompare;
+    ADest.Compare := Compare;
+    ADest.HashConvert := HashConvert;
+  end;
+end;
+
+function TJclUnicodeStrAbstractContainer.FreeString(var AString: UnicodeString): UnicodeString;
+begin
+  Result := AString;
+  AString := '';
+end;
+
+function TJclUnicodeStrAbstractContainer.GetCompare: TUnicodeStrCompare;
+begin
+  Result := FCompare;
+end;
+
+function TJclUnicodeStrAbstractContainer.GetEqualityCompare: TUnicodeStrEqualityCompare;
+begin
+  Result := FEqualityCompare;
+end;
+
+function TJclUnicodeStrAbstractContainer.GetHashConvert: TUnicodeStrHashConvert;
+begin
+  Result := FHashConvert;
+end;
+
+function TJclUnicodeStrAbstractContainer.Hash(const AString: UnicodeString): Integer;
+var
+  I: Integer;
+begin
+  if Assigned(FHashConvert) then
+    Result := FHashConvert(AString)
+  else
+  begin
+    Result := 0;
+    //if FCaseSensitive then
+      for I := 1 to Length(AString) do
+        Inc(Result, Ord(AString[I]) * (I - 1) * 65536)
+    //else
+    //  for I := 1 to Length(AString) do
+    //    Inc(Result, Ord(AString[I]) * (I - 1) * 65536); // TODO: case folding
+  end;
+end;
+
+function TJclUnicodeStrAbstractContainer.ItemsCompare(const A, B: UnicodeString): Integer;
+begin
+  if Assigned(FCompare) then
+    Result := FCompare(A, B)
+  else
+  if FCaseSensitive then
+    Result := CompareStr(A, B)
+  else
+    Result := CompareText(A, B);
+end;
+
+function TJclUnicodeStrAbstractContainer.ItemsEqual(const A, B: UnicodeString): Boolean;
+begin
+  if Assigned(FEqualityCompare) then
+    Result := FEqualityCompare(A, B)
+  else
+  if Assigned(FCompare) then
+    Result := FCompare(A, B) = 0
+  else
+  if FCaseSensitive then
+    Result := CompareStr(A, B) = 0
+  else
+    Result := CompareText(A, B) = 0;
+end;
+
+procedure TJclUnicodeStrAbstractContainer.SetCompare(Value: TUnicodeStrCompare);
+begin
+  FCompare := Value;
+end;
+
+procedure TJclUnicodeStrAbstractContainer.SetEqualityCompare(Value: TUnicodeStrEqualityCompare);
+begin
+  FEqualityCompare := Value;
+end;
+
+procedure TJclUnicodeStrAbstractContainer.SetHashConvert(Value: TUnicodeStrHashConvert);
+begin
+  FHashConvert := Value;
+end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
 
 //=== { TJclSingleAbstractContainer } ========================================
 
@@ -2315,10 +2408,10 @@ end;
 var
   Item: AnsiString;
   SepLen: Integer;
-  PString, PSep, PPos: PChar;
+  PString, PSep, PPos: PAnsiChar;
 begin
-  PString := PChar(AString);
-  PSep := PChar(Separator);
+  PString := PAnsiChar(AString);
+  PSep := PAnsiChar(Separator);
   PPos := StrPos(PString, PSep);
   if PPos <> nil then
   begin
@@ -2326,7 +2419,7 @@ begin
     repeat
       //SetLength(Item, PPos - PString + 1);
       SetLength(Item, PPos - PString);
-      Move(PString^, Item[1], PPos - PString);
+      Move(PString^, Item[1], (PPos - PString) * SizeOf(AnsiChar));
       //Item[PPos - PString + 1] := #0;
       Add(Item);
       PString := PPos + SepLen;
@@ -2340,15 +2433,15 @@ begin
 end;
 {$ENDIF CLR}
 
-procedure TJclAnsiStrAbstractCollection.AppendFromStrings(Strings: TStrings);
+procedure TJclAnsiStrAbstractCollection.AppendFromStrings(Strings: TAnsiStrings);
 var
   I: Integer;
 begin
   for I := 0 to Strings.Count - 1 do
-    Add(Strings[I]);
+    Add(AnsiString(Strings[I])); // OF TStrings to AnsiString
 end;
 
-procedure TJclAnsiStrAbstractCollection.AppendToStrings(Strings: TStrings);
+procedure TJclAnsiStrAbstractCollection.AppendToStrings(Strings: TAnsiStrings);
 var
   It: IJclAnsiStrIterator;
 begin
@@ -2356,7 +2449,7 @@ begin
   Strings.BeginUpdate;
   try
     while It.HasNext do
-      Strings.Add(It.Next);
+      Strings.Add(string(It.Next)); // OF AnsiString to TStrings
   finally
     Strings.EndUpdate;
   end;
@@ -2374,7 +2467,7 @@ begin
     Result := Result + Separator + It.Next;
 end;
 
-function TJclAnsiStrAbstractCollection.GetAsStrings: TStrings;
+function TJclAnsiStrAbstractCollection.GetAsStrings: TAnsiStrings;
 begin
   Result := TStringList.Create;
   try
@@ -2391,13 +2484,13 @@ begin
   AppendDelimited(AString, Separator);
 end;
 
-procedure TJclAnsiStrAbstractCollection.LoadFromStrings(Strings: TStrings);
+procedure TJclAnsiStrAbstractCollection.LoadFromStrings(Strings: TAnsiStrings);
 begin
   Clear;
   AppendFromStrings(Strings);
 end;
 
-procedure TJclAnsiStrAbstractCollection.SaveToStrings(Strings: TStrings);
+procedure TJclAnsiStrAbstractCollection.SaveToStrings(Strings: TAnsiStrings);
 begin
   Strings.Clear;
   AppendToStrings(Strings);

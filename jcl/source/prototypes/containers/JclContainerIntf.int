@@ -36,7 +36,7 @@ PROCNAME = procedure(const AList: LISTINTERFACENAME; L, R: Integer; AComparator:
   INTERFACENAME = interface(ANCESTORNAME)
     ['{GUID}']
     function Add(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
-    function Equals(const AIterator: INTERFACENAME): Boolean;
+    function IteratorEquals(const AIterator: INTERFACENAME): Boolean;
     function GETTERNAME: TYPENAME;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -85,7 +85,7 @@ PROCNAME = procedure(const AList: LISTINTERFACENAME; L, R: Integer; AComparator:
     procedure Clear;
     function Contains(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
     function ContainsAll(const ACollection: INTERFACENAME): Boolean;
-    function Equals(const ACollection: INTERFACENAME): Boolean;
+    function CollectionEquals(const ACollection: INTERFACENAME): Boolean;
     function First: ITRNAME;
     function IsEmpty: Boolean;
     function Last: ITRNAME;
@@ -139,7 +139,7 @@ PROCNAME = procedure(const AList: LISTINTERFACENAME; L, R: Integer; AComparator:
     procedure Clear;
     function ContainsKey(KEYCONSTKEYWORDKey: KEYTYPENAME): Boolean;
     function ContainsValue(VALUECONSTKEYWORDValue: VALUETYPENAME): Boolean;
-    function Equals(const AMap: INTERFACENAME): Boolean;
+    function MapEquals(const AMap: INTERFACENAME): Boolean;
     function GetValue(KEYCONSTKEYWORDKey: KEYTYPENAME): VALUETYPENAME;
     function IsEmpty: Boolean;
     function KeyOfValue(VALUECONSTKEYWORDValue: VALUETYPENAME): KEYTYPENAME;
@@ -158,7 +158,7 @@ PROCNAME = procedure(const AList: LISTINTERFACENAME; L, R: Integer; AComparator:
     procedure Clear;
     function ContainsKey(CONSTKEYWORDKey: TYPENAME): Boolean;
     function ContainsValue(CONSTKEYWORDValue: TYPENAME): Boolean;
-    function Equals(const AMap: INTERFACENAME): Boolean;
+    function MapEquals(const AMap: INTERFACENAME): Boolean;
     function GetValue(CONSTKEYWORDKey: TYPENAME): TYPENAME;
     function IsEmpty: Boolean;
     function KeyOfValue(CONSTKEYWORDValue: TYPENAME): TYPENAME;

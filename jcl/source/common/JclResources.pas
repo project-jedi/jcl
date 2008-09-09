@@ -1233,38 +1233,39 @@ resourcestring
   RsMapiInvalidIndex  = 'Index is out ot range';
   RsMapiMailNoClient  = 'No Simple MAPI client installed, cannot send the message';
 
-  RsMapiErrUSER_ABORT               = 'User abort';
-  RsMapiErrFAILURE                  = 'General MAPI failure';
-  RsMapiErrLOGIN_FAILURE            = 'MAPI login failure';
-  RsMapiErrDISK_FULL                = 'Disk full';
-  RsMapiErrINSUFFICIENT_MEMORY      = 'Insufficient memory';
-  RsMapiErrACCESS_DENIED            = 'Access denied';
-  RsMapiErrTOO_MANY_SESSIONS        = 'Too many sessions';
-  RsMapiErrTOO_MANY_FILES           = 'Too many files were specified';
-  RsMapiErrTOO_MANY_RECIPIENTS      = 'Too many recipients were specified';
-  RsMapiErrATTACHMENT_NOT_FOUND     = 'A specified attachment was not found';
-  RsMapiErrATTACHMENT_OPEN_FAILURE  = 'Attachment open failure';
-  RsMapiErrATTACHMENT_WRITE_FAILURE = 'Attachment write failure';
-  RsMapiErrUNKNOWN_RECIPIENT        = 'Unknown recipient';
-  RsMapiErrBAD_RECIPTYPE            = 'Bad recipient type';
-  RsMapiErrNO_MESSAGES              = 'No messages';
-  RsMapiErrINVALID_MESSAGE          = 'Invalid message';
-  RsMapiErrTEXT_TOO_LARGE           = 'Text too large';
-  RsMapiErrINVALID_SESSION          = 'Invalid session';
-  RsMapiErrTYPE_NOT_SUPPORTED       = 'Type not supported';
-  RsMapiErrAMBIGUOUS_RECIPIENT      = 'A recipient was specified ambiguously';
-  RsMapiErrMESSAGE_IN_USE           = 'Message in use';
-  RsMapiErrNETWORK_FAILURE          = 'Network failure';
-  RsMapiErrINVALID_EDITFIELDS       = 'Invalid edit fields';
-  RsMapiErrINVALID_RECIPS           = 'Invalid recipients';
-  RsMapiErrNOT_SUPPORTED            = 'Not supported';
+const
+  RsMapiErrUSER_ABORT               : AnsiString = 'User abort';
+  RsMapiErrFAILURE                  : AnsiString = 'General MAPI failure';
+  RsMapiErrLOGIN_FAILURE            : AnsiString = 'MAPI login failure';
+  RsMapiErrDISK_FULL                : AnsiString = 'Disk full';
+  RsMapiErrINSUFFICIENT_MEMORY      : AnsiString = 'Insufficient memory';
+  RsMapiErrACCESS_DENIED            : AnsiString = 'Access denied';
+  RsMapiErrTOO_MANY_SESSIONS        : AnsiString = 'Too many sessions';
+  RsMapiErrTOO_MANY_FILES           : AnsiString = 'Too many files were specified';
+  RsMapiErrTOO_MANY_RECIPIENTS      : AnsiString = 'Too many recipients were specified';
+  RsMapiErrATTACHMENT_NOT_FOUND     : AnsiString = 'A specified attachment was not found';
+  RsMapiErrATTACHMENT_OPEN_FAILURE  : AnsiString = 'Attachment open failure';
+  RsMapiErrATTACHMENT_WRITE_FAILURE : AnsiString = 'Attachment write failure';
+  RsMapiErrUNKNOWN_RECIPIENT        : AnsiString = 'Unknown recipient';
+  RsMapiErrBAD_RECIPTYPE            : AnsiString = 'Bad recipient type';
+  RsMapiErrNO_MESSAGES              : AnsiString = 'No messages';
+  RsMapiErrINVALID_MESSAGE          : AnsiString = 'Invalid message';
+  RsMapiErrTEXT_TOO_LARGE           : AnsiString = 'Text too large';
+  RsMapiErrINVALID_SESSION          : AnsiString = 'Invalid session';
+  RsMapiErrTYPE_NOT_SUPPORTED       : AnsiString = 'Type not supported';
+  RsMapiErrAMBIGUOUS_RECIPIENT      : AnsiString = 'A recipient was specified ambiguously';
+  RsMapiErrMESSAGE_IN_USE           : AnsiString = 'Message in use';
+  RsMapiErrNETWORK_FAILURE          : AnsiString = 'Network failure';
+  RsMapiErrINVALID_EDITFIELDS       : AnsiString = 'Invalid edit fields';
+  RsMapiErrINVALID_RECIPS           : AnsiString = 'Invalid recipients';
+  RsMapiErrNOT_SUPPORTED            : AnsiString = 'Not supported';
 
-  RsMapiMailORIG    = 'From';
-  RsMapiMailTO      = 'To';
-  RsMapiMailCC      = 'Cc';
-  RsMapiMailBCC     = 'Bcc';
-  RsMapiMailSubject = 'Subject';
-  RsMapiMailBody    = 'Body';
+  RsMapiMailORIG    = AnsiString('From');
+  RsMapiMailTO      = AnsiString('To');
+  RsMapiMailCC      = AnsiString('Cc');
+  RsMapiMailBCC     = AnsiString('Bcc');
+  RsMapiMailSubject = AnsiString('Subject');
+  RsMapiMailBody    = AnsiString('Body');
 
 //=== JclMath ================================================================
 resourcestring
@@ -1408,7 +1409,8 @@ resourcestring
   RsErrMemFuncNotSet = 'PCRE memory management functions not set';
   RsErrStudyFailed   = 'Study failed'; 
   RsErrCalloutError  = 'Unhandled exception in callout';
-  RsErrUnknownError  = 'Unknown error'; 
+  RsErrUnknownError  = 'Unknown error';
+  RsErrNoUTF8Support = 'No UTF8 support in this version of PCRE';
 
 //=== JclPeImage =============================================================
 resourcestring
@@ -1621,6 +1623,7 @@ resourcestring
   RsWrongDataType        = '"%s\%s\%s" is of wrong kind or size';
   RsInconsistentPath     = '"%s" does not match RootKey';
 
+const
   RsHKCRLong = 'HKEY_CLASSES_ROOT';
   RsHKCULong = 'HKEY_CURRENT_USER';
   RsHKLMLong = 'HKEY_LOCAL_MACHINE';
@@ -1888,8 +1891,6 @@ resourcestring
   RsProductTypeEnterprise       = 'Enterprise';
   RsProductTypeWebEdition       = 'Web Edition';
 
-  RsOpenGLInfoError = 'Err';
-
   RsEOpenGLInfo = 'GetOpenGLVersion: %s failed';
 
   {$IFDEF MSWINDOWS}
@@ -1899,6 +1900,9 @@ resourcestring
   {$IFDEF UNIX}
   RsInvalidProcessID = 'Invalid process ID %d';
   {$ENDIF UNIX}
+
+const
+  RsOpenGLInfoError : AnsiString = 'Err';
 
 //=== JclSysUtils ============================================================
 resourcestring

@@ -581,10 +581,10 @@ begin
       Stream.Seek(0, soFromBeginning);
       while Stream.Position < Stream.Size do
       begin
-        OpCode := PByte(Longint(Stream.Memory) + Stream.Position)^;
+        OpCode := PByte(DWORD_PTR(Stream.Memory) + Stream.Position)^;
         if OpCode = STP1 then
         begin
-          OpCode := PByte(Longint(Stream.Memory) + Stream.Position + 1)^;
+          OpCode := PByte(DWORD_PTR(Stream.Memory) + Stream.Position + 1)^;
           Instruction := TJclInstruction.Create(Self, TJclOpCode(MaxByte + 1 + OpCode));
         end
         else

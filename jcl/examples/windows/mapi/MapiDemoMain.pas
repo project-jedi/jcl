@@ -101,8 +101,8 @@ begin
       for I := 0 to ProfileCount - 1 do
         with ProfilesListView.Items.Add do
         begin
-          Caption := Profiles[I];
-          Data := Pointer(Caption = DefaultProfileName);
+          Caption := string(Profiles[I]);
+          Data := Pointer(Caption = string(DefaultProfileName));
         end;  
   finally
     ProfilesListView.Items.EndUpdate;
@@ -178,9 +178,9 @@ begin
   // Creating message using TJclEmail object, it is more flexible, but you have
   // to create an instance (SimpleMapiMail variable in this example) of the class
   SimpleMapiMail.Clear;
-  SimpleMapiMail.Recipients.Add(ToAddressEdit.Text, ToNameEdit.Text);
-  SimpleMapiMail.Subject := SubjectEdit.Text;
-  SimpleMapiMail.Body := BodyEdit.Text;
+  SimpleMapiMail.Recipients.Add(AnsiString(ToAddressEdit.Text), AnsiString(ToNameEdit.Text));
+  SimpleMapiMail.Subject := AnsiString(SubjectEdit.Text);
+  SimpleMapiMail.Body := AnsiString(BodyEdit.Text);
   SimpleMapiMail.HtmlBody := HtmlCheckBox.Checked;
   if OpenDialog1.FileName <> '' then
     SimpleMapiMail.Attachments.Add(OpenDialog1.FileName);

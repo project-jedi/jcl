@@ -72,9 +72,14 @@ uses
   System.Text,
   System.IO,
   {$ELSE}
+  JclAnsiStrings,
   JclWideStrings,
   {$ENDIF CLR}
   JclBase, JclSysUtils;
+
+// Exceptions
+type
+  EJclStringError = EJclError;
 
 // Character constants and sets
 
@@ -244,7 +249,10 @@ function StrCharsCount(const S: string; const Chars: array of Char): Integer; ov
 function StrStrCount(const S, SubS: string): Integer;
 function StrCompare(const S1, S2: string): Integer;
 function StrCompareRange(const S1, S2: string; const Index, Count: Integer): Integer;
-function StrFillChar(const C: Char; Count: Integer): string;
+{$IFNDEF CLR}
+procedure StrFillChar(var S; Count: Integer; C: Char);
+{$ENDIF ~CLR}
+function StrRepeatChar(C: Char; Count: Integer): string;
 function StrFind(const Substr, S: string; const Index: Integer = 1): Integer;
 function StrHasPrefix(const S: string; const Prefixes: array of string): Boolean;
 function StrIndex(const S: string; const List: array of string): Integer;
@@ -319,7 +327,13 @@ procedure FreePCharVector(var Dest: PCharVector);
 // MultiSz Routines
 type
   PMultiSz = PChar;
-  PWideMultiSz = PWideChar;
+  PAnsiMultiSz = JclAnsiStrings.PMultiSz;
+  PWideMultiSz = JclWideStrings.PMultiSz;
+
+  TAnsiStrings = JclAnsiStrings.TAnsiStrings;
+  TWideStrings = JclWideStrings.TWideStrings;
+  TAnsiStringList = JclAnsiStrings.TAnsiStringList;
+  TWideStringList = JclWideStrings.TWideStringList;
 
 function StringsToMultiSz(var Dest: PMultiSz; const Source: TStrings): PMultiSz;
 procedure MultiSzToStrings(const Dest: TStrings; const Source: PMultiSz);
@@ -328,12 +342,19 @@ procedure AllocateMultiSz(var Dest: PMultiSz; Len: Integer);
 procedure FreeMultiSz(var Dest: PMultiSz);
 function MultiSzDup(const Source: PMultiSz): PMultiSz;
 
-function WideStringsToWideMultiSz(var Dest: PWideMultiSz; const Source: TWideStrings): PWideMultiSz;
-procedure WideMultiSzToWideStrings(const Dest: TWideStrings; const Source: PWideMultiSz);
-function WideMultiSzLength(const Source: PWideMultiSz): Integer;
-procedure AllocateWideMultiSz(var Dest: PWideMultiSz; Len: Integer);
-procedure FreeWideMultiSz(var Dest: PWideMultiSz);
-function WideMultiSzDup(const Source: PWideMultiSz): PWideMultiSz;
+function AnsiStringsToAnsiMultiSz(var Dest: PAnsiMultiSz; const Source: TAnsiStrings): PAnsiMultiSz; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+procedure AnsiMultiSzToAnsiStrings(const Dest: TAnsiStrings; const Source: PAnsiMultiSz); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+function AnsiMultiSzLength(const Source: PAnsiMultiSz): Integer; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+procedure AllocateAnsiMultiSz(var Dest: PAnsiMultiSz; Len: Integer); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+procedure FreeAnsiMultiSz(var Dest: PAnsiMultiSz); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+function AnsiMultiSzDup(const Source: PAnsiMultiSz): PAnsiMultiSz; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+
+function WideStringsToWideMultiSz(var Dest: PWideMultiSz; const Source: TWideStrings): PWideMultiSz; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+procedure WideMultiSzToWideStrings(const Dest: TWideStrings; const Source: PWideMultiSz); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+function WideMultiSzLength(const Source: PWideMultiSz): Integer; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+procedure AllocateWideMultiSz(var Dest: PWideMultiSz; Len: Integer); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+procedure FreeWideMultiSz(var Dest: PWideMultiSz); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+function WideMultiSzDup(const Source: PWideMultiSz): PWideMultiSz; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 {$ENDIF ~CLR}
 
 // TStrings Manipulation
@@ -459,7 +480,7 @@ type
     function Remove(StartIndex, Length: Integer): TJclStringBuilder;
     function EnsureCapacity(Capacity: Integer): Integer;
 
-    function ToString: string;
+    function ToString: string; {$IFDEF RTL200_UP} override; {$ENDIF RTL200_UP}
 
     property __Chars__[Index: Integer]: Char read GetChars write SetChars; default;
     property Chars: TCharDynArray read FChars;
@@ -520,9 +541,9 @@ type
     function UpdatePosition(const S: string; var Column, Line: Integer): Integer; overload;
 
     // Conversions
-    function ToString: string; overload;
-    function ToString(FormattingOptions: Integer): string; overload;
-    class function FromString(const S: string): TJclTabSet; {$IFDEF SUPPORTS_STATIC} static; {$ENDIF}
+    function ToString: string; overload; {$IFDEF RTL200_UP} override; {$ENDIF RTL200_UP}
+    function ToString(FormattingOptions: Integer): string; {$IFDEF RTL200_UP} reintroduce; {$ENDIF RTL200_UP} overload;
+    class function FromString(const S: string): TJclTabSet; {$IFDEF SUPPORTS_STATIC} static; {$ENDIF SUPPORTS_STATIC}
 
     // Properties
     property ActualTabWidth: Integer read InternalTabWidth;
@@ -570,14 +591,13 @@ type
 procedure StrResetLength(var S: WideString); overload;
 procedure StrResetLength(var S: AnsiString); overload;
 procedure StrResetLength(S: TJclStringBuilder); overload;
+{$IFDEF SUPPORTS_UNICODE_STRING}
+procedure StrResetLength(var S: UnicodeString); overload;
+{$ENDIF SUPPORTS_UNICODE_STRING}
 
 // natural comparison functions
 function CompareNaturalStr(const S1, S2: string): Integer;
 function CompareNaturalText(const S1, S2: string): Integer;
-
-// Exceptions
-type
-  EJclStringError = EJclError;
 
 // internal structures published to make function inlining working
 {$IFNDEF CLR}
@@ -1253,11 +1273,13 @@ end;
 
 function StrEscapedToString(const S: string): string;
 var
-  I, Len, N, Val: Integer;
+  I, Len: Integer;
 
   procedure HandleHexEscapeSeq;
   const
     HexDigits = string('0123456789abcdefABCDEF');
+  var
+    Val, N: Integer;
   begin
     N := Pos(S[I + 1], HexDigits) - 1;
     if N < 0 then
@@ -1282,20 +1304,22 @@ var
         end;
       end;
 
-      if Val > 255 then
+      if Val > Ord(High(Char)) then
         {$IFDEF CLR}
         raise EJclStringError.Create(RsNumericConstantTooLarge);
         {$ELSE}
         raise EJclStringError.CreateRes(@RsNumericConstantTooLarge);
         {$ENDIF CLR}
 
-      Result := Result + Chr(Val);
+      Result := Result + Char(Val);
     end;
   end;
 
   procedure HandleOctEscapeSeq;
   const
     OctDigits = string('01234567');
+  var
+    Val, N: Integer;
   begin
     // first digit
     Val := Pos(S[I], OctDigits) - 1;
@@ -1318,14 +1342,14 @@ var
       end;
     end;
 
-    if Val > 255 then
+    if Val > Ord(High(Char)) then
       {$IFDEF CLR}
       raise EJclStringError.Create(RsNumericConstantTooLarge);
       {$ELSE}
       raise EJclStringError.CreateRes(@RsNumericConstantTooLarge);
       {$ENDIF CLR}
 
-    Result := Result + Chr(Val);
+    Result := Result + Char(Val);
   end;
 
 begin
@@ -2454,6 +2478,20 @@ begin
       end;
 end;
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+procedure StrResetLength(var S: UnicodeString);
+var
+  I: Integer;
+begin
+  for I := 0 to Length(S) - 1 do
+    if S[I + 1] = #0 then
+    begin
+      SetLength(S, I);
+      Exit;
+    end;
+end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
 //=== String Search and Replace Routines =====================================
 
 function StrCharCount(const S: string; C: Char): Integer;
@@ -2626,7 +2664,7 @@ begin
   end;
 end;
 
-{$ELSE} // SUPPORTS_UNICODE
+{$ELSE} // UNICODE
 
 {$IFDEF PIC}
 function _StrCompare(const S1, S2: string): Integer; forward;
@@ -2878,7 +2916,28 @@ asm
 end;
 {$ENDIF SUPPORTS_UNICODE}
 
-function StrFillChar(const C: Char; Count: Integer): string;
+{$IFNDEF CLR}
+procedure StrFillChar(var S; Count: Integer; C: Char);
+{$IFDEF SUPPORTS_UNICODE}
+asm
+        DEC     EDX
+        JS      @@Leave
+@@Loop:
+        MOV     [EAX], CX
+        ADD     EAX, 2
+        DEC     EDX
+        JNS     @@Loop
+@@Leave:
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+    FillChar(S, Count, C);
+end;
+{$ENDIF SUPPORTS_UNICODE}
+{$ENDIF CLR}
+
+function StrRepeatChar(C: Char; Count: Integer): string;
 {$IFDEF CLR}
 var
   sb: StringBuilder;
@@ -2894,8 +2953,8 @@ end;
 {$ELSE}
 begin
   SetLength(Result, Count);
-  if (Count > 0) then
-    FillChar(Result[1], Count * SizeOf(Char), Ord(C));
+  if Count > 0 then
+    StrFillChar(Result[1], Count, C);
 end;
 {$ENDIF CLR}
 
@@ -2909,7 +2968,7 @@ function StrFind(const Substr, S: string; const Index: Integer): Integer;
 var
   pos: PChar;
 begin
-  pos := StrPos(@S[Index],@SubStr[1]);
+  pos := StrPos(PChar(@S[Index]),PChar(@SubStr[1]));
   if Pos = nil then
     Result := 0
   else
@@ -3754,6 +3813,13 @@ end;
 function CharIsValidIdentifierLetter(const C: Char): Boolean;
 begin
   case C of
+    {$IFDEF SUPPORTS_UNICODE}
+    // from XML specifications
+    #$00C0..#$00D6, #$00D8..#$00F6, #$00F8..#$02FF, #$0370..#$037D,
+    #$037F..#$1FFF, #$200C..#$200D, #$2070..#$218F, #$2C00..#$2FEF,
+    #$3001..#$D7FF, #$F900..#$FDCF, #$FDF0..#$FFFD, // #$10000..#$EFFFF, howto match surrogate pairs?
+    #$00B7, #$0300..#$036F, #$203F..#$2040,
+    {$ENDIF SUPPORTS_UNICODE}
     '0'..'9', 'A'..'Z', 'a'..'z', '_':
       Result := True;
   else
@@ -4093,96 +4159,64 @@ begin
     Result := nil;
 end;
 
-function WideStringsToWideMultiSz(var Dest: PWideMultiSz; const Source: TWideStrings): PWideMultiSz;
-var
-  I, TotalLength: Integer;
-  P: PWideMultiSz;
+function AnsiStringsToAnsiMultiSz(var Dest: PAnsiMultiSz; const Source: TAnsiStrings): PAnsiMultiSz;
 begin
-  Assert(Source <> nil);
-  TotalLength := 1;
-  for I := 0 to Source.Count - 1 do
-    if Source[I] = '' then
-      raise EJclStringError.CreateRes(@RsInvalidEmptyStringItem)
-    else
-      Inc(TotalLength, StrLenW(PWideChar(Source[I])) + 1);
-  AllocateWideMultiSz(Dest, TotalLength);
-  P := Dest;
-  for I := 0 to Source.Count - 1 do
-  begin
-    P := StrECopyW(P, PWideChar(Source[I]));
-    Inc(P);
-  end;
-  P^:= #0;
-  Result := Dest;
+  Result := JclAnsiStrings.StringsToMultiSz(Dest, Source);
+end;
+
+procedure AnsiMultiSzToAnsiStrings(const Dest: TAnsiStrings; const Source: PAnsiMultiSz);
+begin
+  JclAnsiStrings.MultiSzToStrings(Dest, Source);
+end;
+
+function AnsiMultiSzLength(const Source: PAnsiMultiSz): Integer;
+begin
+  Result := JclAnsiStrings.MultiSzLength(Source);
+end;
+
+procedure AllocateAnsiMultiSz(var Dest: PAnsiMultiSz; Len: Integer);
+begin
+  JclAnsiStrings.AllocateMultiSz(Dest, Len);
+end;
+
+procedure FreeAnsiMultiSz(var Dest: PAnsiMultiSz);
+begin
+  JclAnsiStrings.FreeMultiSz(Dest);
+end;
+
+function AnsiMultiSzDup(const Source: PAnsiMultiSz): PAnsiMultiSz;
+begin
+  Result := JclAnsiStrings.MultiSzDup(Source);
+end;
+
+function WideStringsToWideMultiSz(var Dest: PWideMultiSz; const Source: TWideStrings): PWideMultiSz;
+begin
+  Result := JclWideStrings.StringsToMultiSz(Dest, Source);
 end;
 
 procedure WideMultiSzToWideStrings(const Dest: TWideStrings; const Source: PWideMultiSz);
-var
-  P: PWideMultiSz;
 begin
-  Assert(Dest <> nil);
-  Dest.BeginUpdate;
-  try
-    Dest.Clear;
-    if Source <> nil then
-    begin
-      P := Source;
-      while P^ <> #0 do
-      begin
-        Dest.Add(P);
-        P := StrEndW(P);
-        Inc(P);
-      end;
-    end;
-  finally
-    Dest.EndUpdate;
-  end;
+  JclWideStrings.MultiSzToStrings(Dest, Source);
 end;
 
 function WideMultiSzLength(const Source: PWideMultiSz): Integer;
-var
-  P: PWideMultiSz;
 begin
-  Result := 0;
-  if Source <> nil then
-  begin
-    P := Source;
-    repeat
-      Inc(Result, StrLenW(P) + 1);
-      P := StrEndW(P);
-      Inc(P);
-    until P^ = #0;
-    Inc(Result);
-  end;
+  Result := JclWideStrings.MultiSzLength(Source);
 end;
 
 procedure AllocateWideMultiSz(var Dest: PWideMultiSz; Len: Integer);
 begin
-  if Len > 0 then
-    GetMem(Dest, Len * SizeOf(WideChar))
-  else
-    Dest := nil;
+  JclWideStrings.AllocateMultiSz(Dest, Len);
 end;
 
 procedure FreeWideMultiSz(var Dest: PWideMultiSz);
 begin
-  if Dest <> nil then
-    FreeMem(Dest);
-  Dest := nil;
+  JclWideStrings.FreeMultiSz(Dest);
 end;
 
 function WideMultiSzDup(const Source: PWideMultiSz): PWideMultiSz;
-var
-  Len: Integer;
 begin
-  if Source <> nil then
-  begin
-    Len := WideMultiSzLength(Source);
-    AllocateWideMultiSz(Result, Len);
-    Move(Source^, Result^, Len * SizeOf(WideChar));
-  end
-  else
-    Result := nil;
+  Result := JclWideStrings.MultiSzDup(Source);
 end;
 {$ENDIF ~CLR}
 
@@ -4757,7 +4791,7 @@ end;
 {$ELSE}
 
 const
-  BoolToStr: array [Boolean] of string[5] = ('false', 'true');
+  BoolToStr: array [Boolean] of string = ('false', 'true');
   {$IFDEF COMPILER5}
   MaxCurrency: Currency =  922337203685477.5807;
 
@@ -4890,15 +4924,15 @@ var
       vtBoolean:
         Result := BoolToStr[V.VBoolean];
       vtChar:
-        Result := V.VChar;
+        Result := string(AnsiString(V.VChar));
       vtExtended:
         Result := FloatToStr(V.VExtended^);
       vtString:
-        Result := V.VString^;
+        Result := string(V.VString^);
       vtPointer:
         Result := IntToHex(DWORD_PTR(V.VPointer), 8);
       vtPChar:
-        Result := V.VPChar;
+        Result := string(AnsiString(V.VPChar));
       vtObject:
         if (V.VObject is TInterfacedObject) and V.VObject.GetInterface(IToString, Intf) then
         begin
@@ -4933,6 +4967,10 @@ var
         Result := WideString(V.VWideString);
       vtInt64:
         Result := IntToStr(V.VInt64^);
+      {$IFDEF SUPPORTS_UNICODE_STRING}
+      vtUnicodeString:
+        Result := UnicodeString(V.VUnicodeString);
+      {$ENDIF SUPPORTS_UNICODE_STRING}
     else
       raise ArgumentNullException.CreateResFmt(@RsDotNetFormatArgumentNotSupported, [Index]);
     end;
@@ -5014,29 +5052,29 @@ begin
   SetLength(Result, Len);
 end;
 
-//=== { TStringBuilder } =====================================================
+//=== { TJclStringBuilder } =====================================================
 
-constructor TStringBuilder.Create(Capacity: Integer; MaxCapacity: Integer);
+constructor TJclStringBuilder.Create(Capacity: Integer; MaxCapacity: Integer);
 begin
   inherited Create;
   SetLength(FChars, Capacity);
   FMaxCapacity := MaxCapacity;
 end;
 
-constructor TStringBuilder.Create(const Value: string; Capacity: Integer);
+constructor TJclStringBuilder.Create(const Value: string; Capacity: Integer);
 begin
   Create(Capacity);
   Append(Value);
 end;
 
-constructor TStringBuilder.Create(const Value: string; StartIndex,
+constructor TJclStringBuilder.Create(const Value: string; StartIndex,
   Length, Capacity: Integer);
 begin
   Create(Capacity);
   Append(Value, StartIndex + 1, Length);
 end;
 
-function TStringBuilder.ToString: string;
+function TJclStringBuilder.ToString: string;
 begin
   if FLength > 0 then
     SetString(Result, PChar(@FChars[0]), FLength)
@@ -5044,14 +5082,14 @@ begin
     Result := '';
 end;
 
-function TStringBuilder.EnsureCapacity(Capacity: Integer): Integer;
+function TJclStringBuilder.EnsureCapacity(Capacity: Integer): Integer;
 begin
   if System.Length(FChars) < Capacity then
     SetCapacity(Capacity);
   Result := System.Length(FChars);
 end;
 
-procedure TStringBuilder.SetCapacity(const Value: Integer);
+procedure TJclStringBuilder.SetCapacity(const Value: Integer);
 begin
   if Value <> System.Length(FChars) then
   begin
@@ -5061,27 +5099,27 @@ begin
   end;
 end;
 
-function TStringBuilder.GetChars(Index: Integer): Char;
+function TJclStringBuilder.GetChars(Index: Integer): Char;
 begin
   Result := FChars[Index];
 end;
 
-procedure TStringBuilder.SetChars(Index: Integer; const Value: Char);
+procedure TJclStringBuilder.SetChars(Index: Integer; const Value: Char);
 begin
   FChars[Index] := Value;
 end;
 
-procedure TStringBuilder.Set_Length(const Value: Integer);
+procedure TJclStringBuilder.Set_Length(const Value: Integer);
 begin
   FLength := Value;
 end;
 
-function TStringBuilder.GetCapacity: Integer;
+function TJclStringBuilder.GetCapacity: Integer;
 begin
   Result := System.Length(FChars);
 end;
 
-function TStringBuilder.AppendPChar(Value: PChar; Count: Integer; RepeatCount: Integer): TStringBuilder;
+function TJclStringBuilder.AppendPChar(Value: PChar; Count: Integer; RepeatCount: Integer): TJclStringBuilder;
 var
   Capacity: Integer;
 begin
@@ -5104,8 +5142,8 @@ begin
   Result := Self;
 end;
 
-function TStringBuilder.InsertPChar(Index: Integer; Value: PChar; Count,
-  RepeatCount: Integer): TStringBuilder;
+function TJclStringBuilder.InsertPChar(Index: Integer; Value: PChar; Count,
+  RepeatCount: Integer): TJclStringBuilder;
 var
   Capacity: Integer;
 begin
@@ -5138,7 +5176,7 @@ begin
   Result := Self;
 end;
 
-function TStringBuilder.Append(const Value: array of Char): TStringBuilder;
+function TJclStringBuilder.Append(const Value: array of Char): TJclStringBuilder;
 var
   Len: Integer;
 begin
@@ -5148,7 +5186,7 @@ begin
   Result := Self;
 end;
 
-function TStringBuilder.Append(const Value: array of Char; StartIndex, Length: Integer): TStringBuilder;
+function TJclStringBuilder.Append(const Value: array of Char; StartIndex, Length: Integer): TJclStringBuilder;
 var
   Len: Integer;
 begin
@@ -5162,12 +5200,12 @@ begin
   Result := Self;
 end;
 
-function TStringBuilder.Append(Value: Char; RepeatCount: Integer = 1): TStringBuilder;
+function TJclStringBuilder.Append(Value: Char; RepeatCount: Integer = 1): TJclStringBuilder;
 begin
   Result := AppendPChar(@Value, 1, RepeatCount);
 end;
 
-function TStringBuilder.Append(const Value: string): TStringBuilder;
+function TJclStringBuilder.Append(const Value: string): TJclStringBuilder;
 var
   Len: Integer;
 begin
@@ -5177,7 +5215,7 @@ begin
   Result := Self;
 end;
 
-function TStringBuilder.Append(const Value: string; StartIndex, Length: Integer): TStringBuilder;
+function TJclStringBuilder.Append(const Value: string; StartIndex, Length: Integer): TJclStringBuilder;
 var
   Len: Integer;
 begin
@@ -5191,57 +5229,57 @@ begin
   Result := Self;
 end;
 
-function TStringBuilder.Append(Value: Boolean): TStringBuilder;
+function TJclStringBuilder.Append(Value: Boolean): TJclStringBuilder;
 begin
   Result := Append(BoolToStr[Value]);
 end;
 
-function TStringBuilder.Append(Value: Cardinal): TStringBuilder;
+function TJclStringBuilder.Append(Value: Cardinal): TJclStringBuilder;
 begin
   Result := Append(IntToStr(Value));
 end;
 
-function TStringBuilder.Append(Value: Integer): TStringBuilder;
+function TJclStringBuilder.Append(Value: Integer): TJclStringBuilder;
 begin
   Result := Append(IntToStr(Value));
 end;
 
-function TStringBuilder.Append(Value: Double): TStringBuilder;
+function TJclStringBuilder.Append(Value: Double): TJclStringBuilder;
 begin
   Result := Append(FloatToStr(Value));
 end;
 
-function TStringBuilder.Append(Value: Int64): TStringBuilder;
+function TJclStringBuilder.Append(Value: Int64): TJclStringBuilder;
 begin
   Result := Append(IntToStr(Value));
 end;
 
-function TStringBuilder.Append(Obj: TObject): TStringBuilder;
+function TJclStringBuilder.Append(Obj: TObject): TJclStringBuilder;
 begin
   Result := Append(DotNetFormat('{0}', [Obj]));
 end;
 
-function TStringBuilder.AppendFormat(const Fmt: string; Arg0: Variant): TStringBuilder;
+function TJclStringBuilder.AppendFormat(const Fmt: string; Arg0: Variant): TJclStringBuilder;
 begin
   Result := Append(DotNetFormat(Fmt, [Arg0]));
 end;
 
-function TStringBuilder.AppendFormat(const Fmt: string; Arg0, Arg1: Variant): TStringBuilder;
+function TJclStringBuilder.AppendFormat(const Fmt: string; Arg0, Arg1: Variant): TJclStringBuilder;
 begin
   Result := Append(DotNetFormat(Fmt, [Arg0, Arg1]));
 end;
 
-function TStringBuilder.AppendFormat(const Fmt: string; Arg0, Arg1, Arg2: Variant): TStringBuilder;
+function TJclStringBuilder.AppendFormat(const Fmt: string; Arg0, Arg1, Arg2: Variant): TJclStringBuilder;
 begin
   Result := Append(DotNetFormat(Fmt, [Arg0, Arg1, Arg2]));
 end;
 
-function TStringBuilder.AppendFormat(const Fmt: string; const Args: array of const): TStringBuilder;
+function TJclStringBuilder.AppendFormat(const Fmt: string; const Args: array of const): TJclStringBuilder;
 begin
   Result := Append(DotNetFormat(Fmt, Args));
 end;
 
-function TStringBuilder.Insert(Index: Integer; const Value: array of Char): TStringBuilder;
+function TJclStringBuilder.Insert(Index: Integer; const Value: array of Char): TJclStringBuilder;
 var
   Len: Integer;
 begin
@@ -5251,7 +5289,7 @@ begin
   Result := Self;
 end;
 
-function TStringBuilder.Insert(Index: Integer; const Value: string; Count: Integer): TStringBuilder;
+function TJclStringBuilder.Insert(Index: Integer; const Value: string; Count: Integer): TJclStringBuilder;
 var
   Len: Integer;
 begin
@@ -5261,13 +5299,13 @@ begin
   Result := Self;
 end;
 
-function TStringBuilder.Insert(Index: Integer; Value: Boolean): TStringBuilder;
+function TJclStringBuilder.Insert(Index: Integer; Value: Boolean): TJclStringBuilder;
 begin
   Result := Insert(Index, BoolToStr[Value]);
 end;
 
-function TStringBuilder.Insert(Index: Integer; const Value: array of Char;
-  StartIndex, Length: Integer): TStringBuilder;
+function TJclStringBuilder.Insert(Index: Integer; const Value: array of Char;
+  StartIndex, Length: Integer): TJclStringBuilder;
 var
   Len: Integer;
 begin
@@ -5281,32 +5319,32 @@ begin
   Result := Self;
 end;
 
-function TStringBuilder.Insert(Index: Integer; Value: Double): TStringBuilder;
+function TJclStringBuilder.Insert(Index: Integer; Value: Double): TJclStringBuilder;
 begin
   Result := Insert(Index, FloatToStr(Value));
 end;
 
-function TStringBuilder.Insert(Index: Integer; Value: Int64): TStringBuilder;
+function TJclStringBuilder.Insert(Index: Integer; Value: Int64): TJclStringBuilder;
 begin
   Result := Insert(Index, IntToStr(Value));
 end;
 
-function TStringBuilder.Insert(Index: Integer; Value: Cardinal): TStringBuilder;
+function TJclStringBuilder.Insert(Index: Integer; Value: Cardinal): TJclStringBuilder;
 begin
   Result := Insert(Index, IntToStr(Value));
 end;
 
-function TStringBuilder.Insert(Index, Value: Integer): TStringBuilder;
+function TJclStringBuilder.Insert(Index, Value: Integer): TJclStringBuilder;
 begin
   Result := Insert(Index, IntToStr(Value));
 end;
 
-function TStringBuilder.Insert(Index: Integer; Obj: TObject): TStringBuilder;
+function TJclStringBuilder.Insert(Index: Integer; Obj: TObject): TJclStringBuilder;
 begin
   Result := Insert(Index, Format('{0}', [Obj]));
 end;
 
-function TStringBuilder.Remove(StartIndex, Length: Integer): TStringBuilder;
+function TJclStringBuilder.Remove(StartIndex, Length: Integer): TJclStringBuilder;
 begin
   if (StartIndex < 0) or (Length < 0) or (StartIndex + Length > FLength) then
     raise ArgumentOutOfRangeException.CreateRes(@RsArgumentOutOfRange);
@@ -5318,8 +5356,8 @@ begin
   Result := Self;
 end;
 
-function TStringBuilder.Replace(OldChar, NewChar: Char; StartIndex,
-  Count: Integer): TStringBuilder;
+function TJclStringBuilder.Replace(OldChar, NewChar: Char; StartIndex,
+  Count: Integer): TJclStringBuilder;
 var
   I: Integer;
 begin
@@ -5336,7 +5374,7 @@ begin
   Result := Self;
 end;
 
-function TStringBuilder.Replace(OldValue, NewValue: string; StartIndex, Count: Integer): TStringBuilder;
+function TJclStringBuilder.Replace(OldValue, NewValue: string; StartIndex, Count: Integer): TJclStringBuilder;
 var
   I: Integer;
   Offset: Integer;
@@ -5545,7 +5583,7 @@ begin
       head := cur;
       while (cur^<> #0) and (cur^ <> #9) do
       begin
-        if cur^ in [#10, #13] then
+        if CharIsReturn(cur^) then
           Column := StartColumn
         else
           Inc(Column);
@@ -5596,7 +5634,7 @@ var
   begin
     SkipWhiteSpace;
     head := cur;
-    while cur^ in ['0'..'9'] do
+    while CharIsDigit(cur^) do
       Inc(cur);
     if (cur <= head) or not TryStrToInt(Copy(head, 1, cur - head), Result) then
       Result := -1;
@@ -5604,9 +5642,8 @@ var
 
   procedure ParseStops;
   var
-    openBracket: Boolean;
+    openBracket, hadComma: Boolean;
     num: Integer;
-    hadComma: Boolean;
   begin
     SkipWhiteSpace;
     openBracket := cur^ = '[';
@@ -5628,7 +5665,7 @@ var
       hadComma := cur^ = ',';
       if hadComma then
         Inc(cur);
-    until (cur^ in [#0, '+', ']']);
+    until (cur^ = #0) or (cur^ = '+') or (cur^ = ']');
     if hadComma then
       {$IFDEF CLR}
       raise EJclStringError.Create(RsTabs_StopExpected)
@@ -5671,7 +5708,7 @@ var
     if cur^ = '0' then
     begin
       Inc(cur);
-      if CharIsWhiteSpace(cur^) or (cur^ in [#0, '[']) then
+      if CharIsWhiteSpace(cur^) or (cur^ = #0) or (cur^ = '[') then
       begin
         Result.ZeroBased := True;
         SkipWhiteSpace;
@@ -6078,7 +6115,7 @@ begin
   while cur^ <> #0 do
   begin
     // check for line-breaking characters
-    if cur^ in [#10, #13] then
+    if CharIsReturn(cur^) then
     begin
       // Column moves back all the way to the left
       Column := StartColumn;
@@ -6088,7 +6125,7 @@ begin
       prevChar := cur^;
       Inc(cur);
       // if it isn't a two-character line-break, undo the previous advancement
-      if not (cur^ in [#10, #13]) or (cur^ = prevChar) then
+      if (cur^ = prevChar) or not CharIsReturn(cur^) then
         Dec(cur);
     end
     else // check for tab character and expand it
@@ -6219,9 +6256,9 @@ begin
       Result := System.String.Compare(S1.Substring(Cur1 - 1),S2.Substring(Cur2 - 1),CaseInsensitive);
       {$ELSE ~CLR}
       if CaseInsensitive then
-        Result := StrLIComp(@S1[Cur1], @S2[Cur2], 1)
+        Result := StrLIComp(PChar(@S1[Cur1]), PChar(@S2[Cur2]), 1)
       else
-        Result := StrLComp(@S1[Cur1], @S2[Cur2], 1);
+        Result := StrLComp(PChar(@S1[Cur1]), PChar(@S2[Cur2]), 1);
       {$ENDIF ~CLR}
       Inc(Cur1);
       Inc(Cur2);

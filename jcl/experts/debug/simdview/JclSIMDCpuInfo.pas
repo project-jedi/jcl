@@ -88,8 +88,8 @@ end;
 
 procedure TJclFormCpuInfo.Execute(const CpuInfo: TCPUInfo);
 begin
-  EditName.Text := CpuInfo.CpuName;
-  EditVendor.Text := CpuInfo.VendorIDString;
+  EditName.Text := string(AnsiString(CpuInfo.CpuName));
+  EditVendor.Text := string(AnsiString(CpuInfo.VendorIDString));
   EditFrequency.Text := IntToStr(CpuInfo.FrequencyInfo.NormFreq);
   CheckBoxMMX.Checked := CpuInfo.MMX;
   CheckBoxExMMX.Checked := CpuInfo.ExMMX;

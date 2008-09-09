@@ -391,9 +391,11 @@ begin
   begin
     NameSize := 0;
     DomainSize := 0;
-    Win32Check(LookupAccountSidW(nil, Sid, nil, NameSize, nil, DomainSize, Use));
-    SetLength(Name, NameSize);
-    SetLength(Domain, DomainSize);
+    LookupAccountSidW(nil, Sid, nil, NameSize, nil, DomainSize, Use);
+    if NameSize > 0 then
+      SetLength(Name, NameSize - 1);
+    if DomainSize > 0 then
+      SetLength(Domain, DomainSize - 1);
     Win32Check(LookupAccountSidW(nil, Sid, PWideChar(Name), NameSize, PWideChar(Domain), DomainSize, Use));
   end
   else
@@ -447,7 +449,11 @@ var
   Handle: THandle;
   Token: THandle;
   User: PTokenUser;
+  {$IFDEF SUPPORTS_UNICODE}
+  Name, Domain: WideString;
+  {$ELSE ~SUPPORTS_UNICODE}
   Name, Domain: AnsiString;
+  {$ENDIF ~SUPPORTS_UNICODE}
 begin
   Result := '';
   if not IsWinNT then  // if Win9x, then function return ''

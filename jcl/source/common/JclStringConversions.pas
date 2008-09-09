@@ -64,7 +64,7 @@ type
 
 {$IFNDEF CLR}
 // one shot conversion between PAnsiChar and PWideChar
-procedure ExpandANSIString(const Source: PChar; Target: PWideChar; Count: Cardinal);
+procedure ExpandANSIString(const Source: PAnsiChar; Target: PWideChar; Count: Cardinal);
 {$ENDIF ~CLR}
 
 // tpye of stream related functions
@@ -128,7 +128,10 @@ function UTF16SkipCharsFromStream(S: TStream; var NbSeq: Integer): Boolean;
 //        - if UNICODE_SILENT_FAILURE is not defined, StrPos is set to -1
 //    - StrPos > -1 flags string being too small, callee did nothing and caller is responsible for allocating space
 // StrPos will be incremented by the number of chars that were written
-function UTF16SetNextChar(var S: TUTF16String; var StrPos: Integer; Ch: UCS4): Boolean;
+function UTF16SetNextChar(var S: TUTF16String; var StrPos: Integer; Ch: UCS4): Boolean; overload;
+{$IFDEF SUPPORTS_UNICODE_STRING}
+function UTF16SetNextChar(var S: UnicodeString; var StrPos: Integer; Ch: UCS4): Boolean; overload;
+{$ENDIF SUPPORTS_UNICODE_STRING}
 function UTF16SetNextCharToStream(S: TStream; Ch: UCS4): Boolean;
 
 // AnsiGetNextChar = read next character at StrPos
@@ -291,7 +294,7 @@ end;
 // EAX contains Source, EDX contains Target, ECX contains Count
 
 {$IFNDEF CLR}
-procedure ExpandANSIString(const Source: PChar; Target: PWideChar; Count: Cardinal);
+procedure ExpandANSIString(const Source: PAnsiChar; Target: PWideChar; Count: Cardinal);
 // Source in EAX
 // Target in EDX
 // Count in ECX
@@ -1405,6 +1408,54 @@ begin
   end;
 end;
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+function UTF16SetNextChar(var S: UnicodeString; var StrPos: Integer; Ch: UCS4): Boolean;
+var
+  StrLength: Integer;
+begin
+  StrLength := Length(S);
+
+  if Ch <= MaximumUCS2 then
+  begin
+    // 16 bits to store in place
+    Result := (StrPos > 0) and (StrPos <= StrLength);
+    if Result then
+    begin
+      S[StrPos] := WideChar(Ch);
+      Inc(StrPos);
+    end;
+  end
+  else
+  if Ch <= MaximumUTF16 then
+  begin
+    // stores a surrogate pair
+    Result := (StrPos > 0) and (StrPos < StrLength);
+    if Result then
+    begin
+      Ch := Ch - HalfBase;
+      S[StrPos] := WideChar((Ch shr HalfShift) + SurrogateHighStart);
+      S[StrPos + 1] := WideChar((Ch and HalfMask) + SurrogateLowStart);
+      Inc(StrPos, 2);
+    end;
+  end
+  else
+  begin
+    {$IFDEF UNICOLE_SILENT_FAILURE}
+    // add ReplacementCharacter
+    Result := (StrPos > 0) and (StrPos <= StrLength);
+    if Result then
+    begin
+      S[StrPos] := WideChar(ReplacementCharacter);
+      Inc(StrPos, 1);
+    end;
+    {$ELSE ~UNICODE_SILENT_FAILURE}
+    StrPos := -1;
+    Result := False;
+    {$ENDIF ~UNICODE_SILENT_FAILURE}
+  end;
+end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
 function UTF16SetNextCharToStream(S: TStream; Ch: UCS4): Boolean;
 begin
   if Ch <= MaximumUCS2 then
@@ -1542,7 +1593,7 @@ begin
     if Result and (TmpPos = 2) then
     begin
       // one wide character
-      AnsiBuffer := UTF16Buffer[1];
+      AnsiBuffer := AnsiString(WideString(UTF16Buffer[1]));
       S[StrPos] := AnsiBuffer[1];
       Inc(StrPos);
     end
@@ -1550,7 +1601,7 @@ begin
     if Result and (TmpPos = 3) then
     begin
       // one surrogate pair
-      AnsiBuffer := UTF16Buffer;
+      AnsiBuffer := AnsiString(UTF16Buffer);
       S[StrPos] := AnsiBuffer[1];
       Inc(StrPos);
     end
@@ -1581,14 +1632,14 @@ begin
   if Result and (TmpPos = 2) then
   begin
     // one wide character
-    AnsiBuffer := UTF16Buffer[1];
+    AnsiBuffer := AnsiString(WideString(UTF16Buffer[1]));
     Result := StreamWriteByte(S, Ord(AnsiBuffer[1]));
   end
   else
   if Result and (TmpPos = 3) then
   begin
     // one surrogate pair
-    AnsiBuffer := UTF16Buffer;
+    AnsiBuffer := AnsiString(UTF16Buffer);
     Result := StreamWriteByte(S, Ord(AnsiBuffer[1]));
   end
   else
@@ -2018,7 +2069,7 @@ var
   StrPos: Integer;
 begin
   StrPos := 1;
-  Buf := AnsiString(Value);
+  Buf := WideString(AnsiString(Value));
   Result := UTF16GetNextChar(Buf, StrPos);
 end;
 

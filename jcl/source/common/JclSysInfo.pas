@@ -85,7 +85,7 @@ uses
   {$ENDIF MSWINDOWS}
   {$ENDIF ~CLR}
   Classes,
-  JclResources;
+  JclBase, JclResources;
 
 // Environment Variables
 {$IFDEF MSWINDOWS}
@@ -463,9 +463,9 @@ type
     Stepping: Byte;
     Features: Cardinal;
     FrequencyInfo: TFreqInfo;
-    VendorIDString: array [0..11] of Char;
-    Manufacturer: array [0..9] of Char;
-    CpuName: array [0..47] of Char;
+    VendorIDString: array [0..11] of AnsiChar;
+    Manufacturer: array [0..9] of AnsiChar;
+    CpuName: array [0..47] of AnsiChar;
     L1DataCacheSize: Cardinal;             // in kByte
     L1DataCacheLineSize: Byte;             // in Byte
     L1DataCacheAssociativity: Byte;
@@ -492,11 +492,11 @@ type
   end;
 
 const
-  VendorIDIntel: array [0..11] of Char = 'GenuineIntel';
-  VendorIDCyrix: array [0..11] of Char = 'CyrixInstead';
-  VendorIDAMD: array [0..11] of Char = 'AuthenticAMD';
-  VendorIDTransmeta: array [0..11] of Char = 'GenuineTMx86';
-  VendorIDVIA: array [0..11] of Char = 'CentaurHauls';
+  VendorIDIntel: array [0..11] of AnsiChar = 'GenuineIntel';
+  VendorIDCyrix: array [0..11] of AnsiChar = 'CyrixInstead';
+  VendorIDAMD: array [0..11] of AnsiChar = 'AuthenticAMD';
+  VendorIDTransmeta: array [0..11] of AnsiChar = 'GenuineTMx86';
+  VendorIDVIA: array [0..11] of AnsiChar = 'CentaurHauls';
 
 // Constants to be used with Feature Flag set of a CPU
 // eg. IF (Features and FPU_FLAG = FPU_FLAG) THEN CPU has Floating-Point unit on
@@ -1233,8 +1233,8 @@ function TestFDIVInstruction: Boolean;
 
 // Memory Information
 {$IFDEF MSWINDOWS}
-function GetMaxAppAddress: Cardinal;
-function GetMinAppAddress: Cardinal;
+function GetMaxAppAddress: DWORD_PTR;
+function GetMinAppAddress: DWORD_PTR;
 {$ENDIF MSWINDOWS}
 function GetMemoryLoad: Byte;
 function GetSwapFileSize: Cardinal;
@@ -1322,7 +1322,7 @@ uses
   {$ENDIF MSWINDOWS}
   Jcl8087, JclIniFiles,
   {$ENDIF ~CLR}
-  JclBase, JclFileUtils, JclStrings;
+  JclFileUtils, JclStrings;
 
 {$IFDEF FPC}
 {$IFDEF MSWINDOWS}
@@ -1620,7 +1620,7 @@ begin
   end
   else
   begin
-    RegWriteAnsiString(HKEY_CURRENT_USER, cEnvironment, VariableName, VariableContent);
+    RegWriteString(HKEY_CURRENT_USER, cEnvironment, VariableName, VariableContent);
     SetEnvironmentVariable(PChar(VariableName), PChar(VariableContent));
   end;
   SendMessage(HWND_BROADCAST, WM_SETTINGCHANGE, 0, LPARAM(PChar(cEnvironment)));
@@ -2122,7 +2122,7 @@ var
   WSAData: TWSAData;
   {$ENDIF MSWINDOWS}
   HostEnt: PHostEnt;
-  Host: string;
+  Host: AnsiString;
   SockAddr: TSockAddrIn;
 begin
   Result := '';
@@ -2131,17 +2131,17 @@ begin
   if R = 0 then
     try
   {$ENDIF MSWINDOWS}
-      Host := HostName;
+      Host := AnsiString(HostName);
       if Host = '' then
       begin
         SetLength(Host, MAX_PATH);
-        GetHostName(PChar(Host), MAX_PATH);
+        GetHostName(PAnsiChar(Host), MAX_PATH);
       end;
-      HostEnt := GetHostByName(PChar(Host));
+      HostEnt := GetHostByName(PAnsiChar(Host));
       if HostEnt <> nil then
       begin
         SockAddr.sin_addr.S_addr := Longint(PLongint(HostEnt^.h_addr_list^)^);
-        Result := inet_ntoa(SockAddr.sin_addr);
+        Result := string(AnsiString(inet_ntoa(SockAddr.sin_addr)));
       end;
     {$IFDEF MSWINDOWS}
     finally
@@ -2155,7 +2155,7 @@ end;
 
 {$IFDEF MSWINDOWS}
 {$IFNDEF CLR}
-procedure GetIpAddresses(Results: TStrings);
+procedure GetIpAddresses(Results: TAnsiStrings);
 type
   TaPInAddr = array[0..10] of PInAddr;
   PaPInAddr = ^TaPInAddr;
@@ -2163,7 +2163,7 @@ var
   R: Integer;
   HostEnt: PHostEnt;
   pptr: PaPInAddr;
-  Host: string;
+  Host: AnsiString;
   i: Integer;
   WSAData: TWSAData;
 begin
@@ -2172,13 +2172,13 @@ begin
   if R = 0 then begin
     try
       SetLength(Host, MAX_PATH);
-      GetHostName(PChar(Host), MAX_PATH);
-      HostEnt := GetHostByName(PChar(Host));
+      GetHostName(PAnsiChar(Host), MAX_PATH);
+      HostEnt := GetHostByName(PAnsiChar(Host));
       if HostEnt <> nil then begin
         pPtr := PaPInAddr(HostEnt^.h_addr_list);
         i := 0;
         while pPtr^[I] <> nil do begin
-          Results.Add(inet_ntoa(pptr^[i]^));
+          Results.Add(string(AnsiString(inet_ntoa(pptr^[i]^)))); // OF AnsiString to TStrings
           Inc(i);
         end;
       end;
@@ -2594,7 +2594,7 @@ end;
       end
       else
       begin
-        if GetModuleBaseNameA(Handle, 0, PChar(Result), MAX_PATH) > 0 then
+        if GetModuleBaseName(Handle, 0, PChar(Result), MAX_PATH) > 0 then
           StrResetLength(Result)
         else
           Result := '';
@@ -2839,7 +2839,7 @@ function GetTasksList(const List: TStrings): Boolean;
 begin
   List.BeginUpdate;
   try
-    Result := EnumWindows(@EnumWindowsProc, Integer(List));
+    Result := EnumWindows(@EnumWindowsProc, LPARAM(List));
   finally
     List.EndUpdate;
   end;
@@ -2888,8 +2888,8 @@ var
 begin
   if IsWindowVisible(Wnd) then
   begin
-    ParentWnd := GetWindowLong(Wnd, GWL_HWNDPARENT);
-    ExStyle := GetWindowLong(Wnd, GWL_EXSTYLE);
+    ParentWnd := THandle(GetWindowLongPtr(Wnd, GWLP_HWNDPARENT));
+    ExStyle := GetWindowLongPtr(Wnd, GWL_EXSTYLE);
     Result := ((ParentWnd = 0) or (ParentWnd = GetDesktopWindow)) and
       ((ExStyle and WS_EX_TOOLWINDOW = 0) or (ExStyle and WS_EX_APPWINDOW <> 0));
   end
@@ -3097,7 +3097,7 @@ var
 begin
   SearchRec.PID := PID;
   SearchRec.Wnd := 0;
-  EnumWindows(@EnumWindowsProc, Integer(@SearchRec));
+  EnumWindows(@EnumWindowsProc, LPARAM(@SearchRec));
   Result := SearchRec.Wnd;
 end;
 
@@ -3427,9 +3427,9 @@ function gluErrorString(errCode: Cardinal): PChar; stdcall; external 'glu32.dll'
 }
 
 type
-  TglGetStringFunc = function(name: Cardinal): PChar; stdcall;
+  TglGetStringFunc = function(name: Cardinal): PAnsiChar; stdcall;
   TglGetErrorFunc = function: Cardinal; stdcall;
-  TgluErrorStringFunc = function(errCode: Cardinal): PChar; stdcall;
+  TgluErrorStringFunc = function(errCode: Cardinal): PAnsiChar; stdcall;
 
   TwglCreateContextFunc = function(DC: HDC): HGLRC; stdcall;
   TwglDeleteContextFunc = function(p1: HGLRC): BOOL; stdcall;
@@ -3466,10 +3466,10 @@ var
   iFormatIndex: Integer;
   hGLContext: HGLRC;
   hGLDC: HDC;
-  pcTemp: PChar;
+  pcTemp: PAnsiChar;
   glErr: Cardinal;
   bError: Boolean;
-  sOpenGLVersion, sOpenGLVendor: string;
+  sOpenGLVersion, sOpenGLVendor: AnsiString;
   Save8087CW: Word;
 
   procedure FunctionFailedError(Name: string);
@@ -3767,9 +3767,9 @@ function GetMacAddresses(const Machine: string; const Addresses: TStrings): Inte
     Enum: TLanaEnum;
     I, L, NameLen: Integer;
     Adapter: AStat;
-    MachineName: string;
+    MachineName: AnsiString;
   begin
-    MachineName := UpperCase(Machine);
+    MachineName := AnsiString(UpperCase(Machine));
     if MachineName = '' then
       MachineName := '*';
     NameLen := Length(MachineName);
@@ -3799,7 +3799,7 @@ function GetMacAddresses(const Machine: string; const Addresses: TStrings): Inte
           NCB.ncb_command := NCBASTAT;
           NCB.ncb_lana_num := Enum.lana[I];
           Move(MachineName[1], NCB.ncb_callname, SizeOf(NCB.ncb_callname));
-          NCB.ncb_buffer := PChar(@Adapter);
+          NCB.ncb_buffer := PUCHAR(@Adapter);
           NCB.ncb_length := SizeOf(Adapter);
           if NetBios(@NCB) = NRC_GOODRET then
             Addresses.Add(AdapterToString(@Adapter.adapt));
@@ -4327,7 +4327,7 @@ function CPUID: TCpuInfo;
             11:
               CPUInfo.CpuName := 'Pentium III';
           else
-            StrPCopy(CPUInfo.CpuName, Format('P6 (Model %d)', [CPUInfo.Model]));
+            StrPCopy(CPUInfo.CpuName, AnsiString(Format('P6 (Model %d)', [CPUInfo.Model])));
           end;
         15:
           case CPUInfo.IntelSpecific.BrandID of
@@ -4341,7 +4341,7 @@ function CPUID: TCpuInfo;
             CPUInfo.CpuName := 'Pentium 4';
           end;
       else
-        StrPCopy(CPUInfo.CpuName, Format('P%d', [CPUInfo.Family]));
+        StrPCopy(CPUInfo.CpuName, AnsiString(Format('P%d', [CPUInfo.Family])));
       end;
     end;
 
@@ -4468,7 +4468,7 @@ function CPUID: TCpuInfo;
             9:
               CPUInfo.CpuName := 'AMD-K6®-III (Model 9)';
             else
-              StrFmt(CPUInfo.CpuName,PChar(RsUnknownAMDModel),[CPUInfo.Model]);
+              StrFmt(CPUInfo.CpuName, PAnsiChar(AnsiString(RsUnknownAMDModel)),[CPUInfo.Model]);
           end;
         6:
           case CPUInfo.Model of
@@ -4489,7 +4489,7 @@ function CPUID: TCpuInfo;
             10:
               CPUInfo.CpuName := 'AMD Athlon™ XP (Model 10)';
             else
-              StrFmt(CPUInfo.CpuName, PChar(RsUnknownAMDModel), [CPUInfo.Model]);
+              StrFmt(CPUInfo.CpuName, PAnsiChar(AnsiString(RsUnknownAMDModel)), [CPUInfo.Model]);
           end;
         8:
 
@@ -4569,7 +4569,7 @@ function CPUID: TCpuInfo;
         6:
           CPUInfo.CpuName := '6x86MX';
       else
-        StrPCopy(CPUInfo.CpuName, Format('%dx86', [CPUInfo.Family]));
+        StrPCopy(CPUInfo.CpuName, AnsiString(Format('%dx86', [CPUInfo.Family])));
       end;
     end;
   end;
@@ -4798,11 +4798,11 @@ end;
 
 procedure RoundToAllocGranularityPtr(var Value: Pointer; Up: Boolean);
 begin
-  if (Cardinal(Value) mod AllocGranularity) <> 0 then
+  if (DWORD_PTR(Value) mod AllocGranularity) <> 0 then
     if Up then
-      Value := Pointer(((Cardinal(Value) div AllocGranularity) + 1) * AllocGranularity)
+      Value := Pointer(((DWORD_PTR(Value) div AllocGranularity) + 1) * AllocGranularity)
     else
-      Value := Pointer((Cardinal(Value) div AllocGranularity) * AllocGranularity);
+      Value := Pointer((DWORD_PTR(Value) div AllocGranularity) * AllocGranularity);
 end;
 
 //=== Advanced Power Management (APM) ========================================
@@ -4941,29 +4941,29 @@ end;
 
 //=== Memory Information =====================================================
 
-function GetMaxAppAddress: Cardinal;
+function GetMaxAppAddress: DWORD_PTR;
 var
   SystemInfo: TSystemInfo;
 begin
   FillChar(SystemInfo, SizeOf(SystemInfo), #0);
   GetSystemInfo(SystemInfo);
-  Result := Integer(SystemInfo.lpMaximumApplicationAddress);
+  Result := DWORD_PTR(SystemInfo.lpMaximumApplicationAddress);
 end;
 
-function GetMinAppAddress: Cardinal;
+function GetMinAppAddress: DWORD_PTR;
 var
   SystemInfo: TSystemInfo;
 begin
   FillChar(SystemInfo, SizeOf(SystemInfo), #0);
   GetSystemInfo(SystemInfo);
-  Result := Integer(SystemInfo.lpMinimumApplicationAddress);
+  Result := DWORD_PTR(SystemInfo.lpMinimumApplicationAddress);
 end;
 {$ENDIF MSWINDOWS}
 
 function GetMemoryLoad: Byte;
 {$IFDEF UNIX}
 var
-  SystemInf: TSysInfo ;
+  SystemInf: TSysInfo;
 begin
   {$IFDEF FPC}
   SysInfo(@SystemInf);

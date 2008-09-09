@@ -3315,7 +3315,7 @@ begin
   end;
 
   if (Value <> '') and (FArchive is TJclCompressionArchive)
-    and GetFileAttributesEx(PAnsiChar(Value), GetFileExInfoStandard, @AFindData) then
+    and GetFileAttributesEx(PChar(Value), GetFileExInfoStandard, @AFindData) then
   begin
     FileSize := (Int64(AFindData.nFileSizeHigh) shl 32) or AFindData.nFileSizeLow;
     Attributes := AFindData.dwFileAttributes;
@@ -3432,7 +3432,7 @@ begin
   Result := FFileName <> '';
   if Result then
   begin
-    FileHandle := CreateFile(PAnsiChar(FFileName), FILE_WRITE_ATTRIBUTES, FILE_SHARE_READ, nil, OPEN_EXISTING, 0, 0);
+    FileHandle := CreateFile(PChar(FFileName), FILE_WRITE_ATTRIBUTES, FILE_SHARE_READ, nil, OPEN_EXISTING, 0, 0);
     try
       // creation time should be the oldest
       if ipCreationTime in FValidProperties then
@@ -4490,7 +4490,7 @@ begin
     VT_LPSTR:
       begin
         Result := True;
-        Setter(Value.pszVal);
+        Setter(WideString(AnsiString(Value.pszVal)));
       end;
     VT_LPWSTR:
       begin

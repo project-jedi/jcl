@@ -51,7 +51,8 @@ uses
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
-  Classes, SysUtils, JclBase;
+  Classes, SysUtils,
+  JclBase, JclStringConversions;
 
 const
   JCL_PCRE_CALLOUT_NOERROR      = 0;
@@ -61,7 +62,7 @@ const
   JCL_PCRE_ERROR_STUDYFAILED    = -999;
 
 type
-  TJclAnsiRegEx = class;
+  TJclRegEx = class;
 
   EPCREError = class(EJclError)
   private
@@ -74,95 +75,101 @@ type
   TPCREIntArray = array [0 .. 0] of Integer;
   PPCREIntArray = ^TPCREIntArray;
 
-  TJclAnsiRegExOption = (roIgnoreCase, roMultiLine, roDotAll, roExtended,
+  TJclRegExOption = (roIgnoreCase, roMultiLine, roDotAll, roExtended,
     roAnchored, roDollarEndOnly, roExtra, roNotBOL, roNotEOL, roUnGreedy,
     roNotEmpty, roUTF8, roNoAutoCapture, roNoUTF8Check, roAutoCallout,
     roPartial, roDfaShortest, roDfaRestart, roDfaFirstLine, roDupNames,
     roNewLineCR, roNewLineLF, roNewLineCRLF, roNewLineAny, roBSRAnyCRLF,
     roBSRUnicode, roJavascriptCompat);
-  TJclAnsiRegExOptions = set of TJclAnsiRegExOption;
-  TJclAnsiCaptureRange = record
+  TJclRegExOptions = set of TJclRegExOption;
+  TJclCaptureRange = record
     FirstPos: Integer;
     LastPos: Integer;
   end;
 
-  TJclAnsiRegExCallout = procedure (Sender: TJclAnsiRegEx;
+  TJclRegExCallout = procedure (Sender: TJclRegEx;
     Index, MatchStart, SubjectPos, LastCapture, PatternPos, NextItemLength: Integer;
     var ErrorCode: Integer) of object;
   TPCRECalloutIndex = 0 .. 255;
 
-  TJclAnsiRegEx = class(TObject)
+  TJclRegEx = class(TObject)
   private
     FCode: PPCRE;
     FExtra: PPCREExtra;
-    FOptions: TJclAnsiRegExOptions;
-    FPattern: AnsiString;
+    FOptions: TJclRegExOptions;
+    FPattern: string;
     FDfaMode: Boolean;
-    FSubject: AnsiString;
+    FSubject: string;
 
     FViewChanges: Boolean;
     FChangedCaptures: TList;
-    FResultValues: array of String;
+    FResultValues: array of string;
 
     FErrorCode: Integer;
-    FErrorMessage: AnsiString;
+    FErrorMessage: string;
     FErrorOffset: Integer;
 
     FVector: PPCREIntArray;
     FVectorSize: Integer;
     FCaptureCount: Integer;
 
-    FOnCallout: TJclAnsiRegExCallout;
+    FOnCallout: TJclRegExCallout;
 
-    function GetResult: AnsiString;
-    function GetCapture(Index: Integer): AnsiString;
-    procedure SetCapture(Index: Integer; const Value: AnsiString);
-    function GetCaptureRange(Index: Integer): TJclAnsiCaptureRange;
-    function GetNamedCapture(const Name: AnsiString): AnsiString;
-    procedure SetNamedCapture(const Name, Value: Ansistring);
+    function GetResult: string;
+    function GetCapture(Index: Integer): string;
+    procedure SetCapture(Index: Integer; const Value: string);
+    function GetCaptureRange(Index: Integer): TJclCaptureRange;
+    function GetNamedCapture(const Name: string): string;
+    procedure SetNamedCapture(const Name, Value: string);
     function GetCaptureNameCount: Integer;
-    function GetCaptureName(Index: Integer): String;
+    function GetCaptureName(Index: Integer): string;
     function GetAPIOptions(RunTime: Boolean): Integer;
     function CalloutHandler(var CalloutBlock: pcre_callout_block): Integer;
 
   public
     destructor Destroy; override;
 
-    property Options: TJclAnsiRegExOptions read FOptions write FOptions;
-    function Compile(const Pattern: AnsiString; Study: Boolean;
+    property Options: TJclRegExOptions read FOptions write FOptions;
+    function Compile(const Pattern: string; Study: Boolean;
       UserLocale: Boolean = False): Boolean;
-    property Pattern: AnsiString read FPattern;
+    property Pattern: string read FPattern;
     property DfaMode: Boolean read FDfaMode write FDfaMode;
-    function Match(const Subject: AnsiString; StartOffset: Cardinal = 1): Boolean;
-    property Subject: AnsiString read FSubject;
-    property Result: AnsiString read GetResult;
+    function Match(const Subject: string; StartOffset: Cardinal = 1): Boolean;
+    property Subject: string read FSubject;
+    property Result: string read GetResult;
 
     property ViewChanges: Boolean read FViewChanges write FViewChanges;
     property CaptureCount: Integer read FCaptureCount write FCaptureCount;
-    property Captures[Index: Integer]: AnsiString read GetCapture write SetCapture;
-    property CaptureRanges[Index: Integer]: TJclAnsiCaptureRange read GetCaptureRange;
+    property Captures[Index: Integer]: string read GetCapture write SetCapture;
+    property CaptureRanges[Index: Integer]: TJclCaptureRange read GetCaptureRange;
 
-    property NamedCaptures[const Name: AnsiString]: AnsiString
+    property NamedCaptures[const Name: string]: string
       read GetNamedCapture write SetNamedCapture;
     property CaptureNameCount: Integer read GetCaptureNameCount;
-    property CaptureNames[Index: Integer]: AnsiString read GetCaptureName;
-    function IndexOfName(const Name: String): Integer;
-    function IsNameValid(const Name: String): Boolean;
+    property CaptureNames[Index: Integer]: string read GetCaptureName;
+    function IndexOfName(const Name: string): Integer;
+    function IsNameValid(const Name: string): Boolean;
 
     property ErrorCode: Integer read FErrorCode;
-    property ErrorMessage: AnsiString read FErrorMessage;
+    property ErrorMessage: string read FErrorMessage;
     property ErrorOffset: Integer read FErrorOffset;
 
-    property OnCallout: TJclAnsiRegExCallout
-      read FOnCallout write FOnCallout;
+    property OnCallout: TJclRegExCallout read FOnCallout write FOnCallout;
   end;
+
+  TJclAnsiRegEx = TJclRegEx;
+  TJclAnsiRegExOption = TJclRegExOption;
+  TJclAnsiRegExOptions = TJclRegExOptions;
+  TJclAnsiCaptureRange = TJclCaptureRange;
+  TJclAnsiRegExCallout = TJclRegExCallout;
+
 
 procedure InitializeLocaleSupport;
 procedure TerminateLocaleSupport;
 
 // Args is an array of pairs (CaptureIndex, Value) or (CaptureName, Value).
 // For example: NewIp := StrReplaceRegEx(DirIP, '(\d+)\.(\d+)\.(\d+)\.(\d+)', [3, '128', 4, '254']); 
-function StrReplaceRegEx(const Subject, Pattern: AnsiString; Args: array of const): AnsiString;
+function StrReplaceRegEx(const Subject, Pattern: string; Args: array of const): string;
 
 {$IFDEF UNITVERSIONING}
 const
@@ -180,8 +187,54 @@ uses
   SysConst,
   JclResources;
 
+function EncodeString(const S: string; ToUTF8: Boolean): AnsiString; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
+begin
+  if ToUTF8 then
+    Result := StringToUTF8(S)
+  else
+    Result := AnsiString(S);
+end;
+
+function DecodeString(const S: AnsiString; IsUTF8: Boolean): string; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
+begin
+  if IsUTF8 then
+    Result := UTF8ToString(S)
+  else
+    Result := string(S);
+end;
+
+function TranslateIndex(const S: string; ToUTF8: Boolean; Index: Integer): Integer;
 var
-  GTables: PChar;
+  UTF8Buffer: TUTF8String;
+  UTF8Pos, StrPos, StrLen: Integer;
+  Ch: UCS4;
+begin
+  if ToUTF8 then
+  begin
+    SetLength(UTF8Buffer, 6);
+    StrPos := 1;
+    StrLen := Length(S);
+    while (StrPos > 0) and (StrPos <= StrLen) and (Index > 1) do
+    begin
+      UTF8Pos := 1;
+      Ch := StringGetNextChar(S, StrPos);
+      if (StrPos > 0) and UTF8SetNextChar(UTF8Buffer, UTF8Pos, Ch) and (UTF8Pos > 0) then
+        Dec(Index, UTF8Pos - 1);
+    end;
+    if StrPos <= 0 then
+      raise EJclUnexpectedEOSequenceError.Create
+    else
+    if StrPos > StrLen then
+      Result := StrLen
+    else
+      Result := StrPos;
+  end
+  else
+    Result := Index;
+end;
+
+var
+  GTables: PAnsiChar;
 
 function JclPCREGetMem(Size: Integer): Pointer; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 begin
@@ -195,7 +248,7 @@ end;
 
 function JclPCRECallout(var callout_block: pcre_callout_block): Integer; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 begin
-   Result := TJclAnsiRegEx(callout_block.callout_data).CalloutHandler(callout_block);
+   Result := TJclRegEx(callout_block.callout_data).CalloutHandler(callout_block);
 end;
 
 function PCRECheck(Value: Integer): Boolean;
@@ -263,9 +316,9 @@ begin
   raise EPCREError.CreateRes(PErr, Value);
 end;
 
-//=== { TJclAnsiRegEx } ======================================================
+//=== { TJclRegEx } ===========================================================
 
-destructor TJclAnsiRegEx.Destroy;
+destructor TJclRegEx.Destroy;
 begin
   if Assigned(FCode) then
     CallPCREFree(FCode);
@@ -279,11 +332,11 @@ begin
   inherited Destroy;
 end;
 
-function TJclAnsiRegEx.Compile(const Pattern: AnsiString; Study: Boolean;
+function TJclRegEx.Compile(const Pattern: string; Study: Boolean;
   UserLocale: Boolean = False): Boolean;
 var
-  ErrMsgPtr: PChar;
-  Tables: PChar;
+  ErrMsgPtr: PAnsiChar;
+  Tables: PAnsiChar;
 begin
   if UserLocale then
   begin
@@ -298,11 +351,14 @@ begin
     raise EPCREError.CreateRes(@RsErrNull, PCRE_ERROR_NULL);
 
   if Assigned(FCode) then
+  begin
     CallPCREFree(FCode);
-  FCode := pcre_compile2(PChar(FPattern), GetAPIOptions(False),
+    FCode := nil;
+  end;
+  FCode := pcre_compile2(PAnsiChar(EncodeString(FPattern, roUTF8 in Options)), GetAPIOptions(False),
     @FErrorCode, @ErrMsgPtr, @FErrorOffset, Tables);
   Inc(FErrorOffset);
-  FErrorMessage := ErrMsgPtr;
+  FErrorMessage := string(AnsiString(ErrMsgPtr));
   Result := Assigned(FCode);
   if Result then
   begin
@@ -314,7 +370,7 @@ begin
       if not Result then
       begin
         FErrorCode := JCL_PCRE_ERROR_STUDYFAILED;
-        FErrorMessage := ErrMsgPtr;
+        FErrorMessage := string(AnsiString(ErrMsgPtr));
       end;
     end;
 
@@ -329,47 +385,52 @@ begin
   end;
 end;
 
-function TJclAnsiRegEx.GetAPIOptions(RunTime: Boolean): Integer;
+function TJclRegEx.GetAPIOptions(RunTime: Boolean): Integer;
 const
   { roIgnoreCase, roMultiLine, roDotAll, roExtended,
     roAnchored, roDollarEndOnly, roExtra, roNotBOL, roNotEOL, roUnGreedy,
     roNotEmpty, roUTF8, roNoAutoCapture, roNoUTF8Check, roAutoCallout,
     roPartial, roDfaShortest, roDfaRestart, roDfaFirstLine, roDupNames,
     roNewLineCR, roNewLineLF, roNewLineCRLF, roNewLineAny }
-  cDesignOptions: array [TJclAnsiRegExOption] of Integer =
+  cDesignOptions: array [TJclRegExOption] of Integer =
    (PCRE_CASELESS, PCRE_MULTILINE, PCRE_DOTALL, PCRE_EXTENDED, PCRE_ANCHORED,
     PCRE_DOLLAR_ENDONLY, PCRE_EXTRA, 0, 0, PCRE_UNGREEDY, 0, PCRE_UTF8,
     PCRE_NO_AUTO_CAPTURE, PCRE_NO_UTF8_CHECK, PCRE_AUTO_CALLOUT, 0, 0, 0, 0,
     PCRE_DUPNAMES, PCRE_NEWLINE_CR, PCRE_NEWLINE_LF, PCRE_NEWLINE_CRLF,
     PCRE_NEWLINE_ANY, PCRE_BSR_ANYCRLF, PCRE_BSR_UNICODE,
     PCRE_JAVASCRIPT_COMPAT);
-  cRunOptions: array [TJclAnsiRegExOption] of Integer =
+  cRunOptions: array [TJclRegExOption] of Integer =
    (0, 0, 0, 0, 0, 0, 0, PCRE_NOTBOL, PCRE_NOTEOL, 0, PCRE_NOTEMPTY, 0, 0,
    PCRE_NO_UTF8_CHECK, 0, PCRE_PARTIAL, 0, 0, 0, 0, PCRE_NEWLINE_CR,
    PCRE_NEWLINE_LF, PCRE_NEWLINE_CRLF, PCRE_NEWLINE_ANY, PCRE_BSR_ANYCRLF,
    PCRE_BSR_UNICODE, PCRE_JAVASCRIPT_COMPAT);
 var
-  I: TJclAnsiRegExOption;
+  I: TJclRegExOption;
+  SUPPORT_UTF8: Integer;
 begin
+  PCRECheck(pcre_config(PCRE_CONFIG_UTF8, @SUPPORT_UTF8));
+  if (roUTF8 in Options) and (SUPPORT_UTF8 = 0) then
+    raise EPCREError.CreateRes(@RsErrNoUTF8Support, 0);
+
   Result := 0;
   if RunTime then
   begin
-    for I := Low(TJclAnsiRegExOption) to High(TJclAnsiRegExOption) do
+    for I := Low(TJclRegExOption) to High(TJclRegExOption) do
       if I in Options then
         Result := Result or cRunOptions[I];
   end
   else
   begin
-    for I := Low(TJclAnsiRegExOption) to High(TJclAnsiRegExOption) do
+    for I := Low(TJclRegExOption) to High(TJclRegExOption) do
       if I in Options then
         Result := Result or cDesignOptions[I];
   end;
 end;
 
-function TJclAnsiRegEx.GetResult: AnsiString;
+function TJclRegEx.GetResult: string;
 var
   Index, CaptureIndex, Pos: Integer;
-  Range: TJclAnsiCaptureRange;
+  Range: TJclCaptureRange;
 begin
   if Assigned(FChangedCaptures) and (FChangedCaptures.Count > 0) then
   begin
@@ -393,9 +454,9 @@ begin
     Result := FSubject;
 end;
 
-function TJclAnsiRegEx.GetCapture(Index: Integer): AnsiString;
+function TJclRegEx.GetCapture(Index: Integer): string;
 var
-  From, Len: Integer;
+  FromPos, ToPos: Integer;
 begin
   if (Index < 0) or (Index >= FCaptureCount) then
     PCRECheck(PCRE_ERROR_NOSUBSTRING)
@@ -408,14 +469,14 @@ begin
     end;
 
     Index := Index * 2;
-    From := FVector^[Index];
-    Len := FVector^[Index + 1] - From;
-    SetLength(Result, Len);
-    Move(FSubject[From + 1], PChar(Result)^, Len);
+    FromPos := TranslateIndex(FSubject, roUTF8 in Options, FVector^[Index] + 1);
+    ToPos := TranslateIndex(FSubject, roUTF8 in Options, FVector^[Index + 1] + 1) - 1;
+    SetLength(Result, ToPos - FromPos + 1);
+    Move(FSubject[FromPos], Result[1], ToPos - FromPos + 1);
   end;
 end;
 
-procedure TJclAnsiRegEx.SetCapture(Index: Integer; const Value: String);
+procedure TJclRegEx.SetCapture(Index: Integer; const Value: string);
 begin
   if (Index < 0) or (Index >= FCaptureCount) then
     PCRECheck(PCRE_ERROR_NOSUBSTRING)
@@ -437,55 +498,56 @@ begin
   end;
 end;
 
-function TJclAnsiRegEx.GetCaptureRange(Index: Integer): TJclAnsiCaptureRange;
+function TJclRegEx.GetCaptureRange(Index: Integer): TJclCaptureRange;
 begin
   if (Index < 0) or (Index >= FCaptureCount) then
     PCRECheck(PCRE_ERROR_NOSUBSTRING)
   else
   begin
     Index := Index * 2;
-    Result.FirstPos := FVector^[Index] + 1;
-    Result.LastPos := FVector^[Index + 1];
+    Result.FirstPos := TranslateIndex(FSubject, roUTF8 in Options, FVector^[Index] + 1);
+    Result.LastPos := TranslateIndex(FSubject, roUTF8 in Options, FVector^[Index + 1] + 1) - 1;
   end;
 end;
 
-function TJclAnsiRegEx.GetNamedCapture(const Name: AnsiString): AnsiString;
+function TJclRegEx.GetNamedCapture(const Name: string): string;
 var
   Index: Integer;
 begin
-  Index := pcre_get_stringnumber(FCode, PChar(Name));
+  Index := pcre_get_stringnumber(FCode, PAnsiChar(EncodeString(Name, roUTF8 in Options)));
   PCRECheck(Index);
 
   Result := GetCapture(Index);
 end;
 
-procedure TJclAnsiRegEx.SetNamedCapture(const Name, Value: String);
+procedure TJclRegEx.SetNamedCapture(const Name, Value: string);
 var
   Index: Integer;
 begin
-  Index := pcre_get_stringnumber(FCode, PChar(Name));
+  Index := pcre_get_stringnumber(FCode, PAnsiChar(EncodeString(Name, roUTF8 in Options)));
   PCRECheck(Index);
 
   SetCapture(Index, Value);
 end;
 
-function TJclAnsiRegEx.GetCaptureNameCount: Integer;
+function TJclRegEx.GetCaptureNameCount: Integer;
 begin
   PCRECheck(pcre_fullinfo(FCode, FExtra, PCRE_INFO_NAMECOUNT, @Result));
 end;
 
-function TJclAnsiRegEx.GetCaptureName(Index: Integer): String;
+function TJclRegEx.GetCaptureName(Index: Integer): string;
 var
-  NameTable: PChar;
+  NameTable: PAnsiChar;
   EntrySize: Integer;
 begin
   PCRECheck(pcre_fullinfo(FCode, FExtra, PCRE_INFO_NAMETABLE, @NameTable));
   PCRECheck(pcre_fullinfo(FCode, FExtra, PCRE_INFO_NAMEENTRYSIZE, @EntrySize));
 
-  Result := NameTable + EntrySize * Index + 2;
+  NameTable := NameTable + EntrySize * Index + 2;
+  Result := DecodeString(AnsiString(NameTable), roUTF8 in Options);
 end;
 
-function TJclAnsiRegEx.CalloutHandler(var CalloutBlock: pcre_callout_block): Integer;
+function TJclRegEx.CalloutHandler(var CalloutBlock: pcre_callout_block): Integer;
 begin
   try
     Result := JCL_PCRE_CALLOUT_NOERROR;
@@ -507,12 +569,13 @@ begin
   end;
 end;
 
-function TJclAnsiRegEx.Match(const Subject: AnsiString; StartOffset: Cardinal = 1): Boolean;
+function TJclRegEx.Match(const Subject: string; StartOffset: Cardinal = 1): Boolean;
 var
   LocalExtra: real_pcre_extra;
   Extra: Pointer;
   WorkSpace: array [0 .. 19] of Integer;
   ExecRslt: Integer;
+  EncodedSubject: AnsiString;
 begin
   if Assigned(FOnCallout) then
   begin
@@ -536,14 +599,20 @@ begin
   FSubject := Subject;
   if Assigned(FChangedCaptures) then
     FChangedCaptures.Clear;
+  EncodedSubject := EncodeString(FSubject, roUTF8 in Options);
+
+  // convert index
+  if roUTF8 in Options then
+    StartOffset := Length(EncodeString(Copy(FSubject, 1, StartOffset - 1), True)) + 1;
+
   if FDfaMode then
   begin
-    ExecRslt := pcre_dfa_exec(FCode, Extra, PChar(FSubject), Length(FSubject),
+    ExecRslt := pcre_dfa_exec(FCode, Extra, PAnsiChar(EncodedSubject), Length(EncodedSubject),
       StartOffset - 1, GetAPIOptions(True), pcre.PInteger(FVector), FVectorSize, @Workspace, 20);
   end
   else
   begin
-    ExecRslt := pcre_exec(FCode, Extra, PChar(FSubject), Length(FSubject),
+    ExecRslt := pcre_exec(FCode, Extra, PAnsiChar(EncodedSubject), Length(EncodedSubject),
       StartOffset - 1, GetAPIOptions(True), pcre.PInteger(FVector), FVectorSize);
   end;
   Result := ExecRslt >= 0;
@@ -560,14 +629,14 @@ begin
   end;
 end;
 
-function TJclAnsiRegEx.IndexOfName(const Name: String): Integer;
+function TJclRegEx.IndexOfName(const Name: string): Integer;
 begin
-  Result := pcre_get_stringnumber(FCode, PChar(Name));
+  Result := pcre_get_stringnumber(FCode, PAnsiChar(EncodeString(Name, roUTF8 in Options)));
 end;
 
-function TJclAnsiRegEx.IsNameValid(const Name: String): Boolean;
+function TJclRegEx.IsNameValid(const Name: string): Boolean;
 begin
-  Result := pcre_get_stringnumber(FCode, PChar(Name)) >= 0;
+  Result := pcre_get_stringnumber(FCode, PAnsiChar(EncodeString(Name, roUTF8 in Options))) >= 0;
 end;
 
 procedure InitializeLocaleSupport;
@@ -586,30 +655,45 @@ begin
 end;
 
 // TODO: Better/specific error messages, show index when available.
-function StrReplaceRegEx(const Subject, Pattern: AnsiString; Args: array of const): AnsiString;
+function StrReplaceRegEx(const Subject, Pattern: string; Args: array of const): string;
 
-  function ArgToString(Index: Integer): AnsiString;
+  function ArgToString(Index: Integer): string;
   begin
     // TODO: Any other type?
     case TVarRec(Args[Index]).VType of
-      vtString: Result := TVarRec(Args[Index]).VString^;
-      vtPChar: Result := TVarRec(Args[Index]).VPChar;
-      vtAnsiString: Result := AnsiString(TVarRec(Args[Index]).VAnsiString);
-      else
-        raise EConvertError.Create(SInvalidFormat);
+      vtPChar:
+        Result := string(AnsiString(TVarRec(Args[Index]).VPChar));
+      vtPWideChar:
+        Result := string(WideString(TVarRec(Args[Index]).VPWideChar));
+      vtString:
+        Result := string(TVarRec(Args[Index]).VString^);
+      vtAnsiString:
+        Result := string(AnsiString(TVarRec(Args[Index]).VAnsiString));
+      vtWideString:
+        Result := string(WideString(TVarRec(Args[Index]).VWideString));
+      {$IFDEF SUPPORTS_UNICODE_STRING}
+      vtUnicodeString:
+        Result := string(UnicodeString(TVarRec(Args[Index]).VUnicodeString));
+      {$ENDIF SUPPORTS_UNICODE_STRING}
+      vtChar:
+        Result := string(AnsiString(TVarRec(Args[Index]).VChar));
+      vtWideChar:
+        Result := string(WideString(TVarRec(Args[Index]).VWideChar));
+    else
+      raise EConvertError.Create(SInvalidFormat);
     end;
   end;
 
 var
-  Re: TJclAnsiRegEx;
+  Re: TJclRegEx;
   Index, ArgIndex: Integer;
-  Value: AnsiString;
+  Value: string;
 begin
   if Odd(Length(Args)) then
     raise EConvertError.Create(SArgumentMissing)
   else
   begin
-    Re := TJclAnsiRegEx.Create;
+    Re := TJclRegEx.Create;
     try
       if Re.Compile(Pattern, False) and Re.Match(Subject) then
       begin

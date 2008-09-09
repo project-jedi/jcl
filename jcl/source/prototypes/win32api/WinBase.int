@@ -131,15 +131,15 @@ function GetFileSecurity(lpFileName: LPCTSTR; RequestedInformation: SECURITY_INF
 
 // WinBase.h line 10251
 
-function SetVolumeMountPoint(lpszVolumeMountPoint, lpszVolumeName: LPCSTR): BOOL; stdcall;
-{$EXTERNALSYM SetVolumeMountPoint}
+function SetVolumeMountPointW(lpszVolumeMountPoint, lpszVolumeName: LPCWSTR): BOOL; stdcall;
+{$EXTERNALSYM SetVolumeMountPointW}
 
-function DeleteVolumeMountPoint(lpszVolumeMountPoint: LPCSTR): BOOL; stdcall;
-{$EXTERNALSYM DeleteVolumeMountPoint}
+function DeleteVolumeMountPointW(lpszVolumeMountPoint: LPCWSTR): BOOL; stdcall;
+{$EXTERNALSYM DeleteVolumeMountPointW}
 
-function GetVolumeNameForVolumeMountPoint(lpszVolumeMountPoint: LPCSTR;
-  lpszVolumeName: LPSTR; cchBufferLength: DWORD): BOOL; stdcall;
-{$EXTERNALSYM GetVolumeNameForVolumeMountPoint}
+function GetVolumeNameForVolumeMountPointW(lpszVolumeMountPoint: LPCWSTR;
+  lpszVolumeName: LPWSTR; cchBufferLength: DWORD): BOOL; stdcall;
+{$EXTERNALSYM GetVolumeNameForVolumeMountPointW}
 
 {$ENDIF ~CLR}
 

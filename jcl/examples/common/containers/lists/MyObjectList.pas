@@ -50,7 +50,7 @@ type
     procedure IMyObjectList.Clear = Clear;
     function Contains(AObject: TMyObject): Boolean;
     function IMyObjectList.ContainsAll = ContainsAll;
-    function IMyObjectList.Equals = Equals;
+    function IMyObjectList.Equals = CollectionEquals;
     function IMyObjectList.First = First;
     function IMyObjectList.IsEmpty = IsEmpty;
     function IMyObjectList.Last = Last;

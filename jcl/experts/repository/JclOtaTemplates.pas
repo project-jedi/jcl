@@ -20,7 +20,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -89,8 +89,7 @@ begin
   Result := StringReplace(Result, ModulePattern, ModuleIdent, [rfReplaceAll, rfIgnoreCase]);
 end;
 
-function GetFinalSourceContent(const Content, ModuleIdent, FormIdent,
-  AncestorIdent: string): string;
+function GetFinalSourceContent(const Content, ModuleIdent, FormIdent, AncestorIdent: string): string;
 begin
   Result := StringReplace(Content, FormPattern, FormIdent, [rfReplaceAll, rfIgnoreCase]);
   Result := StringReplace(Result, AncestorPattern, AncestorIdent, [rfReplaceAll, rfIgnoreCase]);
@@ -113,7 +112,7 @@ function ApplyTemplate(const Template: string;
 
     if CharCount > 0 then
     begin
-      Move(Src[IndexSrc], Dest[IndexDest], CharCount);
+      Move(Src[IndexSrc], Dest[IndexDest], CharCount*SizeOf(Char));
       Inc(IndexDest, CharCount);
     end;
   end;
@@ -130,7 +129,7 @@ function ApplyTemplate(const Template: string;
     IndexStart: Integer;
   begin
     IndexStart := Index;
-    while (Index <= Count) and (Str[Index] in ['0'..'9', 'A'..'Z', 'a'..'z', '_', '%']) do
+    while (Index <= Count) and CharIsValidIdentifierLetter(Str[Index]) or (Str[Index] = '%') do
       Inc(Index);
     Result := Copy(Str, IndexStart, Index - IndexStart);
   end;
@@ -242,7 +241,7 @@ begin
         begin
           RepeatCount := Params.GetIntValue(Symbol);
           StrIndex := TokenPos;
-          while (StrIndex <= CharCountIn) and not CharIsWhiteSpace(Template[StrIndex]) do
+          while (StrIndex <= CharCountIn) and not CharIsReturn(Template[StrIndex]) do
             Inc(StrIndex);
           RepeatPattern := Copy(Template, TokenPos, StrIndex - TokenPos);
           TokenPos := StrIndex;

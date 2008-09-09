@@ -342,11 +342,15 @@ begin
     Result := nil
   else
   begin
+    {$IFDEF SUPPORTS_UNICODE}
+    Result := PChar(S);
+    {$ELSE ~SUPPORTS_UNICODE}
     Result := AllocMem((Length(S)+1) * SizeOf(WideChar));
     MultiByteToWideChar(CP_ACP, 0, PChar(S), Length(S), Result, Length(S));
     // (outchy) length(S) is the number of characters, not the size in bytes
     // (rom) fixed output buffer size (see Win32 help)
     //MultiByteToWideChar(CP_ACP, 0, PChar(S), Length(S), Result, Length(S) div 2);
+    {$ENDIF ~SUPPORTS_UNICODE}
   end;
 end;
 

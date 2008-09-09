@@ -57,7 +57,7 @@ begin
     try
       Lines.Clear;
       // Set SeedMessageID before reading
-      Email.SeedMessageID := SeedMessageID;
+      Email.SeedMessageID := AnsiString(SeedMessageID);
       Email.Read;
       HeaderLinesCount := Email.MessageReport(Lines);
       // Message header part highlighting
@@ -93,10 +93,10 @@ begin
       Email.Read([roHeaderOnly]);
       with HeadersListView.Items.Add do
       begin
-        Caption := Email.Recipients.Originator.Name;
-        SubItems.Add(Email.Subject);
+        Caption := string(Email.Recipients.Originator.Name);
+        SubItems.Add(string(Email.Subject));
         SubItems.Add(DateTimeToStr(Email.ReadMsg.DateReceived));
-        SubItems.Add(Email.SeedMessageID);
+        SubItems.Add(string(Email.SeedMessageID));
         Data := Pointer(Email.ReadMsg.Flags); // store Flags for custom draw
       end;
       NextMessage := Email.FindNextMessage;

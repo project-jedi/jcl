@@ -2649,7 +2649,7 @@ begin
     etI4:
       Result := IntToStr(PInteger(Value.Memory)^);
     etU4:
-      Result := IntToStr(PDWord(Value.Memory)^);
+      Result := IntToStr(PDWORD(Value.Memory)^);
     etI8:
       Result := IntToStr(PInt64(Value.Memory)^);
     etU8:
@@ -3527,19 +3527,19 @@ begin
   if (ILMethod.Tiny.Flags_CodeSize and CorILMethod_FormatMask) = CorILMethod_TinyFormat then
   begin
     FSize              := (ILMethod.Tiny.Flags_CodeSize shr CorILMethod_FormatShift) and ((1 shl 6) - 1);
-    FCode              := Pointer(DWORD(ILMethod) + 1);
+    FCode              := Pointer(DWORD_PTR(ILMethod) + 1);
     FMaxStack          := 0;
     FLocalVarSignToken := 0;
   end
   else
   begin
     FSize              := ILMethod.Fat.CodeSize;
-    FCode              := Pointer(DWORD(ILMethod) + (ILMethod.Fat.Flags_Size shr 12) * SizeOf(DWORD));
+    FCode              := Pointer(DWORD_PTR(ILMethod) + (ILMethod.Fat.Flags_Size shr 12) * SizeOf(DWORD));
     FMaxStack          := ILMethod.Fat.MaxStack;
     FLocalVarSignToken := ILMethod.Fat.LocalVarSigTok;
 
     if IsBitSet(ILMethod.Fat.Flags_Size, CorILMethod_MoreSects) then
-      ParseMoreSections(Pointer((DWORD(FCode) + FSize + 1) and not 1));
+      ParseMoreSections(Pointer((DWORD_PTR(FCode) + FSize + 1) and not 1));
   end;
 end;
 
@@ -3588,10 +3588,10 @@ begin
     AddEHTable(PImageCorILMethodSectEH(SectHeader))
   else
   if IsBitSet(SectHeader.Small.Kind, CorILMethod_Sect_OptILTable) then
-    AddOptILTable(Pointer(DWORD(FCode) + FSize), SectSize);
+    AddOptILTable(Pointer(DWORD_PTR(FCode) + FSize), SectSize);
 
   if IsBitSet(SectHeader.Small.Kind, CorILMethod_Sect_MoreSects) then
-    ParseMoreSections(Pointer(DWORD(SectHeader) + SectSize));
+    ParseMoreSections(Pointer(DWORD_PTR(SectHeader) + SectSize));
 end;
 
 function TJclClrMethodBody.GetExceptionHandler(const Idx: Integer): TJclClrExceptionHandler;

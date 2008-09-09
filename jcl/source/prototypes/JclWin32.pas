@@ -195,22 +195,29 @@ const
     lpCalData: PWideChar; cchData: Integer;
     lpValue: PDWORD): Integer stdcall = GetCalendarInfoW;
 
-  RtdlEnumCalendarInfoExA: function(lpCalInfoEnumProc: TCalInfoEnumProcExA;
-    Locale: LCID; Calendar: CALID; CalType: CALTYPE): BOOL stdcall = EnumCalendarInfoExA;
+  RtdlEnumCalendarInfoExW: function(lpCalInfoEnumProc: TCalInfoEnumProcExW;
+    Locale: LCID; Calendar: CALID; CalType: CALTYPE): BOOL stdcall = EnumCalendarInfoExW;
 
-  RtdlGetVolumeNameForVolumeMountPoint: function(lpszVolumeMountPoint: LPCSTR;
-    lpszVolumeName: LPSTR; cchBufferLength: DWORD): BOOL stdcall = GetVolumeNameForVolumeMountPoint;
+  RtdlGetVolumeNameForVolumeMountPointW: function(lpszVolumeMountPoint: LPCWSTR;
+    lpszVolumeName: LPWSTR; cchBufferLength: DWORD): BOOL stdcall = GetVolumeNameForVolumeMountPointW;
 
-  RtdlSetVolumeMountPoint: function(lpszVolumeMountPoint: LPCSTR;
-    lpszVolumeName: LPCSTR): BOOL stdcall = SetVolumeMountPoint;
+  RtdlSetVolumeMountPointW: function(lpszVolumeMountPoint: LPCWSTR;
+    lpszVolumeName: LPCWSTR): BOOL stdcall = SetVolumeMountPointW;
 
-  RtdlDeleteVolumeMountPoint: function(lpszVolumeMountPoint: LPCSTR): BOOL
-    stdcall = DeleteVolumeMountPoint;
+  RtdlDeleteVolumeMountPointW: function(lpszVolumeMountPoint: LPCWSTR): BOOL
+    stdcall = DeleteVolumeMountPointW;
 
   RtdlNetBios: function(P: PNCB): UCHAR stdcall = NetBios;
 
 {$ENDIF ~CLR}
 {$ENDIF MSWINDOWS}
+
+const
+  {$IFDEF SUPPORTS_UNICODE}
+  AWSuffix = 'W';
+  {$ELSE ~SUPPORTS_UNICODE}
+  AWSuffix = 'A';
+  {$ENDIF ~SUPPORTS_UNICODE}
 
 {$IFDEF UNITVERSIONING}
 const
@@ -226,13 +233,6 @@ implementation
 
 uses
   JclResources;
-
-const
-  {$IFDEF UNICODE}
-  AWSuffix = 'W';
-  {$ELSE ~UNICODE}
-  AWSuffix = 'A';
-  {$ENDIF ~UNICODE}
 
 {$IFNDEF CLR}
 procedure GetProcedureAddress(var P: Pointer; const ModuleName, ProcName: string);
@@ -262,6 +262,7 @@ end;
 {$I win32api\Nb30.imp}
 {$I win32api\WinBase.imp}
 {$I win32api\WinNLS.imp}
+{$I win32api\WinUser.imp}
 {$I win32api\WinNT.imp}
 {$I win32api\PowrProf.imp}
 {$I win32api\ObjBase.imp}
