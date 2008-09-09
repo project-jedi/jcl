@@ -215,20 +215,38 @@ begin
     Result := '.';
 end;
 {******************************************************************************}
+function RegReadStr(Reg: HKEY; const Name: string): string;
+var
+  Len: Longint;
+  Buf: array[0..MAX_PATH] of Char;
+begin
+  Len := MAX_PATH * SizeOf(Char);
+  case RegQueryValueEx(Reg, PChar(Name), nil, nil, PByte(@Buf[0]), @Len) of
+    ERROR_SUCCESS:
+      SetString(Result, Buf, Len div SizeOf(Char) - 1); // Len contains the #0, Len containts the byte size
+    ERROR_MORE_DATA:
+      begin
+        SetLength(Result, Len div SizeOf(Char) - 1);
+        if RegQueryValueEx(Reg, PChar(Name), nil, nil, PByte(Result), @Len) = ERROR_SUCCESS then
+          SetLength(Result, Len div SizeOf(Char) - 1) // Len contains the #0, Len containts the byte size
+        else
+          Result := '';
+      end;
+  else
+    Result := '';
+  end;
+end;
+{******************************************************************************}
 procedure FindDxgettext(Version: Integer);
 var
   reg: HKEY;
-  len: Longint;
-  RegTyp: LongWord;
   i: Integer;
   S: string;
 begin
  // dxgettext detection
   if RegOpenKeyEx(HKEY_CLASSES_ROOT, 'bplfile\Shell\Extract strings\Command', 0, KEY_QUERY_VALUE or KEY_READ, reg) <> ERROR_SUCCESS then
     Exit;
-  SetLength(S, MAX_PATH);
-  len := MAX_PATH;
-  RegQueryValueEx(reg, '', nil, @RegTyp, PByte(S), @len);
+  S := RegReadStr(reg, '');
   SetLength(S, StrLen(PChar(S)));
   RegCloseKey(reg);
 
@@ -282,28 +300,6 @@ type
     JvclVersion: string;
   end;
 
-function RegReadStr(Reg: HKEY; const Name: string): string;
-var
-  Len: Longint;
-  Buf: array[0..MAX_PATH] of Char;
-begin
-  Len := MAX_PATH;
-  case RegQueryValueEx(Reg, PChar(Name), nil, nil, PByte(@Buf[0]), @Len) of
-    ERROR_SUCCESS:
-      SetString(Result, Buf, Len - 1); // Len contains the #0
-    ERROR_MORE_DATA:
-      begin
-        SetLength(Result, Len);
-        if RegQueryValueEx(Reg, PChar(Name), nil, nil, PByte(Result), @Len) = ERROR_SUCCESS then
-          SetLength(Result, Len - 1) // Len contains the #0
-        else
-          Result := '';
-      end;
-  else
-    Result := '';
-  end;
-end;
-
 function ReadTargetInfo(Typ: TTargetType; IDEVersion: Integer): TTarget;
 var
   Reg: HKEY;
@@ -338,7 +334,10 @@ begin
       end;
     ttBDS:
       begin
-        Result.KeyName := 'Software\Borland\BDS\' + IDEVersionStr + '.0';
+        if IDEVersion < 6 then
+          Result.KeyName := 'Software\Borland\BDS\' + IDEVersionStr + '.0'
+        else
+          Result.KeyName := 'Software\Codegear\BDS\' + IDEVersionStr + '.0';
         Result.Id := 'd';
       end;
   end;
@@ -382,6 +381,7 @@ begin
           3: Result.Name := 'Delphi 2005';
           4: Result.Name := 'Borland Developer Studio 2006';
           5: Result.Name := 'CodeGear Delphi 2007 for Win32';
+          6: Result.Name := 'CodeGear RAD Studio 2009';
         end;
     end;
 
@@ -700,7 +700,7 @@ begin
         end;
         Inc(Result);
       end;
-      if Result[0] in [' ', #9] then
+      if (Result[0] = ' ') or (Result[0] = #9) then
         Inc(Result);
     end;
 
@@ -808,9 +808,9 @@ begin
     Val(Copy(DelphiVersion, 2, MaxInt), PreferedVersion, Err);
     if (Err = 0) and (PreferedVersion >= 5) then
     begin
-      if DelphiVersion[1] in ['D', 'd'] then
+      if (DelphiVersion[1] = 'D') or (DelphiVersion[1] = 'd') then
         PreferedTyp := ttDelphi;
-      if DelphiVersion[1] in ['C', 'c'] then
+      if (DelphiVersion[1] = 'C') or (DelphiVersion[1] = 'c') then
       begin
         if PreferedVersion <> 7 then
           PreferedTyp := ttBCB;

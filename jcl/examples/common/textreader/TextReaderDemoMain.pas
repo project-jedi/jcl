@@ -21,7 +21,7 @@ type
     procedure FormCreate(Sender: TObject);
   private
     FFileName: string;
-    FTextReader: TJclMappedTextReader;
+    FTextReader: TJclAnsiMappedTextReader;
   public
     procedure ClearLabels;
     procedure OpenFile(const FileName: string);
@@ -64,7 +64,7 @@ begin
   StatusBar.Panels[0].Text := '';
   StatusBar.Panels[1].Text := '';
   ClearLabels;
-  FTextReader := TJclMappedTextReader.Create(FileName);
+  FTextReader := TJclAnsiMappedTextReader.Create(FileName);
   FFileName := FileName;
   StartCount(C);
   LineCount := FTextReader.LineCount;
@@ -77,8 +77,7 @@ end;
 
 procedure TMainForm.TextListViewData(Sender: TObject; Item: TListItem);
 begin
-  with Item, FTextReader do
-    Caption := Lines[Item.Index];
+  Item.Caption := string(FTextReader.Lines[Item.Index]);
 end;
 
 procedure TMainForm.OpenBtnClick(Sender: TObject);
@@ -97,7 +96,7 @@ var
   TotalTime, StringListTotalTime, AssignFileTotalTime: Extended;
   LineCount, I: Integer;
   S: string;
-  Reader: TJclMappedTextReader;
+  Reader: TJclAnsiMappedTextReader;
   SL: TStringList;
   T: TextFile;
 begin
@@ -106,15 +105,15 @@ begin
   Screen.Cursor := crHourGlass;
   try
     ClearLabels;
-    // TJclMappedTextReader
+    // TJclAnsiMappedTextReader
     LineCount := 0;
     StartCount(C);
-    Reader := TJclMappedTextReader.Create(FFileName);
+    Reader := TJclAnsiMappedTextReader.Create(FFileName);
     try
       Reader.GoBegin;
       while not Reader.Eof do
       begin
-        S := Reader.ReadLn;
+        S := string(Reader.ReadLn);
         Inc(LineCount);
       end;
       TotalTime := StopCount(C);
@@ -141,7 +140,7 @@ begin
     AssignFileTotalTime := StopCount(C);
     CloseFile(T);
 
-    ReadLnLabel.Caption := Format('Lines: %d, TJclMappedTextReader: %.2f ms,  TStringList: %.2f ms,  AssignFile: %.2f ms',
+    ReadLnLabel.Caption := Format('Lines: %d, TJclAnsiMappedTextReader: %.2f ms,  TStringList: %.2f ms,  AssignFile: %.2f ms',
       [LineCount, TotalTime * 1000, StringListTotalTime * 1000, AssignFileTotalTime * 1000]);
   finally
     Screen.Cursor := crDefault;

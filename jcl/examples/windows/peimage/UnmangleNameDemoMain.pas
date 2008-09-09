@@ -181,7 +181,7 @@ begin
           begin
             TI := BorImage.ExportList[Index].MappedAddress;
             SubItems.Add(Copy(GetEnumName(TypeInfo(TTypeKind), Integer(TI^.Kind)), 3, 255));
-            SubItems.Add(TI^.Name);
+            SubItems.Add(string(TI^.Name));
             TD := GetTypeData(TI);
             case TI^.Kind of
               tkInterface:

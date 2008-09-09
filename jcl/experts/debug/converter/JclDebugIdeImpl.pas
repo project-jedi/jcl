@@ -170,12 +170,12 @@ function JCLWizardInit(const BorlandIDEServices: IBorlandIDEServices;
   var TerminateProc: TWizardTerminateProc): Boolean; stdcall;
 
 const
-  DebugActionNames: array [TDebugExpertAction] of string =
+  DebugActionNames: array [TDebugExpertAction] of AnsiString =
     ( JclDebugGenerateJdbgSetting, // deGenerateJdbg
       JclDebugInsertJdbgSetting,   // deInsertJdbg
       JclDebugDeleteMapfileSetting // deDeleteMapFile);
     );
-  DebugActionValues: array [False..True] of string =
+  DebugActionValues: array [False..True] of AnsiString =
     ( 'OFF', 'ON' );
 
 implementation
@@ -289,7 +289,7 @@ end;
 
 procedure TJclDebugExtension.AfterCompile(Succeeded: Boolean);
 var
-  ProjectFileName, MapFileName, DrcFileName, ExecutableFileName, JdbgFileName: string;
+  ProjectFileName, MapFileName, DrcFileName, ExecutableFileName, JdbgFileName: TFileName;
   OutputDirectory, LinkerBugUnit: string;
   Succ: Boolean;
   MapFileSize, JclDebugDataSize, LineNumberErrors, C: Integer;

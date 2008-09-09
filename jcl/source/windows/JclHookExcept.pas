@@ -280,7 +280,7 @@ const
   cNonContinuable = 1;
 begin
   if (ExceptionFlags = cNonContinuable) and (ExceptionCode = cDelphiException) and
-    (NumberOfArguments = 7) and (DWORD(Arguments) = DWORD(@Arguments) + 4) then
+    (NumberOfArguments = 7) and (DWORD_PTR(Arguments) = DWORD_PTR(@Arguments) + 4) then
   begin
     DoExceptNotify(Arguments.ExceptObj, Arguments.ExceptAddr, False, GetEBP);
   end;

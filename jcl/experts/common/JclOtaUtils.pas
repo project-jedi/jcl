@@ -169,10 +169,10 @@ type
     procedure AfterConstruction; override;
     procedure BeforeDestruction; override;
     
-    function FindExecutableName(const MapFileName, OutputDirectory: string;
-      var ExecutableFileName: string): Boolean;
-    function GetDrcFileName(const Project: IOTAProject): string;
-    function GetMapFileName(const Project: IOTAProject): string;
+    function FindExecutableName(const MapFileName: TFileName; const OutputDirectory: string;
+      var ExecutableFileName: TFileName): Boolean;
+    function GetDrcFileName(const Project: IOTAProject): TFileName;
+    function GetMapFileName(const Project: IOTAProject): TFileName;
     function GetOutputDirectory(const Project: IOTAProject): string;
     function IsInstalledPackage(const Project: IOTAProject): Boolean;
     function IsPackage(const Project: IOTAProject): Boolean;
@@ -462,7 +462,7 @@ begin
           // end of comments
           Break;
     else
-      if not CharIsWhiteSpace(Buffer[BufferPosition + 1]) and not InsideLineComment
+      if not CharIsWhiteSpace(Char(Buffer[BufferPosition + 1])) and not InsideLineComment
         and not InsideComment and not InsideBrace then
         // end of comments
         Break;
@@ -505,7 +505,7 @@ begin
           SetLength(Result[PropIndex], BufferSize);
           SetLength(Result[PropIndex], AReader.GetText(PropLocations[PropIndex], PAnsiChar(Result[PropIndex]), BufferSize));
           for BufferIndex := 1 to Length(Result[PropIndex]) do
-            if CharIsWhiteSpace(Result[PropIndex][BufferIndex]) then
+            if CharIsWhiteSpace(Char(Result[PropIndex][BufferIndex])) then
           begin
             SetLength(Result[PropIndex], BufferIndex - 1);
             Break;
@@ -531,6 +531,7 @@ var
   PropLocations: TDynIntegerArray;
   AReader: IOTAEditReader;
   AWriter: IOTAEditWriter;
+  S: AnsiString;
   ABuffer: IOTAEditBuffer;
 begin
   PropCount := Length(PropIDs);
@@ -558,7 +559,7 @@ begin
               SetLength(Buffer, BufferSize);
               SetLength(Buffer, AReader.GetText(PropLocations[0], PAnsiChar(Buffer), BufferSize));
               for BufferIndex := 1 to Length(Buffer) do
-                if CharIsWhiteSpace(Buffer[BufferIndex]) then
+                if CharIsWhiteSpace(Char(Buffer[BufferIndex])) then
               begin
                 PropSize := BufferIndex - 1;
                 Break;
@@ -580,7 +581,8 @@ begin
             else
             begin
               AWriter.CopyTo(-PropLocations[0]);
-              AWriter.Insert(PAnsiChar(Format('// %s %s%s', [PropIDs[PropIndex], PropValues[PropIndex], NativeLineBreak])));
+              S := AnsiString(Format('// %s %s%s', [PropIDs[PropIndex], PropValues[PropIndex], NativeLineBreak]));
+              AWriter.Insert(PAnsiChar(S));
             end;
           finally
             // release the writter before allocating the reader
@@ -903,8 +905,8 @@ begin
   inherited Destroy;
 end;
 
-function TJclOTAExpertBase.FindExecutableName(const MapFileName, OutputDirectory: string;
-  var ExecutableFileName: string): Boolean;
+function TJclOTAExpertBase.FindExecutableName(const MapFileName: TFileName;
+  const OutputDirectory: string; var ExecutableFileName: TFileName): Boolean;
 var
   Se: TSearchRec;
   Res: Integer;
@@ -922,7 +924,8 @@ begin
   begin
     FileName := PathAddSeparator(OutputDirectory) + Se.Name;
     {$IFDEF MSWINDOWS}
-    if MapAndLoad(PChar(FileName), nil, @LI, False, True) then
+    // possible loss of data
+    if MapAndLoad(PAnsiChar(AnsiString(FileName)), nil, @LI, False, True) then
     begin
       if (not LI.fDOSImage) and (Se.Time > LatestTime) then
       begin
@@ -969,7 +972,7 @@ begin
   {$ENDIF COMPILER6_UP}
 end;
 
-function TJclOTAExpertBase.GetDrcFileName(const Project: IOTAProject): string;
+function TJclOTAExpertBase.GetDrcFileName(const Project: IOTAProject): TFileName;
 begin
   if not Assigned(Project) then
     raise EJclExpertException.CreateTrace(RsENoActiveProject);
@@ -977,9 +980,10 @@ begin
   Result := ChangeFileExt(Project.FileName, CompilerExtensionDRC);
 end;
 
-function TJclOTAExpertBase.GetMapFileName(const Project: IOTAProject): string;
+function TJclOTAExpertBase.GetMapFileName(const Project: IOTAProject): TFileName;
 var
-  ProjectFileName, OutputDirectory, LibPrefix, LibSuffix: string;
+  ProjectFileName: TFileName;
+  OutputDirectory, LibPrefix, LibSuffix: string;
 begin
   if not Assigned(Project) then
     raise EJclExpertException.CreateTrace(RsENoActiveProject);
@@ -1131,7 +1135,7 @@ end;
 
 function TJclOTAExpertBase.IsInstalledPackage(const Project: IOTAProject): Boolean;
 var
-  PackageFileName, ExecutableNameNoExt: string;
+  PackageFileName, ExecutableNameNoExt: TFileName;
   APackageServices: IOTAPackageServices;
   I: Integer;
 begin
@@ -1171,7 +1175,8 @@ end;
 
 function TJclOTAExpertBase.IsPackage(const Project: IOTAProject): Boolean;
 var
-  FileName, FileExtension: string;
+  FileName: TFileName;
+  FileExtension: string;
   Index: Integer;
   ProjectFile: TJclSimpleXML;
   PersonalityNode, SourceNode, ProjectExtensions, ProjectTypeNode: TJclSimpleXMLElem;
@@ -1250,7 +1255,7 @@ var
   RADToolsInstallations: TJclBorRADToolInstallations;
   RADToolInstallation: TJclBorRADToolInstallation;
   {$ENDIF KYLIX}
-{$ENDIF COMPÏLER6_UP}
+{$ENDIF COMPILER6_UP}
 begin
   FEnvVariables.Clear;
 

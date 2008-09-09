@@ -207,6 +207,7 @@ implementation
 
 uses
   SysUtils, Math,
+  JclStrings,
   JclOtaUtils;
 
 function FormatBinary(Value: TJclSIMDValue): string;
@@ -587,7 +588,7 @@ begin
     if DataPosition > Length(LocalString) then
       Exit;
     for Index := DataPosition to Length(LocalString) do
-      if LocalString[Index] in ['0'..'9'] then
+      if CharIsDigit(LocalString[Index]) then
         Break;
     if Index > Length(LocalString) then
       Exit;
@@ -595,7 +596,7 @@ begin
 
     DataPosition := Index;
     for Index := DataPosition to Length(LocalString) do
-      if not (LocalString[Index] in ['0'..'9']) then
+      if not CharIsDigit(LocalString[Index]) then
         Break;
     Val(Copy(LocalString, DataPosition, Index - DataPosition), DataIndex, ErrorCode);
     if (ErrorCode <> 0) or (DataIndex < 0) then
@@ -687,7 +688,7 @@ begin
     if DataPosition > Length(LocalString) then
       Exit;
     for Index := DataPosition to Length(LocalString) do
-      if LocalString[Index] in ['0'..'9'] then
+      if CharIsDigit(LocalString[Index]) then
         Break;
     if Index > Length(LocalString) then
       Exit;
@@ -695,7 +696,7 @@ begin
 
     DataPosition := Index;
     for Index := DataPosition to Length(LocalString) do
-      if not (LocalString[Index] in ['0'..'9']) then
+      if not CharIsDigit(LocalString[Index]) then
         Break;
     Val(Copy(LocalString, DataPosition, Index - DataPosition), DataIndex, ErrorCode);
     if (ErrorCode <> 0) or (DataIndex < 0) then

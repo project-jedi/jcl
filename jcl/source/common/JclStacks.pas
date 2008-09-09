@@ -57,16 +57,14 @@ type
   TJclIntfStack = class(TJclIntfAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclIntfEqualityComparer,
     IJclIntfStack)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
   private
-    FElements: JclBase.TDynIInterfaceArray;
+    FElements: TDynIInterfaceArray;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
     { IJclIntfStack }
     procedure Clear;
     function Contains(const AInterface: IInterface): Boolean;
@@ -75,7 +73,6 @@ type
     function Pop: IInterface;
     function Push(const AInterface: IInterface): Boolean;
     function Size: Integer;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -84,16 +81,14 @@ type
   TJclAnsiStrStack = class(TJclAnsiStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclStrContainer, IJclAnsiStrContainer, IJclAnsiStrEqualityComparer,
     IJclAnsiStrStack)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
   private
-    FElements: JclBase.TDynAnsiStringArray;
+    FElements: TDynAnsiStringArray;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
     { IJclAnsiStrStack }
     procedure Clear;
     function Contains(const AString: AnsiString): Boolean;
@@ -102,7 +97,6 @@ type
     function Pop: AnsiString;
     function Push(const AString: AnsiString): Boolean;
     function Size: Integer;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -111,16 +105,14 @@ type
   TJclWideStrStack = class(TJclWideStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclStrContainer, IJclWideStrContainer, IJclWideStrEqualityComparer,
     IJclWideStrStack)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
   private
-    FElements: JclBase.TDynWideStringArray;
+    FElements: TDynWideStringArray;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
     { IJclWideStrStack }
     procedure Clear;
     function Contains(const AString: WideString): Boolean;
@@ -129,11 +121,36 @@ type
     function Pop: WideString;
     function Push(const AString: WideString): Boolean;
     function Size: Integer;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
   end;
+
+{$IFDEF SUPPORTS_UNICODE_STRING}
+  TJclUnicodeStrStack = class(TJclUnicodeStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclStrContainer, IJclUnicodeStrContainer, IJclUnicodeStrEqualityComparer,
+    IJclUnicodeStrStack)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+  private
+    FElements: TDynUnicodeStringArray;
+  protected
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+    { IJclPackable }
+    procedure SetCapacity(Value: Integer); override;
+    { IJclUnicodeStrStack }
+    procedure Clear;
+    function Contains(const AString: UnicodeString): Boolean;
+    function Empty: Boolean;
+    function Peek: UnicodeString;
+    function Pop: UnicodeString;
+    function Push(const AString: UnicodeString): Boolean;
+    function Size: Integer;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+  end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF CONTAINER_ANSISTR}
   TJclStrStack = TJclAnsiStrStack;
@@ -141,20 +158,21 @@ type
   {$IFDEF CONTAINER_WIDESTR}
   TJclStrStack = TJclWideStrStack;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  TJclStrStack = TJclUnicodeStrStack;
+  {$ENDIF CONTAINER_UNICODESTR}
 
   TJclSingleStack = class(TJclSingleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclSingleContainer, IJclSingleEqualityComparer,
     IJclSingleStack)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
   private
-    FElements: JclBase.TDynSingleArray;
+    FElements: TDynSingleArray;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
     { IJclSingleStack }
     procedure Clear;
     function Contains(const AValue: Single): Boolean;
@@ -163,7 +181,6 @@ type
     function Pop: Single;
     function Push(const AValue: Single): Boolean;
     function Size: Integer;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -172,16 +189,14 @@ type
   TJclDoubleStack = class(TJclDoubleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclDoubleContainer, IJclDoubleEqualityComparer,
     IJclDoubleStack)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
   private
-    FElements: JclBase.TDynDoubleArray;
+    FElements: TDynDoubleArray;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
     { IJclDoubleStack }
     procedure Clear;
     function Contains(const AValue: Double): Boolean;
@@ -190,7 +205,6 @@ type
     function Pop: Double;
     function Push(const AValue: Double): Boolean;
     function Size: Integer;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -199,16 +213,14 @@ type
   TJclExtendedStack = class(TJclExtendedAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclExtendedContainer, IJclExtendedEqualityComparer,
     IJclExtendedStack)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
   private
-    FElements: JclBase.TDynExtendedArray;
+    FElements: TDynExtendedArray;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
     { IJclExtendedStack }
     procedure Clear;
     function Contains(const AValue: Extended): Boolean;
@@ -217,7 +229,6 @@ type
     function Pop: Extended;
     function Push(const AValue: Extended): Boolean;
     function Size: Integer;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -236,16 +247,14 @@ type
   TJclIntegerStack = class(TJclIntegerAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclIntegerEqualityComparer,
     IJclIntegerStack)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
   private
-    FElements: JclBase.TDynIntegerArray;
+    FElements: TDynIntegerArray;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
     { IJclIntegerStack }
     procedure Clear;
     function Contains(AValue: Integer): Boolean;
@@ -254,7 +263,6 @@ type
     function Pop: Integer;
     function Push(AValue: Integer): Boolean;
     function Size: Integer;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -263,16 +271,14 @@ type
   TJclCardinalStack = class(TJclCardinalAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclCardinalEqualityComparer,
     IJclCardinalStack)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
   private
-    FElements: JclBase.TDynCardinalArray;
+    FElements: TDynCardinalArray;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
     { IJclCardinalStack }
     procedure Clear;
     function Contains(AValue: Cardinal): Boolean;
@@ -281,7 +287,6 @@ type
     function Pop: Cardinal;
     function Push(AValue: Cardinal): Boolean;
     function Size: Integer;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -290,16 +295,14 @@ type
   TJclInt64Stack = class(TJclInt64AbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclInt64EqualityComparer,
     IJclInt64Stack)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
   private
-    FElements: JclBase.TDynInt64Array;
+    FElements: TDynInt64Array;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
     { IJclInt64Stack }
     procedure Clear;
     function Contains(const AValue: Int64): Boolean;
@@ -308,7 +311,6 @@ type
     function Pop: Int64;
     function Push(const AValue: Int64): Boolean;
     function Size: Integer;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -318,16 +320,14 @@ type
   TJclPtrStack = class(TJclPtrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclPtrEqualityComparer,
     IJclPtrStack)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
   private
-    FElements: JclBase.TDynPointerArray;
+    FElements: TDynPointerArray;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
     { IJclPtrStack }
     procedure Clear;
     function Contains(APtr: Pointer): Boolean;
@@ -336,7 +336,6 @@ type
     function Pop: Pointer;
     function Push(APtr: Pointer): Boolean;
     function Size: Integer;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -346,16 +345,14 @@ type
   TJclStack = class(TJclAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclEqualityComparer, IJclObjectOwner,
     IJclStack)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
   private
-    FElements: JclBase.TDynObjectArray;
+    FElements: TDynObjectArray;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
     { IJclStack }
     procedure Clear;
     function Contains(AObject: TObject): Boolean;
@@ -364,7 +361,6 @@ type
     function Pop: TObject;
     function Push(AObject: TObject): Boolean;
     function Size: Integer;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACapacity: Integer; AOwnsObjects: Boolean);
     destructor Destroy; override;
@@ -375,16 +371,15 @@ type
   TJclStack<T> = class(TJclAbstractContainer<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclEqualityComparer<T>, IJclItemOwner<T>,
     IJclStack<T>)
+  protected
+    type
+      TDynArray = array of T;
   private
-    FElements: TJclBase<T>.TDynArray;
+    FElements: TDynArray;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
     { IJclStack<T> }
     procedure Clear;
     function Contains(const AItem: T): Boolean;
@@ -408,10 +403,6 @@ type
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function ItemsEqual(const A, B: T): Boolean; override;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
   public
     constructor Create(const AEqualityComparer: IEqualityComparer<T>; ACapacity: Integer; AOwnsItems: Boolean);
 
@@ -424,10 +415,6 @@ type
     IJclStack<T>, IJclItemOwner<T>)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
   public
     constructor Create(AEqualityCompare: TEqualityCompare<T>; ACapacity: Integer; AOwnsItems: Boolean);
   end;
@@ -439,10 +426,6 @@ type
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function ItemsEqual(const A, B: T): Boolean; override;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
   end;
   {$ENDIF SUPPORTS_GENERICS}
 
@@ -537,12 +520,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclIntfStack.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclIntfStack.Create(FSize);
-  AssignPropertiesTo(Result);
 end;
 
 function TJclIntfStack.Empty: Boolean;
@@ -650,6 +627,12 @@ begin
   Result := FSize;
 end;
 
+function TJclIntfStack.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclIntfStack.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+
 //=== { TJclAnsiStrStack } =======================================================
 
 constructor TJclAnsiStrStack.Create(ACapacity: Integer);
@@ -726,12 +709,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclAnsiStrStack.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclAnsiStrStack.Create(FSize);
-  AssignPropertiesTo(Result);
 end;
 
 function TJclAnsiStrStack.Empty: Boolean;
@@ -839,6 +816,12 @@ begin
   Result := FSize;
 end;
 
+function TJclAnsiStrStack.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclAnsiStrStack.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+
 //=== { TJclWideStrStack } =======================================================
 
 constructor TJclWideStrStack.Create(ACapacity: Integer);
@@ -915,12 +898,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclWideStrStack.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclWideStrStack.Create(FSize);
-  AssignPropertiesTo(Result);
 end;
 
 function TJclWideStrStack.Empty: Boolean;
@@ -1028,6 +1005,203 @@ begin
   Result := FSize;
 end;
 
+function TJclWideStrStack.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclWideStrStack.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+
+{$IFDEF SUPPORTS_UNICODE_STRING}
+//=== { TJclUnicodeStrStack } =======================================================
+
+constructor TJclUnicodeStrStack.Create(ACapacity: Integer);
+begin
+  inherited Create();
+  SetCapacity(ACapacity);
+end;
+
+destructor TJclUnicodeStrStack.Destroy;
+begin
+  FReadOnly := False;
+  Clear;
+  inherited Destroy;
+end;
+
+procedure TJclUnicodeStrStack.AssignDataTo(Dest: TJclAbstractContainerBase);
+var
+  ADest: TJclUnicodeStrStack;
+  I: Integer;
+begin
+  inherited AssignDataTo(Dest);
+  if Dest is TJclUnicodeStrStack then
+  begin
+    ADest := TJclUnicodeStrStack(Dest);
+    ADest.Clear;
+    ADest.SetCapacity(FSize + 1);
+    for I := 0 to FSize - 1 do
+      ADest.FElements[I] := FElements[I];
+    ADest.FSize := FSize;
+  end;
+end;
+
+procedure TJclUnicodeStrStack.Clear;
+var
+  I: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    for I := 0 to FSize - 1 do
+      FreeString(FElements[I]);
+    FSize := 0;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrStack.Contains(const AString: UnicodeString): Boolean;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    for I := 0 to FSize - 1 do
+      if ItemsEqual(FElements[I], AString) then
+      begin
+        Result := True;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrStack.Empty: Boolean;
+begin
+  Result := FSize = 0;
+end;
+
+function TJclUnicodeStrStack.Peek: UnicodeString;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := '';
+    if FSize > 0 then
+      Result := FElements[FSize - 1]
+    else
+    if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrStack.Pop: UnicodeString;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := '';
+    if FSize > 0 then
+    begin
+      Dec(FSize);
+      Result := FElements[FSize];
+      FElements[FSize] := '';
+    end
+    else
+    if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+    AutoPack;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrStack.Push(const AString: UnicodeString): Boolean;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    if FSize = FCapacity then
+      AutoGrow;
+    Result := FSize < FCapacity;
+    if Result then
+    begin
+      FElements[FSize] := AString;
+      Inc(FSize);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclUnicodeStrStack.SetCapacity(Value: Integer);
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    if Value < FSize then
+      raise EJclOutOfBoundsError.Create;
+    SetLength(FElements, Value);
+    inherited SetCapacity(Value);
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrStack.Size: Integer;
+begin
+  Result := FSize;
+end;
+
+function TJclUnicodeStrStack.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclUnicodeStrStack.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
 //=== { TJclSingleStack } =======================================================
 
 constructor TJclSingleStack.Create(ACapacity: Integer);
@@ -1104,12 +1278,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclSingleStack.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclSingleStack.Create(FSize);
-  AssignPropertiesTo(Result);
 end;
 
 function TJclSingleStack.Empty: Boolean;
@@ -1217,6 +1385,12 @@ begin
   Result := FSize;
 end;
 
+function TJclSingleStack.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclSingleStack.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+
 //=== { TJclDoubleStack } =======================================================
 
 constructor TJclDoubleStack.Create(ACapacity: Integer);
@@ -1293,12 +1467,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclDoubleStack.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclDoubleStack.Create(FSize);
-  AssignPropertiesTo(Result);
 end;
 
 function TJclDoubleStack.Empty: Boolean;
@@ -1406,6 +1574,12 @@ begin
   Result := FSize;
 end;
 
+function TJclDoubleStack.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclDoubleStack.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+
 //=== { TJclExtendedStack } =======================================================
 
 constructor TJclExtendedStack.Create(ACapacity: Integer);
@@ -1482,12 +1656,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclExtendedStack.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclExtendedStack.Create(FSize);
-  AssignPropertiesTo(Result);
 end;
 
 function TJclExtendedStack.Empty: Boolean;
@@ -1595,6 +1763,12 @@ begin
   Result := FSize;
 end;
 
+function TJclExtendedStack.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclExtendedStack.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+
 //=== { TJclIntegerStack } =======================================================
 
 constructor TJclIntegerStack.Create(ACapacity: Integer);
@@ -1671,12 +1845,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclIntegerStack.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclIntegerStack.Create(FSize);
-  AssignPropertiesTo(Result);
 end;
 
 function TJclIntegerStack.Empty: Boolean;
@@ -1784,6 +1952,12 @@ begin
   Result := FSize;
 end;
 
+function TJclIntegerStack.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclIntegerStack.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+
 //=== { TJclCardinalStack } =======================================================
 
 constructor TJclCardinalStack.Create(ACapacity: Integer);
@@ -1860,12 +2034,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclCardinalStack.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclCardinalStack.Create(FSize);
-  AssignPropertiesTo(Result);
 end;
 
 function TJclCardinalStack.Empty: Boolean;
@@ -1973,6 +2141,12 @@ begin
   Result := FSize;
 end;
 
+function TJclCardinalStack.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclCardinalStack.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+
 //=== { TJclInt64Stack } =======================================================
 
 constructor TJclInt64Stack.Create(ACapacity: Integer);
@@ -2049,12 +2223,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclInt64Stack.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclInt64Stack.Create(FSize);
-  AssignPropertiesTo(Result);
 end;
 
 function TJclInt64Stack.Empty: Boolean;
@@ -2162,6 +2330,12 @@ begin
   Result := FSize;
 end;
 
+function TJclInt64Stack.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclInt64Stack.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+
 {$IFNDEF CLR}
 //=== { TJclPtrStack } =======================================================
 
@@ -2239,12 +2413,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclPtrStack.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclPtrStack.Create(FSize);
-  AssignPropertiesTo(Result);
 end;
 
 function TJclPtrStack.Empty: Boolean;
@@ -2351,6 +2519,12 @@ function TJclPtrStack.Size: Integer;
 begin
   Result := FSize;
 end;
+
+function TJclPtrStack.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclPtrStack.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
 {$ENDIF ~CLR}
 
 //=== { TJclStack } =======================================================
@@ -2429,12 +2603,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclStack.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclStack.Create(FSize, False);
-  AssignPropertiesTo(Result);
 end;
 
 function TJclStack.Empty: Boolean;
@@ -2542,6 +2710,12 @@ begin
   Result := FSize;
 end;
 
+function TJclStack.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclStack.Create(FSize, False);
+  AssignPropertiesTo(Result);
+end;
+
 {$IFDEF SUPPORTS_GENERICS}
 
 //=== { TJclStack<T> } =======================================================
@@ -2621,7 +2795,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
 
 function TJclStack<T>.Empty: Boolean;
 begin

@@ -367,7 +367,7 @@ begin
   List := TJclAnsiStrArrayList.Create(DefaultContainerCapacity);
   List.Add('MyString');
 
-  S := List.GetString(0);
+  S := string(List.GetString(0));
   //memResult.Lines.Add(IntToStr(MyObject.Int) + ' ' + MyObject.Str);
 
   List.Add('AnotherString');
@@ -377,14 +377,14 @@ begin
   It := Sub.First;
   while It.HasNext do
   begin
-    S := It.Next;
+    S := string(It.Next);
     memResult.Lines.Add(S);
   end;
   // use [] default of Items[]
   MyArray := List as IJclAnsiStrArray;
   for I := 0 to MyArray.Size - 1 do
   begin
-    S := MyArray[I];
+    S := string(MyArray[I]);
     memResult.Lines.Add(S);
   end;
 end;
@@ -464,7 +464,7 @@ begin
   memResult.Lines.Clear;
   List := TJclAnsiStrLinkedList.Create(nil);
   List.Add('MyString');
-  memResult.Lines.Add(List.GetString(0));
+  memResult.Lines.Add(string(List.GetString(0)));
 
   List.Add('AnotherString');
 
@@ -473,7 +473,7 @@ begin
   It := Sub.First;
   while It.HasNext do
   begin
-    S := It.Next;
+    S := string(It.Next);
     memResult.Lines.Add(S);
   end;
 end;
@@ -512,7 +512,7 @@ begin
   List := TJclAnsiStrVector.Create(DefaultContainerCapacity);
   try
     List.Add('MyString');
-    S := List.GetString(0);
+    S := string(List.GetString(0));
     memResult.Lines.Add(S);
 
     List.Add('AnotherString');
@@ -520,13 +520,13 @@ begin
     It := List.First;
     while It.HasNext do
     begin
-      S := It.Next;
+      S := string(It.Next);
       memResult.Lines.Add(S);
     end;
     // Fastest way
     for I := 0 to List.Size - 1 do
     begin
-      S := List.Strings[I];
+      S := string(List.Strings[I]);
       memResult.Lines.Add(S);
     end;
     List.Clear;

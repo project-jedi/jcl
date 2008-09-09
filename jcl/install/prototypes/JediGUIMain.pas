@@ -50,7 +50,7 @@ uses
   Types,
   Qt, QGraphics, QControls, QForms, QDialogs, QStdCtrls, QExtCtrls, QMenus, QButtons, QComCtrls, QImgList,
   {$ELSE}
-  Graphics, Controls, Forms, Dialogs, StdCtrls, ExtCtrls, Menus, Buttons, ComCtrls, ImgList,
+  Graphics, Forms, Controls, Dialogs, StdCtrls, ExtCtrls, Menus, Buttons, ComCtrls, ImgList,
   {$ENDIF}
   JclBorlandTools, JclContainerIntf, JediInstall;
 

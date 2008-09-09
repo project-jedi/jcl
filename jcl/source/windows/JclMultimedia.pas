@@ -419,7 +419,7 @@ begin
   end;
   FStartTime := GetTime;
   if timeBeginPeriod(FPeriod) = TIMERR_NOERROR then
-    FTimerId := timeSetEvent(Delay, Resolution, TimerCallBack, DWORD(Self), Event);
+    FTimerId := timeSetEvent(Delay, Resolution, TimerCallBack, DWORD_PTR(Self), Event);
   if FTimerId = 0 then
     raise EJclMmTimerError.CreateRes(@RsMmSetEvent);
 end;

@@ -34,7 +34,7 @@ interface
 
 uses
   Windows, Messages, Classes, SysUtils, Controls, StdCtrls, ExtCtrls,
-  JclPeImage;
+  JclPeImage, JclWin32;
 
 type
   TFavOpenDialog = class (TObject)
@@ -118,7 +118,7 @@ begin
   if (Msg = WM_INITDIALOG) and Assigned(FavOpenDialog) then
   begin
     FavOpenDialog.FHandle := Wnd;
-    FavOpenDialog.FOldWndInstance := Pointer(SetWindowLong(Wnd, GWL_WNDPROC, Longint(FavOpenDialog.FWndInstance)));
+    FavOpenDialog.FOldWndInstance := Pointer(SetWindowLongPtr(Wnd, GWLP_WNDPROC, LONG_PTR(FavOpenDialog.FWndInstance)));
     CallWindowProc(FavOpenDialog.FWndInstance, Wnd, Msg, WParam, LParam);
   end;
 end;
@@ -324,14 +324,14 @@ begin
     FFavoritePanel.BoundsRect := PreviewRect;
     FFavoritePanel.ParentWindow := FHandle;
     if IsWin2k or IsWinXP then
-      FOldParentWndInstance := Pointer(SetWindowLong(FParentWnd, GWL_WNDPROC, Longint(FParentWndInstance)));
+      FOldParentWndInstance := Pointer(SetWindowLongPtr(FParentWnd, GWLP_WNDPROC, LONG_PTR(FParentWndInstance)));
     AdjustControlPos;
     try
       DoShow;
     finally
       FFavoriteComboBox.Items.Assign(FavoriteFolders);
     end;
-  end;  
+  end;
 end;
 
 procedure TFavOpenDialog.DoClose;
@@ -375,8 +375,13 @@ procedure TFavOpenDialog.HookDialogs;
   begin
     if ModuleBase <> nil then
     begin
+      {$IFDEF UNICODE}
+      FHooks.HookImport(ModuleBase, comdlg32, 'GetOpenFileNameW', @NewGetOpenFileName, @OldGetOpenFileName);
+      FHooks.HookImport(ModuleBase, comdlg32, 'GetSaveFileNameW', @NewGetSaveFileName, @OldGetSaveFileName);
+      {$ELSE}
       FHooks.HookImport(ModuleBase, comdlg32, 'GetOpenFileNameA', @NewGetOpenFileName, @OldGetOpenFileName);
       FHooks.HookImport(ModuleBase, comdlg32, 'GetSaveFileNameA', @NewGetSaveFileName, @OldGetSaveFileName);
+      {$ENDIF UNICODE}
     end;
   end;
 var

@@ -389,7 +389,11 @@ begin
           for I := 0 to FDumpBytesPerLine div 2 - 1 do
           begin
             SetLength(S, 1);
-            WideCharToMultiByte(CP_ACP, 0, W, 1, PChar(S), 1, nil, nil);
+            {$IFDEF SUPPORTS_UNICODE}
+            S := WideString(W^);
+            {$ELSE ~SUPPORTS_UNICODE}
+            WideCharToMultiByte(CP_ACP, 0, W, 1, PAnsiChar(S), 1, nil, nil);
+            {$ENDIF ~SUPPORTS_UNICODE}
             S := PChar(S);
             if Length(S) = 0 then S := '.';
             Ascii := Ascii + S;

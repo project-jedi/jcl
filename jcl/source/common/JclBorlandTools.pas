@@ -84,9 +84,9 @@ type
   TJclBorRADToolPath = string;
 
 const
-  SupportedDelphiVersions = [5, 6, 7, 8, 9, 10, 11];
-  SupportedBCBVersions    = [5, 6, 10, 11];
-  SupportedBDSVersions    = [1, 2, 3, 4, 5];
+  SupportedDelphiVersions = [5, 6, 7, 8, 9, 10, 11, 12];
+  SupportedBCBVersions    = [5, 6, 10, 11, 12];
+  SupportedBDSVersions    = [1, 2, 3, 4, 5, 6];
 
   // Object Repository
   BorRADToolRepositoryPagesSection    = 'Repository Pages';
@@ -964,9 +964,10 @@ const
 
   BCBKeyName          = '\SOFTWARE\Borland\C++Builder';
   BDSKeyName          = '\SOFTWARE\Borland\BDS';
+  CDSKeyName          = '\SOFTWARE\Codegear\BDS';
   DelphiKeyName       = '\SOFTWARE\Borland\Delphi';
 
-  BDSVersions: array [1..5] of TBDSVersionInfo = (
+  BDSVersions: array [1..6] of TBDSVersionInfo = (
     (
       Name: RsCSharpName;
       VersionStr: '1.0';
@@ -996,6 +997,12 @@ const
       VersionStr: '2007';
       Version: 11;
       CoreIdeVersion: '100';
+      Supported: True),
+    (
+      Name: RsRSName;
+      VersionStr: '2009';
+      Version: 12;
+      CoreIdeVersion: '120';
       Supported: True)
   );
   {$ENDIF MSWINDOWS}
@@ -1119,6 +1126,8 @@ const
   DProjDefineNodeName = 'DCC_Define';
   DProjConfigurationNodeName = 'Configuration';
   DProjPlatformNodeName = 'Platform';
+  DProjProjectVersionNodeName = 'ProjectVersion';
+  DProjConfigNodeName = 'Config';
 
   // MsBuild options
   MsBuildWin32DCPOutputNodeName = 'Win32DCPOutput';
@@ -1508,7 +1517,7 @@ begin
   H := LoadLibraryEx(PChar(FileName), 0, LOAD_LIBRARY_AS_DATAFILE or DONT_RESOLVE_DLL_REFERENCES);
   if H <> 0 then
     try
-      EnumResourceNames(H, RT_STRING, @FindResStartCallBack, Integer(@FindResRec));
+      EnumResourceNames(H, RT_STRING, @FindResStartCallBack, LPARAM(@FindResRec));
     finally
       FreeLibrary(H);
     end;
@@ -1600,7 +1609,7 @@ begin
     LOAD_LIBRARY_AS_DATAFILE or DONT_RESOLVE_DLL_REFERENCES);
   if H <> 0 then
     try
-      EnumResourceNames(H, RT_STRING, @LoadResCallBack, Integer(@LoadResRec));
+      EnumResourceNames(H, RT_STRING, @LoadResCallBack, LPARAM(@LoadResRec));
     finally
       FreeLibrary(H);
     end;
@@ -2518,7 +2527,9 @@ type
     ProjectExtensionsNode, PropertyGroupNode, PersonalityNode, ChildNode: TJclSimpleXMLElem;
     NodeIndex: Integer;
     ConditionProperty: TJclSimpleXMLProp;
+    Version: string;
   begin
+    Version := '';
     DProjFileName := ChangeFileExt(ProjectFileName, SourceExtensionDProject);
     Result := FileExists(DProjFileName) and (Installation.IDEVersionNumber >= 5)
       and (Installation.RadToolKind = brBorlandDevStudio);
@@ -2549,8 +2560,11 @@ type
               ConditionProperty := PropertyGroupNode.Properties.ItemNamed[DProjConditionValueName];
               if Assigned(ConditionProperty) then
               begin
-                if (ProjectConfiguration <> '') and (ProjectPlatform <> '') and
-                  (AnsiPos(Format('%s|%s', [ProjectConfiguration, ProjectPlatform]), ConditionProperty.Value) > 0) then
+                if ((Version = '') and (ProjectConfiguration <> '') and (ProjectPlatform <> '') and
+                    (AnsiPos(Format('%s|%s', [ProjectConfiguration, ProjectPlatform]), ConditionProperty.Value) > 0))
+                   or
+                   ((Version <> '') and (ProjectConfiguration <> '') and
+                    (AnsiPos(ProjectConfiguration, ConditionProperty.Value) > 0)) then
                 begin
                   // this is the active configuration, check for overrides
                   ChildNode := PropertyGroupNode.Items.ItemNamed[DProjUsePackageNodeName];
@@ -2570,13 +2584,26 @@ type
               end
               else
               begin
-                // check for default configurations
-                ChildNode := PropertyGroupNode.Items.ItemNamed[DProjConfigurationNodeName];
+                // check for version and default configurations
+                ChildNode := PropertyGroupNode.Items.ItemNamed[DProjProjectVersionNodeName];
                 if Assigned(ChildNode) then
-                  ProjectConfiguration := ChildNode.Value;
-                ChildNode := PropertyGroupNode.Items.ItemNamed[DProjPlatformNodeName];
-                if Assigned(ChildNode) then
-                  ProjectPlatform := ChildNode.Value;
+                  Version := ChildNode.Value;
+
+                if Version = '' then
+                begin
+                  ChildNode := PropertyGroupNode.Items.ItemNamed[DProjConfigurationNodeName];
+                  if Assigned(ChildNode) then
+                    ProjectConfiguration := ChildNode.Value;
+                  ChildNode := PropertyGroupNode.Items.ItemNamed[DProjPlatformNodeName];
+                  if Assigned(ChildNode) then
+                    ProjectPlatform := ChildNode.Value;
+                end
+                else
+                begin
+                  ChildNode := PropertyGroupNode.Items.ItemNamed[DProjConfigNodeName];
+                  if Assigned(ChildNode) then
+                    ProjectConfiguration := ChildNode.Value;
+                end;
               end;
             end;
           end;
@@ -5185,8 +5212,12 @@ begin
     else
       AppdataFolder := RegReadString(RootKey, 'Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders', 'AppData');
 
-    Result := Format('%sBorland\BDS\%d.0\EnvOptions.proj',
-      [PathAddSeparator(AppdataFolder), IDEVersionNumber]);
+    if IDEVersionNumber >= 6 then
+      Result := Format('%sCodeGear\BDS\%d.0\EnvOptions.proj',
+        [PathAddSeparator(AppdataFolder), IDEVersionNumber])
+    else
+      Result := Format('%sBorland\BDS\%d.0\EnvOptions.proj',
+        [PathAddSeparator(AppdataFolder), IDEVersionNumber]);
   end
   else
     raise EJclBorRADException.CreateRes(@RsMsBuildNotSupported);
@@ -5613,6 +5644,7 @@ begin
     EnumVersions(DelphiKeyName, [], TJclDelphiInstallation);
     EnumVersions(BCBKeyName, [], TJclBCBInstallation);
     EnumVersions(BDSKeyName, ['Delphi.Win32', 'BCB', 'Delphi8', 'C#Builder'], TJclBDSInstallation);
+    EnumVersions(CDSKeyName, ['Delphi.Win32', 'BCB', 'Delphi8', 'C#Builder'], TJclBDSInstallation);
   finally
     VersionNumbers.Free;
   end;

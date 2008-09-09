@@ -2066,7 +2066,7 @@ type
   {$EXTERNALSYM PIMAGE_RESOURCE_DIRECTORY_STRING}
   _IMAGE_RESOURCE_DIRECTORY_STRING = record
     Length: Word;
-    NameString: array [0..0] of CHAR;
+    NameString: array [0..0] of AnsiCHAR;
   end;
   {$EXTERNALSYM _IMAGE_RESOURCE_DIRECTORY_STRING}
   IMAGE_RESOURCE_DIRECTORY_STRING = _IMAGE_RESOURCE_DIRECTORY_STRING;
@@ -2643,7 +2643,7 @@ type
     dwMinorVersion: DWORD;
     dwBuildNumber: DWORD;
     dwPlatformId: DWORD;
-    szCSDVersion: array [0..127] of CHAR;     // Maintenance string for PSS usage
+    szCSDVersion: array [0..127] of ANSICHAR;     // Maintenance string for PSS usage
     wServicePackMajor: WORD;
     wServicePackMinor: WORD;
     wSuiteMask: WORD;
@@ -2941,26 +2941,37 @@ function GetFileSecurity(lpFileName: LPCTSTR; RequestedInformation: SECURITY_INF
 
 // WinBase.h line 10251
 
-function SetVolumeMountPoint(lpszVolumeMountPoint, lpszVolumeName: LPCSTR): BOOL; stdcall;
-{$EXTERNALSYM SetVolumeMountPoint}
+function SetVolumeMountPointW(lpszVolumeMountPoint, lpszVolumeName: LPCWSTR): BOOL; stdcall;
+{$EXTERNALSYM SetVolumeMountPointW}
 
-function DeleteVolumeMountPoint(lpszVolumeMountPoint: LPCSTR): BOOL; stdcall;
-{$EXTERNALSYM DeleteVolumeMountPoint}
+function DeleteVolumeMountPointW(lpszVolumeMountPoint: LPCWSTR): BOOL; stdcall;
+{$EXTERNALSYM DeleteVolumeMountPointW}
 
-function GetVolumeNameForVolumeMountPoint(lpszVolumeMountPoint: LPCSTR;
-  lpszVolumeName: LPSTR; cchBufferLength: DWORD): BOOL; stdcall;
-{$EXTERNALSYM GetVolumeNameForVolumeMountPoint}
+function GetVolumeNameForVolumeMountPointW(lpszVolumeMountPoint: LPCWSTR;
+  lpszVolumeName: LPWSTR; cchBufferLength: DWORD): BOOL; stdcall;
+{$EXTERNALSYM GetVolumeNameForVolumeMountPointW}
 
 {$ENDIF ~CLR}
 
 
+{$IFNDEF COMPILER11_UP}
 type
+  // Need to have the same size like Pointer
+  INT_PTR = JclBase.INT_PTR;
+  {$EXTERNALSYM INT_PTR}
+  LONG_PTR = JclBase.LONG_PTR;
+  {$EXTERNALSYM LONG_PTR}
+  UINT_PTR = JclBase.UINT_PTR;
+  {$EXTERNALSYM UINT_PTR}
+  ULONG_PTR = JclBase.ULONG_PTR;
   {$EXTERNALSYM ULONG_PTR}
-  ULONG_PTR = LongWord;      // Need to have the same size like Pointer
+  DWORD_PTR = JclBase.DWORD_PTR;
   {$EXTERNALSYM DWORD_PTR}
-  DWORD_PTR = ULONG_PTR;
+{$ENDIF ~COMPILER11_UP}
+
+type
+  PDWORD_PTR = ^DWORD_PTR;
   {$EXTERNALSYM PDWORD_PTR}
-  PDWORD_PTR = ^PLongWord;
 
 // From JwaAclApi
 
@@ -2983,9 +2994,9 @@ type
   PLOADED_IMAGE = ^LOADED_IMAGE;
   {$EXTERNALSYM PLOADED_IMAGE}
   _LOADED_IMAGE = record
-    ModuleName: PChar;
+    ModuleName: PAnsiChar;
     hFile: THandle;
-    MappedAddress: PAnsiChar;  // PUCHAR;
+    MappedAddress: PUCHAR;
     FileHeader: PImageNtHeaders;
     LastRvaSection: PImageSectionHeader;
     NumberOfSections: ULONG;
@@ -3034,7 +3045,7 @@ function GetImageUnusedHeaderBytes(const LoadedImage: LOADED_IMAGE;
 
 // line 285
 
-function MapAndLoad(ImageName, DllPath: PChar; var LoadedImage: LOADED_IMAGE;
+function MapAndLoad(ImageName, DllPath: PAnsiChar; var LoadedImage: LOADED_IMAGE;
   DotDll: BOOL; ReadOnly: BOOL): BOOL; stdcall;
 {$EXTERNALSYM MapAndLoad}
 
@@ -3102,27 +3113,120 @@ const
   UNDNAME_NO_SPECIAL_SYMS = ($4000); // Don't undecorate special names (v-table, vcall, vector xxx, metatype, etc)
   {$EXTERNALSYM UNDNAME_NO_SPECIAL_SYMS}
 
-function UnDecorateSymbolName(DecoratedName: {$IFDEF CLR}string{$ELSE}PAnsiChar{$ENDIF};
-  UnDecoratedName: {$IFDEF CLR}string{$ELSE}PAnsiChar{$ENDIF}; UndecoratedLength: DWORD; Flags: DWORD): DWORD; stdcall;
-  {$IFDEF CLR}external 'imagehlp.dll' name 'UnDecorateSymbolName';{$ENDIF}
-{$EXTERNALSYM UnDecorateSymbolName}
-
 // line 1342
 
 type
-  _IMAGEHLP_LINE = packed record
+  {$EXTERNALSYM SYM_TYPE}
+  SYM_TYPE = (
+    SymNone,
+    SymCoff,
+    SymCv,
+    SymPdb,
+    SymExport,
+    SymDeferred,
+    SymSym                  { .sym file }
+  );
+  TSymType = SYM_TYPE;
+
+  { symbol data structure }
+  {$EXTERNALSYM PImagehlpSymbolA}
+  PImagehlpSymbolA = ^TImagehlpSymbolA;
+  {$EXTERNALSYM _IMAGEHLP_SYMBOLA}
+  _IMAGEHLP_SYMBOLA = packed record
+    SizeOfStruct: DWORD;                                { set to sizeof(IMAGEHLP_SYMBOL) }
+    Address: DWORD;                                     { virtual address including dll base address }
+    Size: DWORD;                                        { estimated size of symbol, can be zero }
+    Flags: DWORD;                                       { info about the symbols, see the SYMF defines }
+    MaxNameLength: DWORD;                               { maximum size of symbol name in 'Name' }
+    Name: packed array[0..0] of AnsiChar;               { symbol name (null terminated string) }
+  end;
+  {$EXTERNALSYM IMAGEHLP_SYMBOLA}
+  IMAGEHLP_SYMBOLA = _IMAGEHLP_SYMBOLA;
+  {$EXTERNALSYM TImagehlpSymbolA}
+  TImagehlpSymbolA = _IMAGEHLP_SYMBOLA;
+
+  { symbol data structure }
+  {$EXTERNALSYM PImagehlpSymbolW}
+  PImagehlpSymbolW = ^TImagehlpSymbolW;
+  {$EXTERNALSYM _IMAGEHLP_SYMBOLW}
+  _IMAGEHLP_SYMBOLW = packed record
+    SizeOfStruct: DWORD;                                { set to sizeof(IMAGEHLP_SYMBOL) }
+    Address: DWORD;                                     { virtual address including dll base address }
+    Size: DWORD;                                        { estimated size of symbol, can be zero }
+    Flags: DWORD;                                       { info about the symbols, see the SYMF defines }
+    MaxNameLength: DWORD;                               { maximum size of symbol name in 'Name' }
+    Name: packed array[0..0] of WideChar;               { symbol name (null terminated string) }
+  end;
+  {$EXTERNALSYM IMAGEHLP_SYMBOLW}
+  IMAGEHLP_SYMBOLW = _IMAGEHLP_SYMBOLW;
+  {$EXTERNALSYM TImagehlpSymbolW}
+  TImagehlpSymbolW = _IMAGEHLP_SYMBOLW;
+
+  { module data structure }
+  {$EXTERNALSYM PImagehlpModuleA}
+  PImagehlpModuleA = ^TImagehlpModuleA;
+  {$EXTERNALSYM _IMAGEHLP_MODULEA}
+  _IMAGEHLP_MODULEA = record
+    SizeOfStruct: DWORD;                                { set to sizeof(IMAGEHLP_MODULE) }
+    BaseOfImage: DWORD;                                 { base load address of module }
+    ImageSize: DWORD;                                   { virtual size of the loaded module }
+    TimeDateStamp: DWORD;                               { date/time stamp from pe header }
+    CheckSum: DWORD;                                    { checksum from the pe header }
+    NumSyms: DWORD;                                     { number of symbols in the symbol table }
+    SymType: TSymType;                                  { type of symbols loaded }
+    ModuleName: packed array[0..31] of AnsiChar;        { module name }
+    ImageName: packed array[0..255] of AnsiChar;        { image name }
+    LoadedImageName: packed array[0..255] of AnsiChar;  { symbol file name }
+  end;
+  {$EXTERNALSYM IMAGEHLP_MODULEA}
+  IMAGEHLP_MODULEA = _IMAGEHLP_MODULEA;
+  {$EXTERNALSYM TImagehlpModuleA}
+  TImagehlpModuleA = _IMAGEHLP_MODULEA;
+
+  { module data structure }
+  {$EXTERNALSYM PImagehlpModuleW}
+  PImagehlpModuleW = ^TImagehlpModuleW;
+  {$EXTERNALSYM _IMAGEHLP_MODULEW}
+  _IMAGEHLP_MODULEW = record
+    SizeOfStruct: DWORD;                                { set to sizeof(IMAGEHLP_MODULE) }
+    BaseOfImage: DWORD;                                 { base load address of module }
+    ImageSize: DWORD;                                   { virtual size of the loaded module }
+    TimeDateStamp: DWORD;                               { date/time stamp from pe header }
+    CheckSum: DWORD;                                    { checksum from the pe header }
+    NumSyms: DWORD;                                     { number of symbols in the symbol table }
+    SymType: TSymType;                                  { type of symbols loaded }
+    ModuleName: packed array[0..31] of WideChar;        { module name }
+    ImageName: packed array[0..255] of WideChar;        { image name }
+    LoadedImageName: packed array[0..255] of WideChar;  { symbol file name }
+  end;
+  {$EXTERNALSYM IMAGEHLP_MODULEW}
+  IMAGEHLP_MODULEW = _IMAGEHLP_MODULEW;
+  {$EXTERNALSYM TImagehlpModuleW}
+  TImagehlpModuleW = _IMAGEHLP_MODULEW;
+
+  _IMAGEHLP_LINEA = packed record
     SizeOfStruct: DWORD;           // set to sizeof(IMAGEHLP_LINE)
     Key: Pointer;                  // internal
     LineNumber: DWORD;             // line number in file
-    FileName: PChar;               // full filename
+    FileName: PAnsiChar;           // full filename
     Address: DWORD;                // first instruction of line
   end;
+  IMAGEHLP_LINEA = _IMAGEHLP_LINEA;
+  PIMAGEHLP_LINEA = ^_IMAGEHLP_LINEA;
+  TImageHlpLineA = _IMAGEHLP_LINEA;
+  PImageHlpLineA = PIMAGEHLP_LINEA;
 
-  IMAGEHLP_LINE = _IMAGEHLP_LINE;
-  PIMAGEHLP_LINE = ^_IMAGEHLP_LINE;
-
-  TImageHlpLine = _IMAGEHLP_LINE;
-  PImageHlpLine = PIMAGEHLP_LINE;
+  _IMAGEHLP_LINEW = packed record
+    SizeOfStruct: DWORD;           // set to sizeof(IMAGEHLP_LINE)
+    Key: Pointer;                  // internal
+    LineNumber: DWORD;             // line number in file
+    FileName: PWideChar;           // full filename
+    Address: DWORD;                // first instruction of line
+  end;
+  IMAGEHLP_LINEW = _IMAGEHLP_LINEW;
+  PIMAGEHLP_LINEW = ^_IMAGEHLP_LINEW;
+  TImageHlpLineW = _IMAGEHLP_LINEW;
+  PImageHlpLineW = PIMAGEHLP_LINEW;
 
 // line 1475
 
@@ -3132,15 +3236,14 @@ type
 //
 
 const
-// defined in ImageHlp.pas
-//  SYMOPT_CASE_INSENSITIVE       = $00000001;
-//  {$EXTERNALSYM SYMOPT_CASE_INSENSITIVE}
-//  SYMOPT_UNDNAME                = $00000002;
-//  {$EXTERNALSYM SYMOPT_UNDNAME}
-//  SYMOPT_DEFERRED_LOADS         = $00000004;
-//  {$EXTERNALSYM SYMOPT_DEFERRED_LOADS}
-//  SYMOPT_NO_CPP                 = $00000008;
-//  {$EXTERNALSYM SYMOPT_NO_CPP}
+  SYMOPT_CASE_INSENSITIVE       = $00000001;
+  {$EXTERNALSYM SYMOPT_CASE_INSENSITIVE}
+  SYMOPT_UNDNAME                = $00000002;
+  {$EXTERNALSYM SYMOPT_UNDNAME}
+  SYMOPT_DEFERRED_LOADS         = $00000004;
+  {$EXTERNALSYM SYMOPT_DEFERRED_LOADS}
+  SYMOPT_NO_CPP                 = $00000008;
+  {$EXTERNALSYM SYMOPT_NO_CPP}
   SYMOPT_LOAD_LINES             = $00000010;
   {$EXTERNALSYM SYMOPT_LOAD_LINES}
   SYMOPT_OMAP_FIND_NEAREST      = $00000020;
@@ -4844,19 +4947,19 @@ type
     ncb_retcode: UCHAR;  // return code
     ncb_lsn: UCHAR;      // local session number
     ncb_num: UCHAR;      // number of our network name
-    ncb_buffer: PChar;   // address of message buffer
+    ncb_buffer: PUCHAR;  // address of message buffer
     ncb_length: Word;    // size of message buffer
-    ncb_callname: array [0..NCBNAMSZ - 1] of Char; // blank-padded name of remote
-    ncb_name: array [0..NCBNAMSZ - 1] of Char;     // our blank-padded netname
+    ncb_callname: array [0..NCBNAMSZ - 1] of UCHAR; // blank-padded name of remote
+    ncb_name: array [0..NCBNAMSZ - 1] of UCHAR;     // our blank-padded netname
     ncb_rto: UCHAR;      // rcv timeout/retry count
     ncb_sto: UCHAR;      // send timeout/sys timeout
     ncb_post: TNcbPost;  // POST routine address
     ncb_lana_num: UCHAR; // lana (adapter) number
     ncb_cmd_cplt: UCHAR; // 0xff => commmand pending
     {$IFDEF _WIN64}
-    ncb_reserve: array [0..17] of Char; // reserved, used by BIOS
+    ncb_reserve: array [0..17] of UCHAR; // reserved, used by BIOS
     {$ELSE}
-    ncb_reserve: array [0..9] of Char;  // reserved, used by BIOS
+    ncb_reserve: array [0..9] of UCHAR;  // reserved, used by BIOS
     {$ENDIF}
     ncb_event: THandle;   // HANDLE to Win32 event which
                          // will be set to the signalled
@@ -4911,7 +5014,7 @@ type
   PAdapterStatus = PADAPTER_STATUS;
 
   _NAME_BUFFER = record
-    name: array [0..NCBNAMSZ - 1] of Char;
+    name: array [0..NCBNAMSZ - 1] of UCHAR;
     name_num: UCHAR;
     name_flags: UCHAR;
   end;
@@ -6404,9 +6507,9 @@ const
 // line 1424
 
 type
-  CALINFO_ENUMPROCEXA = function (lpCalendarInfoString: LPSTR; Calendar: CALID): BOOL; stdcall;
-  {$EXTERNALSYM CALINFO_ENUMPROCEXA}
-  TCalInfoEnumProcExA = CALINFO_ENUMPROCEXA;
+  CALINFO_ENUMPROCEXW = function (lpCalendarInfoString: LPWSTR; Calendar: CALID): BOOL; stdcall;
+  {$EXTERNALSYM CALINFO_ENUMPROCEXW}
+  TCalInfoEnumProcExW = CALINFO_ENUMPROCEXW;
 
 // line 1635
 
@@ -6422,9 +6525,9 @@ function GetCalendarInfoW(Locale: LCID; Calendar: CALID; CalType: CALTYPE;
 
 // line 1754
 
-function EnumCalendarInfoExA(lpCalInfoEnumProcEx: CALINFO_ENUMPROCEXA;
+function EnumCalendarInfoExW(lpCalInfoEnumProcEx: CALINFO_ENUMPROCEXW;
   Locale: LCID; Calendar: CALID; CalType: CALTYPE): BOOL; stdcall;
-{$EXTERNALSYM EnumCalendarInfoExA}
+{$EXTERNALSYM EnumCalendarInfoExW}
 
 {$ENDIF ~CLR}
 
@@ -6439,13 +6542,13 @@ type
   MAKEINTRESOURCEW = LPWSTR;
   {$EXTERNALSYM MAKEINTRESOURCEW}
   {$ENDIF CLR}
-{$IFDEF UNICODE}
+{$IFDEF SUPPORTS_UNICODE}
   MAKEINTRESOURCE = MAKEINTRESOURCEW;
   {$EXTERNALSYM MAKEINTRESOURCE}
-{$ELSE}
+{$ELSE ~SUPPORTS_UNICODE}
   MAKEINTRESOURCE = MAKEINTRESOURCEA;
   {$EXTERNALSYM MAKEINTRESOURCE}
-{$ENDIF}
+{$ENDIF ~SUPPORTS_UNICODE}
 
 //
 // Predefined Resource Types
@@ -6517,6 +6620,24 @@ const
   KLF_RESET         = $40000000;
   {$EXTERNALSYM KLF_RESET}
 
+// 64 compatible version of GetWindowLong and SetWindowLong
+
+const
+  GWLP_WNDPROC    = -4;
+  {$EXTERNALSYM GWLP_WNDPROC}
+  GWLP_HINSTANCE  = -6;
+  {$EXTERNALSYM GWLP_HINSTANCE}
+  GWLP_HWNDPARENT = -8;
+  {$EXTERNALSYM GWLP_HWNDPARENT}
+  GWLP_USERDATA   = -21;
+  {$EXTERNALSYM GWLP_USERDATA}
+  GWLP_ID         = -12;
+  {$EXTERNALSYM GWLP_ID}
+
+{$EXTERNALSYM GetWindowLongPtr}
+function GetWindowLongPtr(hWnd: HWND; nIndex: Integer): TJclAddr; stdcall;
+{$EXTERNALSYM SetWindowLongPtr}
+function SetWindowLongPtr(hWnd: HWND; nIndex: Integer; dwNewLong: TJclAddr): Longint; stdcall;
 
 {$IFNDEF CLR}
 
@@ -6992,7 +7113,7 @@ type
   _LSA_STRING = record
     Length: USHORT;
     MaximumLength: USHORT;
-    Buffer: PCHAR;
+    Buffer: PANSICHAR;
   end;
   LSA_STRING = _LSA_STRING;
   TLsaString = LSA_STRING;
@@ -7202,21 +7323,28 @@ const
     lpCalData: PWideChar; cchData: Integer;
     lpValue: PDWORD): Integer stdcall = GetCalendarInfoW;
 
-  RtdlEnumCalendarInfoExA: function(lpCalInfoEnumProc: TCalInfoEnumProcExA;
-    Locale: LCID; Calendar: CALID; CalType: CALTYPE): BOOL stdcall = EnumCalendarInfoExA;
+  RtdlEnumCalendarInfoExW: function(lpCalInfoEnumProc: TCalInfoEnumProcExW;
+    Locale: LCID; Calendar: CALID; CalType: CALTYPE): BOOL stdcall = EnumCalendarInfoExW;
 
-  RtdlGetVolumeNameForVolumeMountPoint: function(lpszVolumeMountPoint: LPCSTR;
-    lpszVolumeName: LPSTR; cchBufferLength: DWORD): BOOL stdcall = GetVolumeNameForVolumeMountPoint;
+  RtdlGetVolumeNameForVolumeMountPointW: function(lpszVolumeMountPoint: LPCWSTR;
+    lpszVolumeName: LPWSTR; cchBufferLength: DWORD): BOOL stdcall = GetVolumeNameForVolumeMountPointW;
 
-  RtdlSetVolumeMountPoint: function(lpszVolumeMountPoint: LPCSTR;
-    lpszVolumeName: LPCSTR): BOOL stdcall = SetVolumeMountPoint;
+  RtdlSetVolumeMountPointW: function(lpszVolumeMountPoint: LPCWSTR;
+    lpszVolumeName: LPCWSTR): BOOL stdcall = SetVolumeMountPointW;
 
-  RtdlDeleteVolumeMountPoint: function(lpszVolumeMountPoint: LPCSTR): BOOL
-    stdcall = DeleteVolumeMountPoint;
+  RtdlDeleteVolumeMountPointW: function(lpszVolumeMountPoint: LPCWSTR): BOOL
+    stdcall = DeleteVolumeMountPointW;
 
   RtdlNetBios: function(P: PNCB): UCHAR stdcall = NetBios;
 
 {$ENDIF ~CLR}
+
+const
+  {$IFDEF SUPPORTS_UNICODE}
+  AWSuffix = 'W';
+  {$ELSE ~SUPPORTS_UNICODE}
+  AWSuffix = 'A';
+  {$ENDIF ~SUPPORTS_UNICODE}
 
 {$IFDEF UNITVERSIONING}
 const
@@ -7232,13 +7360,6 @@ implementation
 
 uses
   JclResources;
-
-const
-  {$IFDEF UNICODE}
-  AWSuffix = 'W';
-  {$ELSE ~UNICODE}
-  AWSuffix = 'A';
-  {$ENDIF ~UNICODE}
 
 {$IFNDEF CLR}
 procedure GetProcedureAddress(var P: Pointer; const ModuleName, ProcName: string);
@@ -7413,19 +7534,6 @@ begin
     mov esp, ebp
     pop ebp
     jmp [_ImageRvaToVa]
-  end;
-end;
-
-var
-  _UnDecorateSymbolName: Pointer;
-
-function UnDecorateSymbolName;
-begin
-  GetProcedureAddress(_UnDecorateSymbolName, ImageHlpLib, 'UnDecorateSymbolName');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_UnDecorateSymbolName]
   end;
 end;
 
@@ -7908,12 +8016,12 @@ begin
 end;
 
 function CreateMutex(lpMutexAttributes: PSecurityAttributes; bInitialOwner: DWORD; lpName: PChar): THandle; stdcall;
-  external kernel32 name 'CreateMutexA';
+  external kernel32 name 'CreateMutex' + AWSuffix;
 
 function GetVersionEx(var lpVersionInformation: TOSVersionInfoEx): BOOL; stdcall;
-  external kernel32 name 'GetVersionExA';
+  external kernel32 name 'GetVersionEx' + AWSuffix;
 function GetVersionEx(lpVersionInformation: POSVersionInfoEx): BOOL; stdcall;
-  external kernel32 name 'GetVersionExA';
+  external kernel32 name 'GetVersionEx' + AWSuffix;
 
 var
   _SetWaitableTimer: Pointer;
@@ -8006,41 +8114,41 @@ begin
 end;
 
 var
-  _SetVolumeMountPoint: Pointer;
+  _SetVolumeMountPointW: Pointer;
 
-function SetVolumeMountPoint;
+function SetVolumeMountPointW;
 begin
-  GetProcedureAddress(_SetVolumeMountPoint, kernel32, 'SetVolumeMountPointA');
+  GetProcedureAddress(_SetVolumeMountPointW, kernel32, 'SetVolumeMountPointW');
   asm
     mov esp, ebp
     pop ebp
-    jmp [_SetVolumeMountPoint]
+    jmp [_SetVolumeMountPointW]
   end;
 end;
 
 var
-  _DeleteVolumeMountPoint: Pointer;
+  _DeleteVolumeMountPointW: Pointer;
 
-function DeleteVolumeMountPoint;
+function DeleteVolumeMountPointW;
 begin
-  GetProcedureAddress(_DeleteVolumeMountPoint, kernel32, 'DeleteVolumeMountPointA');
+  GetProcedureAddress(_DeleteVolumeMountPointW, kernel32, 'DeleteVolumeMountPointW');
   asm
     mov esp, ebp
     pop ebp
-    jmp [_DeleteVolumeMountPoint]
+    jmp [_DeleteVolumeMountPointW]
   end;
 end;
 
 var
-  _GetVolumeNameForVolMountPoint: Pointer;
+  _GetVolumeNameForVolMountPointW: Pointer;
 
-function GetVolumeNameForVolumeMountPoint;
+function GetVolumeNameForVolumeMountPointW;
 begin
-  GetProcedureAddress(_GetVolumeNameForVolMountPoint, kernel32, 'GetVolumeNameForVolumeMountPointA');
+  GetProcedureAddress(_GetVolumeNameForVolMountPointW, kernel32, 'GetVolumeNameForVolumeMountPointW');
   asm
     mov esp, ebp
     pop ebp
-    jmp [_GetVolumeNameForVolMountPoint]
+    jmp [_GetVolumeNameForVolMountPointW]
   end;
 end;
 
@@ -8077,20 +8185,47 @@ begin
 end;
 
 var
-  _EnumCalendarInfoExA: Pointer;
+  _EnumCalendarInfoExW: Pointer;
 
-function EnumCalendarInfoExA;
+function EnumCalendarInfoExW;
 begin
-  GetProcedureAddress(_EnumCalendarInfoExA, kernel32, 'EnumCalendarInfoExA');
+  GetProcedureAddress(_EnumCalendarInfoExW, kernel32, 'EnumCalendarInfoExW');
   asm
     mov esp, ebp
     pop ebp
-    jmp [_EnumCalendarInfoExA]
+    jmp [_EnumCalendarInfoExW]
   end;
 end;
 
 {$ENDIF ~CLR}
 
+
+
+var
+  _GetWindowLongPtr: Pointer;
+
+function GetWindowLongPtr;
+begin
+  GetProcedureAddress(_GetWindowLongPtr, user32, 'GetWindowLong' + AWSuffix);
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_GetWindowLongPtr]
+  end;
+end;
+
+var
+  _SetWindowLongPtr: Pointer;
+
+function SetWindowLongPtr;
+begin
+  GetProcedureAddress(_SetWindowLongPtr, user32, 'SetWindowLong' + AWSuffix);
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_SetWindowLongPtr]
+  end;
+end;
 
 // line 9078
 

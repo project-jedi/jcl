@@ -97,10 +97,7 @@ const
   EDISEFUserAttributeHyphenDesc = 'Not Recommended';
   EDISEFUserAttributeAmpersandDesc = 'Dependent';
 
-  EDISEFUserAttributeSet =
-    [EDISEFUserAttributePeriod, EDISEFUserAttributeExclamationPoint,
-     EDISEFUserAttributeDollarSign, EDISEFUserAttributeHyphen,
-     EDISEFUserAttributeAmpersand];
+function CharIsUserAttribute(const C: Char): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
 const
   // EDI SEF Text,Sets Constants
@@ -834,6 +831,18 @@ implementation
 uses
   JclResources, JclStrings;
 
+function CharIsUserAttribute(const C: Char): Boolean;
+begin
+  case C of
+    EDISEFUserAttributePeriod, EDISEFUserAttributeExclamationPoint,
+    EDISEFUserAttributeDollarSign, EDISEFUserAttributeHyphen,
+    EDISEFUserAttributeAmpersand:
+      Result := True;
+  else
+    Result := False;
+  end;
+end;
+
 const
   Value_Optional = 'O';
   Value_Conditional = 'C';
@@ -950,7 +959,7 @@ begin
   Element.RequirementDesignator := Value_Optional;
   Element.RepeatCount := 1;
   // Parse User Attribute
-  if Data[1] in EDISEFUserAttributeSet then
+  if CharIsUserAttribute(Data[1]) then
   begin
     Element.UserAttribute := Data[1];
     I := 2;
@@ -1111,7 +1120,7 @@ begin
   Element.RequirementDesignator := Value_Optional;
   Element.RepeatCount := 1;
   // Parse User Attribute
-  if Data[1] in EDISEFUserAttributeSet then
+  if CharIsUserAttribute(Data[1]) then
   begin
     Element.UserAttribute := Data[1];
     I := 2;
@@ -1482,7 +1491,7 @@ begin
     begin
       I := 1;
       // Parse User Attribute
-      if Temp[0][1] in EDISEFUserAttributeSet then
+      if CharIsUserAttribute(Temp[0][1]) then
       begin
         Segment.UserAttribute := Temp[0][1];
         I := 2;

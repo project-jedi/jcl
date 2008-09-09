@@ -173,7 +173,7 @@ var
   begin
     I := 1;
     while I <= Length(S) do
-      if not (S[I] in ['0'..'9', '-']) then
+      if not CharIsNumberChar(S[I]) then
         Delete(S, I, 1)
       else
         Inc(I);

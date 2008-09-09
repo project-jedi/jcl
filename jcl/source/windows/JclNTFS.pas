@@ -67,10 +67,10 @@ type
 type
   TFileCompressionState = (fcNoCompression, fcDefaultCompression, fcLZNT1Compression);
 
-function NtfsGetCompression(const FileName: string; var State: Short): Boolean; overload;
-function NtfsGetCompression(const FileName: string): TFileCompressionState; overload;
-function NtfsSetCompression(const FileName: string; const State: Short): Boolean;
-procedure NtfsSetFileCompression(const FileName: string; const State: TFileCompressionState);
+function NtfsGetCompression(const FileName: TFileName; var State: Short): Boolean; overload;
+function NtfsGetCompression(const FileName: TFileName): TFileCompressionState; overload;
+function NtfsSetCompression(const FileName: TFileName; const State: Short): Boolean;
+procedure NtfsSetFileCompression(const FileName: TFileName; const State: TFileCompressionState);
 procedure NtfsSetDirectoryTreeCompression(const Directory: string; const State: TFileCompressionState);
 procedure NtfsSetDefaultFileCompression(const Directory: string; const State: TFileCompressionState);
 procedure NtfsSetPathCompression(const Path: string; const State: TFileCompressionState; Recursive: Boolean);
@@ -101,8 +101,8 @@ function NtfsFileHasReparsePoint(const Path: string): Boolean;
 
 // NTFS - Volume Mount Points
 function NtfsIsFolderMountPoint(const Path: string): Boolean;
-function NtfsMountDeviceAsDrive(const Device: string; Drive: Char): Boolean;
-function NtfsMountVolume(const Volume: Char; const MountPoint: string): Boolean;
+function NtfsMountDeviceAsDrive(const Device: WideString; Drive: Char): Boolean;
+function NtfsMountVolume(const Volume: WideChar; const MountPoint: WideString): Boolean;
 
 // NTFS - Change Journal
 // NTFS - Opportunistic Locks
@@ -678,7 +678,7 @@ begin
   end;
 end;
 
-function NtfsGetCompression(const FileName: string; var State: Short): Boolean;
+function NtfsGetCompression(const FileName: TFileName; var State: Short): Boolean;
 var
   Handle: THandle;
   BytesReturned: DWORD;
@@ -695,7 +695,7 @@ begin
     end;
 end;
 
-function NtfsGetCompression(const FileName: string): TFileCompressionState;
+function NtfsGetCompression(const FileName: TFileName): TFileCompressionState;
 var
   State: Short;
 begin
@@ -713,14 +713,14 @@ begin
   end;
 end;
 
-function NtfsSetCompression(const FileName: string; const State: Short): Boolean;
+function NtfsSetCompression(const FileName: TFileName; const State: Short): Boolean;
 begin
   Result := SetCompression(FileName, State, FileFlag[IsDirectory(FileName)]);
 end;
 
 {$STACKFRAMES ON}
 
-procedure NtfsSetFileCompression(const FileName: string; const State: TFileCompressionState);
+procedure NtfsSetFileCompression(const FileName: TFileName; const State: TFileCompressionState);
 begin
   ValidateArgument(not IsDirectory(FileName), 'NtfsSetFileCompression', 'FileName');
   if not SetCompression(FileName, CompressionFormat[State], 0) then
@@ -825,10 +825,10 @@ end;
 function NtfsGetAllocRangeEntry(const Ranges: TNtfsAllocRanges;
   Index: Integer): TFileAllocatedRangeBuffer;
 var
-  Offset: Longint;
+  Offset: INT_PTR;
 begin
   Assert((Index >= 0) and (Index < Ranges.Entries));
-  Offset := Longint(Ranges.Data) + Index * SizeOf(TFileAllocatedRangeBuffer);
+  Offset := INT_PTR(Ranges.Data) + Index * SizeOf(TFileAllocatedRangeBuffer);
   Result := PFileAllocatedRangeBuffer(Offset)^;
 end;
 
@@ -1018,46 +1018,45 @@ begin
     Result := (Tag = IO_REPARSE_TAG_MOUNT_POINT);
 end;
 
-function NtfsMountDeviceAsDrive(const Device: string; Drive: Char): Boolean;
+function NtfsMountDeviceAsDrive(const Device: WideString; Drive: Char): Boolean;
 const
   DDD_FLAGS = DDD_RAW_TARGET_PATH or DDD_REMOVE_DEFINITION or DDD_EXACT_MATCH_ON_REMOVE;
 var
-  DriveStr: string;
-  VolumeName: string;
+  DriveStr: WideString;
+  VolumeName: WideString;
 begin
   // To create a mount point we must obtain a unique volume name first. To obtain
   // a unique volume name the drive must exist. Therefore we must temporarily
   // create a symbolic link for the drive using DefineDosDevice.
   DriveStr := Drive + ':';
-  Result := DefineDosDevice(DDD_RAW_TARGET_PATH, PChar(DriveStr), PChar(Device));
+  Result := DefineDosDeviceW(DDD_RAW_TARGET_PATH, PWideChar(DriveStr), PWideChar(Device));
   if Result then
   begin
     SetLength(VolumeName, 1024);
-    Result := RtdlGetVolumeNameForVolumeMountPoint(PChar(DriveStr + '\'),
-      PChar(VolumeName), 1024);
+    Result := RtdlGetVolumeNameForVolumeMountPointW(PWideChar(DriveStr + '\'), PWideChar(VolumeName), 1024);
     // Attempt to delete the symbolic link, if it fails then don't attempt to
     // set the mountpoint either but raise an exception instead, there's something
     // seriously wrong so let's try to control the damage done already :)
-    if not DefineDosDevice(DDD_FLAGS, PChar(DriveStr), PChar(Device)) then
+    if not DefineDosDeviceW(DDD_FLAGS, PWideChar(DriveStr), PWideChar(Device)) then
       raise EJclNtfsError.CreateRes(@RsNtfsUnableToDeleteSymbolicLink);
     if Result then
-      Result := RtdlSetVolumeMountPoint(PChar(DriveStr + '\'), PChar(VolumeName));
+      Result := RtdlSetVolumeMountPointW(PWideChar(DriveStr + '\'), PWideChar(VolumeName));
   end;
 end;
 
-function NtfsMountVolume(const Volume: Char; const MountPoint: string): Boolean;
+function NtfsMountVolume(const Volume: WideChar; const MountPoint: WideString): Boolean;
 var
-  VolumeName: string;
-  VolumeStr: string;
+  VolumeName: WideString;
+  VolumeStr: WideString;
 begin
   SetLength(VolumeName, 1024);
   VolumeStr := Volume + ':\';
-  Result := RtdlGetVolumeNameForVolumeMountPoint(PChar(VolumeStr), PChar(VolumeName), 1024);
+  Result := RtdlGetVolumeNameForVolumeMountPointW(PWideChar(VolumeStr), PWideChar(VolumeName), 1024);
   if Result then
   begin
     if not JclFileUtils.DirectoryExists(MountPoint) then
       JclFileUtils.ForceDirectories(MountPoint);
-    Result := RtdlSetVolumeMountPoint(PChar(MountPoint), PChar(VolumeName));
+    Result := RtdlSetVolumeMountPointW(PWideChar(MountPoint), PWideChar(VolumeName));
   end;
 end;
 
@@ -1192,9 +1191,7 @@ begin
         if BytesReturned >= ReparseData.Reparse.SubstituteNameLength + SizeOf(WideChar) then
         begin
           SetLength(Destination, (ReparseData.Reparse.SubstituteNameLength div SizeOf(WideChar)) + 1);
-          WideCharToMultiByte(CP_THREAD_ACP, 0, ReparseData.Reparse.PathBuffer,
-            (ReparseData.Reparse.SubstituteNameLength div SizeOf(WCHAR)) + 1,
-            PChar(Destination), Length(Destination), nil, nil);
+          Move(ReparseData.Reparse.PathBuffer[0], Destination[1], ReparseData.Reparse.SubstituteNameLength);
           Result := True;
         end;
       end;
@@ -1227,7 +1224,7 @@ begin
   while not FoundStream do
   begin
     // Read stream header
-    BytesToRead := DWORD(@Header.cStreamName[0]) - DWORD(@Header.dwStreamId);
+    BytesToRead := DWORD_PTR(@Header.cStreamName[0]) - DWORD_PTR(@Header.dwStreamId);
     if not Windows.BackupRead(Data.Internal.FileHandle, (@Header), BytesToRead, BytesRead,
       False, True, Data.Internal.Context) then
     begin
@@ -1415,13 +1412,12 @@ end;
 //   Why all references need to reside on the same volume should be clear from these
 //   remarks.
 function NtfsCreateHardLink(const LinkFileName, ExistingFileName: String): Boolean;
-{$DEFINE ANSI} // TODO: review for possible existing compatible DEFINES in the JCL
 begin
-  {$IFDEF ANSI}
+  {$IFDEF SUPPORTS_UNICODE}
+  Result := CreateHardLinkW(PWideChar(LinkFileName), PWideChar(ExistingFileName), nil);
+  {$ELSE ~SUPPORTS_UNICODE}
   Result := CreateHardLinkA(PAnsiChar(LinkFileName), PAnsiChar(ExistingFileName), nil);
-  {$ELSE}
-  Result := CreateHardLinkW(PWideChar(LinkFileName), PWideChar(ExistingFileName));
-  {$ENDIF ANSI}
+  {$ENDIF ~SUPPORTS_UNICODE}
 end;
 
 function NtfsGetHardLinkInfo(const FileName: string; var Info: TNtfsHardLinkInfo): Boolean;
@@ -1775,9 +1771,9 @@ begin
     VT_LPSTR:
       Result := PropValue.pszVal;
     VT_LPWSTR:
-      Result := PropValue.pwszVal;
+      Result := AnsiString(WideString(PropValue.pwszVal));
     VT_BSTR:
-      Result := PropValue.bstrVal;
+      Result := AnsiString(WideString(PropValue.bstrVal));
   else
     raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
   end;
@@ -1807,7 +1803,7 @@ begin
     VT_EMPTY, VT_NULL:
       Result := '';
     VT_LPSTR:
-      Result := PropValue.pszVal;
+      Result := WideString(AnsiString(PropValue.pszVal));
     VT_LPWSTR:
       Result := PropValue.pwszVal;
     VT_BSTR:
@@ -1977,7 +1973,7 @@ begin
     VT_EMPTY, VT_NULL:
       Result := '';
     VT_LPSTR:
-      Result := PropValue.pszVal;
+      Result := WideString(AnsiString(PropValue.pszVal));
     VT_LPWSTR:
       Result := PropValue.pwszVal;
     VT_BSTR:

@@ -125,7 +125,7 @@ begin
   {$JPPEXPANDMACRO DELEGATEWRITEEND(FOwnTree)}
 end;
 
-function BASEITRCLASSNAME.Equals(const AIterator: STDITRINTERFACENAME): Boolean;
+function BASEITRCLASSNAME.IteratorEquals(const AIterator: STDITRINTERFACENAME): Boolean;
 var
   Obj: TObject;
   ItrObj: BASEITRCLASSNAME;
@@ -557,10 +557,7 @@ begin
       Result := NODETYPENAME(Result.Children[Result.IndexOfChild(LastRet) - 1]);
   end;
 end;*)
-(*$JPPDEFINEMACRO JCLTREEIMP(NODETYPENAME, SELFCLASSNAME, PREORDERITRCLASSNAME, POSTORDERITRCLASSNAME,
-  COLLECTIONINTERFACENAME, STDITRINTERFACENAME, TREEITRINTERFACENAME,
-  EQUALITYCOMPARERINTERFACENAME, OWNERSHIPDECLARATION, OWNERSHIPPARAMETER,
-  CONSTKEYWORD, PARAMETERNAME, TYPENAME, DEFAULTVALUE, RELEASERNAME)
+(*$JPPDEFINEMACRO JCLTREETYPESIMP(NODETYPENAME, EQUALITYCOMPARERINTERFACENAME, CONSTKEYWORD, PARAMETERNAME, TYPENAME)
 //=== { NODETYPENAME } =======================================================
 
 function NODETYPENAME.IndexOfChild(AChild: NODETYPENAME): Integer;
@@ -578,8 +575,11 @@ begin
     if AEqualityComparer.ItemsEqual(NODETYPENAME(Children[Result]).Value, PARAMETERNAME) then
       Exit;
   Result := -1;
-end;
-
+end;*)
+(*$JPPDEFINEMACRO JCLTREEIMP(NODETYPENAME, SELFCLASSNAME, PREORDERITRCLASSNAME, POSTORDERITRCLASSNAME,
+  COLLECTIONINTERFACENAME, STDITRINTERFACENAME, TREEITRINTERFACENAME,
+  EQUALITYCOMPARERINTERFACENAME, OWNERSHIPDECLARATION, OWNERSHIPPARAMETER,
+  CONSTKEYWORD, PARAMETERNAME, TYPENAME, DEFAULTVALUE, RELEASERNAME)
 //=== { SELFCLASSNAME } =======================================================
 
 constructor SELFCLASSNAME.Create(OWNERSHIPDECLARATION);
@@ -650,18 +650,6 @@ begin
 end;
 
 procedure SELFCLASSNAME.AssignDataTo(Dest: TJclAbstractContainerBase);
-  function CloneNode(Node, Parent: NODETYPENAME): NODETYPENAME;
-  var
-    Index: Integer;
-  begin
-    Result := NODETYPENAME.Create;
-    Result.Value := Node.Value;
-    Result.Parent := Parent;
-    SetLength(Result.Children, Node.ChildrenCount);
-    Result.ChildrenCount := Node.ChildrenCount;
-    for Index := 0 to Node.ChildrenCount - 1 do
-      Result.Children[Index] := CloneNode(NODETYPENAME(Node.Children[Index]), Result); // recursive call
-  end;
 var
   ADest: SELFCLASSNAME;
   ACollection: COLLECTIONINTERFACENAME;
@@ -731,20 +719,20 @@ begin
   Dec(FSize);
 end;
 
+function SELFCLASSNAME.CloneNode(Node, Parent: NODETYPENAME): NODETYPENAME;
+var
+  Index: Integer;
+begin
+  Result := NODETYPENAME.Create;
+  Result.Value := Node.Value;
+  Result.Parent := Parent;
+  SetLength(Result.Children, Node.ChildrenCount);
+  Result.ChildrenCount := Node.ChildrenCount;
+  for Index := 0 to Node.ChildrenCount - 1 do
+    Result.Children[Index] := CloneNode(NODETYPENAME(Node.Children[Index]), Result); // recursive call
+end;
+
 function SELFCLASSNAME.Contains(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
-  function NodeContains(ANode: NODETYPENAME; CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
-  var
-    Index: Integer;
-  begin
-    Result := ItemsEqual(ANode.Value, PARAMETERNAME);
-    if not Result then
-      for Index := 0 to ANode.ChildrenCount - 1 do
-    begin
-      Result := NodeContains(NODETYPENAME(ANode.Children[Index]), PARAMETERNAME);
-      if Result then
-        Break;
-    end;
-  end;
 begin
   {$JPPEXPANDMACRO READBEGIN}
     if FRoot <> nil then
@@ -768,8 +756,7 @@ begin
   {$JPPEXPANDMACRO READEND}
 end;
 
-{$JPPEXPANDMACRO CREATEEMPTYCONTAINER}
-function SELFCLASSNAME.Equals(const ACollection: COLLECTIONINTERFACENAME): Boolean;
+function SELFCLASSNAME.CollectionEquals(const ACollection: COLLECTIONINTERFACENAME): Boolean;
 var
   It, ItSelf: STDITRINTERFACENAME;
 begin
@@ -866,20 +853,35 @@ begin
   {$JPPEXPANDMACRO READEND}
 end;
 
-procedure SELFCLASSNAME.Pack;
-  procedure PackNode(ANode: NODETYPENAME);
-  var
-    Index: Integer;
-  begin
-    SetLength(ANode.Children, ANode.ChildrenCount);
+function SELFCLASSNAME.NodeContains(ANode: NODETYPENAME; CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
+var
+  Index: Integer;
+begin
+  Result := ItemsEqual(ANode.Value, PARAMETERNAME);
+  if not Result then
     for Index := 0 to ANode.ChildrenCount - 1 do
-      PackNode(NODETYPENAME(ANode.Children[Index]));
+  begin
+    Result := NodeContains(NODETYPENAME(ANode.Children[Index]), PARAMETERNAME);
+    if Result then
+      Break;
   end;
+end;
+
+procedure SELFCLASSNAME.Pack;
 begin
   {$JPPEXPANDMACRO WRITEBEGIN}
     if FRoot <> nil then
       PackNode(FRoot);
   {$JPPEXPANDMACRO WRITEEND}
+end;
+
+procedure SELFCLASSNAME.PackNode(ANode: NODETYPENAME);
+var
+  Index: Integer;
+begin
+  SetLength(ANode.Children, ANode.ChildrenCount);
+  for Index := 0 to ANode.ChildrenCount - 1 do
+    PackNode(NODETYPENAME(ANode.Children[Index]));
 end;
 
 function SELFCLASSNAME.Remove(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;

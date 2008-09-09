@@ -160,9 +160,6 @@ type
 
     property BaseType: IJclEnumerationTypeInfo read GetBaseType;
     property Names[const I: Integer]: string read GetNames; default;
-    {$IFDEF RTL140_UP}
-    property UnitName: string read GetUnitName;
-    {$ENDIF RTL140_UP}
   end;
 
   IJclSetTypeInfo = interface(IJclOrdinalTypeInfo)
@@ -561,7 +558,7 @@ end;
 
 function TJclTypeInfo.GetName: string;
 begin
-  Result := TypeInfo.Name;
+  Result := string(TypeInfo.Name);
 end;
 
 function TJclTypeInfo.GetTypeData: {$IFDEF CLR}TTypeData{$ELSE ~CLR}PTypeData{$ENDIF ~CLR};
@@ -718,9 +715,6 @@ type
   public
     property BaseType: IJclEnumerationTypeInfo read GetBaseType;
     property Names[const I: Integer]: string read GetNames; default;
-    {$IFDEF RTL140_UP}
-    property UnitName: string read GetUnitName;
-    {$ENDIF RTL140_UP}
   end;
 
 function TJclEnumerationTypeInfo.GetBaseType: IJclEnumerationTypeInfo;
@@ -760,7 +754,7 @@ begin
     Inc(Integer(P), Length(P^) + 1);
     Dec(Idx);
   end;
-  Result := P^;
+  Result := string(P^);
   {$ENDIF CLR}
 end;
 
@@ -785,10 +779,10 @@ begin
       Inc(Integer(P), Length(P^) + 1);
       Dec(I);
     end;
-    Result := P^;
+    Result := string(P^);
   end
   else
-    Result := TypeData.NameList;
+    Result := string(TypeData.NameList);
 end;
 {$ENDIF CLR}
 
@@ -815,11 +809,11 @@ var
 begin
   inherited WriteTo(Dest);
   {$IFDEF CLR}
-  Dest.Writeln(RsRTTIUnitName + UnitName);
+  Dest.Writeln(RsRTTIUnitName + GetUnitName);
   Dest.Write(RsRTTINameList);
   {$ELSE}
   {$IFDEF RTL140_UP}
-  Dest.Writeln(LoadResString(@RsRTTIUnitName) + UnitName);
+  Dest.Writeln(LoadResString(@RsRTTIUnitName) + GetUnitName);
   {$ENDIF RTL140_UP}
   Dest.Write(LoadResString(@RsRTTINameList));
   {$ENDIF CLR}
@@ -1327,7 +1321,7 @@ end;
 
 function TJclPropInfo.GetName: string;
 begin
-  Result := PropInfo.Name;
+  Result := string(PropInfo.Name);
 end;
 
 {$IFDEF CLR}
@@ -1467,7 +1461,6 @@ type
     property PropertyCount: Integer read GetPropertyCount;
     property Properties[const PropIdx: Integer]: IJclPropInfo read GetProperties;
     property PropNames[const Name: string]: IJclPropInfo read GetPropNames;
-    property UnitName: string read GetUnitName;
   end;
 
 function TJclClassTypeInfo.GetClassRef: TClass;
@@ -1503,7 +1496,7 @@ var
   PropData: ^TPropData;
 begin
   PropData := @TypeData.UnitName;
-  Inc(Integer(PropData), 1 + Length(UnitName));
+  Inc(Integer(PropData), 1 + Length(GetUnitName));
   Result := PropData.PropCount;
 end;
 {$ENDIF CLR}
@@ -1532,7 +1525,7 @@ var
   RecSize: Integer;
 begin
   PropData := @TypeData.UnitName;
-  Inc(Integer(PropData), 1 + Length(UnitName));
+  Inc(Integer(PropData), 1 + Length(GetUnitName));
   if PropIdx + 1 > PropData.PropCount then
     Result := Parent.Properties[PropIdx - PropData.PropCount]
   else
@@ -1568,7 +1561,7 @@ end;
 
 function TJclClassTypeInfo.GetUnitName: string;
 begin
-  Result := TypeData.UnitName;
+  Result := string(TypeData.UnitName);
 end;
 
 procedure TJclClassTypeInfo.WriteTo(const Dest: IJclInfoWriter);
@@ -1591,7 +1584,7 @@ begin
   inherited WriteTo(Dest);
   Dest.Writeln(RsRTTIClassName + ClassRef.ClassName);
   Dest.Writeln(RsRTTIParent + Parent.ClassRef.ClassName);
-  Dest.Writeln(RsRTTIUnitName + UnitName);
+  Dest.Writeln(RsRTTIUnitName + GetUnitName);
   Dest.Writeln(RsRTTIPropCount + IntToStr(PropertyCount) + ' (' +
     IntToStr(TotalPropertyCount) + ')');
   Dest.Indent;
@@ -1718,10 +1711,10 @@ begin
       for I := 0 to IntfTbl.EntryCount-1 do
         Dest.Write(', [''' + JclGUIDToString(IntfTbl.Entries[I].IID) + ''']');
     {$ENDIF CLR}
-    Dest.Writeln(') // unit ' + UnitName);
+    Dest.Writeln(') // unit ' + GetUnitName);
   end
   else
-    Dest.Writeln(Name + ' = class // unit ' + UnitName);
+    Dest.Writeln(Name + ' = class // unit ' + GetUnitName);
   if PropertyCount > 0 then
   begin
     Dest.Writeln('published');
@@ -1867,7 +1860,7 @@ var
 begin
   PName := Param;
   Inc(Integer(PName));
-  Result := PName^;
+  Result := string(PName^);
 end;
 {$ENDIF CLR}
 
@@ -1888,7 +1881,7 @@ begin
   PName := Param;
   Inc(Integer(PName));
   Inc(Integer(PName), PByte(PName)^ + 1);
-  Result := PName^;
+  Result := string(PName^);
 end;
 {$ENDIF CLR}
 
@@ -1964,11 +1957,11 @@ begin
     if ParameterCount > 0 then
     begin
       LastParam := Parameters[ParameterCount-1];
-      ResPtr := Pointer(Longint(LastParam.Param) + LastParam.RecSize);
+      ResPtr := Pointer(INT_PTR(LastParam.Param) + LastParam.RecSize);
     end
     else
       ResPtr := @TypeData.ParamList[0];
-    Result := ResPtr^;
+    Result := string(ResPtr^);
   end
   else
     Result := '';
@@ -2112,7 +2105,6 @@ type
     {$IFDEF RTL140_UP}
     property PropertyCount: Integer read GetPropertyCount;
     {$ENDIF RTL140_UP}
-    property UnitName: string read GetUnitName;
   end;
 
 function TJclInterfaceTypeInfo.GetParent: IJclInterfaceTypeInfo;
@@ -2159,7 +2151,7 @@ var
   PropData: ^TPropData;
 begin
   PropData := @TypeData.IntfUnit;
-  Inc(Integer(PropData), 1 + Length(UnitName));
+  Inc(Integer(PropData), 1 + Length(GetUnitName));
   Result := PropData.PropCount;
 end;
 {$ENDIF CLR}
@@ -2167,7 +2159,7 @@ end;
 
 function TJclInterfaceTypeInfo.GetUnitName: string;
 begin
-  Result := TypeData.IntfUnit;
+  Result := string(TypeData.IntfUnit);
 end;
 
 procedure TJclInterfaceTypeInfo.WriteTo(const Dest: IJclInfoWriter);
@@ -2181,7 +2173,7 @@ begin
   IntfFlags := Flags;
   Dest.Writeln(RsRTTIFlags + JclSetToStr(Borland.Delphi.System.TypeInfo(TIntfFlagsBase),
     IntfFlags, True, False));
-  Dest.Writeln(RsRTTIUnitName + UnitName);
+  Dest.Writeln(RsRTTIUnitName + GetUnitName);
   if Parent <> nil then
     Dest.Writeln(RsRTTIParent + Parent.Name);
   Dest.Writeln(RsRTTIPropCount + IntToStr(PropertyCount));
@@ -2190,7 +2182,7 @@ begin
   IntfFlags := Flags;
   Dest.Writeln(LoadResString(@RsRTTIFlags) + JclSetToStr(System.TypeInfo(TIntfFlagsBase),
     IntfFlags, True, False));
-  Dest.Writeln(LoadResString(@RsRTTIUnitName) + UnitName);
+  Dest.Writeln(LoadResString(@RsRTTIUnitName) + GetUnitName);
   if Parent <> nil then
     Dest.Writeln(LoadResString(@RsRTTIParent) + Parent.Name);
   {$IFDEF RTL140_UP}
@@ -2215,7 +2207,7 @@ begin
       AnsiSameText(Parent.Name, 'IUnknown') then
     Dest.Write('(' + Parent.Name + ')');
   {$ENDIF ~CLR}
-  Dest.Writeln(' // unit ' + UnitName);
+  Dest.Writeln(' // unit ' + GetUnitName);
   Dest.Indent;
   try
     if ifHasGuid in Flags then
@@ -2286,7 +2278,6 @@ type
     property ElementType: IJclTypeInfo read GetElementType;
     property ElementsNeedCleanup: Boolean read GetElementsNeedCleanup;
     property VarType: Integer read GetVarType;
-    property UnitName: string read GetUnitName;
   end;
 
 function TJclDynArrayTypeInfo.GetElementSize: Longint;
@@ -2335,7 +2326,7 @@ end;
 
 function TJclDynArrayTypeInfo.GetUnitName: string;
 begin
-  Result := TypeData.DynUnitName;
+  Result := string(TypeData.DynUnitName);
 end;
 
 procedure TJclDynArrayTypeInfo.WriteTo(const Dest: IJclInfoWriter);
@@ -2363,7 +2354,7 @@ begin
   else
     Dest.Writeln(RsRTTIFalse);
   Dest.Writeln(RsRTTIVarType + IntToStr(VarType));
-  Dest.Writeln(RsRTTIUnitName + UnitName);
+  Dest.Writeln(RsRTTIUnitName + GetUnitName);
 end;
 
 procedure TJclDynArrayTypeInfo.DeclarationTo(const Dest: IJclInfoWriter);
@@ -2380,7 +2371,7 @@ begin
   else
     Dest.Write(ElementType.Name);
   if Name[1] <> '.' then
-    Dest.Writeln('; // Unit ' + UnitName);
+    Dest.Writeln('; // Unit ' + GetUnitName);
 end;
 
 {$ENDIF RTL140_UP}
@@ -2620,7 +2611,7 @@ begin
     CurName := @TypeData^.NameList;
     for I := Low(Literals) to High(Literals) do
     begin
-      CurName^ := Literals[I];
+      CurName^ := ShortString(Literals[I]);
       Inc(Integer(CurName), Length(Literals[I])+1);
     end;
     {$IFDEF RTL140_UP}
@@ -2699,7 +2690,7 @@ begin
     with Result^ do
     begin
       Kind := BaseType^.Kind;
-      Name := TypeName;
+      Name := ShortString(TypeName);
     end;
     TypeData := GetTypeData(Result);
     TypeData^.OrdType := GetTypeData(BaseType)^.OrdType;

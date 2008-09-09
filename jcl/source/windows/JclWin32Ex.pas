@@ -271,7 +271,7 @@ begin
   if not Assigned(FunctionAddr) then
     FunctionAddr := LoadWin32ExFunction(jwfCreateWaitableTimer);
 
-  Result := TCreateWaitableTimerAProc(FunctionAddr)(lpTimerAttributes, bManualReset, PChar(lpTimerAttributes));
+  Result := TCreateWaitableTimerAProc(FunctionAddr)(lpTimerAttributes, bManualReset, PAnsiChar(lpTimerAttributes));
 end;
 
 function JclCancelWaitableTimer(hTimer: THandle): Boolean;

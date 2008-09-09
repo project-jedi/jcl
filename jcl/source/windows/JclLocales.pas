@@ -415,7 +415,7 @@ begin
   Result := GetCalendarIntegerInfo(Calendar, CAL_ITWODIGITYEARMAX);
 end;
 
-function EnumCalendarInfoProcEx(lpCalendarInfoString: PChar; Calendar: CALID): BOOL; stdcall;
+function EnumCalendarInfoProcEx(lpCalendarInfoString: PWideChar; Calendar: CALID): BOOL; stdcall;
 begin
   ProcessedLocaleInfoList.AddObject(lpCalendarInfoString, Pointer(Calendar));
   Result := True;
@@ -441,7 +441,7 @@ begin
     ProcessedLocaleInfoList := FCalendars;
     try
       C := CAL_SCALNAME or LocaleUseAcp[FUseSystemACP];
-      if not JclWin32.RtdlEnumCalendarInfoExA(EnumCalendarInfoProcEx, FLocaleID, ENUM_ALL_CALENDARS, C) then
+      if not JclWin32.RtdlEnumCalendarInfoExW(EnumCalendarInfoProcEx, FLocaleID, ENUM_ALL_CALENDARS, C) then
         Windows.EnumCalendarInfo(@EnumCalendarInfoProcName, FLocaleID, ENUM_ALL_CALENDARS, C);
       FValidCalendars := True;
     finally
@@ -498,17 +498,16 @@ begin
     Result := ' ';
 end;
 
+function EnumDateFormatsProc(lpDateFormatString: LPWSTR): BOOL; stdcall;
+begin
+  ProcessedLocaleInfoList.Add(lpDateFormatString);
+  DWORD(Result) := 1;
+end;
+
 function TJclLocaleInfo.GetDateFormats(Format: TJclLocaleDateFormats): TStrings;
 const
   DateFormats: array [TJclLocaleDateFormats] of DWORD =
     (DATE_SHORTDATE, DATE_LONGDATE, DATE_YEARMONTH);
-
-  function EnumDateFormatsProc(lpDateFormatString: LPSTR): BOOL; stdcall;
-  begin
-    ProcessedLocaleInfoList.Add(lpDateFormatString);
-    DWORD(Result) := 1;
-  end;
-
 begin
   if not (Format in FValidDateFormatLists) then
   begin
@@ -518,7 +517,7 @@ begin
       FDateFormats[Format].Clear;
     ProcessedLocaleInfoList := FDateFormats[Format];
     try
-      Windows.EnumDateFormats(@EnumDateFormatsProc, FLocaleID, DateFormats[Format] or
+      Windows.EnumDateFormatsW(@EnumDateFormatsProc, FLocaleID, DateFormats[Format] or
         LocaleUseAcp[FUseSystemACP]);
       Include(FValidDateFormatLists, Format);
     finally
@@ -612,7 +611,7 @@ begin
   if Res > 0 then
   begin
     SetString(Result, nil, Res);
-    Res := Windows.GetLocaleInfoA(FLocaleID, InfoType, PChar(Result), Res);
+    Res := Windows.GetLocaleInfo(FLocaleID, InfoType, PChar(Result), Res);
     StrResetLength(Result);
     // Note: GetLocaleInfo returns sometimes incorrect length of string on Win95 (usually plus 1),
     // that's why StrResetLength is called.
@@ -633,14 +632,13 @@ begin
     Result := '';
 end;
 
+function EnumTimeFormatsProc(lpTimeFormatString: LPWSTR): BOOL; stdcall;
+begin
+  ProcessedLocaleInfoList.Add(lpTimeFormatString);
+  DWORD(Result) := 1;
+end;
+
 function TJclLocaleInfo.GetTimeFormats: TStrings;
-
-  function EnumTimeFormatsProc(lpTimeFormatString: LPSTR): BOOL; stdcall;
-  begin
-    ProcessedLocaleInfoList.Add(lpTimeFormatString);
-    DWORD(Result) := 1;
-  end;
-
 begin
   if not FValidTimeFormatLists then
   begin
@@ -650,7 +648,7 @@ begin
       FTimeFormats.Clear;
     ProcessedLocaleInfoList := FTimeFormats;
     try
-      Windows.EnumTimeFormats(@EnumTimeFormatsProc, FLocaleID, LocaleUseAcp[FUseSystemACP]);
+      Windows.EnumTimeFormatsW(@EnumTimeFormatsProc, FLocaleID, LocaleUseAcp[FUseSystemACP]);
       FValidTimeFormatLists := True;
     finally
       ProcessedLocaleInfoList := nil;
@@ -701,31 +699,30 @@ begin
   inherited Destroy;
 end;
 
+function EnumLocalesProc(lpLocaleString: LPWSTR): BOOL; stdcall;
+var
+  LocaleID: LCID;
+begin
+  LocaleID := StrToIntDef('$' + Copy(lpLocaleString, 5, 4), 0);
+  if LocaleID > 0 then
+    ProcessedLocalesList.Add(TJclLocaleInfo.Create(LocaleID));
+  DWORD(Result) := 1;
+end;
+
+function EnumCodePagesProc(lpCodePageString: LPWSTR): BOOL; stdcall;
+begin
+  ProcessedLocalesList.CodePages.AddObject(lpCodePageString, Pointer(StrToIntDef(lpCodePageString, 0)));
+  DWORD(Result) := 1;
+end;
+
 procedure TJclLocalesList.CreateList;
 const
   Flags: array [TJclLocalesKind] of DWORD = (LCID_INSTALLED, LCID_SUPPORTED);
-
-  function EnumLocalesProc(lpLocaleString: LPSTR): BOOL; stdcall;
-  var
-    LocaleID: LCID;
-  begin
-    LocaleID := StrToIntDef('$' + Copy(lpLocaleString, 5, 4), 0);
-    if LocaleID > 0 then
-      ProcessedLocalesList.Add(TJclLocaleInfo.Create(LocaleID));
-    DWORD(Result) := 1;
-  end;
-
-  function EnumCodePagesProc(lpCodePageString: LPSTR): BOOL; stdcall;
-  begin
-    ProcessedLocalesList.CodePages.AddObject(lpCodePageString, Pointer(StrToIntDef(lpCodePageString, 0)));
-    DWORD(Result) := 1;
-  end;
-
 begin
   ProcessedLocalesList := Self;
   try
-    Win32Check(Windows.EnumSystemLocales(@EnumLocalesProc, Flags[FKind]));
-    Win32Check(Windows.EnumSystemCodePages(@EnumCodePagesProc, Flags[FKind]));
+    Win32Check(Windows.EnumSystemLocalesW(@EnumLocalesProc, Flags[FKind]));
+    Win32Check(Windows.EnumSystemCodePagesW(@EnumCodePagesProc, Flags[FKind]));
   finally
     ProcessedLocalesList := nil;
   end;

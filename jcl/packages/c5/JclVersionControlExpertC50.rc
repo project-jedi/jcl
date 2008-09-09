@@ -1,6 +1,6 @@
 VS_VERSION_INFO VERSIONINFO
-FILEVERSION 1,103,0,3073
-PRODUCTVERSION 1,103,0,3073
+FILEVERSION 1,103,0,3111
+PRODUCTVERSION 1,103,0,3111
  FILEFLAGSMASK VS_FFI_FILEFLAGSMASK
 #ifdef _DEBUG
  FILEFLAGS VS_FF_DEBUG
@@ -17,12 +17,12 @@ BEGIN
          BEGIN
               VALUE "CompanyName", "Project JEDI\0"
               VALUE "FileDescription", "JCL Integration of version control systems in the IDE\0"
-              VALUE "FileVersion", "1.103.0.3073\0"
+              VALUE "FileVersion", "1.103.0.3111\0"
               VALUE "InternalName", "JclVersionControlExpertC50\0"
               VALUE "LegalCopyright", "Copyright (C) 1999, 2008 Project JEDI\0"
               VALUE "OriginalFilename", "JclVersionControlExpertC50C50.bpl\0"
               VALUE "ProductName", "JEDI Code Library\0"
-              VALUE "ProductVersion", "1.103 Build 3073\0"
+              VALUE "ProductVersion", "1.103 Build 3111\0"
          END
     END
     BLOCK "VarFileInfo"

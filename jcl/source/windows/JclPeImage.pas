@@ -51,7 +51,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Classes, SysUtils, TypInfo, Contnrs,
-  JclBase, JclDateTime, JclFileUtils, JclStrings, JclSysInfo, JclWin32;
+  JclBase, JclDateTime, JclFileUtils, JclSysInfo, JclWin32;
   
 type
   // Smart name compare function
@@ -173,7 +173,7 @@ type
     procedure SetThunk(Value: Pointer);
   public
     constructor Create(AImage: TJclPeImage; AImportDescriptor: Pointer;
-      AImportKind: TJclPeImportKind; const AName: AnsiString; AThunk: Pointer);
+      AImportKind: TJclPeImportKind; const AName: string; AThunk: Pointer);
     procedure SortList(SortType: TJclPeImportSort; Descending: Boolean = False);
     property Count: Integer read GetCount;
     property FileName: TFileName read GetFileName;
@@ -881,8 +881,8 @@ function PeRebaseImage32(const ImageName: TFileName; NewBase: TJclAddr32 = 0; Ti
 function PeRebaseImage64(const ImageName: TFileName; NewBase: TJclAddr64 = 0; TimeStamp: DWORD = 0;
   MaxNewSize: DWORD = 0): TJclRebaseImageInfo64;
 
-function PeUpdateLinkerTimeStamp(const FileName: string; const Time: TDateTime): Boolean;
-function PeReadLinkerTimeStamp(const FileName: string): TDateTime;
+function PeUpdateLinkerTimeStamp(const FileName: TFileName; const Time: TDateTime): Boolean;
+function PeReadLinkerTimeStamp(const FileName: TFileName): TDateTime;
 
 function PeInsertSection(const FileName: TFileName; SectionStream: TStream; SectionName: string): Boolean;
 
@@ -1005,8 +1005,8 @@ type
   protected
     function InternalUnhook: Boolean;
   public
-    constructor Create(AList: TObjectList; const AFunctionName, AModuleName: string;
-      ABaseAddress, ANewAddress, AOriginalAddress: Pointer);
+    constructor Create(AList: TObjectList; const AFunctionName: string;
+      const AModuleName: string; ABaseAddress, ANewAddress, AOriginalAddress: Pointer);
     destructor Destroy; override;
     function Unhook: Boolean;
     property BaseAddress: Pointer read FBaseAddress;
@@ -1022,8 +1022,8 @@ type
     function GetItemFromOriginalAddress(OriginalAddress: Pointer): TJclPeMapImgHookItem;
     function GetItemFromNewAddress(NewAddress: Pointer): TJclPeMapImgHookItem;
   public
-    function HookImport(Base: Pointer; const ModuleName, FunctionName: string;
-      NewAddress: Pointer; var OriginalAddress: Pointer): Boolean;
+    function HookImport(Base: Pointer; const ModuleName: string;
+      const FunctionName: string; NewAddress: Pointer; var OriginalAddress: Pointer): Boolean;
     class function IsWin9xDebugThunk(P: Pointer): Boolean;
     class function ReplaceImport(Base: Pointer; const ModuleName: string; FromProc, ToProc: Pointer): Boolean;
     class function SystemBase: Pointer;
@@ -1076,6 +1076,7 @@ function PeBorUnmangleName(const Name: string): string; overload;
 
 function PeIsNameMangled(const Name: string): TJclPeUmResult;
 
+function UndecorateSymbolName(const DecoratedName: string; var UnMangled: string; Flags: DWORD): Boolean;
 function PeUnmangleName(const Name: string; var Unmangled: string): TJclPeUmResult;
 
 {$IFDEF UNITVERSIONING}
@@ -1091,7 +1092,7 @@ const
 implementation
 
 uses
-  JclLogic, JclResources, JclSysUtils;
+  JclLogic, JclResources, JclSysUtils, JclStrings, JclStringConversions;
 
 const
   MANIFESTExtension = '.manifest';
@@ -1142,7 +1143,7 @@ var
   procedure ProcessLibraries(const AFileName: TFileName);
   var
     I: Integer;
-    S: string;
+    S: TFileName;
     ImportLib: TJclPeImportLibItem;
   begin
     with Cache[AFileName].ImportList do
@@ -1152,7 +1153,7 @@ var
         if FullPathName then
           S := ImportLib.FileName
         else
-          S := ImportLib.Name;
+          S := TFileName(ImportLib.Name);
         if Result.IndexOf(S) = -1 then
         begin
           Result.Add(S);
@@ -1190,7 +1191,6 @@ var
 begin
   Result := FunctionName;
   L := Length(Result);
-  // (rom) possible bug. 'A'..'Z' missing from set (better use AnsiValidIdentifierLetters).
   if (L > 1) then
     case Result[L] of
       'A', 'W':
@@ -1205,7 +1205,7 @@ var
   S: string;
 begin
   if scIgnoreCase in Options then
-    Result := StrSame(FunctionName, ComparedName)
+    Result := CompareText(FunctionName, ComparedName) = 0
   else
     Result := (FunctionName = ComparedName);
   if (not Result) and not (scSimpleCompare in Options) then
@@ -1214,7 +1214,7 @@ begin
     begin
       S := PeStripFunctionAW(FunctionName);
       if scIgnoreCase in Options then
-        Result := StrSame(S, ComparedName)
+        Result := CompareText(S, ComparedName) = 0
       else
         Result := (S = ComparedName);
     end
@@ -1419,7 +1419,7 @@ end;
 //=== { TJclPeImportLibItem } ================================================
 
 constructor TJclPeImportLibItem.Create(AImage: TJclPeImage;
-  AImportDescriptor: Pointer; AImportKind: TJclPeImportKind; const AName: AnsiString;
+  AImportDescriptor: Pointer; AImportKind: TJclPeImportKind; const AName: string;
   AThunk: Pointer);
 begin
   inherited Create(AImage);
@@ -1479,7 +1479,7 @@ procedure TJclPeImportLibItem.CreateList;
     Thunk32: PImageThunkData32;
     OrdinalName: PImageImportByName;
     Ordinal, Hint: Word;
-    Name: PChar;
+    Name: PAnsiChar;
   begin
     Thunk32 := PImageThunkData32(FThunk);
     while Thunk32^.Function_ <> 0 do
@@ -1507,7 +1507,7 @@ procedure TJclPeImportLibItem.CreateList;
       else
         Ordinal := IMAGE_ORDINAL32(Thunk32^.Ordinal);
 
-      Add(TJclPeImportFuncItem.Create(Self, Ordinal, Hint, Name));
+      Add(TJclPeImportFuncItem.Create(Self, Ordinal, Hint, UTF8ToString(Name)));
       Inc(Thunk32);
     end;
   end;
@@ -1517,7 +1517,7 @@ procedure TJclPeImportLibItem.CreateList;
     Thunk64: PImageThunkData64;
     OrdinalName: PImageImportByName;
     Ordinal, Hint: Word;
-    Name: PChar;
+    Name: PAnsiChar;
   begin
     Thunk64 := PImageThunkData64(FThunk);
     while Thunk64^.Function_ <> 0 do
@@ -1545,7 +1545,7 @@ procedure TJclPeImportLibItem.CreateList;
       else
         Ordinal := IMAGE_ORDINAL64(Thunk64^.Ordinal);
 
-      Add(TJclPeImportFuncItem.Create(Self, Ordinal, Hint, Name));
+      Add(TJclPeImportFuncItem.Create(Self, Ordinal, Hint, UTF8ToString(Name)));
       Inc(Thunk64);
     end;
   end;
@@ -1698,11 +1698,13 @@ procedure TJclPeImportList.CreateList;
   procedure CreateDelayImportList32(DelayImportDesc: PImgDelayDescrV1);
   var
     LibItem: TJclPeImportLibItem;
+    LibName: TUTF8String;
   begin
     while DelayImportDesc^.szName <> nil do
     begin
+      LibName := PAnsiChar(Image.RvaToVaEx(DWORD(DelayImportDesc^.szName)));
       LibItem := TJclPeImportLibItem.Create(Image, DelayImportDesc, ikDelayImport,
-        PAnsiChar(Image.RvaToVaEx(DWORD(DelayImportDesc^.szName))), Image.RvaToVaEx(DWORD(DelayImportDesc^.pINT)));
+        UTF8ToString(LibName), Image.RvaToVaEx(DWORD(DelayImportDesc^.pINT)));
       Add(LibItem);
       FUniqueNamesList.AddObject(AnsiLowerCase(LibItem.Name), LibItem);
       Inc(DelayImportDesc);
@@ -1712,11 +1714,13 @@ procedure TJclPeImportList.CreateList;
   procedure CreateDelayImportList64(DelayImportDesc: PImgDelayDescrV2);
   var
     LibItem: TJclPeImportLibItem;
+    LibName: TUTF8String;
   begin
     while DelayImportDesc^.rvaDLLName <> 0 do
     begin
+      LibName := PAnsiChar(Image.RvaToVa(DelayImportDesc^.rvaDLLName));
       LibItem := TJclPeImportLibItem.Create(Image, DelayImportDesc, ikDelayImport,
-        PAnsiChar(Image.RvaToVa(DelayImportDesc^.rvaDLLName)), Image.RvaToVa(DelayImportDesc^.rvaINT));
+        UTF8ToString(LibName), Image.RvaToVa(DelayImportDesc^.rvaINT));
       Add(LibItem);
       FUniqueNamesList.AddObject(AnsiLowerCase(LibItem.Name), LibItem);
       Inc(DelayImportDesc);
@@ -1725,6 +1729,7 @@ procedure TJclPeImportList.CreateList;
 var
   ImportDesc: PImageImportDescriptor;
   LibItem: TJclPeImportLibItem;
+  LibName, ModuleName: TUTF8String;
   DelayImportDesc: Pointer;
   BoundImports, BoundImport: PImageBoundImportDescriptor;
   S: string;
@@ -1753,7 +1758,8 @@ begin
           Thunk := RvaToVa(ImportDesc^.Union.Characteristics);
           FLinkerProducer := lrMicrosoft;
         end;
-        LibItem := TJclPeImportLibItem.Create(Image, ImportDesc, ikImport, PAnsiChar(RvaToVa(ImportDesc^.Name)), Thunk);
+        LibName := PAnsiChar(RvaToVa(ImportDesc^.Name));
+        LibItem := TJclPeImportLibItem.Create(Image, ImportDesc, ikImport, UTF8ToString(LibName), Thunk);
         Add(LibItem);
         FUniqueNamesList.AddObject(AnsiLowerCase(LibItem.Name), LibItem);
         Inc(ImportDesc);
@@ -1774,7 +1780,8 @@ begin
       BoundImport := BoundImports;
       while BoundImport^.OffsetModuleName <> 0 do
       begin
-        S := AnsiLowerCase(PChar(TJclAddr(BoundImports) + BoundImport^.OffsetModuleName));
+        ModuleName := PAnsiChar(TJclAddr(BoundImports) + BoundImport^.OffsetModuleName);
+        S := AnsiLowerCase(UTF8ToString(ModuleName));
         I := FUniqueNamesList.IndexOf(S);
         if I >= 0 then
           TJclPeImportLibItem(FUniqueNamesList.Objects[I]).SetImportKind(ikBoundImport);
@@ -2128,7 +2135,7 @@ end;
 
 function ExportSortByAddress(Item1, Item2: Pointer): Integer;
 begin
-  Result := Integer(TJclPeExportFuncItem(Item1).Address) - Integer(TJclPeExportFuncItem(Item2).Address);
+  Result := INT_PTR(TJclPeExportFuncItem(Item1).Address) - INT_PTR(TJclPeExportFuncItem(Item2).Address);
   if Result = 0 then
     Result := ExportSortByName(Item1, Item2);
 end;
@@ -2289,12 +2296,12 @@ begin
         if (Address >= ExportVABegin) and (Address <= ExportVAEnd) then
         begin
           FAnyForwards := True;
-          ForwardedName := PChar(RvaToVa(Address));
+          ForwardedName := UTF8ToString(PAnsiChar(RvaToVa(Address)));
         end
         else
           ForwardedName := '';
 
-        ExportItem := TJclPeExportFuncItem.Create(Self, PChar(RvaToVa(Names^)),
+        ExportItem := TJclPeExportFuncItem.Create(Self, UTF8ToString(PAnsiChar(RvaToVa(Names^))),
           ForwardedName, Address, I, NameOrdinals^ + FBase, icNotChecked);
 
         List^[I] := ExportItem;
@@ -2398,7 +2405,7 @@ begin
   if (FExportDir = nil) or (FExportDir^.Name = 0) then
     Result := ''
   else
-    Result := PChar(Image.RvaToVa(FExportDir^.Name));
+    Result := UTF8ToString(PAnsiChar(Image.RvaToVa(FExportDir^.Name)));
 end;
 
 class function TJclPeExportFuncList.ItemName(Item: TJclPeExportFuncItem): string;
@@ -2500,7 +2507,7 @@ begin
   if IsName then
     P := PChar(Name)
   else
-    P := PChar(FEntry^.Name and $FFFF);
+    P := PChar(FEntry^.Name and $FFFF); // Integer encoded in a PChar
   Result := CompareResourceName(AName, P);
 end;
 
@@ -3035,7 +3042,8 @@ procedure TJclPeImage.AttachLoadedModule(const Handle: HMODULE);
       FStatus := stOk;
       FAttachedImage := True;
       FFileName := GetModulePath(Handle);
-      FLoadedImage.ModuleName := PChar(FFileName);
+      // OF: possible loss of data
+      FLoadedImage.ModuleName := PAnsiChar(AnsiString(FFileName));
       FLoadedImage.hFile := INVALID_HANDLE_VALUE;
       FLoadedImage.MappedAddress := Pointer(Handle);
       FLoadedImage.FileHeader := PImageNtHeaders(NtHeaders);
@@ -3064,7 +3072,8 @@ procedure TJclPeImage.AttachLoadedModule(const Handle: HMODULE);
       FStatus := stOk;
       FAttachedImage := True;
       FFileName := GetModulePath(Handle);
-      FLoadedImage.ModuleName := PChar(FFileName);
+      // OF: possible loss of data
+      FLoadedImage.ModuleName := PAnsiChar(AnsiString(FFileName));
       FLoadedImage.hFile := INVALID_HANDLE_VALUE;
       FLoadedImage.MappedAddress := Pointer(Handle);
       FLoadedImage.FileHeader := PImageNtHeaders(NtHeaders);
@@ -3218,7 +3227,7 @@ begin
   Result := PathAddSeparator(ExtractFilePath(BasePath)) + ModuleName;
   if FileExists(Result) then
     Exit;
-  if SearchPath(nil, PChar(ModuleName), nil, SizeOf(FullName), FullName, FilePart) = 0 then
+  if SearchPath(nil, PChar(ModuleName), nil, Length(FullName), FullName, FilePart) = 0 then
     Result := ModuleName
   else
     Result := FullName;
@@ -3253,7 +3262,7 @@ end;
 function TJclPeImage.GetDescription: string;
 begin
   if DirectoryExists[IMAGE_DIRECTORY_ENTRY_COPYRIGHT] then
-    Result := PChar(DirectoryEntryToData(IMAGE_DIRECTORY_ENTRY_COPYRIGHT))
+    Result := UTF8ToString(PAnsiChar(DirectoryEntryToData(IMAGE_DIRECTORY_ENTRY_COPYRIGHT)))
   else
     Result := '';
 end;
@@ -3994,13 +4003,17 @@ procedure TJclPeImage.ReadImageSections;
 var
   I: Integer;
   Header: PImageSectionHeader;
+  SectionName: AnsiString;
 begin
   if not StatusOK then
     Exit;
   Header := FLoadedImage.Sections;
   for I := 0 to FLoadedImage.NumberOfSections - 1 do
   begin
-    FImageSections.AddObject(Copy(PChar(@Header.Name), 1, IMAGE_SIZEOF_SHORT_NAME), Pointer(Header));
+    SetLength(SectionName, IMAGE_SIZEOF_SHORT_NAME);
+    Move(Header.Name[0], SectionName[1], IMAGE_SIZEOF_SHORT_NAME * SizeOf(AnsiChar));
+    StrResetLength(SectionName);
+    FImageSections.AddObject(UTF8ToString(SectionName), Pointer(Header));
     Inc(Header);
   end;
 end;
@@ -4044,7 +4057,7 @@ end;
 function TJclPeImage.RvaToVa(Rva: DWORD): Pointer;
 begin
   if FAttachedImage then
-    Result := FLoadedImage.MappedAddress + Rva
+    Result := Pointer(DWORD(FLoadedImage.MappedAddress) + Rva)
   else
     Result := ImageRvaToVa(FLoadedImage.FileHeader, FLoadedImage.MappedAddress, Rva, nil);
 end;
@@ -4088,7 +4101,8 @@ begin
     FFileName := Value;
     if FFileName = '' then
       Exit;
-    if MapAndLoad(PChar(FFileName), nil, FLoadedImage, True, FReadOnlyAccess) then
+    // OF: possible loss of data
+    if MapAndLoad(PAnsiChar(AnsiString(FFileName)), nil, FLoadedImage, True, FReadOnlyAccess) then
     begin
       FTarget := PeMapImgTarget(FLoadedImage.MappedAddress);
       if FTarget <> taUnknown then
@@ -4440,7 +4454,7 @@ var
 
   procedure ProcessListItem(DfmResItem: TJclPeResourceItem);
   const
-    FilerSignature: array [1..4] of Char = 'TPF0';
+    FilerSignature: array [1..4] of AnsiChar = string('TPF0');
   var
     SourceStream: TJclPeResourceRawStream;
     Reader: TReader;
@@ -4874,7 +4888,7 @@ begin
                   else
                     OrdinalName := nil;
                   end;
-                  ExportItem := ExportsImage.ExportList.ItemFromName[PChar(@OrdinalName.Name)];
+                  ExportItem := ExportsImage.ExportList.ItemFromName[UTF8ToString(PAnsiChar(@OrdinalName.Name))];
                   if ExportItem <> nil then
                     OrdinalName.Hint := ExportItem.Hint
                   else
@@ -4899,7 +4913,7 @@ begin
                   else
                     OrdinalName := nil;
                   end;
-                  ExportItem := ExportsImage.ExportList.ItemFromName[PChar(@OrdinalName.Name)];
+                  ExportItem := ExportsImage.ExportList.ItemFromName[UTF8ToString(PAnsiChar(@OrdinalName.Name))];
                   if ExportItem <> nil then
                     OrdinalName.Hint := ExportItem.Hint
                   else
@@ -4927,6 +4941,7 @@ end;
 
 function PeRebaseImage32(const ImageName: TFileName; NewBase: TJclAddr32;
   TimeStamp, MaxNewSize: DWORD): TJclRebaseImageInfo32;
+
   function CalculateBaseAddress: TJclAddr32;
   var
     FirstChar: Char;
@@ -4948,13 +4963,15 @@ begin
   with Result do
   begin
     NewImageBase := NewBase;
-    Win32Check(ReBaseImage(PChar(ImageName), nil, True, False, False, MaxNewSize,
+    // OF: possible loss of data
+    Win32Check(ReBaseImage(PAnsiChar(AnsiString(ImageName)), nil, True, False, False, MaxNewSize,
       OldImageSize, OldImageBase, NewImageSize, NewImageBase, TimeStamp));
   end;
 end;
 
 function PeRebaseImage64(const ImageName: TFileName; NewBase: TJclAddr64;
   TimeStamp, MaxNewSize: DWORD): TJclRebaseImageInfo64;
+
   function CalculateBaseAddress: TJclAddr64;
   var
     FirstChar: Char;
@@ -4977,12 +4994,13 @@ begin
   with Result do
   begin
     NewImageBase := NewBase;
-    Win32Check(ReBaseImage64(PChar(ImageName), nil, True, False, False, MaxNewSize,
+    // OF: possible loss of data
+    Win32Check(ReBaseImage64(PAnsiChar(AnsiString(ImageName)), nil, True, False, False, MaxNewSize,
       OldImageSize, OldImageBase, NewImageSize, NewImageBase, TimeStamp));
   end;
 end;
 
-function PeUpdateLinkerTimeStamp(const FileName: string; const Time: TDateTime): Boolean;
+function PeUpdateLinkerTimeStamp(const FileName: TFileName; const Time: TDateTime): Boolean;
 var
   Mapping: TJclFileMapping;
   View: TJclFileMappingView;
@@ -5001,7 +5019,7 @@ begin
   end;
 end;
 
-function PeReadLinkerTimeStamp(const FileName: string): TDateTime;
+function PeReadLinkerTimeStamp(const FileName: TFileName): TDateTime;
 var
   Mapping: TJclFileMappingStream;
   Headers: PImageNtHeaders32; // works with 64-bit binaries too
@@ -5063,7 +5081,7 @@ function PeInsertSection(const FileName: TFileName; SectionStream: TStream; Sect
       NewSection^.PointerToRawData := LastSection^.PointerToRawData + LastSection^.SizeOfRawData;
       RoundUpToAlignment(NewSection^.PointerToRawData, NtHeaders^.OptionalHeader.FileAlignment);
       // JCLDEBUG Section name
-      StrPLCopy(PChar(@NewSection^.Name), SectionName, IMAGE_SIZEOF_SHORT_NAME);
+      StrPLCopy(PAnsiChar(@NewSection^.Name), StringToUTF8(SectionName), IMAGE_SIZEOF_SHORT_NAME);
       // JCLDEBUG Characteristics flags
       NewSection^.Characteristics := IMAGE_SCN_MEM_READ or IMAGE_SCN_CNT_INITIALIZED_DATA;
 
@@ -5080,7 +5098,7 @@ function PeInsertSection(const FileName: TFileName; SectionStream: TStream; Sect
       Inc(NtHeaders^.OptionalHeader.SizeOfInitializedData, NewSection^.SizeOfRawData);
 
       // Fill data to alignment
-      NeedFill := Integer(NewSection^.SizeOfRawData) - SectionDataSize;
+      NeedFill := INT_PTR(NewSection^.SizeOfRawData) - SectionDataSize;
 
       // Note: Delphi linker seems to generate incorrect (unaligned) size of
       // the executable when adding TD32 debug data so the position could be
@@ -5131,7 +5149,7 @@ function PeInsertSection(const FileName: TFileName; SectionStream: TStream; Sect
       NewSection^.PointerToRawData := LastSection^.PointerToRawData + LastSection^.SizeOfRawData;
       RoundUpToAlignment(NewSection^.PointerToRawData, NtHeaders^.OptionalHeader.FileAlignment);
       // JCLDEBUG Section name
-      StrPLCopy(PChar(@NewSection^.Name), SectionName, IMAGE_SIZEOF_SHORT_NAME);
+      StrPLCopy(PAnsiChar(@NewSection^.Name), StringToUTF8(SectionName), IMAGE_SIZEOF_SHORT_NAME);
       // JCLDEBUG Characteristics flags
       NewSection^.Characteristics := IMAGE_SCN_MEM_READ or IMAGE_SCN_CNT_INITIALIZED_DATA;
 
@@ -5148,7 +5166,7 @@ function PeInsertSection(const FileName: TFileName; SectionStream: TStream; Sect
       Inc(NtHeaders^.OptionalHeader.SizeOfInitializedData, NewSection^.SizeOfRawData);
 
       // Fill data to alignment
-      NeedFill := Integer(NewSection^.SizeOfRawData) - SectionDataSize;
+      NeedFill := INT_PTR(NewSection^.SizeOfRawData) - SectionDataSize;
 
       // Note: Delphi linker seems to generate incorrect (unaligned) size of
       // the executable when adding TD32 debug data so the position could be
@@ -5243,7 +5261,8 @@ function PeUpdateCheckSum(const FileName: TFileName): Boolean;
 var
   LI: TLoadedImage;
 begin
-  Result := MapAndLoad(PChar(FileName), nil, LI, True, False);
+  // OF: possible loss of data
+  Result := MapAndLoad(PAnsiChar(AnsiString(FileName)), nil, LI, True, False);
   if Result then
     Result := UnMapAndLoad(LI);
 end;
@@ -5689,7 +5708,7 @@ function PeMapImgLibraryName(const BaseAddress: Pointer): string;
     ExportDir := PImageExportDirectory(TJclAddr(BaseAddress) + DataDir.VirtualAddress);
     if IsBadReadPtr(ExportDir, SizeOf(TImageExportDirectory)) or (ExportDir^.Name = 0) then
       Exit;
-    Result := PChar(TJclAddr(BaseAddress) + ExportDir^.Name);
+    Result := UTF8ToString(PAnsiChar(TJclAddr(BaseAddress) + ExportDir^.Name));
   end;
   function PeMapImgLibraryName64(const BaseAddress: Pointer): string;
   var
@@ -5707,7 +5726,7 @@ function PeMapImgLibraryName(const BaseAddress: Pointer): string;
     ExportDir := PImageExportDirectory(TJclAddr(BaseAddress) + DataDir.VirtualAddress);
     if IsBadReadPtr(ExportDir, SizeOf(TImageExportDirectory)) or (ExportDir^.Name = 0) then
       Exit;
-    Result := PChar(TJclAddr(BaseAddress) + ExportDir^.Name);
+    Result := UTF8ToString(PAnsiChar(TJclAddr(BaseAddress) + ExportDir^.Name));
   end;
 begin
   case PeMapImgTarget(BaseAddress) of
@@ -5775,16 +5794,16 @@ function PeMapImgFindSection32(NtHeaders: PImageNtHeaders32;
 var
   Header: PImageSectionHeader;
   I: Integer;
-  P: PChar;
+  P: PAnsiChar;
 begin
   Result := nil;
   if NtHeaders <> nil then
   begin
-    P := PChar(SectionName);
+    P := PAnsiChar(StringToUTF8(SectionName));
     Header := PeMapImgSections32(NtHeaders);
     with NtHeaders^ do
       for I := 1 to FileHeader.NumberOfSections do
-        if StrLComp(PChar(@Header^.Name), P, IMAGE_SIZEOF_SHORT_NAME) = 0 then
+        if StrLComp(PAnsiChar(@Header^.Name), P, IMAGE_SIZEOF_SHORT_NAME) = 0 then
         begin
           Result := Header;
           Break;
@@ -5799,16 +5818,16 @@ function PeMapImgFindSection64(NtHeaders: PImageNtHeaders64;
 var
   Header: PImageSectionHeader;
   I: Integer;
-  P: PChar;
+  P: PAnsiChar;
 begin
   Result := nil;
   if NtHeaders <> nil then
   begin
-    P := PChar(SectionName);
+    P := PAnsiChar(StringToUTF8(SectionName));
     Header := PeMapImgSections64(NtHeaders);
     with NtHeaders^ do
       for I := 1 to FileHeader.NumberOfSections do
-        if StrLComp(PChar(@Header^.Name), P, IMAGE_SIZEOF_SHORT_NAME) = 0 then
+        if StrLComp(PAnsiChar(@Header^.Name), P, IMAGE_SIZEOF_SHORT_NAME) = 0 then
         begin
           Result := Header;
           Break;
@@ -5969,7 +5988,7 @@ end;
 //=== { TJclPeMapImgHookItem } ===============================================
 
 constructor TJclPeMapImgHookItem.Create(AList: TObjectList;
-  const AFunctionName, AModuleName: string;
+  const AFunctionName: string; const AModuleName: string;
   ABaseAddress, ANewAddress, AOriginalAddress: Pointer);
 begin
   inherited Create;
@@ -6049,8 +6068,8 @@ begin
   Result := TJclPeMapImgHookItem(Get(Index));
 end;
 
-function TJclPeMapImgHooks.HookImport(Base: Pointer; const ModuleName, FunctionName: string;
-  NewAddress: Pointer; var OriginalAddress: Pointer): Boolean;
+function TJclPeMapImgHooks.HookImport(Base: Pointer; const ModuleName: string;
+  const FunctionName: string; NewAddress: Pointer; var OriginalAddress: Pointer): Boolean;
 var
   ModuleHandle: THandle;
 begin
@@ -6061,7 +6080,7 @@ begin
     SetLastError(ERROR_MOD_NOT_FOUND);
     Exit;
   end;
-  OriginalAddress := GetProcAddress(ModuleHandle, PChar(FunctionName));
+  OriginalAddress := GetProcAddress(ModuleHandle, PAnsiChar(StringToUTF8(FunctionName)));
   Result := (OriginalAddress <> nil);
   if not Result then
   begin
@@ -6101,7 +6120,7 @@ var
   NtHeader32: PImageNtHeaders32;
   ImportDir: TImageDataDirectory;
   ImportDesc: PImageImportDescriptor;
-  CurrName: PChar;
+  CurrName, RefName: PAnsiChar;
   ImportEntry32: PImageThunkData32;
   FoundProc: Boolean;
   WrittenBytes: Cardinal;
@@ -6116,10 +6135,11 @@ begin
   if ImportDir.VirtualAddress = 0 then
     Exit;
   ImportDesc := PImageImportDescriptor(TJclAddr(Base) + ImportDir.VirtualAddress);
+  RefName := PAnsiChar(StringToUTF8(ModuleName));
   while ImportDesc^.Name <> 0 do
   begin
-    CurrName := PChar(Base) + ImportDesc^.Name;
-    if StrIComp(CurrName, PChar(ModuleName)) = 0 then
+    CurrName := PAnsiChar(Base) + ImportDesc^.Name;
+    if StrIComp(CurrName, RefName) = 0 then
     begin
       ImportEntry32 := PImageThunkData32(TJclAddr(Base) + ImportDesc^.FirstThunk);
       while ImportEntry32^.Function_ <> 0 do
@@ -6223,6 +6243,7 @@ var
   NtHeaders32: TImageNtHeaders32;
   DataDir: TImageDataDirectory;
   ExportDir: TImageExportDirectory;
+  UTF8Name: TUTF8String;
 begin
   Name := '';
 
@@ -6237,9 +6258,12 @@ begin
     Exit;
   if ExportDir.Name = 0 then
     Exit;
-  SetLength(Name, MAX_PATH);
-  if InternalReadProcMem(ProcessHandle, TJclAddr(BaseAddress) + ExportDir.Name, PChar(Name), MAX_PATH) then
-    StrResetLength(Name)
+  SetLength(UTF8Name, MAX_PATH);
+  if InternalReadProcMem(ProcessHandle, TJclAddr(BaseAddress) + ExportDir.Name, PAnsiChar(UTF8Name), MAX_PATH) then
+  begin
+    StrResetLength(UTF8Name);
+    Name := UTF8ToString(UTF8Name);
+  end
   else
     Name := '';
 end;
@@ -6249,8 +6273,9 @@ end;
 function PeBorUnmangleName(const Name: string; var Unmangled: string;
   var Description: TJclBorUmDescription; var BasePos: Integer): TJclBorUmResult;
 var
-  NameP, NameU, NameUFirst: PChar;
+  NameP, NameU, NameUFirst: PAnsiChar;
   QualifierFound, LinkProcFound: Boolean;
+  UTF8Unmangled: TUTF8String;
 
   procedure MarkQualifier;
   begin
@@ -6266,7 +6291,7 @@ var
     SymbolLength: Integer;
   begin
     SymbolLength := 0;
-    while CharIsDigit(NameP^) do
+    while CharIsDigit(Char(NameP^)) do
     begin
       SymbolLength := SymbolLength * 10 + Ord(NameP^) - 48;
       Inc(NameP);
@@ -6308,7 +6333,7 @@ var
       LinkProcFound := True;
       Inc(NameP);
     end;
-    while CharIsValidIdentifierLetter(NameP^) do
+    while CharIsValidIdentifierLetter(Char(NameP^)) do
     begin
       NameU^ := NameP^;
       Inc(NameP);
@@ -6371,7 +6396,7 @@ var
   end;
 
 begin
-  NameP := PChar(Name);
+  NameP := PAnsiChar(StringToUTF8(Name));
   Result := urError;
   case NameP^ of
     '@':
@@ -6384,8 +6409,8 @@ begin
   if Result <> urOk then
     Exit;
   Inc(NameP);
-  SetLength(UnMangled, 1024);
-  NameU := Pointer(UnMangled);
+  SetLength(UTF8UnMangled, 1024);
+  NameU := PAnsiChar(UTF8UnMangled);
   NameUFirst := NameU;
   Description.Modifiers := [];
   BasePos := 1;
@@ -6398,7 +6423,8 @@ begin
     Result := urError;
   end;
   NameU^ := #0;
-  StrResetLength(Unmangled);
+  SetLength(UTF8Unmangled, SysUtils.StrLen(PAnsiChar(UTF8Unmangled))); // SysUtils prefix due to compiler bug
+  Unmangled := UTF8ToString(UTF8Unmangled);
 end;
 
 function PeBorUnmangleName(const Name: string; var Unmangled: string;
@@ -6441,26 +6467,81 @@ begin
     end;
 end;
 
-function PeUnmangleName(const Name: string; var Unmangled: string): TJclPeUmResult;
+type
+  TUndecorateSymbolNameA = function (DecoratedName: PAnsiChar;
+    UnDecoratedName: PAnsiChar; UndecoratedLength: DWORD; Flags: DWORD): DWORD; stdcall;
+// 'imagehlp.dll' 'UnDecorateSymbolName'
+
+  TUndecorateSymbolNameW = function (DecoratedName: PWideChar;
+    UnDecoratedName: PWideChar; UndecoratedLength: DWORD; Flags: DWORD): DWORD; stdcall;
+// 'imagehlp.dll' 'UnDecorateSymbolNameW'
+
 var
+  UndecorateSymbolNameA: TUndecorateSymbolNameA = nil;
+  UndecorateSymbolNameAFailed: Boolean = False;
+  UndecorateSymbolNameW: TUndecorateSymbolNameW = nil;
+  UndecorateSymbolNameWFailed: Boolean = False;
+
+function UndecorateSymbolName(const DecoratedName: string; var UnMangled: string; Flags: DWORD): Boolean;
+const
+  ModuleName = 'imagehlp.dll';
+  BufferSize = 512;
+var
+  ModuleHandle: HMODULE;
+  WideBuffer: WideString;
+  AnsiBuffer: AnsiString;
   Res: DWORD;
+begin
+  Result := False;
+  if ((not Assigned(UndecorateSymbolNameA)) and (not UndecorateSymbolNameAFailed)) or
+     ((not Assigned(UndecorateSymbolNameW)) and (not UndecorateSymbolNameWFailed)) then
+  begin
+    ModuleHandle := GetModuleHandle(ModuleName);
+    if ModuleHandle = 0 then
+    begin
+      ModuleHandle := SafeLoadLibrary(ModuleName);
+      if ModuleHandle = 0 then
+        Exit;
+    end;
+    UndecorateSymbolNameA := GetProcAddress(ModuleHandle, 'UnDecorateSymbolName');
+    UndecorateSymbolNameAFailed := not Assigned(UndecorateSymbolNameA);
+    UndecorateSymbolNameW := GetProcAddress(ModuleHandle, 'UnDecorateSymbolNameW');
+    UndecorateSymbolNameWFailed := not Assigned(UndecorateSymbolNameW);
+  end;
+  if Assigned(UndecorateSymbolNameW) then
+  begin
+    SetLength(WideBuffer, BufferSize);
+    Res := UnDecorateSymbolNameW(PWideChar(WideString(DecoratedName)), PWideChar(WideBuffer), BufferSize, Flags);
+    if Res > 0 then
+    begin
+      StrResetLength(WideBuffer);
+      UnMangled := string(WideBuffer);
+      Result := True;
+    end;
+  end
+  else
+  if Assigned(UndecorateSymbolNameA) then
+  begin
+    SetLength(AnsiBuffer, BufferSize);
+    Res := UnDecorateSymbolNameA(PAnsiChar(AnsiString(DecoratedName)), PAnsiChar(AnsiBuffer), BufferSize, Flags);
+    if Res > 0 then
+    begin
+      StrResetLength(AnsiBuffer);
+      UnMangled := string(AnsiBuffer);
+      Result := True;
+    end;
+  end;
+end;
+
+function PeUnmangleName(const Name: string; var Unmangled: string): TJclPeUmResult;
 begin
   Result := umNotMangled;
   case PeBorUnmangleName(Name, Unmangled) of
     urOk:
       Result := umBorland;
     urMicrosoft:
-      begin
-        SetLength(Unmangled, 2048);
-        Res := UnDecorateSymbolName(PChar(Name), PChar(Unmangled), 2048, UNDNAME_NAME_ONLY);
-        if Res > 0 then
-        begin
-          StrResetLength(Unmangled);
-          Result := umMicrosoft;
-        end
-        else
-          Unmangled := '';
-      end;
+      if UndecorateSymbolName(Name, Unmangled, UNDNAME_NAME_ONLY) then
+        Result := umMicrosoft;
   end;
   if Result = umNotMangled then
     Unmangled := Name;

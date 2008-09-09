@@ -57,7 +57,7 @@ type
 implementation
 
 uses
-  JclFileUtils, JclRegistry, JclAnsiStrings,
+  JclFileUtils, JclRegistry, JclAnsiStrings, JclStringConversions,
   JclOtaUtils, JclOtaResources, JclOtaConsts;
 
 const
@@ -206,7 +206,7 @@ function TJclVersionControlSVN.GetFileActions(
   const FileName: string): TJclVersionControlActions;
 var
   EntryFile, EntryLine, UpperCaseFileName, XmlFileNameValue: string;
-  Entries: TJclMappedTextReader;
+  Entries: TJclAnsiMappedTextReader;
   IndexDir: Integer;
 begin
   Result := inherited GetFileActions(FileName);
@@ -223,11 +223,11 @@ begin
 
       if FileExists(EntryFile) then
       begin
-        Entries := TJclMappedTextReader.Create(EntryFile);
+        Entries := TJclAnsiMappedTextReader.Create(EntryFile);
         try
           while not Entries.Eof do
           begin
-            EntryLine := Entries.ReadLn;
+            EntryLine := UTF8ToString(Entries.ReadLn);
             // old SVN entries file (xml-like)
             if Pos(XmlFileNameValue, AnsiUpperCase(EntryLine)) > 0 then
             begin
@@ -241,7 +241,7 @@ begin
             // new SVN entries file (flat-style)
             if EntryLine = AnsiFormFeed then
             begin
-              EntryLine := Entries.ReadLn;
+              EntryLine := UTF8ToString(Entries.ReadLn);
               if AnsiSameStr(UpperCaseFileName, AnsiUpperCase(EntryLine)) then
               begin
                 // TODO: check modifications

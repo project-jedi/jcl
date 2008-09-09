@@ -113,7 +113,7 @@ type
     Offset: Integer;
   end;
 
-  PJclMapString = PAnsiChar;
+  PJclMapString = PAnsiChar;  
 
   TJclAbstractMapParser = class(TObject)
   private
@@ -408,7 +408,7 @@ type
   TJclDebugInfoExports = class(TJclDebugInfoSource)
   private
     FBorImage: TJclPeBorImage;
-    function IsAddressInThisExportedFunction(Addr: PByteArray; FunctionStartAddr: Cardinal): Boolean;
+    function IsAddressInThisExportedFunction(Addr: PByteArray; FunctionStartAddr: DWORD_PTR): Boolean;
   public
     destructor Destroy; override;
     function InitializeSource: Boolean; override;
@@ -491,23 +491,24 @@ type
 
 // Stack info routines
 type
-  PDWORDArray = ^TDWORDArray;
-  TDWORDArray = array [0..(MaxInt - $F) div SizeOf(DWORD)] of DWORD;
+  PDWORD_PTRArray = ^TDWORD_PTRArray;
+  TDWORD_PTRArray = array [0..(MaxInt - $F) div SizeOf(DWORD_PTR)] of DWORD_PTR;
+  PDWORD_PTR = ^DWORD_PTR;
 
   PStackFrame = ^TStackFrame;
   TStackFrame = record
-    CallersEBP: DWORD;
-    CallerAdr: DWORD;
+    CallersEBP: DWORD_PTR;
+    CallerAdr: DWORD_PTR;
   end;
 
   PStackInfo = ^TStackInfo;
   TStackInfo = record
-    CallerAdr: DWORD;
+    CallerAdr: DWORD_PTR;
     Level: DWORD;
-    CallersEBP: DWORD;
+    CallersEBP: DWORD_PTR;
     DumpSize: DWORD;
     ParamSize: DWORD;
-    ParamPtr: PDWORDArray;
+    ParamPtr: PDWORD_PTRArray;
     case Integer of
       0:
         (StackFrame: PStackFrame);
@@ -519,7 +520,7 @@ type
   private
     FStackInfo: TStackInfo;
     function GetCallerAdr: Pointer;
-    function GetLogicalAddress: DWORD;
+    function GetLogicalAddress: DWORD_PTR;
   public
     property CallerAdr: Pointer read GetCallerAdr;
     property LogicalAddress: DWORD read GetLogicalAddress;
@@ -529,8 +530,8 @@ type
   TJclStackInfoList = class(TJclStackBaseList)
   private
     FIgnoreLevels: DWORD;
-    TopOfStack: Cardinal;
-    BaseOfStack: Cardinal;
+    TopOfStack: DWORD_PTR;
+    BaseOfStack: DWORD_PTR;
     FStackData: PPointer;
     FFrameEBP: Pointer;
     FModuleInfoList: TJclModuleInfoList;
@@ -539,15 +540,15 @@ type
     FDelayedTrace: Boolean;
     FInStackTracing: Boolean;
     FRaw: Boolean;
-    FStackOffset: Cardinal;
+    FStackOffset: DWORD_PTR;
     function GetItems(Index: Integer): TJclStackInfoItem;
     function NextStackFrame(var StackFrame: PStackFrame; var StackInfo: TStackInfo): Boolean;
     procedure StoreToList(const StackInfo: TStackInfo);
     procedure TraceStackFrames;
     procedure TraceStackRaw;
     procedure DelayStoreStack;
-    function ValidCallSite(CodeAddr: DWORD; var CallInstructionSize: Cardinal): Boolean;
-    function ValidStackAddr(StackAddr: DWORD): Boolean;
+    function ValidCallSite(CodeAddr: DWORD_PTR; var CallInstructionSize: Cardinal): Boolean;
+    function ValidStackAddr(StackAddr: DWORD_PTR): Boolean;
     function GetCount: Integer;
     procedure CorrectOnAccess(ASkipFirstItem: Boolean);
   public
@@ -768,7 +769,7 @@ const
 // JCL binary debug data generator and scanner
 const
   JclDbgDataSignature = $4742444A; // JDBG
-  JclDbgDataResName   = 'JCLDEBUG'; // do not localize
+  JclDbgDataResName   = AnsiString('JCLDEBUG'); // do not localize
   JclDbgHeaderVersion = 1; // JCL 1.11 and 1.20
 
   JclDbgFileExtension = '.jdbg'; // do not localize
@@ -813,12 +814,11 @@ const
 implementation
 
 uses
-  ImageHlp,
   {$IFDEF MSWINDOWS}
   JclRegistry,
   {$ENDIF MSWINDOWS}
   JclHookExcept, JclLogic, JclStrings, JclSysInfo, JclSysUtils, JclWin32,
-  JclResources;
+  JclStringConversions, JclResources;
 
 //=== Helper assembler routines ==============================================
 
@@ -846,7 +846,7 @@ end;
 // Reference: Matt Pietrek, MSJ, Under the hood, on TIBs:
 // http://www.microsoft.com/MSJ/archive/S2CE.HTM
 
-function GetStackTop: DWORD;
+function GetStackTop: DWORD_PTR;
 asm
   // TODO: 64 bit version
         MOV     EAX, FS:[0].NT_TIB32.StackBase
@@ -928,7 +928,7 @@ end;
 
 {function SortByStartAddress(Item1, Item2: Pointer): Integer;
 begin
-  Result := Integer(TJclModuleInfo(Item2).StartAddr) - Integer(TJclModuleInfo(Item1).StartAddr);
+  Result := INT_PTR(TJclModuleInfo(Item2).StartAddr) - INT_PTR(TJclModuleInfo(Item1).StartAddr);
 end;}
 
 procedure TJclModuleInfoList.BuildModulesList;
@@ -1000,7 +1000,7 @@ begin
   for I := 0 to Count - 1 do
   begin
     Item := Items[I];
-    if (Cardinal(Item.StartAddr) <= Cardinal(Addr)) and (Cardinal(Item.EndAddr) > Cardinal(Addr)) then
+    if (DWORD_PTR(Item.StartAddr) <= DWORD_PTR(Addr)) and (DWORD_PTR(Item.EndAddr) > DWORD_PTR(Addr)) then
     begin
       Result := Item;
       Break;
@@ -1059,7 +1059,7 @@ begin
     Exit;
   end;
   PEnd := MapString;
-  while (PEnd^ <> '=') and not CharIsReturn(PEnd^) do
+  while (PEnd^ <> '=') and not CharIsReturn(Char(PEnd^)) do
     Inc(PEnd);
   if (PEnd^ = '=') then
   begin
@@ -1069,14 +1069,14 @@ begin
       Dec(PEnd);
   end;
   PExtension := PEnd;
-  while (not (PExtension^ in ['.', '|'])) and (PExtension >= MapString) do
+  while (PExtension^ <> '.') and (PExtension^ <> '|') and (PExtension >= MapString) do
     Dec(PExtension);
   if (PExtension^ = '.') then
     PEnd := PExtension;
   PExtension := PEnd;
-  while (not (PExtension^ in ['|','\'])) and (PExtension >= MapString) do
+  while (PExtension^ <> '|') and (PExtension^ <> '\') and (PExtension >= MapString) do
     Dec(PExtension);
-  if (PExtension^ in ['|','\']) then
+  if (PExtension^ = '|') or (PExtension^ = '\') then
     PStart := PExtension + 1
   else PStart := MapString;
   SetString(Result, PStart, PEnd - PStart);
@@ -1096,17 +1096,17 @@ begin
   begin
     Inc(MapString);
     P := MapString;
-    while (P^ <> ')') and not CharIsReturn(P^) do
+    while (P^ <> ')') and not CharIsReturn(Char(P^)) do
       Inc(P);
   end
   else
   begin
     P := MapString;
     if IgnoreSpaces then
-      while (P^ <> '(') and not CharIsReturn(P^) do
+      while (P^ <> '(') and not CharIsReturn(Char(P^)) do
         Inc(P)
     else
-      while (P^ <> '(') and not CharIsWhiteSpace(P^) do
+      while (P^ <> '(') and not CharIsWhiteSpace(Char(P^)) do
         Inc(P);
   end;
   SetString(Result, MapString, P - MapString);
@@ -1118,7 +1118,7 @@ const
   SegmentsHeader       : array [0..3] of string = ('Detailed', 'map', 'of', 'segments');
   PublicsByNameHeader  : array [0..3] of string = ('Address', 'Publics', 'by', 'Name');
   PublicsByValueHeader : array [0..3] of string = ('Address', 'Publics', 'by', 'Value');
-  LineNumbersPrefix    = 'Line numbers for';
+  LineNumbersPrefix    : string = 'Line numbers for';
   ResourceFilesHeader  : array [0..2] of string = ('Bound', 'resource', 'files');
 var
   CurrPos, EndPos: PJclMapString;
@@ -1131,13 +1131,13 @@ var
 
   procedure SkipWhiteSpace;
   begin
-    while CharIsWhiteSpace(CurrPos^) do
+    while CharIsWhiteSpace(Char(CurrPos^)) do
       Inc(CurrPos);
   end;
 
   procedure SkipEndLine;
   begin
-    while not CharIsReturn(CurrPos^) do
+    while not CharIsReturn(Char(CurrPos^)) do
       Inc(CurrPos);
     SkipWhiteSpace;
   end;
@@ -1149,7 +1149,7 @@ var
 
   function IsDecDigit: Boolean;
   begin
-    Result := CharIsDigit(CurrPos^);
+    Result := CharIsDigit(Char(CurrPos^));
   end;
 
   function ReadTextLine: string;
@@ -1157,7 +1157,7 @@ var
     P: PJclMapString;
   begin
     P := CurrPos;
-    while (CurrPos^ <> NativeNull) and not CharIsReturn(CurrPos^) do
+    while (CurrPos^ <> NativeNull) and not CharIsReturn(Char(CurrPos^)) do
       Inc(CurrPos);
     SetString(Result, P, CurrPos - P);
   end;
@@ -1166,7 +1166,7 @@ var
   function ReadDecValue: Integer;
   begin
     Result := 0;
-    while CharIsDigit(CurrPos^) do
+    while CharIsDigit(Char(CurrPos^)) do
     begin
       Result := Result * 10 + (Ord(CurrPos^) - Ord('0'));
       Inc(CurrPos);
@@ -1179,7 +1179,7 @@ var
   begin
     Result := 0;
     repeat
-      C := CurrPos^;
+      C := Char(CurrPos^);
       case C of
         '0'..'9':
           begin
@@ -1224,11 +1224,11 @@ var
   begin
     SkipWhiteSpace;
     Result := CurrPos;
-    while not CharIsWhiteSpace(CurrPos^) do
+    while not CharIsWhiteSpace(Char(CurrPos^)) do
       Inc(CurrPos);
   end;
 
-  procedure FindParam(Param: Char);
+  procedure FindParam(Param: AnsiChar);
   begin
     while not ((CurrPos^ = Param) and ((CurrPos + 1)^ = '=')) do
       Inc(CurrPos);
@@ -1281,7 +1281,7 @@ var
     SkipWhiteSpace;
     I := Length(Prefix);
     P := CurrPos;
-    while not Eof and (not (P^ in [NativeCarriageReturn, NativeNull])) and (I > 0) do
+    while not Eof and (P^ <> NativeCarriageReturn) and (P^ <> NativeNull) and (I > 0) do
     begin
       Inc(P);
       Dec(I);
@@ -1431,7 +1431,7 @@ begin
   // after Delphi 2005: segments started at code base address (module base address + $10000)
   //                    2 segments of code
   if (Length(FSegmentClasses) > 0) and (FSegmentClasses[0].Addr > 0) then
-    // Delphi 2005 and earlier
+    // Delphi 2005 and later
     // The first segment should be code starting at module base address + $10000
     Result := Addr - FSegmentClasses[0].Addr
   else
@@ -1464,7 +1464,7 @@ begin
 
     if SectionHeader <> nil then
     begin
-      FSegmentClasses[C].Addr := Cardinal(FModule) + SectionHeader.VirtualAddress;
+      FSegmentClasses[C].Addr := DWORD_PTR(FModule) + SectionHeader.VirtualAddress;
       FSegmentClasses[C].VA := SectionHeader.VirtualAddress;
     end;
   end;
@@ -1699,7 +1699,7 @@ end;
 { D5  D4  D3  D2  D1  D0  C5  C4 | Data byte 2                                                     }
 {---------------------------------                                                                 }
 
-function SimpleCryptString(const S: string): string;
+function SimpleCryptString(const S: TUTF8String): TUTF8String;
 var
   I: Integer;
   C: Byte;
@@ -1717,12 +1717,12 @@ begin
   end;
 end;
 
-function DecodeNameString(const S: PChar): string;
+function DecodeNameString(const S: PAnsiChar): string;
 var
   I, B: Integer;
   C: Byte;
   P: PByte;
-  Buffer: array [0..255] of Char;
+  Buffer: array [0..255] of AnsiChar;
 begin
   Result := '';
   B := 0;
@@ -1731,7 +1731,7 @@ begin
     1:
       begin
         Inc(P);
-        Result := SimpleCryptString(PChar(P));
+        Result := UTF8ToString(SimpleCryptString(PAnsiChar(P)));
         Exit;
       end;
     2:
@@ -1777,15 +1777,15 @@ begin
       $3F:
         C := Ord('_');
     end;
-    Buffer[B] := Chr(C);
+    Buffer[B] := AnsiChar(C);
     Inc(B);
     Inc(I);
   until B >= SizeOf(Buffer) - 1;
   Buffer[B] := NativeNull;
-  Result := Buffer;
+  Result := UTF8ToString(Buffer);
 end;
 
-function EncodeNameString(const S: string): string;
+function EncodeNameString(const S: string): AnsiString;
 var
   I, StartIndex: Integer;
   C: Byte;
@@ -1796,9 +1796,9 @@ begin
   else
     StartIndex := 0;
   for I := StartIndex + 1 to Length(S) do
-    if not CharIsValidIdentifierLetter(S[I]) then
+    if not CharIsValidIdentifierLetter(Char(S[I])) then
     begin
-      Result := #1 + SimpleCryptString(S) + #0;
+      Result := #1 + SimpleCryptString(StringToUTF8(S)) + #0;
       Exit;
     end;
   SetLength(Result, Length(S) + StartIndex);
@@ -1810,7 +1810,7 @@ begin
   for I := 0 to Length(S) - StartIndex do // including null char
   begin
     C := Byte(S[I + 1 + StartIndex]);
-    case Char(C) of
+    case AnsiChar(C) of
       #0:
         C := 0;
       '0'..'9':
@@ -1846,7 +1846,7 @@ begin
         P^ := P^ or (C shl 2);
     end;
   end;
-  SetLength(Result, DWORD(P) - DWORD(Pointer(Result)) + 1);
+  SetLength(Result, DWORD_PTR(P) - DWORD_PTR(Pointer(Result)) + 1);
 end;
 
 function ConvertMapFileToJdbgFile(const MapFileName: TFileName): Boolean;
@@ -2003,7 +2003,7 @@ begin
         JclDebugSection^.PointerToRawData := LastSection^.PointerToRawData + LastSection^.SizeOfRawData;
         RoundUpToAlignment(JclDebugSection^.PointerToRawData, NtHeaders32^.OptionalHeader.FileAlignment);
         // JCLDEBUG Section name
-        StrPLCopy(PChar(@JclDebugSection^.Name), JclDbgDataResName, IMAGE_SIZEOF_SHORT_NAME);
+        StrPLCopy(PAnsiChar(@JclDebugSection^.Name), JclDbgDataResName, IMAGE_SIZEOF_SHORT_NAME);
         // JCLDEBUG Characteristics flags
         JclDebugSection^.Characteristics := IMAGE_SCN_MEM_READ or IMAGE_SCN_CNT_INITIALIZED_DATA;
   
@@ -2020,7 +2020,7 @@ begin
         Inc(NtHeaders32^.OptionalHeader.SizeOfInitializedData, JclDebugSection^.SizeOfRawData);
   
         // Fill data to alignment
-        NeedFill := Integer(JclDebugSection^.SizeOfRawData) - JclDebugDataSize;
+        NeedFill := INT_PTR(JclDebugSection^.SizeOfRawData) - JclDebugDataSize;
   
         // Note: Delphi linker seems to generate incorrect (unaligned) size of
         // the executable when adding TD32 debug data so the position could be
@@ -2063,7 +2063,7 @@ end;
 function TJclBinDebugGenerator.CalculateCheckSum: Boolean;
 var
   Header: PJclDbgHeader;
-  P, EndData: PChar;
+  P, EndData: PAnsiChar;
   CheckSum: Integer;
 begin
   Result := DataStream.Size >= SizeOf(TJclDbgHeader);
@@ -2094,7 +2094,7 @@ var
   function AddWord(const S: string): Integer;
   var
     N: Integer;
-    E: string;
+    E: AnsiString;
   begin
     if S = '' then
     begin
@@ -2106,7 +2106,7 @@ var
     begin
       Result := WordStream.Position;
       E := EncodeNameString(S);
-      WordStream.WriteBuffer(Pointer(E)^, Length(E));
+      WordStream.WriteBuffer(E[1], Length(E));
       WordList.AddObject(S, TObject(Result));
     end
     else
@@ -2344,7 +2344,7 @@ end;
 procedure TJclBinDebugScanner.CheckFormat;
 var
   CheckSum: Integer;
-  Data, EndData: PChar;
+  Data, EndData: PAnsiChar;
   Header: PJclDbgHeader;
 begin
   Data := FStream.Memory;
@@ -2368,13 +2368,13 @@ end;
 
 function TJclBinDebugScanner.DataToStr(A: Integer): string;
 var
-  P: PChar;
+  P: PAnsiChar;
 begin
   if A = 0 then
     Result := ''
   else
   begin
-    P := PChar(DWORD(A) + DWORD(FStream.Memory) + DWORD(PJclDbgHeader(FStream.Memory)^.Words) - 1);
+    P := PAnsiChar(DWORD_PTR(FStream.Memory) + DWORD(A) + DWORD_PTR(PJclDbgHeader(FStream.Memory)^.Words) - 1);
     Result := DecodeNameString(P);
   end;
 end;
@@ -2450,7 +2450,7 @@ end;
 
 function TJclBinDebugScanner.MakePtr(A: Integer): Pointer;
 begin
-  Result := Pointer(DWORD(FStream.Memory) + DWORD(A));
+  Result := Pointer(DWORD_PTR(FStream.Memory) + DWORD(A));
 end;
 
 function TJclBinDebugScanner.ModuleNameFromAddr(Addr: DWORD): string;
@@ -2639,7 +2639,7 @@ end;
 
 function TJclDebugInfoSource.VAFromAddr(const Addr: Pointer): DWORD;
 begin
-  Result := DWORD(Addr) - FModule - ModuleCodeOffset;
+  Result := DWORD_PTR(Addr) - FModule - ModuleCodeOffset;
 end;
 
 //=== { TJclDebugInfoList } ==================================================
@@ -2870,12 +2870,12 @@ begin
   inherited Destroy;
 end;
 
-function TJclDebugInfoExports.IsAddressInThisExportedFunction(Addr: PByteArray; FunctionStartAddr: Cardinal): Boolean;
+function TJclDebugInfoExports.IsAddressInThisExportedFunction(Addr: PByteArray; FunctionStartAddr: DWORD_PTR): Boolean;
 begin
-  Dec(Cardinal(Addr), 6);
+  Dec(DWORD_PTR(Addr), 6);
   Result := False;
 
-  while (Cardinal(Addr) > FunctionStartAddr) do
+  while DWORD_PTR(Addr) > FunctionStartAddr do
   begin
     if IsBadReadPtr(Addr, 6) then
       Exit;
@@ -2900,7 +2900,7 @@ begin
           ((Addr[2] = $CC) and (Addr[3] = $CC) and (Addr[4] = $CC))) then // int 3
       Exit;
 
-    Dec(Cardinal(Addr));
+    Dec(DWORD_PTR(Addr));
   end;
   Result := True;
 end;
@@ -2914,7 +2914,7 @@ var
   RawName: Boolean;
 begin
   Result := False;
-  VA := DWORD(Addr) - FModule;
+  VA := DWORD_PTR(Addr) - FModule;
   RawName := not FBorImage.IsPackage;
   Info.OffsetFromProcName := 0;
   Info.OffsetFromLineNumber := 0;
@@ -3020,43 +3020,59 @@ end;
 //=== { TJclDebugInfoSymbols } ===============================================
 
 type
-  TSymInitializeFunc = function (hProcess: THandle; UserSearchPath: LPSTR;
+  TSymInitializeAFunc = function (hProcess: THandle; UserSearchPath: LPSTR;
+    fInvadeProcess: Bool): Bool; stdcall;
+  TSymInitializeWFunc = function (hProcess: THandle; UserSearchPath: LPWSTR;
     fInvadeProcess: Bool): Bool; stdcall;
   TSymGetOptionsFunc = function: DWORD; stdcall;
   TSymSetOptionsFunc = function (SymOptions: DWORD): DWORD; stdcall;
   TSymCleanupFunc = function (hProcess: THandle): Bool; stdcall;
-  TSymGetSymFromAddrFunc = function (hProcess: THandle; dwAddr: DWORD;
-    pdwDisplacement: PDWORD; var Symbol: TImagehlpSymbol): Bool; stdcall;
-  TSymGetModuleInfoFunc = function (hProcess: THandle; dwAddr: DWORD;
-    var ModuleInfo: TImagehlpModule): Bool; stdcall;
+  TSymGetSymFromAddrAFunc = function (hProcess: THandle; dwAddr: DWORD;
+    pdwDisplacement: PDWORD; var Symbol: JclWin32.TImagehlpSymbolA): Bool; stdcall;
+  TSymGetSymFromAddrWFunc = function (hProcess: THandle; dwAddr: DWORD;
+    pdwDisplacement: PDWORD; var Symbol: JclWin32.TImagehlpSymbolW): Bool; stdcall;
+  TSymGetModuleInfoAFunc = function (hProcess: THandle; dwAddr: DWORD;
+    var ModuleInfo: JclWin32.TImagehlpModuleA): Bool; stdcall;
+  TSymGetModuleInfoWFunc = function (hProcess: THandle; dwAddr: DWORD;
+    var ModuleInfo: JclWin32.TImagehlpModuleW): Bool; stdcall;
   TSymLoadModuleFunc = function (hProcess: THandle; hFile: THandle; ImageName,
     ModuleName: LPSTR; BaseOfDll, SizeOfDll: DWORD): DWORD; stdcall;
-  TSymGetLineFromAddrFunc = function (hProcess: THandle; dwAddr: DWORD;
-    pdwDisplacement: PDWORD; var Line: TImageHlpLine): Bool; stdcall;
+  TSymGetLineFromAddrAFunc = function (hProcess: THandle; dwAddr: DWORD;
+    pdwDisplacement: PDWORD; var Line: JclWin32.TImageHlpLineA): Bool; stdcall;
+  TSymGetLineFromAddrWFunc = function (hProcess: THandle; dwAddr: DWORD;
+    pdwDisplacement: PDWORD; var Line: JclWin32.TImageHlpLineW): Bool; stdcall;
 
 var
   DebugSymbolsInitialized: Boolean = False;
   DebugSymbolsLoadFailed: Boolean = False;
   ImageHlpDllHandle: THandle = 0;
-  SymInitializeFunc: TSymInitializeFunc = nil;
+  SymInitializeAFunc: TSymInitializeAFunc = nil;
+  SymInitializeWFunc: TSymInitializeWFunc = nil;
   SymGetOptionsFunc: TSymGetOptionsFunc = nil;
   SymSetOptionsFunc: TSymSetOptionsFunc = nil;
   SymCleanupFunc: TSymCleanupFunc = nil;
-  SymGetSymFromAddrFunc: TSymGetSymFromAddrFunc = nil;
-  SymGetModuleInfoFunc: TSymGetModuleInfoFunc = nil;
+  SymGetSymFromAddrAFunc: TSymGetSymFromAddrAFunc = nil;
+  SymGetSymFromAddrWFunc: TSymGetSymFromAddrWFunc = nil;
+  SymGetModuleInfoAFunc: TSymGetModuleInfoAFunc = nil;
+  SymGetModuleInfoWFunc: TSymGetModuleInfoWFunc = nil;
   SymLoadModuleFunc: TSymLoadModuleFunc = nil;
-  SymGetLineFromAddrFunc: TSymGetLineFromAddrFunc = nil;
+  SymGetLineFromAddrAFunc: TSymGetLineFromAddrAFunc = nil;
+  SymGetLineFromAddrWFunc: TSymGetLineFromAddrWFunc = nil;
 
 const
-  ImageHlpDllName = 'imagehlp.dll';                   // do not localize
-  SymInitializeFuncName = 'SymInitialize';            // do not localize
-  SymGetOptionsFuncName = 'SymGetOptions';            // do not localize
-  SymSetOptionsFuncName = 'SymSetOptions';            // do not localize
-  SymCleanupFuncName = 'SymCleanup';                  // do not localize
-  SymGetSymFromAddrFuncName = 'SymGetSymFromAddr';    // do not localize
-  SymGetModuleInfoFuncName = 'SymGetModuleInfo';      // do not localize
-  SymLoadModuleFuncName = 'SymLoadModule';            // do not localize
-  SymGetLineFromAddrName = 'SymGetLineFromAddr';      // do not localize
+  ImageHlpDllName = 'imagehlp.dll';                          // do not localize
+  SymInitializeAFuncName = 'SymInitialize';                  // do not localize
+  SymInitializeWFuncName = 'SymInitializeW';                 // do not localize
+  SymGetOptionsFuncName = 'SymGetOptions';                   // do not localize
+  SymSetOptionsFuncName = 'SymSetOptions';                   // do not localize
+  SymCleanupFuncName = 'SymCleanup';                         // do not localize
+  SymGetSymFromAddrAFuncName = 'SymGetSymFromAddr';          // do not localize
+  SymGetSymFromAddrWFuncName = 'SymGetSymFromAddrW';         // do not localize
+  SymGetModuleInfoAFuncName = 'SymGetModuleInfo';            // do not localize
+  SymGetModuleInfoWFuncName = 'SymGetModuleInfoW';           // do not localize
+  SymLoadModuleFuncName = 'SymLoadModule';                   // do not localize
+  SymGetLineFromAddrAFuncName = 'SymGetLineFromAddr';        // do not localize
+  SymGetLineFromAddrWFuncName = 'SymGetLineFromAddrW';       // do not localize
 
 function StrRemoveEmptyPaths(const Paths: string): string;
 var
@@ -3085,7 +3101,7 @@ begin
   else
   if not DebugSymbolsInitialized then
   begin
-    DebugSymbolsLoadFailed := LoadDebugFunctions;
+    DebugSymbolsLoadFailed := not LoadDebugFunctions;
 
     Result := not DebugSymbolsLoadFailed;
 
@@ -3107,10 +3123,11 @@ begin
         SearchPath := StrRemoveEmptyPaths(SearchPath);
       end;
 
-      if IsWinNT then
-        Result := SymInitializeFunc(GetCurrentProcess, Pointer(SearchPath), False)
+      if IsWinNT and Assigned(SymInitializeWFunc) then
+        Result := SymInitializeWFunc(GetCurrentProcessId, PWideChar(WideString(SearchPath)), False)
       else
-        Result := SymInitializeFunc(GetCurrentProcessId, Pointer(SearchPath), False);
+      if IsWinNT and Assigned(SymInitializeAFunc) then
+        Result := SymInitializeAFunc(GetCurrentProcess, PAnsiChar(AnsiString(SearchPath)), False);
       if Result then
       begin
         SymOptions := SymGetOptionsFunc or SYMOPT_DEFERRED_LOADS
@@ -3142,51 +3159,91 @@ function TJclDebugInfoSymbols.GetLocationInfo(const Addr: Pointer;
   var Info: TJclLocationInfo): Boolean;
 const
   SymbolNameLength = 1000;
-  SymbolSize = SizeOf(TImagehlpSymbol) + SymbolNameLength;
-  UndecoratedLength = 100;
+  SymbolSizeA = SizeOf(TImagehlpSymbolA) + SymbolNameLength * SizeOf(AnsiChar);
+  SymbolSizeW = SizeOf(TImagehlpSymbolW) + SymbolNameLength * SizeOf(WideChar);
 var
   Displacement: DWORD;
-  Symbol: PImagehlpSymbol;
-  SymbolName: PChar;
   ProcessHandle: THandle;
-  UndecoratedName: array [0..UndecoratedLength] of Char;
-  Line: TImageHlpLine;
+  SymbolA: PImagehlpSymbolA;
+  SymbolW: PImagehlpSymbolW;
+  LineA: TImageHlpLineA;
+  LineW: TImageHlpLineW;
 begin
-  GetMem(Symbol, SymbolSize);
-  try
-    ProcessHandle := GetCurrentProcess;
-    
-    ZeroMemory(Symbol, SymbolSize);
-    Symbol^.SizeOfStruct := SizeOf(TImageHlpSymbol);
-    Symbol^.MaxNameLength := SymbolNameLength;
-    Displacement := 0;
+  ProcessHandle := GetCurrentProcess;
 
-    Result := SymGetSymFromAddrFunc(ProcessHandle, DWORD(Addr), @Displacement, Symbol^);
+  if Assigned(SymGetSymFromAddrWFunc) then
+  begin
+    GetMem(SymbolW, SymbolSizeW);
+    try
+      ZeroMemory(SymbolW, SymbolSizeW);
+      SymbolW^.SizeOfStruct := SizeOf(TImageHlpSymbolW);
+      SymbolW^.MaxNameLength := SymbolNameLength;
+      Displacement := 0;
 
-    if Result then
-    begin
-      Info.DebugInfo := Self;
-      Info.Address := Addr;
-      Info.BinaryFileName := FileName;
-      Info.OffsetFromProcName := Displacement;
-      SymbolName := Symbol^.Name;
-      SetString(Info.ProcedureName, UndecoratedName, UnDecorateSymbolName(SymbolName, UndecoratedName, UndecoratedLength, UNDNAME_NAME_ONLY or UNDNAME_NO_ARGUMENTS));
+      Result := SymGetSymFromAddrWFunc(ProcessHandle, DWORD_PTR(Addr), @Displacement, SymbolW^);
+      if Result then
+      begin
+        Info.DebugInfo := Self;
+        Info.Address := Addr;
+        Info.BinaryFileName := FileName;
+        Info.OffsetFromProcName := Displacement;
+        JclPeImage.UnDecorateSymbolName(string(WideString(SymbolW^.Name)), Info.ProcedureName, UNDNAME_NAME_ONLY or UNDNAME_NO_ARGUMENTS);
+      end;
+    finally
+      FreeMem(SymbolW);
     end;
-  finally
-    FreeMem(Symbol);
-  end;
+  end
+  else
+  if Assigned(SymGetSymFromAddrAFunc) then
+  begin
+    GetMem(SymbolA, SymbolSizeA);
+    try
+      ZeroMemory(SymbolA, SymbolSizeA);
+      SymbolA^.SizeOfStruct := SizeOf(TImageHlpSymbolA);
+      SymbolA^.MaxNameLength := SymbolNameLength;
+      Displacement := 0;
+
+      Result := SymGetSymFromAddrAFunc(ProcessHandle, DWORD_PTR(Addr), @Displacement, SymbolA^);
+      if Result then
+      begin
+        Info.DebugInfo := Self;
+        Info.Address := Addr;
+        Info.BinaryFileName := FileName;
+        Info.OffsetFromProcName := Displacement;
+        JclPeImage.UnDecorateSymbolName(string(AnsiString(SymbolA^.Name)), Info.ProcedureName, UNDNAME_NAME_ONLY or UNDNAME_NO_ARGUMENTS);
+      end;
+    finally
+      FreeMem(SymbolA);
+    end;
+  end
+  else
+    Result := False;
 
   // line number is optional
-  if Result and Assigned(SymGetLineFromAddrFunc) then
+  if Result and Assigned(SymGetLineFromAddrWFunc) then
   begin
-    ZeroMemory(@Line, SizeOf(Line));
-    Line.SizeOfStruct := SizeOf(Line);
+    ZeroMemory(@LineW, SizeOf(LineW));
+    LineW.SizeOfStruct := SizeOf(LineW);
     Displacement := 0;
 
-    if SymGetLineFromAddrFunc(ProcessHandle, DWORD(Addr), @Displacement, Line) then
+    if SymGetLineFromAddrWFunc(ProcessHandle, DWORD_PTR(Addr), @Displacement, LineW) then
     begin
-      Info.LineNumber := Line.LineNumber;
-      Info.UnitName := Line.FileName;
+      Info.LineNumber := LineW.LineNumber;
+      Info.UnitName := string(LineW.FileName);
+      Info.OffsetFromLineNumber := Displacement;
+    end;
+  end
+  else
+  if Result and Assigned(SymGetLineFromAddrAFunc) then
+  begin
+    ZeroMemory(@LineA, SizeOf(LineA));
+    LineA.SizeOfStruct := SizeOf(LineA);
+    Displacement := 0;
+
+    if SymGetLineFromAddrAFunc(ProcessHandle, DWORD_PTR(Addr), @Displacement, LineA) then
+    begin
+      Info.LineNumber := LineA.LineNumber;
+      Info.UnitName := string(LineA.FileName);
       Info.OffsetFromLineNumber := Displacement;
     end;
   end;
@@ -3194,8 +3251,9 @@ end;
 
 function TJclDebugInfoSymbols.InitializeSource: Boolean;
 var
-  ModuleFileName: string;
-  ModuleInfo: TImagehlpModule;
+  ModuleFileName: TFileName;
+  ModuleInfoA: TImagehlpModuleA;
+  ModuleInfoW: TImagehlpModuleW;
   ProcessHandle: THandle;
 begin
   Result := InitializeDebugSymbols;
@@ -3204,21 +3262,43 @@ begin
   begin
     ProcessHandle := GetCurrentProcess;
 
-    ZeroMemory(@ModuleInfo, SizeOf(ModuleInfo));
-    ModuleInfo.SizeOfStruct := SizeOf(ModuleInfo);
-
-    if ((not SymGetModuleInfoFunc(ProcessHandle, Module, ModuleInfo))
-        or (ModuleInfo.BaseOfImage = 0)) then
+    if Assigned(SymGetModuleInfoWFunc) then
     begin
-      ModuleFileName := GetModulePath(Module);
-      Result := SymLoadModuleFunc(ProcessHandle, 0, PChar(ModuleFileName), nil, 0, 0) <> 0;
+      ZeroMemory(@ModuleInfoW, SizeOf(ModuleInfoW));
+      ModuleInfoW.SizeOfStruct := SizeOf(ModuleInfoW);
 
-      ZeroMemory(@ModuleInfo, SizeOf(ModuleInfo));
-      ModuleInfo.SizeOfStruct := SizeOf(ModuleInfo);
-      Result := Result and SymGetModuleInfoFunc(ProcessHandle, Module, ModuleInfo);
+      if ((not SymGetModuleInfoWFunc(ProcessHandle, Module, ModuleInfoW))
+          or (ModuleInfoW.BaseOfImage = 0)) then
+      begin
+        ModuleFileName := GetModulePath(Module);
+        // OF: possible loss of data
+        Result := SymLoadModuleFunc(ProcessHandle, 0, PAnsiChar(AnsiString(ModuleFileName)), nil, 0, 0) <> 0;
+
+        ZeroMemory(@ModuleInfoW, SizeOf(ModuleInfoW));
+        ModuleInfoW.SizeOfStruct := SizeOf(ModuleInfoW);
+        Result := Result and SymGetModuleInfoWFunc(ProcessHandle, Module, ModuleInfoW);
+        Result := Result and not (ModuleInfoW.SymType in [SymNone, SymExport]);
+      end;
+    end
+    else
+    if Assigned(SymGetModuleInfoAFunc) then
+    begin
+      ZeroMemory(@ModuleInfoA, SizeOf(ModuleInfoA));
+      ModuleInfoA.SizeOfStruct := SizeOf(ModuleInfoA);
+
+      if ((not SymGetModuleInfoAFunc(ProcessHandle, Module, ModuleInfoA))
+          or (ModuleInfoA.BaseOfImage = 0)) then
+      begin
+        ModuleFileName := GetModulePath(Module);
+        // OF: possible loss of data
+        Result := SymLoadModuleFunc(ProcessHandle, 0, PAnsiChar(AnsiString(ModuleFileName)), nil, 0, 0) <> 0;
+
+        ZeroMemory(@ModuleInfoA, SizeOf(ModuleInfoA));
+        ModuleInfoA.SizeOfStruct := SizeOf(ModuleInfoA);
+        Result := Result and SymGetModuleInfoAFunc(ProcessHandle, Module, ModuleInfoA);
+        Result := Result and not (ModuleInfoA.SymType in [SymNone, SymExport]);
+      end;
     end;
-
-    Result := Result and not (ModuleInfo.SymType in [SymNone, SymExport]);
   end;
 end;
 
@@ -3228,21 +3308,27 @@ begin
 
   if ImageHlpDllHandle <> 0 then
   begin
-    SymInitializeFunc := GetProcAddress(ImageHlpDllHandle, SymInitializeFuncName);
+    SymInitializeAFunc := GetProcAddress(ImageHlpDllHandle, SymInitializeAFuncName);
+    SymInitializeWFunc := GetProcAddress(ImageHlpDllHandle, SymInitializeWFuncName);
     SymGetOptionsFunc := GetProcAddress(ImageHlpDllHandle, SymGetOptionsFuncName);
     SymSetOptionsFunc := GetProcAddress(ImageHlpDllHandle, SymSetOptionsFuncName);
     SymCleanupFunc := GetProcAddress(ImageHlpDllHandle, SymCleanupFuncName);
-    SymGetSymFromAddrFunc := GetProcAddress(ImageHlpDllHandle, SymGetSymFromAddrFuncName);
-    SymGetModuleInfoFunc := GetProcAddress(ImageHlpDllHandle, SymGetModuleInfoFuncName);
+    SymGetSymFromAddrAFunc := GetProcAddress(ImageHlpDllHandle, SymGetSymFromAddrAFuncName);
+    SymGetSymFromAddrWFunc := GetProcAddress(ImageHlpDllHandle, SymGetSymFromAddrWFuncName);
+    SymGetModuleInfoAFunc := GetProcAddress(ImageHlpDllHandle, SymGetModuleInfoAFuncName);
+    SymGetModuleInfoWFunc := GetProcAddress(ImageHlpDllHandle, SymGetModuleInfoWFuncName);
     SymLoadModuleFunc := GetProcAddress(ImageHlpDllHandle, SymLoadModuleFuncName);
-    SymGetLineFromAddrFunc := GetProcAddress(ImageHlpDllHandle, SymGetLineFromAddrName);
+    SymGetLineFromAddrAFunc := GetProcAddress(ImageHlpDllHandle, SymGetLineFromAddrAFuncName);
+    SymGetLineFromAddrWFunc := GetProcAddress(ImageHlpDllHandle, SymGetLineFromAddrWFuncName);
   end;
 
   // SymGetLineFromAddrFunc is optional
-  Result := (ImageHlpDllHandle = 0) or (not Assigned(SymInitializeFunc))
-    or (not Assigned(SymGetOptionsFunc)) or (not Assigned(SymSetOptionsFunc))
-    or (not Assigned(SymCleanupFunc)) or (not Assigned(SymGetSymFromAddrFunc))
-    or (not Assigned(SymGetModuleInfoFunc)) or (not Assigned(SymLoadModuleFunc));
+  Result := (ImageHlpDllHandle <> 0) and
+    Assigned(SymGetOptionsFunc) and Assigned(SymSetOptionsFunc) and
+    Assigned(SymCleanupFunc) and Assigned(SymLoadModuleFunc) and
+    (Assigned(SymInitializeAFunc) or Assigned(SymInitializeWFunc)) and
+    (Assigned(SymGetSymFromAddrAFunc) or Assigned(SymGetSymFromAddrWFunc)) and
+    (Assigned(SymGetModuleInfoAFunc) or Assigned(SymGetModuleInfoWFunc));
 end;
 
 class function TJclDebugInfoSymbols.UnloadDebugFunctions: Boolean;
@@ -3254,14 +3340,18 @@ begin
 
   ImageHlpDllHandle := 0;
 
-  SymInitializeFunc := nil;
+  SymInitializeAFunc := nil;
+  SymInitializeWFunc := nil;
   SymGetOptionsFunc := nil;
   SymSetOptionsFunc := nil;
   SymCleanupFunc := nil;
-  SymGetSymFromAddrFunc := nil;
-  SymGetModuleInfoFunc := nil;
+  SymGetSymFromAddrAFunc := nil;
+  SymGetSymFromAddrWFunc := nil;
+  SymGetModuleInfoAFunc := nil;
+  SymGetModuleInfoWFunc := nil;
   SymLoadModuleFunc := nil;
-  SymGetLineFromAddrFunc := nil;
+  SymGetLineFromAddrAFunc := nil;
+  SymGetLineFromAddrWFunc := nil;
 end;
 
 //=== Source location functions ==============================================
@@ -3270,8 +3360,8 @@ end;
 
 function Caller(Level: Integer; FastStackWalk: Boolean): Pointer;
 var
-  TopOfStack: Cardinal;
-  BaseOfStack: Cardinal;
+  TopOfStack: DWORD_PTR;
+  BaseOfStack: DWORD_PTR;
   StackFrame: PStackFrame;
 begin
   Result := nil;
@@ -3279,9 +3369,9 @@ begin
     if FastStackWalk then
     begin
       StackFrame := GetEBP;
-      BaseOfStack := Cardinal(StackFrame) - 1;
+      BaseOfStack := DWORD_PTR(StackFrame) - 1;
       TopOfStack := GetStackTop;
-      while (BaseOfStack < Cardinal(StackFrame)) and (Cardinal(StackFrame) < TopOfStack) do
+      while (BaseOfStack < DWORD_PTR(StackFrame)) and (DWORD_PTR(StackFrame) < TopOfStack) do
       begin
         if Level = 0 then
         begin
@@ -3357,7 +3447,7 @@ begin
 
     if LineNumber > 0 then
     begin
-      if IncludeStartProcLineOffset and GetLocationInfo(Pointer(Cardinal(Info.Address) -
+      if IncludeStartProcLineOffset and GetLocationInfo(Pointer(DWORD_PTR(Info.Address) -
         Cardinal(Info.OffsetFromProcName)), StartProcInfo) and (StartProcInfo.LineNumber > 0) then
           StartProcOffsetStr := Format(' + %d', [LineNumber - StartProcInfo.LineNumber])
       else
@@ -3392,7 +3482,7 @@ begin
     Module := ModuleFromAddr(Addr);
     if IncludeVAdress then
     begin
-      OffsetStr :=  Format('(%p) ', [Pointer(DWORD(Addr) - Module - ModuleCodeOffset)]);
+      OffsetStr :=  Format('(%p) ', [Pointer(DWORD_PTR(Addr) - Module - ModuleCodeOffset)]);
       Result := OffsetStr + Result;
     end;
     if IncludeModuleName then
@@ -3925,7 +4015,7 @@ function GetThreadFs(const Context: TContext; const Entry: TLDTEntry): DWORD;
 var
   FsBase: PNT_TIB32;
 begin
-  FsBase := PNT_TIB32((DWord(Entry.BaseHi) shl 24) or (DWord(Entry.BaseMid) shl 16) or DWord(Entry.BaseLow));
+  FsBase := PNT_TIB32((DWORD(Entry.BaseHi) shl 24) or (DWORD(Entry.BaseMid) shl 16) or DWORD(Entry.BaseLow));
   Result := FsBase^.StackBase;
 end;
 
@@ -3980,9 +4070,9 @@ begin
   Result := Pointer(FStackInfo.CallerAdr);
 end;
 
-function TJclStackInfoItem.GetLogicalAddress: DWORD;
+function TJclStackInfoItem.GetLogicalAddress: DWORD_PTR;
 begin
-  Result := FStackInfo.CallerAdr - DWORD(ModuleFromAddr(CallerAdr));
+  Result := FStackInfo.CallerAdr - DWORD_PTR(ModuleFromAddr(CallerAdr));
 end;
 
 //=== { TJclStackInfoList } ==================================================
@@ -4014,20 +4104,20 @@ begin
   FIgnoreLevels := AIgnoreLevels;
   FDelayedTrace := ADelayedTrace;
   FRaw := ARaw;
-  BaseOfStack := Cardinal(ABaseOfStack);
+  BaseOfStack := DWORD_PTR(ABaseOfStack);
   FStackOffset := 0;
   FFrameEBP := ABaseOfStack;
 
   if ATopOfStack = nil then
     TopOfStack := GetStackTop
   else
-    TopOfStack := Cardinal(ATopOfStack);
+    TopOfStack := DWORD_PTR(ATopOfStack);
 
   FModuleInfoList := GlobalModulesList.CreateModulesList;
   if AFirstCaller <> nil then
   begin
     Item := TJclStackInfoItem.Create;
-    Item.FStackInfo.CallerAdr := DWORD(AFirstCaller);
+    Item.FStackInfo.CallerAdr := DWORD_PTR(AFirstCaller);
     Add(Item);
   end;
   if DelayedTrace then
@@ -4103,14 +4193,14 @@ end;
 function TJclStackInfoList.NextStackFrame(var StackFrame: PStackFrame; var StackInfo: TStackInfo): Boolean;
 var
   CallInstructionSize: Cardinal;
-  StackFrameCallersEBP, NewEBP: Cardinal;
-  StackFrameCallerAdr: Cardinal;
+  StackFrameCallersEBP, NewEBP: DWORD_PTR;
+  StackFrameCallerAdr: DWORD_PTR;
 begin
   // Only report this stack frame into the StockInfo structure
   // if the StackFrame pointer, EBP on the stack and return
   // address on the stack are valid addresses
   StackFrameCallersEBP := StackInfo.CallersEBP;
-  while ValidStackAddr(DWORD(StackFrame)) do
+  while ValidStackAddr(DWORD_PTR(StackFrame)) do
   begin
     // CallersEBP above the previous CallersEBP
     NewEBP := StackFrame^.CallersEBP;
@@ -4125,7 +4215,7 @@ begin
     begin
       Inc(StackInfo.Level);
       StackInfo.StackFrame := StackFrame;
-      StackInfo.ParamPtr := PDWORDArray(DWORD(StackFrame) + SizeOf(TStackFrame));
+      StackInfo.ParamPtr := PDWORD_PTRArray(DWORD_PTR(StackFrame) + SizeOf(TStackFrame));
 
       if StackFrameCallersEBP > StackInfo.CallersEBP then
         StackInfo.CallersEBP := StackFrameCallersEBP
@@ -4138,7 +4228,7 @@ begin
         StackInfo.CallerAdr := StackFrameCallerAdr - CallInstructionSize
       else
         StackInfo.CallerAdr := StackFrameCallerAdr;
-      StackInfo.DumpSize := StackFrameCallersEBP - DWORD(StackFrame);
+      StackInfo.DumpSize := StackFrameCallersEBP - DWORD_PTR(StackFrame);
       StackInfo.ParamSize := (StackInfo.DumpSize - SizeOf(TStackFrame)) div 4;
       if PStackFrame(StackFrame^.CallersEBP) = StackFrame then
         Break;
@@ -4182,7 +4272,7 @@ begin
   begin
     // We define the bottom of the valid stack to be the current ESP pointer
     if BaseOfStack = 0 then
-      BaseOfStack := DWORD(GetEBP);
+      BaseOfStack := DWORD_PTR(GetEBP);
     // Get a pointer to the current bottom of the stack
     StackFrame := PStackFrame(BaseOfStack);
   end;
@@ -4190,7 +4280,7 @@ begin
   // We define the bottom of the valid stack to be the current EBP Pointer
   // There is a TIB field called pvStackUserBase, but this includes more of the
   // stack than what would define valid stack frames.
-  BaseOfStack := DWORD(StackFrame) - 1;
+  BaseOfStack := DWORD_PTR(StackFrame) - 1;
   // Loop over and report all valid stackframes
   while NextStackFrame(StackFrame, StackInfo) and (inherited Count <> MaxStackTraceItems) do
     StoreToList(StackInfo);
@@ -4204,14 +4294,14 @@ inline;
   Addr: PByteArray;}
 begin
 {  Addr := Proc;
-  while (Addr <> nil) and (Cardinal(Addr) > Cardinal(Proc) - $100) and not IsBadReadPtr(Addr, 6) do
+  while (Addr <> nil) and (DWORD_PTR(Addr) > DWORD_PTR(Proc) - $100) and not IsBadReadPtr(Addr, 6) do
   begin
     if (Addr[0] = $55) and                                           // push ebp
        (Addr[1] = $8B) and (Addr[2] = $EC) then                      // mov ebp,esp
     begin
       if (Addr[3] = $83) and (Addr[4] = $C4) then                    // add esp,c8
       begin
-        Result := Pointer(Integer(StackPtr) - ShortInt(Addr[5]));
+        Result := Pointer(INT_PTR(StackPtr) - ShortInt(Addr[5]));
         Exit;
       end;
       Break;
@@ -4237,7 +4327,7 @@ begin
           ((Addr[2] = $CC) and (Addr[3] = $CC) and (Addr[4] = $CC))) then // int 3
       Break;
 
-    Dec(Cardinal(Addr));
+    Dec(DWORD_TR(Addr));
   end;}
   Result := StackPtr;
 end;
@@ -4245,10 +4335,10 @@ end;
 procedure TJclStackInfoList.TraceStackRaw;
 var
   StackInfo: TStackInfo;
-  StackPtr: PDWORD;
-  PrevCaller: DWORD;
+  StackPtr: PDWORD_PTR;
+  PrevCaller: DWORD_PTR;
   CallInstructionSize: Cardinal;
-  StackTop: DWORD;
+  StackTop: DWORD_PTR;
 begin
   Capacity := 32; // reduce ReallocMem calls, must be > 1 because the caller's EIP register is already in the list
 
@@ -4256,15 +4346,15 @@ begin
   begin
     if not Assigned(FStackData) then
       Exit;
-    StackPtr := PDWORD(FStackData);
+    StackPtr := PDWORD_PTR(FStackData);
   end
   else
   begin
     // We define the bottom of the valid stack to be the current ESP pointer
     if BaseOfStack = 0 then
-      BaseOfStack := DWORD(GetESP);
+      BaseOfStack := DWORD_PTR(GetESP);
     // Get a pointer to the current bottom of the stack
-    StackPtr := PDWORD(BaseOfStack);
+    StackPtr := PDWORD_PTR(BaseOfStack);
   end;
 
   StackTop := TopOfStack;
@@ -4278,7 +4368,7 @@ begin
   // Clear the previous call address
   PrevCaller := 0;
   // Loop through all of the valid stack space
-  while (DWORD(StackPtr) < StackTop) and (inherited Count <> MaxStackTraceItems) do
+  while (DWORD_PTR(StackPtr) < StackTop) and (inherited Count <> MaxStackTraceItems) do
   begin
     // If the current DWORD on the stack refers to a valid call site...
     if ValidCallSite(StackPtr^, CallInstructionSize) and (StackPtr^ <> PrevCaller) then
@@ -4305,7 +4395,7 @@ end;
 
 procedure TJclStackInfoList.DelayStoreStack;
 var
-  StackPtr: PDWORD;
+  StackPtr: PDWORD_PTR;
   StackDataSize: Cardinal;
 begin
   if Assigned(FStackData) then
@@ -4316,22 +4406,22 @@ begin
   // We define the bottom of the valid stack to be the current ESP pointer
   if BaseOfStack = 0 then
   begin
-    BaseOfStack := DWORD(GetESP);
+    BaseOfStack := DWORD_PTR(GetESP);
     FFrameEBP := GetEBP;
   end;
 
   // Get a pointer to the current bottom of the stack
-  StackPtr := PDWORD(BaseOfStack);
-  if Cardinal(StackPtr) < TopOfStack then
+  StackPtr := PDWORD_PTR(BaseOfStack);
+  if DWORD_PTR(StackPtr) < TopOfStack then
   begin
-    StackDataSize := TopOfStack - Cardinal(StackPtr);
+    StackDataSize := TopOfStack - DWORD_PTR(StackPtr);
     GetMem(FStackData, StackDataSize);
     System.Move(StackPtr^, FStackData^, StackDataSize);
     //CopyMemory(FStackData, StackPtr, StackDataSize);
   end;
 
-  FStackOffset := DWORD(FStackData) - DWORD(StackPtr);
-  FFrameEBP := Pointer(Cardinal(FFrameEBP) + FStackOffset);
+  FStackOffset := DWORD_PTR(FStackData) - DWORD_PTR(StackPtr);
+  FFrameEBP := Pointer(DWORD_PTR(FFrameEBP) + FStackOffset);
   TopOfStack := TopOfStack + FStackOffset;
 end;
 
@@ -4348,6 +4438,8 @@ var
   C4P, C8P: PDWORD;
   RM1, RM2, RM5: Byte;
 begin
+  // todo: 64 bit version
+
   // First check that the address is within range of our code segment!
   C8P := PDWORD(CodeAddr - 8);
   C4P := PDWORD(CodeAddr - 4);
@@ -4466,18 +4558,21 @@ begin
   JclCreateExceptFrameList(4);
 end;
 
-function GetJmpDest(Jmp: PJmpInstruction): DWORD;
+function GetJmpDest(Jmp: PJmpInstruction): Pointer;
+type
+  PDWORD_PTR = ^DWORD_PTR;
 begin
+  // TODO : 64 bit version
   if Jmp.opCode = $E9 then
-    Result := Longint(Jmp) + Jmp.distance + 5
+    Result := Pointer(INT_PTR(Jmp) + Jmp.distance + 5)
   else
   if Jmp.opCode = $EB then
-    Result := Longint(Jmp) + ShortInt(jmp.distance) + 2
+    Result := Pointer(INT_PTR(Jmp) + ShortInt(Jmp.distance) + 2)
   else
-    Result := 0;
-  if (Result <> 0) and (PJmpTable(Result).OPCode = $25FF) then
-    if not IsBadReadPtr(PJmpTable(Result).Ptr, 4) then
-      Result := PDWORD(PJmpTable(Result).Ptr)^;
+    Result := nil;
+  if (Result <> nil) and (PJmpTable(Result).OPCode = $25FF) then
+    if not IsBadReadPtr(PJmpTable(Result).Ptr, SizeOf(Pointer)) then
+      Result := Pointer(PDWORD_PTR(PJmpTable(Result).Ptr)^);
 end;
 
 //=== { TJclExceptFrame } ====================================================
@@ -4491,16 +4586,16 @@ end;
 
 procedure TJclExceptFrame.DoDetermineFrameKind;
 var
-  Dest: Longint;
+  Dest: Pointer;
   LocInfo: TJclLocationInfo;
 begin
   FFrameKind := efkUnknown;
   if FExcFrame <> nil then
   begin
     Dest := GetJmpDest(@ExcFrame.desc.Jmp);
-    if Dest <> 0 then
+    if Dest <> nil then
     begin
-      LocInfo := GetLocationInfo(Pointer(Dest));
+      LocInfo := GetLocationInfo(Dest);
       if CompareText(LocInfo.UnitName, 'system') = 0 then
       begin
         if CompareText(LocInfo.ProcedureName, '@HandleAnyException') = 0 then
@@ -4535,17 +4630,17 @@ begin
   if not Result and (FrameKind = efkOnException) then
   begin
     I := 0;
-    VTable := Pointer(Integer(ExceptObj.ClassType) + vmtSelfPtr);
+    VTable := Pointer(INT_PTR(ExceptObj.ClassType) + vmtSelfPtr);
     while (I < ExcFrame.Desc.Cnt) and not Result and (VTable <> nil) do
     begin
       Result := (ExcFrame.Desc.ExcTab[I].VTable = nil) or
         (ExcFrame.Desc.ExcTab[I].VTable = VTable);
       if not Result then
       begin
-        Move(PChar(VTable)[vmtParent - vmtSelfPtr], VTable, 4);
+        Move(PAnsiChar(VTable)[vmtParent - vmtSelfPtr], VTable, 4);
         if VTable = nil then
         begin
-          VTable := Pointer(Integer(ExceptObj.ClassType) + vmtSelfPtr);
+          VTable := Pointer(INT_PTR(ExceptObj.ClassType) + vmtSelfPtr);
           Inc(I);
         end;
       end;
@@ -4556,7 +4651,7 @@ begin
   else
   if Result then
   begin
-    HandlerAt := Pointer(GetJmpDest(@ExcFrame.Desc.Instructions));
+    HandlerAt := GetJmpDest(@ExcFrame.Desc.Instructions);
     if HandlerAt = nil then
       HandlerAt := @ExcFrame.Desc.Instructions;
   end
@@ -4568,13 +4663,13 @@ function TJclExceptFrame.CodeLocation: Pointer;
 begin
   if FrameKind <> efkUnknown then
   begin
-    Result := Pointer(GetJmpDest(PJmpInstruction(DWORD(@ExcFrame.Desc.Instructions))));
+    Result := GetJmpDest(PJmpInstruction(DWORD(@ExcFrame.Desc.Instructions)));
     if Result = nil then
       Result := @ExcFrame.Desc.Instructions;
   end
   else
   begin
-    Result := Pointer(GetJmpDest(PJmpInstruction(DWORD(@ExcFrame.Desc))));
+    Result := GetJmpDest(PJmpInstruction(DWORD(@ExcFrame.Desc)));
     if Result = nil then
       Result := @ExcFrame.Desc;
   end;
@@ -4611,7 +4706,7 @@ begin
   try
     Level := 0;
     FS := GetFS;
-    while Longint(FS) <> -1 do
+    while INT_PTR(FS) <> -1 do
     begin
       if (Level >= IgnoreLevels) and ValidCodeAddr(DWORD(FS.Desc), ModulesList) then
         AddFrame(FS);
@@ -5065,7 +5160,7 @@ begin
   begin
     // Win9x uses thunk pointer outside the module when under a debugger
     P := GetProcAddress(KernelHandle, 'GetProcAddress');
-    Result := DWORD(P) < KernelHandle;
+    Result := DWORD_PTR(P) < KernelHandle;
   end;
 end;
 

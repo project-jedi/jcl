@@ -114,9 +114,9 @@ function MimeDecodePartial(const InputBuffer; const InputByteCount: Cardinal; ou
 function MimeDecodePartialEnd(out OutputBuffer; const ByteBuffer: Cardinal;
   const ByteBufferSpace: Cardinal): Cardinal;
 {$ENDIF CLR}
-procedure MimeEncodeFile(const InputFileName, OutputFileName: AnsiString);
-procedure MimeEncodeFileNoCRLF(const InputFileName, OutputFileName: AnsiString);
-procedure MimeDecodeFile(const InputFileName, OutputFileName: AnsiString);
+procedure MimeEncodeFile(const InputFileName, OutputFileName: TFileName);
+procedure MimeEncodeFileNoCRLF(const InputFileName, OutputFileName: TFileName);
+procedure MimeDecodeFile(const InputFileName, OutputFileName: TFileName);
 procedure MimeEncodeStream(const InputStream: TStream; const OutputStream: TStream);
 procedure MimeEncodeStreamNoCRLF(const InputStream: TStream; const OutputStream: TStream);
 procedure MimeDecodeStream(const InputStream: TStream; const OutputStream: TStream);
@@ -839,7 +839,7 @@ begin
 end;
 
 // File Encoding & Decoding
-procedure MimeEncodeFile(const InputFileName, OutputFileName: AnsiString);
+procedure MimeEncodeFile(const InputFileName, OutputFileName: TFileName);
 var
   InputStream, OutputStream: TFileStream;
 begin
@@ -856,7 +856,7 @@ begin
   end;
 end;
 
-procedure MimeEncodeFileNoCRLF(const InputFileName, OutputFileName: AnsiString);
+procedure MimeEncodeFileNoCRLF(const InputFileName, OutputFileName: TFileName);
 var
   InputStream, OutputStream: TFileStream;
 begin
@@ -873,7 +873,7 @@ begin
   end;
 end;
 
-procedure MimeDecodeFile(const InputFileName, OutputFileName: AnsiString);
+procedure MimeDecodeFile(const InputFileName, OutputFileName: TFileName);
 var
   InputStream, OutputStream: TFileStream;
 begin

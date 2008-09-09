@@ -61,7 +61,7 @@ begin
   raise EJclOperationNotSupportedError.Create;
 end;
 
-function BASEITRCLASSNAME.Equals(const AIterator: STDITRINTERFACENAME): Boolean;
+function BASEITRCLASSNAME.IteratorEquals(const AIterator: STDITRINTERFACENAME): Boolean;
 var
   Obj: TObject;
   ItrObj: BASEITRCLASSNAME;
@@ -620,16 +620,6 @@ begin
 end;
 
 procedure SELFCLASSNAME.AssignDataTo(Dest: TJclAbstractContainerBase);
-  function CloneNode(Node, Parent: NODETYPENAME): NODETYPENAME;
-  begin
-    Result := NODETYPENAME.Create;
-    Result.Value := Node.Value;
-    Result.Parent := Parent;
-    if Node.Left <> nil then
-      Result.Left := CloneNode(Node.Left, Result); // recursive call
-    if Node.Right <> nil then
-      Result.Right := CloneNode(Node.Right, Result); // recursive call
-  end;
 var
   ADest: SELFCLASSNAME;
   ACollection: COLLECTIONINTERFACENAME;
@@ -670,6 +660,24 @@ begin
       if (FMaxDepth > FAutoPackParameter) and (((1 shl (FMaxDepth - FAutoPackParameter)) - 1) > FSize) then
         Pack;
   end;
+end;
+
+function SELFCLASSNAME.BuildTree(const LeafArray: array of NODETYPENAME; Left, Right: Integer; Parent: NODETYPENAME;
+  Offset: Integer): NODETYPENAME;
+var
+  Middle: Integer;
+begin
+  Middle := (Left + Right + Offset) shr 1;
+  Result := LeafArray[Middle];
+  Result.Parent := Parent;
+  if Middle > Left then
+    Result.Left := BuildTree(LeafArray, Left, Middle - 1, Result, 0)
+  else
+    Result.Left := nil;
+  if Middle < Right then
+    Result.Right := BuildTree(LeafArray, Middle + 1, Right, Result, 1)
+  else
+    Result.Right := nil;
 end;
 
 procedure SELFCLASSNAME.Clear;
@@ -726,6 +734,17 @@ begin
   {$JPPEXPANDMACRO WRITEEND}
 end;
 
+function SELFCLASSNAME.CloneNode(Node, Parent: NODETYPENAME): NODETYPENAME;
+begin
+  Result := NODETYPENAME.Create;
+  Result.Value := Node.Value;
+  Result.Parent := Parent;
+  if Node.Left <> nil then
+    Result.Left := CloneNode(Node.Left, Result); // recursive call
+  if Node.Right <> nil then
+    Result.Right := CloneNode(Node.Right, Result); // recursive call
+end;
+
 function SELFCLASSNAME.Contains(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
 var
   Comp: Integer;
@@ -765,8 +784,7 @@ begin
   {$JPPEXPANDMACRO READEND}
 end;
 
-{$JPPEXPANDMACRO CREATEEMPTYCONTAINER}
-function SELFCLASSNAME.Equals(const ACollection: COLLECTIONINTERFACENAME): Boolean;
+function SELFCLASSNAME.CollectionEquals(const ACollection: COLLECTIONINTERFACENAME): Boolean;
 var
   It, ItSelf: STDITRINTERFACENAME;
 begin
@@ -890,28 +908,8 @@ begin
 end;
 
 procedure SELFCLASSNAME.Pack;
-type
-  TLeafArray = array of NODETYPENAME;
-
-  function BuildTree(var LeafArray: TLeafArray; Left, Right: Integer; Parent: NODETYPENAME;
-    Offset: Integer): NODETYPENAME;
-  var
-    Middle: Integer;
-  begin
-    Middle := (Left + Right + Offset) shr 1;
-    Result := LeafArray[Middle];
-    Result.Parent := Parent;
-    if Middle > Left then
-      Result.Left := BuildTree(LeafArray, Left, Middle - 1, Result, 0)
-    else
-      Result.Left := nil;
-    if Middle < Right then
-      Result.Right := BuildTree(LeafArray, Middle + 1, Right, Result, 1)
-    else
-      Result.Right := nil;
-  end;
 var
-  LeafArray: TLeafArray;
+  LeafArray: array of NODETYPENAME;
   ANode, BNode: NODETYPENAME;
   Index: Integer;
 begin

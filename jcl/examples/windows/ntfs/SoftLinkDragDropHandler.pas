@@ -50,7 +50,8 @@ resourcestring
   SRegKeyDir = 'Directory\shellex\DragDropHandlers\JEDISoftLinks';
   SRegKeyDrive = 'Drive\shellex\DragDropHandlers\JEDISoftLinks';
   SMenuItem = 'Create junction here';
-  SMenuHelp = 'Create an NTFS junction point';
+const
+  SMenuHelp = AnsiString('Create an NTFS junction point');
 
 const
   Prefix = '~';
@@ -177,7 +178,7 @@ begin
   begin
     if (uType = GCS_HELPTEXT) then
       // return help string for menu item
-      StrCopy(pszName, PChar(SMenuHelp));
+      StrCopy(pszName, PAnsiChar(SMenuHelp));
     Result := NOERROR;
   end
   else

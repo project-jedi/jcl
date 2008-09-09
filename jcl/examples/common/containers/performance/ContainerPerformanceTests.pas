@@ -309,11 +309,11 @@ begin
     Start := Now;
     Map := TJclAnsiStrAnsiStrHashMap.Create(256);
     for I := 0 to 100000 do
-      Map.PutValue(GenId(123), '');
+      Map.PutValue(AnsiString(GenId(123)), '');
     Results[1] := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
     Start := Now;
     for I := 0 to 100000 do
-      Res := Map.GetValue(GenId(123));
+      Res := string(Map.GetValue(AnsiString(GenId(123))));
     Results[2] := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
     Start := Now;
     Map.Clear;

@@ -51,6 +51,9 @@ uses
 function IntfSimpleCompare(const Obj1, Obj2: IInterface): Integer;
 function AnsiStrSimpleCompare(const Obj1, Obj2: AnsiString): Integer;
 function WideStrSimpleCompare(const Obj1, Obj2: WideString): Integer;
+{$IFDEF SUPPORTS_UNICODE_STRING}
+function UnicodeStrSimpleCompare(const Obj1, Obj2: UnicodeString): Integer;
+{$ENDIF SUPPORTS_UNICODE_STRING}
 function StrSimpleCompare(const Obj1, Obj2: string): Integer;
 function SingleSimpleCompare(const Obj1, Obj2: Single): Integer;
 function DoubleSimpleCompare(const Obj1, Obj2: Double): Integer;
@@ -70,6 +73,9 @@ function IntegerCompare(Obj1, Obj2: TObject): Integer;
 function IntfSimpleEqualityCompare(const Obj1, Obj2: IInterface): Boolean;
 function AnsiStrSimpleEqualityCompare(const Obj1, Obj2: AnsiString): Boolean;
 function WideStrSimpleEqualityCompare(const Obj1, Obj2: WideString): Boolean;
+{$IFDEF SUPPORTS_UNICODE_STRING}
+function UnicodeStrSimpleEqualityCompare(const Obj1, Obj2: UnicodeString): Boolean;
+{$ENDIF SUPPORTS_UNICODE_STRING}
 function StrSimpleEqualityCompare(const Obj1, Obj2: string): Boolean;
 function SingleSimpleEqualityCompare(const Obj1, Obj2: Single): Boolean;
 function DoubleSimpleEqualityCompare(const Obj1, Obj2: Double): Boolean;
@@ -87,6 +93,9 @@ function SimpleEqualityCompare(Obj1, Obj2: TObject): Boolean;
 procedure Apply(const First: IJclIntfIterator; Count: Integer; F: TIntfApplyFunction); overload;
 procedure Apply(const First: IJclAnsiStrIterator; Count: Integer; F: TAnsiStrApplyFunction); overload;
 procedure Apply(const First: IJclWideStrIterator; Count: Integer; F: TWideStrApplyFunction); overload;
+{$IFDEF SUPPORTS_UNICODE_STRING}
+procedure Apply(const First: IJclUnicodeStrIterator; Count: Integer; F: TUnicodeStrApplyFunction); overload;
+{$ENDIF SUPPORTS_UNICODE_STRING}
 procedure Apply(const First: IJclSingleIterator; Count: Integer; F: TSingleApplyFunction); overload;
 procedure Apply(const First: IJclDoubleIterator; Count: Integer; F: TDoubleApplyFunction); overload;
 procedure Apply(const First: IJclExtendedIterator; Count: Integer; F: TExtendedApplyFunction); overload;
@@ -111,6 +120,12 @@ function Find(const First: IJclWideStrIterator; Count: Integer; const AString: W
   AComparator: TWideStrCompare): IJclWideStrIterator; overload;
 function Find(const First: IJclWideStrIterator; Count: Integer; const AString: WideString;
   AEqualityComparator: TWideStrEqualityCompare): IJclWideStrIterator; overload;
+{$IFDEF SUPPORTS_UNICODE_STRING}
+function Find(const First: IJclUnicodeStrIterator; Count: Integer; const AString: UnicodeString;
+  AComparator: TUnicodeStrCompare): IJclUnicodeStrIterator; overload;
+function Find(const First: IJclUnicodeStrIterator; Count: Integer; const AString: UnicodeString;
+  AEqualityComparator: TUnicodeStrEqualityCompare): IJclUnicodeStrIterator; overload;
+{$ENDIF SUPPORTS_UNICODE_STRING}
 function Find(const First: IJclSingleIterator; Count: Integer; const AValue: Single;
   AComparator: TSingleCompare): IJclSingleIterator; overload;
 function Find(const First: IJclSingleIterator; Count: Integer; const AValue: Single;
@@ -159,6 +174,12 @@ function CountObject(const First: IJclWideStrIterator; Count: Integer;
   const AString: WideString; AComparator: TWideStrCompare): Integer; overload;
 function CountObject(const First: IJclWideStrIterator; Count: Integer;
   const AString: WideString; AEqualityComparator: TWideStrEqualityCompare): Integer; overload;
+{$IFDEF SUPPORTS_UNICODE_STRING}
+function CountObject(const First: IJclUnicodeStrIterator; Count: Integer;
+  const AString: UnicodeString; AComparator: TUnicodeStrCompare): Integer; overload;
+function CountObject(const First: IJclUnicodeStrIterator; Count: Integer;
+  const AString: UnicodeString; AEqualityComparator: TUnicodeStrEqualityCompare): Integer; overload;
+{$ENDIF SUPPORTS_UNICODE_STRING}
 function CountObject(const First: IJclSingleIterator; Count: Integer;
   const AValue: Single; AComparator: TSingleCompare): Integer; overload;
 function CountObject(const First: IJclSingleIterator; Count: Integer;
@@ -201,6 +222,10 @@ procedure Copy(const First: IJclAnsiStrIterator; Count: Integer;
   const Output: IJclAnsiStrIterator); overload;
 procedure Copy(const First: IJclWideStrIterator; Count: Integer;
   const Output: IJclWideStrIterator); overload;
+{$IFDEF SUPPORTS_UNICODE_STRING}
+procedure Copy(const First: IJclUnicodeStrIterator; Count: Integer;
+  const Output: IJclUnicodeStrIterator); overload;
+{$ENDIF SUPPORTS_UNICODE_STRING}
 procedure Copy(const First: IJclSingleIterator; Count: Integer;
   const Output: IJclSingleIterator); overload;
 procedure Copy(const First: IJclDoubleIterator; Count: Integer;
@@ -224,6 +249,9 @@ procedure Copy(const First: IJclIterator; Count: Integer;
 procedure Generate(const List: IJclIntfList; Count: Integer; const AInterface: IInterface); overload;
 procedure Generate(const List: IJclAnsiStrList; Count: Integer; const AString: AnsiString); overload;
 procedure Generate(const List: IJclWideStrList; Count: Integer; const AString: WideString); overload;
+{$IFDEF SUPPORTS_UNICODE_STRING}
+procedure Generate(const List: IJclUnicodeStrList; Count: Integer; const AString: UnicodeString); overload;
+{$ENDIF SUPPORTS_UNICODE_STRING}
 procedure Generate(const List: IJclSingleList; Count: Integer; const AValue: Single); overload;
 procedure Generate(const List: IJclDoubleList; Count: Integer; const AValue: Double); overload;
 procedure Generate(const List: IJclExtendedList; Count: Integer; const AValue: Extended); overload;
@@ -239,6 +267,9 @@ procedure Generate(const List: IJclList; Count: Integer; AObject: TObject); over
 procedure Fill(const First: IJclIntfIterator; Count: Integer; const AInterface: IInterface); overload;
 procedure Fill(const First: IJclAnsiStrIterator; Count: Integer; const AString: AnsiString); overload;
 procedure Fill(const First: IJclWideStrIterator; Count: Integer; const AString: WideString); overload;
+{$IFDEF SUPPORTS_UNICODE_STRING}
+procedure Fill(const First: IJclUnicodeStrIterator; Count: Integer; const AString: UnicodeString); overload;
+{$ENDIF SUPPORTS_UNICODE_STRING}
 procedure Fill(const First: IJclSingleIterator; Count: Integer; const AValue: Single); overload;
 procedure Fill(const First: IJclDoubleIterator; Count: Integer; const AValue: Double); overload;
 procedure Fill(const First: IJclExtendedIterator; Count: Integer; const AValue: Extended); overload;
@@ -254,6 +285,9 @@ procedure Fill(const First: IJclIterator; Count: Integer; AObject: TObject); ove
 procedure Reverse(const First, Last: IJclIntfIterator); overload;
 procedure Reverse(const First, Last: IJclAnsiStrIterator); overload;
 procedure Reverse(const First, Last: IJclWideStrIterator); overload;
+{$IFDEF SUPPORTS_UNICODE_STRING}
+procedure Reverse(const First, Last: IJclUnicodeStrIterator); overload;
+{$ENDIF SUPPORTS_UNICODE_STRING}
 procedure Reverse(const First, Last: IJclSingleIterator); overload;
 procedure Reverse(const First, Last: IJclDoubleIterator); overload;
 procedure Reverse(const First, Last: IJclExtendedIterator); overload;
@@ -268,6 +302,9 @@ procedure Reverse(const First, Last: IJclIterator); overload;
 procedure QuickSort(const AList: IJclIntfList; L, R: Integer; AComparator: TIntfCompare); overload;
 procedure QuickSort(const AList: IJclAnsiStrList; L, R: Integer; AComparator: TAnsiStrCompare); overload;
 procedure QuickSort(const AList: IJclWideStrList; L, R: Integer; AComparator: TWideStrCompare); overload;
+{$IFDEF SUPPORTS_UNICODE_STRING}
+procedure QuickSort(const AList: IJclUnicodeStrList; L, R: Integer; AComparator: TUnicodeStrCompare); overload;
+{$ENDIF SUPPORTS_UNICODE_STRING}
 procedure QuickSort(const AList: IJclSingleList; L, R: Integer; AComparator: TSingleCompare); overload;
 procedure QuickSort(const AList: IJclDoubleList; L, R: Integer; AComparator: TDoubleCompare); overload;
 procedure QuickSort(const AList: IJclExtendedList; L, R: Integer; AComparator: TExtendedCompare); overload;
@@ -283,6 +320,9 @@ var
   IntfSortProc: TIntfSortProc = QuickSort;
   AnsiStrSortProc: TAnsiStrSortProc = QuickSort;
   WideStrSortProc: TWideStrSortProc = QuickSort;
+  {$IFDEF SUPPORTS_UNICODE_STRING}
+  UnicodeStrSortProc: TUnicodeStrSortProc = QuickSort;
+  {$ENDIF SUPPORTS_UNICODE_STRING}
   SingleSortProc: TSingleSortProc = QuickSort;
   DoubleSortProc: TDoubleSortProc = QuickSort;
   ExtendedSortProc: TExtendedSortProc = QuickSort;
@@ -298,6 +338,9 @@ var
 procedure Sort(const AList: IJclIntfList; First, Last: Integer; AComparator: TIntfCompare); overload;
 procedure Sort(const AList: IJclAnsiStrList; First, Last: Integer; AComparator: TAnsiStrCompare); overload;
 procedure Sort(const AList: IJclWideStrList; First, Last: Integer; AComparator: TWideStrCompare); overload;
+{$IFDEF SUPPORTS_UNICODE_STRING}
+procedure Sort(const AList: IJclUnicodeStrList; First, Last: Integer; AComparator: TUnicodeStrCompare); overload;
+{$ENDIF SUPPORTS_UNICODE_STRING}
 procedure Sort(const AList: IJclSingleList; First, Last: Integer; AComparator: TSingleCompare); overload;
 procedure Sort(const AList: IJclDoubleList; First, Last: Integer; AComparator: TDoubleCompare); overload;
 procedure Sort(const AList: IJclExtendedList; First, Last: Integer; AComparator: TExtendedCompare); overload;
@@ -349,6 +392,9 @@ const
 implementation
 
 uses
+  {$IFDEF HAS_UNIT_ANSISTRINGS}
+  AnsiStrings,
+  {$ENDIF HAS_UNIT_ANSISTRINGS}
   {$IFNDEF RTL140_UP}
   JclWideStrings,
   {$ENDIF ~RTL140_UP}
@@ -377,13 +423,24 @@ begin
   Result := WideCompareStr(Obj1, Obj2);
 end;
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+function UnicodeStrSimpleCompare(const Obj1, Obj2: UnicodeString): Integer;
+begin
+  Result := CompareStr(Obj1, Obj2);
+end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
 function StrSimpleCompare(const Obj1, Obj2: string): Integer;
 begin
   case SizeOf(Obj1[1]) of
     SizeOf(AnsiChar):
       Result := CompareStr(Obj1, Obj2);
     SizeOf(WideChar):
+      {$IFDEF SUPPORTS_UNICODE}
+      Result := CompareStr(Obj1, Obj2);
+      {$ELSE ~SUPPORTS_UNICODE}
       Result := WideCompareStr(Obj1, Obj2);
+      {$ENDIF ~SUPPORTS_UNICODE}
   else
     raise EJclOperationNotSupportedError.Create;
   end;
@@ -518,6 +575,13 @@ begin
   Result := WideCompareStr(Obj1, Obj2) = 0;
 end;
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+function UnicodeStrSimpleEqualityCompare(const Obj1, Obj2: UnicodeString): Boolean;
+begin
+  Result := CompareStr(Obj1, Obj2) = 0;
+end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
 function StrSimpleEqualityCompare(const Obj1, Obj2: string): Boolean;
 begin
   case SizeOf(Obj1[1]) of
@@ -609,6 +673,19 @@ begin
     else
       Break;
 end;
+
+{$IFDEF SUPPORTS_UNICODE_STRING}
+procedure Apply(const First: IJclUnicodeStrIterator; Count: Integer; F: TUnicodeStrApplyFunction);
+var
+  I: Integer;
+begin
+  for I := Count - 1 downto 0 do
+    if First.HasNext then
+      First.SetString(F(First.Next))
+    else
+      Break;
+end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
 
 procedure Apply(const First: IJclSingleIterator; Count: Integer; F: TSingleApplyFunction);
 var
@@ -813,6 +890,46 @@ begin
     else
       Break;
 end;
+
+{$IFDEF SUPPORTS_UNICODE_STRING}
+function Find(const First: IJclUnicodeStrIterator; Count: Integer;
+  const AString: UnicodeString; AComparator: TUnicodeStrCompare): IJclUnicodeStrIterator;
+var
+  I: Integer;
+begin
+  Result := nil;
+  for I := Count - 1 downto 0 do
+    if First.HasNext then
+    begin
+      if AComparator(First.Next, AString) = 0 then
+      begin
+        Result := First;
+        Break;
+      end;
+    end
+    else
+      Break;
+end;
+
+function Find(const First: IJclUnicodeStrIterator; Count: Integer;
+  const AString: UnicodeString; AEqualityComparator: TUnicodeStrEqualityCompare): IJclUnicodeStrIterator;
+var
+  I: Integer;
+begin
+  Result := nil;
+  for I := Count - 1 downto 0 do
+    if First.HasNext then
+    begin
+      if AEqualityComparator(First.Next, AString) then
+      begin
+        Result := First;
+        Break;
+      end;
+    end
+    else
+      Break;
+end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
 
 function Find(const First: IJclSingleIterator; Count: Integer;
   const AValue: Single; AComparator: TSingleCompare): IJclSingleIterator;
@@ -1198,6 +1315,34 @@ begin
       Break;
 end;
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+function CountObject(const First: IJclUnicodeStrIterator; Count: Integer;
+  const AString: UnicodeString; AComparator: TUnicodeStrCompare): Integer;
+var
+  I: Integer;
+begin
+  Result := 0;
+  for I := Count - 1 downto 0 do
+    if First.HasNext then
+      Inc(Result, Ord(AComparator(First.Next, AString) = 0))
+    else
+      Break;
+end;
+
+function CountObject(const First: IJclUnicodeStrIterator; Count: Integer;
+  const AString: UnicodeString; AEqualityComparator: TUnicodeStrEqualityCompare): Integer;
+var
+  I: Integer;
+begin
+  Result := 0;
+  for I := Count - 1 downto 0 do
+    if First.HasNext then
+      Inc(Result, Ord(AEqualityComparator(First.Next, AString)))
+    else
+      Break;
+end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
 function CountObject(const First: IJclSingleIterator; Count: Integer;
   const AValue: Single; AComparator: TSingleCompare): Integer;
 var
@@ -1453,6 +1598,23 @@ begin
       Break;
 end;
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+procedure Copy(const First: IJclUnicodeStrIterator; Count: Integer;
+  const Output: IJclUnicodeStrIterator);
+var
+  I: Integer;
+begin
+  for I := Count - 1 downto 0 do
+    if Output.HasNext and First.HasNext then
+    begin
+      Output.Next;
+      Output.SetString(First.Next);
+    end
+    else
+      Break;
+end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
 procedure Copy(const First: IJclSingleIterator; Count: Integer;
   const Output: IJclSingleIterator);
 var
@@ -1605,6 +1767,18 @@ begin
     List.Add(AString);
 end;
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+procedure Generate(const List: IJclUnicodeStrList; Count: Integer;
+  const AString: UnicodeString);
+var
+  I: Integer;
+begin
+  List.Clear;
+  for I := 0 to Count - 1 do
+    List.Add(AString);
+end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
 procedure Generate(const List: IJclSingleList; Count: Integer;
   const AValue: Single);
 var
@@ -1731,6 +1905,23 @@ begin
     else
       Break;
 end;
+
+{$IFDEF SUPPORTS_UNICODE_STRING}
+procedure Fill(const First: IJclUnicodeStrIterator; Count: Integer;
+  const AString: UnicodeString);
+var
+  I: Integer;
+begin
+  for I := Count - 1 downto 0 do
+    if First.HasNext then
+    begin
+      First.Next;
+      First.SetString(AString);
+    end
+    else
+      Break;
+end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
 
 procedure Fill(const First: IJclSingleIterator; Count: Integer;
   const AValue: Single);
@@ -1904,6 +2095,25 @@ begin
     Last.SetString(Obj);
   end;
 end;
+
+{$IFDEF SUPPORTS_UNICODE_STRING}
+procedure Reverse(const First, Last: IJclUnicodeStrIterator);
+var
+  Obj: UnicodeString;
+begin
+  if not First.HasNext then
+    Exit;
+  if not Last.HasPrevious then
+    Exit;
+  while First.NextIndex < Last.PreviousIndex do
+  begin
+    Obj := First.Next;
+    Last.Previous;
+    First.SetString(Last.GetString);
+    Last.SetString(Obj);
+  end;
+end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
 
 procedure Reverse(const First, Last: IJclSingleIterator);
 var
@@ -2150,6 +2360,44 @@ begin
     L := I;
   until I >= R;
 end;
+
+{$IFDEF SUPPORTS_UNICODE_STRING}
+procedure QuickSort(const AList: IJclUnicodeStrList; L, R: Integer;
+  AComparator: TUnicodeStrCompare);
+var
+  I, J, P: Integer;
+  Obj: UnicodeString;
+begin
+  repeat
+    I := L;
+    J := R;
+    P := (L + R) shr 1;
+    repeat
+      Obj := AList.GetString(P);
+      while AComparator(AList.GetString(I), Obj) < 0 do
+        Inc(I);
+      while AComparator(AList.GetString(J), Obj) > 0 do
+        Dec(J);
+      if I <= J then
+      begin
+        Obj := AList.GetString(I);
+        AList.SetString(I, AList.GetString(J));
+        AList.SetString(J, Obj);
+        if P = I then
+          P := J
+        else
+        if P = J then
+          P := I;
+        Inc(I);
+        Dec(J);
+      end;
+    until I > J;
+    if L < J then
+      QuickSort(AList, L, J, AComparator);
+    L := I;
+  until I >= R;
+end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
 
 procedure QuickSort(const AList: IJclSingleList; L, R: Integer;
   AComparator: TSingleCompare);
@@ -2455,6 +2703,13 @@ procedure Sort(const AList: IJclWideStrList; First, Last: Integer; AComparator: 
 begin
   WideStrSortProc(AList, First, Last, AComparator);
 end;
+
+{$IFDEF SUPPORTS_UNICODE_STRING}
+procedure Sort(const AList: IJclUnicodeStrList; First, Last: Integer; AComparator: TUnicodeStrCompare);
+begin
+  UnicodeStrSortProc(AList, First, Last, AComparator);
+end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
 
 procedure Sort(const AList: IJclSingleList; First, Last: Integer; AComparator: TSingleCompare);
 begin

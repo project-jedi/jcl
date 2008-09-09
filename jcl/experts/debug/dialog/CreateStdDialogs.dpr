@@ -34,30 +34,34 @@ uses
   SysUtils,
   Classes,
   JclBorlandTools,
-  JclOtaTemplates in 'JclOtaTemplates.pas',
-  JclOtaExcDlgRepository in 'JclOtaExcDlgRepository.pas';
+  JclOtaTemplates in '..\..\repository\JclOtaTemplates.pas',
+  JclOtaExcDlgRepository in '..\..\repository\JclOtaExcDlgRepository.pas';
 
-function LoadTemplate(const FileName: string): string;
+function LoadTemplate(const FileName: TFileName): string;
 var
   AFileStream: TFileStream;
+  Buffer: AnsiString;
 begin
   AFileStream := TFileStream.Create(FileName, fmOpenRead, fmShareDenyWrite);
   try
-    SetLength(Result, AFileStream.Size);
-    AFileStream.ReadBuffer(Result[1], AFileStream.Size);
+    SetLength(Buffer, AFileStream.Size);
+    AFileStream.ReadBuffer(Buffer[1], AFileStream.Size);
+    Result := string(Buffer);
   finally
     AFileStream.Free;
   end;
 end;
 
-procedure SaveFile(const FileName, FileContent: string);
+procedure SaveFile(const FileName: TFileName; const FileContent: string);
 var
   AFileStream: TFileStream;
+  Buffer: AnsiString;
 begin
   AFileStream := TFileStream.Create(FileName, fmOpenWrite, fmShareExclusive);
   try
+    Buffer := AnsiString(FileContent);
     AFileStream.Size := 0;
-    AFileStream.Write(FileContent[1], Length(FileContent));
+    AFileStream.Write(Buffer[1], Length(Buffer));
   finally
     AFileStream.Free;
   end;

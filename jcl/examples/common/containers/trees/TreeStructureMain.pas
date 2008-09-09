@@ -58,8 +58,8 @@ type
     procedure ActionRemoveSelectedUpdate(Sender: TObject);
     procedure ActionTestTreeExecute(Sender: TObject);
   private
-    FTree: IJclAnsiStrTree;
-    function GetSelectedIterator: IJclAnsiStrTreeIterator;
+    FTree: IJclWideStrTree;
+    function GetSelectedIterator: IJclWideStrTreeIterator;
     procedure PrintTree;
   public
   end;
@@ -81,7 +81,7 @@ begin
   begin
     ActionGeneralPurposeTree.Checked := False;
 
-    FTree := TJclAnsiStrBinaryTree.Create(nil);
+    FTree := TJclWideStrBinaryTree.Create(nil);
 
     ActionCaseSensitiveExecute(ActionCaseSensitive);
     ActionRemoveSingleExecute(ActionRemoveSingle);
@@ -102,7 +102,7 @@ begin
   begin
     ActionBinaryTree.Checked := False;
 
-    FTree := TJclAnsiStrTree.Create;
+    FTree := TJclWideStrTree.Create;
 
     ActionCaseSensitiveExecute(ActionCaseSensitive);
     ActionRemoveSingleExecute(ActionRemoveSingle);
@@ -115,7 +115,7 @@ end;
 procedure TForm1.ActionGenerateRandomExecute(Sender: TObject);
   var
     CurrentItem: Integer;
-  function GenerateItem: AnsiString;
+  function GenerateItem: WideString;
   begin
     if FTree.Duplicates = dupAccept then
       Result := Format('Item %.3d', [Random(10)])
@@ -126,11 +126,11 @@ procedure TForm1.ActionGenerateRandomExecute(Sender: TObject);
     end;
   end;
 
-  procedure GenerateRandomChild(const AIterator: IJclAnsiStrIterator; Count: Integer);
+  procedure GenerateRandomChild(const AIterator: IJclWideStrIterator; Count: Integer);
   begin
     while Count > 0 do
     begin
-      (AIterator as IJclAnsiStrTreeIterator).AddChild(GenerateItem);
+      (AIterator as IJclWideStrTreeIterator).AddChild(GenerateItem);
       Dec(Count);
     end;
   end;
@@ -145,7 +145,7 @@ procedure TForm1.ActionGenerateRandomExecute(Sender: TObject);
   end;
 var
   Index1, Index2: Integer;
-  Iterator0, Iterator1, Iterator2: IJclAnsiStrTreeIterator;
+  Iterator0, Iterator1, Iterator2: IJclWideStrTreeIterator;
 begin
   CurrentItem := 0;
   FTree.Clear;
@@ -157,12 +157,12 @@ begin
     Iterator0 := FTree.Root;
     for Index1 := 0 to Iterator0.ChildrenCount - 1 do
     begin
-      Iterator1 := (Iterator0 as IJclIntfCloneable).Clone as IJclAnsiStrTreeIterator;
+      Iterator1 := (Iterator0 as IJclIntfCloneable).IntfClone as IJclWideStrTreeIterator;
       Iterator1.GetChild(Index1);
       GenerateRandomChild(Iterator1, 5);
       for Index2 := 0 to Iterator1.ChildrenCount - 1 do
       begin
-        Iterator2 := (Iterator1 as IJclIntfCloneable).Clone as IJclAnsiStrTreeIterator;
+        Iterator2 := (Iterator1 as IJclIntfCloneable).IntfClone as IJclWideStrTreeIterator;
         Iterator2.GetChild(Index2);
         GenerateRandomChild(Iterator2, 5);
       end;
@@ -204,31 +204,31 @@ begin
 end;
 
 procedure TForm1.ActionTestTreeExecute(Sender: TObject);
-  procedure CheckNode(const AIterator: IJclAnsiStrTreeIterator);
+  procedure CheckNode(const AIterator: IJclWideStrTreeIterator);
   var
     Index: Integer;
-    ChildIterator, ParentIterator: IJclAnsiStrTreeIterator;
+    ChildIterator, ParentIterator: IJclWideStrTreeIterator;
   begin
     for Index := 0 to AIterator.ChildrenCount - 1 do
     begin
-      ChildIterator := (AIterator as IJclIntfCloneable).Clone as IJclAnsiStrTreeIterator;
+      ChildIterator := (AIterator as IJclIntfCloneable).IntfClone as IJclWideStrTreeIterator;
       ChildIterator.GetChild(Index);
 
       try
-        ParentIterator := (ChildIterator as IJclIntfCloneable).Clone as IJclAnsiStrTreeIterator;
+        ParentIterator := (ChildIterator as IJclIntfCloneable).IntfClone as IJclWideStrTreeIterator;
         ParentIterator.Parent;
 
-        if not AIterator.Equals(ParentIterator) then
-          ShowMessage('difference at parent of node ' + ChildIterator.GetString);
+        if not AIterator.IteratorEquals(ParentIterator) then
+          ShowMessage('difference at parent of node ' + string(ChildIterator.GetString));
       except
-        ShowMessage('error at parent of node ' + ChildIterator.GetString);
+        ShowMessage('error at parent of node ' + string(ChildIterator.GetString));
       end;
 
       CheckNode(ChildIterator);
     end;
   end;
 var
-  ARootIterator: IJclAnsiStrTreeIterator;
+  ARootIterator: IJclWideStrTreeIterator;
 begin
   ARootIterator := FTree.Root;
   ARootIterator.Next; // unlock
@@ -286,7 +286,7 @@ begin
   ActionGeneralPurposeTreeExecute(ActionGeneralPurposeTree);
 end;
 
-function TForm1.GetSelectedIterator: IJclAnsiStrTreeIterator;
+function TForm1.GetSelectedIterator: IJclWideStrTreeIterator;
 var
   Indexes: array of Integer;
   I: Integer;
@@ -310,23 +310,23 @@ begin
 end;
 
 procedure TForm1.PrintTree;
-  procedure ProcessNode(const AIterator: IJclAnsiStrTreeIterator; ANode: TTreeNode);
+  procedure ProcessNode(const AIterator: IJclWideStrTreeIterator; ANode: TTreeNode);
   var
     Index: Integer;
-    ChildIterator: IJclAnsiStrTreeIterator;
+    ChildIterator: IJclWideStrTreeIterator;
     ChildNode: TTreeNode;
   begin
-    ANode.Text := AIterator.GetString;
+    ANode.Text := string(AIterator.GetString);
     for Index := 0 to AIterator.ChildrenCount - 1 do
     begin
-      ChildIterator := (AIterator as IJclIntfCloneable).Clone as IJclAnsiStrTreeIterator;
+      ChildIterator := (AIterator as IJclIntfCloneable).IntfClone as IJclWideStrTreeIterator;
       ChildIterator.GetChild(Index);
       ChildNode := TreeViewResults.Items.AddChild(ANode, '');
       ProcessNode(ChildIterator, ChildNode);
     end;
   end;
 var
-  ARootIterator: IJclAnsiStrTreeIterator;
+  ARootIterator: IJclWideStrTreeIterator;
   ARootNode: TTreeNode;
 begin
   TreeViewResults.Items.Clear;

@@ -1,1 +1,1 @@
-This is the directory where object files for bzip (http://www.bzip.org) reside.
+This is the directory where object files for PCRE (http://www.pcre.org/) reside.

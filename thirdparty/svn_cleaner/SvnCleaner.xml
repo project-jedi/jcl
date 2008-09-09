@@ -68,7 +68,7 @@
         <value>text/html</value>
       </property>
     </setting>
-    <setting path="" mask="*.xml *.XML *.dproj *.DPROJ *.cproj *.CPROJ *.bpk *.BPK *.bpr *.BPR" recurse="yes" dironly="no">
+    <setting path="" mask="*.xml *.XML *.dproj *.DPROJ *.cproj *.CPROJ *.bpk *.BPK *.bpr *.BPR *.bdsproj *.groupproj" recurse="yes" dironly="no">
       <property name="svn:mime-type">
         <value>text/xml</value>
       </property>

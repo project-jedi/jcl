@@ -1,21 +1,23 @@
-(*$JPPDEFINEMACRO JCLBINARYTREEINT(NODETYPENAME, SELFCLASSNAME, ANCESTORCLASSNAME, COLLECTIONINTERFACENAME, TREEINTERFACENAME, STDITRINTERFACENAME, TREEITRINTERFACENAME,
-  INTERFACEADDITIONAL, PRIVATEADDITIONAL, PROTECTEDADDITIONAL, PUBLICADDITIONAL, CONSTRUCTORPARAMETERS, COLLECTIONFLAGS,
-  CONSTKEYWORD, PARAMETERNAME, TYPENAME)
+(*$JPPDEFINEMACRO JCLBINARYTREETYPESINT(NODETYPENAME, TYPENAME)
   NODETYPENAME = class
   public
     Value: TYPENAME;
     Left: NODETYPENAME;
     Right: NODETYPENAME;
     Parent: NODETYPENAME;
-  end;
-
+  end;*)
+(*$JPPDEFINEMACRO JCLBINARYTREEINT(NODETYPENAME, SELFCLASSNAME, ANCESTORCLASSNAME, COLLECTIONINTERFACENAME, TREEINTERFACENAME, STDITRINTERFACENAME, TREEITRINTERFACENAME,
+  INTERFACEADDITIONAL, SECTIONADDITIONAL, CONSTRUCTORPARAMETERS, COLLECTIONFLAGS, CONSTKEYWORD, PARAMETERNAME, TYPENAME)
   SELFCLASSNAME = class(ANCESTORCLASSNAME, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer,INTERFACEADDITIONAL
-    COLLECTIONINTERFACENAME, TREEINTERFACENAME)
+    COLLECTIONINTERFACENAME, TREEINTERFACENAME)SECTIONADDITIONAL
   private
     FMaxDepth: Integer;
     FRoot: NODETYPENAME;
-    FTraverseOrder: TJclTraverseOrder;PRIVATEADDITIONAL
+    FTraverseOrder: TJclTraverseOrder;
+    function BuildTree(const LeafArray: array of NODETYPENAME; Left, Right: Integer; Parent: NODETYPENAME;
+      Offset: Integer): NODETYPENAME;
+    function CloneNode(Node, Parent: NODETYPENAME): NODETYPENAME;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
@@ -23,17 +25,13 @@
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
     { COLLECTIONINTERFACENAME }
     function Add(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;COLLECTIONFLAGS
     function AddAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;COLLECTIONFLAGS
     procedure Clear;COLLECTIONFLAGS
     function Contains(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;COLLECTIONFLAGS
     function ContainsAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;COLLECTIONFLAGS
-    function Equals(const ACollection: COLLECTIONINTERFACENAME): Boolean;COLLECTIONFLAGS
+    function CollectionEquals(const ACollection: COLLECTIONINTERFACENAME): Boolean;COLLECTIONFLAGS
     function First: STDITRINTERFACENAME;COLLECTIONFLAGS
     function IsEmpty: Boolean;COLLECTIONFLAGS
     function Last: STDITRINTERFACENAME;COLLECTIONFLAGS
@@ -47,10 +45,10 @@
     { TREEINTERFACENAME }
     function GetRoot: TREEITRINTERFACENAME;
     function GetTraverseOrder: TJclTraverseOrder;
-    procedure SetTraverseOrder(Value: TJclTraverseOrder);PROTECTEDADDITIONAL
+    procedure SetTraverseOrder(Value: TJclTraverseOrder);
   public
     constructor Create(CONSTRUCTORPARAMETERS);
-    destructor Destroy; override;PUBLICADDITIONAL
+    destructor Destroy; override;
     property Root: TREEITRINTERFACENAME read GetRoot;
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;*)
@@ -68,7 +66,7 @@
     function GetPreviousCursor: NODETYPENAME; virtual; abstract;
     { STDITRINTERFACENAME }
     function Add(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
-    function Equals(const AIterator: STDITRINTERFACENAME): Boolean;
+    function IteratorEquals(const AIterator: STDITRINTERFACENAME): Boolean;
     function GETTERNAME: TYPENAME;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -105,38 +103,26 @@
     constructor Create(const AOwnTree: COLLECTIONINTERFACENAME; ACursor: NODETYPENAME; AValid: Boolean; AStart: TItrStart);
   end;
 
-  PREORDERITRCLASSNAME = class(BASEITRCLASSNAME, STDITRINTERFACENAME, STDTREEITRINTERFACENAME, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable)
+  PREORDERITRCLASSNAME = class(BASEITRCLASSNAME, STDITRINTERFACENAME, STDTREEITRINTERFACENAME, BINTREEITRINTERFACENAME,
+    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable)
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
     function GetNextCursor: NODETYPENAME; override;
     function GetPreviousCursor: NODETYPENAME; override;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
   end;
 
-  INORDERITRCLASSNAME = class(BASEITRCLASSNAME, STDITRINTERFACENAME, STDTREEITRINTERFACENAME, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable)
+  INORDERITRCLASSNAME = class(BASEITRCLASSNAME, STDITRINTERFACENAME, STDTREEITRINTERFACENAME, BINTREEITRINTERFACENAME,
+    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable)
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
     function GetNextCursor: NODETYPENAME; override;
     function GetPreviousCursor: NODETYPENAME; override;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
   end;
 
-  POSTORDERITRCLASSNAME = class(BASEITRCLASSNAME, STDITRINTERFACENAME, STDTREEITRINTERFACENAME, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable)
+  POSTORDERITRCLASSNAME = class(BASEITRCLASSNAME, STDITRINTERFACENAME, STDTREEITRINTERFACENAME, BINTREEITRINTERFACENAME,
+    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable)
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
     function GetNextCursor: NODETYPENAME; override;
     function GetPreviousCursor: NODETYPENAME; override;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
   end;*)

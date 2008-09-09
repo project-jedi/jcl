@@ -1,5 +1,5 @@
 (*$JPPDEFINEMACRO JCLQUEUEIMP(SELFCLASSNAME,
-  OWNERSHIPDECLARATION, OWNERSHIPPARAMETER, CONSTKEYWORD, PARAMETERNAME, TYPENAME, DEFAULTVALUE, MOVEARRAY, RELEASERNAME)
+  OWNERSHIPDECLARATION, OWNERSHIPPARAMETER, CONSTKEYWORD, PARAMETERNAME, TYPENAME, DEFAULTVALUE, RELEASERNAME)
 //=== { SELFCLASSNAME } =======================================================
 
 constructor SELFCLASSNAME.Create(ACapacity: IntegerOWNERSHIPDECLARATION);
@@ -78,7 +78,6 @@ begin
   {$JPPEXPANDMACRO READEND}
 end;
 
-{$JPPEXPANDMACRO CREATEEMPTYCONTAINER}
 function SELFCLASSNAME.Dequeue: TYPENAME;
 begin
   {$JPPEXPANDMACRO WRITEBEGIN}
@@ -156,7 +155,7 @@ begin
       if Value > FCapacity then
         // growing
         SetLength(FElements, Value);
-      MOVEARRAY(FElements, FHead, NewHead, FCapacity - FHead);
+      MoveArray(FElements, FHead, NewHead, FCapacity - FHead);
       if FCapacity > Value then
         // packing
         SetLength(FElements, Value);
@@ -167,7 +166,7 @@ begin
       // unlooped
       if Value < FCapacity then
       begin
-        MOVEARRAY(FElements, FHead, 0, FTail - FHead);
+        MoveArray(FElements, FHead, 0, FTail - FHead);
         Dec(FTail, FHead);
         FHead := 0;
       end;

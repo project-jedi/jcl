@@ -723,10 +723,16 @@ const
 
 function WideCharToStr(WStr: PWChar; Len: Integer): string;
 begin
+  {$IFDEF SUPPORTS_UNICODE}
+  SetLength(Result, Len);
+  if Len > 0 then
+    Move(WStr^, Result[1], Len * SizeOf(WideChar));
+  {$ELSE SUPPORTS_UNICODE}
   if Len = 0 then Len := -1;
   Len := WideCharToMultiByte(CP_ACP, 0, WStr, Len, nil, 0, nil, nil);
   SetLength(Result, Len);
   WideCharToMultiByte(CP_ACP, 0, WStr, Len, PChar(Result), Len, nil, nil);
+  {$ENDIF ~SUPPORTS_UNICODE}
 end;
 
 { TPeResItem }

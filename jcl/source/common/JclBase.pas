@@ -65,7 +65,7 @@ const
   JclVersionMajor   = 1;    // 0=pre-release|beta/1, 2, ...=final
   JclVersionMinor   = 103;  // Fifth minor release since JCL 1.90
   JclVersionRelease = 0;    // 0: pre-release|beta/ 1: release
-  JclVersionBuild   = 3073; // build number, days since march 1, 2000
+  JclVersionBuild   = 3110; // build number, days since march 1, 2000
   JclVersion = (JclVersionMajor shl 24) or (JclVersionMinor shl 16) or
     (JclVersionRelease shl 15) or (JclVersionBuild shl 0);
 
@@ -197,26 +197,29 @@ type
 
 // Dynamic Array support
 type
-  TDynByteArray       = array of Byte;
-  TDynShortIntArray   = array of Shortint;
-  TDynWordArray       = array of Word;
-  TDynSmallIntArray   = array of Smallint;
-  TDynLongIntArray    = array of Longint;
-  TDynInt64Array      = array of Int64;
-  TDynCardinalArray   = array of Cardinal;
-  TDynIntegerArray    = array of Integer;
-  TDynExtendedArray   = array of Extended;
-  TDynDoubleArray     = array of Double;
-  TDynSingleArray     = array of Single;
-  TDynFloatArray      = array of Float;
-  {$IFNDEF CLR}
-  TDynPointerArray    = array of Pointer;
+  TDynByteArray          = array of Byte;
+  TDynShortIntArray      = array of Shortint;
+  TDynWordArray          = array of Word;
+  TDynSmallIntArray      = array of Smallint;
+  TDynLongIntArray       = array of Longint;
+  TDynInt64Array         = array of Int64;
+  TDynCardinalArray      = array of Cardinal;
+  TDynIntegerArray       = array of Integer;
+  TDynExtendedArray      = array of Extended;
+  TDynDoubleArray        = array of Double;
+  TDynSingleArray        = array of Single;
+  TDynFloatArray         = array of Float;
+  {$IFNDEF CLR}          
+  TDynPointerArray       = array of Pointer;
   {$ENDIF ~CLR}
-  TDynStringArray     = array of string;
-  TDynAnsiStringArray = array of AnsiString;
-  TDynWideStringArray = array of WideString;
-  TDynIInterfaceArray = array of IInterface;
-  TDynObjectArray     = array of TObject;
+  TDynStringArray        = array of string;
+  TDynAnsiStringArray    = array of AnsiString;
+  TDynWideStringArray    = array of WideString;
+  {$IFDEF SUPPORTS_UNICODE_STRING}
+  TDynUnicodeStringArray = array of UnicodeString;
+  {$ENDIF SUPPORTS_UNICODE_STRING}
+  TDynIInterfaceArray    = array of IInterface;
+  TDynObjectArray        = array of TObject;
   TDynCharArray       = array of Char;
   TDynAnsiCharArray   = array of AnsiChar;
   TDynWideCharArray   = array of WideChar;
@@ -308,6 +311,9 @@ procedure MoveArray(var List: TDynIInterfaceArray; FromIndex, ToIndex, Count: In
 procedure MoveArray(var List: TDynStringArray; FromIndex, ToIndex, Count: Integer); overload;
 procedure MoveArray(var List: TDynFloatArray; FromIndex, ToIndex, Count: Integer); overload;
 procedure MoveArray(var List: TDynPointerArray; FromIndex, ToIndex, Count: Integer); overload;
+{$IFDEF SUPPORTS_UNICODE_STRING}
+procedure MoveArray(var List: TDynUnicodeStringArray; FromIndex, ToIndex, Count: Integer); overload;
+{$ENDIF SUPPORTS_UNICODE_STRING}
 {$ENDIF ~CLR}
 {$IFNDEF FPC}
 procedure MoveArray(var List: TDynAnsiStringArray; FromIndex, ToIndex, Count: Integer); overload;
@@ -396,22 +402,23 @@ type
   TEqualityCompare<T> = function(const Obj1, Obj2: T): Boolean;
   THashConvert<T> = function(const AItem: T): Integer;
 
-  TEquatable<T: class> = class(TObject, IEquatable<T>, IEqualityComparer<T>)
+  {$IFNDEF CLR}
+  IEqualityComparer<T> = interface
+    function Equals(A, B: T): Boolean;
+    function GetHashCode(Obj: T): Integer;
+  end;
+  {$ENDIF CLR}
+
+  TEquatable<T: class> = class(TInterfacedObject, IEquatable<T>, IEqualityComparer<T>)
   public
     { IEquatable<T> }
-    function Equals(Other: T): Boolean; overload;
+    function TestEquals(Other: T): Boolean; overload;
+    function IEquatable<T>.Equals = TestEquals;
     { IEqualityComparer<T> }
-    function Equals(A, B: T): Boolean; overload;
+    function TestEquals(A, B: T): Boolean; overload;
+    function IEqualityComparer<T>.Equals = TestEquals;
     function GetHashCode2(Obj: T): Integer;
     function IEqualityComparer<T>.GetHashCode = GetHashCode2;
-  end;
-
-  TJclBase<T> = class
-  public
-    type
-      TDynArray = array of T;
-  public
-    class procedure MoveArray(var List: TDynArray; FromIndex, ToIndex, Count: Integer);
   end;
 {$ENDIF SUPPORTS_GENERICS}
 
@@ -560,6 +567,33 @@ begin
     end;
   end;
 end;
+
+{$IFDEF SUPPORTS_UNICODE_STRING}
+procedure MoveArray(var List: TDynUnicodeStringArray; FromIndex, ToIndex, Count: Integer); overload;
+begin
+  if Count > 0 then
+  begin
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
+      else
+        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
+      else
+        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
 {$ENDIF ~CLR}
 
 {$IFNDEF FPC}
@@ -1402,23 +1436,9 @@ end;
 {$ENDIF OVERFLOWCHECKS_ON}
 
 {$IFDEF SUPPORTS_GENERICS}
-//=== { TJclBase<T> } ========================================================
-
-class procedure TJclBase<T>.MoveArray(var List: TDynArray; FromIndex, ToIndex, Count: Integer);
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I]
-  else
-    for I := Count - 1 downto 0 do
-      List[ToIndex + I] := List[FromIndex + I];
-end;
-
 //=== { TEquatable<T> } ======================================================
 
-function TEquatable<T>.Equals(Other: T): Boolean;
+function TEquatable<T>.TestEquals(Other: T): Boolean;
 begin
   if Other = nil then
     Result := False
@@ -1426,7 +1446,7 @@ begin
     Result := GetHashCode = Other.GetHashCode;
 end;
 
-function TEquatable<T>.Equals(A, B: T): Boolean;
+function TEquatable<T>.TestEquals(A, B: T): Boolean;
 begin
   if A = nil then
     Result := B = nil
@@ -1458,7 +1478,7 @@ var
   CpInfo: TCpInfo;
 begin
   if GetCPInfo(CP_ACP, CpInfo) then
-    AnsiReplacementCharacter := Chr(CpInfo.DefaultChar[0])
+    AnsiReplacementCharacter := AnsiChar(Chr(CpInfo.DefaultChar[0]))
   else
     raise EJclInternalError.CreateRes(@RsEReplacementChar);
 end;

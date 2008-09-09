@@ -1,0 +1,26 @@
+
+var
+  _GetWindowLongPtr: Pointer;
+
+function GetWindowLongPtr;
+begin
+  GetProcedureAddress(_GetWindowLongPtr, user32, 'GetWindowLong' + AWSuffix);
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_GetWindowLongPtr]
+  end;
+end;
+
+var
+  _SetWindowLongPtr: Pointer;
+
+function SetWindowLongPtr;
+begin
+  GetProcedureAddress(_SetWindowLongPtr, user32, 'SetWindowLong' + AWSuffix);
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_SetWindowLongPtr]
+  end;
+end;

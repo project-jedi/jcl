@@ -108,7 +108,7 @@ begin
     end;
 
     if FProfiles[Index].UnloadKey then
-      Windows.RegUnLoadKey(HKUS, PAnsiChar(FProfiles[Index].SID));
+      Windows.RegUnLoadKey(HKUS, PChar(FProfiles[Index].SID));
   end;
   SetLength(FProfiles, 0);
   {$ENDIF MSWINDOWS}
@@ -201,7 +201,7 @@ begin
         begin
           EnableProcessPrivilege(True, SE_RESTORE_NAME);
           EnableProcessPrivilege(True, SE_BACKUP_NAME);
-          if RegLoadKey(HKUS, PAnsiChar(FProfiles[Index].SID), PAnsiChar(NtUserFileName)) = ERROR_SUCCESS then
+          if RegLoadKey(HKUS, PChar(FProfiles[Index].SID), PChar(NtUserFileName)) = ERROR_SUCCESS then
             FProfiles[Index].UnloadKey := True
           else
             {$IFDEF COMPILER5}
@@ -210,7 +210,7 @@ begin
             RaiseLastOSError;
             {$ENDIF ~COMPILER5}
         end;
-        if RegOpenKey(HKUS, PAnsiChar(FProfiles[Index].SID), Key) = ERROR_SUCCESS then
+        if RegOpenKey(HKUS, PChar(FProfiles[Index].SID), Key) = ERROR_SUCCESS then
           FProfiles[Index].CloseKey := True
         else
           raise EJclSecurityError.CreateFmt('Unable to load profile for user "%s"', [FProfiles[Index].UserName]);
@@ -243,7 +243,8 @@ var
   Index: Integer;
   SID: PSID;
   DataSize: Cardinal;
-  Name, Domain, KeyName, SIDStr, ProfileDir: string;
+  Name, Domain: WideString;
+  KeyName, SIDStr, ProfileDir: string;
   RegProfiles: TStrings;
 begin
   if FMultipleProfileMode then
@@ -257,7 +258,7 @@ begin
         begin
           KeyName := RegProfileListKey + '\' + RegProfiles.Strings[Index];
           if RegReadBinaryEx(HKLM, KeyName, 'Sid', SID^, SECURITY_MAX_SID_SIZE, DataSize, False)
-            and RegReadAnsiStringEx(HKLM, KeyName, 'ProfileImagePath', ProfileDir, False) then
+            and RegReadStringEx(HKLM, KeyName, 'ProfileImagePath', ProfileDir, False) then
           begin
             try
               SIDStr := SIDToString(SID);

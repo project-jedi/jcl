@@ -34,7 +34,7 @@ begin
   Result := SELFCLASSNAME.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
-function SELFCLASSNAME.Equals(const AIterator: ITRINTERFACENAME): Boolean;
+function SELFCLASSNAME.IteratorEquals(const AIterator: ITRINTERFACENAME): Boolean;
 var
   Obj: TObject;
   ItrObj: SELFCLASSNAME;
@@ -148,7 +148,7 @@ begin
 end;*)
 (*$JPPDEFINEMACRO JCLVECTORIMP(SELFCLASSNAME, COLLECTIONINTERFACENAME, LISTINTERFACENAME, ITRINTERFACENAME, ITRCLASSNAME,
   OWNERSHIPDECLARATION, OWNERSHIPPARAMETER, CONSTKEYWORD, PARAMETERNAME, TYPENAME, DEFAULTVALUE,
-  GETTERNAME, SETTERNAME, RELEASERNAME, MOVEARRAY)
+  GETTERNAME, SETTERNAME, RELEASERNAME)
 //=== { SELFCLASSNAME } ======================================================
 
 constructor SELFCLASSNAME.Create(ACapacity: IntegerOWNERSHIPDECLARATION);
@@ -262,20 +262,13 @@ begin
   {$JPPEXPANDMACRO READEND}
 end;
 
-{$JPPEXPANDMACRO CREATEEMPTYCONTAINER}
 function SELFCLASSNAME.Delete(Index: Integer): TYPENAME;
-  // fix ambiguous warnings when compiled on Delphi.net and earlier versions of Delphi.win32
-  // complaining about possible unaffected result.
-  function RaiseOutOfBoundsError: TYPENAME;
-  begin
-    raise EJclOutOfBoundsError.Create;
-  end;
 begin
   {$JPPEXPANDMACRO WRITEBEGIN}
     if (Index >= 0) and (Index < FSize) then
     begin
       Result := RELEASERNAME(FItems[Index]);
-      MOVEARRAY(FItems, Index + 1, Index, FSize - Index);
+      MoveArray(FItems, Index + 1, Index, FSize - Index);
       Dec(FSize);
       AutoPack;
     end
@@ -284,7 +277,7 @@ begin
   {$JPPEXPANDMACRO WRITEEND}
 end;
 
-function SELFCLASSNAME.Equals(const ACollection: COLLECTIONINTERFACENAME): Boolean;
+function SELFCLASSNAME.CollectionEquals(const ACollection: COLLECTIONINTERFACENAME): Boolean;
 var
   I: Integer;
   It: ITRINTERFACENAME;
@@ -369,7 +362,7 @@ begin
         Result := FSize < FCapacity;
         if Result then
         begin
-          MOVEARRAY(FItems, Index, Index + 1, FSize - Index);
+          MoveArray(FItems, Index, Index + 1, FSize - Index);
           FItems[Index] := PARAMETERNAME;
           Inc(FSize);
         end;
@@ -420,6 +413,13 @@ begin
   {$JPPEXPANDMACRO READEND}
 end;
 
+// fix ambiguous warnings when compiled on Delphi.net and earlier versions of Delphi.win32
+// complaining about possible unaffected result.
+function SELFCLASSNAME.RaiseOutOfBoundsError: TYPENAME;
+begin
+  raise EJclOutOfBoundsError.Create;
+end;
+
 function SELFCLASSNAME.Remove(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
 var
   I: Integer;
@@ -430,7 +430,7 @@ begin
       if ItemsEqual(FItems[I], PARAMETERNAME) then
       begin
         RELEASERNAME(FItems[I]); // Force Release
-        MOVEARRAY(FItems, I + 1, I, FSize - I);
+        MoveArray(FItems, I + 1, I, FSize - I);
         Dec(FSize);
         Result := True;
         if FRemoveSingleElement then

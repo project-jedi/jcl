@@ -1,7 +1,8 @@
 library StackTrackDLLsComLibrary;
 
 uses
-  ComServ, JclHookExcept,
+  ComServ,
+  JclHookExcept,
   StackTrackDLLsComLibrary_TLB in 'StackTrackDLLsComLibrary_TLB.pas',
   StackTrackDLLsComUnit in 'StackTrackDLLsComUnit.pas' {StackTrackDllsTest: CoClass};
 

@@ -174,6 +174,7 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
+  SysUtils,
   Classes,
   JclBase;
 
@@ -996,7 +997,7 @@ type
     procedure Clear; virtual; abstract;
     procedure Delete(Index: Integer); virtual; abstract;
     procedure EndUpdate;
-    function Equals(Strings: TWideStrings): Boolean;
+    function Equals(Strings: TWideStrings): Boolean; {$IFDEF RTL200_UP} reintroduce; {$ENDIF RTL200_UP}
     procedure Exchange(Index1, Index2: Integer); virtual;
     function GetSeparatedText(Separators: WideString): WideString; virtual;
     function GetText: PWideChar; virtual;
@@ -1005,10 +1006,10 @@ type
     function IndexOfObject(AObject: TObject): Integer;
     procedure Insert(Index: Integer; const S: WideString); virtual; abstract;
     procedure InsertObject(Index: Integer; const S: WideString; AObject: TObject);
-    procedure LoadFromFile(const FileName: string); virtual;
+    procedure LoadFromFile(const FileName: TFileName); virtual;
     procedure LoadFromStream(Stream: TStream); virtual;
     procedure Move(CurIndex, NewIndex: Integer); virtual;
-    procedure SaveToFile(const FileName: string); virtual;
+    procedure SaveToFile(const FileName: TFileName); virtual;
     procedure SaveToStream(Stream: TStream; WithBOM: Boolean = True); virtual;
     procedure SetText(const Value: WideString); virtual;
 
@@ -1104,9 +1105,9 @@ function StrCopyW(Dest, Source: PWideChar): PWideChar;
 function StrECopyW(Dest, Source: PWideChar): PWideChar;
 function StrLCopyW(Dest, Source: PWideChar; MaxLen: Cardinal): PWideChar;
 function StrPCopyWW(Dest: PWideChar; const Source: WideString): PWideChar; overload;
-function StrPCopyW(Dest: PWideChar; const Source: string): PWideChar;
+function StrPCopyW(Dest: PWideChar; const Source: AnsiString): PWideChar;
 function StrPLCopyWW(Dest: PWideChar; const Source: WideString; MaxLen: Cardinal): PWideChar;
-function StrPLCopyW(Dest: PWideChar; const Source: string; MaxLen: Cardinal): PWideChar;
+function StrPLCopyW(Dest: PWideChar; const Source: AnsiString; MaxLen: Cardinal): PWideChar;
 function StrCatW(Dest: PWideChar; const Source: PWideChar): PWideChar;
 function StrLCatW(Dest, Source: PWideChar; MaxLen: Cardinal): PWideChar;
 function StrCompW(const Str1, Str2: PWideChar): Integer;
@@ -1228,9 +1229,9 @@ function CodeBlockRange(const CB: TUnicodeBlock): TUnicodeBlockRange;
 function CodeBlockFromChar(const C: UCS4): TUnicodeBlock;
 function KeyboardCodePage: Word;
 function KeyUnicode(C: Char): WideChar;
-function StringToWideStringEx(const S: string; CodePage: Word): WideString;
-function TranslateString(const S: string; CP1, CP2: Word): string;
-function WideStringToStringEx(const WS: WideString; CodePage: Word): string;
+function StringToWideStringEx(const S: AnsiString; CodePage: Word): WideString;
+function TranslateString(const S: AnsiString; CP1, CP2: Word): AnsiString;
+function WideStringToStringEx(const WS: WideString; CodePage: Word): AnsiString;
 
 type
   TCompareFunc = function (const W1, W2: WideString; Locale: LCID): Integer;
@@ -1286,7 +1287,6 @@ uses
   Consts,
   {$ENDIF ~FPC}
   {$ENDIF HAS_UNIT_RTLCONSTS}
-  SysUtils,
   {$IFDEF UNICODE_BZIP2_DATA}
   BZip2,
   {$ENDIF UNICODE_BZIP2_DATA}
@@ -2454,7 +2454,7 @@ begin
     end;
 
     // set the number of characters actually used
-    FPatternUsed := (PChar(Cp) - PChar(FPattern)) div SizeOf(TUTBMChar);
+    FPatternUsed := (DWORD(Cp) - DWORD(FPattern)) div SizeOf(TUTBMChar);
 
     // Go through and construct the skip array and determine the actual length
     // of the pattern in UCS2 terms.
@@ -3535,7 +3535,6 @@ var
   Used,
   M, N: Cardinal;
   I: Integer;
-
 begin
   State := _URE_NOOP;
 
@@ -3579,6 +3578,7 @@ begin
           // get first number
           while UnicodeIsWhiteSpace(UCS4(Head^)) do
             Inc(Head);
+          // very slow implementation
           S := '';
           while (Head^ >= WideChar('0')) and (Head^ <= WideChar('9')) do
           begin
@@ -3603,6 +3603,7 @@ begin
             // get second number
             while UnicodeIsWhiteSpace(UCS4(Head^)) do
               Inc(Head);
+            // very slow implementation
             S := '';
             while (Head^ >= WideChar('0')) and (Head^ <= WideChar('9')) do
             begin
@@ -4625,16 +4626,22 @@ end;
 procedure TWideStrings.AddStrings(Strings: TStrings);
 var
   I: Integer;
-  S: WideString;
+  {$IFNDEF SUPPORTS_UNICODE}
   CP: Integer;
+  {$ENDIF ~SUPPORTS_UNICODE}
 begin
   BeginUpdate;
   try
+    {$IFNDEF SUPPORTS_UNICODE}
     CP := CodePageFromLocale(FLanguage);
+    {$ENDIF ~SUPPORTS_UNICODE}
     for I := 0 to Strings.Count - 1 do
     begin
-      S := StringToWideStringEx(Strings[I], CP);
-      AddObject(S, Strings.Objects[I]);
+      {$IFDEF SUPPORTS_UNICODE}
+      AddObject(Strings[I], Strings.Objects[I])
+      {$ELSE ~SUPPORTS_UNICODE}
+      AddObject(StringToWideStringEx(Strings[I], CP), Strings.Objects[I])
+      {$ENDIF SUPPORTS_UNICODE}
     end;
   finally
     EndUpdate;
@@ -4644,29 +4651,13 @@ end;
 procedure TWideStrings.AddStrings(Strings: TWideStrings);
 var
   I: Integer;
-  SourceCP,
-  TargetCP: Integer;
-  S: WideString;
 begin
   Assert(Strings <> nil);
 
   BeginUpdate;
   try
-    if Strings.FLanguage <> FLanguage then
-    begin
-      SourceCP := CodePageFromLocale(Strings.FLanguage);
-      TargetCP := CodePageFromLocale(FLanguage);
-      for I := 0 to Strings.Count - 1 do
-      begin
-        S := TranslateString(Strings[I], SourceCP, TargetCP);
-        AddObject(S, Strings.Objects[I]);
-      end;
-    end
-    else
-    begin
-      for I := 0 to Strings.Count - 1 do
-        AddObject(Strings[I], Strings.Objects[I]);
-    end;
+    for I := 0 to Strings.Count - 1 do
+      AddObject(Strings[I], Strings.Objects[I]);
   finally
     EndUpdate;
   end;
@@ -4707,8 +4698,9 @@ procedure TWideStrings.AssignTo(Dest: TPersistent);
 // TWideStrings, so we need to do it from here
 var
   I: Integer;
-  S: string;
+  {$IFNDEF SUPPORTS_UNICODE}
   CP: Integer;
+  {$ENDIF ~SUPPORTS_UNICODE}
 begin
   if Dest is TStrings then
   begin
@@ -4716,12 +4708,17 @@ begin
     begin
       BeginUpdate;
       try
+        {$IFNDEF SUPPORTS_UNICODE}
         CP := CodePageFromLocale(FLanguage);
+        {$ENDIF SUPPORTS_UNICODE}
         Clear;
         for I := 0 to Self.Count - 1 do
         begin
-          S := WideStringToStringEx(Self[I], CP);
-          AddObject(S, Self.Objects[I]);
+          {$IFDEF SUPPORTS_UNICODE}
+          AddObject(Self[I], Self.Objects[I]);
+          {$ELSE ~SUPPORTS_UNICODE}
+          AddObject(WideStringToStringEx(Self[I], CP), Self.Objects[I]);
+          {$ENDIF ~SUPPORTS_UNICODE}
         end;
       finally
         EndUpdate;
@@ -4864,7 +4861,7 @@ begin
     begin
       S := Get(I);
       P := PWideChar(S);
-      while not (P^ in [WideNull..WideSpace, WideChar('"'), WideChar(',')]) do
+      while (P^ > WideSpace) and (P^ <> '"') and (P^ <> ',') do
         Inc(P);
       if P^ <> WideNull then
         S := WideQuotedStr(S, '"');
@@ -4999,7 +4996,7 @@ begin
   PutObject(Index, AObject);
 end;
 
-procedure TWideStrings.LoadFromFile(const FileName: string);
+procedure TWideStrings.LoadFromFile(const FileName: TFileName);
 var
   Stream: TStream;
 begin
@@ -5024,7 +5021,7 @@ var
                                        // but it is easier to implement with a multiple of 2
   Loaded: Boolean;
   SW: WideString;
-  SA: string;
+  SA: AnsiString;
 begin
   BeginUpdate;
   try
@@ -5065,7 +5062,7 @@ begin
       and (ByteOrderMask[1] = BOM_UTF8[1]) and (ByteOrderMask[2] = BOM_UTF8[2]) then
     begin
       FSaveFormat := sfUTF8;
-      SetLength(SA, (Size-3) div SizeOf(Char));
+      SetLength(SA, (Size-3) div SizeOf(AnsiChar));
       System.Move(ByteOrderMask[3],SA[1],BytesRead-3); // max 3 bytes = 3 chars
       Stream.Read(SA[4], Size-BytesRead); // first 3 chars were copied by System.Move
       SW := UTF8ToWideString(SA);
@@ -5077,10 +5074,10 @@ begin
     if not Loaded then
     begin
       FSaveFormat := sfAnsi;
-      SetLength(SA, Size div SizeOf(Char));
+      SetLength(SA, Size div SizeOf(AnsiChar));
       System.Move(ByteOrderMask[0],SA[1],BytesRead); // max 6 bytes = 6 chars
       Stream.Read(SA[7], Size-BytesRead); // first 6 chars were copied by System.Move
-      SetText(SA);
+      SetText(StringToWideStringEx(SA, CodePageFromLocale(FLanguage)));
     end;
   finally
     EndUpdate;
@@ -5116,7 +5113,7 @@ begin
   end;
 end;
 
-procedure TWideStrings.SaveToFile(const FileName: string);
+procedure TWideStrings.SaveToFile(const FileName: TFileName);
 var
   Stream: TStream;
 begin
@@ -5133,7 +5130,7 @@ procedure TWideStrings.SaveToStream(Stream: TStream; WithBOM: Boolean = True);
 // byte order mark or not. Note: when saved as ANSI text there will never be a BOM.
 var
   SW: WideString;
-  SA: string;
+  SA: AnsiString;
   Allowed: Boolean;
   Run: PWideChar;
 begin
@@ -5191,7 +5188,7 @@ begin
       sfAnsi :
         begin
           SA := WideStringToStringEx(SW,CodePageFromLocale(FLanguage));
-          Stream.WriteBuffer(SA[1],Length(SA)*SizeOf(Char));
+          Stream.WriteBuffer(SA[1],Length(SA)*SizeOf(AnsiChar));
           FSaved := True;
         end;
     end;
@@ -5212,7 +5209,7 @@ begin
   try
     Clear;
     P := PWideChar(Value);
-    while P^ in [WideChar(#1)..WideSpace] do
+    while (P^ >= #1) and (P^ <= WideSpace) do
       Inc(P);
     while P^ <> WideNull do
     begin
@@ -5227,13 +5224,13 @@ begin
       end;
       Add(S);
 
-      while P^ in [WideChar(#1)..WideSpace] do
+      while (P^ >= #1) and (P^ <= WideSpace) do
         Inc(P);
       if P^ = ',' then
       begin
         repeat
           Inc(P);
-        until not (P^ in [WideChar(#1)..WideSpace]);
+        until not ((P^ >= #1) and (P^ <= WideSpace));
       end;
     end;
   finally
@@ -5254,8 +5251,9 @@ begin
     while Head^ <> WideNull do
     begin
       Tail := Head;
-      while not (Tail^ in [WideNull, WideLineFeed, WideCarriageReturn, WideVerticalTab, WideFormFeed]) and
-        (Tail^ <> WideLineSeparator) and (Tail^ <> WideParagraphSeparator) do
+      while (Tail^ <> WideNull) and (Tail^ <> WideLineFeed) and (Tail^ <> WideCarriageReturn) and
+        (Tail^ <> WideVerticalTab) and (Tail^ <> WideFormFeed) and (Tail^ <> WideLineSeparator) and
+        (Tail^ <> WideParagraphSeparator) do
         Inc(Tail);
       SetString(S, Head, Tail - Head);
       Add(S);
@@ -5829,7 +5827,7 @@ begin
   Result := StrLCopyW(Dest, PWideChar(Source), Length(Source));
 end;
 
-function StrPCopyW(Dest: PWideChar; const Source: string): PWideChar;
+function StrPCopyW(Dest: PWideChar; const Source: AnsiString): PWideChar;
 // copies a Pascal-style string to a null-terminated wide string
 begin
   Result := StrPLCopyW(Dest, Source, Cardinal(Length(Source)));
@@ -5842,7 +5840,7 @@ begin
   Result := StrLCopyW(Dest, PWideChar(Source), MaxLen);
 end;
 
-function StrPLCopyW(Dest: PWideChar; const Source: string; MaxLen: Cardinal): PWideChar;
+function StrPLCopyW(Dest: PWideChar; const Source: AnsiString; MaxLen: Cardinal): PWideChar;
 // copies characters from a Pascal-style string into a null-terminated wide string
 asm
        PUSH EDI
@@ -7289,7 +7287,7 @@ function CompareTextWin95(const W1, W2: WideString; Locale: LCID): Integer;
 // special comparation function for Win9x since there's no system defined
 // comparation function, returns -1 if W1 < W2, 0 if W1 = W2 or 1 if W1 > W2
 var
-  S1, S2: string;
+  S1, S2: AnsiString;
   CP: Integer;
   L1, L2: Integer;
 begin
@@ -7298,10 +7296,10 @@ begin
   SetLength(S1, L1);
   SetLength(S2, L2);
   CP := CodePageFromLocale(Locale);
-  WideCharToMultiByte(CP, 0, PWideChar(W1), L1, PChar(S1), L1, nil, nil);
-  WideCharToMultiByte(CP, 0, PWideChar(W2), L2, PChar(S2), L2, nil, nil);
-  Result := CompareStringA(Locale, NORM_IGNORECASE, PChar(S1), Length(S1),
-    PChar(S2), Length(S2)) - 2;
+  WideCharToMultiByte(CP, 0, PWideChar(W1), L1, PAnsiChar(S1), L1, nil, nil);
+  WideCharToMultiByte(CP, 0, PWideChar(W2), L2, PAnsiChar(S2), L2, nil, nil);
+  Result := CompareStringA(Locale, NORM_IGNORECASE, PAnsiChar(S1), Length(S1),
+    PAnsiChar(S2), Length(S2)) - 2;
 end;
 
 function CompareTextWinNT(const W1, W2: WideString; Locale: LCID): Integer;
@@ -7313,18 +7311,18 @@ begin
     PWideChar(W2), Length(W2)) - 2;
 end;
 
-function StringToWideStringEx(const S: string; CodePage: Word): WideString;
+function StringToWideStringEx(const S: AnsiString; CodePage: Word): WideString;
 var
   InputLength,
   OutputLength: Integer;
 begin
   InputLength := Length(S);
-  OutputLength := MultiByteToWideChar(CodePage, 0, PChar(S), InputLength, nil, 0);
+  OutputLength := MultiByteToWideChar(CodePage, 0, PAnsiChar(S), InputLength, nil, 0);
   SetLength(Result, OutputLength);
-  MultiByteToWideChar(CodePage, 0, PChar(S), InputLength, PWideChar(Result), OutputLength);
+  MultiByteToWideChar(CodePage, 0, PAnsiChar(S), InputLength, PWideChar(Result), OutputLength);
 end;
 
-function WideStringToStringEx(const WS: WideString; CodePage: Word): string;
+function WideStringToStringEx(const WS: WideString; CodePage: Word): AnsiString;
 var
   InputLength,
   OutputLength: Integer;
@@ -7332,10 +7330,10 @@ begin
   InputLength := Length(WS);
   OutputLength := WideCharToMultiByte(CodePage, 0, PWideChar(WS), InputLength, nil, 0, nil, nil);
   SetLength(Result, OutputLength);
-  WideCharToMultiByte(CodePage, 0, PWideChar(WS), InputLength, PChar(Result), OutputLength, nil, nil);
+  WideCharToMultiByte(CodePage, 0, PWideChar(WS), InputLength, PAnsiChar(Result), OutputLength, nil, nil);
 end;
 
-function TranslateString(const S: string; CP1, CP2: Word): string;
+function TranslateString(const S: AnsiString; CP1, CP2: Word): AnsiString;
 begin
   Result:= WideStringToStringEx(StringToWideStringEx(S, CP1), CP2);
 end;

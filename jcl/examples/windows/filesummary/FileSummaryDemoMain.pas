@@ -63,23 +63,23 @@ begin
     try
       Memo1.Lines.Add('File summary');
 
-      Memo1.Lines.Add('  Title ' + AFileSummaryInformation.Title);
-      Memo1.Lines.Add('  Subject ' + AFileSummaryInformation.Subject);
-      Memo1.Lines.Add('  Author ' + AFileSummaryInformation.Author);
-      Memo1.Lines.Add('  Keywords ' + AFileSummaryInformation.KeyWords);
-      Memo1.Lines.Add('  Comments ' + AFileSummaryInformation.Comments);
-      Memo1.Lines.Add('  Template ' + AFileSummaryInformation.Template);
-      Memo1.Lines.Add('  Last author ' + AFileSummaryInformation.LastAuthor);
-      Memo1.Lines.Add('  Revision numer ' + AFileSummaryInformation.RevNumber);
-      Memo1.Lines.Add('  Edit time ' + FileTimeToString(AFileSummaryInformation.EditTime));
-      Memo1.Lines.Add('  Last printed time ' + FileTimeToString(AFileSummaryInformation.LastPrintedTime));
-      Memo1.Lines.Add('  Creation time ' + FileTimeToString(AFileSummaryInformation.CreationTime));
-      Memo1.Lines.Add('  Last save time ' + FileTimeToString(AFileSummaryInformation.LastSaveTime));
+      Memo1.Lines.Add(string('  Title ' + AFileSummaryInformation.Title));
+      Memo1.Lines.Add(string('  Subject ' + AFileSummaryInformation.Subject));
+      Memo1.Lines.Add(string('  Author ' + AFileSummaryInformation.Author));
+      Memo1.Lines.Add(string('  Keywords ' + AFileSummaryInformation.KeyWords));
+      Memo1.Lines.Add(string('  Comments ' + AFileSummaryInformation.Comments));
+      Memo1.Lines.Add(string('  Template ' + AFileSummaryInformation.Template));
+      Memo1.Lines.Add(string('  Last author ' + AFileSummaryInformation.LastAuthor));
+      Memo1.Lines.Add(string('  Revision numer ' + AFileSummaryInformation.RevNumber));
+      Memo1.Lines.Add(string('  Edit time ' + FileTimeToString(AFileSummaryInformation.EditTime)));
+      Memo1.Lines.Add(string('  Last printed time ' + FileTimeToString(AFileSummaryInformation.LastPrintedTime)));
+      Memo1.Lines.Add(string('  Creation time ' + FileTimeToString(AFileSummaryInformation.CreationTime)));
+      Memo1.Lines.Add(string('  Last save time ' + FileTimeToString(AFileSummaryInformation.LastSaveTime)));
       Memo1.Lines.Add('  Page count ' + IntToStr(AFileSummaryInformation.PageCount));
       Memo1.Lines.Add('  Word count ' + IntToStr(AFileSummaryInformation.WordCount));
       Memo1.Lines.Add('  Char count ' + IntToStr(AFileSummaryInformation.CharCount));
       //AFileSummaryInformation.Thumnail
-      Memo1.Lines.Add('  App name ' + AFileSummaryInformation.AppName);
+      Memo1.Lines.Add(string('  App name ' + AFileSummaryInformation.AppName));
       Memo1.Lines.Add('  Security ' + IntToStr(AFileSummaryInformation.Security));
     finally
       AFileSummaryInformation.Free;
@@ -89,8 +89,8 @@ begin
     if Assigned(ADocumentSummaryInformation) then
     try
       Memo1.Lines.Add('Document summary');
-      Memo1.Lines.Add('  Category ' + ADocumentSummaryInformation.Category);
-      Memo1.Lines.Add('  Pres format ' + ADocumentSummaryInformation.PresFormat);
+      Memo1.Lines.Add(string('  Category ' + ADocumentSummaryInformation.Category));
+      Memo1.Lines.Add(string('  Pres format ' + ADocumentSummaryInformation.PresFormat));
       Memo1.Lines.Add('  Byte count ' + IntToStr(ADocumentSummaryInformation.ByteCount));
       Memo1.Lines.Add('  Line count ' + IntToStr(ADocumentSummaryInformation.LineCount));
       Memo1.Lines.Add('  Par count ' + IntToStr(ADocumentSummaryInformation.ParCount));
@@ -101,8 +101,8 @@ begin
       Memo1.Lines.Add('  Scale ' + BooleanToStr(ADocumentSummaryInformation.Scale));
       //ADocumentSummaryInformation.HeadingPair
       //ADocumentSummaryInformation.DocParts
-      Memo1.Lines.Add('  Manager ' + ADocumentSummaryInformation.Manager);
-      Memo1.Lines.Add('  Company ' + ADocumentSummaryInformation.Company);
+      Memo1.Lines.Add(string('  Manager ' + ADocumentSummaryInformation.Manager));
+      Memo1.Lines.Add(string('  Company ' + ADocumentSummaryInformation.Company));
       Memo1.Lines.Add('  Links dirty ' + BooleanToStr(ADocumentSummaryInformation.LinksDirty));
     finally
       ADocumentSummaryInformation.Free;

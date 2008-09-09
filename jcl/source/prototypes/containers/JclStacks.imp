@@ -58,7 +58,6 @@ begin
   {$JPPEXPANDMACRO READEND}
 end;
 
-{$JPPEXPANDMACRO CREATEEMPTYCONTAINER}
 function SELFCLASSNAME.Empty: Boolean;
 begin
   Result := FSize = 0;

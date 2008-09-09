@@ -1,7 +1,18 @@
+{$IFNDEF COMPILER11_UP}
 type
+  // Need to have the same size like Pointer
+  INT_PTR = JclBase.INT_PTR;
+  {$EXTERNALSYM INT_PTR}
+  LONG_PTR = JclBase.LONG_PTR;
+  {$EXTERNALSYM LONG_PTR}
+  UINT_PTR = JclBase.UINT_PTR;
+  {$EXTERNALSYM UINT_PTR}
+  ULONG_PTR = JclBase.ULONG_PTR;
   {$EXTERNALSYM ULONG_PTR}
-  ULONG_PTR = LongWord;      // Need to have the same size like Pointer
+  DWORD_PTR = JclBase.DWORD_PTR;
   {$EXTERNALSYM DWORD_PTR}
-  DWORD_PTR = ULONG_PTR;
+{$ENDIF ~COMPILER11_UP}
+
+type
+  PDWORD_PTR = ^DWORD_PTR;
   {$EXTERNALSYM PDWORD_PTR}
-  PDWORD_PTR = ^PLongWord;

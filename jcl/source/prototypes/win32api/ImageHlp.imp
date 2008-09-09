@@ -134,19 +134,6 @@ begin
   end;
 end;
 
-var
-  _UnDecorateSymbolName: Pointer;
-
-function UnDecorateSymbolName;
-begin
-  GetProcedureAddress(_UnDecorateSymbolName, ImageHlpLib, 'UnDecorateSymbolName');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_UnDecorateSymbolName]
-  end;
-end;
-
 {$ENDIF MSWINDOWS}
 
 {$IFDEF UNIX}

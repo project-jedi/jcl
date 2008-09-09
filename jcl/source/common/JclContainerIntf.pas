@@ -31,7 +31,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -71,12 +71,18 @@ type
   TIntfApplyFunction = function(const AInterface: IInterface): IInterface;
   TAnsiStrApplyFunction = function(const AString: AnsiString): AnsiString;
   TWideStrApplyFunction = function(const AString: WideString): WideString;
+  {$IFDEF SUPPORTS_UNICODE_STRING}
+  TUnicodeStrApplyFunction = function(const AString: UnicodeString): UnicodeString;
+  {$ENDIF SUPPORTS_UNICODE_STRING}
   {$IFDEF CONTAINER_ANSISTR}
   TStrApplyFunction = TAnsiStrApplyFunction;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
   TStrApplyFunction = TWideStrApplyFunction;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  TStrApplyFunction = TUnicodeStrApplyFunction;
+  {$ENDIF CONTAINER_UNICODESTR}
   TSingleApplyFunction = function(const AValue: Single): Single;
   TDoubleApplyFunction = function(const AValue: Double): Double;
   TExtendedApplyFunction = function(const AValue: Extended): Extended;
@@ -104,12 +110,18 @@ type
   TIntfCompare = function(const Obj1, Obj2: IInterface): Integer;
   TAnsiStrCompare = function(const Obj1, Obj2: AnsiString): Integer;
   TWideStrCompare = function(const Obj1, Obj2: WideString): Integer;
+  {$IFDEF SUPPORTS_UNICODE_STRING}
+  TUnicodeStrCompare = function(const Obj1, Obj2: UnicodeString): Integer;
+  {$ENDIF SUPPORTS_UNICODE_STRING}
   {$IFDEF CONTAINER_ANSISTR}
   TStrCompare = TAnsiStrCompare;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
   TStrCompare = TWideStrCompare;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  TStrCompare = TUnicodeStrCompare;
+  {$ENDIF CONTAINER_UNICODESTR}
   TSingleCompare = function(const Obj1, Obj2: Single): Integer;
   TDoubleCompare = function(const Obj1, Obj2: Double): Integer;
   TExtendedCompare = function(const Obj1, Obj2: Extended): Integer;
@@ -137,12 +149,18 @@ type
   TIntfEqualityCompare = function(const Obj1, Obj2: IInterface): Boolean;
   TAnsiStrEqualityCompare = function(const Obj1, Obj2: AnsiString): Boolean;
   TWideStrEqualityCompare = function(const Obj1, Obj2: WideString): Boolean;
+  {$IFDEF SUPPORTS_UNICODE_STRING}
+  TUnicodeStrEqualityCompare = function(const Obj1, Obj2: UnicodeString): Boolean;
+  {$ENDIF SUPPORTS_UNICODE_STRING}
   {$IFDEF CONTAINER_ANSISTR}
   TStrEqualityCompare = TAnsiStrEqualityCompare;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
   TStrEqualityCompare = TWideStrEqualityCompare;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  TStrEqualityCompare = TUnicodeStrEqualityCompare;
+  {$ENDIF CONTAINER_UNICODESTR}
   TSingleEqualityCompare = function(const Obj1, Obj2: Single): Boolean;
   TDoubleEqualityCompare = function(const Obj1, Obj2: Double): Boolean;
   TExtendedEqualityCompare = function(const Obj1, Obj2: Extended): Boolean;
@@ -170,12 +188,18 @@ type
   TIntfHashConvert = function(const AInterface: IInterface): Integer;
   TAnsiStrHashConvert = function(const AString: AnsiString): Integer;
   TWideStrHashConvert = function(const AString: WideString): Integer;
+  {$IFDEF SUPPORTS_UNICODE_STRING}
+  TUnicodeStrHashConvert = function(const AString: UnicodeString): Integer;
+  {$ENDIF SUPPORTS_UNICODE_STRING}
   {$IFDEF CONTAINER_ANSISTR}
   TStrHashConvert = TAnsiStrHashConvert;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
   TStrHashConvert = TWideStrHashConvert;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  TStrHashConvert = TUnicodeStrHashConvert;
+  {$ENDIF CONTAINER_UNICODESTR}
   TSingleHashConvert = function(const AValue: Single): Integer;
   TDoubleHashConvert = function(const AValue: Double): Integer;
   TExtendedHashConvert = function(const AValue: Extended): Integer;
@@ -288,6 +312,16 @@ type
     procedure LoadDelimited(const AString: WideString; const Separator: WideString = WideLineBreak);}
   end;
 
+  {$IFDEF SUPPORTS_UNICODE_STRING}
+  IJclUnicodeStrContainer = interface(IJclStrContainer)
+    ['{619BA29F-5E05-464D-B472-1C8453DBC707}']
+  end;
+
+  IJclUnicodeStrFlatContainer = interface(IJclUnicodeStrContainer)
+    ['{3343D73E-4ADC-458E-8289-A4B83D1479D1}']
+  end;
+  {$ENDIF SUPPORTS_UNICODE_STRING}
+
   IJclSingleContainer = interface(IJclContainer)
     ['{22BE88BD-87D1-4B4D-9FAB-F1B6D555C6A9}']
     function GetPrecision: Single;
@@ -343,12 +377,25 @@ type
     property EqualityCompare: TWideStrEqualityCompare read GetEqualityCompare write SetEqualityCompare;
   end;
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+  IJclUnicodeStrEqualityComparer = interface
+    ['{EDFCC1C7-79DB-4F58-BD64-5016B44EEAC0}']
+    function GetEqualityCompare: TUnicodeStrEqualityCompare;
+    procedure SetEqualityCompare(Value: TUnicodeStrEqualityCompare);
+    function ItemsEqual(const A, B: UnicodeString): Boolean;
+    property EqualityCompare: TUnicodeStrEqualityCompare read GetEqualityCompare write SetEqualityCompare;
+  end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrEqualityComparer = IJclAnsiStrEqualityComparer;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
   IJclStrEqualityComparer = IJclWideStrEqualityComparer;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclStrEqualityComparer = IJclUnicodeStrEqualityComparer;
+  {$ENDIF CONTAINER_UNICODESTR}
 
   IJclSingleEqualityComparer = interface
     ['{4835BC5B-1A87-4864-BFE1-778F3BAF26B1}']
@@ -460,12 +507,25 @@ type
     property Compare: TWideStrCompare read GetCompare write SetCompare;
   end;
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+  IJclUnicodeStrComparer = interface
+    ['{E81E2705-0CA0-4DBD-BECC-5F9AA623A6E4}']
+    function GetCompare: TUnicodeStrCompare;
+    procedure SetCompare(Value: TUnicodeStrCompare);
+    function ItemsCompare(const A, B: UnicodeString): Integer;
+    property Compare: TUnicodeStrCompare read GetCompare write SetCompare;
+  end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrComparer = IJclAnsiStrComparer;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
   IJclStrComparer = IJclWideStrComparer;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclStrComparer = IJclUnicodeStrComparer;
+  {$ENDIF CONTAINER_UNICODESTR}
 
   IJclSingleComparer = interface
     ['{008225CE-075E-4450-B9DE-9863CB6D347C}']
@@ -577,12 +637,25 @@ type
     property HashConvert: TWideStrHashConvert read GetHashConvert write SetHashConvert;
   end;
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+  IJclUnicodeStrHashConverter = interface
+    ['{08CD8171-DBAF-405F-9802-46D955C8BBE6}']
+    function GetHashConvert: TUnicodeStrHashConvert;
+    procedure SetHashConvert(Value: TUnicodeStrHashConvert);
+    function Hash(const AString: UnicodeString): Integer;
+    property HashConvert: TUnicodeStrHashConvert read GetHashConvert write SetHashConvert;
+  end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrHashConverter = IJclAnsiStrHashConverter;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
   IJclStrHashConverter = IJclWideStrHashConverter;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclStrHashConverter = IJclUnicodeStrHashConverter;
+  {$ENDIF CONTAINER_UNICODESTR}
 
   IJclSingleHashConverter = interface
     ['{20F0E481-F1D2-48B6-A95D-FBB56AF119F5}']
@@ -672,12 +745,12 @@ type
 
   IJclIntfCloneable = interface
     ['{BCF77740-FB60-4306-9BD1-448AADE5FF4E}']
-    function Clone: IInterface;
+    function IntfClone: IInterface;
   end;
 
   IJclCloneable = interface
     ['{D224AE70-2C93-4998-9479-1D513D75F2B2}']
-    function Clone: TObject;
+    function ObjectClone: TObject;
   end;
 
   TJclAutoPackStrategy = (apsDisabled, apsAgressive, apsProportional, apsIncremental);
@@ -768,7 +841,7 @@ type
   IJclIntfIterator = interface(IJclAbstractIterator)
     ['{E121A98A-7C43-4587-806B-9189E8B2F106}']
     function Add(const AInterface: IInterface): Boolean;
-    function Equals(const AIterator: IJclIntfIterator): Boolean;
+    function IteratorEquals(const AIterator: IJclIntfIterator): Boolean;
     function GetObject: IInterface;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -789,7 +862,7 @@ type
   IJclAnsiStrIterator = interface(IJclAbstractIterator)
     ['{D5D4B681-F902-49C7-B9E1-73007C9D64F0}']
     function Add(const AString: AnsiString): Boolean;
-    function Equals(const AIterator: IJclAnsiStrIterator): Boolean;
+    function IteratorEquals(const AIterator: IJclAnsiStrIterator): Boolean;
     function GetString: AnsiString;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -810,7 +883,7 @@ type
   IJclWideStrIterator = interface(IJclAbstractIterator)
     ['{F03BC7D4-CCDA-4C4A-AF3A-E51FDCDE8ADE}']
     function Add(const AString: WideString): Boolean;
-    function Equals(const AIterator: IJclWideStrIterator): Boolean;
+    function IteratorEquals(const AIterator: IJclWideStrIterator): Boolean;
     function GetString: WideString;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -828,17 +901,43 @@ type
     {$ENDIF SUPPORTS_FOR_IN}
   end;
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+  IJclUnicodeStrIterator = interface(IJclAbstractIterator)
+    ['{B913FFDC-792A-48FB-B58E-763EFDEBA15C}']
+    function Add(const AString: UnicodeString): Boolean;
+    function IteratorEquals(const AIterator: IJclUnicodeStrIterator): Boolean;
+    function GetString: UnicodeString;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AString: UnicodeString): Boolean;
+    function Next: UnicodeString;
+    function NextIndex: Integer;
+    function Previous: UnicodeString;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure Reset;
+    procedure SetString(const AString: UnicodeString);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: UnicodeString read GetString;
+    {$ENDIF SUPPORTS_FOR_IN}
+  end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrIterator = IJclAnsiStrIterator;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
   IJclStrIterator = IJclWideStrIterator;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclStrIterator = IJclUnicodeStrIterator;
+  {$ENDIF CONTAINER_UNICODESTR}
 
   IJclSingleIterator = interface(IJclAbstractIterator)
     ['{FD1124F8-CB2B-4AD7-B12D-C05702F4204B}']
     function Add(const AValue: Single): Boolean;
-    function Equals(const AIterator: IJclSingleIterator): Boolean;
+    function IteratorEquals(const AIterator: IJclSingleIterator): Boolean;
     function GetValue: Single;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -859,7 +958,7 @@ type
   IJclDoubleIterator = interface(IJclAbstractIterator)
     ['{004C154A-281C-4DA7-BF64-F3EE80ACF640}']
     function Add(const AValue: Double): Boolean;
-    function Equals(const AIterator: IJclDoubleIterator): Boolean;
+    function IteratorEquals(const AIterator: IJclDoubleIterator): Boolean;
     function GetValue: Double;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -880,7 +979,7 @@ type
   IJclExtendedIterator = interface(IJclAbstractIterator)
     ['{B89877A5-DED4-4CD9-AB90-C7D062111DE0}']
     function Add(const AValue: Extended): Boolean;
-    function Equals(const AIterator: IJclExtendedIterator): Boolean;
+    function IteratorEquals(const AIterator: IJclExtendedIterator): Boolean;
     function GetValue: Extended;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -911,7 +1010,7 @@ type
   IJclIntegerIterator = interface(IJclAbstractIterator)
     ['{1406A991-4574-48A1-83FE-2EDCA03908BE}']
     function Add(AValue: Integer): Boolean;
-    function Equals(const AIterator: IJclIntegerIterator): Boolean;
+    function IteratorEquals(const AIterator: IJclIntegerIterator): Boolean;
     function GetValue: Integer;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -932,7 +1031,7 @@ type
   IJclCardinalIterator = interface(IJclAbstractIterator)
     ['{72847A34-C8C4-4592-9447-CEB8161E33AD}']
     function Add(AValue: Cardinal): Boolean;
-    function Equals(const AIterator: IJclCardinalIterator): Boolean;
+    function IteratorEquals(const AIterator: IJclCardinalIterator): Boolean;
     function GetValue: Cardinal;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -953,7 +1052,7 @@ type
   IJclInt64Iterator = interface(IJclAbstractIterator)
     ['{573E5A51-BF76-43D7-9F93-46305BED20A8}']
     function Add(const AValue: Int64): Boolean;
-    function Equals(const AIterator: IJclInt64Iterator): Boolean;
+    function IteratorEquals(const AIterator: IJclInt64Iterator): Boolean;
     function GetValue: Int64;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -975,7 +1074,7 @@ type
   IJclPtrIterator = interface(IJclAbstractIterator)
     ['{62B5501C-07AA-4D00-A85B-713B39912CDF}']
     function Add(APtr: Pointer): Boolean;
-    function Equals(const AIterator: IJclPtrIterator): Boolean;
+    function IteratorEquals(const AIterator: IJclPtrIterator): Boolean;
     function GetPointer: Pointer;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -997,7 +1096,7 @@ type
   IJclIterator = interface(IJclAbstractIterator)
     ['{997DF9B7-9AA2-4239-8B94-14DFFD26D790}']
     function Add(AObject: TObject): Boolean;
-    function Equals(const AIterator: IJclIterator): Boolean;
+    function IteratorEquals(const AIterator: IJclIterator): Boolean;
     function GetObject: TObject;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -1019,7 +1118,7 @@ type
   IJclIterator<T> = interface(IJclAbstractIterator)
     ['{6E8547A4-5B5D-4831-8AE3-9C6D04071B11}']
     function Add(const AItem: T): Boolean;
-    function Equals(const AIterator: IJclIterator<T>): Boolean;
+    function IteratorEquals(const AIterator: IJclIterator<T>): Boolean;
     function GetItem: T;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -1086,12 +1185,33 @@ type
     property Children[Index: Integer]: WideString read GetChild write SetChild;
   end;
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+  IJclUnicodeStrTreeIterator = interface(IJclUnicodeStrIterator)
+    ['{0B0A60DE-0403-4EE1-B1F0-10D849924CF8}']
+    function AddChild(const AString: UnicodeString): Boolean;
+    function ChildrenCount: Integer;
+    procedure ClearChildren;
+    procedure DeleteChild(Index: Integer);
+    function GetChild(Index: Integer): UnicodeString;
+    function HasChild(Index: Integer): Boolean;
+    function HasParent: Boolean;
+    function IndexOfChild(const AString: UnicodeString): Integer;
+    function InsertChild(Index: Integer; const AString: UnicodeString): Boolean;
+    function Parent: UnicodeString;
+    procedure SetChild(Index: Integer; const AString: UnicodeString);
+    property Children[Index: Integer]: UnicodeString read GetChild write SetChild;
+  end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrTreeIterator = IJclAnsiStrTreeIterator;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
   IJclStrTreeIterator = IJclWideStrTreeIterator;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclStrTreeIterator = IJclUnicodeStrTreeIterator;
+  {$ENDIF CONTAINER_UNICODESTR}
 
   IJclSingleTreeIterator = interface(IJclSingleIterator)
     ['{17BFDE9D-DBF7-4DC8-AC74-919C717B4726}']
@@ -1275,12 +1395,25 @@ type
     function Right: WideString;
   end;
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+  IJclUnicodeStrBinaryTreeIterator = interface(IJclUnicodeStrTreeIterator)
+    ['{CA32B126-AD4B-4C33-BC47-52B09FE093BE}']
+    function HasLeft: Boolean;
+    function HasRight: Boolean;
+    function Left: UnicodeString;
+    function Right: UnicodeString;
+  end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrBinaryTreeIterator = IJclAnsiStrBinaryTreeIterator;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
   IJclStrBinaryTreeIterator = IJclWideStrBinaryTreeIterator;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclStrBinaryTreeIterator = IJclUnicodeStrBinaryTreeIterator;
+  {$ENDIF CONTAINER_UNICODESTR}
 
   IJclSingleBinaryTreeIterator = interface(IJclSingleTreeIterator)
     ['{BC6FFB13-FA1C-4077-8273-F25A3119168B}']
@@ -1375,7 +1508,7 @@ type
     procedure Clear;
     function Contains(const AInterface: IInterface): Boolean;
     function ContainsAll(const ACollection: IJclIntfCollection): Boolean;
-    function Equals(const ACollection: IJclIntfCollection): Boolean;
+    function CollectionEquals(const ACollection: IJclIntfCollection): Boolean;
     function First: IJclIntfIterator;
     function IsEmpty: Boolean;
     function Last: IJclIntfIterator;
@@ -1395,7 +1528,7 @@ type
     procedure Clear;
     function Contains(const AString: AnsiString): Boolean;
     function ContainsAll(const ACollection: IJclAnsiStrCollection): Boolean;
-    function Equals(const ACollection: IJclAnsiStrCollection): Boolean;
+    function CollectionEquals(const ACollection: IJclAnsiStrCollection): Boolean;
     function First: IJclAnsiStrIterator;
     function IsEmpty: Boolean;
     function Last: IJclAnsiStrIterator;
@@ -1415,7 +1548,7 @@ type
     procedure Clear;
     function Contains(const AString: WideString): Boolean;
     function ContainsAll(const ACollection: IJclWideStrCollection): Boolean;
-    function Equals(const ACollection: IJclWideStrCollection): Boolean;
+    function CollectionEquals(const ACollection: IJclWideStrCollection): Boolean;
     function First: IJclWideStrIterator;
     function IsEmpty: Boolean;
     function Last: IJclWideStrIterator;
@@ -1428,12 +1561,37 @@ type
     {$ENDIF SUPPORTS_FOR_IN}
   end;
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+  IJclUnicodeStrCollection = interface(IJclUnicodeStrFlatContainer)
+    ['{82EA7DDE-4EBF-4E0D-A380-CAF8A24C1A0D}']
+    function Add(const AString: UnicodeString): Boolean;
+    function AddAll(const ACollection: IJclUnicodeStrCollection): Boolean;
+    procedure Clear;
+    function Contains(const AString: UnicodeString): Boolean;
+    function ContainsAll(const ACollection: IJclUnicodeStrCollection): Boolean;
+    function CollectionEquals(const ACollection: IJclUnicodeStrCollection): Boolean;
+    function First: IJclUnicodeStrIterator;
+    function IsEmpty: Boolean;
+    function Last: IJclUnicodeStrIterator;
+    function Remove(const AString: UnicodeString): Boolean;
+    function RemoveAll(const ACollection: IJclUnicodeStrCollection): Boolean;
+    function RetainAll(const ACollection: IJclUnicodeStrCollection): Boolean;
+    function Size: Integer;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclUnicodeStrIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
+  end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrCollection = IJclAnsiStrCollection;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
   IJclStrCollection = IJclWideStrCollection;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclStrCollection = IJclUnicodeStrCollection;
+  {$ENDIF CONTAINER_UNICODESTR}
 
   IJclSingleCollection = interface(IJclSingleContainer)
     ['{1D34D474-6588-441E-B2B3-8C021A37ED89}']
@@ -1442,7 +1600,7 @@ type
     procedure Clear;
     function Contains(const AValue: Single): Boolean;
     function ContainsAll(const ACollection: IJclSingleCollection): Boolean;
-    function Equals(const ACollection: IJclSingleCollection): Boolean;
+    function CollectionEquals(const ACollection: IJclSingleCollection): Boolean;
     function First: IJclSingleIterator;
     function IsEmpty: Boolean;
     function Last: IJclSingleIterator;
@@ -1462,7 +1620,7 @@ type
     procedure Clear;
     function Contains(const AValue: Double): Boolean;
     function ContainsAll(const ACollection: IJclDoubleCollection): Boolean;
-    function Equals(const ACollection: IJclDoubleCollection): Boolean;
+    function CollectionEquals(const ACollection: IJclDoubleCollection): Boolean;
     function First: IJclDoubleIterator;
     function IsEmpty: Boolean;
     function Last: IJclDoubleIterator;
@@ -1482,7 +1640,7 @@ type
     procedure Clear;
     function Contains(const AValue: Extended): Boolean;
     function ContainsAll(const ACollection: IJclExtendedCollection): Boolean;
-    function Equals(const ACollection: IJclExtendedCollection): Boolean;
+    function CollectionEquals(const ACollection: IJclExtendedCollection): Boolean;
     function First: IJclExtendedIterator;
     function IsEmpty: Boolean;
     function Last: IJclExtendedIterator;
@@ -1512,7 +1670,7 @@ type
     procedure Clear;
     function Contains(AValue: Integer): Boolean;
     function ContainsAll(const ACollection: IJclIntegerCollection): Boolean;
-    function Equals(const ACollection: IJclIntegerCollection): Boolean;
+    function CollectionEquals(const ACollection: IJclIntegerCollection): Boolean;
     function First: IJclIntegerIterator;
     function IsEmpty: Boolean;
     function Last: IJclIntegerIterator;
@@ -1532,7 +1690,7 @@ type
     procedure Clear;
     function Contains(AValue: Cardinal): Boolean;
     function ContainsAll(const ACollection: IJclCardinalCollection): Boolean;
-    function Equals(const ACollection: IJclCardinalCollection): Boolean;
+    function CollectionEquals(const ACollection: IJclCardinalCollection): Boolean;
     function First: IJclCardinalIterator;
     function IsEmpty: Boolean;
     function Last: IJclCardinalIterator;
@@ -1552,7 +1710,7 @@ type
     procedure Clear;
     function Contains(const AValue: Int64): Boolean;
     function ContainsAll(const ACollection: IJclInt64Collection): Boolean;
-    function Equals(const ACollection: IJclInt64Collection): Boolean;
+    function CollectionEquals(const ACollection: IJclInt64Collection): Boolean;
     function First: IJclInt64Iterator;
     function IsEmpty: Boolean;
     function Last: IJclInt64Iterator;
@@ -1573,7 +1731,7 @@ type
     procedure Clear;
     function Contains(APtr: Pointer): Boolean;
     function ContainsAll(const ACollection: IJclPtrCollection): Boolean;
-    function Equals(const ACollection: IJclPtrCollection): Boolean;
+    function CollectionEquals(const ACollection: IJclPtrCollection): Boolean;
     function First: IJclPtrIterator;
     function IsEmpty: Boolean;
     function Last: IJclPtrIterator;
@@ -1594,7 +1752,7 @@ type
     procedure Clear;
     function Contains(AObject: TObject): Boolean;
     function ContainsAll(const ACollection: IJclCollection): Boolean;
-    function Equals(const ACollection: IJclCollection): Boolean;
+    function CollectionEquals(const ACollection: IJclCollection): Boolean;
     function First: IJclIterator;
     function IsEmpty: Boolean;
     function Last: IJclIterator;
@@ -1615,7 +1773,7 @@ type
     procedure Clear;
     function Contains(const AItem: T): Boolean;
     function ContainsAll(const ACollection: IJclCollection<T>): Boolean;
-    function Equals(const ACollection: IJclCollection<T>): Boolean;
+    function CollectionEquals(const ACollection: IJclCollection<T>): Boolean;
     function First: IJclIterator<T>;
     function IsEmpty: Boolean;
     function Last: IJclIterator<T>;
@@ -1668,12 +1826,30 @@ type
     property Strings[Key: Integer]: WideString read GetString write SetString; default;
   end;
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+  IJclUnicodeStrList = interface(IJclUnicodeStrCollection)
+    ['{F4307EB4-D66E-4656-AC56-50883D0F2C83}']
+    function Insert(Index: Integer; const AString: UnicodeString): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclUnicodeStrCollection): Boolean;
+    function GetString(Index: Integer): UnicodeString;
+    function IndexOf(const AString: UnicodeString): Integer;
+    function LastIndexOf(const AString: UnicodeString): Integer;
+    function Delete(Index: Integer): UnicodeString;
+    procedure SetString(Index: Integer; const AString: UnicodeString);
+    function SubList(First, Count: Integer): IJclUnicodeStrList;
+    property Strings[Key: Integer]: UnicodeString read GetString write SetString; default;
+  end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrList = IJclAnsiStrList;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
   IJclStrList = IJclWideStrList;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclStrList = IJclUnicodeStrList;
+  {$ENDIF CONTAINER_UNICODESTR}
 
   IJclSingleList = interface(IJclSingleCollection)
     ['{D081324C-70A4-4AAC-BA42-7557F0262826}']
@@ -1810,12 +1986,18 @@ type
   TIntfSortProc = procedure(const AList: IJclIntfList; L, R: Integer; AComparator: TIntfCompare);
   TAnsiStrSortProc = procedure(const AList: IJclAnsiStrList; L, R: Integer; AComparator: TAnsiStrCompare);
   TWideStrSortProc = procedure(const AList: IJclWideStrList; L, R: Integer; AComparator: TWideStrCompare);
+  {$IFDEF SUPPORTS_UNICODE_STRING}
+  TUnicodeStrSortProc = procedure(const AList: IJclUnicodeStrList; L, R: Integer; AComparator: TUnicodeStrCompare);
+  {$ENDIF SUPPORTS_UNICODE_STRING}
   {$IFDEF CONTAINER_ANSISTR}
   TStrSortProc = TAnsiStrSortProc;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
   TStrSortProc = TWideStrSortProc;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  TStrSortProc = TUnicodeStrSortProc;
+  {$ENDIF CONTAINER_UNICODESTR}
   TSingleSortProc = procedure(const AList: IJclSingleList; L, R: Integer; AComparator: TSingleCompare);
   TDoubleSortProc = procedure(const AList: IJclDoubleList; L, R: Integer; AComparator: TDoubleCompare);
   TExtendedSortProc = procedure(const AList: IJclExtendedList; L, R: Integer; AComparator: TExtendedCompare);
@@ -1851,12 +2033,24 @@ type
     property Strings[Index: Integer]: WideString read GetString write SetString; default;
   end;
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+  IJclUnicodeStrArray = interface(IJclUnicodeStrList)
+    ['{24312E5B-B61D-485C-9E57-AC36C93D8159}']
+    function GetString(Index: Integer): UnicodeString;
+    procedure SetString(Index: Integer; const AString: UnicodeString);
+    property Strings[Index: Integer]: UnicodeString read GetString write SetString; default;
+  end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrArray = IJclAnsiStrArray;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
   IJclStrArray = IJclWideStrArray;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclStrArray = IJclUnicodeStrArray;
+  {$ENDIF CONTAINER_UNICODESTR}
 
   IJclSingleArray = interface(IJclSingleList)
     ['{B96E2A4D-D750-4B65-B975-C619A05A29F6}']
@@ -1956,12 +2150,24 @@ type
     procedure Union(const ACollection: IJclWideStrCollection);
   end;
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+  IJclUnicodeStrSet = interface(IJclUnicodeStrCollection)
+    ['{440E9BCB-341F-40B6-8AED-479B2E98C92A}']
+    procedure Intersect(const ACollection: IJclUnicodeStrCollection);
+    procedure Subtract(const ACollection: IJclUnicodeStrCollection);
+    procedure Union(const ACollection: IJclUnicodeStrCollection);
+  end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrSet = IJclAnsiStrSet;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
   IJclStrSet = IJclWideStrSet;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclStrSet = IJclUnicodeStrSet;
+  {$ENDIF CONTAINER_UNICODESTR}
 
   IJclSingleSet = interface(IJclSingleCollection)
     ['{36E34A78-6A29-4503-97D5-4BF53538CEC0}']
@@ -2069,12 +2275,26 @@ type
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+  IJclUnicodeStrTree = interface(IJclUnicodeStrCollection)
+    ['{A378BC36-1FB1-4330-A335-037DD370E81B}']
+    function GetRoot: IJclUnicodeStrTreeIterator;
+    function GetTraverseOrder: TJclTraverseOrder;
+    procedure SetTraverseOrder(Value: TJclTraverseOrder);
+    property Root: IJclUnicodeStrTreeIterator read GetRoot;
+    property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
+  end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrTree = IJclAnsiStrTree;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
   IJclStrTree = IJclWideStrTree;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclStrTree = IJclUnicodeStrTree;
+  {$ENDIF CONTAINER_UNICODESTR}
 
   IJclSingleTree = interface(IJclSingleCollection)
     ['{A90A51BC-EBD7-40D3-B0A0-C9987E7A83D0}']
@@ -2176,7 +2396,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function Equals(const AMap: IJclIntfIntfMap): Boolean;
+    function MapEquals(const AMap: IJclIntfIntfMap): Boolean;
     function GetValue(const Key: IInterface): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): IInterface;
@@ -2201,7 +2421,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: AnsiString): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function Equals(const AMap: IJclAnsiStrIntfMap): Boolean;
+    function MapEquals(const AMap: IJclAnsiStrIntfMap): Boolean;
     function GetValue(const Key: AnsiString): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): AnsiString;
@@ -2220,7 +2440,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: WideString): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function Equals(const AMap: IJclWideStrIntfMap): Boolean;
+    function MapEquals(const AMap: IJclWideStrIntfMap): Boolean;
     function GetValue(const Key: WideString): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): WideString;
@@ -2234,19 +2454,43 @@ type
       {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
   end;
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+  IJclUnicodeStrIntfMap = interface(IJclUnicodeStrContainer)
+    ['{C83D4F5E-8E66-41E9-83F6-338B44F24BE6}']
+    procedure Clear;
+    function ContainsKey(const Key: UnicodeString): Boolean;
+    function ContainsValue(const Value: IInterface): Boolean;
+    function MapEquals(const AMap: IJclUnicodeStrIntfMap): Boolean;
+    function GetValue(const Key: UnicodeString): IInterface;
+    function IsEmpty: Boolean;
+    function KeyOfValue(const Value: IInterface): UnicodeString;
+    function KeySet: IJclUnicodeStrSet;
+    procedure PutAll(const AMap: IJclUnicodeStrIntfMap);
+    procedure PutValue(const Key: UnicodeString; const Value: IInterface);
+    function Remove(const Key: UnicodeString): IInterface;
+    function Size: Integer;
+    function Values: IJclIntfCollection;
+    property Items[const Key: UnicodeString]: IInterface read GetValue write PutValue;
+      {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
+  end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrIntfMap = IJclAnsiStrIntfMap;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
   IJclStrIntfMap = IJclWideStrIntfMap;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclStrIntfMap = IJclUnicodeStrIntfMap;
+  {$ENDIF CONTAINER_UNICODESTR}
 
   IJclIntfAnsiStrMap = interface(IJclAnsiStrContainer)
     ['{B10E324A-1D98-42FF-B9B4-7F99044591B2}']
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(const Value: AnsiString): Boolean;
-    function Equals(const AMap: IJclIntfAnsiStrMap): Boolean;
+    function MapEquals(const AMap: IJclIntfAnsiStrMap): Boolean;
     function GetValue(const Key: IInterface): AnsiString;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: AnsiString): IInterface;
@@ -2265,7 +2509,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(const Value: WideString): Boolean;
-    function Equals(const AMap: IJclIntfWideStrMap): Boolean;
+    function MapEquals(const AMap: IJclIntfWideStrMap): Boolean;
     function GetValue(const Key: IInterface): WideString;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: WideString): IInterface;
@@ -2279,19 +2523,43 @@ type
       {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
   end;
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+  IJclIntfUnicodeStrMap = interface(IJclUnicodeStrContainer)
+    ['{40F8B873-B763-4A3C-8EC4-31DB3404BF73}']
+    procedure Clear;
+    function ContainsKey(const Key: IInterface): Boolean;
+    function ContainsValue(const Value: UnicodeString): Boolean;
+    function MapEquals(const AMap: IJclIntfUnicodeStrMap): Boolean;
+    function GetValue(const Key: IInterface): UnicodeString;
+    function IsEmpty: Boolean;
+    function KeyOfValue(const Value: UnicodeString): IInterface;
+    function KeySet: IJclIntfSet;
+    procedure PutAll(const AMap: IJclIntfUnicodeStrMap);
+    procedure PutValue(const Key: IInterface; const Value: UnicodeString);
+    function Remove(const Key: IInterface): UnicodeString;
+    function Size: Integer;
+    function Values: IJclUnicodeStrCollection;
+    property Items[const Key: IInterface]: UnicodeString read GetValue write PutValue;
+      {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
+  end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
   {$IFDEF CONTAINER_ANSISTR}
   IJclIntfStrMap = IJclIntfAnsiStrMap;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
   IJclIntfStrMap = IJclIntfWideStrMap;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclIntfStrMap = IJclIntfUnicodeStrMap;
+  {$ENDIF CONTAINER_UNICODESTR}
 
   IJclAnsiStrAnsiStrMap = interface(IJclAnsiStrContainer)
     ['{A4788A96-281A-4924-AA24-03776DDAAD8A}']
     procedure Clear;
     function ContainsKey(const Key: AnsiString): Boolean;
     function ContainsValue(const Value: AnsiString): Boolean;
-    function Equals(const AMap: IJclAnsiStrAnsiStrMap): Boolean;
+    function MapEquals(const AMap: IJclAnsiStrAnsiStrMap): Boolean;
     function GetValue(const Key: AnsiString): AnsiString;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: AnsiString): AnsiString;
@@ -2310,7 +2578,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: WideString): Boolean;
     function ContainsValue(const Value: WideString): Boolean;
-    function Equals(const AMap: IJclWideStrWideStrMap): Boolean;
+    function MapEquals(const AMap: IJclWideStrWideStrMap): Boolean;
     function GetValue(const Key: WideString): WideString;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: WideString): WideString;
@@ -2324,19 +2592,43 @@ type
       {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
   end;
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+  IJclUnicodeStrUnicodeStrMap = interface(IJclUnicodeStrContainer)
+    ['{557E1CBD-06AC-41C2-BAED-253709CBD0AE}']
+    procedure Clear;
+    function ContainsKey(const Key: UnicodeString): Boolean;
+    function ContainsValue(const Value: UnicodeString): Boolean;
+    function MapEquals(const AMap: IJclUnicodeStrUnicodeStrMap): Boolean;
+    function GetValue(const Key: UnicodeString): UnicodeString;
+    function IsEmpty: Boolean;
+    function KeyOfValue(const Value: UnicodeString): UnicodeString;
+    function KeySet: IJclUnicodeStrSet;
+    procedure PutAll(const AMap: IJclUnicodeStrUnicodeStrMap);
+    procedure PutValue(const Key, Value: UnicodeString);
+    function Remove(const Key: UnicodeString): UnicodeString;
+    function Size: Integer;
+    function Values: IJclUnicodeStrCollection;
+    property Items[const Key: UnicodeString]: UnicodeString read GetValue write PutValue;
+      {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
+  end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrStrMap = IJclAnsiStrAnsiStrMap;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
   IJclStrStrMap = IJclWideStrWideStrMap;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclStrStrMap = IJclUnicodeStrUnicodeStrMap;
+  {$ENDIF CONTAINER_UNICODESTR}
 
   IJclSingleIntfMap = interface(IJclSingleContainer)
     ['{5F5E9E8B-E648-450B-B6C0-0EC65CC2D0BA}']
     procedure Clear;
     function ContainsKey(const Key: Single): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function Equals(const AMap: IJclSingleIntfMap): Boolean;
+    function MapEquals(const AMap: IJclSingleIntfMap): Boolean;
     function GetValue(const Key: Single): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): Single;
@@ -2355,7 +2647,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(const Value: Single): Boolean;
-    function Equals(const AMap: IJclIntfSingleMap): Boolean;
+    function MapEquals(const AMap: IJclIntfSingleMap): Boolean;
     function GetValue(const Key: IInterface): Single;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Single): IInterface;
@@ -2374,7 +2666,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: Single): Boolean;
     function ContainsValue(const Value: Single): Boolean;
-    function Equals(const AMap: IJclSingleSingleMap): Boolean;
+    function MapEquals(const AMap: IJclSingleSingleMap): Boolean;
     function GetValue(const Key: Single): Single;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Single): Single;
@@ -2393,7 +2685,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: Double): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function Equals(const AMap: IJclDoubleIntfMap): Boolean;
+    function MapEquals(const AMap: IJclDoubleIntfMap): Boolean;
     function GetValue(const Key: Double): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): Double;
@@ -2412,7 +2704,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(const Value: Double): Boolean;
-    function Equals(const AMap: IJclIntfDoubleMap): Boolean;
+    function MapEquals(const AMap: IJclIntfDoubleMap): Boolean;
     function GetValue(const Key: IInterface): Double;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Double): IInterface;
@@ -2431,7 +2723,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: Double): Boolean;
     function ContainsValue(const Value: Double): Boolean;
-    function Equals(const AMap: IJclDoubleDoubleMap): Boolean;
+    function MapEquals(const AMap: IJclDoubleDoubleMap): Boolean;
     function GetValue(const Key: Double): Double;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Double): Double;
@@ -2450,7 +2742,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: Extended): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function Equals(const AMap: IJclExtendedIntfMap): Boolean;
+    function MapEquals(const AMap: IJclExtendedIntfMap): Boolean;
     function GetValue(const Key: Extended): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): Extended;
@@ -2469,7 +2761,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(const Value: Extended): Boolean;
-    function Equals(const AMap: IJclIntfExtendedMap): Boolean;
+    function MapEquals(const AMap: IJclIntfExtendedMap): Boolean;
     function GetValue(const Key: IInterface): Extended;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Extended): IInterface;
@@ -2488,7 +2780,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: Extended): Boolean;
     function ContainsValue(const Value: Extended): Boolean;
-    function Equals(const AMap: IJclExtendedExtendedMap): Boolean;
+    function MapEquals(const AMap: IJclExtendedExtendedMap): Boolean;
     function GetValue(const Key: Extended): Extended;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Extended): Extended;
@@ -2523,7 +2815,7 @@ type
     procedure Clear;
     function ContainsKey(Key: Integer): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function Equals(const AMap: IJclIntegerIntfMap): Boolean;
+    function MapEquals(const AMap: IJclIntegerIntfMap): Boolean;
     function GetValue(Key: Integer): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): Integer;
@@ -2542,7 +2834,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(Value: Integer): Boolean;
-    function Equals(const AMap: IJclIntfIntegerMap): Boolean;
+    function MapEquals(const AMap: IJclIntfIntegerMap): Boolean;
     function GetValue(const Key: IInterface): Integer;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: Integer): IInterface;
@@ -2561,7 +2853,7 @@ type
     procedure Clear;
     function ContainsKey(Key: Integer): Boolean;
     function ContainsValue(Value: Integer): Boolean;
-    function Equals(const AMap: IJclIntegerIntegerMap): Boolean;
+    function MapEquals(const AMap: IJclIntegerIntegerMap): Boolean;
     function GetValue(Key: Integer): Integer;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: Integer): Integer;
@@ -2580,7 +2872,7 @@ type
     procedure Clear;
     function ContainsKey(Key: Cardinal): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function Equals(const AMap: IJclCardinalIntfMap): Boolean;
+    function MapEquals(const AMap: IJclCardinalIntfMap): Boolean;
     function GetValue(Key: Cardinal): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): Cardinal;
@@ -2599,7 +2891,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(Value: Cardinal): Boolean;
-    function Equals(const AMap: IJclIntfCardinalMap): Boolean;
+    function MapEquals(const AMap: IJclIntfCardinalMap): Boolean;
     function GetValue(const Key: IInterface): Cardinal;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: Cardinal): IInterface;
@@ -2618,7 +2910,7 @@ type
     procedure Clear;
     function ContainsKey(Key: Cardinal): Boolean;
     function ContainsValue(Value: Cardinal): Boolean;
-    function Equals(const AMap: IJclCardinalCardinalMap): Boolean;
+    function MapEquals(const AMap: IJclCardinalCardinalMap): Boolean;
     function GetValue(Key: Cardinal): Cardinal;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: Cardinal): Cardinal;
@@ -2637,7 +2929,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: Int64): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function Equals(const AMap: IJclInt64IntfMap): Boolean;
+    function MapEquals(const AMap: IJclInt64IntfMap): Boolean;
     function GetValue(const Key: Int64): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): Int64;
@@ -2656,7 +2948,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(const Value: Int64): Boolean;
-    function Equals(const AMap: IJclIntfInt64Map): Boolean;
+    function MapEquals(const AMap: IJclIntfInt64Map): Boolean;
     function GetValue(const Key: IInterface): Int64;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Int64): IInterface;
@@ -2675,7 +2967,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: Int64): Boolean;
     function ContainsValue(const Value: Int64): Boolean;
-    function Equals(const AMap: IJclInt64Int64Map): Boolean;
+    function MapEquals(const AMap: IJclInt64Int64Map): Boolean;
     function GetValue(const Key: Int64): Int64;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Int64): Int64;
@@ -2695,7 +2987,7 @@ type
     procedure Clear;
     function ContainsKey(Key: Pointer): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function Equals(const AMap: IJclPtrIntfMap): Boolean;
+    function MapEquals(const AMap: IJclPtrIntfMap): Boolean;
     function GetValue(Key: Pointer): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): Pointer;
@@ -2714,7 +3006,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(Value: Pointer): Boolean;
-    function Equals(const AMap: IJclIntfPtrMap): Boolean;
+    function MapEquals(const AMap: IJclIntfPtrMap): Boolean;
     function GetValue(const Key: IInterface): Pointer;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: Pointer): IInterface;
@@ -2733,7 +3025,7 @@ type
     procedure Clear;
     function ContainsKey(Key: Pointer): Boolean;
     function ContainsValue(Value: Pointer): Boolean;
-    function Equals(const AMap: IJclPtrPtrMap): Boolean;
+    function MapEquals(const AMap: IJclPtrPtrMap): Boolean;
     function GetValue(Key: Pointer): Pointer;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: Pointer): Pointer;
@@ -2753,7 +3045,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function Equals(const AMap: IJclIntfMap): Boolean;
+    function MapEquals(const AMap: IJclIntfMap): Boolean;
     function GetValue(const Key: IInterface): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): IInterface;
@@ -2772,7 +3064,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: AnsiString): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function Equals(const AMap: IJclAnsiStrMap): Boolean;
+    function MapEquals(const AMap: IJclAnsiStrMap): Boolean;
     function GetValue(const Key: AnsiString): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): AnsiString;
@@ -2791,7 +3083,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: WideString): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function Equals(const AMap: IJclWideStrMap): Boolean;
+    function MapEquals(const AMap: IJclWideStrMap): Boolean;
     function GetValue(const Key: WideString): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): WideString;
@@ -2805,19 +3097,43 @@ type
       {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
   end;
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+  IJclUnicodeStrMap = interface(IJclUnicodeStrContainer)
+    ['{4328E033-9B92-40C6-873D-A6982CFC2B95}']
+    procedure Clear;
+    function ContainsKey(const Key: UnicodeString): Boolean;
+    function ContainsValue(Value: TObject): Boolean;
+    function MapEquals(const AMap: IJclUnicodeStrMap): Boolean;
+    function GetValue(const Key: UnicodeString): TObject;
+    function IsEmpty: Boolean;
+    function KeyOfValue(Value: TObject): UnicodeString;
+    function KeySet: IJclUnicodeStrSet;
+    procedure PutAll(const AMap: IJclUnicodeStrMap);
+    procedure PutValue(const Key: UnicodeString; Value: TObject);
+    function Remove(const Key: UnicodeString): TObject;
+    function Size: Integer;
+    function Values: IJclCollection;
+    property Items[const Key: UnicodeString]: TObject read GetValue write PutValue;
+      {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
+  end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrMap = IJclAnsiStrMap;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
   IJclStrMap = IJclWideStrMap;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclStrMap = IJclUnicodeStrMap;
+  {$ENDIF CONTAINER_UNICODESTR}
 
   IJclSingleMap = interface(IJclSingleContainer)
     ['{C501920A-F252-4F94-B142-1F05AE06C3D2}']
     procedure Clear;
     function ContainsKey(const Key: Single): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function Equals(const AMap: IJclSingleMap): Boolean;
+    function MapEquals(const AMap: IJclSingleMap): Boolean;
     function GetValue(const Key: Single): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): Single;
@@ -2836,7 +3152,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: Double): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function Equals(const AMap: IJclDoubleMap): Boolean;
+    function MapEquals(const AMap: IJclDoubleMap): Boolean;
     function GetValue(const Key: Double): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): Double;
@@ -2855,7 +3171,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: Extended): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function Equals(const AMap: IJclExtendedMap): Boolean;
+    function MapEquals(const AMap: IJclExtendedMap): Boolean;
     function GetValue(const Key: Extended): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): Extended;
@@ -2884,7 +3200,7 @@ type
     procedure Clear;
     function ContainsKey(Key: Integer): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function Equals(const AMap: IJclIntegerMap): Boolean;
+    function MapEquals(const AMap: IJclIntegerMap): Boolean;
     function GetValue(Key: Integer): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): Integer;
@@ -2903,7 +3219,7 @@ type
     procedure Clear;
     function ContainsKey(Key: Cardinal): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function Equals(const AMap: IJclCardinalMap): Boolean;
+    function MapEquals(const AMap: IJclCardinalMap): Boolean;
     function GetValue(Key: Cardinal): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): Cardinal;
@@ -2922,7 +3238,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: Int64): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function Equals(const AMap: IJclInt64Map): Boolean;
+    function MapEquals(const AMap: IJclInt64Map): Boolean;
     function GetValue(const Key: Int64): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): Int64;
@@ -2942,7 +3258,7 @@ type
     procedure Clear;
     function ContainsKey(Key: Pointer): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function Equals(const AMap: IJclPtrMap): Boolean;
+    function MapEquals(const AMap: IJclPtrMap): Boolean;
     function GetValue(Key: Pointer): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): Pointer;
@@ -2962,7 +3278,7 @@ type
     procedure Clear;
     function ContainsKey(Key: TObject): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function Equals(const AMap: IJclMap): Boolean;
+    function MapEquals(const AMap: IJclMap): Boolean;
     function GetValue(Key: TObject): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): TObject;
@@ -2986,7 +3302,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: TKey): Boolean;
     function ContainsValue(const Value: TValue): Boolean;
-    function Equals(const AMap: IJclMap<TKey,TValue>): Boolean;
+    function MapEquals(const AMap: IJclMap<TKey,TValue>): Boolean;
     function GetValue(const Key: TKey): TValue;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: TValue): TKey;
@@ -3034,12 +3350,28 @@ type
     function Size: Integer;
   end;
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+  IJclUnicodeStrQueue = interface(IJclUnicodeStrContainer)
+    ['{94A09E52-424A-486E-846B-9C2C52DC3A8F}']
+    procedure Clear;
+    function Contains(const AString: UnicodeString): Boolean;
+    function Dequeue: UnicodeString;
+    function Empty: Boolean;
+    function Enqueue(const AString: UnicodeString): Boolean;
+    function Peek: UnicodeString;
+    function Size: Integer;
+  end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrQueue = IJclAnsiStrQueue;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
   IJclStrQueue = IJclWideStrQueue;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclStrQueue = IJclUnicodeStrQueue;
+  {$ENDIF CONTAINER_UNICODESTR}
 
   IJclSingleQueue = interface(IJclSingleContainer)
     ['{67D74314-9967-4C99-8A48-6E0ADD73EC29}']
@@ -3181,12 +3513,26 @@ type
     function TailMap(const FromKey: WideString): IJclWideStrIntfSortedMap;
   end;
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+  IJclUnicodeStrIntfSortedMap = interface(IJclUnicodeStrIntfMap)
+    ['{25FDE916-730D-449A-BA29-852D8A0470B6}']
+    function FirstKey: UnicodeString;
+    function HeadMap(const ToKey: UnicodeString): IJclUnicodeStrIntfSortedMap;
+    function LastKey: UnicodeString;
+    function SubMap(const FromKey, ToKey: UnicodeString): IJclUnicodeStrIntfSortedMap;
+    function TailMap(const FromKey: UnicodeString): IJclUnicodeStrIntfSortedMap;
+  end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrIntfSortedMap = IJclAnsiStrIntfSortedMap;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
   IJclStrIntfSortedMap = IJclWideStrIntfSortedMap;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclStrIntfSortedMap = IJclUnicodeStrIntfSortedMap;
+  {$ENDIF CONTAINER_UNICODESTR}
 
   IJclIntfAnsiStrSortedMap = interface(IJclIntfAnsiStrMap)
     ['{96E6AC5E-8C40-4795-9C8A-CFD098B58680}']
@@ -3206,12 +3552,26 @@ type
     function TailMap(const FromKey: IInterface): IJclIntfWideStrSortedMap;
   end;
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+  IJclIntfUnicodeStrSortedMap = interface(IJclIntfUnicodeStrMap)
+    ['{B0B0CB9B-268B-40D2-94A8-0B8B5BE2E1AC}']
+    function FirstKey: IInterface;
+    function HeadMap(const ToKey: IInterface): IJclIntfUnicodeStrSortedMap;
+    function LastKey: IInterface;
+    function SubMap(const FromKey, ToKey: IInterface): IJclIntfUnicodeStrSortedMap;
+    function TailMap(const FromKey: IInterface): IJclIntfUnicodeStrSortedMap;
+  end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
   {$IFDEF CONTAINER_ANSISTR}
   IJclIntfStrSortedMap = IJclIntfAnsiStrSortedMap;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
   IJclIntfStrSortedMap = IJclIntfWideStrSortedMap;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclIntfStrSortedMap = IJclIntfUnicodeStrSortedMap;
+  {$ENDIF CONTAINER_UNICODESTR}
 
   IJclAnsiStrAnsiStrSortedMap = interface(IJclAnsiStrAnsiStrMap)
     ['{4F457799-5D03-413D-A46C-067DC4200CC3}']
@@ -3231,12 +3591,26 @@ type
     function TailMap(const FromKey: WideString): IJclWideStrWideStrSortedMap;
   end;
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+  IJclUnicodeStrUnicodeStrSortedMap = interface(IJclUnicodeStrUnicodeStrMap)
+    ['{D8EACC5D-B31E-47A8-9CC9-32B15A79CACA}']
+    function FirstKey: UnicodeString;
+    function HeadMap(const ToKey: UnicodeString): IJclUnicodeStrUnicodeStrSortedMap;
+    function LastKey: UnicodeString;
+    function SubMap(const FromKey, ToKey: UnicodeString): IJclUnicodeStrUnicodeStrSortedMap;
+    function TailMap(const FromKey: UnicodeString): IJclUnicodeStrUnicodeStrSortedMap;
+  end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrStrSortedMap = IJclAnsiStrAnsiStrSortedMap;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
   IJclStrStrSortedMap = IJclWideStrWideStrSortedMap;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclStrStrSortedMap = IJclUnicodeStrUnicodeStrSortedMap;
+  {$ENDIF CONTAINER_UNICODESTR}
 
   IJclSingleIntfSortedMap = interface(IJclSingleIntfMap)
     ['{83D57068-7B8E-453E-B35B-2AB4B594A7A9}']
@@ -3472,12 +3846,26 @@ type
     function TailMap(const FromKey: WideString): IJclWideStrSortedMap;
   end;
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+  IJclUnicodeStrSortedMap = interface(IJclUnicodeStrMap)
+    ['{5510B8FC-3439-4211-8D1F-5EDD9A56D3E3}']
+    function FirstKey: UnicodeString;
+    function HeadMap(const ToKey: UnicodeString): IJclUnicodeStrSortedMap;
+    function LastKey: UnicodeString;
+    function SubMap(const FromKey, ToKey: UnicodeString): IJclUnicodeStrSortedMap;
+    function TailMap(const FromKey: UnicodeString): IJclUnicodeStrSortedMap;
+  end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrSortedMap = IJclAnsiStrSortedMap;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
   IJclStrSortedMap = IJclWideStrSortedMap;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclStrSortedMap = IJclUnicodeStrSortedMap;
+  {$ENDIF CONTAINER_UNICODESTR}
 
   IJclSingleSortedMap = interface(IJclSingleMap)
     ['{8C1A12BE-A7F2-4351-90B7-25DB0AAF5F94}']
@@ -3595,12 +3983,24 @@ type
     function TailSet(const Start: WideString): IJclWideStrSortedSet;
   end;
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+  IJclUnicodeStrSortedSet = interface(IJclUnicodeStrSet)
+    ['{172BCD6F-D23C-4014-9C8C-A77A27D6E881}']
+    function HeadSet(const Finish: UnicodeString): IJclUnicodeStrSortedSet;
+    function SubSet(const Start, Finish: UnicodeString): IJclUnicodeStrSortedSet;
+    function TailSet(const Start: UnicodeString): IJclUnicodeStrSortedSet;
+  end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrSortedSet = IJclAnsiStrSortedSet;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
   IJclStrSortedSet = IJclWideStrSortedSet;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclStrSortedSet = IJclUnicodeStrSortedSet;
+  {$ENDIF CONTAINER_UNICODESTR}
 
   IJclSingleSortedSet = interface(IJclSingleSet)
     ['{65EDA801-9E04-4119-BF9E-D7DD4AF82144}']
@@ -3712,12 +4112,28 @@ type
     function Size: Integer;
   end;
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+  IJclUnicodeStrStack = interface(IJclUnicodeStrContainer)
+    ['{BC046C3D-E3D2-42BA-A96D-054834A70404}']
+    procedure Clear;
+    function Contains(const AString: UnicodeString): Boolean;
+    function Empty: Boolean;
+    function Peek: UnicodeString;
+    function Pop: UnicodeString;
+    function Push(const AString: UnicodeString): Boolean;
+    function Size: Integer;
+  end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
   {$IFDEF CONTAINER_ANSISTR}
   IJclStrStack = IJclAnsiStrStack;
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
   IJclStrStack = IJclWideStrStack;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  IJclStrStack = IJclUnicodeStrStack;
+  {$ENDIF CONTAINER_UNICODESTR}
 
   IJclSingleStack = interface(IJclSingleContainer)
     ['{8DCE45C8-B5B3-43AB-BA08-DAD531CEB9CF}']

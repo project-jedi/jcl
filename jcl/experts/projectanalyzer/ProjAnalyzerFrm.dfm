@@ -1,11 +1,11 @@
 object ProjectAnalyzerForm: TProjectAnalyzerForm
   Left = 362
   Top = 263
+  Width = 544
+  Height = 483
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSizeToolWin
   Caption = 'Project Analyzer'
-  ClientHeight = 456
-  ClientWidth = 536
   Color = clBtnFace
   Constraints.MinHeight = 250
   Constraints.MinWidth = 290
@@ -22,9 +22,9 @@ object ProjectAnalyzerForm: TProjectAnalyzerForm
   TextHeight = 13
   object UnitListView: TListView
     Left = 0
-    Top = 40
+    Top = 42
     Width = 536
-    Height = 397
+    Height = 395
     Align = alClient
     Columns = <
       item
@@ -58,7 +58,7 @@ object ProjectAnalyzerForm: TProjectAnalyzerForm
     Left = 0
     Top = 0
     Width = 536
-    Height = 40
+    Height = 42
     AutoSize = True
     ButtonHeight = 36
     ButtonWidth = 84
@@ -71,45 +71,45 @@ object ProjectAnalyzerForm: TProjectAnalyzerForm
     TabOrder = 1
     object ToolButtonCopy: TToolButton
       Left = 4
-      Top = 0
+      Top = 2
       Action = ActionCopy
     end
     object ToolButtonSave: TToolButton
       Left = 88
-      Top = 0
+      Top = 2
       Action = ActionSave
     end
     object ToolButtonSeparator1: TToolButton
       Left = 172
-      Top = 0
+      Top = 2
       Width = 8
       ImageIndex = 3
       Style = tbsSeparator
     end
     object ToolButtonDetails: TToolButton
       Left = 180
-      Top = 0
+      Top = 2
       Action = ActionShowDetails
       Grouped = True
       Style = tbsCheck
     end
     object ToolButtonSummary: TToolButton
       Left = 264
-      Top = 0
+      Top = 2
       Action = ActionShowSummary
       Grouped = True
       Style = tbsCheck
     end
     object ToolButtonDfms: TToolButton
       Left = 348
-      Top = 0
+      Top = 2
       Action = ActionShowDfms
       Grouped = True
       Style = tbsCheck
     end
     object ToolButtonSeparator2: TToolButton
       Left = 432
-      Top = 0
+      Top = 2
       Width = 8
       Caption = 'ToolButtonSeparator2'
       ImageIndex = 18
@@ -117,7 +117,7 @@ object ProjectAnalyzerForm: TProjectAnalyzerForm
     end
     object ToolButtonShowPackages: TToolButton
       Left = 440
-      Top = 0
+      Top = 2
       Action = ActionShowPackages
     end
   end
@@ -130,6 +130,7 @@ object ProjectAnalyzerForm: TProjectAnalyzerForm
       item
         Width = 50
       end>
+    SimplePanel = False
   end
   object ExplorerItemImages: TImageList
     Left = 8

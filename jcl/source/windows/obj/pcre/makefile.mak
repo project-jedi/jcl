@@ -69,7 +69,7 @@ OBJFILES = .\pcre_compile.obj .\pcre_config.obj .\pcre_dfa_exec.obj \
 # ---------------------------------------------------------------------------
 DEBUGLIBPATH = $(BCB)\lib\debug
 RELEASELIBPATH = $(BCB)\lib\release
-USERDEFINES = 
+USERDEFINES = SUPPORT_UTF8;SUPPORT_UCP
 SYSDEFINES = NO_STRICT;_NO_VCL;_RTLDLL
 INCLUDEPATH = $(pcresrc);$(BCC)\include;$(BCB)\include\vcl
 LIBPATH = $(BCB)\lib\obj;$(BCB)\lib

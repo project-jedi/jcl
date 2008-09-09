@@ -558,7 +558,7 @@ begin
   for I := 1 to ParamCount do
   begin
     FileName := PathGetLongName(ParamStr(I));
-    if (FileName <> '') and not (FileName[1] in ['-', '/']) then
+    if (FileName <> '') and (FileName[1] <> '-') and (FileName[1] <> '/') then
       OpenFile(FileName, False);
   end;    
 end;

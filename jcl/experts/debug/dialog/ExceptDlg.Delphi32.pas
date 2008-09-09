@@ -17,7 +17,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -245,7 +245,7 @@ begin
     ParentWnd := Application.Handle;
     Recipients.Add(%StrValue EMailAddress);
     Subject := %StrValue EMailSubject;
-    Body := ReportAsText;
+    Body := AnsiString(ReportAsText);
     SaveTaskWindows;
     try
       Send(True);

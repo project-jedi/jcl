@@ -20,12 +20,18 @@ type
     ButtonUTF16ToUTF16: TButton;
     OpenDialogTxt: TOpenDialog;
     SaveDialogTxt: TSaveDialog;
+    ButtonAutoToAnsi: TButton;
+    ButtonAutoToUTF8: TButton;
+    ButtonAutoToUTF16: TButton;
     procedure ButtonAnsiToUTF8Click(Sender: TObject);
     procedure ButtonAnsiToUTF16Click(Sender: TObject);
     procedure ButtonUTF8ToAnsiClick(Sender: TObject);
     procedure ButtonUTF8ToUTF16Click(Sender: TObject);
     procedure ButtonUTF16ToAnsiClick(Sender: TObject);
     procedure ButtonUTF16ToUTF8Click(Sender: TObject);
+    procedure ButtonAutoToAnsiClick(Sender: TObject);
+    procedure ButtonAutoToUTF8Click(Sender: TObject);
+    procedure ButtonAutoToUTF16Click(Sender: TObject);
   private
   public
     procedure ConvertFile(ReaderClass, WriterClass: TJclStringStreamClass);
@@ -44,6 +50,21 @@ uses
 procedure TForm1.ButtonAnsiToUTF8Click(Sender: TObject);
 begin
   ConvertFile(TJclAnsiStream, TJclUTF8Stream);
+end;
+
+procedure TForm1.ButtonAutoToAnsiClick(Sender: TObject);
+begin
+  ConvertFile(TJclAutoStream, TJclAnsiStream);
+end;
+
+procedure TForm1.ButtonAutoToUTF16Click(Sender: TObject);
+begin
+  ConvertFile(TJclAutoStream, TJclUTF16Stream);
+end;
+
+procedure TForm1.ButtonAutoToUTF8Click(Sender: TObject);
+begin
+  ConvertFile(TJclAutoStream, TJclUTF8Stream);
 end;
 
 procedure TForm1.ButtonAnsiToUTF16Click(Sender: TObject);

@@ -51,7 +51,8 @@ uses
   {$ENDIF CLR}
   JclAlgorithms,
   {$ENDIF SUPPORTS_GENERICS}
-  JclBase, JclAbstractContainers, JclContainerIntf, JclSynch;
+  JclBase, JclSynch,
+  JclAbstractContainers, JclContainerIntf, JclArrayLists, JclArraySets;
 
 type
   TJclIntfIntfSortedEntry = record
@@ -59,13 +60,17 @@ type
     Value: IInterface;
   end;
 
-  TJclIntfIntfSortedEntryArray = array of TJclIntfIntfSortedEntry;
-
   TJclIntfIntfSortedMap = class(TJclIntfAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,
     IJclIntfIntfMap, IJclIntfIntfSortedMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: IInterface): IInterface;
+    function FreeValue(var Value: IInterface): IInterface;
+    function KeysCompare(const A, B: IInterface): Integer;
+    function ValuesCompare(const A, B: IInterface): Integer;
   private
-    FEntries: TJclIntfIntfSortedEntryArray;
+    FEntries: array of TJclIntfIntfSortedEntry;
     function BinarySearch(const Key: IInterface): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -76,7 +81,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function Equals(const AMap: IJclIntfIntfMap): Boolean;
+    function MapEquals(const AMap: IJclIntfIntfMap): Boolean;
     function GetValue(const Key: IInterface): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): IInterface;
@@ -92,15 +97,6 @@ type
     function LastKey: IInterface;
     function SubMap(const FromKey, ToKey: IInterface): IJclIntfIntfSortedMap;
     function TailMap(const FromKey: IInterface): IJclIntfIntfSortedMap;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: IInterface): IInterface;
-    function FreeValue(var Value: IInterface): IInterface;
-    function KeysCompare(const A, B: IInterface): Integer;
-    function ValuesCompare(const A, B: IInterface): Integer;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -111,13 +107,17 @@ type
     Value: IInterface;
   end;
 
-  TJclAnsiStrIntfSortedEntryArray = array of TJclAnsiStrIntfSortedEntry;
-
   TJclAnsiStrIntfSortedMap = class(TJclAnsiStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclAnsiStrContainer,
     IJclAnsiStrIntfMap, IJclAnsiStrIntfSortedMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: AnsiString): AnsiString;
+    function FreeValue(var Value: IInterface): IInterface;
+    function KeysCompare(const A, B: AnsiString): Integer;
+    function ValuesCompare(const A, B: IInterface): Integer;
   private
-    FEntries: TJclAnsiStrIntfSortedEntryArray;
+    FEntries: array of TJclAnsiStrIntfSortedEntry;
     function BinarySearch(const Key: AnsiString): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -128,7 +128,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: AnsiString): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function Equals(const AMap: IJclAnsiStrIntfMap): Boolean;
+    function MapEquals(const AMap: IJclAnsiStrIntfMap): Boolean;
     function GetValue(const Key: AnsiString): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): AnsiString;
@@ -144,15 +144,6 @@ type
     function LastKey: AnsiString;
     function SubMap(const FromKey, ToKey: AnsiString): IJclAnsiStrIntfSortedMap;
     function TailMap(const FromKey: AnsiString): IJclAnsiStrIntfSortedMap;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: AnsiString): AnsiString;
-    function FreeValue(var Value: IInterface): IInterface;
-    function KeysCompare(const A, B: AnsiString): Integer;
-    function ValuesCompare(const A, B: IInterface): Integer;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -163,13 +154,17 @@ type
     Value: AnsiString;
   end;
 
-  TJclIntfAnsiStrSortedEntryArray = array of TJclIntfAnsiStrSortedEntry;
-
   TJclIntfAnsiStrSortedMap = class(TJclAnsiStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclAnsiStrContainer,
     IJclIntfAnsiStrMap, IJclIntfAnsiStrSortedMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: IInterface): IInterface;
+    function FreeValue(var Value: AnsiString): AnsiString;
+    function KeysCompare(const A, B: IInterface): Integer;
+    function ValuesCompare(const A, B: AnsiString): Integer;
   private
-    FEntries: TJclIntfAnsiStrSortedEntryArray;
+    FEntries: array of TJclIntfAnsiStrSortedEntry;
     function BinarySearch(const Key: IInterface): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -180,7 +175,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(const Value: AnsiString): Boolean;
-    function Equals(const AMap: IJclIntfAnsiStrMap): Boolean;
+    function MapEquals(const AMap: IJclIntfAnsiStrMap): Boolean;
     function GetValue(const Key: IInterface): AnsiString;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: AnsiString): IInterface;
@@ -196,15 +191,6 @@ type
     function LastKey: IInterface;
     function SubMap(const FromKey, ToKey: IInterface): IJclIntfAnsiStrSortedMap;
     function TailMap(const FromKey: IInterface): IJclIntfAnsiStrSortedMap;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: IInterface): IInterface;
-    function FreeValue(var Value: AnsiString): AnsiString;
-    function KeysCompare(const A, B: IInterface): Integer;
-    function ValuesCompare(const A, B: AnsiString): Integer;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -215,13 +201,17 @@ type
     Value: AnsiString;
   end;
 
-  TJclAnsiStrAnsiStrSortedEntryArray = array of TJclAnsiStrAnsiStrSortedEntry;
-
   TJclAnsiStrAnsiStrSortedMap = class(TJclAnsiStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclAnsiStrContainer,
     IJclAnsiStrAnsiStrMap, IJclAnsiStrAnsiStrSortedMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: AnsiString): AnsiString;
+    function FreeValue(var Value: AnsiString): AnsiString;
+    function KeysCompare(const A, B: AnsiString): Integer;
+    function ValuesCompare(const A, B: AnsiString): Integer;
   private
-    FEntries: TJclAnsiStrAnsiStrSortedEntryArray;
+    FEntries: array of TJclAnsiStrAnsiStrSortedEntry;
     function BinarySearch(const Key: AnsiString): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -232,7 +222,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: AnsiString): Boolean;
     function ContainsValue(const Value: AnsiString): Boolean;
-    function Equals(const AMap: IJclAnsiStrAnsiStrMap): Boolean;
+    function MapEquals(const AMap: IJclAnsiStrAnsiStrMap): Boolean;
     function GetValue(const Key: AnsiString): AnsiString;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: AnsiString): AnsiString;
@@ -248,15 +238,6 @@ type
     function LastKey: AnsiString;
     function SubMap(const FromKey, ToKey: AnsiString): IJclAnsiStrAnsiStrSortedMap;
     function TailMap(const FromKey: AnsiString): IJclAnsiStrAnsiStrSortedMap;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: AnsiString): AnsiString;
-    function FreeValue(var Value: AnsiString): AnsiString;
-    function KeysCompare(const A, B: AnsiString): Integer;
-    function ValuesCompare(const A, B: AnsiString): Integer;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -267,13 +248,17 @@ type
     Value: IInterface;
   end;
 
-  TJclWideStrIntfSortedEntryArray = array of TJclWideStrIntfSortedEntry;
-
   TJclWideStrIntfSortedMap = class(TJclWideStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclWideStrContainer,
     IJclWideStrIntfMap, IJclWideStrIntfSortedMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: WideString): WideString;
+    function FreeValue(var Value: IInterface): IInterface;
+    function KeysCompare(const A, B: WideString): Integer;
+    function ValuesCompare(const A, B: IInterface): Integer;
   private
-    FEntries: TJclWideStrIntfSortedEntryArray;
+    FEntries: array of TJclWideStrIntfSortedEntry;
     function BinarySearch(const Key: WideString): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -284,7 +269,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: WideString): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function Equals(const AMap: IJclWideStrIntfMap): Boolean;
+    function MapEquals(const AMap: IJclWideStrIntfMap): Boolean;
     function GetValue(const Key: WideString): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): WideString;
@@ -300,15 +285,6 @@ type
     function LastKey: WideString;
     function SubMap(const FromKey, ToKey: WideString): IJclWideStrIntfSortedMap;
     function TailMap(const FromKey: WideString): IJclWideStrIntfSortedMap;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: WideString): WideString;
-    function FreeValue(var Value: IInterface): IInterface;
-    function KeysCompare(const A, B: WideString): Integer;
-    function ValuesCompare(const A, B: IInterface): Integer;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -319,13 +295,17 @@ type
     Value: WideString;
   end;
 
-  TJclIntfWideStrSortedEntryArray = array of TJclIntfWideStrSortedEntry;
-
   TJclIntfWideStrSortedMap = class(TJclWideStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclWideStrContainer,
     IJclIntfWideStrMap, IJclIntfWideStrSortedMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: IInterface): IInterface;
+    function FreeValue(var Value: WideString): WideString;
+    function KeysCompare(const A, B: IInterface): Integer;
+    function ValuesCompare(const A, B: WideString): Integer;
   private
-    FEntries: TJclIntfWideStrSortedEntryArray;
+    FEntries: array of TJclIntfWideStrSortedEntry;
     function BinarySearch(const Key: IInterface): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -336,7 +316,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(const Value: WideString): Boolean;
-    function Equals(const AMap: IJclIntfWideStrMap): Boolean;
+    function MapEquals(const AMap: IJclIntfWideStrMap): Boolean;
     function GetValue(const Key: IInterface): WideString;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: WideString): IInterface;
@@ -352,15 +332,6 @@ type
     function LastKey: IInterface;
     function SubMap(const FromKey, ToKey: IInterface): IJclIntfWideStrSortedMap;
     function TailMap(const FromKey: IInterface): IJclIntfWideStrSortedMap;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: IInterface): IInterface;
-    function FreeValue(var Value: WideString): WideString;
-    function KeysCompare(const A, B: IInterface): Integer;
-    function ValuesCompare(const A, B: WideString): Integer;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -371,13 +342,17 @@ type
     Value: WideString;
   end;
 
-  TJclWideStrWideStrSortedEntryArray = array of TJclWideStrWideStrSortedEntry;
-
   TJclWideStrWideStrSortedMap = class(TJclWideStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclWideStrContainer,
     IJclWideStrWideStrMap, IJclWideStrWideStrSortedMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: WideString): WideString;
+    function FreeValue(var Value: WideString): WideString;
+    function KeysCompare(const A, B: WideString): Integer;
+    function ValuesCompare(const A, B: WideString): Integer;
   private
-    FEntries: TJclWideStrWideStrSortedEntryArray;
+    FEntries: array of TJclWideStrWideStrSortedEntry;
     function BinarySearch(const Key: WideString): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -388,7 +363,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: WideString): Boolean;
     function ContainsValue(const Value: WideString): Boolean;
-    function Equals(const AMap: IJclWideStrWideStrMap): Boolean;
+    function MapEquals(const AMap: IJclWideStrWideStrMap): Boolean;
     function GetValue(const Key: WideString): WideString;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: WideString): WideString;
@@ -404,19 +379,153 @@ type
     function LastKey: WideString;
     function SubMap(const FromKey, ToKey: WideString): IJclWideStrWideStrSortedMap;
     function TailMap(const FromKey: WideString): IJclWideStrWideStrSortedMap;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: WideString): WideString;
-    function FreeValue(var Value: WideString): WideString;
-    function KeysCompare(const A, B: WideString): Integer;
-    function ValuesCompare(const A, B: WideString): Integer;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
   end;
+
+{$IFDEF SUPPORTS_UNICODE_STRING}
+  TJclUnicodeStrIntfSortedEntry = record
+    Key: UnicodeString;
+    Value: IInterface;
+  end;
+
+  TJclUnicodeStrIntfSortedMap = class(TJclUnicodeStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclUnicodeStrContainer,
+    IJclUnicodeStrIntfMap, IJclUnicodeStrIntfSortedMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: UnicodeString): UnicodeString;
+    function FreeValue(var Value: IInterface): IInterface;
+    function KeysCompare(const A, B: UnicodeString): Integer;
+    function ValuesCompare(const A, B: IInterface): Integer;
+  private
+    FEntries: array of TJclUnicodeStrIntfSortedEntry;
+    function BinarySearch(const Key: UnicodeString): Integer;
+  protected
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+    { IJclPackable }
+    procedure SetCapacity(Value: Integer); override;
+    { IJclUnicodeStrIntfMap }
+    procedure Clear;
+    function ContainsKey(const Key: UnicodeString): Boolean;
+    function ContainsValue(const Value: IInterface): Boolean;
+    function MapEquals(const AMap: IJclUnicodeStrIntfMap): Boolean;
+    function GetValue(const Key: UnicodeString): IInterface;
+    function IsEmpty: Boolean;
+    function KeyOfValue(const Value: IInterface): UnicodeString;
+    function KeySet: IJclUnicodeStrSet;
+    procedure PutAll(const AMap: IJclUnicodeStrIntfMap);
+    procedure PutValue(const Key: UnicodeString; const Value: IInterface);
+    function Remove(const Key: UnicodeString): IInterface;
+    function Size: Integer;
+    function Values: IJclIntfCollection;
+    { IJclUnicodeStrIntfSortedMap }
+    function FirstKey: UnicodeString;
+    function HeadMap(const ToKey: UnicodeString): IJclUnicodeStrIntfSortedMap;
+    function LastKey: UnicodeString;
+    function SubMap(const FromKey, ToKey: UnicodeString): IJclUnicodeStrIntfSortedMap;
+    function TailMap(const FromKey: UnicodeString): IJclUnicodeStrIntfSortedMap;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+  end;
+
+  TJclIntfUnicodeStrSortedEntry = record
+    Key: IInterface;
+    Value: UnicodeString;
+  end;
+
+  TJclIntfUnicodeStrSortedMap = class(TJclUnicodeStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclUnicodeStrContainer,
+    IJclIntfUnicodeStrMap, IJclIntfUnicodeStrSortedMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: IInterface): IInterface;
+    function FreeValue(var Value: UnicodeString): UnicodeString;
+    function KeysCompare(const A, B: IInterface): Integer;
+    function ValuesCompare(const A, B: UnicodeString): Integer;
+  private
+    FEntries: array of TJclIntfUnicodeStrSortedEntry;
+    function BinarySearch(const Key: IInterface): Integer;
+  protected
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+    { IJclPackable }
+    procedure SetCapacity(Value: Integer); override;
+    { IJclIntfUnicodeStrMap }
+    procedure Clear;
+    function ContainsKey(const Key: IInterface): Boolean;
+    function ContainsValue(const Value: UnicodeString): Boolean;
+    function MapEquals(const AMap: IJclIntfUnicodeStrMap): Boolean;
+    function GetValue(const Key: IInterface): UnicodeString;
+    function IsEmpty: Boolean;
+    function KeyOfValue(const Value: UnicodeString): IInterface;
+    function KeySet: IJclIntfSet;
+    procedure PutAll(const AMap: IJclIntfUnicodeStrMap);
+    procedure PutValue(const Key: IInterface; const Value: UnicodeString);
+    function Remove(const Key: IInterface): UnicodeString;
+    function Size: Integer;
+    function Values: IJclUnicodeStrCollection;
+    { IJclIntfUnicodeStrSortedMap }
+    function FirstKey: IInterface;
+    function HeadMap(const ToKey: IInterface): IJclIntfUnicodeStrSortedMap;
+    function LastKey: IInterface;
+    function SubMap(const FromKey, ToKey: IInterface): IJclIntfUnicodeStrSortedMap;
+    function TailMap(const FromKey: IInterface): IJclIntfUnicodeStrSortedMap;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+  end;
+
+  TJclUnicodeStrUnicodeStrSortedEntry = record
+    Key: UnicodeString;
+    Value: UnicodeString;
+  end;
+
+  TJclUnicodeStrUnicodeStrSortedMap = class(TJclUnicodeStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclUnicodeStrContainer,
+    IJclUnicodeStrUnicodeStrMap, IJclUnicodeStrUnicodeStrSortedMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: UnicodeString): UnicodeString;
+    function FreeValue(var Value: UnicodeString): UnicodeString;
+    function KeysCompare(const A, B: UnicodeString): Integer;
+    function ValuesCompare(const A, B: UnicodeString): Integer;
+  private
+    FEntries: array of TJclUnicodeStrUnicodeStrSortedEntry;
+    function BinarySearch(const Key: UnicodeString): Integer;
+  protected
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+    { IJclPackable }
+    procedure SetCapacity(Value: Integer); override;
+    { IJclUnicodeStrUnicodeStrMap }
+    procedure Clear;
+    function ContainsKey(const Key: UnicodeString): Boolean;
+    function ContainsValue(const Value: UnicodeString): Boolean;
+    function MapEquals(const AMap: IJclUnicodeStrUnicodeStrMap): Boolean;
+    function GetValue(const Key: UnicodeString): UnicodeString;
+    function IsEmpty: Boolean;
+    function KeyOfValue(const Value: UnicodeString): UnicodeString;
+    function KeySet: IJclUnicodeStrSet;
+    procedure PutAll(const AMap: IJclUnicodeStrUnicodeStrMap);
+    procedure PutValue(const Key: UnicodeString; const Value: UnicodeString);
+    function Remove(const Key: UnicodeString): UnicodeString;
+    function Size: Integer;
+    function Values: IJclUnicodeStrCollection;
+    { IJclUnicodeStrUnicodeStrSortedMap }
+    function FirstKey: UnicodeString;
+    function HeadMap(const ToKey: UnicodeString): IJclUnicodeStrUnicodeStrSortedMap;
+    function LastKey: UnicodeString;
+    function SubMap(const FromKey, ToKey: UnicodeString): IJclUnicodeStrUnicodeStrSortedMap;
+    function TailMap(const FromKey: UnicodeString): IJclUnicodeStrUnicodeStrSortedMap;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+  end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF CONTAINER_ANSISTR}
   TJclStrIntfSortedMap = TJclAnsiStrIntfSortedMap;
@@ -428,19 +537,28 @@ type
   TJclIntfStrSortedMap = TJclIntfWideStrSortedMap;
   TJclStrStrSortedMap = TJclWideStrWideStrSortedMap;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  TJclStrIntfSortedMap = TJclUnicodeStrIntfSortedMap;
+  TJclIntfStrSortedMap = TJclIntfUnicodeStrSortedMap;
+  TJclStrStrSortedMap = TJclUnicodeStrUnicodeStrSortedMap;
+  {$ENDIF CONTAINER_UNICODESTR}
 
   TJclSingleIntfSortedEntry = record
     Key: Single;
     Value: IInterface;
   end;
 
-  TJclSingleIntfSortedEntryArray = array of TJclSingleIntfSortedEntry;
-
   TJclSingleIntfSortedMap = class(TJclSingleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclSingleContainer,
     IJclSingleIntfMap, IJclSingleIntfSortedMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: Single): Single;
+    function FreeValue(var Value: IInterface): IInterface;
+    function KeysCompare(const A, B: Single): Integer;
+    function ValuesCompare(const A, B: IInterface): Integer;
   private
-    FEntries: TJclSingleIntfSortedEntryArray;
+    FEntries: array of TJclSingleIntfSortedEntry;
     function BinarySearch(const Key: Single): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -451,7 +569,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: Single): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function Equals(const AMap: IJclSingleIntfMap): Boolean;
+    function MapEquals(const AMap: IJclSingleIntfMap): Boolean;
     function GetValue(const Key: Single): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): Single;
@@ -467,15 +585,6 @@ type
     function LastKey: Single;
     function SubMap(const FromKey, ToKey: Single): IJclSingleIntfSortedMap;
     function TailMap(const FromKey: Single): IJclSingleIntfSortedMap;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: Single): Single;
-    function FreeValue(var Value: IInterface): IInterface;
-    function KeysCompare(const A, B: Single): Integer;
-    function ValuesCompare(const A, B: IInterface): Integer;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -486,13 +595,17 @@ type
     Value: Single;
   end;
 
-  TJclIntfSingleSortedEntryArray = array of TJclIntfSingleSortedEntry;
-
   TJclIntfSingleSortedMap = class(TJclSingleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclSingleContainer,
     IJclIntfSingleMap, IJclIntfSingleSortedMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: IInterface): IInterface;
+    function FreeValue(var Value: Single): Single;
+    function KeysCompare(const A, B: IInterface): Integer;
+    function ValuesCompare(const A, B: Single): Integer;
   private
-    FEntries: TJclIntfSingleSortedEntryArray;
+    FEntries: array of TJclIntfSingleSortedEntry;
     function BinarySearch(const Key: IInterface): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -503,7 +616,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(const Value: Single): Boolean;
-    function Equals(const AMap: IJclIntfSingleMap): Boolean;
+    function MapEquals(const AMap: IJclIntfSingleMap): Boolean;
     function GetValue(const Key: IInterface): Single;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Single): IInterface;
@@ -519,15 +632,6 @@ type
     function LastKey: IInterface;
     function SubMap(const FromKey, ToKey: IInterface): IJclIntfSingleSortedMap;
     function TailMap(const FromKey: IInterface): IJclIntfSingleSortedMap;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: IInterface): IInterface;
-    function FreeValue(var Value: Single): Single;
-    function KeysCompare(const A, B: IInterface): Integer;
-    function ValuesCompare(const A, B: Single): Integer;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -538,13 +642,17 @@ type
     Value: Single;
   end;
 
-  TJclSingleSingleSortedEntryArray = array of TJclSingleSingleSortedEntry;
-
   TJclSingleSingleSortedMap = class(TJclSingleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclSingleContainer,
     IJclSingleSingleMap, IJclSingleSingleSortedMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: Single): Single;
+    function FreeValue(var Value: Single): Single;
+    function KeysCompare(const A, B: Single): Integer;
+    function ValuesCompare(const A, B: Single): Integer;
   private
-    FEntries: TJclSingleSingleSortedEntryArray;
+    FEntries: array of TJclSingleSingleSortedEntry;
     function BinarySearch(const Key: Single): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -555,7 +663,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: Single): Boolean;
     function ContainsValue(const Value: Single): Boolean;
-    function Equals(const AMap: IJclSingleSingleMap): Boolean;
+    function MapEquals(const AMap: IJclSingleSingleMap): Boolean;
     function GetValue(const Key: Single): Single;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Single): Single;
@@ -571,15 +679,6 @@ type
     function LastKey: Single;
     function SubMap(const FromKey, ToKey: Single): IJclSingleSingleSortedMap;
     function TailMap(const FromKey: Single): IJclSingleSingleSortedMap;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: Single): Single;
-    function FreeValue(var Value: Single): Single;
-    function KeysCompare(const A, B: Single): Integer;
-    function ValuesCompare(const A, B: Single): Integer;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -590,13 +689,17 @@ type
     Value: IInterface;
   end;
 
-  TJclDoubleIntfSortedEntryArray = array of TJclDoubleIntfSortedEntry;
-
   TJclDoubleIntfSortedMap = class(TJclDoubleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclDoubleContainer,
     IJclDoubleIntfMap, IJclDoubleIntfSortedMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: Double): Double;
+    function FreeValue(var Value: IInterface): IInterface;
+    function KeysCompare(const A, B: Double): Integer;
+    function ValuesCompare(const A, B: IInterface): Integer;
   private
-    FEntries: TJclDoubleIntfSortedEntryArray;
+    FEntries: array of TJclDoubleIntfSortedEntry;
     function BinarySearch(const Key: Double): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -607,7 +710,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: Double): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function Equals(const AMap: IJclDoubleIntfMap): Boolean;
+    function MapEquals(const AMap: IJclDoubleIntfMap): Boolean;
     function GetValue(const Key: Double): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): Double;
@@ -623,15 +726,6 @@ type
     function LastKey: Double;
     function SubMap(const FromKey, ToKey: Double): IJclDoubleIntfSortedMap;
     function TailMap(const FromKey: Double): IJclDoubleIntfSortedMap;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: Double): Double;
-    function FreeValue(var Value: IInterface): IInterface;
-    function KeysCompare(const A, B: Double): Integer;
-    function ValuesCompare(const A, B: IInterface): Integer;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -642,13 +736,17 @@ type
     Value: Double;
   end;
 
-  TJclIntfDoubleSortedEntryArray = array of TJclIntfDoubleSortedEntry;
-
   TJclIntfDoubleSortedMap = class(TJclDoubleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclDoubleContainer,
     IJclIntfDoubleMap, IJclIntfDoubleSortedMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: IInterface): IInterface;
+    function FreeValue(var Value: Double): Double;
+    function KeysCompare(const A, B: IInterface): Integer;
+    function ValuesCompare(const A, B: Double): Integer;
   private
-    FEntries: TJclIntfDoubleSortedEntryArray;
+    FEntries: array of TJclIntfDoubleSortedEntry;
     function BinarySearch(const Key: IInterface): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -659,7 +757,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(const Value: Double): Boolean;
-    function Equals(const AMap: IJclIntfDoubleMap): Boolean;
+    function MapEquals(const AMap: IJclIntfDoubleMap): Boolean;
     function GetValue(const Key: IInterface): Double;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Double): IInterface;
@@ -675,15 +773,6 @@ type
     function LastKey: IInterface;
     function SubMap(const FromKey, ToKey: IInterface): IJclIntfDoubleSortedMap;
     function TailMap(const FromKey: IInterface): IJclIntfDoubleSortedMap;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: IInterface): IInterface;
-    function FreeValue(var Value: Double): Double;
-    function KeysCompare(const A, B: IInterface): Integer;
-    function ValuesCompare(const A, B: Double): Integer;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -694,13 +783,17 @@ type
     Value: Double;
   end;
 
-  TJclDoubleDoubleSortedEntryArray = array of TJclDoubleDoubleSortedEntry;
-
   TJclDoubleDoubleSortedMap = class(TJclDoubleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclDoubleContainer,
     IJclDoubleDoubleMap, IJclDoubleDoubleSortedMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: Double): Double;
+    function FreeValue(var Value: Double): Double;
+    function KeysCompare(const A, B: Double): Integer;
+    function ValuesCompare(const A, B: Double): Integer;
   private
-    FEntries: TJclDoubleDoubleSortedEntryArray;
+    FEntries: array of TJclDoubleDoubleSortedEntry;
     function BinarySearch(const Key: Double): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -711,7 +804,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: Double): Boolean;
     function ContainsValue(const Value: Double): Boolean;
-    function Equals(const AMap: IJclDoubleDoubleMap): Boolean;
+    function MapEquals(const AMap: IJclDoubleDoubleMap): Boolean;
     function GetValue(const Key: Double): Double;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Double): Double;
@@ -727,15 +820,6 @@ type
     function LastKey: Double;
     function SubMap(const FromKey, ToKey: Double): IJclDoubleDoubleSortedMap;
     function TailMap(const FromKey: Double): IJclDoubleDoubleSortedMap;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: Double): Double;
-    function FreeValue(var Value: Double): Double;
-    function KeysCompare(const A, B: Double): Integer;
-    function ValuesCompare(const A, B: Double): Integer;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -746,13 +830,17 @@ type
     Value: IInterface;
   end;
 
-  TJclExtendedIntfSortedEntryArray = array of TJclExtendedIntfSortedEntry;
-
   TJclExtendedIntfSortedMap = class(TJclExtendedAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclExtendedContainer,
     IJclExtendedIntfMap, IJclExtendedIntfSortedMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: Extended): Extended;
+    function FreeValue(var Value: IInterface): IInterface;
+    function KeysCompare(const A, B: Extended): Integer;
+    function ValuesCompare(const A, B: IInterface): Integer;
   private
-    FEntries: TJclExtendedIntfSortedEntryArray;
+    FEntries: array of TJclExtendedIntfSortedEntry;
     function BinarySearch(const Key: Extended): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -763,7 +851,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: Extended): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function Equals(const AMap: IJclExtendedIntfMap): Boolean;
+    function MapEquals(const AMap: IJclExtendedIntfMap): Boolean;
     function GetValue(const Key: Extended): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): Extended;
@@ -779,15 +867,6 @@ type
     function LastKey: Extended;
     function SubMap(const FromKey, ToKey: Extended): IJclExtendedIntfSortedMap;
     function TailMap(const FromKey: Extended): IJclExtendedIntfSortedMap;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: Extended): Extended;
-    function FreeValue(var Value: IInterface): IInterface;
-    function KeysCompare(const A, B: Extended): Integer;
-    function ValuesCompare(const A, B: IInterface): Integer;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -798,13 +877,17 @@ type
     Value: Extended;
   end;
 
-  TJclIntfExtendedSortedEntryArray = array of TJclIntfExtendedSortedEntry;
-
   TJclIntfExtendedSortedMap = class(TJclExtendedAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclExtendedContainer,
     IJclIntfExtendedMap, IJclIntfExtendedSortedMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: IInterface): IInterface;
+    function FreeValue(var Value: Extended): Extended;
+    function KeysCompare(const A, B: IInterface): Integer;
+    function ValuesCompare(const A, B: Extended): Integer;
   private
-    FEntries: TJclIntfExtendedSortedEntryArray;
+    FEntries: array of TJclIntfExtendedSortedEntry;
     function BinarySearch(const Key: IInterface): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -815,7 +898,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(const Value: Extended): Boolean;
-    function Equals(const AMap: IJclIntfExtendedMap): Boolean;
+    function MapEquals(const AMap: IJclIntfExtendedMap): Boolean;
     function GetValue(const Key: IInterface): Extended;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Extended): IInterface;
@@ -831,15 +914,6 @@ type
     function LastKey: IInterface;
     function SubMap(const FromKey, ToKey: IInterface): IJclIntfExtendedSortedMap;
     function TailMap(const FromKey: IInterface): IJclIntfExtendedSortedMap;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: IInterface): IInterface;
-    function FreeValue(var Value: Extended): Extended;
-    function KeysCompare(const A, B: IInterface): Integer;
-    function ValuesCompare(const A, B: Extended): Integer;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -850,13 +924,17 @@ type
     Value: Extended;
   end;
 
-  TJclExtendedExtendedSortedEntryArray = array of TJclExtendedExtendedSortedEntry;
-
   TJclExtendedExtendedSortedMap = class(TJclExtendedAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclExtendedContainer,
     IJclExtendedExtendedMap, IJclExtendedExtendedSortedMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: Extended): Extended;
+    function FreeValue(var Value: Extended): Extended;
+    function KeysCompare(const A, B: Extended): Integer;
+    function ValuesCompare(const A, B: Extended): Integer;
   private
-    FEntries: TJclExtendedExtendedSortedEntryArray;
+    FEntries: array of TJclExtendedExtendedSortedEntry;
     function BinarySearch(const Key: Extended): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -867,7 +945,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: Extended): Boolean;
     function ContainsValue(const Value: Extended): Boolean;
-    function Equals(const AMap: IJclExtendedExtendedMap): Boolean;
+    function MapEquals(const AMap: IJclExtendedExtendedMap): Boolean;
     function GetValue(const Key: Extended): Extended;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Extended): Extended;
@@ -883,15 +961,6 @@ type
     function LastKey: Extended;
     function SubMap(const FromKey, ToKey: Extended): IJclExtendedExtendedSortedMap;
     function TailMap(const FromKey: Extended): IJclExtendedExtendedSortedMap;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: Extended): Extended;
-    function FreeValue(var Value: Extended): Extended;
-    function KeysCompare(const A, B: Extended): Integer;
-    function ValuesCompare(const A, B: Extended): Integer;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -918,13 +987,17 @@ type
     Value: IInterface;
   end;
 
-  TJclIntegerIntfSortedEntryArray = array of TJclIntegerIntfSortedEntry;
-
   TJclIntegerIntfSortedMap = class(TJclIntegerAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,
     IJclIntegerIntfMap, IJclIntegerIntfSortedMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: Integer): Integer;
+    function FreeValue(var Value: IInterface): IInterface;
+    function KeysCompare(A, B: Integer): Integer;
+    function ValuesCompare(const A, B: IInterface): Integer;
   private
-    FEntries: TJclIntegerIntfSortedEntryArray;
+    FEntries: array of TJclIntegerIntfSortedEntry;
     function BinarySearch(Key: Integer): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -935,7 +1008,7 @@ type
     procedure Clear;
     function ContainsKey(Key: Integer): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function Equals(const AMap: IJclIntegerIntfMap): Boolean;
+    function MapEquals(const AMap: IJclIntegerIntfMap): Boolean;
     function GetValue(Key: Integer): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): Integer;
@@ -951,15 +1024,6 @@ type
     function LastKey: Integer;
     function SubMap(FromKey, ToKey: Integer): IJclIntegerIntfSortedMap;
     function TailMap(FromKey: Integer): IJclIntegerIntfSortedMap;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: Integer): Integer;
-    function FreeValue(var Value: IInterface): IInterface;
-    function KeysCompare(A, B: Integer): Integer;
-    function ValuesCompare(const A, B: IInterface): Integer;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -970,13 +1034,17 @@ type
     Value: Integer;
   end;
 
-  TJclIntfIntegerSortedEntryArray = array of TJclIntfIntegerSortedEntry;
-
   TJclIntfIntegerSortedMap = class(TJclIntegerAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,
     IJclIntfIntegerMap, IJclIntfIntegerSortedMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: IInterface): IInterface;
+    function FreeValue(var Value: Integer): Integer;
+    function KeysCompare(const A, B: IInterface): Integer;
+    function ValuesCompare(A, B: Integer): Integer;
   private
-    FEntries: TJclIntfIntegerSortedEntryArray;
+    FEntries: array of TJclIntfIntegerSortedEntry;
     function BinarySearch(const Key: IInterface): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -987,7 +1055,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(Value: Integer): Boolean;
-    function Equals(const AMap: IJclIntfIntegerMap): Boolean;
+    function MapEquals(const AMap: IJclIntfIntegerMap): Boolean;
     function GetValue(const Key: IInterface): Integer;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: Integer): IInterface;
@@ -1003,15 +1071,6 @@ type
     function LastKey: IInterface;
     function SubMap(const FromKey, ToKey: IInterface): IJclIntfIntegerSortedMap;
     function TailMap(const FromKey: IInterface): IJclIntfIntegerSortedMap;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: IInterface): IInterface;
-    function FreeValue(var Value: Integer): Integer;
-    function KeysCompare(const A, B: IInterface): Integer;
-    function ValuesCompare(A, B: Integer): Integer;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -1022,13 +1081,17 @@ type
     Value: Integer;
   end;
 
-  TJclIntegerIntegerSortedEntryArray = array of TJclIntegerIntegerSortedEntry;
-
   TJclIntegerIntegerSortedMap = class(TJclIntegerAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,
     IJclIntegerIntegerMap, IJclIntegerIntegerSortedMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: Integer): Integer;
+    function FreeValue(var Value: Integer): Integer;
+    function KeysCompare(A, B: Integer): Integer;
+    function ValuesCompare(A, B: Integer): Integer;
   private
-    FEntries: TJclIntegerIntegerSortedEntryArray;
+    FEntries: array of TJclIntegerIntegerSortedEntry;
     function BinarySearch(Key: Integer): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1039,7 +1102,7 @@ type
     procedure Clear;
     function ContainsKey(Key: Integer): Boolean;
     function ContainsValue(Value: Integer): Boolean;
-    function Equals(const AMap: IJclIntegerIntegerMap): Boolean;
+    function MapEquals(const AMap: IJclIntegerIntegerMap): Boolean;
     function GetValue(Key: Integer): Integer;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: Integer): Integer;
@@ -1055,15 +1118,6 @@ type
     function LastKey: Integer;
     function SubMap(FromKey, ToKey: Integer): IJclIntegerIntegerSortedMap;
     function TailMap(FromKey: Integer): IJclIntegerIntegerSortedMap;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: Integer): Integer;
-    function FreeValue(var Value: Integer): Integer;
-    function KeysCompare(A, B: Integer): Integer;
-    function ValuesCompare(A, B: Integer): Integer;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -1074,13 +1128,17 @@ type
     Value: IInterface;
   end;
 
-  TJclCardinalIntfSortedEntryArray = array of TJclCardinalIntfSortedEntry;
-
   TJclCardinalIntfSortedMap = class(TJclCardinalAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,
     IJclCardinalIntfMap, IJclCardinalIntfSortedMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: Cardinal): Cardinal;
+    function FreeValue(var Value: IInterface): IInterface;
+    function KeysCompare(A, B: Cardinal): Integer;
+    function ValuesCompare(const A, B: IInterface): Integer;
   private
-    FEntries: TJclCardinalIntfSortedEntryArray;
+    FEntries: array of TJclCardinalIntfSortedEntry;
     function BinarySearch(Key: Cardinal): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1091,7 +1149,7 @@ type
     procedure Clear;
     function ContainsKey(Key: Cardinal): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function Equals(const AMap: IJclCardinalIntfMap): Boolean;
+    function MapEquals(const AMap: IJclCardinalIntfMap): Boolean;
     function GetValue(Key: Cardinal): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): Cardinal;
@@ -1107,15 +1165,6 @@ type
     function LastKey: Cardinal;
     function SubMap(FromKey, ToKey: Cardinal): IJclCardinalIntfSortedMap;
     function TailMap(FromKey: Cardinal): IJclCardinalIntfSortedMap;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: Cardinal): Cardinal;
-    function FreeValue(var Value: IInterface): IInterface;
-    function KeysCompare(A, B: Cardinal): Integer;
-    function ValuesCompare(const A, B: IInterface): Integer;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -1126,13 +1175,17 @@ type
     Value: Cardinal;
   end;
 
-  TJclIntfCardinalSortedEntryArray = array of TJclIntfCardinalSortedEntry;
-
   TJclIntfCardinalSortedMap = class(TJclCardinalAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,
     IJclIntfCardinalMap, IJclIntfCardinalSortedMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: IInterface): IInterface;
+    function FreeValue(var Value: Cardinal): Cardinal;
+    function KeysCompare(const A, B: IInterface): Integer;
+    function ValuesCompare(A, B: Cardinal): Integer;
   private
-    FEntries: TJclIntfCardinalSortedEntryArray;
+    FEntries: array of TJclIntfCardinalSortedEntry;
     function BinarySearch(const Key: IInterface): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1143,7 +1196,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(Value: Cardinal): Boolean;
-    function Equals(const AMap: IJclIntfCardinalMap): Boolean;
+    function MapEquals(const AMap: IJclIntfCardinalMap): Boolean;
     function GetValue(const Key: IInterface): Cardinal;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: Cardinal): IInterface;
@@ -1159,15 +1212,6 @@ type
     function LastKey: IInterface;
     function SubMap(const FromKey, ToKey: IInterface): IJclIntfCardinalSortedMap;
     function TailMap(const FromKey: IInterface): IJclIntfCardinalSortedMap;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: IInterface): IInterface;
-    function FreeValue(var Value: Cardinal): Cardinal;
-    function KeysCompare(const A, B: IInterface): Integer;
-    function ValuesCompare(A, B: Cardinal): Integer;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -1178,13 +1222,17 @@ type
     Value: Cardinal;
   end;
 
-  TJclCardinalCardinalSortedEntryArray = array of TJclCardinalCardinalSortedEntry;
-
   TJclCardinalCardinalSortedMap = class(TJclCardinalAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,
     IJclCardinalCardinalMap, IJclCardinalCardinalSortedMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: Cardinal): Cardinal;
+    function FreeValue(var Value: Cardinal): Cardinal;
+    function KeysCompare(A, B: Cardinal): Integer;
+    function ValuesCompare(A, B: Cardinal): Integer;
   private
-    FEntries: TJclCardinalCardinalSortedEntryArray;
+    FEntries: array of TJclCardinalCardinalSortedEntry;
     function BinarySearch(Key: Cardinal): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1195,7 +1243,7 @@ type
     procedure Clear;
     function ContainsKey(Key: Cardinal): Boolean;
     function ContainsValue(Value: Cardinal): Boolean;
-    function Equals(const AMap: IJclCardinalCardinalMap): Boolean;
+    function MapEquals(const AMap: IJclCardinalCardinalMap): Boolean;
     function GetValue(Key: Cardinal): Cardinal;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: Cardinal): Cardinal;
@@ -1211,15 +1259,6 @@ type
     function LastKey: Cardinal;
     function SubMap(FromKey, ToKey: Cardinal): IJclCardinalCardinalSortedMap;
     function TailMap(FromKey: Cardinal): IJclCardinalCardinalSortedMap;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: Cardinal): Cardinal;
-    function FreeValue(var Value: Cardinal): Cardinal;
-    function KeysCompare(A, B: Cardinal): Integer;
-    function ValuesCompare(A, B: Cardinal): Integer;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -1230,13 +1269,17 @@ type
     Value: IInterface;
   end;
 
-  TJclInt64IntfSortedEntryArray = array of TJclInt64IntfSortedEntry;
-
   TJclInt64IntfSortedMap = class(TJclInt64AbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,
     IJclInt64IntfMap, IJclInt64IntfSortedMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: Int64): Int64;
+    function FreeValue(var Value: IInterface): IInterface;
+    function KeysCompare(const A, B: Int64): Integer;
+    function ValuesCompare(const A, B: IInterface): Integer;
   private
-    FEntries: TJclInt64IntfSortedEntryArray;
+    FEntries: array of TJclInt64IntfSortedEntry;
     function BinarySearch(const Key: Int64): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1247,7 +1290,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: Int64): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function Equals(const AMap: IJclInt64IntfMap): Boolean;
+    function MapEquals(const AMap: IJclInt64IntfMap): Boolean;
     function GetValue(const Key: Int64): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): Int64;
@@ -1263,15 +1306,6 @@ type
     function LastKey: Int64;
     function SubMap(const FromKey, ToKey: Int64): IJclInt64IntfSortedMap;
     function TailMap(const FromKey: Int64): IJclInt64IntfSortedMap;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: Int64): Int64;
-    function FreeValue(var Value: IInterface): IInterface;
-    function KeysCompare(const A, B: Int64): Integer;
-    function ValuesCompare(const A, B: IInterface): Integer;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -1282,13 +1316,17 @@ type
     Value: Int64;
   end;
 
-  TJclIntfInt64SortedEntryArray = array of TJclIntfInt64SortedEntry;
-
   TJclIntfInt64SortedMap = class(TJclInt64AbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,
     IJclIntfInt64Map, IJclIntfInt64SortedMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: IInterface): IInterface;
+    function FreeValue(var Value: Int64): Int64;
+    function KeysCompare(const A, B: IInterface): Integer;
+    function ValuesCompare(const A, B: Int64): Integer;
   private
-    FEntries: TJclIntfInt64SortedEntryArray;
+    FEntries: array of TJclIntfInt64SortedEntry;
     function BinarySearch(const Key: IInterface): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1299,7 +1337,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(const Value: Int64): Boolean;
-    function Equals(const AMap: IJclIntfInt64Map): Boolean;
+    function MapEquals(const AMap: IJclIntfInt64Map): Boolean;
     function GetValue(const Key: IInterface): Int64;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Int64): IInterface;
@@ -1315,15 +1353,6 @@ type
     function LastKey: IInterface;
     function SubMap(const FromKey, ToKey: IInterface): IJclIntfInt64SortedMap;
     function TailMap(const FromKey: IInterface): IJclIntfInt64SortedMap;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: IInterface): IInterface;
-    function FreeValue(var Value: Int64): Int64;
-    function KeysCompare(const A, B: IInterface): Integer;
-    function ValuesCompare(const A, B: Int64): Integer;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -1334,13 +1363,17 @@ type
     Value: Int64;
   end;
 
-  TJclInt64Int64SortedEntryArray = array of TJclInt64Int64SortedEntry;
-
   TJclInt64Int64SortedMap = class(TJclInt64AbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,
     IJclInt64Int64Map, IJclInt64Int64SortedMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: Int64): Int64;
+    function FreeValue(var Value: Int64): Int64;
+    function KeysCompare(const A, B: Int64): Integer;
+    function ValuesCompare(const A, B: Int64): Integer;
   private
-    FEntries: TJclInt64Int64SortedEntryArray;
+    FEntries: array of TJclInt64Int64SortedEntry;
     function BinarySearch(const Key: Int64): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1351,7 +1384,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: Int64): Boolean;
     function ContainsValue(const Value: Int64): Boolean;
-    function Equals(const AMap: IJclInt64Int64Map): Boolean;
+    function MapEquals(const AMap: IJclInt64Int64Map): Boolean;
     function GetValue(const Key: Int64): Int64;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Int64): Int64;
@@ -1367,15 +1400,6 @@ type
     function LastKey: Int64;
     function SubMap(const FromKey, ToKey: Int64): IJclInt64Int64SortedMap;
     function TailMap(const FromKey: Int64): IJclInt64Int64SortedMap;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: Int64): Int64;
-    function FreeValue(var Value: Int64): Int64;
-    function KeysCompare(const A, B: Int64): Integer;
-    function ValuesCompare(const A, B: Int64): Integer;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -1387,13 +1411,17 @@ type
     Value: IInterface;
   end;
 
-  TJclPtrIntfSortedEntryArray = array of TJclPtrIntfSortedEntry;
-
   TJclPtrIntfSortedMap = class(TJclPtrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,
     IJclPtrIntfMap, IJclPtrIntfSortedMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: Pointer): Pointer;
+    function FreeValue(var Value: IInterface): IInterface;
+    function KeysCompare(A, B: Pointer): Integer;
+    function ValuesCompare(const A, B: IInterface): Integer;
   private
-    FEntries: TJclPtrIntfSortedEntryArray;
+    FEntries: array of TJclPtrIntfSortedEntry;
     function BinarySearch(Key: Pointer): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1404,7 +1432,7 @@ type
     procedure Clear;
     function ContainsKey(Key: Pointer): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function Equals(const AMap: IJclPtrIntfMap): Boolean;
+    function MapEquals(const AMap: IJclPtrIntfMap): Boolean;
     function GetValue(Key: Pointer): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): Pointer;
@@ -1420,15 +1448,6 @@ type
     function LastKey: Pointer;
     function SubMap(FromKey, ToKey: Pointer): IJclPtrIntfSortedMap;
     function TailMap(FromKey: Pointer): IJclPtrIntfSortedMap;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: Pointer): Pointer;
-    function FreeValue(var Value: IInterface): IInterface;
-    function KeysCompare(A, B: Pointer): Integer;
-    function ValuesCompare(const A, B: IInterface): Integer;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -1439,13 +1458,17 @@ type
     Value: Pointer;
   end;
 
-  TJclIntfPtrSortedEntryArray = array of TJclIntfPtrSortedEntry;
-
   TJclIntfPtrSortedMap = class(TJclPtrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,
     IJclIntfPtrMap, IJclIntfPtrSortedMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: IInterface): IInterface;
+    function FreeValue(var Value: Pointer): Pointer;
+    function KeysCompare(const A, B: IInterface): Integer;
+    function ValuesCompare(A, B: Pointer): Integer;
   private
-    FEntries: TJclIntfPtrSortedEntryArray;
+    FEntries: array of TJclIntfPtrSortedEntry;
     function BinarySearch(const Key: IInterface): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1456,7 +1479,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(Value: Pointer): Boolean;
-    function Equals(const AMap: IJclIntfPtrMap): Boolean;
+    function MapEquals(const AMap: IJclIntfPtrMap): Boolean;
     function GetValue(const Key: IInterface): Pointer;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: Pointer): IInterface;
@@ -1472,15 +1495,6 @@ type
     function LastKey: IInterface;
     function SubMap(const FromKey, ToKey: IInterface): IJclIntfPtrSortedMap;
     function TailMap(const FromKey: IInterface): IJclIntfPtrSortedMap;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: IInterface): IInterface;
-    function FreeValue(var Value: Pointer): Pointer;
-    function KeysCompare(const A, B: IInterface): Integer;
-    function ValuesCompare(A, B: Pointer): Integer;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -1491,13 +1505,17 @@ type
     Value: Pointer;
   end;
 
-  TJclPtrPtrSortedEntryArray = array of TJclPtrPtrSortedEntry;
-
   TJclPtrPtrSortedMap = class(TJclPtrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,
     IJclPtrPtrMap, IJclPtrPtrSortedMap)
+  protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: Pointer): Pointer;
+    function FreeValue(var Value: Pointer): Pointer;
+    function KeysCompare(A, B: Pointer): Integer;
+    function ValuesCompare(A, B: Pointer): Integer;
   private
-    FEntries: TJclPtrPtrSortedEntryArray;
+    FEntries: array of TJclPtrPtrSortedEntry;
     function BinarySearch(Key: Pointer): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1508,7 +1526,7 @@ type
     procedure Clear;
     function ContainsKey(Key: Pointer): Boolean;
     function ContainsValue(Value: Pointer): Boolean;
-    function Equals(const AMap: IJclPtrPtrMap): Boolean;
+    function MapEquals(const AMap: IJclPtrPtrMap): Boolean;
     function GetValue(Key: Pointer): Pointer;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: Pointer): Pointer;
@@ -1524,15 +1542,6 @@ type
     function LastKey: Pointer;
     function SubMap(FromKey, ToKey: Pointer): IJclPtrPtrSortedMap;
     function TailMap(FromKey: Pointer): IJclPtrPtrSortedMap;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: Pointer): Pointer;
-    function FreeValue(var Value: Pointer): Pointer;
-    function KeysCompare(A, B: Pointer): Integer;
-    function ValuesCompare(A, B: Pointer): Integer;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -1544,14 +1553,23 @@ type
     Value: TObject;
   end;
 
-  TJclIntfSortedEntryArray = array of TJclIntfSortedEntry;
-
   TJclIntfSortedMap = class(TJclIntfAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclValueOwner,
     IJclIntfMap, IJclIntfSortedMap)
   private
-    FEntries: TJclIntfSortedEntryArray;
     FOwnsValues: Boolean;
+  protected
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: IInterface): IInterface;
+    function KeysCompare(const A, B: IInterface): Integer;
+    function ValuesCompare(A, B: TObject): Integer;
+  public
+    property OwnsValues: Boolean read FOwnsValues;
+  private
+    FEntries: array of TJclIntfSortedEntry;
     function BinarySearch(const Key: IInterface): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1562,7 +1580,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function Equals(const AMap: IJclIntfMap): Boolean;
+    function MapEquals(const AMap: IJclIntfMap): Boolean;
     function GetValue(const Key: IInterface): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): IInterface;
@@ -1578,21 +1596,9 @@ type
     function LastKey: IInterface;
     function SubMap(const FromKey, ToKey: IInterface): IJclIntfSortedMap;
     function TailMap(const FromKey: IInterface): IJclIntfSortedMap;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: IInterface): IInterface;
-    function KeysCompare(const A, B: IInterface): Integer;
-    function ValuesCompare(A, B: TObject): Integer;
   public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
     destructor Destroy; override;
-    property OwnsValues: Boolean read FOwnsValues;
   end;
 
   TJclAnsiStrSortedEntry = record
@@ -1600,14 +1606,23 @@ type
     Value: TObject;
   end;
 
-  TJclAnsiStrSortedEntryArray = array of TJclAnsiStrSortedEntry;
-
   TJclAnsiStrSortedMap = class(TJclAnsiStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclAnsiStrContainer, IJclValueOwner,
     IJclAnsiStrMap, IJclAnsiStrSortedMap)
   private
-    FEntries: TJclAnsiStrSortedEntryArray;
     FOwnsValues: Boolean;
+  protected
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: AnsiString): AnsiString;
+    function KeysCompare(const A, B: AnsiString): Integer;
+    function ValuesCompare(A, B: TObject): Integer;
+  public
+    property OwnsValues: Boolean read FOwnsValues;
+  private
+    FEntries: array of TJclAnsiStrSortedEntry;
     function BinarySearch(const Key: AnsiString): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1618,7 +1633,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: AnsiString): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function Equals(const AMap: IJclAnsiStrMap): Boolean;
+    function MapEquals(const AMap: IJclAnsiStrMap): Boolean;
     function GetValue(const Key: AnsiString): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): AnsiString;
@@ -1634,21 +1649,9 @@ type
     function LastKey: AnsiString;
     function SubMap(const FromKey, ToKey: AnsiString): IJclAnsiStrSortedMap;
     function TailMap(const FromKey: AnsiString): IJclAnsiStrSortedMap;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: AnsiString): AnsiString;
-    function KeysCompare(const A, B: AnsiString): Integer;
-    function ValuesCompare(A, B: TObject): Integer;
   public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
     destructor Destroy; override;
-    property OwnsValues: Boolean read FOwnsValues;
   end;
 
   TJclWideStrSortedEntry = record
@@ -1656,14 +1659,23 @@ type
     Value: TObject;
   end;
 
-  TJclWideStrSortedEntryArray = array of TJclWideStrSortedEntry;
-
   TJclWideStrSortedMap = class(TJclWideStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclWideStrContainer, IJclValueOwner,
     IJclWideStrMap, IJclWideStrSortedMap)
   private
-    FEntries: TJclWideStrSortedEntryArray;
     FOwnsValues: Boolean;
+  protected
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: WideString): WideString;
+    function KeysCompare(const A, B: WideString): Integer;
+    function ValuesCompare(A, B: TObject): Integer;
+  public
+    property OwnsValues: Boolean read FOwnsValues;
+  private
+    FEntries: array of TJclWideStrSortedEntry;
     function BinarySearch(const Key: WideString): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1674,7 +1686,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: WideString): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function Equals(const AMap: IJclWideStrMap): Boolean;
+    function MapEquals(const AMap: IJclWideStrMap): Boolean;
     function GetValue(const Key: WideString): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): WideString;
@@ -1690,22 +1702,65 @@ type
     function LastKey: WideString;
     function SubMap(const FromKey, ToKey: WideString): IJclWideStrSortedMap;
     function TailMap(const FromKey: WideString): IJclWideStrSortedMap;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
+  public
+    constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
+    destructor Destroy; override;
+  end;
+
+{$IFDEF SUPPORTS_UNICODE_STRING}
+  TJclUnicodeStrSortedEntry = record
+    Key: UnicodeString;
+    Value: TObject;
+  end;
+
+  TJclUnicodeStrSortedMap = class(TJclUnicodeStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclUnicodeStrContainer, IJclValueOwner,
+    IJclUnicodeStrMap, IJclUnicodeStrSortedMap)
+  private
+    FOwnsValues: Boolean;
+  protected
     { IJclValueOwner }
     function FreeValue(var Value: TObject): TObject;
     function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: WideString): WideString;
-    function KeysCompare(const A, B: WideString): Integer;
+    function FreeKey(var Key: UnicodeString): UnicodeString;
+    function KeysCompare(const A, B: UnicodeString): Integer;
     function ValuesCompare(A, B: TObject): Integer;
+  public
+    property OwnsValues: Boolean read FOwnsValues;
+  private
+    FEntries: array of TJclUnicodeStrSortedEntry;
+    function BinarySearch(const Key: UnicodeString): Integer;
+  protected
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+    procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+    { IJclPackable }
+    procedure SetCapacity(Value: Integer); override;
+    { IJclUnicodeStrMap }
+    procedure Clear;
+    function ContainsKey(const Key: UnicodeString): Boolean;
+    function ContainsValue(Value: TObject): Boolean;
+    function MapEquals(const AMap: IJclUnicodeStrMap): Boolean;
+    function GetValue(const Key: UnicodeString): TObject;
+    function IsEmpty: Boolean;
+    function KeyOfValue(Value: TObject): UnicodeString;
+    function KeySet: IJclUnicodeStrSet;
+    procedure PutAll(const AMap: IJclUnicodeStrMap);
+    procedure PutValue(const Key: UnicodeString; Value: TObject);
+    function Remove(const Key: UnicodeString): TObject;
+    function Size: Integer;
+    function Values: IJclCollection;
+    { IJclUnicodeStrSortedMap }
+    function FirstKey: UnicodeString;
+    function HeadMap(const ToKey: UnicodeString): IJclUnicodeStrSortedMap;
+    function LastKey: UnicodeString;
+    function SubMap(const FromKey, ToKey: UnicodeString): IJclUnicodeStrSortedMap;
+    function TailMap(const FromKey: UnicodeString): IJclUnicodeStrSortedMap;
   public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
     destructor Destroy; override;
-    property OwnsValues: Boolean read FOwnsValues;
   end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF CONTAINER_ANSISTR}
   TJclStrSortedMap = TJclAnsiStrSortedMap;
@@ -1713,20 +1768,32 @@ type
   {$IFDEF CONTAINER_WIDESTR}
   TJclStrSortedMap = TJclWideStrSortedMap;
   {$ENDIF CONTAINER_WIDESTR}
+  {$IFDEF CONTAINER_UNICODESTR}
+  TJclStrSortedMap = TJclUnicodeStrSortedMap;
+  {$ENDIF CONTAINER_UNICODESTR}
 
   TJclSingleSortedEntry = record
     Key: Single;
     Value: TObject;
   end;
 
-  TJclSingleSortedEntryArray = array of TJclSingleSortedEntry;
-
   TJclSingleSortedMap = class(TJclSingleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclSingleContainer, IJclValueOwner,
     IJclSingleMap, IJclSingleSortedMap)
   private
-    FEntries: TJclSingleSortedEntryArray;
     FOwnsValues: Boolean;
+  protected
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: Single): Single;
+    function KeysCompare(const A, B: Single): Integer;
+    function ValuesCompare(A, B: TObject): Integer;
+  public
+    property OwnsValues: Boolean read FOwnsValues;
+  private
+    FEntries: array of TJclSingleSortedEntry;
     function BinarySearch(const Key: Single): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1737,7 +1804,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: Single): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function Equals(const AMap: IJclSingleMap): Boolean;
+    function MapEquals(const AMap: IJclSingleMap): Boolean;
     function GetValue(const Key: Single): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): Single;
@@ -1753,21 +1820,9 @@ type
     function LastKey: Single;
     function SubMap(const FromKey, ToKey: Single): IJclSingleSortedMap;
     function TailMap(const FromKey: Single): IJclSingleSortedMap;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: Single): Single;
-    function KeysCompare(const A, B: Single): Integer;
-    function ValuesCompare(A, B: TObject): Integer;
   public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
     destructor Destroy; override;
-    property OwnsValues: Boolean read FOwnsValues;
   end;
 
   TJclDoubleSortedEntry = record
@@ -1775,14 +1830,23 @@ type
     Value: TObject;
   end;
 
-  TJclDoubleSortedEntryArray = array of TJclDoubleSortedEntry;
-
   TJclDoubleSortedMap = class(TJclDoubleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclDoubleContainer, IJclValueOwner,
     IJclDoubleMap, IJclDoubleSortedMap)
   private
-    FEntries: TJclDoubleSortedEntryArray;
     FOwnsValues: Boolean;
+  protected
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: Double): Double;
+    function KeysCompare(const A, B: Double): Integer;
+    function ValuesCompare(A, B: TObject): Integer;
+  public
+    property OwnsValues: Boolean read FOwnsValues;
+  private
+    FEntries: array of TJclDoubleSortedEntry;
     function BinarySearch(const Key: Double): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1793,7 +1857,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: Double): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function Equals(const AMap: IJclDoubleMap): Boolean;
+    function MapEquals(const AMap: IJclDoubleMap): Boolean;
     function GetValue(const Key: Double): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): Double;
@@ -1809,21 +1873,9 @@ type
     function LastKey: Double;
     function SubMap(const FromKey, ToKey: Double): IJclDoubleSortedMap;
     function TailMap(const FromKey: Double): IJclDoubleSortedMap;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: Double): Double;
-    function KeysCompare(const A, B: Double): Integer;
-    function ValuesCompare(A, B: TObject): Integer;
   public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
     destructor Destroy; override;
-    property OwnsValues: Boolean read FOwnsValues;
   end;
 
   TJclExtendedSortedEntry = record
@@ -1831,14 +1883,23 @@ type
     Value: TObject;
   end;
 
-  TJclExtendedSortedEntryArray = array of TJclExtendedSortedEntry;
-
   TJclExtendedSortedMap = class(TJclExtendedAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclExtendedContainer, IJclValueOwner,
     IJclExtendedMap, IJclExtendedSortedMap)
   private
-    FEntries: TJclExtendedSortedEntryArray;
     FOwnsValues: Boolean;
+  protected
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: Extended): Extended;
+    function KeysCompare(const A, B: Extended): Integer;
+    function ValuesCompare(A, B: TObject): Integer;
+  public
+    property OwnsValues: Boolean read FOwnsValues;
+  private
+    FEntries: array of TJclExtendedSortedEntry;
     function BinarySearch(const Key: Extended): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1849,7 +1910,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: Extended): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function Equals(const AMap: IJclExtendedMap): Boolean;
+    function MapEquals(const AMap: IJclExtendedMap): Boolean;
     function GetValue(const Key: Extended): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): Extended;
@@ -1865,21 +1926,9 @@ type
     function LastKey: Extended;
     function SubMap(const FromKey, ToKey: Extended): IJclExtendedSortedMap;
     function TailMap(const FromKey: Extended): IJclExtendedSortedMap;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: Extended): Extended;
-    function KeysCompare(const A, B: Extended): Integer;
-    function ValuesCompare(A, B: TObject): Integer;
   public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
     destructor Destroy; override;
-    property OwnsValues: Boolean read FOwnsValues;
   end;
 
   {$IFDEF MATH_EXTENDED_PRECISION}
@@ -1897,14 +1946,23 @@ type
     Value: TObject;
   end;
 
-  TJclIntegerSortedEntryArray = array of TJclIntegerSortedEntry;
-
   TJclIntegerSortedMap = class(TJclIntegerAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclValueOwner,
     IJclIntegerMap, IJclIntegerSortedMap)
   private
-    FEntries: TJclIntegerSortedEntryArray;
     FOwnsValues: Boolean;
+  protected
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: Integer): Integer;
+    function KeysCompare(A, B: Integer): Integer;
+    function ValuesCompare(A, B: TObject): Integer;
+  public
+    property OwnsValues: Boolean read FOwnsValues;
+  private
+    FEntries: array of TJclIntegerSortedEntry;
     function BinarySearch(Key: Integer): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1915,7 +1973,7 @@ type
     procedure Clear;
     function ContainsKey(Key: Integer): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function Equals(const AMap: IJclIntegerMap): Boolean;
+    function MapEquals(const AMap: IJclIntegerMap): Boolean;
     function GetValue(Key: Integer): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): Integer;
@@ -1931,21 +1989,9 @@ type
     function LastKey: Integer;
     function SubMap(FromKey, ToKey: Integer): IJclIntegerSortedMap;
     function TailMap(FromKey: Integer): IJclIntegerSortedMap;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: Integer): Integer;
-    function KeysCompare(A, B: Integer): Integer;
-    function ValuesCompare(A, B: TObject): Integer;
   public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
     destructor Destroy; override;
-    property OwnsValues: Boolean read FOwnsValues;
   end;
 
   TJclCardinalSortedEntry = record
@@ -1953,14 +1999,23 @@ type
     Value: TObject;
   end;
 
-  TJclCardinalSortedEntryArray = array of TJclCardinalSortedEntry;
-
   TJclCardinalSortedMap = class(TJclCardinalAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclValueOwner,
     IJclCardinalMap, IJclCardinalSortedMap)
   private
-    FEntries: TJclCardinalSortedEntryArray;
     FOwnsValues: Boolean;
+  protected
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: Cardinal): Cardinal;
+    function KeysCompare(A, B: Cardinal): Integer;
+    function ValuesCompare(A, B: TObject): Integer;
+  public
+    property OwnsValues: Boolean read FOwnsValues;
+  private
+    FEntries: array of TJclCardinalSortedEntry;
     function BinarySearch(Key: Cardinal): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -1971,7 +2026,7 @@ type
     procedure Clear;
     function ContainsKey(Key: Cardinal): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function Equals(const AMap: IJclCardinalMap): Boolean;
+    function MapEquals(const AMap: IJclCardinalMap): Boolean;
     function GetValue(Key: Cardinal): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): Cardinal;
@@ -1987,21 +2042,9 @@ type
     function LastKey: Cardinal;
     function SubMap(FromKey, ToKey: Cardinal): IJclCardinalSortedMap;
     function TailMap(FromKey: Cardinal): IJclCardinalSortedMap;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: Cardinal): Cardinal;
-    function KeysCompare(A, B: Cardinal): Integer;
-    function ValuesCompare(A, B: TObject): Integer;
   public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
     destructor Destroy; override;
-    property OwnsValues: Boolean read FOwnsValues;
   end;
 
   TJclInt64SortedEntry = record
@@ -2009,14 +2052,23 @@ type
     Value: TObject;
   end;
 
-  TJclInt64SortedEntryArray = array of TJclInt64SortedEntry;
-
   TJclInt64SortedMap = class(TJclInt64AbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclValueOwner,
     IJclInt64Map, IJclInt64SortedMap)
   private
-    FEntries: TJclInt64SortedEntryArray;
     FOwnsValues: Boolean;
+  protected
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: Int64): Int64;
+    function KeysCompare(const A, B: Int64): Integer;
+    function ValuesCompare(A, B: TObject): Integer;
+  public
+    property OwnsValues: Boolean read FOwnsValues;
+  private
+    FEntries: array of TJclInt64SortedEntry;
     function BinarySearch(const Key: Int64): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -2027,7 +2079,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: Int64): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function Equals(const AMap: IJclInt64Map): Boolean;
+    function MapEquals(const AMap: IJclInt64Map): Boolean;
     function GetValue(const Key: Int64): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): Int64;
@@ -2043,21 +2095,9 @@ type
     function LastKey: Int64;
     function SubMap(const FromKey, ToKey: Int64): IJclInt64SortedMap;
     function TailMap(const FromKey: Int64): IJclInt64SortedMap;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: Int64): Int64;
-    function KeysCompare(const A, B: Int64): Integer;
-    function ValuesCompare(A, B: TObject): Integer;
   public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
     destructor Destroy; override;
-    property OwnsValues: Boolean read FOwnsValues;
   end;
 
   {$IFNDEF CLR}
@@ -2066,14 +2106,23 @@ type
     Value: TObject;
   end;
 
-  TJclPtrSortedEntryArray = array of TJclPtrSortedEntry;
-
   TJclPtrSortedMap = class(TJclPtrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclValueOwner,
     IJclPtrMap, IJclPtrSortedMap)
   private
-    FEntries: TJclPtrSortedEntryArray;
     FOwnsValues: Boolean;
+  protected
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function FreeKey(var Key: Pointer): Pointer;
+    function KeysCompare(A, B: Pointer): Integer;
+    function ValuesCompare(A, B: TObject): Integer;
+  public
+    property OwnsValues: Boolean read FOwnsValues;
+  private
+    FEntries: array of TJclPtrSortedEntry;
     function BinarySearch(Key: Pointer): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -2084,7 +2133,7 @@ type
     procedure Clear;
     function ContainsKey(Key: Pointer): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function Equals(const AMap: IJclPtrMap): Boolean;
+    function MapEquals(const AMap: IJclPtrMap): Boolean;
     function GetValue(Key: Pointer): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): Pointer;
@@ -2100,21 +2149,9 @@ type
     function LastKey: Pointer;
     function SubMap(FromKey, ToKey: Pointer): IJclPtrSortedMap;
     function TailMap(FromKey: Pointer): IJclPtrSortedMap;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: Pointer): Pointer;
-    function KeysCompare(A, B: Pointer): Integer;
-    function ValuesCompare(A, B: TObject): Integer;
   public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
     destructor Destroy; override;
-    property OwnsValues: Boolean read FOwnsValues;
   end;
   {$ENDIF ~CLR}
 
@@ -2123,15 +2160,27 @@ type
     Value: TObject;
   end;
 
-  TJclSortedEntryArray = array of TJclSortedEntry;
-
   TJclSortedMap = class(TJclAbstractContainerBase, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclKeyOwner, IJclValueOwner,
     IJclMap, IJclSortedMap)
   private
-    FEntries: TJclSortedEntryArray;
     FOwnsKeys: Boolean;
     FOwnsValues: Boolean;
+  protected
+    { IJclKeyOwner }
+    function FreeKey(var Key: TObject): TObject;
+    function GetOwnsKeys: Boolean;
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+    function KeysCompare(A, B: TObject): Integer;
+    function ValuesCompare(A, B: TObject): Integer;
+  public
+    property OwnsKeys: Boolean read FOwnsKeys;
+    property OwnsValues: Boolean read FOwnsValues;
+  private
+    FEntries: array of TJclSortedEntry;
     function BinarySearch(Key: TObject): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -2142,7 +2191,7 @@ type
     procedure Clear;
     function ContainsKey(Key: TObject): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function Equals(const AMap: IJclMap): Boolean;
+    function MapEquals(const AMap: IJclMap): Boolean;
     function GetValue(Key: TObject): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): TObject;
@@ -2158,24 +2207,9 @@ type
     function LastKey: TObject;
     function SubMap(FromKey, ToKey: TObject): IJclSortedMap;
     function TailMap(FromKey: TObject): IJclSortedMap;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    { IJclKeyOwner }
-    function FreeKey(var Key: TObject): TObject;
-    function GetOwnsKeys: Boolean;
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function KeysCompare(A, B: TObject): Integer;
-    function ValuesCompare(A, B: TObject): Integer;
   public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean; AOwnsKeys: Boolean);
     destructor Destroy; override;
-    property OwnsKeys: Boolean read FOwnsKeys;
-    property OwnsValues: Boolean read FOwnsValues;
   end;
 
   {$IFDEF SUPPORTS_GENERICS}
@@ -2184,15 +2218,30 @@ type
     Value: TValue;
   end;
 
-  TJclSortedEntryArray<TKey,TValue> = array of TJclSortedEntry<TKey,TValue>;
-
   TJclSortedMap<TKey,TValue> = class(TJclAbstractContainerBase, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclPairOwner<TKey,TValue>,
     IJclMap<TKey,TValue>, IJclSortedMap<TKey,TValue>)
+  protected
+    type
+      TSortedEntry = TJclSortedEntry<TKey,TValue>;
   private
-    FEntries: TJclSortedEntryArray<TKey,TValue>;
     FOwnsKeys: Boolean;
     FOwnsValues: Boolean;
+  protected
+    { IJclPairOwner }
+    function FreeKey(var Key: TKey): TKey;
+    function FreeValue(var Value: TValue): TValue;
+    function GetOwnsKeys: Boolean;
+    function GetOwnsValues: Boolean;
+    function KeysCompare(const A, B: TKey): Integer; virtual; abstract;
+    function ValuesCompare(const A, B: TValue): Integer; virtual; abstract;
+    function CreateEmptyArrayList(ACapacity: Integer; AOwnsObjects: Boolean): IJclCollection<TValue>; virtual; abstract;
+    function CreateEmptyArraySet(ACapacity: Integer; AOwnsObjects: Boolean): IJclSet<TKey>; virtual; abstract;
+  public
+    property OwnsKeys: Boolean read FOwnsKeys;
+    property OwnsValues: Boolean read FOwnsValues;
+  private
+    FEntries: array of TSortedEntry;
     function BinarySearch(const Key: TKey): Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
@@ -2203,7 +2252,7 @@ type
     procedure Clear;
     function ContainsKey(const Key: TKey): Boolean;
     function ContainsValue(const Value: TValue): Boolean;
-    function Equals(const AMap: IJclMap<TKey,TValue>): Boolean;
+    function MapEquals(const AMap: IJclMap<TKey,TValue>): Boolean;
     function GetValue(const Key: TKey): TValue;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: TValue): TKey;
@@ -2219,33 +2268,22 @@ type
     function LastKey: TKey;
     function SubMap(const FromKey, ToKey: TKey): IJclSortedMap<TKey,TValue>;
     function TailMap(const FromKey: TKey): IJclSortedMap<TKey,TValue>;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
-    { IJclPairOwner }
-    function FreeKey(var Key: TKey): TKey;
-    function FreeValue(var Value: TValue): TValue;
-    function GetOwnsKeys: Boolean;
-    function GetOwnsValues: Boolean;
-    function KeysCompare(const A, B: TKey): Integer; virtual; abstract;
-    function ValuesCompare(const A, B: TValue): Integer; virtual; abstract;
-    function CreateEmptyArrayList(ACapacity: Integer; AOwnsObjects: Boolean): IJclCollection<TValue>; virtual; abstract;
-    function CreateEmptyArraySet(ACapacity: Integer; AOwnsObjects: Boolean): IJclSet<TKey>; virtual; abstract;
   public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean; AOwnsKeys: Boolean);
     destructor Destroy; override;
-    property OwnsKeys: Boolean read FOwnsKeys;
-    property OwnsValues: Boolean read FOwnsValues;
   end;
 
   // E = external helper to compare items
   TJclSortedMapE<TKey, TValue> = class(TJclSortedMap<TKey,TValue>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclMap<TKey,TValue>, IJclSortedMap<TKey,TValue>, IJclPairOwner<TKey,TValue>)
+  protected
+    type
+      TArrayList = TJclArrayListE<TValue>;
+      TArraySet = TJclArraySetE<TKey>;
   private
-    FKeyComparer: IComparer<TKey>;
-    FValueComparer: IComparer<TValue>;
-    FValueEqualityComparer: IEqualityComparer<TValue>;
+    FKeyComparer: IJclComparer<TKey>;
+    FValueComparer: IJclComparer<TValue>;
+    FValueEqualityComparer: IJclEqualityComparer<TValue>;
   protected
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     function KeysCompare(const A, B: TKey): Integer; override;
@@ -2253,23 +2291,23 @@ type
     function CreateEmptyArrayList(ACapacity: Integer; AOwnsObjects: Boolean): IJclCollection<TValue>; override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function CreateEmptyArraySet(ACapacity: Integer; AOwnsObjects: Boolean): IJclSet<TKey>; override;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
   public
-    constructor Create(const AKeyComparer: IComparer<TKey>; const AValueComparer: IComparer<TValue>;
-      const AValueEqualityComparer: IEqualityComparer<TValue>; ACapacity: Integer; AOwnsValues: Boolean;
+    constructor Create(const AKeyComparer: IJclComparer<TKey>; const AValueComparer: IJclComparer<TValue>;
+      const AValueEqualityComparer: IJclEqualityComparer<TValue>; ACapacity: Integer; AOwnsValues: Boolean;
       AOwnsKeys: Boolean);
 
-    property KeyComparer: IComparer<TKey> read FKeyComparer write FKeyComparer;
-    property ValueComparer: IComparer<TValue> read FValueComparer write FValueComparer;
-    property ValueEqualityComparer: IEqualityComparer<TValue> read FValueEqualityComparer write FValueEqualityComparer;
+    property KeyComparer: IJclComparer<TKey> read FKeyComparer write FKeyComparer;
+    property ValueComparer: IJclComparer<TValue> read FValueComparer write FValueComparer;
+    property ValueEqualityComparer: IJclEqualityComparer<TValue> read FValueEqualityComparer write FValueEqualityComparer;
   end;
 
   // F = Functions to compare items
   TJclSortedMapF<TKey, TValue> = class(TJclSortedMap<TKey, TValue>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclMap<TKey,TValue>, IJclSortedMap<TKey,TValue>, IJclPairOwner<TKey, TValue>)
+  protected
+    type
+      TArrayList = TJclArrayListF<TValue>;
+      TArraySet = TJclArraySetF<TKey>;
   private
     FKeyCompare: TCompare<TKey>;
     FValueCompare: TCompare<TValue>;
@@ -2281,10 +2319,6 @@ type
     function CreateEmptyArrayList(ACapacity: Integer; AOwnsObjects: Boolean): IJclCollection<TValue>; override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function CreateEmptyArraySet(ACapacity: Integer; AOwnsObjects: Boolean): IJclSet<TKey>; override;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
   public
     constructor Create(AKeyCompare: TCompare<TKey>; AValueCompare: TCompare<TValue>;
       AValueEqualityCompare: TEqualityCompare<TValue>; ACapacity: Integer; AOwnsValues: Boolean; AOwnsKeys: Boolean);
@@ -2299,15 +2333,15 @@ type
     {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer,
     IJclMap<TKey,TValue>, IJclSortedMap<TKey,TValue>, IJclPairOwner<TKey, TValue>)
   protected
+    type
+      TArrayList = TJclArrayListI<TValue>;
+      TArraySet = TJclArraySetI<TKey>;
+  protected
     function KeysCompare(const A, B: TKey): Integer; override;
     function ValuesCompare(const A, B: TValue): Integer; override;
     function CreateEmptyArrayList(ACapacity: Integer; AOwnsObjects: Boolean): IJclCollection<TValue>; override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function CreateEmptyArraySet(ACapacity: Integer; AOwnsObjects: Boolean): IJclSet<TKey>; override;
-    { IJclCloneable }
-    function IJclCloneable.Clone = ObjectClone;
-    { IJclIntfCloneable }
-    function IJclIntfCloneable.Clone = IntfClone;
   end;
   {$ENDIF SUPPORTS_GENERICS}
 
@@ -2324,9 +2358,7 @@ const
 implementation
 
 uses
-  SysUtils,
-  JclArrayLists,
-  JclArraySets;
+  SysUtils;
 
 //=== { TJclIntfIntfSortedMap } ==============================================
 
@@ -2463,13 +2495,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfIntfSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclIntfIntfSortedMap.Create(FSize);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclIntfIntfSortedMap.Equals(const AMap: IJclIntfIntfMap): Boolean;
+function TJclIntfIntfSortedMap.MapEquals(const AMap: IJclIntfIntfMap): Boolean;
 var
   It: IJclIntfIterator;
   Index: Integer;
@@ -2524,18 +2550,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclIntfIntfSortedMap.FreeKey(var Key: IInterface): IInterface;
-begin
-  Result := Key;
-  Key := nil;
-end;
-
-function TJclIntfIntfSortedMap.FreeValue(var Value: IInterface): IInterface;
-begin
-  Result := Value;
-  Value := nil;
 end;
 
 function TJclIntfIntfSortedMap.GetValue(const Key: IInterface): IInterface;
@@ -2636,11 +2650,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclIntfIntfSortedMap.KeysCompare(const A, B: IInterface): Integer;
-begin
-  Result := ItemsCompare(A, B);
 end;
 
 function TJclIntfIntfSortedMap.KeySet: IJclIntfSet;
@@ -2973,11 +2982,33 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfIntfSortedMap.ValuesCompare(const A, B: IInterface): Integer;
+function TJclIntfIntfSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclIntfIntfSortedMap.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclIntfIntfSortedMap.FreeKey(var Key: IInterface): IInterface;
+begin
+  Result := Key;
+  Key := nil;
+end;
+
+function TJclIntfIntfSortedMap.FreeValue(var Value: IInterface): IInterface;
+begin
+  Result := Value;
+  Value := nil;
+end;
+
+function TJclIntfIntfSortedMap.KeysCompare(const A, B: IInterface): Integer;
 begin
   Result := ItemsCompare(A, B);
 end;
 
+function TJclIntfIntfSortedMap.ValuesCompare(const A, B: IInterface): Integer;
+begin
+  Result := ItemsCompare(A, B);
+end;
 
 //=== { TJclAnsiStrIntfSortedMap } ==============================================
 
@@ -3114,13 +3145,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclAnsiStrIntfSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclAnsiStrIntfSortedMap.Create(FSize);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclAnsiStrIntfSortedMap.Equals(const AMap: IJclAnsiStrIntfMap): Boolean;
+function TJclAnsiStrIntfSortedMap.MapEquals(const AMap: IJclAnsiStrIntfMap): Boolean;
 var
   It: IJclAnsiStrIterator;
   Index: Integer;
@@ -3176,20 +3201,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-function TJclAnsiStrIntfSortedMap.FreeKey(var Key: AnsiString): AnsiString;
-begin
-  Result := Key;
-  Key := '';
-end;
-
-function TJclAnsiStrIntfSortedMap.FreeValue(var Value: IInterface): IInterface;
-begin
-  Result := Value;
-  Value := nil;
-end;
-
-
 
 function TJclAnsiStrIntfSortedMap.GetValue(const Key: AnsiString): IInterface;
 var
@@ -3289,11 +3300,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclAnsiStrIntfSortedMap.KeysCompare(const A, B: AnsiString): Integer;
-begin
-  Result := ItemsCompare(A, B);
 end;
 
 function TJclAnsiStrIntfSortedMap.KeySet: IJclAnsiStrSet;
@@ -3626,6 +3632,29 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclAnsiStrIntfSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclAnsiStrIntfSortedMap.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclAnsiStrIntfSortedMap.FreeKey(var Key: AnsiString): AnsiString;
+begin
+  Result := Key;
+  Key := '';
+end;
+
+function TJclAnsiStrIntfSortedMap.FreeValue(var Value: IInterface): IInterface;
+begin
+  Result := Value;
+  Value := nil;
+end;
+
+function TJclAnsiStrIntfSortedMap.KeysCompare(const A, B: AnsiString): Integer;
+begin
+  Result := ItemsCompare(A, B);
+end;
+
 function TJclAnsiStrIntfSortedMap.ValuesCompare(const A, B: IInterface): Integer;
 begin
   if Integer(A) > Integer(B) then
@@ -3636,7 +3665,6 @@ begin
   else
     Result := 0;
 end;
-
 
 //=== { TJclIntfAnsiStrSortedMap } ==============================================
 
@@ -3773,13 +3801,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfAnsiStrSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclIntfAnsiStrSortedMap.Create(FSize);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclIntfAnsiStrSortedMap.Equals(const AMap: IJclIntfAnsiStrMap): Boolean;
+function TJclIntfAnsiStrSortedMap.MapEquals(const AMap: IJclIntfAnsiStrMap): Boolean;
 var
   It: IJclIntfIterator;
   Index: Integer;
@@ -3834,18 +3856,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclIntfAnsiStrSortedMap.FreeKey(var Key: IInterface): IInterface;
-begin
-  Result := Key;
-  Key := nil;
-end;
-
-function TJclIntfAnsiStrSortedMap.FreeValue(var Value: AnsiString): AnsiString;
-begin
-  Result := Value;
-  Value := '';
 end;
 
 function TJclIntfAnsiStrSortedMap.GetValue(const Key: IInterface): AnsiString;
@@ -3946,17 +3956,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclIntfAnsiStrSortedMap.KeysCompare(const A, B: IInterface): Integer;
-begin
-  if Integer(A) > Integer(B) then
-    Result := 1
-  else
-  if Integer(A) < Integer(B) then
-    Result := -1
-  else
-    Result := 0;
 end;
 
 function TJclIntfAnsiStrSortedMap.KeySet: IJclIntfSet;
@@ -4289,11 +4288,39 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclIntfAnsiStrSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclIntfAnsiStrSortedMap.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclIntfAnsiStrSortedMap.FreeKey(var Key: IInterface): IInterface;
+begin
+  Result := Key;
+  Key := nil;
+end;
+
+function TJclIntfAnsiStrSortedMap.FreeValue(var Value: AnsiString): AnsiString;
+begin
+  Result := Value;
+  Value := '';
+end;
+
+function TJclIntfAnsiStrSortedMap.KeysCompare(const A, B: IInterface): Integer;
+begin
+  if Integer(A) > Integer(B) then
+    Result := 1
+  else
+  if Integer(A) < Integer(B) then
+    Result := -1
+  else
+    Result := 0;
+end;
+
 function TJclIntfAnsiStrSortedMap.ValuesCompare(const A, B: AnsiString): Integer;
 begin
   Result := ItemsCompare(A, B);
 end;
-
 
 //=== { TJclAnsiStrAnsiStrSortedMap } ==============================================
 
@@ -4430,13 +4457,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclAnsiStrAnsiStrSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclAnsiStrAnsiStrSortedMap.Create(FSize);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclAnsiStrAnsiStrSortedMap.Equals(const AMap: IJclAnsiStrAnsiStrMap): Boolean;
+function TJclAnsiStrAnsiStrSortedMap.MapEquals(const AMap: IJclAnsiStrAnsiStrMap): Boolean;
 var
   It: IJclAnsiStrIterator;
   Index: Integer;
@@ -4491,18 +4512,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclAnsiStrAnsiStrSortedMap.FreeKey(var Key: AnsiString): AnsiString;
-begin
-  Result := Key;
-  Key := '';
-end;
-
-function TJclAnsiStrAnsiStrSortedMap.FreeValue(var Value: AnsiString): AnsiString;
-begin
-  Result := Value;
-  Value := '';
 end;
 
 function TJclAnsiStrAnsiStrSortedMap.GetValue(const Key: AnsiString): AnsiString;
@@ -4603,11 +4612,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclAnsiStrAnsiStrSortedMap.KeysCompare(const A, B: AnsiString): Integer;
-begin
-  Result := ItemsCompare(A, B);
 end;
 
 function TJclAnsiStrAnsiStrSortedMap.KeySet: IJclAnsiStrSet;
@@ -4940,11 +4944,33 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclAnsiStrAnsiStrSortedMap.ValuesCompare(const A, B: AnsiString): Integer;
+function TJclAnsiStrAnsiStrSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclAnsiStrAnsiStrSortedMap.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclAnsiStrAnsiStrSortedMap.FreeKey(var Key: AnsiString): AnsiString;
+begin
+  Result := Key;
+  Key := '';
+end;
+
+function TJclAnsiStrAnsiStrSortedMap.FreeValue(var Value: AnsiString): AnsiString;
+begin
+  Result := Value;
+  Value := '';
+end;
+
+function TJclAnsiStrAnsiStrSortedMap.KeysCompare(const A, B: AnsiString): Integer;
 begin
   Result := ItemsCompare(A, B);
 end;
 
+function TJclAnsiStrAnsiStrSortedMap.ValuesCompare(const A, B: AnsiString): Integer;
+begin
+  Result := ItemsCompare(A, B);
+end;
 
 //=== { TJclWideStrIntfSortedMap } ==============================================
 
@@ -5081,13 +5107,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclWideStrIntfSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclWideStrIntfSortedMap.Create(FSize);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclWideStrIntfSortedMap.Equals(const AMap: IJclWideStrIntfMap): Boolean;
+function TJclWideStrIntfSortedMap.MapEquals(const AMap: IJclWideStrIntfMap): Boolean;
 var
   It: IJclWideStrIterator;
   Index: Integer;
@@ -5143,20 +5163,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-function TJclWideStrIntfSortedMap.FreeKey(var Key: WideString): WideString;
-begin
-  Result := Key;
-  Key := '';
-end;
-
-function TJclWideStrIntfSortedMap.FreeValue(var Value: IInterface): IInterface;
-begin
-  Result := Value;
-  Value := nil;
-end;
-
-
 
 function TJclWideStrIntfSortedMap.GetValue(const Key: WideString): IInterface;
 var
@@ -5256,11 +5262,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclWideStrIntfSortedMap.KeysCompare(const A, B: WideString): Integer;
-begin
-  Result := ItemsCompare(A, B);
 end;
 
 function TJclWideStrIntfSortedMap.KeySet: IJclWideStrSet;
@@ -5593,6 +5594,29 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclWideStrIntfSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclWideStrIntfSortedMap.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclWideStrIntfSortedMap.FreeKey(var Key: WideString): WideString;
+begin
+  Result := Key;
+  Key := '';
+end;
+
+function TJclWideStrIntfSortedMap.FreeValue(var Value: IInterface): IInterface;
+begin
+  Result := Value;
+  Value := nil;
+end;
+
+function TJclWideStrIntfSortedMap.KeysCompare(const A, B: WideString): Integer;
+begin
+  Result := ItemsCompare(A, B);
+end;
+
 function TJclWideStrIntfSortedMap.ValuesCompare(const A, B: IInterface): Integer;
 begin
   if Integer(A) > Integer(B) then
@@ -5603,7 +5627,6 @@ begin
   else
     Result := 0;
 end;
-
 
 //=== { TJclIntfWideStrSortedMap } ==============================================
 
@@ -5740,13 +5763,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfWideStrSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclIntfWideStrSortedMap.Create(FSize);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclIntfWideStrSortedMap.Equals(const AMap: IJclIntfWideStrMap): Boolean;
+function TJclIntfWideStrSortedMap.MapEquals(const AMap: IJclIntfWideStrMap): Boolean;
 var
   It: IJclIntfIterator;
   Index: Integer;
@@ -5802,20 +5819,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-function TJclIntfWideStrSortedMap.FreeKey(var Key: IInterface): IInterface;
-begin
-  Result := Key;
-  Key := nil;
-end;
-
-function TJclIntfWideStrSortedMap.FreeValue(var Value: WideString): WideString;
-begin
-  Result := Value;
-  Value := '';
-end;
-
-
 
 function TJclIntfWideStrSortedMap.GetValue(const Key: IInterface): WideString;
 var
@@ -5915,17 +5918,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclIntfWideStrSortedMap.KeysCompare(const A, B: IInterface): Integer;
-begin
-  if Integer(A) > Integer(B) then
-    Result := 1
-  else
-  if Integer(A) < Integer(B) then
-    Result := -1
-  else
-    Result := 0;
 end;
 
 function TJclIntfWideStrSortedMap.KeySet: IJclIntfSet;
@@ -6258,11 +6250,39 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclIntfWideStrSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclIntfWideStrSortedMap.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclIntfWideStrSortedMap.FreeKey(var Key: IInterface): IInterface;
+begin
+  Result := Key;
+  Key := nil;
+end;
+
+function TJclIntfWideStrSortedMap.FreeValue(var Value: WideString): WideString;
+begin
+  Result := Value;
+  Value := '';
+end;
+
+function TJclIntfWideStrSortedMap.KeysCompare(const A, B: IInterface): Integer;
+begin
+  if Integer(A) > Integer(B) then
+    Result := 1
+  else
+  if Integer(A) < Integer(B) then
+    Result := -1
+  else
+    Result := 0;
+end;
+
 function TJclIntfWideStrSortedMap.ValuesCompare(const A, B: WideString): Integer;
 begin
   Result := ItemsCompare(A, B);
 end;
-
 
 //=== { TJclWideStrWideStrSortedMap } ==============================================
 
@@ -6399,13 +6419,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclWideStrWideStrSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclWideStrWideStrSortedMap.Create(FSize);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclWideStrWideStrSortedMap.Equals(const AMap: IJclWideStrWideStrMap): Boolean;
+function TJclWideStrWideStrSortedMap.MapEquals(const AMap: IJclWideStrWideStrMap): Boolean;
 var
   It: IJclWideStrIterator;
   Index: Integer;
@@ -6461,20 +6475,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-function TJclWideStrWideStrSortedMap.FreeKey(var Key: WideString): WideString;
-begin
-  Result := Key;
-  Key := '';
-end;
-
-function TJclWideStrWideStrSortedMap.FreeValue(var Value: WideString): WideString;
-begin
-  Result := Value;
-  Value := '';
-end;
-
-
 
 function TJclWideStrWideStrSortedMap.GetValue(const Key: WideString): WideString;
 var
@@ -6574,11 +6574,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclWideStrWideStrSortedMap.KeysCompare(const A, B: WideString): Integer;
-begin
-  Result := ItemsCompare(A, B);
 end;
 
 function TJclWideStrWideStrSortedMap.KeySet: IJclWideStrSet;
@@ -6911,11 +6906,1997 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclWideStrWideStrSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclWideStrWideStrSortedMap.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclWideStrWideStrSortedMap.FreeKey(var Key: WideString): WideString;
+begin
+  Result := Key;
+  Key := '';
+end;
+
+function TJclWideStrWideStrSortedMap.FreeValue(var Value: WideString): WideString;
+begin
+  Result := Value;
+  Value := '';
+end;
+
+function TJclWideStrWideStrSortedMap.KeysCompare(const A, B: WideString): Integer;
+begin
+  Result := ItemsCompare(A, B);
+end;
+
 function TJclWideStrWideStrSortedMap.ValuesCompare(const A, B: WideString): Integer;
 begin
   Result := ItemsCompare(A, B);
 end;
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+//=== { TJclUnicodeStrIntfSortedMap } ==============================================
+
+constructor TJclUnicodeStrIntfSortedMap.Create(ACapacity: Integer);
+begin
+  inherited Create();
+  SetCapacity(ACapacity);
+end;
+
+destructor TJclUnicodeStrIntfSortedMap.Destroy;
+begin
+  FReadOnly := False;
+  Clear;
+  inherited Destroy;
+end;
+
+procedure TJclUnicodeStrIntfSortedMap.AssignDataTo(Dest: TJclAbstractContainerBase);
+var
+  MyDest: TJclUnicodeStrIntfSortedMap;
+begin
+  inherited AssignDataTo(Dest);
+  if Dest is TJclUnicodeStrIntfSortedMap then
+  begin
+    MyDest := TJclUnicodeStrIntfSortedMap(Dest);
+    MyDest.SetCapacity(FSize);
+    MyDest.FEntries := FEntries;
+    MyDest.FSize := FSize;
+  end;
+end;
+
+function TJclUnicodeStrIntfSortedMap.BinarySearch(const Key: UnicodeString): Integer;
+var
+  HiPos, LoPos, CompPos: Integer;
+  Comp: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    LoPos := 0;
+    HiPos := FSize - 1;
+    CompPos := (HiPos + LoPos) div 2;
+    while HiPos >= LoPos do
+    begin
+      Comp := KeysCompare(FEntries[CompPos].Key, Key);
+      if Comp < 0 then
+        LoPos := CompPos + 1
+      else
+      if Comp > 0 then
+        HiPos := CompPos - 1
+      else
+      begin
+        HiPos := CompPos;
+        LoPos := CompPos + 1;
+      end;
+      CompPos := (HiPos + LoPos) div 2;
+    end;
+    Result := HiPos;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclUnicodeStrIntfSortedMap.Clear;
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    for Index := 0 to FSize - 1 do
+    begin
+      FreeKey(FEntries[Index].Key);
+      FreeValue(FEntries[Index].Value);
+    end;
+    FSize := 0;
+    AutoPack;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrIntfSortedMap.ContainsKey(const Key: UnicodeString): Boolean;
+var
+  Index: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrIntfSortedMap.ContainsValue(const Value: IInterface): Boolean;
+var
+  Index: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    for Index := 0 to FSize - 1 do
+      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+    begin
+      Result := True;
+      Break;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrIntfSortedMap.MapEquals(const AMap: IJclUnicodeStrIntfMap): Boolean;
+var
+  It: IJclUnicodeStrIterator;
+  Index: Integer;
+  AKey: UnicodeString;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    It := AMap.KeySet.First;
+    Index := 0;
+    while It.HasNext do
+    begin
+      if Index >= FSize then
+        Exit;
+      AKey := It.Next;
+      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
+        Exit;
+      Inc(Index);
+    end;
+    Result := True;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrIntfSortedMap.FirstKey: UnicodeString;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := '';
+    if FSize > 0 then
+      Result := FEntries[0].Key
+    else
+    if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrIntfSortedMap.GetValue(const Key: UnicodeString): IInterface;
+var
+  Index: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    Result := nil;
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+      Result := FEntries[Index].Value
+    else if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrIntfSortedMap.HeadMap(const ToKey: UnicodeString): IJclUnicodeStrIntfSortedMap;
+var
+  ToIndex: Integer;
+  NewMap: TJclUnicodeStrIntfSortedMap;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    NewMap := CreateEmptyContainer as TJclUnicodeStrIntfSortedMap;
+    ToIndex := BinarySearch(ToKey);
+    if ToIndex >= 0 then
+    begin
+      NewMap.SetCapacity(ToIndex + 1);
+      NewMap.FSize := ToIndex + 1;
+      while ToIndex >= 0 do
+      begin
+        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+        Dec(ToIndex);
+      end;
+    end;
+    Result := NewMap;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrIntfSortedMap.IsEmpty: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FSize = 0;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrIntfSortedMap.KeyOfValue(const Value: IInterface): UnicodeString;
+var
+  Index: Integer;
+  Found: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+   Found := False;
+    Result := '';
+    for Index := 0 to FSize - 1 do
+      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+    begin
+      Result := FEntries[Index].Key;
+      Found := True;
+      Break;
+    end;
+
+    if (not Found) and (not FReturnDefaultElements) then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrIntfSortedMap.KeySet: IJclUnicodeStrSet;
+var
+  Index: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclUnicodeStrArraySet.Create(FSize);
+    for Index := 0 to FSize - 1 do
+      Result.Add(FEntries[Index].Key);
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrIntfSortedMap.LastKey: UnicodeString;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := '';
+    if FSize > 0 then
+      Result := FEntries[FSize - 1].Key
+    else
+    if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclUnicodeStrIntfSortedMap.MoveArray(FromIndex, ToIndex, Count: Integer);
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      FEntries[ToIndex + I] := FEntries[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        FEntries[FromIndex + I].Key := '';
+        FEntries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        FEntries[FromIndex + I].Key := '';
+        FEntries[FromIndex + I].Value := nil;
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      FEntries[ToIndex + I] := FEntries[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        FEntries[FromIndex + I].Key := '';
+        FEntries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        FEntries[FromIndex + I].Key := '';
+        FEntries[FromIndex + I].Value := nil;
+      end;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(FEntries[FromIndex], FEntries[ToIndex], Count * SizeOf(FEntries[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(FEntries[FromIndex], (ToIndex - FromIndex) * SizeOf(FEntries[0]), 0)
+      else
+        FillChar(FEntries[FromIndex], Count * SizeOf(FEntries[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(FEntries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(FEntries[0]), 0)
+      else
+        FillChar(FEntries[FromIndex], Count * SizeOf(FEntries[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
+
+procedure TJclUnicodeStrIntfSortedMap.PutAll(const AMap: IJclUnicodeStrIntfMap);
+var
+  It: IJclUnicodeStrIterator;
+  Key: UnicodeString;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    if AMap = nil then
+      Exit;
+    It := AMap.KeySet.First;
+    while It.HasNext do
+    begin
+      Key := It.Next;
+      PutValue(Key, AMap.GetValue(Key));
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclUnicodeStrIntfSortedMap.PutValue(const Key: UnicodeString; const Value: IInterface);
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    if FAllowDefaultElements or ((KeysCompare(Key, '') <> 0) and (ValuesCompare(Value, nil) <> 0)) then
+    begin
+      Index := BinarySearch(Key);
+
+      if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+      begin
+        FreeValue(FEntries[Index].Value);
+        FEntries[Index].Value := Value;
+      end
+      else
+      begin
+        if FSize = FCapacity then
+          AutoGrow;
+        if FSize < FCapacity then
+        begin
+          Inc(Index);
+          if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
+            MoveArray(Index, Index + 1, FSize - Index);
+          FEntries[Index].Key := Key;
+          FEntries[Index].Value := Value;
+          Inc(FSize);
+        end;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrIntfSortedMap.Remove(const Key: UnicodeString): IInterface;
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      Result := FreeValue(FEntries[Index].Value);
+      FreeKey(FEntries[Index].Key);
+      if Index < (FSize - 1) then
+        MoveArray(Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := nil;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclUnicodeStrIntfSortedMap.SetCapacity(Value: Integer);
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    if FSize <= Value then
+    begin
+      SetLength(FEntries, Value);
+      inherited SetCapacity(Value);
+    end
+    else
+      raise EJclOperationNotSupportedError.Create;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrIntfSortedMap.Size: Integer;
+begin
+  Result := FSize;
+end;
+
+function TJclUnicodeStrIntfSortedMap.SubMap(const FromKey, ToKey: UnicodeString): IJclUnicodeStrIntfSortedMap;
+var
+  FromIndex, ToIndex: Integer;
+  NewMap: TJclUnicodeStrIntfSortedMap;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    NewMap := CreateEmptyContainer as TJclUnicodeStrIntfSortedMap;
+    FromIndex := BinarySearch(FromKey);
+    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+      Inc(FromIndex);
+    ToIndex := BinarySearch(ToKey);
+    if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+    begin
+      NewMap.SetCapacity(ToIndex - FromIndex + 1);
+      NewMap.FSize := ToIndex - FromIndex + 1;
+      while ToIndex >= FromIndex do
+      begin
+        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+        Dec(ToIndex);
+      end;
+    end;
+    Result := NewMap;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrIntfSortedMap.TailMap(const FromKey: UnicodeString): IJclUnicodeStrIntfSortedMap;
+var
+  FromIndex, Index: Integer;
+  NewMap: TJclUnicodeStrIntfSortedMap;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    NewMap := CreateEmptyContainer as TJclUnicodeStrIntfSortedMap;
+    FromIndex := BinarySearch(FromKey);
+    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+      Inc(FromIndex);
+    if (FromIndex >= 0) and (FromIndex < FSize) then
+    begin
+      NewMap.SetCapacity(FSize - FromIndex);
+      NewMap.FSize := FSize - FromIndex;
+      Index := FromIndex;
+      while Index < FSize do
+      begin
+        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+        Inc(Index);
+      end;
+    end;
+    Result := NewMap;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrIntfSortedMap.Values: IJclIntfCollection;
+var
+  Index: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclIntfArrayList.Create(FSize);
+    for Index := 0 to FSize - 1 do
+      Result.Add(FEntries[Index].Value);
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrIntfSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclUnicodeStrIntfSortedMap.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclUnicodeStrIntfSortedMap.FreeKey(var Key: UnicodeString): UnicodeString;
+begin
+  Result := Key;
+  Key := '';
+end;
+
+function TJclUnicodeStrIntfSortedMap.FreeValue(var Value: IInterface): IInterface;
+begin
+  Result := Value;
+  Value := nil;
+end;
+
+function TJclUnicodeStrIntfSortedMap.KeysCompare(const A, B: UnicodeString): Integer;
+begin
+  Result := ItemsCompare(A, B);
+end;
+
+function TJclUnicodeStrIntfSortedMap.ValuesCompare(const A, B: IInterface): Integer;
+begin
+  if Integer(A) > Integer(B) then
+    Result := 1
+  else
+  if Integer(A) < Integer(B) then
+    Result := -1
+  else
+    Result := 0;
+end;
+
+//=== { TJclIntfUnicodeStrSortedMap } ==============================================
+
+constructor TJclIntfUnicodeStrSortedMap.Create(ACapacity: Integer);
+begin
+  inherited Create();
+  SetCapacity(ACapacity);
+end;
+
+destructor TJclIntfUnicodeStrSortedMap.Destroy;
+begin
+  FReadOnly := False;
+  Clear;
+  inherited Destroy;
+end;
+
+procedure TJclIntfUnicodeStrSortedMap.AssignDataTo(Dest: TJclAbstractContainerBase);
+var
+  MyDest: TJclIntfUnicodeStrSortedMap;
+begin
+  inherited AssignDataTo(Dest);
+  if Dest is TJclIntfUnicodeStrSortedMap then
+  begin
+    MyDest := TJclIntfUnicodeStrSortedMap(Dest);
+    MyDest.SetCapacity(FSize);
+    MyDest.FEntries := FEntries;
+    MyDest.FSize := FSize;
+  end;
+end;
+
+function TJclIntfUnicodeStrSortedMap.BinarySearch(const Key: IInterface): Integer;
+var
+  HiPos, LoPos, CompPos: Integer;
+  Comp: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    LoPos := 0;
+    HiPos := FSize - 1;
+    CompPos := (HiPos + LoPos) div 2;
+    while HiPos >= LoPos do
+    begin
+      Comp := KeysCompare(FEntries[CompPos].Key, Key);
+      if Comp < 0 then
+        LoPos := CompPos + 1
+      else
+      if Comp > 0 then
+        HiPos := CompPos - 1
+      else
+      begin
+        HiPos := CompPos;
+        LoPos := CompPos + 1;
+      end;
+      CompPos := (HiPos + LoPos) div 2;
+    end;
+    Result := HiPos;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclIntfUnicodeStrSortedMap.Clear;
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    for Index := 0 to FSize - 1 do
+    begin
+      FreeKey(FEntries[Index].Key);
+      FreeValue(FEntries[Index].Value);
+    end;
+    FSize := 0;
+    AutoPack;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfUnicodeStrSortedMap.ContainsKey(const Key: IInterface): Boolean;
+var
+  Index: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfUnicodeStrSortedMap.ContainsValue(const Value: UnicodeString): Boolean;
+var
+  Index: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    for Index := 0 to FSize - 1 do
+      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+    begin
+      Result := True;
+      Break;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfUnicodeStrSortedMap.MapEquals(const AMap: IJclIntfUnicodeStrMap): Boolean;
+var
+  It: IJclIntfIterator;
+  Index: Integer;
+  AKey: IInterface;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    It := AMap.KeySet.First;
+    Index := 0;
+    while It.HasNext do
+    begin
+      if Index >= FSize then
+        Exit;
+      AKey := It.Next;
+      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
+        Exit;
+      Inc(Index);
+    end;
+    Result := True;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfUnicodeStrSortedMap.FirstKey: IInterface;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := nil;
+    if FSize > 0 then
+      Result := FEntries[0].Key
+    else
+    if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfUnicodeStrSortedMap.GetValue(const Key: IInterface): UnicodeString;
+var
+  Index: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    Result := '';
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+      Result := FEntries[Index].Value
+    else if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfUnicodeStrSortedMap.HeadMap(const ToKey: IInterface): IJclIntfUnicodeStrSortedMap;
+var
+  ToIndex: Integer;
+  NewMap: TJclIntfUnicodeStrSortedMap;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    NewMap := CreateEmptyContainer as TJclIntfUnicodeStrSortedMap;
+    ToIndex := BinarySearch(ToKey);
+    if ToIndex >= 0 then
+    begin
+      NewMap.SetCapacity(ToIndex + 1);
+      NewMap.FSize := ToIndex + 1;
+      while ToIndex >= 0 do
+      begin
+        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+        Dec(ToIndex);
+      end;
+    end;
+    Result := NewMap;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfUnicodeStrSortedMap.IsEmpty: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FSize = 0;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfUnicodeStrSortedMap.KeyOfValue(const Value: UnicodeString): IInterface;
+var
+  Index: Integer;
+  Found: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+   Found := False;
+    Result := nil;
+    for Index := 0 to FSize - 1 do
+      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+    begin
+      Result := FEntries[Index].Key;
+      Found := True;
+      Break;
+    end;
+
+    if (not Found) and (not FReturnDefaultElements) then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfUnicodeStrSortedMap.KeySet: IJclIntfSet;
+var
+  Index: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclIntfArraySet.Create(FSize);
+    for Index := 0 to FSize - 1 do
+      Result.Add(FEntries[Index].Key);
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfUnicodeStrSortedMap.LastKey: IInterface;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := nil;
+    if FSize > 0 then
+      Result := FEntries[FSize - 1].Key
+    else
+    if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclIntfUnicodeStrSortedMap.MoveArray(FromIndex, ToIndex, Count: Integer);
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      FEntries[ToIndex + I] := FEntries[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        FEntries[FromIndex + I].Key := nil;
+        FEntries[FromIndex + I].Value := '';
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        FEntries[FromIndex + I].Key := nil;
+        FEntries[FromIndex + I].Value := '';
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      FEntries[ToIndex + I] := FEntries[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        FEntries[FromIndex + I].Key := nil;
+        FEntries[FromIndex + I].Value := '';
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        FEntries[FromIndex + I].Key := nil;
+        FEntries[FromIndex + I].Value := '';
+      end;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(FEntries[FromIndex], FEntries[ToIndex], Count * SizeOf(FEntries[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(FEntries[FromIndex], (ToIndex - FromIndex) * SizeOf(FEntries[0]), 0)
+      else
+        FillChar(FEntries[FromIndex], Count * SizeOf(FEntries[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(FEntries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(FEntries[0]), 0)
+      else
+        FillChar(FEntries[FromIndex], Count * SizeOf(FEntries[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
+
+procedure TJclIntfUnicodeStrSortedMap.PutAll(const AMap: IJclIntfUnicodeStrMap);
+var
+  It: IJclIntfIterator;
+  Key: IInterface;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    if AMap = nil then
+      Exit;
+    It := AMap.KeySet.First;
+    while It.HasNext do
+    begin
+      Key := It.Next;
+      PutValue(Key, AMap.GetValue(Key));
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclIntfUnicodeStrSortedMap.PutValue(const Key: IInterface; const Value: UnicodeString);
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    if FAllowDefaultElements or ((KeysCompare(Key, nil) <> 0) and (ValuesCompare(Value, '') <> 0)) then
+    begin
+      Index := BinarySearch(Key);
+
+      if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+      begin
+        FreeValue(FEntries[Index].Value);
+        FEntries[Index].Value := Value;
+      end
+      else
+      begin
+        if FSize = FCapacity then
+          AutoGrow;
+        if FSize < FCapacity then
+        begin
+          Inc(Index);
+          if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
+            MoveArray(Index, Index + 1, FSize - Index);
+          FEntries[Index].Key := Key;
+          FEntries[Index].Value := Value;
+          Inc(FSize);
+        end;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfUnicodeStrSortedMap.Remove(const Key: IInterface): UnicodeString;
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      Result := FreeValue(FEntries[Index].Value);
+      FreeKey(FEntries[Index].Key);
+      if Index < (FSize - 1) then
+        MoveArray(Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := '';
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclIntfUnicodeStrSortedMap.SetCapacity(Value: Integer);
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    if FSize <= Value then
+    begin
+      SetLength(FEntries, Value);
+      inherited SetCapacity(Value);
+    end
+    else
+      raise EJclOperationNotSupportedError.Create;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfUnicodeStrSortedMap.Size: Integer;
+begin
+  Result := FSize;
+end;
+
+function TJclIntfUnicodeStrSortedMap.SubMap(const FromKey, ToKey: IInterface): IJclIntfUnicodeStrSortedMap;
+var
+  FromIndex, ToIndex: Integer;
+  NewMap: TJclIntfUnicodeStrSortedMap;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    NewMap := CreateEmptyContainer as TJclIntfUnicodeStrSortedMap;
+    FromIndex := BinarySearch(FromKey);
+    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+      Inc(FromIndex);
+    ToIndex := BinarySearch(ToKey);
+    if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+    begin
+      NewMap.SetCapacity(ToIndex - FromIndex + 1);
+      NewMap.FSize := ToIndex - FromIndex + 1;
+      while ToIndex >= FromIndex do
+      begin
+        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+        Dec(ToIndex);
+      end;
+    end;
+    Result := NewMap;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfUnicodeStrSortedMap.TailMap(const FromKey: IInterface): IJclIntfUnicodeStrSortedMap;
+var
+  FromIndex, Index: Integer;
+  NewMap: TJclIntfUnicodeStrSortedMap;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    NewMap := CreateEmptyContainer as TJclIntfUnicodeStrSortedMap;
+    FromIndex := BinarySearch(FromKey);
+    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+      Inc(FromIndex);
+    if (FromIndex >= 0) and (FromIndex < FSize) then
+    begin
+      NewMap.SetCapacity(FSize - FromIndex);
+      NewMap.FSize := FSize - FromIndex;
+      Index := FromIndex;
+      while Index < FSize do
+      begin
+        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+        Inc(Index);
+      end;
+    end;
+    Result := NewMap;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfUnicodeStrSortedMap.Values: IJclUnicodeStrCollection;
+var
+  Index: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclUnicodeStrArrayList.Create(FSize);
+    for Index := 0 to FSize - 1 do
+      Result.Add(FEntries[Index].Value);
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfUnicodeStrSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclIntfUnicodeStrSortedMap.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclIntfUnicodeStrSortedMap.FreeKey(var Key: IInterface): IInterface;
+begin
+  Result := Key;
+  Key := nil;
+end;
+
+function TJclIntfUnicodeStrSortedMap.FreeValue(var Value: UnicodeString): UnicodeString;
+begin
+  Result := Value;
+  Value := '';
+end;
+
+function TJclIntfUnicodeStrSortedMap.KeysCompare(const A, B: IInterface): Integer;
+begin
+  if Integer(A) > Integer(B) then
+    Result := 1
+  else
+  if Integer(A) < Integer(B) then
+    Result := -1
+  else
+    Result := 0;
+end;
+
+function TJclIntfUnicodeStrSortedMap.ValuesCompare(const A, B: UnicodeString): Integer;
+begin
+  Result := ItemsCompare(A, B);
+end;
+
+//=== { TJclUnicodeStrUnicodeStrSortedMap } ==============================================
+
+constructor TJclUnicodeStrUnicodeStrSortedMap.Create(ACapacity: Integer);
+begin
+  inherited Create();
+  SetCapacity(ACapacity);
+end;
+
+destructor TJclUnicodeStrUnicodeStrSortedMap.Destroy;
+begin
+  FReadOnly := False;
+  Clear;
+  inherited Destroy;
+end;
+
+procedure TJclUnicodeStrUnicodeStrSortedMap.AssignDataTo(Dest: TJclAbstractContainerBase);
+var
+  MyDest: TJclUnicodeStrUnicodeStrSortedMap;
+begin
+  inherited AssignDataTo(Dest);
+  if Dest is TJclUnicodeStrUnicodeStrSortedMap then
+  begin
+    MyDest := TJclUnicodeStrUnicodeStrSortedMap(Dest);
+    MyDest.SetCapacity(FSize);
+    MyDest.FEntries := FEntries;
+    MyDest.FSize := FSize;
+  end;
+end;
+
+function TJclUnicodeStrUnicodeStrSortedMap.BinarySearch(const Key: UnicodeString): Integer;
+var
+  HiPos, LoPos, CompPos: Integer;
+  Comp: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    LoPos := 0;
+    HiPos := FSize - 1;
+    CompPos := (HiPos + LoPos) div 2;
+    while HiPos >= LoPos do
+    begin
+      Comp := KeysCompare(FEntries[CompPos].Key, Key);
+      if Comp < 0 then
+        LoPos := CompPos + 1
+      else
+      if Comp > 0 then
+        HiPos := CompPos - 1
+      else
+      begin
+        HiPos := CompPos;
+        LoPos := CompPos + 1;
+      end;
+      CompPos := (HiPos + LoPos) div 2;
+    end;
+    Result := HiPos;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclUnicodeStrUnicodeStrSortedMap.Clear;
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    for Index := 0 to FSize - 1 do
+    begin
+      FreeKey(FEntries[Index].Key);
+      FreeValue(FEntries[Index].Value);
+    end;
+    FSize := 0;
+    AutoPack;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrUnicodeStrSortedMap.ContainsKey(const Key: UnicodeString): Boolean;
+var
+  Index: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrUnicodeStrSortedMap.ContainsValue(const Value: UnicodeString): Boolean;
+var
+  Index: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    for Index := 0 to FSize - 1 do
+      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+    begin
+      Result := True;
+      Break;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrUnicodeStrSortedMap.MapEquals(const AMap: IJclUnicodeStrUnicodeStrMap): Boolean;
+var
+  It: IJclUnicodeStrIterator;
+  Index: Integer;
+  AKey: UnicodeString;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    It := AMap.KeySet.First;
+    Index := 0;
+    while It.HasNext do
+    begin
+      if Index >= FSize then
+        Exit;
+      AKey := It.Next;
+      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
+        Exit;
+      Inc(Index);
+    end;
+    Result := True;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrUnicodeStrSortedMap.FirstKey: UnicodeString;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := '';
+    if FSize > 0 then
+      Result := FEntries[0].Key
+    else
+    if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrUnicodeStrSortedMap.GetValue(const Key: UnicodeString): UnicodeString;
+var
+  Index: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    Result := '';
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+      Result := FEntries[Index].Value
+    else if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrUnicodeStrSortedMap.HeadMap(const ToKey: UnicodeString): IJclUnicodeStrUnicodeStrSortedMap;
+var
+  ToIndex: Integer;
+  NewMap: TJclUnicodeStrUnicodeStrSortedMap;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    NewMap := CreateEmptyContainer as TJclUnicodeStrUnicodeStrSortedMap;
+    ToIndex := BinarySearch(ToKey);
+    if ToIndex >= 0 then
+    begin
+      NewMap.SetCapacity(ToIndex + 1);
+      NewMap.FSize := ToIndex + 1;
+      while ToIndex >= 0 do
+      begin
+        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+        Dec(ToIndex);
+      end;
+    end;
+    Result := NewMap;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrUnicodeStrSortedMap.IsEmpty: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FSize = 0;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrUnicodeStrSortedMap.KeyOfValue(const Value: UnicodeString): UnicodeString;
+var
+  Index: Integer;
+  Found: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+   Found := False;
+    Result := '';
+    for Index := 0 to FSize - 1 do
+      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+    begin
+      Result := FEntries[Index].Key;
+      Found := True;
+      Break;
+    end;
+
+    if (not Found) and (not FReturnDefaultElements) then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrUnicodeStrSortedMap.KeySet: IJclUnicodeStrSet;
+var
+  Index: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclUnicodeStrArraySet.Create(FSize);
+    for Index := 0 to FSize - 1 do
+      Result.Add(FEntries[Index].Key);
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrUnicodeStrSortedMap.LastKey: UnicodeString;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := '';
+    if FSize > 0 then
+      Result := FEntries[FSize - 1].Key
+    else
+    if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclUnicodeStrUnicodeStrSortedMap.MoveArray(FromIndex, ToIndex, Count: Integer);
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      FEntries[ToIndex + I] := FEntries[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        FEntries[FromIndex + I].Key := '';
+        FEntries[FromIndex + I].Value := '';
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        FEntries[FromIndex + I].Key := '';
+        FEntries[FromIndex + I].Value := '';
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      FEntries[ToIndex + I] := FEntries[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        FEntries[FromIndex + I].Key := '';
+        FEntries[FromIndex + I].Value := '';
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        FEntries[FromIndex + I].Key := '';
+        FEntries[FromIndex + I].Value := '';
+      end;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(FEntries[FromIndex], FEntries[ToIndex], Count * SizeOf(FEntries[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(FEntries[FromIndex], (ToIndex - FromIndex) * SizeOf(FEntries[0]), 0)
+      else
+        FillChar(FEntries[FromIndex], Count * SizeOf(FEntries[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(FEntries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(FEntries[0]), 0)
+      else
+        FillChar(FEntries[FromIndex], Count * SizeOf(FEntries[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
+
+procedure TJclUnicodeStrUnicodeStrSortedMap.PutAll(const AMap: IJclUnicodeStrUnicodeStrMap);
+var
+  It: IJclUnicodeStrIterator;
+  Key: UnicodeString;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    if AMap = nil then
+      Exit;
+    It := AMap.KeySet.First;
+    while It.HasNext do
+    begin
+      Key := It.Next;
+      PutValue(Key, AMap.GetValue(Key));
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclUnicodeStrUnicodeStrSortedMap.PutValue(const Key: UnicodeString; const Value: UnicodeString);
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    if FAllowDefaultElements or ((KeysCompare(Key, '') <> 0) and (ValuesCompare(Value, '') <> 0)) then
+    begin
+      Index := BinarySearch(Key);
+
+      if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+      begin
+        FreeValue(FEntries[Index].Value);
+        FEntries[Index].Value := Value;
+      end
+      else
+      begin
+        if FSize = FCapacity then
+          AutoGrow;
+        if FSize < FCapacity then
+        begin
+          Inc(Index);
+          if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
+            MoveArray(Index, Index + 1, FSize - Index);
+          FEntries[Index].Key := Key;
+          FEntries[Index].Value := Value;
+          Inc(FSize);
+        end;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrUnicodeStrSortedMap.Remove(const Key: UnicodeString): UnicodeString;
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      Result := FreeValue(FEntries[Index].Value);
+      FreeKey(FEntries[Index].Key);
+      if Index < (FSize - 1) then
+        MoveArray(Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := '';
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclUnicodeStrUnicodeStrSortedMap.SetCapacity(Value: Integer);
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    if FSize <= Value then
+    begin
+      SetLength(FEntries, Value);
+      inherited SetCapacity(Value);
+    end
+    else
+      raise EJclOperationNotSupportedError.Create;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrUnicodeStrSortedMap.Size: Integer;
+begin
+  Result := FSize;
+end;
+
+function TJclUnicodeStrUnicodeStrSortedMap.SubMap(const FromKey, ToKey: UnicodeString): IJclUnicodeStrUnicodeStrSortedMap;
+var
+  FromIndex, ToIndex: Integer;
+  NewMap: TJclUnicodeStrUnicodeStrSortedMap;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    NewMap := CreateEmptyContainer as TJclUnicodeStrUnicodeStrSortedMap;
+    FromIndex := BinarySearch(FromKey);
+    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+      Inc(FromIndex);
+    ToIndex := BinarySearch(ToKey);
+    if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+    begin
+      NewMap.SetCapacity(ToIndex - FromIndex + 1);
+      NewMap.FSize := ToIndex - FromIndex + 1;
+      while ToIndex >= FromIndex do
+      begin
+        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+        Dec(ToIndex);
+      end;
+    end;
+    Result := NewMap;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrUnicodeStrSortedMap.TailMap(const FromKey: UnicodeString): IJclUnicodeStrUnicodeStrSortedMap;
+var
+  FromIndex, Index: Integer;
+  NewMap: TJclUnicodeStrUnicodeStrSortedMap;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    NewMap := CreateEmptyContainer as TJclUnicodeStrUnicodeStrSortedMap;
+    FromIndex := BinarySearch(FromKey);
+    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+      Inc(FromIndex);
+    if (FromIndex >= 0) and (FromIndex < FSize) then
+    begin
+      NewMap.SetCapacity(FSize - FromIndex);
+      NewMap.FSize := FSize - FromIndex;
+      Index := FromIndex;
+      while Index < FSize do
+      begin
+        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+        Inc(Index);
+      end;
+    end;
+    Result := NewMap;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrUnicodeStrSortedMap.Values: IJclUnicodeStrCollection;
+var
+  Index: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclUnicodeStrArrayList.Create(FSize);
+    for Index := 0 to FSize - 1 do
+      Result.Add(FEntries[Index].Value);
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrUnicodeStrSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclUnicodeStrUnicodeStrSortedMap.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclUnicodeStrUnicodeStrSortedMap.FreeKey(var Key: UnicodeString): UnicodeString;
+begin
+  Result := Key;
+  Key := '';
+end;
+
+function TJclUnicodeStrUnicodeStrSortedMap.FreeValue(var Value: UnicodeString): UnicodeString;
+begin
+  Result := Value;
+  Value := '';
+end;
+
+function TJclUnicodeStrUnicodeStrSortedMap.KeysCompare(const A, B: UnicodeString): Integer;
+begin
+  Result := ItemsCompare(A, B);
+end;
+
+function TJclUnicodeStrUnicodeStrSortedMap.ValuesCompare(const A, B: UnicodeString): Integer;
+begin
+  Result := ItemsCompare(A, B);
+end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
 
 //=== { TJclSingleIntfSortedMap } ==============================================
 
@@ -7052,13 +9033,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclSingleIntfSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclSingleIntfSortedMap.Create(FSize);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclSingleIntfSortedMap.Equals(const AMap: IJclSingleIntfMap): Boolean;
+function TJclSingleIntfSortedMap.MapEquals(const AMap: IJclSingleIntfMap): Boolean;
 var
   It: IJclSingleIterator;
   Index: Integer;
@@ -7113,18 +9088,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclSingleIntfSortedMap.FreeKey(var Key: Single): Single;
-begin
-  Result := Key;
-  Key := 0.0;
-end;
-
-function TJclSingleIntfSortedMap.FreeValue(var Value: IInterface): IInterface;
-begin
-  Result := Value;
-  Value := nil;
 end;
 
 function TJclSingleIntfSortedMap.GetValue(const Key: Single): IInterface;
@@ -7225,11 +9188,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclSingleIntfSortedMap.KeysCompare(const A, B: Single): Integer;
-begin
-  Result := ItemsCompare(A, B);
 end;
 
 function TJclSingleIntfSortedMap.KeySet: IJclSingleSet;
@@ -7562,6 +9520,29 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclSingleIntfSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclSingleIntfSortedMap.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclSingleIntfSortedMap.FreeKey(var Key: Single): Single;
+begin
+  Result := Key;
+  Key := 0.0;
+end;
+
+function TJclSingleIntfSortedMap.FreeValue(var Value: IInterface): IInterface;
+begin
+  Result := Value;
+  Value := nil;
+end;
+
+function TJclSingleIntfSortedMap.KeysCompare(const A, B: Single): Integer;
+begin
+  Result := ItemsCompare(A, B);
+end;
+
 function TJclSingleIntfSortedMap.ValuesCompare(const A, B: IInterface): Integer;
 begin
   if Integer(A) > Integer(B) then
@@ -7572,7 +9553,6 @@ begin
   else
     Result := 0;
 end;
-
 
 //=== { TJclIntfSingleSortedMap } ==============================================
 
@@ -7709,13 +9689,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfSingleSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclIntfSingleSortedMap.Create(FSize);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclIntfSingleSortedMap.Equals(const AMap: IJclIntfSingleMap): Boolean;
+function TJclIntfSingleSortedMap.MapEquals(const AMap: IJclIntfSingleMap): Boolean;
 var
   It: IJclIntfIterator;
   Index: Integer;
@@ -7771,20 +9745,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-function TJclIntfSingleSortedMap.FreeKey(var Key: IInterface): IInterface;
-begin
-  Result := Key;
-  Key := nil;
-end;
-
-function TJclIntfSingleSortedMap.FreeValue(var Value: Single): Single;
-begin
-  Result := Value;
-  Value := 0.0;
-end;
-
-
 
 function TJclIntfSingleSortedMap.GetValue(const Key: IInterface): Single;
 var
@@ -7884,17 +9844,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclIntfSingleSortedMap.KeysCompare(const A, B: IInterface): Integer;
-begin
-  if Integer(A) > Integer(B) then
-    Result := 1
-  else
-  if Integer(A) < Integer(B) then
-    Result := -1
-  else
-    Result := 0;
 end;
 
 function TJclIntfSingleSortedMap.KeySet: IJclIntfSet;
@@ -8227,11 +10176,39 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclIntfSingleSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclIntfSingleSortedMap.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclIntfSingleSortedMap.FreeKey(var Key: IInterface): IInterface;
+begin
+  Result := Key;
+  Key := nil;
+end;
+
+function TJclIntfSingleSortedMap.FreeValue(var Value: Single): Single;
+begin
+  Result := Value;
+  Value := 0.0;
+end;
+
+function TJclIntfSingleSortedMap.KeysCompare(const A, B: IInterface): Integer;
+begin
+  if Integer(A) > Integer(B) then
+    Result := 1
+  else
+  if Integer(A) < Integer(B) then
+    Result := -1
+  else
+    Result := 0;
+end;
+
 function TJclIntfSingleSortedMap.ValuesCompare(const A, B: Single): Integer;
 begin
   Result := ItemsCompare(A, B);
 end;
-
 
 //=== { TJclSingleSingleSortedMap } ==============================================
 
@@ -8368,13 +10345,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclSingleSingleSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclSingleSingleSortedMap.Create(FSize);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclSingleSingleSortedMap.Equals(const AMap: IJclSingleSingleMap): Boolean;
+function TJclSingleSingleSortedMap.MapEquals(const AMap: IJclSingleSingleMap): Boolean;
 var
   It: IJclSingleIterator;
   Index: Integer;
@@ -8430,20 +10401,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-function TJclSingleSingleSortedMap.FreeKey(var Key: Single): Single;
-begin
-  Result := Key;
-  Key := 0.0;
-end;
-
-function TJclSingleSingleSortedMap.FreeValue(var Value: Single): Single;
-begin
-  Result := Value;
-  Value := 0.0;
-end;
-
-
 
 function TJclSingleSingleSortedMap.GetValue(const Key: Single): Single;
 var
@@ -8543,11 +10500,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclSingleSingleSortedMap.KeysCompare(const A, B: Single): Integer;
-begin
-  Result := ItemsCompare(A, B);
 end;
 
 function TJclSingleSingleSortedMap.KeySet: IJclSingleSet;
@@ -8880,11 +10832,33 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclSingleSingleSortedMap.ValuesCompare(const A, B: Single): Integer;
+function TJclSingleSingleSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclSingleSingleSortedMap.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclSingleSingleSortedMap.FreeKey(var Key: Single): Single;
+begin
+  Result := Key;
+  Key := 0.0;
+end;
+
+function TJclSingleSingleSortedMap.FreeValue(var Value: Single): Single;
+begin
+  Result := Value;
+  Value := 0.0;
+end;
+
+function TJclSingleSingleSortedMap.KeysCompare(const A, B: Single): Integer;
 begin
   Result := ItemsCompare(A, B);
 end;
 
+function TJclSingleSingleSortedMap.ValuesCompare(const A, B: Single): Integer;
+begin
+  Result := ItemsCompare(A, B);
+end;
 
 //=== { TJclDoubleIntfSortedMap } ==============================================
 
@@ -9021,13 +10995,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclDoubleIntfSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclDoubleIntfSortedMap.Create(FSize);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclDoubleIntfSortedMap.Equals(const AMap: IJclDoubleIntfMap): Boolean;
+function TJclDoubleIntfSortedMap.MapEquals(const AMap: IJclDoubleIntfMap): Boolean;
 var
   It: IJclDoubleIterator;
   Index: Integer;
@@ -9083,20 +11051,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-function TJclDoubleIntfSortedMap.FreeKey(var Key: Double): Double;
-begin
-  Result := Key;
-  Key := 0.0;
-end;
-
-function TJclDoubleIntfSortedMap.FreeValue(var Value: IInterface): IInterface;
-begin
-  Result := Value;
-  Value := nil;
-end;
-
-
 
 function TJclDoubleIntfSortedMap.GetValue(const Key: Double): IInterface;
 var
@@ -9196,11 +11150,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclDoubleIntfSortedMap.KeysCompare(const A, B: Double): Integer;
-begin
-  Result := ItemsCompare(A, B);
 end;
 
 function TJclDoubleIntfSortedMap.KeySet: IJclDoubleSet;
@@ -9533,6 +11482,29 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclDoubleIntfSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclDoubleIntfSortedMap.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclDoubleIntfSortedMap.FreeKey(var Key: Double): Double;
+begin
+  Result := Key;
+  Key := 0.0;
+end;
+
+function TJclDoubleIntfSortedMap.FreeValue(var Value: IInterface): IInterface;
+begin
+  Result := Value;
+  Value := nil;
+end;
+
+function TJclDoubleIntfSortedMap.KeysCompare(const A, B: Double): Integer;
+begin
+  Result := ItemsCompare(A, B);
+end;
+
 function TJclDoubleIntfSortedMap.ValuesCompare(const A, B: IInterface): Integer;
 begin
   if Integer(A) > Integer(B) then
@@ -9543,7 +11515,6 @@ begin
   else
     Result := 0;
 end;
-
 
 //=== { TJclIntfDoubleSortedMap } ==============================================
 
@@ -9680,13 +11651,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfDoubleSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclIntfDoubleSortedMap.Create(FSize);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclIntfDoubleSortedMap.Equals(const AMap: IJclIntfDoubleMap): Boolean;
+function TJclIntfDoubleSortedMap.MapEquals(const AMap: IJclIntfDoubleMap): Boolean;
 var
   It: IJclIntfIterator;
   Index: Integer;
@@ -9742,20 +11707,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-function TJclIntfDoubleSortedMap.FreeKey(var Key: IInterface): IInterface;
-begin
-  Result := Key;
-  Key := nil;
-end;
-
-function TJclIntfDoubleSortedMap.FreeValue(var Value: Double): Double;
-begin
-  Result := Value;
-  Value := 0.0;
-end;
-
-
 
 function TJclIntfDoubleSortedMap.GetValue(const Key: IInterface): Double;
 var
@@ -9855,17 +11806,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclIntfDoubleSortedMap.KeysCompare(const A, B: IInterface): Integer;
-begin
-  if Integer(A) > Integer(B) then
-    Result := 1
-  else
-  if Integer(A) < Integer(B) then
-    Result := -1
-  else
-    Result := 0;
 end;
 
 function TJclIntfDoubleSortedMap.KeySet: IJclIntfSet;
@@ -10198,11 +12138,39 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclIntfDoubleSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclIntfDoubleSortedMap.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclIntfDoubleSortedMap.FreeKey(var Key: IInterface): IInterface;
+begin
+  Result := Key;
+  Key := nil;
+end;
+
+function TJclIntfDoubleSortedMap.FreeValue(var Value: Double): Double;
+begin
+  Result := Value;
+  Value := 0.0;
+end;
+
+function TJclIntfDoubleSortedMap.KeysCompare(const A, B: IInterface): Integer;
+begin
+  if Integer(A) > Integer(B) then
+    Result := 1
+  else
+  if Integer(A) < Integer(B) then
+    Result := -1
+  else
+    Result := 0;
+end;
+
 function TJclIntfDoubleSortedMap.ValuesCompare(const A, B: Double): Integer;
 begin
   Result := ItemsCompare(A, B);
 end;
-
 
 //=== { TJclDoubleDoubleSortedMap } ==============================================
 
@@ -10339,13 +12307,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclDoubleDoubleSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclDoubleDoubleSortedMap.Create(FSize);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclDoubleDoubleSortedMap.Equals(const AMap: IJclDoubleDoubleMap): Boolean;
+function TJclDoubleDoubleSortedMap.MapEquals(const AMap: IJclDoubleDoubleMap): Boolean;
 var
   It: IJclDoubleIterator;
   Index: Integer;
@@ -10401,20 +12363,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-function TJclDoubleDoubleSortedMap.FreeKey(var Key: Double): Double;
-begin
-  Result := Key;
-  Key := 0.0;
-end;
-
-function TJclDoubleDoubleSortedMap.FreeValue(var Value: Double): Double;
-begin
-  Result := Value;
-  Value := 0.0;
-end;
-
-
 
 function TJclDoubleDoubleSortedMap.GetValue(const Key: Double): Double;
 var
@@ -10514,11 +12462,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclDoubleDoubleSortedMap.KeysCompare(const A, B: Double): Integer;
-begin
-  Result := ItemsCompare(A, B);
 end;
 
 function TJclDoubleDoubleSortedMap.KeySet: IJclDoubleSet;
@@ -10851,11 +12794,33 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclDoubleDoubleSortedMap.ValuesCompare(const A, B: Double): Integer;
+function TJclDoubleDoubleSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclDoubleDoubleSortedMap.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclDoubleDoubleSortedMap.FreeKey(var Key: Double): Double;
+begin
+  Result := Key;
+  Key := 0.0;
+end;
+
+function TJclDoubleDoubleSortedMap.FreeValue(var Value: Double): Double;
+begin
+  Result := Value;
+  Value := 0.0;
+end;
+
+function TJclDoubleDoubleSortedMap.KeysCompare(const A, B: Double): Integer;
 begin
   Result := ItemsCompare(A, B);
 end;
 
+function TJclDoubleDoubleSortedMap.ValuesCompare(const A, B: Double): Integer;
+begin
+  Result := ItemsCompare(A, B);
+end;
 
 //=== { TJclExtendedIntfSortedMap } ==============================================
 
@@ -10992,13 +12957,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclExtendedIntfSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclExtendedIntfSortedMap.Create(FSize);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclExtendedIntfSortedMap.Equals(const AMap: IJclExtendedIntfMap): Boolean;
+function TJclExtendedIntfSortedMap.MapEquals(const AMap: IJclExtendedIntfMap): Boolean;
 var
   It: IJclExtendedIterator;
   Index: Integer;
@@ -11054,20 +13013,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-function TJclExtendedIntfSortedMap.FreeKey(var Key: Extended): Extended;
-begin
-  Result := Key;
-  Key := 0.0;
-end;
-
-function TJclExtendedIntfSortedMap.FreeValue(var Value: IInterface): IInterface;
-begin
-  Result := Value;
-  Value := nil;
-end;
-
-
 
 function TJclExtendedIntfSortedMap.GetValue(const Key: Extended): IInterface;
 var
@@ -11167,11 +13112,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclExtendedIntfSortedMap.KeysCompare(const A, B: Extended): Integer;
-begin
-  Result := ItemsCompare(A, B);
 end;
 
 function TJclExtendedIntfSortedMap.KeySet: IJclExtendedSet;
@@ -11504,6 +13444,29 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclExtendedIntfSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclExtendedIntfSortedMap.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclExtendedIntfSortedMap.FreeKey(var Key: Extended): Extended;
+begin
+  Result := Key;
+  Key := 0.0;
+end;
+
+function TJclExtendedIntfSortedMap.FreeValue(var Value: IInterface): IInterface;
+begin
+  Result := Value;
+  Value := nil;
+end;
+
+function TJclExtendedIntfSortedMap.KeysCompare(const A, B: Extended): Integer;
+begin
+  Result := ItemsCompare(A, B);
+end;
+
 function TJclExtendedIntfSortedMap.ValuesCompare(const A, B: IInterface): Integer;
 begin
   if Integer(A) > Integer(B) then
@@ -11514,7 +13477,6 @@ begin
   else
     Result := 0;
 end;
-
 
 //=== { TJclIntfExtendedSortedMap } ==============================================
 
@@ -11651,13 +13613,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfExtendedSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclIntfExtendedSortedMap.Create(FSize);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclIntfExtendedSortedMap.Equals(const AMap: IJclIntfExtendedMap): Boolean;
+function TJclIntfExtendedSortedMap.MapEquals(const AMap: IJclIntfExtendedMap): Boolean;
 var
   It: IJclIntfIterator;
   Index: Integer;
@@ -11713,20 +13669,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-function TJclIntfExtendedSortedMap.FreeKey(var Key: IInterface): IInterface;
-begin
-  Result := Key;
-  Key := nil;
-end;
-
-function TJclIntfExtendedSortedMap.FreeValue(var Value: Extended): Extended;
-begin
-  Result := Value;
-  Value := 0.0;
-end;
-
-
 
 function TJclIntfExtendedSortedMap.GetValue(const Key: IInterface): Extended;
 var
@@ -11826,17 +13768,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclIntfExtendedSortedMap.KeysCompare(const A, B: IInterface): Integer;
-begin
-  if Integer(A) > Integer(B) then
-    Result := 1
-  else
-  if Integer(A) < Integer(B) then
-    Result := -1
-  else
-    Result := 0;
 end;
 
 function TJclIntfExtendedSortedMap.KeySet: IJclIntfSet;
@@ -12169,11 +14100,39 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclIntfExtendedSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclIntfExtendedSortedMap.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclIntfExtendedSortedMap.FreeKey(var Key: IInterface): IInterface;
+begin
+  Result := Key;
+  Key := nil;
+end;
+
+function TJclIntfExtendedSortedMap.FreeValue(var Value: Extended): Extended;
+begin
+  Result := Value;
+  Value := 0.0;
+end;
+
+function TJclIntfExtendedSortedMap.KeysCompare(const A, B: IInterface): Integer;
+begin
+  if Integer(A) > Integer(B) then
+    Result := 1
+  else
+  if Integer(A) < Integer(B) then
+    Result := -1
+  else
+    Result := 0;
+end;
+
 function TJclIntfExtendedSortedMap.ValuesCompare(const A, B: Extended): Integer;
 begin
   Result := ItemsCompare(A, B);
 end;
-
 
 //=== { TJclExtendedExtendedSortedMap } ==============================================
 
@@ -12310,13 +14269,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclExtendedExtendedSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclExtendedExtendedSortedMap.Create(FSize);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclExtendedExtendedSortedMap.Equals(const AMap: IJclExtendedExtendedMap): Boolean;
+function TJclExtendedExtendedSortedMap.MapEquals(const AMap: IJclExtendedExtendedMap): Boolean;
 var
   It: IJclExtendedIterator;
   Index: Integer;
@@ -12372,20 +14325,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-function TJclExtendedExtendedSortedMap.FreeKey(var Key: Extended): Extended;
-begin
-  Result := Key;
-  Key := 0.0;
-end;
-
-function TJclExtendedExtendedSortedMap.FreeValue(var Value: Extended): Extended;
-begin
-  Result := Value;
-  Value := 0.0;
-end;
-
-
 
 function TJclExtendedExtendedSortedMap.GetValue(const Key: Extended): Extended;
 var
@@ -12485,11 +14424,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclExtendedExtendedSortedMap.KeysCompare(const A, B: Extended): Integer;
-begin
-  Result := ItemsCompare(A, B);
 end;
 
 function TJclExtendedExtendedSortedMap.KeySet: IJclExtendedSet;
@@ -12822,11 +14756,33 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclExtendedExtendedSortedMap.ValuesCompare(const A, B: Extended): Integer;
+function TJclExtendedExtendedSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclExtendedExtendedSortedMap.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclExtendedExtendedSortedMap.FreeKey(var Key: Extended): Extended;
+begin
+  Result := Key;
+  Key := 0.0;
+end;
+
+function TJclExtendedExtendedSortedMap.FreeValue(var Value: Extended): Extended;
+begin
+  Result := Value;
+  Value := 0.0;
+end;
+
+function TJclExtendedExtendedSortedMap.KeysCompare(const A, B: Extended): Integer;
 begin
   Result := ItemsCompare(A, B);
 end;
 
+function TJclExtendedExtendedSortedMap.ValuesCompare(const A, B: Extended): Integer;
+begin
+  Result := ItemsCompare(A, B);
+end;
 
 //=== { TJclIntegerIntfSortedMap } ==============================================
 
@@ -12963,13 +14919,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntegerIntfSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclIntegerIntfSortedMap.Create(FSize);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclIntegerIntfSortedMap.Equals(const AMap: IJclIntegerIntfMap): Boolean;
+function TJclIntegerIntfSortedMap.MapEquals(const AMap: IJclIntegerIntfMap): Boolean;
 var
   It: IJclIntegerIterator;
   Index: Integer;
@@ -13025,20 +14975,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-function TJclIntegerIntfSortedMap.FreeKey(var Key: Integer): Integer;
-begin
-  Result := Key;
-  Key := 0;
-end;
-
-function TJclIntegerIntfSortedMap.FreeValue(var Value: IInterface): IInterface;
-begin
-  Result := Value;
-  Value := nil;
-end;
-
-
 
 function TJclIntegerIntfSortedMap.GetValue(Key: Integer): IInterface;
 var
@@ -13138,11 +15074,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclIntegerIntfSortedMap.KeysCompare(A, B: Integer): Integer;
-begin
-  Result := ItemsCompare(A, B);
 end;
 
 function TJclIntegerIntfSortedMap.KeySet: IJclIntegerSet;
@@ -13475,6 +15406,29 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclIntegerIntfSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclIntegerIntfSortedMap.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclIntegerIntfSortedMap.FreeKey(var Key: Integer): Integer;
+begin
+  Result := Key;
+  Key := 0;
+end;
+
+function TJclIntegerIntfSortedMap.FreeValue(var Value: IInterface): IInterface;
+begin
+  Result := Value;
+  Value := nil;
+end;
+
+function TJclIntegerIntfSortedMap.KeysCompare(A, B: Integer): Integer;
+begin
+  Result := ItemsCompare(A, B);
+end;
+
 function TJclIntegerIntfSortedMap.ValuesCompare(const A, B: IInterface): Integer;
 begin
   if Integer(A) > Integer(B) then
@@ -13485,7 +15439,6 @@ begin
   else
     Result := 0;
 end;
-
 
 //=== { TJclIntfIntegerSortedMap } ==============================================
 
@@ -13622,13 +15575,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfIntegerSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclIntfIntegerSortedMap.Create(FSize);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclIntfIntegerSortedMap.Equals(const AMap: IJclIntfIntegerMap): Boolean;
+function TJclIntfIntegerSortedMap.MapEquals(const AMap: IJclIntfIntegerMap): Boolean;
 var
   It: IJclIntfIterator;
   Index: Integer;
@@ -13684,20 +15631,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-function TJclIntfIntegerSortedMap.FreeKey(var Key: IInterface): IInterface;
-begin
-  Result := Key;
-  Key := nil;
-end;
-
-function TJclIntfIntegerSortedMap.FreeValue(var Value: Integer): Integer;
-begin
-  Result := Value;
-  Value := 0;
-end;
-
-
 
 function TJclIntfIntegerSortedMap.GetValue(const Key: IInterface): Integer;
 var
@@ -13797,17 +15730,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclIntfIntegerSortedMap.KeysCompare(const A, B: IInterface): Integer;
-begin
-  if Integer(A) > Integer(B) then
-    Result := 1
-  else
-  if Integer(A) < Integer(B) then
-    Result := -1
-  else
-    Result := 0;
 end;
 
 function TJclIntfIntegerSortedMap.KeySet: IJclIntfSet;
@@ -14140,11 +16062,39 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclIntfIntegerSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclIntfIntegerSortedMap.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclIntfIntegerSortedMap.FreeKey(var Key: IInterface): IInterface;
+begin
+  Result := Key;
+  Key := nil;
+end;
+
+function TJclIntfIntegerSortedMap.FreeValue(var Value: Integer): Integer;
+begin
+  Result := Value;
+  Value := 0;
+end;
+
+function TJclIntfIntegerSortedMap.KeysCompare(const A, B: IInterface): Integer;
+begin
+  if Integer(A) > Integer(B) then
+    Result := 1
+  else
+  if Integer(A) < Integer(B) then
+    Result := -1
+  else
+    Result := 0;
+end;
+
 function TJclIntfIntegerSortedMap.ValuesCompare(A, B: Integer): Integer;
 begin
   Result := ItemsCompare(A, B);
 end;
-
 
 //=== { TJclIntegerIntegerSortedMap } ==============================================
 
@@ -14281,13 +16231,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntegerIntegerSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclIntegerIntegerSortedMap.Create(FSize);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclIntegerIntegerSortedMap.Equals(const AMap: IJclIntegerIntegerMap): Boolean;
+function TJclIntegerIntegerSortedMap.MapEquals(const AMap: IJclIntegerIntegerMap): Boolean;
 var
   It: IJclIntegerIterator;
   Index: Integer;
@@ -14343,20 +16287,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-function TJclIntegerIntegerSortedMap.FreeKey(var Key: Integer): Integer;
-begin
-  Result := Key;
-  Key := 0;
-end;
-
-function TJclIntegerIntegerSortedMap.FreeValue(var Value: Integer): Integer;
-begin
-  Result := Value;
-  Value := 0;
-end;
-
-
 
 function TJclIntegerIntegerSortedMap.GetValue(Key: Integer): Integer;
 var
@@ -14456,11 +16386,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclIntegerIntegerSortedMap.KeysCompare(A, B: Integer): Integer;
-begin
-  Result := ItemsCompare(A, B);
 end;
 
 function TJclIntegerIntegerSortedMap.KeySet: IJclIntegerSet;
@@ -14793,11 +16718,33 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntegerIntegerSortedMap.ValuesCompare(A, B: Integer): Integer;
+function TJclIntegerIntegerSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclIntegerIntegerSortedMap.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclIntegerIntegerSortedMap.FreeKey(var Key: Integer): Integer;
+begin
+  Result := Key;
+  Key := 0;
+end;
+
+function TJclIntegerIntegerSortedMap.FreeValue(var Value: Integer): Integer;
+begin
+  Result := Value;
+  Value := 0;
+end;
+
+function TJclIntegerIntegerSortedMap.KeysCompare(A, B: Integer): Integer;
 begin
   Result := ItemsCompare(A, B);
 end;
 
+function TJclIntegerIntegerSortedMap.ValuesCompare(A, B: Integer): Integer;
+begin
+  Result := ItemsCompare(A, B);
+end;
 
 //=== { TJclCardinalIntfSortedMap } ==============================================
 
@@ -14934,13 +16881,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclCardinalIntfSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclCardinalIntfSortedMap.Create(FSize);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclCardinalIntfSortedMap.Equals(const AMap: IJclCardinalIntfMap): Boolean;
+function TJclCardinalIntfSortedMap.MapEquals(const AMap: IJclCardinalIntfMap): Boolean;
 var
   It: IJclCardinalIterator;
   Index: Integer;
@@ -14996,20 +16937,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-function TJclCardinalIntfSortedMap.FreeKey(var Key: Cardinal): Cardinal;
-begin
-  Result := Key;
-  Key := 0;
-end;
-
-function TJclCardinalIntfSortedMap.FreeValue(var Value: IInterface): IInterface;
-begin
-  Result := Value;
-  Value := nil;
-end;
-
-
 
 function TJclCardinalIntfSortedMap.GetValue(Key: Cardinal): IInterface;
 var
@@ -15109,11 +17036,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclCardinalIntfSortedMap.KeysCompare(A, B: Cardinal): Integer;
-begin
-  Result := ItemsCompare(A, B);
 end;
 
 function TJclCardinalIntfSortedMap.KeySet: IJclCardinalSet;
@@ -15446,6 +17368,29 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclCardinalIntfSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclCardinalIntfSortedMap.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclCardinalIntfSortedMap.FreeKey(var Key: Cardinal): Cardinal;
+begin
+  Result := Key;
+  Key := 0;
+end;
+
+function TJclCardinalIntfSortedMap.FreeValue(var Value: IInterface): IInterface;
+begin
+  Result := Value;
+  Value := nil;
+end;
+
+function TJclCardinalIntfSortedMap.KeysCompare(A, B: Cardinal): Integer;
+begin
+  Result := ItemsCompare(A, B);
+end;
+
 function TJclCardinalIntfSortedMap.ValuesCompare(const A, B: IInterface): Integer;
 begin
   if Integer(A) > Integer(B) then
@@ -15456,7 +17401,6 @@ begin
   else
     Result := 0;
 end;
-
 
 //=== { TJclIntfCardinalSortedMap } ==============================================
 
@@ -15593,13 +17537,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfCardinalSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclIntfCardinalSortedMap.Create(FSize);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclIntfCardinalSortedMap.Equals(const AMap: IJclIntfCardinalMap): Boolean;
+function TJclIntfCardinalSortedMap.MapEquals(const AMap: IJclIntfCardinalMap): Boolean;
 var
   It: IJclIntfIterator;
   Index: Integer;
@@ -15655,20 +17593,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-function TJclIntfCardinalSortedMap.FreeKey(var Key: IInterface): IInterface;
-begin
-  Result := Key;
-  Key := nil;
-end;
-
-function TJclIntfCardinalSortedMap.FreeValue(var Value: Cardinal): Cardinal;
-begin
-  Result := Value;
-  Value := 0;
-end;
-
-
 
 function TJclIntfCardinalSortedMap.GetValue(const Key: IInterface): Cardinal;
 var
@@ -15768,17 +17692,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclIntfCardinalSortedMap.KeysCompare(const A, B: IInterface): Integer;
-begin
-  if Integer(A) > Integer(B) then
-    Result := 1
-  else
-  if Integer(A) < Integer(B) then
-    Result := -1
-  else
-    Result := 0;
 end;
 
 function TJclIntfCardinalSortedMap.KeySet: IJclIntfSet;
@@ -16111,11 +18024,39 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclIntfCardinalSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclIntfCardinalSortedMap.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclIntfCardinalSortedMap.FreeKey(var Key: IInterface): IInterface;
+begin
+  Result := Key;
+  Key := nil;
+end;
+
+function TJclIntfCardinalSortedMap.FreeValue(var Value: Cardinal): Cardinal;
+begin
+  Result := Value;
+  Value := 0;
+end;
+
+function TJclIntfCardinalSortedMap.KeysCompare(const A, B: IInterface): Integer;
+begin
+  if Integer(A) > Integer(B) then
+    Result := 1
+  else
+  if Integer(A) < Integer(B) then
+    Result := -1
+  else
+    Result := 0;
+end;
+
 function TJclIntfCardinalSortedMap.ValuesCompare(A, B: Cardinal): Integer;
 begin
   Result := ItemsCompare(A, B);
 end;
-
 
 //=== { TJclCardinalCardinalSortedMap } ==============================================
 
@@ -16252,13 +18193,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclCardinalCardinalSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclCardinalCardinalSortedMap.Create(FSize);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclCardinalCardinalSortedMap.Equals(const AMap: IJclCardinalCardinalMap): Boolean;
+function TJclCardinalCardinalSortedMap.MapEquals(const AMap: IJclCardinalCardinalMap): Boolean;
 var
   It: IJclCardinalIterator;
   Index: Integer;
@@ -16314,20 +18249,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-function TJclCardinalCardinalSortedMap.FreeKey(var Key: Cardinal): Cardinal;
-begin
-  Result := Key;
-  Key := 0;
-end;
-
-function TJclCardinalCardinalSortedMap.FreeValue(var Value: Cardinal): Cardinal;
-begin
-  Result := Value;
-  Value := 0;
-end;
-
-
 
 function TJclCardinalCardinalSortedMap.GetValue(Key: Cardinal): Cardinal;
 var
@@ -16427,11 +18348,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclCardinalCardinalSortedMap.KeysCompare(A, B: Cardinal): Integer;
-begin
-  Result := ItemsCompare(A, B);
 end;
 
 function TJclCardinalCardinalSortedMap.KeySet: IJclCardinalSet;
@@ -16764,11 +18680,33 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclCardinalCardinalSortedMap.ValuesCompare(A, B: Cardinal): Integer;
+function TJclCardinalCardinalSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclCardinalCardinalSortedMap.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclCardinalCardinalSortedMap.FreeKey(var Key: Cardinal): Cardinal;
+begin
+  Result := Key;
+  Key := 0;
+end;
+
+function TJclCardinalCardinalSortedMap.FreeValue(var Value: Cardinal): Cardinal;
+begin
+  Result := Value;
+  Value := 0;
+end;
+
+function TJclCardinalCardinalSortedMap.KeysCompare(A, B: Cardinal): Integer;
 begin
   Result := ItemsCompare(A, B);
 end;
 
+function TJclCardinalCardinalSortedMap.ValuesCompare(A, B: Cardinal): Integer;
+begin
+  Result := ItemsCompare(A, B);
+end;
 
 //=== { TJclInt64IntfSortedMap } ==============================================
 
@@ -16905,13 +18843,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclInt64IntfSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclInt64IntfSortedMap.Create(FSize);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclInt64IntfSortedMap.Equals(const AMap: IJclInt64IntfMap): Boolean;
+function TJclInt64IntfSortedMap.MapEquals(const AMap: IJclInt64IntfMap): Boolean;
 var
   It: IJclInt64Iterator;
   Index: Integer;
@@ -16967,20 +18899,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-function TJclInt64IntfSortedMap.FreeKey(var Key: Int64): Int64;
-begin
-  Result := Key;
-  Key := 0;
-end;
-
-function TJclInt64IntfSortedMap.FreeValue(var Value: IInterface): IInterface;
-begin
-  Result := Value;
-  Value := nil;
-end;
-
-
 
 function TJclInt64IntfSortedMap.GetValue(const Key: Int64): IInterface;
 var
@@ -17080,11 +18998,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclInt64IntfSortedMap.KeysCompare(const A, B: Int64): Integer;
-begin
-  Result := ItemsCompare(A, B);
 end;
 
 function TJclInt64IntfSortedMap.KeySet: IJclInt64Set;
@@ -17417,6 +19330,29 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclInt64IntfSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclInt64IntfSortedMap.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclInt64IntfSortedMap.FreeKey(var Key: Int64): Int64;
+begin
+  Result := Key;
+  Key := 0;
+end;
+
+function TJclInt64IntfSortedMap.FreeValue(var Value: IInterface): IInterface;
+begin
+  Result := Value;
+  Value := nil;
+end;
+
+function TJclInt64IntfSortedMap.KeysCompare(const A, B: Int64): Integer;
+begin
+  Result := ItemsCompare(A, B);
+end;
+
 function TJclInt64IntfSortedMap.ValuesCompare(const A, B: IInterface): Integer;
 begin
   if Integer(A) > Integer(B) then
@@ -17427,7 +19363,6 @@ begin
   else
     Result := 0;
 end;
-
 
 //=== { TJclIntfInt64SortedMap } ==============================================
 
@@ -17564,13 +19499,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfInt64SortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclIntfInt64SortedMap.Create(FSize);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclIntfInt64SortedMap.Equals(const AMap: IJclIntfInt64Map): Boolean;
+function TJclIntfInt64SortedMap.MapEquals(const AMap: IJclIntfInt64Map): Boolean;
 var
   It: IJclIntfIterator;
   Index: Integer;
@@ -17626,20 +19555,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-function TJclIntfInt64SortedMap.FreeKey(var Key: IInterface): IInterface;
-begin
-  Result := Key;
-  Key := nil;
-end;
-
-function TJclIntfInt64SortedMap.FreeValue(var Value: Int64): Int64;
-begin
-  Result := Value;
-  Value := 0;
-end;
-
-
 
 function TJclIntfInt64SortedMap.GetValue(const Key: IInterface): Int64;
 var
@@ -17739,17 +19654,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclIntfInt64SortedMap.KeysCompare(const A, B: IInterface): Integer;
-begin
-  if Integer(A) > Integer(B) then
-    Result := 1
-  else
-  if Integer(A) < Integer(B) then
-    Result := -1
-  else
-    Result := 0;
 end;
 
 function TJclIntfInt64SortedMap.KeySet: IJclIntfSet;
@@ -18082,11 +19986,39 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclIntfInt64SortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclIntfInt64SortedMap.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclIntfInt64SortedMap.FreeKey(var Key: IInterface): IInterface;
+begin
+  Result := Key;
+  Key := nil;
+end;
+
+function TJclIntfInt64SortedMap.FreeValue(var Value: Int64): Int64;
+begin
+  Result := Value;
+  Value := 0;
+end;
+
+function TJclIntfInt64SortedMap.KeysCompare(const A, B: IInterface): Integer;
+begin
+  if Integer(A) > Integer(B) then
+    Result := 1
+  else
+  if Integer(A) < Integer(B) then
+    Result := -1
+  else
+    Result := 0;
+end;
+
 function TJclIntfInt64SortedMap.ValuesCompare(const A, B: Int64): Integer;
 begin
   Result := ItemsCompare(A, B);
 end;
-
 
 //=== { TJclInt64Int64SortedMap } ==============================================
 
@@ -18223,13 +20155,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclInt64Int64SortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclInt64Int64SortedMap.Create(FSize);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclInt64Int64SortedMap.Equals(const AMap: IJclInt64Int64Map): Boolean;
+function TJclInt64Int64SortedMap.MapEquals(const AMap: IJclInt64Int64Map): Boolean;
 var
   It: IJclInt64Iterator;
   Index: Integer;
@@ -18285,20 +20211,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-function TJclInt64Int64SortedMap.FreeKey(var Key: Int64): Int64;
-begin
-  Result := Key;
-  Key := 0;
-end;
-
-function TJclInt64Int64SortedMap.FreeValue(var Value: Int64): Int64;
-begin
-  Result := Value;
-  Value := 0;
-end;
-
-
 
 function TJclInt64Int64SortedMap.GetValue(const Key: Int64): Int64;
 var
@@ -18398,11 +20310,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclInt64Int64SortedMap.KeysCompare(const A, B: Int64): Integer;
-begin
-  Result := ItemsCompare(A, B);
 end;
 
 function TJclInt64Int64SortedMap.KeySet: IJclInt64Set;
@@ -18735,11 +20642,33 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclInt64Int64SortedMap.ValuesCompare(const A, B: Int64): Integer;
+function TJclInt64Int64SortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclInt64Int64SortedMap.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclInt64Int64SortedMap.FreeKey(var Key: Int64): Int64;
+begin
+  Result := Key;
+  Key := 0;
+end;
+
+function TJclInt64Int64SortedMap.FreeValue(var Value: Int64): Int64;
+begin
+  Result := Value;
+  Value := 0;
+end;
+
+function TJclInt64Int64SortedMap.KeysCompare(const A, B: Int64): Integer;
 begin
   Result := ItemsCompare(A, B);
 end;
 
+function TJclInt64Int64SortedMap.ValuesCompare(const A, B: Int64): Integer;
+begin
+  Result := ItemsCompare(A, B);
+end;
 
 {$IFNDEF CLR}
 //=== { TJclPtrIntfSortedMap } ==============================================
@@ -18877,13 +20806,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclPtrIntfSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclPtrIntfSortedMap.Create(FSize);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclPtrIntfSortedMap.Equals(const AMap: IJclPtrIntfMap): Boolean;
+function TJclPtrIntfSortedMap.MapEquals(const AMap: IJclPtrIntfMap): Boolean;
 var
   It: IJclPtrIterator;
   Index: Integer;
@@ -18939,20 +20862,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-function TJclPtrIntfSortedMap.FreeKey(var Key: Pointer): Pointer;
-begin
-  Result := Key;
-  Key := nil;
-end;
-
-function TJclPtrIntfSortedMap.FreeValue(var Value: IInterface): IInterface;
-begin
-  Result := Value;
-  Value := nil;
-end;
-
-
 
 function TJclPtrIntfSortedMap.GetValue(Key: Pointer): IInterface;
 var
@@ -19052,11 +20961,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclPtrIntfSortedMap.KeysCompare(A, B: Pointer): Integer;
-begin
-  Result := ItemsCompare(A, B);
 end;
 
 function TJclPtrIntfSortedMap.KeySet: IJclPtrSet;
@@ -19389,6 +21293,29 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclPtrIntfSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclPtrIntfSortedMap.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclPtrIntfSortedMap.FreeKey(var Key: Pointer): Pointer;
+begin
+  Result := Key;
+  Key := nil;
+end;
+
+function TJclPtrIntfSortedMap.FreeValue(var Value: IInterface): IInterface;
+begin
+  Result := Value;
+  Value := nil;
+end;
+
+function TJclPtrIntfSortedMap.KeysCompare(A, B: Pointer): Integer;
+begin
+  Result := ItemsCompare(A, B);
+end;
+
 function TJclPtrIntfSortedMap.ValuesCompare(const A, B: IInterface): Integer;
 begin
   if Integer(A) > Integer(B) then
@@ -19399,7 +21326,6 @@ begin
   else
     Result := 0;
 end;
-
 
 //=== { TJclIntfPtrSortedMap } ==============================================
 
@@ -19536,13 +21462,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfPtrSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclIntfPtrSortedMap.Create(FSize);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclIntfPtrSortedMap.Equals(const AMap: IJclIntfPtrMap): Boolean;
+function TJclIntfPtrSortedMap.MapEquals(const AMap: IJclIntfPtrMap): Boolean;
 var
   It: IJclIntfIterator;
   Index: Integer;
@@ -19598,20 +21518,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-function TJclIntfPtrSortedMap.FreeKey(var Key: IInterface): IInterface;
-begin
-  Result := Key;
-  Key := nil;
-end;
-
-function TJclIntfPtrSortedMap.FreeValue(var Value: Pointer): Pointer;
-begin
-  Result := Value;
-  Value := nil;
-end;
-
-
 
 function TJclIntfPtrSortedMap.GetValue(const Key: IInterface): Pointer;
 var
@@ -19711,17 +21617,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclIntfPtrSortedMap.KeysCompare(const A, B: IInterface): Integer;
-begin
-  if Integer(A) > Integer(B) then
-    Result := 1
-  else
-  if Integer(A) < Integer(B) then
-    Result := -1
-  else
-    Result := 0;
 end;
 
 function TJclIntfPtrSortedMap.KeySet: IJclIntfSet;
@@ -20054,11 +21949,39 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclIntfPtrSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclIntfPtrSortedMap.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclIntfPtrSortedMap.FreeKey(var Key: IInterface): IInterface;
+begin
+  Result := Key;
+  Key := nil;
+end;
+
+function TJclIntfPtrSortedMap.FreeValue(var Value: Pointer): Pointer;
+begin
+  Result := Value;
+  Value := nil;
+end;
+
+function TJclIntfPtrSortedMap.KeysCompare(const A, B: IInterface): Integer;
+begin
+  if Integer(A) > Integer(B) then
+    Result := 1
+  else
+  if Integer(A) < Integer(B) then
+    Result := -1
+  else
+    Result := 0;
+end;
+
 function TJclIntfPtrSortedMap.ValuesCompare(A, B: Pointer): Integer;
 begin
   Result := ItemsCompare(A, B);
 end;
-
 
 //=== { TJclPtrPtrSortedMap } ==============================================
 
@@ -20195,13 +22118,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclPtrPtrSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclPtrPtrSortedMap.Create(FSize);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclPtrPtrSortedMap.Equals(const AMap: IJclPtrPtrMap): Boolean;
+function TJclPtrPtrSortedMap.MapEquals(const AMap: IJclPtrPtrMap): Boolean;
 var
   It: IJclPtrIterator;
   Index: Integer;
@@ -20257,20 +22174,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-function TJclPtrPtrSortedMap.FreeKey(var Key: Pointer): Pointer;
-begin
-  Result := Key;
-  Key := nil;
-end;
-
-function TJclPtrPtrSortedMap.FreeValue(var Value: Pointer): Pointer;
-begin
-  Result := Value;
-  Value := nil;
-end;
-
-
 
 function TJclPtrPtrSortedMap.GetValue(Key: Pointer): Pointer;
 var
@@ -20370,11 +22273,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclPtrPtrSortedMap.KeysCompare(A, B: Pointer): Integer;
-begin
-  Result := ItemsCompare(A, B);
 end;
 
 function TJclPtrPtrSortedMap.KeySet: IJclPtrSet;
@@ -20707,11 +22605,33 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclPtrPtrSortedMap.ValuesCompare(A, B: Pointer): Integer;
+function TJclPtrPtrSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclPtrPtrSortedMap.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclPtrPtrSortedMap.FreeKey(var Key: Pointer): Pointer;
+begin
+  Result := Key;
+  Key := nil;
+end;
+
+function TJclPtrPtrSortedMap.FreeValue(var Value: Pointer): Pointer;
+begin
+  Result := Value;
+  Value := nil;
+end;
+
+function TJclPtrPtrSortedMap.KeysCompare(A, B: Pointer): Integer;
 begin
   Result := ItemsCompare(A, B);
 end;
 
+function TJclPtrPtrSortedMap.ValuesCompare(A, B: Pointer): Integer;
+begin
+  Result := ItemsCompare(A, B);
+end;
 {$ENDIF ~CLR}
 
 //=== { TJclIntfSortedMap } ==============================================
@@ -20850,13 +22770,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclIntfSortedMap.Create(FSize, False);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclIntfSortedMap.Equals(const AMap: IJclIntfMap): Boolean;
+function TJclIntfSortedMap.MapEquals(const AMap: IJclIntfMap): Boolean;
 var
   It: IJclIntfIterator;
   Index: Integer;
@@ -20911,32 +22825,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclIntfSortedMap.FreeKey(var Key: IInterface): IInterface;
-begin
-  Result := Key;
-  Key := nil;
-end;
-
-function TJclIntfSortedMap.FreeValue(var Value: TObject): TObject;
-begin
-  if FOwnsValues then
-  begin
-    Result := nil;
-    FreeAndNil(Value);
-  end
-  else
-  begin
-    Result := Value;
-    Value := nil;
-  end;
-end;
-
-
-function TJclIntfSortedMap.GetOwnsValues: Boolean;
-begin
-  Result := FOwnsValues;
 end;
 
 function TJclIntfSortedMap.GetValue(const Key: IInterface): TObject;
@@ -21037,17 +22925,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclIntfSortedMap.KeysCompare(const A, B: IInterface): Integer;
-begin
-  if Integer(A) > Integer(B) then
-    Result := 1
-  else
-  if Integer(A) < Integer(B) then
-    Result := -1
-  else
-    Result := 0;
 end;
 
 function TJclIntfSortedMap.KeySet: IJclIntfSet;
@@ -21380,7 +23257,38 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfSortedMap.ValuesCompare(A, B: TObject): Integer;
+function TJclIntfSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclIntfSortedMap.Create(FSize, False);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclIntfSortedMap.FreeKey(var Key: IInterface): IInterface;
+begin
+  Result := Key;
+  Key := nil;
+end;
+
+function TJclIntfSortedMap.FreeValue(var Value: TObject): TObject;
+begin
+  if FOwnsValues then
+  begin
+    Result := nil;
+    FreeAndNil(Value);
+  end
+  else
+  begin
+    Result := Value;
+    Value := nil;
+  end;
+end;
+
+function TJclIntfSortedMap.GetOwnsValues: Boolean;
+begin
+  Result := FOwnsValues;
+end;
+
+function TJclIntfSortedMap.KeysCompare(const A, B: IInterface): Integer;
 begin
   if Integer(A) > Integer(B) then
     Result := 1
@@ -21391,6 +23299,16 @@ begin
     Result := 0;
 end;
 
+function TJclIntfSortedMap.ValuesCompare(A, B: TObject): Integer;
+begin
+  if Integer(A) > Integer(B) then
+    Result := 1
+  else
+  if Integer(A) < Integer(B) then
+    Result := -1
+  else
+    Result := 0;
+end;
 
 //=== { TJclAnsiStrSortedMap } ==============================================
 
@@ -21528,13 +23446,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclAnsiStrSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclAnsiStrSortedMap.Create(FSize, False);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclAnsiStrSortedMap.Equals(const AMap: IJclAnsiStrMap): Boolean;
+function TJclAnsiStrSortedMap.MapEquals(const AMap: IJclAnsiStrMap): Boolean;
 var
   It: IJclAnsiStrIterator;
   Index: Integer;
@@ -21589,32 +23501,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclAnsiStrSortedMap.FreeKey(var Key: AnsiString): AnsiString;
-begin
-  Result := Key;
-  Key := '';
-end;
-
-function TJclAnsiStrSortedMap.FreeValue(var Value: TObject): TObject;
-begin
-  if FOwnsValues then
-  begin
-    Result := nil;
-    FreeAndNil(Value);
-  end
-  else
-  begin
-    Result := Value;
-    Value := nil;
-  end;
-end;
-
-
-function TJclAnsiStrSortedMap.GetOwnsValues: Boolean;
-begin
-  Result := FOwnsValues;
 end;
 
 function TJclAnsiStrSortedMap.GetValue(const Key: AnsiString): TObject;
@@ -21715,11 +23601,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclAnsiStrSortedMap.KeysCompare(const A, B: AnsiString): Integer;
-begin
-  Result := ItemsCompare(A, B);
 end;
 
 function TJclAnsiStrSortedMap.KeySet: IJclAnsiStrSet;
@@ -22052,6 +23933,42 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclAnsiStrSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclAnsiStrSortedMap.Create(FSize, False);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclAnsiStrSortedMap.FreeKey(var Key: AnsiString): AnsiString;
+begin
+  Result := Key;
+  Key := '';
+end;
+
+function TJclAnsiStrSortedMap.FreeValue(var Value: TObject): TObject;
+begin
+  if FOwnsValues then
+  begin
+    Result := nil;
+    FreeAndNil(Value);
+  end
+  else
+  begin
+    Result := Value;
+    Value := nil;
+  end;
+end;
+
+function TJclAnsiStrSortedMap.GetOwnsValues: Boolean;
+begin
+  Result := FOwnsValues;
+end;
+
+function TJclAnsiStrSortedMap.KeysCompare(const A, B: AnsiString): Integer;
+begin
+  Result := ItemsCompare(A, B);
+end;
+
 function TJclAnsiStrSortedMap.ValuesCompare(A, B: TObject): Integer;
 begin
   if Integer(A) > Integer(B) then
@@ -22062,7 +23979,6 @@ begin
   else
     Result := 0;
 end;
-
 
 //=== { TJclWideStrSortedMap } ==============================================
 
@@ -22200,13 +24116,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclWideStrSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclWideStrSortedMap.Create(FSize, False);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclWideStrSortedMap.Equals(const AMap: IJclWideStrMap): Boolean;
+function TJclWideStrSortedMap.MapEquals(const AMap: IJclWideStrMap): Boolean;
 var
   It: IJclWideStrIterator;
   Index: Integer;
@@ -22261,32 +24171,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclWideStrSortedMap.FreeKey(var Key: WideString): WideString;
-begin
-  Result := Key;
-  Key := '';
-end;
-
-function TJclWideStrSortedMap.FreeValue(var Value: TObject): TObject;
-begin
-  if FOwnsValues then
-  begin
-    Result := nil;
-    FreeAndNil(Value);
-  end
-  else
-  begin
-    Result := Value;
-    Value := nil;
-  end;
-end;
-
-
-function TJclWideStrSortedMap.GetOwnsValues: Boolean;
-begin
-  Result := FOwnsValues;
 end;
 
 function TJclWideStrSortedMap.GetValue(const Key: WideString): TObject;
@@ -22387,11 +24271,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclWideStrSortedMap.KeysCompare(const A, B: WideString): Integer;
-begin
-  Result := ItemsCompare(A, B);
 end;
 
 function TJclWideStrSortedMap.KeySet: IJclWideStrSet;
@@ -22724,6 +24603,42 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclWideStrSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclWideStrSortedMap.Create(FSize, False);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclWideStrSortedMap.FreeKey(var Key: WideString): WideString;
+begin
+  Result := Key;
+  Key := '';
+end;
+
+function TJclWideStrSortedMap.FreeValue(var Value: TObject): TObject;
+begin
+  if FOwnsValues then
+  begin
+    Result := nil;
+    FreeAndNil(Value);
+  end
+  else
+  begin
+    Result := Value;
+    Value := nil;
+  end;
+end;
+
+function TJclWideStrSortedMap.GetOwnsValues: Boolean;
+begin
+  Result := FOwnsValues;
+end;
+
+function TJclWideStrSortedMap.KeysCompare(const A, B: WideString): Integer;
+begin
+  Result := ItemsCompare(A, B);
+end;
+
 function TJclWideStrSortedMap.ValuesCompare(A, B: TObject): Integer;
 begin
   if Integer(A) > Integer(B) then
@@ -22735,6 +24650,677 @@ begin
     Result := 0;
 end;
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+//=== { TJclUnicodeStrSortedMap } ==============================================
+
+constructor TJclUnicodeStrSortedMap.Create(ACapacity: Integer; AOwnsValues: Boolean);
+begin
+  inherited Create();
+  FOwnsValues := AOwnsValues;
+  SetCapacity(ACapacity);
+end;
+
+destructor TJclUnicodeStrSortedMap.Destroy;
+begin
+  FReadOnly := False;
+  Clear;
+  inherited Destroy;
+end;
+
+procedure TJclUnicodeStrSortedMap.AssignDataTo(Dest: TJclAbstractContainerBase);
+var
+  MyDest: TJclUnicodeStrSortedMap;
+begin
+  inherited AssignDataTo(Dest);
+  if Dest is TJclUnicodeStrSortedMap then
+  begin
+    MyDest := TJclUnicodeStrSortedMap(Dest);
+    MyDest.SetCapacity(FSize);
+    MyDest.FEntries := FEntries;
+    MyDest.FSize := FSize;
+  end;
+end;
+
+function TJclUnicodeStrSortedMap.BinarySearch(const Key: UnicodeString): Integer;
+var
+  HiPos, LoPos, CompPos: Integer;
+  Comp: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    LoPos := 0;
+    HiPos := FSize - 1;
+    CompPos := (HiPos + LoPos) div 2;
+    while HiPos >= LoPos do
+    begin
+      Comp := KeysCompare(FEntries[CompPos].Key, Key);
+      if Comp < 0 then
+        LoPos := CompPos + 1
+      else
+      if Comp > 0 then
+        HiPos := CompPos - 1
+      else
+      begin
+        HiPos := CompPos;
+        LoPos := CompPos + 1;
+      end;
+      CompPos := (HiPos + LoPos) div 2;
+    end;
+    Result := HiPos;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclUnicodeStrSortedMap.Clear;
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    for Index := 0 to FSize - 1 do
+    begin
+      FreeKey(FEntries[Index].Key);
+      FreeValue(FEntries[Index].Value);
+    end;
+    FSize := 0;
+    AutoPack;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrSortedMap.ContainsKey(const Key: UnicodeString): Boolean;
+var
+  Index: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrSortedMap.ContainsValue(Value: TObject): Boolean;
+var
+  Index: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    for Index := 0 to FSize - 1 do
+      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+    begin
+      Result := True;
+      Break;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrSortedMap.MapEquals(const AMap: IJclUnicodeStrMap): Boolean;
+var
+  It: IJclUnicodeStrIterator;
+  Index: Integer;
+  AKey: UnicodeString;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    It := AMap.KeySet.First;
+    Index := 0;
+    while It.HasNext do
+    begin
+      if Index >= FSize then
+        Exit;
+      AKey := It.Next;
+      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
+        Exit;
+      Inc(Index);
+    end;
+    Result := True;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrSortedMap.FirstKey: UnicodeString;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := '';
+    if FSize > 0 then
+      Result := FEntries[0].Key
+    else
+    if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrSortedMap.GetValue(const Key: UnicodeString): TObject;
+var
+  Index: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    Result := nil;
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+      Result := FEntries[Index].Value
+    else if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrSortedMap.HeadMap(const ToKey: UnicodeString): IJclUnicodeStrSortedMap;
+var
+  ToIndex: Integer;
+  NewMap: TJclUnicodeStrSortedMap;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    NewMap := CreateEmptyContainer as TJclUnicodeStrSortedMap;
+    ToIndex := BinarySearch(ToKey);
+    if ToIndex >= 0 then
+    begin
+      NewMap.SetCapacity(ToIndex + 1);
+      NewMap.FSize := ToIndex + 1;
+      while ToIndex >= 0 do
+      begin
+        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+        Dec(ToIndex);
+      end;
+    end;
+    Result := NewMap;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrSortedMap.IsEmpty: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FSize = 0;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrSortedMap.KeyOfValue(Value: TObject): UnicodeString;
+var
+  Index: Integer;
+  Found: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+   Found := False;
+    Result := '';
+    for Index := 0 to FSize - 1 do
+      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+    begin
+      Result := FEntries[Index].Key;
+      Found := True;
+      Break;
+    end;
+
+    if (not Found) and (not FReturnDefaultElements) then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrSortedMap.KeySet: IJclUnicodeStrSet;
+var
+  Index: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclUnicodeStrArraySet.Create(FSize);
+    for Index := 0 to FSize - 1 do
+      Result.Add(FEntries[Index].Key);
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrSortedMap.LastKey: UnicodeString;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := '';
+    if FSize > 0 then
+      Result := FEntries[FSize - 1].Key
+    else
+    if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclUnicodeStrSortedMap.MoveArray(FromIndex, ToIndex, Count: Integer);
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      FEntries[ToIndex + I] := FEntries[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        FEntries[FromIndex + I].Key := '';
+        FEntries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        FEntries[FromIndex + I].Key := '';
+        FEntries[FromIndex + I].Value := nil;
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      FEntries[ToIndex + I] := FEntries[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        FEntries[FromIndex + I].Key := '';
+        FEntries[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        FEntries[FromIndex + I].Key := '';
+        FEntries[FromIndex + I].Value := nil;
+      end;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(FEntries[FromIndex], FEntries[ToIndex], Count * SizeOf(FEntries[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(FEntries[FromIndex], (ToIndex - FromIndex) * SizeOf(FEntries[0]), 0)
+      else
+        FillChar(FEntries[FromIndex], Count * SizeOf(FEntries[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(FEntries[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(FEntries[0]), 0)
+      else
+        FillChar(FEntries[FromIndex], Count * SizeOf(FEntries[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
+
+procedure TJclUnicodeStrSortedMap.PutAll(const AMap: IJclUnicodeStrMap);
+var
+  It: IJclUnicodeStrIterator;
+  Key: UnicodeString;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    if AMap = nil then
+      Exit;
+    It := AMap.KeySet.First;
+    while It.HasNext do
+    begin
+      Key := It.Next;
+      PutValue(Key, AMap.GetValue(Key));
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclUnicodeStrSortedMap.PutValue(const Key: UnicodeString; Value: TObject);
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    if FAllowDefaultElements or ((KeysCompare(Key, '') <> 0) and (ValuesCompare(Value, nil) <> 0)) then
+    begin
+      Index := BinarySearch(Key);
+
+      if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+      begin
+        FreeValue(FEntries[Index].Value);
+        FEntries[Index].Value := Value;
+      end
+      else
+      begin
+        if FSize = FCapacity then
+          AutoGrow;
+        if FSize < FCapacity then
+        begin
+          Inc(Index);
+          if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
+            MoveArray(Index, Index + 1, FSize - Index);
+          FEntries[Index].Key := Key;
+          FEntries[Index].Value := Value;
+          Inc(FSize);
+        end;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrSortedMap.Remove(const Key: UnicodeString): TObject;
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      Result := FreeValue(FEntries[Index].Value);
+      FreeKey(FEntries[Index].Key);
+      if Index < (FSize - 1) then
+        MoveArray(Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := nil;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclUnicodeStrSortedMap.SetCapacity(Value: Integer);
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    if FSize <= Value then
+    begin
+      SetLength(FEntries, Value);
+      inherited SetCapacity(Value);
+    end
+    else
+      raise EJclOperationNotSupportedError.Create;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrSortedMap.Size: Integer;
+begin
+  Result := FSize;
+end;
+
+function TJclUnicodeStrSortedMap.SubMap(const FromKey, ToKey: UnicodeString): IJclUnicodeStrSortedMap;
+var
+  FromIndex, ToIndex: Integer;
+  NewMap: TJclUnicodeStrSortedMap;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    NewMap := CreateEmptyContainer as TJclUnicodeStrSortedMap;
+    FromIndex := BinarySearch(FromKey);
+    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+      Inc(FromIndex);
+    ToIndex := BinarySearch(ToKey);
+    if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+    begin
+      NewMap.SetCapacity(ToIndex - FromIndex + 1);
+      NewMap.FSize := ToIndex - FromIndex + 1;
+      while ToIndex >= FromIndex do
+      begin
+        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+        Dec(ToIndex);
+      end;
+    end;
+    Result := NewMap;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrSortedMap.TailMap(const FromKey: UnicodeString): IJclUnicodeStrSortedMap;
+var
+  FromIndex, Index: Integer;
+  NewMap: TJclUnicodeStrSortedMap;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    NewMap := CreateEmptyContainer as TJclUnicodeStrSortedMap;
+    FromIndex := BinarySearch(FromKey);
+    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+      Inc(FromIndex);
+    if (FromIndex >= 0) and (FromIndex < FSize) then
+    begin
+      NewMap.SetCapacity(FSize - FromIndex);
+      NewMap.FSize := FSize - FromIndex;
+      Index := FromIndex;
+      while Index < FSize do
+      begin
+        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+        Inc(Index);
+      end;
+    end;
+    Result := NewMap;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrSortedMap.Values: IJclCollection;
+var
+  Index: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclArrayList.Create(FSize, False);
+    for Index := 0 to FSize - 1 do
+      Result.Add(FEntries[Index].Value);
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclUnicodeStrSortedMap.Create(FSize, False);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclUnicodeStrSortedMap.FreeKey(var Key: UnicodeString): UnicodeString;
+begin
+  Result := Key;
+  Key := '';
+end;
+
+function TJclUnicodeStrSortedMap.FreeValue(var Value: TObject): TObject;
+begin
+  if FOwnsValues then
+  begin
+    Result := nil;
+    FreeAndNil(Value);
+  end
+  else
+  begin
+    Result := Value;
+    Value := nil;
+  end;
+end;
+
+function TJclUnicodeStrSortedMap.GetOwnsValues: Boolean;
+begin
+  Result := FOwnsValues;
+end;
+
+function TJclUnicodeStrSortedMap.KeysCompare(const A, B: UnicodeString): Integer;
+begin
+  Result := ItemsCompare(A, B);
+end;
+
+function TJclUnicodeStrSortedMap.ValuesCompare(A, B: TObject): Integer;
+begin
+  if Integer(A) > Integer(B) then
+    Result := 1
+  else
+  if Integer(A) < Integer(B) then
+    Result := -1
+  else
+    Result := 0;
+end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
 
 //=== { TJclSingleSortedMap } ==============================================
 
@@ -22872,13 +25458,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclSingleSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclSingleSortedMap.Create(FSize, False);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclSingleSortedMap.Equals(const AMap: IJclSingleMap): Boolean;
+function TJclSingleSortedMap.MapEquals(const AMap: IJclSingleMap): Boolean;
 var
   It: IJclSingleIterator;
   Index: Integer;
@@ -22933,32 +25513,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclSingleSortedMap.FreeKey(var Key: Single): Single;
-begin
-  Result := Key;
-  Key := 0.0;
-end;
-
-function TJclSingleSortedMap.FreeValue(var Value: TObject): TObject;
-begin
-  if FOwnsValues then
-  begin
-    Result := nil;
-    FreeAndNil(Value);
-  end
-  else
-  begin
-    Result := Value;
-    Value := nil;
-  end;
-end;
-
-
-function TJclSingleSortedMap.GetOwnsValues: Boolean;
-begin
-  Result := FOwnsValues;
 end;
 
 function TJclSingleSortedMap.GetValue(const Key: Single): TObject;
@@ -23059,11 +25613,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclSingleSortedMap.KeysCompare(const A, B: Single): Integer;
-begin
-  Result := ItemsCompare(A, B);
 end;
 
 function TJclSingleSortedMap.KeySet: IJclSingleSet;
@@ -23396,6 +25945,42 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclSingleSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclSingleSortedMap.Create(FSize, False);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclSingleSortedMap.FreeKey(var Key: Single): Single;
+begin
+  Result := Key;
+  Key := 0.0;
+end;
+
+function TJclSingleSortedMap.FreeValue(var Value: TObject): TObject;
+begin
+  if FOwnsValues then
+  begin
+    Result := nil;
+    FreeAndNil(Value);
+  end
+  else
+  begin
+    Result := Value;
+    Value := nil;
+  end;
+end;
+
+function TJclSingleSortedMap.GetOwnsValues: Boolean;
+begin
+  Result := FOwnsValues;
+end;
+
+function TJclSingleSortedMap.KeysCompare(const A, B: Single): Integer;
+begin
+  Result := ItemsCompare(A, B);
+end;
+
 function TJclSingleSortedMap.ValuesCompare(A, B: TObject): Integer;
 begin
   if Integer(A) > Integer(B) then
@@ -23406,7 +25991,6 @@ begin
   else
     Result := 0;
 end;
-
 
 //=== { TJclDoubleSortedMap } ==============================================
 
@@ -23544,13 +26128,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclDoubleSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclDoubleSortedMap.Create(FSize, False);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclDoubleSortedMap.Equals(const AMap: IJclDoubleMap): Boolean;
+function TJclDoubleSortedMap.MapEquals(const AMap: IJclDoubleMap): Boolean;
 var
   It: IJclDoubleIterator;
   Index: Integer;
@@ -23605,32 +26183,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclDoubleSortedMap.FreeKey(var Key: Double): Double;
-begin
-  Result := Key;
-  Key := 0.0;
-end;
-
-function TJclDoubleSortedMap.FreeValue(var Value: TObject): TObject;
-begin
-  if FOwnsValues then
-  begin
-    Result := nil;
-    FreeAndNil(Value);
-  end
-  else
-  begin
-    Result := Value;
-    Value := nil;
-  end;
-end;
-
-
-function TJclDoubleSortedMap.GetOwnsValues: Boolean;
-begin
-  Result := FOwnsValues;
 end;
 
 function TJclDoubleSortedMap.GetValue(const Key: Double): TObject;
@@ -23731,11 +26283,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclDoubleSortedMap.KeysCompare(const A, B: Double): Integer;
-begin
-  Result := ItemsCompare(A, B);
 end;
 
 function TJclDoubleSortedMap.KeySet: IJclDoubleSet;
@@ -24068,6 +26615,42 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclDoubleSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclDoubleSortedMap.Create(FSize, False);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclDoubleSortedMap.FreeKey(var Key: Double): Double;
+begin
+  Result := Key;
+  Key := 0.0;
+end;
+
+function TJclDoubleSortedMap.FreeValue(var Value: TObject): TObject;
+begin
+  if FOwnsValues then
+  begin
+    Result := nil;
+    FreeAndNil(Value);
+  end
+  else
+  begin
+    Result := Value;
+    Value := nil;
+  end;
+end;
+
+function TJclDoubleSortedMap.GetOwnsValues: Boolean;
+begin
+  Result := FOwnsValues;
+end;
+
+function TJclDoubleSortedMap.KeysCompare(const A, B: Double): Integer;
+begin
+  Result := ItemsCompare(A, B);
+end;
+
 function TJclDoubleSortedMap.ValuesCompare(A, B: TObject): Integer;
 begin
   if Integer(A) > Integer(B) then
@@ -24078,7 +26661,6 @@ begin
   else
     Result := 0;
 end;
-
 
 //=== { TJclExtendedSortedMap } ==============================================
 
@@ -24216,13 +26798,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclExtendedSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclExtendedSortedMap.Create(FSize, False);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclExtendedSortedMap.Equals(const AMap: IJclExtendedMap): Boolean;
+function TJclExtendedSortedMap.MapEquals(const AMap: IJclExtendedMap): Boolean;
 var
   It: IJclExtendedIterator;
   Index: Integer;
@@ -24277,32 +26853,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclExtendedSortedMap.FreeKey(var Key: Extended): Extended;
-begin
-  Result := Key;
-  Key := 0.0;
-end;
-
-function TJclExtendedSortedMap.FreeValue(var Value: TObject): TObject;
-begin
-  if FOwnsValues then
-  begin
-    Result := nil;
-    FreeAndNil(Value);
-  end
-  else
-  begin
-    Result := Value;
-    Value := nil;
-  end;
-end;
-
-
-function TJclExtendedSortedMap.GetOwnsValues: Boolean;
-begin
-  Result := FOwnsValues;
 end;
 
 function TJclExtendedSortedMap.GetValue(const Key: Extended): TObject;
@@ -24403,11 +26953,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclExtendedSortedMap.KeysCompare(const A, B: Extended): Integer;
-begin
-  Result := ItemsCompare(A, B);
 end;
 
 function TJclExtendedSortedMap.KeySet: IJclExtendedSet;
@@ -24740,6 +27285,42 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclExtendedSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclExtendedSortedMap.Create(FSize, False);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclExtendedSortedMap.FreeKey(var Key: Extended): Extended;
+begin
+  Result := Key;
+  Key := 0.0;
+end;
+
+function TJclExtendedSortedMap.FreeValue(var Value: TObject): TObject;
+begin
+  if FOwnsValues then
+  begin
+    Result := nil;
+    FreeAndNil(Value);
+  end
+  else
+  begin
+    Result := Value;
+    Value := nil;
+  end;
+end;
+
+function TJclExtendedSortedMap.GetOwnsValues: Boolean;
+begin
+  Result := FOwnsValues;
+end;
+
+function TJclExtendedSortedMap.KeysCompare(const A, B: Extended): Integer;
+begin
+  Result := ItemsCompare(A, B);
+end;
+
 function TJclExtendedSortedMap.ValuesCompare(A, B: TObject): Integer;
 begin
   if Integer(A) > Integer(B) then
@@ -24750,7 +27331,6 @@ begin
   else
     Result := 0;
 end;
-
 
 //=== { TJclIntegerSortedMap } ==============================================
 
@@ -24888,13 +27468,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntegerSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclIntegerSortedMap.Create(FSize, False);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclIntegerSortedMap.Equals(const AMap: IJclIntegerMap): Boolean;
+function TJclIntegerSortedMap.MapEquals(const AMap: IJclIntegerMap): Boolean;
 var
   It: IJclIntegerIterator;
   Index: Integer;
@@ -24949,32 +27523,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclIntegerSortedMap.FreeKey(var Key: Integer): Integer;
-begin
-  Result := Key;
-  Key := 0;
-end;
-
-function TJclIntegerSortedMap.FreeValue(var Value: TObject): TObject;
-begin
-  if FOwnsValues then
-  begin
-    Result := nil;
-    FreeAndNil(Value);
-  end
-  else
-  begin
-    Result := Value;
-    Value := nil;
-  end;
-end;
-
-
-function TJclIntegerSortedMap.GetOwnsValues: Boolean;
-begin
-  Result := FOwnsValues;
 end;
 
 function TJclIntegerSortedMap.GetValue(Key: Integer): TObject;
@@ -25075,11 +27623,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclIntegerSortedMap.KeysCompare(A, B: Integer): Integer;
-begin
-  Result := ItemsCompare(A, B);
 end;
 
 function TJclIntegerSortedMap.KeySet: IJclIntegerSet;
@@ -25412,6 +27955,42 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclIntegerSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclIntegerSortedMap.Create(FSize, False);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclIntegerSortedMap.FreeKey(var Key: Integer): Integer;
+begin
+  Result := Key;
+  Key := 0;
+end;
+
+function TJclIntegerSortedMap.FreeValue(var Value: TObject): TObject;
+begin
+  if FOwnsValues then
+  begin
+    Result := nil;
+    FreeAndNil(Value);
+  end
+  else
+  begin
+    Result := Value;
+    Value := nil;
+  end;
+end;
+
+function TJclIntegerSortedMap.GetOwnsValues: Boolean;
+begin
+  Result := FOwnsValues;
+end;
+
+function TJclIntegerSortedMap.KeysCompare(A, B: Integer): Integer;
+begin
+  Result := ItemsCompare(A, B);
+end;
+
 function TJclIntegerSortedMap.ValuesCompare(A, B: TObject): Integer;
 begin
   if Integer(A) > Integer(B) then
@@ -25422,7 +28001,6 @@ begin
   else
     Result := 0;
 end;
-
 
 //=== { TJclCardinalSortedMap } ==============================================
 
@@ -25560,13 +28138,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclCardinalSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclCardinalSortedMap.Create(FSize, False);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclCardinalSortedMap.Equals(const AMap: IJclCardinalMap): Boolean;
+function TJclCardinalSortedMap.MapEquals(const AMap: IJclCardinalMap): Boolean;
 var
   It: IJclCardinalIterator;
   Index: Integer;
@@ -25621,32 +28193,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclCardinalSortedMap.FreeKey(var Key: Cardinal): Cardinal;
-begin
-  Result := Key;
-  Key := 0;
-end;
-
-function TJclCardinalSortedMap.FreeValue(var Value: TObject): TObject;
-begin
-  if FOwnsValues then
-  begin
-    Result := nil;
-    FreeAndNil(Value);
-  end
-  else
-  begin
-    Result := Value;
-    Value := nil;
-  end;
-end;
-
-
-function TJclCardinalSortedMap.GetOwnsValues: Boolean;
-begin
-  Result := FOwnsValues;
 end;
 
 function TJclCardinalSortedMap.GetValue(Key: Cardinal): TObject;
@@ -25747,11 +28293,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclCardinalSortedMap.KeysCompare(A, B: Cardinal): Integer;
-begin
-  Result := ItemsCompare(A, B);
 end;
 
 function TJclCardinalSortedMap.KeySet: IJclCardinalSet;
@@ -26084,6 +28625,42 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclCardinalSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclCardinalSortedMap.Create(FSize, False);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclCardinalSortedMap.FreeKey(var Key: Cardinal): Cardinal;
+begin
+  Result := Key;
+  Key := 0;
+end;
+
+function TJclCardinalSortedMap.FreeValue(var Value: TObject): TObject;
+begin
+  if FOwnsValues then
+  begin
+    Result := nil;
+    FreeAndNil(Value);
+  end
+  else
+  begin
+    Result := Value;
+    Value := nil;
+  end;
+end;
+
+function TJclCardinalSortedMap.GetOwnsValues: Boolean;
+begin
+  Result := FOwnsValues;
+end;
+
+function TJclCardinalSortedMap.KeysCompare(A, B: Cardinal): Integer;
+begin
+  Result := ItemsCompare(A, B);
+end;
+
 function TJclCardinalSortedMap.ValuesCompare(A, B: TObject): Integer;
 begin
   if Integer(A) > Integer(B) then
@@ -26094,7 +28671,6 @@ begin
   else
     Result := 0;
 end;
-
 
 //=== { TJclInt64SortedMap } ==============================================
 
@@ -26232,13 +28808,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclInt64SortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclInt64SortedMap.Create(FSize, False);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclInt64SortedMap.Equals(const AMap: IJclInt64Map): Boolean;
+function TJclInt64SortedMap.MapEquals(const AMap: IJclInt64Map): Boolean;
 var
   It: IJclInt64Iterator;
   Index: Integer;
@@ -26293,32 +28863,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclInt64SortedMap.FreeKey(var Key: Int64): Int64;
-begin
-  Result := Key;
-  Key := 0;
-end;
-
-function TJclInt64SortedMap.FreeValue(var Value: TObject): TObject;
-begin
-  if FOwnsValues then
-  begin
-    Result := nil;
-    FreeAndNil(Value);
-  end
-  else
-  begin
-    Result := Value;
-    Value := nil;
-  end;
-end;
-
-
-function TJclInt64SortedMap.GetOwnsValues: Boolean;
-begin
-  Result := FOwnsValues;
 end;
 
 function TJclInt64SortedMap.GetValue(const Key: Int64): TObject;
@@ -26419,11 +28963,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclInt64SortedMap.KeysCompare(const A, B: Int64): Integer;
-begin
-  Result := ItemsCompare(A, B);
 end;
 
 function TJclInt64SortedMap.KeySet: IJclInt64Set;
@@ -26756,6 +29295,42 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclInt64SortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclInt64SortedMap.Create(FSize, False);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclInt64SortedMap.FreeKey(var Key: Int64): Int64;
+begin
+  Result := Key;
+  Key := 0;
+end;
+
+function TJclInt64SortedMap.FreeValue(var Value: TObject): TObject;
+begin
+  if FOwnsValues then
+  begin
+    Result := nil;
+    FreeAndNil(Value);
+  end
+  else
+  begin
+    Result := Value;
+    Value := nil;
+  end;
+end;
+
+function TJclInt64SortedMap.GetOwnsValues: Boolean;
+begin
+  Result := FOwnsValues;
+end;
+
+function TJclInt64SortedMap.KeysCompare(const A, B: Int64): Integer;
+begin
+  Result := ItemsCompare(A, B);
+end;
+
 function TJclInt64SortedMap.ValuesCompare(A, B: TObject): Integer;
 begin
   if Integer(A) > Integer(B) then
@@ -26766,7 +29341,6 @@ begin
   else
     Result := 0;
 end;
-
 
 {$IFNDEF CLR}
 //=== { TJclPtrSortedMap } ==============================================
@@ -26905,13 +29479,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclPtrSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclPtrSortedMap.Create(FSize, False);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclPtrSortedMap.Equals(const AMap: IJclPtrMap): Boolean;
+function TJclPtrSortedMap.MapEquals(const AMap: IJclPtrMap): Boolean;
 var
   It: IJclPtrIterator;
   Index: Integer;
@@ -26966,32 +29534,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclPtrSortedMap.FreeKey(var Key: Pointer): Pointer;
-begin
-  Result := Key;
-  Key := nil;
-end;
-
-function TJclPtrSortedMap.FreeValue(var Value: TObject): TObject;
-begin
-  if FOwnsValues then
-  begin
-    Result := nil;
-    FreeAndNil(Value);
-  end
-  else
-  begin
-    Result := Value;
-    Value := nil;
-  end;
-end;
-
-
-function TJclPtrSortedMap.GetOwnsValues: Boolean;
-begin
-  Result := FOwnsValues;
 end;
 
 function TJclPtrSortedMap.GetValue(Key: Pointer): TObject;
@@ -27092,11 +29634,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclPtrSortedMap.KeysCompare(A, B: Pointer): Integer;
-begin
-  Result := ItemsCompare(A, B);
 end;
 
 function TJclPtrSortedMap.KeySet: IJclPtrSet;
@@ -27429,6 +29966,42 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclPtrSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclPtrSortedMap.Create(FSize, False);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclPtrSortedMap.FreeKey(var Key: Pointer): Pointer;
+begin
+  Result := Key;
+  Key := nil;
+end;
+
+function TJclPtrSortedMap.FreeValue(var Value: TObject): TObject;
+begin
+  if FOwnsValues then
+  begin
+    Result := nil;
+    FreeAndNil(Value);
+  end
+  else
+  begin
+    Result := Value;
+    Value := nil;
+  end;
+end;
+
+function TJclPtrSortedMap.GetOwnsValues: Boolean;
+begin
+  Result := FOwnsValues;
+end;
+
+function TJclPtrSortedMap.KeysCompare(A, B: Pointer): Integer;
+begin
+  Result := ItemsCompare(A, B);
+end;
+
 function TJclPtrSortedMap.ValuesCompare(A, B: TObject): Integer;
 begin
   if Integer(A) > Integer(B) then
@@ -27439,7 +30012,6 @@ begin
   else
     Result := 0;
 end;
-
 {$ENDIF ~CLR}
 
 //=== { TJclSortedMap } ==============================================
@@ -27579,13 +30151,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
-begin
-  Result := TJclSortedMap.Create(FSize, False, False);
-  AssignPropertiesTo(Result);
-end;
-
-function TJclSortedMap.Equals(const AMap: IJclMap): Boolean;
+function TJclSortedMap.MapEquals(const AMap: IJclMap): Boolean;
 var
   It: IJclIterator;
   Index: Integer;
@@ -27640,44 +30206,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclSortedMap.FreeKey(var Key: TObject): TObject;
-begin
-  if FOwnsKeys then
-  begin
-    Result := nil;
-    FreeAndNil(Key);
-  end
-  else
-  begin
-    Result := Key;
-    Key := nil;
-  end;
-end;
-
-function TJclSortedMap.FreeValue(var Value: TObject): TObject;
-begin
-  if FOwnsValues then
-  begin
-    Result := nil;
-    FreeAndNil(Value);
-  end
-  else
-  begin
-    Result := Value;
-    Value := nil;
-  end;
-end;
-
-function TJclSortedMap.GetOWnsKeys: Boolean;
-begin
-  Result := FOwnsKeys;
-end;
-
-function TJclSortedMap.GetOwnsValues: Boolean;
-begin
-  Result := FOwnsValues;
 end;
 
 function TJclSortedMap.GetValue(Key: TObject): TObject;
@@ -27778,17 +30306,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclSortedMap.KeysCompare(A, B: TObject): Integer;
-begin
-  if Integer(A) > Integer(B) then
-    Result := 1
-  else
-  if Integer(A) < Integer(B) then
-    Result := -1
-  else
-    Result := 0;
 end;
 
 function TJclSortedMap.KeySet: IJclSet;
@@ -28121,7 +30638,51 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclSortedMap.ValuesCompare(A, B: TObject): Integer;
+function TJclSortedMap.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclSortedMap.Create(FSize, False, False);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclSortedMap.FreeKey(var Key: TObject): TObject;
+begin
+  if FOwnsKeys then
+  begin
+    Result := nil;
+    FreeAndNil(Key);
+  end
+  else
+  begin
+    Result := Key;
+    Key := nil;
+  end;
+end;
+
+function TJclSortedMap.FreeValue(var Value: TObject): TObject;
+begin
+  if FOwnsValues then
+  begin
+    Result := nil;
+    FreeAndNil(Value);
+  end
+  else
+  begin
+    Result := Value;
+    Value := nil;
+  end;
+end;
+
+function TJclSortedMap.GetOWnsKeys: Boolean;
+begin
+  Result := FOwnsKeys;
+end;
+
+function TJclSortedMap.GetOwnsValues: Boolean;
+begin
+  Result := FOwnsValues;
+end;
+
+function TJclSortedMap.KeysCompare(A, B: TObject): Integer;
 begin
   if Integer(A) > Integer(B) then
     Result := 1
@@ -28132,6 +30693,16 @@ begin
     Result := 0;
 end;
 
+function TJclSortedMap.ValuesCompare(A, B: TObject): Integer;
+begin
+  if Integer(A) > Integer(B) then
+    Result := 1
+  else
+  if Integer(A) < Integer(B) then
+    Result := -1
+  else
+    Result := 0;
+end;
 
 {$IFDEF SUPPORTS_GENERICS}
 
@@ -28272,8 +30843,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-
-function TJclSortedMap<TKey,TValue>.Equals(const AMap: IJclMap<TKey,TValue>): Boolean;
+function TJclSortedMap<TKey,TValue>.MapEquals(const AMap: IJclMap<TKey,TValue>): Boolean;
 var
   It: IJclIterator<TKey>;
   Index: Integer;
@@ -28328,44 +30898,6 @@ begin
       SyncReaderWriter.EndRead;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclSortedMap<TKey,TValue>.FreeKey(var Key: TKey): TKey;
-begin
-  if FOwnsKeys then
-  begin
-    Result := Default(TKey);
-    FreeAndNil(Key);
-  end
-  else
-  begin
-    Result := Key;
-    Key := Default(TKey);
-  end;
-end;
-
-function TJclSortedMap<TKey,TValue>.FreeValue(var Value: TValue): TValue;
-begin
-  if FOwnsValues then
-  begin
-    Result := Default(TValue);
-    FreeAndNil(Value);
-  end
-  else
-  begin
-    Result := Value;
-    Value := Default(TValue);
-  end;
-end;
-
-function TJclSortedMap<TKey,TValue>.GetOWnsKeys: Boolean;
-begin
-  Result := FOwnsKeys;
-end;
-
-function TJclSortedMap<TKey,TValue>.GetOwnsValues: Boolean;
-begin
-  Result := FOwnsValues;
 end;
 
 function TJclSortedMap<TKey,TValue>.GetValue(const Key: TKey): TValue;
@@ -28467,7 +30999,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
 
 function TJclSortedMap<TKey,TValue>.KeySet: IJclSet<TKey>;
 var
@@ -28799,12 +31330,48 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclSortedMap<TKey,TValue>.FreeKey(var Key: TKey): TKey;
+begin
+  if FOwnsKeys then
+  begin
+    Result := Default(TKey);
+    FreeAndNil(Key);
+  end
+  else
+  begin
+    Result := Key;
+    Key := Default(TKey);
+  end;
+end;
 
+function TJclSortedMap<TKey,TValue>.FreeValue(var Value: TValue): TValue;
+begin
+  if FOwnsValues then
+  begin
+    Result := Default(TValue);
+    FreeAndNil(Value);
+  end
+  else
+  begin
+    Result := Value;
+    Value := Default(TValue);
+  end;
+end;
+
+function TJclSortedMap<TKey,TValue>.GetOWnsKeys: Boolean;
+begin
+  Result := FOwnsKeys;
+end;
+
+function TJclSortedMap<TKey,TValue>.GetOwnsValues: Boolean;
+begin
+  Result := FOwnsValues;
+end;
 
 //=== { TJclSortedMapE<TKey, TValue> } =======================================
 
-constructor TJclSortedMapE<TKey, TValue>.Create(const AKeyComparer: IComparer<TKey>;
-  const AValueComparer: IComparer<TValue>; const AValueEqualityComparer: IEqualityComparer<TValue>; ACapacity: Integer;
+constructor TJclSortedMapE<TKey, TValue>.Create(const AKeyComparer: IJclComparer<TKey>;
+  const AValueComparer: IJclComparer<TValue>; const AValueEqualityComparer: IJclEqualityComparer<TValue>; ACapacity: Integer;
   AOwnsValues: Boolean; AOwnsKeys: Boolean);
 begin
   inherited Create(ACapacity, AOwnsValues, AOwnsKeys);
@@ -28831,7 +31398,7 @@ function TJclSortedMapE<TKey, TValue>.CreateEmptyArrayList(ACapacity: Integer;
 begin
   if FValueEqualityComparer = nil then
     raise EJclNoEqualityComparerError.Create;
-  Result := TJclArrayListE<TValue>.Create(FValueEqualityComparer, ACapacity, AOwnsObjects);
+  Result := TArrayList.Create(FValueEqualityComparer, ACapacity, AOwnsObjects);
 end;
 
 function TJclSortedMapE<TKey, TValue>.CreateEmptyContainer: TJclAbstractContainerBase;
@@ -28843,7 +31410,7 @@ end;
 
 function TJclSortedMapE<TKey, TValue>.CreateEmptyArraySet(ACapacity: Integer; AOwnsObjects: Boolean): IJclSet<TKey>;
 begin
-  Result := TJclArraySetE<TKey>.Create(FKeyComparer, FCapacity, AOwnsObjects);
+  Result := TArraySet.Create(FKeyComparer, FCapacity, AOwnsObjects);
 end;
 
 function TJclSortedMapE<TKey, TValue>.KeysCompare(const A, B: TKey): Integer;
@@ -28889,7 +31456,7 @@ function TJclSortedMapF<TKey, TValue>.CreateEmptyArrayList(ACapacity: Integer;
 begin
   if not Assigned(FValueEqualityCompare) then
     raise EJclNoEqualityComparerError.Create;
-  Result := TJclArrayListF<TValue>.Create(FValueEqualityCompare, ACapacity, AOwnsObjects);
+  Result := TArrayList.Create(FValueEqualityCompare, ACapacity, AOwnsObjects);
 end;
 
 function TJclSortedMapF<TKey, TValue>.CreateEmptyContainer: TJclAbstractContainerBase;
@@ -28901,7 +31468,7 @@ end;
 
 function TJclSortedMapF<TKey, TValue>.CreateEmptyArraySet(ACapacity: Integer; AOwnsObjects: Boolean): IJclSet<TKey>;
 begin
-  Result := TJclArraySetF<TKey>.Create(FKeyCompare, FCapacity, AOwnsObjects);
+  Result := TArraySet.Create(FKeyCompare, FCapacity, AOwnsObjects);
 end;
 
 function TJclSortedMapF<TKey, TValue>.KeysCompare(const A, B: TKey): Integer;
@@ -28923,7 +31490,7 @@ end;
 function TJclSortedMapI<TKey, TValue>.CreateEmptyArrayList(ACapacity: Integer;
   AOwnsObjects: Boolean): IJclCollection<TValue>;
 begin
-  Result := TJclArrayListI<TValue>.Create(ACapacity, AOwnsObjects);
+  Result := TArrayList.Create(ACapacity, AOwnsObjects);
 end;
 
 function TJclSortedMapI<TKey, TValue>.CreateEmptyContainer: TJclAbstractContainerBase;
@@ -28934,7 +31501,7 @@ end;
 
 function TJclSortedMapI<TKey, TValue>.CreateEmptyArraySet(ACapacity: Integer; AOwnsObjects: Boolean): IJclSet<TKey>;
 begin
-  Result := TJclArraySetI<TKey>.Create(FCapacity, AOwnsObjects);
+  Result := TArraySet.Create(FCapacity, AOwnsObjects);
 end;
 
 function TJclSortedMapI<TKey, TValue>.KeysCompare(const A, B: TKey): Integer;

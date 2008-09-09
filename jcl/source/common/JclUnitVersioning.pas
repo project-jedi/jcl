@@ -145,6 +145,11 @@ function GetUnitVersioning: TUnitVersioning;
 
 implementation
 
+{$IFNDEF COMPILER11_UP}
+type
+  DWORD_PTR = DWORD;
+{$ENDIF ~COMPILER11_UP}
+
 // Delphi 5 does not know this function //(usc) D6/7 Per does have StartsWith
 // a fast version of Pos(SubStr, S) = 1
 function StartsWith(const SubStr, S: string): Boolean;
@@ -609,9 +614,9 @@ begin
   Pages := 0;
   repeat
     Requested := MaximumApplicationAddress;
-    Requested := Pointer((Cardinal(Requested) div $10000) * $10000);
+    Requested := Pointer((DWORD_PTR(Requested) div $10000) * $10000);
     Dec(Cardinal(Requested), Pages * $10000);
-    Requested := Pointer((Cardinal(Requested) div PageSize) * PageSize);
+    Requested := Pointer((DWORD_PTR(Requested) div PageSize) * PageSize);
     {$IFDEF MSWINDOWS}
     Allocated := VirtualAlloc(Requested, PageSize, MEM_RESERVE or MEM_COMMIT, PAGE_READWRITE);
     if Assigned(Allocated) and (Requested <> Allocated) then
@@ -699,7 +704,7 @@ begin
   Result := 0;
   if P <> nil then
   begin
-    Requested := PNPARecord(Cardinal(P) - SizeOf(TNPARecord));
+    Requested := PNPARecord(DWORD_PTR(P) - SizeOf(TNPARecord));
     Dec(Requested.RefCount);
     Result := Requested.RefCount;
     if Requested.RefCount = 0 then
