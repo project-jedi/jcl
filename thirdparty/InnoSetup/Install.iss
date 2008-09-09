@@ -4,7 +4,7 @@
 ;    Include_Binaries    Create an installer that can install a precompiled JCL
 ;    Include_Examples    Add the Examples directory to the installer (user can then select the component)
 ;    DEBUGGING           Development. Will only use Delphi 5 BPLs as files with a fast compression (script debugging)
-;    Include_DelphiX     Include the binaries for Delphi X (X in 5..11)
+;    Include_DelphiX     Include the binaries for Delphi X (X in 5..12)
 ;    Include_BCBX        Include the binaries for C++Builder X (X in 5..6)
 
 #define JclVersionStr "1.102.0.2726"
@@ -35,6 +35,7 @@
   #define Include_Delphi9
   #define Include_Delphi10
   #define Include_Delphi11
+  #define Include_Delphi12
  #endif
 #endif
 
@@ -63,6 +64,8 @@
 #define   Delphi10Bpl BorlandSudioProjects + "\Bpl"
 #define Delphi11Root CodeGearRoot + "\RAD Studio\5.0"
 #define   Delphi11Bpl CommonDocs + "\RAD Studio\5.0\Bpl"
+#define Delphi12Root CodeGearRoot + "\RAD Studio\6.0"
+#define   Delphi12Bpl CommonDocs + "\RAD Studio\6.0\Bpl"
 
 
 [Setup]
@@ -125,6 +128,7 @@ Name: delphi7; Description: "Delphi 7 binary files"; Source: "{#downloadurl}/jcl
 Name: delphi9; Description: "Delphi 2005 binary files"; Source: "{#downloadurl}/jcldelphi9.isz"; Flags: localcopy;
 Name: delphi10; Description: "Delphi/C++Builder 2006 binary files"; Source: "{#downloadurl}/jcldelphi10.isz"; Flags: localcopy;
 Name: delphi11; Description: "Delphi/C++Builder 2007 binary files"; Source: "{#downloadurl}/jcldelphi11.isz"; Flags: localcopy;
+Name: delphi12; Description: "Delphi/C++Builder 2009 binary files"; Source: "{#downloadurl}/jcldelphi12.isz"; Flags: localcopy;
 
 #include "IdeComponents.iss"
 
@@ -205,7 +209,13 @@ Source: {#Delphi10Root}\Include\Vcl\Jcl*.hpp; DestDir: "{code:GetDelphiDir|10}\I
 ; SolidBreak;
 Source: {#JclRoot}\lib\d11\*; DestDir: "{app}\lib\d11"; Excludes: ".svn,__history,*.txt"; Components: "IDE\Delphi11"; Package: delphi11; Flags: ignoreversion recursesubdirs sortfilesbyextension createallsubdirs solidbreak
 Source: {#Delphi11Bpl}\Jcl*.*; DestDir: "{code:GetDelphiBplDir|11}"; Components: "IDE\Delphi11"; Package: delphi11; Flags: ignoreversion recursesubdirs sortfilesbyextension createallsubdirs
-Source: {#Delphi11Root}\Include\Vcl\Jcl*.hpp; DestDir: "{code:GetDelphiDir|10}\Include\Vcl"; Components: "IDE\Delphi11"; Package: delphi11; Flags: ignoreversion recursesubdirs sortfilesbyextension createallsubdirs
+Source: {#Delphi11Root}\Include\Vcl\Jcl*.hpp; DestDir: "{code:GetDelphiDir|11}\Include\Vcl"; Components: "IDE\Delphi11"; Package: delphi11; Flags: ignoreversion recursesubdirs sortfilesbyextension createallsubdirs
+#endif
+#ifdef Include_Delphi12
+; SolidBreak;
+Source: {#JclRoot}\lib\d12\*; DestDir: "{app}\lib\d12"; Excludes: ".svn,__history,*.txt"; Components: "IDE\Delphi12"; Package: delphi12; Flags: ignoreversion recursesubdirs sortfilesbyextension createallsubdirs solidbreak
+Source: {#Delphi12Bpl}\Jcl*.*; DestDir: "{code:GetDelphiBplDir|12}"; Components: "IDE\Delphi12"; Package: delphi12; Flags: ignoreversion recursesubdirs sortfilesbyextension createallsubdirs
+Source: {#Delphi12Root}\Include\Vcl\Jcl*.hpp; DestDir: "{code:GetDelphiDir|12}\Include\Vcl"; Components: "IDE\Delphi12"; Package: delphi12; Flags: ignoreversion recursesubdirs sortfilesbyextension createallsubdirs
 #endif
 #endif
 
@@ -256,6 +266,15 @@ Root: HKCU; Subkey: "{code:GetDelphiRegKey|11}\Jedi\JCL"; ValueType: string; Val
 Root: HKCU; Subkey: "{code:GetDelphiRegKey|11}\Jedi\JCL"; ValueType: string; ValueName: "DcpDir"; ValueData: {app}\lib\d11; Components: "IDE\Delphi11"; Flags: uninsdeletevalue; Check: IsDelphiInstalled(11)
 Root: HKCU; Subkey: "{code:GetDelphiRegKey|11}\Jedi\JCL"; ValueType: string; ValueName: "RootDir"; ValueData: {app}; Components: "IDE\Delphi11"; Flags: uninsdeletevalue; Check: IsDelphiInstalled(11)
 Root: HKCU; Subkey: "{code:GetDelphiRegKey|11}\Jedi\JCL"; ValueType: string; ValueName: "Version"; ValueData: {#JclVersionStr}; Components: "IDE\Delphi11"; Flags: uninsdeletevalue; Check: IsDelphiInstalled(11)
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|11}\Globals"; ValueType: string; ValueName: "ForceEnvOptionsUpdate"; ValueData: "1"; Components: "IDE\Delphi11"; Check: IsDelphiInstalled(11)
+#endif
+#ifdef Include_Delphi12
+; Delphi 2009
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|12}\Jedi\JCL"; ValueType: string; ValueName: "BplDir"; ValueData: {code:GetDelphiBplDir|12}; Components: "IDE\Delphi12"; Flags: uninsdeletevalue; Check: IsDelphiInstalled(12)
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|12}\Jedi\JCL"; ValueType: string; ValueName: "DcpDir"; ValueData: {app}\lib\d12; Components: "IDE\Delphi12"; Flags: uninsdeletevalue; Check: IsDelphiInstalled(12)
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|12}\Jedi\JCL"; ValueType: string; ValueName: "RootDir"; ValueData: {app}; Components: "IDE\Delphi12"; Flags: uninsdeletevalue; Check: IsDelphiInstalled(12)
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|12}\Jedi\JCL"; ValueType: string; ValueName: "Version"; ValueData: {#JclVersionStr}; Components: "IDE\Delphi12"; Flags: uninsdeletevalue; Check: IsDelphiInstalled(12)
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|12}\Globals"; ValueType: string; ValueName: "ForceEnvOptionsUpdate"; ValueData: "1"; Components: "IDE\Delphi12"; Check: IsDelphiInstalled(12)
 #endif
 #endif
 
@@ -304,6 +323,11 @@ Type: files; Name: "{app}\lib\d11\*"
 Type: files; Name: "{app}\lib\d11\debug\*"
 Type: files; Name: "{code:GetDelphiBplDir|11}\Jcl*.*"
 Type: files; Name: "{code:GetDelphiDir|11}\Include\Vcl\Jcl*.hpp"
+; lib\Delphi/C++Builder 2009
+Type: files; Name: "{app}\lib\d12\*"
+Type: files; Name: "{app}\lib\d12\debug\*"
+Type: files; Name: "{code:GetDelphiBplDir|12}\Jcl*.*"
+Type: files; Name: "{code:GetDelphiDir|12}\Include\Vcl\Jcl*.hpp"
 
 
 [Icons]
@@ -330,7 +354,7 @@ var
   Version: Integer;
 begin
 {  // Uninstall from all IDEs ?
-  for Version := 5 to 11 do
+  for Version := 5 to 12 do
     UninstallExpertsPrefixed(ikDelphi, Version, 'Jcl');
   for Version := 5 to 6 do
     UninstallExpertsPrefixed(ikBCB, Version, 'Jcl');}

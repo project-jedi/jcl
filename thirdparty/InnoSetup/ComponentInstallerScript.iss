@@ -434,7 +434,7 @@ begin
 
   // Check if there is any Delphi IDE installed
   Result := False;
-  for Version := 5 to 11 do
+  for Version := 5 to 12 do
     if IsDelphiInstalled(Version) then
       Result := True;
 
