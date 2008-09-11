@@ -26,7 +26,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -459,7 +459,7 @@ end;
 begin
   Result := True;
 end;
-  {$ENDIF ~BZIP2_LINKONREQUEST}
+{$ENDIF ~BZIP2_LINKONREQUEST}
 
 function IsBZip2Loaded: Boolean;
 begin
