@@ -91,11 +91,17 @@
 
 
 // BZIP2 options, mutually exclusive
-// IMPORTANT: The static link is still experimental
 
 {.$DEFINE BZIP2_STATICLINK} // default
 {.$DEFINE BZIP2_LINKDLL}
 {.$DEFINE BZIP2_LINKONREQUEST}
+
+
+// ZLIB options, mutually exclusive
+
+{.$DEFINE ZLIB_STATICLINK} // default
+{.$DEFINE ZLIB_LINKDLL}
+{.$DEFINE ZLIB_LINKONREQUEST}
 
 
 // Unicode options

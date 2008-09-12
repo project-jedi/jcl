@@ -49,6 +49,7 @@ type
         joJCLDefEDI,
         joJCLDefPCRE,
         joJCLDefBZip2,
+        joJCLDefZLib,
         joJCLDefUnicode,
         joJCLDefContainer,
         joJCLDef7z,
@@ -72,6 +73,9 @@ type
         joJCLDefBZip2StaticLink,
         joJCLDefBZip2LinkDLL,
         joJCLDefBZip2LinkOnRequest,
+        joJCLDefZLibStaticLink,
+        joJCLDefZLibLinkDLL,
+        joJCLDefZLibLinkOnRequest,
         joJCLDefUnicodeSilentFailure,
         joJCLDefUnicodeRawData,
         joJCLDefUnicodeZLibData,
@@ -370,6 +374,11 @@ resourcestring
   RsCaptionDefBZip2StaticLink    = 'Static link to BZip2 code';
   RsCaptionDefBZip2LinkDLL       = 'Static bind to bzip2.dll';
   RsCaptionDefBZip2LinkOnRequest = 'Late bind to bzip2.dll';
+  // ZLib options
+  RsCaptionDefZLib              = 'ZLib options';
+  RsCaptionDefZLibStaticLink    = 'Static link to ZLib code';
+  RsCaptionDefZLibLinkDLL       = 'Static bind to zlib1.dll';
+  RsCaptionDefZLibLinkOnRequest = 'Late bind to zlib1.dll';
   // Unicode options
   RsCaptionDefUnicode              = 'Unicode options';
   RsCaptionDefUnicodeSilentFailure = 'Silent failure';
@@ -481,7 +490,12 @@ resourcestring
   RsHintDefBZip2              = 'BZip2 specific options (bzip2.pas)';
   RsHintDefBZip2StaticLink    = 'Code from BZip2 is linked into JCL binaries';
   RsHintDefBZip2LinkDLL       = 'JCL binaries require bzip2.dll to be present';
-  RsHintDefBZip2LinkOnRequest = 'JCL binaries require bzip2.dll when calling PCRE functions';
+  RsHintDefBZip2LinkOnRequest = 'JCL binaries require bzip2.dll when calling BZip2 functions';
+  // ZLib options
+  RsHintDefZLib              = 'ZLib specific options (zlibh.pas)';
+  RsHintDefZLibStaticLink    = 'Code from ZLib is linked into JCL binaries';
+  RsHintDefZLibLinkDLL       = 'JCL binaries require zlib1.dll to be present';
+  RsHintDefZLibLinkOnRequest = 'JCL binaries require zlib1.dll when calling ZLib functions';
   // Unicode options
   RsHintDefUnicode              = 'Unicode specific option (JclUnicode.pas)';
   RsHintDefUnicodeSilentFailure = 'Insert a replacement character if sequence is corrupted rather than raising an exception';
@@ -594,6 +608,7 @@ var
       (Id: -1; Caption: RsCaptionDefEDI; Hint: RsHintDefEDI), // joDefEDI
       (Id: -1; Caption: RsCaptionDefPCRE; Hint: RsHintDefPCRE), // joDefPCRE
       (Id: -1; Caption: RsCaptionDefBZip2; Hint: RsHintDefBZip2), // joDefBZip2
+      (Id: -1; Caption: RsCaptionDefZLib; Hint: RsHintDefZLib), // joDefZLib
       (Id: -1; Caption: RsCaptionDefUnicode; Hint: RsHintDefUnicode), // joDefUnicode
       (Id: -1; Caption: RsCaptionDefContainer; Hint: RsHintDefContainer), // joDefContainer
       (Id: -1; Caption: RsCaptionDef7z; Hint: RsHintDef7z), // joDef7z
@@ -617,6 +632,9 @@ var
       (Id: -1; Caption: RsCaptionDefBZip2StaticLink; Hint: RsHintDefBZip2StaticLink), // joDefBZip2StaticLink
       (Id: -1; Caption: RsCaptionDefBZip2LinkDLL; Hint: RsHintDefBZip2LinkDLL), // joDefBZip2LinkDLL
       (Id: -1; Caption: RsCaptionDefBZip2LinkOnRequest; Hint: RsHintDefBZip2LinkOnRequest), // joDefBZip2LinkOnRequest
+      (Id: -1; Caption: RsCaptionDefZLibStaticLink; Hint: RsHintDefZLibStaticLink), // joDefZLibStaticLink
+      (Id: -1; Caption: RsCaptionDefZLibLinkDLL; Hint: RsHintDefZLibLinkDLL), // joDefZLibLinkDLL
+      (Id: -1; Caption: RsCaptionDefZLibLinkOnRequest; Hint: RsHintDefZLibLinkOnRequest), // joDefZLibLinkOnRequest
       (Id: -1; Caption: RsCaptionDefUnicodeSilentFailure; Hint: RsHintDefUnicodeSilentFailure), // joDefUnicodeSilentFailure
       (Id: -1; Caption: RsCaptionDefUnicodeRawData; Hint: RsHintDefUnicodeRawData), // joDefUnicodeRawData
       (Id: -1; Caption: RsCaptionDefUnicodeZLibData; Hint: RsHintDefUnicodeZLibData), // joDefUnicodeZLibData
@@ -1080,12 +1098,18 @@ procedure TJclInstallation.Init;
       AddOption(joJCLDefBZip2StaticLink, [goRadioButton, goChecked], joJCLDefBZip2);
       AddOption(joJCLDefBZip2LinkOnRequest, [goRadioButton], joJCLDefBZip2);
       AddOption(joJCLDefBZip2LinkDLL, [goRadioButton], joJCLDefBZip2);
-      {$IFDEF MSWINDOWS}
+      // ZLib options
+      AddOption(joJCLDefZLib, [goChecked], Parent);
+      AddOption(joJCLDefZLibStaticLink, [goRadioButton, goChecked], joJCLDefZLib);
+      AddOption(joJCLDefZLibLinkOnRequest, [goRadioButton], joJCLDefZLib);
+      AddOption(joJCLDefZLibLinkDLL, [goRadioButton], joJCLDefZLib);
+      // Unicode options
       AddOption(joJCLDefUnicode, [goChecked], Parent);
       AddOption(joJCLDefUnicodeSilentFailure, [goChecked], joJCLDefUnicode);
       AddOption(joJCLDefUnicodeRawData, [goRadioButton, goChecked], joJCLDefUnicode);
       AddOption(joJCLDefUnicodeZLibData, [goRadioButton], joJCLDefUnicode);
       AddOption(joJCLDefUnicodeBZip2Data, [goRadioButton], joJCLDefUnicode);
+      {$IFDEF MSWINDOWS}
       // Sevenzip options
       AddOption(joJCLDef7z, [goChecked], Parent);
       //AddOption(joJCLDef7zStaticLink, [goRadioButton], joDef7z);
@@ -1555,7 +1579,8 @@ var
         'DEBUG_NO_BINARY', 'DEBUG_NO_TD32', 'DEBUG_NO_MAP', 'DEBUG_NO_EXPORTS',
         'DEBUG_NO_SYMBOLS', 'EDI_WEAK_PACKAGE_UNITS', 'PCRE_STATICLINK',
         'PCRE_LINKDLL', 'PCRE_LINKONREQUEST', 'BZIP2_STATICLINK',
-        'BZIP2_LINKDLL', 'BZIP2_LINKONREQUEST', 'UNICODE_SILENT_FAILURE',
+        'BZIP2_LINKDLL', 'BZIP2_LINKONREQUEST', 'ZLIB_STATICLINK',
+        'ZLIB_LINKDLL', 'ZLIB_LINKONREQUEST', 'UNICODE_SILENT_FAILURE',
         'UNICODE_RAW_DATA', 'UNICODE_ZLIB_DATA', 'UNICODE_BZIP2_DATA',
         'CONTAINER_ANSISTR', 'CONTAINER_WIDESTR', 'CONTAINER_UNICODESTR',
         'CONTAINER_NOSTR', {'7ZIP_STATICLINK',} '7ZIP_LINKDLL',

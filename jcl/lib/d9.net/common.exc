@@ -21,3 +21,4 @@ JclUnitVersioning.pas
 JclUnitVersioningProviders.pas
 JclWideStrings.pas
 pcre.pas
+zlibh.pas

@@ -1877,6 +1877,8 @@ constructor TJclZLibCompressStream.Create(Destination: TStream; CompressionLevel
 begin
   inherited Create(Destination);
 
+  LoadZLib;
+
   Assert(FBuffer <> nil);
   Assert(FBufferSize > 0);
 
@@ -2038,6 +2040,8 @@ constructor TJclZLibDecompressStream.Create(Source: TStream; WindowBits: Integer
 begin
   inherited Create(Source, AOwnsStream);
 
+  LoadZLib;
+
   // Initialize ZLib StreamRecord
   with ZLibRecord do
   begin
@@ -2131,6 +2135,8 @@ end;
 constructor TJclGZIPCompressionStream.Create(Destination: TStream; CompressionLevel: TJclCompressionLevel);
 begin
   inherited Create(Destination);
+
+  LoadZLib;
 
   FFlags := [gfHeaderCRC16, gfExtraField, gfOriginalFileName, gfComment];
   FAutoSetTime := True;
@@ -2366,6 +2372,8 @@ var
 
 begin
   inherited Create(Source, AOwnsStream);
+
+  LoadZLib;
 
   FAutoCheckDataCRC32 := True;
   FComputedDataCRC32 := crc32(0, nil, 0);

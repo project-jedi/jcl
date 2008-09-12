@@ -142,7 +142,7 @@
       <FILE FILENAME="../../source/common/JclValidation.pas" FORMNAME="" UNITNAME="JclValidation" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclWideStrings.pas" FORMNAME="" UNITNAME="JclWideStrings" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/pcre.pas" FORMNAME="" UNITNAME="pcre" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="../../source/unix/zlibh.pas" FORMNAME="" UNITNAME="zlibh" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/zlibh.pas" FORMNAME="" UNITNAME="zlibh" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>

@@ -15,8 +15,6 @@ WinOptions		= $(Options) -dMSWINDOWS -uUNIX -uHAS_UNIT_LIBC -f..\windows\\
 Win32Options		= $(Options) -uHAS_UNIT_LIBC -f..\windows\\
 ContainerOptions	= $(Options) -m -ijcl.inc -f..\Common\\
 UnixOptions		= $(Options) -uMSWINDOWS -dUNIX -f..\unix\\
-ZlibOptions		= -uSTATIC_GZIO
-
 
 release:	VCL VisualCLX Windows Unix ContainersProt Containers
 
@@ -27,13 +25,7 @@ VisualCLX:    	..\visclx\JclQGraphics.pas \
 		..\visclx\JclQGraphUtils.pas
 
 Windows:        ..\windows\JclWin32.pas \
-                ..\windows\Hardlinks.pas \
-                ..\windows\zlibh.pas
-
-Unix:		..\unix\zlibh.pas
-
-zlib:		..\windows\zlibh.pas \
-		..\unix\zlibh.pas
+                ..\windows\Hardlinks.pas
 
 ContainersProt:	JclAlgorithms.pas \
 		JclArrayLists.pas \
@@ -83,19 +75,9 @@ Containers:	..\Common\JclAlgorithms.pas \
                 JclWin32.pas
         $(jpp) -ijcl.inc $(UnixOptions) $?
 
-..\unix\zlibh.pas: \
-		zlibh.pas
-        echo Unix-zlib
-	$(jpp) $(UnixOptions) $(ZlibOptions) -dZLIB_DLL $?
-
 ..\windows\JclWin32.pas: \
                 JclWin32.pas
         $(jpp) -ijcl.inc $(WinOptions) $?
-
-..\windows\zlibh.pas: \
-		zlibh.pas
-        echo Win-zlib
-	$(jpp) $(WinOptions) $(ZlibOptions) -uZLIB_DLL $?
 
 JclAlgorithms.pas: \
 		containers\JclAlgorithms.int containers\JclAlgorithms.imp

@@ -108,6 +108,7 @@
 			<DCCReference Include="..\..\source\common\JclValidation.pas" />
 			<DCCReference Include="..\..\source\common\JclWideStrings.pas" />
 			<DCCReference Include="..\..\source\common\pcre.pas" />
+			<DCCReference Include="..\..\source\common\zlibh.pas" />
 			<DCCReference Include="..\..\source\windows\Hardlinks.pas" />
 			<DCCReference Include="..\..\source\windows\JclAppInst.pas" />
 			<DCCReference Include="..\..\source\windows\JclCIL.pas" />
@@ -143,7 +144,6 @@
 			<DCCReference Include="..\..\source\windows\MSTask.pas" />
 			<DCCReference Include="..\..\source\windows\sevenzip.pas" />
 			<DCCReference Include="..\..\source\windows\Snmp.pas" />
-			<DCCReference Include="..\..\source\windows\zlibh.pas" />
 			<BuildConfiguration Include="Base">
 				<Key>Base</Key>
 			</BuildConfiguration>

@@ -63,6 +63,7 @@
     <File Name="..\..\source\common\JclValidation.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclWideStrings.pas" Targets="JclDev" Formname="" Condition=""/>
     <File Name="..\..\source\common\pcre.pas" Targets="JclDev" Formname="" Condition=""/>
+    <File Name="..\..\source\common\zlibh.pas" Targets="JclDev" Formname="" Condition=""/>
     <File Name="..\..\source\windows\Hardlinks.pas" Targets="WinDev" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclAppInst.pas" Targets="WinDev" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclCIL.pas" Targets="WinDev" Formname="" Condition=""/>
@@ -98,7 +99,5 @@
     <File Name="..\..\source\windows\MSTask.pas" Targets="WinDev" Formname="" Condition=""/>
     <File Name="..\..\source\windows\sevenzip.pas" Targets="WinDev" Formname="" Condition=""/>
     <File Name="..\..\source\windows\Snmp.pas" Targets="WinDev" Formname="" Condition=""/>
-    <File Name="..\..\source\windows\zlibh.pas" Targets="WinDev" Formname="" Condition=""/>
-    <File Name="..\..\source\unix\zlibh.pas" Targets="Kylix" Formname="" Condition=""/>
   </Contains>
 </Package>
