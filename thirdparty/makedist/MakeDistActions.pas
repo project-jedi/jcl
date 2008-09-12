@@ -324,7 +324,7 @@ function TEolConverter.Execute(const AMessageHandler: TTextHandler): Boolean;
 var
   FileList: TStrings;
   Index: Integer;
-  TextFile: TJclMappedTextReader;
+  TextFile: TJclAnsiMappedTextReader;
   OutputStream: TFileStream;
   EOL, Content: AnsiString;
   NewEOL, Directory, Filter, FileName: string;
@@ -361,7 +361,7 @@ begin
       FileName := PathAddSeparator(Directory) + FileList.Strings[Index];
       
       Content := '';
-      TextFile := TJclMappedTextReader.Create(FileName);
+      TextFile := TJclAnsiMappedTextReader.Create(FileName);
       try
         while not TextFile.Eof do
         begin
@@ -1011,7 +1011,7 @@ end;
 function TConstantParser.Execute(const AMessageHandler: TTextHandler): Boolean;
 var
   SourceFile, ConstantName, EnvironmentVariable, Line, Value: string;
-  FileContent: TJclMappedTextReader;
+  FileContent: TJclAnsiMappedTextReader;
   LinePos, ConstantStart: Integer;
 begin
   SourceFile := FSourceFile;
@@ -1021,7 +1021,7 @@ begin
   EnvironmentVariable := FEnvironmentVariable;
   ExpandEnvironmentVar(EnvironmentVariable);
 
-  FileContent := TJclMappedTextReader.Create(SourceFile);
+  FileContent := TJclAnsiMappedTextReader.Create(SourceFile);
   try
     Result := False;
 
