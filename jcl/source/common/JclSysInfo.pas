@@ -754,7 +754,7 @@ const
   AMD2_BIT_6      = BIT_6;  // Reserved, do not count on value
   AMD2_BIT_7      = BIT_7;  // Reserved, do not count on value
   AMD2_BIT_8      = BIT_8;  // Reserved, do not count on value
-  AMD2_BIT_9      = BIT_9;  // Reserved, do not count on value
+  AMD2_SSSE3      = BIT_9;  // supplemental SSE3 extensions
   AMD2_BIT_10     = BIT_10; // Reserved, do not count on value
   AMD2_BIT_11     = BIT_11; // Reserved, do not count on value
   AMD2_BIT_12     = BIT_12; // Reserved, do not count on value
@@ -764,7 +764,7 @@ const
   AMD2_BIT_16     = BIT_16; // Reserved, do not count on value
   AMD2_BIT_17     = BIT_17; // Reserved, do not count on value
   AMD2_BIT_18     = BIT_18; // Reserved, do not count on value
-  AMD2_BIT_19     = BIT_19; // Reserved, do not count on value
+  AMD2_SSE41      = BIT_19; // SSE4.1 instruction support
   AMD2_BIT_20     = BIT_20; // Reserved, do not count on value
   AMD2_BIT_21     = BIT_21; // Reserved, do not count on value
   AMD2_BIT_22     = BIT_22; // Reserved, do not count on value
@@ -823,7 +823,7 @@ const
   EAMD2_MISALIGNSSE   = BIT_7;  // Misaligned SSE mode.
   EAMD2_3DNOWPREFETCH = BIT_8;  // PREFETCH and PREFETCHW instruction support.
   EAMD2_OSVW          = BIT_9;  // OS visible workaround.
-  EAMD2_BIT_10        = BIT_10; // Reserved, do not count on value
+  EAMD2_IBS           = BIT_10; // Instruction based sampling
   EAMD2_SSE5          = BIT_11; // Streaming SIMD Extensions 5
   EAMD2_SKINIT        = BIT_12; // SKINIT, STGI, and DEV support.
   EAMD2_WDT           = BIT_13; // Watchdog timer support.
