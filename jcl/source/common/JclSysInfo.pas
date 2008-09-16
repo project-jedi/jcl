@@ -205,7 +205,10 @@ function GetVolumeFileSystemFlags(const Volume: string): TFileSystemFlags;
 {$ENDIF MSWINDOWS}
 function GetIPAddress(const HostName: string): string;
 {$IFNDEF CLR}
-procedure GetIpAddresses(Results: TStrings);
+{$IFDEF MSWINDOWS}
+procedure GetIpAddresses(Results: TStrings; const HostName: AnsiString); overload;
+{$ENDIF MSWINDOWS}
+procedure GetIpAddresses(Results: TStrings); overload;
 {$ENDIF ~CLR}
 function GetLocalComputerName: string;
 {$IFNDEF CLR}
@@ -2169,6 +2172,11 @@ end;
 {$IFDEF MSWINDOWS}
 {$IFNDEF CLR}
 procedure GetIpAddresses(Results: TAnsiStrings);
+begin
+  GetIpAddresses(Results, '');
+end;
+
+procedure GetIpAddresses(Results: TAnsiStrings; const HostName: AnsiString);
 type
   TaPInAddr = array[0..10] of PInAddr;
   PaPInAddr = ^TaPInAddr;
@@ -2184,10 +2192,19 @@ begin
   R := WSAStartup(MakeWord(1, 1), WSAData);
   if R = 0 then begin
     try
-      SetLength(Host, MAX_PATH);
-      GetHostName(PAnsiChar(Host), MAX_PATH);
-      HostEnt := GetHostByName(PAnsiChar(Host));
-      if HostEnt <> nil then begin
+      if HostName = '' then
+      begin
+        SetLength(Host, MAX_PATH);
+        GetHostName(PAnsiChar(Host), MAX_PATH);
+        HostEnt := GetHostByName(PAnsiChar(Host));
+        if HostEnt = nil then
+          Host := '';
+      end
+      else
+        Host := HostName;
+
+      if Host <> '' then
+      begin
         pPtr := PaPInAddr(HostEnt^.h_addr_list);
         i := 0;
         while pPtr^[I] <> nil do begin
