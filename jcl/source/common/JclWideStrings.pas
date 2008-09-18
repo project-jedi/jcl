@@ -346,17 +346,13 @@ uses
   Math,
   JclResources;
 
-procedure SwapWordByteOrder(P: PChar; Len: Cardinal);
-var
-  B: Char;
+procedure SwapWordByteOrder(P: PWideChar; Len: Cardinal);
 begin
   while Len > 0 do
   begin
-    B := P[0];
-    P[0] := P[1];
-    P[1] := B;
-    Inc(P, 2);
     Dec(Len);
+    P^ := WideChar((Word(P^) shr 8) or (Word(P^) shl 8));
+    Inc(P);
   end;
 end;
 
@@ -1533,29 +1529,24 @@ begin
   BeginUpdate;
   try
     Clear;
-    if foAnsiFile in WideFileOptions then
-    begin
-      Stream.Read(WC, SizeOf(WC));
-      Stream.Seek(-SizeOf(WC), soFromCurrent);
-      if (Hi(Word(WC)) <> 0) and (WC <> BOM_LSB_FIRST) and (WC <> BOM_MSB_FIRST) then
-      begin
-        SetLength(AnsiS, Stream.Size - Stream.Position);
-        Stream.Read(AnsiS[1], Length(AnsiS));
-        SetTextStr(WideString(AnsiS)); // explicit Unicode conversion
-        Exit;
-      end;
-    end;
-
     Stream.Read(WC, SizeOf(WC));
-    if (WC <> BOM_LSB_FIRST) and (WC <> BOM_MSB_FIRST) then
+    if (foAnsiFile in WideFileOptions) and (Hi(Word(WC)) <> 0) and (WC <> BOM_LSB_FIRST) and (WC <> BOM_MSB_FIRST) then
+    begin
       Stream.Seek(-SizeOf(WC), soFromCurrent);
-    SetLength(WideS, Stream.Size - Stream.Position);
-    Stream.Read(WideS[1], Length(WideS) * SizeOf(WideChar));
-
-    if WC = BOM_MSB_FIRST then
-      SwapWordByteOrder(Pointer(WideS), Length(WideS));
-
-    SetTextStr(WideS);
+      SetLength(AnsiS, (Stream.Size - Stream.Position) div SizeOf(AnsiChar));
+      Stream.Read(AnsiS[1], Length(AnsiS) * SizeOf(AnsiChar));
+      SetTextStr(WideString(AnsiS)); // explicit Unicode conversion
+    end
+    else
+    begin
+      if (WC <> BOM_LSB_FIRST) and (WC <> BOM_MSB_FIRST) then
+        Stream.Seek(-SizeOf(WC), soFromCurrent);
+      SetLength(WideS, (Stream.Size - Stream.Position + 1) div SizeOf(WideChar));
+      Stream.Read(WideS[1], Length(WideS) * SizeOf(WideChar));
+      if WC = BOM_MSB_FIRST then
+        SwapWordByteOrder(PWideChar(WideS), Length(WideS));
+      SetTextStr(WideS);
+    end;
   finally
     EndUpdate;
   end;
@@ -1618,7 +1609,7 @@ begin
   if foAnsiFile in WideFileOptions then
   begin
     AnsiS := AnsiString(GetTextStr); // explicit Unicode conversion
-    Stream.Write(AnsiS[1], Length(AnsiS));
+    Stream.Write(AnsiS[1], Length(AnsiS) * SizeOf(AnsiChar));
   end
   else
   begin
