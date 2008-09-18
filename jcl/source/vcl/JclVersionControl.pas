@@ -229,6 +229,16 @@ procedure UnRegisterVersionControlPluginClass(const APluginClass:
 function VersionControlActionInfo(ActionType : TJclVersionControlActionType):
     TJclVersionControlActionInfo;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\vcl'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
@@ -969,7 +979,11 @@ begin
   end;
 end;
 
+
 initialization
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
 
   RegisterVersionControlPluginClass(TJclVersionControlSystemPlugin);
 
@@ -977,5 +991,9 @@ finalization
 
   UnregisterVersionControlPluginClass(TJclVersionControlSystemPlugin);
   FreeAndNil(GlobalPluginList);
+
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
 
 end.

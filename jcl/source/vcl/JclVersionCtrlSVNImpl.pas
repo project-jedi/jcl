@@ -57,6 +57,16 @@ type
       const Action: TJclVersionControlActionType): Boolean; override;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\vcl'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
@@ -406,10 +416,16 @@ end;
 
 initialization
 
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
   RegisterVersionControlPluginClass(TJclVersionControlSVN);
 
 finalization
 
   UnregisterVersionControlPluginClass(TJclVersionControlSVN);
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
 
 end.
