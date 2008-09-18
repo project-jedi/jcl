@@ -20,7 +20,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                     $ }
+{ Last modified: $Date::                                                                    $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -343,6 +343,15 @@ resourcestring
 
   RsRepositoryExcDlgCBuilderName = 'Jcl Exception dialog for C++Builder';
   RsRepositoryExcDlgCBuilderDescription = 'Create an exception dialog for your C++Builder';
+
+//=== JclVersionControlImpl.pas ==============================================
+resourcestring
+  RsVersionCtrlMenuCaption = '&Version Control';
+  RsSvnMenuItemNotInserted = 'Can''t insert the ''%s'' menu item';
+  RsENoToolsMenuItem = 'Tools menu item not found';
+  RsVersionControlSheet = 'Version control';
+  RsActionCategory = 'JEDI Code Library';
+  RsVersionCtrlSystemName = 'System';
 
 implementation
 

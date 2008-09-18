@@ -4,5 +4,5 @@ SearchPath=..\..\source\include;..\..\experts\common
 [Compiler]
 PackageNoLink=1
 [Linker]
-Packages=rtl;vcl;designide;Jcl;JclBaseExpert
+Packages=rtl;vcl;designide;Jcl;JclVcl;JclBaseExpert
 

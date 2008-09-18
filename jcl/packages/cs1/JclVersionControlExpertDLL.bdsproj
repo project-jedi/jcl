@@ -122,7 +122,7 @@
       <Directories Name="PackageDLLOutputDir"></Directories>
       <Directories Name="PackageDCPOutputDir">..\..\lib\cs1</Directories>
       <Directories Name="SearchPath">..\..\lib\cs1;..\..\source\include</Directories>
-      <Directories Name="Packages">rtl;vcl;designide;Jcl;JclBaseExpert</Directories>
+      <Directories Name="Packages">rtl;vcl;designide;Jcl;JclVcl;JclBaseExpert</Directories>
       <Directories Name="Conditionals"></Directories>
       <Directories Name="DebugSourceDirs"></Directories>
       <Directories Name="UsePackages">True</Directories>

@@ -14,12 +14,11 @@
     <Package Name="dsnide50" Targets="noLibSuffix" Condition=""/>
     <Package Name="designide" Targets="WinLibSuffix" Condition=""/>
     <Package Name="Jcl-R" Targets="Windows" Condition=""/>
+    <Package Name="JclVcl-R" Targets="Windows" Condition=""/>
     <Package Name="JclBaseExpert-D" Targets="Windows" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\experts\versioncontrol\VersionControlImpl.pas" Targets="Windows" Formname="" Condition=""/>
+    <File Name="..\..\experts\versioncontrol\JclVersionControlImpl.pas" Targets="Windows" Formname="" Condition=""/>
     <File Name="..\..\experts\versioncontrol\JclVersionCtrlCommonOptions.pas" Targets="Windows" Formname="JclVersionCtrlOptionsFrame: TFrame" Condition=""/>
-    <File Name="..\..\experts\versioncontrol\JclVersionCtrlCVSImpl.pas" Targets="Windows" Formname="" Condition=""/>
-    <File Name="..\..\experts\versioncontrol\JclVersionCtrlSVNImpl.pas" Targets="Windows" Formname="" Condition=""/>
   </Contains>
 </Package>

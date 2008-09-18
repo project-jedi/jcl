@@ -1959,6 +1959,45 @@ resourcestring
   RsTempConvTypeError = 'An invalid type has been provided for the %s parameter';
   RsConvTempBelowAbsoluteZero = 'Temperature can not be below Absolute Zero!';
 
+//=== JclVersionControl ======================================================
+resourcestring
+  RsVersionCtrlAddCaption = '&Add';                                 // vcaAdd
+  RsVersionCtrlAddSandboxCaption = 'Add ...';                       // vcaAddSandbox
+  RsVersionCtrlBlameCaption = '&Blame';                             // vcaBlame
+  RsVersionCtrlBranchCaption = 'Branc&h';                           // vcaBranch
+  RsVersionCtrlBranchSandboxCaption = 'Branch ...';                 // vcaBranchSandbox
+  RsVersionCtrlCheckOutSandboxCaption = 'C&heck out ...';           // vcaCreateSandbox
+  RsVersionCtrlCommitCaption = 'Co&mmit';                           // vcaCommit
+  RsVersionCtrlCommitSandboxCaption = 'Commit ...';                 // vcaCommitSandbox
+  RsVersionCtrlContextMenuCaption = 'Co&ntext Menu (right-click)';  // vcaContextMenu
+  RsVersionCtrlDiffCaption = '&Diff';                               // vcaDiff
+  RsVersionCtrlExploreCaption = 'E&xplore';                         // vcaExplore
+  RsVersionCtrlExploreSandboxCaption = 'E&xplore ...';              // vcaExploreSandbox
+  RsVersionCtrlGraphCaption = 'Revision Gr&aph';                    // vcaGraph
+  RsVersionCtrlLogCaption = '&Log';                                 // vcaLog
+  RsVersionCtrlLogSandboxCaption = 'Log ...';                       // vcaLogSandbox
+  RsVersionCtrlLockCaption = 'Loc&k';                               // vcaLock
+  RsVersionCtrlLockSandboxCaption = 'Lock ...';                     // vcaLockSandbox
+  RsVersionCtrlMergeCaption = '&Merge';                             // vcaMerge
+  RsVersionCtrlMergeSandboxCaption = 'Merge ...';                   // vcaMergeSandbox
+  RsVersionCtrlPropertiesCaption = 'Pr&operties';                   // vcaProperties
+  RsVersionCtrlPropertiesSandboxCaption = 'Properties ...';         // vcaPropertiesSandbox
+  RsVersionCtrlRenameCaption = '&Rename';                           // vcaRename
+  RsVersionCtrlRenameSandboxCaption = '&Rename Sandbox';            // vcaRenameSandbox
+  RsVersionCtrlRepoBrowserCaption = 'Repositor&y Browser';          // vcaRepoBrowser
+  RsVersionCtrlRevertCaption = '&Revert';                           // vcaRevert
+  RsVersionCtrlRevertSandboxCaption = 'Revert ...';                 // vcaRevertSandbox
+  RsVersionCtrlStatusCaption = 'S&tatus';                           // vcaStatus
+  RsVersionCtrlStatusSandboxCaption = 'Status ...';                 // vcaStatusSandbox
+  RsVersionCtrlTagCaption = 'Ta&g';                                 // vcaTag
+  RsVersionCtrlTagSandboxCaption = 'Tag ...';                       // vcaTagSandBox
+  RsVersionCtrlUpdateCaption = 'U&pdate';                           // vcaUpdate
+  RsVersionCtrlUpdateSandboxCaption = 'Update ...';                 // vcaUpdateSandbox
+  RsVersionCtrlUpdateToCaption = 'Update &to ';                     // vcaUpdateTo
+  RsVersionCtrlUpdateSandboxToCaption = 'Update to ...';            // vcaUpdateSandboxTo
+  RsVersionCtrlUnlockCaption = '&Unlock';                           // vcaUnlock
+  RsVersionCtrlUnlockSandboxCaption = 'Unlock ...';                 // vcaUnlockSandbox
+
 //=== JclWideFormat ==========================================================
 resourcestring
   RsFormatSyntaxError = 'Syntax error at index %u';

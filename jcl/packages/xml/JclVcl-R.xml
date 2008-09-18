@@ -21,5 +21,8 @@
     <File Name="..\..\source\vcl\JclGraphUtils.pas" Targets="Vcl" Formname="" Condition=""/>
     <File Name="..\..\source\vcl\JclGraphics.pas" Targets="Vcl" Formname="" Condition=""/>
     <File Name="..\..\source\vcl\JclFont.pas" Targets="Vcl" Formname="" Condition=""/>
+    <File Name="..\..\source\vcl\JclVersionControl.pas" Targets="Vcl" Formname="" Condition=""/>
+    <File Name="..\..\source\vcl\JclVersionCtrlCVSImpl.pas" Targets="Vcl" Formname="" Condition=""/>
+    <File Name="..\..\source\vcl\JclVersionCtrlSVNImpl.pas" Targets="Vcl" Formname="" Condition=""/>
   </Contains>
 </Package>

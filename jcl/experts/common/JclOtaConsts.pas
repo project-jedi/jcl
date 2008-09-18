@@ -133,6 +133,15 @@ const
 
   //=== Version Control Expert ===============================================
   JclVersionCtrlMenuName = 'JclVersionCtrlMenu';
+  JclVersionCtrlActOnTopSandboxName = 'ActOnTopSandbox';
+  JclVersionCtrlMenuOrganizationName = 'MenuOrganization';
+  JclVersionCtrlSaveConfirmationName = 'SaveConfirmation';
+  JclVersionCtrlDisableActionsName = 'DisableActions';
+  JclVersionCtrlHideActionsName = 'HideActions';
+  JclVersionCtrlIconTypeName = 'IconType';
+  JclVersionCtrlIconTypeAutoValue = 'auto';
+  JclVersionCtrlIconTypeNoIconValue = 'noicon';
+  JclVersionCtrlIconTypeJclIconValue = 'jclicons';
 
 implementation
 

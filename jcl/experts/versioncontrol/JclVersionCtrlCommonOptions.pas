@@ -18,7 +18,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -115,8 +115,8 @@ implementation
 
 uses
   TypInfo, ToolsAPI,
-  JclStrings,
-  JclOtaUtils, JclOtaResources, VersionControlImpl;
+  JclStrings, JclVersionControl,
+  JclOtaUtils, JclOtaResources, JclVersionControlImpl;
 
 resourcestring
   RsEInvalidMenuCaption = 'Menu caption cannot contain \, _ and numbers';
@@ -373,7 +373,7 @@ begin
     if Assigned(AAction) then
       for Index := 0 to PopupMenuActions.Items.Count - 1 do
         if TCustomAction(PopupMenuActions.Items.Items[Index].Tag) = AAction then
-          ItemName := GetEnumName(TypeInfo(TJclVersionControlAction), Index);
+          ItemName := GetEnumName(TypeInfo(TJclVersionControlActionType), Index);
 
     if ItemName = '' then
       ItemName := ATreeNode.Text;
@@ -388,7 +388,7 @@ begin
       if Assigned(AAction) then
         for Index := 0 to PopupMenuActions.Items.Count - 1 do
           if TCustomAction(PopupMenuActions.Items.Items[Index].Tag) = AAction then
-            ItemName := GetEnumName(TypeInfo(TJclVersionControlAction), Index);
+            ItemName := GetEnumName(TypeInfo(TJclVersionControlActionType), Index);
 
       if ItemName = '' then
         ItemName := BTreeNode.Text;
@@ -494,7 +494,7 @@ begin
     Item := Value.Strings[Index];
     IndexB := GetItemIndexB(Item);
     ItemName := GetItemName(Item);
-    AAction := GetEnumValue(TypeInfo(TJclVersionControlAction), ItemName);
+    AAction := GetEnumValue(TypeInfo(TJclVersionControlActionType), ItemName);
 
     if IndexB = -1 then
     begin

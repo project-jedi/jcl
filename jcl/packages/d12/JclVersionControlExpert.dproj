@@ -27,7 +27,7 @@
 			<GenDll>true</GenDll>
 			<GenPackage>true</GenPackage>
 			<DCC_ImageBase>$580E0000</DCC_ImageBase>
-			<DCC_UsePackage>rtl;vcl;designide;Jcl;JclBaseExpert</DCC_UsePackage>
+			<DCC_UsePackage>rtl;vcl;designide;Jcl;JclVcl;JclBaseExpert</DCC_UsePackage>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Cfg_Release)'!=''">
 			<DCC_AssertionsAtRuntime>false</DCC_AssertionsAtRuntime>
@@ -66,11 +66,10 @@
 			<DCCReference Include="vcl.dcp" />
 			<DCCReference Include="designide.dcp" />
 			<DCCReference Include="Jcl.dcp" />
+			<DCCReference Include="JclVcl.dcp" />
 			<DCCReference Include="JclBaseExpert.dcp" />
-			<DCCReference Include="..\..\experts\versioncontrol\VersionControlImpl.pas" />
+			<DCCReference Include="..\..\experts\versioncontrol\JclVersionControlImpl.pas" />
 			<DCCReference Include="..\..\experts\versioncontrol\JclVersionCtrlCommonOptions.pas" />
-			<DCCReference Include="..\..\experts\versioncontrol\JclVersionCtrlCVSImpl.pas" />
-			<DCCReference Include="..\..\experts\versioncontrol\JclVersionCtrlSVNImpl.pas" />
 			<BuildConfiguration Include="Base">
 				<Key>Base</Key>
 			</BuildConfiguration>

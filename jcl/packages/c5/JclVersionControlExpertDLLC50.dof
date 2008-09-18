@@ -5,5 +5,5 @@ Conditionals=BCB
 [Compiler]
 PackageNoLink=1
 [Linker]
-Packages=vcl50;dsnide50;JclC50;JclBaseExpertC50
+Packages=vcl50;dsnide50;JclC50;JclVclC50;JclBaseExpertC50
 
