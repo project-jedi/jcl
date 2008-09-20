@@ -596,7 +596,7 @@ var
   {$ENDIF LINUX}
   Requested, Allocated: PNPARecord;
   Pages: Integer;
-  PageSize: Cardinal;
+  PageSize, PageMask: Cardinal;
   MaximumApplicationAddress: Pointer;
 begin
   RefCount := 0;
@@ -614,9 +614,10 @@ begin
   Pages := 0;
   repeat
     Requested := MaximumApplicationAddress;
-    Requested := Pointer((DWORD_PTR(Requested) div $10000) * $10000);
-    Dec(Cardinal(Requested), Pages * $10000);
-    Requested := Pointer((DWORD_PTR(Requested) div PageSize) * PageSize);
+    Requested := Pointer(DWORD_PTR(Requested) and $FFFF0000);
+    Dec(Cardinal(Requested), Pages shl 16);
+    PageMask := (not PageSize) + 1; // assuming a power of two allocation granularity
+    Requested := Pointer(DWORD_PTR(Requested) and PageMask);
     {$IFDEF MSWINDOWS}
     Allocated := VirtualAlloc(Requested, PageSize, MEM_RESERVE or MEM_COMMIT, PAGE_READWRITE);
     if Assigned(Allocated) and (Requested <> Allocated) then
