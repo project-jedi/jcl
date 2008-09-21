@@ -4333,6 +4333,7 @@ var
   LastState: PDFAState;
   Symbol: PUcSymbolTableEntry;
   Rp: PUcRange;
+  LCMapping: TUCS4Array;
 begin
   Result := False;
   if Text <> nil then
@@ -4378,7 +4379,9 @@ begin
 
       if (FDFA.Flags and _URE_DFA_CASEFOLD) <> 0 then
         { TODO : use the entire mapping, not only the first character }
-        C := UnicodeToLower(C)[0];
+        // (CaseLookup used for a little extra speed: avoids dynamic array allocation)
+        if CaseLookup(C, ctLower, LCMapping) then
+          C := LCMapping[0];
 
       // See if one of the transitions matches.
       I := LastState.NumberTransitions - 1;
