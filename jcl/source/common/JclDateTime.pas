@@ -1215,7 +1215,7 @@ const
 
 function DateTimeToUnixTime(DateTime: TDateTime): TJclUnixTime32;
 begin
-  Result := Trunc((DateTime-UnixTimeStart) * SecondsPerDay);
+  Result := Round((DateTime-UnixTimeStart) * SecondsPerDay);
 end;
 
 function UnixTimeToDateTime(const UnixTime: TJclUnixTime32): TDateTime;
