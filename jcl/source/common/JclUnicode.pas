@@ -1302,7 +1302,7 @@ uses
   JclStreams,
   JclCompression,
   {$ENDIF ~UNICODE_RAW_DATA}
-  JclResources, JclSynch, JclSysUtils, JclStringConversions;
+  JclResources, JclSynch, JclSysUtils, JclSysInfo, JclStringConversions;
 
 const
   {$IFDEF FPC} // declarations from unit [Rtl]Consts
@@ -7260,12 +7260,24 @@ function TranslateCharsetInfoEx(lpSrc: PDWORD; var lpCs: TCharsetInfo; dwFlags: 
   external 'gdi32.dll' name 'TranslateCharsetInfo';
 
 function GetCharSetFromLocale(Language: LCID; out FontCharSet: Byte): Boolean;
+const
+  TCI_SRCLOCALE = $1000;
 var
   CP: Cardinal;
   CSI: TCharsetInfo;
 begin
-  CP:= CodePageFromLocale(Language);
-  Result := TranslateCharsetInfoEx(Pointer(CP), CSI, TCI_SRCCODEPAGE);
+  if GetWindowsVersion in [wvUnknown, wvWin95, wvWin95OSR2, wvWin98, wvWin98SE,
+                           wvWinME, wvWinNT31, wvWinNT35, wvWinNT351, wvWinNT4] then
+  begin
+    // these versions of Windows don't support TCI_SRCLOCALE
+    CP := CodePageFromLocale(Language);
+    if CP = 0 then
+      RaiseLastOSError;
+    Result := TranslateCharsetInfoEx(Pointer(CP), CSI, TCI_SRCCODEPAGE);
+  end
+  else
+    Result := TranslateCharsetInfoEx(Pointer(Language), CSI, TCI_SRCLOCALE);
+
   if Result then
     FontCharset := CSI.ciCharset;
 end;
