@@ -245,14 +245,15 @@ var
     C: array [0..Length(ClassNameOfTApplication) + 1] of Char;
   begin
     GetWindowThreadProcessId(Wnd, @PID);
-    if (PID = Param^.ProcessID) and (GetClassName(Wnd, C, SizeOf(C)) > 0) and
-      (C = ClassNameOfTApplication) then
+    if (PID = Param^.ProcessID) and (GetClassName(Wnd, C, Length(C)) > 0) and (C = ClassNameOfTApplication) then
     begin
       Result := False;
       Param^.Wnd := Wnd;
     end
     else
+    begin
       Result := True;
+    end;
   end;
 
 begin
