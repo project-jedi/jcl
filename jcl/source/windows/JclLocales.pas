@@ -323,7 +323,7 @@ uses
   {$IFDEF FPC}
   WinSysUt,
   {$ENDIF FPC}
-  SysConst, JclFileUtils, JclRegistry, JclStrings, JclSysInfo;
+  SysConst, JclFileUtils, JclRegistry, JclStrings, JclSysInfo, JclUnicode;
 
 const
   JclMaxKeyboardLayouts = 16;
@@ -528,36 +528,8 @@ begin
 end;
 
 function TJclLocaleInfo.GetFontCharset: Byte;
-type
-  TCharsetEntry = record
-    CodePage: Word;
-    Charset: Byte;
-  end;
-const
-  CharsetTable: array [1..10] of TCharsetEntry =
-   (
-    (CodePage: 1252; Charset: ANSI_CHARSET),
-    (CodePage: 1250; Charset: EASTEUROPE_CHARSET),
-    (CodePage: 1251; Charset: RUSSIAN_CHARSET),
-    (CodePage: 1253; Charset: GREEK_CHARSET),
-    (CodePage: 1254; Charset: TURKISH_CHARSET),
-    (CodePage: 1255; Charset: HEBREW_CHARSET),
-    (CodePage: 1256; Charset: ARABIC_CHARSET),
-    (CodePage: 1257; Charset: BALTIC_CHARSET),
-    (CodePage:  874; Charset: THAI_CHARSET),
-    (CodePage:  932; Charset: SHIFTJIS_CHARSET)
-   );
-var
-  I, CpANSI: Integer;
 begin
-  Result := DEFAULT_CHARSET;
-  CpANSI := CodePageANSI;
-  for I := Low(CharsetTable) to High(CharsetTable) do
-    if CharsetTable[I].CodePage = CpANSI then
-    begin
-      Result := CharsetTable[I].Charset;
-      Break;
-    end;
+  Result := CharSetFromLocale(FLocaleID);
 end;
 
 function TJclLocaleInfo.GetIntegerInfo(InfoType: Integer): Integer;
