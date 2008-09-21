@@ -1469,7 +1469,8 @@ end;
 //----------------- support for case mapping -------------------------------------------------------
 
 type
-  TCase = array [0..3] of TUCS4Array; // mapping for case fold, lower, title and upper in this order
+  TCaseType = (ctFold, ctLower, ctTitle, ctUpper);
+  TCase = array [TCaseType] of TUCS4Array; // mapping for case fold, lower, title and upper in this order
   TCaseArray = array of array of TCase;
 
 var
@@ -1478,7 +1479,6 @@ var
   // SingletonMapping is to quickly return a single default mapping.
   CaseDataLoaded: Boolean;
   CaseMapping: array [Byte] of TCaseArray;
-  SingletonMapping: TUCS4Array;
 
 procedure LoadCaseMappingData;
 var
@@ -1493,7 +1493,6 @@ begin
     LoadInProgress.Enter;
 
     try
-      SetLength(SingletonMapping, 1);
       CaseDataLoaded := True;
       Stream := OpenResourceStream('CASE');
       try
@@ -1519,29 +1518,29 @@ begin
           Stream.ReadBuffer(Size, 4);
           if Size > 0 then
           begin
-            SetLength(CaseMapping[First, Second, Third, 0], Size);
-            Stream.ReadBuffer(CaseMapping[First, Second, Third, 0, 0], Size * SizeOf(UCS4));
+            SetLength(CaseMapping[First, Second, Third, ctFold], Size);
+            Stream.ReadBuffer(CaseMapping[First, Second, Third, ctFold, 0], Size * SizeOf(UCS4));
           end;
           // c) read lower case array
           Stream.ReadBuffer(Size, 4);
           if Size > 0 then
           begin
-            SetLength(CaseMapping[First, Second, Third, 1], Size);
-            Stream.ReadBuffer(CaseMapping[First, Second, Third, 1, 0], Size * SizeOf(UCS4));
+            SetLength(CaseMapping[First, Second, Third, ctLower], Size);
+            Stream.ReadBuffer(CaseMapping[First, Second, Third, ctLower, 0], Size * SizeOf(UCS4));
           end;
           // d) read title case array
           Stream.ReadBuffer(Size, 4);
           if Size > 0 then
           begin
-            SetLength(CaseMapping[First, Second, Third, 2], Size);
-            Stream.ReadBuffer(CaseMapping[First, Second, Third, 2, 0], Size * SizeOf(UCS4));
+            SetLength(CaseMapping[First, Second, Third, ctTitle], Size);
+            Stream.ReadBuffer(CaseMapping[First, Second, Third, ctTitle, 0], Size * SizeOf(UCS4));
           end;
           // e) read upper case array
           Stream.ReadBuffer(Size, 4);
           if Size > 0 then
           begin
-            SetLength(CaseMapping[First, Second, Third, 3], Size);
-            Stream.ReadBuffer(CaseMapping[First, Second, Third, 3, 0], Size * SizeOf(UCS4));
+            SetLength(CaseMapping[First, Second, Third, ctUpper], Size);
+            Stream.ReadBuffer(CaseMapping[First, Second, Third, ctUpper, 0], Size * SizeOf(UCS4));
           end;
         end;
 
@@ -1554,11 +1553,10 @@ begin
   end;
 end;
 
-function CaseLookup(Code: Cardinal; CaseType: Cardinal): TUCS4Array;
-// Performs a lookup of the given code and returns its case mapping if found.
-// CaseType must be 0 for case folding, 1 for lower case, 2 for title case and 3 for upper case, respectively.
-// If Code could not be found (or there is no case mapping) then the result is a mapping of length 1 with the
-// code itself. Otherwise an array of code points is returned which represent the mapping.
+function CaseLookup(Code: Cardinal; CaseType: TCaseType; var Mapping: TUCS4Array): Boolean;
+// Performs a lookup of the given code; returns True if Found, with Mapping referring to the mapping.
+// ctFold is handled specially: if no mapping is found then result of looking up ctLower
+//   is returned
 var
   First, Second, Third: Byte;
 begin
@@ -1573,14 +1571,19 @@ begin
   Third := Code and $FF;
   // Check first stage table whether there is a mapping for a particular block and
   // (if so) then whether there is a mapping or not.
-  if (CaseMapping[First] = nil) or (CaseMapping[First, Second] = nil)
-    or (CaseMapping[First, Second, Third, CaseType] = nil) then
-  begin
-    SingletonMapping[0] := Code;
-    Result := SingletonMapping;
-  end
+  if (CaseMapping[First] <> nil) and (CaseMapping[First, Second] <> nil) and
+     (CaseMapping[First, Second, Third, CaseType] <> nil) then
+    Mapping := CaseMapping[First, Second, Third, CaseType]
   else
-    Result := CaseMapping[First, Second, Third, CaseType];
+    Mapping := nil;
+  Result := Assigned(Mapping);
+  // defer to lower case if no fold case exists
+  if not Result and (CaseType = ctFold) and (CaseMapping[First] <> nil) and
+    (CaseMapping[First, Second] <> nil) and (CaseMapping[First, Second, Third, ctLower] <> nil) then
+  begin
+    Mapping := CaseMapping[First, Second, Third, ctLower];
+    Result := Assigned(Mapping);
+  end;
 end;
 
 function UnicodeCaseFold(Code: UCS4): TUCS4Array;
@@ -1588,22 +1591,38 @@ function UnicodeCaseFold(Code: UCS4): TUCS4Array;
 // code, otherwise the lower case will be returned. This all applies only to cased code points.
 // Uncased code points are returned unchanged.
 begin
-  Result := CaseLookup(Code, 0);
+  if not CaseLookup(Code, ctFold, Result) then
+  begin
+    SetLength(Result, 1);
+    Result[0] := Code;
+  end;
 end;
 
 function UnicodeToUpper(Code: UCS4): TUCS4Array;
 begin
-  Result := CaseLookup(Code, 3);
+  if not CaseLookup(Code, ctUpper, Result) then
+  begin
+    SetLength(Result, 1);
+    Result[0] := Code;
+  end;
 end;
 
 function UnicodeToLower(Code: UCS4): TUCS4Array;
 begin
-  Result := CaseLookup(Code, 1);
+  if not CaseLookup(Code, ctLower, Result) then
+  begin
+    SetLength(Result, 1);
+    Result[0] := Code;
+  end;
 end;
 
 function UnicodeToTitle(Code: UCS4): TUCS4Array;
 begin
-  Result := CaseLookup(Code, 2);
+  if not CaseLookup(Code, ctTitle, Result) then
+  begin
+    SetLength(Result, 1);
+    Result[0] := Code;
+  end;
 end;
 
 //----------------- support for decomposition ------------------------------------------------------
