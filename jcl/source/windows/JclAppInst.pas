@@ -476,8 +476,7 @@ function TJclAppInstances.SendString(const WindowClassName: string;
   const DataKind: TJclAppInstDataKind; const S: string;
   OriginatorWnd: THandle): Boolean;
 begin
-  Result := SendData(WindowClassName, DataKind, PChar(S), Length(S) + 1,
-    OriginatorWnd);
+  Result := SendData(WindowClassName, DataKind, PChar(S), Length(S), OriginatorWnd);
 end;
 
 function TJclAppInstances.SendStrings(const WindowClassName: string;
