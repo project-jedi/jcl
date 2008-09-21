@@ -27,6 +27,7 @@
 {   Petr Vones (pvones)                                                                            }
 {   Peter Schraut (http://www.console-dev.de)                                                      }
 {   Florent Ouchet (outchy)                                                                        }
+{   glchapman                                                                                      }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -1136,19 +1137,26 @@ function WideDecompose(const S: WideString; Compatible: Boolean): WideString;
 function WideExtractQuotedStr(var Src: PWideChar; Quote: WideChar): WideString;
 function WideQuotedStr(const S: WideString; Quote: WideChar): WideString;
 function WideStringOfChar(C: WideChar; Count: Cardinal): WideString;
-function WideCaseFolding(C: WideChar): WideString; overload;
-function WideCaseFolding(const S: WideString): WideString; overload;
-function WideLowerCase(C: WideChar): WideString; overload;
-function WideLowerCase(const S: WideString): WideString; overload;
+
+// case conversion function
+type
+  TCaseType = (ctFold, ctLower, ctTitle, ctUpper);
+
+function WideCaseConvert(C: WideChar; CaseType: TCaseType): WideString; overload;
+function WideCaseConvert(const S: WideString; CaseType: TCaseType): WideString; overload;
+function WideCaseFolding(C: WideChar): WideString; overload; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
+function WideCaseFolding(const S: WideString): WideString; overload; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
+function WideLowerCase(C: WideChar): WideString; overload; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
+function WideLowerCase(const S: WideString): WideString; overload; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 function WideNormalize(const S: WideString; Form: TNormalizationForm): WideString;
 function WideSameText(const Str1, Str2: WideString): Boolean;
-function WideTitleCase(C: WideChar): WideString; overload;
-function WideTitleCase(const S: WideString): WideString; overload;
+function WideTitleCase(C: WideChar): WideString; overload; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
+function WideTitleCase(const S: WideString): WideString; overload; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 function WideTrim(const S: WideString): WideString;
 function WideTrimLeft(const S: WideString): WideString;
 function WideTrimRight(const S: WideString): WideString;
-function WideUpperCase(C: WideChar): WideString; overload;
-function WideUpperCase(const S: WideString): WideString; overload;
+function WideUpperCase(C: WideChar): WideString; overload; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
+function WideUpperCase(const S: WideString): WideString; overload; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 
 // Low level character routines
 function UnicodeNumberLookup(Code: UCS4; var Number: TUcNumber): Boolean;
@@ -1469,7 +1477,6 @@ end;
 //----------------- support for case mapping -------------------------------------------------------
 
 type
-  TCaseType = (ctFold, ctLower, ctTitle, ctUpper);
   TCase = array [TCaseType] of TUCS4Array; // mapping for case fold, lower, title and upper in this order
   TCaseArray = array of array of TCase;
 
@@ -6760,6 +6767,78 @@ end;
 
 //----------------- general purpose case mapping ---------------------------------------------------
 
+function WideCaseConvert(C: WideChar; CaseType: TCaseType): WideString;
+var
+  I, RPos: integer;
+  Mapping: TUCS4Array;
+begin
+  if not CaseLookup(UCS4(C), CaseType, Mapping) then
+    Result := C
+  else
+  begin
+    SetLength(Result, 2 * Length(Mapping));
+    RPos := 1;
+    for I := Low(Mapping) to High(Mapping) do
+      UTF16SetNextChar(Result, RPos, Mapping[I]);
+    if RPos > 0 then
+      SetLength(Result, RPos - 1)
+    else
+      raise EJclUnexpectedEOSequenceError.Create;
+  end;
+end;
+
+function WideCaseConvert(const S: WideString; CaseType: TCaseType): WideString;
+var
+  SLen, RLen, SPos, RPos, K, MapLen: Integer;
+  Code: UCS4;
+  Mapping: TUCS4Array;
+begin
+  SLen := Length(S);
+  RLen := SLen;
+  SetLength(Result, RLen);
+  SPos := 1;
+  RPos := 1;
+  while (SPos > 0) and (SPos <= SLen) do
+  begin
+    Code := UTF16GetNextChar(S, SPos);
+    if SPos = -1 then
+      raise EJclUnexpectedEOSequenceError.Create;
+
+    if CaseLookup(Code, CaseType, Mapping) then
+    begin
+      MapLen:= Length(Mapping);
+      if MapLen = 1 then
+        Code := Mapping[0];
+    end
+    else
+      MapLen := 1;
+
+    if MapLen = 1 then
+    begin
+      if not UTF16SetNextChar(Result, RPos, Code) then
+      begin
+        Inc(RLen, SLen);
+        SetLength(Result, RLen);
+        UTF16SetNextChar(Result, RPos, Code);
+      end;
+    end
+    else
+    begin
+      for K := Low(Mapping) to High(Mapping) do
+        if not UTF16SetNextChar(Result, RPos, Code) then
+      begin
+        Inc(RLen, SLen);
+        SetLength(Result, RLen);
+        UTF16SetNextChar(Result, RPos, Code);
+      end;
+    end;
+  end;
+  if RPos > 0 then
+    SetLength(Result, RPos - 1)
+  else
+    raise EJclUnexpectedEOSequenceError.Create;
+end;
+
 // Note that most of the assigned code points don't have a case mapping and are therefore
 // returned as they are. Other code points, however, might be converted into several characters
 // like the german  (eszett) whose upper case mapping is SS.
@@ -6767,43 +6846,23 @@ end;
 function WideCaseFolding(C: WideChar): WideString;
 // Special case folding function to map a string to either its lower case or
 // to special cases. This can be used for case-insensitive comparation.
-var
-  I: Integer;
-  Mapping: TUCS4Array;
 begin
-  Mapping := UnicodeCaseFold(UCS4(C));
-  SetLength(Result, Length(Mapping));
-  for I := 0 to High(Mapping) do
-    Result[I + 1] := WideChar(Mapping[I]);
+  Result:= WideCaseConvert(C, ctFold);
 end;
 
 function WideCaseFolding(const S: WideString): WideString;
-var
-  I: Integer;
 begin
-  Result := '';
-  for I := 1 to Length(S) do
-    Result := Result + WideCaseFolding(S[I]);
+  Result:= WideCaseConvert(S, ctFold);
 end;
 
 function WideLowerCase(C: WideChar): WideString;
-var
-  I: Integer;
-  Mapping: TUCS4Array;
 begin
-  Mapping := UnicodeToLower(UCS4(C));
-  SetLength(Result, Length(Mapping));
-  for I := 0 to High(Mapping) do
-    Result[I + 1] := WideChar(Mapping[I]);
+  Result:= WideCaseConvert(C, ctLower);
 end;
 
 function WideLowerCase(const S: WideString): WideString;
-var
-  I: Integer;
 begin
-  Result := '';
-  for I := 1 to Length(S) do
-    Result := Result + WideLowerCase(S[I]);
+  Result:= WideCaseConvert(S, ctLower);
 end;
 
 function WideNormalize(const S: WideString; Form: TNormalizationForm): WideString;
@@ -6835,43 +6894,23 @@ begin
 end;
 
 function WideTitleCase(C: WideChar): WideString;
-var
-  I: Integer;
-  Mapping: TUCS4Array;
 begin
-  Mapping := UnicodeToTitle(UCS4(C));
-  SetLength(Result, Length(Mapping));
-  for I := 0 to High(Mapping) do
-    Result[I + 1] := WideChar(Mapping[I]);
+  Result:= WideCaseConvert(C, ctTitle);
 end;
 
 function WideTitleCase(const S: WideString): WideString;
-var
-  I: Integer;
 begin
-  Result := '';
-  for I := 1 to Length(S) do
-    Result := Result + WideTitleCase(S[I]);
+  Result:= WideCaseConvert(S, ctTitle);
 end;
 
 function WideUpperCase(C: WideChar): WideString;
-var
-  I: Integer;
-  Mapping: TUCS4Array;
 begin
-  Mapping := UnicodeToUpper(UCS4(C));
-  SetLength(Result, Length(Mapping));
-  for I := 0 to High(Mapping) do
-    Result[I + 1] := WideChar(Mapping[I]);
+  Result:= WideCaseConvert(C, ctUpper);
 end;
 
 function WideUpperCase(const S: WideString): WideString;
-var
-  I: Integer;
 begin
-  Result := '';
-  for I := 1 to Length(S) do
-    Result := Result + WideUpperCase(S[I]);
+  Result:= WideCaseConvert(S, ctUpper);
 end;
 
 //----------------- character test routines --------------------------------------------------------
