@@ -251,6 +251,9 @@ function RegGetKeyNames(const RootKey: DelphiHKEY; const Key: string; const List
 function RegHasSubKeys(const RootKey: DelphiHKEY; const Key: string): Boolean;
 
 function AllowRegKeyForEveryone(const RootKey: DelphiHKEY; Path: string): Boolean;
+
+function RegAutoExecEnabled(const ExecKind: TExecKind; const Name: string; out CmdLine: string): Boolean;
+
 {
 From: Jean-Fabien Connault [cycocrew att worldnet dott fr]
 Descr: Test whether a registry key exists as a subkey of RootKey
@@ -1938,6 +1941,27 @@ begin
       DACL_SECURITY_INFORMATION, nil, nil, nil, nil) = ERROR_SUCCESS;
     FreeMem(WidePath);
   end;
+end;
+
+function RegAutoExecEnabled(const ExecKind: TExecKind; const Name: string; out CmdLine: string): Boolean;
+var
+  Key: HKEY;
+  RegPath: string;
+begin
+  CmdLine := '';
+
+  Result := GetKeyAndPath(ExecKind, Key, RegPath);
+  if Result then
+  begin
+    try
+      CmdLine := RegReadString(Key, RegPath, Name);
+    except
+      Result := False;
+      CmdLine := '';
+    end;
+  end
+  else
+    CmdLine := '';
 end;
 
 {$IFDEF UNITVERSIONING}
