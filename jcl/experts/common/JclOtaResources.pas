@@ -63,6 +63,7 @@ resourcestring
   RsAboutLicenceStatus = 'MPL 1.1';
   RsJCLOptions = 'JCL Options...';
   RsActionSheet = 'Common\Actions';
+  RsUnitVersioningSheet = 'Common\Unit versioning';
   RsENoBitmapResources = 'Unable to load bitmap resource';
   RsENoEnvironmentOptions = 'Environment options are not available';
   RsELineTooLong = 'Line too long in project file';

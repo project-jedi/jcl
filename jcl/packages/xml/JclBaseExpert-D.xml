@@ -22,6 +22,7 @@
     <File Name="..\..\experts\common\JclOtaExceptionForm.pas" Targets="WinDev" Formname="JclExpertExceptionForm" Condition=""/>
     <File Name="..\..\experts\common\JclOtaConfigurationForm.pas" Targets="WinDev" Formname="JclOtaOptionsForm" Condition=""/>
     <File Name="..\..\experts\common\JclOtaActionConfigureSheet.pas" Targets="WinDev" Formname="JclOtaActionConfigureFrame: TFrame" Condition=""/>
+    <File Name="..\..\experts\common\JclOtaUnitVersioningSheet.pas" Targets="WinDev" Formname="JclOtaUnitVersioningFrame: TFrame" Condition=""/>
     <File Name="..\..\experts\common\JclOtaWizardForm.pas" Targets="WinDev" Formname="JclWizardForm" Condition=""/>
     <File Name="..\..\experts\common\JclOtaWizardFrame.pas" Targets="WinDev" Formname="JclWizardFrame: TFrame" Condition=""/>
   </Contains>

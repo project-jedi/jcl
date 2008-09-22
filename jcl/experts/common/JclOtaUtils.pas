@@ -251,7 +251,8 @@ uses
   {$ENDIF MSWINDOWS}
   JclFileUtils, JclStrings, JclSysInfo, JclSimpleXml,
   JclOtaConsts, JclOtaResources, JclOtaExceptionForm, JclOtaConfigurationForm,
-  JclOtaActionConfigureSheet, JclOtaWizardForm, JclOtaWizardFrame;
+  JclOtaActionConfigureSheet, JclOtaUnitVersioningSheet,
+  JclOtaWizardForm, JclOtaWizardFrame;
 
 {$R 'JclImages.res'}
 
@@ -262,6 +263,7 @@ var
   ConfigurationAction: TAction = nil;
   ConfigurationMenuItem: TMenuItem = nil;
   ActionConfigureSheet: TJclOtaActionConfigureFrame = nil;
+  UnitVersioningSheet: TJclOtaUnitVersioningFrame = nil;
   {$IFNDEF COMPILER6_UP}
   OldFindGlobalComponentProc: TFindGlobalComponent = nil;
   {$ENDIF COMPILER6_UP}
@@ -837,6 +839,11 @@ begin
     ActionConfigureSheet := TJclOtaActionConfigureFrame.Create(Application);
     AddPageFunc(ActionConfigureSheet, RsActionSheet, Self);
   end;
+  if not Assigned(UnitVersioningSheet) then
+  begin
+    UnitVersioningSheet := TJclOtaUnitVersioningFrame.Create(Application);
+    AddPageFunc(UnitVersioningSheet, RsUnitVersioningSheet, Self);
+  end;
   // override to customize
 end;
 
@@ -849,6 +856,9 @@ begin
       ActionConfigureSheet.SaveChanges;
     FreeAndNil(ActionConfigureSheet);
   end
+  else
+  if Assigned(AControl) and (AControl = UnitVersioningSheet) then
+    FreeAndNil(UnitVersioningSheet)
   else
     AControl.Free;
   // override to customize
