@@ -5871,6 +5871,16 @@ end;
 
 function StrPLCopyW(Dest: PWideChar; const Source: AnsiString; MaxLen: Cardinal): PWideChar;
 // copies characters from a Pascal-style string into a null-terminated wide string
+{$IFDEF MSWINDOWS}
+begin
+  if (MaxLen = 0) or (MultiByteToWideChar(CP_ACP, MB_COMPOSITE or MB_USEGLYPHCHARS, PAnsiChar(Source), Length(Source), Dest, MaxLen) > 0) then
+    Result := Dest
+  else
+    Result := nil;
+end;
+{$ENDIF MSWINDOWS}
+{$IFDEF UNIX}
+// TODO: true conversion from Ansi to UTF-16
 asm
        PUSH EDI
        PUSH ESI
@@ -5886,6 +5896,7 @@ asm
        POP ESI
        POP EDI
 end;
+{$ENDIF UNIX}
 
 function StrCatW(Dest: PWideChar; const Source: PWideChar): PWideChar;
 // appends a copy of Source to the end of Dest and returns the concatenated string
