@@ -34,6 +34,9 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   StdCtrls, ExtCtrls, ComCtrls;
 
 type
@@ -58,6 +61,16 @@ type
     property ConfirmChanges: Boolean read GetConfirmChanges write SetConfirmChanges;
     property ConfigFileName: TFileName read GetConfigFileName write SetConfigFileName;
   end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\experts\useswizard'
+    );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
@@ -126,5 +139,13 @@ begin
     end;
   end;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

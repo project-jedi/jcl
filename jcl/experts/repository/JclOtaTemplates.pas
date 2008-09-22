@@ -33,7 +33,11 @@ interface
 {$I jcl.inc}
 
 uses
-  Classes, JclBorlandTools;
+  Classes,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  JclBorlandTools;
 
 type
   TJclOtaTemplateParams = class(TPersistent)
@@ -63,6 +67,16 @@ function GetFinalSourceContent(const Content, ModuleIdent, FormIdent,
 
 function ApplyTemplate(const Template: string;
   const Params: TJclOtaTemplateParams): string;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\experts\repository'
+    );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
@@ -317,5 +331,13 @@ function TJclOtaTemplateParams.IsDefined(const Name: string): Boolean;
 begin
   Result := GetBoolValue(Name);
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

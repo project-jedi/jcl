@@ -31,6 +31,9 @@ interface
 
 uses
   Classes, Menus, ActnList, ToolsAPI, SysUtils, Graphics, Dialogs, Forms,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JclOtaUtils, ProjAnalyzerFrm;
 
 type
@@ -73,6 +76,16 @@ procedure Register;
 function JCLWizardInit(const BorlandIDEServices: IBorlandIDEServices;
   RegisterProc: TWizardRegisterProc;
   var TerminateProc: TWizardTerminateProc): Boolean; stdcall;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\experts\projectanalyser'
+    );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
@@ -413,5 +426,13 @@ begin
 end;
 
 {$ENDIF BDS4_UP}
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

@@ -35,6 +35,9 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JclBorlandTools, JclOtaWizardFrame, JclOtaExcDlgRepository;
 
 type
@@ -67,6 +70,16 @@ type
 
     property Params: TJclOtaExcDlgParams read FParams write FParams;
   end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\experts\repository'
+    );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
@@ -201,5 +214,13 @@ begin
   Params.FormName := EditFormName.Text;
   Params.FormAncestor := EditFormAncestor.Text;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

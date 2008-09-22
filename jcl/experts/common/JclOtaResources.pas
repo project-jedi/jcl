@@ -32,7 +32,11 @@ interface
 
 {$I jcl.inc}
 
-uses JclBase;
+uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  JclBase;
 
 //=== JclOtaUtils.pas ========================================================
 resourcestring
@@ -354,6 +358,24 @@ resourcestring
   RsActionCategory = 'JEDI Code Library';
   RsVersionCtrlSystemName = 'System';
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\experts\common'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

@@ -21,9 +21,9 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date:: 2008-08-07 23:54:09 +0200 (jeu., 07 août 2008)                      $ }
-{ Revision:      $Rev:: 2412                                                                     $ }
-{ Author:        $Author:: outchy                                                                $ }
+{ Last modified: $Date::                                                                     $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -36,6 +36,9 @@ interface
 uses
   SysUtils, Classes, Graphics, Controls, Menus, ActnList, Dialogs,
   ToolsAPI,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JclVersionControl,
   JclOtaUtils, JclVersionCtrlCommonOptions;
 
@@ -115,6 +118,16 @@ function GetItemIndexB(const Item: string): Integer;
 function GetItemName(const Item: string): string;
 
 function CharIsAmpersand(const C: Char): Boolean;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\experts\versioncontrol'
+    );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
@@ -1303,5 +1316,13 @@ begin
   FVersionCtrlMenu.Clear;
   FreeAndNil(FVersionCtrlMenu);
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

@@ -25,10 +25,15 @@
 
 unit JclDebugIdeResult;
 
+{$I jcl.inc}
+
 interface
 
 uses
   Windows, SysUtils, Classes, Controls, Forms, ComCtrls, StdCtrls, ImgList,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JclOtaUtils;
 
 type
@@ -49,6 +54,16 @@ type
   public
     constructor Create(AOwner: TComponent; ASettings: TJclOTASettings); reintroduce;
   end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\experts\debug\converter'
+    );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
@@ -199,5 +214,13 @@ begin
     MessageBeep(MB_OK);
   end;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

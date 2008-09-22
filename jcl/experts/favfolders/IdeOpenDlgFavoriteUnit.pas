@@ -32,6 +32,9 @@ interface
 uses
   SysUtils,
   ToolsAPI, OpenDlgFavAdapter,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JclOtaUtils;
 
 type
@@ -53,6 +56,16 @@ procedure Register;
 function JCLWizardInit(const BorlandIDEServices: IBorlandIDEServices;
   RegisterProc: TWizardRegisterProc;
   var TerminateProc: TWizardTerminateProc): Boolean; stdcall;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\experts\favfolders'
+    );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
@@ -155,5 +168,13 @@ begin
   FFavOpenDialog.UnhookDialogs;
   inherited UnregisterCommands;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

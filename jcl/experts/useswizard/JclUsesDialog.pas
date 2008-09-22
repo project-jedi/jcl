@@ -27,10 +27,15 @@
 
 unit JclUsesDialog;
 
+{$I jcl.inc}
+
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Dialogs, StdCtrls, ComCtrls, ImgList;
 
 type
@@ -50,6 +55,16 @@ type
   public
     constructor Create(AOwner: TComponent; AChangeList: TStrings; Errors: TList); reintroduce;
   end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\experts\useswizard'
+    );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
@@ -190,5 +205,13 @@ begin
     end;
   end;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

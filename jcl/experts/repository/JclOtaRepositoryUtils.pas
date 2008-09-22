@@ -36,6 +36,9 @@ uses
   Windows,
   SysUtils,
   ToolsAPI,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JclBorlandTools,
   JclOtaUtils;
 
@@ -175,6 +178,16 @@ type
     function GetSource: string;
     function GetAge: TDateTime;
   end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\experts\repository'
+    );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
@@ -582,5 +595,13 @@ begin
   // return the file content
   Result := FContent;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

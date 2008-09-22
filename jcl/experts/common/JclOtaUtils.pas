@@ -42,6 +42,9 @@ uses
   // as TControlAction defined in Controls.pas for newer versions of Delphi
   {$ENDIF COMPILER8_UP}
   JclBase,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   {$IFDEF MSWINDOWS}
   JclDebug,
   {$ENDIF MSWINDOWS}
@@ -238,6 +241,16 @@ function SetProjectProperties(const AProject: IOTAProject; const PropIDs, PropVa
 // set to true to temporary disable experts that alter compiled files after they were compiled
 var
   JclDisablePostCompilationProcess: Boolean = False;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\experts\common'
+    );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
@@ -1554,12 +1567,26 @@ end;
 
 initialization
 
-Classes.RegisterClass(TJclWizardForm);
-Classes.RegisterClass(TJclWizardFrame);
+try
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
+  Classes.RegisterClass(TJclWizardForm);
+  Classes.RegisterClass(TJclWizardFrame);
+except
+  on ExceptionObj: TObject do
+  begin
+    JclExpertShowExceptionDialog(ExceptionObj);
+    raise;
+  end;
+end;
 
 finalization
 
 try
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
   {$IFDEF BDS}
   UnregisterAboutBox;
   {$ENDIF BDS}

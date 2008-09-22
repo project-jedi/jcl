@@ -30,6 +30,9 @@ unit JclDebugThread;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Windows, Classes, SysUtils;
 
 procedure RegisterThread(ThreadID: DWORD; const ThreadName: string); overload;
@@ -42,6 +45,16 @@ procedure ChangeThreadName(ThreadID: DWORD; const ThreadName: string); overload;
 procedure ChangeThreadName(Thread: TThread; const ThreadName: string; IncludeClassName: Boolean = True); overload;
 
 function ThreadNamesAvailable: Boolean;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\experts\debug'
+    );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
@@ -179,11 +192,17 @@ begin
 end;
 
 initialization
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
   Init;
 
 finalization
   FreeAndNil(HookImports);
   FreeAndNil(SharedThreadNames);
   FreeAndNil(Notifier);
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
 
 end.

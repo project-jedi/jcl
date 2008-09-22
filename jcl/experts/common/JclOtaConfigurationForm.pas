@@ -28,11 +28,16 @@
 
 unit JclOtaConfigurationForm;
 
+{$I jcl.inc}
+
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, ComCtrls,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JclOtaUtils;
 
 type
@@ -62,6 +67,16 @@ type
     function Execute(PageName: string): Boolean;
     property Settings: TJclOTASettings read FSettings;
   end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\experts\common'
+    );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
@@ -230,5 +245,13 @@ begin
   for Index := 0 to PanelOptions.ControlCount - 1 do
     PanelOptions.Controls[Index].Visible := PanelOptions.Controls[Index] = AControl;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

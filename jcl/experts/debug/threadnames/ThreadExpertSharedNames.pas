@@ -31,6 +31,9 @@ interface
 
 uses
   Windows, SysUtils, Classes,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JclBase, JclFileUtils, JclSynch;
 
 type
@@ -60,6 +63,16 @@ type
     property ThreadName[ThreadID: DWORD]: string read GetThreadName write SetThreadName; default;
     property NotifyEvent: TJclEvent read FNotifyEvent;
   end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\experts\debug\threadnames'
+    );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
@@ -334,5 +347,13 @@ begin
     FMutex.Release;
   end;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

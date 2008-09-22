@@ -37,6 +37,9 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, ToolsApi, Contnrs,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JclOtaUtils, JclSysInfo, JclSIMDUtils;
 
 const
@@ -107,6 +110,16 @@ type
     property Thread: IOTAThread read FThread;
     property Settings: TJclOTASettings read FSettings;
   end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\experts\debug\simdview'
+    );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
@@ -531,5 +544,13 @@ begin
     PostMessage(Handle, WM_MODIFYCONTINUE, 0, 0);
   end;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

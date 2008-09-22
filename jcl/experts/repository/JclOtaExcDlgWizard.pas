@@ -35,6 +35,9 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, ActnList, ExtCtrls, StdCtrls,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JclBorlandTools, JclOtaExcDlgRepository, JclOtaWizardForm;
 
 type
@@ -49,6 +52,16 @@ type
   end;
 
 function ExcDlgWizard(var AParams: TJclOtaExcDlgParams): Boolean;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\experts\repository'
+    );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
@@ -105,5 +118,13 @@ begin
   AddPage(TJclOtaExcDlgIgnorePage.Create(Self, Params));
   AddPage(TJclOtaExcDlgTracePage.Create(Self, Params));
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

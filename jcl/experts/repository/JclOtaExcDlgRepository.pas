@@ -34,6 +34,9 @@ interface
 
 uses
   Classes, Forms,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JclBorlandTools,
   JclOtaTemplates;
 
@@ -117,6 +120,16 @@ type
     property VirtualAddress: Boolean read FVirtualAddress write FVirtualAddress;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\experts\repository'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 {$R JclOtaExcDlgIcons.res}
@@ -170,5 +183,13 @@ function TJclOtaExcDlgParams.GetIgnoredExceptionsCount: Integer;
 begin
   Result := FIgnoredExceptions.Count;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

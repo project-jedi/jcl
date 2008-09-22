@@ -32,6 +32,9 @@ interface
 uses
   Windows, SysUtils, Classes, Controls, Forms, Dialogs,
   ComCtrls, ActnList, Menus, ClipBrd, ImgList, ToolWin,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JclDebug,
   JclOtaUtils;
 
@@ -130,6 +133,16 @@ type
 
 var
   ProjectAnalyzerForm: TProjectAnalyzerForm;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\experts\projectanalyser'
+    );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
@@ -696,5 +709,13 @@ begin
   FBssSize := 0;
   FPackageUnits := nil;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

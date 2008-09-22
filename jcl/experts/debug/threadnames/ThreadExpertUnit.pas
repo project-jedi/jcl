@@ -31,6 +31,9 @@ interface
 uses
   Windows, Classes, SysUtils, ToolsAPI, ComCtrls, Dialogs,
   ThreadExpertSharedNames,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JclOtaUtils, JclSynch;
 
 type
@@ -91,6 +94,16 @@ procedure Register;
 function JCLWizardInit(const BorlandIDEServices: IBorlandIDEServices;
   RegisterProc: TWizardRegisterProc;
   var TerminateProc: TWizardTerminateProc): Boolean; stdcall;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\experts\debug\threadnames'
+    );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
@@ -397,5 +410,13 @@ procedure TNameChangeThread.UpdateRequest;
 begin
   FExpert.UpdateContent;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

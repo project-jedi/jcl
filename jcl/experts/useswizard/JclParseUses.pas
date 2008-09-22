@@ -33,6 +33,9 @@ interface
 
 uses
   Classes, SysUtils,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JclOtaUtils;
 
 type
@@ -103,6 +106,16 @@ type
   end;
 
 function CreateGoal(Text: PChar): TCustomGoal;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\experts\useswizard'
+    );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
@@ -882,5 +895,13 @@ begin
   FUsesImpl.Free;
   inherited Destroy;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

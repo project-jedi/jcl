@@ -19,7 +19,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -30,7 +30,11 @@ unit JclDebugIdeConfigFrame;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, ExtCtrls;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  Dialogs, StdCtrls, ExtCtrls;
 
 type
   TDebugExpertState = (deAlwaysDisabled, deProjectDisabled, deProjectEnabled, deAlwaysEnabled);
@@ -60,6 +64,16 @@ function ToggleDebugExpertState(Value: TDebugExpertState): TDebugExpertState;
 function EnableDebugExpertState(Value: TDebugExpertState): TDebugExpertState;
 function DisableDebugExpertState(Value: TDebugExpertState): TDebugExpertState;
 function ApplyDebugExpertState(GlobalState: TDebugExpertState; LocalEnabled: Boolean): TDebugExpertState;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\experts\debug\converter'
+    );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
@@ -218,5 +232,13 @@ procedure TJclDebugIdeConfigFrame.SetDeleteMapFileState(Value: TDebugExpertState
 begin
   RadioGroupDeleteMapFile.ItemIndex := DebugExpertStateToInt(Value);
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

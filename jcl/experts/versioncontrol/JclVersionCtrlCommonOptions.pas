@@ -32,6 +32,9 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Dialogs, StdCtrls, ComCtrls, ActnList, Menus;
 
 type
@@ -108,6 +111,16 @@ type
     property MenuTree: TStrings read GetMenuTree write SetMenuTree;
     property SaveConfirmation: Boolean read GetSaveConfirmation write SetSaveConfirmation;
   end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\experts\versioncontrol'
+    );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
@@ -570,5 +583,13 @@ procedure TJclVersionCtrlOptionsFrame.TreeViewMenuEditing(Sender: TObject;
 begin
   AllowEdit := Assigned(Node) and (Node.Text <> '-') and not Assigned(Node.Data);
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

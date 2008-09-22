@@ -38,6 +38,9 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ToolsApi, Grids, ExtCtrls, Menus, ActnList,
   DockForm,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JclOtaUtils, JclSysInfo, JclSIMDUtils, JclSIMDModifyForm;
 
 type
@@ -134,6 +137,16 @@ type
     property NbXMMRegister: Integer read FNbXMMRegister;
     property Settings: TJclOtaSettings read FSettings;
   end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\experts\debug\simdview'
+    );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
@@ -951,5 +964,13 @@ begin
     end;
   end;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

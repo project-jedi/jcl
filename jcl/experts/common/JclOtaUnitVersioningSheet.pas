@@ -28,10 +28,13 @@
 
 unit JclOtaUnitVersioningSheet;
 
+{$I jcl.inc}
+
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  JclUnitVersioning,
   Dialogs, ComCtrls, StdCtrls;
 
 type
@@ -42,6 +45,16 @@ type
     constructor Create(AOwner: TComponent); override;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\experts\common'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 {$R *.dfm}
@@ -49,7 +62,7 @@ implementation
 uses
   ActnList, Menus,
   ToolsApi,
-  JclFileUtils, JclUnitVersioning, JclUnitVersioningProviders,
+  JclFileUtils, JclUnitVersioningProviders,
   JclOtaConsts, JclOtaResources, JclOtaUtils;
 
 constructor TJclOtaUnitVersioningFrame.Create(AOwner: TComponent);
@@ -86,5 +99,13 @@ begin
     MemoUnitVersioning.Lines.EndUpdate;
   end;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

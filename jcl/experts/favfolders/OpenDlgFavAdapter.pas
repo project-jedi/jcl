@@ -34,6 +34,9 @@ interface
 
 uses
   Windows, Messages, Classes, SysUtils, Controls, StdCtrls, ExtCtrls,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JclPeImage, JclWin32;
 
 type
@@ -90,6 +93,16 @@ type
   end;
 
 function InitializeFavOpenDialog: TFavOpenDialog;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\experts\favfolders'
+    );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
@@ -514,9 +527,24 @@ end;
 
 initialization
 
+try
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
+except
+  on ExceptionObj: TObject do
+  begin
+    JclExpertShowExceptionDialog(ExceptionObj);
+    raise;
+  end;
+end;
+
 finalization
 
 try
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
   FreeAndNil(FavOpenDialog);
 except
   on ExceptionObj: TObject do

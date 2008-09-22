@@ -37,6 +37,9 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JclSysInfo;
 
 type
@@ -65,6 +68,16 @@ type
   public
     procedure Execute(const CpuInfo: TCPUInfo);
   end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\experts\debug\simdview'
+    );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
@@ -105,5 +118,13 @@ begin
   CheckBoxSSE5.Checked := sse5 in CpuInfo.SSE;
   ShowModal;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

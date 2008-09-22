@@ -37,7 +37,11 @@ interface
 uses
   Windows, Classes, Menus, ActnList, ToolsAPI, SysUtils, Graphics, Dialogs,
   Forms, ComCtrls,
-  JclOtaUtils, JclSIMDViewForm, JclSysInfo;
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  JclSysInfo,
+  JclOtaUtils, JclSIMDViewForm;
 
 {$R 'JclSIMDIcon.dcr'}
 
@@ -121,6 +125,16 @@ procedure Register;
 function JCLWizardInit(const BorlandIDEServices: IBorlandIDEServices;
   RegisterProc: TWizardRegisterProc;
   var TerminateProc: TWizardTerminateProc): Boolean; stdcall;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\experts\debug\simdview'
+    );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
@@ -627,5 +641,13 @@ begin
     end;
   end;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

@@ -31,6 +31,9 @@ interface
 
 uses
   Windows, Classes, Menus, ActnList, SysUtils, Graphics, Dialogs, Controls, Forms, ToolsAPI,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JclOtaUtils, JclOtaConsts,
   JclDebugIdeConfigFrame;
 
@@ -177,6 +180,16 @@ const
     );
   DebugActionValues: array [False..True] of AnsiString =
     ( 'OFF', 'ON' );
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\experts\debug\converter'
+    );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
@@ -1697,5 +1710,13 @@ begin
 end;
 
 {$ENDIF BDS4_UP}
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

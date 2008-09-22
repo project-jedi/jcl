@@ -37,6 +37,9 @@ interface
 uses
   Windows,
   ToolsAPI,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JclSysInfo,
   JclOtaResources;
 
@@ -202,6 +205,16 @@ function SetThreadContext(hThread: THandle; const lpContext: TJclContext): BOOL;
 function GetVectorContext(AThread: IOTAThread; out VectorContext: TJclVectorFrame): Boolean;
 // return the XMM registers for the specified thread, this thread must be suspended
 function SetVectorContext(AThread: IOTAThread; const VectorContext: TJclVectorFrame): Boolean;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\experts\debug\simdview'
+    );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
@@ -889,5 +902,12 @@ begin
 end;
 {$ENDIF COMPILER9_UP}
 
-end.
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
 
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
+
+end.
