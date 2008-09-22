@@ -2427,10 +2427,10 @@ function TJclInstallation.Uninstall(AUninstallHelp: Boolean): Boolean;
         FileName := ATarget.IdePackages.PackageFileNames[Index];
         ShortFileName := ChangeFileExt(ExtractFileName(FileName), '');
         if StrMatches(Name, ShortFileName)
-          or StrMatches(Format('%s%s', [Name, ATarget.VersionNumberStr]), ShortFileName)
-          or StrMatches(Format('%s%d', [Name, ATarget.VersionNumber]), ShortFileName)
-          or StrMatches(Format('%s%s0', [Name, ATarget.VersionNumberStr]), ShortFileName)
-          or StrMatches(Format('%s%d0', [Name, ATarget.VersionNumber]), ShortFileName) then
+          or StrMatches(Format('%sDLL%s', [Name, StrUpper(ATarget.VersionNumberStr)]), ShortFileName)
+          or StrMatches(Format('%sDLL%d', [Name, ATarget.VersionNumber]), ShortFileName)
+          or StrMatches(Format('%sDLL%s0', [Name, StrUpper(ATarget.VersionNumberStr)]), ShortFileName)
+          or StrMatches(Format('%sDLL%d0', [Name, ATarget.VersionNumber]), ShortFileName) then
           ATarget.UnregisterPackage(FileName);
       end;
       for Index := ATarget.IdePackages.ExpertCount - 1 downto 0 do
@@ -2438,10 +2438,10 @@ function TJclInstallation.Uninstall(AUninstallHelp: Boolean): Boolean;
         FileName := ATarget.IdePackages.ExpertFileNames[Index];
         ShortFileName := ChangeFileExt(ExtractFileName(FileName), '');
         if StrMatches(Name, ShortFileName)
-          or StrMatches(Format('%s%s', [Name, ATarget.VersionNumberStr]), ShortFileName)
-          or StrMatches(Format('%s%d', [Name, ATarget.VersionNumber]), ShortFileName)
-          or StrMatches(Format('%s%s0', [Name, ATarget.VersionNumberStr]), ShortFileName)
-          or StrMatches(Format('%s%d0', [Name, ATarget.VersionNumber]), ShortFileName) then
+          or StrMatches(Format('%sDLL%s', [Name, StrUpper(ATarget.VersionNumberStr)]), ShortFileName)
+          or StrMatches(Format('%sDLL%d', [Name, ATarget.VersionNumber]), ShortFileName)
+          or StrMatches(Format('%sDLL%s0', [Name, StrUpper(ATarget.VersionNumberStr)]), ShortFileName)
+          or StrMatches(Format('%sDLL%d0', [Name, ATarget.VersionNumber]), ShortFileName) then
           ATarget.UnregisterExpert(FileName);
       end;
     end;
