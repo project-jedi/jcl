@@ -799,7 +799,7 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\common';
+    LogPath: 'JCL\source\common';
   );
 
 initialization
