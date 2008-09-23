@@ -5066,8 +5066,13 @@ begin
       FSaveFormat := sfUTF16LSB;
       SetLength(SW, (Size - 2) div SizeOf(WideChar));
       Assert((Size and 1) <> 1,'Number of chars must be a multiple of 2');
-      System.Move(ByteOrderMask[2],SW[1],BytesRead-2); // max 4 bytes = 2 widechars
-      Stream.Read(SW[3], Size-BytesRead); // first 2 chars were copied by System.Move
+      if BytesRead > 2 then
+      begin
+        System.Move(ByteOrderMask[2], SW[1], BytesRead-2); // max 4 bytes = 2 widechars
+        if Size > BytesRead then
+          // first 2 chars (maximum) were copied by System.Move
+          Stream.Read(SW[3], Size-BytesRead);
+      end;
       SetText(SW);
       Loaded := True;
     end;
@@ -5079,9 +5084,14 @@ begin
       FSaveFormat := sfUTF16MSB;
       SetLength(SW, (Size - 2) div SizeOf(WideChar));
       Assert((Size and 1) <> 1,'Number of chars must be a multiple of 2');
-      System.Move(ByteOrderMask[2],SW[1],BytesRead-2); // max 4 bytes = 2 widechars
-      Stream.Read(SW[3], Size-BytesRead); // first 2 chars were copied by System.Move
-      StrSwapByteOrder(PWideChar(SW));
+      if BytesRead > 2 then
+      begin
+        System.Move(ByteOrderMask[2],SW[1],BytesRead-2); // max 4 bytes = 2 widechars
+        if Size > BytesRead then
+          // first 2 chars (maximum) were copied by System.Move
+          Stream.Read(SW[3], Size-BytesRead);
+        StrSwapByteOrder(PWideChar(SW));
+      end;
       SetText(SW);
       Loaded := True;
     end;
@@ -5092,9 +5102,14 @@ begin
     begin
       FSaveFormat := sfUTF8;
       SetLength(SA, (Size-3) div SizeOf(AnsiChar));
-      System.Move(ByteOrderMask[3],SA[1],BytesRead-3); // max 3 bytes = 3 chars
-      Stream.Read(SA[4], Size-BytesRead); // first 3 chars were copied by System.Move
-      SW := UTF8ToWideString(SA);
+      if BytesRead > 3 then
+      begin
+        System.Move(ByteOrderMask[3],SA[1],BytesRead-3); // max 3 bytes = 3 chars
+        if Size > BytesRead then
+          // first 3 chars were copied by System.Move
+          Stream.Read(SA[4], Size-BytesRead);
+        SW := UTF8ToWideString(SA);
+      end;
       SetText(SW);
       Loaded := True;
     end;
@@ -5104,8 +5119,12 @@ begin
     begin
       FSaveFormat := sfAnsi;
       SetLength(SA, Size div SizeOf(AnsiChar));
-      System.Move(ByteOrderMask[0],SA[1],BytesRead); // max 6 bytes = 6 chars
-      Stream.Read(SA[7], Size-BytesRead); // first 6 chars were copied by System.Move
+      if BytesRead > 0 then
+      begin
+        System.Move(ByteOrderMask[0], SA[1], BytesRead); // max 6 bytes = 6 chars
+        if Size > BytesRead then
+          Stream.Read(SA[7], Size-BytesRead); // first 6 chars were copied by System.Move
+      end;
       SetText(StringToWideStringEx(SA, CodePageFromLocale(FLanguage)));
     end;
   finally
