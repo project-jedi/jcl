@@ -40,6 +40,11 @@ uses
 type
   TJclOtaUnitVersioningFrame = class(TFrame)
     MemoUnitVersioning: TMemo;
+    ButtonCopyToClipboard: TButton;
+    ButtonSaveAsText: TButton;
+    SaveDialogText: TSaveDialog;
+    procedure ButtonCopyToClipboardClick(Sender: TObject);
+    procedure ButtonSaveAsTextClick(Sender: TObject);
   private
   public
     constructor Create(AOwner: TComponent); override;
@@ -62,8 +67,21 @@ implementation
 uses
   ActnList, Menus,
   ToolsApi,
-  JclFileUtils, JclUnitVersioningProviders,
+  JclBase, JclFileUtils, JclUnitVersioningProviders,
   JclOtaConsts, JclOtaResources, JclOtaUtils;
+
+procedure TJclOtaUnitVersioningFrame.ButtonCopyToClipboardClick(
+  Sender: TObject);
+begin
+  MemoUnitVersioning.SelectAll;
+  MemoUnitVersioning.CopyToClipboard;
+end;
+
+procedure TJclOtaUnitVersioningFrame.ButtonSaveAsTextClick(Sender: TObject);
+begin
+  if SaveDialogText.Execute then
+    MemoUnitVersioning.Lines.SaveToFile(SaveDialogText.FileName);
+end;
 
 constructor TJclOtaUnitVersioningFrame.Create(AOwner: TComponent);
 var
@@ -74,6 +92,9 @@ var
   LongFileName: string;
 begin
   inherited Create(AOwner);
+  ButtonCopyToClipboard.Caption := RsCopyToClipboard;
+  ButtonSaveAsText.Caption := RsSaveAsText;
+  
   UnitVersioning := GetUnitVersioning;
   UnitVersioning.RegisterProvider(TJclDefaultUnitVersioningProvider);
   for I := 0 to Pred(UnitVersioning.ModuleCount) do
@@ -81,6 +102,7 @@ begin
   MemoUnitVersioning.Lines.BeginUpdate;
   try
     MemoUnitVersioning.Lines.Clear;
+    MemoUnitVersioning.Lines.Add(Format('JCL %d.%d.%d.%d', [JclVersionMajor, JclVersionMinor, JclVersionRelease, JclVersionBuild]));
     for I := 0 to Pred(UnitVersioning.ModuleCount) do
     begin
       UnitVersioningModule := UnitVersioning.Modules[I];

@@ -100,6 +100,11 @@ resourcestring
   RsShortcut = 'Shortcut';
   RsRestore = '&Restore';
 
+//=== JclOtaUnitVersioningSheet.pas ==========================================
+resourcestring
+  RsCopyToClipboard = '&Copy to clipboard';
+  RsSaveAsText = '&Save as...';
+
 //=== JclExpertConfigurationForm.pas =========================================
 resourcestring
   RsConfigurationCaption = 'JCL Options';
