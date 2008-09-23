@@ -5195,29 +5195,39 @@ begin
         begin
           if WithBOM then
             Stream.WriteBuffer(BOM_UTF16_LSB[0],SizeOf(BOM_UTF16_LSB));
-          Stream.WriteBuffer(SW[1],Length(SW)*SizeOf(UTF16));
+          if Length(SW) > 0 then
+            Stream.WriteBuffer(SW[1],Length(SW)*SizeOf(UTF16));
           FSaved := True;
         end;
       sfUTF16MSB :
         begin
           if WithBOM then
             Stream.WriteBuffer(BOM_UTF16_MSB[0],SizeOf(BOM_UTF16_MSB));
-          StrSwapByteOrder(PWideChar(SW));
-          Stream.WriteBuffer(SW[1],Length(SW)*SizeOf(UTF16));
+          if Length(SW) > 0 then
+          begin
+            StrSwapByteOrder(PWideChar(SW));
+            Stream.WriteBuffer(SW[1],Length(SW)*SizeOf(UTF16));
+          end;
           FSaved := True;
         end;
       sfUTF8 :
         begin
           if WithBOM then
             Stream.WriteBuffer(BOM_UTF8[0],SizeOf(BOM_UTF8));
-          SA := WideStringToUTF8(SW);
-          Stream.WriteBuffer(SA[1],Length(SA)*SizeOf(UTF8));
+          if Length(SW) > 0 then
+          begin
+            SA := WideStringToUTF8(SW);
+            Stream.WriteBuffer(SA[1],Length(SA)*SizeOf(UTF8));
+          end;
           FSaved := True;
         end;
       sfAnsi :
         begin
-          SA := WideStringToStringEx(SW,CodePageFromLocale(FLanguage));
-          Stream.WriteBuffer(SA[1],Length(SA)*SizeOf(AnsiChar));
+          if Length(SW) > 0 then
+          begin
+            SA := WideStringToStringEx(SW,CodePageFromLocale(FLanguage));
+            Stream.WriteBuffer(SA[1],Length(SA)*SizeOf(AnsiChar));
+          end;
           FSaved := True;
         end;
     end;
