@@ -6,7 +6,7 @@ object ExceptionDialogMail: TExceptionDialogMail
 
   Caption = 'ExceptionDialogMail'
   ClientHeight = 255
-  ClientWidth = 432
+  ClientWidth = 483
   Color = clBtnFace
   Constraints.MinWidth = 200
   Font.Charset = DEFAULT_CHARSET
@@ -29,14 +29,14 @@ object ExceptionDialogMail: TExceptionDialogMail
   object BevelDetails: TBevel
     Left = 3
     Top = 91
-    Width = 422
+    Width = 473
     Height = 9
     Anchors = [akLeft, akTop, akRight]
     Shape = bsTopLine
   end
 
   object SendBtn: TButton
-    Left = 351
+    Left = 403
     Top = 32
     Width = 75
     Height = 25
@@ -46,17 +46,15 @@ object ExceptionDialogMail: TExceptionDialogMail
     TabOrder = 0
     OnClick = SendBtnClick
   end
-  object TextLabel: TMemo
+  object TextMemo: TMemo
     Left = 56
     Top = 8
-    Width = 281
+    Width = 332
     Height = 75
     Hint = 'Use Ctrl+C to copy the report to the clipboard'
     Anchors = [akLeft, akTop, akRight]
     BorderStyle = bsNone
     Ctl3D = True
-    Lines.Strings = (
-      'TextLabel')
     ParentColor = True
     ParentCtl3D = False
     ReadOnly = True
@@ -64,7 +62,7 @@ object ExceptionDialogMail: TExceptionDialogMail
     WantReturns = False
   end
   object OkBtn: TButton
-    Left = 352
+    Left = 403
     Top = 4
     Width = 75
     Height = 25
@@ -75,7 +73,7 @@ object ExceptionDialogMail: TExceptionDialogMail
     TabOrder = 2
   end
   object DetailsBtn: TButton
-    Left = 352
+    Left = 403
     Top = 60
     Width = 75
     Height = 25
@@ -89,7 +87,7 @@ object ExceptionDialogMail: TExceptionDialogMail
   object DetailsMemo: TMemo
     Left = 4
     Top = 101
-    Width = 421
+    Width = 472
     Height = 147
     Anchors = [akLeft, akTop, akRight, akBottom]
     Font.Charset = DEFAULT_CHARSET

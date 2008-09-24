@@ -38,7 +38,7 @@ const
 type
   T%FORMNAME% = class(%ANCESTORNAME%)
 %if SendEMail    SendBtn: TButton;%endif
-    TextLabel: TMemo;
+    TextMemo: TMemo;
     OkBtn: TButton;
     DetailsBtn: TButton;
     BevelDetails: TBevel;
@@ -71,7 +71,7 @@ type
     function ReportMaxColumns: Integer; virtual;
     function ReportNewBlockDelimiterChar: Char; virtual;
     procedure NextDetailBlock;
-    procedure UpdateTextLabelScrollbars;
+    procedure UpdateTextMemoScrollbars;
   public
     procedure CopyReportToClipboard;
     class procedure ExceptionHandler(Sender: TObject; E: Exception);
@@ -112,6 +112,13 @@ resourcestring
   RsMissingVersionInfo = '(no version info)';
 %if AllThreads  RsMainThreadCallStack = 'Call stack for main thread';
   RsThreadCallStack = 'Call stack for thread %s';%endif
+  RsErrorMessage = 'There was an error during the execution of this program.' + NativeLineBreak +
+                   'The application might become unstable and even useless.' + NativeLineBreak +
+                   'It''s recommended that you save your work and close this application.' + NativeLineBreak + NativeLineBreak;
+  RsDetailsIntro = 'Exception log with detailed tech info. Generated on %s.' + NativeLineBreak +
+                   'You may send it to the application vendor, helping him to understand what had happened.' + NativeLineBreak +
+                   ' Application title: %s' + NativeLineBreak +
+                   ' Application file: %s';
 
 var
   %FORMNAME%: T%FORMNAME%;
@@ -535,15 +542,15 @@ end;
 
 procedure T%FORMNAME%.FormPaint(Sender: TObject);
 begin
-  DrawIcon(Canvas.Handle, TextLabel.Left - GetSystemMetrics(SM_CXICON) - 15,
-    TextLabel.Top, LoadIcon(0, IDI_ERROR));
+  DrawIcon(Canvas.Handle, TextMemo.Left - GetSystemMetrics(SM_CXICON) - 15,
+    TextMemo.Top, LoadIcon(0, IDI_ERROR));
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 procedure T%FORMNAME%.FormResize(Sender: TObject);
 begin
-  UpdateTextLabelScrollbars;
+  UpdateTextMemoScrollbars;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -562,7 +569,7 @@ end;
 
 function T%FORMNAME%.GetReportAsText: string;
 begin
-  Result := StrEnsureSuffix(NativeCrLf, TextLabel.Text) + NativeCrLf + DetailsMemo.Text;
+  Result := StrEnsureSuffix(NativeCrLf, TextMemo.Text) + NativeCrLf + DetailsMemo.Text;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -642,10 +649,14 @@ begin
         FThreadID := MainThreadID;
 %if ActiveControls      FLastActiveControl := Screen.ActiveControl;%endif
       if E is Exception then
-        TextLabel.Text := AdjustLineBreaks(StrEnsureSuffix('.', Exception(E).Message))
+        TextMemo.Text := RsErrorMessage + AdjustLineBreaks(StrEnsureSuffix('.', Exception(E).Message))
       else
-        TextLabel.Text := AdjustLineBreaks(StrEnsureSuffix('.', E.ClassName));
-      UpdateTextLabelScrollbars;
+        TextMemo.Text := RsErrorMessage + AdjustLineBreaks(StrEnsureSuffix('.', E.ClassName));
+      UpdateTextMemoScrollbars;
+      NextDetailBlock;
+      //Arioch: some header for possible saving to txt-file/e-mail/clipboard/NTEvent...
+      DetailsMemo.Lines.Add(Format(RsDetailsIntro, [DateTimeToStr(Now), Application.Title, Application.ExeName]));
+      NextDetailBlock;
       DetailsMemo.Lines.Add(Format(RsExceptionClass, [E.ClassName]));
       if E is Exception then
         DetailsMemo.Lines.Add(Format(RsExceptionMessage, [StrEnsureSuffix('.', Exception(E).Message)]));
@@ -671,13 +682,13 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure T%FORMNAME%.UpdateTextLabelScrollbars;
+procedure T%FORMNAME%.UpdateTextMemoScrollbars;
 begin
-%if AutoScrollBars  Canvas.Font := TextLabel.Font;
-  if TextLabel.Lines.Count * Canvas.TextHeight('Wg') > TextLabel.ClientHeight then
-    TextLabel.ScrollBars := ssVertical
+%if AutoScrollBars  Canvas.Font := TextMemo.Font;
+  if TextMemo.Lines.Count * Canvas.TextHeight('Wg') > TextMemo.ClientHeight then
+    TextMemo.ScrollBars := ssVertical
   else
-    TextLabel.ScrollBars := ssNone;%endif   
+    TextMemo.ScrollBars := ssNone;%endif   
 end;
 
 //==================================================================================================
