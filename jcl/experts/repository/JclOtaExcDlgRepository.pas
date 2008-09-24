@@ -65,6 +65,7 @@ type
     FEMailSubject: string;
     FDesigner: TJclBorDesigner;
     FModuleList: Boolean;
+    FUnitVersioning: Boolean;
     FOSInfo: Boolean;
     FActiveControls: Boolean;
     FStackList: Boolean;
@@ -101,6 +102,7 @@ type
     property LogFileName: string read FLogFileName write FLogFileName;
     property OSInfo: Boolean read FOSInfo write FOSInfo;
     property ModuleList: Boolean read FModuleList write FModuleList;
+    property UnitVersioning: Boolean read FUnitVersioning write FUnitVersioning;
     property ActiveControls: Boolean read FActiveControls write FActiveControls;
     property MainThreadOnly: Boolean read FMainThreadOnly write FMainThreadOnly;
     // ignored exceptions
@@ -163,6 +165,7 @@ begin
   FSizeableDialog := False;
   FDesigner := bdVCL;
   FModuleList := True;
+  FUnitVersioning := True;
   FOSInfo := True;
   FActiveControls := True;
   FStackList := True;

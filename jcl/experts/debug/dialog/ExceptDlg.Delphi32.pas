@@ -30,7 +30,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, AppEvnts,
-  JclSysUtils,%if SendEMail JclMapi,%endif JclDebug;
+  JclSysUtils,%if SendEMail JclMapi,%endif %if UnitVersioning JclUnitVersioning, JclUnitVersioningProviders,%endif JclDebug;
 
 const
   UM_CREATEDETAILS = WM_USER + $100;
@@ -109,7 +109,7 @@ resourcestring
   RsScreenRes = 'Display  : %dx%d pixels, %d bpp';
   RsActiveControl = 'Active Controls hierarchy:';
   RsThread = 'Thread: %s';
-  RsMissingVersionInfo = '(no version info)';
+  RsMissingVersionInfo = '(no module version info)';
 %if AllThreads  RsMainThreadCallStack = 'Call stack for main thread';
   RsThreadCallStack = 'Call stack for thread %s';%endif
   RsErrorMessage = 'There was an error during the execution of this program.' + NativeLineBreak +
@@ -119,6 +119,7 @@ resourcestring
                    'You may send it to the application vendor, helping him to understand what had happened.' + NativeLineBreak +
                    ' Application title: %s' + NativeLineBreak +
                    ' Application file: %s';
+%if UnitVersioning  RsUnitVersioningIntro = 'Unit versioning information:';%endif
 
 var
   %FORMNAME%: T%FORMNAME%;
@@ -310,6 +311,10 @@ var
 %if AllThreads  ThreadList: TJclDebugThreadList;
   AThreadID: DWORD;%endif %endif
   PETarget: TJclPeTarget;
+%if UnitVersioning  UnitVersioning: TUnitVersioning;
+  UnitVersioningModule: TUnitVersioningModule;
+  UnitVersion: TUnitVersion;
+  ModuleIndex, UnitIndex: Integer;%endif
 begin
   SL := TStringList.Create;
   try
@@ -402,6 +407,8 @@ begin
 %if ModuleList    // Modules list
     if LoadedModulesList(SL, GetCurrentProcessId) then
     begin
+%if UnitVersioning      UnitVersioning := GetUnitVersioning;
+      UnitVersioning.RegisterProvider(TJclDefaultUnitVersioningProvider);%endif
       DetailsMemo.Lines.Add(RsModulesList);
       SL.CustomSort(SortModulesListByAddressCompare);
       for I := 0 to SL.Count - 1 do
@@ -435,6 +442,20 @@ begin
           end
         else
           DetailsMemo.Lines.Add(ImageBaseStr + RsMissingVersionInfo);
+%if UnitVersioning        for ModuleIndex := 0 to UnitVersioning.ModuleCount - 1 do
+        begin
+          UnitVersioningModule := UnitVersioning.Modules[ModuleIndex];
+          if UnitVersioningModule.Instance = ModuleBase then
+          begin
+            if UnitVersioningModule.Count > 0 then
+              DetailsMemo.Lines.Add(StrRepeat(' ', 11) + RsUnitVersioningIntro);
+            for UnitIndex := 0 to UnitVersioningModule.Count - 1 do
+            begin
+              UnitVersion := UnitVersioningModule.Items[UnitIndex];
+              DetailsMemo.Lines.Add(Format('%s%s %s %s %s', [StrRepeat(' ', 13), UnitVersion.LogPath, UnitVersion.RCSfile, UnitVersion.Revision, UnitVersion.Date]));
+            end;
+          end;
+        end;%endif
       end;
       NextDetailBlock;
     end;

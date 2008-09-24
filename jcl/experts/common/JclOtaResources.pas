@@ -150,6 +150,7 @@ resourcestring
   RsLogTrace = '&Add crash data to log file';
   RsHookDll = '&Hook DLL';
   RsModuleList = '&Module list';
+  RsUnitVersioning = '&Unit versioning';
   RsOSInfo = '&Operating system informations';
   RsActiveControls = '&List of active controls';
   RsMainThreadOnly = '&Catch only exceptions of main thread';

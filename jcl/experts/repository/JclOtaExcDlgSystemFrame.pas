@@ -51,7 +51,9 @@ type
     CheckBoxOSInfo: TCheckBox;
     CheckBoxActiveControls: TCheckBox;
     CheckBoxMainThreadOnly: TCheckBox;
+    CheckBoxUnitVersioning: TCheckBox;
     procedure CheckBoxLogFileClick(Sender: TObject);
+    procedure CheckBoxModuleListClick(Sender: TObject);
   private
     FParams: TJclOtaExcDlgParams;
     procedure UpdateLogEdits;
@@ -90,6 +92,11 @@ begin
   UpdateLogEdits;
 end;
 
+procedure TJclOtaExcDlgSystemPage.CheckBoxModuleListClick(Sender: TObject);
+begin
+  CheckBoxUnitVersioning.Enabled := CheckBoxModuleList.Checked;
+end;
+
 constructor TJclOtaExcDlgSystemPage.Create(AOwner: TComponent;
   AParams: TJclOtaExcDlgParams);
 begin
@@ -102,6 +109,7 @@ begin
   CheckBoxLogFile.Caption := RsLogTrace;
   LabelLogFileName.Caption := RsFileName;
   CheckBoxModuleList.Caption := RsModuleList;
+  CheckBoxUnitVersioning.Caption := RsUnitVersioning;
   CheckBoxOSInfo.Caption := RsOSInfo;
   CheckBoxActiveControls.Caption := RsActiveControls;
   CheckBoxMainThreadOnly.Caption := RsMainThreadOnly;
@@ -121,6 +129,7 @@ begin
   CheckBoxLogFile.Checked := Params.LogFile;
   EditLogFileName.Text := Params.LogFileName;
   CheckBoxModuleList.Checked := Params.ModuleList;
+  CheckBoxUnitVersioning.Checked := Params.UnitVersioning;
   CheckBoxOSInfo.Checked := Params.OSInfo;
   CheckBoxActiveControls.Checked := Params.ActiveControls;
   CheckBoxMainThreadOnly.Checked := Params.MainThreadOnly;
@@ -138,6 +147,7 @@ begin
   Params.LogFile := CheckBoxLogFile.Checked;
   Params.LogFileName := EditLogFileName.Text;
   Params.ModuleList := CheckBoxModuleList.Checked;
+  Params.UnitVersioning := CheckBoxUnitVersioning.Checked;
   Params.OSInfo := CheckBoxOSInfo.Checked;
   Params.ActiveControls := CheckBoxActiveControls.Checked;
   Params.MainThreadOnly := CheckBoxMainThreadOnly.Checked;
