@@ -1324,6 +1324,7 @@ procedure Stretch(NewWidth, NewHeight: Cardinal; Filter: TResamplingFilter;
   Radius: Single; Source: TGraphic; Target: TBitmap);
 var
   Temp: TBitmap;
+  OriginalPixelFormat: TPixelFormat;
 begin
   if Source.Empty then
     Exit;               // do nothing
@@ -1336,6 +1337,7 @@ begin
     // To allow Source = Target, the following assignment needs to be done initially
     Temp.Assign(Source);
     Temp.PixelFormat := pf32bit;
+    OriginalPixelFormat := Target.PixelFormat; //Save format
 
     Target.FreeImage;
     Target.PixelFormat := pf32bit;
@@ -1344,6 +1346,8 @@ begin
 
     {$IFDEF VCL}if not Target.Empty then{$ENDIF VCL}
       DoStretch(FilterList[Filter], Radius, Temp, Target);
+
+    Target.PixelFormat := OriginalPixelFormat; //Restore original PixelFormat
   finally
     Temp.Free;
   end;
