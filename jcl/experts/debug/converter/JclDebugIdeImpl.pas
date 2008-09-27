@@ -220,18 +220,10 @@ var
   JCLWizardIndex: Integer = -1;
 
 procedure JclWizardTerminate;
-var
-  OTAWizardServices: IOTAWizardServices;
 begin
   try
     if JCLWizardIndex <> -1 then
-    begin
-      Supports(BorlandIDEServices, IOTAWizardServices, OTAWizardServices);
-      if not Assigned(OTAWizardServices) then
-        raise EJclExpertException.CreateTrace(RsENoWizardServices);
-
-      OTAWizardServices.RemoveWizard(JCLWizardIndex);
-    end;
+      TJclOTAExpertBase.GetOTAWizardServices.RemoveWizard(JCLWizardIndex);
   except
     on ExceptionObj: TObject do
     begin
@@ -243,17 +235,11 @@ end;
 function JCLWizardInit(const BorlandIDEServices: IBorlandIDEServices;
     RegisterProc: TWizardRegisterProc;
     var TerminateProc: TWizardTerminateProc): Boolean stdcall;
-var
-  OTAWizardServices: IOTAWizardServices;
 begin
   try
     TerminateProc := JclWizardTerminate;
 
-    Supports(BorlandIDEServices, IOTAWizardServices, OTAWizardServices);
-    if not Assigned(OTAWizardServices) then
-      raise EJclExpertException.CreateTrace(RsENoWizardServices);
-
-    JCLWizardIndex := OTAWizardServices.AddWizard(TJclDebugExtension.Create);
+    JCLWizardIndex := TJclOTAExpertBase.GetOTAWizardServices.AddWizard(TJclDebugExtension.Create);
 
     Result := True;
   except
@@ -307,6 +293,7 @@ var
   Succ: Boolean;
   MapFileSize, JclDebugDataSize, LineNumberErrors, C: Integer;
   EnabledActions: TDebugExpertActions;
+  OTAMessageServices: IOTAMessageServices;
 
   procedure OutputToolMessage(const Msg: string);
   begin
@@ -321,6 +308,7 @@ begin
   if JclDisablePostCompilationProcess or (FCurrentProject = nil) then
     Exit;
 
+  OTAMessageServices := GetOTAMessageServices;
   EnabledActions := GetProjectActions(FCurrentProject);
   if EnabledActions <> [] then
   begin
@@ -552,25 +540,25 @@ end;
 
 procedure TJclDebugExtension.DebugExpertActionExecute(Sender: TObject);
 var
-  AProject: IOTAProject;
+  ActiveProject: IOTAProject;
 begin
   try
-    AProject := ActiveProject;
-    if AProject <> nil then
+    ActiveProject := GetActiveProject;
+    if ActiveProject <> nil then
     begin
-      if ProjectActions[AProject] <> [] then
+      if ProjectActions[ActiveProject] <> [] then
       begin
         // disable all actions
-        ProjectStates[deGenerateJdbg, AProject] := DisableDebugExpertState(ProjectStates[deGenerateJdbg, AProject]);
-        ProjectStates[deInsertJdbg, AProject] := DisableDebugExpertState(ProjectStates[deInsertJdbg, AProject]);
-        ProjectStates[deDeleteMapFile, AProject] := DisableDebugExpertState(ProjectStates[deDeleteMapFile, AProject]);
+        ProjectStates[deGenerateJdbg, ActiveProject] := DisableDebugExpertState(ProjectStates[deGenerateJdbg, ActiveProject]);
+        ProjectStates[deInsertJdbg, ActiveProject] := DisableDebugExpertState(ProjectStates[deInsertJdbg, ActiveProject]);
+        ProjectStates[deDeleteMapFile, ActiveProject] := DisableDebugExpertState(ProjectStates[deDeleteMapFile, ActiveProject]);
       end
       else
       begin
         // enable all actions
-        ProjectStates[deGenerateJdbg, AProject] := EnableDebugExpertState(ProjectStates[deGenerateJdbg, AProject]);
-        ProjectStates[deInsertJdbg, AProject] := EnableDebugExpertState(ProjectStates[deInsertJdbg, AProject]);
-        ProjectStates[deDeleteMapFile, AProject] := EnableDebugExpertState(ProjectStates[deDeleteMapFile, AProject]);
+        ProjectStates[deGenerateJdbg, ActiveProject] := EnableDebugExpertState(ProjectStates[deGenerateJdbg, ActiveProject]);
+        ProjectStates[deInsertJdbg, ActiveProject] := EnableDebugExpertState(ProjectStates[deInsertJdbg, ActiveProject]);
+        ProjectStates[deDeleteMapFile, ActiveProject] := EnableDebugExpertState(ProjectStates[deDeleteMapFile, ActiveProject]);
       end;
     end;
   except
@@ -586,16 +574,16 @@ procedure TJclDebugExtension.DebugExpertActionUpdate(Sender: TObject);
 var
   AAction: TCustomAction;
   AEnabled: Boolean;
-  AProject: IOTAProject;
+  ActiveProject: IOTAProject;
 begin
   try
     AAction := Sender as TCustomAction;
-    AProject := ActiveProject;
-    AEnabled := AProject <> nil;
+    ActiveProject := GetActiveProject;
+    AEnabled := ActiveProject <> nil;
     AAction.Enabled := AEnabled;
     if AEnabled then
     begin
-      AAction.Checked := ProjectActions[AProject] <> [];
+      AAction.Checked := ProjectActions[ActiveProject] <> [];
       AAction.ImageIndex := FDebugImageIndex;
     end
     else
@@ -611,12 +599,12 @@ end;
 procedure TJclDebugExtension.DebugExpertMenuClick(Sender: TObject);
 var
   EnabledActions: TDebugExpertActions;
-  AProject: IOTAProject;
+  ActiveProject: IOTAProject;
 begin
   try
-    AProject := ActiveProject;
-    if AProject <> nil then
-      EnabledActions := ProjectActions[AProject]
+    ActiveProject := GetActiveProject;
+    if ActiveProject <> nil then
+      EnabledActions := ProjectActions[ActiveProject]
     else
       EnabledActions := [];
     FGenerateJdbgItem.Checked := deGenerateJdbg in EnabledActions;
@@ -635,18 +623,18 @@ var
   CheckTag, Index: Integer;
   APopupMenu: TPopupMenu;
   AMenuItem: TMenuItem;
-  AProject: IOTAProject;
+  ActiveProject: IOTAProject;
   TestState: TDebugExpertState;
   IndexAction: TDebugExpertAction;
 begin
   try
-    AProject := ActiveProject;
-    if AProject <> nil then
+    ActiveProject := GetActiveProject;
+    if ActiveProject <> nil then
     begin
-      TestState := ProjectStates[Low(TDebugExpertAction), AProject];
+      TestState := ProjectStates[Low(TDebugExpertAction), ActiveProject];
       CheckTag := DebugExpertStateToInt(TestState);
       for IndexAction := Succ(Low(TDebugExpertAction)) to High(TDebugExpertAction) do
-        if TestState <> ProjectStates[IndexAction, AProject] then
+        if TestState <> ProjectStates[IndexAction, ActiveProject] then
       begin
         CheckTag := -1;
         Break;
@@ -667,7 +655,7 @@ begin
     for Index := 0 to APopupMenu.Items.Count - 1 do
     begin
       AMenuItem := APopupMenu.Items.Items[Index];
-      AMenuItem.Enabled := (AProject <> nil) or (AMenuItem.Tag = DebugExpertStateToInt(deAlwaysDisabled))
+      AMenuItem.Enabled := (ActiveProject <> nil) or (AMenuItem.Tag = DebugExpertStateToInt(deAlwaysDisabled))
         or (AMenuItem.Tag = DebugExpertStateToInt(deAlwaysEnabled));
       AMenuItem.Checked := AMenuItem.Tag = CheckTag;
     end;
@@ -682,16 +670,16 @@ end;
 procedure TJclDebugExtension.DebugExpertSubMenuClick(Sender: TObject);
 var
   AState: TDebugExpertState;
-  AProject: IOTAProject;
+  ActiveProject: IOTAProject;
 begin
   try
     AState := IntToDebugExpertState((Sender as TComponent).Tag);
-    AProject := ActiveProject;
-    if AProject <> nil then
+    ActiveProject := GetActiveProject;
+    if ActiveProject <> nil then
     begin
-      ProjectStates[deGenerateJdbg, AProject] := AState;
-      ProjectStates[deInsertJdbg, AProject] := AState;
-      ProjectStates[deDeleteMapFile, AProject] := AState;
+      ProjectStates[deGenerateJdbg, ActiveProject] := AState;
+      ProjectStates[deInsertJdbg, ActiveProject] := AState;
+      ProjectStates[deDeleteMapFile, ActiveProject] := AState;
     end
     else
     begin
@@ -709,12 +697,12 @@ end;
 
 procedure TJclDebugExtension.DeleteMapFileActionExecute(Sender: TObject);
 var
-  AProject: IOTAProject;
+  ActiveProject: IOTAProject;
 begin
   try
-    AProject := ActiveProject;
-    if AProject <> nil then
-      ProjectStates[deDeleteMapFile, AProject] := ToggleDebugExpertState(ProjectStates[deDeleteMapFile, AProject])
+    ActiveProject := GetActiveProject;
+    if ActiveProject <> nil then
+      ProjectStates[deDeleteMapFile, ActiveProject] := ToggleDebugExpertState(ProjectStates[deDeleteMapFile, ActiveProject])
     else
       GlobalStates[deDeleteMapFile] := ToggleDebugExpertState(GlobalStates[deDeleteMapFile]);
   except
@@ -730,16 +718,16 @@ procedure TJclDebugExtension.DeleteMapFileActionUpdate(Sender: TObject);
 var
   AAction: TCustomAction;
   AEnabled: Boolean;
-  AProject: IOTAProject;
+  ActiveProject: IOTAProject;
 begin
   try
     AAction := Sender as TCustomAction;
-    AProject := ActiveProject;
-    AEnabled := AProject <> nil;
+    ActiveProject := GetActiveProject;
+    AEnabled := ActiveProject <> nil;
     AAction.Enabled := AEnabled;
     if AEnabled then
     begin
-      AAction.Checked := ProjectStates[deDeleteMapFile, AProject] in [deAlwaysEnabled, deProjectEnabled];
+      AAction.Checked := ProjectStates[deDeleteMapFile, ActiveProject] in [deAlwaysEnabled, deProjectEnabled];
       AAction.ImageIndex := FDeleteMapFileImageIndex;
     end
     else
@@ -759,19 +747,19 @@ procedure TJclDebugExtension.DeleteMapFileMenuClick(Sender: TObject);
 var
   AMenuItem, BMenuItem: TMenuItem;
   CheckTag, Index: Integer;
-  AProject: IOTAProject;
+  ActiveProject: IOTAProject;
 begin
   try
-    AProject := ActiveProject;
-    if AProject <> nil then
-      CheckTag := DebugExpertStateToInt(ProjectStates[deDeleteMapFile, AProject])
+    ActiveProject := GetActiveProject;
+    if ActiveProject <> nil then
+      CheckTag := DebugExpertStateToInt(ProjectStates[deDeleteMapFile, ActiveProject])
     else
       CheckTag := DebugExpertStateToInt(GlobalStates[deDeleteMapFile]);
     AMenuItem := Sender as TMenuItem;
     for Index := 0 to AMenuItem.Count - 1 do
     begin
       BMenuItem := AMenuItem.Items[Index];
-      BMenuItem.Enabled := (AProject <> nil) or (BMenuItem.Tag = DebugExpertStateToInt(deAlwaysDisabled))
+      BMenuItem.Enabled := (ActiveProject <> nil) or (BMenuItem.Tag = DebugExpertStateToInt(deAlwaysDisabled))
         or (BMenuItem.Tag = DebugExpertStateToInt(deAlwaysEnabled));
       BMenuItem.Checked := BMenuItem.Tag = CheckTag;
     end;
@@ -788,19 +776,19 @@ var
   AMenu: TPopupMenu;
   AMenuItem: TMenuItem;
   CheckTag, Index: Integer;
-  AProject: IOTAProject;
+  ActiveProject: IOTAProject;
 begin
   try
-    AProject := ActiveProject;
-    if AProject <> nil then
-      CheckTag := DebugExpertStateToInt(ProjectStates[deDeleteMapFile, AProject])
+    ActiveProject := GetActiveProject;
+    if ActiveProject <> nil then
+      CheckTag := DebugExpertStateToInt(ProjectStates[deDeleteMapFile, ActiveProject])
     else
       CheckTag := DebugExpertStateToInt(GlobalStates[deDeleteMapFile]);
     AMenu := Sender as TPopupMenu;
     for Index := 0 to AMenu.Items.Count - 1 do
     begin
       AMenuItem := AMenu.Items.Items[Index];
-      AMenuItem.Enabled := (AProject <> nil) or (AMenuItem.Tag = DebugExpertStateToInt(deAlwaysDisabled))
+      AMenuItem.Enabled := (ActiveProject <> nil) or (AMenuItem.Tag = DebugExpertStateToInt(deAlwaysDisabled))
         or (AMenuItem.Tag = DebugExpertStateToInt(deAlwaysEnabled));
       AMenuItem.Checked := AMenuItem.Tag = CheckTag;
     end;
@@ -815,15 +803,15 @@ end;
 procedure TJclDebugExtension.DeleteMapFileSubMenuClick(Sender: TObject);
 var
   AState: TDebugExpertState;
-  AProject: IOTAProject;
+  ActiveProject: IOTAProject;
 begin
   try
     AState := IntToDebugExpertState((Sender as TComponent).Tag);
-    AProject := ActiveProject;
-    if AProject <> nil then
-      ProjectStates[deDeleteMapFile, AProject] := AState
+    ActiveProject := GetActiveProject;
+    if ActiveProject <> nil then
+      ProjectStates[deDeleteMapFile, ActiveProject] := AState
     else
-      GlobalStates[deDeleteMapFile] := AState; 
+      GlobalStates[deDeleteMapFile] := AState;
   except
     on ExceptionObj: TObject do
     begin
@@ -834,12 +822,12 @@ end;
 
 procedure TJclDebugExtension.GenerateJdbgActionExecute(Sender: TObject);
 var
-  AProject: IOTAProject;
+  ActiveProject: IOTAProject;
 begin
   try
-    AProject := ActiveProject;
-    if AProject <> nil then
-      ProjectStates[deGenerateJdbg, AProject] := ToggleDebugExpertState(ProjectStates[deGenerateJdbg, AProject])
+    ActiveProject := GetActiveProject;
+    if ActiveProject <> nil then
+      ProjectStates[deGenerateJdbg, ActiveProject] := ToggleDebugExpertState(ProjectStates[deGenerateJdbg, ActiveProject])
     else
       GlobalStates[deGenerateJdbg] := ToggleDebugExpertState(GlobalStates[deGenerateJdbg]);
   except
@@ -855,16 +843,16 @@ procedure TJclDebugExtension.GenerateJdbgActionUpdate(Sender: TObject);
 var
   AAction: TCustomAction;
   AEnabled: Boolean;
-  AProject: IOTAProject;
+  ActiveProject: IOTAProject;
 begin
   try
     AAction := Sender as TCustomAction;
-    AProject := ActiveProject;
-    AEnabled := AProject <> nil;
+    ActiveProject := GetActiveProject;
+    AEnabled := ActiveProject <> nil;
     AAction.Enabled := AEnabled;
     if AEnabled then
     begin
-      AAction.Checked := ProjectStates[deGenerateJdbg, AProject] in [deAlwaysEnabled, deProjectEnabled];
+      AAction.Checked := ProjectStates[deGenerateJdbg, ActiveProject] in [deAlwaysEnabled, deProjectEnabled];
       AAction.ImageIndex := FGenerateJdbgImageIndex;
     end
     else
@@ -884,19 +872,19 @@ procedure TJclDebugExtension.GenerateJdbgMenuClick(Sender: TObject);
 var
   AMenuItem, BMenuItem: TMenuItem;
   CheckTag, Index: Integer;
-  AProject: IOTAProject;
+  ActiveProject: IOTAProject;
 begin
   try
-    AProject := ActiveProject;
-    if AProject <> nil then
-      CheckTag := DebugExpertStateToInt(ProjectStates[deGenerateJdbg, AProject])
+    ActiveProject := GetActiveProject;
+    if ActiveProject <> nil then
+      CheckTag := DebugExpertStateToInt(ProjectStates[deGenerateJdbg, ActiveProject])
     else
       CheckTag := DebugExpertStateToInt(GlobalStates[deGenerateJdbg]);
     AMenuItem := Sender as TMenuItem;
     for Index := 0 to AMenuItem.Count - 1 do
     begin
       BMenuItem := AMenuItem.Items[Index];
-      BMenuItem.Enabled := (AProject <> nil) or (BMenuItem.Tag = DebugExpertStateToInt(deAlwaysDisabled))
+      BMenuItem.Enabled := (ActiveProject <> nil) or (BMenuItem.Tag = DebugExpertStateToInt(deAlwaysDisabled))
         or (BMenuItem.Tag = DebugExpertStateToInt(deAlwaysEnabled));
       BMenuItem.Checked := BMenuItem.Tag = CheckTag;
     end;
@@ -913,19 +901,19 @@ var
   AMenu: TPopupMenu;
   AMenuItem: TMenuItem;
   CheckTag, Index: Integer;
-  AProject: IOTAProject;
+  ActiveProject: IOTAProject;
 begin
   try
-    AProject := ActiveProject;
-    if AProject <> nil then
-      CheckTag := DebugExpertStateToInt(ProjectStates[deGenerateJdbg, AProject])
+    ActiveProject := GetActiveProject;
+    if ActiveProject <> nil then
+      CheckTag := DebugExpertStateToInt(ProjectStates[deGenerateJdbg, ActiveProject])
     else
       CheckTag := DebugExpertStateToInt(GlobalStates[deGenerateJdbg]);
     AMenu := Sender as TPopupMenu;
     for Index := 0 to AMenu.Items.Count - 1 do
     begin
       AMenuItem := AMenu.Items.Items[Index];
-      AMenuItem.Enabled := (AProject <> nil) or (AMenuItem.Tag = DebugExpertStateToInt(deAlwaysDisabled))
+      AMenuItem.Enabled := (ActiveProject <> nil) or (AMenuItem.Tag = DebugExpertStateToInt(deAlwaysDisabled))
         or (AMenuItem.Tag = DebugExpertStateToInt(deAlwaysEnabled));
       AMenuItem.Checked := AMenuItem.Tag = CheckTag;
     end;
@@ -940,13 +928,13 @@ end;
 procedure TJclDebugExtension.GenerateJdbgSubMenuClick(Sender: TObject);
 var
   AState: TDebugExpertState;
-  AProject: IOTAProject;
+  ActiveProject: IOTAProject;
 begin
   try
     AState := IntToDebugExpertState((Sender as TComponent).Tag);
-    AProject := ActiveProject;
-    if AProject <> nil then
-      ProjectStates[deGenerateJdbg, AProject] := AState
+    ActiveProject := GetActiveProject;
+    if ActiveProject <> nil then
+      ProjectStates[deGenerateJdbg, ActiveProject] := AState
     else
       GlobalStates[deGenerateJdbg] := AState;
   except
@@ -1019,12 +1007,12 @@ end;
 
 procedure TJclDebugExtension.InsertJdbgActionExecute(Sender: TObject);
 var
-  AProject: IOTAProject;
+  ActiveProject: IOTAProject;
 begin
   try
-    AProject := ActiveProject;
-    if AProject <> nil then
-      ProjectStates[deInsertJdbg, AProject] := ToggleDebugExpertState(ProjectStates[deInsertJdbg, AProject])
+    ActiveProject := GetActiveProject;
+    if ActiveProject <> nil then
+      ProjectStates[deInsertJdbg, ActiveProject] := ToggleDebugExpertState(ProjectStates[deInsertJdbg, ActiveProject])
     else
       GlobalStates[deInsertJdbg] := ToggleDebugExpertState(GlobalStates[deInsertJdbg]);
   except
@@ -1040,16 +1028,16 @@ procedure TJclDebugExtension.InsertJdbgActionUpdate(Sender: TObject);
 var
   AAction: TCustomAction;
   AEnabled: Boolean;
-  AProject: IOTAProject;
+  ActiveProject: IOTAProject;
 begin
   try
     AAction := Sender as TCustomAction;
-    AProject := ActiveProject;
-    AEnabled := AProject <> nil;
+    ActiveProject := GetActiveProject;
+    AEnabled := ActiveProject <> nil;
     AAction.Enabled := AEnabled;
     if AEnabled then
     begin
-      AAction.Checked := ProjectStates[deInsertJdbg, AProject] in [deAlwaysEnabled, deProjectEnabled];
+      AAction.Checked := ProjectStates[deInsertJdbg, ActiveProject] in [deAlwaysEnabled, deProjectEnabled];
       AAction.ImageIndex := FInsertJdbgImageIndex
     end
     else
@@ -1069,19 +1057,19 @@ procedure TJclDebugExtension.InsertJdbgMenuClick(Sender: TObject);
 var
   AMenuItem, BMenuItem: TMenuItem;
   CheckTag, Index: Integer;
-  AProject: IOTAProject;
+  ActiveProject: IOTAProject;
 begin
   try
-    AProject := ActiveProject;
-    if AProject <> nil then
-      CheckTag := DebugExpertStateToInt(ProjectStates[deInsertJdbg, AProject])
+    ActiveProject := GetActiveProject;
+    if ActiveProject <> nil then
+      CheckTag := DebugExpertStateToInt(ProjectStates[deInsertJdbg, ActiveProject])
     else
       CheckTag := DebugExpertStateToInt(GlobalStates[deInsertJdbg]);
     AMenuItem := Sender as TMenuItem;
     for Index := 0 to AMenuItem.Count - 1 do
     begin
       BMenuItem := AMenuItem.Items[Index];
-      BMenuItem.Enabled := (AProject <> nil) or (BMenuItem.Tag = DebugExpertStateToInt(deAlwaysDisabled))
+      BMenuItem.Enabled := (ActiveProject <> nil) or (BMenuItem.Tag = DebugExpertStateToInt(deAlwaysDisabled))
         or (BMenuItem.Tag = DebugExpertStateToInt(deAlwaysEnabled));
       BMenuItem.Checked := BMenuItem.Tag = CheckTag;
     end;
@@ -1098,19 +1086,19 @@ var
   AMenu: TPopupMenu;
   AMenuItem: TMenuItem;
   CheckTag, Index: Integer;
-  AProject: IOTAProject;
+  ActiveProject: IOTAProject;
 begin
   try
-    AProject := ActiveProject;
-    if AProject <> nil then
-      CheckTag := DebugExpertStateToInt(ProjectStates[deInsertJdbg, AProject])
+    ActiveProject := GetActiveProject;
+    if ActiveProject <> nil then
+      CheckTag := DebugExpertStateToInt(ProjectStates[deInsertJdbg, ActiveProject])
     else
       CheckTag := DebugExpertStateToInt(GlobalStates[deInsertJdbg]);
     AMenu := Sender as TPopupMenu;
     for Index := 0 to AMenu.Items.Count - 1 do
     begin
       AMenuItem := AMenu.Items.Items[Index];
-      AMenuItem.Enabled := (AProject <> nil) or (AMenuItem.Tag = DebugExpertStateToInt(deAlwaysDisabled))
+      AMenuItem.Enabled := (ActiveProject <> nil) or (AMenuItem.Tag = DebugExpertStateToInt(deAlwaysDisabled))
         or (AMenuItem.Tag = DebugExpertStateToInt(deAlwaysEnabled));
       AMenuItem.Checked := AMenuItem.Tag = CheckTag;
     end;
@@ -1125,13 +1113,13 @@ end;
 procedure TJclDebugExtension.InsertJdbgSubMenuClick(Sender: TObject);
 var
   AState: TDebugExpertState;
-  AProject: IOTAProject;
+  ActiveProject: IOTAProject;
 begin
   try
     AState := IntToDebugExpertState((Sender as TComponent).Tag);
-    AProject := ActiveProject;
-    if AProject <> nil then
-      ProjectStates[deInsertJdbg, AProject] := AState
+    ActiveProject := GetActiveProject;
+    if ActiveProject <> nil then
+      ProjectStates[deInsertJdbg, ActiveProject] := AState
     else
       GlobalStates[deInsertJdbg] := AState;
   except
@@ -1235,8 +1223,17 @@ var
   IDEActionList: TActionList;
   I: Integer;
   ImageBmp: TBitmap;
+  NTAServices: INTAServices;
+  OTAServices: IOTAServices;
+  {$IFDEF BDS4_UP}
+  OTAProjectManager: IOTAProjectManager;
+  {$ENDIF BDS4_UP}
 begin
   inherited RegisterCommands;
+
+  NTAServices := GetNTAServices;
+  OTAServices := GetOTAServices;
+
   IDEActionList := TActionList(NTAServices.ActionList);
   IDEMainMenu := NTAServices.MainMenu;
   ImageBmp := TBitmap.Create;
@@ -1351,10 +1348,11 @@ begin
   end;
 
   // register notifiers
-  FIDENotifierIndex := Services.AddNotifier(TIdeNotifier.Create(Self));
+  FIDENotifierIndex := OTAServices.AddNotifier(TIdeNotifier.Create(Self));
   {$IFDEF BDS4_UP}
-  FProjectManagerNotifierIndex := ProjectManager.AddMenuCreatorNotifier(TProjectManagerNotifier.Create(Self,
-    NTAServices, ProjectManager));
+  OTAProjectManager := GetOTAProjectManager;
+  FProjectManagerNotifierIndex := OTAProjectManager.AddMenuCreatorNotifier(TProjectManagerNotifier.Create(Self,
+    NTAServices, OTAProjectManager));
   {$ENDIF BDS4_UP}
 
   LoadExpertValues;
@@ -1421,10 +1419,10 @@ begin
   inherited UnregisterCommands;
   {$IFDEF BDS4_UP}
   if FProjectManagerNotifierIndex <> -1 then
-    ProjectManager.RemoveMenuCreatorNotifier(FProjectManagerNotifierIndex);
+    GetOTAProjectManager.RemoveMenuCreatorNotifier(FProjectManagerNotifierIndex);
   {$ENDIF BDS4_UP}
   if FIDENotifierIndex <> -1 then
-    Services.RemoveNotifier(FIDENotifierIndex);
+    GetOTAServices.RemoveNotifier(FIDENotifierIndex);
   // save settings
   SaveExpertValues;
 

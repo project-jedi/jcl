@@ -62,7 +62,6 @@ type
     FVersionCtrlMenu: TMenuItem;
     FActions: array [TJclVersionControlActionType] of TCustomAction;
     FLastPlugin: TJclVersionControlPlugin;
-    FModuleServices: IOTAModuleServices;
     FHideActions: Boolean;
     FIconType: Integer;
     FActOnTopSandbox: Boolean;
@@ -94,7 +93,6 @@ type
     function SaveModules(const FileName: string;
       const IncludeSubDirectories: Boolean): Boolean;
 
-    property ModuleServices: IOTAModuleServices read FModuleServices;
     property ActOnTopSandbox: Boolean read FActOnTopSandbox write FActOnTopSandbox;
     property DisableActions: Boolean read FDisableActions write FDisableActions;
     property HideActions: Boolean read FHideActions write FHideActions;
@@ -160,18 +158,10 @@ var
   JCLWizardIndex: Integer = -1;
 
 procedure JclWizardTerminate;
-var
-  OTAWizardServices: IOTAWizardServices;
 begin
   try
     if JCLWizardIndex <> -1 then
-    begin
-      Supports(BorlandIDEServices, IOTAWizardServices, OTAWizardServices);
-      if not Assigned(OTAWizardServices) then
-        raise EJclExpertException.CreateTrace(RsENoWizardServices);
-
-      OTAWizardServices.RemoveWizard(JCLWizardIndex);
-    end;
+      TJclOTAExpertBase.GetOTAWizardServices.RemoveWizard(JCLWizardIndex);
   except
     on ExceptionObj: TObject do
     begin
@@ -183,17 +173,11 @@ end;
 function JCLWizardInit(const BorlandIDEServices: IBorlandIDEServices;
     RegisterProc: TWizardRegisterProc;
     var TerminateProc: TWizardTerminateProc): Boolean stdcall;
-var
-  OTAWizardServices: IOTAWizardServices;
 begin
   try
     TerminateProc := JclWizardTerminate;
 
-    Supports(BorlandIDEServices, IOTAWizardServices, OTAWizardServices);
-    if not Assigned(OTAWizardServices) then
-      raise EJclExpertException.CreateTrace(RsENoWizardServices);
-
-    JCLWizardIndex := OTAWizardServices.AddWizard(TJclVersionControlExpert.Create);
+    JCLWizardIndex := TJclOTAExpertBase.GetOTAWizardServices.AddWizard(TJclVersionControlExpert.Create);
 
     Result := True;
   except
@@ -291,51 +275,6 @@ begin
 end;
 
 //=== { TJclVersionControlExpert } ===================================================
-
-{function TJclVersionControlExpert.ActiveModuleFileName(ASave, IncludeFamily: Boolean): string;
-var
-  ModuleServices: IOTAModuleServices;
-  lModule: IOTAModule;
-  lExt, lFileName: string;
-begin
-  try
-    Supports(BorlandIDEServices, IOTAModuleServices, ModuleServices);
-    if not Assigned(ModuleServices) then
-      raise EJclExpertException.CreateTrace(RsENoModuleServices);
-    lModule := ModuleServices.CurrentModule;
-    if (lModule = nil) or (lModule.FileSystem <> '') then
-      Result := ''
-    else
-    begin
-      Result := lModule.CurrentEditor.FileName;
-      if ASave then
-        lModule.Save(False, False);
-      if IncludeFamily and (lModule.ModuleFileCount > 1) then
-      begin
-        lExt := ExtractFileExt(Result);
-        if (lExt = '.pas') then
-        begin
-          lFileName := ChangeFileExt(Result, '.dfm');
-          if FileExists(lFileName) then
-            Result := Result + '*' + lFileName;
-        end
-        else
-        if (lExt = '.dfm') then
-        begin
-          lFileName := ChangeFileExt(Result, '.pas');
-          if FileExists(lFileName) then
-            Result := Result + '*' + lFileName;
-        end
-      end;
-    end;
-  except
-    on ExceptionObj: TObject do
-    begin
-      JclExpertShowExceptionDialog(ExceptionObj);
-      raise;
-    end;
-  end;
-end;       }
 
 procedure TJclVersionControlExpert.ActionExecute(Sender: TObject);
 var
@@ -575,10 +514,6 @@ end;
 
 constructor TJclVersionControlExpert.Create;
 begin
-  Supports(BorlandIDEServices, IOTAModuleServices, FModuleServices);
-  if not Assigned(FModuleServices) then
-    raise EJclExpertException.CreateTrace(RsENoModuleServices);
-    
   FMenuOrganization := TStringList.Create;
 
   inherited Create('JclVersionControlExpert');
@@ -672,7 +607,7 @@ function TJclVersionControlExpert.GetCurrentFileName: string;
 var
   AOTAModule: IOTAModule;
 begin
-  AOTAModule := ModuleServices.CurrentModule;
+  AOTAModule := GetOTAModuleServices.CurrentModule;
   {$IFDEF COMPILER6_UP}
   //SC  20/03/2007
   if Assigned(AOTAModule) and Assigned(AOTAModule.CurrentEditor) then
@@ -1091,8 +1026,10 @@ var
   ControlAction: TJclVersionControlActionType;
   ControlActionInfo: TJclVersionControlActionInfo;
   PluginList: TJclVersionControlPluginList;
+  NTAServices: INTAServices;
 begin
   inherited RegisterCommands;
+  NTAServices := GetNTAServices;
 
   Settings.LoadStrings(JclVersionCtrlMenuOrganizationName, FMenuOrganization);
   SaveConfirmation := Settings.LoadBool(JclVersionCtrlSaveConfirmationName, True);
@@ -1183,12 +1120,14 @@ var
   Module: IOTAModule;
   Index: Integer;
   Save: Boolean;
+  OTAModuleServices: IOTAModuleServices;
 begin
   Result := True;
+  OTAModuleServices := GetOTAModuleServices;
 
-  for Index := 0 to ModuleServices.ModuleCount - 1 do
+  for Index := 0 to OTAModuleServices.ModuleCount - 1 do
   begin
-    Module := ModuleServices.Modules[Index];
+    Module := OTAModuleServices.Modules[Index];
 
     if Module.FileSystem <> '' then
     begin

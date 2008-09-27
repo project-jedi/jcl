@@ -112,18 +112,10 @@ var
   JCLWizardIndex: Integer;
 
 procedure JclWizardTerminate;
-var
-  OTAWizardServices: IOTAWizardServices;
 begin
   try
     if JCLWizardIndex <> -1 then
-    begin
-      Supports(BorlandIDEServices, IOTAWizardServices, OTAWizardServices);
-      if not Assigned(OTAWizardServices) then
-        raise EJclExpertException.CreateTrace(RsENoWizardServices);
-
-      OTAWizardServices.RemoveWizard(JCLWizardIndex);
-    end;
+      TJclOTAExpertBase.GetOTAWizardServices.RemoveWizard(JCLWizardIndex);
   except
     on ExceptionObj: TObject do
     begin
@@ -135,17 +127,11 @@ end;
 function JCLWizardInit(const BorlandIDEServices: IBorlandIDEServices;
     RegisterProc: TWizardRegisterProc;
     var TerminateProc: TWizardTerminateProc): Boolean stdcall;
-var
-  OTAWizardServices: IOTAWizardServices;
 begin
   try
     TerminateProc := JclWizardTerminate;
 
-    Supports(BorlandIDEServices, IOTAWizardServices, OTAWizardServices);
-    if not Assigned(OTAWizardServices) then
-      raise EJclExpertException.CreateTrace(RsENoWizardServices);
-
-    JCLWizardIndex := OTAWizardServices.AddWizard(TJclProjectAnalyzerExpert.Create);
+    JCLWizardIndex := TJclOTAExpertBase.GetOTAWizardServices.AddWizard(TJclProjectAnalyzerExpert.Create);
 
     Result := True;
   except
@@ -172,12 +158,12 @@ end;
 
 procedure TJclProjectAnalyzerExpert.ActionExecute(Sender: TObject);
 var
-  TempActiveProject: IOTAProject;
+  ActiveProject: IOTAProject;
 begin
   try
-    TempActiveProject := ActiveProject;
-    if TempActiveProject <> nil then
-      AnalyzeProject(TempActiveProject)
+    ActiveProject := GetActiveProject;
+    if ActiveProject <> nil then
+      AnalyzeProject(ActiveProject)
     else
       raise EJclExpertException.CreateTrace(RsENoActiveProject);
   except
@@ -191,16 +177,16 @@ end;
 
 procedure TJclProjectAnalyzerExpert.ActionUpdate(Sender: TObject);
 var
-  TempActiveProject: IOTAProject;
+  ActiveProject: IOTAProject;
   ProjectName: string;
 begin
   try
-    TempActiveProject := ActiveProject;
-    if Assigned(TempActiveProject) then
-      ProjectName := ExtractFileName(TempActiveProject.FileName)
+    ActiveProject := GetActiveProject;
+    if Assigned(ActiveProject) then
+      ProjectName := ExtractFileName(ActiveProject.FileName)
     else
       ProjectName := '';
-    FBuildAction.Enabled := Assigned(TempActiveProject);
+    FBuildAction.Enabled := Assigned(ActiveProject);
     if not FBuildAction.Enabled then
       ProjectName := RsProjectNone;
     FBuildAction.Caption := Format(RsAnalyzeActionCaption, [ProjectName]);
@@ -288,8 +274,14 @@ var
   IDEActionList: TActionList;
   I: Integer;
   ImageBmp: TBitmap;
+  NTAServices: INTAServices;
+  {$IFDEF BDS4_UP}
+  OTAProjectManager: IOTAProjectManager;
+  {$ENDIF BDS4_UP}
 begin
   inherited RegisterCommands;
+
+  NTAServices := GetNTAServices;
 
   // create actions
   FBuildAction := TAction.Create(nil);
@@ -308,8 +300,9 @@ begin
 
   // create project manager notifier
   {$IFDEF BDS4_UP}
-  FProjectManagerNotifierIndex := ProjectManager.AddMenuCreatorNotifier(TProjectManagerNotifier.Create(Self,
-    ProjectManager));
+  OTAProjectManager := GetOTAProjectManager;
+  FProjectManagerNotifierIndex := OTAProjectManager.AddMenuCreatorNotifier(TProjectManagerNotifier.Create(Self,
+    OTAProjectManager));
   {$ENDIF BDS4_UP}
 
   // create menu item
@@ -352,7 +345,7 @@ begin
   // remove notifier
   {$IFDEF BDS4_UP}
   if FProjectManagerNotifierIndex <> -1 then
-    ProjectManager.RemoveMenuCreatorNotifier(FProjectManagerNotifierIndex);
+    GetOTAProjectManager.RemoveMenuCreatorNotifier(FProjectManagerNotifierIndex);
   {$ENDIF BDS4_UP}
 
   UnregisterAction(FBuildAction);

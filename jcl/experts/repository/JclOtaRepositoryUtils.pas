@@ -65,9 +65,6 @@ type
     FItemType: TJclRepositoryItemType;
     FDesigner: string;
     FPersonality: string;
-    {$IFDEF BDS}
-    FOTAGalleryCategoryManager: IOTAGalleryCategoryManager;
-    {$ENDIF BDS}
   protected
     procedure Execute; override;
     function GetName: string; override;
@@ -82,11 +79,6 @@ type
     // override to customize
     procedure DoExecute(const Personality: TJclBorPersonality); virtual;
     function IsVisible(const Personality: TJclBorPersonality): Boolean; virtual;
-
-    {$IFDEF BDS}
-    property OTAGalleryCategoryManager: IOTAGalleryCategoryManager
-      read FOTAGalleryCategoryManager;
-    {$ENDIF BDS}
   public
     // IOTARepositoryWizard
     function GetAuthor: string;
@@ -211,12 +203,6 @@ begin
   FItemType := AItemType;
   FDesigner := ADesigner;
   FPersonality := APersonality;
-
-  {$IFDEF BDS}
-  Supports(BorlandIDEServices, IOTAGalleryCategoryManager, FOTAGalleryCategoryManager);
-  if not Assigned(FOTAGalleryCategoryManager) then
-    raise EJclExpertException.CreateTrace(RsENoGalleryCategoryManager);
-  {$ENDIF BDS}
 end;
 
 function TJclOTARepositoryExpert.CreateForm(const FormAncestor, FormName: string;
@@ -226,11 +212,11 @@ function TJclOTARepositoryExpert.CreateForm(const FormAncestor, FormName: string
 var
   AModuleCreator: IOTAModuleCreator;
 begin
-  AModuleCreator := TJclOtaFormCreator.Create(ActiveProject, FormAncestor,
+  AModuleCreator := TJclOtaFormCreator.Create(GetActiveProject, FormAncestor,
     FormName, FormFileName, FormContent, SourceFileName, SourceContent,
     HeaderFileName, HeaderContent);
   try
-    Result := OTAModuleServices.CreateModule(AModuleCreator);
+    Result := GetOTAModuleServices.CreateModule(AModuleCreator);
   finally
     AModuleCreator := nil;
   end;
@@ -238,9 +224,6 @@ end;
 
 destructor TJclOTARepositoryExpert.Destroy;
 begin
-  {$IFDEF BDS}
-  FOTAGalleryCategoryManager := nil;
-  {$ENDIF BDS}
   inherited Destroy;
 end;
 
@@ -292,7 +275,7 @@ end;
 function TJclOTARepositoryExpert.GetGalleryCategory: IOTAGalleryCategory;
 begin
   try
-    Result := OTAGalleryCategoryManager.FindCategory(FGalleryCategory);
+    Result := GetOTAGalleryCategoryManager.FindCategory(FGalleryCategory);
   except
     on ExceptionObj: TObject do
     begin

@@ -102,43 +102,15 @@ uses
   JclStrings, JclFileUtils, JclRegistry,
   JclOtaResources, JclOtaConsts, JclOtaTemplates, JclOtaExcDlgWizard;
 
-
-function IsPersonalityLoaded(const BorlandIDEServices: IBorlandIDEServices;
-  const PersonalityName: string): Boolean;
-{$IFDEF BDS}
-var
-  PersonalityServices: IOTAPersonalityServices;
-  Index: Integer;
-begin
-  Supports(BorlandIDEServices, IOTAPersonalityServices, PersonalityServices);
-  if not Assigned(PersonalityServices) then
-    raise EJclExpertException.CreateTrace(RsENoPersonalityServices);
-
-  Result := False;
-
-  for Index := 0 to PersonalityServices.PersonalityCount - 1 do
-    if SameText(PersonalityServices.Personalities[Index], PersonalityName) then
-  begin
-    Result := True;
-    Break;
-  end;
-end;
-{$ELSE BDS}
-begin
-  Result := True;
-end;
-{$ENDIF BDS}
-
-
 procedure Register;
 begin
   try
     {$IFDEF DELPHI}
-    if IsPersonalityLoaded(BorlandIDEServices, JclDelphiPersonality) then
+    if TJclOTAExpertBase.IsPersonalityLoaded(JclDelphiPersonality) then
       RegisterPackageWizard(TJclExcDlgDelphiExpert.Create);
     {$ENDIF DELPHI}
     {$IFDEF BCB}
-    if IsPersonalityLoaded(BorlandIDEServices, JclCBuilderPersonality) then
+    if TJclOTAExpertBase.IsPersonalityLoaded(JclCBuilderPersonality) then
       RegisterPackageWizard(TJclExcDlgCBuilderExpert.Create);
     {$ENDIF BCB}
   except
@@ -163,10 +135,8 @@ var
   OTAWizardServices: IOTAWizardServices;
 begin
   try
-    Supports(BorlandIDEServices, IOTAWizardServices, OTAWizardServices);
-    if not Assigned(OTAWizardServices) then
-      raise EJclExpertException.CreateTrace(RsENoWizardServices);
-
+    OTAWizardServices := TJclOTAExpertBase.GetOTAWizardServices;
+    
     {$IFDEF DELPHI}
     if JCLDelphiWizardIndex <> -1 then
       OTAWizardServices.RemoveWizard(JCLDelphiWizardIndex);
@@ -193,9 +163,7 @@ begin
   try
     TerminateProc := JclWizardTerminate;
 
-    Supports(BorlandIDEServices, IOTAWizardServices, OTAWizardServices);
-    if not Assigned(OTAWizardServices) then
-      raise EJclExpertException.CreateTrace(RsENoWizardServices);
+    OTAWizardServices := TJclOTAExpertBase.GetOTAWizardServices;
 
     {$IFDEF DELPHI}
     //if IsPersonalityLoaded(BorlandIDEServices, JclDelphiPersonality) then
@@ -248,10 +216,7 @@ var
   SourceExtension, SourceTemplate, SourceContent, SourceFileName: string;
   OTAServices: IOTAServices;
 begin
-  Supports(BorlandIDEServices,IOTAServices,OTAServices);
-  if not Assigned(OTAServices) then
-    raise EJclExpertException.CreateTrace(RsENoIDEServices);
-
+  OTAServices := GetOTAServices;
   JclSettingsKeyName := StrEnsureSuffix('\', OTAServices.GetBaseRegistryKey) + RegJclKey;
   TemplatePath := PathAddSeparator(RegReadString(HKCU, JclSettingsKeyName, 'RootDir')) + TemplateSubDir;
 

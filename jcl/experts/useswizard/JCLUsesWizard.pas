@@ -146,18 +146,10 @@ var
   JCLWizardIndex: Integer = -1;
 
 procedure JclWizardTerminate;
-var
-  OTAWizardServices: IOTAWizardServices;
 begin
   try
     if JCLWizardIndex <> -1 then
-    begin
-      Supports(BorlandIDEServices, IOTAWizardServices, OTAWizardServices);
-      if not Assigned(OTAWizardServices) then
-        raise EJclExpertException.CreateTrace(RsENoWizardServices);
-
-      OTAWizardServices.RemoveWizard(JCLWizardIndex);
-    end;
+      TJclOTAExpertBase.GetOTAWizardServices.RemoveWizard(JCLWizardIndex);
   except
     on ExceptionObj: TObject do
     begin
@@ -169,17 +161,11 @@ end;
 function JCLWizardInit(const BorlandIDEServices: IBorlandIDEServices;
     RegisterProc: TWizardRegisterProc;
     var TerminateProc: TWizardTerminateProc): Boolean stdcall;
-var
-  OTAWizardServices: IOTAWizardServices;
 begin
   try
     TerminateProc := JclWizardTerminate;
 
-    Supports(BorlandIDEServices, IOTAWizardServices, OTAWizardServices);
-    if not Assigned(OTAWizardServices) then
-      raise EJclExpertException.CreateTrace(RsENoWizardServices);
-
-    JCLWizardIndex := OTAWizardServices.AddWizard(TJCLUsesWizard.Create);
+    JCLWizardIndex := TJclOTAExpertBase.GetOTAWizardServices.AddWizard(TJCLUsesWizard.Create);
 
     Result := True;
   except
@@ -509,8 +495,10 @@ end;
 procedure TJCLUsesWizard.LoadSettings;
 var
   DefaultIniFile, DefaultRegKey: string;
+  OTAServices: IOTAServices;
 begin
-  DefaultRegKey := StrEnsureSuffix(NativeBackslash, Services.GetBaseRegistryKey) + RegJclKey;
+  OTAServices := GetOTAServices;
+  DefaultRegKey := StrEnsureSuffix(NativeBackslash, OTAServices.GetBaseRegistryKey) + RegJclKey;
   DefaultIniFile := RegReadStringDef(HKCU, DefaultRegKey, JclRootDirValueName, '');
   if DefaultIniFile <> '' then
     DefaultIniFile := PathAddSeparator(DefaultIniFile) + JclIniFileLocation;
@@ -738,7 +726,7 @@ var
   ChangeList: TStrings;
   IntfLength, ImplLength: Integer;
   Writer: IOTAEditWriter;
-  Project: IOTAProject;
+  ActiveProject: IOTAProject;
 begin
   GoalSource := '';
   with BorlandIDEServices as IOTAEditorServices do
@@ -789,9 +777,9 @@ begin
               end;
 
             // attempt to recompile
-            Project := ActiveProject;
-            if Assigned(Project) and Assigned(Project.ProjectBuilder) then
-              Project.ProjectBuilder.BuildProject(cmOTAMake, True, True);
+            ActiveProject := GetActiveProject;
+            if Assigned(ActiveProject) and Assigned(ActiveProject.ProjectBuilder) then
+              ActiveProject.ProjectBuilder.BuildProject(cmOTAMake, True, True);
           end;
         finally
           ChangeList.Free;
@@ -835,9 +823,9 @@ begin
               end;
 
             // attempt to recompile
-            Project := ActiveProject;
-            if Assigned(Project) and Assigned(Project.ProjectBuilder) then
-              Project.ProjectBuilder.BuildProject(cmOTAMake, True, True);
+            ActiveProject := GetActiveProject;
+            if Assigned(ActiveProject) and Assigned(ActiveProject.ProjectBuilder) then
+              ActiveProject.ProjectBuilder.BuildProject(cmOTAMake, True, True);
           end;
         finally
           ChangeList.Free;
@@ -914,9 +902,9 @@ begin
               end;
 
             // attempt to recompile
-            Project := ActiveProject;
-            if Assigned(Project) and Assigned(Project.ProjectBuilder) then
-              Project.ProjectBuilder.BuildProject(cmOTAMake, True, True);
+            ActiveProject := GetActiveProject;
+            if Assigned(ActiveProject) and Assigned(ActiveProject.ProjectBuilder) then
+              ActiveProject.ProjectBuilder.BuildProject(cmOTAMake, True, True);
           end;
         finally
           ChangeList.Free;

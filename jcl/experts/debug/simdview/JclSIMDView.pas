@@ -160,18 +160,10 @@ var
   JCLWizardIndex: Integer = -1;
 
 procedure JclWizardTerminate;
-var
-  OTAWizardServices: IOTAWizardServices;
 begin
   try
     if JCLWizardIndex <> -1 then
-    begin
-      Supports(BorlandIDEServices, IOTAWizardServices, OTAWizardServices);
-      if not Assigned(OTAWizardServices) then
-        raise EJclExpertException.CreateTrace(RsENoWizardServices);
-
-      OTAWizardServices.RemoveWizard(JCLWizardIndex);
-    end;
+      TJclOTAExpertBase.GetOTAWizardServices.RemoveWizard(JCLWizardIndex);
   except
     on ExceptionObj: TObject do
     begin
@@ -183,17 +175,11 @@ end;
 function JCLWizardInit(const BorlandIDEServices: IBorlandIDEServices;
     RegisterProc: TWizardRegisterProc;
     var TerminateProc: TWizardTerminateProc): Boolean stdcall;
-var
-  OTAWizardServices: IOTAWizardServices;
 begin
   try
     TerminateProc := JclWizardTerminate;
 
-    Supports(BorlandIDEServices, IOTAWizardServices, OTAWizardServices);
-    if not Assigned(OTAWizardServices) then
-      raise EJclExpertException.CreateTrace(RsENoWizardServices);
-
-    JCLWizardIndex := OTAWizardServices.AddWizard(TJclSIMDWizard.Create);
+    JCLWizardIndex := TJclOTAExpertBase.GetOTAWizardServices.AddWizard(TJclSIMDWizard.Create);
 
     Result := True;
   except
@@ -307,12 +293,12 @@ var
   IDEMenu: TMenu;
   ViewMenu: TMenuItem;
   Category: string;
+  NTAServices: INTAServices;
 begin
   inherited RegisterCommands;
 
-  Supports(Services, IOTADebuggerServices, FDebuggerServices);
-  if not Assigned(FDebuggerServices) then
-    raise EJclExpertException.CreateTrace(RsENoDebuggerServices);
+  NTAServices := GetNTAServices;
+  FDebuggerServices := GetOTADebuggerServices;
 
   Category := '';
   for I := 0 to NTAServices.ActionList.ActionCount - 1 do

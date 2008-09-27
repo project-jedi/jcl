@@ -40,17 +40,18 @@ uses
 
 //=== JclOtaUtils.pas ========================================================
 resourcestring
-  RsENoIDEServices = 'Unable to get Borland IDE Services';
+  RsENoOTAServices = 'Unable to get Borland IDE Services';
   RsENoNTAServices = 'Unable to get Borland NTA Services';
-  RsENoSplashServices = 'Unable to get Borland Splash Services';
-  RsENoAboutServices = 'Unable to get Borland About Services';
-  RsENoModuleServices = 'Unable to get Borland Module Services';
-  RsENoWizardServices = 'Unable to get Borland Wizard Services';
-  RsENoPackageServices = 'Unable to get Borland Package Services';
-  RsENoPersonalityServices = 'Unable to get Borland Personality Services';
-  RsENoProjectManager = 'Unable to get project manager';
-  RsENoMessageServices = 'Unable to get Borland Message Services';
-  RsENoGalleryCategoryManager = 'Unable to get Borland Gallery Category Manager';
+  RsENoDebuggerServices = 'Unable to get Borland Debugger Services';
+  RsENoNTASplashServices = 'Unable to get Borland Splash Services';
+  RsENoOTAAboutServices = 'Unable to get Borland About Services';
+  RsENoOTAModuleServices = 'Unable to get Borland Module Services';
+  RsENoOTAWizardServices = 'Unable to get Borland Wizard Services';
+  RsENoOTAPackageServices = 'Unable to get Borland Package Services';
+  RsENoOTAPersonalityServices = 'Unable to get Borland Personality Services';
+  RsENoOTAProjectManager = 'Unable to get project manager';
+  RsENoOTAMessageServices = 'Unable to get Borland Message Services';
+  RsENoOTAGalleryCategoryManager = 'Unable to get Borland Gallery Category Manager';
   RsENoModule = 'Unable to get Module';
   RsBadModuleHInstance = 'Unable to get module HInstance';
   RsENoRootDir = 'RootDir is empty';
@@ -274,7 +275,6 @@ resourcestring
 
 //=== JclSIMDView.pas ========================================================
 resourcestring
-  RsENoDebuggerServices = 'Unable to get Borland Debugger Services';
   RsENoViewMenuItem = 'View menu item not found';
   RsENoDebugWindowsMenuItem = 'Debug windows menu item not found';
 
