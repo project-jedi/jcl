@@ -82,6 +82,15 @@
   <Target Name="JclRepositoryExpert:Make">
     <MSBuild Projects="d11\JclRepositoryExpert.dproj" Targets="Make" />
   </Target>
+  <Target Name="JclSIMDViewExpert">
+    <MSBuild Projects="d11\JclSIMDViewExpert.dproj" Targets="" />
+  </Target>
+  <Target Name="JclSIMDViewExpert:Clean">
+    <MSBuild Projects="d11\JclSIMDViewExpert.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JclSIMDViewExpert:Make">
+    <MSBuild Projects="d11\JclSIMDViewExpert.dproj" Targets="Make" />
+  </Target>
   <Target Name="JclVersionControlExpert">
     <MSBuild Projects="d11\JclVersionControlExpert.dproj" Targets="" />
   </Target>
@@ -92,12 +101,12 @@
     <MSBuild Projects="d11\JclVersionControlExpert.dproj" Targets="Make" />
   </Target>
   <Target Name="Build">
-    <CallTarget Targets="Jcl;JclVcl;JclContainers;JclBaseExpert;JclDebugExpert;JclFavoriteFoldersExpert;JclProjectAnalysisExpert;JclRepositoryExpert;JclVersionControlExpert" />
+    <CallTarget Targets="Jcl;JclVcl;JclContainers;JclBaseExpert;JclDebugExpert;JclFavoriteFoldersExpert;JclProjectAnalysisExpert;JclRepositoryExpert;JclSIMDViewExpert;JclVersionControlExpert" />
   </Target>
   <Target Name="Clean">
-    <CallTarget Targets="Jcl:Clean;JclVcl:Clean;JclContainers:Clean;JclBaseExpert:Clean;JclDebugExpert:Clean;JclFavoriteFoldersExpert:Clean;JclProjectAnalysisExpert:Clean;JclRepositoryExpert:Clean;JclVersionControlExpert:Clean" />
+    <CallTarget Targets="Jcl:Clean;JclVcl:Clean;JclContainers:Clean;JclBaseExpert:Clean;JclDebugExpert:Clean;JclFavoriteFoldersExpert:Clean;JclProjectAnalysisExpert:Clean;JclRepositoryExpert:Clean;JclSIMDViewExpert:Clean;JclVersionControlExpert:Clean" />
   </Target>
   <Target Name="Make">
-    <CallTarget Targets="Jcl:Make;JclVcl:Make;JclContainers:Make;JclBaseExpert:Make;JclDebugExpert:Make;JclFavoriteFoldersExpert:Make;JclProjectAnalysisExpert:Make;JclRepositoryExpert:Make;JclVersionControlExpert:Make" />
+    <CallTarget Targets="Jcl:Make;JclVcl:Make;JclContainers:Make;JclBaseExpert:Make;JclDebugExpert:Make;JclFavoriteFoldersExpert:Make;JclProjectAnalysisExpert:Make;JclRepositoryExpert:Make;JclSIMDViewExpert:Make;JclVersionControlExpert:Make" />
   </Target>
 </Project>

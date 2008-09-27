@@ -17,7 +17,7 @@
     <Package Name="JclBaseExpert-D" Targets="Windows" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\experts\debug\threadnames\ThreadExpertSharedNames.pas" Targets="Windows" Formname="" Condition=""/>
-    <File Name="..\..\experts\debug\threadnames\ThreadExpertUnit.pas" Targets="Windows" Formname="" Condition=""/>
+    <File Name="..\..\experts\debug\threadnames\ThreadExpertSharedNames.pas" Targets="d5,d6,c5,c6" Formname="" Condition=""/>
+    <File Name="..\..\experts\debug\threadnames\ThreadExpertUnit.pas" Targets="d5,d6,c5,c6" Formname="" Condition=""/>
   </Contains>
 </Package>
