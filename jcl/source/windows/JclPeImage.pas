@@ -6072,6 +6072,7 @@ function TJclPeMapImgHooks.HookImport(Base: Pointer; const ModuleName: string;
   const FunctionName: string; NewAddress: Pointer; var OriginalAddress: Pointer): Boolean;
 var
   ModuleHandle: THandle;
+  OriginalItem: TJclPeMapImgHookItem;
 begin
   ModuleHandle := GetModuleHandle(PChar(ModuleName));
   Result := (ModuleHandle <> 0);
@@ -6087,8 +6088,9 @@ begin
     SetLastError(ERROR_PROC_NOT_FOUND);
     Exit;
   end;
-  Result := (ItemFromOriginalAddress[OriginalAddress] = nil) and (NewAddress <> nil) and
-    (OriginalAddress <> NewAddress);
+  OriginalItem := ItemFromOriginalAddress[OriginalAddress];
+  Result := ((OriginalItem = nil) or (OriginalItem.ModuleName = ModuleName)) and
+    (NewAddress <> nil) and (OriginalAddress <> NewAddress);
   if not Result then
   begin
     SetLastError(ERROR_ALREADY_EXISTS);
