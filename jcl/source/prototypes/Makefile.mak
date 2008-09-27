@@ -16,7 +16,7 @@ Win32Options		= $(Options) -uHAS_UNIT_LIBC -f..\windows\\
 ContainerOptions	= $(Options) -m -ijcl.inc -f..\Common\\
 UnixOptions		= $(Options) -uMSWINDOWS -dUNIX -f..\unix\\
 
-release:	VCL VisualCLX Windows Unix ContainersProt Containers
+release:	VCL VisualCLX Windows ContainersProt Containers
 
 VCL:    	..\vcl\JclGraphics.pas \
 		..\vcl\JclGraphUtils.pas
@@ -70,10 +70,6 @@ Containers:	..\Common\JclAlgorithms.pas \
 ..\visclx\JclQGraphUtils.pas: \
 		_GraphUtils.pas
 	$(jpp) $(VClxOptions) $?
-
-..\unix\JclWin32.pas: \
-                JclWin32.pas
-        $(jpp) -ijcl.inc $(UnixOptions) $?
 
 ..\windows\JclWin32.pas: \
                 JclWin32.pas
