@@ -398,6 +398,7 @@
   HAS_UNIT_DATEUTILS            Unit DateUtils exists (D6+/BCB6+/FPC)
   HAS_UNIT_CONTNRS              Unit contnrs exists (D6+/BCB6+/FPC)
   HAS_UNIT_ANSISTRINGS          Unit AnsiStrings exists (D12+)
+  HAS_UNIT_PNGIMAGE             Unit PngImage exists (D12+)
   XPLATFORM_RTL                 The RTL supports crossplatform function names (e.g. RaiseLastOSError) (D6+/BCB6+/FPC)
   SUPPORTS_UNICODE              string type is aliased to an unicode string (WideString or UnicodeString) (DX.net, D12+)
   SUPPORTS_UNICODE_STRING       Compiler supports UnicodeString (D12+)
