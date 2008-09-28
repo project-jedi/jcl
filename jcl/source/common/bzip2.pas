@@ -346,7 +346,6 @@ type
 const
   {$IFDEF MSWINDOWS}
   szBZIP2 = 'bzip2.dll'; // from http://gnuwin32.sourceforge.net/
-  szMSVCRT = 'MSVCRT.DLL';
   {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
   szBZIP2 = 'libbz2.so.1';
@@ -391,8 +390,15 @@ function _BZ2_indexIntoF: Pointer;
 type
   size_t = Longint;
 
-function _malloc(size: size_t): Pointer; cdecl; external szMSVCRT name 'malloc';
-procedure _free(pBlock: Pointer); cdecl; external szMSVCRT name 'free';
+function _malloc(size: size_t): Pointer; cdecl;
+begin
+  GetMem(Result, Size);
+end;
+
+procedure _free(pBlock: Pointer); cdecl;
+begin
+  FreeMem(pBlock);
+end;
 
 procedure _bz_internal_error(errcode: Integer); cdecl;
 begin
