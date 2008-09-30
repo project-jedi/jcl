@@ -389,7 +389,7 @@
   SUPPORTS_UNSAFE_WARNINGS      Compiler supports unsafe warnings (D7)
   SUPPORTS_WEAKPACKAGEUNIT      Compiler supports the WEAKPACKAGEUNIT directive
   SUPPORTS_COMPILETIME_MESSAGES Compiler supports the MESSAGE directive
-  SUPPORTS_PACKAGES             Compiler supports Packages 
+  SUPPORTS_PACKAGES             Compiler supports Packages
   HAS_UNIT_LIBC                 Unit Libc exists (Kylix, FPC on Linux/x86)
   HAS_UNIT_RTLCONSTS            Unit RTLConsts exists (D6+/BCB6+/FPC)
   HAS_UNIT_TYPES                Unit Types exists (D6+/BCB6+/FPC)
@@ -1090,7 +1090,6 @@
 
 {$IFDEF COMPILER12_UP}
   {$DEFINE SUPPORTS_GENERICS}
-  {$DEFINE HAS_UNIT_ANSISTRINGS}
   {$IFNDEF CLR}
     {$DEFINE SUPPORTS_UNICODE}
     {$DEFINE SUPPORTS_UNICODE_STRING}
@@ -1112,6 +1111,11 @@
 {$IFDEF RTL130_UP}
   {$DEFINE HAS_UNIT_CONTNRS}
 {$ENDIF RTL130_UP}
+
+{$IFDEF RTL200_UP}
+  {$DEFINE HAS_UNIT_ANSISTRINGS}
+  {$DEFINE HAS_UNIT_PNGIMAGE}
+{$ENDIF RTL200_UP}
 
 {------------------------------------------------------------------------------}
 { Cross-platform related defines                                               }
