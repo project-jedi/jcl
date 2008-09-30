@@ -782,7 +782,7 @@ const
   ReadmeFileName = 'Readme.txt';
   {$ENDIF}
 
-  DailyRevisionFileName = 'daily_revision.log';
+  DailyRevisionFileName = 'jcl-revision.txt';
   EntriesFileName1      = '.svn' + DirDelimiter + 'entries';
   EntriesFileName2      = '_svn' + DirDelimiter + 'entries';
 
@@ -3470,7 +3470,6 @@ function TJclDistribution.GetVersion: string;
   var
     DailyFileName, SvnEntriesFileName, RevisionText: string;
     TextFile: TJclAnsiMappedTextReader;
-    Index: Integer;
   begin
     Result := 0;
 
@@ -3481,13 +3480,7 @@ function TJclDistribution.GetVersion: string;
       TextFile := TJclAnsiMappedTextReader.Create(DailyFileName);
       try
         RevisionText := string(TextFile.ReadLn);
-        if RevisionText <> '' then
-        begin
-          Index := Length(RevisionText) - 1; // skip the '.'
-          while (Index > 1) and CharIsDigit(RevisionText[Index]) do
-            Dec(Index);
-          Result := StrToIntDef(Copy(RevisionText, Index + 1, Length(RevisionText) - Index - 1), 0);
-        end;
+        Result := StrToIntDef(string(TextFile.ReadLn), 0);
       finally
         TextFile.Free;
       end;
