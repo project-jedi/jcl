@@ -7,7 +7,7 @@ interface
 
 uses
   Windows, SysUtils, Classes,
-  JclSysUtils,
+  JclSysUtils, JclStreams,
   MakeDistMain;
 
 type
@@ -173,6 +173,55 @@ type
     function Execute(const AMessageHandler: TTextHandler): Boolean; override;
   end;
 
+  // load an environment variable from a file
+  TVariableReader = class(TDistAction)
+  private
+    FSourceFile: string;
+    FEnvironmentVariable: string;
+  protected
+    function GetCaption: string; override;
+    function GetConfigCount: Integer; override;
+    function GetConfigCaption(Index: Integer): string; override;
+    function GetConfigValue(Index: Integer): string; override;
+    procedure SetConfigValue(Index: Integer; const Value: string); override;
+  public
+    class function GetDescription: string; override;
+    function Execute(const AMessageHandler: TTextHandler): Boolean; override;
+  end;
+
+  // compute an environment variable
+  TVariableSetter = class(TDistAction)
+  private
+    FExpression: string;
+    FEnvironmentVariable: string;
+  protected
+    function GetCaption: string; override;
+    function GetConfigCount: Integer; override;
+    function GetConfigCaption(Index: Integer): string; override;
+    function GetConfigValue(Index: Integer): string; override;
+    procedure SetConfigValue(Index: Integer; const Value: string); override;
+  public
+    class function GetDescription: string; override;
+    function Execute(const AMessageHandler: TTextHandler): Boolean; override;
+  end;
+
+  // save an environment variable to a file
+  TVariableWriter = class(TDistAction)
+  private
+    FDestinationFile: string;
+    FExpression: string;
+    FAppend: string;
+  protected
+    function GetCaption: string; override;
+    function GetConfigCount: Integer; override;
+    function GetConfigCaption(Index: Integer): string; override;
+    function GetConfigValue(Index: Integer): string; override;
+    procedure SetConfigValue(Index: Integer; const Value: string); override;
+  public
+    class function GetDescription: string; override;
+    function Execute(const AMessageHandler: TTextHandler): Boolean; override;
+  end;
+
   // compute the number of days between now and a start date
   TBuildCalculator = class(TDistAction)
   private
@@ -227,6 +276,9 @@ type
     FWorkingDirectory: string;
     FParameters: string;
     FValidExitCodes: string;
+    FResultFile: string;
+    FResultStringStream: TJclAnsiStream;
+    procedure WriteResult(const Text: string);
   protected
     function GetCaption: string; override;
     function GetConfigCount: Integer; override;
@@ -291,9 +343,12 @@ uses
   DateUtils, JclDateTime, JclStrings, JclFileUtils, JclSysInfo, JclSimpleXml, JclCompression;
 
 const
-  StdActionsClasses: array [0..14] of TDistActionClass =
-    ( TBuildCalculator, TConstantParser, TDirectoryCreator, TDirectoryRemover, TEolConverter, TFileCopier,
-      TFileCreator, TFileMover, TFileRemover, TFileTouch, TXmlGetter, TCommandLineCaller, TArchiveMaker,
+  StdActionsClasses: array [0..17] of TDistActionClass =
+    ( TBuildCalculator, TConstantParser,
+      TVariableReader, TVariableSetter, TVariableWriter,
+      TDirectoryCreator, TDirectoryRemover, TEolConverter,
+      TFileCopier, TFileCreator, TFileMover, TFileRemover, TFileTouch,
+      TXmlGetter, TCommandLineCaller, TArchiveMaker,
       TLogSaver, TLogCleaner );
 
 procedure RegisterStandardActions;
@@ -714,12 +769,12 @@ begin
   ExpandEnvironmentVar(MoveToRecycleBin);
   MoveToRecBin := AnsiSameText(MoveToRecycleBin, 'yes');
 
+  Result := True;
   FileList := TStringList.Create;
   try
     BuildFileList(PathAddSeparator(Directory) + Filter, faAnyFile and (not faDirectory), FileList);
     if FileList.Count > 0 then
     begin
-      Result := True;
       for Index := 0 to FileList.Count - 1 do
       begin
         FileName := FileList.Strings[Index];
@@ -734,11 +789,6 @@ begin
         AMessageHandler(IntToStr(FileList.Count) + ' files were deleted')
       else
         AMessageHandler('Failed to remove ' + IntToStr(FileList.Count) + ' files');
-    end
-    else
-    begin
-      AMessageHandler('No files were found');
-      Result := False;
     end;
   finally
     FileList.Free;
@@ -1153,6 +1203,249 @@ begin
   end;
 end;
 
+//=== { TVariableReader } ====================================================
+
+function TVariableReader.Execute(const AMessageHandler: TTextHandler): Boolean;
+var
+  SourceFile, EnvironmentVariable: string;
+  Reader: TJclAnsiMappedTextReader;
+begin
+  SourceFile := FSourceFile;
+  ExpandEnvironmentVar(SourceFile);
+  EnvironmentVariable := FEnvironmentVariable;
+  ExpandEnvironmentVar(EnvironmentVariable);
+
+  AMessageHandler('Read ' + EnvironmentVariable + ' from ' + SourceFile);
+
+  if FileGetSize(SourceFile) <> 0 then
+  begin
+    Reader := TJclAnsiMappedTextReader.Create(SourceFile);
+    try
+      SetEnvironmentVar(EnvironmentVariable, string(Reader.ReadLn));
+    finally
+      Reader.Free;
+    end;
+  end
+  else
+    SetEnvironmentVar(EnvironmentVariable, '');
+  Result := True;
+end;
+
+function TVariableReader.GetCaption: string;
+begin
+  Result := 'Load environment variable ' + FEnvironmentVariable + ' from file ' + FSourceFile;
+end;
+
+function TVariableReader.GetConfigCaption(Index: Integer): string;
+begin
+  case Index of
+    0:
+      Result := 'Source file';
+    1:
+      Result := 'Environment variable';
+  else
+    Result := '';
+  end;
+end;
+
+function TVariableReader.GetConfigCount: Integer;
+begin
+  Result := 2;
+end;
+
+function TVariableReader.GetConfigValue(Index: Integer): string;
+begin
+  case Index of
+    0:
+      Result := FSourceFile;
+    1:
+      Result := FEnvironmentVariable;
+  else
+    Result := '';
+  end;
+end;
+
+class function TVariableReader.GetDescription: string;
+begin
+  Result := 'Load an environment variable from a file';
+end;
+
+procedure TVariableReader.SetConfigValue(Index: Integer; const Value: string);
+begin
+  case Index of
+    0:
+      FSourceFile := Value;
+    1:
+      FEnvironmentVariable := Value;
+  end;
+end;
+
+//=== { TVariableSetter } ====================================================
+
+function TVariableSetter.Execute(const AMessageHandler: TTextHandler): Boolean;
+var
+  EnvironmentVariable, Expression: string;
+begin
+  EnvironmentVariable := FEnvironmentVariable;
+  ExpandEnvironmentVar(EnvironmentVariable);
+  Expression := FExpression;
+  ExpandEnvironmentVar(Expression);
+
+  AMessageHandler('set ' + EnvironmentVariable + '=' + Expression);
+  SetEnvironmentVar(EnvironmentVariable, Expression);
+  Result := True;
+end;
+
+function TVariableSetter.GetCaption: string;
+begin
+  Result := 'Set environment variable ' + FEnvironmentVariable + ' to ' + FExpression;  
+end;
+
+function TVariableSetter.GetConfigCaption(Index: Integer): string;
+begin
+  case Index of
+    0:
+      Result := 'Expression';
+    1:
+      Result := 'Environment variable';
+  else
+    Result := '';
+  end;
+end;
+
+function TVariableSetter.GetConfigCount: Integer;
+begin
+  Result := 2;
+end;
+
+function TVariableSetter.GetConfigValue(Index: Integer): string;
+begin
+  case Index of
+    0:
+      Result := FExpression;
+    1:
+      Result := FEnvironmentVariable;
+  else
+    Result := '';
+  end;
+end;
+
+class function TVariableSetter.GetDescription: string;
+begin
+  Result := 'set an environment variable to an expression';
+end;
+
+procedure TVariableSetter.SetConfigValue(Index: Integer; const Value: string);
+begin
+  case Index of
+    0:
+      FExpression := Value;
+    1:
+      FEnvironmentVariable := Value;
+  end;
+end;
+
+//=== { TVariableWriter } ====================================================
+
+function TVariableWriter.Execute(const AMessageHandler: TTextHandler): Boolean;
+var
+  DestinationFile, Expression, Append: string;
+  DestinationStream: TFileStream;
+  StringStream: TJclAnsiStream;
+begin
+  DestinationFile := FDestinationFile;
+  ExpandEnvironmentVar(DestinationFile);
+  Expression := FExpression;
+  ExpandEnvironmentVar(Expression);
+  Append := FAppend;
+  ExpandEnvironmentVar(Append);
+
+  if AnsiSameText(Append, 'yes') and FileExists(DestinationFile) then
+  begin
+    AMessageHandler('Append ' + Expression + ' to ' + DestinationFile);
+    DestinationStream := TFileStream.Create(DestinationFile, fmOpenReadWrite);
+    DestinationStream.Seek(0, soEnd);
+  end
+  else
+  begin
+    AMessageHandler('Write ' + Expression + ' to ' + DestinationFile);
+    DestinationStream := TFileStream.Create(DestinationFile, fmCreate);
+  end;
+  try
+    StringStream := TJclAnsiStream.Create(DestinationStream, False);
+    try
+      StringStream.WriteString(Expression, 1, Length(Expression));
+    finally
+      StringStream.Free;
+    end;
+  finally
+    DestinationStream.Free;
+  end;
+  Result := True;
+end;
+
+function TVariableWriter.GetCaption: string;
+var
+  Append: string;
+begin
+  Append := FAppend;
+  ExpandEnvironmentVar(Append);
+  if AnsiSameText(Append, 'yes') then
+    Result := 'Append ' + FExpression + ' to file ' + FDestinationFile
+  else
+    Result := 'Save ' + FExpression + ' to file ' + FDestinationFile;
+end;
+
+function TVariableWriter.GetConfigCaption(Index: Integer): string;
+begin
+  case Index of
+    0:
+      Result := 'Destination file';
+    1:
+      Result := 'Expression';
+    2:
+      Result := 'Append';
+  else
+    Result := '';
+  end;
+end;
+
+function TVariableWriter.GetConfigCount: Integer;
+begin
+  Result := 3;
+end;
+
+function TVariableWriter.GetConfigValue(Index: Integer): string;
+begin
+  case Index of
+    0:
+      Result := FDestinationFile;
+    1:
+      Result := FExpression;
+    2:
+      Result := FAppend;
+  else
+    Result := '';
+  end;
+end;
+
+class function TVariableWriter.GetDescription: string;
+begin
+  Result := 'Save an environment variable to a file';
+end;
+
+procedure TVariableWriter.SetConfigValue(Index: Integer; const Value: string);
+begin
+  case Index of
+    0:
+      FDestinationFile := Value;
+    1:
+      FExpression := Value;
+    2:
+      FAppend := Value;
+  end;
+end;
+
 { TBuildCalculator }
 
 function TBuildCalculator.Execute(const AMessageHandler: TTextHandler): Boolean;
@@ -1466,8 +1759,9 @@ end;
 
 function TCommandLineCaller.Execute(const AMessageHandler: TTextHandler): Boolean;
 var
-  Application, WorkingDirectory, Parameters, ValidExitCodes: string;
+  Application, WorkingDirectory, Parameters, ValidExitCodes, ResultFile: string;
   ReturnValue: Integer;
+  ResultFileStream: TFileStream;
 begin
   Application := FApplication;
   ExpandEnvironmentVar(Application);
@@ -1477,11 +1771,32 @@ begin
   ExpandEnvironmentVar(Parameters);
   ValidExitCodes := FValidExitCodes;
   ExpandEnvironmentVar(ValidExitCodes);
+  ResultFile := FResultFile;
+  ExpandEnvironmentVar(ResultFile);
 
-  if WorkingDirectory <> '' then
-    SetCurrentDir(WorkingDirectory);
   AMessageHandler('Executing ' + Application + ' ' + Parameters + ' in directory ' + WorkingDirectory);
-  ReturnValue := JclSysUtils.Execute(Application + ' ' + Parameters, AMessageHandler, False);
+  if ResultFile <> '' then
+  begin
+    ResultFileStream := TFileStream.Create(ResultFile, fmCreate);
+    try
+      FResultStringStream := TJclAnsiStream.Create(ResultFileStream, False);
+      try
+        if WorkingDirectory <> '' then
+          SetCurrentDir(WorkingDirectory);
+        ReturnValue := JclSysUtils.Execute(Application + ' ' + Parameters, WriteResult, True);
+      finally
+        FreeAndNil(FResultStringStream);
+      end;
+    finally
+      ResultFileStream.Free;
+    end;
+  end
+  else
+  begin
+    if WorkingDirectory <> '' then
+      SetCurrentDir(WorkingDirectory);
+    ReturnValue := JclSysUtils.Execute(Application + ' ' + Parameters, AMessageHandler, False);
+  end;
   if ValidExitCodes = '' then
     Result := ReturnValue = 0
   else
@@ -1508,6 +1823,8 @@ begin
       Result := 'Parameters';
     3:
       Result := 'Valid exit codes';
+    4:
+      Result := 'Result file';
   else
     Result := '';
   end;
@@ -1515,7 +1832,7 @@ end;
 
 function TCommandLineCaller.GetConfigCount: Integer;
 begin
-  Result := 4;
+  Result := 5;
 end;
 
 function TCommandLineCaller.GetConfigValue(Index: Integer): string;
@@ -1529,6 +1846,8 @@ begin
       Result := FParameters;
     3:
       Result := FValidExitCodes;
+    4:
+      Result := FResultFile;
   else
     Result := '';
   end;
@@ -1550,7 +1869,15 @@ begin
       FParameters := Value;
     3:
       FValidExitCodes := Value;
+    4:
+      FResultFile := Value;
   end;
+end;
+
+procedure TCommandLineCaller.WriteResult(const Text: string);
+begin
+  if Assigned(FResultStringStream) then
+    FResultStringStream.WriteString(Text,1,Length(Text));
 end;
 
 //=== { TArchiveMaker } ======================================================

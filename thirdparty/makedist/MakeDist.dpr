@@ -40,7 +40,7 @@ begin
       WriteLn('Copyright Florent Ouchet (c), February 2008');
       WriteLn;
     end;
-    if ParamPos('help') > 0 then
+    if (ParamPos('?') > 0) or (ParamPos('h') > 0) then
     begin
       WriteLn('Usage:');
       WriteLn('  MakeDist.exe [/cConfigFile] : launch the graphical GUI');
@@ -57,6 +57,7 @@ begin
       WriteLn('  /u=Task1[,Task2] Unselect these tasks');
       WriteLn('  /x               Execute selected tasks of a project');
       WriteLn;
+      ReadLn;
     end;
 
     ConfigurationPos := ParamPos('c');
