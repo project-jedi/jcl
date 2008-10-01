@@ -356,6 +356,8 @@ type
     procedure LoadFromStringStream(StringStream: TJclStringStream; AParent: TJclSimpleXML = nil); virtual; abstract;
     procedure SaveToStringStream(StringStream: TJclStringStream; const Level: string = ''; AParent: TJclSimpleXML = nil); virtual;
       abstract;
+    procedure LoadFromString(const Value: string);
+    function SaveToString: string;
     procedure GetBinaryValue(Stream: TStream);
     property Data: {$IFDEF CLR} TObject {$ELSE} Pointer {$ENDIF} read FData write FData;
     function GetChildIndex(const AChild: TJclSimpleXMLElem): Integer;
@@ -1475,6 +1477,43 @@ begin
     Result := FParent.GetSimpleXML
   else
     Result := FSimpleXML;
+end;
+
+procedure TJclSimpleXMLElem.LoadFromString(const Value: string);
+var
+  Stream: TJclStringStream;
+  StrStream: TStringStream;
+begin
+  StrStream := TStringStream.Create(Value);
+  try
+    Stream := TJclStringStream.Create(StrStream);
+    try
+      LoadFromStringStream(Stream);
+    finally
+      Stream.Free;
+    end;
+  finally
+    StrStream.Free;
+  end;
+end;
+
+function TJclSimpleXMLElem.SaveToString: string;
+var
+  Stream: TJclStringStream;
+  StrStream: TStringStream;
+begin
+  StrStream := TStringStream.Create('');
+  try
+    Stream := TJclStringStream.Create(StrStream);
+    try
+      SaveToStringStream(Stream);
+      Result := StrStream.DataString;
+    finally
+      Stream.Free;
+    end;
+  finally
+    StrStream.Free;
+  end;
 end;
 
 procedure TJclSimpleXMLElem.SetBoolValue(const Value: Boolean);
