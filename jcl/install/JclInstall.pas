@@ -3480,7 +3480,7 @@ function TJclDistribution.GetVersion: string;
       TextFile := TJclAnsiMappedTextReader.Create(DailyFileName);
       try
         RevisionText := string(TextFile.ReadLn);
-        Result := StrToIntDef(string(TextFile.ReadLn), 0);
+        Result := StrToIntDef(RevisionText, 0);
       finally
         TextFile.Free;
       end;
