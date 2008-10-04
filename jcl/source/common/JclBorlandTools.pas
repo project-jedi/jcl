@@ -964,7 +964,7 @@ const
 
   BCBKeyName          = '\SOFTWARE\Borland\C++Builder';
   BDSKeyName          = '\SOFTWARE\Borland\BDS';
-  CDSKeyName          = '\SOFTWARE\Codegear\BDS';
+  CDSKeyName          = '\SOFTWARE\CodeGear\BDS';
   DelphiKeyName       = '\SOFTWARE\Borland\Delphi';
 
   BDSVersions: array [1..6] of TBDSVersionInfo = (
@@ -1850,7 +1850,12 @@ begin
   FHxRegister := nil;
   FHxPlugin := nil;
   if Assigned(Installation) then
-    FIdeNameSpace := Format(Help2BorlandNameSpace, [Installation.IDEVersionNumber])
+  begin
+  if (Installation.IDEVersionNumber = 6) then
+    FIdeNameSpace := 'embarcadero.rs2009'
+  else
+    FIdeNameSpace := Format(Help2BorlandNameSpace, [Installation.IDEVersionNumber]);
+  end
   else
     FIdeNameSpace := '';
 end;
