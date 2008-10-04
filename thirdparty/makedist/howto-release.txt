@@ -1,0 +1,14 @@
+1/ In WinSCP: create a session that connects to host web.sourceforge.net with login "username,jcl";
+2/ Save this session as "jcl.web.sourceforge.net";
+3/ Set environment variable "DCC2006" to the compilator of Delphi 2006 or RAD Studio 2007;
+4/ Set environment variable "DMCC" to Doc-o-matic command line compiler;
+5/ Set environment variable "SVN" to up-to-date subversion executable;
+6/ Set environment variable "WINSCP" to WinSCP executable;
+7/ Copy 7z.dll from sevenzip distribution to trunk/thirdparty/makedist/
+8/ Compile makedist.exe
+9/ Execute the command:
+
+MakeDist.exe /c=JclFiles.xml /x
+
+This action requires more than an hour to complete.
+

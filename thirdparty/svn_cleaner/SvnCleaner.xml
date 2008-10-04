@@ -429,6 +429,18 @@
         <value>*.local</value>
         <value>*.identcache</value>
         <value>*.dcu</value>
+        <value>*.log</value>
+        <value>*.zip</value>
+        <value>*.gz</value>
+        <value>*.7z</value>
+        <value>daily</value>
+        <value>sandbox</value>
+        <value>jcl-daily-source-0.txt</value>
+        <value>jcl-daily-source-1.txt</value>
+        <value>jcl-daily-source-2.txt</value>
+        <value>jcl-weekly-hlp-0.txt</value>
+        <value>jcl-weekly-h2-0.txt</value>
+        <value>7z.dll</value>
       </property>
     </setting>
   </setting>
