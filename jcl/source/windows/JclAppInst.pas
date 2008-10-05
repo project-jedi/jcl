@@ -114,6 +114,14 @@ procedure ReadMessageData(const Message: TMessage; var Data: Pointer; var Size: 
 procedure ReadMessageString(const Message: TMessage; var S: string);
 procedure ReadMessageStrings(const Message: TMessage; const Strings: TStrings);
 
+function SendData(const Wnd, OriginatorWnd: HWND;
+  const DataKind: TJclAppInstDataKind; const Data: Pointer; const Size: Integer): Boolean;
+function SendStrings(const Wnd, OriginatorWnd: HWND;
+  const DataKind: TJclAppInstDataKind; const Strings: TStrings): Boolean;
+function SendCmdLineParams(const Wnd, OriginatorWnd: HWND): Boolean;
+function SendString(const Wnd, OriginatorWnd: HWND;
+  const DataKind: TJclAppInstDataKind; const S: string): Boolean;
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -580,6 +588,47 @@ begin
       SetString(S, PChar(CopyDataStruct^.lpData), CopyDataStruct^.cbData);
       Strings.Text := S;
     end;
+end;
+
+function SendData(const Wnd, OriginatorWnd: HWND;
+  const DataKind: TJclAppInstDataKind; const Data: Pointer; const Size: Integer): Boolean;
+var
+  CopyData: TCopyDataStruct;
+begin
+  CopyData.dwData := DataKind;
+  CopyData.cbData := Size;
+  CopyData.lpData := Data;
+  Result := Boolean(SendMessage(Wnd, WM_COPYDATA, OriginatorWnd, LPARAM(@CopyData)));
+end;
+
+function SendStrings(const Wnd, OriginatorWnd: HWND;
+  const DataKind: TJclAppInstDataKind; const Strings: TStrings): Boolean;
+var
+  S: string;
+begin
+  S := Strings.Text;
+  Result := SendData(Wnd, OriginatorWnd, DataKind, Pointer(S), Length(S));
+end;
+
+function SendCmdLineParams(const Wnd, OriginatorWnd: HWND): Boolean;
+var
+  TempList: TStringList;
+  I: Integer;
+begin
+  TempList := TStringList.Create;
+  try
+    for I := 1 to ParamCount do
+      TempList.Add(ParamStr(I));
+    Result := SendStrings(Wnd, OriginatorWnd, AppInstCmdLineDataKind, TempList);
+  finally
+    TempList.Free;
+  end;
+end;
+
+function SendString(const Wnd, OriginatorWnd: HWND;
+  const DataKind: TJclAppInstDataKind; const S: string): Boolean;
+begin
+  Result := SendData(Wnd, OriginatorWnd, DataKind, PChar(S), Length(S));
 end;
 
 initialization

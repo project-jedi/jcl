@@ -260,6 +260,7 @@ function GetPidFromProcessName(const ProcessName: string): DWORD;
 function GetProcessNameFromWnd(Wnd: THandle): string;
 function GetProcessNameFromPid(PID: DWORD): string;
 function GetMainAppWndFromPid(PID: DWORD): THandle;
+function GetWndFromPid(PID: DWORD; const WindowClassName: string): HWND;
 {.$ENDIF ~FPC}
 
 function GetShellProcessName: string;
@@ -3129,6 +3130,49 @@ begin
   SearchRec.Wnd := 0;
   EnumWindows(@EnumWindowsProc, LPARAM(@SearchRec));
   Result := SearchRec.Wnd;
+end;
+
+function GetWndFromPid(PID: DWORD; const WindowClassName: string): HWND;
+type
+  PEnumWndStruct = ^TEnumWndStruct;
+  TEnumWndStruct = record
+      PID: DWORD;
+      WndClassName: string;
+      ResultWnd: HWND;
+  end;
+
+  function EnumWinProc(Wnd: HWND; Enum: PEnumWndStruct): BOOL; stdcall;
+  var
+    PID: DWORD;
+    C: PChar;
+    CLen: Integer;
+  begin
+    Result := True;
+    GetWindowThreadProcessId(Wnd, @PID);
+    if (PID = Enum.PID) then
+    begin
+      CLen := Length(Enum.WndClassName)+1;
+      C := StrAlloc(CLen);
+
+      if (GetClassName(Wnd, C, CLen) > 0) then
+      if (C = Enum.WndClassName) then
+      begin
+        Result := False;
+        Enum.ResultWnd := Wnd;
+      end;
+
+      StrDispose(C);
+    end;
+  end;
+
+var
+    EnumWndStruct: TEnumWndStruct;
+begin
+  EnumWndStruct.PID := PID;
+  EnumWndStruct.WndClassName := WindowClassName;
+  EnumWndStruct.ResultWnd := 0;
+  EnumWindows(@EnumWinProc, LPARAM(@EnumWndStruct));
+  Result := EnumWndStruct.ResultWnd;
 end;
 
 function GetShellProcessName: string;
