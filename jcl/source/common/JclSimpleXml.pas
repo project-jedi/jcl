@@ -1486,7 +1486,7 @@ var
 begin
   StrStream := TStringStream.Create(Value);
   try
-    Stream := TJclStringStream.Create(StrStream);
+    Stream := TJclAutoStream.Create(StrStream);
     try
       LoadFromStringStream(Stream);
     finally
@@ -1504,7 +1504,7 @@ var
 begin
   StrStream := TStringStream.Create('');
   try
-    Stream := TJclStringStream.Create(StrStream);
+    Stream := TJclAutoStream.Create(StrStream);
     try
       SaveToStringStream(Stream);
       Result := StrStream.DataString;
