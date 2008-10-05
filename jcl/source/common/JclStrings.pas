@@ -2966,13 +2966,13 @@ end;
 {$ELSE}
 function StrFind(const Substr, S: string; const Index: Integer): Integer;
 var
-  pos: PChar;
+  Pos: PChar;
 begin
-  pos := StrPos(PChar(@S[Index]),PChar(@SubStr[1]));
+  Pos := StrPos(PChar(@S[Index]),PChar(@SubStr[1]));
   if Pos = nil then
     Result := 0
   else
-    Result := Cardinal(Pos) - Cardinal(@S[1]) + 1;
+    Result := (Cardinal(Pos) - Cardinal(@S[1])) div SizeOf(Char) + 1;
 end;
 {$ENDIF CLR}
 
