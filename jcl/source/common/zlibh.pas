@@ -2081,9 +2081,6 @@ const
   ZLIBinflateSyncPointExportName = 'inflateSyncPoint';
   ZLIBget_crc_tableExportName = 'get_crc_table';
 
-var
-  ZLibModuleHandle: TModuleHandle = INVALID_MODULEHANDLE_VALUE;
-
 {$IFDEF ZLIB_STATICLINK}
 
 {$LINK ..\windows\obj\zlib\adler32.obj} // OS: CHECKTHIS - Kylix version may need forward slashes?
@@ -2219,7 +2216,10 @@ begin
 end;
 
 {$ENDIF ~LINK_TO_MSVCRT}
-{$ENDIF ZLIB_STATICLINK}
+{$ELSE ~ZLIB_STATICLINK}
+var
+  ZLibModuleHandle: TModuleHandle = INVALID_MODULEHANDLE_VALUE;
+{$ENDIF ~ZLIB_STATICLINK}
 
 function IsZLibLoaded: Boolean;
 begin
