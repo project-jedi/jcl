@@ -104,9 +104,9 @@ function UTF8SetNextCharToStream(S: TStream; Ch: UCS4): Boolean;
 // if UNICODE_SILENT_FAILURE is defined, invalid sequences will be replaced by ReplacementCharacter
 // otherwise StrPos is set to -1 on return to flag an error (invalid UTF16 sequence)
 // StrPos will be incremented by the number of chars that were read
-function UTF16GetNextChar(const S: TUTF16String; var StrPos: Integer): UCS4;
+function UTF16GetNextChar(const S: TUTF16String; var StrPos: Integer): UCS4; overload;
 {$IFDEF SUPPORTS_UNICODE_STRING}
-function UTF16GetNextChar(const S: UnicodeString; var StrPos: Integer): UCS4;
+function UTF16GetNextChar(const S: UnicodeString; var StrPos: Integer): UCS4; overload;
 {$ENDIF SUPPORTS_UNICODE_STRING}
 function UTF16GetNextCharFromStream(S: TStream; var Ch: UCS4): Boolean;
 
@@ -114,9 +114,9 @@ function UTF16GetNextCharFromStream(S: TStream; var Ch: UCS4): Boolean;
 // if UNICODE_SILENT_FAILURE is defined, invalid sequences will be replaced by ReplacementCharacter
 // otherwise StrPos is set to -1 on return to flag an error (invalid UTF16 sequence)
 // StrPos will be decremented by the number of chars that were read
-function UTF16GetPreviousChar(const S: TUTF16String; var StrPos: Integer): UCS4;
+function UTF16GetPreviousChar(const S: TUTF16String; var StrPos: Integer): UCS4; overload;
 {$IFDEF SUPPORTS_UNICODE_STRING}
-function UTF16GetPreviousChar(const S: UnicodeString; var StrPos: Integer): UCS4;
+function UTF16GetPreviousChar(const S: UnicodeString; var StrPos: Integer): UCS4; overload;
 {$ENDIF SUPPORTS_UNICODE_STRING}
 
 // UTF16SkipChars = skip NbSeq UTF16 sequences starting from StrPos
@@ -124,9 +124,9 @@ function UTF16GetPreviousChar(const S: UnicodeString; var StrPos: Integer): UCS4
 // if UNICODE_SILENT_FAILURE is not defined StrPos is set to -1 on error (invalid UTF16 sequence)
 // StrPos will be incremented by the number of chars that were skipped
 // On return, NbChar contains the number of UTF16 sequences that were skipped
-function UTF16SkipChars(const S: TUTF16String; var StrPos: Integer; var NbSeq: Integer): Boolean;
+function UTF16SkipChars(const S: TUTF16String; var StrPos: Integer; var NbSeq: Integer): Boolean; overload;
 {$IFDEF SUPPORTS_UNICODE_STRING}
-function UTF16SkipChars(const S: UnicodeString; var StrPos: Integer; var NbSeq: Integer): Boolean;
+function UTF16SkipChars(const S: UnicodeString; var StrPos: Integer; var NbSeq: Integer): Boolean; overload;
 {$ENDIF SUPPORTS_UNICODE_STRING}
 function UTF16SkipCharsFromStream(S: TStream; var NbSeq: Integer): Boolean;
 
