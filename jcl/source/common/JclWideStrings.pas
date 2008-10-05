@@ -291,12 +291,10 @@ procedure StrSwapByteOrder(Str: PWideChar);
 function WidePos(const SubStr, S: WideString): Integer;
 function WideQuotedStr(const S: WideString; Quote: WideChar): WideString;
 function WideExtractQuotedStr(var Src: PWideChar; Quote: WideChar): WideString;
-{$IFNDEF RTL140_UP}
 function WideCompareText(const S1, S2: WideString): Integer;
 function WideCompareStr(const S1, S2: WideString): Integer;
 function WideUpperCase(const S: WideString): WideString;
 function WideLowerCase(const S: WideString): WideString;
-{$ENDIF ~RTL140_UP}
 function TrimW(const S: WideString): WideString;
 function TrimLeftW(const S: WideString): WideString;
 function TrimRightW(const S: WideString): WideString;
@@ -1001,9 +999,6 @@ begin
   end;
 end;
 
-// functions missing in Delphi 5 / FPC
-{$IFNDEF RTL140_UP}
-
 function WideCompareText(const S1, S2: WideString): Integer;
 begin
   {$IFDEF MSWINDOWS}
@@ -1059,8 +1054,6 @@ begin
     Result := LowerCase(Result);
     {$ENDIF ~MSWINDOWS}
 end;
-
-{$ENDIF ~RTL140_UP}
 
 function TrimLeftLengthW(const S: WideString): Integer;
 var
