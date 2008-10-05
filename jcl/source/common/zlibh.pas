@@ -2298,7 +2298,7 @@ end;
 
 procedure UnloadZLib;
 begin
-  {$IFDEF BZIP2_LINKONREQUEST}
+  {$IFDEF ZLIB_LINKONREQUEST}
   if ZLibModuleHandle <> INVALID_MODULEHANDLE_VALUE then
     {$IFDEF MSWINDOWS}
     FreeLibrary(ZLibModuleHandle);
@@ -2307,7 +2307,7 @@ begin
     dlclose(Pointer(ZLibModuleHandle));
     {$ENDIF UNIX}
   ZLibModuleHandle := INVALID_MODULEHANDLE_VALUE;
-  {$ENDIF BZIP2_LINKONREQUEST}
+  {$ENDIF ZLIB_LINKONREQUEST}
 end;
 
 {$IFDEF ZLIB_LINKDLL}
