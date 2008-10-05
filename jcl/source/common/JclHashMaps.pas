@@ -2527,10 +2527,11 @@ uses
   JclResources;
 
 function HashMul(Key, Range: Integer): Integer;
+// return a value between 0 and (Range-1) based on integer-hash Key
 const
   A = 0.6180339887; // (sqrt(5) - 1) / 2
 begin
-  Result := Trunc(Range * (Frac(Key * A)));
+  Result := Trunc(Range * (Frac(Abs(Key * A))));
 end;
 
 //=== { TJclIntfIntfBucket } ==========================================
