@@ -651,6 +651,26 @@ type
   end;
   {$ENDIF SUPPORTS_UNICODE_STRING}
 
+const
+  // table of byte permutations without inner loop
+  BytePermTable: array [Byte] of Byte =
+   ( 22,  133, 0,   244, 194, 193, 4,   164, 69,  211, 166, 235, 75,  110, 9,   140,
+     125, 84,  64,  209, 57,  47,  197, 76,  237, 48,  189, 87,  221, 254, 20,  132,
+     25,  162, 203, 225, 186, 165, 72,  228, 61,  208, 158, 185, 114, 173, 1,   66,
+     202, 46,  198, 214, 27,  161, 178, 238, 8,   68,  97,  17,  199, 210, 96,  196,
+     85,  240, 233, 71,  232, 142, 148, 70,  184, 152, 90,  206, 139, 182, 34,  101,
+     104, 12,  143, 227, 24,  247, 175, 150, 39,  31,  36,  123, 62,  119, 236, 28,
+     117, 100, 230, 223, 30,  154, 18,  153, 127, 192, 176, 19,  174, 134, 2,   216,
+     218, 91,  45,  7,   128, 138, 126, 40,  16,  54,  207, 181, 11,  137, 60,  191,
+     51,  231, 121, 213, 86,  111, 141, 172, 98,  226, 179, 249, 136, 58,  88,  93,
+     201, 195, 118, 144, 146, 113, 212, 32,  21,  131, 177, 33,  151, 130, 205, 171,
+     92,  251, 168, 29,  156, 124, 224, 200, 3,   187, 105, 52,  239, 147, 82,  94,
+     26,  102, 243, 242, 145, 163, 49,  135, 43,  78,  112, 83,  63,  35,  170, 167,
+     250, 159, 73,  37,  6,   79,  106, 215, 129, 74,  109, 42,  41,  120, 23,  160,
+     107, 180, 103, 77,  53,  169, 89,  149, 44,  38,  81,  246, 188, 67,  15,  80,
+     155, 99,  95,  5,   229, 108, 13,  255, 59,  241, 252, 245, 222, 248, 115, 55,
+     217, 56,  65,  219, 204, 190, 10,  50,  253, 183, 234, 116, 122, 220, 14,  157);
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -667,9 +687,8 @@ uses
   {$IFDEF HAS_UNIT_ANSISTRINGS}
   AnsiStrings,
   {$ENDIF HAS_UNIT_ANSISTRINGS}
-  {$IFNDEF RTL140_UP}
   JclWideStrings,
-  {$ENDIF ~RTL140_UP}
+  JclStringConversions, JclUnicode,
   SysUtils;
 
 //=== { TJclAbstractLockable } ===============================================
@@ -1228,26 +1247,98 @@ begin
 end;
 
 function TJclAnsiStrAbstractContainer.Hash(const AString: AnsiString): Integer;
+// from "Fast Hashing of Variable-Length Text Strings", Peter K. Pearson, 1990
+// http://portal.acm.org/citation.cfm?id=78978
+type
+  TIntegerHash = packed record
+    case Byte of
+      0: (H1, H2, H3, H4: Byte);
+      1: (H: Integer);
+      2: (C: UCS4);
+  end;
 var
-  I: Integer;
+  I, J: Integer;
+  C1: Byte;
+  C2, IntegerHash: TIntegerHash;
+  CA: TUCS4Array;
 begin
   if Assigned(FHashConvert) then
     Result := FHashConvert(AString)
   else
   begin
-    Result := 0;
+    IntegerHash.H1 := 0;
+    IntegerHash.H2 := 1;
+    IntegerHash.H3 := 2;
+    IntegerHash.H4 := 3;
     case FEncoding of
       seISO:
-        if FCaseSensitive then
-          for I := 1 to Length(AString) do
-            Inc(Result, Ord(AString[I]) * (I - 1) * 256)
-        else
-          for I := 1 to Length(AString) do
-            Inc(Result, Ord(UpCase(AString[I])) * (I - 1) * 256);
-      //seUTF8:
+        begin
+          if FCaseSensitive then
+          begin
+            for I := 1 to Length(AString) do
+            begin
+              C1 := Ord(AString[I]);
+              IntegerHash.H1 := BytePermTable[IntegerHash.H1 xor C1];
+              IntegerHash.H2 := BytePermTable[IntegerHash.H2 xor C1];
+              IntegerHash.H3 := BytePermTable[IntegerHash.H3 xor C1];
+              IntegerHash.H4 := BytePermTable[IntegerHash.H4 xor C1];
+            end;
+          end
+          else
+          begin
+            // case insensitive
+            for I := 1 to Length(AString) - 1 do
+            begin
+              C1 := Ord(JclAnsiStrings.CharUpper(AString[I]));
+              IntegerHash.H1 := BytePermTable[IntegerHash.H1 xor C1];
+              IntegerHash.H2 := BytePermTable[IntegerHash.H2 xor C1];
+              IntegerHash.H3 := BytePermTable[IntegerHash.H3 xor C1];
+              IntegerHash.H4 := BytePermTable[IntegerHash.H4 xor C1];
+            end;  
+          end;
+        end;
+      seUTF8:
+        begin
+          if FCaseSensitive then
+          begin
+            I := 1;
+            while I < Length(AString) do
+            begin
+              C2.C := UTF8GetNextChar(AString, I);
+              if I = -1 then
+                raise EJclUnexpectedEOSequenceError.Create;
+              IntegerHash.H1 := BytePermTable[IntegerHash.H1 xor C2.H1];
+              IntegerHash.H2 := BytePermTable[IntegerHash.H2 xor C2.H2];
+              IntegerHash.H3 := BytePermTable[IntegerHash.H3 xor C2.H3];
+              IntegerHash.H4 := BytePermTable[IntegerHash.H4 xor C2.H4];
+            end;
+          end
+          else
+          begin
+            // case insensitive
+            I := 1;
+            SetLength(CA, 0);
+            while I < Length(AString) do
+            begin
+              C2.C := UTF8GetNextChar(AString, I);
+              CA := UnicodeCaseFold(C2.C);
+              for J := Low(CA) to High(CA) do
+              begin
+                C2.C := CA[J];
+                if I = -1 then
+                  raise EJclUnexpectedEOSequenceError.Create;
+                IntegerHash.H1 := BytePermTable[IntegerHash.H1 xor C2.H1];
+                IntegerHash.H2 := BytePermTable[IntegerHash.H2 xor C2.H2];
+                IntegerHash.H3 := BytePermTable[IntegerHash.H3 xor C2.H3];
+                IntegerHash.H4 := BytePermTable[IntegerHash.H4 xor C2.H4];
+              end;
+            end;
+          end;
+        end;
     else
       raise EJclOperationNotSupportedError.Create;
     end;
+    Result := IntegerHash.H;
   end;
 end;
 
@@ -1356,26 +1447,71 @@ begin
 end;
 
 function TJclWideStrAbstractContainer.Hash(const AString: WideString): Integer;
+// from "Fast Hashing of Variable-Length Text Strings", Peter K. Pearson, 1990
+// http://portal.acm.org/citation.cfm?id=78978
+type
+  TIntegerHash = packed record
+    case Byte of
+      0: (H1, H2, H3, H4: Byte);
+      1: (H: Integer);
+      2: (C: UCS4);
+  end;
 var
-  I: Integer;
+  I, J: Integer;
+  C2, IntegerHash: TIntegerHash;
+  CA: TUCS4Array;
 begin
   if Assigned(FHashConvert) then
     Result := FHashConvert(AString)
   else
   begin
-    Result := 0;
+    IntegerHash.H1 := 0;
+    IntegerHash.H2 := 1;
+    IntegerHash.H3 := 2;
+    IntegerHash.H4 := 3;
     case FEncoding of
-      weUCS2:
-        //if FCaseSensitive then
-          for I := 1 to Length(AString) do
-            Inc(Result, Ord(AString[I]) * (I - 1) * 65536)
-        //else
-        //  for I := 1 to Length(AString) do
-        //    Inc(Result, Ord(AString[I]) * (I - 1) * 65536); // TODO: case folding
-      //weUTF16:
+      seUTF16:
+        begin
+          SetLength(CA, 0);
+          if FCaseSensitive then
+          begin
+            I := 1;
+            while I < Length(AString) do
+            begin
+              C2.C := UTF16GetNextChar(AString, I);
+              if I = -1 then
+                raise EJclUnexpectedEOSequenceError.Create;
+              IntegerHash.H1 := BytePermTable[IntegerHash.H1 xor C2.H1];
+              IntegerHash.H2 := BytePermTable[IntegerHash.H2 xor C2.H2];
+              IntegerHash.H3 := BytePermTable[IntegerHash.H3 xor C2.H3];
+              IntegerHash.H4 := BytePermTable[IntegerHash.H4 xor C2.H4];
+            end;
+          end
+          else
+          begin
+            // case insensitive
+            I := 1;
+            while I < Length(AString) do
+            begin
+              C2.C := UTF16GetNextChar(AString, I);
+              CA := UnicodeCaseFold(C2.C);
+              for J := Low(CA) to High(CA) do
+              begin
+                C2.C := CA[J];
+                if I = -1 then
+                  raise EJclUnexpectedEOSequenceError.Create;
+                IntegerHash.H1 := BytePermTable[IntegerHash.H1 xor C2.H1];
+                IntegerHash.H2 := BytePermTable[IntegerHash.H2 xor C2.H2];
+                IntegerHash.H3 := BytePermTable[IntegerHash.H3 xor C2.H3];
+                IntegerHash.H4 := BytePermTable[IntegerHash.H4 xor C2.H4];
+              end;
+            end;
+          end;
+        end;
     else
       raise EJclOperationNotSupportedError.Create;
     end;
+    Result := IntegerHash.H;
   end;
 end;
 
@@ -1386,12 +1522,11 @@ begin
   else
   begin
     case FEncoding of
-      weUCS2:
+      seUTF16:
         if FCaseSensitive then
-          Result := WideCompareStr(A, B)
+          Result := JclWideStrings.WideCompareStr(A, B)
         else
-          Result := WideCompareText(A, B);
-      //weUTF16:
+          Result := JclWideStrings.WideCompareText(A, B);
     else
       raise EJclOperationNotSupportedError.Create;
     end;
@@ -1408,12 +1543,11 @@ begin
   else
   begin
     case FEncoding of
-      weUCS2:
+      seUTF16:
         if FCaseSensitive then
-          Result := WideCompareStr(A, B) = 0
+          Result := JclWideStrings.WideCompareStr(A, B) = 0
         else
-          Result := WideCompareText(A, B) = 0;
-      //weUTF16:
+          Result := JclWideStrings.WideCompareText(A, B) = 0;
     else
       raise EJclOperationNotSupportedError.Create;
     end;
@@ -1479,20 +1613,71 @@ begin
 end;
 
 function TJclUnicodeStrAbstractContainer.Hash(const AString: UnicodeString): Integer;
+// from "Fast Hashing of Variable-Length Text Strings", Peter K. Pearson, 1990
+// http://portal.acm.org/citation.cfm?id=78978
+type
+  TIntegerHash = packed record
+    case Byte of
+      0: (H1, H2, H3, H4: Byte);
+      1: (H: Integer);
+      2: (C: UCS4);
+  end;
 var
-  I: Integer;
+  I, J: Integer;
+  C2, IntegerHash: TIntegerHash;
+  CA: TUCS4Array;
 begin
   if Assigned(FHashConvert) then
     Result := FHashConvert(AString)
   else
   begin
-    Result := 0;
-    //if FCaseSensitive then
-      for I := 1 to Length(AString) do
-        Inc(Result, Ord(AString[I]) * (I - 1) * 65536)
-    //else
-    //  for I := 1 to Length(AString) do
-    //    Inc(Result, Ord(AString[I]) * (I - 1) * 65536); // TODO: case folding
+    IntegerHash.H1 := 0;
+    IntegerHash.H2 := 1;
+    IntegerHash.H3 := 2;
+    IntegerHash.H4 := 3;
+    case FEncoding of
+      seUTF16:
+        begin
+          SetLength(CA, 0);
+          if FCaseSensitive then
+          begin
+            I := 1;
+            while I < Length(AString) do
+            begin
+              C2.C := UTF16GetNextChar(AString, I);
+              if I = -1 then
+                raise EJclUnexpectedEOSequenceError.Create;
+              IntegerHash.H1 := BytePermTable[IntegerHash.H1 xor C2.H1];
+              IntegerHash.H2 := BytePermTable[IntegerHash.H2 xor C2.H2];
+              IntegerHash.H3 := BytePermTable[IntegerHash.H3 xor C2.H3];
+              IntegerHash.H4 := BytePermTable[IntegerHash.H4 xor C2.H4];
+            end;
+          end
+          else
+          begin
+            // case insensitive
+            I := 1;
+            while I < Length(AString) do
+            begin
+              C2.C := UTF16GetNextChar(AString, I);
+              CA := UnicodeCaseFold(C2.C);
+              for J := Low(CA) to High(CA) do
+              begin
+                C2.C := CA[J];
+                if I = -1 then
+                  raise EJclUnexpectedEOSequenceError.Create;
+                IntegerHash.H1 := BytePermTable[IntegerHash.H1 xor C2.H1];
+                IntegerHash.H2 := BytePermTable[IntegerHash.H2 xor C2.H2];
+                IntegerHash.H3 := BytePermTable[IntegerHash.H3 xor C2.H3];
+                IntegerHash.H4 := BytePermTable[IntegerHash.H4 xor C2.H4];
+              end;
+            end;
+          end;
+        end;
+    else
+      raise EJclOperationNotSupportedError.Create;
+    end;
+    Result := IntegerHash.H;
   end;
 end;
 
