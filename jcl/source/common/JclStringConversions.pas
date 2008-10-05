@@ -105,6 +105,9 @@ function UTF8SetNextCharToStream(S: TStream; Ch: UCS4): Boolean;
 // otherwise StrPos is set to -1 on return to flag an error (invalid UTF16 sequence)
 // StrPos will be incremented by the number of chars that were read
 function UTF16GetNextChar(const S: TUTF16String; var StrPos: Integer): UCS4;
+{$IFDEF SUPPORTS_UNICODE_STRING}
+function UTF16GetNextChar(const S: UnicodeString; var StrPos: Integer): UCS4;
+{$ENDIF SUPPORTS_UNICODE_STRING}
 function UTF16GetNextCharFromStream(S: TStream; var Ch: UCS4): Boolean;
 
 // UTF16GetPreviousChar = read previous UTF16 sequence starting at StrPos-1
@@ -112,6 +115,9 @@ function UTF16GetNextCharFromStream(S: TStream; var Ch: UCS4): Boolean;
 // otherwise StrPos is set to -1 on return to flag an error (invalid UTF16 sequence)
 // StrPos will be decremented by the number of chars that were read
 function UTF16GetPreviousChar(const S: TUTF16String; var StrPos: Integer): UCS4;
+{$IFDEF SUPPORTS_UNICODE_STRING}
+function UTF16GetPreviousChar(const S: UnicodeString; var StrPos: Integer): UCS4;
+{$ENDIF SUPPORTS_UNICODE_STRING}
 
 // UTF16SkipChars = skip NbSeq UTF16 sequences starting from StrPos
 // returns False if String is too small
@@ -119,6 +125,9 @@ function UTF16GetPreviousChar(const S: TUTF16String; var StrPos: Integer): UCS4;
 // StrPos will be incremented by the number of chars that were skipped
 // On return, NbChar contains the number of UTF16 sequences that were skipped
 function UTF16SkipChars(const S: TUTF16String; var StrPos: Integer; var NbSeq: Integer): Boolean;
+{$IFDEF SUPPORTS_UNICODE_STRING}
+function UTF16SkipChars(const S: UnicodeString; var StrPos: Integer; var NbSeq: Integer): Boolean;
+{$ENDIF SUPPORTS_UNICODE_STRING}
 function UTF16SkipCharsFromStream(S: TStream; var NbSeq: Integer): Boolean;
 
 // UTF16SetNextChar = append an UTF16 sequence at StrPos
@@ -1158,6 +1167,55 @@ begin
   end;
 end;
 
+// if UNICODE_SILENT_FAILURE is defined, invalid sequences will be replaced by ReplacementCharacter
+// otherwise StrPos is set to -1 on return to flag an error (invalid UTF16 sequence)
+// StrPos will be incremented by the number of chars that were read
+{$IFDEF SUPPORTS_UNICODE_STRING}
+function UTF16GetNextChar(const S: UnicodeString; var StrPos: Integer): UCS4;
+var
+  StrLength: Integer;
+  ChNext: UCS4;
+begin
+  StrLength := Length(S);
+
+  if (StrPos <= StrLength) and (StrPos > 0) then
+  begin
+    Result := UCS4(S[StrPos]);
+
+    case Result of
+      SurrogateHighStart..SurrogateHighEnd:
+        begin
+          // 2 bytes to read
+          if StrPos >= StrLength then
+          begin
+            FlagInvalidSequence(StrPos, 1, Result);
+            Exit;
+          end;
+          ChNext := UCS4(S[StrPos + 1]);
+          if (ChNext < SurrogateLowStart) or (ChNext > SurrogateLowEnd) then
+          begin
+            FlagInvalidSequence(StrPos, 1, Result);
+            Exit;
+          end;
+          Result := ((Result - SurrogateHighStart) shl HalfShift) +  (ChNext - SurrogateLowStart) + HalfBase;
+          Inc(StrPos, 2);
+        end;
+      SurrogateLowStart..SurrogateLowEnd:
+        FlagInvalidSequence(StrPos, 1, Result);
+    else
+      // 1 byte to read
+      Inc(StrPos);
+    end;
+  end
+  else
+  begin
+    // StrPos > StrLength
+    Result := 0;
+    FlagInvalidSequence(StrPos, 0, Result);
+  end;
+end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
+
 function UTF16GetNextCharFromStream(S: TStream; var Ch: UCS4): Boolean;
 var
   W: Word;
@@ -1235,6 +1293,55 @@ begin
     FlagInvalidSequence(StrPos, 0, Result);
   end;
 end;
+
+// if UNICODE_SILENT_FAILURE is defined, invalid sequences will be replaced by ReplacementCharacter
+// otherwise StrPos is set to -1 on return to flag an error (invalid UTF16 sequence)
+// StrPos will be decremented by the number of chars that were read
+{$IFDEF SUPPORTS_UNICODE_STRING}
+function UTF16GetPreviousChar(const S: UnicodeString; var StrPos: Integer): UCS4;
+var
+  StrLength: Integer;
+  ChPrev: UCS4;
+begin
+  StrLength := Length(S);
+
+  if (StrPos <= (StrLength + 1)) and (StrPos > 1) then
+  begin
+    Result := UCS4(S[StrPos - 1]);
+
+    case Result of
+      SurrogateHighStart..SurrogateHighEnd:
+        FlagInvalidSequence(StrPos, -1, Result);
+      SurrogateLowStart..SurrogateLowEnd:
+        begin
+          // 2 bytes to read
+          if StrPos <= 2 then
+          begin
+            FlagInvalidSequence(StrPos, -1, Result);
+            Exit;
+          end;
+          ChPrev := UCS4(S[StrPos - 2]);
+          if (ChPrev < SurrogateHighStart) or (ChPrev > SurrogateHighEnd) then
+          begin
+            FlagInvalidSequence(StrPos, -1, Result);
+            Exit;
+          end;
+          Result := ((ChPrev - SurrogateHighStart) shl HalfShift) +  (Result - SurrogateLowStart) + HalfBase;
+          Dec(StrPos, 2);
+        end;
+    else
+      // 1 byte to read
+      Dec(StrPos);
+    end;
+  end
+  else
+  begin
+    // StrPos > StrLength
+    Result := 0;
+    FlagInvalidSequence(StrPos, 0, Result);
+  end;
+end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
 
 // returns False if String is too small
 // if UNICODE_SILENT_FAILURE is not defined StrPos is set to -1 on error (invalid UTF16 sequence)
@@ -1321,6 +1428,94 @@ begin
     end;
   NbSeq := Index;
 end;
+
+// returns False if String is too small
+// if UNICODE_SILENT_FAILURE is not defined StrPos is set to -1 on error (invalid UTF16 sequence)
+// StrPos will be incremented by the number of chars that were skipped
+// On return, NbSeq contains the number of UTF16 sequences that were skipped
+{$IFDEF SUPPORTS_UNICODE_STRING}
+function UTF16SkipChars(const S: UnicodeString; var StrPos: Integer; var NbSeq: Integer): Boolean;
+var
+  StrLength, Index: Integer;
+  Ch, ChNext: UCS4;
+begin
+  Result := True;
+  StrLength := Length(S);
+
+  Index := 0;
+  if NbSeq >= 0 then
+    while (Index < NbSeq) and (StrPos > 0) do
+    begin
+      Ch := UCS4(S[StrPos]);
+
+      case Ch of
+        SurrogateHighStart..SurrogateHighEnd:
+          // 2 bytes to skip
+          if StrPos >= StrLength then
+            FlagInvalidSequence(StrPos, 1)
+          else
+          begin
+            ChNext := UCS4(S[StrPos + 1]);
+            if (ChNext < SurrogateLowStart) or (ChNext > SurrogateLowEnd) then
+              FlagInvalidSequence(StrPos, 1)
+            else
+              Inc(StrPos, 2);
+          end;
+        SurrogateLowStart..SurrogateLowEnd:
+          // error
+          FlagInvalidSequence(StrPos, 1);
+      else
+        // 1 byte to skip
+        Inc(StrPos);
+      end;
+
+      if StrPos <> -1 then
+        Inc(Index);
+
+      if (StrPos > StrLength) and (Index < NbSeq) then
+      begin
+        Result := False;
+        Break;
+      end;
+    end
+  else
+    while (Index > NbSeq) and (StrPos > 1) do
+    begin
+      Ch := UCS4(S[StrPos - 1]);
+
+      case Ch of
+        SurrogateHighStart..SurrogateHighEnd:
+          // error
+          FlagInvalidSequence(StrPos, -1);
+        SurrogateLowStart..SurrogateLowEnd:
+          // 2 bytes to skip
+          if StrPos <= 2 then
+            FlagInvalidSequence(StrPos, -1)
+          else
+          begin
+            ChNext := UCS4(S[StrPos - 2]);
+            if (ChNext < SurrogateHighStart) or (ChNext > SurrogateHighEnd) then
+              FlagInvalidSequence(StrPos, -1)
+            else
+              Dec(StrPos, 2);
+          end;
+      else
+        // 1 byte to skip
+        Dec(StrPos);
+      end;
+
+      if StrPos <> -1 then
+        Dec(Index);
+
+      if (StrPos = 1) and (Index > NbSeq) then
+      begin
+        Result := False;
+        Break;
+      end;
+    end;
+  NbSeq := Index;
+end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
 
 function UTF16SkipCharsFromStream(S: TStream; var NbSeq: Integer): Boolean;
 var
