@@ -1635,51 +1635,45 @@ begin
     IntegerHash.H2 := 1;
     IntegerHash.H3 := 2;
     IntegerHash.H4 := 3;
-    case FEncoding of
-      seUTF16:
-        begin
-          SetLength(CA, 0);
-          if FCaseSensitive then
-          begin
-            I := 1;
-            while I < Length(AString) do
-            begin
-              C2.C := UTF16GetNextChar(AString, I);
-              if I = -1 then
-                raise EJclUnexpectedEOSequenceError.Create;
-              IntegerHash.H1 := BytePermTable[IntegerHash.H1 xor C2.H1];
-              IntegerHash.H2 := BytePermTable[IntegerHash.H2 xor C2.H2];
-              IntegerHash.H3 := BytePermTable[IntegerHash.H3 xor C2.H3];
-              IntegerHash.H4 := BytePermTable[IntegerHash.H4 xor C2.H4];
-            end;
-          end
-          else
-          begin
-            // case insensitive
-            I := 1;
-            while I < Length(AString) do
-            begin
-              C2.C := UTF16GetNextChar(AString, I);
-              CA := UnicodeCaseFold(C2.C);
-              for J := Low(CA) to High(CA) do
-              begin
-                C2.C := CA[J];
-                if I = -1 then
-                  raise EJclUnexpectedEOSequenceError.Create;
-                IntegerHash.H1 := BytePermTable[IntegerHash.H1 xor C2.H1];
-                IntegerHash.H2 := BytePermTable[IntegerHash.H2 xor C2.H2];
-                IntegerHash.H3 := BytePermTable[IntegerHash.H3 xor C2.H3];
-                IntegerHash.H4 := BytePermTable[IntegerHash.H4 xor C2.H4];
-              end;
-            end;
-          end;
-        end;
+    SetLength(CA, 0);
+    if FCaseSensitive then
+    begin
+      I := 1;
+      while I < Length(AString) do
+      begin
+        C2.C := UTF16GetNextChar(AString, I);
+        if I = -1 then
+          raise EJclUnexpectedEOSequenceError.Create;
+        IntegerHash.H1 := BytePermTable[IntegerHash.H1 xor C2.H1];
+        IntegerHash.H2 := BytePermTable[IntegerHash.H2 xor C2.H2];
+        IntegerHash.H3 := BytePermTable[IntegerHash.H3 xor C2.H3];
+        IntegerHash.H4 := BytePermTable[IntegerHash.H4 xor C2.H4];
+      end;
+    end
     else
-      raise EJclOperationNotSupportedError.Create;
+    begin
+      // case insensitive
+      I := 1;
+      while I < Length(AString) do
+      begin
+        C2.C := UTF16GetNextChar(AString, I);
+        CA := UnicodeCaseFold(C2.C);
+        for J := Low(CA) to High(CA) do
+        begin
+          C2.C := CA[J];
+          if I = -1 then
+            raise EJclUnexpectedEOSequenceError.Create;
+          IntegerHash.H1 := BytePermTable[IntegerHash.H1 xor C2.H1];
+          IntegerHash.H2 := BytePermTable[IntegerHash.H2 xor C2.H2];
+          IntegerHash.H3 := BytePermTable[IntegerHash.H3 xor C2.H3];
+          IntegerHash.H4 := BytePermTable[IntegerHash.H4 xor C2.H4];
+        end;
+      end;
     end;
     Result := IntegerHash.H;
   end;
 end;
+
 
 function TJclUnicodeStrAbstractContainer.ItemsCompare(const A, B: UnicodeString): Integer;
 begin
