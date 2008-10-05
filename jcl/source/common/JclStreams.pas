@@ -334,7 +334,9 @@ type
     procedure WriteCString(const Value: string); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
     procedure WriteCAnsiString(const Value: AnsiString);
     procedure WriteCWideString(const Value: WideString);
-    procedure WriteStringDelimitedByNull(const Value: string); {$IFDEF ACCEPT_DEPRECATED}deprecated;{$ENDIF ACCEPT_DEPRECATED}
+    {$IFDEF KEEP_DEPRECATED}
+    procedure WriteStringDelimitedByNull(const Value: string);
+    {$ENDIF KEEP_DEPRECATED}
     procedure WriteShortString(const Value: ShortString);
     procedure WriteSingle(const Value: Single);
     procedure WriteSizedString(const Value: string); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
@@ -2013,10 +2015,12 @@ begin
   {$ENDIF ~CLR}
 end;
 
+{$IFDEF KEEP_DEPRECATED}
 procedure TJclEasyStream.WriteStringDelimitedByNull(const Value: string);
 begin
   WriteCString(Value);
 end;
+{$ENDIF KEEP_DEPRECATED}
 
 procedure TJclEasyStream.WriteShortString(const Value: ShortString);
 {$IFDEF CLR}
