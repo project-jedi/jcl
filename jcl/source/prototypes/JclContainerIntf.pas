@@ -266,7 +266,7 @@ type
     property CaseSensitive: Boolean read GetCaseSensitive write SetCaseSensitive;
   end;
 
-  TJclAnsiStrEncoding = (seISO {, seUTF8}); // TODO: make JclUnicode compatible with Linux and .NET
+  TJclAnsiStrEncoding = (seISO, seUTF8);
 
   IJclAnsiStrContainer = interface(IJclStrContainer)
     ['{F8239357-B96F-46F1-A48E-B5DF25B5F1FA}']
@@ -287,7 +287,7 @@ type
     procedure LoadDelimited(const AString: AnsiString; const Separator: AnsiString = AnsiLineBreak);
   end;
 
-  TJclWideStrEncoding = (weUCS2 {, wsUTF16}); // TODO: make JclUnicode compatible with Linux and .NET
+  TJclWideStrEncoding = (seUTF16);
 
   IJclWideStrContainer = interface(IJclStrContainer)
     ['{875E1AC4-CA22-46BC-8999-048E5B9BF11D}']
