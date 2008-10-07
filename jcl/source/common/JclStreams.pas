@@ -304,6 +304,7 @@ type
     function ReadAnsiChar: AnsiChar;
     function ReadWideChar: WideChar;
     {$IFNDEF CLR}
+    function ReadByte: Byte;
     function ReadCurrency: Currency;
     function ReadDateTime: TDateTime;
     function ReadExtended: Extended;
@@ -323,6 +324,7 @@ type
     procedure WriteChar(Value: Char);
     procedure WriteAnsiChar(Value: AnsiChar);
     procedure WriteWideChar(Value: WideChar);
+    procedure WriteByte(Value: Byte);
     {$IFNDEF CLR}
     procedure WriteCurrency(const Value: Currency);
     procedure WriteDateTime(const Value: TDateTime);
@@ -1688,6 +1690,11 @@ begin
 end;
 
 {$IFNDEF CLR}
+function TJclEasyStream.ReadByte: Byte;
+begin
+  ReadBuffer(Result, SizeOf(Result));
+end;
+
 function TJclEasyStream.ReadCurrency: Currency;
 begin
   ReadBuffer(Result, SizeOf(Result));
@@ -1914,6 +1921,15 @@ begin
 end;
 
 procedure TJclEasyStream.WriteWideChar(Value: WideChar);
+begin
+  {$IFDEF CLR}
+  WriteBuffer(Value);
+  {$ELSE ~CLR}
+  WriteBuffer(Value, SizeOf(Value));
+  {$ENDIF ~CLR}
+end;
+
+procedure TJclEasyStream.WriteByte(Value: Byte);
 begin
   {$IFDEF CLR}
   WriteBuffer(Value);
