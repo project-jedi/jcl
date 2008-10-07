@@ -2197,14 +2197,12 @@ begin
       begin
         SetLength(Host, MAX_PATH);
         GetHostName(PAnsiChar(Host), MAX_PATH);
-        HostEnt := GetHostByName(PAnsiChar(Host));
-        if HostEnt = nil then
-          Host := '';
       end
       else
         Host := HostName;
-
-      if Host <> '' then
+        
+      HostEnt := GetHostByName(PAnsiChar(Host));
+      if HostEnt <> nil then
       begin
         pPtr := PaPInAddr(HostEnt^.h_addr_list);
         i := 0;
