@@ -644,7 +644,7 @@ type
 
   TJclFileVersionInfo = class(TObject)
   private
-    FBuffer: string;
+    FBuffer: AnsiString;
     FFixedInfo: PVSFixedFileInfo;
     FFileFlags: TFileFlags;
     FItemList: TStringList;
@@ -5336,7 +5336,8 @@ end;
 
 constructor TJclFileVersionInfo.Attach(VersionInfoData: Pointer; Size: Integer);
 begin
-  SetString(FBuffer, PChar(VersionInfoData), Size);
+  SetLength(FBuffer, Size);
+  CopyMemory(PAnsiChar(FBuffer), VersionInfoData, Size);
   ExtractData;
 end;
 
@@ -5349,7 +5350,7 @@ begin
   if Size = 0 then
     raise EJclFileVersionInfoError.CreateRes(@RsFileUtilsNoVersionInfo);
   SetLength(FBuffer, Size);
-  Win32Check(GetFileVersionInfo(PChar(FileName), Handle, Size, PChar(FBuffer)));
+  Win32Check(GetFileVersionInfo(PChar(FileName), Handle, Size, PAnsiChar(FBuffer)));
   ExtractData;
 end;
 
