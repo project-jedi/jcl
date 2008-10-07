@@ -1298,6 +1298,9 @@ uses
   {$IFDEF UNICODE_BZIP2_DATA}
   BZip2,
   {$ENDIF UNICODE_BZIP2_DATA}
+  {$IFDEF UNICODE_ZLIB_DATA}
+  ZLibh,
+  {$ENDIF UNICODE_ZLIB_DATA}
   {$IFNDEF UNICODE_RAW_DATA}
   JclStreams,
   JclCompression,
@@ -1356,6 +1359,7 @@ begin
   {$ENDIF UNICODE_BZIP2_DATA}
   {$IFDEF UNICODE_ZLIB_DATA}
   try
+    LoadZLib;
     DecompressionStream := TJclZLibDecompressStream.Create(ResourceStream);
     try
       Result := TMemoryStream.Create;
