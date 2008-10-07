@@ -56,7 +56,7 @@
     <File Name="..\..\source\Common\JclSynch.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclSysInfo.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclSysUtils.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
-    <File Name="..\..\source\Common\JclUnicode.pas" Targets="JclDev" Formname="" Condition=""/>
+    <File Name="..\..\source\Common\JclUnicode.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclUnitConv.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclUnitVersioning.pas" Targets="JclDev" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclUnitVersioningProviders.pas" Targets="JclDev" Formname="" Condition=""/>

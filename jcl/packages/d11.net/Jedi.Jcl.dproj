@@ -132,6 +132,7 @@
       <DCCReference Include="..\..\source\Common\JclSynch.pas"/>
       <DCCReference Include="..\..\source\common\JclSysInfo.pas"/>
       <DCCReference Include="..\..\source\common\JclSysUtils.pas"/>
+      <DCCReference Include="..\..\source\Common\JclUnicode.pas"/>
       <DCCReference Include="..\..\source\common\JclUnitConv.pas"/>
       <DCCReference Include="..\..\source\common\JclValidation.pas"/>
   </ItemGroup>

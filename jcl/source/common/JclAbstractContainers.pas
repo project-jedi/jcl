@@ -687,7 +687,9 @@ uses
   {$IFDEF HAS_UNIT_ANSISTRINGS}
   AnsiStrings,
   {$ENDIF HAS_UNIT_ANSISTRINGS}
+  {$IFNDEF CLR}
   JclWideStrings,
+  {$ENDIF ~CLR}
   JclStringConversions, JclUnicode,
   SysUtils;
 
@@ -1524,9 +1526,9 @@ begin
     case FEncoding of
       seUTF16:
         if FCaseSensitive then
-          Result := JclWideStrings.WideCompareStr(A, B)
+          Result := {$IFNDEF CLR}JclWideStrings.{$ENDIF ~CLR}WideCompareStr(A, B)
         else
-          Result := JclWideStrings.WideCompareText(A, B);
+          Result := {$IFNDEF CLR}JclWideStrings.{$ENDIF ~CLR}WideCompareText(A, B);
     else
       raise EJclOperationNotSupportedError.Create;
     end;
@@ -1545,9 +1547,9 @@ begin
     case FEncoding of
       seUTF16:
         if FCaseSensitive then
-          Result := JclWideStrings.WideCompareStr(A, B) = 0
+          Result := {$IFNDEF CLR}JclWideStrings.{$ENDIF ~CLR}WideCompareStr(A, B) = 0
         else
-          Result := JclWideStrings.WideCompareText(A, B) = 0;
+          Result := {$IFNDEF CLR}JclWideStrings.{$ENDIF ~CLR}WideCompareText(A, B) = 0;
     else
       raise EJclOperationNotSupportedError.Create;
     end;

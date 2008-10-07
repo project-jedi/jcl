@@ -626,6 +626,7 @@ const
     (Range:(RangeStart: $F0000; RangeEnd: $FFFFF); Name: 'Supplementary Private Use Area-A'),
     (Range:(RangeStart: $100000; RangeEnd: $10FFFF); Name: 'Supplementary Private Use Area-B'));
 
+{$IFNDEF CLR}
 type
   TWideStrings = class;
 
@@ -1090,12 +1091,6 @@ type
     property OnChanging: TNotifyEvent read FOnChanging write FOnChanging;
   end;
 
-  // result type for number retrieval functions
-  TUcNumber = record
-    Numerator,
-    Denominator: Integer;
-  end;
-
 // functions involving null-terminated strings
 // NOTE: PWideChars as well as WideStrings are NOT managed by reference counting under Win32.
 //       In Kylix this is different. WideStrings are reference counted there, just like ANSI strings.
@@ -1137,6 +1132,7 @@ function WideDecompose(const S: WideString; Compatible: Boolean): WideString;
 function WideExtractQuotedStr(var Src: PWideChar; Quote: WideChar): WideString;
 function WideQuotedStr(const S: WideString; Quote: WideChar): WideString;
 function WideStringOfChar(C: WideChar; Count: Cardinal): WideString;
+{$ENDIF ~CLR}
 
 // case conversion function
 type
@@ -1148,15 +1144,25 @@ function WideCaseFolding(C: WideChar): WideString; overload; {$IFDEF SUPPORTS_IN
 function WideCaseFolding(const S: WideString): WideString; overload; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 function WideLowerCase(C: WideChar): WideString; overload; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 function WideLowerCase(const S: WideString): WideString; overload; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
-function WideNormalize(const S: WideString; Form: TNormalizationForm): WideString;
-function WideSameText(const Str1, Str2: WideString): Boolean;
 function WideTitleCase(C: WideChar): WideString; overload; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 function WideTitleCase(const S: WideString): WideString; overload; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
+function WideUpperCase(C: WideChar): WideString; overload; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
+function WideUpperCase(const S: WideString): WideString; overload; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
+
+{$IFNDEF CLR}
+function WideNormalize(const S: WideString; Form: TNormalizationForm): WideString;
+function WideSameText(const Str1, Str2: WideString): Boolean;
 function WideTrim(const S: WideString): WideString;
 function WideTrimLeft(const S: WideString): WideString;
 function WideTrimRight(const S: WideString): WideString;
-function WideUpperCase(C: WideChar): WideString; overload; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
-function WideUpperCase(const S: WideString): WideString; overload; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
+{$ENDIF ~CLR}
+
+type
+  // result type for number retrieval functions
+  TUcNumber = record
+    Numerator,
+    Denominator: Integer;
+  end;
 
 // Low level character routines
 function UnicodeNumberLookup(Code: UCS4; var Number: TUcNumber): Boolean;
@@ -1229,6 +1235,7 @@ function UnicodeIsHan(C: UCS4): Boolean;
 function UnicodeIsHangul(C: UCS4): Boolean;
 
 // Utility functions
+{$IFNDEF CLR}
 function CharSetFromLocale(Language: LCID): Byte;
 function GetCharSetFromLocale(Language: LCID; out FontCharSet: Byte): Boolean;
 function CodePageFromLocale(Language: LCID): Integer;
@@ -1240,6 +1247,7 @@ function KeyUnicode(C: Char): WideChar;
 function StringToWideStringEx(const S: AnsiString; CodePage: Word): WideString;
 function TranslateString(const S: AnsiString; CP1, CP2: Word): AnsiString;
 function WideStringToStringEx(const WS: WideString; CodePage: Word): AnsiString;
+{$ENDIF ~CLR}
 
 type
   TCompareFunc = function (const W1, W2: WideString; Locale: LCID): Integer;
@@ -1301,10 +1309,13 @@ uses
   {$IFDEF UNICODE_ZLIB_DATA}
   ZLibh,
   {$ENDIF UNICODE_ZLIB_DATA}
-  {$IFNDEF UNICODE_RAW_DATA}
   JclStreams,
+  {$IFNDEF UNICODE_RAW_DATA}
   JclCompression,
   {$ENDIF ~UNICODE_RAW_DATA}
+  {$IFDEF CLR}
+  Borland.Vcl.WinUtils,
+  {$ENDIF CLR}
   JclResources, JclSynch, JclSysUtils, JclSysInfo, JclStringConversions;
 
 const
@@ -1331,25 +1342,27 @@ var
   // while the data is loaded.
   LoadInProgress: TJclCriticalSection;
 
-function OpenResourceStream(const ResName: string): TStream;
+function OpenResourceStream(const ResName: string): TJclEasyStream;
 var
   ResourceStream: TStream;
   {$IFNDEF UNICODE_RAW_DATA}
   DecompressionStream: TStream;
+  RawStream: TMemoryStream;
   {$ENDIF ~UNICODE_RAW_DATA}
 begin
   ResourceStream := TResourceStream.Create(HInstance, ResName, 'UNICODEDATA');
   {$IFDEF UNICODE_RAW_DATA}
-  Result := ResourceStream;
+  Result := TJclEasyStream.Create(ResourceStream, True);
   {$ENDIF UNICODE_RAW_DATA}
   {$IFDEF UNICODE_BZIP2_DATA}
   try
     LoadBZip2;
     DecompressionStream := TJclBZIP2DecompressionStream.Create(ResourceStream);
     try
-      Result := TMemoryStream.Create;
-      StreamCopy(DecompressionStream, Result);
-      StreamSeek(Result, 0, soBeginning);
+      RawStream := TMemoryStream.Create;
+      StreamCopy(DecompressionStream, RawStream);
+      StreamSeek(RawStream, 0, soBeginning);
+      Result := TJclEasyStream.Create(RawStream, True);
     finally
       DecompressionStream.Free;
     end;
@@ -1362,9 +1375,10 @@ begin
     LoadZLib;
     DecompressionStream := TJclZLibDecompressStream.Create(ResourceStream);
     try
-      Result := TMemoryStream.Create;
-      StreamCopy(DecompressionStream, Result);
-      StreamSeek(Result, 0, soBeginning);
+      RawStream := TMemoryStream.Create;
+      StreamCopy(DecompressionStream, RawStream);
+      StreamSeek(RawStream, 0, soBeginning);
+      Result := TJclEasyStream.Create(RawStream, True);
     finally
       DecompressionStream.Free;
     end;
@@ -1405,7 +1419,7 @@ procedure LoadCharacterCategories;
 // the comments about JclUnicode.res above).
 var
   Size: Integer;
-  Stream: TStream;
+  Stream: TJclEasyStream;
   Category: TCharacterCategory;
   Buffer: TRangeArray;
   First, Second, Third: Byte;
@@ -1423,19 +1437,25 @@ begin
         while Stream.Position < Stream.Size do
         begin
           // a) read which category is current in the stream
-          Stream.ReadBuffer(Category, 1);
+          Category := TCharacterCategory(Stream.ReadByte);
           // b) read the size of the ranges and the ranges themself
-          Stream.ReadBuffer(Size, 4);
+          Size := Stream.ReadInteger;
           if Size > 0 then
           begin
             SetLength(Buffer, Size);
-            Stream.ReadBuffer(Buffer[0], Size * SizeOf(TRange));
+            for J := 0 to Size - 1 do
+            begin
+              Buffer[J].Start := Stream.ReadInteger;
+              Buffer[J].Stop := Stream.ReadInteger;
+            end;
 
             // c) go through every range and add the current category to each code point
             for J := 0 to Size - 1 do
               for K := Buffer[J].Start to Buffer[J].Stop do
               begin
+                {$IFNDEF CLR}
                 Assert(K < $1000000, LoadResString(@RsCategoryUnicodeChar));
+                {$ENDIF ~CLR}
 
                 First := (K shr 16) and $FF;
                 Second := (K shr 8) and $FF;
@@ -1463,7 +1483,9 @@ function CategoryLookup(Code: Cardinal; Cats: TCharacterCategories): Boolean; ov
 var
   First, Second, Third: Byte;
 begin
+  {$IFNDEF CLR}
   Assert(Code < $1000000, LoadResString(@RsCategoryUnicodeChar));
+  {$ENDIF ~CLR}
 
   // load property data if not already done
   if not CategoriesLoaded then
@@ -1493,9 +1515,8 @@ var
 
 procedure LoadCaseMappingData;
 var
-  Stream: TStream;
-  I, Code,
-  Size: Cardinal;
+  Stream: TJclEasyStream;
+  I, J, Code, Size: Integer;
   First, Second, Third: Byte;
 begin
   if not CaseDataLoaded then
@@ -1508,15 +1529,16 @@ begin
       Stream := OpenResourceStream('CASE');
       try
         // the first entry in the stream is the number of entries in the case mapping table
-        Stream.ReadBuffer(Size, 4);
+        Size := Stream.ReadInteger;
         for I := 0 to Size - 1 do
         begin
           // a) read actual code point
-          Stream.ReadBuffer(Code, 4);
-
+          Code := Stream.ReadInteger;
+          {$IFNDEF CLR}
           Assert(Code < $1000000, LoadResString(@RsCasedUnicodeChar));
-          // if there is no high byte entry in the first stage table then create one
+          {$ENDIF ~CLR}
 
+          // if there is no high byte entry in the first stage table then create one
           First := (Code shr 16) and $FF;
           Second := (Code shr 8) and $FF;
           Third := Code and $FF;
@@ -1526,32 +1548,36 @@ begin
             SetLength(CaseMapping[First, Second], 256);
 
           // b) read fold case array
-          Stream.ReadBuffer(Size, 4);
+          Size := Stream.ReadInteger;
           if Size > 0 then
           begin
             SetLength(CaseMapping[First, Second, Third, ctFold], Size);
-            Stream.ReadBuffer(CaseMapping[First, Second, Third, ctFold, 0], Size * SizeOf(UCS4));
+            for J := 0 to Size - 1 do
+              CaseMapping[First, Second, Third, ctFold, J] := Stream.ReadInteger;
           end;
           // c) read lower case array
-          Stream.ReadBuffer(Size, 4);
+          Size := Stream.ReadInteger;
           if Size > 0 then
           begin
             SetLength(CaseMapping[First, Second, Third, ctLower], Size);
-            Stream.ReadBuffer(CaseMapping[First, Second, Third, ctLower, 0], Size * SizeOf(UCS4));
+            for J := 0 to Size - 1 do
+              CaseMapping[First, Second, Third, ctLower, J] := Stream.ReadInteger;
           end;
           // d) read title case array
-          Stream.ReadBuffer(Size, 4);
+          Size := Stream.ReadInteger;
           if Size > 0 then
           begin
             SetLength(CaseMapping[First, Second, Third, ctTitle], Size);
-            Stream.ReadBuffer(CaseMapping[First, Second, Third, ctTitle, 0], Size * SizeOf(UCS4));
+            for J := 0 to Size - 1 do
+              CaseMapping[First, Second, Third, ctTitle, J] := Stream.ReadInteger;
           end;
           // e) read upper case array
-          Stream.ReadBuffer(Size, 4);
+          Size := Stream.ReadInteger;
           if Size > 0 then
           begin
             SetLength(CaseMapping[First, Second, Third, ctUpper], Size);
-            Stream.ReadBuffer(CaseMapping[First, Second, Third, ctUpper, 0], Size * SizeOf(UCS4));
+            for J := 0 to Size - 1 do
+              CaseMapping[First, Second, Third, ctUpper, J] := Stream.ReadInteger;
           end;
         end;
 
@@ -1571,7 +1597,9 @@ function CaseLookup(Code: Cardinal; CaseType: TCaseType; var Mapping: TUCS4Array
 var
   First, Second, Third: Byte;
 begin
+  {$IFNDEF CLR}
   Assert(Code < $1000000, LoadResString(@RsCasedUnicodeChar));
+  {$ENDIF ~CLR}
 
   // load case mapping data if not already done
   if not CaseDataLoaded then
@@ -1664,9 +1692,8 @@ var
 
 procedure LoadDecompositionData;
 var
-  Stream: TStream;
-  I, Code,
-  Size: Cardinal;
+  Stream: TJclEasyStream;
+  I, J, Code, Size: Integer;
   First, Second, Third: Byte;
 begin
   if not DecompositionsLoaded then
@@ -1679,12 +1706,14 @@ begin
       Stream := OpenResourceStream('DECOMPOSITION');
       try
         // determine how many decomposition entries we have
-        Stream.ReadBuffer(Size, 4);
+        Size := Stream.ReadInteger;
         for I := 0 to Size - 1 do
         begin
-          Stream.ReadBuffer(Code, 4);
+          Code := Stream.ReadInteger;
 
+          {$IFNDEF CLR}
           Assert((Code and not $40000000) < $1000000, LoadResString(@RsDecomposedUnicodeChar));
+          {$ENDIF ~CLR}
 
           // if there is no high byte entry in the first stage table then create one
           First := (Code shr 16) and $FF;
@@ -1700,11 +1729,12 @@ begin
             if CompatibleDecompositions[First, Second] = nil then
               SetLength(CompatibleDecompositions[First, Second], 256);
 
-            Stream.ReadBuffer(Size, 4);
+            Size := Stream.ReadInteger;
             if Size > 0 then
             begin
               SetLength(CompatibleDecompositions[First, Second, Third], Size);
-              Stream.ReadBuffer(CompatibleDecompositions[First, Second, Third, 0], Size * SizeOf(UCS4));
+              for J := 0 to Size - 1 do
+                CompatibleDecompositions[First, Second, Third, J] := Stream.ReadInteger;
             end;
           end
           else
@@ -1714,11 +1744,12 @@ begin
             if CanonicalDecompositions[First, Second] = nil then
               SetLength(CanonicalDecompositions[First, Second], 256);
 
-            Stream.ReadBuffer(Size, 4);
+            Size := Stream.ReadInteger;
             if Size > 0 then
             begin
               SetLength(CanonicalDecompositions[First, Second, Third], Size);
-              Stream.ReadBuffer(CanonicalDecompositions[First, Second, Third, 0], Size * SizeOf(UCS4));
+              for J := 0 to Size - 1 do
+                CanonicalDecompositions[First, Second, Third, J] := Stream.ReadInteger;
             end;
           end;
         end;
@@ -1752,7 +1783,9 @@ function UnicodeDecompose(Code: UCS4; Compatible: Boolean): TUCS4Array;
 var
   First, Second, Third: Byte;
 begin
+  {$IFNDEF CLR}
   Assert((Code and not $40000000) < $1000000, LoadResString(@RsDecomposedUnicodeChar));
+  {$ENDIF ~CLR}
 
   // load decomposition data if not already done
   if not DecompositionsLoaded then
@@ -1808,9 +1841,8 @@ var
 
 procedure LoadCombiningClassData;
 var
-  Stream: TStream;
-  I, J, K,
-  Size: Cardinal;
+  Stream: TJclEasyStream;
+  I, J, K, Size: Integer;
   Buffer: TRangeArray;
   First, Second, Third: Byte;
 begin
@@ -1826,21 +1858,27 @@ begin
         while Stream.Position < Stream.Size do
         begin
           // a) determine which class is stored here
-          Stream.ReadBuffer(I, 4);
+          I := Stream.ReadInteger;
           // b) determine how many ranges are assigned to this class
-          Stream.ReadBuffer(Size, 4);
+          Size := Stream.ReadInteger;
           // c) read start and stop code of each range
           if Size > 0 then
           begin
             SetLength(Buffer, Size);
-            Stream.ReadBuffer(Buffer[0], Size * SizeOf(TRange));
+            for J := 0 to Size - 1 do
+            begin
+              Buffer[J].Start := Stream.ReadInteger;
+              Buffer[J].Stop := Stream.ReadInteger;
+            end;
 
             // d) put this class in every of the code points just loaded
             for J := 0 to Size - 1 do
               for K := Buffer[J].Start to Buffer[J].Stop do
               begin
                 // (outchy) TODO: handle in a cleaner way
+                {$IFNDEF CLR}
                 Assert(K < $1000000, LoadResString(@RsCombiningClassUnicodeChar));
+                {$ENDIF ~CLR}
                 First := (K shr 16) and $FF;
                 Second := (K shr 8) and $FF;
                 Third := K and $FF;
@@ -1866,7 +1904,9 @@ function CanonicalCombiningClass(Code: Cardinal): Cardinal;
 var
   First, Second, Third: Byte;
 begin
+  {$IFNDEF CLR}
   Assert(Code < $1000000, LoadResString(@RsCombiningClassUnicodeChar));
+  {$ENDIF ~CLR}
 
   // load combining class data if not already done
   if not CCCsLoaded then
@@ -1898,8 +1938,8 @@ var
 
 procedure LoadNumberData;
 var
-  Stream: TStream;
-  Size: Cardinal;
+  Stream: TJclEasyStream;
+  Size, I: Integer;
 begin
   // make sure no other code is currently modifying the global data area
   LoadInProgress.Enter;
@@ -1908,21 +1948,32 @@ begin
     if NumberCodes = nil then
     begin
       Stream := OpenResourceStream('NUMBERS');
-      // Numbers are special (compared to other Unicode data) as they utilize two
-      // arrays, one containing all used numbers (in nominator-denominator format) and
-      // another one which maps a code point to one of the numbers in the first array.
+      try
+        // Numbers are special (compared to other Unicode data) as they utilize two
+        // arrays, one containing all used numbers (in nominator-denominator format) and
+        // another one which maps a code point to one of the numbers in the first array.
 
-      // a) determine size of numbers array
-      Stream.ReadBuffer(Size, 4);
-      SetLength(Numbers, Size);
-      // b) read numbers data
-      Stream.ReadBuffer(Numbers[0], Size * SizeOf(TUcNumber));
-      // c) determine size of index array
-      Stream.ReadBuffer(Size, 4);
-      SetLength(NumberCodes, Size);
-      // d) read index data
-      Stream.ReadBuffer(NumberCodes[0], Size * SizeOf(TCodeIndex));
-      Stream.Free;
+        // a) determine size of numbers array
+        Size := Stream.ReadInteger;
+        SetLength(Numbers, Size);
+        // b) read numbers data
+        for I := 0 to Size - 1 do
+        begin
+          Numbers[I].Numerator := Stream.ReadInteger;
+          Numbers[I].Denominator := Stream.ReadInteger;
+        end;
+        // c) determine size of index array
+        Size := Stream.ReadInteger;
+        SetLength(NumberCodes, Size);
+        // d) read index data
+        for I := 0 to Size - 1 do
+        begin
+          NumberCodes[I].Code := Stream.ReadInteger;
+          NumberCodes[I].Index := Stream.ReadInteger;
+        end;
+      finally
+        Stream.Free;
+      end;
     end;
   finally
     LoadInProgress.Leave;
@@ -1980,8 +2031,8 @@ var
 
 procedure LoadCompositionData;
 var
-  Stream: TStream;
-  I, Size: Integer;
+  Stream: TJclEasyStream;
+  I, J, Size: Integer;
 begin
   // make sure no other code is currently modifying the global data area
   LoadInProgress.Enter;
@@ -1992,18 +2043,19 @@ begin
       Stream := OpenResourceStream('COMPOSITION');
       try
         // a) determine size of compositions array
-        Stream.ReadBuffer(Size, 4);
+        Size := Stream.ReadInteger;
         SetLength(Compositions, Size);
         // b) read data
         for I := 0 to Size - 1 do
         begin
-          Stream.ReadBuffer(Compositions[I].Code, 4);
-          Stream.ReadBuffer(Size, 4);
+          Compositions[I].Code := Stream.ReadInteger;
+          Size := Stream.ReadInteger;
           if Size > MaxCompositionSize then
             MaxCompositionSize := Size;
           SetLength(Compositions[I].Next, Size - 1);
-          Stream.ReadBuffer(Compositions[I].First, 4);
-          Stream.ReadBuffer(Compositions[I].Next[0], 4 * (Size - 1));
+          Compositions[I].First := Stream.ReadInteger;
+          for J := 0 to Size - 2 do
+            Compositions[I].Next[J] := Stream.ReadInteger;
         end;
       finally
         Stream.Free;
@@ -2083,6 +2135,8 @@ begin
 end;
 
 //=== { TSearchEngine } ======================================================
+
+{$IFNDEF CLR}
 
 constructor TSearchEngine.Create(AOwner: TWideStrings);
 begin
@@ -6809,6 +6863,35 @@ begin
   FixCanonical(Result);
 end;
 
+function WideNormalize(const S: WideString; Form: TNormalizationForm): WideString;
+var
+  Temp: WideString;
+  Compatible: Boolean;
+begin
+  Result := S;
+
+  if Form = nfNone then
+    Exit; // No normalization needed.
+
+  Compatible := Form in [nfKC, nfKD];
+  if Form in [nfD, nfKD] then
+    Result := WideDecompose(S, Compatible)
+  else
+  begin
+    Temp := WideDecompose(S, Compatible);
+    Result := WideCompose(Temp);
+  end;
+end;
+
+function WideSameText(const Str1, Str2: WideString): Boolean;
+// Compares both strings case-insensitively and returns True if both are equal, otherwise False is returned.
+begin
+  Result := Length(Str1) = Length(Str2);
+  if Result then
+    Result := StrICompW(PWideChar(Str1), PWideChar(Str2)) = 0;
+end;
+{$ENDIF ~CLR}
+
 //----------------- general purpose case mapping ---------------------------------------------------
 
 function WideCaseConvert(C: WideChar; CaseType: TCaseType): WideString;
@@ -6907,34 +6990,6 @@ end;
 function WideLowerCase(const S: WideString): WideString;
 begin
   Result:= WideCaseConvert(S, ctLower);
-end;
-
-function WideNormalize(const S: WideString; Form: TNormalizationForm): WideString;
-var
-  Temp: WideString;
-  Compatible: Boolean;
-begin
-  Result := S;
-
-  if Form = nfNone then
-    Exit; // No normalization needed.
-
-  Compatible := Form in [nfKC, nfKD];
-  if Form in [nfD, nfKD] then
-    Result := WideDecompose(S, Compatible)
-  else
-  begin
-    Temp := WideDecompose(S, Compatible);
-    Result := WideCompose(Temp);
-  end;
-end;
-
-function WideSameText(const Str1, Str2: WideString): Boolean;
-// Compares both strings case-insensitively and returns True if both are equal, otherwise False is returned.
-begin
-  Result := Length(Str1) = Length(Str2);
-  if Result then
-    Result := StrICompW(PWideChar(Str1), PWideChar(Str2)) = 0;
 end;
 
 function WideTitleCase(C: WideChar): WideString;
@@ -7295,6 +7350,7 @@ begin
   Result := (C >= $AC00) and (C <= $D7FF);
 end;
 
+{$IFNDEF CLR}
 // I need to fix a problem (introduced by MS) here. The first parameter can be a pointer
 // (and is so defined) or can be a normal DWORD, depending on the dwFlags parameter.
 // As usual, lpSrc has been translated to a var parameter. But this does not work in
@@ -7455,15 +7511,19 @@ begin
   Result:= WideStringToStringEx(StringToWideStringEx(S, CP1), CP2);
 end;
 
+{$ENDIF ~CLR}
+
 procedure PrepareUnicodeData;
 // Prepares structures which are globally needed.
 begin
   LoadInProgress := TJclCriticalSection.Create;
 
+  {$IFNDEF CLR}
   if (Win32Platform and VER_PLATFORM_WIN32_NT) <> 0 then
     @WideCompareText := @CompareTextWinNT
   else
     @WideCompareText := @CompareTextWin95;
+  {$ENDIF ~CLR}
 end;
 
 procedure FreeUnicodeData;

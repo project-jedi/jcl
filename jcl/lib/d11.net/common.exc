@@ -16,7 +16,6 @@ JclPCRE.pas
 JclSchedule.pas
 JclStrHashMap.pas
 JclStringLists.pas
-JclUnicode.pas
 JclUnitVersioning.pas
 JclUnitVersioningProviders.pas
 JclWideStrings.pas

@@ -199,6 +199,7 @@
       <File FileName="..\..\source\Common\JclSynch.pas" ContainerId="" ModuleName="JclSynch"/>
       <File FileName="..\..\source\common\JclSysInfo.pas" ContainerId="" ModuleName="JclSysInfo"/>
       <File FileName="..\..\source\common\JclSysUtils.pas" ContainerId="" ModuleName="JclSysUtils"/>
+      <File FileName="..\..\source\Common\JclUnicode.pas" ContainerId="" ModuleName="JclUnicode"/>
       <File FileName="..\..\source\common\JclUnitConv.pas" ContainerId="" ModuleName="JclUnitConv"/>
       <File FileName="..\..\source\common\JclValidation.pas" ContainerId="" ModuleName="JclValidation"/>
     </FileList>
