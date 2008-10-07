@@ -256,7 +256,7 @@ begin
             // new SVN entries file (flat-style)
             if EntryLine = NativeFormFeed then
             begin
-              EntryLine := Entries.ReadLn;
+              EntryLine := string(Entries.ReadLn);
               if StrSame(UpperCaseFileName, StrUpper(EntryLine)) then
               begin
                 // TODO: check modifications
