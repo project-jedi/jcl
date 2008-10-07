@@ -306,9 +306,9 @@ type
     {$IFNDEF CLR}
     function ReadCurrency: Currency;
     function ReadDateTime: TDateTime;
+    function ReadExtended: Extended;
     {$ENDIF ~CLR}
     function ReadDouble: Double;
-    function ReadExtended: Extended;
     function ReadInt64: Int64;
     function ReadInteger: Integer;
     function ReadCString: string; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
@@ -326,9 +326,9 @@ type
     {$IFNDEF CLR}
     procedure WriteCurrency(const Value: Currency);
     procedure WriteDateTime(const Value: TDateTime);
+    procedure WriteExtended(const Value: Extended);
     {$ENDIF ~CLR}
     procedure WriteDouble(const Value: Double);
-    procedure WriteExtended(const Value: Extended);
     procedure WriteInt64(Value: Int64); overload;
     procedure WriteInteger(Value: Integer); overload;
     procedure WriteCString(const Value: string); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
@@ -1708,14 +1708,12 @@ begin
   {$ENDIF ~CLR}
 end;
 
+{$IFNDEF CLR}
 function TJclEasyStream.ReadExtended: Extended;
 begin
-  {$IFDEF CLR}
-  ReadBuffer(Result);
-  {$ELSE ~CLR}
   ReadBuffer(Result, SizeOf(Result));
-  {$ENDIF ~CLR}
 end;
+{$ENDIF ~CLR}
 
 function TJclEasyStream.ReadInt64: Int64;
 begin
@@ -1945,14 +1943,12 @@ begin
   {$ENDIF ~CLR}
 end;
 
+{$IFNDEF CLR}
 procedure TJclEasyStream.WriteExtended(const Value: Extended);
 begin
-  {$IFDEF CLR}
-  WriteBuffer(Value);
-  {$ELSE ~CLR}
   WriteBuffer(Value, SizeOf(Value));
-  {$ENDIF ~CLR}
 end;
+{$ENDIF ~CLR}
 
 procedure TJclEasyStream.WriteInt64(Value: Int64);
 begin
