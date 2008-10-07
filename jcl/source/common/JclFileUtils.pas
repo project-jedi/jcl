@@ -2587,7 +2587,7 @@ function RtdlGetLongPathName(const Path: string): string;
 begin
   Result := Path;
   if not Assigned(_GetLongPathName) then
-    _GetLongPathName := GetModuleSymbol(Kernel32Handle, 'GetLongPathNameA');
+    _GetLongPathName := GetModuleSymbol(Kernel32Handle, {$IFDEF UNICODE}'GetLongPathNameW'{$ELSE}'GetLongPathNameA'{$ENDIF UNICODE});
   if not Assigned(_GetLongPathName) then
     Result := ShellGetLongPathName(Path)
   else
