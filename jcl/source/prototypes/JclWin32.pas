@@ -276,6 +276,8 @@ finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
 
+{$WARNINGS ON}
+
 end.
 
 
