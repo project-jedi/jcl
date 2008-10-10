@@ -191,19 +191,21 @@ procedure TJclExcDlgExpert.CreateExceptionDialog(
   var
     AFileStream: TFileStream;
     StreamLength: Int64;
+    AnsiResult: AnsiString;
   begin
-    Result := '';
+    AnsiResult := '';
     if FileName <> '' then
     begin
       AFileStream := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);
       try
         StreamLength := AFileStream.Size;
-        SetLength(Result, StreamLength);
-        AFileStream.ReadBuffer(Result[1], StreamLength);
+        SetLength(AnsiResult, StreamLength);
+        AFileStream.ReadBuffer(AnsiResult[1], StreamLength);
       finally
         AFileStream.Free;
       end;
     end;
+    Result := string(AnsiResult);
   end;
 const
   TemplateSubDir = 'experts\debug\dialog\';
