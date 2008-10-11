@@ -274,6 +274,12 @@ type
    (wvUnknown, wvWin95, wvWin95OSR2, wvWin98, wvWin98SE, wvWinME,
     wvWinNT31, wvWinNT35, wvWinNT351, wvWinNT4, wvWin2000, wvWinXP,
     wvWin2003, wvWinXP64, wvWin2003R2, wvWinVista, wvWinServer2008);
+  TWindowsEdition =
+   (weUnknown, weWinXPHome, weWinXPPro, weWinXPN, weWinXPK, weWinXPKN,
+    weWinXPStarter, weWinXPMediaCenter, weWinXPTablet,
+    weWinVistaStarter, weWinVistaHomeBasic, weWinVistaHomeBasicN,
+    weWinVistaHomePremium, weWinVistaBusiness, weWinVistaBusinessN,
+    weWinVistaEnterprise, weWinVistaUltimate);
   TNtProductType =
    (ptUnknown, ptWorkStation, ptServer, ptAdvancedServer,
     ptPersonal, ptProfessional, ptDatacenterServer, ptEnterprise, ptWebEdition);
@@ -315,8 +321,10 @@ const
   {$EXTERNALSYM PROCESSOR_ARCHITECTURE_IA64}
 
 function GetWindowsVersion: TWindowsVersion;
+function GetWindowsEdition: TWindowsEdition;
 function NtProductType: TNtProductType;
 function GetWindowsVersionString: string;
+function GetWindowsEditionString: string;
 function NtProductTypeString: string;
 function GetWindowsServicePackVersion: Integer;
 function GetWindowsServicePackVersionString: string;
@@ -3295,6 +3303,71 @@ begin
   end;
 end;
 
+function GetWindowsEdition: TWindowsEdition;
+const
+  ProductName = 'SOFTWARE\Microsoft\Windows NT\CurrentVersion';
+var
+  Edition: string;
+begin
+  Result := weUnknown;
+  Edition := RegReadStringDef(HKEY_LOCAL_MACHINE, ProductName, 'ProductName', '');
+  if (pos('Windows XP', Edition) = 1) then
+  begin
+   // Windows XP Editions
+   if (pos('Home', Edition) > 0) then
+      Result :=  weWinXPHome
+   else
+   if (pos('Pro', Edition) > 0) then
+      Result :=  weWinXPPro
+   else
+   if (pos('N', Edition) > 0) then
+      Result :=  weWinXPN
+   else
+   if (pos('K', Edition) > 0) then
+      Result :=  weWinXPK
+   else
+   if (pos('KN', Edition) > 0) then
+      Result :=  weWinXPKN
+   else
+   if (pos('Starter', Edition) > 0) then
+      Result :=  weWinXPStarter
+   else
+   if (pos('Media Center', Edition) > 0) then
+      Result :=  weWinXPMediaCenter
+   else
+   if (pos('Tablet', Edition) > 0) then
+      Result :=  weWinXPTablet;
+  end
+  else
+  if (pos('Windows Vista', Edition) = 1) then
+  begin
+   // Windows Vista Editions
+   if (pos('Starter', Edition) > 0) then
+      Result := weWinVistaStarter
+   else
+   if (pos('Home Basic', Edition) > 0) then
+      Result := weWinVistaHomeBasic
+   else
+   if (pos('Home Basic N', Edition) > 0) then
+      Result := weWinVistaHomeBasicN
+   else
+   if (pos('Home Premium', Edition) > 0) then
+      Result := weWinVistaHomePremium
+   else
+   if (pos('Business', Edition) > 0) then
+      Result := weWinVistaBusiness
+   else
+   if (pos('Business N', Edition) > 0) then
+      Result := weWinVistaBusinessN
+   else
+   if (pos('Enterprise', Edition) > 0) then
+      Result := weWinVistaEnterprise
+   else
+   if (pos('Ultimate', Edition) > 0) then
+      Result := weWinVistaUltimate;
+  end;
+end;
+
 function NtProductType: TNtProductType;
 const
   ProductType = 'SYSTEM\CurrentControlSet\Control\ProductOptions';
@@ -3428,6 +3501,46 @@ begin
       Result := RsOSVersionWinServer2008;
     wvWinVista:
       Result := RsOSVersionWinVista;
+  else
+    Result := '';
+  end;
+end;
+
+function GetWindowsEditionString: string;
+begin
+  case GetWindowsEdition of
+    weWinXPHome:
+      Result := RsEditionWinXPHome;
+    weWinXPPro:
+      Result := RsEditionWinXPPro;
+    weWinXPN:
+      Result := RsEditionWinXPN;
+    weWinXPK:
+      Result := RsEditionWinXPK;
+    weWinXPKN:
+      Result := RsEditionWinXPKN;
+    weWinXPStarter:
+      Result := RsEditionWinXPStarter;
+    weWinXPMediaCenter:
+      Result := RsEditionWinXPMediaCenter;
+    weWinXPTablet:
+      Result := RsEditionWinXPTablet;
+    weWinVistaStarter:
+      Result := RsEditionWinVistaStarter;
+    weWinVistaHomeBasic:
+      Result := RsEditionWinVistaHomeBasic;
+    weWinVistaHomeBasicN:
+      Result := RsEditionWinVistaHomeBasicN;
+    weWinVistaHomePremium:
+      Result := RsEditionWinVistaHomePremium;
+    weWinVistaBusiness:
+      Result := RsEditionWinVistaBusiness;
+    weWinVistaBusinessN:
+      Result := RsEditionWinVistaBusinessN;
+    weWinVistaEnterprise:
+      Result := RsEditionWinVistaEnterprise;
+    weWinVistaUltimate:
+      Result := RsEditionWinVistaUltimate;
   else
     Result := '';
   end;
