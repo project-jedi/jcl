@@ -325,6 +325,7 @@ function GetWindowsEdition: TWindowsEdition;
 function NtProductType: TNtProductType;
 function GetWindowsVersionString: string;
 function GetWindowsEditionString: string;
+function GetWindowsProductString: string;
 function NtProductTypeString: string;
 function GetWindowsServicePackVersion: Integer;
 function GetWindowsServicePackVersionString: string;
@@ -3544,6 +3545,13 @@ begin
   else
     Result := '';
   end;
+end;
+
+function GetWindowsProductString: string;
+begin
+  Result := GetWindowsVersionString;
+  if (GetWindowsEditionString <> '') then
+    Result := Result + ' ' + GetWindowsEditionString;
 end;
 
 function NtProductTypeString: string;

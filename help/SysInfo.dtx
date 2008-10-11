@@ -329,7 +329,7 @@ Description:
   all users. A typical path is C:\Documents and Settings\All Users\Application Data.
 Result:
   The current directory for the calling process or an empty string on failure.
-Note:
+Notes:
   Requires shell v5.00 and upwards.
 See also:
   GetCommonFilesFolder
@@ -505,7 +505,7 @@ Donator:
 @@TWindowsVersion.wvUnknown
   Anonymous Windows version. This can happen when a new Windows version is released
   after JCL or if you are running a Windows version with a different build number
-  then expected. For example a beta version.
+  than expected. For example a beta version.
 @@TWindowsVersion.wvWin95
   Windows 95
 @@TWindowsVersion.wvWin95OSR2
@@ -535,6 +535,52 @@ Donator:
 @@TWindowsVersion.wvWinServer2008
   Windows Server 2008
 --------------------------------------------------------------------------------
+@@TWindowsEdition
+<GROUP SystemInformationRoutines.VersionInformation>
+Summary:
+  Enumeration of Windows editions. Used as function result by GetWindowsEdition
+Description:
+  Enumeration of Windows editions. Used as function result by GetWindowsEdition
+See also:
+  GetWindowsEdition
+Donator:
+  Jean-Fabien Connault
+@@TWindowsEdition.weUnknown
+  Anonymous Windows ediion. This can happen when a new Windows edition is released
+  after JCL or if you are running a Windows edition.
+@@TWindowsEdition.weWinXPHome
+  Windows XP Home
+@@TWindowsEdition.weWinXPPro
+  Windows XP Professional
+@@TWindowsEdition.weWinXPN
+  Windows XP N
+@@TWindowsEdition.weWinXPK
+  Windows XP K
+@@TWindowsEdition.weWinXPKN
+  Windows XP KN
+@@TWindowsEdition.weWinXPStarter
+  Windows XP Starter
+@@TWindowsEdition.weWinXPMediaCenter
+  Windows XP Media Center
+@@TWindowsEdition.weWinXPTablet
+  Windows XP Tablet
+@@TWindowsEdition.weWinVistaStarter
+  Windows Vista Starter
+@@TWindowsEdition.weWinVistaHomeBasic
+  Windows Vista Home Basic
+@@TWindowsEdition.weWinVistaHomeBasicN
+  Windows Vista Home Basic N
+@@TWindowsEdition.weWinVistaHomePremium
+  Windows Vista Home Premium
+@@TWindowsEdition.weWinVistaBusiness
+  Windows Vista Business
+@@TWindowsEdition.weWinVistaBusinessN
+  Windows Vista Business N
+@@TWindowsEdition.weWinVistaEnterprise
+  Windows Vista Enterprise
+@@TWindowsEdition.weWinVistaUltimate
+  Windows Vista Ultimate
+--------------------------------------------------------------------------------
 @@GetWindowsVersion
 <GROUP SystemInformationRoutines.VersionInformation>
 Summary:
@@ -563,6 +609,17 @@ See also:
 Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
+@@GetWindowsEdition
+<GROUP SystemInformationRoutines.VersionInformation>
+Summary:
+  Returns the Windows edition.
+Description:
+  GetWindowsEdition returns the Windows edition as an enumerated type.
+Result:
+  The Windows edition, see TWindowsEdition for the possible values.
+Donator:
+  Jean-Fabien Connault
+--------------------------------------------------------------------------------
 @@GetOSVersionString
 <GROUP SystemInformationRoutines.VersionInformation>
 Summary:
@@ -584,11 +641,57 @@ Donator:
 Summary:
   Returns the Windows version as a string.
 Description:
-  GetWindowsVersionString returns the Windows version as a string. For example, 'Windows 2000'.
+  GetWindowsVersionString returns the Windows version as a string. For example, 'Windows Vista'.
+Notes:
+  The result does not contain the Windows edition string. For example, 'Ultimate'.
+  The Windows edition string is retrieved using the GetWindowsEditionString function.
+  To obtain the Windows product string (For Example 'Windows Vista Ultimate'), the
+  GetWindowsProductString function should be used.
 Result:
   The Windows version as a string or an empty string if the OS is not recognized.
 See also:
   GetWindowsVersion
+  GetWindowsEditionString
+  GetWindowsProductString
+Donator:
+  Jean-Fabien Connault
+--------------------------------------------------------------------------------
+@@GetWindowsEditionString
+<GROUP SystemInformationRoutines.VersionInformation>
+Summary:
+  Returns the Windows edition as a string.
+Description:
+  GetWindowsEditionString returns the Windows edition as a string. For example, 'Ultimate'.
+Notes:
+  The result does not contain the Windows version string. For example, 'Windows Vista'.
+  The Windows version string is retrieved using the GetWindowsVersionString function.
+  To obtain the Windows product string (For Example 'Windows Vista Ultimate'), the
+  GetWindowsProductString function should be used.
+Result:
+  The Windows edition as a string or an empty string if the edition is not recognized.
+See also:
+  GetWindowsEdition
+  GetWindowsVersionString
+  GetWindowsProductString
+Donator:
+  Jean-Fabien Connault
+--------------------------------------------------------------------------------
+@@GetWindowsProductString
+<GROUP SystemInformationRoutines.VersionInformation>
+Summary:
+  Returns the Windows product as a string.
+Description:
+  GetWindowsProductString returns the Windows product as a string. For example, 'Windows Vista Ultimate'.
+  The Windows product string is equivalent to the concatenation of the Windows version string
+  and the Windows edition string.
+Notes:
+  The Windows version string alone is retrieved using the GetWindowsVersionString function. For example, 'Windows Vista'.
+  The Windows edition string alone is retrieved using the GetWindowsEditionString function. For example, 'Ultimate'.
+Result:
+  The Windows product as a string or an empty string if the product is not recognized.
+See also:
+  GetWindowsEditionString
+  GetWindowsVersionString
 Donator:
   Jean-Fabien Connault
 --------------------------------------------------------------------------------
@@ -1051,7 +1154,7 @@ Description:
 Result:
   The BIOS release date, if successful. The system base date (12/30/1899), if
   there has been a problem.
-Note: This information is accurate only if you have not updated or
+Notes: This information is accurate only if you have not updated or
   changed the BIOS since you last ran Windows Setup.
 See also:
   GetBIOSName
