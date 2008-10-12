@@ -275,9 +275,9 @@ type
     wvWinNT31, wvWinNT35, wvWinNT351, wvWinNT4, wvWin2000, wvWinXP,
     wvWin2003, wvWinXP64, wvWin2003R2, wvWinVista, wvWinServer2008);
   TWindowsEdition =
-   (weUnknown, weWinXPHome, weWinXPPro, weWinXPN, weWinXPK, weWinXPKN,
-    weWinXPStarter, weWinXPMediaCenter, weWinXPTablet,
-    weWinVistaStarter, weWinVistaHomeBasic, weWinVistaHomeBasicN,
+   (weUnknown, weWinXPHome, weWinXPPro, weWinXPHomeN, weWinXPProN, weWinXPHomeK,
+    weWinXPProK, weWinXPHomeKN, weWinXPProKN, weWinXPStarter, weWinXPMediaCenter,
+    weWinXPTablet, weWinVistaStarter, weWinVistaHomeBasic, weWinVistaHomeBasicN,
     weWinVistaHomePremium, weWinVistaBusiness, weWinVistaBusinessN,
     weWinVistaEnterprise, weWinVistaUltimate);
   TNtProductType =
@@ -3315,20 +3315,29 @@ begin
   if (pos('Windows XP', Edition) = 1) then
   begin
    // Windows XP Editions
+   if (pos('Home Edition N', Edition) > 0) then
+      Result :=  weWinXPHomeN
+   else
+   if (pos('Professional N', Edition) > 0) then
+      Result :=  weWinXPProN
+   else
+   if (pos('Home Edition K', Edition) > 0) then
+      Result :=  weWinXPHomeK
+   else
+   if (pos('Professional K', Edition) > 0) then
+      Result :=  weWinXPProK
+   else
+   if (pos('Home Edition KN', Edition) > 0) then
+      Result :=  weWinXPHomeKN
+   else
+   if (pos('Professional KN', Edition) > 0) then
+      Result :=  weWinXPProKN
+   else
    if (pos('Home', Edition) > 0) then
       Result :=  weWinXPHome
    else
-   if (pos('Pro', Edition) > 0) then
+   if (pos('Professional', Edition) > 0) then
       Result :=  weWinXPPro
-   else
-   if (pos('N', Edition) > 0) then
-      Result :=  weWinXPN
-   else
-   if (pos('K', Edition) > 0) then
-      Result :=  weWinXPK
-   else
-   if (pos('KN', Edition) > 0) then
-      Result :=  weWinXPKN
    else
    if (pos('Starter', Edition) > 0) then
       Result :=  weWinXPStarter
@@ -3346,20 +3355,20 @@ begin
    if (pos('Starter', Edition) > 0) then
       Result := weWinVistaStarter
    else
-   if (pos('Home Basic', Edition) > 0) then
-      Result := weWinVistaHomeBasic
-   else
    if (pos('Home Basic N', Edition) > 0) then
       Result := weWinVistaHomeBasicN
+   else
+   if (pos('Home Basic', Edition) > 0) then
+      Result := weWinVistaHomeBasic
    else
    if (pos('Home Premium', Edition) > 0) then
       Result := weWinVistaHomePremium
    else
-   if (pos('Business', Edition) > 0) then
-      Result := weWinVistaBusiness
-   else
    if (pos('Business N', Edition) > 0) then
       Result := weWinVistaBusinessN
+   else
+   if (pos('Business', Edition) > 0) then
+      Result := weWinVistaBusiness
    else
    if (pos('Enterprise', Edition) > 0) then
       Result := weWinVistaEnterprise
@@ -3440,7 +3449,7 @@ begin
     end;
   end
   else
-  if IsWinXP or IsWinVista or IsWinServer2008 then // workstation
+  if IsWinXP or IsWinVista then // workstation
   begin
     if GetVersionEx(OSVersionInfo) then
     begin
@@ -3451,6 +3460,20 @@ begin
         else
           Result := ptProfessional;
       end;
+    end;
+  end
+  else
+  if IsWinServer2008 then // server
+  begin
+    if OSVersionInfo.wProductType in [VER_NT_SERVER,VER_NT_DOMAIN_CONTROLLER] then
+    begin
+      if (OSVersionInfo.wSuiteMask and VER_SUITE_DATACENTER) = VER_SUITE_DATACENTER then
+        Result := ptDatacenterServer
+      else
+      if (OSVersionInfo.wSuiteMask and VER_SUITE_ENTERPRISE) = VER_SUITE_ENTERPRISE then
+        Result := ptEnterprise
+      else
+        Result := ptServer;
     end;
   end;
 
@@ -3514,12 +3537,18 @@ begin
       Result := RsEditionWinXPHome;
     weWinXPPro:
       Result := RsEditionWinXPPro;
-    weWinXPN:
-      Result := RsEditionWinXPN;
-    weWinXPK:
-      Result := RsEditionWinXPK;
-    weWinXPKN:
-      Result := RsEditionWinXPKN;
+    weWinXPHomeN:
+      Result := RsEditionWinXPHomeN;
+    weWinXPProN:
+      Result := RsEditionWinXPProN;
+    weWinXPHomeK:
+      Result := RsEditionWinXPHomeK;
+    weWinXPProK:
+      Result := RsEditionWinXPProK;
+    weWinXPHomeKN:
+      Result := RsEditionWinXPHomeKN;
+    weWinXPProKN:
+      Result := RsEditionWinXPProKN;
     weWinXPStarter:
       Result := RsEditionWinXPStarter;
     weWinXPMediaCenter:

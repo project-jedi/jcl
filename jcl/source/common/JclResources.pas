@@ -1895,14 +1895,17 @@ resourcestring
   RsOSVersionWinVista      = 'Windows Vista';
   RsOSVersionWinServer2008 = 'Windows Server 2008';
 
-  RsEditionWinXPHome           = 'Home';
+  RsEditionWinXPHome           = 'Home Edition';
   RsEditionWinXPPro            = 'Professional';
-  RsEditionWinXPN              = 'N';
-  RsEditionWinXPK              = 'K';
-  RsEditionWinXPKN             = 'KN';
-  RsEditionWinXPStarter        = 'Starter';
-  RsEditionWinXPMediaCenter    = 'Media Center';
-  RsEditionWinXPTablet         = 'Tablet';
+  RsEditionWinXPHomeN          = 'Home Edition N';
+  RsEditionWinXPProN           = 'Professional N';
+  RsEditionWinXPHomeK          = 'Home Edition K';
+  RsEditionWinXPProK           = 'Professional K';
+  RsEditionWinXPHomeKN         = 'Home Edition KN';
+  RsEditionWinXPProKN          = 'Professional KN';
+  RsEditionWinXPStarter        = 'Starter Edition';
+  RsEditionWinXPMediaCenter    = 'Media Center Edition';
+  RsEditionWinXPTablet         = 'Tablet PC Edition';
   RsEditionWinVistaStarter     = 'Starter';
   RsEditionWinVistaHomeBasic   = 'Home Basic';
   RsEditionWinVistaHomeBasicN  = 'Home Basic N';
