@@ -58,16 +58,13 @@ type
   EJclSecurityError = class(EJclError);
 
 // Access Control
-function CreateNullDacl(var Sa: TSecurityAttributes;
-  const Inheritable: Boolean): PSecurityAttributes;
+function CreateNullDacl(var Sa: TSecurityAttributes; const Inheritable: Boolean): PSecurityAttributes;
 function CreateInheritable(var Sa: TSecurityAttributes): PSecurityAttributes;
 
 // Privileges
 function IsAdministrator: Boolean;
-function EnableProcessPrivilege(const Enable: Boolean;
-  const Privilege: string): Boolean;
-function EnableThreadPrivilege(const Enable: Boolean;
-  const Privilege: string): Boolean;
+function EnableProcessPrivilege(const Enable: Boolean; const Privilege: string): Boolean;
+function EnableThreadPrivilege(const Enable: Boolean; const Privilege: string): Boolean;
 function IsPrivilegeEnabled(const Privilege: string): Boolean;
 
 function GetPrivilegeDisplayName(const PrivilegeName: string): string;
@@ -116,8 +113,7 @@ uses
 
 //=== Access Control =========================================================
 
-function CreateNullDacl(var Sa: TSecurityAttributes;
-  const Inheritable: Boolean): PSecurityAttributes;
+function CreateNullDacl(var Sa: TSecurityAttributes; const Inheritable: Boolean): PSecurityAttributes;
 begin
   if IsWinNT then
   begin
@@ -162,7 +158,8 @@ var
   TokenInfo: PTokenGroups;
   HaveToken: Boolean;
   I: Integer;
-const SE_GROUP_USE_FOR_DENY_ONLY = $00000010;
+const
+  SE_GROUP_USE_FOR_DENY_ONLY = $00000010;
 begin
   Result := not IsWinNT;
   if Result then // Win9x/ME
@@ -199,9 +196,6 @@ begin
       begin
         {$RANGECHECKS OFF} // Groups is an array [0..0] of TSIDAndAttributes, ignore ERangeError
         Result := EqualSid(psidAdmin, TokenInfo^.Groups[I].Sid);
-        {$IFDEF RANGECHECKS_ON}
-        {$RANGECHECKS ON}
-        {$ENDIF RANGECHECKS_ON}
         if Result then
         begin
           //consider denied ACE with Administrator SID
@@ -209,6 +203,9 @@ begin
               <> SE_GROUP_USE_FOR_DENY_ONLY;
           Break;
         end;
+        {$IFDEF RANGECHECKS_ON}
+        {$RANGECHECKS ON}
+        {$ENDIF RANGECHECKS_ON}
       end;
     end;
   finally
@@ -221,8 +218,7 @@ begin
   end;
 end;
 
-function EnableProcessPrivilege(const Enable: Boolean;
-  const Privilege: string): Boolean;
+function EnableProcessPrivilege(const Enable: Boolean; const Privilege: string): Boolean;
 const
   PrivAttrs: array [Boolean] of DWORD = (0, SE_PRIVILEGE_ENABLED);
 var
@@ -243,8 +239,7 @@ begin
   end;
 end;
 
-function EnableThreadPrivilege(const Enable: Boolean;
-  const Privilege: string): Boolean;
+function EnableThreadPrivilege(const Enable: Boolean; const Privilege: string): Boolean;
 const
   PrivAttrs: array [Boolean] of DWORD = (0, SE_PRIVILEGE_ENABLED);
 var
