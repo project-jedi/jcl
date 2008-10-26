@@ -109,17 +109,14 @@
       <configuration index="1" caption="Expression" value="%ArchiveName%"/>
       <configuration index="2" caption="Append" value="no"/>
     </action>
-    <action classname="TDirectoryCreator">
-      <configuration index="0" caption="Directory" value="daily"/>
-    </action>
     <action classname="TFileRemover">
-      <configuration index="0" caption="Directory" value="daily"/>
+      <configuration index="0" caption="Directory" value="..\..\website\daily"/>
       <configuration index="1" caption="Filter" value="%OldArchiveName%"/>
       <configuration index="2" caption="Move to recycle bin" value="no"/>
     </action>
     <action classname="TFileMover">
       <configuration index="0" caption="Old file name" value="%ArchiveName%"/>
-      <configuration index="1" caption="New file name" value="daily\%ArchiveName%"/>
+      <configuration index="1" caption="New file name" value="..\..\website\daily\%ArchiveName%"/>
     </action>
     <action classname="TCommandLineCaller">
       <configuration index="0" caption="Application" value="%WINSCP%"/>
@@ -228,17 +225,14 @@
       <configuration index="1" caption="Expression" value="%ArchiveName%"/>
       <configuration index="2" caption="Append" value="no"/>
     </action>
-    <action classname="TDirectoryCreator">
-      <configuration index="0" caption="Directory" value="daily"/>
-    </action>
     <action classname="TFileRemover">
-      <configuration index="0" caption="Directory" value="daily"/>
+      <configuration index="0" caption="Directory" value="..\..\website\daily"/>
       <configuration index="1" caption="Filter" value="%OldArchiveName%"/>
       <configuration index="2" caption="Move to recycle bin" value="no"/>
     </action>
     <action classname="TFileMover">
       <configuration index="0" caption="Old file name" value="%ArchiveName%"/>
-      <configuration index="1" caption="New file name" value="daily\%ArchiveName%"/>
+      <configuration index="1" caption="New file name" value="..\..\website\daily\%ArchiveName%"/>
     </action>
     <action classname="TCommandLineCaller">
       <configuration index="0" caption="Application" value="%WINSCP%"/>
@@ -352,17 +346,14 @@
       <configuration index="1" caption="Expression" value="%ArchiveName%"/>
       <configuration index="2" caption="Append" value="no"/>
     </action>
-    <action classname="TDirectoryCreator">
-      <configuration index="0" caption="Directory" value="daily"/>
-    </action>
     <action classname="TFileRemover">
-      <configuration index="0" caption="Directory" value="daily"/>
+      <configuration index="0" caption="Directory" value="..\..\website\daily"/>
       <configuration index="1" caption="Filter" value="%OldArchiveName%"/>
       <configuration index="2" caption="Move to recycle bin" value="no"/>
     </action>
     <action classname="TFileMover">
       <configuration index="0" caption="Old file name" value="%ArchiveName%"/>
-      <configuration index="1" caption="New file name" value="daily\%ArchiveName%"/>
+      <configuration index="1" caption="New file name" value="..\..\website\daily\%ArchiveName%"/>
     </action>
     <action classname="TCommandLineCaller">
       <configuration index="0" caption="Application" value="%WINSCP%"/>
