@@ -30,7 +30,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, AppEvnts,
-  JclSysUtils, JclMapi,  JclUnitVersioning, JclUnitVersioningProviders, JclDebug;
+  JclSysUtils, JclMapi, JclUnitVersioning, JclUnitVersioningProviders, JclDebug;
 
 const
   UM_CREATEDETAILS = WM_USER + $100;
