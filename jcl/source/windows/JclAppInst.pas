@@ -485,17 +485,14 @@ function TJclAppInstances.SendString(const WindowClassName: string;
   const DataKind: TJclAppInstDataKind; const S: string;
   OriginatorWnd: THandle): Boolean;
 begin
-  Result := SendData(WindowClassName, DataKind, PChar(S), Length(S), OriginatorWnd);
+  Result := SendData(WindowClassName, DataKind, PChar(S), Length(S) * SizeOf(Char), OriginatorWnd);
 end;
 
 function TJclAppInstances.SendStrings(const WindowClassName: string;
   const DataKind: TJclAppInstDataKind; const Strings: TStrings;
   OriginatorWnd: THandle): Boolean;
-var
-  S: string;
 begin
-  S := Strings.Text;
-  Result := SendData(WindowClassName, DataKind, Pointer(S), Length(S), OriginatorWnd);
+  Result := SendString(WindowClassName, DataKind, Strings.Text, OriginatorWnd);
 end;
 
 class function TJclAppInstances.SetForegroundWindow98(const Wnd: THandle): Boolean;
@@ -575,7 +572,7 @@ procedure ReadMessageString(const Message: TMessage; var S: string);
 begin
   with TWMCopyData(Message) do
     if Msg = WM_COPYDATA then
-      SetString(S, PChar(CopyDataStruct^.lpData), CopyDataStruct^.cbData);
+      SetString(S, PChar(CopyDataStruct^.lpData), CopyDataStruct^.cbData div SizeOf(Char));
 end;
 
 procedure ReadMessageStrings(const Message: TMessage; const Strings: TStrings);
@@ -585,7 +582,7 @@ begin
   with TWMCopyData(Message) do
     if Msg = WM_COPYDATA then
     begin
-      SetString(S, PChar(CopyDataStruct^.lpData), CopyDataStruct^.cbData);
+      ReadMessageString(Message, S);
       Strings.Text := S;
     end;
 end;
@@ -603,11 +600,8 @@ end;
 
 function SendStrings(const Wnd, OriginatorWnd: HWND;
   const DataKind: TJclAppInstDataKind; const Strings: TStrings): Boolean;
-var
-  S: string;
 begin
-  S := Strings.Text;
-  Result := SendData(Wnd, OriginatorWnd, DataKind, Pointer(S), Length(S));
+  Result := SendString(Wnd, OriginatorWnd, DataKind, Strings.Text);
 end;
 
 function SendCmdLineParams(const Wnd, OriginatorWnd: HWND): Boolean;
@@ -628,7 +622,7 @@ end;
 function SendString(const Wnd, OriginatorWnd: HWND;
   const DataKind: TJclAppInstDataKind; const S: string): Boolean;
 begin
-  Result := SendData(Wnd, OriginatorWnd, DataKind, PChar(S), Length(S));
+  Result := SendData(Wnd, OriginatorWnd, DataKind, PChar(S), Length(S) * SizeOf(Char));
 end;
 
 initialization
