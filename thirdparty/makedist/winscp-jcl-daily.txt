@@ -1,4 +1,4 @@
-option batch on
+option batch continue
 option confirm off
 option transfer binary
 open jcl.web.sourceforge.net
