@@ -2968,7 +2968,7 @@ function StrFind(const Substr, S: string; const Index: Integer): Integer;
 var
   Pos: PChar;
 begin
-  Pos := StrPos(PChar(@S[Index]),PChar(@SubStr[1]));
+  Pos := StrPos(PChar(@S[Index]), PChar(@SubStr[1]));
   if Pos = nil then
     Result := 0
   else
