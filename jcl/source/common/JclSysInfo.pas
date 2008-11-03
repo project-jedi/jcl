@@ -3615,13 +3615,13 @@ var
   VersionInfo: TOSVersionInfoEx;
 begin
   Result := 0;
-  if IsWin2K or IsWinXP or IsWin2003 or IsWinXP64 or IsWin2003R2 or IsWinVista or IsWinServer2008 then
+  if (Win32Platform = VER_PLATFORM_WIN32_NT) and (Win32MajorVersion >= 5) then
   begin
     FillChar(VersionInfo, SizeOf(VersionInfo), 0);
     VersionInfo.dwOSVersionInfoSize := SizeOf(VersionInfo);
     if GetVersionEx(VersionInfo) then
       Result := VersionInfo.wServicePackMajor;
-    end
+  end
   else
   begin
     SP := RegReadIntegerDef(HKEY_LOCAL_MACHINE, RegWindowsControl, 'CSDVersion', 0);
