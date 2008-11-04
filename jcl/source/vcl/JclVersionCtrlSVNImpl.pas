@@ -46,7 +46,6 @@ type
     function GetSupportedActionTypes: TJclVersionControlActionTypes; override;
     function GetFileActions(const FileName: TFileName): TJclVersionControlActionTypes; override;
     function GetSandboxActions(const SdBxName: TFileName): TJclVersionControlActionTypes; override;
-    function GetIcon(const Action: TJclVersionControlActionType): Integer; override;
     function GetEnabled: Boolean; override;
     function GetName: string; override;
   public
@@ -93,7 +92,7 @@ const
   JclVersionCtrlSVNUpdateVerb = 'update';
   JclVersionCtrlSVNUpdateToParam = '/rev';
   JclVersionCtrlSVNUnlockVerb = 'unlock';
-  JclVersionCtrlSVNTortoiseDLL = 'TortoiseSVN.dll';
+//  JclVersionCtrlSVNTortoiseDLL = 'TortoiseSVN.dll';
   JclVersionCtrlSVNDirectory1 = '.svn\';
   JclVersionCtrlSVNDirectory2 = '_svn\';  
   JclVersionCtrlSVNEntryFile = 'entries';
@@ -287,67 +286,6 @@ begin
     vcaMergeSandbox, vcaRename, vcaRepoBrowser, vcaRevert, vcaRevertSandbox,
     vcaStatus, vcaStatusSandbox, vcaTag, vcaTagSandBox, vcaUpdate,
     vcaUpdateSandbox, vcaUpdateTo, vcaUpdateSandboxTo, vcaUnlock, vcaUnlockSandbox];
-end;
-
-function TJclVersionControlSVN.GetIcon(
-  const Action: TJclVersionControlActionType): Integer;
-var
-  LibraryName: string;
-begin
-  LibraryName := PathAddSeparator(ExtractFilePath(FTortoiseSVNProc)) + JclVersionCtrlSVNTortoiseDLL;
-  
-  case Action of
-    vcaAdd,
-    vcaAddSandbox:
-      Result := VersionControlPluginList.CacheResourceIcon(LibraryName, 124);
-    vcaBlame:
-      Result := VersionControlPluginList.CacheResourceIcon(LibraryName, 5146);
-    vcaBranch,
-    vcaBranchSandbox:
-      Result := VersionControlPluginList.CacheResourceIcon(LibraryName, 132);
-    vcaCheckOutSandbox:
-      Result := VersionControlPluginList.CacheResourceIcon(LibraryName, 121);
-    vcaCommit,
-    vcaCommitSandbox:
-      Result := VersionControlPluginList.CacheResourceIcon(LibraryName, 123);
-    vcaDiff:
-      Result := VersionControlPluginList.CacheResourceIcon(LibraryName, 135);
-    vcaGraph:
-      Result := VersionControlPluginList.CacheResourceIcon(LibraryName, 5151);
-    vcaLog,
-    vcaLogSandbox:
-      Result := VersionControlPluginList.CacheResourceIcon(LibraryName, 136);
-    vcaLock,
-    vcaLockSandbox:
-      Result := VersionControlPluginList.CacheResourceIcon(LibraryName, 5152);
-    vcaMerge,
-    vcaMergeSandbox:
-      Result := VersionControlPluginList.CacheResourceIcon(LibraryName, 129);
-    vcaRename:
-      Result := VersionControlPluginList.CacheResourceIcon(LibraryName, 134);
-    vcaRepoBrowser:
-      Result := VersionControlPluginList.CacheResourceIcon(LibraryName, 5145);
-    vcaRevert,
-    vcaRevertSandbox:
-      Result := VersionControlPluginList.CacheResourceIcon(LibraryName, 125);
-    vcaStatus,
-    vcaStatusSandbox:
-      Result := VersionControlPluginList.CacheResourceIcon(LibraryName, 143);
-    vcaTag,
-    vcaTagSandBox:
-      Result := VersionControlPluginList.CacheResourceIcon(LibraryName, 132);
-    vcaUpdate,
-    vcaUpdateSandbox,
-    vcaUpdateTo,
-    vcaUpdateSandboxTo:
-      Result := VersionControlPluginList.CacheResourceIcon(LibraryName, 122);
-    vcaUnlock,
-    vcaUnlockSandbox:
-      Result := VersionControlPluginList.CacheResourceIcon(LibraryName, 5153);
-    else
-      Result := inherited GetIcon(Action);
-  end;
-
 end;
 
 function TJclVersionControlSVN.GetName: string;

@@ -104,8 +104,6 @@ type
     function GetFileActions(const FileName: TFileName): TJclVersionControlActionTypes; virtual;
     // get actions for the current sandbox (sandbox can be not yet initialized)
     function GetSandboxActions(const SdBxName: TFileName): TJclVersionControlActionTypes; virtual;
-    // get icon for the action
-    function GetIcon(const Action: TJclVersionControlActionType): Integer; virtual;
     // true if the plugin is supported (third-party tools present)
     function GetEnabled: Boolean; virtual;
     // friendly name of the plugin
@@ -124,7 +122,6 @@ type
         GetSupportedActionTypes;
     property FileActions[const FileName: TFileName]: TJclVersionControlActionTypes read GetFileActions;
     property SandboxActions[const SdBxName: TFileName]: TJclVersionControlActionTypes read GetSandboxActions;
-    property Icons[const Action: TJclVersionControlActionType]: Integer read GetIcon;
     property Enabled: Boolean read GetEnabled;
     property Name: string read GetName;
   end;
@@ -161,7 +158,6 @@ type
     function GetSupportedActionTypes: TJclVersionControlActionTypes; override;
     function GetFileActions(const FileName: TFileName): TJclVersionControlActionTypes; override;
     function GetSandboxActions(const SdBxName: TFileName): TJclVersionControlActionTypes; override;
-    function GetIcon(const Action: TJclVersionControlActionType): Integer; override;
     function GetEnabled: Boolean; override;
     function GetName: string; override;
   public
@@ -173,42 +169,18 @@ type
   TJclVersionControlPluginList = class (TObject)
   private
     FFileCache: TList;
-    FIconCache: TList;
-    FImages: TCustomImageList;
-    FIntImages: TImagelist;
     FPluginList: TObjectList;
     procedure ClearFileCache;
-    procedure ClearIconCache;
-    function GetImages: TCustomImageList;
     function GetPlugin(Index: Integer): TJclVersionControlPlugin;
-    procedure SetImages(const Value: TCustomImageList);
   public
     constructor Create;
     destructor Destroy; override;
-    function CacheResourceIcon(const ResourceFile: TFileName; const ResourceID:
-        Integer): Integer; overload;
-    function CacheResourceIcon(const ResourceFile: TFileName; const ResourceName:
-        string): Integer; overload;
     function Count: Integer;
-    function GetActionImageIndex(AIconType: Integer; AActionType: TJclVersionControlActionType;
-      ACurrentPlugin: TJclVersionControlPlugin): Integer;
     function GetFileCache(const FileName: TFileName;
       const Plugin: TJclVersionControlPlugin): TJclVersionControlCache;
     procedure RegisterPluginClass(const APluginClass: TJclVersionControlPluginClass);
     procedure UnregisterPluginClass(const APluginClass: TJclVersionControlPluginClass);
-    property Images: TCustomImageList read GetImages write SetImages;
     property Plugins[Index: Integer]: TJclVersionControlPlugin read GetPlugin;
-  end;
-
-  TJclIconCacheInfo = class (TObject)
-  private
-    FFileName: TFileName;
-    FIconIndex: Integer;
-    FResourceName: string;
-  public
-    property FileName: TFileName read FFileName write FFileName;
-    property ResourceName: string read FResourceName write FResourceName;
-    property IconIndex: Integer read FIconIndex write FIconIndex;
   end;
 
   TJclVersionControlActionsCache = class (TObject)
@@ -326,7 +298,6 @@ const
   JclVersionCtrlDisableActionsName = 'DisableActions';
   JclVersionCtrlHideActionsName = 'HideActions';
   JclVersionCtrlIconTypeName = 'IconType';
-  JclVersionCtrlIconTypeAutoValue = 'auto';
   JclVersionCtrlIconTypeNoIconValue = 'noicon';
   JclVersionCtrlIconTypeJclIconValue = 'jclicons';
 
@@ -577,12 +548,6 @@ begin
   Result := [];
 end;
 
-function TJclVersionControlPlugin.GetIcon(
-  const Action: TJclVersionControlActionType): Integer;
-begin
-  Result := -1;
-end;
-
 function TJclVersionControlPlugin.GetName: string;
 begin
   Result := '';
@@ -705,23 +670,6 @@ begin
   Result := [vcaContextMenu, vcaExplore, vcaExploreSandbox, vcaProperties, vcaPropertiesSandbox];
 end;
 
-function TJclVersionControlSystemPlugin.GetIcon(
-  const Action: TJclVersionControlActionType): Integer;
-begin
-  case Action of
-    vcaContextMenu:
-      Result := -1;
-    vcaExplore,
-    vcaExploreSandbox:
-      Result := VersionControlPluginList.CacheResourceIcon('Explorer.exe', 101);
-    vcaProperties,
-    vcaPropertiesSandbox:
-      Result := VersionControlPluginList.CacheResourceIcon('Shell32.dll', 4);
-    else
-      Result := inherited GetIcon(Action);
-  end;
-end;
-
 function TJclVersionControlSystemPlugin.GetName: string;
 begin
   Result := 'System';
@@ -757,77 +705,14 @@ begin
   inherited Create;
   FFileCache := TList.Create;
   FPluginList := TObjectList.Create(True);
-  FIntImages := TImagelist.Create(nil);
-  FIconCache := TList.Create;
 end;
 
 destructor TJclVersionControlPluginList.Destroy;
 begin
-  ClearIconCache;
-  FreeAndNil(FIconCache);
-  FreeAndNil(FIntImages);
   FreeAndNil(FPluginList);
   ClearFileCache;
   FreeAndNil(FFileCache);
   inherited Destroy;
-end;
-
-function TJclVersionControlPluginList.CacheResourceIcon(
-  const ResourceFile: TFileName; const ResourceID: Integer): Integer;
-var
-  ResourceName: string;
-begin
-  SetLength(ResourceName, SizeOf(ResourceID));
-  System.Move(ResourceID, ResourceName[1], SizeOf(ResourceID));
-  Result := CacheResourceIcon(ResourceFile, ResourceName);
-end;
-
-function TJclVersionControlPluginList.CacheResourceIcon(
-  const ResourceFile: TFileName; const ResourceName: string): Integer;
-var
-  Index: Integer;
-  AIconCacheInfo: TJclIconCacheInfo;
-  AIcon: TIcon;
-  FileModule: HMODULE;
-  ResourceID: Integer;
-begin
-  for Index := 0 to FIconCache.Count - 1 do
-  begin
-    AIconCacheInfo := TJclIconCacheInfo(FIconCache.Items[Index]);
-    if (CompareText(AIconCacheInfo.ResourceName, ResourceName) = 0) and
-       (CompareText(AIconCacheInfo.FileName, ResourceFile) = 0) then
-    begin
-      Result := AIconCacheInfo.IconIndex;
-      Exit;
-    end;
-  end;
-  Result := -1;
-  AIconCacheInfo := TJclIconCacheInfo.Create;
-  AIconCacheInfo.FileName := ResourceFile;
-  AIconCacheInfo.ResourceName := ResourceName;
-  FileModule := LoadLibraryEx(PChar(ResourceFile), 0, LOAD_LIBRARY_AS_DATAFILE);
-  if FileModule <> 0 then
-  try
-    AIcon := TIcon.Create;
-    try
-      if (Length(ResourceName) = 4) and (ResourceName[3] = #0) and (ResourceName[4] = #0) then
-      begin
-        System.Move(ResourceName[1], ResourceID, SizeOf(ResourceID));
-        AIcon.Handle := LoadIcon(FileModule, PChar(ResourceID));
-      end
-      else
-        AIcon.Handle := LoadIcon(FileModule, PChar(ResourceName));
-      Result := Images.AddIcon(AIcon);
-      AIconCacheInfo.IconIndex := Result;
-      FIconCache.Add(AIconCacheInfo);
-    finally
-      AIcon.Free;
-    end;
-  finally
-    FreeLibrary(FileModule);
-  end
-  else
-  AIconCacheInfo.free;
 end;
 
 procedure TJclVersionControlPluginList.ClearFileCache;
@@ -837,15 +722,6 @@ begin
   for Index := FFileCache.Count - 1 downto 0 do
     TJclVersionControlCache(FFileCache.Items[Index]).Free;
   FFileCache.Clear;
-end;
-
-procedure TJclVersionControlPluginList.ClearIconCache;
-var
-  Index: Integer;
-begin
-  for Index := FIconCache.Count - 1 downto 0 do
-    TJclIconCacheInfo(FIconCache.Items[Index]).Free;
-  FIconCache.Clear;
 end;
 
 function TJclVersionControlPluginList.Count: Integer;
@@ -891,68 +767,10 @@ begin
   Result := TJclVersionControlPlugin(FPluginList[Index]);
 end;
 
-function TJclVersionControlPluginList.GetActionImageIndex(AIconType: Integer;
-    AActionType: TJclVersionControlActionType; ACurrentPlugin: TJclVersionControlPlugin): Integer;
-var
-  IndexPlugin: Integer;
-begin
-  Result := -1;
-  case AIconType of
-    // No icon
-    -3 :
-      Result := -1;
-    // JCL icons
-    // TODO: create resources
-    -2 :
-      Result := -1;
-    // auto icons
-    -1 :
-      if VersionControlActionInfo(AActionType).AllPlugins then
-      begin
-        for IndexPlugin := 0 to Count - 1 do
-        begin
-          Result := Plugins[IndexPlugin].Icons[AActionType];
-          if Result > -1 then
-            Break;
-        end;
-      end
-      else
-      begin
-        if Assigned(ACurrentPlugin) then
-          Result := ACurrentPlugin.Icons[AActionType]
-        else
-          Result := -1;
-      end;
-    // Specific icons
-    0..High(Integer) :
-      if aIconType < FPluginList.Count then
-        Result := Plugins[aIconType].Icons[aActionType]
-      else
-        Result := -1;
-  end;
-end;
-
-function TJclVersionControlPluginList.GetImages: TCustomImageList;
-begin
-  if Assigned(FImages) then
-    Result := FImages
-  else
-    Result := FIntImages;
-end;
-
 procedure TJclVersionControlPluginList.RegisterPluginClass(
   const APluginClass: TJclVersionControlPluginClass);
 begin
   FPluginList.Add(APluginClass.Create);
-end;
-
-procedure TJclVersionControlPluginList.SetImages(const Value: TCustomImageList);
-begin
-  if Value <> FImages then
-  begin
-    FImages := Value;
-    ClearIconCache;
-  end;
 end;
 
 procedure TJclVersionControlPluginList.UnregisterPluginClass(

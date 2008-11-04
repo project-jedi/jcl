@@ -38,6 +38,8 @@ uses
   Dialogs, StdCtrls, ComCtrls, ActnList, Menus;
 
 type
+  TIconType = (itNone, itJCL);
+
   TJclVersionCtrlOptionsFrame = class(TFrame)
     CheckBoxHideActions: TCheckBox;
     LabelIcons: TLabel;
@@ -92,22 +94,21 @@ type
     procedure SetSaveConfirmation(const Value: Boolean);
     function GetDisableActions: Boolean;
     function GetHideActions: Boolean;
-    function GetIconType: Integer;
+    function GetIconType: TIconType;
     function GetMenuTree: TStrings;
     procedure SetDisableActions(const Value: Boolean);
     procedure SetHideActions(const Value: Boolean);
-    procedure SetIconType(const Value: Integer);
+    procedure SetIconType(const Value: TIconType);
     procedure SetMenuTree(const Value: TStrings);
     procedure MenuItemNewActionClick(Sender: TObject);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure SetIconTypeNames(const Names: TStrings);
     procedure SetActions(const Actions: array of TCustomAction);
     property ActOnTopSandbox: Boolean read GetActOnTopSandbox write SetActOnTopSandbox;
     property DisableActions: Boolean read GetDisableActions write SetDisableActions;
     property HideActions: Boolean read GetHideActions write SetHideActions;
-    property IconType: Integer read GetIconType write SetIconType;
+    property IconType: TIconType read GetIconType write SetIconType;
     property MenuTree: TStrings read GetMenuTree write SetMenuTree;
     property SaveConfirmation: Boolean read GetSaveConfirmation write SetSaveConfirmation;
   end;
@@ -149,7 +150,6 @@ resourcestring
   RsMenuOrganization = 'Menu &organization:';
   RsNoIcon = 'No icon';
   RsJCLIcons = 'JCL icons';
-  RsAutoIcons = 'Automatic';
 
 //=== TJclVersionCtrlOptionsFrame ============================================
 
@@ -341,7 +341,6 @@ begin
   LabelMenuOrganization.Caption := RsMenuOrganization;
   ComboBoxIcons.Items.Strings[0] := RsNoIcon;
   ComboBoxIcons.Items.Strings[1] := RsJCLIcons;
-  ComboBoxIcons.Items.Strings[2] := RsAutoIcons;
 end;
 
 destructor TJclVersionCtrlOptionsFrame.Destroy;
@@ -365,9 +364,12 @@ begin
   Result := CheckBoxHideActions.Checked;
 end;
 
-function TJclVersionCtrlOptionsFrame.GetIconType: Integer;
+function TJclVersionCtrlOptionsFrame.GetIconType: TIconType;
 begin
-  Result := ComboBoxIcons.ItemIndex - 3;
+  if ComboBoxIcons.ItemIndex = 1 then
+    Result := itJCL
+  else
+    Result := itNone;
 end;
 
 function TJclVersionCtrlOptionsFrame.GetMenuTree: TStrings;
@@ -478,18 +480,14 @@ begin
   CheckBoxHideActions.Checked := Value;
 end;
 
-procedure TJclVersionCtrlOptionsFrame.SetIconType(const Value: Integer);
+procedure TJclVersionCtrlOptionsFrame.SetIconType(const Value: TIconType);
 begin
-  ComboBoxIcons.ItemIndex := Value + 3;
-end;
-
-procedure TJclVersionCtrlOptionsFrame.SetIconTypeNames(const Names: TStrings);
-var
-  Index: Integer;
-begin
-  for Index := ComboBoxIcons.Items.Count - 1 downto 3 do
-    ComboBoxIcons.Items.Delete(Index);
-  ComboBoxIcons.Items.AddStrings(Names);
+  case Value of
+    itNone:
+      ComboBoxIcons.ItemIndex := 0;
+    itJCL:
+      ComboBoxIcons.ItemIndex := 1;
+  end;
 end;
 
 procedure TJclVersionCtrlOptionsFrame.SetMenuTree(const Value: TStrings);

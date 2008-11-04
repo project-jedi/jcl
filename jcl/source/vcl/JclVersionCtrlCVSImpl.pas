@@ -45,7 +45,6 @@ type
     function GetSupportedActionTypes: TJclVersionControlActionTypes; override;
     function GetFileActions(const FileName: TFileName): TJclVersionControlActionTypes; override;
     function GetSandboxActions(const SdBxName: TFileName): TJclVersionControlActionTypes; override;
-    function GetIcon(const Action: TJclVersionControlActionType): Integer; override;
     function GetEnabled: Boolean; override;
     function GetName: string; override;
   public
@@ -71,7 +70,7 @@ uses
   JclFileUtils, JclRegistry, JclStrings;
 
 const
-  JclVersionCtrlCVSTrtseShlDLL = 'TrtseShl.dll';
+//  JclVersionCtrlCVSTrtseShlDLL = 'TrtseShl.dll';
   JclVersionCtrlCVSRegKeyName = 'SOFTWARE\TortoiseCVS';
   JclVersionCtrlCVSRegValueName = 'RootDir';
   JclVersionCtrlCVSTortoiseAct = 'TortoiseAct.exe';
@@ -253,52 +252,6 @@ begin
     vcaDiff, vcaGraph, vcaLog, vcaLogSandbox, vcaLock, vcaLockSandbox,
     vcaStatus, vcaStatusSandbox, vcaTag, vcaTagSandBox, vcaUpdate,
     vcaUpdateSandbox, vcaUpdateTo, vcaUpdateSandboxTo, vcaUnlock, vcaUnlockSandbox];
-end;
-
-function TJclVersionControlCVS.GetIcon(
-  const Action: TJclVersionControlActionType): Integer;
-var
-  LibraryName: string;
-begin
-  LibraryName := PathAddSeparator(ExtractFilePath(FTortoiseCVSAct)) + JclVersionCtrlCVSTrtseShlDLL;
-
-  case Action of
-    vcaAdd,
-    vcaAddSandbox:
-      Result := VersionControlPluginList.CacheResourceIcon(LibraryName, 'IDI_ADD');
-    vcaGraph,
-    vcaLog,
-    vcaLogSandbox,
-    vcaBlame:
-      Result := VersionControlPluginList.CacheResourceIcon(LibraryName, 'IDI_LOG');
-    vcaBranch,
-    vcaBranchSandbox:
-      Result := VersionControlPluginList.CacheResourceIcon(LibraryName, 'IDI_BRANCH');
-    vcaCheckOutSandbox:
-      Result := VersionControlPluginList.CacheResourceIcon(LibraryName, 'IDI_CHECKOUT');
-    vcaCommit,
-    vcaCommitSandbox:
-      Result := VersionControlPluginList.CacheResourceIcon(LibraryName, 'IDI_COMMIT');
-    vcaDiff:
-      Result := VersionControlPluginList.CacheResourceIcon(LibraryName, 'IDI_COMPARE');
-    vcaLock,
-    vcaLockSandbox,
-    vcaStatus,
-    vcaStatusSandbox,
-    vcaTag,
-    vcaTagSandBox:
-      Result := -1;
-    vcaUpdate,
-    vcaUpdateSandbox,
-    vcaUpdateTo,
-    vcaUpdateSandboxTo:
-      Result := VersionControlPluginList.CacheResourceIcon(LibraryName, 'IDI_UPDATE');
-    vcaUnlock,
-    vcaUnlockSandbox:
-      Result := VersionControlPluginList.CacheResourceIcon(LibraryName, 'IDI_REVERT');
-    else
-      Result := inherited GetIcon(Action);
-  end;
 end;
 
 function TJclVersionControlCVS.GetName: string;

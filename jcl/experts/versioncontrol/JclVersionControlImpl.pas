@@ -61,16 +61,15 @@ type
   private
     FVersionCtrlMenu: TMenuItem;
     FActions: array [TJclVersionControlActionType] of TCustomAction;
-    FLastPlugin: TJclVersionControlPlugin;
+    FIconIndexes: array [TJclVersionControlActionType] of Integer;
     FHideActions: Boolean;
-    FIconType: Integer;
+    FIconType: TIconType;
     FActOnTopSandbox: Boolean;
     FSaveConfirmation: Boolean;
     FDisableActions: Boolean;
     FOptionsFrame: TJclVersionCtrlOptionsFrame;
     FMenuOrganization: TStringList;
-    procedure RefreshIcon(const AAction: TCustomAction);
-    procedure SetIconType(const Value: Integer);
+    procedure SetIconType(const Value: TIconType);
 
     procedure ActionUpdate(Sender: TObject);
     procedure ActionExecute(Sender: TObject);
@@ -97,7 +96,7 @@ type
     property DisableActions: Boolean read FDisableActions write FDisableActions;
     property HideActions: Boolean read FHideActions write FHideActions;
     property SaveConfirmation: Boolean read FSaveConfirmation write FSaveConfirmation;
-    property IconType: Integer read FIconType write SetIconType;
+    property IconType: TIconType read FIconType write SetIconType;
     property CurrentCache: TJclVersionControlCache read GetCurrentCache;
     property CurrentPlugin: TJclVersionControlPlugin read GetCurrentPlugin;
     property CurrentFileName: string read GetCurrentFileName;
@@ -130,11 +129,53 @@ const
 implementation
 
 uses
-  Windows, Forms, TypInfo,
+  Windows, Forms, TypInfo, ImgList,
   JclDebug, JclFileUtils, JclRegistry, JclShell, JclStrings,
   JclOtaConsts, JclOtaResources,
   JclVersionCtrlSVNImpl,
   JclVersionCtrlCVSImpl;
+
+{$R JclVersionCtrlIcons.RES}
+
+const
+  IconNames: array [TJclVersionControlActionType] of PChar =
+    ( 'FILEADD',         // vcaAdd
+      'SANDBOXADD',      // vcaAddSandbox
+      'FILEBLAME',       // vcaBlame
+      'FILEBRANCH',      // vcaBranch
+      'SANDBOXBRANCH',   // vcaBranchSandbox
+      'SANDBOXCHECKOUT', // vcaCheckOutSandbox
+      'FILECOMMIT',      // vcaCommit
+      'SANDBOXCOMMIT',   // vcaCommitSandbox
+      'CONTEXTMENU',     // vcaContextMenu
+      'FILEDIFF',        // vcaDiff
+      'EXPLORE',         // vcaExplore
+      'EXPLORE',         // vcaExploreSandbox
+      'FILEGRAPH',       // vcaGraph
+      'FILELOG',         // vcaLog
+      'SANDBOXLOG',      // vcaLogSandbox
+      'FILELOCK',        // vcaLock
+      'SANDBOXLOCK',     // vcaLockSandbox
+      'FILEMERGE',       // vcaMerge
+      'SANDBOXMERGE',    // vcaMergeSandbox
+      'PROPERTIES',      // vcaProperties
+      'PROPERTIES',      // vcaPropertiesSandbox
+      'FILERENAME',      // vcaRename
+      'SANDBOXRENAME',   // vcaRenameSandbox
+      'REPOBROWSER',     // vcaRepoBrowser
+      'FILEREVERT',      // vcaRevert
+      'SANDBOXREVERT',   // vcaRevertSandbox
+      'STATUS',          // vcaStatus
+      'STATUS',          // vcaStatusSandbox
+      'FILETAG',         // vcaTag
+      'SANDBOXTAG',      // vcaTagSandBox
+      'FILEUPDATE',      // vcaUpdate
+      'SANDBOXUPDATE',   // vcaUpdateSandbox
+      'FILEUPDATE',      // vcaUpdateTo
+      'SANDBOXUPDATE',   // vcaUpdateSandboxTo
+      'FILEUNLOCK',      // vcaUnlock
+      'SANDBOXUNLOCK');  // vcaUnlockSandbox
+
 
 function CharIsAmpersand(const C: Char): Boolean;
 begin
@@ -372,15 +413,6 @@ begin
     ControlActionInfo := VersionControlActionInfo(ControlAction);
     AFileCache := CurrentCache;
 
-    if IconType = -1 then
-    begin
-      if Assigned(AFileCache) then
-        FLastPlugin := AFileCache.Plugin
-      else
-        FLastPlugin := nil;
-      RefreshIcon(AAction);
-    end;
-
     if HideActions and not ControlActionInfo.AllPlugins then
       AAction.Visible := Assigned(AFileCache) and Assigned(AFileCache.Plugin)
         and (ControlAction in AFileCache.Plugin.SupportedActionTypes)
@@ -464,10 +496,6 @@ end;
 
 procedure TJclVersionControlExpert.AddConfigurationPages(
   AddPageFunc: TJclOTAAddPageFunc);
-var
-  Index: Integer;
-  IconTypeNames: TStrings;
-  PluginList: TJclVersionControlPluginList;
 begin
   inherited AddConfigurationPages(AddPageFunc);
   FOptionsFrame := TJclVersionCtrlOptionsFrame.Create(nil);
@@ -475,15 +503,6 @@ begin
   FOptionsFrame.HideActions := HideActions;
   FOptionsFrame.SaveConfirmation := SaveConfirmation;
   FOptionsFrame.ActOnTopSandbox := ActOnTopSandbox;
-  IconTypeNames := TStringList.Create;
-  try
-    PluginList := VersionControlPluginList;
-    for Index := 0 to PluginList.Count - 1 do
-      IconTypeNames.Add(PluginList.Plugins[Index].Name);
-    FOptionsFrame.SetIconTypeNames(IconTypeNames);
-  finally
-    IconTypeNames.Free;
-  end;
   FOptionsFrame.SetActions(FActions);
   // after SetActions
   FOptionsFrame.MenuTree := FMenuOrganization;
@@ -557,7 +576,12 @@ begin
           AMenuItem.Caption := Format('%s | %s', [AFileCache.Plugin.Name, AFileCache.SandBoxes[IndexSandbox]]);
           AMenuItem.Tag := APopupMenu.Tag;
           AMenuItem.OnClick := SubItemClick;
-          AMenuItem.ImageIndex := AFileCache.Plugin.Icons[ControlAction];
+          case IconType of
+            itNone:
+              AMenuItem.ImageIndex := -1;
+            itJCL:
+              AMenuItem.ImageIndex := FIconIndexes[ControlAction];
+          end;
           APopupMenu.Items.Add(AMenuItem);
         end;
       end;
@@ -573,7 +597,12 @@ begin
         AMenuItem.Caption := AFileCache.SandBoxes[IndexSandbox];
         AMenuItem.Tag := APopupMenu.Tag;
         AMenuItem.OnClick := SubItemClick;
-        AMenuItem.ImageIndex := AFileCache.Plugin.Icons[ControlAction];
+        case IconType of
+          itNone:
+            AMenuItem.ImageIndex := -1;
+          itJCL:
+            AMenuItem.ImageIndex := FIconIndexes[ControlAction];
+        end;
         APopupMenu.Items.Add(AMenuItem);
       end;
     end;
@@ -675,7 +704,12 @@ begin
           SubMenuItem.Caption := Format('%s | %s', [AFileCache.Plugin.Name, AFileCache.SandBoxes[IndexSandbox]]);
           SubMenuItem.Tag := Integer(ControlAction);
           SubMenuItem.OnClick := SubItemClick;
-          SubMenuItem.ImageIndex := AFileCache.Plugin.Icons[ControlAction];
+          case IconType of
+            itNone:
+              SubMenuItem.ImageIndex := -1;
+            itJCL:
+              SubMenuItem.ImageIndex := FIconIndexes[ControlAction];
+          end;
           AMenuItem.Add(SubMenuItem);
         end;
       end;
@@ -692,7 +726,12 @@ begin
         SubMenuItem.Caption := AFileCache.SandBoxes[IndexSandbox];
         SubMenuItem.Tag := Integer(ControlAction);
         SubMenuItem.OnClick := SubItemClick;
-        SubMenuItem.ImageIndex := AFileCache.Plugin.Icons[ControlAction];
+        case IconType of
+          itNone:
+            SubMenuItem.ImageIndex := -1;
+          itJCL:
+            SubMenuItem.ImageIndex := FIconIndexes[ControlAction];
+        end;
         AMenuItem.Add(SubMenuItem);
       end;
     end;
@@ -732,24 +771,11 @@ procedure TJclVersionControlExpert.IDEVersionCtrlMenuClick(Sender: TObject);
         begin
           AFileCache := CurrentCache;
 
-          if IconType = -1 then
-          begin
-            if ControlActionInfo.AllPlugins then
-            begin
-              PluginList := VersionControlPluginList;
+          case IconType of
+            itNone:
               BMenuItem.ImageIndex := -1;
-              for IndexPlugin := 0 to PluginList.Count - 1 do
-              begin
-                BMenuItem.ImageIndex := TJclVersionControlPlugin(PluginList.Plugins[IndexPlugin]).Icons[ControlAction];
-                if BMenuItem.ImageIndex > -1 then
-                  Break;
-              end;
-            end
-            else
-            if Assigned(AFileCache) and Assigned(AFileCache.Plugin) then
-              BMenuItem.ImageIndex := AFileCache.Plugin.Icons[ControlAction]
-            else
-              BMenuItem.ImageIndex := -1;
+            itJCL:
+              BMenuItem.ImageIndex := FIconIndexes[ControlAction];
           end;
 
           if HideActions and not ControlActionInfo.AllPlugins then
@@ -809,100 +835,20 @@ begin
   end;
 end;
 
-procedure TJclVersionControlExpert.RefreshIcon(const AAction: TCustomAction);
-var
-  ControlAction: TJclVersionControlActionType;
-  IndexPlugin: Integer;
-  PluginList: TJclVersionControlPluginList;
-begin
-  if not Assigned(AAction) then
-    Exit;
-
-  ControlAction := ActionToControlAction(AAction);
-  case IconType of
-    // No icon
-    -3 :
-      AAction.ImageIndex := -1;
-    // JCL icons
-    // TODO: create resources
-    -2 :
-      AAction.ImageIndex := -1;
-    // auto icons
-    -1 :
-      if VersionControlActionInfo(ControlAction).AllPlugins then
-      begin
-        PluginList := VersionControlPluginList;
-        for IndexPlugin := 0 to PluginList.Count - 1 do
-        begin
-          AAction.ImageIndex := PluginList.Plugins[IndexPlugin].Icons[ControlAction];
-          if AAction.ImageIndex > -1 then
-            Break;
-        end;
-      end
-      else
-      begin
-        if Assigned(FLastPlugin) then
-          AAction.ImageIndex := FLastPlugin.Icons[ControlAction]
-        else
-          AAction.ImageIndex := -1;
-      end;
-    // Specific icons
-    0..High(Integer) :
-      begin
-        PluginList := VersionControlPluginList;
-        if IconType < PluginList.Count then
-          AAction.ImageIndex := TJclVersionControlPlugin(PluginList.Plugins[IconType]).Icons[ControlAction]
-        else
-          AAction.ImageIndex := -1;
-      end;
-  end;
-end;
-
 procedure TJclVersionControlExpert.RefreshIcons;
 var
   ControlAction: TJclVersionControlActionType;
-  IndexPlugin: Integer;
-  PluginList: TJclVersionControlPluginList;
 begin
   for ControlAction := Low(TJclVersionControlActionType) to High(TJclVersionControlActionType) do
     if Assigned(FActions[ControlAction]) then
   begin
     case IconType of
       // No icon
-      -3 :
+      itNone :
         FActions[ControlAction].ImageIndex := -1;
       // JCL icons
-      // TODO: create resources
-      -2 :
-        FActions[ControlAction].ImageIndex := -1;
-      // Auto icons
-      -1 :
-        if VersionControlActionInfo(ControlAction).AllPlugins then
-        begin
-          PluginList := VersionControlPluginList;
-          for IndexPlugin := 0 to PluginList.Count - 1 do
-          begin
-            FActions[ControlAction].ImageIndex := PluginList.Plugins[IndexPlugin].Icons[ControlAction];
-            if FActions[ControlAction].ImageIndex > -1 then
-              Break;
-          end;
-        end
-        else
-        begin
-          if Assigned(FLastPlugin) then
-            FActions[ControlAction].ImageIndex := FLastPlugin.Icons[ControlAction]
-          else
-            FActions[ControlAction].ImageIndex := -1;
-        end;
-      // Specific icons
-      0..High(Integer) :
-        begin
-          PluginList := VersionControlPluginList;
-          if IconType < PluginList.Count then
-            FActions[ControlAction].ImageIndex := PluginList.Plugins[IconType].Icons[ControlAction]
-          else
-            FActions[ControlAction].ImageIndex := -1;
-        end;
+      itJCL :
+        FActions[ControlAction].ImageIndex := FIconIndexes[ControlAction];
     end;
   end;
 end;
@@ -1017,6 +963,7 @@ procedure TJclVersionControlExpert.RegisterCommands;
 var
   IDEMainMenu: TMainMenu;
   IDEToolsItem: TMenuItem;
+  IDEImageList: TCustomImageList;
   IDEActionList: TCustomActionList;
   I: Integer;
   AStandardAction: TJclVersionControlStandardAction;
@@ -1025,8 +972,8 @@ var
   IconTypeStr: string;
   ControlAction: TJclVersionControlActionType;
   ControlActionInfo: TJclVersionControlActionInfo;
-  PluginList: TJclVersionControlPluginList;
   NTAServices: INTAServices;
+  AIcon: TIcon;
 begin
   inherited RegisterCommands;
   NTAServices := GetNTAServices;
@@ -1038,21 +985,23 @@ begin
   IconTypeStr := Settings.LoadString(JclVersionCtrlIconTypeName, JclVersionCtrlIconTypeAutoValue);
   ActOnTopSandbox := Settings.LoadBool(JclVersionCtrlActOnTopSandboxName, False);
 
-  FIconType := -1;
+  FIconType := itJCL;
   if IconTypeStr = JclVersionCtrlIconTypeNoIconValue then
-    FIconType := -3
+    FIconType := itNone
   else
   if IconTypeStr = JclVersionCtrlIconTypeJclIconValue then
-    FIconType := -2
-  else
-  if IconTypeStr = JclVersionCtrlIconTypeAutoValue then
-    FIconType := -1
-  else
-  begin
-    PluginList := VersionControlPluginList;
-    for I := 0 to PluginList.Count - 1 do
-      if IconTypeStr = TJclVersionControlPlugin(PluginList.Plugins[I]).Name then
-        FIconType := I;
+    FIconType := itJCL;
+
+  IDEImageList := NTAServices.ImageList;
+  AIcon := TIcon.Create;
+  try
+    for ControlAction := Low(TJclVersionControlActionType) to High(TJclVersionControlActionType) do
+    begin
+      AIcon.Handle := LoadIcon(HInstance, IconNames[ControlAction]);
+      FIconIndexes[ControlAction] := IDEImageList.AddIcon(AIcon);
+    end;
+  finally
+    AIcon.Free;
   end;
 
   IDEMainMenu := NTAServices.MainMenu;
@@ -1142,7 +1091,7 @@ begin
   end;
 end;
 
-procedure TJclVersionControlExpert.SetIconType(const Value: Integer);
+procedure TJclVersionControlExpert.SetIconType(const Value: TIconType);
 begin
   if Value <> FIconType then
   begin
@@ -1227,14 +1176,10 @@ begin
   Settings.SaveBool(JclVersionCtrlHideActionsName, HideActions);
   Settings.SaveBool(JclVersionCtrlActOnTopSandboxName, ActOnTopSandbox);
   case FIconType of
-    -3:
+    itNone:
       Settings.SaveString(JclVersionCtrlIconTypeName, JclVersionCtrlIconTypeNoIconValue);
-    -2:
+    itJCL:
       Settings.SaveString(JclVersionCtrlIconTypeName, JclVersionCtrlIconTypeJclIconValue);
-    -1:
-      Settings.SaveString(JclVersionCtrlIconTypeName, JclVersionCtrlIconTypeAutoValue);
-    0..High(Integer):
-      Settings.SaveString(JclVersionCtrlIconTypeName, TJclVersionControlPlugin(VersionControlPluginList.Plugins[IconType]).Name);
   end;
 
   for ControlAction := Low(TJclVersionControlActionType) to High(TJclVersionControlActionType) do

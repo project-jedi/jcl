@@ -40,8 +40,7 @@ object JclVersionCtrlOptionsFrame: TJclVersionCtrlOptionsFrame
     TabOrder = 1
     Items.Strings = (
       'RsNoIcon'
-      'RsJCLIcons'
-      'RsAutoIcons')
+      'RsJCLIcons')
   end
   object TreeViewMenu: TTreeView
     Left = 16
