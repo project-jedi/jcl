@@ -156,7 +156,7 @@ end;
 
 function compinst_IsBDSInstalled(IDEVersion: Integer): Integer; stdcall;
 begin
-  Result := Ord(Installations.BCBVersionInstalled[IDEVersion]);
+  Result := Ord(Installations.BDSVersionInstalled[IDEVersion]);
 end;
 
 { Design Packages }
