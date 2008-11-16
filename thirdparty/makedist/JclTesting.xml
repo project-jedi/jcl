@@ -367,4 +367,125 @@
       <configuration index="1" caption="Append" value="no"/>
     </action>
   </task>
+  <task name="jcl-weekly-chm" selected="0">
+    <action classname="TLogCleaner"/>
+    <action classname="TCommandLineCaller">
+      <configuration index="0" caption="Application" value="%SVN%"/>
+      <configuration index="1" caption="Working directory" value="..\..\"/>
+      <configuration index="2" caption="Parameters" value="update"/>
+      <configuration index="3" caption="Valid exit codes" value=""/>
+      <configuration index="4" caption="Result file" value=""/>
+    </action>
+    <action classname="TXmlGetter">
+      <configuration index="0" caption="Xml or command file" value="%SVN%"/>
+      <configuration index="1" caption="Working directory" value="..\..\"/>
+      <configuration index="2" caption="Arguments" value="info --xml"/>
+      <configuration index="3" caption="Valid exit codes" value=""/>
+      <configuration index="4" caption="Key" value="info\entry\\revision"/>
+      <configuration index="5" caption="Environment variable" value="VersionRevision"/>
+    </action>
+    <action classname="TDirectoryCreator">
+      <configuration index="0" caption="Directory" value="sandbox"/>
+    </action>
+    <action classname="TCommandLineCaller">
+      <configuration index="0" caption="Application" value="%SVN%"/>
+      <configuration index="1" caption="Working directory" value="sandbox"/>
+      <configuration index="2" caption="Parameters" value="export -rBASE --native-eol CRLF --force ..\..\..\ ."/>
+      <configuration index="3" caption="Valid exit codes" value=""/>
+      <configuration index="4" caption="Result file" value=""/>
+    </action>
+    <action classname="TConstantParser">
+      <configuration index="0" caption="Source file" value="sandbox\jcl\source\common\JclBase.pas"/>
+      <configuration index="1" caption="Constant name" value="JclVersionMajor"/>
+      <configuration index="2" caption="Environment variable" value="VersionMajor"/>
+    </action>
+    <action classname="TConstantParser">
+      <configuration index="0" caption="Source file" value="sandbox\jcl\source\common\JclBase.pas"/>
+      <configuration index="1" caption="Constant name" value="JclVersionMinor"/>
+      <configuration index="2" caption="Environment variable" value="VersionMinor"/>
+    </action>
+    <action classname="TConstantParser">
+      <configuration index="0" caption="Source file" value="sandbox\jcl\source\common\JclBase.pas"/>
+      <configuration index="1" caption="Constant name" value="JclVersionRelease"/>
+      <configuration index="2" caption="Environment variable" value="VersionRelease"/>
+    </action>
+    <action classname="TBuildCalculator">
+      <configuration index="0" caption="Year" value="2000"/>
+      <configuration index="1" caption="Month" value="03"/>
+      <configuration index="2" caption="Day" value="01"/>
+      <configuration index="3" caption="Environment variable" value="VersionBuild"/>
+    </action>
+    <action classname="TCommandLineCaller">
+      <configuration index="0" caption="Application" value="%ComSpec%"/>
+      <configuration index="1" caption="Working directory" value="sandbox\jcl\devtools\"/>
+      <configuration index="2" caption="Parameters" value="/C included_files.bat"/>
+      <configuration index="3" caption="Valid exit codes" value=""/>
+      <configuration index="4" caption="Result file" value=""/>
+    </action>
+    <action classname="TVariableSetter">
+      <configuration index="0" caption="Expression" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-chmhelp.7z"/>
+      <configuration index="1" caption="Environment variable" value="ArchiveName"/>
+    </action>
+    <action classname="TDirectoryCreator">
+      <configuration index="0" caption="Directory" value="sandbox\jcl\help"/>
+    </action>
+    <action classname="TCommandLineCaller">
+      <configuration index="0" caption="Application" value="%DMCC%"/>
+      <configuration index="1" caption="Working directory" value="sandbox\help"/>
+      <configuration index="2" caption="Parameters" value="-config &quot;CHM&quot; -noshow -w3 JclHelp.dox"/>
+      <configuration index="3" caption="Valid exit codes" value="0;20;30"/>
+      <configuration index="4" caption="Result file" value=""/>
+    </action>
+    <action classname="TFileRemover">
+      <configuration index="0" caption="Directory" value="sandbox\jcl\help"/>
+      <configuration index="1" caption="Filter" value="*.html;*.css;*.js;*.gif;*.jpg;*.png;*.c;*.h;*.inc"/>
+      <configuration index="2" caption="Move to recycle bin" value="no"/>
+    </action>
+    <action classname="TArchiveMaker">
+      <configuration index="0" caption="Directory" value="sandbox\jcl"/>
+      <configuration index="1" caption="Filter" value="*help*"/>
+      <configuration index="2" caption="Archive name" value="%ArchiveName%"/>
+    </action>
+    <action classname="TDirectoryRemover">
+      <configuration index="0" caption="Directory" value="sandbox"/>
+      <configuration index="1" caption="Move to recycle bin" value="no"/>
+    </action>
+    <action classname="TFileTouch">
+      <configuration index="0" caption="Path name" value="jcl-weekly-chm-0.txt"/>
+    </action>
+    <action classname="TVariableReader">
+      <configuration index="0" caption="Source file" value="jcl-weekly-chm-0.txt"/>
+      <configuration index="1" caption="Environment variable" value="OldArchiveName"/>
+    </action>
+    <action classname="TFileRemover">
+      <configuration index="0" caption="Directory" value="."/>
+      <configuration index="1" caption="Filter" value="jcl-weekly-chm-0.txt"/>
+      <configuration index="2" caption="Move to recycle bin" value="no"/>
+    </action>
+    <action classname="TVariableWriter">
+      <configuration index="0" caption="Destination file" value="jcl-weekly-chm-0.txt"/>
+      <configuration index="1" caption="Expression" value="%ArchiveName%"/>
+      <configuration index="2" caption="Append" value="no"/>
+    </action>
+    <action classname="TFileRemover">
+      <configuration index="0" caption="Directory" value="..\..\website\daily"/>
+      <configuration index="1" caption="Filter" value="%OldArchiveName%"/>
+      <configuration index="2" caption="Move to recycle bin" value="no"/>
+    </action>
+    <action classname="TFileMover">
+      <configuration index="0" caption="Old file name" value="%ArchiveName%"/>
+      <configuration index="1" caption="New file name" value="..\..\website\daily\%ArchiveName%"/>
+    </action>
+    <action classname="TCommandLineCaller">
+      <configuration index="0" caption="Application" value="%WINSCP%"/>
+      <configuration index="1" caption="Working directory" value="."/>
+      <configuration index="2" caption="Parameters" value="/console /script=winscp-jcl-daily.txt"/>
+      <configuration index="3" caption="Valid exit codes" value=""/>
+      <configuration index="4" caption="Result file" value=""/>
+    </action>
+    <action classname="TLogSaver">
+      <configuration index="0" caption="File name" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-chmhelp.log"/>
+      <configuration index="1" caption="Append" value="no"/>
+    </action>
+  </task>
 </makedist>

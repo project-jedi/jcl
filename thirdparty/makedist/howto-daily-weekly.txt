@@ -8,7 +8,7 @@
 8/ Compile makedist.exe
 9/ Execute the following commands in planified tasks:
 
-MakeDist.exe /c=JclTesting.xml /s=jcl-weekly-h2,jcl-weekly-hlp /x
+MakeDist.exe /c=JclTesting.xml /s=jcl-weekly-h2,jcl-weekly-hlp,jcl-weekly-chm /x
 MakeDist.exe /c=JclTesting.xml /s=jcl-daily-source /x
 
 These actions complete in less than an hour.
