@@ -38,6 +38,7 @@
 {   Robert Marquardt (marquardt)                                                                   }
 {   Robert Rossmair (rrossmair)                                                                    }
 {   Scott Price                                                                                    }
+{   Sean Farrow (sfarrow)                                                                             }
 {   Tom Hahn (tomhahn)                                                                             }
 {   Wim de Cleen                                                                                   }
 {                                                                                                  }
@@ -51,7 +52,7 @@
 {                                                                                                  }
 { Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
-{ Author:        $Author::                                                                       $ }
+{ Author:        $Author::                                                                        $ }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -1311,6 +1312,10 @@ function IsOutlookInstalled: Boolean;
 function IsInternetExplorerInstalled: Boolean;
 function IsMSProjectInstalled: Boolean;
 function IsOpenOfficeInstalled: Boolean;
+
+//windows installer related functions
+function IsWindowsInstallerAvailable: Boolean;
+function GetWindowsInstallerVersion: Float;
 
 {$ENDIF MSWINDOWS}
 
@@ -5501,6 +5506,23 @@ end;
 function IsOpenOfficeInstalled: Boolean;
 begin
   Result := ProgIDExists('com.sun.star.ServiceManager');
+end;
+
+//=== Windows installer related functions =====================================================
+function IsWindowsInstallerAvailable: Boolean;
+begin
+  result:=FileExists(GetWindowsSystemFolder() +'\msi.dll');
+end;
+
+function GetWindowsInstallerVersion: Float;
+begin
+  if VersionResourceAvailable(GetWindowsSystemFolder +'\msi.dll') then
+with TJclFileVersionInfo.Create('txt') do
+begin
+result :=StrToFloat(Trim(ProductVersion));
+end
+else
+result :=-1
 end;
 
 //=== Initialization/Finalization ============================================
