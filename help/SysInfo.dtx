@@ -530,10 +530,16 @@ Donator:
   Windows XP
 @@TWindowsVersion.wvWin2003
   Windows Server 2003
+@@TWindowsVersion.wvWin2003R2
+  Windows Server 2003 R2
 @@TWindowsVersion.wvWinVista
   Windows Vista
 @@TWindowsVersion.wvWinServer2008
   Windows Server 2008
+@@TWindowsVersion.wvWin7
+  Windows 7
+@@TWindowsVersion.wvWinServer2008R2
+  Windows Server 2008 R2
 --------------------------------------------------------------------------------
 @@TWindowsEdition
 <GROUP SystemInformationRoutines.VersionInformation>
@@ -610,8 +616,11 @@ See also:
   IsWin2K
   IsWinXP
   IsWin2003
+  IsWin2003R2
   IsWinVista
   IsWinServer2008
+  IsWin7
+  IsWinServer2008R2
 Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
@@ -1269,7 +1278,7 @@ Donator:
 @@IsWin95
 <GROUP SystemInformationRoutines.VersionInformation>
 Summary:
-  Returns whether the system is running Windows 95
+  Returns whether the system is running Windows 95.
 Description:
   IsWin95 returns whether or not the system is running Windows 95.
 Result:
@@ -1288,15 +1297,18 @@ See also:
   IsWin2K
   IsWinXP
   IsWin2003
+  IsWin2003R2
   IsWinVista
   IsWinServer2008
+  IsWin7
+  IsWinServer2008R2
 Donator:
   Nick Hodges
 --------------------------------------------------------------------------------
 @@IsWin95OSR2
 <GROUP SystemInformationRoutines.VersionInformation>
 Summary:
-  Returns whether the system is running Windows 95 OSR 2
+  Returns whether the system is running Windows 95 OSR 2.
 Description:
   IsWin95OSR2 returns whether or not the system is running Windows 95 OSR 2.
 Result:
@@ -1315,15 +1327,18 @@ See also:
   IsWin2K
   IsWinXP
   IsWin2003
+  IsWin2003R2
   IsWinVista
   IsWinServer2008
+  IsWin7
+  IsWinServer2008R2
 Donator:
   Nick Hodges
 --------------------------------------------------------------------------------
 @@IsWin98
 <GROUP SystemInformationRoutines.VersionInformation>
 Summary:
-  Returns whether the system is running Windows 98
+  Returns whether the system is running Windows 98.
 Description:
   IsWin98 returns whether or not the system is running Windows 98.
 Result:
@@ -1342,15 +1357,18 @@ See also:
   IsWin2K
   IsWinXP
   IsWin2003
+  IsWin2003R2
   IsWinVista
   IsWinServer2008
+  IsWin7
+  IsWinServer2008R2
 Donator:
   Nick Hodges
 --------------------------------------------------------------------------------
 @@IsWin98SE
 <GROUP SystemInformationRoutines.VersionInformation>
 Summary:
-  Returns whether the system is running Windows 98 SE
+  Returns whether the system is running Windows 98 SE.
 Description:
   IsWin98SE returns whether or not the system is running Windows 98 Second Edition.
 Result:
@@ -1369,15 +1387,18 @@ See also:
   IsWin2K
   IsWinXP
   IsWin2003
+  IsWin2003R2
   IsWinVista
   IsWinServer2008
+  IsWin7
+  IsWinServer2008R2
 Donator:
   Nick Hodges
 --------------------------------------------------------------------------------
 @@IsWinME
 <GROUP SystemInformationRoutines.VersionInformation>
 Summary:
-  Returns whether the system is running Windows Millenium
+  Returns whether the system is running Windows Millenium.
 Description:
   IsWinME returns whether or not the system is running Windows Millenium.
 Result:
@@ -1396,22 +1417,25 @@ See also:
   IsWin2K
   IsWinXP
   IsWin2003
+  IsWin2003R2
   IsWinVista
   IsWinServer2008
+  IsWin7
+  IsWinServer2008R2
 Donator:
   Nick Hodges
 --------------------------------------------------------------------------------
 @@IsWinNT
 <GROUP SystemInformationRoutines.VersionInformation>
 Summary:
-  Returns whether the system is running Windows NT
+  Returns whether the system is running Windows NT.
 Description:
   IsWinNT returns whether or not the system is running Windows NT.
 Result:
   If the system is running Windows NT the result is True otherwise the result is False.
   You can use the IsWinNT3, IsWinNT31, IsWinNT35, IsWinNT351, IsWinNT4, IsWin2K, IsWinXP,
-  IsWin2003, IsWinVista or IsWinServer2008 to further distinguish between the different NT
-  versions.
+  IsWin2003, IsWin2003R2, IsWinVista, IsWinServer2008, IsWin7 or IsWinServer2008R2 to further
+  distinguish between the different NT versions.
 See also:
   IsWin95
   IsWin95OSR2
@@ -1426,15 +1450,18 @@ See also:
   IsWin2K
   IsWinXP
   IsWin2003
+  IsWin2003R2
   IsWinVista
   IsWinServer2008
+  IsWin7
+  IsWinServer2008R2
 Donator:
   Nick Hodges
 --------------------------------------------------------------------------------
 @@IsWinNT3
 <GROUP SystemInformationRoutines.VersionInformation>
 Summary:
-  Returns whether the system is running Windows NT 3
+  Returns whether the system is running Windows NT 3.
 Description:
   IsWinNT3 returns whether or not the system is running Windows NT 3.
 Result:
@@ -1453,15 +1480,18 @@ See also:
   IsWin2K
   IsWinXP
   IsWin2003
+  IsWin2003R2
   IsWinVista
   IsWinServer2008
+  IsWin7
+  IsWinServer2008R2
 Donator:
   Nick Hodges
 --------------------------------------------------------------------------------
 @@IsWinNT31
 <GROUP SystemInformationRoutines.VersionInformation>
 Summary:
-  Returns whether the system is running Windows NT 3.1
+  Returns whether the system is running Windows NT 3.1.
 Description:
   IsWinNT31 returns whether or not the system is running Windows NT 3.1.
 Result:
@@ -1480,15 +1510,18 @@ See also:
   IsWin2K
   IsWinXP
   IsWin2003
+  IsWin2003R2
   IsWinVista
   IsWinServer2008
+  IsWin7
+  IsWinServer2008R2
 Donator:
   Nick Hodges
 --------------------------------------------------------------------------------
 @@IsWinNT35
 <GROUP SystemInformationRoutines.VersionInformation>
 Summary:
-  Returns whether the system is running Windows NT 3.5
+  Returns whether the system is running Windows NT 3.5.
 Description:
   IsWinNT35 returns whether or not the system is running Windows NT 3.5.
 Result:
@@ -1507,15 +1540,18 @@ See also:
   IsWin2K
   IsWinXP
   IsWin2003
+  IsWin2003R2
   IsWinVista
   IsWinServer2008
+  IsWin7
+  IsWinServer2008R2
 Donator:
   Nick Hodges
 --------------------------------------------------------------------------------
 @@IsWinNT351
 <GROUP SystemInformationRoutines.VersionInformation>
 Summary:
-  Returns whether the system is running Windows NT 3.5.1
+  Returns whether the system is running Windows NT 3.5.1.
 Description:
   IsWinNT351 returns whether or not the system is running Windows NT 3.5.1.
 Result:
@@ -1534,8 +1570,11 @@ See also:
   IsWin2K
   IsWinXP
   IsWin2003
+  IsWin2003R2
   IsWinVista
   IsWinServer2008
+  IsWin7
+  IsWinServer2008R2
 Donator:
   Nick Hodges
 --------------------------------------------------------------------------------
@@ -1561,15 +1600,18 @@ See also:
   IsWin2K
   IsWinXP
   IsWin2003
+  IsWin2003R2
   IsWinVista
   IsWinServer2008
+  IsWin7
+  IsWinServer2008R2
 Donator:
   Nick Hodges
 --------------------------------------------------------------------------------
 @@IsWin2K
 <GROUP SystemInformationRoutines.VersionInformation>
 Summary:
-  Returns whether the system is running Windows 2000
+  Returns whether the system is running Windows 2000.
 Description:
   IsWin2K returns whether or not the system is running Windows 2000.
 Result:
@@ -1588,15 +1630,18 @@ See also:
   IsWinNT4
   IsWinXP
   IsWin2003
+  IsWin2003R2
   IsWinVista
   IsWinServer2008
+  IsWin7
+  IsWinServer2008R2
 Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
 @@IsWinXP
 <GROUP SystemInformationRoutines.VersionInformation>
 Summary:
-  Returns whether the system is running Windows XP
+  Returns whether the system is running Windows XP.
 Description:
   IsWinXP returns whether or not the system is running Windows XP.
 Result:
@@ -1615,8 +1660,11 @@ See also:
   IsWinNT4
   IsWin2K
   IsWin2003
+  IsWin2003R2
   IsWinVista
   IsWinServer2008
+  IsWin7
+  IsWinServer2008R2
 Donator:
   Petr Vones
 --------------------------------------------------------------------------------
@@ -1642,15 +1690,48 @@ See also:
   IsWinNT4
   IsWin2K
   IsWinXP
+  IsWin2003R2
   IsWinVista
   IsWinServer2008
+  IsWin7
+  IsWinServer2008R2
+Donator:
+  Petr Vones
+--------------------------------------------------------------------------------
+@@IsWin2003R2
+<GROUP SystemInformationRoutines.VersionInformation>
+Summary:
+  Returns whether the system is running Windows Server 2003 R2.
+Description:
+  IsWin2003 returns whether or not the system is running Windows Server 2003 R2.
+Result:
+  If the system is running Windows Server 2003 R2 the result is True otherwise the result is False.
+See also:
+  IsWin95
+  IsWin95OSR2
+  IsWin98
+  IsWin98SE
+  IsWinME
+  IsWinNT
+  IsWinNT3
+  IsWinNT31
+  IsWinNT35
+  IsWinNT351
+  IsWinNT4
+  IsWin2K
+  IsWinXP
+  IsWin2003
+  IsWinVista
+  IsWinServer2008
+  IsWin7
+  IsWinServer2008R2
 Donator:
   Petr Vones
 --------------------------------------------------------------------------------
 @@IsWinVista
 <GROUP SystemInformationRoutines.VersionInformation>
 Summary:
-  Returns whether the system is running Windows Vista
+  Returns whether the system is running Windows Vista.
 Description:
   IsWinVista returns whether or not the system is running Windows Vista.
 Result:
@@ -1670,9 +1751,42 @@ See also:
   IsWin2K
   IsWinXP
   IsWin2003
+  IsWin2003R2
   IsWinServer2008
+  IsWin7
+  IsWinServer2008R2
 Donator:
   Florent Ouchet
+--------------------------------------------------------------------------------
+@@IsWin7
+<GROUP SystemInformationRoutines.VersionInformation>
+Summary:
+  Returns whether the system is running Windows 7.
+Description:
+  IsWinVista returns whether or not the system is running Windows 7.
+Result:
+  If the system is running Windows 7 the result is True otherwise the result is False.
+See also:
+  IsWin95
+  IsWin95OSR2
+  IsWin98
+  IsWin98SE
+  IsWinME
+  IsWinNT
+  IsWinNT3
+  IsWinNT31
+  IsWinNT35
+  IsWinNT351
+  IsWinNT4
+  IsWin2K
+  IsWinXP
+  IsWin2003
+  IsWin2003R2
+  IsWinVista
+  IsWinServer2008
+  IsWinServer2008R2
+Donator:
+  Jean-Fabien Connault
 --------------------------------------------------------------------------------
 @@IsWinServer2008
 <GROUP SystemInformationRoutines.VersionInformation>
@@ -1697,9 +1811,42 @@ See also:
   IsWin2K
   IsWinXP
   IsWin2003
+  IsWin2003R2
   IsWinVista
+  IsWin7
+  IsWinServer2008R2
 Donator:
   Florent Ouchet
+--------------------------------------------------------------------------------
+@@IsWinServer2008R2
+<GROUP SystemInformationRoutines.VersionInformation>
+Summary:
+  Returns whether the system is running Windows Server 2008 R2.
+Description:
+  IsWinServer2008 returns whether or not the system is running Windows Server 2008 R2.
+Result:
+  If the system is running Windows Server 2008 R2 the result is True otherwise the result is False.
+See also:
+  IsWin95
+  IsWin95OSR2
+  IsWin98
+  IsWin98SE
+  IsWinME
+  IsWinNT
+  IsWinNT3
+  IsWinNT31
+  IsWinNT35
+  IsWinNT351
+  IsWinNT4
+  IsWin2K
+  IsWinXP
+  IsWin2003
+  IsWin2003R2
+  IsWinVista
+  IsWin7
+  IsWinServer2008
+Donator:
+  Jean-Fabien Connault
 --------------------------------------------------------------------------------
 @@NtProductType
 <GROUP SystemInformationRoutines.VersionInformation>
@@ -1735,8 +1882,11 @@ See also:
   IsWin2K
   IsWinXP
   IsWin2003
+  IsWin2003R2
   IsWinVista
   IsWinServer2008
+  IsWin7
+  IsWinServer2008R2
 Donator:
   Marcel van Brakel
 Contributors:
@@ -3127,7 +3277,7 @@ Description:
   the version and vendor in the parameters passed.
 Parameters:
   Win - Handle of the window to use for rendering
-  \Version - the string to receive the library version information
+  Version - the string to receive the library version information
   Vendor - the string to receive the library vendor information
 Result:
   Surfaces the information provided by the OpenGL library (if any) relating to
@@ -3140,7 +3290,7 @@ Contributor:
 @@GetOpenGLVersionBitmapRendering
 <GROUP SystemInformationRoutines.VersionInformation>
 Summary:
-  Returns the current OpenGL library version string
+  Returns the current OpenGL library version string.
 Description:
   Takes a WinControl against which to perform the tests, and then returns
   the Version String information provided by the current OpenGL library.
@@ -3153,18 +3303,3 @@ Result:
   the version and vendor of the OpenGL library in the parameters passed.
 Donator:
   Anonymous
---------------------------------------------------------------------------------
-@@IsUACEnabled
-<GROUP SystemInformationRoutines.UserAccountControl>
-Summary:
-  Checks if UAC (User Account Control) is enabled or not on Windows Vista/Server 2008
-Description:
-  Checks if UAC (User Account Control) is enabled or not on Windows Vista/Server 2008.
-  UAC is enabled by default on Windows versions supporting this technology.
-Result:
-  Returns True if UAC is enabled and OS version is Windows Vista or Windows Server 2008.
-  Returns False if UAC is disabled or OS version is not Windows Vista nor Windows Server 2008.
-Donator:
-  Jean-Fabien Connault
---------------------------------------------------------------------------------
-

@@ -273,7 +273,8 @@ type
   TWindowsVersion =
    (wvUnknown, wvWin95, wvWin95OSR2, wvWin98, wvWin98SE, wvWinME,
     wvWinNT31, wvWinNT35, wvWinNT351, wvWinNT4, wvWin2000, wvWinXP,
-    wvWin2003, wvWinXP64, wvWin2003R2, wvWinVista, wvWinServer2008);
+    wvWin2003, wvWinXP64, wvWin2003R2, wvWinVista, wvWinServer2008,
+    wvWin7, wvWinServer2008R2);
   TWindowsEdition =
    (weUnknown, weWinXPHome, weWinXPPro, weWinXPHomeN, weWinXPProN, weWinXPHomeK,
     weWinXPProK, weWinXPHomeKN, weWinXPProKN, weWinXPStarter, weWinXPMediaCenter,
@@ -309,6 +310,8 @@ var
   IsWin2003R2: Boolean = False;
   IsWinVista: Boolean = False;
   IsWinServer2008: Boolean = False;
+  IsWin7: Boolean = False;
+  IsWinServer2008R2: Boolean = False;
 
 const
   PROCESSOR_ARCHITECTURE_INTEL = 0;
@@ -2667,7 +2670,7 @@ end;
         else
         begin
           if IsWin2k or IsWinXP or IsWin2003 or IsWin2003R2 or IsWinXP64 or
-            IsWinVista or IsWinServer2008 then
+            IsWinVista or IsWinServer2008 or IsWin7 or IsWinServer2008R2 then
           begin
             FileName := ProcessFileName(ProcEntry.th32ProcessID);
             if FileName = '' then
@@ -3292,13 +3295,23 @@ begin
               end;
           end;
         6:
-          if Win32MinorVersion = 0 then
-          begin
-            OSVersionInfoEx.dwOSVersionInfoSize := SizeOf(OSVersionInfoEx);
-            if GetVersionEx(OSVersionInfoEx) and (OSVersionInfoEx.wProductType = VER_NT_WORKSTATION) then
-              Result := wvWinVista
-            else
-              Result := wvWinServer2008;
+          case Win32MinorVersion of
+            0:
+              begin
+                OSVersionInfoEx.dwOSVersionInfoSize := SizeOf(OSVersionInfoEx);
+                if GetVersionEx(OSVersionInfoEx) and (OSVersionInfoEx.wProductType = VER_NT_WORKSTATION) then
+                  Result := wvWinVista
+                else
+                  Result := wvWinServer2008;
+              end;
+            1:
+              begin
+                OSVersionInfoEx.dwOSVersionInfoSize := SizeOf(OSVersionInfoEx);
+                if GetVersionEx(OSVersionInfoEx) and (OSVersionInfoEx.wProductType = VER_NT_WORKSTATION) then
+                  Result := wvWin7
+                else
+                  Result := wvWinServer2008R2;
+              end;
           end;
       end;
   end;
@@ -3449,7 +3462,7 @@ begin
     end;
   end
   else
-  if IsWinXP or IsWinVista then // workstation
+  if IsWinXP or IsWinVista or IsWin7 then // workstation
   begin
     if GetVersionEx(OSVersionInfo) then
     begin
@@ -3463,7 +3476,7 @@ begin
     end;
   end
   else
-  if IsWinServer2008 then // server
+  if IsWinServer2008 or IsWinServer2008R2 then // server
   begin
     if OSVersionInfo.wProductType in [VER_NT_SERVER,VER_NT_DOMAIN_CONTROLLER] then
     begin
@@ -3521,10 +3534,14 @@ begin
       Result := RsOSVersionWin2003R2;
     wvWinXP64:
       Result := RsOSVersionWinXP64;
-    wvWinServer2008:
-      Result := RsOSVersionWinServer2008;
     wvWinVista:
       Result := RsOSVersionWinVista;
+    wvWinServer2008:
+      Result := RsOSVersionWinServer2008;
+    wvWin7:
+      Result := RsOSVersionWin7;
+    wvWinServer2008R2:
+      Result := RsOSVersionWinServer2008R2;
   else
     Result := '';
   end;
@@ -5574,6 +5591,10 @@ begin
       IsWinVista := True;
     wvWinServer2008:
       IsWinServer2008 := True;
+    wvWin7:
+      IsWin7 := True;
+    wvWinServer2008R2:
+      IsWinServer2008R2 := True;
   end;
 end;
 

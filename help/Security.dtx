@@ -279,3 +279,20 @@ Notes:
   it always returns True.
 Donator:
   Anonymous
+--------------------------------------------------------------------------------
+@@IsUACEnabled
+<GROUP SystemInformationRoutines.UserAccountControl>
+Summary:
+  Checks if UAC (User Account Control) is enabled or not on Windows Vista or
+  Windows Server 2008 or Windows 7 or Windows Server 2008 R2.
+Description:
+  Checks if UAC (User Account Control) is enabled or not on Windows Vista or
+  Windows Server 2008 or Windows 7 or Windows Server 2008 R2.
+  UAC is enabled by default on Windows versions supporting this technology.
+Result:
+  Returns True if UAC is enabled and OS version is Windows Vista or Windows Server 2008 or
+  Windows 7 or Windows Server 2008 R2.
+  Returns False if UAC is disabled or OS version is not Windows Vista nor Windows Server 2008 or
+  Windows 7 or Windows Server 2008 R2.
+Donator:
+  Jean-Fabien Connault

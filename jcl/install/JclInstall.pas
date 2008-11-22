@@ -3807,7 +3807,7 @@ begin
     GUI.Dialog(RsHTMLHelp2Credentials, dtInformation, [drOK]);
 
   // RegHelper.exe manifest requires elevation on Vista
-  if IsAdministrator or IsWinVista or IsWinServer2008 then
+  if IsAdministrator or IsWinVista or IsWinServer2008 or IsWin7 or IsWinServer2008R2 then
     Verb := 'open'
   else
     Verb := 'runas';
