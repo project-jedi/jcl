@@ -41,6 +41,7 @@
 {   Robert Marquardt (marquardt)                                                                   }
 {   Robert Rossmair (rrossmair)                                                                    }
 {   Andreas Schmidt                                                                                }
+{   Sean Farrow (sfarrow)                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -50,7 +51,7 @@
 {                                                                                                  }
 { Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
-{ Author:        $Author::                                                                       $ }
+{ Author:        $Author::                                                                        $ }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -2968,11 +2969,16 @@ function StrFind(const Substr, S: string; const Index: Integer): Integer;
 var
   Pos: PChar;
 begin
-  Pos := StrPos(PChar(@S[Index]), PChar(@SubStr[1]));
-  if Pos = nil then
-    Result := 0
+  if (Length(SubStr) > 0) and (Length(S) > 0) then
+  begin
+    Pos := StrPos(PChar(@S[Index]), PChar(@SubStr[1]));
+    if Pos =nil then
+      result :=0
+    else    
+      Result := (Cardinal(Pos) - Cardinal(@S[1])) div SizeOf(Char) + 1;
+  end
   else
-    Result := (Cardinal(Pos) - Cardinal(@S[1])) div SizeOf(Char) + 1;
+    result :=0;
 end;
 {$ENDIF CLR}
 
