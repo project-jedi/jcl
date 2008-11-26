@@ -86,43 +86,43 @@ type
 
 const
   // Misc. often used character definitions
-  NativeNull           = Char(#0);
-  NativeSoh            = Char(#1);
-  NativeStx            = Char(#2);
-  NativeEtx            = Char(#3);
-  NativeEot            = Char(#4);
-  NativeEnq            = Char(#5);
-  NativeAck            = Char(#6);
-  NativeBell           = Char(#7);
-  NativeBackspace      = Char(#8);
-  NativeTab            = Char(#9);
-  NativeLineFeed       = JclBase.NativeLineFeed;
-  NativeVerticalTab    = Char(#11);
-  NativeFormFeed       = Char(#12);
+  NativeNull = Char(#0);
+  NativeSoh = Char(#1);
+  NativeStx = Char(#2);
+  NativeEtx = Char(#3);
+  NativeEot = Char(#4);
+  NativeEnq = Char(#5);
+  NativeAck = Char(#6);
+  NativeBell = Char(#7);
+  NativeBackspace = Char(#8);
+  NativeTab = Char(#9);
+  NativeLineFeed = JclBase.NativeLineFeed;
+  NativeVerticalTab = Char(#11);
+  NativeFormFeed = Char(#12);
   NativeCarriageReturn = JclBase.NativeCarriageReturn;
-  NativeCrLf           = JclBase.NativeCrLf;
-  NativeSo             = Char(#14);
-  NativeSi             = Char(#15);
-  NativeDle            = Char(#16);
-  NativeDc1            = Char(#17);
-  NativeDc2            = Char(#18);
-  NativeDc3            = Char(#19);
-  NativeDc4            = Char(#20);
-  NativeNak            = Char(#21);
-  NativeSyn            = Char(#22);
-  NativeEtb            = Char(#23);
-  NativeCan            = Char(#24);
-  NativeEm             = Char(#25);
-  NativeEndOfFile      = Char(#26);
-  NativeEscape         = Char(#27);
-  NativeFs             = Char(#28);
-  NativeGs             = Char(#29);
-  NativeRs             = Char(#30);
-  NativeUs             = Char(#31);
-  NativeSpace          = Char(' ');
-  NativeComma          = Char(',');
-  NativeBackslash      = Char('\');
-  NativeForwardSlash   = Char('/');
+  NativeCrLf = JclBase.NativeCrLf;
+  NativeSo = Char(#14);
+  NativeSi = Char(#15);
+  NativeDle = Char(#16);
+  NativeDc1 = Char(#17);
+  NativeDc2 = Char(#18);
+  NativeDc3 = Char(#19);
+  NativeDc4 = Char(#20);
+  NativeNak = Char(#21);
+  NativeSyn = Char(#22);
+  NativeEtb = Char(#23);
+  NativeCan = Char(#24);
+  NativeEm = Char(#25);
+  NativeEndOfFile = Char(#26);
+  NativeEscape = Char(#27);
+  NativeFs = Char(#28);
+  NativeGs = Char(#29);
+  NativeRs = Char(#30);
+  NativeUs = Char(#31);
+  NativeSpace = Char(' ');
+  NativeComma = Char(',');
+  NativeBackslash = Char('\');
+  NativeForwardSlash = Char('/');
 
   NativeDoubleQuote = Char('"');
   NativeSingleQuote = Char('''');
@@ -131,15 +131,15 @@ const
 
 const
   // CharType return values
-  C1_UPPER  = $0001; // Uppercase
-  C1_LOWER  = $0002; // Lowercase
-  C1_DIGIT  = $0004; // Decimal digits
-  C1_SPACE  = $0008; // Space characters
-  C1_PUNCT  = $0010; // Punctuation
-  C1_CNTRL  = $0020; // Control characters
-  C1_BLANK  = $0040; // Blank characters
+  C1_UPPER = $0001; // Uppercase
+  C1_LOWER = $0002; // Lowercase
+  C1_DIGIT = $0004; // Decimal digits
+  C1_SPACE = $0008; // Space characters
+  C1_PUNCT = $0010; // Punctuation
+  C1_CNTRL = $0020; // Control characters
+  C1_BLANK = $0040; // Blank characters
   C1_XDIGIT = $0080; // Hexadecimal digits
-  C1_ALPHA  = $0100; // Any linguistic character: alphabetic, syllabary, or ideographic
+  C1_ALPHA = $0100; // Any linguistic character: alphabetic, syllabary, or ideographic
 
   {$IFDEF MSWINDOWS}
   {$IFDEF SUPPORTS_EXTSYM}
@@ -156,7 +156,7 @@ const
   {$ENDIF MSWINDOWS}
 
 type
-  TCharValidator = function (const C: Char): Boolean;
+  TCharValidator = function(const C: Char): Boolean;
 
 function ArrayContainsChar(const Chars: array of Char; const C: Char): Boolean;
 
@@ -173,7 +173,7 @@ function StrIsSubset(const S: string; const ValidChars: array of Char): Boolean;
 function StrSame(const S1, S2: string): Boolean;
 
 // String Transformation Routines
-function StrCenter(const S: string; L: Integer; C: Char  = ' '): string;
+function StrCenter(const S: string; L: Integer; C: Char = ' '): string;
 function StrCharPosLower(const S: string; CharPos: Integer): string;
 function StrCharPosUpper(const S: string; CharPos: Integer): string;
 function StrDoubleQuote(const S: string): string;
@@ -189,8 +189,8 @@ procedure StrLowerBuff(S: PChar);
 {$ENDIF ~CLR}
 procedure StrMove(var Dest: string; const Source: string; const ToIndex,
   FromIndex, Count: Integer);
-function StrPadLeft(const S: string; Len: Integer; C: Char = NativeSpace ): string;
-function StrPadRight(const S: string; Len: Integer; C: Char = NativeSpace ): string;
+function StrPadLeft(const S: string; Len: Integer; C: Char = NativeSpace): string;
+function StrPadRight(const S: string; Len: Integer; C: Char = NativeSpace): string;
 function StrProper(const S: string): string;
 {$IFNDEF CLR}
 procedure StrProperBuff(S: PChar);
@@ -312,7 +312,7 @@ function CharToggleCase(const C: Char): Char;
 // Character Search and Replace
 function CharPos(const S: string; const C: Char; const Index: Integer = 1): Integer;
 function CharLastPos(const S: string; const C: Char; const Index: Integer = 1): Integer;
-function CharIPos(const S: string; C: Char; const Index: Integer = 1 ): Integer;
+function CharIPos(const S: string; C: Char; const Index: Integer = 1): Integer;
 function CharReplace(var S: string; const Search, Replace: Char): Integer;
 
 {$IFNDEF CLR}
@@ -343,14 +343,16 @@ procedure AllocateMultiSz(var Dest: PMultiSz; Len: Integer);
 procedure FreeMultiSz(var Dest: PMultiSz);
 function MultiSzDup(const Source: PMultiSz): PMultiSz;
 
-function AnsiStringsToAnsiMultiSz(var Dest: PAnsiMultiSz; const Source: TAnsiStrings): PAnsiMultiSz; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+function AnsiStringsToAnsiMultiSz(var Dest: PAnsiMultiSz; const Source: TAnsiStrings): PAnsiMultiSz;
+ {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 procedure AnsiMultiSzToAnsiStrings(const Dest: TAnsiStrings; const Source: PAnsiMultiSz); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 function AnsiMultiSzLength(const Source: PAnsiMultiSz): Integer; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 procedure AllocateAnsiMultiSz(var Dest: PAnsiMultiSz; Len: Integer); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 procedure FreeAnsiMultiSz(var Dest: PAnsiMultiSz); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 function AnsiMultiSzDup(const Source: PAnsiMultiSz): PAnsiMultiSz; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
-function WideStringsToWideMultiSz(var Dest: PWideMultiSz; const Source: TWideStrings): PWideMultiSz; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+function WideStringsToWideMultiSz(var Dest: PWideMultiSz; const Source: TWideStrings): PWideMultiSz;
+ {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 procedure WideMultiSzToWideStrings(const Dest: TWideStrings; const Source: PWideMultiSz); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 function WideMultiSzLength(const Source: PWideMultiSz): Integer; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 procedure AllocateWideMultiSz(var Dest: PWideMultiSz; Len: Integer); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
@@ -362,9 +364,9 @@ function WideMultiSzDup(const Source: PWideMultiSz): PWideMultiSz; {$IFDEF SUPPO
 procedure StrIToStrings(S, Sep: string; const List: TStrings; const AllowEmptyString: Boolean = True);
 procedure StrToStrings(S, Sep: string; const List: TStrings; const AllowEmptyString: Boolean = True);
 function StringsToStr(const List: TStrings; const Sep: string; const AllowEmptyString: Boolean = True): string;
-procedure TrimStrings(const List: TStrings; DeleteIfEmpty: Boolean = True );
+procedure TrimStrings(const List: TStrings; DeleteIfEmpty: Boolean = True);
 procedure TrimStringsRight(const List: TStrings; DeleteIfEmpty: Boolean = True);
-procedure TrimStringsLeft(const List: TStrings; DeleteIfEmpty: Boolean = True );
+procedure TrimStringsLeft(const List: TStrings; DeleteIfEmpty: Boolean = True);
 function AddStringToStrings(const S: string; Strings: TStrings; const Unique: Boolean): Boolean;
 
 // Miscellaneous
@@ -372,7 +374,8 @@ function AddStringToStrings(const S: string; Strings: TStrings; const Unique: Bo
 function BooleanToStr(B: Boolean): string;
 {$ENDIF KEEP_DEPRECATED}
 function FileToString(const FileName: string): AnsiString; // AnsiString here because it is binary data
-procedure StringToFile(const FileName: string; const Contents: AnsiString; Append: Boolean = False); // AnsiString here because it is binary data
+procedure StringToFile(const FileName: string; const Contents: AnsiString; Append: Boolean = False);
+ // AnsiString here because it is binary data
 function StrToken(var S: string; Separator: Char): string;
 procedure StrTokens(const S: string; const List: TStrings);
 procedure StrTokenToStrings(S: string; Separator: Char; const List: TStrings);
@@ -468,15 +471,18 @@ type
     function Insert(Index: Integer; const Value: string; Count: Integer = 1): TJclStringBuilder; overload;
     function Insert(Index: Integer; Value: Boolean): TJclStringBuilder; overload;
     function Insert(Index: Integer; const Value: array of Char): TJclStringBuilder; overload;
-    function Insert(Index: Integer; const Value: array of Char; StartIndex, Length: Integer): TJclStringBuilder; overload;
+    function Insert(Index: Integer; const Value: array of Char; StartIndex, Length: Integer): TJclStringBuilder;
+      overload;
     function Insert(Index: Integer; Value: Cardinal): TJclStringBuilder; overload;
     function Insert(Index: Integer; Value: Integer): TJclStringBuilder; overload;
     function Insert(Index: Integer; Value: Double): TJclStringBuilder; overload;
     function Insert(Index: Integer; Value: Int64): TJclStringBuilder; overload;
     function Insert(Index: Integer; Obj: TObject): TJclStringBuilder; overload;
 
-    function Replace(OldChar, NewChar: Char; StartIndex: Integer = 0; Count: Integer = -1): TJclStringBuilder; overload;
-    function Replace(OldValue, NewValue: string; StartIndex: Integer = 0; Count: Integer = -1): TJclStringBuilder; overload;
+    function Replace(OldChar, NewChar: Char; StartIndex: Integer = 0; Count: Integer = -1): TJclStringBuilder;
+      overload;
+    function Replace(OldValue, NewValue: string; StartIndex: Integer = 0; Count: Integer = -1): TJclStringBuilder;
+      overload;
 
     function Remove(StartIndex, Length: Integer): TJclStringBuilder;
     function EnsureCapacity(Capacity: Integer): Integer;
@@ -563,8 +569,8 @@ const
   TabSetFormatting_AutoTabWidth = 16;
   // common combinations
   TabSetFormatting_Default = 0;
-  TabSetFormatting_AlwaysUseBrackets =  TabSetFormatting_SurroundStopsWithBrackets or
-                                        TabSetFormatting_EmptyBracketsIfNoStops;
+  TabSetFormatting_AlwaysUseBrackets = TabSetFormatting_SurroundStopsWithBrackets or
+    TabSetFormatting_EmptyBracketsIfNoStops;
   TabSetFormatting_Full = TabSetFormatting_AlwaysUseBrackets or TabSetFormatting_AutoTabWidth;
   // aliases
   TabSetFormatting_StopsOnly = TabSetFormatting_NoTabWidth;
@@ -572,17 +578,17 @@ const
   TabSetFormatting_StopsWithoutBracketsAndTabWidth = TabSetFormatting_Default;
 
 // Tab expansion routines
-function StrExpandTabs(S: string): string; {$IFDEF SUPPORTS_INLINE}inline; {$ENDIF}overload;
-function StrExpandTabs(S: string; TabWidth: Integer): string; {$IFDEF SUPPORTS_INLINE}inline; {$ENDIF}overload;
-function StrExpandTabs(S: string; TabSet: TJclTabSet): string; {$IFDEF SUPPORTS_INLINE}inline; {$ENDIF}overload;
+function StrExpandTabs(S: string): string; {$IFDEF SUPPORTS_INLINE}inline; {$ENDIF} overload;
+function StrExpandTabs(S: string; TabWidth: Integer): string; {$IFDEF SUPPORTS_INLINE}inline; {$ENDIF} overload;
+function StrExpandTabs(S: string; TabSet: TJclTabSet): string; {$IFDEF SUPPORTS_INLINE}inline; {$ENDIF} overload;
 // Tab optimization routines
-function StrOptimizeTabs(S: string): string; {$IFDEF SUPPORTS_INLINE}inline; {$ENDIF}overload;
-function StrOptimizeTabs(S: string; TabWidth: Integer): string; {$IFDEF SUPPORTS_INLINE}inline; {$ENDIF}overload;
-function StrOptimizeTabs(S: string; TabSet: TJclTabSet): string; {$IFDEF SUPPORTS_INLINE}inline; {$ENDIF}overload;
+function StrOptimizeTabs(S: string): string; {$IFDEF SUPPORTS_INLINE}inline; {$ENDIF} overload;
+function StrOptimizeTabs(S: string; TabWidth: Integer): string; {$IFDEF SUPPORTS_INLINE}inline; {$ENDIF} overload;
+function StrOptimizeTabs(S: string; TabSet: TJclTabSet): string; {$IFDEF SUPPORTS_INLINE}inline; {$ENDIF} overload;
 
 // move to JclBase?
 type
-  NullReferenceException = class (EJclError)
+  NullReferenceException = class(EJclError)
   public
     constructor Create; overload;
   end;
@@ -603,11 +609,11 @@ function CompareNaturalText(const S1, S2: string): Integer;
 // internal structures published to make function inlining working
 {$IFNDEF CLR}
 const
-  MaxStrCharCount   = Ord(High(Char)) + 1;       // # of chars in one set
-  StrLoOffset       = MaxStrCharCount * 0;       // offset to lower case chars
-  StrUpOffset       = MaxStrCharCount * 1;       // offset to upper case chars
-  StrReOffset       = MaxStrCharCount * 2;       // offset to reverse case chars
-  StrCaseMapSize    = MaxStrCharCount * 3;       // # of chars is a table
+  MaxStrCharCount = Ord(High(Char)) + 1;       // # of chars in one set
+  StrLoOffset = MaxStrCharCount * 0;       // offset to lower case chars
+  StrUpOffset = MaxStrCharCount * 1;       // offset to upper case chars
+  StrReOffset = MaxStrCharCount * 2;       // offset to reverse case chars
+  StrCaseMapSize = MaxStrCharCount * 3;       // # of chars is a table
 
 var
   StrCaseMap: array [0..StrCaseMapSize - 1] of Char; // case mappings
@@ -652,10 +658,10 @@ type
   end;
 
 const
-  StrRecSize        = SizeOf(TStrRec);           // size of the string header rec
-  StrAllocOffset    = 12;                        // offset to AllocSize in StrRec
+  StrRecSize = SizeOf(TStrRec);           // size of the string header rec
+  StrAllocOffset = 12;                        // offset to AllocSize in StrRec
   StrRefCountOffset = 8;                         // offset to RefCount in StrRec
-  StrLengthOffset   = 4;                         // offset to Length in StrRec
+  StrLengthOffset = 4;                         // offset to Length in StrRec
 {$ENDIF ~SUPPORTS_UNICODE}
 
 procedure LoadCharTypes;
@@ -727,10 +733,10 @@ begin
       if CharIsUpper(CurrChar) then
         ReCaseChar := LoCaseChar
       else
-        if CharIsLower(CurrChar) then
-          ReCaseChar := UpCaseChar
-        else
-          ReCaseChar := CurrChar;
+      if CharIsLower(CurrChar) then
+        ReCaseChar := UpCaseChar
+      else
+        ReCaseChar := CurrChar;
       StrCaseMap[Ord(CurrChar) + StrLoOffset] := LoCaseChar;
       StrCaseMap[Ord(CurrChar) + StrUpOffset] := UpCaseChar;
       StrCaseMap[Ord(CurrChar) + StrReOffset] := ReCaseChar;
@@ -787,94 +793,94 @@ end;
 asm
         // make sure that the string is not null
 
-        TEST    EAX, EAX
-        JZ      @@StrIsNull
+         TEST    EAX, EAX
+         JZ      @@StrIsNull
 
         // create unique string if this one is ref-counted
 
-        PUSH    EDX
-        CALL    UniqueString
-        POP     EDX
+         PUSH    EDX
+         CALL    UniqueString
+         POP     EDX
 
         // make sure that the new string is not null
 
-        TEST    EAX, EAX
-        JZ      @@StrIsNull
+         TEST    EAX, EAX
+         JZ      @@StrIsNull
 
         // get the length, and prepare the counter
 
-        MOV     ECX, [EAX - StrRecSize].TStrRec.Length
-        DEC     ECX
-        JS      @@StrIsNull
+         MOV     ECX, [EAX - StrRecSize].TStrRec.Length
+         DEC     ECX
+         JS      @@StrIsNull
 
         // ebx will hold the case map, esi pointer to Str
 
-        PUSH    EBX
-        PUSH    ESI
-        PUSH    EDI
+         PUSH    EBX
+         PUSH    ESI
+         PUSH    EDI
 
         // load case map and prepare variables }
 
         {$IFDEF PIC}
-        LEA     EBX, [EBX][StrCaseMap + EDX]
+        LEA     EBX, [EBX][STRCASEMAP + EDX]
         {$ELSE}
-        LEA     EBX, [StrCaseMap + EDX]
+         LEA     EBX, [StrCaseMap + EDX]
         {$ENDIF PIC}
-        MOV     ESI, EAX
-        XOR     EDX, EDX
-        XOR     EAX, EAX
+         MOV     ESI, EAX
+         XOR     EDX, EDX
+         XOR     EAX, EAX
 
-@@NextChar:
+         @@NextChar:
         // get current char from the string
 
-        MOV     DL, [ESI]
+         MOV     DL, [ESI]
 
         // get corresponding char from the case map
 
-        MOV     AL, [EBX + EDX]
+         MOV     AL, [EBX + EDX]
 
         // store it back in the string
 
-        MOV     [ESI], AL
+         MOV     [ESI], AL
 
         // update the loop counter and check the end of stirng
 
-        DEC     ECX
-        JL      @@Done
+         DEC     ECX
+         JL      @@Done
 
         // do the same thing with next 3 chars
 
-        MOV     DL, [ESI + 1]
-        MOV     AL, [EBX + EDX]
-        MOV     [ESI + 1], AL
+         MOV     DL, [ESI + 1]
+         MOV     AL, [EBX + EDX]
+         MOV     [ESI + 1], AL
 
-        DEC     ECX
-        JL      @@Done
-        MOV     DL, [ESI + 2]
-        MOV     AL, [EBX+EDX]
-        MOV     [ESI + 2], AL
+         DEC     ECX
+         JL      @@Done
+         MOV     DL, [ESI + 2]
+         MOV     AL, [EBX+EDX]
+         MOV     [ESI + 2], AL
 
-        DEC     ECX
-        JL      @@Done
-        MOV     DL, [ESI + 3]
-        MOV     AL, [EBX + EDX]
-        MOV     [ESI + 3], AL
+         DEC     ECX
+         JL      @@Done
+         MOV     DL, [ESI + 3]
+         MOV     AL, [EBX + EDX]
+         MOV     [ESI + 3], AL
 
         // point string to next 4 chars
 
-        ADD     ESI, 4
+         ADD     ESI, 4
 
         // update the loop counter and check the end of stirng
 
-        DEC     ECX
-        JGE     @@NextChar
+         DEC     ECX
+         JGE     @@NextChar
 
-@@Done:
-        POP     EDI
-        POP     ESI
-        POP     EBX
+         @@Done:
+         POP     EDI
+         POP     ESI
+         POP     EBX
 
-@@StrIsNull:
+         @@StrIsNull:
 end;
 {$ENDIF SUPPORTS_UNICODE}
 {$ENDIF CLR}
@@ -919,73 +925,73 @@ end;
 asm
         // make sure the string is not null
 
-        TEST    EAX, EAX
-        JZ      @@StrIsNull
+         TEST    EAX, EAX
+         JZ      @@StrIsNull
 
         // ebx will hold the case map, esi pointer to Str
 
-        PUSH    EBX
-        PUSH    ESI
+         PUSH    EBX
+         PUSH    ESI
 
         // load case map and prepare variables
 
         {$IFDEF PIC}
-        LEA     EBX, [EBX][StrCaseMap + EDX]
+        LEA     EBX, [EBX][STRCASEMAP + EDX]
         {$ELSE}
-        LEA     EBX, [StrCaseMap + EDX]
+         LEA     EBX, [StrCaseMap + EDX]
         {$ENDIF PIC}
-        MOV     ESI, EAX
-        XOR     EDX, EDX
-        XOR     EAX, EAX
+         MOV     ESI, EAX
+         XOR     EDX, EDX
+         XOR     EAX, EAX
 
-@@NextChar:
+         @@NextChar:
         // get current char from the string
 
-        MOV     DL, [ESI]
+         MOV     DL, [ESI]
 
         // check for null char
 
-        TEST    DL, DL
-        JZ      @@Done
+         TEST    DL, DL
+         JZ      @@Done
 
         // get corresponding char from the case map
 
-        MOV     AL, [EBX + EDX]
+         MOV     AL, [EBX + EDX]
 
         // store it back in the string
 
-        MOV     [ESI], AL
+         MOV     [ESI], AL
 
         // do the same thing with next 3 chars
 
-        MOV     DL, [ESI + 1]
-        TEST    DL, DL
-        JZ      @@Done
-        MOV     AL, [EBX+EDX]
-        MOV     [ESI + 1], AL
+         MOV     DL, [ESI + 1]
+         TEST    DL, DL
+         JZ      @@Done
+         MOV     AL, [EBX+EDX]
+         MOV     [ESI + 1], AL
 
-        MOV     DL, [ESI + 2]
-        TEST    DL, DL
-        JZ      @@Done
-        MOV     AL, [EBX+EDX]
-        MOV     [ESI + 2], AL
+         MOV     DL, [ESI + 2]
+         TEST    DL, DL
+         JZ      @@Done
+         MOV     AL, [EBX+EDX]
+         MOV     [ESI + 2], AL
 
-        MOV     DL, [ESI + 3]
-        TEST    DL, DL
-        JZ      @@Done
-        MOV     AL, [EBX+EDX]
-        MOV     [ESI + 3], AL
+         MOV     DL, [ESI + 3]
+         TEST    DL, DL
+         JZ      @@Done
+         MOV     AL, [EBX+EDX]
+         MOV     [ESI + 3], AL
 
         // point string to next 4 chars
 
-        ADD     ESI, 4
-        JMP     @@NextChar
+         ADD     ESI, 4
+         JMP     @@NextChar
 
-@@Done:
-        POP     ESI
-        POP     EBX
+         @@Done:
+         POP     ESI
+         POP     EBX
 
-@@StrIsNull:
+         @@StrIsNull:
 end;
 {$ENDIF SUPPORTS_UNICODE}
 
@@ -1074,7 +1080,7 @@ begin
       Result := False;
       Exit;
     end;
- end;
+  end;
 end;
 
 function StrContainsChars(const S: string; const Chars: TCharValidator; CheckAll: Boolean): Boolean;
@@ -1111,7 +1117,7 @@ begin
   begin
     for I := 1 to Length(S) do
     begin
-      Result := ArrayContainsChar(Chars,S[I]);
+      Result := ArrayContainsChar(Chars, S[I]);
       if not Result then
         Break;
     end;
@@ -1120,7 +1126,7 @@ begin
   begin
     for I := 1 to Length(S) do
     begin
-      Result := ArrayContainsChar(Chars,S[I]);
+      Result := ArrayContainsChar(Chars, S[I]);
       if Result then
         Break;
     end;
@@ -1181,7 +1187,7 @@ var
 begin
   for I := 1 to Length(S) do
   begin
-    Result := ArrayContainsChar(ValidChars,S[I]);
+    Result := ArrayContainsChar(ValidChars, S[I]);
     if not Result then
       Exit;
   end;
@@ -1196,7 +1202,7 @@ end;
 
 //=== String Transformation Routines =========================================
 
-function StrCenter(const S: string; L: Integer; C: Char  = ' '): string;
+function StrCenter(const S: string; L: Integer; C: Char = ' '): string;
 begin
   if Length(S) < L then
   begin
@@ -1228,7 +1234,7 @@ end;
 
 function StrEnsureNoPrefix(const Prefix, Text: string): string;
 var
-  PrefixLen : Integer;
+  PrefixLen: Integer;
 begin
   PrefixLen := Length(Prefix);
   if Copy(Text, 1, PrefixLen) = Prefix then
@@ -1239,8 +1245,8 @@ end;
 
 function StrEnsureNoSuffix(const Suffix, Text: string): string;
 var
-  SuffixLen : Integer;
-  StrLength : Integer;
+  SuffixLen: Integer;
+  StrLength: Integer;
 begin
   SuffixLen := Length(Suffix);
   StrLength := Length(Text);
@@ -1421,8 +1427,8 @@ end;
 asm
         // StrCase(S, StrLoOffset)
 
-        XOR     EDX, EDX         // MOV     EDX, StrLoOffset
-        JMP     StrCase
+         XOR     EDX, EDX         // MOV     EDX, StrLoOffset
+         JMP     StrCase
 end;
 {$ENDIF PIC}
 
@@ -1435,8 +1441,8 @@ end;
 {$ELSE}
 asm
         // StrCaseBuff(S, LoOffset)
-        XOR     EDX, EDX                // MOV     EDX, LoOffset
-        JMP     StrCaseBuff
+         XOR     EDX, EDX                // MOV     EDX, LoOffset
+         JMP     StrCaseBuff
 end;
 {$ENDIF PIC}
 {$ENDIF ~CLR}
@@ -1460,10 +1466,10 @@ begin
 
   // Check FromIndex
   if (FromIndex <= 0) or (FromIndex > Length(Source)) or
-     (ToIndex <= 0) or (ToIndex > Length(Dest)) or
-     ((FromIndex + Count - 1) > Length(Source)) or ((ToIndex + Count - 1) > Length(Dest)) then
+    (ToIndex <= 0) or (ToIndex > Length(Dest)) or
+    ((FromIndex + Count - 1) > Length(Source)) or ((ToIndex + Count - 1) > Length(Dest)) then
      { TODO : Is failure without notice the proper thing to do here? }
-     Exit;
+    Exit;
 
   // Move
   {$IFDEF CLR}
@@ -1550,7 +1556,7 @@ end;
 {$ELSE}
 var
   Source, Dest: PChar;
-  Len, Index: Integer;
+  Len, Index:   Integer;
 begin
   Len := Length(S);
   SetLength(Result, Len);
@@ -1585,7 +1591,7 @@ end;
 {$ELSE}
 var
   Source, Dest: PChar;
-  Len, Index: Integer;
+  Len, Index:   Integer;
 begin
   Len := Length(S);
   SetLength(Result, Len);
@@ -1594,7 +1600,7 @@ begin
   Dest := PChar(Result);
   for Index := 0 to Len - 1 do
   begin
-    if not ArrayContainsChar(Chars,Source^) then
+    if not ArrayContainsChar(Chars, Source^) then
     begin
       Dest^ := Source^;
       Inc(Dest);
@@ -1620,14 +1626,14 @@ end;
 {$ELSE}
 var
   Source, Dest: PChar;
-  Len, Index: Integer;
+  Len, Index:   Integer;
 begin
   Len := Length(S);
   SetLength(Result, Len);
   UniqueString(Result);
   Source := PChar(S);
   Dest := PChar(Result);
-  for Index := 0 to Len-1 do
+  for Index := 0 to Len - 1 do
   begin
     if Chars(Source^) then
     begin
@@ -1655,16 +1661,16 @@ end;
 {$ELSE}
 var
   Source, Dest: PChar;
-  Len, Index: Integer;
+  Len, Index:   Integer;
 begin
   Len := Length(S);
   SetLength(Result, Len);
   UniqueString(Result);
   Source := PChar(S);
   Dest := PChar(Result);
-  for Index := 0 to Len-1 do
+  for Index := 0 to Len - 1 do
   begin
-    if ArrayContainsChar(Chars,Source^) then
+    if ArrayContainsChar(Chars, Source^) then
     begin
       Dest^ := Source^;
       Inc(Dest);
@@ -1746,7 +1752,7 @@ begin
 
   if (Len > 0) and (S <> '') then
   begin
-    SetLength(Result,L);
+    SetLength(Result, L);
     Dest := PChar(Result);
     while (L > 0) do
     begin
@@ -1947,7 +1953,7 @@ begin
   {$ELSE}
   Result := S;
   for I := 1 to Length(S) do
-    if ArrayContainsChar(Chars,Result[I]) then
+    if ArrayContainsChar(Chars, Result[I]) then
       Result[I] := Replace;
   {$ENDIF CLR}
 end;
@@ -1990,7 +1996,7 @@ begin
   {$ELSE}
   Result := S;
   for I := 1 to Length(S) do
-    if not ArrayContainsChar(Chars,Result[I]) then
+    if not ArrayContainsChar(Chars, Result[I]) then
       Result[I] := Replace;
   {$ENDIF CLR}
 end;
@@ -2018,7 +2024,7 @@ end;
 {$ELSE}
 var
   P1, P2: PChar;
-  C: Char;
+  C:      Char;
 begin
   UniqueString(S);
   P1 := PChar(S);
@@ -2047,7 +2053,7 @@ var
   sb: StringBuilder;
   {$ELSE}
   Source, Dest: PChar;
-  Index, Len: Integer;
+  Index, Len:   Integer;
   {$ENDIF CLR}
   InternalDelimiters: TCharValidator;
 begin
@@ -2101,7 +2107,7 @@ var
   sb: StringBuilder;
   {$ELSE}
   Source, Dest: PChar;
-  Index, Len: Integer;
+  Index, Len:   Integer;
   {$ENDIF CLR}
 begin
   Result := '';
@@ -2132,7 +2138,7 @@ begin
 
     for Index := 2 to Len do
     begin
-      if ArrayContainsChar(Delimiters,Source^) and not ArrayContainsChar(Delimiters,Dest^) then
+      if ArrayContainsChar(Delimiters, Source^) and not ArrayContainsChar(Delimiters, Dest^) then
         Dest^ := CharUpper(Dest^);
       Inc(Dest);
       Inc(Source);
@@ -2171,7 +2177,7 @@ begin
     else
       // Characters < ' ' are escaped with hex sequence
       if S[I] < #32 then
-        Result := Result + Format('\x%.2x',[Integer(S[I])])
+        Result := Result + Format('\x%.2x', [Integer(S[I])])
       else
         Result := Result + S[I];
     end;
@@ -2197,7 +2203,7 @@ var
   Index: Integer;
   C, L, N: Integer;
   BL, BH: Byte;
-  S: string;
+  S:     string;
   {$IFDEF CLR}
   sb: StringBuilder;
   {$ENDIF CLR}
@@ -2256,7 +2262,8 @@ var
 begin
   I := 1;
   L := Length(S);
-  while (I <= L) and (S[I] = C) do Inc(I);
+  while (I <= L) and (S[I] = C) do
+    Inc(I);
   Result := Copy(S, I, L - I + 1);
 end;
 
@@ -2277,7 +2284,7 @@ var
 begin
   I := 1;
   L := Length(S);
-  while (I <= L) and ArrayContainsChar(Chars,S[I]) do
+  while (I <= L) and ArrayContainsChar(Chars, S[I]) do
     Inc(I);
   Result := Copy(S, I, L - I + 1);
 end;
@@ -2287,7 +2294,8 @@ var
   I: Integer;
 begin
   I := Length(S);
-  while (I >= 1) and (S[I] = C) do Dec(I);
+  while (I >= 1) and (S[I] = C) do
+    Dec(I);
   Result := Copy(S, 1, I);
 end;
 
@@ -2306,7 +2314,7 @@ var
   I: Integer;
 begin
   I := Length(S);
-  while (I >= 1) and ArrayContainsChar(Chars,S[I]) do
+  while (I >= 1) and ArrayContainsChar(Chars, S[I]) do
     Dec(I);
   Result := Copy(S, 1, I);
 end;
@@ -2344,8 +2352,8 @@ end;
 {$ELSE}
 asm
         // StrCase(Str, StrUpOffset)
-        MOV     EDX, StrUpOffset
-        JMP     StrCase
+         MOV     EDX, StrUpOffset
+         JMP     StrCase
 end;
 {$ENDIF PIC}
 
@@ -2358,8 +2366,8 @@ end;
 {$ELSE}
 asm
         // StrCaseBuff(S, UpOffset)
-        MOV     EDX, StrUpOffset
-        JMP     StrCaseBuff
+         MOV     EDX, StrUpOffset
+         JMP     StrCaseBuff
 end;
 {$ENDIF PIC}
 {$ENDIF ~CLR}
@@ -2521,7 +2529,7 @@ var
 begin
   Result := 0;
   for I := 1 to Length(S) do
-    if ArrayContainsChar(Chars,S[I]) then
+    if ArrayContainsChar(Chars, S[I]) then
       Inc(Result);
 end;
 
@@ -2542,13 +2550,13 @@ begin
   if I > 0 then
     Inc(Result);
 
-  while (I > 0) and (Length(S) > I+Length(SubS)) do
+  while (I > 0) and (Length(S) > I + Length(SubS)) do
   begin
-    I := StrSearch(SubS, S, I+1);
+    I := StrSearch(SubS, S, I + 1);
 
     if I > 0 then
       Inc(Result);
-  end
+  end;
 end;
 
 {$IFDEF SUPPORTS_UNICODE}
@@ -2682,139 +2690,139 @@ function StrCompare(const S1, S2: string): Integer;
 asm
         // check if pointers are equal
 
-        CMP     EAX, EDX
-        JE      @@Equal
+         CMP     EAX, EDX
+         JE      @@Equal
 
         // if S1 is nil return - Length(S2)
 
-        TEST    EAX, EAX
-        JZ      @@Str1Null
+         TEST    EAX, EAX
+         JZ      @@Str1Null
 
         // if S2 is nil return  Length(S1)
 
-        TEST    EDX, EDX
-        JZ      @@Str2Null
+         TEST    EDX, EDX
+         JZ      @@Str2Null
 
         // EBX will hold case map, ESI S1, EDI S2
 
-        PUSH    EBX
-        PUSH    ESI
-        PUSH    EDI
+         PUSH    EBX
+         PUSH    ESI
+         PUSH    EDI
 
         // move string pointers
 
-        MOV     ESI, EAX
-        MOV     EDI, EDX
+         MOV     ESI, EAX
+         MOV     EDI, EDX
 
         // get the length of strings
 
-        MOV     EAX, [ESI-StrRecSize].TStrRec.Length
-        MOV     EDX, [EDI-StrRecSize].TStrRec.Length
+         MOV     EAX, [ESI-StrRecSize].TStrRec.Length
+         MOV     EDX, [EDI-StrRecSize].TStrRec.Length
 
         // exit if Length(S1) <> Length(S2)
 
-        CMP     EAX, EDX
-        JNE     @@MissMatch
+         CMP     EAX, EDX
+         JNE     @@MissMatch
 
         // check the length just in case
 
-        DEC     EDX
-        JS      @@InvalidStr
+         DEC     EDX
+         JS      @@InvalidStr
 
-        DEC     EAX
-        JS      @@InvalidStr
+         DEC     EAX
+         JS      @@InvalidStr
 
         // load case map
 
-        LEA     EBX, StrCaseMap
+         LEA     EBX, StrCaseMap
 
         // make ECX our loop counter
 
-        MOV     ECX, EAX
+         MOV     ECX, EAX
 
         // clear working regs
 
-        XOR     EAX, EAX
-        XOR     EDX, EDX
+         XOR     EAX, EAX
+         XOR     EDX, EDX
 
         // get last chars
 
-        MOV     AL, [ESI+ECX]
-        MOV     DL, [EDI+ECX]
+         MOV     AL, [ESI+ECX]
+         MOV     DL, [EDI+ECX]
 
         // lower case them
 
-        MOV     AL, [EBX+EAX]
-        MOV     DL, [EBX+EDX]
+         MOV     AL, [EBX+EAX]
+         MOV     DL, [EBX+EDX]
 
         // compare them
 
-        CMP     AL, DL
-        JNE     @@MissMatch
+         CMP     AL, DL
+         JNE     @@MissMatch
 
         // if there was only 1 char then exit
 
-        JECXZ   @@Match
+         JECXZ   @@Match
 
-@@NextChar:
+         @@NextChar:
         // case sensitive compare of strings
 
-        REPE    CMPSB
-        JE      @@Match
+         REPE    CMPSB
+         JE      @@Match
 
         // if there was a missmatch try case insensitive compare, get the chars
 
-        MOV     AL, [ESI-1]
-        MOV     DL, [EDI-1]
+         MOV     AL, [ESI-1]
+         MOV     DL, [EDI-1]
 
         // lowercase and compare them, if equal then continue
 
-        MOV     AL, [EBX+EAX]
-        MOV     DL, [EBX+EDX]
-        CMP     AL, DL
-        JE      @@NextChar
+         MOV     AL, [EBX+EAX]
+         MOV     DL, [EBX+EDX]
+         CMP     AL, DL
+         JE      @@NextChar
 
         // if we make it here then strings don't match,  return the difference
 
-@@MissMatch:
-        SUB     EAX, EDX
-        POP     EDI
-        POP     ESI
-        POP     EBX
-        RET
+         @@MissMatch:
+         SUB     EAX, EDX
+         POP     EDI
+         POP     ESI
+         POP     EBX
+         RET
 
-@@Match:
+         @@Match:
         // match, return 0
 
-        XOR     EAX, EAX
-        POP     EDI
-        POP     ESI
-        POP     EBX
-        RET
+         XOR     EAX, EAX
+         POP     EDI
+         POP     ESI
+         POP     EBX
+         RET
 
-@@InvalidStr:
-        XOR     EAX, EAX
-        DEC     EAX
-        POP     EDI
-        POP     ESI
-        POP     EBX
-        RET
+         @@InvalidStr:
+         XOR     EAX, EAX
+         DEC     EAX
+         POP     EDI
+         POP     ESI
+         POP     EBX
+         RET
 
-@@Str1Null:
+         @@Str1Null:
         // return = - Length(Str2);
 
-        MOV     EDX, [EDX-StrRecSize].TStrRec.Length
-        SUB     EAX, EDX
-        RET
+         MOV     EDX, [EDX-StrRecSize].TStrRec.Length
+         SUB     EAX, EDX
+         RET
 
-@@Str2Null:
+         @@Str2Null:
         // return = Length(Str2);
 
-        MOV     EAX, [EAX-StrRecSize].TStrRec.Length
-        RET
+         MOV     EAX, [EAX-StrRecSize].TStrRec.Length
+         RET
 
-@@Equal:
-        XOR     EAX, EAX
+         @@Equal:
+         XOR     EAX, EAX
 end;
 {$ENDIF SUPPORTS_UNICODE}
 
@@ -2825,95 +2833,95 @@ begin
 end;
 {$ELSE}
 asm
-        TEST    EAX, EAX
-        JZ      @@Str1Null
+         TEST    EAX, EAX
+         JZ      @@Str1Null
 
-        TEST    EDX, EDX
-        JZ      @@StrNull
+         TEST    EDX, EDX
+         JZ      @@StrNull
 
-        DEC     ECX
-        JS      @@StrNull
+         DEC     ECX
+         JS      @@StrNull
 
-        PUSH    EBX
-        PUSH    ESI
-        PUSH    EDI
+         PUSH    EBX
+         PUSH    ESI
+         PUSH    EDI
 
-        MOV     EBX, Count
-        DEC     EBX
-        JS      @@NoWork
+         MOV     EBX, Count
+         DEC     EBX
+         JS      @@NoWork
 
-        MOV     ESI, EAX
-        MOV     EDI, EDX
+         MOV     ESI, EAX
+         MOV     EDI, EDX
 
-        MOV     EDX, [ESI - StrRecSize].TStrRec.Length
+         MOV     EDX, [ESI - StrRecSize].TStrRec.Length
 
         // # of chars in S1 - (Index - 1)
-        SUB     EDX, ECX
-        JLE     @@NoWork
+         SUB     EDX, ECX
+         JLE     @@NoWork
 
         // # of chars in S1 - (Count - 1)
-        SUB     EDX, EBX
-        JLE     @@NoWork
+         SUB     EDX, EBX
+         JLE     @@NoWork
 
         // move to index'th char
-        ADD     ESI, ECX
+         ADD     ESI, ECX
 
-        MOV     ECX, [EDI - StrRecSize].TStrRec.Length
-        DEC     ECX
-        JS      @@NoWork
+         MOV     ECX, [EDI - StrRecSize].TStrRec.Length
+         DEC     ECX
+         JS      @@NoWork
 
         // if Length(S2) > Count then ECX := Count else ECX := Length(S2)
 
-        CMP     ECX, EBX
-        JLE     @@Skip1
-        MOV     ECX, EBX
+         CMP     ECX, EBX
+         JLE     @@Skip1
+         MOV     ECX, EBX
 
-@@Skip1:
-        XOR     EAX, EAX
-        XOR     EDX, EDX
+         @@Skip1:
+         XOR     EAX, EAX
+         XOR     EDX, EDX
 
-@@Loop:
-        MOV     AL, [ESI]
-        INC     ESI
-        MOV     DL, [EDI]
-        INC     EDI
+         @@Loop:
+         MOV     AL, [ESI]
+         INC     ESI
+         MOV     DL, [EDI]
+         INC     EDI
 
-        CMP     AL, DL
-        JNE     @@MisMatch
+         CMP     AL, DL
+         JNE     @@MisMatch
 
-        DEC     ECX
-        JGE     @@Loop
+         DEC     ECX
+         JGE     @@Loop
 
-@@Match:
-        XOR     EAX, EAX
-        POP     EDI
-        POP     ESI
-        POP     EBX
-        JMP     @@Exit
+         @@Match:
+         XOR     EAX, EAX
+         POP     EDI
+         POP     ESI
+         POP     EBX
+         JMP     @@Exit
 
-@@MisMatch:
-        SUB     EAX, EDX
-        POP     EDI
-        POP     ESI
-        POP     EBX
-        JMP     @@Exit
+         @@MisMatch:
+         SUB     EAX, EDX
+         POP     EDI
+         POP     ESI
+         POP     EBX
+         JMP     @@Exit
 
-@@NoWork:
-        MOV     EAX, -2
-        POP     EDI
-        POP     ESI
-        POP     EBX
-        JMP     @@Exit
+         @@NoWork:
+         MOV     EAX, -2
+         POP     EDI
+         POP     ESI
+         POP     EBX
+         JMP     @@Exit
 
-@@Str1Null:
-        MOV     EAX, 0
-        TEST    EDX, EDX
-        JZ      @@Exit
+         @@Str1Null:
+         MOV     EAX, 0
+         TEST    EDX, EDX
+         JZ      @@Exit
 
-@@StrNull:
-        MOV     EAX, -1
+         @@StrNull:
+         MOV     EAX, -1
 
-@@Exit:
+         @@Exit:
 end;
 {$ENDIF SUPPORTS_UNICODE}
 
@@ -2969,16 +2977,16 @@ function StrFind(const Substr, S: string; const Index: Integer): Integer;
 var
   Pos: PChar;
 begin
-if (SubStr <> '') and (S <> '') then
+  if (SubStr <> '') and (S <> '') then
   begin
-  pos := StrPos(@S[Index], PChar(SubStr)); 
-    if Pos =nil then
-      result :=0
-    else    
+    pos := StrPos(@S[Index], PChar(SubStr));
+    if Pos = nil then
+      result := 0
+    else
       Result := (Cardinal(Pos) - Cardinal(@S[1])) div SizeOf(Char) + 1;
   end
   else
-    result :=0;
+    result := 0;
 end;
 {$ENDIF CLR}
 
@@ -3068,176 +3076,176 @@ end;
 asm
         // make sure that strings are not null
 
-        TEST    EAX, EAX
-        JZ      @@SubstrIsNull
+         TEST    EAX, EAX
+         JZ      @@SubstrIsNull
 
-        TEST    EDX, EDX
-        JZ      @@StrIsNull
+         TEST    EDX, EDX
+         JZ      @@StrIsNull
 
         // limit index to satisfy 1 <= index, and dec it
 
-        DEC     ECX
-        JL      @@IndexIsSmall
+         DEC     ECX
+         JL      @@IndexIsSmall
 
         // EBX will hold the case table, ESI pointer to Str, EDI pointer
         // to Substr and EBP # of chars in Substr to compare
 
-        PUSH    EBX
-        PUSH    ESI
-        PUSH    EDI
-        PUSH    EBP
+         PUSH    EBX
+         PUSH    ESI
+         PUSH    EDI
+         PUSH    EBP
 
         // set the string pointers
 
-        MOV     ESI, EDX
-        MOV     EDI, EAX
+         MOV     ESI, EDX
+         MOV     EDI, EAX
 
         // save the Index in EDX
 
-        MOV     EDX, ECX
+         MOV     EDX, ECX
 
         // save the address of Str to compute the result
 
-        PUSH    ESI
+         PUSH    ESI
 
         // temporary get the length of Substr and Str
 
-        MOV     EBX, [EDI - StrRecSize].TStrRec.Length
-        MOV     ECX, [ESI - StrRecSize].TStrRec.Length
+         MOV     EBX, [EDI - StrRecSize].TStrRec.Length
+         MOV     ECX, [ESI - StrRecSize].TStrRec.Length
 
         // dec the length of Substr because the first char is brought out of it
 
-        DEC     EBX
-        JS      @@NotFound
+         DEC     EBX
+         JS      @@NotFound
 
         // #positions in Str to look at = Length(Str) - Length(Substr) - Index - 2
 
-        SUB     ECX, EBX
-        JLE     @@NotFound
+         SUB     ECX, EBX
+         JLE     @@NotFound
 
-        SUB     ECX, EDX
-        JLE     @@NotFound
+         SUB     ECX, EDX
+         JLE     @@NotFound
 
         // # of chars in Substr to compare
 
-        MOV     EBP, EBX
+         MOV     EBP, EBX
 
         // point Str to Index'th char
 
-        ADD     ESI, EDX
+         ADD     ESI, EDX
 
         // load case map into EBX, and clear EAX & ECX
 
-        LEA     EBX, StrCaseMap
-        XOR     EAX, EAX
-        XOR     ECX, ECX
+         LEA     EBX, StrCaseMap
+         XOR     EAX, EAX
+         XOR     ECX, ECX
 
         // bring the first char out of the Substr and point Substr to the next char
 
-        MOV     CL, [EDI]
-        INC     EDI
+         MOV     CL, [EDI]
+         INC     EDI
 
         // lower case it
 
-        MOV     CL, [EBX + ECX]
+         MOV     CL, [EBX + ECX]
 
-@@FindNext:
+         @@FindNext:
 
         // get the current char from Str into al
 
-        MOV     AL, [ESI]
-        INC     ESI
+         MOV     AL, [ESI]
+         INC     ESI
 
         // check the end of string
 
-        TEST    AL, AL
-        JZ      @@NotFound
+         TEST    AL, AL
+         JZ      @@NotFound
 
 
-        CMP     CL, '*'    // Wild Card?
-        JE      @@Compare
+         CMP     CL, '*'    // Wild Card?
+         JE      @@Compare
 
-        CMP     CL, '?'    // Wild Card?
-        JE      @@Compare
+         CMP     CL, '?'    // Wild Card?
+         JE      @@Compare
 
         // lower case current char
 
-        MOV     AL, [EBX + EAX]
+         MOV     AL, [EBX + EAX]
 
         // check if the current char matches the primary search char,
         // if not continue searching
 
-        CMP     AL, CL
-        JNE     @@FindNext
+         CMP     AL, CL
+         JNE     @@FindNext
 
-@@Compare:
+         @@Compare:
 
         // # of chars in Substr to compare }
 
-        MOV     EDX, EBP
+         MOV     EDX, EBP
 
-@@CompareNext:
+         @@CompareNext:
 
         // dec loop counter and check if we reached the end. If yes then we found it
 
-        DEC     EDX
-        JL      @@Found
+         DEC     EDX
+         JL      @@Found
 
         // get the chars from Str and Substr, if they are equal then continue comparing
 
-        MOV     AL, [EDI + EDX]               // char from  Substr
+         MOV     AL, [EDI + EDX]               // char from  Substr
 
-        CMP     AL, '*'                     // wild card?
-        JE      @@CompareNext
+         CMP     AL, '*'                     // wild card?
+         JE      @@CompareNext
 
-        CMP     AL, '?'                     // wild card?
-        JE      @@CompareNext
+         CMP     AL, '?'                     // wild card?
+         JE      @@CompareNext
 
-        CMP     AL, [ESI + EDX]               // equal to PChar(Str)^ ?
-        JE      @@CompareNext
+         CMP     AL, [ESI + EDX]               // equal to PChar(Str)^ ?
+         JE      @@CompareNext
 
-        MOV     AL, [EBX + EAX + StrReOffset]  // reverse case?
-        CMP     AL, [ESI + EDX]
-        JNE     @@FindNext                  // if still no, go back to the main loop
+         MOV     AL, [EBX + EAX + StrReOffset]  // reverse case?
+         CMP     AL, [ESI + EDX]
+         JNE     @@FindNext                  // if still no, go back to the main loop
 
         // if they matched, continue comparing
 
-        JMP     @@CompareNext
+         JMP     @@CompareNext
 
-@@Found:
+         @@Found:
         // we found it, calculate the result
 
-        MOV     EAX, ESI
-        POP     ESI
-        SUB     EAX, ESI
+         MOV     EAX, ESI
+         POP     ESI
+         SUB     EAX, ESI
 
-        POP     EBP
-        POP     EDI
-        POP     ESI
-        POP     EBX
-        RET
+         POP     EBP
+         POP     EDI
+         POP     ESI
+         POP     EBX
+         RET
 
-@@NotFound:
+         @@NotFound:
 
         // not found it, clear the result
 
-        XOR     EAX, EAX
-        POP     ESI
-        POP     EBP
-        POP     EDI
-        POP     ESI
-        POP     EBX
-        RET
+         XOR     EAX, EAX
+         POP     ESI
+         POP     EBP
+         POP     EDI
+         POP     ESI
+         POP     EBX
+         RET
 
-@@IndexIsSmall:
-@@StrIsNull:
+         @@IndexIsSmall:
+         @@StrIsNull:
 
         // clear the result
 
-        XOR     EAX, EAX
+         XOR     EAX, EAX
 
-@@SubstrIsNull:
-@@Exit:
+         @@SubstrIsNull:
+         @@Exit:
 end;
 {$ENDIF SUPPORTS_UNICODE}
 {$ENDIF CLR}
@@ -3276,82 +3284,82 @@ begin
     repeat
       case PatternPtr^ of
         #0:
-          begin
-            Result := StringPtr^ = #0;
-            if Result or (StringRes = nil) or (PatternRes = nil) then
-              Exit;
+        begin
+          Result := StringPtr^ = #0;
+          if Result or (StringRes = nil) or (PatternRes = nil) then
+            Exit;
 
-            StringPtr := StringRes;
-            PatternPtr := PatternRes;
-            Break;
-          end;
+          StringPtr := StringRes;
+          PatternPtr := PatternRes;
+          Break;
+        end;
         '*':
-          begin
-            Inc(PatternPtr);
-            PatternRes := PatternPtr;
-            Break;
-          end;
+        begin
+          Inc(PatternPtr);
+          PatternRes := PatternPtr;
+          Break;
+        end;
         '?':
-          begin
-            if StringPtr^ = #0 then
-              Exit;
-            Inc(StringPtr);
-            Inc(PatternPtr);
-          end;
+        begin
+          if StringPtr^ = #0 then
+            Exit;
+          Inc(StringPtr);
+          Inc(PatternPtr);
+        end;
+      else
+      begin
+        if StringPtr^ = #0 then
+          Exit;
+        if StringPtr^ <> PatternPtr^ then
+        begin
+          if (StringRes = nil) or (PatternRes = nil) then
+            Exit;
+          StringPtr := StringRes;
+          PatternPtr := PatternRes;
+          Break;
+        end
         else
-          begin
-            if StringPtr^ = #0 then
-              Exit;
-            if StringPtr^ <> PatternPtr^ then
-            begin
-              if (StringRes = nil) or (PatternRes = nil) then
-                Exit;
-              StringPtr := StringRes;
-              PatternPtr := PatternRes;
-              Break;
-            end
-            else
-            begin
-              Inc(StringPtr);
-              Inc(PatternPtr);
-            end;
-          end;
+        begin
+          Inc(StringPtr);
+          Inc(PatternPtr);
+        end;
+      end;
       end;
     until False;
 
     repeat
       case PatternPtr^ of
         #0:
-          begin
-            Result := True;
-            Exit;
-          end;
+        begin
+          Result := True;
+          Exit;
+        end;
         '*':
-          begin
-            Inc(PatternPtr);
-            PatternRes := PatternPtr;
-          end;
+        begin
+          Inc(PatternPtr);
+          PatternRes := PatternPtr;
+        end;
         '?':
-          begin
-            if StringPtr^ = #0 then
-              Exit;
-            Inc(StringPtr);
-            Inc(PatternPtr);
-          end;
-        else
-          begin
-            repeat
-              if StringPtr^ = #0 then
-                Exit;
-              if StringPtr^ = PatternPtr^ then
-                Break;
-              Inc(StringPtr);
-            until False;
-            Inc(StringPtr);
-            StringRes := StringPtr;
-            Inc(PatternPtr);
+        begin
+          if StringPtr^ = #0 then
+            Exit;
+          Inc(StringPtr);
+          Inc(PatternPtr);
+        end;
+      else
+      begin
+        repeat
+          if StringPtr^ = #0 then
+            Exit;
+          if StringPtr^ = PatternPtr^ then
             Break;
-          end;
+          Inc(StringPtr);
+        until False;
+        Inc(StringPtr);
+        StringRes := StringPtr;
+        Inc(PatternPtr);
+        Break;
+      end;
       end;
     until False;
   until False;
@@ -3446,156 +3454,156 @@ end;
 asm
         // make sure that strings are not null
 
-        TEST    EAX, EAX
-        JZ      @@SubstrIsNull
+         TEST    EAX, EAX
+         JZ      @@SubstrIsNull
 
-        TEST    EDX, EDX
-        JZ      @@StrIsNull
+         TEST    EDX, EDX
+         JZ      @@StrIsNull
 
         // limit index to satisfy 1 <= index, and dec it
 
-        DEC     ECX
-        JL      @@IndexIsSmall
+         DEC     ECX
+         JL      @@IndexIsSmall
 
         // ebp will hold # of chars in Substr to compare, esi pointer to Str,
         // edi pointer to Substr, ebx primary search char
 
-        PUSH    EBX
-        PUSH    ESI
-        PUSH    EDI
-        PUSH    EBP
+         PUSH    EBX
+         PUSH    ESI
+         PUSH    EDI
+         PUSH    EBP
 
         // set the string pointers
 
-        MOV     ESI, EDX
-        MOV     EDI, EAX
+         MOV     ESI, EDX
+         MOV     EDI, EAX
 
         // save the (Index - 1) in edx
 
-        MOV     EDX, ECX
+         MOV     EDX, ECX
 
         // save the address of Str to compute the result
 
-        PUSH    ESI
+         PUSH    ESI
 
         // temporary get the length of Substr and Str
 
-        MOV     EBX, [EDI-StrRecSize].TStrRec.Length
-        MOV     ECX, [ESI-StrRecSize].TStrRec.Length
+         MOV     EBX, [EDI-StrRecSize].TStrRec.Length
+         MOV     ECX, [ESI-StrRecSize].TStrRec.Length
 
         // dec the length of Substr because the first char is brought out of it
 
-        DEC     EBX
-        JS      @@NotFound
+         DEC     EBX
+         JS      @@NotFound
 
         // # of positions in Str to look at = Length(Str) - Length(Substr) - Index - 2
 
-        SUB     ECX, EBX
-        JLE     @@NotFound
+         SUB     ECX, EBX
+         JLE     @@NotFound
 
-        SUB     ECX, EDX
-        JLE     @@NotFound
+         SUB     ECX, EDX
+         JLE     @@NotFound
 
         // point Str to Index'th char
 
-        ADD     ESI, EDX
+         ADD     ESI, EDX
 
         // # of chars in Substr to compare
 
-        MOV     EBP, EBX
+         MOV     EBP, EBX
 
         // clear EAX & ECX (working regs)
 
-        XOR     EAX, EAX
-        XOR     EBX, EBX
+         XOR     EAX, EAX
+         XOR     EBX, EBX
 
         // bring the first char out of the Substr, and
         // point Substr to the next char
 
-        MOV     BL, [EDI]
-        INC     EDI
+         MOV     BL, [EDI]
+         INC     EDI
 
         // jump into the loop
 
-        JMP     @@Find
+         JMP     @@Find
 
-@@FindNext:
+         @@FindNext:
 
         // update the loop counter and check the end of string.
         // if we reached the end, Substr was not found.
 
-        DEC     ECX
-        JL      @@NotFound
+         DEC     ECX
+         JL      @@NotFound
 
-@@Find:
+         @@Find:
 
         // get current char from the string, and /point Str to the next one.
-        MOV     AL, [ESI]
-        INC     ESI
+         MOV     AL, [ESI]
+         INC     ESI
 
         // does current char match primary search char? if not, go back to the main loop
 
-        CMP     AL, BL
-        JNE     @@FindNext
+         CMP     AL, BL
+         JNE     @@FindNext
 
         // otherwise compare SubStr
 
-@@Compare:
+         @@Compare:
 
         // move # of char to compare into edx, edx will be our compare loop counter.
 
-        MOV     EDX, EBP
+         MOV     EDX, EBP
 
-@@CompareNext:
+         @@CompareNext:
 
         // check if we reached the end of Substr. If yes we found it.
 
-        DEC     EDX
-        JL      @@Found
+         DEC     EDX
+         JL      @@Found
 
         // get last chars from Str and SubStr and compare them,
         // if they don't match go back to out main loop.
 
-        MOV     AL, [EDI+EDX]
-        CMP     AL, [ESI+EDX]
-        JNE     @@FindNext
+         MOV     AL, [EDI+EDX]
+         CMP     AL, [ESI+EDX]
+         JNE     @@FindNext
 
         // if they matched, continue comparing
 
-        JMP     @@CompareNext
+         JMP     @@CompareNext
 
-@@Found:
+         @@Found:
         // we found it, calculate the result and exit.
 
-        MOV     EAX, ESI
-        POP     ESI
-        SUB     EAX, ESI
+         MOV     EAX, ESI
+         POP     ESI
+         SUB     EAX, ESI
 
-        POP     EBP
-        POP     EDI
-        POP     ESI
-        POP     EBX
-        RET
+         POP     EBP
+         POP     EDI
+         POP     ESI
+         POP     EBX
+         RET
 
-@@NotFound:
+         @@NotFound:
         // not found it, clear result and exit.
 
-        XOR     EAX, EAX
-        POP     ESI
-        POP     EBP
-        POP     EDI
-        POP     ESI
-        POP     EBX
-        RET
+         XOR     EAX, EAX
+         POP     ESI
+         POP     EBP
+         POP     EDI
+         POP     ESI
+         POP     EBX
+         RET
 
-@@IndexIsSmall:
-@@StrIsNull:
+         @@IndexIsSmall:
+         @@StrIsNull:
         // clear result and exit.
 
-        XOR     EAX, EAX
+         XOR     EAX, EAX
 
-@@SubstrIsNull:
-@@Exit:
+         @@SubstrIsNull:
+         @@Exit:
 end;
 {$ENDIF SUPPORTS_UNICODE}
 {$ENDIF CLR}
@@ -3631,7 +3639,7 @@ var
   L: Integer;
 begin
   PosStart := Pos(Start, S);
-  PosEnd := StrSearch(Stop, S, PosStart+1);  // PosEnd has to be after PosStart.
+  PosEnd := StrSearch(Stop, S, PosStart + 1);  // PosEnd has to be after PosStart.
 
   if (PosStart > 0) and (PosEnd > PosStart) then
   begin
@@ -3657,7 +3665,7 @@ begin
   Result := Copy(S, Start, Count);
 end;
 
-function StrRestOf(const S: string; N: Integer ): string;
+function StrRestOf(const S: string; N: Integer): string;
 begin
   Result := Copy(S, N, (Length(S) - N + 1));
 end;
@@ -3909,7 +3917,7 @@ end;
 procedure PCharVectorToStrings(const Dest: TStrings; Source: PCharVector);
 var
   I, Count: Integer;
-  List: array of PChar;
+  List:     array of PChar;
 begin
   Assert(Dest <> nil);
   if Source <> nil then
@@ -3931,7 +3939,7 @@ end;
 procedure FreePCharVector(var Dest: PCharVector);
 var
   I, Count: Integer;
-  List: array of PChar;
+  List:     array of PChar;
 begin
   if Dest <> nil then
   begin
@@ -4057,7 +4065,7 @@ begin
     UniqueString(S);
     P := PChar(S);
     Len := Length(S);
-    for Index := 0 to Len-1 do
+    for Index := 0 to Len - 1 do
     begin
       if P^ = Search then
       begin
@@ -4423,7 +4431,7 @@ begin
     {$IFDEF CLR}
     FS.WriteBuffer(BytesOf(Contents), Len);
     {$ELSE}
-    FS.WriteBuffer(Contents[1], Len);
+      FS.WriteBuffer(Contents[1], Len);
     {$ENDIF CLR}
   finally
     FS.Free;
@@ -4526,7 +4534,7 @@ procedure StrTokens(const S: string; const List: TStrings);
 var
   Start: PChar;
   Token: string;
-  Done: Boolean;
+  Done:  Boolean;
 begin
   Assert(List <> nil);
   if List = nil then
@@ -4562,23 +4570,23 @@ begin
   begin
     case S^ of
       #0:
-        begin
-          if Start <> nil then
-            SetString(Word, Start, S - Start);
-          Result := True;
-          Exit;
-        end;
+      begin
+        if Start <> nil then
+          SetString(Word, Start, S - Start);
+        Result := True;
+        Exit;
+      end;
       NativeSpace, NativeLineFeed, NativeCarriageReturn:
+      begin
+        if Start <> nil then
         begin
-          if Start <> nil then
-          begin
-            SetString(Word, Start, S - Start);
-            Exit;
-          end
-          else
-            while CharIsWhiteSpace(S^) do
-              Inc(S);
-        end;
+          SetString(Word, Start, S - Start);
+          Exit;
+        end
+        else
+          while CharIsWhiteSpace(S^) do
+            Inc(S);
+      end;
     else
       if Start = nil then
         Start := S;
@@ -4638,13 +4646,13 @@ begin
     if C = '-' then
       IsNegative := not IsNegative
     else
-      if (C <> ' ') and (C <> '(') and (C <> '+') then
-      begin
+    if (C <> ' ') and (C <> '(') and (C <> '+') then
+    begin
         // if it appears prior to any digit, it has to be a decimal separator
-        SwapSeparators := Temp[I] = ThouSep;
-        J := I;
-        Break;
-      end;
+      SwapSeparators := Temp[I] = ThouSep;
+      J := I;
+      Break;
+    end;
   end;
 
   if not SwapSeparators then
@@ -4678,8 +4686,8 @@ begin
       if Temp[I] = DecSep then
         Temp[I] := ThouSep
       else
-        if Temp[I] = ThouSep then
-          Temp[I] := DecSep;
+      if Temp[I] = ThouSep then
+        Temp[I] := DecSep;
     {$ENDIF CLR}
   end;
 
@@ -4706,8 +4714,8 @@ end;
 
 procedure StrNormIndex(const StrLen: Integer; var Index: Integer; var Count: Integer); overload;
 begin
-   Index := Max(1, Min(Index, StrLen+1));
-   Count := Max(0, Min(Count, StrLen+1 - Index));
+  Index := Max(1, Min(Index, StrLen + 1));
+  Count := Max(0, Min(Count, StrLen + 1 - Index));
 end;
 
 {$IFDEF CLR}
@@ -4799,7 +4807,7 @@ end;
 const
   BoolToStr: array [Boolean] of string = ('false', 'true');
   {$IFDEF COMPILER5}
-  MaxCurrency: Currency =  922337203685477.5807;
+  MaxCurrency: Currency = 922337203685477.5807;
 
   varShortInt = $0010; { vt_i1     16 }
   varWord     = $0012; { vt_ui2    18 }
@@ -4836,7 +4844,7 @@ var
   F, P: PChar;
   Len, Capacity, Count: Integer;
   Index, ErrorCode: Integer;
-  S: string;
+  S:    string;
 
   procedure Grow(Count: Integer);
   begin
@@ -4920,8 +4928,8 @@ var
   begin
     V := Args[Index];
     if (V.VInteger = 0) and
-       (V.VType in [vtExtended, vtString, vtObject, vtClass, vtCurrency,
-                    vtInterface, vtInt64]) then
+      (V.VType in [vtExtended, vtString, vtObject, vtClass, vtCurrency,
+      vtInterface, vtInt64]) then
       raise ArgumentNullException.CreateResFmt(@RsArgumentIsNull, [Index]);
 
     case V.VType of
@@ -5587,7 +5595,7 @@ begin
     while cur^ <> #0 do
     begin
       head := cur;
-      while (cur^<> #0) and (cur^ <> #9) do
+      while (cur^ <> #0) and (cur^ <> #9) do
       begin
         if CharIsReturn(cur^) then
           Column := StartColumn
@@ -5683,7 +5691,7 @@ var
       {$IFDEF CLR}
       raise EJclStringError.Create(RsTabs_CloseBracketExpected)
       {$ELSE}
-      raise EJclStringError.CreateRes(@RsTabs_CloseBracketExpected)
+      raise EJclStringError.CreateRes(@RsTabs_CloseBracketExpected);
       {$ENDIF}
   end;
 
@@ -5761,7 +5769,7 @@ begin
       {$ENDIF CLR}
     end
     else
-      Result := FStops[Index]
+      Result := FStops[Index];
   end
   else
   begin
@@ -5839,7 +5847,7 @@ begin
   sb := TStringBuilder.Create(Length(S));
   try
     cur := PChar(s);
-    while cur^<> #0 do
+    while cur^ <> #0 do
     begin
       // locate first whitespace character
       head := cur;
@@ -5948,7 +5956,7 @@ end;
 procedure TJclTabSet.SetZeroBased(Value: Boolean);
 var
   shift: Integer;
-  idx: Integer;
+  idx:   Integer;
 begin
   if Self <> nil then
   begin
@@ -6035,7 +6043,7 @@ var
 
   function IncludeAutoWidth: Boolean;
   begin
-    Result := (TabSetFormatting_AutoTabWidth and FormattingOptions) <> 0;  
+    Result := (TabSetFormatting_AutoTabWidth and FormattingOptions) <> 0;
   end;
 
   function IncludeTabWidth: Boolean;
@@ -6111,7 +6119,7 @@ end;
 function TJclTabSet.UpdatePosition(const S: string; var Column, Line: Integer): Integer;
 var
   prevChar: Char;
-  cur: PChar;
+  cur:      PChar;
 begin
   if Column < StartColumn then
     raise ArgumentOutOfRangeException.Create('Column');
@@ -6164,7 +6172,7 @@ var
   var
     IsReallyNumber: Boolean;
     FirstDiffBreaks: Boolean;
-    Val1, Val2: Integer;
+    Val1, Val2:     Integer;
   begin
     Result := 0;
     IsReallyNumber := False;
