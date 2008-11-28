@@ -5517,7 +5517,7 @@ end;
 function GetWindowsInstallerVersion: Float;
 begin
   if VersionResourceAvailable(GetWindowsSystemFolder +'\msi.dll') then
-with TJclFileVersionInfo.Create('txt') do
+with TJclFileVersionInfo.Create(GetWindowsSystemFolder() +'\msi.dll') do
 begin
 result :=StrToFloat(Trim(ProductVersion));
 end
