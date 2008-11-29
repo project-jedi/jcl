@@ -2187,7 +2187,10 @@ var
             MarkOptionBegin(ID);
             DemoResult := CompileApplication(ADemoList.Strings[Index]);
             MarkOptionEnd(ID, DemoResult);
-            Result := Result and DemoResult;
+            // ahuser: The installation shouldn't fail if some demos can't be compiled like
+            //         outdated demos or CLX/Kylix demos. Otherwise the JVCL Installer will
+            //         have a hard time finding a valid JCL installation
+            //Result := Result and DemoResult;
           end;
         end;
       finally
