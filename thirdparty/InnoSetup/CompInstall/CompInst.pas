@@ -13,24 +13,24 @@ function compinst_isDelphiInstalled(Version: Integer): Integer; stdcall;
 function compinst_isBCBInstalled(Version: Integer): Integer; stdcall;
 function compinst_isBDSInstalled(IDEVersion: Integer): Integer; stdcall;
 
-function compinst_installDelphiDesignPackage(Version: Integer; const BplFilename, Description: PChar): Integer; stdcall;
-function compinst_installBCBDesignPackage(Version: Integer; const BplFilename, Description: PChar): Integer; stdcall;
-function compinst_uninstallDelphiDesignPackage(Version: Integer; const BplFilename: PChar): Integer; stdcall;
-function compinst_uninstallBCBDesignPackage(Version: Integer; const BplFilename: PChar): Integer; stdcall;
-function compinst_uninstallDelphiDesignPackagesPrefixed(Version: Integer; BplFilenamePrefix: PChar): Integer; stdcall;
-function compinst_uninstallBCBDesignPackagesPrefixed(Version: Integer; BplFilenamePrefix: PChar): Integer; stdcall;
+function compinst_installDelphiDesignPackage(Version: Integer; const BplFilename, Description: PAnsiChar): Integer; stdcall;
+function compinst_installBCBDesignPackage(Version: Integer; const BplFilename, Description: PAnsiChar): Integer; stdcall;
+function compinst_uninstallDelphiDesignPackage(Version: Integer; const BplFilename: PAnsiChar): Integer; stdcall;
+function compinst_uninstallBCBDesignPackage(Version: Integer; const BplFilename: PAnsiChar): Integer; stdcall;
+function compinst_uninstallDelphiDesignPackagesPrefixed(Version: Integer; BplFilenamePrefix: PAnsiChar): Integer; stdcall;
+function compinst_uninstallBCBDesignPackagesPrefixed(Version: Integer; BplFilenamePrefix: PAnsiChar): Integer; stdcall;
 
-function compinst_installDelphiExpert(Version: Integer; const Filename, Description: PChar): Integer; stdcall;
-function compinst_installBCBExpert(Version: Integer; const Filename, Description: PChar): Integer; stdcall;
-function compinst_uninstallDelphiExpert(Version: Integer; const Filename: PChar): Integer; stdcall;
-function compinst_uninstallBCBExpert(Version: Integer; const Filename: PChar): Integer; stdcall;
-function compinst_uninstallDelphiExpertsPrefixed(Version: Integer; FilenamePrefix: PChar): Integer; stdcall;
-function compinst_uninstallBCBExpertsPrefixed(Version: Integer; FilenamePrefix: PChar): Integer; stdcall;
+function compinst_installDelphiExpert(Version: Integer; const Filename, Description: PAnsiChar): Integer; stdcall;
+function compinst_installBCBExpert(Version: Integer; const Filename, Description: PAnsiChar): Integer; stdcall;
+function compinst_uninstallDelphiExpert(Version: Integer; const Filename: PAnsiChar): Integer; stdcall;
+function compinst_uninstallBCBExpert(Version: Integer; const Filename: PAnsiChar): Integer; stdcall;
+function compinst_uninstallDelphiExpertsPrefixed(Version: Integer; FilenamePrefix: PAnsiChar): Integer; stdcall;
+function compinst_uninstallBCBExpertsPrefixed(Version: Integer; FilenamePrefix: PAnsiChar): Integer; stdcall;
 
-function compinst_addDelphiSearchPaths(Version: Integer; SearchPaths, DebugPaths, BrowsePaths: PChar): Integer; stdcall;
-function compinst_addBCBSearchPaths(Version: Integer; SearchPaths, DebugPaths, BrowsePaths: PChar): Integer; stdcall;
-function compinst_removeDelphiSearchPaths(Version: Integer; SearchPaths, DebugPaths, BrowsePaths: PChar): Integer; stdcall;
-function compinst_removeBCBSearchPaths(Version: Integer; SearchPaths, DebugPaths, BrowsePaths: PChar): Integer; stdcall;
+function compinst_addDelphiSearchPaths(Version: Integer; SearchPaths, DebugPaths, BrowsePaths: PAnsiChar): Integer; stdcall;
+function compinst_addBCBSearchPaths(Version: Integer; SearchPaths, DebugPaths, BrowsePaths: PAnsiChar): Integer; stdcall;
+function compinst_removeDelphiSearchPaths(Version: Integer; SearchPaths, DebugPaths, BrowsePaths: PAnsiChar): Integer; stdcall;
+function compinst_removeBCBSearchPaths(Version: Integer; SearchPaths, DebugPaths, BrowsePaths: PAnsiChar): Integer; stdcall;
 
 implementation
 
@@ -273,88 +273,88 @@ end;
 
 { Design Packages }
 
-function compinst_installDelphiDesignPackage(Version: Integer; const BplFilename, Description: PChar): Integer; stdcall;
+function compinst_installDelphiDesignPackage(Version: Integer; const BplFilename, Description: PAnsiChar): Integer; stdcall;
 begin
-  Result := InstallDesignPackage(Installations.DelphiInstallationFromVersion[Version], BplFilename, Description);
+  Result := InstallDesignPackage(Installations.DelphiInstallationFromVersion[Version], string(BplFilename), string(Description));
 end;
 
-function compinst_installBCBDesignPackage(Version: Integer; const BplFilename, Description: PChar): Integer; stdcall;
+function compinst_installBCBDesignPackage(Version: Integer; const BplFilename, Description: PAnsiChar): Integer; stdcall;
 begin
-  Result := InstallDesignPackage(Installations.BCBInstallationFromVersion[Version], BplFilename, Description);
+  Result := InstallDesignPackage(Installations.BCBInstallationFromVersion[Version], string(BplFilename), string(Description));
 end;
 
-function compinst_uninstallDelphiDesignPackage(Version: Integer; const BplFilename: PChar): Integer; stdcall;
+function compinst_uninstallDelphiDesignPackage(Version: Integer; const BplFilename: PAnsiChar): Integer; stdcall;
 begin
-  Result := UninstallDesignPackage(Installations.DelphiInstallationFromVersion[Version], BplFilename);
+  Result := UninstallDesignPackage(Installations.DelphiInstallationFromVersion[Version], string(BplFilename));
 end;
 
-function compinst_uninstallBCBDesignPackage(Version: Integer; const BplFilename: PChar): Integer; stdcall;
+function compinst_uninstallBCBDesignPackage(Version: Integer; const BplFilename: PAnsiChar): Integer; stdcall;
 begin
-  Result := UninstallDesignPackage(Installations.BCBInstallationFromVersion[Version], BplFilename);
+  Result := UninstallDesignPackage(Installations.BCBInstallationFromVersion[Version], string(BplFilename));
 end;
 
-function compinst_uninstallDelphiDesignPackagesPrefixed(Version: Integer; BplFilenamePrefix: PChar): Integer; stdcall;
+function compinst_uninstallDelphiDesignPackagesPrefixed(Version: Integer; BplFilenamePrefix: PAnsiChar): Integer; stdcall;
 begin
-  Result := UninstallDesignPackagesPrefixed(Installations.DelphiInstallationFromVersion[Version], BplFilenamePrefix);
+  Result := UninstallDesignPackagesPrefixed(Installations.DelphiInstallationFromVersion[Version], string(BplFilenamePrefix));
 end;
 
-function compinst_uninstallBCBDesignPackagesPrefixed(Version: Integer; BplFilenamePrefix: PChar): Integer; stdcall;
+function compinst_uninstallBCBDesignPackagesPrefixed(Version: Integer; BplFilenamePrefix: PAnsiChar): Integer; stdcall;
 begin
-  Result := UninstallDesignPackagesPrefixed(Installations.BCBInstallationFromVersion[Version], BplFilenamePrefix);
+  Result := UninstallDesignPackagesPrefixed(Installations.BCBInstallationFromVersion[Version], string(BplFilenamePrefix));
 end;
 
 { Experts }
 
-function compinst_installDelphiExpert(Version: Integer; const Filename, Description: PChar): Integer; stdcall;
+function compinst_installDelphiExpert(Version: Integer; const Filename, Description: PAnsiChar): Integer; stdcall;
 begin
-  Result := InstallExpert(Installations.DelphiInstallationFromVersion[Version], Filename, Description);
+  Result := InstallExpert(Installations.DelphiInstallationFromVersion[Version], string(Filename), string(Description));
 end;
 
-function compinst_installBCBExpert(Version: Integer; const Filename, Description: PChar): Integer; stdcall;
+function compinst_installBCBExpert(Version: Integer; const Filename, Description: PAnsiChar): Integer; stdcall;
 begin
-  Result := InstallExpert(Installations.BCBInstallationFromVersion[Version], Filename, Description);
+  Result := InstallExpert(Installations.BCBInstallationFromVersion[Version], string(Filename), string(Description));
 end;
 
-function compinst_uninstallDelphiExpert(Version: Integer; const Filename: PChar): Integer; stdcall;
+function compinst_uninstallDelphiExpert(Version: Integer; const Filename: PAnsiChar): Integer; stdcall;
 begin
-  Result := UninstallExpert(Installations.DelphiInstallationFromVersion[Version], Filename);
+  Result := UninstallExpert(Installations.DelphiInstallationFromVersion[Version], string(Filename));
 end;
 
-function compinst_uninstallBCBExpert(Version: Integer; const Filename: PChar): Integer; stdcall;
+function compinst_uninstallBCBExpert(Version: Integer; const Filename: PAnsiChar): Integer; stdcall;
 begin
-  Result := UninstallExpert(Installations.BCBInstallationFromVersion[Version], Filename);
+  Result := UninstallExpert(Installations.BCBInstallationFromVersion[Version], string(Filename));
 end;
 
-function compinst_uninstallDelphiExpertsPrefixed(Version: Integer; FilenamePrefix: PChar): Integer; stdcall;
+function compinst_uninstallDelphiExpertsPrefixed(Version: Integer; FilenamePrefix: PAnsiChar): Integer; stdcall;
 begin
-  Result := UninstallExpertsPrefixed(Installations.DelphiInstallationFromVersion[Version], FilenamePrefix);
+  Result := UninstallExpertsPrefixed(Installations.DelphiInstallationFromVersion[Version], string(FilenamePrefix));
 end;
 
-function compinst_uninstallBCBExpertsPrefixed(Version: Integer; FilenamePrefix: PChar): Integer; stdcall;
+function compinst_uninstallBCBExpertsPrefixed(Version: Integer; FilenamePrefix: PAnsiChar): Integer; stdcall;
 begin
-  Result := UninstallExpertsPrefixed(Installations.BCBInstallationFromVersion[Version], FilenamePrefix);
+  Result := UninstallExpertsPrefixed(Installations.BCBInstallationFromVersion[Version], string(FilenamePrefix));
 end;
 
 { Search Paths }
 
-function compinst_addDelphiSearchPaths(Version: Integer; SearchPaths, DebugPaths, BrowsePaths: PChar): Integer; stdcall;
+function compinst_addDelphiSearchPaths(Version: Integer; SearchPaths, DebugPaths, BrowsePaths: PAnsiChar): Integer; stdcall;
 begin
-  Result := ChangeSearchPaths(Installations.DelphiInstallationFromVersion[Version], True, SearchPaths, DebugPaths, BrowsePaths);
+  Result := ChangeSearchPaths(Installations.DelphiInstallationFromVersion[Version], True, string(SearchPaths), string(DebugPaths), string(BrowsePaths));
 end;
 
-function compinst_addBCBSearchPaths(Version: Integer; SearchPaths, DebugPaths, BrowsePaths: PChar): Integer; stdcall;
+function compinst_addBCBSearchPaths(Version: Integer; SearchPaths, DebugPaths, BrowsePaths: PAnsiChar): Integer; stdcall;
 begin
-  Result := ChangeSearchPaths(Installations.BCBInstallationFromVersion[Version], True, SearchPaths, DebugPaths, BrowsePaths);
+  Result := ChangeSearchPaths(Installations.BCBInstallationFromVersion[Version], True, string(SearchPaths), string(DebugPaths), string(BrowsePaths));
 end;
 
-function compinst_removeDelphiSearchPaths(Version: Integer; SearchPaths, DebugPaths, BrowsePaths: PChar): Integer; stdcall;
+function compinst_removeDelphiSearchPaths(Version: Integer; SearchPaths, DebugPaths, BrowsePaths: PAnsiChar): Integer; stdcall;
 begin
-  Result := ChangeSearchPaths(Installations.DelphiInstallationFromVersion[Version], False, SearchPaths, DebugPaths, BrowsePaths);
+  Result := ChangeSearchPaths(Installations.DelphiInstallationFromVersion[Version], False, string(SearchPaths), string(DebugPaths), string(BrowsePaths));
 end;
 
-function compinst_removeBCBSearchPaths(Version: Integer; SearchPaths, DebugPaths, BrowsePaths: PChar): Integer; stdcall;
+function compinst_removeBCBSearchPaths(Version: Integer; SearchPaths, DebugPaths, BrowsePaths: PAnsiChar): Integer; stdcall;
 begin
-  Result := ChangeSearchPaths(Installations.BCBInstallationFromVersion[Version], False, SearchPaths, DebugPaths, BrowsePaths);
+  Result := ChangeSearchPaths(Installations.BCBInstallationFromVersion[Version], False, string(SearchPaths), string(DebugPaths), string(BrowsePaths));
 end;
 
 initialization
