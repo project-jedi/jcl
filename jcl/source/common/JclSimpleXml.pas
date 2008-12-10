@@ -187,6 +187,7 @@ type
     function Value(const Name: string; Default: string = ''): string;
     function IntValue(const Name: string; Default: Int64 = -1): Int64;
     function BoolValue(const Name: string; Default: Boolean = True): Boolean;
+    function FloatValue(const Name: string; Default: Extended = 0): Extended;
     procedure LoadFromStringStream(StringStream: TJclStringStream);
     procedure SaveToStringStream(StringStream: TJclStringStream);
     property Item[const Index: Integer]: TJclSimpleXMLProp read GetItem; default;
@@ -309,6 +310,7 @@ type
     function IndexOf(const Name: string): Integer; overload;
     function Value(const Name: string; Default: string = ''): string;
     function IntValue(const Name: string; Default: Int64 = -1): Int64;
+    function FloatValue(const Name: string; Default: Extended = 0): Extended;
     function BoolValue(const Name: string; Default: Boolean = True): Boolean;
     procedure BinaryValue(const Name: string; Stream: TStream);
     procedure LoadFromStringStream(StringStream: TJclStringStream; AParent: TJclSimpleXML = nil);
@@ -1956,6 +1958,18 @@ begin
   end;
 end;
 
+function TJclSimpleXMLElems.FloatValue(const Name: string;
+  Default: Extended): Extended;
+var
+  Elem: TJclSimpleXMLElem;
+begin
+  Elem := GetItemNamedDefault(Name, FloatToStr(Default));
+  if Elem = nil then
+    Result := Default
+  else
+    Result := Elem.FloatValue;
+end;
+
 function TJclSimpleXMLElems.GetCount: Integer;
 begin
   if FElems = nil then
@@ -2397,6 +2411,18 @@ end;
 procedure TJclSimpleXMLProps.Error(const S: string);
 begin
   raise EJclSimpleXMLError.Create(S);
+end;
+
+function TJclSimpleXMLProps.FloatValue(const Name: string;
+  Default: Extended): Extended;
+var
+  Prop: TJclSimpleXMLProp;
+begin
+  Prop := GetItemNamedDefault(Name, FloatToStr(Default));
+  if Prop = nil then
+    Result := Default
+  else
+    Result := Prop.FloatValue;
 end;
 
 procedure TJclSimpleXMLProps.FmtError(const S: string;
