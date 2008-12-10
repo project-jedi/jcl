@@ -403,7 +403,7 @@
     </action>
     <action classname="TFileRemover">
       <configuration index="0" caption="Directory" value="sandbox\jcl\help"/>
-      <configuration index="1" caption="Filter" value="*.html;*.css;*.js;*.gif;*.jpg;*.png;*.c;*.h;*.inc"/>
+      <configuration index="1" caption="Filter" value="*.html;*.css;*.js;*.gif;*.jpg;*.png;*.c;*.h;*.inc;*.log"/>
       <configuration index="2" caption="Move to recycle bin" value="no"/>
     </action>
     <action classname="TArchiveMaker">
