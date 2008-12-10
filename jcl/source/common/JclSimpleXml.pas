@@ -608,42 +608,62 @@ end;
 {$ENDIF COMPILER6_UP}
 {$ENDIF !CLR}
 
+procedure AddEntity(var Res: string; var ResIndex, ResLen: Integer; const Entity: string);
+  {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
+var
+  EntityIndex, EntityLen: Integer;
+begin
+  EntityLen := Length(Entity);
+  if (ResIndex + EntityLen) > ResLen then
+  begin
+    if ResLen <= EntityLen then
+      ResLen := ResLen * EntityLen
+    else
+      ResLen := ResLen * 2;
+    SetLength(Res, ResLen);
+  end;
+  for EntityIndex := 1 to EntityLen do
+  begin
+    Res[ResIndex] := Entity[EntityIndex];
+    Inc(ResIndex);
+  end;
+end;
+
 function EntityEncode(const S: string): string;
 var
-  I, J, K, L: Integer;
-  tmp: string;
+  C: Char;
+  SLen, SIndex, RLen, RIndex: Integer;
 begin
-  SetLength(Result, Length(S) * 6); // worst case
-  J := 1;
-  I := 1;
-  L := Length(S);
-  while I <= L do
+  SLen := Length(S);
+  RLen := SLen;
+  RIndex := 1;
+  SetLength(Result, RLen);
+  for SIndex := 1 to SLen do
   begin
-    case S[I] of
+    C := S[SIndex];
+    case C of
       '"':
-        tmp := '&quot;';
+        AddEntity(Result, RIndex, RLen, '&quot;');
       '&':
-        tmp := '&amp;';
+        AddEntity(Result, RIndex, RLen, '&amp;');
       #39:
-        tmp := '&apos;';
+        AddEntity(Result, RIndex, RLen, '&apos;');
       '<':
-        tmp := '&lt;';
+        AddEntity(Result, RIndex, RLen, '&lt;');
       '>':
-        tmp := '&gt;';
+        AddEntity(Result, RIndex, RLen, '&gt;');
     else
-      tmp := S[I];
+      if RIndex > RLen then
+      begin
+        RLen := RLen * 2;
+        SetLength(Result, RLen);
+      end;
+      Result[RIndex] := C;
+      Inc(RIndex);
     end;
-    for K := 1 to Length(tmp) do
-    begin
-      Result[J] := tmp[K];
-      Inc(J);
-    end;
-    Inc(I);
   end;
-  if J > 1 then
-    SetLength(Result, J - 1)
-  else
-    SetLength(Result, 0);
+  if RIndex > 1 then
+    SetLength(Result, RIndex - 1);
 end;
 
 function EntityDecode(const S: string): string;
@@ -810,55 +830,42 @@ end;
 {$ENDIF CLR}
 
 function SimpleXMLEncode(const S: string): string;
-  function CharIsConverted(const C: Char): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+var
+  C: Char;
+  SIndex, SLen, RIndex, RLen: Integer;
+begin
+  SLen := Length(S);
+  RLen := SLen;
+  RIndex := 1;
+  SetLength(Result, RLen);
+  for SIndex := 1 to SLen do
   begin
+    C := S[SIndex];
     case C of
-      '"', '&', #39, '<', '>',
+      '"':
+        AddEntity(Result, RIndex, RLen, '&quot;');
+      '&':
+        AddEntity(Result, RIndex, RLen, '&amp;');
+      #39:
+        AddEntity(Result, RIndex, RLen, '&apos;');
+      '<':
+        AddEntity(Result, RIndex, RLen, '&lt;');
+      '>':
+        AddEntity(Result, RIndex, RLen, '&gt;');
       #128..High(Char):
-        Result := True;
+        AddEntity(Result, RIndex, RLen, Format('&#x%.2x;', [Ord(C)]));
     else
-      Result := False;
+      if RIndex > RLen then
+      begin
+        RLen := RLen * 2;
+        SetLength(Result, RLen);
+      end;
+      Result[RIndex] := C;
+      Inc(RIndex);
     end;
   end;
-var
-  I, J, K: Integer;
-  tmp: string;
-begin
-  SetLength(Result, Length(S) * 6); // worst case
-  J := 1;
-  for I := 1 to Length(S) do
-  begin
-    if CharIsConverted(S[I]) then
-    begin
-      case S[I] of
-        '"':
-          tmp := '&quot;';
-        '&':
-          tmp := '&amp;';
-        #39:
-          tmp := '&apos;';
-        '<':
-          tmp := '&lt;';
-        '>':
-          tmp := '&gt;';
-      else
-        tmp := Format('&#x%.2x;', [Ord(S[I])]);
-      end;
-      for K := 1 to Length(tmp) do
-      begin
-        Result[J] := tmp[K];
-        Inc(J);
-      end;
-      Dec(J);
-    end
-    else
-      Result[J] := S[I];
-    Inc(J);
-  end;
-  if J > 0 then
-    SetLength(Result, J - 1)
-  else
-    SetLength(Result, 0);
+  if RIndex > 1 then
+    SetLength(Result, RIndex - 1);
 end;
 
 procedure SimpleXMLDecode(var S: string; TrimBlanks: Boolean);
