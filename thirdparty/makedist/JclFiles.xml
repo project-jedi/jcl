@@ -10,6 +10,7 @@
       <configuration index="1" caption="Working directory" value="sandbox"/>
       <configuration index="2" caption="Parameters" value="export -rBASE --native-eol CRLF --force ..\..\..\jcl\ ."/>
       <configuration index="3" caption="Valid exit codes" value=""/>
+      <configuration index="4" caption="Result file" value=""/>
     </action>
     <action classname="TConstantParser">
       <configuration index="0" caption="Source file" value="sandbox\source\common\JclBase.pas"/>
@@ -36,6 +37,7 @@
       <configuration index="1" caption="Working directory" value="sandbox\devtools\"/>
       <configuration index="2" caption="Parameters" value="/C included_files.bat"/>
       <configuration index="3" caption="Valid exit codes" value=""/>
+      <configuration index="4" caption="Result file" value=""/>
     </action>
     <action classname="TArchiveMaker">
       <configuration index="0" caption="Directory" value="sandbox"/>
@@ -61,6 +63,7 @@
       <configuration index="1" caption="Working directory" value="sandbox"/>
       <configuration index="2" caption="Parameters" value="export -rBASE --native-eol LF --force ..\..\..\jcl\ ."/>
       <configuration index="3" caption="Valid exit codes" value=""/>
+      <configuration index="4" caption="Result file" value=""/>
     </action>
     <action classname="TConstantParser">
       <configuration index="0" caption="Source file" value="sandbox\source\common\JclBase.pas"/>
@@ -87,6 +90,7 @@
       <configuration index="1" caption="Working directory" value="sandbox\devtools\"/>
       <configuration index="2" caption="Parameters" value="/C included_files.bat"/>
       <configuration index="3" caption="Valid exit codes" value=""/>
+      <configuration index="4" caption="Result file" value=""/>
     </action>
     <action classname="TArchiveMaker">
       <configuration index="0" caption="Directory" value="sandbox"/>
@@ -122,6 +126,7 @@
       <configuration index="1" caption="Working directory" value="sandbox"/>
       <configuration index="2" caption="Parameters" value="export -rBASE --native-eol CRLF --force ..\..\..\jcl\ ."/>
       <configuration index="3" caption="Valid exit codes" value=""/>
+      <configuration index="4" caption="Result file" value=""/>
     </action>
     <action classname="TConstantParser">
       <configuration index="0" caption="Source file" value="sandbox\source\common\JclBase.pas"/>
@@ -148,30 +153,35 @@
       <configuration index="1" caption="Working directory" value="sandbox\devtools\"/>
       <configuration index="2" caption="Parameters" value="/C included_files.bat"/>
       <configuration index="3" caption="Valid exit codes" value=""/>
+      <configuration index="4" caption="Result file" value=""/>
     </action>
     <action classname="TCommandLineCaller">
       <configuration index="0" caption="Application" value="..\devtools\jpp.exe"/>
       <configuration index="1" caption="Working directory" value="sandbox\install"/>
       <configuration index="2" caption="Parameters" value="-c -dVCL -dMSWINDOWS -uVisualCLX -uUnix -uKYLIX -xVclGui\ prototypes\JediGUIMain.pas"/>
       <configuration index="3" caption="Valid exit codes" value=""/>
+      <configuration index="4" caption="Result file" value=""/>
     </action>
     <action classname="TCommandLineCaller">
       <configuration index="0" caption="Application" value="..\devtools\jpp.exe"/>
       <configuration index="1" caption="Working directory" value="sandbox\install"/>
       <configuration index="2" caption="Parameters" value="-c -dVCL -dMSWINDOWS -uVisualCLX -uUnix -uKYLIX -xVclGui\ prototypes\JediGUIReadme.pas"/>
       <configuration index="3" caption="Valid exit codes" value=""/>
+      <configuration index="4" caption="Result file" value=""/>
     </action>
     <action classname="TCommandLineCaller">
       <configuration index="0" caption="Application" value="..\devtools\jpp.exe"/>
       <configuration index="1" caption="Working directory" value="sandbox\install"/>
       <configuration index="2" caption="Parameters" value="-c -dVCL -dMSWINDOWS -uVisualCLX -uUnix -uKYLIX -xVclGui\ prototypes\JediGUIInstall.pas"/>
       <configuration index="3" caption="Valid exit codes" value=""/>
+      <configuration index="4" caption="Result file" value=""/>
     </action>
     <action classname="TCommandLineCaller">
       <configuration index="0" caption="Application" value="%DCC2006%"/>
       <configuration index="1" caption="Working directory" value="sandbox\install"/>
       <configuration index="2" caption="Parameters" value="-q -w -dJCLINSTALL -E..\bin -I..\source -U..\source\common;..\source\windows JediInstaller.dpr"/>
       <configuration index="3" caption="Valid exit codes" value=""/>
+      <configuration index="4" caption="Result file" value=""/>
     </action>
     <action classname="TFileMover">
       <configuration index="0" caption="Old file name" value="sandbox\Install turbo delphi.bat"/>
@@ -201,6 +211,7 @@
       <configuration index="1" caption="Working directory" value="sandbox"/>
       <configuration index="2" caption="Parameters" value="export -rBASE --native-eol CRLF --force ..\..\..\ ."/>
       <configuration index="3" caption="Valid exit codes" value=""/>
+      <configuration index="4" caption="Result file" value=""/>
     </action>
     <action classname="TConstantParser">
       <configuration index="0" caption="Source file" value="sandbox\jcl\source\common\JclBase.pas"/>
@@ -227,6 +238,7 @@
       <configuration index="1" caption="Working directory" value="sandbox\jcl\devtools\"/>
       <configuration index="2" caption="Parameters" value="/C included_files.bat"/>
       <configuration index="3" caption="Valid exit codes" value=""/>
+      <configuration index="4" caption="Result file" value=""/>
     </action>
     <action classname="TDirectoryCreator">
       <configuration index="0" caption="Directory" value="sandbox\jcl\help\html"/>
@@ -236,6 +248,7 @@
       <configuration index="1" caption="Working directory" value="sandbox\help"/>
       <configuration index="2" caption="Parameters" value="-config &quot;HTML&quot; -noshow -w3 JclHelp.dox"/>
       <configuration index="3" caption="Valid exit codes" value="0;20;30"/>
+      <configuration index="4" caption="Result file" value=""/>
     </action>
     <action classname="TArchiveMaker">
       <configuration index="0" caption="Directory" value="sandbox\jcl"/>
@@ -281,6 +294,7 @@
       <configuration index="1" caption="Working directory" value="sandbox"/>
       <configuration index="2" caption="Parameters" value="export -rBASE --native-eol CRLF --force ..\..\..\ ."/>
       <configuration index="3" caption="Valid exit codes" value=""/>
+      <configuration index="4" caption="Result file" value=""/>
     </action>
     <action classname="TConstantParser">
       <configuration index="0" caption="Source file" value="sandbox\jcl\source\common\JclBase.pas"/>
@@ -307,6 +321,7 @@
       <configuration index="1" caption="Working directory" value="sandbox\jcl\devtools\"/>
       <configuration index="2" caption="Parameters" value="/C included_files.bat"/>
       <configuration index="3" caption="Valid exit codes" value=""/>
+      <configuration index="4" caption="Result file" value=""/>
     </action>
     <action classname="TDirectoryCreator">
       <configuration index="0" caption="Directory" value="sandbox\jcl\help"/>
@@ -316,6 +331,7 @@
       <configuration index="1" caption="Working directory" value="sandbox\help"/>
       <configuration index="2" caption="Parameters" value="-config &quot;CHM&quot; -noshow -w3 JclHelp.dox"/>
       <configuration index="3" caption="Valid exit codes" value="0;20;30"/>
+      <configuration index="4" caption="Result file" value=""/>
     </action>
     <action classname="TFileRemover">
       <configuration index="0" caption="Directory" value="sandbox\jcl\help"/>
@@ -346,6 +362,7 @@
       <configuration index="1" caption="Working directory" value="sandbox"/>
       <configuration index="2" caption="Parameters" value="export -rBASE --native-eol CRLF --force ..\..\..\ ."/>
       <configuration index="3" caption="Valid exit codes" value=""/>
+      <configuration index="4" caption="Result file" value=""/>
     </action>
     <action classname="TConstantParser">
       <configuration index="0" caption="Source file" value="sandbox\jcl\source\common\JclBase.pas"/>
@@ -372,6 +389,7 @@
       <configuration index="1" caption="Working directory" value="sandbox\jcl\devtools\"/>
       <configuration index="2" caption="Parameters" value="/C included_files.bat"/>
       <configuration index="3" caption="Valid exit codes" value=""/>
+      <configuration index="4" caption="Result file" value=""/>
     </action>
     <action classname="TDirectoryCreator">
       <configuration index="0" caption="Directory" value="sandbox\jcl\help"/>
@@ -381,6 +399,7 @@
       <configuration index="1" caption="Working directory" value="sandbox\help"/>
       <configuration index="2" caption="Parameters" value="-config &quot;H2&quot; -noshow -w3 JclHelp.dox"/>
       <configuration index="3" caption="Valid exit codes" value="0;20;30"/>
+      <configuration index="4" caption="Result file" value=""/>
     </action>
     <action classname="TFileRemover">
       <configuration index="0" caption="Directory" value="sandbox\jcl\help"/>
@@ -411,6 +430,7 @@
       <configuration index="1" caption="Working directory" value="sandbox"/>
       <configuration index="2" caption="Parameters" value="export -rBASE --native-eol CRLF --force ..\..\..\ ."/>
       <configuration index="3" caption="Valid exit codes" value=""/>
+      <configuration index="4" caption="Result file" value=""/>
     </action>
     <action classname="TConstantParser">
       <configuration index="0" caption="Source file" value="sandbox\jcl\source\common\JclBase.pas"/>
@@ -437,6 +457,7 @@
       <configuration index="1" caption="Working directory" value="sandbox\jcl\devtools\"/>
       <configuration index="2" caption="Parameters" value="/C included_files.bat"/>
       <configuration index="3" caption="Valid exit codes" value=""/>
+      <configuration index="4" caption="Result file" value=""/>
     </action>
     <action classname="TDirectoryCreator">
       <configuration index="0" caption="Directory" value="sandbox\jcl\help"/>
@@ -446,6 +467,7 @@
       <configuration index="1" caption="Working directory" value="sandbox\help"/>
       <configuration index="2" caption="Parameters" value="-config &quot;HLP&quot; -noshow -w3 JclHelp.dox"/>
       <configuration index="3" caption="Valid exit codes" value="0;20;30"/>
+      <configuration index="4" caption="Result file" value=""/>
     </action>
     <action classname="TArchiveMaker">
       <configuration index="0" caption="Directory" value="sandbox\jcl"/>
@@ -471,6 +493,7 @@
       <configuration index="1" caption="Working directory" value="sandbox"/>
       <configuration index="2" caption="Parameters" value="export -rBASE --native-eol CRLF --force ..\..\..\ ."/>
       <configuration index="3" caption="Valid exit codes" value=""/>
+      <configuration index="4" caption="Result file" value=""/>
     </action>
     <action classname="TConstantParser">
       <configuration index="0" caption="Source file" value="sandbox\jcl\source\common\JclBase.pas"/>
@@ -497,6 +520,7 @@
       <configuration index="1" caption="Working directory" value="sandbox\jcl\devtools\"/>
       <configuration index="2" caption="Parameters" value="/C included_files.bat"/>
       <configuration index="3" caption="Valid exit codes" value=""/>
+      <configuration index="4" caption="Result file" value=""/>
     </action>
     <action classname="TDirectoryCreator">
       <configuration index="0" caption="Directory" value="sandbox\jcl\help"/>
@@ -506,6 +530,7 @@
       <configuration index="1" caption="Working directory" value="sandbox\help"/>
       <configuration index="2" caption="Parameters" value="-config &quot;XML&quot; -noshow -w3 JclHelp.dox"/>
       <configuration index="3" caption="Valid exit codes" value="0;20;30"/>
+      <configuration index="4" caption="Result file" value=""/>
     </action>
     <action classname="TArchiveMaker">
       <configuration index="0" caption="Directory" value="sandbox\jcl"/>
@@ -531,6 +556,7 @@
       <configuration index="1" caption="Working directory" value="sandbox"/>
       <configuration index="2" caption="Parameters" value="export -rBASE --native-eol CRLF --force ..\..\..\ ."/>
       <configuration index="3" caption="Valid exit codes" value=""/>
+      <configuration index="4" caption="Result file" value=""/>
     </action>
     <action classname="TConstantParser">
       <configuration index="0" caption="Source file" value="sandbox\jcl\source\common\JclBase.pas"/>
@@ -557,6 +583,7 @@
       <configuration index="1" caption="Working directory" value="sandbox\jcl\devtools\"/>
       <configuration index="2" caption="Parameters" value="/C included_files.bat"/>
       <configuration index="3" caption="Valid exit codes" value=""/>
+      <configuration index="4" caption="Result file" value=""/>
     </action>
     <action classname="TDirectoryCreator">
       <configuration index="0" caption="Directory" value="sandbox\jcl\help"/>
@@ -566,6 +593,7 @@
       <configuration index="1" caption="Working directory" value="sandbox\help"/>
       <configuration index="2" caption="Parameters" value="-config &quot;PDF&quot; -noshow -w3 JclHelp.dox"/>
       <configuration index="3" caption="Valid exit codes" value="0;20;30"/>
+      <configuration index="4" caption="Result file" value=""/>
     </action>
     <action classname="TArchiveMaker">
       <configuration index="0" caption="Directory" value="sandbox\jcl"/>
