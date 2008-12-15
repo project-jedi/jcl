@@ -2357,7 +2357,7 @@ var
   CRC: Word;
 begin
   CRC := FBuffer[FBufferCurrentSize] + (FBuffer[FBufferCurrentSize + 1] shl 8);
-  if CheckCrc16(FBuffer, FBufferCurrentSize, CRC) < 0 then
+  if {$IFDEF COMPILER5}CheckCrc16D5{$ELSE}CheckCrc16{$ENDIF COMPILER5}(FBuffer, FBufferCurrentSize, CRC) < 0 then
     {$IFDEF CLR}
     raise EJclStreamError.Create(RsStreamsCRCError);
     {$ELSE ~CLR}
@@ -2387,7 +2387,7 @@ var
 begin
   CRC := FBuffer[FBufferCurrentSize] + (FBuffer[FBufferCurrentSize + 1] shl 8)
     + (FBuffer[FBufferCurrentSize + 2] shl 16) + (FBuffer[FBufferCurrentSize + 3] shl 24);
-  if CheckCrc32(FBuffer, FBufferCurrentSize, CRC) < 0 then
+  if {$IFDEF COMPILER5}CheckCrc32D5{$ELSE}CheckCrc32{$ENDIF COMPILER5}(FBuffer, FBufferCurrentSize, CRC) < 0 then
     {$IFDEF CLR}
     raise EJclStreamError.Create(RsStreamsCRCError);
     {$ELSE ~CLR}
