@@ -634,38 +634,42 @@ end;
 function EntityEncode(const S: string): string;
 var
   C: Char;
-  SLen, SIndex, RLen, RIndex: Integer;
+  SIndex, SLen, RIndex, RLen: Integer;
+  Tmp: string;
+
 begin
   SLen := Length(S);
   RLen := SLen;
   RIndex := 1;
-  SetLength(Result, RLen);
+  SetLength(Tmp, RLen);
   for SIndex := 1 to SLen do
   begin
     C := S[SIndex];
     case C of
       '"':
-        AddEntity(Result, RIndex, RLen, '&quot;');
+        AddEntity(Tmp, RIndex, RLen, '&quot;');
       '&':
-        AddEntity(Result, RIndex, RLen, '&amp;');
+        AddEntity(Tmp, RIndex, RLen, '&amp;');
       #39:
-        AddEntity(Result, RIndex, RLen, '&apos;');
+        AddEntity(Tmp, RIndex, RLen, '&apos;');
       '<':
-        AddEntity(Result, RIndex, RLen, '&lt;');
+        AddEntity(Tmp, RIndex, RLen, '&lt;');
       '>':
-        AddEntity(Result, RIndex, RLen, '&gt;');
+        AddEntity(Tmp, RIndex, RLen, '&gt;');
     else
       if RIndex > RLen then
       begin
         RLen := RLen * 2;
-        SetLength(Result, RLen);
+        SetLength(Tmp, RLen);
       end;
-      Result[RIndex] := C;
+      Tmp[RIndex] := C;
       Inc(RIndex);
     end;
   end;
   if RIndex > 1 then
-    SetLength(Result, RIndex - 1);
+    SetLength(Tmp, RIndex - 1);
+
+  Result := Tmp;
 end;
 
 function EntityDecode(const S: string): string;
@@ -836,6 +840,7 @@ var
   C: Char;
   SIndex, SLen, RIndex, RLen: Integer;
   Tmp: string;
+
 begin
   SLen := Length(S);
   RLen := SLen;
