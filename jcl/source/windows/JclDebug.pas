@@ -25,6 +25,7 @@
 {   Andreas Hausladen (ahuser)                                                                     }
 {   Petr Vones (pvones)                                                                            }
 {   Soeren Muehlbauer                                                                              }
+{   Uwe Schuster (uschuster)                                                                       }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -798,7 +799,9 @@ var
 
 // functions to add/remove exception classes to be ignored if StTraceAllExceptions is not set
 procedure AddIgnoredException(const ExceptionClass: TClass);
+procedure AddIgnoredExceptionByName(const AExceptionClassName: string);
 procedure RemoveIgnoredException(const ExceptionClass: TClass);
+procedure RemoveIgnoredExceptionByName(const AExceptionClassName: string);
 function IsIgnoredException(const ExceptionClass: TClass): Boolean;
 
 {$IFDEF UNITVERSIONING}
@@ -4723,6 +4726,8 @@ end;
 var
   TrackingActive: Boolean;
   IgnoredExceptions: TThreadList = nil;
+  IgnoredExceptionClassNames: TStringList = nil;
+  IgnoredExceptionClassNamesCritSect: TJclCriticalSection = nil;
 
 procedure AddIgnoredException(const ExceptionClass: TClass);
 begin
@@ -4732,6 +4737,27 @@ begin
       IgnoredExceptions := TThreadList.Create;
 
     IgnoredExceptions.Add(ExceptionClass);
+  end;
+end;
+
+procedure AddIgnoredExceptionByName(const AExceptionClassName: string);
+begin
+  if AExceptionClassName <> '' then
+  begin
+    if not Assigned(IgnoredExceptionClassNamesCritSect) then
+      IgnoredExceptionClassNamesCritSect := TJclCriticalSection.Create;
+    if not Assigned(IgnoredExceptionClassNames) then
+    begin
+      IgnoredExceptionClassNames := TStringList.Create;
+      IgnoredExceptionClassNames.Duplicates := dupIgnore;
+      IgnoredExceptionClassNames.Sorted := True;
+    end;
+    IgnoredExceptionClassNamesCritSect.Enter;
+    try
+      IgnoredExceptionClassNames.Add(AExceptionClassName);
+    finally
+      IgnoredExceptionClassNamesCritSect.Leave;
+    end;
   end;
 end;
 
@@ -4746,6 +4772,23 @@ begin
       ClassList.Remove(ExceptionClass);
     finally
       IgnoredExceptions.UnlockList;
+    end;
+  end;
+end;
+
+procedure RemoveIgnoredExceptionByName(const AExceptionClassName: string);
+var
+  Index: Integer;
+begin
+  if Assigned(IgnoredExceptionClassNames) and (AExceptionClassName <> '') then
+  begin
+    IgnoredExceptionClassNamesCritSect.Enter;
+    try
+      Index := IgnoredExceptionClassNames.IndexOf(AExceptionClassName);
+      if Index <> -1 then
+        IgnoredExceptionClassNames.Delete(Index);
+    finally
+      IgnoredExceptionClassNamesCritSect.Leave;
     end;
   end;
 end;
@@ -4768,6 +4811,22 @@ begin
       end;
     finally
       IgnoredExceptions.UnlockList;
+    end;
+  end;
+  if not Result and Assigned(IgnoredExceptionClassNames) and not (stTraceAllExceptions in JclStackTrackingOptions) then
+  begin
+    IgnoredExceptionClassNamesCritSect.Enter;
+    try
+      Result := IgnoredExceptionClassNames.IndexOf(ExceptionClass.ClassName) <> -1;
+      if not Result then
+        for Index := 0 to IgnoredExceptionClassNames.Count - 1 do
+          if InheritsFromByName(ExceptionClass, IgnoredExceptionClassNames[Index]) then
+          begin
+            Result := True;
+            Break;
+          end;
+    finally
+      IgnoredExceptionClassNamesCritSect.Leave;
     end;
   end;
 end;
@@ -5215,6 +5274,8 @@ finalization
   FreeAndNil(DebugInfoCritSect);
   FreeAndNil(InfoSourceClassList);
   FreeAndNil(IgnoredExceptions);
+  FreeAndNil(IgnoredExceptionClassNames);
+  FreeAndNil(IgnoredExceptionClassNamesCritSect);
 
   TJclDebugInfoSymbols.CleanupDebugSymbols;
 

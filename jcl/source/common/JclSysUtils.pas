@@ -353,6 +353,8 @@ function IsClass(Address: Pointer): Boolean;
 function IsObject(Address: Pointer): Boolean;
 {$ENDIF ~FPC}
 
+function InheritsFromByName(AClass: TClass; const AClassName: string): Boolean;
+
 // Interface information
 function GetImplementorOfInterface(const I: IInterface): TObject;
 {$ENDIF ~CLR}
@@ -1908,6 +1910,13 @@ asm
 @Exit:
 end;
 {$ENDIF ~FPC}
+
+function InheritsFromByName(AClass: TClass; const AClassName: string): Boolean;
+begin
+  while (AClass <> nil) and not AClass.ClassNameIs(AClassName) do
+    AClass := AClass.ClassParent;
+  Result := AClass <> nil;
+end;
 
 //=== Interface information ==================================================
 
