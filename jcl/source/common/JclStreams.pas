@@ -1538,7 +1538,15 @@ begin
   while Count > 0 do
   begin
     if not BufferHit then
-      LoadBuffer;
+    begin
+      if (FBufferStart <= FPosition) and (FPosition < (FBufferStart + FBufferSize)) then
+      begin
+        if Length(FBuffer) <> FBufferSize then
+          SetLength(FBuffer, FBufferSize);
+      end
+      else
+        LoadBuffer;
+    end;
     Dec(Count, WriteToBuffer(Buffer, Count, Result - Count));
   end;
   Result := Result - Count - Offset;
