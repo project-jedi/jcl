@@ -18,6 +18,7 @@
 { Contributors:                                                                                    }
 {   Olivier Sannier (obones)                                                                       }
 {   Florent Ouchet (outchy)                                                                        }
+{   Jan Goyvaerts (jgsoft)                                                                         }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -4138,7 +4139,7 @@ end;
 procedure TJclDecompressItem.CheckSetProperty(
   AProperty: TJclCompressionItemProperty);
 begin
-  (Archive as TJclDecompressArchive).CheckListing;
+  (Archive as TJclDecompressArchive).CheckNotDecompressing;
 end;
 
 function TJclDecompressItem.ValidateExtraction(Index: Integer): Boolean;
