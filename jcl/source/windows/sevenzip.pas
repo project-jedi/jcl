@@ -41,6 +41,7 @@
 { Translation 2007-2008 Florent Ouchet for the Jedi Code Library                                   }
 { Contributors:                                                                                    }
 {   Uwe Schuster (uschuster)                                                                       }
+{   Jan Goyvaerts (jgsoft)                                                                         }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -540,12 +541,6 @@ const
   kDeflateFastBytesX7 = 64;
   kDeflateFastBytesX9 = 128;
 
-{$IFDEF 7ZIP_STATICLINK}
-function CreateObject(ClsID: PGUID; IID: PGUID; out Obj): HRESULT; stdcall;
-function GetNumberOfFormats(NumFormats: PCardinal): HRESULT; stdcall;
-function GetNumberOfMethods(NumMethods: PCardinal): HRESULT; stdcall;
-{$ENDIF 7ZIP_STATICLINK}
-
 {$IFDEF 7ZIP_LINKONREQUEST}
 type
   TCreateObjectFunc = function (ClsID: PGUID; IID: PGUID; out Obj): HRESULT; stdcall;
@@ -556,7 +551,11 @@ var
   CreateObject: TCreateObjectFunc = nil;
   GetNumberOfFormats: TGetNumberOfFormatsFunc = nil;
   GetNumberOfMethods: TGetNumberOfMethodsFunc = nil;
-{$ENDIF 7ZIP_LINKONREQUEST}
+{$ELSE ~7ZIP_LINKONREQUEST}
+function CreateObject(ClsID: PGUID; IID: PGUID; out Obj): HRESULT; stdcall;
+function GetNumberOfFormats(NumFormats: PCardinal): HRESULT; stdcall;
+function GetNumberOfMethods(NumMethods: PCardinal): HRESULT; stdcall;
+{$ENDIF ~7ZIP_LINKONREQUEST}
 
 function Load7Zip: Boolean;
 function Is7ZipLoaded: Boolean;
