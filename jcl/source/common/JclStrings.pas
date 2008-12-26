@@ -198,6 +198,8 @@ procedure StrProperBuff(S: PChar);
 function StrQuote(const S: string; C: Char): string;
 function StrRemoveChars(const S: string; const Chars: TCharValidator): string; overload;
 function StrRemoveChars(const S: string; const Chars: array of Char): string; overload;
+function StrRemoveEndChars(const S: string; const Chars: TCharValidator): string; overload;
+function StrRemoveEndChars(const S: string; const Chars: array of Char): string; overload;
 function StrKeepChars(const S: string; const Chars: TCharValidator): string; overload;
 function StrKeepChars(const S: string; const Chars: array of Char): string; overload;
 procedure StrReplace(var S: string; const Search, Replace: string; Flags: TReplaceFlags = []);
@@ -1608,6 +1610,58 @@ begin
     Inc(Source);
   end;
   SetLength(Result, Dest - PChar(Result));
+end;
+{$ENDIF CLR}
+
+function StrRemoveEndChars(const S: string; const Chars: TCharValidator): string;
+{$IFDEF CLR}
+var
+  Len: Integer;
+  I: Integer;
+  sb: StringBuilder;
+begin
+  Len := Length(S);
+  while (Len > 0) and Chars(s[Len]) do
+    Dec(Len);
+  sb := StringBuilder.Create(Len);
+  for I := 0 to Len  do
+    sb.Append(S[I]);
+  Result := sb.ToString();
+end;
+{$ELSE}
+var
+  Len :   Integer;
+begin
+  Len := Length(S);
+  while (Len > 0) and Chars(s[Len]) do
+    Dec(Len);
+  Result := Copy (s, 1, Len);
+end;
+{$ENDIF CLR}
+
+function StrRemoveEndChars(const S: string; const Chars: array of Char): string;
+{$IFDEF CLR}
+var
+  Len: Integer;
+  I: Integer;
+  sb: StringBuilder;
+begin
+  Len := Length(S);
+  while (Len > 0) and ArrayContainsChar(Chars, s[Len]) do
+    Dec(Len);
+  sb := StringBuilder.Create(Len);
+  for I := 0 to Len  do
+    sb.Append(S[I]);
+  Result := sb.ToString();
+end;
+{$ELSE}
+var
+  Len :   Integer;
+begin
+  Len := Length(S);
+  while (Len > 0) and ArrayContainsChar(Chars, s[Len]) do
+    Dec(Len);
+  Result := Copy (s, 1, Len);
 end;
 {$ENDIF CLR}
 
