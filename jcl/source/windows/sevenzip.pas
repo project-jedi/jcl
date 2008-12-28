@@ -3,9 +3,9 @@
 { Project JEDI Code Library (JCL)                                                                  }
 {                                                                                                  }
 { interface of the 'sevenzip' (http://sourceforge.net/projects/sevenzip/) compression library      }
-{ version 4.57, December 6th, 2007                                                                 }
+{ version 4.62, December 2th, 2008                                                                 }
 {                                                                                                  }
-{ Copyright (C) 1999-2007 Igor Pavlov                                                              }
+{ Copyright (C) 1999-2008 Igor Pavlov                                                              }
 {                                                                                                  }
 { GNU LGPL information                                                                             }
 { --------------------                                                                             }
@@ -38,7 +38,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Translation 2007-2008 Florent Ouchet for the Jedi Code Library                                   }
+{ Translation 2007-2008 Florent Ouchet for the JEDI Code Library                                   }
 { Contributors:                                                                                    }
 {   Uwe Schuster (uschuster)                                                                       }
 {   Jan Goyvaerts (jgsoft)                                                                         }
@@ -62,6 +62,7 @@ uses
   Windows,
   ActiveX;
 
+// Guid.txt  
 const
   CLSID_CCodec : TGUID = '{23170F69-40C1-2790-0000-000000000000}';
   CLSID_CCodecBCJ2    : TGUID = '{23170F69-40C1-2790-1B01-030300000000}'; // BCJ2 0303011B
@@ -95,7 +96,15 @@ const
   CLSID_CFormat7z       : TGUID = '{23170F69-40C1-278A-1000-000110070000}';
   CLSID_CFormatCab      : TGUID = '{23170F69-40C1-278A-1000-000110080000}';
   CLSID_CFormatNsis     : TGUID = '{23170F69-40C1-278A-1000-000110090000}';
-  //CLSID_CFormatLzma     : TGUID = '{23170F69-40C1-278A-1000-0001100A0000}';  not in 4.57
+  CLSID_CFormatLzma     : TGUID = '{23170F69-40C1-278A-1000-0001100A0000}';
+  CLSID_CFormatPe       : TGUID = '{23170F69-40C1-278A-1000-000110DD0000}';
+  CLSID_CFormatElf      : TGUID = '{23170F69-40C1-278A-1000-000110DE0000}';
+  CLSID_CFormatMacho    : TGUID = '{23170F69-40C1-278A-1000-000110DF0000}';
+  CLSID_CFormatUdf      : TGUID = '{23170F69-40C1-278A-1000-000110E00000}';
+  CLSID_CFormatXar      : TGUID = '{23170F69-40C1-278A-1000-000110E10000}';
+  CLSID_CFormatMub      : TGUID = '{23170F69-40C1-278A-1000-000110E20000}';
+  CLSID_CFormatHfs      : TGUID = '{23170F69-40C1-278A-1000-000110E30000}';
+  CLSID_CFormatDmg      : TGUID = '{23170F69-40C1-278A-1000-000110E40000}';
   CLSID_CFormatCompound : TGUID = '{23170F69-40C1-278A-1000-000110E50000}';
   CLSID_CFormatWim      : TGUID = '{23170F69-40C1-278A-1000-000110E60000}';
   CLSID_CFormatIso      : TGUID = '{23170F69-40C1-278A-1000-000110E70000}';
@@ -158,13 +167,19 @@ const
   kpidPath = 3;
   kpidName = 4;
   kpidExtension = 5;
-  kpidIsFolder = 6;
+  kpidIsFolder = 6 {$IFDEF SUPPORTS_DEPRECATED} deprecated {$IFDEF SUPPORTS_DEPRECATED_DETAILS} 'Use kpidIsDir' {$ENDIF} {$ENDIF};
+  kpidIsDir = 6;
   kpidSize = 7;
-  kpidPackedSize = 8;
-  kpidAttributes = 9;
-  kpidCreationTime = 10;
-  kpidLastAccessTime = 11;
-  kpidLastWriteTime = 12;
+  kpidPackedSize = 8 {$IFDEF SUPPORTS_DEPRECATED} deprecated {$IFDEF SUPPORTS_DEPRECATED_DETAILS} 'Use kpidPackSize' {$ENDIF} {$ENDIF};
+  kpidPackSize = 8;
+  kpidAttributes = 9 {$IFDEF SUPPORTS_DEPRECATED} deprecated {$IFDEF SUPPORTS_DEPRECATED_DETAILS} 'Use kpidAttrib' {$ENDIF} {$ENDIF};
+  kpidAttrib = 9;
+  kpidCreationTime = 10 {$IFDEF SUPPORTS_DEPRECATED} deprecated {$IFDEF SUPPORTS_DEPRECATED_DETAILS} 'Use kpidCTime' {$ENDIF} {$ENDIF};
+  kpidCTime = 10;
+  kpidLastAccessTime = 11 {$IFDEF SUPPORTS_DEPRECATED} deprecated {$IFDEF SUPPORTS_DEPRECATED_DETAILS} 'Use kpidATime' {$ENDIF} {$ENDIF};
+  kpidATime = 11;
+  kpidLastWriteTime = 12 {$IFDEF SUPPORTS_DEPRECATED} deprecated {$IFDEF SUPPORTS_DEPRECATED_DETAILS} 'Use kpidMTime' {$ENDIF} {$ENDIF};
+  kpidMTime = 12;
   kpidSolid = 13;
   kpidCommented = 14;
   kpidEncrypted = 15;
@@ -183,6 +198,24 @@ const
   kpidComment = 28;
   kpidPosition = 29;
   kpidPrefix = 30;
+  kpidNumSubDirs = 31;
+  kpidNumSubFiles = 32;
+  kpidUnpackVer = 33;
+  kpidVolume = 34;
+  kpidIsVolume = 35;
+  kpidOffset = 36;
+  kpidLinks = 37;
+  kpidNumBlocks = 38;
+  kpidNumVolumes = 39;
+  kpidTimeType = 40;
+  kpidBit64 = 41;
+  kpidBigEndian = 42;
+  kpidCpu = 43;
+  kpidPhySize = 44;
+  kpidHeadersSize = 45;
+  kpidChecksum = 46;
+  kpidCharacts = 47;
+  kpidVa = 48;
 
   kpidTotalSize = $1100;
   kpidFreeSpace = $1101;
@@ -236,6 +269,7 @@ const
   kDictionarySize = $400;
   kUsedMemorySize = $401;
   kOrder = $402;
+  kBlockSize = $403;
   kPosStateBits = $440;
   kLitContextBits = $441;
   kLitPosBits = $442;
@@ -494,16 +528,24 @@ type
 
 // ZipHandlerOut.cpp
 const
-  kDeflateAlgoX1 = 0;
-  kDeflateAlgoX5 = 1;
+  kDeflateAlgoX1 = 0 {$IFDEF SUPPORTS_DEPRECATED} deprecated {$IFDEF SUPPORTS_DEPRECATED_DETAILS} 'Use kLzAlgoX1' {$ENDIF} {$ENDIF};
+  kLzAlgoX1 = 0;
+  kDeflateAlgoX5 = 1 {$IFDEF SUPPORTS_DEPRECATED} deprecated {$IFDEF SUPPORTS_DEPRECATED_DETAILS} 'Use kLzAlgoX5' {$ENDIF} {$ENDIF};
+  kLzAlgoX5 = 1;
 
   kDeflateNumPassesX1  = 1;
   kDeflateNumPassesX7  = 3;
   kDeflateNumPassesX9  = 10;
 
-  kNumFastBytesX1 = 32;
-  kNumFastBytesX7 = 64;
-  kNumFastBytesX9 = 128;
+  kNumFastBytesX1 = 32 {$IFDEF SUPPORTS_DEPRECATED} deprecated {$IFDEF SUPPORTS_DEPRECATED_DETAILS} 'Use kDeflateNumFastBytesX1' {$ENDIF} {$ENDIF};
+  kDeflateNumFastBytesX1 = 32;
+  kNumFastBytesX7 = 64 {$IFDEF SUPPORTS_DEPRECATED} deprecated {$IFDEF SUPPORTS_DEPRECATED_DETAILS} 'Use kDeflateNumFastBytesX7' {$ENDIF} {$ENDIF};
+  kDeflateNumFastBytesX7 = 64;
+  kNumFastBytesX9 = 128 {$IFDEF SUPPORTS_DEPRECATED} deprecated {$IFDEF SUPPORTS_DEPRECATED_DETAILS} 'Use kDeflateNumFastBytesX9' {$ENDIF} {$ENDIF};
+  kDeflateNumFastBytesX9 = 128;
+
+  kLzmaNumFastBytesX1 = 32;
+  kLzmaNumFastBytesX7 = 64;
 
   kBZip2NumPassesX1 = 1;
   kBZip2NumPassesX7 = 2;
@@ -623,7 +665,7 @@ end;
 begin
   Result := True;
 end;
-  {$ENDIF ~7ZIP_LINKONREQUEST}
+{$ENDIF ~7ZIP_LINKONREQUEST}
 
 function Is7ZipLoaded: Boolean;
 begin

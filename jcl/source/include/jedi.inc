@@ -380,7 +380,8 @@
   SUPPORTS_STATIC                Compiler supports static keyword (D9.NET, D10+)
   SUPPORTS_FINAL                 Compiler supports final keyword (D9.NET, D10+)
   SUPPORTS_METHODINFO            Compiler supports the METHODINFO directives (D10+)
-  SUPPORTS_GENERICS              Compiler supports generic implementations (D11.net, D12+)
+  SUPPORTS_GENERICS              Compiler supports generic implementations (D11.NET, D12+)
+  SUPPORTS_DEPRECATED_DETAILS    Compiler supports additional text for the deprecated directive (D11.NET, D12+)
   ACCEPT_DEPRECATED              Compiler supports or ignores the deprecated directive (D6+/BCB6+/FPC)
   ACCEPT_PLATFORM                Compiler supports or ignores the platform directive (D6+/BCB6+/FPC)
   ACCEPT_LIBRARY                 Compiler supports or ignores the library directive (D6+/BCB6+)
@@ -405,7 +406,7 @@
   HAS_UNIT_ANSISTRINGS           Unit AnsiStrings exists (D12+)
   HAS_UNIT_PNGIMAGE              Unit PngImage exists (D12+)
   XPLATFORM_RTL                  The RTL supports crossplatform function names (e.g. RaiseLastOSError) (D6+/BCB6+/FPC)
-  SUPPORTS_UNICODE               string type is aliased to an unicode string (WideString or UnicodeString) (DX.net, D12+)
+  SUPPORTS_UNICODE               string type is aliased to an unicode string (WideString or UnicodeString) (DX.NET, D12+)
   SUPPORTS_UNICODE_STRING        Compiler supports UnicodeString (D12+)
 
 
@@ -1094,11 +1095,13 @@
 {$IFDEF COMPILER11_UP}
   {$IFDEF CLR}
     {$DEFINE SUPPORTS_GENERICS}
+    {$DEFINE SUPPORTS_DEPRECATED_DETAILS}
   {$ENDIF CLR}
 {$ENDIF COMPILER11_UP}
 
 {$IFDEF COMPILER12_UP}
   {$DEFINE SUPPORTS_GENERICS}
+  {$DEFINE SUPPORTS_DEPRECATED_DETAILS}
   {$IFNDEF CLR}
     {$DEFINE SUPPORTS_UNICODE}
     {$DEFINE SUPPORTS_UNICODE_STRING}

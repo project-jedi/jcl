@@ -29,6 +29,7 @@
 {   Robert Marquardt (marquardt)                                                                   }
 {   Robert Rossmair (rrossmair)                                                                    }
 {   Scott Price (scottprice)                                                                       }
+{   Uwe Schuster (uschuster)                                                                       }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -56,7 +57,7 @@ uses
 {$IFNDEF RTL140_UP}
 const
   sLineBreak = #13#10;
-{$ENDIF RTL140_UP}
+{$ENDIF ~RTL140_UP}
 
 //=== JclBase ================================================================
 resourcestring
@@ -839,6 +840,28 @@ resourcestring
   RsCompressionCabExtensions         = '*.cab';
   RsCompressionNsisName              = 'Nsis archive';
   RsCompressionNsisExtensions        = '*.nsis';
+  RsCompressionLzmaName              = 'Lzma archive';
+  RsCompressionLzmaExtensions        = '*.lzma';
+  RsCompressionPeName                = 'Pe archive';
+  // TODO: extension might be *.*, but then TJclCompressionStreamFormats.FindDecompressFormat can fail
+  RsCompressionPeExtensions          = '*.';
+  RsCompressionElfName               = 'Elf archive';
+  // TODO: extension might be *.*, but then TJclCompressionStreamFormats.FindDecompressFormat can fail
+  RsCompressionElfExtensions         = '*.';
+  RsCompressionMachoName             = 'Mach-O archive';
+  // TODO: extension might be *.*, but then TJclCompressionStreamFormats.FindDecompressFormat can fail
+  RsCompressionMachoExtensions       = '*.';
+  RsCompressionUdfName               = 'Udf archive';
+  RsCompressionUdfExtensions         = '*.iso';
+  RsCompressionXarName               = 'Xar archive';
+  RsCompressionXarExtensions         = '*.xar';
+  RsCompressionMubName               = 'Mub archive';
+  // TODO: extension might be *.*, but then TJclCompressionStreamFormats.FindDecompressFormat can fail
+  RsCompressionMubExtensions         = '*.';
+  RsCompressionHfsName               = 'Hfs archive';
+  RsCompressionHfsExtensions         = '*.hfs';
+  RsCompressionDmgName               = 'Dmg archive';
+  RsCompressionDmgExtensions         = '*.dmg';
   RsCompressionCompoundName          = 'Compound archive';
   RsCompressionCompoundExtensions    = '*.msi;*.doc;*.xls;*.ppt';
   RsCompressionWimName               = 'Wim archive';
