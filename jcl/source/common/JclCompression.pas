@@ -66,6 +66,9 @@ uses
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
+  {$IFNDEF SUPPORTS_UNICODE}
+  JclWideStrings,
+  {$ENDIF SUPPORTS_UNICODE}
   SysUtils, Classes, Contnrs,
   zlibh, bzip2,
   JclBase, JclStreams;
@@ -550,6 +553,9 @@ type
   TJclCompressionOperationSuccess = (osNoOperation, osOK, osUnsupportedMethod,
     osDataError, osCRCError, osUnknownError);
 
+  TJclCompressionDuplicateCheck = (dcNone, dcExisting, dcAll);
+  TJclCompressionDuplicateAction = (daOverwrite, daError, daSkip);
+
   TJclCompressionArchive = class;
 
   TJclCompressionItem = class
@@ -883,11 +889,15 @@ type
     FBaseRelName: WideString;
     FBaseDirName: string;
     FAddFilesInDir: Boolean;
+    FDuplicateAction: TJclCompressionDuplicateAction;
+    FDuplicateCheck: TJclCompressionDuplicateCheck;
     procedure InternalAddFile(const Directory: string; const FileInfo: TSearchRec);
     procedure InternalAddDirectory(const Directory: string);
   protected
     FCompressing: Boolean;
+    PackedNames: {$IFDEF SUPPORTS_UNICODE}TStringList{$ELSE}TWStringList{$ENDIF};
     procedure CheckNotCompressing;
+    function AddFileCheckDuplicate(NewItem: TJclCompressionItem): Integer;
   public
     class function VolumeAccess: TJclStreamAccess; override;
     class function ItemAccess: TJclStreamAccess; override;
@@ -900,6 +910,9 @@ type
     function AddFile(const PackedName: WideString; AStream: TStream;
       AOwnsStream: Boolean = False): Integer; overload; virtual;
     procedure Compress; virtual; abstract;
+
+    property DuplicateCheck: TJclCompressionDuplicateCheck read FDuplicateCheck write FDuplicateCheck;
+    property DuplicateAction: TJclCompressionDuplicateAction read FDuplicateAction write FDuplicateAction;
   end;
 
   TJclCompressArchiveClass = class of TJclCompressArchive;
@@ -969,6 +982,10 @@ type
     function ValidateExtraction(Index: Integer; var FileName: TFileName; var AStream: TStream;
       var AOwnsStream: Boolean): Boolean; virtual;
   public
+    constructor Create(Volume0: TStream; AVolumeMaxSize: Int64 = 0;
+      AOwnVolume: Boolean = False); overload;
+    constructor Create(const VolumeName: string; AVolumeMaxSize: Int64 = 0;
+      VolumeMask: Boolean = False); overload;
     class function VolumeAccess: TJclStreamAccess; override;
     class function ItemAccess: TJclStreamAccess; override;
 
@@ -4135,7 +4152,7 @@ begin
     raise;
   end;
 
-  Result := FItems.Add(AItem);
+  Result := AddFileCheckDuplicate(AItem);
 
   if (DirName <> '') and AddFilesInDir then
     EnumFiles(PathAddSeparator(DirName) + '*', InternalAddFile, faDirectory);
@@ -4157,7 +4174,7 @@ begin
     raise;
   end;
 
-  Result := FItems.Add(AItem);
+  Result := AddFileCheckDuplicate(AItem);
 end;
 
 function TJclCompressArchive.AddFile(const PackedName: WideString;
@@ -4178,7 +4195,70 @@ begin
     raise;
   end;
 
-  Result := FItems.Add(AItem);
+  Result := AddFileCheckDuplicate(AItem);
+end;
+
+function TJclCompressArchive.AddFileCheckDuplicate(NewItem: TJclCompressionItem): Integer;
+var
+  I, PackedNamesIndex: Integer;
+  S: string;
+begin
+  if FDuplicateCheck = dcNone then
+    Result := FItems.Add(NewItem)
+  else
+  begin
+    if PackedNames = nil then
+    begin
+      PackedNames := {$IFDEF SUPPORTS_UNICODE}TStringList{$ELSE}TWStringList{$ENDIF}.Create;
+      PackedNames.Sorted := True;
+    {$IFDEF UNIX}
+      PackedNames.CaseSensitive := True;
+    {$ELSE}
+      PackedNames.CaseSensitive := False;
+    {$ENDIF}
+      PackedNames.Duplicates := dupIgnore;
+      for I := ItemCount-1 downto 0 do
+        PackedNames.AddObject(Items[I].PackedName, Items[I]);
+      PackedNames.Duplicates := dupError;
+    end;
+    if DuplicateCheck = dcAll then
+    begin
+      try
+        PackedNamesIndex := -1;
+        PackedNames.AddObject(NewItem.PackedName, NewItem);
+        Result := FItems.Add(NewItem);
+      except
+        Result := -1;
+      end;
+    end
+    else if PackedNames.Find(NewItem.PackedName, PackedNamesIndex) then
+      Result := -1
+    else
+      Result := FItems.Add(NewItem);
+    if Result < 0 then begin
+      case DuplicateAction of
+        daOverwrite: begin
+          if PackedNamesIndex < 0 then
+            PackedNamesIndex := PackedNames.IndexOf(NewItem.PackedName);
+          FItems.Remove(PackedNames.Objects[PackedNamesIndex]);
+          Result := FItems.Add(NewItem);
+          if DuplicateCheck = dcAll then
+            PackedNames.Objects[PackedNamesIndex] := NewItem
+          else
+            PackedNames.Delete(PackedNamesIndex);
+        end;
+        daError: begin
+          S := Format(RsCompressionDuplicate, [NewItem.PackedName]);
+          NewItem.Free;
+          raise Exception.Create(S);
+        end;
+        daSkip: begin
+          NewItem.Free;
+          Result := -1;
+        end;
+      end
+    end;
+  end;
 end;
 
 procedure TJclCompressArchive.CheckNotCompressing;
@@ -4209,7 +4289,7 @@ begin
     raise;
   end;
 
-  FItems.Add(AItem);
+  AddFileCheckDuplicate(AItem);
 end;
 
 class function TJclCompressArchive.ItemAccess: TJclStreamAccess;
@@ -4321,6 +4401,18 @@ procedure TJclUpdateArchive.CheckNotDecompressing;
 begin
   if FDecompressing then
     raise EJclCompressionError.CreateRes(@RsCompressionDecompressingError);
+end;
+
+constructor TJclUpdateArchive.Create(Volume0: TStream; AVolumeMaxSize: Int64; AOwnVolume: Boolean);
+begin
+  inherited;
+  FDuplicateCheck := dcExisting;
+end;
+
+constructor TJclUpdateArchive.Create(const VolumeName: string; AVolumeMaxSize: Int64; VolumeMask: Boolean);
+begin
+  inherited;
+  FDuplicateCheck := dcExisting;
 end;
 
 class function TJclUpdateArchive.ItemAccess: TJclStreamAccess;

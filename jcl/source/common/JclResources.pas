@@ -882,6 +882,7 @@ resourcestring
   RsCompressionTarExtensions         = '*.tar';
   RsCompressionGZipName              = 'GZip archive';
   RsCompressionGZipExtensions        = '*.gz;*.gzip;*.tgz;*.tpz';
+  RsCompressionDuplicate             = 'The file %s already exists in the archive';
 
 //=== JclConsole =============================================================
 resourcestring
