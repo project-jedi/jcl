@@ -41,7 +41,7 @@
 {   Robert Marquardt (marquardt)                                                                   }
 {   Robert Rossmair (rrossmair)                                                                    }
 {   Andreas Schmidt                                                                                }
-{   Sean Farrow (sfarrow)                                                                    }
+{   Sean Farrow (sfarrow)                                                                          }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -49,9 +49,9 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
-{ Author:        $Author::                                                                        $ }
+{ Author:        $Author::                                                                       $ }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -375,9 +375,11 @@ function AddStringToStrings(const S: string; Strings: TStrings; const Unique: Bo
 {$IFDEF KEEP_DEPRECATED}
 function BooleanToStr(B: Boolean): string;
 {$ENDIF KEEP_DEPRECATED}
-function FileToString(const FileName: string): AnsiString; // AnsiString here because it is binary data
-procedure StringToFile(const FileName: string; const Contents: AnsiString; Append: Boolean = False);
  // AnsiString here because it is binary data
+function FileToString(const FileName: string): {$IFDEF COMPILER12_UP}RawByteString{$ELSE}AnsiString{$ENDIF};
+procedure StringToFile(const FileName: string; const Contents: {$IFDEF COMPILER12_UP}RawByteString{$ELSE}AnsiString{$ENDIF};
+  Append: Boolean = False);
+
 function StrToken(var S: string; Separator: Char): string;
 procedure StrTokens(const S: string; const List: TStrings);
 procedure StrTokenToStrings(S: string; Separator: Char; const List: TStrings);
@@ -4441,7 +4443,7 @@ begin
 end;
 {$ENDIF KEEP_DEPRECATED}
 
-function FileToString(const FileName: string): AnsiString;
+function FileToString(const FileName: string): {$IFDEF COMPILER12_UP}RawByteString{$ELSE}AnsiString{$ENDIF};
 var
   fs: TFileStream;
   Len: Integer;
@@ -4468,7 +4470,8 @@ begin
   end;
 end;
 
-procedure StringToFile(const FileName: string; const Contents: AnsiString; Append: Boolean);
+procedure StringToFile(const FileName: string; const Contents: {$IFDEF COMPILER12_UP}RawByteString{$ELSE}AnsiString{$ENDIF};
+  Append: Boolean);
 var
   FS: TFileStream;
   Len: Integer;
@@ -4482,15 +4485,16 @@ begin
       StreamSeek(FS, 0, soEnd);  // faster than .Position := .Size
     Len := Length(Contents);
     if Len > 0 then
-    {$IFDEF CLR}
-    FS.WriteBuffer(BytesOf(Contents), Len);
-    {$ELSE}
+      {$IFDEF CLR}
+      FS.WriteBuffer(BytesOf(Contents), Len);
+      {$ELSE}
       FS.WriteBuffer(Contents[1], Len);
-    {$ENDIF CLR}
+      {$ENDIF CLR}
   finally
     FS.Free;
   end;
 end;
+
 function StrToken(var S: string; Separator: Char): string;
 var
   I: Integer;
