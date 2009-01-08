@@ -682,7 +682,7 @@ type
     property VolumeMaxSize: Int64 read FVolumeMaxSize;
   end;
 
-  TJclStreamAccess = (saCreate, saReadOnly, saWriteOnly, saReadWrite);
+  TJclStreamAccess = (saCreate, saReadOnly, saReadOnlyDenyNone, saWriteOnly, saReadWrite);
 
   { TJclCompressionArchive is not ref-counted }
   TJclCompressionArchive = class(TObject, IInterface)
@@ -3227,6 +3227,9 @@ begin
     saReadOnly:
       if FileExists(FileName) then
         Result := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);
+    saReadOnlyDenyNone:
+      if FileExists(FileName) then
+        Result := TFileStream.Create(FileName, fmOpenRead or fmShareDenyNone);
     saWriteOnly:
       if FileExists(FileName) then
         Result := TFileStream.Create(FileName, fmOpenWrite)
