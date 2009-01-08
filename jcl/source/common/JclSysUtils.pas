@@ -670,7 +670,7 @@ begin
     if APointer <> nil then
     begin
       U := APointer;
-      U := PUsed(PChar(U) - SizeOf(TUsed));
+      U := PUsed(PByte(U) - SizeOf(TUsed));
       if (U.SizeFlags and cThisUsedFlag) <> 0 then
         Result := (U.SizeFlags) and (not cFlags - SizeOf(TUsed));
     end;
