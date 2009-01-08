@@ -2429,7 +2429,7 @@ begin
   Result := '';
   if not IsWinNT and not IsBadReadPtr(Pointer(ADR_BIOSCOPYRIGHT), 2) then
   try
-    Result := PChar(ADR_BIOSCOPYRIGHT);
+    Result := string(AnsiString(PAnsiChar(ADR_BIOSCOPYRIGHT)));
   except
     Result := '';
   end;
@@ -2442,7 +2442,7 @@ begin
   Result := '';
   if not IsWinNT and not IsBadReadPtr(Pointer(ADR_BIOSEXTENDEDINFO), 2) then
   try
-    Result := PChar(ADR_BIOSEXTENDEDINFO);
+    Result := string(AnsiString(PAnsiChar(ADR_BIOSEXTENDEDINFO)));
   except
     Result := '';
   end;
