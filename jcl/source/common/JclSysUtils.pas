@@ -1948,9 +1948,9 @@ begin
       QueryInterfaceThunk := TInterfaceRef(I)^.QueryInterfaceThunk;
       case QueryInterfaceThunk.AddInstruction of
         AddByte:
-          Inc(PChar(Result), QueryInterfaceThunk.AdjustmentByte);
+          Inc(PByte(Result), QueryInterfaceThunk.AdjustmentByte);
         AddLong:
-          Inc(PChar(Result), QueryInterfaceThunk.AdjustmentLong);
+          Inc(PByte(Result), QueryInterfaceThunk.AdjustmentLong);
       else
         Result := nil;
       end;
