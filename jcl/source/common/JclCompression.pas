@@ -2203,6 +2203,13 @@ begin
       Res := inflate(ZLibRecord, Z_NO_FLUSH);
       ZLibCheck(Res);
       Progress(Self);
+
+      // Suggestion by ZENsan (mantis 4546)
+      if Res = Z_STREAM_END then
+      begin
+        Result := Count - Longint(ZLibRecord.avail_out);
+        Exit;
+      end;
     end;
   end;
 
