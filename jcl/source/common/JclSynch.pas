@@ -361,6 +361,9 @@ type
   EJclMutexError = class(EJclWin32Error);
   EJclMeteredSectionError = class(EJclError);
 
+function ValidateMutexName(const aName: string): string;
+
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -378,7 +381,8 @@ uses
   {$IFDEF CLR}
   Math,
   {$ENDIF CLR}
-  JclLogic, {$IFNDEF CLR}JclWin32, JclRegistry,{$ENDIF} JclResources, JclSysInfo;
+  JclLogic, {$IFNDEF CLR}JclWin32, JclRegistry,{$ENDIF} JclResources,
+  JclSysInfo, StrUtils;
 
 const
   RegSessionManager = {HKLM\} 'SYSTEM\CurrentControlSet\Control\Session Manager';
@@ -1684,6 +1688,18 @@ begin
 end;
 
 {$ENDIF ~CLR}
+
+function ValidateMutexName(const aName: string): string;
+const cMutexMaxName = 200;
+begin
+  if Length(aName) > cMutexMaxName then
+    Result := Copy (aName, Length(aName)-cMutexMaxName, cMutexMaxName)
+  else
+    Result := aName;
+  Result := ReplaceStr(Result, '\', '_');
+end;
+
+
 
 {$IFDEF UNITVERSIONING}
 initialization
