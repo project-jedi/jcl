@@ -2973,27 +2973,15 @@ begin
 end;
 
 function GetWindowCaption(Wnd: THandle): string;
-const
-  BufferAllocStep = 256;
 var
-  Buffer: PChar;
-  Size, TextLen: Integer;
+  Buffer: string;
+  Size: Integer;
 begin
-  { TODO : use string }
-  Result := '';
-  Buffer := nil;
-  try
-    Size := GetWindowTextLength(Wnd) + 2 - BufferAllocStep;
-    repeat
-      Inc(Size, BufferAllocStep);
-      ReallocMem(Buffer, Size);
-      TextLen := GetWindowText(Wnd, Buffer, Size);
-    until TextLen < Size - 1;
-    if TextLen > 0 then
-      Result := Buffer;
-  finally
-    FreeMem(Buffer);
-  end;
+  Size := GetWindowTextLength(Wnd);
+  SetLength(Buffer, Size);
+  // strings always have an additional null character
+  Size := GetWindowText(Wnd, PChar(Buffer), Size + 1);
+  Result := Copy(Buffer, 1, Size);
 end;
 
 // Q178893
