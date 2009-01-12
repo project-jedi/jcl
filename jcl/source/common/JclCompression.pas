@@ -68,7 +68,7 @@ uses
   {$ENDIF HAS_UNIT_LIBC}
   {$IFNDEF SUPPORTS_UNICODE}
   JclWideStrings,
-  {$ENDIF SUPPORTS_UNICODE}
+  {$ENDIF ~SUPPORTS_UNICODE}
   SysUtils, Classes, Contnrs,
   zlibh, bzip2,
   JclBase, JclStreams;
@@ -1715,7 +1715,7 @@ const
     Date: '$Date$';
     LogPath: 'JCL\source\common'
     );
-  {$ENDIF UNITVERSIONING}
+{$ENDIF UNITVERSIONING}
 
 implementation
 
@@ -3515,22 +3515,23 @@ begin
   if FPackedName <> Value then
   begin
     CheckSetProperty(ipPackedName);
-    with FArchive as TJclCompressArchive do
-    begin
-      if (FPackedNames <> nil) and FPackedNames.Find(FPackedName, PackedNamesIndex) then
+    if FArchive is TJclCompressArchive then
+      with FArchive as TJclCompressArchive do
       begin
-        FPackedNames.Delete(PackedNamesIndex);
-        try
-          FPackedNames.Add(Value);
-        except
-          raise EJclCompressionError(Format(RsCompressionDuplicate, [Value]));
+        if (FPackedNames <> nil) and FPackedNames.Find(FPackedName, PackedNamesIndex) then
+        begin
+          FPackedNames.Delete(PackedNamesIndex);
+          try
+            FPackedNames.Add(Value);
+          except
+            raise EJclCompressionError(Format(RsCompressionDuplicate, [Value]));
+          end;
         end;
       end;
-    end;
     FPackedName := Value;
     Include(FModifiedProperties, ipPackedName);
     Include(FValidProperties, ipPackedName);
-  end
+  end;
 end;
 
 procedure TJclCompressionItem.SetPackedSize(const Value: Int64);
@@ -4238,13 +4239,13 @@ begin
     begin
       FPackedNames := {$IFDEF SUPPORTS_UNICODE}TStringList{$ELSE}TWStringList{$ENDIF}.Create;
       FPackedNames.Sorted := True;
-    {$IFDEF UNIX}
+      {$IFDEF UNIX}
       FPackedNames.CaseSensitive := True;
-    {$ELSE}
+      {$ELSE}
       FPackedNames.CaseSensitive := False;
-    {$ENDIF}
+      {$ENDIF UNIX}
       FPackedNames.Duplicates := dupIgnore;
-      for I := ItemCount-1 downto 0 do
+      for I := ItemCount - 1 downto 0 do
         FPackedNames.AddObject(Items[I].PackedName, Items[I]);
       FPackedNames.Duplicates := dupError;
     end;
@@ -4258,31 +4259,36 @@ begin
         Result := -1;
       end;
     end
-    else if FPackedNames.Find(NewItem.PackedName, PackedNamesIndex) then
+    else
+    if FPackedNames.Find(NewItem.PackedName, PackedNamesIndex) then
       Result := -1
     else
       Result := FItems.Add(NewItem);
-    if Result < 0 then begin
+    if Result < 0 then
+    begin
       case DuplicateAction of
-        daOverwrite: begin
-          if PackedNamesIndex < 0 then
-            PackedNamesIndex := FPackedNames.IndexOf(NewItem.PackedName);
-          FItems.Remove(FPackedNames.Objects[PackedNamesIndex]);
-          Result := FItems.Add(NewItem);
-          if DuplicateCheck = dcAll then
-            FPackedNames.Objects[PackedNamesIndex] := NewItem
-          else
-            FPackedNames.Delete(PackedNamesIndex);
-        end;
-        daError: begin
-          S := Format(RsCompressionDuplicate, [NewItem.PackedName]);
-          NewItem.Free;
-          raise EJclCompressionError.Create(S);
-        end;
-        daSkip: begin
-          NewItem.Free;
-          Result := -1;
-        end;
+        daOverwrite:
+          begin
+            if PackedNamesIndex < 0 then
+              PackedNamesIndex := FPackedNames.IndexOf(NewItem.PackedName);
+            FItems.Remove(FPackedNames.Objects[PackedNamesIndex]);
+            Result := FItems.Add(NewItem);
+            if DuplicateCheck = dcAll then
+              FPackedNames.Objects[PackedNamesIndex] := NewItem
+            else
+              FPackedNames.Delete(PackedNamesIndex);
+          end;
+        daError:
+          begin
+            S := Format(RsCompressionDuplicate, [NewItem.PackedName]);
+            NewItem.Free;
+            raise EJclCompressionError.Create(S);
+          end;
+        daSkip:
+          begin
+            NewItem.Free;
+            Result := -1;
+          end;
       end
     end;
   end;
@@ -4432,13 +4438,13 @@ end;
 
 constructor TJclUpdateArchive.Create(Volume0: TStream; AVolumeMaxSize: Int64; AOwnVolume: Boolean);
 begin
-  inherited;
+  inherited Create(Volume0, AVolumeMaxSize, AOwnVolume);
   FDuplicateCheck := dcExisting;
 end;
 
 constructor TJclUpdateArchive.Create(const VolumeName: string; AVolumeMaxSize: Int64; VolumeMask: Boolean);
 begin
-  inherited;
+  inherited Create(VolumeName, AVolumeMaxSize, VolumeMask);
   FDuplicateCheck := dcExisting;
 end;
 
@@ -7060,7 +7066,8 @@ begin
     BaseLength := Length(DirectoryName);
 
     for Index := ItemCount - 1 downto 0 do
-      if WideSameText(DirectoryName, Copy(Items[Index].PackedName, 1, BaseLength)) then begin
+      if WideSameText(DirectoryName, Copy(Items[Index].PackedName, 1, BaseLength)) then
+      begin
         if (FPackedNames <> nil) and FPackedNames.Find(Items[Index].PackedName, PackedNamesIndex) then
           FPackedNames.Delete(PackedNamesIndex);
         FItems.Delete(Index);
