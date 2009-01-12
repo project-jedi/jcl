@@ -382,7 +382,7 @@ uses
   Math,
   {$ENDIF CLR}
   JclLogic, {$IFNDEF CLR}JclWin32, JclRegistry,{$ENDIF} JclResources,
-  JclSysInfo, StrUtils;
+  JclSysInfo, JclStrings;
 
 const
   RegSessionManager = {HKLM\} 'SYSTEM\CurrentControlSet\Control\Session Manager';
@@ -1696,7 +1696,7 @@ begin
     Result := Copy (aName, Length(aName)-cMutexMaxName, cMutexMaxName)
   else
     Result := aName;
-  Result := ReplaceStr(Result, '\', '_');
+  Result := StrReplaceChar(Result, '\', '_');
 end;
 
 
