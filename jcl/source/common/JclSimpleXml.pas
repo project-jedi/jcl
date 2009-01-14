@@ -2106,13 +2106,13 @@ begin
                 // in the list. If we did not check this, we would create a
                 // text element for whitespace found between two adjacent end
                 // tags.
-                if (not Assigned(FElems) or (FElems.Count=0)) and
-                  (lContainsText or (lContainsWhiteSpace and not lTrimWhiteSpace)) then
+                if (lContainsText or (lContainsWhiteSpace and not lTrimWhiteSpace)) then
                 begin
                   lElem := TJclSimpleXMLElemText.Create(Parent);
                   lElem.LoadFromStringStream(StringStream, AParent);
                   CreateElems;
                   FElems.AddObject(lElem.Name, lElem);
+                  Notify(lElem,opInsert);
                 end;
                 Break;
               end
@@ -2120,22 +2120,41 @@ begin
               begin
                 lElem := TJclSimpleXMLElemClassic.Create(Parent);
                 St := St + Ch; // "<name/"
+                lPos := rsWaitingTag;
               end;
 
             NativeSpace, '>', ':': //This should be a classic tag
               begin    // "<XXX " or "<XXX:" or "<XXX>
                 lElem := TJclSimpleXMLElemClassic.Create(Parent);
-                St := St + Ch;
+                St := '';
+                lPos := rsWaitingTag;
               end;
           else
+            if lContainsText or (lContainsWhiteSpace and not lTrimWhiteSpace) then
+            begin
+              // inner text
+              lElem := TJclSimpleXMLElemText.Create(Parent);
+              lPos := rsReadingTagKind;
+              lContainsWhiteSpace := False;
+              lContainsText := False;
+            end
+            else
             begin
               if (St <> '<![CDATA') or not CharIsWhiteSpace(Ch) then
                 St := St + Ch;
               if St = '<![CDATA[' then
-                lElem := TJclSimpleXMLElemCData.Create(Parent)
+              begin
+                lElem := TJclSimpleXMLElemCData.Create(Parent);
+                lPos := rsWaitingTag;
+                St := '';
+              end
               else
               if St = '<!--' then
+              begin
                 lElem := TJclSimpleXMLElemComment.Create(Parent);
+                lPos := rsWaitingTag;
+                St := '';
+              end;
                 //<?
             end;
           end;
@@ -2146,8 +2165,6 @@ begin
             lElem.LoadFromStringStream(StringStream, AParent);
             FElems.AddObject(lElem.Name, lElem);
             Notify(lElem, opInsert);
-            St := '';
-            lPos := rsWaitingTag;
           end;
         end;
     end;
