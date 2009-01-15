@@ -2058,16 +2058,12 @@ var
   Po: string;
   lElem: TJclSimpleXMLElem;
   Ch: Char;
-  lTrimWhiteSpace, lContainsWhiteSpace, lContainsText: Boolean;
+  lContainsText: Boolean;
 begin
   Po := '';
   St := '';
   lPos := rsWaitingTag;
-  lContainsWhiteSpace := False;
   lContainsText := False;
-
-  // Preserve old preceeding whitespace trimming behaviour
-  lTrimWhiteSpace := Assigned(AParent) and (sxoTrimPrecedingTextWhitespace in AParent.Options);
 
   // We read from a stream, thus replacing the existing items
   Clear;
@@ -2086,9 +2082,7 @@ begin
             St := Ch;
           end
           else
-          if CharIsWhiteSpace(Ch) then
-            lContainsWhiteSpace := True
-          else
+          if not CharIsWhiteSpace(Ch) then
             lContainsText := True;
         end;
 
@@ -2106,7 +2100,7 @@ begin
                 // in the list. If we did not check this, we would create a
                 // text element for whitespace found between two adjacent end
                 // tags.
-                if (lContainsText or (lContainsWhiteSpace and not lTrimWhiteSpace)) then
+                if lContainsText then
                 begin
                   lElem := TJclSimpleXMLElemText.Create(Parent);
                   lElem.LoadFromStringStream(StringStream, AParent);
@@ -2130,12 +2124,11 @@ begin
                 lPos := rsWaitingTag;
               end;
           else
-            if lContainsText or (lContainsWhiteSpace and not lTrimWhiteSpace) then
+            if lContainsText then
             begin
               // inner text
               lElem := TJclSimpleXMLElemText.Create(Parent);
               lPos := rsReadingTagKind;
-              lContainsWhiteSpace := False;
               lContainsText := False;
             end
             else
@@ -3109,11 +3102,14 @@ procedure TJclSimpleXMLElemText.LoadFromStringStream(StringStream: TJclStringStr
 var
   Ch: Char;
   St: string;
+  lTrimWhiteSpace: Boolean;
 begin
   St := '';
 
   if AParent <> nil then
     AParent.DoLoadProgress(StringStream.Stream.Position, StringStream.Stream.Size);
+
+  lTrimWhiteSpace := Assigned(SimpleXML) and (sxoTrimPrecedingTextWhitespace in SimpleXML.Options);
 
   while StringStream.PeekChar(Ch) do
     case Ch of
@@ -3128,7 +3124,10 @@ begin
   end;
   if GetSimpleXML <> nil then
     GetSimpleXML.DoDecodeValue(St);
-  Value := St;
+  if lTrimWhiteSpace then
+    Value := TrimLeft(St)
+  else
+    Value := St;
   Name := '';
 
   if AParent <> nil then
@@ -3318,7 +3317,7 @@ begin
     Error(RsEInvalidCommentUnexpectedEndOfData);
 
   Name := '';
-  Value := Trim(St);
+  Value := StrTrimCharsLeft(St, CharIsWhiteSpace);
 
   if AParent <> nil then
     AParent.DoValueParsed('', St);
