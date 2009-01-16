@@ -1480,6 +1480,7 @@ procedure TJclPeImportLibItem.CreateList;
     OrdinalName: PImageImportByName;
     Ordinal, Hint: Word;
     Name: PAnsiChar;
+    ImportName: string;
   begin
     Thunk32 := PImageThunkData32(FThunk);
     while Thunk32^.Function_ <> 0 do
@@ -1506,8 +1507,9 @@ procedure TJclPeImportLibItem.CreateList;
       end
       else
         Ordinal := IMAGE_ORDINAL32(Thunk32^.Ordinal);
-
-      Add(TJclPeImportFuncItem.Create(Self, Ordinal, Hint, UTF8ToString(Name)));
+      if not TryUTF8ToString(Name, ImportName) then
+        ImportName := string(Name);
+      Add(TJclPeImportFuncItem.Create(Self, Ordinal, Hint, ImportName));
       Inc(Thunk32);
     end;
   end;
@@ -1518,6 +1520,7 @@ procedure TJclPeImportLibItem.CreateList;
     OrdinalName: PImageImportByName;
     Ordinal, Hint: Word;
     Name: PAnsiChar;
+    ImportName: string;
   begin
     Thunk64 := PImageThunkData64(FThunk);
     while Thunk64^.Function_ <> 0 do
@@ -1544,8 +1547,9 @@ procedure TJclPeImportLibItem.CreateList;
       end
       else
         Ordinal := IMAGE_ORDINAL64(Thunk64^.Ordinal);
-
-      Add(TJclPeImportFuncItem.Create(Self, Ordinal, Hint, UTF8ToString(Name)));
+      if not TryUTF8ToString(Name, ImportName) then
+        ImportName := string(Name);
+      Add(TJclPeImportFuncItem.Create(Self, Ordinal, Hint, ImportName));
       Inc(Thunk64);
     end;
   end;
@@ -1698,13 +1702,16 @@ procedure TJclPeImportList.CreateList;
   procedure CreateDelayImportList32(DelayImportDesc: PImgDelayDescrV1);
   var
     LibItem: TJclPeImportLibItem;
-    LibName: TUTF8String;
+    UTF8Name: TUTF8String;
+    LibName: string;
   begin
     while DelayImportDesc^.szName <> nil do
     begin
-      LibName := PAnsiChar(Image.RvaToVaEx(DWORD(DelayImportDesc^.szName)));
+      UTF8Name := PAnsiChar(Image.RvaToVaEx(DWORD(DelayImportDesc^.szName)));
+      if not TryUTF8ToString(UTF8Name, LibName) then
+        LibName := string(UTF8Name);
       LibItem := TJclPeImportLibItem.Create(Image, DelayImportDesc, ikDelayImport,
-        UTF8ToString(LibName), Image.RvaToVaEx(DWORD(DelayImportDesc^.pINT)));
+        LibName, Image.RvaToVaEx(DWORD(DelayImportDesc^.pINT)));
       Add(LibItem);
       FUniqueNamesList.AddObject(AnsiLowerCase(LibItem.Name), LibItem);
       Inc(DelayImportDesc);
@@ -1714,13 +1721,16 @@ procedure TJclPeImportList.CreateList;
   procedure CreateDelayImportList64(DelayImportDesc: PImgDelayDescrV2);
   var
     LibItem: TJclPeImportLibItem;
-    LibName: TUTF8String;
+    UTF8Name: TUTF8String;
+    LibName: string;
   begin
     while DelayImportDesc^.rvaDLLName <> 0 do
     begin
-      LibName := PAnsiChar(Image.RvaToVa(DelayImportDesc^.rvaDLLName));
+      UTF8Name := PAnsiChar(Image.RvaToVa(DelayImportDesc^.rvaDLLName));
+      if not TryUTF8ToString(UTF8Name, LibName) then
+        LibName := string(UTF8Name);
       LibItem := TJclPeImportLibItem.Create(Image, DelayImportDesc, ikDelayImport,
-        UTF8ToString(LibName), Image.RvaToVa(DelayImportDesc^.rvaINT));
+        LibName, Image.RvaToVa(DelayImportDesc^.rvaINT));
       Add(LibItem);
       FUniqueNamesList.AddObject(AnsiLowerCase(LibItem.Name), LibItem);
       Inc(DelayImportDesc);
@@ -1729,7 +1739,8 @@ procedure TJclPeImportList.CreateList;
 var
   ImportDesc: PImageImportDescriptor;
   LibItem: TJclPeImportLibItem;
-  LibName, ModuleName: TUTF8String;
+  UTF8Name: TUTF8String;
+  LibName, ModuleName: string;
   DelayImportDesc: Pointer;
   BoundImports, BoundImport: PImageBoundImportDescriptor;
   S: string;
@@ -1758,8 +1769,10 @@ begin
           Thunk := RvaToVa(ImportDesc^.Union.Characteristics);
           FLinkerProducer := lrMicrosoft;
         end;
-        LibName := PAnsiChar(RvaToVa(ImportDesc^.Name));
-        LibItem := TJclPeImportLibItem.Create(Image, ImportDesc, ikImport, UTF8ToString(LibName), Thunk);
+        UTF8Name := PAnsiChar(RvaToVa(ImportDesc^.Name));
+        if not TryUTF8ToString(UTF8Name, LibName) then
+          LibName := string(UTF8Name);
+        LibItem := TJclPeImportLibItem.Create(Image, ImportDesc, ikImport, LibName, Thunk);
         Add(LibItem);
         FUniqueNamesList.AddObject(AnsiLowerCase(LibItem.Name), LibItem);
         Inc(ImportDesc);
@@ -1780,8 +1793,10 @@ begin
       BoundImport := BoundImports;
       while BoundImport^.OffsetModuleName <> 0 do
       begin
-        ModuleName := PAnsiChar(TJclAddr(BoundImports) + BoundImport^.OffsetModuleName);
-        S := AnsiLowerCase(UTF8ToString(ModuleName));
+        UTF8Name := PAnsiChar(TJclAddr(BoundImports) + BoundImport^.OffsetModuleName);
+        if not TryUTF8ToString(UTF8Name, ModuleName) then
+          ModuleName := string(UTF8Name);
+        S := AnsiLowerCase(ModuleName);
         I := FUniqueNamesList.IndexOf(S);
         if I >= 0 then
           TJclPeImportLibItem(FUniqueNamesList.Objects[I]).SetImportKind(ikBoundImport);
@@ -2270,7 +2285,8 @@ var
   I: Integer;
   ExportItem: TJclPeExportFuncItem;
   ExportVABegin, ExportVAEnd: DWORD;
-  ForwardedName: string;
+  UTF8Name: TUTF8String;
+  ForwardedName, ExportName: string;
 begin
   with Image do
   begin
@@ -2296,12 +2312,17 @@ begin
         if (Address >= ExportVABegin) and (Address <= ExportVAEnd) then
         begin
           FAnyForwards := True;
-          ForwardedName := UTF8ToString(PAnsiChar(RvaToVa(Address)));
+          UTF8Name := PAnsiChar(RvaToVa(Address));
+          if not TryUTF8ToString(UTF8Name, ForwardedName) then
+            ForwardedName := string(UTF8Name);
         end
         else
           ForwardedName := '';
 
-        ExportItem := TJclPeExportFuncItem.Create(Self, UTF8ToString(PAnsiChar(RvaToVa(Names^))),
+        UTF8Name := PAnsiChar(RvaToVa(Names^));
+        if not TryUTF8ToString(UTF8Name, ExportName) then
+          ExportName := string(UTF8Name);
+        ExportItem := TJclPeExportFuncItem.Create(Self, ExportName,
           ForwardedName, Address, I, NameOrdinals^ + FBase, icNotChecked);
 
         List^[I] := ExportItem;
@@ -2401,11 +2422,17 @@ begin
 end;
 
 function TJclPeExportFuncList.GetName: string;
+var
+  UTF8ExportName: TUTF8String;
 begin
   if (FExportDir = nil) or (FExportDir^.Name = 0) then
     Result := ''
   else
-    Result := UTF8ToString(PAnsiChar(Image.RvaToVa(FExportDir^.Name)));
+  begin
+    UTF8ExportName := PAnsiChar(Image.RvaToVa(FExportDir^.Name));
+    if not TryUTF8ToString(UTF8ExportName, Result) then
+      Result := string(UTF8ExportName);
+  end;
 end;
 
 class function TJclPeExportFuncList.ItemName(Item: TJclPeExportFuncItem): string;
@@ -3260,9 +3287,15 @@ begin
 end;
 
 function TJclPeImage.GetDescription: string;
+var
+  UTF8DescriptionName: TUTF8String;
 begin
   if DirectoryExists[IMAGE_DIRECTORY_ENTRY_COPYRIGHT] then
-    Result := UTF8ToString(PAnsiChar(DirectoryEntryToData(IMAGE_DIRECTORY_ENTRY_COPYRIGHT)))
+  begin
+    UTF8DescriptionName := PAnsiChar(DirectoryEntryToData(IMAGE_DIRECTORY_ENTRY_COPYRIGHT));
+    if not TryUTF8ToString(UTF8DescriptionName, Result) then
+      Result := string(UTF8DescriptionName);
+  end
   else
     Result := '';
 end;
@@ -4003,17 +4036,20 @@ procedure TJclPeImage.ReadImageSections;
 var
   I: Integer;
   Header: PImageSectionHeader;
-  SectionName: AnsiString;
+  UTF8Name: TUTF8String;
+  SectionName: string;
 begin
   if not StatusOK then
     Exit;
   Header := FLoadedImage.Sections;
   for I := 0 to FLoadedImage.NumberOfSections - 1 do
   begin
-    SetLength(SectionName, IMAGE_SIZEOF_SHORT_NAME);
-    Move(Header.Name[0], SectionName[1], IMAGE_SIZEOF_SHORT_NAME * SizeOf(AnsiChar));
-    StrResetLength(SectionName);
-    FImageSections.AddObject(UTF8ToString(SectionName), Pointer(Header));
+    SetLength(UTF8Name, IMAGE_SIZEOF_SHORT_NAME);
+    Move(Header.Name[0], UTF8Name[1], IMAGE_SIZEOF_SHORT_NAME * SizeOf(AnsiChar));
+    StrResetLength(UTF8Name);
+    if not TryUTF8ToString(UTF8Name, SectionName) then
+      SectionName := string(UTF8Name);
+    FImageSections.AddObject(SectionName, Pointer(Header));
     Inc(Header);
   end;
 end;
@@ -4856,6 +4892,8 @@ var
   Cache: TJclPeImagesCache;
   ImageBase32: TJclAddr32;
   ImageBase64: TJclAddr64;
+  UTF8Name: TUTF8String;
+  ExportName: string;
 begin
   Cache := TJclPeImagesCache.Create;
   try
@@ -4888,7 +4926,10 @@ begin
                   else
                     OrdinalName := nil;
                   end;
-                  ExportItem := ExportsImage.ExportList.ItemFromName[UTF8ToString(PAnsiChar(@OrdinalName.Name))];
+                  UTF8Name := PAnsiChar(@OrdinalName.Name);
+                  if not TryUTF8ToString(UTF8Name, ExportName) then
+                    ExportName := string(UTF8Name);
+                  ExportItem := ExportsImage.ExportList.ItemFromName[ExportName];
                   if ExportItem <> nil then
                     OrdinalName.Hint := ExportItem.Hint
                   else
@@ -4913,7 +4954,10 @@ begin
                   else
                     OrdinalName := nil;
                   end;
-                  ExportItem := ExportsImage.ExportList.ItemFromName[UTF8ToString(PAnsiChar(@OrdinalName.Name))];
+                  UTF8Name := PAnsiChar(@OrdinalName.Name);
+                  if not TryUTF8ToString(UTF8Name, ExportName) then
+                    ExportName := string(UTF8Name);
+                  ExportItem := ExportsImage.ExportList.ItemFromName[ExportName];
                   if ExportItem <> nil then
                     OrdinalName.Hint := ExportItem.Hint
                   else
@@ -5051,6 +5095,7 @@ function PeInsertSection(const FileName: TFileName; SectionStream: TStream; Sect
     VirtualAlignedSize: DWORD;
     I, X, NeedFill: Integer;
     SectionDataSize: Integer;
+    UTF8Name: TUTF8String;
   begin
     Result := True;
     try
@@ -5081,7 +5126,9 @@ function PeInsertSection(const FileName: TFileName; SectionStream: TStream; Sect
       NewSection^.PointerToRawData := LastSection^.PointerToRawData + LastSection^.SizeOfRawData;
       RoundUpToAlignment(NewSection^.PointerToRawData, NtHeaders^.OptionalHeader.FileAlignment);
       // JCLDEBUG Section name
-      StrPLCopy(PAnsiChar(@NewSection^.Name), StringToUTF8(SectionName), IMAGE_SIZEOF_SHORT_NAME);
+      if not TryStringToUTF8(SectionName, UTF8Name) then
+        UTF8Name := TUTF8String(SectionName);
+      StrPLCopy(PAnsiChar(@NewSection^.Name), UTF8Name, IMAGE_SIZEOF_SHORT_NAME);
       // JCLDEBUG Characteristics flags
       NewSection^.Characteristics := IMAGE_SCN_MEM_READ or IMAGE_SCN_CNT_INITIALIZED_DATA;
 
@@ -5119,6 +5166,7 @@ function PeInsertSection(const FileName: TFileName; SectionStream: TStream; Sect
     VirtualAlignedSize: DWORD;
     I, X, NeedFill: Integer;
     SectionDataSize: Integer;
+    UTF8Name: TUTF8String;
   begin
     Result := True;
     try
@@ -5149,7 +5197,9 @@ function PeInsertSection(const FileName: TFileName; SectionStream: TStream; Sect
       NewSection^.PointerToRawData := LastSection^.PointerToRawData + LastSection^.SizeOfRawData;
       RoundUpToAlignment(NewSection^.PointerToRawData, NtHeaders^.OptionalHeader.FileAlignment);
       // JCLDEBUG Section name
-      StrPLCopy(PAnsiChar(@NewSection^.Name), StringToUTF8(SectionName), IMAGE_SIZEOF_SHORT_NAME);
+      if not TryStringToUTF8(SectionName, UTF8Name) then
+        UTF8Name := TUTF8String(SectionName);
+      StrPLCopy(PAnsiChar(@NewSection^.Name), UTF8Name, IMAGE_SIZEOF_SHORT_NAME);
       // JCLDEBUG Characteristics flags
       NewSection^.Characteristics := IMAGE_SCN_MEM_READ or IMAGE_SCN_CNT_INITIALIZED_DATA;
 
@@ -5697,6 +5747,7 @@ function PeMapImgLibraryName(const BaseAddress: Pointer): string;
     NtHeaders: PImageNtHeaders32;
     DataDir: TImageDataDirectory;
     ExportDir: PImageExportDirectory;
+    UTF8Name: TUTF8String;
   begin
     Result := '';
     NtHeaders := PeMapImgNtHeaders32(BaseAddress);
@@ -5708,13 +5759,16 @@ function PeMapImgLibraryName(const BaseAddress: Pointer): string;
     ExportDir := PImageExportDirectory(TJclAddr(BaseAddress) + DataDir.VirtualAddress);
     if IsBadReadPtr(ExportDir, SizeOf(TImageExportDirectory)) or (ExportDir^.Name = 0) then
       Exit;
-    Result := UTF8ToString(PAnsiChar(TJclAddr(BaseAddress) + ExportDir^.Name));
+    UTF8Name := PAnsiChar(TJclAddr(BaseAddress) + ExportDir^.Name);
+    if not TryUTF8ToString(UTF8Name, Result) then
+      Result := string(UTF8Name);
   end;
   function PeMapImgLibraryName64(const BaseAddress: Pointer): string;
   var
     NtHeaders: PImageNtHeaders64;
     DataDir: TImageDataDirectory;
     ExportDir: PImageExportDirectory;
+    UTF8Name: TUTF8String;
   begin
     Result := '';
     NtHeaders := PeMapImgNtHeaders64(BaseAddress);
@@ -5726,7 +5780,9 @@ function PeMapImgLibraryName(const BaseAddress: Pointer): string;
     ExportDir := PImageExportDirectory(TJclAddr(BaseAddress) + DataDir.VirtualAddress);
     if IsBadReadPtr(ExportDir, SizeOf(TImageExportDirectory)) or (ExportDir^.Name = 0) then
       Exit;
-    Result := UTF8ToString(PAnsiChar(TJclAddr(BaseAddress) + ExportDir^.Name));
+    UTF8Name := PAnsiChar(TJclAddr(BaseAddress) + ExportDir^.Name);
+    if not TryUTF8ToString(UTF8Name, Result) then
+      Result := string(UTF8Name);
   end;
 begin
   case PeMapImgTarget(BaseAddress) of
@@ -5795,11 +5851,14 @@ var
   Header: PImageSectionHeader;
   I: Integer;
   P: PAnsiChar;
+  UTF8Name: TUTF8String;
 begin
   Result := nil;
   if NtHeaders <> nil then
   begin
-    P := PAnsiChar(StringToUTF8(SectionName));
+    if not TryStringToUTF8(SectionName, UTF8Name) then
+      UTF8Name := TUTF8String(SectionName);
+    P := PAnsiChar(UTF8Name);
     Header := PeMapImgSections32(NtHeaders);
     with NtHeaders^ do
       for I := 1 to FileHeader.NumberOfSections do
@@ -5819,11 +5878,14 @@ var
   Header: PImageSectionHeader;
   I: Integer;
   P: PAnsiChar;
+  UTF8Name: TUTF8String;
 begin
   Result := nil;
   if NtHeaders <> nil then
   begin
-    P := PAnsiChar(StringToUTF8(SectionName));
+    if not TryStringToUTF8(SectionName, UTF8Name) then
+      UTF8Name := TUTF8String(SectionName);
+    P := PAnsiChar(UTF8Name);
     Header := PeMapImgSections64(NtHeaders);
     with NtHeaders^ do
       for I := 1 to FileHeader.NumberOfSections do
@@ -6073,6 +6135,7 @@ function TJclPeMapImgHooks.HookImport(Base: Pointer; const ModuleName: string;
 var
   ModuleHandle: THandle;
   OriginalItem: TJclPeMapImgHookItem;
+  UTF8Name: TUTF8String;
 begin
   ModuleHandle := GetModuleHandle(PChar(ModuleName));
   Result := (ModuleHandle <> 0);
@@ -6081,7 +6144,9 @@ begin
     SetLastError(ERROR_MOD_NOT_FOUND);
     Exit;
   end;
-  OriginalAddress := GetProcAddress(ModuleHandle, PAnsiChar(StringToUTF8(FunctionName)));
+  if not TryStringToUTF8(FunctionName, UTF8Name) then
+    UTF8Name := TUTF8String(FunctionName);
+  OriginalAddress := GetProcAddress(ModuleHandle, PAnsiChar(UTF8Name));
   Result := (OriginalAddress <> nil);
   if not Result then
   begin
@@ -6126,6 +6191,7 @@ var
   ImportEntry32: PImageThunkData32;
   FoundProc: Boolean;
   WrittenBytes: Cardinal;
+  UTF8Name: TUTF8String;
 begin
   Result := False;
   FromProcDebugThunk32 := PWin9xDebugThunk32(FromProc);
@@ -6137,7 +6203,9 @@ begin
   if ImportDir.VirtualAddress = 0 then
     Exit;
   ImportDesc := PImageImportDescriptor(TJclAddr(Base) + ImportDir.VirtualAddress);
-  RefName := PAnsiChar(StringToUTF8(ModuleName));
+  if not TryStringToUTF8(ModuleName, UTF8Name) then
+    UTF8Name := TUTF8String(ModuleName);
+  RefName := PAnsiChar(UTF8Name);
   while ImportDesc^.Name <> 0 do
   begin
     CurrName := PAnsiChar(Base) + ImportDesc^.Name;
@@ -6264,7 +6332,8 @@ begin
   if InternalReadProcMem(ProcessHandle, TJclAddr(BaseAddress) + ExportDir.Name, PAnsiChar(UTF8Name), MAX_PATH) then
   begin
     StrResetLength(UTF8Name);
-    Name := UTF8ToString(UTF8Name);
+    if not TryUTF8ToString(UTF8Name, Name) then
+      Name := string(UTF8Name);
   end
   else
     Name := '';
@@ -6277,7 +6346,7 @@ function PeBorUnmangleName(const Name: string; var Unmangled: string;
 var
   NameP, NameU, NameUFirst: PAnsiChar;
   QualifierFound, LinkProcFound: Boolean;
-  UTF8Unmangled: TUTF8String;
+  UTF8Unmangled, UTF8Name: TUTF8String;
 
   procedure MarkQualifier;
   begin
@@ -6398,7 +6467,9 @@ var
   end;
 
 begin
-  NameP := PAnsiChar(StringToUTF8(Name));
+  if not TryStringToUTF8(Name, UTF8Name) then
+    UTF8Name := TUTF8String(Name);
+  NameP := PAnsiChar(UTF8Name);
   Result := urError;
   case NameP^ of
     '@':
@@ -6426,7 +6497,8 @@ begin
   end;
   NameU^ := #0;
   SetLength(UTF8Unmangled, SysUtils.StrLen(PAnsiChar(UTF8Unmangled))); // SysUtils prefix due to compiler bug
-  Unmangled := UTF8ToString(UTF8Unmangled);
+  if not TryUTF8ToString(UTF8Unmangled, Unmangled) then
+    Unmangled := string(UTF8Unmangled);
 end;
 
 function PeBorUnmangleName(const Name: string; var Unmangled: string;
