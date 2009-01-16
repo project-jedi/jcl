@@ -209,12 +209,26 @@ function UTF16ToString(const S: TUTF16String): string; {$IFDEF SUPPORTS_INLINE} 
 function StringToUCS4(const S: string): TUCS4Array; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 function UCS4ToString(const S: TUCS4Array): string; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 
+function TryStringToUTF8(const S: string; out D: TUTF8String): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
+function TryUTF8ToString(const S: TUTF8String; out D: string): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
+function TryStringToUTF16(const S: string; out D: TUTF16String): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
+function TryUTF16ToString(const S: TUTF16String; out D: string): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
+function TryStringToUCS4(const S: string; out D: TUCS4Array): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
+function TryUCS4ToString(const S: TUCS4Array; out D: string): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
+
 function UTF8ToUTF16(const S: TUTF8String): TUTF16String;
 function UTF16ToUTF8(const S: TUTF16String): TUTF8String;
 function UTF8ToUCS4(const S: TUTF8String): TUCS4Array;
 function UCS4ToUTF8(const S: TUCS4Array): TUTF8String;
 function UTF16ToUCS4(const S: TUTF16String): TUCS4Array;
 function UCS4ToUTF16(const S: TUCS4Array): TUTF16String;
+
+function TryUTF8ToUTF16(const S: TUTF8String; out D: TUTF16String): Boolean;
+function TryUTF16ToUTF8(const S: TUTF16String; out D: TUTF8String): Boolean;
+function TryUTF8ToUCS4(const S: TUTF8String; out D: TUCS4Array): Boolean;
+function TryUCS4ToUTF8(const S: TUCS4Array; out D: TUTF8String): Boolean;
+function TryUTF16ToUCS4(const S: TUTF16String; out D: TUCS4Array): Boolean;
+function TryUCS4ToUTF16(const S: TUCS4Array; out D: TUTF16String): Boolean;
 
 // indexed conversions
 function UTF8CharCount(const S: TUTF8String): Integer;
@@ -1961,6 +1975,14 @@ begin
   Result := UTF16ToUTF8(WS);
 end;
 
+function TryStringToUTF8(const S: string; out D: TUTF8String): Boolean;
+var
+  WS: TUTF16String;
+begin
+  WS := TUTF16String(S);
+  Result := TryUTF16ToUTF8(WS, D);
+end;
+
 function UTF8ToString(const S: TUTF8String): string;
 var
   WS: TUTF16String;
@@ -1969,14 +1991,34 @@ begin
   Result := string(WS);
 end;
 
+function TryUTF8ToString(const S: TUTF8String; out D: string): Boolean;
+var
+  WS: TUTF16String;
+begin
+  Result := TryUTF8ToUTF16(S, WS);
+  D := string(WS);
+end;
+
 function StringToUTF16(const S: string): TUTF16String;
 begin
   Result := TUTF16String(S);
 end;
 
+function TryStringToUTF16(const S: string; out D: TUTF16String): Boolean;
+begin
+  D := TUTF16String(S);
+  Result := True;
+end;
+
 function UTF16ToString(const S: TUTF16String): string;
 begin
   Result := string(S);
+end;
+
+function TryUTF16ToString(const S: TUTF16String; out D: string): Boolean;
+begin
+  D := string(S);
+  Result := True;
 end;
 
 function StringToUCS4(const S: string): TUCS4Array;
@@ -1987,12 +2029,28 @@ begin
   Result := UTF16ToUCS4(WS);
 end;
 
+function TryStringToUCS4(const S: string; out D: TUCS4Array): Boolean;
+var
+  WS: TUTF16String;
+begin
+  WS := TUTF16String(S);
+  Result := TryUTF16ToUCS4(WS, D);
+end;
+
 function UCS4ToString(const S: TUCS4Array): string;
 var
   WS: WideString;
 begin
   WS := UCS4ToUTF16(S);
   Result := string(WS);
+end;
+
+function TryUCS4ToString(const S: TUCS4Array; out D: string): Boolean;
+var
+  WS: WideString;
+begin
+  Result := TryUCS4ToUTF16(S, WS);
+  D := string(WS);
 end;
 
 function UTF8ToUTF16(const S: TUTF8String): TUTF16String;
@@ -2018,6 +2076,37 @@ begin
       UTF16SetNextChar(Result, DestIndex, Ch);
     end;
     SetLength(Result, DestIndex - 1); // now fix up length
+  end;
+end;
+
+function TryUTF8ToUTF16(const S: TUTF8String; out D: TUTF16String): Boolean;
+var
+  SrcIndex, SrcLength, DestIndex: Integer;
+  Ch: UCS4;
+begin
+  Result := True;
+  if S = '' then
+    D := ''
+  else
+  begin
+    SrcLength := Length(S);
+    SetLength(D, SrcLength); // create enough room
+
+    SrcIndex := 1;
+    DestIndex := 1;
+    while SrcIndex <= SrcLength do
+    begin
+      Ch := UTF8GetNextChar(S, SrcIndex);
+      if SrcIndex = -1 then
+      begin
+        Result := False;
+        D := '';
+        Exit;
+      end;
+
+      UTF16SetNextChar(D, DestIndex, Ch);
+    end;
+    SetLength(D, DestIndex - 1); // now fix up length
   end;
 end;
 
@@ -2047,6 +2136,37 @@ begin
   end;
 end;
 
+function TryUTF16ToUTF8(const S: TUTF16String; out D: TUTF8String): Boolean;
+var
+  SrcIndex, SrcLength, DestIndex: Integer;
+  Ch: UCS4;
+begin
+  Result := True;
+  if S = '' then
+    D := ''
+  else
+  begin
+    SrcLength := Length(S);
+    SetLength(D, SrcLength * 3); // worste case
+
+    SrcIndex := 1;
+    DestIndex := 1;
+    while SrcIndex <= SrcLength do
+    begin
+      Ch := UTF16GetNextChar(S, SrcIndex);
+      if SrcIndex = -1 then
+      begin
+        Result := False;
+        D := '';
+        Exit;
+      end;
+
+      UTF8SetNextChar(D, DestIndex, Ch);
+    end;
+    SetLength(D, DestIndex - 1); // now fix up length
+  end;
+end;
+
 function UTF8ToUCS4(const S: TUTF8String): TUCS4Array;
 var
   SrcIndex, SrcLength, DestIndex: Integer;
@@ -2072,6 +2192,36 @@ begin
   end;
 end;
 
+function TryUTF8ToUCS4(const S: TUTF8String; out D: TUCS4Array): Boolean;
+var
+  SrcIndex, SrcLength, DestIndex: Integer;
+  Ch: UCS4;
+begin
+  Result := True;
+  if S <> '' then
+  begin
+    SrcLength := Length(S);
+    SetLength(D, SrcLength); // create enough room
+
+    SrcIndex := 1;
+    DestIndex := 0;
+    while SrcIndex <= SrcLength do
+    begin
+      Ch := UTF8GetNextChar(S, SrcIndex);
+      if SrcIndex = -1 then
+      begin
+        Result := False;
+        SetLength(D, 0);
+        Exit;
+      end;
+
+      D[DestIndex] := Ch;
+      Inc(DestIndex);
+    end;
+    SetLength(D, DestIndex); // now fix up length
+  end;
+end;
+
 function UCS4ToUTF8(const S: TUCS4Array): TUTF8String;
 var
   SrcIndex, SrcLength, DestIndex: Integer;
@@ -2092,6 +2242,34 @@ begin
     end;
 
     SetLength(Result, DestIndex - 1); // set to actual length
+  end;
+end;
+
+function TryUCS4ToUTF8(const S: TUCS4Array; out D: TUTF8String): Boolean;
+var
+  SrcIndex, SrcLength, DestIndex: Integer;
+begin
+  SrcLength := Length(S);
+  Result := True;
+  if Length(S) = 0 then
+    D := ''
+  else
+  begin
+    SetLength(D, SrcLength * 3); // assume worst case
+    DestIndex := 1;
+
+    for SrcIndex := 0 to SrcLength - 1 do
+    begin
+      UTF8SetNextChar(D, DestIndex, S[SrcIndex]);
+      if DestIndex = -1 then
+      begin
+        Result := False;
+        D := '';
+        Exit;
+      end;
+    end;
+
+    SetLength(D, DestIndex - 1); // set to actual length
   end;
 end;
 
@@ -2120,6 +2298,36 @@ begin
   end;
 end;
 
+function TryUTF16ToUCS4(const S: TUTF16String; out D: TUCS4Array): Boolean;
+var
+  SrcIndex, SrcLength, DestIndex: Integer;
+  Ch: UCS4;
+begin
+  Result := True;
+  if S <> '' then
+  begin
+    SrcLength := Length(S);
+    SetLength(D, SrcLength); // create enough room
+
+    SrcIndex := 1;
+    DestIndex := 0;
+    while SrcIndex <= SrcLength do
+    begin
+      Ch := UTF16GetNextChar(S, SrcIndex);
+      if SrcIndex = -1 then
+      begin
+        Result := False;
+        SetLength(D, 0);
+        Exit;
+      end;
+
+      D[DestIndex] := Ch;
+      Inc(DestIndex);
+    end;
+    SetLength(D, DestIndex); // now fix up length
+  end;
+end;
+
 function UCS4ToUTF16(const S: TUCS4Array): TUTF16String;
 var
   SrcIndex, SrcLength, DestIndex: Integer;
@@ -2140,6 +2348,34 @@ begin
     end;
 
     SetLength(Result, DestIndex - 1); // set to actual length
+  end;
+end;
+
+function TryUCS4ToUTF16(const S: TUCS4Array; out D:TUTF16String): Boolean;
+var
+  SrcIndex, SrcLength, DestIndex: Integer;
+begin
+  SrcLength := Length(S);
+  Result := True;
+  if SrcLength = 0 then
+    D := ''
+  else
+  begin
+    SetLength(D, SrcLength * 3); // assume worst case
+    DestIndex := 1;
+
+    for SrcIndex := 0 to SrcLength - 1 do
+    begin
+      UTF16SetNextChar(D, DestIndex, S[SrcIndex]);
+      if DestIndex = -1 then
+      begin
+        Result := False;
+        D := '';
+        Exit;
+      end;
+    end;
+
+    SetLength(D, DestIndex - 1); // set to actual length
   end;
 end;
 
