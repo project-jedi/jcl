@@ -1864,7 +1864,7 @@ begin
       AFormat := CompressFormats[IndexFormat];
       StrTokenToStrings(AFormat.StreamExtensions, DirSeparator, Filters);
       for IndexFilter := 0 to Filters.Count - 1 do
-        if StrMatches(Filters.Strings[IndexFilter], AFileName) then
+        if StrMatches(Filters.Strings[IndexFilter], StrLower(AFileName)) then
       begin
         Result := AFormat;
         Break;
