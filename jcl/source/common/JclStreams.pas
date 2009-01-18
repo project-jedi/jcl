@@ -27,7 +27,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                    $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -303,8 +303,8 @@ type
     function ReadChar: Char;
     function ReadAnsiChar: AnsiChar;
     function ReadWideChar: WideChar;
-    {$IFNDEF CLR}
     function ReadByte: Byte;
+    {$IFNDEF CLR}
     function ReadCurrency: Currency;
     function ReadDateTime: TDateTime;
     function ReadExtended: Extended;
@@ -1697,12 +1697,16 @@ begin
   {$ENDIF ~CLR}
 end;
 
-{$IFNDEF CLR}
 function TJclEasyStream.ReadByte: Byte;
 begin
+  {$IFDEF CLR}
+  ReadBuffer(Result);
+  {$ELSE ~CLR}
   ReadBuffer(Result, SizeOf(Result));
+  {$ENDIF ~CLR}
 end;
 
+{$IFNDEF CLR}
 function TJclEasyStream.ReadCurrency: Currency;
 begin
   ReadBuffer(Result, SizeOf(Result));

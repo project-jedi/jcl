@@ -36,7 +36,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -3948,7 +3948,7 @@ end;
 // The CRC Table can be generated like this:
 // const Crc16Start0 = 0;  !!
 
-function Crc16_Bitwise(X: PJclByteArray; N: Integer; Crc: Word; Polynom: Word): Word;
+function Crc16_Bitwise(const X: array of Byte; N: Integer; Crc: Word; Polynom: Word): Word;
 const
   Crc16Start0 = 0;   //Generating the table
 var
@@ -3989,7 +3989,7 @@ begin
    for I := 0 to 255 do
    begin
      X[0] := I;
-     Crc16Table[I] := Crc16_Bitwise(@X, 1, 0, Polynom); { only with crcstart=0 !!!!}
+     Crc16Table[I] := Crc16_Bitwise(X, 1, 0, Polynom); { only with crcstart=0 !!!!}
    end;
    Crc16DefaultStart := Start;
 end;
@@ -4166,7 +4166,7 @@ end;
 // The CRC Table can be generated like this:
 // const Crc32Start0 = 0;  !!
 
-function Crc32_Bitwise(X: PJclByteArray; N: Integer; Crc: Cardinal; Polynom: Cardinal) : Cardinal;
+function Crc32_Bitwise(const X: array of Byte; N: Integer; Crc: Cardinal; Polynom: Cardinal) : Cardinal;
 const
   Crc32Start0 = 0;   //Generating the table
 var
@@ -4208,7 +4208,7 @@ begin
    for I := 0 to 255 do
    begin
      X[0] := I;
-     Crc32Table[I] := Crc32_Bitwise(@X, 1, 0, Polynom);
+     Crc32Table[I] := Crc32_Bitwise(X, 1, 0, Polynom);
    end;
    Crc32DefaultStart := Start;
 end;
