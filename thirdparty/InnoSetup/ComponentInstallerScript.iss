@@ -169,6 +169,11 @@ begin
   Result := compinst_isBCBInstalled(Version) <> 0;
 end;
 
+function IsStudioInstalled(Version: Integer): Boolean;
+begin
+  Result := compinst_isBDSInstalled(Version) <> 0;
+end;
+
 function IsSourceInstall: Boolean;
 var
   List: TStrings;
