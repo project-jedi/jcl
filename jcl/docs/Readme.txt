@@ -1,9 +1,9 @@
 --------------------------------------------------------------------------------
 
 JEDI Code Library
-Unstable 1.103
-Build 3111
-25-August-2008
+Release 1.104
+Build 3248
+21-January-2009
 
 --------------------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ Getting involved in JCL development
 --------------------------------------------------------------------------------
 
 About this release
-JCL release 1.103 provides an updated support for all targets
+JCL release 1.104 provides an updated support for all targets
 (including Delphi 2009 and C++Builder 2009).
 
 As always, multiple bugs have been fixed; for detailed change logs, use the
@@ -31,21 +31,16 @@ http://sourceforge.net/projects/jcl/, see below.
 
 Head changes:
 
- - security update to BZip2 1.0.5;
- - Streams compatible with Delphi.net, added new stream classes to encode/decode
-   strings;
- - container rework (thread safe implementation, new contained types: WideString,
-   Single, Double, Extended..., compatibility with iterators, splitted to a
-   dedicated package);
- - Installation to multiple local user accounts at the same time;
- - updated detection of CPU features;
- - new functions in JclStrings to expand tab to spaces;
- - added properties to TJclSimpleXml to enumerate elements by name;
- - enhanced support for FPC;
- - added archive support (.zip, .rar, .tar, .gz, .bzip, .iso...) based on
-   sevenzip;
- - support for callout in PCRE;
- - added project-wide settings for the debug expert.
+ - improved Unicode support for Delphi 2009 and C++Builder 2009;
+ - support for late and static binding to ZLib code;
+ - version control actions for CVS and SVN added to JCL runtime;
+ - the polyniomal of CRC computations can be customized;
+ - speed improvement of TJclBufferedStream during write operations;
+ - new archive compression format provided with 7-zip: lzma, pe, elf, macho,
+   udf, xar, mub, hfs, dmg; the wrapper has previous support for the compression
+   and the decompression of zip, bzip2, gzip, 7z, tar and for the decompression
+   of rar, iso, chm, deb, cab...
+ - new string conversion functions with failure detection.
 
 Important:
 
@@ -101,11 +96,11 @@ Only design-time support (only experts):
 Both supports (run time and design time):
  - Delphi version 5, 6, 7;
  - C++Builder version 5 & 6;
- - Delphi 2005 (Delphi for Win32 and Delphi.net personalities);
+ - Delphi 2005 (Delphi.net personality);
  - Borland Developer Studio 2006 (Delphi for Win32, C++Builder for Win32,
    Delphi.net and C#Builder personalities);
  - Turbo Delphi (explorer and professional - cf Installation notes);
- - CodeGear RAD Studio 2007 (Delphi for Win32, C++Builder for Win32 and Delphi.net
+ - CodeGear RAD Studio 2007 (Delphi for Win32 and C++Builder for Win32
    personalities);
  - CodeGear Delphi 2009 and C++Builder 2009.
 
