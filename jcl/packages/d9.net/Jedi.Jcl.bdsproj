@@ -153,9 +153,9 @@
       <VersionInfo Name="IncludeVerInfo">True</VersionInfo>
       <VersionInfo Name="AutoIncBuild">False</VersionInfo>
       <VersionInfo Name="MajorVer">1</VersionInfo>
-      <VersionInfo Name="MinorVer">103</VersionInfo>
+      <VersionInfo Name="MinorVer">105</VersionInfo>
       <VersionInfo Name="Release">0</VersionInfo>
-      <VersionInfo Name="Build">3111</VersionInfo>
+      <VersionInfo Name="Build">3249</VersionInfo>
       <VersionInfo Name="Debug">False</VersionInfo>
       <VersionInfo Name="PreRelease">False</VersionInfo>
       <VersionInfo Name="Special">False</VersionInfo>
@@ -167,13 +167,13 @@
     <VersionInfoKeys>
       <VersionInfoKeys Name="CompanyName"></VersionInfoKeys>
       <VersionInfoKeys Name="FileDescription"></VersionInfoKeys>
-      <VersionInfoKeys Name="FileVersion">1.103.0.3111</VersionInfoKeys>
+      <VersionInfoKeys Name="FileVersion">1.105.0.3249</VersionInfoKeys>
       <VersionInfoKeys Name="InternalName">Jedi.Jcl</VersionInfoKeys>
       <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2008 Project JEDI</VersionInfoKeys>
       <VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
       <VersionInfoKeys Name="OriginalFilename">Jedi.Jcl90.bpl</VersionInfoKeys>
       <VersionInfoKeys Name="ProductName">JEDI Code Library</VersionInfoKeys>
-      <VersionInfoKeys Name="ProductVersion">1.103 Build 3111</VersionInfoKeys>
+      <VersionInfoKeys Name="ProductVersion">1.105 Build 3249</VersionInfoKeys>
       <VersionInfoKeys Name="Comments"></VersionInfoKeys>
     </VersionInfoKeys>
     <FileList>
