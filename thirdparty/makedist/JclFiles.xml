@@ -179,7 +179,7 @@
     <action classname="TCommandLineCaller">
       <configuration index="0" caption="Application" value="%DCC2006%"/>
       <configuration index="1" caption="Working directory" value="sandbox\install"/>
-      <configuration index="2" caption="Parameters" value="-q -w -dJCLINSTALL -E..\bin -I..\source -U..\source\common;..\source\windows JediInstaller.dpr"/>
+      <configuration index="2" caption="Parameters" value="-q -w -dJCLINSTALL -E..\bin -I..\source\include -U..\source\common;..\source\windows JediInstaller.dpr"/>
       <configuration index="3" caption="Valid exit codes" value=""/>
       <configuration index="4" caption="Result file" value=""/>
     </action>
