@@ -330,8 +330,8 @@ procedure FreePCharVector(var Dest: PCharVector);
 // MultiSz Routines
 type
   PMultiSz = PChar;
-  PAnsiMultiSz = JclAnsiStrings.PMultiSz;
-  PWideMultiSz = JclWideStrings.PMultiSz;
+  PAnsiMultiSz = JclAnsiStrings.PAnsiMultiSz;
+  PWideMultiSz = JclWideStrings.PWideMultiSz;
 
   TAnsiStrings = JclAnsiStrings.TAnsiStrings;
   TWideStrings = JclWideStrings.TWideStrings;

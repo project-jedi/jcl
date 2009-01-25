@@ -1208,7 +1208,7 @@ var
 begin
   Result := InternalGetAnsiString(RootKey, Key, Name, True, S, RaiseException);
   if Result then
-    AnsiMultiSzToAnsiStrings(Value, PAnsiMultiSz(PChar(S)));
+    JclStrings.MultiSzToStrings(Value, PAnsiMultiSz(PChar(S)));
 end;
 {$ENDIF ~SUPPORTS_UNICODE}
 
@@ -1228,7 +1228,7 @@ begin
 end;
 
 function RegReadMultiSzEx(const RootKey: DelphiHKEY; const Key, Name: string;
-  out RetValue: JclStrings.PMultiSz; RaiseException: Boolean): Boolean;
+  out RetValue: PMultiSz; RaiseException: Boolean): Boolean;
 {$IFDEF SUPPORTS_UNICODE}
 var
   S: WideString;
@@ -1247,7 +1247,7 @@ begin
   Result := InternalGetAnsiString(RootKey, Key, Name, True, S, RaiseException);
   if Result then
     // always returns a newly allocated PMultiSz
-    RetValue := AnsiMultiSzDup(PAnsiMultiSz(S))
+    RetValue := JclAnsiStrings.MultiSzDup(PAnsiMultiSz(S))
   else
     RetValue := nil;
 end;
@@ -1277,7 +1277,7 @@ var
 begin
   Result := InternalGetAnsiString(RootKey, Key, Name, True, S, RaiseException);
   if Result then
-    AnsiMultiSzToAnsiStrings(Value, PAnsiMultiSz(S));
+    JclAnsiStrings.MultiSzToStrings(Value, PAnsiMultiSz(S));
 end;
 
 procedure RegReadAnsiMultiSz(const RootKey: DelphiHKEY; const Key, Name: string; Value: TAnsiStrings);
@@ -1304,7 +1304,7 @@ begin
   Result := InternalGetAnsiString(RootKey, Key, Name, True, S, RaiseException);
   if Result then
     // always returns a newly allocated PMultiAnsiSz
-    RetValue := AnsiMultiSzDup(PAnsiMultiSz(S));
+    RetValue := JclAnsiStrings.MultiSzDup(PAnsiMultiSz(S));
 end;
 
 function RegReadAnsiMultiSz(const RootKey: DelphiHKEY; const Key, Name: string): PAnsiMultiSz;
@@ -1317,10 +1317,10 @@ begin
   try
     if RegReadAnsiMultiSzEx(RootKey, Key, Name, Result, False) then
       // always returns a newly allocated PAnsiMultiSz
-      Result := AnsiMultiSzDup(Def);
+      Result := JclAnsiStrings.MultiSzDup(Def);
   except
     // always returns a newly allocated PAnsiMultiSz
-    Result := AnsiMultiSzDup(Def);
+    Result := JclAnsiStrings.MultiSzDup(Def);
   end;
 end;
 
@@ -1331,7 +1331,7 @@ var
 begin
   Result := InternalGetWideString(RootKey, Key, Name, True, S, RaiseException);
   if Result then
-    WideMultiSzToWideStrings(Value, PWideMultiSz(S));
+    JclWideStrings.MultiSzToStrings(Value, PWideMultiSz(S));
 end;
 
 procedure RegReadWideMultiSz(const RootKey: DelphiHKEY; const Key, Name: string; Value: TWideStrings);
@@ -1358,7 +1358,7 @@ begin
   Result := InternalGetWideString(RootKey, Key, Name, True, S, RaiseException);
   if Result then
     // always returns a newly allocated PMultiWideSz
-    RetValue := WideMultiSzDup(PWideMultiSz(S));
+    RetValue := JclWideStrings.MultiSzDup(PWideMultiSz(S));
 end;
 
 function RegReadWideMultiSz(const RootKey: DelphiHKEY; const Key, Name: string): PWideMultiSz;
@@ -1371,10 +1371,10 @@ begin
   try
     if RegReadWideMultiSzEx(RootKey, Key, Name, Result, False) then
       // always returns a newly allocated PWideMultiSz
-      Result := WideMultiSzDup(Def);
+      Result := JclWideStrings.MultiSzDup(Def);
   except
     // always returns a newly allocated PWideMultiSz
-    Result := WideMultiSzDup(Def);
+    Result := JclWideStrings.MultiSzDup(Def);
   end;
 end;
 
@@ -1659,7 +1659,7 @@ procedure RegWriteAnsiMultiSz(const RootKey: DelphiHKEY; const Key, Name: string
 begin
   if DataType in [REG_BINARY, REG_MULTI_SZ] then
     InternalSetAnsiData(RootKey, Key, Name, DataType, Value,
-      AnsiMultiSzLength(Value) * SizeOf(AnsiChar))
+      JclAnsiStrings.MultiSzLength(Value) * SizeOf(AnsiChar))
   else
     DataError(RootKey, Key, Name);
 end;
@@ -1676,11 +1676,11 @@ var
 begin
   if DataType in [REG_BINARY, REG_MULTI_SZ] then
   begin
-    AnsiStringsToAnsiMultiSz(Dest, Value);
+    JclAnsiStrings.StringsToMultiSz(Dest, Value);
     try
       RegWriteAnsiMultiSz(RootKey, Key, Name, DataType, Dest);
     finally
-      FreeAnsiMultiSz(Dest);
+      JclAnsiStrings.FreeMultiSz(Dest);
     end;
   end
   else
@@ -1697,7 +1697,7 @@ procedure RegWriteWideMultiSz(const RootKey: DelphiHKEY; const Key, Name: string
 begin
   if DataType in [REG_BINARY, REG_MULTI_SZ] then
     InternalSetWideData(RootKey, Key, Name, DataType, Value,
-      WideMultiSzLength(Value) * SizeOf(WideChar))
+      JclWideStrings.MultiSzLength(Value) * SizeOf(WideChar))
   else
     DataError(RootKey, Key, Name);
 end;
@@ -1714,11 +1714,11 @@ var
 begin
   if DataType in [REG_BINARY, REG_MULTI_SZ] then
   begin
-    WideStringsToWideMultiSz(Dest, Value);
+    JclWideStrings.StringsToMultiSz(Dest, Value);
     try
       RegWriteWideMultiSz(RootKey, Key, Name, DataType, Dest);
     finally
-      FreeWideMultiSz(Dest);
+      JclWideStrings.FreeMultiSz(Dest);
     end;
   end
   else

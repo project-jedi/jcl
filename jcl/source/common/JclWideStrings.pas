@@ -311,14 +311,14 @@ function WideStartsStr(const SubStr, S: WideString): Boolean;
 
 // MultiSz Routines
 type
-  PMultiSz = PWideChar;
+  PWideMultiSz = PWideChar;
 
-function StringsToMultiSz(var Dest: PMultiSz; const Source: TWideStrings): PMultiSz;
-procedure MultiSzToStrings(const Dest: TWideStrings; const Source: PMultiSz);
-function MultiSzLength(const Source: PMultiSz): Integer;
-procedure AllocateMultiSz(var Dest: PMultiSz; Len: Integer);
-procedure FreeMultiSz(var Dest: PMultiSz);
-function MultiSzDup(const Source: PMultiSz): PMultiSz;
+function StringsToMultiSz(var Dest: PWideMultiSz; const Source: TWideStrings): PWideMultiSz;
+procedure MultiSzToStrings(const Dest: TWideStrings; const Source: PWideMultiSz);
+function MultiSzLength(const Source: PWideMultiSz): Integer;
+procedure AllocateMultiSz(var Dest: PWideMultiSz; Len: Integer);
+procedure FreeMultiSz(var Dest: PWideMultiSz);
+function MultiSzDup(const Source: PWideMultiSz): PWideMultiSz;
 
 {$IFDEF UNITVERSIONING}
 const
@@ -2063,10 +2063,10 @@ end;
 
 {$ENDIF ~SUPPORTS_UNICODE}
 
-function StringsToMultiSz(var Dest: PMultiSz; const Source: TWideStrings): PMultiSz;
+function StringsToMultiSz(var Dest: PWideMultiSz; const Source: TWideStrings): PWideMultiSz;
 var
   I, TotalLength: Integer;
-  P: PMultiSz;
+  P: PWideMultiSz;
 begin
   Assert(Source <> nil);
   TotalLength := 1;
@@ -2086,9 +2086,9 @@ begin
   Result := Dest;
 end;
 
-procedure MultiSzToStrings(const Dest: TWideStrings; const Source: PMultiSz);
+procedure MultiSzToStrings(const Dest: TWideStrings; const Source: PWideMultiSz);
 var
-  P: PMultiSz;
+  P: PWideMultiSz;
 begin
   Assert(Dest <> nil);
   Dest.BeginUpdate;
@@ -2109,9 +2109,9 @@ begin
   end;
 end;
 
-function MultiSzLength(const Source: PMultiSz): Integer;
+function MultiSzLength(const Source: PWideMultiSz): Integer;
 var
-  P: PMultiSz;
+  P: PWideMultiSz;
 begin
   Result := 0;
   if Source <> nil then
@@ -2126,7 +2126,7 @@ begin
   end;
 end;
 
-procedure AllocateMultiSz(var Dest: PMultiSz; Len: Integer);
+procedure AllocateMultiSz(var Dest: PWideMultiSz; Len: Integer);
 begin
   if Len > 0 then
     GetMem(Dest, Len * SizeOf(WideChar))
@@ -2134,14 +2134,14 @@ begin
     Dest := nil;
 end;
 
-procedure FreeMultiSz(var Dest: PMultiSz);
+procedure FreeMultiSz(var Dest: PWideMultiSz);
 begin
   if Dest <> nil then
     FreeMem(Dest);
   Dest := nil;
 end;
 
-function MultiSzDup(const Source: PMultiSz): PMultiSz;
+function MultiSzDup(const Source: PWideMultiSz): PWideMultiSz;
 var
   Len: Integer;
 begin

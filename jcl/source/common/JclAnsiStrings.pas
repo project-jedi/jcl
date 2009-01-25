@@ -338,14 +338,14 @@ procedure FreePCharVector(var Dest: PCharVector);
 
 // MultiSz Routines
 type
-  PMultiSz = PAnsiChar;
+  PAnsiMultiSz = PAnsiChar;
 
-function StringsToMultiSz(var Dest: PMultiSz; const Source: TAnsiStrings): PMultiSz;
-procedure MultiSzToStrings(const Dest: TAnsiStrings; const Source: PMultiSz);
-function MultiSzLength(const Source: PMultiSz): Integer;
-procedure AllocateMultiSz(var Dest: PMultiSz; Len: Integer);
-procedure FreeMultiSz(var Dest: PMultiSz);
-function MultiSzDup(const Source: PMultiSz): PMultiSz;
+function StringsToMultiSz(var Dest: PAnsiMultiSz; const Source: TAnsiStrings): PAnsiMultiSz;
+procedure MultiSzToStrings(const Dest: TAnsiStrings; const Source: PAnsiMultiSz);
+function MultiSzLength(const Source: PAnsiMultiSz): Integer;
+procedure AllocateMultiSz(var Dest: PAnsiMultiSz; Len: Integer);
+procedure FreeMultiSz(var Dest: PAnsiMultiSz);
+function MultiSzDup(const Source: PAnsiMultiSz): PAnsiMultiSz;
 {$ENDIF ~CLR}
 
 // TAnsiStrings Manipulation
@@ -3398,10 +3398,10 @@ end;
 {$IFNDEF CLR}
 //=== MultiSz ================================================================
 
-function StringsToMultiSz(var Dest: PMultiSz; const Source: TAnsiStrings): PMultiSz;
+function StringsToMultiSz(var Dest: PAnsiMultiSz; const Source: TAnsiStrings): PAnsiMultiSz;
 var
   I, TotalLength: Integer;
-  P: PMultiSz;
+  P: PAnsiMultiSz;
 begin
   Assert(Source <> nil);
   TotalLength := 1;
@@ -3421,9 +3421,9 @@ begin
   Result := Dest;
 end;
 
-procedure MultiSzToStrings(const Dest: TAnsiStrings; const Source: PMultiSz);
+procedure MultiSzToStrings(const Dest: TAnsiStrings; const Source: PAnsiMultiSz);
 var
-  P: PMultiSz;
+  P: PAnsiMultiSz;
 begin
   Assert(Dest <> nil);
   Dest.BeginUpdate;
@@ -3444,9 +3444,9 @@ begin
   end;
 end;
 
-function MultiSzLength(const Source: PMultiSz): Integer;
+function MultiSzLength(const Source: PAnsiMultiSz): Integer;
 var
-  P: PMultiSz;
+  P: PAnsiMultiSz;
 begin
   Result := 0;
   if Source <> nil then
@@ -3461,22 +3461,22 @@ begin
   end;
 end;
 
-procedure AllocateMultiSz(var Dest: PMultiSz; Len: Integer);
+procedure AllocateMultiSz(var Dest: PAnsiMultiSz; Len: Integer);
 begin
   if Len > 0 then
-    GetMem(Dest, Len * SizeOf(Char))
+    GetMem(Dest, Len * SizeOf(AnsiChar))
   else
     Dest := nil;
 end;
 
-procedure FreeMultiSz(var Dest: PMultiSz);
+procedure FreeMultiSz(var Dest: PAnsiMultiSz);
 begin
   if Dest <> nil then
     FreeMem(Dest);
   Dest := nil;
 end;
 
-function MultiSzDup(const Source: PMultiSz): PMultiSz;
+function MultiSzDup(const Source: PAnsiMultiSz): PAnsiMultiSz;
 var
   Len: Integer;
 begin
@@ -3484,7 +3484,7 @@ begin
   begin
     Len := MultiSzLength(Source);
     AllocateMultiSz(Result, Len);
-    Move(Source^, Result^, Len * SizeOf(Char));
+    Move(Source^, Result^, Len * SizeOf(AnsiChar));
   end
   else
     Result := nil;
