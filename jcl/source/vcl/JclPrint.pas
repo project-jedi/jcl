@@ -389,7 +389,11 @@ begin
     hWinSpool := SafeLoadLibrary(cPrintSpool);
     if hWinSpool <> 0 then
       try
+        {$IFDEF UNICODE}
+        @GetDefPrint := GetProcAddress(hWinSpool, 'GetDefaultPrinterW');
+        {$ELSE}
         @GetDefPrint := GetProcAddress(hWinSpool, 'GetDefaultPrinterA');
+        {$ENDIF UNICODE}
         if not Assigned(GetDefPrint) then
           Exit;
         Size := BUFSIZE;
@@ -491,7 +495,11 @@ begin
     hWinSpool := SafeLoadLibrary(cPrintSpool);
     if hWinSpool <> 0 then
       try
+        {$IFDEF UNICODE}
+        @SetDefPrint := GetProcAddress(hWinSpool, 'SetDefaultPrinterW');
+        {$ELSE}
         @SetDefPrint := GetProcAddress(hWinSpool, 'SetDefaultPrinterA');
+        {$ENDIF UNICODE}
         if Assigned(SetDefPrint) then
           Result := SetDefPrint(PChar(PrinterName));
       finally

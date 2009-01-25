@@ -966,8 +966,8 @@ const
   RecipClasses: array [TJclEmailRecipKind] of DWORD =
     (MAPI_ORIG, MAPI_TO, MAPI_CC, MAPI_BCC);
 type
-  TSetDllDirectory = function(lpPathName: PAnsiChar): LONGBOOL; stdcall;
-  TGetDllDirectory = function(nBufferLength: DWord; lpPathName: PAnsiChar): LONGBOOL; stdcall;
+  TSetDllDirectory = function(lpPathName: PChar): LONGBOOL; stdcall;
+  TGetDllDirectory = function(nBufferLength: DWord; lpPathName: PChar): LONGBOOL; stdcall;
 var
   AttachArray: packed array of TMapiFileDesc;
   RecipArray: packed array of TMapiRecipDesc;
@@ -982,16 +982,21 @@ var
   HtmlBodyFileName: string;
   SetDllDirectory: TSetDllDirectory;
   GetDllDirectory: TGetDllDirectory;
-  DllDirectoryBuffer: array[0..1024] of AnsiChar;
+  DllDirectoryBuffer: array[0..1024] of Char;
 begin
   if not AnyClientInstalled then
     raise EJclMapiError.CreateRes(@RsMapiMailNoClient);
 
+  {$IFDEF UNICODE}
+  @GetDllDirectory := GetProcAddress(GetModuleHandle(kernel32), 'GetDllDirectoryW');
+  @SetDllDirectory := GetProcAddress(GetModuleHandle(kernel32), 'SetDllDirectoryW');
+  {$ELSE}
   @GetDllDirectory := GetProcAddress(GetModuleHandle(kernel32), 'GetDllDirectoryA');
   @SetDllDirectory := GetProcAddress(GetModuleHandle(kernel32), 'SetDllDirectoryA');
+  {$ENDIF UNICODE}
   if Assigned(@GetDllDirectory) and Assigned(@SetDllDirectory) then
   begin
-    GetDllDirectory(SizeOf(DllDirectoryBuffer), @DllDirectoryBuffer);
+    GetDllDirectory(Length(DllDirectoryBuffer), @DllDirectoryBuffer);
     SetDllDirectory(nil);
   end;
   try

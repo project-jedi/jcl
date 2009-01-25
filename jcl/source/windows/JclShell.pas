@@ -1406,15 +1406,8 @@ begin
 end;
 
 { TODO: Dynamic linking - move TRasDialDlgA to JclWin32}
-
 type
-  TRasDialDlgFuncA = function(lpszPhonebook, lpszEntry, lpszPhoneNumber: PAnsiChar; lpInfo: PRasDialDlg): BOOL; stdcall;
-  TRasDialDlgFuncW = function(lpszPhonebook, lpszEntry, lpszPhoneNumber: PWideChar; lpInfo: PRasDialDlg): BOOL; stdcall;
-  {$IFDEF SUPPORTS_UNICODE}
-  TRasDialDlgFunc = TRasDialDlgFuncW;
-  {$ELSE ~SUPPORTS_UNICODE}
-  TRasDialDlgFunc = TRasDialDlgFuncA;
-  {$ENDIF ~SUPPORTS_UNICODE}
+  TRasDialDlgFunc = function(lpszPhonebook, lpszEntry, lpszPhoneNumber: PChar; lpInfo: PRasDialDlg): BOOL; stdcall;
 
 function ShellRasDial(const EntryName: string): Boolean;
 var
