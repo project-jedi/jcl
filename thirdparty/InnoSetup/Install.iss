@@ -85,6 +85,7 @@ DefaultGroupName=DelphiComponents\JEDI Code Library
 DisableProgramGroupPage=no
 ;LicenseFile={#JclRoot}\help\MPL-1.1.html
 OutputBaseFilename=JCLSetup
+PrivilegesRequired=none
 #ifdef DEBUGGING
 Compression=zip/1
 #else
