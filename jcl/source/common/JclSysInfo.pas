@@ -280,7 +280,8 @@ type
     weWinXPProK, weWinXPHomeKN, weWinXPProKN, weWinXPStarter, weWinXPMediaCenter,
     weWinXPTablet, weWinVistaStarter, weWinVistaHomeBasic, weWinVistaHomeBasicN,
     weWinVistaHomePremium, weWinVistaBusiness, weWinVistaBusinessN,
-    weWinVistaEnterprise, weWinVistaUltimate);
+    weWinVistaEnterprise, weWinVistaUltimate, weWin7Starter, weWin7HomeBasic,
+    weWin7HomePremium, weWin7Business, weWin7Ultimate);
   TNtProductType =
    (ptUnknown, ptWorkStation, ptServer, ptAdvancedServer,
     ptPersonal, ptProfessional, ptDatacenterServer, ptEnterprise, ptWebEdition);
@@ -3376,6 +3377,25 @@ begin
    else
    if (pos('Ultimate', Edition) > 0) then
       Result := weWinVistaUltimate;
+  end
+  else
+  if (pos('Windows 7', Edition) = 1) then
+  begin
+   // Windows 7 Editions
+   if (pos('Starter', Edition) > 0) then
+      Result := weWin7Starter
+   else
+   if (pos('Home Basic', Edition) > 0) then
+      Result := weWin7HomeBasic
+   else
+   if (pos('Home Premium', Edition) > 0) then
+      Result := weWin7HomePremium
+   else
+   if (pos('Business', Edition) > 0) then
+      Result := weWin7Business
+   else
+   if (pos('Ultimate', Edition) > 0) then
+      Result := weWin7Ultimate;
   end;
 end;
 
@@ -3576,6 +3596,16 @@ begin
       Result := RsEditionWinVistaEnterprise;
     weWinVistaUltimate:
       Result := RsEditionWinVistaUltimate;
+    weWin7Starter:
+      Result := RsEditionWin7Starter;
+    weWin7HomeBasic:
+      Result := RsEditionWin7HomeBasic;
+    weWin7HomePremium:
+      Result := RsEditionWin7HomePremium;
+    weWin7Business:
+      Result := RsEditionWin7Business;
+    weWin7Ultimate:
+      Result := RsEditionWin7Ultimate;
   else
     Result := '';
   end;

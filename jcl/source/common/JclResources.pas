@@ -20,6 +20,7 @@
 {   Barry Kelly                                                                                    }
 {   Flier Lu (flier)                                                                               }
 {   Florent Ouchet (outchy)                                                                        }
+{   Jean-Fabien Connault (cycocrew)                                                                }
 {   Marcel Bestebroer                                                                              }
 {   Marcel van Brakel                                                                              }
 {   Matthias Thoma (mthoma)                                                                        }
@@ -37,7 +38,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                       $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -1940,6 +1941,11 @@ resourcestring
   RsEditionWinVistaBusinessN    = 'Business N';
   RsEditionWinVistaEnterprise   = 'Enterprise';
   RsEditionWinVistaUltimate     = 'Ultimate';
+  RsEditionWin7Starter          = 'Starter';
+  RsEditionWin7HomeBasic        = 'Home Basic';
+  RsEditionWin7HomePremium      = 'Home Premium';
+  RsEditionWin7Business         = 'Business';
+  RsEditionWin7Ultimate         = 'Ultimate';
 
   RsProductTypeWorkStation      = 'Workstation';
   RsProductTypeServer           = 'Server';
