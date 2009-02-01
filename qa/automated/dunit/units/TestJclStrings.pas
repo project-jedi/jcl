@@ -778,8 +778,7 @@ end;
 
 procedure TJclStringTransformation._StrProper_StrProperBuff;
 var
- s, s3, sn: string;
- i: Integer;
+ s, s3: string;
 
 begin
   CheckEquals('',         StrProper(''),          'StrProper1');
