@@ -227,18 +227,12 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TMathTranscendentalTest._ArcCot;
-var
-  x: Extended;
-
 begin
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 procedure TMathTranscendentalTest._ArcCsc;
-var
-  x: Extended;
-
 begin
 end;
 
