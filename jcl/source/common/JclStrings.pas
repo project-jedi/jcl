@@ -534,6 +534,7 @@ type
     constructor Create(TabWidth: Integer); overload;
     constructor Create(const Tabstops: array of Integer; ZeroBased: Boolean); overload;
     constructor Create(const Tabstops: array of Integer; ZeroBased: Boolean; TabWidth: Integer); overload;
+    function Clone: TJclTabSet;
 
     // Tab stops manipulation
     function Add(Column: Integer): Integer;
@@ -2915,10 +2916,6 @@ asm
          SUB     EDX, ECX
          JLE     @@NoWork
 
-        // # of chars in S1 - (Count - 1)
-         SUB     EDX, EBX
-         JLE     @@NoWork
-
         // move to index'th char
          ADD     ESI, ECX
 
@@ -2933,6 +2930,10 @@ asm
          MOV     ECX, EBX
 
          @@Skip1:
+        // # of chars in S1 - (Min(Count, Length(S2)) - 1)
+         SUB     EDX, ECX
+         JLE     @@NoWork
+
          XOR     EAX, EAX
          XOR     EDX, EDX
 
@@ -5627,6 +5628,14 @@ begin
     FRealWidth := FWidth;
 end;
 
+function TJclTabSet.Clone: TJclTabSet;
+begin
+  if Self <> nil then
+    Result := TJclTabSet.Create(FStops, FZeroBased, FWidth)
+  else
+    Result := nil;
+end;
+
 function TJclTabSet.Delete(Column: Integer): Integer;
 begin
   Result := FindStop(Column);
@@ -6226,6 +6235,11 @@ var
   Cur1, Len1,
   Cur2, Len2: Integer;
 
+  function IsRealNumberChar(ch: Char): Boolean;
+  begin
+    Result := ((ch >= '0') and (ch <= '9')) or (ch = '-') or (ch = '+');
+  end;
+
   procedure NumberCompare;
   var
     IsReallyNumber: Boolean;
@@ -6235,37 +6249,37 @@ var
     Result := 0;
     IsReallyNumber := False;
     // count leading spaces in S1
-    while CharIsWhiteSpace(S1[Cur1]) do
+    while (Cur1 <= Len1) and CharIsWhiteSpace(S1[Cur1]) do
     begin
       Dec(Result);
       Inc(Cur1);
     end;
     // count leading spaces in S2 (canceling them out against the ones in S1)
-    while CharIsWhiteSpace(S2[Cur2]) do
+    while (Cur2 <= Len2) and CharIsWhiteSpace(S2[Cur2]) do
     begin
       Inc(Result);
       Inc(Cur2);
     end;
 
     // if spaces match, or both strings are actually followed by a numeric character, continue the checks
-    if (Result = 0) or (CharIsNumberChar(S1[Cur1])) and (CharIsNumberChar(S2[Cur2])) then
+    if (Result = 0) or ((Cur1 <= Len1) and CharIsNumberChar(S1[Cur1]) and (Cur2 <= Len2) and CharIsNumberChar(S2[Cur2])) then
     begin
       // Check signed number
-      if (S1[Cur1] = '-') and (S2[Cur2] <> '-') then
+      if (Cur1 <= Len1) and (S1[Cur1] = '-') and ((Cur2 > Len2) or (S2[Cur2] <> '-')) then
         Result := 1
       else
-      if (S2[Cur2] = '-') and (S1[Cur1] <> '-') then
+      if (Cur2 <= Len2) and (S2[Cur2] = '-') and ((Cur1 > Len1) or (S1[Cur1] <> '-')) then
         Result := -1
       else
         Result := 0;
 
-      if (S1[Cur1] = '-') or (S1[Cur1] = '+') then
+      if (Cur1 <= Len1) and ((S1[Cur1] = '-') or (S1[Cur1] = '+')) then
         Inc(Cur1);
-      if (S2[Cur2] = '-') or (S2[Cur2] = '+') then
+      if (Cur2 <= Len2) and ((S2[Cur2] = '-') or (S2[Cur2] = '+')) then
         Inc(Cur2);
 
-      FirstDiffBreaks := (S1[Cur1] = '0') or (S2[Cur2] = '0');
-      while CharIsDigit(S1[Cur1]) and CharIsDigit(S2[Cur2]) do
+      FirstDiffBreaks := (Cur1 <= Len1) and (S1[Cur1] = '0') or (Cur2 <= Len2) and (S2[Cur2] = '0');
+      while (Cur1 <= Len1) and CharIsDigit(S1[Cur1]) and (Cur2 <= Len2) and CharIsDigit(S2[Cur2]) do
       begin
         IsReallyNumber := True;
         Val1 := StrToInt(S1[Cur1]);
@@ -6286,14 +6300,35 @@ var
       begin
         if not FirstDiffBreaks then
         begin
-          if CharIsDigit(S1[Cur1]) then
+          if (Cur1 <= Len1) and CharIsDigit(S1[Cur1]) then
             Result := 1
           else
-          if CharIsDigit(S2[Cur2]) then
+          if (Cur2 <= Len2) and CharIsDigit(S2[Cur2]) then
             Result := -1;
         end;
       end;
     end;
+  end;
+
+  procedure SetByCompareLength;
+  var
+    Remain1: Integer;
+    Remain2: Integer;
+  begin
+    // base result on relative compare length (spaces could be ignored, so even if S1 is longer than S2, they could be
+    // completely equal, or S2 could be longer)
+    Remain1 := Len1 - Cur1 + 1;
+    Remain2 := Len2 - Cur2 + 1;
+    if Remain1 < 0 then
+      Remain1 := 0;
+    if Remain2 < 0 then
+      Remain2 := 0;
+
+    if Remain1 < Remain2 then
+      Result := -1
+    else
+    if Remain1 > Remain2 then
+      Result := 1;
   end;
 
 begin
@@ -6305,23 +6340,23 @@ begin
 
   while (Result = 0) do
   begin
-    if (Cur1 = Len1) and (Cur2 = Len2) then
-      Break
+    if (Cur1 > Len1) or (Cur2 > Len2) then
+    begin
+      SetByCompareLength;
+      Break;
+    end
     else
-    if (S1[Cur1] = '-') and CharIsNumberChar(S2[Cur2]) and (S2[Cur2] <> '-') then
-      Result := -1
-    else
-    if (S2[Cur2] = '-') and CharIsNumberChar(S1[Cur1]) and (S1[Cur1] <> '-') then
+    if (Cur1 <= Len1) and (Cur2 > Len2) then
       Result := 1
     else
-    if CharIsNumberChar(S1[Cur1]) and CharIsNumberChar(S2[Cur2]) then
+    if (S1[Cur1] = '-') and IsRealNumberChar(S2[Cur2]) and (S2[Cur2] <> '-') then
+      Result := -1
+    else
+    if (S2[Cur2] = '-') and IsRealNumberChar(S1[Cur1]) and (S1[Cur1] <> '-') then
+      Result := 1
+    else
+    if (IsRealNumberChar(S1[Cur1]) or CharIsWhiteSpace(S1[Cur1])) and (IsRealNumberChar(S2[Cur2]) or CharIsWhiteSpace(S2[Cur2])) then
       NumberCompare
-    else
-    if (Cur1 = Len1) and (Cur2 < Len2) then
-      Result := -1
-    else
-    if (Cur1 < Len1) and (Cur2 = Len2) then
-      Result := 1
     else
     begin
       {$IFDEF CLR}

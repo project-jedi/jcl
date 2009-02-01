@@ -3143,6 +3143,22 @@ See also:
 Donator:
   Marcel Bestebroer
 --------------------------------------------------------------------------------
+@@TJclTabSet.Clone
+Summary:
+  Initializes a new tab set instance equal to the current instance.
+Description:
+  The Clone method initializes a new instance of the TJclTabSet class and
+  copies the contents of the current instance to the new one.
+Result:
+  <b>nil</b> if Clone is called on a <b>nil</b> instance<p>
+  <i>- or -</i><p>
+  A new TJclTabSet instance identical to the instance Close was called on
+Notes:
+  This method is <i><b>nil</b>-safe</i>; when invoked on a
+  <b>nil</b>-reference, this method will return <b>nil</b>.
+Donator:
+  Marcel Bestebroer
+--------------------------------------------------------------------------------
 @@TJclTabSet.Count
 Summary:
   Indicates the number of tabulation positions specified.
