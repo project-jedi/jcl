@@ -1942,9 +1942,9 @@ resourcestring
   RsEditionWinVistaEnterprise   = 'Enterprise';
   RsEditionWinVistaUltimate     = 'Ultimate';
   RsEditionWin7Starter          = 'Starter';
-  RsEditionWin7HomeBasic        = 'Home Basic';
   RsEditionWin7HomePremium      = 'Home Premium';
-  RsEditionWin7Business         = 'Business';
+  RsEditionWin7Professional     = 'Professional';
+  RsEditionWin7Enterprise       = 'Enterprise';
   RsEditionWin7Ultimate         = 'Ultimate';
 
   RsProductTypeWorkStation      = 'Workstation';
