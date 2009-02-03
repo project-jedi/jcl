@@ -1,4 +1,4 @@
-{**************************************************************************************************}
+﻿{**************************************************************************************************}
 {                                                                                                  }
 { Project JEDI Code Library (JCL)                                                                  }
 {                                                                                                  }
@@ -1942,6 +1942,7 @@ resourcestring
   RsEditionWinVistaEnterprise   = 'Enterprise';
   RsEditionWinVistaUltimate     = 'Ultimate';
   RsEditionWin7Starter          = 'Starter';
+  RsEditionWin7HomeBasic        = 'Home Basic';
   RsEditionWin7HomePremium      = 'Home Premium';
   RsEditionWin7Professional     = 'Professional';
   RsEditionWin7Enterprise       = 'Enterprise';
