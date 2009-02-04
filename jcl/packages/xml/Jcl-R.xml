@@ -7,10 +7,6 @@
   <C5Libs/>
   <C6Libs/>
   <ImageBase>48000000</ImageBase>
-  <VersionMajorNumber/>
-  <VersionMinorNumber/>
-  <ReleaseNumber/>
-  <BuildNumber/>
   <Requires>
     <Package Name="rtl" Targets="allLibSuffix" Condition=""/>
     <Package Name="vcl50" Targets="noLibSuffix" Condition=""/>
@@ -42,6 +38,7 @@
     <File Name="..\..\source\common\JclMath.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclMIDI.pas" Targets="JclDev" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclMime.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclNotify.pas" Targets="JclDev" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclPCRE.pas" Targets="JclDev" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclResources.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclRTTI.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>

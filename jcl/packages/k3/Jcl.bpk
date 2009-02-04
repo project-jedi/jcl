@@ -29,6 +29,7 @@
       ..\..\lib\k3\JclMath.obj
       ..\..\lib\k3\JclMIDI.obj
       ..\..\lib\k3\JclMime.obj
+      ..\..\lib\k3\JclNotify.obj
       ..\..\lib\k3\JclPCRE.obj
       ..\..\lib\k3\JclResources.obj
       ..\..\lib\k3\JclRTTI.obj
@@ -121,6 +122,7 @@
       <FILE FILENAME="../../source/common/JclMath.pas" FORMNAME="" UNITNAME="JclMath" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclMIDI.pas" FORMNAME="" UNITNAME="JclMIDI" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclMime.pas" FORMNAME="" UNITNAME="JclMime" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclNotify.pas" FORMNAME="" UNITNAME="JclNotify" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclPCRE.pas" FORMNAME="" UNITNAME="JclPCRE" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclResources.pas" FORMNAME="" UNITNAME="JclResources" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclRTTI.pas" FORMNAME="" UNITNAME="JclRTTI" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>

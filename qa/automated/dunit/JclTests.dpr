@@ -26,7 +26,8 @@ uses
   TestJclDateTime in 'units\TestJclDateTime.pas',
   TestJclEDI in 'units\TestJclEDI.pas',
   TestJclEDI_ANSIX12 in 'units\TestJclEDI_ANSIX12.pas',
-  TestJclContainer in 'units\TestJclContainer.pas';
+  TestJclContainer in 'units\TestJclContainer.pas',
+  TestJclNotify in 'units\TestJclNotify.pas';
 
 {$R *.res}
 

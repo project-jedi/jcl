@@ -87,6 +87,7 @@
 			<DCCReference Include="..\..\source\common\JclMath.pas" />
 			<DCCReference Include="..\..\source\common\JclMIDI.pas" />
 			<DCCReference Include="..\..\source\common\JclMime.pas" />
+			<DCCReference Include="..\..\source\common\JclNotify.pas" />
 			<DCCReference Include="..\..\source\common\JclPCRE.pas" />
 			<DCCReference Include="..\..\source\common\JclResources.pas" />
 			<DCCReference Include="..\..\source\common\JclRTTI.pas" />

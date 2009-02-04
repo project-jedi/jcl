@@ -137298,7 +137298,7 @@ ID9=9
 SavedValues=1
 
 [Source Files]
-Count=136
+Count=138
 File0=8087.dtx
 File1=AppInst.dtx
 File10=ExprEval.dtx
@@ -137341,6 +137341,8 @@ File132=..\jcl\source\windows\JclWideFormat.pas
 File133=..\jcl\source\windows\JclWin32.pas
 File134=..\jcl\source\windows\JclWin32Ex.pas
 File135=..\jcl\source\windows\JclWinMIDI.pas
+File136=..\jcl\source\common\JclNotify.pas
+File137=Notify.dtx
 File14=Hardlinks.dtx
 File15=hlpgrps.dtx
 File16=IncludedFiles.dtx
