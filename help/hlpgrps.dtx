@@ -210,6 +210,80 @@ have all the standard container behavior.
 <TITLE MultiMedia>
 <TOPICORDER 1800>
 --------------------------------------------------------------------------------
+@@BaseServices.Notifications
+<GROUP BaseServices>
+<TITLE Notifier/listener pattern>
+<TOPICORDER 1850>
+The notifier/listener pattern allows for both generalizing the sending of
+notifications to multiple interested parties (listeners) and ease of adding new
+ways of processing notifications without needing to change any code.
+
+An example of this pattern can be found in .NET, where one can find a
+Trace class and a number of derived TraceListener classes. Using that example,
+the Trace class is an IJclNotifier implementer and the TraceListener an
+IJclListener interface. However, the .NET Trace and TraceListener setup is a
+specific implementation and doesn't need an IJclNotificationMessage implementer;
+the Trace class simply calls specific methods of the TraceListener. The JEDI
+Code Library provides a more generic approach to this pattern.
+
+* Notifiers *
+A notifier (any class implementing IJclNotifier) has only two distinct tasks:
+
+* Managing a list of listeners (IJclListener implementing classes)
+* Notify all registered listeners
+
+The first task is generally performed before a certain process within an
+application is started or after it has finished.
+
+The second task is performed by the class or methods that are part of a process.
+At any moment a message (IJclNotificationMessage implementing class) can be
+constructed and passed on to the Notification method.
+
+* Listeners *
+A listener (any class implementing IJclListener) has a single method that will
+be called by a notifier whenever its notify method is called. The method will
+specify the message that was passed to the notifier's notify method. A listener
+can check incoming notifications for additional or derived interface(s) and
+either process the notification or ignore it based on those interface(s).
+
+During processing the additional or derived interface(s) may provide additional
+information regarding the nature of the notification.
+
+* Notification messages *
+A notification message (any class implementing IJclNotificationMessage) is just
+place holder. Normally, one would either create a derived interface or add
+additional interfaces to the message implementation class, adding such
+information as context or other data that may be of interest to listeners.
+
+* Setting up a notifier/listener pattern *
+In general setting up a specific notification sub system involves the steps as
+outlined below. It's not unthinkable that for certain situations you'll need
+additional steps or may skip steps.
+
+1 create a notifier
+    The JEDI Code Library simplifies this task: create an instance of
+    TJclBaseNotifier and you're good to go in most cases. Assign the instance
+    to a variable declared as IJclNotifier, so that you can use the notifier
+    (the class itself declares the methods protected since it is assumed they
+    will be used through the interface reference at all times).
+
+2 create notification messages
+    Notification messages describe to the listener what has happened. If all you
+    need is a simple notification a proces has finished, you could suffice with
+    TJclBaseNotificationMessage. In most cases, however, you will need to
+    declare additional interfaces (use Ctrl+Shift+G to create a GUID). These
+    interfaces can have additional properties and/or functions to provide data
+    to the listener, but a message supporting a certain interface could be all
+    the information you'd need. Then you'll need to create one or more classes
+    that will implement these interfaces (in whatever combination you need).
+
+3 create a listener
+    In most cases you could simply derive a class from TJclBaseListener.
+    Alternatively you could create a new class to implement the IJclListener
+    interface, or - in case of a VCL application - have your MainForm implement
+    the interface. The interface has only one method and it will be passed an
+    IJclNotificationMessage instance.
+--------------------------------------------------------------------------------
 @@OrdinalMathandLogic
 <GROUP JCL>
 <TITLE Ordinal Math and Logic>
