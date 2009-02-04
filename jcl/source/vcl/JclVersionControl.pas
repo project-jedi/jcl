@@ -178,6 +178,8 @@ type
     function Count: Integer;
     function GetFileCache(const FileName: TFileName;
       const Plugin: TJclVersionControlPlugin): TJclVersionControlCache;
+    //1 Returns the number of enabled plugin classes, which implicit shows if there is any versioncontrol system installed
+    function NumberOfEnabledPlugins: Integer;
     procedure RegisterPluginClass(const APluginClass: TJclVersionControlPluginClass);
     procedure UnregisterPluginClass(const APluginClass: TJclVersionControlPluginClass);
     property Plugins[Index: Integer]: TJclVersionControlPlugin read GetPlugin;
@@ -759,6 +761,17 @@ begin
     Result := TJclVersionControlCache.Create(Plugin, FileName);
     FFileCache.Add(Result);
   end;
+end;
+
+function TJclVersionControlPluginList.NumberOfEnabledPlugins: Integer;
+var
+  i: Integer;
+begin
+  Result := 0;
+  for i := 0 to FPluginList.Count - 1 do
+    if TJclVersionControlPlugin(FPluginList.Items[i]).Enabled and
+      not (TJclVersionControlPlugin(FPluginList.Items[i]) is TJclVersionControlSystemPlugin) then
+      Inc(Result);
 end;
 
 function TJclVersionControlPluginList.GetPlugin(Index: Integer):
