@@ -86,7 +86,9 @@ implementation
 {$R *.dfm}
 
 uses
-  JclStrings, JclOtaResources;
+  ToolsApi,
+  JclStrings,
+  JclOtaResources;
 
 //=== { TJclOtaExcDlgFilePage } ==============================================
 
@@ -173,8 +175,27 @@ begin
 end;
 
 function TJclOtaExcDlgFilePage.GetSupportsNext: Boolean;
+var
+  AProject: IOTAProject;
+  AModuleInfo: IOTAModuleInfo;
+  ValidFormName, ValidFileName: Boolean;
+  ProposedFileName: string;
+  Index: Integer;
 begin
-  Result := (ComboBoxLanguage.ItemIndex > -1) and (EditFormName.Text <> '') and (EditFormAncestor.Text <> '')
+  AProject := GetActiveProject;
+  ValidFormName := IsValidIdent(EditFormName.Text, False);
+  ProposedFileName := ExtractFileName(EditFileName.Text);
+  ValidFileName := (ProposedFileName = '') or IsValidIdent(ChangeFileExt(ProposedFileName, ''), False);
+  if Assigned(AProject) then
+    for Index := 0 to AProject.GetModuleCount - 1 do
+    begin
+      AModuleInfo := AProject.GetModule(Index);
+      if ValidFormName and (AModuleInfo.ModuleType = omtForm) and StrSame(EditFormName.Text, AModuleInfo.FormName) then
+        ValidFormName := False;
+      if ValidFileName and (ProposedFileName <> '') and StrSame(ProposedFileName, ExtractFileName(AModuleInfo.FileName)) then
+        ValidFileName := False;
+    end;
+  Result := ValidFormName and ValidFileName and (ComboBoxLanguage.ItemIndex > -1) and (EditFormName.Text <> '') and (EditFormAncestor.Text <> '')
     and (( SelectedLanguage = Params.ActivePersonality)
          or (EditFileName.Text <> ''));
 end;
