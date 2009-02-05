@@ -49,7 +49,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -4968,7 +4968,10 @@ var
       {$ENDIF COMPILER5}
       varString:
         Result := string(V.VString);
-
+      {$IFDEF SUPPORTS_UNICODE_STRING}
+      varUString:
+        Result := string(V.VUString);
+      {$ENDIF SUPPORTS_UNICODE_STRING}
       {varArray,
       varDispatch,
       varError,

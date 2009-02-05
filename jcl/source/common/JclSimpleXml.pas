@@ -3652,6 +3652,28 @@ begin
             StorageStream.Free;
           end;
         end;
+      {$IFDEF SUPPORTS_UNICODE_STRING}
+      varUString:
+        begin
+          StorageStream := TStringStream.Create('');
+          try
+            ConversionString := TJclUTF16Stream.Create(StorageStream, False);
+            try
+              ConversionString.WriteBOM;
+              TXMLVarData(Source).XML.SaveToStringStream(ConversionString, '', nil);
+              ConversionString.Flush;
+            finally
+              ConversionString.Free;
+            end;
+            VarDataClear(Dest);
+            Dest.VUString := nil;
+            Dest.VType := varUString;
+            UnicodeString(Dest.VUString) := UnicodeString(StorageStream.DataString);
+          finally
+            StorageStream.Free;
+          end;
+        end;
+      {$ENDIF SUPPORTS_UNICODE_STRING}
     else
       RaiseCastError;
     end;

@@ -494,33 +494,40 @@ begin
     else
       Add(A[I].ToString);
     {$ELSE}
-    with A[I] do
-      case VType of
-        vtInteger:
-          Add(IntToStr(VInteger));
-        vtBoolean:
-          Add(string(BoolToStr[VBoolean]));
-        vtChar:
-          Add(string(AnsiString(VChar)));
-        vtExtended:
-          Add(FloatToStr(VExtended^));
-        vtString:
-          Add(string(VString^));
-        vtPChar:
-          Add(string(AnsiString(VPChar)));
-        vtObject:
-          Add(VObject.ClassName);
-        vtClass:
-          Add(VClass.ClassName);
-        vtAnsiString:
-          Add(string(VAnsiString));
-        vtCurrency:
-          Add(CurrToStr(VCurrency^));
-        vtVariant:
-          Add(string(VVariant^));
-        vtInt64:
-          Add(IntToStr(VInt64^));
-      end;
+    case A[I].VType of
+      vtInteger:
+        Add(IntToStr(A[I].VInteger));
+      vtBoolean:
+        Add(string(BoolToStr[A[I].VBoolean]));
+      vtChar:
+        Add(string(AnsiString(A[I].VChar)));
+      vtExtended:
+        Add(FloatToStr(A[I].VExtended^));
+      vtString:
+        Add(string(A[I].VString^));
+      vtPChar:
+        Add(string(AnsiString(A[I].VPChar)));
+      vtPWideChar:
+        Add(string(WideString(A[I].VPWideChar)));
+      vtObject:
+        Add(A[I].VObject.ClassName);
+      vtClass:
+        Add(A[I].VClass.ClassName);
+      vtAnsiString:
+        Add(string(A[I].VAnsiString));
+      vtWideString:
+        Add(string(A[I].VWideString));
+      vtCurrency:
+        Add(CurrToStr(A[I].VCurrency^));
+      vtVariant:
+        Add(string(A[I].VVariant^));
+      vtInt64:
+        Add(IntToStr(A[I].VInt64^));
+      {$IFDEF SUPPORTS_UNICODE_STRING}
+      vtUnicodeString:
+        Add(string(A[I].VUnicodeString));
+      {$ENDIF SUPPORTS_UNICODE_STRING}
+    end;
     {$ENDIF CLR}
   Result := FSelfAsInterface;
 end;
