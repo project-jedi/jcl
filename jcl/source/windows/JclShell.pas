@@ -1019,8 +1019,13 @@ begin
 end;
 
 const
+  {$IFDEF SUPPORTS_UNICODE}
+  IID_IShellLink: TGUID = { IID_IShellLinkW }
+    (D1:$000214F9; D2:$0000; D3:$0000; D4:($C0,$00,$00,$00,$00,$00,$00,$46));
+  {$ELSE ~SUPPORTS_UNICODE}
   IID_IShellLink: TGUID = { IID_IShellLinkA }
     (D1:$000214EE; D2:$0000; D3:$0000; D4:($C0,$00,$00,$00,$00,$00,$00,$46));
+  {$ENDIF ~SUPPORTS_UNICODE}
 
 function ShellLinkCreateSystem(const Link: TShellLink; const Folder: Integer;
   const FileName: string): HRESULT;
