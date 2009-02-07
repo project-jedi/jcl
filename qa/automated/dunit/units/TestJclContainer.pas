@@ -64,7 +64,7 @@ begin
     I.AppendDelimited(sl.Text);
 
     for x := 0 to sl.Count - 1 do
-      CheckEquals(sl[x], I.Items[x]);
+      CheckEquals(sl[x], I.Strings[x]);
 
     s := sl.Text;
     sl.Text := I.GetAsDelimited;
@@ -93,8 +93,8 @@ function TJclContainerTest.GetStrList;
 begin
   case ImplentationType of
     litArray: Result := TJclStrArrayList.Create;
-    litLinkedList: Result := TJclStrLinkedList.Create;
-    litVector: Result := TJclStrVector.Create;
+    litLinkedList: Result := TJclStrLinkedList.Create(nil);
+    litVector: Result := TJclStrVector.Create(500);
   end;
 end;
 
