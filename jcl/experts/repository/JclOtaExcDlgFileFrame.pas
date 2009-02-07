@@ -183,9 +183,9 @@ var
   Index: Integer;
 begin
   AProject := GetActiveProject;
-  ValidFormName := IsValidIdent(EditFormName.Text, False);
+  ValidFormName := IsValidIdent(EditFormName.Text);
   ProposedFileName := ExtractFileName(EditFileName.Text);
-  ValidFileName := (ProposedFileName = '') or IsValidIdent(ChangeFileExt(ProposedFileName, ''), False);
+  ValidFileName := (ProposedFileName = '') or IsValidIdent(ChangeFileExt(ProposedFileName, ''));
   if Assigned(AProject) then
     for Index := 0 to AProject.GetModuleCount - 1 do
     begin
