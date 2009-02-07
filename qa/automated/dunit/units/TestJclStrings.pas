@@ -132,9 +132,11 @@ type
     procedure _StrFillChar;
     procedure _StrFind;
     procedure _StrHasPrefix;
+    procedure _StrIHasPrefix;
     procedure _StrIndex;
     procedure _StrILastPos;
     procedure _StrIPos;
+    procedure _StrIPrefixIndex;
     procedure _StrIsOneOf;
     procedure _StrLastPos;
     procedure _StrMatch;
@@ -1619,10 +1621,23 @@ begin
   CheckEquals(False, StrHasPrefix('',          []),                        'StrHasPrefix1');
   CheckEquals(False, StrHasPrefix('',          ['TEST']),                  'StrHasPrefix2');
   CheckEquals(False, StrHasPrefix('',          ['TEST', 'TEST2']),         'StrHasPrefix3');
-  CheckEquals(True,  StrHasPrefix('Test',      ['TEST', 'TEST2', 'Test']), 'StrHasPrefix4');
+  CheckEquals(False, StrHasPrefix('Test',      ['TEST', 'TEST2']),         'StrHasPrefix4');
   CheckEquals(True,  StrHasPrefix('Test2',     ['TEST', 'TEST2', 'Test']), 'StrHasPrefix5');
   CheckEquals(True,  StrHasPrefix('Test12345', ['TEST', 'TEST2', 'Test']), 'StrHasPrefix6');
   CheckEquals(True,  StrHasPrefix('Test21234', ['TEST', 'TEST2', 'Test']), 'StrHasPrefix7');
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclStringSearchandReplace._StrIHasPrefix;
+begin
+  CheckEquals(False, StrIHasPrefix('',          []),                'StrIHasPrefix1');
+  CheckEquals(False, StrIHasPrefix('',          ['TEST']),          'StrIHasPrefix2');
+  CheckEquals(False, StrIHasPrefix('',          ['TEST', 'TEST2']), 'StrIHasPrefix3');
+  CheckEquals(True,  StrIHasPrefix('Test',      ['TEST', 'TEST2']), 'StrIHasPrefix4');
+  CheckEquals(True,  StrIHasPrefix('Test2',     ['TEST', 'TEST2']), 'StrIHasPrefix5');
+  CheckEquals(True,  StrIHasPrefix('Test12345', ['TEST', 'TEST2']), 'StrIHasPrefix6');
+  CheckEquals(True,  StrIHasPrefix('Test21234', ['TEST', 'TEST2']), 'StrIHasPrefix7');
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1645,34 +1660,46 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+procedure TJclStringSearchandReplace._StrIPrefixIndex;
+begin
+  CheckEquals(0,  StrIPrefixIndex('Project',['Pro']),       'StrIPrefixIndex1');
+  CheckEquals(0,  StrIPrefixIndex('Project',['Pro','Con']), 'StrIPrefixIndex2');
+  CheckEquals(0,  StrIPrefixIndex('Project',['']),          'StrIPrefixIndex3');
+  CheckEquals(1,  StrIPrefixIndex('Project',['Con','Pro']), 'StrIPrefixIndex4');
+  CheckEquals(1,  StrIPrefixIndex('Project',['Con','PRO']), 'StrIPrefixIndex5');
+  CheckEquals(-1, StrIPrefixIndex('Project',['Con','PRA']), 'StrIPrefixIndex5');
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 procedure TJclStringSearchandReplace._StrIsOneOf;
 begin
-  CheckEquals(StrIsOneOf('Test', ['a','atest','Test', 'Fest']), True, 'StrIsOneOf_1');
-  CheckEquals(StrIsOneOf('Test', ['a','atest', 'Fest']), False, 'StrIsOneOf_2');
-  CheckEquals(StrIsOneOf('', ['a','atest', 'Fest']), False, 'StrIsOneOf_3');
+  CheckEquals(True,  StrIsOneOf('Test', ['a','atest','Test', 'Fest']), 'StrIsOneOf_1');
+  CheckEquals(False, StrIsOneOf('Test', ['a','atest', 'Fest']),        'StrIsOneOf_2');
+  CheckEquals(False, StrIsOneOf('',     ['a','atest', 'Fest']),        'StrIsOneOf_3');
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 procedure TJclStringSearchandReplace._StrLastPos;
 begin
-  CheckEquals(StrLastPos('a', 'aaaaaaaaaa'), 10, 'StrLastPos_1');
-  CheckEquals(StrLastPos('aba', 'aabaaababababababa'), 16, 'StrLastPos_2');
-  CheckEquals(StrLastPos('abba', 'abbaabbabba'), 8, 'StrLastPos_3');
-  CheckEquals(StrLastPos('_abba', 'abbaabbabba'), 0, 'StrLastPos_4');
-  CheckEquals(StrLastPos('_abba', 'abba_abbabba'), 5, 'StrLastPos_5');
-  CheckEquals(StrLastPos('ABA', 'aabaaaABAbabababa'), 7, 'StrLastPos_6');
+  CheckEquals(10, StrLastPos('a', 'aaaaaaaaaa'),           'StrLastPos_1');
+  CheckEquals(16, StrLastPos('aba', 'aabaaababababababa'), 'StrLastPos_2');
+  CheckEquals(8,  StrLastPos('abba', 'abbaabbabba'),       'StrLastPos_3');
+  CheckEquals(0,  StrLastPos('_abba', 'abbaabbabba'),      'StrLastPos_4');
+  CheckEquals(5,  StrLastPos('_abba', 'abba_abbabba'),     'StrLastPos_5');
+  CheckEquals(7,  StrLastPos('ABA', 'aabaaaABAbabababa'),  'StrLastPos_6');
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 procedure TJclStringSearchandReplace._StrMatch;
 begin
-  CheckEquals(StrMatch('','Test',1),0,'StrMatch_1');
-  CheckEquals(StrMatch('Test','Test',1),1,'StrMatch_2');
-  CheckEquals(StrMatch('Test','aTest',1),2,'StrMatch_3');
-  CheckEquals(StrMatch('Test','abTest',1),3,'StrMatch_4');
-  CheckEquals(StrMatch('Test','abcTest',1),4,'StrMatch_5');
+  CheckEquals(0, StrMatch('',     'Test',    1), 'StrMatch_1');
+  CheckEquals(1, StrMatch('Test', 'Test',    1), 'StrMatch_2');
+  CheckEquals(2, StrMatch('Test', 'aTest',   1), 'StrMatch_3');
+  CheckEquals(3, StrMatch('Test', 'abTest',  1), 'StrMatch_4');
+  CheckEquals(4, StrMatch('Test', 'abcTest', 1), 'StrMatch_5');
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1722,10 +1749,11 @@ end;
 
 procedure TJclStringSearchandReplace._StrPrefixIndex;
 begin
-  CheckEquals(StrPrefixIndex('Project',['Pro']),0,'StrPrefixIndex');
-  CheckEquals(StrPrefixIndex('Project',['Pro','Con']),0,'StrPrefixIndex');
-  CheckEquals(StrPrefixIndex('Project',['']),0,'StrPrefixIndex');
-  CheckEquals(StrPrefixIndex('Project',['Con','Pro']),1,'StrPrefixIndex');
+  CheckEquals(0,  StrPrefixIndex('Project',['Pro']),       'StrPrefixIndex1');
+  CheckEquals(0,  StrPrefixIndex('Project',['Pro','Con']), 'StrPrefixIndex2');
+  CheckEquals(0,  StrPrefixIndex('Project',['']),          'StrPrefixIndex3');
+  CheckEquals(1,  StrPrefixIndex('Project',['Con','Pro']), 'StrPrefixIndex4');
+  CheckEquals(-1, StrPrefixIndex('Project',['Con','PRO']), 'StrPrefixIndex5');
 end;
 
 //--------------------------------------------------------------------------------------------------

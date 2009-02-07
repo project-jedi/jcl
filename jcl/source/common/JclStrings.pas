@@ -259,8 +259,10 @@ function StrRepeatChar(C: Char; Count: Integer): string;
 function StrFind(const Substr, S: string; const Index: Integer = 1): Integer;
 function StrHasPrefix(const S: string; const Prefixes: array of string): Boolean;
 function StrIndex(const S: string; const List: array of string): Integer;
+function StrIHasPrefix(const S: string; const Prefixes: array of string): Boolean;
 function StrILastPos(const SubStr, S: string): Integer;
 function StrIPos(const SubStr, S: string): Integer;
+function StrIPrefixIndex(const S: string; const Prefixes: array of string): Integer;
 function StrIsOneOf(const S: string; const List: array of string): Boolean;
 function StrLastPos(const SubStr, S: string): Integer;
 function StrMatch(const Substr, S: string; const Index: Integer = 1): Integer;
@@ -3067,6 +3069,11 @@ begin
   end;
 end;
 
+function StrIHasPrefix(const S: string; const Prefixes: array of string): Boolean;
+begin
+  Result := StrIPrefixIndex(S, Prefixes) > -1;
+end;
+
 function StrILastPos(const SubStr, S: string): Integer;
 begin
   Result := StrLastPos(StrUpper(SubStr), StrUpper(S));
@@ -3079,6 +3086,23 @@ begin
   {$ELSE}
   Result := Pos(StrUpper(SubStr), StrUpper(S));
   {$ENDIF CLR}
+end;
+
+function StrIPrefixIndex(const S: string; const Prefixes: array of string): Integer;
+var
+  I: Integer;
+  Test: string;
+begin
+  Result := -1;
+  for I := Low(Prefixes) to High(Prefixes) do
+  begin
+    Test := StrLeft(S, Length(Prefixes[I]));
+    if CompareText(Test, Prefixes[I]) = 0 then
+    begin
+      Result := I;
+      Break;
+    end;
+  end;
 end;
 
 function StrIsOneOf(const S: string; const List: array of string): Boolean;

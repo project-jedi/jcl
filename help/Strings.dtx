@@ -1069,8 +1069,9 @@ Summary:
 Description:
   StrHasPrefix returns whether the string is prefixed with at least one of the strings
   supplied in the Prefixes array. In other words, for each string in the Prefixes
-  array it determined if the supplied string starts with that prefix. Note that
-  the routine exits as soon as a match is found.
+  array it's determined if the supplied string starts with that prefix. Note that
+  the routine exits as soon as a match is found and matching is case-sensitive (use
+  StrIHasPrefix for a case-insensitive matching version).
 Parameters:
   S - The string to test.
   Prefixes - Array of prefixes to test for.
@@ -1078,7 +1079,28 @@ Result:
   If the supplied string is prefixed with one of the supplied prefixes the routine
   returns True, otherwise it returns False.
 See also:
-  StrPrefixIndex
+  StrIHasPrefix, StrPrefixIndex
+Donator:
+  Anthony Steele
+--------------------------------------------------------------------------------
+@@StrIHasPrefix
+<GROUP StringManipulation.StringSearchandReplaceRoutines>
+Summary:
+  Returns whether a string is prefixed by one of the supplied strings.
+Description:
+  StrHasPrefix returns whether the string is prefixed with at least one of the strings
+  supplied in the Prefixes array. In other words, for each string in the Prefixes
+  array it's determined if the supplied string starts with that prefix. Note that
+  the routine exits as soon as a match is found and matching is case-insensitive (use
+  StrHasPrefix for a case-sensitive matching version).
+Parameters:
+  S - The string to test.
+  Prefixes - Array of prefixes to test for.
+Result:
+  If the supplied string is prefixed with one of the supplied prefixes the routine
+  returns True, otherwise it returns False.
+See also:
+  StrHasPrefix, StrIPrefixIndex
 Donator:
   Anthony Steele
 --------------------------------------------------------------------------------
@@ -1158,6 +1180,29 @@ Parameters:
 Result:
   The index of the first occurrence of SubStr in S. If the sub-string does not exist
   at all the result is 0.
+Donator:
+  Anthony Steele
+--------------------------------------------------------------------------------
+@@StrIPrefixIndex
+<GROUP StringManipulation.StringSearchandReplaceRoutines>
+Summary:
+  Returns the index at which a string appears which is used as a prefix.
+Description:
+  StrPrefixIndex returns the index into the prefixes array at which a string appears
+  with which the supplied string is prefixed. For example,
+  StrPrefixIndex('banana', ['call', 'ban', 'bana']) will return 1. Note that as
+  can be seen from the example, as soon as a prefix is found the routine stops and
+  doesn't attempt to find a better (longer) match. Matching is case-insensitive; use
+  StrPrefixIndex for a case-insensitive version.
+Parameters:
+  S - The string to test.
+  Prefixes - The list of prefixes.
+Result:
+  The zero based index into Prefixes at which the first string appears that is used
+  as a prefix in the supplied string. If none of the Prefixes array strings qualifies
+  the result is -1.
+See Also
+  StrIHasPrefix, StrPrefixIndex
 Donator:
   Anthony Steele
 --------------------------------------------------------------------------------
@@ -1253,7 +1298,8 @@ Description:
   with which the supplied string is prefixed. For example,
   StrPrefixIndex('banana', ['call', 'ban', 'bana']) will return 1. Note that as
   can be seen from the example, as soon as a prefix is found the routine stops and
-  doesn't attempt to find a better (longer) match.
+  doesn't attempt to find a better (longer) match. Matching is case-sensitive; use
+  StrIPrefixIndex for a case-insensitive version.
 Parameters:
   S - The string to test.
   Prefixes - The list of prefixes.
@@ -1261,6 +1307,8 @@ Result:
   The zero based index into Prefixes at which the first string appears that is used
   as a prefix in the supplied string. If none of the Prefixes array strings qualifies
   the result is -1.
+See Also
+  StrHasPrefix, StrIPrefixIndex
 Donator:
   Anthony Steele
 --------------------------------------------------------------------------------
