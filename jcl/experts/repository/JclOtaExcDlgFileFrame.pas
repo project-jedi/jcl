@@ -20,7 +20,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -179,22 +179,29 @@ var
   AProject: IOTAProject;
   AModuleInfo: IOTAModuleInfo;
   ValidFormName, ValidFileName: Boolean;
-  ProposedFileName: string;
+  ProposedModuleName: string;
   Index: Integer;
 begin
   AProject := GetActiveProject;
   ValidFormName := IsValidIdent(EditFormName.Text);
-  ProposedFileName := ExtractFileName(EditFileName.Text);
-  ValidFileName := (ProposedFileName = '') or IsValidIdent(ChangeFileExt(ProposedFileName, ''));
+  ProposedModuleName := ChangeFileExt(ExtractFileName(EditFileName.Text), '');
+  ValidFileName := (ProposedModuleName = '') or IsValidIdent(ProposedModuleName);
+
   if Assigned(AProject) then
+  begin
+    if ValidFileName and (ProposedModuleName <> '') and StrSame(ProposedModuleName, ChangeFileExt(ExtractFileName(AProject.FileName), '')) then
+      ValidFileName := False;
+
     for Index := 0 to AProject.GetModuleCount - 1 do
     begin
       AModuleInfo := AProject.GetModule(Index);
       if ValidFormName and (AModuleInfo.ModuleType = omtForm) and StrSame(EditFormName.Text, AModuleInfo.FormName) then
         ValidFormName := False;
-      if ValidFileName and (ProposedFileName <> '') and StrSame(ProposedFileName, ExtractFileName(AModuleInfo.FileName)) then
+      if ValidFileName and (ProposedModuleName <> '') and StrSame(ProposedModuleName, ChangeFileExt(ExtractFileName(AModuleInfo.FileName), '')) then
         ValidFileName := False;
     end;
+  end;
+
   Result := ValidFormName and ValidFileName and (ComboBoxLanguage.ItemIndex > -1) and (EditFormName.Text <> '') and (EditFormAncestor.Text <> '')
     and (( SelectedLanguage = Params.ActivePersonality)
          or (EditFileName.Text <> ''));
