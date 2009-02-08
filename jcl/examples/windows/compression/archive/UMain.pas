@@ -159,6 +159,7 @@ begin
   end;
 
   ListView1.Items.Count := FArchive.ItemCount;
+  ListView1.Invalidate;
 end;
 
 procedure TFormMain.ActionDeleteRWUpdate(Sender: TObject);
