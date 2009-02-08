@@ -33,6 +33,9 @@ type
     CheckBoxSaveLastAccessDateTime: TCheckBox;
     CheckBoxSaveLastSaveDateTime: TCheckBox;
     ButtonClose: TButton;
+    CheckBoxSolidExtension: TCheckBox;
+    LabelSolidBlockSize: TLabel;
+    EditSolidBlockSize: TEdit;
     procedure EditPasswordExit(Sender: TObject);
     procedure EditNumberOfThreadsExit(Sender: TObject);
     procedure EditCompressionLevelExit(Sender: TObject);
@@ -47,6 +50,8 @@ type
     procedure CheckBoxSaveCreationDateTimeExit(Sender: TObject);
     procedure CheckBoxSaveLastAccessDateTimeExit(Sender: TObject);
     procedure CheckBoxSaveLastSaveDateTimeExit(Sender: TObject);
+    procedure CheckBoxSolidExtensionExit(Sender: TObject);
+    procedure EditSolidBlockSizeExit(Sender: TObject);
   protected
     FArchive: TJclCompressionArchive;
     FNumberOfThreads: IJclArchiveNumberOfThreads;
@@ -62,6 +67,7 @@ type
     FSaveLastAccessDateTime: IJclArchiveSaveLastAccessDateTime;
     FSaveLastWriteDateTime: IJclArchiveSaveLastWriteDateTime;
     FAlgoritm: IJclArchiveAlgorithm;
+    FSolid: IJclArchiveSolid;
   public
     class procedure Execute(Archive: TJclCompressionArchive);
     procedure RefreshValues;
@@ -116,6 +122,12 @@ begin
   RefreshValues;
 end;
 
+procedure TFormArchiveSettings.CheckBoxSolidExtensionExit(Sender: TObject);
+begin
+  FSolid.SolidExtension := CheckBoxSolidExtension.Checked;
+  RefreshValues;
+end;
+
 procedure TFormArchiveSettings.ComboBoxCompressionMethodExit(Sender: TObject);
 begin
   FCompressionMethod.CompressionMethod := TJclCompressionMethod(GetEnumValue(TypeInfo(TJclCompressionMethod),ComboBoxCompressionMethod.Text));
@@ -158,6 +170,12 @@ begin
   RefreshValues;
 end;
 
+procedure TFormArchiveSettings.EditSolidBlockSizeExit(Sender: TObject);
+begin
+  FSolid.SolidBlockSize := StrToInt(EditSolidBlockSize.Text);
+  RefreshValues;
+end;
+
 class procedure TFormArchiveSettings.Execute(Archive: TJclCompressionArchive);
 var
   AFormSettings: TFormArchiveSettings;
@@ -178,6 +196,7 @@ begin
     Supports(IUnknown(Archive),IJclArchiveSaveCreationDateTime,AFormSettings.FSaveCreationDateTime);
     Supports(IUnknown(Archive),IJclArchiveSaveLastAccessDateTime,AFormSettings.FSaveLastAccessDateTime);
     Supports(IUnknown(Archive),IJclArchiveSaveLastWriteDateTime,AFormSettings.FSaveLastWriteDateTime);
+    Supports(IUnknown(Archive),IJclArchiveSolid,AFormSettings.FSolid);
     AFormSettings.FArchive := Archive;
 
     if Assigned(AFormSettings.FCompressionLevel) then
@@ -235,6 +254,11 @@ begin
     EditNumberOfPasses.Text := IntToStr(FNumberOfPasses.NumberOfPasses)
   else
     EditNumberOfPasses.Enabled := False;
+  // solid block size
+  if Assigned(FSolid) then
+    EditSolidBlockSize.Text := IntToStr(FSolid.SolidBlockSize)
+  else
+    EditSolidBlockSize.Enabled := False;
   // remove sfx
   CheckBoxRemoveSfxBlock.Enabled := Assigned(FRemoveSfxBlock);
   CheckBoxRemoveSfxBlock.Checked := Assigned(FRemoveSfxBlock) and FRemoveSfxBlock.RemoveSfxBlock;
@@ -256,6 +280,9 @@ begin
   // save last write date time
   CheckBoxSaveLastSaveDateTime.Enabled := Assigned(FSaveLastWriteDateTime);
   CheckBoxSaveLastSaveDateTime.Checked := Assigned(FSaveLastWriteDateTime) and FSaveLastWriteDateTime.SaveLastWriteDateTime;
+  // solid by extension
+  CheckBoxSolidExtension.Enabled := Assigned(FSolid);
+  CheckBoxSolidExtension.Checked := Assigned(FSolid) and FSolid.SolidExtension;
 end;
 
 end.

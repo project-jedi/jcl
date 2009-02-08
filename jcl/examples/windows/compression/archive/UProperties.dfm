@@ -3,7 +3,7 @@ object FormArchiveSettings: TFormArchiveSettings
   Top = 0
   BorderStyle = bsDialog
   Caption = 'Archive settings'
-  ClientHeight = 311
+  ClientHeight = 371
   ClientWidth = 493
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -62,7 +62,7 @@ object FormArchiveSettings: TFormArchiveSettings
     Left = 8
     Top = 111
     Width = 273
-    Height = 193
+    Height = 226
     Caption = 'Compression properties:'
     TabOrder = 1
     object LabelCompressionLevel: TLabel
@@ -104,6 +104,14 @@ object FormArchiveSettings: TFormArchiveSettings
       Height = 13
       Caption = '&Number of passes:'
       FocusControl = EditNumberOfPasses
+    end
+    object LabelSolidBlockSize: TLabel
+      Left = 16
+      Top = 192
+      Width = 74
+      Height = 13
+      Caption = '&Solid block size:'
+      FocusControl = EditSolidBlockSize
     end
     object EditCompressionLevel: TEdit
       Left = 216
@@ -158,12 +166,23 @@ object FormArchiveSettings: TFormArchiveSettings
       Text = '0'
       OnExit = EditNumberOfPassesExit
     end
+    object EditSolidBlockSize: TEdit
+      Left = 136
+      Top = 190
+      Width = 121
+      Height = 21
+      BiDiMode = bdRightToLeft
+      ParentBiDiMode = False
+      TabOrder = 5
+      Text = '0'
+      OnExit = EditSolidBlockSizeExit
+    end
   end
   object GroupBox1: TGroupBox
     Left = 296
     Top = 8
     Width = 185
-    Height = 207
+    Height = 218
     Caption = 'Content:'
     TabOrder = 2
     object CheckBoxRemoveSfxBlock: TCheckBox
@@ -229,10 +248,19 @@ object FormArchiveSettings: TFormArchiveSettings
       TabOrder = 6
       OnExit = CheckBoxSaveLastSaveDateTimeExit
     end
+    object CheckBoxSolidExtension: TCheckBox
+      Left = 16
+      Top = 190
+      Width = 153
+      Height = 17
+      Caption = 'Solid archive by e&xtension'
+      TabOrder = 7
+      OnExit = CheckBoxSolidExtensionExit
+    end
   end
   object ButtonClose: TButton
     Left = 328
-    Top = 243
+    Top = 257
     Width = 121
     Height = 25
     Caption = 'Close'
