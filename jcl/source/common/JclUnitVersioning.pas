@@ -202,6 +202,12 @@ begin
         Break;
       end;
   end;
+  // the + is to have SVN not touch the string
+  if StartsWith('$' + 'URL: ', Result) then // a SVN command
+  begin
+    Delete(Result, 1, 6);
+    Delete(Result, Length(Result) - 1, 2);
+  end;
 end;
 
 function TUnitVersion.Revision: string;
