@@ -26,7 +26,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -471,8 +471,7 @@ begin
     Index := Index * 2;
     FromPos := TranslateIndex(FSubject, roUTF8 in Options, FVector^[Index] + 1);
     ToPos := TranslateIndex(FSubject, roUTF8 in Options, FVector^[Index + 1] + 1) - 1;
-    SetLength(Result, ToPos - FromPos + 1);
-    Move(FSubject[FromPos], Result[1], ToPos - FromPos + 1);
+    Result := Copy(FSubject, FromPos, ToPos - FromPos + 1);
   end;
 end;
 
@@ -486,7 +485,7 @@ begin
     begin
       if not Assigned(FChangedCaptures) then
         FChangedCaptures := TList.Create;
-        
+
       // Always resize to the max length to avoid repeated allocations.
       FChangedCaptures.Capacity := FCaptureCount;
       SetLength(FResultValues, FCaptureCount);
