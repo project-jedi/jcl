@@ -878,6 +878,16 @@ type
     property SupportedAlgorithms: TDynCardinalArray read GetSupportedAlgorithms;
   end;
 
+  IJclArchiveSolid = interface
+    ['{6902C54C-1577-422C-B18B-E27953A28661}']
+    function GetSolidBlockSize: Int64;
+    function GetSolidExtension: Boolean;
+    procedure SetSolidBlockSize(const Value: Int64);
+    procedure SetSolidExtension(Value: Boolean);
+    property SolidBlockSize: Int64 read GetSolidBlockSize write SetSolidBlockSize;
+    property SolidExtension: Boolean read GetSolidExtension write SetSolidExtension;
+  end;
+
   TJclCompressItem = class(TJclCompressionItem)
   protected
     procedure CheckGetProperty(AProperty: TJclCompressionItemProperty); override;
@@ -1133,7 +1143,8 @@ type
 
   TJcl7zCompressArchive = class(TJclSevenzipCompressArchive, IJclArchiveCompressionLevel, IJclArchiveDictionarySize,
     IJclArchiveNumberOfThreads, IJclArchiveRemoveSfxBlock, IJclArchiveCompressHeader, IJclArchiveEncryptHeader,
-    IJclArchiveSaveCreationDateTime, IJclArchiveSaveLastAccessDateTime, IJclArchiveSaveLastWriteDateTime, IInterface)
+    IJclArchiveSaveCreationDateTime, IJclArchiveSaveLastAccessDateTime, IJclArchiveSaveLastWriteDateTime,
+    IJclArchiveSolid, IInterface)
   private
     FNumberOfThreads: Cardinal;
     FEncryptHeader: Boolean;
@@ -1145,6 +1156,8 @@ type
     FSaveLastAccessDateTime: Boolean;
     FSaveCreationDateTime: Boolean;
     FSaveLastWriteDateTime: Boolean;
+    FSolidBlockSize: Int64;
+    FSolidExtension: Boolean;
   protected
     function GetCLSID: TGUID; override;
     procedure CreateCompressionObject; override;
@@ -1183,6 +1196,11 @@ type
     { IJclArchiveSaveLastWriteDateTime }
     function GetSaveLastWriteDateTime: Boolean;
     procedure SetSaveLastWriteDateTime(Value: Boolean);
+    { IJclArchiveSolid }
+    function GetSolidBlockSize: Int64;
+    function GetSolidExtension: Boolean;
+    procedure SetSolidBlockSize(const Value: Int64);
+    procedure SetSolidExtension(Value: Boolean);
   end;
 
   TJclTarCompressArchive = class(TJclSevenzipCompressArchive, IInterface)
@@ -4492,11 +4510,13 @@ type
     FItemIndex: Integer;
     FStream: TStream;
     FOwnsStream: Boolean;
+    FTruncateOnRelease: Boolean;
+    FMaximumPosition: Int64;
     procedure NeedStream;
     procedure ReleaseStream;
   public
     constructor Create(AArchive: TJclCompressionArchive; AItemIndex: Integer); overload;
-    constructor Create(AStream: TStream; AOwnsStream: Boolean); overload;
+    constructor Create(AStream: TStream; AOwnsStream: Boolean; ATruncateOnRelease: Boolean); overload;
     destructor Destroy; override;
     // ISequentialOutStream
     function Write(Data: Pointer; Size: Cardinal; ProcessedSize: PCardinal): HRESULT; stdcall;
@@ -4513,9 +4533,11 @@ begin
   FItemIndex := AItemIndex;
   FStream := nil;
   FOwnsStream := False;
+  FMaximumPosition := 0;
+  FTruncateOnRelease := False;
 end;
 
-constructor TJclSevenzipOutStream.Create(AStream: TStream; AOwnsStream: Boolean);
+constructor TJclSevenzipOutStream.Create(AStream: TStream; AOwnsStream: Boolean; ATruncateOnRelease: Boolean);
 begin
   inherited Create;
 
@@ -4523,6 +4545,8 @@ begin
   FItemIndex := -1;
   FStream := AStream;
   FOwnsStream := AOwnsStream;
+  FMaximumPosition := 0;
+  FTruncateOnRelease := ATruncateOnRelease;
 end;
 
 destructor TJclSevenzipOutStream.Destroy;
@@ -4543,6 +4567,10 @@ end;
 
 procedure TJclSevenzipOutStream.ReleaseStream;
 begin
+  // truncate to the maximum position that was written
+  if FTruncateOnRelease then
+    FStream.Size := FMaximumPosition;
+
   if Assigned(FArchive) then
     FArchive.Items[FItemIndex].ReleaseStream
   else
@@ -4572,12 +4600,15 @@ begin
 
   Result := S_OK;
   FStream.Size := NewSize;
+  if FTruncateOnRelease and (FMaximumPosition < NewSize) then
+    FMaximumPosition := NewSize;
 end;
 
 function TJclSevenzipOutStream.Write(Data: Pointer; Size: Cardinal;
   ProcessedSize: PCardinal): HRESULT;
 var
   Processed: Cardinal;
+  APosition: Int64;
 begin
   NeedStream;
 
@@ -4585,6 +4616,12 @@ begin
   Processed := FStream.Write(Data^, Size);
   if Assigned(ProcessedSize) then
     ProcessedSize^ := Processed;
+  if FTruncateOnRelease then
+  begin
+    APosition := FStream.Position;
+    if FMaximumPosition < APosition then
+      FMaximumPosition := APosition;
+  end;
 end;
 
 //=== { TJclSevenzipInStream } ===============================================
@@ -4864,6 +4901,11 @@ begin
   end;
 end;
 
+procedure GetSevenzipArchiveCompressionProperties(AJclArchive: IInterface; ASevenzipArchive: IInterface);
+begin
+  // TODO properties from ASevenzipArchive to AJclArchive
+end;
+
 procedure SetSevenzipArchiveCompressionProperties(AJclArchive: IInterface; ASevenzipArchive: IInterface);
 var
   PropertySetter: Sevenzip.ISetProperties;
@@ -4881,6 +4923,7 @@ var
   SaveLastAccessDateTime: IJclArchiveSaveLastAccessDateTime;
   SaveLastWriteDateTime: IJclArchiveSaveLastWriteDateTime;
   Algorithm: IJclArchiveAlgorithm;
+  Solid: IJclArchiveSolid;
   PropNames: array of PWideChar;
   PropValues: array of TPropVariant;
 
@@ -4954,7 +4997,7 @@ begin
         AddWideStringProperty('EM', EncryptionMethodName[EncryptionMethod.EncryptionMethod]);
 
       if Supports(AJclArchive, IJclArchiveDictionarySize, DictionarySize) and Assigned(DictionarySize) then
-        AddCardinalProperty('D', DictionarySize.DictionarySize);
+        AddWideStringProperty('D', IntToStr(DictionarySize.DictionarySize) + 'B');
 
       if Supports(AJclArchive, IJclArchiveNumberOfPasses, NumberOfPasses) and Assigned(NumberOfPasses) then
         AddCardinalProperty('PASS', NumberOfPasses.NumberOfPasses);
@@ -4986,7 +5029,19 @@ begin
 
       if Supports(AJclArchive, IJclArchiveAlgorithm, Algorithm) and Assigned(Algorithm) then
         AddCardinalProperty('A', Algorithm.Algorithm);
+
+      if Supports(AJclArchive, IJclArchiveSolid, Solid) and Assigned(Solid) then
+      begin
+        if Solid.SolidExtension then
+          AddWideStringProperty('S', 'E');
+        if Solid.SolidBlockSize > 0 then
+          AddWideStringProperty('S', IntToStr(Solid.SolidBlockSize) + 'B')
+        else
+          AddWideStringProperty('S', IntToStr(Solid.SolidBlockSize) + 'F');
+      end;
     end;
+    if Length(PropNames) > 0 then
+      SevenZipCheck(PropertySetter.SetProperties(@PropNames[0], @PropValues[0], Length(PropNames)));
   end;
 end;
 
@@ -5251,10 +5306,10 @@ begin
 
   FCompressing := True;
   try
-    SplitStream := TJclDynamicSplitStream.Create;
+    SplitStream := TJclDynamicSplitStream.Create(False);
     SplitStream.OnVolume := NeedVolume;
     SplitStream.OnVolumeMaxSize := NeedVolumeMaxSize;
-    OutStream := TJclSevenzipOutStream.Create(SplitStream, True);
+    OutStream := TJclSevenzipOutStream.Create(SplitStream, True, False);
     UpdateCallback := TJclSevenzipUpdateCallback.Create(Self);
 
     SetSevenzipArchiveCompressionProperties(Self, FOutArchive);
@@ -5290,6 +5345,8 @@ begin
   FSaveLastAccessDateTime := True;
   FSaveCreationDateTime := True;
   FSaveLastWriteDateTime := True;
+  FSolidBlockSize := High(Cardinal);
+  FSolidExtension := False;
 end;
 
 function TJcl7zCompressArchive.GetCLSID: TGUID;
@@ -5355,6 +5412,16 @@ end;
 function TJcl7zCompressArchive.GetSaveLastWriteDateTime: Boolean;
 begin
   Result := FSaveLastWriteDateTime;
+end;
+
+function TJcl7zCompressArchive.GetSolidBlockSize: Int64;
+begin
+  Result := FSolidBlockSize;
+end;
+
+function TJcl7zCompressArchive.GetSolidExtension: Boolean;
+begin
+  Result := FSolidExtension;
 end;
 
 class function TJcl7zCompressArchive.MultipleItemContainer: Boolean;
@@ -5438,6 +5505,18 @@ procedure TJcl7zCompressArchive.SetSaveLastWriteDateTime(Value: Boolean);
 begin
   CheckNotCompressing;
   FSaveLastWriteDateTime := Value;
+end;
+
+procedure TJcl7zCompressArchive.SetSolidBlockSize(const Value: Int64);
+begin
+  CheckNotCompressing;
+  FSolidBlockSize := Value;
+end;
+
+procedure TJcl7zCompressArchive.SetSolidExtension(Value: Boolean);
+begin
+  CheckNotCompressing;
+  FSolidExtension := Value;
 end;
 
 //=== { TJclZipCompressArchive } =============================================
@@ -6156,7 +6235,7 @@ begin
   begin
     if (FVolumeMaxSize <> 0) or (FVolumes.Count <> 0) then
     begin
-      SplitStream := TJclDynamicSplitStream.Create;
+      SplitStream := TJclDynamicSplitStream.Create(False);
       SplitStream.OnVolume := NeedVolume;
       SplitStream.OnVolumeMaxSize := NeedVolumeMaxSize;
       AInStream := TJclSevenzipInStream.Create(SplitStream, True);
@@ -6169,6 +6248,8 @@ begin
 
     MaxCheckStartPosition := 1 shl 22;
     SevenzipCheck(FInArchive.Open(AInStream, @MaxCheckStartPosition, OpenCallback));
+
+    GetSevenzipArchiveCompressionProperties(Self, FInArchive);
 
     FOpened := True;
   end;
@@ -6839,10 +6920,10 @@ begin
 
   FCompressing := True;
   try
-    SplitStream := TJclDynamicSplitStream.Create;
+    SplitStream := TJclDynamicSplitStream.Create(True);
     SplitStream.OnVolume := NeedVolume;
     SplitStream.OnVolumeMaxSize := NeedVolumeMaxSize;
-    OutStream := TJclSevenzipOutStream.Create(SplitStream, True);
+    OutStream := TJclSevenzipOutStream.Create(SplitStream, True, True);
     UpdateCallback := TJclSevenzipUpdateCallback.Create(Self);
 
     SetSevenzipArchiveCompressionProperties(Self, FOutArchive);
@@ -7010,28 +7091,26 @@ end;
 
 procedure TJclSevenzipUpdateArchive.OpenArchive;
 var
-  SplitStream: TJclDynamicSplitStream;
   OpenCallback: IArchiveOpenCallback;
   MaxCheckStartPosition: Int64;
   AInStream: IInStream;
+  SplitStream: TJclDynamicSplitStream;
 begin
   if not FOpened then
   begin
-    if (FVolumeMaxSize <> 0) or (FVolumes.Count <> 0) then
-    begin
-      SplitStream := TJclDynamicSplitStream.Create;
-      SplitStream.OnVolume := NeedVolume;
-      SplitStream.OnVolumeMaxSize := NeedVolumeMaxSize;
-      AInStream := TJclSevenzipInStream.Create(SplitStream, True);
-    end
-    else
-      AInStream := TJclSevenzipInStream.Create(NeedVolume(0), False);
+    SplitStream := TJclDynamicSplitStream.Create(True);
+    SplitStream.OnVolume := NeedVolume;
+    SplitStream.OnVolumeMaxSize := NeedVolumeMaxSize;
+
+    AInStream := TJclSevenzipInStream.Create(SplitStream, True);
     OpenCallback := TJclSevenzipOpenCallback.Create(Self);
 
     SetSevenzipArchiveCompressionProperties(Self, FInArchive);
 
     MaxCheckStartPosition := 1 shl 22;
     SevenzipCheck(FInArchive.Open(AInStream, @MaxCheckStartPosition, OpenCallback));
+
+    GetSevenzipArchiveCompressionProperties(Self, FInArchive);
 
     FOpened := True;
   end;
