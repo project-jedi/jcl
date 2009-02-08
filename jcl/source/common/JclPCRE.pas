@@ -225,7 +225,7 @@ begin
       raise EJclUnexpectedEOSequenceError.Create
     else
     if StrPos > StrLen then
-      Result := StrLen
+      Result := StrLen + 1
     else
       Result := StrPos;
   end
