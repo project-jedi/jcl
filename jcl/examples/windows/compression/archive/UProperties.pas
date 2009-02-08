@@ -172,7 +172,7 @@ end;
 
 procedure TFormArchiveSettings.EditSolidBlockSizeExit(Sender: TObject);
 begin
-  FSolid.SolidBlockSize := StrToInt(EditSolidBlockSize.Text);
+  FSolid.SolidBlockSize := StrToInt64(EditSolidBlockSize.Text);
   RefreshValues;
 end;
 
