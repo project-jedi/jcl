@@ -458,6 +458,7 @@ type
     FVolumeMaxSize: Int64;
     FPosition: Int64;
     FVolumePosition: Int64;
+    FForcePosition: Boolean;
   protected
     function GetVolume(Index: Integer): TStream; virtual; abstract;
     function GetVolumeMaxSize(Index: Integer): Int64; virtual; abstract;
@@ -465,7 +466,7 @@ type
     procedure SetSize({$IFNDEF CLR}const{$ENDIF ~CLR} NewSize: Int64); override;
     procedure InternalLoadVolume(Index: Integer);
   public
-    constructor Create;
+    constructor Create(AForcePosition: Boolean = False);
 
     function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64; override;
     {$IFDEF CLR}
@@ -475,6 +476,8 @@ type
     function Read(var Buffer; Count: Longint): Longint; override;
     function Write(const Buffer; Count: Longint): Longint; override;
     {$ENDIF ~CLR}
+
+    property ForcePosition: Boolean read FForcePosition write FForcePosition;
   end;
 
   TJclVolumeEvent = function(Index: Integer): TStream of object;
@@ -508,7 +511,7 @@ type
     function GetVolume(Index: Integer): TStream; override;
     function GetVolumeMaxSize(Index: Integer): Int64; override;
   public
-    constructor Create;
+    constructor Create(AForcePosition: Boolean = False);
     destructor Destroy; override;
 
     function AddVolume(AStream: TStream; AMaxSize: Int64 = 0;
@@ -2426,7 +2429,7 @@ end;
 
 //=== { TJclSplitStream } ====================================================
 
-constructor TJclSplitStream.Create;
+constructor TJclSplitStream.Create(AForcePosition: Boolean);
 begin
   inherited Create;
   FVolume := nil;
@@ -2434,6 +2437,7 @@ begin
   FVolumeMaxSize := 0;
   FPosition := 0;
   FVolumePosition := 0;
+  FForcePosition := AForcePosition;
 end;
 
 function TJclSplitStream.GetSize: Int64;
@@ -2500,6 +2504,10 @@ begin
   Total := Count;
 
   repeat
+    // force position
+    if ForcePosition then
+      StreamSeek(FVolume, FVolumePosition, soBeginning);
+
     // try to read (Count) bytes from current stream
     {$IFDEF CLR}
     LoopRead := FVolume.Read(Buffer, Offset, Count);
@@ -2662,6 +2670,10 @@ begin
   Total := Count;
 
   repeat
+    // force position
+    if ForcePosition then
+      StreamSeek(FVolume, FVolumePosition, soBeginning);
+
     // do not write more than (VolumeMaxSize) bytes in current stream
     if (FVolumeMaxSize > 0) and ((Count + FVolumePosition) > FVolumeMaxSize) then
       LoopWritten := FVolumeMaxSize - FVolumePosition
@@ -2712,9 +2724,9 @@ end;
 
 //=== { TJclStaticSplitStream } ===========================================
 
-constructor TJclStaticSplitStream.Create;
+constructor TJclStaticSplitStream.Create(AForcePosition: Boolean);
 begin
-  inherited Create;
+  inherited Create(AForcePosition);
   FVolumes := TObjectList.Create(True);
 end;
 
