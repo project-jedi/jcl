@@ -36,7 +36,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  ToolsApi;
+  ToolsAPI;
 
 const
   DelphiRootDirKeyValue = 'RootDir';
@@ -45,7 +45,7 @@ const
   DelphiEnvironmentVar  = 'DELPHI';
   {$IFDEF COMPILER6_UP}
   EnvironmentVarsKey    = 'Environment Variables';
-  {$ENDIF COMPÏLER6_UP}
+  {$ENDIF COMPILER6_UP}
 
   //=== Various constants shared by different experts ========================
   JclLeft   = 'Left';
@@ -133,6 +133,7 @@ const
   //=== Repository Expert ====================================================
   JclRepositoryCategoryDelphiFiles = {$IFDEF BDS} sCategoryDelphiNewFiles {$ELSE BDS} '' {$ENDIF BDS};
   JclRepositoryCategoryCBuilderFiles = {$IFDEF BDS} sCategoryCBuilderNewFiles {$ELSE BDS} '' {$ENDIF BDS};
+  JclRepositoryModuleTypeForm = {$IFDEF COMPILER6_UP} omtForm {$ELSE COMPILER6_UP} 0 {$ENDIF COMPILER6_UP};  
 
   //=== Version Control Expert ===============================================
   JclVersionCtrlMenuName = 'JclVersionCtrlMenu';

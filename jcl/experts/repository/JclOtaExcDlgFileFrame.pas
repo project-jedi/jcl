@@ -38,7 +38,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JclBorlandTools, JclOtaWizardFrame, JclOtaExcDlgRepository;
+  JclBorlandTools, JclOtaWizardFrame, JclOtaExcDlgRepository, JclOtaConsts, JclOtaUtils;
 
 type
   TJclOtaExcDlgFilePage = class(TJclWizardFrame)
@@ -86,7 +86,7 @@ implementation
 {$R *.dfm}
 
 uses
-  ToolsApi,
+  ToolsAPI,
   JclStrings,
   JclOtaResources;
 
@@ -182,7 +182,7 @@ var
   ProposedModuleName: string;
   Index: Integer;
 begin
-  AProject := GetActiveProject;
+  AProject := TJclOTAExpertBase.GetActiveProject;
   ValidFormName := IsValidIdent(EditFormName.Text);
   ProposedModuleName := ChangeFileExt(ExtractFileName(EditFileName.Text), '');
   ValidFileName := (ProposedModuleName = '') or IsValidIdent(ProposedModuleName);
@@ -195,7 +195,7 @@ begin
     for Index := 0 to AProject.GetModuleCount - 1 do
     begin
       AModuleInfo := AProject.GetModule(Index);
-      if ValidFormName and (AModuleInfo.ModuleType = omtForm) and StrSame(EditFormName.Text, AModuleInfo.FormName) then
+      if ValidFormName and (AModuleInfo.ModuleType = JclRepositoryModuleTypeForm) and StrSame(EditFormName.Text, AModuleInfo.FormName) then
         ValidFormName := False;
       if ValidFileName and (ProposedModuleName <> '') and StrSame(ProposedModuleName, ChangeFileExt(ExtractFileName(AModuleInfo.FileName), '')) then
         ValidFileName := False;
