@@ -514,6 +514,9 @@ begin
   if ipPackedName in CompressionItem.ValidProperties then
     Item.SubItems.Add(CompressionItem.PackedName)
   else
+  if ipPackedExtension in CompressionItem.ValidProperties then
+    Item.SubItems.Add('(Extension)' + CompressionItem.PackedExtension)
+  else
     Item.SubItems.Add('');
   if ipFileSize in CompressionItem.ValidProperties then
     Item.SubItems.Add(IntToStr(CompressionItem.FileSize))

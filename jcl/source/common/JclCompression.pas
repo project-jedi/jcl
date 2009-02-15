@@ -41,7 +41,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                       $ }
+{ Last modified: $Date::                                                                     $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -543,9 +543,10 @@ type
     var AVolumeMaxSize: Int64) of object;
   TJclCompressionProgressEvent = procedure(Sender: TObject; const Value, MaxValue: Int64) of object;
 
-  TJclCompressionItemProperty = (ipPackedName, ipPackedSize, ipFileSize,
-    ipFileName, ipAttributes, ipCreationTime, ipLastAccessTime, ipLastWriteTime,
-    ipComment, ipHostOS, ipHostFS, ipUser, ipGroup, ipCRC, ipStream, ipMethod);
+  TJclCompressionItemProperty = (ipPackedName, ipPackedSize, ipPackedExtension,
+    ipFileSize, ipFileName, ipAttributes, ipCreationTime, ipLastAccessTime,
+    ipLastWriteTime, ipComment, ipHostOS, ipHostFS, ipUser, ipGroup, ipCRC,
+    ipStream, ipMethod);
   TJclCompressionItemProperties = set of TJclCompressionItemProperty;
 
   TJclCompressionItemKind = (ikFile, ikDirectory);
@@ -576,6 +577,7 @@ type
     FPackedSize: Int64;
     FFileSize: Int64;
     FAttributes: Cardinal;
+    FPackedExtension: WideString;
     FCreationTime: TFileTime;
     FLastAccessTime: TFileTime;
     FLastWriteTime: TFileTime;
@@ -607,6 +609,7 @@ type
     function GetLastAccessTime: TFileTime;
     function GetLastWriteTime: TFileTime;
     function GetMethod: WideString;
+    function GetPackedExtension: WideString;
     function GetPackedName: WideString;
     function GetPackedSize: Int64;
     function GetStream: TStream;
@@ -624,6 +627,7 @@ type
     procedure SetLastAccessTime(const Value: TFileTime);
     procedure SetLastWriteTime(const Value: TFileTime);
     procedure SetMethod(const Value: WideString);
+    procedure SetPackedExtension(const Value: WideString);
     procedure SetPackedName(const Value: WideString);
     procedure SetPackedSize(const Value: Int64);
     procedure SetStream(const Value: TStream);
@@ -646,6 +650,7 @@ type
     property LastAccessTime: TFileTime read GetLastAccessTime write SetLastAccessTime;
     property LastWriteTime: TFileTime read GetLastWriteTime write SetLastWriteTime;
     property Method: WideString read GetMethod write SetMethod;
+    property PackedExtension: WideString read GetPackedExtension write SetPackedExtension;
     property PackedName: WideString read GetPackedName write SetPackedName;
     property PackedSize: Int64 read GetPackedSize write SetPackedSize;
     property User: WideString read GetUser write SetUser;
@@ -3371,6 +3376,35 @@ begin
   Result := FMethod;
 end;
 
+function TJclCompressionItem.GetPackedExtension: WideString;
+var
+  Index: Integer;
+begin
+  CheckGetProperty(ipPackedExtension);
+  if FPackedName = '' then
+    Result := FPackedExtension
+  else
+  begin
+    Result := '';
+
+    // Unicode version of ExtractFileExt
+    for Index := Length(FPackedName) downto 1 do
+    begin
+      case FPackedName[Index] of
+        '.':
+          begin
+            Result := Copy(FPackedName, Index, Length(FPackedName) - Index + 1);
+            Break;
+          end;
+        DirSeparator,
+        DirDelimiter:
+          // no extension
+          Break;
+      end;
+    end;
+  end;
+end;
+
 function TJclCompressionItem.GetPackedName: WideString;
 begin
   CheckGetProperty(ipPackedName);
@@ -3524,6 +3558,18 @@ begin
   FMethod := Value;
   Include(FModifiedProperties, ipMethod);
   Include(FValidProperties, ipMethod);
+end;
+
+procedure TJclCompressionItem.SetPackedExtension(const Value: WideString);
+begin
+  CheckSetProperty(ipPackedExtension);
+  if (Value <> '') and (Value[1] <> '.') then
+    // force heading '.'
+    FPackedExtension := '.' + Value
+  else
+    FPackedExtension := Value;
+  Include(FModifiedProperties, ipPackedExtension);
+  Include(FValidProperties, ipPackedExtension);
 end;
 
 procedure TJclCompressionItem.SetPackedName(const Value: WideString);
@@ -4394,13 +4440,25 @@ end;
 
 function TJclDecompressArchive.ValidateExtraction(Index: Integer;
   var FileName: TFileName; var AStream: TStream; var AOwnsStream: Boolean): Boolean;
+var
+  AItem: TJclCompressionItem;
+  PackedName: TFileName;
 begin
   if FExtractingAllIndex <> -1 then
     // extracting all
     FExtractingAllIndex := Index;
 
+  AItem := Items[Index];
+
   if FileName = '' then
-    FileName := PathGetRelativePath(FDestinationDir, Items[Index].PackedName);
+  begin
+    PackedName := AItem.PackedName;
+
+    if PackedName = '' then
+      PackedName := ChangeFileExt(ExtractFileName(Volumes[0].FileName), AItem.PackedExtension);
+
+    FileName := PathGetRelativePath(FDestinationDir, PackedName);
+  end;
   Result := True;
 
   if Assigned(FOnExtract) then
@@ -4408,7 +4466,7 @@ begin
 
   if Result and not Assigned(AStream) and AutoCreateSubDir then
   begin
-    if (Items[Index].Attributes and faDirectory) <> 0 then
+    if (AItem.Attributes and faDirectory) <> 0 then
       ForceDirectories(FileName)
     else
       ForceDirectories(ExtractFilePath(FileName));
@@ -4474,13 +4532,25 @@ end;
 function TJclUpdateArchive.ValidateExtraction(Index: Integer;
   var FileName: TFileName; var AStream: TStream;
   var AOwnsStream: Boolean): Boolean;
+var
+  AItem: TJclCompressionItem;
+  PackedName: TFileName;
 begin
   if FExtractingAllIndex <> -1 then
     // extracting all
     FExtractingAllIndex := Index;
 
+  AItem := Items[Index];
+
   if FileName = '' then
-    FileName := PathGetRelativePath(FDestinationDir, Items[Index].PackedName);
+  begin
+    PackedName := AItem.PackedName;
+
+    if PackedName = '' then
+      PackedName := ChangeFileExt(ExtractFileName(Volumes[0].FileName), AItem.PackedExtension);
+
+    FileName := PathGetRelativePath(FDestinationDir, PackedName);
+  end;
   Result := True;
 
   if Assigned(FOnExtract) then
@@ -4488,7 +4558,7 @@ begin
 
   if Result and not Assigned(AStream) and AutoCreateSubDir then
   begin
-    if (Items[Index].Attributes and faDirectory) <> 0 then
+    if (AItem.Attributes and faDirectory) <> 0 then
       ForceDirectories(FileName)
     else
       ForceDirectories(ExtractFilePath(FileName));
@@ -4876,7 +4946,8 @@ procedure Load7zFileAttribute(AInArchive: IInArchive; ItemIndex: Integer;
   AItem: TJclCompressionItem);
 begin
   AItem.FValidProperties := [];
-  if Get7zWideStringProp(AInArchive, ItemIndex, kpidPath, AItem.SetPackedName) then
+  if Get7zWideStringProp(AInArchive, ItemIndex, kpidPath, AItem.SetPackedName) or
+     Get7zWideStringProp(AInArchive, ItemIndex, kpidExtension, AItem.SetPackedExtension) then
   begin
     AItem.FPackedIndex := ItemIndex;
     AItem.FileName := '';
