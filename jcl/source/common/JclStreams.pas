@@ -2544,7 +2544,7 @@ begin
     soCurrent:
       ExpectedPosition := FPosition + Offset;
     soEnd:
-      ExpectedPosition := Size - Offset;
+      ExpectedPosition := Size + Offset;
   else
     {$IFDEF CLR}
     raise EJclStreamError.Create(RsStreamsSeekError);
