@@ -2672,8 +2672,8 @@ end;
 function TJclGZIPDecompressionStream.ReadCompressedData(Sender: TObject; var Buffer;
   Count: Longint): Longint;
 var
-  BufferAddr: PChar;
-  FooterAddr: PChar;
+  BufferAddr: PByte;
+  FooterAddr: PByte;
 begin
   if (Count = 0) or FDataEnded then
   begin
@@ -2689,7 +2689,7 @@ begin
       raise EJclCompressionError.CreateRes(@RsCompressionGZipDataTruncated);
   end;
 
-  BufferAddr := @Char(Buffer);
+  BufferAddr := @Byte(Buffer);
   Move(FFooter, Buffer, SizeOf(FFooter));
   Result := FStream.Read(BufferAddr[SizeOf(FFooter)], Count - SizeOf(FFooter))
   + FStream.Read(FFooter, SizeOf(FFooter));
