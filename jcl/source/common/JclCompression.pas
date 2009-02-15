@@ -41,7 +41,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                     $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -6188,12 +6188,15 @@ procedure TJclSevenzipDecompressArchive.ExtractAll(const ADestinationDir: string
   AAutoCreateSubDir: Boolean);
 var
   AExtractCallback: IArchiveExtractCallback;
+  Indices: array of Cardinal;
+  NbIndices: Cardinal;
+  Index: Integer;
 begin
   CheckNotDecompressing;
 
   FDestinationDir := ADestinationDir;
   FAutoCreateSubDir := AAutoCreateSubDir;
-  
+
   if FDestinationDir <> '' then
     FDestinationDir := PathAddSeparator(FDestinationDir);
 
@@ -6203,7 +6206,19 @@ begin
   try
     OpenArchive;
 
-    SevenzipCheck(FInArchive.Extract(nil, $FFFFFFFF, 0, AExtractCallback));
+    // seems buggy: first param "indices" is dereferenced without
+    // liveness checks inside Sevenzip code
+    //SevenzipCheck(FInArchive.Extract(nil, $FFFFFFFF, 0, AExtractCallback));
+
+    NbIndices := ItemCount;
+    SetLength(Indices, NbIndices);
+    for Index := 0 to NbIndices - 1 do
+    begin
+      Items[Index].Selected := True;
+      Indices[Index] := Index;
+    end;
+    SevenzipCheck(FInArchive.Extract(@Indices[0], NbIndices, 0, AExtractCallback));
+
     CheckOperationSuccess;
   finally
     FDestinationDir := '';
@@ -7049,6 +7064,9 @@ procedure TJclSevenzipUpdateArchive.ExtractAll(const ADestinationDir: string;
   AAutoCreateSubDir: Boolean);
 var
   AExtractCallback: IArchiveExtractCallback;
+  Indices: array of Cardinal;
+  NbIndices: Cardinal;
+  Index: Integer;
 begin
   CheckNotDecompressing;
   CheckNotCompressing;
@@ -7065,7 +7083,19 @@ begin
   try
     OpenArchive;
 
-    SevenzipCheck(FInArchive.Extract(nil, $FFFFFFFF, 0, AExtractCallback));
+    // seems buggy: first param "indices" is dereferenced without
+    // liveness checks inside Sevenzip code
+    //SevenzipCheck(FInArchive.Extract(nil, $FFFFFFFF, 0, AExtractCallback));
+
+    NbIndices := ItemCount;
+    SetLength(Indices, NbIndices);
+    for Index := 0 to NbIndices - 1 do
+    begin
+      Items[Index].Selected := True;
+      Indices[Index] := Index;
+    end;
+    SevenzipCheck(FInArchive.Extract(@Indices[0], NbIndices, 0, AExtractCallback));
+
     CheckOperationSuccess;
   finally
     FDestinationDir := '';
