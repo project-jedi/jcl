@@ -517,7 +517,7 @@ begin
   if ipPackedExtension in CompressionItem.ValidProperties then
     Item.SubItems.Add('(Extension)' + CompressionItem.PackedExtension)
   else
-    Item.SubItems.Add('');
+    Item.SubItems.Add('(Auto)');
   if ipFileSize in CompressionItem.ValidProperties then
     Item.SubItems.Add(IntToStr(CompressionItem.FileSize))
   else
