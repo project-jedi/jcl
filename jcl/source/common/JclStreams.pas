@@ -630,7 +630,7 @@ begin
     if Stream is TJclStream then
       Result := TJclStream(Stream).Seek(Offset, Origin)
     else
-    if (Offset <= MaxLongint) or (Offset > -MaxLongint) then
+    if (Offset > -MaxLongint) and (Offset <= MaxLongint) then
       Result := Stream.Seek(Longint(Offset), Ord(Origin))
     else
       Result := -1;
