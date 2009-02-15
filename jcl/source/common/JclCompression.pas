@@ -4840,6 +4840,46 @@ begin
         Setter(Value.bstrVal);
         SysFreeString(Value.bstrVal);
       end;
+    VT_I1:
+      begin
+        Result := True;
+        Setter(IntToStr(Value.iVal));
+      end;
+    VT_I2:
+      begin
+        Result := True;
+        Setter(IntToStr(Value.iVal));
+      end;
+    VT_INT, VT_I4:
+      begin
+        Result := True;
+        Setter(IntToStr(Value.lVal));
+      end;
+    VT_I8:
+      begin
+        Result := True;
+        Setter(IntToStr(Value.hVal.QuadPart));
+      end;
+    VT_UI1:
+      begin
+        Result := True;
+        Setter(IntToStr(Value.bVal));
+      end;
+    VT_UI2:
+      begin
+        Result := True;
+        Setter(IntToStr(Value.uiVal));
+      end;
+    VT_UINT, VT_UI4:
+      begin
+        Result := True;
+        Setter(IntToStr(Value.ulVal));
+      end;
+    VT_UI8:
+      begin
+        Result := True;
+        Setter(IntToStr(Value.uhVal.QuadPart));
+      end;
   else
     raise EJclCompressionError.CreateResFmt(@RsCompression7zUnknownValueType, [Value.vt, PropID]);
   end;
@@ -4941,35 +4981,35 @@ begin
   end;
 end;
 
-// TODO: Are changes for UTF-8 filenames (>= 4.58 beta) necessary? 
+// TODO: Are changes for UTF-8 filenames (>= 4.58 beta) necessary?
 procedure Load7zFileAttribute(AInArchive: IInArchive; ItemIndex: Integer;
   AItem: TJclCompressionItem);
 begin
   AItem.FValidProperties := [];
-  if Get7zWideStringProp(AInArchive, ItemIndex, kpidPath, AItem.SetPackedName) or
-     Get7zWideStringProp(AInArchive, ItemIndex, kpidExtension, AItem.SetPackedExtension) then
-  begin
-    AItem.FPackedIndex := ItemIndex;
-    AItem.FileName := '';
-    AItem.Stream := nil;
-    AItem.OwnsStream := False;
-    Get7zCardinalProp(AInArchive, ItemIndex, kpidAttrib, AItem.SetAttributes);
-    Get7zInt64Prop(AInArchive, ItemIndex, kpidSize, AItem.SetFileSize);
-    Get7zInt64Prop(AInArchive, ItemIndex, kpidPackSize, AItem.SetPackedSize);
-    Get7zFileTimeProp(AInArchive, ItemIndex, kpidCTime, AItem.SetCreationTime);
-    Get7zFileTimeProp(AInArchive, ItemIndex, kpidATime, AItem.SetLastAccessTime);
-    Get7zFileTimeProp(AInArchive, ItemIndex, kpidMTime, AItem.SetLastWriteTime);
-    Get7zWideStringProp(AInArchive, ItemIndex, kpidComment, AItem.SetComment);
-    Get7zWideStringProp(AInArchive, ItemIndex, kpidHostOS, AItem.SetHostOS);
-    Get7zWideStringProp(AInArchive, ItemIndex, kpidFileSystem, AItem.SetHostFS);
-    Get7zWideStringProp(AInArchive, ItemIndex, kpidUser, AItem.SetUser);
-    Get7zWideStringProp(AInArchive, ItemIndex, kpidGroup, AItem.SetGroup);
-    Get7zCardinalProp(AInArchive, ItemIndex, kpidCRC, AItem.SetCRC);
-    Get7zWideStringProp(AInArchive, ItemIndex, kpidMethod, AItem.SetMethod);
+  AItem.FPackedIndex := ItemIndex;
+  AItem.FileName := '';
+  AItem.Stream := nil;
+  AItem.OwnsStream := False;
 
-    // reset modified flags
-    AItem.ModifiedProperties := [];
-  end;
+  // sometimes, items have neither names nor extension although other properties may succeed
+  Get7zWideStringProp(AInArchive, ItemIndex, kpidPath, AItem.SetPackedName);
+  Get7zWideStringProp(AInArchive, ItemIndex, kpidExtension, AItem.SetPackedExtension);
+  Get7zCardinalProp(AInArchive, ItemIndex, kpidAttrib, AItem.SetAttributes);
+  Get7zInt64Prop(AInArchive, ItemIndex, kpidSize, AItem.SetFileSize);
+  Get7zInt64Prop(AInArchive, ItemIndex, kpidPackSize, AItem.SetPackedSize);
+  Get7zFileTimeProp(AInArchive, ItemIndex, kpidCTime, AItem.SetCreationTime);
+  Get7zFileTimeProp(AInArchive, ItemIndex, kpidATime, AItem.SetLastAccessTime);
+  Get7zFileTimeProp(AInArchive, ItemIndex, kpidMTime, AItem.SetLastWriteTime);
+  Get7zWideStringProp(AInArchive, ItemIndex, kpidComment, AItem.SetComment);
+  Get7zWideStringProp(AInArchive, ItemIndex, kpidHostOS, AItem.SetHostOS);
+  Get7zWideStringProp(AInArchive, ItemIndex, kpidFileSystem, AItem.SetHostFS);
+  Get7zWideStringProp(AInArchive, ItemIndex, kpidUser, AItem.SetUser);
+  Get7zWideStringProp(AInArchive, ItemIndex, kpidGroup, AItem.SetGroup);
+  Get7zCardinalProp(AInArchive, ItemIndex, kpidCRC, AItem.SetCRC);
+  Get7zWideStringProp(AInArchive, ItemIndex, kpidMethod, AItem.SetMethod);
+
+  // reset modified flags
+  AItem.ModifiedProperties := [];
 end;
 
 procedure GetSevenzipArchiveCompressionProperties(AJclArchive: IInterface; ASevenzipArchive: IInterface);
