@@ -464,7 +464,7 @@ type
     function GetVolumeMaxSize(Index: Integer): Int64; virtual; abstract;
     function GetSize: Int64; {$IFDEF SIZE64}override;{$ENDIF SIZE64}
     procedure SetSize({$IFNDEF CLR}const{$ENDIF ~CLR} NewSize: Int64); override;
-    procedure InternalLoadVolume(Index: Integer);
+    function InternalLoadVolume(Index: Integer): Boolean;
   public
     constructor Create(AForcePosition: Boolean = False);
 
@@ -2453,8 +2453,7 @@ begin
   try
     FVolumeIndex := -1;
     repeat
-      InternalLoadVolume(FVolumeIndex + 1);
-      if not Assigned(FVolume) then
+      if not InternalLoadVolume(FVolumeIndex + 1) then
         Break;
       Result := Result + FVolume.Size;
     until FVolume.Size = 0;
@@ -2466,19 +2465,41 @@ begin
   end;
 end;
 
-procedure TJclSplitStream.InternalLoadVolume(Index: Integer);
+function TJclSplitStream.InternalLoadVolume(Index: Integer): Boolean;
+var
+  OldVolumeIndex: Integer;
+  OldVolumeMaxSize: Int64;
+  OldVolumePosition: Int64;
+  OldVolume: TStream;
 begin
   if Index = -1 then
     Index := 0;
   if Index <> FVolumeIndex then
   begin
+    // save current pointers
+    OldVolumeIndex := FVolumeIndex;
+    OldVolumeMaxSize := FVolumeMaxSize;
+    OldVolumePosition := FVolumePosition;
+    OldVolume := FVolume;
+
     FVolumeIndex := Index;
     FVolumePosition := 0;
     FVolume := GetVolume(Index);
     FVolumeMaxSize := GetVolumeMaxSize(Index);
-    if Assigned(FVolume) then
-      StreamSeek(FVolume, 0, soBeginning);
-  end;
+    Result := Assigned(FVolume);
+    if Result then
+      StreamSeek(FVolume, 0, soBeginning)
+    else
+    begin
+      // restore old pointers if volume load failed
+      FVolumeIndex := OldVolumeIndex;
+      FVolumeMaxSize := OldVolumeMaxSize;
+      FVolumePosition := OldVolumePosition;
+      FVolume := OldVolume;
+    end;
+  end
+  else
+    Result := Assigned(FVolume);
 end;
 
 {$IFDEF CLR}
@@ -2494,8 +2515,7 @@ var
 begin
   Result := 0;
 
-  InternalLoadVolume(FVolumeIndex);
-  if not Assigned(FVolume) then
+  if not InternalLoadVolume(FVolumeIndex) then
     Exit;
 
   {$IFNDEF CLR}
@@ -2527,8 +2547,7 @@ begin
     {$ELSE ~CLR}
     Inc(Data, Result);
     {$ENDIF ~CLR}
-    InternalLoadVolume(FVolumeIndex + 1);
-    if not Assigned(FVolume) then
+    if not InternalLoadVolume(FVolumeIndex + 1) then
       Break;
   until False;
 end;
@@ -2555,8 +2574,7 @@ begin
   RemainingOffset := ExpectedPosition - FPosition;
   Result := FPosition;
   repeat
-    InternalLoadVolume(FVolumeIndex);
-    if not Assigned(FVolume) then
+    if not InternalLoadVolume(FVolumeIndex) then
       Break;
 
     if RemainingOffset < 0 then
@@ -2581,8 +2599,7 @@ begin
         FPosition := Result;
         FVolumePosition := StreamSeek(FVolume, 0, soBeginning);
         // load previous volume
-        InternalLoadVolume(FVolumeIndex - 1);
-        if not Assigned(FVolume) then
+        if not InternalLoadVolume(FVolumeIndex - 1) then
           Break;
         Result := Result - FVolume.Size;
         FPosition := Result;
@@ -2606,8 +2623,7 @@ begin
         RemainingOffset := RemainingOffset - FVolumeMaxSize + FVolumePosition;
         Result := Result + FVolumeMaxSize - FVolumePosition;
         FPosition := Result;
-        InternalLoadVolume(FVolumeIndex + 1);
-        if not Assigned(FVolume) then
+        if not InternalLoadVolume(FVolumeIndex + 1) then
           Break;
       end;
     end;
@@ -2627,8 +2643,7 @@ begin
   try
     FVolumeIndex := 0;
     repeat
-      InternalLoadVolume(FVolumeIndex);
-      if not Assigned(FVolume) then
+      if not InternalLoadVolume(FVolumeIndex) then
         Break;
       if (FVolumeMaxSize > 0) and (RemainingSize > FVolumeMaxSize) then
         VolumeSize := FVolumeMaxSize
@@ -2660,8 +2675,7 @@ var
 begin
   Result := 0;
 
-  InternalLoadVolume(FVolumeIndex);
-  if not Assigned(FVolume) then
+  if not InternalLoadVolume(FVolumeIndex) then
     Exit;
 
   {$IFNDEF CLR}
@@ -2698,8 +2712,7 @@ begin
     {$ELSE ~CLR}
     Inc(Data, LoopWritten);
     {$ENDIF ~CLR}
-    InternalLoadVolume(FVolumeIndex + 1);
-    if not Assigned(FVolume) then
+    if not InternalLoadVolume(FVolumeIndex + 1) then
       Break;
   until False;
 end;
