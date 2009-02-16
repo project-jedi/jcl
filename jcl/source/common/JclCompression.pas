@@ -2677,8 +2677,8 @@ end;
 function TJclGZIPDecompressionStream.ReadCompressedData(Sender: TObject; var Buffer;
   Count: Longint): Longint;
 var
-  BufferAddr: PByte;
-  FooterAddr: PByte;
+  BufferAddr: PAnsiChar;
+  FooterAddr: PAnsiChar;
 begin
   if (Count = 0) or FDataEnded then
   begin
