@@ -2554,7 +2554,7 @@ begin
       finally
         CoTaskMemFree(PIDL);
       end;
-      {$ELSE}
+      {$ELSE ~SUPPORTS_UNICODE}
       MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, PAnsiChar(Path), -1, WideName, MAX_PATH);
       if Succeeded(Desktop.ParseDisplayName(0, nil, WideName, Eaten, PIDL, Attr)) then
       try
@@ -2565,7 +2565,7 @@ begin
       finally
         CoTaskMemFree(PIDL);
       end;
-      {$ENDIF SUPPORTS_UNICODE}
+      {$ENDIF ~SUPPORTS_UNICODE}
     end;
   end;
 end;
@@ -2587,7 +2587,7 @@ function RtdlGetLongPathName(const Path: string): string;
 begin
   Result := Path;
   if not Assigned(_GetLongPathName) then
-    _GetLongPathName := GetModuleSymbol(Kernel32Handle, {$IFDEF UNICODE}'GetLongPathNameW'{$ELSE}'GetLongPathNameA'{$ENDIF UNICODE});
+    _GetLongPathName := GetModuleSymbol(Kernel32Handle, 'GetLongPathName' + AWSuffix);
   if not Assigned(_GetLongPathName) then
     Result := ShellGetLongPathName(Path)
   else

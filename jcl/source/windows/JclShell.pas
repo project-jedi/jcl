@@ -37,7 +37,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                       $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -55,7 +55,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, SysUtils,
   ShlObj,
-  JclWin32, JclSysUtils;
+  JclBase, JclWin32, JclSysUtils;
 
 // Files and Folders
 type
@@ -187,14 +187,8 @@ type
   INSTALLSTATE = Longint;
 const
   MSILIB = 'msi.dll';
-  {$IFDEF SUPPORTS_UNICODE}
-  GetShortcutTargetName = 'MsiGetShortcutTargetW';
-  GetComponentPathName = 'MsiGetComponentPathW';
-  {$ELSE ~SUPPORTS_UNICODE}
-  GetShortcutTargetName = 'MsiGetShortcutTargetA';
-  GetComponentPathName = 'MsiGetComponentPathA';
-  {$ENDIF ~SUPPORTS_UNICODE}
-
+  GetShortcutTargetName = 'MsiGetShortcutTarget' + AWSuffix;
+  GetComponentPathName = 'MsiGetComponentPath' + AWSuffix;
 var
   // MSI.DLL functions can''t be converted to Unicode due to an internal compiler bug (F2084 Internal Error: URW1021)
   RtdlMsiLibHandle: TModuleHandle = INVALID_MODULEHANDLE_VALUE;

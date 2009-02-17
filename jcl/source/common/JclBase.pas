@@ -422,6 +422,13 @@ type
   end;
 {$ENDIF SUPPORTS_GENERICS}
 
+const
+  {$IFDEF SUPPORTS_UNICODE}
+  AWSuffix = 'W';
+  {$ELSE ~SUPPORTS_UNICODE}
+  AWSuffix = 'A';
+  {$ENDIF ~SUPPORTS_UNICODE}
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (

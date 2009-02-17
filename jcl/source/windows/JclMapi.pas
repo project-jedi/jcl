@@ -28,7 +28,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -987,13 +987,9 @@ begin
   if not AnyClientInstalled then
     raise EJclMapiError.CreateRes(@RsMapiMailNoClient);
 
-  {$IFDEF SUPPORTS_UNICODE}
-  @GetDllDirectory := GetProcAddress(GetModuleHandle(kernel32), 'GetDllDirectoryW');
-  @SetDllDirectory := GetProcAddress(GetModuleHandle(kernel32), 'SetDllDirectoryW');
-  {$ELSE ~SUPPORTS_UNICODE}
-  @GetDllDirectory := GetProcAddress(GetModuleHandle(kernel32), 'GetDllDirectoryA');
-  @SetDllDirectory := GetProcAddress(GetModuleHandle(kernel32), 'SetDllDirectoryA');
-  {$ENDIF ~SUPPORTS_UNICODE}
+  @GetDllDirectory := GetProcAddress(GetModuleHandle(kernel32), 'GetDllDirectory' + AWSuffix);
+  @SetDllDirectory := GetProcAddress(GetModuleHandle(kernel32), 'SetDllDirectory' + AWSuffix);
+
   if Assigned(@GetDllDirectory) and Assigned(@SetDllDirectory) then
   begin
     GetDllDirectory(Length(DllDirectoryBuffer), @DllDirectoryBuffer);
