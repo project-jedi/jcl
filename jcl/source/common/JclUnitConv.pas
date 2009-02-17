@@ -265,9 +265,9 @@ procedure TemperatureBelowAbsoluteError;
 begin
   {$IFDEF CLR}
   raise ETemperatureConversionError.Create(RsConvTempBelowAbsoluteZero);
-  {$ELSE}
+  {$ELSE ~CLR}
   raise ETemperatureConversionError.CreateRes(@RsConvTempBelowAbsoluteZero);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function CelsiusToFahrenheit(const Temperature: Float): Float;
@@ -483,9 +483,9 @@ begin
         else
           {$IFDEF CLR}
           raise EInvalidOp.CreateFmt(RsTempConvTypeError, [cToType]);
-          {$ELSE}
+          {$ELSE ~CLR}
           raise EInvalidOp.CreateResFmt(@RsTempConvTypeError, [cToType]);
-          {$ENDIF CLR}
+          {$ENDIF ~CLR}
         end;
       end;
     { All conversions from Fahrenheit to other formats are listed here }
@@ -503,9 +503,9 @@ begin
         else
           {$IFDEF CLR}
           raise EInvalidOp.CreateFmt(RsTempConvTypeError, [cToType]);
-          {$ELSE}
+          {$ELSE ~CLR}
           raise EInvalidOp.CreateResFmt(@RsTempConvTypeError, [cToType]);
-          {$ENDIF CLR}
+          {$ENDIF ~CLR}
         end;
       end;
     { All conversions from Kelvin to other formats are listed here }
@@ -523,9 +523,9 @@ begin
         else
           {$IFDEF CLR}
           raise EInvalidOp.CreateFmt(RsTempConvTypeError, [cToType]);
-          {$ELSE}
+          {$ELSE ~CLR}
           raise EInvalidOp.CreateResFmt(@RsTempConvTypeError, [cToType]);
-          {$ENDIF CLR}
+          {$ENDIF ~CLR}
         end;
       end;
     { All conversions from Kelvin to other formats are listed here }
@@ -543,9 +543,9 @@ begin
         else
           {$IFDEF CLR}
           raise EInvalidOp.CreateFmt(RsTempConvTypeError, [cToType]);
-          {$ELSE}
+          {$ELSE ~CLR}
           raise EInvalidOp.CreateResFmt(@RsTempConvTypeError, [cToType]);
-          {$ENDIF CLR}
+          {$ENDIF ~CLR}
         end;
       end;
     { All conversions from Reaumur to other formats are listed here }
@@ -563,17 +563,17 @@ begin
         else
           {$IFDEF CLR}
           raise EInvalidOp.CreateFmt(RsTempConvTypeError, [cToType]);
-          {$ELSE}
+          {$ELSE ~CLR}
           raise EInvalidOp.CreateResFmt(@RsTempConvTypeError, [cToType]);
-          {$ENDIF CLR}
+          {$ENDIF ~CLR}
         end;
       end;
   else
     {$IFDEF CLR}
     raise EInvalidOp.CreateFmt(RsTempConvTypeError, [cFromType]);
-    {$ELSE}
+    {$ELSE ~CLR}
     raise EInvalidOp.CreateResFmt(@RsTempConvTypeError, [cFromType]);
-    {$ENDIF CLR}
+    {$ENDIF ~CLR}
   end;
 end;
 

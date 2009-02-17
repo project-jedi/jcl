@@ -52,14 +52,14 @@ uses
   {$IFDEF CLR}
   System.Runtime.InteropServices, System.Reflection, System.ComponentModel,
   Variants,
-  {$ELSE}
+  {$ELSE ~CLR}
   {$IFDEF SUPPORTS_INLINE}
   Windows,
   {$ENDIF SUPPORTS_INLINE}
-  {$ENDIF CLR}
-  {$ELSE}
+  {$ENDIF ~CLR}
+  {$ELSE ~HAS_UNIT_TYPES}
   Windows,
-  {$ENDIF HAS_UNIT_TYPES}
+  {$ENDIF ~HAS_UNIT_TYPES}
   Classes, SysUtils, TypInfo,
   JclBase;
 
@@ -432,9 +432,9 @@ const
      #0, #1, #2, #3, #4, #5, #6, #7, #8, #9, #10, #11, #12, #13, #14, #15,
      #16, #17, #18, #19, #20, #21, #22, #23, #24, #25, #26, #27, #28, #29,
      #30, #31, #32, '-');
-{$ELSE}
+{$ELSE ~CLR}
   WrapChars : TSetOfAnsiChar = [#0..' ', '-'];
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 var
   TmpLines: TStringList;
   I: Integer;
@@ -583,21 +583,21 @@ begin
   Dest.Writeln(RsRTTITypeKind + JclEnumValueToIdent(Borland.Delphi.System.TypeInfo(TTypeKind),
     TypeInfo.TypeKind));
   Dest.Writeln(Format(RsRTTITypeInfoAt, [TypeInfo]));
-  {$ELSE}
+  {$ELSE ~CLR}
   Dest.Writeln(LoadResString(@RsRTTIName) + Name);
   Dest.Writeln(LoadResString(@RsRTTITypeKind) + JclEnumValueToIdent(System.TypeInfo(TTypeKind),
     TypeInfo.Kind));
   Dest.Writeln(Format(LoadResString(@RsRTTITypeInfoAt), [TypeInfo]));
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 procedure TJclTypeInfo.DeclarationTo(const Dest: IJclInfoWriter);
 begin
   {$IFDEF CLR}
   Dest.Write(Format(RsDeclarationFormat, [Name]));
-  {$ELSE}
+  {$ELSE ~CLR}
   Dest.Write(Format(LoadResString(@RsDeclarationFormat), [Name]));
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 //=== { TJclOrdinalTypeInfo } ================================================
@@ -622,10 +622,10 @@ begin
   {$IFDEF CLR}
   Dest.Writeln(RsRTTIOrdinalType +
     JclEnumValueToIdent(Borland.Delphi.System.TypeInfo(TOrdType), TypeData.OrdType));
-  {$ELSE}
+  {$ELSE ~CLR}
   Dest.Writeln(LoadResString(@RsRTTIOrdinalType) +
     JclEnumValueToIdent(System.TypeInfo(TOrdType), TypeData.OrdType));
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 //=== { TJclOrdinalRangeTypeInfo } ===========================================
@@ -664,10 +664,10 @@ begin
   {$IFDEF CLR}
   Dest.Writeln(RsRTTIMinValue + IntToStr(MinValue));
   Dest.Writeln(RsRTTIMaxValue + IntToStr(MaxValue));
-  {$ELSE}
+  {$ELSE ~CLR}
   Dest.Writeln(LoadResString(@RsRTTIMinValue) + IntToStr(MinValue));
   Dest.Writeln(LoadResString(@RsRTTIMaxValue) + IntToStr(MaxValue));
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 procedure TJclOrdinalRangeTypeInfo.DeclarationTo(const Dest: IJclInfoWriter);
@@ -694,9 +694,9 @@ begin
     Dest.Write(IntToStr(MinValue) + '..' + IntToStr(MaxValue));
   {$IFDEF CLR}
   Dest.Writeln('; // ' + JclEnumValueToIdent(Borland.Delphi.System.TypeInfo(TOrdType), TypeData.OrdType));
-  {$ELSE}
+  {$ELSE ~CLR}
   Dest.Writeln('; // ' + JclEnumValueToIdent(System.TypeInfo(TOrdType), TypeData.OrdType));
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 //=== { TJclEnumerationTypeInfo } ============================================
@@ -724,12 +724,12 @@ begin
     Result := Self
   else
     Result := TJclEnumerationTypeInfo.Create(TypeData.ParentInfo);
-  {$ELSE}
+  {$ELSE ~CLR}
   if TypeData.BaseType^ = TypeInfo then
     Result := Self
   else
     Result := TJclEnumerationTypeInfo.Create(TypeData.BaseType^);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function TJclEnumerationTypeInfo.GetNames(const I: Integer): string;
@@ -746,7 +746,7 @@ begin
     Result := Enum.GetNames(Base.TypeInfo)[I]
   else
     Result := '';
-  {$ELSE}
+  {$ELSE ~CLR}
   Idx := I;
   P := @Base.TypeData.NameList;
   while Idx <> 0 do
@@ -755,7 +755,7 @@ begin
     Dec(Idx);
   end;
   Result := string(P^);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 {$IFDEF RTL140_UP}
@@ -765,7 +765,7 @@ function TJclEnumerationTypeInfo.GetUnitName: string;
 begin
   Result := BaseType.TypeData.EnumUnitName;
 end;
-{$ELSE}
+{$ELSE ~CLR}
 var
   I: Integer;
   P: ^ShortString;
@@ -784,7 +784,7 @@ begin
   else
     Result := string(TypeData.NameList);
 end;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 
 {$ENDIF RTL140_UP}
 
@@ -794,9 +794,9 @@ begin
   while (Result >= MinValue) and
         {$IFDEF CLR}
         not SameText(Name, Names[Result]) do
-        {$ELSE}
+        {$ELSE ~CLR}
         not AnsiSameText(Name, Names[Result]) do
-        {$ENDIF CLR}
+        {$ENDIF ~CLR}
     Dec(Result);
   if Result < MinValue then
     Result := -1;
@@ -811,12 +811,12 @@ begin
   {$IFDEF CLR}
   Dest.Writeln(RsRTTIUnitName + GetUnitName);
   Dest.Write(RsRTTINameList);
-  {$ELSE}
+  {$ELSE ~CLR}
   {$IFDEF RTL140_UP}
   Dest.Writeln(LoadResString(@RsRTTIUnitName) + GetUnitName);
   {$ENDIF RTL140_UP}
   Dest.Write(LoadResString(@RsRTTINameList));
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
   Prefix := '(';
   for Idx := MinValue to MaxValue do
   begin
@@ -850,9 +850,9 @@ begin
   begin
     {$IFDEF CLR}
     Dest.Write('; // ' + JclEnumValueToIdent(Borland.Delphi.System.TypeInfo(TOrdType), TypeData.OrdType));
-    {$ELSE}
+    {$ELSE ~CLR}
     Dest.Write('; // ' + JclEnumValueToIdent(System.TypeInfo(TOrdType), TypeData.OrdType));
-    {$ENDIF CLR}
+    {$ENDIF ~CLR}
     Dest.Writeln('');
   end;
 end;
@@ -876,9 +876,9 @@ function TJclSetTypeInfo.GetBaseType: IJclOrdinalTypeInfo;
 begin
   {$IFDEF CLR}
   Result := JclTypeInfo(TypeData.CompType) as IJclOrdinalTypeInfo;
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := JclTypeInfo(TypeData.CompType^) as IJclOrdinalTypeInfo;
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 procedure TJclSetTypeInfo.GetAsList(const Value; const WantRanges: Boolean;
@@ -977,9 +977,9 @@ var
     // "set of" is a "array of Byte"
     while ByteCount > 0 do
       TDynByteArray(Value)[ByteCount - 1] := 0;
-    {$ELSE}
+    {$ELSE ~CLR}
     FillChar(Value, ByteCount, 0);
-    {$ENDIF CLR}
+    {$ENDIF ~CLR}
   end;
 
 begin
@@ -1010,12 +1010,12 @@ begin
             raise EJclRTTIError.CreateFmt(RsRTTIUnknownIdentifier, [FirstIdent]);
           if LastOrd = -1 then
             raise EJclRTTIError.CreateFmt(RsRTTIUnknownIdentifier, [LastIdent]);
-          {$ELSE}
+          {$ELSE ~CLR}
           if FirstOrd = -1 then
             raise EJclRTTIError.CreateResFmt(@RsRTTIUnknownIdentifier, [FirstIdent]);
           if LastOrd = -1 then
             raise EJclRTTIError.CreateResFmt(@RsRTTIUnknownIdentifier, [LastIdent]);
-          {$ENDIF CLR}
+          {$ENDIF ~CLR}
         end
         else
         begin
@@ -1038,9 +1038,9 @@ begin
   inherited WriteTo(Dest);
   {$IFDEF CLR}
   Dest.Writeln(RsRTTIBasedOn);
-  {$ELSE}
+  {$ELSE ~CLR}
   Dest.Writeln(LoadResString(@RsRTTIBasedOn));
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
   Dest.Indent;
   try
     BaseType.WriteTo(Dest);
@@ -1065,12 +1065,12 @@ begin
       BaseEnum.DeclarationTo(Dest)
     else
       Dest.Write(RsRTTITypeError);
-    {$ELSE}
+    {$ELSE ~CLR}
     if Base.QueryInterface(IJclEnumerationTypeInfo, BaseEnum) = S_OK then
       BaseEnum.DeclarationTo(Dest)
     else
       Dest.Write(LoadResString(@RsRTTITypeError));
-    {$ENDIF CLR}
+    {$ENDIF ~CLR}
   end
   else
     Dest.Write(Base.Name);
@@ -1078,9 +1078,9 @@ begin
   begin
     {$IFDEF CLR}
     Dest.Write('; // ' + JclEnumValueToIdent(Borland.Delphi.System.TypeInfo(TOrdType), TypeData.OrdType));
-    {$ELSE}
+    {$ELSE ~CLR}
     Dest.Write('; // ' + JclEnumValueToIdent(System.TypeInfo(TOrdType), TypeData.OrdType));
-    {$ENDIF CLR}
+    {$ENDIF ~CLR}
     Dest.Writeln('');
   end;
 end;
@@ -1108,10 +1108,10 @@ begin
   {$IFDEF CLR}
   Dest.Writeln(RsRTTIFloatType +
     JclEnumValueToIdent(Borland.Delphi.System.TypeInfo(TFloatType), TypeData.FloatType));
-  {$ELSE}
+  {$ELSE ~CLR}
   Dest.Writeln(LoadResString(@RsRTTIFloatType) +
     JclEnumValueToIdent(System.TypeInfo(TFloatType), TypeData.FloatType));
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 procedure TJclFloatTypeInfo.DeclarationTo(const Dest: IJclInfoWriter);
@@ -1122,9 +1122,9 @@ begin
   FT := FloatType;
   {$IFDEF CLR}
   S := StrRestOf(JclEnumValueToIdent(Borland.Delphi.System.TypeInfo(TFloatType), FT), 3);
-  {$ELSE}
+  {$ELSE ~CLR}
   S := StrRestOf(JclEnumValueToIdent(System.TypeInfo(TFloatType), FT), 3);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
   Dest.Writeln(Name + ' = type ' + S + ';');
 end;
 
@@ -1150,9 +1150,9 @@ begin
   inherited WriteTo(Dest);
   {$IFDEF CLR}
   Dest.Writeln(RsRTTIMaxLen + IntToStr(MaxLength));
-  {$ELSE}
+  {$ELSE ~CLR}
   Dest.Writeln(LoadResString(@RsRTTIMaxLen) + IntToStr(MaxLength));
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 procedure TJclStringTypeInfo.DeclarationTo(const Dest: IJclInfoWriter);
@@ -1229,27 +1229,27 @@ function TJclPropInfo.GetPropType: IJclTypeInfo;
 begin
   {$IFDEF CLR}
   Result := JclTypeInfo(PropInfo.TypeInfo);
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := JclTypeInfo(PropInfo.PropType^);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function TJclPropInfo.GetReader: {$IFDEF CLR}MethodInfo{$ELSE}Pointer{$ENDIF};
 begin
   {$IFDEF CLR}
   Result := (PropInfo as PropertyInfo).GetGetMethod;
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := PropInfo.GetProc;
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function TJclPropInfo.GetWriter: {$IFDEF CLR}MethodInfo{$ELSE}Pointer{$ENDIF};
 begin
   {$IFDEF CLR}
   Result := (PropInfo as PropertyInfo).GetSetMethod;
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := PropInfo.SetProc;
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function TJclPropInfo.GetStoredProc: {$IFDEF CLR}MethodInfo{$ELSE}Pointer{$ENDIF};
@@ -1286,37 +1286,37 @@ begin
     end;
   end;
 end;
-{$ELSE}
+{$ELSE ~CLR}
 begin
   Result := PropInfo.StoredProc;
 end;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 
 function TJclPropInfo.GetIndex: Integer;
 begin
   {$IFDEF CLR}
   Result := Integer($8000000);
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := PropInfo.Index;
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function TJclPropInfo.GetDefault: Longint;
 begin
   {$IFDEF CLR}
   Result := GetOrdPropDefault(PropInfo);
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := PropInfo.Default;
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function TJclPropInfo.GetNameIndex: Smallint;
 begin
   {$IFDEF CLR}
   Result := 0;
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := PropInfo.NameIndex;
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function TJclPropInfo.GetName: string;
@@ -1375,54 +1375,54 @@ function TJclPropInfo.GetReaderType: TJclPropSpecKind;
 begin
   {$IFDEF CLR}
   Result := MethodInfoToPropSecpKind(Reader);
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := GetSpecKind(Integer(Reader));
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function TJclPropInfo.GetWriterType: TJclPropSpecKind;
 begin
   {$IFDEF CLR}
   Result := MethodInfoToPropSecpKind(Writer);
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := GetSpecKind(Integer(Writer));
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function TJclPropInfo.GetStoredType: TJclPropSpecKind;
 begin
   {$IFDEF CLR}
   Result := MethodInfoToPropSecpKind(StoredProc);
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := GetSpecKind(Integer(StoredProc));
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function TJclPropInfo.GetReaderValue: Integer;
 begin
   {$IFDEF CLR}
   Result := 0;
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := GetSpecValue(Integer(Reader));
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function TJclPropInfo.GetWriterValue: Integer;
 begin
   {$IFDEF CLR}
   Result := 0;
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := GetSpecValue(Integer(Writer));
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function TJclPropInfo.GetStoredValue: Integer;
 begin
   {$IFDEF CLR}
   Result := 0;
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := GetSpecValue(Integer(StoredProc));
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function TJclPropInfo.IsStored(const AInstance: TObject): Boolean;
@@ -1473,10 +1473,10 @@ begin
   {$IFDEF CLR}
   if (TypeData.ParentInfo <> nil) then
     Result := JclTypeInfo(TypeData.ParentInfo) as IJclClassTypeInfo
-  {$ELSE}
+  {$ELSE ~CLR}
   if (TypeData.ParentInfo <> nil) and (TypeData.ParentInfo^ <> nil) then
     Result := JclTypeInfo(TypeData.ParentInfo^) as IJclClassTypeInfo
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
   else
     Result := nil;
 end;
@@ -1491,7 +1491,7 @@ function TJclClassTypeInfo.GetPropertyCount: Integer;
 begin
   Result := TypeData.PropCount;
 end;
-{$ELSE}
+{$ELSE ~CLR}
 var
   PropData: ^TPropData;
 begin
@@ -1499,7 +1499,7 @@ begin
   Inc(Integer(PropData), 1 + Length(GetUnitName));
   Result := PropData.PropCount;
 end;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 
 function TJclClassTypeInfo.GetProperties(const PropIdx: Integer): IJclPropInfo;
 {$IFDEF CLR}
@@ -1517,7 +1517,7 @@ begin
       Result := TJclPropInfo.Create(List[0]);
   end;
 end;
-{$ELSE}
+{$ELSE ~CLR}
 var
   PropData: ^TPropData;
   Prop: PPropInfo;
@@ -1546,7 +1546,7 @@ begin
     Result := TJclPropInfo.Create(Prop);
   end;
 end;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 
 function TJclClassTypeInfo.GetPropNames(const Name: string): IJclPropInfo;
 var
@@ -1571,12 +1571,12 @@ const
   cFmt2 = '[%s %s %s]';
   cFmt3 = '[%s=%s]';
   cFmt4 = '[%s=%s %s]';
-{$ELSE}
+{$ELSE ~CLR}
   cFmt1 = '[%s %d]';
   cFmt2 = '[%s %s $%p]';
   cFmt3 = '[%s=%s]';
   cFmt4 = '[%s=%s $%p]';
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 var
   I: Integer;
   Prop: IJclPropInfo;
@@ -1604,46 +1604,46 @@ begin
             Dest.Writeln(Format(cFmt2, [RsRTTIPropRead, RsRTTIStaticMethod,
               {$IFDEF CLR}
               Prop.Reader.ToString()]));
-              {$ELSE}
+              {$ELSE ~CLR}
               Pointer(Prop.ReaderValue)]));
-              {$ENDIF CLR}
+              {$ENDIF ~CLR}
           pskField:
             Dest.Writeln(Format(cFmt2, [RsRTTIPropRead, RsRTTIField,
               {$IFDEF CLR}
               Prop.Reader.ToString()]));
-              {$ELSE}
+              {$ELSE ~CLR}
               Pointer(Prop.ReaderValue)]));
-              {$ENDIF CLR}
+              {$ENDIF ~CLR}
           pskVirtualMethod:
             Dest.Writeln(Format(cFmt2, [RsRTTIPropRead, RsRTTIVirtualMethod,
               {$IFDEF CLR}
               Prop.Reader.ToString()]));
-              {$ELSE}
+              {$ELSE ~CLR}
               Pointer(Prop.ReaderValue)]));
-              {$ENDIF CLR}
+              {$ENDIF ~CLR}
         end;
         case Prop.WriterType of
           pskStaticMethod:
             Dest.Writeln(Format(cFmt2, [RsRTTIPropWrite, RsRTTIStaticMethod,
               {$IFDEF CLR}
               Prop.Writer.ToString()]));
-              {$ELSE}
+              {$ELSE ~CLR}
               Pointer(Prop.WriterValue)]));
-              {$ENDIF CLR}
+              {$ENDIF ~CLR}
           pskField:
             Dest.Writeln(Format(cFmt2, [RsRTTIPropWrite, RsRTTIField,
               {$IFDEF CLR}
               Prop.Writer.ToString()]));
-              {$ELSE}
+              {$ELSE ~CLR}
               Pointer(Prop.WriterValue)]));
-              {$ENDIF CLR}
+              {$ENDIF ~CLR}
           pskVirtualMethod:
             Dest.Writeln(Format(cFmt2, [RsRTTIPropWrite, RsRTTIVirtualMethod,
               {$IFDEF CLR}
               Prop.Writer.ToString()]));
-              {$ELSE}
+              {$ELSE ~CLR}
               Pointer(Prop.WriterValue)]));
-              {$ENDIF CLR}
+              {$ENDIF ~CLR}
         end;
         case Prop.StoredType of
           pskConstant:
@@ -1655,23 +1655,23 @@ begin
             Dest.Writeln(Format(cFmt4, [RsRTTIPropStored, RsRTTIStaticMethod,
               {$IFDEF CLR}
               Prop.StoredProc.ToString()]));
-              {$ELSE}
+              {$ELSE ~CLR}
               Pointer(Prop.StoredValue)]));
-              {$ENDIF CLR}
+              {$ENDIF ~CLR}
           pskField:
             Dest.Writeln(Format(cFmt4, [RsRTTIPropStored, RsRTTIField,
               {$IFDEF CLR}
               Prop.StoredProc.ToString()]));
-              {$ELSE}
+              {$ELSE ~CLR}
               Pointer(Prop.StoredValue)]));
-              {$ENDIF CLR}
+              {$ENDIF ~CLR}
           pskVirtualMethod:
             Dest.Writeln(Format(cFmt4, [RsRTTIPropStored, RsRTTIVirtualMethod,
               {$IFDEF CLR}
               Prop.StoredProc.ToString()]));
-              {$ELSE}
+              {$ELSE ~CLR}
               Pointer(Prop.StoredValue)]));
-              {$ENDIF CLR}
+              {$ENDIF ~CLR}
         end;
       finally
         Dest.Outdent;
@@ -1686,18 +1686,18 @@ procedure TJclClassTypeInfo.DeclarationTo(const Dest: IJclInfoWriter);
 var
   {$IFDEF CLR}
   IntfTbl: array of &Type;
-  {$ELSE}
+  {$ELSE ~CLR}
   IntfTbl: PInterfaceTable;
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
   I: Integer;
   Prop: IJclPropInfo;
 begin
   if (Parent <> nil) and
      {$IFDEF CLR}
      not SameText(Parent.Name, 'TObject') then
-     {$ELSE}
+     {$ELSE ~CLR}
      not AnsiSameText(Parent.Name, 'TObject') then
-     {$ENDIF CLR}
+     {$ENDIF ~CLR}
   begin
     Dest.Write(Name + ' = class(' + Parent.Name);
     {$IFDEF CLR}
@@ -1705,12 +1705,12 @@ begin
     if IntfTbl <> nil then
       for I := 0 to High(IntfTbl) do
         Dest.Write(', [''' + JclGUIDToString(IntfTbl[I].TypeData.Guid) + ''']');
-    {$ELSE}
+    {$ELSE ~CLR}
     IntfTbl := ClassRef.GetInterfaceTable;
     if IntfTbl <> nil then
       for I := 0 to IntfTbl.EntryCount-1 do
         Dest.Write(', [''' + JclGUIDToString(IntfTbl.Entries[I].IID) + ''']');
-    {$ENDIF CLR}
+    {$ENDIF ~CLR}
     Dest.Writeln(') // unit ' + GetUnitName);
   end
   else
@@ -1735,14 +1735,14 @@ begin
             Dest.Write(Format(' read [field %s]', [Prop.Reader.ToString()]));
           pskVirtualMethod:
             Dest.Write(Format(' read [virtual method %s]', [Prop.Reader.ToString()]));
-          {$ELSE}
+          {$ELSE ~CLR}
           pskStaticMethod:
             Dest.Write(Format(' read [static method $%p]', [Pointer(Prop.ReaderValue)]));
           pskField:
             Dest.Write(Format(' read [field $%p]', [Pointer(Prop.ReaderValue)]));
           pskVirtualMethod:
             Dest.Write(Format(' read [virtual method $%p]', [Pointer(Prop.ReaderValue)]));
-          {$ENDIF CLR}
+          {$ENDIF ~CLR}
         end;
 
         case Prop.WriterType of
@@ -1753,14 +1753,14 @@ begin
             Dest.Write(Format(' write [field %s]', [Prop.Writer.ToString()]));
           pskVirtualMethod:
             Dest.Write(Format(' write [virtual method %s]', [Prop.Writer.ToString()]));
-          {$ELSE}
+          {$ELSE ~CLR}
           pskStaticMethod:
             Dest.Write(Format(' write [static method $%p]', [Pointer(Prop.WriterValue)]));
           pskField:
             Dest.Write(Format(' write [field $%p]', [Pointer(Prop.WriterValue)]));
           pskVirtualMethod:
             Dest.Write(Format(' write [virtual method $%p]', [Pointer(Prop.WriterValue)]));
-          {$ENDIF CLR}
+          {$ENDIF ~CLR}
         end;
 
         case Prop.StoredType of
@@ -1776,14 +1776,14 @@ begin
             Dest.Write(Format(' stored = [field %s]', [Prop.StoredProc.ToString()]));
           pskVirtualMethod:
             Dest.Write(Format(' stored = [virtual method %s]', [Prop.StoredProc.ToString()]));
-          {$ELSE}
+          {$ELSE ~CLR}
           pskStaticMethod:
             Dest.Write(Format(' stored = [static method $%p]', [Pointer(Prop.StoredValue)]));
           pskField:
             Dest.Write(Format(' stored = [field $%p]', [Pointer(Prop.StoredValue)]));
           pskVirtualMethod:
             Dest.Write(Format(' stored = [virtual method $%p]', [Pointer(Prop.StoredValue)]));
-          {$ENDIF CLR}
+          {$ENDIF ~CLR}
         end;
         if Prop.HasDefault then
           Dest.Write(' default ' + IntToStr(Prop.Default));
@@ -1844,9 +1844,9 @@ begin
   with FParam.ParameterType do
     if IsArray or (IsByRef and HasElementType and GetElementType.IsArray) then
        Include(Result, pfArray);
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := TParamFlags(PByte(Param)^);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function TJclEventParamInfo.GetName: string;
@@ -1854,7 +1854,7 @@ function TJclEventParamInfo.GetName: string;
 begin
   Result := FParam.Name;
 end;
-{$ELSE}
+{$ELSE ~CLR}
 var
   PName: PShortString;
 begin
@@ -1862,7 +1862,7 @@ begin
   Inc(Integer(PName));
   Result := string(PName^);
 end;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 
 function TJclEventParamInfo.GetRecSize: Integer;
 begin
@@ -1874,7 +1874,7 @@ function TJclEventParamInfo.GetTypeName: string;
 begin
   Result := FParam.ParameterType.Name;
 end;
-{$ELSE}
+{$ELSE ~CLR}
 var
   PName: PShortString;
 begin
@@ -1883,7 +1883,7 @@ begin
   Inc(Integer(PName), PByte(PName)^ + 1);
   Result := string(PName^);
 end;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 
 function TJclEventParamInfo.GetParam: {$IFDEF CLR}ParameterInfo{$ELSE}Pointer{$ENDIF};
 begin
@@ -1930,7 +1930,7 @@ begin
   {$IFDEF CLR}
   if ParamIdx < TypeData.ParamCount then
     Result := TJclEventParamInfo.Create(TypeData.Params[ParamIdx]);
-  {$ELSE}
+  {$ELSE ~CLR}
   Param := @TypeData.ParamList[0];
   I := ParamIdx;
   while I >= 0 do
@@ -1939,7 +1939,7 @@ begin
     Inc(Integer(Param), Result.RecSize);
     Dec(I);
   end;
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function TJclEventTypeInfo.GetResultTypeName: string;
@@ -1947,7 +1947,7 @@ function TJclEventTypeInfo.GetResultTypeName: string;
 begin
   Result := TypeData.ResultTypeName;
 end;
-{$ELSE}
+{$ELSE ~CLR}
 var
   LastParam: IJclEventParamInfo;
   ResPtr: PShortString;
@@ -1966,7 +1966,7 @@ begin
   else
     Result := '';
 end;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 
 procedure TJclEventTypeInfo.WriteTo(const Dest: IJclInfoWriter);
 var
@@ -1997,7 +1997,7 @@ begin
   end;
   if MethodKind = mkFunction then
     Dest.Writeln(RsRTTIReturnType + ResultTypeName);
-  {$ELSE}
+  {$ELSE ~CLR}
   Dest.Writeln(LoadResString(@RsRTTIMethodKind) +
     JclEnumValueToIdent(System.TypeInfo(TMethodKind), TypeData.MethodKind));
   Dest.Writeln(LoadResString(@RsRTTIParamCount) + IntToStr(ParameterCount));
@@ -2019,7 +2019,7 @@ begin
   end;
   if MethodKind = mkFunction then
     Dest.Writeln(LoadResString(@RsRTTIReturnType) + ResultTypeName);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 procedure TJclEventTypeInfo.DeclarationTo(const Dest: IJclInfoWriter);
@@ -2048,7 +2048,7 @@ begin
     else
     if pfOut in Param.Flags then
       Dest.Write(RsRTTIOut);
-    {$ELSE}
+    {$ELSE ~CLR}
     if pfVar in Param.Flags then
       Dest.Write(LoadResString(@RsRTTIVar))
     else
@@ -2057,7 +2057,7 @@ begin
     else
     if pfOut in Param.Flags then
       Dest.Write(LoadResString(@RsRTTIOut));
-    {$ENDIF CLR}
+    {$ENDIF ~CLR}
     Dest.Write(Param.Name);
     if Param.TypeName <> '' then
     begin
@@ -2067,12 +2067,12 @@ begin
         Dest.Write(RsRTTIArrayOf);
       if WideSameText(Param.TypeName, 'TVarRec') and (pfArray in Param.Flags) then
         Dest.Write(TrimRight(RsRTTIConst))
-      {$ELSE}
+      {$ELSE ~CLR}
       if pfArray in Param.Flags then
         Dest.Write(LoadResString(@RsRTTIArrayOf));
       if AnsiSameText(Param.TypeName, 'TVarRec') and (pfArray in Param.Flags) then
         Dest.Write(TrimRight(LoadResString(@RsRTTIConst)))
-      {$ENDIF CLR}
+      {$ENDIF ~CLR}
       else
         Dest.Write(Param.TypeName);
     end;
@@ -2112,10 +2112,10 @@ begin
   {$IFDEF CLR}
   if TypeInfo.BaseType <> nil then
     Result := JclTypeInfo(TypeInfo.BaseType) as IJclInterfaceTypeInfo
-  {$ELSE}
+  {$ELSE ~CLR}
   if (TypeData.IntfParent <> nil) and (TypeData.IntfParent^ <> nil) then
     Result := JclTypeInfo(TypeData.IntfParent^) as IJclInterfaceTypeInfo
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
   else
     Result := nil;
 end;
@@ -2124,9 +2124,9 @@ function TJclInterfaceTypeInfo.GetFlags: TIntfFlagsBase;
 begin
   {$IFDEF CLR}
   Result := [];
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := TypeData.IntfFlags;
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 const
@@ -2146,7 +2146,7 @@ function TJclInterfaceTypeInfo.GetPropertyCount: Integer;
 begin
   Result := TypeData.PropCount;
 end;
-{$ELSE}
+{$ELSE ~CLR}
 var
   PropData: ^TPropData;
 begin
@@ -2154,7 +2154,7 @@ begin
   Inc(Integer(PropData), 1 + Length(GetUnitName));
   Result := PropData.PropCount;
 end;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 {$ENDIF RTL140_UP}
 
 function TJclInterfaceTypeInfo.GetUnitName: string;
@@ -2177,7 +2177,7 @@ begin
   if Parent <> nil then
     Dest.Writeln(RsRTTIParent + Parent.Name);
   Dest.Writeln(RsRTTIPropCount + IntToStr(PropertyCount));
-  {$ELSE}
+  {$ELSE ~CLR}
     Dest.Writeln(LoadResString(@RsRTTIGUID) + JclGuidToString(GUID));
   IntfFlags := Flags;
   Dest.Writeln(LoadResString(@RsRTTIFlags) + JclSetToStr(System.TypeInfo(TIntfFlagsBase),
@@ -2188,7 +2188,7 @@ begin
   {$IFDEF RTL140_UP}
   Dest.Writeln(LoadResString(@RsRTTIPropCount) + IntToStr(PropertyCount));
   {$ENDIF RTL140_UP}
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 procedure TJclInterfaceTypeInfo.DeclarationTo(const Dest: IJclInfoWriter);
@@ -2248,10 +2248,10 @@ begin
   {$IFDEF CLR}
   Dest.Writeln(RsRTTIMinValue + IntToStr(MinValue));
   Dest.Writeln(RsRTTIMaxValue + IntToStr(MaxValue));
-  {$ELSE}
+  {$ELSE ~CLR}
   Dest.Writeln(LoadResString(@RsRTTIMinValue) + IntToStr(MinValue));
   Dest.Writeln(LoadResString(@RsRTTIMaxValue) + IntToStr(MaxValue));
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 procedure TJclInt64TypeInfo.DeclarationTo(const Dest: IJclInfoWriter);
@@ -2284,16 +2284,16 @@ function TJclDynArrayTypeInfo.GetElementSize: Longint;
 begin
   {$IFDEF CLR}
   Result := Marshal.SizeOf(TypeInfo.GetElementType);
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := TypeData.elSize;
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function TJclDynArrayTypeInfo.GetElementType: IJclTypeInfo;
 begin
   {$IFDEF CLR}
   Result := JclTypeInfo(TypeInfo.GetElementType);
-  {$ELSE}
+  {$ELSE ~CLR}
   if TypeData.elType = nil then
   begin
     if TypeData.elType2 <> nil then
@@ -2303,25 +2303,25 @@ begin
   end
   else
     Result := JclTypeInfo(TypeData.elType^);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function TJclDynArrayTypeInfo.GetElementsNeedCleanup: Boolean;
 begin
   {$IFDEF CLR}
   Result := False;
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := TypeData.elType <> nil;
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function TJclDynArrayTypeInfo.GetVarType: Integer;
 begin
   {$IFDEF CLR}
   Result := Variant.VarType(TypeInfo);
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := TypeData.varType;
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function TJclDynArrayTypeInfo.GetUnitName: string;
@@ -2565,10 +2565,10 @@ begin
   if (EnumVal < MinEnum) or (EnumVal > MaxEnum) then
     {$IFDEf CLR}
     Result := Format(RsRTTIValueOutOfRange, [RsRTTIOrdinal + IntToStr(EnumVal)])
-    {$ELSE}
+    {$ELSE ~CLR}
     Result := Format(LoadResString(@RsRTTIValueOutOfRange),
       [LoadResString(@RsRTTIOrdinal) + IntToStr(EnumVal)])
-    {$ENDIF CLR}
+    {$ENDIF ~CLR}
   else
     Result := GetEnumName(TypeInfo, EnumVal);
 end;
@@ -2733,18 +2733,18 @@ begin
       Info := JclTypeInfo(TypeInfo);
       {$IFDEF CLR}
       if not Supports(Info, IJclOrdinalRangeTypeInfo, RangeInfo) then
-      {$ELSE}
+      {$ELSE ~CLR}
       if Info.QueryInterface(IJclOrdinalRangeTypeInfo, RangeInfo) <> S_OK then
-      {$ENDIF CLR}
+      {$ENDIF ~CLR}
         RangeInfo := nil;
       TmpVal := StrToInt64(Value);
       if (RangeInfo <> nil) and ((TmpVal < RangeInfo.MinValue) or
           (TmpVal > RangeInfo.MaxValue)) then
         {$IFDEF CLR}
         raise EConvertError.CreateFmt(SInvalidInteger, [Value]);
-        {$ELSE}
+        {$ELSE ~CLR}
         raise EConvertError.CreateResFmt(@SInvalidInteger, [Value]);
-        {$ENDIF CLR}
+        {$ENDIF ~CLR}
       Result := Integer(TmpVal);
     end
     else
@@ -2853,11 +2853,11 @@ begin
   TmpInt64 := Longword(Value) shl BitShift;
   {$IFDEF CLR}
   SetVar := BitConverter.GetBytes(TmpInt64);
-  {$ELSE}
+  {$ELSE ~CLR}
   EnumMax := GetTypeData(CompType).MaxValue;
   ResBytes := (EnumMax div 8) - (EnumMin div 8) + 1;
   Move(TmpInt64, SetVar, ResBytes);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function JclSetToInt(TypeInfo: {$IFDEF CLR}TTypeInfo{$ELSE ~CLR}PTypeInfo{$ENDIF ~CLR};
@@ -2882,7 +2882,7 @@ begin
   TmpInt64 := BitConverter.ToInt64(TDynByteArray(SetVar), 0);
   TmpInt64 := TmpInt64 shr BitShift;
   Result := BitConverter.ToInt32(Copy(BitConverter.GetBytes(TmpInt64), 0, ResBytes), 0);
-  {$ELSE}
+  {$ELSE ~CLR}
     raise EJclRTTIError.CreateResFmt(@RsRTTIValueOutOfRange,
       [IntToStr(EnumMax - EnumMin) + ' ' + LoadResString(@RsRTTIBits)]);
   Result := 0;
@@ -2890,7 +2890,7 @@ begin
   Move(SetVar, TmpInt64, ResBytes + 1);
   TmpInt64 := TmpInt64 shr BitShift;
   Move(TmpInt64, Result, ResBytes);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 {$IFNDEF CLR}
@@ -2948,9 +2948,9 @@ type
   TReadLoc = packed record
     {$IFDEF OPTIMIZATION_ON}
     Code: array [0..9] of Byte;
-    {$ELSE}
+    {$ELSE ~OPTIMIZATION_ON}
     Code: array [0..17] of Byte;
-    {$ENDIF OPTIMIZATION_ON}
+    {$ENDIF ~OPTIMIZATION_ON}
     OpCode_Call: Byte;
     CallOffset: Longint;
   end;
@@ -2974,7 +2974,7 @@ function JclIsClass(const AnObj: TObject; const AClass: TClass): Boolean;
 begin
   Result := (AnObj <> nil) and (AClass.ClassInfo.IsInstanceOfType(AnObj));
 end;
-{$ELSE}
+{$ELSE ~CLR}
 asm
         { ->    EAX     left operand (class)    }
         {       EDX VMT of right operand        }
@@ -3034,12 +3034,23 @@ begin
   else
     {$IFDEF CLR}
     raise EInvalidCast.Create(SInvalidCast);
-    {$ELSE}
+    {$ELSE ~CLR}
     raise EInvalidCast.CreateRes(@SInvalidCast);
-    {$ENDIF CLR}
+    {$ENDIF ~CLR}
 end;
 
-{$IFNDEF CLR}
+{$IFDEF CLR}
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
+
+{$ELSE ~CLR}
+
 initialization
   TypeList := TThreadList.Create;
   {$IFDEF UNITVERSIONING}
@@ -3052,16 +3063,6 @@ finalization
   {$ENDIF UNITVERSIONING}
   ClearInfoList;
   FreeAndNil(TypeList);
-
-{$ELSE}
-
-{$IFDEF UNITVERSIONING}
-initialization
-  RegisterUnitVersion(HInstance, UnitVersioning);
-
-finalization
-  UnregisterUnitVersion(HInstance);
-{$ENDIF UNITVERSIONING}
 
 {$ENDIF ~CLR}
 

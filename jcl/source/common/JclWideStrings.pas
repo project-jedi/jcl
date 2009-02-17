@@ -335,9 +335,9 @@ implementation
 uses
   {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
-  {$ELSE}
+  {$ELSE ~HAS_UNIT_RTLCONSTS}
   Consts,
-  {$ENDIF HAS_UNIT_RTLCONSTS}
+  {$ENDIF ~HAS_UNIT_RTLCONSTS}
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
@@ -1024,10 +1024,10 @@ begin
   {$ELSE ~MSWINDOWS}
     {$IFDEF FPC}
     Result := SysUtils.WideCompareStr(S1, S2);
-    {$ELSE}
+    {$ELSE ~FPC}
     { TODO : Don't cheat here }
     Result := CompareString(S1, S2);
-    {$ENDIF FPC}
+    {$ENDIF ~FPC}
   {$ENDIF ~MSWINDOWS}
 end;
 
@@ -1176,7 +1176,7 @@ begin
       FNameValueSeparator := TStrings(Source).NameValueSeparator;
       FQuoteChar := TStrings(Source).QuoteChar;
       FDelimiter := TStrings(Source).Delimiter;
-      {$ELSE}
+      {$ELSE ~RTL190_UP}
       {$IFDEF RTL150_UP}
       FNameValueSeparator := CharToWideChar(TStrings(Source).NameValueSeparator);
       {$ENDIF RTL150_UP}
@@ -1184,7 +1184,7 @@ begin
       FQuoteChar := CharToWideChar(TStrings(Source).QuoteChar);
       FDelimiter := CharToWideChar(TStrings(Source).Delimiter);
       {$ENDIF RTL140_UP}
-      {$ENDIF RTL190_UP}
+      {$ENDIF ~RTL190_UP}
       AddStrings(TStrings(Source));
     finally
       EndUpdate;
@@ -1207,7 +1207,7 @@ begin
       TStrings(Dest).NameValueSeparator := NameValueSeparator;
       TStrings(Dest).QuoteChar := QuoteChar;
       TStrings(Dest).Delimiter := Delimiter;
-      {$ELSE}
+      {$ELSE ~RTL190_UP}
       {$IFDEF RTL150_UP}
       TStrings(Dest).NameValueSeparator := WideCharToChar(NameValueSeparator);
       {$ENDIF RTL150_UP}
@@ -1215,7 +1215,7 @@ begin
       TStrings(Dest).QuoteChar := WideCharToChar(QuoteChar);
       TStrings(Dest).Delimiter := WideCharToChar(Delimiter);
       {$ENDIF RTL140_UP}
-      {$ENDIF RTL190_UP}
+      {$ENDIF ~RTL190_UP}
       for I := 0 to Count - 1 do
         TStrings(Dest).AddObject(GetP(I)^, Objects[I]);
     finally

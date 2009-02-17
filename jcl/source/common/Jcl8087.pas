@@ -96,9 +96,9 @@ function Get8087ControlWord: Word; assembler;
 asm
         {$IFDEF FPC}
         SUB     ESP, $2
-        {$ELSE}
+        {$ELSE ~FPC}
         SUB     ESP, TYPE WORD
-        {$ENDIF FPC}
+        {$ENDIF ~FPC}
         FSTCW   [ESP]
         FWAIT
         POP AX
@@ -161,17 +161,17 @@ asm
         FNCLEX
         {$IFDEF FPC}
         SUB     ESP, $2
-        {$ELSE}
+        {$ELSE ~FPC}
         SUB     ESP, TYPE WORD
-        {$ENDIF FPC}
+        {$ENDIF ~FPC}
         FSTCW   [ESP]
         XCHG    [ESP], AX
         FLDCW   [ESP]
         {$IFDEF FPC}
         ADD     ESP, $2
-        {$ELSE}
+        {$ELSE ~FPC}
         ADD     ESP, TYPE WORD
-        {$ENDIF FPC}
+        {$ENDIF ~FPC}
 end;
 
 function ClearPending8087Exceptions: T8087Exceptions;
@@ -191,9 +191,9 @@ function GetMasked8087Exceptions: T8087Exceptions;
 asm
         {$IFDEF FPC}
         SUB     ESP, $2
-        {$ELSE}
+        {$ELSE ~FPC}
         SUB     ESP, TYPE WORD
-        {$ENDIF FPC}
+        {$ENDIF ~FPC}
         FSTCW   [ESP]
         FWAIT
         POP     AX
@@ -208,9 +208,9 @@ asm
 @1:
         {$IFDEF FPC}
         SUB     ESP, $2
-        {$ELSE}
+        {$ELSE ~FPC}
         SUB     ESP, TYPE WORD
-        {$ENDIF FPC}
+        {$ENDIF ~FPC}
         FSTCW   [ESP]
         FWAIT
         AND     AX, X87ExceptBits  // mask exception mask bits 0..5
@@ -220,9 +220,9 @@ asm
         FLDCW   [ESP]
         {$IFDEF FPC}
         ADD     ESP, $2
-        {$ELSE}
+        {$ELSE ~FPC}
         ADD     ESP, TYPE WORD
-        {$ENDIF FPC}
+        {$ENDIF ~FPC}
         MOV     AX, DX
         AND     AX, X87ExceptBits
 end;

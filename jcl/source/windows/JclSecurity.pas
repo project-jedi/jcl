@@ -106,9 +106,9 @@ uses
   {$IFDEF FPC}
   WinSysUt,
   JwaAccCtrl,
-  {$ELSE}
+  {$ELSE ~FPC}
   AccCtrl,
-  {$ENDIF FPC}
+  {$ENDIF ~FPC}
   JclRegistry, JclResources, JclStrings, JclSysInfo, JclWin32;
 
 //=== Access Control =========================================================
@@ -412,17 +412,17 @@ begin
   Length := 0;
   {$IFDEF FPC}
   Ret := GetTokenInformation(Token, InformationClass, Buffer, Length, @Length);
-  {$ELSE}
+  {$ELSE ~FPC}
   Ret := GetTokenInformation(Token, InformationClass, Buffer, Length, Length);
-  {$ENDIF FPC}
+  {$ENDIF ~FPC}
   if (not Ret) and (GetLastError = ERROR_INSUFFICIENT_BUFFER) then
   begin
     GetMem(Buffer, Length);
     {$IFDEF FPC}
     Ret := GetTokenInformation(Token, InformationClass, Buffer, Length, @Length);
-    {$ELSE}
+    {$ELSE ~FPC}
     Ret := GetTokenInformation(Token, InformationClass, Buffer, Length, Length);
-    {$ENDIF FPC}
+    {$ENDIF ~FPC}
     if not Ret then
     begin
       LastError := GetLastError;
@@ -524,7 +524,7 @@ end;
 
 procedure StringToSID(const SIDString: String; SID: PSID; cbSID: DWORD);
 var
-  {$ifdef FPC} ASID: PSID; {$else} ASID : ^_SID; {$ENDIF}
+  {$IFDEF FPC} ASID: PSID; {$ELSE} ASID : ^_SID; {$ENDIF}
   CurrentPos, TempPos: Integer;
   AuthorityValue, RequiredSize: DWORD;
   Authority: string;

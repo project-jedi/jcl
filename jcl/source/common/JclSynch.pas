@@ -67,9 +67,9 @@ function LockedAdd(var Target: Integer; Value: Integer): Integer;
 function LockedCompareExchange(var Target: Integer; Exch, Comp: Integer): Integer; overload;
 {$IFDEF CLR}
 function LockedCompareExchange(var Target: TObject; Exch, Comp: TObject): TObject; overload;
-{$ELSE}
+{$ELSE ~CLR}
 function LockedCompareExchange(var Target: Pointer; Exch, Comp: Pointer): Pointer; overload;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 function LockedDec(var Target: Integer): Integer;
 function LockedExchange(var Target: Integer; Value: Integer): Integer;
 function LockedExchangeAdd(var Target: Integer; Value: Integer): Integer;
@@ -89,9 +89,9 @@ type
 
   {$IFDEF CLR}
   TJclWaitHandle = System.Threading.WaitHandle;
-  {$ELSE}
+  {$ELSE ~CLR}
   TJclWaitHandle = THandle;
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 
   TJclDispatcherObject = class(TObject)
   private
@@ -450,7 +450,7 @@ begin
 end;
 {$ENDIF ~CLR11}
 
-{$ELSE}
+{$ELSE ~CLR}
 
 function LockedAdd(var Target: Integer; Value: Integer): Integer;
 asm
@@ -533,7 +533,7 @@ asm
         ADD     EAX, EDX
 end;
 
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 
 //=== { TJclDispatcherObject } ===============================================
 
@@ -567,9 +567,9 @@ destructor TJclDispatcherObject.Destroy;
 begin
   {$IFDEF CLR}
   FHandle.Close;
-  {$ELSE}
+  {$ELSE ~CLR}
   CloseHandle(FHandle);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
   inherited Destroy;
 end;
 
@@ -586,10 +586,10 @@ begin
     Result := wrSignaled
   else
     Result := wrTimeout;
-  {$ELSE}
+  {$ELSE ~CLR}
   // Note: Do not make this method virtual! It's only available on NT 4 up...
   Result := MapSignalResult(Cardinal(Windows.SignalObjectAndWait(Obj.Handle, Handle, TimeOut, Alertable)));
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 {$ENDIF ~CLR11}
 
@@ -601,9 +601,9 @@ begin
     Result := wrSignaled
   else
     Result := wrTimeout;
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := MapSignalResult(Windows.WaitForSingleObjectEx(FHandle, TimeOut, True));
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function TJclDispatcherObject.WaitFor(const TimeOut: Cardinal): TJclWaitResult;
@@ -614,9 +614,9 @@ begin
     Result := wrSignaled
   else
     Result := wrTimeout;
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := MapSignalResult(Windows.WaitForSingleObject(FHandle, TimeOut));
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function TJclDispatcherObject.WaitForever: TJclWaitResult;
@@ -645,9 +645,9 @@ begin
   end
   else
     Result := TJclWaitHandle.WaitAny(Handles, IfThen(TimeOut = INFINITE, System.Threading.Timeout.Infinite, TimeOut), False);
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := Windows.WaitForMultipleObjects(Count, @Handles[0], WaitAll, TimeOut);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function WaitAlertableForMultipleObjects(const Objects: array of TJclDispatcherObject;
@@ -670,9 +670,9 @@ begin
   end
   else
     Result := TJclWaitHandle.WaitAny(Handles, IfThen(TimeOut = INFINITE, System.Threading.Timeout.Infinite, TimeOut), True);
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := Windows.WaitForMultipleObjectsEx(Count, @Handles[0], WaitAll, TimeOut, True);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 //=== { TJclCriticalSection } ================================================
@@ -949,12 +949,12 @@ begin
   {$IFDEF CLR}
   FHandle := System.Threading.Mutex.Create(InitialOwner, Name, FExisted, SecAttr);
   FExisted := not FExisted;
-  {$ELSE}
+  {$ELSE ~CLR}
   FHandle := JclWin32.CreateMutex(SecAttr, Ord(InitialOwner), PChar(Name));
   if FHandle = 0 then
     raise EJclMutexError.CreateRes(@RsSynchCreateMutex);
   FExisted := GetLastError = ERROR_ALREADY_EXISTS;
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 constructor TJclMutex.Open({$IFDEF CLR}Rights: MutexRights;{$ELSE}Access: Cardinal; Inheritable: Boolean;{$ENDIF}
@@ -965,11 +965,11 @@ begin
   FExisted := True;
   {$IFDEF CLR}
   FHandle := System.Threading.Mutex.OpenExisting(Name, Rights);
-  {$ELSE}
+  {$ELSE ~CLR}
   FHandle := Windows.OpenMutex(Access, Inheritable, PChar(Name));
   if FHandle = 0 then
     raise EJclMutexError.CreateRes(@RsSynchOpenMutex);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function TJclMutex.Release: Boolean;
@@ -977,9 +977,9 @@ begin
   {$IFDEF CLR}
   System.Threading.Mutex(Handle).ReleaseMutex;
   Result := True;
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := Windows.ReleaseMutex(FHandle);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 {$ENDIF ~CLR11}
 

@@ -639,9 +639,9 @@ begin
   if IsRunningStatus(Data[0]) then
     {$IFDEF FPC}
     DoSendMessage(PJclByteArray(@Data[1])^)
-    {$ELSE}
+    {$ELSE ~FPC}
     DoSendMessage(Slice(Data, 1))
-    {$ENDIF FPC}
+    {$ENDIF ~FPC}
   else
     DoSendMessage(Data);
 end;

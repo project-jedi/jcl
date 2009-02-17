@@ -37,7 +37,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -582,10 +582,10 @@ begin
     {$IFDEF COMPILER7_UP}
     J := StrSearch(FDelimiters.SingleQuote, FAttributes.ValueFromIndex[I]);
     K := StrSearch(FDelimiters.DoubleQuote, FAttributes.ValueFromIndex[I]);
-    {$ELSE}
+    {$ELSE ~COMPILER7_UP}
     J := StrSearch(FDelimiters.SingleQuote, FAttributes.Values[FAttributes.Names[I]]);
     K := StrSearch(FDelimiters.DoubleQuote, FAttributes.Values[FAttributes.Names[I]]);
-    {$ENDIF COMPILER7_UP}
+    {$ENDIF ~COMPILER7_UP}
     if J > K then
       QuoteDelimiter := FDelimiters.SingleQuote
     else
@@ -595,10 +595,10 @@ begin
     {$IFDEF COMPILER7_UP}
     Result := Result + FAttributes.Names[I] + FDelimiters.AssignmentDelimiter +
       QuoteDelimiter + FAttributes.ValueFromIndex[I] + QuoteDelimiter;
-    {$ELSE}
+    {$ELSE ~COMPILER7_UP}
     Result := Result + FAttributes.Names[I] + FDelimiters.AssignmentDelimiter +
       QuoteDelimiter + FAttributes.Values[FAttributes.Names[I]] + QuoteDelimiter;
-    {$ENDIF COMPILER7_UP}
+    {$ENDIF ~COMPILER7_UP}
   end;
 end;
 
@@ -2385,10 +2385,10 @@ begin
     try
       {$IFDEF CLR}
       EDIFileStream.ReadStringAnsiBuffer(FData, EDIFileStream.Size);
-      {$ELSE}
+      {$ELSE ~CLR}
       SetLength(FData, EDIFileStream.Size);
       EDIFileStream.Read(Pointer(FData)^, EDIFileStream.Size);
-      {$ENDIF CLR}
+      {$ENDIF ~CLR}
     finally
       EDIFileStream.Free;
     end;
@@ -2420,9 +2420,9 @@ begin
     try
       {$IFDEF CLR}
       EDIFileStream.WriteStringAnsiBuffer(FData);
-      {$ELSE}
+      {$ELSE ~CLR}
       EDIFileStream.Write(Pointer(FData)^, Length(FData));
-      {$ENDIF CLR}
+      {$ENDIF ~CLR}
     finally
       EDIFileStream.Free;
     end;
@@ -2441,9 +2441,9 @@ begin
     try
       {$IFDEF CLR}
       EDIFileStream.WriteStringAnsiBuffer(FData);
-      {$ELSE}
+      {$ELSE ~CLR}
       EDIFileStream.Write(Pointer(FData)^, Length(FData));
-      {$ENDIF CLR}
+      {$ENDIF ~CLR}
     finally
       EDIFileStream.Free;
     end;

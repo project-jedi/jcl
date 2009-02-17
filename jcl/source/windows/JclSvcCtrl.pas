@@ -53,9 +53,9 @@ uses
   Windows, Classes, SysUtils, Contnrs,
   {$IFDEF FPC}
   JwaWinNT, JwaWinSvc,
-  {$ELSE}
+  {$ELSE ~FPC}
   WinSvc,
-  {$ENDIF FPC}
+  {$ENDIF ~FPC}
   JclBase, JclSysUtils;
 
 // Service Types
@@ -371,9 +371,9 @@ uses
   {$IFDEF FPC}
   WinSysUt,
   JwaRegStr,
-  {$ELSE}
+  {$ELSE ~FPC}
   RegStr,
-  {$ENDIF FPC}
+  {$ENDIF ~FPC}
   Math,
   JclRegistry, JclStrings, JclSysInfo;
 

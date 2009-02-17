@@ -381,11 +381,7 @@ function GetNaNTag(const NaN: Extended): TNaNTag; overload;
 
 type
   TJclASet = class(TObject)
-  {$IFDEF CLR}
   public
-  {$ELSE}
-  protected
-  {$ENDIF}
     function GetBit(const Idx: Integer): Boolean; virtual; abstract;
     procedure SetBit(const Idx: Integer; const Value: Boolean); virtual; abstract;
     procedure Clear; virtual; abstract;
@@ -525,9 +521,9 @@ procedure DomainCheck(Err: Boolean);
 
 {$IFDEF CLR}
 function GetParity(Buffer: TDynByteArray; Len: Integer): Boolean;
-{$ELSE}
+{$ELSE ~CLR}
 function GetParity(Buffer: PByte; Len: Integer): Boolean;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 
 { CRC-16 }
 
@@ -837,14 +833,14 @@ function DoubleToHex(const D: Double): string;
 begin
   Result := IntToHex(BitConverter.DoubleToInt64Bits(D), 16);
 end;
-{$ELSE}
+{$ELSE ~CLR}
 var
   Overlay: array [1..2] of Longint absolute D;
 begin
   // Look at element 2 before element 1 because of "Little Endian" order.
   Result := IntToHex(Overlay[2], 8) + IntToHex(Overlay[1], 8);
 end;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 
 function HexToDouble(const Hex: string): Double;
 {$IFDEF CLR}
@@ -853,7 +849,7 @@ begin
     raise EJclMathError.Create(RsUnexpectedValue);
   Result := BitConverter.Int64BitsToDouble(StrToInt64('$' + Hex))
 end;
-{$ELSE}
+{$ELSE ~CLR}
 var
   D: Double;
   Overlay: array [1..2] of Longint absolute D;
@@ -864,7 +860,7 @@ begin
   Overlay[2] := StrToInt('$' + Copy(Hex, 1, 8));
   Result := D;
 end;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 
 // Converts degrees to radians.
 
@@ -891,9 +887,9 @@ asm
         {$IFDEF PIC}
         CALL    GetGOT
         FLD     [EAX][RatioDegToRad]
-        {$ELSE}
+        {$ELSE ~PIC}
         FLD     [RatioDegToRad]
-        {$ENDIF PIC}
+        {$ENDIF ~PIC}
         FMULP
         FWAIT
 end;
@@ -924,9 +920,9 @@ asm
         {$IFDEF PIC}
         CALL    GetGOT
         FLD     [EAX][RatioRadToDeg]
-        {$ELSE}
+        {$ELSE ~PIC}
         FLD     [RatioRadToDeg]
-        {$ENDIF PIC}
+        {$ENDIF ~PIC}
         FMULP
         FWAIT
 end;
@@ -957,9 +953,9 @@ asm
         {$IFDEF PIC}
         CALL    GetGOT
         FLD     [EAX][RatioGradToRad]
-        {$ELSE}
+        {$ELSE ~PIC}
         FLD     [RatioGradToRad]
-        {$ENDIF PIC}
+        {$ENDIF ~PIC}
         FMULP
         FWAIT
 end;
@@ -990,9 +986,9 @@ asm
         {$IFDEF PIC}
         CALL    GetGOT
         FLD     [EAX][RatioRadToGrad]
-        {$ELSE}
+        {$ELSE ~PIC}
         FLD     [RatioRadToGrad]
-        {$ENDIF PIC}
+        {$ENDIF ~PIC}
         FMULP
         FWAIT
 end;
@@ -1023,9 +1019,9 @@ asm
         {$IFDEF PIC}
         CALL    GetGOT
         FLD     [EAX][RatioDegToGrad]
-        {$ELSE}
+        {$ELSE ~PIC}
         FLD     [RatioDegToGrad]
-        {$ENDIF PIC}
+        {$ENDIF ~PIC}
         FMULP
         FWAIT
 end;
@@ -1056,9 +1052,9 @@ asm
         {$IFDEF PIC}
         CALL    GetGOT
         FLD     [EAX][RatioGradToDeg]
-        {$ELSE}
+        {$ELSE ~PIC}
         FLD     [RatioGradToDeg]
-        {$ENDIF PIC}
+        {$ENDIF ~PIC}
         FMULP
         FWAIT
 end;
@@ -1069,9 +1065,9 @@ begin
   if Err then
     {$IFDEF CLR}
     raise EJclMathError.Create(RsMathDomainError);
-    {$ELSE}
+    {$ELSE ~CLR}
     raise EJclMathError.CreateRes(@RsMathDomainError);
-    {$ENDIF CLR}
+    {$ENDIF ~CLR}
 end;
 
 //=== Logarithmic ============================================================
@@ -1092,9 +1088,9 @@ begin
   DomainCheck(X <= 0.0);
   {$IFDEF CLR}
   Result := System.Math.Log10(X)
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := FLogBase10(X);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function LogBase2(X: Float): Float;
@@ -1113,9 +1109,9 @@ begin
   DomainCheck(X <= 0.0);
   {$IFDEF CLR}
   Result := System.Math.Log(X, 2);
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := FLogBase2(X);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function LogBaseN(Base, X: Float): Float;
@@ -1138,9 +1134,9 @@ begin
   DomainCheck((X <= 0.0) or (Base <= 0.0) or (Base = 1.0));
   {$IFDEF CLR}
   Result := System.Math.Log(X, Base);
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := FLogBaseN(Base, X);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 //=== Transcendental =========================================================
@@ -1166,9 +1162,9 @@ begin
   DomainCheck(Abs(X) > 1.0);
   {$IFDEF CLR}
   Result := System.Math.Acos(X);
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := FArcCos(X);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function ArcCot(X: Float): Float;
@@ -1197,9 +1193,9 @@ function ArcSec(X: Float): Float;
 begin
   {$IFDEF CLR}
   Result := System.Math.Atan(Sqrt(X*X - 1))
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := FArcTan(Sqrt(X*X - 1));
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function ArcSin(X: Float): Float;
@@ -1222,9 +1218,9 @@ begin
   DomainCheck(Abs(X) > 1.0);
   {$IFDEF CPU386}
   Result := FArcSin(X);
-  {$ELSE}
+  {$ELSE ~CPU386}
   Result := System.Math.Asin(X);
-  {$ENDIF}
+  {$ENDIF ~CPU386}
 end;
 
 function ArcTan(X: Float): Float;
@@ -1247,7 +1243,7 @@ function ArcTan2(Y, X: Float): Float;
 begin
   Result := System.Math.ATan2(Y, X);
 end;
-{$ELSE}
+{$ELSE ~CLR}
 function ArcTan2(Y, X: Float): Float; assembler;
 asm
         FLD     Y
@@ -1255,7 +1251,7 @@ asm
         FPATAN
         FWAIT
 end;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 
 function Cos(X: Float): Float;
 
@@ -1272,9 +1268,9 @@ begin
   DomainCheck(Abs(X) > MaxAngle);
   {$IFDEF CLR}
   Result := System.Math.Cos(X);
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := FCos(X);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function Cot(X: Float): Float;
@@ -1294,9 +1290,9 @@ begin
   { TODO : Cot = 1 / Tan -> Tan(X) <> 0.0 }
   {$IFDEF CLR}
   Result := 1 / System.Math.Tan(X);
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := FCot(X);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function Coversine(X: Float): Float;
@@ -1343,9 +1339,9 @@ begin
   { TODO : Sec = 1 / Cos -> Cos(X) <> 0! }
   {$IFDEF CLR}
   Result := 1 / System.Math.Cos(X);
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := FSec(X);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function Sin(X: Float): Float;
@@ -1365,9 +1361,9 @@ begin
   {$ENDIF ~MATH_EXT_SPECIALVALUES}
   {$IFDEF CLR}
   Result := System.Math.Sin(X);
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := FSin(X);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 procedure SinCos(X: Float; var Sin, Cos: Float);
@@ -1388,9 +1384,9 @@ begin
   {$IFDEF CLR}
   Sin := System.Math.Sin(X);
   Cos := System.Math.Cos(X);
-  {$ELSE}
+  {$ELSE ~CLR}
   FSinCos(X, Sin, Cos);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function Tan(X: Float): Float;
@@ -1409,9 +1405,9 @@ begin
   DomainCheck(Abs(X) > MaxAngle);
   {$IFDEF CLR}
   Result := System.Math.Tan(X);
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := FTan(X);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function Versine(X: Float): Float;
@@ -1442,9 +1438,9 @@ begin
   DomainCheck(X < 1.0);
   {$IFDEF CLR}
   Result := System.Math.Log(X + Sqrt(X * X - 1));
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := FArcCosH(X);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function ArcCotH(X: Float): Float;
@@ -1452,9 +1448,9 @@ begin
   DomainCheck(Abs(X) = 1.0);
   {$IFDEF CLR}
   Result := 0.5 * System.Math.Log((X + 1.0) / (X - 1.0));
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := 0.5 * System.Ln((X + 1.0) / (X - 1.0));
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function ArcCscH(X: Float): Float;
@@ -1462,9 +1458,9 @@ begin
   DomainCheck(X = 0);
   {$IFDEF CLR}
   Result := System.Math.Log((Sgn(X) * Sqrt(Sqr(X) + 1.0) + 1.0) / X);
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := System.Ln((Sgn(X) * Sqrt(Sqr(X) + 1.0) + 1.0) / X);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function ArcSecH(X: Float): Float;
@@ -1472,9 +1468,9 @@ begin
   DomainCheck(Abs(X) > 1.0);
   {$IFDEF CLR}
   Result := System.Math.Log((Sqrt(1.0 - Sqr(X)) + 1.0) / X);
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := System.Ln((Sqrt(1.0 - Sqr(X)) + 1.0) / X);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function ArcSinH(X: Float): Float;
@@ -1482,7 +1478,7 @@ function ArcSinH(X: Float): Float;
 begin
   Result := System.Math.Log(X + Sqrt(X * X + 1));
 end;
-{$ELSE}
+{$ELSE ~CLR}
 assembler;
 asm
         FLDLN2
@@ -1495,7 +1491,7 @@ asm
         FADDP   ST(1), ST
         FYL2X
 end;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 
 function ArcTanH(X: Float): Float;
 
@@ -1521,9 +1517,9 @@ begin
   DomainCheck(Abs(X) >= 1.0);
   {$IFDEF CLR}
   Result := System.Math.Log((1 + X) / (1 - X)) / 2;
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := FArcTanH(X);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function CosH(X: Float): Float;
@@ -1547,9 +1543,9 @@ asm
         FSTCW   ControlWW
         {$IFDEF PIC}
         FLDCW   [EAX].RoundDown
-        {$ELSE}
+        {$ELSE ~PIC}
         FLDCW   RoundDown
-        {$ENDIF PIC}
+        {$ENDIF ~PIC}
         FLD     ST(0)
         FRNDINT
         FLDCW   ControlWW
@@ -1565,9 +1561,9 @@ asm
         FADDP   ST(1), ST
         {$IFDEF PIC}
         FLD     [EAX].OneHalf
-        {$ELSE}
+        {$ELSE ~PIC}
         FLD     OneHalf
-        {$ENDIF PIC}
+        {$ENDIF ~PIC}
         FMULP   ST(1), ST
         FWAIT
 end;
@@ -1614,9 +1610,9 @@ asm
         FSTCW   ControlWW
         {$IFDEF PIC}
         FLDCW   [EAX].RoundDown
-        {$ELSE}
+        {$ELSE ~PIC}
         FLDCW   RoundDown
-        {$ENDIF PIC}
+        {$ENDIF ~PIC}
         FLD     ST(0)
         FRNDINT
         FLDCW   ControlWW
@@ -1632,9 +1628,9 @@ asm
         FSUBP   ST(1), ST
         {$IFDEF PIC}
         FLD     [EAX].OneHalf
-        {$ELSE}
+        {$ELSE ~PIC}
         FLD     OneHalf
-        {$ENDIF PIC}
+        {$ENDIF ~PIC}
         FMULP   ST(1), ST
         FWAIT
 end;
@@ -1706,13 +1702,13 @@ begin
     else
       {$IFDEF MATH_EXT_EXTREMEVALUES}
       Result := Infinity;
-      {$ELSE}
+      {$ELSE ~MATH_EXT_EXTREMEVALUES}
       {$IFDEF CLR}
       raise EJclMathError.Create(RsPowerInfinite);
-      {$ELSE}
+      {$ELSE ~CLR}
       raise EJclMathError.CreateRes(@RsPowerInfinite);
-      {$ENDIF CLR}
-      {$ENDIF MATH_EXT_EXTREMEVALUES}
+      {$ENDIF ~CLR}
+      {$ENDIF ~MATH_EXT_EXTREMEVALUES}
   end
   else
   if Base > 0.0 then
@@ -1730,9 +1726,9 @@ begin
     else
       {$IFDEF CLR}
       raise EJclMathError.Create(RsPowerComplex);
-      {$ELSE}
+      {$ELSE ~CLR}
       raise EJclMathError.CreateRes(@RsPowerComplex);
-      {$ENDIF CLR}
+      {$ENDIF ~CLR}
   end;
 end;
 
@@ -2579,9 +2575,9 @@ begin
     begin
       {$IFDEF CLR}
       raise EJclMathError.Create(RsUnexpectedValue);
-      {$ELSE}
+      {$ELSE ~CLR}
       raise EJclMathError.CreateRes(@RsUnexpectedValue);
-      {$ENDIF CLR}
+      {$ENDIF ~CLR}
       Exit;
     end;
     I := 1;
@@ -2792,9 +2788,9 @@ asm
         RCL     EDX, 1
         {$IFDEF PIC}
         MOVZX   EAX, TFloatingPointClass([ECX].FPClasses[EDX])
-        {$ELSE}
+        {$ELSE ~PIC}
         MOVZX   EAX, TFloatingPointClass(FPClasses[EDX])
-        {$ENDIF PIC}
+        {$ENDIF ~PIC}
 end;
 
 function FloatingPointClass(const Value: Single): TFloatingPointClass; overload;
@@ -2834,27 +2830,27 @@ function IsInfinite(const Value: Single): Boolean; overload;
 begin
   {$IFDEF CLR}
   Result := System.Single.IsInfinity(Value);
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := FloatingPointClass(Value) = fpInfinite;
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function IsInfinite(const Value: Double): Boolean; overload;
 begin
   {$IFDEF CLR}
   Result := System.Double.IsInfinity(Value);
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := FloatingPointClass(Value) = fpInfinite;
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function IsInfinite(const Value: Extended): Boolean; overload;
 begin
   {$IFDEF CLR}
   Result := System.Double.IsInfinity(Value);
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := FloatingPointClass(Value) = fpInfinite;
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 const
@@ -2905,27 +2901,27 @@ function IsNaN(const Value: Single): Boolean; overload;
 begin
   {$IFDEF CLR}
   Result := System.Single.IsNaN(Value);
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := FloatingPointClass(Value) = fpNaN;
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function IsNaN(const Value: Double): Boolean; overload;
 begin
   {$IFDEF CLR}
   Result := System.Double.IsNaN(Value);
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := FloatingPointClass(Value) = fpNaN;
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function IsNaN(const Value: Extended): Boolean; overload;
 begin
   {$IFDEF CLR}
   Result := System.Double.IsNaN(Value);
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := FloatingPointClass(Value) = fpNaN;
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 procedure CheckNaN(const Value: Single); overload;
@@ -2934,7 +2930,7 @@ begin
   if not IsNaN(Value) then
     raise EJclMathError.Create(RsNoNaN);
 end;
-{$ELSE}
+{$ELSE ~CLR}
 var
   SaveExMask: T8087Exceptions;
 begin
@@ -2946,7 +2942,7 @@ begin
     SetMasked8087Exceptions(SaveExMask);
   end;
 end;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 
 procedure CheckNaN(const Value: Double); overload;
 {$IFDEF CLR}
@@ -2954,7 +2950,7 @@ begin
   if not IsNaN(Value) then
     raise EJclMathError.Create(RsNoNaN);
 end;
-{$ELSE}
+{$ELSE ~CLR}
 var
   SaveExMask: T8087Exceptions;
 begin
@@ -2966,7 +2962,7 @@ begin
     SetMasked8087Exceptions(SaveExMask);
   end;
 end;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 
 procedure CheckNaN(const Value: Extended); overload;
 {$IFDEF CLR}
@@ -2974,7 +2970,7 @@ begin
   if not IsNaN(Value) then
     raise EJclMathError.Create(RsNoNaN);
 end;
-{$ELSE}
+{$ELSE ~CLR}
 var
   SaveExMask: T8087Exceptions;
 begin
@@ -2986,7 +2982,7 @@ begin
     SetMasked8087Exceptions(SaveExMask);
   end;
 end;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 
 function GetNaNTag(const NaN: Single): TNaNTag;
 var
@@ -3000,10 +2996,10 @@ begin
   Bytes := BitConverter.ToInt32(BitConverter.GetBytes(NaN), 0);
   Temp := Bytes and NaNTagMask;
   if Bytes and (1 shl sSignBit) <> 0 then
-  {$ELSE}
+  {$ELSE ~CLR}
   Temp := PLongint(@NaN)^ and NaNTagMask;
   if sSignBit in TSingleBits(NaN) then
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
     Result := -Temp
   else
   if Temp = ZeroTag then
@@ -3024,14 +3020,14 @@ begin
   Bytes := BitConverter.DoubleToInt64Bits(NaN);
   Temp := (Bytes shr dNanTagShift) and NaNTagMask;
   if Bytes and (1 shl dSignBit) <> 0 then
-  {$ELSE}
+  {$ELSE ~CLR}
   Temp := (PInt64(@NaN)^ shr dNaNTagShift) and NaNTagMask;
   {$IFDEF FPC}
   if Int64(NaN) < 0 then
-  {$ELSE}
+  {$ELSE ~FPC}
   if dSignBit in TDoubleBits(NaN) then
-  {$ENDIF FPC}
-  {$ENDIF CLR}
+  {$ENDIF ~FPC}
+  {$ENDIF ~CLR}
     Result := -Temp
   else
   if Temp = ZeroTag then
@@ -3048,21 +3044,21 @@ var
 begin
   {$IFDEF CLR}
   Result := GetNaNTag(Double(NaN));
-  {$ELSE}
+  {$ELSE ~CLR}
   CheckNaN(NaN);
   Temp := (PExtendedRec(@NaN)^.Significand shr xNaNTagShift) and NaNTagMask;
   {$IFDEF FPC}
   if (TExtendedRec(NaN).Exponent and $8000) <> 0 then
-  {$ELSE}
+  {$ELSE ~FPC}
   if xSignBit in TExtendedBits(NaN) then
-  {$ENDIF FPC}
+  {$ENDIF ~FPC}
     Result := -Temp
   else
   if Temp = ZeroTag then
     Result := 0
   else
     Result := Temp;
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 {$IFNDEF CLR}
@@ -3178,9 +3174,9 @@ begin
   if (Tag < Low(TNaNTag)) or (Tag > High(TNaNTag)) then
     {$IFDEF CLR}
     raise EJclMathError.CreateFmt(RsNaNTagError, [Tag]);
-    {$ELSE}
+    {$ELSE ~CLR}
     raise EJclMathError.CreateResFmt(@RsNaNTagError, [Tag]);
-    {$ENDIF CLR}
+    {$ENDIF ~CLR}
 end;
 
 procedure MakeQuietNaN(var X: Single; Tag: TNaNTag);
@@ -3196,10 +3192,10 @@ begin
   {$IFDEF CLR}
     Bits := Bits or (LongWord(1) shl sSignBit);
   X := BitConverter.ToSingle(BitConverter.GetBytes(Bits), 0);
-  {$ELSE}
+  {$ELSE ~CLR}
     Include(TSingleBits(Bits), sSignBit);
   PLongWord(@X)^ := Bits;
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 procedure MakeQuietNaN(var X: Double; Tag: TNaNTag);
@@ -3213,38 +3209,38 @@ begin
     Bits := Abs(Tag);
   {$IFDEF CLR}
   X := BitConverter.Int64BitsToDouble((Bits shl dNaNTagShift) or dQuietNaNBits);
-  {$ELSE}
+  {$ELSE ~CLR}
   PInt64(@X)^ := (Bits shl dNaNTagShift) or dQuietNaNBits;
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
   if Tag < 0 then
     {$IFDEF CLR}
     X := BitConverter.Int64BitsToDouble(BitConverter.DoubleToInt64Bits(X) or (Int64(1) shl dSignBit));
-    {$ELSE}
+    {$ELSE ~CLR}
     {$IFDEF FPC}
     QWord(X) := QWord(X) or (1 shl dSignBit);
-    {$ELSE}
+    {$ELSE ~FPC}
     Include(TDoubleBits(X), dSignBit);
-    {$ENDIF FPC}
-    {$ENDIF CLR}
+    {$ENDIF ~FPC}
+    {$ENDIF ~CLR}
 end;
 
 procedure MakeQuietNaN(var X: Extended; Tag: TNaNTag);
 {$IFDEF CLR}
 var
   d: Double;
-{$ELSE}
+{$ELSE ~CLR}
 const
   QuietNaNSignificand = $C000000000000000;
   QuietNaNExponent = $7FFF;
 var
   Bits: Int64;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 begin
   {$IFDEF CLR}
   d := X;
   MakeQuietNaN(d);
   X := d;
-  {$ELSE}
+  {$ELSE ~CLR}
   CheckTag(Tag);
   if Tag = 0 then
     Bits := ZeroTag
@@ -3255,21 +3251,21 @@ begin
   if Tag < 0 then
     {$IFDEF FPC}
     TExtendedRec(X).Exponent := TExtendedRec(X).Exponent or $8000;
-    {$ELSE}
+    {$ELSE ~FPC}
     Include(TExtendedBits(X), xSignBit);
-    {$ENDIF FPC}
-  {$ENDIF CLR}
+    {$ENDIF ~FPC}
+  {$ENDIF ~CLR}
 end;
 
 procedure MakeSignalingNaN(var X: Single; Tag: TNaNTag);
 begin
-  {$IFDEF ClR}
+  {$IFDEF CLR}
   MakeQuietNaN(X, Tag);
   BitConverter.ToSingle(
     BitConverter.GetBytes(
       BitConverter.ToInt32(
         BitConverter.GetBytes(X), 0) and not (1 shl sNaNQuietFlag)), 0);
-  {$ELSE}
+  {$ELSE ~CLR}
   {$IFDEF MSWINDOWS}
   {$IFNDEF FPC}
   InitExceptObjProc;
@@ -3277,27 +3273,27 @@ begin
   {$ENDIF MSWINDOWS}
   MakeQuietNaN(X, Tag);
   Exclude(TSingleBits(X), sNaNQuietFlag);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 procedure MakeSignalingNaN(var X: Double; Tag: TNaNTag);
 begin
-  {$IFDEF ClR}
+  {$IFDEF CLR}
   MakeQuietNaN(X, Tag);
   BitConverter.Int64BitsToDouble(
     BitConverter.DoubleToInt64Bits(X) and not (1 shl sNaNQuietFlag));
-  {$ELSE}
+  {$ELSE ~CLR}
   {$IFDEF FPC}
   MakeQuietNaN(X, Tag);
   QWord(X) := QWord(X) and not (1 shl dNaNQuietFlag);
-  {$ELSE}
+  {$ELSE ~FPC}
   {$IFDEF MSWINDOWS}
   InitExceptObjProc;
   {$ENDIF MSWINDOWS}
   MakeQuietNaN(X, Tag);
   Exclude(TDoubleBits(X), dNaNQuietFlag);
-  {$ENDIF FPC}
-  {$ENDIF CLR}
+  {$ENDIF ~FPC}
+  {$ENDIF ~CLR}
 end;
 
 procedure MakeSignalingNaN(var X: Extended; Tag: TNaNTag);
@@ -3310,18 +3306,18 @@ begin
   d := X;
   MakeSignalingNaN(d, Tag);
   X := d;
-  {$ELSE}
+  {$ELSE ~CLR}
   {$IFDEF FPC}
   MakeQuietNaN(X, Tag);
   TExtendedRec(X).Significand := TExtendedRec(X).Significand and not (1 shl xNaNQuietFlag);
-  {$ELSE}
+  {$ELSE ~FPC}
   {$IFDEF MSWINDOWS}
   //InitExceptObjProc;
   {$ENDIF MSWINDOWS}
   MakeQuietNaN(X, Tag);
   Exclude(TExtendedBits(X), xNaNQuietFlag);
-  {$ENDIF FPC}
-  {$ENDIF CLR}
+  {$ENDIF ~FPC}
+  {$ENDIF ~CLR}
 end;
 
 {$IFNDEF CLR}
@@ -3450,9 +3446,9 @@ begin
   if Denominator = 0 then
     {$IFDEF CLR}
     raise EJclMathError.Create(RsInvalidRational);
-    {$ELSE}
+    {$ELSE ~CLR}
     raise EJclMathError.CreateRes(@RsInvalidRational);
-    {$ENDIF CLR}
+    {$ENDIF ~CLR}
   FT := Numerator;
   FN := Denominator;
   if FN <> 1 then
@@ -3642,9 +3638,9 @@ begin
   if V = 0 then
     {$IFDEF CLR}
     raise EJclMathError.Create(RsDivByZero);
-    {$ELSE}
+    {$ELSE ~CLR}
     raise EJclMathError.CreateRes(@RsDivByZero);
-    {$ENDIF CLR}
+    {$ENDIF ~CLR}
 
   FN := FN * V;
   Simplify;
@@ -3655,9 +3651,9 @@ begin
   if R.FT = 0 then
     {$IFDEF CLR}
     raise EJclMathError.Create(RsRationalDivByZero);
-    {$ELSE}
+    {$ELSE ~CLR}
     raise EJclMathError.CreateRes(@RsRationalDivByZero);
-    {$ENDIF CLR}
+    {$ENDIF ~CLR}
 
   FT := FT * R.FN;
   FN := FN * R.FT;
@@ -3674,9 +3670,9 @@ begin
   if FT = 0 then
     {$IFDEF CLR}
     raise EJclMathError.Create(RsRationalDivByZero);
-    {$ELSE}
+    {$ELSE ~CLR}
     raise EJclMathError.CreateRes(@RsRationalDivByZero);
-    {$ENDIF CLR}
+    {$ENDIF ~CLR}
 
   SwapOrd(FT, FN);
 end;
@@ -3736,9 +3732,9 @@ end;
 
 {$IFDEF CLR}
 function GetParity(Buffer: TDynByteArray; Len: Integer): Boolean;
-{$ELSE}
+{$ELSE ~CLR}
 function GetParity(Buffer: PByte; Len: Integer): Boolean;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 const
   lu: packed array [0..15] of Byte =
     (0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4);
@@ -3759,9 +3755,9 @@ begin
   begin
     {$IFDEF CLR}
     b := Buffer[Index];
-    {$ELSE}
+    {$ELSE ~CLR}
     b := PByte(Buffer)^;
-    {$ENDIF CLR}
+    {$ENDIF ~CLR}
     // lower Nibble
     Inc(BitsSet, lu[b and $0F]);
     // upper Nibble
@@ -3770,9 +3766,9 @@ begin
     Dec(Len);
     {$IFDEF CLR}
     Inc(Index);
-    {$ELSE}
+    {$ELSE ~CLR}
     Inc(PByte(Buffer));
-    {$ENDIF CLR}
+    {$ENDIF ~CLR}
   end;
 
   Result := (BitsSet mod 2) = 0;
@@ -4088,27 +4084,27 @@ function Crc32(const Crc32Table: TCrc32Table; const X: array of Byte; N: Integer
 begin
   {$IFDEF CLR}
   Result := Crc32_P(Crc32Table, X, N, Crc);
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := Crc32_P(Crc32Table, @X, N, Crc);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function Crc32(const X: array of Byte; N: Integer; Crc: Cardinal): Cardinal;
 begin
   {$IFDEF CLR}
   Result := Crc32_P(Crc32DefaultTable, X, N, Crc);
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := Crc32_P(Crc32DefaultTable, @X, N, Crc);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function CheckCrc32(const Crc32Table: TCrc32Table; var X: array of Byte; N: Integer; Crc: Cardinal): Integer;
 begin
   {$IFDEF CLR}
   Result := CheckCRC32_P(Crc32Table, X, N, CRC);
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := CheckCRC32_P(Crc32Table, @X, N, CRC);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 {$IFDEF COMPILER5}
@@ -4122,45 +4118,45 @@ function CheckCrc32(var X: array of Byte; N: Integer; Crc: Cardinal): Integer;
 begin
   {$IFDEF CLR}
   Result := CheckCRC32_P(Crc32DefaultTable, X, N, CRC);
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := CheckCRC32_P(Crc32DefaultTable, @X, N, CRC);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function Crc32_A(const Crc32Table: TCrc32Table; const X: array of Byte; Crc: Cardinal): Cardinal;
 begin
   {$IFDEF CLR}
   Result := Crc32_P(Crc32Table, X, Length(X), Crc);
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := Crc32_P(Crc32Table, @X, Length(X), Crc);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function Crc32_A(const X: array of Byte; Crc: Cardinal): Cardinal;
 begin
   {$IFDEF CLR}
   Result := Crc32_P(Crc32DefaultTable, X, Length(X), Crc);
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := Crc32_P(Crc32DefaultTable, @X, Length(X), Crc);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function CheckCrc32_A(const Crc32Table: TCrc32Table; var X: array of Byte; Crc: Cardinal): Integer;
 begin
   {$IFDEF CLR}
   Result := CheckCrc32_P(Crc32Table, X, Length(X), Crc);
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := CheckCrc32_P(Crc32Table, @X, Length(X), Crc);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function CheckCrc32_A(var X: array of Byte; Crc: Cardinal): Integer;
 begin
   {$IFDEF CLR}
   Result := CheckCrc32_P(Crc32DefaultTable, X, Length(X), Crc);
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := CheckCrc32_P(Crc32DefaultTable, @X, Length(X), Crc);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 // The CRC Table can be generated like this:

@@ -51,7 +51,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -2314,9 +2314,9 @@ begin
   else
     {$IFDEF CLR}
     raise EJclPathError.CreateFmt(RsPathInvalidDrive, [IntToStr(Drive)]);
-    {$ELSE}
+    {$ELSE ~CLR}
     raise EJclPathError.CreateResFmt(@RsPathInvalidDrive, [IntToStr(Drive)]);
-    {$ENDIF}
+    {$ENDIF ~CLR}
   {$ENDIF MSWINDOWS}
 end;
 
@@ -2688,9 +2688,9 @@ var
   begin
     {$IFDEF MSWINDOWS}  // case insensitive
     Result := StrSame(Path1, Path2);
-    {$ELSE}             // case sensitive
+    {$ELSE ~MSWINDOWS}  // case sensitive
     Result := Path1 = Path2;
-    {$ENDIF}
+    {$ENDIF ~MSWINDOWS}
   end;
 
 begin
@@ -2929,9 +2929,9 @@ const
 var
   {$IFDEF CLR}
   Index, LenPath: Integer;
-  {$ELSE}
+  {$ELSE ~CLR}
   P: PChar;
-  {$ENDIF}
+  {$ENDIF ~CLR}
 
   function AbsorbSeparator: Boolean;
   begin
@@ -3266,7 +3266,7 @@ begin
   end;
 end;
 
-{$ELSE} // CLR => not CLR
+{$ELSE ~CLR}
 
 function SHGetDisplayName(ShellFolder: IShellFolder; PIDL: PItemIDList; ForParsing: Boolean): string;
 const
@@ -3436,9 +3436,9 @@ begin
       ParsePath := ParsePath + DirDelimiter + Name;
   end;
 end;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 
-{$ELSE} // MSWINDOWS => not MSWINDOWS
+{$ELSE ~MSWINDOWS}
 function PathGetPhysicalPath(const LocalizedPath: string): string;
 begin
   Result := LocalizedPath;
@@ -3448,7 +3448,7 @@ function PathGetLocalizedPath(const PhysicalPath: string): string;
 begin
   Result := PhysicalPath;
 end;
-{$ENDIF MSWINDOWS}
+{$ENDIF ~MSWINDOWS}
 
 //=== Files and Directories ==================================================
 
@@ -3874,10 +3874,10 @@ begin
     // FileGetSize is very slow, GetFileAttributes is much faster
     Attr := GetFileAttributes(Pointer(Filename));
     Result := (Attr <> $FFFFFFFF) and (Attr and FILE_ATTRIBUTE_DIRECTORY = 0);
-    {$ELSE}
+    {$ELSE ~MSWINDOWS}
     // Attempt to access the file, doesn't matter how, using FileGetSize is as good as anything else.
     Result := FileGetSize(FileName) <> -1;
-    {$ENDIF MSWINDOWS}
+    {$ENDIF ~MSWINDOWS}
     {$ENDIF ~CLR}
   end
   else
@@ -4195,9 +4195,9 @@ begin
   if Length(Name) = 0 then
     {$IFDEF CLR}
     raise EJclFileUtilsError.Create(RsCannotCreateDir);
-    {$ELSE}
+    {$ELSE ~CLR}
     raise EJclFileUtilsError.CreateRes(@RsCannotCreateDir);
-    {$ENDIF}
+    {$ENDIF ~CLR}
   Name := PathRemoveSeparator(Name);
   {$IFDEF MSWINDOWS}
   ExtractPath := ExtractFilePath(Name);
@@ -4416,9 +4416,9 @@ function GetFileLastWrite(const FileName: string): TFileTime;
 begin
   {$IFDEF CLR}
   Result := &File.GetLastWriteTimeUtc(FileName);
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := GetFileInformation(FileName).FindData.ftLastWriteTime;
-  {$ENDIF}
+  {$ENDIF ~CLR}
 end;
 
 function GetFileLastWrite(const FileName: string; out LocalTime: TDateTime): Boolean;
@@ -4478,9 +4478,9 @@ function GetFileLastAccess(const FileName: string): TFileTime;
 begin
   {$IFDEF CLR}
   Result := &File.GetLastAccessTimeUtc(FileName);
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := GetFileInformation(FileName).FindData.ftLastAccessTime;
-  {$ENDIF}
+  {$ENDIF ~CLR}
 end;
 
 function GetFileLastAccess(const FileName: string; out LocalTime: TDateTime): Boolean;
@@ -4540,9 +4540,9 @@ function GetFileCreation(const FileName: string): TFileTime;
 begin
   {$IFDEF CLR}
   Result := &File.GetCreationTimeUtc(FileName);
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := GetFileInformation(FileName).FindData.ftCreationTime;
-  {$ENDIF}
+  {$ENDIF ~CLR}
 end;
 
 function GetFileCreation(const FileName: string; out LocalTime: TDateTime): Boolean;
@@ -4609,9 +4609,9 @@ begin
   {$IFDEF UNIX}
   {$IFDEF FPC}
   L := 0; // FIXME
-  {$ELSE}
+  {$ELSE ~FPC}
   L := GetModuleFileName(Module, Pointer(Result), L);
-  {$ENDIF FPC}
+  {$ENDIF ~FPC}
   {$ENDIF UNIX}
   SetLength(Result, L);
 end;
@@ -5033,9 +5033,9 @@ begin
           Fs.Write(ContentPtr{$IFNDEF CLR}[0]{$ENDIF}, N);
         {$IFDEF CLR}
         Fs.Handle.Flush;
-        {$ELSE}
+        {$ELSE ~CLR}
         FlushFileBuffers(Fs.Handle);
-        {$ENDIF}
+        {$ENDIF ~CLR}
         Dec(Times);
       end;
     finally
@@ -6020,9 +6020,9 @@ begin
   else
     {$IFDEF CLR}
     Result := StrMatches(Mask.ToUpper, FileName.ToUpper);
-    {$ELSE}
+    {$ELSE ~CLR}
     Result := StrMatches(AnsiUpperCase(Mask), AnsiUpperCase(FileName));
-    {$ENDIF}
+    {$ENDIF ~CLR}
 end;
 
 // author: Robert Rossmair
@@ -6341,9 +6341,9 @@ begin
   {$IFDEF UNIX}
   {$IFDEF FPC}
   Priority := tpIdle;
-  {$ELSE}
+  {$ELSE ~FPC}
   Priority := 0;
-  {$ENDIF FPC}
+  {$ENDIF ~FPC}
   {$ENDIF UNIX}
   {$ENDIF ~CLR}
   FreeOnTerminate := True;
@@ -6925,9 +6925,9 @@ begin
   {$ELSE ~CLR}
   Result := AnsiSameText(PathGetLongName(Path1), PathGetLongName(Path2));
   {$ENDIF ~CLR}
-  {$ELSE}
+  {$ELSE ~MSWINDOWS}
   Result := Path1 = Path2;
-  {$ENDIF}
+  {$ENDIF ~MSWINDOWS}
 end;
 
 // add items at the end

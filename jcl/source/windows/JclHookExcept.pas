@@ -274,9 +274,9 @@ procedure HookedRaiseException(ExceptionCode, ExceptionFlags, NumberOfArguments:
 const
   {$IFDEF DELPHI2}
   cDelphiException = $0EEDFACE;
-  {$ELSE}
+  {$ELSE ~DELPHI2}
   cDelphiException = $0EEDFADE;
-  {$ENDIF DELPHI2}
+  {$ENDIF ~DELPHI2}
   cNonContinuable = 1;
 begin
   if (ExceptionFlags = cNonContinuable) and (ExceptionCode = cDelphiException) and

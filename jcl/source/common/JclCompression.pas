@@ -4305,9 +4305,9 @@ begin
       FPackedNames.Sorted := True;
       {$IFDEF UNIX}
       FPackedNames.CaseSensitive := True;
-      {$ELSE}
+      {$ELSE ~UNIX}
       FPackedNames.CaseSensitive := False;
-      {$ENDIF UNIX}
+      {$ENDIF ~UNIX}
       FPackedNames.Duplicates := dupIgnore;
       for I := ItemCount - 1 downto 0 do
         FPackedNames.AddObject(Items[I].PackedName, Items[I]);

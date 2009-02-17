@@ -752,7 +752,7 @@ const
   AllowedStringTypes: TDelphiSet = [
     vtChar, vtWideChar, vtString, vtPChar, vtPWideChar,
     vtVariant, vtAnsiString, vtWideString{$IFDEF SUPPORTS_UNICODE_STRING}, vtUnicodeString{$ENDIF SUPPORTS_UNICODE_STRING}
-    {$IFDEF FORMAT_EXTENSIONS}, vtBoolean, vtClass{$ENDIF}
+    {$IFDEF FORMAT_EXTENSIONS}, vtBoolean, vtClass{$ENDIF FORMAT_EXTENSIONS}
   ];
 begin
   case Arg^.VType of

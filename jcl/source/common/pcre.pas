@@ -444,7 +444,8 @@ function pcre_study(const code: PPCRE; options: Integer; const errptr: PPAnsiCha
 function pcre_version: PAnsiChar; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre_version}
 
-{$ELSE}
+{$ELSE PCRE_LINKONREQUEST}
+
 // dynamic dll import
 type
   pcre_compile_func = function(const pattern: PAnsiChar; options: Integer;
@@ -560,7 +561,7 @@ var
   pcre_version: pcre_version_func = nil;
   {$EXTERNALSYM pcre_version}
 
-{$ENDIF ~PCRE_LINKONREQUEST}
+{$ENDIF PCRE_LINKONREQUEST}
 
 function IsPCRELoaded: Boolean;
 function LoadPCRE: Boolean;

@@ -78,9 +78,9 @@ type
   TJclBorRADToolKind = (brDelphi, brCppBuilder, brBorlandDevStudio);
   {$IFDEF KYLIX}
   TJclBorRADToolEdition = (deOPEN, dePRO, deSVR);
-  {$ELSE}
+  {$ELSE ~KYLIX}
   TJclBorRADToolEdition = (deSTD, dePRO, deCSS, deARC);
-  {$ENDIF KYLIX}
+  {$ENDIF ~KYLIX}
   TJclBorRADToolPath = string;
 
 const
@@ -1009,9 +1009,9 @@ const
 
   {$IFDEF KYLIX}
   RootDirValueName           = 'DelphiRoot';
-  {$ELSE}
+  {$ELSE ~KYLIX}
   RootDirValueName           = 'RootDir';
-  {$ENDIF KYLIX}
+  {$ENDIF ~KYLIX}
 
   EditionValueName           = 'Edition';
   VersionValueName           = 'Version';
@@ -3131,9 +3131,9 @@ begin
   inherited Create(AInstallation);
   {$IFDEF KYLIX}
   FFileName := AInstallation.ConfigFileName('dro');
-  {$ELSE}
+  {$ELSE ~KYLIX}
   FFileName := AInstallation.BinFolderName + BorRADToolRepositoryFileName;
-  {$ENDIF KYLIX}
+  {$ENDIF ~KYLIX}
   FPages := TStringList.Create;
   IniFile.ReadSection(BorRADToolRepositoryPagesSection, FPages);
   CloseIniFile;
@@ -3615,7 +3615,7 @@ begin
       else
         Result := RsServerDeveloper;
   end;
-  {$ELSE}
+  {$ELSE ~KYLIX}
   Result := FEditionStr;
   if Length(FEditionStr) = 3 then
     case Edition of
@@ -3634,7 +3634,7 @@ begin
       deARC:
         Result := RsArchitect;
     end;
-  {$ENDIF KYLIX}
+  {$ENDIF ~KYLIX}
 end;
 
 function TJclBorRADToolInstallation.GetEnvironmentVariables: TStrings;
@@ -3690,9 +3690,9 @@ begin
   {$IFDEF KYLIX}
   { TODO : determine Kylix IDE build # }
   Result := '?';
-  {$ELSE}
+  {$ELSE ~KYLIX}
   Result := VersionFixedFileInfoString(IdeExeFileName, vfFull);
-  {$ENDIF KYLIX}
+  {$ENDIF ~KYLIX}
 end;
 
 function TJclBorRADToolInstallation.GetIdePackages: TJclBorRADToolIdePackages;
@@ -3777,9 +3777,9 @@ function TJclBorRADToolInstallation.GetSupportsLibSuffix: Boolean;
 begin
   {$IFDEF KYLIX}
   Result := True;
-  {$ELSE}
+  {$ELSE ~KYLIX}
   Result := (RadToolKind = brBorlandDevStudio) or (VersionNumber >= 6);
-  {$ENDIF KYLIX}
+  {$ENDIF ~KYLIX}
 end;
 
 function TJclBorRADToolInstallation.GetUpdateNeeded: Boolean;
@@ -3942,9 +3942,9 @@ function TJclBorRADToolInstallation.IsBDSPersonality: Boolean;
 begin
   {$IFDEF MSWINDOWS}
   Result := InheritsFrom(TJclBDSInstallation);
-  {$ELSE}
+  {$ELSE ~MSWINDOWS}
   Result := False;
-  {$ENDIF MSWINDOWS}
+  {$ENDIF ~MSWINDOWS}
 end;
 {$ENDIF KEEP_DEPRECATED}
 
@@ -4359,10 +4359,10 @@ const
 begin
   {$IFDEF KYLIX}
   Result := True;
-  {$ELSE}
+  {$ELSE ~KYLIX}
   Result := (Edition <> deSTD) and (VersionNumber in [6, 7]) and (RadToolKind <> brBorlandDevStudio) and
     (FileExists(LibFolderName + VisualClxDcp) or FileExists(ObjFolderName + VisualClxDcp));
-  {$ENDIF KYLIX}
+  {$ENDIF ~KYLIX}
 end;
 
 function TJclBorRADToolInstallation.UninstallBCBExpert(const ProjectName, OutputDir: string): Boolean;

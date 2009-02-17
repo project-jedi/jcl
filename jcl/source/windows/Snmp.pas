@@ -369,7 +369,7 @@ var
   SnmpSvcSetLogLevel: procedure(nLogLevel: Integer); stdcall;
   SnmpSvcSetLogType: procedure(nLogType: Integer); stdcall;
 
-{$ELSE}
+{$ELSE ~SNMP_DYNAMIC_LINK}
 
 function SnmpUtilOidCpy(pOidDst: PAsnObjectIdentifier; pOidSrc: PAsnObjectIdentifier): SNMPAPI; stdcall;
 function SnmpUtilOidAppend(pOidDst: PAsnObjectIdentifier; pOidSrc: PAsnObjectIdentifier): SNMPAPI; stdcall;
@@ -397,7 +397,7 @@ function SnmpSvcGetUptime: DWORD; stdcall;
 procedure SnmpSvcSetLogLevel(nLogLevel: Integer); stdcall;
 procedure SnmpSvcSetLogType(nLogType: Integer); stdcall;
 
-{$ENDIF SNMP_DYNAMIC_LINK}
+{$ENDIF ~SNMP_DYNAMIC_LINK}
 
 {$EXTERNALSYM SnmpUtilOidCpy}
 {$EXTERNALSYM SnmpUtilOidAppend}
@@ -539,7 +539,7 @@ var
   SNMP_DBG_malloc: function (nBytes: UINT): Pointer; stdcall;
   SNMP_DBG_realloc: function (pMem: Pointer; nBytes: UINT): Pointer; stdcall;
 
-{$ELSE}
+{$ELSE SNMP_DYNAMIC_LINK}
 
 function SNMP_oidcpy(pOidDst: PAsnObjectIdentifier; pOidSrc: PAsnObjectIdentifier): SNMPAPI; stdcall;
 function SNMP_oidappend(pOidDst: PAsnObjectIdentifier; pOidSrc: PAsnObjectIdentifier): SNMPAPI; stdcall;
@@ -834,7 +834,7 @@ begin
   end;
 end;
 
-{$ELSE}
+{$ELSE ~SNMP_DYNAMIC_LINK}
 
 function SnmpUtilOidCpy; external snmpapilib name 'SnmpUtilOidCpy';
 function SnmpUtilOidAppend; external snmpapilib name 'SnmpUtilOidAppend';
@@ -882,7 +882,7 @@ function SNMP_DBG_malloc; external snmpapilib name 'SnmpUtilMemAlloc';
 function SNMP_DBG_realloc; external snmpapilib name 'SnmpUtilMemReAlloc';
 {$ENDIF ~SNMPSTRICT}
 
-{$ENDIF SNMP_DYNAMIC_LINK}
+{$ENDIF ~SNMP_DYNAMIC_LINK}
 
 {$IFDEF SNMP_DYNAMIC_LINK}
 {$IFNDEF SNMP_DYNAMIC_LINK_EXPLICIT}

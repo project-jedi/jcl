@@ -308,9 +308,9 @@ uses
   SysUtils,
   {$IFDEF FPC}
 //  JwaAccCtrl,
-  {$ELSE}
+  {$ELSE ~FPC}
   AccCtrl,
-  {$ENDIF FPC}
+  {$ENDIF ~FPC}
   JclResources, JclSysUtils, JclWin32,
   JclAnsiStrings, JclWideStrings;
 
@@ -1126,7 +1126,7 @@ begin
   Result := InternalGetWideString(RootKey, Key, Name, False, TmpRet, RaiseException);
   RetValue := string(TmpRet);
 end;
-{$ELSE SUPPORTS_UNICODE}
+{$ELSE ~SUPPORTS_UNICODE}
 var
   TmpRet: AnsiString;
 begin

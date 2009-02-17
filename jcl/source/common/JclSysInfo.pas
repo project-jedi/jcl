@@ -1707,9 +1707,9 @@ begin
     end;
     {$IFDEF FPC}
     if GetLastOSError <> ERANGE then
-    {$ELSE}
+    {$ELSE ~FPC}
     if GetLastError <> ERANGE then
-    {$ENDIF FPC}
+    {$ENDIF ~FPC}
       RaiseLastOSError;
     Size := Size * 2;
   end;
@@ -2274,9 +2274,9 @@ begin
         //copy in the interface name to look up address of
         {$IFDEF FPC}
         strncpy(IfReq.ifr_ifrn.ifrn_name, IfList^.if_name, IFNAMSIZ);
-        {$ELSE}
+        {$ELSE ~FPC}
         strncpy(IfReq.ifrn_name, IfList^.if_name, IFNAMSIZ);
-        {$ENDIF FPC}
+        {$ENDIF ~FPC}
         //get the address for this interface
         if ioctl(Sock, SIOCGIFADDR, @IfReq) <> 0 then
           RaiseLastOSError;
@@ -2284,10 +2284,10 @@ begin
         {$IFDEF FPC}
         SockAddrPtr := PSockAddrIn(@IfReq.ifr_ifru.ifru_addr);
         Results.Add(Format('%s=%s', [IfReq.ifr_ifrn.ifrn_name, inet_ntoa(SockAddrPtr^.sin_addr)]));
-        {$ELSE}
+        {$ELSE ~FPC}
         SockAddrPtr := PSockAddrIn(@IfReq.ifru_addr);
         Results.Add(Format('%s=%s', [IfReq.ifrn_name, inet_ntoa(SockAddrPtr^.sin_addr)]));
-        {$ENDIF FPC}
+        {$ENDIF ~FPC}
         Inc(IfList);
       end;
     finally
@@ -2464,10 +2464,10 @@ var
   RegStr: string;
   {$IFDEF RTL150_UP}
   FormatSettings: TFormatSettings;
-  {$ELSE RTL150_UP}
+  {$ELSE ~RTL150_UP}
   RegFormat: string;
   RegSeparator: Char;
-  {$ENDIF RTL150_UP}
+  {$ENDIF ~RTL150_UP}
 begin
   if IsWinNT then
     RegStr := RegReadString(HKEY_LOCAL_MACHINE, WinNT_REG_PATH, WinNT_REG_KEY)
@@ -2483,7 +2483,7 @@ begin
     if not TryStrToDate(RegStr, Result, FormatSettings) then
       Result := 0;
   end;
-  {$ELSE RTL150_UP}
+  {$ELSE ~RTL150_UP}
   Result := 0;
   { TODO : change to a threadsafe solution }
   RegFormat := ShortDateFormat;
@@ -2504,7 +2504,7 @@ begin
     ShortDateFormat := RegFormat;
     DateSeparator := RegSeparator;
   end;
-  {$ENDIF RTL150_UP}
+  {$ENDIF ~RTL150_UP}
 end;
 
 {$ENDIF MSWINDOWS}
@@ -2535,10 +2535,10 @@ begin
     {$IFDEF FPC}
     if readdir_r(ProcDir, @Scratch, @PtrDirEnt) <> 0 then
       Exit;
-    {$ELSE}
+    {$ELSE ~FPC}
     if readdir_r(ProcDir, @Scratch, PtrDirEnt) <> 0 then
       Exit;
-    {$ENDIF FPC}
+    {$ENDIF ~FPC}
     List.BeginUpdate;
     try
       while PtrDirEnt <> nil do
@@ -2573,10 +2573,10 @@ begin
         {$IFDEF FPC}
         if readdir_r(ProcDir, @Scratch, @PtrDirEnt) <> 0 then
           Break;
-        {$ELSE}
+        {$ELSE ~FPC}
         if readdir_r(ProcDir, @Scratch, PtrDirEnt) <> 0 then
           Break;
-        {$ENDIF FPC}
+        {$ENDIF ~FPC}
       end;
     finally
       List.EndUpdate;
@@ -5230,9 +5230,9 @@ var
 begin
   {$IFDEF FPC}
   SysInfo(@SystemInf);
-  {$ELSE}
+  {$ELSE ~FPC}
   SysInfo(SystemInf);
-  {$ENDIF FPC}
+  {$ENDIF ~FPC}
   with SystemInf do
     Result := 100 - Round(100 * freeram / totalram);
 end;
@@ -5255,9 +5255,9 @@ var
 begin
   {$IFDEF FPC}
   SysInfo(@SystemInf);
-  {$ELSE}
+  {$ELSE ~FPC}
   SysInfo(SystemInf);
-  {$ENDIF FPC}
+  {$ENDIF ~FPC}
   Result := SystemInf.totalswap;
 end;
 {$ENDIF UNIX}
@@ -5280,9 +5280,9 @@ var
 begin
   {$IFDEF FPC}
   SysInfo(@SystemInf);
-  {$ELSE}
+  {$ELSE ~FPC}
   SysInfo(SystemInf);
-  {$ENDIF FPC}
+  {$ENDIF ~FPC}
   with SystemInf do
     Result := 100 - Trunc(100 * FreeSwap / TotalSwap);
 end;
@@ -5309,9 +5309,9 @@ var
 begin
   {$IFDEF FPC}
   SysInfo(@SystemInf);
-  {$ELSE}
+  {$ELSE ~FPC}
   SysInfo(SystemInf);
-  {$ENDIF FPC}
+  {$ENDIF ~FPC}
   Result := SystemInf.totalram;
 end;
 {$ENDIF UNIX}
@@ -5333,9 +5333,9 @@ var
 begin
   {$IFDEF FPC}
   SysInfo(@SystemInf);
-  {$ELSE}
+  {$ELSE ~FPC}
   SysInfo(SystemInf);
-  {$ENDIF FPC}
+  {$ENDIF ~FPC}
   Result := SystemInf.freeram;
 end;
 {$ENDIF UNIX}

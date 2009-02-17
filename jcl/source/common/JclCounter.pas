@@ -106,9 +106,9 @@ procedure NoCounterError;
 begin
   {$IFDEF CLR}
   raise EJclCounterError.Create(RsNoCounter);
-  {$ELSE}
+  {$ELSE ~CLR}
   raise EJclCounterError.CreateRes(@RsNoCounter);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 constructor TJclCounter.Create(const Compensate: Boolean);

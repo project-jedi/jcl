@@ -413,18 +413,18 @@ begin
     except
       {$IFDEF CLR}
       raise EJclMathError.Create(RsComplexInvalidString);
-      {$ELSE}
+      {$ELSE ~CLR}
       raise EJclMathError.CreateRes(@RsComplexInvalidString);
-      {$ENDIF CLR}
+      {$ENDIF ~CLR}
     end;
     try
       ImagPart := StrToFloat(Copy(StrToParse, SignPos, Length(StrToParse) - SignPos));
     except
       {$IFDEF CLR}
       raise EJclMathError.Create(RsComplexInvalidString);
-      {$ELSE}
+      {$ELSE ~CLR}
       raise EJclMathError.CreateRes(@RsComplexInvalidString);
-      {$ENDIF CLR}
+      {$ENDIF ~CLR}
     end;
   end
   else
@@ -437,9 +437,9 @@ begin
       except
         {$IFDEF CLR}
         raise EJclMathError.Create(RsComplexInvalidString);
-        {$ELSE}
+        {$ELSE ~CLR}
         raise EJclMathError.CreateRes(@RsComplexInvalidString);
-        {$ENDIF CLR}
+        {$ENDIF ~CLR}
       end;
     end
     else
@@ -449,9 +449,9 @@ begin
       except
         {$IFDEF CLR}
         raise EJclMathError.Create(RsComplexInvalidString);
-        {$ELSE}
+        {$ELSE ~CLR}
         raise EJclMathError.CreateRes(@RsComplexInvalidString);
-        {$ENDIF CLR}
+        {$ENDIF ~CLR}
       end;
       ImagPart := 0.0;
     end;
@@ -466,40 +466,40 @@ var
 begin
   {$IFDEF CLR}
   StrToParse := StrRemoveChars(StrToParse, CharIsSpace).toUpper;
-  {$ELSE}
+  {$ELSE ~CLR}
   StrToParse := AnsiUpperCase(StrRemoveChars(StrToParse, CharIsSpace));
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
   AstPos := Pos('*', StrToParse);
   if AstPos = 0 then
     {$IFDEF CLR}
     raise EJclMathError.Create(RsComplexInvalidString);
-    {$ELSE}
+    {$ELSE ~CLR}
     raise EJclMathError.CreateRes(@RsComplexInvalidString);
-    {$ENDIF CLR}
+    {$ENDIF ~CLR}
   try
     Radius := StrToFloat(StrLeft(StrToParse, AstPos - 1));
   except
     {$IFDEF CLR}
     raise EJclMathError.Create(RsComplexInvalidString);
-    {$ELSE}
+    {$ELSE ~CLR}
     raise EJclMathError.CreateRes(@RsComplexInvalidString);
-    {$ENDIF CLR}
+    {$ENDIF ~CLR}
   end;
   AstPos := Pos('(', StrToParse);
   if AstPos = 0 then
     {$IFDEF CLR}
     raise EJclMathError.Create(RsComplexInvalidString);
-    {$ELSE}
+    {$ELSE ~CLR}
     raise EJclMathError.CreateRes(@RsComplexInvalidString);
-    {$ENDIF CLR}
+    {$ENDIF ~CLR}
   try
     Angle := StrToFloat(Copy(StrToParse, AstPos + 1, Length(StrToParse) - AstPos - 1));
   except
     {$IFDEF CLR}
     raise EJclMathError.Create(RsComplexInvalidString);
-    {$ELSE}
+    {$ELSE ~CLR}
     raise EJclMathError.CreateRes(@RsComplexInvalidString);
-    {$ENDIF CLR}
+    {$ENDIF ~CLR}
   end;
   Assign(Radius, Angle, crPolar);
 end;

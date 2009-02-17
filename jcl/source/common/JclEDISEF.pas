@@ -924,9 +924,9 @@ begin
     Element.Id := Temp.Names[0];
     {$IFDEF COMPILER7_UP}
     Temp.CommaText := Temp.ValueFromIndex[0];
-    {$ELSE}
+    {$ELSE ~COMPILER7_UP}
     Temp.CommaText := Temp.Values[Element.Id];
-    {$ENDIF COMPILER7_UP}
+    {$ENDIF ~COMPILER7_UP}
     if Temp.Count >= 1 then
       Element.ElementType := Temp[0];
     if Temp.Count >= 2 then
@@ -1466,12 +1466,12 @@ procedure ParseSEGSDataOfSETSDefinition(Data: string; Segment: TEDISEFSegment;
       end;
     Result := S;
   end;
-  {$ELSE}
+  {$ELSE ~CLR}
   function ToPChar(const S: string): PChar;
   begin
     Result := PChar(S);
   end;
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 
 var
   Temp: TStringList;
@@ -4079,10 +4079,10 @@ begin
     try
       {$IFDEF CLR}
       EDIFileStream.ReadStringAnsiBuffer(FData, EDIFileStream.Size);
-      {$ELSE}
+      {$ELSE ~CLR}
       SetLength(FData, EDIFileStream.Size);
       EDIFileStream.Read(Pointer(FData)^, EDIFileStream.Size);
-      {$ENDIF CLR}
+      {$ENDIF ~CLR}
     finally
       EDIFileStream.Free;
     end;
@@ -4213,9 +4213,9 @@ begin
   INI.Clear;
   {$IFDEF COMPILER6_UP}
   INI.Delimiter := SEFDelimiter_Comma;
-  {$ELSE}
+  {$ELSE ~COMPILER6_UP}
   // TODO : (rom) ?
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF ~COMPILER6_UP}
   SearchResult := StrSearch(SectionTag_INI, FData, 1);
   if SearchResult > 0 then
   begin
@@ -4303,9 +4303,9 @@ begin
   STD.Clear;
   {$IFDEF COMPILER6_UP}
   STD.Delimiter := SEFDelimiter_Comma;
-  {$ELSE}
+  {$ELSE ~COMPILER6_UP}
   // TODO : (rom) ?
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF ~COMPILER6_UP}
   SearchResult := StrSearch(SectionTag_STD, FData, 1);
   if SearchResult > 0 then
   begin
@@ -4315,17 +4315,17 @@ begin
     begin
       {$IFDEF COMPILER6_UP}
       STD.DelimitedText := Copy(FData, SearchResult, SearchResult2 - SearchResult);
-      {$ELSE}
+      {$ELSE ~COMPILER6_UP}
       STD.Text := Copy(FData, SearchResult, SearchResult2 - SearchResult);
-      {$ENDIF COMPILER6_UP}
+      {$ENDIF ~COMPILER6_UP}
     end
     else
     begin
       {$IFDEF COMPILER6_UP}
       STD.DelimitedText := Copy(FData, SearchResult, (Length(FData) - SearchResult) + 1);
-      {$ELSE}
+      {$ELSE ~COMPILER6_UP}
       STD.Text := Copy(FData, SearchResult, (Length(FData) - SearchResult) + 1);
-      {$ENDIF COMPILER6_UP}
+      {$ENDIF ~COMPILER6_UP}
     end;
   end;
 end;
@@ -4365,9 +4365,9 @@ begin
     try
       {$IFDEF CLR}
       EDIFileStream.WriteStringAnsiBuffer(FData);
-      {$ELSE}
+      {$ELSE ~CLR}
       EDIFileStream.Write(Pointer(FData)^, Length(FData));
-      {$ENDIF CLR}
+      {$ENDIF ~CLR}
     finally
       EDIFileStream.Free;
     end;

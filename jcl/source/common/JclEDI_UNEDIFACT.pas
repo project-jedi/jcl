@@ -33,7 +33,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -467,10 +467,10 @@ begin
   else
     Result := nil;
 end;
-{$ELSE}
+{$ELSE ~CLR}
 type
   AsEDIDataObjectArray = TEDIDataObjectArray;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 
 //=== { TEDIElement } ========================================================
 
@@ -1767,21 +1767,21 @@ begin
   if foRemoveCrLf in FEDIFileOptions then
     {$IFDEF OPTIMIZED_STRINGREPLACE}
     FData := JclEDI.StringReplace(FData, NativeCrLf, '', [rfReplaceAll]);
-    {$ELSE}
+    {$ELSE ~OPTIMIZED_STRINGREPLACE}
     FData := SysUtils.StringReplace(FData, NativeCrLf, '', [rfReplaceAll]);
-    {$ENDIF OPTIMIZED_INTERNAL_STRUCTURE}
+    {$ENDIF ~OPTIMIZED_STRINGREPLACE}
   if foRemoveCr in FEDIFileOptions then
     {$IFDEF OPTIMIZED_STRINGREPLACE}
     FData := JclEDI.StringReplace(FData, NativeCarriageReturn, '', [rfReplaceAll]);
-    {$ELSE}
+    {$ELSE ~OPTIMIZED_STRINGREPLACE}
     FData := SysUtils.StringReplace(FData, NativeCarriageReturn, '', [rfReplaceAll]);
-    {$ENDIF OPTIMIZED_STRINGREPLACE}
+    {$ENDIF ~OPTIMIZED_STRINGREPLACE}
   if foRemoveLf in FEDIFileOptions then
     {$IFDEF OPTIMIZED_STRINGREPLACE}
     FData := JclEDI.StringReplace(FData, NativeLineFeed, '', [rfReplaceAll]);
-    {$ELSE}
+    {$ELSE ~OPTIMIZED_STRINGREPLACE}
     FData := SysUtils.StringReplace(FData, NativeLineFeed, '', [rfReplaceAll]);
-    {$ENDIF OPTIMIZED_STRINGREPLACE}
+    {$ENDIF ~OPTIMIZED_STRINGREPLACE}
 
   StartPos := 1;
   if UNASegmentId = Copy(FData, StartPos, Length(UNASegmentId)) then
@@ -1895,10 +1895,10 @@ begin
     try
       {$IFDEF CLR}
       EDIFileStream.ReadStringAnsiBuffer(FData, EDIFileStream.Size);
-      {$ELSE}
+      {$ELSE ~CLR}
       SetLength(FData, EDIFileStream.Size);
       EDIFileStream.Read(Pointer(FData)^, EDIFileStream.Size);
-      {$ENDIF CLR}
+      {$ENDIF ~CLR}
     finally
       EDIFileStream.Free;
     end;
@@ -1929,9 +1929,9 @@ begin
     try
       {$IFDEF CLR}
       EDIFileStream.WriteStringAnsiBuffer(FData);
-      {$ELSE}
+      {$ELSE ~CLR}
       EDIFileStream.Write(Pointer(FData)^, Length(FData));
-      {$ENDIF CLR}
+      {$ENDIF ~CLR}
     finally
       EDIFileStream.Free;
     end;
@@ -1950,9 +1950,9 @@ begin
     try
       {$IFDEF CLR}
       EDIFileStream.WriteStringAnsiBuffer(FData);
-      {$ELSE}
+      {$ELSE ~CLR}
       EDIFileStream.Write(Pointer(FData)^, Length(FData));
-      {$ENDIF CLR}
+      {$ENDIF ~CLR}
     finally
       EDIFileStream.Free;
     end;

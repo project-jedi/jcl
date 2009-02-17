@@ -65,13 +65,13 @@ type
 
   TIterateFunc = function(AUserData: PUserData; const AStr: string; var APtr): Boolean;
   TIterateMethod = function(AUserData: PUserData; const AStr: string; var APtr): Boolean of object;
-  {$ELSE}
+  {$ELSE ~CLR}
   PUserData = Pointer;
   PData = Pointer;
 
   TIterateFunc = function(AUserData: PUserData; const AStr: string; var APtr: PData): Boolean;
   TIterateMethod = function(AUserData: PUserData; const AStr: string; var APtr: PData): Boolean of object;
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 
   {$IFDEF CLR}
   THashNode = class;
@@ -90,7 +90,7 @@ type
 
   THashArray = array of PHashNode;
   PHashArray = THashArray;
-  {$ELSE}
+  {$ELSE ~CLR}
   PPHashNode = ^PHashNode;
   PHashNode = ^THashNode;
   THashNode = record
@@ -106,7 +106,7 @@ type
 
   PHashArray = ^THashArray;
   THashArray = array [0..MaxInt div SizeOf(PHashNode) - 1] of PHashNode;
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 
 
   TStringHashMap = class(TObject)
@@ -232,9 +232,9 @@ function Iterate_Dispose(AUserData: PUserData; const AStr: string; var AData {$I
 begin
   {$IFDEF CLR}
   TObject(AData).Free;
-  {$ELSE}
+  {$ELSE ~CLR}
   Dispose(AData);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
   AData := nil;
   Result := True;
 end;
@@ -243,9 +243,9 @@ function Iterate_FreeMem(AUserData: PUserData; const AStr: string; var AData {$I
 begin
   {$IFDEF CLR}
   TObject(AData).Free;
-  {$ELSE}
+  {$ELSE ~CLR}
   FreeMem(AData);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
   AData := nil;
   Result := True;
 end;
@@ -262,7 +262,7 @@ begin
   if S <> nil then
     Result := S.GetHashCode
 end;
-{$ELSE}
+{$ELSE ~CLR}
 const
   cLongBits = 32;
   cOneEight = 4;
@@ -288,7 +288,7 @@ begin
     Inc(P);
   end;
 end;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 
 function TextHash(const S: string): Cardinal;
 {$IFDEF CLR}
@@ -297,7 +297,7 @@ begin
   if S <> nil then
     Result := S.GetHashCode
 end;
-{$ELSE}
+{$ELSE ~CLR}
 const
   cLongBits = 32;
   cOneEight = 4;
@@ -323,7 +323,7 @@ begin
     Inc(P);
   end;
 end;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 
 function DataHash(var AValue; ASize: Cardinal): THashValue;
 {$IFDEF CLR}
@@ -332,7 +332,7 @@ begin
   if TObject(AValue) <> nil then
     Result := TObject(AValue).GetHashCode
 end;
-{$ELSE}
+{$ELSE ~CLR}
 const
   cLongBits = 32;
   cOneEight = 4;
@@ -356,7 +356,7 @@ begin
     Inc(P);
   end;
 end;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 
 {$IFDEF OVERFLOWCHECKS_ON}
 {$Q+}
@@ -369,9 +369,9 @@ begin
   inherited Create;
   {$IFDEF CLR}
   Assert(ATraits <> nil, RsStringHashMapNoTraits);
-  {$ELSE}
+  {$ELSE ~CLR}
   Assert(ATraits <> nil, LoadResString(@RsStringHashMapNoTraits));
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
   SetHashSize(AHashSize);
   FTraits := ATraits;
 end;
@@ -392,7 +392,7 @@ type
     Str: string;
     Ptr: TObject;
   end;
-  {$ELSE}
+  {$ELSE ~CLR}
   PPCollectNodeNode = ^PCollectNodeNode;
   PCollectNodeNode = ^TCollectNodeNode;
   TCollectNodeNode = record
@@ -400,7 +400,7 @@ type
     Str: string;
     Ptr: Pointer;
   end;
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 
 
 {$IFNDEF CLR}

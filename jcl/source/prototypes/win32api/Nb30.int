@@ -37,9 +37,9 @@ type
     ncb_cmd_cplt: UCHAR; // 0xff => commmand pending
     {$IFDEF _WIN64}
     ncb_reserve: array [0..17] of UCHAR; // reserved, used by BIOS
-    {$ELSE}
+    {$ELSE ~_WIN64}
     ncb_reserve: array [0..9] of UCHAR;  // reserved, used by BIOS
-    {$ENDIF}
+    {$ENDIF ~_WIN64}
     ncb_event: THandle;   // HANDLE to Win32 event which
                          // will be set to the signalled
                          // state when an ASYNCH command

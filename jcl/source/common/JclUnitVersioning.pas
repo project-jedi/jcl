@@ -500,9 +500,9 @@ begin
     SetLength(Buffer, 1024);
     {$IFDEF FPCUNIX}
     if dlsym(Pointer(Modules[I].Instance), '_init') = nil then
-    {$ELSE}
+    {$ELSE ~FPCUNIX}
     if GetModuleFileName(Modules[I].Instance, PChar(Buffer), 1024) = 0 then
-    {$ENDIF}
+    {$ENDIF ~FPCUNIX}
       // This module is no more in memory but has not unregistered itself so
       // unregister it here.
       UnregisterModule(Modules[I]);

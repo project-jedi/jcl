@@ -63,9 +63,9 @@ uses
   {$IFNDEF FPC}
   {$IFDEF CLR}
   System.Runtime.InteropServices, System.Security,
-  {$ELSE}
+  {$ELSE ~CLR}
   AccCtrl,
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
   ActiveX,
   {$ENDIF ~FPC}
   JclBase;

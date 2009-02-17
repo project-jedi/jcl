@@ -1037,9 +1037,9 @@ type
   TWideStringItem = record
     {$IFDEF OWN_WIDESTRING_MEMMGR}
     FString: PWideChar; // "array of WideChar";
-    {$ELSE}
+    {$ELSE ~OWN_WIDESTRING_MEMMGR}
     FString: WideString;
-    {$ENDIF OWN_WIDESTRING_MEMMGR}
+    {$ENDIF ~OWN_WIDESTRING_MEMMGR}
     FObject: TObject;
   end;
 
@@ -1298,11 +1298,11 @@ implementation
 uses
   {$IFDEF HAS_UNIT_RTLCONSTS}
   RtlConsts,
-  {$ELSE}
+  {$ELSE ~HAS_UNIT_RTLCONSTS}
   {$IFNDEF FPC}
   Consts,
   {$ENDIF ~FPC}
-  {$ENDIF HAS_UNIT_RTLCONSTS}
+  {$ENDIF ~HAS_UNIT_RTLCONSTS}
   {$IFDEF UNICODE_BZIP2_DATA}
   BZip2,
   {$ENDIF UNICODE_BZIP2_DATA}
@@ -4728,7 +4728,7 @@ begin
       AddObject(Strings[I], Strings.Objects[I])
       {$ELSE ~SUPPORTS_UNICODE}
       AddObject(StringToWideStringEx(Strings[I], CP), Strings.Objects[I])
-      {$ENDIF SUPPORTS_UNICODE}
+      {$ENDIF ~SUPPORTS_UNICODE}
     end;
   finally
     EndUpdate;
@@ -5501,9 +5501,9 @@ begin
 
   {$IFDEF OWN_WIDESTRING_MEMMGR}
   SetListString(Index, '');
-  {$ELSE}
+  {$ELSE ~OWN_WIDESTRING_MEMMGR}
   FList[Index].FString := '';
-  {$ENDIF OWN_WIDESTRING_MEMMGR}
+  {$ENDIF ~OWN_WIDESTRING_MEMMGR}
   Dec(FCount);
   if Index < FCount then
   begin
@@ -5583,9 +5583,9 @@ begin
     else
       Result := '';
   end;
-  {$ELSE}
+  {$ELSE ~OWN_WIDESTRING_MEMMGR}
   Result := FList[Index].FString;
-  {$ENDIF OWN_WIDESTRING_MEMMGR}
+  {$ENDIF ~OWN_WIDESTRING_MEMMGR}
 end;
 
 function TWideStringList.GetCapacity: Integer;
@@ -5683,11 +5683,11 @@ begin
       SetListString(Index, WideNormalize(S, FNormalizationForm))
     else
       SetListString(Index, S);
-    {$ELSE}
+    {$ELSE ~OWN_WIDESTRING_MEMMGR}
       FString := WideNormalize(S, FNormalizationForm)
     else
       FString := S;
-    {$ENDIF OWN_WIDESTRING_MEMMGR}
+    {$ENDIF ~OWN_WIDESTRING_MEMMGR}
   end;
   Inc(FCount);
   Changed;
@@ -5706,11 +5706,11 @@ begin
     SetListString(Index, WideNormalize(S, FNormalizationForm))
   else
     SetListString(Index, S);
-  {$ELSE}
+  {$ELSE ~OWN_WIDESTRING_MEMMGR}
     FList[Index].FString := WideNormalize(S, FNormalizationForm)
   else
     FList[Index].FString := S;
-  {$ENDIF OWN_WIDESTRING_MEMMGR}
+  {$ENDIF ~OWN_WIDESTRING_MEMMGR}
   Changed;
 end;
 

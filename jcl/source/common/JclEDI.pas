@@ -139,9 +139,9 @@ type
 
   {$IFDEF CLR}
   TCustomData = TObject;
-  {$ELSE}
+  {$ELSE ~CLR}
   TCustomData = Pointer; // backward compatibility
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 
   TEDIDataObject = class(TEDIObject)
   private

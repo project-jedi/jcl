@@ -634,9 +634,9 @@ begin
       Result := Stream.Seek(Longint(Offset), Ord(Origin))
     else
       Result := -1;
-    {$ELSE}
+    {$ELSE ~COMPILER5}
     Result := Stream.Seek(Offset, Origin);
-    {$ENDIF COMPILER5}
+    {$ENDIF ~COMPILER5}
   end
   else
     Result := -1;
@@ -868,9 +868,9 @@ const
 begin
 {$IFDEF KYLIX}
   Result := __lseek(Handle, Offset, SeekOrigins[Origin]);
-{$ELSE}
+{$ELSE ~KYLIX}
   Result := lseek(Handle, Offset, SeekOrigins[Origin]);
-{$ENDIF}
+{$ENDIF ~KYLIX}
 end;
 {$ENDIF LINUX}
 
@@ -913,9 +913,9 @@ begin
     if Handle = INVALID_HANDLE_VALUE then
       {$IFDEF CLR}
       raise EJclStreamError.CreateFmt(RsStreamsCreateError, [FileName]);
-      {$ELSE}
+      {$ELSE ~CLR}
       raise EJclStreamError.CreateResFmt(@RsStreamsCreateError, [FileName]);
-      {$ENDIF CLR}
+      {$ENDIF ~CLR}
   end
   else
   begin
@@ -924,9 +924,9 @@ begin
     if Handle = INVALID_HANDLE_VALUE then
       {$IFDEF CLR}
       raise EJclStreamError.CreateFmt(RsStreamsOpenError, [FileName]);
-      {$ELSE}
+      {$ELSE ~CLR}
       raise EJclStreamError.CreateResFmt(@RsStreamsOpenError, [FileName]);
-      {$ENDIF CLR}
+      {$ENDIF ~CLR}
   end;
 end;
 

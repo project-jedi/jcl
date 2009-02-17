@@ -191,7 +191,7 @@ type
   PLMSTR = ^LMSTR;
   {$NODEFINE PLMSTR}
 
-{$ELSE}
+{$ELSE ~LM_USE_UNICODE}
 
 type
   LMSTR = LPSTR;
@@ -199,7 +199,7 @@ type
   LMCSTR = LPCSTR;
   {$EXTERNALSYM LMCSTR}
 
-{$ENDIF}
+{$ENDIF ~LM_USE_UNICODE}
 
 //
 //        Message File Names

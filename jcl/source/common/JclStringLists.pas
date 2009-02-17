@@ -188,9 +188,9 @@ type
     {$IFDEF CLR}
     function ExtractWords(const AText: string): IJclStringList; overload;
     function ExtractWords(const AText: string; const ADelims: TSetOfAnsiChar; AClearBeforeAdd: Boolean = True): IJclStringList; overload;
-    {$ELSE}
+    {$ELSE ~CLR}
     function ExtractWords(const AText: string; const ADelims: TSetOfAnsiChar = [#0..' ']; AClearBeforeAdd: Boolean = True): IJclStringList;
-    {$ENDIF CLR}
+    {$ENDIF ~CLR}
     function Last: string;
     function First: string;
     function LastIndex: Integer;
@@ -248,10 +248,9 @@ implementation
 uses
   TypInfo,
   JclFileUtils,
-  {$IFDEF CLR}
-  {$ELSE}
+  {$IFNDEF CLR}
   JclPCRE,
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
   JclStrings;
 
 type
@@ -285,10 +284,10 @@ type
     {$IFDEF CLR}
     FRegEx: System.Text.RegularExpressions.Regex;
     FCustomSortCompare: TJclStringListSortCompare;
-    {$ELSE}
+    {$ELSE ~CLR}
     FLastRegExPattern: string;
     FRegEx: TJclAnsiRegEx;
-    {$ENDIF CLR}
+    {$ENDIF ~CLR}
     FUpdateControl: TUpdateControl;
     function AutoUpdateControl: IInterface;
     function CanFreeObjects: Boolean;
@@ -356,13 +355,12 @@ type
     function SortByNameCmp(Index1, Index2: Integer): Integer;
     {$ENDIF CLR}
   protected
-    {$IFDEF CLR}
-    {$ELSE}
+    {$IFNDEF CLR}
     FRefCount: Integer;
     function QueryInterface(const IID: TGUID; out Obj): HRESULT; stdcall;
     function _AddRef: Integer; stdcall;
     function _Release: Integer; stdcall;
-    {$ENDIF CLR}
+    {$ENDIF ~CLR}
     {$IFNDEF HAS_TSTRINGS_COMPARESTRINGS}
     function CompareStrings(const S1, S2: string): Integer; virtual;
     {$ENDIF ~HAS_TSTRINGS_COMPARESTRINGS}
@@ -389,9 +387,9 @@ type
     {$IFDEF CLR}
     function ExtractWords(const AText: string): IJclStringList; overload;
     function ExtractWords(const AText: string; const ADelims: TSetOfAnsiChar; AClearBeforeAdd: Boolean = True): IJclStringList; overload;
-    {$ELSE}
+    {$ELSE ~CLR}
     function ExtractWords(const AText: string; const ADelims: TSetOfAnsiChar = [#0..' ']; AClearBeforeAdd: Boolean = True): IJclStringList;
-    {$ENDIF CLR}
+    {$ENDIF ~CLR}
     function Last: string;
     function First: string;
     function LastIndex: Integer;
@@ -493,7 +491,7 @@ begin
       Add(BoolToStr[A[I] as Boolean])
     else
       Add(A[I].ToString);
-    {$ELSE}
+    {$ELSE ~CLR}
     case A[I].VType of
       vtInteger:
         Add(IntToStr(A[I].VInteger));
@@ -528,7 +526,7 @@ begin
         Add(string(A[I].VUnicodeString));
       {$ENDIF SUPPORTS_UNICODE_STRING}
     end;
-    {$ENDIF CLR}
+    {$ENDIF ~CLR}
   Result := FSelfAsInterface;
 end;
 
@@ -714,7 +712,7 @@ begin
     FRegEx := System.Text.RegularExpressions.Regex.Create(APattern, RegexOptions.IgnoreCase);
   { TODO -oAHUser : I don't think this is correct }
   Result := FRegEx.IsMatch(S, APattern);
-  {$ELSE}
+  {$ELSE ~CLR}
   if FRegEx = nil then
     FRegEx := TJclAnsiRegEx.Create;
   if FLastRegExPattern <> APattern then
@@ -729,7 +727,7 @@ begin
     FLastRegExPattern := APattern;
   end;
   Result := FRegEx.Match(S);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 destructor TJclStringListImpl.Destroy;
@@ -834,14 +832,14 @@ begin
   FUpdateControl := TUpdateControl.Create(Self);
   {$IFDEF CLR}
   FSelfAsInterface := Self;
-  {$ELSE}
+  {$ELSE ~CLR}
   if QueryInterface(IJclStringList, FSelfAsInterface) <> 0 then
     {$IFDEF COMPILER5}
     RunError(228 { reIntfCastError });
-    {$ELSE}
+    {$ELSE ~COMPILER5}
     System.Error(reIntfCastError);
-    {$ENDIF COMPILER5}
-  {$ENDIF CLR}
+    {$ENDIF ~COMPILER5}
+  {$ENDIF ~CLR}
 end;
 
 function TJclStringListImpl.GetLists(Index: Integer): IJclStringList;
@@ -1102,7 +1100,7 @@ end;
 function TJclStringListImpl_LocalSortByName(List: TStringList; Index1, Index2: Integer): Integer;
 begin
   { It is not possible to call TStringList.CompareStrings from here because of
-    assembly boundaries. } 
+    assembly boundaries. }
   Result := TJclStringListImpl(List).SortByNameCmp(Index1, Index2);
 end;
 
@@ -1112,7 +1110,7 @@ begin
   Result := FSelfAsInterface;
 end;
 
-{$ELSE} // CLR
+{$ELSE ~CLR}
 
 function TJclStringListImpl.Sort(ACompareFunction: TJclStringListSortCompare = nil): IJclStringList;
 
@@ -1159,7 +1157,7 @@ begin
   inherited CustomSort(@LocalSortByName);
   Result := FSelfAsInterface;
 end;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 
 function TJclStringListImpl.Insert(Index: Integer; const S: string): IJclStringList;
 begin

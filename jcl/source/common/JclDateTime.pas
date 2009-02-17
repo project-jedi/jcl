@@ -65,11 +65,11 @@ uses
   {$IFDEF CLR20}
   System.Runtime.InteropServices.ComTypes,
   {$ENDIF CLR20}
-  {$ELSE}
+  {$ELSE ~CLR}
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
   {$IFDEF HAS_UNIT_TYPES}
   Types,
   {$ENDIF HAS_UNIT_TYPES}
@@ -356,9 +356,9 @@ begin
   if not Val then
     {$IFDEF CLR}
     raise EJclDateTimeError.Create(RsDateConversion);
-    {$ELSE}
+    {$ELSE ~CLR}
     raise EJclDateTimeError.CreateRes(@RsDateConversion);
-    {$ENDIF CLR}
+    {$ENDIF ~CLR}
 end;
 
 function CenturyBaseYear(const DateTime: TDateTime): Integer;
@@ -687,7 +687,7 @@ function DateTimeToLocalDateTime(DateTime: TDateTime): TDateTime;
 begin
   Result := System.TimeZone.CurrentTimeZone.ToLocalTime(DateTime);
 end;
-{$ELSE}
+{$ELSE ~CLR}
 var
   TimeZoneInfo: TTimeZoneInformation;
 begin
@@ -701,7 +701,7 @@ begin
     raise EJclDateTimeError.CreateRes(@RsMakeUTCTime);
   end;
 end;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 {$ENDIF MSWINDOWS}
 
 {$IFDEF UNIX}
@@ -718,9 +718,9 @@ begin
   UTCTime := gmtime(@TimeNow)^;
   Local   := localtime(@TimeNow)^;
   Offset  := difftime(mktime(UTCTime), mktime(Local));
-  {$ELSE}
+  {$ELSE ~LINUX}
   Offset := -TZSeconds;
-  {$ENDIF LINUX}
+  {$ENDIF ~LINUX}
   Result  := ((DateTime * SecsPerDay) - Offset) / SecsPerDay;
 end;
 {$ENDIF UNIX}
@@ -731,7 +731,7 @@ function LocalDateTimeToDateTime(DateTime: TDateTime): TDateTime;
 begin
   Result := System.TimeZone.CurrentTimeZone.ToUniversalTime(DateTime);
 end;
-{$ELSE}
+{$ELSE ~CLR}
 var
   TimeZoneInfo: TTimeZoneInformation;
 begin
@@ -745,7 +745,7 @@ begin
     raise EJclDateTimeError.CreateRes(@RsMakeUTCTime);
   end;
 end;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 {$ENDIF MSWINDOWS}
 
 {$IFDEF UNIX}
@@ -762,9 +762,9 @@ begin
   UTCTime := gmtime(@TimeNow)^;
   Local   := localtime(@TimeNow)^;
   Offset  := difftime(mktime(UTCTime), mktime(Local));
-  {$ELSE}
+  {$ELSE ~LINUX}
   Offset := -TZSeconds;
-  {$ENDIF LINUX}
+  {$ENDIF ~LINUX}
   Result  := ((DateTime * SecsPerDay) + Offset) / SecsPerDay;
 end;
 {$ENDIF UNIX}
@@ -798,10 +798,10 @@ function FileTimeToDateTime(const FileTime: TFileTime): TDateTime;
 begin
   {$IFDEF CLR}
   Result := System.DateTime.FromFileTime(Int64(FileTime.dwHighDateTime) shl 32 or FileTime.dwLowDateTime);
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := Int64(FileTime) / FileTimeStep;
   Result := Result + FileTimeBase;
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 {$IFNDEF CLR}
@@ -838,9 +838,9 @@ begin
   {$IFDEF CLR}
   Result.dwLowDateTime := F64 and $00000000FFFFFFFF;
   Result.dwHighDateTime := F64 shr 32;
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := TFileTime(F64);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 {$IFNDEF CLR}
@@ -1191,9 +1191,9 @@ begin
   FT1 := Int64(FileTime1.dwHighDateTime) shl 32 or FileTime1.dwLowDateTime;
   FT2 := Int64(FileTime2.dwHighDateTime) shl 32 or FileTime2.dwLowDateTime;
   Result := FATDatesEqual(FT1, FT2);
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := FATDatesEqual(Int64(FileTime1), Int64(FileTime2));
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 // Conversion Unix time <--> TDateTime / FileTime, constants

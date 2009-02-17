@@ -101,7 +101,7 @@ type
     FirstElem: PJclHashElem;
   end;
   PJclHashRecord = TJclHashRecord;
-  {$ELSE}
+  {$ELSE ~CLR}
   PJclHashElem = ^TJclHashElem;
   TJclHashElem = packed record
     Next: PJclHashElem;
@@ -116,7 +116,7 @@ type
       hkList: (List: PJclHashList);
       hkDirect: (FirstElem: PJclHashElem);
   end;
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 
   TJclSimpleHashTable = class(TObject)
   private
@@ -3544,9 +3544,9 @@ begin
   //XXX
   {$IFDEF CLR}
   FList := TJclHashRecord.Create;
-  {$ELSE}
+  {$ELSE ~CLR}
   New(FList);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
   FList.Count := 0;
   FList.Kind := hkDirect;
   FList.FirstElem := nil;
@@ -3567,9 +3567,9 @@ begin
   //XXX
   {$IFDEF CLR}
   FList.FirstElem := TJclHashElem.Create;
-  {$ELSE}
+  {$ELSE ~CLR}
   New(FList.FirstElem);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
   //FList.FirstElem.Value := AName;
   //FList.FirstElem.Obj := nil;
 end;

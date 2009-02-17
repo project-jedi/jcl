@@ -1263,9 +1263,9 @@ begin
       FoundStream := True;
       {$IFDEF FPC}
       Data.Size := Header.Size.QuadPart;
-      {$ELSE}
+      {$ELSE ~FPC}
       Data.Size := Header.Size;
-      {$ENDIF FPC}
+      {$ENDIF ~FPC}
       Data.Name := StreamName;
       Data.Attributes := Header.dwStreamAttributes;
       Data.StreamId := TStreamId(Header.dwStreamId);
@@ -1278,11 +1278,11 @@ begin
     BytesToSeek.QuadPart := Header.Size.QuadPart;
     if (Header.Size.QuadPart <> 0) and (not JclWin32.BackupSeek(Data.Internal.FileHandle, BytesToSeek.LowPart,
          BytesToSeek.HighPart, Lo, Hi, Data.Internal.Context)) then
-    {$ELSE}
+    {$ELSE ~FPC}
     BytesToSeek.QuadPart := Header.Size;
     if (Header.Size <> 0) and (not JclWin32.BackupSeek(Data.Internal.FileHandle, BytesToSeek.LowPart,
       BytesToSeek.HighPart, Lo, Hi, Data.Internal.Context)) then
-    {$ENDIF FPC}
+    {$ENDIF ~FPC}
     begin
       SetLastError(ERROR_READ_FAULT);
       Exit;

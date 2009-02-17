@@ -478,9 +478,9 @@ begin
     False, CREATE_NEW_CONSOLE or CREATE_NEW_PROCESS_GROUP, Environment, nil,
     {$IFDEF FPC}
     @StartUpInfo, @ProcInfo) then
-    {$ELSE}
+    {$ELSE ~FPC}
     StartUpInfo, ProcInfo) then
-    {$ENDIF FPC}
+    {$ENDIF ~FPC}
   begin
     case GetLastError of
       ERROR_PRIVILEGE_NOT_HELD:

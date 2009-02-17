@@ -46,10 +46,10 @@ function AdjustTokenPrivileges(TokenHandle: THandle; DisableAllPrivileges: BOOL;
   {$IFDEF CLR}
   out PreviousState: TTokenPrivileges;
   out ReturnLength: DWORD
-  {$ELSE}
+  {$ELSE ~CLR}
   PreviousState: PTokenPrivileges;
   ReturnLength: PDWORD
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
   ): BOOL; stdcall;
   {$IFDEF CLR} external advapi32 name 'AdjustTokenPrivileges';{$ENDIF}
 {$EXTERNALSYM AdjustTokenPrivileges}

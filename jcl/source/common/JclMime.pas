@@ -104,7 +104,7 @@ function MimeDecodePartial(const InputBuffer: TDynByteArray; const InputByteCoun
 function MimeDecodePartialEnd(out OutputBuffer: TDynByteArray; const ByteBuffer: Cardinal;
   const ByteBufferSpace: Cardinal): Cardinal; overload;
 
-{$ELSE}
+{$ELSE ~CLR}
 procedure MimeEncode(const InputBuffer; const InputByteCount: Cardinal; out OutputBuffer);
 procedure MimeEncodeNoCRLF(const InputBuffer; const InputByteCount: Cardinal; out OutputBuffer);
 procedure MimeEncodeFullLines(const InputBuffer; const InputByteCount: Cardinal; out OutputBuffer);
@@ -113,7 +113,7 @@ function MimeDecodePartial(const InputBuffer; const InputByteCount: Cardinal; ou
   var ByteBuffer: Cardinal; var ByteBufferSpace: Cardinal): Cardinal;
 function MimeDecodePartialEnd(out OutputBuffer; const ByteBuffer: Cardinal;
   const ByteBufferSpace: Cardinal): Cardinal;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 procedure MimeEncodeFile(const InputFileName, OutputFileName: TFileName);
 procedure MimeEncodeFileNoCRLF(const InputFileName, OutputFileName: TFileName);
 procedure MimeDecodeFile(const InputFileName, OutputFileName: TFileName);
@@ -234,7 +234,7 @@ function MimeDecodePartialEnd(out OutputBuffer: TDynByteArray; const ByteBuffer:
 begin
   Result := MimeDecodePartialEnd(OutputBuffer, 0, ByteBuffer, ByteBufferSpace);
 end;
-{$ELSE}
+{$ELSE ~CLR}
 type
   PByte4 = ^TByte4;
   TByte4 = packed record
@@ -250,7 +250,7 @@ type
     B2: Byte;
     B3: Byte;
   end;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 
 // Wrapper functions & procedures
 function MimeEncodeString(const S: AnsiString): AnsiString;
@@ -267,11 +267,11 @@ begin
     SetLength(Bytes, MimeEncodedSize(L));
     MimeEncode(BytesOf(S), 0, L, Bytes, 0);
     Result := Bytes;
-    {$ELSE}
+    {$ELSE ~CLR}
     L := PCardinal(Cardinal(S) - 4)^;
     SetLength(Result, MimeEncodedSize(L));
     MimeEncode(Pointer(S)^, L, Pointer(Result)^);
-    {$ENDIF CLR}
+    {$ENDIF ~CLR}
   end
   else
     Result := '';
@@ -291,11 +291,11 @@ begin
     SetLength(Bytes, MimeEncodedSizeNoCRLF(L));
     MimeEncodeNoCRLF(BytesOf(S), 0, L, Bytes, 0);
     Result := Bytes;
-    {$ELSE}
+    {$ELSE ~CLR}
     L := PCardinal(Cardinal(S) - 4)^;
     SetLength(Result, MimeEncodedSizeNoCRLF(L));
     MimeEncodeNoCRLF(Pointer(S)^, L, Pointer(Result)^);
-    {$ENDIF CLR}
+    {$ENDIF ~CLR}
   end
   else
     Result := '';
@@ -320,7 +320,7 @@ begin
     Inc(L, MimeDecodePartialEnd(Bytes, 0 + L, ByteBuffer, ByteBufferSpace));
     SetLength(Bytes, L);
     Result := Bytes;
-    {$ELSE}
+    {$ELSE ~CLR}
     L := PCardinal(Cardinal(S) - 4)^;
     SetLength(Result, MimeDecodedSize(L));
     ByteBuffer := 0;
@@ -328,7 +328,7 @@ begin
     L := MimeDecodePartial(Pointer(S)^, L, Pointer(Result)^, ByteBuffer, ByteBufferSpace);
     Inc(L, MimeDecodePartialEnd(Pointer(Cardinal(Result) + L)^, ByteBuffer, ByteBufferSpace));
     SetLength(Result, L);
-    {$ENDIF CLR}
+    {$ENDIF ~CLR}
   end
   else
     Result := '';
@@ -369,7 +369,7 @@ begin
   else
     PassWord := '';
 end;
-{$ELSE}
+{$ELSE ~CLR}
 var
   DecodedPtr, P: PAnsiChar;
   I, L: Cardinal;
@@ -409,7 +409,7 @@ begin
 
   FreeMem(DecodedPtr);
 end;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 
 // Helper functions
 function MimeEncodedSize(const InputSize: Cardinal): Cardinal;
@@ -440,17 +440,17 @@ var
 begin
   {$IFDEF CLR}
   MimeEncodeFullLines(InputBuffer, InputOffset, InputByteCount, OutputBuffer, OutputOffset);
-  {$ELSE}
+  {$ELSE ~CLR}
   MimeEncodeFullLines(InputBuffer, InputByteCount, OutputBuffer);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
   IDelta := InputByteCount div MIME_DECODED_LINE_BREAK; // Number of lines processed so far.
   ODelta := IDelta * (MIME_ENCODED_LINE_BREAK + 2);
   IDelta := IDelta * MIME_DECODED_LINE_BREAK;
   {$IFDEF CLR}
   MimeEncodeNoCRLF(InputBuffer, InputOffset + IDelta, InputByteCount - IDelta, OutputBuffer, OutputOffset + ODelta);
-  {$ELSE}
+  {$ELSE ~CLR}
   MimeEncodeNoCRLF(Pointer(Cardinal(@InputBuffer) + IDelta)^, InputByteCount - IDelta, Pointer(Cardinal(@OutputBuffer) + ODelta)^);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 {$IFDEF CLR}
@@ -504,7 +504,7 @@ begin
     Inc(InnerLimit, MIME_DECODED_LINE_BREAK);
   until InnerLimit > OuterLimit;
 end;
-{$ELSE}
+{$ELSE ~CLR}
 procedure MimeEncodeFullLines(const InputBuffer; const InputByteCount: Cardinal; out OutputBuffer);
 var
   B, InnerLimit, OuterLimit: Cardinal;
@@ -554,7 +554,7 @@ begin
     Inc(InnerLimit, MIME_DECODED_LINE_BREAK);
   until InnerLimit > OuterLimit;
 end;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 
 {$IFDEF CLR}
 procedure MimeEncodeNoCRLF(const InputBuffer: TDynByteArray; InputOffset: Cardinal;
@@ -623,7 +623,7 @@ begin
       end;
   end;
 end;
-{$ELSE}
+{$ELSE ~CLR}
 procedure MimeEncodeNoCRLF(const InputBuffer; const InputByteCount: Cardinal; out OutputBuffer);
 var
   B, InnerLimit, OuterLimit: Cardinal;
@@ -689,7 +689,7 @@ begin
       end;
   end;
 end;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 
 // Decoding Core
 function MimeDecode(const InputBuffer {$IFDEF CLR}: TDynByteArray; InputOffset: Cardinal {$ENDIF CLR};
@@ -702,10 +702,10 @@ begin
   {$IFDEF CLR}
   Result := MimeDecodePartial(InputBuffer, InputOffset, InputByteCount, OutputBuffer, OutputOffset, ByteBuffer, ByteBufferSpace);
   Inc(Result, MimeDecodePartialEnd(OutputBuffer, OutputOffset + Result, ByteBuffer, ByteBufferSpace));
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := MimeDecodePartial(InputBuffer, InputByteCount, OutputBuffer, ByteBuffer, ByteBufferSpace);
   Inc(Result, MimeDecodePartialEnd(Pointer(Cardinal(@OutputBuffer) + Result)^, ByteBuffer, ByteBufferSpace));
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 {$IFDEF CLR}
@@ -755,7 +755,7 @@ begin
   else
     Result := 0;
 end;
-{$ELSE}
+{$ELSE ~CLR}
 function MimeDecodePartial(const InputBuffer; const InputByteCount: Cardinal; out OutputBuffer;
   var ByteBuffer: Cardinal; var ByteBufferSpace: Cardinal): Cardinal;
 var
@@ -801,7 +801,7 @@ begin
   else
     Result := 0;
 end;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 
 function MimeDecodePartialEnd(out OutputBuffer {$IFDEF CLR}: TDynByteArray; OutputOffset: Cardinal {$ENDIF CLR};
   const ByteBuffer: Cardinal; const ByteBufferSpace: Cardinal): Cardinal;
@@ -816,11 +816,11 @@ begin
         OutputBuffer[OutputOffset + 1] := Byte(LByteBuffer);
         LByteBuffer := LByteBuffer shr 8;
         OutputBuffer[OutputOffset + 0] := Byte(LByteBuffer);
-        {$ELSE}
+        {$ELSE ~CLR}
         PByte3(@OutputBuffer)^.B2 := Byte(LByteBuffer);
         LByteBuffer := LByteBuffer shr 8;
         PByte3(@OutputBuffer)^.B1 := Byte(LByteBuffer);
-        {$ENDIF CLR}
+        {$ENDIF ~CLR}
         Result := 2;
       end;
     2:
@@ -828,9 +828,9 @@ begin
         LByteBuffer := ByteBuffer shr 4;
         {$IFDEF CLR}
         OutputBuffer[OutputOffset + 0] := Byte(LByteBuffer);
-        {$ELSE}
+        {$ELSE ~CLR}
         PByte3(@OutputBuffer)^.B1 := Byte(LByteBuffer);
-        {$ENDIF CLR}
+        {$ENDIF ~CLR}
         Result := 1;
       end;
   else
@@ -896,9 +896,9 @@ var
   InputBuffer: array [0..MIME_BUFFER_SIZE - 1] of Byte;
   {$IFDEF CLR}
   OutputBuffer: array of Byte;
-  {$ELSE}
+  {$ELSE ~CLR}
   OutputBuffer: array [0..(MIME_BUFFER_SIZE + 2) div 3 * 4 + MIME_BUFFER_SIZE div MIME_DECODED_LINE_BREAK * 2 - 1] of Byte;
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
   BytesRead: Cardinal;
   IDelta, ODelta: Cardinal;
 begin
@@ -919,11 +919,11 @@ begin
   IDelta := BytesRead div MIME_DECODED_LINE_BREAK; // Number of lines processed.
   ODelta := IDelta * (MIME_ENCODED_LINE_BREAK + 2);
   IDelta := IDelta * MIME_DECODED_LINE_BREAK;
-  {$IFDEF ClR}
+  {$IFDEF CLR}
   MimeEncodeNoCRLF(InputBuffer, IDelta, BytesRead - IDelta, OutputBuffer, ODelta);
-  {$ELSE}
+  {$ELSE ~CLR}
   MimeEncodeNoCRLF(Pointer(Cardinal(@InputBuffer) + IDelta)^, BytesRead - IDelta, Pointer(Cardinal(@OutputBuffer) + ODelta)^);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 
   OutputStream.Write(OutputBuffer, MimeEncodedSize(BytesRead));
 end;
@@ -933,9 +933,9 @@ var
   InputBuffer: array [0..MIME_BUFFER_SIZE - 1] of Byte;
   {$IFDEF CLR}
   OutputBuffer: array of Byte;
-  {$ELSE}
+  {$ELSE ~CLR}
   OutputBuffer: array [0..((MIME_BUFFER_SIZE + 2) div 3) * 4 - 1] of Byte;
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
   BytesRead: Cardinal;
 begin
   BytesRead := InputStream.Read(InputBuffer, SizeOf(InputBuffer));
@@ -960,9 +960,9 @@ var
   InputBuffer: array [0..MIME_BUFFER_SIZE - 1] of Byte;
   {$IFDEF CLR}
   OutputBuffer: array of Byte;
-  {$ELSE}
+  {$ELSE ~CLR}
   OutputBuffer: array [0..(MIME_BUFFER_SIZE + 3) div 4 * 3 - 1] of Byte;
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
   BytesRead: Cardinal;
 begin
   ByteBuffer := 0;

@@ -119,18 +119,18 @@ begin
   if Result = 0 then
     {$IFDEF CLR}
     raise EJclMathError.Create(RsEmptyArray);
-    {$ELSE}
+    {$ELSE ~CLR}
     raise EJclMathError.CreateRes(@RsEmptyArray);
-    {$ENDIF CLR}
+    {$ENDIF ~CLR}
 end;
 
 procedure InvalidSampleSize(SampleSize: Integer);
 begin
   {$IFDEF CLR}
   raise EJclStatisticsError.CreateFmt(RsInvalidSampleSize, [SampleSize]);
-  {$ELSE}
+  {$ELSE ~CLR}
   raise EJclStatisticsError.CreateResFmt(@RsInvalidSampleSize, [SampleSize]);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function GetSampleSize(const Sample: TDynFloatArray; MinValidSize: Integer = 1): Integer;
@@ -158,9 +158,9 @@ begin
     if X[I] <= PrecisionTolerance then
       {$IFDEF CLR}
       raise EJclMathError.Create(RsNonPositiveArray);
-      {$ELSE}
+      {$ELSE ~CLR}
       raise EJclMathError.CreateRes(@RsNonPositiveArray);
-      {$ENDIF CLR}
+      {$ENDIF ~CLR}
     Result := Result * X[I];
   end;
   Result := Power(Result, 1 / N);
@@ -177,9 +177,9 @@ begin
     if X[I] <= PrecisionTolerance then
       {$IFDEF CLR}
       raise EJclMathError.Create(RsNonPositiveArray);
-      {$ELSE}
+      {$ELSE ~CLR}
       raise EJclMathError.CreateRes(@RsNonPositiveArray);
-      {$ENDIF CLR}
+      {$ENDIF ~CLR}
     Result := Result + 1 / X[I];
   end;
   Result := N / Result;

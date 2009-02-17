@@ -58,11 +58,11 @@ uses
   {$ENDIF UNITVERSIONING}
   {$IFDEF CLR}
   Variants,
-  {$ELSE}
+  {$ELSE ~CLR}
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
   SysUtils, Classes, TypInfo, SyncObjs,
   JclBase;
 
@@ -594,11 +594,11 @@ uses
   {$ENDIF UNIX}
   {$IFDEF CLR}
   System.Text,
-  {$ELSE}
+  {$ELSE ~CLR}
   {$IFDEF MSWINDOWS}
   JclConsole,
   {$ENDIF MSWINDOWS}
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
   Contnrs,
   {$IFDEF HAS_UNIT_ANSISTRINGS}
   AnsiStrings,
@@ -1058,9 +1058,9 @@ begin
     if FileMappingHandle = 0 then
       {$IFDEF COMPILER6_UP}
       RaiseLastOSError;
-      {$ELSE}
+      {$ELSE ~COMPILER6_UP}
       RaiseLastWin32Error;
-      {$ENDIF COMPILER6_UP}
+      {$ENDIF ~COMPILER6_UP}
   end;
 
   // map view
@@ -1070,9 +1070,9 @@ begin
     try
       {$IFDEF COMPILER6_UP}
       RaiseLastOSError;
-      {$ELSE}
+      {$ELSE ~COMPILER6_UP}
       RaiseLastWin32Error;
-      {$ENDIF COMPILER6_UP}
+      {$ENDIF ~COMPILER6_UP}
     except
       CloseHandle(FileMappingHandle);
       raise;
@@ -2013,9 +2013,9 @@ procedure TJclNumericFormat.InvalidDigit(Digit: Char);
 begin
   {$IFDEF CLR}
   raise EConvertError.CreateFmt(RsInvalidDigit, [Base, Digit]);
-  {$ELSE}
+  {$ELSE ~CLR}
   raise EConvertError.CreateResFmt(@RsInvalidDigit, [Base, Digit]);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function TJclNumericFormat.Digit(DigitValue: TDigitValue): Char;
@@ -2060,9 +2060,9 @@ procedure TJclNumericFormat.GetMantissaExp(const Value: Float;
 const
   {$IFDEF FPC}
   InfMantissa: array [Boolean] of string[4] = ('inf', '-inf');
-  {$ElSE}
+  {$ElSE ~FPC}
   InfMantissa: array [Boolean] of string = ('inf', '-inf');
-  {$ENDIF FPC}
+  {$ENDIF ~FPC}
 var
   BlockDigits: TDigitCount;
   IntDigits, FracDigits: Integer;
@@ -2131,9 +2131,9 @@ has not been investigated if ExponentDivision <= 12 is safe. }
 
   {$IFDEF CLR}
   sb := StringBuilder.Create(IntToStr(K, FirstDigitPos));;
-  {$ELSE}
+  {$ELSE ~CLR}
   Mantissa := IntToStr(K, FirstDigitPos);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 
   FracDigits := Prec - IntDigits;
   if FracDigits > NumberOfFractionalDigits then
@@ -2146,12 +2146,12 @@ has not been investigated if ExponentDivision <= 12 is safe. }
     // allocate sufficient space for point + digits + digit block separators
     sb.Length := FracDigits * 2 + J;
     sb[J - 1] := FractionalPartSeparator;
-    {$ELSE}
+    {$ELSE ~CLR}
     J := Length(Mantissa) + 1;
     // allocate sufficient space for point + digits + digit block separators
     SetLength(Mantissa, FracDigits * 2 + J);
     Mantissa[J] := FractionalPartSeparator;
-    {$ENDIF CLR}
+    {$ENDIF ~CLR}
     I := J + 1;
     BlockDigits := 0;
     while FracDigits > 0 do
@@ -2160,18 +2160,18 @@ has not been investigated if ExponentDivision <= 12 is safe. }
       begin
         {$IFDEF CLR}
         sb[I - 1] := DigitBlockSeparator;
-        {$ELSE}
+        {$ELSE ~CLR}
         Mantissa[I] := DigitBlockSeparator;
-        {$ENDIF CLR}
+        {$ENDIF ~CLR}
         Inc(I);
         BlockDigits := 0;
       end;
       X := Frac(X) * Base;
       {$IFDEF CLR}
       sb[I - 1] := GetDigit(X);
-      {$ELSE}
+      {$ELSE ~CLR}
       Mantissa[I] := GetDigit(X);
-      {$ENDIF CLR}
+      {$ENDIF ~CLR}
       Inc(I);
       Inc(BlockDigits);
       Dec(FracDigits);
@@ -2179,10 +2179,10 @@ has not been investigated if ExponentDivision <= 12 is safe. }
     {$IFDEF CLR}
     sb[I - 1] := #0;
     StrResetLength(sb);
-    {$ELSE}
+    {$ELSE ~CLR}
     Mantissa[I] := #0;
     StrResetLength(Mantissa);
-    {$ENDIF CLR}
+    {$ENDIF ~CLR}
   end;
 
   if Frac(X) >= 0.5 then
@@ -2213,7 +2213,7 @@ has not been investigated if ExponentDivision <= 12 is safe. }
         Break;
       end;
     end;
-    {$ELSE}
+    {$ELSE ~CLR}
     for I := Length(Mantissa) downto 1 do
     begin
       if Mantissa[I] = HighDigit then
@@ -2237,7 +2237,7 @@ has not been investigated if ExponentDivision <= 12 is safe. }
         Break;
       end;
     end;
-    {$ENDIF CLR}
+    {$ENDIF ~CLR}
   end;
   {$IFDEF CLR}
   Mantissa := sb.ToString();
@@ -2806,9 +2806,9 @@ begin
     if Result then
       {$IFDEF CLR}
       raise EJclConversionError.CreateFmt(RsStringToBoolean, [S]);
-      {$ELSE}
+      {$ELSE ~CLR}
       raise EJclConversionError.CreateResFmt(@RsStringToBoolean, [S]);
-      {$ENDIF CLR}
+      {$ENDIF ~CLR}
   end;
 end;
 
@@ -2852,13 +2852,13 @@ end;
 
 function JclGUIDToString(const GUID: TGUID): string;
 begin
-  {$IFDEf CLR}
+  {$IFDEF CLR}
   Result := GUID.ToString();
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := Format('{%.8x-%.4x-%.4x-%.2x%.2x-%.2x%.2x%.2x%.2x%.2x%.2x}',
     [GUID.D1, GUID.D2, GUID.D3, GUID.D4[0], GUID.D4[1], GUID.D4[2],
      GUID.D4[3], GUID.D4[4], GUID.D4[5], GUID.D4[6], GUID.D4[7]]);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function JclStringToGUID(const S: string): TGUID;
@@ -2867,9 +2867,9 @@ begin
     (S[20] <> '-') or (S[25] <> '-') or (S[38] <> '}') then
     {$IFDEF CLR}
     raise EJclConversionError.CreateFmt(RsInvalidGUIDString, [S]);
-    {$ELSE}
+    {$ELSE ~CLR}
     raise EJclConversionError.CreateResFmt(@RsInvalidGUIDString, [S]);
-    {$ENDIF CLR}
+    {$ENDIF ~CLR}
 
   {$IFDEF CLR}
   Result := System.GUID.Create(
@@ -2884,7 +2884,7 @@ begin
     Byte(StrToInt('$' + Copy(S, 32, 2))),
     Byte(StrToInt('$' + Copy(S, 34, 2))),
     Byte(StrToInt('$' + Copy(S, 36, 2))));
-  {$ELSE}
+  {$ELSE ~CLR}
   Result.D1 := StrToInt('$' + Copy(S, 2, 8));
   Result.D2 := StrToInt('$' + Copy(S, 11, 4));
   Result.D3 := StrToInt('$' + Copy(S, 16, 4));
@@ -2896,7 +2896,7 @@ begin
   Result.D4[5] := StrToInt('$' + Copy(S, 32, 2));
   Result.D4[6] := StrToInt('$' + Copy(S, 34, 2));
   Result.D4[7] := StrToInt('$' + Copy(S, 36, 2));
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 // add items at the end

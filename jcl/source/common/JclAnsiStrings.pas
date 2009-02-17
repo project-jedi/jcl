@@ -473,7 +473,7 @@ begin
        CurrType := 0;
     end;
     {$DEFINE CHAR_TYPES_INITIALIZED}
-    {$ELSE}
+    {$ELSE ~CLR}
     {$IFDEF MSWINDOWS}
     GetStringTypeExA(LOCALE_USER_DEFAULT, CT_CTYPE1, @CurrChar, SizeOf(AnsiChar), CurrType);
     {$DEFINE CHAR_TYPES_INITIALIZED}
@@ -500,7 +500,7 @@ begin
       CurrType := CurrType or C1_ALPHA;
     {$DEFINE CHAR_TYPES_INITIALIZED}
     {$ENDIF LINUX}
-    {$ENDIF CLR}
+    {$ENDIF ~CLR}
     AnsiCharTypes[CurrChar] := CurrType;
     {$IFNDEF CHAR_TYPES_INITIALIZED}
     Implement case map initialization here
@@ -520,7 +520,7 @@ begin
       LoCaseChar := AnsiChar(System.Char.ToLower(Char(CurrChar)));
       UpCaseChar := AnsiChar(System.Char.ToUpper(Char(CurrChar)));
       {$DEFINE CASE_MAP_INITIALIZED}
-      {$ELSE}
+      {$ELSE ~CLR}
       {$IFDEF MSWINDOWS}
       LoCaseChar := CurrChar;
       UpCaseChar := CurrChar;
@@ -533,7 +533,7 @@ begin
       UpCaseChar := AnsiChar(toupper(Byte(CurrChar)));
       {$DEFINE CASE_MAP_INITIALIZED}
       {$ENDIF LINUX}
-      {$ENDIF CLR}
+      {$ENDIF ~CLR}
       {$IFNDEF CASE_MAP_INITIALIZED}
       Implement case map initialization here
       {$ENDIF ~CASE_MAP_INITIALIZED}
@@ -563,7 +563,7 @@ begin
   for I := 0 to Length(Str) - 1 do
     Str[I + 1] := AnsiCaseMap[Offset + Ord(Str[I + 1])];
 end;
-{$ELSE}
+{$ELSE ~CLR}
 procedure StrCase(var Str: AnsiString; const Offset: Integer); register; assembler;
 asm
         // make sure that the string is not null
@@ -598,9 +598,9 @@ asm
 
         {$IFDEF PIC}
         LEA     EBX, [EBX][AnsiCaseMap + EDX]
-        {$ELSE}
+        {$ELSE ~PIC}
         LEA     EBX, [AnsiCaseMap + EDX]
-        {$ENDIF PIC}
+        {$ENDIF ~PIC}
         MOV     ESI, EAX
         XOR     EDX, EDX
         XOR     EAX, EAX
@@ -657,7 +657,7 @@ asm
 
 @@StrIsNull:
 end;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 
 {$IFNDEF CLR}
 // Internal utility function
@@ -680,9 +680,9 @@ asm
 
         {$IFDEF PIC}
         LEA     EBX, [EBX][AnsiCaseMap + EDX]
-        {$ELSE}
+        {$ELSE ~PIC}
         LEA     EBX, [AnsiCaseMap + EDX]
-        {$ENDIF PIC}
+        {$ENDIF ~PIC}
         MOV     ESI, EAX
         XOR     EDX, EDX
         XOR     EAX, EAX
@@ -987,9 +987,9 @@ var
       if Val > Ord(High(AnsiChar)) then
         {$IFDEF CLR}
         raise EJclAnsiStringError.Create(RsNumericConstantTooLarge);
-        {$ELSE}
+        {$ELSE ~CLR}
         raise EJclAnsiStringError.CreateRes(@RsNumericConstantTooLarge);
-        {$ENDIF CLR}
+        {$ENDIF ~CLR}
 
       Result := Result + AnsiChar(Val);
     end;
@@ -1025,9 +1025,9 @@ var
     if Val > Ord(High(AnsiChar)) then
       {$IFDEF CLR}
       raise EJclAnsiStringError.Create(RsNumericConstantTooLarge);
-      {$ELSE}
+      {$ELSE ~CLR}
       raise EJclAnsiStringError.CreateRes(@RsNumericConstantTooLarge);
-      {$ENDIF CLR}
+      {$ENDIF ~CLR}
 
     Result := Result + AnsiChar(Val);
   end;
@@ -1096,7 +1096,7 @@ procedure StrLowerInPlace(var S: AnsiString);
 begin
   StrCase(S, AnsiLoOffset);
 end;
-{$ELSE}
+{$ELSE ~PIC}
 assembler;
 asm
         // StrCase(S, AnsiLoOffset)
@@ -1104,7 +1104,7 @@ asm
         XOR     EDX, EDX         // MOV     EDX, LoOffset
         JMP     StrCase
 end;
-{$ENDIF PIC}
+{$ENDIF ~PIC}
 
 {$IFNDEF CLR}
 procedure StrLowerBuff(S: PAnsiChar);
@@ -1112,14 +1112,14 @@ procedure StrLowerBuff(S: PAnsiChar);
 begin
   StrCaseBuff(S, AnsiLoOffset);
 end;
-{$ELSE}
+{$ELSE ~PIC}
 assembler;
 asm
         // StrCaseBuff(S, LoOffset)
         XOR     EDX, EDX                // MOV     EDX, LoOffset
         JMP     StrCaseBuff
 end;
-{$ENDIF PIC}
+{$ENDIF ~PIC}
 {$ENDIF ~CLR}
 
 {$IFDEF CLR}
@@ -1150,9 +1150,9 @@ begin
   // Move
   {$IFDEF CLR}
   MoveAnsiString(Source, FromIndex, Dest, ToIndex, Count);
-  {$ELSE}
+  {$ELSE ~CLR}
   Move(Source[FromIndex], Dest[ToIndex], Count);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function StrPadLeft(const S: AnsiString; Len: Integer; C: AnsiChar): AnsiString;
@@ -1181,9 +1181,9 @@ function StrProper(const S: AnsiString): AnsiString;
 begin
   {$IFDEF CLR}
   Result := AnsiUpperCase(S);
-  {$ELSE}
+  {$ELSE ~CLR}
   Result := StrLower(S);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
   if Result <> '' then
     Result[1] := UpCase(Result[1]);
 end;
@@ -1232,7 +1232,7 @@ begin
     end;
   SetLength(Result, Index);
 end;
-{$ELSE}
+{$ELSE ~CLR}
 var
   Source, Dest: PAnsiChar;
   Index, Len: Integer;
@@ -1253,7 +1253,7 @@ begin
   end;
   SetLength(Result, Dest - PAnsiChar(Result));
 end;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 
 function StrKeepChars(const S: AnsiString; const Chars: TSysCharSet): AnsiString;
 {$IFDEF CLR}
@@ -1270,7 +1270,7 @@ begin
     end;
   SetLength(Result, Index);
 end;
-{$ELSE}
+{$ELSE ~CLR}
 var
   Source, Dest: PAnsiChar;
   Index, Len: Integer;
@@ -1291,7 +1291,7 @@ begin
   end;
   SetLength(Result, Dest - PAnsiChar(Result));
 end;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 
 function StrRepeat(const S: AnsiString; Count: Integer): AnsiString;
 {$IFDEF CLR}
@@ -1304,7 +1304,7 @@ begin
     for I := 1 to Count do
       MoveAnsiString(S, 1, Result, I * Len, Len);
 end;
-{$ELSE}
+{$ELSE ~CLR}
 var
   L: Integer;
   P: PAnsiChar;
@@ -1322,7 +1322,7 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 
 function StrRepeatLength(const S: AnsiString; const L: Integer): AnsiString;
 {$IFDEF CLR}
@@ -1350,7 +1350,7 @@ begin
       SetLength(Result, L);
   end;
 end;
-{$ELSE}
+{$ELSE ~CLR}
 var
   Count: Integer;
   LenS: Integer;
@@ -1376,14 +1376,14 @@ begin
       SetLength(Result, L);
   end;
 end;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 
 procedure StrReplace(var S: AnsiString; const Search, Replace: AnsiString; Flags: TReplaceFlags);
 {$IFDEF CLR}
 begin
   S := StringReplace(S, Search, Replace, Flags); // !!! Convertion to System.String
 end;
-{$ELSE}
+{$ELSE ~CLR}
 var
   SearchStr: AnsiString;
   ResultStr: AnsiString;     { result string }
@@ -1512,7 +1512,7 @@ begin
     S := ResultStr;
   end;
 end;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 
 function StrReplaceChar(const S: AnsiString; const Source, Replace: AnsiChar): AnsiString;
 var
@@ -1568,7 +1568,7 @@ begin
     Dec(EndI);
   end;
 end;
-{$ELSE}
+{$ELSE ~CLR}
 var
   P1, P2: PAnsiChar;
   C: AnsiChar;
@@ -1585,7 +1585,7 @@ begin
     Dec(P2);
   end;
 end;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 
 function StrSingleQuote(const S: AnsiString): AnsiString;
 begin
@@ -1597,10 +1597,10 @@ var
   {$IFDEF CLR}
   Index: Integer;
   LenS: Integer;
-  {$ELSE}
+  {$ELSE ~CLR}
   Source, Dest: PAnsiChar;
   Index, Len: Integer;
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 begin
   Result := '';
   if Delimiters = [] then
@@ -1618,7 +1618,7 @@ begin
         Result[Index + 1] := CharUpper(Result[Index + 1]);
       Inc(Index);
     end;
-    {$ELSE}
+    {$ELSE ~CLR}
     UniqueString(Result);
 
     Len := Length(S);
@@ -1634,7 +1634,7 @@ begin
       Inc(Dest);
       Inc(Source);
     end;
-    {$ENDIF CLR}
+    {$ENDIF ~CLR}
 
     Result[1] := CharUpper(Result[1]);
   end;
@@ -1801,13 +1801,13 @@ procedure StrUpperInPlace(var S: AnsiString);
 begin
   StrCase(S, AnsiUpOffset);
 end;
-{$ELSE}
+{$ELSE ~PIC}
 asm
         // StrCase(Str, AnsiUpOffset)
         MOV     EDX, AnsiUpOffset
         JMP     StrCase
 end;
-{$ENDIF PIC}
+{$ENDIF ~PIC}
 
 {$IFNDEF CLR}
 procedure StrUpperBuff(S: PAnsiChar);
@@ -1815,13 +1815,13 @@ procedure StrUpperBuff(S: PAnsiChar);
 begin
   StrCaseBuff(S, AnsiUpOffset);
 end;
-{$ELSE}
+{$ELSE ~PIC}
 asm
         // StrCaseBuff(S, UpOffset)
         MOV     EDX, AnsiUpOffset
         JMP     StrCaseBuff
 end;
-{$ENDIF PIC}
+{$ENDIF ~PIC}
 {$ENDIF ~CLR}
 
 {$IFDEF MSWINDOWS}
@@ -1978,7 +1978,7 @@ function StrCompare(const S1, S2: AnsiString): Integer;
 begin
   Result := AnsiCompareStr(S1, S2);
 end;
-{$ELSE}
+{$ELSE ~CLR}
 {$IFDEF PIC}
 function _StrCompare(const S1, S2: AnsiString): Integer; forward;
 
@@ -1988,9 +1988,9 @@ begin
 end;
 
 function _StrCompare(const S1, S2: AnsiString): Integer; assembler;
-{$ELSE}
+{$ELSE ~PIC}
 function StrCompare(const S1, S2: AnsiString): Integer; assembler;
-{$ENDIF PIC}
+{$ENDIF ~PIC}
 asm
         // check if pointers are equal
 
@@ -2128,14 +2128,14 @@ asm
 @@Equal:
         XOR     EAX, EAX
 end;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 
 {$IFDEF CLR}
 function StrCompareRange(const S1, S2: AnsiString; const Index, Count: Integer): Integer;
 begin
   Result := System.String.Compare(S1, Index - 1, S2, Index - 1, Count, False);
 end;
-{$ELSE}
+{$ELSE ~CLR}
 function StrCompareRange(const S1, S2: AnsiString; const Index, Count: Integer): Integer; assembler;
 asm
         TEST    EAX, EAX
@@ -2228,7 +2228,7 @@ asm
 
 @@Exit:
 end;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 
 function StrRepeatChar(C: AnsiChar; Count: Integer): AnsiString;
 {$IFDEF CLR}
@@ -2240,20 +2240,20 @@ begin
     Dec(Count);
   end;
 end;
-{$ELSE}
+{$ELSE ~CLR}
 begin
   SetLength(Result, Count);
   if Count > 0 then
     FillChar(Result[1], Count, C);
 end;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 
 {$IFDEF CLR}
 function StrFind(const Substr, S: AnsiString; const Index: Integer): Integer;
 begin
   Result := System.String(S).ToLower().IndexOf(System.String(SubStr).ToLower, Index - 1) + 1;
 end;
-{$ELSE}
+{$ELSE ~CLR}
 function StrFind(const Substr, S: AnsiString; const Index: Integer): Integer; assembler;
 const
    SearchChar: Byte = 0;
@@ -2425,7 +2425,7 @@ asm
 @@SubstrIsNull:
 @@Exit:
 end;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 
 function StrHasPrefix(const S: AnsiString; const Prefixes: array of AnsiString): Boolean;
 begin
@@ -2467,7 +2467,7 @@ function StrLastPos(const SubStr, S: AnsiString): Integer;
 begin
   Result := System.String(S).LastIndexOf(SubStr) + 1;
 end;
-{$ELSE}
+{$ELSE ~CLR}
 var
   Last, Current: PAnsiChar;
 begin
@@ -2487,7 +2487,7 @@ begin
   if Last <> nil then
     Result := Abs(PAnsiChar(S) - Last) + 1;
 end;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 
 // IMPORTANT NOTE: The StrMatch function does currently not work with the Asterix (*)
 
@@ -2857,7 +2857,7 @@ function StrSearch(const Substr, S: AnsiString; const Index: Integer): Integer;
 begin
   Result := System.String(S).IndexOf(SubStr, Index - 1) + 1;
 end;
-{$ELSE}
+{$ELSE ~CLR}
 function StrSearch(const Substr, S: AnsiString; const Index: Integer): Integer; assembler;
 asm
         // make sure that strings are not null
@@ -3013,7 +3013,7 @@ asm
 @@SubstrIsNull:
 @@Exit:
 end;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 
 //=== String Extraction ======================================================
 
@@ -3371,7 +3371,7 @@ begin
       Inc(Result);
     end;
 end;
-{$ELSE}
+{$ELSE ~CLR}
 var
   P: PAnsiChar;
   Index, Len: Integer;
@@ -3393,7 +3393,7 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 
 {$IFNDEF CLR}
 //=== MultiSz ================================================================
@@ -3666,9 +3666,9 @@ begin
       FS.ReadBuffer(Buf, Len);
       Result := Buf;
     end;
-    {$ELSE}
+    {$ELSE ~CLR}
     FS.ReadBuffer(Result[1], Len);
-    {$ENDIF CLR}
+    {$ENDIF ~CLR}
   finally
     FS.Free;
   end;
@@ -3690,9 +3690,9 @@ begin
     if Len > 0 then
     {$IFDEF CLR}
     FS.WriteBuffer(BytesOf(Contents), Len);
-    {$ELSE}
+    {$ELSE ~CLR}
     FS.WriteBuffer(Contents[1], Len);
-    {$ENDIF CLR}
+    {$ENDIF ~CLR}
   finally
     FS.Free;
   end;

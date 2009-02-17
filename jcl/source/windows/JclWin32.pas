@@ -67,9 +67,9 @@ uses
   {$IFNDEF FPC}
   {$IFDEF CLR}
   System.Runtime.InteropServices, System.Security,
-  {$ELSE}
+  {$ELSE ~CLR}
   AccCtrl,
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
   ActiveX,
   {$ENDIF ~FPC}
   JclBase;
@@ -2856,10 +2856,10 @@ function AdjustTokenPrivileges(TokenHandle: THandle; DisableAllPrivileges: BOOL;
   {$IFDEF CLR}
   out PreviousState: TTokenPrivileges;
   out ReturnLength: DWORD
-  {$ELSE}
+  {$ELSE ~CLR}
   PreviousState: PTokenPrivileges;
   ReturnLength: PDWORD
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
   ): BOOL; stdcall;
   {$IFDEF CLR} external advapi32 name 'AdjustTokenPrivileges';{$ENDIF}
 {$EXTERNALSYM AdjustTokenPrivileges}
@@ -4365,7 +4365,7 @@ type
   PLMSTR = ^LMSTR;
   {$NODEFINE PLMSTR}
 
-{$ELSE}
+{$ELSE ~LM_USE_UNICODE}
 
 type
   LMSTR = LPSTR;
@@ -4373,7 +4373,7 @@ type
   LMCSTR = LPCSTR;
   {$EXTERNALSYM LMCSTR}
 
-{$ENDIF}
+{$ENDIF ~LM_USE_UNICODE}
 
 //
 //        Message File Names
@@ -4958,9 +4958,9 @@ type
     ncb_cmd_cplt: UCHAR; // 0xff => commmand pending
     {$IFDEF _WIN64}
     ncb_reserve: array [0..17] of UCHAR; // reserved, used by BIOS
-    {$ELSE}
+    {$ELSE ~_WIN64}
     ncb_reserve: array [0..9] of UCHAR;  // reserved, used by BIOS
-    {$ENDIF}
+    {$ENDIF ~_WIN64}
     ncb_event: THandle;   // HANDLE to Win32 event which
                          // will be set to the signalled
                          // state when an ASYNCH command
@@ -6536,12 +6536,12 @@ type
   {$IFDEF CLR}
   MAKEINTRESOURCEA = Integer;
   MAKEINTRESOURCEW = Integer;
-  {$ELSE}
+  {$ELSE ~CLR}
   MAKEINTRESOURCEA = LPSTR;
   {$EXTERNALSYM MAKEINTRESOURCEA}
   MAKEINTRESOURCEW = LPWSTR;
   {$EXTERNALSYM MAKEINTRESOURCEW}
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 {$IFDEF SUPPORTS_UNICODE}
   MAKEINTRESOURCE = MAKEINTRESOURCEW;
   {$EXTERNALSYM MAKEINTRESOURCE}

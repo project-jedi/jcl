@@ -30,7 +30,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -48,11 +48,11 @@ uses
   {$ENDIF UNITVERSIONING}
   {$IFDEF CLR}
   Classes, System.Reflection,
-  {$ELSE}
+  {$ELSE ~CLR}
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
   {$IFDEF SUPPORTS_GENERICS}
   {$IFDEF CLR}
   System.Collections.Generic,
@@ -117,12 +117,12 @@ type
 type
   {$IFDEF FPC}
   Largeint = Int64;
-  {$ELSE}
+  {$ELSE ~FPC}
   PPointer = ^Pointer;
   {$IFDEF RTL140_UP}
   {$IFDEF CLR}
   PJclByteArray = TBytes;
-  {$ELSE}
+  {$ELSE ~CLR}
   PByte = System.PByte;
   Int8 = ShortInt;
   Int16 = Smallint;
@@ -130,12 +130,12 @@ type
   UInt8 = Byte;
   UInt16 = Word;
   UInt32 = LongWord;
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
   {$ELSE ~RTL140_UP}
   PBoolean = ^Boolean;
   PByte = Windows.PByte;
   {$ENDIF ~RTL140_UP}
-  {$ENDIF FPC}
+  {$ENDIF ~FPC}
   PCardinal = ^Cardinal;
   {$IFNDEF COMPILER7_UP}
   UInt64 = Int64;
@@ -145,7 +145,7 @@ type
   PPWideChar = ^JclBase.PWideChar;
   PInt64 = type System.PInt64;
   PPInt64 = ^JclBase.PInt64;
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 
 // Interface compatibility
 {$IFDEF SUPPORTS_INTERFACE}
@@ -175,7 +175,7 @@ type
 {$IFDEF CLR}
 type
   TJclBytes = TBytes;
-{$ELSE}
+{$ELSE ~CLR}
 // Redefinition of PByteArray to avoid range check exceptions.
 type
   TJclByteArray = array [0..MaxInt div SizeOf(Byte) - 1] of Byte;
@@ -477,7 +477,7 @@ begin
         List[FromIndex + I] := nil;
   end;
 end;
-{$ELSE}
+{$ELSE ~CLR}
 begin
   if Count > 0 then
   begin
@@ -500,7 +500,7 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 
 {$IFNDEF CLR}
 procedure MoveArray(var List: TDynStringArray; FromIndex, ToIndex, Count: Integer); overload;
@@ -637,7 +637,7 @@ begin
         List[FromIndex + I] := '';
   end;
 end;
-{$ELSE}
+{$ELSE ~CLR}
 begin
   if Count > 0 then
   begin
@@ -660,8 +660,8 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
-{$ENDIF FPC}
+{$ENDIF ~CLR}
+{$ENDIF ~FPC}
 
 procedure MoveArray(var List: TDynWideStringArray; FromIndex, ToIndex, Count: Integer); overload;
 {$IFDEF CLR}
@@ -696,7 +696,7 @@ begin
         List[FromIndex + I] := '';
   end;
 end;
-{$ELSE}
+{$ELSE ~CLR}
 begin
   if Count > 0 then
   begin
@@ -719,7 +719,7 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 
 procedure MoveArray(var List: TDynObjectArray; FromIndex, ToIndex, Count: Integer); overload;
 {$IFDEF CLR}
@@ -754,7 +754,7 @@ begin
         List[FromIndex + I] := nil;
   end;
 end;
-{$ELSE}
+{$ELSE ~CLR}
 begin
   if Count > 0 then
   begin
@@ -777,7 +777,7 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 
 procedure MoveArray(var List: TDynSingleArray; FromIndex, ToIndex, Count: Integer); overload;
 {$IFDEF CLR}
@@ -812,7 +812,7 @@ begin
         List[FromIndex + I] := 0.0;
   end;
 end;
-{$ELSE}
+{$ELSE ~CLR}
 begin
   if Count > 0 then
   begin
@@ -835,7 +835,7 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 
 procedure MoveArray(var List: TDynDoubleArray; FromIndex, ToIndex, Count: Integer); overload;
 {$IFDEF CLR}
@@ -870,7 +870,7 @@ begin
         List[FromIndex + I] := 0.0;
   end;
 end;
-{$ELSE}
+{$ELSE ~CLR}
 begin
   if Count > 0 then
   begin
@@ -893,7 +893,7 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 
 {$IFNDEF FPC}
 procedure MoveArray(var List: TDynExtendedArray; FromIndex, ToIndex, Count: Integer); overload;
@@ -929,7 +929,7 @@ begin
         List[FromIndex + I] := 0.0;
   end;
 end;
-{$ELSE}
+{$ELSE ~CLR}
 begin
   if Count > 0 then
   begin
@@ -952,8 +952,8 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
-{$ENDIF FPC}
+{$ENDIF ~CLR}
+{$ENDIF ~FPC}
 
 procedure MoveArray(var List: TDynIntegerArray; FromIndex, ToIndex, Count: Integer); overload;
 {$IFDEF CLR}
@@ -988,7 +988,7 @@ begin
         List[FromIndex + I] := 0;
   end;
 end;
-{$ELSE}
+{$ELSE ~CLR}
 begin
   if Count > 0 then
   begin
@@ -1011,7 +1011,7 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 
 procedure MoveArray(var List: TDynCardinalArray; FromIndex, ToIndex, Count: Integer); overload;
 {$IFDEF CLR}
@@ -1046,7 +1046,7 @@ begin
         List[FromIndex + I] := 0;
   end;
 end;
-{$ELSE}
+{$ELSE ~CLR}
 begin
   if Count > 0 then
   begin
@@ -1069,7 +1069,7 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 
 procedure MoveArray(var List: TDynInt64Array; FromIndex, ToIndex, Count: Integer); overload;
 {$IFDEF CLR}
@@ -1104,7 +1104,7 @@ begin
         List[FromIndex + I] := 0;
   end;
 end;
-{$ELSE}
+{$ELSE ~CLR}
 begin
   if Count > 0 then
   begin
@@ -1127,7 +1127,7 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 
 procedure MoveChar(const Source: string; FromIndex: Integer;
   var Dest: string; ToIndex, Count: Integer);
@@ -1144,14 +1144,14 @@ begin
     for I := Count - 1 downto 0 do
       Buf[ToIndex + I] := Source[FromIndex + I];
   Dest := System.String.Create(Buf);
-{$ELSE}
+end;
+{$ELSE ~CLR}
 begin
   Move(Source[FromIndex + 1], Dest[ToIndex + 1], Count * SizeOf(Char));
-{$ENDIF CLR}
 end;
+{$ENDIF ~CLR}
 
 {$IFDEF CLR}
-
 function GetBytesEx(const Value): TBytes;
 begin
   if TObject(Value) is TBytes then
@@ -1287,7 +1287,7 @@ begin
   end;
 end;
 
-{$ELSE}
+{$ELSE ~CLR}
 
 function BytesOf(const Value: AnsiString): TBytes;
 begin
@@ -1339,7 +1339,7 @@ begin
     Result := '';
 end;
 
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 
 //== { EJclWin32Error } ======================================================
 
@@ -1379,9 +1379,9 @@ begin
   FLastErrorMsg := SysErrorMessage(FLastError);
   {$IFDEF FPC}
   inherited CreateFmt(ResStringRec^ + AnsiLineBreak + RsWin32Prefix, [FLastErrorMsg, FLastError]);
-  {$ELSE}
+  {$ELSE ~FPC}
   inherited CreateFmt(LoadResString(ResStringRec) + NativeLineBreak + RsWin32Prefix, [FLastErrorMsg, FLastError]);
-  {$ENDIF FPC}
+  {$ENDIF ~FPC}
 end;
 {$ENDIF ~CLR}
 
@@ -1394,20 +1394,20 @@ begin
   {$IFDEF CLR}
   LowPart := Cardinal(I and $00000000FFFFFFFF);
   HighPart := Cardinal(I shr 32);
-  {$ELSE}
+  {$ELSE ~CLR}
   LowPart := TULargeInteger(I).LowPart;
   HighPart := TULargeInteger(I).HighPart;
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 procedure CardinalsToI64(var I: Int64; const LowPart, HighPart: Cardinal);
 begin
   {$IFDEF CLR}
   I := Int64(HighPart) shl 16 or LowPart;
-  {$ELSE}
+  {$ELSE ~CLR}
   TULargeInteger(I).LowPart := LowPart;
   TULargeInteger(I).HighPart := HighPart;
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 // Cross Platform Compatibility

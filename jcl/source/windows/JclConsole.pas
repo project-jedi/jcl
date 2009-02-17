@@ -168,10 +168,10 @@ type
     {$IFDEF CLR}
     function Write(const Text: string; const X: Smallint; const Y: Smallint;
       Attrs: array of Word): DWORD; overload;
-    {$ELSE}
+    {$ELSE ~CLR}
     function Write(const Text: string; const X: Smallint; const Y: Smallint;
       pAttrs: PWORD): DWORD; overload;
-    {$ENDIF CLR}
+    {$ENDIF ~CLR}
     function Write(const Text: string;
       const HorizontalAlign: TJclScreenBufferTextHorizontalAlign;
       const VerticalAlign: TJclScreenBufferTextVerticalAlign = tvaCurrent;
@@ -629,22 +629,22 @@ begin
   Len := GetConsoleTitle(Result, Length(Result));
   Win32Check((0 < Len) and (Len < Length(Result)));
   SetLength(Result, Len);
-  {$ELSE}
+  {$ELSE ~CLR}
   { TODO : max 64kByte instead of max 255 }
   SetLength(Result, High(Byte));
   Len := GetConsoleTitle(PChar(Result), Length(Result));
   Win32Check((0 < Len) and (Len < Length(Result)));
   SetLength(Result, Len);
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 procedure TJclConsole.SetTitle(const Value: string);
 begin
   {$IFDEF CLR}
   Win32Check(SetConsoleTitle(Value));
-  {$ELSE}
+  {$ELSE ~CLR}
   Win32Check(SetConsoleTitle(PChar(Value)));
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function TJclConsole.GetInputCodePage: DWORD;
@@ -841,9 +841,9 @@ begin
     Font.TextAttribute := ATextAttribute.TextAttribute;
   {$IFDEF CLR}
   Win32Check(WriteConsole(Handle, StringToByteArray(Text), Text.Length, Result, nil));
-  {$ELSE}
+  {$ELSE ~CLR}
   Win32Check(WriteConsole(Handle, PChar(Text), Length(Text), Result, nil));
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function TJclScreenBuffer.Writeln(const Text: string;
@@ -879,16 +879,16 @@ begin
         Attrs[I] := ATextAttribute.TextAttribute;
       {$IFDEF CLR}
       Result := Write(Text, X, Y, Attrs);
-      {$ELSE}
+      {$ELSE ~CLR}
       Result := Write(Text, X, Y, @Attrs[0]);
-      {$ENDIF CLR}
+      {$ENDIF ~CLR}
     end
     else
       {$IFDEF CLR}
       Win32Check(WriteConsoleOutputCharacter(Handle, Text, Length(Text), Pos, Result));
-      {$ELSE}
+      {$ELSE ~CLR}
       Win32Check(WriteConsoleOutputCharacter(Handle, PChar(Text), Length(Text), Pos, Result));
-      {$ENDIF CLR}
+      {$ENDIF ~CLR}
   end
   else
     Result := 0;
@@ -913,7 +913,7 @@ begin
     Win32Check(WriteConsoleOutputAttribute(Handle, Attrs, Length(Text), Pos, Result));
   Win32Check(WriteConsoleOutputCharacter(Handle, Text, Length(Text), Pos, Result));
 end;
-{$ELSE}
+{$ELSE ~CLR}
 function TJclScreenBuffer.Write(const Text: string; const X, Y: Smallint;
   pAttrs: PWORD): DWORD;
 var
@@ -932,7 +932,7 @@ begin
     Win32Check(WriteConsoleOutputAttribute(Handle, pAttrs, Length(Text), Pos, Result));
   Win32Check(WriteConsoleOutputCharacter(Handle, PChar(Text), Length(Text), Pos, Result));
 end;
-{$ENDIF CLR}
+{$ENDIF ~CLR}
 
 function TJclScreenBuffer.Write(const Text: string;
   const HorizontalAlign: TJclScreenBufferTextHorizontalAlign;
@@ -978,10 +978,10 @@ begin
   SetLength(Data, Count);
   Win32Check(ReadConsole(Handle, Data, Count, ReadCount, nil));
   Result := ByteArrayToString(Data, Min(ReadCount, ByteArrayStringLen(Data)));
-  {$ELSE}
+  {$ELSE ~CLR}
   Win32Check(ReadConsole(Handle, PChar(Result), Count, ReadCount, nil));
   SetLength(Result, Min(ReadCount, StrLen(PChar(Result))));
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function TJclScreenBuffer.Readln: string;
@@ -1004,10 +1004,10 @@ begin
   sb := System.Text.StringBuilder.Create(Count);
   Win32Check(ReadConsoleOutputCharacter(Handle, sb, Count, ReadPos, ReadCount));
   Result := sb.ToString();
-  {$ELSE}
+  {$ELSE ~CLR}
   Win32Check(ReadConsoleOutputCharacter(Handle, PChar(Result), Count, ReadPos, ReadCount));
   SetLength(Result, Min(ReadCount, StrLen(PChar(Result))));
-  {$ENDIF CLR}
+  {$ENDIF ~CLR}
 end;
 
 function TJclScreenBuffer.Readln(X, Y: Smallint): string;
@@ -1494,10 +1494,10 @@ begin
     {$IFDEF CLR}
     raise EJclError.CreateFmt(RsCannotRaiseSignal,
       [GetEnumName(TypeInfo(TJclInputCtrlEvent), Integer(AEvent))]);
-    {$ELSE}
+    {$ELSE ~CLR}
     raise EJclError.CreateResFmt(@RsCannotRaiseSignal,
       [GetEnumName(TypeInfo(TJclInputCtrlEvent), Integer(AEvent))]);
-    {$ENDIF CLR}
+    {$ENDIF ~CLR}
 end;
 
 function TJclInputBuffer.GetEventCount: DWORD;
