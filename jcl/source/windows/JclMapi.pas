@@ -28,7 +28,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -978,7 +978,7 @@ var
   I: Integer;
   MsgID: array [0..512] of AnsiChar;
   AttachmentFileNames: array of AnsiString;
-  AttachmentPathNames: array of string;
+  AttachmentPathNames: array of AnsiString;
   HtmlBodyFileName: string;
   SetDllDirectory: TSetDllDirectory;
   GetDllDirectory: TGetDllDirectory;
@@ -987,13 +987,13 @@ begin
   if not AnyClientInstalled then
     raise EJclMapiError.CreateRes(@RsMapiMailNoClient);
 
-  {$IFDEF UNICODE}
+  {$IFDEF SUPPORTS_UNICODE}
   @GetDllDirectory := GetProcAddress(GetModuleHandle(kernel32), 'GetDllDirectoryW');
   @SetDllDirectory := GetProcAddress(GetModuleHandle(kernel32), 'SetDllDirectoryW');
-  {$ELSE}
+  {$ELSE ~SUPPORTS_UNICODE}
   @GetDllDirectory := GetProcAddress(GetModuleHandle(kernel32), 'GetDllDirectoryA');
   @SetDllDirectory := GetProcAddress(GetModuleHandle(kernel32), 'SetDllDirectoryA');
-  {$ENDIF UNICODE}
+  {$ENDIF ~SUPPORTS_UNICODE}
   if Assigned(@GetDllDirectory) and Assigned(@SetDllDirectory) then
   begin
     GetDllDirectory(Length(DllDirectoryBuffer), @DllDirectoryBuffer);
@@ -1022,16 +1022,16 @@ begin
           if (AttachmentFiles.Count > I) and (AttachmentFiles[I] <> '') then
           begin
             AttachmentFileNames[I] := AnsiString(Attachments[I]); // OF TStrings to AnsiString
-            AttachmentPathNames[I] := SysUtils.ExpandFileName(AttachmentFiles[I]);
+            AttachmentPathNames[I] := AnsiString(SysUtils.ExpandFileName(AttachmentFiles[I]));
           end
           else
           begin
             AttachmentFileNames[I] := AnsiString(ExtractFileName(AnsiString(Attachments[I]))); // OF TStrings to AnsiString
-            AttachmentPathNames[I] := SysUtils.ExpandFileName(Attachments[I]);
+            AttachmentPathNames[I] := AnsiString(SysUtils.ExpandFileName(Attachments[I]));
           end;
-          AttachArray[I].lpszFileName := PAnsiChar(AnsiString(AttachmentFileNames[I]));
-          AttachArray[I].lpszPathName := PAnsiChar(AnsiString(AttachmentPathNames[I]));
-          if not FileExists(AttachmentPathNames[I]) then
+          AttachArray[I].lpszFileName := PAnsiChar(AttachmentFileNames[I]);
+          AttachArray[I].lpszPathName := PAnsiChar(AttachmentPathNames[I]);
+          if not FileExists(string(AttachmentPathNames[I])) then
             MapiCheck(MAPI_E_ATTACHMENT_NOT_FOUND, False);
         end;
       end
