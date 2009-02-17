@@ -183,8 +183,8 @@ object MainForm: TMainForm
     TabOrder = 3
   end
   object SendBtn: TButton
-    Left = 605
-    Top = 8
+    Left = 603
+    Top = 4
     Width = 75
     Height = 25
     Anchors = [akTop, akRight]
@@ -194,7 +194,7 @@ object MainForm: TMainForm
   end
   object AttachmentBtn: TButton
     Left = 605
-    Top = 40
+    Top = 58
     Width = 75
     Height = 25
     Anchors = [akTop, akRight]
@@ -203,16 +203,16 @@ object MainForm: TMainForm
     OnClick = AttachmentBtnClick
   end
   object ToAddressEdit: TEdit
-    Left = 248
+    Left = 247
     Top = 8
-    Width = 333
+    Width = 269
     Height = 21
     Anchors = [akLeft, akTop, akRight]
     TabOrder = 1
   end
   object DialogCheckBox: TCheckBox
-    Left = 604
-    Top = 72
+    Left = 603
+    Top = 35
     Width = 81
     Height = 17
     Anchors = [akTop, akRight]
@@ -248,6 +248,16 @@ object MainForm: TMainForm
     Height = 17
     Caption = 'HTML message'
     TabOrder = 10
+  end
+  object SaveBtn: TButton
+    Left = 522
+    Top = 4
+    Width = 75
+    Height = 25
+    Anchors = [akTop, akRight]
+    Caption = 'Sa&ve'
+    TabOrder = 11
+    OnClick = SaveBtnClick
   end
   object OpenDialog1: TOpenDialog
     Title = 'Select attachment'

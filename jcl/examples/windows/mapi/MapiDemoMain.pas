@@ -32,6 +32,7 @@ type
     AttachmentPaintBox: TPaintBox;
     ProfilesListView: TListView;
     HtmlCheckBox: TCheckBox;
+    SaveBtn: TButton;
     procedure FormCreate(Sender: TObject);
     procedure ClientsListViewSelectItem(Sender: TObject; Item: TListItem;
       Selected: Boolean);
@@ -44,6 +45,7 @@ type
     procedure AttachmentPaintBoxPaint(Sender: TObject);
     procedure ProfilesListViewCustomDrawItem(Sender: TCustomListView;
       Item: TListItem; State: TCustomDrawState; var DefaultDraw: Boolean);
+    procedure SaveBtnClick(Sender: TObject);
   private
     procedure BuildClientList;
     procedure BuildProfilesList;
@@ -163,6 +165,28 @@ procedure TMainForm.ProfilesListViewCustomDrawItem(Sender: TCustomListView;
 begin
   if Boolean(Item.Data) then
     Sender.Canvas.Font.Style := [fsBold];
+end;
+
+procedure TMainForm.SaveBtnClick(Sender: TObject);
+begin
+  if not DialogCheckBox.Checked then
+    Application.MessageBox('The message will be inserted to Draft folder.',
+      PChar(Caption), MB_OK or MB_ICONWARNING);
+
+{ // Simple message creating, using TJclEmail.SimpleSendMail class method
+  JclSimpleSendMail(ToAddressEdit.Text, ToNameEdit.Text, SubjectEdit.Text,
+    BodyEdit.Text, OpenDialog1.FileName, DialogCheckBox.Checked);}
+
+  // Creating message using TJclEmail object, it is more flexible, but you have
+  // to create an instance (SimpleMapiMail variable in this example) of the class
+  SimpleMapiMail.Clear;
+  SimpleMapiMail.Recipients.Add(AnsiString(ToAddressEdit.Text), AnsiString(ToNameEdit.Text));
+  SimpleMapiMail.Subject := AnsiString(SubjectEdit.Text);
+  SimpleMapiMail.Body := AnsiString(BodyEdit.Text);
+  SimpleMapiMail.HtmlBody := HtmlCheckBox.Checked;
+  if OpenDialog1.FileName <> '' then
+    SimpleMapiMail.Attachments.Add(OpenDialog1.FileName);
+  SimpleMapiMail.Save;
 end;
 
 procedure TMainForm.SendBtnClick(Sender: TObject);
