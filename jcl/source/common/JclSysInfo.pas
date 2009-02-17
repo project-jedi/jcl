@@ -443,10 +443,10 @@ type
   end;
 
   TFreqInfo = record
-    RawFreq: Cardinal;
-    NormFreq: Cardinal;
-    InCycles: Cardinal;
-    ExTicks: Cardinal;
+    RawFreq: Int64;
+    NormFreq: Int64;
+    InCycles: Int64;
+    ExTicks: Int64;
   end;
 
 const
@@ -1339,6 +1339,7 @@ implementation
 
 uses
   SysUtils,
+  Math,
   {$IFNDEF CLR}
   {$IFDEF MSWINDOWS}
   Messages, Winsock, Snmp,
@@ -4301,7 +4302,7 @@ begin
       TotalCycles := TotalCycles + Cycles;
 
       // avoid division by zero
-      if Ticks = 0 then
+      if Math.IsZero(Ticks) then
         Freq := High(Freq)
       else
         Freq := Round(Cycles / Ticks);
@@ -4310,7 +4311,7 @@ begin
     end;
 
     // avoid division by zero
-    if TotalTicks = 0 then
+    if Math.IsZero(TotalTicks) then
     begin
       Freq3 := High(Freq3);
       Freq2 := High(Freq2);
