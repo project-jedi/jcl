@@ -41,7 +41,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                       $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -207,8 +207,8 @@ type
     procedure RegisterFormat(AClass: TJclCompressionStreamClass);
     procedure UnregisterFormat(AClass: TJclCompressionStreamClass);
 
-    function FindCompressFormat(const AFileName: string): TJclCompressStreamClass;
-    function FindDecompressFormat(const AFileName: string): TJclDecompressStreamClass;
+    function FindCompressFormat(const AFileName: TFileName): TJclCompressStreamClass;
+    function FindDecompressFormat(const AFileName: TFileName): TJclDecompressStreamClass;
 
     property CompressFormatCount: Integer read GetCompressFormatCount;
     property CompressFormats[Index: Integer]: TJclCompressStreamClass read GetCompressFormat;
@@ -516,18 +516,18 @@ type
   TJclCompressStreamProgressCallback = procedure(FileSize, Position: Int64; UserData: Pointer) of object;
 
 {helper functions - one liners by wpostma}
-function GZipFile(SourceFile, DestinationFile: string; CompressionLevel: Integer = Z_DEFAULT_COMPRESSION;
+function GZipFile(SourceFile, DestinationFile: TFileName; CompressionLevel: Integer = Z_DEFAULT_COMPRESSION;
   ProgressCallback: TJclCompressStreamProgressCallback = nil; UserData: Pointer = nil): Boolean;
-function UnGZipFile(SourceFile, DestinationFile: string;
+function UnGZipFile(SourceFile, DestinationFile: TFileName;
   ProgressCallback: TJclCompressStreamProgressCallback = nil; UserData: Pointer = nil): Boolean;
 procedure GZipStream(SourceStream, DestinationStream: TStream; CompressionLevel: Integer = Z_DEFAULT_COMPRESSION;
   ProgressCallback: TJclCompressStreamProgressCallback = nil; UserData: Pointer = nil);
 procedure UnGZipStream(SourceStream, DestinationStream: TStream;
   ProgressCallback: TJclCompressStreamProgressCallback = nil; UserData: Pointer = nil);
 
-function BZip2File(SourceFile, DestinationFile: string; CompressionLevel: Integer = 5;
+function BZip2File(SourceFile, DestinationFile: TFileName; CompressionLevel: Integer = 5;
   ProgressCallback: TJclCompressStreamProgressCallback = nil; UserData: Pointer = nil): Boolean;
-function UnBZip2File(SourceFile, DestinationFile: string;
+function UnBZip2File(SourceFile, DestinationFile: TFileName;
   ProgressCallback: TJclCompressStreamProgressCallback = nil; UserData: Pointer = nil): Boolean;
 procedure BZip2Stream(SourceStream, DestinationStream: TStream; CompressionLevel: Integer = 5;
   ProgressCallback: TJclCompressStreamProgressCallback = nil; UserData: Pointer = nil);
@@ -700,7 +700,7 @@ type
     FVolumeIndex: Integer;
     FVolumeIndexOffset: Integer;
     FVolumeMaxSize: Int64;
-    FVolumeNameMask: string;
+    FVolumeFileNameMask: TFileName;
     FProgressMax: Int64;
     function GetItemCount: Integer;
     function GetItem(Index: Integer): TJclCompressionItem;
@@ -735,13 +735,13 @@ type
 
     constructor Create(Volume0: TStream; AVolumeMaxSize: Int64 = 0;
       AOwnVolume: Boolean = False); overload;
-    constructor Create(const VolumeName: string; AVolumeMaxSize: Int64 = 0;
+    constructor Create(const VolumeFileName: TFileName; AVolumeMaxSize: Int64 = 0;
       VolumeMask: Boolean = False); overload;
-      // if VolumeMask is true then VolumeName represents a mask to get volume file names
+      // if VolumeMask is true then VolumeFileName represents a mask to get volume file names
       // "myfile%d.zip" "myfile.zip.%.3d" ...
     destructor Destroy; override;
 
-    function AddVolume(const VolumeName: string;
+    function AddVolume(const VolumeFileName: TFileName;
       AVolumeMaxSize: Int64 = 0): Integer; overload; virtual;
     function AddVolume(VolumeStream: TStream; AVolumeMaxSize: Int64 = 0;
       AOwnsStream: Boolean = False): Integer; overload; virtual;
@@ -761,7 +761,7 @@ type
     property VolumeCount: Integer read GetVolumeCount;
     property Volumes[Index: Integer]: TJclCompressionVolume read GetVolume;
     property VolumeMaxSize: Int64 read FVolumeMaxSize;
-    property VolumeNameMask: string read FVolumeNameMask;
+    property VolumeFileNameMask: TFileName read FVolumeFileNameMask;
     property VolumeIndexOffset: Integer read FVolumeIndexOffset write FVolumeIndexOffset;
 
     property OnProgress: TJclCompressionProgressEvent read FOnProgress write FOnProgress;
@@ -923,7 +923,7 @@ type
       const DirName: string = ''; RecurseIntoDir: Boolean = False;
       AddFilesInDir: Boolean = False): Integer; overload; virtual;
     function AddFile(const PackedName: WideString;
-      const FileName: string): Integer; overload; virtual;
+      const FileName: TFileName): Integer; overload; virtual;
     function AddFile(const PackedName: WideString; AStream: TStream;
       AOwnsStream: Boolean = False): Integer; overload; virtual;
     procedure Compress; virtual;
@@ -1001,7 +1001,7 @@ type
   public
     constructor Create(Volume0: TStream; AVolumeMaxSize: Int64 = 0;
       AOwnVolume: Boolean = False); overload;
-    constructor Create(const VolumeName: string; AVolumeMaxSize: Int64 = 0;
+    constructor Create(const VolumeFileName: TFileName; AVolumeMaxSize: Int64 = 0;
       VolumeMask: Boolean = False); overload;
     class function VolumeAccess: TJclStreamAccess; override;
     class function ItemAccess: TJclStreamAccess; override;
@@ -1042,9 +1042,9 @@ type
     procedure RegisterFormat(AClass: TJclCompressionArchiveClass);
     procedure UnregisterFormat(AClass: TJclCompressionArchiveClass);
 
-    function FindCompressFormat(const AFileName: string): TJclCompressArchiveClass;
-    function FindDecompressFormat(const AFileName: string): TJclDecompressArchiveClass;
-    function FindUpdateFormat(const AFileName: string): TJclUpdateArchiveClass;
+    function FindCompressFormat(const AFileName: TFileName): TJclCompressArchiveClass;
+    function FindDecompressFormat(const AFileName: TFileName): TJclDecompressArchiveClass;
+    function FindUpdateFormat(const AFileName: TFileName): TJclUpdateArchiveClass;
 
     property CompressFormatCount: Integer read GetCompressFormatCount;
     property CompressFormats[Index: Integer]: TJclCompressArchiveClass read GetCompressFormat;
@@ -1875,7 +1875,7 @@ begin
   inherited Destroy;
 end;
 
-function TJclCompressionStreamFormats.FindCompressFormat(const AFileName: string): TJclCompressStreamClass;
+function TJclCompressionStreamFormats.FindCompressFormat(const AFileName: TFileName): TJclCompressStreamClass;
 var
   IndexFormat, IndexFilter: Integer;
   Filters: TStrings;
@@ -1902,7 +1902,7 @@ begin
   end;
 end;
 
-function TJclCompressionStreamFormats.FindDecompressFormat(const AFileName: string): TJclDecompressStreamClass;
+function TJclCompressionStreamFormats.FindDecompressFormat(const AFileName: TFileName): TJclDecompressStreamClass;
 var
   IndexFormat, IndexFilter: Integer;
   Filters: TStrings;
@@ -3045,7 +3045,7 @@ end;
 
 { Compress to a .gz file - one liner - NEW MARCH 2007  }
 
-function GZipFile(SourceFile, DestinationFile: string; CompressionLevel: Integer;
+function GZipFile(SourceFile, DestinationFile: TFileName; CompressionLevel: Integer;
   ProgressCallback: TJclCompressStreamProgressCallback; UserData: Pointer): Boolean;
 var
   GZipStream: TJclGZIPCompressionStream;
@@ -3085,7 +3085,7 @@ end;
 
 { Decompress a .gz file }
 
-function UnGZipFile(SourceFile, DestinationFile: string;
+function UnGZipFile(SourceFile, DestinationFile: TFileName;
   ProgressCallback: TJclCompressStreamProgressCallback; UserData: Pointer): Boolean;
 var
   GZipStream: TJclGZIPDecompressionStream;
@@ -3152,7 +3152,7 @@ end;
 
 { Compress to a .bz2 file - one liner }
 
-function BZip2File(SourceFile, DestinationFile: string; CompressionLevel: Integer;
+function BZip2File(SourceFile, DestinationFile: TFileName; CompressionLevel: Integer;
   ProgressCallback: TJclCompressStreamProgressCallback; UserData: Pointer): Boolean;
 var
   BZip2Stream: TJclBZIP2CompressionStream;
@@ -3188,7 +3188,7 @@ end;
 
 { Decompress a .bzip2 file }
 
-function UnBZip2File(SourceFile, DestinationFile: string;
+function UnBZip2File(SourceFile, DestinationFile: TFileName;
   ProgressCallback: TJclCompressStreamProgressCallback; UserData: Pointer): Boolean;
 var
   BZip2Stream: TJclBZIP2DecompressionStream;
@@ -3737,7 +3737,7 @@ begin
   inherited Destroy;
 end;
 
-function TJclCompressionArchiveFormats.FindCompressFormat(const AFileName: string): TJclCompressArchiveClass;
+function TJclCompressionArchiveFormats.FindCompressFormat(const AFileName: TFileName): TJclCompressArchiveClass;
 var
   IndexFormat, IndexFilter: Integer;
   Filters: TStrings;
@@ -3764,7 +3764,7 @@ begin
   end;
 end;
 
-function TJclCompressionArchiveFormats.FindDecompressFormat(const AFileName: string): TJclDecompressArchiveClass;
+function TJclCompressionArchiveFormats.FindDecompressFormat(const AFileName: TFileName): TJclDecompressArchiveClass;
 var
   IndexFormat, IndexFilter: Integer;
   Filters: TStrings;
@@ -3791,7 +3791,7 @@ begin
   end;
 end;
 
-function TJclCompressionArchiveFormats.FindUpdateFormat(const AFileName: string): TJclUpdateArchiveClass;
+function TJclCompressionArchiveFormats.FindUpdateFormat(const AFileName: TFileName): TJclUpdateArchiveClass;
 var
   IndexFormat, IndexFilter: Integer;
   Filters: TStrings;
@@ -3919,7 +3919,7 @@ begin
   CreateCompressionObject;
 end;
 
-constructor TJclCompressionArchive.Create(const VolumeName: string;
+constructor TJclCompressionArchive.Create(const VolumeFileName: TFileName;
   AVolumeMaxSize: Int64 = 0; VolumeMask: Boolean = False);
 begin
   inherited Create;
@@ -3929,9 +3929,9 @@ begin
   FItems := TObjectList.Create(True);
   FVolumes := TObjectList.Create(True);
   if VolumeMask then
-    FVolumeNameMask := VolumeName
+    FVolumeFileNameMask := VolumeFileName
   else
-    AddVolume(VolumeName, AVolumeMaxSize);
+    AddVolume(VolumeFileName, AVolumeMaxSize);
   CreateCompressionObject;
 end;
 
@@ -3960,10 +3960,10 @@ begin
   Result := '';
 end;
 
-function TJclCompressionArchive.AddVolume(const VolumeName: string;
+function TJclCompressionArchive.AddVolume(const VolumeFileName: TFileName;
   AVolumeMaxSize: Int64): Integer;
 begin
-  Result := FVolumes.Add(TJclCompressionVolume.Create(nil, True, VolumeName, AVolumeMaxSize));
+  Result := FVolumes.Add(TJclCompressionVolume.Create(nil, True, VolumeFileName, AVolumeMaxSize));
 end;
 
 procedure TJclCompressionArchive.CheckOperationSuccess;
@@ -4067,9 +4067,9 @@ begin
 
   if Index <> FVolumeIndex then
   begin
-    AOwnsStream := VolumeNameMask <> '';
+    AOwnsStream := VolumeFileNameMask <> '';
     AVolume := nil;
-    AFileName := Format(VolumeNameMask, [Index + VolumeIndexOffset]);
+    AFileName := Format(VolumeFileNameMask, [Index + VolumeIndexOffset]);
     if (Index >= 0) and (Index < FVolumes.Count) then
     begin
       AVolume := TJclCompressionVolume(FVolumes.Items[Index]);
@@ -4092,7 +4092,7 @@ begin
     else
     begin
       while FVolumes.Count < Index do
-        FVolumes.Add(TJclCompressionVolume.Create(nil, True, Format(VolumeNameMask, [Index + VolumeIndexOffset]), FVolumeMaxSize));
+        FVolumes.Add(TJclCompressionVolume.Create(nil, True, Format(VolumeFileNameMask, [Index + VolumeIndexOffset]), FVolumeMaxSize));
       if not Assigned(Result) then
         Result := InternalOpenVolume(AFileName);
       if Assigned(Result) then
@@ -4142,17 +4142,17 @@ begin
     else
     begin
       while FVolumes.Count < Index do
-        FVolumes.Add(TJclCompressionVolume.Create(nil, True, Format(VolumeNameMask, [Index + VolumeIndexOffset]), FVolumeMaxSize));
+        FVolumes.Add(TJclCompressionVolume.Create(nil, True, Format(VolumeFileNameMask, [Index + VolumeIndexOffset]), FVolumeMaxSize));
       if Index < FVolumes.Count then
       begin
         AVolume := TJclCompressionVolume(FVolumes.Items[Index]);
-        AVolume.FFileName := Format(VolumeNameMask, [Index + VolumeIndexOffset]);
+        AVolume.FFileName := Format(VolumeFileNameMask, [Index + VolumeIndexOffset]);
         AVolume.FStream := nil;
         AVolume.FOwnsStream := True;
         AVolume.FVolumeMaxSize := FVolumeMaxSize;
       end
       else
-        FVolumes.Add(TJclCompressionVolume.Create(nil, True, Format(VolumeNameMask, [Index + VolumeIndexOffset]), FVolumeMaxSize));
+        FVolumes.Add(TJclCompressionVolume.Create(nil, True, Format(VolumeFileNameMask, [Index + VolumeIndexOffset]), FVolumeMaxSize));
     end;
   end;
   Result := FVolumeMaxSize;
@@ -4266,7 +4266,7 @@ begin
 end;
 
 function TJclCompressArchive.AddFile(const PackedName: WideString;
-  const FileName: string): Integer;
+  const FileName: TFileName): Integer;
 var
   AItem: TJclCompressionItem;
 begin
@@ -4392,7 +4392,7 @@ end;
 procedure TJclCompressArchive.InternalAddFile(const Directory: string;
   const FileInfo: TSearchRec);
 var
-  AFileName: string;
+  AFileName: TFileName;
   AItem: TJclCompressionItem;
 begin
   AFileName := PathAddSeparator(Directory) + FileInfo.Name;
@@ -4550,9 +4550,9 @@ begin
   FDuplicateCheck := dcExisting;
 end;
 
-constructor TJclUpdateArchive.Create(const VolumeName: string; AVolumeMaxSize: Int64; VolumeMask: Boolean);
+constructor TJclUpdateArchive.Create(const VolumeFileName: TFileName; AVolumeMaxSize: Int64; VolumeMask: Boolean);
 begin
-  inherited Create(VolumeName, AVolumeMaxSize, VolumeMask);
+  inherited Create(VolumeFileName, AVolumeMaxSize, VolumeMask);
   FDuplicateCheck := dcExisting;
 end;
 
