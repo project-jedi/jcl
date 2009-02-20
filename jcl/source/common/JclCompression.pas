@@ -41,7 +41,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                       $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -674,17 +674,23 @@ type
   TJclCompressionVolume = class
   protected
     FFileName: TFileName;
+    FTmpFileName: TFileName;
     FStream: TStream;
+    FTmpStream: TStream;
     FOwnsStream: Boolean;
+    FOwnsTmpStream: Boolean;
     FVolumeMaxSize: Int64;
   public
-    constructor Create(AStream: TStream; AOwnsStream: Boolean; AFileName: TFileName;
-      AVolumeMaxSize: Int64);
+    constructor Create(AStream, ATmpStream: TStream; AOwnsStream, AOwnsTmpStream: Boolean;
+      AFileName, ATmpFileName: TFileName; AVolumeMaxSize: Int64);
     destructor Destroy; override;
     procedure ReleaseStreams;
     property FileName: TFileName read FFileName;
+    property TmpFileName: TFileName read FTmpFileName;
     property Stream: TStream read FStream;
+    property TmpStream: TStream read FTmpStream;
     property OwnsStream: Boolean read FOwnsStream;
+    property OwnsTmpStream: Boolean read FOwnsTmpStream;
     property VolumeMaxSize: Int64 read FVolumeMaxSize;
   end;
 
@@ -713,12 +719,12 @@ type
     procedure CreateCompressionObject; virtual;
     procedure FreeCompressionObject; virtual;
 
-    function InternalOpenVolume(const FileName: TFileName): TStream;
+    function InternalOpenStream(const FileName: TFileName): TStream;
     function TranslateItemPath(const ItemPath, OldBase, NewBase: WideString): WideString;
 
     procedure DoProgress(const Value, MaxValue: Int64);
-    function NeedVolume(Index: Integer): TStream;
-    function NeedVolumeMaxSize(Index: Integer): Int64;
+    function NeedStream(Index: Integer): TStream;
+    function NeedStreamMaxSize(Index: Integer): Int64;
     procedure ReleaseVolumes;
     function GetItemClass: TJclCompressionItemClass; virtual; abstract;
   public
@@ -734,17 +740,21 @@ type
     class function ArchiveName: string; virtual;
 
     constructor Create(Volume0: TStream; AVolumeMaxSize: Int64 = 0;
-      AOwnVolume: Boolean = False); overload;
+      AOwnVolume: Boolean = False); overload; virtual;
     constructor Create(const VolumeFileName: TFileName; AVolumeMaxSize: Int64 = 0;
-      VolumeMask: Boolean = False); overload;
+      VolumeMask: Boolean = False); overload; virtual;
       // if VolumeMask is true then VolumeFileName represents a mask to get volume file names
       // "myfile%d.zip" "myfile.zip.%.3d" ...
     destructor Destroy; override;
 
     function AddVolume(const VolumeFileName: TFileName;
       AVolumeMaxSize: Int64 = 0): Integer; overload; virtual;
+    function AddVolume(const VolumeFileName, TmpVolumeFileName: TFileName;
+      AVolumeMaxSize: Int64 = 0): Integer; overload; virtual;
     function AddVolume(VolumeStream: TStream; AVolumeMaxSize: Int64 = 0;
       AOwnsStream: Boolean = False): Integer; overload; virtual;
+    function AddVolume(VolumeStream, TmpVolumeStream: TStream; AVolumeMaxSize: Int64 = 0;
+      AOwnsStream: Boolean = False; AOwnsTmpStream: Boolean = False): Integer; overload; virtual;
 
     // miscellaneous
     procedure ClearVolumes;
@@ -1000,9 +1010,9 @@ type
       var AOwnsStream: Boolean): Boolean; virtual;
   public
     constructor Create(Volume0: TStream; AVolumeMaxSize: Int64 = 0;
-      AOwnVolume: Boolean = False); overload;
+      AOwnVolume: Boolean = False); overload; override;
     constructor Create(const VolumeFileName: TFileName; AVolumeMaxSize: Int64 = 0;
-      VolumeMask: Boolean = False); overload;
+      VolumeMask: Boolean = False); overload; override;
     class function VolumeAccess: TJclStreamAccess; override;
     class function ItemAccess: TJclStreamAccess; override;
 
@@ -1017,6 +1027,39 @@ type
     property OnExtract: TJclCompressionExtractEvent read FOnExtract write FOnExtract;
     property DestinationDir: string read FDestinationDir;
     property AutoCreateSubDir: Boolean read FAutoCreateSubDir;
+  end;
+
+  // ancestor class for all archives that update files in-place (not creating a copy of the volumes)
+  TJclInPlaceUpdateArchive = class(TJclUpdateArchive, IInterface)
+  end;
+
+  // called when tmp volumes will replace volumes after out-of-place update
+  TJclCompressionReplaceEvent = function (Sender: TObject; const SrcFileName, DestFileName: TFileName;
+    var SrcStream, DestStream: TStream; var OwnsSrcStream, OwnsDestStream: Boolean): Boolean;
+
+  // ancestor class for all archives that update files out-of-place (by creating a copy of the volumes)
+  TJclOutOfPlaceUpdateArchive = class(TJclUpdateArchive, IInterface)
+  private
+    FReplaceVolumes: Boolean;
+    FTmpVolumeIndex: Integer;
+    FOnReplace: TJclCompressionReplaceEvent;
+    FOnTmpVolume: TJclCompressionVolumeEvent;
+  protected
+    function NeedTmpStream(Index: Integer): TStream;
+    function InternalOpenTmpStream(const FileName: TFileName): TStream;
+  public
+    class function TmpVolumeAccess: TJclStreamAccess; virtual;
+
+    constructor Create(Volume0: TStream; AVolumeMaxSize: Int64 = 0;
+      AOwnVolume: Boolean = False); overload; override;
+    constructor Create(const VolumeFileName: TFileName; AVolumeMaxSize: Int64 = 0;
+      VolumeMask: Boolean = False); overload; override;
+
+    procedure Compress; override;
+
+    property ReplaceVolumes: Boolean read FReplaceVolumes write FReplaceVolumes;
+    property OnReplace: TJclCompressionReplaceEvent read FOnReplace write FOnReplace;
+    property OnTmpVolume: TJclCompressionVolumeEvent read FOnTmpVolume write FOnTmpVolume;
   end;
 
   TJclUpdateArchiveClass = class of TJclUpdateArchive;
@@ -1545,7 +1588,7 @@ type
 
 //sevenzip classes for updates (read and write)
 type
-  TJclSevenzipUpdateArchive = class(TJclUpdateArchive, IInterface)
+  TJclSevenzipUpdateArchive = class(TJclOutOfPlaceUpdateArchive, IInterface)
   private
     FInArchive: IInArchive;
     FOutArchive: IOutArchive;
@@ -3881,13 +3924,16 @@ end;
 
 //=== { TJclCompressionVolume } ==============================================
 
-constructor TJclCompressionVolume.Create(AStream: TStream; AOwnsStream: Boolean;
-  AFileName: TFileName; AVolumeMaxSize: Int64);
+constructor TJclCompressionVolume.Create(AStream, ATmpStream: TStream; AOwnsStream, AOwnsTmpStream: Boolean;
+  AFileName, ATmpFileName: TFileName; AVolumeMaxSize: Int64);
 begin
   inherited Create;
   FStream := AStream;
+  FTmpStream := ATmpStream;
   FOwnsStream := AOwnsStream;
+  FOwnsTmpStream := AOwnsTmpStream;
   FFileName := AFileName;
+  FTmpFileName := ATmpFileName;
   FVolumeMaxSize := AVolumeMaxSize;
 end;
 
@@ -3900,7 +3946,9 @@ end;
 procedure TJclCompressionVolume.ReleaseStreams;
 begin
   if OwnsStream then
-    FStream.Free;
+    FreeAndNil(FStream);
+  if OwnsTmpStream then
+    FreeAndNil(FTmpStream);
 end;
 
 //=== { TJclCompressionArchive } =============================================
@@ -3947,7 +3995,25 @@ end;
 function TJclCompressionArchive.AddVolume(VolumeStream: TStream;
   AVolumeMaxSize: Int64; AOwnsStream: Boolean): Integer;
 begin
-  Result := FVolumes.Add(TJclCompressionVolume.Create(VolumeStream, AOwnsStream, '', AVolumeMaxSize));
+  Result := FVolumes.Add(TJclCompressionVolume.Create(VolumeStream, nil, AOwnsStream, True, '', '', AVolumeMaxSize));
+end;
+
+function TJclCompressionArchive.AddVolume(VolumeStream, TmpVolumeStream: TStream;
+  AVolumeMaxSize: Int64; AOwnsStream, AOwnsTmpStream: Boolean): Integer;
+begin
+  Result := FVolumes.Add(TJclCompressionVolume.Create(VolumeStream, TmpVolumeStream, AOwnsStream, AOwnsTmpStream, '', '', AVolumeMaxSize));
+end;
+
+function TJclCompressionArchive.AddVolume(const VolumeFileName: TFileName;
+  AVolumeMaxSize: Int64): Integer;
+begin
+  Result := FVolumes.Add(TJclCompressionVolume.Create(nil, nil, True, True, VolumeFileName, '', AVolumeMaxSize));
+end;
+
+function TJclCompressionArchive.AddVolume(const VolumeFileName, TmpVolumeFileName: TFileName;
+  AVolumeMaxSize: Int64): Integer;
+begin
+  Result := FVolumes.Add(TJclCompressionVolume.Create(nil, nil, True, True, VolumeFileName, TmpVolumeFileName, AVolumeMaxSize));
 end;
 
 class function TJclCompressionArchive.ArchiveExtensions: string;
@@ -3958,12 +4024,6 @@ end;
 class function TJclCompressionArchive.ArchiveName: string;
 begin
   Result := '';
-end;
-
-function TJclCompressionArchive.AddVolume(const VolumeFileName: TFileName;
-  AVolumeMaxSize: Int64): Integer;
-begin
-  Result := FVolumes.Add(TJclCompressionVolume.Create(nil, True, VolumeFileName, AVolumeMaxSize));
 end;
 
 procedure TJclCompressionArchive.CheckOperationSuccess;
@@ -4041,7 +4101,7 @@ begin
   Result := FVolumes.Count;
 end;
 
-function TJclCompressionArchive.InternalOpenVolume(
+function TJclCompressionArchive.InternalOpenStream(
   const FileName: TFileName): TStream;
 begin
   Result := OpenFileStream(FileName, VolumeAccess);
@@ -4057,7 +4117,7 @@ begin
   Result := True;
 end;
 
-function TJclCompressionArchive.NeedVolume(Index: Integer): TStream;
+function TJclCompressionArchive.NeedStream(Index: Integer): TStream;
 var
   AVolume: TJclCompressionVolume;
   AOwnsStream: Boolean;
@@ -4084,7 +4144,7 @@ begin
     if Assigned(AVolume) then
     begin
       if not Assigned(Result) then
-        Result := InternalOpenVolume(AFileName);
+        Result := InternalOpenStream(AFileName);
       AVolume.FFileName := AFileName;
       AVolume.FStream := Result;
       AVolume.FOwnsStream := AOwnsStream;
@@ -4092,9 +4152,9 @@ begin
     else
     begin
       while FVolumes.Count < Index do
-        FVolumes.Add(TJclCompressionVolume.Create(nil, True, Format(VolumeFileNameMask, [Index + VolumeIndexOffset]), FVolumeMaxSize));
+        FVolumes.Add(TJclCompressionVolume.Create(nil, nil, True, True, Format(VolumeFileNameMask, [Index + VolumeIndexOffset]), '', FVolumeMaxSize));
       if not Assigned(Result) then
-        Result := InternalOpenVolume(AFileName);
+        Result := InternalOpenStream(AFileName);
       if Assigned(Result) then
       begin
         if Index < FVolumes.Count then
@@ -4106,7 +4166,7 @@ begin
           AVolume.FVolumeMaxSize := FVolumeMaxSize;
         end
         else
-          FVolumes.Add(TJclCompressionVolume.Create(Result, AOwnsStream, AFileName, FVolumeMaxSize));
+          FVolumes.Add(TJclCompressionVolume.Create(Result, nil, AOwnsStream, True, AFileName, '', FVolumeMaxSize));
       end;
     end;
     FVolumeIndex := Index;
@@ -4123,7 +4183,7 @@ begin
     FVolumeIndex := Index;
 end;
 
-function TJclCompressionArchive.NeedVolumeMaxSize(Index: Integer): Int64;
+function TJclCompressionArchive.NeedStreamMaxSize(Index: Integer): Int64;
 var
   AVolume: TJclCompressionVolume;
 begin
@@ -4142,7 +4202,7 @@ begin
     else
     begin
       while FVolumes.Count < Index do
-        FVolumes.Add(TJclCompressionVolume.Create(nil, True, Format(VolumeFileNameMask, [Index + VolumeIndexOffset]), FVolumeMaxSize));
+        FVolumes.Add(TJclCompressionVolume.Create(nil, nil, True, True, Format(VolumeFileNameMask, [Index + VolumeIndexOffset]), '', FVolumeMaxSize));
       if Index < FVolumes.Count then
       begin
         AVolume := TJclCompressionVolume(FVolumes.Items[Index]);
@@ -4152,7 +4212,7 @@ begin
         AVolume.FVolumeMaxSize := FVolumeMaxSize;
       end
       else
-        FVolumes.Add(TJclCompressionVolume.Create(nil, True, Format(VolumeFileNameMask, [Index + VolumeIndexOffset]), FVolumeMaxSize));
+        FVolumes.Add(TJclCompressionVolume.Create(nil, nil, True, True, Format(VolumeFileNameMask, [Index + VolumeIndexOffset]), '', FVolumeMaxSize));
     end;
   end;
   Result := FVolumeMaxSize;
@@ -4611,7 +4671,177 @@ end;
 
 class function TJclUpdateArchive.VolumeAccess: TJclStreamAccess;
 begin
-  Result := saReadWrite;
+  Result := saReadOnly;
+end;
+
+//=== { TJclOutOfPlaceUpdateArchive } ========================================
+
+procedure TJclOutOfPlaceUpdateArchive.Compress;
+var
+  Index: Integer;
+  AVolume: TJclCompressionVolume;
+  SrcFileName, DestFileName: TFileName;
+  SrcStream, DestStream: TStream;
+  OwnsSrcStream, OwnsDestStream, AllHandled, Handled: Boolean;
+  CopiedSize: Int64;
+begin
+  // release volume streams and other finalization
+  inherited Compress;
+
+  if ReplaceVolumes then
+  begin
+    AllHandled := True;
+
+    // replace streams by tmp streams
+    for Index := 0 to FVolumes.Count - 1 do
+    begin
+      AVolume := TJclCompressionVolume(FVolumes.Items[Index]);
+
+      SrcFileName := AVolume.TmpFileName;
+      DestFileName := AVolume.FileName;
+      SrcStream := AVolume.TmpStream;
+      DestStream := AVolume.Stream;
+      OwnsSrcStream := AVolume.OwnsTmpStream;
+      OwnsDestStream := AVolume.OwnsStream;
+
+      Handled := Assigned(FOnReplace) and FOnReplace(Self, SrcFileName, DestFileName, SrcStream, DestStream, OwnsSrcStream, OwnsDestStream);
+
+      if not Handled then
+      begin
+        if (SrcFileName <> '') and (DestFileName <> '') and
+           (OwnsSrcStream or not Assigned(SrcStream)) and
+           (OwnsDestStream or not Assigned(DestStream)) then
+        begin
+          // close references before moving files
+          if OwnsSrcStream then
+            FreeAndNil(SrcStream);
+          if OwnsDestStream then
+            FreeAndNil(DestStream);
+          Handled := FileMove(SrcFileName, DestFileName, True);
+        end
+        else
+        if (SrcFileName = '') and (DestFileName = '') and Assigned(SrcStream) and Assigned(DestStream) then
+        begin
+          // in-memory moves
+          StreamSeek(SrcStream, 0, soBeginning);
+          StreamSeek(DestStream, 0, soBeginning);
+          CopiedSize := StreamCopy(SrcStream, DestStream);
+          // reset size
+          DestStream.Size := CopiedSize;
+        end;
+        // identity
+        // else
+        //   Handled := False;
+      end;
+
+      // update volume information
+      AVolume.FTmpStream := SrcStream;
+      AVolume.FStream := DestStream;
+      AVolume.FOwnsTmpStream := OwnsSrcStream;
+      AVolume.FOwnsStream := OwnsDestStream;
+      AVolume.FTmpFileName := SrcFileName;
+      AVolume.FFileName := DestFileName;
+
+      AllHandled := AllHandled and Handled;
+    end;
+    if not AllHandled then
+      raise EJclCompressionError.CreateRes(@RsCompressionReplaceError);
+  end;
+end;
+
+constructor TJclOutOfPlaceUpdateArchive.Create(Volume0: TStream;
+  AVolumeMaxSize: Int64; AOwnVolume: Boolean);
+begin
+  inherited Create(Volume0, AVolumeMaxSize, AOwnVolume);
+  FReplaceVolumes := True;
+  FTmpVolumeIndex := -1;
+end;
+
+constructor TJclOutOfPlaceUpdateArchive.Create(const VolumeFileName: TFileName;
+  AVolumeMaxSize: Int64; VolumeMask: Boolean);
+begin
+  inherited Create(VolumeFileName, AVolumeMaxSize, VolumeMask);
+  FReplaceVolumes := True;
+  FTmpVolumeIndex := -1;
+end;
+
+function TJclOutOfPlaceUpdateArchive.InternalOpenTmpStream(
+  const FileName: TFileName): TStream;
+begin
+  Result := OpenFileStream(FileName, TmpVolumeAccess);
+end;
+
+function TJclOutOfPlaceUpdateArchive.NeedTmpStream(Index: Integer): TStream;
+var
+  AVolume: TJclCompressionVolume;
+  AOwnsStream: Boolean;
+  AFileName: TFileName;
+begin
+  Result := nil;
+
+  if Index <> FTmpVolumeIndex then
+  begin
+    AOwnsStream := VolumeFileNameMask <> '';
+    AVolume := nil;
+    AFileName := FindUnusedFileName(Format(VolumeFileNameMask, [Index + VolumeIndexOffset]), '.tmp');
+    if (Index >= 0) and (Index < FVolumes.Count) then
+    begin
+      AVolume := TJclCompressionVolume(FVolumes.Items[Index]);
+      Result := AVolume.TmpStream;
+      AOwnsStream := AVolume.OwnsTmpStream;
+      AFileName := AVolume.TmpFileName;
+      if AFileName = '' then
+        AFileName := FindUnusedFileName(AVolume.FileName, '.tmp');
+    end;
+
+    if Assigned(FOnTmpVolume) then
+      FOnTmpVolume(Self, Index, AFileName, Result, AOwnsStream);
+
+    if Assigned(AVolume) then
+    begin
+      if not Assigned(Result) then
+        Result := InternalOpenTmpStream(AFileName);
+      AVolume.FTmpFileName := AFileName;
+      AVolume.FTmpStream := Result;
+      AVolume.FOwnsTmpStream := AOwnsStream;
+    end
+    else
+    begin
+      while FVolumes.Count < Index do
+        FVolumes.Add(TJclCompressionVolume.Create(nil, nil, True, True, Format(VolumeFileNameMask, [Index + VolumeIndexOffset]), '', FVolumeMaxSize));
+      if not Assigned(Result) then
+        Result := InternalOpenTmpStream(AFileName);
+      if Assigned(Result) then
+      begin
+        if Index < FVolumes.Count then
+        begin
+          AVolume := TJclCompressionVolume(FVolumes.Items[Index]);
+          AVolume.FTmpFileName := AFileName;
+          AVolume.FTmpStream := Result;
+          AVolume.FOwnsTmpStream := AOwnsStream;
+          AVolume.FVolumeMaxSize := FVolumeMaxSize;
+        end
+        else
+          FVolumes.Add(TJclCompressionVolume.Create(nil, Result, True, AOwnsStream, '', AFileName, FVolumeMaxSize));
+      end;
+    end;
+    FTmpVolumeIndex := Index;
+  end
+  else
+  if (Index >= 0) and (Index < FVolumes.Count) then
+  begin
+    AVolume := TJclCompressionVolume(FVolumes.Items[Index]);
+    Result := AVolume.TmpStream;
+    if Assigned(Result) then
+      StreamSeek(Result, 0, soBeginning);
+  end
+  else
+    FTmpVolumeIndex := Index;
+end;
+
+class function TJclOutOfPlaceUpdateArchive.TmpVolumeAccess: TJclStreamAccess;
+begin
+  Result := saWriteOnly;
 end;
 
 //=== { TJclSevenzipOutStream } ==============================================
@@ -5462,8 +5692,8 @@ begin
   FCompressing := True;
   try
     SplitStream := TJclDynamicSplitStream.Create(False);
-    SplitStream.OnVolume := NeedVolume;
-    SplitStream.OnVolumeMaxSize := NeedVolumeMaxSize;
+    SplitStream.OnVolume := NeedStream;
+    SplitStream.OnVolumeMaxSize := NeedStreamMaxSize;
     OutStream := TJclSevenzipOutStream.Create(SplitStream, True, False);
     UpdateCallback := TJclSevenzipUpdateCallback.Create(Self);
 
@@ -6412,12 +6642,12 @@ begin
     if (FVolumeMaxSize <> 0) or (FVolumes.Count <> 0) then
     begin
       SplitStream := TJclDynamicSplitStream.Create(False);
-      SplitStream.OnVolume := NeedVolume;
-      SplitStream.OnVolumeMaxSize := NeedVolumeMaxSize;
+      SplitStream.OnVolume := NeedStream;
+      SplitStream.OnVolumeMaxSize := NeedStreamMaxSize;
       AInStream := TJclSevenzipInStream.Create(SplitStream, True);
     end
     else
-      AInStream := TJclSevenzipInStream.Create(NeedVolume(0), False);
+      AInStream := TJclSevenzipInStream.Create(NeedStream(0), False);
     OpenCallback := TJclSevenzipOpenCallback.Create(Self);
 
     SetSevenzipArchiveCompressionProperties(Self, FInArchive);
@@ -7097,8 +7327,8 @@ begin
   FCompressing := True;
   try
     SplitStream := TJclDynamicSplitStream.Create(True);
-    SplitStream.OnVolume := NeedVolume;
-    SplitStream.OnVolumeMaxSize := NeedVolumeMaxSize;
+    SplitStream.OnVolume := NeedTmpStream;
+    SplitStream.OnVolumeMaxSize := NeedStreamMaxSize;
     OutStream := TJclSevenzipOutStream.Create(SplitStream, True, True);
     UpdateCallback := TJclSevenzipUpdateCallback.Create(Self);
 
@@ -7107,7 +7337,9 @@ begin
     SevenzipCheck(FOutArchive.UpdateItems(OutStream, ItemCount, UpdateCallback));
   finally
     FCompressing := False;
-    // release volumes and other finalizations
+    // release reference to volume streams
+    OutStream := nil;
+    // replace streams by tmp streams
     inherited Compress;
   end;
 end;
@@ -7296,8 +7528,8 @@ begin
   if not FOpened then
   begin
     SplitStream := TJclDynamicSplitStream.Create(True);
-    SplitStream.OnVolume := NeedVolume;
-    SplitStream.OnVolumeMaxSize := NeedVolumeMaxSize;
+    SplitStream.OnVolume := NeedStream;
+    SplitStream.OnVolumeMaxSize := NeedStreamMaxSize;
 
     AInStream := TJclSevenzipInStream.Create(SplitStream, True);
     OpenCallback := TJclSevenzipOpenCallback.Create(Self);
