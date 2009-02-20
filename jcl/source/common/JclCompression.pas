@@ -41,7 +41,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -681,6 +681,7 @@ type
     constructor Create(AStream: TStream; AOwnsStream: Boolean; AFileName: TFileName;
       AVolumeMaxSize: Int64);
     destructor Destroy; override;
+    procedure ReleaseStreams;
     property FileName: TFileName read FFileName;
     property Stream: TStream read FStream;
     property OwnsStream: Boolean read FOwnsStream;
@@ -718,6 +719,7 @@ type
     procedure DoProgress(const Value, MaxValue: Int64);
     function NeedVolume(Index: Integer): TStream;
     function NeedVolumeMaxSize(Index: Integer): Int64;
+    procedure ReleaseVolumes;
     function GetItemClass: TJclCompressionItemClass; virtual; abstract;
   public
     { IInterface }
@@ -924,7 +926,7 @@ type
       const FileName: string): Integer; overload; virtual;
     function AddFile(const PackedName: WideString; AStream: TStream;
       AOwnsStream: Boolean = False): Integer; overload; virtual;
-    procedure Compress; virtual; abstract;
+    procedure Compress; virtual;
 
     property DuplicateCheck: TJclCompressionDuplicateCheck read FDuplicateCheck write FDuplicateCheck;
     property DuplicateAction: TJclCompressionDuplicateAction read FDuplicateAction write FDuplicateAction;
@@ -964,9 +966,9 @@ type
 
     procedure ListFiles; virtual; abstract;
     procedure ExtractSelected(const ADestinationDir: string = '';
-      AAutoCreateSubDir: Boolean = True); virtual; abstract;
+      AAutoCreateSubDir: Boolean = True); virtual;
     procedure ExtractAll(const ADestinationDir: string = '';
-      AAutoCreateSubDir: Boolean = True); virtual; abstract;
+      AAutoCreateSubDir: Boolean = True); virtual;
 
     property OnExtract: TJclCompressionExtractEvent read FOnExtract write FOnExtract;
     property DestinationDir: string read FDestinationDir;
@@ -1006,9 +1008,9 @@ type
 
     procedure ListFiles; virtual; abstract;
     procedure ExtractSelected(const ADestinationDir: string = '';
-      AAutoCreateSubDir: Boolean = True); virtual; abstract;
+      AAutoCreateSubDir: Boolean = True); virtual;
     procedure ExtractAll(const ADestinationDir: string = '';
-      AAutoCreateSubDir: Boolean = True); virtual; abstract;
+      AAutoCreateSubDir: Boolean = True); virtual;
     procedure DeleteItem(Index: Integer); virtual; abstract;
     procedure RemoveItem(const PackedName: WideString); virtual; abstract;
 
@@ -3891,9 +3893,14 @@ end;
 
 destructor TJclCompressionVolume.Destroy;
 begin
+  ReleaseStreams;
+  inherited Destroy;
+end;
+
+procedure TJclCompressionVolume.ReleaseStreams;
+begin
   if OwnsStream then
     FStream.Free;
-  inherited Destroy;
 end;
 
 //=== { TJclCompressionArchive } =============================================
@@ -4151,6 +4158,14 @@ begin
   Result := FVolumeMaxSize;
 end;
 
+procedure TJclCompressionArchive.ReleaseVolumes;
+var
+  Index: Integer;
+begin
+  for Index := 0 to FVolumes.Count - 1 do
+    TJclCompressionVolume(FVolumes.Items[Index]).ReleaseStreams;
+end;
+
 procedure TJclCompressionArchive.SelectAll;
 var
   Index: Integer;
@@ -4364,6 +4379,11 @@ begin
     raise EJclCompressionError.CreateRes(@RsCompressionCompressingError);
 end;
 
+procedure TJclCompressArchive.Compress;
+begin
+  ReleaseVolumes;
+end;
+
 procedure TJclCompressArchive.InternalAddDirectory(const Directory: string);
 begin
   AddDirectory(TranslateItemPath(Directory, FBaseDirName, FBaseRelName), Directory, False, FAddFilesInDir);
@@ -4431,6 +4451,18 @@ procedure TJclDecompressArchive.CheckNotDecompressing;
 begin
   if FDecompressing then
     raise EJclCompressionError.CreateRes(@RsCompressionDecompressingError);
+end;
+
+procedure TJclDecompressArchive.ExtractAll(const ADestinationDir: string;
+  AAutoCreateSubDir: Boolean);
+begin
+  ReleaseVolumes;
+end;
+
+procedure TJclDecompressArchive.ExtractSelected(const ADestinationDir: string;
+  AAutoCreateSubDir: Boolean);
+begin
+  ReleaseVolumes;
 end;
 
 class function TJclDecompressArchive.ItemAccess: TJclStreamAccess;
@@ -4522,6 +4554,18 @@ constructor TJclUpdateArchive.Create(const VolumeName: string; AVolumeMaxSize: I
 begin
   inherited Create(VolumeName, AVolumeMaxSize, VolumeMask);
   FDuplicateCheck := dcExisting;
+end;
+
+procedure TJclUpdateArchive.ExtractAll(const ADestinationDir: string;
+  AAutoCreateSubDir: Boolean);
+begin
+  ReleaseVolumes;
+end;
+
+procedure TJclUpdateArchive.ExtractSelected(const ADestinationDir: string;
+  AAutoCreateSubDir: Boolean);
+begin
+  ReleaseVolumes;
 end;
 
 class function TJclUpdateArchive.ItemAccess: TJclStreamAccess;
@@ -5428,6 +5472,8 @@ begin
     SevenzipCheck(FOutArchive.UpdateItems(OutStream, ItemCount, UpdateCallback));
   finally
     FCompressing := False;
+    // release volumes and other finalizations
+    inherited Compress;
   end;
 end;
 
@@ -6265,6 +6311,8 @@ begin
     FDecompressing := False;
     FExtractingAllIndex := -1;
     AExtractCallback := nil;
+    // release volumes and other finalizations
+    inherited ExtractAll(ADestinationDir, AAutoCreateSubDir);
   end;
 end;
 
@@ -6309,6 +6357,8 @@ begin
     FDestinationDir := '';
     FDecompressing := False;
     AExtractCallback := nil;
+    // release volumes and other finalizations
+    inherited ExtractSelected(ADestinationDir, AAutoCreateSubDir);
   end;
 end;
 
@@ -7057,6 +7107,8 @@ begin
     SevenzipCheck(FOutArchive.UpdateItems(OutStream, ItemCount, UpdateCallback));
   finally
     FCompressing := False;
+    // release volumes and other finalizations
+    inherited Compress;
   end;
 end;
 
@@ -7142,6 +7194,8 @@ begin
     FDecompressing := False;
     FExtractingAllIndex := -1;
     AExtractCallback := nil;
+    // release volumes and other finalizations
+    inherited ExtractAll(ADestinationDir, AAutoCreateSubDir);
   end;
 end;
 
@@ -7187,6 +7241,8 @@ begin
     FDestinationDir := '';
     FDecompressing := False;
     AExtractCallback := nil;
+    // release volumes and other finalizations
+    inherited ExtractSelected(ADestinationDir, AAutoCreateSubDir);
   end;
 end;
 
