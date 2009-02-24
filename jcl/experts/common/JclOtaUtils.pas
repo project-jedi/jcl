@@ -1102,7 +1102,15 @@ begin
     end;
   end
   else
+  begin
     Result := VarToStr(Project.ProjectOptions.Values[OutputDirOptionName]);
+
+    if Result = 'false' then
+      Result := '';
+
+    if Result = '' then
+      Result := VarToStr(Project.ProjectOptions.Values[FinalOutputDirOptionName]);
+  end;
 
   if Result = 'false' then
     Result := '';

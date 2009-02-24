@@ -77,6 +77,7 @@ const
   JclDebugDeleteMapFileRegValue = 'JclDebugDeleteMapFile';
   MapFileOptionName             = 'MapFile';
   OutputDirOptionName           = 'OutputDir';
+  FinalOutputDirOptionName      = 'FinalOutputDir';
   RuntimeOnlyOptionName         = 'RuntimeOnly';
   PkgDllDirOptionName           = 'PkgDllDir';
   BPLOutputDirOptionName        = 'PackageDPLOutput';
