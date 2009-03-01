@@ -158,7 +158,8 @@ const
 type
   TCharValidator = function(const C: Char): Boolean;
 
-function ArrayContainsChar(const Chars: array of Char; const C: Char): Boolean;
+function ArrayContainsChar(const Chars: array of Char; const C: Char): Boolean; overload;
+function ArrayContainsChar(const Chars: array of Char; const C: Char; out Index: Integer): Boolean; overload;
 
 // String Test Routines
 function StrIsAlpha(const S: string): Boolean;
@@ -1012,6 +1013,13 @@ end;
 {$ENDIF ~CLR}
 
 function ArrayContainsChar(const Chars: array of Char; const C: Char): Boolean;
+var
+  idx: Integer;
+begin
+  Result := ArrayContainsChar(Chars, C, idx);
+end;
+
+function ArrayContainsChar(const Chars: array of Char; const C: Char; out Index: Integer): Boolean;
 { optimized version for sorted arrays
 var
   I, L, H: Integer;
@@ -1035,14 +1043,11 @@ begin
   end;
   Result := False;
 end;}
-var
-  I: Integer;
 begin
-  Result := True;
-  for I := Low(Chars) to High(Chars) do
-    if Chars[I] = C then
-      Exit;
-  Result := False;
+  Index := High(Chars);
+  while (Index >= Low(Chars)) and (Chars[Index] <> C) do
+    Dec(Index);
+  Result := Index >= Low(Chars);
 end;
 
 // String Test Routines
@@ -1098,6 +1103,10 @@ begin
   Result := False;
   if CheckAll then
   begin
+    // this will not work with the current definition of the validator. The validator would need to check each character
+    // it requires against the string (which is currently not provided to the Validator). The current implementation of
+    // CheckAll will check if all characters in S will be accepted by the provided Validator, which is wrong and incon-
+    // sistent with the documentation and the array-based overload.
     for I := 1 to Length(S) do
     begin
       Result := Chars(S[I]);
@@ -1120,18 +1129,19 @@ function StrContainsChars(const S: string; const Chars: array of Char; CheckAll:
 var
   I: Integer;
 begin
-  Result := False;
   if CheckAll then
   begin
-    for I := 1 to Length(S) do
+    Result := True;
+    I := High(Chars);
+    while (I >= 0) and Result do
     begin
-      Result := ArrayContainsChar(Chars, S[I]);
-      if not Result then
-        Break;
+      Result := CharPos(S, Chars[I]) > 0;
+      Dec(I);
     end;
   end
   else
   begin
+    Result := False;
     for I := 1 to Length(S) do
     begin
       Result := ArrayContainsChar(Chars, S[I]);
@@ -3035,18 +3045,18 @@ end;
 {$ELSE ~CLR}
 function StrFind(const Substr, S: string; const Index: Integer): Integer;
 var
-  Pos: PChar;
+  pos: Integer;
 begin
   if (SubStr <> '') and (S <> '') then
   begin
-    pos := StrPos(@S[Index], PChar(SubStr));
-    if Pos = nil then
-      result := 0
+    pos := StrIPos(Substr, Copy(S, Index, Length(S) - Index + 1));
+    if pos = 0 then
+      Result := 0
     else
-      Result := (Cardinal(Pos) - Cardinal(@S[1])) div SizeOf(Char) + 1;
+      Result := Index + Pos - 1;
   end
   else
-    result := 0;
+    Result := 0;
 end;
 {$ENDIF ~CLR}
 

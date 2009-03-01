@@ -1254,7 +1254,7 @@ Description:
 Parameters:
   S - The string in which to search for N occurences of SubStr.
   SubStr - The sub-string to search for.
-  Index - The number of occurences of sub-string in S.
+  N - The number of occurences of sub-string in S.
 Result:
   Index into S where the N-th occurence of SubStr is located. If SubStr has less
   than N occurences in S the result is 0.
@@ -2376,34 +2376,6 @@ Result:
   AnsiSameText returns 0 (CSTR_EQUAL) if the two strings match.
 Donator:
   Team JCL
---------------------------------------------------------------------------------
-@@StrAnsiToOem
-<GROUP StringManipulation.StringTransformationRoutines>
-Summary:
-  Translates an ANSI string into a string using the OEM character set.
-Description:
-  The StrAnsiToOem function translates an ansi string into a string using the
-  OEM defined character set.
-Parameters:
-  S - The string to translate.
-Result:
-  The translated string.
-Donator:
-  Anonymous
---------------------------------------------------------------------------------
-@@StrOemToAnsi
-<GROUP StringManipulation.StringTransformationRoutines>
-Summary:
-  Translates an OEM string into an ansi string.
-Description:
-  The StrOemToAnsi function translated a string using the OEM defined character set
-  into an ansi string.
-Parameters:
-  S - The string to translate.
-Result:
-  The translated string.
-Donator:
-  Anonymous
 --------------------------------------------------------------------------------
 @@StrCharsCount
 <GROUP StringManipulation.StringTransformationRoutines>
@@ -3974,4 +3946,5 @@ Result:
   <c>a positive value</c> if S1 is greater than S2
 Donator:
   Marcel Bestebroer
+--------------------------------------------------------------------------------
 
