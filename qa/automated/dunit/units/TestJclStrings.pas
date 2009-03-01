@@ -171,6 +171,7 @@ type
     procedure _NilSet;
     procedure _OptimalFill;
     procedure _Optimize;
+    procedure _Referencing;
     procedure _TabFrom;
     procedure _TabStopAdding;
     procedure _TabStopDeleting;
@@ -2415,6 +2416,14 @@ var
         CheckEquals(tabs1.Count, tabs2.Count, 'NormalClone: .Count');
         CheckEquals(tabs1.TabStops[0], tabs2.TabStops[0], 'NormalClone: .TabStops[0]');
         CheckEquals(tabs1.TabStops[1], tabs2.TabStops[1], 'NormalClone: .TabStops[1]');
+
+        // changing values in one reference should not influence the other reference
+        tabs1.TabWidth := 3;
+        CheckEquals(2, tabs2.TabWidth, 'NormalReference: .TabWidth changed');
+
+        // freeing the first instance should leave the second instance working
+        FreeAndNil(tabs1);
+        CheckEquals(2, tabs2.TabWidth, 'NormalReference: .TabWidth after freeing instance 1');
       finally
         FreeAndNil(tabs2);
       end;
@@ -2566,6 +2575,57 @@ begin
   finally
     FreeAndNil(tabs);
   end;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclStringTabSet._Referencing;
+var
+  tabs1: TJclTabSet;
+  tabs2: TJclTabSet;
+
+  procedure NilReference;
+  begin
+    tabs1 := nil;
+    tabs2 := tabs1.NewReference;
+    try
+      CheckTrue(tabs2 = nil, 'NilReference: tabs2 = nil');
+    finally
+      FreeAndNil(tabs2);
+    end;
+  end;
+
+  procedure NormalReference;
+  begin
+    tabs1 := TJclTabSet.Create([4, 8], False, 2);
+    try
+      tabs2 := tabs1.NewReference;
+      try
+        CheckTrue(tabs1 <> tabs2, 'NormalReference: tabs1 <> tabs2');
+        CheckEquals(tabs1.TabWidth, tabs2.TabWidth, 'NormalReference: .TabWidth');
+        CheckEquals(tabs1.ActualTabWidth, tabs2.ActualTabWidth, 'NormalReference: .ActualTabWidth');
+        CheckEquals(tabs1.Count, tabs2.Count, 'NormalReference: .Count');
+        CheckEquals(tabs1.TabStops[0], tabs2.TabStops[0], 'NormalReference: .TabStops[0]');
+        CheckEquals(tabs1.TabStops[1], tabs2.TabStops[1], 'NormalReference: .TabStops[1]');
+
+        // changing values in one reference should also occur in the other reference
+        tabs1.TabWidth := 3;
+        CheckEquals(3, tabs2.TabWidth, 'NormalReference: .TabWidth changed');
+
+        // freeing the first instance should leave the second instance working
+        FreeAndNil(tabs1);
+        CheckEquals(3, tabs2.TabWidth, 'NormalReference: .TabWidth after freeing instance 1');
+      finally
+        FreeAndNil(tabs2);
+      end;
+    finally
+      FreeAndNil(tabs1);
+    end;
+  end;
+
+begin
+  NilReference;
+  NormalReference;
 end;
 
 //------------------------------------------------------------------------------
