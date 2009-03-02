@@ -241,7 +241,7 @@ begin
   if not Found then
     for i := 0 to ASearchPath.Size - 1 do
     begin
-      fn := ASearchPath.Items[i] + PathDelim + AName;
+      fn := ASearchPath.Strings[i] + PathDelim + AName;
       if FileExists(fn) then
       begin
         Found := True;
@@ -353,10 +353,10 @@ var
   ADefines: IJclStrMap;
   AMacros: IJclStrStrMap;
 begin
-  ADefines := (InternalPeekDefines as IJclIntfCloneable).Clone as IJclStrMap;
-  AExcludedFiles := (InternalPeekExcludedFiles as IJclIntfCloneable).Clone as IJclStrList;
-  ASearchPath := (InternalPeekSearchPath as IJclIntfCloneable).Clone as IJclStrList;
-  AMacros := (InternalPeekMacros as IJclIntfCloneable).Clone as IJclStrStrMap;
+  ADefines := (InternalPeekDefines as IJclIntfCloneable).IntfClone as IJclStrMap;
+  AExcludedFiles := (InternalPeekExcludedFiles as IJclIntfCloneable).IntfClone as IJclStrList;
+  ASearchPath := (InternalPeekSearchPath as IJclIntfCloneable).IntfClone as IJclStrList;
+  AMacros := (InternalPeekMacros as IJclIntfCloneable).IntfClone as IJclStrStrMap;
 
   InternalPushState(AExcludedFiles, ASearchPath, AMacros, ADefines);
 end;
