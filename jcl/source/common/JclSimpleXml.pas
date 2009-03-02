@@ -1524,10 +1524,11 @@ begin
     Stream := TJclAutoStream.Create(StrStream);
     try
       SaveToStringStream(Stream);
-      Result := StrStream.DataString;
+      Stream.Flush;
     finally
       Stream.Free;
     end;
+    Result := StrStream.DataString;
   finally
     StrStream.Free;
   end;
