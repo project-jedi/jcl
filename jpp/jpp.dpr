@@ -57,6 +57,7 @@ uses
   Classes,
   TypInfo,
   JclFileUtils,
+  JclStreams,
   JclSysUtils,
   JppState in 'JppState.pas',
   JppParser in 'JppParser.pas',
@@ -107,22 +108,40 @@ procedure Process(AState: TSimplePppState; const AOld, ANew: string);
 var
   parse: TJppParser;
   fsIn, fsOut: TStream;
+  ssIn: TJclAutoStream;
+  ssOut: TJclStringStream;
   answer: string;
 begin
   fsOut := nil;
   parse := nil;
   fsIn := nil;
+  ssIn := nil;
+  ssOut := nil;
   AState.PushState;
   try
     fsIn := TFileStream.Create(AOld, fmOpenRead);
-    parse := TJppParser.Create(fsIn, AState);
+    ssIn := TJclAutoStream.Create(fsIn);
+    parse := TJppParser.Create(ssIn, AState);
     answer := Format('%s'#13#10'%s', [SWarningJppGenerated, parse.Parse]);
     fsOut := TFileStream.Create(ANew, fmCreate);
-    fsOut.WriteBuffer(Pointer(answer)^, Length(answer));
+    case ssIn.Encoding of
+      seAnsi:
+        ssOut := TJclAnsiStream.Create(fsOut);
+      seUTF8:
+        ssOut := TJclUTF8Stream.Create(fsOut);
+      seUTF16:
+        ssOut := TJclUTF16Stream.Create(fsOut);
+    else
+      WriteLn('Unknown encoding for file ' + AOld);
+      Abort;
+    end;
+    ssOut.WriteString(answer, 1, Length(answer));
   finally
     AState.PopState;
+    ssOut.Free;
     fsOut.Free;
     parse.Free;
+    ssIn.Free;
     fsIn.Free;
   end;
 end;
@@ -180,16 +199,19 @@ var
     begin
       case cp^ of
         '+':
-          pppState.Options := pppState.Options + [AOpt];
+          begin
+            pppState.Options := pppState.Options + [AOpt];
+            Result := cp + 1;
+          end;
         '-':
-          pppState.Options := pppState.Options - [AOpt];
+          begin
+            pppState.Options := pppState.Options - [AOpt];
+            Result := cp + 1;
+          end;
       else
         pppState.Options := pppState.Options + [AOpt];
-      end;
-      if cp^ in ['+', '-'] then
-        Result := cp + 1
-      else
         Result := cp;
+      end;
     end;
 
   var
@@ -281,7 +303,7 @@ var
     NewName, tmp: string;
     iter: IFindFileIterator;
   begin
-    while not (cp^ in ['-', #0]) do
+    while (cp^ <> '-') and (cp^ <> #0) do
     begin
       cp := SkipWhite(ReadStringDoubleQuotedMaybe(cp, tmp));
 

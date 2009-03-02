@@ -38,7 +38,9 @@ unit PCharUtils;
 
 interface
 
-uses SysUtils;
+uses
+  SysUtils,
+  JclStrings;
 
 function SkipWhite(cp: PChar): PChar;
 function ReadStringDoubleQuotedMaybe(cp: PChar; var AStr: string): PChar;
@@ -49,7 +51,7 @@ implementation
 
 function SkipWhite(cp: PChar): PChar;
 begin
-  while cp^ in [#1..#32] do
+  while CharIsSpace(cp^) do
     Inc(cp);
   Result := cp;
 end;
@@ -60,7 +62,7 @@ begin
   Result := cp;
   if Result^ = '"' then
   begin
-    while not (Result^ in [#0, '"']) do
+    while (Result^ <> #0) and (Result^ <> '"') do
       Inc(Result);
     if Result^ = #0 then
       raise Exception.Create('Unterminated string');
@@ -69,7 +71,7 @@ begin
   end
   else
   begin
-    while not (Result^ in [#0..#32]) do
+    while (Result^ <> #0) and not CharIsSpace(Result^) do
       Inc(Result);
     SetString(AStr, cp, Result - cp);
   end;
@@ -81,7 +83,7 @@ begin
   Result := cp;
   if Result^ = '"' then
   begin
-    while not (Result^ in [#0, '"']) do
+    while (Result^ <> #0) and (Result^ <> '"') do
       Inc(Result);
     if Result^ = #0 then
       raise Exception.Create('Unterminated string');
@@ -90,7 +92,7 @@ begin
   end
   else
   begin
-    while not (Result^ in [#0..#32]) do
+    while (Result^ <> #0) and not CharIsSpace(Result^) do
       Inc(Result);
     SetString(AStr, cp, Result - cp);
   end;
@@ -101,7 +103,7 @@ var
   start: PChar;
 begin
   start := cp;
-  while cp^ in ['a'..'z', 'A'..'Z', '0'..'9', '_'] do
+  while CharIsValidIdentifierLetter(cp^) do
     Inc(cp);
   SetString(ident, start, cp - start);
   Result := cp;
