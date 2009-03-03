@@ -41,7 +41,6 @@ type
 	published
     procedure Comprehensive_001;
     procedure Comprehensive_002;
-    procedure Comprehensive_003;
   end;
 
 	TEDIStringReplace_Tests = class(TTestCase)
@@ -146,16 +145,16 @@ end;
 procedure TEDIObjectList_Tests.Comprehensive_002;
 var
   OL: TEDIObjectList;
-  LI0, LI1, LI2, LI3, LI4, LI5: TEDIObjectListItem;
+  {LI0, }LI1, LI2, LI3, {LI4, }LI5: TEDIObjectListItem;
   O: TEDIObject;
 begin
   OL := TEDIObjectList.Create(True);
   try
-    LI0 := OL.Add(TEDIObject.Create, 'Element 1');
+    {LI0 := }OL.Add(TEDIObject.Create, 'Element 1');
     LI1 := OL.Add(TEDIObject.Create, 'Element 2');
     LI2 := OL.Add(TEDIObject.Create, 'Element 3');
     LI3 := OL.Add(TEDIObject.Create, 'Element 4');
-    LI4 := OL.Add(TEDIObject.Create, 'Element 5');
+    {LI4 := }OL.Add(TEDIObject.Create, 'Element 5');
     Check(OL.Count = 5, 'TEDIObjectList.Add failed.');
     {$IFDEF USING_EDI_NEW_PROTOTYPE THEN}
     LI5 := OL.FindItem(LI2.EDIObject);
@@ -169,18 +168,11 @@ begin
     Check(OL.Count = 3, 'TEDIObjectList.Remove failed.');
     LI2 := OL.Insert(O, LI3.EDIObject);
     Check(OL.Count = 4, 'TEDIObjectList.Insert failed.');
-    LI1 := OL.Insert(LI2.EDIObject);
+    {LI1 := }OL.Insert(LI2.EDIObject);
     Check(OL.Count = 5, 'TEDIObjectList.Insert failed.');
   finally
     OL.Free;
   end; //try
-end;
-{
-	Tests with dynamic array emulation
-}
-procedure TEDIObjectList_Tests.Comprehensive_003;
-begin
-
 end;
 
 { TEDIStringReplace_Tests }
