@@ -77,7 +77,7 @@ function SELFCLASSNAME.HasPrevious: Boolean;
 begin
   {$JPPEXPANDMACRO DELEGATEREADBEGIN(FOwnList)}
     if Valid then
-      Result := (FCursor <> nil) and (FCursor.Next <> nil)
+      Result := (FCursor <> nil) and (FCursor.Previous <> nil)
     else
       Result := FCursor <> nil;
   {$JPPEXPANDMACRO DELEGATEREADEND(FOwnList)}

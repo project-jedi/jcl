@@ -2102,7 +2102,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     if Valid then
-      Result := (FCursor <> nil) and (FCursor.Next <> nil)
+      Result := (FCursor <> nil) and (FCursor.Previous <> nil)
     else
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
@@ -3232,7 +3232,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     if Valid then
-      Result := (FCursor <> nil) and (FCursor.Next <> nil)
+      Result := (FCursor <> nil) and (FCursor.Previous <> nil)
     else
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
@@ -4362,7 +4362,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     if Valid then
-      Result := (FCursor <> nil) and (FCursor.Next <> nil)
+      Result := (FCursor <> nil) and (FCursor.Previous <> nil)
     else
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
@@ -5495,7 +5495,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     if Valid then
-      Result := (FCursor <> nil) and (FCursor.Next <> nil)
+      Result := (FCursor <> nil) and (FCursor.Previous <> nil)
     else
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
@@ -6627,7 +6627,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     if Valid then
-      Result := (FCursor <> nil) and (FCursor.Next <> nil)
+      Result := (FCursor <> nil) and (FCursor.Previous <> nil)
     else
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
@@ -7758,7 +7758,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     if Valid then
-      Result := (FCursor <> nil) and (FCursor.Next <> nil)
+      Result := (FCursor <> nil) and (FCursor.Previous <> nil)
     else
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
@@ -8890,7 +8890,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     if Valid then
-      Result := (FCursor <> nil) and (FCursor.Next <> nil)
+      Result := (FCursor <> nil) and (FCursor.Previous <> nil)
     else
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
@@ -10020,7 +10020,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     if Valid then
-      Result := (FCursor <> nil) and (FCursor.Next <> nil)
+      Result := (FCursor <> nil) and (FCursor.Previous <> nil)
     else
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
@@ -11150,7 +11150,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     if Valid then
-      Result := (FCursor <> nil) and (FCursor.Next <> nil)
+      Result := (FCursor <> nil) and (FCursor.Previous <> nil)
     else
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
@@ -12280,7 +12280,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     if Valid then
-      Result := (FCursor <> nil) and (FCursor.Next <> nil)
+      Result := (FCursor <> nil) and (FCursor.Previous <> nil)
     else
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
@@ -13411,7 +13411,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     if Valid then
-      Result := (FCursor <> nil) and (FCursor.Next <> nil)
+      Result := (FCursor <> nil) and (FCursor.Previous <> nil)
     else
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
@@ -14542,7 +14542,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     if Valid then
-      Result := (FCursor <> nil) and (FCursor.Next <> nil)
+      Result := (FCursor <> nil) and (FCursor.Previous <> nil)
     else
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
@@ -15668,7 +15668,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     if Valid then
-      Result := (FCursor <> nil) and (FCursor.Next <> nil)
+      Result := (FCursor <> nil) and (FCursor.Previous <> nil)
     else
       Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
