@@ -51,30 +51,43 @@ begin
   {$JPPEXPANDMACRO DELEGATEREADEND(FOwnTree)}
 end;
 
-procedure BASEITRCLASSNAME.ClearChildren;
-begin
-  raise EJclOperationNotSupportedError.Create;
-end;
-
 procedure BASEITRCLASSNAME.DeleteChild(Index: Integer);
 begin
   raise EJclOperationNotSupportedError.Create;
 end;
 
-function BASEITRCLASSNAME.IteratorEquals(const AIterator: STDITRINTERFACENAME): Boolean;
-var
-  Obj: TObject;
-  ItrObj: BASEITRCLASSNAME;
+procedure BASEITRCLASSNAME.DeleteChildren;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is BASEITRCLASSNAME then
-  begin
-    ItrObj := BASEITRCLASSNAME(Obj);
-    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
-  end;
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure BASEITRCLASSNAME.Extract;
+var
+  OldCursor: NODETYPENAME;
+begin
+  {$JPPEXPANDMACRO DELEGATEWRITEBEGIN(FOwnTree)}
+    CheckValid;
+    Valid := False;
+    OldCursor := FCursor;
+    if OldCursor <> nil then
+    begin
+      repeat
+        FCursor := GetNextCursor;
+      until (FCursor = nil) or FOwnTree.RemoveSingleElement
+        or (not FEqualityComparer.ItemsEqual(OldCursor.Value, FCursor.Value));
+      FOwnTree.Extract(OldCursor.Value);
+    end;
+  {$JPPEXPANDMACRO DELEGATEWRITEEND(FOwnTree)}
+end;
+
+procedure BASEITRCLASSNAME.ExtractChild(Index: Integer);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure BASEITRCLASSNAME.ExtractChildren;
+begin
+  raise EJclOperationNotSupportedError.Create;
 end;
 
 function BASEITRCLASSNAME.GetChild(Index: Integer): TYPENAME;
@@ -195,6 +208,22 @@ end;
 function BASEITRCLASSNAME.InsertChild(Index: Integer; CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
+end;
+
+function BASEITRCLASSNAME.IteratorEquals(const AIterator: STDITRINTERFACENAME): Boolean;
+var
+  Obj: TObject;
+  ItrObj: BASEITRCLASSNAME;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is BASEITRCLASSNAME then
+  begin
+    ItrObj := BASEITRCLASSNAME(Obj);
+    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 function BASEITRCLASSNAME.Left: TYPENAME;
@@ -745,6 +774,28 @@ begin
     Result.Right := CloneNode(Node.Right, Result); // recursive call
 end;
 
+function SELFCLASSNAME.CollectionEquals(const ACollection: COLLECTIONINTERFACENAME): Boolean;
+var
+  It, ItSelf: STDITRINTERFACENAME;
+begin
+  {$JPPEXPANDMACRO READBEGIN}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$JPPEXPANDMACRO READEND}
+end;
+
 function SELFCLASSNAME.Contains(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
 var
   Comp: Integer;
@@ -784,26 +835,142 @@ begin
   {$JPPEXPANDMACRO READEND}
 end;
 
-function SELFCLASSNAME.CollectionEquals(const ACollection: COLLECTIONINTERFACENAME): Boolean;
+function SELFCLASSNAME.Extract(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
 var
-  It, ItSelf: STDITRINTERFACENAME;
+  Current, Successor: NODETYPENAME;
+  Comp: Integer;
 begin
-  {$JPPEXPANDMACRO READBEGIN}
+  {$JPPEXPANDMACRO WRITEBEGIN}
+    Result := False;
+    // locate PARAMETERNAME in the tree
+    Current := FRoot;
+    repeat
+      while Current <> nil do
+      begin
+        Comp := ItemsCompare(PARAMETERNAME, Current.Value);
+        if Comp = 0 then
+          Break
+        else
+        if Comp < 0 then
+         Current := Current.Left
+        else
+          Current := Current.Right;
+      end;
+      if Current = nil then
+        Break;
+      Result := True;
+      // Remove Current from tree
+      if (Current.Left = nil) and (Current.Right <> nil) then
+      begin
+        // remove references to Current
+        Current.Right.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Current.Right
+          else
+            Current.Parent.Right := Current.Right;
+        end
+        else
+          // fix root
+          FRoot := Current.Right;
+        Successor := Current.Parent;
+        if Successor = nil then
+          Successor := FRoot;
+      end
+      else
+      if (Current.Left <> nil) and (Current.Right = nil) then
+      begin
+        // remove references to Current
+        Current.Left.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Current.Left
+          else
+            Current.Parent.Right := Current.Left;
+        end
+        else
+          // fix root
+          FRoot := Current.Left;
+        Successor := Current.Parent;
+        if Successor = nil then
+          Successor := FRoot;
+      end
+      else
+      if (Current.Left <> nil) and (Current.Right <> nil) then
+      begin
+        // find the successor in tree
+        Successor := Current.Right;
+        while Successor.Left <> nil do
+          Successor := Successor.Left;
+
+        if Successor <> Current.Right then
+        begin
+          // remove references to successor
+          Successor.Parent.Left := Successor.Right;
+          if Successor.Right <> nil then
+            Successor.Right.Parent := Successor.Parent;
+          Successor.Right := Current.Right;
+          if Successor.Right <> nil then
+            Successor.Right.Parent := Successor;
+        end;
+
+        // insert successor in new position
+        Successor.Left := Current.Left;
+        if Current.Left <> nil then
+          Current.Left.Parent := Successor;
+        Successor.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Successor
+          else
+            Current.Parent.Right := Successor;
+        end
+        else
+          // fix root
+          FRoot := Successor;
+        Successor := Current.Parent;
+        if Successor <> nil then
+          Successor := FRoot;
+      end
+      else
+      begin
+        // (Current.Left = nil) and (Current.Right = nil)
+        Successor := Current.Parent;
+        if Successor <> nil then
+        begin
+          // remove references from parent
+          if Successor.Left = Current then
+            Successor.Left := nil
+          else
+            Successor.Right := nil;
+        end
+        else
+          FRoot := nil;
+      end;
+      Current.Free;
+      Dec(FSize);
+      Current := Successor;
+    until FRemoveSingleElement or (Current = nil);
+    AutoPack;
+  {$JPPEXPANDMACRO WRITEEND}
+end;
+
+function SELFCLASSNAME.ExtractAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;
+var
+  It: STDITRINTERFACENAME;
+begin
+  {$JPPEXPANDMACRO WRITEBEGIN}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
     Result := True;
     It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
-  {$JPPEXPANDMACRO READEND}
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
+  {$JPPEXPANDMACRO WRITEEND}
 end;
 
 function SELFCLASSNAME.First: STDITRINTERFACENAME;
@@ -967,125 +1134,15 @@ end;
 
 function SELFCLASSNAME.Remove(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
 var
-  Current, Successor: NODETYPENAME;
-  Comp: Integer;
+  Extracted: TYPENAME;
 begin
   {$JPPEXPANDMACRO WRITEBEGIN}
-    Result := False;
-    // locate PARAMETERNAME in the tree
-    Current := FRoot;
-    repeat
-      while Current <> nil do
-      begin
-        Comp := ItemsCompare(PARAMETERNAME, Current.Value);
-        if Comp = 0 then
-          Break
-        else
-        if Comp < 0 then
-         Current := Current.Left
-        else
-          Current := Current.Right;
-      end;
-      if Current = nil then
-        Break;
-      Result := True;
-      // Remove Current from tree
-      if (Current.Left = nil) and (Current.Right <> nil) then
-      begin
-        // remove references to Current
-        Current.Right.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Current.Right
-          else
-            Current.Parent.Right := Current.Right;
-        end
-        else
-          // fix root
-          FRoot := Current.Right;
-        Successor := Current.Parent;
-        if Successor = nil then
-          Successor := FRoot;
-      end
-      else
-      if (Current.Left <> nil) and (Current.Right = nil) then
-      begin
-        // remove references to Current
-        Current.Left.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Current.Left
-          else
-            Current.Parent.Right := Current.Left;
-        end
-        else
-          // fix root
-          FRoot := Current.Left;
-        Successor := Current.Parent;
-        if Successor = nil then
-          Successor := FRoot;
-      end
-      else
-      if (Current.Left <> nil) and (Current.Right <> nil) then
-      begin
-        // find the successor in tree
-        Successor := Current.Right;
-        while Successor.Left <> nil do
-          Successor := Successor.Left;
-
-        if Successor <> Current.Right then
-        begin
-          // remove references to successor
-          Successor.Parent.Left := Successor.Right;
-          if Successor.Right <> nil then
-            Successor.Right.Parent := Successor.Parent;
-          Successor.Right := Current.Right;
-          if Successor.Right <> nil then
-            Successor.Right.Parent := Successor;
-        end;
-
-        // insert successor in new position
-        Successor.Left := Current.Left;
-        if Current.Left <> nil then
-          Current.Left.Parent := Successor;
-        Successor.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Successor
-          else
-            Current.Parent.Right := Successor;
-        end
-        else
-          // fix root
-          FRoot := Successor;
-        Successor := Current.Parent;
-        if Successor <> nil then
-          Successor := FRoot;
-      end
-      else
-      begin
-        // (Current.Left = nil) and (Current.Right = nil)
-        Successor := Current.Parent;
-        if Successor <> nil then
-        begin
-          // remove references from parent
-          if Successor.Left = Current then
-            Successor.Left := nil
-          else
-            Successor.Right := nil;
-        end
-        else
-          FRoot := nil;
-      end;
-      RELEASERNAME(Current.Value);
-      Current.Free;
-      Dec(FSize);
-      Current := Successor;
-    until FRemoveSingleElement or (Current = nil);
-    AutoPack;
+    Result := Extract(PARAMETERNAME);
+    if Result then
+    begin
+      Extracted := PARAMETERNAME;
+      RELEASERNAME(Extracted);
+    end;
   {$JPPEXPANDMACRO WRITEEND}
 end;
 

@@ -95,11 +95,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function MapEquals(const AMap: IJclIntfIntfMap): Boolean;
+    function Extract(const Key: IInterface): IInterface;
     function GetValue(const Key: IInterface): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): IInterface;
     function KeySet: IJclIntfSet;
+    function MapEquals(const AMap: IJclIntfIntfMap): Boolean;
     procedure PutAll(const AMap: IJclIntfIntfMap);
     procedure PutValue(const Key: IInterface; const Value: IInterface);
     function Remove(const Key: IInterface): IInterface;
@@ -145,11 +146,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: AnsiString): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function MapEquals(const AMap: IJclAnsiStrIntfMap): Boolean;
+    function Extract(const Key: AnsiString): IInterface;
     function GetValue(const Key: AnsiString): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): AnsiString;
     function KeySet: IJclAnsiStrSet;
+    function MapEquals(const AMap: IJclAnsiStrIntfMap): Boolean;
     procedure PutAll(const AMap: IJclAnsiStrIntfMap);
     procedure PutValue(const Key: AnsiString; const Value: IInterface);
     function Remove(const Key: AnsiString): IInterface;
@@ -196,11 +198,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(const Value: AnsiString): Boolean;
-    function MapEquals(const AMap: IJclIntfAnsiStrMap): Boolean;
+    function Extract(const Key: IInterface): AnsiString;
     function GetValue(const Key: IInterface): AnsiString;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: AnsiString): IInterface;
     function KeySet: IJclIntfSet;
+    function MapEquals(const AMap: IJclIntfAnsiStrMap): Boolean;
     procedure PutAll(const AMap: IJclIntfAnsiStrMap);
     procedure PutValue(const Key: IInterface; const Value: AnsiString);
     function Remove(const Key: IInterface): AnsiString;
@@ -246,11 +249,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: AnsiString): Boolean;
     function ContainsValue(const Value: AnsiString): Boolean;
-    function MapEquals(const AMap: IJclAnsiStrAnsiStrMap): Boolean;
+    function Extract(const Key: AnsiString): AnsiString;
     function GetValue(const Key: AnsiString): AnsiString;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: AnsiString): AnsiString;
     function KeySet: IJclAnsiStrSet;
+    function MapEquals(const AMap: IJclAnsiStrAnsiStrMap): Boolean;
     procedure PutAll(const AMap: IJclAnsiStrAnsiStrMap);
     procedure PutValue(const Key: AnsiString; const Value: AnsiString);
     function Remove(const Key: AnsiString): AnsiString;
@@ -296,11 +300,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: WideString): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function MapEquals(const AMap: IJclWideStrIntfMap): Boolean;
+    function Extract(const Key: WideString): IInterface;
     function GetValue(const Key: WideString): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): WideString;
     function KeySet: IJclWideStrSet;
+    function MapEquals(const AMap: IJclWideStrIntfMap): Boolean;
     procedure PutAll(const AMap: IJclWideStrIntfMap);
     procedure PutValue(const Key: WideString; const Value: IInterface);
     function Remove(const Key: WideString): IInterface;
@@ -347,11 +352,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(const Value: WideString): Boolean;
-    function MapEquals(const AMap: IJclIntfWideStrMap): Boolean;
+    function Extract(const Key: IInterface): WideString;
     function GetValue(const Key: IInterface): WideString;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: WideString): IInterface;
     function KeySet: IJclIntfSet;
+    function MapEquals(const AMap: IJclIntfWideStrMap): Boolean;
     procedure PutAll(const AMap: IJclIntfWideStrMap);
     procedure PutValue(const Key: IInterface; const Value: WideString);
     function Remove(const Key: IInterface): WideString;
@@ -397,11 +403,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: WideString): Boolean;
     function ContainsValue(const Value: WideString): Boolean;
-    function MapEquals(const AMap: IJclWideStrWideStrMap): Boolean;
+    function Extract(const Key: WideString): WideString;
     function GetValue(const Key: WideString): WideString;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: WideString): WideString;
     function KeySet: IJclWideStrSet;
+    function MapEquals(const AMap: IJclWideStrWideStrMap): Boolean;
     procedure PutAll(const AMap: IJclWideStrWideStrMap);
     procedure PutValue(const Key: WideString; const Value: WideString);
     function Remove(const Key: WideString): WideString;
@@ -448,11 +455,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: UnicodeString): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function MapEquals(const AMap: IJclUnicodeStrIntfMap): Boolean;
+    function Extract(const Key: UnicodeString): IInterface;
     function GetValue(const Key: UnicodeString): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): UnicodeString;
     function KeySet: IJclUnicodeStrSet;
+    function MapEquals(const AMap: IJclUnicodeStrIntfMap): Boolean;
     procedure PutAll(const AMap: IJclUnicodeStrIntfMap);
     procedure PutValue(const Key: UnicodeString; const Value: IInterface);
     function Remove(const Key: UnicodeString): IInterface;
@@ -499,11 +507,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(const Value: UnicodeString): Boolean;
-    function MapEquals(const AMap: IJclIntfUnicodeStrMap): Boolean;
+    function Extract(const Key: IInterface): UnicodeString;
     function GetValue(const Key: IInterface): UnicodeString;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: UnicodeString): IInterface;
     function KeySet: IJclIntfSet;
+    function MapEquals(const AMap: IJclIntfUnicodeStrMap): Boolean;
     procedure PutAll(const AMap: IJclIntfUnicodeStrMap);
     procedure PutValue(const Key: IInterface; const Value: UnicodeString);
     function Remove(const Key: IInterface): UnicodeString;
@@ -549,11 +558,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: UnicodeString): Boolean;
     function ContainsValue(const Value: UnicodeString): Boolean;
-    function MapEquals(const AMap: IJclUnicodeStrUnicodeStrMap): Boolean;
+    function Extract(const Key: UnicodeString): UnicodeString;
     function GetValue(const Key: UnicodeString): UnicodeString;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: UnicodeString): UnicodeString;
     function KeySet: IJclUnicodeStrSet;
+    function MapEquals(const AMap: IJclUnicodeStrUnicodeStrMap): Boolean;
     procedure PutAll(const AMap: IJclUnicodeStrUnicodeStrMap);
     procedure PutValue(const Key: UnicodeString; const Value: UnicodeString);
     function Remove(const Key: UnicodeString): UnicodeString;
@@ -616,11 +626,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: Single): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function MapEquals(const AMap: IJclSingleIntfMap): Boolean;
+    function Extract(const Key: Single): IInterface;
     function GetValue(const Key: Single): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): Single;
     function KeySet: IJclSingleSet;
+    function MapEquals(const AMap: IJclSingleIntfMap): Boolean;
     procedure PutAll(const AMap: IJclSingleIntfMap);
     procedure PutValue(const Key: Single; const Value: IInterface);
     function Remove(const Key: Single): IInterface;
@@ -667,11 +678,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(const Value: Single): Boolean;
-    function MapEquals(const AMap: IJclIntfSingleMap): Boolean;
+    function Extract(const Key: IInterface): Single;
     function GetValue(const Key: IInterface): Single;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Single): IInterface;
     function KeySet: IJclIntfSet;
+    function MapEquals(const AMap: IJclIntfSingleMap): Boolean;
     procedure PutAll(const AMap: IJclIntfSingleMap);
     procedure PutValue(const Key: IInterface; const Value: Single);
     function Remove(const Key: IInterface): Single;
@@ -717,11 +729,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: Single): Boolean;
     function ContainsValue(const Value: Single): Boolean;
-    function MapEquals(const AMap: IJclSingleSingleMap): Boolean;
+    function Extract(const Key: Single): Single;
     function GetValue(const Key: Single): Single;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Single): Single;
     function KeySet: IJclSingleSet;
+    function MapEquals(const AMap: IJclSingleSingleMap): Boolean;
     procedure PutAll(const AMap: IJclSingleSingleMap);
     procedure PutValue(const Key: Single; const Value: Single);
     function Remove(const Key: Single): Single;
@@ -767,11 +780,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: Double): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function MapEquals(const AMap: IJclDoubleIntfMap): Boolean;
+    function Extract(const Key: Double): IInterface;
     function GetValue(const Key: Double): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): Double;
     function KeySet: IJclDoubleSet;
+    function MapEquals(const AMap: IJclDoubleIntfMap): Boolean;
     procedure PutAll(const AMap: IJclDoubleIntfMap);
     procedure PutValue(const Key: Double; const Value: IInterface);
     function Remove(const Key: Double): IInterface;
@@ -818,11 +832,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(const Value: Double): Boolean;
-    function MapEquals(const AMap: IJclIntfDoubleMap): Boolean;
+    function Extract(const Key: IInterface): Double;
     function GetValue(const Key: IInterface): Double;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Double): IInterface;
     function KeySet: IJclIntfSet;
+    function MapEquals(const AMap: IJclIntfDoubleMap): Boolean;
     procedure PutAll(const AMap: IJclIntfDoubleMap);
     procedure PutValue(const Key: IInterface; const Value: Double);
     function Remove(const Key: IInterface): Double;
@@ -868,11 +883,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: Double): Boolean;
     function ContainsValue(const Value: Double): Boolean;
-    function MapEquals(const AMap: IJclDoubleDoubleMap): Boolean;
+    function Extract(const Key: Double): Double;
     function GetValue(const Key: Double): Double;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Double): Double;
     function KeySet: IJclDoubleSet;
+    function MapEquals(const AMap: IJclDoubleDoubleMap): Boolean;
     procedure PutAll(const AMap: IJclDoubleDoubleMap);
     procedure PutValue(const Key: Double; const Value: Double);
     function Remove(const Key: Double): Double;
@@ -918,11 +934,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: Extended): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function MapEquals(const AMap: IJclExtendedIntfMap): Boolean;
+    function Extract(const Key: Extended): IInterface;
     function GetValue(const Key: Extended): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): Extended;
     function KeySet: IJclExtendedSet;
+    function MapEquals(const AMap: IJclExtendedIntfMap): Boolean;
     procedure PutAll(const AMap: IJclExtendedIntfMap);
     procedure PutValue(const Key: Extended; const Value: IInterface);
     function Remove(const Key: Extended): IInterface;
@@ -969,11 +986,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(const Value: Extended): Boolean;
-    function MapEquals(const AMap: IJclIntfExtendedMap): Boolean;
+    function Extract(const Key: IInterface): Extended;
     function GetValue(const Key: IInterface): Extended;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Extended): IInterface;
     function KeySet: IJclIntfSet;
+    function MapEquals(const AMap: IJclIntfExtendedMap): Boolean;
     procedure PutAll(const AMap: IJclIntfExtendedMap);
     procedure PutValue(const Key: IInterface; const Value: Extended);
     function Remove(const Key: IInterface): Extended;
@@ -1019,11 +1037,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: Extended): Boolean;
     function ContainsValue(const Value: Extended): Boolean;
-    function MapEquals(const AMap: IJclExtendedExtendedMap): Boolean;
+    function Extract(const Key: Extended): Extended;
     function GetValue(const Key: Extended): Extended;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Extended): Extended;
     function KeySet: IJclExtendedSet;
+    function MapEquals(const AMap: IJclExtendedExtendedMap): Boolean;
     procedure PutAll(const AMap: IJclExtendedExtendedMap);
     procedure PutValue(const Key: Extended; const Value: Extended);
     function Remove(const Key: Extended): Extended;
@@ -1085,11 +1104,12 @@ type
     procedure Clear;
     function ContainsKey(Key: Integer): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function MapEquals(const AMap: IJclIntegerIntfMap): Boolean;
+    function Extract(Key: Integer): IInterface;
     function GetValue(Key: Integer): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): Integer;
     function KeySet: IJclIntegerSet;
+    function MapEquals(const AMap: IJclIntegerIntfMap): Boolean;
     procedure PutAll(const AMap: IJclIntegerIntfMap);
     procedure PutValue(Key: Integer; const Value: IInterface);
     function Remove(Key: Integer): IInterface;
@@ -1136,11 +1156,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(Value: Integer): Boolean;
-    function MapEquals(const AMap: IJclIntfIntegerMap): Boolean;
+    function Extract(const Key: IInterface): Integer;
     function GetValue(const Key: IInterface): Integer;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: Integer): IInterface;
     function KeySet: IJclIntfSet;
+    function MapEquals(const AMap: IJclIntfIntegerMap): Boolean;
     procedure PutAll(const AMap: IJclIntfIntegerMap);
     procedure PutValue(const Key: IInterface; Value: Integer);
     function Remove(const Key: IInterface): Integer;
@@ -1186,11 +1207,12 @@ type
     procedure Clear;
     function ContainsKey(Key: Integer): Boolean;
     function ContainsValue(Value: Integer): Boolean;
-    function MapEquals(const AMap: IJclIntegerIntegerMap): Boolean;
+    function Extract(Key: Integer): Integer;
     function GetValue(Key: Integer): Integer;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: Integer): Integer;
     function KeySet: IJclIntegerSet;
+    function MapEquals(const AMap: IJclIntegerIntegerMap): Boolean;
     procedure PutAll(const AMap: IJclIntegerIntegerMap);
     procedure PutValue(Key: Integer; Value: Integer);
     function Remove(Key: Integer): Integer;
@@ -1236,11 +1258,12 @@ type
     procedure Clear;
     function ContainsKey(Key: Cardinal): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function MapEquals(const AMap: IJclCardinalIntfMap): Boolean;
+    function Extract(Key: Cardinal): IInterface;
     function GetValue(Key: Cardinal): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): Cardinal;
     function KeySet: IJclCardinalSet;
+    function MapEquals(const AMap: IJclCardinalIntfMap): Boolean;
     procedure PutAll(const AMap: IJclCardinalIntfMap);
     procedure PutValue(Key: Cardinal; const Value: IInterface);
     function Remove(Key: Cardinal): IInterface;
@@ -1287,11 +1310,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(Value: Cardinal): Boolean;
-    function MapEquals(const AMap: IJclIntfCardinalMap): Boolean;
+    function Extract(const Key: IInterface): Cardinal;
     function GetValue(const Key: IInterface): Cardinal;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: Cardinal): IInterface;
     function KeySet: IJclIntfSet;
+    function MapEquals(const AMap: IJclIntfCardinalMap): Boolean;
     procedure PutAll(const AMap: IJclIntfCardinalMap);
     procedure PutValue(const Key: IInterface; Value: Cardinal);
     function Remove(const Key: IInterface): Cardinal;
@@ -1337,11 +1361,12 @@ type
     procedure Clear;
     function ContainsKey(Key: Cardinal): Boolean;
     function ContainsValue(Value: Cardinal): Boolean;
-    function MapEquals(const AMap: IJclCardinalCardinalMap): Boolean;
+    function Extract(Key: Cardinal): Cardinal;
     function GetValue(Key: Cardinal): Cardinal;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: Cardinal): Cardinal;
     function KeySet: IJclCardinalSet;
+    function MapEquals(const AMap: IJclCardinalCardinalMap): Boolean;
     procedure PutAll(const AMap: IJclCardinalCardinalMap);
     procedure PutValue(Key: Cardinal; Value: Cardinal);
     function Remove(Key: Cardinal): Cardinal;
@@ -1387,11 +1412,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: Int64): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function MapEquals(const AMap: IJclInt64IntfMap): Boolean;
+    function Extract(const Key: Int64): IInterface;
     function GetValue(const Key: Int64): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): Int64;
     function KeySet: IJclInt64Set;
+    function MapEquals(const AMap: IJclInt64IntfMap): Boolean;
     procedure PutAll(const AMap: IJclInt64IntfMap);
     procedure PutValue(const Key: Int64; const Value: IInterface);
     function Remove(const Key: Int64): IInterface;
@@ -1438,11 +1464,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(const Value: Int64): Boolean;
-    function MapEquals(const AMap: IJclIntfInt64Map): Boolean;
+    function Extract(const Key: IInterface): Int64;
     function GetValue(const Key: IInterface): Int64;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Int64): IInterface;
     function KeySet: IJclIntfSet;
+    function MapEquals(const AMap: IJclIntfInt64Map): Boolean;
     procedure PutAll(const AMap: IJclIntfInt64Map);
     procedure PutValue(const Key: IInterface; const Value: Int64);
     function Remove(const Key: IInterface): Int64;
@@ -1488,11 +1515,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: Int64): Boolean;
     function ContainsValue(const Value: Int64): Boolean;
-    function MapEquals(const AMap: IJclInt64Int64Map): Boolean;
+    function Extract(const Key: Int64): Int64;
     function GetValue(const Key: Int64): Int64;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Int64): Int64;
     function KeySet: IJclInt64Set;
+    function MapEquals(const AMap: IJclInt64Int64Map): Boolean;
     procedure PutAll(const AMap: IJclInt64Int64Map);
     procedure PutValue(const Key: Int64; const Value: Int64);
     function Remove(const Key: Int64): Int64;
@@ -1539,11 +1567,12 @@ type
     procedure Clear;
     function ContainsKey(Key: Pointer): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function MapEquals(const AMap: IJclPtrIntfMap): Boolean;
+    function Extract(Key: Pointer): IInterface;
     function GetValue(Key: Pointer): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): Pointer;
     function KeySet: IJclPtrSet;
+    function MapEquals(const AMap: IJclPtrIntfMap): Boolean;
     procedure PutAll(const AMap: IJclPtrIntfMap);
     procedure PutValue(Key: Pointer; const Value: IInterface);
     function Remove(Key: Pointer): IInterface;
@@ -1590,11 +1619,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(Value: Pointer): Boolean;
-    function MapEquals(const AMap: IJclIntfPtrMap): Boolean;
+    function Extract(const Key: IInterface): Pointer;
     function GetValue(const Key: IInterface): Pointer;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: Pointer): IInterface;
     function KeySet: IJclIntfSet;
+    function MapEquals(const AMap: IJclIntfPtrMap): Boolean;
     procedure PutAll(const AMap: IJclIntfPtrMap);
     procedure PutValue(const Key: IInterface; Value: Pointer);
     function Remove(const Key: IInterface): Pointer;
@@ -1640,11 +1670,12 @@ type
     procedure Clear;
     function ContainsKey(Key: Pointer): Boolean;
     function ContainsValue(Value: Pointer): Boolean;
-    function MapEquals(const AMap: IJclPtrPtrMap): Boolean;
+    function Extract(Key: Pointer): Pointer;
     function GetValue(Key: Pointer): Pointer;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: Pointer): Pointer;
     function KeySet: IJclPtrSet;
+    function MapEquals(const AMap: IJclPtrPtrMap): Boolean;
     procedure PutAll(const AMap: IJclPtrPtrMap);
     procedure PutValue(Key: Pointer; Value: Pointer);
     function Remove(Key: Pointer): Pointer;
@@ -1698,11 +1729,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function MapEquals(const AMap: IJclIntfMap): Boolean;
+    function Extract(const Key: IInterface): TObject;
     function GetValue(const Key: IInterface): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): IInterface;
     function KeySet: IJclIntfSet;
+    function MapEquals(const AMap: IJclIntfMap): Boolean;
     procedure PutAll(const AMap: IJclIntfMap);
     procedure PutValue(const Key: IInterface; Value: TObject);
     function Remove(const Key: IInterface): TObject;
@@ -1754,11 +1786,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: AnsiString): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function MapEquals(const AMap: IJclAnsiStrMap): Boolean;
+    function Extract(const Key: AnsiString): TObject;
     function GetValue(const Key: AnsiString): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): AnsiString;
     function KeySet: IJclAnsiStrSet;
+    function MapEquals(const AMap: IJclAnsiStrMap): Boolean;
     procedure PutAll(const AMap: IJclAnsiStrMap);
     procedure PutValue(const Key: AnsiString; Value: TObject);
     function Remove(const Key: AnsiString): TObject;
@@ -1810,11 +1843,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: WideString): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function MapEquals(const AMap: IJclWideStrMap): Boolean;
+    function Extract(const Key: WideString): TObject;
     function GetValue(const Key: WideString): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): WideString;
     function KeySet: IJclWideStrSet;
+    function MapEquals(const AMap: IJclWideStrMap): Boolean;
     procedure PutAll(const AMap: IJclWideStrMap);
     procedure PutValue(const Key: WideString; Value: TObject);
     function Remove(const Key: WideString): TObject;
@@ -1867,11 +1901,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: UnicodeString): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function MapEquals(const AMap: IJclUnicodeStrMap): Boolean;
+    function Extract(const Key: UnicodeString): TObject;
     function GetValue(const Key: UnicodeString): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): UnicodeString;
     function KeySet: IJclUnicodeStrSet;
+    function MapEquals(const AMap: IJclUnicodeStrMap): Boolean;
     procedure PutAll(const AMap: IJclUnicodeStrMap);
     procedure PutValue(const Key: UnicodeString; Value: TObject);
     function Remove(const Key: UnicodeString): TObject;
@@ -1934,11 +1969,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: Single): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function MapEquals(const AMap: IJclSingleMap): Boolean;
+    function Extract(const Key: Single): TObject;
     function GetValue(const Key: Single): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): Single;
     function KeySet: IJclSingleSet;
+    function MapEquals(const AMap: IJclSingleMap): Boolean;
     procedure PutAll(const AMap: IJclSingleMap);
     procedure PutValue(const Key: Single; Value: TObject);
     function Remove(const Key: Single): TObject;
@@ -1990,11 +2026,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: Double): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function MapEquals(const AMap: IJclDoubleMap): Boolean;
+    function Extract(const Key: Double): TObject;
     function GetValue(const Key: Double): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): Double;
     function KeySet: IJclDoubleSet;
+    function MapEquals(const AMap: IJclDoubleMap): Boolean;
     procedure PutAll(const AMap: IJclDoubleMap);
     procedure PutValue(const Key: Double; Value: TObject);
     function Remove(const Key: Double): TObject;
@@ -2046,11 +2083,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: Extended): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function MapEquals(const AMap: IJclExtendedMap): Boolean;
+    function Extract(const Key: Extended): TObject;
     function GetValue(const Key: Extended): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): Extended;
     function KeySet: IJclExtendedSet;
+    function MapEquals(const AMap: IJclExtendedMap): Boolean;
     procedure PutAll(const AMap: IJclExtendedMap);
     procedure PutValue(const Key: Extended; Value: TObject);
     function Remove(const Key: Extended): TObject;
@@ -2112,11 +2150,12 @@ type
     procedure Clear;
     function ContainsKey(Key: Integer): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function MapEquals(const AMap: IJclIntegerMap): Boolean;
+    function Extract(Key: Integer): TObject;
     function GetValue(Key: Integer): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): Integer;
     function KeySet: IJclIntegerSet;
+    function MapEquals(const AMap: IJclIntegerMap): Boolean;
     procedure PutAll(const AMap: IJclIntegerMap);
     procedure PutValue(Key: Integer; Value: TObject);
     function Remove(Key: Integer): TObject;
@@ -2168,11 +2207,12 @@ type
     procedure Clear;
     function ContainsKey(Key: Cardinal): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function MapEquals(const AMap: IJclCardinalMap): Boolean;
+    function Extract(Key: Cardinal): TObject;
     function GetValue(Key: Cardinal): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): Cardinal;
     function KeySet: IJclCardinalSet;
+    function MapEquals(const AMap: IJclCardinalMap): Boolean;
     procedure PutAll(const AMap: IJclCardinalMap);
     procedure PutValue(Key: Cardinal; Value: TObject);
     function Remove(Key: Cardinal): TObject;
@@ -2224,11 +2264,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: Int64): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function MapEquals(const AMap: IJclInt64Map): Boolean;
+    function Extract(const Key: Int64): TObject;
     function GetValue(const Key: Int64): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): Int64;
     function KeySet: IJclInt64Set;
+    function MapEquals(const AMap: IJclInt64Map): Boolean;
     procedure PutAll(const AMap: IJclInt64Map);
     procedure PutValue(const Key: Int64; Value: TObject);
     function Remove(const Key: Int64): TObject;
@@ -2281,11 +2322,12 @@ type
     procedure Clear;
     function ContainsKey(Key: Pointer): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function MapEquals(const AMap: IJclPtrMap): Boolean;
+    function Extract(Key: Pointer): TObject;
     function GetValue(Key: Pointer): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): Pointer;
     function KeySet: IJclPtrSet;
+    function MapEquals(const AMap: IJclPtrMap): Boolean;
     procedure PutAll(const AMap: IJclPtrMap);
     procedure PutValue(Key: Pointer; Value: TObject);
     function Remove(Key: Pointer): TObject;
@@ -2343,11 +2385,12 @@ type
     procedure Clear;
     function ContainsKey(Key: TObject): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function MapEquals(const AMap: IJclMap): Boolean;
+    function Extract(Key: TObject): TObject;
     function GetValue(Key: TObject): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): TObject;
     function KeySet: IJclSet;
+    function MapEquals(const AMap: IJclMap): Boolean;
     procedure PutAll(const AMap: IJclMap);
     procedure PutValue(Key: TObject; Value: TObject);
     function Remove(Key: TObject): TObject;
@@ -2408,11 +2451,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: TKey): Boolean;
     function ContainsValue(const Value: TValue): Boolean;
-    function MapEquals(const AMap: IJclMap<TKey,TValue>): Boolean;
+    function Extract(const Key: TKey): TValue;
     function GetValue(const Key: TKey): TValue;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: TValue): TKey;
     function KeySet: IJclSet<TKey>;
+    function MapEquals(const AMap: IJclMap<TKey,TValue>): Boolean;
     procedure PutAll(const AMap: IJclMap<TKey,TValue>);
     procedure PutValue(const Key: TKey; const Value: TValue);
     function Remove(const Key: TKey): TValue;
@@ -2768,39 +2812,42 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfIntfHashMap.MapEquals(const AMap: IJclIntfIntfMap): Boolean;
+function TJclIntfIntfHashMap.Extract(const Key: IInterface): IInterface;
 var
-  I, J: Integer;
   Bucket: TJclIntfIntfBucket;
+  I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
+    Result := nil;
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
-            Exit;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := Bucket.Entries[I].Value;
+          FreeKey(Bucket.Entries[I].Key);
+          if I < Length(Bucket.Entries) - 1 then
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
+          Break;
+        end;
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
-    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2895,6 +2942,43 @@ begin
         for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Key);
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfIntfHashMap.MapEquals(const AMap: IJclIntfIntfMap): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclIntfIntfBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          if AMap.ContainsKey(Bucket.Entries[J].Key) then
+          begin
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
+              Exit;
+          end
+          else
+            Exit;
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -3016,9 +3100,6 @@ begin
 end;
 
 function TJclIntfIntfHashMap.Remove(const Key: IInterface): IInterface;
-var
-  Bucket: TJclIntfIntfBucket;
-  I, NewCapacity: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -3027,26 +3108,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-
-      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
-      if NewCapacity < Length(Bucket.Entries) then
-        SetLength(Bucket.Entries, NewCapacity);
-    end;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -3372,39 +3435,42 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclAnsiStrIntfHashMap.MapEquals(const AMap: IJclAnsiStrIntfMap): Boolean;
+function TJclAnsiStrIntfHashMap.Extract(const Key: AnsiString): IInterface;
 var
-  I, J: Integer;
   Bucket: TJclAnsiStrIntfBucket;
+  I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
+    Result := nil;
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
-            Exit;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := Bucket.Entries[I].Value;
+          FreeKey(Bucket.Entries[I].Key);
+          if I < Length(Bucket.Entries) - 1 then
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
+          Break;
+        end;
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
-    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3499,6 +3565,43 @@ begin
         for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Key);
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclAnsiStrIntfHashMap.MapEquals(const AMap: IJclAnsiStrIntfMap): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclAnsiStrIntfBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          if AMap.ContainsKey(Bucket.Entries[J].Key) then
+          begin
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
+              Exit;
+          end
+          else
+            Exit;
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -3620,9 +3723,6 @@ begin
 end;
 
 function TJclAnsiStrIntfHashMap.Remove(const Key: AnsiString): IInterface;
-var
-  Bucket: TJclAnsiStrIntfBucket;
-  I, NewCapacity: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -3631,26 +3731,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-
-      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
-      if NewCapacity < Length(Bucket.Entries) then
-        SetLength(Bucket.Entries, NewCapacity);
-    end;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -3976,39 +4058,42 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfAnsiStrHashMap.MapEquals(const AMap: IJclIntfAnsiStrMap): Boolean;
+function TJclIntfAnsiStrHashMap.Extract(const Key: IInterface): AnsiString;
 var
-  I, J: Integer;
   Bucket: TJclIntfAnsiStrBucket;
+  I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
+    Result := '';
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
-            Exit;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := Bucket.Entries[I].Value;
+          FreeKey(Bucket.Entries[I].Key);
+          if I < Length(Bucket.Entries) - 1 then
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
+          Break;
+        end;
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
-    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4103,6 +4188,43 @@ begin
         for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Key);
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfAnsiStrHashMap.MapEquals(const AMap: IJclIntfAnsiStrMap): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclIntfAnsiStrBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          if AMap.ContainsKey(Bucket.Entries[J].Key) then
+          begin
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
+              Exit;
+          end
+          else
+            Exit;
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -4224,9 +4346,6 @@ begin
 end;
 
 function TJclIntfAnsiStrHashMap.Remove(const Key: IInterface): AnsiString;
-var
-  Bucket: TJclIntfAnsiStrBucket;
-  I, NewCapacity: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -4235,26 +4354,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := '';
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-
-      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
-      if NewCapacity < Length(Bucket.Entries) then
-        SetLength(Bucket.Entries, NewCapacity);
-    end;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -4585,39 +4686,42 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclAnsiStrAnsiStrHashMap.MapEquals(const AMap: IJclAnsiStrAnsiStrMap): Boolean;
+function TJclAnsiStrAnsiStrHashMap.Extract(const Key: AnsiString): AnsiString;
 var
-  I, J: Integer;
   Bucket: TJclAnsiStrAnsiStrBucket;
+  I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
+    Result := '';
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
-            Exit;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := Bucket.Entries[I].Value;
+          FreeKey(Bucket.Entries[I].Key);
+          if I < Length(Bucket.Entries) - 1 then
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
+          Break;
+        end;
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
-    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4712,6 +4816,43 @@ begin
         for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Key);
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclAnsiStrAnsiStrHashMap.MapEquals(const AMap: IJclAnsiStrAnsiStrMap): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclAnsiStrAnsiStrBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          if AMap.ContainsKey(Bucket.Entries[J].Key) then
+          begin
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
+              Exit;
+          end
+          else
+            Exit;
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -4833,9 +4974,6 @@ begin
 end;
 
 function TJclAnsiStrAnsiStrHashMap.Remove(const Key: AnsiString): AnsiString;
-var
-  Bucket: TJclAnsiStrAnsiStrBucket;
-  I, NewCapacity: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -4844,26 +4982,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := '';
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-
-      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
-      if NewCapacity < Length(Bucket.Entries) then
-        SetLength(Bucket.Entries, NewCapacity);
-    end;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -5189,39 +5309,42 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclWideStrIntfHashMap.MapEquals(const AMap: IJclWideStrIntfMap): Boolean;
+function TJclWideStrIntfHashMap.Extract(const Key: WideString): IInterface;
 var
-  I, J: Integer;
   Bucket: TJclWideStrIntfBucket;
+  I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
+    Result := nil;
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
-            Exit;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := Bucket.Entries[I].Value;
+          FreeKey(Bucket.Entries[I].Key);
+          if I < Length(Bucket.Entries) - 1 then
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
+          Break;
+        end;
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
-    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -5316,6 +5439,43 @@ begin
         for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Key);
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclWideStrIntfHashMap.MapEquals(const AMap: IJclWideStrIntfMap): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclWideStrIntfBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          if AMap.ContainsKey(Bucket.Entries[J].Key) then
+          begin
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
+              Exit;
+          end
+          else
+            Exit;
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -5437,9 +5597,6 @@ begin
 end;
 
 function TJclWideStrIntfHashMap.Remove(const Key: WideString): IInterface;
-var
-  Bucket: TJclWideStrIntfBucket;
-  I, NewCapacity: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -5448,26 +5605,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-
-      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
-      if NewCapacity < Length(Bucket.Entries) then
-        SetLength(Bucket.Entries, NewCapacity);
-    end;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -5793,39 +5932,42 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfWideStrHashMap.MapEquals(const AMap: IJclIntfWideStrMap): Boolean;
+function TJclIntfWideStrHashMap.Extract(const Key: IInterface): WideString;
 var
-  I, J: Integer;
   Bucket: TJclIntfWideStrBucket;
+  I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
+    Result := '';
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
-            Exit;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := Bucket.Entries[I].Value;
+          FreeKey(Bucket.Entries[I].Key);
+          if I < Length(Bucket.Entries) - 1 then
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
+          Break;
+        end;
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
-    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -5920,6 +6062,43 @@ begin
         for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Key);
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfWideStrHashMap.MapEquals(const AMap: IJclIntfWideStrMap): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclIntfWideStrBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          if AMap.ContainsKey(Bucket.Entries[J].Key) then
+          begin
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
+              Exit;
+          end
+          else
+            Exit;
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -6041,9 +6220,6 @@ begin
 end;
 
 function TJclIntfWideStrHashMap.Remove(const Key: IInterface): WideString;
-var
-  Bucket: TJclIntfWideStrBucket;
-  I, NewCapacity: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -6052,26 +6228,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := '';
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-
-      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
-      if NewCapacity < Length(Bucket.Entries) then
-        SetLength(Bucket.Entries, NewCapacity);
-    end;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -6402,39 +6560,42 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclWideStrWideStrHashMap.MapEquals(const AMap: IJclWideStrWideStrMap): Boolean;
+function TJclWideStrWideStrHashMap.Extract(const Key: WideString): WideString;
 var
-  I, J: Integer;
   Bucket: TJclWideStrWideStrBucket;
+  I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
+    Result := '';
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
-            Exit;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := Bucket.Entries[I].Value;
+          FreeKey(Bucket.Entries[I].Key);
+          if I < Length(Bucket.Entries) - 1 then
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
+          Break;
+        end;
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
-    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -6529,6 +6690,43 @@ begin
         for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Key);
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclWideStrWideStrHashMap.MapEquals(const AMap: IJclWideStrWideStrMap): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclWideStrWideStrBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          if AMap.ContainsKey(Bucket.Entries[J].Key) then
+          begin
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
+              Exit;
+          end
+          else
+            Exit;
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -6650,9 +6848,6 @@ begin
 end;
 
 function TJclWideStrWideStrHashMap.Remove(const Key: WideString): WideString;
-var
-  Bucket: TJclWideStrWideStrBucket;
-  I, NewCapacity: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -6661,26 +6856,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := '';
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-
-      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
-      if NewCapacity < Length(Bucket.Entries) then
-        SetLength(Bucket.Entries, NewCapacity);
-    end;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -7007,39 +7184,42 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclUnicodeStrIntfHashMap.MapEquals(const AMap: IJclUnicodeStrIntfMap): Boolean;
+function TJclUnicodeStrIntfHashMap.Extract(const Key: UnicodeString): IInterface;
 var
-  I, J: Integer;
   Bucket: TJclUnicodeStrIntfBucket;
+  I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
+    Result := nil;
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
-            Exit;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := Bucket.Entries[I].Value;
+          FreeKey(Bucket.Entries[I].Key);
+          if I < Length(Bucket.Entries) - 1 then
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
+          Break;
+        end;
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
-    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -7134,6 +7314,43 @@ begin
         for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Key);
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrIntfHashMap.MapEquals(const AMap: IJclUnicodeStrIntfMap): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclUnicodeStrIntfBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          if AMap.ContainsKey(Bucket.Entries[J].Key) then
+          begin
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
+              Exit;
+          end
+          else
+            Exit;
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -7255,9 +7472,6 @@ begin
 end;
 
 function TJclUnicodeStrIntfHashMap.Remove(const Key: UnicodeString): IInterface;
-var
-  Bucket: TJclUnicodeStrIntfBucket;
-  I, NewCapacity: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -7266,26 +7480,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-
-      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
-      if NewCapacity < Length(Bucket.Entries) then
-        SetLength(Bucket.Entries, NewCapacity);
-    end;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -7611,39 +7807,42 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfUnicodeStrHashMap.MapEquals(const AMap: IJclIntfUnicodeStrMap): Boolean;
+function TJclIntfUnicodeStrHashMap.Extract(const Key: IInterface): UnicodeString;
 var
-  I, J: Integer;
   Bucket: TJclIntfUnicodeStrBucket;
+  I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
+    Result := '';
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
-            Exit;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := Bucket.Entries[I].Value;
+          FreeKey(Bucket.Entries[I].Key);
+          if I < Length(Bucket.Entries) - 1 then
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
+          Break;
+        end;
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
-    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -7738,6 +7937,43 @@ begin
         for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Key);
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfUnicodeStrHashMap.MapEquals(const AMap: IJclIntfUnicodeStrMap): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclIntfUnicodeStrBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          if AMap.ContainsKey(Bucket.Entries[J].Key) then
+          begin
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
+              Exit;
+          end
+          else
+            Exit;
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -7859,9 +8095,6 @@ begin
 end;
 
 function TJclIntfUnicodeStrHashMap.Remove(const Key: IInterface): UnicodeString;
-var
-  Bucket: TJclIntfUnicodeStrBucket;
-  I, NewCapacity: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -7870,26 +8103,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := '';
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-
-      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
-      if NewCapacity < Length(Bucket.Entries) then
-        SetLength(Bucket.Entries, NewCapacity);
-    end;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -8220,39 +8435,42 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclUnicodeStrUnicodeStrHashMap.MapEquals(const AMap: IJclUnicodeStrUnicodeStrMap): Boolean;
+function TJclUnicodeStrUnicodeStrHashMap.Extract(const Key: UnicodeString): UnicodeString;
 var
-  I, J: Integer;
   Bucket: TJclUnicodeStrUnicodeStrBucket;
+  I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
+    Result := '';
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
-            Exit;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := Bucket.Entries[I].Value;
+          FreeKey(Bucket.Entries[I].Key);
+          if I < Length(Bucket.Entries) - 1 then
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
+          Break;
+        end;
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
-    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -8347,6 +8565,43 @@ begin
         for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Key);
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrUnicodeStrHashMap.MapEquals(const AMap: IJclUnicodeStrUnicodeStrMap): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclUnicodeStrUnicodeStrBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          if AMap.ContainsKey(Bucket.Entries[J].Key) then
+          begin
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
+              Exit;
+          end
+          else
+            Exit;
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -8468,9 +8723,6 @@ begin
 end;
 
 function TJclUnicodeStrUnicodeStrHashMap.Remove(const Key: UnicodeString): UnicodeString;
-var
-  Bucket: TJclUnicodeStrUnicodeStrBucket;
-  I, NewCapacity: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -8479,26 +8731,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := '';
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-
-      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
-      if NewCapacity < Length(Bucket.Entries) then
-        SetLength(Bucket.Entries, NewCapacity);
-    end;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -8826,39 +9060,42 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclSingleIntfHashMap.MapEquals(const AMap: IJclSingleIntfMap): Boolean;
+function TJclSingleIntfHashMap.Extract(const Key: Single): IInterface;
 var
-  I, J: Integer;
   Bucket: TJclSingleIntfBucket;
+  I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
+    Result := nil;
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
-            Exit;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := Bucket.Entries[I].Value;
+          FreeKey(Bucket.Entries[I].Key);
+          if I < Length(Bucket.Entries) - 1 then
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
+          Break;
+        end;
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
-    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -8953,6 +9190,43 @@ begin
         for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Key);
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleIntfHashMap.MapEquals(const AMap: IJclSingleIntfMap): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclSingleIntfBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          if AMap.ContainsKey(Bucket.Entries[J].Key) then
+          begin
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
+              Exit;
+          end
+          else
+            Exit;
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -9074,9 +9348,6 @@ begin
 end;
 
 function TJclSingleIntfHashMap.Remove(const Key: Single): IInterface;
-var
-  Bucket: TJclSingleIntfBucket;
-  I, NewCapacity: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -9085,26 +9356,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-
-      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
-      if NewCapacity < Length(Bucket.Entries) then
-        SetLength(Bucket.Entries, NewCapacity);
-    end;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -9430,39 +9683,42 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfSingleHashMap.MapEquals(const AMap: IJclIntfSingleMap): Boolean;
+function TJclIntfSingleHashMap.Extract(const Key: IInterface): Single;
 var
-  I, J: Integer;
   Bucket: TJclIntfSingleBucket;
+  I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
+    Result := 0.0;
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
-            Exit;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := Bucket.Entries[I].Value;
+          FreeKey(Bucket.Entries[I].Key);
+          if I < Length(Bucket.Entries) - 1 then
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
+          Break;
+        end;
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
-    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -9557,6 +9813,43 @@ begin
         for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Key);
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfSingleHashMap.MapEquals(const AMap: IJclIntfSingleMap): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclIntfSingleBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          if AMap.ContainsKey(Bucket.Entries[J].Key) then
+          begin
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
+              Exit;
+          end
+          else
+            Exit;
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -9678,9 +9971,6 @@ begin
 end;
 
 function TJclIntfSingleHashMap.Remove(const Key: IInterface): Single;
-var
-  Bucket: TJclIntfSingleBucket;
-  I, NewCapacity: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -9689,26 +9979,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := 0.0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-
-      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
-      if NewCapacity < Length(Bucket.Entries) then
-        SetLength(Bucket.Entries, NewCapacity);
-    end;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -10039,39 +10311,42 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclSingleSingleHashMap.MapEquals(const AMap: IJclSingleSingleMap): Boolean;
+function TJclSingleSingleHashMap.Extract(const Key: Single): Single;
 var
-  I, J: Integer;
   Bucket: TJclSingleSingleBucket;
+  I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
+    Result := 0.0;
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
-            Exit;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := Bucket.Entries[I].Value;
+          FreeKey(Bucket.Entries[I].Key);
+          if I < Length(Bucket.Entries) - 1 then
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
+          Break;
+        end;
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
-    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -10166,6 +10441,43 @@ begin
         for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Key);
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleSingleHashMap.MapEquals(const AMap: IJclSingleSingleMap): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclSingleSingleBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          if AMap.ContainsKey(Bucket.Entries[J].Key) then
+          begin
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
+              Exit;
+          end
+          else
+            Exit;
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -10287,9 +10599,6 @@ begin
 end;
 
 function TJclSingleSingleHashMap.Remove(const Key: Single): Single;
-var
-  Bucket: TJclSingleSingleBucket;
-  I, NewCapacity: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -10298,26 +10607,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := 0.0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-
-      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
-      if NewCapacity < Length(Bucket.Entries) then
-        SetLength(Bucket.Entries, NewCapacity);
-    end;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -10643,39 +10934,42 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclDoubleIntfHashMap.MapEquals(const AMap: IJclDoubleIntfMap): Boolean;
+function TJclDoubleIntfHashMap.Extract(const Key: Double): IInterface;
 var
-  I, J: Integer;
   Bucket: TJclDoubleIntfBucket;
+  I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
+    Result := nil;
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
-            Exit;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := Bucket.Entries[I].Value;
+          FreeKey(Bucket.Entries[I].Key);
+          if I < Length(Bucket.Entries) - 1 then
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
+          Break;
+        end;
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
-    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -10770,6 +11064,43 @@ begin
         for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Key);
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleIntfHashMap.MapEquals(const AMap: IJclDoubleIntfMap): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclDoubleIntfBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          if AMap.ContainsKey(Bucket.Entries[J].Key) then
+          begin
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
+              Exit;
+          end
+          else
+            Exit;
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -10891,9 +11222,6 @@ begin
 end;
 
 function TJclDoubleIntfHashMap.Remove(const Key: Double): IInterface;
-var
-  Bucket: TJclDoubleIntfBucket;
-  I, NewCapacity: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -10902,26 +11230,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-
-      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
-      if NewCapacity < Length(Bucket.Entries) then
-        SetLength(Bucket.Entries, NewCapacity);
-    end;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -11247,39 +11557,42 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfDoubleHashMap.MapEquals(const AMap: IJclIntfDoubleMap): Boolean;
+function TJclIntfDoubleHashMap.Extract(const Key: IInterface): Double;
 var
-  I, J: Integer;
   Bucket: TJclIntfDoubleBucket;
+  I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
+    Result := 0.0;
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
-            Exit;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := Bucket.Entries[I].Value;
+          FreeKey(Bucket.Entries[I].Key);
+          if I < Length(Bucket.Entries) - 1 then
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
+          Break;
+        end;
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
-    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -11374,6 +11687,43 @@ begin
         for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Key);
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfDoubleHashMap.MapEquals(const AMap: IJclIntfDoubleMap): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclIntfDoubleBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          if AMap.ContainsKey(Bucket.Entries[J].Key) then
+          begin
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
+              Exit;
+          end
+          else
+            Exit;
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -11495,9 +11845,6 @@ begin
 end;
 
 function TJclIntfDoubleHashMap.Remove(const Key: IInterface): Double;
-var
-  Bucket: TJclIntfDoubleBucket;
-  I, NewCapacity: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -11506,26 +11853,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := 0.0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-
-      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
-      if NewCapacity < Length(Bucket.Entries) then
-        SetLength(Bucket.Entries, NewCapacity);
-    end;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -11856,39 +12185,42 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclDoubleDoubleHashMap.MapEquals(const AMap: IJclDoubleDoubleMap): Boolean;
+function TJclDoubleDoubleHashMap.Extract(const Key: Double): Double;
 var
-  I, J: Integer;
   Bucket: TJclDoubleDoubleBucket;
+  I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
+    Result := 0.0;
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
-            Exit;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := Bucket.Entries[I].Value;
+          FreeKey(Bucket.Entries[I].Key);
+          if I < Length(Bucket.Entries) - 1 then
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
+          Break;
+        end;
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
-    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -11983,6 +12315,43 @@ begin
         for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Key);
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleDoubleHashMap.MapEquals(const AMap: IJclDoubleDoubleMap): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclDoubleDoubleBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          if AMap.ContainsKey(Bucket.Entries[J].Key) then
+          begin
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
+              Exit;
+          end
+          else
+            Exit;
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -12104,9 +12473,6 @@ begin
 end;
 
 function TJclDoubleDoubleHashMap.Remove(const Key: Double): Double;
-var
-  Bucket: TJclDoubleDoubleBucket;
-  I, NewCapacity: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -12115,26 +12481,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := 0.0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-
-      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
-      if NewCapacity < Length(Bucket.Entries) then
-        SetLength(Bucket.Entries, NewCapacity);
-    end;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -12460,39 +12808,42 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclExtendedIntfHashMap.MapEquals(const AMap: IJclExtendedIntfMap): Boolean;
+function TJclExtendedIntfHashMap.Extract(const Key: Extended): IInterface;
 var
-  I, J: Integer;
   Bucket: TJclExtendedIntfBucket;
+  I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
+    Result := nil;
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
-            Exit;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := Bucket.Entries[I].Value;
+          FreeKey(Bucket.Entries[I].Key);
+          if I < Length(Bucket.Entries) - 1 then
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
+          Break;
+        end;
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
-    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -12587,6 +12938,43 @@ begin
         for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Key);
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedIntfHashMap.MapEquals(const AMap: IJclExtendedIntfMap): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclExtendedIntfBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          if AMap.ContainsKey(Bucket.Entries[J].Key) then
+          begin
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
+              Exit;
+          end
+          else
+            Exit;
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -12708,9 +13096,6 @@ begin
 end;
 
 function TJclExtendedIntfHashMap.Remove(const Key: Extended): IInterface;
-var
-  Bucket: TJclExtendedIntfBucket;
-  I, NewCapacity: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -12719,26 +13104,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-
-      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
-      if NewCapacity < Length(Bucket.Entries) then
-        SetLength(Bucket.Entries, NewCapacity);
-    end;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -13064,39 +13431,42 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfExtendedHashMap.MapEquals(const AMap: IJclIntfExtendedMap): Boolean;
+function TJclIntfExtendedHashMap.Extract(const Key: IInterface): Extended;
 var
-  I, J: Integer;
   Bucket: TJclIntfExtendedBucket;
+  I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
+    Result := 0.0;
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
-            Exit;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := Bucket.Entries[I].Value;
+          FreeKey(Bucket.Entries[I].Key);
+          if I < Length(Bucket.Entries) - 1 then
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
+          Break;
+        end;
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
-    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -13191,6 +13561,43 @@ begin
         for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Key);
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfExtendedHashMap.MapEquals(const AMap: IJclIntfExtendedMap): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclIntfExtendedBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          if AMap.ContainsKey(Bucket.Entries[J].Key) then
+          begin
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
+              Exit;
+          end
+          else
+            Exit;
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -13312,9 +13719,6 @@ begin
 end;
 
 function TJclIntfExtendedHashMap.Remove(const Key: IInterface): Extended;
-var
-  Bucket: TJclIntfExtendedBucket;
-  I, NewCapacity: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -13323,26 +13727,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := 0.0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-
-      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
-      if NewCapacity < Length(Bucket.Entries) then
-        SetLength(Bucket.Entries, NewCapacity);
-    end;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -13673,39 +14059,42 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclExtendedExtendedHashMap.MapEquals(const AMap: IJclExtendedExtendedMap): Boolean;
+function TJclExtendedExtendedHashMap.Extract(const Key: Extended): Extended;
 var
-  I, J: Integer;
   Bucket: TJclExtendedExtendedBucket;
+  I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
+    Result := 0.0;
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
-            Exit;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := Bucket.Entries[I].Value;
+          FreeKey(Bucket.Entries[I].Key);
+          if I < Length(Bucket.Entries) - 1 then
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
+          Break;
+        end;
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
-    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -13800,6 +14189,43 @@ begin
         for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Key);
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedExtendedHashMap.MapEquals(const AMap: IJclExtendedExtendedMap): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclExtendedExtendedBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          if AMap.ContainsKey(Bucket.Entries[J].Key) then
+          begin
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
+              Exit;
+          end
+          else
+            Exit;
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -13921,9 +14347,6 @@ begin
 end;
 
 function TJclExtendedExtendedHashMap.Remove(const Key: Extended): Extended;
-var
-  Bucket: TJclExtendedExtendedBucket;
-  I, NewCapacity: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -13932,26 +14355,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := 0.0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-
-      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
-      if NewCapacity < Length(Bucket.Entries) then
-        SetLength(Bucket.Entries, NewCapacity);
-    end;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -14277,39 +14682,42 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntegerIntfHashMap.MapEquals(const AMap: IJclIntegerIntfMap): Boolean;
+function TJclIntegerIntfHashMap.Extract(Key: Integer): IInterface;
 var
-  I, J: Integer;
   Bucket: TJclIntegerIntfBucket;
+  I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
+    Result := nil;
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
-            Exit;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := Bucket.Entries[I].Value;
+          FreeKey(Bucket.Entries[I].Key);
+          if I < Length(Bucket.Entries) - 1 then
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
+          Break;
+        end;
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
-    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -14404,6 +14812,43 @@ begin
         for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Key);
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerIntfHashMap.MapEquals(const AMap: IJclIntegerIntfMap): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclIntegerIntfBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          if AMap.ContainsKey(Bucket.Entries[J].Key) then
+          begin
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
+              Exit;
+          end
+          else
+            Exit;
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -14525,9 +14970,6 @@ begin
 end;
 
 function TJclIntegerIntfHashMap.Remove(Key: Integer): IInterface;
-var
-  Bucket: TJclIntegerIntfBucket;
-  I, NewCapacity: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -14536,26 +14978,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-
-      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
-      if NewCapacity < Length(Bucket.Entries) then
-        SetLength(Bucket.Entries, NewCapacity);
-    end;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -14881,39 +15305,42 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfIntegerHashMap.MapEquals(const AMap: IJclIntfIntegerMap): Boolean;
+function TJclIntfIntegerHashMap.Extract(const Key: IInterface): Integer;
 var
-  I, J: Integer;
   Bucket: TJclIntfIntegerBucket;
+  I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
+    Result := 0;
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
-            Exit;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := Bucket.Entries[I].Value;
+          FreeKey(Bucket.Entries[I].Key);
+          if I < Length(Bucket.Entries) - 1 then
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
+          Break;
+        end;
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
-    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -15008,6 +15435,43 @@ begin
         for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Key);
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfIntegerHashMap.MapEquals(const AMap: IJclIntfIntegerMap): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclIntfIntegerBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          if AMap.ContainsKey(Bucket.Entries[J].Key) then
+          begin
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
+              Exit;
+          end
+          else
+            Exit;
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -15129,9 +15593,6 @@ begin
 end;
 
 function TJclIntfIntegerHashMap.Remove(const Key: IInterface): Integer;
-var
-  Bucket: TJclIntfIntegerBucket;
-  I, NewCapacity: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -15140,26 +15601,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := 0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-
-      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
-      if NewCapacity < Length(Bucket.Entries) then
-        SetLength(Bucket.Entries, NewCapacity);
-    end;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -15490,39 +15933,42 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntegerIntegerHashMap.MapEquals(const AMap: IJclIntegerIntegerMap): Boolean;
+function TJclIntegerIntegerHashMap.Extract(Key: Integer): Integer;
 var
-  I, J: Integer;
   Bucket: TJclIntegerIntegerBucket;
+  I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
+    Result := 0;
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
-            Exit;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := Bucket.Entries[I].Value;
+          FreeKey(Bucket.Entries[I].Key);
+          if I < Length(Bucket.Entries) - 1 then
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
+          Break;
+        end;
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
-    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -15617,6 +16063,43 @@ begin
         for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Key);
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerIntegerHashMap.MapEquals(const AMap: IJclIntegerIntegerMap): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclIntegerIntegerBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          if AMap.ContainsKey(Bucket.Entries[J].Key) then
+          begin
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
+              Exit;
+          end
+          else
+            Exit;
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -15738,9 +16221,6 @@ begin
 end;
 
 function TJclIntegerIntegerHashMap.Remove(Key: Integer): Integer;
-var
-  Bucket: TJclIntegerIntegerBucket;
-  I, NewCapacity: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -15749,26 +16229,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := 0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-
-      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
-      if NewCapacity < Length(Bucket.Entries) then
-        SetLength(Bucket.Entries, NewCapacity);
-    end;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -16094,39 +16556,42 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclCardinalIntfHashMap.MapEquals(const AMap: IJclCardinalIntfMap): Boolean;
+function TJclCardinalIntfHashMap.Extract(Key: Cardinal): IInterface;
 var
-  I, J: Integer;
   Bucket: TJclCardinalIntfBucket;
+  I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
+    Result := nil;
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
-            Exit;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := Bucket.Entries[I].Value;
+          FreeKey(Bucket.Entries[I].Key);
+          if I < Length(Bucket.Entries) - 1 then
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
+          Break;
+        end;
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
-    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -16221,6 +16686,43 @@ begin
         for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Key);
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalIntfHashMap.MapEquals(const AMap: IJclCardinalIntfMap): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclCardinalIntfBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          if AMap.ContainsKey(Bucket.Entries[J].Key) then
+          begin
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
+              Exit;
+          end
+          else
+            Exit;
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -16342,9 +16844,6 @@ begin
 end;
 
 function TJclCardinalIntfHashMap.Remove(Key: Cardinal): IInterface;
-var
-  Bucket: TJclCardinalIntfBucket;
-  I, NewCapacity: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -16353,26 +16852,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-
-      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
-      if NewCapacity < Length(Bucket.Entries) then
-        SetLength(Bucket.Entries, NewCapacity);
-    end;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -16698,39 +17179,42 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfCardinalHashMap.MapEquals(const AMap: IJclIntfCardinalMap): Boolean;
+function TJclIntfCardinalHashMap.Extract(const Key: IInterface): Cardinal;
 var
-  I, J: Integer;
   Bucket: TJclIntfCardinalBucket;
+  I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
+    Result := 0;
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
-            Exit;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := Bucket.Entries[I].Value;
+          FreeKey(Bucket.Entries[I].Key);
+          if I < Length(Bucket.Entries) - 1 then
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
+          Break;
+        end;
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
-    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -16825,6 +17309,43 @@ begin
         for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Key);
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfCardinalHashMap.MapEquals(const AMap: IJclIntfCardinalMap): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclIntfCardinalBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          if AMap.ContainsKey(Bucket.Entries[J].Key) then
+          begin
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
+              Exit;
+          end
+          else
+            Exit;
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -16946,9 +17467,6 @@ begin
 end;
 
 function TJclIntfCardinalHashMap.Remove(const Key: IInterface): Cardinal;
-var
-  Bucket: TJclIntfCardinalBucket;
-  I, NewCapacity: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -16957,26 +17475,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := 0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-
-      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
-      if NewCapacity < Length(Bucket.Entries) then
-        SetLength(Bucket.Entries, NewCapacity);
-    end;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -17307,39 +17807,42 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclCardinalCardinalHashMap.MapEquals(const AMap: IJclCardinalCardinalMap): Boolean;
+function TJclCardinalCardinalHashMap.Extract(Key: Cardinal): Cardinal;
 var
-  I, J: Integer;
   Bucket: TJclCardinalCardinalBucket;
+  I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
+    Result := 0;
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
-            Exit;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := Bucket.Entries[I].Value;
+          FreeKey(Bucket.Entries[I].Key);
+          if I < Length(Bucket.Entries) - 1 then
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
+          Break;
+        end;
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
-    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -17434,6 +17937,43 @@ begin
         for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Key);
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalCardinalHashMap.MapEquals(const AMap: IJclCardinalCardinalMap): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclCardinalCardinalBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          if AMap.ContainsKey(Bucket.Entries[J].Key) then
+          begin
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
+              Exit;
+          end
+          else
+            Exit;
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -17555,9 +18095,6 @@ begin
 end;
 
 function TJclCardinalCardinalHashMap.Remove(Key: Cardinal): Cardinal;
-var
-  Bucket: TJclCardinalCardinalBucket;
-  I, NewCapacity: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -17566,26 +18103,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := 0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-
-      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
-      if NewCapacity < Length(Bucket.Entries) then
-        SetLength(Bucket.Entries, NewCapacity);
-    end;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -17911,39 +18430,42 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclInt64IntfHashMap.MapEquals(const AMap: IJclInt64IntfMap): Boolean;
+function TJclInt64IntfHashMap.Extract(const Key: Int64): IInterface;
 var
-  I, J: Integer;
   Bucket: TJclInt64IntfBucket;
+  I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
+    Result := nil;
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
-            Exit;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := Bucket.Entries[I].Value;
+          FreeKey(Bucket.Entries[I].Key);
+          if I < Length(Bucket.Entries) - 1 then
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
+          Break;
+        end;
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
-    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -18038,6 +18560,43 @@ begin
         for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Key);
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64IntfHashMap.MapEquals(const AMap: IJclInt64IntfMap): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclInt64IntfBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          if AMap.ContainsKey(Bucket.Entries[J].Key) then
+          begin
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
+              Exit;
+          end
+          else
+            Exit;
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -18159,9 +18718,6 @@ begin
 end;
 
 function TJclInt64IntfHashMap.Remove(const Key: Int64): IInterface;
-var
-  Bucket: TJclInt64IntfBucket;
-  I, NewCapacity: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -18170,26 +18726,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-
-      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
-      if NewCapacity < Length(Bucket.Entries) then
-        SetLength(Bucket.Entries, NewCapacity);
-    end;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -18515,39 +19053,42 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfInt64HashMap.MapEquals(const AMap: IJclIntfInt64Map): Boolean;
+function TJclIntfInt64HashMap.Extract(const Key: IInterface): Int64;
 var
-  I, J: Integer;
   Bucket: TJclIntfInt64Bucket;
+  I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
+    Result := 0;
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
-            Exit;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := Bucket.Entries[I].Value;
+          FreeKey(Bucket.Entries[I].Key);
+          if I < Length(Bucket.Entries) - 1 then
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
+          Break;
+        end;
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
-    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -18642,6 +19183,43 @@ begin
         for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Key);
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfInt64HashMap.MapEquals(const AMap: IJclIntfInt64Map): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclIntfInt64Bucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          if AMap.ContainsKey(Bucket.Entries[J].Key) then
+          begin
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
+              Exit;
+          end
+          else
+            Exit;
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -18763,9 +19341,6 @@ begin
 end;
 
 function TJclIntfInt64HashMap.Remove(const Key: IInterface): Int64;
-var
-  Bucket: TJclIntfInt64Bucket;
-  I, NewCapacity: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -18774,26 +19349,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := 0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-
-      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
-      if NewCapacity < Length(Bucket.Entries) then
-        SetLength(Bucket.Entries, NewCapacity);
-    end;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -19124,39 +19681,42 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclInt64Int64HashMap.MapEquals(const AMap: IJclInt64Int64Map): Boolean;
+function TJclInt64Int64HashMap.Extract(const Key: Int64): Int64;
 var
-  I, J: Integer;
   Bucket: TJclInt64Int64Bucket;
+  I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
+    Result := 0;
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
-            Exit;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := Bucket.Entries[I].Value;
+          FreeKey(Bucket.Entries[I].Key);
+          if I < Length(Bucket.Entries) - 1 then
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
+          Break;
+        end;
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
-    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -19251,6 +19811,43 @@ begin
         for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Key);
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64Int64HashMap.MapEquals(const AMap: IJclInt64Int64Map): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclInt64Int64Bucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          if AMap.ContainsKey(Bucket.Entries[J].Key) then
+          begin
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
+              Exit;
+          end
+          else
+            Exit;
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -19372,9 +19969,6 @@ begin
 end;
 
 function TJclInt64Int64HashMap.Remove(const Key: Int64): Int64;
-var
-  Bucket: TJclInt64Int64Bucket;
-  I, NewCapacity: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -19383,26 +19977,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := 0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-
-      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
-      if NewCapacity < Length(Bucket.Entries) then
-        SetLength(Bucket.Entries, NewCapacity);
-    end;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -19729,39 +20305,42 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclPtrIntfHashMap.MapEquals(const AMap: IJclPtrIntfMap): Boolean;
+function TJclPtrIntfHashMap.Extract(Key: Pointer): IInterface;
 var
-  I, J: Integer;
   Bucket: TJclPtrIntfBucket;
+  I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
+    Result := nil;
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
-            Exit;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := Bucket.Entries[I].Value;
+          FreeKey(Bucket.Entries[I].Key);
+          if I < Length(Bucket.Entries) - 1 then
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
+          Break;
+        end;
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
-    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -19856,6 +20435,43 @@ begin
         for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Key);
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrIntfHashMap.MapEquals(const AMap: IJclPtrIntfMap): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclPtrIntfBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          if AMap.ContainsKey(Bucket.Entries[J].Key) then
+          begin
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
+              Exit;
+          end
+          else
+            Exit;
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -19977,9 +20593,6 @@ begin
 end;
 
 function TJclPtrIntfHashMap.Remove(Key: Pointer): IInterface;
-var
-  Bucket: TJclPtrIntfBucket;
-  I, NewCapacity: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -19988,26 +20601,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-
-      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
-      if NewCapacity < Length(Bucket.Entries) then
-        SetLength(Bucket.Entries, NewCapacity);
-    end;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -20333,39 +20928,42 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfPtrHashMap.MapEquals(const AMap: IJclIntfPtrMap): Boolean;
+function TJclIntfPtrHashMap.Extract(const Key: IInterface): Pointer;
 var
-  I, J: Integer;
   Bucket: TJclIntfPtrBucket;
+  I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
+    Result := nil;
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
-            Exit;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := Bucket.Entries[I].Value;
+          FreeKey(Bucket.Entries[I].Key);
+          if I < Length(Bucket.Entries) - 1 then
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
+          Break;
+        end;
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
-    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -20460,6 +21058,43 @@ begin
         for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Key);
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfPtrHashMap.MapEquals(const AMap: IJclIntfPtrMap): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclIntfPtrBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          if AMap.ContainsKey(Bucket.Entries[J].Key) then
+          begin
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
+              Exit;
+          end
+          else
+            Exit;
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -20581,9 +21216,6 @@ begin
 end;
 
 function TJclIntfPtrHashMap.Remove(const Key: IInterface): Pointer;
-var
-  Bucket: TJclIntfPtrBucket;
-  I, NewCapacity: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -20592,26 +21224,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-
-      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
-      if NewCapacity < Length(Bucket.Entries) then
-        SetLength(Bucket.Entries, NewCapacity);
-    end;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -20942,39 +21556,42 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclPtrPtrHashMap.MapEquals(const AMap: IJclPtrPtrMap): Boolean;
+function TJclPtrPtrHashMap.Extract(Key: Pointer): Pointer;
 var
-  I, J: Integer;
   Bucket: TJclPtrPtrBucket;
+  I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
+    Result := nil;
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
-            Exit;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := Bucket.Entries[I].Value;
+          FreeKey(Bucket.Entries[I].Key);
+          if I < Length(Bucket.Entries) - 1 then
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
+          Break;
+        end;
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
-    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -21069,6 +21686,43 @@ begin
         for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Key);
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrPtrHashMap.MapEquals(const AMap: IJclPtrPtrMap): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclPtrPtrBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          if AMap.ContainsKey(Bucket.Entries[J].Key) then
+          begin
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
+              Exit;
+          end
+          else
+            Exit;
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -21190,9 +21844,6 @@ begin
 end;
 
 function TJclPtrPtrHashMap.Remove(Key: Pointer): Pointer;
-var
-  Bucket: TJclPtrPtrBucket;
-  I, NewCapacity: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -21201,26 +21852,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-
-      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
-      if NewCapacity < Length(Bucket.Entries) then
-        SetLength(Bucket.Entries, NewCapacity);
-    end;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -21548,39 +22181,42 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfHashMap.MapEquals(const AMap: IJclIntfMap): Boolean;
+function TJclIntfHashMap.Extract(const Key: IInterface): TObject;
 var
-  I, J: Integer;
   Bucket: TJclIntfBucket;
+  I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
+    Result := nil;
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
-            Exit;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := Bucket.Entries[I].Value;
+          FreeKey(Bucket.Entries[I].Key);
+          if I < Length(Bucket.Entries) - 1 then
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
+          Break;
+        end;
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
-    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -21675,6 +22311,43 @@ begin
         for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Key);
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfHashMap.MapEquals(const AMap: IJclIntfMap): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclIntfBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          if AMap.ContainsKey(Bucket.Entries[J].Key) then
+          begin
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
+              Exit;
+          end
+          else
+            Exit;
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -21796,9 +22469,6 @@ begin
 end;
 
 function TJclIntfHashMap.Remove(const Key: IInterface): TObject;
-var
-  Bucket: TJclIntfBucket;
-  I, NewCapacity: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -21807,26 +22477,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-
-      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
-      if NewCapacity < Length(Bucket.Entries) then
-        SetLength(Bucket.Entries, NewCapacity);
-    end;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -22171,39 +22823,42 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclAnsiStrHashMap.MapEquals(const AMap: IJclAnsiStrMap): Boolean;
+function TJclAnsiStrHashMap.Extract(const Key: AnsiString): TObject;
 var
-  I, J: Integer;
   Bucket: TJclAnsiStrBucket;
+  I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
+    Result := nil;
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
-            Exit;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := Bucket.Entries[I].Value;
+          FreeKey(Bucket.Entries[I].Key);
+          if I < Length(Bucket.Entries) - 1 then
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
+          Break;
+        end;
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
-    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -22298,6 +22953,43 @@ begin
         for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Key);
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclAnsiStrHashMap.MapEquals(const AMap: IJclAnsiStrMap): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclAnsiStrBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          if AMap.ContainsKey(Bucket.Entries[J].Key) then
+          begin
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
+              Exit;
+          end
+          else
+            Exit;
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -22419,9 +23111,6 @@ begin
 end;
 
 function TJclAnsiStrHashMap.Remove(const Key: AnsiString): TObject;
-var
-  Bucket: TJclAnsiStrBucket;
-  I, NewCapacity: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -22430,26 +23119,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-
-      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
-      if NewCapacity < Length(Bucket.Entries) then
-        SetLength(Bucket.Entries, NewCapacity);
-    end;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -22789,39 +23460,42 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclWideStrHashMap.MapEquals(const AMap: IJclWideStrMap): Boolean;
+function TJclWideStrHashMap.Extract(const Key: WideString): TObject;
 var
-  I, J: Integer;
   Bucket: TJclWideStrBucket;
+  I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
+    Result := nil;
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
-            Exit;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := Bucket.Entries[I].Value;
+          FreeKey(Bucket.Entries[I].Key);
+          if I < Length(Bucket.Entries) - 1 then
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
+          Break;
+        end;
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
-    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -22916,6 +23590,43 @@ begin
         for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Key);
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclWideStrHashMap.MapEquals(const AMap: IJclWideStrMap): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclWideStrBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          if AMap.ContainsKey(Bucket.Entries[J].Key) then
+          begin
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
+              Exit;
+          end
+          else
+            Exit;
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -23037,9 +23748,6 @@ begin
 end;
 
 function TJclWideStrHashMap.Remove(const Key: WideString): TObject;
-var
-  Bucket: TJclWideStrBucket;
-  I, NewCapacity: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -23048,26 +23756,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-
-      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
-      if NewCapacity < Length(Bucket.Entries) then
-        SetLength(Bucket.Entries, NewCapacity);
-    end;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -23408,39 +24098,42 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclUnicodeStrHashMap.MapEquals(const AMap: IJclUnicodeStrMap): Boolean;
+function TJclUnicodeStrHashMap.Extract(const Key: UnicodeString): TObject;
 var
-  I, J: Integer;
   Bucket: TJclUnicodeStrBucket;
+  I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
+    Result := nil;
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
-            Exit;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := Bucket.Entries[I].Value;
+          FreeKey(Bucket.Entries[I].Key);
+          if I < Length(Bucket.Entries) - 1 then
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
+          Break;
+        end;
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
-    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -23535,6 +24228,43 @@ begin
         for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Key);
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrHashMap.MapEquals(const AMap: IJclUnicodeStrMap): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclUnicodeStrBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          if AMap.ContainsKey(Bucket.Entries[J].Key) then
+          begin
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
+              Exit;
+          end
+          else
+            Exit;
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -23656,9 +24386,6 @@ begin
 end;
 
 function TJclUnicodeStrHashMap.Remove(const Key: UnicodeString): TObject;
-var
-  Bucket: TJclUnicodeStrBucket;
-  I, NewCapacity: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -23667,26 +24394,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-
-      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
-      if NewCapacity < Length(Bucket.Entries) then
-        SetLength(Bucket.Entries, NewCapacity);
-    end;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -24027,39 +24736,42 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclSingleHashMap.MapEquals(const AMap: IJclSingleMap): Boolean;
+function TJclSingleHashMap.Extract(const Key: Single): TObject;
 var
-  I, J: Integer;
   Bucket: TJclSingleBucket;
+  I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
+    Result := nil;
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
-            Exit;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := Bucket.Entries[I].Value;
+          FreeKey(Bucket.Entries[I].Key);
+          if I < Length(Bucket.Entries) - 1 then
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
+          Break;
+        end;
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
-    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -24154,6 +24866,43 @@ begin
         for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Key);
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleHashMap.MapEquals(const AMap: IJclSingleMap): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclSingleBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          if AMap.ContainsKey(Bucket.Entries[J].Key) then
+          begin
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
+              Exit;
+          end
+          else
+            Exit;
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -24275,9 +25024,6 @@ begin
 end;
 
 function TJclSingleHashMap.Remove(const Key: Single): TObject;
-var
-  Bucket: TJclSingleBucket;
-  I, NewCapacity: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -24286,26 +25032,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-
-      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
-      if NewCapacity < Length(Bucket.Entries) then
-        SetLength(Bucket.Entries, NewCapacity);
-    end;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -24645,39 +25373,42 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclDoubleHashMap.MapEquals(const AMap: IJclDoubleMap): Boolean;
+function TJclDoubleHashMap.Extract(const Key: Double): TObject;
 var
-  I, J: Integer;
   Bucket: TJclDoubleBucket;
+  I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
+    Result := nil;
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
-            Exit;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := Bucket.Entries[I].Value;
+          FreeKey(Bucket.Entries[I].Key);
+          if I < Length(Bucket.Entries) - 1 then
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
+          Break;
+        end;
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
-    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -24772,6 +25503,43 @@ begin
         for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Key);
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleHashMap.MapEquals(const AMap: IJclDoubleMap): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclDoubleBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          if AMap.ContainsKey(Bucket.Entries[J].Key) then
+          begin
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
+              Exit;
+          end
+          else
+            Exit;
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -24893,9 +25661,6 @@ begin
 end;
 
 function TJclDoubleHashMap.Remove(const Key: Double): TObject;
-var
-  Bucket: TJclDoubleBucket;
-  I, NewCapacity: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -24904,26 +25669,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-
-      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
-      if NewCapacity < Length(Bucket.Entries) then
-        SetLength(Bucket.Entries, NewCapacity);
-    end;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -25263,39 +26010,42 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclExtendedHashMap.MapEquals(const AMap: IJclExtendedMap): Boolean;
+function TJclExtendedHashMap.Extract(const Key: Extended): TObject;
 var
-  I, J: Integer;
   Bucket: TJclExtendedBucket;
+  I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
+    Result := nil;
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
-            Exit;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := Bucket.Entries[I].Value;
+          FreeKey(Bucket.Entries[I].Key);
+          if I < Length(Bucket.Entries) - 1 then
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
+          Break;
+        end;
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
-    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -25390,6 +26140,43 @@ begin
         for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Key);
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedHashMap.MapEquals(const AMap: IJclExtendedMap): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclExtendedBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          if AMap.ContainsKey(Bucket.Entries[J].Key) then
+          begin
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
+              Exit;
+          end
+          else
+            Exit;
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -25511,9 +26298,6 @@ begin
 end;
 
 function TJclExtendedHashMap.Remove(const Key: Extended): TObject;
-var
-  Bucket: TJclExtendedBucket;
-  I, NewCapacity: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -25522,26 +26306,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-
-      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
-      if NewCapacity < Length(Bucket.Entries) then
-        SetLength(Bucket.Entries, NewCapacity);
-    end;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -25881,39 +26647,42 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntegerHashMap.MapEquals(const AMap: IJclIntegerMap): Boolean;
+function TJclIntegerHashMap.Extract(Key: Integer): TObject;
 var
-  I, J: Integer;
   Bucket: TJclIntegerBucket;
+  I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
+    Result := nil;
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
-            Exit;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := Bucket.Entries[I].Value;
+          FreeKey(Bucket.Entries[I].Key);
+          if I < Length(Bucket.Entries) - 1 then
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
+          Break;
+        end;
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
-    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -26008,6 +26777,43 @@ begin
         for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Key);
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerHashMap.MapEquals(const AMap: IJclIntegerMap): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclIntegerBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          if AMap.ContainsKey(Bucket.Entries[J].Key) then
+          begin
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
+              Exit;
+          end
+          else
+            Exit;
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -26129,9 +26935,6 @@ begin
 end;
 
 function TJclIntegerHashMap.Remove(Key: Integer): TObject;
-var
-  Bucket: TJclIntegerBucket;
-  I, NewCapacity: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -26140,26 +26943,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-
-      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
-      if NewCapacity < Length(Bucket.Entries) then
-        SetLength(Bucket.Entries, NewCapacity);
-    end;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -26499,39 +27284,42 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclCardinalHashMap.MapEquals(const AMap: IJclCardinalMap): Boolean;
+function TJclCardinalHashMap.Extract(Key: Cardinal): TObject;
 var
-  I, J: Integer;
   Bucket: TJclCardinalBucket;
+  I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
+    Result := nil;
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
-            Exit;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := Bucket.Entries[I].Value;
+          FreeKey(Bucket.Entries[I].Key);
+          if I < Length(Bucket.Entries) - 1 then
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
+          Break;
+        end;
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
-    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -26626,6 +27414,43 @@ begin
         for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Key);
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalHashMap.MapEquals(const AMap: IJclCardinalMap): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclCardinalBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          if AMap.ContainsKey(Bucket.Entries[J].Key) then
+          begin
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
+              Exit;
+          end
+          else
+            Exit;
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -26747,9 +27572,6 @@ begin
 end;
 
 function TJclCardinalHashMap.Remove(Key: Cardinal): TObject;
-var
-  Bucket: TJclCardinalBucket;
-  I, NewCapacity: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -26758,26 +27580,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-
-      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
-      if NewCapacity < Length(Bucket.Entries) then
-        SetLength(Bucket.Entries, NewCapacity);
-    end;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -27117,39 +27921,42 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclInt64HashMap.MapEquals(const AMap: IJclInt64Map): Boolean;
+function TJclInt64HashMap.Extract(const Key: Int64): TObject;
 var
-  I, J: Integer;
   Bucket: TJclInt64Bucket;
+  I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
+    Result := nil;
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
-            Exit;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := Bucket.Entries[I].Value;
+          FreeKey(Bucket.Entries[I].Key);
+          if I < Length(Bucket.Entries) - 1 then
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
+          Break;
+        end;
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
-    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -27244,6 +28051,43 @@ begin
         for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Key);
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64HashMap.MapEquals(const AMap: IJclInt64Map): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclInt64Bucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          if AMap.ContainsKey(Bucket.Entries[J].Key) then
+          begin
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
+              Exit;
+          end
+          else
+            Exit;
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -27365,9 +28209,6 @@ begin
 end;
 
 function TJclInt64HashMap.Remove(const Key: Int64): TObject;
-var
-  Bucket: TJclInt64Bucket;
-  I, NewCapacity: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -27376,26 +28217,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-
-      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
-      if NewCapacity < Length(Bucket.Entries) then
-        SetLength(Bucket.Entries, NewCapacity);
-    end;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -27736,39 +28559,42 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclPtrHashMap.MapEquals(const AMap: IJclPtrMap): Boolean;
+function TJclPtrHashMap.Extract(Key: Pointer): TObject;
 var
-  I, J: Integer;
   Bucket: TJclPtrBucket;
+  I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
+    Result := nil;
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
-            Exit;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := Bucket.Entries[I].Value;
+          FreeKey(Bucket.Entries[I].Key);
+          if I < Length(Bucket.Entries) - 1 then
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
+          Break;
+        end;
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
-    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -27863,6 +28689,43 @@ begin
         for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Key);
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrHashMap.MapEquals(const AMap: IJclPtrMap): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclPtrBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          if AMap.ContainsKey(Bucket.Entries[J].Key) then
+          begin
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
+              Exit;
+          end
+          else
+            Exit;
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -27984,9 +28847,6 @@ begin
 end;
 
 function TJclPtrHashMap.Remove(Key: Pointer): TObject;
-var
-  Bucket: TJclPtrBucket;
-  I, NewCapacity: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -27995,26 +28855,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-
-      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
-      if NewCapacity < Length(Bucket.Entries) then
-        SetLength(Bucket.Entries, NewCapacity);
-    end;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -28356,39 +29198,42 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclHashMap.MapEquals(const AMap: IJclMap): Boolean;
+function TJclHashMap.Extract(Key: TObject): TObject;
 var
-  I, J: Integer;
   Bucket: TJclBucket;
+  I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
+    Result := nil;
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
-            Exit;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := Bucket.Entries[I].Value;
+          FreeKey(Bucket.Entries[I].Key);
+          if I < Length(Bucket.Entries) - 1 then
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
+          Break;
+        end;
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
-    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -28483,6 +29328,43 @@ begin
         for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Key);
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclHashMap.MapEquals(const AMap: IJclMap): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          if AMap.ContainsKey(Bucket.Entries[J].Key) then
+          begin
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
+              Exit;
+          end
+          else
+            Exit;
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -28604,9 +29486,6 @@ begin
 end;
 
 function TJclHashMap.Remove(Key: TObject): TObject;
-var
-  Bucket: TJclBucket;
-  I, NewCapacity: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -28615,26 +29494,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-
-      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
-      if NewCapacity < Length(Bucket.Entries) then
-        SetLength(Bucket.Entries, NewCapacity);
-    end;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -28994,39 +29855,42 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclHashMap<TKey, TValue>.MapEquals(const AMap: IJclMap<TKey, TValue>): Boolean;
+function TJclHashMap<TKey, TValue>.Extract(const Key: TKey): TValue;
 var
-  I, J: Integer;
   Bucket: TBucket;
+  I, NewCapacity: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
+    Result := Default(TValue);
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
-            Exit;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := Bucket.Entries[I].Value;
+          FreeKey(Bucket.Entries[I].Key);
+          if I < Length(Bucket.Entries) - 1 then
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
+          Break;
+        end;
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
-    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -29121,6 +29985,43 @@ begin
         for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Key);
     end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclHashMap<TKey, TValue>.MapEquals(const AMap: IJclMap<TKey, TValue>): Boolean;
+var
+  I, J: Integer;
+  Bucket: TBucket;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          if AMap.ContainsKey(Bucket.Entries[J].Key) then
+          begin
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
+              Exit;
+          end
+          else
+            Exit;
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -29242,9 +30143,6 @@ begin
 end;
 
 function TJclHashMap<TKey, TValue>.Remove(const Key: TKey): TValue;
-var
-  Bucket: TBucket;
-  I, NewCapacity: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -29253,26 +30151,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := Default(TValue);
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-
-      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
-      if NewCapacity < Length(Bucket.Entries) then
-        SetLength(Bucket.Entries, NewCapacity);
-    end;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then

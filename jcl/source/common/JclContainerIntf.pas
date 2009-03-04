@@ -841,11 +841,12 @@ type
   IJclIntfIterator = interface(IJclAbstractIterator)
     ['{E121A98A-7C43-4587-806B-9189E8B2F106}']
     function Add(const AInterface: IInterface): Boolean;
-    function IteratorEquals(const AIterator: IJclIntfIterator): Boolean;
+    procedure Extract;
     function GetObject: IInterface;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(const AInterface: IInterface): Boolean;
+    function IteratorEquals(const AIterator: IJclIntfIterator): Boolean;
     function Next: IInterface;
     function NextIndex: Integer;
     function Previous: IInterface;
@@ -862,11 +863,12 @@ type
   IJclAnsiStrIterator = interface(IJclAbstractIterator)
     ['{D5D4B681-F902-49C7-B9E1-73007C9D64F0}']
     function Add(const AString: AnsiString): Boolean;
-    function IteratorEquals(const AIterator: IJclAnsiStrIterator): Boolean;
+    procedure Extract;
     function GetString: AnsiString;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(const AString: AnsiString): Boolean;
+    function IteratorEquals(const AIterator: IJclAnsiStrIterator): Boolean;
     function Next: AnsiString;
     function NextIndex: Integer;
     function Previous: AnsiString;
@@ -883,11 +885,12 @@ type
   IJclWideStrIterator = interface(IJclAbstractIterator)
     ['{F03BC7D4-CCDA-4C4A-AF3A-E51FDCDE8ADE}']
     function Add(const AString: WideString): Boolean;
-    function IteratorEquals(const AIterator: IJclWideStrIterator): Boolean;
+    procedure Extract;
     function GetString: WideString;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(const AString: WideString): Boolean;
+    function IteratorEquals(const AIterator: IJclWideStrIterator): Boolean;
     function Next: WideString;
     function NextIndex: Integer;
     function Previous: WideString;
@@ -905,11 +908,12 @@ type
   IJclUnicodeStrIterator = interface(IJclAbstractIterator)
     ['{B913FFDC-792A-48FB-B58E-763EFDEBA15C}']
     function Add(const AString: UnicodeString): Boolean;
-    function IteratorEquals(const AIterator: IJclUnicodeStrIterator): Boolean;
+    procedure Extract;
     function GetString: UnicodeString;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(const AString: UnicodeString): Boolean;
+    function IteratorEquals(const AIterator: IJclUnicodeStrIterator): Boolean;
     function Next: UnicodeString;
     function NextIndex: Integer;
     function Previous: UnicodeString;
@@ -937,11 +941,12 @@ type
   IJclSingleIterator = interface(IJclAbstractIterator)
     ['{FD1124F8-CB2B-4AD7-B12D-C05702F4204B}']
     function Add(const AValue: Single): Boolean;
-    function IteratorEquals(const AIterator: IJclSingleIterator): Boolean;
+    procedure Extract;
     function GetValue: Single;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(const AValue: Single): Boolean;
+    function IteratorEquals(const AIterator: IJclSingleIterator): Boolean;
     function Next: Single;
     function NextIndex: Integer;
     function Previous: Single;
@@ -958,11 +963,12 @@ type
   IJclDoubleIterator = interface(IJclAbstractIterator)
     ['{004C154A-281C-4DA7-BF64-F3EE80ACF640}']
     function Add(const AValue: Double): Boolean;
-    function IteratorEquals(const AIterator: IJclDoubleIterator): Boolean;
+    procedure Extract;
     function GetValue: Double;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(const AValue: Double): Boolean;
+    function IteratorEquals(const AIterator: IJclDoubleIterator): Boolean;
     function Next: Double;
     function NextIndex: Integer;
     function Previous: Double;
@@ -979,11 +985,12 @@ type
   IJclExtendedIterator = interface(IJclAbstractIterator)
     ['{B89877A5-DED4-4CD9-AB90-C7D062111DE0}']
     function Add(const AValue: Extended): Boolean;
-    function IteratorEquals(const AIterator: IJclExtendedIterator): Boolean;
+    procedure Extract;
     function GetValue: Extended;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(const AValue: Extended): Boolean;
+    function IteratorEquals(const AIterator: IJclExtendedIterator): Boolean;
     function Next: Extended;
     function NextIndex: Integer;
     function Previous: Extended;
@@ -1010,11 +1017,12 @@ type
   IJclIntegerIterator = interface(IJclAbstractIterator)
     ['{1406A991-4574-48A1-83FE-2EDCA03908BE}']
     function Add(AValue: Integer): Boolean;
-    function IteratorEquals(const AIterator: IJclIntegerIterator): Boolean;
+    procedure Extract;
     function GetValue: Integer;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(AValue: Integer): Boolean;
+    function IteratorEquals(const AIterator: IJclIntegerIterator): Boolean;
     function Next: Integer;
     function NextIndex: Integer;
     function Previous: Integer;
@@ -1031,11 +1039,12 @@ type
   IJclCardinalIterator = interface(IJclAbstractIterator)
     ['{72847A34-C8C4-4592-9447-CEB8161E33AD}']
     function Add(AValue: Cardinal): Boolean;
-    function IteratorEquals(const AIterator: IJclCardinalIterator): Boolean;
+    procedure Extract;
     function GetValue: Cardinal;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(AValue: Cardinal): Boolean;
+    function IteratorEquals(const AIterator: IJclCardinalIterator): Boolean;
     function Next: Cardinal;
     function NextIndex: Integer;
     function Previous: Cardinal;
@@ -1052,11 +1061,12 @@ type
   IJclInt64Iterator = interface(IJclAbstractIterator)
     ['{573E5A51-BF76-43D7-9F93-46305BED20A8}']
     function Add(const AValue: Int64): Boolean;
-    function IteratorEquals(const AIterator: IJclInt64Iterator): Boolean;
+    procedure Extract;
     function GetValue: Int64;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(const AValue: Int64): Boolean;
+    function IteratorEquals(const AIterator: IJclInt64Iterator): Boolean;
     function Next: Int64;
     function NextIndex: Integer;
     function Previous: Int64;
@@ -1074,11 +1084,12 @@ type
   IJclPtrIterator = interface(IJclAbstractIterator)
     ['{62B5501C-07AA-4D00-A85B-713B39912CDF}']
     function Add(APtr: Pointer): Boolean;
-    function IteratorEquals(const AIterator: IJclPtrIterator): Boolean;
+    procedure Extract;
     function GetPointer: Pointer;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(APtr: Pointer): Boolean;
+    function IteratorEquals(const AIterator: IJclPtrIterator): Boolean;
     function Next: Pointer;
     function NextIndex: Integer;
     function Previous: Pointer;
@@ -1096,11 +1107,12 @@ type
   IJclIterator = interface(IJclAbstractIterator)
     ['{997DF9B7-9AA2-4239-8B94-14DFFD26D790}']
     function Add(AObject: TObject): Boolean;
-    function IteratorEquals(const AIterator: IJclIterator): Boolean;
+    procedure Extract;
     function GetObject: TObject;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(AObject: TObject): Boolean;
+    function IteratorEquals(const AIterator: IJclIterator): Boolean;
     function Next: TObject;
     function NextIndex: Integer;
     function Previous: TObject;
@@ -1118,11 +1130,12 @@ type
   IJclIterator<T> = interface(IJclAbstractIterator)
     ['{6E8547A4-5B5D-4831-8AE3-9C6D04071B11}']
     function Add(const AItem: T): Boolean;
-    function IteratorEquals(const AIterator: IJclIterator<T>): Boolean;
+    procedure Extract;
     function GetItem: T;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(const AItem: T): Boolean;
+    function IteratorEquals(const AIterator: IJclIterator<T>): Boolean;
     function Next: T;
     function NextIndex: Integer;
     function Previous: T;
@@ -1141,8 +1154,10 @@ type
     ['{C97379BF-C6A9-4A90-9D7A-152E9BAD314F}']
     function AddChild(const AInterface: IInterface): Boolean;
     function ChildrenCount: Integer;
-    procedure ClearChildren;
     procedure DeleteChild(Index: Integer);
+    procedure DeleteChildren;
+    procedure ExtractChild(Index: Integer);
+    procedure ExtractChildren;
     function GetChild(Index: Integer): IInterface;
     function HasChild(Index: Integer): Boolean;
     function HasParent: Boolean;
@@ -1157,8 +1172,10 @@ type
     ['{66BC5C76-758C-4E72-ABF1-EB02CF851C6D}']
     function AddChild(const AString: AnsiString): Boolean;
     function ChildrenCount: Integer;
-    procedure ClearChildren;
     procedure DeleteChild(Index: Integer);
+    procedure DeleteChildren;
+    procedure ExtractChild(Index: Integer);
+    procedure ExtractChildren;
     function GetChild(Index: Integer): AnsiString;
     function HasChild(Index: Integer): Boolean;
     function HasParent: Boolean;
@@ -1173,8 +1190,10 @@ type
     ['{B3168A3B-5A90-4ABF-855F-3D2B3AB6EE7F}']
     function AddChild(const AString: WideString): Boolean;
     function ChildrenCount: Integer;
-    procedure ClearChildren;
     procedure DeleteChild(Index: Integer);
+    procedure DeleteChildren;
+    procedure ExtractChild(Index: Integer);
+    procedure ExtractChildren;
     function GetChild(Index: Integer): WideString;
     function HasChild(Index: Integer): Boolean;
     function HasParent: Boolean;
@@ -1190,8 +1209,10 @@ type
     ['{0B0A60DE-0403-4EE1-B1F0-10D849924CF8}']
     function AddChild(const AString: UnicodeString): Boolean;
     function ChildrenCount: Integer;
-    procedure ClearChildren;
     procedure DeleteChild(Index: Integer);
+    procedure DeleteChildren;
+    procedure ExtractChild(Index: Integer);
+    procedure ExtractChildren;
     function GetChild(Index: Integer): UnicodeString;
     function HasChild(Index: Integer): Boolean;
     function HasParent: Boolean;
@@ -1217,8 +1238,10 @@ type
     ['{17BFDE9D-DBF7-4DC8-AC74-919C717B4726}']
     function AddChild(const AValue: Single): Boolean;
     function ChildrenCount: Integer;
-    procedure ClearChildren;
     procedure DeleteChild(Index: Integer);
+    procedure DeleteChildren;
+    procedure ExtractChild(Index: Integer);
+    procedure ExtractChildren;
     function GetChild(Index: Integer): Single;
     function HasChild(Index: Integer): Boolean;
     function HasParent: Boolean;
@@ -1233,8 +1256,10 @@ type
     ['{EB39B84E-D3C5-496E-A521-B8BF24579252}']
     function AddChild(const AValue: Double): Boolean;
     function ChildrenCount: Integer;
-    procedure ClearChildren;
     procedure DeleteChild(Index: Integer);
+    procedure DeleteChildren;
+    procedure ExtractChild(Index: Integer);
+    procedure ExtractChildren;
     function GetChild(Index: Integer): Double;
     function HasChild(Index: Integer): Boolean;
     function HasParent: Boolean;
@@ -1249,8 +1274,10 @@ type
     ['{1B40A544-FC5D-454C-8E42-CE17B015E65C}']
     function AddChild(const AValue: Extended): Boolean;
     function ChildrenCount: Integer;
-    procedure ClearChildren;
     procedure DeleteChild(Index: Integer);
+    procedure DeleteChildren;
+    procedure ExtractChild(Index: Integer);
+    procedure ExtractChildren;
     function GetChild(Index: Integer): Extended;
     function HasChild(Index: Integer): Boolean;
     function HasParent: Boolean;
@@ -1275,8 +1302,10 @@ type
     ['{88EDC5C5-CA41-41AF-9838-AA19D07E69F5}']
     function AddChild(AValue: Integer): Boolean;
     function ChildrenCount: Integer;
-    procedure ClearChildren;
     procedure DeleteChild(Index: Integer);
+    procedure DeleteChildren;
+    procedure ExtractChild(Index: Integer);
+    procedure ExtractChildren;
     function GetChild(Index: Integer): Integer;
     function HasChild(Index: Integer): Boolean;
     function HasParent: Boolean;
@@ -1291,8 +1320,10 @@ type
     ['{FDBF493F-F79D-46EB-A59D-7193B6E6A860}']
     function AddChild(AValue: Cardinal): Boolean;
     function ChildrenCount: Integer;
-    procedure ClearChildren;
     procedure DeleteChild(Index: Integer);
+    procedure DeleteChildren;
+    procedure ExtractChild(Index: Integer);
+    procedure ExtractChildren;
     function GetChild(Index: Integer): Cardinal;
     function HasChild(Index: Integer): Boolean;
     function HasParent: Boolean;
@@ -1307,8 +1338,10 @@ type
     ['{C5A5E504-E19B-43AC-90B9-E4B8984BFA23}']
     function AddChild(const AValue: Int64): Boolean;
     function ChildrenCount: Integer;
-    procedure ClearChildren;
     procedure DeleteChild(Index: Integer);
+    procedure DeleteChildren;
+    procedure ExtractChild(Index: Integer);
+    procedure ExtractChildren;
     function GetChild(Index: Integer): Int64;
     function HasChild(Index: Integer): Boolean;
     function HasParent: Boolean;
@@ -1324,8 +1357,10 @@ type
     ['{ED4C08E6-60FC-4ED3-BD19-E6605B9BD943}']
     function AddChild(APtr: Pointer): Boolean;
     function ChildrenCount: Integer;
-    procedure ClearChildren;
     procedure DeleteChild(Index: Integer);
+    procedure DeleteChildren;
+    procedure ExtractChild(Index: Integer);
+    procedure ExtractChildren;
     function GetChild(Index: Integer): Pointer;
     function HasChild(Index: Integer): Boolean;
     function HasParent: Boolean;
@@ -1341,8 +1376,10 @@ type
     ['{8B4863B0-B6B9-426E-B5B8-7AF71D264237}']
     function AddChild(AObject: TObject): Boolean;
     function ChildrenCount: Integer;
-    procedure ClearChildren;
     procedure DeleteChild(Index: Integer);
+    procedure DeleteChildren;
+    procedure ExtractChild(Index: Integer);
+    procedure ExtractChildren;
     function GetChild(Index: Integer): TObject;
     function HasChild(Index: Integer): Boolean;
     function HasParent: Boolean;
@@ -1358,8 +1395,10 @@ type
     ['{29A06DA4-D93A-40A5-8581-0FE85BC8384B}']
     function AddChild(const AItem: T): Boolean;
     function ChildrenCount: Integer;
-    procedure ClearChildren;
     procedure DeleteChild(Index: Integer);
+    procedure DeleteChildren;
+    procedure ExtractChild(Index: Integer);
+    procedure ExtractChildren;
     function GetChild(Index: Integer): T;
     function HasChild(Index: Integer): Boolean;
     function HasParent: Boolean;
@@ -1509,6 +1548,8 @@ type
     function Contains(const AInterface: IInterface): Boolean;
     function ContainsAll(const ACollection: IJclIntfCollection): Boolean;
     function CollectionEquals(const ACollection: IJclIntfCollection): Boolean;
+    function Extract(const AInterface: IInterface): Boolean;
+    function ExtractAll(const ACollection: IJclIntfCollection): Boolean;
     function First: IJclIntfIterator;
     function IsEmpty: Boolean;
     function Last: IJclIntfIterator;
@@ -1529,6 +1570,8 @@ type
     function Contains(const AString: AnsiString): Boolean;
     function ContainsAll(const ACollection: IJclAnsiStrCollection): Boolean;
     function CollectionEquals(const ACollection: IJclAnsiStrCollection): Boolean;
+    function Extract(const AString: AnsiString): Boolean;
+    function ExtractAll(const ACollection: IJclAnsiStrCollection): Boolean;
     function First: IJclAnsiStrIterator;
     function IsEmpty: Boolean;
     function Last: IJclAnsiStrIterator;
@@ -1549,6 +1592,8 @@ type
     function Contains(const AString: WideString): Boolean;
     function ContainsAll(const ACollection: IJclWideStrCollection): Boolean;
     function CollectionEquals(const ACollection: IJclWideStrCollection): Boolean;
+    function Extract(const AString: WideString): Boolean;
+    function ExtractAll(const ACollection: IJclWideStrCollection): Boolean;
     function First: IJclWideStrIterator;
     function IsEmpty: Boolean;
     function Last: IJclWideStrIterator;
@@ -1570,6 +1615,8 @@ type
     function Contains(const AString: UnicodeString): Boolean;
     function ContainsAll(const ACollection: IJclUnicodeStrCollection): Boolean;
     function CollectionEquals(const ACollection: IJclUnicodeStrCollection): Boolean;
+    function Extract(const AString: UnicodeString): Boolean;
+    function ExtractAll(const ACollection: IJclUnicodeStrCollection): Boolean;
     function First: IJclUnicodeStrIterator;
     function IsEmpty: Boolean;
     function Last: IJclUnicodeStrIterator;
@@ -1601,6 +1648,8 @@ type
     function Contains(const AValue: Single): Boolean;
     function ContainsAll(const ACollection: IJclSingleCollection): Boolean;
     function CollectionEquals(const ACollection: IJclSingleCollection): Boolean;
+    function Extract(const AValue: Single): Boolean;
+    function ExtractAll(const ACollection: IJclSingleCollection): Boolean;
     function First: IJclSingleIterator;
     function IsEmpty: Boolean;
     function Last: IJclSingleIterator;
@@ -1621,6 +1670,8 @@ type
     function Contains(const AValue: Double): Boolean;
     function ContainsAll(const ACollection: IJclDoubleCollection): Boolean;
     function CollectionEquals(const ACollection: IJclDoubleCollection): Boolean;
+    function Extract(const AValue: Double): Boolean;
+    function ExtractAll(const ACollection: IJclDoubleCollection): Boolean;
     function First: IJclDoubleIterator;
     function IsEmpty: Boolean;
     function Last: IJclDoubleIterator;
@@ -1641,6 +1692,8 @@ type
     function Contains(const AValue: Extended): Boolean;
     function ContainsAll(const ACollection: IJclExtendedCollection): Boolean;
     function CollectionEquals(const ACollection: IJclExtendedCollection): Boolean;
+    function Extract(const AValue: Extended): Boolean;
+    function ExtractAll(const ACollection: IJclExtendedCollection): Boolean;
     function First: IJclExtendedIterator;
     function IsEmpty: Boolean;
     function Last: IJclExtendedIterator;
@@ -1671,6 +1724,8 @@ type
     function Contains(AValue: Integer): Boolean;
     function ContainsAll(const ACollection: IJclIntegerCollection): Boolean;
     function CollectionEquals(const ACollection: IJclIntegerCollection): Boolean;
+    function Extract(AValue: Integer): Boolean;
+    function ExtractAll(const ACollection: IJclIntegerCollection): Boolean;
     function First: IJclIntegerIterator;
     function IsEmpty: Boolean;
     function Last: IJclIntegerIterator;
@@ -1691,6 +1746,8 @@ type
     function Contains(AValue: Cardinal): Boolean;
     function ContainsAll(const ACollection: IJclCardinalCollection): Boolean;
     function CollectionEquals(const ACollection: IJclCardinalCollection): Boolean;
+    function Extract(AValue: Cardinal): Boolean;
+    function ExtractAll(const ACollection: IJclCardinalCollection): Boolean;
     function First: IJclCardinalIterator;
     function IsEmpty: Boolean;
     function Last: IJclCardinalIterator;
@@ -1711,6 +1768,8 @@ type
     function Contains(const AValue: Int64): Boolean;
     function ContainsAll(const ACollection: IJclInt64Collection): Boolean;
     function CollectionEquals(const ACollection: IJclInt64Collection): Boolean;
+    function Extract(const AValue: Int64): Boolean;
+    function ExtractAll(const ACollection: IJclInt64Collection): Boolean;
     function First: IJclInt64Iterator;
     function IsEmpty: Boolean;
     function Last: IJclInt64Iterator;
@@ -1732,6 +1791,8 @@ type
     function Contains(APtr: Pointer): Boolean;
     function ContainsAll(const ACollection: IJclPtrCollection): Boolean;
     function CollectionEquals(const ACollection: IJclPtrCollection): Boolean;
+    function Extract(APtr: Pointer): Boolean;
+    function ExtractAll(const ACollection: IJclPtrCollection): Boolean;
     function First: IJclPtrIterator;
     function IsEmpty: Boolean;
     function Last: IJclPtrIterator;
@@ -1753,6 +1814,8 @@ type
     function Contains(AObject: TObject): Boolean;
     function ContainsAll(const ACollection: IJclCollection): Boolean;
     function CollectionEquals(const ACollection: IJclCollection): Boolean;
+    function Extract(AObject: TObject): Boolean;
+    function ExtractAll(const ACollection: IJclCollection): Boolean;
     function First: IJclIterator;
     function IsEmpty: Boolean;
     function Last: IJclIterator;
@@ -1774,6 +1837,8 @@ type
     function Contains(const AItem: T): Boolean;
     function ContainsAll(const ACollection: IJclCollection<T>): Boolean;
     function CollectionEquals(const ACollection: IJclCollection<T>): Boolean;
+    function Extract(const AItem: T): Boolean;
+    function ExtractAll(const ACollection: IJclCollection<T>): Boolean;
     function First: IJclIterator<T>;
     function IsEmpty: Boolean;
     function Last: IJclIterator<T>;
@@ -1789,12 +1854,13 @@ type
 
   IJclIntfList = interface(IJclIntfCollection)
     ['{E14EDA4B-1DAA-4013-9E6C-CDCB365C7CF9}']
-    function Insert(Index: Integer; const AInterface: IInterface): Boolean;
-    function InsertAll(Index: Integer; const ACollection: IJclIntfCollection): Boolean;
+    function Delete(Index: Integer): IInterface;
+    function ExtractIndex(Index: Integer): IInterface;
     function GetObject(Index: Integer): IInterface;
     function IndexOf(const AInterface: IInterface): Integer;
+    function Insert(Index: Integer; const AInterface: IInterface): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclIntfCollection): Boolean;
     function LastIndexOf(const AInterface: IInterface): Integer;
-    function Delete(Index: Integer): IInterface;
     procedure SetObject(Index: Integer; const AInterface: IInterface);
     function SubList(First, Count: Integer): IJclIntfList;
     property Objects[Key: Integer]: IInterface read GetObject write SetObject; default;
@@ -1802,12 +1868,13 @@ type
 
   IJclAnsiStrList = interface(IJclAnsiStrCollection)
     ['{07DD7644-EAC6-4059-99FC-BEB7FBB73186}']
-    function Insert(Index: Integer; const AString: AnsiString): Boolean;
-    function InsertAll(Index: Integer; const ACollection: IJclAnsiStrCollection): Boolean;
+    function Delete(Index: Integer): AnsiString;
+    function ExtractIndex(Index: Integer): AnsiString;
     function GetString(Index: Integer): AnsiString;
     function IndexOf(const AString: AnsiString): Integer;
+    function Insert(Index: Integer; const AString: AnsiString): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclAnsiStrCollection): Boolean;
     function LastIndexOf(const AString: AnsiString): Integer;
-    function Delete(Index: Integer): AnsiString;
     procedure SetString(Index: Integer; const AString: AnsiString);
     function SubList(First, Count: Integer): IJclAnsiStrList;
     property Strings[Key: Integer]: AnsiString read GetString write SetString; default;
@@ -1815,12 +1882,13 @@ type
 
   IJclWideStrList = interface(IJclWideStrCollection)
     ['{C9955874-6AC0-4CE0-8CC0-606A3F1702C6}']
-    function Insert(Index: Integer; const AString: WideString): Boolean;
-    function InsertAll(Index: Integer; const ACollection: IJclWideStrCollection): Boolean;
+    function Delete(Index: Integer): WideString;
+    function ExtractIndex(Index: Integer): WideString;
     function GetString(Index: Integer): WideString;
     function IndexOf(const AString: WideString): Integer;
+    function Insert(Index: Integer; const AString: WideString): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclWideStrCollection): Boolean;
     function LastIndexOf(const AString: WideString): Integer;
-    function Delete(Index: Integer): WideString;
     procedure SetString(Index: Integer; const AString: WideString);
     function SubList(First, Count: Integer): IJclWideStrList;
     property Strings[Key: Integer]: WideString read GetString write SetString; default;
@@ -1829,12 +1897,13 @@ type
 {$IFDEF SUPPORTS_UNICODE_STRING}
   IJclUnicodeStrList = interface(IJclUnicodeStrCollection)
     ['{F4307EB4-D66E-4656-AC56-50883D0F2C83}']
-    function Insert(Index: Integer; const AString: UnicodeString): Boolean;
-    function InsertAll(Index: Integer; const ACollection: IJclUnicodeStrCollection): Boolean;
+    function Delete(Index: Integer): UnicodeString;
+    function ExtractIndex(Index: Integer): UnicodeString;
     function GetString(Index: Integer): UnicodeString;
     function IndexOf(const AString: UnicodeString): Integer;
+    function Insert(Index: Integer; const AString: UnicodeString): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclUnicodeStrCollection): Boolean;
     function LastIndexOf(const AString: UnicodeString): Integer;
-    function Delete(Index: Integer): UnicodeString;
     procedure SetString(Index: Integer; const AString: UnicodeString);
     function SubList(First, Count: Integer): IJclUnicodeStrList;
     property Strings[Key: Integer]: UnicodeString read GetString write SetString; default;
@@ -1853,12 +1922,13 @@ type
 
   IJclSingleList = interface(IJclSingleCollection)
     ['{D081324C-70A4-4AAC-BA42-7557F0262826}']
-    function Insert(Index: Integer; const AValue: Single): Boolean;
-    function InsertAll(Index: Integer; const ACollection: IJclSingleCollection): Boolean;
+    function Delete(Index: Integer): Single;
+    function ExtractIndex(Index: Integer): Single;
     function GetValue(Index: Integer): Single;
     function IndexOf(const AValue: Single): Integer;
+    function Insert(Index: Integer; const AValue: Single): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclSingleCollection): Boolean;
     function LastIndexOf(const AValue: Single): Integer;
-    function Delete(Index: Integer): Single;
     procedure SetValue(Index: Integer; const AValue: Single);
     function SubList(First, Count: Integer): IJclSingleList;
     property Values[Key: Integer]: Single read GetValue write SetValue; default;
@@ -1866,12 +1936,13 @@ type
 
   IJclDoubleList = interface(IJclDoubleCollection)
     ['{ECA58515-3903-4312-9486-3214E03F35AB}']
-    function Insert(Index: Integer; const AValue: Double): Boolean;
-    function InsertAll(Index: Integer; const ACollection: IJclDoubleCollection): Boolean;
+    function Delete(Index: Integer): Double;
+    function ExtractIndex(Index: Integer): Double;
     function GetValue(Index: Integer): Double;
     function IndexOf(const AValue: Double): Integer;
+    function Insert(Index: Integer; const AValue: Double): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclDoubleCollection): Boolean;
     function LastIndexOf(const AValue: Double): Integer;
-    function Delete(Index: Integer): Double;
     procedure SetValue(Index: Integer; const AValue: Double);
     function SubList(First, Count: Integer): IJclDoubleList;
     property Values[Key: Integer]: Double read GetValue write SetValue; default;
@@ -1879,12 +1950,13 @@ type
 
   IJclExtendedList = interface(IJclExtendedCollection)
     ['{7463F954-F8DF-4B02-A284-FCB98746248E}']
-    function Insert(Index: Integer; const AValue: Extended): Boolean;
-    function InsertAll(Index: Integer; const ACollection: IJclExtendedCollection): Boolean;
+    function Delete(Index: Integer): Extended;
+    function ExtractIndex(Index: Integer): Extended;
     function GetValue(Index: Integer): Extended;
     function IndexOf(const AValue: Extended): Integer;
+    function Insert(Index: Integer; const AValue: Extended): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclExtendedCollection): Boolean;
     function LastIndexOf(const AValue: Extended): Integer;
-    function Delete(Index: Integer): Extended;
     procedure SetValue(Index: Integer; const AValue: Extended);
     function SubList(First, Count: Integer): IJclExtendedList;
     property Values[Key: Integer]: Extended read GetValue write SetValue; default;
@@ -1902,12 +1974,13 @@ type
 
   IJclIntegerList = interface(IJclIntegerCollection)
     ['{339BE91B-557D-4CE0-A854-1CBD4FE31725}']
-    function Insert(Index: Integer; AValue: Integer): Boolean;
-    function InsertAll(Index: Integer; const ACollection: IJclIntegerCollection): Boolean;
+    function Delete(Index: Integer): Integer;
+    function ExtractIndex(Index: Integer): Integer;
     function GetValue(Index: Integer): Integer;
     function IndexOf(AValue: Integer): Integer;
+    function Insert(Index: Integer; AValue: Integer): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclIntegerCollection): Boolean;
     function LastIndexOf(AValue: Integer): Integer;
-    function Delete(Index: Integer): Integer;
     procedure SetValue(Index: Integer; AValue: Integer);
     function SubList(First, Count: Integer): IJclIntegerList;
     property Values[Key: Integer]: Integer read GetValue write SetValue; default;
@@ -1915,12 +1988,13 @@ type
 
   IJclCardinalList = interface(IJclCardinalCollection)
     ['{02B09EA8-DE6F-4A18-AA57-C3533E6AC4E3}']
-    function Insert(Index: Integer; AValue: Cardinal): Boolean;
-    function InsertAll(Index: Integer; const ACollection: IJclCardinalCollection): Boolean;
+    function Delete(Index: Integer): Cardinal;
+    function ExtractIndex(Index: Integer): Cardinal;
     function GetValue(Index: Integer): Cardinal;
     function IndexOf(AValue: Cardinal): Integer;
+    function Insert(Index: Integer; AValue: Cardinal): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclCardinalCollection): Boolean;
     function LastIndexOf(AValue: Cardinal): Integer;
-    function Delete(Index: Integer): Cardinal;
     procedure SetValue(Index: Integer; AValue: Cardinal);
     function SubList(First, Count: Integer): IJclCardinalList;
     property Values[Key: Integer]: Cardinal read GetValue write SetValue; default;
@@ -1928,12 +2002,13 @@ type
 
   IJclInt64List = interface(IJclInt64Collection)
     ['{E8D49200-91D3-4BD0-A59B-B93EC7E2074B}']
-    function Insert(Index: Integer; const AValue: Int64): Boolean;
-    function InsertAll(Index: Integer; const ACollection: IJclInt64Collection): Boolean;
+    function Delete(Index: Integer): Int64;
+    function ExtractIndex(Index: Integer): Int64;
     function GetValue(Index: Integer): Int64;
     function IndexOf(const AValue: Int64): Integer;
+    function Insert(Index: Integer; const AValue: Int64): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclInt64Collection): Boolean;
     function LastIndexOf(const AValue: Int64): Integer;
-    function Delete(Index: Integer): Int64;
     procedure SetValue(Index: Integer; const AValue: Int64);
     function SubList(First, Count: Integer): IJclInt64List;
     property Values[Key: Integer]: Int64 read GetValue write SetValue; default;
@@ -1942,12 +2017,13 @@ type
   {$IFNDEF CLR}
   IJclPtrList = interface(IJclPtrCollection)
     ['{2CF5CF1F-C012-480C-A4CE-38BDAFB15D05}']
-    function Insert(Index: Integer; APtr: Pointer): Boolean;
-    function InsertAll(Index: Integer; const ACollection: IJclPtrCollection): Boolean;
+    function Delete(Index: Integer): Pointer;
+    function ExtractIndex(Index: Integer): Pointer;
     function GetPointer(Index: Integer): Pointer;
     function IndexOf(APtr: Pointer): Integer;
+    function Insert(Index: Integer; APtr: Pointer): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclPtrCollection): Boolean;
     function LastIndexOf(APtr: Pointer): Integer;
-    function Delete(Index: Integer): Pointer;
     procedure SetPointer(Index: Integer; APtr: Pointer);
     function SubList(First, Count: Integer): IJclPtrList;
     property Pointers[Key: Integer]: Pointer read GetPointer write SetPointer; default;
@@ -1956,12 +2032,13 @@ type
 
   IJclList = interface(IJclCollection)
     ['{8ABC70AC-5C06-43EA-AFE0-D066379BCC28}']
-    function Insert(Index: Integer; AObject: TObject): Boolean;
-    function InsertAll(Index: Integer; const ACollection: IJclCollection): Boolean;
+    function Delete(Index: Integer): TObject;
+    function ExtractIndex(Index: Integer): TObject;
     function GetObject(Index: Integer): TObject;
     function IndexOf(AObject: TObject): Integer;
+    function Insert(Index: Integer; AObject: TObject): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclCollection): Boolean;
     function LastIndexOf(AObject: TObject): Integer;
-    function Delete(Index: Integer): TObject;
     procedure SetObject(Index: Integer; AObject: TObject);
     function SubList(First, Count: Integer): IJclList;
     property Objects[Key: Integer]: TObject read GetObject write SetObject; default;
@@ -1970,12 +2047,13 @@ type
   {$IFDEF SUPPORTS_GENERICS}
   IJclList<T> = interface(IJclCollection<T>)
     ['{3B4BE3D7-8FF7-4163-91DF-3F73AE6935E7}']
-    function Insert(Index: Integer; const AItem: T): Boolean;
-    function InsertAll(Index: Integer; const ACollection: IJclCollection<T>): Boolean;
+    function Delete(Index: Integer): T;
+    function ExtractIndex(Index: Integer): T;
     function GetItem(Index: Integer): T;
     function IndexOf(const AItem: T): Integer;
+    function Insert(Index: Integer; const AItem: T): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclCollection<T>): Boolean;
     function LastIndexOf(const AItem: T): Integer;
-    function Delete(Index: Integer): T;
     procedure SetItem(Index: Integer; const AItem: T);
     function SubList(First, Count: Integer): IJclList<T>;
     property Items[Key: Integer]: T read GetItem write SetItem; default;
@@ -2396,11 +2474,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function MapEquals(const AMap: IJclIntfIntfMap): Boolean;
+    function Extract(const Key: IInterface): IInterface;
     function GetValue(const Key: IInterface): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): IInterface;
     function KeySet: IJclIntfSet;
+    function MapEquals(const AMap: IJclIntfIntfMap): Boolean;
     procedure PutAll(const AMap: IJclIntfIntfMap);
     procedure PutValue(const Key, Value: IInterface);
     function Remove(const Key: IInterface): IInterface;
@@ -2421,11 +2500,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: AnsiString): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function MapEquals(const AMap: IJclAnsiStrIntfMap): Boolean;
+    function Extract(const Key: AnsiString): IInterface;
     function GetValue(const Key: AnsiString): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): AnsiString;
     function KeySet: IJclAnsiStrSet;
+    function MapEquals(const AMap: IJclAnsiStrIntfMap): Boolean;
     procedure PutAll(const AMap: IJclAnsiStrIntfMap);
     procedure PutValue(const Key: AnsiString; const Value: IInterface);
     function Remove(const Key: AnsiString): IInterface;
@@ -2440,11 +2520,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: WideString): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function MapEquals(const AMap: IJclWideStrIntfMap): Boolean;
+    function Extract(const Key: WideString): IInterface;
     function GetValue(const Key: WideString): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): WideString;
     function KeySet: IJclWideStrSet;
+    function MapEquals(const AMap: IJclWideStrIntfMap): Boolean;
     procedure PutAll(const AMap: IJclWideStrIntfMap);
     procedure PutValue(const Key: WideString; const Value: IInterface);
     function Remove(const Key: WideString): IInterface;
@@ -2460,11 +2541,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: UnicodeString): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function MapEquals(const AMap: IJclUnicodeStrIntfMap): Boolean;
+    function Extract(const Key: UnicodeString): IInterface;
     function GetValue(const Key: UnicodeString): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): UnicodeString;
     function KeySet: IJclUnicodeStrSet;
+    function MapEquals(const AMap: IJclUnicodeStrIntfMap): Boolean;
     procedure PutAll(const AMap: IJclUnicodeStrIntfMap);
     procedure PutValue(const Key: UnicodeString; const Value: IInterface);
     function Remove(const Key: UnicodeString): IInterface;
@@ -2490,11 +2572,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(const Value: AnsiString): Boolean;
-    function MapEquals(const AMap: IJclIntfAnsiStrMap): Boolean;
+    function Extract(const Key: IInterface): AnsiString;
     function GetValue(const Key: IInterface): AnsiString;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: AnsiString): IInterface;
     function KeySet: IJclIntfSet;
+    function MapEquals(const AMap: IJclIntfAnsiStrMap): Boolean;
     procedure PutAll(const AMap: IJclIntfAnsiStrMap);
     procedure PutValue(const Key: IInterface; const Value: AnsiString);
     function Remove(const Key: IInterface): AnsiString;
@@ -2509,11 +2592,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(const Value: WideString): Boolean;
-    function MapEquals(const AMap: IJclIntfWideStrMap): Boolean;
+    function Extract(const Key: IInterface): WideString;
     function GetValue(const Key: IInterface): WideString;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: WideString): IInterface;
     function KeySet: IJclIntfSet;
+    function MapEquals(const AMap: IJclIntfWideStrMap): Boolean;
     procedure PutAll(const AMap: IJclIntfWideStrMap);
     procedure PutValue(const Key: IInterface; const Value: WideString);
     function Remove(const Key: IInterface): WideString;
@@ -2529,11 +2613,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(const Value: UnicodeString): Boolean;
-    function MapEquals(const AMap: IJclIntfUnicodeStrMap): Boolean;
+    function Extract(const Key: IInterface): UnicodeString;
     function GetValue(const Key: IInterface): UnicodeString;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: UnicodeString): IInterface;
     function KeySet: IJclIntfSet;
+    function MapEquals(const AMap: IJclIntfUnicodeStrMap): Boolean;
     procedure PutAll(const AMap: IJclIntfUnicodeStrMap);
     procedure PutValue(const Key: IInterface; const Value: UnicodeString);
     function Remove(const Key: IInterface): UnicodeString;
@@ -2559,11 +2644,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: AnsiString): Boolean;
     function ContainsValue(const Value: AnsiString): Boolean;
-    function MapEquals(const AMap: IJclAnsiStrAnsiStrMap): Boolean;
+    function Extract(const Key: AnsiString): AnsiString;
     function GetValue(const Key: AnsiString): AnsiString;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: AnsiString): AnsiString;
     function KeySet: IJclAnsiStrSet;
+    function MapEquals(const AMap: IJclAnsiStrAnsiStrMap): Boolean;
     procedure PutAll(const AMap: IJclAnsiStrAnsiStrMap);
     procedure PutValue(const Key, Value: AnsiString);
     function Remove(const Key: AnsiString): AnsiString;
@@ -2578,11 +2664,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: WideString): Boolean;
     function ContainsValue(const Value: WideString): Boolean;
-    function MapEquals(const AMap: IJclWideStrWideStrMap): Boolean;
+    function Extract(const Key: WideString): WideString;
     function GetValue(const Key: WideString): WideString;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: WideString): WideString;
     function KeySet: IJclWideStrSet;
+    function MapEquals(const AMap: IJclWideStrWideStrMap): Boolean;
     procedure PutAll(const AMap: IJclWideStrWideStrMap);
     procedure PutValue(const Key, Value: WideString);
     function Remove(const Key: WideString): WideString;
@@ -2598,11 +2685,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: UnicodeString): Boolean;
     function ContainsValue(const Value: UnicodeString): Boolean;
-    function MapEquals(const AMap: IJclUnicodeStrUnicodeStrMap): Boolean;
+    function Extract(const Key: UnicodeString): UnicodeString;
     function GetValue(const Key: UnicodeString): UnicodeString;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: UnicodeString): UnicodeString;
     function KeySet: IJclUnicodeStrSet;
+    function MapEquals(const AMap: IJclUnicodeStrUnicodeStrMap): Boolean;
     procedure PutAll(const AMap: IJclUnicodeStrUnicodeStrMap);
     procedure PutValue(const Key, Value: UnicodeString);
     function Remove(const Key: UnicodeString): UnicodeString;
@@ -2628,11 +2716,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: Single): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function MapEquals(const AMap: IJclSingleIntfMap): Boolean;
+    function Extract(const Key: Single): IInterface;
     function GetValue(const Key: Single): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): Single;
     function KeySet: IJclSingleSet;
+    function MapEquals(const AMap: IJclSingleIntfMap): Boolean;
     procedure PutAll(const AMap: IJclSingleIntfMap);
     procedure PutValue(const Key: Single; const Value: IInterface);
     function Remove(const Key: Single): IInterface;
@@ -2647,11 +2736,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(const Value: Single): Boolean;
-    function MapEquals(const AMap: IJclIntfSingleMap): Boolean;
+    function Extract(const Key: IInterface): Single;
     function GetValue(const Key: IInterface): Single;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Single): IInterface;
     function KeySet: IJclIntfSet;
+    function MapEquals(const AMap: IJclIntfSingleMap): Boolean;
     procedure PutAll(const AMap: IJclIntfSingleMap);
     procedure PutValue(const Key: IInterface; const Value: Single);
     function Remove(const Key: IInterface): Single;
@@ -2666,11 +2756,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: Single): Boolean;
     function ContainsValue(const Value: Single): Boolean;
-    function MapEquals(const AMap: IJclSingleSingleMap): Boolean;
+    function Extract(const Key: Single): Single;
     function GetValue(const Key: Single): Single;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Single): Single;
     function KeySet: IJclSingleSet;
+    function MapEquals(const AMap: IJclSingleSingleMap): Boolean;
     procedure PutAll(const AMap: IJclSingleSingleMap);
     procedure PutValue(const Key, Value: Single);
     function Remove(const Key: Single): Single;
@@ -2685,11 +2776,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: Double): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function MapEquals(const AMap: IJclDoubleIntfMap): Boolean;
+    function Extract(const Key: Double): IInterface;
     function GetValue(const Key: Double): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): Double;
     function KeySet: IJclDoubleSet;
+    function MapEquals(const AMap: IJclDoubleIntfMap): Boolean;
     procedure PutAll(const AMap: IJclDoubleIntfMap);
     procedure PutValue(const Key: Double; const Value: IInterface);
     function Remove(const Key: Double): IInterface;
@@ -2704,11 +2796,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(const Value: Double): Boolean;
-    function MapEquals(const AMap: IJclIntfDoubleMap): Boolean;
+    function Extract(const Key: IInterface): Double;
     function GetValue(const Key: IInterface): Double;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Double): IInterface;
     function KeySet: IJclIntfSet;
+    function MapEquals(const AMap: IJclIntfDoubleMap): Boolean;
     procedure PutAll(const AMap: IJclIntfDoubleMap);
     procedure PutValue(const Key: IInterface; const Value: Double);
     function Remove(const Key: IInterface): Double;
@@ -2723,11 +2816,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: Double): Boolean;
     function ContainsValue(const Value: Double): Boolean;
-    function MapEquals(const AMap: IJclDoubleDoubleMap): Boolean;
+    function Extract(const Key: Double): Double;
     function GetValue(const Key: Double): Double;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Double): Double;
     function KeySet: IJclDoubleSet;
+    function MapEquals(const AMap: IJclDoubleDoubleMap): Boolean;
     procedure PutAll(const AMap: IJclDoubleDoubleMap);
     procedure PutValue(const Key, Value: Double);
     function Remove(const Key: Double): Double;
@@ -2742,11 +2836,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: Extended): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function MapEquals(const AMap: IJclExtendedIntfMap): Boolean;
+    function Extract(const Key: Extended): IInterface;
     function GetValue(const Key: Extended): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): Extended;
     function KeySet: IJclExtendedSet;
+    function MapEquals(const AMap: IJclExtendedIntfMap): Boolean;
     procedure PutAll(const AMap: IJclExtendedIntfMap);
     procedure PutValue(const Key: Extended; const Value: IInterface);
     function Remove(const Key: Extended): IInterface;
@@ -2761,11 +2856,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(const Value: Extended): Boolean;
-    function MapEquals(const AMap: IJclIntfExtendedMap): Boolean;
+    function Extract(const Key: IInterface): Extended;
     function GetValue(const Key: IInterface): Extended;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Extended): IInterface;
     function KeySet: IJclIntfSet;
+    function MapEquals(const AMap: IJclIntfExtendedMap): Boolean;
     procedure PutAll(const AMap: IJclIntfExtendedMap);
     procedure PutValue(const Key: IInterface; const Value: Extended);
     function Remove(const Key: IInterface): Extended;
@@ -2780,11 +2876,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: Extended): Boolean;
     function ContainsValue(const Value: Extended): Boolean;
-    function MapEquals(const AMap: IJclExtendedExtendedMap): Boolean;
+    function Extract(const Key: Extended): Extended;
     function GetValue(const Key: Extended): Extended;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Extended): Extended;
     function KeySet: IJclExtendedSet;
+    function MapEquals(const AMap: IJclExtendedExtendedMap): Boolean;
     procedure PutAll(const AMap: IJclExtendedExtendedMap);
     procedure PutValue(const Key, Value: Extended);
     function Remove(const Key: Extended): Extended;
@@ -2815,11 +2912,12 @@ type
     procedure Clear;
     function ContainsKey(Key: Integer): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function MapEquals(const AMap: IJclIntegerIntfMap): Boolean;
+    function Extract(Key: Integer): IInterface;
     function GetValue(Key: Integer): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): Integer;
     function KeySet: IJclIntegerSet;
+    function MapEquals(const AMap: IJclIntegerIntfMap): Boolean;
     procedure PutAll(const AMap: IJclIntegerIntfMap);
     procedure PutValue(Key: Integer; const Value: IInterface);
     function Remove(Key: Integer): IInterface;
@@ -2834,11 +2932,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(Value: Integer): Boolean;
-    function MapEquals(const AMap: IJclIntfIntegerMap): Boolean;
+    function Extract(const Key: IInterface): Integer;
     function GetValue(const Key: IInterface): Integer;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: Integer): IInterface;
     function KeySet: IJclIntfSet;
+    function MapEquals(const AMap: IJclIntfIntegerMap): Boolean;
     procedure PutAll(const AMap: IJclIntfIntegerMap);
     procedure PutValue(const Key: IInterface; Value: Integer);
     function Remove(const Key: IInterface): Integer;
@@ -2853,11 +2952,12 @@ type
     procedure Clear;
     function ContainsKey(Key: Integer): Boolean;
     function ContainsValue(Value: Integer): Boolean;
-    function MapEquals(const AMap: IJclIntegerIntegerMap): Boolean;
+    function Extract(Key: Integer): Integer;
     function GetValue(Key: Integer): Integer;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: Integer): Integer;
     function KeySet: IJclIntegerSet;
+    function MapEquals(const AMap: IJclIntegerIntegerMap): Boolean;
     procedure PutAll(const AMap: IJclIntegerIntegerMap);
     procedure PutValue(Key, Value: Integer);
     function Remove(Key: Integer): Integer;
@@ -2872,11 +2972,12 @@ type
     procedure Clear;
     function ContainsKey(Key: Cardinal): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function MapEquals(const AMap: IJclCardinalIntfMap): Boolean;
+    function Extract(Key: Cardinal): IInterface;
     function GetValue(Key: Cardinal): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): Cardinal;
     function KeySet: IJclCardinalSet;
+    function MapEquals(const AMap: IJclCardinalIntfMap): Boolean;
     procedure PutAll(const AMap: IJclCardinalIntfMap);
     procedure PutValue(Key: Cardinal; const Value: IInterface);
     function Remove(Key: Cardinal): IInterface;
@@ -2891,11 +2992,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(Value: Cardinal): Boolean;
-    function MapEquals(const AMap: IJclIntfCardinalMap): Boolean;
+    function Extract(const Key: IInterface): Cardinal;
     function GetValue(const Key: IInterface): Cardinal;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: Cardinal): IInterface;
     function KeySet: IJclIntfSet;
+    function MapEquals(const AMap: IJclIntfCardinalMap): Boolean;
     procedure PutAll(const AMap: IJclIntfCardinalMap);
     procedure PutValue(const Key: IInterface; Value: Cardinal);
     function Remove(const Key: IInterface): Cardinal;
@@ -2910,11 +3012,12 @@ type
     procedure Clear;
     function ContainsKey(Key: Cardinal): Boolean;
     function ContainsValue(Value: Cardinal): Boolean;
-    function MapEquals(const AMap: IJclCardinalCardinalMap): Boolean;
+    function Extract(Key: Cardinal): Cardinal;
     function GetValue(Key: Cardinal): Cardinal;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: Cardinal): Cardinal;
     function KeySet: IJclCardinalSet;
+    function MapEquals(const AMap: IJclCardinalCardinalMap): Boolean;
     procedure PutAll(const AMap: IJclCardinalCardinalMap);
     procedure PutValue(Key, Value: Cardinal);
     function Remove(Key: Cardinal): Cardinal;
@@ -2929,11 +3032,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: Int64): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function MapEquals(const AMap: IJclInt64IntfMap): Boolean;
+    function Extract(const Key: Int64): IInterface;
     function GetValue(const Key: Int64): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): Int64;
     function KeySet: IJclInt64Set;
+    function MapEquals(const AMap: IJclInt64IntfMap): Boolean;
     procedure PutAll(const AMap: IJclInt64IntfMap);
     procedure PutValue(const Key: Int64; const Value: IInterface);
     function Remove(const Key: Int64): IInterface;
@@ -2948,11 +3052,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(const Value: Int64): Boolean;
-    function MapEquals(const AMap: IJclIntfInt64Map): Boolean;
+    function Extract(const Key: IInterface): Int64;
     function GetValue(const Key: IInterface): Int64;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Int64): IInterface;
     function KeySet: IJclIntfSet;
+    function MapEquals(const AMap: IJclIntfInt64Map): Boolean;
     procedure PutAll(const AMap: IJclIntfInt64Map);
     procedure PutValue(const Key: IInterface; const Value: Int64);
     function Remove(const Key: IInterface): Int64;
@@ -2967,11 +3072,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: Int64): Boolean;
     function ContainsValue(const Value: Int64): Boolean;
-    function MapEquals(const AMap: IJclInt64Int64Map): Boolean;
+    function Extract(const Key: Int64): Int64;
     function GetValue(const Key: Int64): Int64;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Int64): Int64;
     function KeySet: IJclInt64Set;
+    function MapEquals(const AMap: IJclInt64Int64Map): Boolean;
     procedure PutAll(const AMap: IJclInt64Int64Map);
     procedure PutValue(const Key, Value: Int64);
     function Remove(const Key: Int64): Int64;
@@ -2987,11 +3093,12 @@ type
     procedure Clear;
     function ContainsKey(Key: Pointer): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function MapEquals(const AMap: IJclPtrIntfMap): Boolean;
+    function Extract(Key: Pointer): IInterface;
     function GetValue(Key: Pointer): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): Pointer;
     function KeySet: IJclPtrSet;
+    function MapEquals(const AMap: IJclPtrIntfMap): Boolean;
     procedure PutAll(const AMap: IJclPtrIntfMap);
     procedure PutValue(Key: Pointer; const Value: IInterface);
     function Remove(Key: Pointer): IInterface;
@@ -3006,11 +3113,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(Value: Pointer): Boolean;
-    function MapEquals(const AMap: IJclIntfPtrMap): Boolean;
+    function Extract(const Key: IInterface): Pointer;
     function GetValue(const Key: IInterface): Pointer;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: Pointer): IInterface;
     function KeySet: IJclIntfSet;
+    function MapEquals(const AMap: IJclIntfPtrMap): Boolean;
     procedure PutAll(const AMap: IJclIntfPtrMap);
     procedure PutValue(const Key: IInterface; Value: Pointer);
     function Remove(const Key: IInterface): Pointer;
@@ -3025,11 +3133,12 @@ type
     procedure Clear;
     function ContainsKey(Key: Pointer): Boolean;
     function ContainsValue(Value: Pointer): Boolean;
-    function MapEquals(const AMap: IJclPtrPtrMap): Boolean;
+    function Extract(Key: Pointer): Pointer;
     function GetValue(Key: Pointer): Pointer;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: Pointer): Pointer;
     function KeySet: IJclPtrSet;
+    function MapEquals(const AMap: IJclPtrPtrMap): Boolean;
     procedure PutAll(const AMap: IJclPtrPtrMap);
     procedure PutValue(Key, Value: Pointer);
     function Remove(Key: Pointer): Pointer;
@@ -3045,11 +3154,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function MapEquals(const AMap: IJclIntfMap): Boolean;
+    function Extract(const Key: IInterface): TObject;
     function GetValue(const Key: IInterface): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): IInterface;
     function KeySet: IJclIntfSet;
+    function MapEquals(const AMap: IJclIntfMap): Boolean;
     procedure PutAll(const AMap: IJclIntfMap);
     procedure PutValue(const Key: IInterface; Value: TObject);
     function Remove(const Key: IInterface): TObject;
@@ -3064,11 +3174,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: AnsiString): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function MapEquals(const AMap: IJclAnsiStrMap): Boolean;
+    function Extract(const Key: AnsiString): TObject;
     function GetValue(const Key: AnsiString): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): AnsiString;
     function KeySet: IJclAnsiStrSet;
+    function MapEquals(const AMap: IJclAnsiStrMap): Boolean;
     procedure PutAll(const AMap: IJclAnsiStrMap);
     procedure PutValue(const Key: AnsiString; Value: TObject);
     function Remove(const Key: AnsiString): TObject;
@@ -3083,11 +3194,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: WideString): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function MapEquals(const AMap: IJclWideStrMap): Boolean;
+    function Extract(const Key: WideString): TObject;
     function GetValue(const Key: WideString): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): WideString;
     function KeySet: IJclWideStrSet;
+    function MapEquals(const AMap: IJclWideStrMap): Boolean;
     procedure PutAll(const AMap: IJclWideStrMap);
     procedure PutValue(const Key: WideString; Value: TObject);
     function Remove(const Key: WideString): TObject;
@@ -3103,11 +3215,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: UnicodeString): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function MapEquals(const AMap: IJclUnicodeStrMap): Boolean;
+    function Extract(const Key: UnicodeString): TObject;
     function GetValue(const Key: UnicodeString): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): UnicodeString;
     function KeySet: IJclUnicodeStrSet;
+    function MapEquals(const AMap: IJclUnicodeStrMap): Boolean;
     procedure PutAll(const AMap: IJclUnicodeStrMap);
     procedure PutValue(const Key: UnicodeString; Value: TObject);
     function Remove(const Key: UnicodeString): TObject;
@@ -3133,11 +3246,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: Single): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function MapEquals(const AMap: IJclSingleMap): Boolean;
+    function Extract(const Key: Single): TObject;
     function GetValue(const Key: Single): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): Single;
     function KeySet: IJclSingleSet;
+    function MapEquals(const AMap: IJclSingleMap): Boolean;
     procedure PutAll(const AMap: IJclSingleMap);
     procedure PutValue(const Key: Single; Value: TObject);
     function Remove(const Key: Single): TObject;
@@ -3152,11 +3266,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: Double): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function MapEquals(const AMap: IJclDoubleMap): Boolean;
+    function Extract(const Key: Double): TObject;
     function GetValue(const Key: Double): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): Double;
     function KeySet: IJclDoubleSet;
+    function MapEquals(const AMap: IJclDoubleMap): Boolean;
     procedure PutAll(const AMap: IJclDoubleMap);
     procedure PutValue(const Key: Double; Value: TObject);
     function Remove(const Key: Double): TObject;
@@ -3171,11 +3286,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: Extended): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function MapEquals(const AMap: IJclExtendedMap): Boolean;
+    function Extract(const Key: Extended): TObject;
     function GetValue(const Key: Extended): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): Extended;
     function KeySet: IJclExtendedSet;
+    function MapEquals(const AMap: IJclExtendedMap): Boolean;
     procedure PutAll(const AMap: IJclExtendedMap);
     procedure PutValue(const Key: Extended; Value: TObject);
     function Remove(const Key: Extended): TObject;
@@ -3200,11 +3316,12 @@ type
     procedure Clear;
     function ContainsKey(Key: Integer): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function MapEquals(const AMap: IJclIntegerMap): Boolean;
+    function Extract(Key: Integer): TObject;
     function GetValue(Key: Integer): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): Integer;
     function KeySet: IJclIntegerSet;
+    function MapEquals(const AMap: IJclIntegerMap): Boolean;
     procedure PutAll(const AMap: IJclIntegerMap);
     procedure PutValue(Key: Integer; Value: TObject);
     function Remove(Key: Integer): TObject;
@@ -3219,11 +3336,12 @@ type
     procedure Clear;
     function ContainsKey(Key: Cardinal): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function MapEquals(const AMap: IJclCardinalMap): Boolean;
+    function Extract(Key: Cardinal): TObject;
     function GetValue(Key: Cardinal): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): Cardinal;
     function KeySet: IJclCardinalSet;
+    function MapEquals(const AMap: IJclCardinalMap): Boolean;
     procedure PutAll(const AMap: IJclCardinalMap);
     procedure PutValue(Key: Cardinal; Value: TObject);
     function Remove(Key: Cardinal): TObject;
@@ -3238,11 +3356,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: Int64): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function MapEquals(const AMap: IJclInt64Map): Boolean;
+    function Extract(const Key: Int64): TObject;
     function GetValue(const Key: Int64): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): Int64;
     function KeySet: IJclInt64Set;
+    function MapEquals(const AMap: IJclInt64Map): Boolean;
     procedure PutAll(const AMap: IJclInt64Map);
     procedure PutValue(const Key: Int64; Value: TObject);
     function Remove(const Key: Int64): TObject;
@@ -3258,11 +3377,12 @@ type
     procedure Clear;
     function ContainsKey(Key: Pointer): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function MapEquals(const AMap: IJclPtrMap): Boolean;
+    function Extract(Key: Pointer): TObject;
     function GetValue(Key: Pointer): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): Pointer;
     function KeySet: IJclPtrSet;
+    function MapEquals(const AMap: IJclPtrMap): Boolean;
     procedure PutAll(const AMap: IJclPtrMap);
     procedure PutValue(Key: Pointer; Value: TObject);
     function Remove(Key: Pointer): TObject;
@@ -3278,11 +3398,12 @@ type
     procedure Clear;
     function ContainsKey(Key: TObject): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function MapEquals(const AMap: IJclMap): Boolean;
+    function Extract(Key: TObject): TObject;
     function GetValue(Key: TObject): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): TObject;
     function KeySet: IJclSet;
+    function MapEquals(const AMap: IJclMap): Boolean;
     procedure PutAll(const AMap: IJclMap);
     procedure PutValue(Key, Value: TObject);
     function Remove(Key: TObject): TObject;
@@ -3302,11 +3423,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: TKey): Boolean;
     function ContainsValue(const Value: TValue): Boolean;
-    function MapEquals(const AMap: IJclMap<TKey,TValue>): Boolean;
+    function Extract(const Key: TKey): TValue;
     function GetValue(const Key: TKey): TValue;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: TValue): TKey;
     function KeySet: IJclSet<TKey>;
+    function MapEquals(const AMap: IJclMap<TKey,TValue>): Boolean;
     procedure PutAll(const AMap: IJclMap<TKey,TValue>);
     procedure PutValue(const Key: TKey; const Value: TValue);
     function Remove(const Key: TKey): TValue;

@@ -68,7 +68,7 @@ type
     function AddAll(const ACollection: IJclIntfCollection): Boolean;
     function Contains(const AInterface: IInterface): Boolean;
     { IJclIntfList }
-    function Insert(Index: Integer; const AInterface: IInterface): Boolean; overload;
+    function Insert(Index: Integer; const AInterface: IInterface): Boolean;
     { IJclIntfSet }
     procedure Intersect(const ACollection: IJclIntfCollection);
     procedure Subtract(const ACollection: IJclIntfCollection);
@@ -89,7 +89,7 @@ type
     function AddAll(const ACollection: IJclAnsiStrCollection): Boolean; override;
     function Contains(const AString: AnsiString): Boolean; override;
     { IJclAnsiStrList }
-    function Insert(Index: Integer; const AString: AnsiString): Boolean; overload;
+    function Insert(Index: Integer; const AString: AnsiString): Boolean;
     { IJclAnsiStrSet }
     procedure Intersect(const ACollection: IJclAnsiStrCollection);
     procedure Subtract(const ACollection: IJclAnsiStrCollection);
@@ -110,7 +110,7 @@ type
     function AddAll(const ACollection: IJclWideStrCollection): Boolean; override;
     function Contains(const AString: WideString): Boolean; override;
     { IJclWideStrList }
-    function Insert(Index: Integer; const AString: WideString): Boolean; overload;
+    function Insert(Index: Integer; const AString: WideString): Boolean;
     { IJclWideStrSet }
     procedure Intersect(const ACollection: IJclWideStrCollection);
     procedure Subtract(const ACollection: IJclWideStrCollection);
@@ -132,7 +132,7 @@ type
     function AddAll(const ACollection: IJclUnicodeStrCollection): Boolean; override;
     function Contains(const AString: UnicodeString): Boolean; override;
     { IJclUnicodeStrList }
-    function Insert(Index: Integer; const AString: UnicodeString): Boolean; overload;
+    function Insert(Index: Integer; const AString: UnicodeString): Boolean;
     { IJclUnicodeStrSet }
     procedure Intersect(const ACollection: IJclUnicodeStrCollection);
     procedure Subtract(const ACollection: IJclUnicodeStrCollection);
@@ -164,7 +164,7 @@ type
     function AddAll(const ACollection: IJclSingleCollection): Boolean;
     function Contains(const AValue: Single): Boolean;
     { IJclSingleList }
-    function Insert(Index: Integer; const AValue: Single): Boolean; overload;
+    function Insert(Index: Integer; const AValue: Single): Boolean;
     { IJclSingleSet }
     procedure Intersect(const ACollection: IJclSingleCollection);
     procedure Subtract(const ACollection: IJclSingleCollection);
@@ -185,7 +185,7 @@ type
     function AddAll(const ACollection: IJclDoubleCollection): Boolean;
     function Contains(const AValue: Double): Boolean;
     { IJclDoubleList }
-    function Insert(Index: Integer; const AValue: Double): Boolean; overload;
+    function Insert(Index: Integer; const AValue: Double): Boolean;
     { IJclDoubleSet }
     procedure Intersect(const ACollection: IJclDoubleCollection);
     procedure Subtract(const ACollection: IJclDoubleCollection);
@@ -206,7 +206,7 @@ type
     function AddAll(const ACollection: IJclExtendedCollection): Boolean;
     function Contains(const AValue: Extended): Boolean;
     { IJclExtendedList }
-    function Insert(Index: Integer; const AValue: Extended): Boolean; overload;
+    function Insert(Index: Integer; const AValue: Extended): Boolean;
     { IJclExtendedSet }
     procedure Intersect(const ACollection: IJclExtendedCollection);
     procedure Subtract(const ACollection: IJclExtendedCollection);
@@ -237,7 +237,7 @@ type
     function AddAll(const ACollection: IJclIntegerCollection): Boolean;
     function Contains(AValue: Integer): Boolean;
     { IJclIntegerList }
-    function Insert(Index: Integer; AValue: Integer): Boolean; overload;
+    function Insert(Index: Integer; AValue: Integer): Boolean;
     { IJclIntegerSet }
     procedure Intersect(const ACollection: IJclIntegerCollection);
     procedure Subtract(const ACollection: IJclIntegerCollection);
@@ -258,7 +258,7 @@ type
     function AddAll(const ACollection: IJclCardinalCollection): Boolean;
     function Contains(AValue: Cardinal): Boolean;
     { IJclCardinalList }
-    function Insert(Index: Integer; AValue: Cardinal): Boolean; overload;
+    function Insert(Index: Integer; AValue: Cardinal): Boolean;
     { IJclCardinalSet }
     procedure Intersect(const ACollection: IJclCardinalCollection);
     procedure Subtract(const ACollection: IJclCardinalCollection);
@@ -279,7 +279,7 @@ type
     function AddAll(const ACollection: IJclInt64Collection): Boolean;
     function Contains(const AValue: Int64): Boolean;
     { IJclInt64List }
-    function Insert(Index: Integer; const AValue: Int64): Boolean; overload;
+    function Insert(Index: Integer; const AValue: Int64): Boolean;
     { IJclInt64Set }
     procedure Intersect(const ACollection: IJclInt64Collection);
     procedure Subtract(const ACollection: IJclInt64Collection);
@@ -301,7 +301,7 @@ type
     function AddAll(const ACollection: IJclPtrCollection): Boolean;
     function Contains(APtr: Pointer): Boolean;
     { IJclPtrList }
-    function Insert(Index: Integer; APtr: Pointer): Boolean; overload;
+    function Insert(Index: Integer; APtr: Pointer): Boolean;
     { IJclPtrSet }
     procedure Intersect(const ACollection: IJclPtrCollection);
     procedure Subtract(const ACollection: IJclPtrCollection);
@@ -323,7 +323,7 @@ type
     function AddAll(const ACollection: IJclCollection): Boolean;
     function Contains(AObject: TObject): Boolean;
     { IJclList }
-    function Insert(Index: Integer; AObject: TObject): Boolean; overload;
+    function Insert(Index: Integer; AObject: TObject): Boolean;
     { IJclSet }
     procedure Intersect(const ACollection: IJclCollection);
     procedure Subtract(const ACollection: IJclCollection);
@@ -343,7 +343,7 @@ type
     function AddAll(const ACollection: IJclCollection<T>): Boolean;
     function Contains(const AItem: T): Boolean;
     { IJclList<T> }
-    function Insert(Index: Integer; const AItem: T): Boolean; overload;
+    function Insert(Index: Integer; const AItem: T): Boolean;
     { IJclSet<T> }
     procedure Intersect(const ACollection: IJclCollection<T>);
     procedure Subtract(const ACollection: IJclCollection<T>);

@@ -90,6 +90,8 @@ type
     function Contains(const AInterface: IInterface): Boolean;
     function ContainsAll(const ACollection: IJclIntfCollection): Boolean;
     function CollectionEquals(const ACollection: IJclIntfCollection): Boolean;
+    function Extract(const AInterface: IInterface): Boolean;
+    function ExtractAll(const ACollection: IJclIntfCollection): Boolean;
     function First: IJclIntfIterator;
     function IsEmpty: Boolean;
     function Last: IJclIntfIterator;
@@ -122,11 +124,12 @@ type
     function GetPreviousCursor: TJclIntfBinaryNode; virtual; abstract;
     { IJclIntfIterator }
     function Add(const AInterface: IInterface): Boolean;
-    function IteratorEquals(const AIterator: IJclIntfIterator): Boolean;
+    procedure Extract;
     function GetObject: IInterface;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(const AInterface: IInterface): Boolean;
+    function IteratorEquals(const AIterator: IJclIntfIterator): Boolean;
     function Next: IInterface;
     function NextIndex: Integer;
     function Previous: IInterface;
@@ -141,8 +144,10 @@ type
     { IJclIntfTreeIterator }
     function AddChild(const AInterface: IInterface): Boolean;
     function ChildrenCount: Integer;
-    procedure ClearChildren;
     procedure DeleteChild(Index: Integer);
+    procedure DeleteChildren;
+    procedure ExtractChild(Index: Integer);
+    procedure ExtractChildren;
     function GetChild(Index: Integer): IInterface;
     function HasChild(Index: Integer): Boolean;
     function HasParent: Boolean;
@@ -217,6 +222,8 @@ type
     function Contains(const AString: AnsiString): Boolean; override;
     function ContainsAll(const ACollection: IJclAnsiStrCollection): Boolean; override;
     function CollectionEquals(const ACollection: IJclAnsiStrCollection): Boolean; override;
+    function Extract(const AString: AnsiString): Boolean; override;
+    function ExtractAll(const ACollection: IJclAnsiStrCollection): Boolean; override;
     function First: IJclAnsiStrIterator; override;
     function IsEmpty: Boolean; override;
     function Last: IJclAnsiStrIterator; override;
@@ -249,11 +256,12 @@ type
     function GetPreviousCursor: TJclAnsiStrBinaryNode; virtual; abstract;
     { IJclAnsiStrIterator }
     function Add(const AString: AnsiString): Boolean;
-    function IteratorEquals(const AIterator: IJclAnsiStrIterator): Boolean;
+    procedure Extract;
     function GetString: AnsiString;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(const AString: AnsiString): Boolean;
+    function IteratorEquals(const AIterator: IJclAnsiStrIterator): Boolean;
     function Next: AnsiString;
     function NextIndex: Integer;
     function Previous: AnsiString;
@@ -268,8 +276,10 @@ type
     { IJclAnsiStrTreeIterator }
     function AddChild(const AString: AnsiString): Boolean;
     function ChildrenCount: Integer;
-    procedure ClearChildren;
     procedure DeleteChild(Index: Integer);
+    procedure DeleteChildren;
+    procedure ExtractChild(Index: Integer);
+    procedure ExtractChildren;
     function GetChild(Index: Integer): AnsiString;
     function HasChild(Index: Integer): Boolean;
     function HasParent: Boolean;
@@ -344,6 +354,8 @@ type
     function Contains(const AString: WideString): Boolean; override;
     function ContainsAll(const ACollection: IJclWideStrCollection): Boolean; override;
     function CollectionEquals(const ACollection: IJclWideStrCollection): Boolean; override;
+    function Extract(const AString: WideString): Boolean; override;
+    function ExtractAll(const ACollection: IJclWideStrCollection): Boolean; override;
     function First: IJclWideStrIterator; override;
     function IsEmpty: Boolean; override;
     function Last: IJclWideStrIterator; override;
@@ -376,11 +388,12 @@ type
     function GetPreviousCursor: TJclWideStrBinaryNode; virtual; abstract;
     { IJclWideStrIterator }
     function Add(const AString: WideString): Boolean;
-    function IteratorEquals(const AIterator: IJclWideStrIterator): Boolean;
+    procedure Extract;
     function GetString: WideString;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(const AString: WideString): Boolean;
+    function IteratorEquals(const AIterator: IJclWideStrIterator): Boolean;
     function Next: WideString;
     function NextIndex: Integer;
     function Previous: WideString;
@@ -395,8 +408,10 @@ type
     { IJclWideStrTreeIterator }
     function AddChild(const AString: WideString): Boolean;
     function ChildrenCount: Integer;
-    procedure ClearChildren;
     procedure DeleteChild(Index: Integer);
+    procedure DeleteChildren;
+    procedure ExtractChild(Index: Integer);
+    procedure ExtractChildren;
     function GetChild(Index: Integer): WideString;
     function HasChild(Index: Integer): Boolean;
     function HasParent: Boolean;
@@ -473,6 +488,8 @@ type
     function Contains(const AString: UnicodeString): Boolean; override;
     function ContainsAll(const ACollection: IJclUnicodeStrCollection): Boolean; override;
     function CollectionEquals(const ACollection: IJclUnicodeStrCollection): Boolean; override;
+    function Extract(const AString: UnicodeString): Boolean; override;
+    function ExtractAll(const ACollection: IJclUnicodeStrCollection): Boolean; override;
     function First: IJclUnicodeStrIterator; override;
     function IsEmpty: Boolean; override;
     function Last: IJclUnicodeStrIterator; override;
@@ -505,11 +522,12 @@ type
     function GetPreviousCursor: TJclUnicodeStrBinaryNode; virtual; abstract;
     { IJclUnicodeStrIterator }
     function Add(const AString: UnicodeString): Boolean;
-    function IteratorEquals(const AIterator: IJclUnicodeStrIterator): Boolean;
+    procedure Extract;
     function GetString: UnicodeString;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(const AString: UnicodeString): Boolean;
+    function IteratorEquals(const AIterator: IJclUnicodeStrIterator): Boolean;
     function Next: UnicodeString;
     function NextIndex: Integer;
     function Previous: UnicodeString;
@@ -524,8 +542,10 @@ type
     { IJclUnicodeStrTreeIterator }
     function AddChild(const AString: UnicodeString): Boolean;
     function ChildrenCount: Integer;
-    procedure ClearChildren;
     procedure DeleteChild(Index: Integer);
+    procedure DeleteChildren;
+    procedure ExtractChild(Index: Integer);
+    procedure ExtractChildren;
     function GetChild(Index: Integer): UnicodeString;
     function HasChild(Index: Integer): Boolean;
     function HasParent: Boolean;
@@ -611,6 +631,8 @@ type
     function Contains(const AValue: Single): Boolean;
     function ContainsAll(const ACollection: IJclSingleCollection): Boolean;
     function CollectionEquals(const ACollection: IJclSingleCollection): Boolean;
+    function Extract(const AValue: Single): Boolean;
+    function ExtractAll(const ACollection: IJclSingleCollection): Boolean;
     function First: IJclSingleIterator;
     function IsEmpty: Boolean;
     function Last: IJclSingleIterator;
@@ -643,11 +665,12 @@ type
     function GetPreviousCursor: TJclSingleBinaryNode; virtual; abstract;
     { IJclSingleIterator }
     function Add(const AValue: Single): Boolean;
-    function IteratorEquals(const AIterator: IJclSingleIterator): Boolean;
+    procedure Extract;
     function GetValue: Single;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(const AValue: Single): Boolean;
+    function IteratorEquals(const AIterator: IJclSingleIterator): Boolean;
     function Next: Single;
     function NextIndex: Integer;
     function Previous: Single;
@@ -662,8 +685,10 @@ type
     { IJclSingleTreeIterator }
     function AddChild(const AValue: Single): Boolean;
     function ChildrenCount: Integer;
-    procedure ClearChildren;
     procedure DeleteChild(Index: Integer);
+    procedure DeleteChildren;
+    procedure ExtractChild(Index: Integer);
+    procedure ExtractChildren;
     function GetChild(Index: Integer): Single;
     function HasChild(Index: Integer): Boolean;
     function HasParent: Boolean;
@@ -738,6 +763,8 @@ type
     function Contains(const AValue: Double): Boolean;
     function ContainsAll(const ACollection: IJclDoubleCollection): Boolean;
     function CollectionEquals(const ACollection: IJclDoubleCollection): Boolean;
+    function Extract(const AValue: Double): Boolean;
+    function ExtractAll(const ACollection: IJclDoubleCollection): Boolean;
     function First: IJclDoubleIterator;
     function IsEmpty: Boolean;
     function Last: IJclDoubleIterator;
@@ -770,11 +797,12 @@ type
     function GetPreviousCursor: TJclDoubleBinaryNode; virtual; abstract;
     { IJclDoubleIterator }
     function Add(const AValue: Double): Boolean;
-    function IteratorEquals(const AIterator: IJclDoubleIterator): Boolean;
+    procedure Extract;
     function GetValue: Double;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(const AValue: Double): Boolean;
+    function IteratorEquals(const AIterator: IJclDoubleIterator): Boolean;
     function Next: Double;
     function NextIndex: Integer;
     function Previous: Double;
@@ -789,8 +817,10 @@ type
     { IJclDoubleTreeIterator }
     function AddChild(const AValue: Double): Boolean;
     function ChildrenCount: Integer;
-    procedure ClearChildren;
     procedure DeleteChild(Index: Integer);
+    procedure DeleteChildren;
+    procedure ExtractChild(Index: Integer);
+    procedure ExtractChildren;
     function GetChild(Index: Integer): Double;
     function HasChild(Index: Integer): Boolean;
     function HasParent: Boolean;
@@ -865,6 +895,8 @@ type
     function Contains(const AValue: Extended): Boolean;
     function ContainsAll(const ACollection: IJclExtendedCollection): Boolean;
     function CollectionEquals(const ACollection: IJclExtendedCollection): Boolean;
+    function Extract(const AValue: Extended): Boolean;
+    function ExtractAll(const ACollection: IJclExtendedCollection): Boolean;
     function First: IJclExtendedIterator;
     function IsEmpty: Boolean;
     function Last: IJclExtendedIterator;
@@ -897,11 +929,12 @@ type
     function GetPreviousCursor: TJclExtendedBinaryNode; virtual; abstract;
     { IJclExtendedIterator }
     function Add(const AValue: Extended): Boolean;
-    function IteratorEquals(const AIterator: IJclExtendedIterator): Boolean;
+    procedure Extract;
     function GetValue: Extended;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(const AValue: Extended): Boolean;
+    function IteratorEquals(const AIterator: IJclExtendedIterator): Boolean;
     function Next: Extended;
     function NextIndex: Integer;
     function Previous: Extended;
@@ -916,8 +949,10 @@ type
     { IJclExtendedTreeIterator }
     function AddChild(const AValue: Extended): Boolean;
     function ChildrenCount: Integer;
-    procedure ClearChildren;
     procedure DeleteChild(Index: Integer);
+    procedure DeleteChildren;
+    procedure ExtractChild(Index: Integer);
+    procedure ExtractChildren;
     function GetChild(Index: Integer): Extended;
     function HasChild(Index: Integer): Boolean;
     function HasParent: Boolean;
@@ -1002,6 +1037,8 @@ type
     function Contains(AValue: Integer): Boolean;
     function ContainsAll(const ACollection: IJclIntegerCollection): Boolean;
     function CollectionEquals(const ACollection: IJclIntegerCollection): Boolean;
+    function Extract(AValue: Integer): Boolean;
+    function ExtractAll(const ACollection: IJclIntegerCollection): Boolean;
     function First: IJclIntegerIterator;
     function IsEmpty: Boolean;
     function Last: IJclIntegerIterator;
@@ -1034,11 +1071,12 @@ type
     function GetPreviousCursor: TJclIntegerBinaryNode; virtual; abstract;
     { IJclIntegerIterator }
     function Add(AValue: Integer): Boolean;
-    function IteratorEquals(const AIterator: IJclIntegerIterator): Boolean;
+    procedure Extract;
     function GetValue: Integer;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(AValue: Integer): Boolean;
+    function IteratorEquals(const AIterator: IJclIntegerIterator): Boolean;
     function Next: Integer;
     function NextIndex: Integer;
     function Previous: Integer;
@@ -1053,8 +1091,10 @@ type
     { IJclIntegerTreeIterator }
     function AddChild(AValue: Integer): Boolean;
     function ChildrenCount: Integer;
-    procedure ClearChildren;
     procedure DeleteChild(Index: Integer);
+    procedure DeleteChildren;
+    procedure ExtractChild(Index: Integer);
+    procedure ExtractChildren;
     function GetChild(Index: Integer): Integer;
     function HasChild(Index: Integer): Boolean;
     function HasParent: Boolean;
@@ -1129,6 +1169,8 @@ type
     function Contains(AValue: Cardinal): Boolean;
     function ContainsAll(const ACollection: IJclCardinalCollection): Boolean;
     function CollectionEquals(const ACollection: IJclCardinalCollection): Boolean;
+    function Extract(AValue: Cardinal): Boolean;
+    function ExtractAll(const ACollection: IJclCardinalCollection): Boolean;
     function First: IJclCardinalIterator;
     function IsEmpty: Boolean;
     function Last: IJclCardinalIterator;
@@ -1161,11 +1203,12 @@ type
     function GetPreviousCursor: TJclCardinalBinaryNode; virtual; abstract;
     { IJclCardinalIterator }
     function Add(AValue: Cardinal): Boolean;
-    function IteratorEquals(const AIterator: IJclCardinalIterator): Boolean;
+    procedure Extract;
     function GetValue: Cardinal;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(AValue: Cardinal): Boolean;
+    function IteratorEquals(const AIterator: IJclCardinalIterator): Boolean;
     function Next: Cardinal;
     function NextIndex: Integer;
     function Previous: Cardinal;
@@ -1180,8 +1223,10 @@ type
     { IJclCardinalTreeIterator }
     function AddChild(AValue: Cardinal): Boolean;
     function ChildrenCount: Integer;
-    procedure ClearChildren;
     procedure DeleteChild(Index: Integer);
+    procedure DeleteChildren;
+    procedure ExtractChild(Index: Integer);
+    procedure ExtractChildren;
     function GetChild(Index: Integer): Cardinal;
     function HasChild(Index: Integer): Boolean;
     function HasParent: Boolean;
@@ -1256,6 +1301,8 @@ type
     function Contains(const AValue: Int64): Boolean;
     function ContainsAll(const ACollection: IJclInt64Collection): Boolean;
     function CollectionEquals(const ACollection: IJclInt64Collection): Boolean;
+    function Extract(const AValue: Int64): Boolean;
+    function ExtractAll(const ACollection: IJclInt64Collection): Boolean;
     function First: IJclInt64Iterator;
     function IsEmpty: Boolean;
     function Last: IJclInt64Iterator;
@@ -1288,11 +1335,12 @@ type
     function GetPreviousCursor: TJclInt64BinaryNode; virtual; abstract;
     { IJclInt64Iterator }
     function Add(const AValue: Int64): Boolean;
-    function IteratorEquals(const AIterator: IJclInt64Iterator): Boolean;
+    procedure Extract;
     function GetValue: Int64;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(const AValue: Int64): Boolean;
+    function IteratorEquals(const AIterator: IJclInt64Iterator): Boolean;
     function Next: Int64;
     function NextIndex: Integer;
     function Previous: Int64;
@@ -1307,8 +1355,10 @@ type
     { IJclInt64TreeIterator }
     function AddChild(const AValue: Int64): Boolean;
     function ChildrenCount: Integer;
-    procedure ClearChildren;
     procedure DeleteChild(Index: Integer);
+    procedure DeleteChildren;
+    procedure ExtractChild(Index: Integer);
+    procedure ExtractChildren;
     function GetChild(Index: Integer): Int64;
     function HasChild(Index: Integer): Boolean;
     function HasParent: Boolean;
@@ -1384,6 +1434,8 @@ type
     function Contains(APtr: Pointer): Boolean;
     function ContainsAll(const ACollection: IJclPtrCollection): Boolean;
     function CollectionEquals(const ACollection: IJclPtrCollection): Boolean;
+    function Extract(APtr: Pointer): Boolean;
+    function ExtractAll(const ACollection: IJclPtrCollection): Boolean;
     function First: IJclPtrIterator;
     function IsEmpty: Boolean;
     function Last: IJclPtrIterator;
@@ -1416,11 +1468,12 @@ type
     function GetPreviousCursor: TJclPtrBinaryNode; virtual; abstract;
     { IJclPtrIterator }
     function Add(APtr: Pointer): Boolean;
-    function IteratorEquals(const AIterator: IJclPtrIterator): Boolean;
+    procedure Extract;
     function GetPointer: Pointer;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(APtr: Pointer): Boolean;
+    function IteratorEquals(const AIterator: IJclPtrIterator): Boolean;
     function Next: Pointer;
     function NextIndex: Integer;
     function Previous: Pointer;
@@ -1435,8 +1488,10 @@ type
     { IJclPtrTreeIterator }
     function AddChild(APtr: Pointer): Boolean;
     function ChildrenCount: Integer;
-    procedure ClearChildren;
     procedure DeleteChild(Index: Integer);
+    procedure DeleteChildren;
+    procedure ExtractChild(Index: Integer);
+    procedure ExtractChildren;
     function GetChild(Index: Integer): Pointer;
     function HasChild(Index: Integer): Boolean;
     function HasParent: Boolean;
@@ -1512,6 +1567,8 @@ type
     function Contains(AObject: TObject): Boolean;
     function ContainsAll(const ACollection: IJclCollection): Boolean;
     function CollectionEquals(const ACollection: IJclCollection): Boolean;
+    function Extract(AObject: TObject): Boolean;
+    function ExtractAll(const ACollection: IJclCollection): Boolean;
     function First: IJclIterator;
     function IsEmpty: Boolean;
     function Last: IJclIterator;
@@ -1544,11 +1601,12 @@ type
     function GetPreviousCursor: TJclBinaryNode; virtual; abstract;
     { IJclIterator }
     function Add(AObject: TObject): Boolean;
-    function IteratorEquals(const AIterator: IJclIterator): Boolean;
+    procedure Extract;
     function GetObject: TObject;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(AObject: TObject): Boolean;
+    function IteratorEquals(const AIterator: IJclIterator): Boolean;
     function Next: TObject;
     function NextIndex: Integer;
     function Previous: TObject;
@@ -1563,8 +1621,10 @@ type
     { IJclTreeIterator }
     function AddChild(AObject: TObject): Boolean;
     function ChildrenCount: Integer;
-    procedure ClearChildren;
     procedure DeleteChild(Index: Integer);
+    procedure DeleteChildren;
+    procedure ExtractChild(Index: Integer);
+    procedure ExtractChildren;
     function GetChild(Index: Integer): TObject;
     function HasChild(Index: Integer): Boolean;
     function HasParent: Boolean;
@@ -1649,6 +1709,8 @@ type
     function Contains(const AItem: T): Boolean;
     function ContainsAll(const ACollection: IJclCollection<T>): Boolean;
     function CollectionEquals(const ACollection: IJclCollection<T>): Boolean;
+    function Extract(const AItem: T): Boolean;
+    function ExtractAll(const ACollection: IJclCollection<T>): Boolean;
     function First: IJclIterator<T>;
     function IsEmpty: Boolean;
     function Last: IJclIterator<T>;
@@ -1681,11 +1743,12 @@ type
     function GetPreviousCursor: TJclBinaryNode<T>; virtual; abstract;
     { IJclIterator<T> }
     function Add(const AItem: T): Boolean;
-    function IteratorEquals(const AIterator: IJclIterator<T>): Boolean;
+    procedure Extract;
     function GetItem: T;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(const AItem: T): Boolean;
+    function IteratorEquals(const AIterator: IJclIterator<T>): Boolean;
     function Next: T;
     function NextIndex: Integer;
     function Previous: T;
@@ -1700,8 +1763,10 @@ type
     { IJclTreeIterator<T> }
     function AddChild(const AItem: T): Boolean;
     function ChildrenCount: Integer;
-    procedure ClearChildren;
     procedure DeleteChild(Index: Integer);
+    procedure DeleteChildren;
+    procedure ExtractChild(Index: Integer);
+    procedure ExtractChildren;
     function GetChild(Index: Integer): T;
     function HasChild(Index: Integer): Boolean;
     function HasParent: Boolean;
@@ -2047,6 +2112,37 @@ begin
     Result.Right := CloneNode(Node.Right, Result); // recursive call
 end;
 
+function TJclIntfBinaryTree.CollectionEquals(const ACollection: IJclIntfCollection): Boolean;
+var
+  It, ItSelf: IJclIntfIterator;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclIntfBinaryTree.Contains(const AInterface: IInterface): Boolean;
 var
   Comp: Integer;
@@ -2104,33 +2200,162 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfBinaryTree.CollectionEquals(const ACollection: IJclIntfCollection): Boolean;
+function TJclIntfBinaryTree.Extract(const AInterface: IInterface): Boolean;
 var
-  It, ItSelf: IJclIntfIterator;
+  Current, Successor: TJclIntfBinaryNode;
+  Comp: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    // locate AInterface in the tree
+    Current := FRoot;
+    repeat
+      while Current <> nil do
+      begin
+        Comp := ItemsCompare(AInterface, Current.Value);
+        if Comp = 0 then
+          Break
+        else
+        if Comp < 0 then
+         Current := Current.Left
+        else
+          Current := Current.Right;
+      end;
+      if Current = nil then
+        Break;
+      Result := True;
+      // Remove Current from tree
+      if (Current.Left = nil) and (Current.Right <> nil) then
+      begin
+        // remove references to Current
+        Current.Right.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Current.Right
+          else
+            Current.Parent.Right := Current.Right;
+        end
+        else
+          // fix root
+          FRoot := Current.Right;
+        Successor := Current.Parent;
+        if Successor = nil then
+          Successor := FRoot;
+      end
+      else
+      if (Current.Left <> nil) and (Current.Right = nil) then
+      begin
+        // remove references to Current
+        Current.Left.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Current.Left
+          else
+            Current.Parent.Right := Current.Left;
+        end
+        else
+          // fix root
+          FRoot := Current.Left;
+        Successor := Current.Parent;
+        if Successor = nil then
+          Successor := FRoot;
+      end
+      else
+      if (Current.Left <> nil) and (Current.Right <> nil) then
+      begin
+        // find the successor in tree
+        Successor := Current.Right;
+        while Successor.Left <> nil do
+          Successor := Successor.Left;
+
+        if Successor <> Current.Right then
+        begin
+          // remove references to successor
+          Successor.Parent.Left := Successor.Right;
+          if Successor.Right <> nil then
+            Successor.Right.Parent := Successor.Parent;
+          Successor.Right := Current.Right;
+          if Successor.Right <> nil then
+            Successor.Right.Parent := Successor;
+        end;
+
+        // insert successor in new position
+        Successor.Left := Current.Left;
+        if Current.Left <> nil then
+          Current.Left.Parent := Successor;
+        Successor.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Successor
+          else
+            Current.Parent.Right := Successor;
+        end
+        else
+          // fix root
+          FRoot := Successor;
+        Successor := Current.Parent;
+        if Successor <> nil then
+          Successor := FRoot;
+      end
+      else
+      begin
+        // (Current.Left = nil) and (Current.Right = nil)
+        Successor := Current.Parent;
+        if Successor <> nil then
+        begin
+          // remove references from parent
+          if Successor.Left = Current then
+            Successor.Left := nil
+          else
+            Successor.Right := nil;
+        end
+        else
+          FRoot := nil;
+      end;
+      Current.Free;
+      Dec(FSize);
+      Current := Successor;
+    until FRemoveSingleElement or (Current = nil);
+    AutoPack;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfBinaryTree.ExtractAll(const ACollection: IJclIntfCollection): Boolean;
+var
+  It: IJclIntfIterator;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
     Result := True;
     It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2334,8 +2559,7 @@ end;
 
 function TJclIntfBinaryTree.Remove(const AInterface: IInterface): Boolean;
 var
-  Current, Successor: TJclIntfBinaryNode;
-  Comp: Integer;
+  Extracted: IInterface;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -2344,121 +2568,12 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    // locate AInterface in the tree
-    Current := FRoot;
-    repeat
-      while Current <> nil do
-      begin
-        Comp := ItemsCompare(AInterface, Current.Value);
-        if Comp = 0 then
-          Break
-        else
-        if Comp < 0 then
-         Current := Current.Left
-        else
-          Current := Current.Right;
-      end;
-      if Current = nil then
-        Break;
-      Result := True;
-      // Remove Current from tree
-      if (Current.Left = nil) and (Current.Right <> nil) then
-      begin
-        // remove references to Current
-        Current.Right.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Current.Right
-          else
-            Current.Parent.Right := Current.Right;
-        end
-        else
-          // fix root
-          FRoot := Current.Right;
-        Successor := Current.Parent;
-        if Successor = nil then
-          Successor := FRoot;
-      end
-      else
-      if (Current.Left <> nil) and (Current.Right = nil) then
-      begin
-        // remove references to Current
-        Current.Left.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Current.Left
-          else
-            Current.Parent.Right := Current.Left;
-        end
-        else
-          // fix root
-          FRoot := Current.Left;
-        Successor := Current.Parent;
-        if Successor = nil then
-          Successor := FRoot;
-      end
-      else
-      if (Current.Left <> nil) and (Current.Right <> nil) then
-      begin
-        // find the successor in tree
-        Successor := Current.Right;
-        while Successor.Left <> nil do
-          Successor := Successor.Left;
-
-        if Successor <> Current.Right then
-        begin
-          // remove references to successor
-          Successor.Parent.Left := Successor.Right;
-          if Successor.Right <> nil then
-            Successor.Right.Parent := Successor.Parent;
-          Successor.Right := Current.Right;
-          if Successor.Right <> nil then
-            Successor.Right.Parent := Successor;
-        end;
-
-        // insert successor in new position
-        Successor.Left := Current.Left;
-        if Current.Left <> nil then
-          Current.Left.Parent := Successor;
-        Successor.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Successor
-          else
-            Current.Parent.Right := Successor;
-        end
-        else
-          // fix root
-          FRoot := Successor;
-        Successor := Current.Parent;
-        if Successor <> nil then
-          Successor := FRoot;
-      end
-      else
-      begin
-        // (Current.Left = nil) and (Current.Right = nil)
-        Successor := Current.Parent;
-        if Successor <> nil then
-        begin
-          // remove references from parent
-          if Successor.Left = Current then
-            Successor.Left := nil
-          else
-            Successor.Right := nil;
-        end
-        else
-          FRoot := nil;
-      end;
-      FreeObject(Current.Value);
-      Current.Free;
-      Dec(FSize);
-      Current := Successor;
-    until FRemoveSingleElement or (Current = nil);
-    AutoPack;
+    Result := Extract(AInterface);
+    if Result then
+    begin
+      Extracted := AInterface;
+      FreeObject(Extracted);
+    end;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -2598,30 +2713,52 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntfBinaryTreeIterator.ClearChildren;
-begin
-  raise EJclOperationNotSupportedError.Create;
-end;
-
 procedure TJclIntfBinaryTreeIterator.DeleteChild(Index: Integer);
 begin
   raise EJclOperationNotSupportedError.Create;
 end;
 
-function TJclIntfBinaryTreeIterator.IteratorEquals(const AIterator: IJclIntfIterator): Boolean;
-var
-  Obj: TObject;
-  ItrObj: TJclIntfBinaryTreeIterator;
+procedure TJclIntfBinaryTreeIterator.DeleteChildren;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is TJclIntfBinaryTreeIterator then
-  begin
-    ItrObj := TJclIntfBinaryTreeIterator(Obj);
-    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclIntfBinaryTreeIterator.Extract;
+var
+  OldCursor: TJclIntfBinaryNode;
+begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnTree.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    OldCursor := FCursor;
+    if OldCursor <> nil then
+    begin
+      repeat
+        FCursor := GetNextCursor;
+      until (FCursor = nil) or FOwnTree.RemoveSingleElement
+        or (not FEqualityComparer.ItemsEqual(OldCursor.Value, FCursor.Value));
+      FOwnTree.Extract(OldCursor.Value);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnTree.WriteUnlock;
   end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclIntfBinaryTreeIterator.ExtractChild(Index: Integer);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclIntfBinaryTreeIterator.ExtractChildren;
+begin
+  raise EJclOperationNotSupportedError.Create;
 end;
 
 function TJclIntfBinaryTreeIterator.GetChild(Index: Integer): IInterface;
@@ -2805,6 +2942,22 @@ end;
 function TJclIntfBinaryTreeIterator.InsertChild(Index: Integer; const AInterface: IInterface): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclIntfBinaryTreeIterator.IteratorEquals(const AIterator: IJclIntfIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclIntfBinaryTreeIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclIntfBinaryTreeIterator then
+  begin
+    ItrObj := TJclIntfBinaryTreeIterator(Obj);
+    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 function TJclIntfBinaryTreeIterator.Left: IInterface;
@@ -3445,6 +3598,37 @@ begin
     Result.Right := CloneNode(Node.Right, Result); // recursive call
 end;
 
+function TJclAnsiStrBinaryTree.CollectionEquals(const ACollection: IJclAnsiStrCollection): Boolean;
+var
+  It, ItSelf: IJclAnsiStrIterator;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclAnsiStrBinaryTree.Contains(const AString: AnsiString): Boolean;
 var
   Comp: Integer;
@@ -3502,33 +3686,162 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclAnsiStrBinaryTree.CollectionEquals(const ACollection: IJclAnsiStrCollection): Boolean;
+function TJclAnsiStrBinaryTree.Extract(const AString: AnsiString): Boolean;
 var
-  It, ItSelf: IJclAnsiStrIterator;
+  Current, Successor: TJclAnsiStrBinaryNode;
+  Comp: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    // locate AString in the tree
+    Current := FRoot;
+    repeat
+      while Current <> nil do
+      begin
+        Comp := ItemsCompare(AString, Current.Value);
+        if Comp = 0 then
+          Break
+        else
+        if Comp < 0 then
+         Current := Current.Left
+        else
+          Current := Current.Right;
+      end;
+      if Current = nil then
+        Break;
+      Result := True;
+      // Remove Current from tree
+      if (Current.Left = nil) and (Current.Right <> nil) then
+      begin
+        // remove references to Current
+        Current.Right.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Current.Right
+          else
+            Current.Parent.Right := Current.Right;
+        end
+        else
+          // fix root
+          FRoot := Current.Right;
+        Successor := Current.Parent;
+        if Successor = nil then
+          Successor := FRoot;
+      end
+      else
+      if (Current.Left <> nil) and (Current.Right = nil) then
+      begin
+        // remove references to Current
+        Current.Left.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Current.Left
+          else
+            Current.Parent.Right := Current.Left;
+        end
+        else
+          // fix root
+          FRoot := Current.Left;
+        Successor := Current.Parent;
+        if Successor = nil then
+          Successor := FRoot;
+      end
+      else
+      if (Current.Left <> nil) and (Current.Right <> nil) then
+      begin
+        // find the successor in tree
+        Successor := Current.Right;
+        while Successor.Left <> nil do
+          Successor := Successor.Left;
+
+        if Successor <> Current.Right then
+        begin
+          // remove references to successor
+          Successor.Parent.Left := Successor.Right;
+          if Successor.Right <> nil then
+            Successor.Right.Parent := Successor.Parent;
+          Successor.Right := Current.Right;
+          if Successor.Right <> nil then
+            Successor.Right.Parent := Successor;
+        end;
+
+        // insert successor in new position
+        Successor.Left := Current.Left;
+        if Current.Left <> nil then
+          Current.Left.Parent := Successor;
+        Successor.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Successor
+          else
+            Current.Parent.Right := Successor;
+        end
+        else
+          // fix root
+          FRoot := Successor;
+        Successor := Current.Parent;
+        if Successor <> nil then
+          Successor := FRoot;
+      end
+      else
+      begin
+        // (Current.Left = nil) and (Current.Right = nil)
+        Successor := Current.Parent;
+        if Successor <> nil then
+        begin
+          // remove references from parent
+          if Successor.Left = Current then
+            Successor.Left := nil
+          else
+            Successor.Right := nil;
+        end
+        else
+          FRoot := nil;
+      end;
+      Current.Free;
+      Dec(FSize);
+      Current := Successor;
+    until FRemoveSingleElement or (Current = nil);
+    AutoPack;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclAnsiStrBinaryTree.ExtractAll(const ACollection: IJclAnsiStrCollection): Boolean;
+var
+  It: IJclAnsiStrIterator;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
     Result := True;
     It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3732,8 +4045,7 @@ end;
 
 function TJclAnsiStrBinaryTree.Remove(const AString: AnsiString): Boolean;
 var
-  Current, Successor: TJclAnsiStrBinaryNode;
-  Comp: Integer;
+  Extracted: AnsiString;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -3742,121 +4054,12 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    // locate AString in the tree
-    Current := FRoot;
-    repeat
-      while Current <> nil do
-      begin
-        Comp := ItemsCompare(AString, Current.Value);
-        if Comp = 0 then
-          Break
-        else
-        if Comp < 0 then
-         Current := Current.Left
-        else
-          Current := Current.Right;
-      end;
-      if Current = nil then
-        Break;
-      Result := True;
-      // Remove Current from tree
-      if (Current.Left = nil) and (Current.Right <> nil) then
-      begin
-        // remove references to Current
-        Current.Right.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Current.Right
-          else
-            Current.Parent.Right := Current.Right;
-        end
-        else
-          // fix root
-          FRoot := Current.Right;
-        Successor := Current.Parent;
-        if Successor = nil then
-          Successor := FRoot;
-      end
-      else
-      if (Current.Left <> nil) and (Current.Right = nil) then
-      begin
-        // remove references to Current
-        Current.Left.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Current.Left
-          else
-            Current.Parent.Right := Current.Left;
-        end
-        else
-          // fix root
-          FRoot := Current.Left;
-        Successor := Current.Parent;
-        if Successor = nil then
-          Successor := FRoot;
-      end
-      else
-      if (Current.Left <> nil) and (Current.Right <> nil) then
-      begin
-        // find the successor in tree
-        Successor := Current.Right;
-        while Successor.Left <> nil do
-          Successor := Successor.Left;
-
-        if Successor <> Current.Right then
-        begin
-          // remove references to successor
-          Successor.Parent.Left := Successor.Right;
-          if Successor.Right <> nil then
-            Successor.Right.Parent := Successor.Parent;
-          Successor.Right := Current.Right;
-          if Successor.Right <> nil then
-            Successor.Right.Parent := Successor;
-        end;
-
-        // insert successor in new position
-        Successor.Left := Current.Left;
-        if Current.Left <> nil then
-          Current.Left.Parent := Successor;
-        Successor.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Successor
-          else
-            Current.Parent.Right := Successor;
-        end
-        else
-          // fix root
-          FRoot := Successor;
-        Successor := Current.Parent;
-        if Successor <> nil then
-          Successor := FRoot;
-      end
-      else
-      begin
-        // (Current.Left = nil) and (Current.Right = nil)
-        Successor := Current.Parent;
-        if Successor <> nil then
-        begin
-          // remove references from parent
-          if Successor.Left = Current then
-            Successor.Left := nil
-          else
-            Successor.Right := nil;
-        end
-        else
-          FRoot := nil;
-      end;
-      FreeString(Current.Value);
-      Current.Free;
-      Dec(FSize);
-      Current := Successor;
-    until FRemoveSingleElement or (Current = nil);
-    AutoPack;
+    Result := Extract(AString);
+    if Result then
+    begin
+      Extracted := AString;
+      FreeString(Extracted);
+    end;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -3996,30 +4199,52 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclAnsiStrBinaryTreeIterator.ClearChildren;
-begin
-  raise EJclOperationNotSupportedError.Create;
-end;
-
 procedure TJclAnsiStrBinaryTreeIterator.DeleteChild(Index: Integer);
 begin
   raise EJclOperationNotSupportedError.Create;
 end;
 
-function TJclAnsiStrBinaryTreeIterator.IteratorEquals(const AIterator: IJclAnsiStrIterator): Boolean;
-var
-  Obj: TObject;
-  ItrObj: TJclAnsiStrBinaryTreeIterator;
+procedure TJclAnsiStrBinaryTreeIterator.DeleteChildren;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is TJclAnsiStrBinaryTreeIterator then
-  begin
-    ItrObj := TJclAnsiStrBinaryTreeIterator(Obj);
-    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclAnsiStrBinaryTreeIterator.Extract;
+var
+  OldCursor: TJclAnsiStrBinaryNode;
+begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnTree.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    OldCursor := FCursor;
+    if OldCursor <> nil then
+    begin
+      repeat
+        FCursor := GetNextCursor;
+      until (FCursor = nil) or FOwnTree.RemoveSingleElement
+        or (not FEqualityComparer.ItemsEqual(OldCursor.Value, FCursor.Value));
+      FOwnTree.Extract(OldCursor.Value);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnTree.WriteUnlock;
   end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclAnsiStrBinaryTreeIterator.ExtractChild(Index: Integer);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclAnsiStrBinaryTreeIterator.ExtractChildren;
+begin
+  raise EJclOperationNotSupportedError.Create;
 end;
 
 function TJclAnsiStrBinaryTreeIterator.GetChild(Index: Integer): AnsiString;
@@ -4203,6 +4428,22 @@ end;
 function TJclAnsiStrBinaryTreeIterator.InsertChild(Index: Integer; const AString: AnsiString): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclAnsiStrBinaryTreeIterator.IteratorEquals(const AIterator: IJclAnsiStrIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclAnsiStrBinaryTreeIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclAnsiStrBinaryTreeIterator then
+  begin
+    ItrObj := TJclAnsiStrBinaryTreeIterator(Obj);
+    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 function TJclAnsiStrBinaryTreeIterator.Left: AnsiString;
@@ -4843,6 +5084,37 @@ begin
     Result.Right := CloneNode(Node.Right, Result); // recursive call
 end;
 
+function TJclWideStrBinaryTree.CollectionEquals(const ACollection: IJclWideStrCollection): Boolean;
+var
+  It, ItSelf: IJclWideStrIterator;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclWideStrBinaryTree.Contains(const AString: WideString): Boolean;
 var
   Comp: Integer;
@@ -4900,33 +5172,162 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclWideStrBinaryTree.CollectionEquals(const ACollection: IJclWideStrCollection): Boolean;
+function TJclWideStrBinaryTree.Extract(const AString: WideString): Boolean;
 var
-  It, ItSelf: IJclWideStrIterator;
+  Current, Successor: TJclWideStrBinaryNode;
+  Comp: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    // locate AString in the tree
+    Current := FRoot;
+    repeat
+      while Current <> nil do
+      begin
+        Comp := ItemsCompare(AString, Current.Value);
+        if Comp = 0 then
+          Break
+        else
+        if Comp < 0 then
+         Current := Current.Left
+        else
+          Current := Current.Right;
+      end;
+      if Current = nil then
+        Break;
+      Result := True;
+      // Remove Current from tree
+      if (Current.Left = nil) and (Current.Right <> nil) then
+      begin
+        // remove references to Current
+        Current.Right.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Current.Right
+          else
+            Current.Parent.Right := Current.Right;
+        end
+        else
+          // fix root
+          FRoot := Current.Right;
+        Successor := Current.Parent;
+        if Successor = nil then
+          Successor := FRoot;
+      end
+      else
+      if (Current.Left <> nil) and (Current.Right = nil) then
+      begin
+        // remove references to Current
+        Current.Left.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Current.Left
+          else
+            Current.Parent.Right := Current.Left;
+        end
+        else
+          // fix root
+          FRoot := Current.Left;
+        Successor := Current.Parent;
+        if Successor = nil then
+          Successor := FRoot;
+      end
+      else
+      if (Current.Left <> nil) and (Current.Right <> nil) then
+      begin
+        // find the successor in tree
+        Successor := Current.Right;
+        while Successor.Left <> nil do
+          Successor := Successor.Left;
+
+        if Successor <> Current.Right then
+        begin
+          // remove references to successor
+          Successor.Parent.Left := Successor.Right;
+          if Successor.Right <> nil then
+            Successor.Right.Parent := Successor.Parent;
+          Successor.Right := Current.Right;
+          if Successor.Right <> nil then
+            Successor.Right.Parent := Successor;
+        end;
+
+        // insert successor in new position
+        Successor.Left := Current.Left;
+        if Current.Left <> nil then
+          Current.Left.Parent := Successor;
+        Successor.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Successor
+          else
+            Current.Parent.Right := Successor;
+        end
+        else
+          // fix root
+          FRoot := Successor;
+        Successor := Current.Parent;
+        if Successor <> nil then
+          Successor := FRoot;
+      end
+      else
+      begin
+        // (Current.Left = nil) and (Current.Right = nil)
+        Successor := Current.Parent;
+        if Successor <> nil then
+        begin
+          // remove references from parent
+          if Successor.Left = Current then
+            Successor.Left := nil
+          else
+            Successor.Right := nil;
+        end
+        else
+          FRoot := nil;
+      end;
+      Current.Free;
+      Dec(FSize);
+      Current := Successor;
+    until FRemoveSingleElement or (Current = nil);
+    AutoPack;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclWideStrBinaryTree.ExtractAll(const ACollection: IJclWideStrCollection): Boolean;
+var
+  It: IJclWideStrIterator;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
     Result := True;
     It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -5130,8 +5531,7 @@ end;
 
 function TJclWideStrBinaryTree.Remove(const AString: WideString): Boolean;
 var
-  Current, Successor: TJclWideStrBinaryNode;
-  Comp: Integer;
+  Extracted: WideString;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -5140,121 +5540,12 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    // locate AString in the tree
-    Current := FRoot;
-    repeat
-      while Current <> nil do
-      begin
-        Comp := ItemsCompare(AString, Current.Value);
-        if Comp = 0 then
-          Break
-        else
-        if Comp < 0 then
-         Current := Current.Left
-        else
-          Current := Current.Right;
-      end;
-      if Current = nil then
-        Break;
-      Result := True;
-      // Remove Current from tree
-      if (Current.Left = nil) and (Current.Right <> nil) then
-      begin
-        // remove references to Current
-        Current.Right.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Current.Right
-          else
-            Current.Parent.Right := Current.Right;
-        end
-        else
-          // fix root
-          FRoot := Current.Right;
-        Successor := Current.Parent;
-        if Successor = nil then
-          Successor := FRoot;
-      end
-      else
-      if (Current.Left <> nil) and (Current.Right = nil) then
-      begin
-        // remove references to Current
-        Current.Left.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Current.Left
-          else
-            Current.Parent.Right := Current.Left;
-        end
-        else
-          // fix root
-          FRoot := Current.Left;
-        Successor := Current.Parent;
-        if Successor = nil then
-          Successor := FRoot;
-      end
-      else
-      if (Current.Left <> nil) and (Current.Right <> nil) then
-      begin
-        // find the successor in tree
-        Successor := Current.Right;
-        while Successor.Left <> nil do
-          Successor := Successor.Left;
-
-        if Successor <> Current.Right then
-        begin
-          // remove references to successor
-          Successor.Parent.Left := Successor.Right;
-          if Successor.Right <> nil then
-            Successor.Right.Parent := Successor.Parent;
-          Successor.Right := Current.Right;
-          if Successor.Right <> nil then
-            Successor.Right.Parent := Successor;
-        end;
-
-        // insert successor in new position
-        Successor.Left := Current.Left;
-        if Current.Left <> nil then
-          Current.Left.Parent := Successor;
-        Successor.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Successor
-          else
-            Current.Parent.Right := Successor;
-        end
-        else
-          // fix root
-          FRoot := Successor;
-        Successor := Current.Parent;
-        if Successor <> nil then
-          Successor := FRoot;
-      end
-      else
-      begin
-        // (Current.Left = nil) and (Current.Right = nil)
-        Successor := Current.Parent;
-        if Successor <> nil then
-        begin
-          // remove references from parent
-          if Successor.Left = Current then
-            Successor.Left := nil
-          else
-            Successor.Right := nil;
-        end
-        else
-          FRoot := nil;
-      end;
-      FreeString(Current.Value);
-      Current.Free;
-      Dec(FSize);
-      Current := Successor;
-    until FRemoveSingleElement or (Current = nil);
-    AutoPack;
+    Result := Extract(AString);
+    if Result then
+    begin
+      Extracted := AString;
+      FreeString(Extracted);
+    end;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -5394,30 +5685,52 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclWideStrBinaryTreeIterator.ClearChildren;
-begin
-  raise EJclOperationNotSupportedError.Create;
-end;
-
 procedure TJclWideStrBinaryTreeIterator.DeleteChild(Index: Integer);
 begin
   raise EJclOperationNotSupportedError.Create;
 end;
 
-function TJclWideStrBinaryTreeIterator.IteratorEquals(const AIterator: IJclWideStrIterator): Boolean;
-var
-  Obj: TObject;
-  ItrObj: TJclWideStrBinaryTreeIterator;
+procedure TJclWideStrBinaryTreeIterator.DeleteChildren;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is TJclWideStrBinaryTreeIterator then
-  begin
-    ItrObj := TJclWideStrBinaryTreeIterator(Obj);
-    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclWideStrBinaryTreeIterator.Extract;
+var
+  OldCursor: TJclWideStrBinaryNode;
+begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnTree.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    OldCursor := FCursor;
+    if OldCursor <> nil then
+    begin
+      repeat
+        FCursor := GetNextCursor;
+      until (FCursor = nil) or FOwnTree.RemoveSingleElement
+        or (not FEqualityComparer.ItemsEqual(OldCursor.Value, FCursor.Value));
+      FOwnTree.Extract(OldCursor.Value);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnTree.WriteUnlock;
   end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclWideStrBinaryTreeIterator.ExtractChild(Index: Integer);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclWideStrBinaryTreeIterator.ExtractChildren;
+begin
+  raise EJclOperationNotSupportedError.Create;
 end;
 
 function TJclWideStrBinaryTreeIterator.GetChild(Index: Integer): WideString;
@@ -5601,6 +5914,22 @@ end;
 function TJclWideStrBinaryTreeIterator.InsertChild(Index: Integer; const AString: WideString): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclWideStrBinaryTreeIterator.IteratorEquals(const AIterator: IJclWideStrIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclWideStrBinaryTreeIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclWideStrBinaryTreeIterator then
+  begin
+    ItrObj := TJclWideStrBinaryTreeIterator(Obj);
+    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 function TJclWideStrBinaryTreeIterator.Left: WideString;
@@ -6242,6 +6571,37 @@ begin
     Result.Right := CloneNode(Node.Right, Result); // recursive call
 end;
 
+function TJclUnicodeStrBinaryTree.CollectionEquals(const ACollection: IJclUnicodeStrCollection): Boolean;
+var
+  It, ItSelf: IJclUnicodeStrIterator;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclUnicodeStrBinaryTree.Contains(const AString: UnicodeString): Boolean;
 var
   Comp: Integer;
@@ -6299,33 +6659,162 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclUnicodeStrBinaryTree.CollectionEquals(const ACollection: IJclUnicodeStrCollection): Boolean;
+function TJclUnicodeStrBinaryTree.Extract(const AString: UnicodeString): Boolean;
 var
-  It, ItSelf: IJclUnicodeStrIterator;
+  Current, Successor: TJclUnicodeStrBinaryNode;
+  Comp: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    // locate AString in the tree
+    Current := FRoot;
+    repeat
+      while Current <> nil do
+      begin
+        Comp := ItemsCompare(AString, Current.Value);
+        if Comp = 0 then
+          Break
+        else
+        if Comp < 0 then
+         Current := Current.Left
+        else
+          Current := Current.Right;
+      end;
+      if Current = nil then
+        Break;
+      Result := True;
+      // Remove Current from tree
+      if (Current.Left = nil) and (Current.Right <> nil) then
+      begin
+        // remove references to Current
+        Current.Right.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Current.Right
+          else
+            Current.Parent.Right := Current.Right;
+        end
+        else
+          // fix root
+          FRoot := Current.Right;
+        Successor := Current.Parent;
+        if Successor = nil then
+          Successor := FRoot;
+      end
+      else
+      if (Current.Left <> nil) and (Current.Right = nil) then
+      begin
+        // remove references to Current
+        Current.Left.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Current.Left
+          else
+            Current.Parent.Right := Current.Left;
+        end
+        else
+          // fix root
+          FRoot := Current.Left;
+        Successor := Current.Parent;
+        if Successor = nil then
+          Successor := FRoot;
+      end
+      else
+      if (Current.Left <> nil) and (Current.Right <> nil) then
+      begin
+        // find the successor in tree
+        Successor := Current.Right;
+        while Successor.Left <> nil do
+          Successor := Successor.Left;
+
+        if Successor <> Current.Right then
+        begin
+          // remove references to successor
+          Successor.Parent.Left := Successor.Right;
+          if Successor.Right <> nil then
+            Successor.Right.Parent := Successor.Parent;
+          Successor.Right := Current.Right;
+          if Successor.Right <> nil then
+            Successor.Right.Parent := Successor;
+        end;
+
+        // insert successor in new position
+        Successor.Left := Current.Left;
+        if Current.Left <> nil then
+          Current.Left.Parent := Successor;
+        Successor.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Successor
+          else
+            Current.Parent.Right := Successor;
+        end
+        else
+          // fix root
+          FRoot := Successor;
+        Successor := Current.Parent;
+        if Successor <> nil then
+          Successor := FRoot;
+      end
+      else
+      begin
+        // (Current.Left = nil) and (Current.Right = nil)
+        Successor := Current.Parent;
+        if Successor <> nil then
+        begin
+          // remove references from parent
+          if Successor.Left = Current then
+            Successor.Left := nil
+          else
+            Successor.Right := nil;
+        end
+        else
+          FRoot := nil;
+      end;
+      Current.Free;
+      Dec(FSize);
+      Current := Successor;
+    until FRemoveSingleElement or (Current = nil);
+    AutoPack;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrBinaryTree.ExtractAll(const ACollection: IJclUnicodeStrCollection): Boolean;
+var
+  It: IJclUnicodeStrIterator;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
     Result := True;
     It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -6529,8 +7018,7 @@ end;
 
 function TJclUnicodeStrBinaryTree.Remove(const AString: UnicodeString): Boolean;
 var
-  Current, Successor: TJclUnicodeStrBinaryNode;
-  Comp: Integer;
+  Extracted: UnicodeString;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -6539,121 +7027,12 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    // locate AString in the tree
-    Current := FRoot;
-    repeat
-      while Current <> nil do
-      begin
-        Comp := ItemsCompare(AString, Current.Value);
-        if Comp = 0 then
-          Break
-        else
-        if Comp < 0 then
-         Current := Current.Left
-        else
-          Current := Current.Right;
-      end;
-      if Current = nil then
-        Break;
-      Result := True;
-      // Remove Current from tree
-      if (Current.Left = nil) and (Current.Right <> nil) then
-      begin
-        // remove references to Current
-        Current.Right.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Current.Right
-          else
-            Current.Parent.Right := Current.Right;
-        end
-        else
-          // fix root
-          FRoot := Current.Right;
-        Successor := Current.Parent;
-        if Successor = nil then
-          Successor := FRoot;
-      end
-      else
-      if (Current.Left <> nil) and (Current.Right = nil) then
-      begin
-        // remove references to Current
-        Current.Left.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Current.Left
-          else
-            Current.Parent.Right := Current.Left;
-        end
-        else
-          // fix root
-          FRoot := Current.Left;
-        Successor := Current.Parent;
-        if Successor = nil then
-          Successor := FRoot;
-      end
-      else
-      if (Current.Left <> nil) and (Current.Right <> nil) then
-      begin
-        // find the successor in tree
-        Successor := Current.Right;
-        while Successor.Left <> nil do
-          Successor := Successor.Left;
-
-        if Successor <> Current.Right then
-        begin
-          // remove references to successor
-          Successor.Parent.Left := Successor.Right;
-          if Successor.Right <> nil then
-            Successor.Right.Parent := Successor.Parent;
-          Successor.Right := Current.Right;
-          if Successor.Right <> nil then
-            Successor.Right.Parent := Successor;
-        end;
-
-        // insert successor in new position
-        Successor.Left := Current.Left;
-        if Current.Left <> nil then
-          Current.Left.Parent := Successor;
-        Successor.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Successor
-          else
-            Current.Parent.Right := Successor;
-        end
-        else
-          // fix root
-          FRoot := Successor;
-        Successor := Current.Parent;
-        if Successor <> nil then
-          Successor := FRoot;
-      end
-      else
-      begin
-        // (Current.Left = nil) and (Current.Right = nil)
-        Successor := Current.Parent;
-        if Successor <> nil then
-        begin
-          // remove references from parent
-          if Successor.Left = Current then
-            Successor.Left := nil
-          else
-            Successor.Right := nil;
-        end
-        else
-          FRoot := nil;
-      end;
-      FreeString(Current.Value);
-      Current.Free;
-      Dec(FSize);
-      Current := Successor;
-    until FRemoveSingleElement or (Current = nil);
-    AutoPack;
+    Result := Extract(AString);
+    if Result then
+    begin
+      Extracted := AString;
+      FreeString(Extracted);
+    end;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -6793,30 +7172,52 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclUnicodeStrBinaryTreeIterator.ClearChildren;
-begin
-  raise EJclOperationNotSupportedError.Create;
-end;
-
 procedure TJclUnicodeStrBinaryTreeIterator.DeleteChild(Index: Integer);
 begin
   raise EJclOperationNotSupportedError.Create;
 end;
 
-function TJclUnicodeStrBinaryTreeIterator.IteratorEquals(const AIterator: IJclUnicodeStrIterator): Boolean;
-var
-  Obj: TObject;
-  ItrObj: TJclUnicodeStrBinaryTreeIterator;
+procedure TJclUnicodeStrBinaryTreeIterator.DeleteChildren;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is TJclUnicodeStrBinaryTreeIterator then
-  begin
-    ItrObj := TJclUnicodeStrBinaryTreeIterator(Obj);
-    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclUnicodeStrBinaryTreeIterator.Extract;
+var
+  OldCursor: TJclUnicodeStrBinaryNode;
+begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnTree.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    OldCursor := FCursor;
+    if OldCursor <> nil then
+    begin
+      repeat
+        FCursor := GetNextCursor;
+      until (FCursor = nil) or FOwnTree.RemoveSingleElement
+        or (not FEqualityComparer.ItemsEqual(OldCursor.Value, FCursor.Value));
+      FOwnTree.Extract(OldCursor.Value);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnTree.WriteUnlock;
   end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclUnicodeStrBinaryTreeIterator.ExtractChild(Index: Integer);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclUnicodeStrBinaryTreeIterator.ExtractChildren;
+begin
+  raise EJclOperationNotSupportedError.Create;
 end;
 
 function TJclUnicodeStrBinaryTreeIterator.GetChild(Index: Integer): UnicodeString;
@@ -7000,6 +7401,22 @@ end;
 function TJclUnicodeStrBinaryTreeIterator.InsertChild(Index: Integer; const AString: UnicodeString): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclUnicodeStrBinaryTreeIterator.IteratorEquals(const AIterator: IJclUnicodeStrIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclUnicodeStrBinaryTreeIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclUnicodeStrBinaryTreeIterator then
+  begin
+    ItrObj := TJclUnicodeStrBinaryTreeIterator(Obj);
+    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 function TJclUnicodeStrBinaryTreeIterator.Left: UnicodeString;
@@ -7641,6 +8058,37 @@ begin
     Result.Right := CloneNode(Node.Right, Result); // recursive call
 end;
 
+function TJclSingleBinaryTree.CollectionEquals(const ACollection: IJclSingleCollection): Boolean;
+var
+  It, ItSelf: IJclSingleIterator;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclSingleBinaryTree.Contains(const AValue: Single): Boolean;
 var
   Comp: Integer;
@@ -7698,33 +8146,162 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclSingleBinaryTree.CollectionEquals(const ACollection: IJclSingleCollection): Boolean;
+function TJclSingleBinaryTree.Extract(const AValue: Single): Boolean;
 var
-  It, ItSelf: IJclSingleIterator;
+  Current, Successor: TJclSingleBinaryNode;
+  Comp: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    // locate AValue in the tree
+    Current := FRoot;
+    repeat
+      while Current <> nil do
+      begin
+        Comp := ItemsCompare(AValue, Current.Value);
+        if Comp = 0 then
+          Break
+        else
+        if Comp < 0 then
+         Current := Current.Left
+        else
+          Current := Current.Right;
+      end;
+      if Current = nil then
+        Break;
+      Result := True;
+      // Remove Current from tree
+      if (Current.Left = nil) and (Current.Right <> nil) then
+      begin
+        // remove references to Current
+        Current.Right.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Current.Right
+          else
+            Current.Parent.Right := Current.Right;
+        end
+        else
+          // fix root
+          FRoot := Current.Right;
+        Successor := Current.Parent;
+        if Successor = nil then
+          Successor := FRoot;
+      end
+      else
+      if (Current.Left <> nil) and (Current.Right = nil) then
+      begin
+        // remove references to Current
+        Current.Left.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Current.Left
+          else
+            Current.Parent.Right := Current.Left;
+        end
+        else
+          // fix root
+          FRoot := Current.Left;
+        Successor := Current.Parent;
+        if Successor = nil then
+          Successor := FRoot;
+      end
+      else
+      if (Current.Left <> nil) and (Current.Right <> nil) then
+      begin
+        // find the successor in tree
+        Successor := Current.Right;
+        while Successor.Left <> nil do
+          Successor := Successor.Left;
+
+        if Successor <> Current.Right then
+        begin
+          // remove references to successor
+          Successor.Parent.Left := Successor.Right;
+          if Successor.Right <> nil then
+            Successor.Right.Parent := Successor.Parent;
+          Successor.Right := Current.Right;
+          if Successor.Right <> nil then
+            Successor.Right.Parent := Successor;
+        end;
+
+        // insert successor in new position
+        Successor.Left := Current.Left;
+        if Current.Left <> nil then
+          Current.Left.Parent := Successor;
+        Successor.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Successor
+          else
+            Current.Parent.Right := Successor;
+        end
+        else
+          // fix root
+          FRoot := Successor;
+        Successor := Current.Parent;
+        if Successor <> nil then
+          Successor := FRoot;
+      end
+      else
+      begin
+        // (Current.Left = nil) and (Current.Right = nil)
+        Successor := Current.Parent;
+        if Successor <> nil then
+        begin
+          // remove references from parent
+          if Successor.Left = Current then
+            Successor.Left := nil
+          else
+            Successor.Right := nil;
+        end
+        else
+          FRoot := nil;
+      end;
+      Current.Free;
+      Dec(FSize);
+      Current := Successor;
+    until FRemoveSingleElement or (Current = nil);
+    AutoPack;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleBinaryTree.ExtractAll(const ACollection: IJclSingleCollection): Boolean;
+var
+  It: IJclSingleIterator;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
     Result := True;
     It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -7928,8 +8505,7 @@ end;
 
 function TJclSingleBinaryTree.Remove(const AValue: Single): Boolean;
 var
-  Current, Successor: TJclSingleBinaryNode;
-  Comp: Integer;
+  Extracted: Single;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -7938,121 +8514,12 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    // locate AValue in the tree
-    Current := FRoot;
-    repeat
-      while Current <> nil do
-      begin
-        Comp := ItemsCompare(AValue, Current.Value);
-        if Comp = 0 then
-          Break
-        else
-        if Comp < 0 then
-         Current := Current.Left
-        else
-          Current := Current.Right;
-      end;
-      if Current = nil then
-        Break;
-      Result := True;
-      // Remove Current from tree
-      if (Current.Left = nil) and (Current.Right <> nil) then
-      begin
-        // remove references to Current
-        Current.Right.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Current.Right
-          else
-            Current.Parent.Right := Current.Right;
-        end
-        else
-          // fix root
-          FRoot := Current.Right;
-        Successor := Current.Parent;
-        if Successor = nil then
-          Successor := FRoot;
-      end
-      else
-      if (Current.Left <> nil) and (Current.Right = nil) then
-      begin
-        // remove references to Current
-        Current.Left.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Current.Left
-          else
-            Current.Parent.Right := Current.Left;
-        end
-        else
-          // fix root
-          FRoot := Current.Left;
-        Successor := Current.Parent;
-        if Successor = nil then
-          Successor := FRoot;
-      end
-      else
-      if (Current.Left <> nil) and (Current.Right <> nil) then
-      begin
-        // find the successor in tree
-        Successor := Current.Right;
-        while Successor.Left <> nil do
-          Successor := Successor.Left;
-
-        if Successor <> Current.Right then
-        begin
-          // remove references to successor
-          Successor.Parent.Left := Successor.Right;
-          if Successor.Right <> nil then
-            Successor.Right.Parent := Successor.Parent;
-          Successor.Right := Current.Right;
-          if Successor.Right <> nil then
-            Successor.Right.Parent := Successor;
-        end;
-
-        // insert successor in new position
-        Successor.Left := Current.Left;
-        if Current.Left <> nil then
-          Current.Left.Parent := Successor;
-        Successor.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Successor
-          else
-            Current.Parent.Right := Successor;
-        end
-        else
-          // fix root
-          FRoot := Successor;
-        Successor := Current.Parent;
-        if Successor <> nil then
-          Successor := FRoot;
-      end
-      else
-      begin
-        // (Current.Left = nil) and (Current.Right = nil)
-        Successor := Current.Parent;
-        if Successor <> nil then
-        begin
-          // remove references from parent
-          if Successor.Left = Current then
-            Successor.Left := nil
-          else
-            Successor.Right := nil;
-        end
-        else
-          FRoot := nil;
-      end;
-      FreeSingle(Current.Value);
-      Current.Free;
-      Dec(FSize);
-      Current := Successor;
-    until FRemoveSingleElement or (Current = nil);
-    AutoPack;
+    Result := Extract(AValue);
+    if Result then
+    begin
+      Extracted := AValue;
+      FreeSingle(Extracted);
+    end;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -8192,30 +8659,52 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclSingleBinaryTreeIterator.ClearChildren;
-begin
-  raise EJclOperationNotSupportedError.Create;
-end;
-
 procedure TJclSingleBinaryTreeIterator.DeleteChild(Index: Integer);
 begin
   raise EJclOperationNotSupportedError.Create;
 end;
 
-function TJclSingleBinaryTreeIterator.IteratorEquals(const AIterator: IJclSingleIterator): Boolean;
-var
-  Obj: TObject;
-  ItrObj: TJclSingleBinaryTreeIterator;
+procedure TJclSingleBinaryTreeIterator.DeleteChildren;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is TJclSingleBinaryTreeIterator then
-  begin
-    ItrObj := TJclSingleBinaryTreeIterator(Obj);
-    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclSingleBinaryTreeIterator.Extract;
+var
+  OldCursor: TJclSingleBinaryNode;
+begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnTree.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    OldCursor := FCursor;
+    if OldCursor <> nil then
+    begin
+      repeat
+        FCursor := GetNextCursor;
+      until (FCursor = nil) or FOwnTree.RemoveSingleElement
+        or (not FEqualityComparer.ItemsEqual(OldCursor.Value, FCursor.Value));
+      FOwnTree.Extract(OldCursor.Value);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnTree.WriteUnlock;
   end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclSingleBinaryTreeIterator.ExtractChild(Index: Integer);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclSingleBinaryTreeIterator.ExtractChildren;
+begin
+  raise EJclOperationNotSupportedError.Create;
 end;
 
 function TJclSingleBinaryTreeIterator.GetChild(Index: Integer): Single;
@@ -8399,6 +8888,22 @@ end;
 function TJclSingleBinaryTreeIterator.InsertChild(Index: Integer; const AValue: Single): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclSingleBinaryTreeIterator.IteratorEquals(const AIterator: IJclSingleIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclSingleBinaryTreeIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclSingleBinaryTreeIterator then
+  begin
+    ItrObj := TJclSingleBinaryTreeIterator(Obj);
+    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 function TJclSingleBinaryTreeIterator.Left: Single;
@@ -9039,6 +9544,37 @@ begin
     Result.Right := CloneNode(Node.Right, Result); // recursive call
 end;
 
+function TJclDoubleBinaryTree.CollectionEquals(const ACollection: IJclDoubleCollection): Boolean;
+var
+  It, ItSelf: IJclDoubleIterator;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclDoubleBinaryTree.Contains(const AValue: Double): Boolean;
 var
   Comp: Integer;
@@ -9096,33 +9632,162 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclDoubleBinaryTree.CollectionEquals(const ACollection: IJclDoubleCollection): Boolean;
+function TJclDoubleBinaryTree.Extract(const AValue: Double): Boolean;
 var
-  It, ItSelf: IJclDoubleIterator;
+  Current, Successor: TJclDoubleBinaryNode;
+  Comp: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    // locate AValue in the tree
+    Current := FRoot;
+    repeat
+      while Current <> nil do
+      begin
+        Comp := ItemsCompare(AValue, Current.Value);
+        if Comp = 0 then
+          Break
+        else
+        if Comp < 0 then
+         Current := Current.Left
+        else
+          Current := Current.Right;
+      end;
+      if Current = nil then
+        Break;
+      Result := True;
+      // Remove Current from tree
+      if (Current.Left = nil) and (Current.Right <> nil) then
+      begin
+        // remove references to Current
+        Current.Right.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Current.Right
+          else
+            Current.Parent.Right := Current.Right;
+        end
+        else
+          // fix root
+          FRoot := Current.Right;
+        Successor := Current.Parent;
+        if Successor = nil then
+          Successor := FRoot;
+      end
+      else
+      if (Current.Left <> nil) and (Current.Right = nil) then
+      begin
+        // remove references to Current
+        Current.Left.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Current.Left
+          else
+            Current.Parent.Right := Current.Left;
+        end
+        else
+          // fix root
+          FRoot := Current.Left;
+        Successor := Current.Parent;
+        if Successor = nil then
+          Successor := FRoot;
+      end
+      else
+      if (Current.Left <> nil) and (Current.Right <> nil) then
+      begin
+        // find the successor in tree
+        Successor := Current.Right;
+        while Successor.Left <> nil do
+          Successor := Successor.Left;
+
+        if Successor <> Current.Right then
+        begin
+          // remove references to successor
+          Successor.Parent.Left := Successor.Right;
+          if Successor.Right <> nil then
+            Successor.Right.Parent := Successor.Parent;
+          Successor.Right := Current.Right;
+          if Successor.Right <> nil then
+            Successor.Right.Parent := Successor;
+        end;
+
+        // insert successor in new position
+        Successor.Left := Current.Left;
+        if Current.Left <> nil then
+          Current.Left.Parent := Successor;
+        Successor.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Successor
+          else
+            Current.Parent.Right := Successor;
+        end
+        else
+          // fix root
+          FRoot := Successor;
+        Successor := Current.Parent;
+        if Successor <> nil then
+          Successor := FRoot;
+      end
+      else
+      begin
+        // (Current.Left = nil) and (Current.Right = nil)
+        Successor := Current.Parent;
+        if Successor <> nil then
+        begin
+          // remove references from parent
+          if Successor.Left = Current then
+            Successor.Left := nil
+          else
+            Successor.Right := nil;
+        end
+        else
+          FRoot := nil;
+      end;
+      Current.Free;
+      Dec(FSize);
+      Current := Successor;
+    until FRemoveSingleElement or (Current = nil);
+    AutoPack;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleBinaryTree.ExtractAll(const ACollection: IJclDoubleCollection): Boolean;
+var
+  It: IJclDoubleIterator;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
     Result := True;
     It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -9326,8 +9991,7 @@ end;
 
 function TJclDoubleBinaryTree.Remove(const AValue: Double): Boolean;
 var
-  Current, Successor: TJclDoubleBinaryNode;
-  Comp: Integer;
+  Extracted: Double;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -9336,121 +10000,12 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    // locate AValue in the tree
-    Current := FRoot;
-    repeat
-      while Current <> nil do
-      begin
-        Comp := ItemsCompare(AValue, Current.Value);
-        if Comp = 0 then
-          Break
-        else
-        if Comp < 0 then
-         Current := Current.Left
-        else
-          Current := Current.Right;
-      end;
-      if Current = nil then
-        Break;
-      Result := True;
-      // Remove Current from tree
-      if (Current.Left = nil) and (Current.Right <> nil) then
-      begin
-        // remove references to Current
-        Current.Right.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Current.Right
-          else
-            Current.Parent.Right := Current.Right;
-        end
-        else
-          // fix root
-          FRoot := Current.Right;
-        Successor := Current.Parent;
-        if Successor = nil then
-          Successor := FRoot;
-      end
-      else
-      if (Current.Left <> nil) and (Current.Right = nil) then
-      begin
-        // remove references to Current
-        Current.Left.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Current.Left
-          else
-            Current.Parent.Right := Current.Left;
-        end
-        else
-          // fix root
-          FRoot := Current.Left;
-        Successor := Current.Parent;
-        if Successor = nil then
-          Successor := FRoot;
-      end
-      else
-      if (Current.Left <> nil) and (Current.Right <> nil) then
-      begin
-        // find the successor in tree
-        Successor := Current.Right;
-        while Successor.Left <> nil do
-          Successor := Successor.Left;
-
-        if Successor <> Current.Right then
-        begin
-          // remove references to successor
-          Successor.Parent.Left := Successor.Right;
-          if Successor.Right <> nil then
-            Successor.Right.Parent := Successor.Parent;
-          Successor.Right := Current.Right;
-          if Successor.Right <> nil then
-            Successor.Right.Parent := Successor;
-        end;
-
-        // insert successor in new position
-        Successor.Left := Current.Left;
-        if Current.Left <> nil then
-          Current.Left.Parent := Successor;
-        Successor.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Successor
-          else
-            Current.Parent.Right := Successor;
-        end
-        else
-          // fix root
-          FRoot := Successor;
-        Successor := Current.Parent;
-        if Successor <> nil then
-          Successor := FRoot;
-      end
-      else
-      begin
-        // (Current.Left = nil) and (Current.Right = nil)
-        Successor := Current.Parent;
-        if Successor <> nil then
-        begin
-          // remove references from parent
-          if Successor.Left = Current then
-            Successor.Left := nil
-          else
-            Successor.Right := nil;
-        end
-        else
-          FRoot := nil;
-      end;
-      FreeDouble(Current.Value);
-      Current.Free;
-      Dec(FSize);
-      Current := Successor;
-    until FRemoveSingleElement or (Current = nil);
-    AutoPack;
+    Result := Extract(AValue);
+    if Result then
+    begin
+      Extracted := AValue;
+      FreeDouble(Extracted);
+    end;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -9590,30 +10145,52 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclDoubleBinaryTreeIterator.ClearChildren;
-begin
-  raise EJclOperationNotSupportedError.Create;
-end;
-
 procedure TJclDoubleBinaryTreeIterator.DeleteChild(Index: Integer);
 begin
   raise EJclOperationNotSupportedError.Create;
 end;
 
-function TJclDoubleBinaryTreeIterator.IteratorEquals(const AIterator: IJclDoubleIterator): Boolean;
-var
-  Obj: TObject;
-  ItrObj: TJclDoubleBinaryTreeIterator;
+procedure TJclDoubleBinaryTreeIterator.DeleteChildren;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is TJclDoubleBinaryTreeIterator then
-  begin
-    ItrObj := TJclDoubleBinaryTreeIterator(Obj);
-    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclDoubleBinaryTreeIterator.Extract;
+var
+  OldCursor: TJclDoubleBinaryNode;
+begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnTree.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    OldCursor := FCursor;
+    if OldCursor <> nil then
+    begin
+      repeat
+        FCursor := GetNextCursor;
+      until (FCursor = nil) or FOwnTree.RemoveSingleElement
+        or (not FEqualityComparer.ItemsEqual(OldCursor.Value, FCursor.Value));
+      FOwnTree.Extract(OldCursor.Value);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnTree.WriteUnlock;
   end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclDoubleBinaryTreeIterator.ExtractChild(Index: Integer);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclDoubleBinaryTreeIterator.ExtractChildren;
+begin
+  raise EJclOperationNotSupportedError.Create;
 end;
 
 function TJclDoubleBinaryTreeIterator.GetChild(Index: Integer): Double;
@@ -9797,6 +10374,22 @@ end;
 function TJclDoubleBinaryTreeIterator.InsertChild(Index: Integer; const AValue: Double): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclDoubleBinaryTreeIterator.IteratorEquals(const AIterator: IJclDoubleIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclDoubleBinaryTreeIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclDoubleBinaryTreeIterator then
+  begin
+    ItrObj := TJclDoubleBinaryTreeIterator(Obj);
+    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 function TJclDoubleBinaryTreeIterator.Left: Double;
@@ -10437,6 +11030,37 @@ begin
     Result.Right := CloneNode(Node.Right, Result); // recursive call
 end;
 
+function TJclExtendedBinaryTree.CollectionEquals(const ACollection: IJclExtendedCollection): Boolean;
+var
+  It, ItSelf: IJclExtendedIterator;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclExtendedBinaryTree.Contains(const AValue: Extended): Boolean;
 var
   Comp: Integer;
@@ -10494,33 +11118,162 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclExtendedBinaryTree.CollectionEquals(const ACollection: IJclExtendedCollection): Boolean;
+function TJclExtendedBinaryTree.Extract(const AValue: Extended): Boolean;
 var
-  It, ItSelf: IJclExtendedIterator;
+  Current, Successor: TJclExtendedBinaryNode;
+  Comp: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    // locate AValue in the tree
+    Current := FRoot;
+    repeat
+      while Current <> nil do
+      begin
+        Comp := ItemsCompare(AValue, Current.Value);
+        if Comp = 0 then
+          Break
+        else
+        if Comp < 0 then
+         Current := Current.Left
+        else
+          Current := Current.Right;
+      end;
+      if Current = nil then
+        Break;
+      Result := True;
+      // Remove Current from tree
+      if (Current.Left = nil) and (Current.Right <> nil) then
+      begin
+        // remove references to Current
+        Current.Right.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Current.Right
+          else
+            Current.Parent.Right := Current.Right;
+        end
+        else
+          // fix root
+          FRoot := Current.Right;
+        Successor := Current.Parent;
+        if Successor = nil then
+          Successor := FRoot;
+      end
+      else
+      if (Current.Left <> nil) and (Current.Right = nil) then
+      begin
+        // remove references to Current
+        Current.Left.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Current.Left
+          else
+            Current.Parent.Right := Current.Left;
+        end
+        else
+          // fix root
+          FRoot := Current.Left;
+        Successor := Current.Parent;
+        if Successor = nil then
+          Successor := FRoot;
+      end
+      else
+      if (Current.Left <> nil) and (Current.Right <> nil) then
+      begin
+        // find the successor in tree
+        Successor := Current.Right;
+        while Successor.Left <> nil do
+          Successor := Successor.Left;
+
+        if Successor <> Current.Right then
+        begin
+          // remove references to successor
+          Successor.Parent.Left := Successor.Right;
+          if Successor.Right <> nil then
+            Successor.Right.Parent := Successor.Parent;
+          Successor.Right := Current.Right;
+          if Successor.Right <> nil then
+            Successor.Right.Parent := Successor;
+        end;
+
+        // insert successor in new position
+        Successor.Left := Current.Left;
+        if Current.Left <> nil then
+          Current.Left.Parent := Successor;
+        Successor.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Successor
+          else
+            Current.Parent.Right := Successor;
+        end
+        else
+          // fix root
+          FRoot := Successor;
+        Successor := Current.Parent;
+        if Successor <> nil then
+          Successor := FRoot;
+      end
+      else
+      begin
+        // (Current.Left = nil) and (Current.Right = nil)
+        Successor := Current.Parent;
+        if Successor <> nil then
+        begin
+          // remove references from parent
+          if Successor.Left = Current then
+            Successor.Left := nil
+          else
+            Successor.Right := nil;
+        end
+        else
+          FRoot := nil;
+      end;
+      Current.Free;
+      Dec(FSize);
+      Current := Successor;
+    until FRemoveSingleElement or (Current = nil);
+    AutoPack;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedBinaryTree.ExtractAll(const ACollection: IJclExtendedCollection): Boolean;
+var
+  It: IJclExtendedIterator;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
     Result := True;
     It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -10724,8 +11477,7 @@ end;
 
 function TJclExtendedBinaryTree.Remove(const AValue: Extended): Boolean;
 var
-  Current, Successor: TJclExtendedBinaryNode;
-  Comp: Integer;
+  Extracted: Extended;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -10734,121 +11486,12 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    // locate AValue in the tree
-    Current := FRoot;
-    repeat
-      while Current <> nil do
-      begin
-        Comp := ItemsCompare(AValue, Current.Value);
-        if Comp = 0 then
-          Break
-        else
-        if Comp < 0 then
-         Current := Current.Left
-        else
-          Current := Current.Right;
-      end;
-      if Current = nil then
-        Break;
-      Result := True;
-      // Remove Current from tree
-      if (Current.Left = nil) and (Current.Right <> nil) then
-      begin
-        // remove references to Current
-        Current.Right.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Current.Right
-          else
-            Current.Parent.Right := Current.Right;
-        end
-        else
-          // fix root
-          FRoot := Current.Right;
-        Successor := Current.Parent;
-        if Successor = nil then
-          Successor := FRoot;
-      end
-      else
-      if (Current.Left <> nil) and (Current.Right = nil) then
-      begin
-        // remove references to Current
-        Current.Left.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Current.Left
-          else
-            Current.Parent.Right := Current.Left;
-        end
-        else
-          // fix root
-          FRoot := Current.Left;
-        Successor := Current.Parent;
-        if Successor = nil then
-          Successor := FRoot;
-      end
-      else
-      if (Current.Left <> nil) and (Current.Right <> nil) then
-      begin
-        // find the successor in tree
-        Successor := Current.Right;
-        while Successor.Left <> nil do
-          Successor := Successor.Left;
-
-        if Successor <> Current.Right then
-        begin
-          // remove references to successor
-          Successor.Parent.Left := Successor.Right;
-          if Successor.Right <> nil then
-            Successor.Right.Parent := Successor.Parent;
-          Successor.Right := Current.Right;
-          if Successor.Right <> nil then
-            Successor.Right.Parent := Successor;
-        end;
-
-        // insert successor in new position
-        Successor.Left := Current.Left;
-        if Current.Left <> nil then
-          Current.Left.Parent := Successor;
-        Successor.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Successor
-          else
-            Current.Parent.Right := Successor;
-        end
-        else
-          // fix root
-          FRoot := Successor;
-        Successor := Current.Parent;
-        if Successor <> nil then
-          Successor := FRoot;
-      end
-      else
-      begin
-        // (Current.Left = nil) and (Current.Right = nil)
-        Successor := Current.Parent;
-        if Successor <> nil then
-        begin
-          // remove references from parent
-          if Successor.Left = Current then
-            Successor.Left := nil
-          else
-            Successor.Right := nil;
-        end
-        else
-          FRoot := nil;
-      end;
-      FreeExtended(Current.Value);
-      Current.Free;
-      Dec(FSize);
-      Current := Successor;
-    until FRemoveSingleElement or (Current = nil);
-    AutoPack;
+    Result := Extract(AValue);
+    if Result then
+    begin
+      Extracted := AValue;
+      FreeExtended(Extracted);
+    end;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -10988,30 +11631,52 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclExtendedBinaryTreeIterator.ClearChildren;
-begin
-  raise EJclOperationNotSupportedError.Create;
-end;
-
 procedure TJclExtendedBinaryTreeIterator.DeleteChild(Index: Integer);
 begin
   raise EJclOperationNotSupportedError.Create;
 end;
 
-function TJclExtendedBinaryTreeIterator.IteratorEquals(const AIterator: IJclExtendedIterator): Boolean;
-var
-  Obj: TObject;
-  ItrObj: TJclExtendedBinaryTreeIterator;
+procedure TJclExtendedBinaryTreeIterator.DeleteChildren;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is TJclExtendedBinaryTreeIterator then
-  begin
-    ItrObj := TJclExtendedBinaryTreeIterator(Obj);
-    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclExtendedBinaryTreeIterator.Extract;
+var
+  OldCursor: TJclExtendedBinaryNode;
+begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnTree.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    OldCursor := FCursor;
+    if OldCursor <> nil then
+    begin
+      repeat
+        FCursor := GetNextCursor;
+      until (FCursor = nil) or FOwnTree.RemoveSingleElement
+        or (not FEqualityComparer.ItemsEqual(OldCursor.Value, FCursor.Value));
+      FOwnTree.Extract(OldCursor.Value);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnTree.WriteUnlock;
   end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclExtendedBinaryTreeIterator.ExtractChild(Index: Integer);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclExtendedBinaryTreeIterator.ExtractChildren;
+begin
+  raise EJclOperationNotSupportedError.Create;
 end;
 
 function TJclExtendedBinaryTreeIterator.GetChild(Index: Integer): Extended;
@@ -11195,6 +11860,22 @@ end;
 function TJclExtendedBinaryTreeIterator.InsertChild(Index: Integer; const AValue: Extended): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclExtendedBinaryTreeIterator.IteratorEquals(const AIterator: IJclExtendedIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclExtendedBinaryTreeIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclExtendedBinaryTreeIterator then
+  begin
+    ItrObj := TJclExtendedBinaryTreeIterator(Obj);
+    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 function TJclExtendedBinaryTreeIterator.Left: Extended;
@@ -11835,6 +12516,37 @@ begin
     Result.Right := CloneNode(Node.Right, Result); // recursive call
 end;
 
+function TJclIntegerBinaryTree.CollectionEquals(const ACollection: IJclIntegerCollection): Boolean;
+var
+  It, ItSelf: IJclIntegerIterator;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclIntegerBinaryTree.Contains(AValue: Integer): Boolean;
 var
   Comp: Integer;
@@ -11892,33 +12604,162 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntegerBinaryTree.CollectionEquals(const ACollection: IJclIntegerCollection): Boolean;
+function TJclIntegerBinaryTree.Extract(AValue: Integer): Boolean;
 var
-  It, ItSelf: IJclIntegerIterator;
+  Current, Successor: TJclIntegerBinaryNode;
+  Comp: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    // locate AValue in the tree
+    Current := FRoot;
+    repeat
+      while Current <> nil do
+      begin
+        Comp := ItemsCompare(AValue, Current.Value);
+        if Comp = 0 then
+          Break
+        else
+        if Comp < 0 then
+         Current := Current.Left
+        else
+          Current := Current.Right;
+      end;
+      if Current = nil then
+        Break;
+      Result := True;
+      // Remove Current from tree
+      if (Current.Left = nil) and (Current.Right <> nil) then
+      begin
+        // remove references to Current
+        Current.Right.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Current.Right
+          else
+            Current.Parent.Right := Current.Right;
+        end
+        else
+          // fix root
+          FRoot := Current.Right;
+        Successor := Current.Parent;
+        if Successor = nil then
+          Successor := FRoot;
+      end
+      else
+      if (Current.Left <> nil) and (Current.Right = nil) then
+      begin
+        // remove references to Current
+        Current.Left.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Current.Left
+          else
+            Current.Parent.Right := Current.Left;
+        end
+        else
+          // fix root
+          FRoot := Current.Left;
+        Successor := Current.Parent;
+        if Successor = nil then
+          Successor := FRoot;
+      end
+      else
+      if (Current.Left <> nil) and (Current.Right <> nil) then
+      begin
+        // find the successor in tree
+        Successor := Current.Right;
+        while Successor.Left <> nil do
+          Successor := Successor.Left;
+
+        if Successor <> Current.Right then
+        begin
+          // remove references to successor
+          Successor.Parent.Left := Successor.Right;
+          if Successor.Right <> nil then
+            Successor.Right.Parent := Successor.Parent;
+          Successor.Right := Current.Right;
+          if Successor.Right <> nil then
+            Successor.Right.Parent := Successor;
+        end;
+
+        // insert successor in new position
+        Successor.Left := Current.Left;
+        if Current.Left <> nil then
+          Current.Left.Parent := Successor;
+        Successor.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Successor
+          else
+            Current.Parent.Right := Successor;
+        end
+        else
+          // fix root
+          FRoot := Successor;
+        Successor := Current.Parent;
+        if Successor <> nil then
+          Successor := FRoot;
+      end
+      else
+      begin
+        // (Current.Left = nil) and (Current.Right = nil)
+        Successor := Current.Parent;
+        if Successor <> nil then
+        begin
+          // remove references from parent
+          if Successor.Left = Current then
+            Successor.Left := nil
+          else
+            Successor.Right := nil;
+        end
+        else
+          FRoot := nil;
+      end;
+      Current.Free;
+      Dec(FSize);
+      Current := Successor;
+    until FRemoveSingleElement or (Current = nil);
+    AutoPack;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerBinaryTree.ExtractAll(const ACollection: IJclIntegerCollection): Boolean;
+var
+  It: IJclIntegerIterator;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
     Result := True;
     It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -12122,8 +12963,7 @@ end;
 
 function TJclIntegerBinaryTree.Remove(AValue: Integer): Boolean;
 var
-  Current, Successor: TJclIntegerBinaryNode;
-  Comp: Integer;
+  Extracted: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -12132,121 +12972,12 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    // locate AValue in the tree
-    Current := FRoot;
-    repeat
-      while Current <> nil do
-      begin
-        Comp := ItemsCompare(AValue, Current.Value);
-        if Comp = 0 then
-          Break
-        else
-        if Comp < 0 then
-         Current := Current.Left
-        else
-          Current := Current.Right;
-      end;
-      if Current = nil then
-        Break;
-      Result := True;
-      // Remove Current from tree
-      if (Current.Left = nil) and (Current.Right <> nil) then
-      begin
-        // remove references to Current
-        Current.Right.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Current.Right
-          else
-            Current.Parent.Right := Current.Right;
-        end
-        else
-          // fix root
-          FRoot := Current.Right;
-        Successor := Current.Parent;
-        if Successor = nil then
-          Successor := FRoot;
-      end
-      else
-      if (Current.Left <> nil) and (Current.Right = nil) then
-      begin
-        // remove references to Current
-        Current.Left.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Current.Left
-          else
-            Current.Parent.Right := Current.Left;
-        end
-        else
-          // fix root
-          FRoot := Current.Left;
-        Successor := Current.Parent;
-        if Successor = nil then
-          Successor := FRoot;
-      end
-      else
-      if (Current.Left <> nil) and (Current.Right <> nil) then
-      begin
-        // find the successor in tree
-        Successor := Current.Right;
-        while Successor.Left <> nil do
-          Successor := Successor.Left;
-
-        if Successor <> Current.Right then
-        begin
-          // remove references to successor
-          Successor.Parent.Left := Successor.Right;
-          if Successor.Right <> nil then
-            Successor.Right.Parent := Successor.Parent;
-          Successor.Right := Current.Right;
-          if Successor.Right <> nil then
-            Successor.Right.Parent := Successor;
-        end;
-
-        // insert successor in new position
-        Successor.Left := Current.Left;
-        if Current.Left <> nil then
-          Current.Left.Parent := Successor;
-        Successor.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Successor
-          else
-            Current.Parent.Right := Successor;
-        end
-        else
-          // fix root
-          FRoot := Successor;
-        Successor := Current.Parent;
-        if Successor <> nil then
-          Successor := FRoot;
-      end
-      else
-      begin
-        // (Current.Left = nil) and (Current.Right = nil)
-        Successor := Current.Parent;
-        if Successor <> nil then
-        begin
-          // remove references from parent
-          if Successor.Left = Current then
-            Successor.Left := nil
-          else
-            Successor.Right := nil;
-        end
-        else
-          FRoot := nil;
-      end;
-      FreeInteger(Current.Value);
-      Current.Free;
-      Dec(FSize);
-      Current := Successor;
-    until FRemoveSingleElement or (Current = nil);
-    AutoPack;
+    Result := Extract(AValue);
+    if Result then
+    begin
+      Extracted := AValue;
+      FreeInteger(Extracted);
+    end;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -12386,30 +13117,52 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntegerBinaryTreeIterator.ClearChildren;
-begin
-  raise EJclOperationNotSupportedError.Create;
-end;
-
 procedure TJclIntegerBinaryTreeIterator.DeleteChild(Index: Integer);
 begin
   raise EJclOperationNotSupportedError.Create;
 end;
 
-function TJclIntegerBinaryTreeIterator.IteratorEquals(const AIterator: IJclIntegerIterator): Boolean;
-var
-  Obj: TObject;
-  ItrObj: TJclIntegerBinaryTreeIterator;
+procedure TJclIntegerBinaryTreeIterator.DeleteChildren;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is TJclIntegerBinaryTreeIterator then
-  begin
-    ItrObj := TJclIntegerBinaryTreeIterator(Obj);
-    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclIntegerBinaryTreeIterator.Extract;
+var
+  OldCursor: TJclIntegerBinaryNode;
+begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnTree.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    OldCursor := FCursor;
+    if OldCursor <> nil then
+    begin
+      repeat
+        FCursor := GetNextCursor;
+      until (FCursor = nil) or FOwnTree.RemoveSingleElement
+        or (not FEqualityComparer.ItemsEqual(OldCursor.Value, FCursor.Value));
+      FOwnTree.Extract(OldCursor.Value);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnTree.WriteUnlock;
   end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclIntegerBinaryTreeIterator.ExtractChild(Index: Integer);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclIntegerBinaryTreeIterator.ExtractChildren;
+begin
+  raise EJclOperationNotSupportedError.Create;
 end;
 
 function TJclIntegerBinaryTreeIterator.GetChild(Index: Integer): Integer;
@@ -12593,6 +13346,22 @@ end;
 function TJclIntegerBinaryTreeIterator.InsertChild(Index: Integer; AValue: Integer): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclIntegerBinaryTreeIterator.IteratorEquals(const AIterator: IJclIntegerIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclIntegerBinaryTreeIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclIntegerBinaryTreeIterator then
+  begin
+    ItrObj := TJclIntegerBinaryTreeIterator(Obj);
+    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 function TJclIntegerBinaryTreeIterator.Left: Integer;
@@ -13233,6 +14002,37 @@ begin
     Result.Right := CloneNode(Node.Right, Result); // recursive call
 end;
 
+function TJclCardinalBinaryTree.CollectionEquals(const ACollection: IJclCardinalCollection): Boolean;
+var
+  It, ItSelf: IJclCardinalIterator;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclCardinalBinaryTree.Contains(AValue: Cardinal): Boolean;
 var
   Comp: Integer;
@@ -13290,33 +14090,162 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclCardinalBinaryTree.CollectionEquals(const ACollection: IJclCardinalCollection): Boolean;
+function TJclCardinalBinaryTree.Extract(AValue: Cardinal): Boolean;
 var
-  It, ItSelf: IJclCardinalIterator;
+  Current, Successor: TJclCardinalBinaryNode;
+  Comp: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    // locate AValue in the tree
+    Current := FRoot;
+    repeat
+      while Current <> nil do
+      begin
+        Comp := ItemsCompare(AValue, Current.Value);
+        if Comp = 0 then
+          Break
+        else
+        if Comp < 0 then
+         Current := Current.Left
+        else
+          Current := Current.Right;
+      end;
+      if Current = nil then
+        Break;
+      Result := True;
+      // Remove Current from tree
+      if (Current.Left = nil) and (Current.Right <> nil) then
+      begin
+        // remove references to Current
+        Current.Right.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Current.Right
+          else
+            Current.Parent.Right := Current.Right;
+        end
+        else
+          // fix root
+          FRoot := Current.Right;
+        Successor := Current.Parent;
+        if Successor = nil then
+          Successor := FRoot;
+      end
+      else
+      if (Current.Left <> nil) and (Current.Right = nil) then
+      begin
+        // remove references to Current
+        Current.Left.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Current.Left
+          else
+            Current.Parent.Right := Current.Left;
+        end
+        else
+          // fix root
+          FRoot := Current.Left;
+        Successor := Current.Parent;
+        if Successor = nil then
+          Successor := FRoot;
+      end
+      else
+      if (Current.Left <> nil) and (Current.Right <> nil) then
+      begin
+        // find the successor in tree
+        Successor := Current.Right;
+        while Successor.Left <> nil do
+          Successor := Successor.Left;
+
+        if Successor <> Current.Right then
+        begin
+          // remove references to successor
+          Successor.Parent.Left := Successor.Right;
+          if Successor.Right <> nil then
+            Successor.Right.Parent := Successor.Parent;
+          Successor.Right := Current.Right;
+          if Successor.Right <> nil then
+            Successor.Right.Parent := Successor;
+        end;
+
+        // insert successor in new position
+        Successor.Left := Current.Left;
+        if Current.Left <> nil then
+          Current.Left.Parent := Successor;
+        Successor.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Successor
+          else
+            Current.Parent.Right := Successor;
+        end
+        else
+          // fix root
+          FRoot := Successor;
+        Successor := Current.Parent;
+        if Successor <> nil then
+          Successor := FRoot;
+      end
+      else
+      begin
+        // (Current.Left = nil) and (Current.Right = nil)
+        Successor := Current.Parent;
+        if Successor <> nil then
+        begin
+          // remove references from parent
+          if Successor.Left = Current then
+            Successor.Left := nil
+          else
+            Successor.Right := nil;
+        end
+        else
+          FRoot := nil;
+      end;
+      Current.Free;
+      Dec(FSize);
+      Current := Successor;
+    until FRemoveSingleElement or (Current = nil);
+    AutoPack;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalBinaryTree.ExtractAll(const ACollection: IJclCardinalCollection): Boolean;
+var
+  It: IJclCardinalIterator;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
     Result := True;
     It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -13520,8 +14449,7 @@ end;
 
 function TJclCardinalBinaryTree.Remove(AValue: Cardinal): Boolean;
 var
-  Current, Successor: TJclCardinalBinaryNode;
-  Comp: Integer;
+  Extracted: Cardinal;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -13530,121 +14458,12 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    // locate AValue in the tree
-    Current := FRoot;
-    repeat
-      while Current <> nil do
-      begin
-        Comp := ItemsCompare(AValue, Current.Value);
-        if Comp = 0 then
-          Break
-        else
-        if Comp < 0 then
-         Current := Current.Left
-        else
-          Current := Current.Right;
-      end;
-      if Current = nil then
-        Break;
-      Result := True;
-      // Remove Current from tree
-      if (Current.Left = nil) and (Current.Right <> nil) then
-      begin
-        // remove references to Current
-        Current.Right.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Current.Right
-          else
-            Current.Parent.Right := Current.Right;
-        end
-        else
-          // fix root
-          FRoot := Current.Right;
-        Successor := Current.Parent;
-        if Successor = nil then
-          Successor := FRoot;
-      end
-      else
-      if (Current.Left <> nil) and (Current.Right = nil) then
-      begin
-        // remove references to Current
-        Current.Left.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Current.Left
-          else
-            Current.Parent.Right := Current.Left;
-        end
-        else
-          // fix root
-          FRoot := Current.Left;
-        Successor := Current.Parent;
-        if Successor = nil then
-          Successor := FRoot;
-      end
-      else
-      if (Current.Left <> nil) and (Current.Right <> nil) then
-      begin
-        // find the successor in tree
-        Successor := Current.Right;
-        while Successor.Left <> nil do
-          Successor := Successor.Left;
-
-        if Successor <> Current.Right then
-        begin
-          // remove references to successor
-          Successor.Parent.Left := Successor.Right;
-          if Successor.Right <> nil then
-            Successor.Right.Parent := Successor.Parent;
-          Successor.Right := Current.Right;
-          if Successor.Right <> nil then
-            Successor.Right.Parent := Successor;
-        end;
-
-        // insert successor in new position
-        Successor.Left := Current.Left;
-        if Current.Left <> nil then
-          Current.Left.Parent := Successor;
-        Successor.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Successor
-          else
-            Current.Parent.Right := Successor;
-        end
-        else
-          // fix root
-          FRoot := Successor;
-        Successor := Current.Parent;
-        if Successor <> nil then
-          Successor := FRoot;
-      end
-      else
-      begin
-        // (Current.Left = nil) and (Current.Right = nil)
-        Successor := Current.Parent;
-        if Successor <> nil then
-        begin
-          // remove references from parent
-          if Successor.Left = Current then
-            Successor.Left := nil
-          else
-            Successor.Right := nil;
-        end
-        else
-          FRoot := nil;
-      end;
-      FreeCardinal(Current.Value);
-      Current.Free;
-      Dec(FSize);
-      Current := Successor;
-    until FRemoveSingleElement or (Current = nil);
-    AutoPack;
+    Result := Extract(AValue);
+    if Result then
+    begin
+      Extracted := AValue;
+      FreeCardinal(Extracted);
+    end;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -13784,30 +14603,52 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclCardinalBinaryTreeIterator.ClearChildren;
-begin
-  raise EJclOperationNotSupportedError.Create;
-end;
-
 procedure TJclCardinalBinaryTreeIterator.DeleteChild(Index: Integer);
 begin
   raise EJclOperationNotSupportedError.Create;
 end;
 
-function TJclCardinalBinaryTreeIterator.IteratorEquals(const AIterator: IJclCardinalIterator): Boolean;
-var
-  Obj: TObject;
-  ItrObj: TJclCardinalBinaryTreeIterator;
+procedure TJclCardinalBinaryTreeIterator.DeleteChildren;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is TJclCardinalBinaryTreeIterator then
-  begin
-    ItrObj := TJclCardinalBinaryTreeIterator(Obj);
-    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclCardinalBinaryTreeIterator.Extract;
+var
+  OldCursor: TJclCardinalBinaryNode;
+begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnTree.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    OldCursor := FCursor;
+    if OldCursor <> nil then
+    begin
+      repeat
+        FCursor := GetNextCursor;
+      until (FCursor = nil) or FOwnTree.RemoveSingleElement
+        or (not FEqualityComparer.ItemsEqual(OldCursor.Value, FCursor.Value));
+      FOwnTree.Extract(OldCursor.Value);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnTree.WriteUnlock;
   end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclCardinalBinaryTreeIterator.ExtractChild(Index: Integer);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclCardinalBinaryTreeIterator.ExtractChildren;
+begin
+  raise EJclOperationNotSupportedError.Create;
 end;
 
 function TJclCardinalBinaryTreeIterator.GetChild(Index: Integer): Cardinal;
@@ -13991,6 +14832,22 @@ end;
 function TJclCardinalBinaryTreeIterator.InsertChild(Index: Integer; AValue: Cardinal): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclCardinalBinaryTreeIterator.IteratorEquals(const AIterator: IJclCardinalIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclCardinalBinaryTreeIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclCardinalBinaryTreeIterator then
+  begin
+    ItrObj := TJclCardinalBinaryTreeIterator(Obj);
+    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 function TJclCardinalBinaryTreeIterator.Left: Cardinal;
@@ -14631,6 +15488,37 @@ begin
     Result.Right := CloneNode(Node.Right, Result); // recursive call
 end;
 
+function TJclInt64BinaryTree.CollectionEquals(const ACollection: IJclInt64Collection): Boolean;
+var
+  It, ItSelf: IJclInt64Iterator;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclInt64BinaryTree.Contains(const AValue: Int64): Boolean;
 var
   Comp: Integer;
@@ -14688,33 +15576,162 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclInt64BinaryTree.CollectionEquals(const ACollection: IJclInt64Collection): Boolean;
+function TJclInt64BinaryTree.Extract(const AValue: Int64): Boolean;
 var
-  It, ItSelf: IJclInt64Iterator;
+  Current, Successor: TJclInt64BinaryNode;
+  Comp: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    // locate AValue in the tree
+    Current := FRoot;
+    repeat
+      while Current <> nil do
+      begin
+        Comp := ItemsCompare(AValue, Current.Value);
+        if Comp = 0 then
+          Break
+        else
+        if Comp < 0 then
+         Current := Current.Left
+        else
+          Current := Current.Right;
+      end;
+      if Current = nil then
+        Break;
+      Result := True;
+      // Remove Current from tree
+      if (Current.Left = nil) and (Current.Right <> nil) then
+      begin
+        // remove references to Current
+        Current.Right.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Current.Right
+          else
+            Current.Parent.Right := Current.Right;
+        end
+        else
+          // fix root
+          FRoot := Current.Right;
+        Successor := Current.Parent;
+        if Successor = nil then
+          Successor := FRoot;
+      end
+      else
+      if (Current.Left <> nil) and (Current.Right = nil) then
+      begin
+        // remove references to Current
+        Current.Left.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Current.Left
+          else
+            Current.Parent.Right := Current.Left;
+        end
+        else
+          // fix root
+          FRoot := Current.Left;
+        Successor := Current.Parent;
+        if Successor = nil then
+          Successor := FRoot;
+      end
+      else
+      if (Current.Left <> nil) and (Current.Right <> nil) then
+      begin
+        // find the successor in tree
+        Successor := Current.Right;
+        while Successor.Left <> nil do
+          Successor := Successor.Left;
+
+        if Successor <> Current.Right then
+        begin
+          // remove references to successor
+          Successor.Parent.Left := Successor.Right;
+          if Successor.Right <> nil then
+            Successor.Right.Parent := Successor.Parent;
+          Successor.Right := Current.Right;
+          if Successor.Right <> nil then
+            Successor.Right.Parent := Successor;
+        end;
+
+        // insert successor in new position
+        Successor.Left := Current.Left;
+        if Current.Left <> nil then
+          Current.Left.Parent := Successor;
+        Successor.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Successor
+          else
+            Current.Parent.Right := Successor;
+        end
+        else
+          // fix root
+          FRoot := Successor;
+        Successor := Current.Parent;
+        if Successor <> nil then
+          Successor := FRoot;
+      end
+      else
+      begin
+        // (Current.Left = nil) and (Current.Right = nil)
+        Successor := Current.Parent;
+        if Successor <> nil then
+        begin
+          // remove references from parent
+          if Successor.Left = Current then
+            Successor.Left := nil
+          else
+            Successor.Right := nil;
+        end
+        else
+          FRoot := nil;
+      end;
+      Current.Free;
+      Dec(FSize);
+      Current := Successor;
+    until FRemoveSingleElement or (Current = nil);
+    AutoPack;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64BinaryTree.ExtractAll(const ACollection: IJclInt64Collection): Boolean;
+var
+  It: IJclInt64Iterator;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
     Result := True;
     It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -14918,8 +15935,7 @@ end;
 
 function TJclInt64BinaryTree.Remove(const AValue: Int64): Boolean;
 var
-  Current, Successor: TJclInt64BinaryNode;
-  Comp: Integer;
+  Extracted: Int64;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -14928,121 +15944,12 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    // locate AValue in the tree
-    Current := FRoot;
-    repeat
-      while Current <> nil do
-      begin
-        Comp := ItemsCompare(AValue, Current.Value);
-        if Comp = 0 then
-          Break
-        else
-        if Comp < 0 then
-         Current := Current.Left
-        else
-          Current := Current.Right;
-      end;
-      if Current = nil then
-        Break;
-      Result := True;
-      // Remove Current from tree
-      if (Current.Left = nil) and (Current.Right <> nil) then
-      begin
-        // remove references to Current
-        Current.Right.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Current.Right
-          else
-            Current.Parent.Right := Current.Right;
-        end
-        else
-          // fix root
-          FRoot := Current.Right;
-        Successor := Current.Parent;
-        if Successor = nil then
-          Successor := FRoot;
-      end
-      else
-      if (Current.Left <> nil) and (Current.Right = nil) then
-      begin
-        // remove references to Current
-        Current.Left.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Current.Left
-          else
-            Current.Parent.Right := Current.Left;
-        end
-        else
-          // fix root
-          FRoot := Current.Left;
-        Successor := Current.Parent;
-        if Successor = nil then
-          Successor := FRoot;
-      end
-      else
-      if (Current.Left <> nil) and (Current.Right <> nil) then
-      begin
-        // find the successor in tree
-        Successor := Current.Right;
-        while Successor.Left <> nil do
-          Successor := Successor.Left;
-
-        if Successor <> Current.Right then
-        begin
-          // remove references to successor
-          Successor.Parent.Left := Successor.Right;
-          if Successor.Right <> nil then
-            Successor.Right.Parent := Successor.Parent;
-          Successor.Right := Current.Right;
-          if Successor.Right <> nil then
-            Successor.Right.Parent := Successor;
-        end;
-
-        // insert successor in new position
-        Successor.Left := Current.Left;
-        if Current.Left <> nil then
-          Current.Left.Parent := Successor;
-        Successor.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Successor
-          else
-            Current.Parent.Right := Successor;
-        end
-        else
-          // fix root
-          FRoot := Successor;
-        Successor := Current.Parent;
-        if Successor <> nil then
-          Successor := FRoot;
-      end
-      else
-      begin
-        // (Current.Left = nil) and (Current.Right = nil)
-        Successor := Current.Parent;
-        if Successor <> nil then
-        begin
-          // remove references from parent
-          if Successor.Left = Current then
-            Successor.Left := nil
-          else
-            Successor.Right := nil;
-        end
-        else
-          FRoot := nil;
-      end;
-      FreeInt64(Current.Value);
-      Current.Free;
-      Dec(FSize);
-      Current := Successor;
-    until FRemoveSingleElement or (Current = nil);
-    AutoPack;
+    Result := Extract(AValue);
+    if Result then
+    begin
+      Extracted := AValue;
+      FreeInt64(Extracted);
+    end;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -15182,30 +16089,52 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclInt64BinaryTreeIterator.ClearChildren;
-begin
-  raise EJclOperationNotSupportedError.Create;
-end;
-
 procedure TJclInt64BinaryTreeIterator.DeleteChild(Index: Integer);
 begin
   raise EJclOperationNotSupportedError.Create;
 end;
 
-function TJclInt64BinaryTreeIterator.IteratorEquals(const AIterator: IJclInt64Iterator): Boolean;
-var
-  Obj: TObject;
-  ItrObj: TJclInt64BinaryTreeIterator;
+procedure TJclInt64BinaryTreeIterator.DeleteChildren;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is TJclInt64BinaryTreeIterator then
-  begin
-    ItrObj := TJclInt64BinaryTreeIterator(Obj);
-    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclInt64BinaryTreeIterator.Extract;
+var
+  OldCursor: TJclInt64BinaryNode;
+begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnTree.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    OldCursor := FCursor;
+    if OldCursor <> nil then
+    begin
+      repeat
+        FCursor := GetNextCursor;
+      until (FCursor = nil) or FOwnTree.RemoveSingleElement
+        or (not FEqualityComparer.ItemsEqual(OldCursor.Value, FCursor.Value));
+      FOwnTree.Extract(OldCursor.Value);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnTree.WriteUnlock;
   end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclInt64BinaryTreeIterator.ExtractChild(Index: Integer);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclInt64BinaryTreeIterator.ExtractChildren;
+begin
+  raise EJclOperationNotSupportedError.Create;
 end;
 
 function TJclInt64BinaryTreeIterator.GetChild(Index: Integer): Int64;
@@ -15389,6 +16318,22 @@ end;
 function TJclInt64BinaryTreeIterator.InsertChild(Index: Integer; const AValue: Int64): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclInt64BinaryTreeIterator.IteratorEquals(const AIterator: IJclInt64Iterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclInt64BinaryTreeIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclInt64BinaryTreeIterator then
+  begin
+    ItrObj := TJclInt64BinaryTreeIterator(Obj);
+    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 function TJclInt64BinaryTreeIterator.Left: Int64;
@@ -16030,6 +16975,37 @@ begin
     Result.Right := CloneNode(Node.Right, Result); // recursive call
 end;
 
+function TJclPtrBinaryTree.CollectionEquals(const ACollection: IJclPtrCollection): Boolean;
+var
+  It, ItSelf: IJclPtrIterator;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclPtrBinaryTree.Contains(APtr: Pointer): Boolean;
 var
   Comp: Integer;
@@ -16087,33 +17063,162 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclPtrBinaryTree.CollectionEquals(const ACollection: IJclPtrCollection): Boolean;
+function TJclPtrBinaryTree.Extract(APtr: Pointer): Boolean;
 var
-  It, ItSelf: IJclPtrIterator;
+  Current, Successor: TJclPtrBinaryNode;
+  Comp: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    // locate APtr in the tree
+    Current := FRoot;
+    repeat
+      while Current <> nil do
+      begin
+        Comp := ItemsCompare(APtr, Current.Value);
+        if Comp = 0 then
+          Break
+        else
+        if Comp < 0 then
+         Current := Current.Left
+        else
+          Current := Current.Right;
+      end;
+      if Current = nil then
+        Break;
+      Result := True;
+      // Remove Current from tree
+      if (Current.Left = nil) and (Current.Right <> nil) then
+      begin
+        // remove references to Current
+        Current.Right.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Current.Right
+          else
+            Current.Parent.Right := Current.Right;
+        end
+        else
+          // fix root
+          FRoot := Current.Right;
+        Successor := Current.Parent;
+        if Successor = nil then
+          Successor := FRoot;
+      end
+      else
+      if (Current.Left <> nil) and (Current.Right = nil) then
+      begin
+        // remove references to Current
+        Current.Left.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Current.Left
+          else
+            Current.Parent.Right := Current.Left;
+        end
+        else
+          // fix root
+          FRoot := Current.Left;
+        Successor := Current.Parent;
+        if Successor = nil then
+          Successor := FRoot;
+      end
+      else
+      if (Current.Left <> nil) and (Current.Right <> nil) then
+      begin
+        // find the successor in tree
+        Successor := Current.Right;
+        while Successor.Left <> nil do
+          Successor := Successor.Left;
+
+        if Successor <> Current.Right then
+        begin
+          // remove references to successor
+          Successor.Parent.Left := Successor.Right;
+          if Successor.Right <> nil then
+            Successor.Right.Parent := Successor.Parent;
+          Successor.Right := Current.Right;
+          if Successor.Right <> nil then
+            Successor.Right.Parent := Successor;
+        end;
+
+        // insert successor in new position
+        Successor.Left := Current.Left;
+        if Current.Left <> nil then
+          Current.Left.Parent := Successor;
+        Successor.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Successor
+          else
+            Current.Parent.Right := Successor;
+        end
+        else
+          // fix root
+          FRoot := Successor;
+        Successor := Current.Parent;
+        if Successor <> nil then
+          Successor := FRoot;
+      end
+      else
+      begin
+        // (Current.Left = nil) and (Current.Right = nil)
+        Successor := Current.Parent;
+        if Successor <> nil then
+        begin
+          // remove references from parent
+          if Successor.Left = Current then
+            Successor.Left := nil
+          else
+            Successor.Right := nil;
+        end
+        else
+          FRoot := nil;
+      end;
+      Current.Free;
+      Dec(FSize);
+      Current := Successor;
+    until FRemoveSingleElement or (Current = nil);
+    AutoPack;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrBinaryTree.ExtractAll(const ACollection: IJclPtrCollection): Boolean;
+var
+  It: IJclPtrIterator;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
     Result := True;
     It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -16317,8 +17422,7 @@ end;
 
 function TJclPtrBinaryTree.Remove(APtr: Pointer): Boolean;
 var
-  Current, Successor: TJclPtrBinaryNode;
-  Comp: Integer;
+  Extracted: Pointer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -16327,121 +17431,12 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    // locate APtr in the tree
-    Current := FRoot;
-    repeat
-      while Current <> nil do
-      begin
-        Comp := ItemsCompare(APtr, Current.Value);
-        if Comp = 0 then
-          Break
-        else
-        if Comp < 0 then
-         Current := Current.Left
-        else
-          Current := Current.Right;
-      end;
-      if Current = nil then
-        Break;
-      Result := True;
-      // Remove Current from tree
-      if (Current.Left = nil) and (Current.Right <> nil) then
-      begin
-        // remove references to Current
-        Current.Right.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Current.Right
-          else
-            Current.Parent.Right := Current.Right;
-        end
-        else
-          // fix root
-          FRoot := Current.Right;
-        Successor := Current.Parent;
-        if Successor = nil then
-          Successor := FRoot;
-      end
-      else
-      if (Current.Left <> nil) and (Current.Right = nil) then
-      begin
-        // remove references to Current
-        Current.Left.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Current.Left
-          else
-            Current.Parent.Right := Current.Left;
-        end
-        else
-          // fix root
-          FRoot := Current.Left;
-        Successor := Current.Parent;
-        if Successor = nil then
-          Successor := FRoot;
-      end
-      else
-      if (Current.Left <> nil) and (Current.Right <> nil) then
-      begin
-        // find the successor in tree
-        Successor := Current.Right;
-        while Successor.Left <> nil do
-          Successor := Successor.Left;
-
-        if Successor <> Current.Right then
-        begin
-          // remove references to successor
-          Successor.Parent.Left := Successor.Right;
-          if Successor.Right <> nil then
-            Successor.Right.Parent := Successor.Parent;
-          Successor.Right := Current.Right;
-          if Successor.Right <> nil then
-            Successor.Right.Parent := Successor;
-        end;
-
-        // insert successor in new position
-        Successor.Left := Current.Left;
-        if Current.Left <> nil then
-          Current.Left.Parent := Successor;
-        Successor.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Successor
-          else
-            Current.Parent.Right := Successor;
-        end
-        else
-          // fix root
-          FRoot := Successor;
-        Successor := Current.Parent;
-        if Successor <> nil then
-          Successor := FRoot;
-      end
-      else
-      begin
-        // (Current.Left = nil) and (Current.Right = nil)
-        Successor := Current.Parent;
-        if Successor <> nil then
-        begin
-          // remove references from parent
-          if Successor.Left = Current then
-            Successor.Left := nil
-          else
-            Successor.Right := nil;
-        end
-        else
-          FRoot := nil;
-      end;
-      FreePointer(Current.Value);
-      Current.Free;
-      Dec(FSize);
-      Current := Successor;
-    until FRemoveSingleElement or (Current = nil);
-    AutoPack;
+    Result := Extract(APtr);
+    if Result then
+    begin
+      Extracted := APtr;
+      FreePointer(Extracted);
+    end;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -16581,30 +17576,52 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclPtrBinaryTreeIterator.ClearChildren;
-begin
-  raise EJclOperationNotSupportedError.Create;
-end;
-
 procedure TJclPtrBinaryTreeIterator.DeleteChild(Index: Integer);
 begin
   raise EJclOperationNotSupportedError.Create;
 end;
 
-function TJclPtrBinaryTreeIterator.IteratorEquals(const AIterator: IJclPtrIterator): Boolean;
-var
-  Obj: TObject;
-  ItrObj: TJclPtrBinaryTreeIterator;
+procedure TJclPtrBinaryTreeIterator.DeleteChildren;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is TJclPtrBinaryTreeIterator then
-  begin
-    ItrObj := TJclPtrBinaryTreeIterator(Obj);
-    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclPtrBinaryTreeIterator.Extract;
+var
+  OldCursor: TJclPtrBinaryNode;
+begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnTree.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    OldCursor := FCursor;
+    if OldCursor <> nil then
+    begin
+      repeat
+        FCursor := GetNextCursor;
+      until (FCursor = nil) or FOwnTree.RemoveSingleElement
+        or (not FEqualityComparer.ItemsEqual(OldCursor.Value, FCursor.Value));
+      FOwnTree.Extract(OldCursor.Value);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnTree.WriteUnlock;
   end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclPtrBinaryTreeIterator.ExtractChild(Index: Integer);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclPtrBinaryTreeIterator.ExtractChildren;
+begin
+  raise EJclOperationNotSupportedError.Create;
 end;
 
 function TJclPtrBinaryTreeIterator.GetChild(Index: Integer): Pointer;
@@ -16788,6 +17805,22 @@ end;
 function TJclPtrBinaryTreeIterator.InsertChild(Index: Integer; APtr: Pointer): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclPtrBinaryTreeIterator.IteratorEquals(const AIterator: IJclPtrIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclPtrBinaryTreeIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclPtrBinaryTreeIterator then
+  begin
+    ItrObj := TJclPtrBinaryTreeIterator(Obj);
+    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 function TJclPtrBinaryTreeIterator.Left: Pointer;
@@ -17429,6 +18462,37 @@ begin
     Result.Right := CloneNode(Node.Right, Result); // recursive call
 end;
 
+function TJclBinaryTree.CollectionEquals(const ACollection: IJclCollection): Boolean;
+var
+  It, ItSelf: IJclIterator;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclBinaryTree.Contains(AObject: TObject): Boolean;
 var
   Comp: Integer;
@@ -17486,33 +18550,162 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclBinaryTree.CollectionEquals(const ACollection: IJclCollection): Boolean;
+function TJclBinaryTree.Extract(AObject: TObject): Boolean;
 var
-  It, ItSelf: IJclIterator;
+  Current, Successor: TJclBinaryNode;
+  Comp: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    // locate AObject in the tree
+    Current := FRoot;
+    repeat
+      while Current <> nil do
+      begin
+        Comp := ItemsCompare(AObject, Current.Value);
+        if Comp = 0 then
+          Break
+        else
+        if Comp < 0 then
+         Current := Current.Left
+        else
+          Current := Current.Right;
+      end;
+      if Current = nil then
+        Break;
+      Result := True;
+      // Remove Current from tree
+      if (Current.Left = nil) and (Current.Right <> nil) then
+      begin
+        // remove references to Current
+        Current.Right.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Current.Right
+          else
+            Current.Parent.Right := Current.Right;
+        end
+        else
+          // fix root
+          FRoot := Current.Right;
+        Successor := Current.Parent;
+        if Successor = nil then
+          Successor := FRoot;
+      end
+      else
+      if (Current.Left <> nil) and (Current.Right = nil) then
+      begin
+        // remove references to Current
+        Current.Left.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Current.Left
+          else
+            Current.Parent.Right := Current.Left;
+        end
+        else
+          // fix root
+          FRoot := Current.Left;
+        Successor := Current.Parent;
+        if Successor = nil then
+          Successor := FRoot;
+      end
+      else
+      if (Current.Left <> nil) and (Current.Right <> nil) then
+      begin
+        // find the successor in tree
+        Successor := Current.Right;
+        while Successor.Left <> nil do
+          Successor := Successor.Left;
+
+        if Successor <> Current.Right then
+        begin
+          // remove references to successor
+          Successor.Parent.Left := Successor.Right;
+          if Successor.Right <> nil then
+            Successor.Right.Parent := Successor.Parent;
+          Successor.Right := Current.Right;
+          if Successor.Right <> nil then
+            Successor.Right.Parent := Successor;
+        end;
+
+        // insert successor in new position
+        Successor.Left := Current.Left;
+        if Current.Left <> nil then
+          Current.Left.Parent := Successor;
+        Successor.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Successor
+          else
+            Current.Parent.Right := Successor;
+        end
+        else
+          // fix root
+          FRoot := Successor;
+        Successor := Current.Parent;
+        if Successor <> nil then
+          Successor := FRoot;
+      end
+      else
+      begin
+        // (Current.Left = nil) and (Current.Right = nil)
+        Successor := Current.Parent;
+        if Successor <> nil then
+        begin
+          // remove references from parent
+          if Successor.Left = Current then
+            Successor.Left := nil
+          else
+            Successor.Right := nil;
+        end
+        else
+          FRoot := nil;
+      end;
+      Current.Free;
+      Dec(FSize);
+      Current := Successor;
+    until FRemoveSingleElement or (Current = nil);
+    AutoPack;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclBinaryTree.ExtractAll(const ACollection: IJclCollection): Boolean;
+var
+  It: IJclIterator;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
     Result := True;
     It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -17716,8 +18909,7 @@ end;
 
 function TJclBinaryTree.Remove(AObject: TObject): Boolean;
 var
-  Current, Successor: TJclBinaryNode;
-  Comp: Integer;
+  Extracted: TObject;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -17726,121 +18918,12 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    // locate AObject in the tree
-    Current := FRoot;
-    repeat
-      while Current <> nil do
-      begin
-        Comp := ItemsCompare(AObject, Current.Value);
-        if Comp = 0 then
-          Break
-        else
-        if Comp < 0 then
-         Current := Current.Left
-        else
-          Current := Current.Right;
-      end;
-      if Current = nil then
-        Break;
-      Result := True;
-      // Remove Current from tree
-      if (Current.Left = nil) and (Current.Right <> nil) then
-      begin
-        // remove references to Current
-        Current.Right.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Current.Right
-          else
-            Current.Parent.Right := Current.Right;
-        end
-        else
-          // fix root
-          FRoot := Current.Right;
-        Successor := Current.Parent;
-        if Successor = nil then
-          Successor := FRoot;
-      end
-      else
-      if (Current.Left <> nil) and (Current.Right = nil) then
-      begin
-        // remove references to Current
-        Current.Left.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Current.Left
-          else
-            Current.Parent.Right := Current.Left;
-        end
-        else
-          // fix root
-          FRoot := Current.Left;
-        Successor := Current.Parent;
-        if Successor = nil then
-          Successor := FRoot;
-      end
-      else
-      if (Current.Left <> nil) and (Current.Right <> nil) then
-      begin
-        // find the successor in tree
-        Successor := Current.Right;
-        while Successor.Left <> nil do
-          Successor := Successor.Left;
-
-        if Successor <> Current.Right then
-        begin
-          // remove references to successor
-          Successor.Parent.Left := Successor.Right;
-          if Successor.Right <> nil then
-            Successor.Right.Parent := Successor.Parent;
-          Successor.Right := Current.Right;
-          if Successor.Right <> nil then
-            Successor.Right.Parent := Successor;
-        end;
-
-        // insert successor in new position
-        Successor.Left := Current.Left;
-        if Current.Left <> nil then
-          Current.Left.Parent := Successor;
-        Successor.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Successor
-          else
-            Current.Parent.Right := Successor;
-        end
-        else
-          // fix root
-          FRoot := Successor;
-        Successor := Current.Parent;
-        if Successor <> nil then
-          Successor := FRoot;
-      end
-      else
-      begin
-        // (Current.Left = nil) and (Current.Right = nil)
-        Successor := Current.Parent;
-        if Successor <> nil then
-        begin
-          // remove references from parent
-          if Successor.Left = Current then
-            Successor.Left := nil
-          else
-            Successor.Right := nil;
-        end
-        else
-          FRoot := nil;
-      end;
-      FreeObject(Current.Value);
-      Current.Free;
-      Dec(FSize);
-      Current := Successor;
-    until FRemoveSingleElement or (Current = nil);
-    AutoPack;
+    Result := Extract(AObject);
+    if Result then
+    begin
+      Extracted := AObject;
+      FreeObject(Extracted);
+    end;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -17980,30 +19063,52 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclBinaryTreeIterator.ClearChildren;
-begin
-  raise EJclOperationNotSupportedError.Create;
-end;
-
 procedure TJclBinaryTreeIterator.DeleteChild(Index: Integer);
 begin
   raise EJclOperationNotSupportedError.Create;
 end;
 
-function TJclBinaryTreeIterator.IteratorEquals(const AIterator: IJclIterator): Boolean;
-var
-  Obj: TObject;
-  ItrObj: TJclBinaryTreeIterator;
+procedure TJclBinaryTreeIterator.DeleteChildren;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is TJclBinaryTreeIterator then
-  begin
-    ItrObj := TJclBinaryTreeIterator(Obj);
-    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclBinaryTreeIterator.Extract;
+var
+  OldCursor: TJclBinaryNode;
+begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnTree.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    OldCursor := FCursor;
+    if OldCursor <> nil then
+    begin
+      repeat
+        FCursor := GetNextCursor;
+      until (FCursor = nil) or FOwnTree.RemoveSingleElement
+        or (not FEqualityComparer.ItemsEqual(OldCursor.Value, FCursor.Value));
+      FOwnTree.Extract(OldCursor.Value);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnTree.WriteUnlock;
   end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclBinaryTreeIterator.ExtractChild(Index: Integer);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclBinaryTreeIterator.ExtractChildren;
+begin
+  raise EJclOperationNotSupportedError.Create;
 end;
 
 function TJclBinaryTreeIterator.GetChild(Index: Integer): TObject;
@@ -18187,6 +19292,22 @@ end;
 function TJclBinaryTreeIterator.InsertChild(Index: Integer; AObject: TObject): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclBinaryTreeIterator.IteratorEquals(const AIterator: IJclIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclBinaryTreeIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclBinaryTreeIterator then
+  begin
+    ItrObj := TJclBinaryTreeIterator(Obj);
+    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 function TJclBinaryTreeIterator.Left: TObject;
@@ -18827,6 +19948,37 @@ begin
     Result.Right := CloneNode(Node.Right, Result); // recursive call
 end;
 
+function TJclBinaryTree<T>.CollectionEquals(const ACollection: IJclCollection<T>): Boolean;
+var
+  It, ItSelf: IJclIterator<T>;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclBinaryTree<T>.Contains(const AItem: T): Boolean;
 var
   Comp: Integer;
@@ -18884,33 +20036,162 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclBinaryTree<T>.CollectionEquals(const ACollection: IJclCollection<T>): Boolean;
+function TJclBinaryTree<T>.Extract(const AItem: T): Boolean;
 var
-  It, ItSelf: IJclIterator<T>;
+  Current, Successor: TJclBinaryNode<T>;
+  Comp: Integer;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    // locate AItem in the tree
+    Current := FRoot;
+    repeat
+      while Current <> nil do
+      begin
+        Comp := ItemsCompare(AItem, Current.Value);
+        if Comp = 0 then
+          Break
+        else
+        if Comp < 0 then
+         Current := Current.Left
+        else
+          Current := Current.Right;
+      end;
+      if Current = nil then
+        Break;
+      Result := True;
+      // Remove Current from tree
+      if (Current.Left = nil) and (Current.Right <> nil) then
+      begin
+        // remove references to Current
+        Current.Right.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Current.Right
+          else
+            Current.Parent.Right := Current.Right;
+        end
+        else
+          // fix root
+          FRoot := Current.Right;
+        Successor := Current.Parent;
+        if Successor = nil then
+          Successor := FRoot;
+      end
+      else
+      if (Current.Left <> nil) and (Current.Right = nil) then
+      begin
+        // remove references to Current
+        Current.Left.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Current.Left
+          else
+            Current.Parent.Right := Current.Left;
+        end
+        else
+          // fix root
+          FRoot := Current.Left;
+        Successor := Current.Parent;
+        if Successor = nil then
+          Successor := FRoot;
+      end
+      else
+      if (Current.Left <> nil) and (Current.Right <> nil) then
+      begin
+        // find the successor in tree
+        Successor := Current.Right;
+        while Successor.Left <> nil do
+          Successor := Successor.Left;
+
+        if Successor <> Current.Right then
+        begin
+          // remove references to successor
+          Successor.Parent.Left := Successor.Right;
+          if Successor.Right <> nil then
+            Successor.Right.Parent := Successor.Parent;
+          Successor.Right := Current.Right;
+          if Successor.Right <> nil then
+            Successor.Right.Parent := Successor;
+        end;
+
+        // insert successor in new position
+        Successor.Left := Current.Left;
+        if Current.Left <> nil then
+          Current.Left.Parent := Successor;
+        Successor.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Successor
+          else
+            Current.Parent.Right := Successor;
+        end
+        else
+          // fix root
+          FRoot := Successor;
+        Successor := Current.Parent;
+        if Successor <> nil then
+          Successor := FRoot;
+      end
+      else
+      begin
+        // (Current.Left = nil) and (Current.Right = nil)
+        Successor := Current.Parent;
+        if Successor <> nil then
+        begin
+          // remove references from parent
+          if Successor.Left = Current then
+            Successor.Left := nil
+          else
+            Successor.Right := nil;
+        end
+        else
+          FRoot := nil;
+      end;
+      Current.Free;
+      Dec(FSize);
+      Current := Successor;
+    until FRemoveSingleElement or (Current = nil);
+    AutoPack;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclBinaryTree<T>.ExtractAll(const ACollection: IJclCollection<T>): Boolean;
+var
+  It: IJclIterator<T>;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
     Result := True;
     It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -19114,8 +20395,7 @@ end;
 
 function TJclBinaryTree<T>.Remove(const AItem: T): Boolean;
 var
-  Current, Successor: TJclBinaryNode<T>;
-  Comp: Integer;
+  Extracted: T;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -19124,121 +20404,12 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    // locate AItem in the tree
-    Current := FRoot;
-    repeat
-      while Current <> nil do
-      begin
-        Comp := ItemsCompare(AItem, Current.Value);
-        if Comp = 0 then
-          Break
-        else
-        if Comp < 0 then
-         Current := Current.Left
-        else
-          Current := Current.Right;
-      end;
-      if Current = nil then
-        Break;
-      Result := True;
-      // Remove Current from tree
-      if (Current.Left = nil) and (Current.Right <> nil) then
-      begin
-        // remove references to Current
-        Current.Right.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Current.Right
-          else
-            Current.Parent.Right := Current.Right;
-        end
-        else
-          // fix root
-          FRoot := Current.Right;
-        Successor := Current.Parent;
-        if Successor = nil then
-          Successor := FRoot;
-      end
-      else
-      if (Current.Left <> nil) and (Current.Right = nil) then
-      begin
-        // remove references to Current
-        Current.Left.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Current.Left
-          else
-            Current.Parent.Right := Current.Left;
-        end
-        else
-          // fix root
-          FRoot := Current.Left;
-        Successor := Current.Parent;
-        if Successor = nil then
-          Successor := FRoot;
-      end
-      else
-      if (Current.Left <> nil) and (Current.Right <> nil) then
-      begin
-        // find the successor in tree
-        Successor := Current.Right;
-        while Successor.Left <> nil do
-          Successor := Successor.Left;
-
-        if Successor <> Current.Right then
-        begin
-          // remove references to successor
-          Successor.Parent.Left := Successor.Right;
-          if Successor.Right <> nil then
-            Successor.Right.Parent := Successor.Parent;
-          Successor.Right := Current.Right;
-          if Successor.Right <> nil then
-            Successor.Right.Parent := Successor;
-        end;
-
-        // insert successor in new position
-        Successor.Left := Current.Left;
-        if Current.Left <> nil then
-          Current.Left.Parent := Successor;
-        Successor.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Successor
-          else
-            Current.Parent.Right := Successor;
-        end
-        else
-          // fix root
-          FRoot := Successor;
-        Successor := Current.Parent;
-        if Successor <> nil then
-          Successor := FRoot;
-      end
-      else
-      begin
-        // (Current.Left = nil) and (Current.Right = nil)
-        Successor := Current.Parent;
-        if Successor <> nil then
-        begin
-          // remove references from parent
-          if Successor.Left = Current then
-            Successor.Left := nil
-          else
-            Successor.Right := nil;
-        end
-        else
-          FRoot := nil;
-      end;
-      FreeItem(Current.Value);
-      Current.Free;
-      Dec(FSize);
-      Current := Successor;
-    until FRemoveSingleElement or (Current = nil);
-    AutoPack;
+    Result := Extract(AItem);
+    if Result then
+    begin
+      Extracted := AItem;
+      FreeItem(Extracted);
+    end;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -19372,30 +20543,52 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclBinaryTreeIterator<T>.ClearChildren;
-begin
-  raise EJclOperationNotSupportedError.Create;
-end;
-
 procedure TJclBinaryTreeIterator<T>.DeleteChild(Index: Integer);
 begin
   raise EJclOperationNotSupportedError.Create;
 end;
 
-function TJclBinaryTreeIterator<T>.IteratorEquals(const AIterator: IJclIterator<T>): Boolean;
-var
-  Obj: TObject;
-  ItrObj: TJclBinaryTreeIterator<T>;
+procedure TJclBinaryTreeIterator<T>.DeleteChildren;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is TJclBinaryTreeIterator<T> then
-  begin
-    ItrObj := TJclBinaryTreeIterator<T>(Obj);
-    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclBinaryTreeIterator<T>.Extract;
+var
+  OldCursor: TJclBinaryNode<T>;
+begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnTree.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    OldCursor := FCursor;
+    if OldCursor <> nil then
+    begin
+      repeat
+        FCursor := GetNextCursor;
+      until (FCursor = nil) or FOwnTree.RemoveSingleElement
+        or (not FEqualityComparer.ItemsEqual(OldCursor.Value, FCursor.Value));
+      FOwnTree.Extract(OldCursor.Value);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnTree.WriteUnlock;
   end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclBinaryTreeIterator<T>.ExtractChild(Index: Integer);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclBinaryTreeIterator<T>.ExtractChildren;
+begin
+  raise EJclOperationNotSupportedError.Create;
 end;
 
 function TJclBinaryTreeIterator<T>.GetChild(Index: Integer): T;
@@ -19579,6 +20772,22 @@ end;
 function TJclBinaryTreeIterator<T>.InsertChild(Index: Integer; const AItem: T): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
+end;
+
+function TJclBinaryTreeIterator<T>.IteratorEquals(const AIterator: IJclIterator<T>): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclBinaryTreeIterator<T>;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclBinaryTreeIterator<T> then
+  begin
+    ItrObj := TJclBinaryTreeIterator<T>(Obj);
+    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 function TJclBinaryTreeIterator<T>.Left: T;

@@ -92,7 +92,21 @@ begin
   {$JPPEXPANDMACRO DELEGATEREADEND(FOwnTree)}
 end;
 
-procedure BASEITRCLASSNAME.ClearChildren;
+procedure BASEITRCLASSNAME.DeleteChild(Index: Integer);
+begin
+  {$JPPEXPANDMACRO DELEGATEWRITEBEGIN(FOwnTree)}
+    if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
+      {$IFDEF BCB}
+      FOwnTree.RemoveNode(NODETYPENAME(FCursor.Children[Index]))
+      {$ELSE ~BCB}
+      FOwnTree.RemoveNode(FCursor.Children[Index])
+      {$ENDIF ~BCB}
+    else
+      raise EJclOutOfBoundsError.Create;
+  {$JPPEXPANDMACRO DELEGATEWRITEEND(FOwnTree)}
+end;
+
+procedure BASEITRCLASSNAME.DeleteChildren;
 var
   Index: Integer;
 begin
@@ -101,9 +115,9 @@ begin
     begin
       for Index := FCursor.ChildrenCount - 1 downto 0 do
         {$IFDEF BCB}
-        FOwnTree.ClearNode(NODETYPENAME(FCursor.Children[Index]));
+        FOwnTree.RemoveNode(NODETYPENAME(FCursor.Children[Index]));
         {$ELSE ~BCB}
-        FOwnTree.ClearNode(FCursor.Children[Index]);
+        FOwnTree.RemoveNode(FCursor.Children[Index]);
         {$ENDIF ~BCB}
       SetLength(FCursor.Children, 0);
       FCursor.ChildrenCount := 0;
@@ -111,34 +125,51 @@ begin
   {$JPPEXPANDMACRO DELEGATEWRITEEND(FOwnTree)}
 end;
 
-procedure BASEITRCLASSNAME.DeleteChild(Index: Integer);
+procedure BASEITRCLASSNAME.Extract;
+var
+  OldCursor: NODETYPENAME;
+begin
+  {$JPPEXPANDMACRO DELEGATEWRITEBEGIN(FOwnTree)}
+    CheckValid;
+    Valid := False;
+    OldCursor := FCursor;
+    FCursor := GetNextSibling;
+    if OldCursor <> nil then
+      FOwnTree.ExtractNode(OldCursor);
+  {$JPPEXPANDMACRO DELEGATEWRITEEND(FOwnTree)}
+end;
+
+procedure BASEITRCLASSNAME.ExtractChild(Index: Integer);
 begin
   {$JPPEXPANDMACRO DELEGATEWRITEBEGIN(FOwnTree)}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
       {$IFDEF BCB}
-      FOwnTree.ClearNode(NODETYPENAME(FCursor.Children[Index]))
+      FOwnTree.ExtractNode(NODETYPENAME(FCursor.Children[Index]))
       {$ELSE ~BCB}
-      FOwnTree.ClearNode(FCursor.Children[Index])
+      FOwnTree.ExtractNode(FCursor.Children[Index])
       {$ENDIF ~BCB}
     else
       raise EJclOutOfBoundsError.Create;
   {$JPPEXPANDMACRO DELEGATEWRITEEND(FOwnTree)}
 end;
 
-function BASEITRCLASSNAME.IteratorEquals(const AIterator: STDITRINTERFACENAME): Boolean;
+procedure BASEITRCLASSNAME.ExtractChildren;
 var
-  Obj: TObject;
-  ItrObj: BASEITRCLASSNAME;
+  Index: Integer;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is BASEITRCLASSNAME then
-  begin
-    ItrObj := BASEITRCLASSNAME(Obj);
-    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
-  end;
+  {$JPPEXPANDMACRO DELEGATEWRITEBEGIN(FOwnTree)}
+    if FCursor <> nil then
+    begin
+      for Index := FCursor.ChildrenCount - 1 downto 0 do
+        {$IFDEF BCB}
+        FOwnTree.ExtractNode(NODETYPENAME(FCursor.Children[Index]));
+        {$ELSE ~BCB}
+        FOwnTree.ExtractNode(FCursor.Children[Index]);
+        {$ENDIF ~BCB}
+      SetLength(FCursor.Children, 0);
+      FCursor.ChildrenCount := 0;
+    end;
+  {$JPPEXPANDMACRO DELEGATEWRITEEND(FOwnTree)}
 end;
 
 function BASEITRCLASSNAME.GetChild(Index: Integer): TYPENAME;
@@ -283,6 +314,22 @@ begin
   {$JPPEXPANDMACRO DELEGATEWRITEEND(FOwnTree)}
 end;
 
+function BASEITRCLASSNAME.IteratorEquals(const AIterator: STDITRINTERFACENAME): Boolean;
+var
+  Obj: TObject;
+  ItrObj: BASEITRCLASSNAME;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is BASEITRCLASSNAME then
+  begin
+    ItrObj := BASEITRCLASSNAME(Obj);
+    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
 {$IFDEF SUPPORTS_FOR_IN}
 function BASEITRCLASSNAME.MoveNext: Boolean;
 begin
@@ -364,7 +411,7 @@ begin
     OldCursor := FCursor;
     FCursor := GetNextSibling;
     if OldCursor <> nil then
-      FOwnTree.ClearNode(OldCursor);
+      FOwnTree.RemoveNode(OldCursor);
   {$JPPEXPANDMACRO DELEGATEWRITEEND(FOwnTree)}
 end;
 
@@ -682,41 +729,9 @@ procedure SELFCLASSNAME.Clear;
 begin
   {$JPPEXPANDMACRO WRITEBEGIN}
     if FRoot <> nil then
-      ClearNode(FRoot);
+      RemoveNode(FRoot);
     FSize := 0;
   {$JPPEXPANDMACRO WRITEEND}
-end;
-
-procedure SELFCLASSNAME.ClearNode(var ANode: NODETYPENAME);
-var
-  Index, ChildIndex, NewCapacity: Integer;
-  Parent: NODETYPENAME;
-begin
-  for Index := ANode.ChildrenCount - 1 downto 0 do
-    {$IFDEF BCB}
-    ClearNode(NODETYPENAME(ANode.Children[Index]));
-    {$ELSE ~BCB}
-    ClearNode(ANode.Children[Index]);
-    {$ENDIF ~BCB}
-  RELEASERNAME(ANode.Value);
-  Parent := ANode.Parent;
-  if Parent <> nil then
-  begin
-    ChildIndex := Parent.IndexOfChild(ANode);
-    for Index := ChildIndex + 1 to Parent.ChildrenCount - 1 do
-      Parent.Children[Index - 1] := Parent.Children[Index];
-    Dec(Parent.ChildrenCount);
-    NewCapacity := CalcPackCapacity(Length(Parent.Children), Parent.ChildrenCount);
-    if NewCapacity < Length(Parent.Children) then
-      SetLength(Parent.Children, NewCapacity);
-    FreeAndNil(ANode);
-  end
-  else
-  begin
-    FreeAndNil(ANode);
-    FRoot := nil;
-  end;
-  Dec(FSize);
 end;
 
 function SELFCLASSNAME.CloneNode(Node, Parent: NODETYPENAME): NODETYPENAME;
@@ -730,6 +745,28 @@ begin
   Result.ChildrenCount := Node.ChildrenCount;
   for Index := 0 to Node.ChildrenCount - 1 do
     Result.Children[Index] := CloneNode(NODETYPENAME(Node.Children[Index]), Result); // recursive call
+end;
+
+function SELFCLASSNAME.CollectionEquals(const ACollection: COLLECTIONINTERFACENAME): Boolean;
+var
+  It, ItSelf: STDITRINTERFACENAME;
+begin
+  {$JPPEXPANDMACRO READBEGIN}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$JPPEXPANDMACRO READEND}
 end;
 
 function SELFCLASSNAME.Contains(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
@@ -756,26 +793,70 @@ begin
   {$JPPEXPANDMACRO READEND}
 end;
 
-function SELFCLASSNAME.CollectionEquals(const ACollection: COLLECTIONINTERFACENAME): Boolean;
+function SELFCLASSNAME.Extract(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
 var
-  It, ItSelf: STDITRINTERFACENAME;
+  It: STDITRINTERFACENAME;
 begin
-  {$JPPEXPANDMACRO READBEGIN}
+  {$JPPEXPANDMACRO WRITEBEGIN}
+    Result := FRoot <> nil;
+    if Result then
+    begin
+      It := First;
+      while It.HasNext do
+        if ItemsEqual(It.Next, PARAMETERNAME) then
+      begin
+        It.Extract;
+        if RemoveSingleElement then
+          Break;
+      end;
+    end;
+  {$JPPEXPANDMACRO WRITEEND}
+end;
+
+function SELFCLASSNAME.ExtractAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;
+var
+  It: STDITRINTERFACENAME;
+begin
+  {$JPPEXPANDMACRO WRITEBEGIN}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
     Result := True;
     It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
-  {$JPPEXPANDMACRO READEND}
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
+  {$JPPEXPANDMACRO WRITEEND}
+end;
+
+procedure SELFCLASSNAME.ExtractNode(var ANode: NODETYPENAME);
+var
+  Index, ChildIndex, NewCapacity: Integer;
+  Parent: NODETYPENAME;
+begin
+  for Index := ANode.ChildrenCount - 1 downto 0 do
+    {$IFDEF BCB}
+    ExtractNode(NODETYPENAME(ANode.Children[Index]));
+    {$ELSE ~BCB}
+    ExtractNode(ANode.Children[Index]);
+    {$ENDIF ~BCB}
+  Parent := ANode.Parent;
+  if Parent <> nil then
+  begin
+    ChildIndex := Parent.IndexOfChild(ANode);
+    for Index := ChildIndex + 1 to Parent.ChildrenCount - 1 do
+      Parent.Children[Index - 1] := Parent.Children[Index];
+    Dec(Parent.ChildrenCount);
+    NewCapacity := CalcPackCapacity(Length(Parent.Children), Parent.ChildrenCount);
+    if NewCapacity < Length(Parent.Children) then
+      SetLength(Parent.Children, NewCapacity);
+    FreeAndNil(ANode);
+  end
+  else
+  begin
+    FreeAndNil(ANode);
+    FRoot := nil;
+  end;
+  Dec(FSize);
 end;
 
 function SELFCLASSNAME.First: STDITRINTERFACENAME;
@@ -886,20 +967,14 @@ end;
 
 function SELFCLASSNAME.Remove(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
 var
-  It: STDITRINTERFACENAME;
+  Extracted: TYPENAME;
 begin
   {$JPPEXPANDMACRO WRITEBEGIN}
-    Result := FRoot <> nil;
+    Result := Extract(PARAMETERNAME);
     if Result then
     begin
-      It := First;
-      while It.HasNext do
-        if ItemsEqual(It.Next, PARAMETERNAME) then
-      begin
-        It.Remove;
-        if RemoveSingleElement then
-          Break;
-      end;
+      Extracted := PARAMETERNAME;
+      RELEASERNAME(Extracted);
     end;
   {$JPPEXPANDMACRO WRITEEND}
 end;
@@ -917,6 +992,38 @@ begin
     while It.HasNext do
       Result := Remove(It.Next) and Result;
   {$JPPEXPANDMACRO WRITEEND}
+end;
+
+procedure SELFCLASSNAME.RemoveNode(var ANode: NODETYPENAME);
+var
+  Index, ChildIndex, NewCapacity: Integer;
+  Parent: NODETYPENAME;
+begin
+  for Index := ANode.ChildrenCount - 1 downto 0 do
+    {$IFDEF BCB}
+    RemoveNode(NODETYPENAME(ANode.Children[Index]));
+    {$ELSE ~BCB}
+    RemoveNode(ANode.Children[Index]);
+    {$ENDIF ~BCB}
+  RELEASERNAME(ANode.Value);
+  Parent := ANode.Parent;
+  if Parent <> nil then
+  begin
+    ChildIndex := Parent.IndexOfChild(ANode);
+    for Index := ChildIndex + 1 to Parent.ChildrenCount - 1 do
+      Parent.Children[Index - 1] := Parent.Children[Index];
+    Dec(Parent.ChildrenCount);
+    NewCapacity := CalcPackCapacity(Length(Parent.Children), Parent.ChildrenCount);
+    if NewCapacity < Length(Parent.Children) then
+      SetLength(Parent.Children, NewCapacity);
+    FreeAndNil(ANode);
+  end
+  else
+  begin
+    FreeAndNil(ANode);
+    FRoot := nil;
+  end;
+  Dec(FSize);
 end;
 
 function SELFCLASSNAME.RetainAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;

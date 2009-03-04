@@ -99,33 +99,6 @@ begin
   {$JPPEXPANDMACRO READEND}
 end;
 
-function SELFCLASSNAME.MapEquals(const AMap: STDMAPINTERFACENAME): Boolean;
-var
-  It: KEYITRINTERFACENAME;
-  Index: Integer;
-  AKey: KEYTYPENAME;
-begin
-  {$JPPEXPANDMACRO READBEGIN}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
-  {$JPPEXPANDMACRO READEND}
-end;
-
 function SELFCLASSNAME.FirstKey: KEYTYPENAME;
 begin
   {$JPPEXPANDMACRO READBEGIN}
@@ -136,6 +109,26 @@ begin
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
   {$JPPEXPANDMACRO READEND}
+end;
+
+function SELFCLASSNAME.Extract(KEYCONSTKEYWORDKey: KEYTYPENAME): VALUETYPENAME;
+var
+  Index: Integer;
+begin
+  {$JPPEXPANDMACRO WRITEBEGIN}
+    Index := BinarySearch(Key);
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      Result := FEntries[Index].Value;
+      FreeKey(FEntries[Index].Key);
+      if Index < (FSize - 1) then
+        MoveArray(Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := VALUEDEFAULT;
+  {$JPPEXPANDMACRO WRITEEND}
 end;
 
 function SELFCLASSNAME.GetValue(KEYCONSTKEYWORDKey: KEYTYPENAME): VALUETYPENAME;
@@ -222,6 +215,33 @@ begin
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$JPPEXPANDMACRO READEND}
+end;
+
+function SELFCLASSNAME.MapEquals(const AMap: STDMAPINTERFACENAME): Boolean;
+var
+  It: KEYITRINTERFACENAME;
+  Index: Integer;
+  AKey: KEYTYPENAME;
+begin
+  {$JPPEXPANDMACRO READBEGIN}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    It := AMap.KeySet.First;
+    Index := 0;
+    while It.HasNext do
+    begin
+      if Index >= FSize then
+        Exit;
+      AKey := It.Next;
+      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
+        Exit;
+      Inc(Index);
+    end;
+    Result := True;
   {$JPPEXPANDMACRO READEND}
 end;
 
@@ -345,22 +365,10 @@ begin
 end;
 
 function SELFCLASSNAME.Remove(KEYCONSTKEYWORDKey: KEYTYPENAME): VALUETYPENAME;
-var
-  Index: Integer;
 begin
   {$JPPEXPANDMACRO WRITEBEGIN}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := VALUEDEFAULT;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$JPPEXPANDMACRO WRITEEND}
 end;
 

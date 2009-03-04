@@ -34,20 +34,11 @@ begin
   Result := SELFCLASSNAME.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
-function SELFCLASSNAME.IteratorEquals(const AIterator: ITRINTERFACENAME): Boolean;
-var
-  Obj: TObject;
-  ItrObj: SELFCLASSNAME;
+procedure SELFCLASSNAME.Extract;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is SELFCLASSNAME then
-  begin
-    ItrObj := SELFCLASSNAME(Obj);
-    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
-  end;
+  CheckValid;
+  Valid := False;
+  FOwnList.ExtractIndex(FCursor);
 end;
 
 function SELFCLASSNAME.GETTERNAME: TYPENAME;
@@ -76,6 +67,22 @@ function SELFCLASSNAME.Insert(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
 begin
   CheckValid;
   Result := FOwnList.Insert(FCursor, PARAMETERNAME);
+end;
+
+function SELFCLASSNAME.IteratorEquals(const AIterator: ITRINTERFACENAME): Boolean;
+var
+  Obj: TObject;
+  ItrObj: SELFCLASSNAME;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is SELFCLASSNAME then
+  begin
+    ItrObj := SELFCLASSNAME(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
@@ -233,6 +240,28 @@ begin
   {$JPPEXPANDMACRO WRITEEND}
 end;
 
+function SELFCLASSNAME.CollectionEquals(const ACollection: COLLECTIONINTERFACENAME): Boolean;
+var
+  I: Integer;
+  It: ITRINTERFACENAME;
+begin
+  {$JPPEXPANDMACRO READBEGIN}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    for I := 0 to FSize - 1 do
+      if not ItemsEqual(Items[I], It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$JPPEXPANDMACRO READEND}
+end;
+
 function SELFCLASSNAME.Contains(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
 var
   I: Integer;
@@ -277,26 +306,52 @@ begin
   {$JPPEXPANDMACRO WRITEEND}
 end;
 
-function SELFCLASSNAME.CollectionEquals(const ACollection: COLLECTIONINTERFACENAME): Boolean;
+function SELFCLASSNAME.Extract(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
 var
   I: Integer;
+begin
+  {$JPPEXPANDMACRO WRITEBEGIN}
+    Result := False;
+    for I := FSize - 1 downto 0 do
+      if ItemsEqual(FItems[I], PARAMETERNAME) then
+      begin
+        MoveArray(FItems, I + 1, I, FSize - I);
+        Dec(FSize);
+        Result := True;
+        if FRemoveSingleElement then
+          Break;
+      end;
+  {$JPPEXPANDMACRO WRITEEND}
+end;
+
+function SELFCLASSNAME.ExtractAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;
+var
   It: ITRINTERFACENAME;
 begin
-  {$JPPEXPANDMACRO READBEGIN}
+  {$JPPEXPANDMACRO WRITEBEGIN}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
     Result := True;
     It := ACollection.First;
-    for I := 0 to FSize - 1 do
-      if not ItemsEqual(Items[I], It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
-  {$JPPEXPANDMACRO READEND}
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
+  {$JPPEXPANDMACRO WRITEEND}
+end;
+
+function SELFCLASSNAME.ExtractIndex(Index: Integer): TYPENAME;
+begin
+  {$JPPEXPANDMACRO WRITEBEGIN}
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Result := FItems[Index];
+      MoveArray(FItems, Index + 1, Index, FSize - Index);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := RaiseOutOfBoundsError;
+  {$JPPEXPANDMACRO WRITEEND}
 end;
 
 function SELFCLASSNAME.First: ITRINTERFACENAME;
@@ -422,20 +477,15 @@ end;
 
 function SELFCLASSNAME.Remove(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
 var
-  I: Integer;
+  Extracted: TYPENAME;
 begin
   {$JPPEXPANDMACRO WRITEBEGIN}
-    Result := False;
-    for I := FSize - 1 downto 0 do
-      if ItemsEqual(FItems[I], PARAMETERNAME) then
-      begin
-        RELEASERNAME(FItems[I]); // Force Release
-        MoveArray(FItems, I + 1, I, FSize - I);
-        Dec(FSize);
-        Result := True;
-        if FRemoveSingleElement then
-          Break;
-      end;
+    Result := Extract(PARAMETERNAME);
+    if Result then
+    begin
+      Extracted := PARAMETERNAME;
+      RELEASERNAME(Extracted);
+    end;
   {$JPPEXPANDMACRO WRITEEND}
 end;
 

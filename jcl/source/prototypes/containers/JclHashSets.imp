@@ -49,26 +49,6 @@ begin
   FMap.Clear;
 end;
 
-function SELFCLASSNAME.Contains(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
-begin
-  Result := FMap.ContainsKey(PARAMETERNAME);
-end;
-
-function SELFCLASSNAME.ContainsAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;
-var
-  It: ITRINTERFACENAME;
-begin
-  {$JPPEXPANDMACRO DELEGATEREADBEGIN(FMap)}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while Result and It.HasNext do
-      Result := FMap.ContainsKey(It.Next);
-  {$JPPEXPANDMACRO DELEGATEREADEND(FMap)}
-end;
-
 function SELFCLASSNAME.CollectionEquals(const ACollection: COLLECTIONINTERFACENAME): Boolean;
 var
   It, ItMap: ITRINTERFACENAME;
@@ -89,6 +69,48 @@ begin
         Exit;
       end;
   {$JPPEXPANDMACRO DELEGATEREADEND(FMap)}
+end;
+
+function SELFCLASSNAME.Contains(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
+begin
+  Result := FMap.ContainsKey(PARAMETERNAME);
+end;
+
+function SELFCLASSNAME.ContainsAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;
+var
+  It: ITRINTERFACENAME;
+begin
+  {$JPPEXPANDMACRO DELEGATEREADBEGIN(FMap)}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    while Result and It.HasNext do
+      Result := FMap.ContainsKey(It.Next);
+  {$JPPEXPANDMACRO DELEGATEREADEND(FMap)}
+end;
+
+function SELFCLASSNAME.Extract(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
+begin
+  Result := FMap.Extract(PARAMETERNAME) = RefUnique;
+end;
+
+function SELFCLASSNAME.ExtractAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;
+var
+  It: ITRINTERFACENAME;
+  ARefUnique: TRefUnique;
+begin
+  {$JPPEXPANDMACRO DELEGATEWRITEBEGIN(FMap)}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    ARefUnique := RefUnique;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := (FMap.Extract(It.Next) = ARefUnique) and Result;
+  {$JPPEXPANDMACRO DELEGATEWRITEEND(FMap)}
 end;
 
 function SELFCLASSNAME.First: ITRINTERFACENAME;

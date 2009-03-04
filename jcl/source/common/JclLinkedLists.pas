@@ -78,9 +78,11 @@ type
     function Add(const AInterface: IInterface): Boolean;
     function AddAll(const ACollection: IJclIntfCollection): Boolean;
     procedure Clear;
+    function CollectionEquals(const ACollection: IJclIntfCollection): Boolean;
     function Contains(const AInterface: IInterface): Boolean;
     function ContainsAll(const ACollection: IJclIntfCollection): Boolean;
-    function CollectionEquals(const ACollection: IJclIntfCollection): Boolean;
+    function Extract(const AInterface: IInterface): Boolean;
+    function ExtractAll(const ACollection: IJclIntfCollection): Boolean;
     function First: IJclIntfIterator;
     function IsEmpty: Boolean;
     function Last: IJclIntfIterator;
@@ -92,12 +94,13 @@ type
     function GetEnumerator: IJclIntfIterator;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclIntfList }
-    function Insert(Index: Integer; const AInterface: IInterface): Boolean;
-    function InsertAll(Index: Integer; const ACollection: IJclIntfCollection): Boolean;
+    function Delete(Index: Integer): IInterface;
+    function ExtractIndex(Index: Integer): IInterface;
     function GetObject(Index: Integer): IInterface;
     function IndexOf(const AInterface: IInterface): Integer;
+    function Insert(Index: Integer; const AInterface: IInterface): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclIntfCollection): Boolean;
     function LastIndexOf(const AInterface: IInterface): Integer;
-    function Delete(Index: Integer): IInterface; overload;
     procedure SetObject(Index: Integer; const AInterface: IInterface);
     function SubList(First, Count: Integer): IJclIntfList;
   public
@@ -117,11 +120,12 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     { IJclIntfIterator }
     function Add(const AInterface: IInterface): Boolean;
-    function IteratorEquals(const AIterator: IJclIntfIterator): Boolean;
+    procedure Extract;
     function GetObject: IInterface;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(const AInterface: IInterface): Boolean;
+    function IteratorEquals(const AIterator: IJclIntfIterator): Boolean;
     function Next: IInterface;
     function NextIndex: Integer;
     function Previous: IInterface;
@@ -158,9 +162,11 @@ type
     function Add(const AString: AnsiString): Boolean; override;
     function AddAll(const ACollection: IJclAnsiStrCollection): Boolean; override;
     procedure Clear; override;
+    function CollectionEquals(const ACollection: IJclAnsiStrCollection): Boolean; override;
     function Contains(const AString: AnsiString): Boolean; override;
     function ContainsAll(const ACollection: IJclAnsiStrCollection): Boolean; override;
-    function CollectionEquals(const ACollection: IJclAnsiStrCollection): Boolean; override;
+    function Extract(const AString: AnsiString): Boolean; override;
+    function ExtractAll(const ACollection: IJclAnsiStrCollection): Boolean; override;
     function First: IJclAnsiStrIterator; override;
     function IsEmpty: Boolean; override;
     function Last: IJclAnsiStrIterator; override;
@@ -172,12 +178,13 @@ type
     function GetEnumerator: IJclAnsiStrIterator; override;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclAnsiStrList }
-    function Insert(Index: Integer; const AString: AnsiString): Boolean;
-    function InsertAll(Index: Integer; const ACollection: IJclAnsiStrCollection): Boolean;
+    function Delete(Index: Integer): AnsiString;
+    function ExtractIndex(Index: Integer): AnsiString;
     function GetString(Index: Integer): AnsiString;
     function IndexOf(const AString: AnsiString): Integer;
+    function Insert(Index: Integer; const AString: AnsiString): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclAnsiStrCollection): Boolean;
     function LastIndexOf(const AString: AnsiString): Integer;
-    function Delete(Index: Integer): AnsiString; overload;
     procedure SetString(Index: Integer; const AString: AnsiString);
     function SubList(First, Count: Integer): IJclAnsiStrList;
   public
@@ -197,11 +204,12 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     { IJclAnsiStrIterator }
     function Add(const AString: AnsiString): Boolean;
-    function IteratorEquals(const AIterator: IJclAnsiStrIterator): Boolean;
+    procedure Extract;
     function GetString: AnsiString;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(const AString: AnsiString): Boolean;
+    function IteratorEquals(const AIterator: IJclAnsiStrIterator): Boolean;
     function Next: AnsiString;
     function NextIndex: Integer;
     function Previous: AnsiString;
@@ -238,9 +246,11 @@ type
     function Add(const AString: WideString): Boolean; override;
     function AddAll(const ACollection: IJclWideStrCollection): Boolean; override;
     procedure Clear; override;
+    function CollectionEquals(const ACollection: IJclWideStrCollection): Boolean; override;
     function Contains(const AString: WideString): Boolean; override;
     function ContainsAll(const ACollection: IJclWideStrCollection): Boolean; override;
-    function CollectionEquals(const ACollection: IJclWideStrCollection): Boolean; override;
+    function Extract(const AString: WideString): Boolean; override;
+    function ExtractAll(const ACollection: IJclWideStrCollection): Boolean; override;
     function First: IJclWideStrIterator; override;
     function IsEmpty: Boolean; override;
     function Last: IJclWideStrIterator; override;
@@ -252,12 +262,13 @@ type
     function GetEnumerator: IJclWideStrIterator; override;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclWideStrList }
-    function Insert(Index: Integer; const AString: WideString): Boolean;
-    function InsertAll(Index: Integer; const ACollection: IJclWideStrCollection): Boolean;
+    function Delete(Index: Integer): WideString;
+    function ExtractIndex(Index: Integer): WideString;
     function GetString(Index: Integer): WideString;
     function IndexOf(const AString: WideString): Integer;
+    function Insert(Index: Integer; const AString: WideString): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclWideStrCollection): Boolean;
     function LastIndexOf(const AString: WideString): Integer;
-    function Delete(Index: Integer): WideString; overload;
     procedure SetString(Index: Integer; const AString: WideString);
     function SubList(First, Count: Integer): IJclWideStrList;
   public
@@ -277,11 +288,12 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     { IJclWideStrIterator }
     function Add(const AString: WideString): Boolean;
-    function IteratorEquals(const AIterator: IJclWideStrIterator): Boolean;
+    procedure Extract;
     function GetString: WideString;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(const AString: WideString): Boolean;
+    function IteratorEquals(const AIterator: IJclWideStrIterator): Boolean;
     function Next: WideString;
     function NextIndex: Integer;
     function Previous: WideString;
@@ -319,9 +331,11 @@ type
     function Add(const AString: UnicodeString): Boolean; override;
     function AddAll(const ACollection: IJclUnicodeStrCollection): Boolean; override;
     procedure Clear; override;
+    function CollectionEquals(const ACollection: IJclUnicodeStrCollection): Boolean; override;
     function Contains(const AString: UnicodeString): Boolean; override;
     function ContainsAll(const ACollection: IJclUnicodeStrCollection): Boolean; override;
-    function CollectionEquals(const ACollection: IJclUnicodeStrCollection): Boolean; override;
+    function Extract(const AString: UnicodeString): Boolean; override;
+    function ExtractAll(const ACollection: IJclUnicodeStrCollection): Boolean; override;
     function First: IJclUnicodeStrIterator; override;
     function IsEmpty: Boolean; override;
     function Last: IJclUnicodeStrIterator; override;
@@ -333,12 +347,13 @@ type
     function GetEnumerator: IJclUnicodeStrIterator; override;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclUnicodeStrList }
-    function Insert(Index: Integer; const AString: UnicodeString): Boolean;
-    function InsertAll(Index: Integer; const ACollection: IJclUnicodeStrCollection): Boolean;
+    function Delete(Index: Integer): UnicodeString;
+    function ExtractIndex(Index: Integer): UnicodeString;
     function GetString(Index: Integer): UnicodeString;
     function IndexOf(const AString: UnicodeString): Integer;
+    function Insert(Index: Integer; const AString: UnicodeString): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclUnicodeStrCollection): Boolean;
     function LastIndexOf(const AString: UnicodeString): Integer;
-    function Delete(Index: Integer): UnicodeString; overload;
     procedure SetString(Index: Integer; const AString: UnicodeString);
     function SubList(First, Count: Integer): IJclUnicodeStrList;
   public
@@ -358,11 +373,12 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     { IJclUnicodeStrIterator }
     function Add(const AString: UnicodeString): Boolean;
-    function IteratorEquals(const AIterator: IJclUnicodeStrIterator): Boolean;
+    procedure Extract;
     function GetString: UnicodeString;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(const AString: UnicodeString): Boolean;
+    function IteratorEquals(const AIterator: IJclUnicodeStrIterator): Boolean;
     function Next: UnicodeString;
     function NextIndex: Integer;
     function Previous: UnicodeString;
@@ -410,9 +426,11 @@ type
     function Add(const AValue: Single): Boolean;
     function AddAll(const ACollection: IJclSingleCollection): Boolean;
     procedure Clear;
+    function CollectionEquals(const ACollection: IJclSingleCollection): Boolean;
     function Contains(const AValue: Single): Boolean;
     function ContainsAll(const ACollection: IJclSingleCollection): Boolean;
-    function CollectionEquals(const ACollection: IJclSingleCollection): Boolean;
+    function Extract(const AValue: Single): Boolean;
+    function ExtractAll(const ACollection: IJclSingleCollection): Boolean;
     function First: IJclSingleIterator;
     function IsEmpty: Boolean;
     function Last: IJclSingleIterator;
@@ -424,12 +442,13 @@ type
     function GetEnumerator: IJclSingleIterator;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclSingleList }
-    function Insert(Index: Integer; const AValue: Single): Boolean;
-    function InsertAll(Index: Integer; const ACollection: IJclSingleCollection): Boolean;
+    function Delete(Index: Integer): Single;
+    function ExtractIndex(Index: Integer): Single;
     function GetValue(Index: Integer): Single;
     function IndexOf(const AValue: Single): Integer;
+    function Insert(Index: Integer; const AValue: Single): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclSingleCollection): Boolean;
     function LastIndexOf(const AValue: Single): Integer;
-    function Delete(Index: Integer): Single; overload;
     procedure SetValue(Index: Integer; const AValue: Single);
     function SubList(First, Count: Integer): IJclSingleList;
   public
@@ -449,11 +468,12 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     { IJclSingleIterator }
     function Add(const AValue: Single): Boolean;
-    function IteratorEquals(const AIterator: IJclSingleIterator): Boolean;
+    procedure Extract;
     function GetValue: Single;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(const AValue: Single): Boolean;
+    function IteratorEquals(const AIterator: IJclSingleIterator): Boolean;
     function Next: Single;
     function NextIndex: Integer;
     function Previous: Single;
@@ -490,9 +510,11 @@ type
     function Add(const AValue: Double): Boolean;
     function AddAll(const ACollection: IJclDoubleCollection): Boolean;
     procedure Clear;
+    function CollectionEquals(const ACollection: IJclDoubleCollection): Boolean;
     function Contains(const AValue: Double): Boolean;
     function ContainsAll(const ACollection: IJclDoubleCollection): Boolean;
-    function CollectionEquals(const ACollection: IJclDoubleCollection): Boolean;
+    function Extract(const AValue: Double): Boolean;
+    function ExtractAll(const ACollection: IJclDoubleCollection): Boolean;
     function First: IJclDoubleIterator;
     function IsEmpty: Boolean;
     function Last: IJclDoubleIterator;
@@ -504,12 +526,13 @@ type
     function GetEnumerator: IJclDoubleIterator;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclDoubleList }
-    function Insert(Index: Integer; const AValue: Double): Boolean;
-    function InsertAll(Index: Integer; const ACollection: IJclDoubleCollection): Boolean;
+    function Delete(Index: Integer): Double;
+    function ExtractIndex(Index: Integer): Double;
     function GetValue(Index: Integer): Double;
     function IndexOf(const AValue: Double): Integer;
+    function Insert(Index: Integer; const AValue: Double): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclDoubleCollection): Boolean;
     function LastIndexOf(const AValue: Double): Integer;
-    function Delete(Index: Integer): Double; overload;
     procedure SetValue(Index: Integer; const AValue: Double);
     function SubList(First, Count: Integer): IJclDoubleList;
   public
@@ -529,11 +552,12 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     { IJclDoubleIterator }
     function Add(const AValue: Double): Boolean;
-    function IteratorEquals(const AIterator: IJclDoubleIterator): Boolean;
+    procedure Extract;
     function GetValue: Double;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(const AValue: Double): Boolean;
+    function IteratorEquals(const AIterator: IJclDoubleIterator): Boolean;
     function Next: Double;
     function NextIndex: Integer;
     function Previous: Double;
@@ -570,9 +594,11 @@ type
     function Add(const AValue: Extended): Boolean;
     function AddAll(const ACollection: IJclExtendedCollection): Boolean;
     procedure Clear;
+    function CollectionEquals(const ACollection: IJclExtendedCollection): Boolean;
     function Contains(const AValue: Extended): Boolean;
     function ContainsAll(const ACollection: IJclExtendedCollection): Boolean;
-    function CollectionEquals(const ACollection: IJclExtendedCollection): Boolean;
+    function Extract(const AValue: Extended): Boolean;
+    function ExtractAll(const ACollection: IJclExtendedCollection): Boolean;
     function First: IJclExtendedIterator;
     function IsEmpty: Boolean;
     function Last: IJclExtendedIterator;
@@ -584,12 +610,13 @@ type
     function GetEnumerator: IJclExtendedIterator;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclExtendedList }
-    function Insert(Index: Integer; const AValue: Extended): Boolean;
-    function InsertAll(Index: Integer; const ACollection: IJclExtendedCollection): Boolean;
+    function Delete(Index: Integer): Extended;
+    function ExtractIndex(Index: Integer): Extended;
     function GetValue(Index: Integer): Extended;
     function IndexOf(const AValue: Extended): Integer;
+    function Insert(Index: Integer; const AValue: Extended): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclExtendedCollection): Boolean;
     function LastIndexOf(const AValue: Extended): Integer;
-    function Delete(Index: Integer): Extended; overload;
     procedure SetValue(Index: Integer; const AValue: Extended);
     function SubList(First, Count: Integer): IJclExtendedList;
   public
@@ -609,11 +636,12 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     { IJclExtendedIterator }
     function Add(const AValue: Extended): Boolean;
-    function IteratorEquals(const AIterator: IJclExtendedIterator): Boolean;
+    procedure Extract;
     function GetValue: Extended;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(const AValue: Extended): Boolean;
+    function IteratorEquals(const AIterator: IJclExtendedIterator): Boolean;
     function Next: Extended;
     function NextIndex: Integer;
     function Previous: Extended;
@@ -660,9 +688,11 @@ type
     function Add(AValue: Integer): Boolean;
     function AddAll(const ACollection: IJclIntegerCollection): Boolean;
     procedure Clear;
+    function CollectionEquals(const ACollection: IJclIntegerCollection): Boolean;
     function Contains(AValue: Integer): Boolean;
     function ContainsAll(const ACollection: IJclIntegerCollection): Boolean;
-    function CollectionEquals(const ACollection: IJclIntegerCollection): Boolean;
+    function Extract(AValue: Integer): Boolean;
+    function ExtractAll(const ACollection: IJclIntegerCollection): Boolean;
     function First: IJclIntegerIterator;
     function IsEmpty: Boolean;
     function Last: IJclIntegerIterator;
@@ -674,12 +704,13 @@ type
     function GetEnumerator: IJclIntegerIterator;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclIntegerList }
-    function Insert(Index: Integer; AValue: Integer): Boolean;
-    function InsertAll(Index: Integer; const ACollection: IJclIntegerCollection): Boolean;
+    function Delete(Index: Integer): Integer;
+    function ExtractIndex(Index: Integer): Integer;
     function GetValue(Index: Integer): Integer;
     function IndexOf(AValue: Integer): Integer;
+    function Insert(Index: Integer; AValue: Integer): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclIntegerCollection): Boolean;
     function LastIndexOf(AValue: Integer): Integer;
-    function Delete(Index: Integer): Integer; overload;
     procedure SetValue(Index: Integer; AValue: Integer);
     function SubList(First, Count: Integer): IJclIntegerList;
   public
@@ -699,11 +730,12 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     { IJclIntegerIterator }
     function Add(AValue: Integer): Boolean;
-    function IteratorEquals(const AIterator: IJclIntegerIterator): Boolean;
+    procedure Extract;
     function GetValue: Integer;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(AValue: Integer): Boolean;
+    function IteratorEquals(const AIterator: IJclIntegerIterator): Boolean;
     function Next: Integer;
     function NextIndex: Integer;
     function Previous: Integer;
@@ -740,9 +772,11 @@ type
     function Add(AValue: Cardinal): Boolean;
     function AddAll(const ACollection: IJclCardinalCollection): Boolean;
     procedure Clear;
+    function CollectionEquals(const ACollection: IJclCardinalCollection): Boolean;
     function Contains(AValue: Cardinal): Boolean;
     function ContainsAll(const ACollection: IJclCardinalCollection): Boolean;
-    function CollectionEquals(const ACollection: IJclCardinalCollection): Boolean;
+    function Extract(AValue: Cardinal): Boolean;
+    function ExtractAll(const ACollection: IJclCardinalCollection): Boolean;
     function First: IJclCardinalIterator;
     function IsEmpty: Boolean;
     function Last: IJclCardinalIterator;
@@ -754,12 +788,13 @@ type
     function GetEnumerator: IJclCardinalIterator;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclCardinalList }
-    function Insert(Index: Integer; AValue: Cardinal): Boolean;
-    function InsertAll(Index: Integer; const ACollection: IJclCardinalCollection): Boolean;
+    function Delete(Index: Integer): Cardinal;
+    function ExtractIndex(Index: Integer): Cardinal;
     function GetValue(Index: Integer): Cardinal;
     function IndexOf(AValue: Cardinal): Integer;
+    function Insert(Index: Integer; AValue: Cardinal): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclCardinalCollection): Boolean;
     function LastIndexOf(AValue: Cardinal): Integer;
-    function Delete(Index: Integer): Cardinal; overload;
     procedure SetValue(Index: Integer; AValue: Cardinal);
     function SubList(First, Count: Integer): IJclCardinalList;
   public
@@ -779,11 +814,12 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     { IJclCardinalIterator }
     function Add(AValue: Cardinal): Boolean;
-    function IteratorEquals(const AIterator: IJclCardinalIterator): Boolean;
+    procedure Extract;
     function GetValue: Cardinal;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(AValue: Cardinal): Boolean;
+    function IteratorEquals(const AIterator: IJclCardinalIterator): Boolean;
     function Next: Cardinal;
     function NextIndex: Integer;
     function Previous: Cardinal;
@@ -820,9 +856,11 @@ type
     function Add(const AValue: Int64): Boolean;
     function AddAll(const ACollection: IJclInt64Collection): Boolean;
     procedure Clear;
+    function CollectionEquals(const ACollection: IJclInt64Collection): Boolean;
     function Contains(const AValue: Int64): Boolean;
     function ContainsAll(const ACollection: IJclInt64Collection): Boolean;
-    function CollectionEquals(const ACollection: IJclInt64Collection): Boolean;
+    function Extract(const AValue: Int64): Boolean;
+    function ExtractAll(const ACollection: IJclInt64Collection): Boolean;
     function First: IJclInt64Iterator;
     function IsEmpty: Boolean;
     function Last: IJclInt64Iterator;
@@ -834,12 +872,13 @@ type
     function GetEnumerator: IJclInt64Iterator;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclInt64List }
-    function Insert(Index: Integer; const AValue: Int64): Boolean;
-    function InsertAll(Index: Integer; const ACollection: IJclInt64Collection): Boolean;
+    function Delete(Index: Integer): Int64;
+    function ExtractIndex(Index: Integer): Int64;
     function GetValue(Index: Integer): Int64;
     function IndexOf(const AValue: Int64): Integer;
+    function Insert(Index: Integer; const AValue: Int64): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclInt64Collection): Boolean;
     function LastIndexOf(const AValue: Int64): Integer;
-    function Delete(Index: Integer): Int64; overload;
     procedure SetValue(Index: Integer; const AValue: Int64);
     function SubList(First, Count: Integer): IJclInt64List;
   public
@@ -859,11 +898,12 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     { IJclInt64Iterator }
     function Add(const AValue: Int64): Boolean;
-    function IteratorEquals(const AIterator: IJclInt64Iterator): Boolean;
+    procedure Extract;
     function GetValue: Int64;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(const AValue: Int64): Boolean;
+    function IteratorEquals(const AIterator: IJclInt64Iterator): Boolean;
     function Next: Int64;
     function NextIndex: Integer;
     function Previous: Int64;
@@ -901,9 +941,11 @@ type
     function Add(APtr: Pointer): Boolean;
     function AddAll(const ACollection: IJclPtrCollection): Boolean;
     procedure Clear;
+    function CollectionEquals(const ACollection: IJclPtrCollection): Boolean;
     function Contains(APtr: Pointer): Boolean;
     function ContainsAll(const ACollection: IJclPtrCollection): Boolean;
-    function CollectionEquals(const ACollection: IJclPtrCollection): Boolean;
+    function Extract(APtr: Pointer): Boolean;
+    function ExtractAll(const ACollection: IJclPtrCollection): Boolean;
     function First: IJclPtrIterator;
     function IsEmpty: Boolean;
     function Last: IJclPtrIterator;
@@ -915,12 +957,13 @@ type
     function GetEnumerator: IJclPtrIterator;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclPtrList }
-    function Insert(Index: Integer; APtr: Pointer): Boolean;
-    function InsertAll(Index: Integer; const ACollection: IJclPtrCollection): Boolean;
+    function Delete(Index: Integer): Pointer;
+    function ExtractIndex(Index: Integer): Pointer;
     function GetPointer(Index: Integer): Pointer;
     function IndexOf(APtr: Pointer): Integer;
+    function Insert(Index: Integer; APtr: Pointer): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclPtrCollection): Boolean;
     function LastIndexOf(APtr: Pointer): Integer;
-    function Delete(Index: Integer): Pointer; overload;
     procedure SetPointer(Index: Integer; APtr: Pointer);
     function SubList(First, Count: Integer): IJclPtrList;
   public
@@ -940,11 +983,12 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     { IJclPtrIterator }
     function Add(AValue: Pointer): Boolean;
-    function IteratorEquals(const AIterator: IJclPtrIterator): Boolean;
+    procedure Extract;
     function GetPointer: Pointer;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(AValue: Pointer): Boolean;
+    function IteratorEquals(const AIterator: IJclPtrIterator): Boolean;
     function Next: Pointer;
     function NextIndex: Integer;
     function Previous: Pointer;
@@ -982,9 +1026,11 @@ type
     function Add(AObject: TObject): Boolean;
     function AddAll(const ACollection: IJclCollection): Boolean;
     procedure Clear;
+    function CollectionEquals(const ACollection: IJclCollection): Boolean;
     function Contains(AObject: TObject): Boolean;
     function ContainsAll(const ACollection: IJclCollection): Boolean;
-    function CollectionEquals(const ACollection: IJclCollection): Boolean;
+    function Extract(AObject: TObject): Boolean;
+    function ExtractAll(const ACollection: IJclCollection): Boolean;
     function First: IJclIterator;
     function IsEmpty: Boolean;
     function Last: IJclIterator;
@@ -996,12 +1042,13 @@ type
     function GetEnumerator: IJclIterator;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclList }
-    function Insert(Index: Integer; AObject: TObject): Boolean;
-    function InsertAll(Index: Integer; const ACollection: IJclCollection): Boolean;
+    function Delete(Index: Integer): TObject;
+    function ExtractIndex(Index: Integer): TObject;
     function GetObject(Index: Integer): TObject;
     function IndexOf(AObject: TObject): Integer;
+    function Insert(Index: Integer; AObject: TObject): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclCollection): Boolean;
     function LastIndexOf(AObject: TObject): Integer;
-    function Delete(Index: Integer): TObject; overload;
     procedure SetObject(Index: Integer; AObject: TObject);
     function SubList(First, Count: Integer): IJclList;
   public
@@ -1021,11 +1068,12 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     { IJclIterator }
     function Add(AObject: TObject): Boolean;
-    function IteratorEquals(const AIterator: IJclIterator): Boolean;
+    procedure Extract;
     function GetObject: TObject;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(AObject: TObject): Boolean;
+    function IteratorEquals(const AIterator: IJclIterator): Boolean;
     function Next: TObject;
     function NextIndex: Integer;
     function Previous: TObject;
@@ -1067,9 +1115,11 @@ type
     function Add(const AItem: T): Boolean;
     function AddAll(const ACollection: IJclCollection<T>): Boolean;
     procedure Clear;
+    function CollectionEquals(const ACollection: IJclCollection<T>): Boolean;
     function Contains(const AItem: T): Boolean;
     function ContainsAll(const ACollection: IJclCollection<T>): Boolean;
-    function CollectionEquals(const ACollection: IJclCollection<T>): Boolean;
+    function Extract(const AItem: T): Boolean;
+    function ExtractAll(const ACollection: IJclCollection<T>): Boolean;
     function First: IJclIterator<T>;
     function IsEmpty: Boolean;
     function Last: IJclIterator<T>;
@@ -1081,12 +1131,13 @@ type
     function GetEnumerator: IJclIterator<T>;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclList<T> }
-    function Insert(Index: Integer; const AItem: T): Boolean;
-    function InsertAll(Index: Integer; const ACollection: IJclCollection<T>): Boolean;
+    function Delete(Index: Integer): T;
+    function ExtractIndex(Index: Integer): T;
     function GetItem(Index: Integer): T;
     function IndexOf(const AItem: T): Integer;
+    function Insert(Index: Integer; const AItem: T): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclCollection<T>): Boolean;
     function LastIndexOf(const AItem: T): Integer;
-    function Delete(Index: Integer): T; overload;
     procedure SetItem(Index: Integer; const AItem: T);
     function SubList(First, Count: Integer): IJclList<T>;
   public
@@ -1106,11 +1157,12 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     { IJclIterator<T> }
     function Add(const AItem: T): Boolean;
-    function IteratorEquals(const AIterator: IJclIterator<T>): Boolean;
+    procedure Extract;
     function GetItem: T;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(const AItem: T): Boolean;
+    function IteratorEquals(const AIterator: IJclIterator<T>): Boolean;
     function Next: T;
     function NextIndex: Integer;
     function Previous: T;
@@ -1362,6 +1414,37 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclIntfLinkedList.CollectionEquals(const ACollection: IJclIntfCollection): Boolean;
+var
+  It, ItSelf: IJclIntfIterator;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext and It.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclIntfLinkedList.Contains(const AInterface: IInterface): Boolean;
 var
   Current: TJclIntfLinkedListItem;
@@ -1460,33 +1543,114 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfLinkedList.CollectionEquals(const ACollection: IJclIntfCollection): Boolean;
+function TJclIntfLinkedList.Extract(const AInterface: IInterface): Boolean;
 var
-  It, ItSelf: IJclIntfIterator;
+  Current: TJclIntfLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    if ACollection = nil then
-      Exit;
-    if FSize <> ACollection.Size then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext and It.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
+    Current := FStart;
+    while Current <> nil do
+    begin
+      if ItemsEqual(Current.Value, AInterface) then
       begin
-        Result := False;
-        Break;
+        if Current.Previous <> nil then
+          Current.Previous.Next := Current.Next
+        else
+          FStart := Current.Next;
+        if Current.Next <> nil then
+          Current.Next.Previous := Current.Previous
+        else
+          FEnd := Current.Previous;
+        Current.Free;
+        Dec(FSize);
+        Result := True;
+        if FRemoveSingleElement then
+          Break;
       end;
+      Current := Current.Next;
+    end;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfLinkedList.ExtractAll(const ACollection: IJclIntfCollection): Boolean;
+var
+  It: IJclIntfIterator;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := True;
+    if ACollection = nil then
+      Exit;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfLinkedList.ExtractIndex(Index: Integer): IInterface;
+var
+  Current: TJclIntfLinkedListItem;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := nil;
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Current := FStart;
+      while Current <> nil do
+      begin
+        if Index = 0 then
+        begin
+          if Current.Previous <> nil then
+            Current.Previous.Next := Current.Next
+          else
+            FStart := Current.Next;
+          if Current.Next <> nil then
+            Current.Next.Previous := Current.Previous
+          else
+            FEnd := Current.Previous;
+          Result := Current.Value;
+          Current.Free;
+          Dec(FSize);
+          Break;
+        end;
+        Dec(Index);
+        Current := Current.Next;
+      end;
+    end
+    else
+      raise EJclOutOfBoundsError.Create;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1828,7 +1992,7 @@ end;
 
 function TJclIntfLinkedList.Remove(const AInterface: IInterface): Boolean;
 var
-  Current: TJclIntfLinkedListItem;
+  Extracted: IInterface;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -1837,28 +2001,11 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Current := FStart;
-    while Current <> nil do
+    Result := Extract(AInterface);
+    if Result then
     begin
-      if ItemsEqual(Current.Value, AInterface) then
-      begin
-        if Current.Previous <> nil then
-          Current.Previous.Next := Current.Next
-        else
-          FStart := Current.Next;
-        if Current.Next <> nil then
-          Current.Next.Previous := Current.Previous
-        else
-          FEnd := Current.Previous;
-        FreeObject(Current.Value);
-        Current.Free;
-        Dec(FSize);
-        Result := True;
-        if FRemoveSingleElement then
-          Break;
-      end;
-      Current := Current.Next;
+      Extracted := AInterface;
+      FreeObject(Extracted);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -2051,20 +2198,33 @@ begin
   Result := TJclIntfLinkedListIterator.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
-function TJclIntfLinkedListIterator.IteratorEquals(const AIterator: IJclIntfIterator): Boolean;
+procedure TJclIntfLinkedListIterator.Extract;
 var
-  Obj: TObject;
-  ItrObj: TJclIntfLinkedListIterator;
+  OldCursor: TJclIntfLinkedListItem;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is TJclIntfLinkedListIterator then
-  begin
-    ItrObj := TJclIntfLinkedListIterator(Obj);
-    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  if FOwnList.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnList.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    if FCursor <> nil then
+    begin
+      if FCursor.Next <> nil then
+        FCursor.Next.Previous := FCursor.Previous;
+      if FCursor.Previous <> nil then
+        FCursor.Previous.Next := FCursor.Next;
+      OldCursor := FCursor;
+      FCursor := FCursor.Next;
+      OldCursor.Free;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnList.WriteUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TJclIntfLinkedListIterator.GetObject: IInterface;
@@ -2159,6 +2319,22 @@ begin
     FOwnList.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfLinkedListIterator.IteratorEquals(const AIterator: IJclIntfIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclIntfLinkedListIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclIntfLinkedListIterator then
+  begin
+    ItrObj := TJclIntfLinkedListIterator(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
@@ -2492,6 +2668,37 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclAnsiStrLinkedList.CollectionEquals(const ACollection: IJclAnsiStrCollection): Boolean;
+var
+  It, ItSelf: IJclAnsiStrIterator;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext and It.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclAnsiStrLinkedList.Contains(const AString: AnsiString): Boolean;
 var
   Current: TJclAnsiStrLinkedListItem;
@@ -2590,33 +2797,114 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclAnsiStrLinkedList.CollectionEquals(const ACollection: IJclAnsiStrCollection): Boolean;
+function TJclAnsiStrLinkedList.Extract(const AString: AnsiString): Boolean;
 var
-  It, ItSelf: IJclAnsiStrIterator;
+  Current: TJclAnsiStrLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    if ACollection = nil then
-      Exit;
-    if FSize <> ACollection.Size then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext and It.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
+    Current := FStart;
+    while Current <> nil do
+    begin
+      if ItemsEqual(Current.Value, AString) then
       begin
-        Result := False;
-        Break;
+        if Current.Previous <> nil then
+          Current.Previous.Next := Current.Next
+        else
+          FStart := Current.Next;
+        if Current.Next <> nil then
+          Current.Next.Previous := Current.Previous
+        else
+          FEnd := Current.Previous;
+        Current.Free;
+        Dec(FSize);
+        Result := True;
+        if FRemoveSingleElement then
+          Break;
       end;
+      Current := Current.Next;
+    end;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclAnsiStrLinkedList.ExtractAll(const ACollection: IJclAnsiStrCollection): Boolean;
+var
+  It: IJclAnsiStrIterator;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := True;
+    if ACollection = nil then
+      Exit;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclAnsiStrLinkedList.ExtractIndex(Index: Integer): AnsiString;
+var
+  Current: TJclAnsiStrLinkedListItem;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := '';
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Current := FStart;
+      while Current <> nil do
+      begin
+        if Index = 0 then
+        begin
+          if Current.Previous <> nil then
+            Current.Previous.Next := Current.Next
+          else
+            FStart := Current.Next;
+          if Current.Next <> nil then
+            Current.Next.Previous := Current.Previous
+          else
+            FEnd := Current.Previous;
+          Result := Current.Value;
+          Current.Free;
+          Dec(FSize);
+          Break;
+        end;
+        Dec(Index);
+        Current := Current.Next;
+      end;
+    end
+    else
+      raise EJclOutOfBoundsError.Create;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2958,7 +3246,7 @@ end;
 
 function TJclAnsiStrLinkedList.Remove(const AString: AnsiString): Boolean;
 var
-  Current: TJclAnsiStrLinkedListItem;
+  Extracted: AnsiString;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -2967,28 +3255,11 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Current := FStart;
-    while Current <> nil do
+    Result := Extract(AString);
+    if Result then
     begin
-      if ItemsEqual(Current.Value, AString) then
-      begin
-        if Current.Previous <> nil then
-          Current.Previous.Next := Current.Next
-        else
-          FStart := Current.Next;
-        if Current.Next <> nil then
-          Current.Next.Previous := Current.Previous
-        else
-          FEnd := Current.Previous;
-        FreeString(Current.Value);
-        Current.Free;
-        Dec(FSize);
-        Result := True;
-        if FRemoveSingleElement then
-          Break;
-      end;
-      Current := Current.Next;
+      Extracted := AString;
+      FreeString(Extracted);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -3181,20 +3452,33 @@ begin
   Result := TJclAnsiStrLinkedListIterator.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
-function TJclAnsiStrLinkedListIterator.IteratorEquals(const AIterator: IJclAnsiStrIterator): Boolean;
+procedure TJclAnsiStrLinkedListIterator.Extract;
 var
-  Obj: TObject;
-  ItrObj: TJclAnsiStrLinkedListIterator;
+  OldCursor: TJclAnsiStrLinkedListItem;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is TJclAnsiStrLinkedListIterator then
-  begin
-    ItrObj := TJclAnsiStrLinkedListIterator(Obj);
-    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  if FOwnList.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnList.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    if FCursor <> nil then
+    begin
+      if FCursor.Next <> nil then
+        FCursor.Next.Previous := FCursor.Previous;
+      if FCursor.Previous <> nil then
+        FCursor.Previous.Next := FCursor.Next;
+      OldCursor := FCursor;
+      FCursor := FCursor.Next;
+      OldCursor.Free;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnList.WriteUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TJclAnsiStrLinkedListIterator.GetString: AnsiString;
@@ -3289,6 +3573,22 @@ begin
     FOwnList.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+function TJclAnsiStrLinkedListIterator.IteratorEquals(const AIterator: IJclAnsiStrIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclAnsiStrLinkedListIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclAnsiStrLinkedListIterator then
+  begin
+    ItrObj := TJclAnsiStrLinkedListIterator(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
@@ -3622,6 +3922,37 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclWideStrLinkedList.CollectionEquals(const ACollection: IJclWideStrCollection): Boolean;
+var
+  It, ItSelf: IJclWideStrIterator;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext and It.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclWideStrLinkedList.Contains(const AString: WideString): Boolean;
 var
   Current: TJclWideStrLinkedListItem;
@@ -3720,33 +4051,114 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclWideStrLinkedList.CollectionEquals(const ACollection: IJclWideStrCollection): Boolean;
+function TJclWideStrLinkedList.Extract(const AString: WideString): Boolean;
 var
-  It, ItSelf: IJclWideStrIterator;
+  Current: TJclWideStrLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    if ACollection = nil then
-      Exit;
-    if FSize <> ACollection.Size then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext and It.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
+    Current := FStart;
+    while Current <> nil do
+    begin
+      if ItemsEqual(Current.Value, AString) then
       begin
-        Result := False;
-        Break;
+        if Current.Previous <> nil then
+          Current.Previous.Next := Current.Next
+        else
+          FStart := Current.Next;
+        if Current.Next <> nil then
+          Current.Next.Previous := Current.Previous
+        else
+          FEnd := Current.Previous;
+        Current.Free;
+        Dec(FSize);
+        Result := True;
+        if FRemoveSingleElement then
+          Break;
       end;
+      Current := Current.Next;
+    end;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclWideStrLinkedList.ExtractAll(const ACollection: IJclWideStrCollection): Boolean;
+var
+  It: IJclWideStrIterator;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := True;
+    if ACollection = nil then
+      Exit;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclWideStrLinkedList.ExtractIndex(Index: Integer): WideString;
+var
+  Current: TJclWideStrLinkedListItem;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := '';
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Current := FStart;
+      while Current <> nil do
+      begin
+        if Index = 0 then
+        begin
+          if Current.Previous <> nil then
+            Current.Previous.Next := Current.Next
+          else
+            FStart := Current.Next;
+          if Current.Next <> nil then
+            Current.Next.Previous := Current.Previous
+          else
+            FEnd := Current.Previous;
+          Result := Current.Value;
+          Current.Free;
+          Dec(FSize);
+          Break;
+        end;
+        Dec(Index);
+        Current := Current.Next;
+      end;
+    end
+    else
+      raise EJclOutOfBoundsError.Create;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4088,7 +4500,7 @@ end;
 
 function TJclWideStrLinkedList.Remove(const AString: WideString): Boolean;
 var
-  Current: TJclWideStrLinkedListItem;
+  Extracted: WideString;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -4097,28 +4509,11 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Current := FStart;
-    while Current <> nil do
+    Result := Extract(AString);
+    if Result then
     begin
-      if ItemsEqual(Current.Value, AString) then
-      begin
-        if Current.Previous <> nil then
-          Current.Previous.Next := Current.Next
-        else
-          FStart := Current.Next;
-        if Current.Next <> nil then
-          Current.Next.Previous := Current.Previous
-        else
-          FEnd := Current.Previous;
-        FreeString(Current.Value);
-        Current.Free;
-        Dec(FSize);
-        Result := True;
-        if FRemoveSingleElement then
-          Break;
-      end;
-      Current := Current.Next;
+      Extracted := AString;
+      FreeString(Extracted);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -4311,20 +4706,33 @@ begin
   Result := TJclWideStrLinkedListIterator.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
-function TJclWideStrLinkedListIterator.IteratorEquals(const AIterator: IJclWideStrIterator): Boolean;
+procedure TJclWideStrLinkedListIterator.Extract;
 var
-  Obj: TObject;
-  ItrObj: TJclWideStrLinkedListIterator;
+  OldCursor: TJclWideStrLinkedListItem;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is TJclWideStrLinkedListIterator then
-  begin
-    ItrObj := TJclWideStrLinkedListIterator(Obj);
-    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  if FOwnList.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnList.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    if FCursor <> nil then
+    begin
+      if FCursor.Next <> nil then
+        FCursor.Next.Previous := FCursor.Previous;
+      if FCursor.Previous <> nil then
+        FCursor.Previous.Next := FCursor.Next;
+      OldCursor := FCursor;
+      FCursor := FCursor.Next;
+      OldCursor.Free;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnList.WriteUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TJclWideStrLinkedListIterator.GetString: WideString;
@@ -4419,6 +4827,22 @@ begin
     FOwnList.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+function TJclWideStrLinkedListIterator.IteratorEquals(const AIterator: IJclWideStrIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclWideStrLinkedListIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclWideStrLinkedListIterator then
+  begin
+    ItrObj := TJclWideStrLinkedListIterator(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
@@ -4568,7 +4992,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
 
 {$IFDEF SUPPORTS_UNICODE_STRING}
 //=== { TJclLinkedList<T> } ==================================================
@@ -4754,6 +5177,37 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclUnicodeStrLinkedList.CollectionEquals(const ACollection: IJclUnicodeStrCollection): Boolean;
+var
+  It, ItSelf: IJclUnicodeStrIterator;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext and It.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclUnicodeStrLinkedList.Contains(const AString: UnicodeString): Boolean;
 var
   Current: TJclUnicodeStrLinkedListItem;
@@ -4852,33 +5306,114 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclUnicodeStrLinkedList.CollectionEquals(const ACollection: IJclUnicodeStrCollection): Boolean;
+function TJclUnicodeStrLinkedList.Extract(const AString: UnicodeString): Boolean;
 var
-  It, ItSelf: IJclUnicodeStrIterator;
+  Current: TJclUnicodeStrLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    if ACollection = nil then
-      Exit;
-    if FSize <> ACollection.Size then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext and It.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
+    Current := FStart;
+    while Current <> nil do
+    begin
+      if ItemsEqual(Current.Value, AString) then
       begin
-        Result := False;
-        Break;
+        if Current.Previous <> nil then
+          Current.Previous.Next := Current.Next
+        else
+          FStart := Current.Next;
+        if Current.Next <> nil then
+          Current.Next.Previous := Current.Previous
+        else
+          FEnd := Current.Previous;
+        Current.Free;
+        Dec(FSize);
+        Result := True;
+        if FRemoveSingleElement then
+          Break;
       end;
+      Current := Current.Next;
+    end;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrLinkedList.ExtractAll(const ACollection: IJclUnicodeStrCollection): Boolean;
+var
+  It: IJclUnicodeStrIterator;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := True;
+    if ACollection = nil then
+      Exit;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrLinkedList.ExtractIndex(Index: Integer): UnicodeString;
+var
+  Current: TJclUnicodeStrLinkedListItem;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := '';
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Current := FStart;
+      while Current <> nil do
+      begin
+        if Index = 0 then
+        begin
+          if Current.Previous <> nil then
+            Current.Previous.Next := Current.Next
+          else
+            FStart := Current.Next;
+          if Current.Next <> nil then
+            Current.Next.Previous := Current.Previous
+          else
+            FEnd := Current.Previous;
+          Result := Current.Value;
+          Current.Free;
+          Dec(FSize);
+          Break;
+        end;
+        Dec(Index);
+        Current := Current.Next;
+      end;
+    end
+    else
+      raise EJclOutOfBoundsError.Create;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -5220,7 +5755,7 @@ end;
 
 function TJclUnicodeStrLinkedList.Remove(const AString: UnicodeString): Boolean;
 var
-  Current: TJclUnicodeStrLinkedListItem;
+  Extracted: UnicodeString;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -5229,28 +5764,11 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Current := FStart;
-    while Current <> nil do
+    Result := Extract(AString);
+    if Result then
     begin
-      if ItemsEqual(Current.Value, AString) then
-      begin
-        if Current.Previous <> nil then
-          Current.Previous.Next := Current.Next
-        else
-          FStart := Current.Next;
-        if Current.Next <> nil then
-          Current.Next.Previous := Current.Previous
-        else
-          FEnd := Current.Previous;
-        FreeString(Current.Value);
-        Current.Free;
-        Dec(FSize);
-        Result := True;
-        if FRemoveSingleElement then
-          Break;
-      end;
-      Current := Current.Next;
+      Extracted := AString;
+      FreeString(Extracted);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -5407,7 +5925,6 @@ begin
   AssignPropertiesTo(Result);
 end;
 
-
 //=== { TJclUnicodeStrLinkedListIterator } ============================================================
 
 constructor TJclUnicodeStrLinkedListIterator.Create(const AOwnList: IJclUnicodeStrList; ACursor: TJclUnicodeStrLinkedListItem; AValid: Boolean; AStart: TItrStart);
@@ -5444,20 +5961,33 @@ begin
   Result := TJclUnicodeStrLinkedListIterator.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
-function TJclUnicodeStrLinkedListIterator.IteratorEquals(const AIterator: IJclUnicodeStrIterator): Boolean;
+procedure TJclUnicodeStrLinkedListIterator.Extract;
 var
-  Obj: TObject;
-  ItrObj: TJclUnicodeStrLinkedListIterator;
+  OldCursor: TJclUnicodeStrLinkedListItem;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is TJclUnicodeStrLinkedListIterator then
-  begin
-    ItrObj := TJclUnicodeStrLinkedListIterator(Obj);
-    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  if FOwnList.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnList.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    if FCursor <> nil then
+    begin
+      if FCursor.Next <> nil then
+        FCursor.Next.Previous := FCursor.Previous;
+      if FCursor.Previous <> nil then
+        FCursor.Previous.Next := FCursor.Next;
+      OldCursor := FCursor;
+      FCursor := FCursor.Next;
+      OldCursor.Free;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnList.WriteUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TJclUnicodeStrLinkedListIterator.GetString: UnicodeString;
@@ -5552,6 +6082,22 @@ begin
     FOwnList.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrLinkedListIterator.IteratorEquals(const AIterator: IJclUnicodeStrIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclUnicodeStrLinkedListIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclUnicodeStrLinkedListIterator then
+  begin
+    ItrObj := TJclUnicodeStrLinkedListIterator(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
@@ -5701,7 +6247,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
 {$ENDIF SUPPORTS_UNICODE_STRING}
 
 //=== { TJclLinkedList<T> } ==================================================
@@ -5887,6 +6432,37 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclSingleLinkedList.CollectionEquals(const ACollection: IJclSingleCollection): Boolean;
+var
+  It, ItSelf: IJclSingleIterator;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext and It.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclSingleLinkedList.Contains(const AValue: Single): Boolean;
 var
   Current: TJclSingleLinkedListItem;
@@ -5985,33 +6561,114 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclSingleLinkedList.CollectionEquals(const ACollection: IJclSingleCollection): Boolean;
+function TJclSingleLinkedList.Extract(const AValue: Single): Boolean;
 var
-  It, ItSelf: IJclSingleIterator;
+  Current: TJclSingleLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    if ACollection = nil then
-      Exit;
-    if FSize <> ACollection.Size then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext and It.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
+    Current := FStart;
+    while Current <> nil do
+    begin
+      if ItemsEqual(Current.Value, AValue) then
       begin
-        Result := False;
-        Break;
+        if Current.Previous <> nil then
+          Current.Previous.Next := Current.Next
+        else
+          FStart := Current.Next;
+        if Current.Next <> nil then
+          Current.Next.Previous := Current.Previous
+        else
+          FEnd := Current.Previous;
+        Current.Free;
+        Dec(FSize);
+        Result := True;
+        if FRemoveSingleElement then
+          Break;
       end;
+      Current := Current.Next;
+    end;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleLinkedList.ExtractAll(const ACollection: IJclSingleCollection): Boolean;
+var
+  It: IJclSingleIterator;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := True;
+    if ACollection = nil then
+      Exit;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleLinkedList.ExtractIndex(Index: Integer): Single;
+var
+  Current: TJclSingleLinkedListItem;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0.0;
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Current := FStart;
+      while Current <> nil do
+      begin
+        if Index = 0 then
+        begin
+          if Current.Previous <> nil then
+            Current.Previous.Next := Current.Next
+          else
+            FStart := Current.Next;
+          if Current.Next <> nil then
+            Current.Next.Previous := Current.Previous
+          else
+            FEnd := Current.Previous;
+          Result := Current.Value;
+          Current.Free;
+          Dec(FSize);
+          Break;
+        end;
+        Dec(Index);
+        Current := Current.Next;
+      end;
+    end
+    else
+      raise EJclOutOfBoundsError.Create;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -6353,7 +7010,7 @@ end;
 
 function TJclSingleLinkedList.Remove(const AValue: Single): Boolean;
 var
-  Current: TJclSingleLinkedListItem;
+  Extracted: Single;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -6362,28 +7019,11 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Current := FStart;
-    while Current <> nil do
+    Result := Extract(AValue);
+    if Result then
     begin
-      if ItemsEqual(Current.Value, AValue) then
-      begin
-        if Current.Previous <> nil then
-          Current.Previous.Next := Current.Next
-        else
-          FStart := Current.Next;
-        if Current.Next <> nil then
-          Current.Next.Previous := Current.Previous
-        else
-          FEnd := Current.Previous;
-        FreeSingle(Current.Value);
-        Current.Free;
-        Dec(FSize);
-        Result := True;
-        if FRemoveSingleElement then
-          Break;
-      end;
-      Current := Current.Next;
+      Extracted := AValue;
+      FreeSingle(Extracted);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -6540,6 +7180,7 @@ begin
   AssignPropertiesTo(Result);
 end;
 
+
 //=== { TJclSingleLinkedListIterator } ============================================================
 
 constructor TJclSingleLinkedListIterator.Create(const AOwnList: IJclSingleList; ACursor: TJclSingleLinkedListItem; AValid: Boolean; AStart: TItrStart);
@@ -6576,20 +7217,33 @@ begin
   Result := TJclSingleLinkedListIterator.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
-function TJclSingleLinkedListIterator.IteratorEquals(const AIterator: IJclSingleIterator): Boolean;
+procedure TJclSingleLinkedListIterator.Extract;
 var
-  Obj: TObject;
-  ItrObj: TJclSingleLinkedListIterator;
+  OldCursor: TJclSingleLinkedListItem;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is TJclSingleLinkedListIterator then
-  begin
-    ItrObj := TJclSingleLinkedListIterator(Obj);
-    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  if FOwnList.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnList.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    if FCursor <> nil then
+    begin
+      if FCursor.Next <> nil then
+        FCursor.Next.Previous := FCursor.Previous;
+      if FCursor.Previous <> nil then
+        FCursor.Previous.Next := FCursor.Next;
+      OldCursor := FCursor;
+      FCursor := FCursor.Next;
+      OldCursor.Free;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnList.WriteUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TJclSingleLinkedListIterator.GetValue: Single;
@@ -6684,6 +7338,22 @@ begin
     FOwnList.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleLinkedListIterator.IteratorEquals(const AIterator: IJclSingleIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclSingleLinkedListIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclSingleLinkedListIterator then
+  begin
+    ItrObj := TJclSingleLinkedListIterator(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
@@ -6833,6 +7503,7 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
+
 
 //=== { TJclLinkedList<T> } ==================================================
 
@@ -7017,6 +7688,37 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclDoubleLinkedList.CollectionEquals(const ACollection: IJclDoubleCollection): Boolean;
+var
+  It, ItSelf: IJclDoubleIterator;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext and It.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclDoubleLinkedList.Contains(const AValue: Double): Boolean;
 var
   Current: TJclDoubleLinkedListItem;
@@ -7115,33 +7817,114 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclDoubleLinkedList.CollectionEquals(const ACollection: IJclDoubleCollection): Boolean;
+function TJclDoubleLinkedList.Extract(const AValue: Double): Boolean;
 var
-  It, ItSelf: IJclDoubleIterator;
+  Current: TJclDoubleLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    if ACollection = nil then
-      Exit;
-    if FSize <> ACollection.Size then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext and It.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
+    Current := FStart;
+    while Current <> nil do
+    begin
+      if ItemsEqual(Current.Value, AValue) then
       begin
-        Result := False;
-        Break;
+        if Current.Previous <> nil then
+          Current.Previous.Next := Current.Next
+        else
+          FStart := Current.Next;
+        if Current.Next <> nil then
+          Current.Next.Previous := Current.Previous
+        else
+          FEnd := Current.Previous;
+        Current.Free;
+        Dec(FSize);
+        Result := True;
+        if FRemoveSingleElement then
+          Break;
       end;
+      Current := Current.Next;
+    end;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleLinkedList.ExtractAll(const ACollection: IJclDoubleCollection): Boolean;
+var
+  It: IJclDoubleIterator;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := True;
+    if ACollection = nil then
+      Exit;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleLinkedList.ExtractIndex(Index: Integer): Double;
+var
+  Current: TJclDoubleLinkedListItem;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0.0;
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Current := FStart;
+      while Current <> nil do
+      begin
+        if Index = 0 then
+        begin
+          if Current.Previous <> nil then
+            Current.Previous.Next := Current.Next
+          else
+            FStart := Current.Next;
+          if Current.Next <> nil then
+            Current.Next.Previous := Current.Previous
+          else
+            FEnd := Current.Previous;
+          Result := Current.Value;
+          Current.Free;
+          Dec(FSize);
+          Break;
+        end;
+        Dec(Index);
+        Current := Current.Next;
+      end;
+    end
+    else
+      raise EJclOutOfBoundsError.Create;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -7483,7 +8266,7 @@ end;
 
 function TJclDoubleLinkedList.Remove(const AValue: Double): Boolean;
 var
-  Current: TJclDoubleLinkedListItem;
+  Extracted: Double;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -7492,28 +8275,11 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Current := FStart;
-    while Current <> nil do
+    Result := Extract(AValue);
+    if Result then
     begin
-      if ItemsEqual(Current.Value, AValue) then
-      begin
-        if Current.Previous <> nil then
-          Current.Previous.Next := Current.Next
-        else
-          FStart := Current.Next;
-        if Current.Next <> nil then
-          Current.Next.Previous := Current.Previous
-        else
-          FEnd := Current.Previous;
-        FreeDouble(Current.Value);
-        Current.Free;
-        Dec(FSize);
-        Result := True;
-        if FRemoveSingleElement then
-          Break;
-      end;
-      Current := Current.Next;
+      Extracted := AValue;
+      FreeDouble(Extracted);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -7670,7 +8436,6 @@ begin
   AssignPropertiesTo(Result);
 end;
 
-
 //=== { TJclDoubleLinkedListIterator } ============================================================
 
 constructor TJclDoubleLinkedListIterator.Create(const AOwnList: IJclDoubleList; ACursor: TJclDoubleLinkedListItem; AValid: Boolean; AStart: TItrStart);
@@ -7707,20 +8472,33 @@ begin
   Result := TJclDoubleLinkedListIterator.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
-function TJclDoubleLinkedListIterator.IteratorEquals(const AIterator: IJclDoubleIterator): Boolean;
+procedure TJclDoubleLinkedListIterator.Extract;
 var
-  Obj: TObject;
-  ItrObj: TJclDoubleLinkedListIterator;
+  OldCursor: TJclDoubleLinkedListItem;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is TJclDoubleLinkedListIterator then
-  begin
-    ItrObj := TJclDoubleLinkedListIterator(Obj);
-    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  if FOwnList.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnList.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    if FCursor <> nil then
+    begin
+      if FCursor.Next <> nil then
+        FCursor.Next.Previous := FCursor.Previous;
+      if FCursor.Previous <> nil then
+        FCursor.Previous.Next := FCursor.Next;
+      OldCursor := FCursor;
+      FCursor := FCursor.Next;
+      OldCursor.Free;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnList.WriteUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TJclDoubleLinkedListIterator.GetValue: Double;
@@ -7815,6 +8593,22 @@ begin
     FOwnList.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleLinkedListIterator.IteratorEquals(const AIterator: IJclDoubleIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclDoubleLinkedListIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclDoubleLinkedListIterator then
+  begin
+    ItrObj := TJclDoubleLinkedListIterator(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
@@ -7964,7 +8758,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
 
 //=== { TJclLinkedList<T> } ==================================================
 
@@ -8149,6 +8942,37 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclExtendedLinkedList.CollectionEquals(const ACollection: IJclExtendedCollection): Boolean;
+var
+  It, ItSelf: IJclExtendedIterator;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext and It.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclExtendedLinkedList.Contains(const AValue: Extended): Boolean;
 var
   Current: TJclExtendedLinkedListItem;
@@ -8247,33 +9071,114 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclExtendedLinkedList.CollectionEquals(const ACollection: IJclExtendedCollection): Boolean;
+function TJclExtendedLinkedList.Extract(const AValue: Extended): Boolean;
 var
-  It, ItSelf: IJclExtendedIterator;
+  Current: TJclExtendedLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    if ACollection = nil then
-      Exit;
-    if FSize <> ACollection.Size then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext and It.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
+    Current := FStart;
+    while Current <> nil do
+    begin
+      if ItemsEqual(Current.Value, AValue) then
       begin
-        Result := False;
-        Break;
+        if Current.Previous <> nil then
+          Current.Previous.Next := Current.Next
+        else
+          FStart := Current.Next;
+        if Current.Next <> nil then
+          Current.Next.Previous := Current.Previous
+        else
+          FEnd := Current.Previous;
+        Current.Free;
+        Dec(FSize);
+        Result := True;
+        if FRemoveSingleElement then
+          Break;
       end;
+      Current := Current.Next;
+    end;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedLinkedList.ExtractAll(const ACollection: IJclExtendedCollection): Boolean;
+var
+  It: IJclExtendedIterator;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := True;
+    if ACollection = nil then
+      Exit;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedLinkedList.ExtractIndex(Index: Integer): Extended;
+var
+  Current: TJclExtendedLinkedListItem;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0.0;
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Current := FStart;
+      while Current <> nil do
+      begin
+        if Index = 0 then
+        begin
+          if Current.Previous <> nil then
+            Current.Previous.Next := Current.Next
+          else
+            FStart := Current.Next;
+          if Current.Next <> nil then
+            Current.Next.Previous := Current.Previous
+          else
+            FEnd := Current.Previous;
+          Result := Current.Value;
+          Current.Free;
+          Dec(FSize);
+          Break;
+        end;
+        Dec(Index);
+        Current := Current.Next;
+      end;
+    end
+    else
+      raise EJclOutOfBoundsError.Create;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -8615,7 +9520,7 @@ end;
 
 function TJclExtendedLinkedList.Remove(const AValue: Extended): Boolean;
 var
-  Current: TJclExtendedLinkedListItem;
+  Extracted: Extended;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -8624,28 +9529,11 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Current := FStart;
-    while Current <> nil do
+    Result := Extract(AValue);
+    if Result then
     begin
-      if ItemsEqual(Current.Value, AValue) then
-      begin
-        if Current.Previous <> nil then
-          Current.Previous.Next := Current.Next
-        else
-          FStart := Current.Next;
-        if Current.Next <> nil then
-          Current.Next.Previous := Current.Previous
-        else
-          FEnd := Current.Previous;
-        FreeExtended(Current.Value);
-        Current.Free;
-        Dec(FSize);
-        Result := True;
-        if FRemoveSingleElement then
-          Break;
-      end;
-      Current := Current.Next;
+      Extracted := AValue;
+      FreeExtended(Extracted);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -8802,7 +9690,6 @@ begin
   AssignPropertiesTo(Result);
 end;
 
-
 //=== { TJclExtendedLinkedListIterator } ============================================================
 
 constructor TJclExtendedLinkedListIterator.Create(const AOwnList: IJclExtendedList; ACursor: TJclExtendedLinkedListItem; AValid: Boolean; AStart: TItrStart);
@@ -8839,20 +9726,33 @@ begin
   Result := TJclExtendedLinkedListIterator.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
-function TJclExtendedLinkedListIterator.IteratorEquals(const AIterator: IJclExtendedIterator): Boolean;
+procedure TJclExtendedLinkedListIterator.Extract;
 var
-  Obj: TObject;
-  ItrObj: TJclExtendedLinkedListIterator;
+  OldCursor: TJclExtendedLinkedListItem;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is TJclExtendedLinkedListIterator then
-  begin
-    ItrObj := TJclExtendedLinkedListIterator(Obj);
-    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  if FOwnList.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnList.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    if FCursor <> nil then
+    begin
+      if FCursor.Next <> nil then
+        FCursor.Next.Previous := FCursor.Previous;
+      if FCursor.Previous <> nil then
+        FCursor.Previous.Next := FCursor.Next;
+      OldCursor := FCursor;
+      FCursor := FCursor.Next;
+      OldCursor.Free;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnList.WriteUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TJclExtendedLinkedListIterator.GetValue: Extended;
@@ -8947,6 +9847,22 @@ begin
     FOwnList.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedLinkedListIterator.IteratorEquals(const AIterator: IJclExtendedIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclExtendedLinkedListIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclExtendedLinkedListIterator then
+  begin
+    ItrObj := TJclExtendedLinkedListIterator(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
@@ -9280,6 +10196,37 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclIntegerLinkedList.CollectionEquals(const ACollection: IJclIntegerCollection): Boolean;
+var
+  It, ItSelf: IJclIntegerIterator;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext and It.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclIntegerLinkedList.Contains(AValue: Integer): Boolean;
 var
   Current: TJclIntegerLinkedListItem;
@@ -9378,33 +10325,114 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntegerLinkedList.CollectionEquals(const ACollection: IJclIntegerCollection): Boolean;
+function TJclIntegerLinkedList.Extract(AValue: Integer): Boolean;
 var
-  It, ItSelf: IJclIntegerIterator;
+  Current: TJclIntegerLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    if ACollection = nil then
-      Exit;
-    if FSize <> ACollection.Size then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext and It.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
+    Current := FStart;
+    while Current <> nil do
+    begin
+      if ItemsEqual(Current.Value, AValue) then
       begin
-        Result := False;
-        Break;
+        if Current.Previous <> nil then
+          Current.Previous.Next := Current.Next
+        else
+          FStart := Current.Next;
+        if Current.Next <> nil then
+          Current.Next.Previous := Current.Previous
+        else
+          FEnd := Current.Previous;
+        Current.Free;
+        Dec(FSize);
+        Result := True;
+        if FRemoveSingleElement then
+          Break;
       end;
+      Current := Current.Next;
+    end;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerLinkedList.ExtractAll(const ACollection: IJclIntegerCollection): Boolean;
+var
+  It: IJclIntegerIterator;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := True;
+    if ACollection = nil then
+      Exit;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerLinkedList.ExtractIndex(Index: Integer): Integer;
+var
+  Current: TJclIntegerLinkedListItem;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0;
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Current := FStart;
+      while Current <> nil do
+      begin
+        if Index = 0 then
+        begin
+          if Current.Previous <> nil then
+            Current.Previous.Next := Current.Next
+          else
+            FStart := Current.Next;
+          if Current.Next <> nil then
+            Current.Next.Previous := Current.Previous
+          else
+            FEnd := Current.Previous;
+          Result := Current.Value;
+          Current.Free;
+          Dec(FSize);
+          Break;
+        end;
+        Dec(Index);
+        Current := Current.Next;
+      end;
+    end
+    else
+      raise EJclOutOfBoundsError.Create;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -9746,7 +10774,7 @@ end;
 
 function TJclIntegerLinkedList.Remove(AValue: Integer): Boolean;
 var
-  Current: TJclIntegerLinkedListItem;
+  Extracted: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -9755,28 +10783,11 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Current := FStart;
-    while Current <> nil do
+    Result := Extract(AValue);
+    if Result then
     begin
-      if ItemsEqual(Current.Value, AValue) then
-      begin
-        if Current.Previous <> nil then
-          Current.Previous.Next := Current.Next
-        else
-          FStart := Current.Next;
-        if Current.Next <> nil then
-          Current.Next.Previous := Current.Previous
-        else
-          FEnd := Current.Previous;
-        FreeInteger(Current.Value);
-        Current.Free;
-        Dec(FSize);
-        Result := True;
-        if FRemoveSingleElement then
-          Break;
-      end;
-      Current := Current.Next;
+      Extracted := AValue;
+      FreeInteger(Extracted);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -9969,20 +10980,33 @@ begin
   Result := TJclIntegerLinkedListIterator.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
-function TJclIntegerLinkedListIterator.IteratorEquals(const AIterator: IJclIntegerIterator): Boolean;
+procedure TJclIntegerLinkedListIterator.Extract;
 var
-  Obj: TObject;
-  ItrObj: TJclIntegerLinkedListIterator;
+  OldCursor: TJclIntegerLinkedListItem;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is TJclIntegerLinkedListIterator then
-  begin
-    ItrObj := TJclIntegerLinkedListIterator(Obj);
-    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  if FOwnList.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnList.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    if FCursor <> nil then
+    begin
+      if FCursor.Next <> nil then
+        FCursor.Next.Previous := FCursor.Previous;
+      if FCursor.Previous <> nil then
+        FCursor.Previous.Next := FCursor.Next;
+      OldCursor := FCursor;
+      FCursor := FCursor.Next;
+      OldCursor.Free;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnList.WriteUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TJclIntegerLinkedListIterator.GetValue: Integer;
@@ -10077,6 +11101,22 @@ begin
     FOwnList.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerLinkedListIterator.IteratorEquals(const AIterator: IJclIntegerIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclIntegerLinkedListIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclIntegerLinkedListIterator then
+  begin
+    ItrObj := TJclIntegerLinkedListIterator(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
@@ -10410,6 +11450,37 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclCardinalLinkedList.CollectionEquals(const ACollection: IJclCardinalCollection): Boolean;
+var
+  It, ItSelf: IJclCardinalIterator;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext and It.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclCardinalLinkedList.Contains(AValue: Cardinal): Boolean;
 var
   Current: TJclCardinalLinkedListItem;
@@ -10508,33 +11579,114 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclCardinalLinkedList.CollectionEquals(const ACollection: IJclCardinalCollection): Boolean;
+function TJclCardinalLinkedList.Extract(AValue: Cardinal): Boolean;
 var
-  It, ItSelf: IJclCardinalIterator;
+  Current: TJclCardinalLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    if ACollection = nil then
-      Exit;
-    if FSize <> ACollection.Size then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext and It.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
+    Current := FStart;
+    while Current <> nil do
+    begin
+      if ItemsEqual(Current.Value, AValue) then
       begin
-        Result := False;
-        Break;
+        if Current.Previous <> nil then
+          Current.Previous.Next := Current.Next
+        else
+          FStart := Current.Next;
+        if Current.Next <> nil then
+          Current.Next.Previous := Current.Previous
+        else
+          FEnd := Current.Previous;
+        Current.Free;
+        Dec(FSize);
+        Result := True;
+        if FRemoveSingleElement then
+          Break;
       end;
+      Current := Current.Next;
+    end;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalLinkedList.ExtractAll(const ACollection: IJclCardinalCollection): Boolean;
+var
+  It: IJclCardinalIterator;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := True;
+    if ACollection = nil then
+      Exit;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalLinkedList.ExtractIndex(Index: Integer): Cardinal;
+var
+  Current: TJclCardinalLinkedListItem;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0;
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Current := FStart;
+      while Current <> nil do
+      begin
+        if Index = 0 then
+        begin
+          if Current.Previous <> nil then
+            Current.Previous.Next := Current.Next
+          else
+            FStart := Current.Next;
+          if Current.Next <> nil then
+            Current.Next.Previous := Current.Previous
+          else
+            FEnd := Current.Previous;
+          Result := Current.Value;
+          Current.Free;
+          Dec(FSize);
+          Break;
+        end;
+        Dec(Index);
+        Current := Current.Next;
+      end;
+    end
+    else
+      raise EJclOutOfBoundsError.Create;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -10876,7 +12028,7 @@ end;
 
 function TJclCardinalLinkedList.Remove(AValue: Cardinal): Boolean;
 var
-  Current: TJclCardinalLinkedListItem;
+  Extracted: Cardinal;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -10885,28 +12037,11 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Current := FStart;
-    while Current <> nil do
+    Result := Extract(AValue);
+    if Result then
     begin
-      if ItemsEqual(Current.Value, AValue) then
-      begin
-        if Current.Previous <> nil then
-          Current.Previous.Next := Current.Next
-        else
-          FStart := Current.Next;
-        if Current.Next <> nil then
-          Current.Next.Previous := Current.Previous
-        else
-          FEnd := Current.Previous;
-        FreeCardinal(Current.Value);
-        Current.Free;
-        Dec(FSize);
-        Result := True;
-        if FRemoveSingleElement then
-          Break;
-      end;
-      Current := Current.Next;
+      Extracted := AValue;
+      FreeCardinal(Extracted);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -11099,20 +12234,33 @@ begin
   Result := TJclCardinalLinkedListIterator.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
-function TJclCardinalLinkedListIterator.IteratorEquals(const AIterator: IJclCardinalIterator): Boolean;
+procedure TJclCardinalLinkedListIterator.Extract;
 var
-  Obj: TObject;
-  ItrObj: TJclCardinalLinkedListIterator;
+  OldCursor: TJclCardinalLinkedListItem;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is TJclCardinalLinkedListIterator then
-  begin
-    ItrObj := TJclCardinalLinkedListIterator(Obj);
-    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  if FOwnList.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnList.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    if FCursor <> nil then
+    begin
+      if FCursor.Next <> nil then
+        FCursor.Next.Previous := FCursor.Previous;
+      if FCursor.Previous <> nil then
+        FCursor.Previous.Next := FCursor.Next;
+      OldCursor := FCursor;
+      FCursor := FCursor.Next;
+      OldCursor.Free;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnList.WriteUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TJclCardinalLinkedListIterator.GetValue: Cardinal;
@@ -11207,6 +12355,22 @@ begin
     FOwnList.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalLinkedListIterator.IteratorEquals(const AIterator: IJclCardinalIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclCardinalLinkedListIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclCardinalLinkedListIterator then
+  begin
+    ItrObj := TJclCardinalLinkedListIterator(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
@@ -11540,6 +12704,37 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclInt64LinkedList.CollectionEquals(const ACollection: IJclInt64Collection): Boolean;
+var
+  It, ItSelf: IJclInt64Iterator;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext and It.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclInt64LinkedList.Contains(const AValue: Int64): Boolean;
 var
   Current: TJclInt64LinkedListItem;
@@ -11638,33 +12833,114 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclInt64LinkedList.CollectionEquals(const ACollection: IJclInt64Collection): Boolean;
+function TJclInt64LinkedList.Extract(const AValue: Int64): Boolean;
 var
-  It, ItSelf: IJclInt64Iterator;
+  Current: TJclInt64LinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    if ACollection = nil then
-      Exit;
-    if FSize <> ACollection.Size then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext and It.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
+    Current := FStart;
+    while Current <> nil do
+    begin
+      if ItemsEqual(Current.Value, AValue) then
       begin
-        Result := False;
-        Break;
+        if Current.Previous <> nil then
+          Current.Previous.Next := Current.Next
+        else
+          FStart := Current.Next;
+        if Current.Next <> nil then
+          Current.Next.Previous := Current.Previous
+        else
+          FEnd := Current.Previous;
+        Current.Free;
+        Dec(FSize);
+        Result := True;
+        if FRemoveSingleElement then
+          Break;
       end;
+      Current := Current.Next;
+    end;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64LinkedList.ExtractAll(const ACollection: IJclInt64Collection): Boolean;
+var
+  It: IJclInt64Iterator;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := True;
+    if ACollection = nil then
+      Exit;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64LinkedList.ExtractIndex(Index: Integer): Int64;
+var
+  Current: TJclInt64LinkedListItem;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0;
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Current := FStart;
+      while Current <> nil do
+      begin
+        if Index = 0 then
+        begin
+          if Current.Previous <> nil then
+            Current.Previous.Next := Current.Next
+          else
+            FStart := Current.Next;
+          if Current.Next <> nil then
+            Current.Next.Previous := Current.Previous
+          else
+            FEnd := Current.Previous;
+          Result := Current.Value;
+          Current.Free;
+          Dec(FSize);
+          Break;
+        end;
+        Dec(Index);
+        Current := Current.Next;
+      end;
+    end
+    else
+      raise EJclOutOfBoundsError.Create;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -12006,7 +13282,7 @@ end;
 
 function TJclInt64LinkedList.Remove(const AValue: Int64): Boolean;
 var
-  Current: TJclInt64LinkedListItem;
+  Extracted: Int64;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -12015,28 +13291,11 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Current := FStart;
-    while Current <> nil do
+    Result := Extract(AValue);
+    if Result then
     begin
-      if ItemsEqual(Current.Value, AValue) then
-      begin
-        if Current.Previous <> nil then
-          Current.Previous.Next := Current.Next
-        else
-          FStart := Current.Next;
-        if Current.Next <> nil then
-          Current.Next.Previous := Current.Previous
-        else
-          FEnd := Current.Previous;
-        FreeInt64(Current.Value);
-        Current.Free;
-        Dec(FSize);
-        Result := True;
-        if FRemoveSingleElement then
-          Break;
-      end;
-      Current := Current.Next;
+      Extracted := AValue;
+      FreeInt64(Extracted);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -12229,20 +13488,33 @@ begin
   Result := TJclInt64LinkedListIterator.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
-function TJclInt64LinkedListIterator.IteratorEquals(const AIterator: IJclInt64Iterator): Boolean;
+procedure TJclInt64LinkedListIterator.Extract;
 var
-  Obj: TObject;
-  ItrObj: TJclInt64LinkedListIterator;
+  OldCursor: TJclInt64LinkedListItem;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is TJclInt64LinkedListIterator then
-  begin
-    ItrObj := TJclInt64LinkedListIterator(Obj);
-    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  if FOwnList.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnList.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    if FCursor <> nil then
+    begin
+      if FCursor.Next <> nil then
+        FCursor.Next.Previous := FCursor.Previous;
+      if FCursor.Previous <> nil then
+        FCursor.Previous.Next := FCursor.Next;
+      OldCursor := FCursor;
+      FCursor := FCursor.Next;
+      OldCursor.Free;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnList.WriteUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TJclInt64LinkedListIterator.GetValue: Int64;
@@ -12337,6 +13609,22 @@ begin
     FOwnList.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64LinkedListIterator.IteratorEquals(const AIterator: IJclInt64Iterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclInt64LinkedListIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclInt64LinkedListIterator then
+  begin
+    ItrObj := TJclInt64LinkedListIterator(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
@@ -12671,6 +13959,37 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclPtrLinkedList.CollectionEquals(const ACollection: IJclPtrCollection): Boolean;
+var
+  It, ItSelf: IJclPtrIterator;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext and It.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclPtrLinkedList.Contains(APtr: Pointer): Boolean;
 var
   Current: TJclPtrLinkedListItem;
@@ -12769,33 +14088,114 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclPtrLinkedList.CollectionEquals(const ACollection: IJclPtrCollection): Boolean;
+function TJclPtrLinkedList.Extract(APtr: Pointer): Boolean;
 var
-  It, ItSelf: IJclPtrIterator;
+  Current: TJclPtrLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    if ACollection = nil then
-      Exit;
-    if FSize <> ACollection.Size then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext and It.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
+    Current := FStart;
+    while Current <> nil do
+    begin
+      if ItemsEqual(Current.Value, APtr) then
       begin
-        Result := False;
-        Break;
+        if Current.Previous <> nil then
+          Current.Previous.Next := Current.Next
+        else
+          FStart := Current.Next;
+        if Current.Next <> nil then
+          Current.Next.Previous := Current.Previous
+        else
+          FEnd := Current.Previous;
+        Current.Free;
+        Dec(FSize);
+        Result := True;
+        if FRemoveSingleElement then
+          Break;
       end;
+      Current := Current.Next;
+    end;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrLinkedList.ExtractAll(const ACollection: IJclPtrCollection): Boolean;
+var
+  It: IJclPtrIterator;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := True;
+    if ACollection = nil then
+      Exit;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrLinkedList.ExtractIndex(Index: Integer): Pointer;
+var
+  Current: TJclPtrLinkedListItem;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := nil;
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Current := FStart;
+      while Current <> nil do
+      begin
+        if Index = 0 then
+        begin
+          if Current.Previous <> nil then
+            Current.Previous.Next := Current.Next
+          else
+            FStart := Current.Next;
+          if Current.Next <> nil then
+            Current.Next.Previous := Current.Previous
+          else
+            FEnd := Current.Previous;
+          Result := Current.Value;
+          Current.Free;
+          Dec(FSize);
+          Break;
+        end;
+        Dec(Index);
+        Current := Current.Next;
+      end;
+    end
+    else
+      raise EJclOutOfBoundsError.Create;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -13137,7 +14537,7 @@ end;
 
 function TJclPtrLinkedList.Remove(APtr: Pointer): Boolean;
 var
-  Current: TJclPtrLinkedListItem;
+  Extracted: Pointer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -13146,28 +14546,11 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Current := FStart;
-    while Current <> nil do
+    Result := Extract(APtr);
+    if Result then
     begin
-      if ItemsEqual(Current.Value, APtr) then
-      begin
-        if Current.Previous <> nil then
-          Current.Previous.Next := Current.Next
-        else
-          FStart := Current.Next;
-        if Current.Next <> nil then
-          Current.Next.Previous := Current.Previous
-        else
-          FEnd := Current.Previous;
-        FreePointer(Current.Value);
-        Current.Free;
-        Dec(FSize);
-        Result := True;
-        if FRemoveSingleElement then
-          Break;
-      end;
-      Current := Current.Next;
+      Extracted := APtr;
+      FreePointer(Extracted);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -13360,20 +14743,33 @@ begin
   Result := TJclPtrLinkedListIterator.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
-function TJclPtrLinkedListIterator.IteratorEquals(const AIterator: IJclPtrIterator): Boolean;
+procedure TJclPtrLinkedListIterator.Extract;
 var
-  Obj: TObject;
-  ItrObj: TJclPtrLinkedListIterator;
+  OldCursor: TJclPtrLinkedListItem;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is TJclPtrLinkedListIterator then
-  begin
-    ItrObj := TJclPtrLinkedListIterator(Obj);
-    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  if FOwnList.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnList.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    if FCursor <> nil then
+    begin
+      if FCursor.Next <> nil then
+        FCursor.Next.Previous := FCursor.Previous;
+      if FCursor.Previous <> nil then
+        FCursor.Previous.Next := FCursor.Next;
+      OldCursor := FCursor;
+      FCursor := FCursor.Next;
+      OldCursor.Free;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnList.WriteUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TJclPtrLinkedListIterator.GetPointer: Pointer;
@@ -13468,6 +14864,22 @@ begin
     FOwnList.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrLinkedListIterator.IteratorEquals(const AIterator: IJclPtrIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclPtrLinkedListIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclPtrLinkedListIterator then
+  begin
+    ItrObj := TJclPtrLinkedListIterator(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
@@ -13802,6 +15214,37 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclLinkedList.CollectionEquals(const ACollection: IJclCollection): Boolean;
+var
+  It, ItSelf: IJclIterator;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext and It.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclLinkedList.Contains(AObject: TObject): Boolean;
 var
   Current: TJclLinkedListItem;
@@ -13900,33 +15343,114 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclLinkedList.CollectionEquals(const ACollection: IJclCollection): Boolean;
+function TJclLinkedList.Extract(AObject: TObject): Boolean;
 var
-  It, ItSelf: IJclIterator;
+  Current: TJclLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    if ACollection = nil then
-      Exit;
-    if FSize <> ACollection.Size then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext and It.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
+    Current := FStart;
+    while Current <> nil do
+    begin
+      if ItemsEqual(Current.Value, AObject) then
       begin
-        Result := False;
-        Break;
+        if Current.Previous <> nil then
+          Current.Previous.Next := Current.Next
+        else
+          FStart := Current.Next;
+        if Current.Next <> nil then
+          Current.Next.Previous := Current.Previous
+        else
+          FEnd := Current.Previous;
+        Current.Free;
+        Dec(FSize);
+        Result := True;
+        if FRemoveSingleElement then
+          Break;
       end;
+      Current := Current.Next;
+    end;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclLinkedList.ExtractAll(const ACollection: IJclCollection): Boolean;
+var
+  It: IJclIterator;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := True;
+    if ACollection = nil then
+      Exit;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclLinkedList.ExtractIndex(Index: Integer): TObject;
+var
+  Current: TJclLinkedListItem;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := nil;
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Current := FStart;
+      while Current <> nil do
+      begin
+        if Index = 0 then
+        begin
+          if Current.Previous <> nil then
+            Current.Previous.Next := Current.Next
+          else
+            FStart := Current.Next;
+          if Current.Next <> nil then
+            Current.Next.Previous := Current.Previous
+          else
+            FEnd := Current.Previous;
+          Result := Current.Value;
+          Current.Free;
+          Dec(FSize);
+          Break;
+        end;
+        Dec(Index);
+        Current := Current.Next;
+      end;
+    end
+    else
+      raise EJclOutOfBoundsError.Create;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -14268,7 +15792,7 @@ end;
 
 function TJclLinkedList.Remove(AObject: TObject): Boolean;
 var
-  Current: TJclLinkedListItem;
+  Extracted: TObject;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -14277,28 +15801,11 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Current := FStart;
-    while Current <> nil do
+    Result := Extract(AObject);
+    if Result then
     begin
-      if ItemsEqual(Current.Value, AObject) then
-      begin
-        if Current.Previous <> nil then
-          Current.Previous.Next := Current.Next
-        else
-          FStart := Current.Next;
-        if Current.Next <> nil then
-          Current.Next.Previous := Current.Previous
-        else
-          FEnd := Current.Previous;
-        FreeObject(Current.Value);
-        Current.Free;
-        Dec(FSize);
-        Result := True;
-        if FRemoveSingleElement then
-          Break;
-      end;
-      Current := Current.Next;
+      Extracted := AObject;
+      FreeObject(Extracted);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -14491,20 +15998,33 @@ begin
   Result := TJclLinkedListIterator.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
-function TJclLinkedListIterator.IteratorEquals(const AIterator: IJclIterator): Boolean;
+procedure TJclLinkedListIterator.Extract;
 var
-  Obj: TObject;
-  ItrObj: TJclLinkedListIterator;
+  OldCursor: TJclLinkedListItem;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is TJclLinkedListIterator then
-  begin
-    ItrObj := TJclLinkedListIterator(Obj);
-    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  if FOwnList.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnList.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    if FCursor <> nil then
+    begin
+      if FCursor.Next <> nil then
+        FCursor.Next.Previous := FCursor.Previous;
+      if FCursor.Previous <> nil then
+        FCursor.Previous.Next := FCursor.Next;
+      OldCursor := FCursor;
+      FCursor := FCursor.Next;
+      OldCursor.Free;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnList.WriteUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TJclLinkedListIterator.GetObject: TObject;
@@ -14599,6 +16119,22 @@ begin
     FOwnList.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+function TJclLinkedListIterator.IteratorEquals(const AIterator: IJclIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclLinkedListIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclLinkedListIterator then
+  begin
+    ItrObj := TJclLinkedListIterator(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
@@ -14934,6 +16470,37 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclLinkedList<T>.CollectionEquals(const ACollection: IJclCollection<T>): Boolean;
+var
+  It, ItSelf: IJclIterator<T>;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext and It.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclLinkedList<T>.Contains(const AItem: T): Boolean;
 var
   Current: TLinkedListItem;
@@ -15032,33 +16599,114 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclLinkedList<T>.CollectionEquals(const ACollection: IJclCollection<T>): Boolean;
+function TJclLinkedList<T>.Extract(const AItem: T): Boolean;
 var
-  It, ItSelf: IJclIterator<T>;
+  Current: TLinkedListItem;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    if ACollection = nil then
-      Exit;
-    if FSize <> ACollection.Size then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext and It.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
+    Current := FStart;
+    while Current <> nil do
+    begin
+      if ItemsEqual(Current.Value, AItem) then
       begin
-        Result := False;
-        Break;
+        if Current.Previous <> nil then
+          Current.Previous.Next := Current.Next
+        else
+          FStart := Current.Next;
+        if Current.Next <> nil then
+          Current.Next.Previous := Current.Previous
+        else
+          FEnd := Current.Previous;
+        Current.Free;
+        Dec(FSize);
+        Result := True;
+        if FRemoveSingleElement then
+          Break;
       end;
+      Current := Current.Next;
+    end;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclLinkedList<T>.ExtractAll(const ACollection: IJclCollection<T>): Boolean;
+var
+  It: IJclIterator<T>;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := True;
+    if ACollection = nil then
+      Exit;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclLinkedList<T>.ExtractIndex(Index: Integer): T;
+var
+  Current: TLinkedListItem;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := Default(T);
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Current := FStart;
+      while Current <> nil do
+      begin
+        if Index = 0 then
+        begin
+          if Current.Previous <> nil then
+            Current.Previous.Next := Current.Next
+          else
+            FStart := Current.Next;
+          if Current.Next <> nil then
+            Current.Next.Previous := Current.Previous
+          else
+            FEnd := Current.Previous;
+          Result := Current.Value;
+          Current.Free;
+          Dec(FSize);
+          Break;
+        end;
+        Dec(Index);
+        Current := Current.Next;
+      end;
+    end
+    else
+      raise EJclOutOfBoundsError.Create;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -15400,7 +17048,7 @@ end;
 
 function TJclLinkedList<T>.Remove(const AItem: T): Boolean;
 var
-  Current: TLinkedListItem;
+  Extracted: T;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -15409,28 +17057,11 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Current := FStart;
-    while Current <> nil do
+    Result := Extract(AItem);
+    if Result then
     begin
-      if ItemsEqual(Current.Value, AItem) then
-      begin
-        if Current.Previous <> nil then
-          Current.Previous.Next := Current.Next
-        else
-          FStart := Current.Next;
-        if Current.Next <> nil then
-          Current.Next.Previous := Current.Previous
-        else
-          FEnd := Current.Previous;
-        FreeItem(Current.Value);
-        Current.Free;
-        Dec(FSize);
-        Result := True;
-        if FRemoveSingleElement then
-          Break;
-      end;
-      Current := Current.Next;
+      Extracted := AItem;
+      FreeItem(Extracted);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -15617,20 +17248,33 @@ begin
   Result := TJclLinkedListIterator<T>.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
-function TJclLinkedListIterator<T>.IteratorEquals(const AIterator: IJclIterator<T>): Boolean;
+procedure TJclLinkedListIterator<T>.Extract;
 var
-  Obj: TObject;
-  ItrObj: TJclLinkedListIterator<T>;
+  OldCursor: TJclLinkedList<T>.TLinkedListItem;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is TJclLinkedListIterator<T> then
-  begin
-    ItrObj := TJclLinkedListIterator<T>(Obj);
-    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  if FOwnList.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnList.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    if FCursor <> nil then
+    begin
+      if FCursor.Next <> nil then
+        FCursor.Next.Previous := FCursor.Previous;
+      if FCursor.Previous <> nil then
+        FCursor.Previous.Next := FCursor.Next;
+      OldCursor := FCursor;
+      FCursor := FCursor.Next;
+      OldCursor.Free;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnList.WriteUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TJclLinkedListIterator<T>.GetItem: T;
@@ -15725,6 +17369,22 @@ begin
     FOwnList.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+function TJclLinkedListIterator<T>.IteratorEquals(const AIterator: IJclIterator<T>): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclLinkedListIterator<T>;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclLinkedListIterator<T> then
+  begin
+    ItrObj := TJclLinkedListIterator<T>(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
