@@ -4234,6 +4234,16 @@ begin
 end;
 {$ENDIF UNIX}
 {$IFDEF MSWINDOWS}
+
+  {$IFDEF COMPILER5}
+  function IsZero(const A: Double): Boolean;
+  const
+    DoubleResolution = 1E-15 * 1000;
+  begin
+    Result := Abs(A) <= DoubleResolution;
+  end;
+  {$ENDIF COMPILER5}
+
 var
   T0, T1: Int64;
   CountFreq: Int64;
@@ -4302,7 +4312,7 @@ begin
       TotalCycles := TotalCycles + Cycles;
 
       // avoid division by zero
-      if Math.IsZero(Ticks) then
+      if IsZero(Ticks) then
         Freq := High(Freq)
       else
         Freq := Round(Cycles / Ticks);
@@ -4311,7 +4321,7 @@ begin
     end;
 
     // avoid division by zero
-    if Math.IsZero(TotalTicks) then
+    if IsZero(TotalTicks) then
     begin
       Freq3 := High(Freq3);
       Freq2 := High(Freq2);
