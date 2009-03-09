@@ -1640,7 +1640,7 @@ var
 begin
   Len := Length(S);
   I := 1;
-  while (I < Len) and Chars(s[I]) do
+  while (I <= Len) and Chars(s[I]) do
     Inc(I);
   sb := StringBuilder.Create(Len);
   for J := I to Len  do
@@ -1654,7 +1654,7 @@ var
 begin
   Len := Length(S);
   I := 1;
-  while (I < Len) and Chars(s[I]) do
+  while (I <= Len) and Chars(s[I]) do
     Inc(I);
   Result := Copy (s, I, Len-I+1);
 end;
@@ -1669,7 +1669,7 @@ var
 begin
   Len := Length(S);
   I := 1;
-  while (I < Len) and ArrayContainsChar(Chars, s[I]) do
+  while (I <= Len) and ArrayContainsChar(Chars, s[I]) do
     Inc(I);
   sb := StringBuilder.Create(Len);
   for J := I to Len  do
@@ -1683,7 +1683,7 @@ var
 begin
   Len := Length(S);
   I := 1;
-  while (I < Len) and ArrayContainsChar(Chars, s[I]) do
+  while (I <= Len) and ArrayContainsChar(Chars, s[I]) do
     Inc(I);
   Result := Copy (s, I, Len-I+1);
 end;
