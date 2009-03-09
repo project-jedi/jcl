@@ -199,6 +199,8 @@ procedure StrProperBuff(S: PChar);
 function StrQuote(const S: string; C: Char): string;
 function StrRemoveChars(const S: string; const Chars: TCharValidator): string; overload;
 function StrRemoveChars(const S: string; const Chars: array of Char): string; overload;
+function StrRemoveLeadingChars(const S: string; const Chars: TCharValidator): string; overload;
+function StrRemoveLeadingChars(const S: string; const Chars: array of Char): string; overload;
 function StrRemoveEndChars(const S: string; const Chars: TCharValidator): string; overload;
 function StrRemoveEndChars(const S: string; const Chars: array of Char): string; overload;
 function StrKeepChars(const S: string; const Chars: TCharValidator): string; overload;
@@ -1629,6 +1631,64 @@ begin
 end;
 {$ENDIF ~CLR}
 
+function StrRemoveLeadingChars(const S: string; const Chars: TCharValidator): string;
+{$IFDEF CLR}
+var
+  Len: Integer;
+  I,J: Integer;
+  sb: StringBuilder;
+begin
+  Len := Length(S);
+  I := 1;
+  while (I < Len) and Chars(s[I]) do
+    Inc(I);
+  sb := StringBuilder.Create(Len);
+  for J := I to Len  do
+    sb.Append(S[J]);
+  Result := sb.ToString();
+end;
+{$ELSE ~CLR}
+var
+  Len : Integer;
+  I: Integer;
+begin
+  Len := Length(S);
+  I := 1;
+  while (I < Len) and Chars(s[I]) do
+    Inc(I);
+  Result := Copy (s, I, Len-I+1);
+end;
+{$ENDIF ~CLR}
+
+function StrRemoveLeadingChars(const S: string; const Chars: array of Char): string;
+{$IFDEF CLR}
+var
+  Len: Integer;
+  I,J: Integer;
+  sb: StringBuilder;
+begin
+  Len := Length(S);
+  I := 1;
+  while (I < Len) and ArrayContainsChar(Chars, s[I]) do
+    Inc(I);
+  sb := StringBuilder.Create(Len);
+  for J := I to Len  do
+    sb.Append(S[J]);
+  Result := sb.ToString();
+end;
+{$ELSE ~CLR}
+var
+  Len : Integer;
+  I: Integer;
+begin
+  Len := Length(S);
+  I := 1;
+  while (I < Len) and ArrayContainsChar(Chars, s[I]) do
+    Inc(I);
+  Result := Copy (s, I, Len-I+1);
+end;
+{$ENDIF ~CLR}
+
 function StrRemoveEndChars(const S: string; const Chars: TCharValidator): string;
 {$IFDEF CLR}
 var
@@ -1680,6 +1740,7 @@ begin
   Result := Copy (s, 1, Len);
 end;
 {$ENDIF ~CLR}
+
 
 function StrKeepChars(const S: string; const Chars: TCharValidator): string;
 {$IFDEF CLR}
