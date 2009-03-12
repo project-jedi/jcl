@@ -2186,12 +2186,12 @@ end;
 
 {$IFDEF MSWINDOWS}
 {$IFNDEF CLR}
-procedure GetIpAddresses(Results: TAnsiStrings);
+procedure GetIpAddresses(Results: TStrings);
 begin
   GetIpAddresses(Results, '');
 end;
 
-procedure GetIpAddresses(Results: TAnsiStrings; const HostName: AnsiString);
+procedure GetIpAddresses(Results: TStrings; const HostName: AnsiString);
 type
   TaPInAddr = array[0..10] of PInAddr;
   PaPInAddr = ^TaPInAddr;
