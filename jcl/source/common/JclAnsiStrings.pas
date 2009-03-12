@@ -1,4 +1,4 @@
-{**************************************************************************************************}
+﻿{**************************************************************************************************}
 {                                                                                                  }
 { Project JEDI Code Library (JCL)                                                                  }
 {                                                                                                  }
@@ -70,14 +70,65 @@ uses
   System.Text,
   System.IO,
   {$ENDIF CLR}
+  {$IFDEF SUPPORTS_UNICODE}
+  AnsiStrings, RTLConsts,
+  {$ENDIF SUPPORTS_UNICODE}
   JclBase;
 
 // Ansi types
 
 type
   {$IFDEF SUPPORTS_UNICODE}
-  TAnsiStrings = Classes.TStrings; // QC 65630
-  TAnsiStringList = Classes.TStringList;
+  // Codegear should be the one providing this class, in the AnsiStrings unit.
+  // It has been requested in QC 65630 but this was closed as "won't do".
+  // So we are providing here a very light implementation that is designed
+  // to provide the basics, and in no way be a "copy/paste" of what is in the RTL.
+  TAnsiStrings = class(TPersistent)
+  private
+    function GetText: AnsiString;
+    procedure SetText(const Value: AnsiString);
+  protected
+    procedure Error(const Msg: string; Data: Integer); overload;
+    procedure Error(Msg: PResStringRec; Data: Integer); overload;
+
+    function GetString(Index: Integer): AnsiString; virtual; abstract;
+    procedure SetString(Index: Integer; const Value: AnsiString); virtual; abstract;
+    function GetCapacity: Integer; virtual;
+    procedure SetCapacity(const Value: Integer); virtual;
+    function GetCount: Integer; virtual; abstract;
+    function CompareStrings(const S1, S2: AnsiString): Integer; virtual;
+  public
+    function Add(const S: AnsiString): Integer; virtual; abstract;
+    procedure Delete(Index: Integer); virtual; abstract;
+    procedure Clear; virtual; abstract;
+    procedure BeginUpdate;
+    procedure EndUpdate;
+    function IndexOf(const S: AnsiString): Integer; virtual;
+    procedure Exchange(Index1, Index2: Integer); virtual;
+
+    property Strings[Index: Integer]: AnsiString read GetString write SetString; default;
+    property Text: AnsiString read GetText write SetText;
+    property Count: Integer read GetCount;
+    property Capacity: Integer read GetCapacity write SetCapacity;
+  end;
+
+  TAnsiStringList = class(TAnsiStrings)
+  private
+    FStrings: array of AnsiString;
+    FCount: Integer;
+
+    procedure Grow;
+  protected
+    function GetString(Index: Integer): AnsiString; override;
+    procedure SetString(Index: Integer; const Value: AnsiString); override;
+    function GetCapacity: Integer; override;
+    procedure SetCapacity(const Value: Integer); override;
+    function GetCount: Integer; override;
+  public
+    function Add(const S: AnsiString): Integer; override;
+    procedure Delete(Index: Integer); override;
+    procedure Clear; override;
+  end;
   {$ELSE ~SUPPORTS_UNICODE}
   TAnsiStrings = Classes.TStrings;
   TAnsiStringList = Classes.TStringList;
@@ -737,6 +788,161 @@ asm
 @@StrIsNull:
 end;
 {$ENDIF ~CLR}
+
+{$IFDEF SUPPORTS_UNICODE}
+{ TAnsiStrings }
+
+procedure TAnsiStrings.Error(const Msg: string; Data: Integer);
+begin
+  raise EStringListError.CreateFmt(Msg, [Data]);
+end;
+
+procedure TAnsiStrings.Error(Msg: PResStringRec; Data: Integer);
+begin
+  Error(LoadResString(Msg), Data);
+end;
+
+function TAnsiStrings.CompareStrings(const S1, S2: AnsiString): Integer;
+begin
+  Result := CompareStr(S1, S2);
+end;
+
+function TAnsiStrings.IndexOf(const S: AnsiString): Integer;
+begin
+  for Result := 0 to Count - 1 do
+    if CompareStrings(Strings[Result], S) = 0 then Exit;
+  Result := -1;
+end;
+
+procedure TAnsiStrings.Exchange(Index1, Index2: Integer);
+var
+  TempString: AnsiString;
+begin
+  BeginUpdate;
+  try
+    TempString := Strings[Index1];
+    Strings[Index1] := Strings[Index2];
+    Strings[Index2] := TempString;
+  finally
+    EndUpdate;
+  end;
+end;
+
+function TAnsiStrings.GetText: AnsiString;
+var
+  I: Integer;
+begin
+  Result := '';
+  for I := 0 to Count - 2 do
+    Result := Result + Strings[I] + sLineBreak;
+  if Count > 0 then
+    Result := Result + Strings[Count - 1];
+end;
+
+procedure TAnsiStrings.SetText(const Value: AnsiString);
+begin
+end;
+
+function TAnsiStrings.GetCapacity: Integer;
+begin
+  Result := Count; // Might be overridden in derived classes
+end;
+
+procedure TAnsiStrings.SetCapacity(const Value: Integer);
+begin
+  // Nothing at this level
+end;
+
+procedure TAnsiStrings.BeginUpdate;
+begin
+end;
+
+procedure TAnsiStrings.EndUpdate;
+begin
+end;
+
+{ TAnsiStringList }
+
+procedure TAnsiStringList.Grow;
+var
+  Delta: Integer;
+begin
+  if Capacity > 64 then
+    Delta := Capacity div 4
+  else if Capacity > 8 then
+    Delta := 16
+  else
+    Delta := 4;
+
+  SetCapacity(Capacity + Delta);
+end;
+
+function TAnsiStringList.GetString(Index: Integer): AnsiString;
+begin
+  if (Index < 0) or (Index >= FCount) then
+    Error(@SListIndexError, Index);
+
+  Result := FStrings[Index];
+end;
+
+procedure TAnsiStringList.SetString(Index: Integer; const Value: AnsiString);
+begin
+  if (Index < 0) or (Index >= FCount) then
+    Error(@SListIndexError, Index);
+
+  FStrings[Index] := Value;
+end;
+
+function TAnsiStringList.GetCapacity: Integer;
+begin
+  Result := Length(FStrings);
+end;
+
+procedure TAnsiStringList.SetCapacity(const Value: Integer);
+begin
+  if (Value < FCount) then
+    Error(@SListCapacityError, Value);
+
+  if Value <> Capacity then
+    SetLength(FStrings, Value);
+end;
+
+function TAnsiStringList.GetCount: Integer;
+begin
+  Result := FCount;
+end;
+
+function TAnsiStringList.Add(const S: AnsiString): Integer;
+begin
+  if Count = Capacity then
+    Grow;
+
+  Result := Count;
+  FStrings[Count] := S;
+  Inc(FCount);
+end;
+
+procedure TAnsiStringList.Delete(Index: Integer);
+var
+  I: Integer;
+begin
+  if (Index < 0) or (Index >= FCount) then
+    Error(@SListIndexError, Index);
+
+  for I := Index to Count - 2 do
+    FStrings[Index] := FStrings[Index + 1];
+end;
+
+procedure TAnsiStringList.Clear;
+var
+  I: Integer;
+begin
+  FCount := 0;
+  for I := 0 to Length(FStrings) - 1 do
+    FStrings[I] := '';
+end;
+
+{$ENDIF SUPPORTS_UNICODE}
 
 // String Test Routines
 function StrIsAlpha(const S: AnsiString): Boolean;
@@ -3270,7 +3476,7 @@ begin
     try
       Dest.Clear;
       for I := 0 to Count - 1 do
-        Dest.Add(string(AnsiString(List[I]))); // OF AnsiString to TStrings
+        Dest.Add(List[I]); // OF AnsiString to TStrings
     finally
       Dest.EndUpdate;
     end;
@@ -3434,7 +3640,7 @@ begin
       P := Source;
       while P^ <> #0 do
       begin
-        Dest.Add(string(AnsiString(P))); // OF AnsiString to TStrings
+        Dest.Add(P); // OF AnsiString to TStrings
         P := StrEnd(P);
         Inc(P);
       end;
@@ -3508,13 +3714,13 @@ begin
     begin
       Left := StrLeft(S, I - 1);
       if (Left <> '') or AllowEmptyString then
-        List.Add(string(Left)); // OF AnsiString to TStrings
+        List.Add(Left); // OF AnsiString to TStrings
       Delete(S, 1, I + L - 1);
       I := Pos(Sep, S);
     end;
     if S <> '' then
       // OF AnsiString to TStrings
-      List.Add(string(S));  // Ignore empty strings at the end.
+      List.Add(S);  // Ignore empty strings at the end.
   finally
     List.EndUpdate;
   end;
@@ -3538,14 +3744,14 @@ begin
     begin
       Left := StrLeft(S, I - 1);
       if (Left <> '') or AllowEmptyString then
-        List.Add(string(Left)); // OF AnsiString to TStrings
+        List.Add(Left); // OF AnsiString to TStrings
       Delete(S, 1, I + L - 1);
       Delete(LowerCaseStr, 1, I + L - 1);
       I := Pos(Sep, LowerCaseStr);
     end;
     if S <> '' then
       // OF AnsiString to TStrings
-      List.Add(string(S));  // Ignore empty strings at the end.
+      List.Add(S);  // Ignore empty strings at the end.
   finally
     List.EndUpdate;
   end;
@@ -3631,9 +3837,9 @@ end;
 function AddStringToStrings(const S: AnsiString; Strings: TAnsiStrings; const Unique: Boolean): Boolean;
 begin
   Assert(Strings <> nil);
-  Result := Unique and (Strings.IndexOf(string(S)) <> -1); // OF AnsiString to TStrings
+  Result := Unique and (Strings.IndexOf(S) <> -1); // OF AnsiString to TStrings
   if not Result then
-    Result := Strings.Add(string(S)) > -1; // OF AnsiString to TStrings
+    Result := Strings.Add(S) > -1; // OF AnsiString to TStrings
 end;
 
 //=== Miscellaneous ==========================================================
@@ -3734,7 +3940,7 @@ begin
     repeat
       Done := StrWord(Start, Token);
       if Token <> '' then
-        List.Add(string(Token)); // OF AnsiString to TStrings
+        List.Add(Token); // OF AnsiString to TStrings
     until Done;
   finally
     List.EndUpdate;
@@ -3756,7 +3962,7 @@ begin
     while S <> '' do
     begin
       Token := StrToken(S, Separator);
-      List.Add(string(Token)); // OF AnsiString to TStrings
+      List.Add(Token); // OF AnsiString to TStrings
     end;
   finally
     List.EndUpdate;
