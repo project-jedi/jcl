@@ -141,6 +141,8 @@ type
     procedure SetName(const Value: string);
     function GetFloatValue: Extended;
     procedure SetFloatValue(const Value: Extended);
+    function GetAnsiValue: AnsiString;
+    procedure SetAnsiValue(const Value: AnsiString);
   protected
     function GetIntValue: Int64;
     procedure SetIntValue(const Value: Int64);
@@ -151,6 +153,7 @@ type
     property Parent: TJclSimpleXMLProps read FParent write FParent;
     property Name: string read FName write SetName;
     property Value: string read FValue write FValue;
+    property AnsiValue: AnsiString read GetAnsiValue write SetAnsiValue;
     property IntValue: Int64 read GetIntValue write SetIntValue;
     property BoolValue: Boolean read GetBoolValue write SetBoolValue;
     property FloatValue: Extended read GetFloatValue write SetFloatValue;
@@ -176,6 +179,9 @@ type
     constructor Create(Parent: TJclSimpleXMLElem);
     destructor Destroy; override;
     function Add(const Name, Value: string): TJclSimpleXMLProp; overload;
+    {$IFDEF SUPPORTS_UNICODE}
+    function Add(const Name: string; const Value: AnsiString): TJclSimpleXMLProp; overload;
+    {$ENDIF SUPPORTS_UNICODE}
     function Add(const Name: string; const Value: Int64): TJclSimpleXMLProp; overload;
     function Add(const Name: string; const Value: Boolean): TJclSimpleXMLProp; overload;
     function Insert(const Index: Integer; const Name, Value: string): TJclSimpleXMLProp; overload;
@@ -338,6 +344,8 @@ type
     FContainer: TJclSimpleXMLElems;
     function GetFloatValue: Extended;
     procedure SetFloatValue(const Value: Extended);
+    function GetAnsiValue: AnsiString;
+    procedure SetAnsiValue(const Value: AnsiString);
   protected
     function GetSimpleXML: TJclSimpleXML;
     function GetIntValue: Int64;
@@ -379,6 +387,7 @@ type
     property BoolValue: Boolean read GetBoolValue write SetBoolValue;
     property FloatValue: Extended read GetFloatValue write SetFloatValue;
     property Value: string read FValue write FValue;
+    property AnsiValue: AnsiString read GetAnsiValue write SetAnsiValue;
   end;
   {$M-}
   TJclSimpleXMLElemClass = class of TJclSimpleXMLElem;
@@ -1358,6 +1367,11 @@ begin
     Result := Name;
 end;
 
+function TJclSimpleXMLElem.GetAnsiValue: AnsiString;
+begin
+  Result := AnsiString(Value);
+end;
+
 procedure TJclSimpleXMLElem.GetBinaryValue(Stream: TStream);
 var
   I, J, ValueLength, RequiredStreamSize: Integer;
@@ -1532,6 +1546,11 @@ begin
   finally
     StrStream.Free;
   end;
+end;
+
+procedure TJclSimpleXMLElem.SetAnsiValue(const Value: AnsiString);
+begin
+  Self.Value := string(Value);
 end;
 
 procedure TJclSimpleXMLElem.SetBoolValue(const Value: Boolean);
@@ -2333,6 +2352,14 @@ begin
   Result := Add(Name, BoolToStr(Value));
 end;
 
+{$IFDEF SUPPORTS_UNICODE}
+function TJclSimpleXMLProps.Add(const Name: string;
+  const Value: AnsiString): TJclSimpleXMLProp;
+begin
+  Result := Add(Name, string(Value));
+end;
+{$ENDIF SUPPORTS_UNICODE}
+
 function TJclSimpleXMLProps.Insert(const Index: Integer; const Name, Value: string): TJclSimpleXMLProp;
 var
   Elem: TJclSimpleXMLProp;
@@ -2653,6 +2680,11 @@ end;
 
 //=== { TJclSimpleXMLProp } ==================================================
 
+function TJclSimpleXMLProp.GetAnsiValue: AnsiString;
+begin
+  Result := AnsiString(Value);
+end;
+
 function TJclSimpleXMLProp.GetBoolValue: Boolean;
 begin
   Result := StrToBoolDef(Value, False);
@@ -2699,6 +2731,11 @@ begin
   else
     Tmp := Format(' %s="%s"', [Name, tmp]);
   StringStream.WriteString(Tmp, 1, Length(Tmp));
+end;
+
+procedure TJclSimpleXMLProp.SetAnsiValue(const Value: AnsiString);
+begin
+  Self.Value := string(Value);
 end;
 
 procedure TJclSimpleXMLProp.SetBoolValue(const Value: Boolean);
