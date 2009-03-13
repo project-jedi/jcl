@@ -116,6 +116,8 @@ type
   public
     constructor Create;
 
+    procedure Assign(Source: TPersistent); override;
+
     function Add(const S: AnsiString): Integer; virtual;
     function AddObject(const S: AnsiString; AObject: TObject): Integer; virtual; abstract;
     procedure AddStrings(Strings: TAnsiStrings); virtual;
@@ -856,6 +858,24 @@ begin
   FNameValueSeparator := '=';
 end;
 
+procedure TAnsiStrings.Assign(Source: TPersistent);
+begin
+  if Source is TAnsiStrings then
+  begin
+    BeginUpdate;
+    try
+      Clear;
+      FNameValueSeparator := TAnsiStrings(Source).FNameValueSeparator;
+      FDelimiter := TAnsiStrings(Source).FDelimiter;
+      AddStrings(TAnsiStrings(Source));
+    finally
+      EndUpdate;
+    end;
+    Exit;
+  end;
+  inherited Assign(Source);
+end;
+
 function TAnsiStrings.Add(const S: AnsiString): Integer;
 begin
   Result := AddObject(S, nil);
@@ -866,7 +886,7 @@ var
   I: Integer;
 begin
   for I := 0 to Strings.Count - 1 do
-    Add(Strings[I]);
+    Add(Strings.Strings[I]);
 end;
 
 procedure TAnsiStrings.Error(const Msg: string; Data: Integer);
@@ -971,7 +991,30 @@ begin
 end;
 
 procedure TAnsiStrings.SetText(const Value: AnsiString);
+var
+  Index, Start, Len: Integer;
+  S: AnsiString;
 begin
+  Clear;
+  Len := Length(Value);
+  if Len > 0 then
+  begin
+    Index := 1;
+    while Index <= Len do
+    begin
+      Start := Index;
+      while not (Value[Index] in [#10, #13]) do
+        Inc(Index);
+
+      S := Copy(Value, Start, Index - Start);
+      Add(S);
+
+      if Value[Index] = #13 then
+        Inc(Index);
+      if Value[Index] = #10 then
+        Inc(Index);
+    end;
+  end;
 end;
 
 function TAnsiStrings.GetCapacity: Integer;
@@ -1184,7 +1227,7 @@ begin
   if Count = Capacity then
     Grow;
 
-  for I := Index to Count do
+  for I := Index to Count - 1 do
     FStrings[I + 1] := FStrings[I];
 
   FStrings[Index].Str := S;
@@ -1194,7 +1237,7 @@ end;
 
 function TAnsiStringList.AddObject(const S: AnsiString; AObject: TObject): Integer;
 begin
-  if Sorted then
+  if not Sorted then
   begin
     Result := Count;
   end
