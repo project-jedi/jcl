@@ -79,55 +79,111 @@ uses
 
 type
   {$IFDEF SUPPORTS_UNICODE}
+  TAnsiStringList = class;
+
   // Codegear should be the one providing this class, in the AnsiStrings unit.
   // It has been requested in QC 65630 but this was closed as "won't do".
   // So we are providing here a very light implementation that is designed
   // to provide the basics, and in no way be a "copy/paste" of what is in the RTL.
   TAnsiStrings = class(TPersistent)
   private
+    FDelimiter: AnsiChar;
+    FNameValueSeparator: AnsiChar;
+
     function GetText: AnsiString;
     procedure SetText(const Value: AnsiString);
+    function GetDelimitedText: AnsiString;
+    procedure SetDelimitedText(const Value: AnsiString);
+    function ExtractName(const S: AnsiString): AnsiString;
+    function GetName(Index: Integer): AnsiString;
+    function GetValue(const Name: AnsiString): AnsiString;
+    procedure SetValue(const Name, Value: AnsiString);
+    function GetValueFromIndex(Index: Integer): AnsiString;
+    procedure SetValueFromIndex(Index: Integer; const Value: AnsiString);
   protected
     procedure Error(const Msg: string; Data: Integer); overload;
     procedure Error(Msg: PResStringRec; Data: Integer); overload;
 
     function GetString(Index: Integer): AnsiString; virtual; abstract;
     procedure SetString(Index: Integer; const Value: AnsiString); virtual; abstract;
+    function GetObject(Index: Integer): TObject; virtual; abstract;
+    procedure SetObject(Index: Integer; AObject: TObject); virtual; abstract;
+
     function GetCapacity: Integer; virtual;
     procedure SetCapacity(const Value: Integer); virtual;
     function GetCount: Integer; virtual; abstract;
     function CompareStrings(const S1, S2: AnsiString): Integer; virtual;
   public
-    function Add(const S: AnsiString): Integer; virtual; abstract;
+    constructor Create;
+
+    function Add(const S: AnsiString): Integer; virtual;
+    function AddObject(const S: AnsiString; AObject: TObject): Integer; virtual; abstract;
+    procedure AddStrings(Strings: TAnsiStrings); virtual;
+    procedure Insert(Index: Integer; const S: AnsiString); virtual;
+    procedure InsertObject(Index: Integer; const S: AnsiString; AObject: TObject); virtual; abstract;
     procedure Delete(Index: Integer); virtual; abstract;
     procedure Clear; virtual; abstract;
+    procedure LoadFromFile(const FileName: string); virtual;
+    procedure LoadFromStream(Stream: TStream); virtual;
+    procedure SaveToFile(const FileName: string); virtual;
+    procedure SaveToStream(Stream: TStream); virtual;
     procedure BeginUpdate;
     procedure EndUpdate;
     function IndexOf(const S: AnsiString): Integer; virtual;
+    function IndexOfName(const Name: AnsiString): Integer; virtual;
+    function IndexOfObject(AObject: TObject): Integer; virtual;
     procedure Exchange(Index1, Index2: Integer); virtual;
 
+    property Delimiter: AnsiChar read FDelimiter write FDelimiter;
+    property DelimitedText: AnsiString read GetDelimitedText write SetDelimitedText;
+
     property Strings[Index: Integer]: AnsiString read GetString write SetString; default;
+    property Objects[Index: Integer]: TObject read GetObject write SetObject;
     property Text: AnsiString read GetText write SetText;
     property Count: Integer read GetCount;
     property Capacity: Integer read GetCapacity write SetCapacity;
+    property Names[Index: Integer]: AnsiString read GetName;
+    property Values[const Name: AnsiString]: AnsiString read GetValue write SetValue;
+    property ValueFromIndex[Index: Integer]: AnsiString read GetValueFromIndex write SetValueFromIndex;
+    property NameValueSeparator: AnsiChar read FNameValueSeparator write FNameValueSeparator;
+  end;
+
+  TAnsiStringListSortCompare = function(List: TAnsiStringList; Index1, Index2: Integer): Integer;
+
+  TAnsiStringObjectHolder = record
+    Str: AnsiString;
+    Obj: TObject;
   end;
 
   TAnsiStringList = class(TAnsiStrings)
   private
-    FStrings: array of AnsiString;
+    FStrings: array of TAnsiStringObjectHolder;
     FCount: Integer;
+    FDuplicates: TDuplicates;
+    FSorted: Boolean;
 
     procedure Grow;
+    procedure QuickSort(L, R: Integer; SCompare: TAnsiStringListSortCompare);
+    procedure SetSorted(Value: Boolean);
   protected
     function GetString(Index: Integer): AnsiString; override;
     procedure SetString(Index: Integer; const Value: AnsiString); override;
+    function GetObject(Index: Integer): TObject; override;
+    procedure SetObject(Index: Integer; AObject: TObject); override;
     function GetCapacity: Integer; override;
     procedure SetCapacity(const Value: Integer); override;
     function GetCount: Integer; override;
   public
-    function Add(const S: AnsiString): Integer; override;
+    function AddObject(const S: AnsiString; AObject: TObject): Integer; override;
+    procedure InsertObject(Index: Integer; const S: AnsiString; AObject: TObject); override;
     procedure Delete(Index: Integer); override;
+    function Find(const S: AnsiString; var Index: Integer): Boolean; virtual;
+    procedure CustomSort(Compare: TAnsiStringListSortCompare); virtual;
+    procedure Sort; virtual;
     procedure Clear; override;
+
+    property Duplicates: TDuplicates read FDuplicates write FDuplicates;
+    property Sorted: Boolean read FSorted write SetSorted;
   end;
   {$ELSE ~SUPPORTS_UNICODE}
   TAnsiStrings = Classes.TStrings;
@@ -792,6 +848,27 @@ end;
 {$IFDEF SUPPORTS_UNICODE}
 { TAnsiStrings }
 
+constructor TAnsiStrings.Create;
+begin
+  inherited Create;
+
+  FDelimiter := ',';
+  FNameValueSeparator := '=';
+end;
+
+function TAnsiStrings.Add(const S: AnsiString): Integer;
+begin
+  Result := AddObject(S, nil);
+end;
+
+procedure TAnsiStrings.AddStrings(Strings: TAnsiStrings);
+var
+  I: Integer;
+begin
+  for I := 0 to Strings.Count - 1 do
+    Add(Strings[I]);
+end;
+
 procedure TAnsiStrings.Error(const Msg: string; Data: Integer);
 begin
   raise EStringListError.CreateFmt(Msg, [Data]);
@@ -814,6 +891,27 @@ begin
   Result := -1;
 end;
 
+function TAnsiStrings.IndexOfName(const Name: AnsiString): Integer;
+var
+  P: Integer;
+  S: AnsiString;
+begin
+  for Result := 0 to GetCount - 1 do
+  begin
+    S := GetString(Result);
+    P := AnsiPos(NameValueSeparator, S);
+    if (P <> 0) and (CompareStrings(Copy(S, 1, P - 1), Name) = 0) then Exit;
+  end;
+  Result := -1;
+end;
+
+function TAnsiStrings.IndexOfObject(AObject: TObject): Integer;
+begin
+  for Result := 0 to GetCount - 1 do
+    if GetObject(Result) = AObject then Exit;
+  Result := -1;
+end;
+
 procedure TAnsiStrings.Exchange(Index1, Index2: Integer);
 var
   TempString: AnsiString;
@@ -825,6 +923,39 @@ begin
     Strings[Index2] := TempString;
   finally
     EndUpdate;
+  end;
+end;
+
+function TAnsiStrings.GetDelimitedText: AnsiString;
+var
+  I: Integer;
+begin
+  Result := '';
+  for I := 0 to Count - 2 do
+    Result := Result + Strings[I] + Delimiter;
+  if Count > 0 then
+    Result := Result + Strings[Count - 1];
+end;
+
+procedure TAnsiStrings.Insert(Index: Integer; const S: AnsiString);
+begin
+  InsertObject(Index, S, nil);
+end;
+
+procedure TAnsiStrings.SetDelimitedText(const Value: AnsiString);
+var
+  LastStart: Integer;
+  Index: Integer;
+begin
+  Clear;
+  LastStart := 1;
+  for Index := 1 to Length(Value) do
+  begin
+    if Value[Index] = Delimiter then
+    begin
+      Add(Copy(Value, LastStart, Index - LastStart));
+      LastStart := Index + 1;
+    end;
   end;
 end;
 
@@ -861,6 +992,121 @@ procedure TAnsiStrings.EndUpdate;
 begin
 end;
 
+procedure TAnsiStrings.LoadFromFile(const FileName: string);
+var
+  Stream: TStream;
+begin
+  Stream := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);
+  try
+    LoadFromStream(Stream);
+  finally
+    Stream.Free;
+  end;
+end;
+
+procedure TAnsiStrings.LoadFromStream(Stream: TStream);
+var
+  Size: Integer;
+  S: AnsiString;
+begin
+  BeginUpdate;
+  try
+    Size := Stream.Size - Stream.Position;
+    System.SetString(S, nil, Size);
+    Stream.Read(Pointer(S)^, Size);
+    SetText(S);
+  finally
+    EndUpdate;
+  end;
+end;
+
+procedure TAnsiStrings.SaveToFile(const FileName: string);
+var
+  Stream: TStream;
+begin
+  Stream := TFileStream.Create(FileName, fmCreate);
+  try
+    SaveToStream(Stream);
+  finally
+    Stream.Free;
+  end;
+end;
+
+procedure TAnsiStrings.SaveToStream(Stream: TStream);
+var
+  S: AnsiString;
+begin
+  S := GetText;
+  Stream.WriteBuffer(Pointer(S)^, Length(S));
+end;
+
+function TAnsiStrings.ExtractName(const S: AnsiString): AnsiString;
+var
+  P: Integer;
+begin
+  Result := S;
+  P := AnsiPos(NameValueSeparator, Result);
+  if P <> 0 then
+    SetLength(Result, P-1)
+  else
+    SetLength(Result, 0);
+end;
+
+function TAnsiStrings.GetName(Index: Integer): AnsiString;
+begin
+  Result := ExtractName(GetString(Index));
+end;
+
+function TAnsiStrings.GetValue(const Name: AnsiString): AnsiString;
+var
+  I: Integer;
+begin
+  I := IndexOfName(Name);
+  if I >= 0 then
+    Result := Copy(GetString(I), Length(Name) + 2, MaxInt)
+  else
+    Result := '';
+end;
+
+procedure TAnsiStrings.SetValue(const Name, Value: AnsiString);
+var
+  I: Integer;
+begin
+  I := IndexOfName(Name);
+  if Value <> '' then
+  begin
+    if I < 0 then
+      I := Add('');
+    SetString(I, Name + NameValueSeparator + Value);
+  end
+  else
+  begin
+    if I >= 0 then
+      Delete(I);
+  end;
+end;
+
+function TAnsiStrings.GetValueFromIndex(Index: Integer): AnsiString;
+begin
+  if Index >= 0 then
+    Result := Copy(GetString(Index), Length(Names[Index]) + 2, MaxInt)
+  else
+    Result := '';
+end;
+
+procedure TAnsiStrings.SetValueFromIndex(Index: Integer; const Value: AnsiString);
+begin
+  if Value <> '' then
+  begin
+    if Index < 0 then Index := Add('');
+    SetString(Index, Names[Index] + NameValueSeparator + Value);
+  end
+  else
+  begin
+    if Index >= 0 then Delete(Index);
+  end;
+end;
+
 { TAnsiStringList }
 
 procedure TAnsiStringList.Grow;
@@ -882,15 +1128,34 @@ begin
   if (Index < 0) or (Index >= FCount) then
     Error(@SListIndexError, Index);
 
-  Result := FStrings[Index];
+  Result := FStrings[Index].Str;
 end;
 
 procedure TAnsiStringList.SetString(Index: Integer; const Value: AnsiString);
 begin
+  if Sorted then
+    Error(@SSortedListError, 0);
+
   if (Index < 0) or (Index >= FCount) then
     Error(@SListIndexError, Index);
 
-  FStrings[Index] := Value;
+  FStrings[Index].Str := Value;
+end;
+
+function TAnsiStringList.GetObject(Index: Integer): TObject;
+begin
+  if (Index < 0) or (Index >= FCount) then
+    Error(@SListIndexError, Index);
+
+  Result := FStrings[Index].Obj;
+end;
+
+procedure TAnsiStringList.SetObject(Index: Integer; AObject: TObject);
+begin
+  if (Index < 0) or (Index >= FCount) then
+    Error(@SListIndexError, Index);
+
+  FStrings[Index].Obj := AObject;
 end;
 
 function TAnsiStringList.GetCapacity: Integer;
@@ -912,14 +1177,37 @@ begin
   Result := FCount;
 end;
 
-function TAnsiStringList.Add(const S: AnsiString): Integer;
+procedure TAnsiStringList.InsertObject(Index: Integer; const S: AnsiString; AObject: TObject);
+var
+  I: Integer;
 begin
   if Count = Capacity then
     Grow;
 
-  Result := Count;
-  FStrings[Count] := S;
+  for I := Index to Count do
+    FStrings[I + 1] := FStrings[I];
+
+  FStrings[Index].Str := S;
+  FStrings[Index].Obj := AObject;
   Inc(FCount);
+end;
+
+function TAnsiStringList.AddObject(const S: AnsiString; AObject: TObject): Integer;
+begin
+  if Sorted then
+  begin
+    Result := Count;
+  end
+  else
+  begin
+    if Find(S, Result) then
+      case Duplicates of
+        dupIgnore: Exit;
+        dupError: Error(@SDuplicateString, 0);
+      end;
+  end;
+
+  InsertObject(Result, S, AObject);
 end;
 
 procedure TAnsiStringList.Delete(Index: Integer);
@@ -939,7 +1227,89 @@ var
 begin
   FCount := 0;
   for I := 0 to Length(FStrings) - 1 do
-    FStrings[I] := '';
+  begin
+    FStrings[I].Str := '';
+    FStrings[I].Obj := nil;
+  end;
+end;
+
+function TAnsiStringList.Find(const S: AnsiString; var Index: Integer): Boolean;
+var
+  L, H, I, C: Integer;
+begin
+  Result := False;
+  L := 0;
+  H := FCount - 1;
+  while L <= H do
+  begin
+    I := (L + H) shr 1;
+    C := CompareStrings(FStrings[I].Str, S);
+    if C < 0 then L := I + 1 else
+    begin
+      H := I - 1;
+      if C = 0 then
+      begin
+        Result := True;
+        if Duplicates <> dupAccept then L := I;
+      end;
+    end;
+  end;
+  Index := L;
+end;
+
+function AnsiStringListCompareStrings(List: TAnsiStringList; Index1, Index2: Integer): Integer;
+begin
+  Result := List.CompareStrings(List.FStrings[Index1].Str,
+                                List.FStrings[Index2].Str);
+end;
+
+procedure TAnsiStringList.Sort;
+begin
+  CustomSort(AnsiStringListCompareStrings);
+end;
+
+procedure TAnsiStringList.CustomSort(Compare: TAnsiStringListSortCompare);
+begin
+  if not Sorted and (FCount > 1) then
+    QuickSort(0, FCount - 1, Compare);
+end;
+
+procedure TAnsiStringList.QuickSort(L, R: Integer; SCompare: TAnsiStringListSortCompare);
+var
+  I, J, P: Integer;
+begin
+  repeat
+    I := L;
+    J := R;
+    P := (L + R) shr 1;
+    repeat
+      while SCompare(Self, I, P) < 0 do Inc(I);
+      while SCompare(Self, J, P) > 0 do Dec(J);
+      if I <= J then
+      begin
+        if I <> J then
+          Exchange(I, J);
+        if P = I then
+          P := J
+        else if P = J then
+          P := I;
+        Inc(I);
+        Dec(J);
+      end;
+    until I > J;
+    if L < J then QuickSort(L, J, SCompare);
+    L := I;
+  until I >= R;
+end;
+
+procedure TAnsiStringList.SetSorted(Value: Boolean);
+begin
+  if FSorted <> Value then
+  begin
+    if Value then
+      Sort;
+    FSorted := Value;
+  end;
 end;
 
 {$ENDIF SUPPORTS_UNICODE}
