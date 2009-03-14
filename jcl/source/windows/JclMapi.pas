@@ -240,7 +240,7 @@ type
     function FindNextMessage: Boolean;
     procedure LogOff;
     procedure LogOn(const ProfileName: AnsiString = ''; const Password: AnsiString = '');
-    function MessageReport(Strings: TAnsiStrings; MaxWidth: Integer = 80; IncludeAddresses: Boolean = False): Integer;
+    function MessageReport(Strings: TStrings; MaxWidth: Integer = 80; IncludeAddresses: Boolean = False): Integer;
     function Read(const Options: TJclEmailReadOptions = []): Boolean;
     function ResolveName(var Name, Address: AnsiString; ShowDialog: Boolean = False): Boolean;
     procedure RestoreTaskWindows;
@@ -568,7 +568,7 @@ const
   MailClientsKey = 'SOFTWARE\Clients\Mail';
 var
   DefaultValue, ClientKey: string;
-  SL: TAnsiStringList;
+  SL: TStringList;
   I: Integer;
 
   function CheckValid(var Client: TJclMapiClient): Boolean;
@@ -596,7 +596,7 @@ begin
   FDefaultClientIndex := -1;
   FProfiles := nil;
   FDefaultProfileName := '';
-  SL := TAnsiStringList.Create;
+  SL := TStringList.Create;
   try
     if RegKeyExists(HKEY_LOCAL_MACHINE, MessageSubsytemKey) then
     begin
@@ -979,7 +979,7 @@ var
   MsgID: array [0..512] of AnsiChar;
   AttachmentFileNames: array of AnsiString;
   AttachmentPathNames: array of AnsiString;
-  HtmlBodyFileName: string;
+  HtmlBodyFileName: TFileName;
   SetDllDirectory: TSetDllDirectory;
   GetDllDirectory: TGetDllDirectory;
   DllDirectoryBuffer: array[0..1024] of Char;
@@ -1001,7 +1001,7 @@ begin
       if FHtmlBody then
       begin
         HtmlBodyFileName := FindUnusedFileName(PathAddSeparator(GetWindowsTempFolder) + 'JclMapi', 'htm', 'Temp');
-        Attachments.Insert(0, HtmlBodyFileName);
+        Attachments.Insert(0, AnsiString(HtmlBodyFileName));
         AttachmentFiles.Insert(0, '');
         StringToFile(HtmlBodyFileName, Body);
       end;
@@ -1017,13 +1017,13 @@ begin
           AttachArray[I].nPosition := DWORD(-1);
           if (AttachmentFiles.Count > I) and (AttachmentFiles[I] <> '') then
           begin
-            AttachmentFileNames[I] := AnsiString(Attachments[I]); // OF TStrings to AnsiString
+            AttachmentFileNames[I] := Attachments[I];
             AttachmentPathNames[I] := AnsiString(SysUtils.ExpandFileName(AttachmentFiles[I]));
           end
           else
           begin
-            AttachmentFileNames[I] := AnsiString(ExtractFileName(AnsiString(Attachments[I]))); // OF TStrings to AnsiString
-            AttachmentPathNames[I] := AnsiString(SysUtils.ExpandFileName(Attachments[I]));
+            AttachmentFileNames[I] := ExtractFileName(AnsiString(Attachments[I]));
+            AttachmentPathNames[I] := AnsiString(SysUtils.ExpandFileName(string(Attachments[I])));
           end;
           AttachArray[I].lpszFileName := PAnsiChar(AttachmentFileNames[I]);
           AttachArray[I].lpszPathName := PAnsiChar(AttachmentPathNames[I]);
@@ -1153,7 +1153,7 @@ begin
     Inc(Result, MAPI_DIALOG);
 end;
 
-function TJclEmail.MessageReport(Strings: TAnsiStrings; MaxWidth: Integer; IncludeAddresses: Boolean): Integer;
+function TJclEmail.MessageReport(Strings: TStrings; MaxWidth: Integer; IncludeAddresses: Boolean): Integer;
 const
   NameDelimiter = ', ';
 var
@@ -1252,9 +1252,9 @@ begin
       for I := 0 to Msg^.nFileCount - 1 do
       begin
         if Files^.lpszPathName <> nil then
-          Attachments.Add(string(AnsiString(Files^.lpszPathName))) // OF AnsiString to TStrings
+          Attachments.Add(AnsiString(Files^.lpszPathName))
         else
-          Attachments.Add(string(AnsiString(Files^.lpszFileName))); // OF AnsiString to TStrings
+          Attachments.Add(AnsiString(Files^.lpszFileName));
         Inc(Files);
       end;
     FReadMsg.MessageType := Msg^.lpszMessageType;
@@ -1358,24 +1358,26 @@ end;
 
 //=== Simple email send function =============================================
 
-function SimpleSendHelper(const ARecipient, AName, ASubject, ABody: AnsiString; const AAttachment: string;
+function SimpleSendHelper(const ARecipient, AName, ASubject, ABody: AnsiString; const AAttachment: TFileName;
   AShowDialog: Boolean; AParentWND: THandle; const AProfileName, APassword, AAddressType: AnsiString): Boolean;
+var
+  AJclEmail: TJclEmail;
 begin
-  with TJclEmail.Create do
+  AJclEmail := TJclEmail.Create;
   try
     if AParentWND <> 0 then
-      ParentWnd := AParentWND;
+      AJclEmail.ParentWnd := AParentWND;
     if ARecipient <> '' then
-      Recipients.Add(ARecipient, AName, rkTO, AAddressType);
-    Subject := ASubject;
-    Body := ABody;
+      AJclEmail.Recipients.Add(ARecipient, AName, rkTO, AAddressType);
+    AJclEmail.Subject := ASubject;
+    AJclEmail.Body := ABody;
     if AAttachment <> '' then
-      Attachments.Add(AAttachment);
+      AJclEmail.Attachments.Add(AnsiString(AAttachment));
     if AProfileName <> '' then
-      LogOn(AProfileName, APassword);
-    Result := Send(AShowDialog);
+      AJclEmail.LogOn(AProfileName, APassword);
+    Result := AJclEmail.Send(AShowDialog);
   finally
-    Free;
+    AJclEmail.Free;
   end;
 end;
 

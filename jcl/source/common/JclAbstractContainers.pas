@@ -2625,7 +2625,7 @@ var
   I: Integer;
 begin
   for I := 0 to Strings.Count - 1 do
-    Add(AnsiString(Strings[I])); // OF TStrings to AnsiString
+    Add(Strings[I]);
 end;
 
 procedure TJclAnsiStrAbstractCollection.AppendToStrings(Strings: TAnsiStrings);
@@ -2636,7 +2636,7 @@ begin
   Strings.BeginUpdate;
   try
     while It.HasNext do
-      Strings.Add(string(It.Next)); // OF AnsiString to TStrings
+      Strings.Add(It.Next);
   finally
     Strings.EndUpdate;
   end;
@@ -2656,7 +2656,7 @@ end;
 
 function TJclAnsiStrAbstractCollection.GetAsStrings: TAnsiStrings;
 begin
-  Result := TStringList.Create;
+  Result := TAnsiStringList.Create;
   try
     AppendToStrings(Result);
   except

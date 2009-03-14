@@ -277,11 +277,11 @@ type
 
   IJclAnsiStrFlatContainer = interface(IJclAnsiStrContainer)
     ['{8A45A4D4-6317-4CDF-8314-C3E5CC6899F4}']
-    procedure LoadFromStrings(Strings: TStrings);
-    procedure SaveToStrings(Strings: TStrings);
-    procedure AppendToStrings(Strings: TStrings);
-    procedure AppendFromStrings(Strings: TStrings);
-    function GetAsStrings: TStrings;
+    procedure LoadFromStrings(Strings: TAnsiStrings);
+    procedure SaveToStrings(Strings: TAnsiStrings);
+    procedure AppendToStrings(Strings: TAnsiStrings);
+    procedure AppendFromStrings(Strings: TAnsiStrings);
+    function GetAsStrings: TAnsiStrings;
     function GetAsDelimited(const Separator: AnsiString = AnsiLineBreak): AnsiString;
     procedure AppendDelimited(const AString: AnsiString; const Separator: AnsiString = AnsiLineBreak);
     procedure LoadDelimited(const AString: AnsiString; const Separator: AnsiString = AnsiLineBreak);

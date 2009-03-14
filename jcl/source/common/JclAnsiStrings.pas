@@ -3845,7 +3845,7 @@ begin
   SetLength(List, Source.Count + SizeOf(AnsiChar));
   for I := 0 to Source.Count - 1 do
   begin
-    S := AnsiString(Source[I]);  // OF TStrings to AnsiString
+    S := Source[I];
     {$IFDEF SUPPORTS_UNICODE}
     List[I] := AnsiStrAlloc(Length(S) + SizeOf(AnsiChar));
     {$ELSE ~SUPPORTS_UNICODE}
@@ -3889,7 +3889,7 @@ begin
     try
       Dest.Clear;
       for I := 0 to Count - 1 do
-        Dest.Add(List[I]); // OF AnsiString to TStrings
+        Dest.Add(List[I]);
     finally
       Dest.EndUpdate;
     end;
@@ -4053,7 +4053,7 @@ begin
       P := Source;
       while P^ <> #0 do
       begin
-        Dest.Add(P); // OF AnsiString to TStrings
+        Dest.Add(P);
         P := StrEnd(P);
         Inc(P);
       end;
@@ -4127,12 +4127,11 @@ begin
     begin
       Left := StrLeft(S, I - 1);
       if (Left <> '') or AllowEmptyString then
-        List.Add(Left); // OF AnsiString to TStrings
+        List.Add(Left);
       Delete(S, 1, I + L - 1);
       I := Pos(Sep, S);
     end;
     if S <> '' then
-      // OF AnsiString to TStrings
       List.Add(S);  // Ignore empty strings at the end.
   finally
     List.EndUpdate;
@@ -4157,13 +4156,12 @@ begin
     begin
       Left := StrLeft(S, I - 1);
       if (Left <> '') or AllowEmptyString then
-        List.Add(Left); // OF AnsiString to TStrings
+        List.Add(Left);
       Delete(S, 1, I + L - 1);
       Delete(LowerCaseStr, 1, I + L - 1);
       I := Pos(Sep, LowerCaseStr);
     end;
     if S <> '' then
-      // OF AnsiString to TStrings
       List.Add(S);  // Ignore empty strings at the end.
   finally
     List.EndUpdate;
@@ -4181,7 +4179,7 @@ begin
     if (List[I] <> '') or AllowEmptyString then
     begin
       // don't combine these into one addition, somehow it hurts performance
-      Result := Result + AnsiString(List[I]); // OF TStrings to AnsiString
+      Result := Result + List[I];
       Result := Result + Sep;
     end;
   end;
@@ -4250,9 +4248,9 @@ end;
 function AddStringToStrings(const S: AnsiString; Strings: TAnsiStrings; const Unique: Boolean): Boolean;
 begin
   Assert(Strings <> nil);
-  Result := Unique and (Strings.IndexOf(S) <> -1); // OF AnsiString to TStrings
+  Result := Unique and (Strings.IndexOf(S) <> -1);
   if not Result then
-    Result := Strings.Add(S) > -1; // OF AnsiString to TStrings
+    Result := Strings.Add(S) > -1;
 end;
 
 //=== Miscellaneous ==========================================================
@@ -4353,7 +4351,7 @@ begin
     repeat
       Done := StrWord(Start, Token);
       if Token <> '' then
-        List.Add(Token); // OF AnsiString to TStrings
+        List.Add(Token);
     until Done;
   finally
     List.EndUpdate;
@@ -4375,7 +4373,7 @@ begin
     while S <> '' do
     begin
       Token := StrToken(S, Separator);
-      List.Add(Token); // OF AnsiString to TStrings
+      List.Add(Token);
     end;
   finally
     List.EndUpdate;
