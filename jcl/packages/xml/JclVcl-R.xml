@@ -6,6 +6,7 @@
   <C6PFlags/>
   <C5Libs/>
   <C6Libs/>
+  <CompilerDefines>RELEASE</CompilerDefines>
   <ImageBase>48400000</ImageBase>
   <Requires>
     <Package Name="rtl" Targets="WinLibSuffix" Condition=""/>

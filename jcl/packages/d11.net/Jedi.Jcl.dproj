@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProjectGuid>{44DB645B-C167-410D-9334-38AF9F0C7913}</ProjectGuid>
@@ -9,13 +9,13 @@
     <DCC_DependencyCheckOutputName>Jedi.Jcl.bpl</DCC_DependencyCheckOutputName>
     <DCC_EnabledPackages>true</DCC_EnabledPackages>
     <DCC_UsePackage>Borland.Delphi;Borland.VclRtl</DCC_UsePackage>
+    <DCC_Define>RELEASE</DCC_Define>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Version>7.0</Version>
     <DCC_DebugInformation>False</DCC_DebugInformation>
     <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
     <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
-    <DCC_Define>RELEASE</DCC_Define>
     <DCC_Platform>x86</DCC_Platform>
     <DCC_DcuOutput>..\..\lib\d11.net</DCC_DcuOutput>
     <DCC_ObjOutput>..\..\lib\d11.net</DCC_ObjOutput>

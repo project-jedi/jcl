@@ -1,5 +1,5 @@
 [Directories]
 UnitOutputDir=..\..\lib\c6
 SearchPath=..\..\source\include
-Conditionals=BCB
+Conditionals=BCB;RELEASE
 

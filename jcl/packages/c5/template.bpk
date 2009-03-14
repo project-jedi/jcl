@@ -52,7 +52,7 @@
     <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
     <RELEASELIBPATH value="$(BCB)\lib\release"/>
     <LINKER value="ilink32"/>
-    <USERDEFINES value="_DEBUG;BCB"/>
+    <USERDEFINES value="%DEFINES%"/>
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="%NAME%.cpp"/>
     <INCLUDEPATH value="..\..\source\include;..\..\source\windows;..\..\source\vcl;..\..\source\common;..\..\experts\common;$(BCB)\include;$(BCB)\include\vcl"/>
@@ -62,11 +62,11 @@
   </MACROS>
   <OPTIONS>
     <IDLCFLAGS value="-I..\..\source\include -I..\..\source\windows -I..\..\source\vcl -I..\..\source\common
-      -I$(BCB)\include -I$(BCB)\include\vcl -src_suffix cpp -D_DEBUG -boa"/>
+      -I$(BCB)\include -I$(BCB)\include\vcl -src_suffix cpp -boa"/>
     <CFLAG1 value="-Od -H=$(BCB)\lib\vcl50.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c
-      -tWM"/>
+      -tWM %COMPILERDEFINES%"/>
     <PFLAGS value="-N0..\..\lib\c5 -N2..\..\lib\c5 -$YD -$W -$O- -$A8 -v -JPHNE -M
-                   %C5PFLAGS%
+                   %C5PFLAGS% %COMPILERDEFINES%
                    -U$(BCB)\Projects\Lib -U..\..\lib\c5
                   "/>
     <RFLAGS value=""/>
