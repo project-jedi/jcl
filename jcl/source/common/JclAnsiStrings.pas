@@ -194,7 +194,8 @@ type
 
 // Exceptions
 type
-  EJclAnsiStringError = EJclError;
+  EJclAnsiStringError = class(EJclError);
+  EJclAnsiStringListError = class(EJclAnsiStringError);
 
 // Character constants and sets
 
@@ -891,7 +892,7 @@ end;
 
 procedure TAnsiStrings.Error(const Msg: string; Data: Integer);
 begin
-  raise EStringListError.CreateFmt(Msg, [Data]);
+  raise EJclAnsiStringListError.CreateFmt(Msg, [Data]);
 end;
 
 procedure TAnsiStrings.Error(Msg: PResStringRec; Data: Integer);
