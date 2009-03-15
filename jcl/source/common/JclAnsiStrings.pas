@@ -939,12 +939,16 @@ end;
 procedure TJclAnsiStrings.Exchange(Index1, Index2: Integer);
 var
   TempString: AnsiString;
+  TempObject: TObject;
 begin
   BeginUpdate;
   try
     TempString := Strings[Index1];
+    TempObject := Objects[Index1];
     Strings[Index1] := Strings[Index2];
+    Objects[Index1] := Objects[Index2];
     Strings[Index2] := TempString;
+    Objects[Index2] := TempObject;
   finally
     EndUpdate;
   end;
