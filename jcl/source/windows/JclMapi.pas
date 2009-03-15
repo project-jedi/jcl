@@ -205,7 +205,7 @@ type
 
   TJclEmail = class(TJclSimpleMapi)
   private
-    FAttachments: TAnsiStringList;
+    FAttachments: TJclAnsiStringList;
     FBody: AnsiString;
     FFindOptions: TJclEmailFindOptions;
     FHtmlBody: Boolean;
@@ -219,7 +219,7 @@ type
     FSubject: AnsiString;
     FTaskWindowList: TJclTaskWindowsList;
     FAttachmentFiles: TStringList;
-    function GetAttachments: TAnsiStrings;
+    function GetAttachments: TJclAnsiStrings;
     function GetAttachmentFiles: TStrings;
     function GetParentWnd: THandle;
     function GetUserLogged: Boolean;
@@ -248,7 +248,7 @@ type
     procedure SaveTaskWindows;
     function Send(ShowDialog: Boolean = True): Boolean;
     procedure SortAttachments;
-    property Attachments: TAnsiStrings read GetAttachments;
+    property Attachments: TJclAnsiStrings read GetAttachments;
     property AttachmentFiles: TStrings read GetAttachmentFiles;
     property Body: AnsiString read FBody write SetBody;
     property FindOptions: TJclEmailFindOptions read FFindOptions write FFindOptions;
@@ -806,7 +806,7 @@ end;
 constructor TJclEmail.Create;
 begin
   inherited Create;
-  FAttachments := TAnsiStringList.Create;
+  FAttachments := TJclAnsiStringList.Create;
   FAttachmentFiles := TStringList.Create;
   FLogonOptions := [loLogonUI];
   FFindOptions := [foFifo];
@@ -938,7 +938,7 @@ begin
   end;
 end;
 
-function TJclEmail.GetAttachments: TAnsiStrings;
+function TJclEmail.GetAttachments: TJclAnsiStrings;
 begin
   Result := FAttachments;
 end;
@@ -1323,18 +1323,18 @@ end;
 
 procedure TJclEmail.SortAttachments;
 var
-  S, T: TAnsiStringList;
+  S, T: TJclAnsiStringList;
   U: TStringList;
   I, Nr: Integer;
 begin
   // This is confusing, quick and very dirty.
-  S := TAnsiStringList.Create;
+  S := TJclAnsiStringList.Create;
   try
     S.Capacity := FAttachments.Count;
     for I := 0 to Pred(FAttachments.Count) do
       S.AddObject(FAttachments[I], Pointer(I));
     S.Sort;
-    T := TAnsiStringList.Create;
+    T := TJclAnsiStringList.Create;
     U := TStringList.Create;
     try
       T.Capacity := S.Count;

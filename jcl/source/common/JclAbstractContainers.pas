@@ -591,11 +591,11 @@ type
     function GetEnumerator: IJclAnsistrIterator; virtual; abstract;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclAnsiStrFlatContainer }
-    procedure LoadFromStrings(Strings: TAnsiStrings);
-    procedure SaveToStrings(Strings: TAnsiStrings);
-    procedure AppendToStrings(Strings: TAnsiStrings);
-    procedure AppendFromStrings(Strings: TAnsiStrings);
-    function GetAsStrings: TAnsiStrings;
+    procedure LoadFromStrings(Strings: TJclAnsiStrings);
+    procedure SaveToStrings(Strings: TJclAnsiStrings);
+    procedure AppendToStrings(Strings: TJclAnsiStrings);
+    procedure AppendFromStrings(Strings: TJclAnsiStrings);
+    function GetAsStrings: TJclAnsiStrings;
     function GetAsDelimited(const Separator: AnsiString = AnsiLineBreak): AnsiString;
     procedure AppendDelimited(const AString: AnsiString; const Separator: AnsiString = AnsiLineBreak);
     procedure LoadDelimited(const AString: AnsiString; const Separator: AnsiString = AnsiLineBreak);
@@ -2620,7 +2620,7 @@ begin
 end;
 {$ENDIF CLR}
 
-procedure TJclAnsiStrAbstractCollection.AppendFromStrings(Strings: TAnsiStrings);
+procedure TJclAnsiStrAbstractCollection.AppendFromStrings(Strings: TJclAnsiStrings);
 var
   I: Integer;
 begin
@@ -2628,7 +2628,7 @@ begin
     Add(Strings[I]);
 end;
 
-procedure TJclAnsiStrAbstractCollection.AppendToStrings(Strings: TAnsiStrings);
+procedure TJclAnsiStrAbstractCollection.AppendToStrings(Strings: TJclAnsiStrings);
 var
   It: IJclAnsiStrIterator;
 begin
@@ -2654,9 +2654,9 @@ begin
     Result := Result + Separator + It.Next;
 end;
 
-function TJclAnsiStrAbstractCollection.GetAsStrings: TAnsiStrings;
+function TJclAnsiStrAbstractCollection.GetAsStrings: TJclAnsiStrings;
 begin
-  Result := TAnsiStringList.Create;
+  Result := TJclAnsiStringList.Create;
   try
     AppendToStrings(Result);
   except
@@ -2671,13 +2671,13 @@ begin
   AppendDelimited(AString, Separator);
 end;
 
-procedure TJclAnsiStrAbstractCollection.LoadFromStrings(Strings: TAnsiStrings);
+procedure TJclAnsiStrAbstractCollection.LoadFromStrings(Strings: TJclAnsiStrings);
 begin
   Clear;
   AppendFromStrings(Strings);
 end;
 
-procedure TJclAnsiStrAbstractCollection.SaveToStrings(Strings: TAnsiStrings);
+procedure TJclAnsiStrAbstractCollection.SaveToStrings(Strings: TJclAnsiStrings);
 begin
   Strings.Clear;
   AppendToStrings(Strings);

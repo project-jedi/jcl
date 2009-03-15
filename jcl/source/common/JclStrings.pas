@@ -338,10 +338,10 @@ type
   PAnsiMultiSz = JclAnsiStrings.PAnsiMultiSz;
   PWideMultiSz = JclWideStrings.PWideMultiSz;
 
-  TAnsiStrings = JclAnsiStrings.TAnsiStrings;
-  TWideStrings = JclWideStrings.TWideStrings;
-  TAnsiStringList = JclAnsiStrings.TAnsiStringList;
-  TWideStringList = JclWideStrings.TWideStringList;
+  TAnsiStrings = JclAnsiStrings.TJclAnsiStrings;
+  TWideStrings = JclWideStrings.TJclWideStrings;
+  TAnsiStringList = JclAnsiStrings.TJclAnsiStringList;
+  TWideStringList = JclWideStrings.TJclWideStringList;
 
 function StringsToMultiSz(var Dest: PMultiSz; const Source: TStrings): PMultiSz;
 procedure MultiSzToStrings(const Dest: TStrings; const Source: PMultiSz);

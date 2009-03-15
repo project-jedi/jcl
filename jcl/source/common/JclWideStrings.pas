@@ -81,8 +81,8 @@ const
 
 type
   {$IFDEF SUPPORTS_UNICODE}
-  TWStrings = TStrings;
-  TWStringList = TStringList;
+  TJclWideStrings = Classes.TStrings;
+  TJclWideStringList = Classes.TStringList;
   {$ELSE ~SUPPORTS_UNICODE}
 
   TWideFileOptionsType =
@@ -101,12 +101,12 @@ type
   );
   TSearchFlags = set of TSearchFlag;
 
-  TWStrings = class;
-  TWStringList = class;
+  TJclWideStrings = class;
+  TJclWideStringList = class;
 
-  TWStringListSortCompare = function(List: TWStringList; Index1, Index2: Integer): Integer;
+  TJclWideStringListSortCompare = function(List: TJclWideStringList; Index1, Index2: Integer): Integer;
 
-  TWStrings = class(TPersistent)
+  TJclWideStrings = class(TPersistent)
   private
     FDelimiter: WideChar;
     FQuoteChar: WideChar;
@@ -146,7 +146,7 @@ type
     function Add(const S: WideString): Integer; virtual;
     function AddObject(const S: WideString; AObject: TObject): Integer; virtual;
     procedure Append(const S: WideString);
-    procedure AddStrings(Strings: TWStrings); overload; virtual;
+    procedure AddStrings(Strings: TJclWideStrings); overload; virtual;
     procedure AddStrings(Strings: TStrings); overload; virtual;
     procedure Assign(Source: TPersistent); override;
     function CreateAnsiStringList: TStrings;
@@ -155,7 +155,7 @@ type
     procedure Clear; virtual; abstract;
     procedure Delete(Index: Integer); virtual; abstract;
     procedure EndUpdate;
-    function Equals(Strings: TWStrings): Boolean; {$IFDEF RTL200_UP}reintroduce; {$ENDIF RTL200_UP}overload;
+    function Equals(Strings: TJclWideStrings): Boolean; {$IFDEF RTL200_UP}reintroduce; {$ENDIF RTL200_UP}overload;
     function Equals(Strings: TStrings): Boolean; {$IFDEF RTL200_UP}reintroduce; {$ENDIF RTL200_UP}overload;
     procedure Exchange(Index1, Index2: Integer); virtual;
     function GetText: PWideChar; virtual;
@@ -201,7 +201,7 @@ type
     FObject: TObject;
   end;
 
-  TWStringList = class(TWStrings)
+  TJclWideStringList = class(TJclWideStrings)
   private
     FList: TList;
     FSorted: Boolean;
@@ -237,7 +237,7 @@ type
     procedure InsertObject(Index: Integer; const S: WideString;
       AObject: TObject); override;
     procedure Sort; virtual;
-    procedure CustomSort(Compare: TWStringListSortCompare); virtual;
+    procedure CustomSort(Compare: TJclWideStringListSortCompare); virtual;
     property Duplicates: TDuplicates read FDuplicates write FDuplicates;
     property Sorted: Boolean read FSorted write SetSorted;
     property CaseSensitive: Boolean read FCaseSensitive write SetCaseSensitive;
@@ -246,8 +246,12 @@ type
   end;
   {$ENDIF ~SUPPORTS_UNICODE}
 
-  TWideStringList = TWStringList;
-  TWideStrings = TWStrings;
+  TWideStringList = TJclWideStringList;
+  TWideStrings = TJclWideStrings;
+
+  // OF deprecated?
+  TWStringList = TJclWideStringList;
+  TWStrings = TJclWideStrings;
 
 // WideChar functions
 function CharToWideChar(Ch: AnsiChar): WideChar;
@@ -313,8 +317,8 @@ function WideStartsStr(const SubStr, S: WideString): Boolean;
 type
   PWideMultiSz = PWideChar;
 
-function StringsToMultiSz(var Dest: PWideMultiSz; const Source: TWideStrings): PWideMultiSz;
-procedure MultiSzToStrings(const Dest: TWideStrings; const Source: PWideMultiSz);
+function StringsToMultiSz(var Dest: PWideMultiSz; const Source: TJclWideStrings): PWideMultiSz;
+procedure MultiSzToStrings(const Dest: TJclWideStrings; const Source: PWideMultiSz);
 function MultiSzLength(const Source: PWideMultiSz): Integer;
 procedure AllocateMultiSz(var Dest: PWideMultiSz; Len: Integer);
 procedure FreeMultiSz(var Dest: PWideMultiSz);
@@ -1094,9 +1098,9 @@ end;
 {$ENDIF ~FPC}
 
 {$IFNDEF SUPPORTS_UNICODE}
-//=== { TWStrings } ==========================================================
+//=== { TJclWideStrings } ==========================================================
 
-constructor TWStrings.Create;
+constructor TJclWideStrings.Create;
 begin
   inherited Create;
   // FLineSeparator := WideChar($2028);
@@ -1111,18 +1115,18 @@ begin
   FQuoteChar := '"';
 end;
 
-function TWStrings.Add(const S: WideString): Integer;
+function TJclWideStrings.Add(const S: WideString): Integer;
 begin
   Result := AddObject(S, nil);
 end;
 
-function TWStrings.AddObject(const S: WideString; AObject: TObject): Integer;
+function TJclWideStrings.AddObject(const S: WideString; AObject: TObject): Integer;
 begin
   Result := Count;
   InsertObject(Result, S, AObject);
 end;
 
-procedure TWStrings.AddStrings(Strings: TWStrings);
+procedure TJclWideStrings.AddStrings(Strings: TJclWideStrings);
 var
   I: Integer;
 begin
@@ -1130,7 +1134,7 @@ begin
     AddObject(Strings.GetP(I)^, Strings.Objects[I]);
 end;
 
-procedure TWStrings.AddStrings(Strings: TStrings);
+procedure TJclWideStrings.AddStrings(Strings: TStrings);
 var
   I: Integer;
 begin
@@ -1138,7 +1142,7 @@ begin
     AddObject(Strings.Strings[I], Strings.Objects[I]);
 end;
 
-procedure TWStrings.AddStringsTo(Dest: TStrings);
+procedure TJclWideStrings.AddStringsTo(Dest: TStrings);
 var
   I: Integer;
 begin
@@ -1146,22 +1150,22 @@ begin
     Dest.AddObject(GetP(I)^, Objects[I]);
 end;
 
-procedure TWStrings.Append(const S: WideString);
+procedure TJclWideStrings.Append(const S: WideString);
 begin
   Add(S);
 end;
 
-procedure TWStrings.Assign(Source: TPersistent);
+procedure TJclWideStrings.Assign(Source: TPersistent);
 begin
-  if Source is TWStrings then
+  if Source is TJclWideStrings then
   begin
     BeginUpdate;
     try
       Clear;
-      FDelimiter := TWStrings(Source).FDelimiter;
-      FNameValueSeparator := TWStrings(Source).FNameValueSeparator;
-      FQuoteChar := TWStrings(Source).FQuoteChar;
-      AddStrings(TWStrings(Source));
+      FDelimiter := TJclWideStrings(Source).FDelimiter;
+      FNameValueSeparator := TJclWideStrings(Source).FNameValueSeparator;
+      FQuoteChar := TJclWideStrings(Source).FQuoteChar;
+      AddStrings(TJclWideStrings(Source));
     finally
       EndUpdate;
     end;
@@ -1194,7 +1198,7 @@ begin
     inherited Assign(Source);
 end;
 
-procedure TWStrings.AssignTo(Dest: TPersistent);
+procedure TJclWideStrings.AssignTo(Dest: TPersistent);
 var
   I: Integer;
 begin
@@ -1226,19 +1230,19 @@ begin
     inherited AssignTo(Dest);
 end;
 
-procedure TWStrings.BeginUpdate;
+procedure TJclWideStrings.BeginUpdate;
 begin
   if FUpdateCount = 0 then
     SetUpdateState(True);
   Inc(FUpdateCount);
 end;
 
-function TWStrings.CompareStrings(const S1, S2: WideString): Integer;
+function TJclWideStrings.CompareStrings(const S1, S2: WideString): Integer;
 begin
   Result := WideCompareText(S1, S2);
 end;
 
-function TWStrings.CreateAnsiStringList: TStrings;
+function TJclWideStrings.CreateAnsiStringList: TStrings;
 var
   I: Integer;
 begin
@@ -1254,15 +1258,15 @@ begin
   end;
 end;
 
-procedure TWStrings.DefineProperties(Filer: TFiler);
+procedure TJclWideStrings.DefineProperties(Filer: TFiler);
 
   function DoWrite: Boolean;
   begin
     if Filer.Ancestor <> nil then
     begin
       Result := True;
-      if Filer.Ancestor is TWStrings then
-        Result := not Equals(TWStrings(Filer.Ancestor))
+      if Filer.Ancestor is TJclWideStrings then
+        Result := not Equals(TJclWideStrings(Filer.Ancestor))
     end
     else
       Result := Count > 0;
@@ -1272,14 +1276,14 @@ begin
   Filer.DefineProperty('Strings', ReadData, WriteData, DoWrite);
 end;
 
-procedure TWStrings.EndUpdate;
+procedure TJclWideStrings.EndUpdate;
 begin
   Dec(FUpdateCount);
   if FUpdateCount = 0 then
     SetUpdateState(False);
 end;
 
-function TWStrings.Equals(Strings: TStrings): Boolean;
+function TJclWideStrings.Equals(Strings: TStrings): Boolean;
 var
   I: Integer;
 begin
@@ -1293,7 +1297,7 @@ begin
   end;
 end;
 
-function TWStrings.Equals(Strings: TWStrings): Boolean;
+function TJclWideStrings.Equals(Strings: TJclWideStrings): Boolean;
 var
   I: Integer;
 begin
@@ -1307,7 +1311,7 @@ begin
   end;
 end;
 
-procedure TWStrings.Exchange(Index1, Index2: Integer);
+procedure TJclWideStrings.Exchange(Index1, Index2: Integer);
 var
   TempObject: TObject;
   TempString: WideString;
@@ -1325,7 +1329,7 @@ begin
   end;
 end;
 
-function TWStrings.ExtractName(const S: WideString): WideString;
+function TJclWideStrings.ExtractName(const S: WideString): WideString;
 var
   Index: Integer;
 begin
@@ -1337,27 +1341,27 @@ begin
     SetLength(Result, 0);
 end;
 
-function TWStrings.Get(Index: Integer): WideString;
+function TJclWideStrings.Get(Index: Integer): WideString;
 begin
   Result := GetP(Index)^;
 end;
 
-function TWStrings.GetCapacity: Integer;
+function TJclWideStrings.GetCapacity: Integer;
 begin
   Result := Count;
 end;
 
-function TWStrings.GetCommaText: WideString;
+function TJclWideStrings.GetCommaText: WideString;
 begin
   Result := GetDelimitedTextEx(',', '"');
 end;
 
-function TWStrings.GetDelimitedText: WideString;
+function TJclWideStrings.GetDelimitedText: WideString;
 begin
   Result := GetDelimitedTextEx(FDelimiter, FQuoteChar);
 end;
 
-function TWStrings.GetDelimitedTextEx(ADelimiter, AQuoteChar: WideChar): WideString;
+function TJclWideStrings.GetDelimitedTextEx(ADelimiter, AQuoteChar: WideChar): WideString;
 var
   S: WideString;
   P: PWideChar;
@@ -1393,7 +1397,7 @@ begin
   end;
 end;
 
-function TWStrings.GetName(Index: Integer): WideString;
+function TJclWideStrings.GetName(Index: Integer): WideString;
 var
   I: Integer;
 begin
@@ -1403,17 +1407,17 @@ begin
     SetLength(Result, I - 1);
 end;
 
-function TWStrings.GetObject(Index: Integer): TObject;
+function TJclWideStrings.GetObject(Index: Integer): TObject;
 begin
   Result := nil;
 end;
 
-function TWStrings.GetText: PWideChar;
+function TJclWideStrings.GetText: PWideChar;
 begin
   Result := StrNewW(GetTextStr);
 end;
 
-function TWStrings.GetTextStr: WideString;
+function TJclWideStrings.GetTextStr: WideString;
 var
   I: Integer;
   Len, LL: Integer;
@@ -1443,7 +1447,7 @@ begin
   end;
 end;
 
-function TWStrings.GetValue(const Name: WideString): WideString;
+function TJclWideStrings.GetValue(const Name: WideString): WideString;
 var
   Idx: Integer;
 begin
@@ -1454,7 +1458,7 @@ begin
     Result := '';
 end;
 
-function TWStrings.GetValueFromIndex(Index: Integer): WideString;
+function TJclWideStrings.GetValueFromIndex(Index: Integer): WideString;
 var
   I: Integer;
 begin
@@ -1466,7 +1470,7 @@ begin
     Result := '';
 end;
 
-function TWStrings.IndexOf(const S: WideString): Integer;
+function TJclWideStrings.IndexOf(const S: WideString): Integer;
 begin
   for Result := 0 to Count - 1 do
     if CompareStrings(GetP(Result)^, S) = 0 then
@@ -1474,7 +1478,7 @@ begin
   Result := -1;
 end;
 
-function TWStrings.IndexOfName(const Name: WideString): Integer;
+function TJclWideStrings.IndexOfName(const Name: WideString): Integer;
 begin
   for Result := 0 to Count - 1 do
     if CompareStrings(Names[Result], Name) = 0 then
@@ -1482,7 +1486,7 @@ begin
   Result := -1;
 end;
 
-function TWStrings.IndexOfObject(AObject: TObject): Integer;
+function TJclWideStrings.IndexOfObject(AObject: TObject): Integer;
 begin
   for Result := 0 to Count - 1 do
     if Objects[Result] = AObject then
@@ -1490,16 +1494,16 @@ begin
   Result := -1;
 end;
 
-procedure TWStrings.Insert(Index: Integer; const S: WideString);
+procedure TJclWideStrings.Insert(Index: Integer; const S: WideString);
 begin
   InsertObject(Index, S, nil);
 end;
 
-procedure TWStrings.InsertObject(Index: Integer; const S: WideString; AObject: TObject);
+procedure TJclWideStrings.InsertObject(Index: Integer; const S: WideString; AObject: TObject);
 begin
 end;
 
-procedure TWStrings.LoadFromFile(const FileName: string;
+procedure TJclWideStrings.LoadFromFile(const FileName: string;
   WideFileOptions: TWideFileOptions = []);
 var
   Stream: TFileStream;
@@ -1512,7 +1516,7 @@ begin
   end;
 end;
 
-procedure TWStrings.LoadFromStream(Stream: TStream;
+procedure TJclWideStrings.LoadFromStream(Stream: TStream;
   WideFileOptions: TWideFileOptions = []);
 var
   AnsiS: AnsiString;
@@ -1545,7 +1549,7 @@ begin
   end;
 end;
 
-procedure TWStrings.Move(CurIndex, NewIndex: Integer);
+procedure TJclWideStrings.Move(CurIndex, NewIndex: Integer);
 var
   TempObject: TObject;
   TempString: WideString;
@@ -1564,7 +1568,7 @@ begin
   end;
 end;
 
-procedure TWStrings.ReadData(Reader: TReader);
+procedure TJclWideStrings.ReadData(Reader: TReader);
 begin
   BeginUpdate;
   try
@@ -1581,7 +1585,7 @@ begin
   end;
 end;
 
-procedure TWStrings.SaveToFile(const FileName: string; WideFileOptions: TWideFileOptions = []);
+procedure TJclWideStrings.SaveToFile(const FileName: string; WideFileOptions: TWideFileOptions = []);
 var
   Stream: TFileStream;
 begin
@@ -1593,7 +1597,7 @@ begin
   end;
 end;
 
-procedure TWStrings.SaveToStream(Stream: TStream; WideFileOptions: TWideFileOptions = []);
+procedure TJclWideStrings.SaveToStream(Stream: TStream; WideFileOptions: TWideFileOptions = []);
 var
   AnsiS: AnsiString;
   WideS: WideString;
@@ -1616,21 +1620,21 @@ begin
   end;
 end;
 
-procedure TWStrings.SetCapacity(NewCapacity: Integer);
+procedure TJclWideStrings.SetCapacity(NewCapacity: Integer);
 begin
 end;
 
-procedure TWStrings.SetCommaText(const Value: WideString);
+procedure TJclWideStrings.SetCommaText(const Value: WideString);
 begin
   SetDelimitedTextEx(',', '"', Value);
 end;
 
-procedure TWStrings.SetDelimitedText(const Value: WideString);
+procedure TJclWideStrings.SetDelimitedText(const Value: WideString);
 begin
   SetDelimitedTextEx(Delimiter, QuoteChar, Value);
 end;
 
-procedure TWStrings.SetDelimitedTextEx(ADelimiter, AQuoteChar: WideChar;
+procedure TJclWideStrings.SetDelimitedTextEx(ADelimiter, AQuoteChar: WideChar;
   const Value: WideString);
 var
   P, P1: PWideChar;
@@ -1678,12 +1682,12 @@ begin
   end;
 end;
 
-procedure TWStrings.SetText(Text: PWideChar);
+procedure TJclWideStrings.SetText(Text: PWideChar);
 begin
   SetTextStr(Text);
 end;
 
-procedure TWStrings.SetTextStr(const Value: WideString);
+procedure TJclWideStrings.SetTextStr(const Value: WideString);
 var
   P, Start: PWideChar;
   S: WideString;
@@ -1728,11 +1732,11 @@ begin
   end;
 end;
 
-procedure TWStrings.SetUpdateState(Updating: Boolean);
+procedure TJclWideStrings.SetUpdateState(Updating: Boolean);
 begin
 end;
 
-procedure TWStrings.SetValue(const Name, Value: WideString);
+procedure TJclWideStrings.SetValue(const Name, Value: WideString);
 var
   Idx: Integer;
 begin
@@ -1744,7 +1748,7 @@ begin
     Add(Name + NameValueSeparator + Value);
 end;
 
-procedure TWStrings.SetValueFromIndex(Index: Integer; const Value: WideString);
+procedure TJclWideStrings.SetValueFromIndex(Index: Integer; const Value: WideString);
 var
   S: WideString;
   I: Integer;
@@ -1764,7 +1768,7 @@ begin
   end;
 end;
 
-procedure TWStrings.WriteData(Writer: TWriter);
+procedure TJclWideStrings.WriteData(Writer: TWriter);
 var
   I: Integer;
 begin
@@ -1774,15 +1778,15 @@ begin
   Writer.WriteListEnd;
 end;
 
-//=== { TWStringList } =======================================================
+//=== { TJclWideStringList } =======================================================
 
-constructor TWStringList.Create;
+constructor TJclWideStringList.Create;
 begin
   inherited Create;
   FList := TList.Create;
 end;
 
-destructor TWStringList.Destroy;
+destructor TJclWideStringList.Destroy;
 begin
   FOnChange := nil;
   FOnChanging := nil;
@@ -1792,7 +1796,7 @@ begin
   inherited Destroy;
 end;
 
-function TWStringList.AddObject(const S: WideString; AObject: TObject): Integer;
+function TJclWideStringList.AddObject(const S: WideString; AObject: TObject): Integer;
 begin
   if not Sorted then
     Result := Count
@@ -1807,19 +1811,19 @@ begin
   InsertObject(Result, S, AObject);
 end;
 
-procedure TWStringList.Changed;
+procedure TJclWideStringList.Changed;
 begin
   if Assigned(FOnChange) then
     FOnChange(Self);
 end;
 
-procedure TWStringList.Changing;
+procedure TJclWideStringList.Changing;
 begin
   if Assigned(FOnChanging) then
     FOnChanging(Self);
 end;
 
-procedure TWStringList.Clear;
+procedure TJclWideStringList.Clear;
 var
   I: Integer;
   Item: PWStringItem;
@@ -1837,7 +1841,7 @@ begin
     Changed;
 end;
 
-function TWStringList.CompareStrings(const S1, S2: WideString): Integer;
+function TJclWideStringList.CompareStrings(const S1, S2: WideString): Integer;
 begin
   if CaseSensitive then
     Result := WideCompareStr(S1, S2)
@@ -1846,8 +1850,8 @@ begin
 end;
 
 threadvar
-  CustomSortList: TWStringList;
-  CustomSortCompare: TWStringListSortCompare;
+  CustomSortList: TJclWideStringList;
+  CustomSortCompare: TJclWideStringListSortCompare;
 
 function WStringListCustomSort(Item1, Item2: Pointer): Integer;
 begin
@@ -1856,10 +1860,10 @@ begin
     CustomSortList.FList.IndexOf(Item2));
 end;
 
-procedure TWStringList.CustomSort(Compare: TWStringListSortCompare);
+procedure TJclWideStringList.CustomSort(Compare: TJclWideStringListSortCompare);
 var
-  TempList: TWStringList;
-  TempCompare: TWStringListSortCompare;
+  TempList: TJclWideStringList;
+  TempCompare: TJclWideStringListSortCompare;
 begin
   TempList := CustomSortList;
   TempCompare := CustomSortCompare;
@@ -1875,7 +1879,7 @@ begin
   end;
 end;
 
-procedure TWStringList.Delete(Index: Integer);
+procedure TJclWideStringList.Delete(Index: Integer);
 var
   Item: PWStringItem;
 begin
@@ -1889,7 +1893,7 @@ begin
     Changed;
 end;
 
-procedure TWStringList.Exchange(Index1, Index2: Integer);
+procedure TJclWideStringList.Exchange(Index1, Index2: Integer);
 begin
   if FUpdateCount = 0 then
     Changing;
@@ -1898,7 +1902,7 @@ begin
     Changed;
 end;
 
-function TWStringList.Find(const S: WideString; var Index: Integer): Boolean;
+function TJclWideStringList.Find(const S: WideString; var Index: Integer): Boolean;
 var
   L, H, I, C: Integer;
 begin
@@ -1933,32 +1937,32 @@ begin
   end;
 end;
 
-function TWStringList.GetCapacity: Integer;
+function TJclWideStringList.GetCapacity: Integer;
 begin
   Result := FList.Capacity;
 end;
 
-function TWStringList.GetCount: Integer;
+function TJclWideStringList.GetCount: Integer;
 begin
   Result := FList.Count;
 end;
 
-function TWStringList.GetItem(Index: Integer): PWStringItem;
+function TJclWideStringList.GetItem(Index: Integer): PWStringItem;
 begin
   Result := FList[Index];
 end;
 
-function TWStringList.GetObject(Index: Integer): TObject;
+function TJclWideStringList.GetObject(Index: Integer): TObject;
 begin
   Result := GetItem(Index).FObject;
 end;
 
-function TWStringList.GetP(Index: Integer): PWideString;
+function TJclWideStringList.GetP(Index: Integer): PWideString;
 begin
   Result := Addr(GetItem(Index).FString);
 end;
 
-function TWStringList.IndexOf(const S: WideString): Integer;
+function TJclWideStringList.IndexOf(const S: WideString): Integer;
 begin
   if Sorted then
   begin
@@ -1974,7 +1978,7 @@ begin
   end;
 end;
 
-procedure TWStringList.InsertObject(Index: Integer; const S: WideString;
+procedure TJclWideStringList.InsertObject(Index: Integer; const S: WideString;
   AObject: TObject);
 var
   P: PWStringItem;
@@ -1992,7 +1996,7 @@ begin
     Changed;
 end;
 
-procedure TWStringList.Put(Index: Integer; const Value: WideString);
+procedure TJclWideStringList.Put(Index: Integer; const Value: WideString);
 begin
   if FUpdateCount = 0 then
     Changing;
@@ -2001,7 +2005,7 @@ begin
     Changed;
 end;
 
-procedure TWStringList.PutObject(Index: Integer; AObject: TObject);
+procedure TJclWideStringList.PutObject(Index: Integer; AObject: TObject);
 begin
   if FUpdateCount = 0 then
     Changing;
@@ -2010,12 +2014,12 @@ begin
     Changed;
 end;
 
-procedure TWStringList.SetCapacity(NewCapacity: Integer);
+procedure TJclWideStringList.SetCapacity(NewCapacity: Integer);
 begin
   FList.Capacity := NewCapacity;
 end;
 
-procedure TWStringList.SetCaseSensitive(const Value: Boolean);
+procedure TJclWideStringList.SetCaseSensitive(const Value: Boolean);
 begin
   if Value <> FCaseSensitive then
   begin
@@ -2028,7 +2032,7 @@ begin
   end;
 end;
 
-procedure TWStringList.SetSorted(Value: Boolean);
+procedure TJclWideStringList.SetSorted(Value: Boolean);
 begin
   if Value <> FSorted then
   begin
@@ -2042,7 +2046,7 @@ begin
   end;
 end;
 
-procedure TWStringList.SetUpdateState(Updating: Boolean);
+procedure TJclWideStringList.SetUpdateState(Updating: Boolean);
 begin
   if Updating then
     Changing
@@ -2050,12 +2054,12 @@ begin
     Changed;
 end;
 
-function DefaultSort(List: TWStringList; Index1, Index2: Integer): Integer;
+function DefaultSort(List: TJclWideStringList; Index1, Index2: Integer): Integer;
 begin
   Result := List.CompareStrings(List.GetItem(Index1).FString, List.GetItem(Index2).FString);
 end;
 
-procedure TWStringList.Sort;
+procedure TJclWideStringList.Sort;
 begin
   if not Sorted then
     CustomSort(DefaultSort);
@@ -2063,7 +2067,7 @@ end;
 
 {$ENDIF ~SUPPORTS_UNICODE}
 
-function StringsToMultiSz(var Dest: PWideMultiSz; const Source: TWideStrings): PWideMultiSz;
+function StringsToMultiSz(var Dest: PWideMultiSz; const Source: TJclWideStrings): PWideMultiSz;
 var
   I, TotalLength: Integer;
   P: PWideMultiSz;
@@ -2086,7 +2090,7 @@ begin
   Result := Dest;
 end;
 
-procedure MultiSzToStrings(const Dest: TWideStrings; const Source: PWideMultiSz);
+procedure MultiSzToStrings(const Dest: TJclWideStrings; const Source: PWideMultiSz);
 var
   P: PWideMultiSz;
 begin

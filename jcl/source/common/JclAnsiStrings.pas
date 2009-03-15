@@ -79,13 +79,13 @@ uses
 
 type
   {$IFDEF SUPPORTS_UNICODE}
-  TAnsiStringList = class;
+  TJclAnsiStringList = class;
 
   // Codegear should be the one providing this class, in the AnsiStrings unit.
   // It has been requested in QC 65630 but this was closed as "won't do".
   // So we are providing here a very light implementation that is designed
   // to provide the basics, and in no way be a "copy/paste" of what is in the RTL.
-  TAnsiStrings = class(TPersistent)
+  TJclAnsiStrings = class(TPersistent)
   private
     FDelimiter: AnsiChar;
     FNameValueSeparator: AnsiChar;
@@ -120,7 +120,7 @@ type
 
     function Add(const S: AnsiString): Integer; virtual;
     function AddObject(const S: AnsiString; AObject: TObject): Integer; virtual; abstract;
-    procedure AddStrings(Strings: TAnsiStrings); virtual;
+    procedure AddStrings(Strings: TJclAnsiStrings); virtual;
     procedure Insert(Index: Integer; const S: AnsiString); virtual;
     procedure InsertObject(Index: Integer; const S: AnsiString; AObject: TObject); virtual; abstract;
     procedure Delete(Index: Integer); virtual; abstract;
@@ -150,22 +150,22 @@ type
     property NameValueSeparator: AnsiChar read FNameValueSeparator write FNameValueSeparator;
   end;
 
-  TAnsiStringListSortCompare = function(List: TAnsiStringList; Index1, Index2: Integer): Integer;
+  TJclAnsiStringListSortCompare = function(List: TJclAnsiStringList; Index1, Index2: Integer): Integer;
 
-  TAnsiStringObjectHolder = record
+  TJclAnsiStringObjectHolder = record
     Str: AnsiString;
     Obj: TObject;
   end;
 
-  TAnsiStringList = class(TAnsiStrings)
+  TJclAnsiStringList = class(TJclAnsiStrings)
   private
-    FStrings: array of TAnsiStringObjectHolder;
+    FStrings: array of TJclAnsiStringObjectHolder;
     FCount: Integer;
     FDuplicates: TDuplicates;
     FSorted: Boolean;
 
     procedure Grow;
-    procedure QuickSort(L, R: Integer; SCompare: TAnsiStringListSortCompare);
+    procedure QuickSort(L, R: Integer; SCompare: TJclAnsiStringListSortCompare);
     procedure SetSorted(Value: Boolean);
   protected
     function GetString(Index: Integer): AnsiString; override;
@@ -180,7 +180,7 @@ type
     procedure InsertObject(Index: Integer; const S: AnsiString; AObject: TObject); override;
     procedure Delete(Index: Integer); override;
     function Find(const S: AnsiString; var Index: Integer): Boolean; virtual;
-    procedure CustomSort(Compare: TAnsiStringListSortCompare); virtual;
+    procedure CustomSort(Compare: TJclAnsiStringListSortCompare); virtual;
     procedure Sort; virtual;
     procedure Clear; override;
 
@@ -188,9 +188,12 @@ type
     property Sorted: Boolean read FSorted write SetSorted;
   end;
   {$ELSE ~SUPPORTS_UNICODE}
-  TAnsiStrings = Classes.TStrings;
-  TAnsiStringList = Classes.TStringList;
+  TJclAnsiStrings = Classes.TStrings;
+  TJclAnsiStringList = Classes.TStringList;
   {$ENDIF ~SUPPORTS_UNICODE}
+
+  TAnsiStrings = TJclAnsiStrings;
+  TAnsiStringList = TJclAnsiStringList;
 
 // Exceptions
 type
@@ -441,31 +444,31 @@ function CharReplace(var S: AnsiString; const Search, Replace: AnsiChar): Intege
 type
   PCharVector = ^PAnsiChar;
 
-function StringsToPCharVector(var Dest: PCharVector; const Source: TAnsiStrings): PCharVector;
+function StringsToPCharVector(var Dest: PCharVector; const Source: TJclAnsiStrings): PCharVector;
 function PCharVectorCount(Source: PCharVector): Integer;
-procedure PCharVectorToStrings(const Dest: TAnsiStrings; Source: PCharVector);
+procedure PCharVectorToStrings(const Dest: TJclAnsiStrings; Source: PCharVector);
 procedure FreePCharVector(var Dest: PCharVector);
 
 // MultiSz Routines
 type
   PAnsiMultiSz = PAnsiChar;
 
-function StringsToMultiSz(var Dest: PAnsiMultiSz; const Source: TAnsiStrings): PAnsiMultiSz;
-procedure MultiSzToStrings(const Dest: TAnsiStrings; const Source: PAnsiMultiSz);
+function StringsToMultiSz(var Dest: PAnsiMultiSz; const Source: TJclAnsiStrings): PAnsiMultiSz;
+procedure MultiSzToStrings(const Dest: TJclAnsiStrings; const Source: PAnsiMultiSz);
 function MultiSzLength(const Source: PAnsiMultiSz): Integer;
 procedure AllocateMultiSz(var Dest: PAnsiMultiSz; Len: Integer);
 procedure FreeMultiSz(var Dest: PAnsiMultiSz);
 function MultiSzDup(const Source: PAnsiMultiSz): PAnsiMultiSz;
 {$ENDIF ~CLR}
 
-// TAnsiStrings Manipulation
-procedure StrIToStrings(S, Sep: AnsiString; const List: TAnsiStrings; const AllowEmptyString: Boolean = True);
-procedure StrToStrings(S, Sep: AnsiString; const List: TAnsiStrings; const AllowEmptyString: Boolean = True);
-function StringsToStr(const List: TAnsiStrings; const Sep: AnsiString; const AllowEmptyString: Boolean = True): AnsiString;
-procedure TrimStrings(const List: TAnsiStrings; DeleteIfEmpty: Boolean = True);
-procedure TrimStringsRight(const List: TAnsiStrings; DeleteIfEmpty: Boolean = True);
-procedure TrimStringsLeft(const List: TAnsiStrings; DeleteIfEmpty: Boolean = True);
-function AddStringToStrings(const S: AnsiString; Strings: TAnsiStrings; const Unique: Boolean): Boolean;
+// TJclAnsiStrings Manipulation
+procedure StrIToStrings(S, Sep: AnsiString; const List: TJclAnsiStrings; const AllowEmptyString: Boolean = True);
+procedure StrToStrings(S, Sep: AnsiString; const List: TJclAnsiStrings; const AllowEmptyString: Boolean = True);
+function StringsToStr(const List: TJclAnsiStrings; const Sep: AnsiString; const AllowEmptyString: Boolean = True): AnsiString;
+procedure TrimStrings(const List: TJclAnsiStrings; DeleteIfEmpty: Boolean = True);
+procedure TrimStringsRight(const List: TJclAnsiStrings; DeleteIfEmpty: Boolean = True);
+procedure TrimStringsLeft(const List: TJclAnsiStrings; DeleteIfEmpty: Boolean = True);
+function AddStringToStrings(const S: AnsiString; Strings: TJclAnsiStrings; const Unique: Boolean): Boolean;
 
 // Miscellaneous
 {$IFDEF KEEP_DEPRECATED}
@@ -475,8 +478,8 @@ function FileToString(const FileName: TFileName): AnsiString;
 procedure StringToFile(const FileName: TFileName; const Contents: AnsiString; Append: Boolean = False);
 function StrToken(var S: AnsiString; Separator: AnsiChar): AnsiString;
 {$IFNDEF CLR}
-procedure StrTokens(const S: AnsiString; const List: TAnsiStrings);
-procedure StrTokenToStrings(S: AnsiString; Separator: AnsiChar; const List: TAnsiStrings);
+procedure StrTokens(const S: AnsiString; const List: TJclAnsiStrings);
+procedure StrTokenToStrings(S: AnsiString; Separator: AnsiChar; const List: TJclAnsiStrings);
 function StrWord(var S: PAnsiChar; out Word: AnsiString): Boolean;
 {$ENDIF ~CLR}
 function StrToFloatSafe(const S: AnsiString): Float;
@@ -484,7 +487,7 @@ function StrToIntSafe(const S: AnsiString): Integer;
 procedure StrNormIndex(const StrLen: Integer; var Index: Integer; var Count: Integer); overload;
 
 {$IFDEF CLR}
-function ArrayOf(List: TAnsiStrings): TDynStringArray; overload;
+function ArrayOf(List: TJclAnsiStrings): TDynStringArray; overload;
 {$ENDIF CLR}
 
 function AnsiCompareNaturalStr(const S1, S2: AnsiString): Integer;
@@ -849,9 +852,9 @@ end;
 {$ENDIF ~CLR}
 
 {$IFDEF SUPPORTS_UNICODE}
-{ TAnsiStrings }
+{ TJclAnsiStrings }
 
-constructor TAnsiStrings.Create;
+constructor TJclAnsiStrings.Create;
 begin
   inherited Create;
 
@@ -859,16 +862,16 @@ begin
   FNameValueSeparator := '=';
 end;
 
-procedure TAnsiStrings.Assign(Source: TPersistent);
+procedure TJclAnsiStrings.Assign(Source: TPersistent);
 begin
-  if Source is TAnsiStrings then
+  if Source is TJclAnsiStrings then
   begin
     BeginUpdate;
     try
       Clear;
-      FNameValueSeparator := TAnsiStrings(Source).FNameValueSeparator;
-      FDelimiter := TAnsiStrings(Source).FDelimiter;
-      AddStrings(TAnsiStrings(Source));
+      FNameValueSeparator := TJclAnsiStrings(Source).FNameValueSeparator;
+      FDelimiter := TJclAnsiStrings(Source).FDelimiter;
+      AddStrings(TJclAnsiStrings(Source));
     finally
       EndUpdate;
     end;
@@ -877,12 +880,12 @@ begin
   inherited Assign(Source);
 end;
 
-function TAnsiStrings.Add(const S: AnsiString): Integer;
+function TJclAnsiStrings.Add(const S: AnsiString): Integer;
 begin
   Result := AddObject(S, nil);
 end;
 
-procedure TAnsiStrings.AddStrings(Strings: TAnsiStrings);
+procedure TJclAnsiStrings.AddStrings(Strings: TJclAnsiStrings);
 var
   I: Integer;
 begin
@@ -890,29 +893,29 @@ begin
     Add(Strings.Strings[I]);
 end;
 
-procedure TAnsiStrings.Error(const Msg: string; Data: Integer);
+procedure TJclAnsiStrings.Error(const Msg: string; Data: Integer);
 begin
   raise EJclAnsiStringListError.CreateFmt(Msg, [Data]);
 end;
 
-procedure TAnsiStrings.Error(Msg: PResStringRec; Data: Integer);
+procedure TJclAnsiStrings.Error(Msg: PResStringRec; Data: Integer);
 begin
   Error(LoadResString(Msg), Data);
 end;
 
-function TAnsiStrings.CompareStrings(const S1, S2: AnsiString): Integer;
+function TJclAnsiStrings.CompareStrings(const S1, S2: AnsiString): Integer;
 begin
   Result := CompareStr(S1, S2);
 end;
 
-function TAnsiStrings.IndexOf(const S: AnsiString): Integer;
+function TJclAnsiStrings.IndexOf(const S: AnsiString): Integer;
 begin
   for Result := 0 to Count - 1 do
     if CompareStrings(Strings[Result], S) = 0 then Exit;
   Result := -1;
 end;
 
-function TAnsiStrings.IndexOfName(const Name: AnsiString): Integer;
+function TJclAnsiStrings.IndexOfName(const Name: AnsiString): Integer;
 var
   P: Integer;
   S: AnsiString;
@@ -926,14 +929,14 @@ begin
   Result := -1;
 end;
 
-function TAnsiStrings.IndexOfObject(AObject: TObject): Integer;
+function TJclAnsiStrings.IndexOfObject(AObject: TObject): Integer;
 begin
   for Result := 0 to GetCount - 1 do
     if GetObject(Result) = AObject then Exit;
   Result := -1;
 end;
 
-procedure TAnsiStrings.Exchange(Index1, Index2: Integer);
+procedure TJclAnsiStrings.Exchange(Index1, Index2: Integer);
 var
   TempString: AnsiString;
 begin
@@ -947,7 +950,7 @@ begin
   end;
 end;
 
-function TAnsiStrings.GetDelimitedText: AnsiString;
+function TJclAnsiStrings.GetDelimitedText: AnsiString;
 var
   I: Integer;
 begin
@@ -958,12 +961,12 @@ begin
     Result := Result + Strings[Count - 1];
 end;
 
-procedure TAnsiStrings.Insert(Index: Integer; const S: AnsiString);
+procedure TJclAnsiStrings.Insert(Index: Integer; const S: AnsiString);
 begin
   InsertObject(Index, S, nil);
 end;
 
-procedure TAnsiStrings.SetDelimitedText(const Value: AnsiString);
+procedure TJclAnsiStrings.SetDelimitedText(const Value: AnsiString);
 var
   LastStart: Integer;
   Index: Integer;
@@ -980,7 +983,7 @@ begin
   end;
 end;
 
-function TAnsiStrings.GetText: AnsiString;
+function TJclAnsiStrings.GetText: AnsiString;
 var
   I: Integer;
 begin
@@ -991,7 +994,7 @@ begin
     Result := Result + Strings[Count - 1];
 end;
 
-procedure TAnsiStrings.SetText(const Value: AnsiString);
+procedure TJclAnsiStrings.SetText(const Value: AnsiString);
 var
   Index, Start, Len: Integer;
   S: AnsiString;
@@ -1018,25 +1021,25 @@ begin
   end;
 end;
 
-function TAnsiStrings.GetCapacity: Integer;
+function TJclAnsiStrings.GetCapacity: Integer;
 begin
   Result := Count; // Might be overridden in derived classes
 end;
 
-procedure TAnsiStrings.SetCapacity(const Value: Integer);
+procedure TJclAnsiStrings.SetCapacity(const Value: Integer);
 begin
   // Nothing at this level
 end;
 
-procedure TAnsiStrings.BeginUpdate;
+procedure TJclAnsiStrings.BeginUpdate;
 begin
 end;
 
-procedure TAnsiStrings.EndUpdate;
+procedure TJclAnsiStrings.EndUpdate;
 begin
 end;
 
-procedure TAnsiStrings.LoadFromFile(const FileName: string);
+procedure TJclAnsiStrings.LoadFromFile(const FileName: string);
 var
   Stream: TStream;
 begin
@@ -1048,7 +1051,7 @@ begin
   end;
 end;
 
-procedure TAnsiStrings.LoadFromStream(Stream: TStream);
+procedure TJclAnsiStrings.LoadFromStream(Stream: TStream);
 var
   Size: Integer;
   S: AnsiString;
@@ -1064,7 +1067,7 @@ begin
   end;
 end;
 
-procedure TAnsiStrings.SaveToFile(const FileName: string);
+procedure TJclAnsiStrings.SaveToFile(const FileName: string);
 var
   Stream: TStream;
 begin
@@ -1076,7 +1079,7 @@ begin
   end;
 end;
 
-procedure TAnsiStrings.SaveToStream(Stream: TStream);
+procedure TJclAnsiStrings.SaveToStream(Stream: TStream);
 var
   S: AnsiString;
 begin
@@ -1084,7 +1087,7 @@ begin
   Stream.WriteBuffer(Pointer(S)^, Length(S));
 end;
 
-function TAnsiStrings.ExtractName(const S: AnsiString): AnsiString;
+function TJclAnsiStrings.ExtractName(const S: AnsiString): AnsiString;
 var
   P: Integer;
 begin
@@ -1096,12 +1099,12 @@ begin
     SetLength(Result, 0);
 end;
 
-function TAnsiStrings.GetName(Index: Integer): AnsiString;
+function TJclAnsiStrings.GetName(Index: Integer): AnsiString;
 begin
   Result := ExtractName(GetString(Index));
 end;
 
-function TAnsiStrings.GetValue(const Name: AnsiString): AnsiString;
+function TJclAnsiStrings.GetValue(const Name: AnsiString): AnsiString;
 var
   I: Integer;
 begin
@@ -1112,7 +1115,7 @@ begin
     Result := '';
 end;
 
-procedure TAnsiStrings.SetValue(const Name, Value: AnsiString);
+procedure TJclAnsiStrings.SetValue(const Name, Value: AnsiString);
 var
   I: Integer;
 begin
@@ -1130,7 +1133,7 @@ begin
   end;
 end;
 
-function TAnsiStrings.GetValueFromIndex(Index: Integer): AnsiString;
+function TJclAnsiStrings.GetValueFromIndex(Index: Integer): AnsiString;
 begin
   if Index >= 0 then
     Result := Copy(GetString(Index), Length(Names[Index]) + 2, MaxInt)
@@ -1138,7 +1141,7 @@ begin
     Result := '';
 end;
 
-procedure TAnsiStrings.SetValueFromIndex(Index: Integer; const Value: AnsiString);
+procedure TJclAnsiStrings.SetValueFromIndex(Index: Integer; const Value: AnsiString);
 begin
   if Value <> '' then
   begin
@@ -1151,9 +1154,9 @@ begin
   end;
 end;
 
-{ TAnsiStringList }
+{ TJclAnsiStringList }
 
-procedure TAnsiStringList.Grow;
+procedure TJclAnsiStringList.Grow;
 var
   Delta: Integer;
 begin
@@ -1167,7 +1170,7 @@ begin
   SetCapacity(Capacity + Delta);
 end;
 
-function TAnsiStringList.GetString(Index: Integer): AnsiString;
+function TJclAnsiStringList.GetString(Index: Integer): AnsiString;
 begin
   if (Index < 0) or (Index >= FCount) then
     Error(@SListIndexError, Index);
@@ -1175,7 +1178,7 @@ begin
   Result := FStrings[Index].Str;
 end;
 
-procedure TAnsiStringList.SetString(Index: Integer; const Value: AnsiString);
+procedure TJclAnsiStringList.SetString(Index: Integer; const Value: AnsiString);
 begin
   if Sorted then
     Error(@SSortedListError, 0);
@@ -1186,7 +1189,7 @@ begin
   FStrings[Index].Str := Value;
 end;
 
-function TAnsiStringList.GetObject(Index: Integer): TObject;
+function TJclAnsiStringList.GetObject(Index: Integer): TObject;
 begin
   if (Index < 0) or (Index >= FCount) then
     Error(@SListIndexError, Index);
@@ -1194,7 +1197,7 @@ begin
   Result := FStrings[Index].Obj;
 end;
 
-procedure TAnsiStringList.SetObject(Index: Integer; AObject: TObject);
+procedure TJclAnsiStringList.SetObject(Index: Integer; AObject: TObject);
 begin
   if (Index < 0) or (Index >= FCount) then
     Error(@SListIndexError, Index);
@@ -1202,12 +1205,12 @@ begin
   FStrings[Index].Obj := AObject;
 end;
 
-function TAnsiStringList.GetCapacity: Integer;
+function TJclAnsiStringList.GetCapacity: Integer;
 begin
   Result := Length(FStrings);
 end;
 
-procedure TAnsiStringList.SetCapacity(const Value: Integer);
+procedure TJclAnsiStringList.SetCapacity(const Value: Integer);
 begin
   if (Value < FCount) then
     Error(@SListCapacityError, Value);
@@ -1216,12 +1219,12 @@ begin
     SetLength(FStrings, Value);
 end;
 
-function TAnsiStringList.GetCount: Integer;
+function TJclAnsiStringList.GetCount: Integer;
 begin
   Result := FCount;
 end;
 
-procedure TAnsiStringList.InsertObject(Index: Integer; const S: AnsiString; AObject: TObject);
+procedure TJclAnsiStringList.InsertObject(Index: Integer; const S: AnsiString; AObject: TObject);
 var
   I: Integer;
 begin
@@ -1236,7 +1239,7 @@ begin
   Inc(FCount);
 end;
 
-function TAnsiStringList.AddObject(const S: AnsiString; AObject: TObject): Integer;
+function TJclAnsiStringList.AddObject(const S: AnsiString; AObject: TObject): Integer;
 begin
   if not Sorted then
   begin
@@ -1254,7 +1257,7 @@ begin
   InsertObject(Result, S, AObject);
 end;
 
-procedure TAnsiStringList.Delete(Index: Integer);
+procedure TJclAnsiStringList.Delete(Index: Integer);
 var
   I: Integer;
 begin
@@ -1265,7 +1268,7 @@ begin
     FStrings[Index] := FStrings[Index + 1];
 end;
 
-procedure TAnsiStringList.Clear;
+procedure TJclAnsiStringList.Clear;
 var
   I: Integer;
 begin
@@ -1277,7 +1280,7 @@ begin
   end;
 end;
 
-function TAnsiStringList.Find(const S: AnsiString; var Index: Integer): Boolean;
+function TJclAnsiStringList.Find(const S: AnsiString; var Index: Integer): Boolean;
 var
   L, H, I, C: Integer;
 begin
@@ -1301,24 +1304,24 @@ begin
   Index := L;
 end;
 
-function AnsiStringListCompareStrings(List: TAnsiStringList; Index1, Index2: Integer): Integer;
+function AnsiStringListCompareStrings(List: TJclAnsiStringList; Index1, Index2: Integer): Integer;
 begin
   Result := List.CompareStrings(List.FStrings[Index1].Str,
                                 List.FStrings[Index2].Str);
 end;
 
-procedure TAnsiStringList.Sort;
+procedure TJclAnsiStringList.Sort;
 begin
   CustomSort(AnsiStringListCompareStrings);
 end;
 
-procedure TAnsiStringList.CustomSort(Compare: TAnsiStringListSortCompare);
+procedure TJclAnsiStringList.CustomSort(Compare: TJclAnsiStringListSortCompare);
 begin
   if not Sorted and (FCount > 1) then
     QuickSort(0, FCount - 1, Compare);
 end;
 
-procedure TAnsiStringList.QuickSort(L, R: Integer; SCompare: TAnsiStringListSortCompare);
+procedure TJclAnsiStringList.QuickSort(L, R: Integer; SCompare: TJclAnsiStringListSortCompare);
 var
   I, J, P: Integer;
 begin
@@ -1346,7 +1349,7 @@ begin
   until I >= R;
 end;
 
-procedure TAnsiStringList.SetSorted(Value: Boolean);
+procedure TJclAnsiStringList.SetSorted(Value: Boolean);
 begin
   if FSorted <> Value then
   begin
@@ -3835,7 +3838,7 @@ end;
 {$IFNDEF CLR}
 //=== PCharVector ============================================================
 
-function StringsToPCharVector(var Dest: PCharVector; const Source: TAnsiStrings): PCharVector;
+function StringsToPCharVector(var Dest: PCharVector; const Source: TJclAnsiStrings): PCharVector;
 var
   I: Integer;
   S: AnsiString;
@@ -3875,7 +3878,7 @@ begin
   end;
 end;
 
-procedure PCharVectorToStrings(const Dest: TAnsiStrings; Source: PCharVector);
+procedure PCharVectorToStrings(const Dest: TJclAnsiStrings; Source: PCharVector);
 var
   I, Count: Integer;
   List: array of PAnsiChar;
@@ -4018,7 +4021,7 @@ end;
 {$IFNDEF CLR}
 //=== MultiSz ================================================================
 
-function StringsToMultiSz(var Dest: PAnsiMultiSz; const Source: TAnsiStrings): PAnsiMultiSz;
+function StringsToMultiSz(var Dest: PAnsiMultiSz; const Source: TJclAnsiStrings): PAnsiMultiSz;
 var
   I, TotalLength: Integer;
   P: PAnsiMultiSz;
@@ -4041,7 +4044,7 @@ begin
   Result := Dest;
 end;
 
-procedure MultiSzToStrings(const Dest: TAnsiStrings; const Source: PAnsiMultiSz);
+procedure MultiSzToStrings(const Dest: TJclAnsiStrings; const Source: PAnsiMultiSz);
 var
   P: PAnsiMultiSz;
 begin
@@ -4111,9 +4114,9 @@ begin
 end;
 {$ENDIF ~CLR}
 
-//=== TAnsiStrings Manipulation ===============================================
+//=== TJclAnsiStrings Manipulation ===============================================
 
-procedure StrToStrings(S, Sep: AnsiString; const List: TAnsiStrings; const AllowEmptyString: Boolean = True);
+procedure StrToStrings(S, Sep: AnsiString; const List: TJclAnsiStrings; const AllowEmptyString: Boolean = True);
 var
   I, L: Integer;
   Left: AnsiString;
@@ -4139,7 +4142,7 @@ begin
   end;
 end;
 
-procedure StrIToStrings(S, Sep: AnsiString; const List: TAnsiStrings; const AllowEmptyString: Boolean = True);
+procedure StrIToStrings(S, Sep: AnsiString; const List: TJclAnsiStrings; const AllowEmptyString: Boolean = True);
 var
   I, L: Integer;
   LowerCaseStr: AnsiString;
@@ -4169,7 +4172,7 @@ begin
   end;
 end;
 
-function StringsToStr(const List: TAnsiStrings; const Sep: AnsiString;
+function StringsToStr(const List: TJclAnsiStrings; const Sep: AnsiString;
   const AllowEmptyString: Boolean): AnsiString;
 var
   I, L: Integer;
@@ -4192,7 +4195,7 @@ begin
   end;
 end;
 
-procedure TrimStrings(const List: TAnsiStrings; DeleteIfEmpty: Boolean);
+procedure TrimStrings(const List: TJclAnsiStrings; DeleteIfEmpty: Boolean);
 var
   I: Integer;
 begin
@@ -4210,7 +4213,7 @@ begin
   end;
 end;
 
-procedure TrimStringsRight(const List: TAnsiStrings; DeleteIfEmpty: Boolean);
+procedure TrimStringsRight(const List: TJclAnsiStrings; DeleteIfEmpty: Boolean);
 var
   I: Integer;
 begin
@@ -4228,7 +4231,7 @@ begin
   end;
 end;
 
-procedure TrimStringsLeft(const List: TAnsiStrings; DeleteIfEmpty: Boolean);
+procedure TrimStringsLeft(const List: TJclAnsiStrings; DeleteIfEmpty: Boolean);
 var
   I: Integer;
 begin
@@ -4246,7 +4249,7 @@ begin
   end;
 end;
 
-function AddStringToStrings(const S: AnsiString; Strings: TAnsiStrings; const Unique: Boolean): Boolean;
+function AddStringToStrings(const S: AnsiString; Strings: TJclAnsiStrings; const Unique: Boolean): Boolean;
 begin
   Assert(Strings <> nil);
   Result := Unique and (Strings.IndexOf(S) <> -1);
@@ -4335,7 +4338,7 @@ end;
 
 {$IFNDEF CLR}
 
-procedure StrTokens(const S: AnsiString; const List: TAnsiStrings);
+procedure StrTokens(const S: AnsiString; const List: TJclAnsiStrings);
 var
   Start: PAnsiChar;
   Token: AnsiString;
@@ -4359,7 +4362,7 @@ begin
   end;
 end;
 
-procedure StrTokenToStrings(S: AnsiString; Separator: AnsiChar; const List: TAnsiStrings);
+procedure StrTokenToStrings(S: AnsiString; Separator: AnsiChar; const List: TJclAnsiStrings);
 var
   Token: AnsiString;
 begin
@@ -4506,7 +4509,7 @@ begin
 end;
 
 {$IFDEF CLR}
-function ArrayOf(List: TAnsiStrings): TDynStringArray;
+function ArrayOf(List: TJclAnsiStrings): TDynStringArray;
 var
   I: Integer;
 begin
