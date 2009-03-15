@@ -72,9 +72,16 @@ const
   WideFormFeed           = WideChar(#12);
   WideCR                 = WideChar(#13);
   WideCarriageReturn     = WideChar(#13);
-  WideCRLF: WideString   = #13#10;
+  WideCRLF               = WideString(#13#10);
   WideLineSeparator      = WideChar($2028);
   WideParagraphSeparator = WideChar($2029);
+
+  {$IFDEF MSWINDOWS}
+  WideLineBreak = WideCRLF;
+  {$ENDIF MSWINDOWS}
+  {$IFDEF UNIX}
+  WideLineBreak = WideLineFeed;
+  {$ENDIF UNIX}
 
   BOM_LSB_FIRST = WideChar($FEFF);
   BOM_MSB_FIRST = WideChar($FFFE);
@@ -248,6 +255,9 @@ type
 
   TWideStringList = TJclWideStringList;
   TWideStrings = TJclWideStrings;
+
+  TJclUnicodeStringList = TJclWideStringList;
+  TJclUnicodeStrings = TJclWideStrings;
 
   // OF deprecated?
   TWStringList = TJclWideStringList;
