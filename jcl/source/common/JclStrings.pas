@@ -2155,11 +2155,11 @@ end;
 {$ELSE ~CLR}
 var
   P1, P2: PChar;
-  C:      Char;
+  C: Char;
 begin
   UniqueString(S);
   P1 := PChar(S);
-  P2 := P1 + SizeOf(Char) * (Length(S) - 1);
+  P2 := P1 + (Length(S) - 1);
   while P1 < P2 do
   begin
     C := P1^;
