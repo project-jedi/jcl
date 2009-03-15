@@ -2523,6 +2523,7 @@ var
   ProcessInfo: TProcessInformation;
   SecurityAttr: TSecurityAttributes;
   PipeRead, PipeWrite: THandle;
+  WriteableCommandLine: array [0..1024] of Char;
 begin
   Result := $FFFFFFFF;
   SecurityAttr.nLength := SizeOf(SecurityAttr);
@@ -2540,7 +2541,8 @@ begin
   StartupInfo.hStdInput := GetStdHandle(STD_INPUT_HANDLE);
   StartupInfo.hStdOutput := PipeWrite;
   StartupInfo.hStdError := PipeWrite;
-  if CreateProcess(nil, PChar(CommandLine), nil, nil, True, NORMAL_PRIORITY_CLASS,
+  StrPCopy(WriteableCommandLine, CommandLine);
+  if CreateProcess(nil, @WriteableCommandLine, nil, nil, True, NORMAL_PRIORITY_CLASS,
     nil, nil, StartupInfo, ProcessInfo) then
   begin
     CloseHandle(PipeWrite);
