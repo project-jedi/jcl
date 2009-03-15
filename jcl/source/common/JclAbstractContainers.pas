@@ -27,7 +27,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                       $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -2729,10 +2729,10 @@ var
 begin
   PString := PWideChar(AString);
   PSep := PWideChar(Separator);
-  PPos := StrPos(PString, PSep);
+  PPos := StrPosW(PString, PSep);
   if PPos <> nil then
   begin
-    SepLen := StrLen(PSep);
+    SepLen := StrLenW(PSep);
     repeat
       //SetLength(Item, PPos - PString + 1);
       SetLength(Item, PPos - PString);
@@ -2740,9 +2740,9 @@ begin
       //Item[PPos - PString + 1] := #0;
       Add(Item);
       PString := PPos + SepLen;
-      PPos := StrPos(PString, PSep);
+      PPos := StrPosW(PString, PSep);
     until PPos = nil;
-    if StrLen(PString) > 0 then //ex. hello#world
+    if StrLenW(PString) > 0 then //ex. hello#world
       Add(PString);
   end
   else //There isnt a Separator in AString
