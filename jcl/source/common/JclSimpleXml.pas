@@ -620,7 +620,6 @@ end;
 {$ENDIF !CLR}
 
 procedure AddEntity(var Res: string; var ResIndex, ResLen: Integer; const Entity: string);
-  {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 var
   EntityIndex, EntityLen: Integer;
 begin
@@ -645,7 +644,6 @@ var
   C: Char;
   SIndex, SLen, RIndex, RLen: Integer;
   Tmp: string;
-
 begin
   SLen := Length(S);
   RLen := SLen;
@@ -849,7 +847,6 @@ var
   C: Char;
   SIndex, SLen, RIndex, RLen: Integer;
   Tmp: string;
-
 begin
   SLen := Length(S);
   RLen := SLen;
