@@ -2475,7 +2475,7 @@ begin
   SetLength(Result, OutPos - 1);
 end;
 
-function InternalExecute(const CommandLine: string; var Output: string; OutputLineCallback: TTextHandler;
+function InternalExecute(CommandLine: string; var Output: string; OutputLineCallback: TTextHandler;
   RawOutput: Boolean; AbortPtr: PBoolean): Cardinal;
 const
   BufferSize = 255;
@@ -2523,7 +2523,6 @@ var
   ProcessInfo: TProcessInformation;
   SecurityAttr: TSecurityAttributes;
   PipeRead, PipeWrite: THandle;
-  WriteableCommandLine: array [0..1024] of Char;
 begin
   Result := $FFFFFFFF;
   SecurityAttr.nLength := SizeOf(SecurityAttr);
@@ -2541,8 +2540,8 @@ begin
   StartupInfo.hStdInput := GetStdHandle(STD_INPUT_HANDLE);
   StartupInfo.hStdOutput := PipeWrite;
   StartupInfo.hStdError := PipeWrite;
-  StrPCopy(WriteableCommandLine, CommandLine);
-  if CreateProcess(nil, @WriteableCommandLine, nil, nil, True, NORMAL_PRIORITY_CLASS,
+  UniqueString(CommandLine); // CommandLine must be in a writable memory block
+  if CreateProcess(nil, PChar(CommandLine), nil, nil, True, NORMAL_PRIORITY_CLASS,
     nil, nil, StartupInfo, ProcessInfo) then
   begin
     CloseHandle(PipeWrite);
