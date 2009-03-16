@@ -5379,7 +5379,7 @@ end;
 
 procedure TJclBDSInstallation.SetMsBuildEnvOption(const OptionName, Value: string);
 var
-  EnvOptionsFileName: string;
+  EnvOptionsFileName, BakEnvOptionsFileName: string;
   EnvOptionsFile: TJclSimpleXML;
   PropertyGroupNode, PropertyNode: TJclSimpleXMLElem;
 begin
@@ -5394,7 +5394,18 @@ begin
 
     PropertyNode.Value := Value;
 
-    EnvOptionsFile.SaveToFile(EnvOptionsFileName);
+    { Do not overwrite the original file if something goes wrong }
+    BakEnvOptionsFileName := EnvOptionsFileName + '.bak';
+    DeleteFile(BakEnvOptionsFileName);
+    RenameFile(EnvOptionsFileName, BakEnvOptionsFileName);
+    try
+      EnvOptionsFile.SaveToFile(EnvOptionsFileName);
+      DeleteFile(BakEnvOptionsFileName);
+    except
+      DeleteFile(EnvOptionsFileName);
+      RenameFile(BakEnvOptionsFileName, EnvOptionsFileName);
+      raise;
+    end;
   finally
     EnvOptionsFile.Free;
   end;
