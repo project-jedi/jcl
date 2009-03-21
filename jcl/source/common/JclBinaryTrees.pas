@@ -2321,6 +2321,7 @@ begin
         else
           FRoot := nil;
       end;
+      Current.Value := nil;
       Current.Free;
       Dec(FSize);
       Current := Successor;
@@ -3807,6 +3808,7 @@ begin
         else
           FRoot := nil;
       end;
+      Current.Value := '';
       Current.Free;
       Dec(FSize);
       Current := Successor;
@@ -5293,6 +5295,7 @@ begin
         else
           FRoot := nil;
       end;
+      Current.Value := '';
       Current.Free;
       Dec(FSize);
       Current := Successor;
@@ -6780,6 +6783,7 @@ begin
         else
           FRoot := nil;
       end;
+      Current.Value := '';
       Current.Free;
       Dec(FSize);
       Current := Successor;
@@ -8267,6 +8271,7 @@ begin
         else
           FRoot := nil;
       end;
+      Current.Value := 0.0;
       Current.Free;
       Dec(FSize);
       Current := Successor;
@@ -9753,6 +9758,7 @@ begin
         else
           FRoot := nil;
       end;
+      Current.Value := 0.0;
       Current.Free;
       Dec(FSize);
       Current := Successor;
@@ -11239,6 +11245,7 @@ begin
         else
           FRoot := nil;
       end;
+      Current.Value := 0.0;
       Current.Free;
       Dec(FSize);
       Current := Successor;
@@ -12725,6 +12732,7 @@ begin
         else
           FRoot := nil;
       end;
+      Current.Value := 0;
       Current.Free;
       Dec(FSize);
       Current := Successor;
@@ -14211,6 +14219,7 @@ begin
         else
           FRoot := nil;
       end;
+      Current.Value := 0;
       Current.Free;
       Dec(FSize);
       Current := Successor;
@@ -15697,6 +15706,7 @@ begin
         else
           FRoot := nil;
       end;
+      Current.Value := 0;
       Current.Free;
       Dec(FSize);
       Current := Successor;
@@ -17184,6 +17194,7 @@ begin
         else
           FRoot := nil;
       end;
+      Current.Value := nil;
       Current.Free;
       Dec(FSize);
       Current := Successor;
@@ -18671,6 +18682,7 @@ begin
         else
           FRoot := nil;
       end;
+      Current.Value := nil;
       Current.Free;
       Dec(FSize);
       Current := Successor;
@@ -20157,6 +20169,7 @@ begin
         else
           FRoot := nil;
       end;
+      Current.Value := Default(T);
       Current.Free;
       Dec(FSize);
       Current := Successor;

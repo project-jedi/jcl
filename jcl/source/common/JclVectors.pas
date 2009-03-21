@@ -1429,6 +1429,7 @@ begin
     for I := FSize - 1 downto 0 do
       if ItemsEqual(FItems[I], AInterface) then
       begin
+        FItems[I] := nil;
         MoveArray(FItems, I + 1, I, FSize - I);
         Dec(FSize);
         Result := True;
@@ -2228,6 +2229,7 @@ begin
     for I := FSize - 1 downto 0 do
       if ItemsEqual(FItems[I], AString) then
       begin
+        FItems[I] := '';
         MoveArray(FItems, I + 1, I, FSize - I);
         Dec(FSize);
         Result := True;
@@ -3027,6 +3029,7 @@ begin
     for I := FSize - 1 downto 0 do
       if ItemsEqual(FItems[I], AString) then
       begin
+        FItems[I] := '';
         MoveArray(FItems, I + 1, I, FSize - I);
         Dec(FSize);
         Result := True;
@@ -3827,6 +3830,7 @@ begin
     for I := FSize - 1 downto 0 do
       if ItemsEqual(FItems[I], AString) then
       begin
+        FItems[I] := '';
         MoveArray(FItems, I + 1, I, FSize - I);
         Dec(FSize);
         Result := True;
@@ -4627,6 +4631,7 @@ begin
     for I := FSize - 1 downto 0 do
       if ItemsEqual(FItems[I], AValue) then
       begin
+        FItems[I] := 0.0;
         MoveArray(FItems, I + 1, I, FSize - I);
         Dec(FSize);
         Result := True;
@@ -5426,6 +5431,7 @@ begin
     for I := FSize - 1 downto 0 do
       if ItemsEqual(FItems[I], AValue) then
       begin
+        FItems[I] := 0.0;
         MoveArray(FItems, I + 1, I, FSize - I);
         Dec(FSize);
         Result := True;
@@ -6225,6 +6231,7 @@ begin
     for I := FSize - 1 downto 0 do
       if ItemsEqual(FItems[I], AValue) then
       begin
+        FItems[I] := 0.0;
         MoveArray(FItems, I + 1, I, FSize - I);
         Dec(FSize);
         Result := True;
@@ -7024,6 +7031,7 @@ begin
     for I := FSize - 1 downto 0 do
       if ItemsEqual(FItems[I], AValue) then
       begin
+        FItems[I] := 0;
         MoveArray(FItems, I + 1, I, FSize - I);
         Dec(FSize);
         Result := True;
@@ -7823,6 +7831,7 @@ begin
     for I := FSize - 1 downto 0 do
       if ItemsEqual(FItems[I], AValue) then
       begin
+        FItems[I] := 0;
         MoveArray(FItems, I + 1, I, FSize - I);
         Dec(FSize);
         Result := True;
@@ -8622,6 +8631,7 @@ begin
     for I := FSize - 1 downto 0 do
       if ItemsEqual(FItems[I], AValue) then
       begin
+        FItems[I] := 0;
         MoveArray(FItems, I + 1, I, FSize - I);
         Dec(FSize);
         Result := True;
@@ -9422,6 +9432,7 @@ begin
     for I := FSize - 1 downto 0 do
       if ItemsEqual(FItems[I], APtr) then
       begin
+        FItems[I] := nil;
         MoveArray(FItems, I + 1, I, FSize - I);
         Dec(FSize);
         Result := True;
@@ -10222,6 +10233,7 @@ begin
     for I := FSize - 1 downto 0 do
       if ItemsEqual(FItems[I], AObject) then
       begin
+        FItems[I] := nil;
         MoveArray(FItems, I + 1, I, FSize - I);
         Dec(FSize);
         Result := True;
@@ -11022,6 +11034,7 @@ begin
     for I := FSize - 1 downto 0 do
       if ItemsEqual(FItems[I], AItem) then
       begin
+        FItems[I] := Default(T);
         MoveArray(FItems, I + 1, I, FSize - I);
         Dec(FSize);
         Result := True;

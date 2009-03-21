@@ -315,6 +315,7 @@ begin
     for I := FSize - 1 downto 0 do
       if ItemsEqual(FItems[I], PARAMETERNAME) then
       begin
+        FItems[I] := DEFAULTVALUE;
         MoveArray(FItems, I + 1, I, FSize - I);
         Dec(FSize);
         Result := True;

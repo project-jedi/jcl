@@ -2832,6 +2832,7 @@ begin
         if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := Bucket.Entries[I].Value;
+          Bucket.Entries[I].Value := nil;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
             Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
@@ -3455,6 +3456,7 @@ begin
         if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := Bucket.Entries[I].Value;
+          Bucket.Entries[I].Value := nil;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
             Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
@@ -4078,6 +4080,7 @@ begin
         if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := Bucket.Entries[I].Value;
+          Bucket.Entries[I].Value := '';
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
             Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
@@ -4706,6 +4709,7 @@ begin
         if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := Bucket.Entries[I].Value;
+          Bucket.Entries[I].Value := '';
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
             Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
@@ -5329,6 +5333,7 @@ begin
         if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := Bucket.Entries[I].Value;
+          Bucket.Entries[I].Value := nil;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
             Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
@@ -5952,6 +5957,7 @@ begin
         if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := Bucket.Entries[I].Value;
+          Bucket.Entries[I].Value := '';
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
             Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
@@ -6580,6 +6586,7 @@ begin
         if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := Bucket.Entries[I].Value;
+          Bucket.Entries[I].Value := '';
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
             Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
@@ -7204,6 +7211,7 @@ begin
         if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := Bucket.Entries[I].Value;
+          Bucket.Entries[I].Value := nil;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
             Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
@@ -7827,6 +7835,7 @@ begin
         if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := Bucket.Entries[I].Value;
+          Bucket.Entries[I].Value := '';
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
             Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
@@ -8455,6 +8464,7 @@ begin
         if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := Bucket.Entries[I].Value;
+          Bucket.Entries[I].Value := '';
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
             Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
@@ -9080,6 +9090,7 @@ begin
         if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := Bucket.Entries[I].Value;
+          Bucket.Entries[I].Value := nil;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
             Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
@@ -9703,6 +9714,7 @@ begin
         if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := Bucket.Entries[I].Value;
+          Bucket.Entries[I].Value := 0.0;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
             Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
@@ -10331,6 +10343,7 @@ begin
         if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := Bucket.Entries[I].Value;
+          Bucket.Entries[I].Value := 0.0;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
             Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
@@ -10954,6 +10967,7 @@ begin
         if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := Bucket.Entries[I].Value;
+          Bucket.Entries[I].Value := nil;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
             Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
@@ -11577,6 +11591,7 @@ begin
         if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := Bucket.Entries[I].Value;
+          Bucket.Entries[I].Value := 0.0;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
             Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
@@ -12205,6 +12220,7 @@ begin
         if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := Bucket.Entries[I].Value;
+          Bucket.Entries[I].Value := 0.0;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
             Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
@@ -12828,6 +12844,7 @@ begin
         if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := Bucket.Entries[I].Value;
+          Bucket.Entries[I].Value := nil;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
             Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
@@ -13451,6 +13468,7 @@ begin
         if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := Bucket.Entries[I].Value;
+          Bucket.Entries[I].Value := 0.0;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
             Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
@@ -14079,6 +14097,7 @@ begin
         if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := Bucket.Entries[I].Value;
+          Bucket.Entries[I].Value := 0.0;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
             Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
@@ -14702,6 +14721,7 @@ begin
         if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := Bucket.Entries[I].Value;
+          Bucket.Entries[I].Value := nil;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
             Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
@@ -15325,6 +15345,7 @@ begin
         if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := Bucket.Entries[I].Value;
+          Bucket.Entries[I].Value := 0;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
             Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
@@ -15953,6 +15974,7 @@ begin
         if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := Bucket.Entries[I].Value;
+          Bucket.Entries[I].Value := 0;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
             Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
@@ -16576,6 +16598,7 @@ begin
         if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := Bucket.Entries[I].Value;
+          Bucket.Entries[I].Value := nil;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
             Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
@@ -17199,6 +17222,7 @@ begin
         if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := Bucket.Entries[I].Value;
+          Bucket.Entries[I].Value := 0;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
             Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
@@ -17827,6 +17851,7 @@ begin
         if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := Bucket.Entries[I].Value;
+          Bucket.Entries[I].Value := 0;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
             Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
@@ -18450,6 +18475,7 @@ begin
         if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := Bucket.Entries[I].Value;
+          Bucket.Entries[I].Value := nil;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
             Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
@@ -19073,6 +19099,7 @@ begin
         if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := Bucket.Entries[I].Value;
+          Bucket.Entries[I].Value := 0;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
             Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
@@ -19701,6 +19728,7 @@ begin
         if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := Bucket.Entries[I].Value;
+          Bucket.Entries[I].Value := 0;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
             Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
@@ -20325,6 +20353,7 @@ begin
         if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := Bucket.Entries[I].Value;
+          Bucket.Entries[I].Value := nil;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
             Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
@@ -20948,6 +20977,7 @@ begin
         if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := Bucket.Entries[I].Value;
+          Bucket.Entries[I].Value := nil;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
             Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
@@ -21576,6 +21606,7 @@ begin
         if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := Bucket.Entries[I].Value;
+          Bucket.Entries[I].Value := nil;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
             Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
@@ -22201,6 +22232,7 @@ begin
         if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := Bucket.Entries[I].Value;
+          Bucket.Entries[I].Value := nil;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
             Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
@@ -22843,6 +22875,7 @@ begin
         if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := Bucket.Entries[I].Value;
+          Bucket.Entries[I].Value := nil;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
             Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
@@ -23480,6 +23513,7 @@ begin
         if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := Bucket.Entries[I].Value;
+          Bucket.Entries[I].Value := nil;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
             Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
@@ -24118,6 +24152,7 @@ begin
         if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := Bucket.Entries[I].Value;
+          Bucket.Entries[I].Value := nil;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
             Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
@@ -24756,6 +24791,7 @@ begin
         if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := Bucket.Entries[I].Value;
+          Bucket.Entries[I].Value := nil;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
             Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
@@ -25393,6 +25429,7 @@ begin
         if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := Bucket.Entries[I].Value;
+          Bucket.Entries[I].Value := nil;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
             Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
@@ -26030,6 +26067,7 @@ begin
         if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := Bucket.Entries[I].Value;
+          Bucket.Entries[I].Value := nil;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
             Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
@@ -26667,6 +26705,7 @@ begin
         if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := Bucket.Entries[I].Value;
+          Bucket.Entries[I].Value := nil;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
             Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
@@ -27304,6 +27343,7 @@ begin
         if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := Bucket.Entries[I].Value;
+          Bucket.Entries[I].Value := nil;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
             Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
@@ -27941,6 +27981,7 @@ begin
         if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := Bucket.Entries[I].Value;
+          Bucket.Entries[I].Value := nil;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
             Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
@@ -28579,6 +28620,7 @@ begin
         if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := Bucket.Entries[I].Value;
+          Bucket.Entries[I].Value := nil;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
             Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
@@ -29218,6 +29260,7 @@ begin
         if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := Bucket.Entries[I].Value;
+          Bucket.Entries[I].Value := nil;
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
             Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
@@ -29875,6 +29918,7 @@ begin
         if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := Bucket.Entries[I].Value;
+          Bucket.Entries[I].Value := Default(TValue);
           FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
             Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);

@@ -1568,6 +1568,7 @@ begin
           Current.Next.Previous := Current.Previous
         else
           FEnd := Current.Previous;
+        Current.Value := nil;
         Current.Free;
         Dec(FSize);
         Result := True;
@@ -2822,6 +2823,7 @@ begin
           Current.Next.Previous := Current.Previous
         else
           FEnd := Current.Previous;
+        Current.Value := '';
         Current.Free;
         Dec(FSize);
         Result := True;
@@ -4076,6 +4078,7 @@ begin
           Current.Next.Previous := Current.Previous
         else
           FEnd := Current.Previous;
+        Current.Value := '';
         Current.Free;
         Dec(FSize);
         Result := True;
@@ -5331,6 +5334,7 @@ begin
           Current.Next.Previous := Current.Previous
         else
           FEnd := Current.Previous;
+        Current.Value := '';
         Current.Free;
         Dec(FSize);
         Result := True;
@@ -6586,6 +6590,7 @@ begin
           Current.Next.Previous := Current.Previous
         else
           FEnd := Current.Previous;
+        Current.Value := 0.0;
         Current.Free;
         Dec(FSize);
         Result := True;
@@ -7842,6 +7847,7 @@ begin
           Current.Next.Previous := Current.Previous
         else
           FEnd := Current.Previous;
+        Current.Value := 0.0;
         Current.Free;
         Dec(FSize);
         Result := True;
@@ -9096,6 +9102,7 @@ begin
           Current.Next.Previous := Current.Previous
         else
           FEnd := Current.Previous;
+        Current.Value := 0.0;
         Current.Free;
         Dec(FSize);
         Result := True;
@@ -10350,6 +10357,7 @@ begin
           Current.Next.Previous := Current.Previous
         else
           FEnd := Current.Previous;
+        Current.Value := 0;
         Current.Free;
         Dec(FSize);
         Result := True;
@@ -11604,6 +11612,7 @@ begin
           Current.Next.Previous := Current.Previous
         else
           FEnd := Current.Previous;
+        Current.Value := 0;
         Current.Free;
         Dec(FSize);
         Result := True;
@@ -12858,6 +12867,7 @@ begin
           Current.Next.Previous := Current.Previous
         else
           FEnd := Current.Previous;
+        Current.Value := 0;
         Current.Free;
         Dec(FSize);
         Result := True;
@@ -14113,6 +14123,7 @@ begin
           Current.Next.Previous := Current.Previous
         else
           FEnd := Current.Previous;
+        Current.Value := nil;
         Current.Free;
         Dec(FSize);
         Result := True;
@@ -15368,6 +15379,7 @@ begin
           Current.Next.Previous := Current.Previous
         else
           FEnd := Current.Previous;
+        Current.Value := nil;
         Current.Free;
         Dec(FSize);
         Result := True;
@@ -16624,6 +16636,7 @@ begin
           Current.Next.Previous := Current.Previous
         else
           FEnd := Current.Previous;
+        Current.Value := Default(T);
         Current.Free;
         Dec(FSize);
         Result := True;

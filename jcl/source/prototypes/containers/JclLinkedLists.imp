@@ -507,6 +507,7 @@ begin
           Current.Next.Previous := Current.Previous
         else
           FEnd := Current.Previous;
+        Current.Value := DEFAULTVALUE;
         Current.Free;
         Dec(FSize);
         Result := True;

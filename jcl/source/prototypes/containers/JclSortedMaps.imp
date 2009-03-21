@@ -120,6 +120,7 @@ begin
     if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
     begin
       Result := FEntries[Index].Value;
+      FEntries[Index].Value := VALUEDEFAULT;
       FreeKey(FEntries[Index].Key);
       if Index < (FSize - 1) then
         MoveArray(Index + 1, Index, FSize - Index - 1);

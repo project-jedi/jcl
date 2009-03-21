@@ -950,6 +950,7 @@ begin
         else
           FRoot := nil;
       end;
+      Current.Value := DEFAULTVALUE;
       Current.Free;
       Dec(FSize);
       Current := Successor;

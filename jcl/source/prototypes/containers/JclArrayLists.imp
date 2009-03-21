@@ -364,6 +364,7 @@ begin
     for I := FSize - 1 downto 0 do
       if ItemsEqual(FElementData[I], PARAMETERNAME) then
       begin
+        FElementData[I] := DEFAULTVALUE;
         if I < (FSize - 1) then
           MoveArray(FElementData, I + 1, I, FSize - I - 1);
         Dec(FSize);
