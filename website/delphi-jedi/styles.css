@@ -1,0 +1,39 @@
+
+a:link { text-decoration: none; color: #FF9933; }
+a:visited { text-decoration: none; color: #FF9933; }
+a:hover { text-decoration: underline; color: #FF9933; }
+a:active { text-decoration: underline; color: #FF9933; }
+
+
+.text
+{
+font-size: 12px;
+color: #999999;
+line-height: 21px;
+font-family: Courier New,Courier,Monaco,monospace;
+}
+
+.lesen
+{
+font-size: 11px;
+color: #666666;
+line-height: 18px;
+font-family: Verdana,Arial,Helvetica;
+}
+
+.head
+{
+font-size: 14px;
+color: #666666;
+line-height: 21px;
+font-family: Courier New,Courier,Monaco,monospace;
+}
+
+
+.sb {scrollbar-3dlight-color:#666666;
+           scrollbar-arrow-color:#cc3300;
+           scrollbar-base-color:#ffffff;
+           scrollbar-darkshadow-color:#6666666;
+           scrollbar-face-color:#ffffff;
+           scrollbar-highlight-color:#ffffff;
+           scrollbar-shadow-color:}

@@ -1,0 +1,610 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+   <link rel="stylesheet" href="test.css" type="text/css">
+   <title>Jedi Code Library - Cross Platform Strategy</title>
+</head>
+
+<body>
+<h1>Jedi Code Library - Cross Platform Strategy</h1>
+
+<p>
+This paper presents the JCL teams strategy for cross platform compliance of the
+Jedi Code Library. It is based up on the discussions within the JCL newsgroup
+and JCL developer mailing lists. This document is currently <b>work in progress</b>
+and subject to changes with or without notice.
+</p>
+
+<p>
+Version history: <br>
+&nbsp;&nbsp;&nbsp;&nbsp;0.1  Initial release
+</p>
+
+<p>
+</p>
+
+<h3>Background</h3>
+<p>
+The main objective is to make the Jedi Code Library VisualCLX (Kylix for Delphi/Delphi) 
+and Delphi.NET compatible. For a detailed explanation of the currently used 
+terminology, see the following article <a href="http://bdn.borland.com/article/0,1410,29460,00.html">
+Overview of the VCL for .NET</a>. 
+</p>
+<p>
+We have to cope with nearly all aspects of cross platform progamming, like 
+different APIs, different operating system concepts etc. Since we want to be as 
+crossplatform compatible as possible interface compatability is the most important
+issue for us. Jedi Code Library users should have to opportunity the use the JCL
+on whatever platform they like. Figure 1 shows the three basic layers we have to 
+deal with:
+
+<ul>
+<li>Platform independant layer: Units which are not (or only very minor)
+platform specific and do not depend on a specific component set. This doesn't mean 
+that units in this layer have to consist of no platform dependant code, but they have to
+be nearly 100% interface compatible and all functionality must have been ported to all
+supported platforms. </li> 
+<li>Platform dependant layer: Units which depend on a specific platform (e.g. JclCLI) </li>
+<li>Component set dependant layer: Units which depend on a specific component set</li>
+</ul>
+
+<p>
+<img src="strucv1.jpg" border="1">
+<br>
+<i>Fig 1: The Jedi Code Library crossplatform layer structure</i>
+</p>
+
+<p>
+The Jedi Code Library currently targets the following platforms:
+
+<ul>
+<li>Kylix for Delphi (Kylix 3) / Linux</li>
+<li>Delphi (Version 5,6,7) / Microsoft Windows</li>
+</p>
+</ul>
+
+and is trying to support the following platforms as soon as possible:
+
+<ul>
+<li>Delphi .NET / .NET (Micrsoft Windows) </li>
+</ul>
+</p>
+
+<p>
+As a mid or long term perspective we are hoping to get the JCL FreePascal compatible.
+This involves the possibilty to have the JCL running on DOS, OS/2, FreeBSD and
+AmigaOS. 
+</p>
+
+<h3>Common platform independant layer</h3>
+<p>
+This layer consists of all files which are not platform dependant or need only 
+very minor adjustations. Furthermore all units in this layer do not depend on a
+specific component set. Examples for common platform independant units are 
+JclBase, JclDateTime, JclFileUtils and JclMath. The units have been ported to 
+all platforms and are the crossplatform "core" of the Jedi Code Library. As a 
+general rule a unit in this layer should have no platform specific ifdefs in its
+interface section.
+</p>
+
+<h3>Platform dependant layer</h3>
+<p>
+Furthermore we do not have to differentiate between VCL and VisualCLX units only 
+(the so called component set dependent layer), but also between UNIX, 
+Windows and .NET dependent units. The platform dependent units doesn't need to be 
+interface compatible (if there is an equivalent in one of the other suported platforms at all!).
+An example for a platform dependant unit is JclCLI. Nonetheless if there are equivalents 
+in all other supported platforms as well it might be considerable to write a more general 
+class and include that unit into the common platform indepedant layer.
+</p>
+
+<h3>Component set dependant layer</h3>
+<p>
+When it comes to sharing code between VCL and VisualCLX-applications, some facts 
+need to be stated:
+</p>
+
+<p>
+<li>A unit is called <i>VCL-dependent</i>, when it uses some VCL-unit(s), e.g. Graphics.
+</li>
+<li>A unit is called <i>VisualCLX-dependent</i>, when it uses some VisualCLX-unit(s), 
+e.g. QGraphics.</li>
+</p>
+<p>
+When a unit contains neither VCL- nor VisualCLX-specific code, there is no 
+problem: It can be used by either type of application.
+</p>
+
+<p>
+While it is basically possible to create VCL-dependent and VisualCLX-dependent
+variants of the same unit by means of conditional compilation - and use them in
+VCL- and VisualCLX-applications respectively -, this method fails at design time:
+One and the same unit cannot be installed twice in the IDE, not even as part of
+different packages.  We would have to rename one of the variants, effectively
+creating a new unit. Therefor we will use a preprocessor to resolve the 
+conditional compilation symbols related to VCL/VisualCLX-specific code and create
+VCL/VisualCLX units from a common codebase.
+</p>
+<p>
+Component dependant units should be largely "interface compatible" - interface
+adjustments for specific component sets are unavoidable - nonetheless similar
+interfaces are desirable.
+</p>
+
+
+<h3>Preprocessor</h3>
+
+<p>
+The preprocessor jpp is a modified version of Barry Kelly's ppp tool.
+In contrast to ppp, which resolves all conditional compilation directives 
+without exception, with jpp symbols not only can be defined but also undefined. 
+Those symbols which are neither defined nor explicitely undefined are considered
+as of unknown status and it and its related source code remains untouched.
+</p>
+
+<p>
+The usage of jpp is not too hard. It is called via
+
+<pre>
+jpp [options] &lt;input files&gt;...
+</pre>
+
+Possible options are
+
+<pre>
+  -i       Process includes
+  -c       Process conditional directives
+  -C       Strip comments
+  -pxxx    Add xxx to include path
+  -dxxx    Define xxx as a preprocessor conditional symbol
+  -uxxx    Assume preprocessor conditional symbol xxx as not defined
+  -x[n:]yyy  Strip first n characters from file name; precede filename by prefix yyy
+</pre>
+ 
+</p>
+
+<p>
+The example command line below generates a file JclQGraphics.pas in subdirectory
+CLX from file Graphics.cb located in the current directory.  Symbols "VisualCLX"
+and "COMPILER6_UP" are specified as defined, "Bitmap32" and "VCL" as undefined.
+</p>
+
+<pre>
+  jpp -c -dVisualCLX -dCOMPILER6_UP -uBitmap32 -uVCL -xCLX\JclQ Graphics.cb
+</pre>
+
+<h3>Generating Jcl[Q]Graphics.pas and Jcl[Q]GraphUtils.pas</h3>
+<p>
+First compile Preprocessor\jpp.exe from Preprocessor\jpp.dpr.
+Then change to the "Source" directory and type "make" at the command line.
+This will create the units <br>
+
+VCL\JclGraphics.pas <br>
+VCL\JclGraphUtils.pas <br>
+CLX\JclQGraphics.pas <br>
+CLX\JclQGraphUtils.pas <br>
+</p>
+<p>
+from their prototypes _Graphics.pas and _GraphUtils.pas.
+</p>
+
+
+<h3>Minimizing VCL dependencies</h3>
+<p>
+To reduce VCL dependencies in JCL, the following changes have been made:
+</p>
+
+<menu>
+<dl>
+	<dt>JclFileUtils<dd>PathCompactPath is an overloaded function.  The variant which takes a TCanvas
+    as argument (and thus creates a dependency on VCL unit Graphics) has been
+    removed.
+</dl>
+
+<br>
+
+<dl>
+	<dt>JclShell<dd> ShellLinkGetIcon has been removed.  It could get part of some genuine
+    VCL-dependent unit (e.g. JclGraphUtils), but for now it is left out.
+</dl>
+
+<br>
+
+<dl>
+	<dt>JclPEImage<dd><pre> Replace "uses Consts," by
+
+    uses
+      {$IFDEF COMPILER6_UP}
+      RtlConsts,         // VisualCLX-package compatible (part of rtlxx.bpl)
+      {$ELSE}
+      Consts,            // not VisualCLX-package compatible (part of vclxx.bpl)
+      {$ENDIF COMPILER6_UP} </pre>
+</dl>
+</menu>
+
+<p>
+Note that the first two changes have enormous impact, since many JCL units use 
+JclFileUtils and JclSysInfo (which both use JclShell).  This leaves JclGraphics 
+and JclGraphUtils as sole units with genuine VCL/VisualCLX-dependencies.
+JclPrint is the only remaining pure VCL-dependent units. </p>
+
+<h3>New directory structure</h3>
+<p>
+With the new JCL release we introduce a more appropriate source file directory
+structure. The files are now grouped according their respective layers.
+</p>
+
+<pre>
+Source/
+  Common
+  DotNet
+  Unix
+  VCL
+  VisCLX
+  Windows   
+</pre>
+
+<h3>Status - Platforms</h3>
+<p>
+This table gives a short overview of which units are already working under three 
+different Delphi language compilers/platforms. There are three status 
+levels possible:
+</p>
+
+<p>
+<li>Yes - The unit has been ported to that platform </li>
+<li>No - The unit has not been ported to that platform</li>
+<li>dependant - The unit is platform dependant and will not be ported.</li>
+</p>
+<table>
+   <tbody>
+     <tr>
+       <td><b>Name</b></td>
+       <td><b>Delphi (Windows)</b></td>
+       <td><b>Kylix for Delphi</b></td>
+       <td><b>Delphi.NET</b></td>
+     </tr>
+     <tr>
+       <td>Jcl8087</td>
+       <td>yes</td>
+       <td>yes<br>
+       </td>
+       <td>no</td>
+     </tr>
+     <tr>
+       <td>JclAppInst</td>
+       <td>yes</td>
+       <td>no</td>
+       <td>no</td>
+     </tr>
+     <tr>
+       <td>JclCil</td>
+       <td>yes</td>
+       <td>no</td>
+       <td>no</td>
+     </tr>
+     <tr>
+       <td>JclClr</td>
+       <td>yes</td>
+       <td>no</td>
+       <td>no</td>
+     </tr>
+     <tr>
+       <td>JclCom</td>
+       <td>yes</td>
+       <td>no</td>
+       <td>no</td>
+     </tr>
+     <tr>
+       <td>JclComplex</td>
+       <td>yes</td>
+       <td>yes</td>
+       <td>no</td>
+     </tr>
+     <tr>
+       <td>JclConsole</td>
+       <td>yes</td>
+       <td>no</td>
+       <td>no</td>
+     </tr>
+     <tr>
+       <td>JclCounter</td>
+       <td>yes</td>
+       <td>yes</td>
+       <td>no</td>
+     </tr>
+     <tr>
+       <td>JclDateTime</td>
+       <td>yes</td>
+       <td>partly</td>
+       <td>no</td>
+     </tr>
+     <tr>
+       <td>JclDebug</td>
+       <td>yes</td>
+       <td>no</td>
+       <td>no</td>
+     </tr>
+     <tr>
+       <td>JclDotNet</td>
+       <td>yes</td>
+       <td>no</td>
+       <td>no</td>
+     </tr>
+     <tr>
+       <td>JclEDI</td>
+       <td>yes</td>
+       <td>yes</td>
+       <td>no</td>
+     </tr>
+     <tr>
+       <td>JclEDISEF</td>
+       <td>yes</td>
+       <td>yes</td>
+       <td>no</td>
+     </tr>
+     <tr>
+       <td>JclEDIXML</td>
+       <td>yes</td>
+       <td>yes</td>
+       <td>no</td>
+     </tr>
+     <tr>
+       <td>JclEDI_ANSIX12</td>
+       <td>yes</td>
+       <td>yes</td>
+       <td>no</td>
+     </tr>
+     <tr>
+       <td>JclEDI_UNEDIFACT</td>
+       <td>yes</td>
+       <td>yes</td>
+       <td>no</td>
+     </tr>
+     <tr>
+       <td>JclFileUtils</td>
+       <td>yes</td>
+       <td>partly</td>
+       <td>no</td>
+     </tr>
+     <tr>
+       <td>JclExprEval</td>
+       <td>yes</td>
+       <td>yes<br>
+       </td>
+       <td>no</td>
+     </tr>
+     <tr>
+       <td>JclHookExcept</td>
+       <td>yes</td>
+       <td>no</td>
+       <td>no</td>
+     </tr>
+     <tr>
+       <td>JclIniFiles</td>
+       <td>yes</td>
+       <td>yes<br>
+       </td>
+       <td>no</td>
+     </tr>
+     <tr>
+       <td>JclLanMan</td>
+       <td>yes</td>
+       <td>no</td>
+       <td>no</td>
+     </tr>
+     <tr>
+       <td>JclLocales</td>
+       <td>yes</td>
+       <td>no</td>
+       <td>no</td>
+     </tr>
+     <tr>
+       <td>JclLogic</td>
+       <td>yes</td>
+       <td>yes</td>
+       <td>no</td>
+     </tr>
+     <tr>
+       <td>JclMapi</td>
+       <td>yes</td>
+       <td>no</td>
+       <td>no</td>
+     </tr>
+     <tr>
+       <td>JclMath</td>
+       <td>yes</td>
+       <td>yes</td>
+       <td>no</td>
+     </tr>
+     <tr>
+       <td>JclMetaData</td>
+       <td>yes</td>
+       <td>no</td>
+       <td>no</td>
+     </tr>
+     <tr>
+       <td>JclMidi</td>
+       <td>yes</td>
+       <td>no</td>
+       <td>no</td>
+     </tr>
+     <tr>
+       <td>JclMime</td>
+       <td>yes</td>
+       <td>yes</td>
+       <td>no</td>
+     </tr>
+     <tr>
+       <td>JclMiscel</td>
+       <td>yes</td>
+       <td>no</td>
+       <td>no</td>
+     </tr>
+     <tr>
+       <td>JclMultimedia</td>
+       <td>yes</td>
+       <td>no</td>
+       <td>no</td>
+     </tr>
+     <tr>
+       <td>JclNTFS</td>
+       <td>yes</td>
+       <td>no</td>
+       <td>no</td>
+     </tr>
+     <tr>
+       <td>JclPEImage</td>
+       <td>yes</td>
+       <td>no</td>
+       <td>no</td>
+     </tr>
+     <tr>
+       <td>JclPrint</td>
+       <td>yes</td>
+       <td>no</td>
+       <td>no</td>
+     </tr>
+     <tr>
+       <td>JclStrHashMap</td>
+       <td>yes</td>
+       <td>yes<br>
+       </td>
+       <td>no</td>
+     </tr>
+     <tr>
+       <td>JclStatistics</td>
+       <td>yes</td>
+       <td>yes</td>
+       <td>no</td>
+     </tr>
+     <tr>
+       <td>JclShell</td>
+       <td>yes</td>
+       <td>no</td>
+       <td>no</td>
+     </tr>
+     <tr>
+       <td>JclSecurity</td>
+       <td>yes</td>
+       <td>no</td>
+       <td>no</td>
+     </tr>
+     <tr>
+       <td>JclSchedule</td>
+       <td>yes</td>
+       <td>yes</td>
+       <td>no</td>
+     </tr>
+     <tr>
+       <td>JclRTTI</td>
+       <td>yes</td>
+       <td>no</td>
+       <td>no</td>
+     </tr>
+     <tr>
+       <td>JclResources</td>
+       <td>yes</td>
+       <td>no</td>
+       <td>no</td>
+     </tr>
+     <tr>
+       <td>JclRegistry</td>
+       <td>yes</td>
+       <td>no</td>
+       <td>no</td>
+     </tr>
+     <tr>
+       <td>JclStrings</td>
+       <td>yes</td>
+       <td>yes</td>
+       <td>no</td>
+     </tr>
+     <tr>
+       <td>Jclsvcctrl</td>
+       <td>yes</td>
+       <td>no</td>
+       <td>no</td>
+     </tr>
+     <tr>
+       <td>Jclsynch</td>
+       <td>yes</td>
+       <td>no</td>
+       <td>no</td>
+     </tr>
+     <tr>
+       <td>JclTask</td>
+       <td>platform</td>
+       <td>no</td>
+       <td>no</td>
+     </tr>
+     <tr>
+       <td>JclSysUtils</td>
+       <td>yes</td>
+       <td>partly<br>
+       </td>
+       <td>no</td>
+     </tr>
+     <tr>
+       <td>JclSysInfo</td>
+       <td>yes</td>
+       <td>partly</td>
+       <td>no</td>
+     </tr>
+     <tr>
+       <td>JclTD32</td>
+       <td>yes</td>
+       <td>no</td>
+       <td>no</td>
+     </tr>
+     <tr>
+       <td>JclUnicode</td>
+       <td>yes</td>
+       <td>no</td>
+       <td>no</td>
+     </tr>
+     <tr>
+       <td>JclUnitConv</td>
+       <td>yes</td>
+       <td>yes</td>
+       <td>no</td>
+     </tr>
+     <tr>
+       <td>JclWin32</td>
+       <td>dependant<br>
+       </td>
+       <td>no</td>
+       <td>no</td>
+     </tr>
+     <tr>
+       <td>JclWinMidi</td>
+       <td>dependant<br>
+       </td>
+       <td>no</td>
+       <td>no</td>
+     </tr>
+   </tbody>
+</table>
+
+
+<h3>Assembler</h3>
+<p>
+For crossplatform compatability it is absolutely necessary to reduce the amount
+of inline assembler code used. Therefore as a general rule every line of assembler
+<b>must have a pure pascal pendant</b>. Please use assembler only if it really 
+has a noticeable impact on the libraries performance. 
+
+<pre>
+{$IFNDEF PUREPASCAL}
+  // assembler code here
+{$ELSE}
+  // Delphi equivalent here
+{$ENDIF}  
+</pre>
+
+</p>
+
+<h3>Packages</h3>
+</body>
+</html>
