@@ -601,7 +601,7 @@ uses
 {$LINK ..\windows\obj\pcre\pcre_study.obj}
 {$LINK ..\windows\obj\pcre\pcre_tables.obj}
 {$LINK ..\windows\obj\pcre\pcre_try_flipped.obj}
-{$LINK ..\windows\obj\pcre\pcre_ucp_searchfuncs.obj}
+{$LINK ..\windows\obj\pcre\pcre_ucd.obj}
 {$LINK ..\windows\obj\pcre\pcre_valid_utf8.obj}
 {$LINK ..\windows\obj\pcre\pcre_version.obj}
 {$LINK ..\windows\obj\pcre\pcre_xclass.obj}
