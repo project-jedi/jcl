@@ -17,6 +17,7 @@
 { Portions created by Florent Ouchet are Copyright (C) of Florent Ouchet. All rights reserved.     }
 {                                                                                                  }
 { Contributors:                                                                                    }
+{   Uwe Schuster (uschuster)                                                                       }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -181,10 +182,32 @@ end;
 function TJclOtaOptionsForm.Execute(PageName: string): Boolean;
 var
   ATreeNode: TTreeNode;
+  NodeName: string;
+  PosSeparator: Integer;
   AItemDataRec: TItemDataRec;
 begin
-  // TODO: use PageName
   ATreeNode := TreeViewCategories.Items.GetFirstNode;
+
+  repeat
+    PosSeparator := Pos('\', PageName);
+    if PosSeparator > 0 then
+    begin
+      NodeName := Copy(PageName, 1, PosSeparator - 1);
+      PageName := Copy(PageName, PosSeparator + 1, Length(PageName) - PosSeparator);
+      while Assigned(ATreeNode) and (CompareText(NodeName, ATreeNode.Text) <> 0) do
+        ATreeNode := ATreeNode.getNextSibling;
+      if Assigned(ATreeNode) then
+        ATreeNode := ATreeNode.getFirstChild;
+    end
+    else
+    begin
+      while Assigned(ATreeNode) and (CompareText(PageName, ATreeNode.Text) <> 0) do
+        ATreeNode := ATreeNode.getNextSibling;
+    end;
+  until PosSeparator = 0;
+
+  if not Assigned(ATreeNode) then
+    ATreeNode := TreeViewCategories.Items.GetFirstNode;
   if Assigned(ATreeNode) then
     TreeViewCategories.Selected := ATreeNode;
 
