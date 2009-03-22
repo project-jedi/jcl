@@ -17,6 +17,7 @@
 {                                                                                                  }
 { Contributors:                                                                                    }
 {   Florent Ouchet (outchy)                                                                        }
+{   Uwe Schuster (uschuster)                                                                       }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -39,6 +40,7 @@ uses
   JclBase;
 
 //=== JclOtaUtils.pas ========================================================
+{ TODO : consider replacing "Borland X Services" by "IDE X Services"}
 resourcestring
   RsENoOTAServices = 'Unable to get Borland IDE Services';
   RsENoNTAServices = 'Unable to get Borland NTA Services';
@@ -61,7 +63,7 @@ resourcestring
   RsAboutDialogTitle = 'JEDI Code Library';
   RsAboutCopyright = 'Copyright the JCL development team';
   RsAboutTitle = 'JEDI Code Library';
-  RsAboutDescription = 'JEDI Code Library http://jcl.sf.net' + NativeLineBreak +
+  RsAboutDescription = 'JEDI Code Library http://jcl.delphi-jedi.org/' + NativeLineBreak +
                        'The JCL is a member of the JEDI Project http://www.delphi-jedi.org' + NativeLineBreak +
                        'Covered under the Mozilla Public License v1.1 (MPL 1.1)' + NativeLineBreak +
                        'License available at http://www.mozilla.org/MPL/MPL-1.1.html';
@@ -87,7 +89,8 @@ resourcestring
                        ' - jedi newsgroups,' + NativeLineBreak +
                        ' - mailing list.' + NativeLineBreak +
                        'Details and guidelines for these tools are available at:';
-  RsReportURL = 'http://homepages.borland.com/jedi/jcl/page24.html';
+  { TODO : Should this link lead directly to the issue tracker at http://issuetracker.delphi-jedi.org/ ?}
+  RsReportURL = 'http://jcl.delphi-jedi.org/page24.html';
   RsReportCaption = 'JCL - Feedback&&Support - Report a bug page';
   RsDetailsExceptionName = 'Exception class name: ';
   RsDetailsExceptionMessage = 'Exception message: ';
@@ -113,6 +116,7 @@ resourcestring
   RsCancel = '&Cancel';
   RsSelectPage = 'Select a page';
   RsHomePage = '&JCL Home page';
+  RsHomePageURL = 'http://jcl.delphi-jedi.org/';
 
 //=== JclOtaWizardForm.pas ===================================================
 resourcestring

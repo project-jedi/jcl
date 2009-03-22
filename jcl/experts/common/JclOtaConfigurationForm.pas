@@ -252,7 +252,7 @@ end;
 
 procedure TJclOtaOptionsForm.LabelHomePageClick(Sender: TObject);
 begin
-  ShellExecute(Handle, 'open', 'http://jcl.sf.net/', '', '', SW_SHOW);
+  ShellExecute(Handle, 'open', PChar(RsHomePageURL), '', '', SW_SHOW);
 end;
 
 procedure TJclOtaOptionsForm.TreeViewCategoriesChange(Sender: TObject;
