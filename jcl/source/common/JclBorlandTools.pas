@@ -1,4 +1,4 @@
-{**************************************************************************************************}
+﻿{**************************************************************************************************}
 {                                                                                                  }
 { Project JEDI Code Library (JCL)                                                                  }
 {                                                                                                  }
@@ -2552,7 +2552,7 @@ type
           if Assigned(PersonalityNode) then
             PersonalityName := PersonalityNode.Value;
         end;
-        if AnsiSameText(PersonalityName, DProjDelphiPersonalityValue) or
+        if StrHasPrefix(PersonalityName, [DProjDelphiPersonalityValue]) or
           AnsiSameText(PersonalityName, DProjDelphiDotNetPersonalityValue) then
         begin
           ProjectConfiguration := '';
@@ -2569,7 +2569,10 @@ type
                     (AnsiPos(Format('%s|%s', [ProjectConfiguration, ProjectPlatform]), ConditionProperty.Value) > 0))
                    or
                    ((Version <> '') and (ProjectConfiguration <> '') and
-                    (AnsiPos(ProjectConfiguration, ConditionProperty.Value) > 0)) then
+                    (AnsiPos(ProjectConfiguration, ConditionProperty.Value) > 0))
+                   or
+                   ((Version <> '') and (ProjectConfiguration <> '') and
+                    (AnsiPos('$(Base)', ConditionProperty.Value) > 0)) then
                 begin
                   // this is the active configuration, check for overrides
                   ChildNode := PropertyGroupNode.Items.ItemNamed[DProjUsePackageNodeName];
