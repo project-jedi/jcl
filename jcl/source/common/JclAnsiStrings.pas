@@ -101,6 +101,8 @@ type
     function GetValueFromIndex(Index: Integer): AnsiString;
     procedure SetValueFromIndex(Index: Integer; const Value: AnsiString);
   protected
+    procedure AssignTo(Dest: TPersistent); override;
+
     procedure Error(const Msg: string; Data: Integer); overload;
     procedure Error(Msg: PResStringRec; Data: Integer); overload;
 
@@ -878,6 +880,27 @@ begin
     Exit;
   end;
   inherited Assign(Source);
+end;
+
+procedure TJclAnsiStrings.AssignTo(Dest: TPersistent);
+var
+  StringsDest: TStrings;
+  I: Integer;
+begin
+  if Dest is TStrings then
+  begin
+    StringsDest := TStrings(Dest);
+    StringsDest.BeginUpdate;
+    try
+      StringsDest.Clear;
+      StringsDest.Delimiter := Char(Delimiter);
+      StringsDest.NameValueSeparator := Char(NameValueSeparator);
+      for I := 0 to Count - 1 do
+        StringsDest.AddObject(string(Strings[I]), Objects[I]);
+    finally
+      StringsDest.EndUpdate;
+    end;
+  end;
 end;
 
 function TJclAnsiStrings.Add(const S: AnsiString): Integer;
