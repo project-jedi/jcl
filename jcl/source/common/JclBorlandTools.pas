@@ -29,9 +29,9 @@
 {                                                                                                  }
 { Important notes for C#Builder 1 and Delphi 8:                                                    }
 { These products were not shipped with their native compilers, but the toolkit to build design     }
-{ packages is available in codecentral (http://codecentral.borland.com):                           }
-{  - "IDE Integration pack for C#Builder 1.0" http://codecentral.borland.com/Item.aspx?ID=21334    }
-{  - "IDE Integration pack for Delphi 8" http://codecentral.borland.com/Item.aspx?ID=21333         }
+{ packages is available in codecentral (http://cc.embarcadero.com):                                }
+{  - "IDE Integration pack for C#Builder 1.0" http://cc.embarcadero.com/Item/21334                 }
+{  - "IDE Integration pack for Delphi 8" http://cc.embarcadero.com/Item/21333                      }
 { It's recommended to extract zip files using the standard pattern of Delphi directories:          }
 {  - Binary files go to \bin (DCC32.EXE, RLINK32.DLL and lnkdfm7*.dll)                             }
 {  - Compiler files go to \lib (designide.dcp, rtl.dcp, SysInit.dcu, vcl.dcp, vclactnband.dcp,     }
