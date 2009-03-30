@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+  <Transactions>
+    <Transaction>2009/02/18 19:45:37.453.cpp,C:\Documents and Settings\Sean Farrow\My Documents\RAD Studio\Projects\File1.cpp=C:\Work\jcl development\jcl-msi\thirdparty\Windows Installer\Custom Action\JclCustomAction.cpp</Transaction>
+    <Transaction>2009/02/18 19:45:48.796.cbproj,C:\Documents and Settings\Sean Farrow\My Documents\RAD Studio\Projects\Project1.cbproj=C:\Work\jcl development\jcl-msi\thirdparty\Windows Installer\Custom Action\JclCustomAction.cbproj</Transaction>
+  </Transactions>
+</BorlandProject>
