@@ -47,7 +47,9 @@ unit JppParser;
 interface
 
 uses
-  SysUtils, Classes, JppState, JppLexer;
+  SysUtils, Classes,
+  JclStreams,
+  JppState, JppLexer;
 
 type
   EPppParserError = class(Exception);
@@ -88,7 +90,7 @@ type
     property Lexer: TJppLexer read FLexer;
     property State: TSimplePppState read FState;
   public
-    constructor Create(AStream: TStream; APppState: TSimplePppState);
+    constructor Create(AStream: TJclStringStream; APppState: TSimplePppState);
     destructor Destroy; override;
     function Parse: string;
   end;
@@ -96,7 +98,7 @@ type
 implementation
 
 uses
-  JclBase, JclAnsiStrings;
+  JclBase, JclStrings;
   
 {$IFDEF MSWINDOWS}
 const
@@ -121,10 +123,10 @@ var
 begin
   Result := True;
   for I := 1 to Length(P) do
-    if P^ in [#9, #10, #13, ' '] then
-      Inc(P)
+    case P^ of
+      #9, #10, #13, ' ':
+        Inc(P);
     else
-    begin
       Result := False;
       Break;
     end;
@@ -138,12 +140,12 @@ var
   ParenthesisCount: Integer;
 begin
   I := 1;
-  while (I <= Length(MacroText)) and not (MacroText[I] in [#1..#32]) do
+  while (I <= Length(MacroText)) and not CharIsSpace(MacroText[I]) do
     Inc(I);
-  while (I <= Length(MacroText)) and (MacroText[I] in [#1..#32]) do
+  while (I <= Length(MacroText)) and CharIsSpace(MacroText[I]) do
     Inc(I);
   J := I;
-  while (J <= Length(MacroText)) and (MacroText[J] in ['a'..'z', 'A'..'Z', '0'..'9', '_']) do
+  while (J <= Length(MacroText)) and CharIsValidIdentifierLetter(MacroText[J]) do
     Inc(J);
   MacroName := Copy(MacroText, I, J - I);
 
@@ -156,14 +158,14 @@ begin
       if ParamDeclaration then
       begin
         repeat
-          while (J <= Length(MacroText)) and (MacroText[J] in [#1..#32]) do
+          while (J <= Length(MacroText)) and CharIsSpace(MacroText[J]) do
             Inc(J);
           I := J;
-          while (I <= Length(MacroText)) and (MacroText[I] in ['a'..'z', 'A'..'Z', '0'..'9', '_']) do
+          while (I <= Length(MacroText)) and CharIsValidIdentifierLetter(MacroText[I]) do
             Inc(I);
           SetLength(ParamNames, Length(ParamNames) + 1);
           ParamNames[High(ParamNames)] := Copy(MacroText, J, I - J);
-          while (I <= Length(MacroText)) and (MacroText[I] in [#1..#32]) do
+          while (I <= Length(MacroText)) and CharIsSpace(MacroText[I]) do
             Inc(I);
           if (I <= Length(MacroText)) then
             case MacroText[I] of
@@ -186,7 +188,7 @@ begin
           while I <= Length(MacroText) do
           begin
             case MacroText[I] of
-              AnsiSingleQuote:
+              NativeSingleQuote:
                 Comment := not Comment;
               '(':
                 if not Comment then
@@ -198,10 +200,10 @@ begin
                   if not Comment then
                     Dec(ParenthesisCount);
                 end;
-              AnsiBackslash:
-                if (not Comment) and (ParenthesisCount = 0) and (I < Length(MacroText)) and (MacroText[i + 1] = AnsiComma) then
+              NativeBackslash:
+                if (not Comment) and (ParenthesisCount = 0) and (I < Length(MacroText)) and (MacroText[i + 1] = NativeComma) then
                   Inc(I);
-              AnsiComma:
+              NativeComma:
                 if (not Comment) and (ParenthesisCount = 0) then
                   Break;
             end;
@@ -225,7 +227,7 @@ begin
     end
     else
     begin
-      while (J <= Length(MacroText)) and (MacroText[J] in [#1..#32]) do
+      while (J <= Length(MacroText)) and CharIsSpace(MacroText[J]) do
         Inc(J);
     end;
   end;
@@ -234,7 +236,7 @@ end;
 
 { TJppParser }
 
-constructor TJppParser.Create(AStream: TStream; APppState: TSimplePppState);
+constructor TJppParser.Create(AStream: TJclStringStream; APppState: TSimplePppState);
 begin
   Assert(AStream <> nil);
   Assert(APppState <> nil);
@@ -254,6 +256,7 @@ end;
 procedure TJppParser.AddResult(const S: string);
 var
   TempMemoryStream: TMemoryStream;
+  TempStringStream: TJclAutoStream;
   TempParser: TJppParser;
   AResult: string;
 begin
@@ -264,13 +267,18 @@ begin
   begin
     TempMemoryStream := TMemoryStream.Create;
     try
-      TempMemoryStream.WriteBuffer(S[1], Length(S));
-      TempMemoryStream.Seek(0, soBeginning);
-      TempParser := TJppParser.Create(TempMemoryStream, State);
+      TempStringStream := TJclAutoStream.Create(TempMemoryStream);
       try
-        AResult := TempParser.Parse;
+        TempStringStream.WriteString(S, 1, Length(S));
+        TempStringStream.Seek(0, soBeginning);
+        TempParser := TJppParser.Create(TempStringStream, State);
+        try
+          AResult := TempParser.Parse;
+        finally
+          TempParser.Free;
+        end;
       finally
-        TempParser.Free;
+        TempStringStream.Free;
       end;
     finally
       TempMemoryStream.Free;
@@ -281,7 +289,7 @@ begin
 
   while FResultLen + Length(AResult) > Length(FResult) do
     SetLength(FResult, Length(FResult) * 2);
-  Move(AResult[1], FResult[FResultLen + 1], Length(AResult));
+  Move(AResult[1], FResult[FResultLen + 1], Length(AResult) * SizeOf(Char));
   if FAllWhiteSpaceOut then
     FAllWhiteSpaceOut := AllWhiteSpace(@FResult[FLineBreakPos]);
   Inc(FResultLen, Length(AResult));
@@ -438,8 +446,8 @@ begin
   I := ParseMacro(MacroText, MacroName, ParamNames, True);
   if I <= Length(MacroText) then
   begin
-    if Copy(MacroText, I, Length(AnsiLineBreak)) = AnsiLineBreak then
-      Inc(I, Length(AnsiLineBreak));
+    if Copy(MacroText, I, Length(NativeLineBreak)) = NativeLineBreak then
+      Inc(I, Length(NativeLineBreak));
     J := Length(MacroText);
     if MacroText[J] = ')' then
       Dec(J);
@@ -488,16 +496,19 @@ function TJppParser.ParseInclude: string;
 var
   oldLexer, newLexer: TJppLexer;
   fsIn: TStream;
+  ssIn: TJclAutoStream;
 begin
   Result := '';
   Assert(Lexer.TokenAsString <> '');
   { we must prevent case of $I- & $I+ becoming file names }
-  if (Lexer.TokenAsString[1] in ['-', '+'])
-  or IsExcludedInclude(Lexer.TokenAsString) then
+  if   (Lexer.TokenAsString[1] = '-')
+    or (Lexer.TokenAsString[1] = '+')
+    or IsExcludedInclude(Lexer.TokenAsString) then
     Result := Lexer.RawComment
   else
   begin
     fsIn := nil;
+    ssIn := nil;
     newLexer := nil;
 
     oldLexer := Lexer;
@@ -508,11 +519,13 @@ begin
         on e: Exception do
           Lexer.Error(e.Message);
       end;
-      newLexer := TJppLexer.Create(fsIn);
+      ssIn := TJclAutoStream.Create(fsIn);
+      newLexer := TJppLexer.Create(ssIn);
       FLexer := newLexer;
       ParseText;
     finally
       FLexer := oldLexer;
+      ssIn.Free;
       fsIn.Free;
       newLexer.Free;
     end;

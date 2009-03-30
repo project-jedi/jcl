@@ -1,7 +1,7 @@
 [Directories]
 UnitOutputDir=..\..\lib\c5
 SearchPath=..\..\source\include
-Conditionals=BCB
+Conditionals=%DEFINES%
 <%%% BEGIN LIBRARYONLY %%%>
 [Compiler]
 PackageNoLink=1

@@ -81,11 +81,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function MapEquals(const AMap: IJclIntfIntfMap): Boolean;
+    function Extract(const Key: IInterface): IInterface;
     function GetValue(const Key: IInterface): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): IInterface;
     function KeySet: IJclIntfSet;
+    function MapEquals(const AMap: IJclIntfIntfMap): Boolean;
     procedure PutAll(const AMap: IJclIntfIntfMap);
     procedure PutValue(const Key: IInterface; const Value: IInterface);
     function Remove(const Key: IInterface): IInterface;
@@ -128,11 +129,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: AnsiString): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function MapEquals(const AMap: IJclAnsiStrIntfMap): Boolean;
+    function Extract(const Key: AnsiString): IInterface;
     function GetValue(const Key: AnsiString): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): AnsiString;
     function KeySet: IJclAnsiStrSet;
+    function MapEquals(const AMap: IJclAnsiStrIntfMap): Boolean;
     procedure PutAll(const AMap: IJclAnsiStrIntfMap);
     procedure PutValue(const Key: AnsiString; const Value: IInterface);
     function Remove(const Key: AnsiString): IInterface;
@@ -175,11 +177,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(const Value: AnsiString): Boolean;
-    function MapEquals(const AMap: IJclIntfAnsiStrMap): Boolean;
+    function Extract(const Key: IInterface): AnsiString;
     function GetValue(const Key: IInterface): AnsiString;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: AnsiString): IInterface;
     function KeySet: IJclIntfSet;
+    function MapEquals(const AMap: IJclIntfAnsiStrMap): Boolean;
     procedure PutAll(const AMap: IJclIntfAnsiStrMap);
     procedure PutValue(const Key: IInterface; const Value: AnsiString);
     function Remove(const Key: IInterface): AnsiString;
@@ -222,11 +225,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: AnsiString): Boolean;
     function ContainsValue(const Value: AnsiString): Boolean;
-    function MapEquals(const AMap: IJclAnsiStrAnsiStrMap): Boolean;
+    function Extract(const Key: AnsiString): AnsiString;
     function GetValue(const Key: AnsiString): AnsiString;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: AnsiString): AnsiString;
     function KeySet: IJclAnsiStrSet;
+    function MapEquals(const AMap: IJclAnsiStrAnsiStrMap): Boolean;
     procedure PutAll(const AMap: IJclAnsiStrAnsiStrMap);
     procedure PutValue(const Key: AnsiString; const Value: AnsiString);
     function Remove(const Key: AnsiString): AnsiString;
@@ -269,11 +273,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: WideString): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function MapEquals(const AMap: IJclWideStrIntfMap): Boolean;
+    function Extract(const Key: WideString): IInterface;
     function GetValue(const Key: WideString): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): WideString;
     function KeySet: IJclWideStrSet;
+    function MapEquals(const AMap: IJclWideStrIntfMap): Boolean;
     procedure PutAll(const AMap: IJclWideStrIntfMap);
     procedure PutValue(const Key: WideString; const Value: IInterface);
     function Remove(const Key: WideString): IInterface;
@@ -316,11 +321,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(const Value: WideString): Boolean;
-    function MapEquals(const AMap: IJclIntfWideStrMap): Boolean;
+    function Extract(const Key: IInterface): WideString;
     function GetValue(const Key: IInterface): WideString;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: WideString): IInterface;
     function KeySet: IJclIntfSet;
+    function MapEquals(const AMap: IJclIntfWideStrMap): Boolean;
     procedure PutAll(const AMap: IJclIntfWideStrMap);
     procedure PutValue(const Key: IInterface; const Value: WideString);
     function Remove(const Key: IInterface): WideString;
@@ -363,11 +369,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: WideString): Boolean;
     function ContainsValue(const Value: WideString): Boolean;
-    function MapEquals(const AMap: IJclWideStrWideStrMap): Boolean;
+    function Extract(const Key: WideString): WideString;
     function GetValue(const Key: WideString): WideString;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: WideString): WideString;
     function KeySet: IJclWideStrSet;
+    function MapEquals(const AMap: IJclWideStrWideStrMap): Boolean;
     procedure PutAll(const AMap: IJclWideStrWideStrMap);
     procedure PutValue(const Key: WideString; const Value: WideString);
     function Remove(const Key: WideString): WideString;
@@ -411,11 +418,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: UnicodeString): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function MapEquals(const AMap: IJclUnicodeStrIntfMap): Boolean;
+    function Extract(const Key: UnicodeString): IInterface;
     function GetValue(const Key: UnicodeString): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): UnicodeString;
     function KeySet: IJclUnicodeStrSet;
+    function MapEquals(const AMap: IJclUnicodeStrIntfMap): Boolean;
     procedure PutAll(const AMap: IJclUnicodeStrIntfMap);
     procedure PutValue(const Key: UnicodeString; const Value: IInterface);
     function Remove(const Key: UnicodeString): IInterface;
@@ -458,11 +466,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(const Value: UnicodeString): Boolean;
-    function MapEquals(const AMap: IJclIntfUnicodeStrMap): Boolean;
+    function Extract(const Key: IInterface): UnicodeString;
     function GetValue(const Key: IInterface): UnicodeString;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: UnicodeString): IInterface;
     function KeySet: IJclIntfSet;
+    function MapEquals(const AMap: IJclIntfUnicodeStrMap): Boolean;
     procedure PutAll(const AMap: IJclIntfUnicodeStrMap);
     procedure PutValue(const Key: IInterface; const Value: UnicodeString);
     function Remove(const Key: IInterface): UnicodeString;
@@ -505,11 +514,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: UnicodeString): Boolean;
     function ContainsValue(const Value: UnicodeString): Boolean;
-    function MapEquals(const AMap: IJclUnicodeStrUnicodeStrMap): Boolean;
+    function Extract(const Key: UnicodeString): UnicodeString;
     function GetValue(const Key: UnicodeString): UnicodeString;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: UnicodeString): UnicodeString;
     function KeySet: IJclUnicodeStrSet;
+    function MapEquals(const AMap: IJclUnicodeStrUnicodeStrMap): Boolean;
     procedure PutAll(const AMap: IJclUnicodeStrUnicodeStrMap);
     procedure PutValue(const Key: UnicodeString; const Value: UnicodeString);
     function Remove(const Key: UnicodeString): UnicodeString;
@@ -569,11 +579,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: Single): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function MapEquals(const AMap: IJclSingleIntfMap): Boolean;
+    function Extract(const Key: Single): IInterface;
     function GetValue(const Key: Single): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): Single;
     function KeySet: IJclSingleSet;
+    function MapEquals(const AMap: IJclSingleIntfMap): Boolean;
     procedure PutAll(const AMap: IJclSingleIntfMap);
     procedure PutValue(const Key: Single; const Value: IInterface);
     function Remove(const Key: Single): IInterface;
@@ -616,11 +627,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(const Value: Single): Boolean;
-    function MapEquals(const AMap: IJclIntfSingleMap): Boolean;
+    function Extract(const Key: IInterface): Single;
     function GetValue(const Key: IInterface): Single;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Single): IInterface;
     function KeySet: IJclIntfSet;
+    function MapEquals(const AMap: IJclIntfSingleMap): Boolean;
     procedure PutAll(const AMap: IJclIntfSingleMap);
     procedure PutValue(const Key: IInterface; const Value: Single);
     function Remove(const Key: IInterface): Single;
@@ -663,11 +675,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: Single): Boolean;
     function ContainsValue(const Value: Single): Boolean;
-    function MapEquals(const AMap: IJclSingleSingleMap): Boolean;
+    function Extract(const Key: Single): Single;
     function GetValue(const Key: Single): Single;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Single): Single;
     function KeySet: IJclSingleSet;
+    function MapEquals(const AMap: IJclSingleSingleMap): Boolean;
     procedure PutAll(const AMap: IJclSingleSingleMap);
     procedure PutValue(const Key: Single; const Value: Single);
     function Remove(const Key: Single): Single;
@@ -710,11 +723,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: Double): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function MapEquals(const AMap: IJclDoubleIntfMap): Boolean;
+    function Extract(const Key: Double): IInterface;
     function GetValue(const Key: Double): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): Double;
     function KeySet: IJclDoubleSet;
+    function MapEquals(const AMap: IJclDoubleIntfMap): Boolean;
     procedure PutAll(const AMap: IJclDoubleIntfMap);
     procedure PutValue(const Key: Double; const Value: IInterface);
     function Remove(const Key: Double): IInterface;
@@ -757,11 +771,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(const Value: Double): Boolean;
-    function MapEquals(const AMap: IJclIntfDoubleMap): Boolean;
+    function Extract(const Key: IInterface): Double;
     function GetValue(const Key: IInterface): Double;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Double): IInterface;
     function KeySet: IJclIntfSet;
+    function MapEquals(const AMap: IJclIntfDoubleMap): Boolean;
     procedure PutAll(const AMap: IJclIntfDoubleMap);
     procedure PutValue(const Key: IInterface; const Value: Double);
     function Remove(const Key: IInterface): Double;
@@ -804,11 +819,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: Double): Boolean;
     function ContainsValue(const Value: Double): Boolean;
-    function MapEquals(const AMap: IJclDoubleDoubleMap): Boolean;
+    function Extract(const Key: Double): Double;
     function GetValue(const Key: Double): Double;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Double): Double;
     function KeySet: IJclDoubleSet;
+    function MapEquals(const AMap: IJclDoubleDoubleMap): Boolean;
     procedure PutAll(const AMap: IJclDoubleDoubleMap);
     procedure PutValue(const Key: Double; const Value: Double);
     function Remove(const Key: Double): Double;
@@ -851,11 +867,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: Extended): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function MapEquals(const AMap: IJclExtendedIntfMap): Boolean;
+    function Extract(const Key: Extended): IInterface;
     function GetValue(const Key: Extended): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): Extended;
     function KeySet: IJclExtendedSet;
+    function MapEquals(const AMap: IJclExtendedIntfMap): Boolean;
     procedure PutAll(const AMap: IJclExtendedIntfMap);
     procedure PutValue(const Key: Extended; const Value: IInterface);
     function Remove(const Key: Extended): IInterface;
@@ -898,11 +915,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(const Value: Extended): Boolean;
-    function MapEquals(const AMap: IJclIntfExtendedMap): Boolean;
+    function Extract(const Key: IInterface): Extended;
     function GetValue(const Key: IInterface): Extended;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Extended): IInterface;
     function KeySet: IJclIntfSet;
+    function MapEquals(const AMap: IJclIntfExtendedMap): Boolean;
     procedure PutAll(const AMap: IJclIntfExtendedMap);
     procedure PutValue(const Key: IInterface; const Value: Extended);
     function Remove(const Key: IInterface): Extended;
@@ -945,11 +963,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: Extended): Boolean;
     function ContainsValue(const Value: Extended): Boolean;
-    function MapEquals(const AMap: IJclExtendedExtendedMap): Boolean;
+    function Extract(const Key: Extended): Extended;
     function GetValue(const Key: Extended): Extended;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Extended): Extended;
     function KeySet: IJclExtendedSet;
+    function MapEquals(const AMap: IJclExtendedExtendedMap): Boolean;
     procedure PutAll(const AMap: IJclExtendedExtendedMap);
     procedure PutValue(const Key: Extended; const Value: Extended);
     function Remove(const Key: Extended): Extended;
@@ -1008,11 +1027,12 @@ type
     procedure Clear;
     function ContainsKey(Key: Integer): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function MapEquals(const AMap: IJclIntegerIntfMap): Boolean;
+    function Extract(Key: Integer): IInterface;
     function GetValue(Key: Integer): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): Integer;
     function KeySet: IJclIntegerSet;
+    function MapEquals(const AMap: IJclIntegerIntfMap): Boolean;
     procedure PutAll(const AMap: IJclIntegerIntfMap);
     procedure PutValue(Key: Integer; const Value: IInterface);
     function Remove(Key: Integer): IInterface;
@@ -1055,11 +1075,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(Value: Integer): Boolean;
-    function MapEquals(const AMap: IJclIntfIntegerMap): Boolean;
+    function Extract(const Key: IInterface): Integer;
     function GetValue(const Key: IInterface): Integer;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: Integer): IInterface;
     function KeySet: IJclIntfSet;
+    function MapEquals(const AMap: IJclIntfIntegerMap): Boolean;
     procedure PutAll(const AMap: IJclIntfIntegerMap);
     procedure PutValue(const Key: IInterface; Value: Integer);
     function Remove(const Key: IInterface): Integer;
@@ -1102,11 +1123,12 @@ type
     procedure Clear;
     function ContainsKey(Key: Integer): Boolean;
     function ContainsValue(Value: Integer): Boolean;
-    function MapEquals(const AMap: IJclIntegerIntegerMap): Boolean;
+    function Extract(Key: Integer): Integer;
     function GetValue(Key: Integer): Integer;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: Integer): Integer;
     function KeySet: IJclIntegerSet;
+    function MapEquals(const AMap: IJclIntegerIntegerMap): Boolean;
     procedure PutAll(const AMap: IJclIntegerIntegerMap);
     procedure PutValue(Key: Integer; Value: Integer);
     function Remove(Key: Integer): Integer;
@@ -1149,11 +1171,12 @@ type
     procedure Clear;
     function ContainsKey(Key: Cardinal): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function MapEquals(const AMap: IJclCardinalIntfMap): Boolean;
+    function Extract(Key: Cardinal): IInterface;
     function GetValue(Key: Cardinal): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): Cardinal;
     function KeySet: IJclCardinalSet;
+    function MapEquals(const AMap: IJclCardinalIntfMap): Boolean;
     procedure PutAll(const AMap: IJclCardinalIntfMap);
     procedure PutValue(Key: Cardinal; const Value: IInterface);
     function Remove(Key: Cardinal): IInterface;
@@ -1196,11 +1219,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(Value: Cardinal): Boolean;
-    function MapEquals(const AMap: IJclIntfCardinalMap): Boolean;
+    function Extract(const Key: IInterface): Cardinal;
     function GetValue(const Key: IInterface): Cardinal;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: Cardinal): IInterface;
     function KeySet: IJclIntfSet;
+    function MapEquals(const AMap: IJclIntfCardinalMap): Boolean;
     procedure PutAll(const AMap: IJclIntfCardinalMap);
     procedure PutValue(const Key: IInterface; Value: Cardinal);
     function Remove(const Key: IInterface): Cardinal;
@@ -1243,11 +1267,12 @@ type
     procedure Clear;
     function ContainsKey(Key: Cardinal): Boolean;
     function ContainsValue(Value: Cardinal): Boolean;
-    function MapEquals(const AMap: IJclCardinalCardinalMap): Boolean;
+    function Extract(Key: Cardinal): Cardinal;
     function GetValue(Key: Cardinal): Cardinal;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: Cardinal): Cardinal;
     function KeySet: IJclCardinalSet;
+    function MapEquals(const AMap: IJclCardinalCardinalMap): Boolean;
     procedure PutAll(const AMap: IJclCardinalCardinalMap);
     procedure PutValue(Key: Cardinal; Value: Cardinal);
     function Remove(Key: Cardinal): Cardinal;
@@ -1290,11 +1315,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: Int64): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function MapEquals(const AMap: IJclInt64IntfMap): Boolean;
+    function Extract(const Key: Int64): IInterface;
     function GetValue(const Key: Int64): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): Int64;
     function KeySet: IJclInt64Set;
+    function MapEquals(const AMap: IJclInt64IntfMap): Boolean;
     procedure PutAll(const AMap: IJclInt64IntfMap);
     procedure PutValue(const Key: Int64; const Value: IInterface);
     function Remove(const Key: Int64): IInterface;
@@ -1337,11 +1363,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(const Value: Int64): Boolean;
-    function MapEquals(const AMap: IJclIntfInt64Map): Boolean;
+    function Extract(const Key: IInterface): Int64;
     function GetValue(const Key: IInterface): Int64;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Int64): IInterface;
     function KeySet: IJclIntfSet;
+    function MapEquals(const AMap: IJclIntfInt64Map): Boolean;
     procedure PutAll(const AMap: IJclIntfInt64Map);
     procedure PutValue(const Key: IInterface; const Value: Int64);
     function Remove(const Key: IInterface): Int64;
@@ -1384,11 +1411,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: Int64): Boolean;
     function ContainsValue(const Value: Int64): Boolean;
-    function MapEquals(const AMap: IJclInt64Int64Map): Boolean;
+    function Extract(const Key: Int64): Int64;
     function GetValue(const Key: Int64): Int64;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: Int64): Int64;
     function KeySet: IJclInt64Set;
+    function MapEquals(const AMap: IJclInt64Int64Map): Boolean;
     procedure PutAll(const AMap: IJclInt64Int64Map);
     procedure PutValue(const Key: Int64; const Value: Int64);
     function Remove(const Key: Int64): Int64;
@@ -1432,11 +1460,12 @@ type
     procedure Clear;
     function ContainsKey(Key: Pointer): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
-    function MapEquals(const AMap: IJclPtrIntfMap): Boolean;
+    function Extract(Key: Pointer): IInterface;
     function GetValue(Key: Pointer): IInterface;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: IInterface): Pointer;
     function KeySet: IJclPtrSet;
+    function MapEquals(const AMap: IJclPtrIntfMap): Boolean;
     procedure PutAll(const AMap: IJclPtrIntfMap);
     procedure PutValue(Key: Pointer; const Value: IInterface);
     function Remove(Key: Pointer): IInterface;
@@ -1479,11 +1508,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(Value: Pointer): Boolean;
-    function MapEquals(const AMap: IJclIntfPtrMap): Boolean;
+    function Extract(const Key: IInterface): Pointer;
     function GetValue(const Key: IInterface): Pointer;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: Pointer): IInterface;
     function KeySet: IJclIntfSet;
+    function MapEquals(const AMap: IJclIntfPtrMap): Boolean;
     procedure PutAll(const AMap: IJclIntfPtrMap);
     procedure PutValue(const Key: IInterface; Value: Pointer);
     function Remove(const Key: IInterface): Pointer;
@@ -1526,11 +1556,12 @@ type
     procedure Clear;
     function ContainsKey(Key: Pointer): Boolean;
     function ContainsValue(Value: Pointer): Boolean;
-    function MapEquals(const AMap: IJclPtrPtrMap): Boolean;
+    function Extract(Key: Pointer): Pointer;
     function GetValue(Key: Pointer): Pointer;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: Pointer): Pointer;
     function KeySet: IJclPtrSet;
+    function MapEquals(const AMap: IJclPtrPtrMap): Boolean;
     procedure PutAll(const AMap: IJclPtrPtrMap);
     procedure PutValue(Key: Pointer; Value: Pointer);
     function Remove(Key: Pointer): Pointer;
@@ -1580,11 +1611,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function MapEquals(const AMap: IJclIntfMap): Boolean;
+    function Extract(const Key: IInterface): TObject;
     function GetValue(const Key: IInterface): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): IInterface;
     function KeySet: IJclIntfSet;
+    function MapEquals(const AMap: IJclIntfMap): Boolean;
     procedure PutAll(const AMap: IJclIntfMap);
     procedure PutValue(const Key: IInterface; Value: TObject);
     function Remove(const Key: IInterface): TObject;
@@ -1633,11 +1665,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: AnsiString): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function MapEquals(const AMap: IJclAnsiStrMap): Boolean;
+    function Extract(const Key: AnsiString): TObject;
     function GetValue(const Key: AnsiString): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): AnsiString;
     function KeySet: IJclAnsiStrSet;
+    function MapEquals(const AMap: IJclAnsiStrMap): Boolean;
     procedure PutAll(const AMap: IJclAnsiStrMap);
     procedure PutValue(const Key: AnsiString; Value: TObject);
     function Remove(const Key: AnsiString): TObject;
@@ -1686,11 +1719,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: WideString): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function MapEquals(const AMap: IJclWideStrMap): Boolean;
+    function Extract(const Key: WideString): TObject;
     function GetValue(const Key: WideString): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): WideString;
     function KeySet: IJclWideStrSet;
+    function MapEquals(const AMap: IJclWideStrMap): Boolean;
     procedure PutAll(const AMap: IJclWideStrMap);
     procedure PutValue(const Key: WideString; Value: TObject);
     function Remove(const Key: WideString): TObject;
@@ -1740,11 +1774,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: UnicodeString): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function MapEquals(const AMap: IJclUnicodeStrMap): Boolean;
+    function Extract(const Key: UnicodeString): TObject;
     function GetValue(const Key: UnicodeString): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): UnicodeString;
     function KeySet: IJclUnicodeStrSet;
+    function MapEquals(const AMap: IJclUnicodeStrMap): Boolean;
     procedure PutAll(const AMap: IJclUnicodeStrMap);
     procedure PutValue(const Key: UnicodeString; Value: TObject);
     function Remove(const Key: UnicodeString): TObject;
@@ -1804,11 +1839,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: Single): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function MapEquals(const AMap: IJclSingleMap): Boolean;
+    function Extract(const Key: Single): TObject;
     function GetValue(const Key: Single): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): Single;
     function KeySet: IJclSingleSet;
+    function MapEquals(const AMap: IJclSingleMap): Boolean;
     procedure PutAll(const AMap: IJclSingleMap);
     procedure PutValue(const Key: Single; Value: TObject);
     function Remove(const Key: Single): TObject;
@@ -1857,11 +1893,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: Double): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function MapEquals(const AMap: IJclDoubleMap): Boolean;
+    function Extract(const Key: Double): TObject;
     function GetValue(const Key: Double): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): Double;
     function KeySet: IJclDoubleSet;
+    function MapEquals(const AMap: IJclDoubleMap): Boolean;
     procedure PutAll(const AMap: IJclDoubleMap);
     procedure PutValue(const Key: Double; Value: TObject);
     function Remove(const Key: Double): TObject;
@@ -1910,11 +1947,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: Extended): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function MapEquals(const AMap: IJclExtendedMap): Boolean;
+    function Extract(const Key: Extended): TObject;
     function GetValue(const Key: Extended): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): Extended;
     function KeySet: IJclExtendedSet;
+    function MapEquals(const AMap: IJclExtendedMap): Boolean;
     procedure PutAll(const AMap: IJclExtendedMap);
     procedure PutValue(const Key: Extended; Value: TObject);
     function Remove(const Key: Extended): TObject;
@@ -1973,11 +2011,12 @@ type
     procedure Clear;
     function ContainsKey(Key: Integer): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function MapEquals(const AMap: IJclIntegerMap): Boolean;
+    function Extract(Key: Integer): TObject;
     function GetValue(Key: Integer): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): Integer;
     function KeySet: IJclIntegerSet;
+    function MapEquals(const AMap: IJclIntegerMap): Boolean;
     procedure PutAll(const AMap: IJclIntegerMap);
     procedure PutValue(Key: Integer; Value: TObject);
     function Remove(Key: Integer): TObject;
@@ -2026,11 +2065,12 @@ type
     procedure Clear;
     function ContainsKey(Key: Cardinal): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function MapEquals(const AMap: IJclCardinalMap): Boolean;
+    function Extract(Key: Cardinal): TObject;
     function GetValue(Key: Cardinal): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): Cardinal;
     function KeySet: IJclCardinalSet;
+    function MapEquals(const AMap: IJclCardinalMap): Boolean;
     procedure PutAll(const AMap: IJclCardinalMap);
     procedure PutValue(Key: Cardinal; Value: TObject);
     function Remove(Key: Cardinal): TObject;
@@ -2079,11 +2119,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: Int64): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function MapEquals(const AMap: IJclInt64Map): Boolean;
+    function Extract(const Key: Int64): TObject;
     function GetValue(const Key: Int64): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): Int64;
     function KeySet: IJclInt64Set;
+    function MapEquals(const AMap: IJclInt64Map): Boolean;
     procedure PutAll(const AMap: IJclInt64Map);
     procedure PutValue(const Key: Int64; Value: TObject);
     function Remove(const Key: Int64): TObject;
@@ -2133,11 +2174,12 @@ type
     procedure Clear;
     function ContainsKey(Key: Pointer): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function MapEquals(const AMap: IJclPtrMap): Boolean;
+    function Extract(Key: Pointer): TObject;
     function GetValue(Key: Pointer): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): Pointer;
     function KeySet: IJclPtrSet;
+    function MapEquals(const AMap: IJclPtrMap): Boolean;
     procedure PutAll(const AMap: IJclPtrMap);
     procedure PutValue(Key: Pointer; Value: TObject);
     function Remove(Key: Pointer): TObject;
@@ -2191,11 +2233,12 @@ type
     procedure Clear;
     function ContainsKey(Key: TObject): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function MapEquals(const AMap: IJclMap): Boolean;
+    function Extract(Key: TObject): TObject;
     function GetValue(Key: TObject): TObject;
     function IsEmpty: Boolean;
     function KeyOfValue(Value: TObject): TObject;
     function KeySet: IJclSet;
+    function MapEquals(const AMap: IJclMap): Boolean;
     procedure PutAll(const AMap: IJclMap);
     procedure PutValue(Key: TObject; Value: TObject);
     function Remove(Key: TObject): TObject;
@@ -2252,11 +2295,12 @@ type
     procedure Clear;
     function ContainsKey(const Key: TKey): Boolean;
     function ContainsValue(const Value: TValue): Boolean;
-    function MapEquals(const AMap: IJclMap<TKey,TValue>): Boolean;
+    function Extract(const Key: TKey): TValue;
     function GetValue(const Key: TKey): TValue;
     function IsEmpty: Boolean;
     function KeyOfValue(const Value: TValue): TKey;
     function KeySet: IJclSet<TKey>;
+    function MapEquals(const AMap: IJclMap<TKey,TValue>): Boolean;
     procedure PutAll(const AMap: IJclMap<TKey,TValue>);
     procedure PutValue(const Key: TKey; const Value: TValue);
     function Remove(const Key: TKey): TValue;
@@ -2495,42 +2539,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfIntfSortedMap.MapEquals(const AMap: IJclIntfIntfMap): Boolean;
-var
-  It: IJclIntfIterator;
-  Index: Integer;
-  AKey: IInterface;
-begin
-  {$IFDEF THREADSAFE}
-  if FThreadSafe then
-    SyncReaderWriter.BeginRead;
-  try
-  {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
-  {$IFDEF THREADSAFE}
-  finally
-    if FThreadSafe then
-      SyncReaderWriter.EndRead;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclIntfIntfSortedMap.FirstKey: IInterface;
 begin
   {$IFDEF THREADSAFE}
@@ -2548,6 +2556,38 @@ begin
   finally
     if FThreadSafe then
       SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfIntfSortedMap.Extract(const Key: IInterface): IInterface;
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      Result := FEntries[Index].Value;
+      FEntries[Index].Value := nil;
+      FreeKey(FEntries[Index].Key);
+      if Index < (FSize - 1) then
+        MoveArray(Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := nil;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2685,6 +2725,42 @@ begin
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfIntfSortedMap.MapEquals(const AMap: IJclIntfIntfMap): Boolean;
+var
+  It: IJclIntfIterator;
+  Index: Integer;
+  AKey: IInterface;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    It := AMap.KeySet.First;
+    Index := 0;
+    while It.HasNext do
+    begin
+      if Index >= FSize then
+        Exit;
+      AKey := It.Next;
+      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
+        Exit;
+      Inc(Index);
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -2835,8 +2911,6 @@ begin
 end;
 
 function TJclIntfIntfSortedMap.Remove(const Key: IInterface): IInterface;
-var
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -2845,18 +2919,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := nil;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -3145,42 +3209,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclAnsiStrIntfSortedMap.MapEquals(const AMap: IJclAnsiStrIntfMap): Boolean;
-var
-  It: IJclAnsiStrIterator;
-  Index: Integer;
-  AKey: AnsiString;
-begin
-  {$IFDEF THREADSAFE}
-  if FThreadSafe then
-    SyncReaderWriter.BeginRead;
-  try
-  {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
-  {$IFDEF THREADSAFE}
-  finally
-    if FThreadSafe then
-      SyncReaderWriter.EndRead;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclAnsiStrIntfSortedMap.FirstKey: AnsiString;
 begin
   {$IFDEF THREADSAFE}
@@ -3198,6 +3226,38 @@ begin
   finally
     if FThreadSafe then
       SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclAnsiStrIntfSortedMap.Extract(const Key: AnsiString): IInterface;
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      Result := FEntries[Index].Value;
+      FEntries[Index].Value := nil;
+      FreeKey(FEntries[Index].Key);
+      if Index < (FSize - 1) then
+        MoveArray(Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := nil;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3335,6 +3395,42 @@ begin
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclAnsiStrIntfSortedMap.MapEquals(const AMap: IJclAnsiStrIntfMap): Boolean;
+var
+  It: IJclAnsiStrIterator;
+  Index: Integer;
+  AKey: AnsiString;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    It := AMap.KeySet.First;
+    Index := 0;
+    while It.HasNext do
+    begin
+      if Index >= FSize then
+        Exit;
+      AKey := It.Next;
+      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
+        Exit;
+      Inc(Index);
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -3485,8 +3581,6 @@ begin
 end;
 
 function TJclAnsiStrIntfSortedMap.Remove(const Key: AnsiString): IInterface;
-var
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -3495,18 +3589,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := nil;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -3801,42 +3885,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfAnsiStrSortedMap.MapEquals(const AMap: IJclIntfAnsiStrMap): Boolean;
-var
-  It: IJclIntfIterator;
-  Index: Integer;
-  AKey: IInterface;
-begin
-  {$IFDEF THREADSAFE}
-  if FThreadSafe then
-    SyncReaderWriter.BeginRead;
-  try
-  {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
-  {$IFDEF THREADSAFE}
-  finally
-    if FThreadSafe then
-      SyncReaderWriter.EndRead;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclIntfAnsiStrSortedMap.FirstKey: IInterface;
 begin
   {$IFDEF THREADSAFE}
@@ -3854,6 +3902,38 @@ begin
   finally
     if FThreadSafe then
       SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfAnsiStrSortedMap.Extract(const Key: IInterface): AnsiString;
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      Result := FEntries[Index].Value;
+      FEntries[Index].Value := '';
+      FreeKey(FEntries[Index].Key);
+      if Index < (FSize - 1) then
+        MoveArray(Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := '';
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3991,6 +4071,42 @@ begin
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfAnsiStrSortedMap.MapEquals(const AMap: IJclIntfAnsiStrMap): Boolean;
+var
+  It: IJclIntfIterator;
+  Index: Integer;
+  AKey: IInterface;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    It := AMap.KeySet.First;
+    Index := 0;
+    while It.HasNext do
+    begin
+      if Index >= FSize then
+        Exit;
+      AKey := It.Next;
+      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
+        Exit;
+      Inc(Index);
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -4141,8 +4257,6 @@ begin
 end;
 
 function TJclIntfAnsiStrSortedMap.Remove(const Key: IInterface): AnsiString;
-var
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -4151,18 +4265,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := '';
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -4457,42 +4561,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclAnsiStrAnsiStrSortedMap.MapEquals(const AMap: IJclAnsiStrAnsiStrMap): Boolean;
-var
-  It: IJclAnsiStrIterator;
-  Index: Integer;
-  AKey: AnsiString;
-begin
-  {$IFDEF THREADSAFE}
-  if FThreadSafe then
-    SyncReaderWriter.BeginRead;
-  try
-  {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
-  {$IFDEF THREADSAFE}
-  finally
-    if FThreadSafe then
-      SyncReaderWriter.EndRead;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclAnsiStrAnsiStrSortedMap.FirstKey: AnsiString;
 begin
   {$IFDEF THREADSAFE}
@@ -4510,6 +4578,38 @@ begin
   finally
     if FThreadSafe then
       SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclAnsiStrAnsiStrSortedMap.Extract(const Key: AnsiString): AnsiString;
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      Result := FEntries[Index].Value;
+      FEntries[Index].Value := '';
+      FreeKey(FEntries[Index].Key);
+      if Index < (FSize - 1) then
+        MoveArray(Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := '';
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4647,6 +4747,42 @@ begin
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclAnsiStrAnsiStrSortedMap.MapEquals(const AMap: IJclAnsiStrAnsiStrMap): Boolean;
+var
+  It: IJclAnsiStrIterator;
+  Index: Integer;
+  AKey: AnsiString;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    It := AMap.KeySet.First;
+    Index := 0;
+    while It.HasNext do
+    begin
+      if Index >= FSize then
+        Exit;
+      AKey := It.Next;
+      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
+        Exit;
+      Inc(Index);
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -4797,8 +4933,6 @@ begin
 end;
 
 function TJclAnsiStrAnsiStrSortedMap.Remove(const Key: AnsiString): AnsiString;
-var
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -4807,18 +4941,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := '';
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -5107,42 +5231,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclWideStrIntfSortedMap.MapEquals(const AMap: IJclWideStrIntfMap): Boolean;
-var
-  It: IJclWideStrIterator;
-  Index: Integer;
-  AKey: WideString;
-begin
-  {$IFDEF THREADSAFE}
-  if FThreadSafe then
-    SyncReaderWriter.BeginRead;
-  try
-  {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
-  {$IFDEF THREADSAFE}
-  finally
-    if FThreadSafe then
-      SyncReaderWriter.EndRead;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclWideStrIntfSortedMap.FirstKey: WideString;
 begin
   {$IFDEF THREADSAFE}
@@ -5160,6 +5248,38 @@ begin
   finally
     if FThreadSafe then
       SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclWideStrIntfSortedMap.Extract(const Key: WideString): IInterface;
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      Result := FEntries[Index].Value;
+      FEntries[Index].Value := nil;
+      FreeKey(FEntries[Index].Key);
+      if Index < (FSize - 1) then
+        MoveArray(Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := nil;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -5297,6 +5417,42 @@ begin
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclWideStrIntfSortedMap.MapEquals(const AMap: IJclWideStrIntfMap): Boolean;
+var
+  It: IJclWideStrIterator;
+  Index: Integer;
+  AKey: WideString;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    It := AMap.KeySet.First;
+    Index := 0;
+    while It.HasNext do
+    begin
+      if Index >= FSize then
+        Exit;
+      AKey := It.Next;
+      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
+        Exit;
+      Inc(Index);
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -5447,8 +5603,6 @@ begin
 end;
 
 function TJclWideStrIntfSortedMap.Remove(const Key: WideString): IInterface;
-var
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -5457,18 +5611,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := nil;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -5763,42 +5907,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfWideStrSortedMap.MapEquals(const AMap: IJclIntfWideStrMap): Boolean;
-var
-  It: IJclIntfIterator;
-  Index: Integer;
-  AKey: IInterface;
-begin
-  {$IFDEF THREADSAFE}
-  if FThreadSafe then
-    SyncReaderWriter.BeginRead;
-  try
-  {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
-  {$IFDEF THREADSAFE}
-  finally
-    if FThreadSafe then
-      SyncReaderWriter.EndRead;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclIntfWideStrSortedMap.FirstKey: IInterface;
 begin
   {$IFDEF THREADSAFE}
@@ -5816,6 +5924,38 @@ begin
   finally
     if FThreadSafe then
       SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfWideStrSortedMap.Extract(const Key: IInterface): WideString;
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      Result := FEntries[Index].Value;
+      FEntries[Index].Value := '';
+      FreeKey(FEntries[Index].Key);
+      if Index < (FSize - 1) then
+        MoveArray(Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := '';
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -5953,6 +6093,42 @@ begin
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfWideStrSortedMap.MapEquals(const AMap: IJclIntfWideStrMap): Boolean;
+var
+  It: IJclIntfIterator;
+  Index: Integer;
+  AKey: IInterface;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    It := AMap.KeySet.First;
+    Index := 0;
+    while It.HasNext do
+    begin
+      if Index >= FSize then
+        Exit;
+      AKey := It.Next;
+      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
+        Exit;
+      Inc(Index);
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -6103,8 +6279,6 @@ begin
 end;
 
 function TJclIntfWideStrSortedMap.Remove(const Key: IInterface): WideString;
-var
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -6113,18 +6287,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := '';
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -6419,42 +6583,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclWideStrWideStrSortedMap.MapEquals(const AMap: IJclWideStrWideStrMap): Boolean;
-var
-  It: IJclWideStrIterator;
-  Index: Integer;
-  AKey: WideString;
-begin
-  {$IFDEF THREADSAFE}
-  if FThreadSafe then
-    SyncReaderWriter.BeginRead;
-  try
-  {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
-  {$IFDEF THREADSAFE}
-  finally
-    if FThreadSafe then
-      SyncReaderWriter.EndRead;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclWideStrWideStrSortedMap.FirstKey: WideString;
 begin
   {$IFDEF THREADSAFE}
@@ -6472,6 +6600,38 @@ begin
   finally
     if FThreadSafe then
       SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclWideStrWideStrSortedMap.Extract(const Key: WideString): WideString;
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      Result := FEntries[Index].Value;
+      FEntries[Index].Value := '';
+      FreeKey(FEntries[Index].Key);
+      if Index < (FSize - 1) then
+        MoveArray(Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := '';
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -6609,6 +6769,42 @@ begin
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclWideStrWideStrSortedMap.MapEquals(const AMap: IJclWideStrWideStrMap): Boolean;
+var
+  It: IJclWideStrIterator;
+  Index: Integer;
+  AKey: WideString;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    It := AMap.KeySet.First;
+    Index := 0;
+    while It.HasNext do
+    begin
+      if Index >= FSize then
+        Exit;
+      AKey := It.Next;
+      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
+        Exit;
+      Inc(Index);
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -6759,8 +6955,6 @@ begin
 end;
 
 function TJclWideStrWideStrSortedMap.Remove(const Key: WideString): WideString;
-var
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -6769,18 +6963,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := '';
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -7070,42 +7254,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclUnicodeStrIntfSortedMap.MapEquals(const AMap: IJclUnicodeStrIntfMap): Boolean;
-var
-  It: IJclUnicodeStrIterator;
-  Index: Integer;
-  AKey: UnicodeString;
-begin
-  {$IFDEF THREADSAFE}
-  if FThreadSafe then
-    SyncReaderWriter.BeginRead;
-  try
-  {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
-  {$IFDEF THREADSAFE}
-  finally
-    if FThreadSafe then
-      SyncReaderWriter.EndRead;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclUnicodeStrIntfSortedMap.FirstKey: UnicodeString;
 begin
   {$IFDEF THREADSAFE}
@@ -7123,6 +7271,38 @@ begin
   finally
     if FThreadSafe then
       SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrIntfSortedMap.Extract(const Key: UnicodeString): IInterface;
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      Result := FEntries[Index].Value;
+      FEntries[Index].Value := nil;
+      FreeKey(FEntries[Index].Key);
+      if Index < (FSize - 1) then
+        MoveArray(Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := nil;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -7260,6 +7440,42 @@ begin
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrIntfSortedMap.MapEquals(const AMap: IJclUnicodeStrIntfMap): Boolean;
+var
+  It: IJclUnicodeStrIterator;
+  Index: Integer;
+  AKey: UnicodeString;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    It := AMap.KeySet.First;
+    Index := 0;
+    while It.HasNext do
+    begin
+      if Index >= FSize then
+        Exit;
+      AKey := It.Next;
+      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
+        Exit;
+      Inc(Index);
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -7410,8 +7626,6 @@ begin
 end;
 
 function TJclUnicodeStrIntfSortedMap.Remove(const Key: UnicodeString): IInterface;
-var
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -7420,18 +7634,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := nil;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -7726,42 +7930,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfUnicodeStrSortedMap.MapEquals(const AMap: IJclIntfUnicodeStrMap): Boolean;
-var
-  It: IJclIntfIterator;
-  Index: Integer;
-  AKey: IInterface;
-begin
-  {$IFDEF THREADSAFE}
-  if FThreadSafe then
-    SyncReaderWriter.BeginRead;
-  try
-  {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
-  {$IFDEF THREADSAFE}
-  finally
-    if FThreadSafe then
-      SyncReaderWriter.EndRead;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclIntfUnicodeStrSortedMap.FirstKey: IInterface;
 begin
   {$IFDEF THREADSAFE}
@@ -7779,6 +7947,38 @@ begin
   finally
     if FThreadSafe then
       SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfUnicodeStrSortedMap.Extract(const Key: IInterface): UnicodeString;
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      Result := FEntries[Index].Value;
+      FEntries[Index].Value := '';
+      FreeKey(FEntries[Index].Key);
+      if Index < (FSize - 1) then
+        MoveArray(Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := '';
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -7916,6 +8116,42 @@ begin
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfUnicodeStrSortedMap.MapEquals(const AMap: IJclIntfUnicodeStrMap): Boolean;
+var
+  It: IJclIntfIterator;
+  Index: Integer;
+  AKey: IInterface;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    It := AMap.KeySet.First;
+    Index := 0;
+    while It.HasNext do
+    begin
+      if Index >= FSize then
+        Exit;
+      AKey := It.Next;
+      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
+        Exit;
+      Inc(Index);
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -8066,8 +8302,6 @@ begin
 end;
 
 function TJclIntfUnicodeStrSortedMap.Remove(const Key: IInterface): UnicodeString;
-var
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -8076,18 +8310,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := '';
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -8382,42 +8606,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclUnicodeStrUnicodeStrSortedMap.MapEquals(const AMap: IJclUnicodeStrUnicodeStrMap): Boolean;
-var
-  It: IJclUnicodeStrIterator;
-  Index: Integer;
-  AKey: UnicodeString;
-begin
-  {$IFDEF THREADSAFE}
-  if FThreadSafe then
-    SyncReaderWriter.BeginRead;
-  try
-  {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
-  {$IFDEF THREADSAFE}
-  finally
-    if FThreadSafe then
-      SyncReaderWriter.EndRead;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclUnicodeStrUnicodeStrSortedMap.FirstKey: UnicodeString;
 begin
   {$IFDEF THREADSAFE}
@@ -8435,6 +8623,38 @@ begin
   finally
     if FThreadSafe then
       SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrUnicodeStrSortedMap.Extract(const Key: UnicodeString): UnicodeString;
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      Result := FEntries[Index].Value;
+      FEntries[Index].Value := '';
+      FreeKey(FEntries[Index].Key);
+      if Index < (FSize - 1) then
+        MoveArray(Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := '';
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -8572,6 +8792,42 @@ begin
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrUnicodeStrSortedMap.MapEquals(const AMap: IJclUnicodeStrUnicodeStrMap): Boolean;
+var
+  It: IJclUnicodeStrIterator;
+  Index: Integer;
+  AKey: UnicodeString;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    It := AMap.KeySet.First;
+    Index := 0;
+    while It.HasNext do
+    begin
+      if Index >= FSize then
+        Exit;
+      AKey := It.Next;
+      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
+        Exit;
+      Inc(Index);
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -8722,8 +8978,6 @@ begin
 end;
 
 function TJclUnicodeStrUnicodeStrSortedMap.Remove(const Key: UnicodeString): UnicodeString;
-var
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -8732,18 +8986,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := '';
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -9033,42 +9277,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclSingleIntfSortedMap.MapEquals(const AMap: IJclSingleIntfMap): Boolean;
-var
-  It: IJclSingleIterator;
-  Index: Integer;
-  AKey: Single;
-begin
-  {$IFDEF THREADSAFE}
-  if FThreadSafe then
-    SyncReaderWriter.BeginRead;
-  try
-  {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
-  {$IFDEF THREADSAFE}
-  finally
-    if FThreadSafe then
-      SyncReaderWriter.EndRead;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclSingleIntfSortedMap.FirstKey: Single;
 begin
   {$IFDEF THREADSAFE}
@@ -9086,6 +9294,38 @@ begin
   finally
     if FThreadSafe then
       SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleIntfSortedMap.Extract(const Key: Single): IInterface;
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      Result := FEntries[Index].Value;
+      FEntries[Index].Value := nil;
+      FreeKey(FEntries[Index].Key);
+      if Index < (FSize - 1) then
+        MoveArray(Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := nil;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -9223,6 +9463,42 @@ begin
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleIntfSortedMap.MapEquals(const AMap: IJclSingleIntfMap): Boolean;
+var
+  It: IJclSingleIterator;
+  Index: Integer;
+  AKey: Single;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    It := AMap.KeySet.First;
+    Index := 0;
+    while It.HasNext do
+    begin
+      if Index >= FSize then
+        Exit;
+      AKey := It.Next;
+      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
+        Exit;
+      Inc(Index);
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -9373,8 +9649,6 @@ begin
 end;
 
 function TJclSingleIntfSortedMap.Remove(const Key: Single): IInterface;
-var
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -9383,18 +9657,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := nil;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -9689,42 +9953,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfSingleSortedMap.MapEquals(const AMap: IJclIntfSingleMap): Boolean;
-var
-  It: IJclIntfIterator;
-  Index: Integer;
-  AKey: IInterface;
-begin
-  {$IFDEF THREADSAFE}
-  if FThreadSafe then
-    SyncReaderWriter.BeginRead;
-  try
-  {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
-  {$IFDEF THREADSAFE}
-  finally
-    if FThreadSafe then
-      SyncReaderWriter.EndRead;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclIntfSingleSortedMap.FirstKey: IInterface;
 begin
   {$IFDEF THREADSAFE}
@@ -9742,6 +9970,38 @@ begin
   finally
     if FThreadSafe then
       SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfSingleSortedMap.Extract(const Key: IInterface): Single;
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      Result := FEntries[Index].Value;
+      FEntries[Index].Value := 0.0;
+      FreeKey(FEntries[Index].Key);
+      if Index < (FSize - 1) then
+        MoveArray(Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := 0.0;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -9879,6 +10139,42 @@ begin
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfSingleSortedMap.MapEquals(const AMap: IJclIntfSingleMap): Boolean;
+var
+  It: IJclIntfIterator;
+  Index: Integer;
+  AKey: IInterface;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    It := AMap.KeySet.First;
+    Index := 0;
+    while It.HasNext do
+    begin
+      if Index >= FSize then
+        Exit;
+      AKey := It.Next;
+      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
+        Exit;
+      Inc(Index);
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -10029,8 +10325,6 @@ begin
 end;
 
 function TJclIntfSingleSortedMap.Remove(const Key: IInterface): Single;
-var
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -10039,18 +10333,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := 0.0;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -10345,42 +10629,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclSingleSingleSortedMap.MapEquals(const AMap: IJclSingleSingleMap): Boolean;
-var
-  It: IJclSingleIterator;
-  Index: Integer;
-  AKey: Single;
-begin
-  {$IFDEF THREADSAFE}
-  if FThreadSafe then
-    SyncReaderWriter.BeginRead;
-  try
-  {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
-  {$IFDEF THREADSAFE}
-  finally
-    if FThreadSafe then
-      SyncReaderWriter.EndRead;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclSingleSingleSortedMap.FirstKey: Single;
 begin
   {$IFDEF THREADSAFE}
@@ -10398,6 +10646,38 @@ begin
   finally
     if FThreadSafe then
       SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleSingleSortedMap.Extract(const Key: Single): Single;
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      Result := FEntries[Index].Value;
+      FEntries[Index].Value := 0.0;
+      FreeKey(FEntries[Index].Key);
+      if Index < (FSize - 1) then
+        MoveArray(Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := 0.0;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -10535,6 +10815,42 @@ begin
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleSingleSortedMap.MapEquals(const AMap: IJclSingleSingleMap): Boolean;
+var
+  It: IJclSingleIterator;
+  Index: Integer;
+  AKey: Single;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    It := AMap.KeySet.First;
+    Index := 0;
+    while It.HasNext do
+    begin
+      if Index >= FSize then
+        Exit;
+      AKey := It.Next;
+      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
+        Exit;
+      Inc(Index);
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -10685,8 +11001,6 @@ begin
 end;
 
 function TJclSingleSingleSortedMap.Remove(const Key: Single): Single;
-var
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -10695,18 +11009,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := 0.0;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -10995,42 +11299,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclDoubleIntfSortedMap.MapEquals(const AMap: IJclDoubleIntfMap): Boolean;
-var
-  It: IJclDoubleIterator;
-  Index: Integer;
-  AKey: Double;
-begin
-  {$IFDEF THREADSAFE}
-  if FThreadSafe then
-    SyncReaderWriter.BeginRead;
-  try
-  {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
-  {$IFDEF THREADSAFE}
-  finally
-    if FThreadSafe then
-      SyncReaderWriter.EndRead;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclDoubleIntfSortedMap.FirstKey: Double;
 begin
   {$IFDEF THREADSAFE}
@@ -11048,6 +11316,38 @@ begin
   finally
     if FThreadSafe then
       SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleIntfSortedMap.Extract(const Key: Double): IInterface;
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      Result := FEntries[Index].Value;
+      FEntries[Index].Value := nil;
+      FreeKey(FEntries[Index].Key);
+      if Index < (FSize - 1) then
+        MoveArray(Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := nil;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -11185,6 +11485,42 @@ begin
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleIntfSortedMap.MapEquals(const AMap: IJclDoubleIntfMap): Boolean;
+var
+  It: IJclDoubleIterator;
+  Index: Integer;
+  AKey: Double;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    It := AMap.KeySet.First;
+    Index := 0;
+    while It.HasNext do
+    begin
+      if Index >= FSize then
+        Exit;
+      AKey := It.Next;
+      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
+        Exit;
+      Inc(Index);
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -11335,8 +11671,6 @@ begin
 end;
 
 function TJclDoubleIntfSortedMap.Remove(const Key: Double): IInterface;
-var
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -11345,18 +11679,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := nil;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -11651,42 +11975,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfDoubleSortedMap.MapEquals(const AMap: IJclIntfDoubleMap): Boolean;
-var
-  It: IJclIntfIterator;
-  Index: Integer;
-  AKey: IInterface;
-begin
-  {$IFDEF THREADSAFE}
-  if FThreadSafe then
-    SyncReaderWriter.BeginRead;
-  try
-  {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
-  {$IFDEF THREADSAFE}
-  finally
-    if FThreadSafe then
-      SyncReaderWriter.EndRead;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclIntfDoubleSortedMap.FirstKey: IInterface;
 begin
   {$IFDEF THREADSAFE}
@@ -11704,6 +11992,38 @@ begin
   finally
     if FThreadSafe then
       SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfDoubleSortedMap.Extract(const Key: IInterface): Double;
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      Result := FEntries[Index].Value;
+      FEntries[Index].Value := 0.0;
+      FreeKey(FEntries[Index].Key);
+      if Index < (FSize - 1) then
+        MoveArray(Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := 0.0;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -11841,6 +12161,42 @@ begin
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfDoubleSortedMap.MapEquals(const AMap: IJclIntfDoubleMap): Boolean;
+var
+  It: IJclIntfIterator;
+  Index: Integer;
+  AKey: IInterface;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    It := AMap.KeySet.First;
+    Index := 0;
+    while It.HasNext do
+    begin
+      if Index >= FSize then
+        Exit;
+      AKey := It.Next;
+      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
+        Exit;
+      Inc(Index);
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -11991,8 +12347,6 @@ begin
 end;
 
 function TJclIntfDoubleSortedMap.Remove(const Key: IInterface): Double;
-var
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -12001,18 +12355,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := 0.0;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -12307,42 +12651,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclDoubleDoubleSortedMap.MapEquals(const AMap: IJclDoubleDoubleMap): Boolean;
-var
-  It: IJclDoubleIterator;
-  Index: Integer;
-  AKey: Double;
-begin
-  {$IFDEF THREADSAFE}
-  if FThreadSafe then
-    SyncReaderWriter.BeginRead;
-  try
-  {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
-  {$IFDEF THREADSAFE}
-  finally
-    if FThreadSafe then
-      SyncReaderWriter.EndRead;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclDoubleDoubleSortedMap.FirstKey: Double;
 begin
   {$IFDEF THREADSAFE}
@@ -12360,6 +12668,38 @@ begin
   finally
     if FThreadSafe then
       SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleDoubleSortedMap.Extract(const Key: Double): Double;
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      Result := FEntries[Index].Value;
+      FEntries[Index].Value := 0.0;
+      FreeKey(FEntries[Index].Key);
+      if Index < (FSize - 1) then
+        MoveArray(Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := 0.0;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -12497,6 +12837,42 @@ begin
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleDoubleSortedMap.MapEquals(const AMap: IJclDoubleDoubleMap): Boolean;
+var
+  It: IJclDoubleIterator;
+  Index: Integer;
+  AKey: Double;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    It := AMap.KeySet.First;
+    Index := 0;
+    while It.HasNext do
+    begin
+      if Index >= FSize then
+        Exit;
+      AKey := It.Next;
+      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
+        Exit;
+      Inc(Index);
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -12647,8 +13023,6 @@ begin
 end;
 
 function TJclDoubleDoubleSortedMap.Remove(const Key: Double): Double;
-var
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -12657,18 +13031,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := 0.0;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -12957,42 +13321,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclExtendedIntfSortedMap.MapEquals(const AMap: IJclExtendedIntfMap): Boolean;
-var
-  It: IJclExtendedIterator;
-  Index: Integer;
-  AKey: Extended;
-begin
-  {$IFDEF THREADSAFE}
-  if FThreadSafe then
-    SyncReaderWriter.BeginRead;
-  try
-  {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
-  {$IFDEF THREADSAFE}
-  finally
-    if FThreadSafe then
-      SyncReaderWriter.EndRead;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclExtendedIntfSortedMap.FirstKey: Extended;
 begin
   {$IFDEF THREADSAFE}
@@ -13010,6 +13338,38 @@ begin
   finally
     if FThreadSafe then
       SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedIntfSortedMap.Extract(const Key: Extended): IInterface;
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      Result := FEntries[Index].Value;
+      FEntries[Index].Value := nil;
+      FreeKey(FEntries[Index].Key);
+      if Index < (FSize - 1) then
+        MoveArray(Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := nil;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -13147,6 +13507,42 @@ begin
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedIntfSortedMap.MapEquals(const AMap: IJclExtendedIntfMap): Boolean;
+var
+  It: IJclExtendedIterator;
+  Index: Integer;
+  AKey: Extended;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    It := AMap.KeySet.First;
+    Index := 0;
+    while It.HasNext do
+    begin
+      if Index >= FSize then
+        Exit;
+      AKey := It.Next;
+      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
+        Exit;
+      Inc(Index);
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -13297,8 +13693,6 @@ begin
 end;
 
 function TJclExtendedIntfSortedMap.Remove(const Key: Extended): IInterface;
-var
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -13307,18 +13701,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := nil;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -13613,42 +13997,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfExtendedSortedMap.MapEquals(const AMap: IJclIntfExtendedMap): Boolean;
-var
-  It: IJclIntfIterator;
-  Index: Integer;
-  AKey: IInterface;
-begin
-  {$IFDEF THREADSAFE}
-  if FThreadSafe then
-    SyncReaderWriter.BeginRead;
-  try
-  {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
-  {$IFDEF THREADSAFE}
-  finally
-    if FThreadSafe then
-      SyncReaderWriter.EndRead;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclIntfExtendedSortedMap.FirstKey: IInterface;
 begin
   {$IFDEF THREADSAFE}
@@ -13666,6 +14014,38 @@ begin
   finally
     if FThreadSafe then
       SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfExtendedSortedMap.Extract(const Key: IInterface): Extended;
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      Result := FEntries[Index].Value;
+      FEntries[Index].Value := 0.0;
+      FreeKey(FEntries[Index].Key);
+      if Index < (FSize - 1) then
+        MoveArray(Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := 0.0;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -13803,6 +14183,42 @@ begin
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfExtendedSortedMap.MapEquals(const AMap: IJclIntfExtendedMap): Boolean;
+var
+  It: IJclIntfIterator;
+  Index: Integer;
+  AKey: IInterface;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    It := AMap.KeySet.First;
+    Index := 0;
+    while It.HasNext do
+    begin
+      if Index >= FSize then
+        Exit;
+      AKey := It.Next;
+      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
+        Exit;
+      Inc(Index);
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -13953,8 +14369,6 @@ begin
 end;
 
 function TJclIntfExtendedSortedMap.Remove(const Key: IInterface): Extended;
-var
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -13963,18 +14377,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := 0.0;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -14269,42 +14673,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclExtendedExtendedSortedMap.MapEquals(const AMap: IJclExtendedExtendedMap): Boolean;
-var
-  It: IJclExtendedIterator;
-  Index: Integer;
-  AKey: Extended;
-begin
-  {$IFDEF THREADSAFE}
-  if FThreadSafe then
-    SyncReaderWriter.BeginRead;
-  try
-  {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
-  {$IFDEF THREADSAFE}
-  finally
-    if FThreadSafe then
-      SyncReaderWriter.EndRead;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclExtendedExtendedSortedMap.FirstKey: Extended;
 begin
   {$IFDEF THREADSAFE}
@@ -14322,6 +14690,38 @@ begin
   finally
     if FThreadSafe then
       SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedExtendedSortedMap.Extract(const Key: Extended): Extended;
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      Result := FEntries[Index].Value;
+      FEntries[Index].Value := 0.0;
+      FreeKey(FEntries[Index].Key);
+      if Index < (FSize - 1) then
+        MoveArray(Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := 0.0;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -14459,6 +14859,42 @@ begin
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedExtendedSortedMap.MapEquals(const AMap: IJclExtendedExtendedMap): Boolean;
+var
+  It: IJclExtendedIterator;
+  Index: Integer;
+  AKey: Extended;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    It := AMap.KeySet.First;
+    Index := 0;
+    while It.HasNext do
+    begin
+      if Index >= FSize then
+        Exit;
+      AKey := It.Next;
+      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
+        Exit;
+      Inc(Index);
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -14609,8 +15045,6 @@ begin
 end;
 
 function TJclExtendedExtendedSortedMap.Remove(const Key: Extended): Extended;
-var
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -14619,18 +15053,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := 0.0;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -14919,42 +15343,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntegerIntfSortedMap.MapEquals(const AMap: IJclIntegerIntfMap): Boolean;
-var
-  It: IJclIntegerIterator;
-  Index: Integer;
-  AKey: Integer;
-begin
-  {$IFDEF THREADSAFE}
-  if FThreadSafe then
-    SyncReaderWriter.BeginRead;
-  try
-  {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
-  {$IFDEF THREADSAFE}
-  finally
-    if FThreadSafe then
-      SyncReaderWriter.EndRead;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclIntegerIntfSortedMap.FirstKey: Integer;
 begin
   {$IFDEF THREADSAFE}
@@ -14972,6 +15360,38 @@ begin
   finally
     if FThreadSafe then
       SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerIntfSortedMap.Extract(Key: Integer): IInterface;
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      Result := FEntries[Index].Value;
+      FEntries[Index].Value := nil;
+      FreeKey(FEntries[Index].Key);
+      if Index < (FSize - 1) then
+        MoveArray(Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := nil;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -15109,6 +15529,42 @@ begin
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerIntfSortedMap.MapEquals(const AMap: IJclIntegerIntfMap): Boolean;
+var
+  It: IJclIntegerIterator;
+  Index: Integer;
+  AKey: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    It := AMap.KeySet.First;
+    Index := 0;
+    while It.HasNext do
+    begin
+      if Index >= FSize then
+        Exit;
+      AKey := It.Next;
+      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
+        Exit;
+      Inc(Index);
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -15259,8 +15715,6 @@ begin
 end;
 
 function TJclIntegerIntfSortedMap.Remove(Key: Integer): IInterface;
-var
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -15269,18 +15723,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := nil;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -15575,42 +16019,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfIntegerSortedMap.MapEquals(const AMap: IJclIntfIntegerMap): Boolean;
-var
-  It: IJclIntfIterator;
-  Index: Integer;
-  AKey: IInterface;
-begin
-  {$IFDEF THREADSAFE}
-  if FThreadSafe then
-    SyncReaderWriter.BeginRead;
-  try
-  {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
-  {$IFDEF THREADSAFE}
-  finally
-    if FThreadSafe then
-      SyncReaderWriter.EndRead;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclIntfIntegerSortedMap.FirstKey: IInterface;
 begin
   {$IFDEF THREADSAFE}
@@ -15628,6 +16036,38 @@ begin
   finally
     if FThreadSafe then
       SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfIntegerSortedMap.Extract(const Key: IInterface): Integer;
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      Result := FEntries[Index].Value;
+      FEntries[Index].Value := 0;
+      FreeKey(FEntries[Index].Key);
+      if Index < (FSize - 1) then
+        MoveArray(Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := 0;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -15765,6 +16205,42 @@ begin
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfIntegerSortedMap.MapEquals(const AMap: IJclIntfIntegerMap): Boolean;
+var
+  It: IJclIntfIterator;
+  Index: Integer;
+  AKey: IInterface;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    It := AMap.KeySet.First;
+    Index := 0;
+    while It.HasNext do
+    begin
+      if Index >= FSize then
+        Exit;
+      AKey := It.Next;
+      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
+        Exit;
+      Inc(Index);
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -15915,8 +16391,6 @@ begin
 end;
 
 function TJclIntfIntegerSortedMap.Remove(const Key: IInterface): Integer;
-var
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -15925,18 +16399,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := 0;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -16231,42 +16695,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntegerIntegerSortedMap.MapEquals(const AMap: IJclIntegerIntegerMap): Boolean;
-var
-  It: IJclIntegerIterator;
-  Index: Integer;
-  AKey: Integer;
-begin
-  {$IFDEF THREADSAFE}
-  if FThreadSafe then
-    SyncReaderWriter.BeginRead;
-  try
-  {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
-  {$IFDEF THREADSAFE}
-  finally
-    if FThreadSafe then
-      SyncReaderWriter.EndRead;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclIntegerIntegerSortedMap.FirstKey: Integer;
 begin
   {$IFDEF THREADSAFE}
@@ -16284,6 +16712,38 @@ begin
   finally
     if FThreadSafe then
       SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerIntegerSortedMap.Extract(Key: Integer): Integer;
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      Result := FEntries[Index].Value;
+      FEntries[Index].Value := 0;
+      FreeKey(FEntries[Index].Key);
+      if Index < (FSize - 1) then
+        MoveArray(Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := 0;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -16421,6 +16881,42 @@ begin
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerIntegerSortedMap.MapEquals(const AMap: IJclIntegerIntegerMap): Boolean;
+var
+  It: IJclIntegerIterator;
+  Index: Integer;
+  AKey: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    It := AMap.KeySet.First;
+    Index := 0;
+    while It.HasNext do
+    begin
+      if Index >= FSize then
+        Exit;
+      AKey := It.Next;
+      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
+        Exit;
+      Inc(Index);
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -16571,8 +17067,6 @@ begin
 end;
 
 function TJclIntegerIntegerSortedMap.Remove(Key: Integer): Integer;
-var
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -16581,18 +17075,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := 0;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -16881,42 +17365,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclCardinalIntfSortedMap.MapEquals(const AMap: IJclCardinalIntfMap): Boolean;
-var
-  It: IJclCardinalIterator;
-  Index: Integer;
-  AKey: Cardinal;
-begin
-  {$IFDEF THREADSAFE}
-  if FThreadSafe then
-    SyncReaderWriter.BeginRead;
-  try
-  {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
-  {$IFDEF THREADSAFE}
-  finally
-    if FThreadSafe then
-      SyncReaderWriter.EndRead;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclCardinalIntfSortedMap.FirstKey: Cardinal;
 begin
   {$IFDEF THREADSAFE}
@@ -16934,6 +17382,38 @@ begin
   finally
     if FThreadSafe then
       SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalIntfSortedMap.Extract(Key: Cardinal): IInterface;
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      Result := FEntries[Index].Value;
+      FEntries[Index].Value := nil;
+      FreeKey(FEntries[Index].Key);
+      if Index < (FSize - 1) then
+        MoveArray(Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := nil;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -17071,6 +17551,42 @@ begin
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalIntfSortedMap.MapEquals(const AMap: IJclCardinalIntfMap): Boolean;
+var
+  It: IJclCardinalIterator;
+  Index: Integer;
+  AKey: Cardinal;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    It := AMap.KeySet.First;
+    Index := 0;
+    while It.HasNext do
+    begin
+      if Index >= FSize then
+        Exit;
+      AKey := It.Next;
+      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
+        Exit;
+      Inc(Index);
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -17221,8 +17737,6 @@ begin
 end;
 
 function TJclCardinalIntfSortedMap.Remove(Key: Cardinal): IInterface;
-var
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -17231,18 +17745,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := nil;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -17537,42 +18041,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfCardinalSortedMap.MapEquals(const AMap: IJclIntfCardinalMap): Boolean;
-var
-  It: IJclIntfIterator;
-  Index: Integer;
-  AKey: IInterface;
-begin
-  {$IFDEF THREADSAFE}
-  if FThreadSafe then
-    SyncReaderWriter.BeginRead;
-  try
-  {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
-  {$IFDEF THREADSAFE}
-  finally
-    if FThreadSafe then
-      SyncReaderWriter.EndRead;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclIntfCardinalSortedMap.FirstKey: IInterface;
 begin
   {$IFDEF THREADSAFE}
@@ -17590,6 +18058,38 @@ begin
   finally
     if FThreadSafe then
       SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfCardinalSortedMap.Extract(const Key: IInterface): Cardinal;
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      Result := FEntries[Index].Value;
+      FEntries[Index].Value := 0;
+      FreeKey(FEntries[Index].Key);
+      if Index < (FSize - 1) then
+        MoveArray(Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := 0;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -17727,6 +18227,42 @@ begin
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfCardinalSortedMap.MapEquals(const AMap: IJclIntfCardinalMap): Boolean;
+var
+  It: IJclIntfIterator;
+  Index: Integer;
+  AKey: IInterface;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    It := AMap.KeySet.First;
+    Index := 0;
+    while It.HasNext do
+    begin
+      if Index >= FSize then
+        Exit;
+      AKey := It.Next;
+      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
+        Exit;
+      Inc(Index);
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -17877,8 +18413,6 @@ begin
 end;
 
 function TJclIntfCardinalSortedMap.Remove(const Key: IInterface): Cardinal;
-var
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -17887,18 +18421,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := 0;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -18193,42 +18717,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclCardinalCardinalSortedMap.MapEquals(const AMap: IJclCardinalCardinalMap): Boolean;
-var
-  It: IJclCardinalIterator;
-  Index: Integer;
-  AKey: Cardinal;
-begin
-  {$IFDEF THREADSAFE}
-  if FThreadSafe then
-    SyncReaderWriter.BeginRead;
-  try
-  {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
-  {$IFDEF THREADSAFE}
-  finally
-    if FThreadSafe then
-      SyncReaderWriter.EndRead;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclCardinalCardinalSortedMap.FirstKey: Cardinal;
 begin
   {$IFDEF THREADSAFE}
@@ -18246,6 +18734,38 @@ begin
   finally
     if FThreadSafe then
       SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalCardinalSortedMap.Extract(Key: Cardinal): Cardinal;
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      Result := FEntries[Index].Value;
+      FEntries[Index].Value := 0;
+      FreeKey(FEntries[Index].Key);
+      if Index < (FSize - 1) then
+        MoveArray(Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := 0;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -18383,6 +18903,42 @@ begin
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalCardinalSortedMap.MapEquals(const AMap: IJclCardinalCardinalMap): Boolean;
+var
+  It: IJclCardinalIterator;
+  Index: Integer;
+  AKey: Cardinal;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    It := AMap.KeySet.First;
+    Index := 0;
+    while It.HasNext do
+    begin
+      if Index >= FSize then
+        Exit;
+      AKey := It.Next;
+      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
+        Exit;
+      Inc(Index);
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -18533,8 +19089,6 @@ begin
 end;
 
 function TJclCardinalCardinalSortedMap.Remove(Key: Cardinal): Cardinal;
-var
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -18543,18 +19097,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := 0;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -18843,42 +19387,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclInt64IntfSortedMap.MapEquals(const AMap: IJclInt64IntfMap): Boolean;
-var
-  It: IJclInt64Iterator;
-  Index: Integer;
-  AKey: Int64;
-begin
-  {$IFDEF THREADSAFE}
-  if FThreadSafe then
-    SyncReaderWriter.BeginRead;
-  try
-  {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
-  {$IFDEF THREADSAFE}
-  finally
-    if FThreadSafe then
-      SyncReaderWriter.EndRead;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclInt64IntfSortedMap.FirstKey: Int64;
 begin
   {$IFDEF THREADSAFE}
@@ -18896,6 +19404,38 @@ begin
   finally
     if FThreadSafe then
       SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64IntfSortedMap.Extract(const Key: Int64): IInterface;
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      Result := FEntries[Index].Value;
+      FEntries[Index].Value := nil;
+      FreeKey(FEntries[Index].Key);
+      if Index < (FSize - 1) then
+        MoveArray(Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := nil;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -19033,6 +19573,42 @@ begin
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64IntfSortedMap.MapEquals(const AMap: IJclInt64IntfMap): Boolean;
+var
+  It: IJclInt64Iterator;
+  Index: Integer;
+  AKey: Int64;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    It := AMap.KeySet.First;
+    Index := 0;
+    while It.HasNext do
+    begin
+      if Index >= FSize then
+        Exit;
+      AKey := It.Next;
+      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
+        Exit;
+      Inc(Index);
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -19183,8 +19759,6 @@ begin
 end;
 
 function TJclInt64IntfSortedMap.Remove(const Key: Int64): IInterface;
-var
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -19193,18 +19767,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := nil;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -19499,42 +20063,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfInt64SortedMap.MapEquals(const AMap: IJclIntfInt64Map): Boolean;
-var
-  It: IJclIntfIterator;
-  Index: Integer;
-  AKey: IInterface;
-begin
-  {$IFDEF THREADSAFE}
-  if FThreadSafe then
-    SyncReaderWriter.BeginRead;
-  try
-  {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
-  {$IFDEF THREADSAFE}
-  finally
-    if FThreadSafe then
-      SyncReaderWriter.EndRead;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclIntfInt64SortedMap.FirstKey: IInterface;
 begin
   {$IFDEF THREADSAFE}
@@ -19552,6 +20080,38 @@ begin
   finally
     if FThreadSafe then
       SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfInt64SortedMap.Extract(const Key: IInterface): Int64;
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      Result := FEntries[Index].Value;
+      FEntries[Index].Value := 0;
+      FreeKey(FEntries[Index].Key);
+      if Index < (FSize - 1) then
+        MoveArray(Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := 0;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -19689,6 +20249,42 @@ begin
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfInt64SortedMap.MapEquals(const AMap: IJclIntfInt64Map): Boolean;
+var
+  It: IJclIntfIterator;
+  Index: Integer;
+  AKey: IInterface;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    It := AMap.KeySet.First;
+    Index := 0;
+    while It.HasNext do
+    begin
+      if Index >= FSize then
+        Exit;
+      AKey := It.Next;
+      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
+        Exit;
+      Inc(Index);
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -19839,8 +20435,6 @@ begin
 end;
 
 function TJclIntfInt64SortedMap.Remove(const Key: IInterface): Int64;
-var
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -19849,18 +20443,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := 0;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -20155,42 +20739,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclInt64Int64SortedMap.MapEquals(const AMap: IJclInt64Int64Map): Boolean;
-var
-  It: IJclInt64Iterator;
-  Index: Integer;
-  AKey: Int64;
-begin
-  {$IFDEF THREADSAFE}
-  if FThreadSafe then
-    SyncReaderWriter.BeginRead;
-  try
-  {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
-  {$IFDEF THREADSAFE}
-  finally
-    if FThreadSafe then
-      SyncReaderWriter.EndRead;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclInt64Int64SortedMap.FirstKey: Int64;
 begin
   {$IFDEF THREADSAFE}
@@ -20208,6 +20756,38 @@ begin
   finally
     if FThreadSafe then
       SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64Int64SortedMap.Extract(const Key: Int64): Int64;
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      Result := FEntries[Index].Value;
+      FEntries[Index].Value := 0;
+      FreeKey(FEntries[Index].Key);
+      if Index < (FSize - 1) then
+        MoveArray(Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := 0;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -20345,6 +20925,42 @@ begin
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64Int64SortedMap.MapEquals(const AMap: IJclInt64Int64Map): Boolean;
+var
+  It: IJclInt64Iterator;
+  Index: Integer;
+  AKey: Int64;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    It := AMap.KeySet.First;
+    Index := 0;
+    while It.HasNext do
+    begin
+      if Index >= FSize then
+        Exit;
+      AKey := It.Next;
+      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
+        Exit;
+      Inc(Index);
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -20495,8 +21111,6 @@ begin
 end;
 
 function TJclInt64Int64SortedMap.Remove(const Key: Int64): Int64;
-var
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -20505,18 +21119,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := 0;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -20806,42 +21410,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclPtrIntfSortedMap.MapEquals(const AMap: IJclPtrIntfMap): Boolean;
-var
-  It: IJclPtrIterator;
-  Index: Integer;
-  AKey: Pointer;
-begin
-  {$IFDEF THREADSAFE}
-  if FThreadSafe then
-    SyncReaderWriter.BeginRead;
-  try
-  {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
-  {$IFDEF THREADSAFE}
-  finally
-    if FThreadSafe then
-      SyncReaderWriter.EndRead;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclPtrIntfSortedMap.FirstKey: Pointer;
 begin
   {$IFDEF THREADSAFE}
@@ -20859,6 +21427,38 @@ begin
   finally
     if FThreadSafe then
       SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrIntfSortedMap.Extract(Key: Pointer): IInterface;
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      Result := FEntries[Index].Value;
+      FEntries[Index].Value := nil;
+      FreeKey(FEntries[Index].Key);
+      if Index < (FSize - 1) then
+        MoveArray(Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := nil;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -20996,6 +21596,42 @@ begin
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrIntfSortedMap.MapEquals(const AMap: IJclPtrIntfMap): Boolean;
+var
+  It: IJclPtrIterator;
+  Index: Integer;
+  AKey: Pointer;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    It := AMap.KeySet.First;
+    Index := 0;
+    while It.HasNext do
+    begin
+      if Index >= FSize then
+        Exit;
+      AKey := It.Next;
+      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
+        Exit;
+      Inc(Index);
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -21146,8 +21782,6 @@ begin
 end;
 
 function TJclPtrIntfSortedMap.Remove(Key: Pointer): IInterface;
-var
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -21156,18 +21790,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := nil;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -21462,42 +22086,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfPtrSortedMap.MapEquals(const AMap: IJclIntfPtrMap): Boolean;
-var
-  It: IJclIntfIterator;
-  Index: Integer;
-  AKey: IInterface;
-begin
-  {$IFDEF THREADSAFE}
-  if FThreadSafe then
-    SyncReaderWriter.BeginRead;
-  try
-  {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
-  {$IFDEF THREADSAFE}
-  finally
-    if FThreadSafe then
-      SyncReaderWriter.EndRead;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclIntfPtrSortedMap.FirstKey: IInterface;
 begin
   {$IFDEF THREADSAFE}
@@ -21515,6 +22103,38 @@ begin
   finally
     if FThreadSafe then
       SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfPtrSortedMap.Extract(const Key: IInterface): Pointer;
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      Result := FEntries[Index].Value;
+      FEntries[Index].Value := nil;
+      FreeKey(FEntries[Index].Key);
+      if Index < (FSize - 1) then
+        MoveArray(Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := nil;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -21652,6 +22272,42 @@ begin
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfPtrSortedMap.MapEquals(const AMap: IJclIntfPtrMap): Boolean;
+var
+  It: IJclIntfIterator;
+  Index: Integer;
+  AKey: IInterface;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    It := AMap.KeySet.First;
+    Index := 0;
+    while It.HasNext do
+    begin
+      if Index >= FSize then
+        Exit;
+      AKey := It.Next;
+      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
+        Exit;
+      Inc(Index);
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -21802,8 +22458,6 @@ begin
 end;
 
 function TJclIntfPtrSortedMap.Remove(const Key: IInterface): Pointer;
-var
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -21812,18 +22466,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := nil;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -22118,42 +22762,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclPtrPtrSortedMap.MapEquals(const AMap: IJclPtrPtrMap): Boolean;
-var
-  It: IJclPtrIterator;
-  Index: Integer;
-  AKey: Pointer;
-begin
-  {$IFDEF THREADSAFE}
-  if FThreadSafe then
-    SyncReaderWriter.BeginRead;
-  try
-  {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
-  {$IFDEF THREADSAFE}
-  finally
-    if FThreadSafe then
-      SyncReaderWriter.EndRead;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclPtrPtrSortedMap.FirstKey: Pointer;
 begin
   {$IFDEF THREADSAFE}
@@ -22171,6 +22779,38 @@ begin
   finally
     if FThreadSafe then
       SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrPtrSortedMap.Extract(Key: Pointer): Pointer;
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      Result := FEntries[Index].Value;
+      FEntries[Index].Value := nil;
+      FreeKey(FEntries[Index].Key);
+      if Index < (FSize - 1) then
+        MoveArray(Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := nil;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -22308,6 +22948,42 @@ begin
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrPtrSortedMap.MapEquals(const AMap: IJclPtrPtrMap): Boolean;
+var
+  It: IJclPtrIterator;
+  Index: Integer;
+  AKey: Pointer;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    It := AMap.KeySet.First;
+    Index := 0;
+    while It.HasNext do
+    begin
+      if Index >= FSize then
+        Exit;
+      AKey := It.Next;
+      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
+        Exit;
+      Inc(Index);
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -22458,8 +23134,6 @@ begin
 end;
 
 function TJclPtrPtrSortedMap.Remove(Key: Pointer): Pointer;
-var
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -22468,18 +23142,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := nil;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -22770,42 +23434,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfSortedMap.MapEquals(const AMap: IJclIntfMap): Boolean;
-var
-  It: IJclIntfIterator;
-  Index: Integer;
-  AKey: IInterface;
-begin
-  {$IFDEF THREADSAFE}
-  if FThreadSafe then
-    SyncReaderWriter.BeginRead;
-  try
-  {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
-  {$IFDEF THREADSAFE}
-  finally
-    if FThreadSafe then
-      SyncReaderWriter.EndRead;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclIntfSortedMap.FirstKey: IInterface;
 begin
   {$IFDEF THREADSAFE}
@@ -22823,6 +23451,38 @@ begin
   finally
     if FThreadSafe then
       SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfSortedMap.Extract(const Key: IInterface): TObject;
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      Result := FEntries[Index].Value;
+      FEntries[Index].Value := nil;
+      FreeKey(FEntries[Index].Key);
+      if Index < (FSize - 1) then
+        MoveArray(Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := nil;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -22960,6 +23620,42 @@ begin
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfSortedMap.MapEquals(const AMap: IJclIntfMap): Boolean;
+var
+  It: IJclIntfIterator;
+  Index: Integer;
+  AKey: IInterface;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    It := AMap.KeySet.First;
+    Index := 0;
+    while It.HasNext do
+    begin
+      if Index >= FSize then
+        Exit;
+      AKey := It.Next;
+      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
+        Exit;
+      Inc(Index);
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -23110,8 +23806,6 @@ begin
 end;
 
 function TJclIntfSortedMap.Remove(const Key: IInterface): TObject;
-var
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -23120,18 +23814,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := nil;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -23446,42 +24130,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclAnsiStrSortedMap.MapEquals(const AMap: IJclAnsiStrMap): Boolean;
-var
-  It: IJclAnsiStrIterator;
-  Index: Integer;
-  AKey: AnsiString;
-begin
-  {$IFDEF THREADSAFE}
-  if FThreadSafe then
-    SyncReaderWriter.BeginRead;
-  try
-  {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
-  {$IFDEF THREADSAFE}
-  finally
-    if FThreadSafe then
-      SyncReaderWriter.EndRead;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclAnsiStrSortedMap.FirstKey: AnsiString;
 begin
   {$IFDEF THREADSAFE}
@@ -23499,6 +24147,38 @@ begin
   finally
     if FThreadSafe then
       SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclAnsiStrSortedMap.Extract(const Key: AnsiString): TObject;
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      Result := FEntries[Index].Value;
+      FEntries[Index].Value := nil;
+      FreeKey(FEntries[Index].Key);
+      if Index < (FSize - 1) then
+        MoveArray(Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := nil;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -23636,6 +24316,42 @@ begin
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclAnsiStrSortedMap.MapEquals(const AMap: IJclAnsiStrMap): Boolean;
+var
+  It: IJclAnsiStrIterator;
+  Index: Integer;
+  AKey: AnsiString;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    It := AMap.KeySet.First;
+    Index := 0;
+    while It.HasNext do
+    begin
+      if Index >= FSize then
+        Exit;
+      AKey := It.Next;
+      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
+        Exit;
+      Inc(Index);
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -23786,8 +24502,6 @@ begin
 end;
 
 function TJclAnsiStrSortedMap.Remove(const Key: AnsiString): TObject;
-var
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -23796,18 +24510,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := nil;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -24116,42 +24820,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclWideStrSortedMap.MapEquals(const AMap: IJclWideStrMap): Boolean;
-var
-  It: IJclWideStrIterator;
-  Index: Integer;
-  AKey: WideString;
-begin
-  {$IFDEF THREADSAFE}
-  if FThreadSafe then
-    SyncReaderWriter.BeginRead;
-  try
-  {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
-  {$IFDEF THREADSAFE}
-  finally
-    if FThreadSafe then
-      SyncReaderWriter.EndRead;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclWideStrSortedMap.FirstKey: WideString;
 begin
   {$IFDEF THREADSAFE}
@@ -24169,6 +24837,38 @@ begin
   finally
     if FThreadSafe then
       SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclWideStrSortedMap.Extract(const Key: WideString): TObject;
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      Result := FEntries[Index].Value;
+      FEntries[Index].Value := nil;
+      FreeKey(FEntries[Index].Key);
+      if Index < (FSize - 1) then
+        MoveArray(Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := nil;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -24306,6 +25006,42 @@ begin
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclWideStrSortedMap.MapEquals(const AMap: IJclWideStrMap): Boolean;
+var
+  It: IJclWideStrIterator;
+  Index: Integer;
+  AKey: WideString;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    It := AMap.KeySet.First;
+    Index := 0;
+    while It.HasNext do
+    begin
+      if Index >= FSize then
+        Exit;
+      AKey := It.Next;
+      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
+        Exit;
+      Inc(Index);
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -24456,8 +25192,6 @@ begin
 end;
 
 function TJclWideStrSortedMap.Remove(const Key: WideString): TObject;
-var
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -24466,18 +25200,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := nil;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -24787,42 +25511,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclUnicodeStrSortedMap.MapEquals(const AMap: IJclUnicodeStrMap): Boolean;
-var
-  It: IJclUnicodeStrIterator;
-  Index: Integer;
-  AKey: UnicodeString;
-begin
-  {$IFDEF THREADSAFE}
-  if FThreadSafe then
-    SyncReaderWriter.BeginRead;
-  try
-  {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
-  {$IFDEF THREADSAFE}
-  finally
-    if FThreadSafe then
-      SyncReaderWriter.EndRead;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclUnicodeStrSortedMap.FirstKey: UnicodeString;
 begin
   {$IFDEF THREADSAFE}
@@ -24840,6 +25528,38 @@ begin
   finally
     if FThreadSafe then
       SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrSortedMap.Extract(const Key: UnicodeString): TObject;
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      Result := FEntries[Index].Value;
+      FEntries[Index].Value := nil;
+      FreeKey(FEntries[Index].Key);
+      if Index < (FSize - 1) then
+        MoveArray(Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := nil;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -24977,6 +25697,42 @@ begin
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrSortedMap.MapEquals(const AMap: IJclUnicodeStrMap): Boolean;
+var
+  It: IJclUnicodeStrIterator;
+  Index: Integer;
+  AKey: UnicodeString;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    It := AMap.KeySet.First;
+    Index := 0;
+    while It.HasNext do
+    begin
+      if Index >= FSize then
+        Exit;
+      AKey := It.Next;
+      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
+        Exit;
+      Inc(Index);
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -25127,8 +25883,6 @@ begin
 end;
 
 function TJclUnicodeStrSortedMap.Remove(const Key: UnicodeString): TObject;
-var
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -25137,18 +25891,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := nil;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -25458,42 +26202,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclSingleSortedMap.MapEquals(const AMap: IJclSingleMap): Boolean;
-var
-  It: IJclSingleIterator;
-  Index: Integer;
-  AKey: Single;
-begin
-  {$IFDEF THREADSAFE}
-  if FThreadSafe then
-    SyncReaderWriter.BeginRead;
-  try
-  {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
-  {$IFDEF THREADSAFE}
-  finally
-    if FThreadSafe then
-      SyncReaderWriter.EndRead;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclSingleSortedMap.FirstKey: Single;
 begin
   {$IFDEF THREADSAFE}
@@ -25511,6 +26219,38 @@ begin
   finally
     if FThreadSafe then
       SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleSortedMap.Extract(const Key: Single): TObject;
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      Result := FEntries[Index].Value;
+      FEntries[Index].Value := nil;
+      FreeKey(FEntries[Index].Key);
+      if Index < (FSize - 1) then
+        MoveArray(Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := nil;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -25648,6 +26388,42 @@ begin
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleSortedMap.MapEquals(const AMap: IJclSingleMap): Boolean;
+var
+  It: IJclSingleIterator;
+  Index: Integer;
+  AKey: Single;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    It := AMap.KeySet.First;
+    Index := 0;
+    while It.HasNext do
+    begin
+      if Index >= FSize then
+        Exit;
+      AKey := It.Next;
+      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
+        Exit;
+      Inc(Index);
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -25798,8 +26574,6 @@ begin
 end;
 
 function TJclSingleSortedMap.Remove(const Key: Single): TObject;
-var
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -25808,18 +26582,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := nil;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -26128,42 +26892,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclDoubleSortedMap.MapEquals(const AMap: IJclDoubleMap): Boolean;
-var
-  It: IJclDoubleIterator;
-  Index: Integer;
-  AKey: Double;
-begin
-  {$IFDEF THREADSAFE}
-  if FThreadSafe then
-    SyncReaderWriter.BeginRead;
-  try
-  {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
-  {$IFDEF THREADSAFE}
-  finally
-    if FThreadSafe then
-      SyncReaderWriter.EndRead;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclDoubleSortedMap.FirstKey: Double;
 begin
   {$IFDEF THREADSAFE}
@@ -26181,6 +26909,38 @@ begin
   finally
     if FThreadSafe then
       SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleSortedMap.Extract(const Key: Double): TObject;
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      Result := FEntries[Index].Value;
+      FEntries[Index].Value := nil;
+      FreeKey(FEntries[Index].Key);
+      if Index < (FSize - 1) then
+        MoveArray(Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := nil;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -26318,6 +27078,42 @@ begin
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleSortedMap.MapEquals(const AMap: IJclDoubleMap): Boolean;
+var
+  It: IJclDoubleIterator;
+  Index: Integer;
+  AKey: Double;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    It := AMap.KeySet.First;
+    Index := 0;
+    while It.HasNext do
+    begin
+      if Index >= FSize then
+        Exit;
+      AKey := It.Next;
+      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
+        Exit;
+      Inc(Index);
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -26468,8 +27264,6 @@ begin
 end;
 
 function TJclDoubleSortedMap.Remove(const Key: Double): TObject;
-var
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -26478,18 +27272,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := nil;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -26798,42 +27582,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclExtendedSortedMap.MapEquals(const AMap: IJclExtendedMap): Boolean;
-var
-  It: IJclExtendedIterator;
-  Index: Integer;
-  AKey: Extended;
-begin
-  {$IFDEF THREADSAFE}
-  if FThreadSafe then
-    SyncReaderWriter.BeginRead;
-  try
-  {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
-  {$IFDEF THREADSAFE}
-  finally
-    if FThreadSafe then
-      SyncReaderWriter.EndRead;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclExtendedSortedMap.FirstKey: Extended;
 begin
   {$IFDEF THREADSAFE}
@@ -26851,6 +27599,38 @@ begin
   finally
     if FThreadSafe then
       SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedSortedMap.Extract(const Key: Extended): TObject;
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      Result := FEntries[Index].Value;
+      FEntries[Index].Value := nil;
+      FreeKey(FEntries[Index].Key);
+      if Index < (FSize - 1) then
+        MoveArray(Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := nil;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -26988,6 +27768,42 @@ begin
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedSortedMap.MapEquals(const AMap: IJclExtendedMap): Boolean;
+var
+  It: IJclExtendedIterator;
+  Index: Integer;
+  AKey: Extended;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    It := AMap.KeySet.First;
+    Index := 0;
+    while It.HasNext do
+    begin
+      if Index >= FSize then
+        Exit;
+      AKey := It.Next;
+      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
+        Exit;
+      Inc(Index);
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -27138,8 +27954,6 @@ begin
 end;
 
 function TJclExtendedSortedMap.Remove(const Key: Extended): TObject;
-var
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -27148,18 +27962,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := nil;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -27468,42 +28272,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntegerSortedMap.MapEquals(const AMap: IJclIntegerMap): Boolean;
-var
-  It: IJclIntegerIterator;
-  Index: Integer;
-  AKey: Integer;
-begin
-  {$IFDEF THREADSAFE}
-  if FThreadSafe then
-    SyncReaderWriter.BeginRead;
-  try
-  {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
-  {$IFDEF THREADSAFE}
-  finally
-    if FThreadSafe then
-      SyncReaderWriter.EndRead;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclIntegerSortedMap.FirstKey: Integer;
 begin
   {$IFDEF THREADSAFE}
@@ -27521,6 +28289,38 @@ begin
   finally
     if FThreadSafe then
       SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerSortedMap.Extract(Key: Integer): TObject;
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      Result := FEntries[Index].Value;
+      FEntries[Index].Value := nil;
+      FreeKey(FEntries[Index].Key);
+      if Index < (FSize - 1) then
+        MoveArray(Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := nil;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -27658,6 +28458,42 @@ begin
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerSortedMap.MapEquals(const AMap: IJclIntegerMap): Boolean;
+var
+  It: IJclIntegerIterator;
+  Index: Integer;
+  AKey: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    It := AMap.KeySet.First;
+    Index := 0;
+    while It.HasNext do
+    begin
+      if Index >= FSize then
+        Exit;
+      AKey := It.Next;
+      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
+        Exit;
+      Inc(Index);
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -27808,8 +28644,6 @@ begin
 end;
 
 function TJclIntegerSortedMap.Remove(Key: Integer): TObject;
-var
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -27818,18 +28652,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := nil;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -28138,42 +28962,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclCardinalSortedMap.MapEquals(const AMap: IJclCardinalMap): Boolean;
-var
-  It: IJclCardinalIterator;
-  Index: Integer;
-  AKey: Cardinal;
-begin
-  {$IFDEF THREADSAFE}
-  if FThreadSafe then
-    SyncReaderWriter.BeginRead;
-  try
-  {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
-  {$IFDEF THREADSAFE}
-  finally
-    if FThreadSafe then
-      SyncReaderWriter.EndRead;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclCardinalSortedMap.FirstKey: Cardinal;
 begin
   {$IFDEF THREADSAFE}
@@ -28191,6 +28979,38 @@ begin
   finally
     if FThreadSafe then
       SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalSortedMap.Extract(Key: Cardinal): TObject;
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      Result := FEntries[Index].Value;
+      FEntries[Index].Value := nil;
+      FreeKey(FEntries[Index].Key);
+      if Index < (FSize - 1) then
+        MoveArray(Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := nil;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -28328,6 +29148,42 @@ begin
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalSortedMap.MapEquals(const AMap: IJclCardinalMap): Boolean;
+var
+  It: IJclCardinalIterator;
+  Index: Integer;
+  AKey: Cardinal;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    It := AMap.KeySet.First;
+    Index := 0;
+    while It.HasNext do
+    begin
+      if Index >= FSize then
+        Exit;
+      AKey := It.Next;
+      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
+        Exit;
+      Inc(Index);
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -28478,8 +29334,6 @@ begin
 end;
 
 function TJclCardinalSortedMap.Remove(Key: Cardinal): TObject;
-var
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -28488,18 +29342,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := nil;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -28808,42 +29652,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclInt64SortedMap.MapEquals(const AMap: IJclInt64Map): Boolean;
-var
-  It: IJclInt64Iterator;
-  Index: Integer;
-  AKey: Int64;
-begin
-  {$IFDEF THREADSAFE}
-  if FThreadSafe then
-    SyncReaderWriter.BeginRead;
-  try
-  {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
-  {$IFDEF THREADSAFE}
-  finally
-    if FThreadSafe then
-      SyncReaderWriter.EndRead;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclInt64SortedMap.FirstKey: Int64;
 begin
   {$IFDEF THREADSAFE}
@@ -28861,6 +29669,38 @@ begin
   finally
     if FThreadSafe then
       SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64SortedMap.Extract(const Key: Int64): TObject;
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      Result := FEntries[Index].Value;
+      FEntries[Index].Value := nil;
+      FreeKey(FEntries[Index].Key);
+      if Index < (FSize - 1) then
+        MoveArray(Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := nil;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -28998,6 +29838,42 @@ begin
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64SortedMap.MapEquals(const AMap: IJclInt64Map): Boolean;
+var
+  It: IJclInt64Iterator;
+  Index: Integer;
+  AKey: Int64;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    It := AMap.KeySet.First;
+    Index := 0;
+    while It.HasNext do
+    begin
+      if Index >= FSize then
+        Exit;
+      AKey := It.Next;
+      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
+        Exit;
+      Inc(Index);
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -29148,8 +30024,6 @@ begin
 end;
 
 function TJclInt64SortedMap.Remove(const Key: Int64): TObject;
-var
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -29158,18 +30032,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := nil;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -29479,42 +30343,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclPtrSortedMap.MapEquals(const AMap: IJclPtrMap): Boolean;
-var
-  It: IJclPtrIterator;
-  Index: Integer;
-  AKey: Pointer;
-begin
-  {$IFDEF THREADSAFE}
-  if FThreadSafe then
-    SyncReaderWriter.BeginRead;
-  try
-  {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
-  {$IFDEF THREADSAFE}
-  finally
-    if FThreadSafe then
-      SyncReaderWriter.EndRead;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclPtrSortedMap.FirstKey: Pointer;
 begin
   {$IFDEF THREADSAFE}
@@ -29532,6 +30360,38 @@ begin
   finally
     if FThreadSafe then
       SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrSortedMap.Extract(Key: Pointer): TObject;
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      Result := FEntries[Index].Value;
+      FEntries[Index].Value := nil;
+      FreeKey(FEntries[Index].Key);
+      if Index < (FSize - 1) then
+        MoveArray(Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := nil;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -29669,6 +30529,42 @@ begin
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrSortedMap.MapEquals(const AMap: IJclPtrMap): Boolean;
+var
+  It: IJclPtrIterator;
+  Index: Integer;
+  AKey: Pointer;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    It := AMap.KeySet.First;
+    Index := 0;
+    while It.HasNext do
+    begin
+      if Index >= FSize then
+        Exit;
+      AKey := It.Next;
+      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
+        Exit;
+      Inc(Index);
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -29819,8 +30715,6 @@ begin
 end;
 
 function TJclPtrSortedMap.Remove(Key: Pointer): TObject;
-var
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -29829,18 +30723,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := nil;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -30151,42 +31035,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclSortedMap.MapEquals(const AMap: IJclMap): Boolean;
-var
-  It: IJclIterator;
-  Index: Integer;
-  AKey: TObject;
-begin
-  {$IFDEF THREADSAFE}
-  if FThreadSafe then
-    SyncReaderWriter.BeginRead;
-  try
-  {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
-  {$IFDEF THREADSAFE}
-  finally
-    if FThreadSafe then
-      SyncReaderWriter.EndRead;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclSortedMap.FirstKey: TObject;
 begin
   {$IFDEF THREADSAFE}
@@ -30204,6 +31052,38 @@ begin
   finally
     if FThreadSafe then
       SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSortedMap.Extract(Key: TObject): TObject;
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      Result := FEntries[Index].Value;
+      FEntries[Index].Value := nil;
+      FreeKey(FEntries[Index].Key);
+      if Index < (FSize - 1) then
+        MoveArray(Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := nil;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -30341,6 +31221,42 @@ begin
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSortedMap.MapEquals(const AMap: IJclMap): Boolean;
+var
+  It: IJclIterator;
+  Index: Integer;
+  AKey: TObject;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    It := AMap.KeySet.First;
+    Index := 0;
+    while It.HasNext do
+    begin
+      if Index >= FSize then
+        Exit;
+      AKey := It.Next;
+      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
+        Exit;
+      Inc(Index);
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -30491,8 +31407,6 @@ begin
 end;
 
 function TJclSortedMap.Remove(Key: TObject): TObject;
-var
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -30501,18 +31415,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := nil;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -30843,42 +31747,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclSortedMap<TKey,TValue>.MapEquals(const AMap: IJclMap<TKey,TValue>): Boolean;
-var
-  It: IJclIterator<TKey>;
-  Index: Integer;
-  AKey: TKey;
-begin
-  {$IFDEF THREADSAFE}
-  if FThreadSafe then
-    SyncReaderWriter.BeginRead;
-  try
-  {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
-  {$IFDEF THREADSAFE}
-  finally
-    if FThreadSafe then
-      SyncReaderWriter.EndRead;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclSortedMap<TKey,TValue>.FirstKey: TKey;
 begin
   {$IFDEF THREADSAFE}
@@ -30896,6 +31764,38 @@ begin
   finally
     if FThreadSafe then
       SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSortedMap<TKey,TValue>.Extract(const Key: TKey): TValue;
+var
+  Index: Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Index := BinarySearch(Key);
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      Result := FEntries[Index].Value;
+      FEntries[Index].Value := Default(TValue);
+      FreeKey(FEntries[Index].Key);
+      if Index < (FSize - 1) then
+        MoveArray(Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := Default(TValue);
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -31033,6 +31933,42 @@ begin
     else
     if not FReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSortedMap<TKey,TValue>.MapEquals(const AMap: IJclMap<TKey,TValue>): Boolean;
+var
+  It: IJclIterator<TKey>;
+  Index: Integer;
+  AKey: TKey;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    It := AMap.KeySet.First;
+    Index := 0;
+    while It.HasNext do
+    begin
+      if Index >= FSize then
+        Exit;
+      AKey := It.Next;
+      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
+        Exit;
+      Inc(Index);
+    end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -31183,8 +32119,6 @@ begin
 end;
 
 function TJclSortedMap<TKey,TValue>.Remove(const Key: TKey): TValue;
-var
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -31193,18 +32127,8 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := Default(TValue);
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then

@@ -125,7 +125,7 @@
       <Directories Name="PackageDLLOutputDir"></Directories>
       <Directories Name="PackageDCPOutputDir">..\..\lib\d10</Directories>
       <Directories Name="Packages">rtl;Jcl</Directories>
-      <Directories Name="Conditionals"></Directories>
+      <Directories Name="Conditionals">BCB;RELEASE</Directories>
       <Directories Name="DebugSourceDirs"></Directories>
       <Directories Name="UsePackages">True</Directories>
     </Directories>

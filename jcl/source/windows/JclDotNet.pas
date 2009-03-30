@@ -125,7 +125,7 @@ type
     class function CorSystemDirectory: WideString;
     class function CorVersion: WideString;
     class function CorRequiredVersion: WideString;
-    class procedure GetClrVersions(VersionNames: TWideStrings); overload;
+    class procedure GetClrVersions(VersionNames: TJclWideStrings); overload;
     {$IFNDEF SUPPORTS_UNICODE}
     class procedure GetClrVersions(VersionNames: TStrings); overload;
     {$ENDIF ~SUPPORTS_UNICODE}

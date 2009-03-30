@@ -36,11 +36,12 @@ PROCNAME = procedure(const AList: LISTINTERFACENAME; L, R: Integer; AComparator:
   INTERFACENAME = interface(ANCESTORNAME)
     ['{GUID}']
     function Add(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
-    function IteratorEquals(const AIterator: INTERFACENAME): Boolean;
+    procedure Extract;
     function GETTERNAME: TYPENAME;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
+    function IteratorEquals(const AIterator: INTERFACENAME): Boolean;
     function Next: TYPENAME;
     function NextIndex: Integer;
     function Previous: TYPENAME;
@@ -58,8 +59,10 @@ PROCNAME = procedure(const AList: LISTINTERFACENAME; L, R: Integer; AComparator:
     ['{GUID}']
     function AddChild(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
     function ChildrenCount: Integer;
-    procedure ClearChildren;
     procedure DeleteChild(Index: Integer);
+    procedure DeleteChildren;
+    procedure ExtractChild(Index: Integer);
+    procedure ExtractChildren;
     function GetChild(Index: Integer): TYPENAME;
     function HasChild(Index: Integer): Boolean;
     function HasParent: Boolean;
@@ -86,6 +89,8 @@ PROCNAME = procedure(const AList: LISTINTERFACENAME; L, R: Integer; AComparator:
     function Contains(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
     function ContainsAll(const ACollection: INTERFACENAME): Boolean;
     function CollectionEquals(const ACollection: INTERFACENAME): Boolean;
+    function Extract(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
+    function ExtractAll(const ACollection: INTERFACENAME): Boolean;
     function First: ITRNAME;
     function IsEmpty: Boolean;
     function Last: ITRNAME;
@@ -100,12 +105,13 @@ PROCNAME = procedure(const AList: LISTINTERFACENAME; L, R: Integer; AComparator:
 (*$JPPDEFINEMACRO LIST(INTERFACENAME, ANCESTORNAME, GUID, CONSTKEYWORD, PARAMETERNAME, TYPENAME, GETTERNAME, SETTERNAME, PROPNAME)
   INTERFACENAME = interface(ANCESTORNAME)
     ['{GUID}']
-    function Insert(Index: Integer; CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
-    function InsertAll(Index: Integer; const ACollection: ANCESTORNAME): Boolean;
+    function Delete(Index: Integer): TYPENAME;
+    function ExtractIndex(Index: Integer): TYPENAME;
     function GETTERNAME(Index: Integer): TYPENAME;
     function IndexOf(CONSTKEYWORDPARAMETERNAME: TYPENAME): Integer;
+    function Insert(Index: Integer; CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
+    function InsertAll(Index: Integer; const ACollection: ANCESTORNAME): Boolean;
     function LastIndexOf(CONSTKEYWORDPARAMETERNAME: TYPENAME): Integer;
-    function Delete(Index: Integer): TYPENAME;
     procedure SETTERNAME(Index: Integer; CONSTKEYWORDPARAMETERNAME: TYPENAME);
     function SubList(First, Count: Integer): INTERFACENAME;
     property PROPNAME[Key: Integer]: TYPENAME read GETTERNAME write SETTERNAME; default;
@@ -139,11 +145,12 @@ PROCNAME = procedure(const AList: LISTINTERFACENAME; L, R: Integer; AComparator:
     procedure Clear;
     function ContainsKey(KEYCONSTKEYWORDKey: KEYTYPENAME): Boolean;
     function ContainsValue(VALUECONSTKEYWORDValue: VALUETYPENAME): Boolean;
-    function MapEquals(const AMap: INTERFACENAME): Boolean;
+    function Extract(KEYCONSTKEYWORDKey: KEYTYPENAME): VALUETYPENAME;
     function GetValue(KEYCONSTKEYWORDKey: KEYTYPENAME): VALUETYPENAME;
     function IsEmpty: Boolean;
     function KeyOfValue(VALUECONSTKEYWORDValue: VALUETYPENAME): KEYTYPENAME;
     function KeySet: KEYSETNAME;
+    function MapEquals(const AMap: INTERFACENAME): Boolean;
     procedure PutAll(const AMap: INTERFACENAME);
     procedure PutValue(KEYCONSTKEYWORDKey: KEYTYPENAME; VALUECONSTKEYWORDValue: VALUETYPENAME);
     function Remove(KEYCONSTKEYWORDKey: KEYTYPENAME): VALUETYPENAME;
@@ -158,11 +165,12 @@ PROCNAME = procedure(const AList: LISTINTERFACENAME; L, R: Integer; AComparator:
     procedure Clear;
     function ContainsKey(CONSTKEYWORDKey: TYPENAME): Boolean;
     function ContainsValue(CONSTKEYWORDValue: TYPENAME): Boolean;
-    function MapEquals(const AMap: INTERFACENAME): Boolean;
+    function Extract(CONSTKEYWORDKey: TYPENAME): TYPENAME;
     function GetValue(CONSTKEYWORDKey: TYPENAME): TYPENAME;
     function IsEmpty: Boolean;
     function KeyOfValue(CONSTKEYWORDValue: TYPENAME): TYPENAME;
     function KeySet: SETNAME;
+    function MapEquals(const AMap: INTERFACENAME): Boolean;
     procedure PutAll(const AMap: INTERFACENAME);
     procedure PutValue(CONSTKEYWORDKey, Value: TYPENAME);
     function Remove(CONSTKEYWORDKey: TYPENAME): TYPENAME;

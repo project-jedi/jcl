@@ -1,3 +1,4 @@
 [Directories]
 UnitOutputDir=../../lib/k3
 SearchPath=../../source/include:../../source/common:../../source/visclx
+Conditionals=BCB;RELEASE

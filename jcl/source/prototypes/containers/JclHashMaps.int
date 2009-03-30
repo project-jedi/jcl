@@ -29,11 +29,12 @@
     procedure Clear;
     function ContainsKey(KEYCONSTKEYWORDKey: KEYTYPENAME): Boolean;
     function ContainsValue(VALUECONSTKEYWORDValue: VALUETYPENAME): Boolean;
-    function MapEquals(const AMap: MAPINTERFACENAME): Boolean;
+    function Extract(KEYCONSTKEYWORDKey: KEYTYPENAME): VALUETYPENAME;
     function GetValue(KEYCONSTKEYWORDKey: KEYTYPENAME): VALUETYPENAME;
     function IsEmpty: Boolean;
     function KeyOfValue(VALUECONSTKEYWORDValue: VALUETYPENAME): KEYTYPENAME;
     function KeySet: KEYSETINTERFACENAME;
+    function MapEquals(const AMap: MAPINTERFACENAME): Boolean;
     procedure PutAll(const AMap: MAPINTERFACENAME);
     procedure PutValue(KEYCONSTKEYWORDKey: KEYTYPENAME; VALUECONSTKEYWORDValue: VALUETYPENAME);
     function Remove(KEYCONSTKEYWORDKey: KEYTYPENAME): VALUETYPENAME;

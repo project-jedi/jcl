@@ -19,9 +19,11 @@
     function Add(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;COLLECTIONFLAGS
     function AddAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;COLLECTIONFLAGS
     procedure Clear;COLLECTIONFLAGS
+    function CollectionEquals(const ACollection: COLLECTIONINTERFACENAME): Boolean;COLLECTIONFLAGS
     function Contains(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;COLLECTIONFLAGS
     function ContainsAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;COLLECTIONFLAGS
-    function CollectionEquals(const ACollection: COLLECTIONINTERFACENAME): Boolean;COLLECTIONFLAGS
+    function Extract(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;COLLECTIONFLAGS
+    function ExtractAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;COLLECTIONFLAGS
     function First: ITRINTERFACENAME;COLLECTIONFLAGS
     function IsEmpty: Boolean;COLLECTIONFLAGS
     function Last: ITRINTERFACENAME;COLLECTIONFLAGS
@@ -33,12 +35,13 @@
     function GetEnumerator: ITRINTERFACENAME;COLLECTIONFLAGS
     {$ENDIF SUPPORTS_FOR_IN}
     { LISTINTERFACENAME }
-    function Insert(Index: Integer; CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
-    function InsertAll(Index: Integer; const ACollection: COLLECTIONINTERFACENAME): Boolean;
+    function Delete(Index: Integer): TYPENAME;
+    function ExtractIndex(Index: Integer): TYPENAME;
     function GETTERNAME(Index: Integer): TYPENAME;
     function IndexOf(CONSTKEYWORDPARAMETERNAME: TYPENAME): Integer;
+    function Insert(Index: Integer; CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
+    function InsertAll(Index: Integer; const ACollection: COLLECTIONINTERFACENAME): Boolean;
     function LastIndexOf(CONSTKEYWORDPARAMETERNAME: TYPENAME): Integer;
-    function Delete(Index: Integer): TYPENAME; overload;
     procedure SETTERNAME(Index: Integer; CONSTKEYWORDPARAMETERNAME: TYPENAME);
     function SubList(First, Count: Integer): LISTINTERFACENAME;
   public
@@ -59,11 +62,12 @@
     function CreateEmptyIterator: TJclAbstractIterator; override;
     { ITRINTERFACENAME }
     function Add(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
-    function IteratorEquals(const AIterator: ITRINTERFACENAME): Boolean;
+    procedure Extract;
     function GETTERNAME: TYPENAME;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
+    function IteratorEquals(const AIterator: ITRINTERFACENAME): Boolean;
     function Next: TYPENAME;
     function NextIndex: Integer;
     function Previous: TYPENAME;

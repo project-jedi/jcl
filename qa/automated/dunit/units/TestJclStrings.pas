@@ -100,7 +100,6 @@ type
     procedure _StrTrimCharsRight;
     procedure _StrTrimQuotes;
     procedure _StrUpper_StrUpperInPlace_StrUpperBuff;
-    procedure _StrOemToAnsi_StrAnsiToOem;
   end;
 
   { TJclStringManagment }
@@ -171,6 +170,7 @@ type
     procedure _NilSet;
     procedure _OptimalFill;
     procedure _Optimize;
+    procedure _Referencing;
     procedure _TabFrom;
     procedure _TabStopAdding;
     procedure _TabStopDeleting;
@@ -411,8 +411,24 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+function ContainsValidator(const C: Char): Boolean;
+begin
+  Result := (C = 'g') or (C = 'r');
+end;
+
 procedure TJclStringTransformation._StrContainsChars;
 begin
+  CheckEquals(True,  StrContainsChars('AbcdefghiJkl',  ['g', 'r'], False), 'array, CheckAll set to False');
+  CheckEquals(False, StrContainsChars('AbcdefghiJkl',  ['g', 'r'], True),  'array, CheckAll set to True, only 1 occurring');
+  CheckEquals(True,  StrContainsChars('AbcdefghiJklr', ['g', 'r'], True),  'array, CheckAll set to True, both occurring');
+
+  CheckEquals(True,  StrContainsChars('AbcdefghiJkl',  ContainsValidator, False), 'validator, CheckAll set to False');
+  // CheckAll=True will not work with a validator, at least not with the same meaning as with the array-based tests.
+  // The tests are disabled for now.
+  {
+  CheckEquals(False, StrContainsChars('AbcdefghiJkl',  ContainsValidator, True),  'validator, CheckAll set to True, only 1 occurring');
+  CheckEquals(True,  StrContainsChars('AbcdefghiJklr', ContainsValidator, True),  'validator, CheckAll set to True, both occurring');
+  }
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1158,8 +1174,8 @@ var
   i,t: Integer;
   s, s3, sn: string;
 begin
-  CheckEquals(StrTrimCharLeft('',#0),'','StrTrimCharLeft');
-  CheckEquals(StrTrimCharLeft('AAAAAAAAAA','A'),'','StrTrimCharLeft');
+  CheckEquals('', StrTrimCharLeft('',           #0),  'StrTrimCharLeft1');
+  CheckEquals('', StrTrimCharLeft('AAAAAAAAAA', 'A'), 'StrTrimCharLeft2');
 
   GenerateAll(200, 2000, StringArray);
   GenerateAll(1,   2000, StringArray2);
@@ -1181,14 +1197,25 @@ begin
       dec(t);
     end;
 
-    CheckEquals(StrTrimCharLeft(S3,SN[1]), S,'StrTrimCharLeft');
+    CheckEquals(S, StrTrimCharLeft(S3,SN[1]), 'StrTrimCharLeft3.' + IntToStr(i));
   end;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
+function TrimValidator(const C: Char): Boolean;
+begin
+  Result := (C = 'A') or (C = 'B');
+end;
+
 procedure TJclStringTransformation._StrTrimCharsLeft;
 begin
+  CheckEquals('',    StrTrimCharsLeft('', []),                'empty str, empty array');
+  CheckEquals('ABC', StrTrimCharsLeft('ABC', []),             'non-empty str, empty array');
+  CheckEquals('BCA', StrTrimCharsLeft('ABCA', ['A']),         'ABCA str, A array');
+  CheckEquals('CA',  StrTrimCharsLeft('ABCA', ['B', 'A']),    'ABCA str, BA array');
+
+  CheckEquals('CA',  StrTrimCharsLeft('ABCA', TrimValidator), 'ABCA str, AB validator');
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1200,8 +1227,8 @@ var
 
 begin
   // -- StrTrimCharRight --
-  CheckEquals(StrTrimCharRight('',#0),'','StrTrimCharRight');
-  CheckEquals(StrTrimCharRight('AAAAAAAAAA','A'),'','StrTrimCharRight');
+  CheckEquals('', StrTrimCharRight('',           #0),  'StrTrimCharRight1');
+  CheckEquals('', StrTrimCharRight('AAAAAAAAAA', 'A'), 'StrTrimCharRight2');
 
   GenerateAll(200, 2000, StringArray);
   GenerateAll(1,   2000, StringArray2);
@@ -1223,7 +1250,7 @@ begin
       dec(t);
     end;
 
-    CheckEquals(StrTrimCharRight(S3,SN[1]), S,'StrTrimCharRight');
+    CheckEquals(S, StrTrimCharRight(S3, SN[1]), 'StrTrimCharRight3.' + IntToStr(i));
   end;
 end;
 
@@ -1231,6 +1258,12 @@ end;
 
 procedure TJclStringTransformation._StrTrimCharsRight;
 begin
+  CheckEquals('',    StrTrimCharsRight('', []),                   'empty str, empty array');
+  CheckEquals('ABC', StrTrimCharsRight('ABC', []),                'non-empty str, empty array');
+  CheckEquals('ABC', StrTrimCharsRight('ABCA', ['A']),            'ABCA str, A array');
+  CheckEquals('AB',  StrTrimCharsRight('ABCA', ['C', 'A']),       'ABCA str, CA array');
+
+  CheckEquals('ABC', StrTrimCharsRight('ABCAABA', TrimValidator), 'ABCAABA str, AB validator');
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1286,10 +1319,6 @@ begin
 end;
 
 //--------------------------------------------------------------------------------------------------
-
-procedure TJclStringTransformation._StrOemToAnsi_StrAnsiToOem;
-begin
-end;
 
 //==================================================================================================
 // String Managment
@@ -1610,8 +1639,9 @@ end;
 
 procedure TJclStringSearchandReplace._StrFind;
 begin
-  CheckEquals(0, StrFind('abc', 'Test'));
-  CheckEquals(1, StrFind('Test', 'Test'));
+  CheckEquals(0, StrFind('abc', 'Test'), 'StrFind_1');
+  CheckEquals(1, StrFind('Test', 'Test'), 'StrFind_2');
+  CheckEquals(1, StrFind('Test', 'test'), 'StrFind_3');
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1644,18 +1674,36 @@ end;
 
 procedure TJclStringSearchandReplace._StrIndex;
 begin
+  CheckEquals(-1, StrIndex('',  ['A', 'B']),           'Empty string in array of AB');
+  CheckEquals(-1, StrIndex('A', []),                   '''A'' string in empty array');
+  CheckEquals(0,  StrIndex('A', ['A', 'B']),           '''A'' string in array of AB, equal case');
+  CheckEquals(0,  StrIndex('a', ['A', 'B']),           '''A'' string in array of AB, differing case');
+  CheckEquals(1,  StrIndex('B', ['A', 'B']),           '''B'' string in array of AB, equal case');
+  CheckEquals(2,  StrIndex('C', ['A', 'B', 'C', 'C']), '''C'' string in array of ABCC, equal case');
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 procedure TJclStringSearchandReplace._StrILastPos;
 begin
+  CheckEquals(10, StrILastPos('A',     'aaaaaaaaaa'),         'StrILastPos_1');
+  CheckEquals(16, StrILastPos('abA',   'aabaaababababababa'), 'StrILastPos_2');
+  CheckEquals(8,  StrILastPos('abbA',  'abbaabbabba'),        'StrILastPos_3');
+  CheckEquals(0,  StrILastPos('_abba', 'abbaabbabba'),        'StrILastPos_4');
+  CheckEquals(5,  StrILastPos('_aBBa', 'abba_abbabba'),       'StrILastPos_5');
+  CheckEquals(15, StrILastPos('ABA',   'aabaaaABAbabababa'),  'StrILastPos_6');
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 procedure TJclStringSearchandReplace._StrIPos;
 begin
+  CheckEquals(1,  StrIPos('A',     'aaaaaaaaaa'),         'StrIPos_1');
+  CheckEquals(2,  StrIPos('abA',   'aabaaababababababa'), 'StrIPos_2');
+  CheckEquals(1,  StrIPos('abbA',  'abbaabbabba'),        'StrIPos_3');
+  CheckEquals(0,  StrIPos('_abba', 'abbaabbabba'),        'StrIPos_4');
+  CheckEquals(5,  StrIPos('_aBBa', 'abba_abbabba'),       'StrIPos_5');
+  CheckEquals(2,  StrIPos('ABA',   'aabaaaABAbabababa'),  'StrIPos_6');
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1743,6 +1791,12 @@ end;
 
 procedure TJclStringSearchandReplace._StrNIPos;
 begin
+  CheckEquals(5,  StrNIPos('aaaaaaaaaa',         'A',     5), 'StrNIPos_1');
+  CheckEquals(0,  StrNIPos('aabaaababababababa', 'abA',   0), 'StrNIPos_2');
+  CheckEquals(0,  StrNIPos('abbaabbabba',        'abbA',  4), 'StrNIPos_3');
+  CheckEquals(8,  StrNIPos('abbaabbabba',        'abba',  3), 'StrNIPos_4');
+  CheckEquals(5,  StrNIPos('abba_abbabba',       '_aBBa', 1), 'StrNIPos_5');
+  CheckEquals(11, StrNIPos('aabaaaABAbabababa',  'ABA',   4), 'StrNIPos_6');
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1813,7 +1867,15 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TJclStringCharacterTestRoutines._CharIsBlank;
+var
+  c1: char;
+
 begin
+  for c1 := #0 to #255 do
+    CheckEquals(
+      (c1 in [#9, ' ', #160]),
+      CharIsBlank(c1),
+      'CharIsBlank #' + IntToStr(Ord(c1)));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2415,6 +2477,14 @@ var
         CheckEquals(tabs1.Count, tabs2.Count, 'NormalClone: .Count');
         CheckEquals(tabs1.TabStops[0], tabs2.TabStops[0], 'NormalClone: .TabStops[0]');
         CheckEquals(tabs1.TabStops[1], tabs2.TabStops[1], 'NormalClone: .TabStops[1]');
+
+        // changing values in one reference should not influence the other reference
+        tabs1.TabWidth := 3;
+        CheckEquals(2, tabs2.TabWidth, 'NormalReference: .TabWidth changed');
+
+        // freeing the first instance should leave the second instance working
+        FreeAndNil(tabs1);
+        CheckEquals(2, tabs2.TabWidth, 'NormalReference: .TabWidth after freeing instance 1');
       finally
         FreeAndNil(tabs2);
       end;
@@ -2566,6 +2636,57 @@ begin
   finally
     FreeAndNil(tabs);
   end;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclStringTabSet._Referencing;
+var
+  tabs1: TJclTabSet;
+  tabs2: TJclTabSet;
+
+  procedure NilReference;
+  begin
+    tabs1 := nil;
+    tabs2 := tabs1.NewReference;
+    try
+      CheckTrue(tabs2 = nil, 'NilReference: tabs2 = nil');
+    finally
+      FreeAndNil(tabs2);
+    end;
+  end;
+
+  procedure NormalReference;
+  begin
+    tabs1 := TJclTabSet.Create([4, 8], False, 2);
+    try
+      tabs2 := tabs1.NewReference;
+      try
+        CheckTrue(tabs1 <> tabs2, 'NormalReference: tabs1 <> tabs2');
+        CheckEquals(tabs1.TabWidth, tabs2.TabWidth, 'NormalReference: .TabWidth');
+        CheckEquals(tabs1.ActualTabWidth, tabs2.ActualTabWidth, 'NormalReference: .ActualTabWidth');
+        CheckEquals(tabs1.Count, tabs2.Count, 'NormalReference: .Count');
+        CheckEquals(tabs1.TabStops[0], tabs2.TabStops[0], 'NormalReference: .TabStops[0]');
+        CheckEquals(tabs1.TabStops[1], tabs2.TabStops[1], 'NormalReference: .TabStops[1]');
+
+        // changing values in one reference should also occur in the other reference
+        tabs1.TabWidth := 3;
+        CheckEquals(3, tabs2.TabWidth, 'NormalReference: .TabWidth changed');
+
+        // freeing the first instance should leave the second instance working
+        FreeAndNil(tabs1);
+        CheckEquals(3, tabs2.TabWidth, 'NormalReference: .TabWidth after freeing instance 1');
+      finally
+        FreeAndNil(tabs2);
+      end;
+    finally
+      FreeAndNil(tabs1);
+    end;
+  end;
+
+begin
+  NilReference;
+  NormalReference;
 end;
 
 //------------------------------------------------------------------------------

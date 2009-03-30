@@ -108,9 +108,11 @@ type
     function Add(const AInterface: IInterface): Boolean;
     function AddAll(const ACollection: IJclIntfCollection): Boolean;
     procedure Clear;
+    function CollectionEquals(const ACollection: IJclIntfCollection): Boolean;
     function Contains(const AInterface: IInterface): Boolean;
     function ContainsAll(const ACollection: IJclIntfCollection): Boolean;
-    function CollectionEquals(const ACollection: IJclIntfCollection): Boolean;
+    function Extract(const AInterface: IInterface): Boolean;
+    function ExtractAll(const ACollection: IJclIntfCollection): Boolean;
     function First: IJclIntfIterator;
     function IsEmpty: Boolean;
     function Last: IJclIntfIterator;
@@ -172,9 +174,11 @@ type
     function Add(const AString: AnsiString): Boolean; override;
     function AddAll(const ACollection: IJclAnsiStrCollection): Boolean; override;
     procedure Clear; override;
+    function CollectionEquals(const ACollection: IJclAnsiStrCollection): Boolean; override;
     function Contains(const AString: AnsiString): Boolean; override;
     function ContainsAll(const ACollection: IJclAnsiStrCollection): Boolean; override;
-    function CollectionEquals(const ACollection: IJclAnsiStrCollection): Boolean; override;
+    function Extract(const AString: AnsiString): Boolean; override;
+    function ExtractAll(const ACollection: IJclAnsiStrCollection): Boolean; override;
     function First: IJclAnsiStrIterator; override;
     function IsEmpty: Boolean; override;
     function Last: IJclAnsiStrIterator; override;
@@ -236,9 +240,11 @@ type
     function Add(const AString: WideString): Boolean; override;
     function AddAll(const ACollection: IJclWideStrCollection): Boolean; override;
     procedure Clear; override;
+    function CollectionEquals(const ACollection: IJclWideStrCollection): Boolean; override;
     function Contains(const AString: WideString): Boolean; override;
     function ContainsAll(const ACollection: IJclWideStrCollection): Boolean; override;
-    function CollectionEquals(const ACollection: IJclWideStrCollection): Boolean; override;
+    function Extract(const AString: WideString): Boolean; override;
+    function ExtractAll(const ACollection: IJclWideStrCollection): Boolean; override;
     function First: IJclWideStrIterator; override;
     function IsEmpty: Boolean; override;
     function Last: IJclWideStrIterator; override;
@@ -298,9 +304,11 @@ type
     function Add(const AString: UnicodeString): Boolean; override;
     function AddAll(const ACollection: IJclUnicodeStrCollection): Boolean; override;
     procedure Clear; override;
+    function CollectionEquals(const ACollection: IJclUnicodeStrCollection): Boolean; override;
     function Contains(const AString: UnicodeString): Boolean; override;
     function ContainsAll(const ACollection: IJclUnicodeStrCollection): Boolean; override;
-    function CollectionEquals(const ACollection: IJclUnicodeStrCollection): Boolean; override;
+    function Extract(const AString: UnicodeString): Boolean; override;
+    function ExtractAll(const ACollection: IJclUnicodeStrCollection): Boolean; override;
     function First: IJclUnicodeStrIterator; override;
     function IsEmpty: Boolean; override;
     function Last: IJclUnicodeStrIterator; override;
@@ -370,9 +378,11 @@ type
     function Add(const AValue: Single): Boolean;
     function AddAll(const ACollection: IJclSingleCollection): Boolean;
     procedure Clear;
+    function CollectionEquals(const ACollection: IJclSingleCollection): Boolean;
     function Contains(const AValue: Single): Boolean;
     function ContainsAll(const ACollection: IJclSingleCollection): Boolean;
-    function CollectionEquals(const ACollection: IJclSingleCollection): Boolean;
+    function Extract(const AValue: Single): Boolean;
+    function ExtractAll(const ACollection: IJclSingleCollection): Boolean;
     function First: IJclSingleIterator;
     function IsEmpty: Boolean;
     function Last: IJclSingleIterator;
@@ -431,9 +441,11 @@ type
     function Add(const AValue: Double): Boolean;
     function AddAll(const ACollection: IJclDoubleCollection): Boolean;
     procedure Clear;
+    function CollectionEquals(const ACollection: IJclDoubleCollection): Boolean;
     function Contains(const AValue: Double): Boolean;
     function ContainsAll(const ACollection: IJclDoubleCollection): Boolean;
-    function CollectionEquals(const ACollection: IJclDoubleCollection): Boolean;
+    function Extract(const AValue: Double): Boolean;
+    function ExtractAll(const ACollection: IJclDoubleCollection): Boolean;
     function First: IJclDoubleIterator;
     function IsEmpty: Boolean;
     function Last: IJclDoubleIterator;
@@ -492,9 +504,11 @@ type
     function Add(const AValue: Extended): Boolean;
     function AddAll(const ACollection: IJclExtendedCollection): Boolean;
     procedure Clear;
+    function CollectionEquals(const ACollection: IJclExtendedCollection): Boolean;
     function Contains(const AValue: Extended): Boolean;
     function ContainsAll(const ACollection: IJclExtendedCollection): Boolean;
-    function CollectionEquals(const ACollection: IJclExtendedCollection): Boolean;
+    function Extract(const AValue: Extended): Boolean;
+    function ExtractAll(const ACollection: IJclExtendedCollection): Boolean;
     function First: IJclExtendedIterator;
     function IsEmpty: Boolean;
     function Last: IJclExtendedIterator;
@@ -560,9 +574,11 @@ type
     function Add(AValue: Integer): Boolean;
     function AddAll(const ACollection: IJclIntegerCollection): Boolean;
     procedure Clear;
+    function CollectionEquals(const ACollection: IJclIntegerCollection): Boolean;
     function Contains(AValue: Integer): Boolean;
     function ContainsAll(const ACollection: IJclIntegerCollection): Boolean;
-    function CollectionEquals(const ACollection: IJclIntegerCollection): Boolean;
+    function Extract(AValue: Integer): Boolean;
+    function ExtractAll(const ACollection: IJclIntegerCollection): Boolean;
     function First: IJclIntegerIterator;
     function IsEmpty: Boolean;
     function Last: IJclIntegerIterator;
@@ -618,9 +634,11 @@ type
     function Add(AValue: Cardinal): Boolean;
     function AddAll(const ACollection: IJclCardinalCollection): Boolean;
     procedure Clear;
+    function CollectionEquals(const ACollection: IJclCardinalCollection): Boolean;
     function Contains(AValue: Cardinal): Boolean;
     function ContainsAll(const ACollection: IJclCardinalCollection): Boolean;
-    function CollectionEquals(const ACollection: IJclCardinalCollection): Boolean;
+    function Extract(AValue: Cardinal): Boolean;
+    function ExtractAll(const ACollection: IJclCardinalCollection): Boolean;
     function First: IJclCardinalIterator;
     function IsEmpty: Boolean;
     function Last: IJclCardinalIterator;
@@ -676,9 +694,11 @@ type
     function Add(const AValue: Int64): Boolean;
     function AddAll(const ACollection: IJclInt64Collection): Boolean;
     procedure Clear;
+    function CollectionEquals(const ACollection: IJclInt64Collection): Boolean;
     function Contains(const AValue: Int64): Boolean;
     function ContainsAll(const ACollection: IJclInt64Collection): Boolean;
-    function CollectionEquals(const ACollection: IJclInt64Collection): Boolean;
+    function Extract(const AValue: Int64): Boolean;
+    function ExtractAll(const ACollection: IJclInt64Collection): Boolean;
     function First: IJclInt64Iterator;
     function IsEmpty: Boolean;
     function Last: IJclInt64Iterator;
@@ -735,9 +755,11 @@ type
     function Add(AValue: Pointer): Boolean;
     function AddAll(const ACollection: IJclPtrCollection): Boolean;
     procedure Clear;
+    function CollectionEquals(const ACollection: IJclPtrCollection): Boolean;
     function Contains(AValue: Pointer): Boolean;
     function ContainsAll(const ACollection: IJclPtrCollection): Boolean;
-    function CollectionEquals(const ACollection: IJclPtrCollection): Boolean;
+    function Extract(AValue: Pointer): Boolean;
+    function ExtractAll(const ACollection: IJclPtrCollection): Boolean;
     function First: IJclPtrIterator;
     function IsEmpty: Boolean;
     function Last: IJclPtrIterator;
@@ -797,9 +819,11 @@ type
     function Add(AObject: TObject): Boolean;
     function AddAll(const ACollection: IJclCollection): Boolean;
     procedure Clear;
+    function CollectionEquals(const ACollection: IJclCollection): Boolean;
     function Contains(AObject: TObject): Boolean;
     function ContainsAll(const ACollection: IJclCollection): Boolean;
-    function CollectionEquals(const ACollection: IJclCollection): Boolean;
+    function Extract(AObject: TObject): Boolean;
+    function ExtractAll(const ACollection: IJclCollection): Boolean;
     function First: IJclIterator;
     function IsEmpty: Boolean;
     function Last: IJclIterator;
@@ -857,9 +881,11 @@ type
     function Add(const AItem: T): Boolean;
     function AddAll(const ACollection: IJclCollection<T>): Boolean;
     procedure Clear;
+    function CollectionEquals(const ACollection: IJclCollection<T>): Boolean;
     function Contains(const AItem: T): Boolean;
     function ContainsAll(const ACollection: IJclCollection<T>): Boolean;
-    function CollectionEquals(const ACollection: IJclCollection<T>): Boolean;
+    function Extract(const AItem: T): Boolean;
+    function ExtractAll(const ACollection: IJclCollection<T>): Boolean;
     function First: IJclIterator<T>;
     function IsEmpty: Boolean;
     function Last: IJclIterator<T>;
@@ -1050,6 +1076,35 @@ begin
   FMap.Clear;
 end;
 
+function TJclIntfHashSet.CollectionEquals(const ACollection: IJclIntfCollection): Boolean;
+var
+  It, ItMap: IJclIntfIterator;
+begin
+  {$IFDEF THREADSAFE}
+  FMap.ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FMap.Size <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItMap := FMap.KeySet.First;
+    while ItMap.HasNext do
+      if not ItemsEqual(ItMap.Next, It.Next) then
+      begin
+        Result := False;
+        Exit;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    FMap.ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclIntfHashSet.Contains(const AInterface: IInterface): Boolean;
 begin
   Result := FMap.ContainsKey(AInterface);
@@ -1077,31 +1132,33 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfHashSet.CollectionEquals(const ACollection: IJclIntfCollection): Boolean;
-var
-  It, ItMap: IJclIntfIterator;
+function TJclIntfHashSet.Extract(const AInterface: IInterface): Boolean;
 begin
+  Result := FMap.Extract(AInterface) = RefUnique;
+end;
+
+function TJclIntfHashSet.ExtractAll(const ACollection: IJclIntfCollection): Boolean;
+var
+  It: IJclIntfIterator;
+  ARefUnique: TRefUnique;
+begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  FMap.ReadLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FMap.Size <> ACollection.Size then
-      Exit;
     Result := True;
+    ARefUnique := RefUnique;
     It := ACollection.First;
-    ItMap := FMap.KeySet.First;
-    while ItMap.HasNext do
-      if not ItemsEqual(ItMap.Next, It.Next) then
-      begin
-        Result := False;
-        Exit;
-      end;
+    while It.HasNext do
+      Result := (FMap.Extract(It.Next) = ARefUnique) and Result;
   {$IFDEF THREADSAFE}
   finally
-    FMap.ReadUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1379,6 +1436,35 @@ begin
   FMap.Clear;
 end;
 
+function TJclAnsiStrHashSet.CollectionEquals(const ACollection: IJclAnsiStrCollection): Boolean;
+var
+  It, ItMap: IJclAnsiStrIterator;
+begin
+  {$IFDEF THREADSAFE}
+  FMap.ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FMap.Size <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItMap := FMap.KeySet.First;
+    while ItMap.HasNext do
+      if not ItemsEqual(ItMap.Next, It.Next) then
+      begin
+        Result := False;
+        Exit;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    FMap.ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclAnsiStrHashSet.Contains(const AString: AnsiString): Boolean;
 begin
   Result := FMap.ContainsKey(AString);
@@ -1406,31 +1492,33 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclAnsiStrHashSet.CollectionEquals(const ACollection: IJclAnsiStrCollection): Boolean;
-var
-  It, ItMap: IJclAnsiStrIterator;
+function TJclAnsiStrHashSet.Extract(const AString: AnsiString): Boolean;
 begin
+  Result := FMap.Extract(AString) = RefUnique;
+end;
+
+function TJclAnsiStrHashSet.ExtractAll(const ACollection: IJclAnsiStrCollection): Boolean;
+var
+  It: IJclAnsiStrIterator;
+  ARefUnique: TRefUnique;
+begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  FMap.ReadLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FMap.Size <> ACollection.Size then
-      Exit;
     Result := True;
+    ARefUnique := RefUnique;
     It := ACollection.First;
-    ItMap := FMap.KeySet.First;
-    while ItMap.HasNext do
-      if not ItemsEqual(ItMap.Next, It.Next) then
-      begin
-        Result := False;
-        Exit;
-      end;
+    while It.HasNext do
+      Result := (FMap.Extract(It.Next) = ARefUnique) and Result;
   {$IFDEF THREADSAFE}
   finally
-    FMap.ReadUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1728,6 +1816,35 @@ begin
   FMap.Clear;
 end;
 
+function TJclWideStrHashSet.CollectionEquals(const ACollection: IJclWideStrCollection): Boolean;
+var
+  It, ItMap: IJclWideStrIterator;
+begin
+  {$IFDEF THREADSAFE}
+  FMap.ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FMap.Size <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItMap := FMap.KeySet.First;
+    while ItMap.HasNext do
+      if not ItemsEqual(ItMap.Next, It.Next) then
+      begin
+        Result := False;
+        Exit;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    FMap.ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclWideStrHashSet.Contains(const AString: WideString): Boolean;
 begin
   Result := FMap.ContainsKey(AString);
@@ -1755,31 +1872,33 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclWideStrHashSet.CollectionEquals(const ACollection: IJclWideStrCollection): Boolean;
-var
-  It, ItMap: IJclWideStrIterator;
+function TJclWideStrHashSet.Extract(const AString: WideString): Boolean;
 begin
+  Result := FMap.Extract(AString) = RefUnique;
+end;
+
+function TJclWideStrHashSet.ExtractAll(const ACollection: IJclWideStrCollection): Boolean;
+var
+  It: IJclWideStrIterator;
+  ARefUnique: TRefUnique;
+begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  FMap.ReadLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FMap.Size <> ACollection.Size then
-      Exit;
     Result := True;
+    ARefUnique := RefUnique;
     It := ACollection.First;
-    ItMap := FMap.KeySet.First;
-    while ItMap.HasNext do
-      if not ItemsEqual(ItMap.Next, It.Next) then
-      begin
-        Result := False;
-        Exit;
-      end;
+    while It.HasNext do
+      Result := (FMap.Extract(It.Next) = ARefUnique) and Result;
   {$IFDEF THREADSAFE}
   finally
-    FMap.ReadUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2078,6 +2197,35 @@ begin
   FMap.Clear;
 end;
 
+function TJclUnicodeStrHashSet.CollectionEquals(const ACollection: IJclUnicodeStrCollection): Boolean;
+var
+  It, ItMap: IJclUnicodeStrIterator;
+begin
+  {$IFDEF THREADSAFE}
+  FMap.ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FMap.Size <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItMap := FMap.KeySet.First;
+    while ItMap.HasNext do
+      if not ItemsEqual(ItMap.Next, It.Next) then
+      begin
+        Result := False;
+        Exit;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    FMap.ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclUnicodeStrHashSet.Contains(const AString: UnicodeString): Boolean;
 begin
   Result := FMap.ContainsKey(AString);
@@ -2105,31 +2253,33 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclUnicodeStrHashSet.CollectionEquals(const ACollection: IJclUnicodeStrCollection): Boolean;
-var
-  It, ItMap: IJclUnicodeStrIterator;
+function TJclUnicodeStrHashSet.Extract(const AString: UnicodeString): Boolean;
 begin
+  Result := FMap.Extract(AString) = RefUnique;
+end;
+
+function TJclUnicodeStrHashSet.ExtractAll(const ACollection: IJclUnicodeStrCollection): Boolean;
+var
+  It: IJclUnicodeStrIterator;
+  ARefUnique: TRefUnique;
+begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  FMap.ReadLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FMap.Size <> ACollection.Size then
-      Exit;
     Result := True;
+    ARefUnique := RefUnique;
     It := ACollection.First;
-    ItMap := FMap.KeySet.First;
-    while ItMap.HasNext do
-      if not ItemsEqual(ItMap.Next, It.Next) then
-      begin
-        Result := False;
-        Exit;
-      end;
+    while It.HasNext do
+      Result := (FMap.Extract(It.Next) = ARefUnique) and Result;
   {$IFDEF THREADSAFE}
   finally
-    FMap.ReadUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2419,6 +2569,35 @@ begin
   FMap.Clear;
 end;
 
+function TJclSingleHashSet.CollectionEquals(const ACollection: IJclSingleCollection): Boolean;
+var
+  It, ItMap: IJclSingleIterator;
+begin
+  {$IFDEF THREADSAFE}
+  FMap.ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FMap.Size <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItMap := FMap.KeySet.First;
+    while ItMap.HasNext do
+      if not ItemsEqual(ItMap.Next, It.Next) then
+      begin
+        Result := False;
+        Exit;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    FMap.ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclSingleHashSet.Contains(const AValue: Single): Boolean;
 begin
   Result := FMap.ContainsKey(AValue);
@@ -2446,31 +2625,33 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclSingleHashSet.CollectionEquals(const ACollection: IJclSingleCollection): Boolean;
-var
-  It, ItMap: IJclSingleIterator;
+function TJclSingleHashSet.Extract(const AValue: Single): Boolean;
 begin
+  Result := FMap.Extract(AValue) = RefUnique;
+end;
+
+function TJclSingleHashSet.ExtractAll(const ACollection: IJclSingleCollection): Boolean;
+var
+  It: IJclSingleIterator;
+  ARefUnique: TRefUnique;
+begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  FMap.ReadLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FMap.Size <> ACollection.Size then
-      Exit;
     Result := True;
+    ARefUnique := RefUnique;
     It := ACollection.First;
-    ItMap := FMap.KeySet.First;
-    while ItMap.HasNext do
-      if not ItemsEqual(ItMap.Next, It.Next) then
-      begin
-        Result := False;
-        Exit;
-      end;
+    while It.HasNext do
+      Result := (FMap.Extract(It.Next) = ARefUnique) and Result;
   {$IFDEF THREADSAFE}
   finally
-    FMap.ReadUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2758,6 +2939,35 @@ begin
   FMap.Clear;
 end;
 
+function TJclDoubleHashSet.CollectionEquals(const ACollection: IJclDoubleCollection): Boolean;
+var
+  It, ItMap: IJclDoubleIterator;
+begin
+  {$IFDEF THREADSAFE}
+  FMap.ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FMap.Size <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItMap := FMap.KeySet.First;
+    while ItMap.HasNext do
+      if not ItemsEqual(ItMap.Next, It.Next) then
+      begin
+        Result := False;
+        Exit;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    FMap.ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclDoubleHashSet.Contains(const AValue: Double): Boolean;
 begin
   Result := FMap.ContainsKey(AValue);
@@ -2785,31 +2995,33 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclDoubleHashSet.CollectionEquals(const ACollection: IJclDoubleCollection): Boolean;
-var
-  It, ItMap: IJclDoubleIterator;
+function TJclDoubleHashSet.Extract(const AValue: Double): Boolean;
 begin
+  Result := FMap.Extract(AValue) = RefUnique;
+end;
+
+function TJclDoubleHashSet.ExtractAll(const ACollection: IJclDoubleCollection): Boolean;
+var
+  It: IJclDoubleIterator;
+  ARefUnique: TRefUnique;
+begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  FMap.ReadLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FMap.Size <> ACollection.Size then
-      Exit;
     Result := True;
+    ARefUnique := RefUnique;
     It := ACollection.First;
-    ItMap := FMap.KeySet.First;
-    while ItMap.HasNext do
-      if not ItemsEqual(ItMap.Next, It.Next) then
-      begin
-        Result := False;
-        Exit;
-      end;
+    while It.HasNext do
+      Result := (FMap.Extract(It.Next) = ARefUnique) and Result;
   {$IFDEF THREADSAFE}
   finally
-    FMap.ReadUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3097,6 +3309,35 @@ begin
   FMap.Clear;
 end;
 
+function TJclExtendedHashSet.CollectionEquals(const ACollection: IJclExtendedCollection): Boolean;
+var
+  It, ItMap: IJclExtendedIterator;
+begin
+  {$IFDEF THREADSAFE}
+  FMap.ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FMap.Size <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItMap := FMap.KeySet.First;
+    while ItMap.HasNext do
+      if not ItemsEqual(ItMap.Next, It.Next) then
+      begin
+        Result := False;
+        Exit;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    FMap.ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclExtendedHashSet.Contains(const AValue: Extended): Boolean;
 begin
   Result := FMap.ContainsKey(AValue);
@@ -3124,31 +3365,33 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclExtendedHashSet.CollectionEquals(const ACollection: IJclExtendedCollection): Boolean;
-var
-  It, ItMap: IJclExtendedIterator;
+function TJclExtendedHashSet.Extract(const AValue: Extended): Boolean;
 begin
+  Result := FMap.Extract(AValue) = RefUnique;
+end;
+
+function TJclExtendedHashSet.ExtractAll(const ACollection: IJclExtendedCollection): Boolean;
+var
+  It: IJclExtendedIterator;
+  ARefUnique: TRefUnique;
+begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  FMap.ReadLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FMap.Size <> ACollection.Size then
-      Exit;
     Result := True;
+    ARefUnique := RefUnique;
     It := ACollection.First;
-    ItMap := FMap.KeySet.First;
-    while ItMap.HasNext do
-      if not ItemsEqual(ItMap.Next, It.Next) then
-      begin
-        Result := False;
-        Exit;
-      end;
+    while It.HasNext do
+      Result := (FMap.Extract(It.Next) = ARefUnique) and Result;
   {$IFDEF THREADSAFE}
   finally
-    FMap.ReadUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3436,6 +3679,35 @@ begin
   FMap.Clear;
 end;
 
+function TJclIntegerHashSet.CollectionEquals(const ACollection: IJclIntegerCollection): Boolean;
+var
+  It, ItMap: IJclIntegerIterator;
+begin
+  {$IFDEF THREADSAFE}
+  FMap.ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FMap.Size <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItMap := FMap.KeySet.First;
+    while ItMap.HasNext do
+      if not ItemsEqual(ItMap.Next, It.Next) then
+      begin
+        Result := False;
+        Exit;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    FMap.ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclIntegerHashSet.Contains(AValue: Integer): Boolean;
 begin
   Result := FMap.ContainsKey(AValue);
@@ -3463,31 +3735,33 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntegerHashSet.CollectionEquals(const ACollection: IJclIntegerCollection): Boolean;
-var
-  It, ItMap: IJclIntegerIterator;
+function TJclIntegerHashSet.Extract(AValue: Integer): Boolean;
 begin
+  Result := FMap.Extract(AValue) = RefUnique;
+end;
+
+function TJclIntegerHashSet.ExtractAll(const ACollection: IJclIntegerCollection): Boolean;
+var
+  It: IJclIntegerIterator;
+  ARefUnique: TRefUnique;
+begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  FMap.ReadLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FMap.Size <> ACollection.Size then
-      Exit;
     Result := True;
+    ARefUnique := RefUnique;
     It := ACollection.First;
-    ItMap := FMap.KeySet.First;
-    while ItMap.HasNext do
-      if not ItemsEqual(ItMap.Next, It.Next) then
-      begin
-        Result := False;
-        Exit;
-      end;
+    while It.HasNext do
+      Result := (FMap.Extract(It.Next) = ARefUnique) and Result;
   {$IFDEF THREADSAFE}
   finally
-    FMap.ReadUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3765,6 +4039,35 @@ begin
   FMap.Clear;
 end;
 
+function TJclCardinalHashSet.CollectionEquals(const ACollection: IJclCardinalCollection): Boolean;
+var
+  It, ItMap: IJclCardinalIterator;
+begin
+  {$IFDEF THREADSAFE}
+  FMap.ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FMap.Size <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItMap := FMap.KeySet.First;
+    while ItMap.HasNext do
+      if not ItemsEqual(ItMap.Next, It.Next) then
+      begin
+        Result := False;
+        Exit;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    FMap.ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclCardinalHashSet.Contains(AValue: Cardinal): Boolean;
 begin
   Result := FMap.ContainsKey(AValue);
@@ -3792,31 +4095,33 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclCardinalHashSet.CollectionEquals(const ACollection: IJclCardinalCollection): Boolean;
-var
-  It, ItMap: IJclCardinalIterator;
+function TJclCardinalHashSet.Extract(AValue: Cardinal): Boolean;
 begin
+  Result := FMap.Extract(AValue) = RefUnique;
+end;
+
+function TJclCardinalHashSet.ExtractAll(const ACollection: IJclCardinalCollection): Boolean;
+var
+  It: IJclCardinalIterator;
+  ARefUnique: TRefUnique;
+begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  FMap.ReadLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FMap.Size <> ACollection.Size then
-      Exit;
     Result := True;
+    ARefUnique := RefUnique;
     It := ACollection.First;
-    ItMap := FMap.KeySet.First;
-    while ItMap.HasNext do
-      if not ItemsEqual(ItMap.Next, It.Next) then
-      begin
-        Result := False;
-        Exit;
-      end;
+    while It.HasNext do
+      Result := (FMap.Extract(It.Next) = ARefUnique) and Result;
   {$IFDEF THREADSAFE}
   finally
-    FMap.ReadUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4094,6 +4399,35 @@ begin
   FMap.Clear;
 end;
 
+function TJclInt64HashSet.CollectionEquals(const ACollection: IJclInt64Collection): Boolean;
+var
+  It, ItMap: IJclInt64Iterator;
+begin
+  {$IFDEF THREADSAFE}
+  FMap.ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FMap.Size <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItMap := FMap.KeySet.First;
+    while ItMap.HasNext do
+      if not ItemsEqual(ItMap.Next, It.Next) then
+      begin
+        Result := False;
+        Exit;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    FMap.ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclInt64HashSet.Contains(const AValue: Int64): Boolean;
 begin
   Result := FMap.ContainsKey(AValue);
@@ -4121,31 +4455,33 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclInt64HashSet.CollectionEquals(const ACollection: IJclInt64Collection): Boolean;
-var
-  It, ItMap: IJclInt64Iterator;
+function TJclInt64HashSet.Extract(const AValue: Int64): Boolean;
 begin
+  Result := FMap.Extract(AValue) = RefUnique;
+end;
+
+function TJclInt64HashSet.ExtractAll(const ACollection: IJclInt64Collection): Boolean;
+var
+  It: IJclInt64Iterator;
+  ARefUnique: TRefUnique;
+begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  FMap.ReadLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FMap.Size <> ACollection.Size then
-      Exit;
     Result := True;
+    ARefUnique := RefUnique;
     It := ACollection.First;
-    ItMap := FMap.KeySet.First;
-    while ItMap.HasNext do
-      if not ItemsEqual(ItMap.Next, It.Next) then
-      begin
-        Result := False;
-        Exit;
-      end;
+    while It.HasNext do
+      Result := (FMap.Extract(It.Next) = ARefUnique) and Result;
   {$IFDEF THREADSAFE}
   finally
-    FMap.ReadUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4424,6 +4760,35 @@ begin
   FMap.Clear;
 end;
 
+function TJclPtrHashSet.CollectionEquals(const ACollection: IJclPtrCollection): Boolean;
+var
+  It, ItMap: IJclPtrIterator;
+begin
+  {$IFDEF THREADSAFE}
+  FMap.ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FMap.Size <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItMap := FMap.KeySet.First;
+    while ItMap.HasNext do
+      if not ItemsEqual(ItMap.Next, It.Next) then
+      begin
+        Result := False;
+        Exit;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    FMap.ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclPtrHashSet.Contains(AValue: Pointer): Boolean;
 begin
   Result := FMap.ContainsKey(AValue);
@@ -4451,31 +4816,33 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclPtrHashSet.CollectionEquals(const ACollection: IJclPtrCollection): Boolean;
-var
-  It, ItMap: IJclPtrIterator;
+function TJclPtrHashSet.Extract(AValue: Pointer): Boolean;
 begin
+  Result := FMap.Extract(AValue) = RefUnique;
+end;
+
+function TJclPtrHashSet.ExtractAll(const ACollection: IJclPtrCollection): Boolean;
+var
+  It: IJclPtrIterator;
+  ARefUnique: TRefUnique;
+begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  FMap.ReadLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FMap.Size <> ACollection.Size then
-      Exit;
     Result := True;
+    ARefUnique := RefUnique;
     It := ACollection.First;
-    ItMap := FMap.KeySet.First;
-    while ItMap.HasNext do
-      if not ItemsEqual(ItMap.Next, It.Next) then
-      begin
-        Result := False;
-        Exit;
-      end;
+    while It.HasNext do
+      Result := (FMap.Extract(It.Next) = ARefUnique) and Result;
   {$IFDEF THREADSAFE}
   finally
-    FMap.ReadUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4754,6 +5121,35 @@ begin
   FMap.Clear;
 end;
 
+function TJclHashSet.CollectionEquals(const ACollection: IJclCollection): Boolean;
+var
+  It, ItMap: IJclIterator;
+begin
+  {$IFDEF THREADSAFE}
+  FMap.ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FMap.Size <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItMap := FMap.KeySet.First;
+    while ItMap.HasNext do
+      if not ItemsEqual(ItMap.Next, It.Next) then
+      begin
+        Result := False;
+        Exit;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    FMap.ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclHashSet.Contains(AObject: TObject): Boolean;
 begin
   Result := FMap.ContainsKey(AObject);
@@ -4781,31 +5177,33 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclHashSet.CollectionEquals(const ACollection: IJclCollection): Boolean;
-var
-  It, ItMap: IJclIterator;
+function TJclHashSet.Extract(AObject: TObject): Boolean;
 begin
+  Result := FMap.Extract(AObject) = RefUnique;
+end;
+
+function TJclHashSet.ExtractAll(const ACollection: IJclCollection): Boolean;
+var
+  It: IJclIterator;
+  ARefUnique: TRefUnique;
+begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  FMap.ReadLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FMap.Size <> ACollection.Size then
-      Exit;
     Result := True;
+    ARefUnique := RefUnique;
     It := ACollection.First;
-    ItMap := FMap.KeySet.First;
-    while ItMap.HasNext do
-      if not ItemsEqual(ItMap.Next, It.Next) then
-      begin
-        Result := False;
-        Exit;
-      end;
+    while It.HasNext do
+      Result := (FMap.Extract(It.Next) = ARefUnique) and Result;
   {$IFDEF THREADSAFE}
   finally
-    FMap.ReadUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -5095,6 +5493,35 @@ begin
   FMap.Clear;
 end;
 
+function TJclHashSet<T>.CollectionEquals(const ACollection: IJclCollection<T>): Boolean;
+var
+  It, ItMap: IJclIterator<T>;
+begin
+  {$IFDEF THREADSAFE}
+  FMap.ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FMap.Size <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItMap := FMap.KeySet.First;
+    while ItMap.HasNext do
+      if not ItemsEqual(ItMap.Next, It.Next) then
+      begin
+        Result := False;
+        Exit;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    FMap.ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclHashSet<T>.Contains(const AItem: T): Boolean;
 begin
   Result := FMap.ContainsKey(AItem);
@@ -5122,31 +5549,33 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclHashSet<T>.CollectionEquals(const ACollection: IJclCollection<T>): Boolean;
-var
-  It, ItMap: IJclIterator<T>;
+function TJclHashSet<T>.Extract(const AItem: T): Boolean;
 begin
+  Result := FMap.Extract(AItem) = RefUnique;
+end;
+
+function TJclHashSet<T>.ExtractAll(const ACollection: IJclCollection<T>): Boolean;
+var
+  It: IJclIterator<T>;
+  ARefUnique: TRefUnique;
+begin
+  if FMap.ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
-  FMap.ReadLock;
+  FMap.WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FMap.Size <> ACollection.Size then
-      Exit;
     Result := True;
+    ARefUnique := RefUnique;
     It := ACollection.First;
-    ItMap := FMap.KeySet.First;
-    while ItMap.HasNext do
-      if not ItemsEqual(ItMap.Next, It.Next) then
-      begin
-        Result := False;
-        Exit;
-      end;
+    while It.HasNext do
+      Result := (FMap.Extract(It.Next) = ARefUnique) and Result;
   {$IFDEF THREADSAFE}
   finally
-    FMap.ReadUnlock;
+    FMap.WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;

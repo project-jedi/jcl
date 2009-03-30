@@ -23,7 +23,8 @@
     FRoot: NODETYPENAME;
     FTraverseOrder: TJclTraverseOrder;
   protected
-    procedure ClearNode(var ANode: NODETYPENAME);
+    procedure ExtractNode(var ANode: NODETYPENAME);
+    procedure RemoveNode(var ANode: NODETYPENAME);
     function CloneNode(Node, Parent: NODETYPENAME): NODETYPENAME;
     function NodeContains(ANode: NODETYPENAME; CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
     procedure PackNode(ANode: NODETYPENAME);
@@ -36,9 +37,11 @@
     function Add(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;COLLECTIONFLAGS
     function AddAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;COLLECTIONFLAGS
     procedure Clear;COLLECTIONFLAGS
+    function CollectionEquals(const ACollection: COLLECTIONINTERFACENAME): Boolean;COLLECTIONFLAGS
     function Contains(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;COLLECTIONFLAGS
     function ContainsAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;COLLECTIONFLAGS
-    function CollectionEquals(const ACollection: COLLECTIONINTERFACENAME): Boolean;COLLECTIONFLAGS
+    function Extract(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;COLLECTIONFLAGS
+    function ExtractAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;COLLECTIONFLAGS
     function First: STDITRINTERFACENAME;COLLECTIONFLAGS
     function IsEmpty: Boolean;COLLECTIONFLAGS
     function Last: STDITRINTERFACENAME;COLLECTIONFLAGS
@@ -75,11 +78,12 @@
     function GetPreviousCursor: NODETYPENAME; virtual; abstract;
     { STDITRINTERFACENAME }
     function Add(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
-    function IteratorEquals(const AIterator: STDITRINTERFACENAME): Boolean;
+    procedure Extract;
     function GETTERNAME: TYPENAME;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
+    function IteratorEquals(const AIterator: STDITRINTERFACENAME): Boolean;
     function Next: TYPENAME;
     function NextIndex: Integer;
     function Previous: TYPENAME;
@@ -94,8 +98,10 @@
     { TREEITRINTERFACENAME }
     function AddChild(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
     function ChildrenCount: Integer;
-    procedure ClearChildren;
     procedure DeleteChild(Index: Integer);
+    procedure DeleteChildren;
+    procedure ExtractChild(Index: Integer);
+    procedure ExtractChildren;
     function GetChild(Index: Integer): TYPENAME;
     function HasChild(Index: Integer): Boolean;
     function HasParent: Boolean;

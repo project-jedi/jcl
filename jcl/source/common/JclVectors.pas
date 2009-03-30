@@ -78,13 +78,15 @@ type
     function Add(const AInterface: IInterface): Boolean;
     function AddAll(const ACollection: IJclIntfCollection): Boolean;
     procedure Clear;
+    function CollectionEquals(const ACollection: IJclIntfCollection): Boolean;
     function Contains(const AInterface: IInterface): Boolean;
     function ContainsAll(const ACollection: IJclIntfCollection): Boolean;
-    function CollectionEquals(const ACollection: IJclIntfCollection): Boolean;
+    function Extract(const AInterface: IInterface): Boolean; 
+    function ExtractAll(const ACollection: IJclIntfCollection): Boolean;
     function First: IJclIntfIterator;
     function IsEmpty: Boolean;
     function Last: IJclIntfIterator;
-    function Remove(const AInterface: IInterface): Boolean; overload;
+    function Remove(const AInterface: IInterface): Boolean; 
     function RemoveAll(const ACollection: IJclIntfCollection): Boolean;
     function RetainAll(const ACollection: IJclIntfCollection): Boolean;
     function Size: Integer;
@@ -92,12 +94,13 @@ type
     function GetEnumerator: IJclIntfIterator;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclIntfList }
-    function Insert(Index: Integer; const AInterface: IInterface): Boolean;
-    function InsertAll(Index: Integer; const ACollection: IJclIntfCollection): Boolean;
+    function Delete(Index: Integer): IInterface;
+    function ExtractIndex(Index: Integer): IInterface;
     function GetObject(Index: Integer): IInterface;
     function IndexOf(const AInterface: IInterface): Integer;
+    function Insert(Index: Integer; const AInterface: IInterface): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclIntfCollection): Boolean;
     function LastIndexOf(const AInterface: IInterface): Integer;
-    function Delete(Index: Integer): IInterface; overload;
     procedure SetObject(Index: Integer; const AInterface: IInterface);
     function SubList(First, Count: Integer): IJclIntfList;
   public
@@ -117,11 +120,12 @@ type
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     { IJclIntfIterator }
     function Add(const AInterface: IInterface): Boolean;
-    function IteratorEquals(const AIterator: IJclIntfIterator): Boolean;
+    procedure Extract;
     function GetObject: IInterface;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(const AInterface: IInterface): Boolean;
+    function IteratorEquals(const AIterator: IJclIntfIterator): Boolean;
     function Next: IInterface;
     function NextIndex: Integer;
     function Previous: IInterface;
@@ -155,13 +159,15 @@ type
     function Add(const AString: AnsiString): Boolean; override;
     function AddAll(const ACollection: IJclAnsiStrCollection): Boolean; override;
     procedure Clear; override;
+    function CollectionEquals(const ACollection: IJclAnsiStrCollection): Boolean; override;
     function Contains(const AString: AnsiString): Boolean; override;
     function ContainsAll(const ACollection: IJclAnsiStrCollection): Boolean; override;
-    function CollectionEquals(const ACollection: IJclAnsiStrCollection): Boolean; override;
+    function Extract(const AString: AnsiString): Boolean;  override;
+    function ExtractAll(const ACollection: IJclAnsiStrCollection): Boolean; override;
     function First: IJclAnsiStrIterator; override;
     function IsEmpty: Boolean; override;
     function Last: IJclAnsiStrIterator; override;
-    function Remove(const AString: AnsiString): Boolean; overload; override;
+    function Remove(const AString: AnsiString): Boolean;  override;
     function RemoveAll(const ACollection: IJclAnsiStrCollection): Boolean; override;
     function RetainAll(const ACollection: IJclAnsiStrCollection): Boolean; override;
     function Size: Integer; override;
@@ -169,12 +175,13 @@ type
     function GetEnumerator: IJclAnsiStrIterator; override;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclAnsiStrList }
-    function Insert(Index: Integer; const AString: AnsiString): Boolean;
-    function InsertAll(Index: Integer; const ACollection: IJclAnsiStrCollection): Boolean;
+    function Delete(Index: Integer): AnsiString;
+    function ExtractIndex(Index: Integer): AnsiString;
     function GetString(Index: Integer): AnsiString;
     function IndexOf(const AString: AnsiString): Integer;
+    function Insert(Index: Integer; const AString: AnsiString): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclAnsiStrCollection): Boolean;
     function LastIndexOf(const AString: AnsiString): Integer;
-    function Delete(Index: Integer): AnsiString; overload;
     procedure SetString(Index: Integer; const AString: AnsiString);
     function SubList(First, Count: Integer): IJclAnsiStrList;
   public
@@ -194,11 +201,12 @@ type
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     { IJclAnsiStrIterator }
     function Add(const AString: AnsiString): Boolean;
-    function IteratorEquals(const AIterator: IJclAnsiStrIterator): Boolean;
+    procedure Extract;
     function GetString: AnsiString;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(const AString: AnsiString): Boolean;
+    function IteratorEquals(const AIterator: IJclAnsiStrIterator): Boolean;
     function Next: AnsiString;
     function NextIndex: Integer;
     function Previous: AnsiString;
@@ -232,13 +240,15 @@ type
     function Add(const AString: WideString): Boolean; override;
     function AddAll(const ACollection: IJclWideStrCollection): Boolean; override;
     procedure Clear; override;
+    function CollectionEquals(const ACollection: IJclWideStrCollection): Boolean; override;
     function Contains(const AString: WideString): Boolean; override;
     function ContainsAll(const ACollection: IJclWideStrCollection): Boolean; override;
-    function CollectionEquals(const ACollection: IJclWideStrCollection): Boolean; override;
+    function Extract(const AString: WideString): Boolean;  override;
+    function ExtractAll(const ACollection: IJclWideStrCollection): Boolean; override;
     function First: IJclWideStrIterator; override;
     function IsEmpty: Boolean; override;
     function Last: IJclWideStrIterator; override;
-    function Remove(const AString: WideString): Boolean; overload; override;
+    function Remove(const AString: WideString): Boolean;  override;
     function RemoveAll(const ACollection: IJclWideStrCollection): Boolean; override;
     function RetainAll(const ACollection: IJclWideStrCollection): Boolean; override;
     function Size: Integer; override;
@@ -246,12 +256,13 @@ type
     function GetEnumerator: IJclWideStrIterator; override;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclWideStrList }
-    function Insert(Index: Integer; const AString: WideString): Boolean;
-    function InsertAll(Index: Integer; const ACollection: IJclWideStrCollection): Boolean;
+    function Delete(Index: Integer): WideString;
+    function ExtractIndex(Index: Integer): WideString;
     function GetString(Index: Integer): WideString;
     function IndexOf(const AString: WideString): Integer;
+    function Insert(Index: Integer; const AString: WideString): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclWideStrCollection): Boolean;
     function LastIndexOf(const AString: WideString): Integer;
-    function Delete(Index: Integer): WideString; overload;
     procedure SetString(Index: Integer; const AString: WideString);
     function SubList(First, Count: Integer): IJclWideStrList;
   public
@@ -271,11 +282,12 @@ type
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     { IJclWideStrIterator }
     function Add(const AString: WideString): Boolean;
-    function IteratorEquals(const AIterator: IJclWideStrIterator): Boolean;
+    procedure Extract;
     function GetString: WideString;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(const AString: WideString): Boolean;
+    function IteratorEquals(const AIterator: IJclWideStrIterator): Boolean;
     function Next: WideString;
     function NextIndex: Integer;
     function Previous: WideString;
@@ -310,13 +322,15 @@ type
     function Add(const AString: UnicodeString): Boolean; override;
     function AddAll(const ACollection: IJclUnicodeStrCollection): Boolean; override;
     procedure Clear; override;
+    function CollectionEquals(const ACollection: IJclUnicodeStrCollection): Boolean; override;
     function Contains(const AString: UnicodeString): Boolean; override;
     function ContainsAll(const ACollection: IJclUnicodeStrCollection): Boolean; override;
-    function CollectionEquals(const ACollection: IJclUnicodeStrCollection): Boolean; override;
+    function Extract(const AString: UnicodeString): Boolean;  override;
+    function ExtractAll(const ACollection: IJclUnicodeStrCollection): Boolean; override;
     function First: IJclUnicodeStrIterator; override;
     function IsEmpty: Boolean; override;
     function Last: IJclUnicodeStrIterator; override;
-    function Remove(const AString: UnicodeString): Boolean; overload; override;
+    function Remove(const AString: UnicodeString): Boolean;  override;
     function RemoveAll(const ACollection: IJclUnicodeStrCollection): Boolean; override;
     function RetainAll(const ACollection: IJclUnicodeStrCollection): Boolean; override;
     function Size: Integer; override;
@@ -324,12 +338,13 @@ type
     function GetEnumerator: IJclUnicodeStrIterator; override;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclUnicodeStrList }
-    function Insert(Index: Integer; const AString: UnicodeString): Boolean;
-    function InsertAll(Index: Integer; const ACollection: IJclUnicodeStrCollection): Boolean;
+    function Delete(Index: Integer): UnicodeString;
+    function ExtractIndex(Index: Integer): UnicodeString;
     function GetString(Index: Integer): UnicodeString;
     function IndexOf(const AString: UnicodeString): Integer;
+    function Insert(Index: Integer; const AString: UnicodeString): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclUnicodeStrCollection): Boolean;
     function LastIndexOf(const AString: UnicodeString): Integer;
-    function Delete(Index: Integer): UnicodeString; overload;
     procedure SetString(Index: Integer; const AString: UnicodeString);
     function SubList(First, Count: Integer): IJclUnicodeStrList;
   public
@@ -349,11 +364,12 @@ type
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     { IJclUnicodeStrIterator }
     function Add(const AString: UnicodeString): Boolean;
-    function IteratorEquals(const AIterator: IJclUnicodeStrIterator): Boolean;
+    procedure Extract;
     function GetString: UnicodeString;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(const AString: UnicodeString): Boolean;
+    function IteratorEquals(const AIterator: IJclUnicodeStrIterator): Boolean;
     function Next: UnicodeString;
     function NextIndex: Integer;
     function Previous: UnicodeString;
@@ -398,13 +414,15 @@ type
     function Add(const AValue: Single): Boolean;
     function AddAll(const ACollection: IJclSingleCollection): Boolean;
     procedure Clear;
+    function CollectionEquals(const ACollection: IJclSingleCollection): Boolean;
     function Contains(const AValue: Single): Boolean;
     function ContainsAll(const ACollection: IJclSingleCollection): Boolean;
-    function CollectionEquals(const ACollection: IJclSingleCollection): Boolean;
+    function Extract(const AValue: Single): Boolean; 
+    function ExtractAll(const ACollection: IJclSingleCollection): Boolean;
     function First: IJclSingleIterator;
     function IsEmpty: Boolean;
     function Last: IJclSingleIterator;
-    function Remove(const AValue: Single): Boolean; overload;
+    function Remove(const AValue: Single): Boolean; 
     function RemoveAll(const ACollection: IJclSingleCollection): Boolean;
     function RetainAll(const ACollection: IJclSingleCollection): Boolean;
     function Size: Integer;
@@ -412,12 +430,13 @@ type
     function GetEnumerator: IJclSingleIterator;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclSingleList }
-    function Insert(Index: Integer; const AValue: Single): Boolean;
-    function InsertAll(Index: Integer; const ACollection: IJclSingleCollection): Boolean;
+    function Delete(Index: Integer): Single;
+    function ExtractIndex(Index: Integer): Single;
     function GetValue(Index: Integer): Single;
     function IndexOf(const AValue: Single): Integer;
+    function Insert(Index: Integer; const AValue: Single): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclSingleCollection): Boolean;
     function LastIndexOf(const AValue: Single): Integer;
-    function Delete(Index: Integer): Single; overload;
     procedure SetValue(Index: Integer; const AValue: Single);
     function SubList(First, Count: Integer): IJclSingleList;
   public
@@ -437,11 +456,12 @@ type
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     { IJclSingleIterator }
     function Add(const AValue: Single): Boolean;
-    function IteratorEquals(const AIterator: IJclSingleIterator): Boolean;
+    procedure Extract;
     function GetValue: Single;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(const AValue: Single): Boolean;
+    function IteratorEquals(const AIterator: IJclSingleIterator): Boolean;
     function Next: Single;
     function NextIndex: Integer;
     function Previous: Single;
@@ -475,13 +495,15 @@ type
     function Add(const AValue: Double): Boolean;
     function AddAll(const ACollection: IJclDoubleCollection): Boolean;
     procedure Clear;
+    function CollectionEquals(const ACollection: IJclDoubleCollection): Boolean;
     function Contains(const AValue: Double): Boolean;
     function ContainsAll(const ACollection: IJclDoubleCollection): Boolean;
-    function CollectionEquals(const ACollection: IJclDoubleCollection): Boolean;
+    function Extract(const AValue: Double): Boolean; 
+    function ExtractAll(const ACollection: IJclDoubleCollection): Boolean;
     function First: IJclDoubleIterator;
     function IsEmpty: Boolean;
     function Last: IJclDoubleIterator;
-    function Remove(const AValue: Double): Boolean; overload;
+    function Remove(const AValue: Double): Boolean; 
     function RemoveAll(const ACollection: IJclDoubleCollection): Boolean;
     function RetainAll(const ACollection: IJclDoubleCollection): Boolean;
     function Size: Integer;
@@ -489,12 +511,13 @@ type
     function GetEnumerator: IJclDoubleIterator;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclDoubleList }
-    function Insert(Index: Integer; const AValue: Double): Boolean;
-    function InsertAll(Index: Integer; const ACollection: IJclDoubleCollection): Boolean;
+    function Delete(Index: Integer): Double;
+    function ExtractIndex(Index: Integer): Double;
     function GetValue(Index: Integer): Double;
     function IndexOf(const AValue: Double): Integer;
+    function Insert(Index: Integer; const AValue: Double): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclDoubleCollection): Boolean;
     function LastIndexOf(const AValue: Double): Integer;
-    function Delete(Index: Integer): Double; overload;
     procedure SetValue(Index: Integer; const AValue: Double);
     function SubList(First, Count: Integer): IJclDoubleList;
   public
@@ -514,11 +537,12 @@ type
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     { IJclDoubleIterator }
     function Add(const AValue: Double): Boolean;
-    function IteratorEquals(const AIterator: IJclDoubleIterator): Boolean;
+    procedure Extract;
     function GetValue: Double;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(const AValue: Double): Boolean;
+    function IteratorEquals(const AIterator: IJclDoubleIterator): Boolean;
     function Next: Double;
     function NextIndex: Integer;
     function Previous: Double;
@@ -552,13 +576,15 @@ type
     function Add(const AValue: Extended): Boolean;
     function AddAll(const ACollection: IJclExtendedCollection): Boolean;
     procedure Clear;
+    function CollectionEquals(const ACollection: IJclExtendedCollection): Boolean;
     function Contains(const AValue: Extended): Boolean;
     function ContainsAll(const ACollection: IJclExtendedCollection): Boolean;
-    function CollectionEquals(const ACollection: IJclExtendedCollection): Boolean;
+    function Extract(const AValue: Extended): Boolean; 
+    function ExtractAll(const ACollection: IJclExtendedCollection): Boolean;
     function First: IJclExtendedIterator;
     function IsEmpty: Boolean;
     function Last: IJclExtendedIterator;
-    function Remove(const AValue: Extended): Boolean; overload;
+    function Remove(const AValue: Extended): Boolean; 
     function RemoveAll(const ACollection: IJclExtendedCollection): Boolean;
     function RetainAll(const ACollection: IJclExtendedCollection): Boolean;
     function Size: Integer;
@@ -566,12 +592,13 @@ type
     function GetEnumerator: IJclExtendedIterator;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclExtendedList }
-    function Insert(Index: Integer; const AValue: Extended): Boolean;
-    function InsertAll(Index: Integer; const ACollection: IJclExtendedCollection): Boolean;
+    function Delete(Index: Integer): Extended;
+    function ExtractIndex(Index: Integer): Extended;
     function GetValue(Index: Integer): Extended;
     function IndexOf(const AValue: Extended): Integer;
+    function Insert(Index: Integer; const AValue: Extended): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclExtendedCollection): Boolean;
     function LastIndexOf(const AValue: Extended): Integer;
-    function Delete(Index: Integer): Extended; overload;
     procedure SetValue(Index: Integer; const AValue: Extended);
     function SubList(First, Count: Integer): IJclExtendedList;
   public
@@ -591,11 +618,12 @@ type
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     { IJclExtendedIterator }
     function Add(const AValue: Extended): Boolean;
-    function IteratorEquals(const AIterator: IJclExtendedIterator): Boolean;
+    procedure Extract;
     function GetValue: Extended;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(const AValue: Extended): Boolean;
+    function IteratorEquals(const AIterator: IJclExtendedIterator): Boolean;
     function Next: Extended;
     function NextIndex: Integer;
     function Previous: Extended;
@@ -639,13 +667,15 @@ type
     function Add(AValue: Integer): Boolean;
     function AddAll(const ACollection: IJclIntegerCollection): Boolean;
     procedure Clear;
+    function CollectionEquals(const ACollection: IJclIntegerCollection): Boolean;
     function Contains(AValue: Integer): Boolean;
     function ContainsAll(const ACollection: IJclIntegerCollection): Boolean;
-    function CollectionEquals(const ACollection: IJclIntegerCollection): Boolean;
+    function Extract(AValue: Integer): Boolean; 
+    function ExtractAll(const ACollection: IJclIntegerCollection): Boolean;
     function First: IJclIntegerIterator;
     function IsEmpty: Boolean;
     function Last: IJclIntegerIterator;
-    function Remove(AValue: Integer): Boolean; overload;
+    function Remove(AValue: Integer): Boolean; 
     function RemoveAll(const ACollection: IJclIntegerCollection): Boolean;
     function RetainAll(const ACollection: IJclIntegerCollection): Boolean;
     function Size: Integer;
@@ -653,12 +683,13 @@ type
     function GetEnumerator: IJclIntegerIterator;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclIntegerList }
-    function Insert(Index: Integer; AValue: Integer): Boolean;
-    function InsertAll(Index: Integer; const ACollection: IJclIntegerCollection): Boolean;
+    function Delete(Index: Integer): Integer;
+    function ExtractIndex(Index: Integer): Integer;
     function GetValue(Index: Integer): Integer;
     function IndexOf(AValue: Integer): Integer;
+    function Insert(Index: Integer; AValue: Integer): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclIntegerCollection): Boolean;
     function LastIndexOf(AValue: Integer): Integer;
-    function Delete(Index: Integer): Integer; overload;
     procedure SetValue(Index: Integer; AValue: Integer);
     function SubList(First, Count: Integer): IJclIntegerList;
   public
@@ -678,11 +709,12 @@ type
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     { IJclIntegerIterator }
     function Add(AValue: Integer): Boolean;
-    function IteratorEquals(const AIterator: IJclIntegerIterator): Boolean;
+    procedure Extract;
     function GetValue: Integer;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(AValue: Integer): Boolean;
+    function IteratorEquals(const AIterator: IJclIntegerIterator): Boolean;
     function Next: Integer;
     function NextIndex: Integer;
     function Previous: Integer;
@@ -716,13 +748,15 @@ type
     function Add(AValue: Cardinal): Boolean;
     function AddAll(const ACollection: IJclCardinalCollection): Boolean;
     procedure Clear;
+    function CollectionEquals(const ACollection: IJclCardinalCollection): Boolean;
     function Contains(AValue: Cardinal): Boolean;
     function ContainsAll(const ACollection: IJclCardinalCollection): Boolean;
-    function CollectionEquals(const ACollection: IJclCardinalCollection): Boolean;
+    function Extract(AValue: Cardinal): Boolean; 
+    function ExtractAll(const ACollection: IJclCardinalCollection): Boolean;
     function First: IJclCardinalIterator;
     function IsEmpty: Boolean;
     function Last: IJclCardinalIterator;
-    function Remove(AValue: Cardinal): Boolean; overload;
+    function Remove(AValue: Cardinal): Boolean; 
     function RemoveAll(const ACollection: IJclCardinalCollection): Boolean;
     function RetainAll(const ACollection: IJclCardinalCollection): Boolean;
     function Size: Integer;
@@ -730,12 +764,13 @@ type
     function GetEnumerator: IJclCardinalIterator;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclCardinalList }
-    function Insert(Index: Integer; AValue: Cardinal): Boolean;
-    function InsertAll(Index: Integer; const ACollection: IJclCardinalCollection): Boolean;
+    function Delete(Index: Integer): Cardinal;
+    function ExtractIndex(Index: Integer): Cardinal;
     function GetValue(Index: Integer): Cardinal;
     function IndexOf(AValue: Cardinal): Integer;
+    function Insert(Index: Integer; AValue: Cardinal): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclCardinalCollection): Boolean;
     function LastIndexOf(AValue: Cardinal): Integer;
-    function Delete(Index: Integer): Cardinal; overload;
     procedure SetValue(Index: Integer; AValue: Cardinal);
     function SubList(First, Count: Integer): IJclCardinalList;
   public
@@ -755,11 +790,12 @@ type
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     { IJclCardinalIterator }
     function Add(AValue: Cardinal): Boolean;
-    function IteratorEquals(const AIterator: IJclCardinalIterator): Boolean;
+    procedure Extract;
     function GetValue: Cardinal;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(AValue: Cardinal): Boolean;
+    function IteratorEquals(const AIterator: IJclCardinalIterator): Boolean;
     function Next: Cardinal;
     function NextIndex: Integer;
     function Previous: Cardinal;
@@ -793,13 +829,15 @@ type
     function Add(const AValue: Int64): Boolean;
     function AddAll(const ACollection: IJclInt64Collection): Boolean;
     procedure Clear;
+    function CollectionEquals(const ACollection: IJclInt64Collection): Boolean;
     function Contains(const AValue: Int64): Boolean;
     function ContainsAll(const ACollection: IJclInt64Collection): Boolean;
-    function CollectionEquals(const ACollection: IJclInt64Collection): Boolean;
+    function Extract(const AValue: Int64): Boolean; 
+    function ExtractAll(const ACollection: IJclInt64Collection): Boolean;
     function First: IJclInt64Iterator;
     function IsEmpty: Boolean;
     function Last: IJclInt64Iterator;
-    function Remove(const AValue: Int64): Boolean; overload;
+    function Remove(const AValue: Int64): Boolean; 
     function RemoveAll(const ACollection: IJclInt64Collection): Boolean;
     function RetainAll(const ACollection: IJclInt64Collection): Boolean;
     function Size: Integer;
@@ -807,12 +845,13 @@ type
     function GetEnumerator: IJclInt64Iterator;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclInt64List }
-    function Insert(Index: Integer; const AValue: Int64): Boolean;
-    function InsertAll(Index: Integer; const ACollection: IJclInt64Collection): Boolean;
+    function Delete(Index: Integer): Int64;
+    function ExtractIndex(Index: Integer): Int64;
     function GetValue(Index: Integer): Int64;
     function IndexOf(const AValue: Int64): Integer;
+    function Insert(Index: Integer; const AValue: Int64): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclInt64Collection): Boolean;
     function LastIndexOf(const AValue: Int64): Integer;
-    function Delete(Index: Integer): Int64; overload;
     procedure SetValue(Index: Integer; const AValue: Int64);
     function SubList(First, Count: Integer): IJclInt64List;
   public
@@ -832,11 +871,12 @@ type
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     { IJclInt64Iterator }
     function Add(const AValue: Int64): Boolean;
-    function IteratorEquals(const AIterator: IJclInt64Iterator): Boolean;
+    procedure Extract;
     function GetValue: Int64;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(const AValue: Int64): Boolean;
+    function IteratorEquals(const AIterator: IJclInt64Iterator): Boolean;
     function Next: Int64;
     function NextIndex: Integer;
     function Previous: Int64;
@@ -871,13 +911,15 @@ type
     function Add(APtr: Pointer): Boolean;
     function AddAll(const ACollection: IJclPtrCollection): Boolean;
     procedure Clear;
+    function CollectionEquals(const ACollection: IJclPtrCollection): Boolean;
     function Contains(APtr: Pointer): Boolean;
     function ContainsAll(const ACollection: IJclPtrCollection): Boolean;
-    function CollectionEquals(const ACollection: IJclPtrCollection): Boolean;
+    function Extract(APtr: Pointer): Boolean; 
+    function ExtractAll(const ACollection: IJclPtrCollection): Boolean;
     function First: IJclPtrIterator;
     function IsEmpty: Boolean;
     function Last: IJclPtrIterator;
-    function Remove(APtr: Pointer): Boolean; overload;
+    function Remove(APtr: Pointer): Boolean; 
     function RemoveAll(const ACollection: IJclPtrCollection): Boolean;
     function RetainAll(const ACollection: IJclPtrCollection): Boolean;
     function Size: Integer;
@@ -885,12 +927,13 @@ type
     function GetEnumerator: IJclPtrIterator;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclPtrList }
-    function Insert(Index: Integer; APtr: Pointer): Boolean;
-    function InsertAll(Index: Integer; const ACollection: IJclPtrCollection): Boolean;
+    function Delete(Index: Integer): Pointer;
+    function ExtractIndex(Index: Integer): Pointer;
     function GetPointer(Index: Integer): Pointer;
     function IndexOf(APtr: Pointer): Integer;
+    function Insert(Index: Integer; APtr: Pointer): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclPtrCollection): Boolean;
     function LastIndexOf(APtr: Pointer): Integer;
-    function Delete(Index: Integer): Pointer; overload;
     procedure SetPointer(Index: Integer; APtr: Pointer);
     function SubList(First, Count: Integer): IJclPtrList;
   public
@@ -910,11 +953,12 @@ type
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     { IJclPtrIterator }
     function Add(APtr: Pointer): Boolean;
-    function IteratorEquals(const AIterator: IJclPtrIterator): Boolean;
+    procedure Extract;
     function GetPointer: Pointer;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(APtr: Pointer): Boolean;
+    function IteratorEquals(const AIterator: IJclPtrIterator): Boolean;
     function Next: Pointer;
     function NextIndex: Integer;
     function Previous: Pointer;
@@ -949,13 +993,15 @@ type
     function Add(AObject: TObject): Boolean;
     function AddAll(const ACollection: IJclCollection): Boolean;
     procedure Clear;
+    function CollectionEquals(const ACollection: IJclCollection): Boolean;
     function Contains(AObject: TObject): Boolean;
     function ContainsAll(const ACollection: IJclCollection): Boolean;
-    function CollectionEquals(const ACollection: IJclCollection): Boolean;
+    function Extract(AObject: TObject): Boolean; 
+    function ExtractAll(const ACollection: IJclCollection): Boolean;
     function First: IJclIterator;
     function IsEmpty: Boolean;
     function Last: IJclIterator;
-    function Remove(AObject: TObject): Boolean; overload;
+    function Remove(AObject: TObject): Boolean; 
     function RemoveAll(const ACollection: IJclCollection): Boolean;
     function RetainAll(const ACollection: IJclCollection): Boolean;
     function Size: Integer;
@@ -963,12 +1009,13 @@ type
     function GetEnumerator: IJclIterator;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclList }
-    function Insert(Index: Integer; AObject: TObject): Boolean;
-    function InsertAll(Index: Integer; const ACollection: IJclCollection): Boolean;
+    function Delete(Index: Integer): TObject;
+    function ExtractIndex(Index: Integer): TObject;
     function GetObject(Index: Integer): TObject;
     function IndexOf(AObject: TObject): Integer;
+    function Insert(Index: Integer; AObject: TObject): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclCollection): Boolean;
     function LastIndexOf(AObject: TObject): Integer;
-    function Delete(Index: Integer): TObject; overload;
     procedure SetObject(Index: Integer; AObject: TObject);
     function SubList(First, Count: Integer): IJclList;
   public
@@ -988,11 +1035,12 @@ type
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     { IJclIterator }
     function Add(AObject: TObject): Boolean;
-    function IteratorEquals(const AIterator: IJclIterator): Boolean;
+    procedure Extract;
     function GetObject: TObject;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(AObject: TObject): Boolean;
+    function IteratorEquals(const AIterator: IJclIterator): Boolean;
     function Next: TObject;
     function NextIndex: Integer;
     function Previous: TObject;
@@ -1032,13 +1080,15 @@ type
     function Add(const AItem: T): Boolean;
     function AddAll(const ACollection: IJclCollection<T>): Boolean;
     procedure Clear;
+    function CollectionEquals(const ACollection: IJclCollection<T>): Boolean;
     function Contains(const AItem: T): Boolean;
     function ContainsAll(const ACollection: IJclCollection<T>): Boolean;
-    function CollectionEquals(const ACollection: IJclCollection<T>): Boolean;
+    function Extract(const AItem: T): Boolean; 
+    function ExtractAll(const ACollection: IJclCollection<T>): Boolean;
     function First: IJclIterator<T>;
     function IsEmpty: Boolean;
     function Last: IJclIterator<T>;
-    function Remove(const AItem: T): Boolean; overload;
+    function Remove(const AItem: T): Boolean; 
     function RemoveAll(const ACollection: IJclCollection<T>): Boolean;
     function RetainAll(const ACollection: IJclCollection<T>): Boolean;
     function Size: Integer;
@@ -1046,12 +1096,13 @@ type
     function GetEnumerator: IJclIterator<T>;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclList<T> }
-    function Insert(Index: Integer; const AItem: T): Boolean;
-    function InsertAll(Index: Integer; const ACollection: IJclCollection<T>): Boolean;
+    function Delete(Index: Integer): T;
+    function ExtractIndex(Index: Integer): T;
     function GetItem(Index: Integer): T;
     function IndexOf(const AItem: T): Integer;
+    function Insert(Index: Integer; const AItem: T): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclCollection<T>): Boolean;
     function LastIndexOf(const AItem: T): Integer;
-    function Delete(Index: Integer): T; overload;
     procedure SetItem(Index: Integer; const AItem: T);
     function SubList(First, Count: Integer): IJclList<T>;
   public
@@ -1071,11 +1122,12 @@ type
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     { IJclIterator<T> }
     function Add(const AItem: T): Boolean;
-    function IteratorEquals(const AIterator: IJclIterator<T>): Boolean;
+    procedure Extract;
     function GetItem: T;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(const AItem: T): Boolean;
+    function IteratorEquals(const AIterator: IJclIterator<T>): Boolean;
     function Next: T;
     function NextIndex: Integer;
     function Previous: T;
@@ -1258,6 +1310,37 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclIntfVector.CollectionEquals(const ACollection: IJclIntfCollection): Boolean;
+var
+  I: Integer;
+  It: IJclIntfIterator;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    for I := 0 to FSize - 1 do
+      if not ItemsEqual(Items[I], It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclIntfVector.Contains(const AInterface: IInterface): Boolean;
 var
   I: Integer;
@@ -1331,33 +1414,84 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfVector.CollectionEquals(const ACollection: IJclIntfCollection): Boolean;
+function TJclIntfVector.Extract(const AInterface: IInterface): Boolean;
 var
   I: Integer;
-  It: IJclIntfIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    for I := FSize - 1 downto 0 do
+      if ItemsEqual(FItems[I], AInterface) then
+      begin
+        FItems[I] := nil;
+        MoveArray(FItems, I + 1, I, FSize - I);
+        Dec(FSize);
+        Result := True;
+        if FRemoveSingleElement then
+          Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfVector.ExtractAll(const ACollection: IJclIntfCollection): Boolean;
+var
+  It: IJclIntfIterator;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
     Result := True;
     It := ACollection.First;
-    for I := 0 to FSize - 1 do
-      if not ItemsEqual(Items[I], It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfVector.ExtractIndex(Index: Integer): IInterface;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Result := FItems[Index];
+      MoveArray(FItems, Index + 1, Index, FSize - Index);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := RaiseOutOfBoundsError;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1534,7 +1668,7 @@ end;
 
 function TJclIntfVector.Remove(const AInterface: IInterface): Boolean;
 var
-  I: Integer;
+  Extracted: IInterface;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -1543,17 +1677,12 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for I := FSize - 1 downto 0 do
-      if ItemsEqual(FItems[I], AInterface) then
-      begin
-        FreeObject(FItems[I]); // Force Release
-        MoveArray(FItems, I + 1, I, FSize - I);
-        Dec(FSize);
-        Result := True;
-        if FRemoveSingleElement then
-          Break;
-      end;
+    Result := Extract(AInterface);
+    if Result then
+    begin
+      Extracted := AInterface;
+      FreeObject(Extracted);
+    end;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -1744,20 +1873,11 @@ begin
   Result := TJclIntfVectorIterator.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
-function TJclIntfVectorIterator.IteratorEquals(const AIterator: IJclIntfIterator): Boolean;
-var
-  Obj: TObject;
-  ItrObj: TJclIntfVectorIterator;
+procedure TJclIntfVectorIterator.Extract;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is TJclIntfVectorIterator then
-  begin
-    ItrObj := TJclIntfVectorIterator(Obj);
-    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
-  end;
+  CheckValid;
+  Valid := False;
+  FOwnList.ExtractIndex(FCursor);
 end;
 
 function TJclIntfVectorIterator.GetObject: IInterface;
@@ -1786,6 +1906,22 @@ function TJclIntfVectorIterator.Insert(const AInterface: IInterface): Boolean;
 begin
   CheckValid;
   Result := FOwnList.Insert(FCursor, AInterface);
+end;
+
+function TJclIntfVectorIterator.IteratorEquals(const AIterator: IJclIntfIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclIntfVectorIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclIntfVectorIterator then
+  begin
+    ItrObj := TJclIntfVectorIterator(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
@@ -1974,6 +2110,37 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclAnsiStrVector.CollectionEquals(const ACollection: IJclAnsiStrCollection): Boolean;
+var
+  I: Integer;
+  It: IJclAnsiStrIterator;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    for I := 0 to FSize - 1 do
+      if not ItemsEqual(Items[I], It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclAnsiStrVector.Contains(const AString: AnsiString): Boolean;
 var
   I: Integer;
@@ -2047,33 +2214,84 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclAnsiStrVector.CollectionEquals(const ACollection: IJclAnsiStrCollection): Boolean;
+function TJclAnsiStrVector.Extract(const AString: AnsiString): Boolean;
 var
   I: Integer;
-  It: IJclAnsiStrIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    for I := FSize - 1 downto 0 do
+      if ItemsEqual(FItems[I], AString) then
+      begin
+        FItems[I] := '';
+        MoveArray(FItems, I + 1, I, FSize - I);
+        Dec(FSize);
+        Result := True;
+        if FRemoveSingleElement then
+          Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclAnsiStrVector.ExtractAll(const ACollection: IJclAnsiStrCollection): Boolean;
+var
+  It: IJclAnsiStrIterator;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
     Result := True;
     It := ACollection.First;
-    for I := 0 to FSize - 1 do
-      if not ItemsEqual(Items[I], It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclAnsiStrVector.ExtractIndex(Index: Integer): AnsiString;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Result := FItems[Index];
+      MoveArray(FItems, Index + 1, Index, FSize - Index);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := RaiseOutOfBoundsError;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2250,7 +2468,7 @@ end;
 
 function TJclAnsiStrVector.Remove(const AString: AnsiString): Boolean;
 var
-  I: Integer;
+  Extracted: AnsiString;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -2259,17 +2477,12 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for I := FSize - 1 downto 0 do
-      if ItemsEqual(FItems[I], AString) then
-      begin
-        FreeString(FItems[I]); // Force Release
-        MoveArray(FItems, I + 1, I, FSize - I);
-        Dec(FSize);
-        Result := True;
-        if FRemoveSingleElement then
-          Break;
-      end;
+    Result := Extract(AString);
+    if Result then
+    begin
+      Extracted := AString;
+      FreeString(Extracted);
+    end;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -2460,20 +2673,11 @@ begin
   Result := TJclAnsiStrVectorIterator.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
-function TJclAnsiStrVectorIterator.IteratorEquals(const AIterator: IJclAnsiStrIterator): Boolean;
-var
-  Obj: TObject;
-  ItrObj: TJclAnsiStrVectorIterator;
+procedure TJclAnsiStrVectorIterator.Extract;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is TJclAnsiStrVectorIterator then
-  begin
-    ItrObj := TJclAnsiStrVectorIterator(Obj);
-    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
-  end;
+  CheckValid;
+  Valid := False;
+  FOwnList.ExtractIndex(FCursor);
 end;
 
 function TJclAnsiStrVectorIterator.GetString: AnsiString;
@@ -2502,6 +2706,22 @@ function TJclAnsiStrVectorIterator.Insert(const AString: AnsiString): Boolean;
 begin
   CheckValid;
   Result := FOwnList.Insert(FCursor, AString);
+end;
+
+function TJclAnsiStrVectorIterator.IteratorEquals(const AIterator: IJclAnsiStrIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclAnsiStrVectorIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclAnsiStrVectorIterator then
+  begin
+    ItrObj := TJclAnsiStrVectorIterator(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
@@ -2690,6 +2910,37 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclWideStrVector.CollectionEquals(const ACollection: IJclWideStrCollection): Boolean;
+var
+  I: Integer;
+  It: IJclWideStrIterator;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    for I := 0 to FSize - 1 do
+      if not ItemsEqual(Items[I], It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclWideStrVector.Contains(const AString: WideString): Boolean;
 var
   I: Integer;
@@ -2763,33 +3014,84 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclWideStrVector.CollectionEquals(const ACollection: IJclWideStrCollection): Boolean;
+function TJclWideStrVector.Extract(const AString: WideString): Boolean;
 var
   I: Integer;
-  It: IJclWideStrIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    for I := FSize - 1 downto 0 do
+      if ItemsEqual(FItems[I], AString) then
+      begin
+        FItems[I] := '';
+        MoveArray(FItems, I + 1, I, FSize - I);
+        Dec(FSize);
+        Result := True;
+        if FRemoveSingleElement then
+          Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclWideStrVector.ExtractAll(const ACollection: IJclWideStrCollection): Boolean;
+var
+  It: IJclWideStrIterator;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
     Result := True;
     It := ACollection.First;
-    for I := 0 to FSize - 1 do
-      if not ItemsEqual(Items[I], It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclWideStrVector.ExtractIndex(Index: Integer): WideString;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Result := FItems[Index];
+      MoveArray(FItems, Index + 1, Index, FSize - Index);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := RaiseOutOfBoundsError;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2966,7 +3268,7 @@ end;
 
 function TJclWideStrVector.Remove(const AString: WideString): Boolean;
 var
-  I: Integer;
+  Extracted: WideString;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -2975,17 +3277,12 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for I := FSize - 1 downto 0 do
-      if ItemsEqual(FItems[I], AString) then
-      begin
-        FreeString(FItems[I]); // Force Release
-        MoveArray(FItems, I + 1, I, FSize - I);
-        Dec(FSize);
-        Result := True;
-        if FRemoveSingleElement then
-          Break;
-      end;
+    Result := Extract(AString);
+    if Result then
+    begin
+      Extracted := AString;
+      FreeString(Extracted);
+    end;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -3176,20 +3473,11 @@ begin
   Result := TJclWideStrVectorIterator.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
-function TJclWideStrVectorIterator.IteratorEquals(const AIterator: IJclWideStrIterator): Boolean;
-var
-  Obj: TObject;
-  ItrObj: TJclWideStrVectorIterator;
+procedure TJclWideStrVectorIterator.Extract;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is TJclWideStrVectorIterator then
-  begin
-    ItrObj := TJclWideStrVectorIterator(Obj);
-    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
-  end;
+  CheckValid;
+  Valid := False;
+  FOwnList.ExtractIndex(FCursor);
 end;
 
 function TJclWideStrVectorIterator.GetString: WideString;
@@ -3218,6 +3506,22 @@ function TJclWideStrVectorIterator.Insert(const AString: WideString): Boolean;
 begin
   CheckValid;
   Result := FOwnList.Insert(FCursor, AString);
+end;
+
+function TJclWideStrVectorIterator.IteratorEquals(const AIterator: IJclWideStrIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclWideStrVectorIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclWideStrVectorIterator then
+  begin
+    ItrObj := TJclWideStrVectorIterator(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
@@ -3407,6 +3711,37 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclUnicodeStrVector.CollectionEquals(const ACollection: IJclUnicodeStrCollection): Boolean;
+var
+  I: Integer;
+  It: IJclUnicodeStrIterator;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    for I := 0 to FSize - 1 do
+      if not ItemsEqual(Items[I], It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclUnicodeStrVector.Contains(const AString: UnicodeString): Boolean;
 var
   I: Integer;
@@ -3480,33 +3815,84 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclUnicodeStrVector.CollectionEquals(const ACollection: IJclUnicodeStrCollection): Boolean;
+function TJclUnicodeStrVector.Extract(const AString: UnicodeString): Boolean;
 var
   I: Integer;
-  It: IJclUnicodeStrIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    for I := FSize - 1 downto 0 do
+      if ItemsEqual(FItems[I], AString) then
+      begin
+        FItems[I] := '';
+        MoveArray(FItems, I + 1, I, FSize - I);
+        Dec(FSize);
+        Result := True;
+        if FRemoveSingleElement then
+          Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrVector.ExtractAll(const ACollection: IJclUnicodeStrCollection): Boolean;
+var
+  It: IJclUnicodeStrIterator;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
     Result := True;
     It := ACollection.First;
-    for I := 0 to FSize - 1 do
-      if not ItemsEqual(Items[I], It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrVector.ExtractIndex(Index: Integer): UnicodeString;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Result := FItems[Index];
+      MoveArray(FItems, Index + 1, Index, FSize - Index);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := RaiseOutOfBoundsError;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3683,7 +4069,7 @@ end;
 
 function TJclUnicodeStrVector.Remove(const AString: UnicodeString): Boolean;
 var
-  I: Integer;
+  Extracted: UnicodeString;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -3692,17 +4078,12 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for I := FSize - 1 downto 0 do
-      if ItemsEqual(FItems[I], AString) then
-      begin
-        FreeString(FItems[I]); // Force Release
-        MoveArray(FItems, I + 1, I, FSize - I);
-        Dec(FSize);
-        Result := True;
-        if FRemoveSingleElement then
-          Break;
-      end;
+    Result := Extract(AString);
+    if Result then
+    begin
+      Extracted := AString;
+      FreeString(Extracted);
+    end;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -3893,20 +4274,11 @@ begin
   Result := TJclUnicodeStrVectorIterator.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
-function TJclUnicodeStrVectorIterator.IteratorEquals(const AIterator: IJclUnicodeStrIterator): Boolean;
-var
-  Obj: TObject;
-  ItrObj: TJclUnicodeStrVectorIterator;
+procedure TJclUnicodeStrVectorIterator.Extract;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is TJclUnicodeStrVectorIterator then
-  begin
-    ItrObj := TJclUnicodeStrVectorIterator(Obj);
-    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
-  end;
+  CheckValid;
+  Valid := False;
+  FOwnList.ExtractIndex(FCursor);
 end;
 
 function TJclUnicodeStrVectorIterator.GetString: UnicodeString;
@@ -3935,6 +4307,22 @@ function TJclUnicodeStrVectorIterator.Insert(const AString: UnicodeString): Bool
 begin
   CheckValid;
   Result := FOwnList.Insert(FCursor, AString);
+end;
+
+function TJclUnicodeStrVectorIterator.IteratorEquals(const AIterator: IJclUnicodeStrIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclUnicodeStrVectorIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclUnicodeStrVectorIterator then
+  begin
+    ItrObj := TJclUnicodeStrVectorIterator(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
@@ -4124,6 +4512,37 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclSingleVector.CollectionEquals(const ACollection: IJclSingleCollection): Boolean;
+var
+  I: Integer;
+  It: IJclSingleIterator;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    for I := 0 to FSize - 1 do
+      if not ItemsEqual(Items[I], It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclSingleVector.Contains(const AValue: Single): Boolean;
 var
   I: Integer;
@@ -4197,33 +4616,84 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclSingleVector.CollectionEquals(const ACollection: IJclSingleCollection): Boolean;
+function TJclSingleVector.Extract(const AValue: Single): Boolean;
 var
   I: Integer;
-  It: IJclSingleIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    for I := FSize - 1 downto 0 do
+      if ItemsEqual(FItems[I], AValue) then
+      begin
+        FItems[I] := 0.0;
+        MoveArray(FItems, I + 1, I, FSize - I);
+        Dec(FSize);
+        Result := True;
+        if FRemoveSingleElement then
+          Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleVector.ExtractAll(const ACollection: IJclSingleCollection): Boolean;
+var
+  It: IJclSingleIterator;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
     Result := True;
     It := ACollection.First;
-    for I := 0 to FSize - 1 do
-      if not ItemsEqual(Items[I], It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleVector.ExtractIndex(Index: Integer): Single;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Result := FItems[Index];
+      MoveArray(FItems, Index + 1, Index, FSize - Index);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := RaiseOutOfBoundsError;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -4400,7 +4870,7 @@ end;
 
 function TJclSingleVector.Remove(const AValue: Single): Boolean;
 var
-  I: Integer;
+  Extracted: Single;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -4409,17 +4879,12 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for I := FSize - 1 downto 0 do
-      if ItemsEqual(FItems[I], AValue) then
-      begin
-        FreeSingle(FItems[I]); // Force Release
-        MoveArray(FItems, I + 1, I, FSize - I);
-        Dec(FSize);
-        Result := True;
-        if FRemoveSingleElement then
-          Break;
-      end;
+    Result := Extract(AValue);
+    if Result then
+    begin
+      Extracted := AValue;
+      FreeSingle(Extracted);
+    end;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -4610,20 +5075,11 @@ begin
   Result := TJclSingleVectorIterator.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
-function TJclSingleVectorIterator.IteratorEquals(const AIterator: IJclSingleIterator): Boolean;
-var
-  Obj: TObject;
-  ItrObj: TJclSingleVectorIterator;
+procedure TJclSingleVectorIterator.Extract;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is TJclSingleVectorIterator then
-  begin
-    ItrObj := TJclSingleVectorIterator(Obj);
-    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
-  end;
+  CheckValid;
+  Valid := False;
+  FOwnList.ExtractIndex(FCursor);
 end;
 
 function TJclSingleVectorIterator.GetValue: Single;
@@ -4652,6 +5108,22 @@ function TJclSingleVectorIterator.Insert(const AValue: Single): Boolean;
 begin
   CheckValid;
   Result := FOwnList.Insert(FCursor, AValue);
+end;
+
+function TJclSingleVectorIterator.IteratorEquals(const AIterator: IJclSingleIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclSingleVectorIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclSingleVectorIterator then
+  begin
+    ItrObj := TJclSingleVectorIterator(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
@@ -4840,6 +5312,37 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclDoubleVector.CollectionEquals(const ACollection: IJclDoubleCollection): Boolean;
+var
+  I: Integer;
+  It: IJclDoubleIterator;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    for I := 0 to FSize - 1 do
+      if not ItemsEqual(Items[I], It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclDoubleVector.Contains(const AValue: Double): Boolean;
 var
   I: Integer;
@@ -4913,33 +5416,84 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclDoubleVector.CollectionEquals(const ACollection: IJclDoubleCollection): Boolean;
+function TJclDoubleVector.Extract(const AValue: Double): Boolean;
 var
   I: Integer;
-  It: IJclDoubleIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    for I := FSize - 1 downto 0 do
+      if ItemsEqual(FItems[I], AValue) then
+      begin
+        FItems[I] := 0.0;
+        MoveArray(FItems, I + 1, I, FSize - I);
+        Dec(FSize);
+        Result := True;
+        if FRemoveSingleElement then
+          Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleVector.ExtractAll(const ACollection: IJclDoubleCollection): Boolean;
+var
+  It: IJclDoubleIterator;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
     Result := True;
     It := ACollection.First;
-    for I := 0 to FSize - 1 do
-      if not ItemsEqual(Items[I], It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleVector.ExtractIndex(Index: Integer): Double;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Result := FItems[Index];
+      MoveArray(FItems, Index + 1, Index, FSize - Index);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := RaiseOutOfBoundsError;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -5116,7 +5670,7 @@ end;
 
 function TJclDoubleVector.Remove(const AValue: Double): Boolean;
 var
-  I: Integer;
+  Extracted: Double;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -5125,17 +5679,12 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for I := FSize - 1 downto 0 do
-      if ItemsEqual(FItems[I], AValue) then
-      begin
-        FreeDouble(FItems[I]); // Force Release
-        MoveArray(FItems, I + 1, I, FSize - I);
-        Dec(FSize);
-        Result := True;
-        if FRemoveSingleElement then
-          Break;
-      end;
+    Result := Extract(AValue);
+    if Result then
+    begin
+      Extracted := AValue;
+      FreeDouble(Extracted);
+    end;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -5326,20 +5875,11 @@ begin
   Result := TJclDoubleVectorIterator.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
-function TJclDoubleVectorIterator.IteratorEquals(const AIterator: IJclDoubleIterator): Boolean;
-var
-  Obj: TObject;
-  ItrObj: TJclDoubleVectorIterator;
+procedure TJclDoubleVectorIterator.Extract;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is TJclDoubleVectorIterator then
-  begin
-    ItrObj := TJclDoubleVectorIterator(Obj);
-    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
-  end;
+  CheckValid;
+  Valid := False;
+  FOwnList.ExtractIndex(FCursor);
 end;
 
 function TJclDoubleVectorIterator.GetValue: Double;
@@ -5368,6 +5908,22 @@ function TJclDoubleVectorIterator.Insert(const AValue: Double): Boolean;
 begin
   CheckValid;
   Result := FOwnList.Insert(FCursor, AValue);
+end;
+
+function TJclDoubleVectorIterator.IteratorEquals(const AIterator: IJclDoubleIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclDoubleVectorIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclDoubleVectorIterator then
+  begin
+    ItrObj := TJclDoubleVectorIterator(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
@@ -5556,6 +6112,37 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclExtendedVector.CollectionEquals(const ACollection: IJclExtendedCollection): Boolean;
+var
+  I: Integer;
+  It: IJclExtendedIterator;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    for I := 0 to FSize - 1 do
+      if not ItemsEqual(Items[I], It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclExtendedVector.Contains(const AValue: Extended): Boolean;
 var
   I: Integer;
@@ -5629,33 +6216,84 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclExtendedVector.CollectionEquals(const ACollection: IJclExtendedCollection): Boolean;
+function TJclExtendedVector.Extract(const AValue: Extended): Boolean;
 var
   I: Integer;
-  It: IJclExtendedIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    for I := FSize - 1 downto 0 do
+      if ItemsEqual(FItems[I], AValue) then
+      begin
+        FItems[I] := 0.0;
+        MoveArray(FItems, I + 1, I, FSize - I);
+        Dec(FSize);
+        Result := True;
+        if FRemoveSingleElement then
+          Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedVector.ExtractAll(const ACollection: IJclExtendedCollection): Boolean;
+var
+  It: IJclExtendedIterator;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
     Result := True;
     It := ACollection.First;
-    for I := 0 to FSize - 1 do
-      if not ItemsEqual(Items[I], It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedVector.ExtractIndex(Index: Integer): Extended;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Result := FItems[Index];
+      MoveArray(FItems, Index + 1, Index, FSize - Index);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := RaiseOutOfBoundsError;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -5832,7 +6470,7 @@ end;
 
 function TJclExtendedVector.Remove(const AValue: Extended): Boolean;
 var
-  I: Integer;
+  Extracted: Extended;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -5841,17 +6479,12 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for I := FSize - 1 downto 0 do
-      if ItemsEqual(FItems[I], AValue) then
-      begin
-        FreeExtended(FItems[I]); // Force Release
-        MoveArray(FItems, I + 1, I, FSize - I);
-        Dec(FSize);
-        Result := True;
-        if FRemoveSingleElement then
-          Break;
-      end;
+    Result := Extract(AValue);
+    if Result then
+    begin
+      Extracted := AValue;
+      FreeExtended(Extracted);
+    end;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -6042,20 +6675,11 @@ begin
   Result := TJclExtendedVectorIterator.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
-function TJclExtendedVectorIterator.IteratorEquals(const AIterator: IJclExtendedIterator): Boolean;
-var
-  Obj: TObject;
-  ItrObj: TJclExtendedVectorIterator;
+procedure TJclExtendedVectorIterator.Extract;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is TJclExtendedVectorIterator then
-  begin
-    ItrObj := TJclExtendedVectorIterator(Obj);
-    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
-  end;
+  CheckValid;
+  Valid := False;
+  FOwnList.ExtractIndex(FCursor);
 end;
 
 function TJclExtendedVectorIterator.GetValue: Extended;
@@ -6084,6 +6708,22 @@ function TJclExtendedVectorIterator.Insert(const AValue: Extended): Boolean;
 begin
   CheckValid;
   Result := FOwnList.Insert(FCursor, AValue);
+end;
+
+function TJclExtendedVectorIterator.IteratorEquals(const AIterator: IJclExtendedIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclExtendedVectorIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclExtendedVectorIterator then
+  begin
+    ItrObj := TJclExtendedVectorIterator(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
@@ -6272,6 +6912,37 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclIntegerVector.CollectionEquals(const ACollection: IJclIntegerCollection): Boolean;
+var
+  I: Integer;
+  It: IJclIntegerIterator;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    for I := 0 to FSize - 1 do
+      if not ItemsEqual(Items[I], It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclIntegerVector.Contains(AValue: Integer): Boolean;
 var
   I: Integer;
@@ -6345,33 +7016,84 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntegerVector.CollectionEquals(const ACollection: IJclIntegerCollection): Boolean;
+function TJclIntegerVector.Extract(AValue: Integer): Boolean;
 var
   I: Integer;
-  It: IJclIntegerIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    for I := FSize - 1 downto 0 do
+      if ItemsEqual(FItems[I], AValue) then
+      begin
+        FItems[I] := 0;
+        MoveArray(FItems, I + 1, I, FSize - I);
+        Dec(FSize);
+        Result := True;
+        if FRemoveSingleElement then
+          Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerVector.ExtractAll(const ACollection: IJclIntegerCollection): Boolean;
+var
+  It: IJclIntegerIterator;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
     Result := True;
     It := ACollection.First;
-    for I := 0 to FSize - 1 do
-      if not ItemsEqual(Items[I], It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerVector.ExtractIndex(Index: Integer): Integer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Result := FItems[Index];
+      MoveArray(FItems, Index + 1, Index, FSize - Index);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := RaiseOutOfBoundsError;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -6548,7 +7270,7 @@ end;
 
 function TJclIntegerVector.Remove(AValue: Integer): Boolean;
 var
-  I: Integer;
+  Extracted: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -6557,17 +7279,12 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for I := FSize - 1 downto 0 do
-      if ItemsEqual(FItems[I], AValue) then
-      begin
-        FreeInteger(FItems[I]); // Force Release
-        MoveArray(FItems, I + 1, I, FSize - I);
-        Dec(FSize);
-        Result := True;
-        if FRemoveSingleElement then
-          Break;
-      end;
+    Result := Extract(AValue);
+    if Result then
+    begin
+      Extracted := AValue;
+      FreeInteger(Extracted);
+    end;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -6758,20 +7475,11 @@ begin
   Result := TJclIntegerVectorIterator.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
-function TJclIntegerVectorIterator.IteratorEquals(const AIterator: IJclIntegerIterator): Boolean;
-var
-  Obj: TObject;
-  ItrObj: TJclIntegerVectorIterator;
+procedure TJclIntegerVectorIterator.Extract;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is TJclIntegerVectorIterator then
-  begin
-    ItrObj := TJclIntegerVectorIterator(Obj);
-    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
-  end;
+  CheckValid;
+  Valid := False;
+  FOwnList.ExtractIndex(FCursor);
 end;
 
 function TJclIntegerVectorIterator.GetValue: Integer;
@@ -6800,6 +7508,22 @@ function TJclIntegerVectorIterator.Insert(AValue: Integer): Boolean;
 begin
   CheckValid;
   Result := FOwnList.Insert(FCursor, AValue);
+end;
+
+function TJclIntegerVectorIterator.IteratorEquals(const AIterator: IJclIntegerIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclIntegerVectorIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclIntegerVectorIterator then
+  begin
+    ItrObj := TJclIntegerVectorIterator(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
@@ -6988,6 +7712,37 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclCardinalVector.CollectionEquals(const ACollection: IJclCardinalCollection): Boolean;
+var
+  I: Integer;
+  It: IJclCardinalIterator;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    for I := 0 to FSize - 1 do
+      if not ItemsEqual(Items[I], It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclCardinalVector.Contains(AValue: Cardinal): Boolean;
 var
   I: Integer;
@@ -7061,33 +7816,84 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclCardinalVector.CollectionEquals(const ACollection: IJclCardinalCollection): Boolean;
+function TJclCardinalVector.Extract(AValue: Cardinal): Boolean;
 var
   I: Integer;
-  It: IJclCardinalIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    for I := FSize - 1 downto 0 do
+      if ItemsEqual(FItems[I], AValue) then
+      begin
+        FItems[I] := 0;
+        MoveArray(FItems, I + 1, I, FSize - I);
+        Dec(FSize);
+        Result := True;
+        if FRemoveSingleElement then
+          Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalVector.ExtractAll(const ACollection: IJclCardinalCollection): Boolean;
+var
+  It: IJclCardinalIterator;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
     Result := True;
     It := ACollection.First;
-    for I := 0 to FSize - 1 do
-      if not ItemsEqual(Items[I], It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalVector.ExtractIndex(Index: Integer): Cardinal;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Result := FItems[Index];
+      MoveArray(FItems, Index + 1, Index, FSize - Index);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := RaiseOutOfBoundsError;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -7264,7 +8070,7 @@ end;
 
 function TJclCardinalVector.Remove(AValue: Cardinal): Boolean;
 var
-  I: Integer;
+  Extracted: Cardinal;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -7273,17 +8079,12 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for I := FSize - 1 downto 0 do
-      if ItemsEqual(FItems[I], AValue) then
-      begin
-        FreeCardinal(FItems[I]); // Force Release
-        MoveArray(FItems, I + 1, I, FSize - I);
-        Dec(FSize);
-        Result := True;
-        if FRemoveSingleElement then
-          Break;
-      end;
+    Result := Extract(AValue);
+    if Result then
+    begin
+      Extracted := AValue;
+      FreeCardinal(Extracted);
+    end;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -7474,20 +8275,11 @@ begin
   Result := TJclCardinalVectorIterator.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
-function TJclCardinalVectorIterator.IteratorEquals(const AIterator: IJclCardinalIterator): Boolean;
-var
-  Obj: TObject;
-  ItrObj: TJclCardinalVectorIterator;
+procedure TJclCardinalVectorIterator.Extract;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is TJclCardinalVectorIterator then
-  begin
-    ItrObj := TJclCardinalVectorIterator(Obj);
-    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
-  end;
+  CheckValid;
+  Valid := False;
+  FOwnList.ExtractIndex(FCursor);
 end;
 
 function TJclCardinalVectorIterator.GetValue: Cardinal;
@@ -7516,6 +8308,22 @@ function TJclCardinalVectorIterator.Insert(AValue: Cardinal): Boolean;
 begin
   CheckValid;
   Result := FOwnList.Insert(FCursor, AValue);
+end;
+
+function TJclCardinalVectorIterator.IteratorEquals(const AIterator: IJclCardinalIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclCardinalVectorIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclCardinalVectorIterator then
+  begin
+    ItrObj := TJclCardinalVectorIterator(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
@@ -7704,6 +8512,37 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclInt64Vector.CollectionEquals(const ACollection: IJclInt64Collection): Boolean;
+var
+  I: Integer;
+  It: IJclInt64Iterator;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    for I := 0 to FSize - 1 do
+      if not ItemsEqual(Items[I], It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclInt64Vector.Contains(const AValue: Int64): Boolean;
 var
   I: Integer;
@@ -7777,33 +8616,84 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclInt64Vector.CollectionEquals(const ACollection: IJclInt64Collection): Boolean;
+function TJclInt64Vector.Extract(const AValue: Int64): Boolean;
 var
   I: Integer;
-  It: IJclInt64Iterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    for I := FSize - 1 downto 0 do
+      if ItemsEqual(FItems[I], AValue) then
+      begin
+        FItems[I] := 0;
+        MoveArray(FItems, I + 1, I, FSize - I);
+        Dec(FSize);
+        Result := True;
+        if FRemoveSingleElement then
+          Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64Vector.ExtractAll(const ACollection: IJclInt64Collection): Boolean;
+var
+  It: IJclInt64Iterator;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
     Result := True;
     It := ACollection.First;
-    for I := 0 to FSize - 1 do
-      if not ItemsEqual(Items[I], It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64Vector.ExtractIndex(Index: Integer): Int64;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Result := FItems[Index];
+      MoveArray(FItems, Index + 1, Index, FSize - Index);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := RaiseOutOfBoundsError;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -7980,7 +8870,7 @@ end;
 
 function TJclInt64Vector.Remove(const AValue: Int64): Boolean;
 var
-  I: Integer;
+  Extracted: Int64;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -7989,17 +8879,12 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for I := FSize - 1 downto 0 do
-      if ItemsEqual(FItems[I], AValue) then
-      begin
-        FreeInt64(FItems[I]); // Force Release
-        MoveArray(FItems, I + 1, I, FSize - I);
-        Dec(FSize);
-        Result := True;
-        if FRemoveSingleElement then
-          Break;
-      end;
+    Result := Extract(AValue);
+    if Result then
+    begin
+      Extracted := AValue;
+      FreeInt64(Extracted);
+    end;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -8190,20 +9075,11 @@ begin
   Result := TJclInt64VectorIterator.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
-function TJclInt64VectorIterator.IteratorEquals(const AIterator: IJclInt64Iterator): Boolean;
-var
-  Obj: TObject;
-  ItrObj: TJclInt64VectorIterator;
+procedure TJclInt64VectorIterator.Extract;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is TJclInt64VectorIterator then
-  begin
-    ItrObj := TJclInt64VectorIterator(Obj);
-    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
-  end;
+  CheckValid;
+  Valid := False;
+  FOwnList.ExtractIndex(FCursor);
 end;
 
 function TJclInt64VectorIterator.GetValue: Int64;
@@ -8232,6 +9108,22 @@ function TJclInt64VectorIterator.Insert(const AValue: Int64): Boolean;
 begin
   CheckValid;
   Result := FOwnList.Insert(FCursor, AValue);
+end;
+
+function TJclInt64VectorIterator.IteratorEquals(const AIterator: IJclInt64Iterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclInt64VectorIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclInt64VectorIterator then
+  begin
+    ItrObj := TJclInt64VectorIterator(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
@@ -8421,6 +9313,37 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclPtrVector.CollectionEquals(const ACollection: IJclPtrCollection): Boolean;
+var
+  I: Integer;
+  It: IJclPtrIterator;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    for I := 0 to FSize - 1 do
+      if not ItemsEqual(Items[I], It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclPtrVector.Contains(APtr: Pointer): Boolean;
 var
   I: Integer;
@@ -8494,33 +9417,84 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclPtrVector.CollectionEquals(const ACollection: IJclPtrCollection): Boolean;
+function TJclPtrVector.Extract(APtr: Pointer): Boolean;
 var
   I: Integer;
-  It: IJclPtrIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    for I := FSize - 1 downto 0 do
+      if ItemsEqual(FItems[I], APtr) then
+      begin
+        FItems[I] := nil;
+        MoveArray(FItems, I + 1, I, FSize - I);
+        Dec(FSize);
+        Result := True;
+        if FRemoveSingleElement then
+          Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrVector.ExtractAll(const ACollection: IJclPtrCollection): Boolean;
+var
+  It: IJclPtrIterator;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
     Result := True;
     It := ACollection.First;
-    for I := 0 to FSize - 1 do
-      if not ItemsEqual(Items[I], It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrVector.ExtractIndex(Index: Integer): Pointer;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Result := FItems[Index];
+      MoveArray(FItems, Index + 1, Index, FSize - Index);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := RaiseOutOfBoundsError;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -8697,7 +9671,7 @@ end;
 
 function TJclPtrVector.Remove(APtr: Pointer): Boolean;
 var
-  I: Integer;
+  Extracted: Pointer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -8706,17 +9680,12 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for I := FSize - 1 downto 0 do
-      if ItemsEqual(FItems[I], APtr) then
-      begin
-        FreePointer(FItems[I]); // Force Release
-        MoveArray(FItems, I + 1, I, FSize - I);
-        Dec(FSize);
-        Result := True;
-        if FRemoveSingleElement then
-          Break;
-      end;
+    Result := Extract(APtr);
+    if Result then
+    begin
+      Extracted := APtr;
+      FreePointer(Extracted);
+    end;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -8907,20 +9876,11 @@ begin
   Result := TJclPtrVectorIterator.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
-function TJclPtrVectorIterator.IteratorEquals(const AIterator: IJclPtrIterator): Boolean;
-var
-  Obj: TObject;
-  ItrObj: TJclPtrVectorIterator;
+procedure TJclPtrVectorIterator.Extract;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is TJclPtrVectorIterator then
-  begin
-    ItrObj := TJclPtrVectorIterator(Obj);
-    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
-  end;
+  CheckValid;
+  Valid := False;
+  FOwnList.ExtractIndex(FCursor);
 end;
 
 function TJclPtrVectorIterator.GetPointer: Pointer;
@@ -8949,6 +9909,22 @@ function TJclPtrVectorIterator.Insert(APtr: Pointer): Boolean;
 begin
   CheckValid;
   Result := FOwnList.Insert(FCursor, APtr);
+end;
+
+function TJclPtrVectorIterator.IteratorEquals(const AIterator: IJclPtrIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclPtrVectorIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclPtrVectorIterator then
+  begin
+    ItrObj := TJclPtrVectorIterator(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
@@ -9138,6 +10114,37 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclVector.CollectionEquals(const ACollection: IJclCollection): Boolean;
+var
+  I: Integer;
+  It: IJclIterator;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    for I := 0 to FSize - 1 do
+      if not ItemsEqual(Items[I], It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclVector.Contains(AObject: TObject): Boolean;
 var
   I: Integer;
@@ -9211,33 +10218,84 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclVector.CollectionEquals(const ACollection: IJclCollection): Boolean;
+function TJclVector.Extract(AObject: TObject): Boolean;
 var
   I: Integer;
-  It: IJclIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    for I := FSize - 1 downto 0 do
+      if ItemsEqual(FItems[I], AObject) then
+      begin
+        FItems[I] := nil;
+        MoveArray(FItems, I + 1, I, FSize - I);
+        Dec(FSize);
+        Result := True;
+        if FRemoveSingleElement then
+          Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclVector.ExtractAll(const ACollection: IJclCollection): Boolean;
+var
+  It: IJclIterator;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
     Result := True;
     It := ACollection.First;
-    for I := 0 to FSize - 1 do
-      if not ItemsEqual(Items[I], It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclVector.ExtractIndex(Index: Integer): TObject;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Result := FItems[Index];
+      MoveArray(FItems, Index + 1, Index, FSize - Index);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := RaiseOutOfBoundsError;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -9414,7 +10472,7 @@ end;
 
 function TJclVector.Remove(AObject: TObject): Boolean;
 var
-  I: Integer;
+  Extracted: TObject;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -9423,17 +10481,12 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for I := FSize - 1 downto 0 do
-      if ItemsEqual(FItems[I], AObject) then
-      begin
-        FreeObject(FItems[I]); // Force Release
-        MoveArray(FItems, I + 1, I, FSize - I);
-        Dec(FSize);
-        Result := True;
-        if FRemoveSingleElement then
-          Break;
-      end;
+    Result := Extract(AObject);
+    if Result then
+    begin
+      Extracted := AObject;
+      FreeObject(Extracted);
+    end;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -9624,20 +10677,11 @@ begin
   Result := TJclVectorIterator.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
-function TJclVectorIterator.IteratorEquals(const AIterator: IJclIterator): Boolean;
-var
-  Obj: TObject;
-  ItrObj: TJclVectorIterator;
+procedure TJclVectorIterator.Extract;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is TJclVectorIterator then
-  begin
-    ItrObj := TJclVectorIterator(Obj);
-    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
-  end;
+  CheckValid;
+  Valid := False;
+  FOwnList.ExtractIndex(FCursor);
 end;
 
 function TJclVectorIterator.GetObject: TObject;
@@ -9666,6 +10710,22 @@ function TJclVectorIterator.Insert(AObject: TObject): Boolean;
 begin
   CheckValid;
   Result := FOwnList.Insert(FCursor, AObject);
+end;
+
+function TJclVectorIterator.IteratorEquals(const AIterator: IJclIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclVectorIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclVectorIterator then
+  begin
+    ItrObj := TJclVectorIterator(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
@@ -9855,6 +10915,37 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclVector<T>.CollectionEquals(const ACollection: IJclCollection<T>): Boolean;
+var
+  I: Integer;
+  It: IJclIterator<T>;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    for I := 0 to FSize - 1 do
+      if not ItemsEqual(Items[I], It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclVector<T>.Contains(const AItem: T): Boolean;
 var
   I: Integer;
@@ -9928,33 +11019,84 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclVector<T>.CollectionEquals(const ACollection: IJclCollection<T>): Boolean;
+function TJclVector<T>.Extract(const AItem: T): Boolean;
 var
   I: Integer;
-  It: IJclIterator<T>;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    for I := FSize - 1 downto 0 do
+      if ItemsEqual(FItems[I], AItem) then
+      begin
+        FItems[I] := Default(T);
+        MoveArray(FItems, I + 1, I, FSize - I);
+        Dec(FSize);
+        Result := True;
+        if FRemoveSingleElement then
+          Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclVector<T>.ExtractAll(const ACollection: IJclCollection<T>): Boolean;
+var
+  It: IJclIterator<T>;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
     Result := True;
     It := ACollection.First;
-    for I := 0 to FSize - 1 do
-      if not ItemsEqual(Items[I], It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclVector<T>.ExtractIndex(Index: Integer): T;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Result := FItems[Index];
+      MoveArray(FItems, Index + 1, Index, FSize - Index);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
+      Result := RaiseOutOfBoundsError;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -10131,7 +11273,7 @@ end;
 
 function TJclVector<T>.Remove(const AItem: T): Boolean;
 var
-  I: Integer;
+  Extracted: T;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -10140,17 +11282,12 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for I := FSize - 1 downto 0 do
-      if ItemsEqual(FItems[I], AItem) then
-      begin
-        FreeItem(FItems[I]); // Force Release
-        MoveArray(FItems, I + 1, I, FSize - I);
-        Dec(FSize);
-        Result := True;
-        if FRemoveSingleElement then
-          Break;
-      end;
+    Result := Extract(AItem);
+    if Result then
+    begin
+      Extracted := AItem;
+      FreeItem(Extracted);
+    end;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -10335,20 +11472,11 @@ begin
   Result := TJclVectorIterator<T>.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
-function TJclVectorIterator<T>.IteratorEquals(const AIterator: IJclIterator<T>): Boolean;
-var
-  Obj: TObject;
-  ItrObj: TJclVectorIterator<T>;
+procedure TJclVectorIterator<T>.Extract;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is TJclVectorIterator<T> then
-  begin
-    ItrObj := TJclVectorIterator<T>(Obj);
-    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
-  end;
+  CheckValid;
+  Valid := False;
+  FOwnList.ExtractIndex(FCursor);
 end;
 
 function TJclVectorIterator<T>.GetItem: T;
@@ -10377,6 +11505,22 @@ function TJclVectorIterator<T>.Insert(const AItem: T): Boolean;
 begin
   CheckValid;
   Result := FOwnList.Insert(FCursor, AItem);
+end;
+
+function TJclVectorIterator<T>.IteratorEquals(const AIterator: IJclIterator<T>): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclVectorIterator<T>;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclVectorIterator<T> then
+  begin
+    ItrObj := TJclVectorIterator<T>(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}

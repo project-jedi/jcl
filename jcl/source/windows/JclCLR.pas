@@ -189,7 +189,7 @@ type
 
   TJclClrStringsStream = class(TJclClrStream)
   private
-    FStrings: TAnsiStringList;
+    FStrings: TStringList;
     function GetString(const Idx: Integer): WideString;
     function GetOffset(const Idx: Integer): DWORD;
     function GetStringCount: Integer;
@@ -629,7 +629,7 @@ begin
   while off < Size do
   begin
     if pch^ <> #0 then
-      FStrings.AddObject(string(TUTF8String(pch)), TObject(off)); // OF AnsiString to TStrings
+      FStrings.AddObject(string(TUTF8String(pch)), TObject(off));
     pch := pch + StrLen(pch) + 1;
     off := DWORD_PTR(pch - Data);
   end;
@@ -643,7 +643,7 @@ end;
 
 function TJclClrStringsStream.GetString(const Idx: Integer): WideString;
 begin
-  Result := UTF8ToWideString(TUTF8String(FStrings.Strings[Idx])); // OF TStrings to AnsiString
+  Result := UTF8ToWideString(TUTF8String(FStrings.Strings[Idx]));
 end;
 
 function TJclClrStringsStream.GetOffset(const Idx: Integer): DWORD;

@@ -27,6 +27,30 @@ var
   RuntimePackageRtl: Boolean;
   RuntimePackageVcl: Boolean;
 
+type
+  TTargetType = (ttNone, ttDelphi, ttBCB, ttBDS);
+  TLibraryType = (ltJCL, ltJVCL);
+
+const
+  ttFirst = ttDelphi;
+
+type
+  TTarget = record
+    Typ: TTargetType;
+    Version: Integer;
+    IDEVersion: Integer;
+    Name: string;
+    RootDir: string;
+    LibDirs: string;
+    SearchPaths: string;
+    KeyName: string;
+    Id: string; // ["d"|"c"]<version>
+    InstalledJcl: Boolean;
+    JclVersion: string;
+    InstalledJvcl: Boolean;
+    JvclVersion: string;
+  end;
+
 { Helper functions because no SysUtils unit is used. }
 {******************************************************************************}
 function ExtractFileDir(const S: string): string;
@@ -87,8 +111,11 @@ begin
 end;
 {******************************************************************************}
 function IntToStr(Value: Integer): string;
+var
+  S: ShortString;
 begin
-  Str(Value, Result);
+  Str(Value, S);
+  Result := string(S);
 end;
 {******************************************************************************}
 function SameText(const S1, S2: string): Boolean;
@@ -179,7 +206,59 @@ begin
   Result := (Attr <> $FFFFFFFF) and (Attr and FILE_ATTRIBUTE_DIRECTORY <> 0);
 end;
 {******************************************************************************}
-function Execute(const Cmd, StartDir: string; HideOutput: Boolean): Integer;
+function FileSearch(const Name, DirList: string): string;
+var
+  I, P, L: Integer;
+  C: Char;
+begin
+  Result := Name;
+  if Result <> '' then
+  begin
+    P := 1;
+    L := Length(DirList);
+    while True do
+    begin
+      if FileExists(Result) then
+        Exit;
+      while (P <= L) and (DirList[P] = ';') do
+        Inc(P);
+      if P > L then Break;
+      I := P;
+      while (P <= L) and (DirList[P] <> ';') do
+        Inc(P);
+      Result := Copy(DirList, I, P - I);
+      C := #0;
+      if Result <> '' then
+        C := Result[Length(Result)];
+      if (C <> ':') and (C <> '\') then
+        Result := Result + '\';
+      Result := Result + Name;
+    end;
+    Result := '';
+  end;
+end;
+{******************************************************************************}
+function GetSysErrorMessage(ErrorCode: Cardinal): string;
+var
+  Buffer: array[0..4096] of Char;
+  Len: Integer;
+begin
+  Len := FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM or FORMAT_MESSAGE_IGNORE_INSERTS or
+    FORMAT_MESSAGE_ARGUMENT_ARRAY, nil, ErrorCode, 0, Buffer,
+    Length(Buffer), nil);
+  while (Len > 0) and ((Buffer[Len - 1] <= ' ') or (Buffer[Len - 1] = '.')) do
+    Dec(Len);
+  SetString(Result, Buffer, Len);
+end;
+{******************************************************************************}
+procedure FailedToStart(const Cmd: string; ErrorCode: Cardinal);
+begin
+  WriteLn(ErrOutput, 'Failed to start: ', Cmd);
+  if ErrorCode <> ERROR_SUCCESS then
+    WriteLn(ErrOutput, '  System error (', ErrorCode, '): ', GetSysErrorMessage(ErrorCode));
+end;
+{******************************************************************************}
+function Execute(Cmd: string; const StartDir: string; HideOutput: Boolean): Integer;
 var
   ProcessInfo: TProcessInformation;
   StartupInfo: TStartupInfo;
@@ -192,6 +271,7 @@ begin
     StartupInfo.hStdError := 0;
     StartupInfo.dwFlags := STARTF_USESTDHANDLES;
   end;
+  UniqueString(Cmd);
   if CreateProcess(nil, PChar(Cmd), nil, nil, True, 0, nil,
     Pointer(StartDir), StartupInfo, ProcessInfo) then
   begin
@@ -276,35 +356,109 @@ begin
   end;
 end;
 {******************************************************************************}
+{ GetJediVersionFromCode returns the exact version number of the JCL or JVCL by
+  compiling a simple test application that writes the exact version number to a
+  file.
+  This makes it possible to install the JVCL if the JCL was installed by hand. }
+function GetJediVersionFromCode(const Target: TTarget; LibraryType: TLibraryType): string;
+var
+  f: TextFile;
+  TestFilename, VersionOutputFilename: string;
+  Status: Integer;
+  CmdLine: string;
+  LastError: Cardinal;
+begin
+  Result := '';
 
-type
-  TTargetType = (ttNone, ttDelphi, ttBCB, ttBDS);
-
-const
-  ttFirst = ttDelphi;
-
-type
-  TTarget = record
-    Typ: TTargetType;
-    Version: Integer;
-    IDEVersion: Integer;
-    Name: string;
-    RootDir: string;
-    LibDirs: string;
-    SearchPaths: string;
-    KeyName: string;
-    Id: string; // ["d"|"c"]<version>
-    InstalledJcl: Boolean;
-    JclVersion: string;
-    InstalledJvcl: Boolean;
-    JvclVersion: string;
+  // Get the JCL/JVCL Version number from the JCL/JVCL itself by compiling and
+  // starting a test application.
+  TestFilename := GetTempDir + '\JediVersionCheck.dpr';
+  VersionOutputFilename := ChangeFileExt(TestFilename, '.output');
+  DeleteFile(PChar(VersionOutputFilename));
+  AssignFile(f, Testfilename);
+  {$I-}
+  Rewrite(f);
+  WriteLn(f, 'program JediVersionCheck;');
+  if LibraryType = ltJCL then
+    WriteLn(f, 'uses JclBase;')
+  else
+    WriteLn(f, 'uses JVCLVer;');
+  WriteLn(f, 'var f: TextFile;');
+  WriteLn(f, 'begin');
+  WriteLn(f, '  ExitCode := 0;');
+  WriteLn(f, '  AssignFile(f, ''' + VersionOutputFilename + ''');');
+  WriteLn(f, '  {$I-}');
+  WriteLn(f, '  Rewrite(f);');
+  if LibraryType = ltJCL then
+    WriteLn(f, '  WriteLn(f, JclVersionMajor, ''.'', JclVersionMinor, ''.'', JclVersionRelease, ''.'', JclVersionBuild);')
+  else
+    WriteLn(f, '  WriteLn(f, JvclVersionMajor, ''.'', JvclVersionMinor, ''.'', JvclVersionRelease, ''.'', JvclVersionBuild);');
+  WriteLn(f, '  CloseFile(f);');
+  WriteLn(f, '  if IOResult <> 0 then');
+  WriteLn(f, '    ExitCode := 1;');
+  WriteLn(f, '  {$I+}');
+  WriteLn(f, 'end.');
+  CloseFile(f);
+  {$I+}
+  if IOResult <> 0 then
+  begin
+    WriteLn(ErrOutput, 'Failed to write file ', TestFilename);
+    DeleteFile(PChar(TestFilename));
+  end
+  else
+  begin
+    // compile <TestFilename>.dpr
+    CmdLine := '"' + Target.RootDir + '\bin\dcc32.exe" ' +
+               '-Q -E. -N. -U"' + Target.LibDirs + '" ' + ExtractFileName(TestFilename);
+    Status := Execute(CmdLine, ExtractFileDir(TestFilename), {HideOutput:}True);
+    LastError := GetLastError;
+    DeleteFile(PChar(TestFilename));
+    if LibraryType = ltJCL then
+      DeleteFile(PChar(ExtractFileDir(TestFilename) + '\JclBase.dcu'))
+    else
+    begin
+      DeleteFile(PChar(ExtractFileDir(TestFilename) + '\JVCLVer.dcu'));
+      DeleteFile(PChar(ExtractFileDir(TestFilename) + '\JclUnitVersioning.dcu'));
+    end;
+    if Status <> 0 then
+    begin
+      if Status = -1 then
+        FailedToStart(CmdLine, LastError)
+      else
+        ;//WriteLn(ErrOutput, 'Compilation of "', TestFilename, '" failed.');
+      Exit;
+    end;
+    // start <TextFilename>.exe
+    Status := Execute('"' + ChangeFileExt(TestFilename, '.exe') + '"',
+                      ExtractFileDir(TestFilename), False);
+    DeleteFile(PChar(ChangeFileExt(TestFilename, '.exe')));
+    if Status <> 0 then
+    begin
+      if Status = -1 then
+        WriteLn(ErrOutput, '"' + ChangeFileExt(TestFilename, '.exe') + '"');
+    end
+    else
+    begin
+      AssignFile(f, VersionOutputFilename);
+      {$I-}
+      Reset(f);
+      ReadLn(f, Result);
+      CloseFile(f);
+      {$I+}
+      if IOResult <> 0 then
+        Result := '';
+    end;
+    DeleteFile(PChar(VersionOutputFilename));
   end;
-
+end;
+{******************************************************************************}
+{ ReadTargetInfo }
 function ReadTargetInfo(Typ: TTargetType; IDEVersion: Integer): TTarget;
 var
   Reg: HKEY;
   IDEVersionStr: string;
-  JediLibDirs, Dir, DcpDir, RootDir: string;
+  JediLibDirs, Dir, DcpDir, RootDir, Filename: string;
+  IsSourceFile: Boolean;
 begin
   Result.Typ := ttNone;
   Result.Version := 0;
@@ -320,7 +474,7 @@ begin
   Result.SearchPaths := '';
   Result.LibDirs := '';
 
-  Str(IDEVersion, IDEVersionStr);
+  IDEVersionStr := IntToStr(IDEVersion);
   case Typ of
     ttDelphi:
       begin
@@ -427,6 +581,49 @@ begin
                        RootDir + '\source\windows' + JediLibDirs; // JediLibDirs has leading ';'
         Result.InstalledJcl := True;
       end;
+    end
+    else if RequireJcl then
+    begin
+      { Registry key Jedi\JCL doesn't exist, maybe it was installed by hand.
+        Try to find the JCL in the IDE's search paths. }
+      if UseSearchPaths then
+      begin
+        IsSourceFile := True;
+        Filename := FileSearch('JclBase.pas', Result.LibDirs);
+        if Filename = '' then
+        begin
+          IsSourceFile := False;
+          Filename := FileSearch('JclBase.dcu', Result.LibDirs);
+        end;
+        if Filename <> '' then
+        begin
+          Result.JclVersion := GetJediVersionFromCode(Result, ltJCL);
+          if IsSourceFile then
+          begin
+            { Default directory is: jcl\source\common\JclBase.pas }
+            RootDir := ExtractFileDir(ExtractFileDir(ExtractFileDir(Filename)));
+            Dir := RootDir + '\lib\' + Result.Id;
+          end
+          else
+          begin
+            { Default directory is: jcl\lib\dxx\JclBase.dcu }
+            Dir := ExtractFileDir(Filename);
+            RootDir := ExtractFileDir(ExtractFileDir(Dir));
+            if not FileExists(RootDir + '\source\common\JclBase.pas') then
+              RootDir := '';
+          end;
+
+          if RootDir <> '' then
+          begin
+            JediLibDirs := JediLibDirs + ';' + Dir;
+            JediLibDirs := JediLibDirs + ';' + RootDir + '\source;' + RootDir + '\source\include';
+            Result.InstalledJcl := True;
+          end
+          else
+          if not UseJclSource then
+            Result.InstalledJcl := True;
+        end;
+      end;
     end;
 
     { Read JVCL information }
@@ -454,9 +651,55 @@ begin
                        JediLibDirs; // JediLibDirs has leading ';'
         Result.InstalledJvcl := True;
       end;
+    end
+    else if RequireJvcl then
+    begin
+      { Registry key Jedi\JVCL doesn't exist, maybe it was installed by hand.
+        Try to find the JVCL in the IDE's search paths. }
+      if UseSearchPaths then
+      begin
+        IsSourceFile := True;
+        Filename := FileSearch('JVCLVer.pas', Result.LibDirs);
+        if Filename = '' then
+        begin
+          IsSourceFile := False;
+          Filename := FileSearch('JVCLVer.dcu', Result.LibDirs);
+        end;
+        if Filename <> '' then
+        begin
+          Result.JvclVersion := GetJediVersionFromCode(Result, ltJVCL);
+          if IsSourceFile then
+          begin
+            { Default directory is: jvcl3\run\JVCLVer.pas }
+            RootDir := ExtractFileDir(ExtractFileDir(Filename));
+            Dir := RootDir + '\lib\' + Result.Id;
+          end
+          else
+          begin
+            { Default directory is: jvcl3\lib\dxx\JVCLVer.dcu }
+            Dir := ExtractFileDir(Filename);
+            RootDir := ExtractFileDir(ExtractFileDir(Dir));
+            if not FileExists(RootDir + '\run\JVCLVer.pas') then
+              RootDir := '';
+          end;
+
+          if RootDir <> '' then
+          begin
+            JediLibDirs := JediLibDirs + ';' + Dir;
+            JediLibDirs := JediLibDirs + ';' + RootDir + '\common;' + RootDir + '\Resources';
+            Result.InstalledJvcl := True;
+          end
+          else
+          if not UseJclSource then
+            Result.InstalledJvcl := True;
+        end;
+      end;
     end;
+
     if JediLibDirs <> '' then
-      Result.LibDirs := Result.LibDirs + JediLibDirs; // leading ';' is already in JediLibDirs
+      //Result.LibDirs := Result.LibDirs + JediLibDirs; // leading ';' is already in JediLibDirs
+      { Prefer our own files over outdated copies in other component libraries }
+      Result.LibDirs := Copy(JediLibDirs, 2, MaxInt) + ';' + Result.LibDirs;
   end
   else
   begin
@@ -465,11 +708,16 @@ begin
   end;
 end;
 {******************************************************************************}
+{ TestDelphi6Update2 tests the Delphi 6 installation for the Update 2 which is
+  required by JCL and JVCL. This is achieved by compiling and starting a simple
+  test application that tests for the Update 2 Graphics.pas symbol clHotLight. }
 procedure TestDelphi6Update2(const Target: TTarget);
 var
   f: TextFile;
   TestFilename: string;
   Status: Integer;
+  CmdLine: string;
+  LastError: Cardinal;
 begin
   // Test for Delphi 6 Update 2
   TestFilename := GetTempDir + '\delphi6compiletest.dpr';
@@ -496,27 +744,29 @@ begin
   else
   begin
     // compile <TestFilename>.dpr
-    Status := Execute('"' + Target.RootDir + '\bin\dcc32.exe" ' +
-                      '-Q -E. -N. -U"' + Target.LibDirs + '" ' + ExtractFileName(TestFilename),
-                      ExtractFileDir(TestFilename), True);
+    CmdLine := '"' + Target.RootDir + '\bin\dcc32.exe" ' +
+               '-Q -E. -N. -U"' + Target.LibDirs + '" ' + ExtractFileName(TestFilename);
+    Status := Execute(CmdLine, ExtractFileDir(TestFilename), True);
+    LastError := GetLastError;
     DeleteFile(PChar(TestFilename));
     if Status <> 0 then
     begin
       if Status = -1 then
-        WriteLn(ErrOutput, 'Failed to start "', Target.RootDir, '\bin\dcc32.exe"')
+        FailedToStart(CmdLine, LastError)
       else
         ;//WriteLn(ErrOutput, 'Compilation of "', TestFilename, '" failed.');
       Halt(1);
     end;
 
     // start <TextFilename>.exe
-    Status := Execute('"' + ChangeFileExt(TestFilename, '.exe') + '"',
-                      ExtractFileDir(TestFilename), False);
+    CmdLine := '"' + ChangeFileExt(TestFilename, '.exe') + '"';
+    Status := Execute(CmdLine, ExtractFileDir(TestFilename), False);
+    LastError := GetLastError;
     DeleteFile(PChar(ChangeFileExt(TestFilename, '.exe')));
     if Status <> 0 then
     begin
       if Status = -1 then
-        WriteLn(ErrOutput, '"' + ChangeFileExt(TestFilename, '.exe') + '"')
+        FailedToStart(CmdLine, LastError)
       else
       begin
         WriteLn(ErrOutput, 'Delphi 6 Update 2 is not installed.');
@@ -526,7 +776,7 @@ begin
     end;
   end;
 end;
-
+{******************************************************************************}
 function ParseVersionNumber(const VersionStr: string): Cardinal;
 const
   Shifts: array[0..3] of Integer = (24, 16, 15, 0);
@@ -556,7 +806,7 @@ begin
     end;
   end;
 end;
-
+{******************************************************************************}
 function IsVersionCompatible(const RequiredVersion, Version: string): Boolean;
 var
   ReqVer, Ver: Cardinal;
@@ -572,7 +822,7 @@ begin
     Result := ReqVer < Ver;
   end;
 end;
-
+{******************************************************************************}
 procedure CheckTargets(const PreferedTyp: TTargetType; const PreferedVersion: Integer; var NewestTarget: TTarget; ShowErrors: Boolean);
 var
   PreferedTarget: TTarget;
@@ -672,7 +922,7 @@ begin
     MessageBox(0, PChar(ErrMsg), 'dcc32ex.exe', MB_ICONERROR or MB_OK);
   end;
 end;
-
+{******************************************************************************}
 function SkipOption(CmdLine: PChar): PChar;
 begin
   Result := CmdLine;
@@ -712,7 +962,7 @@ begin
       Result := nil;
   end;
 end;
-
+{******************************************************************************}
 function ParseParams(CmdLine: PChar): PChar;
 var
   S: string;
@@ -783,6 +1033,8 @@ begin
   end;
 end;
 
+{******************************************************************************}
+{******************************************************************************}
 var
   NewestTarget: TTarget;
   f: TextFile;
@@ -927,7 +1179,7 @@ begin
   begin
     WriteLn;
     WriteLn('Additional options (must be specified before any dcc32 parameter):');
-    WriteLn('  --delphi-version=d11   Prefer this version, overrides environment variable');
+    WriteLn('  --delphi-version=d12   Prefer this version, overrides environment variable');
     WriteLn('  --verbose              Show warnings and errors during the compiler detection');
     WriteLn('  --use-search-paths     Use the IDE''s search paths');
     WriteLn('  --preserve-config      Keep the dcc32.cfg file and create a dcc32_command.cmd');
@@ -939,8 +1191,8 @@ begin
     WriteLn('  --runtime-package-vcl  Link the executable against the vcl package');
     WriteLn;
     WriteLn('Environment variables:');
-    WriteLn('  DELPHIVERSION = d11    Prefer this Delphi/BCB/BDS version');
-    WriteLn('                         (d5, d6, d7, c5, c6, d9, d10, d11, ...)');
+    WriteLn('  DELPHIVERSION = d12    Prefer this Delphi/BCB/BDS version');
+    WriteLn('                         (d5, d6, d7, c5, c6, d9, d10, d11, d12, ...)');
   end;
 
   ExitCode := Status;

@@ -61,21 +61,21 @@
   <models>
     <Model format="%p%n" name="JCL" prefix="Jcl" packages="..\packages" incfile="" nolibsuffixformat="%p%n%e%v0" dotnetprefix="Jedi.Jcl">
       <targets>
-        <target name="c5"/>
-        <target name="c6"/>
+        <target name="c5" defines="BCB"/>
+        <target name="c6" defines="BCB"/>
         <target name="d5"/>
         <target name="d6"/>
         <target name="d7"/>
         <target name="d8" IsBds="1"/>
         <target name="cs1" IsBds="1"/>
         <target name="d9" IsBds="1"/>
-        <target name="d10" IsBds="1"/>
-        <target name="k3" PathSep="/"/>
+        <target name="d10" defines="BCB" IsBds="1"/>
+        <target name="k3" defines="BCB" PathSep="/"/>
         <target name="d9.net" IsDotNet="1"/>
         <target name="d10.net" IsDotNet="1"/>
-        <target name="d11" IsBds="1"/>
+        <target name="d11" defines="BCB" IsBds="1"/>
         <target name="d11.net" IsDotNet="1"/>
-        <target name="d12" IsBds="1"/>
+        <target name="d12" defines="BCB" IsBds="1"/>
       </targets>
       <aliases>
         <alias name="Delphi" value="d5,d6,d7,d9,d10,d11,d12"/>

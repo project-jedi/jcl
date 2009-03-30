@@ -36,7 +36,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -4028,7 +4028,7 @@ function Crc32_P(const Crc32Table: TCrc32Table; X: PJclByteArray; N: Integer; Cr
 var
   I: Integer;
 begin
-  Result := Crc16DefaultStart;
+  Result := Crc32DefaultStart;
   for I := 0 to N - 1 do // The CRC Bytes are located at the end of the information
     // a 32 bit value shr 24 is a Byte, explictit type conversion to Byte adds an ASM instruction
     Result := Crc32Table[Result shr (CRC32Bits-8)] xor (Result shl 8) xor X[I];

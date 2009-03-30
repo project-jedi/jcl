@@ -49,7 +49,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                       $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -158,7 +158,8 @@ const
 type
   TCharValidator = function(const C: Char): Boolean;
 
-function ArrayContainsChar(const Chars: array of Char; const C: Char): Boolean;
+function ArrayContainsChar(const Chars: array of Char; const C: Char): Boolean; overload;
+function ArrayContainsChar(const Chars: array of Char; const C: Char; out Index: Integer): Boolean; overload;
 
 // String Test Routines
 function StrIsAlpha(const S: string): Boolean;
@@ -198,6 +199,8 @@ procedure StrProperBuff(S: PChar);
 function StrQuote(const S: string; C: Char): string;
 function StrRemoveChars(const S: string; const Chars: TCharValidator): string; overload;
 function StrRemoveChars(const S: string; const Chars: array of Char): string; overload;
+function StrRemoveLeadingChars(const S: string; const Chars: TCharValidator): string; overload;
+function StrRemoveLeadingChars(const S: string; const Chars: array of Char): string; overload;
 function StrRemoveEndChars(const S: string; const Chars: TCharValidator): string; overload;
 function StrRemoveEndChars(const S: string; const Chars: array of Char): string; overload;
 function StrKeepChars(const S: string; const Chars: TCharValidator): string; overload;
@@ -335,10 +338,10 @@ type
   PAnsiMultiSz = JclAnsiStrings.PAnsiMultiSz;
   PWideMultiSz = JclWideStrings.PWideMultiSz;
 
-  TAnsiStrings = JclAnsiStrings.TAnsiStrings;
-  TWideStrings = JclWideStrings.TWideStrings;
-  TAnsiStringList = JclAnsiStrings.TAnsiStringList;
-  TWideStringList = JclWideStrings.TWideStringList;
+  TAnsiStrings = JclAnsiStrings.TJclAnsiStrings;
+  TWideStrings = JclWideStrings.TJclWideStrings;
+  TAnsiStringList = JclAnsiStrings.TJclAnsiStringList;
+  TWideStringList = JclWideStrings.TJclWideStringList;
 
 function StringsToMultiSz(var Dest: PMultiSz; const Source: TStrings): PMultiSz;
 procedure MultiSzToStrings(const Dest: TStrings; const Source: PMultiSz);
@@ -514,15 +517,12 @@ function DotNetFormat(const Fmt: string; const Arg0, Arg1, Arg2: Variant): strin
 type
   TJclTabSet = class {$IFNDEF CLR}(TInterfacedObject, IToString){$ENDIF}
   private
-    FStops: TDynIntegerArray;
-    FRealWidth: Integer;
-    FWidth: Integer;
-    FZeroBased: Boolean;
-    procedure CalcRealWidth;
+    FData: TObject;
     function GetCount: Integer;
     function GetStops(Index: Integer): Integer;
     function GetTabWidth: Integer;
     function GetZeroBased: Boolean;
+    constructor InternalCreate(Data: TObject); 
     procedure SetStops(Index, Value: Integer);
     procedure SetTabWidth(Value: Integer);
     procedure SetZeroBased(Value: Boolean);
@@ -536,7 +536,11 @@ type
     constructor Create(TabWidth: Integer); overload;
     constructor Create(const Tabstops: array of Integer; ZeroBased: Boolean); overload;
     constructor Create(const Tabstops: array of Integer; ZeroBased: Boolean; TabWidth: Integer); overload;
+    destructor Destroy; override;
+
+    // cloning and referencing
     function Clone: TJclTabSet;
+    function NewReference: TJclTabSet;
 
     // Tab stops manipulation
     function Add(Column: Integer): Integer;
@@ -1011,6 +1015,13 @@ end;
 {$ENDIF ~CLR}
 
 function ArrayContainsChar(const Chars: array of Char; const C: Char): Boolean;
+var
+  idx: Integer;
+begin
+  Result := ArrayContainsChar(Chars, C, idx);
+end;
+
+function ArrayContainsChar(const Chars: array of Char; const C: Char; out Index: Integer): Boolean;
 { optimized version for sorted arrays
 var
   I, L, H: Integer;
@@ -1034,14 +1045,11 @@ begin
   end;
   Result := False;
 end;}
-var
-  I: Integer;
 begin
-  Result := True;
-  for I := Low(Chars) to High(Chars) do
-    if Chars[I] = C then
-      Exit;
-  Result := False;
+  Index := High(Chars);
+  while (Index >= Low(Chars)) and (Chars[Index] <> C) do
+    Dec(Index);
+  Result := Index >= Low(Chars);
 end;
 
 // String Test Routines
@@ -1097,6 +1105,10 @@ begin
   Result := False;
   if CheckAll then
   begin
+    // this will not work with the current definition of the validator. The validator would need to check each character
+    // it requires against the string (which is currently not provided to the Validator). The current implementation of
+    // CheckAll will check if all characters in S will be accepted by the provided Validator, which is wrong and incon-
+    // sistent with the documentation and the array-based overload.
     for I := 1 to Length(S) do
     begin
       Result := Chars(S[I]);
@@ -1119,18 +1131,19 @@ function StrContainsChars(const S: string; const Chars: array of Char; CheckAll:
 var
   I: Integer;
 begin
-  Result := False;
   if CheckAll then
   begin
-    for I := 1 to Length(S) do
+    Result := True;
+    I := High(Chars);
+    while (I >= 0) and Result do
     begin
-      Result := ArrayContainsChar(Chars, S[I]);
-      if not Result then
-        Break;
+      Result := CharPos(S, Chars[I]) > 0;
+      Dec(I);
     end;
   end
   else
   begin
+    Result := False;
     for I := 1 to Length(S) do
     begin
       Result := ArrayContainsChar(Chars, S[I]);
@@ -1618,6 +1631,64 @@ begin
 end;
 {$ENDIF ~CLR}
 
+function StrRemoveLeadingChars(const S: string; const Chars: TCharValidator): string;
+{$IFDEF CLR}
+var
+  Len: Integer;
+  I,J: Integer;
+  sb: StringBuilder;
+begin
+  Len := Length(S);
+  I := 1;
+  while (I <= Len) and Chars(s[I]) do
+    Inc(I);
+  sb := StringBuilder.Create(Len);
+  for J := I to Len  do
+    sb.Append(S[J]);
+  Result := sb.ToString();
+end;
+{$ELSE ~CLR}
+var
+  Len : Integer;
+  I: Integer;
+begin
+  Len := Length(S);
+  I := 1;
+  while (I <= Len) and Chars(s[I]) do
+    Inc(I);
+  Result := Copy (s, I, Len-I+1);
+end;
+{$ENDIF ~CLR}
+
+function StrRemoveLeadingChars(const S: string; const Chars: array of Char): string;
+{$IFDEF CLR}
+var
+  Len: Integer;
+  I,J: Integer;
+  sb: StringBuilder;
+begin
+  Len := Length(S);
+  I := 1;
+  while (I <= Len) and ArrayContainsChar(Chars, s[I]) do
+    Inc(I);
+  sb := StringBuilder.Create(Len);
+  for J := I to Len  do
+    sb.Append(S[J]);
+  Result := sb.ToString();
+end;
+{$ELSE ~CLR}
+var
+  Len : Integer;
+  I: Integer;
+begin
+  Len := Length(S);
+  I := 1;
+  while (I <= Len) and ArrayContainsChar(Chars, s[I]) do
+    Inc(I);
+  Result := Copy (s, I, Len-I+1);
+end;
+{$ENDIF ~CLR}
+
 function StrRemoveEndChars(const S: string; const Chars: TCharValidator): string;
 {$IFDEF CLR}
 var
@@ -1669,6 +1740,7 @@ begin
   Result := Copy (s, 1, Len);
 end;
 {$ENDIF ~CLR}
+
 
 function StrKeepChars(const S: string; const Chars: TCharValidator): string;
 {$IFDEF CLR}
@@ -2083,11 +2155,11 @@ end;
 {$ELSE ~CLR}
 var
   P1, P2: PChar;
-  C:      Char;
+  C: Char;
 begin
   UniqueString(S);
   P1 := PChar(S);
-  P2 := P1 + SizeOf(Char) * (Length(S) - 1);
+  P2 := P1 + (Length(S) - 1);
   while P1 < P2 do
   begin
     C := P1^;
@@ -3034,18 +3106,18 @@ end;
 {$ELSE ~CLR}
 function StrFind(const Substr, S: string; const Index: Integer): Integer;
 var
-  Pos: PChar;
+  pos: Integer;
 begin
   if (SubStr <> '') and (S <> '') then
   begin
-    pos := StrPos(@S[Index], PChar(SubStr));
-    if Pos = nil then
-      result := 0
+    pos := StrIPos(Substr, Copy(S, Index, Length(S) - Index + 1));
+    if pos = 0 then
+      Result := 0
     else
-      Result := (Cardinal(Pos) - Cardinal(@S[1])) div SizeOf(Char) + 1;
+      Result := Index + Pos - 1;
   end
   else
-    result := 0;
+    Result := 0;
 end;
 {$ENDIF ~CLR}
 
@@ -5578,31 +5650,33 @@ begin
   Result := TabSet.Optimize(S);
 end;
 
-//=== { TJclTabSet } =====================================================
+// === { TTabSetData } ===================================================
 
-constructor TJclTabSet.Create;
-begin
-  // no tab stops, tab width set to auto
-  Create([], True, 0);
-end;
+type
+  TTabSetData = class
+  public
+    FStops: TDynIntegerArray;
+    FRealWidth: Integer;
+    FRefCount: Integer;
+    FWidth: Integer;
+    FZeroBased: Boolean;
+    constructor Create(TabStops: array of Integer; ZeroBased: Boolean; TabWidth: Integer);
 
-constructor TJclTabSet.Create(TabWidth: Integer);
-begin
-  // no tab stops, specified tab width
-  Create([], True, TabWidth);
-end;
+    function Add(Column: Integer): Integer;
+    function AddRef: Integer;
+    procedure CalcRealWidth;
+    function FindStop(Column: Integer): Integer;
+    function ReleaseRef: Integer;
+    procedure RemoveAt(Index: Integer);
+    procedure SetStops(Index, Value: Integer);
+  end;
 
-constructor TJclTabSet.Create(const Tabstops: array of Integer; ZeroBased: Boolean);
-begin
-  // specified tab stops, tab width equal to distance between last two tab stops
-  Create(Tabstops, ZeroBased, 0);
-end;
-
-constructor TJclTabSet.Create(const Tabstops: array of Integer; ZeroBased: Boolean; TabWidth: Integer);
+constructor TTabSetData.Create(TabStops: array of Integer; ZeroBased: Boolean; TabWidth: Integer);
 var
   idx: Integer;
 begin
   inherited Create;
+  FRefCount := 1;
   for idx := 0 to High(Tabstops) do
     Add(Tabstops[idx]);
   FWidth := TabWidth;
@@ -5610,11 +5684,9 @@ begin
   CalcRealWidth;
 end;
 
-function TJclTabSet.Add(Column: Integer): Integer;
+function TTabSetData.Add(Column: Integer): Integer;
 begin
-  if Self = nil then
-    raise NullReferenceException.Create;
-  if Column < StartColumn then
+  if Column < Ord(FZeroBased) then
     raise ArgumentOutOfRangeException.Create('Column');
   Result := FindStop(Column);
   if Result < 0 then
@@ -5639,7 +5711,12 @@ begin
   end;
 end;
 
-procedure TJclTabSet.CalcRealWidth;
+function TTabSetData.AddRef: Integer;
+begin
+  Result := InterlockedIncrement(FRefCount);
+end;
+
+procedure TTabSetData.CalcRealWidth;
 begin
   if FWidth < 1 then
   begin
@@ -5655,19 +5732,120 @@ begin
     FRealWidth := FWidth;
 end;
 
+function TTabSetData.FindStop(Column: Integer): Integer;
+begin
+  Result := High(FStops);
+  while (Result >= 0) and (FStops[Result] > Column) do
+    Dec(Result);
+  if (Result >= 0) and (FStops[Result] <> Column) then
+    Result := not Succ(Result);
+end;
+
+function TTabSetData.ReleaseRef: Integer;
+begin
+  Result := InterlockedDecrement(FRefCount);
+  if Result <= 0 then
+    Destroy;
+end;
+
+procedure TTabSetData.RemoveAt(Index: Integer);
+begin
+  MoveArray(FStops, Succ(Index), Index, High(FStops) - Index);
+  SetLength(FStops, High(FStops));
+  CalcRealWidth;
+end;
+
+procedure TTabSetData.SetStops(Index, Value: Integer);
+var
+  temp: Integer;
+begin
+  if (Index < 0) or (Index >= Length(FStops)) then
+  begin
+    {$IFDEF CLR}
+    raise ArgumentOutOfRangeException.Create;
+    {$ELSE ~CLR}
+    raise ArgumentOutOfRangeException.CreateRes(@RsArgumentOutOfRange);
+    {$ENDIF ~CLR}
+  end
+  else
+  begin
+    temp := FindStop(Value);
+    if temp < 0 then
+    begin
+      // remove existing tab stop...
+      RemoveAt(Index);
+      // now add the new tab stop
+      Add(Value);
+    end
+    else
+    if temp <> Index then
+    begin
+      // new tab stop already present at another index
+      {$IFDEF CLR}
+      raise EJclStringError.Create(RsTabs_DuplicatesNotAllowed);
+      {$ELSE ~CLR}
+      raise EJclStringError.CreateRes(@RsTabs_DuplicatesNotAllowed);
+      {$ENDIF ~CLR}
+    end;
+  end;
+end;
+
+//=== { TJclTabSet } =====================================================
+
+constructor TJclTabSet.Create;
+begin
+  // no tab stops, tab width set to auto
+  Create([], True, 0);
+end;
+
+constructor TJclTabSet.Create(TabWidth: Integer);
+begin
+  // no tab stops, specified tab width
+  Create([], True, TabWidth);
+end;
+
+constructor TJclTabSet.Create(const Tabstops: array of Integer; ZeroBased: Boolean);
+begin
+  // specified tab stops, tab width equal to distance between last two tab stops
+  Create(Tabstops, ZeroBased, 0);
+end;
+
+constructor TJclTabSet.Create(const Tabstops: array of Integer; ZeroBased: Boolean; TabWidth: Integer);
+begin
+  inherited Create;
+  FData := TTabSetData.Create(Tabstops, ZeroBased, TabWidth);
+end;
+
+destructor TJclTabSet.Destroy;
+begin
+  // release the reference to the tab set data
+  TTabSetData(FData).ReleaseRef;
+  // make sure we won't accidentally refer to it later, just in case something goes wrong during destruction
+  FData := nil;
+  // really destroy the instance
+  inherited Destroy;
+end;
+
+function TJclTabSet.Add(Column: Integer): Integer;
+begin
+  if Self = nil then
+    raise NullReferenceException.Create;
+  Result := TTabSetData(FData).Add(Column);
+end;
+
 function TJclTabSet.Clone: TJclTabSet;
 begin
   if Self <> nil then
-    Result := TJclTabSet.Create(FStops, FZeroBased, FWidth)
+    Result := TJclTabSet.Create(TTabSetData(FData).FStops, TTabSetData(FData).FZeroBased, TTabSetData(FData).FWidth)
   else
     Result := nil;
 end;
 
 function TJclTabSet.Delete(Column: Integer): Integer;
 begin
-  Result := FindStop(Column);
+  Result := TTabSetData(FData).FindStop(Column);
   if Result >= 0 then
-    RemoveAt(Result);
+    TTabSetData(FData).RemoveAt(Result);
 end;
 
 function TJclTabSet.Expand(const S: string): string;
@@ -5715,13 +5893,7 @@ end;
 function TJclTabSet.FindStop(Column: Integer): Integer;
 begin
   if Self <> nil then
-  begin
-    Result := High(FStops);
-    while (Result >= 0) and (FStops[Result] > Column) do
-      Dec(Result);
-    if (Result >= 0) and (FStops[Result] <> Column) then
-      Result := not Succ(Result);
-  end
+    Result := TTabSetData(FData).FindStop(Column)
   else
     Result := -1;
 end;
@@ -5845,7 +6017,7 @@ end;
 function TJclTabSet.GetCount: Integer;
 begin
   if Self <> nil then
-    Result := Length(FStops)
+    Result := Length(TTabSetData(FData).FStops)
   else
     Result := 0;
 end;
@@ -5854,7 +6026,7 @@ function TJclTabSet.GetStops(Index: Integer): Integer;
 begin
   if Self <> nil then
   begin
-    if (Index < 0) or (Index >= Length(FStops)) then
+    if (Index < 0) or (Index >= Length(TTabSetData(FData).FStops)) then
     begin
       {$IFDEF CLR}
       raise EJclStringError.Create(RsArgumentOutOfRange);
@@ -5863,7 +6035,7 @@ begin
       {$ENDIF ~CLR}
     end
     else
-      Result := FStops[Index];
+      Result := TTabSetData(FData).FStops[Index];
   end
   else
   begin
@@ -5878,14 +6050,14 @@ end;
 function TJclTabSet.GetTabWidth: Integer;
 begin
   if Self <> nil then
-    Result := FWidth
+    Result := TTabSetData(FData).FWidth
   else
     Result := 0;
 end;
 
 function TJclTabSet.GetZeroBased: Boolean;
 begin
-  Result := (Self = nil) or FZeroBased;
+  Result := (Self = nil) or TTabSetData(FData).FZeroBased;
 end;
 
 procedure TJclTabSet.OptimalFillInfo(StartColumn, TargetColumn: Integer; out TabsNeeded, SpacesNeeded: Integer);
@@ -5987,51 +6159,15 @@ end;
 procedure TJclTabSet.RemoveAt(Index: Integer);
 begin
   if Self <> nil then
-  begin
-    MoveArray(FStops, Succ(Index), Index, High(FStops) - Index);
-    SetLength(FStops, High(FStops));
-    CalcRealWidth;
-  end
+    TTabSetData(FData).RemoveAt(Index)
   else
     raise NullReferenceException.Create;
 end;
 
 procedure TJclTabSet.SetStops(Index, Value: Integer);
-var
-  temp: Integer;
 begin
   if Self <> nil then
-  begin
-    if (Index < 0) or (Index >= Length(FStops)) then
-    begin
-      {$IFDEF CLR}
-      raise ArgumentOutOfRangeException.Create;
-      {$ELSE ~CLR}
-      raise ArgumentOutOfRangeException.CreateRes(@RsArgumentOutOfRange);
-      {$ENDIF ~CLR}
-    end
-    else
-    begin
-      temp := FindStop(Value);
-      if temp < 0 then
-      begin
-        // remove existing tab stop...
-        RemoveAt(Index);
-        // now add the new tab stop
-        Add(Value);
-      end
-      else
-      if temp <> Index then
-      begin
-        // new tab stop already present at another index
-        {$IFDEF CLR}
-        raise EJclStringError.Create(RsTabs_DuplicatesNotAllowed);
-        {$ELSE ~CLR}
-        raise EJclStringError.CreateRes(@RsTabs_DuplicatesNotAllowed);
-        {$ENDIF ~CLR}
-      end;
-    end;
-  end
+    TTabSetData(FData).SetStops(Index, Value)
   else
     raise NullReferenceException.Create;
 end;
@@ -6040,8 +6176,8 @@ procedure TJclTabSet.SetTabWidth(Value: Integer);
 begin
   if Self <> nil then
   begin
-    FWidth := Value;
-    CalcRealWidth;
+    TTabSetData(FData).FWidth := Value;
+    TTabSetData(FData).CalcRealWidth;
   end
   else
     raise NullReferenceException.Create;
@@ -6054,25 +6190,34 @@ var
 begin
   if Self <> nil then
   begin
-    if Value <> FZeroBased then
+    if Value <> TTabSetData(FData).FZeroBased then
     begin
-      FZeroBased := Value;
+      TTabSetData(FData).FZeroBased := Value;
       if Value then
         shift := -1
       else
         shift := 1;
-      for idx := 0 to High(FStops) do
-        FStops[idx] := FStops[idx] + shift;
+      for idx := 0 to High(TTabSetData(FData).FStops) do
+        TTabSetData(FData).FStops[idx] := TTabSetData(FData).FStops[idx] + shift;
     end;
   end
   else
     raise NullReferenceException.Create;
 end;
 
+constructor TJclTabSet.InternalCreate(Data: TObject);
+begin
+  inherited Create;
+  // add a reference to the data
+  TTabSetData(Data).AddRef;
+  // assign the data to this instance
+  FData := TTabSetData(Data);
+end;
+
 function TJclTabSet.InternalTabStops: TDynIntegerArray;
 begin
   if Self <> nil then
-    Result := FStops
+    Result := TTabSetData(FData).FStops
   else
     Result := nil;
 end;
@@ -6080,9 +6225,17 @@ end;
 function TJclTabSet.InternalTabWidth: Integer;
 begin
   if Self <> nil then
-    Result := FRealWidth
+    Result := TTabSetData(FData).FRealWidth
   else
     Result := 2;
+end;
+
+function TJclTabSet.NewReference: TJclTabSet;
+begin
+  if Self <> nil then
+    Result := TJclTabSet.InternalCreate(FData)
+  else
+    Result := nil;
 end;
 
 function TJclTabSet.StartColumn: Integer;
@@ -6105,14 +6258,14 @@ begin
   if Result >= GetCount then
   begin
     if GetCount > 0 then
-      Result := FStops[High(FStops)]
+      Result := TTabSetData(FData).FStops[High(TTabSetData(FData).FStops)]
     else
       Result := StartColumn;
     while Result <= Column do
       Inc(Result, ActualTabWidth);
   end
   else
-    Result := FStops[Result];
+    Result := TTabSetData(FData).FStops[Result];
 end;
 
 function TJclTabSet.ToString: string;

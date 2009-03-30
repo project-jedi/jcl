@@ -51,7 +51,9 @@ unit JppLexer;
 interface
 
 uses
-  SysUtils, Classes, JclStrHashMap, PCharUtils;
+  SysUtils, Classes,
+  JclStrHashMap, JclStrings, JclStreams,
+  PCharUtils;
 
 type
   TJppToken = (ptEof, ptComment, ptText, ptEol,
@@ -70,7 +72,7 @@ type
     FTokenAsString: string;
     FRawComment: string;
   public
-    constructor Create(AStream: TStream);
+    constructor Create(AStream: TJclStringStream);
     destructor Destroy; override;
 
     procedure Error(const AMsg: string);
@@ -90,7 +92,7 @@ implementation
 
 { TJppLexer }
 
-constructor TJppLexer.Create(AStream: TStream);
+constructor TJppLexer.Create(AStream: TJclStringStream);
 
   procedure AddToken(const AIdent: string; AValue: TJppToken);
   var
@@ -116,8 +118,7 @@ begin
   AddToken('jppexpandmacro', ptJppExpandMacro);
   AddToken('jppundefmacro', ptJppUndefMacro);
 
-  SetLength(FBuf, AStream.Size);
-  AStream.ReadBuffer(Pointer(FBuf)^, Length(FBuf));
+  FBuf := AStream.ReadString;
   Reset;
 end;
 
@@ -145,9 +146,9 @@ procedure TJppLexer.NextTok;
       begin
         Inc(cp);
         start := cp;
-        while not (cp^ in [#0, #10, #13, '"']) do
+        while (cp^ <> #0) and (cp^ <> #10) and (cp^ <> #13) and (cp^ <> '"') do
           Inc(cp);
-        if cp^ in [#0, #10, #13] then
+        if (cp^ = #0) or (cp^ = #10) or (cp^ = #13) then
           Error('Unterminated string');
         SetString(ident, start, cp - start);
         Result := cp + 1;
@@ -155,7 +156,7 @@ procedure TJppLexer.NextTok;
       else
       begin
         start := cp;
-        while not (cp^ in [#0..#32, '*', '}']) do
+        while (not CharIsSpace(cp^)) and (cp^ <> '*') and (cp^ <> '}') do
           Inc(cp);
         if cp^ = #0 then
           Error('Unterminated string');
@@ -174,7 +175,7 @@ procedure TJppLexer.NextTok;
     start := APos;
 
     { read identifier }
-    while APos^ in ['a'..'z', 'A'..'Z', '_'] do
+    while CharIsValidIdentifierLetter(APos^) do
       Inc(APos);
     SetString(ident, start, APos - start);
 

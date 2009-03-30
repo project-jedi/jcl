@@ -1,1 +1,1 @@
-<?php header("Location: http://homepages.codegear.com/jedi/issuetracker/"); exit; ?>
+<?php header("Location: http://issuetracker.delphi-jedi.org/"); exit; ?>

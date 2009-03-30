@@ -46,7 +46,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -70,22 +70,137 @@ uses
   System.Text,
   System.IO,
   {$ENDIF CLR}
+  {$IFDEF SUPPORTS_UNICODE}
+  AnsiStrings, RTLConsts,
+  {$ENDIF SUPPORTS_UNICODE}
   JclBase;
 
 // Ansi types
 
 type
   {$IFDEF SUPPORTS_UNICODE}
-  TAnsiStrings = Classes.TStrings; // QC 65630
-  TAnsiStringList = Classes.TStringList;
+  TJclAnsiStringList = class;
+
+  // Codegear should be the one providing this class, in the AnsiStrings unit.
+  // It has been requested in QC 65630 but this was closed as "won't do".
+  // So we are providing here a very light implementation that is designed
+  // to provide the basics, and in no way be a "copy/paste" of what is in the RTL.
+  TJclAnsiStrings = class(TPersistent)
+  private
+    FDelimiter: AnsiChar;
+    FNameValueSeparator: AnsiChar;
+
+    function GetText: AnsiString;
+    procedure SetText(const Value: AnsiString);
+    function GetDelimitedText: AnsiString;
+    procedure SetDelimitedText(const Value: AnsiString);
+    function ExtractName(const S: AnsiString): AnsiString;
+    function GetName(Index: Integer): AnsiString;
+    function GetValue(const Name: AnsiString): AnsiString;
+    procedure SetValue(const Name, Value: AnsiString);
+    function GetValueFromIndex(Index: Integer): AnsiString;
+    procedure SetValueFromIndex(Index: Integer; const Value: AnsiString);
+  protected
+    procedure AssignTo(Dest: TPersistent); override;
+
+    procedure Error(const Msg: string; Data: Integer); overload;
+    procedure Error(Msg: PResStringRec; Data: Integer); overload;
+
+    function GetString(Index: Integer): AnsiString; virtual; abstract;
+    procedure SetString(Index: Integer; const Value: AnsiString); virtual; abstract;
+    function GetObject(Index: Integer): TObject; virtual; abstract;
+    procedure SetObject(Index: Integer; AObject: TObject); virtual; abstract;
+
+    function GetCapacity: Integer; virtual;
+    procedure SetCapacity(const Value: Integer); virtual;
+    function GetCount: Integer; virtual; abstract;
+    function CompareStrings(const S1, S2: AnsiString): Integer; virtual;
+  public
+    constructor Create;
+
+    procedure Assign(Source: TPersistent); override;
+
+    function Add(const S: AnsiString): Integer; virtual;
+    function AddObject(const S: AnsiString; AObject: TObject): Integer; virtual; abstract;
+    procedure AddStrings(Strings: TJclAnsiStrings); virtual;
+    procedure Insert(Index: Integer; const S: AnsiString); virtual;
+    procedure InsertObject(Index: Integer; const S: AnsiString; AObject: TObject); virtual; abstract;
+    procedure Delete(Index: Integer); virtual; abstract;
+    procedure Clear; virtual; abstract;
+    procedure LoadFromFile(const FileName: string); virtual;
+    procedure LoadFromStream(Stream: TStream); virtual;
+    procedure SaveToFile(const FileName: string); virtual;
+    procedure SaveToStream(Stream: TStream); virtual;
+    procedure BeginUpdate;
+    procedure EndUpdate;
+    function IndexOf(const S: AnsiString): Integer; virtual;
+    function IndexOfName(const Name: AnsiString): Integer; virtual;
+    function IndexOfObject(AObject: TObject): Integer; virtual;
+    procedure Exchange(Index1, Index2: Integer); virtual;
+
+    property Delimiter: AnsiChar read FDelimiter write FDelimiter;
+    property DelimitedText: AnsiString read GetDelimitedText write SetDelimitedText;
+
+    property Strings[Index: Integer]: AnsiString read GetString write SetString; default;
+    property Objects[Index: Integer]: TObject read GetObject write SetObject;
+    property Text: AnsiString read GetText write SetText;
+    property Count: Integer read GetCount;
+    property Capacity: Integer read GetCapacity write SetCapacity;
+    property Names[Index: Integer]: AnsiString read GetName;
+    property Values[const Name: AnsiString]: AnsiString read GetValue write SetValue;
+    property ValueFromIndex[Index: Integer]: AnsiString read GetValueFromIndex write SetValueFromIndex;
+    property NameValueSeparator: AnsiChar read FNameValueSeparator write FNameValueSeparator;
+  end;
+
+  TJclAnsiStringListSortCompare = function(List: TJclAnsiStringList; Index1, Index2: Integer): Integer;
+
+  TJclAnsiStringObjectHolder = record
+    Str: AnsiString;
+    Obj: TObject;
+  end;
+
+  TJclAnsiStringList = class(TJclAnsiStrings)
+  private
+    FStrings: array of TJclAnsiStringObjectHolder;
+    FCount: Integer;
+    FDuplicates: TDuplicates;
+    FSorted: Boolean;
+
+    procedure Grow;
+    procedure QuickSort(L, R: Integer; SCompare: TJclAnsiStringListSortCompare);
+    procedure SetSorted(Value: Boolean);
+  protected
+    function GetString(Index: Integer): AnsiString; override;
+    procedure SetString(Index: Integer; const Value: AnsiString); override;
+    function GetObject(Index: Integer): TObject; override;
+    procedure SetObject(Index: Integer; AObject: TObject); override;
+    function GetCapacity: Integer; override;
+    procedure SetCapacity(const Value: Integer); override;
+    function GetCount: Integer; override;
+  public
+    function AddObject(const S: AnsiString; AObject: TObject): Integer; override;
+    procedure InsertObject(Index: Integer; const S: AnsiString; AObject: TObject); override;
+    procedure Delete(Index: Integer); override;
+    function Find(const S: AnsiString; var Index: Integer): Boolean; virtual;
+    procedure CustomSort(Compare: TJclAnsiStringListSortCompare); virtual;
+    procedure Sort; virtual;
+    procedure Clear; override;
+
+    property Duplicates: TDuplicates read FDuplicates write FDuplicates;
+    property Sorted: Boolean read FSorted write SetSorted;
+  end;
   {$ELSE ~SUPPORTS_UNICODE}
-  TAnsiStrings = Classes.TStrings;
-  TAnsiStringList = Classes.TStringList;
+  TJclAnsiStrings = Classes.TStrings;
+  TJclAnsiStringList = Classes.TStringList;
   {$ENDIF ~SUPPORTS_UNICODE}
+
+  TAnsiStrings = TJclAnsiStrings;
+  TAnsiStringList = TJclAnsiStringList;
 
 // Exceptions
 type
-  EJclAnsiStringError = EJclError;
+  EJclAnsiStringError = class(EJclError);
+  EJclAnsiStringListError = class(EJclAnsiStringError);
 
 // Character constants and sets
 
@@ -331,31 +446,31 @@ function CharReplace(var S: AnsiString; const Search, Replace: AnsiChar): Intege
 type
   PCharVector = ^PAnsiChar;
 
-function StringsToPCharVector(var Dest: PCharVector; const Source: TAnsiStrings): PCharVector;
+function StringsToPCharVector(var Dest: PCharVector; const Source: TJclAnsiStrings): PCharVector;
 function PCharVectorCount(Source: PCharVector): Integer;
-procedure PCharVectorToStrings(const Dest: TAnsiStrings; Source: PCharVector);
+procedure PCharVectorToStrings(const Dest: TJclAnsiStrings; Source: PCharVector);
 procedure FreePCharVector(var Dest: PCharVector);
 
 // MultiSz Routines
 type
   PAnsiMultiSz = PAnsiChar;
 
-function StringsToMultiSz(var Dest: PAnsiMultiSz; const Source: TAnsiStrings): PAnsiMultiSz;
-procedure MultiSzToStrings(const Dest: TAnsiStrings; const Source: PAnsiMultiSz);
+function StringsToMultiSz(var Dest: PAnsiMultiSz; const Source: TJclAnsiStrings): PAnsiMultiSz;
+procedure MultiSzToStrings(const Dest: TJclAnsiStrings; const Source: PAnsiMultiSz);
 function MultiSzLength(const Source: PAnsiMultiSz): Integer;
 procedure AllocateMultiSz(var Dest: PAnsiMultiSz; Len: Integer);
 procedure FreeMultiSz(var Dest: PAnsiMultiSz);
 function MultiSzDup(const Source: PAnsiMultiSz): PAnsiMultiSz;
 {$ENDIF ~CLR}
 
-// TAnsiStrings Manipulation
-procedure StrIToStrings(S, Sep: AnsiString; const List: TAnsiStrings; const AllowEmptyString: Boolean = True);
-procedure StrToStrings(S, Sep: AnsiString; const List: TAnsiStrings; const AllowEmptyString: Boolean = True);
-function StringsToStr(const List: TAnsiStrings; const Sep: AnsiString; const AllowEmptyString: Boolean = True): AnsiString;
-procedure TrimStrings(const List: TAnsiStrings; DeleteIfEmpty: Boolean = True);
-procedure TrimStringsRight(const List: TAnsiStrings; DeleteIfEmpty: Boolean = True);
-procedure TrimStringsLeft(const List: TAnsiStrings; DeleteIfEmpty: Boolean = True);
-function AddStringToStrings(const S: AnsiString; Strings: TAnsiStrings; const Unique: Boolean): Boolean;
+// TJclAnsiStrings Manipulation
+procedure StrIToStrings(S, Sep: AnsiString; const List: TJclAnsiStrings; const AllowEmptyString: Boolean = True);
+procedure StrToStrings(S, Sep: AnsiString; const List: TJclAnsiStrings; const AllowEmptyString: Boolean = True);
+function StringsToStr(const List: TJclAnsiStrings; const Sep: AnsiString; const AllowEmptyString: Boolean = True): AnsiString;
+procedure TrimStrings(const List: TJclAnsiStrings; DeleteIfEmpty: Boolean = True);
+procedure TrimStringsRight(const List: TJclAnsiStrings; DeleteIfEmpty: Boolean = True);
+procedure TrimStringsLeft(const List: TJclAnsiStrings; DeleteIfEmpty: Boolean = True);
+function AddStringToStrings(const S: AnsiString; Strings: TJclAnsiStrings; const Unique: Boolean): Boolean;
 
 // Miscellaneous
 {$IFDEF KEEP_DEPRECATED}
@@ -365,8 +480,8 @@ function FileToString(const FileName: TFileName): AnsiString;
 procedure StringToFile(const FileName: TFileName; const Contents: AnsiString; Append: Boolean = False);
 function StrToken(var S: AnsiString; Separator: AnsiChar): AnsiString;
 {$IFNDEF CLR}
-procedure StrTokens(const S: AnsiString; const List: TAnsiStrings);
-procedure StrTokenToStrings(S: AnsiString; Separator: AnsiChar; const List: TAnsiStrings);
+procedure StrTokens(const S: AnsiString; const List: TJclAnsiStrings);
+procedure StrTokenToStrings(S: AnsiString; Separator: AnsiChar; const List: TJclAnsiStrings);
 function StrWord(var S: PAnsiChar; out Word: AnsiString): Boolean;
 {$ENDIF ~CLR}
 function StrToFloatSafe(const S: AnsiString): Float;
@@ -374,7 +489,7 @@ function StrToIntSafe(const S: AnsiString): Integer;
 procedure StrNormIndex(const StrLen: Integer; var Index: Integer; var Count: Integer); overload;
 
 {$IFDEF CLR}
-function ArrayOf(List: TAnsiStrings): TDynStringArray; overload;
+function ArrayOf(List: TJclAnsiStrings): TDynStringArray; overload;
 {$ENDIF CLR}
 
 function AnsiCompareNaturalStr(const S1, S2: AnsiString): Integer;
@@ -737,6 +852,541 @@ asm
 @@StrIsNull:
 end;
 {$ENDIF ~CLR}
+
+{$IFDEF SUPPORTS_UNICODE}
+{ TJclAnsiStrings }
+
+constructor TJclAnsiStrings.Create;
+begin
+  inherited Create;
+
+  FDelimiter := ',';
+  FNameValueSeparator := '=';
+end;
+
+procedure TJclAnsiStrings.Assign(Source: TPersistent);
+begin
+  if Source is TJclAnsiStrings then
+  begin
+    BeginUpdate;
+    try
+      Clear;
+      FNameValueSeparator := TJclAnsiStrings(Source).FNameValueSeparator;
+      FDelimiter := TJclAnsiStrings(Source).FDelimiter;
+      AddStrings(TJclAnsiStrings(Source));
+    finally
+      EndUpdate;
+    end;
+    Exit;
+  end;
+  inherited Assign(Source);
+end;
+
+procedure TJclAnsiStrings.AssignTo(Dest: TPersistent);
+var
+  StringsDest: TStrings;
+  I: Integer;
+begin
+  if Dest is TStrings then
+  begin
+    StringsDest := TStrings(Dest);
+    StringsDest.BeginUpdate;
+    try
+      StringsDest.Clear;
+      StringsDest.Delimiter := Char(Delimiter);
+      StringsDest.NameValueSeparator := Char(NameValueSeparator);
+      for I := 0 to Count - 1 do
+        StringsDest.AddObject(string(Strings[I]), Objects[I]);
+    finally
+      StringsDest.EndUpdate;
+    end;
+  end;
+end;
+
+function TJclAnsiStrings.Add(const S: AnsiString): Integer;
+begin
+  Result := AddObject(S, nil);
+end;
+
+procedure TJclAnsiStrings.AddStrings(Strings: TJclAnsiStrings);
+var
+  I: Integer;
+begin
+  for I := 0 to Strings.Count - 1 do
+    Add(Strings.Strings[I]);
+end;
+
+procedure TJclAnsiStrings.Error(const Msg: string; Data: Integer);
+begin
+  raise EJclAnsiStringListError.CreateFmt(Msg, [Data]);
+end;
+
+procedure TJclAnsiStrings.Error(Msg: PResStringRec; Data: Integer);
+begin
+  Error(LoadResString(Msg), Data);
+end;
+
+function TJclAnsiStrings.CompareStrings(const S1, S2: AnsiString): Integer;
+begin
+  Result := CompareStr(S1, S2);
+end;
+
+function TJclAnsiStrings.IndexOf(const S: AnsiString): Integer;
+begin
+  for Result := 0 to Count - 1 do
+    if CompareStrings(Strings[Result], S) = 0 then Exit;
+  Result := -1;
+end;
+
+function TJclAnsiStrings.IndexOfName(const Name: AnsiString): Integer;
+var
+  P: Integer;
+  S: AnsiString;
+begin
+  for Result := 0 to GetCount - 1 do
+  begin
+    S := GetString(Result);
+    P := AnsiPos(NameValueSeparator, S);
+    if (P <> 0) and (CompareStrings(Copy(S, 1, P - 1), Name) = 0) then Exit;
+  end;
+  Result := -1;
+end;
+
+function TJclAnsiStrings.IndexOfObject(AObject: TObject): Integer;
+begin
+  for Result := 0 to GetCount - 1 do
+    if GetObject(Result) = AObject then Exit;
+  Result := -1;
+end;
+
+procedure TJclAnsiStrings.Exchange(Index1, Index2: Integer);
+var
+  TempString: AnsiString;
+  TempObject: TObject;
+begin
+  BeginUpdate;
+  try
+    TempString := Strings[Index1];
+    TempObject := Objects[Index1];
+    Strings[Index1] := Strings[Index2];
+    Objects[Index1] := Objects[Index2];
+    Strings[Index2] := TempString;
+    Objects[Index2] := TempObject;
+  finally
+    EndUpdate;
+  end;
+end;
+
+function TJclAnsiStrings.GetDelimitedText: AnsiString;
+var
+  I: Integer;
+begin
+  Result := '';
+  for I := 0 to Count - 2 do
+    Result := Result + Strings[I] + Delimiter;
+  if Count > 0 then
+    Result := Result + Strings[Count - 1];
+end;
+
+procedure TJclAnsiStrings.Insert(Index: Integer; const S: AnsiString);
+begin
+  InsertObject(Index, S, nil);
+end;
+
+procedure TJclAnsiStrings.SetDelimitedText(const Value: AnsiString);
+var
+  LastStart: Integer;
+  Index: Integer;
+begin
+  Clear;
+  LastStart := 1;
+  for Index := 1 to Length(Value) do
+  begin
+    if Value[Index] = Delimiter then
+    begin
+      Add(Copy(Value, LastStart, Index - LastStart));
+      LastStart := Index + 1;
+    end;
+  end;
+end;
+
+function TJclAnsiStrings.GetText: AnsiString;
+var
+  I: Integer;
+begin
+  Result := '';
+  for I := 0 to Count - 2 do
+    Result := Result + Strings[I] + sLineBreak;
+  if Count > 0 then
+    Result := Result + Strings[Count - 1];
+end;
+
+procedure TJclAnsiStrings.SetText(const Value: AnsiString);
+var
+  Index, Start, Len: Integer;
+  S: AnsiString;
+begin
+  Clear;
+  Len := Length(Value);
+  if Len > 0 then
+  begin
+    Index := 1;
+    while Index <= Len do
+    begin
+      Start := Index;
+      while not (Value[Index] in [#10, #13]) do
+        Inc(Index);
+
+      S := Copy(Value, Start, Index - Start);
+      Add(S);
+
+      if Value[Index] = #13 then
+        Inc(Index);
+      if Value[Index] = #10 then
+        Inc(Index);
+    end;
+  end;
+end;
+
+function TJclAnsiStrings.GetCapacity: Integer;
+begin
+  Result := Count; // Might be overridden in derived classes
+end;
+
+procedure TJclAnsiStrings.SetCapacity(const Value: Integer);
+begin
+  // Nothing at this level
+end;
+
+procedure TJclAnsiStrings.BeginUpdate;
+begin
+end;
+
+procedure TJclAnsiStrings.EndUpdate;
+begin
+end;
+
+procedure TJclAnsiStrings.LoadFromFile(const FileName: string);
+var
+  Stream: TStream;
+begin
+  Stream := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);
+  try
+    LoadFromStream(Stream);
+  finally
+    Stream.Free;
+  end;
+end;
+
+procedure TJclAnsiStrings.LoadFromStream(Stream: TStream);
+var
+  Size: Integer;
+  S: AnsiString;
+begin
+  BeginUpdate;
+  try
+    Size := Stream.Size - Stream.Position;
+    System.SetString(S, nil, Size);
+    Stream.Read(Pointer(S)^, Size);
+    SetText(S);
+  finally
+    EndUpdate;
+  end;
+end;
+
+procedure TJclAnsiStrings.SaveToFile(const FileName: string);
+var
+  Stream: TStream;
+begin
+  Stream := TFileStream.Create(FileName, fmCreate);
+  try
+    SaveToStream(Stream);
+  finally
+    Stream.Free;
+  end;
+end;
+
+procedure TJclAnsiStrings.SaveToStream(Stream: TStream);
+var
+  S: AnsiString;
+begin
+  S := GetText;
+  Stream.WriteBuffer(Pointer(S)^, Length(S));
+end;
+
+function TJclAnsiStrings.ExtractName(const S: AnsiString): AnsiString;
+var
+  P: Integer;
+begin
+  Result := S;
+  P := AnsiPos(NameValueSeparator, Result);
+  if P <> 0 then
+    SetLength(Result, P-1)
+  else
+    SetLength(Result, 0);
+end;
+
+function TJclAnsiStrings.GetName(Index: Integer): AnsiString;
+begin
+  Result := ExtractName(GetString(Index));
+end;
+
+function TJclAnsiStrings.GetValue(const Name: AnsiString): AnsiString;
+var
+  I: Integer;
+begin
+  I := IndexOfName(Name);
+  if I >= 0 then
+    Result := Copy(GetString(I), Length(Name) + 2, MaxInt)
+  else
+    Result := '';
+end;
+
+procedure TJclAnsiStrings.SetValue(const Name, Value: AnsiString);
+var
+  I: Integer;
+begin
+  I := IndexOfName(Name);
+  if Value <> '' then
+  begin
+    if I < 0 then
+      I := Add('');
+    SetString(I, Name + NameValueSeparator + Value);
+  end
+  else
+  begin
+    if I >= 0 then
+      Delete(I);
+  end;
+end;
+
+function TJclAnsiStrings.GetValueFromIndex(Index: Integer): AnsiString;
+begin
+  if Index >= 0 then
+    Result := Copy(GetString(Index), Length(Names[Index]) + 2, MaxInt)
+  else
+    Result := '';
+end;
+
+procedure TJclAnsiStrings.SetValueFromIndex(Index: Integer; const Value: AnsiString);
+begin
+  if Value <> '' then
+  begin
+    if Index < 0 then Index := Add('');
+    SetString(Index, Names[Index] + NameValueSeparator + Value);
+  end
+  else
+  begin
+    if Index >= 0 then Delete(Index);
+  end;
+end;
+
+{ TJclAnsiStringList }
+
+procedure TJclAnsiStringList.Grow;
+var
+  Delta: Integer;
+begin
+  if Capacity > 64 then
+    Delta := Capacity div 4
+  else if Capacity > 8 then
+    Delta := 16
+  else
+    Delta := 4;
+
+  SetCapacity(Capacity + Delta);
+end;
+
+function TJclAnsiStringList.GetString(Index: Integer): AnsiString;
+begin
+  if (Index < 0) or (Index >= FCount) then
+    Error(@SListIndexError, Index);
+
+  Result := FStrings[Index].Str;
+end;
+
+procedure TJclAnsiStringList.SetString(Index: Integer; const Value: AnsiString);
+begin
+  if Sorted then
+    Error(@SSortedListError, 0);
+
+  if (Index < 0) or (Index >= FCount) then
+    Error(@SListIndexError, Index);
+
+  FStrings[Index].Str := Value;
+end;
+
+function TJclAnsiStringList.GetObject(Index: Integer): TObject;
+begin
+  if (Index < 0) or (Index >= FCount) then
+    Error(@SListIndexError, Index);
+
+  Result := FStrings[Index].Obj;
+end;
+
+procedure TJclAnsiStringList.SetObject(Index: Integer; AObject: TObject);
+begin
+  if (Index < 0) or (Index >= FCount) then
+    Error(@SListIndexError, Index);
+
+  FStrings[Index].Obj := AObject;
+end;
+
+function TJclAnsiStringList.GetCapacity: Integer;
+begin
+  Result := Length(FStrings);
+end;
+
+procedure TJclAnsiStringList.SetCapacity(const Value: Integer);
+begin
+  if (Value < FCount) then
+    Error(@SListCapacityError, Value);
+
+  if Value <> Capacity then
+    SetLength(FStrings, Value);
+end;
+
+function TJclAnsiStringList.GetCount: Integer;
+begin
+  Result := FCount;
+end;
+
+procedure TJclAnsiStringList.InsertObject(Index: Integer; const S: AnsiString; AObject: TObject);
+var
+  I: Integer;
+begin
+  if Count = Capacity then
+    Grow;
+
+  for I := Index to Count - 1 do
+    FStrings[I + 1] := FStrings[I];
+
+  FStrings[Index].Str := S;
+  FStrings[Index].Obj := AObject;
+  Inc(FCount);
+end;
+
+function TJclAnsiStringList.AddObject(const S: AnsiString; AObject: TObject): Integer;
+begin
+  if not Sorted then
+  begin
+    Result := Count;
+  end
+  else
+  begin
+    if Find(S, Result) then
+      case Duplicates of
+        dupIgnore: Exit;
+        dupError: Error(@SDuplicateString, 0);
+      end;
+  end;
+
+  InsertObject(Result, S, AObject);
+end;
+
+procedure TJclAnsiStringList.Delete(Index: Integer);
+var
+  I: Integer;
+begin
+  if (Index < 0) or (Index >= FCount) then
+    Error(@SListIndexError, Index);
+
+  for I := Index to Count - 2 do
+    FStrings[Index] := FStrings[Index + 1];
+end;
+
+procedure TJclAnsiStringList.Clear;
+var
+  I: Integer;
+begin
+  FCount := 0;
+  for I := 0 to Length(FStrings) - 1 do
+  begin
+    FStrings[I].Str := '';
+    FStrings[I].Obj := nil;
+  end;
+end;
+
+function TJclAnsiStringList.Find(const S: AnsiString; var Index: Integer): Boolean;
+var
+  L, H, I, C: Integer;
+begin
+  Result := False;
+  L := 0;
+  H := FCount - 1;
+  while L <= H do
+  begin
+    I := (L + H) shr 1;
+    C := CompareStrings(FStrings[I].Str, S);
+    if C < 0 then L := I + 1 else
+    begin
+      H := I - 1;
+      if C = 0 then
+      begin
+        Result := True;
+        if Duplicates <> dupAccept then L := I;
+      end;
+    end;
+  end;
+  Index := L;
+end;
+
+function AnsiStringListCompareStrings(List: TJclAnsiStringList; Index1, Index2: Integer): Integer;
+begin
+  Result := List.CompareStrings(List.FStrings[Index1].Str,
+                                List.FStrings[Index2].Str);
+end;
+
+procedure TJclAnsiStringList.Sort;
+begin
+  CustomSort(AnsiStringListCompareStrings);
+end;
+
+procedure TJclAnsiStringList.CustomSort(Compare: TJclAnsiStringListSortCompare);
+begin
+  if not Sorted and (FCount > 1) then
+    QuickSort(0, FCount - 1, Compare);
+end;
+
+procedure TJclAnsiStringList.QuickSort(L, R: Integer; SCompare: TJclAnsiStringListSortCompare);
+var
+  I, J, P: Integer;
+begin
+  repeat
+    I := L;
+    J := R;
+    P := (L + R) shr 1;
+    repeat
+      while SCompare(Self, I, P) < 0 do Inc(I);
+      while SCompare(Self, J, P) > 0 do Dec(J);
+      if I <= J then
+      begin
+        if I <> J then
+          Exchange(I, J);
+        if P = I then
+          P := J
+        else if P = J then
+          P := I;
+        Inc(I);
+        Dec(J);
+      end;
+    until I > J;
+    if L < J then QuickSort(L, J, SCompare);
+    L := I;
+  until I >= R;
+end;
+
+procedure TJclAnsiStringList.SetSorted(Value: Boolean);
+begin
+  if FSorted <> Value then
+  begin
+    if Value then
+      Sort;
+    FSorted := Value;
+  end;
+end;
+
+{$ENDIF SUPPORTS_UNICODE}
 
 // String Test Routines
 function StrIsAlpha(const S: AnsiString): Boolean;
@@ -3215,7 +3865,7 @@ end;
 {$IFNDEF CLR}
 //=== PCharVector ============================================================
 
-function StringsToPCharVector(var Dest: PCharVector; const Source: TAnsiStrings): PCharVector;
+function StringsToPCharVector(var Dest: PCharVector; const Source: TJclAnsiStrings): PCharVector;
 var
   I: Integer;
   S: AnsiString;
@@ -3226,7 +3876,7 @@ begin
   SetLength(List, Source.Count + SizeOf(AnsiChar));
   for I := 0 to Source.Count - 1 do
   begin
-    S := AnsiString(Source[I]);  // OF TStrings to AnsiString
+    S := Source[I];
     {$IFDEF SUPPORTS_UNICODE}
     List[I] := AnsiStrAlloc(Length(S) + SizeOf(AnsiChar));
     {$ELSE ~SUPPORTS_UNICODE}
@@ -3255,7 +3905,7 @@ begin
   end;
 end;
 
-procedure PCharVectorToStrings(const Dest: TAnsiStrings; Source: PCharVector);
+procedure PCharVectorToStrings(const Dest: TJclAnsiStrings; Source: PCharVector);
 var
   I, Count: Integer;
   List: array of PAnsiChar;
@@ -3270,7 +3920,7 @@ begin
     try
       Dest.Clear;
       for I := 0 to Count - 1 do
-        Dest.Add(string(AnsiString(List[I]))); // OF AnsiString to TStrings
+        Dest.Add(List[I]);
     finally
       Dest.EndUpdate;
     end;
@@ -3398,7 +4048,7 @@ end;
 {$IFNDEF CLR}
 //=== MultiSz ================================================================
 
-function StringsToMultiSz(var Dest: PAnsiMultiSz; const Source: TAnsiStrings): PAnsiMultiSz;
+function StringsToMultiSz(var Dest: PAnsiMultiSz; const Source: TJclAnsiStrings): PAnsiMultiSz;
 var
   I, TotalLength: Integer;
   P: PAnsiMultiSz;
@@ -3421,7 +4071,7 @@ begin
   Result := Dest;
 end;
 
-procedure MultiSzToStrings(const Dest: TAnsiStrings; const Source: PAnsiMultiSz);
+procedure MultiSzToStrings(const Dest: TJclAnsiStrings; const Source: PAnsiMultiSz);
 var
   P: PAnsiMultiSz;
 begin
@@ -3434,7 +4084,7 @@ begin
       P := Source;
       while P^ <> #0 do
       begin
-        Dest.Add(string(AnsiString(P))); // OF AnsiString to TStrings
+        Dest.Add(P);
         P := StrEnd(P);
         Inc(P);
       end;
@@ -3491,9 +4141,9 @@ begin
 end;
 {$ENDIF ~CLR}
 
-//=== TAnsiStrings Manipulation ===============================================
+//=== TJclAnsiStrings Manipulation ===============================================
 
-procedure StrToStrings(S, Sep: AnsiString; const List: TAnsiStrings; const AllowEmptyString: Boolean = True);
+procedure StrToStrings(S, Sep: AnsiString; const List: TJclAnsiStrings; const AllowEmptyString: Boolean = True);
 var
   I, L: Integer;
   Left: AnsiString;
@@ -3508,19 +4158,18 @@ begin
     begin
       Left := StrLeft(S, I - 1);
       if (Left <> '') or AllowEmptyString then
-        List.Add(string(Left)); // OF AnsiString to TStrings
+        List.Add(Left);
       Delete(S, 1, I + L - 1);
       I := Pos(Sep, S);
     end;
     if S <> '' then
-      // OF AnsiString to TStrings
-      List.Add(string(S));  // Ignore empty strings at the end.
+      List.Add(S);  // Ignore empty strings at the end.
   finally
     List.EndUpdate;
   end;
 end;
 
-procedure StrIToStrings(S, Sep: AnsiString; const List: TAnsiStrings; const AllowEmptyString: Boolean = True);
+procedure StrIToStrings(S, Sep: AnsiString; const List: TJclAnsiStrings; const AllowEmptyString: Boolean = True);
 var
   I, L: Integer;
   LowerCaseStr: AnsiString;
@@ -3538,20 +4187,19 @@ begin
     begin
       Left := StrLeft(S, I - 1);
       if (Left <> '') or AllowEmptyString then
-        List.Add(string(Left)); // OF AnsiString to TStrings
+        List.Add(Left);
       Delete(S, 1, I + L - 1);
       Delete(LowerCaseStr, 1, I + L - 1);
       I := Pos(Sep, LowerCaseStr);
     end;
     if S <> '' then
-      // OF AnsiString to TStrings
-      List.Add(string(S));  // Ignore empty strings at the end.
+      List.Add(S);  // Ignore empty strings at the end.
   finally
     List.EndUpdate;
   end;
 end;
 
-function StringsToStr(const List: TAnsiStrings; const Sep: AnsiString;
+function StringsToStr(const List: TJclAnsiStrings; const Sep: AnsiString;
   const AllowEmptyString: Boolean): AnsiString;
 var
   I, L: Integer;
@@ -3562,7 +4210,7 @@ begin
     if (List[I] <> '') or AllowEmptyString then
     begin
       // don't combine these into one addition, somehow it hurts performance
-      Result := Result + AnsiString(List[I]); // OF TStrings to AnsiString
+      Result := Result + List[I];
       Result := Result + Sep;
     end;
   end;
@@ -3574,7 +4222,7 @@ begin
   end;
 end;
 
-procedure TrimStrings(const List: TAnsiStrings; DeleteIfEmpty: Boolean);
+procedure TrimStrings(const List: TJclAnsiStrings; DeleteIfEmpty: Boolean);
 var
   I: Integer;
 begin
@@ -3592,7 +4240,7 @@ begin
   end;
 end;
 
-procedure TrimStringsRight(const List: TAnsiStrings; DeleteIfEmpty: Boolean);
+procedure TrimStringsRight(const List: TJclAnsiStrings; DeleteIfEmpty: Boolean);
 var
   I: Integer;
 begin
@@ -3610,7 +4258,7 @@ begin
   end;
 end;
 
-procedure TrimStringsLeft(const List: TAnsiStrings; DeleteIfEmpty: Boolean);
+procedure TrimStringsLeft(const List: TJclAnsiStrings; DeleteIfEmpty: Boolean);
 var
   I: Integer;
 begin
@@ -3628,12 +4276,12 @@ begin
   end;
 end;
 
-function AddStringToStrings(const S: AnsiString; Strings: TAnsiStrings; const Unique: Boolean): Boolean;
+function AddStringToStrings(const S: AnsiString; Strings: TJclAnsiStrings; const Unique: Boolean): Boolean;
 begin
   Assert(Strings <> nil);
-  Result := Unique and (Strings.IndexOf(string(S)) <> -1); // OF AnsiString to TStrings
+  Result := Unique and (Strings.IndexOf(S) <> -1);
   if not Result then
-    Result := Strings.Add(string(S)) > -1; // OF AnsiString to TStrings
+    Result := Strings.Add(S) > -1;
 end;
 
 //=== Miscellaneous ==========================================================
@@ -3717,7 +4365,7 @@ end;
 
 {$IFNDEF CLR}
 
-procedure StrTokens(const S: AnsiString; const List: TAnsiStrings);
+procedure StrTokens(const S: AnsiString; const List: TJclAnsiStrings);
 var
   Start: PAnsiChar;
   Token: AnsiString;
@@ -3734,14 +4382,14 @@ begin
     repeat
       Done := StrWord(Start, Token);
       if Token <> '' then
-        List.Add(string(Token)); // OF AnsiString to TStrings
+        List.Add(Token);
     until Done;
   finally
     List.EndUpdate;
   end;
 end;
 
-procedure StrTokenToStrings(S: AnsiString; Separator: AnsiChar; const List: TAnsiStrings);
+procedure StrTokenToStrings(S: AnsiString; Separator: AnsiChar; const List: TJclAnsiStrings);
 var
   Token: AnsiString;
 begin
@@ -3756,7 +4404,7 @@ begin
     while S <> '' do
     begin
       Token := StrToken(S, Separator);
-      List.Add(string(Token)); // OF AnsiString to TStrings
+      List.Add(Token);
     end;
   finally
     List.EndUpdate;
@@ -3888,7 +4536,7 @@ begin
 end;
 
 {$IFDEF CLR}
-function ArrayOf(List: TAnsiStrings): TDynStringArray;
+function ArrayOf(List: TJclAnsiStrings): TDynStringArray;
 var
   I: Integer;
 begin

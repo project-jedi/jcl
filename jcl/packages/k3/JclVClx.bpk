@@ -31,7 +31,7 @@
     <DEBUGLIBPATH value="$(BCB)/lib/debug:../../lib/k3/debug"/>
     <RELEASELIBPATH value="$(BCB)/lib/release:../../lib/k3"/>
     <LINKER value="ilink"/>
-    <USERDEFINES value=""/>
+    <USERDEFINES value="BCB;RELEASE"/>
     <SYSDEFINES value="USEPACKAGES:_RTLDLL"/>
     <MAINSOURCE value="JclVClx.bpf"/>
     <INCLUDEPATH value="../../source/include:../../source/visclx:$(BCB)/include/stlport:$(BCB)/include:$(BCB)/include/vcl:/usr/include"/>
@@ -40,9 +40,8 @@
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
-    <CFLAG1 value="-tP -VP -O2 -H=$(HOME)/.borland/clx69.csm -Hc -Vx -Ve -X- -a8 -b- -k- -vi 
-      -c"/>
-    <PFLAGS value="-N0../../lib/k3 -N2../../lib/k3 -P -$Y- -$L- -$D- -$A8 -v -JPHNE -M"/>
+    <CFLAG1 value="-tP -VP -O2 -H=$(HOME)/.borland/clx69.csm -Hc -Vx -Ve -X- -a8 -b- -k- -vi -c -DBCB;RELEASE"/>
+    <PFLAGS value="-N0../../lib/k3 -N2../../lib/k3 -P -$Y- -$L- -$D- -$A8 -v -JPHNE -M -DBCB;RELEASE"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
     <LFLAGS value="-l../../lib/k3 -I../../lib/k3 -GB&quot;CJclVClx&quot; -N&quot;&quot; -D&quot;&quot;

@@ -55,7 +55,7 @@
     <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
     <RELEASELIBPATH value="$(BCB)\lib\release"/>
     <LINKER value="ilink32"/>
-    <USERDEFINES value="_DEBUG;BCB"/>
+    <USERDEFINES value="%DEFINES%"/>
     <SYSDEFINES value="NO_STRICT;_RTLDLL;USEPACKAGES"/>
     <MAINSOURCE value="%NAME%.cpp"/>
     <INCLUDEPATH value="..\..\source\common;..\..\source\windows;..\..\source\vcl;..\..\source\visclx;$(BCB)\include;$(BCB)\include\vcl"/>
@@ -64,9 +64,9 @@
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
-    <CFLAG1 value="-WD -Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -tWD -tWM -c"/>
+    <CFLAG1 value="-WD -Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -tWD -tWM -c %COMPILERDEFINES%"/>
     <PFLAGS value="-U..\..\lib\c6 -N2..\..\lib\c6 -N0..\..\lib\c6 -I..\..\source\include -$YD -$W -$O- -$A8 -v -JPHNE -M
-                   %C6PFLAGS%
+                   %C6PFLAGS% %COMPILERDEFINES%
                   "/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>

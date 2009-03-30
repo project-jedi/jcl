@@ -36,20 +36,24 @@ begin
   Result := SELFCLASSNAME.Create(FOwnList, FCursor, Valid, FStart);
 end;
 
-function SELFCLASSNAME.IteratorEquals(const AIterator: ITRINTERFACENAME): Boolean;
+procedure SELFCLASSNAME.Extract;
 var
-  Obj: TObject;
-  ItrObj: SELFCLASSNAME;
+  OldCursor: ITEMCLASSNAME;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is SELFCLASSNAME then
-  begin
-    ItrObj := SELFCLASSNAME(Obj);
-    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
-  end;
+  {$JPPEXPANDMACRO DELEGATEWRITEBEGIN(FOwnList)}
+    CheckValid;
+    Valid := False;
+    if FCursor <> nil then
+    begin
+      if FCursor.Next <> nil then
+        FCursor.Next.Previous := FCursor.Previous;
+      if FCursor.Previous <> nil then
+        FCursor.Previous.Next := FCursor.Next;
+      OldCursor := FCursor;
+      FCursor := FCursor.Next;
+      OldCursor.Free;
+    end;
+  {$JPPEXPANDMACRO DELEGATEWRITEEND(FOwnList)}
 end;
 
 function SELFCLASSNAME.GETTERNAME: TYPENAME;
@@ -77,7 +81,7 @@ function SELFCLASSNAME.HasPrevious: Boolean;
 begin
   {$JPPEXPANDMACRO DELEGATEREADBEGIN(FOwnList)}
     if Valid then
-      Result := (FCursor <> nil) and (FCursor.Next <> nil)
+      Result := (FCursor <> nil) and (FCursor.Previous <> nil)
     else
       Result := FCursor <> nil;
   {$JPPEXPANDMACRO DELEGATEREADEND(FOwnList)}
@@ -121,6 +125,22 @@ begin
       end;
     end;
   {$JPPEXPANDMACRO DELEGATEWRITEEND(FOwnList)}
+end;
+
+function SELFCLASSNAME.IteratorEquals(const AIterator: ITRINTERFACENAME): Boolean;
+var
+  Obj: TObject;
+  ItrObj: SELFCLASSNAME;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is SELFCLASSNAME then
+  begin
+    ItrObj := SELFCLASSNAME(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
@@ -377,6 +397,28 @@ begin
   {$JPPEXPANDMACRO WRITEEND}
 end;
 
+function SELFCLASSNAME.CollectionEquals(const ACollection: COLLECTIONINTERFACENAME): Boolean;
+var
+  It, ItSelf: ITRINTERFACENAME;
+begin
+  {$JPPEXPANDMACRO READBEGIN}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext and It.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$JPPEXPANDMACRO READEND}
+end;
+
 function SELFCLASSNAME.Contains(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
 var
   Current: ITEMCLASSNAME;
@@ -446,26 +488,84 @@ begin
   {$JPPEXPANDMACRO WRITEEND}
 end;
 
-function SELFCLASSNAME.CollectionEquals(const ACollection: COLLECTIONINTERFACENAME): Boolean;
+function SELFCLASSNAME.Extract(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
 var
-  It, ItSelf: ITRINTERFACENAME;
+  Current: ITEMCLASSNAME;
 begin
-  {$JPPEXPANDMACRO READBEGIN}
+  {$JPPEXPANDMACRO WRITEBEGIN}
     Result := False;
+    Current := FStart;
+    while Current <> nil do
+    begin
+      if ItemsEqual(Current.Value, PARAMETERNAME) then
+      begin
+        if Current.Previous <> nil then
+          Current.Previous.Next := Current.Next
+        else
+          FStart := Current.Next;
+        if Current.Next <> nil then
+          Current.Next.Previous := Current.Previous
+        else
+          FEnd := Current.Previous;
+        Current.Value := DEFAULTVALUE;
+        Current.Free;
+        Dec(FSize);
+        Result := True;
+        if FRemoveSingleElement then
+          Break;
+      end;
+      Current := Current.Next;
+    end;
+  {$JPPEXPANDMACRO WRITEEND}
+end;
+
+function SELFCLASSNAME.ExtractAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;
+var
+  It: ITRINTERFACENAME;
+begin
+  {$JPPEXPANDMACRO WRITEBEGIN}
+    Result := True;
     if ACollection = nil then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
-    Result := True;
     It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext and It.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
+  {$JPPEXPANDMACRO WRITEEND}
+end;
+
+function SELFCLASSNAME.ExtractIndex(Index: Integer): TYPENAME;
+var
+  Current: ITEMCLASSNAME;
+begin
+  {$JPPEXPANDMACRO WRITEBEGIN}
+    Result := DEFAULTVALUE;
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Current := FStart;
+      while Current <> nil do
       begin
-        Result := False;
-        Break;
+        if Index = 0 then
+        begin
+          if Current.Previous <> nil then
+            Current.Previous.Next := Current.Next
+          else
+            FStart := Current.Next;
+          if Current.Next <> nil then
+            Current.Next.Previous := Current.Previous
+          else
+            FEnd := Current.Previous;
+          Result := Current.Value;
+          Current.Free;
+          Dec(FSize);
+          Break;
+        end;
+        Dec(Index);
+        Current := Current.Next;
       end;
-  {$JPPEXPANDMACRO READEND}
+    end
+    else
+      raise EJclOutOfBoundsError.Create;
+  {$JPPEXPANDMACRO WRITEEND}
 end;
 
 function SELFCLASSNAME.First: ITRINTERFACENAME;
@@ -756,31 +856,14 @@ end;
 
 function SELFCLASSNAME.Remove(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
 var
-  Current: ITEMCLASSNAME;
+  Extracted: TYPENAME;
 begin
   {$JPPEXPANDMACRO WRITEBEGIN}
-    Result := False;
-    Current := FStart;
-    while Current <> nil do
+    Result := Extract(PARAMETERNAME);
+    if Result then
     begin
-      if ItemsEqual(Current.Value, PARAMETERNAME) then
-      begin
-        if Current.Previous <> nil then
-          Current.Previous.Next := Current.Next
-        else
-          FStart := Current.Next;
-        if Current.Next <> nil then
-          Current.Next.Previous := Current.Previous
-        else
-          FEnd := Current.Previous;
-        RELEASERNAME(Current.Value);
-        Current.Free;
-        Dec(FSize);
-        Result := True;
-        if FRemoveSingleElement then
-          Break;
-      end;
-      Current := Current.Next;
+      Extracted := PARAMETERNAME;
+      RELEASERNAME(Extracted);
     end;
   {$JPPEXPANDMACRO WRITEEND}
 end;

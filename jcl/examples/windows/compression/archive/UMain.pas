@@ -75,7 +75,6 @@ type
     procedure ActionPropertiesExecute(Sender: TObject);
   private
     FArchive: TJclCompressionArchive;
-    FArchiveReference: IUnknown;
     procedure CloseArchive;
     procedure ArchiveProgress(Sender: TObject; const Value, MaxValue: Int64);
   public
@@ -244,7 +243,6 @@ begin
         ArchiveFileName := ArchiveFileName + '.%.3d';
 
       FArchive := AFormat.Create(ArchiveFileName, VolumeSize, VolumeSize <> 0);
-      FArchiveReference := FArchive;
       FArchive.Password := Password;
       FArchive.OnProgress := ArchiveProgress;
     end
@@ -287,7 +285,6 @@ begin
         ArchiveFileName := ArchiveFileName + '.%.3d';
 
       FArchive := AFormat.Create(ArchiveFileName, VolumeSize, VolumeSize <> 0);
-      FArchiveReference := FArchive;
       FArchive.Password := Password;
       FArchive.OnProgress := ArchiveProgress;
     end
@@ -321,7 +318,6 @@ begin
       InputQuery('Archive password', 'Value', Password);
 
       FArchive := AFormat.Create(ArchiveFileName, 0, SplitArchive);
-      FArchiveReference := FArchive;
       FArchive.Password := Password;
       FArchive.OnProgress := ArchiveProgress;
 
@@ -369,7 +365,6 @@ begin
       InputQuery('Archive password', 'Value', Password);
 
       FArchive := AFormat.Create(ArchiveFileName, 0, SplitArchive);
-      FArchiveReference := FArchive;
       FArchive.Password := Password;
       FArchive.OnProgress := ArchiveProgress;
 
@@ -431,8 +426,7 @@ end;
 
 procedure TFormMain.CloseArchive;
 begin
-  FArchiveReference := nil; // free
-  FArchive := nil;
+  FreeAndNil(FArchive);
   ListView1.Items.Clear;
 end;
 

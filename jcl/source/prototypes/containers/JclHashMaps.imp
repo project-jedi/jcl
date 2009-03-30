@@ -198,32 +198,34 @@ begin
   {$JPPEXPANDMACRO READEND}
 end;
 
-function SELFCLASSNAME.MapEquals(const AMap: MAPINTERFACENAME): Boolean;
+function SELFCLASSNAME.Extract(KEYCONSTKEYWORDKey: KEYTYPENAME): VALUETYPENAME;
 var
-  I, J: Integer;
   Bucket: BUCKETTYPENAME;
+  I, NewCapacity: Integer;
 begin
-  {$JPPEXPANDMACRO READBEGIN}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
+  {$JPPEXPANDMACRO WRITEBEGIN}
+    Result := VALUEDEFAULT;
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
-            Exit;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := Bucket.Entries[I].Value;
+          Bucket.Entries[I].Value := VALUEDEFAULT;
+          FreeKey(Bucket.Entries[I].Key);
+          if I < Length(Bucket.Entries) - 1 then
+            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
+          Break;
+        end;
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
-    Result := True;
-  {$JPPEXPANDMACRO READEND}
+  {$JPPEXPANDMACRO WRITEEND}
 end;
 
 function SELFCLASSNAME.GetValue(KEYCONSTKEYWORDKey: KEYTYPENAME): VALUETYPENAME;
@@ -294,6 +296,34 @@ begin
         for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Key);
     end;
+  {$JPPEXPANDMACRO READEND}
+end;
+
+function SELFCLASSNAME.MapEquals(const AMap: MAPINTERFACENAME): Boolean;
+var
+  I, J: Integer;
+  Bucket: BUCKETTYPENAME;
+begin
+  {$JPPEXPANDMACRO READBEGIN}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          if AMap.ContainsKey(Bucket.Entries[J].Key) then
+          begin
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
+              Exit;
+          end
+          else
+            Exit;
+    end;
+    Result := True;
   {$JPPEXPANDMACRO READEND}
 end;
 
@@ -377,31 +407,10 @@ begin
 end;
 
 function SELFCLASSNAME.Remove(KEYCONSTKEYWORDKey: KEYTYPENAME): VALUETYPENAME;
-var
-  Bucket: BUCKETTYPENAME;
-  I, NewCapacity: Integer;
 begin
   {$JPPEXPANDMACRO WRITEBEGIN}
-    Result := VALUEDEFAULT;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            Bucket.MoveArray(I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-
-      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
-      if NewCapacity < Length(Bucket.Entries) then
-        SetLength(Bucket.Entries, NewCapacity);
-    end;
+    Result := Extract(Key);
+    Result := FreeValue(Result);
   {$JPPEXPANDMACRO WRITEEND}
 end;
 

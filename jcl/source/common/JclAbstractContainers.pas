@@ -27,7 +27,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                       $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -47,7 +47,7 @@ uses
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
   Classes,
-  JclBase, JclContainerIntf, JclSynch, JclSysUtils, JclAnsiStrings;
+  JclBase, JclContainerIntf, JclSynch, JclSysUtils, JclAnsiStrings, JclWideStrings;
 
 type
   {$IFDEF KEEP_DEPRECATED}
@@ -578,10 +578,12 @@ type
     function Contains(const AString: AnsiString): Boolean; virtual; abstract;
     function ContainsAll(const ACollection: IJclAnsiStrCollection): Boolean; virtual; abstract;
     function CollectionEquals(const ACollection: IJclAnsiStrCollection): Boolean; virtual; abstract;
+    function Extract(const AString: AnsiString): Boolean; virtual; abstract;
+    function ExtractAll(const ACollection: IJclAnsiStrCollection): Boolean; virtual; abstract;
     function First: IJclAnsiStrIterator; virtual; abstract;
     function IsEmpty: Boolean; virtual; abstract;
     function Last: IJclAnsiStrIterator; virtual; abstract;
-    function Remove(const AString: AnsiString): Boolean; overload; virtual; abstract;
+    function Remove(const AString: AnsiString): Boolean; virtual; abstract;
     function RemoveAll(const ACollection: IJclAnsiStrCollection): Boolean; virtual; abstract;
     function RetainAll(const ACollection: IJclAnsiStrCollection): Boolean; virtual; abstract;
     function Size: Integer; virtual; abstract;
@@ -589,11 +591,11 @@ type
     function GetEnumerator: IJclAnsistrIterator; virtual; abstract;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclAnsiStrFlatContainer }
-    procedure LoadFromStrings(Strings: TAnsiStrings);
-    procedure SaveToStrings(Strings: TAnsiStrings);
-    procedure AppendToStrings(Strings: TAnsiStrings);
-    procedure AppendFromStrings(Strings: TAnsiStrings);
-    function GetAsStrings: TAnsiStrings;
+    procedure LoadFromStrings(Strings: TJclAnsiStrings);
+    procedure SaveToStrings(Strings: TJclAnsiStrings);
+    procedure AppendToStrings(Strings: TJclAnsiStrings);
+    procedure AppendFromStrings(Strings: TJclAnsiStrings);
+    function GetAsStrings: TJclAnsiStrings;
     function GetAsDelimited(const Separator: AnsiString = AnsiLineBreak): AnsiString;
     procedure AppendDelimited(const AString: AnsiString; const Separator: AnsiString = AnsiLineBreak);
     procedure LoadDelimited(const AString: AnsiString; const Separator: AnsiString = AnsiLineBreak);
@@ -611,10 +613,12 @@ type
     function Contains(const AString: WideString): Boolean; virtual; abstract;
     function ContainsAll(const ACollection: IJclWideStrCollection): Boolean; virtual; abstract;
     function CollectionEquals(const ACollection: IJclWideStrCollection): Boolean; virtual; abstract;
+    function Extract(const AString: WideString): Boolean; virtual; abstract;
+    function ExtractAll(const ACollection: IJclWideStrCollection): Boolean; virtual; abstract;
     function First: IJclWideStrIterator; virtual; abstract;
     function IsEmpty: Boolean; virtual; abstract;
     function Last: IJclWideStrIterator; virtual; abstract;
-    function Remove(const AString: WideString): Boolean; overload; virtual; abstract;
+    function Remove(const AString: WideString): Boolean; virtual; abstract;
     function RemoveAll(const ACollection: IJclWideStrCollection): Boolean; virtual; abstract;
     function RetainAll(const ACollection: IJclWideStrCollection): Boolean; virtual; abstract;
     function Size: Integer; virtual; abstract;
@@ -622,6 +626,14 @@ type
     function GetEnumerator: IJclWideStrIterator; virtual; abstract;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclWideStrFlatContainer }
+    procedure LoadFromStrings(Strings: TJclWideStrings);
+    procedure SaveToStrings(Strings: TJclWideStrings);
+    procedure AppendToStrings(Strings: TJclWideStrings);
+    procedure AppendFromStrings(Strings: TJclWideStrings);
+    function GetAsStrings: TJclWideStrings;
+    function GetAsDelimited(const Separator: WideString = WideLineBreak): WideString;
+    procedure AppendDelimited(const AString: WideString; const Separator: WideString = WideLineBreak);
+    procedure LoadDelimited(const AString: WideString; const Separator: WideString = WideLineBreak);
   end;
 
   {$IFDEF SUPPORTS_UNICODE_STRING}
@@ -637,10 +649,12 @@ type
     function Contains(const AString: UnicodeString): Boolean; virtual; abstract;
     function ContainsAll(const ACollection: IJclUnicodeStrCollection): Boolean; virtual; abstract;
     function CollectionEquals(const ACollection: IJclUnicodeStrCollection): Boolean; virtual; abstract;
+    function Extract(const AString: UnicodeString): Boolean; virtual; abstract;
+    function ExtractAll(const ACollection: IJclUnicodeStrCollection): Boolean; virtual; abstract;
     function First: IJclUnicodeStrIterator; virtual; abstract;
     function IsEmpty: Boolean; virtual; abstract;
     function Last: IJclUnicodeStrIterator; virtual; abstract;
-    function Remove(const AString: UnicodeString): Boolean; overload; virtual; abstract;
+    function Remove(const AString: UnicodeString): Boolean; virtual; abstract;
     function RemoveAll(const ACollection: IJclUnicodeStrCollection): Boolean; virtual; abstract;
     function RetainAll(const ACollection: IJclUnicodeStrCollection): Boolean; virtual; abstract;
     function Size: Integer; virtual; abstract;
@@ -648,6 +662,14 @@ type
     function GetEnumerator: IJclUnicodeStrIterator; virtual; abstract;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclUnicodeStrFlatContainer }
+    procedure LoadFromStrings(Strings: TJclUnicodeStrings);
+    procedure SaveToStrings(Strings: TJclUnicodeStrings);
+    procedure AppendToStrings(Strings: TJclUnicodeStrings);
+    procedure AppendFromStrings(Strings: TJclUnicodeStrings);
+    function GetAsStrings: TJclUnicodeStrings;
+    function GetAsDelimited(const Separator: UnicodeString = WideLineBreak): UnicodeString;
+    procedure AppendDelimited(const AString: UnicodeString; const Separator: UnicodeString = WideLineBreak);
+    procedure LoadDelimited(const AString: UnicodeString; const Separator: UnicodeString = WideLineBreak);
   end;
   {$ENDIF SUPPORTS_UNICODE_STRING}
 
@@ -687,9 +709,6 @@ uses
   {$IFDEF HAS_UNIT_ANSISTRINGS}
   AnsiStrings,
   {$ENDIF HAS_UNIT_ANSISTRINGS}
-  {$IFNDEF CLR}
-  JclWideStrings,
-  {$ENDIF ~CLR}
   JclStringConversions, JclUnicode,
   SysUtils;
 
@@ -2560,7 +2579,7 @@ end;
 
 {$ENDIF SUPPORTS_GENERICS}
 
-//=== { TJclAnsiStrCollection } ==============================================
+//=== { TJclAnsiStrAbstractCollection } ======================================
 
 // TODO: common implementation, need a function to search for a string starting from
 // a predefined index
@@ -2614,15 +2633,15 @@ begin
 end;
 {$ENDIF CLR}
 
-procedure TJclAnsiStrAbstractCollection.AppendFromStrings(Strings: TAnsiStrings);
+procedure TJclAnsiStrAbstractCollection.AppendFromStrings(Strings: TJclAnsiStrings);
 var
   I: Integer;
 begin
   for I := 0 to Strings.Count - 1 do
-    Add(AnsiString(Strings[I])); // OF TStrings to AnsiString
+    Add(Strings[I]);
 end;
 
-procedure TJclAnsiStrAbstractCollection.AppendToStrings(Strings: TAnsiStrings);
+procedure TJclAnsiStrAbstractCollection.AppendToStrings(Strings: TJclAnsiStrings);
 var
   It: IJclAnsiStrIterator;
 begin
@@ -2630,7 +2649,7 @@ begin
   Strings.BeginUpdate;
   try
     while It.HasNext do
-      Strings.Add(string(It.Next)); // OF AnsiString to TStrings
+      Strings.Add(It.Next);
   finally
     Strings.EndUpdate;
   end;
@@ -2648,9 +2667,9 @@ begin
     Result := Result + Separator + It.Next;
 end;
 
-function TJclAnsiStrAbstractCollection.GetAsStrings: TAnsiStrings;
+function TJclAnsiStrAbstractCollection.GetAsStrings: TJclAnsiStrings;
 begin
-  Result := TStringList.Create;
+  Result := TJclAnsiStringList.Create;
   try
     AppendToStrings(Result);
   except
@@ -2665,17 +2684,253 @@ begin
   AppendDelimited(AString, Separator);
 end;
 
-procedure TJclAnsiStrAbstractCollection.LoadFromStrings(Strings: TAnsiStrings);
+procedure TJclAnsiStrAbstractCollection.LoadFromStrings(Strings: TJclAnsiStrings);
 begin
   Clear;
   AppendFromStrings(Strings);
 end;
 
-procedure TJclAnsiStrAbstractCollection.SaveToStrings(Strings: TAnsiStrings);
+procedure TJclAnsiStrAbstractCollection.SaveToStrings(Strings: TJclAnsiStrings);
 begin
   Strings.Clear;
   AppendToStrings(Strings);
 end;
+
+//=== { TJclWideStrAbstractCollection } ======================================
+
+// TODO: common implementation, need a function to search for a string starting from
+// a predefined index
+procedure TJclWideStrAbstractCollection.AppendDelimited(const AString, Separator: WideString);
+{$IFDEF CLR}
+var
+  I, StartIndex: Integer;
+  BString: string;
+begin
+  I := Pos(Separator, AString);
+  if I <> 0 then
+  begin
+    BString := AString;
+    Dec(I); // to .NET string index base
+    StartIndex := 0;
+    repeat
+      Add(BString.Substring(StartIndex, I - StartIndex + 1));
+      StartIndex := I + 1;
+      I := BString.IndexOf(Separator, StartIndex);
+    until I < 0;
+  end
+  else
+    Add(AString);
+end;
+{$ELSE}
+var
+  Item: WideString;
+  SepLen: Integer;
+  PString, PSep, PPos: PWideChar;
+begin
+  PString := PWideChar(AString);
+  PSep := PWideChar(Separator);
+  PPos := StrPosW(PString, PSep);
+  if PPos <> nil then
+  begin
+    SepLen := StrLenW(PSep);
+    repeat
+      //SetLength(Item, PPos - PString + 1);
+      SetLength(Item, PPos - PString);
+      Move(PString^, Item[1], (PPos - PString) * SizeOf(WideChar));
+      //Item[PPos - PString + 1] := #0;
+      Add(Item);
+      PString := PPos + SepLen;
+      PPos := StrPosW(PString, PSep);
+    until PPos = nil;
+    if StrLenW(PString) > 0 then //ex. hello#world
+      Add(PString);
+  end
+  else //There isnt a Separator in AString
+    Add(AString);
+end;
+{$ENDIF CLR}
+
+procedure TJclWideStrAbstractCollection.AppendFromStrings(Strings: TJclWideStrings);
+var
+  I: Integer;
+begin
+  for I := 0 to Strings.Count - 1 do
+    Add(Strings[I]);
+end;
+
+procedure TJclWideStrAbstractCollection.AppendToStrings(Strings: TJclWideStrings);
+var
+  It: IJclWideStrIterator;
+begin
+  It := First;
+  Strings.BeginUpdate;
+  try
+    while It.HasNext do
+      Strings.Add(It.Next);
+  finally
+    Strings.EndUpdate;
+  end;
+end;
+
+function TJclWideStrAbstractCollection.GetAsDelimited(const Separator: WideString): WideString;
+var
+  It: IJclWideStrIterator;
+begin
+  It := First;
+  Result := '';
+  if It.HasNext then
+    Result := It.Next;
+  while It.HasNext do
+    Result := Result + Separator + It.Next;
+end;
+
+function TJclWideStrAbstractCollection.GetAsStrings: TJclWideStrings;
+begin
+  Result := TJclWideStringList.Create;
+  try
+    AppendToStrings(Result);
+  except
+    Result.Free;
+    raise;
+  end;
+end;
+
+procedure TJclWideStrAbstractCollection.LoadDelimited(const AString, Separator: WideString);
+begin
+  Clear;
+  AppendDelimited(AString, Separator);
+end;
+
+procedure TJclWideStrAbstractCollection.LoadFromStrings(Strings: TJclWideStrings);
+begin
+  Clear;
+  AppendFromStrings(Strings);
+end;
+
+procedure TJclWideStrAbstractCollection.SaveToStrings(Strings: TJclWideStrings);
+begin
+  Strings.Clear;
+  AppendToStrings(Strings);
+end;
+
+{$IFDEF SUPPORTS_UNICODE_STRING}
+//=== { TJclUnicodeStrAbstractCollection } ===================================
+
+// TODO: common implementation, need a function to search for a string starting from
+// a predefined index
+procedure TJclUnicodeStrAbstractCollection.AppendDelimited(const AString, Separator: UnicodeString);
+{$IFDEF CLR}
+var
+  I, StartIndex: Integer;
+  BString: string;
+begin
+  I := Pos(Separator, AString);
+  if I <> 0 then
+  begin
+    BString := AString;
+    Dec(I); // to .NET string index base
+    StartIndex := 0;
+    repeat
+      Add(BString.Substring(StartIndex, I - StartIndex + 1));
+      StartIndex := I + 1;
+      I := BString.IndexOf(Separator, StartIndex);
+    until I < 0;
+  end
+  else
+    Add(AString);
+end;
+{$ELSE}
+var
+  Item: UnicodeString;
+  SepLen: Integer;
+  PString, PSep, PPos: PWideChar;
+begin
+  PString := PWideChar(AString);
+  PSep := PWideChar(Separator);
+  PPos := StrPos(PString, PSep);
+  if PPos <> nil then
+  begin
+    SepLen := StrLen(PSep);
+    repeat
+      //SetLength(Item, PPos - PString + 1);
+      SetLength(Item, PPos - PString);
+      Move(PString^, Item[1], (PPos - PString) * SizeOf(WideChar));
+      //Item[PPos - PString + 1] := #0;
+      Add(Item);
+      PString := PPos + SepLen;
+      PPos := StrPos(PString, PSep);
+    until PPos = nil;
+    if StrLen(PString) > 0 then //ex. hello#world
+      Add(PString);
+  end
+  else //There isnt a Separator in AString
+    Add(AString);
+end;
+{$ENDIF CLR}
+
+procedure TJclUnicodeStrAbstractCollection.AppendFromStrings(Strings: TJclUnicodeStrings);
+var
+  I: Integer;
+begin
+  for I := 0 to Strings.Count - 1 do
+    Add(Strings[I]);
+end;
+
+procedure TJclUnicodeStrAbstractCollection.AppendToStrings(Strings: TJclUnicodeStrings);
+var
+  It: IJclUnicodeStrIterator;
+begin
+  It := First;
+  Strings.BeginUpdate;
+  try
+    while It.HasNext do
+      Strings.Add(It.Next);
+  finally
+    Strings.EndUpdate;
+  end;
+end;
+
+function TJclUnicodeStrAbstractCollection.GetAsDelimited(const Separator: UnicodeString): UnicodeString;
+var
+  It: IJclUnicodeStrIterator;
+begin
+  It := First;
+  Result := '';
+  if It.HasNext then
+    Result := It.Next;
+  while It.HasNext do
+    Result := Result + Separator + It.Next;
+end;
+
+function TJclUnicodeStrAbstractCollection.GetAsStrings: TJclUnicodeStrings;
+begin
+  Result := TJclUnicodeStringList.Create;
+  try
+    AppendToStrings(Result);
+  except
+    Result.Free;
+    raise;
+  end;
+end;
+
+procedure TJclUnicodeStrAbstractCollection.LoadDelimited(const AString, Separator: UnicodeString);
+begin
+  Clear;
+  AppendDelimited(AString, Separator);
+end;
+
+procedure TJclUnicodeStrAbstractCollection.LoadFromStrings(Strings: TJclUnicodeStrings);
+begin
+  Clear;
+  AppendFromStrings(Strings);
+end;
+
+procedure TJclUnicodeStrAbstractCollection.SaveToStrings(Strings: TJclUnicodeStrings);
+begin
+  Strings.Clear;
+  AppendToStrings(Strings);
+end;
+{$ENDIF SUPPORTS_UNICODE_STRING}
 
 {$IFDEF UNITVERSIONING}
 initialization

@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<Package Name="Jcl" Design="0">
+<Package Name="JclContainers" Design="0">
   <Description>JEDI Code Library Containers package</Description>
   <GUID>{71D14CDC-6386-44FD-B861-4C4213CFFF08}</GUID>
   <C5PFlags>-LUvcl50</C5PFlags>
   <C6PFlags/>
   <C5Libs/>
   <C6Libs/>
+  <CompilerDefines>RELEASE</CompilerDefines>
   <ImageBase>48500000</ImageBase>
   <VersionMajorNumber/>
   <VersionMinorNumber/>

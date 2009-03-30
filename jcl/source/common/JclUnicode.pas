@@ -35,7 +35,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                       $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -202,7 +202,7 @@ const
   WideFormFeed = WideChar(#12);
   WideCR = WideChar(#13);
   WideCarriageReturn = WideChar(#13);
-  WideCRLF: WideString = #13#10;
+  WideCRLF = WideString(#13#10);
   WideLineSeparator = WideChar($2028);
   WideParagraphSeparator = WideChar($2029);
 

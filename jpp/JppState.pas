@@ -45,6 +45,8 @@ unit JppState;
 
 interface
 
+{$I jcl.inc}
+
 uses
   SysUtils, Classes, JclBase, JclContainerIntf;
 
@@ -138,7 +140,7 @@ type
 implementation
 
 uses
-  JclAnsiStrings, JclArrayLists, JclHashMaps, JclStacks;
+  JclStrings, JclArrayLists, JclHashMaps, JclStacks;
 
 type
   TSimplePppStateItem = class
@@ -188,13 +190,18 @@ begin
   AMacroNames := AMacros.KeySet.First;
   while AMacroNames.HasNext do
   begin
-    if JclAnsiStrings.StrSame(AMacroNames.Next, AMacroName) then
+    if JclStrings.StrSame(AMacroNames.Next, AMacroName) then
     begin
       SetLength(Params, Length(ParamValues));
       for Index := Low(ParamValues) to High(ParamValues) do
       begin
+        {$IFDEF SUPPORTS_UNICODE}
+        Params[Index].VType := vtPWideChar;
+        Params[Index].VPWideChar := PWideChar(ParamValues[Index]);
+        {$ELSE ~SUPPORTS_UNICODE}
         Params[Index].VType := vtPChar;
         Params[Index].VPChar := PAnsiChar(ParamValues[Index]);
+        {$ENDIF ~SUPPORTS_UNICODE}
       end;
       Result := Format(AMacros.Items[AMacroNames.GetString], Params);
       Exit;
@@ -220,7 +227,7 @@ begin
   AMacroName := Format('%s`%d', [AName, Length(ParamNames)]);
   AMacroNames := AMacros.KeySet.First;
   while AMacroNames.HasNext do
-    if JclAnsiStrings.StrSame(AMacroNames.Next, AMacroName) then
+    if JclStrings.StrSame(AMacroNames.Next, AMacroName) then
       raise EPppState.CreateFmt('macro "%s" is already defined', [AName]);
   AMacroFormat := Value;
   for Index := Low(ParamNames) to High(ParamNames) do
@@ -241,7 +248,7 @@ begin
   if not Found then
     for i := 0 to ASearchPath.Size - 1 do
     begin
-      fn := ASearchPath.Items[i] + PathDelim + AName;
+      fn := ASearchPath.Strings[i] + PathDelim + AName;
       if FileExists(fn) then
       begin
         Found := True;
@@ -268,7 +275,7 @@ begin
   ASymbolNames := ADefines.KeySet.First;
   while ASymbolNames.HasNext do
   begin
-    if JclAnsiStrings.StrSame(ASymbolNames.Next, ASymbol) then
+    if JclStrings.StrSame(ASymbolNames.Next, ASymbol) then
     begin
       Result := TTriState(ADefines.Items[ASymbolNames.GetString]);
       Break;
@@ -332,7 +339,7 @@ begin
   Result := False;
   while AFileNames.HasNext do
   begin
-    if JclAnsiStrings.StrSame(AFileNames.Next, AName) then
+    if JclStrings.StrSame(AFileNames.Next, AName) then
     begin
       Result := True;
       Break;
@@ -353,10 +360,10 @@ var
   ADefines: IJclStrMap;
   AMacros: IJclStrStrMap;
 begin
-  ADefines := (InternalPeekDefines as IJclIntfCloneable).Clone as IJclStrMap;
-  AExcludedFiles := (InternalPeekExcludedFiles as IJclIntfCloneable).Clone as IJclStrList;
-  ASearchPath := (InternalPeekSearchPath as IJclIntfCloneable).Clone as IJclStrList;
-  AMacros := (InternalPeekMacros as IJclIntfCloneable).Clone as IJclStrStrMap;
+  ADefines := (InternalPeekDefines as IJclIntfCloneable).IntfClone as IJclStrMap;
+  AExcludedFiles := (InternalPeekExcludedFiles as IJclIntfCloneable).IntfClone as IJclStrList;
+  ASearchPath := (InternalPeekSearchPath as IJclIntfCloneable).IntfClone as IJclStrList;
+  AMacros := (InternalPeekMacros as IJclIntfCloneable).IntfClone as IJclStrStrMap;
 
   InternalPushState(AExcludedFiles, ASearchPath, AMacros, ADefines);
 end;
@@ -378,7 +385,7 @@ begin
   ASymbolNames := ADefines.KeySet.First;
   while ASymbolNames.HasNext do
   begin
-    if JclAnsiStrings.StrSame(ASymbolNames.Next, ASymbol) then
+    if JclStrings.StrSame(ASymbolNames.Next, ASymbol) then
     begin
       ADefines.Items[ASymbolNames.GetString] := TObject(Value);
       Found := True;
@@ -404,7 +411,7 @@ begin
   AMacroName := Format('%s`%d', [AName, Length(ParamNames)]);
   AMacroNames := AMacros.KeySet.First;
   while AMacroNames.HasNext do
-    if JclAnsiStrings.StrSame(AMacroNames.Next, AMacroName) then
+    if JclStrings.StrSame(AMacroNames.Next, AMacroName) then
       AMacros.Remove(AMacroNames.GetString);
 end;
 

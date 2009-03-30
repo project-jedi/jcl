@@ -9,13 +9,13 @@
     <DCC_DependencyCheckOutputName>%NAME%%BINEXTENSION%</DCC_DependencyCheckOutputName>
     <DCC_EnabledPackages>true</DCC_EnabledPackages>
     <DCC_UsePackage>%NOLINKPACKAGELIST%</DCC_UsePackage>
+    <DCC_Define>%DEFINES%</DCC_Define>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Version>7.0</Version>
     <DCC_DebugInformation>False</DCC_DebugInformation>
     <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
     <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
-    <DCC_Define>RELEASE</DCC_Define>
     <DCC_Platform>x86</DCC_Platform>
     <DCC_DcuOutput>..\..\lib\d11.net</DCC_DcuOutput>
     <DCC_ObjOutput>..\..\lib\d11.net</DCC_ObjOutput>

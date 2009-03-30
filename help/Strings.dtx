@@ -1254,7 +1254,7 @@ Description:
 Parameters:
   S - The string in which to search for N occurences of SubStr.
   SubStr - The sub-string to search for.
-  Index - The number of occurences of sub-string in S.
+  N - The number of occurences of sub-string in S.
 Result:
   Index into S where the N-th occurence of SubStr is located. If SubStr has less
   than N occurences in S the result is 0.
@@ -2377,34 +2377,6 @@ Result:
 Donator:
   Team JCL
 --------------------------------------------------------------------------------
-@@StrAnsiToOem
-<GROUP StringManipulation.StringTransformationRoutines>
-Summary:
-  Translates an ANSI string into a string using the OEM character set.
-Description:
-  The StrAnsiToOem function translates an ansi string into a string using the
-  OEM defined character set.
-Parameters:
-  S - The string to translate.
-Result:
-  The translated string.
-Donator:
-  Anonymous
---------------------------------------------------------------------------------
-@@StrOemToAnsi
-<GROUP StringManipulation.StringTransformationRoutines>
-Summary:
-  Translates an OEM string into an ansi string.
-Description:
-  The StrOemToAnsi function translated a string using the OEM defined character set
-  into an ansi string.
-Parameters:
-  S - The string to translate.
-Result:
-  The translated string.
-Donator:
-  Anonymous
---------------------------------------------------------------------------------
 @@StrCharsCount
 <GROUP StringManipulation.StringTransformationRoutines>
 Summary:
@@ -3204,6 +3176,8 @@ Result:
 Notes:
   This method is <i><b>nil</b>-safe</i>; when invoked on a
   <b>nil</b>-reference, this method will return <b>nil</b>.
+See Also
+  NewReference
 Donator:
   Marcel Bestebroer
 --------------------------------------------------------------------------------
@@ -3449,6 +3423,32 @@ Returns:
   The value of the TabWidth property<p>
    <i>- or -</i><p>
   <b>2</b> if the method is called on a <b>nil</b>-reference
+Donator:
+  Marcel Bestebroer
+--------------------------------------------------------------------------------
+@@TJclTabSet.NewReference
+Summary:
+  Initializes a new tab set instance referencing the current instance.
+Description:
+  The NewReference method initializes a new instance of the TJclTabSet class and
+  sets a reference in the new instance to the current instance.
+
+  NewReference allows several tabset instances to hold the same tab set
+  settings, regardless of which instance changes them. Only when the last
+  tab set instance is destroyed, will the actual tab set data be disposed of.
+
+  Contrast this to Clone, which will simply copy the data from the original
+  instance to the new one. Whenever you change the settings in one instance,
+  the other will remain unaffected.
+Result:
+  <b>nil</b> if NewReference is called on a <b>nil</b> instance<p>
+  <i>- or -</i><p>
+  A new TJclTabSet instance identical to the instance Close was called on
+Notes:
+  This method is <i><b>nil</b>-safe</i>; when invoked on a
+  <b>nil</b>-reference, this method will return <b>nil</b>.
+See Also
+  Clone
 Donator:
   Marcel Bestebroer
 --------------------------------------------------------------------------------
@@ -3946,4 +3946,5 @@ Result:
   <c>a positive value</c> if S1 is greater than S2
 Donator:
   Marcel Bestebroer
+--------------------------------------------------------------------------------
 

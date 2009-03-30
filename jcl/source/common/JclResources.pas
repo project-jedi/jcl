@@ -38,7 +38,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -884,6 +884,7 @@ resourcestring
   RsCompressionGZipName              = 'GZip archive';
   RsCompressionGZipExtensions        = '*.gz;*.gzip;*.tgz;*.tpz';
   RsCompressionDuplicate             = 'The file %s already exists in the archive';
+  RsCompressionReplaceError          = 'At least one compression volumes could not be replaced after an archive out-of-place update';
 
 //=== JclConsole =============================================================
 resourcestring

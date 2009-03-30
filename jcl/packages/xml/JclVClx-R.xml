@@ -6,6 +6,7 @@
   <C6PFlags/>
   <C5Libs/>
   <C6Libs/>
+  <CompilerDefines>RELEASE</CompilerDefines>
   <ImageBase>48450000</ImageBase>
   <Requires>
     <Package Name="rtl" Targets="all" Condition=""/>

@@ -80,7 +80,8 @@ type
     FRoot: TJclIntfTreeNode;
     FTraverseOrder: TJclTraverseOrder;
   protected
-    procedure ClearNode(var ANode: TJclIntfTreeNode);
+    procedure ExtractNode(var ANode: TJclIntfTreeNode);
+    procedure RemoveNode(var ANode: TJclIntfTreeNode);
     function CloneNode(Node, Parent: TJclIntfTreeNode): TJclIntfTreeNode;
     function NodeContains(ANode: TJclIntfTreeNode; const AInterface: IInterface): Boolean;
     procedure PackNode(ANode: TJclIntfTreeNode);
@@ -93,9 +94,11 @@ type
     function Add(const AInterface: IInterface): Boolean;
     function AddAll(const ACollection: IJclIntfCollection): Boolean;
     procedure Clear;
+    function CollectionEquals(const ACollection: IJclIntfCollection): Boolean;
     function Contains(const AInterface: IInterface): Boolean;
     function ContainsAll(const ACollection: IJclIntfCollection): Boolean;
-    function CollectionEquals(const ACollection: IJclIntfCollection): Boolean;
+    function Extract(const AInterface: IInterface): Boolean;
+    function ExtractAll(const ACollection: IJclIntfCollection): Boolean;
     function First: IJclIntfIterator;
     function IsEmpty: Boolean;
     function Last: IJclIntfIterator;
@@ -130,11 +133,12 @@ type
     function GetPreviousCursor: TJclIntfTreeNode; virtual; abstract;
     { IJclIntfIterator }
     function Add(const AInterface: IInterface): Boolean;
-    function IteratorEquals(const AIterator: IJclIntfIterator): Boolean;
+    procedure Extract;
     function GetObject: IInterface;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(const AInterface: IInterface): Boolean;
+    function IteratorEquals(const AIterator: IJclIntfIterator): Boolean;
     function Next: IInterface;
     function NextIndex: Integer;
     function Previous: IInterface;
@@ -149,8 +153,10 @@ type
     { IJclIntfTreeIterator }
     function AddChild(const AInterface: IInterface): Boolean;
     function ChildrenCount: Integer;
-    procedure ClearChildren;
     procedure DeleteChild(Index: Integer);
+    procedure DeleteChildren;
+    procedure ExtractChild(Index: Integer);
+    procedure ExtractChildren;
     function GetChild(Index: Integer): IInterface;
     function HasChild(Index: Integer): Boolean;
     function HasParent: Boolean;
@@ -203,7 +209,8 @@ type
     FRoot: TJclAnsiStrTreeNode;
     FTraverseOrder: TJclTraverseOrder;
   protected
-    procedure ClearNode(var ANode: TJclAnsiStrTreeNode);
+    procedure ExtractNode(var ANode: TJclAnsiStrTreeNode);
+    procedure RemoveNode(var ANode: TJclAnsiStrTreeNode);
     function CloneNode(Node, Parent: TJclAnsiStrTreeNode): TJclAnsiStrTreeNode;
     function NodeContains(ANode: TJclAnsiStrTreeNode; const AString: AnsiString): Boolean;
     procedure PackNode(ANode: TJclAnsiStrTreeNode);
@@ -216,9 +223,11 @@ type
     function Add(const AString: AnsiString): Boolean; override;
     function AddAll(const ACollection: IJclAnsiStrCollection): Boolean; override;
     procedure Clear; override;
+    function CollectionEquals(const ACollection: IJclAnsiStrCollection): Boolean; override;
     function Contains(const AString: AnsiString): Boolean; override;
     function ContainsAll(const ACollection: IJclAnsiStrCollection): Boolean; override;
-    function CollectionEquals(const ACollection: IJclAnsiStrCollection): Boolean; override;
+    function Extract(const AString: AnsiString): Boolean; override;
+    function ExtractAll(const ACollection: IJclAnsiStrCollection): Boolean; override;
     function First: IJclAnsiStrIterator; override;
     function IsEmpty: Boolean; override;
     function Last: IJclAnsiStrIterator; override;
@@ -253,11 +262,12 @@ type
     function GetPreviousCursor: TJclAnsiStrTreeNode; virtual; abstract;
     { IJclAnsiStrIterator }
     function Add(const AString: AnsiString): Boolean;
-    function IteratorEquals(const AIterator: IJclAnsiStrIterator): Boolean;
+    procedure Extract;
     function GetString: AnsiString;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(const AString: AnsiString): Boolean;
+    function IteratorEquals(const AIterator: IJclAnsiStrIterator): Boolean;
     function Next: AnsiString;
     function NextIndex: Integer;
     function Previous: AnsiString;
@@ -272,8 +282,10 @@ type
     { IJclAnsiStrTreeIterator }
     function AddChild(const AString: AnsiString): Boolean;
     function ChildrenCount: Integer;
-    procedure ClearChildren;
     procedure DeleteChild(Index: Integer);
+    procedure DeleteChildren;
+    procedure ExtractChild(Index: Integer);
+    procedure ExtractChildren;
     function GetChild(Index: Integer): AnsiString;
     function HasChild(Index: Integer): Boolean;
     function HasParent: Boolean;
@@ -326,7 +338,8 @@ type
     FRoot: TJclWideStrTreeNode;
     FTraverseOrder: TJclTraverseOrder;
   protected
-    procedure ClearNode(var ANode: TJclWideStrTreeNode);
+    procedure ExtractNode(var ANode: TJclWideStrTreeNode);
+    procedure RemoveNode(var ANode: TJclWideStrTreeNode);
     function CloneNode(Node, Parent: TJclWideStrTreeNode): TJclWideStrTreeNode;
     function NodeContains(ANode: TJclWideStrTreeNode; const AString: WideString): Boolean;
     procedure PackNode(ANode: TJclWideStrTreeNode);
@@ -339,9 +352,11 @@ type
     function Add(const AString: WideString): Boolean; override;
     function AddAll(const ACollection: IJclWideStrCollection): Boolean; override;
     procedure Clear; override;
+    function CollectionEquals(const ACollection: IJclWideStrCollection): Boolean; override;
     function Contains(const AString: WideString): Boolean; override;
     function ContainsAll(const ACollection: IJclWideStrCollection): Boolean; override;
-    function CollectionEquals(const ACollection: IJclWideStrCollection): Boolean; override;
+    function Extract(const AString: WideString): Boolean; override;
+    function ExtractAll(const ACollection: IJclWideStrCollection): Boolean; override;
     function First: IJclWideStrIterator; override;
     function IsEmpty: Boolean; override;
     function Last: IJclWideStrIterator; override;
@@ -376,11 +391,12 @@ type
     function GetPreviousCursor: TJclWideStrTreeNode; virtual; abstract;
     { IJclWideStrIterator }
     function Add(const AString: WideString): Boolean;
-    function IteratorEquals(const AIterator: IJclWideStrIterator): Boolean;
+    procedure Extract;
     function GetString: WideString;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(const AString: WideString): Boolean;
+    function IteratorEquals(const AIterator: IJclWideStrIterator): Boolean;
     function Next: WideString;
     function NextIndex: Integer;
     function Previous: WideString;
@@ -395,8 +411,10 @@ type
     { IJclWideStrTreeIterator }
     function AddChild(const AString: WideString): Boolean;
     function ChildrenCount: Integer;
-    procedure ClearChildren;
     procedure DeleteChild(Index: Integer);
+    procedure DeleteChildren;
+    procedure ExtractChild(Index: Integer);
+    procedure ExtractChildren;
     function GetChild(Index: Integer): WideString;
     function HasChild(Index: Integer): Boolean;
     function HasParent: Boolean;
@@ -450,7 +468,8 @@ type
     FRoot: TJclUnicodeStrTreeNode;
     FTraverseOrder: TJclTraverseOrder;
   protected
-    procedure ClearNode(var ANode: TJclUnicodeStrTreeNode);
+    procedure ExtractNode(var ANode: TJclUnicodeStrTreeNode);
+    procedure RemoveNode(var ANode: TJclUnicodeStrTreeNode);
     function CloneNode(Node, Parent: TJclUnicodeStrTreeNode): TJclUnicodeStrTreeNode;
     function NodeContains(ANode: TJclUnicodeStrTreeNode; const AString: UnicodeString): Boolean;
     procedure PackNode(ANode: TJclUnicodeStrTreeNode);
@@ -463,9 +482,11 @@ type
     function Add(const AString: UnicodeString): Boolean; override;
     function AddAll(const ACollection: IJclUnicodeStrCollection): Boolean; override;
     procedure Clear; override;
+    function CollectionEquals(const ACollection: IJclUnicodeStrCollection): Boolean; override;
     function Contains(const AString: UnicodeString): Boolean; override;
     function ContainsAll(const ACollection: IJclUnicodeStrCollection): Boolean; override;
-    function CollectionEquals(const ACollection: IJclUnicodeStrCollection): Boolean; override;
+    function Extract(const AString: UnicodeString): Boolean; override;
+    function ExtractAll(const ACollection: IJclUnicodeStrCollection): Boolean; override;
     function First: IJclUnicodeStrIterator; override;
     function IsEmpty: Boolean; override;
     function Last: IJclUnicodeStrIterator; override;
@@ -500,11 +521,12 @@ type
     function GetPreviousCursor: TJclUnicodeStrTreeNode; virtual; abstract;
     { IJclUnicodeStrIterator }
     function Add(const AString: UnicodeString): Boolean;
-    function IteratorEquals(const AIterator: IJclUnicodeStrIterator): Boolean;
+    procedure Extract;
     function GetString: UnicodeString;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(const AString: UnicodeString): Boolean;
+    function IteratorEquals(const AIterator: IJclUnicodeStrIterator): Boolean;
     function Next: UnicodeString;
     function NextIndex: Integer;
     function Previous: UnicodeString;
@@ -519,8 +541,10 @@ type
     { IJclUnicodeStrTreeIterator }
     function AddChild(const AString: UnicodeString): Boolean;
     function ChildrenCount: Integer;
-    procedure ClearChildren;
     procedure DeleteChild(Index: Integer);
+    procedure DeleteChildren;
+    procedure ExtractChild(Index: Integer);
+    procedure ExtractChildren;
     function GetChild(Index: Integer): UnicodeString;
     function HasChild(Index: Integer): Boolean;
     function HasParent: Boolean;
@@ -584,7 +608,8 @@ type
     FRoot: TJclSingleTreeNode;
     FTraverseOrder: TJclTraverseOrder;
   protected
-    procedure ClearNode(var ANode: TJclSingleTreeNode);
+    procedure ExtractNode(var ANode: TJclSingleTreeNode);
+    procedure RemoveNode(var ANode: TJclSingleTreeNode);
     function CloneNode(Node, Parent: TJclSingleTreeNode): TJclSingleTreeNode;
     function NodeContains(ANode: TJclSingleTreeNode; const AValue: Single): Boolean;
     procedure PackNode(ANode: TJclSingleTreeNode);
@@ -597,9 +622,11 @@ type
     function Add(const AValue: Single): Boolean;
     function AddAll(const ACollection: IJclSingleCollection): Boolean;
     procedure Clear;
+    function CollectionEquals(const ACollection: IJclSingleCollection): Boolean;
     function Contains(const AValue: Single): Boolean;
     function ContainsAll(const ACollection: IJclSingleCollection): Boolean;
-    function CollectionEquals(const ACollection: IJclSingleCollection): Boolean;
+    function Extract(const AValue: Single): Boolean;
+    function ExtractAll(const ACollection: IJclSingleCollection): Boolean;
     function First: IJclSingleIterator;
     function IsEmpty: Boolean;
     function Last: IJclSingleIterator;
@@ -634,11 +661,12 @@ type
     function GetPreviousCursor: TJclSingleTreeNode; virtual; abstract;
     { IJclSingleIterator }
     function Add(const AValue: Single): Boolean;
-    function IteratorEquals(const AIterator: IJclSingleIterator): Boolean;
+    procedure Extract;
     function GetValue: Single;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(const AValue: Single): Boolean;
+    function IteratorEquals(const AIterator: IJclSingleIterator): Boolean;
     function Next: Single;
     function NextIndex: Integer;
     function Previous: Single;
@@ -653,8 +681,10 @@ type
     { IJclSingleTreeIterator }
     function AddChild(const AValue: Single): Boolean;
     function ChildrenCount: Integer;
-    procedure ClearChildren;
     procedure DeleteChild(Index: Integer);
+    procedure DeleteChildren;
+    procedure ExtractChild(Index: Integer);
+    procedure ExtractChildren;
     function GetChild(Index: Integer): Single;
     function HasChild(Index: Integer): Boolean;
     function HasParent: Boolean;
@@ -707,7 +737,8 @@ type
     FRoot: TJclDoubleTreeNode;
     FTraverseOrder: TJclTraverseOrder;
   protected
-    procedure ClearNode(var ANode: TJclDoubleTreeNode);
+    procedure ExtractNode(var ANode: TJclDoubleTreeNode);
+    procedure RemoveNode(var ANode: TJclDoubleTreeNode);
     function CloneNode(Node, Parent: TJclDoubleTreeNode): TJclDoubleTreeNode;
     function NodeContains(ANode: TJclDoubleTreeNode; const AValue: Double): Boolean;
     procedure PackNode(ANode: TJclDoubleTreeNode);
@@ -720,9 +751,11 @@ type
     function Add(const AValue: Double): Boolean;
     function AddAll(const ACollection: IJclDoubleCollection): Boolean;
     procedure Clear;
+    function CollectionEquals(const ACollection: IJclDoubleCollection): Boolean;
     function Contains(const AValue: Double): Boolean;
     function ContainsAll(const ACollection: IJclDoubleCollection): Boolean;
-    function CollectionEquals(const ACollection: IJclDoubleCollection): Boolean;
+    function Extract(const AValue: Double): Boolean;
+    function ExtractAll(const ACollection: IJclDoubleCollection): Boolean;
     function First: IJclDoubleIterator;
     function IsEmpty: Boolean;
     function Last: IJclDoubleIterator;
@@ -757,11 +790,12 @@ type
     function GetPreviousCursor: TJclDoubleTreeNode; virtual; abstract;
     { IJclDoubleIterator }
     function Add(const AValue: Double): Boolean;
-    function IteratorEquals(const AIterator: IJclDoubleIterator): Boolean;
+    procedure Extract;
     function GetValue: Double;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(const AValue: Double): Boolean;
+    function IteratorEquals(const AIterator: IJclDoubleIterator): Boolean;
     function Next: Double;
     function NextIndex: Integer;
     function Previous: Double;
@@ -776,8 +810,10 @@ type
     { IJclDoubleTreeIterator }
     function AddChild(const AValue: Double): Boolean;
     function ChildrenCount: Integer;
-    procedure ClearChildren;
     procedure DeleteChild(Index: Integer);
+    procedure DeleteChildren;
+    procedure ExtractChild(Index: Integer);
+    procedure ExtractChildren;
     function GetChild(Index: Integer): Double;
     function HasChild(Index: Integer): Boolean;
     function HasParent: Boolean;
@@ -830,7 +866,8 @@ type
     FRoot: TJclExtendedTreeNode;
     FTraverseOrder: TJclTraverseOrder;
   protected
-    procedure ClearNode(var ANode: TJclExtendedTreeNode);
+    procedure ExtractNode(var ANode: TJclExtendedTreeNode);
+    procedure RemoveNode(var ANode: TJclExtendedTreeNode);
     function CloneNode(Node, Parent: TJclExtendedTreeNode): TJclExtendedTreeNode;
     function NodeContains(ANode: TJclExtendedTreeNode; const AValue: Extended): Boolean;
     procedure PackNode(ANode: TJclExtendedTreeNode);
@@ -843,9 +880,11 @@ type
     function Add(const AValue: Extended): Boolean;
     function AddAll(const ACollection: IJclExtendedCollection): Boolean;
     procedure Clear;
+    function CollectionEquals(const ACollection: IJclExtendedCollection): Boolean;
     function Contains(const AValue: Extended): Boolean;
     function ContainsAll(const ACollection: IJclExtendedCollection): Boolean;
-    function CollectionEquals(const ACollection: IJclExtendedCollection): Boolean;
+    function Extract(const AValue: Extended): Boolean;
+    function ExtractAll(const ACollection: IJclExtendedCollection): Boolean;
     function First: IJclExtendedIterator;
     function IsEmpty: Boolean;
     function Last: IJclExtendedIterator;
@@ -880,11 +919,12 @@ type
     function GetPreviousCursor: TJclExtendedTreeNode; virtual; abstract;
     { IJclExtendedIterator }
     function Add(const AValue: Extended): Boolean;
-    function IteratorEquals(const AIterator: IJclExtendedIterator): Boolean;
+    procedure Extract;
     function GetValue: Extended;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(const AValue: Extended): Boolean;
+    function IteratorEquals(const AIterator: IJclExtendedIterator): Boolean;
     function Next: Extended;
     function NextIndex: Integer;
     function Previous: Extended;
@@ -899,8 +939,10 @@ type
     { IJclExtendedTreeIterator }
     function AddChild(const AValue: Extended): Boolean;
     function ChildrenCount: Integer;
-    procedure ClearChildren;
     procedure DeleteChild(Index: Integer);
+    procedure DeleteChildren;
+    procedure ExtractChild(Index: Integer);
+    procedure ExtractChildren;
     function GetChild(Index: Integer): Extended;
     function HasChild(Index: Integer): Boolean;
     function HasParent: Boolean;
@@ -963,7 +1005,8 @@ type
     FRoot: TJclIntegerTreeNode;
     FTraverseOrder: TJclTraverseOrder;
   protected
-    procedure ClearNode(var ANode: TJclIntegerTreeNode);
+    procedure ExtractNode(var ANode: TJclIntegerTreeNode);
+    procedure RemoveNode(var ANode: TJclIntegerTreeNode);
     function CloneNode(Node, Parent: TJclIntegerTreeNode): TJclIntegerTreeNode;
     function NodeContains(ANode: TJclIntegerTreeNode; AValue: Integer): Boolean;
     procedure PackNode(ANode: TJclIntegerTreeNode);
@@ -976,9 +1019,11 @@ type
     function Add(AValue: Integer): Boolean;
     function AddAll(const ACollection: IJclIntegerCollection): Boolean;
     procedure Clear;
+    function CollectionEquals(const ACollection: IJclIntegerCollection): Boolean;
     function Contains(AValue: Integer): Boolean;
     function ContainsAll(const ACollection: IJclIntegerCollection): Boolean;
-    function CollectionEquals(const ACollection: IJclIntegerCollection): Boolean;
+    function Extract(AValue: Integer): Boolean;
+    function ExtractAll(const ACollection: IJclIntegerCollection): Boolean;
     function First: IJclIntegerIterator;
     function IsEmpty: Boolean;
     function Last: IJclIntegerIterator;
@@ -1013,11 +1058,12 @@ type
     function GetPreviousCursor: TJclIntegerTreeNode; virtual; abstract;
     { IJclIntegerIterator }
     function Add(AValue: Integer): Boolean;
-    function IteratorEquals(const AIterator: IJclIntegerIterator): Boolean;
+    procedure Extract;
     function GetValue: Integer;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(AValue: Integer): Boolean;
+    function IteratorEquals(const AIterator: IJclIntegerIterator): Boolean;
     function Next: Integer;
     function NextIndex: Integer;
     function Previous: Integer;
@@ -1032,8 +1078,10 @@ type
     { IJclIntegerTreeIterator }
     function AddChild(AValue: Integer): Boolean;
     function ChildrenCount: Integer;
-    procedure ClearChildren;
     procedure DeleteChild(Index: Integer);
+    procedure DeleteChildren;
+    procedure ExtractChild(Index: Integer);
+    procedure ExtractChildren;
     function GetChild(Index: Integer): Integer;
     function HasChild(Index: Integer): Boolean;
     function HasParent: Boolean;
@@ -1086,7 +1134,8 @@ type
     FRoot: TJclCardinalTreeNode;
     FTraverseOrder: TJclTraverseOrder;
   protected
-    procedure ClearNode(var ANode: TJclCardinalTreeNode);
+    procedure ExtractNode(var ANode: TJclCardinalTreeNode);
+    procedure RemoveNode(var ANode: TJclCardinalTreeNode);
     function CloneNode(Node, Parent: TJclCardinalTreeNode): TJclCardinalTreeNode;
     function NodeContains(ANode: TJclCardinalTreeNode; AValue: Cardinal): Boolean;
     procedure PackNode(ANode: TJclCardinalTreeNode);
@@ -1099,9 +1148,11 @@ type
     function Add(AValue: Cardinal): Boolean;
     function AddAll(const ACollection: IJclCardinalCollection): Boolean;
     procedure Clear;
+    function CollectionEquals(const ACollection: IJclCardinalCollection): Boolean;
     function Contains(AValue: Cardinal): Boolean;
     function ContainsAll(const ACollection: IJclCardinalCollection): Boolean;
-    function CollectionEquals(const ACollection: IJclCardinalCollection): Boolean;
+    function Extract(AValue: Cardinal): Boolean;
+    function ExtractAll(const ACollection: IJclCardinalCollection): Boolean;
     function First: IJclCardinalIterator;
     function IsEmpty: Boolean;
     function Last: IJclCardinalIterator;
@@ -1136,11 +1187,12 @@ type
     function GetPreviousCursor: TJclCardinalTreeNode; virtual; abstract;
     { IJclCardinalIterator }
     function Add(AValue: Cardinal): Boolean;
-    function IteratorEquals(const AIterator: IJclCardinalIterator): Boolean;
+    procedure Extract;
     function GetValue: Cardinal;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(AValue: Cardinal): Boolean;
+    function IteratorEquals(const AIterator: IJclCardinalIterator): Boolean;
     function Next: Cardinal;
     function NextIndex: Integer;
     function Previous: Cardinal;
@@ -1155,8 +1207,10 @@ type
     { IJclCardinalTreeIterator }
     function AddChild(AValue: Cardinal): Boolean;
     function ChildrenCount: Integer;
-    procedure ClearChildren;
     procedure DeleteChild(Index: Integer);
+    procedure DeleteChildren;
+    procedure ExtractChild(Index: Integer);
+    procedure ExtractChildren;
     function GetChild(Index: Integer): Cardinal;
     function HasChild(Index: Integer): Boolean;
     function HasParent: Boolean;
@@ -1209,7 +1263,8 @@ type
     FRoot: TJclInt64TreeNode;
     FTraverseOrder: TJclTraverseOrder;
   protected
-    procedure ClearNode(var ANode: TJclInt64TreeNode);
+    procedure ExtractNode(var ANode: TJclInt64TreeNode);
+    procedure RemoveNode(var ANode: TJclInt64TreeNode);
     function CloneNode(Node, Parent: TJclInt64TreeNode): TJclInt64TreeNode;
     function NodeContains(ANode: TJclInt64TreeNode; const AValue: Int64): Boolean;
     procedure PackNode(ANode: TJclInt64TreeNode);
@@ -1222,9 +1277,11 @@ type
     function Add(const AValue: Int64): Boolean;
     function AddAll(const ACollection: IJclInt64Collection): Boolean;
     procedure Clear;
+    function CollectionEquals(const ACollection: IJclInt64Collection): Boolean;
     function Contains(const AValue: Int64): Boolean;
     function ContainsAll(const ACollection: IJclInt64Collection): Boolean;
-    function CollectionEquals(const ACollection: IJclInt64Collection): Boolean;
+    function Extract(const AValue: Int64): Boolean;
+    function ExtractAll(const ACollection: IJclInt64Collection): Boolean;
     function First: IJclInt64Iterator;
     function IsEmpty: Boolean;
     function Last: IJclInt64Iterator;
@@ -1259,11 +1316,12 @@ type
     function GetPreviousCursor: TJclInt64TreeNode; virtual; abstract;
     { IJclInt64Iterator }
     function Add(const AValue: Int64): Boolean;
-    function IteratorEquals(const AIterator: IJclInt64Iterator): Boolean;
+    procedure Extract;
     function GetValue: Int64;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(const AValue: Int64): Boolean;
+    function IteratorEquals(const AIterator: IJclInt64Iterator): Boolean;
     function Next: Int64;
     function NextIndex: Integer;
     function Previous: Int64;
@@ -1278,8 +1336,10 @@ type
     { IJclInt64TreeIterator }
     function AddChild(const AValue: Int64): Boolean;
     function ChildrenCount: Integer;
-    procedure ClearChildren;
     procedure DeleteChild(Index: Integer);
+    procedure DeleteChildren;
+    procedure ExtractChild(Index: Integer);
+    procedure ExtractChildren;
     function GetChild(Index: Integer): Int64;
     function HasChild(Index: Integer): Boolean;
     function HasParent: Boolean;
@@ -1333,7 +1393,8 @@ type
     FRoot: TJclPtrTreeNode;
     FTraverseOrder: TJclTraverseOrder;
   protected
-    procedure ClearNode(var ANode: TJclPtrTreeNode);
+    procedure ExtractNode(var ANode: TJclPtrTreeNode);
+    procedure RemoveNode(var ANode: TJclPtrTreeNode);
     function CloneNode(Node, Parent: TJclPtrTreeNode): TJclPtrTreeNode;
     function NodeContains(ANode: TJclPtrTreeNode; APtr: Pointer): Boolean;
     procedure PackNode(ANode: TJclPtrTreeNode);
@@ -1346,9 +1407,11 @@ type
     function Add(APtr: Pointer): Boolean;
     function AddAll(const ACollection: IJclPtrCollection): Boolean;
     procedure Clear;
+    function CollectionEquals(const ACollection: IJclPtrCollection): Boolean;
     function Contains(APtr: Pointer): Boolean;
     function ContainsAll(const ACollection: IJclPtrCollection): Boolean;
-    function CollectionEquals(const ACollection: IJclPtrCollection): Boolean;
+    function Extract(APtr: Pointer): Boolean;
+    function ExtractAll(const ACollection: IJclPtrCollection): Boolean;
     function First: IJclPtrIterator;
     function IsEmpty: Boolean;
     function Last: IJclPtrIterator;
@@ -1383,11 +1446,12 @@ type
     function GetPreviousCursor: TJclPtrTreeNode; virtual; abstract;
     { IJclPtrIterator }
     function Add(APtr: Pointer): Boolean;
-    function IteratorEquals(const AIterator: IJclPtrIterator): Boolean;
+    procedure Extract;
     function GetPointer: Pointer;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(APtr: Pointer): Boolean;
+    function IteratorEquals(const AIterator: IJclPtrIterator): Boolean;
     function Next: Pointer;
     function NextIndex: Integer;
     function Previous: Pointer;
@@ -1402,8 +1466,10 @@ type
     { IJclPtrTreeIterator }
     function AddChild(APtr: Pointer): Boolean;
     function ChildrenCount: Integer;
-    procedure ClearChildren;
     procedure DeleteChild(Index: Integer);
+    procedure DeleteChildren;
+    procedure ExtractChild(Index: Integer);
+    procedure ExtractChildren;
     function GetChild(Index: Integer): Pointer;
     function HasChild(Index: Integer): Boolean;
     function HasParent: Boolean;
@@ -1457,7 +1523,8 @@ type
     FRoot: TJclTreeNode;
     FTraverseOrder: TJclTraverseOrder;
   protected
-    procedure ClearNode(var ANode: TJclTreeNode);
+    procedure ExtractNode(var ANode: TJclTreeNode);
+    procedure RemoveNode(var ANode: TJclTreeNode);
     function CloneNode(Node, Parent: TJclTreeNode): TJclTreeNode;
     function NodeContains(ANode: TJclTreeNode; AObject: TObject): Boolean;
     procedure PackNode(ANode: TJclTreeNode);
@@ -1470,9 +1537,11 @@ type
     function Add(AObject: TObject): Boolean;
     function AddAll(const ACollection: IJclCollection): Boolean;
     procedure Clear;
+    function CollectionEquals(const ACollection: IJclCollection): Boolean;
     function Contains(AObject: TObject): Boolean;
     function ContainsAll(const ACollection: IJclCollection): Boolean;
-    function CollectionEquals(const ACollection: IJclCollection): Boolean;
+    function Extract(AObject: TObject): Boolean;
+    function ExtractAll(const ACollection: IJclCollection): Boolean;
     function First: IJclIterator;
     function IsEmpty: Boolean;
     function Last: IJclIterator;
@@ -1507,11 +1576,12 @@ type
     function GetPreviousCursor: TJclTreeNode; virtual; abstract;
     { IJclIterator }
     function Add(AObject: TObject): Boolean;
-    function IteratorEquals(const AIterator: IJclIterator): Boolean;
+    procedure Extract;
     function GetObject: TObject;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(AObject: TObject): Boolean;
+    function IteratorEquals(const AIterator: IJclIterator): Boolean;
     function Next: TObject;
     function NextIndex: Integer;
     function Previous: TObject;
@@ -1526,8 +1596,10 @@ type
     { IJclTreeIterator }
     function AddChild(AObject: TObject): Boolean;
     function ChildrenCount: Integer;
-    procedure ClearChildren;
     procedure DeleteChild(Index: Integer);
+    procedure DeleteChildren;
+    procedure ExtractChild(Index: Integer);
+    procedure ExtractChildren;
     function GetChild(Index: Integer): TObject;
     function HasChild(Index: Integer): Boolean;
     function HasParent: Boolean;
@@ -1587,7 +1659,8 @@ type
     FRoot: TTreeNode;
     FTraverseOrder: TJclTraverseOrder;
   protected
-    procedure ClearNode(var ANode: TTreeNode);
+    procedure ExtractNode(var ANode: TTreeNode);
+    procedure RemoveNode(var ANode: TTreeNode);
     function CloneNode(Node, Parent: TTreeNode): TTreeNode;
     function NodeContains(ANode: TTreeNode; const AItem: T): Boolean;
     procedure PackNode(ANode: TTreeNode);
@@ -1600,9 +1673,11 @@ type
     function Add(const AItem: T): Boolean;
     function AddAll(const ACollection: IJclCollection<T>): Boolean;
     procedure Clear;
+    function CollectionEquals(const ACollection: IJclCollection<T>): Boolean;
     function Contains(const AItem: T): Boolean;
     function ContainsAll(const ACollection: IJclCollection<T>): Boolean;
-    function CollectionEquals(const ACollection: IJclCollection<T>): Boolean;
+    function Extract(const AItem: T): Boolean;
+    function ExtractAll(const ACollection: IJclCollection<T>): Boolean;
     function First: IJclIterator<T>;
     function IsEmpty: Boolean;
     function Last: IJclIterator<T>;
@@ -1637,11 +1712,12 @@ type
     function GetPreviousCursor: TJclTree<T>.TTreeNode; virtual; abstract;
     { IJclIterator<T> }
     function Add(const AItem: T): Boolean;
-    function IteratorEquals(const AIterator: IJclIterator<T>): Boolean;
+    procedure Extract;
     function GetItem: T;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(const AItem: T): Boolean;
+    function IteratorEquals(const AIterator: IJclIterator<T>): Boolean;
     function Next: T;
     function NextIndex: Integer;
     function Previous: T;
@@ -1656,8 +1732,10 @@ type
     { IJclTreeIterator<T> }
     function AddChild(const AItem: T): Boolean;
     function ChildrenCount: Integer;
-    procedure ClearChildren;
     procedure DeleteChild(Index: Integer);
+    procedure DeleteChildren;
+    procedure ExtractChild(Index: Integer);
+    procedure ExtractChildren;
     function GetChild(Index: Integer): T;
     function HasChild(Index: Integer): Boolean;
     function HasParent: Boolean;
@@ -1888,7 +1966,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     if FRoot <> nil then
-      ClearNode(FRoot);
+      RemoveNode(FRoot);
     FSize := 0;
   {$IFDEF THREADSAFE}
   finally
@@ -1896,38 +1974,6 @@ begin
       SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-procedure TJclIntfTree.ClearNode(var ANode: TJclIntfTreeNode);
-var
-  Index, ChildIndex, NewCapacity: Integer;
-  Parent: TJclIntfTreeNode;
-begin
-  for Index := ANode.ChildrenCount - 1 downto 0 do
-    {$IFDEF BCB}
-    ClearNode(TJclIntfTreeNode(ANode.Children[Index]));
-    {$ELSE ~BCB}
-    ClearNode(ANode.Children[Index]);
-    {$ENDIF ~BCB}
-  FreeObject(ANode.Value);
-  Parent := ANode.Parent;
-  if Parent <> nil then
-  begin
-    ChildIndex := Parent.IndexOfChild(ANode);
-    for Index := ChildIndex + 1 to Parent.ChildrenCount - 1 do
-      Parent.Children[Index - 1] := Parent.Children[Index];
-    Dec(Parent.ChildrenCount);
-    NewCapacity := CalcPackCapacity(Length(Parent.Children), Parent.ChildrenCount);
-    if NewCapacity < Length(Parent.Children) then
-      SetLength(Parent.Children, NewCapacity);
-    FreeAndNil(ANode);
-  end
-  else
-  begin
-    FreeAndNil(ANode);
-    FRoot := nil;
-  end;
-  Dec(FSize);
 end;
 
 function TJclIntfTree.CloneNode(Node, Parent: TJclIntfTreeNode): TJclIntfTreeNode;
@@ -1941,6 +1987,37 @@ begin
   Result.ChildrenCount := Node.ChildrenCount;
   for Index := 0 to Node.ChildrenCount - 1 do
     Result.Children[Index] := CloneNode(TJclIntfTreeNode(Node.Children[Index]), Result); // recursive call
+end;
+
+function TJclIntfTree.CollectionEquals(const ACollection: IJclIntfCollection): Boolean;
+var
+  It, ItSelf: IJclIntfIterator;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TJclIntfTree.Contains(const AInterface: IInterface): Boolean;
@@ -1985,35 +2062,92 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfTree.CollectionEquals(const ACollection: IJclIntfCollection): Boolean;
+function TJclIntfTree.Extract(const AInterface: IInterface): Boolean;
 var
-  It, ItSelf: IJclIntfIterator;
+  It: IJclIntfIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FRoot <> nil;
+    if Result then
+    begin
+      It := First;
+      while It.HasNext do
+        if ItemsEqual(It.Next, AInterface) then
+      begin
+        It.Extract;
+        if RemoveSingleElement then
+          Break;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfTree.ExtractAll(const ACollection: IJclIntfCollection): Boolean;
+var
+  It: IJclIntfIterator;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
     Result := True;
     It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+procedure TJclIntfTree.ExtractNode(var ANode: TJclIntfTreeNode);
+var
+  Index, ChildIndex, NewCapacity: Integer;
+  Parent: TJclIntfTreeNode;
+begin
+  for Index := ANode.ChildrenCount - 1 downto 0 do
+    {$IFDEF BCB}
+    ExtractNode(TJclIntfTreeNode(ANode.Children[Index]));
+    {$ELSE ~BCB}
+    ExtractNode(ANode.Children[Index]);
+    {$ENDIF ~BCB}
+  Parent := ANode.Parent;
+  if Parent <> nil then
+  begin
+    ChildIndex := Parent.IndexOfChild(ANode);
+    for Index := ChildIndex + 1 to Parent.ChildrenCount - 1 do
+      Parent.Children[Index - 1] := Parent.Children[Index];
+    Dec(Parent.ChildrenCount);
+    NewCapacity := CalcPackCapacity(Length(Parent.Children), Parent.ChildrenCount);
+    if NewCapacity < Length(Parent.Children) then
+      SetLength(Parent.Children, NewCapacity);
+    FreeAndNil(ANode);
+  end
+  else
+  begin
+    FreeAndNil(ANode);
+    FRoot := nil;
+  end;
+  Dec(FSize);
 end;
 
 function TJclIntfTree.First: IJclIntfIterator;
@@ -2162,7 +2296,7 @@ end;
 
 function TJclIntfTree.Remove(const AInterface: IInterface): Boolean;
 var
-  It: IJclIntfIterator;
+  Extracted: IInterface;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -2171,17 +2305,11 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := FRoot <> nil;
+    Result := Extract(AInterface);
     if Result then
     begin
-      It := First;
-      while It.HasNext do
-        if ItemsEqual(It.Next, AInterface) then
-      begin
-        It.Remove;
-        if RemoveSingleElement then
-          Break;
-      end;
+      Extracted := AInterface;
+      FreeObject(Extracted);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -2215,6 +2343,38 @@ begin
       SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+procedure TJclIntfTree.RemoveNode(var ANode: TJclIntfTreeNode);
+var
+  Index, ChildIndex, NewCapacity: Integer;
+  Parent: TJclIntfTreeNode;
+begin
+  for Index := ANode.ChildrenCount - 1 downto 0 do
+    {$IFDEF BCB}
+    RemoveNode(TJclIntfTreeNode(ANode.Children[Index]));
+    {$ELSE ~BCB}
+    RemoveNode(ANode.Children[Index]);
+    {$ENDIF ~BCB}
+  FreeObject(ANode.Value);
+  Parent := ANode.Parent;
+  if Parent <> nil then
+  begin
+    ChildIndex := Parent.IndexOfChild(ANode);
+    for Index := ChildIndex + 1 to Parent.ChildrenCount - 1 do
+      Parent.Children[Index - 1] := Parent.Children[Index];
+    Dec(Parent.ChildrenCount);
+    NewCapacity := CalcPackCapacity(Length(Parent.Children), Parent.ChildrenCount);
+    if NewCapacity < Length(Parent.Children) then
+      SetLength(Parent.Children, NewCapacity);
+    FreeAndNil(ANode);
+  end
+  else
+  begin
+    FreeAndNil(ANode);
+    FRoot := nil;
+  end;
+  Dec(FSize);
 end;
 
 function TJclIntfTree.RetainAll(const ACollection: IJclIntfCollection): Boolean;
@@ -2381,7 +2541,30 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntfTreeIterator.ClearChildren;
+procedure TJclIntfTreeIterator.DeleteChild(Index: Integer);
+begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnTree.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
+      {$IFDEF BCB}
+      FOwnTree.RemoveNode(TJclIntfTreeNode(FCursor.Children[Index]))
+      {$ELSE ~BCB}
+      FOwnTree.RemoveNode(FCursor.Children[Index])
+      {$ENDIF ~BCB}
+    else
+      raise EJclOutOfBoundsError.Create;
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnTree.WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclIntfTreeIterator.DeleteChildren;
 var
   Index: Integer;
 begin
@@ -2395,9 +2578,9 @@ begin
     begin
       for Index := FCursor.ChildrenCount - 1 downto 0 do
         {$IFDEF BCB}
-        FOwnTree.ClearNode(TJclIntfTreeNode(FCursor.Children[Index]));
+        FOwnTree.RemoveNode(TJclIntfTreeNode(FCursor.Children[Index]));
         {$ELSE ~BCB}
-        FOwnTree.ClearNode(FCursor.Children[Index]);
+        FOwnTree.RemoveNode(FCursor.Children[Index]);
         {$ENDIF ~BCB}
       SetLength(FCursor.Children, 0);
       FCursor.ChildrenCount := 0;
@@ -2409,7 +2592,30 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntfTreeIterator.DeleteChild(Index: Integer);
+procedure TJclIntfTreeIterator.Extract;
+var
+  OldCursor: TJclIntfTreeNode;
+begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnTree.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    OldCursor := FCursor;
+    FCursor := GetNextSibling;
+    if OldCursor <> nil then
+      FOwnTree.ExtractNode(OldCursor);
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnTree.WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclIntfTreeIterator.ExtractChild(Index: Integer);
 begin
   if FOwnTree.ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -2419,9 +2625,9 @@ begin
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
       {$IFDEF BCB}
-      FOwnTree.ClearNode(TJclIntfTreeNode(FCursor.Children[Index]))
+      FOwnTree.ExtractNode(TJclIntfTreeNode(FCursor.Children[Index]))
       {$ELSE ~BCB}
-      FOwnTree.ClearNode(FCursor.Children[Index])
+      FOwnTree.ExtractNode(FCursor.Children[Index])
       {$ENDIF ~BCB}
     else
       raise EJclOutOfBoundsError.Create;
@@ -2432,20 +2638,32 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfTreeIterator.IteratorEquals(const AIterator: IJclIntfIterator): Boolean;
+procedure TJclIntfTreeIterator.ExtractChildren;
 var
-  Obj: TObject;
-  ItrObj: TJclIntfTreeIterator;
+  Index: Integer;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is TJclIntfTreeIterator then
-  begin
-    ItrObj := TJclIntfTreeIterator(Obj);
-    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnTree.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if FCursor <> nil then
+    begin
+      for Index := FCursor.ChildrenCount - 1 downto 0 do
+        {$IFDEF BCB}
+        FOwnTree.ExtractNode(TJclIntfTreeNode(FCursor.Children[Index]));
+        {$ELSE ~BCB}
+        FOwnTree.ExtractNode(FCursor.Children[Index]);
+        {$ENDIF ~BCB}
+      SetLength(FCursor.Children, 0);
+      FCursor.ChildrenCount := 0;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnTree.WriteUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TJclIntfTreeIterator.GetChild(Index: Integer): IInterface;
@@ -2657,6 +2875,22 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclIntfTreeIterator.IteratorEquals(const AIterator: IJclIntfIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclIntfTreeIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclIntfTreeIterator then
+  begin
+    ItrObj := TJclIntfTreeIterator(Obj);
+    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
 {$IFDEF SUPPORTS_FOR_IN}
 function TJclIntfTreeIterator.MoveNext: Boolean;
 begin
@@ -2771,7 +3005,7 @@ begin
     OldCursor := FCursor;
     FCursor := GetNextSibling;
     if OldCursor <> nil then
-      FOwnTree.ClearNode(OldCursor);
+      FOwnTree.RemoveNode(OldCursor);
   {$IFDEF THREADSAFE}
   finally
     FOwnTree.WriteUnlock;
@@ -3143,7 +3377,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     if FRoot <> nil then
-      ClearNode(FRoot);
+      RemoveNode(FRoot);
     FSize := 0;
   {$IFDEF THREADSAFE}
   finally
@@ -3151,38 +3385,6 @@ begin
       SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-procedure TJclAnsiStrTree.ClearNode(var ANode: TJclAnsiStrTreeNode);
-var
-  Index, ChildIndex, NewCapacity: Integer;
-  Parent: TJclAnsiStrTreeNode;
-begin
-  for Index := ANode.ChildrenCount - 1 downto 0 do
-    {$IFDEF BCB}
-    ClearNode(TJclAnsiStrTreeNode(ANode.Children[Index]));
-    {$ELSE ~BCB}
-    ClearNode(ANode.Children[Index]);
-    {$ENDIF ~BCB}
-  FreeString(ANode.Value);
-  Parent := ANode.Parent;
-  if Parent <> nil then
-  begin
-    ChildIndex := Parent.IndexOfChild(ANode);
-    for Index := ChildIndex + 1 to Parent.ChildrenCount - 1 do
-      Parent.Children[Index - 1] := Parent.Children[Index];
-    Dec(Parent.ChildrenCount);
-    NewCapacity := CalcPackCapacity(Length(Parent.Children), Parent.ChildrenCount);
-    if NewCapacity < Length(Parent.Children) then
-      SetLength(Parent.Children, NewCapacity);
-    FreeAndNil(ANode);
-  end
-  else
-  begin
-    FreeAndNil(ANode);
-    FRoot := nil;
-  end;
-  Dec(FSize);
 end;
 
 function TJclAnsiStrTree.CloneNode(Node, Parent: TJclAnsiStrTreeNode): TJclAnsiStrTreeNode;
@@ -3196,6 +3398,37 @@ begin
   Result.ChildrenCount := Node.ChildrenCount;
   for Index := 0 to Node.ChildrenCount - 1 do
     Result.Children[Index] := CloneNode(TJclAnsiStrTreeNode(Node.Children[Index]), Result); // recursive call
+end;
+
+function TJclAnsiStrTree.CollectionEquals(const ACollection: IJclAnsiStrCollection): Boolean;
+var
+  It, ItSelf: IJclAnsiStrIterator;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TJclAnsiStrTree.Contains(const AString: AnsiString): Boolean;
@@ -3240,35 +3473,92 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclAnsiStrTree.CollectionEquals(const ACollection: IJclAnsiStrCollection): Boolean;
+function TJclAnsiStrTree.Extract(const AString: AnsiString): Boolean;
 var
-  It, ItSelf: IJclAnsiStrIterator;
+  It: IJclAnsiStrIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FRoot <> nil;
+    if Result then
+    begin
+      It := First;
+      while It.HasNext do
+        if ItemsEqual(It.Next, AString) then
+      begin
+        It.Extract;
+        if RemoveSingleElement then
+          Break;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclAnsiStrTree.ExtractAll(const ACollection: IJclAnsiStrCollection): Boolean;
+var
+  It: IJclAnsiStrIterator;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
     Result := True;
     It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+procedure TJclAnsiStrTree.ExtractNode(var ANode: TJclAnsiStrTreeNode);
+var
+  Index, ChildIndex, NewCapacity: Integer;
+  Parent: TJclAnsiStrTreeNode;
+begin
+  for Index := ANode.ChildrenCount - 1 downto 0 do
+    {$IFDEF BCB}
+    ExtractNode(TJclAnsiStrTreeNode(ANode.Children[Index]));
+    {$ELSE ~BCB}
+    ExtractNode(ANode.Children[Index]);
+    {$ENDIF ~BCB}
+  Parent := ANode.Parent;
+  if Parent <> nil then
+  begin
+    ChildIndex := Parent.IndexOfChild(ANode);
+    for Index := ChildIndex + 1 to Parent.ChildrenCount - 1 do
+      Parent.Children[Index - 1] := Parent.Children[Index];
+    Dec(Parent.ChildrenCount);
+    NewCapacity := CalcPackCapacity(Length(Parent.Children), Parent.ChildrenCount);
+    if NewCapacity < Length(Parent.Children) then
+      SetLength(Parent.Children, NewCapacity);
+    FreeAndNil(ANode);
+  end
+  else
+  begin
+    FreeAndNil(ANode);
+    FRoot := nil;
+  end;
+  Dec(FSize);
 end;
 
 function TJclAnsiStrTree.First: IJclAnsiStrIterator;
@@ -3417,7 +3707,7 @@ end;
 
 function TJclAnsiStrTree.Remove(const AString: AnsiString): Boolean;
 var
-  It: IJclAnsiStrIterator;
+  Extracted: AnsiString;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -3426,17 +3716,11 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := FRoot <> nil;
+    Result := Extract(AString);
     if Result then
     begin
-      It := First;
-      while It.HasNext do
-        if ItemsEqual(It.Next, AString) then
-      begin
-        It.Remove;
-        if RemoveSingleElement then
-          Break;
-      end;
+      Extracted := AString;
+      FreeString(Extracted);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -3470,6 +3754,38 @@ begin
       SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+procedure TJclAnsiStrTree.RemoveNode(var ANode: TJclAnsiStrTreeNode);
+var
+  Index, ChildIndex, NewCapacity: Integer;
+  Parent: TJclAnsiStrTreeNode;
+begin
+  for Index := ANode.ChildrenCount - 1 downto 0 do
+    {$IFDEF BCB}
+    RemoveNode(TJclAnsiStrTreeNode(ANode.Children[Index]));
+    {$ELSE ~BCB}
+    RemoveNode(ANode.Children[Index]);
+    {$ENDIF ~BCB}
+  FreeString(ANode.Value);
+  Parent := ANode.Parent;
+  if Parent <> nil then
+  begin
+    ChildIndex := Parent.IndexOfChild(ANode);
+    for Index := ChildIndex + 1 to Parent.ChildrenCount - 1 do
+      Parent.Children[Index - 1] := Parent.Children[Index];
+    Dec(Parent.ChildrenCount);
+    NewCapacity := CalcPackCapacity(Length(Parent.Children), Parent.ChildrenCount);
+    if NewCapacity < Length(Parent.Children) then
+      SetLength(Parent.Children, NewCapacity);
+    FreeAndNil(ANode);
+  end
+  else
+  begin
+    FreeAndNil(ANode);
+    FRoot := nil;
+  end;
+  Dec(FSize);
 end;
 
 function TJclAnsiStrTree.RetainAll(const ACollection: IJclAnsiStrCollection): Boolean;
@@ -3636,7 +3952,30 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclAnsiStrTreeIterator.ClearChildren;
+procedure TJclAnsiStrTreeIterator.DeleteChild(Index: Integer);
+begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnTree.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
+      {$IFDEF BCB}
+      FOwnTree.RemoveNode(TJclAnsiStrTreeNode(FCursor.Children[Index]))
+      {$ELSE ~BCB}
+      FOwnTree.RemoveNode(FCursor.Children[Index])
+      {$ENDIF ~BCB}
+    else
+      raise EJclOutOfBoundsError.Create;
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnTree.WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclAnsiStrTreeIterator.DeleteChildren;
 var
   Index: Integer;
 begin
@@ -3650,9 +3989,9 @@ begin
     begin
       for Index := FCursor.ChildrenCount - 1 downto 0 do
         {$IFDEF BCB}
-        FOwnTree.ClearNode(TJclAnsiStrTreeNode(FCursor.Children[Index]));
+        FOwnTree.RemoveNode(TJclAnsiStrTreeNode(FCursor.Children[Index]));
         {$ELSE ~BCB}
-        FOwnTree.ClearNode(FCursor.Children[Index]);
+        FOwnTree.RemoveNode(FCursor.Children[Index]);
         {$ENDIF ~BCB}
       SetLength(FCursor.Children, 0);
       FCursor.ChildrenCount := 0;
@@ -3664,7 +4003,30 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclAnsiStrTreeIterator.DeleteChild(Index: Integer);
+procedure TJclAnsiStrTreeIterator.Extract;
+var
+  OldCursor: TJclAnsiStrTreeNode;
+begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnTree.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    OldCursor := FCursor;
+    FCursor := GetNextSibling;
+    if OldCursor <> nil then
+      FOwnTree.ExtractNode(OldCursor);
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnTree.WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclAnsiStrTreeIterator.ExtractChild(Index: Integer);
 begin
   if FOwnTree.ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -3674,9 +4036,9 @@ begin
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
       {$IFDEF BCB}
-      FOwnTree.ClearNode(TJclAnsiStrTreeNode(FCursor.Children[Index]))
+      FOwnTree.ExtractNode(TJclAnsiStrTreeNode(FCursor.Children[Index]))
       {$ELSE ~BCB}
-      FOwnTree.ClearNode(FCursor.Children[Index])
+      FOwnTree.ExtractNode(FCursor.Children[Index])
       {$ENDIF ~BCB}
     else
       raise EJclOutOfBoundsError.Create;
@@ -3687,20 +4049,32 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclAnsiStrTreeIterator.IteratorEquals(const AIterator: IJclAnsiStrIterator): Boolean;
+procedure TJclAnsiStrTreeIterator.ExtractChildren;
 var
-  Obj: TObject;
-  ItrObj: TJclAnsiStrTreeIterator;
+  Index: Integer;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is TJclAnsiStrTreeIterator then
-  begin
-    ItrObj := TJclAnsiStrTreeIterator(Obj);
-    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnTree.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if FCursor <> nil then
+    begin
+      for Index := FCursor.ChildrenCount - 1 downto 0 do
+        {$IFDEF BCB}
+        FOwnTree.ExtractNode(TJclAnsiStrTreeNode(FCursor.Children[Index]));
+        {$ELSE ~BCB}
+        FOwnTree.ExtractNode(FCursor.Children[Index]);
+        {$ENDIF ~BCB}
+      SetLength(FCursor.Children, 0);
+      FCursor.ChildrenCount := 0;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnTree.WriteUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TJclAnsiStrTreeIterator.GetChild(Index: Integer): AnsiString;
@@ -3912,6 +4286,22 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclAnsiStrTreeIterator.IteratorEquals(const AIterator: IJclAnsiStrIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclAnsiStrTreeIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclAnsiStrTreeIterator then
+  begin
+    ItrObj := TJclAnsiStrTreeIterator(Obj);
+    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
 {$IFDEF SUPPORTS_FOR_IN}
 function TJclAnsiStrTreeIterator.MoveNext: Boolean;
 begin
@@ -4026,7 +4416,7 @@ begin
     OldCursor := FCursor;
     FCursor := GetNextSibling;
     if OldCursor <> nil then
-      FOwnTree.ClearNode(OldCursor);
+      FOwnTree.RemoveNode(OldCursor);
   {$IFDEF THREADSAFE}
   finally
     FOwnTree.WriteUnlock;
@@ -4398,7 +4788,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     if FRoot <> nil then
-      ClearNode(FRoot);
+      RemoveNode(FRoot);
     FSize := 0;
   {$IFDEF THREADSAFE}
   finally
@@ -4406,38 +4796,6 @@ begin
       SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-procedure TJclWideStrTree.ClearNode(var ANode: TJclWideStrTreeNode);
-var
-  Index, ChildIndex, NewCapacity: Integer;
-  Parent: TJclWideStrTreeNode;
-begin
-  for Index := ANode.ChildrenCount - 1 downto 0 do
-    {$IFDEF BCB}
-    ClearNode(TJclWideStrTreeNode(ANode.Children[Index]));
-    {$ELSE ~BCB}
-    ClearNode(ANode.Children[Index]);
-    {$ENDIF ~BCB}
-  FreeString(ANode.Value);
-  Parent := ANode.Parent;
-  if Parent <> nil then
-  begin
-    ChildIndex := Parent.IndexOfChild(ANode);
-    for Index := ChildIndex + 1 to Parent.ChildrenCount - 1 do
-      Parent.Children[Index - 1] := Parent.Children[Index];
-    Dec(Parent.ChildrenCount);
-    NewCapacity := CalcPackCapacity(Length(Parent.Children), Parent.ChildrenCount);
-    if NewCapacity < Length(Parent.Children) then
-      SetLength(Parent.Children, NewCapacity);
-    FreeAndNil(ANode);
-  end
-  else
-  begin
-    FreeAndNil(ANode);
-    FRoot := nil;
-  end;
-  Dec(FSize);
 end;
 
 function TJclWideStrTree.CloneNode(Node, Parent: TJclWideStrTreeNode): TJclWideStrTreeNode;
@@ -4451,6 +4809,37 @@ begin
   Result.ChildrenCount := Node.ChildrenCount;
   for Index := 0 to Node.ChildrenCount - 1 do
     Result.Children[Index] := CloneNode(TJclWideStrTreeNode(Node.Children[Index]), Result); // recursive call
+end;
+
+function TJclWideStrTree.CollectionEquals(const ACollection: IJclWideStrCollection): Boolean;
+var
+  It, ItSelf: IJclWideStrIterator;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TJclWideStrTree.Contains(const AString: WideString): Boolean;
@@ -4495,35 +4884,92 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclWideStrTree.CollectionEquals(const ACollection: IJclWideStrCollection): Boolean;
+function TJclWideStrTree.Extract(const AString: WideString): Boolean;
 var
-  It, ItSelf: IJclWideStrIterator;
+  It: IJclWideStrIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FRoot <> nil;
+    if Result then
+    begin
+      It := First;
+      while It.HasNext do
+        if ItemsEqual(It.Next, AString) then
+      begin
+        It.Extract;
+        if RemoveSingleElement then
+          Break;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclWideStrTree.ExtractAll(const ACollection: IJclWideStrCollection): Boolean;
+var
+  It: IJclWideStrIterator;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
     Result := True;
     It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+procedure TJclWideStrTree.ExtractNode(var ANode: TJclWideStrTreeNode);
+var
+  Index, ChildIndex, NewCapacity: Integer;
+  Parent: TJclWideStrTreeNode;
+begin
+  for Index := ANode.ChildrenCount - 1 downto 0 do
+    {$IFDEF BCB}
+    ExtractNode(TJclWideStrTreeNode(ANode.Children[Index]));
+    {$ELSE ~BCB}
+    ExtractNode(ANode.Children[Index]);
+    {$ENDIF ~BCB}
+  Parent := ANode.Parent;
+  if Parent <> nil then
+  begin
+    ChildIndex := Parent.IndexOfChild(ANode);
+    for Index := ChildIndex + 1 to Parent.ChildrenCount - 1 do
+      Parent.Children[Index - 1] := Parent.Children[Index];
+    Dec(Parent.ChildrenCount);
+    NewCapacity := CalcPackCapacity(Length(Parent.Children), Parent.ChildrenCount);
+    if NewCapacity < Length(Parent.Children) then
+      SetLength(Parent.Children, NewCapacity);
+    FreeAndNil(ANode);
+  end
+  else
+  begin
+    FreeAndNil(ANode);
+    FRoot := nil;
+  end;
+  Dec(FSize);
 end;
 
 function TJclWideStrTree.First: IJclWideStrIterator;
@@ -4672,7 +5118,7 @@ end;
 
 function TJclWideStrTree.Remove(const AString: WideString): Boolean;
 var
-  It: IJclWideStrIterator;
+  Extracted: WideString;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -4681,17 +5127,11 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := FRoot <> nil;
+    Result := Extract(AString);
     if Result then
     begin
-      It := First;
-      while It.HasNext do
-        if ItemsEqual(It.Next, AString) then
-      begin
-        It.Remove;
-        if RemoveSingleElement then
-          Break;
-      end;
+      Extracted := AString;
+      FreeString(Extracted);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -4725,6 +5165,38 @@ begin
       SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+procedure TJclWideStrTree.RemoveNode(var ANode: TJclWideStrTreeNode);
+var
+  Index, ChildIndex, NewCapacity: Integer;
+  Parent: TJclWideStrTreeNode;
+begin
+  for Index := ANode.ChildrenCount - 1 downto 0 do
+    {$IFDEF BCB}
+    RemoveNode(TJclWideStrTreeNode(ANode.Children[Index]));
+    {$ELSE ~BCB}
+    RemoveNode(ANode.Children[Index]);
+    {$ENDIF ~BCB}
+  FreeString(ANode.Value);
+  Parent := ANode.Parent;
+  if Parent <> nil then
+  begin
+    ChildIndex := Parent.IndexOfChild(ANode);
+    for Index := ChildIndex + 1 to Parent.ChildrenCount - 1 do
+      Parent.Children[Index - 1] := Parent.Children[Index];
+    Dec(Parent.ChildrenCount);
+    NewCapacity := CalcPackCapacity(Length(Parent.Children), Parent.ChildrenCount);
+    if NewCapacity < Length(Parent.Children) then
+      SetLength(Parent.Children, NewCapacity);
+    FreeAndNil(ANode);
+  end
+  else
+  begin
+    FreeAndNil(ANode);
+    FRoot := nil;
+  end;
+  Dec(FSize);
 end;
 
 function TJclWideStrTree.RetainAll(const ACollection: IJclWideStrCollection): Boolean;
@@ -4891,7 +5363,30 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclWideStrTreeIterator.ClearChildren;
+procedure TJclWideStrTreeIterator.DeleteChild(Index: Integer);
+begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnTree.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
+      {$IFDEF BCB}
+      FOwnTree.RemoveNode(TJclWideStrTreeNode(FCursor.Children[Index]))
+      {$ELSE ~BCB}
+      FOwnTree.RemoveNode(FCursor.Children[Index])
+      {$ENDIF ~BCB}
+    else
+      raise EJclOutOfBoundsError.Create;
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnTree.WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclWideStrTreeIterator.DeleteChildren;
 var
   Index: Integer;
 begin
@@ -4905,9 +5400,9 @@ begin
     begin
       for Index := FCursor.ChildrenCount - 1 downto 0 do
         {$IFDEF BCB}
-        FOwnTree.ClearNode(TJclWideStrTreeNode(FCursor.Children[Index]));
+        FOwnTree.RemoveNode(TJclWideStrTreeNode(FCursor.Children[Index]));
         {$ELSE ~BCB}
-        FOwnTree.ClearNode(FCursor.Children[Index]);
+        FOwnTree.RemoveNode(FCursor.Children[Index]);
         {$ENDIF ~BCB}
       SetLength(FCursor.Children, 0);
       FCursor.ChildrenCount := 0;
@@ -4919,7 +5414,30 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclWideStrTreeIterator.DeleteChild(Index: Integer);
+procedure TJclWideStrTreeIterator.Extract;
+var
+  OldCursor: TJclWideStrTreeNode;
+begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnTree.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    OldCursor := FCursor;
+    FCursor := GetNextSibling;
+    if OldCursor <> nil then
+      FOwnTree.ExtractNode(OldCursor);
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnTree.WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclWideStrTreeIterator.ExtractChild(Index: Integer);
 begin
   if FOwnTree.ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -4929,9 +5447,9 @@ begin
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
       {$IFDEF BCB}
-      FOwnTree.ClearNode(TJclWideStrTreeNode(FCursor.Children[Index]))
+      FOwnTree.ExtractNode(TJclWideStrTreeNode(FCursor.Children[Index]))
       {$ELSE ~BCB}
-      FOwnTree.ClearNode(FCursor.Children[Index])
+      FOwnTree.ExtractNode(FCursor.Children[Index])
       {$ENDIF ~BCB}
     else
       raise EJclOutOfBoundsError.Create;
@@ -4942,20 +5460,32 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclWideStrTreeIterator.IteratorEquals(const AIterator: IJclWideStrIterator): Boolean;
+procedure TJclWideStrTreeIterator.ExtractChildren;
 var
-  Obj: TObject;
-  ItrObj: TJclWideStrTreeIterator;
+  Index: Integer;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is TJclWideStrTreeIterator then
-  begin
-    ItrObj := TJclWideStrTreeIterator(Obj);
-    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnTree.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if FCursor <> nil then
+    begin
+      for Index := FCursor.ChildrenCount - 1 downto 0 do
+        {$IFDEF BCB}
+        FOwnTree.ExtractNode(TJclWideStrTreeNode(FCursor.Children[Index]));
+        {$ELSE ~BCB}
+        FOwnTree.ExtractNode(FCursor.Children[Index]);
+        {$ENDIF ~BCB}
+      SetLength(FCursor.Children, 0);
+      FCursor.ChildrenCount := 0;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnTree.WriteUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TJclWideStrTreeIterator.GetChild(Index: Integer): WideString;
@@ -5167,6 +5697,22 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclWideStrTreeIterator.IteratorEquals(const AIterator: IJclWideStrIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclWideStrTreeIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclWideStrTreeIterator then
+  begin
+    ItrObj := TJclWideStrTreeIterator(Obj);
+    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
 {$IFDEF SUPPORTS_FOR_IN}
 function TJclWideStrTreeIterator.MoveNext: Boolean;
 begin
@@ -5281,7 +5827,7 @@ begin
     OldCursor := FCursor;
     FCursor := GetNextSibling;
     if OldCursor <> nil then
-      FOwnTree.ClearNode(OldCursor);
+      FOwnTree.RemoveNode(OldCursor);
   {$IFDEF THREADSAFE}
   finally
     FOwnTree.WriteUnlock;
@@ -5654,7 +6200,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     if FRoot <> nil then
-      ClearNode(FRoot);
+      RemoveNode(FRoot);
     FSize := 0;
   {$IFDEF THREADSAFE}
   finally
@@ -5662,38 +6208,6 @@ begin
       SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-procedure TJclUnicodeStrTree.ClearNode(var ANode: TJclUnicodeStrTreeNode);
-var
-  Index, ChildIndex, NewCapacity: Integer;
-  Parent: TJclUnicodeStrTreeNode;
-begin
-  for Index := ANode.ChildrenCount - 1 downto 0 do
-    {$IFDEF BCB}
-    ClearNode(TJclUnicodeStrTreeNode(ANode.Children[Index]));
-    {$ELSE ~BCB}
-    ClearNode(ANode.Children[Index]);
-    {$ENDIF ~BCB}
-  FreeString(ANode.Value);
-  Parent := ANode.Parent;
-  if Parent <> nil then
-  begin
-    ChildIndex := Parent.IndexOfChild(ANode);
-    for Index := ChildIndex + 1 to Parent.ChildrenCount - 1 do
-      Parent.Children[Index - 1] := Parent.Children[Index];
-    Dec(Parent.ChildrenCount);
-    NewCapacity := CalcPackCapacity(Length(Parent.Children), Parent.ChildrenCount);
-    if NewCapacity < Length(Parent.Children) then
-      SetLength(Parent.Children, NewCapacity);
-    FreeAndNil(ANode);
-  end
-  else
-  begin
-    FreeAndNil(ANode);
-    FRoot := nil;
-  end;
-  Dec(FSize);
 end;
 
 function TJclUnicodeStrTree.CloneNode(Node, Parent: TJclUnicodeStrTreeNode): TJclUnicodeStrTreeNode;
@@ -5707,6 +6221,37 @@ begin
   Result.ChildrenCount := Node.ChildrenCount;
   for Index := 0 to Node.ChildrenCount - 1 do
     Result.Children[Index] := CloneNode(TJclUnicodeStrTreeNode(Node.Children[Index]), Result); // recursive call
+end;
+
+function TJclUnicodeStrTree.CollectionEquals(const ACollection: IJclUnicodeStrCollection): Boolean;
+var
+  It, ItSelf: IJclUnicodeStrIterator;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TJclUnicodeStrTree.Contains(const AString: UnicodeString): Boolean;
@@ -5751,35 +6296,92 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclUnicodeStrTree.CollectionEquals(const ACollection: IJclUnicodeStrCollection): Boolean;
+function TJclUnicodeStrTree.Extract(const AString: UnicodeString): Boolean;
 var
-  It, ItSelf: IJclUnicodeStrIterator;
+  It: IJclUnicodeStrIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FRoot <> nil;
+    if Result then
+    begin
+      It := First;
+      while It.HasNext do
+        if ItemsEqual(It.Next, AString) then
+      begin
+        It.Extract;
+        if RemoveSingleElement then
+          Break;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclUnicodeStrTree.ExtractAll(const ACollection: IJclUnicodeStrCollection): Boolean;
+var
+  It: IJclUnicodeStrIterator;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
     Result := True;
     It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+procedure TJclUnicodeStrTree.ExtractNode(var ANode: TJclUnicodeStrTreeNode);
+var
+  Index, ChildIndex, NewCapacity: Integer;
+  Parent: TJclUnicodeStrTreeNode;
+begin
+  for Index := ANode.ChildrenCount - 1 downto 0 do
+    {$IFDEF BCB}
+    ExtractNode(TJclUnicodeStrTreeNode(ANode.Children[Index]));
+    {$ELSE ~BCB}
+    ExtractNode(ANode.Children[Index]);
+    {$ENDIF ~BCB}
+  Parent := ANode.Parent;
+  if Parent <> nil then
+  begin
+    ChildIndex := Parent.IndexOfChild(ANode);
+    for Index := ChildIndex + 1 to Parent.ChildrenCount - 1 do
+      Parent.Children[Index - 1] := Parent.Children[Index];
+    Dec(Parent.ChildrenCount);
+    NewCapacity := CalcPackCapacity(Length(Parent.Children), Parent.ChildrenCount);
+    if NewCapacity < Length(Parent.Children) then
+      SetLength(Parent.Children, NewCapacity);
+    FreeAndNil(ANode);
+  end
+  else
+  begin
+    FreeAndNil(ANode);
+    FRoot := nil;
+  end;
+  Dec(FSize);
 end;
 
 function TJclUnicodeStrTree.First: IJclUnicodeStrIterator;
@@ -5928,7 +6530,7 @@ end;
 
 function TJclUnicodeStrTree.Remove(const AString: UnicodeString): Boolean;
 var
-  It: IJclUnicodeStrIterator;
+  Extracted: UnicodeString;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -5937,17 +6539,11 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := FRoot <> nil;
+    Result := Extract(AString);
     if Result then
     begin
-      It := First;
-      while It.HasNext do
-        if ItemsEqual(It.Next, AString) then
-      begin
-        It.Remove;
-        if RemoveSingleElement then
-          Break;
-      end;
+      Extracted := AString;
+      FreeString(Extracted);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -5981,6 +6577,38 @@ begin
       SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+procedure TJclUnicodeStrTree.RemoveNode(var ANode: TJclUnicodeStrTreeNode);
+var
+  Index, ChildIndex, NewCapacity: Integer;
+  Parent: TJclUnicodeStrTreeNode;
+begin
+  for Index := ANode.ChildrenCount - 1 downto 0 do
+    {$IFDEF BCB}
+    RemoveNode(TJclUnicodeStrTreeNode(ANode.Children[Index]));
+    {$ELSE ~BCB}
+    RemoveNode(ANode.Children[Index]);
+    {$ENDIF ~BCB}
+  FreeString(ANode.Value);
+  Parent := ANode.Parent;
+  if Parent <> nil then
+  begin
+    ChildIndex := Parent.IndexOfChild(ANode);
+    for Index := ChildIndex + 1 to Parent.ChildrenCount - 1 do
+      Parent.Children[Index - 1] := Parent.Children[Index];
+    Dec(Parent.ChildrenCount);
+    NewCapacity := CalcPackCapacity(Length(Parent.Children), Parent.ChildrenCount);
+    if NewCapacity < Length(Parent.Children) then
+      SetLength(Parent.Children, NewCapacity);
+    FreeAndNil(ANode);
+  end
+  else
+  begin
+    FreeAndNil(ANode);
+    FRoot := nil;
+  end;
+  Dec(FSize);
 end;
 
 function TJclUnicodeStrTree.RetainAll(const ACollection: IJclUnicodeStrCollection): Boolean;
@@ -6147,7 +6775,30 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclUnicodeStrTreeIterator.ClearChildren;
+procedure TJclUnicodeStrTreeIterator.DeleteChild(Index: Integer);
+begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnTree.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
+      {$IFDEF BCB}
+      FOwnTree.RemoveNode(TJclUnicodeStrTreeNode(FCursor.Children[Index]))
+      {$ELSE ~BCB}
+      FOwnTree.RemoveNode(FCursor.Children[Index])
+      {$ENDIF ~BCB}
+    else
+      raise EJclOutOfBoundsError.Create;
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnTree.WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclUnicodeStrTreeIterator.DeleteChildren;
 var
   Index: Integer;
 begin
@@ -6161,9 +6812,9 @@ begin
     begin
       for Index := FCursor.ChildrenCount - 1 downto 0 do
         {$IFDEF BCB}
-        FOwnTree.ClearNode(TJclUnicodeStrTreeNode(FCursor.Children[Index]));
+        FOwnTree.RemoveNode(TJclUnicodeStrTreeNode(FCursor.Children[Index]));
         {$ELSE ~BCB}
-        FOwnTree.ClearNode(FCursor.Children[Index]);
+        FOwnTree.RemoveNode(FCursor.Children[Index]);
         {$ENDIF ~BCB}
       SetLength(FCursor.Children, 0);
       FCursor.ChildrenCount := 0;
@@ -6175,7 +6826,30 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclUnicodeStrTreeIterator.DeleteChild(Index: Integer);
+procedure TJclUnicodeStrTreeIterator.Extract;
+var
+  OldCursor: TJclUnicodeStrTreeNode;
+begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnTree.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    OldCursor := FCursor;
+    FCursor := GetNextSibling;
+    if OldCursor <> nil then
+      FOwnTree.ExtractNode(OldCursor);
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnTree.WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclUnicodeStrTreeIterator.ExtractChild(Index: Integer);
 begin
   if FOwnTree.ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -6185,9 +6859,9 @@ begin
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
       {$IFDEF BCB}
-      FOwnTree.ClearNode(TJclUnicodeStrTreeNode(FCursor.Children[Index]))
+      FOwnTree.ExtractNode(TJclUnicodeStrTreeNode(FCursor.Children[Index]))
       {$ELSE ~BCB}
-      FOwnTree.ClearNode(FCursor.Children[Index])
+      FOwnTree.ExtractNode(FCursor.Children[Index])
       {$ENDIF ~BCB}
     else
       raise EJclOutOfBoundsError.Create;
@@ -6198,20 +6872,32 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclUnicodeStrTreeIterator.IteratorEquals(const AIterator: IJclUnicodeStrIterator): Boolean;
+procedure TJclUnicodeStrTreeIterator.ExtractChildren;
 var
-  Obj: TObject;
-  ItrObj: TJclUnicodeStrTreeIterator;
+  Index: Integer;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is TJclUnicodeStrTreeIterator then
-  begin
-    ItrObj := TJclUnicodeStrTreeIterator(Obj);
-    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnTree.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if FCursor <> nil then
+    begin
+      for Index := FCursor.ChildrenCount - 1 downto 0 do
+        {$IFDEF BCB}
+        FOwnTree.ExtractNode(TJclUnicodeStrTreeNode(FCursor.Children[Index]));
+        {$ELSE ~BCB}
+        FOwnTree.ExtractNode(FCursor.Children[Index]);
+        {$ENDIF ~BCB}
+      SetLength(FCursor.Children, 0);
+      FCursor.ChildrenCount := 0;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnTree.WriteUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TJclUnicodeStrTreeIterator.GetChild(Index: Integer): UnicodeString;
@@ -6423,6 +7109,22 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclUnicodeStrTreeIterator.IteratorEquals(const AIterator: IJclUnicodeStrIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclUnicodeStrTreeIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclUnicodeStrTreeIterator then
+  begin
+    ItrObj := TJclUnicodeStrTreeIterator(Obj);
+    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
 {$IFDEF SUPPORTS_FOR_IN}
 function TJclUnicodeStrTreeIterator.MoveNext: Boolean;
 begin
@@ -6537,7 +7239,7 @@ begin
     OldCursor := FCursor;
     FCursor := GetNextSibling;
     if OldCursor <> nil then
-      FOwnTree.ClearNode(OldCursor);
+      FOwnTree.RemoveNode(OldCursor);
   {$IFDEF THREADSAFE}
   finally
     FOwnTree.WriteUnlock;
@@ -6910,7 +7612,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     if FRoot <> nil then
-      ClearNode(FRoot);
+      RemoveNode(FRoot);
     FSize := 0;
   {$IFDEF THREADSAFE}
   finally
@@ -6918,38 +7620,6 @@ begin
       SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-procedure TJclSingleTree.ClearNode(var ANode: TJclSingleTreeNode);
-var
-  Index, ChildIndex, NewCapacity: Integer;
-  Parent: TJclSingleTreeNode;
-begin
-  for Index := ANode.ChildrenCount - 1 downto 0 do
-    {$IFDEF BCB}
-    ClearNode(TJclSingleTreeNode(ANode.Children[Index]));
-    {$ELSE ~BCB}
-    ClearNode(ANode.Children[Index]);
-    {$ENDIF ~BCB}
-  FreeSingle(ANode.Value);
-  Parent := ANode.Parent;
-  if Parent <> nil then
-  begin
-    ChildIndex := Parent.IndexOfChild(ANode);
-    for Index := ChildIndex + 1 to Parent.ChildrenCount - 1 do
-      Parent.Children[Index - 1] := Parent.Children[Index];
-    Dec(Parent.ChildrenCount);
-    NewCapacity := CalcPackCapacity(Length(Parent.Children), Parent.ChildrenCount);
-    if NewCapacity < Length(Parent.Children) then
-      SetLength(Parent.Children, NewCapacity);
-    FreeAndNil(ANode);
-  end
-  else
-  begin
-    FreeAndNil(ANode);
-    FRoot := nil;
-  end;
-  Dec(FSize);
 end;
 
 function TJclSingleTree.CloneNode(Node, Parent: TJclSingleTreeNode): TJclSingleTreeNode;
@@ -6963,6 +7633,37 @@ begin
   Result.ChildrenCount := Node.ChildrenCount;
   for Index := 0 to Node.ChildrenCount - 1 do
     Result.Children[Index] := CloneNode(TJclSingleTreeNode(Node.Children[Index]), Result); // recursive call
+end;
+
+function TJclSingleTree.CollectionEquals(const ACollection: IJclSingleCollection): Boolean;
+var
+  It, ItSelf: IJclSingleIterator;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TJclSingleTree.Contains(const AValue: Single): Boolean;
@@ -7007,35 +7708,92 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclSingleTree.CollectionEquals(const ACollection: IJclSingleCollection): Boolean;
+function TJclSingleTree.Extract(const AValue: Single): Boolean;
 var
-  It, ItSelf: IJclSingleIterator;
+  It: IJclSingleIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FRoot <> nil;
+    if Result then
+    begin
+      It := First;
+      while It.HasNext do
+        if ItemsEqual(It.Next, AValue) then
+      begin
+        It.Extract;
+        if RemoveSingleElement then
+          Break;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleTree.ExtractAll(const ACollection: IJclSingleCollection): Boolean;
+var
+  It: IJclSingleIterator;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
     Result := True;
     It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+procedure TJclSingleTree.ExtractNode(var ANode: TJclSingleTreeNode);
+var
+  Index, ChildIndex, NewCapacity: Integer;
+  Parent: TJclSingleTreeNode;
+begin
+  for Index := ANode.ChildrenCount - 1 downto 0 do
+    {$IFDEF BCB}
+    ExtractNode(TJclSingleTreeNode(ANode.Children[Index]));
+    {$ELSE ~BCB}
+    ExtractNode(ANode.Children[Index]);
+    {$ENDIF ~BCB}
+  Parent := ANode.Parent;
+  if Parent <> nil then
+  begin
+    ChildIndex := Parent.IndexOfChild(ANode);
+    for Index := ChildIndex + 1 to Parent.ChildrenCount - 1 do
+      Parent.Children[Index - 1] := Parent.Children[Index];
+    Dec(Parent.ChildrenCount);
+    NewCapacity := CalcPackCapacity(Length(Parent.Children), Parent.ChildrenCount);
+    if NewCapacity < Length(Parent.Children) then
+      SetLength(Parent.Children, NewCapacity);
+    FreeAndNil(ANode);
+  end
+  else
+  begin
+    FreeAndNil(ANode);
+    FRoot := nil;
+  end;
+  Dec(FSize);
 end;
 
 function TJclSingleTree.First: IJclSingleIterator;
@@ -7184,7 +7942,7 @@ end;
 
 function TJclSingleTree.Remove(const AValue: Single): Boolean;
 var
-  It: IJclSingleIterator;
+  Extracted: Single;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -7193,17 +7951,11 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := FRoot <> nil;
+    Result := Extract(AValue);
     if Result then
     begin
-      It := First;
-      while It.HasNext do
-        if ItemsEqual(It.Next, AValue) then
-      begin
-        It.Remove;
-        if RemoveSingleElement then
-          Break;
-      end;
+      Extracted := AValue;
+      FreeSingle(Extracted);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -7237,6 +7989,38 @@ begin
       SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+procedure TJclSingleTree.RemoveNode(var ANode: TJclSingleTreeNode);
+var
+  Index, ChildIndex, NewCapacity: Integer;
+  Parent: TJclSingleTreeNode;
+begin
+  for Index := ANode.ChildrenCount - 1 downto 0 do
+    {$IFDEF BCB}
+    RemoveNode(TJclSingleTreeNode(ANode.Children[Index]));
+    {$ELSE ~BCB}
+    RemoveNode(ANode.Children[Index]);
+    {$ENDIF ~BCB}
+  FreeSingle(ANode.Value);
+  Parent := ANode.Parent;
+  if Parent <> nil then
+  begin
+    ChildIndex := Parent.IndexOfChild(ANode);
+    for Index := ChildIndex + 1 to Parent.ChildrenCount - 1 do
+      Parent.Children[Index - 1] := Parent.Children[Index];
+    Dec(Parent.ChildrenCount);
+    NewCapacity := CalcPackCapacity(Length(Parent.Children), Parent.ChildrenCount);
+    if NewCapacity < Length(Parent.Children) then
+      SetLength(Parent.Children, NewCapacity);
+    FreeAndNil(ANode);
+  end
+  else
+  begin
+    FreeAndNil(ANode);
+    FRoot := nil;
+  end;
+  Dec(FSize);
 end;
 
 function TJclSingleTree.RetainAll(const ACollection: IJclSingleCollection): Boolean;
@@ -7403,7 +8187,30 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclSingleTreeIterator.ClearChildren;
+procedure TJclSingleTreeIterator.DeleteChild(Index: Integer);
+begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnTree.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
+      {$IFDEF BCB}
+      FOwnTree.RemoveNode(TJclSingleTreeNode(FCursor.Children[Index]))
+      {$ELSE ~BCB}
+      FOwnTree.RemoveNode(FCursor.Children[Index])
+      {$ENDIF ~BCB}
+    else
+      raise EJclOutOfBoundsError.Create;
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnTree.WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclSingleTreeIterator.DeleteChildren;
 var
   Index: Integer;
 begin
@@ -7417,9 +8224,9 @@ begin
     begin
       for Index := FCursor.ChildrenCount - 1 downto 0 do
         {$IFDEF BCB}
-        FOwnTree.ClearNode(TJclSingleTreeNode(FCursor.Children[Index]));
+        FOwnTree.RemoveNode(TJclSingleTreeNode(FCursor.Children[Index]));
         {$ELSE ~BCB}
-        FOwnTree.ClearNode(FCursor.Children[Index]);
+        FOwnTree.RemoveNode(FCursor.Children[Index]);
         {$ENDIF ~BCB}
       SetLength(FCursor.Children, 0);
       FCursor.ChildrenCount := 0;
@@ -7431,7 +8238,30 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclSingleTreeIterator.DeleteChild(Index: Integer);
+procedure TJclSingleTreeIterator.Extract;
+var
+  OldCursor: TJclSingleTreeNode;
+begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnTree.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    OldCursor := FCursor;
+    FCursor := GetNextSibling;
+    if OldCursor <> nil then
+      FOwnTree.ExtractNode(OldCursor);
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnTree.WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclSingleTreeIterator.ExtractChild(Index: Integer);
 begin
   if FOwnTree.ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -7441,9 +8271,9 @@ begin
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
       {$IFDEF BCB}
-      FOwnTree.ClearNode(TJclSingleTreeNode(FCursor.Children[Index]))
+      FOwnTree.ExtractNode(TJclSingleTreeNode(FCursor.Children[Index]))
       {$ELSE ~BCB}
-      FOwnTree.ClearNode(FCursor.Children[Index])
+      FOwnTree.ExtractNode(FCursor.Children[Index])
       {$ENDIF ~BCB}
     else
       raise EJclOutOfBoundsError.Create;
@@ -7454,20 +8284,32 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclSingleTreeIterator.IteratorEquals(const AIterator: IJclSingleIterator): Boolean;
+procedure TJclSingleTreeIterator.ExtractChildren;
 var
-  Obj: TObject;
-  ItrObj: TJclSingleTreeIterator;
+  Index: Integer;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is TJclSingleTreeIterator then
-  begin
-    ItrObj := TJclSingleTreeIterator(Obj);
-    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnTree.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if FCursor <> nil then
+    begin
+      for Index := FCursor.ChildrenCount - 1 downto 0 do
+        {$IFDEF BCB}
+        FOwnTree.ExtractNode(TJclSingleTreeNode(FCursor.Children[Index]));
+        {$ELSE ~BCB}
+        FOwnTree.ExtractNode(FCursor.Children[Index]);
+        {$ENDIF ~BCB}
+      SetLength(FCursor.Children, 0);
+      FCursor.ChildrenCount := 0;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnTree.WriteUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TJclSingleTreeIterator.GetChild(Index: Integer): Single;
@@ -7679,6 +8521,22 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclSingleTreeIterator.IteratorEquals(const AIterator: IJclSingleIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclSingleTreeIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclSingleTreeIterator then
+  begin
+    ItrObj := TJclSingleTreeIterator(Obj);
+    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
 {$IFDEF SUPPORTS_FOR_IN}
 function TJclSingleTreeIterator.MoveNext: Boolean;
 begin
@@ -7793,7 +8651,7 @@ begin
     OldCursor := FCursor;
     FCursor := GetNextSibling;
     if OldCursor <> nil then
-      FOwnTree.ClearNode(OldCursor);
+      FOwnTree.RemoveNode(OldCursor);
   {$IFDEF THREADSAFE}
   finally
     FOwnTree.WriteUnlock;
@@ -8165,7 +9023,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     if FRoot <> nil then
-      ClearNode(FRoot);
+      RemoveNode(FRoot);
     FSize := 0;
   {$IFDEF THREADSAFE}
   finally
@@ -8173,38 +9031,6 @@ begin
       SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-procedure TJclDoubleTree.ClearNode(var ANode: TJclDoubleTreeNode);
-var
-  Index, ChildIndex, NewCapacity: Integer;
-  Parent: TJclDoubleTreeNode;
-begin
-  for Index := ANode.ChildrenCount - 1 downto 0 do
-    {$IFDEF BCB}
-    ClearNode(TJclDoubleTreeNode(ANode.Children[Index]));
-    {$ELSE ~BCB}
-    ClearNode(ANode.Children[Index]);
-    {$ENDIF ~BCB}
-  FreeDouble(ANode.Value);
-  Parent := ANode.Parent;
-  if Parent <> nil then
-  begin
-    ChildIndex := Parent.IndexOfChild(ANode);
-    for Index := ChildIndex + 1 to Parent.ChildrenCount - 1 do
-      Parent.Children[Index - 1] := Parent.Children[Index];
-    Dec(Parent.ChildrenCount);
-    NewCapacity := CalcPackCapacity(Length(Parent.Children), Parent.ChildrenCount);
-    if NewCapacity < Length(Parent.Children) then
-      SetLength(Parent.Children, NewCapacity);
-    FreeAndNil(ANode);
-  end
-  else
-  begin
-    FreeAndNil(ANode);
-    FRoot := nil;
-  end;
-  Dec(FSize);
 end;
 
 function TJclDoubleTree.CloneNode(Node, Parent: TJclDoubleTreeNode): TJclDoubleTreeNode;
@@ -8218,6 +9044,37 @@ begin
   Result.ChildrenCount := Node.ChildrenCount;
   for Index := 0 to Node.ChildrenCount - 1 do
     Result.Children[Index] := CloneNode(TJclDoubleTreeNode(Node.Children[Index]), Result); // recursive call
+end;
+
+function TJclDoubleTree.CollectionEquals(const ACollection: IJclDoubleCollection): Boolean;
+var
+  It, ItSelf: IJclDoubleIterator;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TJclDoubleTree.Contains(const AValue: Double): Boolean;
@@ -8262,35 +9119,92 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclDoubleTree.CollectionEquals(const ACollection: IJclDoubleCollection): Boolean;
+function TJclDoubleTree.Extract(const AValue: Double): Boolean;
 var
-  It, ItSelf: IJclDoubleIterator;
+  It: IJclDoubleIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FRoot <> nil;
+    if Result then
+    begin
+      It := First;
+      while It.HasNext do
+        if ItemsEqual(It.Next, AValue) then
+      begin
+        It.Extract;
+        if RemoveSingleElement then
+          Break;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleTree.ExtractAll(const ACollection: IJclDoubleCollection): Boolean;
+var
+  It: IJclDoubleIterator;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
     Result := True;
     It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+procedure TJclDoubleTree.ExtractNode(var ANode: TJclDoubleTreeNode);
+var
+  Index, ChildIndex, NewCapacity: Integer;
+  Parent: TJclDoubleTreeNode;
+begin
+  for Index := ANode.ChildrenCount - 1 downto 0 do
+    {$IFDEF BCB}
+    ExtractNode(TJclDoubleTreeNode(ANode.Children[Index]));
+    {$ELSE ~BCB}
+    ExtractNode(ANode.Children[Index]);
+    {$ENDIF ~BCB}
+  Parent := ANode.Parent;
+  if Parent <> nil then
+  begin
+    ChildIndex := Parent.IndexOfChild(ANode);
+    for Index := ChildIndex + 1 to Parent.ChildrenCount - 1 do
+      Parent.Children[Index - 1] := Parent.Children[Index];
+    Dec(Parent.ChildrenCount);
+    NewCapacity := CalcPackCapacity(Length(Parent.Children), Parent.ChildrenCount);
+    if NewCapacity < Length(Parent.Children) then
+      SetLength(Parent.Children, NewCapacity);
+    FreeAndNil(ANode);
+  end
+  else
+  begin
+    FreeAndNil(ANode);
+    FRoot := nil;
+  end;
+  Dec(FSize);
 end;
 
 function TJclDoubleTree.First: IJclDoubleIterator;
@@ -8439,7 +9353,7 @@ end;
 
 function TJclDoubleTree.Remove(const AValue: Double): Boolean;
 var
-  It: IJclDoubleIterator;
+  Extracted: Double;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -8448,17 +9362,11 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := FRoot <> nil;
+    Result := Extract(AValue);
     if Result then
     begin
-      It := First;
-      while It.HasNext do
-        if ItemsEqual(It.Next, AValue) then
-      begin
-        It.Remove;
-        if RemoveSingleElement then
-          Break;
-      end;
+      Extracted := AValue;
+      FreeDouble(Extracted);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -8492,6 +9400,38 @@ begin
       SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+procedure TJclDoubleTree.RemoveNode(var ANode: TJclDoubleTreeNode);
+var
+  Index, ChildIndex, NewCapacity: Integer;
+  Parent: TJclDoubleTreeNode;
+begin
+  for Index := ANode.ChildrenCount - 1 downto 0 do
+    {$IFDEF BCB}
+    RemoveNode(TJclDoubleTreeNode(ANode.Children[Index]));
+    {$ELSE ~BCB}
+    RemoveNode(ANode.Children[Index]);
+    {$ENDIF ~BCB}
+  FreeDouble(ANode.Value);
+  Parent := ANode.Parent;
+  if Parent <> nil then
+  begin
+    ChildIndex := Parent.IndexOfChild(ANode);
+    for Index := ChildIndex + 1 to Parent.ChildrenCount - 1 do
+      Parent.Children[Index - 1] := Parent.Children[Index];
+    Dec(Parent.ChildrenCount);
+    NewCapacity := CalcPackCapacity(Length(Parent.Children), Parent.ChildrenCount);
+    if NewCapacity < Length(Parent.Children) then
+      SetLength(Parent.Children, NewCapacity);
+    FreeAndNil(ANode);
+  end
+  else
+  begin
+    FreeAndNil(ANode);
+    FRoot := nil;
+  end;
+  Dec(FSize);
 end;
 
 function TJclDoubleTree.RetainAll(const ACollection: IJclDoubleCollection): Boolean;
@@ -8658,7 +9598,30 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclDoubleTreeIterator.ClearChildren;
+procedure TJclDoubleTreeIterator.DeleteChild(Index: Integer);
+begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnTree.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
+      {$IFDEF BCB}
+      FOwnTree.RemoveNode(TJclDoubleTreeNode(FCursor.Children[Index]))
+      {$ELSE ~BCB}
+      FOwnTree.RemoveNode(FCursor.Children[Index])
+      {$ENDIF ~BCB}
+    else
+      raise EJclOutOfBoundsError.Create;
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnTree.WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclDoubleTreeIterator.DeleteChildren;
 var
   Index: Integer;
 begin
@@ -8672,9 +9635,9 @@ begin
     begin
       for Index := FCursor.ChildrenCount - 1 downto 0 do
         {$IFDEF BCB}
-        FOwnTree.ClearNode(TJclDoubleTreeNode(FCursor.Children[Index]));
+        FOwnTree.RemoveNode(TJclDoubleTreeNode(FCursor.Children[Index]));
         {$ELSE ~BCB}
-        FOwnTree.ClearNode(FCursor.Children[Index]);
+        FOwnTree.RemoveNode(FCursor.Children[Index]);
         {$ENDIF ~BCB}
       SetLength(FCursor.Children, 0);
       FCursor.ChildrenCount := 0;
@@ -8686,7 +9649,30 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclDoubleTreeIterator.DeleteChild(Index: Integer);
+procedure TJclDoubleTreeIterator.Extract;
+var
+  OldCursor: TJclDoubleTreeNode;
+begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnTree.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    OldCursor := FCursor;
+    FCursor := GetNextSibling;
+    if OldCursor <> nil then
+      FOwnTree.ExtractNode(OldCursor);
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnTree.WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclDoubleTreeIterator.ExtractChild(Index: Integer);
 begin
   if FOwnTree.ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -8696,9 +9682,9 @@ begin
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
       {$IFDEF BCB}
-      FOwnTree.ClearNode(TJclDoubleTreeNode(FCursor.Children[Index]))
+      FOwnTree.ExtractNode(TJclDoubleTreeNode(FCursor.Children[Index]))
       {$ELSE ~BCB}
-      FOwnTree.ClearNode(FCursor.Children[Index])
+      FOwnTree.ExtractNode(FCursor.Children[Index])
       {$ENDIF ~BCB}
     else
       raise EJclOutOfBoundsError.Create;
@@ -8709,20 +9695,32 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclDoubleTreeIterator.IteratorEquals(const AIterator: IJclDoubleIterator): Boolean;
+procedure TJclDoubleTreeIterator.ExtractChildren;
 var
-  Obj: TObject;
-  ItrObj: TJclDoubleTreeIterator;
+  Index: Integer;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is TJclDoubleTreeIterator then
-  begin
-    ItrObj := TJclDoubleTreeIterator(Obj);
-    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnTree.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if FCursor <> nil then
+    begin
+      for Index := FCursor.ChildrenCount - 1 downto 0 do
+        {$IFDEF BCB}
+        FOwnTree.ExtractNode(TJclDoubleTreeNode(FCursor.Children[Index]));
+        {$ELSE ~BCB}
+        FOwnTree.ExtractNode(FCursor.Children[Index]);
+        {$ENDIF ~BCB}
+      SetLength(FCursor.Children, 0);
+      FCursor.ChildrenCount := 0;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnTree.WriteUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TJclDoubleTreeIterator.GetChild(Index: Integer): Double;
@@ -8934,6 +9932,22 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclDoubleTreeIterator.IteratorEquals(const AIterator: IJclDoubleIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclDoubleTreeIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclDoubleTreeIterator then
+  begin
+    ItrObj := TJclDoubleTreeIterator(Obj);
+    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
 {$IFDEF SUPPORTS_FOR_IN}
 function TJclDoubleTreeIterator.MoveNext: Boolean;
 begin
@@ -9048,7 +10062,7 @@ begin
     OldCursor := FCursor;
     FCursor := GetNextSibling;
     if OldCursor <> nil then
-      FOwnTree.ClearNode(OldCursor);
+      FOwnTree.RemoveNode(OldCursor);
   {$IFDEF THREADSAFE}
   finally
     FOwnTree.WriteUnlock;
@@ -9420,7 +10434,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     if FRoot <> nil then
-      ClearNode(FRoot);
+      RemoveNode(FRoot);
     FSize := 0;
   {$IFDEF THREADSAFE}
   finally
@@ -9428,38 +10442,6 @@ begin
       SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-procedure TJclExtendedTree.ClearNode(var ANode: TJclExtendedTreeNode);
-var
-  Index, ChildIndex, NewCapacity: Integer;
-  Parent: TJclExtendedTreeNode;
-begin
-  for Index := ANode.ChildrenCount - 1 downto 0 do
-    {$IFDEF BCB}
-    ClearNode(TJclExtendedTreeNode(ANode.Children[Index]));
-    {$ELSE ~BCB}
-    ClearNode(ANode.Children[Index]);
-    {$ENDIF ~BCB}
-  FreeExtended(ANode.Value);
-  Parent := ANode.Parent;
-  if Parent <> nil then
-  begin
-    ChildIndex := Parent.IndexOfChild(ANode);
-    for Index := ChildIndex + 1 to Parent.ChildrenCount - 1 do
-      Parent.Children[Index - 1] := Parent.Children[Index];
-    Dec(Parent.ChildrenCount);
-    NewCapacity := CalcPackCapacity(Length(Parent.Children), Parent.ChildrenCount);
-    if NewCapacity < Length(Parent.Children) then
-      SetLength(Parent.Children, NewCapacity);
-    FreeAndNil(ANode);
-  end
-  else
-  begin
-    FreeAndNil(ANode);
-    FRoot := nil;
-  end;
-  Dec(FSize);
 end;
 
 function TJclExtendedTree.CloneNode(Node, Parent: TJclExtendedTreeNode): TJclExtendedTreeNode;
@@ -9473,6 +10455,37 @@ begin
   Result.ChildrenCount := Node.ChildrenCount;
   for Index := 0 to Node.ChildrenCount - 1 do
     Result.Children[Index] := CloneNode(TJclExtendedTreeNode(Node.Children[Index]), Result); // recursive call
+end;
+
+function TJclExtendedTree.CollectionEquals(const ACollection: IJclExtendedCollection): Boolean;
+var
+  It, ItSelf: IJclExtendedIterator;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TJclExtendedTree.Contains(const AValue: Extended): Boolean;
@@ -9517,35 +10530,92 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclExtendedTree.CollectionEquals(const ACollection: IJclExtendedCollection): Boolean;
+function TJclExtendedTree.Extract(const AValue: Extended): Boolean;
 var
-  It, ItSelf: IJclExtendedIterator;
+  It: IJclExtendedIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FRoot <> nil;
+    if Result then
+    begin
+      It := First;
+      while It.HasNext do
+        if ItemsEqual(It.Next, AValue) then
+      begin
+        It.Extract;
+        if RemoveSingleElement then
+          Break;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedTree.ExtractAll(const ACollection: IJclExtendedCollection): Boolean;
+var
+  It: IJclExtendedIterator;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
     Result := True;
     It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+procedure TJclExtendedTree.ExtractNode(var ANode: TJclExtendedTreeNode);
+var
+  Index, ChildIndex, NewCapacity: Integer;
+  Parent: TJclExtendedTreeNode;
+begin
+  for Index := ANode.ChildrenCount - 1 downto 0 do
+    {$IFDEF BCB}
+    ExtractNode(TJclExtendedTreeNode(ANode.Children[Index]));
+    {$ELSE ~BCB}
+    ExtractNode(ANode.Children[Index]);
+    {$ENDIF ~BCB}
+  Parent := ANode.Parent;
+  if Parent <> nil then
+  begin
+    ChildIndex := Parent.IndexOfChild(ANode);
+    for Index := ChildIndex + 1 to Parent.ChildrenCount - 1 do
+      Parent.Children[Index - 1] := Parent.Children[Index];
+    Dec(Parent.ChildrenCount);
+    NewCapacity := CalcPackCapacity(Length(Parent.Children), Parent.ChildrenCount);
+    if NewCapacity < Length(Parent.Children) then
+      SetLength(Parent.Children, NewCapacity);
+    FreeAndNil(ANode);
+  end
+  else
+  begin
+    FreeAndNil(ANode);
+    FRoot := nil;
+  end;
+  Dec(FSize);
 end;
 
 function TJclExtendedTree.First: IJclExtendedIterator;
@@ -9694,7 +10764,7 @@ end;
 
 function TJclExtendedTree.Remove(const AValue: Extended): Boolean;
 var
-  It: IJclExtendedIterator;
+  Extracted: Extended;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -9703,17 +10773,11 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := FRoot <> nil;
+    Result := Extract(AValue);
     if Result then
     begin
-      It := First;
-      while It.HasNext do
-        if ItemsEqual(It.Next, AValue) then
-      begin
-        It.Remove;
-        if RemoveSingleElement then
-          Break;
-      end;
+      Extracted := AValue;
+      FreeExtended(Extracted);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -9747,6 +10811,38 @@ begin
       SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+procedure TJclExtendedTree.RemoveNode(var ANode: TJclExtendedTreeNode);
+var
+  Index, ChildIndex, NewCapacity: Integer;
+  Parent: TJclExtendedTreeNode;
+begin
+  for Index := ANode.ChildrenCount - 1 downto 0 do
+    {$IFDEF BCB}
+    RemoveNode(TJclExtendedTreeNode(ANode.Children[Index]));
+    {$ELSE ~BCB}
+    RemoveNode(ANode.Children[Index]);
+    {$ENDIF ~BCB}
+  FreeExtended(ANode.Value);
+  Parent := ANode.Parent;
+  if Parent <> nil then
+  begin
+    ChildIndex := Parent.IndexOfChild(ANode);
+    for Index := ChildIndex + 1 to Parent.ChildrenCount - 1 do
+      Parent.Children[Index - 1] := Parent.Children[Index];
+    Dec(Parent.ChildrenCount);
+    NewCapacity := CalcPackCapacity(Length(Parent.Children), Parent.ChildrenCount);
+    if NewCapacity < Length(Parent.Children) then
+      SetLength(Parent.Children, NewCapacity);
+    FreeAndNil(ANode);
+  end
+  else
+  begin
+    FreeAndNil(ANode);
+    FRoot := nil;
+  end;
+  Dec(FSize);
 end;
 
 function TJclExtendedTree.RetainAll(const ACollection: IJclExtendedCollection): Boolean;
@@ -9913,7 +11009,30 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclExtendedTreeIterator.ClearChildren;
+procedure TJclExtendedTreeIterator.DeleteChild(Index: Integer);
+begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnTree.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
+      {$IFDEF BCB}
+      FOwnTree.RemoveNode(TJclExtendedTreeNode(FCursor.Children[Index]))
+      {$ELSE ~BCB}
+      FOwnTree.RemoveNode(FCursor.Children[Index])
+      {$ENDIF ~BCB}
+    else
+      raise EJclOutOfBoundsError.Create;
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnTree.WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclExtendedTreeIterator.DeleteChildren;
 var
   Index: Integer;
 begin
@@ -9927,9 +11046,9 @@ begin
     begin
       for Index := FCursor.ChildrenCount - 1 downto 0 do
         {$IFDEF BCB}
-        FOwnTree.ClearNode(TJclExtendedTreeNode(FCursor.Children[Index]));
+        FOwnTree.RemoveNode(TJclExtendedTreeNode(FCursor.Children[Index]));
         {$ELSE ~BCB}
-        FOwnTree.ClearNode(FCursor.Children[Index]);
+        FOwnTree.RemoveNode(FCursor.Children[Index]);
         {$ENDIF ~BCB}
       SetLength(FCursor.Children, 0);
       FCursor.ChildrenCount := 0;
@@ -9941,7 +11060,30 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclExtendedTreeIterator.DeleteChild(Index: Integer);
+procedure TJclExtendedTreeIterator.Extract;
+var
+  OldCursor: TJclExtendedTreeNode;
+begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnTree.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    OldCursor := FCursor;
+    FCursor := GetNextSibling;
+    if OldCursor <> nil then
+      FOwnTree.ExtractNode(OldCursor);
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnTree.WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclExtendedTreeIterator.ExtractChild(Index: Integer);
 begin
   if FOwnTree.ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -9951,9 +11093,9 @@ begin
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
       {$IFDEF BCB}
-      FOwnTree.ClearNode(TJclExtendedTreeNode(FCursor.Children[Index]))
+      FOwnTree.ExtractNode(TJclExtendedTreeNode(FCursor.Children[Index]))
       {$ELSE ~BCB}
-      FOwnTree.ClearNode(FCursor.Children[Index])
+      FOwnTree.ExtractNode(FCursor.Children[Index])
       {$ENDIF ~BCB}
     else
       raise EJclOutOfBoundsError.Create;
@@ -9964,20 +11106,32 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclExtendedTreeIterator.IteratorEquals(const AIterator: IJclExtendedIterator): Boolean;
+procedure TJclExtendedTreeIterator.ExtractChildren;
 var
-  Obj: TObject;
-  ItrObj: TJclExtendedTreeIterator;
+  Index: Integer;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is TJclExtendedTreeIterator then
-  begin
-    ItrObj := TJclExtendedTreeIterator(Obj);
-    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnTree.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if FCursor <> nil then
+    begin
+      for Index := FCursor.ChildrenCount - 1 downto 0 do
+        {$IFDEF BCB}
+        FOwnTree.ExtractNode(TJclExtendedTreeNode(FCursor.Children[Index]));
+        {$ELSE ~BCB}
+        FOwnTree.ExtractNode(FCursor.Children[Index]);
+        {$ENDIF ~BCB}
+      SetLength(FCursor.Children, 0);
+      FCursor.ChildrenCount := 0;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnTree.WriteUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TJclExtendedTreeIterator.GetChild(Index: Integer): Extended;
@@ -10189,6 +11343,22 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclExtendedTreeIterator.IteratorEquals(const AIterator: IJclExtendedIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclExtendedTreeIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclExtendedTreeIterator then
+  begin
+    ItrObj := TJclExtendedTreeIterator(Obj);
+    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
 {$IFDEF SUPPORTS_FOR_IN}
 function TJclExtendedTreeIterator.MoveNext: Boolean;
 begin
@@ -10303,7 +11473,7 @@ begin
     OldCursor := FCursor;
     FCursor := GetNextSibling;
     if OldCursor <> nil then
-      FOwnTree.ClearNode(OldCursor);
+      FOwnTree.RemoveNode(OldCursor);
   {$IFDEF THREADSAFE}
   finally
     FOwnTree.WriteUnlock;
@@ -10675,7 +11845,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     if FRoot <> nil then
-      ClearNode(FRoot);
+      RemoveNode(FRoot);
     FSize := 0;
   {$IFDEF THREADSAFE}
   finally
@@ -10683,38 +11853,6 @@ begin
       SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-procedure TJclIntegerTree.ClearNode(var ANode: TJclIntegerTreeNode);
-var
-  Index, ChildIndex, NewCapacity: Integer;
-  Parent: TJclIntegerTreeNode;
-begin
-  for Index := ANode.ChildrenCount - 1 downto 0 do
-    {$IFDEF BCB}
-    ClearNode(TJclIntegerTreeNode(ANode.Children[Index]));
-    {$ELSE ~BCB}
-    ClearNode(ANode.Children[Index]);
-    {$ENDIF ~BCB}
-  FreeInteger(ANode.Value);
-  Parent := ANode.Parent;
-  if Parent <> nil then
-  begin
-    ChildIndex := Parent.IndexOfChild(ANode);
-    for Index := ChildIndex + 1 to Parent.ChildrenCount - 1 do
-      Parent.Children[Index - 1] := Parent.Children[Index];
-    Dec(Parent.ChildrenCount);
-    NewCapacity := CalcPackCapacity(Length(Parent.Children), Parent.ChildrenCount);
-    if NewCapacity < Length(Parent.Children) then
-      SetLength(Parent.Children, NewCapacity);
-    FreeAndNil(ANode);
-  end
-  else
-  begin
-    FreeAndNil(ANode);
-    FRoot := nil;
-  end;
-  Dec(FSize);
 end;
 
 function TJclIntegerTree.CloneNode(Node, Parent: TJclIntegerTreeNode): TJclIntegerTreeNode;
@@ -10728,6 +11866,37 @@ begin
   Result.ChildrenCount := Node.ChildrenCount;
   for Index := 0 to Node.ChildrenCount - 1 do
     Result.Children[Index] := CloneNode(TJclIntegerTreeNode(Node.Children[Index]), Result); // recursive call
+end;
+
+function TJclIntegerTree.CollectionEquals(const ACollection: IJclIntegerCollection): Boolean;
+var
+  It, ItSelf: IJclIntegerIterator;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TJclIntegerTree.Contains(AValue: Integer): Boolean;
@@ -10772,35 +11941,92 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntegerTree.CollectionEquals(const ACollection: IJclIntegerCollection): Boolean;
+function TJclIntegerTree.Extract(AValue: Integer): Boolean;
 var
-  It, ItSelf: IJclIntegerIterator;
+  It: IJclIntegerIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FRoot <> nil;
+    if Result then
+    begin
+      It := First;
+      while It.HasNext do
+        if ItemsEqual(It.Next, AValue) then
+      begin
+        It.Extract;
+        if RemoveSingleElement then
+          Break;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerTree.ExtractAll(const ACollection: IJclIntegerCollection): Boolean;
+var
+  It: IJclIntegerIterator;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
     Result := True;
     It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+procedure TJclIntegerTree.ExtractNode(var ANode: TJclIntegerTreeNode);
+var
+  Index, ChildIndex, NewCapacity: Integer;
+  Parent: TJclIntegerTreeNode;
+begin
+  for Index := ANode.ChildrenCount - 1 downto 0 do
+    {$IFDEF BCB}
+    ExtractNode(TJclIntegerTreeNode(ANode.Children[Index]));
+    {$ELSE ~BCB}
+    ExtractNode(ANode.Children[Index]);
+    {$ENDIF ~BCB}
+  Parent := ANode.Parent;
+  if Parent <> nil then
+  begin
+    ChildIndex := Parent.IndexOfChild(ANode);
+    for Index := ChildIndex + 1 to Parent.ChildrenCount - 1 do
+      Parent.Children[Index - 1] := Parent.Children[Index];
+    Dec(Parent.ChildrenCount);
+    NewCapacity := CalcPackCapacity(Length(Parent.Children), Parent.ChildrenCount);
+    if NewCapacity < Length(Parent.Children) then
+      SetLength(Parent.Children, NewCapacity);
+    FreeAndNil(ANode);
+  end
+  else
+  begin
+    FreeAndNil(ANode);
+    FRoot := nil;
+  end;
+  Dec(FSize);
 end;
 
 function TJclIntegerTree.First: IJclIntegerIterator;
@@ -10949,7 +12175,7 @@ end;
 
 function TJclIntegerTree.Remove(AValue: Integer): Boolean;
 var
-  It: IJclIntegerIterator;
+  Extracted: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -10958,17 +12184,11 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := FRoot <> nil;
+    Result := Extract(AValue);
     if Result then
     begin
-      It := First;
-      while It.HasNext do
-        if ItemsEqual(It.Next, AValue) then
-      begin
-        It.Remove;
-        if RemoveSingleElement then
-          Break;
-      end;
+      Extracted := AValue;
+      FreeInteger(Extracted);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -11002,6 +12222,38 @@ begin
       SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+procedure TJclIntegerTree.RemoveNode(var ANode: TJclIntegerTreeNode);
+var
+  Index, ChildIndex, NewCapacity: Integer;
+  Parent: TJclIntegerTreeNode;
+begin
+  for Index := ANode.ChildrenCount - 1 downto 0 do
+    {$IFDEF BCB}
+    RemoveNode(TJclIntegerTreeNode(ANode.Children[Index]));
+    {$ELSE ~BCB}
+    RemoveNode(ANode.Children[Index]);
+    {$ENDIF ~BCB}
+  FreeInteger(ANode.Value);
+  Parent := ANode.Parent;
+  if Parent <> nil then
+  begin
+    ChildIndex := Parent.IndexOfChild(ANode);
+    for Index := ChildIndex + 1 to Parent.ChildrenCount - 1 do
+      Parent.Children[Index - 1] := Parent.Children[Index];
+    Dec(Parent.ChildrenCount);
+    NewCapacity := CalcPackCapacity(Length(Parent.Children), Parent.ChildrenCount);
+    if NewCapacity < Length(Parent.Children) then
+      SetLength(Parent.Children, NewCapacity);
+    FreeAndNil(ANode);
+  end
+  else
+  begin
+    FreeAndNil(ANode);
+    FRoot := nil;
+  end;
+  Dec(FSize);
 end;
 
 function TJclIntegerTree.RetainAll(const ACollection: IJclIntegerCollection): Boolean;
@@ -11168,7 +12420,30 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntegerTreeIterator.ClearChildren;
+procedure TJclIntegerTreeIterator.DeleteChild(Index: Integer);
+begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnTree.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
+      {$IFDEF BCB}
+      FOwnTree.RemoveNode(TJclIntegerTreeNode(FCursor.Children[Index]))
+      {$ELSE ~BCB}
+      FOwnTree.RemoveNode(FCursor.Children[Index])
+      {$ENDIF ~BCB}
+    else
+      raise EJclOutOfBoundsError.Create;
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnTree.WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclIntegerTreeIterator.DeleteChildren;
 var
   Index: Integer;
 begin
@@ -11182,9 +12457,9 @@ begin
     begin
       for Index := FCursor.ChildrenCount - 1 downto 0 do
         {$IFDEF BCB}
-        FOwnTree.ClearNode(TJclIntegerTreeNode(FCursor.Children[Index]));
+        FOwnTree.RemoveNode(TJclIntegerTreeNode(FCursor.Children[Index]));
         {$ELSE ~BCB}
-        FOwnTree.ClearNode(FCursor.Children[Index]);
+        FOwnTree.RemoveNode(FCursor.Children[Index]);
         {$ENDIF ~BCB}
       SetLength(FCursor.Children, 0);
       FCursor.ChildrenCount := 0;
@@ -11196,7 +12471,30 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntegerTreeIterator.DeleteChild(Index: Integer);
+procedure TJclIntegerTreeIterator.Extract;
+var
+  OldCursor: TJclIntegerTreeNode;
+begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnTree.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    OldCursor := FCursor;
+    FCursor := GetNextSibling;
+    if OldCursor <> nil then
+      FOwnTree.ExtractNode(OldCursor);
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnTree.WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclIntegerTreeIterator.ExtractChild(Index: Integer);
 begin
   if FOwnTree.ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -11206,9 +12504,9 @@ begin
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
       {$IFDEF BCB}
-      FOwnTree.ClearNode(TJclIntegerTreeNode(FCursor.Children[Index]))
+      FOwnTree.ExtractNode(TJclIntegerTreeNode(FCursor.Children[Index]))
       {$ELSE ~BCB}
-      FOwnTree.ClearNode(FCursor.Children[Index])
+      FOwnTree.ExtractNode(FCursor.Children[Index])
       {$ENDIF ~BCB}
     else
       raise EJclOutOfBoundsError.Create;
@@ -11219,20 +12517,32 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntegerTreeIterator.IteratorEquals(const AIterator: IJclIntegerIterator): Boolean;
+procedure TJclIntegerTreeIterator.ExtractChildren;
 var
-  Obj: TObject;
-  ItrObj: TJclIntegerTreeIterator;
+  Index: Integer;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is TJclIntegerTreeIterator then
-  begin
-    ItrObj := TJclIntegerTreeIterator(Obj);
-    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnTree.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if FCursor <> nil then
+    begin
+      for Index := FCursor.ChildrenCount - 1 downto 0 do
+        {$IFDEF BCB}
+        FOwnTree.ExtractNode(TJclIntegerTreeNode(FCursor.Children[Index]));
+        {$ELSE ~BCB}
+        FOwnTree.ExtractNode(FCursor.Children[Index]);
+        {$ENDIF ~BCB}
+      SetLength(FCursor.Children, 0);
+      FCursor.ChildrenCount := 0;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnTree.WriteUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TJclIntegerTreeIterator.GetChild(Index: Integer): Integer;
@@ -11444,6 +12754,22 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclIntegerTreeIterator.IteratorEquals(const AIterator: IJclIntegerIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclIntegerTreeIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclIntegerTreeIterator then
+  begin
+    ItrObj := TJclIntegerTreeIterator(Obj);
+    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
 {$IFDEF SUPPORTS_FOR_IN}
 function TJclIntegerTreeIterator.MoveNext: Boolean;
 begin
@@ -11558,7 +12884,7 @@ begin
     OldCursor := FCursor;
     FCursor := GetNextSibling;
     if OldCursor <> nil then
-      FOwnTree.ClearNode(OldCursor);
+      FOwnTree.RemoveNode(OldCursor);
   {$IFDEF THREADSAFE}
   finally
     FOwnTree.WriteUnlock;
@@ -11930,7 +13256,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     if FRoot <> nil then
-      ClearNode(FRoot);
+      RemoveNode(FRoot);
     FSize := 0;
   {$IFDEF THREADSAFE}
   finally
@@ -11938,38 +13264,6 @@ begin
       SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-procedure TJclCardinalTree.ClearNode(var ANode: TJclCardinalTreeNode);
-var
-  Index, ChildIndex, NewCapacity: Integer;
-  Parent: TJclCardinalTreeNode;
-begin
-  for Index := ANode.ChildrenCount - 1 downto 0 do
-    {$IFDEF BCB}
-    ClearNode(TJclCardinalTreeNode(ANode.Children[Index]));
-    {$ELSE ~BCB}
-    ClearNode(ANode.Children[Index]);
-    {$ENDIF ~BCB}
-  FreeCardinal(ANode.Value);
-  Parent := ANode.Parent;
-  if Parent <> nil then
-  begin
-    ChildIndex := Parent.IndexOfChild(ANode);
-    for Index := ChildIndex + 1 to Parent.ChildrenCount - 1 do
-      Parent.Children[Index - 1] := Parent.Children[Index];
-    Dec(Parent.ChildrenCount);
-    NewCapacity := CalcPackCapacity(Length(Parent.Children), Parent.ChildrenCount);
-    if NewCapacity < Length(Parent.Children) then
-      SetLength(Parent.Children, NewCapacity);
-    FreeAndNil(ANode);
-  end
-  else
-  begin
-    FreeAndNil(ANode);
-    FRoot := nil;
-  end;
-  Dec(FSize);
 end;
 
 function TJclCardinalTree.CloneNode(Node, Parent: TJclCardinalTreeNode): TJclCardinalTreeNode;
@@ -11983,6 +13277,37 @@ begin
   Result.ChildrenCount := Node.ChildrenCount;
   for Index := 0 to Node.ChildrenCount - 1 do
     Result.Children[Index] := CloneNode(TJclCardinalTreeNode(Node.Children[Index]), Result); // recursive call
+end;
+
+function TJclCardinalTree.CollectionEquals(const ACollection: IJclCardinalCollection): Boolean;
+var
+  It, ItSelf: IJclCardinalIterator;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TJclCardinalTree.Contains(AValue: Cardinal): Boolean;
@@ -12027,35 +13352,92 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclCardinalTree.CollectionEquals(const ACollection: IJclCardinalCollection): Boolean;
+function TJclCardinalTree.Extract(AValue: Cardinal): Boolean;
 var
-  It, ItSelf: IJclCardinalIterator;
+  It: IJclCardinalIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FRoot <> nil;
+    if Result then
+    begin
+      It := First;
+      while It.HasNext do
+        if ItemsEqual(It.Next, AValue) then
+      begin
+        It.Extract;
+        if RemoveSingleElement then
+          Break;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalTree.ExtractAll(const ACollection: IJclCardinalCollection): Boolean;
+var
+  It: IJclCardinalIterator;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
     Result := True;
     It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+procedure TJclCardinalTree.ExtractNode(var ANode: TJclCardinalTreeNode);
+var
+  Index, ChildIndex, NewCapacity: Integer;
+  Parent: TJclCardinalTreeNode;
+begin
+  for Index := ANode.ChildrenCount - 1 downto 0 do
+    {$IFDEF BCB}
+    ExtractNode(TJclCardinalTreeNode(ANode.Children[Index]));
+    {$ELSE ~BCB}
+    ExtractNode(ANode.Children[Index]);
+    {$ENDIF ~BCB}
+  Parent := ANode.Parent;
+  if Parent <> nil then
+  begin
+    ChildIndex := Parent.IndexOfChild(ANode);
+    for Index := ChildIndex + 1 to Parent.ChildrenCount - 1 do
+      Parent.Children[Index - 1] := Parent.Children[Index];
+    Dec(Parent.ChildrenCount);
+    NewCapacity := CalcPackCapacity(Length(Parent.Children), Parent.ChildrenCount);
+    if NewCapacity < Length(Parent.Children) then
+      SetLength(Parent.Children, NewCapacity);
+    FreeAndNil(ANode);
+  end
+  else
+  begin
+    FreeAndNil(ANode);
+    FRoot := nil;
+  end;
+  Dec(FSize);
 end;
 
 function TJclCardinalTree.First: IJclCardinalIterator;
@@ -12204,7 +13586,7 @@ end;
 
 function TJclCardinalTree.Remove(AValue: Cardinal): Boolean;
 var
-  It: IJclCardinalIterator;
+  Extracted: Cardinal;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -12213,17 +13595,11 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := FRoot <> nil;
+    Result := Extract(AValue);
     if Result then
     begin
-      It := First;
-      while It.HasNext do
-        if ItemsEqual(It.Next, AValue) then
-      begin
-        It.Remove;
-        if RemoveSingleElement then
-          Break;
-      end;
+      Extracted := AValue;
+      FreeCardinal(Extracted);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -12257,6 +13633,38 @@ begin
       SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+procedure TJclCardinalTree.RemoveNode(var ANode: TJclCardinalTreeNode);
+var
+  Index, ChildIndex, NewCapacity: Integer;
+  Parent: TJclCardinalTreeNode;
+begin
+  for Index := ANode.ChildrenCount - 1 downto 0 do
+    {$IFDEF BCB}
+    RemoveNode(TJclCardinalTreeNode(ANode.Children[Index]));
+    {$ELSE ~BCB}
+    RemoveNode(ANode.Children[Index]);
+    {$ENDIF ~BCB}
+  FreeCardinal(ANode.Value);
+  Parent := ANode.Parent;
+  if Parent <> nil then
+  begin
+    ChildIndex := Parent.IndexOfChild(ANode);
+    for Index := ChildIndex + 1 to Parent.ChildrenCount - 1 do
+      Parent.Children[Index - 1] := Parent.Children[Index];
+    Dec(Parent.ChildrenCount);
+    NewCapacity := CalcPackCapacity(Length(Parent.Children), Parent.ChildrenCount);
+    if NewCapacity < Length(Parent.Children) then
+      SetLength(Parent.Children, NewCapacity);
+    FreeAndNil(ANode);
+  end
+  else
+  begin
+    FreeAndNil(ANode);
+    FRoot := nil;
+  end;
+  Dec(FSize);
 end;
 
 function TJclCardinalTree.RetainAll(const ACollection: IJclCardinalCollection): Boolean;
@@ -12423,7 +13831,30 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclCardinalTreeIterator.ClearChildren;
+procedure TJclCardinalTreeIterator.DeleteChild(Index: Integer);
+begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnTree.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
+      {$IFDEF BCB}
+      FOwnTree.RemoveNode(TJclCardinalTreeNode(FCursor.Children[Index]))
+      {$ELSE ~BCB}
+      FOwnTree.RemoveNode(FCursor.Children[Index])
+      {$ENDIF ~BCB}
+    else
+      raise EJclOutOfBoundsError.Create;
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnTree.WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclCardinalTreeIterator.DeleteChildren;
 var
   Index: Integer;
 begin
@@ -12437,9 +13868,9 @@ begin
     begin
       for Index := FCursor.ChildrenCount - 1 downto 0 do
         {$IFDEF BCB}
-        FOwnTree.ClearNode(TJclCardinalTreeNode(FCursor.Children[Index]));
+        FOwnTree.RemoveNode(TJclCardinalTreeNode(FCursor.Children[Index]));
         {$ELSE ~BCB}
-        FOwnTree.ClearNode(FCursor.Children[Index]);
+        FOwnTree.RemoveNode(FCursor.Children[Index]);
         {$ENDIF ~BCB}
       SetLength(FCursor.Children, 0);
       FCursor.ChildrenCount := 0;
@@ -12451,7 +13882,30 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclCardinalTreeIterator.DeleteChild(Index: Integer);
+procedure TJclCardinalTreeIterator.Extract;
+var
+  OldCursor: TJclCardinalTreeNode;
+begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnTree.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    OldCursor := FCursor;
+    FCursor := GetNextSibling;
+    if OldCursor <> nil then
+      FOwnTree.ExtractNode(OldCursor);
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnTree.WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclCardinalTreeIterator.ExtractChild(Index: Integer);
 begin
   if FOwnTree.ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -12461,9 +13915,9 @@ begin
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
       {$IFDEF BCB}
-      FOwnTree.ClearNode(TJclCardinalTreeNode(FCursor.Children[Index]))
+      FOwnTree.ExtractNode(TJclCardinalTreeNode(FCursor.Children[Index]))
       {$ELSE ~BCB}
-      FOwnTree.ClearNode(FCursor.Children[Index])
+      FOwnTree.ExtractNode(FCursor.Children[Index])
       {$ENDIF ~BCB}
     else
       raise EJclOutOfBoundsError.Create;
@@ -12474,20 +13928,32 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclCardinalTreeIterator.IteratorEquals(const AIterator: IJclCardinalIterator): Boolean;
+procedure TJclCardinalTreeIterator.ExtractChildren;
 var
-  Obj: TObject;
-  ItrObj: TJclCardinalTreeIterator;
+  Index: Integer;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is TJclCardinalTreeIterator then
-  begin
-    ItrObj := TJclCardinalTreeIterator(Obj);
-    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnTree.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if FCursor <> nil then
+    begin
+      for Index := FCursor.ChildrenCount - 1 downto 0 do
+        {$IFDEF BCB}
+        FOwnTree.ExtractNode(TJclCardinalTreeNode(FCursor.Children[Index]));
+        {$ELSE ~BCB}
+        FOwnTree.ExtractNode(FCursor.Children[Index]);
+        {$ENDIF ~BCB}
+      SetLength(FCursor.Children, 0);
+      FCursor.ChildrenCount := 0;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnTree.WriteUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TJclCardinalTreeIterator.GetChild(Index: Integer): Cardinal;
@@ -12699,6 +14165,22 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclCardinalTreeIterator.IteratorEquals(const AIterator: IJclCardinalIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclCardinalTreeIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclCardinalTreeIterator then
+  begin
+    ItrObj := TJclCardinalTreeIterator(Obj);
+    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
 {$IFDEF SUPPORTS_FOR_IN}
 function TJclCardinalTreeIterator.MoveNext: Boolean;
 begin
@@ -12813,7 +14295,7 @@ begin
     OldCursor := FCursor;
     FCursor := GetNextSibling;
     if OldCursor <> nil then
-      FOwnTree.ClearNode(OldCursor);
+      FOwnTree.RemoveNode(OldCursor);
   {$IFDEF THREADSAFE}
   finally
     FOwnTree.WriteUnlock;
@@ -13185,7 +14667,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     if FRoot <> nil then
-      ClearNode(FRoot);
+      RemoveNode(FRoot);
     FSize := 0;
   {$IFDEF THREADSAFE}
   finally
@@ -13193,38 +14675,6 @@ begin
       SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-procedure TJclInt64Tree.ClearNode(var ANode: TJclInt64TreeNode);
-var
-  Index, ChildIndex, NewCapacity: Integer;
-  Parent: TJclInt64TreeNode;
-begin
-  for Index := ANode.ChildrenCount - 1 downto 0 do
-    {$IFDEF BCB}
-    ClearNode(TJclInt64TreeNode(ANode.Children[Index]));
-    {$ELSE ~BCB}
-    ClearNode(ANode.Children[Index]);
-    {$ENDIF ~BCB}
-  FreeInt64(ANode.Value);
-  Parent := ANode.Parent;
-  if Parent <> nil then
-  begin
-    ChildIndex := Parent.IndexOfChild(ANode);
-    for Index := ChildIndex + 1 to Parent.ChildrenCount - 1 do
-      Parent.Children[Index - 1] := Parent.Children[Index];
-    Dec(Parent.ChildrenCount);
-    NewCapacity := CalcPackCapacity(Length(Parent.Children), Parent.ChildrenCount);
-    if NewCapacity < Length(Parent.Children) then
-      SetLength(Parent.Children, NewCapacity);
-    FreeAndNil(ANode);
-  end
-  else
-  begin
-    FreeAndNil(ANode);
-    FRoot := nil;
-  end;
-  Dec(FSize);
 end;
 
 function TJclInt64Tree.CloneNode(Node, Parent: TJclInt64TreeNode): TJclInt64TreeNode;
@@ -13238,6 +14688,37 @@ begin
   Result.ChildrenCount := Node.ChildrenCount;
   for Index := 0 to Node.ChildrenCount - 1 do
     Result.Children[Index] := CloneNode(TJclInt64TreeNode(Node.Children[Index]), Result); // recursive call
+end;
+
+function TJclInt64Tree.CollectionEquals(const ACollection: IJclInt64Collection): Boolean;
+var
+  It, ItSelf: IJclInt64Iterator;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TJclInt64Tree.Contains(const AValue: Int64): Boolean;
@@ -13282,35 +14763,92 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclInt64Tree.CollectionEquals(const ACollection: IJclInt64Collection): Boolean;
+function TJclInt64Tree.Extract(const AValue: Int64): Boolean;
 var
-  It, ItSelf: IJclInt64Iterator;
+  It: IJclInt64Iterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FRoot <> nil;
+    if Result then
+    begin
+      It := First;
+      while It.HasNext do
+        if ItemsEqual(It.Next, AValue) then
+      begin
+        It.Extract;
+        if RemoveSingleElement then
+          Break;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64Tree.ExtractAll(const ACollection: IJclInt64Collection): Boolean;
+var
+  It: IJclInt64Iterator;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
     Result := True;
     It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+procedure TJclInt64Tree.ExtractNode(var ANode: TJclInt64TreeNode);
+var
+  Index, ChildIndex, NewCapacity: Integer;
+  Parent: TJclInt64TreeNode;
+begin
+  for Index := ANode.ChildrenCount - 1 downto 0 do
+    {$IFDEF BCB}
+    ExtractNode(TJclInt64TreeNode(ANode.Children[Index]));
+    {$ELSE ~BCB}
+    ExtractNode(ANode.Children[Index]);
+    {$ENDIF ~BCB}
+  Parent := ANode.Parent;
+  if Parent <> nil then
+  begin
+    ChildIndex := Parent.IndexOfChild(ANode);
+    for Index := ChildIndex + 1 to Parent.ChildrenCount - 1 do
+      Parent.Children[Index - 1] := Parent.Children[Index];
+    Dec(Parent.ChildrenCount);
+    NewCapacity := CalcPackCapacity(Length(Parent.Children), Parent.ChildrenCount);
+    if NewCapacity < Length(Parent.Children) then
+      SetLength(Parent.Children, NewCapacity);
+    FreeAndNil(ANode);
+  end
+  else
+  begin
+    FreeAndNil(ANode);
+    FRoot := nil;
+  end;
+  Dec(FSize);
 end;
 
 function TJclInt64Tree.First: IJclInt64Iterator;
@@ -13459,7 +14997,7 @@ end;
 
 function TJclInt64Tree.Remove(const AValue: Int64): Boolean;
 var
-  It: IJclInt64Iterator;
+  Extracted: Int64;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -13468,17 +15006,11 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := FRoot <> nil;
+    Result := Extract(AValue);
     if Result then
     begin
-      It := First;
-      while It.HasNext do
-        if ItemsEqual(It.Next, AValue) then
-      begin
-        It.Remove;
-        if RemoveSingleElement then
-          Break;
-      end;
+      Extracted := AValue;
+      FreeInt64(Extracted);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -13512,6 +15044,38 @@ begin
       SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+procedure TJclInt64Tree.RemoveNode(var ANode: TJclInt64TreeNode);
+var
+  Index, ChildIndex, NewCapacity: Integer;
+  Parent: TJclInt64TreeNode;
+begin
+  for Index := ANode.ChildrenCount - 1 downto 0 do
+    {$IFDEF BCB}
+    RemoveNode(TJclInt64TreeNode(ANode.Children[Index]));
+    {$ELSE ~BCB}
+    RemoveNode(ANode.Children[Index]);
+    {$ENDIF ~BCB}
+  FreeInt64(ANode.Value);
+  Parent := ANode.Parent;
+  if Parent <> nil then
+  begin
+    ChildIndex := Parent.IndexOfChild(ANode);
+    for Index := ChildIndex + 1 to Parent.ChildrenCount - 1 do
+      Parent.Children[Index - 1] := Parent.Children[Index];
+    Dec(Parent.ChildrenCount);
+    NewCapacity := CalcPackCapacity(Length(Parent.Children), Parent.ChildrenCount);
+    if NewCapacity < Length(Parent.Children) then
+      SetLength(Parent.Children, NewCapacity);
+    FreeAndNil(ANode);
+  end
+  else
+  begin
+    FreeAndNil(ANode);
+    FRoot := nil;
+  end;
+  Dec(FSize);
 end;
 
 function TJclInt64Tree.RetainAll(const ACollection: IJclInt64Collection): Boolean;
@@ -13678,7 +15242,30 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclInt64TreeIterator.ClearChildren;
+procedure TJclInt64TreeIterator.DeleteChild(Index: Integer);
+begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnTree.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
+      {$IFDEF BCB}
+      FOwnTree.RemoveNode(TJclInt64TreeNode(FCursor.Children[Index]))
+      {$ELSE ~BCB}
+      FOwnTree.RemoveNode(FCursor.Children[Index])
+      {$ENDIF ~BCB}
+    else
+      raise EJclOutOfBoundsError.Create;
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnTree.WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclInt64TreeIterator.DeleteChildren;
 var
   Index: Integer;
 begin
@@ -13692,9 +15279,9 @@ begin
     begin
       for Index := FCursor.ChildrenCount - 1 downto 0 do
         {$IFDEF BCB}
-        FOwnTree.ClearNode(TJclInt64TreeNode(FCursor.Children[Index]));
+        FOwnTree.RemoveNode(TJclInt64TreeNode(FCursor.Children[Index]));
         {$ELSE ~BCB}
-        FOwnTree.ClearNode(FCursor.Children[Index]);
+        FOwnTree.RemoveNode(FCursor.Children[Index]);
         {$ENDIF ~BCB}
       SetLength(FCursor.Children, 0);
       FCursor.ChildrenCount := 0;
@@ -13706,7 +15293,30 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclInt64TreeIterator.DeleteChild(Index: Integer);
+procedure TJclInt64TreeIterator.Extract;
+var
+  OldCursor: TJclInt64TreeNode;
+begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnTree.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    OldCursor := FCursor;
+    FCursor := GetNextSibling;
+    if OldCursor <> nil then
+      FOwnTree.ExtractNode(OldCursor);
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnTree.WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclInt64TreeIterator.ExtractChild(Index: Integer);
 begin
   if FOwnTree.ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -13716,9 +15326,9 @@ begin
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
       {$IFDEF BCB}
-      FOwnTree.ClearNode(TJclInt64TreeNode(FCursor.Children[Index]))
+      FOwnTree.ExtractNode(TJclInt64TreeNode(FCursor.Children[Index]))
       {$ELSE ~BCB}
-      FOwnTree.ClearNode(FCursor.Children[Index])
+      FOwnTree.ExtractNode(FCursor.Children[Index])
       {$ENDIF ~BCB}
     else
       raise EJclOutOfBoundsError.Create;
@@ -13729,20 +15339,32 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclInt64TreeIterator.IteratorEquals(const AIterator: IJclInt64Iterator): Boolean;
+procedure TJclInt64TreeIterator.ExtractChildren;
 var
-  Obj: TObject;
-  ItrObj: TJclInt64TreeIterator;
+  Index: Integer;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is TJclInt64TreeIterator then
-  begin
-    ItrObj := TJclInt64TreeIterator(Obj);
-    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnTree.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if FCursor <> nil then
+    begin
+      for Index := FCursor.ChildrenCount - 1 downto 0 do
+        {$IFDEF BCB}
+        FOwnTree.ExtractNode(TJclInt64TreeNode(FCursor.Children[Index]));
+        {$ELSE ~BCB}
+        FOwnTree.ExtractNode(FCursor.Children[Index]);
+        {$ENDIF ~BCB}
+      SetLength(FCursor.Children, 0);
+      FCursor.ChildrenCount := 0;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnTree.WriteUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TJclInt64TreeIterator.GetChild(Index: Integer): Int64;
@@ -13954,6 +15576,22 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclInt64TreeIterator.IteratorEquals(const AIterator: IJclInt64Iterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclInt64TreeIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclInt64TreeIterator then
+  begin
+    ItrObj := TJclInt64TreeIterator(Obj);
+    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
 {$IFDEF SUPPORTS_FOR_IN}
 function TJclInt64TreeIterator.MoveNext: Boolean;
 begin
@@ -14068,7 +15706,7 @@ begin
     OldCursor := FCursor;
     FCursor := GetNextSibling;
     if OldCursor <> nil then
-      FOwnTree.ClearNode(OldCursor);
+      FOwnTree.RemoveNode(OldCursor);
   {$IFDEF THREADSAFE}
   finally
     FOwnTree.WriteUnlock;
@@ -14441,7 +16079,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     if FRoot <> nil then
-      ClearNode(FRoot);
+      RemoveNode(FRoot);
     FSize := 0;
   {$IFDEF THREADSAFE}
   finally
@@ -14449,38 +16087,6 @@ begin
       SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-procedure TJclPtrTree.ClearNode(var ANode: TJclPtrTreeNode);
-var
-  Index, ChildIndex, NewCapacity: Integer;
-  Parent: TJclPtrTreeNode;
-begin
-  for Index := ANode.ChildrenCount - 1 downto 0 do
-    {$IFDEF BCB}
-    ClearNode(TJclPtrTreeNode(ANode.Children[Index]));
-    {$ELSE ~BCB}
-    ClearNode(ANode.Children[Index]);
-    {$ENDIF ~BCB}
-  FreePointer(ANode.Value);
-  Parent := ANode.Parent;
-  if Parent <> nil then
-  begin
-    ChildIndex := Parent.IndexOfChild(ANode);
-    for Index := ChildIndex + 1 to Parent.ChildrenCount - 1 do
-      Parent.Children[Index - 1] := Parent.Children[Index];
-    Dec(Parent.ChildrenCount);
-    NewCapacity := CalcPackCapacity(Length(Parent.Children), Parent.ChildrenCount);
-    if NewCapacity < Length(Parent.Children) then
-      SetLength(Parent.Children, NewCapacity);
-    FreeAndNil(ANode);
-  end
-  else
-  begin
-    FreeAndNil(ANode);
-    FRoot := nil;
-  end;
-  Dec(FSize);
 end;
 
 function TJclPtrTree.CloneNode(Node, Parent: TJclPtrTreeNode): TJclPtrTreeNode;
@@ -14494,6 +16100,37 @@ begin
   Result.ChildrenCount := Node.ChildrenCount;
   for Index := 0 to Node.ChildrenCount - 1 do
     Result.Children[Index] := CloneNode(TJclPtrTreeNode(Node.Children[Index]), Result); // recursive call
+end;
+
+function TJclPtrTree.CollectionEquals(const ACollection: IJclPtrCollection): Boolean;
+var
+  It, ItSelf: IJclPtrIterator;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TJclPtrTree.Contains(APtr: Pointer): Boolean;
@@ -14538,35 +16175,92 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclPtrTree.CollectionEquals(const ACollection: IJclPtrCollection): Boolean;
+function TJclPtrTree.Extract(APtr: Pointer): Boolean;
 var
-  It, ItSelf: IJclPtrIterator;
+  It: IJclPtrIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FRoot <> nil;
+    if Result then
+    begin
+      It := First;
+      while It.HasNext do
+        if ItemsEqual(It.Next, APtr) then
+      begin
+        It.Extract;
+        if RemoveSingleElement then
+          Break;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrTree.ExtractAll(const ACollection: IJclPtrCollection): Boolean;
+var
+  It: IJclPtrIterator;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
     Result := True;
     It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+procedure TJclPtrTree.ExtractNode(var ANode: TJclPtrTreeNode);
+var
+  Index, ChildIndex, NewCapacity: Integer;
+  Parent: TJclPtrTreeNode;
+begin
+  for Index := ANode.ChildrenCount - 1 downto 0 do
+    {$IFDEF BCB}
+    ExtractNode(TJclPtrTreeNode(ANode.Children[Index]));
+    {$ELSE ~BCB}
+    ExtractNode(ANode.Children[Index]);
+    {$ENDIF ~BCB}
+  Parent := ANode.Parent;
+  if Parent <> nil then
+  begin
+    ChildIndex := Parent.IndexOfChild(ANode);
+    for Index := ChildIndex + 1 to Parent.ChildrenCount - 1 do
+      Parent.Children[Index - 1] := Parent.Children[Index];
+    Dec(Parent.ChildrenCount);
+    NewCapacity := CalcPackCapacity(Length(Parent.Children), Parent.ChildrenCount);
+    if NewCapacity < Length(Parent.Children) then
+      SetLength(Parent.Children, NewCapacity);
+    FreeAndNil(ANode);
+  end
+  else
+  begin
+    FreeAndNil(ANode);
+    FRoot := nil;
+  end;
+  Dec(FSize);
 end;
 
 function TJclPtrTree.First: IJclPtrIterator;
@@ -14715,7 +16409,7 @@ end;
 
 function TJclPtrTree.Remove(APtr: Pointer): Boolean;
 var
-  It: IJclPtrIterator;
+  Extracted: Pointer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -14724,17 +16418,11 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := FRoot <> nil;
+    Result := Extract(APtr);
     if Result then
     begin
-      It := First;
-      while It.HasNext do
-        if ItemsEqual(It.Next, APtr) then
-      begin
-        It.Remove;
-        if RemoveSingleElement then
-          Break;
-      end;
+      Extracted := APtr;
+      FreePointer(Extracted);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -14768,6 +16456,38 @@ begin
       SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+procedure TJclPtrTree.RemoveNode(var ANode: TJclPtrTreeNode);
+var
+  Index, ChildIndex, NewCapacity: Integer;
+  Parent: TJclPtrTreeNode;
+begin
+  for Index := ANode.ChildrenCount - 1 downto 0 do
+    {$IFDEF BCB}
+    RemoveNode(TJclPtrTreeNode(ANode.Children[Index]));
+    {$ELSE ~BCB}
+    RemoveNode(ANode.Children[Index]);
+    {$ENDIF ~BCB}
+  FreePointer(ANode.Value);
+  Parent := ANode.Parent;
+  if Parent <> nil then
+  begin
+    ChildIndex := Parent.IndexOfChild(ANode);
+    for Index := ChildIndex + 1 to Parent.ChildrenCount - 1 do
+      Parent.Children[Index - 1] := Parent.Children[Index];
+    Dec(Parent.ChildrenCount);
+    NewCapacity := CalcPackCapacity(Length(Parent.Children), Parent.ChildrenCount);
+    if NewCapacity < Length(Parent.Children) then
+      SetLength(Parent.Children, NewCapacity);
+    FreeAndNil(ANode);
+  end
+  else
+  begin
+    FreeAndNil(ANode);
+    FRoot := nil;
+  end;
+  Dec(FSize);
 end;
 
 function TJclPtrTree.RetainAll(const ACollection: IJclPtrCollection): Boolean;
@@ -14934,7 +16654,30 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclPtrTreeIterator.ClearChildren;
+procedure TJclPtrTreeIterator.DeleteChild(Index: Integer);
+begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnTree.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
+      {$IFDEF BCB}
+      FOwnTree.RemoveNode(TJclPtrTreeNode(FCursor.Children[Index]))
+      {$ELSE ~BCB}
+      FOwnTree.RemoveNode(FCursor.Children[Index])
+      {$ENDIF ~BCB}
+    else
+      raise EJclOutOfBoundsError.Create;
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnTree.WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclPtrTreeIterator.DeleteChildren;
 var
   Index: Integer;
 begin
@@ -14948,9 +16691,9 @@ begin
     begin
       for Index := FCursor.ChildrenCount - 1 downto 0 do
         {$IFDEF BCB}
-        FOwnTree.ClearNode(TJclPtrTreeNode(FCursor.Children[Index]));
+        FOwnTree.RemoveNode(TJclPtrTreeNode(FCursor.Children[Index]));
         {$ELSE ~BCB}
-        FOwnTree.ClearNode(FCursor.Children[Index]);
+        FOwnTree.RemoveNode(FCursor.Children[Index]);
         {$ENDIF ~BCB}
       SetLength(FCursor.Children, 0);
       FCursor.ChildrenCount := 0;
@@ -14962,7 +16705,30 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclPtrTreeIterator.DeleteChild(Index: Integer);
+procedure TJclPtrTreeIterator.Extract;
+var
+  OldCursor: TJclPtrTreeNode;
+begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnTree.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    OldCursor := FCursor;
+    FCursor := GetNextSibling;
+    if OldCursor <> nil then
+      FOwnTree.ExtractNode(OldCursor);
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnTree.WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclPtrTreeIterator.ExtractChild(Index: Integer);
 begin
   if FOwnTree.ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -14972,9 +16738,9 @@ begin
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
       {$IFDEF BCB}
-      FOwnTree.ClearNode(TJclPtrTreeNode(FCursor.Children[Index]))
+      FOwnTree.ExtractNode(TJclPtrTreeNode(FCursor.Children[Index]))
       {$ELSE ~BCB}
-      FOwnTree.ClearNode(FCursor.Children[Index])
+      FOwnTree.ExtractNode(FCursor.Children[Index])
       {$ENDIF ~BCB}
     else
       raise EJclOutOfBoundsError.Create;
@@ -14985,20 +16751,32 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclPtrTreeIterator.IteratorEquals(const AIterator: IJclPtrIterator): Boolean;
+procedure TJclPtrTreeIterator.ExtractChildren;
 var
-  Obj: TObject;
-  ItrObj: TJclPtrTreeIterator;
+  Index: Integer;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is TJclPtrTreeIterator then
-  begin
-    ItrObj := TJclPtrTreeIterator(Obj);
-    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnTree.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if FCursor <> nil then
+    begin
+      for Index := FCursor.ChildrenCount - 1 downto 0 do
+        {$IFDEF BCB}
+        FOwnTree.ExtractNode(TJclPtrTreeNode(FCursor.Children[Index]));
+        {$ELSE ~BCB}
+        FOwnTree.ExtractNode(FCursor.Children[Index]);
+        {$ENDIF ~BCB}
+      SetLength(FCursor.Children, 0);
+      FCursor.ChildrenCount := 0;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnTree.WriteUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TJclPtrTreeIterator.GetChild(Index: Integer): Pointer;
@@ -15210,6 +16988,22 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclPtrTreeIterator.IteratorEquals(const AIterator: IJclPtrIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclPtrTreeIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclPtrTreeIterator then
+  begin
+    ItrObj := TJclPtrTreeIterator(Obj);
+    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
 {$IFDEF SUPPORTS_FOR_IN}
 function TJclPtrTreeIterator.MoveNext: Boolean;
 begin
@@ -15324,7 +17118,7 @@ begin
     OldCursor := FCursor;
     FCursor := GetNextSibling;
     if OldCursor <> nil then
-      FOwnTree.ClearNode(OldCursor);
+      FOwnTree.RemoveNode(OldCursor);
   {$IFDEF THREADSAFE}
   finally
     FOwnTree.WriteUnlock;
@@ -15697,7 +17491,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     if FRoot <> nil then
-      ClearNode(FRoot);
+      RemoveNode(FRoot);
     FSize := 0;
   {$IFDEF THREADSAFE}
   finally
@@ -15705,38 +17499,6 @@ begin
       SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-procedure TJclTree.ClearNode(var ANode: TJclTreeNode);
-var
-  Index, ChildIndex, NewCapacity: Integer;
-  Parent: TJclTreeNode;
-begin
-  for Index := ANode.ChildrenCount - 1 downto 0 do
-    {$IFDEF BCB}
-    ClearNode(TJclTreeNode(ANode.Children[Index]));
-    {$ELSE ~BCB}
-    ClearNode(ANode.Children[Index]);
-    {$ENDIF ~BCB}
-  FreeObject(ANode.Value);
-  Parent := ANode.Parent;
-  if Parent <> nil then
-  begin
-    ChildIndex := Parent.IndexOfChild(ANode);
-    for Index := ChildIndex + 1 to Parent.ChildrenCount - 1 do
-      Parent.Children[Index - 1] := Parent.Children[Index];
-    Dec(Parent.ChildrenCount);
-    NewCapacity := CalcPackCapacity(Length(Parent.Children), Parent.ChildrenCount);
-    if NewCapacity < Length(Parent.Children) then
-      SetLength(Parent.Children, NewCapacity);
-    FreeAndNil(ANode);
-  end
-  else
-  begin
-    FreeAndNil(ANode);
-    FRoot := nil;
-  end;
-  Dec(FSize);
 end;
 
 function TJclTree.CloneNode(Node, Parent: TJclTreeNode): TJclTreeNode;
@@ -15750,6 +17512,37 @@ begin
   Result.ChildrenCount := Node.ChildrenCount;
   for Index := 0 to Node.ChildrenCount - 1 do
     Result.Children[Index] := CloneNode(TJclTreeNode(Node.Children[Index]), Result); // recursive call
+end;
+
+function TJclTree.CollectionEquals(const ACollection: IJclCollection): Boolean;
+var
+  It, ItSelf: IJclIterator;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TJclTree.Contains(AObject: TObject): Boolean;
@@ -15794,35 +17587,92 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclTree.CollectionEquals(const ACollection: IJclCollection): Boolean;
+function TJclTree.Extract(AObject: TObject): Boolean;
 var
-  It, ItSelf: IJclIterator;
+  It: IJclIterator;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FRoot <> nil;
+    if Result then
+    begin
+      It := First;
+      while It.HasNext do
+        if ItemsEqual(It.Next, AObject) then
+      begin
+        It.Extract;
+        if RemoveSingleElement then
+          Break;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclTree.ExtractAll(const ACollection: IJclCollection): Boolean;
+var
+  It: IJclIterator;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
     Result := True;
     It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+procedure TJclTree.ExtractNode(var ANode: TJclTreeNode);
+var
+  Index, ChildIndex, NewCapacity: Integer;
+  Parent: TJclTreeNode;
+begin
+  for Index := ANode.ChildrenCount - 1 downto 0 do
+    {$IFDEF BCB}
+    ExtractNode(TJclTreeNode(ANode.Children[Index]));
+    {$ELSE ~BCB}
+    ExtractNode(ANode.Children[Index]);
+    {$ENDIF ~BCB}
+  Parent := ANode.Parent;
+  if Parent <> nil then
+  begin
+    ChildIndex := Parent.IndexOfChild(ANode);
+    for Index := ChildIndex + 1 to Parent.ChildrenCount - 1 do
+      Parent.Children[Index - 1] := Parent.Children[Index];
+    Dec(Parent.ChildrenCount);
+    NewCapacity := CalcPackCapacity(Length(Parent.Children), Parent.ChildrenCount);
+    if NewCapacity < Length(Parent.Children) then
+      SetLength(Parent.Children, NewCapacity);
+    FreeAndNil(ANode);
+  end
+  else
+  begin
+    FreeAndNil(ANode);
+    FRoot := nil;
+  end;
+  Dec(FSize);
 end;
 
 function TJclTree.First: IJclIterator;
@@ -15971,7 +17821,7 @@ end;
 
 function TJclTree.Remove(AObject: TObject): Boolean;
 var
-  It: IJclIterator;
+  Extracted: TObject;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -15980,17 +17830,11 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := FRoot <> nil;
+    Result := Extract(AObject);
     if Result then
     begin
-      It := First;
-      while It.HasNext do
-        if ItemsEqual(It.Next, AObject) then
-      begin
-        It.Remove;
-        if RemoveSingleElement then
-          Break;
-      end;
+      Extracted := AObject;
+      FreeObject(Extracted);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -16024,6 +17868,38 @@ begin
       SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+procedure TJclTree.RemoveNode(var ANode: TJclTreeNode);
+var
+  Index, ChildIndex, NewCapacity: Integer;
+  Parent: TJclTreeNode;
+begin
+  for Index := ANode.ChildrenCount - 1 downto 0 do
+    {$IFDEF BCB}
+    RemoveNode(TJclTreeNode(ANode.Children[Index]));
+    {$ELSE ~BCB}
+    RemoveNode(ANode.Children[Index]);
+    {$ENDIF ~BCB}
+  FreeObject(ANode.Value);
+  Parent := ANode.Parent;
+  if Parent <> nil then
+  begin
+    ChildIndex := Parent.IndexOfChild(ANode);
+    for Index := ChildIndex + 1 to Parent.ChildrenCount - 1 do
+      Parent.Children[Index - 1] := Parent.Children[Index];
+    Dec(Parent.ChildrenCount);
+    NewCapacity := CalcPackCapacity(Length(Parent.Children), Parent.ChildrenCount);
+    if NewCapacity < Length(Parent.Children) then
+      SetLength(Parent.Children, NewCapacity);
+    FreeAndNil(ANode);
+  end
+  else
+  begin
+    FreeAndNil(ANode);
+    FRoot := nil;
+  end;
+  Dec(FSize);
 end;
 
 function TJclTree.RetainAll(const ACollection: IJclCollection): Boolean;
@@ -16190,7 +18066,30 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclTreeIterator.ClearChildren;
+procedure TJclTreeIterator.DeleteChild(Index: Integer);
+begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnTree.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
+      {$IFDEF BCB}
+      FOwnTree.RemoveNode(TJclTreeNode(FCursor.Children[Index]))
+      {$ELSE ~BCB}
+      FOwnTree.RemoveNode(FCursor.Children[Index])
+      {$ENDIF ~BCB}
+    else
+      raise EJclOutOfBoundsError.Create;
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnTree.WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclTreeIterator.DeleteChildren;
 var
   Index: Integer;
 begin
@@ -16204,9 +18103,9 @@ begin
     begin
       for Index := FCursor.ChildrenCount - 1 downto 0 do
         {$IFDEF BCB}
-        FOwnTree.ClearNode(TJclTreeNode(FCursor.Children[Index]));
+        FOwnTree.RemoveNode(TJclTreeNode(FCursor.Children[Index]));
         {$ELSE ~BCB}
-        FOwnTree.ClearNode(FCursor.Children[Index]);
+        FOwnTree.RemoveNode(FCursor.Children[Index]);
         {$ENDIF ~BCB}
       SetLength(FCursor.Children, 0);
       FCursor.ChildrenCount := 0;
@@ -16218,7 +18117,30 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclTreeIterator.DeleteChild(Index: Integer);
+procedure TJclTreeIterator.Extract;
+var
+  OldCursor: TJclTreeNode;
+begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnTree.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    OldCursor := FCursor;
+    FCursor := GetNextSibling;
+    if OldCursor <> nil then
+      FOwnTree.ExtractNode(OldCursor);
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnTree.WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclTreeIterator.ExtractChild(Index: Integer);
 begin
   if FOwnTree.ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -16228,9 +18150,9 @@ begin
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
       {$IFDEF BCB}
-      FOwnTree.ClearNode(TJclTreeNode(FCursor.Children[Index]))
+      FOwnTree.ExtractNode(TJclTreeNode(FCursor.Children[Index]))
       {$ELSE ~BCB}
-      FOwnTree.ClearNode(FCursor.Children[Index])
+      FOwnTree.ExtractNode(FCursor.Children[Index])
       {$ENDIF ~BCB}
     else
       raise EJclOutOfBoundsError.Create;
@@ -16241,20 +18163,32 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclTreeIterator.IteratorEquals(const AIterator: IJclIterator): Boolean;
+procedure TJclTreeIterator.ExtractChildren;
 var
-  Obj: TObject;
-  ItrObj: TJclTreeIterator;
+  Index: Integer;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is TJclTreeIterator then
-  begin
-    ItrObj := TJclTreeIterator(Obj);
-    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnTree.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if FCursor <> nil then
+    begin
+      for Index := FCursor.ChildrenCount - 1 downto 0 do
+        {$IFDEF BCB}
+        FOwnTree.ExtractNode(TJclTreeNode(FCursor.Children[Index]));
+        {$ELSE ~BCB}
+        FOwnTree.ExtractNode(FCursor.Children[Index]);
+        {$ENDIF ~BCB}
+      SetLength(FCursor.Children, 0);
+      FCursor.ChildrenCount := 0;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnTree.WriteUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TJclTreeIterator.GetChild(Index: Integer): TObject;
@@ -16466,6 +18400,22 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclTreeIterator.IteratorEquals(const AIterator: IJclIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclTreeIterator;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclTreeIterator then
+  begin
+    ItrObj := TJclTreeIterator(Obj);
+    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
 {$IFDEF SUPPORTS_FOR_IN}
 function TJclTreeIterator.MoveNext: Boolean;
 begin
@@ -16580,7 +18530,7 @@ begin
     OldCursor := FCursor;
     FCursor := GetNextSibling;
     if OldCursor <> nil then
-      FOwnTree.ClearNode(OldCursor);
+      FOwnTree.RemoveNode(OldCursor);
   {$IFDEF THREADSAFE}
   finally
     FOwnTree.WriteUnlock;
@@ -16953,7 +18903,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     if FRoot <> nil then
-      ClearNode(FRoot);
+      RemoveNode(FRoot);
     FSize := 0;
   {$IFDEF THREADSAFE}
   finally
@@ -16961,38 +18911,6 @@ begin
       SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-procedure TJclTree<T>.ClearNode(var ANode: TTreeNode);
-var
-  Index, ChildIndex, NewCapacity: Integer;
-  Parent: TTreeNode;
-begin
-  for Index := ANode.ChildrenCount - 1 downto 0 do
-    {$IFDEF BCB}
-    ClearNode(TTreeNode(ANode.Children[Index]));
-    {$ELSE ~BCB}
-    ClearNode(ANode.Children[Index]);
-    {$ENDIF ~BCB}
-  FreeItem(ANode.Value);
-  Parent := ANode.Parent;
-  if Parent <> nil then
-  begin
-    ChildIndex := Parent.IndexOfChild(ANode);
-    for Index := ChildIndex + 1 to Parent.ChildrenCount - 1 do
-      Parent.Children[Index - 1] := Parent.Children[Index];
-    Dec(Parent.ChildrenCount);
-    NewCapacity := CalcPackCapacity(Length(Parent.Children), Parent.ChildrenCount);
-    if NewCapacity < Length(Parent.Children) then
-      SetLength(Parent.Children, NewCapacity);
-    FreeAndNil(ANode);
-  end
-  else
-  begin
-    FreeAndNil(ANode);
-    FRoot := nil;
-  end;
-  Dec(FSize);
 end;
 
 function TJclTree<T>.CloneNode(Node, Parent: TTreeNode): TTreeNode;
@@ -17006,6 +18924,37 @@ begin
   Result.ChildrenCount := Node.ChildrenCount;
   for Index := 0 to Node.ChildrenCount - 1 do
     Result.Children[Index] := CloneNode(TTreeNode(Node.Children[Index]), Result); // recursive call
+end;
+
+function TJclTree<T>.CollectionEquals(const ACollection: IJclCollection<T>): Boolean;
+var
+  It, ItSelf: IJclIterator<T>;
+begin
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginRead;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndRead;
+  end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TJclTree<T>.Contains(const AItem: T): Boolean;
@@ -17050,35 +18999,92 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclTree<T>.CollectionEquals(const ACollection: IJclCollection<T>): Boolean;
+function TJclTree<T>.Extract(const AItem: T): Boolean;
 var
-  It, ItSelf: IJclIterator<T>;
+  It: IJclIterator<T>;
 begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
   {$IFDEF THREADSAFE}
   if FThreadSafe then
-    SyncReaderWriter.BeginRead;
+    SyncReaderWriter.BeginWrite;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FRoot <> nil;
+    if Result then
+    begin
+      It := First;
+      while It.HasNext do
+        if ItemsEqual(It.Next, AItem) then
+      begin
+        It.Extract;
+        if RemoveSingleElement then
+          Break;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    if FThreadSafe then
+      SyncReaderWriter.EndWrite;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclTree<T>.ExtractAll(const ACollection: IJclCollection<T>): Boolean;
+var
+  It: IJclIterator<T>;
+begin
+  if ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  if FThreadSafe then
+    SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
     Result := False;
     if ACollection = nil then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
     Result := True;
     It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+    while It.HasNext do
+      Result := Extract(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
-      SyncReaderWriter.EndRead;
+      SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+procedure TJclTree<T>.ExtractNode(var ANode: TTreeNode);
+var
+  Index, ChildIndex, NewCapacity: Integer;
+  Parent: TTreeNode;
+begin
+  for Index := ANode.ChildrenCount - 1 downto 0 do
+    {$IFDEF BCB}
+    ExtractNode(TTreeNode(ANode.Children[Index]));
+    {$ELSE ~BCB}
+    ExtractNode(ANode.Children[Index]);
+    {$ENDIF ~BCB}
+  Parent := ANode.Parent;
+  if Parent <> nil then
+  begin
+    ChildIndex := Parent.IndexOfChild(ANode);
+    for Index := ChildIndex + 1 to Parent.ChildrenCount - 1 do
+      Parent.Children[Index - 1] := Parent.Children[Index];
+    Dec(Parent.ChildrenCount);
+    NewCapacity := CalcPackCapacity(Length(Parent.Children), Parent.ChildrenCount);
+    if NewCapacity < Length(Parent.Children) then
+      SetLength(Parent.Children, NewCapacity);
+    FreeAndNil(ANode);
+  end
+  else
+  begin
+    FreeAndNil(ANode);
+    FRoot := nil;
+  end;
+  Dec(FSize);
 end;
 
 function TJclTree<T>.First: IJclIterator<T>;
@@ -17227,7 +19233,7 @@ end;
 
 function TJclTree<T>.Remove(const AItem: T): Boolean;
 var
-  It: IJclIterator<T>;
+  Extracted: T;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -17236,17 +19242,11 @@ begin
     SyncReaderWriter.BeginWrite;
   try
   {$ENDIF THREADSAFE}
-    Result := FRoot <> nil;
+    Result := Extract(AItem);
     if Result then
     begin
-      It := First;
-      while It.HasNext do
-        if ItemsEqual(It.Next, AItem) then
-      begin
-        It.Remove;
-        if RemoveSingleElement then
-          Break;
-      end;
+      Extracted := AItem;
+      FreeItem(Extracted);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -17280,6 +19280,38 @@ begin
       SyncReaderWriter.EndWrite;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+procedure TJclTree<T>.RemoveNode(var ANode: TTreeNode);
+var
+  Index, ChildIndex, NewCapacity: Integer;
+  Parent: TTreeNode;
+begin
+  for Index := ANode.ChildrenCount - 1 downto 0 do
+    {$IFDEF BCB}
+    RemoveNode(TTreeNode(ANode.Children[Index]));
+    {$ELSE ~BCB}
+    RemoveNode(ANode.Children[Index]);
+    {$ENDIF ~BCB}
+  FreeItem(ANode.Value);
+  Parent := ANode.Parent;
+  if Parent <> nil then
+  begin
+    ChildIndex := Parent.IndexOfChild(ANode);
+    for Index := ChildIndex + 1 to Parent.ChildrenCount - 1 do
+      Parent.Children[Index - 1] := Parent.Children[Index];
+    Dec(Parent.ChildrenCount);
+    NewCapacity := CalcPackCapacity(Length(Parent.Children), Parent.ChildrenCount);
+    if NewCapacity < Length(Parent.Children) then
+      SetLength(Parent.Children, NewCapacity);
+    FreeAndNil(ANode);
+  end
+  else
+  begin
+    FreeAndNil(ANode);
+    FRoot := nil;
+  end;
+  Dec(FSize);
 end;
 
 function TJclTree<T>.RetainAll(const ACollection: IJclCollection<T>): Boolean;
@@ -17440,7 +19472,30 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclTreeIterator<T>.ClearChildren;
+procedure TJclTreeIterator<T>.DeleteChild(Index: Integer);
+begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnTree.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
+      {$IFDEF BCB}
+      FOwnTree.RemoveNode(TJclTreeNode<T>(FCursor.Children[Index]))
+      {$ELSE ~BCB}
+      FOwnTree.RemoveNode(FCursor.Children[Index])
+      {$ENDIF ~BCB}
+    else
+      raise EJclOutOfBoundsError.Create;
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnTree.WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclTreeIterator<T>.DeleteChildren;
 var
   Index: Integer;
 begin
@@ -17454,9 +19509,9 @@ begin
     begin
       for Index := FCursor.ChildrenCount - 1 downto 0 do
         {$IFDEF BCB}
-        FOwnTree.ClearNode(TJclTreeNode<T>(FCursor.Children[Index]));
+        FOwnTree.RemoveNode(TJclTreeNode<T>(FCursor.Children[Index]));
         {$ELSE ~BCB}
-        FOwnTree.ClearNode(FCursor.Children[Index]);
+        FOwnTree.RemoveNode(FCursor.Children[Index]);
         {$ENDIF ~BCB}
       SetLength(FCursor.Children, 0);
       FCursor.ChildrenCount := 0;
@@ -17468,7 +19523,30 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclTreeIterator<T>.DeleteChild(Index: Integer);
+procedure TJclTreeIterator<T>.Extract;
+var
+  OldCursor: TJclTreeNode<T>;
+begin
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnTree.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    OldCursor := FCursor;
+    FCursor := GetNextSibling;
+    if OldCursor <> nil then
+      FOwnTree.ExtractNode(OldCursor);
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnTree.WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclTreeIterator<T>.ExtractChild(Index: Integer);
 begin
   if FOwnTree.ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -17478,9 +19556,9 @@ begin
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
       {$IFDEF BCB}
-      FOwnTree.ClearNode(TJclTreeNode<T>(FCursor.Children[Index]))
+      FOwnTree.ExtractNode(TJclTreeNode<T>(FCursor.Children[Index]))
       {$ELSE ~BCB}
-      FOwnTree.ClearNode(FCursor.Children[Index])
+      FOwnTree.ExtractNode(FCursor.Children[Index])
       {$ENDIF ~BCB}
     else
       raise EJclOutOfBoundsError.Create;
@@ -17491,20 +19569,32 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclTreeIterator<T>.IteratorEquals(const AIterator: IJclIterator<T>): Boolean;
+procedure TJclTreeIterator<T>.ExtractChildren;
 var
-  Obj: TObject;
-  ItrObj: TJclTreeIterator<T>;
+  Index: Integer;
 begin
-  Result := False;
-  if AIterator = nil then
-    Exit;
-  Obj := AIterator.GetIteratorReference;
-  if Obj is TJclTreeIterator<T> then
-  begin
-    ItrObj := TJclTreeIterator<T>(Obj);
-    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  if FOwnTree.ReadOnly then
+    raise EJclReadOnlyError.Create;
+  {$IFDEF THREADSAFE}
+  FOwnTree.WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if FCursor <> nil then
+    begin
+      for Index := FCursor.ChildrenCount - 1 downto 0 do
+        {$IFDEF BCB}
+        FOwnTree.ExtractNode(TJclTreeNode<T>(FCursor.Children[Index]));
+        {$ELSE ~BCB}
+        FOwnTree.ExtractNode(FCursor.Children[Index]);
+        {$ENDIF ~BCB}
+      SetLength(FCursor.Children, 0);
+      FCursor.ChildrenCount := 0;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    FOwnTree.WriteUnlock;
   end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TJclTreeIterator<T>.GetChild(Index: Integer): T;
@@ -17716,6 +19806,22 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclTreeIterator<T>.IteratorEquals(const AIterator: IJclIterator<T>): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TJclTreeIterator<T>;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TJclTreeIterator<T> then
+  begin
+    ItrObj := TJclTreeIterator<T>(Obj);
+    Result := (FOwnTree = ItrObj.FOwnTree) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
+end;
+
 {$IFDEF SUPPORTS_FOR_IN}
 function TJclTreeIterator<T>.MoveNext: Boolean;
 begin
@@ -17830,7 +19936,7 @@ begin
     OldCursor := FCursor;
     FCursor := GetNextSibling;
     if OldCursor <> nil then
-      FOwnTree.ClearNode(OldCursor);
+      FOwnTree.RemoveNode(OldCursor);
   {$IFDEF THREADSAFE}
   finally
     FOwnTree.WriteUnlock;

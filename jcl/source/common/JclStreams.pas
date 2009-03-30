@@ -27,7 +27,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -531,9 +531,12 @@ type
     function GetCalcedSize: Int64; override;
   public
     constructor Create(AStream: TStream; AOwnsStream: Boolean = False); virtual;
-    function ReadString(var Buffer: string; Start, Count: Longint): Longint;
-    function ReadAnsiString(var Buffer: AnsiString; Start, Count: Longint): Longint;
-    function ReadWideString(var Buffer: WideString; Start, Count: Longint): Longint;
+    function ReadString(var Buffer: string; Start, Count: Longint): Longint; overload;
+    function ReadString(BufferSize: Longint = 4096): string; overload;
+    function ReadAnsiString(var Buffer: AnsiString; Start, Count: Longint): Longint; overload;
+    function ReadAnsiString(BufferSize: Longint = 4096): AnsiString; overload;
+    function ReadWideString(var Buffer: WideString; Start, Count: Longint): Longint; overload;
+    function ReadWideString(BufferSize: Longint = 4096): WideString; overload;
     function WriteString(const Buffer: string; Start, Count: Longint): Longint;
     function WriteAnsiString(const Buffer: AnsiString; Start, Count: Longint): Longint;
     function WriteWideString(const Buffer: WideString; Start, Count: Longint): Longint;
@@ -2869,6 +2872,20 @@ begin
   FPeekPosition := FPosition;
 end;
 
+function TJclStringStream.ReadString(BufferSize: Longint): string;
+var
+  Buffer: string;
+  ProcessedLength: Longint;
+begin
+  Result := '';
+  SetLength(Buffer, BufferSize);
+  repeat
+    ProcessedLength := ReadString(Buffer, 1, BufferSize);
+    if ProcessedLength > 0 then
+      Result := Result + Copy(Buffer, 1, ProcessedLength);
+  until ProcessedLength = 0;
+end;
+
 function TJclStringStream.ReadAnsiChar(var Buffer: AnsiChar): Boolean;
 var
   Ch: UCS4;
@@ -2900,6 +2917,20 @@ begin
   end;
   Result := Index - Start;
   FPeekPosition := FPosition;
+end;
+
+function TJclStringStream.ReadAnsiString(BufferSize: Longint): AnsiString;
+var
+  Buffer: AnsiString;
+  ProcessedLength: Longint;
+begin
+  Result := '';
+  SetLength(Buffer, BufferSize);
+  repeat
+    ProcessedLength := ReadAnsiString(Buffer, 1, BufferSize);
+    if ProcessedLength > 0 then
+      Result := Result + Copy(Buffer, 1, ProcessedLength);
+  until ProcessedLength = 0;
 end;
 
 function TJclStringStream.ReadChar(var Buffer: Char): Boolean;
@@ -2943,6 +2974,20 @@ begin
   end;
   Result := Index - Start;
   FPeekPosition := FPosition;
+end;
+
+function TJclStringStream.ReadWideString(BufferSize: Longint): WideString;
+var
+  Buffer: WideString;
+  ProcessedLength: Longint;
+begin
+  Result := '';
+  SetLength(Buffer, BufferSize);
+  repeat
+    ProcessedLength := ReadWideString(Buffer, 1, BufferSize);
+    if ProcessedLength > 0 then
+      Result := Result + Copy(Buffer, 1, ProcessedLength);
+  until ProcessedLength = 0;
 end;
 
 function TJclStringStream.SkipBOM: Longint;

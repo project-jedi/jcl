@@ -37,7 +37,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                       $ }
+{ Last modified: $Date::                                                                      $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -835,7 +835,7 @@ begin
   Result := nil;
   {$IFDEF SUPPORTS_UNICODE}
   Path := PChar(ExtractFilePath(FileName));
-  ItemName := Path;
+  ItemName := PChar(ExtractFileName(FileName));
   {$ELSE ~SUPPORTS_UNICODE}
   MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, PAnsiChar(ExtractFilePath(FileName)), -1, Path, MAX_PATH);
   MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, PAnsiChar(ExtractFileName(FileName)), -1, ItemName, MAX_PATH);

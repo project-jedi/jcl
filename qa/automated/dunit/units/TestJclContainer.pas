@@ -22,8 +22,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, JclContainerIntf, JclLinkedLists, JclVectors, JclArrayLists, JclAlgorithms, TestFramework, GUITestRunner,
-  JvDebugHandler;
+  Dialogs, JclContainerIntf, JclLinkedLists, JclVectors, JclArrayLists, JclAlgorithms, TestFramework, GUITestRunner;
 
 type
   TJclStrListImplType = (litArray, litLinkedList, litVector);
@@ -40,6 +39,7 @@ type
     procedure IJclStrList_InsertAll_with_ArrayList;
     procedure IJclStrList_InsertAll_with_VectorList;
   end;
+
 implementation
 
 //==================================================================================================
@@ -80,11 +80,6 @@ begin
 end;
 
 procedure TJclContainerTest.IJclStrList_AppendDelim_with_LinkedList;
-var
-  I: IJclStrList;
-  sl: TStringList;
-  x: integer;
-  s: string;
 begin
   DoDelimTest(GetStrList);
 end;
@@ -101,9 +96,7 @@ end;
 procedure TJclContainerTest.InsertAll(x, y, SavedX: IJclStrList);
 var
   i: byte;
-  cc, v, c: cardinal;
-  s: string;
-  it: IJclStrIterator;
+  c: cardinal;
 const
   StartChar = 'A';
   EndChar = 'Z';
@@ -121,11 +114,15 @@ begin
 
   for c := 0 to Pred(count div 50) do
   begin
-    CheckEquals(Count * (ord(EndChar) - ord(StartChar) + 1), x.size);
-    CheckEquals(Count * (ord(EndChar) - ord(StartChar) + 1), y.size);
-    x.InsertAll(c, y);
+    CheckEquals(Count * (ord(EndChar) - ord(StartChar) + 1), x.size, 'x.size[' + IntToStr(c) + ']');
+    CheckEquals(Count * (ord(EndChar) - ord(StartChar) + 1), y.size, 'y.size[' + IntToStr(c) + ']');
+    CheckEquals(True, x.InsertAll(c, y), 'x.InsertAll(' + IntToStr(c) + ', y)');
     for i := ord(StartChar) to ord(EndChar) do
-      CheckEquals(Count * 2, CountObject(x.First, x.Size, chr(i), StrSimpleCompare));
+      CheckEquals(
+        Count * 2,
+        CountObject(x.First, x.Size, chr(i), StrSimpleCompare),
+        'Count char #' + IntToStr(i) + ', c=' + IntToStr(c)
+      );
     x.Clear;
     x.AddAll(SavedX);
   end;

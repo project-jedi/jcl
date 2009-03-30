@@ -12,7 +12,7 @@
     function AddAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;COLLECTIONFLAGS
     function Contains(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;COLLECTIONFLAGS
     { LISTINTERFACENAME }
-    function Insert(Index: Integer; CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean; overload;
+    function Insert(Index: Integer; CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
     { SETINTERFACENAME }
     procedure Intersect(const ACollection: COLLECTIONINTERFACENAME);
     procedure Subtract(const ACollection: COLLECTIONINTERFACENAME);

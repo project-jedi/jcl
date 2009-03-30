@@ -123,7 +123,7 @@
       <Directories Name="PackageDCPOutputDir">..\..\lib\cs1</Directories>
       <Directories Name="SearchPath">..\..\lib\cs1;..\..\source\include</Directories>
       <Directories Name="Packages">rtl;vcl;designide;Jcl</Directories>
-      <Directories Name="Conditionals"></Directories>
+      <Directories Name="Conditionals">RELEASE</Directories>
       <Directories Name="DebugSourceDirs"></Directories>
       <Directories Name="UsePackages">True</Directories>
     </Directories>

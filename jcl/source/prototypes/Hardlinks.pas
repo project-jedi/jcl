@@ -355,7 +355,7 @@ const
 
 {$IFNDEF RTDL}
 function RtlCreateUnicodeStringFromAsciiz(var destination: UNICODE_STRING;
-  source: PChar): Boolean; stdcall; external szNtDll;
+  source: PAnsiChar): Boolean; stdcall; external szNtDll;
 
 function ZwClose(Handle: THandle): NTSTATUS; stdcall; external szNtDll;
 
@@ -398,7 +398,7 @@ function RtlNtStatusToDosError(status: NTSTATUS): ULONG; stdcall; external szNtD
 
 type
   TRtlCreateUnicodeStringFromAsciiz = function(var destination: UNICODE_STRING;
-    source: PChar): Boolean; stdcall;
+    source: PAnsiChar): Boolean; stdcall;
 
   TZwClose = function(Handle: THandle): NTSTATUS; stdcall;
 

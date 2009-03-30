@@ -146,7 +146,7 @@ const
 
   // Note: faVolumeID is potentially dangerous and its usage has been discontinued
   // Please see QC report 6003 for details, available online at this URL:
-  // http://qc.borland.com/wc/qcmain.aspx?d=6003
+  // http://qc.embarcadero.com/wc/qcmain.aspx?d=6003
   faRejectedByDefault = faHidden + faSysFile + faDirectory;
   faWindowsSpecific   = faArchive + faTemporary + faSparseFile + faReparsePoint +
                         faCompressed + faOffline + faNotContentIndexed + faEncrypted;
