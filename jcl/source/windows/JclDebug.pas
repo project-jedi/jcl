@@ -781,7 +781,7 @@ const
 type
   TJclStackTrackingOption =
     (stStack, stExceptFrame, stRawMode, stAllModules, stStaticModuleList,
-     stDelayedTrace, stTraceAllExceptions, stMainThreadOnly);
+     stDelayedTrace, stTraceAllExceptions, stMainThreadOnly, stDisableIfDebuggerAttached);
   TJclStackTrackingOptions = set of TJclStackTrackingOption;
 
 {$IFDEF KEEP_DEPRECATED}
@@ -4834,8 +4834,9 @@ end;
 procedure DoExceptNotify(ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean;
   BaseOfStack: Pointer);
 begin
-  if TrackingActive and Assigned(ExceptObj) and (not IsIgnoredException(ExceptObj.ClassType)) and
-     (not (stMainThreadOnly in JclStackTrackingOptions) or (GetCurrentThreadId = MainThreadID)) then
+  if TrackingActive and (not (stDisableIfDebuggerAttached in JclStackTrackingOptions) or (not IsDebuggerAttached)) and
+    Assigned(ExceptObj) and (not IsIgnoredException(ExceptObj.ClassType)) and
+    (not (stMainThreadOnly in JclStackTrackingOptions) or (GetCurrentThreadId = MainThreadID)) then
   begin
     if stStack in JclStackTrackingOptions then
       DoExceptionStackTrace(ExceptObj, ExceptAddr, OSException, BaseOfStack);
