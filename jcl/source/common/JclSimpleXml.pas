@@ -451,7 +451,7 @@ type
 
   TJclSimpleXML = class(TObject)
   protected
-    FEncoding: TJClStringEncoding;
+    FEncoding: TJclStringEncoding;
     FFileName: TFileName;
     FOptions: TJclSimpleXMLOptions;
     FRoot: TJclSimpleXMLElemClassic;
@@ -1140,6 +1140,7 @@ begin
     end
     else
       AOutStream := Stream;
+
     case Encoding of
       seAnsi:
         AStringStream := TJclAnsiStream.Create(AOutStream, False);
@@ -1152,6 +1153,12 @@ begin
     end;
     try
       AStringStream.SkipBOM;
+
+      if AStringStream is TJclAutoStream then
+        FEncoding := TJclAutoStream(AStringStream).Encoding
+      else
+        FEncoding := Encoding;
+
       LoadFromStringStream(AStringStream);
     finally
       AStringStream.Free;
