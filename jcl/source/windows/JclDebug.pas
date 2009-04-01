@@ -351,6 +351,65 @@ type
     BinaryFileName: string;         // Name of the binary file containing the symbol 
   end;
 
+  TJclLocationInfoExValues = set of (lievLocationInfo, lievProcedureStartLocationInfo);
+
+  TJclLocationInfoEx = class(TPersistent)
+  private
+    FAddress: Pointer;
+    FLineNumber: Integer;
+    FLineNumberOffsetFromProcedureStart: Integer;
+    FModuleName: string;
+    FOffsetFromLineNumber: Integer;
+    FOffsetFromProcName: Integer;
+    FProcedureName: string;
+    FSourceName: string;
+    FSourceUnitName: string;
+    FVAddress: Pointer;
+    FValues: TJclLocationInfoExValues;
+    procedure Fill;
+    function GetAsCSVString: string;
+    function GetAsString: string;
+  protected
+    procedure AssignTo(Dest: TPersistent); override;
+  public
+    constructor Create(Address: Pointer);
+    class function CSVHeader: string;
+    property Address: Pointer read FAddress write FAddress;
+    property AsCSVString: string read GetAsCSVString;
+    property AsString: string read GetAsString;
+    property LineNumber: Integer read FLineNumber write FLineNumber;
+    property LineNumberOffsetFromProcedureStart: Integer read FLineNumberOffsetFromProcedureStart write FLineNumberOffsetFromProcedureStart;
+    property ModuleName: string read FModuleName write FModuleName;
+    property OffsetFromLineNumber: Integer read FOffsetFromLineNumber write FOffsetFromLineNumber;
+    property OffsetFromProcName: Integer read FOffsetFromProcName write FOffsetFromProcName;
+    property ProcedureName: string read FProcedureName write FProcedureName;
+    property SourceName: string read FSourceName write FSourceName;
+    { this is equal to TJclLocationInfo.UnitName, but has been renamed because
+      UnitName is a class function in TObject since Delphi 2009 }
+    property SourceUnitName: string read FSourceUnitName write FSourceUnitName;
+    property VAddress: Pointer read FVAddress write FVAddress;
+    property Values: TJclLocationInfoExValues read FValues write FValues;
+  end;
+
+  TJclLocationInfoList = class(TObject)
+  private
+    FItems: TObjectList;
+    function GetAsCSVString: string;
+    function GetAsString: string;
+    function GetCount: Integer;
+    function GetItems(AIndex: Integer): TJclLocationInfoEx;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    function Add(Addr: Pointer): TJclLocationInfoEx; overload;
+    procedure Add(AStackInfoList: TObject); overload;
+    procedure Clear;
+    property AsCSVString: string read GetAsCSVString;
+    property AsString: string read GetAsString;
+    property Count: Integer read GetCount;
+    property Items[AIndex: Integer]: TJclLocationInfoEx read GetItems; default;
+  end;
+
   TJclDebugInfoSource = class(TObject)
   private
     FModule: HMODULE;
@@ -704,10 +763,11 @@ type
 
   TJclDebugThreadList = class(TObject)
   private
-    FList: TStringList;
+    FList: TObjectList;
     FLock: TJclCriticalSection;
     FReadLock: TJclCriticalSection;
     FRegSyncThreadID: DWORD;
+    FSaveCreationStack: Boolean;
     FUnregSyncThreadID: DWORD;
     FOnSyncException: TJclDebugThreadNotifyEvent;
     FOnThreadRegistered: TJclThreadIDNotifyEvent;
@@ -717,25 +777,32 @@ type
     function GetThreadNames(ThreadID: DWORD): string;
     procedure DoSyncThreadRegistered;
     procedure DoSyncThreadUnregistered;
+    function GetThreadCreationTime(ThreadID: DWORD): TDateTime;
     function GetThreadHandle(Index: Integer): THandle;
     function GetThreadID(Index: Integer): DWORD;
     function GetThreadIDCount: Integer;
+    function GetThreadParentID(ThreadID: DWORD): DWORD;
     function GetThreadValues(ThreadID: DWORD; Index: Integer): string;
     function IndexOfThreadID(ThreadID: DWORD): Integer;
   protected
     procedure DoSyncException(Thread: TJclDebugThread);
     procedure DoThreadRegistered(Thread: TThread);
     procedure DoThreadUnregistered(Thread: TThread);
-    procedure InternalRegisterThread(Thread: TThread; const ThreadName: string);
-    procedure InternalUnregisterThread(Thread: TThread);
+    procedure InternalRegisterThread(Thread: TThread; ThreadID: DWORD; const ThreadName: string);
+    procedure InternalUnregisterThread(Thread: TThread; ThreadID: DWORD);
   public
     constructor Create;
     destructor Destroy; override;
+    function AddStackListToLocationInfoList(ThreadID: DWORD; AList: TJclLocationInfoList): Boolean;
     procedure RegisterThread(Thread: TThread; const ThreadName: string);
+    procedure RegisterThreadID(AThreadID: DWORD);
     procedure UnregisterThread(Thread: TThread);
+    procedure UnregisterThreadID(AThreadID: DWORD);
     property Lock: TJclCriticalSection read FLock;
     //property ThreadClassNames[ThreadID: DWORD]: string index 1 read GetThreadValues;
+    property SaveCreationStack: Boolean read FSaveCreationStack write FSaveCreationStack;
     property ThreadClassNames[ThreadID: DWORD]: string read GetThreadClassNames;
+    property ThreadCreationTime[ThreadID: DWORD]: TDateTime read GetThreadCreationTime;
     property ThreadHandles[Index: Integer]: DWORD read GetThreadHandle;
     property ThreadIDs[Index: Integer]: DWORD read GetThreadID;
     property ThreadIDCount: Integer read GetThreadIDCount;
@@ -743,12 +810,90 @@ type
     property ThreadInfos[ThreadID: DWORD]: string read GetThreadInfos;
     //property ThreadNames[ThreadID: DWORD]: string index 0 read GetThreadValues;
     property ThreadNames[ThreadID: DWORD]: string read GetThreadNames;
+    property ThreadParentIDs[ThreadID: DWORD]: DWORD read GetThreadParentID;
     property OnSyncException: TJclDebugThreadNotifyEvent read FOnSyncException write FOnSyncException;
     property OnThreadRegistered: TJclThreadIDNotifyEvent read FOnThreadRegistered write FOnThreadRegistered;
     property OnThreadUnregistered: TJclThreadIDNotifyEvent read FOnThreadUnregistered write FOnThreadUnregistered;
   end;
 
+  TJclDebugThreadInfo = class(TObject)
+  private
+    FCreationTime: TDateTime;
+    FParentThreadID: DWORD;
+    FStackList: TJclStackInfoList;
+    FThreadClassName: string;
+    FThreadID: DWORD;
+    FThreadHandle: THandle;
+    FThreadName: string;
+  public
+    constructor Create(AParentThreadID, AThreadID: DWORD; AStack: Boolean);
+    destructor Destroy; override;
+    property CreationTime: TDateTime read FCreationTime;
+    property ParentThreadID: DWORD read FParentThreadID;
+    property StackList: TJclStackInfoList read FStackList;
+    property ThreadClassName: string read FThreadClassName write FThreadClassName;
+    property ThreadID: DWORD read FThreadID;
+    property ThreadHandle: THandle read FThreadHandle write FThreadHandle;
+    property ThreadName: string read FThreadName write FThreadName;
+  end;
+
+  TJclThreadInfoOptions = set of (tioIsMainThread, tioName, tioCreationTime, tioParentThreadID, tioStack, tioCreationStack);
+
+  TJclThreadInfo = class(TObject)
+  private
+    FCreationTime: TDateTime;
+    FCreationStack: TJclLocationInfoList;
+    FName: string;
+    FParentThreadID: DWORD;
+    FStack: TJclLocationInfoList;
+    FThreadID: DWORD;
+    FValues: TJclThreadInfoOptions;
+    function GetAsCSVString: string;
+    function GetAsString: string;
+    procedure InternalFill(AThreadHandle: THandle; AThreadID: DWORD; AGatherOptions: TJclThreadInfoOptions; AExceptThread: Boolean);
+  public
+    constructor Create;
+    destructor Destroy; override;
+    class function CSVHeader: string;
+    procedure Fill(AThreadHandle: THandle; AThreadID: DWORD; AGatherOptions: TJclThreadInfoOptions);
+    procedure FillFromExceptThread(AGatherOptions: TJclThreadInfoOptions);
+    property AsCSVString: string read GetAsCSVString;
+    property AsString: string read GetAsString;
+    property CreationTime: TDateTime read FCreationTime write FCreationTime;
+    property CreationStack: TJclLocationInfoList read FCreationStack;
+    property Name: string read FName write FName;
+    property ParentThreadID: DWORD read FParentThreadID write FParentThreadID;
+    property Stack: TJclLocationInfoList read FStack;
+    property ThreadID: DWORD read FThreadID write FThreadID;
+    property Values: TJclThreadInfoOptions read FValues write FValues;
+  end;
+
+  TJclThreadInfoList = class(TObject)
+  private
+    FGatherOptions: TJclThreadInfoOptions;
+    FItems: TObjectList;
+    function GetAsCSVString: string;
+    function GetAsString: string;
+    function GetCount: Integer;
+    function GetItems(AIndex: Integer): TJclThreadInfo;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    function Add: TJclThreadInfo;
+    procedure Clear;
+    function Gather(AExceptThreadID: DWORD): string;
+    property AsCSVString: string read GetAsCSVString;
+    property AsString: string read GetAsString;
+    property Count: Integer read GetCount;
+    property GatherOptions: TJclThreadInfoOptions read FGatherOptions write FGatherOptions;
+    property Items[AIndex: Integer]: TJclThreadInfo read GetItems; default;
+  end;
+
 function JclDebugThreadList: TJclDebugThreadList;
+
+function JclHookThreads: Boolean;
+function JclUnhookThreads: Boolean;
+function JclThreadsHooked: Boolean;
 
 // Miscellanuous
 {$IFDEF MSWINDOWS}
@@ -821,7 +966,7 @@ uses
   JclRegistry,
   {$ENDIF MSWINDOWS}
   JclHookExcept, JclLogic, JclStrings, JclSysInfo, JclSysUtils, JclWin32,
-  JclStringConversions, JclResources;
+  JclStringConversions, JclResources, TLHelp32;
 
 //=== Helper assembler routines ==============================================
 
@@ -2628,6 +2773,251 @@ begin
     Result := '';
 end;
 
+//=== { TJclLocationInfoEx } =================================================
+
+constructor TJclLocationInfoEx.Create(Address: Pointer);
+begin
+  inherited Create;
+  FAddress := Address;
+  Fill;
+end;
+
+procedure TJclLocationInfoEx.AssignTo(Dest: TPersistent);
+begin
+  if Dest is TJclLocationInfoEx then
+  begin
+    TJclLocationInfoEx(Dest).FAddress := FAddress;
+    TJclLocationInfoEx(Dest).FLineNumber := FLineNumber;
+    TJclLocationInfoEx(Dest).FLineNumberOffsetFromProcedureStart := FLineNumberOffsetFromProcedureStart;
+    TJclLocationInfoEx(Dest).FModuleName := FModuleName;
+    TJclLocationInfoEx(Dest).FOffsetFromLineNumber := FOffsetFromLineNumber;
+    TJclLocationInfoEx(Dest).FOffsetFromProcName := FOffsetFromProcName;
+    TJclLocationInfoEx(Dest).FProcedureName := FProcedureName;
+    TJclLocationInfoEx(Dest).FSourceName := FSourceName;
+    TJclLocationInfoEx(Dest).FSourceUnitName := FSourceUnitName;
+    TJclLocationInfoEx(Dest).FVAddress := FVAddress;
+    TJclLocationInfoEx(Dest).FValues := FValues;
+  end
+  else
+    inherited AssignTo(Dest);
+end;
+
+class function TJclLocationInfoEx.CSVHeader: string;
+begin
+  Result := '"VAddress";"ModuleName";"Address";"OffsetFromProcName";"UnitName";"ProcedureName";"SourceName";"LineNumber";"OffsetFromLineNumber";"LineNumberOffsetFromProcedureStart"';
+end;
+
+procedure TJclLocationInfoEx.Fill;
+var
+  Info, StartProcInfo: TJclLocationInfo;
+  FixedProcedureName: string;
+  Module: HMODULE;
+begin
+  FValues := [];
+  Module := ModuleFromAddr(FAddress);
+  FVAddress := Pointer(DWORD_PTR(FAddress) - Module - ModuleCodeOffset);
+  FModuleName := ExtractFileName(GetModulePath(Module));
+  if GetLocationInfo(FAddress, Info) then
+  begin
+    FValues := FValues + [lievLocationInfo];
+    FOffsetFromProcName := Info.OffsetFromProcName;
+    FSourceUnitName := Info.UnitName;
+    FixedProcedureName := Info.ProcedureName;
+    if Pos(Info.UnitName + '.', FixedProcedureName) = 1 then
+      FixedProcedureName := Copy(FixedProcedureName, Length(Info.UnitName) + 2, Length(FixedProcedureName) - Length(Info.UnitName) - 1);
+    FProcedureName := FixedProcedureName;
+    FSourceName := Info.SourceName;
+    FLineNumber := Info.LineNumber;
+    if FLineNumber > 0 then
+      FOffsetFromLineNumber := Info.OffsetFromLineNumber
+    else
+      FOffsetFromLineNumber := 0;
+    if GetLocationInfo(Pointer(DWORD_PTR(Info.Address) -
+      Cardinal(Info.OffsetFromProcName)), StartProcInfo) and (StartProcInfo.LineNumber > 0) then
+    begin
+      FLineNumberOffsetFromProcedureStart := Info.LineNumber - StartProcInfo.LineNumber;
+      FValues := FValues + [lievProcedureStartLocationInfo];
+    end
+    else
+      FLineNumberOffsetFromProcedureStart := 0;
+  end
+  else
+  begin
+    FOffsetFromProcName := 0;
+    FSourceUnitName := '';
+    FProcedureName := '';
+    FSourceName := '';
+    FLineNumber := 0;
+    FOffsetFromLineNumber := 0;
+    FLineNumberOffsetFromProcedureStart := 0;
+  end;
+end;
+
+function TJclLocationInfoEx.GetAsCSVString: string;
+var
+  S: string;
+begin
+  S := Format('"%p"', [VAddress]);
+  S := S + ';' + Format('"%s"', [ModuleName]);
+  S := S + ';' + Format('"%p"', [Address]);
+  if lievLocationInfo in FValues then
+  begin
+    S := S + Format(';"+ $%x"', [OffsetFromProcName]);
+    S := S + Format(';"%s"', [SourceUnitName]);
+    S := S + Format(';"%s"', [ProcedureName]);
+    S := S + Format(';"%s"', [SourceName]);
+    if LineNumber > 0 then
+    begin
+      S := S + Format(';"%d"', [LineNumber]);
+      if OffsetFromLineNumber >= 0 then
+        S := S + Format(';"+ $%x"', [OffsetFromLineNumber])
+      else
+        S := S + Format(';"- $%x"', [-OffsetFromLineNumber]);
+    end
+    else
+      S := S + ';"";""';
+    if lievProcedureStartLocationInfo in FValues then
+      S := S + Format(';"%d"', [LineNumberOffsetFromProcedureStart])
+    else
+      S := S + ';""';
+  end
+  else
+    S := S + ';"";"";"";"";"";"";""';
+  Result := S;
+end;
+
+{ TODO -oUSc : Include... better as function than property? }
+function TJclLocationInfoEx.GetAsString: string;
+const
+  IncludeStartProcLineOffset = True;
+  IncludeAddressOffset = True;
+  IncludeModuleName = True;
+var
+  IncludeVAdress: Boolean;
+  OffsetStr, StartProcOffsetStr: string;
+begin
+  IncludeVAdress := True;
+  OffsetStr := '';
+  if lievLocationInfo in FValues then
+  begin
+    if LineNumber > 0 then
+    begin
+      if IncludeStartProcLineOffset and (lievProcedureStartLocationInfo in FValues) then
+        StartProcOffsetStr := Format(' + %d', [LineNumberOffsetFromProcedureStart])
+      else
+        StartProcOffsetStr := '';
+      if IncludeAddressOffset then
+      begin
+        if OffsetFromLineNumber >= 0 then
+          OffsetStr := Format(' + $%x', [OffsetFromLineNumber])
+        else
+          OffsetStr := Format(' - $%x', [-OffsetFromLineNumber])
+      end;
+      Result := Format('[%p] %s.%s (Line %u, "%s"%s)%s', [Address, SourceUnitName, ProcedureName, LineNumber,
+        SourceName, StartProcOffsetStr, OffsetStr]);
+    end
+    else
+    begin
+      if IncludeAddressOffset then
+        OffsetStr := Format(' + $%x', [OffsetFromProcName]);
+      if SourceUnitName <> '' then
+        Result := Format('[%p] %s.%s%s', [Address, SourceUnitName, ProcedureName, OffsetStr])
+      else
+        Result := Format('[%p] %s%s', [Address, ProcedureName, OffsetStr]);
+    end;
+  end
+  else
+  begin
+    Result := Format('[%p]', [Address]);
+    IncludeVAdress := True;
+  end;
+  if IncludeVAdress or IncludeModuleName then
+  begin
+    if IncludeVAdress then
+    begin
+      OffsetStr :=  Format('(%p) ', [VAddress]);
+      Result := OffsetStr + Result;
+    end;
+    if IncludeModuleName then
+      Insert(Format('{%-12s}', [ModuleName]), Result, 11);
+  end;
+end;
+
+//=== { TJclLocationInfoList } ===============================================
+
+constructor TJclLocationInfoList.Create;
+begin
+  inherited Create;
+  FItems := TObjectList.Create;
+end;
+
+destructor TJclLocationInfoList.Destroy;
+begin
+  FItems.Free;
+  inherited Destroy;
+end;
+
+function TJclLocationInfoList.Add(Addr: Pointer): TJclLocationInfoEx;
+begin
+  FItems.Add(TJclLocationInfoEx.Create(Addr));
+  Result := TJclLocationInfoEx(FItems.Last);
+end;
+
+procedure TJclLocationInfoList.Add(AStackInfoList: TObject);
+var
+  I: Integer;
+begin
+  TJclStackInfoList(AStackInfoList).ForceStackTracing;
+  for I := 0 to TJclStackInfoList(AStackInfoList).Count - 1 do
+    Add(TJclStackInfoList(AStackInfoList)[I].CallerAdr);
+end;
+
+procedure TJclLocationInfoList.Clear;
+begin
+  FItems.Clear;
+end;
+
+function TJclLocationInfoList.GetAsCSVString: string;
+var
+  I: Integer;
+  Strings: TStringList;
+begin
+  Strings := TStringList.Create;
+  try
+    Strings.Add(TJclLocationInfoEx.CSVHeader);
+    for I := 0 to Count - 1 do
+      Strings.Add(Items[I].AsCSVString);
+    Result := Strings.Text;
+  finally
+    Strings.Free;
+  end;
+end;
+
+function TJclLocationInfoList.GetAsString: string;
+var
+  I: Integer;
+  Strings: TStringList;
+begin
+  Strings := TStringList.Create;
+  try
+    for I := 0 to Count - 1 do
+      Strings.Add(Items[I].AsString);
+    Result := Strings.Text;
+  finally
+    Strings.Free;
+  end;
+end;
+
+function TJclLocationInfoList.GetCount: Integer;
+begin
+  Result := FItems.Count;
+end;
+
+function TJclLocationInfoList.GetItems(AIndex: Integer): TJclLocationInfoEx;
+begin
+  Result := TJclLocationInfoEx(FItems[AIndex]);
+end;
+
 //=== { TJclDebugInfoSource } ================================================
 
 constructor TJclDebugInfoSource.Create(AModule: HMODULE);
@@ -3441,7 +3831,7 @@ var
   Module : HMODULE;
 begin
   OffsetStr := '';
-  if GetLocationInfo(Addr, Info) then 
+  if GetLocationInfo(Addr, Info) then
   with Info do
   begin
     FixedProcedureName := ProcedureName;
@@ -4891,6 +5281,77 @@ begin
   Result := RegisteredThreadList;
 end;
 
+var
+  ThreadsHooked: Boolean;
+  Kernel32_CreateThread: function(SecurityAttributes: Pointer; StackSize: LongWord;
+    ThreadFunc: TThreadFunc; Parameter: Pointer;
+    CreationFlags: LongWord; var ThreadId: LongWord): Integer; stdcall = nil;
+  Kernel32_ExitThread: procedure(ExitCode: Integer); stdcall = nil;
+
+function HookedCreateThread(SecurityAttributes: Pointer; StackSize: LongWord;
+  ThreadFunc: TThreadFunc; Parameter: Pointer;
+  CreationFlags: LongWord; var ThreadId: LongWord): Integer; stdcall;
+begin
+  Result := Kernel32_CreateThread(SecurityAttributes, StackSize, ThreadFunc, Parameter, CreationFlags, ThreadId);
+  if Result <> 0 then
+    RegisteredThreadList.RegisterThreadID(ThreadId);
+end;
+
+procedure HookedExitThread(ExitCode: Integer); stdcall;
+begin
+  RegisteredThreadList.UnregisterThreadID(GetCurrentThreadID);
+  Kernel32_ExitThread(ExitCode);
+end;
+
+function JclHookThreads: Boolean;
+var
+  ProcAddrCache: Pointer;
+begin
+  if not ThreadsHooked then
+  begin
+    ProcAddrCache := GetProcAddress(GetModuleHandle(kernel32), 'CreateThread');
+    with TJclPeMapImgHooks do
+      Result := ReplaceImport(SystemBase, kernel32, ProcAddrCache, @HookedCreateThread);
+    if Result then
+    begin
+      @Kernel32_CreateThread := ProcAddrCache;
+
+      ProcAddrCache := GetProcAddress(GetModuleHandle(kernel32), 'ExitThread');
+      with TJclPeMapImgHooks do
+        Result := ReplaceImport(SystemBase, kernel32, ProcAddrCache, @HookedExitThread);
+      if Result then
+        @Kernel32_ExitThread := ProcAddrCache
+      else
+      with TJclPeMapImgHooks do
+        ReplaceImport(SystemBase, kernel32, @HookedCreateThread, @Kernel32_CreateThread);
+    end;
+    ThreadsHooked := Result;
+  end
+  else
+    Result := True;
+end;
+
+function JclUnhookThreads: Boolean;
+begin
+  if ThreadsHooked then
+  begin
+    with TJclPeMapImgHooks do
+    begin
+      ReplaceImport(SystemBase, kernel32, @HookedCreateThread, @Kernel32_CreateThread);
+      ReplaceImport(SystemBase, kernel32, @HookedExitThread, @Kernel32_ExitThread);
+    end;
+    Result := True;
+    ThreadsHooked := False;
+  end
+  else
+    Result := True;
+end;
+
+function JclThreadsHooked: Boolean;
+begin
+  Result := ThreadsHooked;
+end;
+
 //=== { TJclDebugThread } ====================================================
 
 constructor TJclDebugThread.Create(Suspended: Boolean; const AThreadName: string);
@@ -4956,36 +5417,40 @@ end;
 type
   TThreadAccess = class(TThread);
 
-  TThreadListRec = record
-    ThreadID: DWORD;
-    ThreadHandle: THandle;
-  end;
-  PThreadListRec = ^TThreadListRec;
-
 constructor TJclDebugThreadList.Create;
 begin
   FLock := TJclCriticalSection.Create;
   FReadLock := TJclCriticalSection.Create;
-  FList := TStringList.Create;
+  FList := TObjectList.Create;
+  FSaveCreationStack := False;
 end;
 
 destructor TJclDebugThreadList.Destroy;
-var
-  I: Integer;
-  ThreadRec: PThreadListRec;
 begin
-  if Assigned(FList) then
-  begin
-    for I := FList.Count - 1 downto 0 do
-    begin
-      ThreadRec := PThreadListRec(FList.Objects[I]);
-      Dispose(ThreadRec);
-    end;
-  end;
   FreeAndNil(FList);
   FreeAndNil(FLock);
   FreeAndNil(FReadLock);
   inherited Destroy;
+end;
+
+function TJclDebugThreadList.AddStackListToLocationInfoList(ThreadID: DWORD; AList: TJclLocationInfoList): Boolean;
+var
+  I: Integer;
+  List: TJclStackInfoList;  
+begin
+  Result := False;
+  FReadLock.Enter;
+  try
+    I := IndexOfThreadID(ThreadID);
+    if (I <> -1) and Assigned(TJclDebugThreadInfo(FList[I]).StackList) then
+    begin
+      List := TJclDebugThreadInfo(FList[I]).StackList;
+      AList.Add(List);
+      Result := True;
+    end;
+  finally
+    FReadLock.Leave;
+  end;
 end;
 
 procedure TJclDebugThreadList.DoSyncException(Thread: TJclDebugThread);
@@ -5029,6 +5494,22 @@ begin
   Result := GetThreadValues(ThreadID, 1);
 end;
 
+function TJclDebugThreadList.GetThreadCreationTime(ThreadID: DWORD): TDateTime;
+var
+  I: Integer;
+begin
+  FReadLock.Enter;
+  try
+    I := IndexOfThreadID(ThreadID);
+    if I <> -1 then
+      Result := TJclDebugThreadInfo(FList[I]).CreationTime
+    else
+      Result := 0;
+  finally
+    FReadLock.Leave;
+  end;
+end;
+
 function TJclDebugThreadList.GetThreadIDCount: Integer;
 begin
   FReadLock.Enter;
@@ -5036,14 +5517,14 @@ begin
     Result := FList.Count;
   finally
     FReadLock.Leave;
-  end;    
+  end;
 end;
 
 function TJclDebugThreadList.GetThreadHandle(Index: Integer): DWORD;
 begin
   FReadLock.Enter;
   try
-    Result := PThreadListRec(FList.Objects[Index])^.ThreadHandle;
+    Result := TJclDebugThreadInfo(FList[Index]).ThreadHandle;
   finally
     FReadLock.Leave;
   end;
@@ -5053,7 +5534,7 @@ function TJclDebugThreadList.GetThreadID(Index: Integer): DWORD;
 begin
   FReadLock.Enter;
   try
-    Result := PThreadListRec(FList.Objects[Index])^.ThreadID;
+    Result := TJclDebugThreadInfo(FList[Index]).ThreadID;
   finally
     FReadLock.Leave;
   end;
@@ -5069,16 +5550,25 @@ begin
   Result := GetThreadValues(ThreadID, 0);
 end;
 
+function TJclDebugThreadList.GetThreadParentID(ThreadID: DWORD): DWORD;
+var
+  I: Integer;
+begin
+  FReadLock.Enter;
+  try
+    I := IndexOfThreadID(ThreadID);
+    if I <> -1 then
+      Result := TJclDebugThreadInfo(FList[I]).ParentThreadID
+    else
+      Result := 0;
+  finally
+    FReadLock.Leave;
+  end;
+end;
+
 function TJclDebugThreadList.GetThreadValues(ThreadID: DWORD; Index: Integer): string;
 var
   I: Integer;
-
-  function ThreadName: string;
-  begin
-    Result := FList.Strings[I];
-    Delete(Result, 1, Pos('=', Result));
-  end;
-
 begin
   FReadLock.Enter;
   try
@@ -5087,11 +5577,12 @@ begin
     begin
       case Index of
         0:
-          Result := ThreadName;
+          Result := TJclDebugThreadInfo(FList[I]).ThreadName;
         1:
-          Result := FList.Names[I];
+          Result := TJclDebugThreadInfo(FList[I]).ThreadClassName;
         2:
-          Result := Format('%.8x [%s] "%s"', [ThreadID, FList.Names[I], ThreadName]);
+          Result := Format('%.8x [%s] "%s"', [ThreadID, TJclDebugThreadInfo(FList[I]).ThreadClassName,
+            TJclDebugThreadInfo(FList[I]).ThreadName]);
       end;
     end
     else
@@ -5104,67 +5595,65 @@ end;
 function TJclDebugThreadList.IndexOfThreadID(ThreadID: DWORD): Integer;
 var
   I: Integer;
-  ThreadRec: PThreadListRec;
 begin
   Result := -1;
   for I := FList.Count - 1 downto 0 do
-  begin
-    ThreadRec := PThreadListRec(FList.Objects[I]);
-    if ThreadRec^.ThreadID = ThreadID then
+    if TJclDebugThreadInfo(FList[I]).ThreadID = ThreadID then
     begin
       Result := I;
       Break;
     end;
-  end;
 end;
 
-procedure TJclDebugThreadList.InternalRegisterThread(Thread: TThread; const ThreadName: string);
+procedure TJclDebugThreadList.InternalRegisterThread(Thread: TThread; ThreadID: DWORD; const ThreadName: string);
 var
   I: Integer;
-  ThreadRec: PThreadListRec;
-
-  function FormatInternalName: string;
-  begin
-    Result := Format('%s=%s', [Thread.ClassName, ThreadName]);
-  end;
-
+  ThreadInfo: TJclDebugThreadInfo;
 begin
   FLock.Enter;
   try
-    I := IndexOfThreadID(Thread.ThreadID);
+    I := IndexOfThreadID(ThreadID);
     if I = -1 then
     begin
       FReadLock.Enter;
       try
-        New(ThreadRec);
-        ThreadRec^.ThreadID := Thread.ThreadID;
-        ThreadRec^.ThreadHandle := Thread.Handle;
-        FList.AddObject(FormatInternalName, TObject(ThreadRec));
+        FList.Add(TJclDebugThreadInfo.Create(GetCurrentThreadId, ThreadID, FSaveCreationStack));
+        ThreadInfo := TJclDebugThreadInfo(FList.Last);
+        if Assigned(Thread) then
+        begin
+          ThreadInfo.ThreadHandle := Thread.Handle;
+          ThreadInfo.ThreadClassName := Thread.ClassName;
+        end
+        else
+        begin
+          ThreadInfo.ThreadHandle := 0;
+          ThreadInfo.ThreadClassName := '';
+        end;
+        ThreadInfo.ThreadName := ThreadName;
       finally
         FReadLock.Leave;
       end;
-      DoThreadRegistered(Thread);
+      if Assigned(Thread) then
+        DoThreadRegistered(Thread);
     end;
   finally
     FLock.Leave;
   end;
 end;
 
-procedure TJclDebugThreadList.InternalUnregisterThread(Thread: TThread);
+procedure TJclDebugThreadList.InternalUnregisterThread(Thread: TThread; ThreadID: DWORD);
 var
   I: Integer;
-  ThreadRec: PThreadListRec;
 begin
   FLock.Enter;
   try
-    I := IndexOfThreadID(Thread.ThreadID);
+    I := IndexOfThreadID(ThreadID);
     if I <> -1 then
     begin
-      DoThreadUnregistered(Thread);
+      if Assigned(Thread) then
+        DoThreadUnregistered(Thread);
       FReadLock.Enter;
       try
-        ThreadRec := PThreadListRec(FList.Objects[I]);
-        Dispose(ThreadRec);
         FList.Delete(I);
       finally
         FReadLock.Leave;
@@ -5177,12 +5666,327 @@ end;
 
 procedure TJclDebugThreadList.RegisterThread(Thread: TThread; const ThreadName: string);
 begin
-  InternalRegisterThread(Thread, ThreadName);
+  InternalRegisterThread(Thread, Thread.ThreadID, ThreadName);
+end;
+
+procedure TJclDebugThreadList.RegisterThreadID(AThreadID: DWORD);
+begin
+  InternalRegisterThread(nil, AThreadID, '');
 end;
 
 procedure TJclDebugThreadList.UnregisterThread(Thread: TThread);
 begin
-  InternalUnregisterThread(Thread);
+  InternalUnregisterThread(Thread, Thread.ThreadID);
+end;
+
+procedure TJclDebugThreadList.UnregisterThreadID(AThreadID: DWORD);
+begin
+  InternalUnregisterThread(nil, AThreadID);
+end;
+
+//=== { TJclDebugThreadInfo } ================================================
+
+constructor TJclDebugThreadInfo.Create(AParentThreadID, AThreadID: DWORD; AStack: Boolean);
+begin
+  FCreationTime := Now;
+  FParentThreadID := AParentThreadID;
+  try
+  { TODO -oUSc : ... }
+//    FStackList := JclCreateStackList(True, 0, nil, True);//probably IgnoreLevels = 11
+    if AStack then
+      FStackList := TJclStackInfoList.Create(True, 0, nil, True, nil, nil)
+    else
+      FStackList := nil;
+  except
+    FStackList := nil;
+  end;
+  FThreadID := AThreadID;
+end;
+
+destructor TJclDebugThreadInfo.Destroy;
+begin
+  FStackList.Free;
+  inherited Destroy;
+end;
+
+//=== { TJclThreadInfo } =====================================================
+
+constructor TJclThreadInfo.Create;
+begin
+  inherited Create;
+  FCreationTime := 0;
+  FCreationStack := TJclLocationInfoList.Create;
+  FName := '';
+  FParentThreadID := 0;
+  FStack := TJclLocationInfoList.Create;
+  FThreadID := 0;
+  FValues := [];
+end;
+
+destructor TJclThreadInfo.Destroy;
+begin
+  FCreationStack.Free;
+  FStack.Free;
+  inherited Destroy;
+end;
+
+class function TJclThreadInfo.CSVHeader: string;
+begin
+  Result := 'ThreadID;MainThread;Name;CreationTime;ParentThreadID;Stack;CreationStack';
+end;
+
+procedure TJclThreadInfo.Fill(AThreadHandle: THandle; AThreadID: DWORD; AGatherOptions: TJclThreadInfoOptions);
+begin
+  InternalFill(AThreadHandle, AThreadID, AGatherOptions, False);
+end;
+
+procedure TJclThreadInfo.FillFromExceptThread(AGatherOptions: TJclThreadInfoOptions);
+begin
+  InternalFill(0, GetCurrentThreadID, AGatherOptions, True);
+end;
+
+function TJclThreadInfo.GetAsCSVString: string;
+
+  function CSVEncode(const AStr: string): string;
+  begin
+    Result := '"' + StringReplace(AStr, '"', '""', [rfReplaceAll]) + '"';
+  end;
+
+begin
+  Result := CSVEncode(IntToStr(ThreadID));
+  Result := Result + ';';
+  if tioIsMainThread in Values then
+    Result := Result + CSVEncode('1');
+  Result := Result + ';';
+  if tioName in Values then
+    Result := Result + CSVEncode(Name);
+  Result := Result + ';';
+  if tioCreationTime in Values then
+    Result := Result + CSVEncode(DateTimeToStr(CreationTime));{ TODO -oUSc : ISO format }
+  Result := Result + ';';
+  if tioParentThreadID in Values then
+    Result := Result + CSVEncode(IntToStr(ParentThreadID));
+  Result := Result + ';';
+  if tioStack in Values then
+    Result := Result + CSVEncode(Stack.AsCSVString);
+  Result := Result + ';';
+  if tioCreationStack in Values then
+    Result := Result + CSVEncode(CreationStack.AsCSVString);
+end;
+
+function TJclThreadInfo.GetAsString: string;
+var
+  ExceptInfo, ThreadName, ThreadInfoStr: string;
+begin
+  if tioIsMainThread in Values then
+    ThreadName := ' [MainThread]'
+  else
+  if tioName in Values then
+    ThreadName := Name
+  else
+    ThreadName := '';
+  ThreadInfoStr := '';
+  if tioCreationTime in Values then
+    ThreadInfoStr := ThreadInfoStr + Format(' CreationTime: %s', [DateTimeToStr(CreationTime)]);
+  if tioParentThreadID in Values then
+    ThreadInfoStr := ThreadInfoStr + Format(' ParentThreadID: %d', [ParentThreadID]);
+  ExceptInfo := Format('ThreadID: %d%s%s', [ThreadID, ThreadName, ThreadInfoStr]) + #13#10;
+  if tioStack in Values then
+    ExceptInfo := ExceptInfo + Stack.AsString;
+  if tioCreationStack in Values then
+    ExceptInfo := ExceptInfo + 'Created at:' + #13#10 + CreationStack.AsString + #13#10;
+  Result := ExceptInfo + #13#10;
+end;
+
+procedure TJclThreadInfo.InternalFill(AThreadHandle: THandle; AThreadID: DWORD; AGatherOptions: TJclThreadInfoOptions; AExceptThread: Boolean);
+var
+  Idx: Integer;
+  List: TJclStackInfoList;
+begin
+  if tioStack in AGatherOptions then
+  begin
+    if AExceptThread then
+      List := JclLastExceptStackList
+    else
+      List := JclCreateThreadStackTrace(True, AThreadHandle);
+    try
+      Stack.Add(List);
+      Values := Values + [tioStack];
+    except
+    { TODO -oUSc : ... }
+    end;
+  end;
+  ThreadID := AThreadID;
+  if tioIsMainThread in AGatherOptions then
+  begin
+    if MainThreadID = AThreadID then
+      Values := Values + [tioIsMainThread];
+  end;
+  if AGatherOptions * [tioName, tioCreationTime, tioParentThreadID, tioCreationStack] <> [] then
+    Idx := JclDebugThreadList.IndexOfThreadID(AThreadID)
+  else
+    Idx := -1;
+  if (tioName in AGatherOptions) and (Idx <> -1) then
+  begin
+    Name := JclDebugThreadList.ThreadNames[AThreadID];
+    Values := Values + [tioName];
+  end;
+  if (tioCreationTime in AGatherOptions) and (Idx <> -1) then
+  begin
+    CreationTime := JclDebugThreadList.ThreadCreationTime[AThreadID];
+    Values := Values + [tioCreationTime];
+  end;
+  if (tioParentThreadID in AGatherOptions) and (Idx <> -1) then
+  begin
+    ParentThreadID := JclDebugThreadList.ThreadParentIDs[AThreadID];
+    Values := Values + [tioParentThreadID];
+  end;
+  if (tioCreationStack in AGatherOptions) and (Idx <> -1) then
+  begin
+    try
+      if JclDebugThreadList.AddStackListToLocationInfoList(AThreadID, CreationStack) then
+        Values := Values + [tioCreationStack];
+    except
+      { TODO -oUSc : ... }
+    end;
+  end;
+end;
+
+//=== { TJclThreadInfoList } =================================================
+
+constructor TJclThreadInfoList.Create;
+begin
+  inherited Create;
+  FItems := TObjectList.Create;
+  FGatherOptions := [tioIsMainThread, tioName, tioCreationTime, tioParentThreadID, tioStack, tioCreationStack];
+end;
+
+destructor TJclThreadInfoList.Destroy;
+begin
+  FItems.Free;
+  inherited Destroy;
+end;
+
+function TJclThreadInfoList.Add: TJclThreadInfo;
+begin
+  FItems.Add(TJclThreadInfo.Create);
+  Result := TJclThreadInfo(FItems.Last);
+end;
+
+procedure TJclThreadInfoList.Clear;
+begin
+  FItems.Clear;
+end;
+
+function TJclThreadInfoList.GetAsCSVString: string;
+var
+  I: Integer;
+begin
+  Result := TJclThreadInfo.CSVHeader + #13#10;
+  for I := 0 to Count - 1 do
+    Result := Result + Items[I].AsCSVString + #13#10;
+end;
+
+function TJclThreadInfoList.GetAsString: string;
+var
+  I: Integer;
+begin
+  Result := '';
+  for I := 0 to Count - 1 do
+    Result := Result + Items[I].AsString + #13#10;
+end;
+
+function TJclThreadInfoList.Gather(AExceptThreadID: DWORD): string;
+
+  function OpenThread(ThreadID: DWORD): THandle;
+  type
+    TOpenThreadFunc = function(DesiredAccess: DWORD; InheritHandle: BOOL; ThreadID: DWORD): THandle; stdcall;
+  const
+    THREAD_SUSPEND_RESUME    = $0002;
+    THREAD_GET_CONTEXT       = $0008;
+    THREAD_QUERY_INFORMATION = $0040;
+  var
+    Kernel32Lib: THandle;
+    OpenThreadFunc: TOpenThreadFunc;
+  begin
+    Result := 0;
+    Kernel32Lib := GetModuleHandle(kernel32);
+    if Kernel32Lib <> 0 then
+    begin
+      // OpenThread only exists since Windows ME
+      OpenThreadFunc := GetProcAddress(Kernel32Lib, 'OpenThread');
+      if Assigned(OpenThreadFunc) then
+        Result := OpenThreadFunc(THREAD_SUSPEND_RESUME or THREAD_GET_CONTEXT or THREAD_QUERY_INFORMATION, False, ThreadID);
+    end;
+  end;
+
+var
+  SnapProcHandle: THandle;
+  ThreadEntry: TThreadEntry32;
+  NextThread: Boolean;
+  ThreadIDList, ThreadHandleList: TList;
+  I: Integer;
+  PID, TID: DWORD;
+  ThreadHandle: THandle;
+  ThreadInfo: TJclThreadInfo;
+begin
+  ThreadIDList := TList.Create;
+  ThreadHandleList := TList.Create;
+  try
+    SnapProcHandle := CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, 0);
+    if SnapProcHandle <> INVALID_HANDLE_VALUE then
+    try
+      PID := GetCurrentProcessId;
+      ThreadEntry.dwSize := SizeOf(ThreadEntry);
+      NextThread := Thread32First(SnapProcHandle, ThreadEntry);
+      while NextThread do
+      begin
+        if (AExceptThreadID <> ThreadEntry.th32ThreadID) and (ThreadEntry.th32OwnerProcessID = PID) then
+          ThreadIDList.Add(Pointer(ThreadEntry.th32ThreadID));
+        NextThread := Thread32Next(SnapProcHandle, ThreadEntry);
+      end;
+    finally
+      CloseHandle(SnapProcHandle);
+    end;
+    for I := 0 to ThreadIDList.Count - 1 do
+    begin
+      ThreadHandle := OpenThread(Integer(ThreadIDList[I]));
+      ThreadHandleList.Add(Pointer(ThreadHandle));
+      if ThreadHandle <> 0 then
+        SuspendThread(ThreadHandle);
+    end;
+    try
+      for I := 0 to ThreadIDList.Count - 1 do
+      begin
+        ThreadHandle := THandle(ThreadHandleList[I]);
+        TID := Integer(ThreadIDList[I]);
+
+        ThreadInfo := Add;
+        ThreadInfo.Fill(ThreadHandle, TID, FGatherOptions);
+      end;
+    finally
+      for I := 0 to ThreadHandleList.Count - 1 do
+        if ThreadHandleList[I] <> nil then
+        begin
+          ThreadHandle := THandle(ThreadHandleList[I]);
+          ResumeThread(ThreadHandle);
+          CloseHandle(ThreadHandle);
+        end;
+    end;
+  finally
+    ThreadIDList.Free;
+    ThreadHandleList.Free;
+  end;
+end;
+
+function TJclThreadInfoList.GetCount: Integer;
+begin
+  Result := FItems.Count;
+end;
+
+function TJclThreadInfoList.GetItems(AIndex: Integer): TJclThreadInfo;
+begin
+  Result := TJclThreadInfo(FItems[AIndex]);
 end;
 
 //== Miscellanuous ===========================================================
