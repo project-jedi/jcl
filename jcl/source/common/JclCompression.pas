@@ -4542,7 +4542,7 @@ begin
 
   AItem := Items[Index];
 
-  if FileName = '' then
+  if (FileName = '') and not Assigned(AStream) then
   begin
     PackedName := AItem.PackedName;
 

@@ -5390,7 +5390,7 @@ begin
   try
     EnvOptionsFileName := GetMsBuildEnvOptionsFileName;
     EnvOptionsFile.LoadFromFile(EnvOptionsFileName);
-    EnvOptionsFile.Options := EnvOptionsFile.Options + [sxoAutoCreate];
+    EnvOptionsFile.Options := EnvOptionsFile.Options + [sxoAutoCreate,sxoDoNotSaveProlog];
 
     PropertyGroupNode := EnvOptionsFile.Root.Items.ItemNamed[MsBuildPropertyGroupNodeName];
     PropertyNode := PropertyGroupNode.Items.ItemNamed[OptionName];
