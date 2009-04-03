@@ -356,10 +356,6 @@ begin
                   RevisionLineNumbers.Free;
                   CurrentLineNumbers.Free;
                 end;
-              {//todo [old - remove]
-                if not TranslateLineNumber(Stream, StackViewItem.FileName, StackViewItem.Revision, StackViewItem.LineNumber, NewLineNumber) then
-                  NewLineNumber := 0;
-              }
               end;
             finally
               FS.Free;

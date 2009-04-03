@@ -32,7 +32,6 @@ Expert
 
 * clean up
   - use updated TJclFileEnumerator instead of TFileSearcher
-  - remove IJclLineNumberTranslator stuff in StackLineNumberTranslator.pas
   - rename some files
   - MPL headers
   - UNITVERSIONING

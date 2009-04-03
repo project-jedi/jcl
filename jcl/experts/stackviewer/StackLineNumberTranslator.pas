@@ -3,21 +3,10 @@ unit StackLineNumberTranslator;
 interface
 
 uses
-  Classes, SysUtils, ActiveX, ToolsAPI;//todo remove
+  Classes, ActiveX;
 
 type
   IJclLineNumberTranslator = interface
-  ['{864A28E9-5ED2-4386-975B-3F8ECC048074}']
-    function GetIDString: string;
-    function GetName: string;
-    function TranslateLineNumber(ACurrentContent: IStream; const AFileName, ARevision: string;
-      ALineNumber: Integer; var ANewLineNumber: Integer): Boolean;
-
-    property Name: string read GetName;
-    property IDString: string read GetIDString;
-  end;
-
-  IJclLineNumberTranslator2 = interface
   ['{01E06940-49AE-464B-AC47-D65DFBC41396}']
     function GetIDString: string;
     function GetName: string;
@@ -44,20 +33,16 @@ type
     FNextIndex: Integer;
     FTranslators: TInterfaceList;
     function GetCount: Integer;
-    function GetItems(AIndex: Integer): IJclLineNumberTranslator2;
+    function GetItems(AIndex: Integer): IJclLineNumberTranslator;
   public
     constructor Create;
     destructor Destroy; override;
-    function RegisterTranslator(const ATranslator: IJclLineNumberTranslator2): Integer;
-    {
-    function TranslateLineNumber(ACurrentContent: IStream; const AFileName, ARevision: string;
-      ALineNumber: Integer; var ANewLineNumber: Integer): Boolean;
-    }
+    function RegisterTranslator(const ATranslator: IJclLineNumberTranslator): Integer;
     function TranslateLineNumbers(ARevisionContent, ACurrentContent: IStream;
       ARevisionLineNumbers: TList; ACurrentLineNumbers: TList): Integer;
     procedure UnregisterTranslator(AIndex: Integer);
     property Count: Integer read GetCount;
-    property Items[AIndex: Integer]: IJclLineNumberTranslator2 read GetItems; default;
+    property Items[AIndex: Integer]: IJclLineNumberTranslator read GetItems; default;
   end;
 
   TJclRevisionProviders = class(TObject)
@@ -71,10 +56,6 @@ type
     constructor Create;
     destructor Destroy; override;
     function RegisterProvider(const ATranslator: IJclRevisionProvider): Integer;
-    {
-    function TranslateLineNumber(ACurrentContent: IStream; const AFileName, ARevision: string;
-      ALineNumber: Integer; var ANewLineNumber: Integer): Boolean;
-    }
     function GetRevisionContent(const AFileName, ARevision: string; AContent: IStream): Boolean;
     procedure UnregisterProvider(AIndex: Integer);
     property Count: Integer read GetCount;
@@ -85,13 +66,9 @@ var
   LineNumberTranslators: TJclLineNumberTranslators;
   RevisionProviders: TJclRevisionProviders;
 
-{
-function TranslateLineNumber(ACurrentContent: IStream; const AFileName, ARevision: string;
-  ALineNumber: Integer; var ANewLineNumber: Integer): Boolean;
-}
 function TranslateLineNumbers(ARevisionContent, ACurrentContent: IStream; ARevisionLineNumbers: TList; ACurrentLineNumbers: TList): Integer;
 
-function RegisterLineNumberTranslator(const ATranslator: IJclLineNumberTranslator2): Integer;
+function RegisterLineNumberTranslator(const ATranslator: IJclLineNumberTranslator): Integer;
 procedure UnregisterLineNumberTranslator(AIndex: Integer);
 
 function GetRevisionContent(const AFileName, ARevision: string; AContent: IStream): Boolean;
@@ -123,12 +100,12 @@ begin
   Result := FTranslators.Count;
 end;
 
-function TJclLineNumberTranslators.GetItems(AIndex: Integer): IJclLineNumberTranslator2;
+function TJclLineNumberTranslators.GetItems(AIndex: Integer): IJclLineNumberTranslator;
 begin
-  Result := IJclLineNumberTranslator2(FTranslators[AIndex]);
+  Result := IJclLineNumberTranslator(FTranslators[AIndex]);
 end;
 
-function TJclLineNumberTranslators.RegisterTranslator(const ATranslator: IJclLineNumberTranslator2): Integer;
+function TJclLineNumberTranslators.RegisterTranslator(const ATranslator: IJclLineNumberTranslator): Integer;
 begin
   if Assigned(ATranslator) then
   begin
@@ -140,26 +117,6 @@ begin
   else
     Result := -1;
 end;
-
-{
-function TJclLineNumberTranslators.TranslateLineNumber(ACurrentContent: IStream; const AFileName, ARevision: string;
-  ALineNumber: Integer; var ANewLineNumber: Integer): Boolean;
-var
-  I: Integer;
-begin
-  Result := False;
-  //todo remove debug
-  (BorlandIDEServices as IOTAMessageServices).AddTitleMessage(Format('TranslateLineNumber %s %s %d', [AFileName, ARevision, ALineNumber]));
-  for I := 0 to Count - 1 do
-    if Items[I].TranslateLineNumber(ACurrentContent, AFileName, ARevision, ALineNumber, ANewLineNumber) then
-    begin
-      Result := True;
-      Break;
-    end;
-  //todo remove debug
-  (BorlandIDEServices as IOTAMessageServices).AddTitleMessage(Format('TranslateLineNumber %d -> %d', [ALineNumber, ANewLineNumber]));
-end;
-}
 
 function TJclLineNumberTranslators.TranslateLineNumbers(ARevisionContent, ACurrentContent: IStream;
   ARevisionLineNumbers: TList; ACurrentLineNumbers: TList): Integer;
@@ -252,19 +209,10 @@ begin
   end;
 end;
 
-
-function RegisterLineNumberTranslator(const ATranslator: IJclLineNumberTranslator2): Integer;
+function RegisterLineNumberTranslator(const ATranslator: IJclLineNumberTranslator): Integer;
 begin
   Result := LineNumberTranslators.RegisterTranslator(ATranslator);
 end;
-
-{
-function TranslateLineNumber(ACurrentContent: IStream; const AFileName, ARevision: string;
-  ALineNumber: Integer; var ANewLineNumber: Integer): Boolean;
-begin
-  Result := LineNumberTranslators.TranslateLineNumber(ACurrentContent, AFileName, ARevision, ALineNumber, ANewLineNumber);
-end;
-}
 
 function TranslateLineNumbers(ARevisionContent, ACurrentContent: IStream; ARevisionLineNumbers: TList; ACurrentLineNumbers: TList): Integer;
 begin
