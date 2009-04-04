@@ -5,8 +5,8 @@ unit JclDebugMTTestMain;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, JclDebug, StdCtrls, PSAPI;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  StdCtrls, PSAPI, JclDebug;
 
 type
   TMTTestForm = class(TForm)
@@ -108,7 +108,7 @@ var
   ThreadInfoList: TJclThreadInfoList;
   ThreadName, ExceptMessage, ExceptInfo: string;
 begin
-  if (not (stDisableIfDebuggerPresent in JclStackTrackingOptions) or (not IsDebuggerAttached)) then
+  if (not (stDisableIfDebuggerAttached in JclStackTrackingOptions) or (not IsDebuggerAttached)) then
   begin
     TID := GetCurrentThreadId;
     ThreadInfoList := TJclThreadInfoList.Create;
