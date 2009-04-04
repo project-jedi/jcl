@@ -52,7 +52,7 @@ end;
 
 function TStackViewItemsList.Add: TStackViewItem;
 begin
-  FItems.Add(TStackViewItem.Create(nil));
+  FItems.Add(TStackViewItem.Create(nil, nil));
   Result := TStackViewItem(FItems.Last);
 end;
 

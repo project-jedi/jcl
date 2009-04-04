@@ -4,6 +4,9 @@ JclDebug
 
 * extending TJclThreadInfoList.Gather to exclude a set of threads or to include a set of threads
   (multiple functions to make things more clear)
+  - one function for exclude
+  - one function for include
+    (exclude + include together doesn't make sense without any wildcard like stuff)
 
 * ? merge TJclDebugThreadInfo/TJclDebugThreadList and TJclThreadInfo/TJclThreadInfoList
   - investigate if the stack can stay a TJclStackInfoList and if the location information can be retrieved later correctly
@@ -23,15 +26,23 @@ Expert
      this can be get from the handle which doesn't work in the viewer)
 
 * Revision property
-  - Integration UNITVERSIONING into TJclLocationInfoEx, but also adding an option to use the version info of a module binary as revision
+  - show revision in stack trace
+  - adding an option to use the version info of a module binary as revision
 
 * progress for TfrmStackView.PrepareStack 
-  (getting revisions for a real SCM system can take some time)
+  (getting revisions from a real SCM system can take some time)
 
 * icon's
 
 * clean up
+  - split StackLineNumberTranslator.pas into API and internal stuff
   - use updated TJclFileEnumerator instead of TFileSearcher
   - rename some files
-  - MPL headers
-  - UNITVERSIONING
+  - add MPL headers
+  - add UNITVERSIONING
+
+* integrate it into the installation
+  - update jcl\packages
+  - update jcl\install\JclInstall.pas
+
+* example Line number translator package
