@@ -4,7 +4,7 @@ object frmThread: TfrmThread
   Width = 320
   Height = 240
   TabOrder = 0
-  object Splitter1: TSplitter
+  object splCreationStack: TSplitter
     Left = 0
     Top = 149
     Width = 320
@@ -40,6 +40,5 @@ object frmThread: TfrmThread
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 2
-    ExplicitTop = 44
   end
 end

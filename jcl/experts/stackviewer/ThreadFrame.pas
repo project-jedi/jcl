@@ -11,7 +11,7 @@ type
     pnlExceptInfo: TPanel;
     pnlCreationStack: TPanel;
     pnlStack: TPanel;
-    Splitter1: TSplitter;
+    splCreationStack: TSplitter;
   private
     FCreationStackFrame: TfrmStack;
     FExceptionFrame: TfrmException;
@@ -20,15 +20,18 @@ type
     FStackList: TStackViewItemsList;
     FException: TException;
     FLastStackFrame: TObject;
+    FCreationStackHeight: Integer;
+    procedure SaveSplitterState;
     procedure SetCreationStackList(const Value: TStackViewItemsList);
     procedure SetException(const Value: TException);
     procedure SetStackList(const Value: TStackViewItemsList);
     function GetSelected: TStackViewItem;
     procedure HandleStackSelection(ASender: TObject);
+    procedure UpdateSplitterState;
     { Private declarations }
   public
     { Public declarations }
-    constructor Create(AOwner: TComponent);
+    constructor Create(AOwner: TComponent); override;
     procedure LoadState(AIni: TCustomIniFile; const ASection: string);
     procedure SaveState(AIni: TCustomIniFile; const ASection: string);
     property CreationStackList: TStackViewItemsList read FCreationStackList write SetCreationStackList;
@@ -59,6 +62,7 @@ begin
   FStackFrame.Parent := pnlStack;
   FStackFrame.Align := alClient;
   FStackFrame.OnSelectStackLine := HandleStackSelection;
+  FCreationStackHeight := pnlCreationStack.Height;
   FLastStackFrame := nil;
 end;
 
@@ -80,14 +84,22 @@ end;
 
 procedure TfrmThread.LoadState(AIni: TCustomIniFile; const ASection: string);
 begin
-  { TODO -oUSc : Load splitter }
+  FCreationStackHeight := AIni.ReadInteger(ASection, 'CreationStackFrameHeight', FCreationStackHeight);
+  UpdateSplitterState;
   FStackFrame.LoadState(AIni, ASection, 'StackFrameThread');
   FCreationStackFrame.LoadState(AIni, ASection, 'CreationStackFrameThread');
 end;
 
+procedure TfrmThread.SaveSplitterState;
+begin
+  if pnlStack.Visible and pnlCreationStack.Visible then
+    FCreationStackHeight := pnlCreationStack.Height;
+end;
+
 procedure TfrmThread.SaveState(AIni: TCustomIniFile; const ASection: string);
 begin
-  { TODO -oUSc : Save splitter }
+  SaveSplitterState;
+  AIni.WriteInteger(ASection, 'CreationStackFrameHeight', FCreationStackHeight);
   FStackFrame.SaveState(AIni, ASection, 'StackFrameThread');
   FCreationStackFrame.SaveState(AIni, ASection, 'CreationStackFrameThread');
 end;
@@ -96,7 +108,9 @@ procedure TfrmThread.SetCreationStackList(const Value: TStackViewItemsList);
 begin
   FCreationStackList := Value;
   FCreationStackFrame.StackList := FCreationStackList;
+  SaveSplitterState;
   pnlCreationStack.Visible := Assigned(FCreationStackList);
+  UpdateSplitterState;
 end;
 
 procedure TfrmThread.SetException(const Value: TException);
@@ -110,7 +124,19 @@ procedure TfrmThread.SetStackList(const Value: TStackViewItemsList);
 begin
   FStackList := Value;
   FStackFrame.StackList := FStackList;
+  SaveSplitterState;
   pnlStack.Visible := Assigned(FStackList);
+  UpdateSplitterState;
+end;
+
+procedure TfrmThread.UpdateSplitterState;
+begin
+  splCreationStack.Visible := pnlStack.Visible and pnlCreationStack.Visible;
+  if splCreationStack.Visible then
+  begin
+    pnlCreationStack.Height := FCreationStackHeight;
+    splCreationStack.Top := pnlCreationStack.Top - 1;
+  end;
 end;
 
 end.
