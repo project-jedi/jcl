@@ -177,6 +177,7 @@ end;
 procedure TJclStackTraceViewerExpert.LoadExpertValues;
 begin
   FOptions.ExpandTreeView := Settings.LoadBool('ExpandTreeView', FOptions.ExpandTreeView);
+  FOptions.ModuleVersionAsRevision := Settings.LoadBool('ModuleVersionAsRevision', FOptions.ModuleVersionAsRevision);
 end;
 
 procedure TJclStackTraceViewerExpert.RegisterCommands;
@@ -253,6 +254,7 @@ end;
 procedure TJclStackTraceViewerExpert.SaveExpertValues;
 begin
   Settings.SaveBool('ExpandTreeView', FOptions.ExpandTreeView);
+  Settings.SaveBool('ModuleVersionAsRevision', FOptions.ModuleVersionAsRevision);
 end;
 
 procedure TJclStackTraceViewerExpert.UnregisterCommands;

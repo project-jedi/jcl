@@ -26,8 +26,7 @@ Expert
      this can be get from the handle which doesn't work in the viewer)
 
 * Revision property
-  - show revision in stack trace
-  - adding an option to use the version info of a module binary as revision
+  - load revision info provide in stack trace
 
 * progress for TfrmStackView.PrepareStack 
   (getting revisions from a real SCM system can take some time)

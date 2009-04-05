@@ -84,6 +84,7 @@ begin
         else
           S := '';
         ListItem.SubItems.Add(S);
+        ListItem.SubItems.Add(FStackList[I].Revision);
         if FStackList[I].ProjectName <> '' then
           S := ExtractFileName(FStackList[I].ProjectName)
         else

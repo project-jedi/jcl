@@ -34,9 +34,15 @@ begin
   for I := 0 to FModuleList.Count - 1 do
   begin
     ListItem := lv.Items.Add;
-    ListItem.Caption := FModuleList[I].HandleStr;
-    ListItem.SubItems.Add(FModuleList[I].ModuleName);
+    ListItem.Caption := FModuleList[I].StartStr;
+    ListItem.SubItems.Add(FModuleList[I].EndStr);
+    ListItem.SubItems.Add(FModuleList[I].SystemModuleStr);
+    ListItem.SubItems.Add(ExtractFileName(FModuleList[I].ModuleName));
+    ListItem.SubItems.Add(FModuleList[I].BinFileVersion);
+    ListItem.SubItems.Add(FModuleList[I].FileVersion);
+    ListItem.SubItems.Add(FModuleList[I].FileDescription);
   end;
 end;
 
 end.
+

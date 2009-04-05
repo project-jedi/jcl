@@ -6,7 +6,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, PSAPI, JclDebug;
+  StdCtrls, PSAPI, JclDebug, JclFileUtils;
 
 type
   TMTTestForm = class(TForm)
@@ -36,25 +36,43 @@ end;
 procedure LoadedModules(ModuleList: TStrings);
 var
   I: Integer;
-  Modules: array of DWORD;
-  BytesNeeded: DWORD;
-  ModuleCount: Integer;
   ProcessHandle: THandle;
   FileName: array [0..Max_Path] of Char;
-  S: string;
+  S, BinFileVersion, FileVersion, FileDescription: string;
+  FileVersionInfo: TJclFileVersionInfo;
+  ModuleInfoList: TJclModuleInfoList;
+  ModuleBase: Cardinal;
 begin
   ProcessHandle := GetCurrentProcess;
-  SetLength(Modules, 1);
-  EnumProcessModules(ProcessHandle, @Modules[0], 1, BytesNeeded);
-  ModuleCount := BytesNeeded div SizeOf(DWORD);
-  SetLength(Modules, ModuleCount);
-  EnumProcessModules(ProcessHandle, @Modules[0], BytesNeeded, BytesNeeded);
-  ModuleList.Add('Handle;FileName');
-  for I := 0 to ModuleCount - 1 do
-  begin
-    GetModuleFileNameEx(ProcessHandle, Modules[I], FileName, SizeOf(FileName));
-    S := Format('"0x%.8x";%s', [Modules[I], CSVEncode(ExtractFileName(FileName))]);
-    ModuleList.Add(S);
+  ModuleList.Add('StartAddr;EndAddr;SystemModule;FileName;BinFileVersion;FileVersion;FileDescription');
+  ModuleInfoList := TJclModuleInfoList.Create(False, False);
+  try
+    for I := 0 to ModuleInfoList.Count - 1 do
+    begin
+      ModuleBase := Cardinal(ModuleInfoList.Items[I].StartAddr);
+      GetModuleFileNameEx(ProcessHandle, ModuleBase, FileName, SizeOf(FileName));
+      FileVersion := '';
+      if (FileName <> '') and VersionResourceAvailable(FileName) then
+      begin
+        FileVersionInfo := TJclFileVersionInfo.Create(FileName);
+        try
+          BinFileVersion := FileVersionInfo.BinFileVersion;
+          FileVersion := FileVersionInfo.FileVersion;
+          FileDescription := FileVersionInfo.FileDescription;
+        finally
+          FileVersionInfo.Free;
+        end;
+      end;
+      if ModuleInfoList.Items[I].SystemModule then
+        S := '1'
+      else
+        S := '0';
+      S := Format('"0x%.8x";"0x%.8x";"%s";%s;%s;%s;%s', [ModuleBase, Cardinal(ModuleInfoList.Items[I].EndAddr), S,
+        CSVEncode(FileName), CSVEncode(BinFileVersion), CSVEncode(FileVersion), CSVEncode(FileDescription)]);
+      ModuleList.Add(S);
+    end;
+  finally
+    ModuleInfoList.Free;
   end;
 end;
 

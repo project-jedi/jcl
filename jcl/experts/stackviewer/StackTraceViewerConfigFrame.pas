@@ -12,6 +12,7 @@ uses
 type
   TJclStackTraceViewerConfigFrame = class(TFrame)
     cbExpandTreeView: TCheckBox;
+    cbModuleVersionAsRevision: TCheckBox;
   private
     FOptions: TExceptionViewerOption;
     function GetOptions: TExceptionViewerOption;
@@ -54,12 +55,14 @@ function TJclStackTraceViewerConfigFrame.GetOptions: TExceptionViewerOption;
 begin
   Result := FOptions;
   FOptions.ExpandTreeView := cbExpandTreeView.Checked;
+  FOptions.ModuleVersionAsRevision := cbModuleVersionAsRevision.Checked;
 end;
 
 procedure TJclStackTraceViewerConfigFrame.SetOptions(const Value: TExceptionViewerOption);
 begin
   FOptions.Assign(Value);
   cbExpandTreeView.Checked := FOptions.ExpandTreeView;
+  cbModuleVersionAsRevision.Checked := FOptions.ModuleVersionAsRevision;
 end;
 
 {$IFDEF UNITVERSIONING}

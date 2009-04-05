@@ -12,10 +12,25 @@ object frmModule: TfrmModule
     Align = alClient
     Columns = <
       item
-        Caption = 'Handle'
+        Caption = 'StartAddr'
+      end
+      item
+        Caption = 'EndAddr'
+      end
+      item
+        Caption = 'SystemModule'
       end
       item
         Caption = 'FileName'
+      end
+      item
+        Caption = 'BinFileVersion'
+      end
+      item
+        Caption = 'FileVersion'
+      end
+      item
+        Caption = 'FileDescription'
       end>
     GridLines = True
     ReadOnly = True

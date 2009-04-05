@@ -222,6 +222,49 @@ begin
         end;
       end;
 
+      //use the build number from the version number as revision number if the revision number is empty
+      if FOptions.ModuleVersionAsRevision then
+      begin
+        for I := 0 to FindFileList.Count - 1 do
+        begin
+          FindMapping := TFindMapping(FindFileList.Objects[I]);
+          if (FindMapping.Count > 0) and (FindMapping[0].Revision = '') and (FindMapping[0].ModuleName <> '') then
+          begin
+            Idx := -1;
+            { TODO -oUSc : Compare full filename when the filename in the stack contains also the path
+
+  Why full filenames?
+
+  It is possible to load
+  <Path 1>\TestDLL.DLL
+  <Path 2>\TestDLL.DLL}
+            for J := 0 to FExceptionInfo.Modules.Count - 1 do
+              if CompareText(ExtractFileName(FExceptionInfo.Modules[J].ModuleName), ExtractFileName(FindMapping[0].ModuleName)) = 0 then
+              begin
+                Idx := J;
+                Break;
+              end;
+            if Idx <> -1 then
+            begin
+              S := FExceptionInfo.Modules[Idx].BinFileVersion;
+              K := Pos('.', S);
+              if K > 0 then
+                Delete(S, 1, K);
+              K := Pos('.', S);
+              if K > 0 then
+                Delete(S, 1, K);
+              K := Pos('.', S);
+              if K > 0 then
+              begin
+                Delete(S, 1, K);
+                for J := 0 to FindMapping.Count - 1 do
+                  FindMapping[J].Revision := S;
+              end;
+            end;
+          end;
+        end;
+      end;
+
       //check if the other files can be found in BrowsingPath
       Found := False;
       for I := 0 to FindFileList.Count - 1 do
@@ -373,8 +416,20 @@ begin
 end;
 
 procedure TfrmStackView.SetOptions(const Value: TExceptionViewerOption);
+var
+  OldOptions: TExceptionViewerOption;
 begin
-  FOptions.Assign(Value);
+  OldOptions := TExceptionViewerOption.Create;
+  try
+    OldOptions.Assign(FOptions);
+    FOptions.Assign(Value);
+    if FOptions.ModuleVersionAsRevision <> OldOptions.ModuleVersionAsRevision then
+    begin
+      { TODO -oUSc : Update stack views }
+    end;
+  finally
+    OldOptions.Free;
+  end;
 end;
 
 procedure TfrmStackView.tvChange(Sender: TObject; Node: TTreeNode);
@@ -590,12 +645,6 @@ procedure TfrmStackView.acOptionsExecute(Sender: TObject);
 begin
   inherited;
   TJclOTAExpertBase.ConfigurationDialog('Stack Trace Viewer');
-  {
-  if ShowOptions(FOptions) then
-  begin
-  //todo options changed
-  end;
-  }
 end;
 
 procedure TfrmStackView.acUpdateLocalInfoExecute(Sender: TObject);

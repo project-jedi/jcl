@@ -83,11 +83,21 @@ type
 
   TModule = class(TObject)
   private
-    FHandleStr: string;
+    FStartStr: string;
+    FEndStr: string;
+    FSystemModuleStr: string;
     FModuleName: string;
+    FBinFileVersion: string;
+    FFileVersion: string;
+    FFileDescription: string;
   public
-    property HandleStr: string read FHandleStr write FHandleStr;
+    property StartStr: string read FStartStr write FStartStr;
+    property EndStr: string read FEndStr write FEndStr;
+    property SystemModuleStr: string read FSystemModuleStr write FSystemModuleStr;
     property ModuleName: string read FModuleName write FModuleName;
+    property BinFileVersion: string read FBinFileVersion write FBinFileVersion;
+    property FileVersion: string read FFileVersion write FFileVersion;
+    property FileDescription: string read FFileDescription write FFileDescription;
   end;
 
   TModuleList = class(TObject)
@@ -638,9 +648,19 @@ begin
       begin
         FItems.Add(TModule.Create);
         Module := TModule(FItems.Last);
-        Module.HandleStr := CSVRecord[0].Value;
+        Module.StartStr := CSVRecord[0].Value;
         if CSVRecord.Count > 1 then
-          Module.ModuleName := CSVRecord[1].Value;
+          Module.EndStr := CSVRecord[1].Value;
+        if CSVRecord.Count > 2 then
+          Module.SystemModuleStr := CSVRecord[2].Value;
+        if CSVRecord.Count > 3 then
+          Module.ModuleName := CSVRecord[3].Value;
+        if CSVRecord.Count > 4 then
+          Module.BinFileVersion := CSVRecord[4].Value;
+        if CSVRecord.Count > 5 then
+          Module.FileVersion := CSVRecord[5].Value;
+        if CSVRecord.Count > 6 then
+          Module.FileDescription := CSVRecord[6].Value;
       end;
     end;
   finally

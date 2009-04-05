@@ -30,6 +30,9 @@ object frmStack: TfrmStack
         Caption = 'LineNumberOffsetFromProcedureStart'
       end
       item
+        Caption = 'Revision'
+      end
+      item
         Caption = 'Project/File'
       end
       item

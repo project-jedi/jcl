@@ -14,4 +14,12 @@ object JclStackTraceViewerConfigFrame: TJclStackTraceViewerConfigFrame
     Caption = 'Expand TreeView'
     TabOrder = 0
   end
+  object cbModuleVersionAsRevision: TCheckBox
+    Left = 8
+    Top = 31
+    Width = 169
+    Height = 17
+    Caption = 'Module FileVersion as Revision'
+    TabOrder = 1
+  end
 end
