@@ -3,8 +3,8 @@ unit ThreadFrame;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms, 
-  Dialogs, ExtCtrls, JclDebugStackUtils, StackViewUnit, StackFrame, ExceptInfoFrame;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  ExtCtrls, IniFiles, JclDebugStackUtils, StackViewUnit, StackFrame, ExceptInfoFrame;
 
 type
   TfrmThread = class(TFrame)
@@ -29,6 +29,8 @@ type
   public
     { Public declarations }
     constructor Create(AOwner: TComponent);
+    procedure LoadState(AIni: TCustomIniFile; const ASection: string);
+    procedure SaveState(AIni: TCustomIniFile; const ASection: string);
     property CreationStackList: TStackViewItemsList read FCreationStackList write SetCreationStackList;
     property Exception: TException read FException write SetException;
     property StackList: TStackViewItemsList read FStackList write SetStackList;
@@ -74,6 +76,20 @@ end;
 procedure TfrmThread.HandleStackSelection(ASender: TObject);
 begin
   FLastStackFrame := ASender;
+end;
+
+procedure TfrmThread.LoadState(AIni: TCustomIniFile; const ASection: string);
+begin
+  { TODO -oUSc : Load splitter }
+  FStackFrame.LoadState(AIni, ASection, 'StackFrameThread');
+  FCreationStackFrame.LoadState(AIni, ASection, 'CreationStackFrameThread');
+end;
+
+procedure TfrmThread.SaveState(AIni: TCustomIniFile; const ASection: string);
+begin
+  { TODO -oUSc : Save splitter }
+  FStackFrame.SaveState(AIni, ASection, 'StackFrameThread');
+  FCreationStackFrame.SaveState(AIni, ASection, 'CreationStackFrameThread');
 end;
 
 procedure TfrmThread.SetCreationStackList(const Value: TStackViewItemsList);

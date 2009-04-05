@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, Docktoolform, StdCtrls, ComCtrls, Menus,
-  PlatformDefaultStyleActnCtrls, ActnPopup, ActnList, ToolWin, ExtCtrls, ToolsAPI,
+  PlatformDefaultStyleActnCtrls, ActnPopup, ActnList, ToolWin, ExtCtrls, IniFiles, ToolsAPI,
   JclDebug, JclDebugStackUtils, Contnrs, StackFrame, ModuleFrame,
   StackViewUnit, StackFrame2, StackCodeUtils, ExceptInfoFrame, ThreadFrame, ExceptionViewerOptionsUnit,
   StackLineNumberTranslator, JclOtaUtils
@@ -63,6 +63,8 @@ type
     { Public declarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure LoadWindowState(ADesktop: TCustomIniFile); override;
+    procedure SaveWindowState(ADesktop: TCustomIniFile; AIsProject: Boolean); override;
     property Options: TExceptionViewerOption read FOptions write SetOptions;
     property RootDir: string read FRootDir write FRootDir;
   end;
@@ -70,10 +72,10 @@ type
 var
   frmStackView: TfrmStackView;
 
-implementation
-
 const
   IDEDesktopIniSection = 'TStackViewAddIn';//todo - move
+
+implementation
 
 {$R *.dfm}
 
@@ -96,6 +98,17 @@ begin
   inherited;
   DeskSection := IDEDesktopIniSection;
   AutoSave := True;
+end;
+
+procedure TfrmStackView.LoadWindowState(ADesktop: TCustomIniFile);
+begin
+  inherited LoadWindowState(ADesktop);
+  if Assigned(ADesktop) then
+  begin
+    FStackFrame.LoadState(ADesktop, DeskSection, 'StackFrameSingle');
+    FModuleFrame.LoadState(ADesktop, DeskSection);
+    FThreadFrame.LoadState(ADesktop, DeskSection);
+  end;
 end;
 
 type
@@ -412,6 +425,17 @@ begin
         FindFileList.Objects[I].Free;
       FindFileList.Free;
     end;
+  end;
+end;
+
+procedure TfrmStackView.SaveWindowState(ADesktop: TCustomIniFile; AIsProject: Boolean);
+begin
+  inherited SaveWindowState(ADesktop, AIsProject);
+  if SaveStateNecessary and Assigned(ADesktop) then
+  begin
+    FStackFrame.SaveState(ADesktop, DeskSection, 'StackFrameSingle');
+    FModuleFrame.SaveState(ADesktop, DeskSection);
+    FThreadFrame.SaveState(ADesktop, DeskSection);
   end;
 end;
 

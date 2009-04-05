@@ -3,8 +3,8 @@ unit ModuleFrame;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms, 
-  Dialogs, ComCtrls, JclDebugStackUtils;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  ComCtrls, IniFiles, JclDebugStackUtils;
 
 type
   TfrmModule = class(TFrame)
@@ -16,6 +16,8 @@ type
   public
     { Public declarations }
     property ModuleList: TModuleList read FModuleList write SetModuleList;
+    procedure LoadState(AIni: TCustomIniFile; const ASection: string);
+    procedure SaveState(AIni: TCustomIniFile; const ASection: string);
   end;
 
 implementation
@@ -23,6 +25,23 @@ implementation
 {$R *.dfm}
 
 { TfrmModule }
+
+procedure TfrmModule.LoadState(AIni: TCustomIniFile; const ASection: string);
+var
+  I: Integer;
+begin
+  for I := 0 to lv.Columns.Count - 1 do
+    lv.Columns.Items[I].Width := AIni.ReadInteger(ASection,
+      Format('ModuleFrameColumnWidth%d', [I]), lv.Columns.Items[I].Width);
+end;
+
+procedure TfrmModule.SaveState(AIni: TCustomIniFile; const ASection: string);
+var
+  I: Integer;
+begin
+  for I := 0 to lv.Columns.Count - 1 do
+    AIni.WriteInteger(ASection, Format('ModuleFrameColumnWidth%d', [I]), lv.Columns.Items[I].Width);
+end;
 
 procedure TfrmModule.SetModuleList(const Value: TModuleList);
 var

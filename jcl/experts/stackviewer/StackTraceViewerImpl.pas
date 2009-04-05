@@ -9,7 +9,8 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JclOtaUtils, StackViewForm, StackTraceViewerConfigFrame, ExceptionViewerOptionsUnit;//td1
+  JclOtaUtils, StackViewForm, StackTraceViewerConfigFrame, ExceptionViewerOptionsUnit,
+  DeskUtil;
 
 {$R 'JclSIMDIcon.dcr'} //todo - own icon
 
@@ -70,6 +71,9 @@ const
 procedure Register;
 begin
   try
+    if Assigned(RegisterFieldAddress) then
+      RegisterFieldAddress(IDEDesktopIniSection, @frmStackView);
+    RegisterDesktopFormClass(TfrmStackView, IDEDesktopIniSection, IDEDesktopIniSection);
     RegisterPackageWizard(TJclStackTraceViewerExpert.Create);
   except
     on ExceptionObj: TObject do
@@ -96,6 +100,7 @@ begin
   end;
 end;
 
+{ TODO -oUSc : Add and test desktop state stuff (RegisterFieldAddress and RegisterDesktopFormClass) }
 function JCLWizardInit(const BorlandIDEServices: IBorlandIDEServices;
     RegisterProc: TWizardRegisterProc;
     var TerminateProc: TWizardTerminateProc): Boolean stdcall;
@@ -267,12 +272,16 @@ begin
   FreeAndNil(FStackTraceViewAction);
 end;
 
-{$IFDEF UNITVERSIONING}
 initialization
+  {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
 
 finalization
+  if Assigned(UnRegisterFieldAddress) then
+    UnRegisterFieldAddress(@frmStackView);
+  {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
 
 end.

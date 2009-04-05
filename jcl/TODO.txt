@@ -14,10 +14,6 @@ JclDebug
 
 Expert
 ------
-* storing the layout 
-  - e.g. settings of the stack listviews
-  - should go into the desktop layout and not into the expert settings?
-
 * serialization 
   - saving/loading
   - which classes for the viewer?
@@ -33,7 +29,8 @@ Expert
 
 * icon's
 
-* clean up
+* clean up/minor things
+  - add and test desktop state stuff in DLL expert mode
   - split StackLineNumberTranslator.pas into API and internal stuff
   - use updated TJclFileEnumerator instead of TFileSearcher
   - rename some files

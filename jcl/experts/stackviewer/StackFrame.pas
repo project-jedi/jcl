@@ -3,8 +3,8 @@ unit StackFrame;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms, 
-  Dialogs, ComCtrls, JclDebug, StackViewUnit, StackCodeUtils;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  ComCtrls, IniFiles, JclDebug, StackViewUnit, StackCodeUtils;
 
 type
   TfrmStack = class(TFrame)
@@ -20,6 +20,8 @@ type
     function GetSelected: TStackViewItem;
   public
     { Public declarations }
+    procedure LoadState(AIni: TCustomIniFile; const ASection, APrefix: string);
+    procedure SaveState(AIni: TCustomIniFile; const ASection, APrefix: string);
     property StackList: TStackViewItemsList read FStackList write SetStackList;
     property Selected: TStackViewItem read GetSelected;
     property OnSelectStackLine: TNotifyEvent read FOnSelectStackLine write FOnSelectStackLine;
@@ -45,6 +47,15 @@ begin
     Result := nil;
 end;
 
+procedure TfrmStack.LoadState(AIni: TCustomIniFile; const ASection, APrefix: string);
+var
+  I: Integer;
+begin
+  for I := 0 to lv.Columns.Count - 1 do
+    lv.Columns.Items[I].Width := AIni.ReadInteger(ASection,
+      Format(APrefix + 'ColumnWidth%d', [I]), lv.Columns.Items[I].Width);
+end;
+
 procedure TfrmStack.lvChange(Sender: TObject; Item: TListItem; Change: TItemChange);
 begin
   DoSelectStackLine;
@@ -53,6 +64,14 @@ end;
 procedure TfrmStack.lvDblClick(Sender: TObject);
 begin
   JumpToCode(Selected);
+end;
+
+procedure TfrmStack.SaveState(AIni: TCustomIniFile; const ASection, APrefix: string);
+var
+  I: Integer;
+begin
+  for I := 0 to lv.Columns.Count - 1 do
+    AIni.WriteInteger(ASection, Format(APrefix + 'ColumnWidth%d', [I]), lv.Columns.Items[I].Width);
 end;
 
 procedure TfrmStack.SetStackList(const Value: TStackViewItemsList);
