@@ -31,7 +31,6 @@ Expert
 
 * clean up/minor things
   - add and test desktop state stuff in DLL expert mode
-  - split StackLineNumberTranslator.pas into API and internal stuff
   - use updated TJclFileEnumerator instead of TFileSearcher
   - rename some files
   - add MPL headers

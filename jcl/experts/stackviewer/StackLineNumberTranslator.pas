@@ -3,30 +3,9 @@ unit StackLineNumberTranslator;
 interface
 
 uses
-  Classes, ActiveX;
+  Classes, ActiveX, JclStackTraceViewerAPI;
 
 type
-  IJclLineNumberTranslator = interface
-  ['{01E06940-49AE-464B-AC47-D65DFBC41396}']
-    function GetIDString: string;
-    function GetName: string;
-    function TranslateLineNumbers(ARevisionContent, ACurrentContent: IStream;
-      ARevisionLineNumbers: TList; ACurrentLineNumbers: TList): Integer;
-
-    property Name: string read GetName;
-    property IDString: string read GetIDString;
-  end;
-
-  IJclRevisionProvider = interface
-  ['{8127FF3C-083D-47FD-855D-6C68EC7CBFB9}']
-    function GetIDString: string;
-    function GetName: string;
-    function GetRevisionContent(const AFileName, ARevision: string; AContent: IStream): Boolean;
-
-    property Name: string read GetName;
-    property IDString: string read GetIDString;
-  end;
-
   TJclLineNumberTranslators = class(TObject)
   private
     FIndexList: TList;
@@ -67,14 +46,7 @@ var
   RevisionProviders: TJclRevisionProviders;
 
 function TranslateLineNumbers(ARevisionContent, ACurrentContent: IStream; ARevisionLineNumbers: TList; ACurrentLineNumbers: TList): Integer;
-
-function RegisterLineNumberTranslator(const ATranslator: IJclLineNumberTranslator): Integer;
-procedure UnregisterLineNumberTranslator(AIndex: Integer);
-
 function GetRevisionContent(const AFileName, ARevision: string; AContent: IStream): Boolean;
-
-function RegisterRevisionProvider(const ATranslator: IJclRevisionProvider): Integer;
-procedure UnregisterRevisionProvider(AIndex: Integer);
 
 implementation
 
@@ -242,6 +214,10 @@ end;
 initialization
   LineNumberTranslators := TJclLineNumberTranslators.Create;
   RevisionProviders := TJclRevisionProviders.Create;
+  RegisterLineNumberTranslatorProc := RegisterLineNumberTranslator;
+  UnregisterLineNumberTranslatorProc := UnregisterLineNumberTranslator;
+  RegisterRevisionProviderProc := RegisterRevisionProvider;
+  UnregisterRevisionProviderProc := UnregisterRevisionProvider;
 
 finalization
   LineNumberTranslators.Free;
