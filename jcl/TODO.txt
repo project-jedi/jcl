@@ -37,7 +37,8 @@ Expert
   - add UNITVERSIONING
 
 * integrate it into the installation
-  - update jcl\packages
-  - update jcl\install\JclInstall.pas
+  - update jcl\packages\JclPackages*.*
+  - add all files to jcl\packages\xml\JclStackTraceViewerExpert*.xml 
+  - generate packages for 5 - 11
 
 * example Line number translator package

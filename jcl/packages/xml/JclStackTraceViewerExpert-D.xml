@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JclStackTraceViewerExpert" Design="-1">
+  <Description>JCL Stack Trace Viewer</Description>
+  <GUID>{85153A85-6CA4-4CD5-92E6-C39A5C5161E2}</GUID>
+  <C5PFlags>-LUvcl50 -LUdsnide50 -LUJclC50 -LUJclBaseExpertC50</C5PFlags>
+  <C6PFlags>-LUdesignide</C6PFlags>
+  <C5Libs/>
+  <C6Libs/>
+  <CompilerDefines>RELEASE</CompilerDefines>
+  <ImageBase>58120000</ImageBase>
+  <Requires>
+    <Package Name="rtl" Targets="WinLibSuffix" Condition=""/>
+    <Package Name="vcl50" Targets="noLibSuffix" Condition=""/>
+    <Package Name="vcl" Targets="WinLibSuffix" Condition=""/>
+    <Package Name="dsnide50" Targets="noLibSuffix" Condition=""/>
+    <Package Name="designide" Targets="WinLibSuffix" Condition=""/>
+    <Package Name="Jcl-R" Targets="Windows" Condition=""/>
+    <Package Name="JclBaseExpert-D" Targets="Windows" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\experts\stackviewer\StackTraceViewerImpl.pas" Targets="Windows" Formname="" Condition=""/>
+  </Contains>
+</Package>

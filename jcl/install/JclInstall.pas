@@ -121,6 +121,7 @@ type
           joJCLExpertUses,
           joJCLExpertSimdView,
           joJCLExpertVersionControl,
+          joJCLExpertStackTraceViewer,
       joJCLExceptDlg,
         joJCLExceptDlgVCL,
         joJCLExceptDlgVCLSnd,
@@ -433,17 +434,18 @@ resourcestring
   RsCaptionExceptDlgCLX    = 'CLX Exception Dialog';
 
   // experts
-  RsCaptionExperts              = 'IDE experts';
-  RsCaptionExpertsDsgnPackages  = 'Design packages';
-  RsCaptionExpertsDLL           = 'DLL experts';
-  RsCaptionExpertDebug          = 'Debug Extension';
-  RsCaptionExpertAnalyzer       = 'Project Analyzer';
-  RsCaptionExpertFavorite       = 'Favorite combobox in Open/Save dialogs';
-  RsCaptionExpertRepository     = 'Exception dialog expert';
-  RsCaptionExpertThreadNames    = 'Displaying thread names in Thread Status window';
-  RsCaptionExpertUses           = 'Uses Wizard';
-  RsCaptionExpertSimdView       = 'Debug window for XMM registers';
-  RsCaptionExpertVersionControl = 'Version control';
+  RsCaptionExperts                = 'IDE experts';
+  RsCaptionExpertsDsgnPackages    = 'Design packages';
+  RsCaptionExpertsDLL             = 'DLL experts';
+  RsCaptionExpertDebug            = 'Debug Extension';
+  RsCaptionExpertAnalyzer         = 'Project Analyzer';
+  RsCaptionExpertFavorite         = 'Favorite combobox in Open/Save dialogs';
+  RsCaptionExpertRepository       = 'Exception dialog expert';
+  RsCaptionExpertThreadNames      = 'Displaying thread names in Thread Status window';
+  RsCaptionExpertUses             = 'Uses Wizard';
+  RsCaptionExpertSimdView         = 'Debug window for XMM registers';
+  RsCaptionExpertVersionControl   = 'Version control';
+  RsCaptionExpertStackTraceViewer = 'Stack Trace Viewer';
 
   // help
   RsCaptionHelp          = 'Help files';
@@ -555,17 +557,18 @@ resourcestring
   RsHintExceptDlgCLX    = 'Add CLX exception dialog (Windows only) to the Object Repository.';
 
   // experts
-  RsHintExperts              = 'Build and install selected IDE experts.';
-  RsHintExpertsDsgnPackages  = 'Design packages containing JCL experts';
-  RsHintExpertsDLL           = 'DLLs containing JCL experts';
-  RsHintExpertDebug          = 'Install IDE expert which assists to insert JCL Debug information into executable files.';
-  RsHintExpertAnalyzer       = 'Install IDE Project Analyzer.';
-  RsHintExpertFavorite       = 'Install "Favorites" combobox in IDE Open/Save dialogs.';
-  RsHintExpertRepository     = 'Repository expert to easily create exception dialogs';
-  RsHintExpertThreadNames    = 'Display thread names in Thread Status window IDE extension.';
-  RsHintExpertUses           = 'Install IDE Uses Wizard.';
-  RsHintExpertSimdView       = 'Install a debug window of XMM registers (used by SSE instructions)';
-  RsHintExpertVersionControl = 'Integration of TortoiseCVS and TortoiseSVN in the IDE';
+  RsHintExperts                = 'Build and install selected IDE experts.';
+  RsHintExpertsDsgnPackages    = 'Design packages containing JCL experts';
+  RsHintExpertsDLL             = 'DLLs containing JCL experts';
+  RsHintExpertDebug            = 'Install IDE expert which assists to insert JCL Debug information into executable files.';
+  RsHintExpertAnalyzer         = 'Install IDE Project Analyzer.';
+  RsHintExpertFavorite         = 'Install "Favorites" combobox in IDE Open/Save dialogs.';
+  RsHintExpertRepository       = 'Repository expert to easily create exception dialogs';
+  RsHintExpertThreadNames      = 'Display thread names in Thread Status window IDE extension.';
+  RsHintExpertUses             = 'Install IDE Uses Wizard.';
+  RsHintExpertSimdView         = 'Install a debug window of XMM registers (used by SSE instructions)';
+  RsHintExpertVersionControl   = 'Integration of TortoiseCVS and TortoiseSVN in the IDE';
+  RsHintExpertStackTraceViewer = 'Install an IDE expert which shows the JCL Debug stack trace information.';
 
   // help
   RsHintHelp          = 'Install JCL help files.';
@@ -680,6 +683,7 @@ var
       (Id: -1; Caption: RsCaptionExpertUses; Hint: RsHintExpertUses), // joExpertUses
       (Id: -1; Caption: RsCaptionExpertSimdView; Hint: RsHintExpertSimdView), // joExpertSimdView
       (Id: -1; Caption: RsCaptionExpertVersionControl; Hint: RsHintExpertVersionControl), // joExpertVersionControl
+      (Id: -1; Caption: RsCaptionExpertStackTraceViewer; Hint: RsHintExpertStackTraceViewer), //joExpertStackTraceViewer
       (Id: -1; Caption: RsCaptionExceptDlg; Hint: RsHintExceptDlg), // joExceptDlg
       (Id: -1; Caption: RsCaptionExceptDlgVCL; Hint: RsHintExceptDlgVCL), // joExceptDlgVCL
       (Id: -1; Caption: RsCaptionExceptDlgVCLSnd; Hint: RsHintExceptDlgVCLSnd), // joExceptDlgVCLSnd
@@ -711,21 +715,22 @@ const
   JediJclDpk           = 'Jedi.Jcl';
   JediJclContainersDpk = 'Jedi.JclContainers';
 
-  JclExpertBase           = 'JclBaseExpert';
-  JclExpertDebug          = 'JclDebugExpert';
-  JclExpertAnalyzer       = 'JclProjectAnalysisExpert';
-  JclExpertFavorite       = 'JclFavoriteFoldersExpert';
-  JclExpertRepository     = 'JclRepositoryExpert';
-  JclExpertThrNames       = 'JclThreadNameExpert';
-  JclExpertUses           = 'JclUsesExpert';
-  JclExpertSimdView       = 'JclSIMDViewExpert';
-  JclExpertVersionControl = 'JclVersionControlExpert';
+  JclExpertBase             = 'JclBaseExpert';
+  JclExpertDebug            = 'JclDebugExpert';
+  JclExpertAnalyzer         = 'JclProjectAnalysisExpert';
+  JclExpertFavorite         = 'JclFavoriteFoldersExpert';
+  JclExpertRepository       = 'JclRepositoryExpert';
+  JclExpertThrNames         = 'JclThreadNameExpert';
+  JclExpertUses             = 'JclUsesExpert';
+  JclExpertSimdView         = 'JclSIMDViewExpert';
+  JclExpertVersionControl   = 'JclVersionControlExpert';
+  JclExpertStackTraceViewer = 'JclStackTraceViewerExpert';
 
-  SupportedExperts: array [joJCLExperts..joJCLExpertVersionControl] of string =
+  SupportedExperts: array [joJCLExperts..joJCLExpertStackTraceViewer] of string =
     (
       JclExpertBase, '', '', JclExpertDebug, JclExpertAnalyzer,
       JclExpertFavorite, JclExpertRepository, JclExpertThrNames,
-      JclExpertUses, JclExpertSimdView, JclExpertVersionControl
+      JclExpertUses, JclExpertSimdView, JclExpertVersionControl, JclExpertStackTraceViewer
     );
 
   OldExperts: array [0..6] of string =
@@ -1280,6 +1285,7 @@ procedure TJclInstallation.Init;
         AddOption(joJCLExpertUses, ExpertOptions, joJCLExperts);
       AddOption(joJCLExpertSimdView, ExpertOptions, joJCLExperts);
       AddOption(joJCLExpertRepository, ExpertOptions, joJCLExperts);
+      AddOption(joJCLExpertStackTraceViewer, ExpertOptions, joJCLExperts);
     end;
     AddOption(joJCLExpertFavorite, ExpertOptions, joJCLExperts);
     AddOption(joJCLExpertVersionControl, [goNoAutoCheck], joJCLExperts);
