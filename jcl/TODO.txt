@@ -40,5 +40,3 @@ Expert
   - update jcl\packages\JclPackages*.*
   - add all files to jcl\packages\xml\JclStackTraceViewerExpert*.xml 
   - generate packages for 5 - 11
-
-* example Line number translator package
