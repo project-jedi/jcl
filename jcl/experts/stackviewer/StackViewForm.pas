@@ -1,11 +1,13 @@
 unit StackViewForm;
 
+{$I jcl.inc}
+
 interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, Docktoolform, StdCtrls, ComCtrls, Menus,
-  PlatformDefaultStyleActnCtrls, ActnPopup, ActnList, ToolWin, ExtCtrls, IniFiles, ToolsAPI,
+  {PlatformDefaultStyleActnCtrls,} ActnPopup, ActnList, ToolWin, ExtCtrls, IniFiles, ToolsAPI,
   JclDebug, JclDebugStackUtils, Contnrs, StackFrame, ModuleFrame,
   StackViewUnit, StackFrame2, StackCodeUtils, ExceptInfoFrame, ThreadFrame, ExceptionViewerOptionsUnit,
   StackLineNumberTranslator, JclOtaUtils
@@ -574,6 +576,9 @@ end;
 procedure TfrmStackView.acLoadStackExecute(Sender: TObject);
 var
   SS: TStringStream;
+  {$IFNDEF COMPILER12_UP}
+  FS: TFileStream;
+  {$ENDIF ~COMPILER12_UP}
   I: Integer;
   S: string;
   tn, tns: TTreeNode;
@@ -588,9 +593,18 @@ begin
     cboxThread.Items.Clear;
     tv.Items.Clear;
     FTreeViewLinkList.Clear;
-    SS := TStringStream.Create;
+    SS := TStringStream.Create('');
     try
+      {$IFDEF COMPILER12_UP}
       SS.LoadFromFile(OpenDialog1.FileName);
+      {$ELSE ~COMPILER12_UP}
+      FS := TFileStream.Create(OpenDialog1.FileName, fmOpenRead);
+      try
+        SS.CopyFrom(FS, 0);
+      finally
+        FS.Free;
+      end;
+      {$ENDIF ~COMPILER12_UP}
       FExceptionInfo.LoadFromString(SS.DataString);
 
       FTreeViewLinkList.Add(TTreeViewLink.Create);

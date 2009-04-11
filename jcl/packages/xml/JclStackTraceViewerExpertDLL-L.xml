@@ -19,5 +19,19 @@
   </Requires>
   <Contains>
     <File Name="..\..\experts\stackviewer\StackTraceViewerImpl.pas" Targets="Windows" Formname="" Condition=""/>
+    <File Name="..\..\experts\stackviewer\ExceptInfoFrame.pas" Targets="Windows" Formname="frmException: TFrame" Condition=""/>
+    <File Name="..\..\experts\stackviewer\StackFrame.pas" Targets="Windows" Formname="frmStack: TFrame" Condition=""/>
+    <File Name="..\..\experts\stackviewer\ThreadFrame.pas" Targets="Windows" Formname="frmThread: TFrame" Condition=""/>
+    <File Name="..\..\experts\stackviewer\StackFrame2.pas" Targets="Windows" Formname="frmStack2: TFrame" Condition=""/>
+    <File Name="..\..\experts\stackviewer\ModuleFrame.pas" Targets="Windows" Formname="frmModule: TFrame" Condition=""/>
+    <File Name="..\..\experts\stackviewer\StackViewForm.pas" Targets="Windows" Formname="frmStackView" Condition=""/>
+    <File Name="..\..\experts\stackviewer\StackTraceViewerConfigFrame.pas" Targets="Windows" Formname="JclStackTraceViewerConfigFrame: TFrame" Condition=""/>
+    <File Name="..\..\experts\stackviewer\JclDebugStackUtils.pas" Targets="Windows" Formname="" Condition=""/>
+    <File Name="..\..\experts\stackviewer\StackViewUnit.pas" Targets="Windows" Formname="" Condition=""/>
+    <File Name="..\..\experts\stackviewer\StackCodeUtils.pas" Targets="Windows" Formname="" Condition=""/>
+    <File Name="..\..\experts\stackviewer\ExceptionViewerOptionsUnit.pas" Targets="Windows" Formname="" Condition=""/>
+    <File Name="..\..\experts\stackviewer\StackLineNumberTranslator.pas" Targets="Windows" Formname="" Condition=""/>
+    <File Name="..\..\experts\stackviewer\JclStackTraceViewerAPI.pas" Targets="Windows" Formname="" Condition=""/>
+    <File Name="..\..\experts\stackviewer\FileSearcherUnit.pas" Targets="Windows" Formname="" Condition=""/>
   </Contains>
 </Package>

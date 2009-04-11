@@ -76,6 +76,8 @@ RESFILES = c5\JclBaseExpertC50.res                  \
            d11\JclRepositoryExpertDLL.res           \
            d11\JclSIMDViewExpert.res                \
            d11\JclSIMDViewExpertDLL.res             \
+           d11\JclStackTraceViewerExpert.res        \
+           d11\JclStackTraceViewerExpertDLL.res     \
            d11\JclVcl.res                           \
            d11\JclVersionControlExpert.res          \
            d11\JclVersionControlExpertDLL.res       \
@@ -92,6 +94,8 @@ RESFILES = c5\JclBaseExpertC50.res                  \
            d12\JclRepositoryExpertDLL.res           \
            d12\JclSIMDViewExpert.res                \
            d12\JclSIMDViewExpertDLL.res             \
+           d12\JclStackTraceViewerExpert.res        \
+           d12\JclStackTraceViewerExpertDLL.res     \
            d12\JclVcl.res                           \
            d12\JclVersionControlExpert.res          \
            d12\JclVersionControlExpertDLL.res       \
