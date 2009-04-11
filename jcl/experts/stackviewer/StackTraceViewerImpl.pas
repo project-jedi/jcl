@@ -12,8 +12,6 @@ uses
   JclOtaUtils, StackViewForm, StackTraceViewerConfigFrame, ExceptionViewerOptionsUnit,
   DeskUtil;
 
-{$R 'JclSIMDIcon.dcr'} //todo - own icon
-
 type
   TJclStackTraceViewerExpert = class(TJclOTAExpert)
   private
@@ -54,7 +52,7 @@ const
 
 implementation
 
-{$R JclDebugIdeIcon.res}//todo - own icon
+{$R JclStackTraceViewerIcon.res}
 
 uses
   JclDebug, JclFileUtils, JclOtaConsts,
@@ -100,7 +98,7 @@ begin
   end;
 end;
 
-{ TODO -oUSc : Add and test desktop state stuff (RegisterFieldAddress and RegisterDesktopFormClass) }
+{ TODO -oUSc : test desktop state stuff (RegisterFieldAddress and RegisterDesktopFormClass) }
 function JCLWizardInit(const BorlandIDEServices: IBorlandIDEServices;
     RegisterProc: TWizardRegisterProc;
     var TerminateProc: TWizardTerminateProc): Boolean stdcall;
@@ -108,6 +106,9 @@ begin
   try
     TerminateProc := JclWizardTerminate;
 
+    if Assigned(RegisterFieldAddress) then
+      RegisterFieldAddress(IDEDesktopIniSection, @frmStackView);
+    RegisterDesktopFormClass(TfrmStackView, IDEDesktopIniSection, IDEDesktopIniSection);
     JCLWizardIndex := TJclOTAExpertBase.GetOTAWizardServices.AddWizard(TJclStackTraceViewerExpert.Create);
 
     Result := True;
@@ -208,7 +209,7 @@ begin
     end;
 
   FIcon := TIcon.Create;
-  FIcon.Handle := LoadIcon(FindResourceHInstance(ModuleHInstance), 'SIMDICON');//todo - resource name
+  FIcon.Handle := LoadIcon(FindResourceHInstance(ModuleHInstance), 'JCLSTACKTRACEVIEWER');
 
   // create actions
   FStackTraceViewAction := TAction.Create(nil);
@@ -218,13 +219,7 @@ begin
   FStackTraceViewAction.Category := Category;
   FStackTraceViewAction.Name := JclStackTraceViewerActionName;
   FStackTraceViewAction.ActionList := NTAServices.ActionList;
-  ImageBmp := TBitmap.Create;
-  try
-    ImageBmp.LoadFromResourceName(FindResourceHInstance(ModuleHInstance), 'JCLDEBUG');//todo - resource name
-    FStackTraceViewAction.ImageIndex := NTAServices.AddMasked(ImageBmp, clPurple);
-  finally
-    ImageBmp.Free;
-  end;
+  FStackTraceViewAction.ImageIndex := NTAServices.ImageList.AddIcon(FIcon);
 
   FStackTraceViewMenuItem := TMenuItem.Create(nil);
   FStackTraceViewMenuItem.Name := JclStackTraceViewerMenuName;
