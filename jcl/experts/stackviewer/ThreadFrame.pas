@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, IniFiles, JclDebugStackUtils, StackViewUnit, StackFrame, ExceptInfoFrame;
+  ExtCtrls, IniFiles, JclDebugSerialization, StackViewUnit, StackFrame, ExceptInfoFrame;
 
 type
   TfrmThread = class(TFrame)

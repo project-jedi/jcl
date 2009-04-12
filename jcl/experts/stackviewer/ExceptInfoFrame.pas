@@ -3,8 +3,8 @@ unit ExceptInfoFrame;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms, 
-  Dialogs, StdCtrls, JclDebugStackUtils;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  StdCtrls, JclDebugSerialization;
 
 type
   TfrmException = class(TFrame)

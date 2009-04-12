@@ -353,9 +353,8 @@ type
 
   TJclLocationInfoExValues = set of (lievLocationInfo, lievProcedureStartLocationInfo, lievUnitVersionInfo);
 
-  TJclLocationInfoList = class;
+  TJclCustomLocationInfoList = class;
 
-  { TODO -oUSc : TUnitVersionInfo or TUnitVersion? }
   TJclLocationInfoEx = class(TPersistent)
   private
     FAddress: Pointer;
@@ -366,13 +365,15 @@ type
     FModuleName: string;
     FOffsetFromLineNumber: Integer;
     FOffsetFromProcName: Integer;
-    FParent: TJclLocationInfoList;
+    FParent: TJclCustomLocationInfoList;
     FProcedureName: string;
     FSourceName: string;
     FSourceUnitName: string;
-    {$IFDEF UNITVERSIONING}
-    FUnitVersion: TUnitVersion;
-    {$ENDIF UNITVERSIONING}
+    FUnitVersionDateTime: TDateTime;
+    FUnitVersionExtra: string;
+    FUnitVersionLogPath: string;
+    FUnitVersionRCSfile: string;
+    FUnitVersionRevision: string;
     FVAddress: Pointer;
     FValues: TJclLocationInfoExValues;
     procedure Fill;
@@ -381,7 +382,7 @@ type
   protected
     procedure AssignTo(Dest: TPersistent); override;
   public
-    constructor Create(AParent: TJclLocationInfoList; Address: Pointer);
+    constructor Create(AParent: TJclCustomLocationInfoList; Address: Pointer);
     class function CSVHeader: string;
     property Address: Pointer read FAddress write FAddress;
     property AsCSVString: string read GetAsCSVString;
@@ -398,34 +399,50 @@ type
     { this is equal to TJclLocationInfo.UnitName, but has been renamed because
       UnitName is a class function in TObject since Delphi 2009 }
     property SourceUnitName: string read FSourceUnitName write FSourceUnitName;
-    {$IFDEF UNITVERSIONING}
-    property UnitVersion: TUnitVersion read FUnitVersion write FUnitVersion;
-    {$ENDIF UNITVERSIONING}
+    property UnitVersionDateTime: TDateTime read FUnitVersionDateTime write FUnitVersionDateTime;
+    property UnitVersionExtra: string read FUnitVersionExtra write FUnitVersionExtra;
+    property UnitVersionLogPath: string read FUnitVersionLogPath write FUnitVersionLogPath;
+    property UnitVersionRCSfile: string read FUnitVersionRCSfile write FUnitVersionRCSfile;
+    property UnitVersionRevision: string read FUnitVersionRevision write FUnitVersionRevision;
     property VAddress: Pointer read FVAddress write FVAddress;
     property Values: TJclLocationInfoExValues read FValues write FValues;
   end;
 
   TJclLocationInfoListOptions = set of (liloAutoGetAddressInfo, liloAutoGetLocationInfo, liloAutoGetUnitVersionInfo);
 
-  TJclLocationInfoList = class(TObject)
-  private
+  TJclLocationInfoClass = class of TJclLocationInfoEx;
+
+  TJclCustomLocationInfoListClass = class of TJclCustomLocationInfoList;
+
+  TJclCustomLocationInfoList = class(TPersistent)
+  protected
+    FItemClass: TJclLocationInfoClass;
     FItems: TObjectList;
     FOptions: TJclLocationInfoListOptions;
     function GetAsCSVString: string;
     function GetAsString: string;
     function GetCount: Integer;
-    function GetItems(AIndex: Integer): TJclLocationInfoEx;
+    function InternalAdd(Addr: Pointer): TJclLocationInfoEx;
+  protected
+    procedure AssignTo(Dest: TPersistent); override;
   public
-    constructor Create;
+    constructor Create; virtual;
     destructor Destroy; override;
-    function Add(Addr: Pointer): TJclLocationInfoEx; overload;
-    procedure Add(AStackInfoList: TObject); overload;
+    procedure AddStackInfoList(AStackInfoList: TObject);
     procedure Clear;
     property AsCSVString: string read GetAsCSVString;
     property AsString: string read GetAsString;
     property Count: Integer read GetCount;
-    property Items[AIndex: Integer]: TJclLocationInfoEx read GetItems; default;
     property Options: TJclLocationInfoListOptions read FOptions write FOptions;
+  end;
+
+  TJclLocationInfoList = class(TJclCustomLocationInfoList)
+  private
+    function GetItems(AIndex: Integer): TJclLocationInfoEx;
+  public
+    constructor Create; override;
+    function Add(Addr: Pointer): TJclLocationInfoEx;
+    property Items[AIndex: Integer]: TJclLocationInfoEx read GetItems; default;
   end;
 
   TJclDebugInfoSource = class(TObject)
@@ -857,33 +874,43 @@ type
 
   TJclThreadInfoOptions = set of (tioIsMainThread, tioName, tioCreationTime, tioParentThreadID, tioStack, tioCreationStack);
 
-  TJclThreadInfo = class(TObject)
-  private
+  TJclCustomThreadInfo = class(TPersistent)
+  protected
     FCreationTime: TDateTime;
-    FCreationStack: TJclLocationInfoList;
+    FCreationStack: TJclCustomLocationInfoList;
     FName: string;
     FParentThreadID: DWORD;
-    FStack: TJclLocationInfoList;
+    FStack: TJclCustomLocationInfoList;
     FThreadID: DWORD;
     FValues: TJclThreadInfoOptions;
-    function GetAsCSVString: string;
-    function GetAsString: string;
-    procedure InternalFill(AThreadHandle: THandle; AThreadID: DWORD; AGatherOptions: TJclThreadInfoOptions; AExceptThread: Boolean);
+    procedure AssignTo(Dest: TPersistent); override;
+    function GetStackClass: TJclCustomLocationInfoListClass; virtual;
   public
     constructor Create;
     destructor Destroy; override;
+    property CreationTime: TDateTime read FCreationTime write FCreationTime;
+    property Name: string read FName write FName;
+    property ParentThreadID: DWORD read FParentThreadID write FParentThreadID;
+    property ThreadID: DWORD read FThreadID write FThreadID;
+    property Values: TJclThreadInfoOptions read FValues write FValues;
+  end;
+
+  TJclThreadInfo = class(TJclCustomThreadInfo)
+  private
+    function GetAsCSVString: string;
+    function GetAsString: string;
+    procedure InternalFill(AThreadHandle: THandle; AThreadID: DWORD; AGatherOptions: TJclThreadInfoOptions; AExceptThread: Boolean);
+    function GetStack(const AIndex: Integer): TJclLocationInfoList;
+  protected
+    function GetStackClass: TJclCustomLocationInfoListClass; override;
+  public
     class function CSVHeader: string;
     procedure Fill(AThreadHandle: THandle; AThreadID: DWORD; AGatherOptions: TJclThreadInfoOptions);
     procedure FillFromExceptThread(AGatherOptions: TJclThreadInfoOptions);
     property AsCSVString: string read GetAsCSVString;
     property AsString: string read GetAsString;
-    property CreationTime: TDateTime read FCreationTime write FCreationTime;
-    property CreationStack: TJclLocationInfoList read FCreationStack;
-    property Name: string read FName write FName;
-    property ParentThreadID: DWORD read FParentThreadID write FParentThreadID;
-    property Stack: TJclLocationInfoList read FStack;
-    property ThreadID: DWORD read FThreadID write FThreadID;
-    property Values: TJclThreadInfoOptions read FValues write FValues;
+    property CreationStack: TJclLocationInfoList index 1 read GetStack;
+    property Stack: TJclLocationInfoList index 2 read GetStack;
   end;
 
   TJclThreadInfoList = class(TObject)
@@ -2793,7 +2820,7 @@ end;
 
 //=== { TJclLocationInfoEx } =================================================
 
-constructor TJclLocationInfoEx.Create(AParent: TJclLocationInfoList; Address: Pointer);
+constructor TJclLocationInfoEx.Create(AParent: TJclCustomLocationInfoList; Address: Pointer);
 begin
   inherited Create;
   FAddress := Address;
@@ -2816,9 +2843,11 @@ begin
     TJclLocationInfoEx(Dest).FProcedureName := FProcedureName;
     TJclLocationInfoEx(Dest).FSourceName := FSourceName;
     TJclLocationInfoEx(Dest).FSourceUnitName := FSourceUnitName;
-    {$IFDEF UNITVERSIONING}
-    TJclLocationInfoEx(Dest).FUnitVersion := FUnitVersion;
-    {$ENDIF UNITVERSIONING}
+    TJclLocationInfoEx(Dest).FUnitVersionDateTime := FUnitVersionDateTime;
+    TJclLocationInfoEx(Dest).FUnitVersionExtra := FUnitVersionExtra;
+    TJclLocationInfoEx(Dest).FUnitVersionLogPath := FUnitVersionLogPath;
+    TJclLocationInfoEx(Dest).FUnitVersionRCSfile := FUnitVersionRCSfile;
+    TJclLocationInfoEx(Dest).FUnitVersionRevision := FUnitVersionRevision;
     TJclLocationInfoEx(Dest).FVAddress := FVAddress;
     TJclLocationInfoEx(Dest).FValues := FValues;
   end
@@ -2842,6 +2871,7 @@ var
   Options: TJclLocationInfoListOptions;
   {$IFDEF UNITVERSIONING}
   I: Integer;
+  UnitVersion: TUnitVersion;
   UnitVersioning: TUnitVersioning;
   UnitVersioningModule: TUnitVersioningModule;
   {$ENDIF UNITVERSIONING}
@@ -2902,8 +2932,11 @@ begin
     FDebugInfo := nil;
     FBinaryFileName := '';
   end;
+  FUnitVersionDateTime := 0;
+  FUnitVersionLogPath := '';
+  FUnitVersionRCSfile := '';
+  FUnitVersionRevision := '';
   {$IFDEF UNITVERSIONING}
-  FUnitVersion := nil;
   if (liloAutoGetUnitVersionInfo in Options) and (FSourceName <> '') then
   begin
     if not (liloAutoGetAddressInfo in Options) then
@@ -2914,9 +2947,13 @@ begin
       UnitVersioningModule := UnitVersioning.Modules[I];
       if UnitVersioningModule.Instance = Module then
       begin
-        FUnitVersion := UnitVersioningModule.FindUnit(FSourceName);
-        if Assigned(FUnitVersion) then
+        UnitVersion := UnitVersioningModule.FindUnit(FSourceName);
+        if Assigned(UnitVersion) then
         begin
+          FUnitVersionDateTime := UnitVersion.DateTime;
+          FUnitVersionLogPath := UnitVersion.LogPath;
+          FUnitVersionRCSfile := UnitVersion.RCSfile;
+          FUnitVersionRevision := UnitVersion.Revision;
           FValues := FValues + [lievUnitVersionInfo];
           Break;
         end;
@@ -2958,12 +2995,10 @@ begin
   end
   else
     S := S + ';"";"";"";"";"";"";""';
-  {$IFDEF UNITVERSIONING}
   if lievUnitVersionInfo in FValues then
-    S := S + Format(';"%s"', [UnitVersion.Revision])
+    S := S + Format(';"%s"', [UnitVersionRevision])
   else
     S := S + ';""';
-  {$ENDIF UNITVERSIONING}
   Result := S;
 end;
 
@@ -3024,42 +3059,51 @@ begin
   end;
 end;
 
-//=== { TJclLocationInfoList } ===============================================
+//=== { TJclCustomLocationInfoList } =========================================
 
-constructor TJclLocationInfoList.Create;
+constructor TJclCustomLocationInfoList.Create;
 begin
   inherited Create;
+  FItemClass := TJclLocationInfoEx;
   FItems := TObjectList.Create;
-  FOptions := [liloAutoGetAddressInfo, liloAutoGetLocationInfo, liloAutoGetUnitVersionInfo];
+  FOptions := [];
 end;
 
-destructor TJclLocationInfoList.Destroy;
+destructor TJclCustomLocationInfoList.Destroy;
 begin
   FItems.Free;
   inherited Destroy;
 end;
 
-function TJclLocationInfoList.Add(Addr: Pointer): TJclLocationInfoEx;
-begin
-  FItems.Add(TJclLocationInfoEx.Create(Self, Addr));
-  Result := TJclLocationInfoEx(FItems.Last);
-end;
-
-procedure TJclLocationInfoList.Add(AStackInfoList: TObject);
+procedure TJclCustomLocationInfoList.AddStackInfoList(AStackInfoList: TObject);
 var
   I: Integer;
 begin
   TJclStackInfoList(AStackInfoList).ForceStackTracing;
   for I := 0 to TJclStackInfoList(AStackInfoList).Count - 1 do
-    Add(TJclStackInfoList(AStackInfoList)[I].CallerAdr);
+    InternalAdd(TJclStackInfoList(AStackInfoList)[I].CallerAdr);
 end;
 
-procedure TJclLocationInfoList.Clear;
+procedure TJclCustomLocationInfoList.AssignTo(Dest: TPersistent);
+var
+  I: Integer;
+begin
+  if Dest is TJclCustomLocationInfoList then
+  begin
+    TJclCustomLocationInfoList(Dest).Clear;
+    for I := 0 to Count - 1 do
+      TJclCustomLocationInfoList(Dest).InternalAdd(nil).Assign(TJclLocationInfoEx(FItems[I]));
+  end
+  else
+    inherited AssignTo(Dest);
+end;
+
+procedure TJclCustomLocationInfoList.Clear;
 begin
   FItems.Clear;
 end;
 
-function TJclLocationInfoList.GetAsCSVString: string;
+function TJclCustomLocationInfoList.GetAsCSVString: string;
 var
   I: Integer;
   Strings: TStringList;
@@ -3068,14 +3112,14 @@ begin
   try
     Strings.Add(TJclLocationInfoEx.CSVHeader);
     for I := 0 to Count - 1 do
-      Strings.Add(Items[I].AsCSVString);
+      Strings.Add(TJclLocationInfoEx(FItems[I]).AsCSVString);
     Result := Strings.Text;
   finally
     Strings.Free;
   end;
 end;
 
-function TJclLocationInfoList.GetAsString: string;
+function TJclCustomLocationInfoList.GetAsString: string;
 var
   I: Integer;
   Strings: TStringList;
@@ -3083,16 +3127,35 @@ begin
   Strings := TStringList.Create;
   try
     for I := 0 to Count - 1 do
-      Strings.Add(Items[I].AsString);
+      Strings.Add(TJclLocationInfoEx(FItems[I]).AsString);
     Result := Strings.Text;
   finally
     Strings.Free;
   end;
 end;
 
-function TJclLocationInfoList.GetCount: Integer;
+function TJclCustomLocationInfoList.GetCount: Integer;
 begin
   Result := FItems.Count;
+end;
+
+function TJclCustomLocationInfoList.InternalAdd(Addr: Pointer): TJclLocationInfoEx;
+begin
+  FItems.Add(FItemClass.Create(Self, Addr));
+  Result := TJclLocationInfoEx(FItems.Last);
+end;
+
+//=== { TJclLocationInfoList } ===============================================
+
+function TJclLocationInfoList.Add(Addr: Pointer): TJclLocationInfoEx;
+begin
+  Result := InternalAdd(Addr);
+end;
+
+constructor TJclLocationInfoList.Create;
+begin
+  inherited Create;
+  FOptions := [liloAutoGetAddressInfo, liloAutoGetLocationInfo, liloAutoGetUnitVersionInfo];
 end;
 
 function TJclLocationInfoList.GetItems(AIndex: Integer): TJclLocationInfoEx;
@@ -5527,7 +5590,7 @@ begin
     if (I <> -1) and Assigned(TJclDebugThreadInfo(FList[I]).StackList) then
     begin
       List := TJclDebugThreadInfo(FList[I]).StackList;
-      AList.Add(List);
+      AList.AddStackInfoList(List);
       Result := True;
     end;
   finally
@@ -5791,26 +5854,52 @@ begin
   inherited Destroy;
 end;
 
-//=== { TJclThreadInfo } =====================================================
+//=== { TJclCustomThreadInfo } ===============================================
 
-constructor TJclThreadInfo.Create;
+constructor TJclCustomThreadInfo.Create;
+var
+  StackClass: TJclCustomLocationInfoListClass;
 begin
   inherited Create;
+  StackClass := GetStackClass;
   FCreationTime := 0;
-  FCreationStack := TJclLocationInfoList.Create;
+  FCreationStack := StackClass.Create;
   FName := '';
   FParentThreadID := 0;
-  FStack := TJclLocationInfoList.Create;
+  FStack := StackClass.Create;
   FThreadID := 0;
   FValues := [];
 end;
 
-destructor TJclThreadInfo.Destroy;
+destructor TJclCustomThreadInfo.Destroy;
 begin
   FCreationStack.Free;
   FStack.Free;
   inherited Destroy;
 end;
+
+procedure TJclCustomThreadInfo.AssignTo(Dest: TPersistent);
+begin
+  if Dest is TJclCustomThreadInfo then
+  begin
+    TJclCustomThreadInfo(Dest).FCreationTime := FCreationTime;
+    TJclCustomThreadInfo(Dest).FCreationStack.Assign(FCreationStack);
+    TJclCustomThreadInfo(Dest).FName := FName;
+    TJclCustomThreadInfo(Dest).FParentThreadID := FParentThreadID;
+    TJclCustomThreadInfo(Dest).FStack.Assign(FStack);
+    TJclCustomThreadInfo(Dest).FThreadID := FThreadID;
+    TJclCustomThreadInfo(Dest).FValues := FValues;
+  end
+  else
+    inherited AssignTo(Dest);
+end;
+
+function TJclCustomThreadInfo.GetStackClass: TJclCustomLocationInfoListClass;
+begin
+  Result := TJclLocationInfoList;
+end;
+
+//=== { TJclThreadInfo } =====================================================
 
 class function TJclThreadInfo.CSVHeader: string;
 begin
@@ -5880,6 +5969,21 @@ begin
   Result := ExceptInfo + #13#10;
 end;
 
+function TJclThreadInfo.GetStack(const AIndex: Integer): TJclLocationInfoList;
+begin
+  case AIndex of
+    1: Result := TJclLocationInfoList(FCreationStack);
+    2: Result := TJclLocationInfoList(FStack);
+    else
+      Result := nil;
+  end;
+end;
+
+function TJclThreadInfo.GetStackClass: TJclCustomLocationInfoListClass;
+begin
+  Result := TJclLocationInfoList;
+end;
+
 procedure TJclThreadInfo.InternalFill(AThreadHandle: THandle; AThreadID: DWORD; AGatherOptions: TJclThreadInfoOptions; AExceptThread: Boolean);
 var
   Idx: Integer;
@@ -5892,7 +5996,7 @@ begin
     else
       List := JclCreateThreadStackTrace(True, AThreadHandle);
     try
-      Stack.Add(List);
+      Stack.AddStackInfoList(List);
       Values := Values + [tioStack];
     except
     { TODO -oUSc : ... }

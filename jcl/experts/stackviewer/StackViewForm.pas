@@ -5,14 +5,14 @@ unit StackViewForm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, Docktoolform, StdCtrls, ComCtrls, Menus,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  Docktoolform, StdCtrls, ComCtrls, Menus,
   {PlatformDefaultStyleActnCtrls,} ActnPopup, ActnList, ToolWin, ExtCtrls, IniFiles, ToolsAPI,
-  JclDebug, JclDebugStackUtils, Contnrs, StackFrame, ModuleFrame,
+  JclDebug, JclDebugSerialization, Contnrs, StackFrame, ModuleFrame,
   StackViewUnit, StackFrame2, StackCodeUtils, ExceptInfoFrame, ThreadFrame, ExceptionViewerOptionsUnit,
   StackLineNumberTranslator, JclOtaUtils
   , ActiveX
-  , FileSearcherUnit, JclStrings
+  , FileSearcherUnit, JclStrings, JclDebugXMLDeserializer
   ;
 
 type
@@ -50,7 +50,7 @@ type
     FStackItemList: TStackViewItemsList;
     FCreationStackItemList: TStackViewItemsList;
     FTreeViewLinkList: TObjectList;
-    FThreadInfoList: TThreadInfoList;
+    FThreadInfoList: TJclSerializableThreadInfoList;
     FExceptionInfo: TExceptionInfo;
     FStackFrame: TfrmStack;
     FModuleFrame: TfrmModule;
@@ -59,7 +59,7 @@ type
     FLastControl: TControl;
     FOptions: TExceptionViewerOption;
     FRootDir: string;
-    procedure PrepareStack(AStack: TJclLocationInfoList; AStackItemList: TStackViewItemsList);
+    procedure PrepareStack(AStack: TJclSerializableLocationInfoList; AStackItemList: TStackViewItemsList);
     procedure SetOptions(const Value: TExceptionViewerOption);
   public
     { Public declarations }
@@ -176,7 +176,7 @@ begin
   end;
 end;
 
-procedure TfrmStackView.PrepareStack(AStack: TJclLocationInfoList; AStackItemList: TStackViewItemsList);
+procedure TfrmStackView.PrepareStack(AStack: TJclSerializableLocationInfoList; AStackItemList: TStackViewItemsList);
 var
   I, J, K, Idx, NewLineNumber: Integer;
   StackViewItem: TStackViewItem;
@@ -206,6 +206,7 @@ begin
       begin
         StackViewItem := AStackItemList.Add;
         StackViewItem.Assign(AStack[I]);
+        StackViewItem.Revision := AStack[I].UnitVersionRevision;
         Idx := FindFileList.IndexOf(AStack[I].SourceName);
         if Idx <> -1 then
         begin
@@ -462,7 +463,7 @@ procedure TfrmStackView.tvChange(Sender: TObject; Node: TTreeNode);
 var
   TreeViewLink: TTreeViewLink;
   NewControl: TControl;
-  ThreadInfo: TJclThreadInfo;
+  ThreadInfo: TJclSerializableThreadInfo;
 begin
   inherited;
   NewControl := nil;
@@ -476,9 +477,9 @@ begin
       FModuleFrame.ModuleList := TModuleList(TreeViewLink.Data);
     end
     else
-    if (TreeViewLink.Kind = tvlkThread) and (TreeViewLink.Data is TJclThreadInfo) then
+    if (TreeViewLink.Kind = tvlkThread) and (TreeViewLink.Data is TJclSerializableThreadInfo) then
     begin
-      ThreadInfo := TJclThreadInfo(TreeViewLink.Data);
+      ThreadInfo := TJclSerializableThreadInfo(TreeViewLink.Data);
       NewControl := FThreadFrame;
       PrepareStack(ThreadInfo.CreationStack, FCreationStackItemList);
       if tioCreationStack in ThreadInfo.Values then
@@ -502,9 +503,9 @@ begin
       FExceptionFrame.Exception := TException(TreeViewLink.Data);
     end
     else
-    if (TreeViewLink.Kind in [tvlkThreadStack, tvlkThreadCreationStack]) and (TreeViewLink.Data is TJclLocationInfoList) then
+    if (TreeViewLink.Kind in [tvlkThreadStack, tvlkThreadCreationStack]) and (TreeViewLink.Data is TJclSerializableLocationInfoList) then
     begin
-      PrepareStack(TJclLocationInfoList(TreeViewLink.Data), FStackItemList);
+      PrepareStack(TJclSerializableLocationInfoList(TreeViewLink.Data), FStackItemList);
       FStackFrame.StackList := FStackItemList;
       NewControl := FStackFrame;
     end;
@@ -583,6 +584,7 @@ var
   S: string;
   tn, tns: TTreeNode;
   TreeViewLink: TTreeViewLink;
+  XMLDeserializer: TJclXMLDeserializer;
 begin
   inherited;
   if OpenDialog1.Execute then
@@ -605,7 +607,14 @@ begin
         FS.Free;
       end;
       {$ENDIF ~COMPILER12_UP}
-      FExceptionInfo.LoadFromString(SS.DataString);
+      //FExceptionInfo.LoadFromString(SS.DataString);
+      XMLDeserializer := TJclXMLDeserializer.Create('ExceptInfo');
+      try
+        XMLDeserializer.LoadFromString(SS.DataString);
+        FExceptionInfo.Deserialize(XMLDeserializer);
+      finally
+        XMLDeserializer.Free;
+      end;
 
       FTreeViewLinkList.Add(TTreeViewLink.Create);
       TreeViewLink := TTreeViewLink(FTreeViewLinkList.Last);
@@ -623,7 +632,7 @@ begin
         }
         for I := 0 to FThreadInfoList.Count - 1 do
         begin
-          cboxThread.Items.AddObject(Format('[%d/%d] %s', [I + 1, FThreadInfoList.Count, FThreadInfoList[I].AsString]), FThreadInfoList[I]);
+          cboxThread.Items.AddObject(Format('[%d/%d] %s', [I + 1, FThreadInfoList.Count, ''{FThreadInfoList[I].AsString}]), FThreadInfoList[I]);
           if tioIsMainThread in FThreadInfoList[I].Values then
             S := '[MainThread]'
           else

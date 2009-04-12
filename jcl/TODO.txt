@@ -11,18 +11,17 @@ JclDebug
 * ? merge TJclDebugThreadInfo/TJclDebugThreadList and TJclThreadInfo/TJclThreadInfoList
   - investigate if the stack can stay a TJclStackInfoList and if the location information can be retrieved later correctly
 
+* remove AsCSV                                                                                           
+
 
 Expert
 ------
 * serialization 
-  - saving/loading
+  - (Done?) saving/loading
   - which classes for the viewer?
     (for exam. JclDebug.TJclModuleInfoList vs. JclDebugStackUtils.TModuleList;
      TJclModuleInfoList doesn't store the module name, because
      this can be get from the handle which doesn't work in the viewer)
-
-* Revision property
-  - load revision info provide in stack trace
 
 * progress for TfrmStackView.PrepareStack 
   (getting revisions from a real SCM system can take some time)

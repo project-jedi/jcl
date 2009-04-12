@@ -6,7 +6,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, PSAPI, JclDebug, JclFileUtils;
+  StdCtrls, PSAPI, JclDebug, JclFileUtils, JclDebugSerialization, JclDebugXMLSerializer;
 
 type
   TMTTestForm = class(TForm)
@@ -76,9 +76,60 @@ begin
   end;
 end;
 
+procedure LoadedModulesNew(ModuleList: TModuleList);
+var
+  I: Integer;
+  ProcessHandle: THandle;
+  FileName: array [0..Max_Path] of Char;
+  S, BinFileVersion, FileVersion, FileDescription: string;
+  FileVersionInfo: TJclFileVersionInfo;
+  ModuleInfoList: TJclModuleInfoList;
+  ModuleBase: Cardinal;
+  Module: TModule;
+begin
+  ProcessHandle := GetCurrentProcess;
+  ModuleInfoList := TJclModuleInfoList.Create(False, False);
+  try
+    for I := 0 to ModuleInfoList.Count - 1 do
+    begin
+      ModuleBase := Cardinal(ModuleInfoList.Items[I].StartAddr);
+      GetModuleFileNameEx(ProcessHandle, ModuleBase, FileName, SizeOf(FileName));
+      FileVersion := '';
+      if (FileName <> '') and VersionResourceAvailable(FileName) then
+      begin
+        FileVersionInfo := TJclFileVersionInfo.Create(FileName);
+        try
+          BinFileVersion := FileVersionInfo.BinFileVersion;
+          FileVersion := FileVersionInfo.FileVersion;
+          FileDescription := FileVersionInfo.FileDescription;
+        finally
+          FileVersionInfo.Free;
+        end;
+      end;
+      if ModuleInfoList.Items[I].SystemModule then
+        S := '1'
+      else
+        S := '0';
+      Module := ModuleList.Add;
+      Module.StartStr := Format('0x%.8x', [ModuleBase]);
+      Module.EndStr := Format('0x%.8x', [Cardinal(ModuleInfoList.Items[I].EndAddr)]);
+      Module.SystemModuleStr := S;
+      Module.ModuleName := FileName;
+      Module.BinFileVersion := BinFileVersion;
+      Module.FileVersion := FileVersion;
+      Module.FileDescription := FileDescription;
+    end;
+  finally
+    ModuleInfoList.Free;
+  end;
+end;
+
 procedure SaveExceptInfo(AExceptObj: TObject; AThreadInfoList: TJclThreadInfoList);
 var
   StackInfo, DetailSL: TStringList;
+  ExceptionInfo: TExceptionInfo;
+  XMLSerializer: TJclXMLSerializer;
+  I: Integer;
 begin
   StackInfo := TStringList.Create;
   try
@@ -105,6 +156,30 @@ begin
     StackInfo.SaveToFile('ExceptInfo.csv');
   finally
     StackInfo.Free;
+  end;
+
+  ExceptionInfo := TExceptionInfo.Create;
+  try
+    ExceptionInfo.Exception.ExceptionClassName := Exception(AExceptObj).ClassName;
+    ExceptionInfo.Exception.ExceptionMessage := Exception(AExceptObj).Message;
+    LoadedModulesNew(ExceptionInfo.Modules);
+    for I := 0 to AThreadInfoList.Count - 1 do
+      ExceptionInfo.ThreadInfoList.Add.Assign(AThreadInfoList[I]);//todo - implement Assign
+    XMLSerializer := TJclXMLSerializer.Create('ExceptInfo');
+    try
+      ExceptionInfo.Serialize(XMLSerializer);
+      StackInfo := TStringList.Create;
+      try
+        StackInfo.Text := XMLSerializer.SaveToString;
+        StackInfo.SaveToFile('ExceptInfo.xml');
+      finally
+        StackInfo.Free;
+      end;
+    finally
+      XMLSerializer.Free;
+    end;
+  finally
+    ExceptionInfo.Free;
   end;
 end;
 

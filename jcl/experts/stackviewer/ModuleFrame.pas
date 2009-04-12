@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ComCtrls, IniFiles, JclDebugStackUtils;
+  ComCtrls, IniFiles, JclDebugSerialization;
 
 type
   TfrmModule = class(TFrame)
