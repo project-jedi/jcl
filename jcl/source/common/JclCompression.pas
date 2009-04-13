@@ -546,7 +546,7 @@ type
   TJclCompressionItemProperty = (ipPackedName, ipPackedSize, ipPackedExtension,
     ipFileSize, ipFileName, ipAttributes, ipCreationTime, ipLastAccessTime,
     ipLastWriteTime, ipComment, ipHostOS, ipHostFS, ipUser, ipGroup, ipCRC,
-    ipStream, ipMethod);
+    ipStream, ipMethod, ipEncrypted);
   TJclCompressionItemProperties = set of TJclCompressionItemProperty;
 
   TJclCompressionItemKind = (ikFile, ikDirectory);
@@ -588,6 +588,7 @@ type
     FGroup: WideString;
     FCRC: Cardinal;
     FMethod: WideString;
+    FEncrypted: Boolean;
   protected
     // property checkers
     procedure CheckGetProperty(AProperty: TJclCompressionItemProperty); virtual; abstract;
@@ -600,6 +601,7 @@ type
     function GetComment: WideString;
     function GetCRC: Cardinal;
     function GetCreationTime: TFileTime;
+    function GetEncrypted: Boolean;
     function GetFileName: TFileName;
     function GetFileSize: Int64;
     function GetGroup: WideString;
@@ -619,6 +621,7 @@ type
     procedure SetComment(const Value: WideString);
     procedure SetCRC(Value: Cardinal);
     procedure SetCreationTime(const Value: TFileTime);
+    procedure SetEncrypted(const Value: Boolean);
     procedure SetFileName(const Value: TFileName);
     procedure SetFileSize(const Value: Int64);
     procedure SetGroup(const Value: WideString);
@@ -642,6 +645,7 @@ type
     property Comment: WideString read GetComment write SetComment;
     property CRC: Cardinal read GetCRC write SetCRC;
     property CreationTime: TFileTime read GetCreationTime write SetCreationTime;
+    property Encrypted: Boolean read GetEncrypted write SetEncrypted;
     property FileSize: Int64 read GetFileSize write SetFileSize;
     property Group: WideString read GetGroup write SetGroup;
     property HostOS: WideString read GetHostOS write SetHostOS;
@@ -3365,6 +3369,12 @@ begin
   Result := FCreationTime;
 end;
 
+function TJclCompressionItem.GetEncrypted: Boolean;
+begin
+  CheckGetProperty(ipEncrypted);
+  Result := FEncrypted;
+end;
+
 function TJclCompressionItem.GetFileName: TFileName;
 begin
   CheckGetProperty(ipFileName);
@@ -3512,6 +3522,14 @@ begin
   FCreationTime := Value;
   Include(FModifiedProperties, ipCreationTime);
   Include(FValidProperties, ipCreationTime);
+end;
+
+procedure TJclCompressionItem.SetEncrypted(const Value: Boolean);
+begin
+  CheckSetProperty(ipEncrypted);
+  FEncrypted := Value;
+  Include(FModifiedProperties, ipEncrypted);
+  Include(FValidProperties, ipEncrypted);
 end;
 
 procedure TJclCompressionItem.SetFileName(const Value: TFileName);
@@ -4441,7 +4459,8 @@ end;
 
 procedure TJclCompressArchive.Compress;
 begin
-  ReleaseVolumes;
+// Calling ReleaseVolumes here causes subsequent operations on the archive to fail with an "unsupported method" exception
+//  ReleaseVolumes;
 end;
 
 procedure TJclCompressArchive.InternalAddDirectory(const Directory: string);
@@ -4516,13 +4535,15 @@ end;
 procedure TJclDecompressArchive.ExtractAll(const ADestinationDir: string;
   AAutoCreateSubDir: Boolean);
 begin
-  ReleaseVolumes;
+// Calling ReleaseVolumes here causes subsequent operations on the archive to fail with an "unsupported method" exception
+//  ReleaseVolumes;
 end;
 
 procedure TJclDecompressArchive.ExtractSelected(const ADestinationDir: string;
   AAutoCreateSubDir: Boolean);
 begin
-  ReleaseVolumes;
+// Calling ReleaseVolumes here causes subsequent operations on the archive to fail with an "unsupported method" exception
+//  ReleaseVolumes;
 end;
 
 class function TJclDecompressArchive.ItemAccess: TJclStreamAccess;
@@ -4619,13 +4640,15 @@ end;
 procedure TJclUpdateArchive.ExtractAll(const ADestinationDir: string;
   AAutoCreateSubDir: Boolean);
 begin
-  ReleaseVolumes;
+// Calling ReleaseVolumes here causes subsequent operations on the archive to fail with an "unsupported method" exception
+//  ReleaseVolumes;
 end;
 
 procedure TJclUpdateArchive.ExtractSelected(const ADestinationDir: string;
   AAutoCreateSubDir: Boolean);
 begin
-  ReleaseVolumes;
+// Calling ReleaseVolumes here causes subsequent operations on the archive to fail with an "unsupported method" exception
+//  ReleaseVolumes;
 end;
 
 class function TJclUpdateArchive.ItemAccess: TJclStreamAccess;
@@ -5087,6 +5110,7 @@ type
   TCardinalSetter = procedure (Value: Cardinal) of object;
   TInt64Setter = procedure (const Value: Int64) of object;
   TFileTimeSetter = procedure (const Value: TFileTime) of object;
+  TBoolSetter = procedure (const Value: Boolean) of object;
 
 function Get7zWideStringProp(const AArchive: IInArchive; ItemIndex: Integer;
   PropID: Cardinal; const Setter: TWideStringSetter): Boolean;
@@ -5255,6 +5279,26 @@ begin
   end;
 end;
 
+function Get7zBoolProp(const AArchive: IInArchive; ItemIndex: Integer;
+  PropID: Cardinal; const Setter: TBoolSetter): Boolean;
+var
+  Value: TPropVariant;
+begin
+  ZeroMemory(@Value, SizeOf(Value));
+  SevenzipCheck(AArchive.GetProperty(ItemIndex, PropID, Value));
+  case Value.vt of
+    VT_EMPTY, VT_NULL:
+      Result := False;
+    VT_BOOL:
+      begin
+        Result := True;
+        Setter(Value.bool);
+      end;
+  else
+    raise EJclCompressionError.CreateResFmt(@RsCompression7zUnknownValueType, [Value.vt, PropID]);
+  end;
+end;
+
 // TODO: Are changes for UTF-8 filenames (>= 4.58 beta) necessary?
 procedure Load7zFileAttribute(AInArchive: IInArchive; ItemIndex: Integer;
   AItem: TJclCompressionItem);
@@ -5281,6 +5325,7 @@ begin
   Get7zWideStringProp(AInArchive, ItemIndex, kpidGroup, AItem.SetGroup);
   Get7zCardinalProp(AInArchive, ItemIndex, kpidCRC, AItem.SetCRC);
   Get7zWideStringProp(AInArchive, ItemIndex, kpidMethod, AItem.SetMethod);
+  Get7zBoolProp(AInArchive, ItemIndex, kpidEncrypted, AItem.SetEncrypted);
 
   // reset modified flags
   AItem.ModifiedProperties := [];
