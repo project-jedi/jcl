@@ -3,10 +3,11 @@ unit StackCodeUtils;
 interface
 
 uses
-  SysUtils, ToolsAPI, StackViewUnit;
+  SysUtils, ActiveX, ToolsAPI, StackViewUnit;
 
 function FindModule(const AFileName: string): string;
 function FindModuleAndProject(const AFileName: string; var AProjectName: string): string;
+function GetFileEditorContent(const AFileName: string): IStream;
 procedure JumpToCode(AStackViewItem: TStackViewItem);
 
 implementation
@@ -63,6 +64,25 @@ begin
         Break;
       end;
     end;
+end;
+
+function GetFileEditorContent(const AFileName: string): IStream;
+var
+  I: Integer;
+  Module: IOTAModule;
+  EditorContent: IOTAEditorContent;
+begin
+  Result := nil;
+  Module := (BorlandIDEServices as IOTAModuleServices).FindModule(AFileName);
+  if Assigned(Module) then
+  begin
+    for I := 0 to Module.ModuleFileCount - 1 do
+      if Supports(Module.ModuleFileEditors[I], IOTAEditorContent, EditorContent) then
+      begin
+        Result := EditorContent.Content;
+        Break;
+      end;
+  end;
 end;
 
 procedure JumpToCode(AStackViewItem: TStackViewItem);

@@ -11,8 +11,6 @@ object frmThread: TfrmThread
     Height = 3
     Cursor = crVSplit
     Align = alBottom
-    ExplicitTop = 41
-    ExplicitWidth = 111
   end
   object pnlExceptInfo: TPanel
     Left = 0

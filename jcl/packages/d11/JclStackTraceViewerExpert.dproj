@@ -98,12 +98,13 @@
     <DCCReference Include="..\..\experts\stackviewer\ModuleFrame.pas" />
     <DCCReference Include="..\..\experts\stackviewer\StackViewForm.pas" />
     <DCCReference Include="..\..\experts\stackviewer\StackTraceViewerConfigFrame.pas" />
-    <DCCReference Include="..\..\experts\stackviewer\JclDebugStackUtils.pas" />
     <DCCReference Include="..\..\experts\stackviewer\StackViewUnit.pas" />
     <DCCReference Include="..\..\experts\stackviewer\StackCodeUtils.pas" />
     <DCCReference Include="..\..\experts\stackviewer\ExceptionViewerOptionsUnit.pas" />
     <DCCReference Include="..\..\experts\stackviewer\StackLineNumberTranslator.pas" />
     <DCCReference Include="..\..\experts\stackviewer\JclStackTraceViewerAPI.pas" />
     <DCCReference Include="..\..\experts\stackviewer\FileSearcherUnit.pas" />
+    <DCCReference Include="..\..\experts\stackviewer\JclDebugSerialization.pas" />
+    <DCCReference Include="..\..\experts\stackviewer\JclDebugXMLDeserializer.pas" />
   </ItemGroup>
 </Project>

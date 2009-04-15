@@ -157,25 +157,6 @@ begin
   Result := FItems[AIndex];
 end;
 
-function GetFileEditorContent(const AFileName: string): IStream;
-var
-  I: Integer;
-  Module: IOTAModule;
-  EditorContent: IOTAEditorContent;
-begin
-  Result := nil;
-  Module := (BorlandIDEServices as IOTAModuleServices).FindModule(AFileName);
-  if Assigned(Module) then
-  begin
-    for I := 0 to Module.ModuleFileCount - 1 do
-      if Supports(Module.ModuleFileEditors[I], IOTAEditorContent, EditorContent) then
-      begin
-        Result := EditorContent.Content;
-        Break;
-      end;
-  end;
-end;
-
 procedure TfrmStackView.PrepareStack(AStack: TJclSerializableLocationInfoList; AStackItemList: TStackViewItemsList);
 var
   I, J, K, Idx, NewLineNumber: Integer;

@@ -5,28 +5,21 @@ inherited frmStackView: TfrmStackView
   KeyPreview = True
   PopupMenu = nil
   ShowHint = False
-  ExplicitWidth = 372
-  ExplicitHeight = 365
   PixelsPerInch = 96
   TextHeight = 13
   inherited Splitter1: TSplitter
     Width = 356
     Constraints.MinHeight = 3
-    ExplicitWidth = 260
   end
   object Splitter2: TSplitter [1]
     Left = 145
     Top = 54
     Height = 277
-    ExplicitLeft = 232
-    ExplicitTop = 112
-    ExplicitHeight = 100
   end
   inherited ToolBar1: TToolBar
     Width = 356
     ParentShowHint = False
     ShowHint = False
-    ExplicitWidth = 356
     object ToolButton1: TToolButton
       Left = 4
       Top = 0
@@ -77,7 +70,6 @@ inherited frmStackView: TfrmStackView
     Top = 33
     Width = 356
     Height = 21
-    Align = alTop
     Style = csDropDownList
     ItemHeight = 13
     TabOrder = 1
