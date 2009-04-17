@@ -10,7 +10,7 @@
 { ANY KIND, either express or implied. See the License for the specific language governing rights  }
 { and limitations under the License.                                                               }
 {                                                                                                  }
-{ The Original Code is JclDebugXMLSerializer.pas.                                                  }
+{ The Original Code is JclStackTraceViewerOptions.pas.                                             }
 {                                                                                                  }
 { The Initial Developer of the Original Code is Uwe Schuster.                                      }
 { Portions created by Uwe Schuster are Copyright (C) 2009 Uwe Schuster. All rights reserved.       }
@@ -26,23 +26,30 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-unit JclDebugXMLSerializer;
+unit JclStackTraceViewerOptions;
 
 {$I jcl.inc}
 
 interface
 
 uses
-  SysUtils, Classes,
+  Classes
   {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
+  , JclUnitVersioning
   {$ENDIF UNITVERSIONING}
-  JclDebugSerialization;
+  ;
 
 type
-  TJclXMLSerializer = class(TJclCustomSimpleSerializer)
+  TExceptionViewerOption = class(TPersistent)
+  private
+    FExpandTreeView: Boolean;
+    FModuleVersionAsRevision: Boolean;
+  protected
+    procedure AssignTo(Dest: TPersistent); override;
   public
-    function SaveToString: string;
+    constructor Create;
+    property ExpandTreeView: Boolean read FExpandTreeView write FExpandTreeView;
+    property ModuleVersionAsRevision: Boolean read FModuleVersionAsRevision write FModuleVersionAsRevision;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -57,55 +64,24 @@ const
 
 implementation
 
-//=== { TJclXMLSerializer } ==================================================
+{ TExceptionViewerOption }
 
-function TJclXMLSerializer.SaveToString: string;
-
-  procedure AddToStrings(ASerializer: TJclCustomSimpleSerializer; AXMLStrings: TStringList; AIdent: Integer);
-  var
-    I, P: Integer;
-    S, S1, S2, V: string;
-  begin
-    if AIdent = 0 then
-      S := ''
-    else
-      S := StringOfChar(' ', AIdent);
-    V := '';
-    for I := 0 to ASerializer.Values.Count - 1 do
-    begin
-      S1 := ASerializer.Values[I];
-      P := Pos('=', S1);
-      if P > 0 then
-      begin
-        S2 := S1;
-        Delete(S1, P, Length(S1));
-        Delete(S2, 1, P);
-        V := V + ' ';
-        V := V + Format('%s="%s"', [S1, S2]);
-      end;
-    end;
-    if ASerializer.Count > 0 then
-    begin
-      AXMLStrings.Add(S + '<' + ASerializer.Name + V + '>');
-      for I := 0 to ASerializer.Count - 1 do
-        AddToStrings(ASerializer[I], AXMLStrings, AIdent + 2);
-      AXMLStrings.Add(S + '</' + ASerializer.Name + '>');
-    end
-    else
-      AXMLStrings.Add(S + '<' + ASerializer.Name + V + '/>');
-  end;
-
-
-var
-  XMLStrings: TStringList;
+constructor TExceptionViewerOption.Create;
 begin
-  XMLStrings := TStringList.Create;
-  try
-    AddToStrings(Self, XMLStrings, 0);
-    Result := XMLStrings.Text;
-  finally
-    XMLStrings.Free;
-  end;
+  inherited Create;
+  FExpandTreeView := False;
+  FModuleVersionAsRevision := False;
+end;
+
+procedure TExceptionViewerOption.AssignTo(Dest: TPersistent);
+begin
+  if Dest is TExceptionViewerOption then
+  begin
+    TExceptionViewerOption(Dest).FExpandTreeView := ExpandTreeView;
+    TExceptionViewerOption(Dest).FModuleVersionAsRevision := ModuleVersionAsRevision;
+  end
+  else
+    inherited AssignTo(Dest);
 end;
 
 {$IFDEF UNITVERSIONING}

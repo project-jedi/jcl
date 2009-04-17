@@ -31,9 +31,9 @@ Expert
 * clean up/minor things
   - add and test desktop state stuff in DLL expert mode
   - use updated TJclFileEnumerator instead of TFileSearcher
-  - rename some files
-  - add MPL headers
-  - add UNITVERSIONING
+  - (partly done) rename some files
+  - (partly done) add MPL headers
+  - (partly done) add UNITVERSIONING
 
 * integrate it into the installation
   - generate packages, JclPackages*.* and resources.mak for 5 - 10

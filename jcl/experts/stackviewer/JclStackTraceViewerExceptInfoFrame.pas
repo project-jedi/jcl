@@ -10,7 +10,7 @@
 { ANY KIND, either express or implied. See the License for the specific language governing rights  }
 { and limitations under the License.                                                               }
 {                                                                                                  }
-{ The Original Code is JclDebugXMLSerializer.pas.                                                  }
+{ The Original Code is JclStackTraceViewerExceptInfoFrame.pas.                                     }
 {                                                                                                  }
 { The Initial Developer of the Original Code is Uwe Schuster.                                      }
 { Portions created by Uwe Schuster are Copyright (C) 2009 Uwe Schuster. All rights reserved.       }
@@ -26,23 +26,33 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-unit JclDebugXMLSerializer;
+unit JclStackTraceViewerExceptInfoFrame;
 
 {$I jcl.inc}
 
 interface
 
 uses
-  SysUtils, Classes,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  StdCtrls,
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   JclDebugSerialization;
 
 type
-  TJclXMLSerializer = class(TJclCustomSimpleSerializer)
+  TfrmException = class(TFrame)
+    Label1: TLabel;
+    Label2: TLabel;
+    lbExceptionClassName: TLabel;
+    lbExceptionMessage: TLabel;
+  private
+    FException: TException;
+    procedure SetException(const Value: TException);
+    { Private declarations }
   public
-    function SaveToString: string;
+    { Public declarations }
+    property Exception: TException read FException write SetException;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -57,54 +67,22 @@ const
 
 implementation
 
-//=== { TJclXMLSerializer } ==================================================
+{$R *.dfm}
 
-function TJclXMLSerializer.SaveToString: string;
+{ TfrmException }
 
-  procedure AddToStrings(ASerializer: TJclCustomSimpleSerializer; AXMLStrings: TStringList; AIdent: Integer);
-  var
-    I, P: Integer;
-    S, S1, S2, V: string;
-  begin
-    if AIdent = 0 then
-      S := ''
-    else
-      S := StringOfChar(' ', AIdent);
-    V := '';
-    for I := 0 to ASerializer.Values.Count - 1 do
-    begin
-      S1 := ASerializer.Values[I];
-      P := Pos('=', S1);
-      if P > 0 then
-      begin
-        S2 := S1;
-        Delete(S1, P, Length(S1));
-        Delete(S2, 1, P);
-        V := V + ' ';
-        V := V + Format('%s="%s"', [S1, S2]);
-      end;
-    end;
-    if ASerializer.Count > 0 then
-    begin
-      AXMLStrings.Add(S + '<' + ASerializer.Name + V + '>');
-      for I := 0 to ASerializer.Count - 1 do
-        AddToStrings(ASerializer[I], AXMLStrings, AIdent + 2);
-      AXMLStrings.Add(S + '</' + ASerializer.Name + '>');
-    end
-    else
-      AXMLStrings.Add(S + '<' + ASerializer.Name + V + '/>');
-  end;
-
-
-var
-  XMLStrings: TStringList;
+procedure TfrmException.SetException(const Value: TException);
 begin
-  XMLStrings := TStringList.Create;
-  try
-    AddToStrings(Self, XMLStrings, 0);
-    Result := XMLStrings.Text;
-  finally
-    XMLStrings.Free;
+  FException := Value;
+  if Assigned(FException) then
+  begin
+    lbExceptionClassName.Caption := FException.ExceptionClassName;
+    lbExceptionMessage.Caption := FException.ExceptionMessage;
+  end
+  else
+  begin
+    lbExceptionClassName.Caption := '';
+    lbExceptionMessage.Caption := '';
   end;
 end;
 

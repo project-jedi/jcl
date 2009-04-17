@@ -8,8 +8,9 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   Docktoolform, StdCtrls, ComCtrls, Menus,
   {PlatformDefaultStyleActnCtrls,} ActnPopup, ActnList, ToolWin, ExtCtrls, IniFiles, ToolsAPI,
-  JclDebug, JclDebugSerialization, Contnrs, StackFrame, ModuleFrame,
-  StackViewUnit, StackFrame2, StackCodeUtils, ExceptInfoFrame, ThreadFrame, ExceptionViewerOptionsUnit,
+  JclDebug, JclDebugSerialization, Contnrs, JclStackTraceViewerStackFrame, JclStackTraceViewerModuleFrame,
+  StackViewUnit, StackFrame2, StackCodeUtils, JclStackTraceViewerExceptInfoFrame, JclStackTraceViewerThreadFrame,
+  JclStackTraceViewerOptions,
   StackLineNumberTranslator, JclOtaUtils
   , ActiveX
   , FileSearcherUnit, JclStrings, JclDebugXMLDeserializer

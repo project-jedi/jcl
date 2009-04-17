@@ -13,8 +13,8 @@ inherited frmStackView: TfrmStackView
   end
   object Splitter2: TSplitter [1]
     Left = 145
-    Top = 54
-    Height = 277
+    Top = 33
+    Height = 298
   end
   inherited ToolBar1: TToolBar
     Width = 356
@@ -71,16 +71,16 @@ inherited frmStackView: TfrmStackView
     Width = 356
     Height = 21
     Style = csDropDownList
-    ItemHeight = 13
+    ItemHeight = 0
     TabOrder = 1
     Visible = False
     OnChange = cboxThreadChange
   end
   object tv: TTreeView [4]
     Left = 0
-    Top = 54
+    Top = 33
     Width = 145
-    Height = 277
+    Height = 298
     Align = alLeft
     HideSelection = False
     Indent = 19

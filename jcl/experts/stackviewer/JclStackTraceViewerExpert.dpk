@@ -37,8 +37,8 @@ requires
   vclx;
 
 contains
-  StackTraceViewerImpl in 'StackTraceViewerImpl.pas',
-  StackTraceViewerConfigFrame in 'StackTraceViewerConfigFrame.pas' {JclStackTraceViewerConfigFrame: TFrame},
+  JclStackTraceViewerImpl in 'JclStackTraceViewerImpl.pas',
+  JclStackTraceViewerConfigFrame in 'JclStackTraceViewerConfigFrame.pas' {JclStackTraceViewerConfigFrame: TFrame},
   StackViewForm in 'StackViewForm.pas' {frmStackView};
 
 end.

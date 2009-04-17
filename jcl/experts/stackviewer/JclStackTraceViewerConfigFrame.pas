@@ -10,7 +10,7 @@
 { ANY KIND, either express or implied. See the License for the specific language governing rights  }
 { and limitations under the License.                                                               }
 {                                                                                                  }
-{ The Original Code is JclDebugXMLSerializer.pas.                                                  }
+{ The Original Code is JclStackTraceViewerConfigFrame.pas.                                         }
 {                                                                                                  }
 { The Initial Developer of the Original Code is Uwe Schuster.                                      }
 { Portions created by Uwe Schuster are Copyright (C) 2009 Uwe Schuster. All rights reserved.       }
@@ -26,23 +26,31 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-unit JclDebugXMLSerializer;
+unit JclStackTraceViewerConfigFrame;
 
 {$I jcl.inc}
 
 interface
 
 uses
-  SysUtils, Classes,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JclDebugSerialization;
+  Dialogs, StdCtrls, ExtCtrls, JclStackTraceViewerOptions;
 
 type
-  TJclXMLSerializer = class(TJclCustomSimpleSerializer)
+  TJclStackTraceViewerConfigFrame = class(TFrame)
+    cbExpandTreeView: TCheckBox;
+    cbModuleVersionAsRevision: TCheckBox;
+  private
+    FOptions: TExceptionViewerOption;
+    function GetOptions: TExceptionViewerOption;
+    procedure SetOptions(const Value: TExceptionViewerOption);
   public
-    function SaveToString: string;
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    property Options: TExceptionViewerOption read GetOptions write SetOptions;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -57,55 +65,34 @@ const
 
 implementation
 
-//=== { TJclXMLSerializer } ==================================================
+{$R *.dfm}
 
-function TJclXMLSerializer.SaveToString: string;
+//=== { TJclStackTraceViewerConfigFrame } ====================================
 
-  procedure AddToStrings(ASerializer: TJclCustomSimpleSerializer; AXMLStrings: TStringList; AIdent: Integer);
-  var
-    I, P: Integer;
-    S, S1, S2, V: string;
-  begin
-    if AIdent = 0 then
-      S := ''
-    else
-      S := StringOfChar(' ', AIdent);
-    V := '';
-    for I := 0 to ASerializer.Values.Count - 1 do
-    begin
-      S1 := ASerializer.Values[I];
-      P := Pos('=', S1);
-      if P > 0 then
-      begin
-        S2 := S1;
-        Delete(S1, P, Length(S1));
-        Delete(S2, 1, P);
-        V := V + ' ';
-        V := V + Format('%s="%s"', [S1, S2]);
-      end;
-    end;
-    if ASerializer.Count > 0 then
-    begin
-      AXMLStrings.Add(S + '<' + ASerializer.Name + V + '>');
-      for I := 0 to ASerializer.Count - 1 do
-        AddToStrings(ASerializer[I], AXMLStrings, AIdent + 2);
-      AXMLStrings.Add(S + '</' + ASerializer.Name + '>');
-    end
-    else
-      AXMLStrings.Add(S + '<' + ASerializer.Name + V + '/>');
-  end;
-
-
-var
-  XMLStrings: TStringList;
+constructor TJclStackTraceViewerConfigFrame.Create(AOwner: TComponent);
 begin
-  XMLStrings := TStringList.Create;
-  try
-    AddToStrings(Self, XMLStrings, 0);
-    Result := XMLStrings.Text;
-  finally
-    XMLStrings.Free;
-  end;
+  inherited Create(AOwner);
+  FOptions := TExceptionViewerOption.Create;
+end;
+
+destructor TJclStackTraceViewerConfigFrame.Destroy;
+begin
+  FOptions.Free;
+  inherited Destroy;
+end;
+
+function TJclStackTraceViewerConfigFrame.GetOptions: TExceptionViewerOption;
+begin
+  Result := FOptions;
+  FOptions.ExpandTreeView := cbExpandTreeView.Checked;
+  FOptions.ModuleVersionAsRevision := cbModuleVersionAsRevision.Checked;
+end;
+
+procedure TJclStackTraceViewerConfigFrame.SetOptions(const Value: TExceptionViewerOption);
+begin
+  FOptions.Assign(Value);
+  cbExpandTreeView.Checked := FOptions.ExpandTreeView;
+  cbModuleVersionAsRevision.Checked := FOptions.ModuleVersionAsRevision;
 end;
 
 {$IFDEF UNITVERSIONING}

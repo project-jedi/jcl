@@ -10,7 +10,7 @@
 { ANY KIND, either express or implied. See the License for the specific language governing rights  }
 { and limitations under the License.                                                               }
 {                                                                                                  }
-{ The Original Code is JclDebugXMLSerializer.pas.                                                  }
+{ The Original Code is JclStackTraceViewerModuleFrame.pas.                                         }
 {                                                                                                  }
 { The Initial Developer of the Original Code is Uwe Schuster.                                      }
 { Portions created by Uwe Schuster are Copyright (C) 2009 Uwe Schuster. All rights reserved.       }
@@ -26,23 +26,32 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-unit JclDebugXMLSerializer;
+unit JclStackTraceViewerModuleFrame;
 
 {$I jcl.inc}
 
 interface
 
 uses
-  SysUtils, Classes,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  ComCtrls, IniFiles,
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   JclDebugSerialization;
 
 type
-  TJclXMLSerializer = class(TJclCustomSimpleSerializer)
+  TfrmModule = class(TFrame)
+    lv: TListView;
+  private
+    FModuleList: TModuleList;
+    procedure SetModuleList(const Value: TModuleList);
+    { Private declarations }
   public
-    function SaveToString: string;
+    { Public declarations }
+    property ModuleList: TModuleList read FModuleList write SetModuleList;
+    procedure LoadState(AIni: TCustomIniFile; const ASection: string);
+    procedure SaveState(AIni: TCustomIniFile; const ASection: string);
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -57,54 +66,44 @@ const
 
 implementation
 
-//=== { TJclXMLSerializer } ==================================================
+{$R *.dfm}
 
-function TJclXMLSerializer.SaveToString: string;
+{ TfrmModule }
 
-  procedure AddToStrings(ASerializer: TJclCustomSimpleSerializer; AXMLStrings: TStringList; AIdent: Integer);
-  var
-    I, P: Integer;
-    S, S1, S2, V: string;
-  begin
-    if AIdent = 0 then
-      S := ''
-    else
-      S := StringOfChar(' ', AIdent);
-    V := '';
-    for I := 0 to ASerializer.Values.Count - 1 do
-    begin
-      S1 := ASerializer.Values[I];
-      P := Pos('=', S1);
-      if P > 0 then
-      begin
-        S2 := S1;
-        Delete(S1, P, Length(S1));
-        Delete(S2, 1, P);
-        V := V + ' ';
-        V := V + Format('%s="%s"', [S1, S2]);
-      end;
-    end;
-    if ASerializer.Count > 0 then
-    begin
-      AXMLStrings.Add(S + '<' + ASerializer.Name + V + '>');
-      for I := 0 to ASerializer.Count - 1 do
-        AddToStrings(ASerializer[I], AXMLStrings, AIdent + 2);
-      AXMLStrings.Add(S + '</' + ASerializer.Name + '>');
-    end
-    else
-      AXMLStrings.Add(S + '<' + ASerializer.Name + V + '/>');
-  end;
-
-
+procedure TfrmModule.LoadState(AIni: TCustomIniFile; const ASection: string);
 var
-  XMLStrings: TStringList;
+  I: Integer;
 begin
-  XMLStrings := TStringList.Create;
-  try
-    AddToStrings(Self, XMLStrings, 0);
-    Result := XMLStrings.Text;
-  finally
-    XMLStrings.Free;
+  for I := 0 to lv.Columns.Count - 1 do
+    lv.Columns.Items[I].Width := AIni.ReadInteger(ASection,
+      Format('ModuleFrameColumnWidth%d', [I]), lv.Columns.Items[I].Width);
+end;
+
+procedure TfrmModule.SaveState(AIni: TCustomIniFile; const ASection: string);
+var
+  I: Integer;
+begin
+  for I := 0 to lv.Columns.Count - 1 do
+    AIni.WriteInteger(ASection, Format('ModuleFrameColumnWidth%d', [I]), lv.Columns.Items[I].Width);
+end;
+
+procedure TfrmModule.SetModuleList(const Value: TModuleList);
+var
+  I: Integer;
+  ListItem: TListItem;
+begin
+  FModuleList := Value;
+  lv.Items.Clear;
+  for I := 0 to FModuleList.Count - 1 do
+  begin
+    ListItem := lv.Items.Add;
+    ListItem.Caption := FModuleList[I].StartStr;
+    ListItem.SubItems.Add(FModuleList[I].EndStr);
+    ListItem.SubItems.Add(FModuleList[I].SystemModuleStr);
+    ListItem.SubItems.Add(ExtractFileName(FModuleList[I].ModuleName));
+    ListItem.SubItems.Add(FModuleList[I].BinFileVersion);
+    ListItem.SubItems.Add(FModuleList[I].FileVersion);
+    ListItem.SubItems.Add(FModuleList[I].FileDescription);
   end;
 end;
 
@@ -117,3 +116,4 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
+
