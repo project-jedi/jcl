@@ -529,8 +529,10 @@ type
     FCharacterWriter: TJclStreamSetNextCharFunc;
     FPeekPosition: Int64;
     function GetCalcedSize: Int64; override;
+    procedure SetSize({$IFNDEF CLR}const{$ENDIF ~CLR} NewSize: Int64); override;
   public
     constructor Create(AStream: TStream; AOwnsStream: Boolean = False); virtual;
+    function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64; override;
     function ReadString(var Buffer: string; Start, Count: Longint): Longint; overload;
     function ReadString(BufferSize: Longint = 4096): string; overload;
     function ReadAnsiString(var Buffer: AnsiString; Start, Count: Longint): Longint; overload;
@@ -2988,6 +2990,18 @@ begin
     if ProcessedLength > 0 then
       Result := Result + Copy(Buffer, 1, ProcessedLength);
   until ProcessedLength = 0;
+end;
+
+function TJclStringStream.Seek(const Offset: Int64; Origin: TSeekOrigin): Int64;
+begin
+  Result := inherited Seek(Offset, Origin);
+  FPeekPosition := FPosition;
+end;
+
+procedure TJclStringStream.SetSize({$IFNDEF CLR}const{$ENDIF ~CLR} NewSize: Int64);
+begin
+  inherited SetSize(NewSize);
+  FPeekPosition := FPosition;
 end;
 
 function TJclStringStream.SkipBOM: Longint;
