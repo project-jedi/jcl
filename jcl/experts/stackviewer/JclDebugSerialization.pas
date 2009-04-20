@@ -337,7 +337,7 @@ begin
         S := S + Format('+ $%x', [OffsetFromLineNumber])
       else
         S := S + Format('- $%x', [-OffsetFromLineNumber]);
-      ASerializer.WriteString(Self, 'OffsetFromProcName', S);
+      ASerializer.WriteString(Self, 'OffsetFromLineNumber', S);
     end;
     if lievProcedureStartLocationInfo in Values then
       ASerializer.WriteString(Self, 'LineNumberOffsetFromProcedureStart', IntToStr(LineNumberOffsetFromProcedureStart));
