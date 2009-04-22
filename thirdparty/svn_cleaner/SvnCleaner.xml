@@ -11,7 +11,7 @@
       <value>(Mantis #%BUGID%)</value>
     </property>
     <property name="bugtraq:url">
-      <value>http://homepages.codegear.com/jedi/issuetracker/view.php?id=%BUGID%</value>
+      <value>http://issuetracker.delphi-jedi.org/view.php?id=%BUGID%</value>
     </property>
     <property name="tsvn:projectlanguage">
       <value>0x0409</value>
@@ -23,7 +23,7 @@
         <value>URL HeadURL Author LastChangedBy Date LastChangedDate Rev Revision LastChangedRevision Id</value>
       </property>
     </setting>
-    <setting path="" mask="*.pas *.cpp *.inc *.h *.dpr *.dpk *.bpr *.bpk *.bpf *.gmk *.bmk *.def *.conf *.sh *.txt *.bat *.xml *.html *.css *.exc *.bpg *.bdsgroup *.bdsproj *.groupproj *.dproj *.cproj *.dof *.kof *.rc *.dfm *.xfm *.dtx *.dsf *.dox *.dfg *.ini *.fpc *.mak *.int *.imp *.pl *.cmd *.manifest *.iss *.cs *.resx" recurse="yes"  dironly="no">
+    <setting path="" mask="*.pas *.cpp *.inc *.h *.dpr *.dpk *.bpr *.bpk *.bpf *.gmk *.bmk *.def *.conf *.sh *.txt *.bat *.xml *.html *.css *.exc *.bpg *.bdsgroup *.bdsproj *.groupproj *.dproj *.cproj *.dof *.kof *.rc *.dfm *.xfm *.dtx *.dsf *.dox *.dfg *.ini *.fpc *.mak *.int *.imp *.pl *.cmd *.manifest *.iss *.cs *.resx *.htaccess *.cfg" recurse="yes"  dironly="no">
       <property name="svn:eol-style">
         <value>native</value>
       </property>
@@ -38,7 +38,12 @@
         <value>image/jpeg</value>
       </property>
     </setting>
-    <setting path="" mask="*.ico" recurse="yes" dironly="no">
+	<setting path="" mask="*.gif" recurse="yes" dironly="no">
+	  <property name="svn:mime-type">
+		<value>image/gif</value>
+	  </property>
+	</setting>
+	<setting path="" mask="*.ico" recurse="yes" dironly="no">
       <property name="svn:mime-type">
         <value>image/x-icon</value>
       </property>
@@ -73,6 +78,11 @@
         <value>text/xml</value>
       </property>
     </setting>
+	<setting path="" mask="*.pdf" recurse="yes" dironly="no">
+	  <property name="svn:mime-type">
+		<value>application/pdf</value>
+	  </property>
+	</setting>
 
     <!-- specific properties based on directories -->
     
@@ -383,7 +393,8 @@
             <value>jclkc3.inc</value>
             <value>jcld11.inc</value>
             <value>jcld11.net.inc</value>
-          </property>
+            <value>jcld12.inc</value>
+		  </property>
         </setting>
 
         <setting path="prototypes" mask="*" recurse="no" dironly="yes">
@@ -433,15 +444,21 @@
         <value>*.zip</value>
         <value>*.gz</value>
         <value>*.7z</value>
-        <value>daily</value>
         <value>sandbox</value>
         <value>jcl-daily-source-0.txt</value>
         <value>jcl-daily-source-1.txt</value>
         <value>jcl-daily-source-2.txt</value>
         <value>jcl-weekly-hlp-0.txt</value>
         <value>jcl-weekly-h2-0.txt</value>
-        <value>7z.dll</value>
+        <value>jcl-weekly-chm-0.txt</value>
+		<value>7z.dll</value>
       </property>
-    </setting>
+	</setting>
+
+	<setting path="website/daily" mask="" recurse="no" dironly="yes">
+	  <property name="svn:ignore">
+        <value>*.7z</value>
+	  </property>
+	</setting>
   </setting>
 </svncleaner>
