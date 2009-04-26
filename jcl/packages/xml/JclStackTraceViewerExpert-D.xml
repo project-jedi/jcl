@@ -24,7 +24,8 @@
     <File Name="..\..\experts\stackviewer\JclStackTraceViewerThreadFrame.pas" Targets="Windows" Formname="frmThread: TFrame" Condition=""/>
     <File Name="..\..\experts\stackviewer\StackFrame2.pas" Targets="Windows" Formname="frmStack2: TFrame" Condition=""/>
     <File Name="..\..\experts\stackviewer\JclStackTraceViewerModuleFrame.pas" Targets="Windows" Formname="frmModule: TFrame" Condition=""/>
-    <File Name="..\..\experts\stackviewer\StackViewForm.pas" Targets="Windows" Formname="frmStackView" Condition=""/>
+    <File Name="..\..\experts\stackviewer\JclStackTraceViewerMainFormBDS.pas" Targets="Windows" Formname="frmStackView" Condition=""/>
+    <File Name="..\..\experts\stackviewer\JclStackTraceViewerMainFrame.pas" Targets="Windows" Formname="frmMain: TFrame" Condition=""/>
     <File Name="..\..\experts\stackviewer\JclStackTraceViewerConfigFrame.pas" Targets="Windows" Formname="JclStackTraceViewerConfigFrame: TFrame" Condition=""/>
     <File Name="..\..\experts\stackviewer\StackViewUnit.pas" Targets="Windows" Formname="" Condition=""/>
     <File Name="..\..\experts\stackviewer\StackCodeUtils.pas" Targets="Windows" Formname="" Condition=""/>

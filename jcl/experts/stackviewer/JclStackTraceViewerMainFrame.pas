@@ -1,4 +1,32 @@
-unit StackViewForm;
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is JclStackTraceViewerMainFrame.pas.                                           }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is Uwe Schuster.                                      }
+{ Portions created by Uwe Schuster are Copyright (C) 2009 Uwe Schuster. All rights reserved.       }
+{                                                                                                  }
+{ Contributor(s):                                                                                  }
+{   Uwe Schuster (uschuster)                                                                       }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date::                              $ }
+{ Revision:      $Rev::                                                                      $ }
+{ Author:        $Author::                                                                 $ }
+{                                                                                                  }
+{**************************************************************************************************}
+
+unit JclStackTraceViewerMainFrame;
 
 {$I jcl.inc}
 
@@ -8,6 +36,9 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   Docktoolform, StdCtrls, ComCtrls, Menus,
   {PlatformDefaultStyleActnCtrls,} ActnPopup, ActnList, ToolWin, ExtCtrls, IniFiles, ToolsAPI,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JclDebug, JclDebugSerialization, Contnrs, JclStackTraceViewerStackFrame, JclStackTraceViewerModuleFrame,
   StackViewUnit, StackFrame2, StackCodeUtils, JclStackTraceViewerExceptInfoFrame, JclStackTraceViewerThreadFrame,
   JclStackTraceViewerOptions,
@@ -17,29 +48,16 @@ uses
   ;
 
 type
-  TfrmStackView = class(TDockableToolbarForm)
+  TfrmMain = class(TFrame)
     ActionList1: TActionList;
     acJumpToCodeLine: TAction;
-    ToolButton1: TToolButton;
-    PopupActionBar1: TPopupActionBar;
-    mnuJumpToCodeLine: TMenuItem;
-    N1: TMenuItem;
-    StayonTop2: TMenuItem;
-    Dockable2: TMenuItem;
     acLoadStack: TAction;
-    ToolButton2: TToolButton;
-    ToolButton3: TToolButton;
     OpenDialog1: TOpenDialog;
     cboxThread: TComboBox;
     tv: TTreeView;
     acOptions: TAction;
-    ToolButton4: TToolButton;
-    ToolButton5: TToolButton;
     acUpdateLocalInfo: TAction;
-    ToolButton6: TToolButton;
-    ToolButton7: TToolButton;
     Splitter2: TSplitter;
-    procedure FormCreate(Sender: TObject);
     procedure acJumpToCodeLineExecute(Sender: TObject);
     procedure acLoadStackExecute(Sender: TObject);
     procedure cboxThreadChange(Sender: TObject);
@@ -66,19 +84,29 @@ type
     { Public declarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure LoadWindowState(ADesktop: TCustomIniFile); override;
-    procedure SaveWindowState(ADesktop: TCustomIniFile; AIsProject: Boolean); override;
+    procedure LoadWindowState(ADesktop: TCustomIniFile);
+    procedure SaveWindowState(ADesktop: TCustomIniFile; AIsProject: Boolean);
     property Options: TExceptionViewerOption read FOptions write SetOptions;
     property RootDir: string read FRootDir write FRootDir;
   end;
 
-var
-  frmStackView: TfrmStackView;
-
 const
   IDEDesktopIniSection = 'TStackViewAddIn';//todo - move
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL: $';
+    Revision: '$Revision: $';
+    Date: '$Date: $';
+    LogPath: ''
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
+
+uses
+  JclStackTraceViewerImpl;
 
 {$R *.dfm}
 
@@ -94,23 +122,13 @@ type
     property Kind: TTreeViewLinkKind read FKind write FKind;
   end;
 
-{ TfrmStackView }
-
-procedure TfrmStackView.FormCreate(Sender: TObject);
+procedure TfrmMain.LoadWindowState(ADesktop: TCustomIniFile);
 begin
-  inherited;
-  DeskSection := IDEDesktopIniSection;
-  AutoSave := True;
-end;
-
-procedure TfrmStackView.LoadWindowState(ADesktop: TCustomIniFile);
-begin
-  inherited LoadWindowState(ADesktop);
   if Assigned(ADesktop) then
   begin
-    FStackFrame.LoadState(ADesktop, DeskSection, 'StackFrameSingle');
-    FModuleFrame.LoadState(ADesktop, DeskSection);
-    FThreadFrame.LoadState(ADesktop, DeskSection);
+    FStackFrame.LoadState(ADesktop, IDEDesktopIniSection, 'StackFrameSingle');
+    FModuleFrame.LoadState(ADesktop, IDEDesktopIniSection);
+    FThreadFrame.LoadState(ADesktop, IDEDesktopIniSection);
   end;
 end;
 
@@ -158,7 +176,7 @@ begin
   Result := FItems[AIndex];
 end;
 
-procedure TfrmStackView.PrepareStack(AStack: TJclSerializableLocationInfoList; AStackItemList: TStackViewItemsList);
+procedure TfrmMain.PrepareStack(AStack: TJclSerializableLocationInfoList; AStackItemList: TStackViewItemsList);
 var
   I, J, K, Idx, NewLineNumber: Integer;
   StackViewItem: TStackViewItem;
@@ -413,18 +431,17 @@ begin
   end;
 end;
 
-procedure TfrmStackView.SaveWindowState(ADesktop: TCustomIniFile; AIsProject: Boolean);
+procedure TfrmMain.SaveWindowState(ADesktop: TCustomIniFile; AIsProject: Boolean);
 begin
-  inherited SaveWindowState(ADesktop, AIsProject);
-  if SaveStateNecessary and Assigned(ADesktop) then
+  if Assigned(ADesktop) then
   begin
-    FStackFrame.SaveState(ADesktop, DeskSection, 'StackFrameSingle');
-    FModuleFrame.SaveState(ADesktop, DeskSection);
-    FThreadFrame.SaveState(ADesktop, DeskSection);
+    FStackFrame.SaveState(ADesktop, IDEDesktopIniSection, 'StackFrameSingle');
+    FModuleFrame.SaveState(ADesktop, IDEDesktopIniSection);
+    FThreadFrame.SaveState(ADesktop, IDEDesktopIniSection);
   end;
 end;
 
-procedure TfrmStackView.SetOptions(const Value: TExceptionViewerOption);
+procedure TfrmMain.SetOptions(const Value: TExceptionViewerOption);
 var
   OldOptions: TExceptionViewerOption;
 begin
@@ -441,7 +458,7 @@ begin
   end;
 end;
 
-procedure TfrmStackView.tvChange(Sender: TObject; Node: TTreeNode);
+procedure TfrmMain.tvChange(Sender: TObject; Node: TTreeNode);
 var
   TreeViewLink: TTreeViewLink;
   NewControl: TControl;
@@ -500,7 +517,7 @@ begin
     FLastControl := NewControl;
 end;
 
-procedure TfrmStackView.acJumpToCodeLineExecute(Sender: TObject);
+procedure TfrmMain.acJumpToCodeLineExecute(Sender: TObject);
 begin
   if Assigned(FThreadFrame) and FThreadFrame.Visible and Assigned(FThreadFrame.Selected) then
     JumpToCode(FThreadFrame.Selected)
@@ -509,7 +526,7 @@ begin
     JumpToCode(FStackFrame.Selected);
 end;
 
-constructor TfrmStackView.Create(AOwner: TComponent);
+constructor TfrmMain.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 //  FThreadInfoList := TThreadInfoList.Create;
@@ -541,11 +558,16 @@ begin
   FThreadFrame.Visible := False;
 
   FOptions := TExceptionViewerOption.Create;
+  if Assigned(StackTraceViewerExpert) then
+  begin
+    Options := StackTraceViewerExpert.Options;
+    RootDir := StackTraceViewerExpert.RootDir;
+  end;
 
   FLastControl := nil;
 end;
 
-destructor TfrmStackView.Destroy;
+destructor TfrmMain.Destroy;
 begin
   FOptions.Free;
   FTreeViewLinkList.Free;
@@ -556,7 +578,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TfrmStackView.acLoadStackExecute(Sender: TObject);
+procedure TfrmMain.acLoadStackExecute(Sender: TObject);
 var
   SS: TStringStream;
   {$IFNDEF COMPILER12_UP}
@@ -670,19 +692,19 @@ begin
   end;
 end;
 
-procedure TfrmStackView.acOptionsExecute(Sender: TObject);
+procedure TfrmMain.acOptionsExecute(Sender: TObject);
 begin
   inherited;
   TJclOTAExpertBase.ConfigurationDialog('Stack Trace Viewer');
 end;
 
-procedure TfrmStackView.acUpdateLocalInfoExecute(Sender: TObject);
+procedure TfrmMain.acUpdateLocalInfoExecute(Sender: TObject);
 begin
   inherited;
   tvChange(nil, nil);
 end;
 
-procedure TfrmStackView.cboxThreadChange(Sender: TObject);
+procedure TfrmMain.cboxThreadChange(Sender: TObject);
 begin
   inherited;
   {//todo
@@ -695,5 +717,13 @@ begin
   end;
   }
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

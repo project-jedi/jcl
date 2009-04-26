@@ -38,7 +38,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JclOtaUtils, StackViewForm, JclStackTraceViewerConfigFrame, JclStackTraceViewerOptions;
+  JclOtaUtils, JclStackTraceViewerMainFormBDS, JclStackTraceViewerConfigFrame, JclStackTraceViewerOptions;
 
 type
   TJclStackTraceViewerExpert = class(TJclOTAExpert)
@@ -58,7 +58,14 @@ type
     procedure UnregisterCommands; override;
     procedure AddConfigurationPages(AddPageFunc: TJclOTAAddPageFunc); override;
     procedure ConfigurationClosed(AControl: TControl; SaveChanges: Boolean); override;
+    property Icon: TIcon read FIcon;
+    property Options: TExceptionViewerOption read FOptions;
   end;
+
+// the expert var is required to get the icon and options in the MainForm/Frame create methods
+// (the main form is a registered form and the IDE can create it too)
+var
+  StackTraceViewerExpert: TJclStackTraceViewerExpert = nil;
 
 // design package entry point
 procedure Register;
@@ -100,7 +107,8 @@ begin
     if Assigned(RegisterFieldAddress) then
       RegisterFieldAddress(IDEDesktopIniSection, @frmStackView);
     RegisterDesktopFormClass(TfrmStackView, IDEDesktopIniSection, IDEDesktopIniSection);
-    RegisterPackageWizard(TJclStackTraceViewerExpert.Create);
+    StackTraceViewerExpert := TJclStackTraceViewerExpert.Create;
+    RegisterPackageWizard(StackTraceViewerExpert);
   except
     on ExceptionObj: TObject do
     begin
@@ -117,7 +125,10 @@ procedure JclWizardTerminate;
 begin
   try
     if JCLWizardIndex <> -1 then
+    begin
+      StackTraceViewerExpert := nil;
       TJclOTAExpertBase.GetOTAWizardServices.RemoveWizard(JCLWizardIndex);
+    end;
   except
     on ExceptionObj: TObject do
     begin
@@ -137,7 +148,8 @@ begin
     if Assigned(RegisterFieldAddress) then
       RegisterFieldAddress(IDEDesktopIniSection, @frmStackView);
     RegisterDesktopFormClass(TfrmStackView, IDEDesktopIniSection, IDEDesktopIniSection);
-    JCLWizardIndex := TJclOTAExpertBase.GetOTAWizardServices.AddWizard(TJclStackTraceViewerExpert.Create);
+    StackTraceViewerExpert := TJclStackTraceViewerExpert.Create;
+    JCLWizardIndex := TJclOTAExpertBase.GetOTAWizardServices.AddWizard(StackTraceViewerExpert);
 
     Result := True;
   except
@@ -170,9 +182,6 @@ begin
     if not Assigned(frmStackView) then
     begin
       frmStackView := TfrmStackView.Create(Application);
-      frmStackView.Icon := FIcon;
-      frmStackView.Options := FOptions;
-      frmStackView.RootDir := RootDir;
       frmStackView.Show;
     end
     else
