@@ -1,5 +1,7 @@
 unit StackCodeUtils;
 
+{$I jcl.inc}
+
 interface
 
 uses
@@ -53,6 +55,7 @@ var
 begin
   Result := '';
   AProjectName := '';
+  {$IFDEF BDS}
   ProjectGroup := (BorlandIDEServices as IOTAModuleServices).MainProjectGroup;
   if Assigned(ProjectGroup) then
     for I := 0 to ProjectGroup.ProjectCount - 1 do
@@ -64,15 +67,19 @@ begin
         Break;
       end;
     end;
+  {$ENDIF BDS}
 end;
 
 function GetFileEditorContent(const AFileName: string): IStream;
+{$IFDEF BDS}
 var
   I: Integer;
   Module: IOTAModule;
   EditorContent: IOTAEditorContent;
+{$ENDIF BDS}
 begin
   Result := nil;
+  {$IFDEF BDS}
   Module := (BorlandIDEServices as IOTAModuleServices).FindModule(AFileName);
   if Assigned(Module) then
   begin
@@ -83,9 +90,11 @@ begin
         Break;
       end;
   end;
+  {$ENDIF BDS}
 end;
 
 procedure JumpToCode(AStackViewItem: TStackViewItem);
+{$IFDEF BDS}
 var
   S, FileName: string;
   Module: IOTAModule;
@@ -93,7 +102,9 @@ var
   SourceEditor: IOTASourceEditor;
   I, LineNumber: Integer;
   EditPos: TOTAEditPos;
+{$ENDIF BDS}  
 begin
+  {$IFDEF BDS}
   if Assigned(AStackViewItem) then
   begin
     FileName := AStackViewItem.SourceName;
@@ -127,6 +138,7 @@ begin
       end;
     end;
   end;
+  {$ENDIF BDS}
 end;
 
 end.

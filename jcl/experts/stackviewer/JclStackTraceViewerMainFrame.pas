@@ -35,7 +35,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   Docktoolform, StdCtrls, ComCtrls, Menus,
-  {PlatformDefaultStyleActnCtrls,} ActnPopup, ActnList, ToolWin, ExtCtrls, IniFiles, ToolsAPI,
+  ActnList, ToolWin, ExtCtrls, IniFiles, ToolsAPI,
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}

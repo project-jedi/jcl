@@ -38,7 +38,12 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JclOtaUtils, JclStackTraceViewerMainFormBDS, JclStackTraceViewerConfigFrame, JclStackTraceViewerOptions;
+  {$IFDEF BDS}
+  JclStackTraceViewerMainFormBDS,
+  {$ELSE ~BDS}
+  JclStackTraceViewerMainFormDelphi,
+  {$ENDIF ~BDS}
+  JclOtaUtils, JclStackTraceViewerConfigFrame, JclStackTraceViewerOptions;
 
 type
   TJclStackTraceViewerExpert = class(TJclOTAExpert)
@@ -137,7 +142,6 @@ begin
   end;
 end;
 
-{ TODO -oUSc : test desktop state stuff (RegisterFieldAddress and RegisterDesktopFormClass) }
 function JCLWizardInit(const BorlandIDEServices: IBorlandIDEServices;
     RegisterProc: TWizardRegisterProc;
     var TerminateProc: TWizardTerminateProc): Boolean stdcall;
@@ -237,7 +241,6 @@ begin
   NTAServices := GetNTAServices;
 
   Category := '';
-  { TODO : verify if command exists in <= D2007 }
   for I := 0 to NTAServices.ActionList.ActionCount - 1 do
     if CompareText(NTAServices.ActionList.Actions[I].Name, 'ViewPrjMgrCommand') = 0 then
     begin

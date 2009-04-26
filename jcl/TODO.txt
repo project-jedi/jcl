@@ -23,7 +23,7 @@ Expert
 * icon's
 
 * clean up/minor things
-  - add and test desktop state stuff in DLL expert mode
+  - implement StackCodeUtils.pas functions for the old IDE
   - use updated TJclFileEnumerator instead of TFileSearcher
   - (partly done) rename some files
   - (partly done) add MPL headers
