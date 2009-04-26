@@ -2,12 +2,6 @@ JclDebug
 --------
 * (Florent) TJclLocationInfoEx should replace TJclLocationInfo
 
-* extending TJclThreadInfoList.Gather to exclude a set of threads or to include a set of threads
-  (multiple functions to make things more clear)
-  - one function for exclude
-  - one function for include
-    (exclude + include together doesn't make sense without any wildcard like stuff)
-
 * ? merge TJclDebugThreadInfo/TJclDebugThreadList and TJclThreadInfo/TJclThreadInfoList
   - investigate if the stack can stay a TJclStackInfoList and if the location information can be retrieved later correctly
 

@@ -921,12 +921,15 @@ type
     function GetAsString: string;
     function GetCount: Integer;
     function GetItems(AIndex: Integer): TJclThreadInfo;
+    procedure InternalGather(AIncludeThreadIDs, AExcludeThreadIDs: array of DWORD);
   public
     constructor Create;
     destructor Destroy; override;
     function Add: TJclThreadInfo;
     procedure Clear;
-    function Gather(AExceptThreadID: DWORD): string;
+    procedure Gather(AExceptThreadID: DWORD);
+    procedure GatherExclude(AThreadIDs: array of DWORD);
+    procedure GatherInclude(AThreadIDs: array of DWORD);
     property AsCSVString: string read GetAsCSVString;
     property AsString: string read GetAsString;
     property Count: Integer read GetCount;
@@ -6082,7 +6085,32 @@ begin
     Result := Result + Items[I].AsString + #13#10;
 end;
 
-function TJclThreadInfoList.Gather(AExceptThreadID: DWORD): string;
+procedure TJclThreadInfoList.Gather(AExceptThreadID: DWORD);
+begin
+  InternalGather([], [AExceptThreadID]);
+end;
+
+procedure TJclThreadInfoList.GatherExclude(AThreadIDs: array of DWORD);
+begin
+  InternalGather([], AThreadIDs);
+end;
+
+procedure TJclThreadInfoList.GatherInclude(AThreadIDs: array of DWORD);
+begin
+  InternalGather(AThreadIDs, []);
+end;
+
+function TJclThreadInfoList.GetCount: Integer;
+begin
+  Result := FItems.Count;
+end;
+
+function TJclThreadInfoList.GetItems(AIndex: Integer): TJclThreadInfo;
+begin
+  Result := TJclThreadInfo(FItems[AIndex]);
+end;
+
+procedure TJclThreadInfoList.InternalGather(AIncludeThreadIDs, AExcludeThreadIDs: array of DWORD);
 
   function OpenThread(ThreadID: DWORD): THandle;
   type
@@ -6106,6 +6134,20 @@ function TJclThreadInfoList.Gather(AExceptThreadID: DWORD): string;
     end;
   end;
 
+  function SearchThreadInArray(AThreadIDs: array of DWORD; AThreadID: DWORD): Boolean;
+  var
+    I: Integer;
+  begin
+    Result := False;
+    if Length(AThreadIDs) > 0 then
+      for I := Low(AThreadIDs) to High(AThreadIDs) do
+        if AThreadIDs[I] = AThreadID then
+        begin
+          Result := True;
+          Break;
+        end;
+  end;
+
 var
   SnapProcHandle: THandle;
   ThreadEntry: TThreadEntry32;
@@ -6127,8 +6169,12 @@ begin
       NextThread := Thread32First(SnapProcHandle, ThreadEntry);
       while NextThread do
       begin
-        if (AExceptThreadID <> ThreadEntry.th32ThreadID) and (ThreadEntry.th32OwnerProcessID = PID) then
-          ThreadIDList.Add(Pointer(ThreadEntry.th32ThreadID));
+        if ThreadEntry.th32OwnerProcessID = PID then
+        begin
+          if SearchThreadInArray(AIncludeThreadIDs, ThreadEntry.th32ThreadID) or
+            not SearchThreadInArray(AExcludeThreadIDs, ThreadEntry.th32ThreadID) then
+            ThreadIDList.Add(Pointer(ThreadEntry.th32ThreadID));
+        end;
         NextThread := Thread32Next(SnapProcHandle, ThreadEntry);
       end;
     finally
@@ -6163,16 +6209,6 @@ begin
     ThreadIDList.Free;
     ThreadHandleList.Free;
   end;
-end;
-
-function TJclThreadInfoList.GetCount: Integer;
-begin
-  Result := FItems.Count;
-end;
-
-function TJclThreadInfoList.GetItems(AIndex: Integer): TJclThreadInfo;
-begin
-  Result := TJclThreadInfo(FItems[AIndex]);
 end;
 
 //== Miscellanuous ===========================================================
