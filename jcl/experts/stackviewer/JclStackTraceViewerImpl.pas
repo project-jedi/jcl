@@ -95,23 +95,15 @@ implementation
 {$R JclStackTraceViewerIcon.res}
 
 uses
-  JclDebug, JclFileUtils, JclOtaConsts,
-  JclOtaResources;
-
-resourcestring
-  rsStackTraceViewerCaption = 'Stack Traces';//todo - move to JclOtaResources.pas
-
-const
-  JclStackTraceViewerExpertName = 'JclStackTraceViewerExpert';//todo - move to JclOtaConsts.pas
-  JclStackTraceViewerActionName = 'JCLStackTraceViewerCommand';
-  JclStackTraceViewerMenuName   = 'JCLStackTraceViewerMenu';
+  JclDebug, JclFileUtils,
+  JclOtaConsts, JclOtaResources;
 
 procedure Register;
 begin
   try
     if Assigned(RegisterFieldAddress) then
-      RegisterFieldAddress(IDEDesktopIniSection, @frmStackView);
-    RegisterDesktopFormClass(TfrmStackView, IDEDesktopIniSection, IDEDesktopIniSection);
+      RegisterFieldAddress(JclStackTraceViewerDesktopIniSection, @frmStackView);
+    RegisterDesktopFormClass(TfrmStackView, JclStackTraceViewerDesktopIniSection, JclStackTraceViewerDesktopIniSection);
     StackTraceViewerExpert := TJclStackTraceViewerExpert.Create;
     RegisterPackageWizard(StackTraceViewerExpert);
   except
@@ -150,8 +142,8 @@ begin
     TerminateProc := JclWizardTerminate;
 
     if Assigned(RegisterFieldAddress) then
-      RegisterFieldAddress(IDEDesktopIniSection, @frmStackView);
-    RegisterDesktopFormClass(TfrmStackView, IDEDesktopIniSection, IDEDesktopIniSection);
+      RegisterFieldAddress(JclStackTraceViewerDesktopIniSection, @frmStackView);
+    RegisterDesktopFormClass(TfrmStackView, JclStackTraceViewerDesktopIniSection, JclStackTraceViewerDesktopIniSection);
     StackTraceViewerExpert := TJclStackTraceViewerExpert.Create;
     JCLWizardIndex := TJclOTAExpertBase.GetOTAWizardServices.AddWizard(StackTraceViewerExpert);
 
@@ -204,7 +196,7 @@ begin
   inherited AddConfigurationPages(AddPageFunc);
   FOptionsFrame := TJclStackTraceViewerConfigFrame.Create(nil);
   FOptionsFrame.Options := FOptions;
-  AddPageFunc(FOptionsFrame, 'Stack Trace Viewer', Self);//todo - resourcestring
+  AddPageFunc(FOptionsFrame, rsStackTraceViewerOptionsPageName, Self);
 end;
 
 procedure TJclStackTraceViewerExpert.ConfigurationClosed(AControl: TControl; SaveChanges: Boolean);
@@ -233,7 +225,6 @@ var
   IDEMenu: TMainMenu;
   ViewMenu: TMenuItem;
   Category: string;
-  ImageBmp: TBitmap;
   NTAServices: INTAServices;
 begin
   inherited RegisterCommands;

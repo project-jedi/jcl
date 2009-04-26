@@ -42,7 +42,7 @@ uses
   JclDebug, JclDebugSerialization, Contnrs, JclStackTraceViewerStackFrame, JclStackTraceViewerModuleFrame,
   StackViewUnit, StackFrame2, StackCodeUtils, JclStackTraceViewerExceptInfoFrame, JclStackTraceViewerThreadFrame,
   JclStackTraceViewerOptions,
-  StackLineNumberTranslator, JclOtaUtils
+  JclStackTraceViewerAPIImpl, JclOtaUtils
   , ActiveX
   , FileSearcherUnit, JclStrings, JclDebugXMLDeserializer
   ;
@@ -90,9 +90,6 @@ type
     property RootDir: string read FRootDir write FRootDir;
   end;
 
-const
-  IDEDesktopIniSection = 'TStackViewAddIn';//todo - move
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -106,6 +103,7 @@ const
 implementation
 
 uses
+  JclOtaConsts,
   JclStackTraceViewerImpl;
 
 {$R *.dfm}
@@ -126,9 +124,9 @@ procedure TfrmMain.LoadWindowState(ADesktop: TCustomIniFile);
 begin
   if Assigned(ADesktop) then
   begin
-    FStackFrame.LoadState(ADesktop, IDEDesktopIniSection, 'StackFrameSingle');
-    FModuleFrame.LoadState(ADesktop, IDEDesktopIniSection);
-    FThreadFrame.LoadState(ADesktop, IDEDesktopIniSection);
+    FStackFrame.LoadState(ADesktop, JclStackTraceViewerDesktopIniSection, 'StackFrameSingle');
+    FModuleFrame.LoadState(ADesktop, JclStackTraceViewerDesktopIniSection);
+    FThreadFrame.LoadState(ADesktop, JclStackTraceViewerDesktopIniSection);
   end;
 end;
 
@@ -435,9 +433,9 @@ procedure TfrmMain.SaveWindowState(ADesktop: TCustomIniFile; AIsProject: Boolean
 begin
   if Assigned(ADesktop) then
   begin
-    FStackFrame.SaveState(ADesktop, IDEDesktopIniSection, 'StackFrameSingle');
-    FModuleFrame.SaveState(ADesktop, IDEDesktopIniSection);
-    FThreadFrame.SaveState(ADesktop, IDEDesktopIniSection);
+    FStackFrame.SaveState(ADesktop, JclStackTraceViewerDesktopIniSection, 'StackFrameSingle');
+    FModuleFrame.SaveState(ADesktop, JclStackTraceViewerDesktopIniSection);
+    FThreadFrame.SaveState(ADesktop, JclStackTraceViewerDesktopIniSection);
   end;
 end;
 

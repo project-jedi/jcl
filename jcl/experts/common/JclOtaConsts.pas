@@ -17,6 +17,7 @@
 {                                                                                                  }
 { Contributors:                                                                                    }
 {   Florent Ouchet (outchy)                                                                        }
+{   Uwe Schuster (uschuster)                                                                       }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -147,6 +148,12 @@ const
   JclVersionCtrlIconTypeAutoValue = 'auto';
   JclVersionCtrlIconTypeNoIconValue = 'noicon';
   JclVersionCtrlIconTypeJclIconValue = 'jclicons';
+
+  //=== Stack Trace Viewer Expert ============================================
+  JclStackTraceViewerExpertName        = 'JclStackTraceViewerExpert';
+  JclStackTraceViewerActionName        = 'JCLStackTraceViewerCommand';
+  JclStackTraceViewerMenuName          = 'JCLStackTraceViewerMenu';
+  JclStackTraceViewerDesktopIniSection = 'JclStackTraceViewer';
 
 {$IFDEF UNITVERSIONING}
 const

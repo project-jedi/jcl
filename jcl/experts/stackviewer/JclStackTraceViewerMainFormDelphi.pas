@@ -35,17 +35,11 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   Docktoolform, StdCtrls, ComCtrls, Menus,
-  ActnList, ToolWin, ExtCtrls, IniFiles, ToolsAPI,
+  ActnList, ToolWin, ExtCtrls, IniFiles,
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JclDebug, JclDebugSerialization, Contnrs, JclStackTraceViewerStackFrame, JclStackTraceViewerModuleFrame,
-  StackViewUnit, StackFrame2, StackCodeUtils, JclStackTraceViewerExceptInfoFrame, JclStackTraceViewerThreadFrame,
-  JclStackTraceViewerOptions,
-  StackLineNumberTranslator, JclOtaUtils
-  , ActiveX
-  , FileSearcherUnit, JclStrings, JclDebugXMLDeserializer, JclStackTraceViewerMainFrame
-  ;
+  JclStackTraceViewerOptions, JclStackTraceViewerMainFrame;
 
 type
   TfrmStackView = class(TDockableToolbarForm)
@@ -72,9 +66,6 @@ type
 var
   frmStackView: TfrmStackView;
 
-const
-  IDEDesktopIniSection = 'TStackViewAddIn';//todo - move
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -88,6 +79,7 @@ const
 implementation
 
 uses
+  JclOtaConsts,
   JclStackTraceViewerImpl;
 
 {$R *.dfm}
@@ -97,7 +89,7 @@ uses
 procedure TfrmStackView.FormCreate(Sender: TObject);
 begin
   inherited;
-  DeskSection := IDEDesktopIniSection;
+  DeskSection := JclStackTraceViewerDesktopIniSection;
   AutoSave := True;
   if Assigned(StackTraceViewerExpert) then
     Icon := StackTraceViewerExpert.Icon;

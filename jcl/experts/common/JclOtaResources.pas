@@ -368,6 +368,11 @@ resourcestring
   RsActionCategory = 'JEDI Code Library';
   RsVersionCtrlSystemName = 'System';
 
+//=== JclStackTraceViewerImpl.pas ============================================
+resourcestring
+  rsStackTraceViewerCaption = 'Stack Traces';
+  rsStackTraceViewerOptionsPageName = 'Stack Trace Viewer';
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (

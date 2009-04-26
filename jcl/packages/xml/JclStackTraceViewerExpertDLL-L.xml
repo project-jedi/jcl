@@ -31,7 +31,7 @@
     <File Name="..\..\experts\stackviewer\StackViewUnit.pas" Targets="Windows" Formname="" Condition=""/>
     <File Name="..\..\experts\stackviewer\StackCodeUtils.pas" Targets="Windows" Formname="" Condition=""/>
     <File Name="..\..\experts\stackviewer\JclStackTraceViewerOptions.pas" Targets="Windows" Formname="" Condition=""/>
-    <File Name="..\..\experts\stackviewer\StackLineNumberTranslator.pas" Targets="Windows" Formname="" Condition=""/>
+    <File Name="..\..\experts\stackviewer\JclStackTraceViewerAPIImpl.pas" Targets="Windows" Formname="" Condition=""/>
     <File Name="..\..\experts\stackviewer\JclStackTraceViewerAPI.pas" Targets="Windows" Formname="" Condition=""/>
     <File Name="..\..\experts\stackviewer\FileSearcherUnit.pas" Targets="Windows" Formname="" Condition=""/>
     <File Name="..\..\experts\stackviewer\JclDebugSerialization.pas" Targets="Windows" Formname="" Condition=""/>
