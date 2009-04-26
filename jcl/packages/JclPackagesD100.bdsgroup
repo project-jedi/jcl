@@ -19,7 +19,8 @@
       <Projects Name="JclRepositoryExpert100.bpl">d10\JclRepositoryExpert.bdsproj</Projects>
       <Projects Name="JclSIMDViewExpert100.bpl">d10\JclSIMDViewExpert.bdsproj</Projects>
       <Projects Name="JclVersionControlExpert100.bpl">d10\JclVersionControlExpert.bdsproj</Projects>
-      <Projects Name="Targets">Jcl100.bpl JclVcl100.bpl JclContainers100.bpl JclBaseExpert100.bpl JclDebugExpert100.bpl JclFavoriteFoldersExpert100.bpl JclProjectAnalysisExpert100.bpl JclRepositoryExpert100.bpl JclSIMDViewExpert100.bpl JclVersionControlExpert100.bpl</Projects>
+      <Projects Name="JclStackTraceViewerExpert100.bpl">d10\JclStackTraceViewerExpert.bdsproj</Projects>
+      <Projects Name="Targets">Jcl100.bpl JclVcl100.bpl JclContainers100.bpl JclBaseExpert100.bpl JclDebugExpert100.bpl JclFavoriteFoldersExpert100.bpl JclProjectAnalysisExpert100.bpl JclRepositoryExpert100.bpl JclSIMDViewExpert100.bpl JclVersionControlExpert100.bpl JclStackTraceViewerExpert100.bpl</Projects>
     </Projects>
     <Dependencies/>
   </Default.Personality>

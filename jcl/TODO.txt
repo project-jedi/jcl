@@ -30,4 +30,4 @@ Expert
   - (partly done) add UNITVERSIONING
 
 * integrate it into the installation
-  - generate packages, JclPackages*.* and resources.mak for 5 - 10
+  - commit packages for D5-D7, D9, D10
