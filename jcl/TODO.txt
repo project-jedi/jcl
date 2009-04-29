@@ -17,9 +17,6 @@ Expert
      TJclModuleInfoList doesn't store the module name, because
      this can be get from the handle which doesn't work in the viewer)
 
-* progress for TfrmStackView.PrepareStack 
-  (getting revisions from a real SCM system can take some time)
-
 * icon's
 
 * clean up/minor things

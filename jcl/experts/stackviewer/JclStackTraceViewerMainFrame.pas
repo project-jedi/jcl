@@ -58,6 +58,8 @@ type
     acOptions: TAction;
     acUpdateLocalInfo: TAction;
     Splitter2: TSplitter;
+    StatusBar: TStatusBar;
+    PB: TProgressBar;
     procedure acJumpToCodeLineExecute(Sender: TObject);
     procedure acLoadStackExecute(Sender: TObject);
     procedure cboxThreadChange(Sender: TObject);
@@ -78,6 +80,7 @@ type
     FLastControl: TControl;
     FOptions: TExceptionViewerOption;
     FRootDir: string;
+    procedure DoProgress(APos, AMax: Integer; const AText: string);
     procedure PrepareStack(AStack: TJclSerializableLocationInfoList; AStackItemList: TStackViewItemsList);
     procedure SetOptions(const Value: TExceptionViewerOption);
   public
@@ -103,7 +106,7 @@ const
 implementation
 
 uses
-  JclOtaConsts,
+  JclOtaConsts, JclOtaResources,
   JclStackTraceViewerImpl;
 
 {$R *.dfm}
@@ -193,239 +196,255 @@ var
   Found: Boolean;
   RevisionLineNumbers, CurrentLineNumbers: TList;
 begin
-  AStackItemList.Clear;
-  if AStack.Count > 0 then
-  begin
-    FindFileList := TStringList.Create;
-    try
-      FindFileList.Sorted := True;
-      //check if the files can be found in a project in the current project group
-      for I := 0 to AStack.Count - 1 do
-      begin
-        StackViewItem := AStackItemList.Add;
-        StackViewItem.Assign(AStack[I]);
-        StackViewItem.Revision := AStack[I].UnitVersionRevision;
-        Idx := FindFileList.IndexOf(AStack[I].SourceName);
-        if Idx <> -1 then
+  DoProgress(0, 100, '');
+  PB.Visible := True;
+  try
+    AStackItemList.Clear;
+    if AStack.Count > 0 then
+    begin
+      FindFileList := TStringList.Create;
+      try
+        FindFileList.Sorted := True;
+        //check if the files can be found in a project in the current project group
+        DoProgress(0, AStack.Count, rsSTVFindFilesInProjectGroup);
+        for I := 0 to AStack.Count - 1 do
         begin
-          FindMapping := TFindMapping(FindFileList.Objects[Idx]);
-          FindMapping.Add(StackViewItem);
-          StackViewItem.FoundFile := FindMapping.FoundFile;
-          StackViewItem.FileName := FindMapping.FileName;
-          StackViewItem.ProjectName := FindMapping.ProjectName;
-        end
-        else
-        begin
-          if AStack[I].SourceName <> '' then
-            FileName := FindModuleAndProject(AStack[I].SourceName, ProjectName)
+          StackViewItem := AStackItemList.Add;
+          StackViewItem.Assign(AStack[I]);
+          StackViewItem.Revision := AStack[I].UnitVersionRevision;
+          Idx := FindFileList.IndexOf(AStack[I].SourceName);
+          if Idx <> -1 then
+          begin
+            FindMapping := TFindMapping(FindFileList.Objects[Idx]);
+            FindMapping.Add(StackViewItem);
+            StackViewItem.FoundFile := FindMapping.FoundFile;
+            StackViewItem.FileName := FindMapping.FileName;
+            StackViewItem.ProjectName := FindMapping.ProjectName;
+          end
           else
           begin
-            FileName := '';
-            ProjectName := '';
+            if AStack[I].SourceName <> '' then
+            begin
+              DoProgress(I + 1, AStack.Count, Format(rsSTVFindFileInProjectGroup, [AStack[I].SourceName]));
+              FileName := FindModuleAndProject(AStack[I].SourceName, ProjectName);
+            end
+            else
+            begin
+              FileName := '';
+              ProjectName := '';
+            end;
+            FindMapping := TFindMapping.Create;
+            FindMapping.Add(StackViewItem);
+            FindFileList.AddObject(AStack[I].SourceName, FindMapping);
+            FindMapping.FoundFile := FileName <> '';
+            FindMapping.FileName := FileName;
+            FindMapping.ProjectName := ProjectName;
+
+            StackViewItem.FoundFile := FileName <> '';
+            StackViewItem.FileName := FileName;
+            StackViewItem.ProjectName := ProjectName;
           end;
-          FindMapping := TFindMapping.Create;
-          FindMapping.Add(StackViewItem);
-          FindFileList.AddObject(AStack[I].SourceName, FindMapping);
-          FindMapping.FoundFile := FileName <> '';
-          FindMapping.FileName := FileName;
-          FindMapping.ProjectName := ProjectName;
-
-          StackViewItem.FoundFile := FileName <> '';
-          StackViewItem.FileName := FileName;
-          StackViewItem.ProjectName := ProjectName;
+          DoProgress(I + 1, AStack.Count, rsSTVFindFilesInProjectGroup);
         end;
-      end;
 
-      //use the build number from the version number as revision number if the revision number is empty
-      if FOptions.ModuleVersionAsRevision then
-      begin
+        //use the build number from the version number as revision number if the revision number is empty
+        if FOptions.ModuleVersionAsRevision then
+        begin
+          for I := 0 to FindFileList.Count - 1 do
+          begin
+            FindMapping := TFindMapping(FindFileList.Objects[I]);
+            if (FindMapping.Count > 0) and (FindMapping[0].Revision = '') and (FindMapping[0].ModuleName <> '') then
+            begin
+              Idx := -1;
+              { TODO -oUSc : Compare full filename when the filename in the stack contains also the path
+
+    Why full filenames?
+
+    It is possible to load
+    <Path 1>\TestDLL.DLL
+    <Path 2>\TestDLL.DLL}
+              for J := 0 to FExceptionInfo.Modules.Count - 1 do
+                if CompareText(ExtractFileName(FExceptionInfo.Modules[J].ModuleName), ExtractFileName(FindMapping[0].ModuleName)) = 0 then
+                begin
+                  Idx := J;
+                  Break;
+                end;
+              if Idx <> -1 then
+              begin
+                S := FExceptionInfo.Modules[Idx].BinFileVersion;
+                K := Pos('.', S);
+                if K > 0 then
+                  Delete(S, 1, K);
+                K := Pos('.', S);
+                if K > 0 then
+                  Delete(S, 1, K);
+                K := Pos('.', S);
+                if K > 0 then
+                begin
+                  Delete(S, 1, K);
+                  for J := 0 to FindMapping.Count - 1 do
+                    FindMapping[J].Revision := S;
+                end;
+              end;
+            end;
+          end;
+        end;
+
+        //check if the other files can be found in BrowsingPath
+        Found := False;
         for I := 0 to FindFileList.Count - 1 do
         begin
           FindMapping := TFindMapping(FindFileList.Objects[I]);
-          if (FindMapping.Count > 0) and (FindMapping[0].Revision = '') and (FindMapping[0].ModuleName <> '') then
+          if (FindFileList[I] <> '') and (not FindMapping.FoundFile) then
           begin
-            Idx := -1;
-            { TODO -oUSc : Compare full filename when the filename in the stack contains also the path
-
-  Why full filenames?
-
-  It is possible to load
-  <Path 1>\TestDLL.DLL
-  <Path 2>\TestDLL.DLL}
-            for J := 0 to FExceptionInfo.Modules.Count - 1 do
-              if CompareText(ExtractFileName(FExceptionInfo.Modules[J].ModuleName), ExtractFileName(FindMapping[0].ModuleName)) = 0 then
-              begin
-                Idx := J;
-                Break;
-              end;
-            if Idx <> -1 then
-            begin
-              S := FExceptionInfo.Modules[Idx].BinFileVersion;
-              K := Pos('.', S);
-              if K > 0 then
-                Delete(S, 1, K);
-              K := Pos('.', S);
-              if K > 0 then
-                Delete(S, 1, K);
-              K := Pos('.', S);
-              if K > 0 then
-              begin
-                Delete(S, 1, K);
-                for J := 0 to FindMapping.Count - 1 do
-                  FindMapping[J].Revision := S;
-              end;
-            end;
+            Found := True;
+            Break;
           end;
         end;
-      end;
-
-      //check if the other files can be found in BrowsingPath
-      Found := False;
-      for I := 0 to FindFileList.Count - 1 do
-      begin
-        FindMapping := TFindMapping(FindFileList.Objects[I]);
-        if (FindFileList[I] <> '') and (not FindMapping.FoundFile) then
+        if Found then
         begin
-          Found := True;
-          Break;
-        end;
-      end;
-      if Found then
-      begin
-        FileSearcher := TFileSearcher.Create;
-        try
-          BrowsingPaths := TStringList.Create;
+          FileSearcher := TFileSearcher.Create;
           try
-            EV := (BorlandIDEServices as IOTAServices).GetEnvironmentOptions;
-            StrTokenToStrings(EV.Values['BrowsingPath'], ';', BrowsingPaths);
-            for I := 0 to BrowsingPaths.Count - 1 do
-            begin
-              S := BrowsingPaths[I];
-              if Pos('$(BDS)', S) > 0 then
-                S := StringReplace(S, '$(BDS)', RootDir, []);
-              FileSearcher.SearchPaths.Add(S);
+            BrowsingPaths := TStringList.Create;
+            try
+              EV := (BorlandIDEServices as IOTAServices).GetEnvironmentOptions;
+              StrTokenToStrings(EV.Values['BrowsingPath'], ';', BrowsingPaths);
+              for I := 0 to BrowsingPaths.Count - 1 do
+              begin
+                S := BrowsingPaths[I];
+                if Pos('$(BDS)', S) > 0 then
+                  S := StringReplace(S, '$(BDS)', RootDir, []);
+                FileSearcher.SearchPaths.Add(S);
+              end;
+            finally
+              BrowsingPaths.Free;
             end;
-          finally
-            BrowsingPaths.Free;
-          end;
-          if FileSearcher.SearchPaths.Count > 0 then
-          begin
-            for I := 0 to FindFileList.Count - 1 do
+            if FileSearcher.SearchPaths.Count > 0 then
             begin
-              FindMapping := TFindMapping(FindFileList.Objects[I]);
-              if (FindFileList[I] <> '') and (not FindMapping.FoundFile) and (FileSearcher.IndexOf(FindFileList[I]) = -1) then
-                FileSearcher.Add(FindFileList[I]);
-            end;
-            if FileSearcher.Count > 0 then
-            begin
-              FileSearcher.Search;
               for I := 0 to FindFileList.Count - 1 do
               begin
                 FindMapping := TFindMapping(FindFileList.Objects[I]);
-                if not FindMapping.FoundFile then
+                if (FindFileList[I] <> '') and (not FindMapping.FoundFile) and (FileSearcher.IndexOf(FindFileList[I]) = -1) then
+                  FileSearcher.Add(FindFileList[I]);
+              end;
+              if FileSearcher.Count > 0 then
+              begin
+                DoProgress(0, 100, rsSTVFindFilesInBrowsingPath);
+                FileSearcher.Search;
+                DoProgress(75, 100, rsSTVFindFilesInBrowsingPath);
+                for I := 0 to FindFileList.Count - 1 do
                 begin
-                  Idx := FileSearcher.IndexOf(FindFileList[I]);
-                  if (Idx <> -1) and (FileSearcher[Idx].Results.Count > 0) then
+                  FindMapping := TFindMapping(FindFileList.Objects[I]);
+                  if not FindMapping.FoundFile then
                   begin
-                    FindMapping.FoundFile := True;
-                    FindMapping.FileName := FileSearcher[Idx].Results[0];
-                    FindMapping.ProjectName := '';
-                    for J := 0 to FindMapping.Count - 1 do
+                    Idx := FileSearcher.IndexOf(FindFileList[I]);
+                    if (Idx <> -1) and (FileSearcher[Idx].Results.Count > 0) then
                     begin
-                      FindMapping[J].FoundFile := FindMapping.FoundFile;
-                      FindMapping[J].FileName := FindMapping.FileName;
-                      FindMapping[J].ProjectName := FindMapping.ProjectName;
-                    end;
-                  end;
-                end;
-              end;
-            end;
-          end;
-        finally
-          FileSearcher.Free;
-        end;
-      end;
-      for I := 0 to FindFileList.Count - 1 do
-      begin
-        FindMapping := TFindMapping(FindFileList.Objects[I]);
-        if (FindMapping.FoundFile) and (FindMapping.Count > 0) {and (FindMapping[0].Revision <> '')} then//todo - check revision
-        begin
-          Found := False;
-          for J := 0 to FindMapping.Count - 1 do
-            if FindMapping[J].LineNumber > 0 then
-            begin
-              Found := True;
-              Break;
-            end;
-          if Found then
-          begin
-            Stream := GetFileEditorContent(FindMapping.FileName);
-            if not Assigned(Stream) then
-            begin
-              if FileExists(FindMapping.FileName) then
-              begin
-(BorlandIDEServices as IOTAMessageServices).AddTitleMessage(Format('Using %s', [FindMapping.FileName]));//todo - remove
-                FS := TFileStream.Create(FindMapping.FileName, fmOpenRead);
-                Stream := TStreamAdapter.Create(FS);
-              end;
-            end
-            else
-              FS := nil;
-            try
-              if Assigned(Stream) and (FS = nil) then//todo - remove FS = nil
-              begin
-                RevisionLineNumbers := TList.Create;
-                CurrentLineNumbers := TList.Create;
-                try
-                  for J := 0 to FindMapping.Count - 1 do
-                    if FindMapping[J].LineNumber > 0 then
-                      RevisionLineNumbers.Add(Pointer(FindMapping[J].LineNumber));
-                  RevisionMS := TMemoryStream.Create;
-                  try
-                    RevisionStream := TStreamAdapter.Create(RevisionMS);
-(BorlandIDEServices as IOTAMessageServices).AddTitleMessage(Format('F1 %s', [FindMapping.FileName]));//todo - remove
-                    if GetRevisionContent(FindMapping.FileName, FindMapping[0].Revision, RevisionStream) then
-                    begin
-(BorlandIDEServices as IOTAMessageServices).AddTitleMessage(Format('F2 %s', [FindMapping.FileName]));//todo - remove
-                      if TranslateLineNumbers(RevisionStream, Stream, RevisionLineNumbers, CurrentLineNumbers) > 0 then
+                      FindMapping.FoundFile := True;
+                      FindMapping.FileName := FileSearcher[Idx].Results[0];
+                      FindMapping.ProjectName := '';
+                      for J := 0 to FindMapping.Count - 1 do
                       begin
-(BorlandIDEServices as IOTAMessageServices).AddTitleMessage(Format('F3 %s', [FindMapping.FileName]));//todo - remove
-                        if RevisionLineNumbers.Count = CurrentLineNumbers.Count then
-                        begin
-                          for J := 0 to FindMapping.Count - 1 do
-                            if FindMapping[J].LineNumber > 0 then
-                            begin
-                              FindMapping[J].TranslatedLineNumber := -1;
-                              for K := 0 to RevisionLineNumbers.Count - 1 do
-                                if Integer(RevisionLineNumbers[K]) = FindMapping[J].LineNumber then
-                                begin
-                                  FindMapping[J].TranslatedLineNumber := Integer(CurrentLineNumbers[K]);
-                                  Break;
-                                end;
-                            end;
-                        end;
+                        FindMapping[J].FoundFile := FindMapping.FoundFile;
+                        FindMapping[J].FileName := FindMapping.FileName;
+                        FindMapping[J].ProjectName := FindMapping.ProjectName;
                       end;
                     end;
-                  finally
-                    RevisionMS.Free;
                   end;
-                finally
-                  RevisionLineNumbers.Free;
-                  CurrentLineNumbers.Free;
+                  DoProgress(FindFileList.Count * 3 + I + 1, FindFileList.Count * 4, rsSTVFindFilesInBrowsingPath);
                 end;
               end;
-            finally
-              FS.Free;
             end;
-            StackViewItem.TranslatedLineNumber := NewLineNumber;
+          finally
+            FileSearcher.Free;
           end;
         end;
+        DoProgress(0, FindFileList.Count, '');
+        for I := 0 to FindFileList.Count - 1 do
+        begin
+          FindMapping := TFindMapping(FindFileList.Objects[I]);
+          if (FindMapping.FoundFile) and (FindMapping.Count > 0) {and (FindMapping[0].Revision <> '')} then//todo - check revision
+          begin
+            Found := False;
+            for J := 0 to FindMapping.Count - 1 do
+              if FindMapping[J].LineNumber > 0 then
+              begin
+                Found := True;
+                Break;
+              end;
+            if Found then
+            begin
+              Stream := GetFileEditorContent(FindMapping.FileName);
+              if not Assigned(Stream) then
+              begin
+                if FileExists(FindMapping.FileName) then
+                begin
+  (BorlandIDEServices as IOTAMessageServices).AddTitleMessage(Format('Using %s', [FindMapping.FileName]));//todo - remove
+                  FS := TFileStream.Create(FindMapping.FileName, fmOpenRead);
+                  Stream := TStreamAdapter.Create(FS);
+                end;
+              end
+              else
+                FS := nil;
+              try
+                if Assigned(Stream) and (FS = nil) then//todo - remove FS = nil
+                begin
+                  RevisionLineNumbers := TList.Create;
+                  CurrentLineNumbers := TList.Create;
+                  try
+                    for J := 0 to FindMapping.Count - 1 do
+                      if FindMapping[J].LineNumber > 0 then
+                        RevisionLineNumbers.Add(Pointer(FindMapping[J].LineNumber));
+                    RevisionMS := TMemoryStream.Create;
+                    try
+                      RevisionStream := TStreamAdapter.Create(RevisionMS);
+  (BorlandIDEServices as IOTAMessageServices).AddTitleMessage(Format('F1 %s', [FindMapping.FileName]));//todo - remove
+                      if GetRevisionContent(FindMapping.FileName, FindMapping[0].Revision, RevisionStream) then
+                      begin
+  (BorlandIDEServices as IOTAMessageServices).AddTitleMessage(Format('F2 %s', [FindMapping.FileName]));//todo - remove
+                        if TranslateLineNumbers(RevisionStream, Stream, RevisionLineNumbers, CurrentLineNumbers) > 0 then
+                        begin
+  (BorlandIDEServices as IOTAMessageServices).AddTitleMessage(Format('F3 %s', [FindMapping.FileName]));//todo - remove
+                          if RevisionLineNumbers.Count = CurrentLineNumbers.Count then
+                          begin
+                            for J := 0 to FindMapping.Count - 1 do
+                              if FindMapping[J].LineNumber > 0 then
+                              begin
+                                FindMapping[J].TranslatedLineNumber := -1;
+                                for K := 0 to RevisionLineNumbers.Count - 1 do
+                                  if Integer(RevisionLineNumbers[K]) = FindMapping[J].LineNumber then
+                                  begin
+                                    FindMapping[J].TranslatedLineNumber := Integer(CurrentLineNumbers[K]);
+                                    Break;
+                                  end;
+                              end;
+                          end;
+                        end;
+                      end;
+                    finally
+                      RevisionMS.Free;
+                    end;
+                  finally
+                    RevisionLineNumbers.Free;
+                    CurrentLineNumbers.Free;
+                  end;
+                end;
+              finally
+                FS.Free;
+              end;
+              StackViewItem.TranslatedLineNumber := NewLineNumber;
+            end;
+          end;
+          DoProgress(I + 1, FindFileList.Count, '');
+        end;
+      finally
+        for I := 0 to FindFileList.Count - 1 do
+          FindFileList.Objects[I].Free;
+        FindFileList.Free;
       end;
-    finally
-      for I := 0 to FindFileList.Count - 1 do
-        FindFileList.Objects[I].Free;
-      FindFileList.Free;
     end;
+  finally
+    PB.Visible := False;
   end;
 end;
 
@@ -527,7 +546,6 @@ end;
 constructor TfrmMain.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-//  FThreadInfoList := TThreadInfoList.Create;
   FExceptionInfo := TExceptionInfo.Create;
   FThreadInfoList := FExceptionInfo.ThreadInfoList;
   FStackItemList := TStackViewItemsList.Create;
@@ -555,6 +573,9 @@ begin
   FThreadFrame.Align := alClient;
   FThreadFrame.Visible := False;
 
+  PB.Parent := StatusBar;
+  PB.SetBounds(2, 3, 96, 14);
+
   FOptions := TExceptionViewerOption.Create;
   if Assigned(StackTraceViewerExpert) then
   begin
@@ -571,7 +592,6 @@ begin
   FTreeViewLinkList.Free;
   FStackItemList.Free;
   FCreationStackItemList.Free;
-//  FThreadInfoList.Free;
   FExceptionInfo.Free;
   inherited Destroy;
 end;
@@ -595,6 +615,7 @@ begin
     FStackItemList.Clear;
     FCreationStackItemList.Clear;
     cboxThread.Items.Clear;
+    tv.Selected := nil;
     tv.Items.Clear;
     FTreeViewLinkList.Clear;
     SS := TStringStream.Create('');
@@ -693,7 +714,7 @@ end;
 procedure TfrmMain.acOptionsExecute(Sender: TObject);
 begin
   inherited;
-  TJclOTAExpertBase.ConfigurationDialog('Stack Trace Viewer');
+  TJclOTAExpertBase.ConfigurationDialog(rsStackTraceViewerOptionsPageName);
 end;
 
 procedure TfrmMain.acUpdateLocalInfoExecute(Sender: TObject);
@@ -714,6 +735,14 @@ begin
     FStackItemList.Clear;
   end;
   }
+end;
+
+procedure TfrmMain.DoProgress(APos, AMax: Integer; const AText: string);
+begin
+  PB.Max := AMax;
+  PB.Position := APos;
+  StatusBar.Panels[1].Text := AText;
+  StatusBar.Update;
 end;
 
 {$IFDEF UNITVERSIONING}

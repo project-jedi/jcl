@@ -7,7 +7,7 @@ object frmMain: TfrmMain
   object Splitter2: TSplitter
     Left = 145
     Top = 0
-    Height = 320
+    Height = 301
   end
   object cboxThread: TComboBox
     Left = 0
@@ -24,13 +24,34 @@ object frmMain: TfrmMain
     Left = 0
     Top = 0
     Width = 145
-    Height = 320
+    Height = 301
     Align = alLeft
     HideSelection = False
     Indent = 19
     ReadOnly = True
     TabOrder = 1
     OnChange = tvChange
+  end
+  object StatusBar: TStatusBar
+    Left = 0
+    Top = 301
+    Width = 372
+    Height = 19
+    Panels = <
+      item
+        Width = 100
+      end
+      item
+        Width = 50
+      end>
+  end
+  object PB: TProgressBar
+    Left = 19
+    Top = 300
+    Width = 41
+    Height = 17
+    TabOrder = 3
+    Visible = False
   end
   object ActionList1: TActionList
     Left = 56
