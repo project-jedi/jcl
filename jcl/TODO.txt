@@ -20,7 +20,6 @@ Expert
 * icon's
 
 * clean up/minor things
-  - implement StackCodeUtils.pas functions for the old IDE
   - use updated TJclFileEnumerator instead of TFileSearcher
   - (partly done) rename some files
   - (partly done) add MPL headers
