@@ -164,40 +164,52 @@ begin
     FileName := AStackViewItem.SourceName;
     ModuleInfo := FindModuleInfoAndProject(FileName, ProjectName);
     if Assigned(ModuleInfo) then
-      S := ModuleInfo.FileName;
-    if (S <> '') and Assigned(BorlandIDEServices) then
     begin
-      {$IFDEF BDS}
-      Module := (BorlandIDEServices as IOTAModuleServices).OpenModule(S);
-      {$ELSE !BDS}
-      Module := ModuleInfo.OpenModule;
-      {$ENDIF !BDS}
-      if Assigned(Module) then
+      S := ModuleInfo.FileName;
+      if (S <> '') and Assigned(BorlandIDEServices) then
       begin
         {$IFDEF BDS}
-        Module.Show;
-        {$ENDIF BDS}
-        for I := 0 to Module.GetModuleFileCount - 1 do
-          if Supports(Module.GetModuleFileEditor(I), IOTASourceEditor, SourceEditor) then
-          begin
-            SourceEditor.Show;
-            if SourceEditor.EditViewCount > 0 then
-            begin
-              if AStackViewItem.TranslatedLineNumber > 0 then
-                LineNumber := AStackViewItem.TranslatedLineNumber
-              else
-                LineNumber := AStackViewItem.LineNumber;
-              if LineNumber > 0 then
-              begin
-                SourceEditor.EditViews[0].Center(LineNumber, 1);
-                EditPos.Line := LineNumber;
-                EditPos.Col := 1;
-                SourceEditor.EditViews[0].CursorPos := EditPos;
-              end;
-            end;
-            Break;
-          end;
+        Module := (BorlandIDEServices as IOTAModuleServices).OpenModule(S);
+        {$ELSE !BDS}
+        Module := ModuleInfo.OpenModule;
+        {$ENDIF !BDS}
       end;
+    end
+    else
+    if AStackViewItem.FoundFile then
+    begin
+      {$IFDEF BDS}
+      Module := (BorlandIDEServices as IOTAModuleServices).OpenModule(AStackViewItem.FileName);
+      {$ELSE !BDS}
+      (BorlandIDEServices as IOTAActionServices).OpenFile(AStackViewItem.FileName);
+      Module := (BorlandIDEServices as IOTAModuleServices).FindModule(AStackViewItem.FileName);
+      {$ENDIF !BDS}
+    end;
+    if Assigned(Module) then
+    begin
+      {$IFDEF BDS}
+      Module.Show;
+      {$ENDIF BDS}
+      for I := 0 to Module.GetModuleFileCount - 1 do
+        if Supports(Module.GetModuleFileEditor(I), IOTASourceEditor, SourceEditor) then
+        begin
+          SourceEditor.Show;
+          if SourceEditor.EditViewCount > 0 then
+          begin
+            if AStackViewItem.TranslatedLineNumber > 0 then
+              LineNumber := AStackViewItem.TranslatedLineNumber
+            else
+              LineNumber := AStackViewItem.LineNumber;
+            if LineNumber > 0 then
+            begin
+              SourceEditor.EditViews[0].Center(LineNumber, 1);
+              EditPos.Line := LineNumber;
+              EditPos.Col := 1;
+              SourceEditor.EditViews[0].CursorPos := EditPos;
+            end;
+          end;
+          Break;
+        end;
     end;
   end;
 end;
