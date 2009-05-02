@@ -79,7 +79,7 @@
 			<DCCReference Include="..\..\experts\stackviewer\JclStackTraceViewerOptions.pas" />
 			<DCCReference Include="..\..\experts\stackviewer\JclStackTraceViewerAPIImpl.pas" />
 			<DCCReference Include="..\..\experts\stackviewer\JclStackTraceViewerAPI.pas" />
-			<DCCReference Include="..\..\experts\stackviewer\FileSearcherUnit.pas" />
+			<DCCReference Include="..\..\experts\stackviewer\JclStackTraceViewerStackUtils.pas" />
 			<DCCReference Include="..\..\experts\stackviewer\JclDebugSerialization.pas" />
 			<DCCReference Include="..\..\experts\stackviewer\JclDebugXMLDeserializer.pas" />
 			<BuildConfiguration Include="Base">

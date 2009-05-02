@@ -32,7 +32,7 @@
     <File Name="..\..\experts\stackviewer\JclStackTraceViewerOptions.pas" Targets="Delphi" Formname="" Condition=""/>
     <File Name="..\..\experts\stackviewer\JclStackTraceViewerAPIImpl.pas" Targets="Delphi" Formname="" Condition=""/>
     <File Name="..\..\experts\stackviewer\JclStackTraceViewerAPI.pas" Targets="Delphi" Formname="" Condition=""/>
-    <File Name="..\..\experts\stackviewer\FileSearcherUnit.pas" Targets="Delphi" Formname="" Condition=""/>
+    <File Name="..\..\experts\stackviewer\JclStackTraceViewerStackUtils.pas" Targets="Delphi" Formname="" Condition=""/>
     <File Name="..\..\experts\stackviewer\JclDebugSerialization.pas" Targets="Delphi" Formname="" Condition=""/>
     <File Name="..\..\experts\stackviewer\JclDebugXMLDeserializer.pas" Targets="Delphi" Formname="" Condition=""/>
   </Contains>
