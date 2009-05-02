@@ -389,7 +389,7 @@ resourcestring
   RsCaptionDefContainer           = 'Container options';
   RsCaptionDefContainerAnsiStr    = 'Alias AnsiString containers to String containers';
   RsCaptionDefContainerWideStr    = 'Alias WideString containers to String containers';
-  RsCaptionDefContainerUnicodeStr = 'Alias UnicodeString containers to String containers (Delphi 2008 only)';
+  RsCaptionDefContainerUnicodeStr = 'Alias UnicodeString containers to String containers (Delphi 2009 only)';
   RsCaptionDefContainerNoStr      = 'Do not alias anything';
   // 7Z options
   RsCaptionDef7z               = 'Sevenzip options';
