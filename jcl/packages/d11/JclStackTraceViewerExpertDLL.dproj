@@ -94,12 +94,11 @@
     <DCCReference Include="..\..\experts\stackviewer\JclStackTraceViewerExceptInfoFrame.pas" />
     <DCCReference Include="..\..\experts\stackviewer\JclStackTraceViewerStackFrame.pas" />
     <DCCReference Include="..\..\experts\stackviewer\JclStackTraceViewerThreadFrame.pas" />
-    <DCCReference Include="..\..\experts\stackviewer\StackFrame2.pas" />
     <DCCReference Include="..\..\experts\stackviewer\JclStackTraceViewerModuleFrame.pas" />
     <DCCReference Include="..\..\experts\stackviewer\JclStackTraceViewerMainFormBDS.pas" />
     <DCCReference Include="..\..\experts\stackviewer\JclStackTraceViewerMainFrame.pas" />
     <DCCReference Include="..\..\experts\stackviewer\JclStackTraceViewerConfigFrame.pas" />
-    <DCCReference Include="..\..\experts\stackviewer\StackViewUnit.pas" />
+    <DCCReference Include="..\..\experts\stackviewer\JclStackTraceViewerClasses.pas" />
     <DCCReference Include="..\..\experts\stackviewer\StackCodeUtils.pas" />
     <DCCReference Include="..\..\experts\stackviewer\JclStackTraceViewerOptions.pas" />
     <DCCReference Include="..\..\experts\stackviewer\JclStackTraceViewerAPIImpl.pas" />

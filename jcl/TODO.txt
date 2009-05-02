@@ -12,7 +12,7 @@ Expert
 ------
 * serialization 
   - (Done?) saving/loading
-  - which classes for the viewer?
+  - (Done?) which classes for the viewer?
     (for exam. JclDebug.TJclModuleInfoList vs. JclDebugStackUtils.TModuleList;
      TJclModuleInfoList doesn't store the module name, because
      this can be get from the handle which doesn't work in the viewer)
@@ -21,9 +21,10 @@ Expert
 
 * clean up/minor things
   - use updated TJclFileEnumerator instead of TFileSearcher
-  - (partly done) rename some files
-  - (partly done) add MPL headers
-  - (partly done) add UNITVERSIONING
+  - (almost done) rename some files
+  - (almost done) add MPL headers
+  - (almost done) add UNITVERSIONING
 
 * integrate it into the installation
   - commit packages for D5-D7, D9, D10
+  - prevent package generation/installation for C5, C6, CS1, D8

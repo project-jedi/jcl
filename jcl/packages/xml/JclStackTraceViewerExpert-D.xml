@@ -22,13 +22,12 @@
     <File Name="..\..\experts\stackviewer\JclStackTraceViewerExceptInfoFrame.pas" Targets="Windows" Formname="frmException: TFrame" Condition=""/>
     <File Name="..\..\experts\stackviewer\JclStackTraceViewerStackFrame.pas" Targets="Windows" Formname="frmStack: TFrame" Condition=""/>
     <File Name="..\..\experts\stackviewer\JclStackTraceViewerThreadFrame.pas" Targets="Windows" Formname="frmThread: TFrame" Condition=""/>
-    <File Name="..\..\experts\stackviewer\StackFrame2.pas" Targets="Windows" Formname="frmStack2: TFrame" Condition=""/>
     <File Name="..\..\experts\stackviewer\JclStackTraceViewerModuleFrame.pas" Targets="Windows" Formname="frmModule: TFrame" Condition=""/>
     <File Name="..\..\experts\stackviewer\JclStackTraceViewerMainFormDelphi.pas" Targets="OldStyleIDE" Formname="frmStackView" Condition=""/>
     <File Name="..\..\experts\stackviewer\JclStackTraceViewerMainFormBDS.pas" Targets="Bds" Formname="frmStackView" Condition=""/>
     <File Name="..\..\experts\stackviewer\JclStackTraceViewerMainFrame.pas" Targets="Windows" Formname="frmMain: TFrame" Condition=""/>
     <File Name="..\..\experts\stackviewer\JclStackTraceViewerConfigFrame.pas" Targets="Windows" Formname="JclStackTraceViewerConfigFrame: TFrame" Condition=""/>
-    <File Name="..\..\experts\stackviewer\StackViewUnit.pas" Targets="Windows" Formname="" Condition=""/>
+    <File Name="..\..\experts\stackviewer\JclStackTraceViewerClasses.pas" Targets="Windows" Formname="" Condition=""/>
     <File Name="..\..\experts\stackviewer\StackCodeUtils.pas" Targets="Windows" Formname="" Condition=""/>
     <File Name="..\..\experts\stackviewer\JclStackTraceViewerOptions.pas" Targets="Windows" Formname="" Condition=""/>
     <File Name="..\..\experts\stackviewer\JclStackTraceViewerAPIImpl.pas" Targets="Windows" Formname="" Condition=""/>

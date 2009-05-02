@@ -38,7 +38,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JclDebug, StackViewUnit, StackCodeUtils;
+  JclDebug, JclStackTraceViewerClasses, StackCodeUtils;
 
 type
   TfrmStack = class(TFrame)
@@ -47,17 +47,17 @@ type
     procedure lvChange(Sender: TObject; Item: TListItem; Change: TItemChange);
   private
     { Private declarations }
-    FStackList: TStackViewItemsList;
+    FStackList: TJclStackTraceViewerLocationInfoList;
     FOnSelectStackLine: TNotifyEvent;
     procedure DoSelectStackLine;
-    procedure SetStackList(const Value: TStackViewItemsList);
-    function GetSelected: TStackViewItem;
+    procedure SetStackList(const Value: TJclStackTraceViewerLocationInfoList);
+    function GetSelected: TJclStackTraceViewerLocationInfo;
   public
     { Public declarations }
     procedure LoadState(AIni: TCustomIniFile; const ASection, APrefix: string);
     procedure SaveState(AIni: TCustomIniFile; const ASection, APrefix: string);
-    property StackList: TStackViewItemsList read FStackList write SetStackList;
-    property Selected: TStackViewItem read GetSelected;
+    property StackList: TJclStackTraceViewerLocationInfoList read FStackList write SetStackList;
+    property Selected: TJclStackTraceViewerLocationInfo read GetSelected;
     property OnSelectStackLine: TNotifyEvent read FOnSelectStackLine write FOnSelectStackLine;
   end;
 
@@ -83,10 +83,10 @@ begin
     FOnSelectStackLine(Self);
 end;
 
-function TfrmStack.GetSelected: TStackViewItem;
+function TfrmStack.GetSelected: TJclStackTraceViewerLocationInfo;
 begin
-  if Assigned(lv.Selected) and Assigned(lv.Selected.Data) and (TObject(lv.Selected.Data) is TStackViewItem) then
-    Result := TStackViewItem(lv.Selected.Data)
+  if Assigned(lv.Selected) and Assigned(lv.Selected.Data) and (TObject(lv.Selected.Data) is TJclStackTraceViewerLocationInfo) then
+    Result := TJclStackTraceViewerLocationInfo(lv.Selected.Data)
   else
     Result := nil;
 end;
@@ -118,7 +118,7 @@ begin
     AIni.WriteInteger(ASection, Format(APrefix + 'ColumnWidth%d', [I]), lv.Columns.Items[I].Width);
 end;
 
-procedure TfrmStack.SetStackList(const Value: TStackViewItemsList);
+procedure TfrmStack.SetStackList(const Value: TJclStackTraceViewerLocationInfoList);
 var
   I: Integer;
   ListItem: TListItem;

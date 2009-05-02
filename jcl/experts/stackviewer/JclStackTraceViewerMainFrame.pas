@@ -40,7 +40,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   JclDebug, JclDebugSerialization, Contnrs, JclStackTraceViewerStackFrame, JclStackTraceViewerModuleFrame,
-  StackViewUnit, StackFrame2, StackCodeUtils, JclStackTraceViewerExceptInfoFrame, JclStackTraceViewerThreadFrame,
+  JclStackTraceViewerClasses, StackCodeUtils, JclStackTraceViewerExceptInfoFrame, JclStackTraceViewerThreadFrame,
   JclStackTraceViewerOptions,
   JclStackTraceViewerAPIImpl, JclOtaUtils
   , ActiveX
@@ -53,7 +53,6 @@ type
     acJumpToCodeLine: TAction;
     acLoadStack: TAction;
     OpenDialog1: TOpenDialog;
-    cboxThread: TComboBox;
     tv: TTreeView;
     acOptions: TAction;
     acUpdateLocalInfo: TAction;
@@ -62,17 +61,14 @@ type
     PB: TProgressBar;
     procedure acJumpToCodeLineExecute(Sender: TObject);
     procedure acLoadStackExecute(Sender: TObject);
-    procedure cboxThreadChange(Sender: TObject);
     procedure tvChange(Sender: TObject; Node: TTreeNode);
     procedure acOptionsExecute(Sender: TObject);
     procedure acUpdateLocalInfoExecute(Sender: TObject);
   private
     { Private declarations }
-    FStackItemList: TStackViewItemsList;
-    FCreationStackItemList: TStackViewItemsList;
     FTreeViewLinkList: TObjectList;
-    FThreadInfoList: TJclSerializableThreadInfoList;
-    FExceptionInfo: TExceptionInfo;
+    FThreadInfoList: TJclStackTraceViewerThreadInfoList;
+    FExceptionInfo: TJclStackTraceViewerExceptionInfo;
     FStackFrame: TfrmStack;
     FModuleFrame: TfrmModule;
     FExceptionFrame: TfrmException;
@@ -81,7 +77,7 @@ type
     FOptions: TExceptionViewerOption;
     FRootDir: string;
     procedure DoProgress(APos, AMax: Integer; const AText: string);
-    procedure PrepareStack(AStack: TJclSerializableLocationInfoList; AStackItemList: TStackViewItemsList);
+    procedure PrepareStack(AStack: TJclStackTraceViewerLocationInfoList; AForce: Boolean = False);
     procedure SetOptions(const Value: TExceptionViewerOption);
   public
     { Public declarations }
@@ -138,16 +134,16 @@ type
   private
     FItems: TList;
     function GetCount: Integer;
-    function GetItems(AIndex: Integer): TStackViewItem;
+    function GetItems(AIndex: Integer): TJclStackTraceViewerLocationInfo;
   public
     FoundFile: Boolean;
     FileName: string;
     ProjectName: string;
     constructor Create;
     destructor Destroy; override;
-    procedure Add(AStackViewItem: TStackViewItem);
+    procedure Add(AStackViewItem: TJclStackTraceViewerLocationInfo);
     property Count: Integer read GetCount;
-    property Items[AIndex: Integer]: TStackViewItem read GetItems; default;
+    property Items[AIndex: Integer]: TJclStackTraceViewerLocationInfo read GetItems; default;
   end;
 
 constructor TFindMapping.Create;
@@ -162,7 +158,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TFindMapping.Add(AStackViewItem: TStackViewItem);
+procedure TFindMapping.Add(AStackViewItem: TJclStackTraceViewerLocationInfo);
 begin
   FItems.Add(AStackViewItem);
 end;
@@ -172,21 +168,22 @@ begin
   Result := FItems.Count;
 end;
 
-function TFindMapping.GetItems(AIndex: Integer): TStackViewItem;
+function TFindMapping.GetItems(AIndex: Integer): TJclStackTraceViewerLocationInfo;
 begin
   Result := FItems[AIndex];
 end;
 
-procedure TfrmMain.PrepareStack(AStack: TJclSerializableLocationInfoList; AStackItemList: TStackViewItemsList);
+procedure TfrmMain.PrepareStack(AStack: TJclStackTraceViewerLocationInfoList; AForce: Boolean = False);
 var
-  I, J, K, Idx, NewLineNumber: Integer;
-  StackViewItem: TStackViewItem;
+  I, J, K, Idx: Integer;
+  StackViewItem: TJclStackTraceViewerLocationInfo;
   FindFileList: TStringList;
   FindMapping: TFindMapping;
   FileName, ProjectName: string;
   RevisionMS: TMemoryStream;
   RevisionStream, Stream: IStream;
-  FS: TFileStream;
+  MS: TMemoryStream;
+  SA: TStreamAdapter;
 
   S: string;
   EV: IOTAEnvironmentOptions;
@@ -196,198 +193,196 @@ var
   Found: Boolean;
   RevisionLineNumbers, CurrentLineNumbers: TList;
 begin
-  DoProgress(0, 100, '');
-  PB.Visible := True;
-  try
-    AStackItemList.Clear;
-    if AStack.Count > 0 then
-    begin
-      FindFileList := TStringList.Create;
-      try
-        FindFileList.Sorted := True;
-        //check if the files can be found in a project in the current project group
-        DoProgress(0, AStack.Count, rsSTVFindFilesInProjectGroup);
-        for I := 0 to AStack.Count - 1 do
-        begin
-          StackViewItem := AStackItemList.Add;
-          StackViewItem.Assign(AStack[I]);
-          StackViewItem.Revision := AStack[I].UnitVersionRevision;
-          Idx := FindFileList.IndexOf(AStack[I].SourceName);
-          if Idx <> -1 then
+  if AForce or not AStack.Prepared then
+  begin
+    DoProgress(0, 100, '');
+    PB.Visible := True;
+    try
+      if AStack.Count > 0 then
+      begin
+        FindFileList := TStringList.Create;
+        try
+          FindFileList.Sorted := True;
+          //check if the files can be found in a project in the current project group
+          DoProgress(0, AStack.Count, rsSTVFindFilesInProjectGroup);
+          for I := 0 to AStack.Count - 1 do
           begin
-            FindMapping := TFindMapping(FindFileList.Objects[Idx]);
-            FindMapping.Add(StackViewItem);
-            StackViewItem.FoundFile := FindMapping.FoundFile;
-            StackViewItem.FileName := FindMapping.FileName;
-            StackViewItem.ProjectName := FindMapping.ProjectName;
-          end
-          else
-          begin
-            if AStack[I].SourceName <> '' then
+            StackViewItem := AStack[I];
+            StackViewItem.Revision := AStack[I].UnitVersionRevision;
+            Idx := FindFileList.IndexOf(AStack[I].SourceName);
+            if Idx <> -1 then
             begin
-              DoProgress(I + 1, AStack.Count, Format(rsSTVFindFileInProjectGroup, [AStack[I].SourceName]));
-              FileName := FindModuleAndProject(AStack[I].SourceName, ProjectName);
+              FindMapping := TFindMapping(FindFileList.Objects[Idx]);
+              FindMapping.Add(StackViewItem);
+              StackViewItem.FoundFile := FindMapping.FoundFile;
+              StackViewItem.FileName := FindMapping.FileName;
+              StackViewItem.ProjectName := FindMapping.ProjectName;
             end
             else
             begin
-              FileName := '';
-              ProjectName := '';
+              if AStack[I].SourceName <> '' then
+              begin
+                DoProgress(I + 1, AStack.Count, Format(rsSTVFindFileInProjectGroup, [AStack[I].SourceName]));
+                FileName := FindModuleAndProject(AStack[I].SourceName, ProjectName);
+              end
+              else
+              begin
+                FileName := '';
+                ProjectName := '';
+              end;
+              FindMapping := TFindMapping.Create;
+              FindMapping.Add(StackViewItem);
+              FindFileList.AddObject(AStack[I].SourceName, FindMapping);
+              FindMapping.FoundFile := FileName <> '';
+              FindMapping.FileName := FileName;
+              FindMapping.ProjectName := ProjectName;
+
+              StackViewItem.FoundFile := FileName <> '';
+              StackViewItem.FileName := FileName;
+              StackViewItem.ProjectName := ProjectName;
             end;
-            FindMapping := TFindMapping.Create;
-            FindMapping.Add(StackViewItem);
-            FindFileList.AddObject(AStack[I].SourceName, FindMapping);
-            FindMapping.FoundFile := FileName <> '';
-            FindMapping.FileName := FileName;
-            FindMapping.ProjectName := ProjectName;
-
-            StackViewItem.FoundFile := FileName <> '';
-            StackViewItem.FileName := FileName;
-            StackViewItem.ProjectName := ProjectName;
+            DoProgress(I + 1, AStack.Count, rsSTVFindFilesInProjectGroup);
           end;
-          DoProgress(I + 1, AStack.Count, rsSTVFindFilesInProjectGroup);
-        end;
 
-        //use the build number from the version number as revision number if the revision number is empty
-        if FOptions.ModuleVersionAsRevision then
-        begin
+          //use the build number from the version number as revision number if the revision number is empty
+          if FOptions.ModuleVersionAsRevision then
+          begin
+            for I := 0 to FindFileList.Count - 1 do
+            begin
+              FindMapping := TFindMapping(FindFileList.Objects[I]);
+              if (FindMapping.Count > 0) and (FindMapping[0].Revision = '') and (FindMapping[0].ModuleName <> '') then
+              begin
+                Idx := -1;
+                { TODO -oUSc : Compare full filename when the filename in the stack contains also the path
+
+      Why full filenames?
+
+      It is possible to load
+      <Path 1>\TestDLL.DLL
+      <Path 2>\TestDLL.DLL}
+                for J := 0 to FExceptionInfo.Modules.Count - 1 do
+                  if CompareText(ExtractFileName(FExceptionInfo.Modules[J].ModuleName), ExtractFileName(FindMapping[0].ModuleName)) = 0 then
+                  begin
+                    Idx := J;
+                    Break;
+                  end;
+                if Idx <> -1 then
+                begin
+                  S := FExceptionInfo.Modules[Idx].BinFileVersion;
+                  K := Pos('.', S);
+                  if K > 0 then
+                    Delete(S, 1, K);
+                  K := Pos('.', S);
+                  if K > 0 then
+                    Delete(S, 1, K);
+                  K := Pos('.', S);
+                  if K > 0 then
+                  begin
+                    Delete(S, 1, K);
+                    for J := 0 to FindMapping.Count - 1 do
+                      FindMapping[J].Revision := S;
+                  end;
+                end;
+              end;
+            end;
+          end;
+
+          //check if the other files can be found in BrowsingPath
+          Found := False;
           for I := 0 to FindFileList.Count - 1 do
           begin
             FindMapping := TFindMapping(FindFileList.Objects[I]);
-            if (FindMapping.Count > 0) and (FindMapping[0].Revision = '') and (FindMapping[0].ModuleName <> '') then
+            if (FindFileList[I] <> '') and (not FindMapping.FoundFile) then
             begin
-              Idx := -1;
-              { TODO -oUSc : Compare full filename when the filename in the stack contains also the path
-
-    Why full filenames?
-
-    It is possible to load
-    <Path 1>\TestDLL.DLL
-    <Path 2>\TestDLL.DLL}
-              for J := 0 to FExceptionInfo.Modules.Count - 1 do
-                if CompareText(ExtractFileName(FExceptionInfo.Modules[J].ModuleName), ExtractFileName(FindMapping[0].ModuleName)) = 0 then
-                begin
-                  Idx := J;
-                  Break;
-                end;
-              if Idx <> -1 then
-              begin
-                S := FExceptionInfo.Modules[Idx].BinFileVersion;
-                K := Pos('.', S);
-                if K > 0 then
-                  Delete(S, 1, K);
-                K := Pos('.', S);
-                if K > 0 then
-                  Delete(S, 1, K);
-                K := Pos('.', S);
-                if K > 0 then
-                begin
-                  Delete(S, 1, K);
-                  for J := 0 to FindMapping.Count - 1 do
-                    FindMapping[J].Revision := S;
-                end;
-              end;
+              Found := True;
+              Break;
             end;
           end;
-        end;
-
-        //check if the other files can be found in BrowsingPath
-        Found := False;
-        for I := 0 to FindFileList.Count - 1 do
-        begin
-          FindMapping := TFindMapping(FindFileList.Objects[I]);
-          if (FindFileList[I] <> '') and (not FindMapping.FoundFile) then
+          if Found then
           begin
-            Found := True;
-            Break;
-          end;
-        end;
-        if Found then
-        begin
-          FileSearcher := TFileSearcher.Create;
-          try
-            BrowsingPaths := TStringList.Create;
+            FileSearcher := TFileSearcher.Create;
             try
-              EV := (BorlandIDEServices as IOTAServices).GetEnvironmentOptions;
-              StrTokenToStrings(EV.Values['BrowsingPath'], ';', BrowsingPaths);
-              for I := 0 to BrowsingPaths.Count - 1 do
-              begin
-                S := BrowsingPaths[I];
-                if Pos('$(BDS)', S) > 0 then
-                  S := StringReplace(S, '$(BDS)', RootDir, []);
-                FileSearcher.SearchPaths.Add(S);
+              BrowsingPaths := TStringList.Create;
+              try
+                EV := (BorlandIDEServices as IOTAServices).GetEnvironmentOptions;
+                StrTokenToStrings(EV.Values['BrowsingPath'], ';', BrowsingPaths);
+                for I := 0 to BrowsingPaths.Count - 1 do
+                begin
+                  S := BrowsingPaths[I];
+                  if Pos('$(BDS)', S) > 0 then
+                    S := StringReplace(S, '$(BDS)', RootDir, []);
+                  FileSearcher.SearchPaths.Add(S);
+                end;
+              finally
+                BrowsingPaths.Free;
               end;
-            finally
-              BrowsingPaths.Free;
-            end;
-            if FileSearcher.SearchPaths.Count > 0 then
-            begin
-              for I := 0 to FindFileList.Count - 1 do
+              if FileSearcher.SearchPaths.Count > 0 then
               begin
-                FindMapping := TFindMapping(FindFileList.Objects[I]);
-                if (FindFileList[I] <> '') and (not FindMapping.FoundFile) and (FileSearcher.IndexOf(FindFileList[I]) = -1) then
-                  FileSearcher.Add(FindFileList[I]);
-              end;
-              if FileSearcher.Count > 0 then
-              begin
-                DoProgress(0, 100, rsSTVFindFilesInBrowsingPath);
-                FileSearcher.Search;
-                DoProgress(75, 100, rsSTVFindFilesInBrowsingPath);
                 for I := 0 to FindFileList.Count - 1 do
                 begin
                   FindMapping := TFindMapping(FindFileList.Objects[I]);
-                  if not FindMapping.FoundFile then
+                  if (FindFileList[I] <> '') and (not FindMapping.FoundFile) and (FileSearcher.IndexOf(FindFileList[I]) = -1) then
+                    FileSearcher.Add(FindFileList[I]);
+                end;
+                if FileSearcher.Count > 0 then
+                begin
+                  DoProgress(0, 100, rsSTVFindFilesInBrowsingPath);
+                  FileSearcher.Search;
+                  DoProgress(75, 100, rsSTVFindFilesInBrowsingPath);
+                  for I := 0 to FindFileList.Count - 1 do
                   begin
-                    Idx := FileSearcher.IndexOf(FindFileList[I]);
-                    if (Idx <> -1) and (FileSearcher[Idx].Results.Count > 0) then
+                    FindMapping := TFindMapping(FindFileList.Objects[I]);
+                    if not FindMapping.FoundFile then
                     begin
-                      FindMapping.FoundFile := True;
-                      FindMapping.FileName := FileSearcher[Idx].Results[0];
-                      FindMapping.ProjectName := '';
-                      for J := 0 to FindMapping.Count - 1 do
+                      Idx := FileSearcher.IndexOf(FindFileList[I]);
+                      if (Idx <> -1) and (FileSearcher[Idx].Results.Count > 0) then
                       begin
-                        FindMapping[J].FoundFile := FindMapping.FoundFile;
-                        FindMapping[J].FileName := FindMapping.FileName;
-                        FindMapping[J].ProjectName := FindMapping.ProjectName;
+                        FindMapping.FoundFile := True;
+                        FindMapping.FileName := FileSearcher[Idx].Results[0];
+                        FindMapping.ProjectName := '';
+                        for J := 0 to FindMapping.Count - 1 do
+                        begin
+                          FindMapping[J].FoundFile := FindMapping.FoundFile;
+                          FindMapping[J].FileName := FindMapping.FileName;
+                          FindMapping[J].ProjectName := FindMapping.ProjectName;
+                        end;
                       end;
                     end;
+                    DoProgress(FindFileList.Count * 3 + I + 1, FindFileList.Count * 4, rsSTVFindFilesInBrowsingPath);
                   end;
-                  DoProgress(FindFileList.Count * 3 + I + 1, FindFileList.Count * 4, rsSTVFindFilesInBrowsingPath);
                 end;
               end;
+            finally
+              FileSearcher.Free;
             end;
-          finally
-            FileSearcher.Free;
           end;
-        end;
-        DoProgress(0, FindFileList.Count, '');
-        for I := 0 to FindFileList.Count - 1 do
-        begin
-          FindMapping := TFindMapping(FindFileList.Objects[I]);
-          if (FindMapping.FoundFile) and (FindMapping.Count > 0) {and (FindMapping[0].Revision <> '')} then//todo - check revision
+          DoProgress(0, FindFileList.Count, '');
+          for I := 0 to FindFileList.Count - 1 do
           begin
-            Found := False;
-            for J := 0 to FindMapping.Count - 1 do
-              if FindMapping[J].LineNumber > 0 then
-              begin
-                Found := True;
-                Break;
-              end;
-            if Found then
+            FindMapping := TFindMapping(FindFileList.Objects[I]);
+            if (FindMapping.FoundFile) and (FindMapping.Count > 0) and (FindMapping[0].Revision <> '') then
             begin
-              Stream := GetFileEditorContent(FindMapping.FileName);
-              if not Assigned(Stream) then
-              begin
-                if FileExists(FindMapping.FileName) then
+              Found := False;
+              for J := 0 to FindMapping.Count - 1 do
+                if FindMapping[J].LineNumber > 0 then
                 begin
-  (BorlandIDEServices as IOTAMessageServices).AddTitleMessage(Format('Using %s', [FindMapping.FileName]));//todo - remove
-                  FS := TFileStream.Create(FindMapping.FileName, fmOpenRead);
-                  Stream := TStreamAdapter.Create(FS);
+                  Found := True;
+                  Break;
                 end;
-              end
-              else
-                FS := nil;
-              try
-                if Assigned(Stream) and (FS = nil) then//todo - remove FS = nil
+              if Found then
+              begin
+                Stream := GetFileEditorContent(FindMapping.FileName);
+                if not Assigned(Stream) then
+                begin
+                  if FileExists(FindMapping.FileName) then
+                  begin
+                    SA := TStreamAdapter.Create(TMemoryStream.Create, soOwned);
+                    Stream := SA;
+                    MS := TMemoryStream(SA.Stream);
+                    MS.LoadFromFile(FindMapping.FileName);
+                  end;
+                end;
+                if Assigned(Stream) then
                 begin
                   RevisionLineNumbers := TList.Create;
                   CurrentLineNumbers := TList.Create;
@@ -398,13 +393,10 @@ begin
                     RevisionMS := TMemoryStream.Create;
                     try
                       RevisionStream := TStreamAdapter.Create(RevisionMS);
-  (BorlandIDEServices as IOTAMessageServices).AddTitleMessage(Format('F1 %s', [FindMapping.FileName]));//todo - remove
                       if GetRevisionContent(FindMapping.FileName, FindMapping[0].Revision, RevisionStream) then
                       begin
-  (BorlandIDEServices as IOTAMessageServices).AddTitleMessage(Format('F2 %s', [FindMapping.FileName]));//todo - remove
                         if TranslateLineNumbers(RevisionStream, Stream, RevisionLineNumbers, CurrentLineNumbers) > 0 then
                         begin
-  (BorlandIDEServices as IOTAMessageServices).AddTitleMessage(Format('F3 %s', [FindMapping.FileName]));//todo - remove
                           if RevisionLineNumbers.Count = CurrentLineNumbers.Count then
                           begin
                             for J := 0 to FindMapping.Count - 1 do
@@ -429,22 +421,20 @@ begin
                     CurrentLineNumbers.Free;
                   end;
                 end;
-              finally
-                FS.Free;
               end;
-              StackViewItem.TranslatedLineNumber := NewLineNumber;
             end;
+            DoProgress(I + 1, FindFileList.Count, '');
           end;
-          DoProgress(I + 1, FindFileList.Count, '');
+        finally
+          for I := 0 to FindFileList.Count - 1 do
+            FindFileList.Objects[I].Free;
+          FindFileList.Free;
         end;
-      finally
-        for I := 0 to FindFileList.Count - 1 do
-          FindFileList.Objects[I].Free;
-        FindFileList.Free;
       end;
+      AStack.Prepared := True;
+    finally
+      PB.Visible := False;
     end;
-  finally
-    PB.Visible := False;
   end;
 end;
 
@@ -479,13 +469,15 @@ procedure TfrmMain.tvChange(Sender: TObject; Node: TTreeNode);
 var
   TreeViewLink: TTreeViewLink;
   NewControl: TControl;
-  ThreadInfo: TJclSerializableThreadInfo;
+  ThreadInfo: TJclStackTraceViewerThreadInfo;
+  ForceStackUpdate: Boolean;
 begin
   inherited;
   NewControl := nil;
   if Assigned(tv.Selected) and Assigned(tv.Selected.Data) and
     (TObject(tv.Selected.Data) is TTreeViewLink) then
   begin
+    ForceStackUpdate := Sender = acUpdateLocalInfo;
     TreeViewLink := TTreeViewLink(tv.Selected.Data);
     if (TreeViewLink.Kind = tvlkModuleList) and (TreeViewLink.Data is TModuleList) then
     begin
@@ -493,22 +485,22 @@ begin
       FModuleFrame.ModuleList := TModuleList(TreeViewLink.Data);
     end
     else
-    if (TreeViewLink.Kind = tvlkThread) and (TreeViewLink.Data is TJclSerializableThreadInfo) then
+    if (TreeViewLink.Kind = tvlkThread) and (TreeViewLink.Data is TJclStackTraceViewerThreadInfo) then
     begin
-      ThreadInfo := TJclSerializableThreadInfo(TreeViewLink.Data);
+      ThreadInfo := TJclStackTraceViewerThreadInfo(TreeViewLink.Data);
       NewControl := FThreadFrame;
-      PrepareStack(ThreadInfo.CreationStack, FCreationStackItemList);
+      PrepareStack(ThreadInfo.CreationStack, ForceStackUpdate);
       if tioCreationStack in ThreadInfo.Values then
-        FThreadFrame.CreationStackList := FCreationStackItemList
+        FThreadFrame.CreationStackList := ThreadInfo.CreationStack
       else
         FThreadFrame.CreationStackList := nil;
       if TreeViewLink.Data = FThreadInfoList[0] then
         FThreadFrame.Exception := FExceptionInfo.Exception
       else
         FThreadFrame.Exception := nil;
-      PrepareStack(ThreadInfo.Stack, FStackItemList);
+      PrepareStack(ThreadInfo.Stack, ForceStackUpdate);
       if tioStack in ThreadInfo.Values then
-        FThreadFrame.StackList := FStackItemList
+        FThreadFrame.StackList := ThreadInfo.Stack
       else
         FThreadFrame.StackList := nil;
     end
@@ -519,10 +511,10 @@ begin
       FExceptionFrame.Exception := TException(TreeViewLink.Data);
     end
     else
-    if (TreeViewLink.Kind in [tvlkThreadStack, tvlkThreadCreationStack]) and (TreeViewLink.Data is TJclSerializableLocationInfoList) then
+    if (TreeViewLink.Kind in [tvlkThreadStack, tvlkThreadCreationStack]) and (TreeViewLink.Data is TJclStackTraceViewerLocationInfoList) then
     begin
-      PrepareStack(TJclSerializableLocationInfoList(TreeViewLink.Data), FStackItemList);
-      FStackFrame.StackList := FStackItemList;
+      PrepareStack(TJclStackTraceViewerLocationInfoList(TreeViewLink.Data), ForceStackUpdate);
+      FStackFrame.StackList := TJclStackTraceViewerLocationInfoList(TreeViewLink.Data);
       NewControl := FStackFrame;
     end;
   end;
@@ -546,10 +538,8 @@ end;
 constructor TfrmMain.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FExceptionInfo := TExceptionInfo.Create;
+  FExceptionInfo := TJclStackTraceViewerExceptionInfo.Create;
   FThreadInfoList := FExceptionInfo.ThreadInfoList;
-  FStackItemList := TStackViewItemsList.Create;
-  FCreationStackItemList := TStackViewItemsList.Create;
   FTreeViewLinkList := TObjectList.Create;
   FStackFrame := TfrmStack.Create(Self);
   FStackFrame.Name := 'StackFrameSingle';
@@ -590,8 +580,6 @@ destructor TfrmMain.Destroy;
 begin
   FOptions.Free;
   FTreeViewLinkList.Free;
-  FStackItemList.Free;
-  FCreationStackItemList.Free;
   FExceptionInfo.Free;
   inherited Destroy;
 end;
@@ -607,14 +595,12 @@ var
   tn, tns: TTreeNode;
   TreeViewLink: TTreeViewLink;
   XMLDeserializer: TJclXMLDeserializer;
+  SerializeExceptionInfo: TExceptionInfo;
 begin
   inherited;
   if OpenDialog1.Execute then
   begin
     FStackFrame.StackList := nil;
-    FStackItemList.Clear;
-    FCreationStackItemList.Clear;
-    cboxThread.Items.Clear;
     tv.Selected := nil;
     tv.Items.Clear;
     FTreeViewLinkList.Clear;
@@ -630,13 +616,18 @@ begin
         FS.Free;
       end;
       {$ENDIF ~COMPILER12_UP}
-      //FExceptionInfo.LoadFromString(SS.DataString);
-      XMLDeserializer := TJclXMLDeserializer.Create('ExceptInfo');
+      SerializeExceptionInfo := TExceptionInfo.Create;
       try
-        XMLDeserializer.LoadFromString(SS.DataString);
-        FExceptionInfo.Deserialize(XMLDeserializer);
+        XMLDeserializer := TJclXMLDeserializer.Create('ExceptInfo');
+        try
+          XMLDeserializer.LoadFromString(SS.DataString);
+          SerializeExceptionInfo.Deserialize(XMLDeserializer);
+        finally
+          XMLDeserializer.Free;
+        end;
+        FExceptionInfo.AssignExceptionInfo(SerializeExceptionInfo);
       finally
-        XMLDeserializer.Free;
+        SerializeExceptionInfo.Free;
       end;
 
       FTreeViewLinkList.Add(TTreeViewLink.Create);
@@ -648,14 +639,8 @@ begin
 
       if FThreadInfoList.Count > 0 then
       begin
-        {
-        for I := 0 to FThreadInfoList.Count - 1 do
-          cboxThread.Items.AddObject(Format('[%d/%d] ThreadID: %d [%d]', [I + 1, FThreadInfoList.Count,
-            FThreadInfoList[I].ThreadID, FThreadInfoList[I].Stack.Count]), FThreadInfoList[I]);
-        }
         for I := 0 to FThreadInfoList.Count - 1 do
         begin
-          cboxThread.Items.AddObject(Format('[%d/%d] %s', [I + 1, FThreadInfoList.Count, ''{FThreadInfoList[I].AsString}]), FThreadInfoList[I]);
           if tioIsMainThread in FThreadInfoList[I].Values then
             S := '[MainThread]'
           else
@@ -701,9 +686,6 @@ begin
           if FOptions.ExpandTreeView then
             tn.Expanded := True;
         end;
-
-        cboxThread.ItemIndex := 0;
-        cboxThreadChange(nil);
       end;
     finally
       SS.Free;
@@ -720,21 +702,7 @@ end;
 procedure TfrmMain.acUpdateLocalInfoExecute(Sender: TObject);
 begin
   inherited;
-  tvChange(nil, nil);
-end;
-
-procedure TfrmMain.cboxThreadChange(Sender: TObject);
-begin
-  inherited;
-  {//todo
-  if (cboxThread.ItemIndex <> -1) and (cboxThread.Items.Objects[cboxThread.ItemIndex] is TJclThreadInfo) then
-    StackListToListBox(TJclThreadInfo(cboxThread.Items.Objects[cboxThread.ItemIndex]).Stack)
-  else
-  begin
-    lbStack.Items.Clear;
-    FStackItemList.Clear;
-  end;
-  }
+  tvChange(Sender, nil);
 end;
 
 procedure TfrmMain.DoProgress(APos, AMax: Integer; const AText: string);

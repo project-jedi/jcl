@@ -107,10 +107,12 @@ type
     property Items[AIndex: Integer]: TJclSerializableThreadInfo read GetItems; default;
   end;
 
-  TException = class(TObject)
+  TException = class(TPersistent)
   private
     FExceptionClassName: string;
     FExceptionMessage: string;
+  protected
+    procedure AssignTo(Dest: TPersistent); override;
   public
     procedure Clear;
     procedure Deserialize(ASerializer: TJclCustomSimpleSerializer);
@@ -119,7 +121,7 @@ type
     property ExceptionMessage: string read FExceptionMessage write FExceptionMessage;
   end;
 
-  TModule = class(TObject)
+  TModule = class(TPersistent)
   private
     FStartStr: string;
     FEndStr: string;
@@ -128,6 +130,8 @@ type
     FBinFileVersion: string;
     FFileVersion: string;
     FFileDescription: string;
+  protected
+    procedure AssignTo(Dest: TPersistent); override;
   public
     procedure Deserialize(ASerializer: TJclCustomSimpleSerializer);
     procedure Serialize(ASerializer: TJclCustomSimpleSerializer);
@@ -140,11 +144,13 @@ type
     property FileDescription: string read FFileDescription write FFileDescription;
   end;
 
-  TModuleList = class(TObject)
+  TModuleList = class(TPersistent)
   private
     FItems: TObjectList;
     function GetCount: Integer;
     function GetItems(AIndex: Integer): TModule;
+  protected
+    procedure AssignTo(Dest: TPersistent); override;
   public
     constructor Create;
     destructor Destroy; override;
@@ -516,6 +522,17 @@ end;
 
 //=== { TException } =========================================================
 
+procedure TException.AssignTo(Dest: TPersistent);
+begin
+  if Dest is TException then
+  begin
+    TException(Dest).FExceptionClassName := FExceptionClassName;
+    TException(Dest).FExceptionMessage := FExceptionMessage;
+  end
+  else
+    inherited AssignTo(Dest);
+end;
+
 procedure TException.Clear;
 begin
   FExceptionClassName := '';
@@ -536,6 +553,22 @@ begin
 end;
 
 //=== { TModule } ============================================================
+
+procedure TModule.AssignTo(Dest: TPersistent);
+begin
+  if Dest is TModule then
+  begin
+    TModule(Dest).FStartStr := FStartStr;
+    TModule(Dest).FEndStr := FEndStr;
+    TModule(Dest).FSystemModuleStr := FSystemModuleStr;
+    TModule(Dest).FModuleName := FModuleName;
+    TModule(Dest).FBinFileVersion := FBinFileVersion;
+    TModule(Dest).FFileVersion := FFileVersion;
+    TModule(Dest).FFileDescription := FFileDescription;
+  end
+  else
+    inherited AssignTo(Dest);
+end;
 
 procedure TModule.Deserialize(ASerializer: TJclCustomSimpleSerializer);
 begin
@@ -577,6 +610,20 @@ function TModuleList.Add: TModule;
 begin
   FItems.Add(TModule.Create);
   Result := TModule(FItems.Last);
+end;
+
+procedure TModuleList.AssignTo(Dest: TPersistent);
+var
+  I: Integer;
+begin
+  if Dest is TModuleList then
+  begin
+    TModuleList(Dest).Clear;
+    for I := 0 to Count - 1 do
+      TModuleList(Dest).Add.Assign(TModule(FItems[I]));
+  end
+  else
+    inherited AssignTo(Dest);
 end;
 
 procedure TModuleList.Clear;

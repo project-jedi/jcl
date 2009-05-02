@@ -38,7 +38,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JclDebugSerialization, StackViewUnit, JclStackTraceViewerStackFrame, JclStackTraceViewerExceptInfoFrame;
+  JclDebugSerialization, JclStackTraceViewerClasses, JclStackTraceViewerStackFrame, JclStackTraceViewerExceptInfoFrame;
 
 type
   TfrmThread = class(TFrame)
@@ -50,16 +50,16 @@ type
     FCreationStackFrame: TfrmStack;
     FExceptionFrame: TfrmException;
     FStackFrame: TfrmStack;
-    FCreationStackList: TStackViewItemsList;
-    FStackList: TStackViewItemsList;
+    FCreationStackList: TJclStackTraceViewerLocationInfoList;
+    FStackList: TJclStackTraceViewerLocationInfoList;
     FException: TException;
     FLastStackFrame: TObject;
     FCreationStackHeight: Integer;
     procedure SaveSplitterState;
-    procedure SetCreationStackList(const Value: TStackViewItemsList);
+    procedure SetCreationStackList(const Value: TJclStackTraceViewerLocationInfoList);
     procedure SetException(const Value: TException);
-    procedure SetStackList(const Value: TStackViewItemsList);
-    function GetSelected: TStackViewItem;
+    procedure SetStackList(const Value: TJclStackTraceViewerLocationInfoList);
+    function GetSelected: TJclStackTraceViewerLocationInfo;
     procedure HandleStackSelection(ASender: TObject);
     procedure UpdateSplitterState;
     { Private declarations }
@@ -68,10 +68,10 @@ type
     constructor Create(AOwner: TComponent); override;
     procedure LoadState(AIni: TCustomIniFile; const ASection: string);
     procedure SaveState(AIni: TCustomIniFile; const ASection: string);
-    property CreationStackList: TStackViewItemsList read FCreationStackList write SetCreationStackList;
+    property CreationStackList: TJclStackTraceViewerLocationInfoList read FCreationStackList write SetCreationStackList;
     property Exception: TException read FException write SetException;
-    property StackList: TStackViewItemsList read FStackList write SetStackList;
-    property Selected: TStackViewItem read GetSelected;
+    property StackList: TJclStackTraceViewerLocationInfoList read FStackList write SetStackList;
+    property Selected: TJclStackTraceViewerLocationInfo read GetSelected;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -110,7 +110,7 @@ begin
   FLastStackFrame := nil;
 end;
 
-function TfrmThread.GetSelected: TStackViewItem;
+function TfrmThread.GetSelected: TJclStackTraceViewerLocationInfo;
 begin
   if (FLastStackFrame = FStackFrame) and FStackFrame.Visible and Assigned(FStackFrame.Selected) then
     Result := FStackFrame.Selected
@@ -148,7 +148,7 @@ begin
   FCreationStackFrame.SaveState(AIni, ASection, 'CreationStackFrameThread');
 end;
 
-procedure TfrmThread.SetCreationStackList(const Value: TStackViewItemsList);
+procedure TfrmThread.SetCreationStackList(const Value: TJclStackTraceViewerLocationInfoList);
 begin
   FCreationStackList := Value;
   FCreationStackFrame.StackList := FCreationStackList;
@@ -164,7 +164,7 @@ begin
   pnlExceptInfo.Visible := Assigned(FException);
 end;
 
-procedure TfrmThread.SetStackList(const Value: TStackViewItemsList);
+procedure TfrmThread.SetStackList(const Value: TJclStackTraceViewerLocationInfoList);
 begin
   FStackList := Value;
   FStackFrame.StackList := FStackList;

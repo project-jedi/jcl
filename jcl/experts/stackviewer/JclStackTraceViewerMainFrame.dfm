@@ -9,17 +9,6 @@ object frmMain: TfrmMain
     Top = 0
     Height = 301
   end
-  object cboxThread: TComboBox
-    Left = 0
-    Top = 33
-    Width = 356
-    Height = 21
-    Style = csDropDownList
-    ItemHeight = 13
-    TabOrder = 0
-    Visible = False
-    OnChange = cboxThreadChange
-  end
   object tv: TTreeView
     Left = 0
     Top = 0
@@ -29,7 +18,7 @@ object frmMain: TfrmMain
     HideSelection = False
     Indent = 19
     ReadOnly = True
-    TabOrder = 1
+    TabOrder = 0
     OnChange = tvChange
   end
   object StatusBar: TStatusBar
@@ -50,7 +39,7 @@ object frmMain: TfrmMain
     Top = 300
     Width = 41
     Height = 17
-    TabOrder = 3
+    TabOrder = 2
     Visible = False
   end
   object ActionList1: TActionList

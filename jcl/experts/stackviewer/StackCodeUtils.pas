@@ -11,12 +11,12 @@ uses
   {$ENDIF !BDS}
   ActiveX, ToolsAPI,
   JclOtaUtils,
-  StackViewUnit;
+  JclStackTraceViewerClasses;
 
 function FindModule(const AFileName: string): string;
 function FindModuleAndProject(const AFileName: string; var AProjectName: string): string;
 function GetFileEditorContent(const AFileName: string): IStream;
-procedure JumpToCode(AStackViewItem: TStackViewItem);
+procedure JumpToCode(AStackViewItem: TJclStackTraceViewerLocationInfo);
 
 implementation
 
@@ -149,7 +149,7 @@ begin
   end;
 end;
 
-procedure JumpToCode(AStackViewItem: TStackViewItem);
+procedure JumpToCode(AStackViewItem: TJclStackTraceViewerLocationInfo);
 var
   S, FileName, ProjectName: string;
   Module: IOTAModule;
