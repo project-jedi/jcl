@@ -1285,7 +1285,10 @@ procedure TJclInstallation.Init;
         AddOption(joJCLExpertUses, ExpertOptions, joJCLExperts);
       AddOption(joJCLExpertSimdView, ExpertOptions, joJCLExperts);
       AddOption(joJCLExpertRepository, ExpertOptions, joJCLExperts);
-      AddOption(joJCLExpertStackTraceViewer, ExpertOptions, joJCLExperts);
+      // the Stack Tracer Viewer experts is for Delphi targets only
+      if (Target.RadToolKind = brDelphi) or
+        ((Target.RadToolKind = brBorlandDevStudio) and (Target.VersionNumber >= 3)) then
+        AddOption(joJCLExpertStackTraceViewer, ExpertOptions, joJCLExperts);
     end;
     AddOption(joJCLExpertFavorite, ExpertOptions, joJCLExperts);
     AddOption(joJCLExpertVersionControl, [goNoAutoCheck], joJCLExperts);

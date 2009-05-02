@@ -18,22 +18,22 @@
     <Package Name="JclBaseExpert-D" Targets="Windows" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\experts\stackviewer\JclStackTraceViewerImpl.pas" Targets="Windows" Formname="" Condition=""/>
-    <File Name="..\..\experts\stackviewer\JclStackTraceViewerExceptInfoFrame.pas" Targets="Windows" Formname="frmException: TFrame" Condition=""/>
-    <File Name="..\..\experts\stackviewer\JclStackTraceViewerStackFrame.pas" Targets="Windows" Formname="frmStack: TFrame" Condition=""/>
-    <File Name="..\..\experts\stackviewer\JclStackTraceViewerThreadFrame.pas" Targets="Windows" Formname="frmThread: TFrame" Condition=""/>
-    <File Name="..\..\experts\stackviewer\JclStackTraceViewerModuleFrame.pas" Targets="Windows" Formname="frmModule: TFrame" Condition=""/>
-    <File Name="..\..\experts\stackviewer\JclStackTraceViewerMainFormDelphi.pas" Targets="OldStyleIDE" Formname="frmStackView" Condition=""/>
-    <File Name="..\..\experts\stackviewer\JclStackTraceViewerMainFormBDS.pas" Targets="Bds" Formname="frmStackView" Condition=""/>
-    <File Name="..\..\experts\stackviewer\JclStackTraceViewerMainFrame.pas" Targets="Windows" Formname="frmMain: TFrame" Condition=""/>
-    <File Name="..\..\experts\stackviewer\JclStackTraceViewerConfigFrame.pas" Targets="Windows" Formname="JclStackTraceViewerConfigFrame: TFrame" Condition=""/>
-    <File Name="..\..\experts\stackviewer\JclStackTraceViewerClasses.pas" Targets="Windows" Formname="" Condition=""/>
-    <File Name="..\..\experts\stackviewer\StackCodeUtils.pas" Targets="Windows" Formname="" Condition=""/>
-    <File Name="..\..\experts\stackviewer\JclStackTraceViewerOptions.pas" Targets="Windows" Formname="" Condition=""/>
-    <File Name="..\..\experts\stackviewer\JclStackTraceViewerAPIImpl.pas" Targets="Windows" Formname="" Condition=""/>
-    <File Name="..\..\experts\stackviewer\JclStackTraceViewerAPI.pas" Targets="Windows" Formname="" Condition=""/>
-    <File Name="..\..\experts\stackviewer\FileSearcherUnit.pas" Targets="Windows" Formname="" Condition=""/>
-    <File Name="..\..\experts\stackviewer\JclDebugSerialization.pas" Targets="Windows" Formname="" Condition=""/>
-    <File Name="..\..\experts\stackviewer\JclDebugXMLDeserializer.pas" Targets="Windows" Formname="" Condition=""/>
+    <File Name="..\..\experts\stackviewer\JclStackTraceViewerImpl.pas" Targets="Delphi" Formname="" Condition=""/>
+    <File Name="..\..\experts\stackviewer\JclStackTraceViewerExceptInfoFrame.pas" Targets="Delphi" Formname="frmException: TFrame" Condition=""/>
+    <File Name="..\..\experts\stackviewer\JclStackTraceViewerStackFrame.pas" Targets="Delphi" Formname="frmStack: TFrame" Condition=""/>
+    <File Name="..\..\experts\stackviewer\JclStackTraceViewerThreadFrame.pas" Targets="Delphi" Formname="frmThread: TFrame" Condition=""/>
+    <File Name="..\..\experts\stackviewer\JclStackTraceViewerModuleFrame.pas" Targets="Delphi" Formname="frmModule: TFrame" Condition=""/>
+    <File Name="..\..\experts\stackviewer\JclStackTraceViewerMainFormDelphi.pas" Targets="d5,d6,d7" Formname="frmStackView" Condition=""/>
+    <File Name="..\..\experts\stackviewer\JclStackTraceViewerMainFormBDS.pas" Targets="d9,d10,d11,d12" Formname="frmStackView" Condition=""/>
+    <File Name="..\..\experts\stackviewer\JclStackTraceViewerMainFrame.pas" Targets="Delphi" Formname="frmMain: TFrame" Condition=""/>
+    <File Name="..\..\experts\stackviewer\JclStackTraceViewerConfigFrame.pas" Targets="Delphi" Formname="JclStackTraceViewerConfigFrame: TFrame" Condition=""/>
+    <File Name="..\..\experts\stackviewer\JclStackTraceViewerClasses.pas" Targets="Delphi" Formname="" Condition=""/>
+    <File Name="..\..\experts\stackviewer\StackCodeUtils.pas" Targets="Delphi" Formname="" Condition=""/>
+    <File Name="..\..\experts\stackviewer\JclStackTraceViewerOptions.pas" Targets="Delphi" Formname="" Condition=""/>
+    <File Name="..\..\experts\stackviewer\JclStackTraceViewerAPIImpl.pas" Targets="Delphi" Formname="" Condition=""/>
+    <File Name="..\..\experts\stackviewer\JclStackTraceViewerAPI.pas" Targets="Delphi" Formname="" Condition=""/>
+    <File Name="..\..\experts\stackviewer\FileSearcherUnit.pas" Targets="Delphi" Formname="" Condition=""/>
+    <File Name="..\..\experts\stackviewer\JclDebugSerialization.pas" Targets="Delphi" Formname="" Condition=""/>
+    <File Name="..\..\experts\stackviewer\JclDebugXMLDeserializer.pas" Targets="Delphi" Formname="" Condition=""/>
   </Contains>
 </Package>

@@ -27,4 +27,3 @@ Expert
 
 * integrate it into the installation
   - commit packages for D5-D7, D9, D10
-  - prevent package generation/installation for C5, C6, CS1, D8
