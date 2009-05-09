@@ -175,7 +175,7 @@ end;
 procedure TJclWizardForm.FormCreate(Sender: TObject);
 begin
   {$IFDEF COMPILER7_UP}
-  PanelTitle.ParentBackground = False;
+  PanelTitle.ParentBackground := False;
   {$ENDIF COMPILER7_UP}
 
   ActionPrevious.Caption := RsPrevious;
