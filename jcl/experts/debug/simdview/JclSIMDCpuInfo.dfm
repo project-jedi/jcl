@@ -153,7 +153,7 @@ object JclFormCpuInfo: TJclFormCpuInfo
     Height = 25
     Caption = 'Close'
     ModalResult = 2
-    TabOrder = 11
+    TabOrder = 15
   end
   object CheckBoxSSSE3: TCheckBox
     Left = 161
@@ -163,7 +163,7 @@ object JclFormCpuInfo: TJclFormCpuInfo
     Alignment = taLeftJustify
     Caption = 'Suppl. SSE Version 3'
     Enabled = False
-    TabOrder = 12
+    TabOrder = 11
   end
   object CheckBoxSSE4A: TCheckBox
     Left = 161
@@ -173,7 +173,7 @@ object JclFormCpuInfo: TJclFormCpuInfo
     Alignment = taLeftJustify
     Caption = 'SSE Version 4 A'
     Enabled = False
-    TabOrder = 13
+    TabOrder = 12
   end
   object CheckBoxSSE5: TCheckBox
     Left = 161
@@ -193,6 +193,6 @@ object JclFormCpuInfo: TJclFormCpuInfo
     Alignment = taLeftJustify
     Caption = 'SSE Version 4 B'
     Enabled = False
-    TabOrder = 15
+    TabOrder = 13
   end
 end

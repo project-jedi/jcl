@@ -37,7 +37,7 @@ object JclWizardForm: TJclWizardForm
     Cancel = True
     Caption = 'RsCancel'
     ModalResult = 2
-    TabOrder = 0
+    TabOrder = 2
   end
   object ButtonFinish: TButton
     Left = 459
@@ -54,7 +54,7 @@ object JclWizardForm: TJclWizardForm
     Width = 75
     Height = 25
     Action = ActionNext
-    TabOrder = 2
+    TabOrder = 0
   end
   object ButtonPrevious: TButton
     Left = 297
@@ -62,7 +62,7 @@ object JclWizardForm: TJclWizardForm
     Width = 75
     Height = 25
     Action = ActionPrevious
-    TabOrder = 3
+    TabOrder = 5
   end
   object PanelTitle: TPanel
     Left = 0
@@ -72,7 +72,7 @@ object JclWizardForm: TJclWizardForm
     Align = alTop
     BevelOuter = bvNone
     Color = clBlack
-    TabOrder = 4
+    TabOrder = 3
     object ImageJcl: TImage
       Left = 8
       Top = 8
@@ -99,7 +99,7 @@ object JclWizardForm: TJclWizardForm
     Width = 623
     Height = 298
     BevelOuter = bvNone
-    TabOrder = 5
+    TabOrder = 4
   end
   object ActionListButtons: TActionList
     Left = 240

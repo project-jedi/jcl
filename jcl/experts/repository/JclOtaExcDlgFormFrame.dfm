@@ -2,7 +2,7 @@ inherited JclOtaExcDlgFormPage: TJclOtaExcDlgFormPage
   object LabelEMailAddress: TLabel
     Left = 97
     Top = 186
-    Width = 36
+    Width = 38
     Height = 13
     Caption = 'RsEmail'
     FocusControl = EditEMail
@@ -10,7 +10,7 @@ inherited JclOtaExcDlgFormPage: TJclOtaExcDlgFormPage
   object LabelSubject: TLabel
     Left = 97
     Top = 226
-    Width = 48
+    Width = 49
     Height = 13
     Caption = 'RsSubject'
     FocusControl = EditSubject
@@ -21,7 +21,7 @@ inherited JclOtaExcDlgFormPage: TJclOtaExcDlgFormPage
     Width = 233
     Height = 17
     Caption = 'RsDialogWithMailButton'
-    TabOrder = 0
+    TabOrder = 3
     OnClick = CheckBoxMailClick
   end
   object EditEMail: TEdit
@@ -29,7 +29,7 @@ inherited JclOtaExcDlgFormPage: TJclOtaExcDlgFormPage
     Top = 183
     Width = 193
     Height = 21
-    TabOrder = 1
+    TabOrder = 4
   end
   object CheckBoxModalDialog: TCheckBox
     Left = 72
@@ -37,7 +37,7 @@ inherited JclOtaExcDlgFormPage: TJclOtaExcDlgFormPage
     Width = 233
     Height = 17
     Caption = 'RsModalDialog'
-    TabOrder = 2
+    TabOrder = 0
   end
   object CheckBoxSizeable: TCheckBox
     Left = 72
@@ -45,14 +45,14 @@ inherited JclOtaExcDlgFormPage: TJclOtaExcDlgFormPage
     Width = 233
     Height = 17
     Caption = 'RsSizeable'
-    TabOrder = 3
+    TabOrder = 1
   end
   object EditSubject: TEdit
     Left = 160
     Top = 223
     Width = 193
     Height = 21
-    TabOrder = 4
+    TabOrder = 5
   end
   object CheckBoxAutoScrollBars: TCheckBox
     Left = 72
@@ -60,6 +60,6 @@ inherited JclOtaExcDlgFormPage: TJclOtaExcDlgFormPage
     Width = 233
     Height = 17
     Caption = 'RsAutoScrollBars'
-    TabOrder = 5
+    TabOrder = 2
   end
 end

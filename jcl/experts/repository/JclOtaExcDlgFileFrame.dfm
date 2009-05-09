@@ -2,7 +2,7 @@ inherited JclOtaExcDlgFilePage: TJclOtaExcDlgFilePage
   object LabelLanguage: TLabel
     Left = 23
     Top = 27
-    Width = 59
+    Width = 61
     Height = 13
     Caption = 'RsLanguage'
     FocusControl = ComboBoxLanguage
@@ -10,7 +10,7 @@ inherited JclOtaExcDlgFilePage: TJclOtaExcDlgFilePage
   object LabelFormName: TLabel
     Left = 23
     Top = 182
-    Width = 63
+    Width = 64
     Height = 13
     Caption = 'RsFormName'
     FocusControl = EditFormName
@@ -18,7 +18,7 @@ inherited JclOtaExcDlgFilePage: TJclOtaExcDlgFilePage
   object LabelFileName: TLabel
     Left = 23
     Top = 75
-    Width = 55
+    Width = 57
     Height = 13
     Caption = 'RsFileName'
     FocusControl = EditFileName
@@ -26,7 +26,7 @@ inherited JclOtaExcDlgFilePage: TJclOtaExcDlgFilePage
   object LabelFormAncestor: TLabel
     Left = 23
     Top = 222
-    Width = 79
+    Width = 78
     Height = 13
     Caption = 'RsFormAncestor'
     FocusControl = EditFormAncestor
@@ -46,14 +46,14 @@ inherited JclOtaExcDlgFilePage: TJclOtaExcDlgFilePage
     Top = 179
     Width = 249
     Height = 21
-    TabOrder = 1
+    TabOrder = 3
   end
   object EditFileName: TEdit
     Left = 136
     Top = 72
     Width = 249
     Height = 21
-    TabOrder = 2
+    TabOrder = 1
   end
   object ButtonFileBrowse: TButton
     Left = 391
@@ -61,7 +61,7 @@ inherited JclOtaExcDlgFilePage: TJclOtaExcDlgFilePage
     Width = 25
     Height = 21
     Caption = '...'
-    TabOrder = 3
+    TabOrder = 2
     OnClick = ButtonFileBrowseClick
   end
   object EditFormAncestor: TEdit

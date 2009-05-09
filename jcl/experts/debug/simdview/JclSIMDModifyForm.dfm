@@ -40,7 +40,7 @@ object JclSIMDModifyFrm: TJclSIMDModifyFrm
   end
   object ComboBoxDisplay: TComboBox
     Left = 56
-    Top = 16
+    Top = 13
     Width = 137
     Height = 21
     Style = csDropDownList
@@ -57,7 +57,7 @@ object JclSIMDModifyFrm: TJclSIMDModifyFrm
   end
   object ComboBoxFormat: TComboBox
     Left = 288
-    Top = 16
+    Top = 13
     Width = 145
     Height = 21
     Style = csDropDownList

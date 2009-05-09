@@ -2,7 +2,7 @@ inherited JclOtaExcDlgSystemPage: TJclOtaExcDlgSystemPage
   object LabelLogFileName: TLabel
     Left = 170
     Top = 139
-    Width = 55
+    Width = 57
     Height = 13
     Caption = 'RsFileName'
   end
@@ -28,7 +28,7 @@ inherited JclOtaExcDlgSystemPage: TJclOtaExcDlgSystemPage
     Width = 265
     Height = 17
     Caption = 'RsLogFile'
-    TabOrder = 2
+    TabOrder = 3
     OnClick = CheckBoxLogFileClick
   end
   object EditLogFileName: TEdit
@@ -36,7 +36,7 @@ inherited JclOtaExcDlgSystemPage: TJclOtaExcDlgSystemPage
     Top = 136
     Width = 145
     Height = 21
-    TabOrder = 3
+    TabOrder = 4
   end
   object CheckBoxModuleList: TCheckBox
     Left = 120
@@ -44,7 +44,7 @@ inherited JclOtaExcDlgSystemPage: TJclOtaExcDlgSystemPage
     Width = 265
     Height = 17
     Caption = 'RsModuleList'
-    TabOrder = 4
+    TabOrder = 5
     OnClick = CheckBoxModuleListClick
   end
   object CheckBoxOSInfo: TCheckBox
@@ -53,7 +53,7 @@ inherited JclOtaExcDlgSystemPage: TJclOtaExcDlgSystemPage
     Width = 265
     Height = 17
     Caption = 'RsOSInfo'
-    TabOrder = 5
+    TabOrder = 7
   end
   object CheckBoxActiveControls: TCheckBox
     Left = 120
@@ -61,7 +61,7 @@ inherited JclOtaExcDlgSystemPage: TJclOtaExcDlgSystemPage
     Width = 265
     Height = 17
     Caption = 'RsActiveControls'
-    TabOrder = 6
+    TabOrder = 8
   end
   object CheckBoxMainThreadOnly: TCheckBox
     Left = 120
@@ -69,7 +69,7 @@ inherited JclOtaExcDlgSystemPage: TJclOtaExcDlgSystemPage
     Width = 265
     Height = 17
     Caption = 'RsMainThreadOnly'
-    TabOrder = 7
+    TabOrder = 2
   end
   object CheckBoxUnitVersioning: TCheckBox
     Left = 152
@@ -77,6 +77,6 @@ inherited JclOtaExcDlgSystemPage: TJclOtaExcDlgSystemPage
     Width = 233
     Height = 17
     Caption = 'RsUnitVersioning'
-    TabOrder = 8
+    TabOrder = 6
   end
 end

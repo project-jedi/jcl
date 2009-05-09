@@ -28,7 +28,7 @@ object JclVersionCtrlOptionsFrame: TJclVersionCtrlOptionsFrame
     Width = 185
     Height = 17
     Caption = 'RsHideUnsupportedActions'
-    TabOrder = 0
+    TabOrder = 1
   end
   object ComboBoxIcons: TComboBox
     Left = 72
@@ -37,7 +37,7 @@ object JclVersionCtrlOptionsFrame: TJclVersionCtrlOptionsFrame
     Height = 21
     Style = csDropDownList
     ItemHeight = 13
-    TabOrder = 1
+    TabOrder = 4
     Items.Strings = (
       'RsNoIcon'
       'RsJCLIcons')
@@ -53,7 +53,7 @@ object JclVersionCtrlOptionsFrame: TJclVersionCtrlOptionsFrame
     RightClickSelect = True
     RowSelect = True
     ShowRoot = False
-    TabOrder = 2
+    TabOrder = 5
     OnEdited = TreeViewMenuEdited
     OnEditing = TreeViewMenuEditing
   end
@@ -63,7 +63,7 @@ object JclVersionCtrlOptionsFrame: TJclVersionCtrlOptionsFrame
     Width = 201
     Height = 17
     Caption = 'RsDisableActions'
-    TabOrder = 3
+    TabOrder = 0
   end
   object ButtonNewSeparator: TButton
     Left = 282
@@ -72,7 +72,7 @@ object JclVersionCtrlOptionsFrame: TJclVersionCtrlOptionsFrame
     Height = 25
     Action = ActionNewSeparator
     Anchors = [akTop, akRight]
-    TabOrder = 4
+    TabOrder = 7
   end
   object ButtonDelete: TButton
     Left = 282
@@ -81,7 +81,7 @@ object JclVersionCtrlOptionsFrame: TJclVersionCtrlOptionsFrame
     Height = 25
     Action = ActionDeleteItem
     Anchors = [akTop, akRight]
-    TabOrder = 5
+    TabOrder = 9
   end
   object ButtonRename: TButton
     Left = 282
@@ -90,7 +90,7 @@ object JclVersionCtrlOptionsFrame: TJclVersionCtrlOptionsFrame
     Height = 25
     Action = ActionRenameItem
     Anchors = [akTop, akRight]
-    TabOrder = 6
+    TabOrder = 10
   end
   object ButtonMoveUp: TButton
     Left = 282
@@ -99,7 +99,7 @@ object JclVersionCtrlOptionsFrame: TJclVersionCtrlOptionsFrame
     Height = 25
     Action = ActionMoveItemUp
     Anchors = [akTop, akRight]
-    TabOrder = 7
+    TabOrder = 11
   end
   object ButtonMoveDown: TButton
     Left = 282
@@ -108,7 +108,7 @@ object JclVersionCtrlOptionsFrame: TJclVersionCtrlOptionsFrame
     Height = 25
     Action = ActionMoveItemDown
     Anchors = [akTop, akRight]
-    TabOrder = 8
+    TabOrder = 12
   end
   object CheckBoxSaveConfirmation: TCheckBox
     Left = 16
@@ -116,7 +116,7 @@ object JclVersionCtrlOptionsFrame: TJclVersionCtrlOptionsFrame
     Width = 201
     Height = 17
     Caption = 'RsSaveConfirmation'
-    TabOrder = 9
+    TabOrder = 2
   end
   object ButtonNewAction: TButton
     Left = 282
@@ -125,7 +125,7 @@ object JclVersionCtrlOptionsFrame: TJclVersionCtrlOptionsFrame
     Height = 25
     Action = ActionNewAction
     Anchors = [akTop, akRight]
-    TabOrder = 10
+    TabOrder = 8
   end
   object ButtonNewSubMenu: TButton
     Left = 282
@@ -134,7 +134,7 @@ object JclVersionCtrlOptionsFrame: TJclVersionCtrlOptionsFrame
     Height = 25
     Action = ActionNewSubMenu
     Anchors = [akTop, akRight]
-    TabOrder = 11
+    TabOrder = 6
   end
   object CheckBoxActOnTopSandbox: TCheckBox
     Left = 16
@@ -142,7 +142,7 @@ object JclVersionCtrlOptionsFrame: TJclVersionCtrlOptionsFrame
     Width = 201
     Height = 17
     Caption = 'RsActOnTopSandbox'
-    TabOrder = 12
+    TabOrder = 3
   end
   object ActionListVersionCtrl: TActionList
     Left = 256

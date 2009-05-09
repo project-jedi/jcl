@@ -12,7 +12,7 @@ inherited JclOtaExcDlgTracePage: TJclOtaExcDlgTracePage
     Width = 233
     Height = 17
     Caption = 'RsRawData'
-    TabOrder = 0
+    TabOrder = 1
     OnClick = CheckBoxClick
   end
   object CheckBoxModuleName: TCheckBox
@@ -21,7 +21,7 @@ inherited JclOtaExcDlgTracePage: TJclOtaExcDlgTracePage
     Width = 233
     Height = 17
     Caption = 'RsModuleName'
-    TabOrder = 1
+    TabOrder = 2
     OnClick = CheckBoxClick
   end
   object CheckBoxCodeDetails: TCheckBox
@@ -30,7 +30,7 @@ inherited JclOtaExcDlgTracePage: TJclOtaExcDlgTracePage
     Width = 233
     Height = 17
     Caption = 'RsCodeDetails'
-    TabOrder = 2
+    TabOrder = 4
     OnClick = CheckBoxClick
   end
   object CheckBoxVirtualAddress: TCheckBox
@@ -39,7 +39,7 @@ inherited JclOtaExcDlgTracePage: TJclOtaExcDlgTracePage
     Width = 233
     Height = 17
     Caption = 'RsVirtualAddress'
-    TabOrder = 3
+    TabOrder = 5
     OnClick = CheckBoxClick
   end
   object CheckBoxModuleOffset: TCheckBox
@@ -48,7 +48,7 @@ inherited JclOtaExcDlgTracePage: TJclOtaExcDlgTracePage
     Width = 233
     Height = 17
     Caption = 'RsModuleOffset'
-    TabOrder = 4
+    TabOrder = 3
     OnClick = CheckBoxClick
   end
   object MemoStack: TMemo
@@ -59,7 +59,7 @@ inherited JclOtaExcDlgTracePage: TJclOtaExcDlgTracePage
     ParentColor = True
     ReadOnly = True
     ScrollBars = ssBoth
-    TabOrder = 6
+    TabOrder = 7
     WordWrap = False
   end
   object CheckBoxStackList: TCheckBox
@@ -68,7 +68,7 @@ inherited JclOtaExcDlgTracePage: TJclOtaExcDlgTracePage
     Width = 257
     Height = 17
     Caption = 'RsStackList'
-    TabOrder = 5
+    TabOrder = 0
     OnClick = CheckBoxStackListClick
   end
   object CheckBoxAllThreads: TCheckBox
@@ -77,7 +77,7 @@ inherited JclOtaExcDlgTracePage: TJclOtaExcDlgTracePage
     Width = 233
     Height = 17
     Caption = 'RsAllThreads'
-    TabOrder = 7
+    TabOrder = 6
     OnClick = CheckBoxClick
   end
 end
