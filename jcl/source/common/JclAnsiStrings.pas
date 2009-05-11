@@ -1034,7 +1034,7 @@ begin
     while Index <= Len do
     begin
       Start := Index;
-      while not (Value[Index] in [#10, #13]) do
+      while (Index <= Len) and not (Value[Index] in [#10, #13]) do
         Inc(Index);
 
       S := Copy(Value, Start, Index - Start);
