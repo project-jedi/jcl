@@ -5442,12 +5442,12 @@ function HookedCreateThread(SecurityAttributes: Pointer; StackSize: LongWord;
 begin
   Result := Kernel32_CreateThread(SecurityAttributes, StackSize, ThreadFunc, Parameter, CreationFlags, ThreadId);
   if Result <> 0 then
-    RegisteredThreadList.RegisterThreadID(ThreadId);
+    JclDebugThreadList.RegisterThreadID(ThreadId);
 end;
 
 procedure HookedExitThread(ExitCode: Integer); stdcall;
 begin
-  RegisteredThreadList.UnregisterThreadID(GetCurrentThreadID);
+  JclDebugThreadList.UnregisterThreadID(GetCurrentThreadID);
   Kernel32_ExitThread(ExitCode);
 end;
 
