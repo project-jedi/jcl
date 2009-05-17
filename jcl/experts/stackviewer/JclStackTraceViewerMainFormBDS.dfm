@@ -1,5 +1,5 @@
 inherited frmStackView: TfrmStackView
-  Caption = 'Exception Stack View'
+  Caption = 'Stack Traces'
   ClientHeight = 331
   ClientWidth = 356
   KeyPreview = True

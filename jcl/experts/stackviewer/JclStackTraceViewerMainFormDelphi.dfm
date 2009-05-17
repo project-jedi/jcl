@@ -1,7 +1,7 @@
 inherited frmStackView: TfrmStackView
   Width = 364
   Height = 358
-  Caption = 'Exception Stack View'
+  Caption = 'Stack Traces'
   KeyPreview = True
   PopupMenu = nil
   ShowHint = False
