@@ -11,12 +11,12 @@ uses
   {$ENDIF !BDS}
   ActiveX, ToolsAPI,
   JclOtaUtils,
-  JclStackTraceViewerClasses;
+  JclStackTraceViewerAPI;
 
 function FindModule(const AFileName: string): string;
 function FindModuleAndProject(const AFileName: string; var AProjectName: string): string;
 function GetFileEditorContent(const AFileName: string): IStream;
-procedure JumpToCode(AStackViewItem: TJclStackTraceViewerLocationInfo);
+procedure JumpToCode(AStackViewItem: IJclLocationInfo);
 
 implementation
 
@@ -149,7 +149,7 @@ begin
   end;
 end;
 
-procedure JumpToCode(AStackViewItem: TJclStackTraceViewerLocationInfo);
+procedure JumpToCode(AStackViewItem: IJclLocationInfo);
 var
   S, FileName, ProjectName: string;
   Module: IOTAModule;
@@ -158,9 +158,12 @@ var
   SourceEditor: IOTASourceEditor;
   I, LineNumber: Integer;
   EditPos: TOTAEditPos;
+  PreparedLocationInfo: IJclPreparedLocationInfo;
 begin
   if Assigned(AStackViewItem) then
   begin
+    if AStackViewItem.QueryInterface(IJclPreparedLocationInfo, PreparedLocationInfo) <> S_OK then
+      PreparedLocationInfo := nil;
     FileName := AStackViewItem.SourceName;
     ModuleInfo := FindModuleInfoAndProject(FileName, ProjectName);
     if Assigned(ModuleInfo) then
@@ -176,13 +179,13 @@ begin
       end;
     end
     else
-    if AStackViewItem.FoundFile then
+    if Assigned(PreparedLocationInfo) and PreparedLocationInfo.FoundFile then
     begin
       {$IFDEF BDS}
-      Module := (BorlandIDEServices as IOTAModuleServices).OpenModule(AStackViewItem.FileName);
+      Module := (BorlandIDEServices as IOTAModuleServices).OpenModule(PreparedLocationInfo.FileName);
       {$ELSE !BDS}
-      (BorlandIDEServices as IOTAActionServices).OpenFile(AStackViewItem.FileName);
-      Module := (BorlandIDEServices as IOTAModuleServices).FindModule(AStackViewItem.FileName);
+      (BorlandIDEServices as IOTAActionServices).OpenFile(PreparedLocationInfo.FileName);
+      Module := (BorlandIDEServices as IOTAModuleServices).FindModule(PreparedLocationInfo.FileName);
       {$ENDIF !BDS}
     end;
     if Assigned(Module) then
@@ -196,8 +199,8 @@ begin
           SourceEditor.Show;
           if SourceEditor.EditViewCount > 0 then
           begin
-            if AStackViewItem.TranslatedLineNumber > 0 then
-              LineNumber := AStackViewItem.TranslatedLineNumber
+            if Assigned(PreparedLocationInfo) and (PreparedLocationInfo.TranslatedLineNumber > 0) then
+              LineNumber := PreparedLocationInfo.TranslatedLineNumber
             else
               LineNumber := AStackViewItem.LineNumber;
             if LineNumber > 0 then

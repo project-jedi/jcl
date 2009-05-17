@@ -40,21 +40,30 @@ uses
   {$ENDIF UNITVERSIONING}
   JclStrings, JclFileUtils,
   JclDebugSerialization, JclStackTraceViewerClasses, StackCodeUtils, JclStackTraceViewerOptions,
-  JclStackTraceViewerAPIImpl;
+  JclStackTraceViewerAPIImpl, JclStackTraceViewerAPI;
 
 type
-  TJclLocationInfoProgressEvent = procedure(APos, AMax: Integer; const AText: string) of object;
+  TLocationInfoProcessorProgressStatus = (lippsUnknown, lippsStart, lippsFinished);
 
-  TJclLocationInfoProcessor = class(TObject)
+  TJclLocationInfoProgressEvent = procedure(AStatus: TLocationInfoProcessorProgressStatus;
+    APos, AMax: Integer; const AText: string) of object;
+
+  TJclLocationInfoProcessor = class(TObject, IJclStackTraceViewerStackProcessorServices)
   private
-    FModuleList: TModuleList;
+    FModuleList: IJclModuleInfoList;
     FOnProgress: TJclLocationInfoProgressEvent;
     FOptions: TExceptionViewerOption;
     FRootDir: string;
-    procedure DoProgress(APos, AMax: Integer; const AText: string);
+    procedure DoProgress(AStatus: TLocationInfoProcessorProgressStatus; APos, AMax: Integer; const AText: string);
   public
-    procedure PrepareLocationInfoList(AStack: TJclStackTraceViewerLocationInfoList; AForce: Boolean = False);
-    property ModuleList: TModuleList read FModuleList write FModuleList;
+    { IInterface }
+    function QueryInterface(const IID: TGUID; out Obj): HRESULT; stdcall;
+    function _AddRef: Integer; stdcall;
+    function _Release: Integer; stdcall;
+    { IJclStackTraceViewerStackProcessorServices }
+    function GetModuleInfoList: IJclModuleInfoList;
+    procedure PrepareLocationInfoList(AStack: IJclPreparedLocationInfoList; AForce: Boolean = False);
+    procedure SetModuleInfoList(AValue: IJclModuleInfoList);
     property OnProgress: TJclLocationInfoProgressEvent read FOnProgress write FOnProgress;
     property Options: TExceptionViewerOption read FOptions write FOptions;
     property RootDir: string read FRootDir write FRootDir;
@@ -222,24 +231,24 @@ end;
 type
   TFindMapping = class(TObject)
   private
-    FItems: TList;
+    FItems: TInterfaceList;
     function GetCount: Integer;
-    function GetItems(AIndex: Integer): TJclStackTraceViewerLocationInfo;
+    function GetItems(AIndex: Integer): IJclPreparedLocationInfo;
   public
     FoundFile: Boolean;
     FileName: string;
     ProjectName: string;
     constructor Create;
     destructor Destroy; override;
-    procedure Add(AStackViewItem: TJclStackTraceViewerLocationInfo);
+    procedure Add(AStackViewItem: IJclPreparedLocationInfo);
     property Count: Integer read GetCount;
-    property Items[AIndex: Integer]: TJclStackTraceViewerLocationInfo read GetItems; default;
+    property Items[AIndex: Integer]: IJclPreparedLocationInfo read GetItems; default;
   end;
 
 constructor TFindMapping.Create;
 begin
   inherited Create;
-  FItems := TList.Create;
+  FItems := TInterfaceList.Create;
 end;
 
 destructor TFindMapping.Destroy;
@@ -248,7 +257,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TFindMapping.Add(AStackViewItem: TJclStackTraceViewerLocationInfo);
+procedure TFindMapping.Add(AStackViewItem: IJclPreparedLocationInfo);
 begin
   FItems.Add(AStackViewItem);
 end;
@@ -258,22 +267,27 @@ begin
   Result := FItems.Count;
 end;
 
-function TFindMapping.GetItems(AIndex: Integer): TJclStackTraceViewerLocationInfo;
+function TFindMapping.GetItems(AIndex: Integer): IJclPreparedLocationInfo;
 begin
-  Result := FItems[AIndex];
+  Result := IJclPreparedLocationInfo(FItems[AIndex]);
 end;
 
-procedure TJclLocationInfoProcessor.DoProgress(APos, AMax: Integer; const AText: string);
+procedure TJclLocationInfoProcessor.DoProgress(AStatus: TLocationInfoProcessorProgressStatus;
+  APos, AMax: Integer; const AText: string);
 begin
   if Assigned(FOnProgress) then
-    FOnProgress(APos, AMax, AText);
+    FOnProgress(AStatus, APos, AMax, AText);
 end;
 
-procedure TJclLocationInfoProcessor.PrepareLocationInfoList(AStack: TJclStackTraceViewerLocationInfoList;
-  AForce: Boolean = False);
+function TJclLocationInfoProcessor.GetModuleInfoList: IJclModuleInfoList;
+begin
+  Result := FModuleList;
+end;
+
+procedure TJclLocationInfoProcessor.PrepareLocationInfoList(AStack: IJclPreparedLocationInfoList; AForce: Boolean);
 var
   I, J, K, Idx: Integer;
-  StackViewItem: TJclStackTraceViewerLocationInfo;
+  StackViewItem: IJclPreparedLocationInfo;
   FindFileList: TStringList;
   FindMapping: TFindMapping;
   FileName, ProjectName: string;
@@ -292,52 +306,52 @@ var
 begin
   if AForce or not AStack.Prepared then
   begin
-    DoProgress(0, 100, '');
+    DoProgress(lippsStart, 0, 100, '');
     if AStack.Count > 0 then
     begin
       FindFileList := TStringList.Create;
       try
         FindFileList.Sorted := True;
         //check if the files can be found in a project in the current project group
-        DoProgress(0, AStack.Count, rsSTVFindFilesInProjectGroup);
+        DoProgress(lippsUnknown, 0, AStack.Count, rsSTVFindFilesInProjectGroup);
         for I := 0 to AStack.Count - 1 do
-        begin
-          StackViewItem := AStack[I];
-          StackViewItem.Revision := AStack[I].UnitVersionRevision;
-          Idx := FindFileList.IndexOf(AStack[I].SourceName);
-          if Idx <> -1 then
+          if AStack.Items[I].QueryInterface(IJclPreparedLocationInfo, StackViewItem) = S_OK then
           begin
-            FindMapping := TFindMapping(FindFileList.Objects[Idx]);
-            FindMapping.Add(StackViewItem);
-            StackViewItem.FoundFile := FindMapping.FoundFile;
-            StackViewItem.FileName := FindMapping.FileName;
-            StackViewItem.ProjectName := FindMapping.ProjectName;
-          end
-          else
-          begin
-            if AStack[I].SourceName <> '' then
+            StackViewItem.Revision := StackViewItem.UnitVersionRevision;
+            Idx := FindFileList.IndexOf(StackViewItem.SourceName);
+            if Idx <> -1 then
             begin
-              DoProgress(I + 1, AStack.Count, Format(rsSTVFindFileInProjectGroup, [AStack[I].SourceName]));
-              FileName := FindModuleAndProject(AStack[I].SourceName, ProjectName);
+              FindMapping := TFindMapping(FindFileList.Objects[Idx]);
+              FindMapping.Add(StackViewItem);
+              StackViewItem.FoundFile := FindMapping.FoundFile;
+              StackViewItem.FileName := FindMapping.FileName;
+              StackViewItem.ProjectName := FindMapping.ProjectName;
             end
             else
             begin
-              FileName := '';
-              ProjectName := '';
-            end;
-            FindMapping := TFindMapping.Create;
-            FindMapping.Add(StackViewItem);
-            FindFileList.AddObject(AStack[I].SourceName, FindMapping);
-            FindMapping.FoundFile := FileName <> '';
-            FindMapping.FileName := FileName;
-            FindMapping.ProjectName := ProjectName;
+              if AStack.Items[I].SourceName <> '' then
+              begin
+                DoProgress(lippsUnknown, I + 1, AStack.Count, Format(rsSTVFindFileInProjectGroup, [AStack.Items[I].SourceName]));
+                FileName := FindModuleAndProject(AStack.Items[I].SourceName, ProjectName);
+              end
+              else
+              begin
+                FileName := '';
+                ProjectName := '';
+              end;
+              FindMapping := TFindMapping.Create;
+              FindMapping.Add(StackViewItem);
+              FindFileList.AddObject(AStack.Items[I].SourceName, FindMapping);
+              FindMapping.FoundFile := FileName <> '';
+              FindMapping.FileName := FileName;
+              FindMapping.ProjectName := ProjectName;
 
-            StackViewItem.FoundFile := FileName <> '';
-            StackViewItem.FileName := FileName;
-            StackViewItem.ProjectName := ProjectName;
+              StackViewItem.FoundFile := FileName <> '';
+              StackViewItem.FileName := FileName;
+              StackViewItem.ProjectName := ProjectName;
+            end;
+            DoProgress(lippsUnknown, I + 1, AStack.Count, rsSTVFindFilesInProjectGroup);
           end;
-          DoProgress(I + 1, AStack.Count, rsSTVFindFilesInProjectGroup);
-        end;
 
         //use the build number from the version number as revision number if the revision number is empty
         if Assigned(FOptions) and FOptions.ModuleVersionAsRevision and Assigned(FModuleList) then
@@ -423,9 +437,9 @@ begin
                 end;
                 if FileSearcher.Count > 0 then
                 begin
-                  DoProgress(0, 100, rsSTVFindFilesInBrowsingPath);
+                  DoProgress(lippsUnknown, 0, 100, rsSTVFindFilesInBrowsingPath);
                   FileSearcher.Search;
-                  DoProgress(75, 100, rsSTVFindFilesInBrowsingPath);
+                  DoProgress(lippsUnknown, 75, 100, rsSTVFindFilesInBrowsingPath);
                   for I := 0 to FindFileList.Count - 1 do
                   begin
                     FindMapping := TFindMapping(FindFileList.Objects[I]);
@@ -445,7 +459,7 @@ begin
                         end;
                       end;
                     end;
-                    DoProgress(FindFileList.Count * 3 + I + 1, FindFileList.Count * 4, rsSTVFindFilesInBrowsingPath);
+                    DoProgress(lippsUnknown, FindFileList.Count * 3 + I + 1, FindFileList.Count * 4, rsSTVFindFilesInBrowsingPath);
                   end;
                 end;
               end;
@@ -454,7 +468,7 @@ begin
             end;
           end;
         end;
-        DoProgress(0, FindFileList.Count, '');
+        DoProgress(lippsUnknown, 0, FindFileList.Count, '');
         for I := 0 to FindFileList.Count - 1 do
         begin
           FindMapping := TFindMapping(FindFileList.Objects[I]);
@@ -521,7 +535,7 @@ begin
               end;
             end;
           end;
-          DoProgress(I + 1, FindFileList.Count, '');
+          DoProgress(lippsUnknown, I + 1, FindFileList.Count, '');
         end;
       finally
         for I := 0 to FindFileList.Count - 1 do
@@ -529,8 +543,32 @@ begin
         FindFileList.Free;
       end;
     end;
+    DoProgress(lippsFinished, 0, 0, '');
     AStack.Prepared := True;
   end;
+end;
+
+function TJclLocationInfoProcessor.QueryInterface(const IID: TGUID; out Obj): HRESULT;
+begin
+  if GetInterface(IID, Obj) then
+    Result := S_OK
+  else
+    Result := E_NOINTERFACE;
+end;
+
+procedure TJclLocationInfoProcessor.SetModuleInfoList(AValue: IJclModuleInfoList);
+begin
+  FModuleList := AValue;
+end;
+
+function TJclLocationInfoProcessor._AddRef: Integer;
+begin
+  Result := -1;
+end;
+
+function TJclLocationInfoProcessor._Release: Integer;
+begin
+  Result := -1;
 end;
 
 {$IFDEF UNITVERSIONING}

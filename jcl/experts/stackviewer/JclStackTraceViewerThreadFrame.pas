@@ -38,10 +38,10 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JclDebugSerialization, JclStackTraceViewerClasses, JclStackTraceViewerStackFrame, JclStackTraceViewerExceptInfoFrame;
+  JclDebugSerialization, JclStackTraceViewerAPI, JclStackTraceViewerClasses, JclStackTraceViewerStackFrame, JclStackTraceViewerExceptInfoFrame;
 
 type
-  TfrmThread = class(TFrame)
+  TfrmThread = class(TFrame, IJclStackTraceViewerPreparableStackFrame, IJclStackTraceViewerStackSelection)
     pnlExceptInfo: TPanel;
     pnlCreationStack: TPanel;
     pnlStack: TPanel;
@@ -55,23 +55,27 @@ type
     FException: TException;
     FLastStackFrame: TObject;
     FCreationStackHeight: Integer;
+    FStackInterfaceList: TInterfaceList;
     procedure SaveSplitterState;
     procedure SetCreationStackList(const Value: TJclStackTraceViewerLocationInfoList);
     procedure SetException(const Value: TException);
     procedure SetStackList(const Value: TJclStackTraceViewerLocationInfoList);
-    function GetSelected: TJclStackTraceViewerLocationInfo;
+    function GetSelected: IJclLocationInfo;
     procedure HandleStackSelection(ASender: TObject);
     procedure UpdateSplitterState;
+    function GetPreparableLocationInfoListCount: Integer;
+    function GetPreparableLocationInfoList(AIndex: Integer): IJclPreparedLocationInfoList;
+    procedure UpdatePreparableLocationInfoLists;
     { Private declarations }
   public
     { Public declarations }
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     procedure LoadState(AIni: TCustomIniFile; const ASection: string);
     procedure SaveState(AIni: TCustomIniFile; const ASection: string);
     property CreationStackList: TJclStackTraceViewerLocationInfoList read FCreationStackList write SetCreationStackList;
     property Exception: TException read FException write SetException;
     property StackList: TJclStackTraceViewerLocationInfoList read FStackList write SetStackList;
-    property Selected: TJclStackTraceViewerLocationInfo read GetSelected;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -108,15 +112,39 @@ begin
   FStackFrame.OnSelectStackLine := HandleStackSelection;
   FCreationStackHeight := pnlCreationStack.Height;
   FLastStackFrame := nil;
+  FStackInterfaceList := TInterfaceList.Create;
 end;
 
-function TfrmThread.GetSelected: TJclStackTraceViewerLocationInfo;
+destructor TfrmThread.Destroy;
 begin
-  if (FLastStackFrame = FStackFrame) and FStackFrame.Visible and Assigned(FStackFrame.Selected) then
-    Result := FStackFrame.Selected
+  FStackInterfaceList.Free;
+  inherited Destroy;
+end;
+
+function TfrmThread.GetPreparableLocationInfoList(AIndex: Integer): IJclPreparedLocationInfoList;
+begin
+  if FStackInterfaceList[AIndex].QueryInterface(IJclPreparedLocationInfoList, Result) <> S_OK then
+    Result := nil;
+end;
+
+function TfrmThread.GetPreparableLocationInfoListCount: Integer;
+begin
+  Result := FStackInterfaceList.Count;
+end;
+
+function TfrmThread.GetSelected: IJclLocationInfo;
+var
+  StackTraceViewerStackSelection: IJclStackTraceViewerStackSelection;
+begin
+  if (FLastStackFrame = FStackFrame) and FStackFrame.Visible and
+    (FStackFrame.GetInterface(IJclStackTraceViewerStackSelection, StackTraceViewerStackSelection)) and
+    Assigned(StackTraceViewerStackSelection.Selected) then
+    Result := StackTraceViewerStackSelection.Selected
   else
-  if (FLastStackFrame = FCreationStackFrame) and FCreationStackFrame.Visible and Assigned(FCreationStackFrame.Selected) then
-    Result := FCreationStackFrame.Selected
+  if (FLastStackFrame = FCreationStackFrame) and FCreationStackFrame.Visible and
+    (FCreationStackFrame.GetInterface(IJclStackTraceViewerStackSelection, StackTraceViewerStackSelection)) and
+    Assigned(StackTraceViewerStackSelection.Selected) then
+    Result := StackTraceViewerStackSelection.Selected
   else
     Result := nil;
 end;
@@ -152,6 +180,7 @@ procedure TfrmThread.SetCreationStackList(const Value: TJclStackTraceViewerLocat
 begin
   FCreationStackList := Value;
   FCreationStackFrame.StackList := FCreationStackList;
+  UpdatePreparableLocationInfoLists;
   SaveSplitterState;
   pnlCreationStack.Visible := Assigned(FCreationStackList);
   UpdateSplitterState;
@@ -168,9 +197,23 @@ procedure TfrmThread.SetStackList(const Value: TJclStackTraceViewerLocationInfoL
 begin
   FStackList := Value;
   FStackFrame.StackList := FStackList;
+  UpdatePreparableLocationInfoLists;
   SaveSplitterState;
   pnlStack.Visible := Assigned(FStackList);
   UpdateSplitterState;
+end;
+
+procedure TfrmThread.UpdatePreparableLocationInfoLists;
+var
+  PreparedLocationInfoList: IJclPreparedLocationInfoList;
+begin
+  FStackInterfaceList.Clear;
+  if Assigned(FCreationStackList) then
+    if FCreationStackList.GetInterface(IJclPreparedLocationInfoList, PreparedLocationInfoList) then
+      FStackInterfaceList.Add(PreparedLocationInfoList);
+  if Assigned(FStackList) then
+    if FStackList.GetInterface(IJclPreparedLocationInfoList, PreparedLocationInfoList) then
+      FStackInterfaceList.Add(PreparedLocationInfoList);
 end;
 
 procedure TfrmThread.UpdateSplitterState;

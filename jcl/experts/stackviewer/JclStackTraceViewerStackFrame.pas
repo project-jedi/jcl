@@ -38,26 +38,29 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JclDebug, JclStackTraceViewerClasses, StackCodeUtils;
+  JclDebug, JclStackTraceViewerAPI, StackCodeUtils;
 
 type
-  TfrmStack = class(TFrame)
+  TfrmStack = class(TFrame, IJclStackTraceViewerStackFrame, IJclStackTraceViewerPreparableStackFrame,
+    IJclStackTraceViewerStackSelection)
     lv: TListView;
     procedure lvDblClick(Sender: TObject);
     procedure lvChange(Sender: TObject; Item: TListItem; Change: TItemChange);
   private
     { Private declarations }
-    FStackList: TJclStackTraceViewerLocationInfoList;
+    FStackList: IJclLocationInfoList;
     FOnSelectStackLine: TNotifyEvent;
     procedure DoSelectStackLine;
-    procedure SetStackList(const Value: TJclStackTraceViewerLocationInfoList);
-    function GetSelected: TJclStackTraceViewerLocationInfo;
+    function GetStackList: IJclLocationInfoList;
+    procedure SetStackList(const Value: IJclLocationInfoList);
+    function GetPreparableLocationInfoListCount: Integer;
+    function GetPreparableLocationInfoList(AIndex: Integer): IJclPreparedLocationInfoList;
+    function GetSelected: IJclLocationInfo;
   public
     { Public declarations }
     procedure LoadState(AIni: TCustomIniFile; const ASection, APrefix: string);
     procedure SaveState(AIni: TCustomIniFile; const ASection, APrefix: string);
-    property StackList: TJclStackTraceViewerLocationInfoList read FStackList write SetStackList;
-    property Selected: TJclStackTraceViewerLocationInfo read GetSelected;
+    property StackList: IJclLocationInfoList read FStackList write SetStackList;
     property OnSelectStackLine: TNotifyEvent read FOnSelectStackLine write FOnSelectStackLine;
   end;
 
@@ -83,12 +86,37 @@ begin
     FOnSelectStackLine(Self);
 end;
 
-function TfrmStack.GetSelected: TJclStackTraceViewerLocationInfo;
+function TfrmStack.GetPreparableLocationInfoList(AIndex: Integer): IJclPreparedLocationInfoList;
 begin
-  if Assigned(lv.Selected) and Assigned(lv.Selected.Data) and (TObject(lv.Selected.Data) is TJclStackTraceViewerLocationInfo) then
-    Result := TJclStackTraceViewerLocationInfo(lv.Selected.Data)
+  if AIndex = 0 then
+  begin
+    if FStackList.QueryInterface(IJclPreparedLocationInfoList, Result) <> S_OK then
+      Result := nil;
+  end
   else
     Result := nil;
+end;
+
+function TfrmStack.GetPreparableLocationInfoListCount: Integer;
+var
+  Dummy: IJclPreparedLocationInfoList;
+begin
+  if Assigned(FStackList) and (FStackList.QueryInterface(IJclPreparedLocationInfoList, Dummy) = S_OK) then
+    Result := 1
+  else
+    Result := 0;
+end;
+
+function TfrmStack.GetSelected: IJclLocationInfo;
+begin
+  if not (Assigned(lv.Selected) and Assigned(lv.Selected.Data) and
+    (IUnknown(lv.Selected.Data).QueryInterface(IJclLocationInfo, Result) = S_OK)) then
+    Result := nil;
+end;
+
+function TfrmStack.GetStackList: IJclLocationInfoList;
+begin
+  Result := FStackList;
 end;
 
 procedure TfrmStack.LoadState(AIni: TCustomIniFile; const ASection, APrefix: string);
@@ -107,7 +135,7 @@ end;
 
 procedure TfrmStack.lvDblClick(Sender: TObject);
 begin
-  JumpToCode(Selected);
+  JumpToCode(GetSelected);
 end;
 
 procedure TfrmStack.SaveState(AIni: TCustomIniFile; const ASection, APrefix: string);
@@ -118,11 +146,12 @@ begin
     AIni.WriteInteger(ASection, Format(APrefix + 'ColumnWidth%d', [I]), lv.Columns.Items[I].Width);
 end;
 
-procedure TfrmStack.SetStackList(const Value: TJclStackTraceViewerLocationInfoList);
+procedure TfrmStack.SetStackList(const Value: IJclLocationInfoList);
 var
   I: Integer;
   ListItem: TListItem;
   S: string;
+  PreparedLocationInfo: IJclPreparedLocationInfo;
 begin
   FStackList := Value;
 
@@ -142,23 +171,32 @@ begin
         else
           S := '';
         ListItem.SubItems.Add(S);
-        if lievProcedureStartLocationInfo in FStackList[I].Values then
+        if FStackList[I].Values and livProcedureStartLocationInfo <> 0 then
           S := IntToStr(FStackList[I].LineNumberOffsetFromProcedureStart)
         else
           S := '';
         ListItem.SubItems.Add(S);
-        ListItem.SubItems.Add(FStackList[I].Revision);
-        if FStackList[I].ProjectName <> '' then
-          S := ExtractFileName(FStackList[I].ProjectName)
+        if FStackList[I].QueryInterface(IJclPreparedLocationInfo, PreparedLocationInfo) = S_OK then
+        begin
+          ListItem.SubItems.Add(PreparedLocationInfo.Revision);
+          if PreparedLocationInfo.ProjectName <> '' then
+            S := ExtractFileName(PreparedLocationInfo.ProjectName)
+          else
+            S := ExtractFileName(PreparedLocationInfo.FileName);
+          ListItem.SubItems.Add(S);
+          if PreparedLocationInfo.TranslatedLineNumber > 0 then
+            S := IntToStr(PreparedLocationInfo.TranslatedLineNumber)
+          else
+            S := '';
+          ListItem.SubItems.Add(S);
+        end
         else
-          S := ExtractFileName(FStackList[I].FileName);
-        ListItem.SubItems.Add(S);
-        if FStackList[I].TranslatedLineNumber > 0 then
-          S := IntToStr(FStackList[I].TranslatedLineNumber)
-        else
-          S := '';
-        ListItem.SubItems.Add(S);
-        ListItem.Data := FStackList[I];
+        begin
+          ListItem.SubItems.Add('');
+          ListItem.SubItems.Add('');
+          ListItem.SubItems.Add('');
+        end;
+        ListItem.Data := Pointer(FStackList[I]);
       end;
   finally
     lv.Items.EndUpdate;

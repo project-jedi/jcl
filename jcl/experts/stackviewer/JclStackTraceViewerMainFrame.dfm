@@ -4,6 +4,7 @@ object frmMain: TfrmMain
   Width = 372
   Height = 320
   TabOrder = 0
+  OnResize = FrameResize
   object Splitter2: TSplitter
     Left = 145
     Top = 0
@@ -49,6 +50,7 @@ object frmMain: TfrmMain
       Caption = 'Jump to code line'
       Hint = 'Jump to the code line of the selected stack line'
       OnExecute = acJumpToCodeLineExecute
+      OnUpdate = acJumpToCodeLineUpdate
     end
     object acLoadStack: TAction
       Caption = 'Load Stack'
@@ -62,6 +64,7 @@ object frmMain: TfrmMain
     object acUpdateLocalInfo: TAction
       Caption = 'Update Local Info'
       OnExecute = acUpdateLocalInfoExecute
+      OnUpdate = acUpdateLocalInfoUpdate
     end
   end
   object OpenDialog1: TOpenDialog
