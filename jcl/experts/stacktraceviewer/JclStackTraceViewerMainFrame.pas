@@ -20,9 +20,9 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                              $ }
-{ Revision:      $Rev::                                                                      $ }
-{ Author:        $Author::                                                                 $ }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -388,6 +388,8 @@ procedure TfrmMain.ShowTree(ARootLink: IJclStackTraceViewerTreeViewLink);
 begin
   FRootLink := ARootLink;
   FStackFrame.StackList := nil;
+  FThreadFrame.CreationStackList := nil;
+  FThreadFrame.StackList := nil;
   tv.Selected := nil;
   tv.Items.Clear;
   if Assigned(FLastControl) then
@@ -563,6 +565,8 @@ begin
   if OpenDialog1.Execute then
   begin
     FStackFrame.StackList := nil;
+    FThreadFrame.CreationStackList := nil;
+    FThreadFrame.StackList := nil;
     FRootLink := nil;
     tv.Selected := nil;
     tv.Items.Clear;

@@ -20,9 +20,9 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                              $ }
-{ Revision:      $Rev::                                                                      $ }
-{ Author:        $Author::                                                                 $ }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -165,6 +165,7 @@ type
     function GetModuleInfo(AIndex: Integer): IJclModuleInfo;
 
     function Add: TJclStackTraceViewerModuleModuleInfo;
+    procedure Clear;
   end;
 
   TJclStackTraceViewerExceptionInfo = class(TObject)
@@ -345,6 +346,7 @@ begin
   FThreadInfoList.Clear;
   for I := 0 to AExceptionInfo.ThreadInfoList.Count - 1 do
     FThreadInfoList.Add.Assign(AExceptionInfo.ThreadInfoList[I]);
+  FModules.Clear;
   for I := 0 to AExceptionInfo.Modules.Count - 1 do
     FModules.Add.Assign(AExceptionInfo.Modules[I]);
   AddModuleListToStacks;
@@ -548,6 +550,11 @@ function TJclStackTraceViewerModuleInfoList.Add: TJclStackTraceViewerModuleModul
 begin
   FItems.Add(TJclStackTraceViewerModuleModuleInfo.Create);
   Result := TJclStackTraceViewerModuleModuleInfo(FItems.Last);
+end;
+
+procedure TJclStackTraceViewerModuleInfoList.Clear;
+begin
+  FItems.Clear;
 end;
 
 constructor TJclStackTraceViewerModuleInfoList.Create;
