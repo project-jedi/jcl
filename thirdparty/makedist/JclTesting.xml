@@ -17,6 +17,10 @@
       <configuration index="4" caption="Key" value="info\entry\\revision"/>
       <configuration index="5" caption="Environment variable" value="VersionRevision"/>
     </action>
+    <action classname="TDirectoryRemover">
+      <configuration index="0" caption="Directory" value="sandbox"/>
+      <configuration index="1" caption="Move to recycle bin" value="no"/>
+    </action>
     <action classname="TDirectoryCreator">
       <configuration index="0" caption="Directory" value="sandbox"/>
     </action>
@@ -147,6 +151,10 @@
       <configuration index="4" caption="Key" value="info\entry\\revision"/>
       <configuration index="5" caption="Environment variable" value="VersionRevision"/>
     </action>
+    <action classname="TDirectoryRemover">
+      <configuration index="0" caption="Directory" value="sandbox"/>
+      <configuration index="1" caption="Move to recycle bin" value="no"/>
+    </action>
     <action classname="TDirectoryCreator">
       <configuration index="0" caption="Directory" value="sandbox"/>
     </action>
@@ -262,6 +270,10 @@
       <configuration index="3" caption="Valid exit codes" value=""/>
       <configuration index="4" caption="Key" value="info\entry\\revision"/>
       <configuration index="5" caption="Environment variable" value="VersionRevision"/>
+    </action>
+    <action classname="TDirectoryRemover">
+      <configuration index="0" caption="Directory" value="sandbox"/>
+      <configuration index="1" caption="Move to recycle bin" value="no"/>
     </action>
     <action classname="TDirectoryCreator">
       <configuration index="0" caption="Directory" value="sandbox"/>
@@ -383,6 +395,10 @@
       <configuration index="3" caption="Valid exit codes" value=""/>
       <configuration index="4" caption="Key" value="info\entry\\revision"/>
       <configuration index="5" caption="Environment variable" value="VersionRevision"/>
+    </action>
+    <action classname="TDirectoryRemover">
+      <configuration index="0" caption="Directory" value="sandbox"/>
+      <configuration index="1" caption="Move to recycle bin" value="no"/>
     </action>
     <action classname="TDirectoryCreator">
       <configuration index="0" caption="Directory" value="sandbox"/>

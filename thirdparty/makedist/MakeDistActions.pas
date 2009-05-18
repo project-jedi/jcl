@@ -999,7 +999,7 @@ begin
   ExpandEnvironmentVar(MoveToRecycleBin);
   MoveToRecBin := AnsiSameText(MoveToRecycleBin, 'yes');
 
-  Result := DeleteDirectory(Directory, MoveToRecBin);
+  Result := (not DirectoryExists(Directory)) or DeleteDirectory(Directory, MoveToRecBin);
 
   if Result then
     AMessageHandler('Removed directory ' + Directory)
