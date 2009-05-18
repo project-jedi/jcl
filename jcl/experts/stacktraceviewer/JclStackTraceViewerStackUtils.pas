@@ -39,8 +39,8 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   JclStrings, JclFileUtils,
-  JclDebugSerialization, JclStackTraceViewerClasses, StackCodeUtils, JclStackTraceViewerOptions,
-  JclStackTraceViewerAPIImpl, JclStackTraceViewerAPI;
+  JclDebugSerialization, JclStackTraceViewerClasses, JclStackTraceViewerStackCodeUtils,
+  JclStackTraceViewerOptions, JclStackTraceViewerAPIImpl, JclStackTraceViewerAPI;
 
 type
   TLocationInfoProcessorProgressStatus = (lippsUnknown, lippsStart, lippsFinished);

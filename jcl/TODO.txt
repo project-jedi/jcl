@@ -21,9 +21,6 @@ Expert
 
 * clean up/minor things
   - use updated TJclFileEnumerator instead of TFileSearcher
-  - (almost done) rename some files
-  - (almost done) add MPL headers
-  - (almost done) add UNITVERSIONING
 
 * integrate it into the installation
   - commit packages for D5-D7, D9, D10

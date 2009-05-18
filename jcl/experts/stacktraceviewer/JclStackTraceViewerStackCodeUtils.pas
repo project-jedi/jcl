@@ -1,4 +1,32 @@
-unit StackCodeUtils;
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is JclStackTraceViewerStackCodeUtils.pas.                                      }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is Uwe Schuster.                                      }
+{ Portions created by Uwe Schuster are Copyright (C) 2009 Uwe Schuster. All rights reserved.       }
+{                                                                                                  }
+{ Contributor(s):                                                                                  }
+{   Uwe Schuster (uschuster)                                                                       }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date::                              $ }
+{ Revision:      $Rev::                                                                      $ }
+{ Author:        $Author::                                                                 $ }
+{                                                                                                  }
+{**************************************************************************************************}
+
+unit JclStackTraceViewerStackCodeUtils;
 
 {$I jcl.inc}
 
@@ -8,8 +36,11 @@ uses
   SysUtils,
   {$IFNDEF BDS}
   Classes,
-  {$ENDIF !BDS}
+  {$ENDIF ~BDS}
   ActiveX, ToolsAPI,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JclOtaUtils,
   JclStackTraceViewerAPI;
 
@@ -17,6 +48,16 @@ function FindModule(const AFileName: string): string;
 function FindModuleAndProject(const AFileName: string; var AProjectName: string): string;
 function GetFileEditorContent(const AFileName: string): IStream;
 procedure JumpToCode(AStackViewItem: IJclLocationInfo);
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL: $';
+    Revision: '$Revision: $';
+    Date: '$Date: $';
+    LogPath: ''
+    );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
@@ -63,9 +104,9 @@ begin
   AProjectName := '';
   {$IFDEF BDS}
   ProjectGroup := (BorlandIDEServices as IOTAModuleServices).MainProjectGroup;
-  {$ELSE !BDS}
+  {$ELSE ~BDS}
   ProjectGroup := TJclOTAExpertBase.GetProjectGroup;
-  {$ENDIF !BDS}
+  {$ENDIF ~BDS}
   if Assigned(ProjectGroup) then
     for I := 0 to ProjectGroup.ProjectCount - 1 do
     begin
@@ -95,14 +136,14 @@ var
   Module: IOTAModule;
   {$IFDEF BDS}
   EditorContent: IOTAEditorContent;
-  {$ELSE !BDS}
+  {$ELSE ~BDS}
   ContentPos, ReadCount, BufferSize: Integer;
   Buffer: Pointer;
   ModuleSourceEditor: IOTASourceEditor;
   ModuleReader: IOTAEditReader;
   S: TStream;
   SA: TStreamAdapter;
-  {$ENDIF !BDS}
+  {$ENDIF ~BDS}
 begin
   Result := nil;
   Module := (BorlandIDEServices as IOTAModuleServices).FindModule(AFileName);
@@ -115,7 +156,7 @@ begin
         Result := EditorContent.Content;
         Break;
       end;
-    {$ELSE !BDS}
+    {$ELSE ~BDS}
     for I := 0 to Module.GetModuleFileCount - 1 do
       if Supports(Module.GetModuleFileEditor(I), IOTASourceEditor, ModuleSourceEditor) then
       begin
@@ -145,7 +186,7 @@ begin
         end;
         Break;
       end;
-    {$ENDIF !BDS}
+    {$ENDIF ~BDS}
   end;
 end;
 
@@ -173,9 +214,9 @@ begin
       begin
         {$IFDEF BDS}
         Module := (BorlandIDEServices as IOTAModuleServices).OpenModule(S);
-        {$ELSE !BDS}
+        {$ELSE ~BDS}
         Module := ModuleInfo.OpenModule;
-        {$ENDIF !BDS}
+        {$ENDIF ~BDS}
       end;
     end
     else
@@ -183,10 +224,10 @@ begin
     begin
       {$IFDEF BDS}
       Module := (BorlandIDEServices as IOTAModuleServices).OpenModule(PreparedLocationInfo.FileName);
-      {$ELSE !BDS}
+      {$ELSE ~BDS}
       (BorlandIDEServices as IOTAActionServices).OpenFile(PreparedLocationInfo.FileName);
       Module := (BorlandIDEServices as IOTAModuleServices).FindModule(PreparedLocationInfo.FileName);
-      {$ENDIF !BDS}
+      {$ENDIF ~BDS}
     end;
     if Assigned(Module) then
     begin
@@ -216,5 +257,13 @@ begin
     end;
   end;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

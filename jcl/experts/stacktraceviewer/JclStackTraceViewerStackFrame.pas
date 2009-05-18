@@ -38,7 +38,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JclDebug, JclStackTraceViewerAPI, StackCodeUtils;
+  JclDebug, JclStackTraceViewerAPI, JclStackTraceViewerStackCodeUtils;
 
 type
   TfrmStack = class(TFrame, IJclStackTraceViewerStackFrame, IJclStackTraceViewerPreparableStackFrame,

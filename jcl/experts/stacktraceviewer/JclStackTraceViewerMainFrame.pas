@@ -40,7 +40,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   JclDebug, JclDebugSerialization, Contnrs, JclStackTraceViewerStackFrame, JclStackTraceViewerModuleFrame,
-  JclStackTraceViewerClasses, StackCodeUtils, JclStackTraceViewerExceptInfoFrame, JclStackTraceViewerThreadFrame,
+  JclStackTraceViewerClasses, JclStackTraceViewerStackCodeUtils, JclStackTraceViewerExceptInfoFrame, JclStackTraceViewerThreadFrame,
   JclStackTraceViewerOptions,
   JclStackTraceViewerAPIImpl, JclOtaUtils
   , JclStrings, JclDebugXMLDeserializer, JclStackTraceViewerStackUtils, JclStackTraceViewerAPI
