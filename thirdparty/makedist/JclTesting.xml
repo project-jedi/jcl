@@ -2,6 +2,10 @@
 <makedist>
   <task name="jcl-daily-source" selected="0">
     <action classname="TLogCleaner"/>
+    <action classname="TLogSaver">
+      <configuration index="0" caption="File name" value="jcl-daily-source.log"/>
+      <configuration index="1" caption="Append" value="no"/>
+    </action>
     <action classname="TCommandLineCaller">
       <configuration index="0" caption="Application" value="%SVN%"/>
       <configuration index="1" caption="Working directory" value="..\..\"/>
@@ -56,6 +60,10 @@
       <configuration index="1" caption="Month" value="03"/>
       <configuration index="2" caption="Day" value="01"/>
       <configuration index="3" caption="Environment variable" value="VersionBuild"/>
+    </action>
+    <action classname="TLogSaver">
+      <configuration index="0" caption="File name" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%.log"/>
+      <configuration index="1" caption="Append" value="no"/>
     </action>
     <action classname="TVariableWriter">
       <configuration index="0" caption="Destination file" value="sandbox\jcl-build.txt"/>
@@ -129,13 +137,13 @@
       <configuration index="3" caption="Valid exit codes" value=""/>
       <configuration index="4" caption="Result file" value=""/>
     </action>
-    <action classname="TLogSaver">
-      <configuration index="0" caption="File name" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%.log"/>
-      <configuration index="1" caption="Append" value="no"/>
-    </action>
   </task>
   <task name="jcl-weekly-hlp" selected="0">
     <action classname="TLogCleaner"/>
+    <action classname="TLogSaver">
+      <configuration index="0" caption="File name" value="jcl-weekly-hlp.log"/>
+      <configuration index="1" caption="Append" value="no"/>
+    </action>
     <action classname="TCommandLineCaller">
       <configuration index="0" caption="Application" value="%SVN%"/>
       <configuration index="1" caption="Working directory" value="..\..\"/>
@@ -185,6 +193,10 @@
       <configuration index="1" caption="Month" value="03"/>
       <configuration index="2" caption="Day" value="01"/>
       <configuration index="3" caption="Environment variable" value="VersionBuild"/>
+    </action>
+    <action classname="TLogSaver">
+      <configuration index="0" caption="File name" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-winhelp.log"/>
+      <configuration index="1" caption="Append" value="no"/>
     </action>
     <action classname="TCommandLineCaller">
       <configuration index="0" caption="Application" value="%ComSpec%"/>
@@ -249,13 +261,13 @@
       <configuration index="3" caption="Valid exit codes" value=""/>
       <configuration index="4" caption="Result file" value=""/>
     </action>
-    <action classname="TLogSaver">
-      <configuration index="0" caption="File name" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-winhelp.log"/>
-      <configuration index="1" caption="Append" value="no"/>
-    </action>
   </task>
   <task name="jcl-weekly-h2" selected="0">
     <action classname="TLogCleaner"/>
+    <action classname="TLogSaver">
+      <configuration index="0" caption="File name" value="jcl-weekly-h2.log"/>
+      <configuration index="1" caption="Append" value="no"/>
+    </action>
     <action classname="TCommandLineCaller">
       <configuration index="0" caption="Application" value="%SVN%"/>
       <configuration index="1" caption="Working directory" value="..\..\"/>
@@ -305,6 +317,10 @@
       <configuration index="1" caption="Month" value="03"/>
       <configuration index="2" caption="Day" value="01"/>
       <configuration index="3" caption="Environment variable" value="VersionBuild"/>
+    </action>
+    <action classname="TLogSaver">
+      <configuration index="0" caption="File name" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-htmlhelp2.log"/>
+      <configuration index="1" caption="Append" value="no"/>
     </action>
     <action classname="TCommandLineCaller">
       <configuration index="0" caption="Application" value="%ComSpec%"/>
@@ -374,13 +390,13 @@
       <configuration index="3" caption="Valid exit codes" value=""/>
       <configuration index="4" caption="Result file" value=""/>
     </action>
-    <action classname="TLogSaver">
-      <configuration index="0" caption="File name" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-htmlhelp2.log"/>
-      <configuration index="1" caption="Append" value="no"/>
-    </action>
   </task>
   <task name="jcl-weekly-chm" selected="0">
     <action classname="TLogCleaner"/>
+    <action classname="TLogSaver">
+      <configuration index="0" caption="File name" value="jcl-weekly-chm.log"/>
+      <configuration index="1" caption="Append" value="no"/>
+    </action>
     <action classname="TCommandLineCaller">
       <configuration index="0" caption="Application" value="%SVN%"/>
       <configuration index="1" caption="Working directory" value="..\..\"/>
@@ -430,6 +446,10 @@
       <configuration index="1" caption="Month" value="03"/>
       <configuration index="2" caption="Day" value="01"/>
       <configuration index="3" caption="Environment variable" value="VersionBuild"/>
+    </action>
+    <action classname="TLogSaver">
+      <configuration index="0" caption="File name" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-chmhelp.log"/>
+      <configuration index="1" caption="Append" value="no"/>
     </action>
     <action classname="TCommandLineCaller">
       <configuration index="0" caption="Application" value="%ComSpec%"/>
@@ -498,10 +518,6 @@
       <configuration index="2" caption="Parameters" value="/console /script=winscp-jcl-daily.txt"/>
       <configuration index="3" caption="Valid exit codes" value=""/>
       <configuration index="4" caption="Result file" value=""/>
-    </action>
-    <action classname="TLogSaver">
-      <configuration index="0" caption="File name" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-chmhelp.log"/>
-      <configuration index="1" caption="Append" value="no"/>
     </action>
   </task>
 </makedist>

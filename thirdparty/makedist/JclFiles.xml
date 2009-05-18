@@ -2,6 +2,10 @@
 <makedist>
   <task name="Jcl-win.zip" selected="-1">
     <action classname="TLogCleaner"/>
+    <action classname="TLogSaver">
+      <configuration index="0" caption="File name" value="jcl-win.log"/>
+      <configuration index="1" caption="Append" value="no"/>
+    </action>
     <action classname="TDirectoryCreator">
       <configuration index="0" caption="Directory" value="sandbox"/>
     </action>
@@ -32,6 +36,10 @@
       <configuration index="1" caption="Constant name" value="JclVersionBuild"/>
       <configuration index="2" caption="Environment variable" value="VersionBuild"/>
     </action>
+    <action classname="TLogSaver">
+      <configuration index="0" caption="File name" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%.log"/>
+      <configuration index="1" caption="Append" value="no"/>
+    </action>
     <action classname="TCommandLineCaller">
       <configuration index="0" caption="Application" value="%ComSpec%"/>
       <configuration index="1" caption="Working directory" value="sandbox\devtools\"/>
@@ -48,13 +56,13 @@
       <configuration index="0" caption="Directory" value="sandbox"/>
       <configuration index="1" caption="Move to recycle bin" value="no"/>
     </action>
-    <action classname="TLogSaver">
-      <configuration index="0" caption="File name" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%.log"/>
-      <configuration index="1" caption="Append" value="no"/>
-    </action>
   </task>
   <task name="Jcl-linux.zip" selected="-1">
     <action classname="TLogCleaner"/>
+    <action classname="TLogSaver">
+      <configuration index="0" caption="File name" value="jcl-linux.log"/>
+      <configuration index="1" caption="Append" value="no"/>
+    </action>
     <action classname="TDirectoryCreator">
       <configuration index="0" caption="Directory" value="sandbox"/>
     </action>
@@ -85,6 +93,10 @@
       <configuration index="1" caption="Constant name" value="JclVersionBuild"/>
       <configuration index="2" caption="Environment variable" value="VersionBuild"/>
     </action>
+    <action classname="TLogSaver">
+      <configuration index="0" caption="File name" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-linux.log"/>
+      <configuration index="1" caption="Append" value="no"/>
+    </action>
     <action classname="TCommandLineCaller">
       <configuration index="0" caption="Application" value="%ComSpec%"/>
       <configuration index="1" caption="Working directory" value="sandbox\devtools\"/>
@@ -111,13 +123,13 @@
       <configuration index="1" caption="Filter" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-linux.tar"/>
       <configuration index="2" caption="Move to recycle bin" value="no"/>
     </action>
-    <action classname="TLogSaver">
-      <configuration index="0" caption="File name" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-linux.log"/>
-      <configuration index="1" caption="Append" value="no"/>
-    </action>
   </task>
   <task name="Jcl-turbo.zip" selected="-1">
     <action classname="TLogCleaner"/>
+    <action classname="TLogSaver">
+      <configuration index="0" caption="File name" value="jcl-turbo.log"/>
+      <configuration index="1" caption="Append" value="no"/>
+    </action>
     <action classname="TDirectoryCreator">
       <configuration index="0" caption="Directory" value="sandbox"/>
     </action>
@@ -147,6 +159,10 @@
       <configuration index="0" caption="Source file" value="sandbox\source\common\JclBase.pas"/>
       <configuration index="1" caption="Constant name" value="JclVersionBuild"/>
       <configuration index="2" caption="Environment variable" value="VersionBuild"/>
+    </action>
+    <action classname="TLogSaver">
+      <configuration index="0" caption="File name" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-turbo.log"/>
+      <configuration index="1" caption="Append" value="no"/>
     </action>
     <action classname="TCommandLineCaller">
       <configuration index="0" caption="Application" value="%ComSpec%"/>
@@ -196,13 +212,13 @@
       <configuration index="0" caption="Directory" value="sandbox"/>
       <configuration index="1" caption="Move to recycle bin" value="no"/>
     </action>
-    <action classname="TLogSaver">
-      <configuration index="0" caption="File name" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-turbo.log"/>
-      <configuration index="1" caption="Append" value="no"/>
-    </action>
   </task>
   <task name="jcl-html.zip" selected="-1">
     <action classname="TLogCleaner"/>
+    <action classname="TLogSaver">
+      <configuration index="0" caption="File name" value="jcl-html.log"/>
+      <configuration index="1" caption="Append" value="no"/>
+    </action>
     <action classname="TDirectoryCreator">
       <configuration index="0" caption="Directory" value="sandbox"/>
     </action>
@@ -232,6 +248,10 @@
       <configuration index="0" caption="Source file" value="sandbox\jcl\source\common\JclBase.pas"/>
       <configuration index="1" caption="Constant name" value="JclVersionBuild"/>
       <configuration index="2" caption="Environment variable" value="VersionBuild"/>
+    </action>
+    <action classname="TLogSaver">
+      <configuration index="0" caption="File name" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-htmlhelp.log"/>
+      <configuration index="1" caption="Append" value="no"/>
     </action>
     <action classname="TCommandLineCaller">
       <configuration index="0" caption="Application" value="%ComSpec%"/>
@@ -279,13 +299,13 @@
       <configuration index="1" caption="Filter" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-htmlhelp-linux.tar"/>
       <configuration index="2" caption="Move to recycle bin" value="no"/>
     </action>
-    <action classname="TLogSaver">
-      <configuration index="0" caption="File name" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-htmlhelp.log"/>
-      <configuration index="1" caption="Append" value="no"/>
-    </action>
   </task>
   <task name="jcl-chm.zip" selected="-1">
     <action classname="TLogCleaner"/>
+    <action classname="TLogSaver">
+      <configuration index="0" caption="File name" value="jcl-chm.log"/>
+      <configuration index="1" caption="Append" value="no"/>
+    </action>
     <action classname="TDirectoryCreator">
       <configuration index="0" caption="Directory" value="sandbox"/>
     </action>
@@ -315,6 +335,10 @@
       <configuration index="0" caption="Source file" value="sandbox\jcl\source\common\JclBase.pas"/>
       <configuration index="1" caption="Constant name" value="JclVersionBuild"/>
       <configuration index="2" caption="Environment variable" value="VersionBuild"/>
+    </action>
+    <action classname="TLogSaver">
+      <configuration index="0" caption="File name" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-chmhelp.log"/>
+      <configuration index="1" caption="Append" value="no"/>
     </action>
     <action classname="TCommandLineCaller">
       <configuration index="0" caption="Application" value="%ComSpec%"/>
@@ -347,13 +371,13 @@
       <configuration index="0" caption="Directory" value="sandbox"/>
       <configuration index="1" caption="Move to recycle bin" value="no"/>
     </action>
-    <action classname="TLogSaver">
-      <configuration index="0" caption="File name" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-chmhelp.log"/>
-      <configuration index="1" caption="Append" value="no"/>
-    </action>
   </task>
   <task name="jcl-h2.zip" selected="-1">
     <action classname="TLogCleaner"/>
+    <action classname="TLogSaver">
+      <configuration index="0" caption="File name" value="jcl-h2.log"/>
+      <configuration index="1" caption="Append" value="no"/>
+    </action>
     <action classname="TDirectoryCreator">
       <configuration index="0" caption="Directory" value="sandbox"/>
     </action>
@@ -383,6 +407,10 @@
       <configuration index="0" caption="Source file" value="sandbox\jcl\source\common\JclBase.pas"/>
       <configuration index="1" caption="Constant name" value="JclVersionBuild"/>
       <configuration index="2" caption="Environment variable" value="VersionBuild"/>
+    </action>
+    <action classname="TLogSaver">
+      <configuration index="0" caption="File name" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-htmlhelp2.log"/>
+      <configuration index="1" caption="Append" value="no"/>
     </action>
     <action classname="TCommandLineCaller">
       <configuration index="0" caption="Application" value="%ComSpec%"/>
@@ -415,13 +443,13 @@
       <configuration index="0" caption="Directory" value="sandbox"/>
       <configuration index="1" caption="Move to recycle bin" value="no"/>
     </action>
-    <action classname="TLogSaver">
-      <configuration index="0" caption="File name" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-htmlhelp2.log"/>
-      <configuration index="1" caption="Append" value="no"/>
-    </action>
   </task>
   <task name="jcl-hlp.zip" selected="-1">
     <action classname="TLogCleaner"/>
+    <action classname="TLogSaver">
+      <configuration index="0" caption="File name" value="jcl-hlp.log"/>
+      <configuration index="1" caption="Append" value="no"/>
+    </action>
     <action classname="TDirectoryCreator">
       <configuration index="0" caption="Directory" value="sandbox"/>
     </action>
@@ -451,6 +479,10 @@
       <configuration index="0" caption="Source file" value="sandbox\jcl\source\common\JclBase.pas"/>
       <configuration index="1" caption="Constant name" value="JclVersionBuild"/>
       <configuration index="2" caption="Environment variable" value="VersionBuild"/>
+    </action>
+    <action classname="TLogSaver">
+      <configuration index="0" caption="File name" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-winhelp.log"/>
+      <configuration index="1" caption="Append" value="no"/>
     </action>
     <action classname="TCommandLineCaller">
       <configuration index="0" caption="Application" value="%ComSpec%"/>
@@ -478,13 +510,13 @@
       <configuration index="0" caption="Directory" value="sandbox"/>
       <configuration index="1" caption="Move to recycle bin" value="no"/>
     </action>
-    <action classname="TLogSaver">
-      <configuration index="0" caption="File name" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-winhelp.log"/>
-      <configuration index="1" caption="Append" value="no"/>
-    </action>
   </task>
   <task name="jcl-xml.zip" selected="-1">
     <action classname="TLogCleaner"/>
+    <action classname="TLogSaver">
+      <configuration index="0" caption="File name" value="jcl-xml.log"/>
+      <configuration index="1" caption="Append" value="no"/>
+    </action>
     <action classname="TDirectoryCreator">
       <configuration index="0" caption="Directory" value="sandbox"/>
     </action>
@@ -514,6 +546,10 @@
       <configuration index="0" caption="Source file" value="sandbox\jcl\source\common\JclBase.pas"/>
       <configuration index="1" caption="Constant name" value="JclVersionBuild"/>
       <configuration index="2" caption="Environment variable" value="VersionBuild"/>
+    </action>
+    <action classname="TLogSaver">
+      <configuration index="0" caption="File name" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-xml.log"/>
+      <configuration index="1" caption="Append" value="no"/>
     </action>
     <action classname="TCommandLineCaller">
       <configuration index="0" caption="Application" value="%ComSpec%"/>
@@ -541,13 +577,13 @@
       <configuration index="0" caption="Directory" value="sandbox"/>
       <configuration index="1" caption="Move to recycle bin" value="no"/>
     </action>
-    <action classname="TLogSaver">
-      <configuration index="0" caption="File name" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-xml.log"/>
-      <configuration index="1" caption="Append" value="no"/>
-    </action>
   </task>
   <task name="jcl-pdf.zip" selected="-1">
     <action classname="TLogCleaner"/>
+    <action classname="TLogSaver">
+      <configuration index="0" caption="File name" value="jcl-pdf.log"/>
+      <configuration index="1" caption="Append" value="no"/>
+    </action>
     <action classname="TDirectoryCreator">
       <configuration index="0" caption="Directory" value="sandbox"/>
     </action>
@@ -578,6 +614,10 @@
       <configuration index="1" caption="Constant name" value="JclVersionBuild"/>
       <configuration index="2" caption="Environment variable" value="VersionBuild"/>
     </action>
+    <action classname="TLogSaver">
+      <configuration index="0" caption="File name" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-pdf.log"/>
+      <configuration index="1" caption="Append" value="no"/>
+    </action>
     <action classname="TCommandLineCaller">
       <configuration index="0" caption="Application" value="%ComSpec%"/>
       <configuration index="1" caption="Working directory" value="sandbox\jcl\devtools\"/>
@@ -603,10 +643,6 @@
     <action classname="TDirectoryRemover">
       <configuration index="0" caption="Directory" value="sandbox"/>
       <configuration index="1" caption="Move to recycle bin" value="no"/>
-    </action>
-    <action classname="TLogSaver">
-      <configuration index="0" caption="File name" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-pdf.log"/>
-      <configuration index="1" caption="Append" value="no"/>
     </action>
   </task>
 </makedist>

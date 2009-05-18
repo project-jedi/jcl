@@ -79,6 +79,8 @@ type
 
   TDistribution = class
   private
+    FLogFileName: TFileName;
+    FLogAppend: Boolean;
     FOnMessage: TTextHandler;
     FOnProgress: TProgressionEvent;
     FTasks: TObjectList;
@@ -88,6 +90,7 @@ type
     function GetTaskCount: Integer;
     function GetTask(Index: Integer): TDistTask;
     procedure OutputMessage(const Text: string);
+    procedure SaveLog;
   public
     constructor Create;
     destructor Destroy; override;
@@ -407,6 +410,10 @@ begin
   Result := True;
   CurrentTask := Tasks[Index];
 
+  FLogFileName := '';
+  FLogAppend := False;
+  FLog.Clear;
+  
   OutputMessage('starting task: ' + CurrentTask.Name);
 
   if Assigned(FOnProgress) then
@@ -437,6 +444,8 @@ begin
       OutputMessage('action failure.');
     if Assigned(FOnProgress) then
       FOnProgress(Index, ActionIndex, True, Result);
+
+    SaveLog;
 
     if not Result then
       Break;
@@ -496,9 +505,6 @@ begin
 end;
 
 procedure TDistribution.OutputMessage(const Text: string);
-var
-  AStream: TFileStream;
-  FileName: string;
 begin
   if Assigned(FOnMessage) then
     FOnMessage(Text);
@@ -510,27 +516,21 @@ begin
 
   if Copy(Text, 1, Length(LogSaveCommand)) = LogSaveCommand then
   begin
-    FileName := Copy(Text, Length(LogSaveCommand) + 1, Length(Text) - Length(LogSaveCommand));
-    FLog.SaveToFile(FileName);
+    FLogFileName := Copy(Text, Length(LogSaveCommand) + 1, Length(Text) - Length(LogSaveCommand));
+    FLogAppend := False;
   end
   else
   if Copy(Text, 1, Length(LogAppendCommand)) = LogAppendCommand then
   begin
-    FileName := Copy(Text, Length(LogAppendCommand) + 1, Length(Text) - Length(LogAppendCommand));
-    if FileExists(FileName) then
-      AStream := TFileStream.Create(FileName, fmOpenWrite or fmShareDenyNone)
-    else
-      AStream := TFileStream.Create(FileName, fmCreate or fmShareDenyNone);
-    try
-      AStream.Seek(0, soEnd);
-      FLog.SaveToStream(AStream);
-    finally
-      AStream.Free;
-    end;
+    FLogFileName := Copy(Text, Length(LogAppendCommand) + 1, Length(Text) - Length(LogAppendCommand));
+    FLogAppend := True;
   end
   else
   if Text = LogClearCommand then
+  begin
+    SaveLog;
     FLog.Clear;
+  end;
 end;
 
 function TDistribution.SaveConfiguration(const AFileName: string): Boolean;
@@ -566,6 +566,30 @@ begin
 
     if not Result then
       Break;
+  end;
+end;
+
+procedure TDistribution.SaveLog;
+var
+  AStream: TFileStream;
+begin
+  if FLogFileName <> '' then
+  begin
+    if FLogAppend then
+    begin
+      if FileExists(FLogFileName) then
+        AStream := TFileStream.Create(FLogFileName, fmOpenWrite or fmShareDenyNone)
+      else
+        AStream := TFileStream.Create(FLogFileName, fmCreate or fmShareDenyNone);
+      try
+        AStream.Seek(0, soEnd);
+        FLog.SaveToStream(AStream);
+      finally
+        AStream.Free;
+      end;
+    end
+    else
+      FLog.SaveToFile(FLogFileName);
   end;
 end;
 
