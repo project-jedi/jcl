@@ -52,9 +52,9 @@ procedure JumpToCode(AStackViewItem: IJclLocationInfo);
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL: $';
-    Revision: '$Revision: $';
-    Date: '$Date: $';
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
     LogPath: ''
     );
 {$ENDIF UNITVERSIONING}
