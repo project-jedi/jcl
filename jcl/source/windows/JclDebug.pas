@@ -355,6 +355,8 @@ type
 
   TJclCustomLocationInfoList = class;
 
+  TJclLocationInfoListOptions = set of (liloAutoGetAddressInfo, liloAutoGetLocationInfo, liloAutoGetUnitVersionInfo);
+
   TJclLocationInfoEx = class(TPersistent)
   private
     FAddress: Pointer;
@@ -376,7 +378,7 @@ type
     FUnitVersionRevision: string;
     FVAddress: Pointer;
     FValues: TJclLocationInfoExValues;
-    procedure Fill;
+    procedure Fill(AOptions: TJclLocationInfoListOptions);
     function GetAsCSVString: string;
     function GetAsString: string;
   protected
@@ -384,6 +386,7 @@ type
   public
     constructor Create(AParent: TJclCustomLocationInfoList; Address: Pointer);
     class function CSVHeader: string;
+    procedure Clear; virtual;
     property Address: Pointer read FAddress write FAddress;
     property AsCSVString: string read GetAsCSVString;
     property AsString: string read GetAsString;
@@ -407,8 +410,6 @@ type
     property VAddress: Pointer read FVAddress write FVAddress;
     property Values: TJclLocationInfoExValues read FValues write FValues;
   end;
-
-  TJclLocationInfoListOptions = set of (liloAutoGetAddressInfo, liloAutoGetLocationInfo, liloAutoGetUnitVersionInfo);
 
   TJclLocationInfoClass = class of TJclLocationInfoEx;
 
@@ -2824,11 +2825,17 @@ end;
 //=== { TJclLocationInfoEx } =================================================
 
 constructor TJclLocationInfoEx.Create(AParent: TJclCustomLocationInfoList; Address: Pointer);
+var
+  Options: TJclLocationInfoListOptions;
 begin
   inherited Create;
   FAddress := Address;
   FParent := AParent;
-  Fill;
+  if Assigned(FParent) then
+    Options := FParent.Options
+  else
+    Options := [];
+  Fill(Options);
 end;
 
 procedure TJclLocationInfoEx.AssignTo(Dest: TPersistent);
@@ -2858,6 +2865,12 @@ begin
     inherited AssignTo(Dest);
 end;
 
+procedure TJclLocationInfoEx.Clear;
+begin
+  FAddress := nil;
+  Fill([]);
+end;
+
 class function TJclLocationInfoEx.CSVHeader: string;
 begin
   Result := '"VAddress";"ModuleName";"Address";"OffsetFromProcName";"UnitName";"ProcedureName";"SourceName";"LineNumber";"OffsetFromLineNumber";"LineNumberOffsetFromProcedureStart"';
@@ -2866,12 +2879,11 @@ begin
   {$ENDIF UNITVERSIONING}
 end;
 
-procedure TJclLocationInfoEx.Fill;
+procedure TJclLocationInfoEx.Fill(AOptions: TJclLocationInfoListOptions);
 var
   Info, StartProcInfo: TJclLocationInfo;
   FixedProcedureName: string;
   Module: HMODULE;
-  Options: TJclLocationInfoListOptions;
   {$IFDEF UNITVERSIONING}
   I: Integer;
   UnitVersion: TUnitVersion;
@@ -2880,10 +2892,7 @@ var
   {$ENDIF UNITVERSIONING}
 begin
   FValues := [];
-  Options := [];
-  if Assigned(FParent) then
-    Options := FParent.Options;
-  if liloAutoGetAddressInfo in Options then
+  if liloAutoGetAddressInfo in AOptions then
   begin
     Module := ModuleFromAddr(FAddress);
     FVAddress := Pointer(DWORD_PTR(FAddress) - Module - ModuleCodeOffset);
@@ -2897,7 +2906,7 @@ begin
     FVAddress := nil;
     FModuleName := '';
   end;
-  if (liloAutoGetLocationInfo in Options) and GetLocationInfo(FAddress, Info) then
+  if (liloAutoGetLocationInfo in AOptions) and GetLocationInfo(FAddress, Info) then
   begin
     FValues := FValues + [lievLocationInfo];
     FOffsetFromProcName := Info.OffsetFromProcName;
@@ -2940,9 +2949,9 @@ begin
   FUnitVersionRCSfile := '';
   FUnitVersionRevision := '';
   {$IFDEF UNITVERSIONING}
-  if (liloAutoGetUnitVersionInfo in Options) and (FSourceName <> '') then
+  if (liloAutoGetUnitVersionInfo in AOptions) and (FSourceName <> '') then
   begin
-    if not (liloAutoGetAddressInfo in Options) then
+    if not (liloAutoGetAddressInfo in AOptions) then
       Module := ModuleFromAddr(FAddress);
     UnitVersioning := GetUnitVersioning;
     for I := 0 to UnitVersioning.ModuleCount - 1 do

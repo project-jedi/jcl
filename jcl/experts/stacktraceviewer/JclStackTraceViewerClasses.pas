@@ -33,7 +33,7 @@ unit JclStackTraceViewerClasses;
 interface
 
 uses
-  Contnrs,
+  Classes, Contnrs,
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
@@ -47,6 +47,8 @@ type
     FProjectName: string;
     FRevision: string;
     FTranslatedLineNumber: Integer;
+  protected
+    procedure AssignTo(Dest: TPersistent); override;
   public
     { IInterface }
     function QueryInterface(const IID: TGUID; out Obj): HRESULT; stdcall;
@@ -370,6 +372,19 @@ end;
 function TJclStackTraceViewerLocationInfo._Release: Integer;
 begin
   Result := -1;
+end;
+
+procedure TJclStackTraceViewerLocationInfo.AssignTo(Dest: TPersistent);
+begin
+  inherited AssignTo(Dest);
+  if Dest is TJclStackTraceViewerLocationInfo then
+  begin
+    TJclStackTraceViewerLocationInfo(Dest).FFoundFile := FFoundFile;
+    TJclStackTraceViewerLocationInfo(Dest).FFileName := FFileName;
+    TJclStackTraceViewerLocationInfo(Dest).FProjectName := FProjectName;
+    TJclStackTraceViewerLocationInfo(Dest).FRevision := FRevision;
+    TJclStackTraceViewerLocationInfo(Dest).FTranslatedLineNumber := FTranslatedLineNumber;
+  end;
 end;
 
 function TJclStackTraceViewerLocationInfo.GetAddress: Pointer;
