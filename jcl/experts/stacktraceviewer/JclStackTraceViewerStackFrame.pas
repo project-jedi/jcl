@@ -53,8 +53,10 @@ type
     procedure DoSelectStackLine;
     function GetStackList: IJclLocationInfoList;
     procedure SetStackList(const Value: IJclLocationInfoList);
+    procedure UpdateView;
     function GetPreparableLocationInfoListCount: Integer;
     function GetPreparableLocationInfoList(AIndex: Integer): IJclPreparedLocationInfoList;
+    procedure UpdateViews;
     function GetSelected: IJclLocationInfo;
   public
     { Public declarations }
@@ -201,6 +203,16 @@ begin
   finally
     lv.Items.EndUpdate;
   end;
+end;
+
+procedure TfrmStack.UpdateView;
+begin
+  SetStackList(FStackList);
+end;
+
+procedure TfrmStack.UpdateViews;
+begin
+  UpdateView;
 end;
 
 {$IFDEF UNITVERSIONING}

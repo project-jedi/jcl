@@ -187,12 +187,14 @@ type
   ['{5868BC94-D24A-42EB-8A4A-9AB411702407}']
     function GetStackList: IJclLocationInfoList;
     procedure SetStackList(const AValue: IJclLocationInfoList);
+    procedure UpdateView;
   end;
 
   IJclStackTraceViewerPreparableStackFrame = interface
   ['{E1E3D9FF-AE1C-43AD-8273-1A440B5C46C1}']
     function GetPreparableLocationInfoListCount: Integer;
     function GetPreparableLocationInfoList(AIndex: Integer): IJclPreparedLocationInfoList;
+    procedure UpdateViews;
 
     property PreparableLocationInfoListCount: Integer read GetPreparableLocationInfoListCount;
     property PreparableLocationInfoList[AIndex: Integer]: IJclPreparedLocationInfoList read GetPreparableLocationInfoList;

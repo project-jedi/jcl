@@ -661,11 +661,13 @@ var
   I: Integer;
   PreparableStackFrame: IJclStackTraceViewerPreparableStackFrame;
   PreparedLocationInfoList: IJclPreparedLocationInfoList;
+  UpdateView: Boolean;
 begin
   inherited;
   if Assigned(StackTraceViewerStackProcessorServices) and Assigned(FLastControl) and
     (FLastControl.GetInterface(IJclStackTraceViewerPreparableStackFrame, PreparableStackFrame)) then
   begin
+    UpdateView := False;
     for I := 0 to PreparableStackFrame.PreparableLocationInfoListCount - 1 do
     begin
       PreparedLocationInfoList := PreparableStackFrame.PreparableLocationInfoList[I];
@@ -673,8 +675,11 @@ begin
       begin
         StackTraceViewerStackProcessorServices.ModuleList := PreparedLocationInfoList.ModuleInfoList;
         StackTraceViewerStackProcessorServices.PrepareLocationInfoList(PreparedLocationInfoList, True);
+        UpdateView := True;
       end;
     end;
+    if UpdateView then
+      PreparableStackFrame.UpdateViews;
   end;
 end;
 

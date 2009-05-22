@@ -65,6 +65,7 @@ type
     procedure UpdateSplitterState;
     function GetPreparableLocationInfoListCount: Integer;
     function GetPreparableLocationInfoList(AIndex: Integer): IJclPreparedLocationInfoList;
+    procedure UpdateViews;
     procedure UpdatePreparableLocationInfoLists;
     { Private declarations }
   public
@@ -224,6 +225,18 @@ begin
     pnlCreationStack.Height := FCreationStackHeight;
     splCreationStack.Top := pnlCreationStack.Top - 1;
   end;
+end;
+
+procedure TfrmThread.UpdateViews;
+var
+  StackTraceViewerPreparableStackFrame: IJclStackTraceViewerPreparableStackFrame;
+begin
+  if FStackFrame.Visible and
+    (FStackFrame.GetInterface(IJclStackTraceViewerPreparableStackFrame, StackTraceViewerPreparableStackFrame)) then
+    StackTraceViewerPreparableStackFrame.UpdateViews;
+  if FCreationStackFrame.Visible and
+    (FCreationStackFrame.GetInterface(IJclStackTraceViewerPreparableStackFrame, StackTraceViewerPreparableStackFrame)) then
+    StackTraceViewerPreparableStackFrame.UpdateViews;
 end;
 
 {$IFDEF UNITVERSIONING}

@@ -24,9 +24,11 @@ object frmStack: TfrmStack
         Caption = 'SourceName'
       end
       item
+        Alignment = taRightJustify
         Caption = 'LineNumber'
       end
       item
+        Alignment = taRightJustify
         Caption = 'LineNumberOffsetFromProcedureStart'
       end
       item
@@ -36,6 +38,7 @@ object frmStack: TfrmStack
         Caption = 'Project/File'
       end
       item
+        Alignment = taRightJustify
         Caption = 'TranslatedLineNumber'
       end>
     GridLines = True
