@@ -527,6 +527,7 @@ end;
 
 destructor TfrmMain.Destroy;
 begin
+  StackTraceViewerStackServices := nil;
   StackTraceViewerStackProcessorServices := nil;
   FStackFrame.StackList := nil;
   FLocationInfoProcessor.Free;
