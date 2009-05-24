@@ -20,9 +20,9 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                              $ }
-{ Revision:      $Rev::                                                                      $ }
-{ Author:        $Author::                                                                 $ }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -58,6 +58,7 @@ type
     function GetPreparableLocationInfoList(AIndex: Integer): IJclPreparedLocationInfoList;
     procedure UpdateViews;
     function GetSelected: IJclLocationInfo;
+    procedure UpdateListView;
   public
     { Public declarations }
     procedure LoadState(AIni: TCustomIniFile; const ASection, APrefix: string);
@@ -149,24 +150,45 @@ begin
 end;
 
 procedure TfrmStack.SetStackList(const Value: IJclLocationInfoList);
+begin
+  FStackList := Value;
+  UpdateListView;
+end;
+
+procedure TfrmStack.UpdateListView;
 var
   I: Integer;
   ListItem: TListItem;
   S: string;
   PreparedLocationInfo: IJclPreparedLocationInfo;
+  LocationInfo: IJclLocationInfo;
+  FixProcedureName: Boolean;
 begin
-  FStackList := Value;
-
   lv.Items.BeginUpdate;
   try
     lv.Items.Clear;
     if Assigned(FStackList) then
+    begin
+      FixProcedureName := True;
+      for I := 0 to FStackList.Count - 1 do
+      begin
+        LocationInfo := FStackList[I];
+        if (LocationInfo.SourceUnitName <> '') and
+          (Pos(LocationInfo.SourceUnitName + '.', LocationInfo.ProcedureName) <> 1) then
+        begin
+          FixProcedureName := False;
+          Break;
+        end;
+      end;
       for I := 0 to FStackList.Count - 1 do
       begin
         ListItem := lv.Items.Add;
         ListItem.Caption := FStackList[I].ModuleName;
         ListItem.SubItems.Add(FStackList[I].SourceUnitName);
-        ListItem.SubItems.Add(FStackList[I].ProcedureName);
+        S := FStackList[I].ProcedureName;
+        if FixProcedureName and (FStackList[I].SourceUnitName <> '') then
+          Delete(S, 1, Length(FStackList[I].SourceUnitName) + 1);
+        ListItem.SubItems.Add(S);
         ListItem.SubItems.Add(FStackList[I].SourceName);
         if FStackList[I].LineNumber > 0 then
           S := IntToStr(FStackList[I].LineNumber)
@@ -200,6 +222,7 @@ begin
         end;
         ListItem.Data := Pointer(FStackList[I]);
       end;
+    end;
   finally
     lv.Items.EndUpdate;
   end;
@@ -207,7 +230,7 @@ end;
 
 procedure TfrmStack.UpdateView;
 begin
-  SetStackList(FStackList);
+  UpdateListView;
 end;
 
 procedure TfrmStack.UpdateViews;

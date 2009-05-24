@@ -1,5 +1,7 @@
 unit FastMMParser;
 
+{$I jcl.inc}
+
 interface
 
 uses
@@ -130,6 +132,8 @@ type
   end;
 
   TFastMMFileParser = class(TObject)
+  private
+    procedure FixStack(ALocationInfoList: TFastMMLocationInfoList);
   public
     function ParseFile(const AFileName: string; AReportList: TObjectList): Integer;
   end;
@@ -412,7 +416,11 @@ begin
       begin
         LastIsNumber := True;
         for I := 1 to Length(S) do
+          {$IFDEF COMPILER12_UP}
+          if not CharInSet(S[I], ['0'..'9']) then
+          {$ELSE !COMPILER12_UP}
           if not (S[I] in ['0'..'9']) then
+          {$ENDIF !COMPILER12_UP}
           begin
             LastIsNumber := False;
             Break;
@@ -456,7 +464,11 @@ begin
         for I := 1 to Length(AStr) do
         begin
           C := AStr[I];
+          {$IFDEF COMPILER12_UP}
+          if CharInSet(C, ['0'..'9', 'A'..'F']) then
+          {$ELSE !COMPILER12_UP}
           if C in ['0'..'9', 'A'..'F'] then
+          {$ENDIF !COMPILER12_UP}
             S := S + C
           else
           if C = ' ' then
@@ -477,6 +489,40 @@ begin
 end;
 
 { TFastMMFileParser }
+
+procedure TFastMMFileParser.FixStack(ALocationInfoList: TFastMMLocationInfoList);
+var
+  I: Integer;
+  FixProcedureName: Boolean;
+  S: string;
+  LocationInfoEx: TJclLocationInfoEx;
+begin
+  if ALocationInfoList.Count > 0 then
+  begin
+    FixProcedureName := True;
+    for I := 0 to ALocationInfoList.Count - 1 do
+    begin
+      LocationInfoEx := ALocationInfoList[I];
+      if (LocationInfoEx.SourceUnitName <> '') and
+        (Pos(LocationInfoEx.SourceUnitName + '.', LocationInfoEx.ProcedureName) <> 1) then
+      begin
+        FixProcedureName := False;
+        Break;
+      end;
+    end;
+    if FixProcedureName then
+      for I := 0 to ALocationInfoList.Count - 1 do
+      begin
+        LocationInfoEx := ALocationInfoList[I];
+        if LocationInfoEx.SourceUnitName <> '' then
+        begin
+          S := LocationInfoEx.ProcedureName;
+          Delete(S, 1, Length(LocationInfoEx.SourceUnitName) + 1);
+          LocationInfoEx.ProcedureName := S;
+        end;
+      end;
+  end;
+end;
 
 function TFastMMFileParser.ParseFile(const AFileName: string; AReportList: TObjectList): Integer;
 type
@@ -817,7 +863,18 @@ begin
       TSL.Free;
     end;
     for I := 0 to AReportList.Count - 1 do
-      TFastMMReport(AReportList[I]).BuildGroups;
+    begin
+      Report := TFastMMReport(AReportList[I]);
+      Report.BuildGroups;
+      for J := 0 to Report.LeakCount - 1 do
+        FixStack(Report.LeakItems[J].Stack);
+      for J := 0 to Report.VMOnFreedObjectCount - 1 do
+      begin
+        FixStack(Report.VMOnFreedObjectItems[J].Stack1);
+        FixStack(Report.VMOnFreedObjectItems[J].Stack2);
+        FixStack(Report.VMOnFreedObjectItems[J].Stack3);
+      end;
+    end;
 
     Result := AReportList.Count;
   end;
