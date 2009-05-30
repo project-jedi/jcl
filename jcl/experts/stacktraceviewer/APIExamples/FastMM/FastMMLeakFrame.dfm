@@ -97,10 +97,10 @@ object frmLeak: TfrmLeak
     end
     object tsMemory: TTabSheet
       Caption = 'Memory dump'
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
+    end
+    object tsMemoryVisualized: TTabSheet
+      Caption = 'Memory visualized'
+      ImageIndex = 2
     end
   end
 end

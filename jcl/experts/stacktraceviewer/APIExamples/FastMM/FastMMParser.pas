@@ -27,6 +27,8 @@ type
 
   TFastMMMemoryArray = array [0..255] of Byte;
 
+  TFastMMReport = class;
+
   TFastMMLeak = class(TObject)
   private
     FAddress: Integer;
@@ -36,10 +38,11 @@ type
     FMemory: TFastMMMemoryArray;
     FFoundMemory: Boolean;
     FLeakSize: Integer;
+    FParent: TFastMMReport;
     FThreadID: Integer;
     FStack: TFastMMLocationInfoList;
   public
-    constructor Create;
+    constructor Create(AParent: TFastMMReport);
     destructor Destroy; override;
     property Address: Integer read FAddress write FAddress;
     property AllocationNumber: Integer read FAllocationNumber write FAllocationNumber;
@@ -48,6 +51,7 @@ type
     property Memory: TFastMMMemoryArray read FMemory write FMemory;
     property FoundMemory: Boolean read FFoundMemory write FFoundMemory;
     property LeakSize: Integer read FLeakSize write FLeakSize;
+    property Parent: TFastMMReport read FParent;
     property Stack: TFastMMLocationInfoList read FStack;
     property ThreadID: Integer read FThreadID write FThreadID;
   end;
@@ -107,6 +111,7 @@ type
     FLeakGroups: TObjectList;
     FLeaks: TObjectList;
     FLeakSummary: TStringList;
+    FReportCompilerVersion: Double;
     FVMOnFreedObjects: TObjectList;
     function GetLeakCount: Integer;
     function GetLeaks(AIndex: Integer): TFastMMLeak;
@@ -127,6 +132,7 @@ type
     property LeakGroupItems[AIndex: Integer]: TFastMMLeakGroup read GetLeakGroupItems;
     property LeakItems[AIndex: Integer]: TFastMMLeak read GetLeaks;
     property LeakSummary: TStringList read FLeakSummary;
+    property ReportCompilerVersion: Double read FReportCompilerVersion write FReportCompilerVersion;
     property VMOnFreedObjectCount: Integer read GetVMOnFreedObjectCount;
     property VMOnFreedObjectItems[AIndex: Integer]: TFastMMVMOnFreedObject read GetVMOnFreedObjectItems;
   end;
@@ -160,7 +166,7 @@ end;
 
 { TFastMMLeak }
 
-constructor TFastMMLeak.Create;
+constructor TFastMMLeak.Create(AParent: TFastMMReport);
 begin
   inherited Create;
   FAddress := -1;
@@ -168,6 +174,7 @@ begin
   FBlockClass := '';
   FFoundMemory := False;
   FLeakSize := -1;
+  FParent := AParent;
   FThreadID := -1;
   FStack := TFastMMLocationInfoList.Create;
 end;
@@ -254,6 +261,11 @@ begin
   FLeakGroups := TObjectList.Create;
   FLeaks := TObjectList.Create;
   FLeakSummary := TStringList.Create;
+  {$IFDEF CONDITIONALEXPRESSIONS}
+  FReportCompilerVersion := CompilerVersion;
+  {$ELSE ~CONDITIONALEXPRESSIONS}
+  FReportCompilerVersion := 5.01;
+  {$ENDIF ~CONDITIONALEXPRESSIONS}
   FVMOnFreedObjects := TObjectList.Create;
 end;
 
@@ -268,7 +280,7 @@ end;
 
 function TFastMMReport.AddLeak: TFastMMLeak;
 begin
-  FLeaks.Add(TFastMMLeak.Create);
+  FLeaks.Add(TFastMMLeak.Create(Self));
   Result := TFastMMLeak(FLeaks.Last);
 end;
 
@@ -524,8 +536,9 @@ begin
   end;
 end;
 
+{ TODO : Parse compiler version when they exist in the report }
 function TFastMMFileParser.ParseFile(const AFileName: string; AReportList: TObjectList): Integer;
-type
+type { TODO : There is at least one other report type (FastMM4Messages.InterfaceErrorHeader) }
   TReportType = (rtUnknown, rtMemoryLeak, rtVMOnFreedObject);
 const
   //Leak constants

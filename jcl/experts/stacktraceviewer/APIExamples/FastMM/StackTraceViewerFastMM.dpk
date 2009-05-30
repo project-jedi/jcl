@@ -44,6 +44,7 @@ contains
   FastMMLeakGroupFrame in 'FastMMLeakGroupFrame.pas' {frmLeakGroup: TFrame},
   FastMMFreedObjectFrame in 'FastMMFreedObjectFrame.pas' {frmFreedObject: TFrame},
   FastMMMemoryFrame in 'FastMMMemoryFrame.pas' {frmMemory: TFrame},
-  FastMMLeakSummaryFrame in 'FastMMLeakSummaryFrame.pas' {frmLeakSummary: TFrame};
+  FastMMLeakSummaryFrame in 'FastMMLeakSummaryFrame.pas' {frmLeakSummary: TFrame},
+  FastMMMemoryVisualizerFrame in 'FastMMMemoryVisualizerFrame.pas' {frmMemoryVisualizer: TFrame};
 
 end.

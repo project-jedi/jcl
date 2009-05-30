@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms, 
   Dialogs, StdCtrls, ExtCtrls, Grids, ComCtrls, JclStackTraceViewerAPI, FastMMParser,
-  FastMMMemoryFrame;
+  FastMMMemoryFrame, FastMMMemoryVisualizerFrame;
 
 type
   TfrmLeak = class(TFrame, IJclStackTraceViewerPreparableStackFrame, IJclStackTraceViewerStackSelection)
@@ -23,11 +23,13 @@ type
     pg: TPageControl;
     tsMemory: TTabSheet;
     tsStack: TTabSheet;
+    tsMemoryVisualized: TTabSheet;
   private
     { Private-Deklarationen }
     FLeakData: TFastMMLeak;
     FStackFrame: TCustomFrame;
     FMemoryFrame: TfrmMemory;
+    FMemoryVisualizerFrame: TfrmMemoryVisualizer;
     function GetSelected: IJclLocationInfo;
     function GetPreparableLocationInfoListCount: Integer;
     function GetPreparableLocationInfoList(AIndex: Integer): IJclPreparedLocationInfoList;
@@ -65,10 +67,14 @@ begin
   FMemoryFrame := TfrmMemory.Create(Self);
   FMemoryFrame.Parent := tsMemory;
   FMemoryFrame.Align := alClient;
+  FMemoryVisualizerFrame := TfrmMemoryVisualizer.Create(Self);
+  FMemoryVisualizerFrame.Parent := tsMemoryVisualized;
+  FMemoryVisualizerFrame.Align := alClient;
 end;
 
 destructor TfrmLeak.Destroy;
 begin
+  FMemoryVisualizerFrame.Free;
   FMemoryFrame.Free;
   FStackFrame.Free;
   inherited Destroy;
@@ -121,13 +127,23 @@ begin
     StackTraceViewerStackFrame.SetStackList(FLeakData.Stack);
 
   tsMemory.TabVisible := Assigned(FLeakData) and FLeakData.FoundMemory;
-  pg.Visible := tsStack.TabVisible or tsMemory.TabVisible;
+  tsMemoryVisualized.TabVisible := tsMemory.TabVisible and Assigned(FLeakData.Parent) and
+    IsVisualizable(FLeakData.BlockClass, FLeakData.Parent.ReportCompilerVersion, @FLeakData.Memory, Length(FLeakData.Memory));
+  pg.Visible := tsStack.TabVisible or tsMemory.TabVisible or tsMemoryVisualized.TabVisible;
   if pg.Visible then
     pg.TabIndex := 0;
   if Assigned(FLeakData) and FLeakData.FoundMemory then
   begin
     FMemoryFrame.Address := FLeakData.Address;
     FMemoryFrame.MemoryArray := FLeakData.Memory;
+  end;
+  if tsMemoryVisualized.TabVisible then
+  begin
+    FMemoryVisualizerFrame.Memory := @FLeakData.Memory;
+    FMemoryVisualizerFrame.MemorySize := Length(FLeakData.Memory);
+    FMemoryVisualizerFrame.ReportCompilerVersion := FLeakData.Parent.ReportCompilerVersion;
+    FMemoryVisualizerFrame.TypeStr := FLeakData.BlockClass;
+    FMemoryVisualizerFrame.Decode;
   end;
 end;
 
