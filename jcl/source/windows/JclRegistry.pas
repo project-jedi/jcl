@@ -557,6 +557,7 @@ var
   DataType, DataSize: DWORD;
   TmpRet: WideString;
   DataLength: Integer;
+  RegKinds: TRegKinds;
 begin
   Result := True;
   DataType := REG_NONE;
@@ -566,30 +567,29 @@ begin
     try
       if InternalRegQueryValueEx(RegKey, PWideChar(Name), nil, @DataType, nil, @DataSize) = ERROR_SUCCESS then
       begin
-        if not (DataType in [REG_BINARY, REG_SZ, REG_EXPAND_SZ]) then
+        if MultiFlag then
+          RegKinds := [REG_BINARY, REG_SZ, REG_EXPAND_SZ, REG_MULTI_SZ]
+        else
+          RegKinds := [REG_BINARY, REG_SZ, REG_EXPAND_SZ];
+        if not (DataType in RegKinds) then
           DataError(RootKey, Key, Name);
         if Win32Platform = VER_PLATFORM_WIN32_NT then
-          DataLength := DataSize div SizeOf(WideChar)
-        else
-          DataLength := DataSize div SizeOf(AnsiChar);
-        if Win32Platform = VER_PLATFORM_WIN32_NT then
         begin
+          DataLength := DataSize div SizeOf(WideChar);
           SetLength(TmpRet, DataLength);
-          Result := InternalRegQueryValueEx(RegKey, PWideChar(Name), nil, nil, PWideChar(TmpRet), @DataSize) = ERROR_SUCCESS
+          Result := InternalRegQueryValueEx(RegKey, PWideChar(Name), nil, nil, PWideChar(TmpRet), @DataSize) = ERROR_SUCCESS;
+          if Result then
+            RetValue := AnsiString(Copy(TmpRet, 1, DataLength - 1));
         end
         else
         begin
+          DataLength := DataSize div SizeOf(AnsiChar);
           SetLength(RetValue, DataLength);
           Result := InternalRegQueryValueEx(RegKey, PWideChar(Name), nil, nil, PAnsiChar(RetValue), @DataSize) = ERROR_SUCCESS;
-        end;
-        if Result then
-        begin
-          if Win32Platform = VER_PLATFORM_WIN32_NT then
-            RetValue := AnsiString(Copy(TmpRet, 1, DataLength - 1))
-          else
+          if Result then
             SetLength(RetValue, DataLength - 1);
-        end
-        else
+        end;
+        if not Result then
         begin
           RetValue := '';
           if RaiseException then
