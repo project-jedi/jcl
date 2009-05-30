@@ -47,7 +47,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -3700,6 +3700,14 @@ begin
   if FEnvironmentVariables = nil then
   begin
     FEnvironmentVariables := TStringList.Create;
+
+    // at first get system environment variables
+    JclSysInfo.GetEnvironmentVars(FEnvironmentVariables, True);
+    for I := FEnvironmentVariables.count-1 downto 0 do
+      if FEnvironmentVariables.Names[I] = EmptyStr then
+        FEnvironmentVariables.Delete(I);
+
+    // read environment variable overrides
     if ((VersionNumber >= 6) or (RadToolKind = brBorlandDevStudio)) and
       ConfigData.SectionExists(EnvVariablesKeyName) then
     begin
