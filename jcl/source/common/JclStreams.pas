@@ -358,7 +358,8 @@ type
     // scopedstream starting at the current position of the ParentStream
     //   if MaxSize is positive or null, read and write operations cannot overrun this size or the ParentStream limitation
     //   if MaxSize is negative, read and write operations are unlimited (up to the ParentStream limitation)
-    constructor Create(AParentStream: TStream; AMaxSize: Int64 = -1);
+    constructor Create(AParentStream: TStream; const AMaxSize: Int64 = -1); overload;
+    constructor Create(AParentStream: TStream; const AStartPos, AMaxSize: Int64); overload;
     {$IFDEF CLR}
     function Read(var Buffer: array of Byte; Offset, Count: Longint): Longint; override;
     function Write(const Buffer: array of Byte; Offset, Count: Longint): Longint; override;
@@ -2122,12 +2123,22 @@ end;
 
 //=== { TJclScopedStream } ===================================================
 
-constructor TJclScopedStream.Create(AParentStream: TStream; AMaxSize: Int64);
+constructor TJclScopedStream.Create(AParentStream: TStream; const AMaxSize: Int64);
 begin
   inherited Create;
 
   FParentStream := AParentStream;
   FStartPos := ParentStream.Position;
+  FCurrentPos := 0;
+  FMaxSize := AMaxSize;
+end;
+
+constructor TJclScopedStream.Create(AParentStream: TStream; const AStartPos, AMaxSize: Int64);
+begin
+  inherited Create;
+
+  FParentStream := AParentStream;
+  FStartPos := AStartPos;
   FCurrentPos := 0;
   FMaxSize := AMaxSize;
 end;
