@@ -396,11 +396,16 @@ type
     destructor Destroy; override;
   end;
 
+  TJclBorlandCommandLineTool = class;
+  TJclBorlandCommandLineToolEvent = procedure(Sender:TJclBorlandCommandLineTool) of object;
+
   TJclBorlandCommandLineTool = class(TJclBorRADToolInstallationObject, IJclCommandLineTool)
   private
     FOptions: TStringList;
     FOutputCallback: TTextHandler;
     FOutput: string;
+    FOnAfterExecute: TJclBorlandCommandLineToolEvent;
+    FOnBeforeExecute: TJclBorlandCommandLineToolEvent;
   protected
     constructor Create(AInstallation: TJclBorRADToolInstallation); virtual;
     procedure CheckOutputValid;
@@ -408,6 +413,7 @@ type
     function GetFileName: string;
     function GetOptions: TStrings;
     function GetOutputCallback: TTextHandler;
+    function InternalExecute(const CommandLine: string): Boolean;
     procedure SetOutputCallback(const CallbackMethod: TTextHandler);
     function GetOutput: string;
   public
@@ -418,6 +424,9 @@ type
     property Output: string read GetOutput;
     property OutputCallback: TTextHandler read FOutputCallback write SetOutputCallback;
     property Options: TStrings read GetOptions;
+
+    property OnAfterExecute: TJclBorlandCommandLineToolEvent read FOnAfterExecute write FOnAfterExecute;
+    property OnBeforeExecute: TJclBorlandCommandLineToolEvent read FOnBeforeExecute write FOnBeforeExecute;
   end;
 
   TJclBCC32 = class(TJclBorlandCommandLineTool)
@@ -2443,17 +2452,14 @@ begin
 end;
 
 function TJclBorlandCommandLineTool.Execute(const CommandLine: string): Boolean;
-var
-  LaunchCommand: string;
 begin
-  LaunchCommand := Format('%s %s', [FileName, CommandLine]);
-  if Assigned(FOutputCallback) then
-  begin
-    FOutputCallback(LaunchCommand);
-    Result := JclSysUtils.Execute(LaunchCommand, FOutputCallback) = 0;
-  end
-  else
-    Result := JclSysUtils.Execute(LaunchCommand, FOutput) = 0;
+  if Assigned(FOnBeforeExecute) then
+    FOnBeforeExecute(Self);
+
+  Result := InternalExecute(CommandLine);
+
+  if Assigned(FOnAfterExecute) then
+    FOnAfterExecute(Self);
 end;
 
 function TJclBorlandCommandLineTool.GetExeName: string;
@@ -2485,6 +2491,21 @@ end;
 function TJclBorlandCommandLineTool.GetOutputCallback: TTextHandler;
 begin
   Result := FOutputCallback;
+end;
+
+function TJclBorlandCommandLineTool.InternalExecute(
+  const CommandLine: string): Boolean;
+var
+  LaunchCommand: string;
+begin
+  LaunchCommand := Format('%s %s', [FileName, CommandLine]);
+  if Assigned(FOutputCallback) then
+  begin
+    FOutputCallback(LaunchCommand);
+    Result := JclSysUtils.Execute(LaunchCommand, FOutputCallback) = 0;
+  end
+  else
+    Result := JclSysUtils.Execute(LaunchCommand, FOutput) = 0;
 end;
 
 procedure TJclBorlandCommandLineTool.SetOutputCallback(const CallbackMethod: TTextHandler);
@@ -2815,6 +2836,9 @@ var
   PathList: TStrings;
   Option, Arguments, CurrentFolder: string;
 begin
+  if Assigned(FOnBeforeExecute) then
+    FOnBeforeExecute(Self);
+    
   FOutput := '';
   Arguments := '';
   CurrentFolder := GetCurrentFolder;
@@ -2849,7 +2873,10 @@ begin
     PathList.Free;
   end;
 
-  Result := inherited Execute(CommandLine + Arguments);
+  Result := InternalExecute(CommandLine + Arguments);
+
+  if Assigned(FOnAfterExecute) then
+    FOnAfterExecute(Self);
 end;
 
 function TJclDCC32.GetExeName: string;
