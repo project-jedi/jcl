@@ -3211,6 +3211,7 @@ end;
 procedure TJclSimpleLog.TimeWrite(const Text: string; Indent: Integer = 0);
 var
   S: string;
+  UTF8S: TUTF8String;
   SL: TStringList;
   I: Integer;
 begin
@@ -3222,7 +3223,8 @@ begin
       for I := 0 to SL.Count - 1 do
       begin
         S := DateTimeToStr(Now)+' : '+StringOfChar(' ', Indent) + StrEnsureSuffix(NativeLineBreak, TrimRight(SL[I]));
-        FileWrite(FLogFileHandle, Pointer(S)^, Length(S));
+        UTF8S := StringToUTF8(S);
+        FileWrite(FLogFileHandle, UTF8S[1], Length(UTF8S));
       end;
     finally
       SL.Free;
