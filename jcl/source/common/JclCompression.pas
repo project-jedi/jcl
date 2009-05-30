@@ -4366,6 +4366,7 @@ function TJclCompressArchive.AddFile(const PackedName: WideString;
   AStream: TStream; AOwnsStream: Boolean): Integer;
 var
   AItem: TJclCompressionItem;
+  NowFileTime: TFileTime;
 begin
   CheckNotCompressing;
 
@@ -4375,6 +4376,17 @@ begin
     AItem.Stream := AStream;
     AItem.OwnsStream := AOwnsStream;
     AItem.FileSize := AStream.Size - AStream.Position;
+    NowFileTime := LocalDateTimeToFileTime(Now);
+    AItem.Attributes := faReadOnly and faArchive;
+    AItem.CreationTime := NowFileTime;
+    AItem.LastAccessTime := NowFileTime;
+    AItem.LastWriteTime := NowFileTime;
+    {$IFDEF MSWINDOWS}
+    AItem.HostOS := RsCompression7zWindows;
+    {$ENDIF MSWINDOWS}
+    {$IFDEF UNIX}
+    AItem.HostOS := RsCompression7zUnix;
+    {$ENDIF UNIX}
   except
     AItem.Destroy;
     raise;
