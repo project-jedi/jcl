@@ -1007,32 +1007,47 @@ procedure TJclSCManager.Refresh(const RefreshAll: Boolean);
     PEss: PEnumServiceStatus;
     NtSvc: TJclNtService;
     BytesNeeded, ServicesReturned, ResumeHandle: DWORD;
+    LastError: Cardinal;
   begin
     Assert((DesiredAccess and SC_MANAGER_ENUMERATE_SERVICE) <> 0);
     // Enum the services
     ResumeHandle := 0; // Must set this value to zero !!!
     try
       PBuf := nil;
-      BytesNeeded := 40960;
+      BytesNeeded := 0;
+      //from MSDN:
+      //The maximum size of this array is 256K bytes. To determine the required
+      //size, specify NULL for this parameter and 0 for the cbBufSize parameter.
+      //The function will fail and GetLastError will return
+      //ERROR_INSUFFICIENT_BUFFER. The pcbBytesNeeded parameter will receive the
+      //required size.
+
+      //(it doesn't actually return ERROR_INSUFFICIENT_BUFFER apparently)
+
       repeat
         ReallocMem(PBuf, BytesNeeded);
         Ret := EnumServicesStatus(FHandle, SERVICE_TYPE_ALL, SERVICE_STATE_ALL,
           PEnumServiceStatus(PBuf){$IFNDEF FPC}^{$ENDIF},
           BytesNeeded, BytesNeeded, ServicesReturned, ResumeHandle);
-      until Ret or (GetLastError <> ERROR_MORE_DATA);
+        LastError := GetLastError;
+
+        if (ServicesReturned > 0) and (Ret or (LastError = ERROR_MORE_DATA)) then
+        begin
+          PEss := PBuf;
+          for I := 0 to ServicesReturned - 1 do
+          begin
+            NtSvc := TJclNtService.Create(Self, PEss^);
+            try
+              NtSvc.Refresh;
+            except
+              // trap invalid services
+            end;
+            Inc(PEss);
+          end;
+        end;
+      until Ret or (LastError <> ERROR_MORE_DATA);
       Win32Check(Ret);
 
-      PEss := PBuf;
-      for I := 0 to ServicesReturned - 1 do
-      begin
-        NtSvc := TJclNtService.Create(Self, PEss^);
-        try
-          NtSvc.Refresh;
-        except
-          // trap invalid services
-        end;
-        Inc(PEss);
-      end;
     finally
       FreeMem(PBuf);
     end;
