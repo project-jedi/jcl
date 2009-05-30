@@ -692,6 +692,7 @@ type
     function SupportsVCL: Boolean;
     function LibFolderName: string;
     function ObjFolderName: string;
+    function LibDebugFolderName: string;
     // Command line tools
     property CommandLineTools: TCommandLineTools read FCommandLineTools;
     property BCC32: TJclBCC32 read GetBCC32;
@@ -3979,6 +3980,11 @@ begin
   {$ENDIF ~MSWINDOWS}
 end;
 {$ENDIF KEEP_DEPRECATED}
+
+function TJclBorRADToolInstallation.LibDebugFolderName: string;
+begin
+  Result := LibFolderName + PathAddSeparator('debug');
+end;
 
 function TJclBorRADToolInstallation.LibFolderName: string;
 begin
