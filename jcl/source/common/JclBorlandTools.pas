@@ -2744,13 +2744,8 @@ end;
 
 procedure TJclDCC32.AddProjectOptions(const ProjectFileName, DCPPath: string);
 var
-  ConfigurationFileName: string;
   ProjectOptions: TProjectOptions;
 begin
-  ConfigurationFileName := ChangeFileExt(ProjectFileName, ConfigurationExtension);
-  if FileExists(ConfigurationFileName) then
-    FileDelete(ConfigurationFileName);
-
   ProjectOptions.UsePackages := False;
   ProjectOptions.UnitOutputDir := '';
   ProjectOptions.SearchPath := '';
@@ -2890,17 +2885,30 @@ end;
 function TJclDCC32.MakePackage(const PackageName, BPLPath, DCPPath: string; ExtraOptions: string): Boolean;
 var
   SaveDir: string;
+  ConfigurationFileName, BackupFileName: string;
 begin
   SaveDir := GetCurrentDir;
   SetCurrentDir(ExtractFilePath(PackageName) + '.');
   try
+    // backup existing configuration file, if any
+    ConfigurationFileName := ChangeFileExt(PackageName, ConfigurationExtension);
+    if FileExists(ConfigurationFileName) then
+      FileBackup(ConfigurationFileName, True);
+
     Options.Clear;
     SetDefaultOptions;
     AddProjectOptions(PackageName, DCPPath);
-    AddPathOption('LN', DCPPath);
-    AddPathOption('LE', BPLPath);
-    Options.Add(ExtraOptions);
-    Result := Compile(PackageName);
+    try
+      AddPathOption('LN', DCPPath);
+      AddPathOption('LE', BPLPath);
+      Options.Add(ExtraOptions);
+      Result := Compile(PackageName);
+    finally
+      // restore existing configuration file, if any
+      BackupFileName := GetBackupFileName(ConfigurationFileName);
+      if FileExists(BackupFileName) then
+        FileMove(BackupFileName, ConfigurationFileName, True);
+    end;
   finally
     SetCurrentDir(SaveDir);
   end;
@@ -2910,16 +2918,29 @@ function TJclDCC32.MakeProject(const ProjectName, OutputDir, DcpSearchPath: stri
   ExtraOptions: string): Boolean;
 var
   SaveDir: string;
+  ConfigurationFileName, BackupFileName: string;
 begin
   SaveDir := GetCurrentDir;
   SetCurrentDir(ExtractFilePath(ProjectName) + '.');
   try
+    // backup existing configuration file, if any
+    ConfigurationFileName := ChangeFileExt(ProjectName, ConfigurationExtension);
+    if FileExists(ConfigurationFileName) then
+      FileBackup(ConfigurationFileName, True);
+
     Options.Clear;
     SetDefaultOptions;
     AddProjectOptions(ProjectName, DcpSearchPath);
-    AddPathOption('E', OutputDir);
-    Options.Add(ExtraOptions);
-    Result := Compile(ProjectName);
+    try
+      AddPathOption('E', OutputDir);
+      Options.Add(ExtraOptions);
+      Result := Compile(ProjectName);
+    finally
+      // restore existing configuration file, if any
+      BackupFileName := GetBackupFileName(ConfigurationFileName);
+      if FileExists(BackupFileName) then
+        FileMove(BackupFileName, ConfigurationFileName, True);
+    end;
   finally
     SetCurrentDir(SaveDir);
   end;
