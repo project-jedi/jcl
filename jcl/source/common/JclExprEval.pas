@@ -844,7 +844,7 @@ type
     procedure AddFunc(const AName: string; AFunc: TTernary80Func); overload;
     procedure Remove(const AName: string);
 
-    procedure Clear;
+    procedure Clear; virtual;
     property ExtContextSet: TExprSetContext read FExtContextSet;
   end;
 
@@ -889,7 +889,7 @@ type
     function Compile(const AExpr: string): TCompiledExpression;
     procedure Remove(const AExpr: string);
     procedure Delete(ACompiledExpression: TCompiledExpression);
-    procedure Clear;
+    procedure Clear; override;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -4401,6 +4401,8 @@ end;
 procedure TExpressionCompiler.Clear;
 begin
   FExprHash.Iterate(nil, Iterate_FreeObjects);
+  FExprHash.Clear;
+  inherited Clear;
 end;
 
 {$IFDEF UNITVERSIONING}
