@@ -5841,8 +5841,8 @@ var
 
     while CurrentItem <= Counter do
     begin
-      // searching for subfolders
-      Rslt := FindFirst(Folders[CurrentItem] + '*.*', faDirectory, FindInfo);
+      // searching for subfolders (including hidden ones)
+      Rslt := FindFirst(Folders[CurrentItem] + '*.*', faAnyFile, FindInfo);
       try
         while Rslt = 0 do
         begin
