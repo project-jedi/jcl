@@ -77,6 +77,7 @@ type
   TJclSimpleXMLElemText = class;
   TJclSimpleXMLElemHeader = class;
   TJclSimpleXMLElemSheet = class;
+  TJclSimpleXMLElemMSOApplication = class;
   TJclOnSimpleXMLParsed = procedure(Sender: TObject; Name: string) of object;
   TJclOnValueParsed = procedure(Sender: TObject; Name, Value: string) of object;
   TJclOnSimpleProgress = procedure(Sender: TObject; const Position, Total: Integer) of object;
@@ -223,6 +224,7 @@ type
     function AddDocType(const AValue: string): TJclSimpleXMLElemDocType;
     procedure Clear;
     function AddStyleSheet(AType, AHRef: string): TJclSimpleXMLElemSheet;
+    function AddMSOApplication(AProgId : string): TJclSimpleXMLElemMSOApplication;
     procedure LoadFromStringStream(StringStream: TJclStringStream; AParent: TJclSimpleXML = nil);
     procedure SaveToStringStream(StringStream: TJclStringStream; AParent: TJclSimpleXML = nil);
     property Item[const Index: Integer]: TJclSimpleXMLElem read GetItem; default;
@@ -443,6 +445,12 @@ type
     procedure LoadFromStringStream(StringStream: TJclStringStream; AParent: TJclSimpleXML = nil); override;
     procedure SaveToStringStream(StringStream: TJclStringStream; const Level: string = ''; AParent: TJclSimpleXML = nil); override;
   end;
+
+  TJclSimpleXMLElemMSOApplication = class(TJclSimpleXMLElem)
+  public
+    procedure LoadFromStringStream(StringStream: TJclStringStream; AParent: TJclSimpleXML = nil); override;
+    procedure SaveToStringStream(StringStream: TJclStringStream; const Level: string = ''; AParent: TJclSimpleXML = nil); override;
+  end; 
 
   TJclSimpleXMLOptions = set of (sxoAutoCreate, sxoAutoIndent, sxoAutoEncodeValue,
     sxoAutoEncodeEntity, sxoDoNotSaveProlog, sxoTrimPrecedingTextWhitespace);
@@ -3453,6 +3461,83 @@ begin
     AParent.DoSaveProgress;
 end;
 
+//=== { TJclSimpleXMLElemMSOApplication } =============================================
+
+procedure TJclSimpleXMLElemMSOApplication.LoadFromStringStream(StringStream: TJclStringStream;
+  AParent: TJclSimpleXML);
+//<?mso-application progid="Word.Document"?>
+const
+  CS_START_PI = '<?mso-application';
+  CS_STOP_PI  = '                 ?>';
+var
+  lPos: Integer;
+  lOk: Boolean;
+  Ch: Char;
+begin
+  lPos := 1;
+  lOk := False;
+
+  if AParent <> nil then
+    AParent.DoLoadProgress(StringStream.Stream.Position, StringStream.Stream.Size);
+
+  while StringStream.ReadChar(Ch) do
+  begin
+    case lPos of
+      1..16: //<?mso-applicatio
+        if Ch = CS_START_PI[lPos] then
+          Inc(lPos)
+        else
+        if not CharIsWhiteSpace(Ch) then
+          FmtError(RsEInvalidMSOExpectedsButFounds, [CS_START_PI[lPos], Ch]);
+      17: //n
+        if Ch = CS_START_PI[lPos] then
+        begin
+          Properties.LoadFromStringStream(StringStream);
+          Inc(lPos);
+        end
+        else
+          FmtError(RsEInvalidMSOExpectedsButFounds, [CS_START_PI[lPos], Ch]);
+      18: //?
+        if Ch = CS_STOP_PI[lPos] then
+          Inc(lPos)
+        else
+        if CharIsWhiteSpace(Ch) then
+          // space after properties
+        else
+          FmtError(RsEInvalidMSOExpectedsButFounds, [CS_STOP_PI[lPos], Ch]);
+      19: //>
+        if Ch = CS_STOP_PI[lPos] then
+        begin
+          lOk := True;
+          Break; //End if
+        end
+        else
+          FmtError(RsEInvalidMSOExpectedsButFounds, [CS_STOP_PI[lPos], Ch]);
+    end;
+  end;
+
+  if not lOk then
+    Error(RsEInvalidMSOUnexpectedEndOfDat);
+
+  Name := '';
+end;
+
+procedure TJclSimpleXMLElemMSOApplication.SaveToStringStream(StringStream: TJclStringStream;
+  const Level: string; AParent: TJclSimpleXML);
+var
+  I: Integer;
+  St: string;
+begin
+  St := Level + '<?mso-application';      
+  StringStream.WriteString(St, 1, Length(St));
+  for I := 0 to Properties.GetCount - 1 do
+    Properties.Item[I].SaveToStringStream(StringStream);
+  St := '?>' + sLineBreak;
+  StringStream.WriteString(St, 1, Length(St));
+  if AParent <> nil then
+    AParent.DoSaveProgress;
+end;
+
 //=== { TJclSimpleXMLElemsProlog } ===========================================
 
 constructor TJclSimpleXMLElemsProlog.Create;
@@ -3550,6 +3635,9 @@ begin
           else
           if St = '<!DOCTYPE' then
             lElem := TJclSimpleXMLElemDocType.Create(nil)
+          else
+          if St = '<?mso-application' then
+            lElem := TJclSimpleXMLElemMSOApplication.Create(nil)
           else
           if (Length(St) > 1) and (St[2] <> '!') and (St[2] <> '?') then
             lEnd := True;
@@ -3965,6 +4053,16 @@ begin
   Result.Properties.Add('type',AType);
   Result.Properties.Add('href',AHRef);
   FElems.AddObject('xml-stylesheet', Result);
+end;
+
+function TJclSimpleXMLElemsProlog.AddMSOApplication(AProgId : string): TJclSimpleXMLElemMSOApplication;
+begin
+  // make sure there is an xml header
+  FindHeader;
+  Result := TJclSimpleXMLElemMSOApplication.Create(nil);
+  Result.Name := 'mso-application';
+  Result.Properties.Add('progid',AProgId);
+  FElems.AddObject('mso-application', Result);
 end;
 
 function TJclSimpleXMLElemsProlog.AddComment(const AValue: string): TJclSimpleXMLElemComment;
