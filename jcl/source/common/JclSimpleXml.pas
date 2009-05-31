@@ -78,8 +78,8 @@ type
   TJclSimpleXMLElemHeader = class;
   TJclSimpleXMLElemSheet = class;
   TJclSimpleXMLElemMSOApplication = class;
-  TJclOnSimpleXMLParsed = procedure(Sender: TObject; Name: string) of object;
-  TJclOnValueParsed = procedure(Sender: TObject; Name, Value: string) of object;
+  TJclOnSimpleXMLParsed = procedure(Sender: TObject; const Name: string) of object;
+  TJclOnValueParsed = procedure(Sender: TObject; const Name, Value: string) of object;
   TJclOnSimpleProgress = procedure(Sender: TObject; const Position, Total: Integer) of object;
 
   //Those hash stuffs are for future use only
@@ -191,10 +191,10 @@ type
     procedure Clear; virtual;
     procedure Delete(const Index: Integer); overload;
     procedure Delete(const Name: string); overload;
-    function Value(const Name: string; Default: string = ''): string;
-    function IntValue(const Name: string; Default: Int64 = -1): Int64;
+    function Value(const Name: string; const Default: string = ''): string;
+    function IntValue(const Name: string; const Default: Int64 = -1): Int64;
     function BoolValue(const Name: string; Default: Boolean = True): Boolean;
-    function FloatValue(const Name: string; Default: Extended = 0): Extended;
+    function FloatValue(const Name: string; const Default: Extended = 0): Extended;
     procedure LoadFromStringStream(StringStream: TJclStringStream);
     procedure SaveToStringStream(StringStream: TJclStringStream);
     property Item[const Index: Integer]: TJclSimpleXMLProp read GetItem; default;
@@ -223,8 +223,8 @@ type
     function AddComment(const AValue: string): TJclSimpleXMLElemComment;
     function AddDocType(const AValue: string): TJclSimpleXMLElemDocType;
     procedure Clear;
-    function AddStyleSheet(AType, AHRef: string): TJclSimpleXMLElemSheet;
-    function AddMSOApplication(AProgId : string): TJclSimpleXMLElemMSOApplication;
+    function AddStyleSheet(const AType, AHRef: string): TJclSimpleXMLElemSheet;
+    function AddMSOApplication(const AProgId : string): TJclSimpleXMLElemMSOApplication;
     procedure LoadFromStringStream(StringStream: TJclStringStream; AParent: TJclSimpleXML = nil);
     procedure SaveToStringStream(StringStream: TJclStringStream; AParent: TJclSimpleXML = nil);
     property Item[const Index: Integer]: TJclSimpleXMLElem read GetItem; default;
@@ -316,9 +316,9 @@ type
     procedure Move(const CurIndex, NewIndex: Integer);
     function IndexOf(const Value: TJclSimpleXMLElem): Integer; overload;
     function IndexOf(const Name: string): Integer; overload;
-    function Value(const Name: string; Default: string = ''): string;
-    function IntValue(const Name: string; Default: Int64 = -1): Int64;
-    function FloatValue(const Name: string; Default: Extended = 0): Extended;
+    function Value(const Name: string; const Default: string = ''): string;
+    function IntValue(const Name: string; const Default: Int64 = -1): Int64;
+    function FloatValue(const Name: string; const Default: Extended = 0): Extended;
     function BoolValue(const Name: string; Default: Boolean = True): Boolean;
     procedure BinaryValue(const Name: string; Stream: TStream);
     procedure LoadFromStringStream(StringStream: TJclStringStream; AParent: TJclSimpleXML = nil);
@@ -1999,7 +1999,7 @@ begin
 end;
 
 function TJclSimpleXMLElems.FloatValue(const Name: string;
-  Default: Extended): Extended;
+  const Default: Extended): Extended;
 var
   Elem: TJclSimpleXMLElem;
 begin
@@ -2070,7 +2070,7 @@ begin
   Result := GetItemNamedDefault(Name, '');
 end;
 
-function TJclSimpleXMLElems.IntValue(const Name: string; Default: Int64): Int64;
+function TJclSimpleXMLElems.IntValue(const Name: string; const Default: Int64): Int64;
 var
   Elem: TJclSimpleXMLElem;
 begin
@@ -2233,7 +2233,7 @@ begin
     Item[I].SaveToStringStream(StringStream, Level, AParent);
 end;
 
-function TJclSimpleXMLElems.Value(const Name: string; Default: string): string;
+function TJclSimpleXMLElems.Value(const Name, Default: string): string;
 var
   Elem: TJclSimpleXMLElem;
 begin
@@ -2472,7 +2472,7 @@ begin
 end;
 
 function TJclSimpleXMLProps.FloatValue(const Name: string;
-  Default: Extended): Extended;
+  const Default: Extended): Extended;
 var
   Prop: TJclSimpleXMLProp;
 begin
@@ -2539,7 +2539,7 @@ begin
     Result := nil;
 end;
 
-function TJclSimpleXMLProps.IntValue(const Name: string; Default: Int64): Int64;
+function TJclSimpleXMLProps.IntValue(const Name: string; const Default: Int64): Int64;
 var
   Prop: TJclSimpleXMLProp;
 begin
@@ -2678,7 +2678,7 @@ begin
     Item[I].SaveToStringStream(StringStream);
 end;
 
-function TJclSimpleXMLProps.Value(const Name: string; Default: string): string;
+function TJclSimpleXMLProps.Value(const Name, Default: string): string;
 var
   Prop: TJclSimpleXMLProp;
 begin
@@ -4044,7 +4044,7 @@ begin
   FElems.AddObject('', Result);
 end;
 
-function TJclSimpleXMLElemsProlog.AddStyleSheet(AType, AHRef: string): TJclSimpleXMLElemSheet;
+function TJclSimpleXMLElemsProlog.AddStyleSheet(const AType, AHRef: string): TJclSimpleXMLElemSheet;
 begin
   // make sure there is an xml header
   FindHeader;
@@ -4055,7 +4055,7 @@ begin
   FElems.AddObject('xml-stylesheet', Result);
 end;
 
-function TJclSimpleXMLElemsProlog.AddMSOApplication(AProgId : string): TJclSimpleXMLElemMSOApplication;
+function TJclSimpleXMLElemsProlog.AddMSOApplication(const AProgId : string): TJclSimpleXMLElemMSOApplication;
 begin
   // make sure there is an xml header
   FindHeader;
