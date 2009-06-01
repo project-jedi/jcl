@@ -55,6 +55,9 @@ uses
   {$ENDIF HAS_UNIT_CONTNRS}
   JclBase, JclStringConversions;
 
+const
+  StreamDefaultBufferSize = 4096;
+
 type
   {$IFDEF COMPILER5}
   TSeekOrigin = (soBeginning, soCurrent, soEnd);
@@ -77,10 +80,10 @@ type
     {$ENDIF ~CLR}
     function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64;
       {$IFDEF COMPILER5} reintroduce; overload; virtual; {$ELSE} overload; override; {$ENDIF}
-    procedure LoadFromStream(Source: TStream; BufferSize: Longint = 4096); virtual;
-    procedure LoadFromFile(const FileName: TFileName; BufferSize: Longint = 4096); virtual;
-    procedure SaveToStream(Dest: TStream; BufferSize: Longint = 4096); virtual;
-    procedure SaveToFile(const FileName: TFileName; BufferSize: Longint = 4096); virtual;
+    procedure LoadFromStream(Source: TStream; BufferSize: Longint = StreamDefaultBufferSize); virtual;
+    procedure LoadFromFile(const FileName: TFileName; BufferSize: Longint = StreamDefaultBufferSize); virtual;
+    procedure SaveToStream(Dest: TStream; BufferSize: Longint = StreamDefaultBufferSize); virtual;
+    procedure SaveToFile(const FileName: TFileName; BufferSize: Longint = StreamDefaultBufferSize); virtual;
   end;
 
   //=== VCL stream replacements ===
@@ -539,11 +542,11 @@ type
     constructor Create(AStream: TStream; AOwnsStream: Boolean = False); virtual;
     function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64; override;
     function ReadString(var Buffer: string; Start, Count: Longint): Longint; overload;
-    function ReadString(BufferSize: Longint = 4096): string; overload;
+    function ReadString(BufferSize: Longint = StreamDefaultBufferSize): string; overload;
     function ReadAnsiString(var Buffer: AnsiString; Start, Count: Longint): Longint; overload;
-    function ReadAnsiString(BufferSize: Longint = 4096): AnsiString; overload;
+    function ReadAnsiString(BufferSize: Longint = StreamDefaultBufferSize): AnsiString; overload;
     function ReadWideString(var Buffer: WideString; Start, Count: Longint): Longint; overload;
-    function ReadWideString(BufferSize: Longint = 4096): WideString; overload;
+    function ReadWideString(BufferSize: Longint = StreamDefaultBufferSize): WideString; overload;
     function WriteString(const Buffer: string; Start, Count: Longint): Longint;
     function WriteAnsiString(const Buffer: AnsiString; Start, Count: Longint): Longint;
     function WriteWideString(const Buffer: WideString; Start, Count: Longint): Longint;
@@ -595,18 +598,18 @@ function StreamSeek(Stream: TStream; const Offset: Int64;
 
 // buffered copy of all available bytes from Source to Dest
 // returns the number of bytes that were copied
-function StreamCopy(Source: TStream; Dest: TStream; BufferSize: Longint = 4096): Int64;
+function StreamCopy(Source: TStream; Dest: TStream; BufferSize: Longint = StreamDefaultBufferSize): Int64;
 
 // buffered copy of all available characters from Source to Dest
 // retuns the number of characters (in specified encoding) that were copied
-function StringStreamCopy(Source, Dest: TJclStringStream; BufferLength: Longint = 4096): Int64;
-function AnsiStringStreamCopy(Source, Dest: TJclStringStream; BufferLength: Longint = 4096): Int64;
-function WideStringStreamCopy(Source, Dest: TJclStringStream; BufferLength: Longint = 4096): Int64;
+function StringStreamCopy(Source, Dest: TJclStringStream; BufferLength: Longint = StreamDefaultBufferSize): Int64;
+function AnsiStringStreamCopy(Source, Dest: TJclStringStream; BufferLength: Longint = StreamDefaultBufferSize): Int64;
+function WideStringStreamCopy(Source, Dest: TJclStringStream; BufferLength: Longint = StreamDefaultBufferSize): Int64;
 
 // compares 2 streams for differencies
-function CompareStreams(A, B : TStream; BufferSize: Longint = 4096): Boolean;
+function CompareStreams(A, B : TStream; BufferSize: Longint = StreamDefaultBufferSize): Boolean;
 // compares 2 files for differencies (calling CompareStreams)
-function CompareFiles(const FileA, FileB: TFileName; BufferSize: Longint = 4096): Boolean;
+function CompareFiles(const FileA, FileB: TFileName; BufferSize: Longint = StreamDefaultBufferSize): Boolean;
 
 {$IFDEF UNITVERSIONING}
 const
@@ -674,7 +677,7 @@ begin
   until ByteCount < BufferSize;
 end;
 
-function StringStreamCopy(Source, Dest: TJclStringStream; BufferLength: Longint = 4096): Int64;
+function StringStreamCopy(Source, Dest: TJclStringStream; BufferLength: Longint): Int64;
 var
   Buffer: string;
   CharCount: Longint;
@@ -688,7 +691,7 @@ begin
   until CharCount = 0;
 end;
 
-function AnsiStringStreamCopy(Source, Dest: TJclStringStream; BufferLength: Longint = 4096): Int64;
+function AnsiStringStreamCopy(Source, Dest: TJclStringStream; BufferLength: Longint): Int64;
 var
   Buffer: AnsiString;
   CharCount: Longint;
@@ -702,7 +705,7 @@ begin
   until CharCount = 0;
 end;
 
-function WideStringStreamCopy(Source, Dest: TJclStringStream; BufferLength: Longint = 4096): Int64;
+function WideStringStreamCopy(Source, Dest: TJclStringStream; BufferLength: Longint): Int64;
 var
   Buffer: WideString;
   CharCount: Longint;
@@ -716,7 +719,7 @@ begin
   until CharCount = 0;
 end;
 
-function CompareStreams(A, B : TStream; BufferSize: Longint = 4096): Boolean;
+function CompareStreams(A, B : TStream; BufferSize: Longint): Boolean;
 var
   BufferA, BufferB: array of Byte;
   ByteCountA, ByteCountB: Longint;
@@ -758,7 +761,7 @@ begin
   end;
 end;
 
-function CompareFiles(const FileA, FileB: TFileName; BufferSize: Longint = 4096): Boolean;
+function CompareFiles(const FileA, FileB: TFileName; BufferSize: Longint): Boolean;
 var
   A, B: TStream;
 begin
@@ -1412,7 +1415,7 @@ begin
   inherited Create(AStream, AOwnsStream);
   if Stream <> nil then
     FPosition := Stream.Position;
-  BufferSize := 4096;
+  BufferSize := StreamDefaultBufferSize;
 end;
 
 destructor TJclBufferedStream.Destroy;
