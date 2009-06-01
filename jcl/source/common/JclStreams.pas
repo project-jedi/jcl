@@ -77,6 +77,10 @@ type
     {$ENDIF ~CLR}
     function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64;
       {$IFDEF COMPILER5} reintroduce; overload; virtual; {$ELSE} overload; override; {$ENDIF}
+    procedure LoadFromStream(Source: TStream; BufferSize: Longint = 4096); virtual;
+    procedure LoadFromFile(const FileName: TFileName; BufferSize: Longint = 4096); virtual;
+    procedure SaveToStream(Dest: TStream; BufferSize: Longint = 4096); virtual;
+    procedure SaveToFile(const FileName: TFileName; BufferSize: Longint = 4096); virtual;
   end;
 
   //=== VCL stream replacements ===
@@ -793,6 +797,41 @@ begin
   Result := Result64;
 end;
 {$ENDIF ~CLR}
+
+procedure TJclStream.LoadFromFile(const FileName: TFileName;
+  BufferSize: Integer);
+var
+  FS: TStream;
+begin
+  FS := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);
+  try
+    LoadFromStream(FS, BufferSize);
+  finally
+    FS.Free;
+  end;
+end;
+
+procedure TJclStream.LoadFromStream(Source: TStream; BufferSize: Integer);
+begin
+  StreamCopy(Source, Self, BufferSize);
+end;
+
+procedure TJclStream.SaveToFile(const FileName: TFileName; BufferSize: Integer);
+var
+  FS: TStream;
+begin
+  FS := TFileStream.Create(FileName, fmCreate or fmShareExclusive);
+  try
+    SaveToStream(FS);
+  finally
+    FS.Free;
+  end;
+end;
+
+procedure TJclStream.SaveToStream(Dest: TStream; BufferSize: Integer);
+begin
+  StreamCopy(Self, Dest, BufferSize);
+end;
 
 function TJclStream.Seek(const Offset: Int64; Origin: TSeekOrigin): Int64;
 begin
