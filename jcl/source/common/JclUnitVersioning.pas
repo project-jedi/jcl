@@ -146,12 +146,7 @@ function GetUnitVersioning: TUnitVersioning;
 implementation
 
 uses
-  JclSysUtils, SyncObjs;
-
-{$IFNDEF COMPILER11_UP}
-type
-  DWORD_PTR = DWORD;
-{$ENDIF ~COMPILER11_UP}
+  JclSysUtils, JclSynch;
 
 // Delphi 5 does not know this function //(usc) D6/7 Per does have StartsWith
 // a fast version of Pos(SubStr, S) = 1
@@ -573,7 +568,7 @@ var
   UnitVersioningOwner: Boolean = False;
   GlobalUnitVersioning: TUnitVersioning = nil;
   UnitVersioningNPA: PUnitVersioning = nil;
-  UnitVersioningMutex: TMutex;
+  UnitVersioningMutex: TJclMutex;
   UnitVersioningFinalized: Boolean = False;
 
 function GetUnitVersioning: TUnitVersioning;
@@ -585,11 +580,11 @@ begin
   end;
 
   if UnitVersioningMutex = nil then
-    UnitVersioningMutex := TMutex.Create(nil, False, 'MutexNPA_UnitVersioning_' + IntToStr(GetCurrentProcessId));
+    UnitVersioningMutex := TJclMutex.Create(nil, False, 'MutexNPA_UnitVersioning_' + IntToStr(GetCurrentProcessId));
 
   if GlobalUnitVersioning = nil then
   begin
-    UnitVersioningMutex.Acquire;
+    UnitVersioningMutex.WaitFor(INFINITE);
     try
       if UnitVersioningNPA = nil then
         SharedGetMem(UnitVersioningNPA, 'ShmNPA_UnitVersioning_' + IntToStr(GetCurrentProcessId), SizeOf(TUnitVersioning));
@@ -615,7 +610,7 @@ begin
   else
   if UnitVersioningNPA <> nil then
   begin
-    UnitVersioningMutex.Acquire;
+    UnitVersioningMutex.WaitFor(INFINITE);
     try
       GlobalUnitVersioning := UnitVersioningNPA^; // update (maybe the owner has destroyed the instance)
     finally
@@ -631,7 +626,7 @@ begin
   try
     if UnitVersioningNPA <> nil then
     begin
-      UnitVersioningMutex.Acquire;
+      UnitVersioningMutex.WaitFor(INFINITE);
       try
         UnitVersioningNPA^ := nil;
         SharedCloseMem(UnitVersioningNPA);

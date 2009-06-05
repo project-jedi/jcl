@@ -51,6 +51,10 @@ unit JclCompression;
 
 {$I jcl.inc}
 
+{$IFDEF SUPPORTS_PLATFORM_WARNINGS}
+  {$WARN SYMBOL_PLATFORM OFF}
+{$ENDIF SUPPORTS_PLATFORM_WARNINGS}
+
 interface
 
 uses
