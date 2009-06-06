@@ -997,10 +997,14 @@ begin
   if not Assigned(GlobalMMFHandleListCS) and not MMFFinalized then
   begin
     CS := TJclIntfCriticalSection.Create;
-    {$IFDEF RTL185_UP}
+    {$IFDEF RTL200_UP} // Delphi 2009+
     OldValue := InterlockedCompareExchangePointer(Pointer(GlobalMMFHandleListCS), Pointer(CS), nil);
     {$ELSE}
-    OldValue := Pointer(InterlockedCompareExchange(Integer(GlobalMMFHandleListCS), Integer(CS), 0));
+      {$IFDEF RTL160_UP} // Delphi 7-2007
+    OldValue := Pointer(InterlockedCompareExchange(Longint(GlobalMMFHandleListCS), Longint(CS), 0));
+      {$ELSE} // Delphi 5, 6
+    OldValue := InterlockedCompareExchange(Pointer(GlobalMMFHandleListCS), Pointer(CS), 0);
+      {$ENDIF RTL180_UP}
     {$ENDIF RTL185_UP}
     if OldValue <> nil then
       CS.Free;
