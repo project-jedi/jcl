@@ -3126,11 +3126,16 @@ begin
         SearchPath := StrRemoveEmptyPaths(SearchPath);
       end;
 
+      // in Windows NT, first argument is a process handle
       if IsWinNT and Assigned(SymInitializeWFunc) then
-        Result := SymInitializeWFunc(GetCurrentProcessId, PWideChar(WideString(SearchPath)), False)
+        Result := SymInitializeWFunc(GetCurrentProcess, PWideChar(WideString(SearchPath)), False)
       else
       if IsWinNT and Assigned(SymInitializeAFunc) then
-        Result := SymInitializeAFunc(GetCurrentProcess, PAnsiChar(AnsiString(SearchPath)), False);
+        Result := SymInitializeAFunc(GetCurrentProcess, PAnsiChar(AnsiString(SearchPath)), False)
+      else
+      // in Windows 95, 98, ME, first argument is a process identifier
+      if Assigned(SymInitializeAFunc) then
+        Result := SymInitializeAFunc(GetCurrentProcessId, PAnsiChar(AnsiString(SearchPath)), False);
       if Result then
       begin
         SymOptions := SymGetOptionsFunc or SYMOPT_DEFERRED_LOADS
