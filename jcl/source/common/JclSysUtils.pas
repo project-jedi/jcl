@@ -143,7 +143,7 @@ type
 { SharedGetMem return ERROR_ALREADY_EXISTS if the shared memory is already
   allocated, otherwise it returns 0.
   Throws ESharedMemError if the Name is invalid. }
-function SharedGetMem(var p{: Pointer}; const Name: string; Size: Cardinal;
+function SharedGetMem(var P{: Pointer}; const Name: string; Size: Cardinal;
   DesiredAccess: Cardinal = FILE_MAP_ALL_ACCESS): Integer;
 
 { SharedAllocMem calls SharedGetMem and then fills the memory with zero if
@@ -153,7 +153,7 @@ function SharedAllocMem(const Name: string; Size: Cardinal;
   DesiredAccess: Cardinal = FILE_MAP_ALL_ACCESS): Pointer;
 
 { SharedFreeMem releases the shared memory if it was the last reference. }
-function SharedFreeMem(var p{: Pointer}): Boolean;
+function SharedFreeMem(var P{: Pointer}): Boolean;
 
 // Functions for the shared memory user
 
@@ -161,7 +161,7 @@ function SharedFreeMem(var p{: Pointer}): Boolean;
   SharedGetMem or SharedAllocMem. Otherwise it returns False.
   Throws ESharedMemError if the Name is invalid. }
 
-function SharedOpenMem(var p{: Pointer}; const Name: string;
+function SharedOpenMem(var P{: Pointer}; const Name: string;
   DesiredAccess: Cardinal = FILE_MAP_ALL_ACCESS): Boolean; overload;
 
 { SharedOpenMem return nil if the shared memory was not already allocated
@@ -171,7 +171,7 @@ function SharedOpenMem(const Name: string;
   DesiredAccess: Cardinal = FILE_MAP_ALL_ACCESS): Pointer; overload;
 
 { SharedCloseMem releases the shared memory if it was the last reference. }
-function SharedCloseMem(var p{: Pointer}): Boolean;
+function SharedCloseMem(var P{: Pointer}): Boolean;
 
 {$ENDIF MSWINDOWS}
 
@@ -983,22 +983,35 @@ type
 
 var
   MMFHandleList: PMMFHandleList = nil;
+  MMFFinalized: Boolean = False;
   {$IFDEF THREADSAFE}
   GlobalMMFHandleListCS: TJclIntfCriticalSection = nil;
   {$ENDIF THREADSAGE}
 
 {$IFDEF THREADSAFE}
 function GetAccessToHandleList: IInterface;
+var
+  OldValue: Pointer;
+  CS: TJclIntfCriticalSection;
 begin
-  if not Assigned(GlobalMMFHandleListCS) then
-    GlobalMMFHandleListCS := TJclIntfCriticalSection.Create;
+  if not Assigned(GlobalMMFHandleListCS) and not MMFFinalized then
+  begin
+    CS := TJclIntfCriticalSection.Create;
+    {$IFDEF RTL185_UP}
+    OldValue := InterlockedCompareExchangePointer(Pointer(GlobalMMFHandleListCS), Pointer(CS), nil);
+    {$ELSE}
+    OldValue := Pointer(InterlockedCompareExchange(Integer(GlobalMMFHandleListCS), Integer(CS), 0));
+    {$ENDIF RTL185_UP}
+    if OldValue <> nil then
+      CS.Free;
+  end;
   Result := GlobalMMFHandleListCS;
 end;
 {$ENDIF THREADSAFE}
 
 {$IFDEF MSWINDOWS}
 
-function SharedGetMem(var p{: Pointer}; const Name: string; Size: Cardinal;
+function SharedGetMem(var P{: Pointer}; const Name: string; Size: Cardinal;
   DesiredAccess: Cardinal = FILE_MAP_ALL_ACCESS): Integer;
 var
   FileMappingHandle: THandle;
@@ -1009,11 +1022,10 @@ var
   {$ENDIF THREADSAFE}
 begin
   Result := 0;
-  Pointer(p) := nil;
+  Pointer(P) := nil;
 
-  if (GetWindowsVersion in [wvUnknown..wvWinNT4]) and
-    ((Name = '') or (Pos('\', Name) > 0)) then
-      raise ESharedMemError.CreateResFmt(@RsInvalidMMFName, [Name]);
+  if (GetWindowsVersion in [wvUnknown..wvWinNT4]) and ((Name = '') or (Pos('\', Name) > 0)) then
+    raise ESharedMemError.CreateResFmt(@RsInvalidMMFName, [Name]);
 
   {$IFDEF THREADSAFE}
   HandleListAccess := GetAccessToHandleList;
@@ -1026,7 +1038,7 @@ begin
     if CompareText(Iterate^.Name, Name) = 0 then
     begin
       Inc(Iterate^.References);
-      Pointer(p) := Iterate^.Memory;
+      Pointer(P) := Iterate^.Memory;
       Result := ERROR_ALREADY_EXISTS;
       Exit;
     end;
@@ -1041,8 +1053,7 @@ begin
       raise ESharedMemError.CreateResFmt(@RsInvalidMMFEmpty, [Name]);
 
     Protect := PAGE_READWRITE;
-    if (Win32Platform = VER_PLATFORM_WIN32_WINDOWS) and
-       (DesiredAccess = FILE_MAP_COPY) then
+    if (Win32Platform = VER_PLATFORM_WIN32_WINDOWS) and (DesiredAccess = FILE_MAP_COPY) then
       Protect := PAGE_WRITECOPY;
 
     FileMappingHandle := CreateFileMapping(INVALID_HANDLE_VALUE, nil, Protect,
@@ -1051,10 +1062,10 @@ begin
   else
     Result := ERROR_ALREADY_EXISTS;
 
-  case GetLastError of
-    ERROR_ALREADY_EXISTS:
-      Result := ERROR_ALREADY_EXISTS;
+  if GetLastError = ERROR_ALREADY_EXISTS then
+    Result := ERROR_ALREADY_EXISTS
   else
+  begin
     if FileMappingHandle = 0 then
       {$IFDEF COMPILER6_UP}
       RaiseLastOSError;
@@ -1064,8 +1075,8 @@ begin
   end;
 
   // map view
-  Pointer(p) := MapViewOfFile(FileMappingHandle, DesiredAccess, 0, 0, Size);
-  if Pointer(p) = nil then
+  Pointer(P) := MapViewOfFile(FileMappingHandle, DesiredAccess, 0, 0, Size);
+  if Pointer(P) = nil then
   begin
     try
       {$IFDEF COMPILER6_UP}
@@ -1083,7 +1094,7 @@ begin
   New(NewListItem);
   NewListItem^.Name := Name;
   NewListItem^.Handle := FileMappingHandle;
-  NewListItem^.Memory := Pointer(p);
+  NewListItem^.Memory := Pointer(P);
   NewListItem^.References := 1;
 
   NewListItem^.Next := MMFHandleList;
@@ -1099,29 +1110,29 @@ begin
       FillChar(Pointer(Result)^, Size, 0);
 end;
 
-function SharedFreeMem(var p{: Pointer}): Boolean;
+function SharedFreeMem(var P{: Pointer}): Boolean;
 var
-  n, Iterate: PMMFHandleListItem;
+  N, Iterate: PMMFHandleListItem;
   {$IFDEF THREADSAFE}
   HandleListAccess: IInterface;
   {$ENDIF THREADSAFE}
 begin
-  if Pointer(p) <> nil then
+  if Pointer(P) <> nil then
   begin
     Result := False;
     {$IFDEF THREADSAFE}
     HandleListAccess := GetAccessToHandleList;
     {$ENDIF THREADSAFE}
     Iterate := MMFHandleList;
-    n := nil;
+    N := nil;
     while Iterate <> nil do
     begin
-      if Iterate^.Memory = Pointer(p) then
+      if Iterate^.Memory = Pointer(P) then
       begin
         if Iterate^.References > 1 then
         begin
           Dec(Iterate^.References);
-          Pointer(p) := nil;
+          Pointer(P) := nil;
           Result := True;
           Exit;
         end;
@@ -1129,17 +1140,17 @@ begin
         UnmapViewOfFile(Iterate^.Memory);
         CloseHandle(Iterate^.Handle);
 
-        if n = nil then
+        if N = nil then
           MMFHandleList := Iterate^.Next
         else
-          n^.Next := Iterate^.Next;
+          N^.Next := Iterate^.Next;
 
         Dispose(Iterate);
-        Pointer(p) := nil;
+        Pointer(P) := nil;
         Result := True;
         Break;
       end;
-      n := Iterate;
+      N := Iterate;
       Iterate := Iterate^.Next;
     end;
   end
@@ -1147,10 +1158,10 @@ begin
     Result := True;
 end;
 
-function SharedOpenMem(var p{: Pointer}; const Name: string;
+function SharedOpenMem(var P{: Pointer}; const Name: string;
   DesiredAccess: Cardinal = FILE_MAP_ALL_ACCESS): Boolean;
 begin
-  Result := SharedGetMem(p, Name, 0, DesiredAccess) = ERROR_ALREADY_EXISTS;
+  Result := SharedGetMem(P, Name, 0, DesiredAccess) = ERROR_ALREADY_EXISTS;
 end;
 
 function SharedOpenMem(const Name: string;
@@ -1159,31 +1170,9 @@ begin
   SharedGetMem(Result, Name, 0, DesiredAccess);
 end;
 
-function SharedCloseMem(var p{: Pointer}): Boolean;
+function SharedCloseMem(var P{: Pointer}): Boolean;
 begin
-  Result := SharedFreeMem(p);
-end;
-
-procedure FinalizeMMFHandleList;
-var
-  NextItem, Iterate: PMMFHandleList;
-  {$IFDEF THREADSAFE}
-  HandleListAccess: IInterface;
-  {$ENDIF THREADSAFE}
-begin
-  {$IFDEF THREADSAFE}
-  HandleListAccess := GetAccessToHandleList;
-  {$ENDIF THREADSAFE}
-  Iterate := MMFHandleList;
-  while Iterate <> nil do
-  begin
-    UnmapViewOfFile(Iterate^.Memory);
-    CloseHandle(Iterate^.Handle);
-
-    NextItem := Iterate^.Next;
-    Dispose(Iterate);
-    Iterate := NextItem;
-  end;
+  Result := SharedFreeMem(P);
 end;
 
 {$ENDIF MSWINDOWS}
@@ -3265,12 +3254,6 @@ end;
 initialization
   {$IFNDEF CLR}
   SimpleLog := nil;
-  {$IFDEF MSWINDOWS}
-  {$IFDEF THREADSAFE}
-  if not Assigned(GlobalMMFHandleListCS) then
-    GlobalMMFHandleListCS := TJclIntfCriticalSection.Create;
-  {$ENDIF THREADSAFE}
-  {$ENDIF MSWINDOWS}
   {$ENDIF ~CLR}
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -3282,8 +3265,11 @@ finalization
   {$ENDIF UNITVERSIONING}
   {$IFNDEF CLR}
   {$IFDEF MSWINDOWS}
-  FinalizeMMFHandleList;
   {$IFDEF THREADSAFE}
+  // The user must release shared memory blocks himself. We don't clean up his
+  // memory leaks and make it impossible to release the shared memory in other
+  // unit's finalization blocks.
+  MMFFinalized := True;
   FreeAndNil(GlobalMMFHandleListCS);
   {$ENDIF THREADSAFE}
   {$ENDIF MSWINDOWS}
