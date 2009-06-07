@@ -3293,11 +3293,13 @@ begin
         ModuleFileName := GetModulePath(Module);
         // OF: possible loss of data
         Result := SymLoadModuleFunc(ProcessHandle, 0, PAnsiChar(AnsiString(ModuleFileName)), nil, 0, 0) <> 0;
-
-        ZeroMemory(@ModuleInfoW, SizeOf(ModuleInfoW));
-        ModuleInfoW.SizeOfStruct := SizeOf(ModuleInfoW);
-        Result := Result and SymGetModuleInfoWFunc(ProcessHandle, Module, ModuleInfoW);
-        Result := Result and not (ModuleInfoW.SymType in [SymNone, SymExport]);
+        if Result then
+        begin
+          ZeroMemory(@ModuleInfoW, SizeOf(ModuleInfoW));
+          ModuleInfoW.SizeOfStruct := SizeOf(ModuleInfoW);
+          Result := SymGetModuleInfoWFunc(ProcessHandle, Module, ModuleInfoW);
+          Result := Result and not (ModuleInfoW.SymType in [SymNone, SymExport]);
+        end;
       end;
     end
     else
@@ -3313,10 +3315,13 @@ begin
         // OF: possible loss of data
         Result := SymLoadModuleFunc(ProcessHandle, 0, PAnsiChar(AnsiString(ModuleFileName)), nil, 0, 0) <> 0;
 
-        ZeroMemory(@ModuleInfoA, SizeOf(ModuleInfoA));
-        ModuleInfoA.SizeOfStruct := SizeOf(ModuleInfoA);
-        Result := Result and SymGetModuleInfoAFunc(ProcessHandle, Module, ModuleInfoA);
-        Result := Result and not (ModuleInfoA.SymType in [SymNone, SymExport]);
+        if Result then
+        begin
+          ZeroMemory(@ModuleInfoA, SizeOf(ModuleInfoA));
+          ModuleInfoA.SizeOfStruct := SizeOf(ModuleInfoA);
+          Result := SymGetModuleInfoAFunc(ProcessHandle, Module, ModuleInfoA);
+          Result := Result and not (ModuleInfoA.SymType in [SymNone, SymExport]);
+        end;
       end;
     end;
   end;
