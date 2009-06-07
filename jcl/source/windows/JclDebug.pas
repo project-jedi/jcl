@@ -3098,6 +3098,7 @@ class function TJclDebugInfoSymbols.InitializeDebugSymbols: Boolean;
 var
   EnvironmentVarValue, SearchPath: string;
   SymOptions: Cardinal;
+  ProcessHandle: THandle;
 begin
   if DebugSymbolsLoadFailed then
     Result := False
@@ -3126,16 +3127,21 @@ begin
         SearchPath := StrRemoveEmptyPaths(SearchPath);
       end;
 
-      // in Windows NT, first argument is a process handle
-      if IsWinNT and Assigned(SymInitializeWFunc) then
-        Result := SymInitializeWFunc(GetCurrentProcess, PWideChar(WideString(SearchPath)), False)
+      if IsWinNT then
+        // in Windows NT, first argument is a process handle
+        ProcessHandle := GetCurrentProcess
       else
-      if IsWinNT and Assigned(SymInitializeAFunc) then
-        Result := SymInitializeAFunc(GetCurrentProcess, PAnsiChar(AnsiString(SearchPath)), False)
+        // in Windows 95, 98, ME, first argument is a process identifier
+        ProcessHandle := GetCurrentProcessId;
+
+      if Assigned(SymInitializeWFunc) then
+        Result := SymInitializeWFunc(ProcessHandle, PWideChar(WideString(SearchPath)), False)
       else
-      // in Windows 95, 98, ME, first argument is a process identifier
       if Assigned(SymInitializeAFunc) then
-        Result := SymInitializeAFunc(GetCurrentProcessId, PAnsiChar(AnsiString(SearchPath)), False);
+        Result := SymInitializeAFunc(ProcessHandle, PAnsiChar(AnsiString(SearchPath)), False)
+      else
+        Result := False;
+
       if Result then
       begin
         SymOptions := SymGetOptionsFunc or SYMOPT_DEFERRED_LOADS
@@ -3268,7 +3274,13 @@ begin
 
   if Result then
   begin
-    ProcessHandle := GetCurrentProcess;
+    if IsWinNT and (Win32MajorVersion >= 6) then
+      // ? in Windows NT, first argument is a process handle
+      // in Windows Vista (WinNT_6_Up), first argument is a process handle
+      ProcessHandle := GetCurrentProcess
+    else
+      // in Windows 95, 98, ME, ?WinNT_5_Down first argument is a process identifier
+      ProcessHandle := GetCurrentProcessId;
 
     if Assigned(SymGetModuleInfoWFunc) then
     begin
