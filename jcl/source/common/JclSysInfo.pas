@@ -429,7 +429,7 @@ type
   TCacheFamily = (
     cfInstructionTLB, cfDataTLB,
     cfL1InstructionCache, cfL1DataCache,
-    cfL2Cache, cfL3Cache, cfTrace, cfOther);
+    cfL2Cache, cfL2TLB, cfL3Cache, cfTrace, cfOther);
 
   TCacheInfo = record
     D: Byte;
@@ -626,38 +626,38 @@ const
   INTEL_PBE    = BIT_31; // Pending Break Enable
 
   { Extended Intel Feature Flags }
-  EINTEL_SSE3    = BIT_0;  // Streaming SIMD Extensions 3
-  EINTEL_BIT_1   = BIT_1;  // Reserved, do not count on value
-  EINTEL_DTES64  = BIT_2;  // write a history of the 64-bit branch to and from addresses into memory
-  EINTEL_MONITOR = BIT_3;  // Monitor/MWAIT
-  EINTEL_DSCPL   = BIT_4;  // CPL Qualified debug Store
-  EINTEL_VMX     = BIT_5;  // Virtual Machine Technology
-  EINTEL_SMX     = BIT_6;  // Safer Mode Extensions
-  EINTEL_EST     = BIT_7;  // Enhanced Intel Speedstep technology
-  EINTEL_TM2     = BIT_8;  // Thermal monitor 2
-  EINTEL_SSSE3   = BIT_9;  // SSSE 3 extensions
-  EINTEL_CNXTID  = BIT_10; // L1 Context ID
-  EINTEL_BIT_11  = BIT_11; // Reserved, do not count on value
-  EINTEL_BIT_12  = BIT_12; // Reserved, do not count on value
-  EINTEL_CX16    = BIT_13; // CMPXCHG16B instruction
-  EINTEL_XTPR    = BIT_14; // Send Task Priority messages
-  EINTEL_PDCM    = BIT_15; // Perf/Debug Capability MSR
-  EINTEL_BIT_16  = BIT_16; // Reserved, do not count on value
-  EINTEL_BIT_17  = BIT_17; // Reserved, do not count on value
-  EINTEL_DCA     = BIT_18; // Direct Cache Access
-  EINTEL_SSE4_1  = BIT_19; // Streaming SIMD Extensions 4.1
-  EINTEL_SSE4_2  = BIT_20; // Streaming SIMD Extensions 4.2
-  EINTEL_X2APIC  = BIT_21; // x2APIC feature
-  EINTEL_MOVBE   = BIT_22; // MOVBE instruction
-  EINTEL_POPCNT  = BIT_23; // A value of 1 indicates the processor supports the POPCNT instruction.
-  EINTEL_BIT_24  = BIT_24; // Reserved, do not count on value
-  EINTEL_BIT_25  = BIT_25; // Reserved, do not count on value
-  EINTEL_XSAVE   = BIT_26; // XSAVE/XRSTOR processor extended states feature, XSETBV/XGETBV instructions and XFEATURE_ENABLED_MASK (XCR0) register
-  EINTEL_OSXSAVE = BIT_27; // OS has enabled features present in EINTEL_XSAVE
-  EINTEL_BIT_28  = BIT_28; // Reserved, do not count on value
-  EINTEL_BIT_29  = BIT_29; // Reserved, do not count on value
-  EINTEL_BIT_30  = BIT_30; // Reserved, do not count on value
-  EINTEL_BIT_31  = BIT_31; // Reserved, do not count on value
+  EINTEL_SSE3      = BIT_0;  // Streaming SIMD Extensions 3
+  EINTEL_PCLMULQDQ = BIT_1;  // the processor supports the PCLMULQDQ instruction
+  EINTEL_DTES64    = BIT_2;  // the processor supports DS area using 64-bit layout
+  EINTEL_MONITOR   = BIT_3;  // Monitor/MWAIT
+  EINTEL_DSCPL     = BIT_4;  // CPL Qualified debug Store
+  EINTEL_VMX       = BIT_5;  // Virtual Machine Technology
+  EINTEL_SMX       = BIT_6;  // Safer Mode Extensions
+  EINTEL_EST       = BIT_7;  // Enhanced Intel Speedstep technology
+  EINTEL_TM2       = BIT_8;  // Thermal monitor 2
+  EINTEL_SSSE3     = BIT_9;  // SSSE 3 extensions
+  EINTEL_CNXTID    = BIT_10; // L1 Context ID
+  EINTEL_BIT_11    = BIT_11; // Reserved, do not count on value
+  EINTEL_BIT_12    = BIT_12; // Reserved, do not count on value
+  EINTEL_CX16      = BIT_13; // CMPXCHG16B instruction
+  EINTEL_XTPR      = BIT_14; // Send Task Priority messages
+  EINTEL_PDCM      = BIT_15; // Perf/Debug Capability MSR
+  EINTEL_BIT_16    = BIT_16; // Reserved, do not count on value
+  EINTEL_BIT_17    = BIT_17; // Reserved, do not count on value
+  EINTEL_DCA       = BIT_18; // Direct Cache Access
+  EINTEL_SSE4_1    = BIT_19; // Streaming SIMD Extensions 4.1
+  EINTEL_SSE4_2    = BIT_20; // Streaming SIMD Extensions 4.2
+  EINTEL_X2APIC    = BIT_21; // x2APIC feature
+  EINTEL_MOVBE     = BIT_22; // MOVBE instruction
+  EINTEL_POPCNT    = BIT_23; // A value of 1 indicates the processor supports the POPCNT instruction.
+  EINTEL_BIT_24    = BIT_24; // Reserved, do not count on value
+  EINTEL_AES       = BIT_25; // the processor supports the AES instruction extensions
+  EINTEL_XSAVE     = BIT_26; // XSAVE/XRSTOR processor extended states feature, XSETBV/XGETBV instructions and XFEATURE_ENABLED_MASK (XCR0) register
+  EINTEL_OSXSAVE   = BIT_27; // OS has enabled features present in EINTEL_XSAVE
+  EINTEL_BIT_28    = BIT_28; // Reserved, do not count on value
+  EINTEL_BIT_29    = BIT_29; // Reserved, do not count on value
+  EINTEL_BIT_30    = BIT_30; // Reserved, do not count on value
+  EINTEL_BIT_31    = BIT_31; // Always return 0
 
   { Extended Intel 64 Bits Feature Flags }
   EINTEL64_BIT_0  = BIT_0;  // Reserved, do not count on value
@@ -687,7 +687,7 @@ const
   EINTEL64_BIT_24 = BIT_24; // Reserved, do not count on value
   EINTEL64_BIT_25 = BIT_25; // Reserved, do not count on value
   EINTEL64_BIT_26 = BIT_26; // Reserved, do not count on value
-  EINTEL64_BIT_27 = BIT_27; // Reserved, do not count on value
+  EINTEL64_RDTSCP = BIT_27; // RDTSCP and IA32_TSC_AUX are available
   EINTEL64_BIT_28 = BIT_28; // Reserved, do not count on value
   EINTEL64_EM64T  = BIT_29; // Intel Extended Memory 64 Technology
   EINTEL64_BIT_30 = BIT_30; // Reserved, do not count on value
@@ -1170,7 +1170,7 @@ const
   MXCSR_FZ  = BIT_15;                 // Flush to Zero
 
 const
-  IntelCacheDescription: array [0..77] of TCacheInfo = (
+  IntelCacheDescription: array [0..86] of TCacheInfo = (
     (D: $00; Family: cfOther;                                                                           I: RsIntelCacheDescr00),
     (D: $01; Family: cfInstructionTLB;     Size: 4;     WaysOfAssoc: 4;                Entries: 32;      I: RsIntelCacheDescr01),
     (D: $02; Family: cfInstructionTLB;     Size: 4096;  WaysOfAssoc: 4;                Entries: 2;       I: RsIntelCacheDescr02),
@@ -1182,7 +1182,9 @@ const
     (D: $0A; Family: cfL1DataCache;        Size: 8;     WaysOfAssoc: 2;  LineSize: 32;                   I: RsIntelCacheDescr0A),
     (D: $0B; Family: cfInstructionTLB;     Size: 4;     WaysOfAssoc: 4;                Entries: 4;       I: RsIntelCacheDescr0B),
     (D: $0C; Family: cfL1DataCache;        Size: 16;    WaysOfAssoc: 4;  LineSize: 32;                   I: RsIntelCacheDescr0C),
-    (D: $0E; Family: cfL1DataCache;        Size: 24;    WaysOfAssoc: 4;  LineSize: 32;                   I: RsIntelCacheDescr0E),
+    (D: $0D; Family: cfL1DataCache;        Size: 16;    WaysOfAssoc: 4;  LineSize: 64;                   I: RsIntelCacheDescr0D),
+    (D: $0E; Family: cfL1DataCache;        Size: 24;    WaysOfAssoc: 4;  LineSize: 64;                   I: RsIntelCacheDescr0E),
+    (D: $21; Family: cfL2Cache;            Size: 256;   WaysOfAssoc: 4;  LineSize: 64;                   I: RsIntelCacheDescr21),
     (D: $22; Family: cfL3Cache;            Size: 512;   WaysOfAssoc: 4;  LineSize: 64; LinePerSector: 2; I: RsIntelCacheDescr22),
     (D: $23; Family: cfL3Cache;            Size: 1024;  WaysOfAssoc: 8;  LineSize: 64; LinePerSector: 2; I: RsIntelCacheDescr23),
     (D: $25; Family: cfL3Cache;            Size: 2048;  WaysOfAssoc: 8;  LineSize: 64; LinePerSector: 2; I: RsIntelCacheDescr25),
@@ -1207,15 +1209,18 @@ const
     (D: $49; Family: cfL2Cache;            Size: 4096;  WaysOfAssoc: 16; LineSize: 64;                   I: RsIntelCacheDescr49),
     (D: $4A; Family: cfL3Cache;            Size: 6144;  WaysOfAssoc: 12; LineSize: 64;                   I: RsIntelCacheDescr4A),
     (D: $4B; Family: cfL3Cache;            Size: 8192;  WaysOfAssoc: 16; LineSize: 64;                   I: RsIntelCacheDescr4B),
+    (D: $4C; Family: cfL3Cache;            Size: 12288; WaysOfAssoc: 12; LineSize: 64;                   I: RsIntelCacheDescr4C),
     (D: $4D; Family: cfL3Cache;            Size: 16384; WaysOfAssoc: 16; LineSize: 64;                   I: RsIntelCacheDescr4D),
     (D: $4E; Family: cfL3Cache;            Size: 6144;  WaysOfAssoc: 24; LineSize: 64;                   I: RsIntelCacheDescr4E),
     (D: $4F; Family: cfInstructionTLB;     Size: 4;                                    Entries: 32;      I: RsIntelCacheDescr4F),
     (D: $50; Family: cfInstructionTLB;     Size: 4;                                    Entries: 64;      I: RsIntelCacheDescr50),
     (D: $51; Family: cfInstructionTLB;     Size: 4;                                    Entries: 128;     I: RsIntelCacheDescr51),
     (D: $52; Family: cfInstructionTLB;     Size: 4;                                    Entries: 256;     I: RsIntelCacheDescr52),
+    (D: $55; Family: cfInstructionTLB;     Size: 2048;                                 Entries: 7;       I: RsIntelCacheDescr55),
     (D: $56; Family: cfDataTLB;            Size: 4096;  WaysOfAssoc: 4;                Entries: 16;      I: RsIntelCacheDescr56),
     (D: $57; Family: cfDataTLB;            Size: 4;     WaysOfAssoc: 4;                Entries: 16;      I: RsIntelCacheDescr57),
     (D: $59; Family: cfDataTLB;            Size: 4;                                    Entries: 16;      I: RsIntelCacheDescr59),
+    (D: $5A; Family: cfDataTLB;            Size: 4096;  WaysOfAssoc: 4;                Entries: 32;      I: RsIntelCacheDescr5A),
     (D: $5B; Family: cfDataTLB;            Size: 4096;                                 Entries: 64;      I: RsIntelCacheDescr5B),
     (D: $5C; Family: cfDataTLB;            Size: 4096;                                 Entries: 128;     I: RsIntelCacheDescr5C),
     (D: $5D; Family: cfDataTLB;            Size: 4096;                                 Entries: 256;     I: RsIntelCacheDescr5D),
@@ -1243,12 +1248,16 @@ const
     (D: $87; Family: cfL2Cache;            Size: 1024;  WaysOfAssoc: 8;  LineSize: 64;                   I: RsIntelCacheDescr87),
     (D: $B0; Family: cfInstructionTLB;     Size: 4;     WaysOfAssoc: 4;                 Entries: 128;    I: RsIntelCacheDescrB0),
     (D: $B1; Family: cfInstructionTLB;     Size: 2048;  WaysOfAssoc: 4;                 Entries: 8;      I: RsIntelCacheDescrB1),
+    (D: $B2; Family: cfInstructionTLB;     Size: 4;     WaysOfAssoc: 4;                 Entries: 64;     I: RsIntelCacheDescrB2),
     (D: $B3; Family: cfDataTLB;            Size: 4;     WaysOfAssoc: 4;                 Entries: 128;    I: RsIntelCacheDescrB3),
     (D: $B4; Family: cfDataTLB;            Size: 4;     WaysOfAssoc: 4;                 Entries: 256;    I: RsIntelCacheDescrB4),
     (D: $BA; Family: cfDataTLB;            Size: 4;     WaysOfAssoc: 4;                 Entries: 64;     I: RsIntelCacheDescrBA),
     (D: $C0; Family: cfDataTLB;            Size: 4;     WaysOfAssoc: 4;                 Entries: 8;      I: RsIntelCacheDescrC0),
+    (D: $CA; Family: cfL2TLB;              Size: 4;     WaysOfAssoc: 4;                 Entries: 512;    I: RsIntelCacheDescrCA),
+    (D: $E4; Family: cfL3Cache;            Size: 8192;  WaysOfAssoc: 16; LineSize: 64;                   I: RsIntelCacheDescrE4),
     (D: $F0; Family: cfOther;                                                                            I: RsIntelCacheDescrF0),
-    (D: $F1; Family: cfOther;                                                                            I: RsIntelCacheDescrF1)
+    (D: $F1; Family: cfOther;                                                                            I: RsIntelCacheDescrF1),
+    (D: $FF; Family: cfOther;                                                                            I: RsIntelCacheDescrFF)
   );
 
 procedure GetCpuInfo(var CpuInfo: TCpuInfo);
