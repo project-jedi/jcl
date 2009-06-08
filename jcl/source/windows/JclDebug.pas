@@ -3111,7 +3111,6 @@ begin
 
     if Result then
     begin
-      SearchPath := ''; // use default paths
       if JclDebugInfoSymbolPaths <> '' then
       begin
         SearchPath := StrEnsureSuffix(DirSeparator, JclDebugInfoSymbolPaths);
@@ -3122,18 +3121,22 @@ begin
         if GetEnvironmentVar(EnvironmentVarAlternateNtSymbolPath, EnvironmentVarValue) and (EnvironmentVarValue <> '') then
           SearchPath := StrEnsureNoSuffix(DirSeparator, StrEnsureSuffix(DirSeparator, EnvironmentVarValue) + SearchPath);
 
-        { DbgHelp.dll crashes when an empty path is specified. This also means
-          that the SearchPath must not end with a DirSeparator. }
+        // DbgHelp.dll crashes when an empty path is specified.
+        // This also means that the SearchPath must not end with a DirSeparator. }
         SearchPath := StrRemoveEmptyPaths(SearchPath);
-      end;
+      end
+      else
+        // Fix crash SymLoadModuleFunc on WinXP SP3 when SearchPath=''
+        SearchPath := GetCurrentFolder;
 
       if IsWinNT then
         // in Windows NT, first argument is a process handle
         ProcessHandle := GetCurrentProcess
       else
-        // in Windows 95, 98, ME, first argument is a process identifier
+        // in Windows 95, 98, ME first argument is a process identifier
         ProcessHandle := GetCurrentProcessId;
 
+      // Debug(WinXPSP3): SymInitializeWFunc==nil
       if Assigned(SymInitializeWFunc) then
         Result := SymInitializeWFunc(ProcessHandle, PWideChar(WideString(SearchPath)), False)
       else
@@ -3271,58 +3274,53 @@ var
   ProcessHandle: THandle;
 begin
   Result := InitializeDebugSymbols;
-
   if Result then
   begin
-    if IsWinNT and (Win32MajorVersion >= 6) then
-      // ? in Windows NT, first argument is a process handle
-      // in Windows Vista (WinNT_6_Up), first argument is a process handle
+    if IsWinNT then
+      // in Windows NT, first argument is a process handle
       ProcessHandle := GetCurrentProcess
     else
-      // in Windows 95, 98, ME, ?WinNT_5_Down first argument is a process identifier
+      // in Windows 95, 98, ME, first argument is a process identifier
       ProcessHandle := GetCurrentProcessId;
 
-    if Assigned(SymGetModuleInfoWFunc) then
+    if IsWinNT and Assigned(SymGetModuleInfoWFunc) then
     begin
       ZeroMemory(@ModuleInfoW, SizeOf(ModuleInfoW));
       ModuleInfoW.SizeOfStruct := SizeOf(ModuleInfoW);
-
-      if ((not SymGetModuleInfoWFunc(ProcessHandle, Module, ModuleInfoW))
-          or (ModuleInfoW.BaseOfImage = 0)) then
+      Result := SymGetModuleInfoWFunc(ProcessHandle, Module, ModuleInfoW);
+      if not Result then
       begin
+        // the symbols for this module are not loaded yet: load the module and query for the symbol again
         ModuleFileName := GetModulePath(Module);
+        ZeroMemory(@ModuleInfoW, SizeOf(ModuleInfoW));
+        ModuleInfoW.SizeOfStruct := SizeOf(ModuleInfoW);
+        // warning: crash on WinXP SP3 when SymInitializeAFunc is called with empty SearchPath
         // OF: possible loss of data
-        Result := SymLoadModuleFunc(ProcessHandle, 0, PAnsiChar(AnsiString(ModuleFileName)), nil, 0, 0) <> 0;
-        if Result then
-        begin
-          ZeroMemory(@ModuleInfoW, SizeOf(ModuleInfoW));
-          ModuleInfoW.SizeOfStruct := SizeOf(ModuleInfoW);
-          Result := SymGetModuleInfoWFunc(ProcessHandle, Module, ModuleInfoW);
-          Result := Result and not (ModuleInfoW.SymType in [SymNone, SymExport]);
-        end;
+        Result := (SymLoadModuleFunc(ProcessHandle, 0, PAnsiChar(AnsiString(ModuleFileName)), nil, 0, 0) <> 0) and
+                  SymGetModuleInfoWFunc(ProcessHandle, Module, ModuleInfoW);
       end;
+      Result := Result and (ModuleInfoW.BaseOfImage <> 0) and
+                not (ModuleInfoW.SymType in [SymNone, SymExport]);
     end
     else
     if Assigned(SymGetModuleInfoAFunc) then
     begin
       ZeroMemory(@ModuleInfoA, SizeOf(ModuleInfoA));
       ModuleInfoA.SizeOfStruct := SizeOf(ModuleInfoA);
-
-      if ((not SymGetModuleInfoAFunc(ProcessHandle, Module, ModuleInfoA))
-          or (ModuleInfoA.BaseOfImage = 0)) then
+      Result := SymGetModuleInfoAFunc(ProcessHandle, Module, ModuleInfoA);
+      if not Result then
       begin
+        // the symbols for this module are not loaded yet: load the module and query for the symbol again
         ModuleFileName := GetModulePath(Module);
+        ZeroMemory(@ModuleInfoA, SizeOf(ModuleInfoA));
+        ModuleInfoA.SizeOfStruct := SizeOf(ModuleInfoA);
+        // warning: crash on WinXP SP3 when SymInitializeAFunc is called with empty SearchPath
         // OF: possible loss of data
-        Result := SymLoadModuleFunc(ProcessHandle, 0, PAnsiChar(AnsiString(ModuleFileName)), nil, 0, 0) <> 0;
-
-        if Result then
-        begin
-          ZeroMemory(@ModuleInfoA, SizeOf(ModuleInfoA));
-          ModuleInfoA.SizeOfStruct := SizeOf(ModuleInfoA);
-          Result := SymGetModuleInfoAFunc(ProcessHandle, Module, ModuleInfoA);
-          Result := Result and not (ModuleInfoA.SymType in [SymNone, SymExport]);
-        end;
+        Result := (SymLoadModuleFunc(ProcessHandle, 0, PAnsiChar(AnsiString(ModuleFileName)), nil, 0, 0) <> 0) and
+                  SymGetModuleInfoAFunc(ProcessHandle, Module, ModuleInfoA);
       end;
+      Result := Result and (ModuleInfoW.BaseOfImage <> 0) and
+                not (ModuleInfoA.SymType in [SymNone, SymExport]);
     end;
   end;
 end;
