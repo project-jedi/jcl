@@ -1003,7 +1003,7 @@ begin
       {$IFDEF RTL160_UP} // Delphi 7-2007
     OldValue := Pointer(InterlockedCompareExchange(Longint(GlobalMMFHandleListCS), Longint(CS), 0));
       {$ELSE} // Delphi 5, 6
-    OldValue := InterlockedCompareExchange(Pointer(GlobalMMFHandleListCS), Pointer(CS), 0);
+    OldValue := InterlockedCompareExchange(Pointer(GlobalMMFHandleListCS), Pointer(CS), nil);
       {$ENDIF RTL180_UP}
     {$ENDIF RTL185_UP}
     if OldValue <> nil then

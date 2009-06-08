@@ -611,7 +611,7 @@ end;
 
 function TJclClrStream.GetData: Pointer;
 begin
-  Result := Pointer(DWORD_PTR(FMetadata.Header) + FHeader.Offset);
+  Result := Pointer(PAnsiChar(FMetadata.Header) + FHeader.Offset);
 end;
 
 //=== { TJclClrStringsStream } ===============================================
@@ -631,7 +631,7 @@ begin
     if pch^ <> #0 then
       FStrings.AddObject(string(TUTF8String(pch)), TObject(off));
     pch := pch + StrLen(pch) + 1;
-    off := DWORD_PTR(pch - Data);
+    off := pch - PAnsiChar(Data);
   end;
 end;
 
@@ -755,13 +755,13 @@ var
     end;
 
     if IsTail then
-      Result := HexStr + ')' + JclStrings.StrRepeat(' ', (BufSize-Size)*3) + ' // ' + AsciiStr
+      Result := HexStr + ')' + JclStrings.StrRepeat(' ', (BufSize-Size) * 3) + ' // ' + AsciiStr
     else
-      Result := HexStr + ' ' + JclStrings.StrRepeat(' ', (BufSize-Size)*3) + ' // ' + AsciiStr;
+      Result := HexStr + ' ' + JclStrings.StrRepeat(' ', (BufSize-Size) * 3) + ' // ' + AsciiStr;
     if IsHead then
       Result := Indent + '( ' + Result
     else
-      Result := JclStrings.StrRepeat(' ', Length(Indent)+2) + Result;
+      Result := JclStrings.StrRepeat(' ', Length(Indent) + 2) + Result;
   end;
 
 begin
@@ -781,7 +781,7 @@ end;
 
 function TJclClrBlobRecord.GetData: PJclByteArray;
 begin
-  Result := PJclByteArray(DWORD_PTR(Memory) + Position);
+  Result := PJclByteArray(PAnsiChar(Memory) + Position);
 end;
 
 //=== { TJclClrBlobStream } ==================================================
@@ -798,8 +798,8 @@ begin
   begin
     if ABlob.Size > 0 then
       FBlobs.Add(ABlob);
-    if (INT_PTR(ABlob.Memory) + ABlob.Size) < (INT_PTR(Self.Data) + Integer(Self.Size)) then
-      ABlob := TJclClrBlobRecord.Create(Self, Pointer(INT_PTR(ABlob.Memory) + ABlob.Size))
+    if (PAnsiChar(ABlob.Memory) + ABlob.Size) < (PAnsiChar(Self.Data) + Integer(Self.Size)) then
+      ABlob := TJclClrBlobRecord.Create(Self, Pointer(PAnsiChar(ABlob.Memory) + ABlob.Size))
     else
       ABlob := nil;
   end;
