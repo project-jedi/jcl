@@ -181,6 +181,7 @@
       <File FileName="" ContainerId="" ModuleName="Borland.VclRtl"/>
       <File FileName="..\..\source\common\JclAnsiStrings.pas" ContainerId="" ModuleName="JclAnsiStrings"/>
       <File FileName="..\..\source\common\JclBase.pas" ContainerId="" ModuleName="JclBase"/>
+      <File FileName="..\..\source\common\JclCharsets.pas" ContainerId="" ModuleName="JclCharsets"/>
       <File FileName="..\..\source\common\JclComplex.pas" ContainerId="" ModuleName="JclComplex"/>
       <File FileName="..\..\source\common\JclCounter.pas" ContainerId="" ModuleName="JclCounter"/>
       <File FileName="..\..\source\common\JclDateTime.pas" ContainerId="" ModuleName="JclDateTime"/>

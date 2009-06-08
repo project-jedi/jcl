@@ -20,6 +20,7 @@
     <File Name="..\..\source\common\JclAnsiStrings.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclBase.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclBorlandTools.pas" Targets="JclDev" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclCharsets.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclComplex.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclCompression.pas" Targets="JclDev" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclCounter.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
