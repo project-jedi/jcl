@@ -3278,7 +3278,7 @@ begin
       // in Windows 95, 98, ME, first argument is a process identifier
       ProcessHandle := GetCurrentProcessId;
 
-    if IsWinNT and Assigned(SymGetModuleInfoWFunc) then
+    if Assigned(SymGetModuleInfoWFunc) then
     begin
       ZeroMemory(@ModuleInfoW, SizeOf(ModuleInfoW));
       ModuleInfoW.SizeOfStruct := SizeOf(ModuleInfoW);
@@ -3316,7 +3316,9 @@ begin
       end;
       Result := Result and (ModuleInfoW.BaseOfImage <> 0) and
                 not (ModuleInfoA.SymType in [SymNone, SymExport]);
-    end;
+    end
+    else
+      Result := False;
   end;
 end;
 
