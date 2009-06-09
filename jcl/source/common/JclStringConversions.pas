@@ -64,7 +64,7 @@ type
 
 {$IFNDEF CLR}
 // one shot conversion between PAnsiChar and PWideChar
-procedure ExpandANSIString(const Source: PAnsiChar; Target: PWideChar; Count: Cardinal);
+procedure ExpandASCIIString(const Source: PAnsiChar; Target: PWideChar; Count: Cardinal);
 {$ENDIF ~CLR}
 
 // tpye of stream related functions
@@ -317,7 +317,7 @@ end;
 // EAX contains Source, EDX contains Target, ECX contains Count
 
 {$IFNDEF CLR}
-procedure ExpandANSIString(const Source: PAnsiChar; Target: PWideChar; Count: Cardinal);
+procedure ExpandASCIIString(const Source: PAnsiChar; Target: PWideChar; Count: Cardinal);
 // Source in EAX
 // Target in EDX
 // Count in ECX
