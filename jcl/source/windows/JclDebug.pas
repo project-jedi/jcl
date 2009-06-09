@@ -3100,14 +3100,11 @@ var
   SymOptions: Cardinal;
   ProcessHandle: THandle;
 begin
-  if DebugSymbolsLoadFailed then
-    Result := False
-  else
-  if not DebugSymbolsInitialized then
+  Result := DebugSymbolsInitialized;
+  if not DebugSymbolsLoadFailed then
   begin
-    DebugSymbolsLoadFailed := not LoadDebugFunctions;
-
-    Result := not DebugSymbolsLoadFailed;
+    Result := LoadDebugFunctions;
+    DebugSymbolsLoadFailed := not Result;
 
     if Result then
     begin
@@ -3157,9 +3154,7 @@ begin
     end
     else
       UnloadDebugFunctions;
-  end
-  else
-    Result := DebugSymbolsInitialized;
+  end;
 end;
 
 class function TJclDebugInfoSymbols.CleanupDebugSymbols: Boolean;
