@@ -163,6 +163,10 @@ resourcestring
   RsENoOpenHelp                 = 'open help not present in Borland Developer Studio';
   {$ENDIF MSWINDOWS}
 
+//=== JclCharsets ============================================================
+resourcestring
+  RsENoCharset = 'No matching charset';
+
 //=== JclCIL =================================================================
 resourcestring
   RsInstructionStreamInvalid = 'Invalid IL instruction stream';

@@ -36,10 +36,17 @@ unit JclCharsets;
 
 interface
 
-{$IFDEF UNITVERSIONING}
 uses
-  JclUnitVersioning;
-{$ENDIF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  JclBase;
+
+type
+  EJclCharsetError = class(EJclError);
+
+const
+  CP_UTF16LE = 1200;
 
 type
   TJclCharsetInfo = record
@@ -471,6 +478,12 @@ const JclCharsetInfos: array [0..301] of TJclCharsetInfo =
      (Name: 'us-ascii'; CodePage: 1252; FamilyCodePage: 1252),
      (Name: 'x-ansi'; CodePage: 1252; FamilyCodePage: 1252) );
 
+function FamilyCodePageFromCharsetName(const CharsetName: string): Word;
+function FamilyCodePageFromCodePage(CodePage: Word): Word;
+function CodePageFromCharsetName(const CharsetName: string): Word;
+function CharsetInfoFromCharsetName(const CharsetName: string): TJclCharsetInfo;
+function CharsetNameFromCodePage(CodePage: Word): string;
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -482,6 +495,101 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
+
+uses
+  SysUtils,
+  JclResources;
+
+function FamilyCodePageFromCharsetName(const CharsetName: string): Word;
+var
+  Index: Integer;
+  UpperCharsetName: string;
+begin
+  UpperCharsetName := UpperCase(CharsetName);
+  for Index := Low(JclCharsetInfos) to High(JclCharsetInfos) do
+    if CompareStr(UpperCharsetName, UpperCase(JclCharsetInfos[Index].Name)) = 0 then
+  begin
+    Result := JclCharsetInfos[Index].FamilyCodePage;
+    Exit;
+  end;
+  {$IFDEF CLR}
+  raise EJclCharsetError.Create(RsENoCharset);
+  {$ELSE ~CLR}
+  raise EJclCharsetError.CreateRes(@RsENoCharset);
+  {$ENDIF ~CLR}
+end;
+
+function CodePageFromCharsetName(const CharsetName: string): Word;
+var
+  Index: Integer;
+  UpperCharsetName: string;
+begin
+  UpperCharsetName := UpperCase(CharsetName);
+  for Index := Low(JclCharsetInfos) to High(JclCharsetInfos) do
+    if CompareStr(UpperCharsetName, UpperCase(JclCharsetInfos[Index].Name)) = 0 then
+  begin
+    Result := JclCharsetInfos[Index].CodePage;
+    Exit;
+  end;
+  {$IFDEF CLR}
+  raise EJclCharsetError.Create(RsENoCharset);
+  {$ELSE ~CLR}
+  raise EJclCharsetError.CreateRes(@RsENoCharset);
+  {$ENDIF ~CLR}
+end;
+
+function CharsetInfoFromCharsetName(const CharsetName: string): TJclCharsetInfo;
+var
+  Index: Integer;
+  UpperCharsetName: string;
+begin
+  UpperCharsetName := UpperCase(CharsetName);
+  for Index := Low(JclCharsetInfos) to High(JclCharsetInfos) do
+    if CompareStr(UpperCharsetName, UpperCase(JclCharsetInfos[Index].Name)) = 0 then
+  begin
+    Result := JclCharsetInfos[Index];
+    Exit;
+  end;
+  {$IFDEF CLR}
+  raise EJclCharsetError.Create(RsENoCharset);
+  {$ELSE ~CLR}
+  raise EJclCharsetError.CreateRes(@RsENoCharset);
+  {$ENDIF ~CLR}
+end;
+
+function FamilyCodePageFromCodePage(CodePage: Word): Word;
+var
+  Index: Integer;
+begin
+  for Index := Low(JclCharsetInfos) to High(JclCharsetInfos) do
+    if JclCharsetInfos[Index].CodePage = CodePage then
+  begin
+    Result := JclCharsetInfos[Index].FamilyCodePage;
+    Exit;
+  end;
+  {$IFDEF CLR}
+  raise EJclCharsetError.Create(RsENoCharset);
+  {$ELSE ~CLR}
+  raise EJclCharsetError.CreateRes(@RsENoCharset);
+  {$ENDIF ~CLR}
+end;
+
+function CharsetNameFromCodePage(CodePage: Word): string;
+var
+  Index: Integer;
+begin
+  for Index := Low(JclCharsetInfos) to High(JclCharsetInfos) do
+    if JclCharsetInfos[Index].CodePage = CodePage then
+  begin
+    Result := JclCharsetInfos[Index].Name;
+    Exit;
+  end;
+  {$IFDEF CLR}
+  raise EJclCharsetError.Create(RsENoCharset);
+  {$ELSE ~CLR}
+  raise EJclCharsetError.CreateRes(@RsENoCharset);
+  {$ENDIF ~CLR}
+end;
 
 {$IFDEF UNITVERSIONING}
 initialization
