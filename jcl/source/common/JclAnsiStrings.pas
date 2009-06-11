@@ -70,9 +70,9 @@ uses
   System.Text,
   System.IO,
   {$ENDIF CLR}
-  {$IFDEF SUPPORTS_UNICODE}
+  {$IFDEF HAS_UNIT_ANSISTRINGS}
   AnsiStrings, RTLConsts,
-  {$ENDIF SUPPORTS_UNICODE}
+  {$ENDIF HAS_UNIT_ANSISTRINGS}
   JclBase;
 
 // Ansi types
@@ -104,7 +104,9 @@ type
     procedure AssignTo(Dest: TPersistent); override;
 
     procedure Error(const Msg: string; Data: Integer); overload;
+    {$IFNDEF CLR}
     procedure Error(Msg: PResStringRec; Data: Integer); overload;
+    {$ENDIF ~CLR}
 
     function GetString(Index: Integer): AnsiString; virtual; abstract;
     procedure SetString(Index: Integer; const Value: AnsiString); virtual; abstract;
@@ -921,10 +923,12 @@ begin
   raise EJclAnsiStringListError.CreateFmt(Msg, [Data]);
 end;
 
+{$IFNDEF CLR}
 procedure TJclAnsiStrings.Error(Msg: PResStringRec; Data: Integer);
 begin
   Error(LoadResString(Msg), Data);
 end;
+{$ENDIF ~CLR}
 
 function TJclAnsiStrings.CompareStrings(const S1, S2: AnsiString): Integer;
 begin
@@ -1082,12 +1086,25 @@ procedure TJclAnsiStrings.LoadFromStream(Stream: TStream);
 var
   Size: Integer;
   S: AnsiString;
+  {$IFDEF CLR}
+  C: AnsiChar;
+  I: Integer;
+  {$ENDIF CLR}
 begin
   BeginUpdate;
   try
     Size := Stream.Size - Stream.Position;
+    {$IFDEF CLR}
+    S := '';
+    for I := 1 to Size do
+    begin
+      Stream.Read(C);
+      S := S + C;
+    end;
+    {$ELSE ~CLR}
     System.SetString(S, nil, Size);
     Stream.Read(Pointer(S)^, Size);
+    {$ENDIF ~CLR}
     SetText(S);
   finally
     EndUpdate;
