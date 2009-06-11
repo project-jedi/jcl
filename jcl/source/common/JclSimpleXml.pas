@@ -460,6 +460,7 @@ type
   TJclSimpleXML = class(TObject)
   protected
     FEncoding: TJclStringEncoding;
+    FCodePage: Word;
     FFileName: TFileName;
     FOptions: TJclSimpleXMLOptions;
     FRoot: TJclSimpleXMLElemClassic;
@@ -488,12 +489,12 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure LoadFromString(const Value: string);
-    procedure LoadFromFile(const FileName: TFileName; Encoding: TJclStringEncoding = seAuto);
-    procedure LoadFromStream(Stream: TStream; Encoding: TJclStringEncoding = seAuto);
+    procedure LoadFromFile(const FileName: TFileName; Encoding: TJclStringEncoding = seAuto; CodePage: Word = CP_ACP);
+    procedure LoadFromStream(Stream: TStream; Encoding: TJclStringEncoding = seAuto; CodePage: Word = CP_ACP);
     procedure LoadFromStringStream(StringStream: TJclStringStream);
-    procedure LoadFromResourceName(Instance: THandle; const ResName: string; Encoding: TJclStringEncoding = seAuto);
-    procedure SaveToFile(const FileName: TFileName; Encoding: TJclStringEncoding = seAuto);
-    procedure SaveToStream(Stream: TStream; Encoding: TJclStringEncoding = seAuto);
+    procedure LoadFromResourceName(Instance: THandle; const ResName: string; Encoding: TJclStringEncoding = seAuto; CodePage: Word = CP_ACP);
+    procedure SaveToFile(const FileName: TFileName; Encoding: TJclStringEncoding = seAuto; CodePage: Word = CP_ACP);
+    procedure SaveToStream(Stream: TStream; Encoding: TJclStringEncoding = seAuto; CodePage: Word = CP_ACP);
     procedure SaveToStringStream(StringStream: TJclStringStream);
     function SaveToString: string;
     property Prolog: TJclSimpleXMLElemsProlog read FProlog write FProlog;
@@ -582,6 +583,7 @@ const
 implementation
 
 uses
+  JclCharsets,
   JclStrings,
   JclStringConversions,
   JclResources;
@@ -1098,21 +1100,21 @@ begin
     FOnValue(Self, AName, AValue);
 end;
 
-procedure TJclSimpleXML.LoadFromFile(const FileName: TFileName; Encoding: TJclStringEncoding);
+procedure TJclSimpleXML.LoadFromFile(const FileName: TFileName; Encoding: TJclStringEncoding; CodePage: Word);
 var
   Stream: TMemoryStream;
 begin
   Stream := TMemoryStream.Create;
   try
     Stream.LoadFromFile(FileName);
-    LoadFromStream(Stream, Encoding);
+    LoadFromStream(Stream, Encoding, CodePage);
   finally
     Stream.Free;
   end;
 end;
 
 procedure TJclSimpleXML.LoadFromResourceName(Instance: THandle; const ResName: string;
-  Encoding: TJclStringEncoding);
+  Encoding: TJclStringEncoding; CodePage: Word);
 {$IFNDEF MSWINDOWS}
 const
   RT_RCDATA = PChar(10);
@@ -1122,13 +1124,13 @@ var
 begin
   Stream := TResourceStream.Create(Instance, ResName, RT_RCDATA);
   try
-    LoadFromStream(Stream, Encoding);
+    LoadFromStream(Stream, Encoding, CodePage);
   finally
     Stream.Free;
   end;
 end;
 
-procedure TJclSimpleXML.LoadFromStream(Stream: TStream; Encoding: TJclStringEncoding);
+procedure TJclSimpleXML.LoadFromStream(Stream: TStream; Encoding: TJclStringEncoding; CodePage: Word);
 var
   AOutStream: TStream;
   AStringStream: TJclStringStream;
@@ -1151,23 +1153,40 @@ begin
 
     case Encoding of
       seAnsi:
-        AStringStream := TJclAnsiStream.Create(AOutStream, False);
+        begin
+          AStringStream := TJclAnsiStream.Create(AOutStream, False);
+          TJclAnsiStream(AStringStream).CodePage := CodePage;
+        end;
       seUTF8:
         AStringStream := TJclUTF8Stream.Create(AOutStream, False);
       seUTF16:
         AStringStream := TJclUTF16Stream.Create(AOutStream, False);
     else
       AStringStream := TJclAutoStream.Create(AOutStream, False);
+      TJclAutoStream(AStringStream).CodePage := CodePage;
     end;
     try
       AStringStream.SkipBOM;
 
-      if AStringStream is TJclAutoStream then
-        FEncoding := TJclAutoStream(AStringStream).Encoding
-      else
-        FEncoding := Encoding;
-
       LoadFromStringStream(AStringStream);
+
+      // save codepage and encoding for future saves
+      if AStringStream is TJclAutoStream then
+      begin
+        FCodePage := TJclAutoStream(AStringStream).CodePage;
+        FEncoding := TJclAutoStream(AStringStream).Encoding;
+      end
+      else
+      if AStringStream is TJclAnsiStream then
+      begin
+        FCodePage := TJclAnsiStream(AStringStream).CodePage;
+        FEncoding := Encoding;
+      end
+      else
+      begin
+        FCodePage := CodePage;
+        FEncoding := Encoding;
+      end;
     finally
       AStringStream.Free;
     end;
@@ -1203,7 +1222,7 @@ begin
   end;
 end;
 
-procedure TJclSimpleXML.SaveToFile(const FileName: TFileName; Encoding: TJclStringEncoding);
+procedure TJclSimpleXML.SaveToFile(const FileName: TFileName; Encoding: TJclStringEncoding; CodePage: Word);
 var
   Stream: TFileStream;
 begin
@@ -1215,17 +1234,19 @@ begin
   else
     Stream := TFileStream.Create(FileName, fmCreate);
   try
-    SaveToStream(Stream, Encoding);
+    SaveToStream(Stream, Encoding, CodePage);
   finally
     Stream.Free;
   end;
 end;
 
-procedure TJclSimpleXML.SaveToStream(Stream: TStream; Encoding: TJclStringEncoding);
+procedure TJclSimpleXML.SaveToStream(Stream: TStream; Encoding: TJclStringEncoding; CodePage: Word);
 var
   AOutStream: TStream;
   AStringStream: TJclStringStream;
   DoFree: Boolean;
+  XmlHeader: TJclSimpleXMLElemHeader;
+  I: Integer;
 begin
   if Assigned(FOnEncodeStream) then
   begin
@@ -1239,7 +1260,33 @@ begin
   end;
   try
     if Encoding = seAuto then
-      Encoding := FEncoding;
+    begin
+      XmlHeader := nil;
+      for I := 0 to Prolog.Count - 1 do
+        if Prolog.Item[I] is TJclSimpleXMLElemHeader then
+      begin
+        XmlHeader := TJclSimpleXMLElemHeader(Prolog.Item[I]);
+        Break;
+      end;
+      if Assigned(XmlHeader) then
+      begin
+        CodePage := CodePageFromCharsetName(XmlHeader.Encoding);
+        case CodePage of
+          CP_UTF8:
+            Encoding := seUTF8;
+          CP_UTF16LE:
+            Encoding := seUTF16;
+        else
+          Encoding := seAnsi;
+        end;
+      end
+      else
+      begin
+        // restore from previous load
+        Encoding := FEncoding;
+        CodePage := FCodePage;
+      end;
+    end;
 
     case Encoding of
       seUTF8:
@@ -1248,6 +1295,7 @@ begin
         AStringStream := TJclUTF16Stream.Create(AOutStream, False);
     else
       AStringStream := TJclAnsiStream.Create(AOutStream);
+      TJclAnsiStream(AStringStream).CodePage := CodePage;
     end;
     try
       AStringStream.WriteBOM;
@@ -3284,6 +3332,15 @@ begin
     Error(RsEInvalidCommentUnexpectedEndOfData);
 
   Name := '';
+
+  // set current stringstream codepage
+  if StringStream is TJclAutoStream then
+    TJclAutoStream(StringStream).CodePage := CodePageFromCharsetName(FEncoding)
+  else
+  if StringStream is TJclAnsiStream then
+    TJclAnsiStream(StringStream).CodePage := CodePageFromCharsetName(FEncoding)
+  else
+    Error(RsENoCharset);
 end;
 
 procedure TJclSimpleXMLElemHeader.SaveToStringStream(StringStream: TJclStringStream;
