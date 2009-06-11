@@ -71,8 +71,11 @@ uses
   System.IO,
   {$ENDIF CLR}
   {$IFDEF HAS_UNIT_ANSISTRINGS}
-  AnsiStrings, RTLConsts,
+  AnsiStrings,
   {$ENDIF HAS_UNIT_ANSISTRINGS}
+  {$IFDEF HAS_UNIT_RTLCONSTS}
+  RTLConsts,
+  {$ENDIF HAS_UNIT_RTLCONSTS}
   JclBase;
 
 // Ansi types
@@ -1126,9 +1129,17 @@ end;
 procedure TJclAnsiStrings.SaveToStream(Stream: TStream);
 var
   S: AnsiString;
+  {$IFDEF CLR}
+  I: Integer;
+  {$ENDIF CLR}
 begin
   S := GetText;
+  {$IFDEF CLR}
+  for I := 1 to Length(S) do
+    Stream.Write(S[I]);
+  {$ELSE ~CLR}
   Stream.WriteBuffer(Pointer(S)^, Length(S));
+  {$ENDIF ~CLR}
 end;
 
 function TJclAnsiStrings.ExtractName(const S: AnsiString): AnsiString;
@@ -1217,7 +1228,7 @@ end;
 function TJclAnsiStringList.GetString(Index: Integer): AnsiString;
 begin
   if (Index < 0) or (Index >= FCount) then
-    Error(@SListIndexError, Index);
+    Error({$IFNDEF CLR}@{$ENDIF}SListIndexError, Index);
 
   Result := FStrings[Index].Str;
 end;
@@ -1225,10 +1236,10 @@ end;
 procedure TJclAnsiStringList.SetString(Index: Integer; const Value: AnsiString);
 begin
   if Sorted then
-    Error(@SSortedListError, 0);
+    Error({$IFNDEF CLR}@{$ENDIF}SSortedListError, 0);
 
   if (Index < 0) or (Index >= FCount) then
-    Error(@SListIndexError, Index);
+    Error({$IFNDEF CLR}@{$ENDIF}SListIndexError, Index);
 
   FStrings[Index].Str := Value;
 end;
@@ -1236,7 +1247,7 @@ end;
 function TJclAnsiStringList.GetObject(Index: Integer): TObject;
 begin
   if (Index < 0) or (Index >= FCount) then
-    Error(@SListIndexError, Index);
+    Error({$IFNDEF CLR}@{$ENDIF}SListIndexError, Index);
 
   Result := FStrings[Index].Obj;
 end;
@@ -1244,7 +1255,7 @@ end;
 procedure TJclAnsiStringList.SetObject(Index: Integer; AObject: TObject);
 begin
   if (Index < 0) or (Index >= FCount) then
-    Error(@SListIndexError, Index);
+    Error({$IFNDEF CLR}@{$ENDIF}SListIndexError, Index);
 
   FStrings[Index].Obj := AObject;
 end;
@@ -1257,7 +1268,7 @@ end;
 procedure TJclAnsiStringList.SetCapacity(const Value: Integer);
 begin
   if (Value < FCount) then
-    Error(@SListCapacityError, Value);
+    Error({$IFNDEF CLR}@{$ENDIF}SListCapacityError, Value);
 
   if Value <> Capacity then
     SetLength(FStrings, Value);
@@ -1294,7 +1305,7 @@ begin
     if Find(S, Result) then
       case Duplicates of
         dupIgnore: Exit;
-        dupError: Error(@SDuplicateString, 0);
+        dupError: Error({$IFNDEF CLR}@{$ENDIF}SDuplicateString, 0);
       end;
   end;
 
@@ -1306,7 +1317,7 @@ var
   I: Integer;
 begin
   if (Index < 0) or (Index >= FCount) then
-    Error(@SListIndexError, Index);
+    Error({$IFNDEF CLR}@{$ENDIF}SListIndexError, Index);
 
   for I := Index to Count - 2 do
     FStrings[Index] := FStrings[Index + 1];

@@ -49,8 +49,10 @@ uses
   {$ENDIF UNITVERSIONING}
   Classes,
   JclBase,
-  JclAnsiStrings,
-  JclWideStrings;
+  {$IFNDEF CLR}
+  JclWideStrings,
+  {$ENDIF ~CLR}
+  JclAnsiStrings;
 
 {$IFDEF BCB6}
 {$DEFINE BUGGY_DEFAULT_INDEXED_PROP}
@@ -61,6 +63,14 @@ uses
 {$IFDEF BCB11}
 {$DEFINE BUGGY_DEFAULT_INDEXED_PROP}
 {$ENDIF BCB11}
+
+{$IFDEF CLR}
+type
+  TJclWideStrings = TStrings;
+  TJclWideStringList = TStringList;
+const
+  WideLineBreak = #13#10;
+{$ENDIF CLR}
 
 const
   DefaultContainerCapacity = 16;

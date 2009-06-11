@@ -47,7 +47,11 @@ uses
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
   Classes,
-  JclBase, JclContainerIntf, JclSynch, JclSysUtils, JclAnsiStrings, JclWideStrings;
+  JclBase, JclContainerIntf, JclSynch, JclSysUtils,
+  {$IFNDEF CLR}
+  JclWideStrings,
+  {$ENDIF ~CLR}
+  JclAnsiStrings;
 
 type
   {$IFDEF KEEP_DEPRECATED}
