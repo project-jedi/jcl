@@ -145,8 +145,12 @@ function UTF16SetNextCharToStream(S: TStream; Ch: UCS4): Boolean;
 
 // AnsiGetNextChar = read next character at StrPos
 // StrPos will be incremented by the number of chars that were read (1)
-function AnsiGetNextChar(const S: AnsiString; var StrPos: Integer): UCS4;
-function AnsiGetNextCharFromStream(S: TStream; var Ch: UCS4): Boolean;
+function AnsiGetNextChar(const S: AnsiString; var StrPos: Integer): UCS4; overload;
+function AnsiGetNextCharFromStream(S: TStream; var Ch: UCS4): Boolean; overload;
+
+// same as AnsiGetNextChar* with custom codepage
+function AnsiGetNextChar(const S: AnsiString; CodePage: Word; var StrPos: Integer): UCS4; overload;
+function AnsiGetNextCharFromStream(S: TStream; CodePage: Word; var Ch: UCS4): Boolean; overload;
 
 // AnsiSkipChars = skip NbSeq characters starting from StrPos
 // returns False if String is too small
@@ -162,8 +166,12 @@ function AnsiSkipCharsFromStream(S: TStream; var NbSeq: Integer): Boolean;
 //        - if UNICODE_SILENT_FAILURE is not defined, StrPos is set to -1
 //    - StrPos > -1 flags string being too small, callee did nothing and caller is responsible for allocating space
 // StrPos will be incremented by the number of chars that were written (1)
-function AnsiSetNextChar(var S: AnsiString; var StrPos: Integer; Ch: UCS4): Boolean;
-function AnsiSetNextCharToStream(S: TStream; Ch: UCS4): Boolean;
+function AnsiSetNextChar(var S: AnsiString; var StrPos: Integer; Ch: UCS4): Boolean; overload;
+function AnsiSetNextCharToStream(S: TStream; Ch: UCS4): Boolean; overload;
+
+// same as AnsiSetNextChar* with custom codepage
+function AnsiSetNextChar(var S: AnsiString; CodePage: Word; var StrPos: Integer; Ch: UCS4): Boolean; overload;
+function AnsiSetNextCharToStream(S: TStream; CodePage: Word; Ch: UCS4): Boolean; overload;
 
 // StringGetNextChar = read next character/sequence at StrPos
 // if UNICODE_SILENT_FAILURE is defined, invalid sequences will be replaced by ReplacementCharacter
@@ -263,7 +271,15 @@ const
 implementation
 
 uses
+  {$IFDEF CLR}
+  System.Text,
+  {$ENDIF CLR}
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF MSWINDOWS}
   JclResources;
+
+const MB_ERR_INVALID_CHARS = 8;
 
 constructor EJclUnexpectedEOSequenceError.Create;
 begin
@@ -1728,6 +1744,80 @@ begin
   Result := TmpPos <> -1;
 end;
 
+// AnsiGetNextChar = read next character at StrPos
+// StrPos will be incremented by the number of chars that were read (1)
+function AnsiGetNextChar(const S: AnsiString; CodePage: Word; var StrPos: Integer): UCS4;
+var
+  StrLen, TmpPos: Integer;
+  UTF16Buffer: TUTF16String;
+  {$IFDEF CLR}
+  AnsiBytes: array [0..0] of Byte;
+  AnsiEncoding: Encoding;
+  {$ENDIF CLR}
+begin
+  StrLen := Length(S);
+
+  if (StrPos <= StrLen) and (StrPos > 0) then
+  begin
+    {$IFDEF CLR}
+    AnsiEncoding := Encoding.Default;
+    AnsiBytes[0] := Ord(S[StrPos]);
+    UTF16Buffer := AnsiEncoding.GetChars(AnsiBytes);
+    {$ELSE ~CLR}
+    SetLength(UTF16Buffer, 2);
+    if MultiByteToWideChar(CodePage, MB_PRECOMPOSED or MB_ERR_INVALID_CHARS, @S[StrPos], 1, PWideChar(UTF16Buffer), 2) = 0 then
+    begin
+      Result := UCS4ReplacementCharacter;
+      FlagInvalidSequence(StrPos, 0, Result);
+      Exit;
+    end;
+    {$ENDIF ~CLR}
+    TmpPos := 1;
+    Result := UTF16GetNextChar(UTF16Buffer, TmpPos);
+    if TmpPos = -1 then
+      StrPos := -1
+    else
+      Inc(StrPos);
+  end
+  else
+  begin
+    // StrPos > StrLength
+    Result := 0;
+    FlagInvalidSequence(StrPos, 0, Result);
+  end;
+end;
+
+function AnsiGetNextCharFromStream(S: TStream; CodePage: Word; var Ch: UCS4): Boolean;
+var
+  B: Byte;
+  TmpPos: Integer;
+  UTF16Buffer: TUTF16String;
+  {$IFDEF CLR}
+  AnsiBytes: array [0..0] of Byte;
+  AnsiEncoding: Encoding;
+  {$ENDIF CLR}
+begin
+  Result := StreamReadByte(S, B);
+  if not Result then
+    Exit;
+  {$IFDEF CLR}
+  AnsiEncoding := Encoding.Default;
+  AnsiBytes[0] := Ord(B);
+  UTF16Buffer := AnsiEncoding.GetChars(AnsiBytes);
+  {$ELSE ~CLR}
+  SetLength(UTF16Buffer, 2);
+  if MultiByteToWideChar(CodePage, MB_PRECOMPOSED or MB_ERR_INVALID_CHARS, @B, 1, PWideChar(UTF16Buffer), 2) = 0 then
+  begin
+    Result := False;
+    Ch := UCS4ReplacementCharacter;
+    Exit;
+  end;
+  {$ENDIF ~CLR}
+  TmpPos := 1;
+  Ch := UTF16GetNextChar(UTF16Buffer, TmpPos);
+  Result := TmpPos <> -1;
+end;
+
 // AnsiSkipChars = skip NbSeq characters starting from StrPos
 // returns False if String is too small
 // StrPos will be incremented by the number of chars that were skipped
@@ -1852,6 +1942,93 @@ begin
     Result := StreamWriteByte(S, Ord(AnsiBuffer[1]));
   end
   else
+  begin
+    {$IFDEF UNICODE_SILENT_FAILURE}
+    // add ReplacementCharacter
+    Result := StreamWriteByte(S, Ord(AnsiReplacementCharacter));
+    {$ELSE ~UNICODE_SILENT_FAILURE}
+    Result := False;
+    {$ENDIF ~UNICODE_SILENT_FAILURE}
+  end;
+end;
+
+function AnsiSetNextChar(var S: AnsiString; CodePage: Word; var StrPos: Integer; Ch: UCS4): Boolean;
+var
+  StrLen, TmpPos: Integer;
+  UTF16Buffer: TUTF16String;
+  {$IFDEF CLR}
+  AnsiEncoding: Encoding;
+  AnsiBytes: array of Byte;
+  {$ELSE ~CLR}
+  AnsiCharacter: AnsiChar;
+  {$ENDIF ~CLR}
+begin
+  StrLen := Length(S);
+  Result := (StrPos > 0) and (StrPos <= StrLen);
+  if Result then
+  begin
+    SetLength(UTF16Buffer, 2);
+    TmpPos := 1;
+    Result := UTF16SetNextChar(UTF16Buffer, TmpPos, Ch);
+    {$IFDEF CLR}
+    AnsiEncoding := Encoding.Default;
+    SetLength(UTF16Buffer, TmpPos-1);
+    AnsiBytes := AnsiEncoding.GetBytes(UTF16Buffer);
+    Result := Result and (Length(AnsiBytes) = 1);
+    if Result then
+    begin
+      S[StrPos] := AnsiChar(Chr(AnsiBytes[0]));
+      Inc(StrPos);
+    end;
+    {$ELSE ~CLR}
+    Result := Result and (WideCharToMultiByte(CodePage, 0, PWideChar(UTF16Buffer), TmpPos-1, @AnsiCharacter, 1, nil, nil) > 0);
+    if Result then
+    begin
+      S[StrPos] := AnsiCharacter;
+      Inc(StrPos);
+    end;
+    {$ENDIF ~CLR}
+    if not Result then
+    begin
+      {$IFDEF UNICODE_SILENT_FAILURE}
+      // add ReplacementCharacter
+      S[StrPos] := AnsiReplacementCharacter;
+      Inc(StrPos);
+      {$ELSE ~UNICODE_SILENT_FAILURE}
+      Result := False;
+      StrPos := -1;
+      {$ENDIF ~UNICODE_SILENT_FAILURE}
+    end;
+  end;
+end;
+
+function AnsiSetNextCharToStream(S: TStream; CodePage: Word; Ch: UCS4): Boolean;
+var
+  TmpPos: Integer;
+  UTF16Buffer: TUTF16String;
+  {$IFDEF CLR}
+  AnsiEncoding: Encoding;
+  AnsiBytes: array of Byte;
+  {$ELSE ~CLR}
+  AnsiCharacter: AnsiChar;
+  {$ENDIF ~CLR}
+begin
+  SetLength(UTF16Buffer, 2);
+  TmpPos := 1;
+  Result := UTF16SetNextChar(UTF16Buffer, TmpPos, Ch);
+  {$IFDEF CLR}
+  AnsiEncoding := Encoding.Default;
+  SetLength(UTF16Buffer, TmpPos-1);
+  AnsiBytes := AnsiEncoding.GetBytes(UTF16Buffer);
+  Result := Result and (Length(AnsiBytes) = 1);
+  if Result then
+    Result := StreamWriteByte(S, Ord(AnsiBytes[0]));
+  {$ELSE ~CLR}
+  Result := Result and (WideCharToMultiByte(CodePage, 0, PWideChar(UTF16Buffer), TmpPos-1, @AnsiCharacter, 1, nil, nil) > 0);
+  if Result then
+    Result := StreamWriteByte(S, Ord(AnsiCharacter));
+  {$ENDIF ~CLR}
+  if not Result then
   begin
     {$IFDEF UNICODE_SILENT_FAILURE}
     // add ReplacementCharacter

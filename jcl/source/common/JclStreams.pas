@@ -533,10 +533,10 @@ type
   TJclStringStream = class(TJclBufferedStream)
   protected
     FBOM: array of Byte;
-    FCharacterReader: TJclStreamGetNextCharFunc;
-    FCharacterWriter: TJclStreamSetNextCharFunc;
     FPeekPosition: Int64;
     function GetCalcedSize: Int64; override;
+    function InternalGetNextChar(S: TStream; var Ch: UCS4): Boolean; virtual; abstract;
+    function InternalSetNextChar(S: TStream; Ch: UCS4): Boolean; virtual; abstract;
     procedure SetSize({$IFNDEF CLR}const{$ENDIF ~CLR} NewSize: Int64); override;
   public
     constructor Create(AStream: TStream; AOwnsStream: Boolean = False); virtual;
@@ -566,16 +566,28 @@ type
   TJclStringStreamClass = class of TJclStringStream;
 
   TJclAnsiStream = class(TJclStringStream)
+  private
+    FCodePage: Word;
+  protected
+    function InternalGetNextChar(S: TStream; var Ch: UCS4): Boolean; override;
+    function InternalSetNextChar(S: TStream; Ch: UCS4): Boolean; override;
   public
     constructor Create(AStream: TStream; AOwnsStream: Boolean = False); override;
+    property CodePage: Word read FCodePage write FCodePage;
   end;
 
   TJclUTF8Stream = class(TJclStringStream)
+  protected
+    function InternalGetNextChar(S: TStream; var Ch: UCS4): Boolean; override;
+    function InternalSetNextChar(S: TStream; Ch: UCS4): Boolean; override;
   public
     constructor Create(AStream: TStream; AOwnsStream: Boolean = False); override;
   end;
 
   TJclUTF16Stream = class(TJclStringStream)
+  protected
+    function InternalGetNextChar(S: TStream; var Ch: UCS4): Boolean; override;
+    function InternalSetNextChar(S: TStream; Ch: UCS4): Boolean; override;
   public
     constructor Create(AStream: TStream; AOwnsStream: Boolean = False); override;
   end;
@@ -584,10 +596,15 @@ type
 
   TJclAutoStream = class(TJclStringStream)
   private
+    FCodePage: Word;
     FEncoding: TJclStringEncoding;
+  protected
+    function InternalGetNextChar(S: TStream; var Ch: UCS4): Boolean; override;
+    function InternalSetNextChar(S: TStream; Ch: UCS4): Boolean; override;
   public
     constructor Create(AStream: TStream; AOwnsStream: Boolean = False); override;
     function SkipBOM: LongInt; override;
+    property CodePage: Word read FCodePage write FCodePage;
     property Encoding: TJclStringEncoding read FEncoding;
   end;
 
@@ -627,7 +644,7 @@ uses
   {$IFDEF CLR}
   System.Text,
   {$ENDIF CLR}
-  JclResources, JclMath;
+  JclResources, JclCharsets, JclMath;
 
 {$IFDEF KYLIX}
 function __open(PathName: PChar; Flags: Integer; Mode: Integer): Integer; cdecl;
@@ -2869,7 +2886,7 @@ var
 begin
   Pos := FPosition;
   FPosition := FPeekPosition;
-  Result := FCharacterReader(Self, Ch);
+  Result := InternalGetNextChar(Self, Ch);
   if Result then
     Buffer := UCS4ToAnsiChar(Ch);
   FPosition := Pos;
@@ -2883,7 +2900,7 @@ var
 begin
   Pos := FPosition;
   FPosition := FPeekPosition;
-  Result := FCharacterReader(Self, Ch);
+  Result := InternalGetNextChar(Self, Ch);
   if Result then
     Buffer := UCS4ToChar(Ch);
   FPosition := Pos;
@@ -2897,7 +2914,7 @@ var
 begin
   Pos := FPosition;
   FPosition := FPeekPosition;
-  Result := FCharacterReader(Self, Ch);
+  Result := InternalGetNextChar(Self, Ch);
   if Result then
     Buffer := UCS4ToWideChar(Ch);
   FPosition := Pos;
@@ -2912,7 +2929,7 @@ begin
   Index := Start;
   while Index < Start + Count - 1 do // avoid overflow on surrogate pairs for WideString
   begin
-    if FCharacterReader(Self, Ch) then
+    if InternalGetNextChar(Self, Ch) then
     begin
       StrPos := Index;
       if StringSetNextChar(Buffer, StrPos, Ch) and (StrPos > 0) then
@@ -2945,7 +2962,7 @@ function TJclStringStream.ReadAnsiChar(var Buffer: AnsiChar): Boolean;
 var
   Ch: UCS4;
 begin
-  Result := FCharacterReader(Self, Ch);
+  Result := InternalGetNextChar(Self, Ch);
   if Result then
     Buffer := UCS4ToAnsiChar(Ch);
   FPeekPosition := FPosition;
@@ -2959,7 +2976,7 @@ begin
   Index := Start;
   while Index < Start + Count do
   begin
-    if FCharacterReader(Self, Ch) then
+    if InternalGetNextChar(Self, Ch) then
     begin
       StrPos := Index;
       if AnsiSetNextChar(Buffer, StrPos, Ch) and (StrPos > 0) then
@@ -2992,7 +3009,7 @@ function TJclStringStream.ReadChar(var Buffer: Char): Boolean;
 var
   Ch: UCS4;
 begin
-  Result := FCharacterReader(Self, Ch);
+  Result := InternalGetNextChar(Self, Ch);
   if Result then
     Buffer := UCS4ToChar(Ch);
   FPeekPosition := FPosition;
@@ -3002,7 +3019,7 @@ function TJclStringStream.ReadWideChar(var Buffer: WideChar): Boolean;
 var
   Ch: UCS4;
 begin
-  Result := FCharacterReader(Self, Ch);
+  Result := InternalGetNextChar(Self, Ch);
   if Result then
     Buffer := UCS4ToWideChar(Ch);
   FPeekPosition := FPosition;
@@ -3016,7 +3033,7 @@ begin
   Index := Start;
   while Index < Start + Count - 1 do // avoid overflow on surrogate pairs
   begin
-    if FCharacterReader(Self, Ch) then
+    if InternalGetNextChar(Self, Ch) then
     begin
       StrPos := Index;
       if UTF16SetNextChar(Buffer, StrPos, Ch) and (StrPos > 0) then
@@ -3101,7 +3118,7 @@ end;
 
 function TJclStringStream.WriteChar(Value: Char): Boolean;
 begin
-  Result := FCharacterWriter(Self, CharToUCS4(Value));
+  Result := InternalSetNextChar(Self, CharToUCS4(Value));
 end;
 
 function TJclStringStream.WriteString(const Buffer: string; Start, Count: Longint): Longint;
@@ -3114,7 +3131,7 @@ begin
   begin
     StrPos := Index;
     Ch := StringGetNextChar(Buffer, StrPos);
-    if (StrPos > 0) and FCharacterWriter(Self, Ch) then
+    if (StrPos > 0) and InternalSetNextChar(Self, Ch) then
       Index := StrPos
     else
       Break; // end of string (read) or end of stream (write)
@@ -3125,7 +3142,7 @@ end;
 
 function TJclStringStream.WriteAnsiChar(Value: AnsiChar): Boolean;
 begin
-  Result := FCharacterWriter(Self, AnsiCharToUCS4(Value));
+  Result := InternalSetNextChar(Self, AnsiCharToUCS4(Value));
   FPeekPosition := FPosition;
 end;
 
@@ -3139,7 +3156,7 @@ begin
   begin
     StrPos := Index;
     Ch := AnsiGetNextChar(Buffer, StrPos);
-    if (StrPos > 0) and FCharacterWriter(Self, Ch) then
+    if (StrPos > 0) and InternalSetNextChar(Self, Ch) then
       Index := StrPos
     else
       Break; // end of string (read) or end of stream (write)
@@ -3150,7 +3167,7 @@ end;
 
 function TJclStringStream.WriteWideChar(Value: WideChar): Boolean;
 begin
-  Result := FCharacterWriter(Self, WideCharToUCS4(Value));
+  Result := InternalSetNextChar(Self, WideCharToUCS4(Value));
   FPeekPosition := FPosition;
 end;
 
@@ -3164,7 +3181,7 @@ begin
   begin
     StrPos := Index;
     Ch := UTF16GetNextChar(Buffer, StrPos);
-    if (StrPos > 0) and FCharacterWriter(Self, Ch) then
+    if (StrPos > 0) and InternalSetNextChar(Self, Ch) then
       Index := StrPos
     else
       Break; // end of string (read) or end of stream (write)
@@ -3178,10 +3195,24 @@ end;
 constructor TJclAnsiStream.Create(AStream: TStream; AOwnsStream: Boolean);
 begin
   inherited Create(AStream, AOwnsStream);
-  // not adding the @ character causes an internal error in Delphi 5 and C++Builder 5
-  FCharacterReader := {$IFNDEF CLR}@{$ENDIF ~CLR}AnsiGetNextCharFromStream;
-  FCharacterWriter := {$IFNDEF CLR}@{$ENDIF ~CLR}AnsiSetNextCharToStream;
   SetLength(FBOM, 0);
+  FCodePage := CP_ACP;
+end;
+
+function TJclAnsiStream.InternalGetNextChar(S: TStream; var Ch: UCS4): Boolean;
+begin
+  if FCodePage = CP_ACP then
+    Result := AnsiGetNextCharFromStream(S, Ch)
+  else
+    Result := AnsiGetNextCharFromStream(S, FCodePage, Ch);
+end;
+
+function TJclAnsiStream.InternalSetNextChar(S: TStream; Ch: UCS4): Boolean;
+begin
+  if FCodePage = CP_ACP then
+    Result := AnsiSetNextCharToStream(S, Ch)
+  else
+    Result := AnsiSetNextCharToStream(S, FCodePage, Ch);
 end;
 
 //=== { TJclUTF8Stream } ======================================================
@@ -3191,11 +3222,19 @@ var
   I: Integer;
 begin
   inherited Create(AStream, AOwnsStream);
-  FCharacterReader := {$IFNDEF CLR}@{$ENDIF ~CLR}UTF8GetNextCharFromStream;
-  FCharacterWriter := {$IFNDEF CLR}@{$ENDIF ~CLR}UTF8SetNextCharToStream;
   SetLength(FBOM, Length(BOM_UTF8));
   for I := Low(BOM_UTF8) to High(BOM_UTF8) do
     FBOM[I - Low(BOM_UTF8)] := BOM_UTF8[I];
+end;
+
+function TJclUTF8Stream.InternalGetNextChar(S: TStream; var Ch: UCS4): Boolean;
+begin
+  Result := UTF8GetNextCharFromStream(S, Ch);
+end;
+
+function TJclUTF8Stream.InternalSetNextChar(S: TStream; Ch: UCS4): Boolean;
+begin
+  Result := UTF8SetNextCharToStream(S, Ch);
 end;
 
 //=== { TJclUTF16Stream } =====================================================
@@ -3205,11 +3244,19 @@ var
   I: Integer;
 begin
   inherited Create(AStream, AOwnsStream);
-  FCharacterReader := {$IFNDEF CLR}@{$ENDIF ~CLR}UTF16GetNextCharFromStream;
-  FCharacterWriter := {$IFNDEF CLR}@{$ENDIF ~CLR}UTF16SetNextCharToStream;
   SetLength(FBOM, Length(BOM_UTF16_LSB));
   for I := Low(BOM_UTF16_LSB) to High(BOM_UTF16_LSB) do
     FBOM[I - Low(BOM_UTF16_LSB)] := BOM_UTF16_LSB[I];
+end;
+
+function TJclUTF16Stream.InternalGetNextChar(S: TStream; var Ch: UCS4): Boolean;
+begin
+  Result := UTF16GetNextCharFromStream(S, Ch);
+end;
+
+function TJclUTF16Stream.InternalSetNextChar(S: TStream; Ch: UCS4): Boolean;
+begin
+  Result := UTF16SetNextCharToStream(S, Ch);
 end;
 
 //=== { TJclAutoStream } ======================================================
@@ -3239,6 +3286,7 @@ begin
   // try UTF8 BOM
   if (FEncoding = seAuto) and (ReadLength >= Length(BOM_UTF8) * SizeOf(BOM_UTF8[0])) then
   begin
+    FCodePage := CP_UTF8;
     FEncoding := seUTF8;
     for I := Low(BOM_UTF8) to High(BOM_UTF8) do
       if BOM[I - Low(BOM_UTF8)] <> BOM_UTF8[I] then
@@ -3251,6 +3299,7 @@ begin
   // try UTF16 BOM
   if (FEncoding = seAuto) and (ReadLength >= Length(BOM_UTF16_LSB) * SizeOf(BOM_UTF16_LSB[0])) then
   begin
+    FCodePage := CP_UTF16LE;
     FEncoding := seUTF16;
     for I := Low(BOM_UTF16_LSB) to High(BOM_UTF16_LSB) do
       if BOM[I - Low(BOM_UTF8)] <> BOM_UTF16_LSB[I] then
@@ -3263,34 +3312,59 @@ begin
   case FEncoding of
     seUTF8:
       begin
+        FCodePage := CP_UTF8;
         SetLength(FBOM, Length(BOM_UTF8));
         for I := Low(BOM_UTF8) to High(BOM_UTF8) do
           FBOM[I - Low(BOM_UTF8)] := BOM_UTF8[I];
-        FCharacterReader := {$IFNDEF CLR}@{$ENDIF ~CLR}UTF8GetNextCharFromStream;
-        FCharacterWriter := {$IFNDEF CLR}@{$ENDIF ~CLR}UTF8SetNextCharToStream;
         FPosition := Pos + Length(BOM_UTF8) * SizeOf(BOM_UTF8[0]);
       end;
     seUTF16:
       begin
+        FCodePage := CP_UTF16LE;
         SetLength(FBOM, Length(BOM_UTF16_LSB));
         for I := Low(BOM_UTF16_LSB) to High(BOM_UTF16_LSB) do
           FBOM[I - Low(BOM_UTF16_LSB)] := BOM_UTF16_LSB[I];
-        FCharacterReader := {$IFNDEF CLR}@{$ENDIF ~CLR}UTF16GetNextCharFromStream;
-        FCharacterWriter := {$IFNDEF CLR}@{$ENDIF ~CLR}UTF16SetNextCharToStream;
         FPosition := Pos + Length(BOM_UTF16_LSB) * SizeOf(BOM_UTF16_LSB[0]);
       end;
     seAuto,
     seAnsi:
       begin
         // defaults to Ansi
+        FCodePage := CP_ACP;
         FEncoding := seAnsi;
         SetLength(FBOM, 0);
-        FCharacterReader := {$IFNDEF CLR}@{$ENDIF ~CLR}AnsiGetNextCharFromStream;
-        FCharacterWriter := {$IFNDEF CLR}@{$ENDIF ~CLR}AnsiSetNextCharToStream;
         FPosition := Pos;
       end;
   end;
   FPeekPosition := FPosition;
+end;
+
+function TJclAutoStream.InternalGetNextChar(S: TStream; var Ch: UCS4): Boolean;
+begin
+  case FCodePage of
+    CP_UTF8:
+      Result := UTF8GetNextCharFromStream(S, Ch);
+    CP_UTF16LE:
+      Result := UTF16GetNextCharFromStream(S, Ch);
+    CP_ACP:
+      Result := AnsiGetNextCharFromStream(S, Ch);
+  else
+    Result := AnsiGetNextCharFromStream(S, CodePage, Ch);
+  end;
+end;
+
+function TJclAutoStream.InternalSetNextChar(S: TStream; Ch: UCS4): Boolean;
+begin
+  case FCodePage of
+    CP_UTF8:
+      Result := UTF8SetNextCharToStream(S, Ch);
+    CP_UTF16LE:
+      Result := UTF16SetNextCharToStream(S, Ch);
+    CP_ACP:
+      Result := AnsiSetNextCharToStream(S, Ch);
+  else
+    Result := AnsiSetNextCharToStream(S, CodePage, Ch);
+  end;
 end;
 
 function TJclAutoStream.SkipBOM: LongInt;
