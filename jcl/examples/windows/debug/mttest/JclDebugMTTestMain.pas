@@ -28,7 +28,7 @@ implementation
 
 {$R *.dfm}
 
-procedure LoadedModules(ModuleList: TModuleList);
+procedure LoadedModules(ModuleList: TJclSerializableModuleInfoList);
 var
   I: Integer;
   ProcessHandle: THandle;
@@ -37,7 +37,7 @@ var
   FileVersionInfo: TJclFileVersionInfo;
   ModuleInfoList: TJclModuleInfoList;
   ModuleBase: Cardinal;
-  Module: TModule;
+  Module: TJclSerializableModuleInfo;
 begin
   ProcessHandle := GetCurrentProcess;
   ModuleInfoList := TJclModuleInfoList.Create(False, False);
@@ -79,10 +79,10 @@ end;
 procedure SaveExceptInfo(AExceptObj: TObject; AThreadInfoList: TJclThreadInfoList);
 var
   StackInfo: TStringList;
-  ExceptionInfo: TExceptionInfo;
+  ExceptionInfo: TJclSerializableExceptionInfo;
   XMLSerializer: TJclXMLSerializer;
 begin
-  ExceptionInfo := TExceptionInfo.Create;
+  ExceptionInfo := TJclSerializableExceptionInfo.Create;
   try
     if AExceptObj is Exception then
     begin

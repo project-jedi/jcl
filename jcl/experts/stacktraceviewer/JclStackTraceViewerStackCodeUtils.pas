@@ -35,7 +35,7 @@ interface
 uses
   SysUtils,
   {$IFNDEF BDS}
-  Classes,
+  Windows, Classes,
   {$ENDIF ~BDS}
   ActiveX, ToolsAPI,
   {$IFDEF UNITVERSIONING}

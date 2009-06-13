@@ -149,11 +149,11 @@ type
 
   TThreadData = class(TObject)
   private
-    FException: TException;
+    FException: TJclSerializableException;
     FModuleList: TJclStackTraceViewerModuleInfoList;
     FThreadInfo: TJclStackTraceViewerThreadInfo;
   public
-    property Exception: TException read FException write FException;
+    property Exception: TJclSerializableException read FException write FException;
     property ModuleList: TJclStackTraceViewerModuleInfoList read FModuleList write FModuleList;
     property ThreadInfo: TJclStackTraceViewerThreadInfo read FThreadInfo write FThreadInfo;
   end;
@@ -277,7 +277,7 @@ var
 begin
   case FKind of
     tvlkModuleList: if AFrame is TfrmModule then
-                      TfrmModule(AFrame).ModuleList := TModuleList(Data);
+                      TfrmModule(AFrame).ModuleList := TJclSerializableModuleInfoList(Data);
     tvlkThread: if AFrame is TfrmThread then
                 begin
                   ThreadData := TThreadData(Data);
@@ -297,7 +297,7 @@ begin
                     ThreadFrame.StackList := nil;
                 end;
     tvlkException: if AFrame is TfrmException then
-                     TfrmException(AFrame).Exception := TException(Data);
+                     TfrmException(AFrame).Exception := TJclSerializableException(Data);
     tvlkThreadStack, tvlkThreadCreationStack: if AFrame is TfrmStack then
                                               begin
                                                 StackData := TStackData(Data);
@@ -557,7 +557,7 @@ var
   I: Integer;
   ThreadTreeViewLink, TreeViewLink: TDefaultTreeViewLink;
   XMLDeserializer: TJclXMLDeserializer;
-  SerializeExceptionInfo: TExceptionInfo;
+  SerializeExceptionInfo: TJclSerializableExceptionInfo;
   RootTreeViewLink: TRootTreeViewLink;
   ThreadData: TThreadData;
   StackData: TStackData;
@@ -584,7 +584,7 @@ begin
         FS.Free;
       end;
       {$ENDIF ~COMPILER12_UP}
-      SerializeExceptionInfo := TExceptionInfo.Create;
+      SerializeExceptionInfo := TJclSerializableExceptionInfo.Create;
       try
         XMLDeserializer := TJclXMLDeserializer.Create('ExceptInfo');
         try

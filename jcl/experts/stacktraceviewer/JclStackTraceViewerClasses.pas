@@ -33,7 +33,7 @@ unit JclStackTraceViewerClasses;
 interface
 
 uses
-  Classes, Contnrs,
+  Windows, Classes, Contnrs,
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
@@ -142,7 +142,7 @@ type
     property Items[AIndex: Integer]: TJclStackTraceViewerThreadInfo read GetItems; default;
   end;
 
-  TJclStackTraceViewerModuleModuleInfo = class(TModule, IJclModuleInfo)
+  TJclStackTraceViewerModuleModuleInfo = class(TJclSerializableModuleInfo, IJclModuleInfo)
     { IInterface }
     function QueryInterface(const IID: TGUID; out Obj): HRESULT; stdcall;
     function _AddRef: Integer; stdcall;
@@ -172,16 +172,16 @@ type
 
   TJclStackTraceViewerExceptionInfo = class(TObject)
   private
-    FException: TException;
+    FException: TJclSerializableException;
     FThreadInfoList: TJclStackTraceViewerThreadInfoList;
     FModules: TJclStackTraceViewerModuleInfoList;
     procedure AddModuleListToStacks;
   public
     constructor Create;
     destructor Destroy; override;
-    procedure AssignExceptionInfo(AExceptionInfo: TExceptionInfo);
+    procedure AssignExceptionInfo(AExceptionInfo: TJclSerializableExceptionInfo);
     property ThreadInfoList: TJclStackTraceViewerThreadInfoList read FThreadInfoList;
-    property Exception: TException read FException;
+    property Exception: TJclSerializableException read FException;
     property Modules: TJclStackTraceViewerModuleInfoList read FModules;
   end;
 
@@ -317,7 +317,7 @@ end;
 constructor TJclStackTraceViewerExceptionInfo.Create;
 begin
   inherited Create;
-  FException := TException.Create;
+  FException := TJclSerializableException.Create;
   FThreadInfoList := TJclStackTraceViewerThreadInfoList.Create;
   FModules := TJclStackTraceViewerModuleInfoList.Create;
 end;
@@ -340,7 +340,7 @@ begin
     FThreadInfoList[I].Stack.ModuleInfoList := FModules;
 end;
 
-procedure TJclStackTraceViewerExceptionInfo.AssignExceptionInfo(AExceptionInfo: TExceptionInfo);
+procedure TJclStackTraceViewerExceptionInfo.AssignExceptionInfo(AExceptionInfo: TJclSerializableExceptionInfo);
 var
   I: Integer;
 begin

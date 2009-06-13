@@ -44,12 +44,12 @@ type
   TfrmModule = class(TFrame)
     lv: TListView;
   private
-    FModuleList: TModuleList;
-    procedure SetModuleList(const Value: TModuleList);
+    FModuleList: TJclSerializableModuleInfoList;
+    procedure SetModuleList(const Value: TJclSerializableModuleInfoList);
     { Private declarations }
   public
     { Public declarations }
-    property ModuleList: TModuleList read FModuleList write SetModuleList;
+    property ModuleList: TJclSerializableModuleInfoList read FModuleList write SetModuleList;
     procedure LoadState(AIni: TCustomIniFile; const ASection: string);
     procedure SaveState(AIni: TCustomIniFile; const ASection: string);
   end;
@@ -87,7 +87,7 @@ begin
     AIni.WriteInteger(ASection, Format('ModuleFrameColumnWidth%d', [I]), lv.Columns.Items[I].Width);
 end;
 
-procedure TfrmModule.SetModuleList(const Value: TModuleList);
+procedure TfrmModule.SetModuleList(const Value: TJclSerializableModuleInfoList);
 var
   I: Integer;
   ListItem: TListItem;

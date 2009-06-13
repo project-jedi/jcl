@@ -52,13 +52,13 @@ type
     FStackFrame: TfrmStack;
     FCreationStackList: TJclStackTraceViewerLocationInfoList;
     FStackList: TJclStackTraceViewerLocationInfoList;
-    FException: TException;
+    FException: TJclSerializableException;
     FLastStackFrame: TObject;
     FCreationStackHeight: Integer;
     FStackInterfaceList: TInterfaceList;
     procedure SaveSplitterState;
     procedure SetCreationStackList(const Value: TJclStackTraceViewerLocationInfoList);
-    procedure SetException(const Value: TException);
+    procedure SetException(const Value: TJclSerializableException);
     procedure SetStackList(const Value: TJclStackTraceViewerLocationInfoList);
     function GetSelected: IJclLocationInfo;
     procedure HandleStackSelection(ASender: TObject);
@@ -75,7 +75,7 @@ type
     procedure LoadState(AIni: TCustomIniFile; const ASection: string);
     procedure SaveState(AIni: TCustomIniFile; const ASection: string);
     property CreationStackList: TJclStackTraceViewerLocationInfoList read FCreationStackList write SetCreationStackList;
-    property Exception: TException read FException write SetException;
+    property Exception: TJclSerializableException read FException write SetException;
     property StackList: TJclStackTraceViewerLocationInfoList read FStackList write SetStackList;
   end;
 
@@ -187,7 +187,7 @@ begin
   UpdateSplitterState;
 end;
 
-procedure TfrmThread.SetException(const Value: TException);
+procedure TfrmThread.SetException(const Value: TJclSerializableException);
 begin
   FException := Value;
   FExceptionFrame.Exception := FException;

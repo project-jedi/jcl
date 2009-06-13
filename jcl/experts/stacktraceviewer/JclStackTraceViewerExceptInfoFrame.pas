@@ -47,12 +47,12 @@ type
     lbExceptionClassName: TLabel;
     lbExceptionMessage: TLabel;
   private
-    FException: TException;
-    procedure SetException(const Value: TException);
+    FException: TJclSerializableException;
+    procedure SetException(const Value: TJclSerializableException);
     { Private declarations }
   public
     { Public declarations }
-    property Exception: TException read FException write SetException;
+    property Exception: TJclSerializableException read FException write SetException;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -71,7 +71,7 @@ implementation
 
 { TfrmException }
 
-procedure TfrmException.SetException(const Value: TException);
+procedure TfrmException.SetException(const Value: TJclSerializableException);
 begin
   FException := Value;
   if Assigned(FException) then

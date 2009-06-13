@@ -33,7 +33,7 @@ unit JclStackTraceViewerStackUtils;
 interface
 
 uses
-  SysUtils, Classes, Contnrs, ActiveX,
+  Windows, SysUtils, Classes, Contnrs, ActiveX,
   ToolsAPI,
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
@@ -296,7 +296,7 @@ var
   MS: TMemoryStream;
   SA: TStreamAdapter;
 
-  S: string;
+  S, ModuleListModulePath, FindMappingModulePath: string;
   EV: IOTAEnvironmentOptions;
   FileSearcher: TFileSearcher;
   BrowsingPaths: TStringList;
@@ -362,19 +362,23 @@ begin
             if (FindMapping.Count > 0) and (FindMapping[0].Revision = '') and (FindMapping[0].ModuleName <> '') then
             begin
               Idx := -1;
-              { TODO -oUSc : Compare full filename when the filename in the stack contains also the path
+              {Why full filenames?
 
-    Why full filenames?
-
-    It is possible to load
-    <Path 1>\TestDLL.DLL
-    <Path 2>\TestDLL.DLL}
+               It is possible to load
+               <Path 1>\TestDLL.DLL
+               <Path 2>\TestDLL.DLL}
               for J := 0 to FModuleList.Count - 1 do
-                if CompareText(ExtractFileName(FModuleList[J].ModuleName), ExtractFileName(FindMapping[0].ModuleName)) = 0 then
+              begin
+                ModuleListModulePath := ExtractFilePath(FModuleList[J].ModuleName);
+                FindMappingModulePath := ExtractFilePath(FindMapping[0].ModuleName);
+                if (CompareText(ExtractFileName(FModuleList[J].ModuleName), ExtractFileName(FindMapping[0].ModuleName)) = 0) and
+                  ((ModuleListModulePath = '') or (FindMappingModulePath = '') or
+                    (CompareText(ModuleListModulePath, FindMappingModulePath) = 0)) then
                 begin
                   Idx := J;
                   Break;
                 end;
+              end;
               if Idx <> -1 then
               begin
                 S := FModuleList[Idx].BinFileVersion;
