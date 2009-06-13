@@ -5,9 +5,6 @@ JclDebug
 * ? merge TJclDebugThreadInfo/TJclDebugThreadList and TJclThreadInfo/TJclThreadInfoList
   - investigate if the stack can stay a TJclStackInfoList and if the location information can be retrieved later correctly
 
-* remove AsCSV                                                                                           
-
-
 Expert
 ------
 * serialization 

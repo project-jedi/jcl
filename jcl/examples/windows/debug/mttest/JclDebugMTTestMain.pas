@@ -28,55 +28,7 @@ implementation
 
 {$R *.dfm}
 
-function CSVEncode(const AStr: string): string;
-begin
-  Result := '"' + StringReplace(AStr, '"', '""', [rfReplaceAll]) + '"';
-end;
-
-procedure LoadedModules(ModuleList: TStrings);
-var
-  I: Integer;
-  ProcessHandle: THandle;
-  FileName: array [0..Max_Path] of Char;
-  S, BinFileVersion, FileVersion, FileDescription: string;
-  FileVersionInfo: TJclFileVersionInfo;
-  ModuleInfoList: TJclModuleInfoList;
-  ModuleBase: Cardinal;
-begin
-  ProcessHandle := GetCurrentProcess;
-  ModuleList.Add('StartAddr;EndAddr;SystemModule;FileName;BinFileVersion;FileVersion;FileDescription');
-  ModuleInfoList := TJclModuleInfoList.Create(False, False);
-  try
-    for I := 0 to ModuleInfoList.Count - 1 do
-    begin
-      ModuleBase := Cardinal(ModuleInfoList.Items[I].StartAddr);
-      GetModuleFileNameEx(ProcessHandle, ModuleBase, FileName, SizeOf(FileName));
-      FileVersion := '';
-      if (FileName <> '') and VersionResourceAvailable(FileName) then
-      begin
-        FileVersionInfo := TJclFileVersionInfo.Create(FileName);
-        try
-          BinFileVersion := FileVersionInfo.BinFileVersion;
-          FileVersion := FileVersionInfo.FileVersion;
-          FileDescription := FileVersionInfo.FileDescription;
-        finally
-          FileVersionInfo.Free;
-        end;
-      end;
-      if ModuleInfoList.Items[I].SystemModule then
-        S := '1'
-      else
-        S := '0';
-      S := Format('"0x%.8x";"0x%.8x";"%s";%s;%s;%s;%s', [ModuleBase, Cardinal(ModuleInfoList.Items[I].EndAddr), S,
-        CSVEncode(FileName), CSVEncode(BinFileVersion), CSVEncode(FileVersion), CSVEncode(FileDescription)]);
-      ModuleList.Add(S);
-    end;
-  finally
-    ModuleInfoList.Free;
-  end;
-end;
-
-procedure LoadedModulesNew(ModuleList: TModuleList);
+procedure LoadedModules(ModuleList: TModuleList);
 var
   I: Integer;
   ProcessHandle: THandle;
@@ -126,45 +78,19 @@ end;
 
 procedure SaveExceptInfo(AExceptObj: TObject; AThreadInfoList: TJclThreadInfoList);
 var
-  StackInfo, DetailSL: TStringList;
+  StackInfo: TStringList;
   ExceptionInfo: TExceptionInfo;
   XMLSerializer: TJclXMLSerializer;
-  I: Integer;
 begin
-  StackInfo := TStringList.Create;
-  try
-    StackInfo.Add('Type;Data');
-    if AExceptObj is Exception then
-    begin
-      DetailSL := TStringList.Create;
-      try
-        DetailSL.Add('ClassName;Message');
-        DetailSL.Add(CSVEncode(Exception(AExceptObj).ClassName) + ';' + CSVEncode(Exception(AExceptObj).Message));
-        StackInfo.Add('"Exception";' + CSVEncode(DetailSL.Text));
-      finally
-        DetailSL.Free;
-      end;
-    end;
-    StackInfo.Add('"ThreadInfo";' + CSVEncode(AThreadInfoList.AsCSVString));
-    DetailSL := TStringList.Create;
-    try
-      LoadedModules(DetailSL);
-      StackInfo.Add('"Modules";' + CSVEncode(DetailSL.Text));
-    finally
-      DetailSL.Free;
-    end;
-    StackInfo.SaveToFile('ExceptInfo.csv');
-  finally
-    StackInfo.Free;
-  end;
-
   ExceptionInfo := TExceptionInfo.Create;
   try
-    ExceptionInfo.Exception.ExceptionClassName := Exception(AExceptObj).ClassName;
-    ExceptionInfo.Exception.ExceptionMessage := Exception(AExceptObj).Message;
-    LoadedModulesNew(ExceptionInfo.Modules);
-    for I := 0 to AThreadInfoList.Count - 1 do
-      ExceptionInfo.ThreadInfoList.Add.Assign(AThreadInfoList[I]);//todo - implement Assign
+    if AExceptObj is Exception then
+    begin
+      ExceptionInfo.Exception.ExceptionClassName := Exception(AExceptObj).ClassName;
+      ExceptionInfo.Exception.ExceptionMessage := Exception(AExceptObj).Message;
+    end;
+    LoadedModules(ExceptionInfo.Modules);
+    ExceptionInfo.ThreadInfoList.Assign(AThreadInfoList);
     XMLSerializer := TJclXMLSerializer.Create('ExceptInfo');
     try
       ExceptionInfo.Serialize(XMLSerializer);
@@ -214,7 +140,6 @@ begin
         ThreadName := '[MainThread]'
       else
         ThreadName := ThreadInfoList[0].Name;
-      //ExceptInfo := ThreadInfoList.AsCSVString;
       ExceptInfo := ThreadInfoList.AsString;
       SaveExceptInfo(AObj, ThreadInfoList);
     finally
@@ -274,7 +199,6 @@ begin
   ThreadInfoList := TJclThreadInfoList.Create;
   try
     ThreadInfoList.Gather(TID);
-    //ExceptInfo := ThreadInfoList.AsCSVString;
     ThreadInfo := ThreadInfoList.AsString;
   finally
     ThreadInfoList.Free;

@@ -379,16 +379,13 @@ type
     FVAddress: Pointer;
     FValues: TJclLocationInfoExValues;
     procedure Fill(AOptions: TJclLocationInfoListOptions);
-    function GetAsCSVString: string;
     function GetAsString: string;
   protected
     procedure AssignTo(Dest: TPersistent); override;
   public
     constructor Create(AParent: TJclCustomLocationInfoList; Address: Pointer);
-    class function CSVHeader: string;
     procedure Clear; virtual;
     property Address: Pointer read FAddress write FAddress;
-    property AsCSVString: string read GetAsCSVString;
     property AsString: string read GetAsString;
     property BinaryFileName: string read FBinaryFileName write FBinaryFileName;
     property DebugInfo: TJclDebugInfoSource read FDebugInfo write FDebugInfo;
@@ -420,7 +417,6 @@ type
     FItemClass: TJclLocationInfoClass;
     FItems: TObjectList;
     FOptions: TJclLocationInfoListOptions;
-    function GetAsCSVString: string;
     function GetAsString: string;
     function GetCount: Integer;
     function InternalAdd(Addr: Pointer): TJclLocationInfoEx;
@@ -431,7 +427,6 @@ type
     destructor Destroy; override;
     procedure AddStackInfoList(AStackInfoList: TObject);
     procedure Clear;
-    property AsCSVString: string read GetAsCSVString;
     property AsString: string read GetAsString;
     property Count: Integer read GetCount;
     property Options: TJclLocationInfoListOptions read FOptions write FOptions;
@@ -898,31 +893,29 @@ type
 
   TJclThreadInfo = class(TJclCustomThreadInfo)
   private
-    function GetAsCSVString: string;
     function GetAsString: string;
     procedure InternalFill(AThreadHandle: THandle; AThreadID: DWORD; AGatherOptions: TJclThreadInfoOptions; AExceptThread: Boolean);
     function GetStack(const AIndex: Integer): TJclLocationInfoList;
   protected
     function GetStackClass: TJclCustomLocationInfoListClass; override;
   public
-    class function CSVHeader: string;
     procedure Fill(AThreadHandle: THandle; AThreadID: DWORD; AGatherOptions: TJclThreadInfoOptions);
     procedure FillFromExceptThread(AGatherOptions: TJclThreadInfoOptions);
-    property AsCSVString: string read GetAsCSVString;
     property AsString: string read GetAsString;
     property CreationStack: TJclLocationInfoList index 1 read GetStack;
     property Stack: TJclLocationInfoList index 2 read GetStack;
   end;
 
-  TJclThreadInfoList = class(TObject)
+  TJclThreadInfoList = class(TPersistent)
   private
     FGatherOptions: TJclThreadInfoOptions;
     FItems: TObjectList;
-    function GetAsCSVString: string;
     function GetAsString: string;
     function GetCount: Integer;
     function GetItems(AIndex: Integer): TJclThreadInfo;
     procedure InternalGather(AIncludeThreadIDs, AExcludeThreadIDs: array of DWORD);
+  protected
+    procedure AssignTo(Dest: TPersistent); override;
   public
     constructor Create;
     destructor Destroy; override;
@@ -931,7 +924,6 @@ type
     procedure Gather(AExceptThreadID: DWORD);
     procedure GatherExclude(AThreadIDs: array of DWORD);
     procedure GatherInclude(AThreadIDs: array of DWORD);
-    property AsCSVString: string read GetAsCSVString;
     property AsString: string read GetAsString;
     property Count: Integer read GetCount;
     property GatherOptions: TJclThreadInfoOptions read FGatherOptions write FGatherOptions;
@@ -2871,14 +2863,6 @@ begin
   Fill([]);
 end;
 
-class function TJclLocationInfoEx.CSVHeader: string;
-begin
-  Result := '"VAddress";"ModuleName";"Address";"OffsetFromProcName";"UnitName";"ProcedureName";"SourceName";"LineNumber";"OffsetFromLineNumber";"LineNumberOffsetFromProcedureStart"';
-  {$IFDEF UNITVERSIONING}
-  Result := Result + '"Revision"';
-  {$ENDIF UNITVERSIONING}
-end;
-
 procedure TJclLocationInfoEx.Fill(AOptions: TJclLocationInfoListOptions);
 var
   Info, StartProcInfo: TJclLocationInfo;
@@ -2975,43 +2959,6 @@ begin
     end;
   end;
   {$ENDIF UNITVERSIONING}
-end;
-
-function TJclLocationInfoEx.GetAsCSVString: string;
-var
-  S: string;
-begin
-  S := Format('"%p"', [VAddress]);
-  S := S + ';' + Format('"%s"', [ModuleName]);
-  S := S + ';' + Format('"%p"', [Address]);
-  if lievLocationInfo in FValues then
-  begin
-    S := S + Format(';"+ $%x"', [OffsetFromProcName]);
-    S := S + Format(';"%s"', [SourceUnitName]);
-    S := S + Format(';"%s"', [ProcedureName]);
-    S := S + Format(';"%s"', [SourceName]);
-    if LineNumber > 0 then
-    begin
-      S := S + Format(';"%d"', [LineNumber]);
-      if OffsetFromLineNumber >= 0 then
-        S := S + Format(';"+ $%x"', [OffsetFromLineNumber])
-      else
-        S := S + Format(';"- $%x"', [-OffsetFromLineNumber]);
-    end
-    else
-      S := S + ';"";""';
-    if lievProcedureStartLocationInfo in FValues then
-      S := S + Format(';"%d"', [LineNumberOffsetFromProcedureStart])
-    else
-      S := S + ';""';
-  end
-  else
-    S := S + ';"";"";"";"";"";"";""';
-  if lievUnitVersionInfo in FValues then
-    S := S + Format(';"%s"', [UnitVersionRevision])
-  else
-    S := S + ';""';
-  Result := S;
 end;
 
 { TODO -oUSc : Include... better as function than property? }
@@ -3113,22 +3060,6 @@ end;
 procedure TJclCustomLocationInfoList.Clear;
 begin
   FItems.Clear;
-end;
-
-function TJclCustomLocationInfoList.GetAsCSVString: string;
-var
-  I: Integer;
-  Strings: TStringList;
-begin
-  Strings := TStringList.Create;
-  try
-    Strings.Add(TJclLocationInfoEx.CSVHeader);
-    for I := 0 to Count - 1 do
-      Strings.Add(TJclLocationInfoEx(FItems[I]).AsCSVString);
-    Result := Strings.Text;
-  finally
-    Strings.Free;
-  end;
 end;
 
 function TJclCustomLocationInfoList.GetAsString: string;
@@ -5913,11 +5844,6 @@ end;
 
 //=== { TJclThreadInfo } =====================================================
 
-class function TJclThreadInfo.CSVHeader: string;
-begin
-  Result := 'ThreadID;MainThread;Name;CreationTime;ParentThreadID;Stack;CreationStack';
-end;
-
 procedure TJclThreadInfo.Fill(AThreadHandle: THandle; AThreadID: DWORD; AGatherOptions: TJclThreadInfoOptions);
 begin
   InternalFill(AThreadHandle, AThreadID, AGatherOptions, False);
@@ -5926,35 +5852,6 @@ end;
 procedure TJclThreadInfo.FillFromExceptThread(AGatherOptions: TJclThreadInfoOptions);
 begin
   InternalFill(0, GetCurrentThreadID, AGatherOptions, True);
-end;
-
-function TJclThreadInfo.GetAsCSVString: string;
-
-  function CSVEncode(const AStr: string): string;
-  begin
-    Result := '"' + StringReplace(AStr, '"', '""', [rfReplaceAll]) + '"';
-  end;
-
-begin
-  Result := CSVEncode(IntToStr(ThreadID));
-  Result := Result + ';';
-  if tioIsMainThread in Values then
-    Result := Result + CSVEncode('1');
-  Result := Result + ';';
-  if tioName in Values then
-    Result := Result + CSVEncode(Name);
-  Result := Result + ';';
-  if tioCreationTime in Values then
-    Result := Result + CSVEncode(DateTimeToStr(CreationTime));{ TODO -oUSc : ISO format }
-  Result := Result + ';';
-  if tioParentThreadID in Values then
-    Result := Result + CSVEncode(IntToStr(ParentThreadID));
-  Result := Result + ';';
-  if tioStack in Values then
-    Result := Result + CSVEncode(Stack.AsCSVString);
-  Result := Result + ';';
-  if tioCreationStack in Values then
-    Result := Result + CSVEncode(CreationStack.AsCSVString);
 end;
 
 function TJclThreadInfo.GetAsString: string;
@@ -6071,18 +5968,24 @@ begin
   Result := TJclThreadInfo(FItems.Last);
 end;
 
-procedure TJclThreadInfoList.Clear;
-begin
-  FItems.Clear;
-end;
-
-function TJclThreadInfoList.GetAsCSVString: string;
+procedure TJclThreadInfoList.AssignTo(Dest: TPersistent);
 var
   I: Integer;
 begin
-  Result := TJclThreadInfo.CSVHeader + #13#10;
-  for I := 0 to Count - 1 do
-    Result := Result + Items[I].AsCSVString + #13#10;
+  if Dest is TJclThreadInfoList then
+  begin
+    TJclThreadInfoList(Dest).Clear;
+    for I := 0 to Count - 1 do
+      TJclThreadInfoList(Dest).Add.Assign(Items[I]);
+    TJclThreadInfoList(Dest).GatherOptions := FGatherOptions;
+  end
+  else
+    inherited AssignTo(Dest);
+end;
+
+procedure TJclThreadInfoList.Clear;
+begin
+  FItems.Clear;
 end;
 
 function TJclThreadInfoList.GetAsString: string;

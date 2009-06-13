@@ -20,9 +20,9 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                              $ }
-{ Revision:      $Rev::                                                                      $ }
-{ Author:        $Author::                                                                 $ }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -91,7 +91,7 @@ type
     property Stack: TJclSerializableLocationInfoList index 2 read GetStack;
   end;
 
-  TJclSerializableThreadInfoList = class(TObject)
+  TJclSerializableThreadInfoList = class(TPersistent)
   private
     FItems: TObjectList;
     function GetItems(AIndex: Integer): TJclSerializableThreadInfo;
@@ -100,6 +100,7 @@ type
     constructor Create;
     destructor Destroy; override;
     function Add: TJclSerializableThreadInfo;
+    procedure Assign(Source: TPersistent); override;
     procedure Clear;
     procedure Deserialize(ASerializer: TJclCustomSimpleSerializer);
     procedure Serialize(ASerializer: TJclCustomSimpleSerializer);
@@ -257,6 +258,20 @@ function TJclSerializableThreadInfoList.Add: TJclSerializableThreadInfo;
 begin
   FItems.Add(TJclSerializableThreadInfo.Create);
   Result := TJclSerializableThreadInfo(FItems.Last);
+end;
+
+procedure TJclSerializableThreadInfoList.Assign(Source: TPersistent);
+var
+  I: Integer;
+begin
+  if Source is TJclThreadInfoList then
+  begin
+    Clear;
+    for I := 0 to TJclThreadInfoList(Source).Count - 1 do
+      Add.Assign(TJclThreadInfoList(Source)[I]);
+  end
+  else
+    inherited Assign(Source);
 end;
 
 procedure TJclSerializableThreadInfoList.Clear;

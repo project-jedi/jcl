@@ -1,9 +1,9 @@
 object MTTestForm: TMTTestForm
   Left = 399
   Top = 375
-  Width = 325
-  Height = 159
   Caption = 'JclDebug MT Test'
+  ClientHeight = 123
+  ClientWidth = 309
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -20,7 +20,7 @@ object MTTestForm: TMTTestForm
     Top = 8
     Width = 225
     Height = 25
-    Caption = 'Thread Exception Test (requires 2009)'
+    Caption = 'Thread Exception Test (requires Delphi 2009)'
     TabOrder = 0
     OnClick = Button1Click
   end
