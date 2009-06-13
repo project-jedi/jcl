@@ -675,8 +675,12 @@ type
   public
     constructor Attach(VersionInfoData: Pointer; Size: Integer);
     constructor Create(const FileName: string); overload;
-    constructor Create(const Window: hwnd); overload;
+    {$IFNDEF CLR}
+    {$IFDEF MSWINDOWS}
+    constructor Create(const Window: HWND); overload;
     constructor Create(const Module: HMODULE); overload;
+    {$ENDIF MSWINDOWS}
+    {$ENDIF ~CLR}
     destructor Destroy; override;
     class function VersionLanguageId(const LangIdRec: TLangIdRec): string;
     class function VersionLanguageName(const LangId: Word): string;
@@ -5356,68 +5360,75 @@ begin
   ExtractData;
 end;
 
-constructor TJclFileVersionInfo.Create(const Window: hwnd);
+{$IFNDEF CLR}
+{$IFDEF MSWINDOWS}
+constructor TJclFileVersionInfo.Create(const Window: HWND);
 type
-{$IFDEF VER200}
-TGetModuleFileNameEx =function(hProcess: THandle; hModule: HMODULE; FileName: PWideChar; nSize: DWORD): DWORD; stdcall;
-{$ELSE}
-TGetModuleFileNameEx =function(hProcess: THandle; hModule: HMODULE; FileName: PAnsiChar; nSize: DWORD): DWORD; stdcall;
-{$ENDIF}
+  {$IFDEF SUPPORTS_UNICODE}
+  TGetModuleFileNameEx =function(hProcess: THandle; hModule: HMODULE; FileName: PWideChar; nSize: DWORD): DWORD; stdcall;
+  {$ELSE ~SUPPORTS_UNICODE}
+  TGetModuleFileNameEx =function(hProcess: THandle; hModule: HMODULE; FileName: PAnsiChar; nSize: DWORD): DWORD; stdcall;
+  {$ENDIF ~SUPPORTS_UNICODE}
 var
-filename: array[0..300] of Char;
-DllHinst: HMODULE;
-ProcessID: DWORD;
-HProcess: THandle;
+  FileName: array[0..300] of Char;
+  DllHinst: HMODULE;
+  ProcessID: DWORD;
+  HProcess: THandle;
 const
-GetModuleFileNameExAddress: TGetModuleFileNameEx =nil;
+  GetModuleFileNameExAddress: TGetModuleFileNameEx = nil;
 begin
-if Window <>0 then
-begin
-Windows.GetWindowThreadProcessId(Window, ProcessID);
-hProcess :=Windows.OpenProcess(PROCESS_QUERY_INFORMATION or PROCESS_VM_READ, false, ProcessID);
-if hProcess <> 0 then
-begin
-if GetWindowsVersion() <WVWin2000 then
-raise EJclWin32Error.CreateRes(@RsEWindowsVersionNotSupported)
-else 
-begin
-DllHinst :=LoadLibrary('Psapi.dll');
-if DllHinst < HINSTANCE_ERROR then
-begin
-{$IFDEF VER200}
-GetModuleFileNameExAddress :=GetProcAddress(DllHinst, 'GetModuleFileNameExW');
-{$ELSE}
-GetModuleFileNameExAddress :=GetProcAddress(DllHinst, 'GetModuleFileNameExA');
-{$ENDIF}
-if Assigned(GetModuleFileNameExAddress) then
-begin
-GetModuleFileNameExAddress(hProcess, 0, FileName, sizeof(FileName));
-Create(FileName);
-end
-else
-begin
-FreeLibrary(DllHinst);
-raise EJclError.CreateResFmt(@RsEFunctionNotFound, ['Psapi.dll', 'GetModuleFileNameEx']);
-end
-end
-else
-raise EJclError.CreateResFmt(@RsELibraryNotFound, ['Psapi.dll']);
-end;
-end
-else
-raise EJclError.CreateResFmt(@RsEProcessNotValid, [ProcessID]);
-end
-else
-raise EJclError.CreateResFmt(@RsEWindowNotValid, [Window]);
+  if Window <>0 then
+  begin
+    Windows.GetWindowThreadProcessId(Window, ProcessID);
+    hProcess := Windows.OpenProcess(PROCESS_QUERY_INFORMATION or PROCESS_VM_READ, false, ProcessID);
+    if hProcess <> 0 then
+    begin
+      if GetWindowsVersion() < WVWin2000 then
+        raise EJclWin32Error.CreateRes(@RsEWindowsVersionNotSupported)
+      else
+      begin
+        DllHinst := LoadLibrary('Psapi.dll');
+        if DllHinst < HINSTANCE_ERROR then
+        begin
+          try
+            {$IFDEF SUPPORTS_UNICODE}
+            GetModuleFileNameExAddress := GetProcAddress(DllHinst, 'GetModuleFileNameExW');
+            {$ELSE ~SUPPORTS_UNICODE}
+            GetModuleFileNameExAddress := GetProcAddress(DllHinst, 'GetModuleFileNameExA');
+            {$ENDIF ~SUPPORTS_UNICODE}
+            if Assigned(GetModuleFileNameExAddress) then
+            begin
+              GetModuleFileNameExAddress(hProcess, 0, FileName, sizeof(FileName));
+              Create(FileName);
+            end
+            else
+            begin
+              raise EJclError.CreateResFmt(@RsEFunctionNotFound, ['Psapi.dll', 'GetModuleFileNameEx']);
+            end
+          finally
+            FreeLibrary(DllHinst);
+          end;
+        end
+        else
+          raise EJclError.CreateResFmt(@RsELibraryNotFound, ['Psapi.dll']);
+      end;
+    end
+    else
+      raise EJclError.CreateResFmt(@RsEProcessNotValid, [ProcessID]);
+  end
+  else
+    raise EJclError.CreateResFmt(@RsEWindowNotValid, [Window]);
 end;
 
-    constructor TJclFileVersionInfo.Create(const Module: HMODULE);
+constructor TJclFileVersionInfo.Create(const Module: HMODULE);
 begin
-if Module <> 0 then
-Create(GetModulePath(Module))
-else
-raise EJclError.CreateResFmt(@RsEModuleNotValid, [Module]);
+  if Module <> 0 then
+    Create(GetModulePath(Module))
+  else
+    raise EJclError.CreateResFmt(@RsEModuleNotValid, [Module]);
 end;
+{$ENDIF MSWINDOWS}
+{$ENDIF ~CLR}
 
 destructor TJclFileVersionInfo.Destroy;
 begin
