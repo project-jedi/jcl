@@ -18,6 +18,3 @@ Expert
 
 * clean up/minor things
   - use updated TJclFileEnumerator instead of TFileSearcher
-
-* integrate it into the installation
-  - commit packages for D5-D7, D9, D10
