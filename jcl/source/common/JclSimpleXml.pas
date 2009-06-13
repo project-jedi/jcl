@@ -895,9 +895,6 @@ begin
 end;
 
 procedure SimpleXMLDecode(var S: string; TrimBlanks: Boolean);
-var
-  StringLength, ReadIndex, WriteIndex: Cardinal;
-
   procedure DecodeEntity(var S: string; StringLength: Cardinal;
     var ReadIndex, WriteIndex: Cardinal);
   const
@@ -943,6 +940,8 @@ var
     end;
   end;
 
+var
+  StringLength, ReadIndex, WriteIndex: Cardinal;
 begin
   // NB! This procedure replaces the text inplace to speed up the conversion. This
   // works because when decoding, the string can only become shorter. This is
@@ -959,7 +958,7 @@ begin
       SkipBlanks(S, StringLength, ReadIndex);
     if S[ReadIndex] = '&' then
     begin
-      if S[ReadIndex + 1] = '#' then
+      if (ReadIndex < StringLength) and (S[ReadIndex + 1] = '#') then
       begin
         DecodeEntity(S, StringLength, ReadIndex, WriteIndex);
         Inc(WriteIndex);
