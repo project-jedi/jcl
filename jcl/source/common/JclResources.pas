@@ -2079,7 +2079,10 @@ resourcestring
 resourcestring
   RsELibraryNotFound  = 'Library not found: %s';
   RsEFunctionNotFound = 'Function not found: %s.%s';
-
+  RsEWindowsVersionNotSupported = 'This windows version is not supported';
+  RsEWindowNotValid = 'The window with handle %d is not valid';
+  RsEProcessNotValid = 'The process with ID %d is not valid'; 
+  RsEModuleNotValid = 'The Module with handle %d is not valid'; 
 //=== JclWinMidi =============================================================
 resourcestring
   RsMidiInUnknownError  = 'Unknown MIDI-In error No. %d';
