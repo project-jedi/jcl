@@ -876,8 +876,12 @@ begin
         AddEntity(Tmp, RIndex, RLen, '&lt;');
       '>':
         AddEntity(Tmp, RIndex, RLen, '&gt;');
-      #128..High(Char):
+      Char(128)..Char(255):
         AddEntity(Tmp, RIndex, RLen, Format('&#x%.2x;', [Ord(C)]));
+      {$IFDEF SUPPORTS_UNICODE}
+      Char(256)..High(Char):
+        AddEntity(Tmp, RIndex, RLen, Format('&#x%.4x;', [Ord(C)]));
+      {$ENDIF SUPPORTS_UNICODE}
     else
       if RIndex > RLen then
       begin
