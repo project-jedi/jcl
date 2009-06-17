@@ -505,7 +505,11 @@ type
     property MaxCapacity: Integer read FMaxCapacity;
   end;
 
+  {$IFDEF RTL200_UP}
+  TStringBuilder = SysUtils.TStringBuilder;
+  {$ELSE ~RTL200_UP}
   TStringBuilder = TJclStringBuilder;
+  {$ENDIF ~RTL200_UP}
 
 // DotNetFormat() uses the .NET format style: "{argX}"
 function DotNetFormat(const Fmt: string; const Args: array of const): string; overload;
@@ -5855,13 +5859,13 @@ end;
 
 function TJclTabSet.Expand(const S: string; Column: Integer): string;
 var
-  sb: TStringBuilder;
+  sb: TJclStringBuilder;
   head: PChar;
   cur: PChar;
 begin
   if Column < StartColumn then
     raise ArgumentOutOfRangeException.Create('Column');
-  sb := TStringBuilder.Create(Length(S));
+  sb := TJclStringBuilder.Create(Length(S));
   try
     cur := PChar(S);
     while cur^ <> #0 do
@@ -6087,7 +6091,7 @@ end;
 
 function TJclTabSet.Optimize(const S: string; Column: Integer): string;
 var
-  sb: TStringBuilder;
+  sb: TJclStringBuilder;
   head: PChar;
   cur: PChar;
   tgt: Integer;
@@ -6110,7 +6114,7 @@ var
 begin
   if Column < StartColumn then
     raise ArgumentOutOfRangeException.Create('Column');
-  sb := TStringBuilder.Create(Length(S));
+  sb := TJclStringBuilder.Create(Length(S));
   try
     cur := PChar(s);
     while cur^ <> #0 do
@@ -6275,7 +6279,7 @@ end;
 
 function TJclTabSet.ToString(FormattingOptions: Integer): string;
 var
-  sb: TStringBuilder;
+  sb: TJclStringBuilder;
   idx: Integer;
 
   function WantBrackets: Boolean;
@@ -6304,7 +6308,7 @@ var
   end;
 
 begin
-  sb := TStringBuilder.Create;
+  sb := TJclStringBuilder.Create;
   try
     // output the fixed tabulation positions if requested...
     if IncludeStops then
