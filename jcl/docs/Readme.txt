@@ -254,7 +254,7 @@ Reporting bugs
 The general rule is: If you want to get a bug fixed you need to log it!
 
 An issue tracking tool can be accessed via ('Code Library' category):
-http://homepages.codegear.com/jedi/issuetracker/
+http://issuetracker.delphi-jedi.org/
 
 Please be aware that you are allowed there to enter feature request and code
 donations as well.
@@ -290,7 +290,7 @@ To always have access to the most recent changes in the JCL, you should install
 a Subversion client (we recommend TortoiseSVN http://tortoisesvn.tigris.org/and
 RapidSVN http://rapidsvn.tigris.org/) and download the SVN repository files to
 your computer as explained in the repository page of the JEDI Wiki at
-http://homepages.codegear.com/jedi/wiki/index.php?title=Repository With the SVN
+http://wiki.delphi-jedi.org/index.php?title=Repository With the SVN
 client, you can update your local repository at any time. You can also view the
 repository online via the web interface at http://jcl.svn.sourceforge.net/
 
@@ -309,7 +309,7 @@ your help on:
 
   JCL accepts donations from developers as long as the source fullfills the
 requirements set up by the JEDI and JCL teams. To read more about these
-requirements, visit the page http://homepages.codegear.com/jedi/jcl
+requirements, visit the page http://jcl.delphi-jedi.org/
 
   You can also donate your time by writing help for the source already in JCL.
 We currently use Doc-o-Matic to create the finished help files but the actual
