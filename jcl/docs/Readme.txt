@@ -1,9 +1,9 @@
 --------------------------------------------------------------------------------
 
 JEDI Code Library
-Release 1.104
-Build 3248
-21-January-2009
+Release 1.105
+Build 3400
+22-June-2009
 
 --------------------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ Getting involved in JCL development
 --------------------------------------------------------------------------------
 
 About this release
-JCL release 1.104 provides an updated support for all targets
+JCL release 1.105 provides an updated support for all targets
 (including Delphi 2009 and C++Builder 2009).
 
 As always, multiple bugs have been fixed; for detailed change logs, use the
@@ -32,17 +32,21 @@ http://sourceforge.net/projects/jcl/, see below.
 Head changes:
 
  - improved Unicode support for Delphi 2009 and C++Builder 2009;
- - support for late and static binding to ZLib code;
- - version control actions for CVS and SVN added to JCL runtime;
- - the polyniomal of CRC computations can be customized;
- - speed improvement of TJclBufferedStream during write operations;
- - new archive compression format provided with 7-zip: lzma, pe, elf, macho,
-   udf, xar, mub, hfs, dmg; the wrapper has previous support for the compression
-   and the decompression of zip, bzip2, gzip, 7z, tar and for the decompression
-   of rar, iso, chm, deb, cab...
- - new string conversion functions with failure detection.
+ - support for solid archives in JclCompression (backend handled by 7-zip);
+ - support for RPM, MUB and DMG archive formats (backend handled by 7-zip);
+ - support for out-of-place and in-place archive updates (backend handled by 7-zip);
+ - new string class TJclAnsiStrings to store AnsiString (improved Delphi 2009 backward compatibility);
+ - JclPCRE update to PCRE 7.8;
+ - the exception notifier can be disabled when a debugger is attached to the application;
+ - support for multiple roots in TJclFileEnumerator;
+ - new unit TJclCharsets.pas that contains the translations of charset names to codepages;
 
 Important:
+
+ - This release is the last one to support Delphi 5 and C++Builder 5, the upcoming
+   JCL 2.x release will NOT support these tools;
+
+ - The support for Delphi 2005 is broken because of various compiler internal failures;
 
  - Note that the package naming has changed: the same package name is used by
    all versions of the compiler supporting suffixes (C++Builder 6, Delphi 6,
@@ -78,8 +82,8 @@ of the JCL from C++ code.
 
 .net Framework support:
 
-  A subset of JCL units was worked over to support Delphi.Net (Delphi 2005, BDS 2006
-and RAD Studio 2007). The packages belong to the Jedi.Jcl namespace.
+  A subset of JCL units was worked over to support Delphi.Net (Delphi.net 2006
+and Delphi.net 2007). The packages belong to the Jedi.Jcl namespace.
 
 --------------------------------------------------------------------------------
 
@@ -96,7 +100,6 @@ Only design-time support (only experts):
 Both supports (run time and design time):
  - Delphi version 5, 6, 7;
  - C++Builder version 5 & 6;
- - Delphi 2005 (Delphi.net personality);
  - Borland Developer Studio 2006 (Delphi for Win32, C++Builder for Win32,
    Delphi.net and C#Builder personalities);
  - Turbo Delphi (explorer and professional - cf Installation notes);

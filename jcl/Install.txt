@@ -1,4 +1,4 @@
-JEDI Code Library v 1.104 Installation
+JEDI Code Library v 1.105 Installation
 
 Supported development tools versions:
 
@@ -68,4 +68,4 @@ To execute for
   Kylix 3 installation) in case your system is not set up to do that at startup.
 
 --------------------------------
-Document last updated 2009-01-21
+Document last updated 2009-06-22

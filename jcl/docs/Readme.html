@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html lang="en-us">
 <head>
-  <title>JEDI Code Library Beta 1.103</title>
+  <title>JEDI Code Library Release 1.105</title>
   <meta content="text/html;charset=ISO-8859-1" http-equiv="Content-Type">
 
 
@@ -18,9 +18,9 @@
 
 <h1>JEDI Code Library</h1>
 
-<p>Release 1.104<br>
-Build 3248
-21-January-2009</p>
+<p>Release 1.105<br>
+Build 3400
+22-June-2009</p>
 
 <hr><br>
 
@@ -66,12 +66,14 @@ use the facilities of our Subversion repository at Sourceforge.net&nbsp;
 <ul>
 
  <li>improved Unicode support for Delphi 2009 and C++Builder 2009;</li>
- <li>support for late and static binding to ZLib code;</li>
- <li>version control actions for CVS and SVN added to JCL runtime;</li>
- <li>the polynomial of CRC computations can be customized;</li>
- <li>speed improvement of TJclBufferedStream during write operations;</li>
- <li>new archive compression format provided with 7-zip: lzma, pe, elf, macho, udf, xar, mub, hfs, dmg; the wrapper has previous support for the compression and the decompression of zip, bzip2, gzip, 7z, tar and for the decompression of rar, iso, chm, deb, cab...</li>
- <li>new string conversion functions with failure detection.</li>
+ <li>support for solid archives in JclCompression (backend handled by 7-zip);</li>
+ <li>support for RPM, MUB and DMG archive formats (backend handled by 7-zip);</li>
+ <li>support for out-of-place and in-place archive updates (backend handled by 7-zip);</li>
+ <li>new string class TJclAnsiStrings to store AnsiString (improved Delphi 2009 backward compatibility);</li>
+ <li>JclPCRE update to PCRE 7.8;</li>
+ <li>the exception notifier can be disabled when a debugger is attached to the application;</li>
+ <li>support for multiple roots in TJclFileEnumerator;</li>
+ <li>new unit TJclCharsets.pas that contains the translations of charset names to codepages.</li>
 
 </ul>
 
@@ -79,6 +81,14 @@ use the facilities of our Subversion repository at Sourceforge.net&nbsp;
 </p>
 
 <ul>
+
+  <li>
+   <p>This release is the last one to support Delphi 5 and C++Builder 5, the upcoming JCL 2.x release will NOT support these tools;</p>
+  </li>
+
+  <li>
+   <p>The support for Delphi 2005 is broken because of various compiler internal failures;</p>
+  </li>
 
   <li>
     <p>Note that the package naming has changed: the same package name is used by
@@ -151,8 +161,6 @@ Studio 2007). The packages belong to the Jedi.Jcl namespace.</p>
   <li>Delphi version 5, 6, 7;</li>
 
   <li>C++Builder version 5 &amp; 6;</li>
-
-  <li>Delphi 2005 (Delphi.net personality);</li>
 
   <li>Borland Developer Studio 2006 (Delphi for Win32, C++Builder Win32, Delphi.net and C#Builder personalities);</li>
 
