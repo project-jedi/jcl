@@ -53,7 +53,7 @@ uses
 
 // Exceptions
 type
-  EJclWideStringError = EJclError;
+  EJclWideStringError = class(EJclError);
 
 const
   // definitions of often used characters:

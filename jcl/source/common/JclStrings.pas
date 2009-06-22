@@ -80,7 +80,7 @@ uses
 
 // Exceptions
 type
-  EJclStringError = EJclError;
+  EJclStringError = class(EJclError);
 
 // Character constants and sets
 
