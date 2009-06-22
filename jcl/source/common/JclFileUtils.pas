@@ -5379,7 +5379,7 @@ const
 begin
   if Window <>0 then
   begin
-    Windows.GetWindowThreadProcessId(Window, ProcessID);
+    Windows.GetWindowThreadProcessId(Window, @ProcessID);
     hProcess := Windows.OpenProcess(PROCESS_QUERY_INFORMATION or PROCESS_VM_READ, false, ProcessID);
     if hProcess <> 0 then
     begin
