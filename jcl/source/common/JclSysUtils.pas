@@ -109,7 +109,8 @@ function Guard(Obj: TObject; var SafeGuard: IMultiSafeGuard): TObject; overload;
 function GuardGetMem(Size: Cardinal; out SafeGuard: ISafeGuard): Pointer;
 function GuardAllocMem(Size: Cardinal; out SafeGuard: ISafeGuard): Pointer;
 
-{$IFDEF SUPPORTS_GENERICS_}
+(*
+{$IFDEF SUPPORTS_GENERICS}
 type
   ISafeGuard<T: class> = interface
     function ReleaseItem: T;
@@ -130,7 +131,8 @@ type
   public
     class function New(Instance: T): ISafeGuard<T>; static;
   end;
-{$ENDIF SUPPORTS_GENERICS_}
+{$ENDIF SUPPORTS_GENERICS}
+*)
 
 { Shared memory between processes functions }
 
