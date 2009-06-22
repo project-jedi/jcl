@@ -3,7 +3,7 @@
 <PROJECT>
   <MACROS>
     <VERSION value="BCB.06.10"/>
-    <PROJECT value="bplJcl69.so.1.105.0"/>
+    <PROJECT value="bplJcl69.so.2.0.0"/>
     <OBJFILES value="
       ..\..\lib\k3\bzip2.obj
       ..\..\lib\k3\Jcl8087.obj
@@ -170,6 +170,6 @@ LinkDebugVcl=0
 LibPrefix=
 LibPrefixDefined=0
 LibSuffix=69
-LibVersion=1.105.0
+LibVersion=2.0.0
   </IDEOPTIONS>
 </PROJECT>

@@ -136,10 +136,10 @@
     <VersionInfo>
       <VersionInfo Name="IncludeVerInfo">True</VersionInfo>
       <VersionInfo Name="AutoIncBuild">False</VersionInfo>
-      <VersionInfo Name="MajorVer">1</VersionInfo>
-      <VersionInfo Name="MinorVer">105</VersionInfo>
+      <VersionInfo Name="MajorVer">2</VersionInfo>
+      <VersionInfo Name="MinorVer">0</VersionInfo>
       <VersionInfo Name="Release">0</VersionInfo>
-      <VersionInfo Name="Build">3249</VersionInfo>
+      <VersionInfo Name="Build">3401</VersionInfo>
       <VersionInfo Name="Debug">False</VersionInfo>
       <VersionInfo Name="PreRelease">False</VersionInfo>
       <VersionInfo Name="Special">False</VersionInfo>
@@ -151,13 +151,13 @@
     <VersionInfoKeys>
       <VersionInfoKeys Name="CompanyName">Project JEDI</VersionInfoKeys>
       <VersionInfoKeys Name="FileDescription">JCL Package containing common units for JCL Experts</VersionInfoKeys>
-      <VersionInfoKeys Name="FileVersion">1.105.0.3249</VersionInfoKeys>
+      <VersionInfoKeys Name="FileVersion">2.0.0.3401</VersionInfoKeys>
       <VersionInfoKeys Name="InternalName">JclBaseExpert</VersionInfoKeys>
       <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2008 Project JEDI</VersionInfoKeys>
       <VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
       <VersionInfoKeys Name="OriginalFilename">JclBaseExpert100.bpl</VersionInfoKeys>
       <VersionInfoKeys Name="ProductName">JEDI Code Library</VersionInfoKeys>
-      <VersionInfoKeys Name="ProductVersion">1.105 Build 3249</VersionInfoKeys>
+      <VersionInfoKeys Name="ProductVersion">2.0 Build 3401</VersionInfoKeys>
     </VersionInfoKeys>
   </Delphi.Personality>
 </BorlandProject>

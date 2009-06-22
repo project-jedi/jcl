@@ -1,6 +1,6 @@
 VS_VERSION_INFO VERSIONINFO
-FILEVERSION 1,105,0,3249
-PRODUCTVERSION 1,105,0,3249
+FILEVERSION 2,0,0,3401
+PRODUCTVERSION 2,0,0,3401
  FILEFLAGSMASK VS_FFI_FILEFLAGSMASK
 #ifdef _DEBUG
  FILEFLAGS VS_FF_DEBUG
@@ -17,12 +17,12 @@ BEGIN
          BEGIN
               VALUE "CompanyName", "Project JEDI\0"
               VALUE "FileDescription", "JCL Project Analyzer\0"
-              VALUE "FileVersion", "1.105.0.3249\0"
+              VALUE "FileVersion", "2.0.0.3401\0"
               VALUE "InternalName", "JclProjectAnalysisExpertDLL\0"
               VALUE "LegalCopyright", "Copyright (C) 1999, 2008 Project JEDI\0"
               VALUE "OriginalFilename", "JclProjectAnalysisExpertDLLD60.dll\0"
               VALUE "ProductName", "JEDI Code Library\0"
-              VALUE "ProductVersion", "1.105 Build 3249\0"
+              VALUE "ProductVersion", "2.0 Build 3401\0"
          END
     END
     BLOCK "VarFileInfo"

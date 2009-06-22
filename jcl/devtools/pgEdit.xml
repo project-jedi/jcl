@@ -97,10 +97,10 @@
         <alias name="OldStyleIDE" value="c5,c6,d5,d6,d7"/>
       </aliases>
       <ProjectProperties>
-        <ProjectProperty name="VersionMajorNumber" value="1"/>
-        <ProjectProperty name="VersionMinorNumber" value="105"/>
+        <ProjectProperty name="VersionMajorNumber" value="2"/>
+        <ProjectProperty name="VersionMinorNumber" value="0"/>
         <ProjectProperty name="ReleaseNumber" value="0"/>
-        <ProjectProperty name="BuildNumber" value="3249"/>
+        <ProjectProperty name="BuildNumber" value="3401"/>
       </ProjectProperties>
     </Model>
   </models>
