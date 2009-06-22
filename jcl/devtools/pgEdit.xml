@@ -99,8 +99,8 @@
       <ProjectProperties>
         <ProjectProperty name="VersionMajorNumber" value="1"/>
         <ProjectProperty name="VersionMinorNumber" value="105"/>
-        <ProjectProperty name="ReleaseNumber" value="0"/>
-        <ProjectProperty name="BuildNumber" value="3249"/>
+        <ProjectProperty name="ReleaseNumber" value="1"/>
+        <ProjectProperty name="BuildNumber" value="3400"/>
       </ProjectProperties>
     </Model>
   </models>
