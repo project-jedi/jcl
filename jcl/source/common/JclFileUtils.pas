@@ -671,6 +671,14 @@ type
     function GetFileOS: DWORD;
     function GetFileSubType: DWORD;
     function GetFileType: DWORD;
+    function GetFileVersionBuild: string;
+    function GetFileVersionMajor: string;
+    function GetFileVersionMinor: string;
+    function GetFileVersionRevision: string;
+    function GetProductVersionBuild: string;
+    function GetProductVersionMajor: string;
+    function GetProductVersionMinor: string;
+    function GetProductVersionRevision: string;
     function GetVersionKeyValue(Index: Integer): string;
   public
     constructor Attach(VersionInfoData: Pointer; Size: Integer);
@@ -696,6 +704,10 @@ type
     property FileSubType: DWORD read GetFileSubType;
     property FileType: DWORD read GetFileType;
     property FileVersion: string index 4 read GetVersionKeyValue;
+    property FileVersionBuild: string read GetFileVersionBuild;
+    property FileVersionMajor: string read GetFileVersionMajor;
+    property FileVersionMinor: string read GetFileVersionMinor;
+    property FileVersionRevision: string read GetFileVersionRevision;
     property Items: TStrings read GetItems;
     property InternalName: string index 5 read GetVersionKeyValue;
     property LanguageCount: Integer read GetLanguageCount;
@@ -709,6 +721,10 @@ type
     property PrivateBuild: string index 12 read GetVersionKeyValue;
     property ProductName: string index 9 read GetVersionKeyValue;
     property ProductVersion: string index 10 read GetVersionKeyValue;
+    property ProductVersionBuild: string read GetProductVersionBuild;
+    property ProductVersionMajor: string read GetProductVersionMajor;
+    property ProductVersionMinor: string read GetProductVersionMinor;
+    property ProductVersionRevision: string read GetProductVersionRevision;
     property SpecialBuild: string index 11 read GetVersionKeyValue;
     property TranslationCount: Integer read GetTranslationCount;
     property Translations[Index: Integer]: TLangIdRec read GetTranslations;
@@ -5682,6 +5698,49 @@ begin
   Result := FFixedInfo^.dwFileType;
 end;
 
+function TJclFileVersionInfo.GetFileVersionBuild: string;
+var
+  Count: Integer;
+begin
+  Result :=GetVersionKeyValue(4);
+  Result :=Trim(Result);
+  if StrFind(', ', Result) <> 0 then
+    StrReplace(Result, ', ', '.', [rfReplaceAll]);
+  Count :=CharPos(Result, '.', CharPos(Result, '.')+1);
+  Result :=StrMid(Result, Count, CharPos(Result, '.', Count+1) -Count);
+end;
+
+function TJclFileVersionInfo.GetFileVersionMajor: string;
+begin
+  Result :=GetVersionKeyValue(4);
+  Result :=Trim(Result);
+  if StrFind(', ', Result) <> 0 then
+    StrReplace(Result, ', ', '.', [rfReplaceAll]);
+  Result :=StrBefore('.', Result);
+end;
+
+function TJclFileVersionInfo.GetFileVersionMinor: string;
+var
+  Count: integer;
+begin
+  Result :=GetVersionKeyValue(4);
+  Result :=Trim(Result);
+  if StrFind(', ', Result) <> 0 then
+    StrReplace(Result, ', ', '.', [rfReplaceAll]);
+  Count :=CharPos(Result, '.');
+  Count :=CharPos(Result, '.', Count+1)-Count;
+  Result :=StrMid(Result, CharPos(Result, '.'), Count);
+end;
+
+function TJclFileVersionInfo.GetFileVersionRevision: string;
+begin
+  Result :=GetVersionKeyValue(4);
+  Result :=Trim(Result);
+  if StrFind(', ', Result) <> 0 then
+    StrReplace(Result, ', ', '.', [rfReplaceAll]);
+  Result :=StrRight(Result, LastDelimiter('.', Result));
+end;
+
 function TJclFileVersionInfo.GetFixedInfo: TVSFixedFileInfo;
 begin
   Result := FFixedInfo^;
@@ -5725,6 +5784,48 @@ begin
   Result := FTranslations[Index];
 end;
 
+function TJclFileVersionInfo.GetProductVersionBuild: string;
+var
+  Count: integer;
+begin
+  Result :=GetVersionKeyValue(10);
+  Result :=Trim(Result);
+  if StrFind(', ', Result) <> 0 then
+    StrReplace(Result, ', ', '.', [rfReplaceAll]);
+  Count :=CharPos(Result, '.', CharPos(Result, '.')+1);
+  Result :=StrMid(Result, Count, CharPos(Result, ' ', Count+1) -Count);
+end;
+
+function TJclFileVersionInfo.GetProductVersionMajor: string;
+begin
+  Result :=GetVersionKeyValue(10);
+  Result :=Trim(Result);
+  if StrFind(', ', Result) <> 0 then
+    StrReplace(Result, ', ', '.', [rfReplaceAll]);
+  Result :=StrBefore('.', Result);
+end;
+
+function TJclFileVersionInfo.GetProductVersionRevision: string;
+begin
+  Result :=GetVersionKeyValue(10);
+  Result :=Trim(Result);
+  if StrFind(', ', Result) <> 0 then
+    StrReplace(Result, ', ', '.', [rfReplaceAll]);
+  Result :=StrRight(Result, LastDelimiter(' ', Result));
+end;
+
+function TJclFileVersionInfo.GetProductVersionMinor: string;
+var
+  Count: integer;
+begin
+  Result :=GetVersionKeyValue(10);
+  Result :=Trim(Result);
+  if StrFind(', ', Result) <> 0 then
+    StrReplace(Result, ', ', '.', [rfReplaceAll]);
+  Count :=CharPos(Result, '.');
+  Count :=CharPos(Result, '.', Count+1)-Count;
+  Result :=StrMid(Result, CharPos(Result, '.'), Count);
+end;
 function TJclFileVersionInfo.GetVersionKeyValue(Index: Integer): string;
 begin
   Result := Items.Values[VerKeyNames[Index]];
