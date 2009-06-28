@@ -352,7 +352,7 @@ resourcestring
 //=== JclOtaExcDlgRepository.pas =============================================
 resourcestring
   RsRepositoryExcDlgPage = 'Exception dialog';
-  
+
   RsRepositoryExcDlgDelphiName = 'Jcl Exception dialog for Delphi';
   RsRepositoryExcDlgDelphiDescription = 'Create an exception dialog for your Delphi project';
 
@@ -367,6 +367,18 @@ resourcestring
   RsVersionControlSheet = 'Version control';
   RsActionCategory = 'JEDI Code Library';
   RsVersionCtrlSystemName = 'System';
+
+//=== JclStackTraceViewerImpl.pas ============================================
+resourcestring
+  rsStackTraceViewerCaption = 'Stack Traces';
+  rsStackTraceViewerOptionsPageName = 'Stack Trace Viewer';
+
+//=== JclStackTraceViewerMainFrame.pas =======================================
+resourcestring
+  rsSTVFindFilesInProjectGroup = 'Find files in active project group';
+  rsSTVFindFileInProjectGroup  = 'Find %s in active project group';
+  rsSTVFindFilesInBrowsingPath = 'Find files in browsing path';
+
 
 {$IFDEF UNITVERSIONING}
 const

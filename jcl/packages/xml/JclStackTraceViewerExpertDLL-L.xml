@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JclStackTraceViewerDLL" Type="L">
+  <Description>JCL Stack Trace Viewer</Description>
+  <GUID>{851E8773-ADE0-479D-94F9-FE3AAB64A847}</GUID>
+  <C5PFlags>-LUvcl50 -LUdsnide50 -LUJclC50 -LUJclBaseExpertC50</C5PFlags>
+  <C6PFlags>-LUdesignide</C6PFlags>
+  <C5Libs/>
+  <C6Libs/>
+  <CompilerDefines>RELEASE</CompilerDefines>
+  <ImageBase>58120000</ImageBase>
+  <Requires>
+    <Package Name="rtl" Targets="WinLibSuffix" Condition=""/>
+    <Package Name="vcl50" Targets="noLibSuffix" Condition=""/>
+    <Package Name="vcl" Targets="WinLibSuffix" Condition=""/>
+    <Package Name="dsnide50" Targets="noLibSuffix" Condition=""/>
+    <Package Name="designide" Targets="WinLibSuffix" Condition=""/>
+    <Package Name="Jcl-R" Targets="Windows" Condition=""/>
+    <Package Name="JclBaseExpert-D" Targets="Windows" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\experts\stacktraceviewer\JclStackTraceViewerImpl.pas" Targets="Delphi" Formname="" Condition=""/>
+    <File Name="..\..\experts\stacktraceviewer\JclStackTraceViewerExceptInfoFrame.pas" Targets="Delphi" Formname="frmException: TFrame" Condition=""/>
+    <File Name="..\..\experts\stacktraceviewer\JclStackTraceViewerStackFrame.pas" Targets="Delphi" Formname="frmStack: TFrame" Condition=""/>
+    <File Name="..\..\experts\stacktraceviewer\JclStackTraceViewerThreadFrame.pas" Targets="Delphi" Formname="frmThread: TFrame" Condition=""/>
+    <File Name="..\..\experts\stacktraceviewer\JclStackTraceViewerModuleFrame.pas" Targets="Delphi" Formname="frmModule: TFrame" Condition=""/>
+    <File Name="..\..\experts\stacktraceviewer\JclStackTraceViewerMainFormDelphi.pas" Targets="d5,d6,d7" Formname="frmStackView" Condition=""/>
+    <File Name="..\..\experts\stacktraceviewer\JclStackTraceViewerMainFormBDS.pas" Targets="d9,d10,d11,d12" Formname="frmStackView" Condition=""/>
+    <File Name="..\..\experts\stacktraceviewer\JclStackTraceViewerMainFrame.pas" Targets="Delphi" Formname="frmMain: TFrame" Condition=""/>
+    <File Name="..\..\experts\stacktraceviewer\JclStackTraceViewerConfigFrame.pas" Targets="Delphi" Formname="JclStackTraceViewerConfigFrame: TFrame" Condition=""/>
+    <File Name="..\..\experts\stacktraceviewer\JclStackTraceViewerClasses.pas" Targets="Delphi" Formname="" Condition=""/>
+    <File Name="..\..\experts\stacktraceviewer\JclStackTraceViewerStackCodeUtils.pas" Targets="Delphi" Formname="" Condition=""/>
+    <File Name="..\..\experts\stacktraceviewer\JclStackTraceViewerOptions.pas" Targets="Delphi" Formname="" Condition=""/>
+    <File Name="..\..\experts\stacktraceviewer\JclStackTraceViewerAPIImpl.pas" Targets="Delphi" Formname="" Condition=""/>
+    <File Name="..\..\experts\stacktraceviewer\JclStackTraceViewerAPI.pas" Targets="Delphi" Formname="" Condition=""/>
+    <File Name="..\..\experts\stacktraceviewer\JclStackTraceViewerStackUtils.pas" Targets="Delphi" Formname="" Condition=""/>
+    <File Name="..\..\experts\stacktraceviewer\JclDebugSerialization.pas" Targets="Delphi" Formname="" Condition=""/>
+    <File Name="..\..\experts\stacktraceviewer\JclDebugXMLDeserializer.pas" Targets="Delphi" Formname="" Condition=""/>
+  </Contains>
+</Package>

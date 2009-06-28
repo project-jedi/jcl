@@ -148,6 +148,8 @@ begin
 end;
 
 procedure TFileSearchForm.StartBtnClick(Sender: TObject);
+var
+  RootDirectories: TStrings;
 begin
   RootDirInput.Text := PathCanonicalize(RootDirInput.Text);
 
@@ -157,7 +159,13 @@ begin
     FFileEnumerator.LastChangeAfterAsString := edLastChangeAfter.Text;
   if FFileEnumerator.SearchOption[fsLastChangeBefore] then
     FFileEnumerator.LastChangeBeforeAsString := edLastChangeBefore.Text;
-  FFileEnumerator.RootDirectory := RootDirInput.Text;
+  RootDirectories := TStringList.Create;
+  try
+    StrToStrings(RootDirInput.Text, DirSeparator, RootDirectories, False);
+    FFileEnumerator.RootDirectories := RootDirectories;
+  finally
+    RootDirectories.Free;
+  end;
   FFileEnumerator.FileMask := FileMaskInput.Text;
   FFileEnumerator.SearchOption[fsMinSize] := cbFileSizeMin.Checked;
   FFileEnumerator.SearchOption[fsMaxSize] := cbFileSizeMax.Checked;

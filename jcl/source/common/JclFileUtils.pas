@@ -436,6 +436,7 @@ type
     // property access methods
     function GetAttributeMask: TJclFileAttributeMask;
     function GetCaseSensitiveSearch: Boolean;
+    function GetRootDirectories: TStrings;
     function GetRootDirectory: string;
     function GetFileMask: string;
     function GetFileMasks: TStrings;
@@ -456,6 +457,7 @@ type
     function GetOptions: TFileSearchoptions;
     procedure SetAttributeMask(const Value: TJclFileAttributeMask);
     procedure SetCaseSensitiveSearch(const Value: Boolean);
+    procedure SetRootDirectories(const Value: TStrings);
     procedure SetRootDirectory(const Value: string);
     procedure SetFileMask(const Value: string);
     procedure SetFileMasks(const Value: TStrings);
@@ -481,6 +483,7 @@ type
     procedure StopAllTasks(Silently: Boolean = False); // Silently: Don't call OnTerminateTask
     // properties
     property CaseSensitiveSearch: Boolean read GetCaseSensitiveSearch write SetCaseSensitiveSearch;
+    property RootDirectories: TStrings read GetRootDirectories write SetRootDirectories;
     property RootDirectory: string read GetRootDirectory write SetRootDirectory;
     property FileMask: string read GetFileMask write SetFileMask;
     property SubDirectoryMask: string read GetSubDirectoryMask write SetSubDirectoryMask;
@@ -510,7 +513,7 @@ type
     {$ENDIF ~CLR}
     FTasks: TList;
     FFileMasks: TStringList;
-    FRootDirectory: string;
+    FRootDirectories: TStringList;
     FSubDirectoryMask: string;
     FOnEnterDirectory: TFileHandler;
     FOnTerminateTask: TFileSearchTerminationEvent;
@@ -539,6 +542,7 @@ type
     procedure TaskTerminated(Sender: TObject);
     // IJclFileEnumerator property access methods
     function GetAttributeMask: TJclFileAttributeMask;
+    function GetRootDirectories: TStrings;
     function GetRootDirectory: string;
     function GetFileMask: string;
     function GetFileMasks: TStrings;
@@ -558,6 +562,7 @@ type
     function GetOnEnterDirectory: TFileHandler;
     function GetOnTerminateTask: TFileSearchTerminationEvent;
     procedure SetAttributeMask(const Value: TJclFileAttributeMask);
+    procedure SetRootDirectories(const Value: TStrings);
     procedure SetRootDirectory(const Value: string);
     procedure SetFileMask(const Value: string);
     procedure SetFileMasks(const Value: TStrings);
@@ -600,7 +605,8 @@ type
     property CaseSensitiveSearch: Boolean read GetCaseSensitiveSearch write SetCaseSensitiveSearch
       default {$IFDEF MSWINDOWS} False {$ELSE} True {$ENDIF};
     property FileMasks: TStrings read GetFileMasks write SetFileMasks;
-    property RootDirectory: string read FRootDirectory write FRootDirectory;
+    property RootDirectories: TStrings read GetRootDirectories write SetRootDirectories;
+    property RootDirectory: string read GetRootDirectory write SetRootDirectory;
     property SubDirectoryMask: string read FSubDirectoryMask write FSubDirectoryMask;
     property AttributeMask: TJclFileAttributeMask read FAttributeMask write SetAttributeMask;
     property FileSizeMin: Int64 read FFileSizeMin write FFileSizeMin;
@@ -6444,7 +6450,8 @@ type
   private
     FID: TFileSearchTaskID;
     FFileMasks: TStringList;
-    FDirectory: string;
+    FDirectories: TStrings;
+    FCurrentDirectory: string;
     FSubDirectoryMask: string;
     FOnEnterDirectory: TFileHandler;
     FFileHandlerEx: TFileHandlerEx;
@@ -6469,7 +6476,9 @@ type
     procedure SyncProcessDirectory(const Directory: string);
     procedure AsyncProcessFile(const Directory: string; const FileInfo: TSearchRec);
     procedure SyncProcessFile(const Directory: string; const FileInfo: TSearchRec);
+    function GetDirectories: TStrings;
     function GetFileMasks: TStrings;
+    procedure SetDirectories(const Value: TStrings);
     procedure SetFileMasks(const Value: TStrings);
   protected
     procedure DoTerminate; override;
@@ -6484,7 +6493,7 @@ type
     property FileMasks: TStrings read GetFileMasks write SetFileMasks;
     property FileSizeMin: Int64 read FFileSizeMin write FFileSizeMin;
     property FileSizeMax: Int64 read FFileSizeMax write FFileSizeMax;
-    property Directory: string read FDirectory write FDirectory;
+    property Directories: TStrings read GetDirectories write SetDirectories;
     property IncludeSubDirectories: Boolean
       read FIncludeSubDirectories write FIncludeSubDirectories;
     property IncludeHiddenSubDirectories: Boolean
@@ -6508,6 +6517,7 @@ type
 constructor TEnumFileThread.Create;
 begin
   inherited Create(True);
+  FDirectories := TStringList.Create;
   FFileMasks := TStringList.Create;
   FFileTimeMin := Low(FFileInfo.Time);
   FFileTimeMax := High(FFileInfo.Time);
@@ -6533,10 +6543,13 @@ end;
 destructor TEnumFileThread.Destroy;
 begin
   FFileMasks.Free;
+  FDirectories.Free;
   inherited Destroy;
 end;
 
 procedure TEnumFileThread.Execute;
+var
+  Index: Integer;
 begin
   if SynchronizationMode = smPerDirectory then
   begin
@@ -6550,10 +6563,16 @@ begin
   end;
 
   if FIncludeSubDirectories then
-    EnumDirectories(Directory, FInternalDirHandler, FIncludeHiddenSubDirectories,
-      FSubDirectoryMask, {$IFDEF CLR}TObject(Terminated){$ELSE}@Terminated{$ENDIF})
+  begin
+    for Index := 0 to FDirectories.Count - 1 do
+      EnumDirectories(FDirectories.Strings[Index], FInternalDirHandler, FIncludeHiddenSubDirectories,
+        FSubDirectoryMask, {$IFDEF CLR}TObject(Terminated){$ELSE}@Terminated{$ENDIF})
+  end
   else
-    FInternalDirHandler(CanonicalizedSearchPath(Directory));
+  begin
+    for Index := 0 to FDirectories.Count - 1 do
+      FInternalDirHandler(CanonicalizedSearchPath(FDirectories.Strings[Index]));
+  end;
 end;
 
 procedure TEnumFileThread.DoTerminate;
@@ -6564,7 +6583,7 @@ end;
 
 procedure TEnumFileThread.EnterDirectory;
 begin
-  FOnEnterDirectory(Directory);
+  FOnEnterDirectory(FCurrentDirectory);
 end;
 
 procedure TEnumFileThread.ProcessDirectory;
@@ -6576,7 +6595,7 @@ end;
 
 procedure TEnumFileThread.AsyncProcessDirectory(const Directory: string);
 begin
-  FDirectory := Directory;
+  FCurrentDirectory := Directory;
   if Assigned(FOnEnterDirectory) then
     Synchronize(EnterDirectory);
   ProcessDirFiles;
@@ -6584,13 +6603,13 @@ end;
 
 procedure TEnumFileThread.SyncProcessDirectory(const Directory: string);
 begin
-  FDirectory := Directory;
+  FCurrentDirectory := Directory;
   Synchronize(ProcessDirectory);
 end;
 
 procedure TEnumFileThread.ProcessDirFiles;
 begin
-  EnumFiles(Directory + '*', FInternalFileHandler, FRejectedAttr, FRequiredAttr,
+  EnumFiles(FCurrentDirectory + '*', FInternalFileHandler, FRejectedAttr, FRequiredAttr,
     {$IFDEF CLR}TObject(Terminated){$ELSE}@Terminated{$ENDIF});
 end;
 
@@ -6623,9 +6642,9 @@ end;
 procedure TEnumFileThread.ProcessFile;
 begin
   if Assigned(FFileHandlerEx) then
-    FFileHandlerEx(Directory, FFileInfo)
+    FFileHandlerEx(FCurrentDirectory, FFileInfo)
   else
-    FFileHandler(Directory + FFileInfo.Name);
+    FFileHandler(FCurrentDirectory + FFileInfo.Name);
 end;
 
 procedure TEnumFileThread.AsyncProcessFile(const Directory: string; const FileInfo: TSearchRec);
@@ -6642,9 +6661,19 @@ begin
     Synchronize(ProcessFile);
 end;
 
+function TEnumFileThread.GetDirectories: TStrings;
+begin
+  Result := FDirectories;
+end;
+
 function TEnumFileThread.GetFileMasks: TStrings;
 begin
   Result := FFileMasks;
+end;
+
+procedure TEnumFileThread.SetDirectories(const Value: TStrings);
+begin
+  FDirectories.Assign(Value);
 end;
 
 procedure TEnumFileThread.SetFileMasks(const Value: TStrings);
@@ -6671,7 +6700,8 @@ begin
   inherited Create;
   FTasks := TList.Create;
   FAttributeMask := TJclFileAttributeMask.Create;
-  FRootDirectory := '.';
+  FRootDirectories := TStringList.Create;
+  FRootDirectories.Add('.');
   FFileMasks := TStringList.Create;
   FFileMasks.Add('*');
   FSubDirectoryMask := '*';
@@ -6694,6 +6724,7 @@ begin
   FTasks.Free;
   FAttributeMask.Free;
   FFileMasks.Free;
+  FRootDirectories.Free;
   inherited Destroy;
 end;
 
@@ -6769,7 +6800,7 @@ begin
   Task.FID := NextTaskID;
   Task.CaseSensitiveSearch := FCaseSensitiveSearch;
   Task.FileMasks := FileMasks;
-  Task.Directory := RootDirectory;
+  Task.Directories := RootDirectories;
   Task.RejectedAttr := AttributeMask.Rejected;
   Task.RequiredAttr := AttributeMask.Required;
   Task.IncludeSubDirectories := IncludeSubDirectories;
@@ -6918,9 +6949,17 @@ begin
   Result := FCaseSensitiveSearch;
 end;
 
+function TJclFileEnumerator.GetRootDirectories: TStrings;
+begin
+  Result := FRootDirectories;
+end;
+
 function TJclFileEnumerator.GetRootDirectory: string;
 begin
-  Result := FRootDirectory;
+  if FRootDirectories.Count = 1 then
+    Result := FRootDirectories.Strings[0]
+  else
+    Result := '';
 end;
 
 function TJclFileEnumerator.GetFileMask: string;
@@ -7008,9 +7047,15 @@ begin
   FCaseSensitiveSearch := Value;
 end;
 
+procedure TJclFileEnumerator.SetRootDirectories(const Value: TStrings);
+begin
+  FRootDirectories.Assign(Value);
+end;
+
 procedure TJclFileEnumerator.SetRootDirectory(const Value: string);
 begin
-  FRootDirectory := Value;
+  FRootDirectories.Clear;
+  FRootDirectories.Add(Value);
 end;
 
 procedure TJclFileEnumerator.SetFileMask(const Value: string);

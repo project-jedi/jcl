@@ -1,0 +1,5 @@
+[Directories]
+UnitOutputDir=..\..\lib\d7
+SearchPath=..\..\source\include;..\..\experts\common
+Conditionals=RELEASE
+

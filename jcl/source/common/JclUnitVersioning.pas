@@ -185,7 +185,7 @@ end;
 
 function TUnitVersion.RCSfile: string;
 var
-  I: Integer;
+  I, P: Integer;
 begin
   Result := Trim(FInfo.RCSfile);
   // the + is to have CVS not touch the string
@@ -205,6 +205,13 @@ begin
   begin
     Delete(Result, 1, 6);
     Delete(Result, Length(Result) - 1, 2);
+    { TODO -oUSc : Is there any need for a function that returns the URL? }
+    P := Pos('/', Result);
+    while P > 0 do
+    begin
+      Delete(Result, 1, P);
+      P := Pos('/', Result);
+    end;
   end;
 end;
 

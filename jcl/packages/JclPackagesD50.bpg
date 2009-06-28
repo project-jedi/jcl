@@ -13,7 +13,7 @@ PROJECTS = JclD50.bpl JclVclD50.bpl JclContainersD50.bpl JclBaseExpertD50.bpl \
   JclDebugExpertD50.bpl JclFavoriteFoldersExpertD50.bpl \
   JclProjectAnalysisExpertD50.bpl JclRepositoryExpertD50.bpl \
   JclSIMDViewExpertD50.bpl JclThreadNameExpertD50.bpl JclUsesExpertD50.bpl \
-  JclVersionControlExpertD50.bpl
+  JclVersionControlExpertD50.bpl JclStackTraceViewerExpertD50.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -52,6 +52,9 @@ JclUsesExpertD50.bpl: d5\JclUsesExpertD50.dpk
   $(DCC)
 
 JclVersionControlExpertD50.bpl: d5\JclVersionControlExpertD50.dpk
+  $(DCC)
+
+JclStackTraceViewerExpertD50.bpl: d5\JclStackTraceViewerExpertD50.dpk
   $(DCC)
 
 
