@@ -1839,6 +1839,7 @@ resourcestring
   RsIntelCacheDescr05 = 'Data TLB1: 4 MByte pages, 4-way set associative, 32 entries';
   RsIntelCacheDescr06 = '1st level instruction cache: 8 KBytes, 4-way set associative, 32 byte line size';
   RsIntelCacheDescr08 = '1st level instruction cache: 16 KBytes, 4-way set associative, 32 byte line size';
+  RsIntelCacheDescr09 = '1st level instruction cache: 32 KBytes, 4-way set associative, 64 byte line size';
   RsIntelCacheDescr0A = '1st level data cache: 8 KBytes, 2-way set associative, 32 byte line size';
   RsIntelCacheDescr0B = 'Instruction TLB: 4 MByte pages, 4-way set associative, 4 entries';
   RsIntelCacheDescr0C = '1st level data cache: 16 KBytes, 4-way set associative, 32 byte line size';

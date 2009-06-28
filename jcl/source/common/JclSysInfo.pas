@@ -457,7 +457,7 @@ const
   CPU_TYPE_VIA       = 5;
 
 type
-  TSSESupport = (sse, sse2, sse3, ssse3, sse4A, sse4B, sse5);
+  TSSESupport = (sse, sse2, sse3, ssse3, sse4A, sse4B, sse5, avx);
   TSSESupports = set of TSSESupport;
 
   TCpuInfo = record
@@ -638,7 +638,7 @@ const
   EINTEL_SSSE3     = BIT_9;  // SSSE 3 extensions
   EINTEL_CNXTID    = BIT_10; // L1 Context ID
   EINTEL_BIT_11    = BIT_11; // Reserved, do not count on value
-  EINTEL_BIT_12    = BIT_12; // Reserved, do not count on value
+  EINTEL_FMA       = BIT_12; // Fused Multiply Add
   EINTEL_CX16      = BIT_13; // CMPXCHG16B instruction
   EINTEL_XTPR      = BIT_14; // Send Task Priority messages
   EINTEL_PDCM      = BIT_15; // Perf/Debug Capability MSR
@@ -654,7 +654,7 @@ const
   EINTEL_AES       = BIT_25; // the processor supports the AES instruction extensions
   EINTEL_XSAVE     = BIT_26; // XSAVE/XRSTOR processor extended states feature, XSETBV/XGETBV instructions and XFEATURE_ENABLED_MASK (XCR0) register
   EINTEL_OSXSAVE   = BIT_27; // OS has enabled features present in EINTEL_XSAVE
-  EINTEL_BIT_28    = BIT_28; // Reserved, do not count on value
+  EINTEL_AVX       = BIT_28; // Advanced Vector Extensions
   EINTEL_BIT_29    = BIT_29; // Reserved, do not count on value
   EINTEL_BIT_30    = BIT_30; // Reserved, do not count on value
   EINTEL_BIT_31    = BIT_31; // Always return 0
@@ -1170,8 +1170,8 @@ const
   MXCSR_FZ  = BIT_15;                 // Flush to Zero
 
 const
-  IntelCacheDescription: array [0..86] of TCacheInfo = (
-    (D: $00; Family: cfOther;                                                                           I: RsIntelCacheDescr00),
+  IntelCacheDescription: array [0..87] of TCacheInfo = (
+    (D: $00; Family: cfOther;                                                                            I: RsIntelCacheDescr00),
     (D: $01; Family: cfInstructionTLB;     Size: 4;     WaysOfAssoc: 4;                Entries: 32;      I: RsIntelCacheDescr01),
     (D: $02; Family: cfInstructionTLB;     Size: 4096;  WaysOfAssoc: 4;                Entries: 2;       I: RsIntelCacheDescr02),
     (D: $03; Family: cfDataTLB;            Size: 4;     WaysOfAssoc: 4;                Entries: 64;      I: RsIntelCacheDescr03),
@@ -1179,6 +1179,7 @@ const
     (D: $05; Family: cfDataTLB;            Size: 4096;  WaysOfAssoc: 4;                Entries: 32;      I: RsIntelCacheDescr05),
     (D: $06; Family: cfL1InstructionCache; Size: 8;     WaysOfAssoc: 4;  LineSize: 32;                   I: RsIntelCacheDescr06),
     (D: $08; Family: cfL1InstructionCache; Size: 16;    WaysOfAssoc: 4;  LineSize: 32;                   I: RsIntelCacheDescr08),
+    (D: $09; Family: cfL1InstructionCache; Size: 32;    WaysOfAssoc: 4;  LineSize: 64;                   I: RsIntelCacheDescr09),
     (D: $0A; Family: cfL1DataCache;        Size: 8;     WaysOfAssoc: 2;  LineSize: 32;                   I: RsIntelCacheDescr0A),
     (D: $0B; Family: cfInstructionTLB;     Size: 4;     WaysOfAssoc: 4;                Entries: 4;       I: RsIntelCacheDescr0B),
     (D: $0C; Family: cfL1DataCache;        Size: 16;    WaysOfAssoc: 4;  LineSize: 32;                   I: RsIntelCacheDescr0C),
@@ -4641,6 +4642,8 @@ function CPUID: TCpuInfo;
       Include(CPUInfo.SSE, sse4A);
     if (CPUInfo.IntelSpecific.ExFeatures and EINTEL_SSE4_2) <> 0 then
       Include(CPUInfo.SSE, sse4B);
+    if (CPUInfo.IntelSpecific.ExFeatures and EINTEL_AVX) <> 0 then
+      Include(CPUInfo.SSE, avx);
     CPUInfo.Is64Bits := CPUInfo.HasExtendedInfo and ((CPUInfo.IntelSpecific.Ex64Features and EINTEL64_EM64T)<>0);
     CPUInfo.DepCapable := CPUInfo.HasExtendedInfo and ((CPUInfo.IntelSpecific.Ex64Features and EINTEL64_XD) <> 0);
   end;
