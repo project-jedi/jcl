@@ -3282,6 +3282,7 @@ var
   lPos: Integer;
   lOk: Boolean;
   Ch: Char;
+  CodePage: Word;
 begin
   lPos := 1;
   lOk := False;
@@ -3336,12 +3337,17 @@ begin
 
   Name := '';
 
+  if FEncoding <> '' then
+    CodePage := CodePageFromCharsetName(FEncoding)
+  else
+    CodePage := CP_ACP;
+
   // set current stringstream codepage
   if StringStream is TJclAutoStream then
-    TJclAutoStream(StringStream).CodePage := CodePageFromCharsetName(FEncoding)
+    TJclAutoStream(StringStream).CodePage := CodePage
   else
   if StringStream is TJclAnsiStream then
-    TJclAnsiStream(StringStream).CodePage := CodePageFromCharsetName(FEncoding)
+    TJclAnsiStream(StringStream).CodePage := CodePage
   else
     Error(RsENoCharset);
 end;
