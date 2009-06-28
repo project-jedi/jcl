@@ -490,7 +490,8 @@ begin
       Win32Check(Ret);
 
       PEss := PBuf;
-      for I := 0 to ServicesReturned - 1 do
+      if ServicesReturned > 0 then
+        for I := 0 to ServicesReturned - 1 do
       begin
         if (PEss.lpServiceName[1] <> SC_GROUP_IDENTIFIER) and
           (SCManager.FindService(PEss.lpServiceName, NtSvc)) then
