@@ -45,9 +45,7 @@
 {$IFNDEF PROTOTYPE}
 {$IFDEF VCL}
 unit JclGraphics;
-{$ELSE VisualCLX}
-unit JclQGraphics;
-{$ENDIF VisualCLX}
+{$ENDIF VCL}
 {$ENDIF ~PROTOTYPE}
 
 {$I jcl.inc}
@@ -62,11 +60,9 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF VisualCLX}
-  Types, QGraphics, JclQGraphUtils,
-  {$ELSE}
+  {$IFDEF VCL}
   Graphics, JclGraphUtils, Controls,
-  {$ENDIF VisualCLX}
+  {$ENDIF VCL}
   JclBase;
 
 type
@@ -564,9 +560,6 @@ const
     {$IFDEF VCL}
     LogPath: 'JCL\source\vcl'
     {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    LogPath: 'JCL\source\visclx'
-    {$ENDIF VisualCLX}
     );
 {$ENDIF UNITVERSIONING}
 
@@ -2454,7 +2447,7 @@ procedure TJclRegion.FillGradient(Canvas: TCanvas; ColorCount: Integer;
   StartColor, EndColor: TColor; ADirection: TGradientDirection);
 begin
   SelectClipRgn(Canvas.Handle,FHandle);
-  {$IFDEF VisualCLX}JclQGraphics{$ELSE}JclGraphics{$ENDIF}.FillGradient(Canvas.Handle, Box, ColorCount, StartColor, EndColor, ADirection);
+  {$IFDEF VCL}JclGraphics{$ENDIF}.FillGradient(Canvas.Handle, Box, ColorCount, StartColor, EndColor, ADirection);
 end;
 
 procedure TJclRegion.Frame(Canvas: TCanvas; FrameWidth, FrameHeight: Integer);

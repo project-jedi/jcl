@@ -31,9 +31,7 @@
 {$IFNDEF PROTOTYPE}
 {$IFDEF VCL}
 unit JediGUIInstall;
-{$ELSE VisualCLX}
-unit QJediGUIInstall;
-{$ENDIF VisualCLX}
+{$ENDIF VCL}
 {$ENDIF ~PROTOTYPE}
 
 {$I jcl.inc}
@@ -43,12 +41,9 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF VisualCLX}
-  Types,
-  QGraphics, QForms, QControls, QStdCtrls, QComCtrls, QExtCtrls,
-  {$ELSE}
+  {$IFDEF VCL}
   Graphics, Forms, Controls, StdCtrls, ComCtrls, ExtCtrls, FrmCompile,
-  {$ENDIF}
+  {$ENDIF VCL}
   JclBorlandTools, JediInstall;
 
 type
@@ -61,9 +56,7 @@ type
     Splitter: TSplitter;
     InfoPanel: TPanel;
     Label2: TLabel;
-    {$IFDEF VisualCLX}
-    InfoDisplay: TMemo;
-    {$ELSE VCL}
+    {$IFDEF VCL}
     InfoDisplay: TRichEdit;
     {$ENDIF VCL}
     OptionsGroupBox: TGroupBox;
@@ -73,14 +66,8 @@ type
     procedure TreeViewMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure TreeViewKeyPress(Sender: TObject; var Key: Char);
-    {$IFDEF VisualCLX}
-    procedure TreeViewCustomDrawItem(Sender: TCustomViewControl; Item: TCustomViewItem;
-      Canvas: TCanvas; const Rect: TRect; State: TCustomDrawState; Stage: TCustomDrawStage;
-      var DefaultDraw: Boolean);
-    {$ELSE}
     procedure TreeViewCustomDrawItem(Sender: TCustomTreeView; Node: TTreeNode;
       State: TCustomDrawState; var DefaultDraw: Boolean);
-    {$ENDIF}
   private
     FNodeData: TList;
     FDirectories: TList;
@@ -144,19 +131,15 @@ implementation
 
 {$IFDEF VCL}
 {$R *.dfm}
-{$ELSE VisualCLX}
-{$R *.xfm}
-{$ENDIF VisualCLX}
+{$ENDIF VCL}
 
 uses
   {$IFDEF MSWINDOWS}
   Windows, Messages,
   {$ENDIF MSWINDOWS}
-  {$IFDEF VisualCLX}
-  Qt, QDialogs,
-  {$ELSE}
+  {$IFDEF VCL}
   FileCtrl,
-  {$ENDIF}
+  {$ENDIF VCL}
   JclStrings;
 
 const
@@ -383,14 +366,6 @@ var
   Index: Integer;
   Button: TButton;
   Edit: TEdit;
-  {$IFDEF VisualCLX}
-    {$IFDEF COMPILER7_UP}
-      {$DEFINE USE_WIDESTRING}
-    {$ENDIF}
-  {$ENDIF}
-  {$IFDEF KYLIX}
-    {$DEFINE USE_WIDESTRING}
-  {$ENDIF KYLIX}
   {$IFDEF USE_WIDESTRING}
   Directory: WideString;
   {$UNDEF USE_WIDESTRING}
@@ -420,16 +395,10 @@ begin
   Accept := NewSize > 150;
 end;
 
-{$IFDEF VisualCLX}
-procedure TInstallFrame.TreeViewCustomDrawItem(Sender: TCustomViewControl; Item: TCustomViewItem;
-  Canvas: TCanvas; const Rect: TRect; State: TCustomDrawState; Stage: TCustomDrawStage; 
-  var DefaultDraw: Boolean);
-{$ELSE}
 procedure TInstallFrame.TreeViewCustomDrawItem(Sender: TCustomTreeView; Node: TTreeNode; 
   State: TCustomDrawState; var DefaultDraw: Boolean);
-{$ENDIF}
 begin
-  case TTreeNode({$IFDEF VisualCLX}Item{$ELSE}Node{$ENDIF}).Level of
+  case TTreeNode(Node).Level of
     0: begin
          {$IFDEF VCL}Sender.{$ENDIF}Canvas.Font.Style := [fsBold, fsUnderline];
        end;
@@ -456,24 +425,7 @@ begin
     end;
 end;
 
-{$IFDEF VisualCLX}
-function TreeNodeIconHit(TreeView: TTreeView; X, Y: Integer; Node: TTreeNode = nil): Boolean;
-var
-  Level, X1: Integer;
-begin
-  Result := False;
-  if Node = nil then
-    Node := TreeView.GetNodeAt(X, Y);
-  if Assigned(Node) then
-  begin
-    Level := Node.Level;
-    if QListView_rootIsDecorated(TreeView.Handle) then
-      Inc(Level);
-    X1 := QListView_treeStepSize(TreeView.Handle) * Level;
-    Result := (X > X1) and (X <= X1 + TreeView.Images.Width);
-  end;
-end;
-{$ELSE VCL}
+{$IFDEF VCL}
 function TreeNodeIconHit(TreeView: TTreeView; X, Y: Integer): Boolean;
 begin
   Result := htOnIcon in TreeView.GetHitTestInfoAt(X, Y);
@@ -489,7 +441,7 @@ begin
     with TTreeView(Sender) do
   begin
     Node := GetNodeAt(X, Y);
-    if (Button = mbLeft) and TreeNodeIconHit(TreeView, X, Y{$IFDEF VisualCLX}, Node{$ENDIF}) then
+    if (Button = mbLeft) and TreeNodeIconHit(TreeView, X, Y) then
       ToggleNodeChecked(Node);
   end;
 end;
@@ -670,12 +622,8 @@ begin
   ADirectoryRec^.Button.OnClick := DirectorySelectBtnClick;
 
   OptionsGroupBox.ClientHeight := ADirectoryRec^.Edit.Top + ADirectoryRec^.Edit.Height + 10;
-  {$IFDEF VisualCLX}
-  InfoDisplay.Height := InfoPanel.Height + OptionsGroupBox.Top - 8;
-  {$ELSE ~VisualCLX}
   OptionsGroupBox.Top := TreeView.Height + TreeView.Top - OptionsGroupBox.Height;
   InfoDisplay.Height := OptionsGroupBox.Top - InfoDisplay.Top - 8;
-  {$ENDIF ~VisualCLX}
 
   Result := FDirectories.Add(ADirectoryRec);
 end;

@@ -5,7 +5,6 @@ Supported development tools versions:
 - Delphi 2009 and C++Builder 2009
 - CodeGear RAD Studio 2007 (also known as Delphi 2007 for Win32, C++Builder 2007)
 - Borland Developer Studio 2006 (also known as Delphi 2006, C++Builder 2006)
-- Borland Kylix 3
 - Borland Delphi 7
 - Borland Delphi 6 Update Pack #2 (including Personal Edition)
 - Borland Delphi 5 Update Pack #1
@@ -60,12 +59,5 @@ To execute for
 
         >install d5
 
-2) Kylix 3
-- open a shell window
-- cd into JCL root directory
-- at the command prompt, type "sh ./install.sh", then press "Enter".
-  You'll also need to do a "source kylixpath" first (see the README of your 
-  Kylix 3 installation) in case your system is not set up to do that at startup.
-
 --------------------------------
-Document last updated 2009-06-22
+Document last updated 2009-06-28

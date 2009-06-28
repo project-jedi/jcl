@@ -28,9 +28,7 @@
 {$IFNDEF PROTOTYPE}
 {$IFDEF VCL}
 unit JediGUIReadme;
-{$ELSE VisualCLX}
-unit QJediGUIReadme;
-{$ENDIF VisualCLX}
+{$ENDIF VCL}
 {$ENDIF ~PROTOTYPE}
 
 {$I jcl.inc}
@@ -43,11 +41,9 @@ uses
   Windows, Messages,
   {$ENDIF MSWINDOWS}
   SysUtils, Classes,
-  {$IFDEF VisualCLX}
-  Qt, QGraphics, QControls, QForms, QDialogs, QStdCtrls, QComCtrls,
-  {$ELSE ~VisualCLX}
+  {$IFDEF VCL}
   Graphics, Controls, Forms, Dialogs, StdCtrls, ComCtrls,
-  {$ENDIF ~VisualCLX}
+  {$ENDIF VCL}
   JediInstall;
 
 type

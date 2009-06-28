@@ -128,12 +128,6 @@
 #ifdef TEST_COMMON
 #include <JclQueues.hpp>
 #endif TEST_COMMON
-#ifdef TEST_VISCLX
-#include <JclQGraphUtils.hpp>
-#endif TEST_VISCLX
-#ifdef TEST_VISCLX
-#include <JclQGraphics.hpp>
-#endif TEST_VISCLX
 #ifdef TEST_VCL
 #include <JclPrint.hpp>
 #endif TEST_VCL

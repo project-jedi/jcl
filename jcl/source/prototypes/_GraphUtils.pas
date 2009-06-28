@@ -37,9 +37,7 @@
 {$IFNDEF PROTOTYPE}
 {$IFDEF VCL}
 unit JclGraphUtils;
-{$ELSE VisualCLX}
-unit JclQGraphUtils;
-{$ENDIF VisualCLX}
+{$ENDIF VCL}
 {$ENDIF ~PROTOTYPE}
 
 interface
@@ -57,9 +55,6 @@ uses
   {$IFDEF VCL}
   Graphics,
   {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Qt, QGraphics,
-  {$ENDIF VisualCLX}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
@@ -308,9 +303,6 @@ const
     {$IFDEF VCL}
     LogPath: 'JCL\source\vcl'
     {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    LogPath: 'JCL\source\visclx'
-    {$ENDIF VisualCLX}
     );
 {$ENDIF UNITVERSIONING}
 
@@ -1148,11 +1140,7 @@ begin
   X := GetSystemMetrics(SM_CXSCREEN);
   Y := GetSystemMetrics(SM_CYSCREEN);
   {$ELSE ~MSWINDOWS}
-  {$IFDEF VisualCLX}
-  { TODO : Find a Qt-independent solution }
-  X := QWidget_width(QApplication_desktop);
-  Y := QWidget_height(QApplication_desktop);
-  {$ENDIF VisualCLX}
+  TODO: find a solution for other systems
   {$ENDIF ~MSWINDOWS}
   with R do
   begin

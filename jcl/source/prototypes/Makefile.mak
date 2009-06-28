@@ -9,20 +9,16 @@ touch		= $(MAKEDIR)\touch.exe
 
 Options			= -c -dJCL -dSUPPORTS_DEFAULTPARAMS -dSUPPORTS_INT64
 # CommonOptions		= $(Options) -f..\common\\
-VclOptions		= $(Options) -dVCL -uVisualCLX -dMSWINDOWS -uUnix -dBitmap32 -x1:..\vcl\Jcl
-VClxOptions		= $(Options) -uVCL -dVisualCLX -dHAS_UNIT_TYPES -uBitmap32 -x1:..\visclx\JclQ
+VclOptions		= $(Options) -dVCL -dMSWINDOWS -uUnix -dBitmap32 -x1:..\vcl\Jcl
 WinOptions		= $(Options) -dMSWINDOWS -uUNIX -uHAS_UNIT_LIBC -f..\windows\\
 Win32Options		= $(Options) -uHAS_UNIT_LIBC -f..\windows\\
 ContainerOptions	= $(Options) -m -ijcl.inc -f..\Common\\
 UnixOptions		= $(Options) -uMSWINDOWS -dUNIX -f..\unix\\
 
-release:	VCL VisualCLX Windows ContainersProt Containers
+release:	VCL Windows ContainersProt Containers
 
 VCL:    	..\vcl\JclGraphics.pas \
 		..\vcl\JclGraphUtils.pas
-
-VisualCLX:    	..\visclx\JclQGraphics.pas \
-		..\visclx\JclQGraphUtils.pas
 
 Windows:        ..\windows\JclWin32.pas \
                 ..\windows\Hardlinks.pas
@@ -62,14 +58,6 @@ Containers:	..\Common\JclAlgorithms.pas \
 ..\vcl\JclGraphUtils.pas: \
 		_GraphUtils.pas
 	$(jpp) $(VclOptions) $?
-
-..\visclx\JclQGraphics.pas: \
-		_Graphics.pas
-	$(jpp) $(VClxOptions) $?
-
-..\visclx\JclQGraphUtils.pas: \
-		_GraphUtils.pas
-	$(jpp) $(VClxOptions) $?
 
 ..\windows\JclWin32.pas: \
                 JclWin32.pas

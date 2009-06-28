@@ -31,9 +31,7 @@
 {$IFNDEF PROTOTYPE}
 {$IFDEF VCL}
 unit JediGUIMain;
-{$ELSE VisualCLX}
-unit QJediGUIMain;
-{$ENDIF VisualCLX}
+{$ENDIF VCL}
 {$ENDIF ~PROTOTYPE}
 
 {$I jcl.inc}
@@ -46,12 +44,9 @@ uses
   Windows, Messages, CommCtrl,
   {$ENDIF MSWINDOWS}
   SysUtils, Classes,
-  {$IFDEF VisualCLX}
-  Types,
-  Qt, QGraphics, QControls, QForms, QDialogs, QStdCtrls, QExtCtrls, QMenus, QButtons, QComCtrls, QImgList,
-  {$ELSE}
+  {$IFDEF VCL}
   Graphics, Forms, Controls, Dialogs, StdCtrls, ExtCtrls, Menus, Buttons, ComCtrls, ImgList,
-  {$ENDIF}
+  {$ENDIF VCL}
   JclBorlandTools, JclContainerIntf, JediInstall;
 
 const
@@ -91,7 +86,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure ShowFeatureHint(var HintStr: {$IFDEF VisualCLX}WideString{$ELSE ~VisualCLX}string{$ENDIF ~VisualCLX}; var CanShow: Boolean;
+    procedure ShowFeatureHint(var HintStr: string; var CanShow: Boolean;
       var HintInfo: THintInfo);
     // IJediInstallGUI
     function Dialog(const Text: string; DialogType: TDialogType = dtInformation;
@@ -124,9 +119,7 @@ implementation
 
 {$IFDEF VCL}
 {$R *.dfm}
-{$ELSE VisualCLX}
-{$R *.xfm}
-{$ENDIF VisualCLX}
+{$ENDIF VCL}
 
 uses
   {$IFDEF UNIX}
@@ -137,11 +130,9 @@ uses
   JclDebug, JclShell, JediGUIProfiles,
   {$ENDIF MSWINDOWS}
   JclBase, JclFileUtils, JclStrings, JclSysInfo, JclSysUtils, JclArrayLists,
-  {$IFDEF VisualCLX}
-  QJediGUIReadme, QJediGUIInstall;
-  {$ELSE ~VisualCLX}
+  {$IFDEF VCL}
   JediGUIReadme, JediGUIInstall;
-  {$ENDIF ~VisualCLX}
+  {$ENDIF VCL}
 
 const
   DelphiJediURL     = 'http://www.delphi-jedi.org/';
@@ -209,8 +200,7 @@ begin
   PostMessage(Handle, WM_AFTERSHOW, 0, 0);
 end;
 
-procedure TMainForm.ShowFeatureHint(var HintStr: {$IFDEF VisualCLX}WideString{$ELSE ~VisualCLX}string{$ENDIF ~VisualCLX};
-  var CanShow: Boolean; var HintInfo: THintInfo);
+procedure TMainForm.ShowFeatureHint(var HintStr: string; var CanShow: Boolean; var HintInfo: THintInfo);
 var
   ATabSheet: TTabSheet;
   ScreenPos: TPoint;

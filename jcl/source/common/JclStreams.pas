@@ -27,7 +27,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -646,11 +646,6 @@ uses
   {$ENDIF CLR}
   JclResources, JclCharsets, JclMath;
 
-{$IFDEF KYLIX}
-function __open(PathName: PChar; Flags: Integer; Mode: Integer): Integer; cdecl;
-  external 'libc.so.6' name 'open';
-{$ENDIF KYLIX}
-
 function StreamSeek(Stream: TStream; const Offset: Int64;
   const Origin: TSeekOrigin): Int64; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF SUPPORTS_INLINE}
 begin
@@ -931,11 +926,7 @@ function TJclHandleStream.Seek(const Offset: Int64; Origin: TSeekOrigin): Int64;
 const
   SeekOrigins: array [TSeekOrigin] of Cardinal = ( SEEK_SET {soBeginning}, SEEK_CUR {soCurrent}, SEEK_END {soEnd} );
 begin
-{$IFDEF KYLIX}
-  Result := __lseek(Handle, Offset, SeekOrigins[Origin]);
-{$ELSE ~KYLIX}
   Result := lseek(Handle, Offset, SeekOrigins[Origin]);
-{$ENDIF ~KYLIX}
 end;
 {$ENDIF LINUX}
 
@@ -965,11 +956,7 @@ begin
   if Mode = fmCreate then
   begin
     {$IFDEF LINUX}
-    {$IFDEF KYLIX}
-    H := __open(PChar(FileName), O_CREAT or O_RDWR, FileAccessRights);
-    {$ELSE ~KYLIX}
     H := open(PChar(FileName), O_CREAT or O_RDWR, $666);
-    {$ENDIF}
     {$ELSE ~LINUX}
     H := CreateFile(PChar(FileName), GENERIC_READ or GENERIC_WRITE,
       0, nil, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);

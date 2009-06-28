@@ -23,7 +23,7 @@
         <value>URL HeadURL Author LastChangedBy Date LastChangedDate Rev Revision LastChangedRevision Id</value>
       </property>
     </setting>
-    <setting path="" mask="*.pas *.cpp *.inc *.h *.dpr *.dpk *.bpr *.bpk *.bpf *.gmk *.bmk *.def *.conf *.sh *.txt *.bat *.xml *.html *.css *.exc *.bpg *.bdsgroup *.bdsproj *.groupproj *.dproj *.cproj *.dof *.kof *.rc *.dfm *.xfm *.dtx *.dsf *.dox *.dfg *.ini *.fpc *.mak *.int *.imp *.pl *.cmd *.manifest *.iss *.cs *.resx *.htaccess *.cfg" recurse="yes"  dironly="no">
+    <setting path="" mask="*.pas *.cpp *.inc *.h *.dpr *.dpk *.bpr *.bpk *.bpf *.bmk *.def *.conf *.sh *.txt *.bat *.xml *.html *.css *.exc *.bpg *.bdsgroup *.bdsproj *.groupproj *.dproj *.cproj *.dof *.rc *.dfm *.xfm *.dtx *.dsf *.dox *.dfg *.ini *.fpc *.mak *.int *.imp *.pl *.cmd *.manifest *.iss *.cs *.resx *.htaccess *.cfg" recurse="yes"  dironly="no">
       <property name="svn:eol-style">
         <value>native</value>
       </property>
@@ -173,18 +173,6 @@
           </property>
         </setting>
 
-        <setting path="" mask="ClxGui" recurse="no" dironly="yes">
-          <property name="svn:ignore">
-            <value>QJediGUIInstall.pas</value>
-            <value>QJediGUIMain.pas</value>
-            <value>QJediGUIReadme.pas</value>
-            <value>*.dcu</value>
-            <value>*.dpu</value>
-            <value>*.~* </value>
-            <value>__history</value>
-          </property>
-        </setting>
-
         <setting path="" mask="VclGui" recurse="no" dironly="yes">
           <property name="svn:ignore">
             <value>JediGUIInstall.pas</value>
@@ -226,23 +214,6 @@
           </property>
         </setting>
 
-        <setting path="" mask="k3" recurse="no" dironly="yes">
-          <property name="svn:ignore">
-            <value>*.dcu</value>
-            <value>*.dpu</value>
-            <value>*.dcp</value>
-            <value>*.res</value>
-          </property>
-        </setting>
-
-        <setting path="" mask="k3/debug" recurse="yes" dironly="yes">
-          <property name="svn:ignore">
-            <value>*.dcu</value>
-            <value>*.dpu</value>
-            <value>*.res</value>
-          </property>
-        </setting>
-
         <setting path="" mask="d?.net d??.net" recurse="no" dironly="yes">
           <property name="svn:ignore">
             <value>*.dcuil</value>
@@ -268,7 +239,7 @@
           <value>*.cfg</value>
         </property>
 
-        <setting path="" mask="c? k?" recurse="no" dironly="yes">
+        <setting path="" mask="c?" recurse="no" dironly="yes">
           <property name="svn:ignore">
             <value>*.drc</value>
             <value>*.~*</value>
@@ -352,18 +323,6 @@
           </property>
         </setting>
 
-        <setting path="" mask="visclx" recurse="no" dironly="yes">
-          <property name="svn:ignore">
-            <value>*.~*</value>
-            <value>*.hpp</value>
-            <value>*.dcu</value>
-            <value>*.o</value>
-            <value>*.ppu</value>
-            <value>*.rst</value>
-            <value>__history</value>
-          </property>
-        </setting>
-
         <setting path="" mask="windows" recurse="no" dironly="yes">
           <property name="svn:ignore">
             <value>*.~*</value>
@@ -389,8 +348,6 @@
             <value>jcld9.net.inc</value>
             <value>jcld10.inc</value>
             <value>jcld10.net.inc</value>
-            <value>jclkd3.inc</value>
-            <value>jclkc3.inc</value>
             <value>jcld11.inc</value>
             <value>jcld11.net.inc</value>
             <value>jcld12.inc</value>
@@ -451,14 +408,14 @@
         <value>jcl-weekly-hlp-0.txt</value>
         <value>jcl-weekly-h2-0.txt</value>
         <value>jcl-weekly-chm-0.txt</value>
-		<value>7z.dll</value>
+        <value>7z.dll</value>
       </property>
-	</setting>
+    </setting>
 
-	<setting path="website/daily" mask="" recurse="no" dironly="yes">
-	  <property name="svn:ignore">
+    <setting path="website/daily" mask="" recurse="no" dironly="yes">
+      <property name="svn:ignore">
         <value>*.7z</value>
-	  </property>
-	</setting>
+      </property>
+    </setting>
   </setting>
 </svncleaner>

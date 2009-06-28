@@ -38,7 +38,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -82,13 +82,6 @@ resourcestring
   RsCSharpName          = 'C#Builder';
   RsBDSName             = 'Borland Developer Studio';
   RsRSName              = 'RAD Studio';
-  {$IFDEF KYLIX}
-  RsKylixName           = 'Kylix for %s';
-  RsKylixVersionName    = 'Kylix %d for %s';
-  RsOpenEdition         = 'Open Edition';
-  RsServerDeveloper     = 'Server Developer';
-  RsVclIncludeDir       = '/include/vcl/';
-  {$ENDIF KYLIX}
   {$IFDEF MSWINDOWS}
   RsClientServer        = 'Client/Server';
   RsStandard            = 'Standard';

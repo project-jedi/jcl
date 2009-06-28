@@ -67,20 +67,6 @@ ALERT_jedi_inc_incompatible
     {----------------------------}
   {$ELSE ~CLR}
     {----------------------------}
-    { Kylix                      }
-    {----------------------------}
-    // KYLIX3 is not defined (version numbers comparisons are wrong)
-    // won't fix because of possible bug with floating point comparisons
-    // at compile time
-    {$IFDEF KYLIX}
-      {$IFDEF BCB}
-        {$I jclkc3.inc}
-      {$ELSE ~BCB}
-        {$I jclkd3.inc}
-      {$ENDIF ~BCB}
-      {$DEFINE JCL_CONFIGURED}
-    {$ENDIF KYLIX}
-    {----------------------------}
     { C++Builder                 }
     {----------------------------}
     {$IFDEF BCB5}
@@ -155,9 +141,9 @@ ALERT_jedi_inc_incompatible
   {$IFNDEF JCL_CONFIGURED}
     {$IFDEF SUPPORTS_COMPILETIME_MESSAGES}
       {$MESSAGE FATAL 'Your Delphi/BCB version is not supported by this JCL version!'}
-    {$ELSE}
+    {$ELSE ~SUPPORTS_COMPILETIME_MESSAGES}
       'Your Delphi/BCB version is not supported by this JCL version!'
-    {$ENDIF SUPPORTS_COMPILETIME_MESSAGES}
+    {$ENDIF ~SUPPORTS_COMPILETIME_MESSAGES}
   {$ENDIF !JCL_CONFIGURED}
 
 {$ENDIF ~JCLINSTALL}

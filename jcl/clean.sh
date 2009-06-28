@@ -9,4 +9,3 @@ rm -f `find -name *.dcu`
 rm -f `find -name *.dpu`
 rm -f `find -name *.hpp`
 rm -f `find -name *.o`
-rm -f packages/k?/*.mak

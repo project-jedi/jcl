@@ -76,11 +76,7 @@ type
   EJclBorRADException = class(EJclError);
 
   TJclBorRADToolKind = (brDelphi, brCppBuilder, brBorlandDevStudio);
-  {$IFDEF KYLIX}
-  TJclBorRADToolEdition = (deOPEN, dePRO, deSVR);
-  {$ELSE ~KYLIX}
   TJclBorRADToolEdition = (deSTD, dePRO, deCSS, deARC);
-  {$ENDIF ~KYLIX}
   TJclBorRADToolPath = string;
 
 const
@@ -166,13 +162,8 @@ const
   DOFAdditionalSection  = 'Additional';
   DOFOptionsKey         = 'Options';
 
-  {$IFDEF KYLIX}
-  BorRADToolEditionIDs: array [TJclBorRADToolEdition] of PChar =
-    ('OPEN', 'PRO', 'SVR');
-  {$ELSE ~KYLIX}
   BorRADToolEditionIDs: array [TJclBorRADToolEdition] of PChar =
     ('STD', 'PRO', 'CSS', 'ARC'); // 'ARC' is an assumption
-  {$ENDIF ~KYLIX}
 
 // Installed versions information classes
 type
@@ -641,9 +632,6 @@ type
     function AddToDebugDCUPath(const Path: string): Boolean;
     function AddToLibrarySearchPath(const Path: string): Boolean;
     function AddToLibraryBrowsingPath(const Path: string): Boolean;
-    {$IFDEF KYLIX}
-    function ConfigFileName(const Extension: string): string; virtual;
-    {$ENDIF KYLIX}
     function FindFolderInPath(Folder: string; List: TStrings): Integer;
     // package functions
       // install = package compile + registration
@@ -763,9 +751,6 @@ type
     class function RadToolKind: TJclBorRadToolKind; override;
     {class }function RadToolName: string; override;
     class function GetLatestUpdatePackForVersion(Version: Integer): Integer; override;
-    {$IFDEF KYLIX}
-    function ConfigFileName(const Extension: string): string; override;
-    {$ENDIF KYLIX}
   end;
 
   TJclDelphiInstallation = class(TJclBorRADToolInstallation)
@@ -780,9 +765,6 @@ type
     class function GetLatestUpdatePackForVersion(Version: Integer): Integer; override;
     function InstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean; reintroduce;
     {class }function RadToolName: string; override;
-    {$IFDEF KYLIX}
-    function ConfigFileName(const Extension: string): string; override;
-    {$ENDIF KYLIX}
   end;
 
   {$IFDEF MSWINDOWS}
@@ -962,9 +944,6 @@ type
     Version: Byte;
     LatestUpdatePack: Integer;
   end;
-  {$IFDEF KYLIX}
-  TKylixVersion = 1..3;
-  {$ENDIF KYLIX}
 
   {$IFDEF MSWINDOWS}
   TBDSVersionInfo = record
@@ -1029,11 +1008,7 @@ const
   );
   {$ENDIF MSWINDOWS}
 
-  {$IFDEF KYLIX}
-  RootDirValueName           = 'DelphiRoot';
-  {$ELSE ~KYLIX}
   RootDirValueName           = 'RootDir';
-  {$ENDIF ~KYLIX}
 
   EditionValueName           = 'Edition';
   VersionValueName           = 'Version';
@@ -1096,22 +1071,6 @@ const
   HelpProjectFileName        = '%s\Help\%s%d.ohp';
   HelpGidFileName            = '%s\Help\%s%d.gid';      
   {$ENDIF MSWINDOWS}
-
-  {$IFDEF KYLIX}
-  IDs: array [TKylixVersion] of Integer = (60, 65, 69);
-  LibSuffixes: array [TKylixVersion] of string[3] = ('6.0', '6.5', '6.9');
-
-  BCC32ExeName               = 'bc++';
-  DCC32ExeName               = 'dcc';
-  Bpr2MakExeName             = 'bpr2mak';
-  MakeExeName                = 'make';
-
-  DelphiIdeExeName           = 'delphi';
-  BCBIdeExeName              = 'bcblin';
-  DelphiOptionsFileExtension = '.kof';
-
-  KylixHelpNamePart          = 'k%d';
-  {$ENDIF KYLIX}
 
   DelphiLibSuffixOption   = '{$LIBSUFFIX ''';
   DelphiDescriptionOption = '{$DESCRIPTION ''';
@@ -2858,14 +2817,7 @@ begin
             StringsToStr(PathList, PathSep)]);
       end
       else
-      begin
-        {$IFDEF KYLIX}
-        // escaping $ chars
-        if (Length(Option) > 2) and (Option[1] = '-') and (Option[2] = '$') then
-          Option := '-\' + Copy(Option, 2, Length(Option) - 1);
-        {$ENDIF KYLIX}
         Arguments := Format('%s %s', [Arguments, Option]);
-      end;
     end;
   finally
     PathList.Free;
@@ -2955,13 +2907,11 @@ begin
   if Installation.RadToolKind = brCppBuilder then
   begin
     AddPathOption('U', Installation.LibFolderName + PathAddSeparator('obj'));
-    {$IFNDEF KYLIX}
     if (Installation.RadToolKind <> brBorlandDevStudio) and
       (Installation.VersionNumber = 5) then
       Options.Add('-LUvcl50')
     else
       Options.Add('-LUrtl');
-    {$ENDIF ~KYLIX}
   end;
 end;
 
@@ -3183,11 +3133,7 @@ end;
 constructor TJclBorRADToolRepository.Create(AInstallation: TJclBorRADToolInstallation);
 begin
   inherited Create(AInstallation);
-  {$IFDEF KYLIX}
-  FFileName := AInstallation.ConfigFileName('dro');
-  {$ELSE ~KYLIX}
   FFileName := AInstallation.BinFolderName + BorRADToolRepositoryFileName;
-  {$ENDIF ~KYLIX}
   FPages := TStringList.Create;
   IniFile.ReadSection(BorRADToolRepositoryPagesSection, FPages);
   CloseIniFile;
@@ -3288,9 +3234,6 @@ constructor TJclBorRADToolInstallation.Create(const AConfigDataLocation: string;
 begin
   inherited Create;
   FConfigDataLocation := AConfigDataLocation;
-  {$IFDEF KYLIX}
-  FConfigData := TMemIniFile.Create(AConfigDataLocation);
-  {$ELSE ~KYLIX}
   FConfigData := TRegistryIniFile.Create(AConfigDataLocation);
   if ARootKey = 0 then
     FRootKey := HKCU
@@ -3298,7 +3241,6 @@ begin
     FRootKey := ARootKey;
   TRegistryIniFile(FConfigData).RegIniFile.RootKey := RootKey;
   TRegistryIniFile(FConfigData).RegIniFile.OpenKey(AConfigDataLocation, True);
-  {$ENDIF ~KYLIX}
   FGlobals := TStringList.Create;
   ReadInformation;
   FIdeTools := TJclBorRADToolIdeTool.Create(Self);
@@ -3340,9 +3282,6 @@ begin
   {$ENDIF MSWINDOWS}
   FreeAndNil(FPalette);
   FreeAndNil(FGlobals);
-  {$IFDEF KYLIX}
-  FConfigData.UpdateFile; // TMemIniFile.Destroy doesn't call UpdateFile
-  {$ENDIF KYLIX}
   FreeAndNil(FEnvironmentVariables);
   FreeAndNil(FConfigData);
   inherited Destroy;
@@ -3400,13 +3339,6 @@ begin
   end;
 end;
 
-{$IFDEF KYLIX}
-function TJclBorRADToolInstallation.ConfigFileName(const Extension: string): string;
-begin
-  Result := '';
-end;
-{$ENDIF KYLIX}
-
 class procedure TJclBorRADToolInstallation.ExtractPaths(const Path: TJclBorRADToolPath; List: TStrings);
 begin
   StrToStrings(Path, PathSep, List);
@@ -3427,7 +3359,6 @@ begin
   try
     MakeFileName := StrTrimQuotes(ChangeFileExt(PackageName, '.mak'));
     if clProj2Mak in CommandLineTools then       // let bpr2mak generate make file from .bpk
-      // Kylix bpr2mak doesn't like full file names
       Result := Bpr2Mak.Execute(StringsToStr(Bpr2Mak.Options, ' ') + ' ' + ExtractFileName(PackageName))
     else
       // If make file exists (and doesn't need to be created by bpr2mak)
@@ -3464,7 +3395,6 @@ begin
   try
     MakeFileName := StrTrimQuotes(ChangeFileExt(ProjectName, '.mak'));
     if clProj2Mak in CommandLineTools then       // let bpr2mak generate make file from .bpk
-      // Kylix bpr2mak doesn't like full file names
       Result := Bpr2Mak.Execute(StringsToStr(Bpr2Mak.Options, ' ') + ' ' + ExtractFileName(ProjectName))
     else
       // If make file exists (and doesn't need to be created by bpr2mak)
@@ -3639,13 +3569,9 @@ end;
 
 function TJclBorRADToolInstallation.GetDefaultProjectsDir: string;
 begin
-  {$IFDEF KYLIX}
-  Result := GetPersonalFolder;
-  {$ELSE ~KYLIX}
   Result := Globals.Values['DefaultProjectsDirectory'];
   if Result = '' then
     Result := PathAddSeparator(RootDir) + 'Projects';
-  {$ENDIF ~KYLIX}
 end;
 
 function TJclBorRADToolInstallation.GetDescription: TJclBorRADToolPath;
@@ -3657,19 +3583,6 @@ end;
 
 function TJclBorRADToolInstallation.GetEditionAsText: string;
 begin
-  {$IFDEF KYLIX}
-  case Edition of
-    deOPEN:
-      Result := RsOpenEdition;
-    dePRO:
-      Result := RsProfessional;
-    deSVR:
-      if VersionNumber >= 2 then
-        Result := RsEnterprise
-      else
-        Result := RsServerDeveloper;
-  end;
-  {$ELSE ~KYLIX}
   Result := FEditionStr;
   if Length(FEditionStr) = 3 then
     case Edition of
@@ -3688,7 +3601,6 @@ begin
       deARC:
         Result := RsArchitect;
     end;
-  {$ENDIF ~KYLIX}
 end;
 
 function TJclBorRADToolInstallation.GetEnvironmentVariables: TStrings;
@@ -3734,27 +3646,13 @@ begin
 end;
 
 function TJclBorRADToolInstallation.GetIdeExeFileName: string;
-{$IFDEF KYLIX}
-const
-  IdeFileNames: array [brDelphi..brCppBuilder] of string = (DelphiIdeExeName, BCBIdeExeName);
-begin
-  Result := FBinFolderName + IdeFileNames[RADToolKind];
-end;
-{$ENDIF KYLIX}
-{$IFDEF MSWINDOWS}
 begin
   Result := Globals.Values['App'];
 end;
-{$ENDIF MSWINDOWS}
 
 function TJclBorRADToolInstallation.GetIdeExeBuildNumber: string;
 begin
-  {$IFDEF KYLIX}
-  { TODO : determine Kylix IDE build # }
-  Result := '?';
-  {$ELSE ~KYLIX}
   Result := VersionFixedFileInfoString(IdeExeFileName, vfFull);
-  {$ENDIF ~KYLIX}
 end;
 
 function TJclBorRADToolInstallation.GetIdePackages: TJclBorRADToolIdePackages;
@@ -3795,14 +3693,10 @@ begin
   begin
     if not (clMake in CommandLineTools) then
       raise EJclBorRadException.CreateResFmt(@RsENotFound, [MakeExeName]);
-    {$IFDEF KYLIX}
-    FMake := TJclCommandLineTool.Create(MakeExeName);
-    {$ELSE ~KYLIX}
     FMake := TJclBorlandMake.Create(Self);
     // Set option "-l+", which enables use of long command lines.  Should be
     // default, but there have been reports indicating that's not always the case.
     FMake.Options.Add('-l+');
-    {$ENDIF ~KYLIX}
   end;
   Result := FMake;
 end;
@@ -3814,11 +3708,7 @@ end;
 
 function TJclBorRADToolInstallation.GetName: string;
 begin
-  {$IFDEF KYLIX}
-  Result := Format(RsKylixVersionName, [IDEVersionNumber, RADToolName]);
-  {$ELSE ~KYLIX}
   Result := Format('%s %d', [RADToolName, IDEVersionNumber]);
-  {$ENDIF ~KYLIX}
 end;
 
 function TJclBorRADToolInstallation.GetPalette: TJclBorRADToolPalette;
@@ -3837,11 +3727,7 @@ end;
 
 function TJclBorRADToolInstallation.GetSupportsLibSuffix: Boolean;
 begin
-  {$IFDEF KYLIX}
-  Result := True;
-  {$ELSE ~KYLIX}
   Result := (RadToolKind = brBorlandDevStudio) or (VersionNumber >= 6);
-  {$ENDIF ~KYLIX}
 end;
 
 function TJclBorRADToolInstallation.GetUpdateNeeded: Boolean;
@@ -4119,11 +4005,7 @@ end;
 
 procedure TJclBorRADToolInstallation.ReadInformation;
 const
-  {$IFDEF KYLIX}
-  BinDir = 'bin/';
-  {$ELSE ~KYLIX}
   BinDir = 'bin\';
-  {$ENDIF ~KYLIX}
   UpdateKeyName = 'Update #';
   BDSUpdateKeyName = 'UpdatePackInstalled';
 var
@@ -4135,17 +4017,10 @@ var
   begin
     Result := '';
     case RadToolKind of
-      {$IFDEF KYLIX}
-      brDelphi:
-        Result := Format('kd%d', [Num]);
-      brCppBuilder:
-        Result := Format('kc%d', [Num]);
-      {$ELSE ~KYLIX}
       brDelphi:
         Result := Format('d%d', [Num]);
       brCppBuilder:
         Result := Format('c%d', [Num]);
-      {$ENDIF ~KYLIX}
       brBorlandDevStudio:
         case Num of
           1:
@@ -4158,24 +4033,6 @@ var
 
 begin
   Key := ConfigData.FileName;
-  {$IFDEF KYLIX}
-  ConfigData.ReadSectionValues(GlobalsKeyName, Globals);
-  if Length(Key) >= 3 then
-  begin
-    case Key[Length(Key)-2] of
-      '0' :
-        FVersionNumber := 1;
-      '5' :
-        FVersionNumber := 2;
-      '9' :
-        FVersionNumber := 3;
-    else
-      FVersionNumber := 0;
-    end;
-  end;
-  FIDEVersionNumber := VersionNumber;
-
-  {$ELSE ~KYLIX}
   RegGetValueNamesAndValues(HKEY_LOCAL_MACHINE, Key, Globals);
 
   KeyLen := Length(Key);
@@ -4196,8 +4053,6 @@ begin
     FVersionNumber := 4
   else}
     FVersionNumber := FIDEVersionNumber;
-
-  {$ENDIF ~KYLIX}
 
   FVersionNumberStr := FormatVersionNumber(VersionNumber);
   FIDEVersionNumberStr := FormatVersionNumber(IDEVersionNumber);
@@ -4412,24 +4267,16 @@ function TJclBorRADToolInstallation.SupportsVCL: Boolean;
 const
   VclDcp = 'vcl.dcp';
 begin
-  {$IFDEF KYLIX}
-  Result := False;
-  {$ELSE ~KYLIX}
   Result := ((RadToolKind <> brBorlandDevStudio) and (VersionNumber = 5)) or
     FileExists(LibFolderName + VclDcp) or FileExists(ObjFolderName + VclDcp);
-  {$ENDIF ~KYLIX}
 end;
 
 function TJclBorRADToolInstallation.SupportsVisualCLX: Boolean;
 const
   VisualClxDcp = 'visualclx.dcp';
 begin
-  {$IFDEF KYLIX}
-  Result := True;
-  {$ELSE ~KYLIX}
   Result := (Edition <> deSTD) and (VersionNumber in [6, 7]) and (RadToolKind <> brBorlandDevStudio) and
     (FileExists(LibFolderName + VisualClxDcp) or FileExists(ObjFolderName + VisualClxDcp));
-  {$ENDIF ~KYLIX}
 end;
 
 function TJclBorRADToolInstallation.UninstallBCBExpert(const ProjectName, OutputDir: string): Boolean;
@@ -4728,13 +4575,6 @@ begin
   inherited Destroy;
 end;
 
-{$IFDEF KYLIX}
-function TJclBCBInstallation.ConfigFileName(const Extension: string): string;
-begin
-  Result := Format('%s/.borland/bcb%d%s', [GetPersonalFolder, IDs[VersionNumber], Extension]);
-end;
-{$ENDIF KYLIX}
-
 function TJclBCBInstallation.GetEnvironmentVariables: TStrings;
 begin
   Result := inherited GetEnvironmentVariables;
@@ -4788,13 +4628,6 @@ destructor TJclDelphiInstallation.Destroy;
 begin
   inherited Destroy;
 end;
-
-{$IFDEF KYLIX}
-function TJclDelphiInstallation.ConfigFileName(const Extension: string): string;
-begin
-  Result := Format('%s/.borland/delphi%d%s', [GetPersonalFolder, IDs[VersionNumber], Extension]);
-end;
-{$ENDIF KYLIX}
 
 function TJclDelphiInstallation.GetEnvironmentVariables: TStrings;
 begin
@@ -5629,37 +5462,6 @@ begin
 end;
 
 procedure TJclBorRADToolInstallations.ReadInstallations;
-{$IFDEF KYLIX}
-var
-  I: Integer;
-
-  procedure CheckForInstallation(RADToolKind: TJclBorRADToolKind; VersionNumber: Integer);
-  const
-    RcBaseFileNames: array [brDelphi..brCppBuilder] of string = ('delphi', 'bcb');
-  var
-    Item: TJclBorRADToolInstallation;
-    RcFileName: string;
-  begin
-    RcFileName := Format('%s/.borland/%s%drc', [GetPersonalFolder, RcBaseFileNames[RADToolKind], IDs[VersionNumber]]);
-    if FileExists(RcFileName) then
-    begin
-      if RADToolKind = brCppBuilder then
-        Item := TJclBCBInstallation.Create(RcFileName)
-      else
-        Item := TJclDelphiInstallation.Create(RcFileName);
-      Item.FVersionNumber := VersionNumber;
-      Item.FIDEVersionNumber := VersionNumber;
-      FList.Add(Item);
-    end;
-  end;
-
-begin
-  FList.Clear;
-  for I := Low(TKylixVersion) to High(TKylixVersion) do
-    CheckForInstallation(brDelphi, I);
-  CheckForInstallation(brCppBuilder, 3); // Kylix 3 only
-end;
-{$ELSE ~KYLIX}
 var
   VersionNumbers: TStringList;
 
@@ -5732,7 +5534,6 @@ begin
     VersionNumbers.Free;
   end;
 end;
-{$ENDIF ~KYLIX}
 
 //=== { TJclCommandLineTool } ================================================
 

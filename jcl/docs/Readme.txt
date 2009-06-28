@@ -91,7 +91,7 @@ Supported Tools
 The JCL can be compiled and installed in the following environments
 
 Only runtime support:
- - Kylix 3 (cf Installation notes)
+ - None
 
 Only design-time support (only experts):
  - C#Builder 1 (cf Installation notes);
@@ -113,10 +113,6 @@ Installation notes
 
  - Not every unit supports all tools. Look out for *.exc files in the tool-
    specific lib/subdirectories for a list of units excluded from compilation.
-
- - Kylix 3 Delphi/C++ installation is back but specific code has not been tested
-   with the latest versions of the kernel. Please ensure you use the flavor of
-   the JCL with Unix EOL.
 
  - Free Pascal (http://www.freepascal.org/) support has not been updated for
    this release; most units fromsource/common should work with FP 2.0, as tests
@@ -173,8 +169,6 @@ included file.
 For each tool you want to install the JCL in, repeat the following steps:
 
 1. Open and edit included file to customize options:
- - For Kylix 3 (Delphi): source\include\jclkd3.inc
- - For Kylix 3 (C++Builder): source\include\jclkc3.inc
  - For C++Builder 5: source\include\jclc5.inc
  - For C++Builder 6: source\include\jclc6.inc
  - For Delphi 5: source\include\jcld5.inc

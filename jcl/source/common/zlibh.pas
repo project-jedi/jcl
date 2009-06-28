@@ -2083,7 +2083,7 @@ const
 
 {$IFDEF ZLIB_STATICLINK}
 
-{$LINK ..\windows\obj\zlib\adler32.obj} // OS: CHECKTHIS - Kylix version may need forward slashes?
+{$LINK ..\windows\obj\zlib\adler32.obj} // OS: CHECKTHIS - Unix version may need forward slashes?
 {$LINK ..\windows\obj\zlib\compress.obj}
 {$LINK ..\windows\obj\zlib\crc32.obj}
 {$LINK ..\windows\obj\zlib\deflate.obj}

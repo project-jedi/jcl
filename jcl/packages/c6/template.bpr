@@ -58,7 +58,7 @@
     <USERDEFINES value="%DEFINES%"/>
     <SYSDEFINES value="NO_STRICT;_RTLDLL;USEPACKAGES"/>
     <MAINSOURCE value="%NAME%.cpp"/>
-    <INCLUDEPATH value="..\..\source\common;..\..\source\windows;..\..\source\vcl;..\..\source\visclx;$(BCB)\include;$(BCB)\include\vcl"/>
+    <INCLUDEPATH value="..\..\source\common;..\..\source\windows;..\..\source\vcl;$(BCB)\include;$(BCB)\include\vcl"/>
     <LIBPATH value="%PATHLIB%..\..\lib\c6;..\..\lib\c6;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>

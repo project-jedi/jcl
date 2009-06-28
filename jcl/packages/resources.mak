@@ -39,7 +39,6 @@ RESFILES = c5\JclBaseExpertC50.res                  \
            c6\JclThreadNameExpert.res               \
            c6\JclUsesExpertDLL.res                  \
            c6\JclVersionControlExpert.res           \
-           c6\JclVClx.res                           \
            c6\JclVcl.res                            \
            c6\JclVersionControlExpertDLL.res        \
            cs1\Jcl.res                              \
@@ -141,7 +140,6 @@ RESFILES = c5\JclBaseExpertC50.res                  \
            d6\JclThreadNameExpertDLL.res            \
            d6\JclUsesExpert.res                     \
            d6\JclUsesExpertDLL.res                  \
-           d6\JclVClx.res                           \
            d6\JclVersionControlExpert.res           \
            d6\JclVersionControlExpertDLL.res        \
            d6\JclStackTraceViewerExpert.res         \
@@ -162,7 +160,6 @@ RESFILES = c5\JclBaseExpertC50.res                  \
            d7\JclSIMDViewExpertDLL.res              \
            d7\JclUsesExpert.res                     \
            d7\JclUsesExpertDLL.res                  \
-           d7\JclVClx.res                           \
            d7\JclVersionControlExpert.res           \
            d7\JclVersionControlExpertDLL.res        \
            d7\JclStackTraceViewerExpert.res         \
@@ -189,10 +186,7 @@ RESFILES = c5\JclBaseExpertC50.res                  \
            d9\JclVersionControlExpert.res           \
            d9\JclVersionControlExpertDLL.res        \
            d9\JclStackTraceViewerExpert.res         \
-           d9\JclStackTraceViewerExpertDLL.res      \
-           k3\Jcl.res                               \
-           k3\JclContainers.res                     \
-           k3\JclVClx.res
+           d9\JclStackTraceViewerExpertDLL.res
 # ---------------------------------------------------------------------------
 !if !$d(BRCC32)
 BRCC32 = brcc32

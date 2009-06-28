@@ -577,7 +577,7 @@ begin
       end
       else if FileExists(RootDir + '\source\common\JclBase.pas') then
       begin
-        JediLibDirs := ';' + RootDir + '\source;' + RootDir + '\source\include;' + RootDir + '\source\common;' + RootDir + '\source\vcl;' + RootDir + '\source\visclx;' +
+        JediLibDirs := ';' + RootDir + '\source;' + RootDir + '\source\include;' + RootDir + '\source\common;' + RootDir + '\source\vcl;' +
                        RootDir + '\source\windows' + JediLibDirs; // JediLibDirs has leading ';'
         Result.InstalledJcl := True;
       end;

@@ -99,18 +99,6 @@ type
   TFileTime = System.DateTime;
 {$ENDIF CLR}
 
-// replacements for defective Libc.pas declarations
-{$IFDEF KYLIX}
-
-function stat64(FileName: PChar; var StatBuffer: TStatBuf64): Integer; cdecl;
-{$EXTERNALSYM stat64}
-function fstat64(FileDes: Integer; var StatBuffer: TStatBuf64): Integer; cdecl;
-{$EXTERNALSYM fstat64}
-function lstat64(FileName: PChar; var StatBuffer: TStatBuf64): Integer; cdecl;
-{$EXTERNALSYM lstat64}
-
-{$ENDIF KYLIX}
-
 // Path Manipulation
 //
 // Various support routines for working with path strings. For example, building a path from
@@ -1137,26 +1125,6 @@ const
   ERROR_NO_MORE_FILES  = -1;
   INVALID_HANDLE_VALUE = THandle(-1);
 {$ENDIF UNIX}
-
-// replacements for defective Libc.pas declarations
-{$IFDEF KYLIX}
-
-function fstat64(FileDes: Integer; var StatBuffer: TStatBuf64): Integer;
-begin
-  Result := __fxstat64(_STAT_VER, FileDes, StatBuffer);
-end;
-
-function lstat64(FileName: PChar; var StatBuffer: TStatBuf64): Integer;
-begin
-  Result := __lxstat64(_STAT_VER, FileName, StatBuffer);
-end;
-
-function stat64(FileName: PChar; var StatBuffer: TStatBuf64): Integer;
-begin
-  Result := __xstat64(_STAT_VER, FileName, StatBuffer);
-end;
-
-{$ENDIF KYLIX}
 
 //=== { TJclTempFileStream } =================================================
 

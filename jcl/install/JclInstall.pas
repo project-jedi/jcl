@@ -19,8 +19,6 @@
 {   - Robert Rossmair - crossplatform & BCB support, refactoring                                   }
 {   - Florent Ouchet (outchy) - New installer core for .net compilation                            }
 {                                                                                                  }
-{ Last modified: $Date$                          }
-{                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { Last modified: $Date::                                                                         $ }
@@ -93,16 +91,13 @@ type
         joJCLEnvDebugDCUPath,
       joJCLMake,
         joJCLMakeRelease,
-          joJCLMakeReleaseVClx,
           joJCLMakeReleaseVCL,
         joJCLMakeDebug,
-          joJCLMakeDebugVClx,
           joJCLMakeDebugVCL,
         joJCLCopyHppFiles,
         joJCLCheckHppFiles,
       joJCLPackages,
         joJCLVclPackage,
-        joJCLClxPackage,
         joJCLDualPackages,
         joJCLCopyPackagesHppFiles,
         joJCLPdbCreate,
@@ -125,7 +120,6 @@ type
       joJCLExceptDlg,
         joJCLExceptDlgVCL,
         joJCLExceptDlgVCLSnd,
-        joJCLExceptDlgCLX,
       joJCLHelp,
         joJCLHelpHlp,
         joJCLHelpChm,
@@ -226,8 +220,6 @@ type
     FJclIncludeDir: string;
     FJclSourcePath: string;
     FJclExamplesDir: string;
-    FClxDialogFileName: string;
-    FClxDialogIconFileName: string;
     FVclDialogFileName: string;
     FVclDialogSendFileName: string;
     FVclDialogIconFileName: string;
@@ -287,8 +279,6 @@ type
     property JclIncludeDir: string read FJclIncludeDir;
     property JclSourcePath: string read FJclSourcePath;
     property JclExamplesDir: string read FJclExamplesDir;
-    property ClxDialogFileName: string read FClxDialogFileName;
-    property ClxDialogIconFileName: string read FClxDialogIconFileName;
     property VclDialogFileName: string read FVclDialogFileName;
     property VclDialogSendFileName: string read FVclDialogSendFileName;
     property VclDialogIconFileName: string read FVclDialogIconFileName;
@@ -415,7 +405,6 @@ resourcestring
   RsCaptionMake          = 'Make library units';
   RsCaptionMakeRelease   = 'Release';
   RsCaptionMakeDebug     = 'Debug';
-  RsCaptionMakeVClx      = 'Visual CLX';
   RsCaptionMakeVCL       = 'Visual Component Library';
   RsCaptionCopyHppFiles  = 'Copy HPP files to %s';
   RsCaptionCheckHppFiles = 'Check HPP files';
@@ -423,7 +412,6 @@ resourcestring
   // packages
   RsCaptionPackages             = 'Packages';
   RsCaptionVclPackage           = 'VCL Package';
-  RsCaptionClxPackage           = 'CLX package';
   RsCaptionDualPackages         = 'Dual packages';
   RsCaptionCopyPackagesHppFiles = 'Output HPP files to %s';
 
@@ -431,7 +419,6 @@ resourcestring
   RsCaptionExceptDlg       = 'Sample Exception Dialogs in the Object Repository';
   RsCaptionExceptDlgVCL    = 'VCL Exception Dialog';
   RsCaptionExceptDlgVCLSnd = 'VCL Exception Dialog with Send button';
-  RsCaptionExceptDlgCLX    = 'CLX Exception Dialog';
 
   // experts
   RsCaptionExperts                = 'IDE experts';
@@ -531,21 +518,18 @@ resourcestring
     'Project Options|Compiler switch. See "Make library units/Debug" option below.';
 
   // make units
-  RsHintMake            = 'Generate .dcu and .dpu (Kylix only) files.' + NativeLineBreak + 'Recommended.';
+  RsHintMake            = 'Generate .dcu files.' + NativeLineBreak + 'Recommended.';
   RsHintMakeRelease     = 'Make precompiled units for release, i.e. optimized, w/o debug information.';
   RsHintMakeReleaseVcl  = 'Make precompiled VCL units for release';
-  RsHintMakeReleaseVClx = 'Make precompiled Visual CLX units for release';
   RsHintMakeDebug       = 'Make precompiled units for debugging, i.e.optimization off, debug information included.' + NativeLineBreak +
     'When installed, available through Project Options|Compiler|Use Debug DCUs.';
   RsHintMakeDebugVcl    = 'Make precompiled VCL units for debugging';
-  RsHintMakeDebugVClx   = 'Make precompiled Visual CLX units for debugging';
   RsHintCopyHppFiles    = 'Copy .hpp files into C++Builder''s include path.';
   RsHintCheckHppFiles   = 'Compile some C++ source files to verify JCL headers';
 
   // packages
   RsHintPackages             = 'Build and eventually install JCL runtime packages and optional IDE experts.';
   RsHintVclPackage           = 'Build JCL runtime package containing VCL extensions';
-  RsHintClxPackage           = 'Build JCL runtime package containing Visual CLX extensions';
   RsHintDualPackages         = 'The same package introduce code for Delphi Win32 and C++Builder Win32';
   RsHintCopyPackagesHppFiles = 'Output .hpp files into C++Builder''s include path instead of ' +
     'the source paths.';
@@ -554,7 +538,6 @@ resourcestring
   RsHintExceptDlg       = 'Add selected Exception dialogs to the Object Repository.';
   RsHintExceptDlgVCL    = 'Add VCL exception dialog to the Object Repository.';
   RsHintExceptDlgVCLSnd = 'Add VCL exception dialog with "Send Button" to the Object Repository.';
-  RsHintExceptDlgCLX    = 'Add CLX exception dialog (Windows only) to the Object Repository.';
 
   // experts
   RsHintExperts                = 'Build and install selected IDE experts.';
@@ -655,16 +638,13 @@ var
       (Id: -1; Caption: RsCaptionEnvDebugDCUPath; Hint: RsHintEnvDebugDCUPath), // joEnvDebugDCUPath
       (Id: -1; Caption: RsCaptionMake; Hint: RsHintMake), // joMake
       (Id: -1; Caption: RsCaptionMakeRelease; Hint: RsHintMakeRelease), // joMakeRelease
-      (Id: -1; Caption: RsCaptionMakeVClx; Hint: RsHintMakeReleaseVClx), // joMakeReleaseVClx
       (Id: -1; Caption: RsCaptionMakeVCL; Hint: RsHintMakeReleaseVCL), // joMakeReleaseVCL
       (Id: -1; Caption: RsCaptionMakeDebug; Hint: RsHintMakeDebug), // joMakeDebug
-      (Id: -1; Caption: RsCaptionMakeVClx; Hint: RsHintMakeDebugVClx), // joMakeDebugVClx
       (Id: -1; Caption: RsCaptionMakeVCL; Hint: RsHintMakeDebugVCL), // joMakeDebugVCL
       (Id: -1; Caption: RsCaptionCopyHppFiles; Hint: RsHintCopyHppFiles), // joCopyHppFiles
       (Id: -1; Caption: RsCaptionCheckHppFiles; Hint: RsHintCheckHppFiles), // joCheckHppFiles
       (Id: -1; Caption: RsCaptionPackages; Hint: RsHintPackages), // joPackages
       (Id: -1; Caption: RsCaptionVclPackage; Hint: RsHintVclPackage), // joVclPackage
-      (Id: -1; Caption: RsCaptionClxPackage; Hint: RsHintClxPackage), // joClxPackage
       (Id: -1; Caption: RsCaptionDualPackages; Hint: RsHintDualPackages), // joDualPackages
       (Id: -1; Caption: RsCaptionCopyPackagesHppFiles; Hint: RsHintCopyPackagesHppFiles), // joCopyPackagesHppFiles
       (Id: -1; Caption: RsCaptionPdbCreate; Hint: RsHintPdbCreate), // joPdbCreate
@@ -687,7 +667,6 @@ var
       (Id: -1; Caption: RsCaptionExceptDlg; Hint: RsHintExceptDlg), // joExceptDlg
       (Id: -1; Caption: RsCaptionExceptDlgVCL; Hint: RsHintExceptDlgVCL), // joExceptDlgVCL
       (Id: -1; Caption: RsCaptionExceptDlgVCLSnd; Hint: RsHintExceptDlgVCLSnd), // joExceptDlgVCLSnd
-      (Id: -1; Caption: RsCaptionExceptDlgCLX; Hint: RsHintExceptDlgCLX), // joExceptDlgCLX
       (Id: -1; Caption: RsCaptionHelp; Hint: RsHintHelp), // joHelp
       (Id: -1; Caption: RsCaptionHelpHlp; Hint: RsHintHelpHlp), // joHelpHlp
       (Id: -1; Caption: RsCaptionHelpChm; Hint: RsHintHelpChm), // joHelpChm
@@ -697,19 +676,13 @@ var
     );
 
 const
-  {$IFDEF KYLIX}
-  VersionDir = '/k%d';
-  VersionDirExp = '/k%%d';
-  {$ELSE}
   VersionDir = '\%s';
   VersionDirExp = '\%%s';
-  {$ENDIF}
 
   // native packages
   JclDpk           = 'Jcl';
   JclContainersDpk = 'JclContainers';
   JclVclDpk        = 'JclVcl';
-  JclVClxDpk       = 'JclVClx';
 
   // .net packages
   JediJclDpk           = 'Jedi.Jcl';
@@ -740,24 +713,21 @@ const
   JclSrcDirUnix     = 'unix';
   JclSrcDirVcl      = 'vcl';
   JclSrcDirCommon   = 'common';
-  JclSrcDirVisClx   = 'visclx';
 
   BCBIncludePath = '%s' + DirSeparator + '%s' + DirSeparator + '$(BCB)' + DirDelimiter + 'include;$(BCB)' + DirDelimiter + 'include' + DirDelimiter + 'vcl';
   {$IFDEF MSWINDOWS}
   BCBObjectPath  = '%s;%s;$(BCB)\Lib\Obj';
-  JclSourceDirs: array[0..3] of string = (JclSrcDirCommon, JclSrcDirWindows, JclSrcDirVcl, JclSrcDirVisClx);
+  JclSourceDirs: array[0..2] of string = (JclSrcDirCommon, JclSrcDirWindows, JclSrcDirVcl);
   {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
   BCBObjectPath  = BCBIncludePath;
-  JclSourceDirs: array[0..2] of string = (JclSrcDirCommon, JclSrcDirUnix, JclSrcDirVisClx);
+  JclSourceDirs: array[0..1] of string = (JclSrcDirCommon, JclSrcDirUnix);
   {$ENDIF UNIX}
 
   ExceptDlgPath = 'experts' + DirDelimiter + 'debug' + DirDelimiter + 'dialog' + DirDelimiter;
-  ExceptDlgClxFileName    = 'ClxExceptDlg.pas';
   ExceptDlgVclFileName    = 'ExceptDlg.pas';
   ExceptDlgVclSndFileName = 'ExceptDlgMail.pas';
 
-  ExceptDlgClxName    = 'CLX Exception Dialog';
   ExceptDlgVclName    = 'Exception Dialog';
   ExceptDlgVclSndName = 'Exception Dialog with Send';
 
@@ -781,11 +751,7 @@ const
   JclHelpIndexName  = 'JEDI Code Library Reference';
   HHFileName        = 'HH.EXE';
 
-  {$IFDEF VisualCLX}
-  ReadmeFileName = 'Readme.html';
-  {$ELSE}
   ReadmeFileName = 'Readme.txt';
-  {$ENDIF}
 
   DailyRevisionFileName = 'jcl-revision.txt';
   EntriesFileName1      = '.svn' + DirDelimiter + 'entries';
@@ -800,9 +766,6 @@ const
   {$IFDEF MSWINDOWS}
   Bcb2MakTemplate = 'packages\BCB.bmk';
   {$ENDIF MSWINDOWS}
-  {$IFDEF KYLIX}
-  Bcb2MakTemplate = 'packages/bcb.gmk';
-  {$ENDIF KYLIX}
 
   PathEnvironmentVar = 'PATH';
   RegHKCUEnvironmentVar = 'Environment';
@@ -829,14 +792,10 @@ const
 begin
   with Target do
   begin
-    {$IFDEF KYLIX}
-    Result := Format(S + '%s', [VersionNumber, BaseName, PackageSourceFileExtension]);
-    {$ELSE KYLIX}
     if SupportsLibSuffix then
       Result := Format(S + '%s', [VersionNumberStr, BaseName, PackageSourceFileExtension])
     else
       Result := Format(S + '%s0%3:s', [VersionNumberStr, BaseName, VersionNumberStr, PackageSourceFileExtension]);
-    {$ENDIF KYLIX}
   end;
 end;
 
@@ -1139,12 +1098,6 @@ procedure TJclInstallation.Init;
 
     if CLRVersion = '' then
     begin
-      if Target.SupportsVisualCLX then
-      begin
-        AddOption(joJCLMakeReleaseVClx, [goChecked], joJCLMakeRelease);
-        AddOption(joJCLMakeDebugVClx, [goChecked], joJCLMakeDebug);
-      end;
-
       if Target.SupportsVCL then
       begin
         AddOption(joJCLMakeReleaseVCL, [goChecked], joJCLMakeRelease);
@@ -1201,8 +1154,6 @@ procedure TJclInstallation.Init;
         AddOption(joJCLExceptDlgVCLSnd, [], joJCLExceptDlg);
         {$ENDIF MSWINDOWS}
       end;
-      if Target.SupportsVisualCLX then
-        AddOption(joJCLExceptDlgCLX, [], joJCLExceptDlg);
     end;
   end;
 
@@ -1210,8 +1161,6 @@ procedure TJclInstallation.Init;
   begin
     if (CLRVersion = '') and RuntimeInstallation and Target.SupportsVCL then
       AddOption(joJCLVclPackage, [goChecked], Parent);
-    if (CLRVersion = '') and RuntimeInstallation and Target.SupportsVisualCLX then
-      AddOption(joJCLClxPackage, [goChecked], Parent);
     if (bpBCBuilder32 in Target.Personalities) and RunTimeInstallation and (CLRVersion = '') then
     begin
       if (Target.RadToolKind = brBorlandDevStudio) and (Target.VersionNumber >= 4) then
@@ -1796,8 +1745,6 @@ var
         {$ENDIF UNIX}
         if OptionChecked[joJCLMakeReleaseVCL] or OptionChecked[joJCLMakeDebugVCL] then
           Target.BCC32.Options.Add('-DTEST_VCL');
-        if OptionChecked[joJCLMakeReleaseVClx] or OptionChecked[joJCLMakeDebugVClx] then
-          Target.BCC32.Options.Add('-DTEST_VISCLX');
         Options := StringsToStr(Target.BCC32.Options, NativeSpace);
         Result := Target.BCC32.Execute(Options + ' "jcl_a2z.cpp"')
           and Target.BCC32.Execute(Options + ' "jcl_z2a.cpp"'); 
@@ -1819,13 +1766,6 @@ var
 
         for I := Low(JclSourceDirs) to High(JclSourceDirs) do
         begin
-          if (JclSourceDirs[I] = JclSrcDirVisClx) then
-          begin
-            if OptionChecked[joJCLMakeReleaseVClx] then
-              MarkOptionBegin(joJCLMakeReleaseVClx)
-            else
-              Continue;
-          end;
           if (JclSourceDirs[I] = JclSrcDirVcl) then
           begin
             if OptionChecked[joJCLMakeReleaseVCL] or
@@ -1835,8 +1775,6 @@ var
               Continue;
           end;
           Result := Result and CompileLibraryUnits(JclSourceDirs[I], False);
-          if (JclSourceDirs[I] = JclSrcDirVisClx) then
-            MarkOptionEnd(joJCLMakeReleaseVClx, Result);
           if (JclSourceDirs[I] = JclSrcDirVcl) then
             MarkOptionEnd(joJCLMakeReleaseVCL, Result);
         end;
@@ -1848,13 +1786,6 @@ var
         MarkOptionBegin(joJCLMakeDebug);
         for I := Low(JclSourceDirs) to High(JclSourceDirs) do
         begin
-          if (JclSourceDirs[I] = JclSrcDirVisClx) then
-          begin
-            if OptionChecked[joJCLMakeDebugVClx] then
-              MarkOptionBegin(joJCLMakeDebugVClx)
-            else
-              Continue;
-          end;
           if (JclSourceDirs[I] = JclSrcDirVcl) then
           begin
             if OptionChecked[joJCLMakeDebugVCL] or
@@ -1864,8 +1795,6 @@ var
               Continue;
           end;
           Result := Result and CompileLibraryUnits(JclSourceDirs[I], True);
-          if (JclSourceDirs[I] = JclSrcDirVisClx) then
-            MarkOptionEnd(joJCLMakeDebugVClx, Result);
           if (JclSourceDirs[I] = JclSrcDirVcl) then
             MarkOptionEnd(joJCLMakeDebugVCL, Result);
         end;
@@ -1900,13 +1829,6 @@ var
           MarkOptionBegin(joJCLVclPackage);
           Result := Result and CompilePackage(FullPackageFileName(Target, JclVclDpk));
           MarkOptionEnd(joJCLVclPackage, Result);
-        end;
-
-        if Result and OptionChecked[joJCLClxPackage] then
-        begin
-          MarkOptionBegin(joJCLClxPackage);
-          Result := Result and CompilePackage(FullPackageFileName(Target, JclVClxDpk));
-          MarkOptionEnd(joJCLClxPackage, Result);
         end;
 
         MarkOptionEnd(joJCLPackages, Result);
@@ -2061,13 +1983,6 @@ var
         MarkOptionEnd(joJCLExceptDlgVCLSnd, Result);
       end;
       {$ENDIF MSWINDOWS}
-      if Result and OptionChecked[joJCLExceptDlgCLX] then
-      begin
-        MarkOptionBegin(joJCLExceptDlgCLX);
-        Result := AddDialogToRepository(ExceptDlgClxName, Distribution.ClxDialogFileName,
-          Distribution.ClxDialogIconFileName, BorRADToolRepositoryDesignerXfm);
-        MarkOptionEnd(joJCLExceptDlgCLX, Result);
-      end;
       MarkOptionEnd(joJCLExceptDlg, Result);
     end;
   end;
@@ -2197,7 +2112,7 @@ var
             DemoResult := CompileApplication(ADemoList.Strings[Index]);
             MarkOptionEnd(ID, DemoResult);
             // ahuser: The installation shouldn't fail if some demos can't be compiled like
-            //         outdated demos or CLX/Kylix demos. Otherwise the JVCL Installer will
+            //         outdated demos. Otherwise the JVCL Installer will
             //         have a hard time finding a valid JCL installation
             //Result := Result and DemoResult;
           end;
@@ -2269,19 +2184,13 @@ begin
 end;
 
 function TJclInstallation.MakePath(const FormatStr: string): string;
-{$IFNDEF KYLIX}
 var
   VersionStr: string;
-{$ENDIF KYLIX}
 begin
-  {$IFDEF KYLIX}
-  Result := Format(FormatStr, [Target.VersionNumber]);
-  {$ELSE ~KYLIX}
   VersionStr := Target.VersionNumberStr;
   if CLRVersion <> '' then
     VersionStr := Format('%s.net', [VersionStr]);
   Result := PathGetShortName(Format(FormatStr, [VersionStr]));
-  {$ENDIF ~KYLIX}
 end;
 
 function TJclInstallation.RemoveSettings: Boolean;
@@ -2383,30 +2292,22 @@ function TJclInstallation.Uninstall(AUninstallHelp: Boolean): Boolean;
   end;
 
   procedure UnregisterPackages(ATarget: TJclBorRADToolInstallation);
-  {$IFNDEF KYLIX}
   var
     ABDSTarget: TJclBDSInstallation;
-  {$ENDIF ~KYLIX}
   begin
     if CLRVersion = '' then
     begin
-      {$IFNDEF KYLIX}
       if ATarget.RadToolKind = brBorlandDevStudio then
       begin
         ABDSTarget := ATarget as TJclBDSInstallation;
         ABDSTarget.CleanPackageCache(BinaryFileName(GetBPLPath, Distribution.JclPath + FullPackageFileName(ATarget, JclDpk)));
         ABDSTarget.CleanPackageCache(BinaryFileName(GetBPLPath, Distribution.JclPath + FullPackageFileName(ATarget, JclContainersDpk)));
-        if RuntimeInstallation and ATarget.SupportsVisualCLX then
-          ABDSTarget.CleanPackageCache(BinaryFileName(GetBPLPath, Distribution.JclPath + FullPackageFileName(ATarget, JclVClxDpk)));
         if RuntimeInstallation and ATarget.SupportsVCL then
           ABDSTarget.CleanPackageCache(BinaryFileName(GetBPLPath, Distribution.JclPath + FullPackageFileName(ATarget, JclVclDpk)));
       end;
-      {$ENDIF KYLIX}
       //ioJclPackages
       ATarget.UnregisterPackage(Distribution.JclPath + FullPackageFileName(ATarget, JclDpk), GetBplPath);
       ATarget.UnregisterPackage(Distribution.JclPath + FullPackageFileName(ATarget, JclContainersDpk), GetBplPath);
-      if RuntimeInstallation and ATarget.SupportsVisualCLX then
-        ATarget.UnregisterPackage(Distribution.JclPath + FullPackageFileName(ATarget, JclVClxDpk), GetBplPath);
       if RuntimeInstallation and ATarget.SupportsVCL then
         ATarget.UnregisterPackage(Distribution.JclPath + FullPackageFileName(ATarget, JclVclDpk), GetBplPath);
       {$IFDEF MSWINDOWS}
@@ -2421,8 +2322,6 @@ function TJclInstallation.Uninstall(AUninstallHelp: Boolean): Boolean;
     begin
       DeletePackage(FullPackageFileName(Target, JclDpk));
       DeletePackage(FullPackageFileName(Target, JclContainersDpk));
-      if RuntimeInstallation and Target.SupportsVisualCLX then
-        DeletePackage(FullPackageFileName(Target, JclVClxDpk));
       if RuntimeInstallation and Target.SupportsVCL then
         DeletePackage(FullPackageFileName(Target, JclVclDpk));
     end;
@@ -2570,8 +2469,6 @@ function TJclInstallation.Uninstall(AUninstallHelp: Boolean): Boolean;
       //ioJclExcDialogVCLSnd
       RemoveDialogFromRepository(ExceptDlgVclSndName, Distribution.VclDialogSendFileName);
       {$ENDIF MSWINDOWS}
-      //ioJclExcDialogCLX
-      RemoveDialogFromRepository(ExceptDlgClxName, Distribution.ClxDialogFileName);
     end;
   end;
 
@@ -2930,12 +2827,6 @@ begin
           Result := Result and CopyHppFiles(Target.VclIncludeDir);
           MarkOptionEnd(joJCLCopyHppFiles, Result);
         end;
-        {$IFDEF KYLIX}
-        Compiler.Options.Add('-P');   // generate position independent code (PIC)
-        WriteLog('');
-        WriteLog('Compiling dpu files...');
-        Result := Result and CompileUnits;
-        {$ENDIF KYLIX}
       end;
     finally
       SetCurrentDir(SaveDir);
@@ -2967,9 +2858,7 @@ end;
 function TJclInstallation.CompilePackage(const Name: string): Boolean;
 var
   PackageFileName: string;
-{$IFNDEF KYLIX}
   DpkPackageFileName: string;
-{$ENDIF}
 begin
   PackageFileName := PathAddSeparator(Distribution.JclPath) + Name;
   WriteLog(Format('Compiling package %s...', [PackageFileName]));
@@ -2979,19 +2868,13 @@ begin
 
   if IsDelphiPackage(PackageFileName) and (bpDelphi32 in Target.Personalities) then
   begin
-    {$IFNDEF KYLIX}
     if Target.RadToolKind = brBorlandDevStudio then
       (Target as TJclBDSInstallation).CleanPackageCache(BinaryFileName(GetBplPath, PackageFileName));
-    {$ENDIF ~KYLIX}
     Result := Target.CompilePackage(PackageFileName, GetBplPath, GetDcpPath);
   end
   else if IsBCBPackage(PackageFileName) and (bpBCBuilder32 in Target.Personalities) then
   begin
     ConfigureBpr2Mak(PackageFileName);
-    {$IFDEF KYLIX}
-    Result := Target.CompilePackage(PackageFileName, GetBplPath, GetDcpPath);
-    {$ELSE ~KYLIX}
-
     if Target.RadToolKind = brBorlandDevStudio then
       (Target as TJclBDSInstallation).CleanPackageCache(BinaryFileName(GetBplPath, PackageFileName));
 
@@ -3001,7 +2884,6 @@ begin
     Result := ((not FileExists(DpkPackageFileName))
                or Target.CompilePackage(DpkPackageFileName, GetBplPath, GetDcpPath))
               and Target.CompilePackage(PackageFileName, GetBplPath, GetDcpPath);
-    {$ENDIF ~KYLIX}
   end
   else
   begin
@@ -3076,11 +2958,6 @@ begin
     Target.Bpr2Mak.Options.Clear;
     Target.Bpr2Mak.Options.Add('-t' + ExtractRelativePath(PackageDirectory,Distribution.JclPath + Bcb2MakTemplate));
   end;
-  {$IFDEF KYLIX}
-  SetEnvironmentVar('OBJDIR', FLibReleaseDir);
-  SetEnvironmentVar('BPILIBDIR', GetDcpPath);
-  SetEnvironmentVar('BPLDIR', GetBplPath);
-  {$ELSE ~KYLIX}
   if clMake in Target.CommandLineTools then
   begin
     Target.Make.Options.Clear;
@@ -3093,7 +2970,6 @@ begin
     //  MarkOptionEnd(joJCLCopyPackagesHppFiles, True);
     //end;
   end;
-  {$ENDIF ~KYLIX}
 end;
 
 {$IFDEF MSWINDOWS}
@@ -3290,11 +3166,7 @@ begin
     EnumDirectories(Distribution.JclExamplesDir, AddDemos);
     FDemoList.CustomSort(DemoNameCompare);
 
-    {$IFDEF KYLIX}
-    ProcessExcludeFile('k%d.exc');
-    {$ELSE ~KYLIX}
     ProcessExcludeFile('%s.exc');
-    {$ENDIF ~KYLIX}
   end;
   Result := FDemoList;
 end;
@@ -3398,9 +3270,6 @@ end;
 function TJclDistribution.CreateInstall(Target: TJclBorRADToolInstallation): Boolean;
   function Supported: Boolean;
   begin
-    {$IFDEF KYLIX}
-    Result := Target.VersionNumber = 3;
-    {$ELSE ~KYLIX}
     case Target.RadToolKind of
       brDelphi :
         Result := Target.VersionNumber in [5, 6, 7];
@@ -3413,7 +3282,6 @@ function TJclDistribution.CreateInstall(Target: TJclBorRADToolInstallation): Boo
         Result := False;
     end;
     Result := Result and (Target.Personalities * [bpDelphi32, bpBCBuilder32, bpDelphiNet32, bpDelphiNet64] <> []);
-    {$ENDIF ~KYLIX}
   end;
 var
   Inst: TJclInstallation;
@@ -3570,8 +3438,6 @@ procedure TJclDistribution.Init;
       ListAddItems(FJclSourcePath, DirSeparator, PathAddSeparator(FJclSourceDir) + JclSourceDirs[Index]);
 
     ExceptDialogsPath := FJclPath + ExceptDlgPath;
-    FClxDialogFileName := ExceptDialogsPath + ExceptDlgClxFileName;
-    FClxDialogIconFileName := ChangeFileExt(FClxDialogFileName, '.ico');
     FVclDialogFileName := ExceptDialogsPath + ExceptDlgVclFileName;
     FVclDialogIconFileName := ChangeFileExt(FVclDialogFileName, '.ico');
     FVclDialogSendFileName := ExceptDialogsPath + ExceptDlgVclSndFileName;
@@ -3587,8 +3453,6 @@ procedure TJclDistribution.Init;
       FJclHxSHelpFileName := '';
     {$IFDEF MSWINDOWS}
     // Reset ReadOnly flag for dialog forms
-    FileSetAttr(FClxDialogFileName, faArchive);
-    FileSetAttr(ChangeFileExt(FClxDialogFileName, '.xfm'), faArchive);
     FileSetAttr(FVclDialogFileName, faArchive);
     FileSetAttr(ChangeFileExt(FVclDialogFileName, '.dfm'), faArchive);
     FileSetAttr(FVclDialogSendFileName, faArchive);

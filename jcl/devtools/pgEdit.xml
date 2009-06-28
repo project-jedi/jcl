@@ -70,7 +70,6 @@
         <target name="cs1" IsBds="1"/>
         <target name="d9" IsBds="1"/>
         <target name="d10" defines="BCB" IsBds="1"/>
-        <target name="k3" defines="BCB" PathSep="/"/>
         <target name="d9.net" IsDotNet="1"/>
         <target name="d10.net" IsDotNet="1"/>
         <target name="d11" defines="BCB" IsBds="1"/>
@@ -80,17 +79,16 @@
       <aliases>
         <alias name="Delphi" value="d5,d6,d7,d9,d10,d11,d12"/>
         <alias name="Bcb" value="c5,c6,d10,d11,d12"/>
-        <alias name="Kylix" value="k3"/>
         <alias name="Windows" value="c5,c6,d5,d6,d7,d9,d10,d11,d12"/>
-        <alias name="Linux" value="k3"/>
+        <alias name="Linux" value=""/>
         <alias name="WinDev" value="c5,c6,d5,d6,d7,d8,d9,d10,cs1,d11,d12"/>
-        <alias name="JclDev" value="c5,c6,d5,d6,d7,d8,d9,d10,k3,cs1,d11,d12"/>
+        <alias name="JclDev" value="c5,c6,d5,d6,d7,d8,d9,d10,cs1,d11,d12"/>
         <alias name="DelphiDev" value="d5,d6,d7,d8,d9,d10,d11,d12"/>
         <alias name="WinLibSuffix" value="c6,d6,d7,d8,d9,d10,cs1,d11,d12"/>
-        <alias name="allLibSuffix" value="c6,d6,d7,d8,d9,d10,k3,cs1,d11,d12"/>
+        <alias name="allLibSuffix" value="c6,d6,d7,d8,d9,d10,cs1,d11,d12"/>
         <alias name="allv12up" value="d12"/>
         <alias name="noLibSuffix" value="c5,d5"/>
-        <alias name="Clx" value="c6,d6,d7,k3"/>
+        <alias name="Clx" value="c6,d6,d7"/>
         <alias name="Vcl" value="c5,d5,c6,d6,d7,d9,d10,d11,d12"/>
         <alias name="Bds" value="cs1,d8,d9,d10,d11,d12"/>
         <alias name="JclDotNet" value="d9.net,d10.net,d11.net"/>

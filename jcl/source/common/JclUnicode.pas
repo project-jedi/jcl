@@ -1093,7 +1093,6 @@ type
 
 // functions involving null-terminated strings
 // NOTE: PWideChars as well as WideStrings are NOT managed by reference counting under Win32.
-//       In Kylix this is different. WideStrings are reference counted there, just like ANSI strings.
 function StrLenW(Str: PWideChar): Cardinal;
 function StrEndW(Str: PWideChar): PWideChar;
 function StrMoveW(Dest, Source: PWideChar; Count: Cardinal): PWideChar;

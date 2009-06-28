@@ -50,7 +50,7 @@ listed above. It is not necessary to generate any debug
 data for Borland runtime packages because the source
 location code can use names of exported functions to get
 procedure or method name. To get line number information
-for Borland RTL and VCL/CLX units you have to check Use
+for Borland RTL and VCL units you have to check Use
 Debug DCUs checkbox in Project|Options dialog -> Compiler tab.
 Unfortunately it is not possible to get line number
 information for Borland runtime packages because Borland

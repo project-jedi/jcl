@@ -122,10 +122,7 @@ implementation
 
 {$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF}
-{$IFDEF VisualCLX}
-{$R *.xfm}
-{$ENDIF VisualCLX}
+{$ENDIF VCL}
 
 var
   FileMask: string;

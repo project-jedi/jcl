@@ -1171,11 +1171,6 @@ begin
 end;
 
 function TJclOTAExpertBase.GetRootDir: string;
-{$IFDEF KYLIX}
-var
-  RADToolsInstallations: TJclBorRADToolInstallations;
-  RADToolInstallation: TJclBorRADToolInstallation;
-{$ENDIF KYLIX}
 begin
   if FRootDir = '' then
   begin
@@ -1186,24 +1181,6 @@ begin
     if FRootDir = '' then
       FRootDir := RegReadStringDef(HKEY_CURRENT_USER, Settings.BaseKeyName, DelphiRootDirKeyValue, '');
     {$ENDIF MSWINDOWS}
-    {$IFDEF KYLIX}
-    RADToolsInstallations := TJclBorRADToolInstallations.Create;
-    try
-      {$IFDEF KYLIX3}
-      {$IFDEF BCB}
-      RADToolInstallation := RADToolsInstallations.BCBInstallationFromVersion[3];
-      {$ELSE}
-      RADToolInstallation := RADToolsInstallations.DelphiInstallationFromVersion[3];
-      {$ENDIF BCB}
-      {$ELSE}
-      RADToolInstallation := nil;
-      {$ENDIF KYLIX3}
-      if Assigned(RADToolInstallation) then
-        FRootDir := RADToolInstallation.RootDir;
-    finally
-      RADToolsInstallations.Free;
-    end;
-    {$ENDIF KYLIX}
     if FRootDir = '' then
       raise EJclExpertException.CreateTrace(RsENoRootDir);
   end;
@@ -1347,10 +1324,6 @@ var
   {$IFDEF MSWINDOWS}
   EnvVarKeyName: string;
   {$ENDIF MSWINDOWS}
-  {$IFDEF KYLIX}
-  RADToolsInstallations: TJclBorRADToolInstallations;
-  RADToolInstallation: TJclBorRADToolInstallation;
-  {$ENDIF KYLIX}
 {$ENDIF COMPILER6_UP}
 begin
   FEnvVariables.Clear;
@@ -1370,30 +1343,6 @@ begin
         FEnvVariables.Values[EnvNames[I]] :=
           RegReadStringDef(HKEY_CURRENT_USER, EnvVarKeyName, EnvNames[I], '');
     {$ENDIF MSWINDOWS}
-    {$IFDEF KYLIX}
-    RADToolsInstallations := TJclBorRADToolInstallations.Create;
-    try
-      {$IFDEF KYLIX3}
-      {$IFDEF BCB}
-      RADToolInstallation := RADToolsInstallations.BCBInstallationFromVersion[3];
-      {$ELSE}
-      RADToolInstallation := RADToolsInstallations.DelphiInstallationFromVersion[3];
-      {$ENDIF BCB}
-      {$ELSE}
-      RADToolInstallation := nil;
-      {$ENDIF KYLIX3}
-      if Assigned(RADToolInstallation) then
-      begin
-        for I := 0 to RADToolInstallation.EnvironmentVariables.Count - 1 do
-          EnvNames.Add(RADToolInstallation.EnvironmentVariables.Names[I]);
-        for I := 0 to EnvNames.Count - 1 do
-          FEnvVariables.Values[EnvNames[I]] :=
-            RADToolInstallation.EnvironmentVariables.Values[EnvNames[I]];
-      end;
-    finally
-      RADToolsInstallations.Free;
-    end;
-    {$ENDIF KYLIX}
   finally
     EnvNames.Free;
   end;
