@@ -178,6 +178,8 @@ end;
 
 procedure TfrmMain.lstSvcData(Sender: TObject; Item: TListItem);
 begin
+  if not Assigned(SCManager) then
+    Exit;
   with Item, SCManager.Services[Item.Index] do
   begin
     Caption := ServiceName;
