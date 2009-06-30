@@ -164,7 +164,7 @@
       <VersionInfoKeys Name="FileDescription">JCL Stack Trace Viewer</VersionInfoKeys>
       <VersionInfoKeys Name="FileVersion">2.0.0.3401</VersionInfoKeys>
       <VersionInfoKeys Name="InternalName">JclStackTraceViewerExpertDLL</VersionInfoKeys>
-      <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2008 Project JEDI</VersionInfoKeys>
+      <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2009 Project JEDI</VersionInfoKeys>
       <VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
       <VersionInfoKeys Name="OriginalFilename">JclStackTraceViewerExpertDLL90.dll</VersionInfoKeys>
       <VersionInfoKeys Name="ProductName">JEDI Code Library</VersionInfoKeys>

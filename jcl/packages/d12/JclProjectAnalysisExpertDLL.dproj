@@ -110,24 +110,10 @@
 						</VersionInfo>
 						<VersionInfoKeys>
 							<VersionInfoKeys Name="CompanyName">Project JEDI</VersionInfoKeys>
-							<VersionInfoKeys Name="FileDescription">JEDI Code Library RTL package</VersionInfoKeys>
-							<VersionInfoKeys Name="FileVersion">1.102.0.2726</VersionInfoKeys>
-							<VersionInfoKeys Name="InternalName">Jcl</VersionInfoKeys>
-							<VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2008 Project JEDI</VersionInfoKeys>
-							<VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
-							<VersionInfoKeys Name="OriginalFilename">Jcl110.bpl</VersionInfoKeys>
-							<VersionInfoKeys Name="ProductName">JEDI Code Library</VersionInfoKeys>
-							<VersionInfoKeys Name="ProductVersion">1.102 Build 2726</VersionInfoKeys>
-						</VersionInfoKeys>
-						<Source>
-							<Source Name="MainSource">Jcl.dpk</Source>
-						</Source>
-						<VersionInfoKeys>
-							<VersionInfoKeys Name="CompanyName">Project JEDI</VersionInfoKeys>
 							<VersionInfoKeys Name="FileDescription">JCL Project Analyzer</VersionInfoKeys>
 							<VersionInfoKeys Name="FileVersion">2.0.0.3401</VersionInfoKeys>
 							<VersionInfoKeys Name="InternalName">JclProjectAnalysisExpertDLL</VersionInfoKeys>
-							<VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2008 Project JEDI</VersionInfoKeys>
+							<VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2009 Project JEDI</VersionInfoKeys>
 							<VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
 							<VersionInfoKeys Name="OriginalFilename">JclProjectAnalysisExpertDLL120.dll</VersionInfoKeys>
 							<VersionInfoKeys Name="ProductName">JEDI Code Library</VersionInfoKeys>

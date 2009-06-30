@@ -77,7 +77,7 @@
             <VersionInfoKeys Name="FileDescription">JEDI Code Library Containers package</VersionInfoKeys>
             <VersionInfoKeys Name="FileVersion">2.0.0.3401</VersionInfoKeys>
             <VersionInfoKeys Name="InternalName">Jedi.JclContainers</VersionInfoKeys>
-            <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2008 Project JEDI</VersionInfoKeys>
+            <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2009 Project JEDI</VersionInfoKeys>
             <VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
             <VersionInfoKeys Name="OriginalFilename">Jedi.JclContainers.bpl</VersionInfoKeys>
             <VersionInfoKeys Name="ProductName">JEDI Code Library</VersionInfoKeys>

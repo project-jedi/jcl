@@ -19,7 +19,7 @@ BEGIN
               VALUE "FileDescription", "JCL Debug Window of XMM registers\0"
               VALUE "FileVersion", "2.0.0.3401\0"
               VALUE "InternalName", "JclSIMDViewExpertDLL\0"
-              VALUE "LegalCopyright", "Copyright (C) 1999, 2008 Project JEDI\0"
+              VALUE "LegalCopyright", "Copyright (C) 1999, 2009 Project JEDI\0"
               VALUE "OriginalFilename", "JclSIMDViewExpertDLL90.dll\0"
               VALUE "ProductName", "JEDI Code Library\0"
               VALUE "ProductVersion", "2.0 Build 3401\0"

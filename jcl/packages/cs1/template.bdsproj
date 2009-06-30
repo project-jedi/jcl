@@ -164,7 +164,7 @@
       <VersionInfoKeys Name="FileDescription">%DESCRIPTION%</VersionInfoKeys>
       <VersionInfoKeys Name="FileVersion">%VERSION_MAJOR_NUMBER%.%VERSION_MINOR_NUMBER%.%RELEASE_NUMBER%.%BUILD_NUMBER%</VersionInfoKeys>
       <VersionInfoKeys Name="InternalName">%NAME%</VersionInfoKeys>
-      <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2008 Project JEDI</VersionInfoKeys>
+      <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2009 Project JEDI</VersionInfoKeys>
       <VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
       <VersionInfoKeys Name="OriginalFilename">%NAME%71%BINEXTENSION%</VersionInfoKeys>
       <VersionInfoKeys Name="ProductName">JEDI Code Library</VersionInfoKeys>
