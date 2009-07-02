@@ -2733,9 +2733,20 @@ begin
     else
     {$ENDIF MSWINDOWS}
       Compiler := Target.DCC32;
+
     Compiler.SetDefaultOptions;
     //Options.Add('-D' + StringsToStr(Defines, ';'));
-    Compiler.Options.Add('-M');
+    Compiler.Options.Add('-M');   // make modified units
+    Compiler.Options.Add('-$X+'); // extended syntax
+    Compiler.Options.Add('-$G+'); // imported data
+    Compiler.Options.Add('-$H+'); // long strings
+    Compiler.Options.Add('-$P+'); // open string params
+    Compiler.Options.Add('-$U-'); // safe divide
+    Compiler.Options.Add('-$T-'); // typed address
+    Compiler.Options.Add('-$V+'); // strict var strings
+    Compiler.Options.Add('-$J+'); // writeable constants
+    Compiler.Options.Add('-$Z1'); // minimum enum size
+
     if Debug then
     begin
       Compiler.Options.Add('-$C+'); // assertions
