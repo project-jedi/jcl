@@ -1,4 +1,4 @@
-{**************************************************************************************************}
+﻿{**************************************************************************************************}
 {                                                                                                  }
 { Project JEDI Code Library (JCL)                                                                  }
 {                                                                                                  }
@@ -61,11 +61,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, SysUtils,
   {$IFNDEF FPC}
-  {$IFDEF CLR}
-  System.Runtime.InteropServices, System.Security,
-  {$ELSE ~CLR}
   AccCtrl,
-  {$ENDIF ~CLR}
   ActiveX,
   {$ENDIF ~FPC}
   JclBase;
@@ -103,17 +99,6 @@ uses
 {$HPPEMIT '#include <ntsecapi.h>'}
 {$HPPEMIT ''}
 
-{$IFDEF CLR}
-type
-  LPSTR = string;
-  LPWSTR = string;
-  LPCSTR = string;
-  LPCWSTR = string;
-  LPCTSTR = string;
-  PLongWord = ^LongWord;
-  PByte = IntPtr;
-{$ENDIF CLR}
-
 {$I win32api\WinDef.int}
 {$I win32api\WinNT.int}
 {$I win32api\WinBase.int}
@@ -143,8 +128,6 @@ type
 {$I win32api\NtSecApi.int}
 
 {$IFDEF MSWINDOWS}
-
-{$IFNDEF CLR}
 
 const
   RtdlSetNamedSecurityInfoW: function(pObjectName: LPWSTR; ObjectType: SE_OBJECT_TYPE;
@@ -209,7 +192,6 @@ const
 
   RtdlNetBios: function(P: PNCB): UCHAR stdcall = NetBios;
 
-{$ENDIF ~CLR}
 {$ENDIF MSWINDOWS}
 
 {$IFDEF UNITVERSIONING}
@@ -227,7 +209,6 @@ implementation
 uses
   JclResources;
 
-{$IFNDEF CLR}
 procedure GetProcedureAddress(var P: Pointer; const ModuleName, ProcName: string);
 var
   ModuleHandle: HMODULE;
@@ -246,7 +227,6 @@ begin
       raise EJclError.CreateResFmt(@RsEFunctionNotFound, [ModuleName, ProcName]);
   end;
 end;
-{$ENDIF ~CLR}
 
 {$I win32api\AclApi.imp}
 {$I win32api\ImageHlp.imp}

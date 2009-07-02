@@ -43,9 +43,6 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$IFDEF SUPPORTS_GENERICS}
-  {$IFDEF CLR}
-  System.Collections.Generic,
-  {$ENDIF CLR}
   JclAlgorithms,
   {$ENDIF SUPPORTS_GENERICS}
   JclBase, JclAbstractContainers, JclContainerIntf, JclSynch;
@@ -137,13 +134,11 @@ type
 
 {$JPPEXPANDMACRO JCLARRAYLISTITRINT(TJclInt64ArrayIterator,IJclInt64Iterator,IJclInt64List,const ,AValue,Int64,GetValue,SetValue)}
 
-  {$IFNDEF CLR}
 {$JPPEXPANDMACRO JCLARRAYLISTINT(TJclPtrArrayList,TJclPtrAbstractContainer,IJclPtrCollection,IJclPtrList,IJclPtrArray,IJclPtrIterator,TDynPointerArray, IJclPtrEqualityComparer\,,
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,,APtr,Pointer,GetPointer,SetPointer)}
 
 {$JPPEXPANDMACRO JCLARRAYLISTITRINT(TJclPtrArrayIterator,IJclPtrIterator,IJclPtrList,,APtr,Pointer,GetPointer,SetPointer)}
-  {$ENDIF ~CLR}
 
 {$JPPEXPANDMACRO JCLARRAYLISTINT(TJclArrayList,TJclAbstractContainer,IJclCollection,IJclList,IJclArray,IJclIterator,TDynObjectArray, IJclObjectOwner\, IJclEqualityComparer\,,
   protected
@@ -321,7 +316,6 @@ end;
 
 {$JPPEXPANDMACRO JCLARRAYLISTITRIMP(TJclInt64ArrayIterator,IJclInt64Iterator,IJclInt64List,const ,AValue,Int64,GetValue,SetValue)}
 
-{$IFNDEF CLR}
 {$JPPEXPANDMACRO JCLARRAYLISTIMP(TJclPtrArrayList,,,IJclPtrCollection,IJclPtrIterator,TJclPtrArrayIterator,IJclPtrList,,APtr,GetPointer,SetPointer,FreePointer,Pointer,nil)}
 
 function TJclPtrArrayList.CreateEmptyContainer: TJclAbstractContainerBase;
@@ -331,7 +325,6 @@ begin
 end;
 
 {$JPPEXPANDMACRO JCLARRAYLISTITRIMP(TJclPtrArrayIterator,IJclPtrIterator,IJclPtrList,,APtr,Pointer,GetPointer,SetPointer)}
-{$ENDIF ~CLR}
 
 {$JPPEXPANDMACRO JCLARRAYLISTIMP(TJclArrayList,; AOwnsObjects: Boolean,AOwnsObjects,IJclCollection,IJclIterator,TJclArrayIterator,IJclList,,AObject,GetObject,SetObject,FreeObject,TObject,nil)}
 

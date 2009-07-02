@@ -127,9 +127,7 @@ begin
   Accumulator := 0;
   Counter := 10;
   Part := ipGroupID;
-  {$IFNDEF CLR}
   FillChar(PartSizes[Low(PartSizes)], SizeOf(PartSizes), 0);
-  {$ENDIF ~CLR}
 
   while CurPtr <= EndPtr do
   begin

@@ -46,9 +46,6 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$IFDEF SUPPORTS_GENERICS}
-  {$IFDEF CLR}
-  System.Collections.Generic,
-  {$ENDIF CLR}
   JclAlgorithms,
   {$ENDIF SUPPORTS_GENERICS}
   JclBase, JclAbstractContainers, JclContainerIntf, JclSynch;
@@ -347,7 +344,6 @@ type
     destructor Destroy; override;
   end;
 
-  {$IFNDEF CLR}
   TJclPtrQueue = class(TJclPtrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclPtrEqualityComparer,
     IJclPtrQueue)
@@ -374,7 +370,6 @@ type
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
   end;
-  {$ENDIF ~CLR}
 
   TJclQueue = class(TJclAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclEqualityComparer, IJclObjectOwner,
@@ -3314,7 +3309,6 @@ begin
   AssignPropertiesTo(Result);
 end;
 
-{$IFNDEF CLR}
 //=== { TJclPtrQueue } =======================================================
 
 constructor TJclPtrQueue.Create(ACapacity: Integer);
@@ -3597,7 +3591,6 @@ begin
   Result := TJclPtrQueue.Create(Size + 1);
   AssignPropertiesTo(Result);
 end;
-{$ENDIF ~CLR}
 
 //=== { TJclQueue } =======================================================
 

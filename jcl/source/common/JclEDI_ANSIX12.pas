@@ -731,20 +731,8 @@ begin
 end;
 
 function TEDISegment.AppendElements(ElementArray: TEDIElementArray): Integer;
-{$IFDEF CLR}
-var
-  HelpArray: TEDIDataObjectArray;
-  I: Integer;
-{$ENDIF CLR}
 begin
-  {$IFDEF CLR}
-  SetLength(HelpArray, Length(ElementArray));
-  for I := 0 to High(ElementArray) do
-    HelpArray[I] := TEDIDataObject(ElementArray[I]);
-  Result := AppendEDIDataObjects(HelpArray);
-  {$ELSE ~CLR}
   Result := AppendEDIDataObjects(TEDIDataObjectArray(ElementArray));
-  {$ENDIF ~CLR}
 end;
 
 function TEDISegment.Assemble: string;
@@ -864,20 +852,8 @@ begin
 end;
 
 function TEDISegment.InsertElements(InsertIndex: Integer; ElementArray: TEDIElementArray): Integer;
-{$IFDEF CLR}
-var
-  HelpArray: TEDIDataObjectArray;
-  I: Integer;
-{$ENDIF CLR}
 begin
-  {$IFDEF CLR}
-  SetLength(HelpArray, Length(ElementArray));
-  for I := 0 to High(ElementArray) do
-    HelpArray[I] := TEDIDataObject(ElementArray[I]);
-  Result := InsertEDIDataObjects(InsertIndex, HelpArray);
-  {$ELSE ~CLR}
   Result := InsertEDIDataObjects(InsertIndex, TEDIDataObjectArray(ElementArray));
-  {$ENDIF ~CLR}
 end;
 
 function TEDISegment.InsertElements(InsertIndex, Count: Integer): Integer;
@@ -1023,20 +999,8 @@ begin
 end;
 
 function TEDITransactionSet.AppendSegments(SegmentArray: TEDISegmentArray): Integer;
-{$IFDEF CLR}
-var
-  HelpArray: TEDIDataObjectArray;
-  I: Integer;
-{$ENDIF CLR}
 begin
-  {$IFDEF CLR}
-  SetLength(HelpArray, Length(SegmentArray));
-  for I := 0 to High(SegmentArray) do
-    HelpArray[I] := TEDIDataObject(SegmentArray[I]);
-  Result := AppendEDIDataObjects(HelpArray);
-  {$ELSE ~CLR}
   Result := AppendEDIDataObjects(TEDIDataObjectArray(SegmentArray));
-  {$ENDIF ~CLR}
 end;
 
 function TEDITransactionSet.Assemble: string;
@@ -1175,20 +1139,8 @@ end;
 
 function TEDITransactionSet.InsertSegments(InsertIndex: Integer;
   SegmentArray: TEDISegmentArray): Integer;
-{$IFDEF CLR}
-var
-  HelpArray: TEDIDataObjectArray;
-  I: Integer;
-{$ENDIF CLR}
 begin
-  {$IFDEF CLR}
-  SetLength(HelpArray, Length(SegmentArray));
-  for I := 0 to High(SegmentArray) do
-    HelpArray[I] := TEDIDataObject(SegmentArray[I]);
-  Result := InsertEDIDataObjects(InsertIndex, HelpArray);
-  {$ELSE ~CLR}
   Result := InsertEDIDataObjects(InsertIndex, TEDIDataObjectArray(SegmentArray));
-  {$ENDIF ~CLR}
 end;
 
 function TEDITransactionSet.InternalAssignDelimiters: TEDIDelimiters;
@@ -1280,20 +1232,8 @@ end;
 
 function TEDIFunctionalGroup.AppendTransactionSets(
   TransactionSetArray: TEDITransactionSetArray): Integer;
-{$IFDEF CLR}
-var
-  HelpArray: TEDIDataObjectArray;
-  I: Integer;
-{$ENDIF CLR}
 begin
-  {$IFDEF CLR}
-  SetLength(HelpArray, Length(TransactionSetArray));
-  for I := 0 to High(TransactionSetArray) do
-    HelpArray[I] := TEDIDataObject(TransactionSetArray[I]);
-  Result := AppendEDIDataObjects(HelpArray);
-  {$ELSE ~CLR}
   Result := AppendEDIDataObjects(TEDIDataObjectArray(TransactionSetArray));
-  {$ENDIF ~CLR}
 end;
 
 function TEDIFunctionalGroup.Assemble: string;
@@ -1458,20 +1398,8 @@ end;
 
 function TEDIFunctionalGroup.InsertTransactionSets(InsertIndex: Integer;
   TransactionSetArray: TEDITransactionSetArray): Integer;
-{$IFDEF CLR}
-var
-  HelpArray: TEDIDataObjectArray;
-  I: Integer;
-{$ENDIF CLR}
 begin
-  {$IFDEF CLR}
-  SetLength(HelpArray, Length(TransactionSetArray));
-  for I := 0 to High(TransactionSetArray) do
-    HelpArray[I] := TEDIDataObject(TransactionSetArray[I]);
-  Result := InsertEDIDataObjects(InsertIndex, HelpArray);
-  {$ELSE ~CLR}
   Result := InsertEDIDataObjects(InsertIndex, TEDIDataObjectArray(TransactionSetArray));
-  {$ENDIF ~CLR}
 end;
 
 function TEDIFunctionalGroup.InsertTransactionSets(InsertIndex, Count: Integer): Integer;
@@ -1566,20 +1494,8 @@ end;
 
 function TEDIInterchangeControl.AppendFunctionalGroups(
   FunctionalGroupArray: TEDIFunctionalGroupArray): Integer;
-{$IFDEF CLR}
-var
-  HelpArray: TEDIDataObjectArray;
-  I: Integer;
-{$ENDIF CLR}
 begin
-  {$IFDEF CLR}
-  SetLength(HelpArray, Length(FunctionalGroupArray));
-  for I := 0 to High(FunctionalGroupArray) do
-    HelpArray[I] := TEDIDataObject(FunctionalGroupArray[I]);
-  Result := AppendEDIDataObjects(HelpArray);
-  {$ELSE ~CLR}
   Result := AppendEDIDataObjects(TEDIDataObjectArray(FunctionalGroupArray));
-  {$ENDIF ~CLR}
 end;
 
 function TEDIInterchangeControl.Assemble: string;
@@ -1774,20 +1690,8 @@ end;
 
 function TEDIInterchangeControl.InsertFunctionalGroups(InsertIndex: Integer;
   FunctionalGroupArray: TEDIFunctionalGroupArray): Integer;
-{$IFDEF CLR}
-var
-  HelpArray: TEDIDataObjectArray;
-  I: Integer;
-{$ENDIF CLR}
 begin
-  {$IFDEF CLR}
-  SetLength(HelpArray, Length(FunctionalGroupArray));
-  for I := 0 to High(FunctionalGroupArray) do
-    HelpArray[I] := TEDIDataObject(FunctionalGroupArray[I]);
-  Result := InsertEDIDataObjects(InsertIndex, HelpArray);
-  {$ELSE ~CLR}
   Result := InsertEDIDataObjects(InsertIndex, TEDIDataObjectArray(FunctionalGroupArray));
-  {$ENDIF ~CLR}
 end;
 
 procedure TEDIInterchangeControl.SetFunctionalGroup(Index: Integer;
@@ -1868,20 +1772,8 @@ begin
 end;
 
 function TEDIFile.AppendInterchanges(InterchangeControlArray: TEDIInterchangeControlArray): Integer;
-{$IFDEF CLR}
-var
-  HelpArray: TEDIDataObjectArray;
-  I: Integer;
-{$ENDIF CLR}
 begin
-  {$IFDEF CLR}
-  SetLength(HelpArray, Length(InterchangeControlArray));
-  for I := 0 to High(InterchangeControlArray) do
-    HelpArray[I] := TEDIDataObject(InterchangeControlArray[I]);
-  Result := AppendEDIDataObjects(HelpArray);
-  {$ELSE ~CLR}
   Result := AppendEDIDataObjects(TEDIDataObjectArray(InterchangeControlArray));
-  {$ENDIF ~CLR}
 end;
 
 function TEDIFile.Assemble: string;
@@ -2037,42 +1929,21 @@ end;
 
 function TEDIFile.InsertInterchanges(InsertIndex: Integer;
   InterchangeControlArray: TEDIInterchangeControlArray): Integer;
-{$IFDEF CLR}
-var
-  HelpArray: TEDIDataObjectArray;
-  I: Integer;
-{$ENDIF CLR}
 begin
-  {$IFDEF CLR}
-  SetLength(HelpArray, Length(InterchangeControlArray));
-  for I := 0 to High(InterchangeControlArray) do
-    HelpArray[I] := TEDIDataObject(InterchangeControlArray[I]);
-  Result := InsertEDIDataObjects(InsertIndex, HelpArray);
-  {$ELSE ~CLR}
   Result := InsertEDIDataObjects(InsertIndex, TEDIDataObjectArray(InterchangeControlArray));
-  {$ENDIF ~CLR}
 end;
 
 procedure TEDIFile.InternalLoadFromFile;
 var
   EDIFileStream: TFileStream;
-  {$IFDEF CLR}
-  Buf: TBytes;
-  {$ENDIF CLR}
 begin
   FData := '';
   if FFileName <> '' then
   begin
     EDIFileStream := TFileStream.Create(FFileName, fmOpenRead or fmShareDenyNone);
     try
-      {$IFDEF CLR}
-      SetLength(Buf, EDIFileStream.Size);
-      EDIFileStream.Read(Buf, EDIFileStream.Size);
-      FData := StringOf(Buf);
-      {$ELSE ~CLR}
       SetLength(FData, EDIFileStream.Size);
       EDIFileStream.Read(Pointer(FData)^, EDIFileStream.Size);
-      {$ENDIF ~CLR}
     finally
       EDIFileStream.Free;
     end;
@@ -2102,11 +1973,7 @@ begin
   begin
     EDIFileStream := TFileStream.Create(FFileName, fmCreate or fmShareDenyNone);
     try
-      {$IFDEF CLR}
-      EDIFileStream.Write(BytesOf(FData), Length(FData));
-      {$ELSE ~CLR}
       EDIFileStream.Write(Pointer(FData)^, Length(FData));
-      {$ENDIF ~CLR}
     finally
       EDIFileStream.Free;
     end;
@@ -2123,11 +1990,7 @@ begin
   begin
     EDIFileStream := TFileStream.Create(FFileName, fmCreate or fmShareDenyNone);
     try
-      {$IFDEF CLR}
-      EDIFileStream.Write(BytesOf(FData), Length(FData));
-      {$ELSE ~CLR}
       EDIFileStream.Write(Pointer(FData)^, Length(FData));
-      {$ENDIF ~CLR}
     finally
       EDIFileStream.Free;
     end;

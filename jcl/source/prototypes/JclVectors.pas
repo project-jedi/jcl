@@ -28,7 +28,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                       $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -45,9 +45,6 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$IFDEF SUPPORTS_GENERICS}
-  {$IFDEF CLR}
-  System.Collections.Generic,
-  {$ENDIF CLR}
   JclAlgorithms,
   {$ENDIF SUPPORTS_GENERICS}
   Classes,
@@ -140,13 +137,11 @@ type
 
 (*$JPPEXPANDMACRO JCLVECTORITRINT(TJclInt64VectorIterator,IJclInt64Iterator,IJclInt64List,const ,AValue,Int64,GetValue,SetValue)*)
 
-  {$IFNDEF CLR}
 (*$JPPEXPANDMACRO JCLVECTORINT(TJclPtrVector,TJclPtrAbstractContainer,IJclPtrCollection,IJclPtrList,IJclPtrArray,IJclPtrIterator, IJclPtrEqualityComparer\,,
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,,APtr,Pointer,nil,TDynPointerArray,GetPointer,SetPointer)*)
 
 (*$JPPEXPANDMACRO JCLVECTORITRINT(TJclPtrVectorIterator,IJclPtrIterator,IJclPtrList,,APtr,Pointer,GetPointer,SetPointer)*)
-  {$ENDIF ~CLR}
 
 (*$JPPEXPANDMACRO JCLVECTORINT(TJclVector,TJclAbstractContainer,IJclCollection,IJclList,IJclArray,IJclIterator, IJclObjectOwner\, IJclEqualityComparer\,,
   protected
@@ -318,7 +313,6 @@ end;
 
 (*$JPPEXPANDMACRO JCLVECTORITRIMP(TJclInt64VectorIterator,IJclInt64Iterator,IJclInt64List,const ,AValue,Int64,GetValue,SetValue)*)
 
-{$IFNDEF CLR}
 (*$JPPEXPANDMACRO JCLVECTORIMP(TJclPtrVector,IJclPtrCollection,IJclPtrList,IJclPtrIterator,TJclPtrVectorIterator,,,,APtr,Pointer,nil,GetPointer,SetPointer,FreePointer)*)
 
 function TJclPtrVector.CreateEmptyContainer: TJclAbstractContainerBase;
@@ -328,7 +322,6 @@ begin
 end;
 
 (*$JPPEXPANDMACRO JCLVECTORITRIMP(TJclPtrVectorIterator,IJclPtrIterator,IJclPtrList,,APtr,Pointer,GetPointer,SetPointer)*)
-{$ENDIF ~CLR}
 
 (*$JPPEXPANDMACRO JCLVECTORIMP(TJclVector,IJclCollection,IJclList,IJclIterator,TJclVectorIterator,; AOwnsObjects: Boolean,AOwnsObjects,,AObject,TObject,nil,GetObject,SetObject,FreeObject)*)
 

@@ -15,25 +15,22 @@
   <Requires>
     <Package Name="rtl" Targets="allLibSuffix" Condition=""/>
     <Package Name="vcl50" Targets="noLibSuffix" Condition=""/>
-    <Package Name="Borland.Delphi" Targets="JclDotNet" Condition=""/>
-    <Package Name="Borland.VclRtl" Targets="JclDotNet" Condition=""/>
     <Package Name="Jcl-R" Targets="JclDev" Condition=""/>
-    <Package Name="Jedi.Jcl" Targets="JclDotNet" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\source\common\JclAbstractContainers.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclAlgorithms.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclArrayLists.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclArraySets.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclBinaryTrees.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclContainerIntf.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclHashMaps.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclHashSets.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclLinkedLists.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclQueues.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclSortedMaps.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclStacks.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclTrees.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclVectors.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclAbstractContainers.pas" Targets="JclDev" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclAlgorithms.pas" Targets="JclDev" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclArrayLists.pas" Targets="JclDev" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclArraySets.pas" Targets="JclDev" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclBinaryTrees.pas" Targets="JclDev" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclContainerIntf.pas" Targets="JclDev" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclHashMaps.pas" Targets="JclDev" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclHashSets.pas" Targets="JclDev" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclLinkedLists.pas" Targets="JclDev" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclQueues.pas" Targets="JclDev" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclSortedMaps.pas" Targets="JclDev" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclStacks.pas" Targets="JclDev" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclTrees.pas" Targets="JclDev" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclVectors.pas" Targets="JclDev" Formname="" Condition=""/>
   </Contains>
 </Package>

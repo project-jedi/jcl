@@ -213,20 +213,6 @@
             <value>*.res</value>
           </property>
         </setting>
-
-        <setting path="" mask="d?.net d??.net" recurse="no" dironly="yes">
-          <property name="svn:ignore">
-            <value>*.dcuil</value>
-            <value>*.dll</value>
-            <value>*.pdb</value>
-          </property>
-        </setting>
-
-        <setting path="" mask="d?.net/debug d??.net/debug" recurse="yes" dironly="yes">
-          <property name="svn:ignore">
-            <value>*.dcuil</value>
-          </property>
-        </setting>
       </setting>
 
       <setting path="packages" mask="" recurse="no" dironly="yes">
@@ -261,16 +247,6 @@
           </property>
         </setting>
 
-        <setting path="" mask="d?.net d??.net" recurse="no" dironly="yes">
-          <property name="svn:ignore">
-            <value>*.local</value>
-            <value>*.drc</value>
-            <value>__history</value>
-            <value>*.~*</value>
-            <value>*.identcache</value>
-            <value>ModelSupport</value>
-          </property>
-        </setting>
       </setting>
 
       <setting path="source" mask="" recurse="no" dironly="yes">
@@ -345,13 +321,10 @@
             <value>jclcs1.inc</value>
             <value>jcld8.inc</value>
             <value>jcld9.inc</value>
-            <value>jcld9.net.inc</value>
             <value>jcld10.inc</value>
-            <value>jcld10.net.inc</value>
             <value>jcld11.inc</value>
-            <value>jcld11.net.inc</value>
             <value>jcld12.inc</value>
-		  </property>
+         </property>
         </setting>
 
         <setting path="prototypes" mask="*" recurse="no" dironly="yes">

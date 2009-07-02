@@ -46,9 +46,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$IFDEF SUPPORTS_GENERICS}
-  {$IFDEF CLR}
   System.Collections.Generic,
-  {$ENDIF CLR}
   JclAlgorithms,
   {$ENDIF SUPPORTS_GENERICS}
   JclBase, JclAbstractContainers, JclContainerIntf, JclSynch;
@@ -316,7 +314,6 @@ type
     destructor Destroy; override;
   end;
 
-  {$IFNDEF CLR}
   TJclPtrStack = class(TJclPtrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclPtrEqualityComparer,
     IJclPtrStack)
@@ -340,7 +337,6 @@ type
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
   end;
-  {$ENDIF ~CLR}
 
   TJclStack = class(TJclAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclEqualityComparer, IJclObjectOwner,
@@ -2336,7 +2332,6 @@ begin
   AssignPropertiesTo(Result);
 end;
 
-{$IFNDEF CLR}
 //=== { TJclPtrStack } =======================================================
 
 constructor TJclPtrStack.Create(ACapacity: Integer);
@@ -2525,7 +2520,6 @@ begin
   Result := TJclPtrStack.Create(FSize);
   AssignPropertiesTo(Result);
 end;
-{$ENDIF ~CLR}
 
 //=== { TJclStack } =======================================================
 

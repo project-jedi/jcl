@@ -46,9 +46,6 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$IFDEF SUPPORTS_GENERICS}
-  {$IFDEF CLR}
-  System.Collections.Generic,
-  {$ENDIF CLR}
   JclAlgorithms,
   {$ENDIF SUPPORTS_GENERICS}
   JclBase, JclAbstractContainers, JclContainerIntf, JclSynch;
@@ -1369,7 +1366,6 @@ type
     function GetPreviousCursor: TJclInt64TreeNode; override;
   end;
 
-{$IFNDEF CLR}
   TJclPtrTreeNode = class
   public
     Value: Pointer;
@@ -1498,7 +1494,6 @@ type
     function GetNextSibling: TJclPtrTreeNode; override;
     function GetPreviousCursor: TJclPtrTreeNode; override;
   end;
-{$ENDIF ~CLR}
 
   TJclTreeNode = class
   public
@@ -15929,7 +15924,6 @@ begin
   end;
 end;
 
-{$IFNDEF CLR}
 //=== { TJclPtrTreeNode } =======================================================
 
 function TJclPtrTreeNode.IndexOfChild(AChild: TJclPtrTreeNode): Integer;
@@ -17340,7 +17334,6 @@ begin
       Result := TJclPtrTreeNode(Result.Children[Result.IndexOfChild(LastRet) - 1]);
   end;
 end;
-{$ENDIF ~CLR}
 
 //=== { TJclTreeNode } =======================================================
 

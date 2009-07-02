@@ -69,15 +69,11 @@ type
   // 64 bit version of overloaded functions are introduced
   TJclStream = class(TStream)
   protected
-    {$IFNDEF CLR}
     procedure SetSize(NewSize: Longint); overload; override;
-    {$ENDIF ~CLR}
-    procedure SetSize({$IFNDEF CLR}const{$ENDIF ~CLR} NewSize: Int64);
+    procedure SetSize(const NewSize: Int64);
       {$IFDEF COMPILER5} reintroduce; overload; virtual; {$ELSE} overload; override; {$ENDIF}
   public
-    {$IFNDEF CLR}
     function Seek(Offset: Longint; Origin: Word): Longint; overload; override;
-    {$ENDIF ~CLR}
     function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64;
       {$IFDEF COMPILER5} reintroduce; overload; virtual; {$ELSE} overload; override; {$ENDIF}
     procedure LoadFromStream(Source: TStream; BufferSize: Longint = StreamDefaultBufferSize); virtual;
@@ -88,7 +84,6 @@ type
 
   //=== VCL stream replacements ===
 
-  {$IFNDEF CLR}
   TJclHandleStream = class(TJclStream)
   private
     FHandle: THandle;
@@ -107,7 +102,6 @@ type
     constructor Create(const FileName: TFileName; Mode: Word; Rights: Cardinal = 0);
     destructor Destroy; override;
   end;
-  {$ENDIF ~CLR}
 
   {
   TJclCustomMemoryStream = class(TJclStream)
@@ -127,15 +121,10 @@ type
 
   TJclEmptyStream = class(TJclStream)
   protected
-    procedure SetSize({$IFNDEF CLR}const{$ENDIF ~CLR} NewSize: Int64); override;
+    procedure SetSize(const NewSize: Int64); override;
   public
-    {$IFDEF CLR}
-    function Read(var Buffer: array of Byte; Offset, Count: Longint): Longint; override;
-    function Write(const Buffer: array of Byte; Offset, Count: Longint): Longint; override;
-    {$ELSE ~CLR}
     function Read(var Buffer; Count: Longint): Longint; override;
     function Write(const Buffer; Count: Longint): Longint; override;
-    {$ENDIF ~CLR}
     function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64; override;
   end;
 
@@ -144,38 +133,21 @@ type
     FPosition: Int64;
     FSize: Int64;
   protected
-    procedure SetSize({$IFNDEF CLR}const{$ENDIF ~CLR} NewSize: Int64); override;
+    procedure SetSize(const NewSize: Int64); override;
   public
-    {$IFDEF CLR}
-    function Read(var Buffer: array of Byte; Offset, Count: Longint): Longint; override;
-    function Write(const Buffer: array of Byte; Offset, Count: Longint): Longint; override;
-    {$ELSE ~CLR}
     function Read(var Buffer; Count: Longint): Longint; override;
     function Write(const Buffer; Count: Longint): Longint; override;
-    {$ENDIF ~CLR}
     function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64; override;
   end;
 
   TJclRandomStream = class(TJclNullStream)
-  {$IFDEF CLR}
-  private
-    FRandomGenerator: System.Random;
-  {$ENDIF CLR}
   protected
     function GetRandSeed: Longint; virtual;
     procedure SetRandSeed(Seed: Longint); virtual;
   public
-    {$IFDEF CLR}
-    constructor Create;
-    destructor Destroy; override;
-    {$ENDIF CLR}
     function RandomData: Byte; virtual;
     procedure Randomize; dynamic;
-    {$IFDEF CLR}
-    function Read(var Buffer: array of Byte; Offset, Count: Longint): Longint; override;
-    {$ELSE ~CLR}
     function Read(var Buffer; Count: Longint): Longint; override;
-    {$ENDIF ~CLR}
     property RandSeed: Longint read GetRandSeed write SetRandSeed;
   end;
 
@@ -190,17 +162,12 @@ type
     procedure SetReadStream(const Value: TStream);
     procedure SetReadStreamIndex(const Value: Integer);
   protected
-    procedure SetSize({$IFNDEF CLR}const{$ENDIF ~CLR} NewSize: Int64); override;
+    procedure SetSize(const NewSize: Int64); override;
   public
     constructor Create;
     destructor Destroy; override;
-    {$IFDEF CLR}
-    function Read(var Buffer: array of Byte; Offset, Count: Longint): Longint; override;
-    function Write(const Buffer: array of Byte; Offset, Count: Longint): Longint; override;
-    {$ELSE ~CLR}
     function Read(var Buffer; Count: Longint): Longint; override;
     function Write(const Buffer; Count: Longint): Longint; override;
-    {$ENDIF ~CLR}
     function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64; override;
 
     function Add(NewStream: TStream): Integer;
@@ -224,17 +191,12 @@ type
   protected
     procedure DoAfterStreamChange; virtual;
     procedure DoBeforeStreamChange; virtual;
-    procedure SetSize({$IFNDEF CLR}const{$ENDIF ~CLR} NewSize: Int64); override;
+    procedure SetSize(const NewSize: Int64); override;
   public
     constructor Create(AStream: TStream; AOwnsStream: Boolean = False);
     destructor Destroy; override;
-    {$IFDEF CLR}
-    function Read(var Buffer: array of Byte; Offset, Count: Longint): Longint; override;
-    function Write(const Buffer: array of Byte; Offset, Count: Longint): Longint; override;
-    {$ELSE ~CLR}
     function Read(var Buffer; Count: Longint): Longint; override;
     function Write(const Buffer; Count: Longint): Longint; override;
-    {$ENDIF ~CLR}
     function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64; override;
     property AfterStreamChange: TNotifyEvent read FAfterStreamChange write FAfterStreamChange;
     property BeforeStreamChange: TNotifyEvent read FBeforeStreamChange write FBeforeStreamChange;
@@ -253,28 +215,18 @@ type
     function BufferHit: Boolean;
     function GetCalcedSize: Int64; virtual;
     function LoadBuffer: Boolean; virtual;
-    {$IFDEF CLR}
-    function ReadFromBuffer(var Buffer: array of Byte; Count, Start: Longint): Longint;
-    function WriteToBuffer(const Buffer: array of Byte; Count, Start: Longint): Longint;
-    {$ELSE ~CLR}
     function ReadFromBuffer(var Buffer; Count, Start: Longint): Longint;
     function WriteToBuffer(const Buffer; Count, Start: Longint): Longint;
-    {$ENDIF ~CLR}
   protected
     procedure DoAfterStreamChange; override;
     procedure DoBeforeStreamChange; override;
-    procedure SetSize({$IFNDEF CLR}const{$ENDIF ~CLR} NewSize: Int64); override;
+    procedure SetSize(const NewSize: Int64); override;
   public
     constructor Create(AStream: TStream; AOwnsStream: Boolean = False);
     destructor Destroy; override;
     procedure Flush; virtual;
-    {$IFDEF CLR}
-    function Read(var Buffer: array of Byte; Offset, Count: Longint): Longint; override;
-    function Write(const Buffer: array of Byte; Offset, Count: Longint): Longint; override;
-    {$ELSE ~CLR}
     function Read(var Buffer; Count: Longint): Longint; override;
     function Write(const Buffer; Count: Longint): Longint; override;
-    {$ENDIF ~CLR}
     function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64; override;
     property BufferSize: Longint read FBufferSize write FBufferSize;
   end;
@@ -288,17 +240,12 @@ type
   protected
     procedure DoBeforeStreamChange; override;
     procedure DoAfterStreamChange; override;
-    procedure SetSize({$IFNDEF CLR}const{$ENDIF ~CLR} NewSize: Int64); override;
+    procedure SetSize(const NewSize: Int64); override;
   public
     constructor Create(AStream: TStream; ANotification: TStreamNotifyEvent = nil;
       AOwnsStream: Boolean = False);
-    {$IFDEF CLR}
-    function Read(var Buffer: array of Byte; Offset, Count: Longint): Longint; override;
-    function Write(const Buffer: array of Byte; Offset, Count: Longint): Longint; override;
-    {$ELSE ~CLR}
     function Read(var Buffer; Count: Longint): Longint; override;
     function Write(const Buffer; Count: Longint): Longint; override;
-    {$ENDIF ~CLR}
     function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64; override;
     property OnNotification: TStreamNotifyEvent read FNotification write FNotification;
   end;
@@ -311,11 +258,9 @@ type
     function ReadAnsiChar: AnsiChar;
     function ReadWideChar: WideChar;
     function ReadByte: Byte;
-    {$IFNDEF CLR}
     function ReadCurrency: Currency;
     function ReadDateTime: TDateTime;
     function ReadExtended: Extended;
-    {$ENDIF ~CLR}
     function ReadDouble: Double;
     function ReadInt64: Int64;
     function ReadInteger: Integer;
@@ -332,11 +277,9 @@ type
     procedure WriteAnsiChar(Value: AnsiChar);
     procedure WriteWideChar(Value: WideChar);
     procedure WriteByte(Value: Byte);
-    {$IFNDEF CLR}
     procedure WriteCurrency(const Value: Currency);
     procedure WriteDateTime(const Value: TDateTime);
     procedure WriteExtended(const Value: Extended);
-    {$ENDIF ~CLR}
     procedure WriteDouble(const Value: Double);
     procedure WriteInt64(Value: Int64); overload;
     procedure WriteInteger(Value: Integer); overload;
@@ -360,20 +303,15 @@ type
     FCurrentPos: Int64;
     FMaxSize: Int64;
   protected
-    procedure SetSize({$IFNDEF CLR}const{$ENDIF ~CLR} NewSize: Int64); override;
+    procedure SetSize(const NewSize: Int64); override;
   public
     // scopedstream starting at the current position of the ParentStream
     //   if MaxSize is positive or null, read and write operations cannot overrun this size or the ParentStream limitation
     //   if MaxSize is negative, read and write operations are unlimited (up to the ParentStream limitation)
     constructor Create(AParentStream: TStream; const AMaxSize: Int64 = -1); overload;
     constructor Create(AParentStream: TStream; const AStartPos, AMaxSize: Int64); overload;
-    {$IFDEF CLR}
-    function Read(var Buffer: array of Byte; Offset, Count: Longint): Longint; override;
-    function Write(const Buffer: array of Byte; Offset, Count: Longint): Longint; override;
-    {$ELSE ~CLR}
     function Read(var Buffer; Count: Longint): Longint; override;
     function Write(const Buffer; Count: Longint): Longint; override;
-    {$ENDIF ~CLR}
     function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64; override;
 
     property ParentStream: TStream read FParentStream;
@@ -383,9 +321,9 @@ type
 
   TJclStreamSeekEvent = function(Sender: TObject; const Offset: Int64;
     Origin: TSeekOrigin): Int64 of object;
-  TJclStreamReadEvent = function(Sender: TObject; var Buffer; {$IFDEF CLR}Offset,{$ENDIF CLR} Count: Longint): Longint of object;
-  TJclStreamWriteEvent = function(Sender: TObject; const Buffer; {$IFDEF CLR}Offset,{$ENDIF CLR}Count: Longint): Longint of object;
-  TJclStreamSizeEvent = procedure(Sender: TObject; {$IFNDEF CLR}const{$ENDIF ~CLR} NewSize: Int64) of object;
+  TJclStreamReadEvent = function(Sender: TObject; var Buffer; Count: Longint): Longint of object;
+  TJclStreamWriteEvent = function(Sender: TObject; const Buffer;Count: Longint): Longint of object;
+  TJclStreamSizeEvent = procedure(Sender: TObject; const NewSize: Int64) of object;
 
   TJclDelegatedStream = class(TJclStream)
   private
@@ -394,16 +332,11 @@ type
     FOnWrite: TJclStreamWriteEvent;
     FOnSize: TJclStreamSizeEvent;
   protected
-    procedure SetSize({$IFNDEF CLR}const{$ENDIF CLR} NewSize: Int64); override;
+    procedure SetSize(const NewSize: Int64); override;
   public
     function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64; override;
-    {$IFDEF CLR}
-    function Read(var Buffer: array of Byte; Offset, Count: Longint): Longint; override;
-    function Write(const Buffer: array of Byte; Offset, Count: Longint): Longint; override;
-    {$ELSE ~CLR}
     function Read(var Buffer; Count: Longint): Longint; override;
     function Write(const Buffer; Count: Longint): Longint; override;
-    {$ENDIF ~CLR}
     property OnSeek: TJclStreamSeekEvent read FOnSeek write FOnSeek;
     property OnRead: TJclStreamReadEvent read FOnRead write FOnRead;
     property OnWrite: TJclStreamWriteEvent read FOnWrite write FOnWrite;
@@ -426,7 +359,7 @@ type
     procedure DoAfterStreamChange; override;
     procedure AfterBlockRead; virtual;   // override to check protection
     procedure BeforeBlockWrite; virtual; // override to compute protection
-    procedure SetSize({$IFNDEF CLR}const{$ENDIF ~CLR} NewSize: Int64); override;
+    procedure SetSize(const NewSize: Int64); override;
   public
     constructor Create(AStorageStream: TStream; AOwnsStream: Boolean = False;
       ASectorOverHead: Longint = 0);
@@ -450,15 +383,9 @@ type
     constructor Create(AStorageStream: TStream; AOwnsStream: Boolean = False);
   end;
 
-  {$IFDEF CLR}
-    {$IFDEF BDS5_UP}
-      {$DEFINE SIZE64}
-    {$ENDIF ~BDS5_UP}
-  {$ELSE ~CLR}
-    {$IFDEF COMPILER7_UP}
-      {$DEFINE SIZE64}
-    {$ENDIF ~COMPILER7_UP}
-  {$ENDIF ~CLR}
+  {$IFDEF COMPILER7_UP}
+    {$DEFINE SIZE64}
+  {$ENDIF ~COMPILER7_UP}
   TJclSplitStream = class(TJclStream)
   private
     FVolume: TStream;
@@ -471,19 +398,14 @@ type
     function GetVolume(Index: Integer): TStream; virtual; abstract;
     function GetVolumeMaxSize(Index: Integer): Int64; virtual; abstract;
     function GetSize: Int64; {$IFDEF SIZE64}override;{$ENDIF SIZE64}
-    procedure SetSize({$IFNDEF CLR}const{$ENDIF ~CLR} NewSize: Int64); override;
+    procedure SetSize(const NewSize: Int64); override;
     function InternalLoadVolume(Index: Integer): Boolean;
   public
     constructor Create(AForcePosition: Boolean = False);
 
     function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64; override;
-    {$IFDEF CLR}
-    function Read(var Buffer: array of Byte; Offset, Count: Longint): Longint; override;
-    function Write(const Buffer: array of Byte; Offset, Count: Longint): Longint; override;
-    {$ELSE ~CLR}
     function Read(var Buffer; Count: Longint): Longint; override;
     function Write(const Buffer; Count: Longint): Longint; override;
-    {$ENDIF ~CLR}
 
     property ForcePosition: Boolean read FForcePosition write FForcePosition;
   end;
@@ -537,7 +459,7 @@ type
     function GetCalcedSize: Int64; override;
     function InternalGetNextChar(S: TStream; var Ch: UCS4): Boolean; virtual; abstract;
     function InternalSetNextChar(S: TStream; Ch: UCS4): Boolean; virtual; abstract;
-    procedure SetSize({$IFNDEF CLR}const{$ENDIF ~CLR} NewSize: Int64); override;
+    procedure SetSize(const NewSize: Int64); override;
   public
     constructor Create(AStream: TStream; AOwnsStream: Boolean = False); virtual;
     function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64; override;
@@ -641,9 +563,6 @@ const
 implementation
 
 uses
-  {$IFDEF CLR}
-  System.Text,
-  {$ENDIF CLR}
   JclResources, JclCharsets, JclMath;
 
 function StreamSeek(Stream: TStream; const Offset: Int64;
@@ -675,17 +594,9 @@ begin
   Result := 0;
   SetLength(Buffer, BufferSize);
   repeat
-    {$IFDEF CLR}
-    ByteCount := Source.Read(Buffer, 0, BufferSize);
-    {$ELSE ~CLR}
     ByteCount := Source.Read(Buffer[0], BufferSize);
-    {$ENDIF ~CLR}
     Result := Result + ByteCount;
-    {$IFDEF CLR}
-    Dest.WriteBuffer(Buffer, ByteCount);
-    {$ELSE ~CLR}
     Dest.WriteBuffer(Buffer[0], ByteCount);
-    {$ENDIF ~CLR}
   until ByteCount < BufferSize;
 end;
 
@@ -735,35 +646,17 @@ function CompareStreams(A, B : TStream; BufferSize: Longint): Boolean;
 var
   BufferA, BufferB: array of Byte;
   ByteCountA, ByteCountB: Longint;
-  {$IFDEF CLR}
-  Index: Longint;
-  {$ENDIF CLR}
 begin
   SetLength(BufferA, BufferSize);
   try
     SetLength(BufferB, BufferSize);
     try
       repeat
-        {$IFDEF CLR}
-        ByteCountA := A.Read(BufferA, 0, BufferSize);
-        ByteCountB := A.Read(BufferB, 0, BufferSize);
-        {$ELSE ~CLR}
         ByteCountA := A.Read(BufferA[0], BufferSize);
         ByteCountB := B.Read(BufferB[0], BufferSize);
-        {$ENDIF ~CLR}
 
         Result := (ByteCountA = ByteCountB);
-        {$IFDEF CLR}
-        if Result then
-          for Index := 0 to ByteCountA - 1 do
-            if BufferA[Index] <> BufferB[Index] then
-        begin
-          Result := False;
-          Break;
-        end;
-        {$ELSE CLR}
         Result := Result and CompareMem(BufferA, BufferB, ByteCountA);
-        {$ENDIF ~CLR}
       until (ByteCountA <> BufferSize) or (ByteCountB <> BufferSize) or not Result;
     finally
       SetLength(BufferB, 0);
@@ -792,7 +685,6 @@ end;
 
 //=== { TJclStream } =========================================================
 
-{$IFNDEF CLR}
 function TJclStream.Seek(Offset: Longint; Origin: Word): Longint;
 var
   Result64: Int64;
@@ -811,7 +703,6 @@ begin
     Result64 := -1;
   Result := Result64;
 end;
-{$ENDIF ~CLR}
 
 procedure TJclStream.LoadFromFile(const FileName: TFileName;
   BufferSize: Integer);
@@ -854,19 +745,16 @@ begin
   Result := -1;
 end;
 
-{$IFNDEF CLR}
 procedure TJclStream.SetSize(NewSize: Longint);
 begin
   SetSize(Int64(NewSize));
 end;
-{$ENDIF ~CLR}
 
-procedure TJclStream.SetSize({$IFNDEF CLR}const{$ENDIF ~CLR} NewSize: Int64);
+procedure TJclStream.SetSize(const NewSize: Int64);
 begin
   // override to customize
 end;
 
-{$IFNDEF CLR}
 //=== { TJclHandleStream } ===================================================
 
 constructor TJclHandleStream.Create(AHandle: THandle);
@@ -963,22 +851,14 @@ begin
     {$ENDIF ~LINUX}
     inherited Create(H);
     if Handle = INVALID_HANDLE_VALUE then
-      {$IFDEF CLR}
-      raise EJclStreamError.CreateFmt(RsStreamsCreateError, [FileName]);
-      {$ELSE ~CLR}
       raise EJclStreamError.CreateResFmt(@RsStreamsCreateError, [FileName]);
-      {$ENDIF ~CLR}
   end
   else
   begin
     H := THandle(FileOpen(FileName, Mode));
     inherited Create(H);
     if Handle = INVALID_HANDLE_VALUE then
-      {$IFDEF CLR}
-      raise EJclStreamError.CreateFmt(RsStreamsOpenError, [FileName]);
-      {$ELSE ~CLR}
       raise EJclStreamError.CreateResFmt(@RsStreamsOpenError, [FileName]);
-      {$ENDIF ~CLR}
   end;
 end;
 
@@ -994,33 +874,23 @@ begin
   inherited Destroy;
 end;
 
-{$ENDIF ~CLR}
-
 //=== { TJclEmptyStream } ====================================================
 
 // a stream which stays empty no matter what you do
 // so it is a Unix /dev/null equivalent
 
-procedure TJclEmptyStream.SetSize({$IFNDEF CLR}const{$ENDIF CLR} NewSize: Int64);
+procedure TJclEmptyStream.SetSize(const NewSize: Int64);
 begin
   // nothing
 end;
 
-{$IFDEF CLR}
-function TJclEmptyStream.Read(var Buffer: array of Byte; Offset, Count: Longint): Longint;
-{$ELSE ~CLR}
 function TJclEmptyStream.Read(var Buffer; Count: Longint): Longint;
-{$ENDIF ~CLR}
 begin
   // you cannot read anything
   Result := 0;
 end;
 
-{$IFDEF CLR}
-function TJclEmptyStream.Write(const Buffer: array of Byte; Offset, Count: Longint): Longint;
-{$ELSE ~CLR}
 function TJclEmptyStream.Write(const Buffer; Count: Longint): Longint;
-{$ENDIF ~CLR}
 begin
   // you cannot write anything
   Result := 0;
@@ -1040,7 +910,7 @@ end;
 // a stream which only keeps position and size, but no data
 // so it is a Unix /dev/zero equivalent (?)
 
-procedure TJclNullStream.SetSize({$IFNDEF CLR}const{$ENDIF ~CLR} NewSize: Int64);
+procedure TJclNullStream.SetSize(const NewSize: Int64);
 begin
   if NewSize > 0 then
     FSize := NewSize
@@ -1050,13 +920,7 @@ begin
     FPosition := FSize;
 end;
 
-{$IFDEF CLR}
-function TJclNullStream.Read(var Buffer: array of Byte; Offset, Count: Longint): Longint;
-var
-  Index: Longint;
-{$ELSE ~CLR}
 function TJclNullStream.Read(var Buffer; Count: Longint): Longint;
-{$ENDIF ~CLR}
 begin
   if Count < 0 then
     Count := 0;
@@ -1066,22 +930,13 @@ begin
   // does not read if beyond EOF
   if Count > 0 then
   begin
-    {$IFDEF CLR}
-    for Index := Offset to Offset + Count - 1 do
-      Buffer[Index] := 0;
-    {$ELSE ~CLR}
     FillChar(Buffer, Count, 0);
-    {$ENDIF ~CLR}
     FPosition := FPosition + Count;
   end;
   Result := Count;
 end;
 
-{$IFDEF CLR}
-function TJclNullStream.Write(const Buffer: array of Byte; Offset, Count: Longint): Longint;
-{$ELSE ~CLR}
 function TJclNullStream.Write(const Buffer; Count: Longint): Longint;
-{$ENDIF ~CLR}
 begin
   if Count < 0 then
     Count := 0;
@@ -1122,67 +977,26 @@ end;
 // A TJclNullStream decendant which returns random data when read
 // so it is a Unix /dev/random equivalent
 
-{$IFDEF CLR}
-constructor TJclRandomStream.Create;
-begin
-  inherited Create;
-  FRandomGenerator := System.Random.Create;
-end;
-
-destructor TJclRandomStream.Destroy;
-begin
-  FRandomGenerator.Free;
-  inherited Destroy;
-end;
-{$ENDIF CLR}
-
 function TJclRandomStream.GetRandSeed: Longint;
 begin
-  {$IFDEF CLR}
-  Result := 0;
-  {$ELSE ~CLR}
   Result := System.RandSeed;
-  {$ENDIF ~CLR}
 end;
 
 procedure TJclRandomStream.SetRandSeed(Seed: Longint);
 begin
-  {$IFDEF CLR}
-  FRandomGenerator.Free;
-  FRandomGenerator := System.Random.Create(Seed);
-  {$ELSE ~CLR}
   System.RandSeed := Seed;
-  {$ENDIF ~CLR}
 end;
 
 function TJclRandomStream.RandomData: Byte;
 begin
-  {$IFDEF CLR}
-  Result := FRandomGenerator.Next(256);
-  {$ELSE ~CLR}
   Result := System.Random(256);
-  {$ENDIF ~CLR}
 end;
 
 procedure TJclRandomStream.Randomize;
 begin
-  {$IFNDEF CLR}
   System.Randomize;
-  {$ENDIF ~CLR}
 end;
 
-{$IFDEF CLR}
-function TJclRandomStream.Read(var Buffer: array of Byte; Offset, Count: Longint): Longint;
-var
-  I: Longint;
-begin
-  // this handles all necessary checks
-  Count := inherited Read(Buffer, Offset, Count);
-  for I := Offset to Offset + Count - 1 do
-    Buffer[I] := RandomData;
-  Result := Count;
-end;
-{$ELSE ~CLR}
 function TJclRandomStream.Read(var Buffer; Count: Longint): Longint;
 var
   I: Longint;
@@ -1198,7 +1012,6 @@ begin
   end;
   Result := Count;
 end;
-{$ENDIF ~CLR}
 
 //=== { TJclMultiplexStream } ================================================
 
@@ -1217,11 +1030,7 @@ end;
 
 function TJclMultiplexStream.Add(NewStream: TStream): Integer;
 begin
-  {$IFDEF CLR}
-  Result := FStreams.Add(NewStream);
-  {$ELSE ~CLR}
   Result := FStreams.Add(Pointer(NewStream));
-  {$ENDIF ~CLR}
 end;
 
 procedure TJclMultiplexStream.Clear;
@@ -1258,28 +1067,20 @@ begin
   Result := FStreams.Count;
 end;
 
-{$IFDEF CLR}
-function TJclMultiplexStream.Read(var Buffer: array of Byte; Offset, Count: Longint): Longint;
-{$ELSE ~CLR}
 function TJclMultiplexStream.Read(var Buffer; Count: Longint): Longint;
-{$ENDIF ~CLR}
 var
   Stream: TStream;
 begin
   Stream := ReadStream;
   if Assigned(Stream) then
-    Result := Stream.Read(Buffer, {$IFDEF CLR}Offset,{$ENDIF CLR} Count)
+    Result := Stream.Read(Buffer, Count)
   else
     Result := 0;
 end;
 
 function TJclMultiplexStream.Remove(AStream: TStream): Integer;
 begin
-  {$IFDEF CLR}
-  Result := FStreams.Remove(AStream);
-  {$ELSE ~CLR}
   Result := FStreams.Remove(Pointer(AStream));
-  {$ENDIF ~CLR}
   if FReadStreamIndex = Result then
     FReadStreamIndex := -1
   else
@@ -1295,11 +1096,7 @@ end;
 
 procedure TJclMultiplexStream.SetReadStream(const Value: TStream);
 begin
-  {$IFDEF CLR}
-  FReadStreamIndex := FStreams.IndexOf(Value);
-  {$ELSE ~CLR}
   FReadStreamIndex := FStreams.IndexOf(Pointer(Value));
-  {$ENDIF ~CLR}
 end;
 
 procedure TJclMultiplexStream.SetReadStreamIndex(const Value: Integer);
@@ -1307,21 +1104,17 @@ begin
   FReadStreamIndex := Value;
 end;
 
-procedure TJclMultiplexStream.SetSize({$IFNDEF CLR}const{$ENDIF ~CLR} NewSize: Int64);
+procedure TJclMultiplexStream.SetSize(const NewSize: Int64);
 begin
   // what should this function do?
 end;
 
 procedure TJclMultiplexStream.SetStream(Index: Integer; const Value: TStream);
 begin
-  FStreams.Items[Index] := {$IFDEF CLR}Value;{$ELSE ~CLR}Pointer(Value){$ENDIF ~CLR};
+  FStreams.Items[Index] := Pointer(Value);
 end;
 
-{$IFDEF CLR}
-function TJclMultiplexStream.Write(const Buffer: array of Byte; Offset, Count: Longint): Longint;
-{$ELSE ~CLR}
 function TJclMultiplexStream.Write(const Buffer; Count: Longint): Longint;
-{$ENDIF ~CLR}
 var
   Index: Integer;
   ByteWritten, MinByteWritten: Longint;
@@ -1329,7 +1122,7 @@ begin
   MinByteWritten := Count;
   for Index := 0 to Self.Count - 1 do
   begin
-    ByteWritten := TStream(FStreams.Items[Index]).Write(Buffer, {$IFDEF CLR}Offset,{$ENDIF CLR} Count);
+    ByteWritten := TStream(FStreams.Items[Index]).Write(Buffer, Count);
     if ByteWritten < MinByteWritten then
       MinByteWritten := ByteWritten;
   end;
@@ -1364,14 +1157,10 @@ begin
     FBeforeStreamChange(Self);
 end;
 
-{$IFDEF CLR}
-function TJclStreamDecorator.Read(var Buffer: array of Byte; Offset, Count: Longint): Longint;
-{$ELSE ~CLR}
 function TJclStreamDecorator.Read(var Buffer; Count: Longint): Longint;
-{$ENDIF ~CLR}
 begin
   if Assigned(FStream) then
-    Result := Stream.Read(Buffer, {$IFDEF CLR}Offset,{$ENDIF CLR} Count)
+    Result := Stream.Read(Buffer, Count)
   else
     Result := 0;
 end;
@@ -1381,7 +1170,7 @@ begin
   Result := StreamSeek(Stream, Offset, Origin);
 end;
 
-procedure TJclStreamDecorator.SetSize({$IFNDEF CLR}const{$ENDIF ~CLR} NewSize: Int64);
+procedure TJclStreamDecorator.SetSize(const NewSize: Int64);
 begin
   if Assigned(FStream) then
     Stream.Size := NewSize;
@@ -1400,14 +1189,10 @@ begin
     end;
 end;
 
-{$IFDEF CLR}
-function TJclStreamDecorator.Write(const Buffer: array of Byte; Offset, Count: Longint): Longint;
-{$ELSE ~CLR}
 function TJclStreamDecorator.Write(const Buffer; Count: Longint): Longint;
-{$ENDIF ~CLR}
 begin
   if Assigned(FStream) then
-    Result := Stream.Write(Buffer, {$IFDEF CLR}Offset,{$ENDIF CLR} Count)
+    Result := Stream.Write(Buffer, Count)
   else
     Result := 0;
 end;
@@ -1453,11 +1238,7 @@ begin
   if (Stream <> nil) and (FBufferMaxModifiedPos > 0) then
   begin
     Stream.Position := FBufferStart;
-    {$IFDEF CLR}
-    Stream.WriteBuffer(FBuffer, FBufferMaxModifiedPos);
-    {$ELSE ~CLR}
     Stream.WriteBuffer(FBuffer[0], FBufferMaxModifiedPos);
-    {$ENDIF ~CLR}
     FBufferMaxModifiedPos := 0;
   end;
 end;
@@ -1480,11 +1261,7 @@ begin
   if Stream <> nil then
   begin
     Stream.Position := FPosition;
-    {$IFDEF CLR}
-    FBufferCurrentSize := Stream.Read(FBuffer, FBufferSize);
-    {$ELSE ~CLR}
     FBufferCurrentSize := Stream.Read(FBuffer[0], FBufferSize);
-    {$ENDIF ~CLR}
   end
   else
     FBufferCurrentSize := 0;
@@ -1492,13 +1269,9 @@ begin
   Result := (FBufferCurrentSize > 0);
 end;
 
-{$IFDEF CLR}
-function TJclBufferedStream.Read(var Buffer: array of Byte; Offset, Count: Longint): Longint;
-{$ELSE ~CLR}
 function TJclBufferedStream.Read(var Buffer; Count: Longint): Longint;
 const
   Offset = 0;
-{$ENDIF ~CLR}
 begin
   Result := Count + Offset;
   while Count > 0 do
@@ -1511,30 +1284,17 @@ begin
   Result := Result - Count - Offset;
 end;
 
-{$IFDEF CLR}
-function TJclBufferedStream.ReadFromBuffer(var Buffer: array of Byte; Count, Start: Longint): Longint;
-{$ELSE ~CLR}
 function TJclBufferedStream.ReadFromBuffer(var Buffer; Count, Start: Longint): Longint;
-{$ENDIF ~CLR}
 var
   BufPos: Longint;
-  {$IFDEF CLR}
-  I: Longint;
-  {$ELSE ~CLR}
   P: PAnsiChar;
-  {$ENDIF ~CLR}
 begin
   Result := Count;
   BufPos := FPosition - FBufferStart;
   if Result > FBufferCurrentSize - BufPos then
     Result := FBufferCurrentSize - BufPos;
-  {$IFDEF CLR}
-  for I := 0 to Result - 1 do
-    Buffer[Start + I] := FBuffer[BufPos + I];
-  {$ELSE ~CLR}
   P := @Buffer;
   Move(FBuffer[BufPos], P[Start], Result);
-  {$ENDIF ~CLR}
   Inc(FPosition, Result);
 end;
 
@@ -1561,7 +1321,7 @@ begin
   Result := NewPos;
 end;
 
-procedure TJclBufferedStream.SetSize({$IFNDEF CLR}const{$ENDIF ~CLR} NewSize: Int64);
+procedure TJclBufferedStream.SetSize(const NewSize: Int64);
 begin
   inherited SetSize(NewSize);
   if NewSize < (FBufferStart + FBufferMaxModifiedPos) then
@@ -1581,13 +1341,9 @@ begin
     FPosition := Stream.Position;
 end;
 
-{$IFDEF CLR}
-function TJclBufferedStream.Write(const Buffer: array of Byte; Offset, Count: Longint): Longint;
-{$ELSE ~CLR}
 function TJclBufferedStream.Write(const Buffer; Count: Longint): Longint;
 const
   Offset = 0;
-{$ENDIF ~CLR}
 begin
   Result := Count + Offset;
   while Count > 0 do
@@ -1607,18 +1363,10 @@ begin
   Result := Result - Count - Offset;
 end;
 
-{$IFDEF CLR}
-function TJclBufferedStream.WriteToBuffer(const Buffer: array of Byte; Count, Start: Longint): Longint;
-{$ELSE ~CLR}
 function TJclBufferedStream.WriteToBuffer(const Buffer; Count, Start: Longint): Longint;
-{$ENDIF ~CLR}
 var
   BufPos: Longint;
-  {$IFDEF CLR}
-  I: Longint;
-  {$ELSE ~CLR}
   P: PAnsiChar;
-  {$ENDIF ~CLR}
 begin
   Result := Count;
   BufPos := FPosition - FBufferStart;
@@ -1626,13 +1374,8 @@ begin
     Result := Length(FBuffer) - BufPos;
   if FBufferCurrentSize < BufPos + Result then
     FBufferCurrentSize := BufPos + Result;
-  {$IFDEF CLR}
-  for I := 0 to Result - 1 do
-    FBuffer[BufPos + I] := Buffer[Start + I];
-  {$ELSE ~CLR}
   P := @Buffer;
   Move(P[Start], FBuffer[BufPos], Result);
-  {$ENDIF ~CLR}
   FBufferMaxModifiedPos := BufPos + Result;
   Inc(FPosition, Result);
 end;
@@ -1666,11 +1409,7 @@ begin
     FNotification(Self, Stream.Position, Stream.Size);
 end;
 
-{$IFDEF CLR}
-function TJclEventStream.Read(var Buffer: array of Byte; Offset, Count: Longint): Longint;
-{$ELSE ~CLR}
 function TJclEventStream.Read(var Buffer; Count: Longint): Longint;
-{$ENDIF ~CLR}
 begin
   Result := inherited Read(Buffer, Count);
   DoNotification;
@@ -1682,17 +1421,13 @@ begin
   DoNotification;
 end;
 
-procedure TJclEventStream.SetSize({$IFNDEF CLR}const{$ENDIF ~CLR} NewSize: Int64);
+procedure TJclEventStream.SetSize(const NewSize: Int64);
 begin
   inherited SetSize(NewSize);
   DoNotification;
 end;
 
-{$IFDEF CLR}
-function TJclEventStream.Write(const Buffer: array of Byte; Offset, Count: Longint): Longint;
-{$ELSE ~CLR}
 function TJclEventStream.Write(const Buffer; Count: Longint): Longint;
-{$ENDIF ~CLR}
 begin
   Result := inherited Write(Buffer, Count);
   DoNotification;
@@ -1718,50 +1453,29 @@ end;
 
 function TJclEasyStream.ReadBoolean: Boolean;
 begin
-  {$IFDEF CLR}
-  ReadBuffer(Result);
-  {$ELSE ~CLR}
   ReadBuffer(Result, SizeOf(Result));
-  {$ENDIF ~CLR}
 end;
 
 function TJclEasyStream.ReadChar: Char;
 begin
-  {$IFDEF CLR}
-  ReadBuffer(Result);
-  {$ELSE ~CLR}
   ReadBuffer(Result, SizeOf(Result));
-  {$ENDIF ~CLR}
 end;
 
 function TJclEasyStream.ReadAnsiChar: AnsiChar;
 begin
-  {$IFDEF CLR}
-  ReadBuffer(Result);
-  {$ELSE ~CLR}
   ReadBuffer(Result, SizeOf(Result));
-  {$ENDIF ~CLR}
 end;
 
 function TJclEasyStream.ReadWideChar: WideChar;
 begin
-  {$IFDEF CLR}
-  ReadBuffer(Result);
-  {$ELSE ~CLR}
   ReadBuffer(Result, SizeOf(Result));
-  {$ENDIF ~CLR}
 end;
 
 function TJclEasyStream.ReadByte: Byte;
 begin
-  {$IFDEF CLR}
-  ReadBuffer(Result);
-  {$ELSE ~CLR}
   ReadBuffer(Result, SizeOf(Result));
-  {$ENDIF ~CLR}
 end;
 
-{$IFNDEF CLR}
 function TJclEasyStream.ReadCurrency: Currency;
 begin
   ReadBuffer(Result, SizeOf(Result));
@@ -1771,40 +1485,25 @@ function TJclEasyStream.ReadDateTime: TDateTime;
 begin
   ReadBuffer(Result, SizeOf(Result));
 end;
-{$ENDIF ~CLR}
 
 function TJclEasyStream.ReadDouble: Double;
 begin
-  {$IFDEF CLR}
-  ReadBuffer(Result);
-  {$ELSE ~CLR}
   ReadBuffer(Result, SizeOf(Result));
-  {$ENDIF ~CLR}
 end;
 
-{$IFNDEF CLR}
 function TJclEasyStream.ReadExtended: Extended;
 begin
   ReadBuffer(Result, SizeOf(Result));
 end;
-{$ENDIF ~CLR}
 
 function TJclEasyStream.ReadInt64: Int64;
 begin
-  {$IFDEF CLR}
-  ReadBuffer(Result);
-  {$ELSE ~CLR}
   ReadBuffer(Result, SizeOf(Result));
-  {$ENDIF ~CLR}
 end;
 
 function TJclEasyStream.ReadInteger: Integer;
 begin
-  {$IFDEF CLR}
-  ReadBuffer(Result);
-  {$ELSE ~CLR}
   ReadBuffer(Result, SizeOf(Result));
-  {$ENDIF ~CLR}
 end;
 
 function TJclEasyStream.ReadCString: string;
@@ -1818,23 +1517,9 @@ end;
 
 function TJclEasyStream.ReadCAnsiString: AnsiString;
 var
-  {$IFDEF CLR}
-  SB: System.Text.StringBuilder;
-  Ch: AnsiChar;
-  {$ELSE ~CLR}
   CurrPos: Longint;
   StrSize: Integer;
-  {$ENDIF ~CLR}
 begin
-  {$IFDEF CLR}
-  SB := System.Text.StringBuilder.Create;
-  repeat
-    Ch := ReadAnsiChar;
-    if Ch <> #0 then
-      SB.Append(Ch);
-  until Ch = #0;
-  Result := SB.ToString;
-  {$ELSE ~CLR}
   CurrPos := Position;
   repeat
   until ReadAnsiChar = #0;
@@ -1843,28 +1528,13 @@ begin
   Position := CurrPos;
   ReadBuffer(Result[1], StrSize * SizeOf(Result[1]));
   Position := Position + 1;
-  {$ENDIF ~CLR}
 end;
 
 function TJclEasyStream.ReadCWideString: WideString;
 var
-  {$IFDEF CLR}
-  SB: System.Text.StringBuilder;
-  Ch: WideChar;
-  {$ELSE ~CLR}
   CurrPos: Integer;
   StrSize: Integer;
-  {$ENDIF ~CLR}
 begin
-  {$IFDEF CLR}
-  SB := System.Text.StringBuilder.Create;
-  repeat
-    Ch := ReadWideChar;
-    if Ch <> #0 then
-      SB.Append(Ch);
-  until Ch = #0;
-  Result := SB.ToString;
-  {$ELSE ~CLR}
   CurrPos := Position;
   repeat
   until ReadWideChar = #0;
@@ -1873,38 +1543,20 @@ begin
   Position := CurrPos;
   ReadBuffer(Result[1], StrSize * SizeOf(Result[1]));
   Position := Position + 1;
-  {$ENDIF ~CLR}
 end;
 
 function TJclEasyStream.ReadShortString: string;
 var
-  {$IFDEF CLR}
-  SB: System.Text.StringBuilder;
-  {$ENDIF CLR}
   StrSize: Integer;
 begin
   StrSize := Ord(ReadChar);
-  {$IFDEF CLR}
-  SB := System.Text.StringBuilder.Create(StrSize);
-  while StrSize > 0 do
-  begin
-    SB.Append(ReadChar);
-    Dec(StrSize);
-  end;
-  Result := SB.ToString;
-  {$ELSE ~CLR}
   SetString(Result, PChar(nil), StrSize);
   ReadBuffer(Pointer(Result)^, StrSize);
-  {$ENDIF ~CLR}
 end;
 
 function TJclEasyStream.ReadSingle: Single;
 begin
-  {$IFDEF CLR}
-  ReadBuffer(Result);
-  {$ELSE ~CLR}
   ReadBuffer(Result, SizeOf(Result));
-  {$ENDIF ~CLR}
 end;
 
 function TJclEasyStream.ReadSizedString: string;
@@ -1918,94 +1570,47 @@ end;
 
 function TJclEasyStream.ReadSizedAnsiString: AnsiString;
 var
-  {$IFDEF CLR}
-  SB: System.Text.StringBuilder;
-  {$ENDIF CLR}
   StrSize: Integer;
 begin
   StrSize := ReadInteger;
-  {$IFDEF CLR}
-  SB := System.Text.StringBuilder.Create(StrSize);
-  while StrSize > 0 do
-  begin
-    SB.Append(ReadAnsiChar);
-    Dec(StrSize);
-  end;
-  Result := SB.ToString;
-  {$ELSE ~CLR}
   SetLength(Result, StrSize);
   ReadBuffer(Result[1], StrSize * SizeOf(Result[1]));
-  {$ENDIF ~CLR}
 end;
 
 function TJclEasyStream.ReadSizedWideString: WideString;
 var
-  {$IFDEF CLR}
-  SB: System.Text.StringBuilder;
-  {$ENDIF CLR}
   StrSize: Integer;
 begin
   StrSize := ReadInteger;
-  {$IFDEF CLR}
-  SB := System.Text.StringBuilder.Create(StrSize);
-  while StrSize > 0 do
-  begin
-    SB.Append(ReadWideChar);
-    Dec(StrSize);
-  end;
-  Result := SB.ToString;
-  {$ELSE ~CLR}
   SetLength(Result, StrSize);
   ReadBuffer(Result[1], StrSize * SizeOf(Result[1]));
-  {$ENDIF ~CLR}
 end;
 
 procedure TJclEasyStream.WriteBoolean(Value: Boolean);
 begin
-  {$IFDEF CLR}
-  WriteBuffer(Value);
-  {$ELSE ~CLR}
   WriteBuffer(Value, SizeOf(Value));
-  {$ENDIF ~CLR}
 end;
 
 procedure TJclEasyStream.WriteChar(Value: Char);
 begin
-  {$IFDEF CLR}
-  WriteBuffer(Value);
-  {$ELSE ~CLR}
   WriteBuffer(Value, SizeOf(Value));
-  {$ENDIF ~CLR}
 end;
 
 procedure TJclEasyStream.WriteAnsiChar(Value: AnsiChar);
 begin
-  {$IFDEF CLR}
-  WriteBuffer(Value);
-  {$ELSE ~CLR}
   WriteBuffer(Value, SizeOf(Value));
-  {$ENDIF ~CLR}
 end;
 
 procedure TJclEasyStream.WriteWideChar(Value: WideChar);
 begin
-  {$IFDEF CLR}
-  WriteBuffer(Value);
-  {$ELSE ~CLR}
   WriteBuffer(Value, SizeOf(Value));
-  {$ENDIF ~CLR}
 end;
 
 procedure TJclEasyStream.WriteByte(Value: Byte);
 begin
-  {$IFDEF CLR}
-  WriteBuffer(Value);
-  {$ELSE ~CLR}
   WriteBuffer(Value, SizeOf(Value));
-  {$ENDIF ~CLR}
 end;
 
-{$IFNDEF CLR}
 procedure TJclEasyStream.WriteCurrency(const Value: Currency);
 begin
   WriteBuffer(Value, SizeOf(Value));
@@ -2015,40 +1620,25 @@ procedure TJclEasyStream.WriteDateTime(const Value: TDateTime);
 begin
   WriteBuffer(Value, SizeOf(Value));
 end;
-{$ENDIF ~CLR}
 
 procedure TJclEasyStream.WriteDouble(const Value: Double);
 begin
-  {$IFDEF CLR}
-  WriteBuffer(Value);
-  {$ELSE ~CLR}
   WriteBuffer(Value, SizeOf(Value));
-  {$ENDIF ~CLR}
 end;
 
-{$IFNDEF CLR}
 procedure TJclEasyStream.WriteExtended(const Value: Extended);
 begin
   WriteBuffer(Value, SizeOf(Value));
 end;
-{$ENDIF ~CLR}
 
 procedure TJclEasyStream.WriteInt64(Value: Int64);
 begin
-  {$IFDEF CLR}
-  WriteBuffer(Value);
-  {$ELSE ~CLR}
   WriteBuffer(Value, SizeOf(Value));
-  {$ENDIF ~CLR}
 end;
 
 procedure TJclEasyStream.WriteInteger(Value: Integer);
 begin
-  {$IFDEF CLR}
-  WriteBuffer(Value);
-  {$ELSE ~CLR}
   WriteBuffer(Value, SizeOf(Value));
-  {$ENDIF ~CLR}
 end;
 
 procedure TJclEasyStream.WriteCString(const Value: string);
@@ -2063,35 +1653,17 @@ end;
 procedure TJclEasyStream.WriteCAnsiString(const Value: AnsiString);
 var
   StrSize: Integer;
-  {$IFDEF CLR}
-  I: Longint;
-  {$ENDIF CLR}
 begin
   StrSize := Length(Value);
-  {$IFDEF CLR}
-  for I := 1 to StrSize do
-    WriteAnsiChar(Value[I]);
-  WriteAnsiChar(#0);
-  {$ELSE ~CLR}
   WriteBuffer(Value[1], (StrSize + 1) * SizeOf(Value[1]));
-  {$ENDIF ~CLR}
 end;
 
 procedure TJclEasyStream.WriteCWideString(const Value: WideString);
 var
   StrSize: Integer;
-  {$IFDEF CLR}
-  I: Integer;
-  {$ENDIF CLR}
 begin
   StrSize := Length(Value);
-  {$IFDEF CLR}
-  for I := 1 to StrSize do
-    WriteWideChar(Value[I]);
-  WriteWideChar(#0);
-  {$ELSE ~CLR}
   WriteBuffer(Value[1], (StrSize + 1) * SizeOf(Value[1]));
-  {$ENDIF ~CLR}
 end;
 
 {$IFDEF KEEP_DEPRECATED}
@@ -2102,26 +1674,13 @@ end;
 {$ENDIF KEEP_DEPRECATED}
 
 procedure TJclEasyStream.WriteShortString(const Value: ShortString);
-{$IFDEF CLR}
-var
-  I: Longint;
-{$ENDIF CLR}
 begin
-  {$IFDEF CLR}
-  for I := 0 to Length(Value) do
-    inherited WriteBuffer(Value[I]);
-  {$ELSE ~CLR}
   WriteBuffer(Value[0], Length(Value) + 1);
-  {$ENDIF ~CLR}
 end;
 
 procedure TJclEasyStream.WriteSingle(const Value: Single);
 begin
-  {$IFDEF CLR}
-  WriteBuffer(Value);
-  {$ELSE ~CLR}
   WriteBuffer(Value, SizeOf(Value));
-  {$ENDIF ~~ CLR}
 end;
 
 procedure TJclEasyStream.WriteSizedString(const Value: string);
@@ -2136,35 +1695,19 @@ end;
 procedure TJclEasyStream.WriteSizedAnsiString(const Value: AnsiString);
 var
   StrSize: Integer;
-  {$IFDEF CLR}
-  I: Longint;
-  {$ENDIF CLR}
 begin
   StrSize := Length(Value);
   WriteInteger(StrSize);
-  {$IFDEF CLR}
-  for I := 1 to StrSize do
-    WriteAnsiChar(Value[I]);
-  {$ELSE ~CLR}
   WriteBuffer(Value[1], StrSize * SizeOf(Value[1]));
-  {$ENDIF ~CLR}
 end;
 
 procedure TJclEasyStream.WriteSizedWideString(const Value: WideString);
 var
   StrSize: Integer;
-  {$IFDEF CLR}
-  I: Integer;
-  {$ENDIF CLR}
 begin
   StrSize := Length(Value);
   WriteInteger(StrSize);
-  {$IFDEF CLR}
-  for I := 1 to StrSize do
-    WriteWideChar(Value[I]);
-  {$ELSE ~CLR}
   WriteBuffer(Value[1], StrSize * SizeOf(Value[1]));
-  {$ENDIF ~CLR}
 end;
 
 //=== { TJclScopedStream } ===================================================
@@ -2189,18 +1732,14 @@ begin
   FMaxSize := AMaxSize;
 end;
 
-{$IFDEF CLR}
-function TJclScopedStream.Read(var Buffer: array of Byte; Offset, Count: Longint): Longint;
-{$ELSE ~CLR}
 function TJclScopedStream.Read(var Buffer; Count: Longint): Longint;
-{$ENDIF ~CLR}
 begin
   if (MaxSize >= 0) and ((FCurrentPos + Count) > MaxSize) then
     Count := MaxSize - FCurrentPos;
 
   if (Count > 0) and Assigned(ParentStream) then
   begin
-    Result := ParentStream.Read(Buffer, {$IFDEF CLR}Offset,{$ENDIF CLR} Count);
+    Result := ParentStream.Read(Buffer, Count);
     Inc(FCurrentPos, Result);
   end
   else
@@ -2253,7 +1792,7 @@ begin
     FCurrentPos := Result;
 end;
 
-procedure TJclScopedStream.SetSize({$IFNDEF CLR}const{$ENDIF ~CLR} NewSize: Int64);
+procedure TJclScopedStream.SetSize(const NewSize: Int64);
 var
   ScopedNewSize: Int64;
 begin
@@ -2264,11 +1803,7 @@ begin
   inherited SetSize(ScopedNewSize);
 end;
 
-{$IFDEF CLR}
-function TJclScopedStream.Write(const Buffer: array of Byte; Offset, Count: Longint): Longint;
-{$ELSE ~CLR}
 function TJclScopedStream.Write(const Buffer; Count: Longint): Longint;
-{$ENDIF ~CLR}
 begin
   if (MaxSize >= 0) and ((FCurrentPos + Count) > MaxSize) then
     Count := MaxSize - FCurrentPos;
@@ -2284,7 +1819,7 @@ end;
 
 //=== { TJclDelegateStream } =================================================
 
-procedure TJclDelegatedStream.SetSize({$IFNDEF CLR}const{$ENDIF ~CLR} NewSize: Int64);
+procedure TJclDelegatedStream.SetSize(const NewSize: Int64);
 begin
   if Assigned(FOnSize) then
     FOnSize(Self, NewSize);
@@ -2298,26 +1833,18 @@ begin
     Result := -1;
 end;
 
-{$IFDEF CLR}
-function TJclDelegatedStream.Read(var Buffer: array of Byte; Offset, Count: Longint): Longint;
-{$ELSE ~CLR}
 function TJclDelegatedStream.Read(var Buffer; Count: Longint): Longint;
-{$ENDIF ~CLR}
 begin
   if Assigned(FOnRead) then
-    Result := FOnRead(Self, Buffer, {$IFDEF CLR}Offset,{$ENDIF CLR} Count)
+    Result := FOnRead(Self, Buffer, Count)
   else
     Result := -1;
 end;
 
-{$IFDEF CLR}
-function TJclDelegatedStream.Write(const Buffer: array of Byte; Offset, Count: Longint): Longint;
-{$ELSE ~CLR}
 function TJclDelegatedStream.Write(const Buffer; Count: Longint): Longint;
-{$ENDIF ~CLR}
 begin
   if Assigned(FOnWrite) then
-    Result := FOnWrite(Self, Buffer, {$IFDEF CLR}Offset,{$ENDIF CLR} Count)
+    Result := FOnWrite(Self, Buffer, Count)
   else
     Result := -1;
 end;
@@ -2363,11 +1890,7 @@ begin
     BeforeBlockWrite;
 
     Stream.Position := FlatToSectored(FBufferStart);
-    {$IFDEF CLR}
-    Stream.WriteBuffer(FBuffer, FBufferCurrentSize + FSectorOverHead);
-    {$ELSE ~CLR}
     Stream.WriteBuffer(FBuffer[0], FBufferCurrentSize + FSectorOverHead);
-    {$ENDIF ~CLR}
     FBufferMaxModifiedPos := 0;
   end;
 end;
@@ -2397,11 +1920,7 @@ begin
   if Stream <> nil then
   begin
     Stream.Position := FlatToSectored(FBufferStart);
-    {$IFDEF CLR}
-    FBufferCurrentSize := Stream.Read(FBuffer, TotalSectorSize);
-    {$ELSE ~CLR}
     FBufferCurrentSize := Stream.Read(FBuffer[0], TotalSectorSize);
-    {$ENDIF ~CLR}
     if FBufferCurrentSize > 0 then
     begin
       Dec(FBufferCurrentSize, FSectorOverHead);
@@ -2422,7 +1941,7 @@ begin
     + Position mod TotalSectorSize; // offset in sector
 end;
 
-procedure TJclSectoredStream.SetSize({$IFNDEF CLR}const{$ENDIF ~CLR} NewSize: Int64);
+procedure TJclSectoredStream.SetSize(const NewSize: Int64);
 begin
   inherited SetSize(FlatToSectored(NewSize));
 end;
@@ -2435,11 +1954,7 @@ var
 begin
   CRC := FBuffer[FBufferCurrentSize] + (FBuffer[FBufferCurrentSize + 1] shl 8);
   if {$IFDEF COMPILER5}CheckCrc16D5{$ELSE}CheckCrc16{$ENDIF COMPILER5}(FBuffer, FBufferCurrentSize, CRC) < 0 then
-    {$IFDEF CLR}
-    raise EJclStreamError.Create(RsStreamsCRCError);
-    {$ELSE ~CLR}
     raise EJclStreamError.CreateRes(@RsStreamsCRCError);
-    {$ENDIF ~CLR}
 end;
 
 procedure TJclCRC16Stream.BeforeBlockWrite;
@@ -2465,11 +1980,7 @@ begin
   CRC := FBuffer[FBufferCurrentSize] + (FBuffer[FBufferCurrentSize + 1] shl 8)
     + (FBuffer[FBufferCurrentSize + 2] shl 16) + (FBuffer[FBufferCurrentSize + 3] shl 24);
   if {$IFDEF COMPILER5}CheckCrc32D5{$ELSE}CheckCrc32{$ENDIF COMPILER5}(FBuffer, FBufferCurrentSize, CRC) < 0 then
-    {$IFDEF CLR}
-    raise EJclStreamError.Create(RsStreamsCRCError);
-    {$ELSE ~CLR}
     raise EJclStreamError.CreateRes(@RsStreamsCRCError);
-    {$ENDIF ~CLR}
 end;
 
 procedure TJclCRC32Stream.BeforeBlockWrite;
@@ -2564,15 +2075,9 @@ begin
     Result := Assigned(FVolume);
 end;
 
-{$IFDEF CLR}
-function TJclSplitStream.Read(var Buffer: array of Byte; Offset, Count: Longint): Longint;
-{$ELSE ~CLR}
 function TJclSplitStream.Read(var Buffer; Count: Longint): Longint;
-{$ENDIF ~CLR}
 var
-  {$IFNDEF CLR}
   Data: PByte;
-  {$ENDIF ~CLR}
   Total, LoopRead: Longint;
 begin
   Result := 0;
@@ -2580,9 +2085,7 @@ begin
   if not InternalLoadVolume(FVolumeIndex) then
     Exit;
 
-  {$IFNDEF CLR}
   Data := PByte(@Buffer);
-  {$ENDIF ~CLR}
   Total := Count;
 
   repeat
@@ -2591,11 +2094,7 @@ begin
       StreamSeek(FVolume, FVolumePosition, soBeginning);
 
     // try to read (Count) bytes from current stream
-    {$IFDEF CLR}
-    LoopRead := FVolume.Read(Buffer, Offset, Count);
-    {$ELSE ~CLR}
     LoopRead := FVolume.Read(Data^, Count);
-    {$ENDIF ~CLR}
     FVolumePosition := FVolumePosition + LoopRead;
     FPosition := FPosition + LoopRead;
     Inc(Result, LoopRead);
@@ -2604,11 +2103,7 @@ begin
 
     // with next volume
     Dec(Count, Result);
-    {$IFDEF CLR}
-    Inc(Offset, Result);
-    {$ELSE ~CLR}
     Inc(Data, Result);
-    {$ENDIF ~CLR}
     if not InternalLoadVolume(FVolumeIndex + 1) then
       Break;
   until False;
@@ -2627,11 +2122,7 @@ begin
     soEnd:
       ExpectedPosition := Size + Offset;
   else
-    {$IFDEF CLR}
-    raise EJclStreamError.Create(RsStreamsSeekError);
-    {$ELSE ~CLR}
     raise EJclStreamError.CreateRes(@RsStreamsSeekError);
-    {$ENDIF ~CLR}
   end;
   RemainingOffset := ExpectedPosition - FPosition;
   Result := FPosition;
@@ -2692,7 +2183,7 @@ begin
   until RemainingOffset = 0;
 end;
 
-procedure TJclSplitStream.SetSize({$IFNDEF CLR}const{$ENDIF ~CLR} NewSize: Int64);
+procedure TJclSplitStream.SetSize(const NewSize: Int64);
 var
   OldVolumeIndex: Integer;
   OldVolumePosition, OldPosition, RemainingSize, VolumeSize: Int64;
@@ -2724,15 +2215,9 @@ begin
   end;
 end;
 
-{$IFDEF CLR}
-function TJclSplitStream.Write(const Buffer: array of Byte; Offset, Count: Longint): Longint;
-{$ELSE ~CLR}
 function TJclSplitStream.Write(const Buffer; Count: Longint): Longint;
-{$ENDIF ~CLR}
 var
-  {$IFNDEF CLR}
   Data: PByte;
-  {$ENDIF ~CLR}
   Total, LoopWritten: Longint;
 begin
   Result := 0;
@@ -2740,9 +2225,7 @@ begin
   if not InternalLoadVolume(FVolumeIndex) then
     Exit;
 
-  {$IFNDEF CLR}
   Data := PByte(@Buffer);
-  {$ENDIF ~CLR}
   Total := Count;
 
   repeat
@@ -2756,11 +2239,7 @@ begin
     else
       LoopWritten := Count;
     // try to write (Count) bytes from current stream
-    {$IFDEF CLR}
-    LoopWritten := FVolume.Write(Buffer, Offset, LoopWritten);
-    {$ELSE ~CLR}
     LoopWritten := FVolume.Write(Data^, LoopWritten);
-    {$ENDIF ~CLR}
     FVolumePosition := FVolumePosition + LoopWritten;
     FPosition := FPosition + LoopWritten;
     Inc(Result, LoopWritten);
@@ -2769,11 +2248,7 @@ begin
 
     // with next volume
     Dec(Count, LoopWritten);
-    {$IFDEF CLR}
-    Inc(Offset, LoopWritten);
-    {$ELSE ~CLR}
     Inc(Data, LoopWritten);
-    {$ENDIF ~CLR}
     if not InternalLoadVolume(FVolumeIndex + 1) then
       Break;
   until False;
@@ -2859,11 +2334,7 @@ end;
 
 function TJclStringStream.GetCalcedSize: Int64;
 begin
-  {$IFDEF CLR}
-  raise EJclStreamError.Create(RsStreamsSeekError);
-  {$ELSE ~CLR}
   raise EJclStreamError.CreateRes(@RsStreamsSeekError);
-  {$ENDIF ~CLR}
 end;
 
 function TJclStringStream.PeekAnsiChar(var Buffer: AnsiChar): Boolean;
@@ -3055,7 +2526,7 @@ begin
   FPeekPosition := FPosition;
 end;
 
-procedure TJclStringStream.SetSize({$IFNDEF CLR}const{$ENDIF ~CLR} NewSize: Int64);
+procedure TJclStringStream.SetSize(const NewSize: Int64);
 begin
   inherited SetSize(NewSize);
   FPeekPosition := FPosition;
@@ -3071,11 +2542,7 @@ begin
   begin
     SetLength(BOM, Length(FBOM));
     Pos := Position;
-    {$IFDEF CLR}
-    Result := Read(BOM, Low(BOM), Length(BOM));
-    {$ELSE ~CLR}
     Result := Read(BOM[0], Length(BOM) * SizeOf(BOM[0]));
-    {$ENDIF ~CLR}
     if Result = Length(FBOM) * SizeOf(FBOM[0]) then
       for I := Low(FBOM) to High(FBOM) do
         if BOM[I - Low(FBOM)] <> FBOM[I] then
@@ -3092,11 +2559,7 @@ function TJclStringStream.WriteBOM: Longint;
 begin
   if Length(FBOM) > 0 then
   begin
-    {$IFDEF CLR}
-    Result := Write(FBOM, Low(FBOM), Length(FBOM));
-    {$ELSE ~CLR}
     Result := Write(FBOM[0], Length(FBOM) * SizeOf(FBOM[0]));
-    {$ENDIF ~CLR}
   end
   else
     Result := 0;
@@ -3262,11 +2725,7 @@ begin
   Pos := FPosition;
 
   SetLength(BOM, MaxLength);
-  {$IFDEF CLR}
-  ReadLength := Read(BOM, Low(BOM), Length(BOM)) div SizeOf(BOM[0]);
-  {$ELSE ~CLR}
   ReadLength := Read(BOM[0], Length(BOM) * SizeOf(BOM[0])) div SizeOf(BOM[0]);
-  {$ENDIF ~CLR}
 
   FEncoding := seAuto;
 

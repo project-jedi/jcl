@@ -42,9 +42,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$IFDEF SUPPORTS_GENERICS}
-  {$IFDEF CLR}
   System.Collections.Generic,
-  {$ENDIF CLR}
   JclAlgorithms,
   {$ENDIF SUPPORTS_GENERICS}
   JclBase, JclAbstractContainers, JclContainerIntf, JclSynch;
@@ -114,11 +112,9 @@ type
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;,,const ,AValue,Int64)*)
 
-  {$IFNDEF CLR}
 (*$JPPEXPANDMACRO JCLSTACKINT(TJclPtrStack,IJclPtrStack,TJclPtrAbstractContainer,TDynPointerArray, IJclPtrEqualityComparer\,,
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,APtr,Pointer)*)
-  {$ENDIF ~CLR}
 
 (*$JPPEXPANDMACRO JCLSTACKINT(TJclStack,IJclStack,TJclAbstractContainer,TDynObjectArray, IJclEqualityComparer\, IJclObjectOwner\,,
   protected
@@ -264,7 +260,6 @@ begin
   AssignPropertiesTo(Result);
 end;
 
-{$IFNDEF CLR}
 (*$JPPEXPANDMACRO JCLSTACKIMP(TJclPtrStack,,,,APtr,Pointer,nil,FreePointer)*)
 
 function TJclPtrStack.CreateEmptyContainer: TJclAbstractContainerBase;
@@ -272,7 +267,6 @@ begin
   Result := TJclPtrStack.Create(FSize);
   AssignPropertiesTo(Result);
 end;
-{$ENDIF ~CLR}
 
 (*$JPPEXPANDMACRO JCLSTACKIMP(TJclStack,; AOwnsObjects: Boolean,AOwnsObjects,,AObject,TObject,nil,FreeObject)*)
 

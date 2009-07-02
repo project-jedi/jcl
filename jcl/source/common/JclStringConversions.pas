@@ -62,10 +62,8 @@ type
 
 // conversion routines between Ansi, UTF-16, UCS-4 and UTF8 strings
 
-{$IFNDEF CLR}
 // one shot conversion between PAnsiChar and PWideChar
 procedure ExpandASCIIString(const Source: PAnsiChar; Target: PWideChar; Count: Cardinal);
-{$ENDIF ~CLR}
 
 // tpye of stream related functions
 type
@@ -271,9 +269,6 @@ const
 implementation
 
 uses
-  {$IFDEF CLR}
-  System.Text,
-  {$ENDIF CLR}
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
@@ -283,47 +278,27 @@ const MB_ERR_INVALID_CHARS = 8;
 
 constructor EJclUnexpectedEOSequenceError.Create;
 begin
-  {$IFDEF CLR}
-  inherited Create(RsEUnexpectedEOSeq);
-  {$ELSE ~CLR}
   inherited CreateRes(@RsEUnexpectedEOSeq);
-  {$ENDIF ~CLR}
 end;
 
 function StreamReadByte(S: TStream; out B: Byte): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 begin
-  {$IFDEF CLR}
-  Result := S.Read(B) = SizeOf(B);
-  {$ELSE ~CLR}
   Result := S.Read(B, SizeOf(B)) = SizeOf(B);
-  {$ENDIF ~CLR}
 end;
 
 function StreamWriteByte(S: TStream; B: Byte): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 begin
-  {$IFDEF CLR}
-  Result := S.Write(B) = SizeOf(B);
-  {$ELSE ~CLR}
   Result := S.Write(B, SizeOf(B)) = SizeOf(B);
-  {$ENDIF ~CLR}
 end;
 
 function StreamReadWord(S: TStream; out W: Word): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 begin
-  {$IFDEF CLR}
-  Result := S.Read(W) = SizeOf(W);
-  {$ELSE ~CLR}
   Result := S.Read(W, SizeOf(W)) = SizeOf(W);
-  {$ENDIF ~CLR}
 end;
 
 function StreamWriteWord(S: TStream; W: Word): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 begin
-  {$IFDEF CLR}
-  Result := S.Write(W) = SizeOf(W);
-  {$ELSE ~CLR}
   Result := S.Write(W, SizeOf(W)) = SizeOf(W);
-  {$ENDIF ~CLR}
 end;
 
 //----------------- conversion routines ------------------------------------------------------------
@@ -332,7 +307,6 @@ end;
 // from one byte to two bytes.
 // EAX contains Source, EDX contains Target, ECX contains Count
 
-{$IFNDEF CLR}
 procedure ExpandASCIIString(const Source: PAnsiChar; Target: PWideChar; Count: Cardinal);
 // Source in EAX
 // Target in EDX
@@ -352,7 +326,6 @@ asm
        POP     ESI
 @@Finish:
 end;
-{$ENDIF ~CLR}
 
 const
   HalfShift: Integer = 10;
@@ -1750,20 +1723,11 @@ function AnsiGetNextChar(const S: AnsiString; CodePage: Word; var StrPos: Intege
 var
   StrLen, TmpPos: Integer;
   UTF16Buffer: TUTF16String;
-  {$IFDEF CLR}
-  AnsiBytes: array [0..0] of Byte;
-  AnsiEncoding: Encoding;
-  {$ENDIF CLR}
 begin
   StrLen := Length(S);
 
   if (StrPos <= StrLen) and (StrPos > 0) then
   begin
-    {$IFDEF CLR}
-    AnsiEncoding := Encoding.Default;
-    AnsiBytes[0] := Ord(S[StrPos]);
-    UTF16Buffer := AnsiEncoding.GetChars(AnsiBytes);
-    {$ELSE ~CLR}
     SetLength(UTF16Buffer, 2);
     if MultiByteToWideChar(CodePage, MB_PRECOMPOSED or MB_ERR_INVALID_CHARS, @S[StrPos], 1, PWideChar(UTF16Buffer), 2) = 0 then
     begin
@@ -1771,7 +1735,6 @@ begin
       FlagInvalidSequence(StrPos, 0, Result);
       Exit;
     end;
-    {$ENDIF ~CLR}
     TmpPos := 1;
     Result := UTF16GetNextChar(UTF16Buffer, TmpPos);
     if TmpPos = -1 then
@@ -1792,19 +1755,10 @@ var
   B: Byte;
   TmpPos: Integer;
   UTF16Buffer: TUTF16String;
-  {$IFDEF CLR}
-  AnsiBytes: array [0..0] of Byte;
-  AnsiEncoding: Encoding;
-  {$ENDIF CLR}
 begin
   Result := StreamReadByte(S, B);
   if not Result then
     Exit;
-  {$IFDEF CLR}
-  AnsiEncoding := Encoding.Default;
-  AnsiBytes[0] := Ord(B);
-  UTF16Buffer := AnsiEncoding.GetChars(AnsiBytes);
-  {$ELSE ~CLR}
   SetLength(UTF16Buffer, 2);
   if MultiByteToWideChar(CodePage, MB_PRECOMPOSED or MB_ERR_INVALID_CHARS, @B, 1, PWideChar(UTF16Buffer), 2) = 0 then
   begin
@@ -1812,7 +1766,6 @@ begin
     Ch := UCS4ReplacementCharacter;
     Exit;
   end;
-  {$ENDIF ~CLR}
   TmpPos := 1;
   Ch := UTF16GetNextChar(UTF16Buffer, TmpPos);
   Result := TmpPos <> -1;
@@ -1956,12 +1909,7 @@ function AnsiSetNextChar(var S: AnsiString; CodePage: Word; var StrPos: Integer;
 var
   StrLen, TmpPos: Integer;
   UTF16Buffer: TUTF16String;
-  {$IFDEF CLR}
-  AnsiEncoding: Encoding;
-  AnsiBytes: array of Byte;
-  {$ELSE ~CLR}
   AnsiCharacter: AnsiChar;
-  {$ENDIF ~CLR}
 begin
   StrLen := Length(S);
   Result := (StrPos > 0) and (StrPos <= StrLen);
@@ -1970,24 +1918,12 @@ begin
     SetLength(UTF16Buffer, 2);
     TmpPos := 1;
     Result := UTF16SetNextChar(UTF16Buffer, TmpPos, Ch);
-    {$IFDEF CLR}
-    AnsiEncoding := Encoding.Default;
-    SetLength(UTF16Buffer, TmpPos-1);
-    AnsiBytes := AnsiEncoding.GetBytes(UTF16Buffer);
-    Result := Result and (Length(AnsiBytes) = 1);
-    if Result then
-    begin
-      S[StrPos] := AnsiChar(Chr(AnsiBytes[0]));
-      Inc(StrPos);
-    end;
-    {$ELSE ~CLR}
     Result := Result and (WideCharToMultiByte(CodePage, 0, PWideChar(UTF16Buffer), TmpPos-1, @AnsiCharacter, 1, nil, nil) > 0);
     if Result then
     begin
       S[StrPos] := AnsiCharacter;
       Inc(StrPos);
     end;
-    {$ENDIF ~CLR}
     if not Result then
     begin
       {$IFDEF UNICODE_SILENT_FAILURE}
@@ -2006,28 +1942,14 @@ function AnsiSetNextCharToStream(S: TStream; CodePage: Word; Ch: UCS4): Boolean;
 var
   TmpPos: Integer;
   UTF16Buffer: TUTF16String;
-  {$IFDEF CLR}
-  AnsiEncoding: Encoding;
-  AnsiBytes: array of Byte;
-  {$ELSE ~CLR}
   AnsiCharacter: AnsiChar;
-  {$ENDIF ~CLR}
 begin
   SetLength(UTF16Buffer, 2);
   TmpPos := 1;
   Result := UTF16SetNextChar(UTF16Buffer, TmpPos, Ch);
-  {$IFDEF CLR}
-  AnsiEncoding := Encoding.Default;
-  SetLength(UTF16Buffer, TmpPos-1);
-  AnsiBytes := AnsiEncoding.GetBytes(UTF16Buffer);
-  Result := Result and (Length(AnsiBytes) = 1);
-  if Result then
-    Result := StreamWriteByte(S, Ord(AnsiBytes[0]));
-  {$ELSE ~CLR}
   Result := Result and (WideCharToMultiByte(CodePage, 0, PWideChar(UTF16Buffer), TmpPos-1, @AnsiCharacter, 1, nil, nil) > 0);
   if Result then
     Result := StreamWriteByte(S, Ord(AnsiCharacter));
-  {$ENDIF ~CLR}
   if not Result then
   begin
     {$IFDEF UNICODE_SILENT_FAILURE}

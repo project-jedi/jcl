@@ -29,7 +29,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -47,9 +47,6 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$IFDEF SUPPORTS_GENERICS}
-  {$IFDEF CLR}
-  System.Collections.Generic,
-  {$ENDIF CLR}
   JclAlgorithms,
   {$ENDIF SUPPORTS_GENERICS}
   JclBase, JclSynch,
@@ -1532,7 +1529,6 @@ type
     property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
-  {$IFNDEF CLR}
   TJclPtrIntfHashEntry = record
     Key: Pointer;
     Value: IInterface;
@@ -1686,7 +1682,6 @@ type
     destructor Destroy; override;
     property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
-  {$ENDIF ~CLR}
 
   TJclIntfHashEntry = record
     Key: IInterface;
@@ -2281,7 +2276,6 @@ type
     property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
-  {$IFNDEF CLR}
   TJclPtrHashEntry = record
     Key: Pointer;
     Value: TObject;
@@ -2338,7 +2332,6 @@ type
     destructor Destroy; override;
     property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
-  {$ENDIF ~CLR}
 
   TJclHashEntry = record
     Key: TObject;
@@ -2581,51 +2574,6 @@ end;
 //=== { TJclIntfIntfBucket } ==========================================
 
 procedure TJclIntfIntfBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := nil;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := nil;
-      end;
-  end;
-end;
-{$ELSE}
 begin
   if Count > 0 then
   begin
@@ -2648,7 +2596,6 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
 
 //=== { TJclIntfIntfHashMap } ==========================================
 
@@ -3205,51 +3152,6 @@ end;
 //=== { TJclAnsiStrIntfBucket } ==========================================
 
 procedure TJclAnsiStrIntfBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        Entries[FromIndex + I].Key := '';
-        Entries[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := '';
-        Entries[FromIndex + I].Value := nil;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := '';
-        Entries[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := '';
-        Entries[FromIndex + I].Value := nil;
-      end;
-  end;
-end;
-{$ELSE}
 begin
   if Count > 0 then
   begin
@@ -3272,7 +3174,6 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
 
 //=== { TJclAnsiStrIntfHashMap } ==========================================
 
@@ -3829,51 +3730,6 @@ end;
 //=== { TJclIntfAnsiStrBucket } ==========================================
 
 procedure TJclIntfAnsiStrBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := '';
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := '';
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := '';
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := '';
-      end;
-  end;
-end;
-{$ELSE}
 begin
   if Count > 0 then
   begin
@@ -3896,7 +3752,6 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
 
 //=== { TJclIntfAnsiStrHashMap } ==========================================
 
@@ -4458,51 +4313,6 @@ end;
 //=== { TJclAnsiStrAnsiStrBucket } ==========================================
 
 procedure TJclAnsiStrAnsiStrBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        Entries[FromIndex + I].Key := '';
-        Entries[FromIndex + I].Value := '';
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := '';
-        Entries[FromIndex + I].Value := '';
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := '';
-        Entries[FromIndex + I].Value := '';
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := '';
-        Entries[FromIndex + I].Value := '';
-      end;
-  end;
-end;
-{$ELSE}
 begin
   if Count > 0 then
   begin
@@ -4525,7 +4335,6 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
 
 //=== { TJclAnsiStrAnsiStrHashMap } ==========================================
 
@@ -5082,51 +4891,6 @@ end;
 //=== { TJclWideStrIntfBucket } ==========================================
 
 procedure TJclWideStrIntfBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        Entries[FromIndex + I].Key := '';
-        Entries[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := '';
-        Entries[FromIndex + I].Value := nil;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := '';
-        Entries[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := '';
-        Entries[FromIndex + I].Value := nil;
-      end;
-  end;
-end;
-{$ELSE}
 begin
   if Count > 0 then
   begin
@@ -5149,7 +4913,6 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
 
 //=== { TJclWideStrIntfHashMap } ==========================================
 
@@ -5706,51 +5469,6 @@ end;
 //=== { TJclIntfWideStrBucket } ==========================================
 
 procedure TJclIntfWideStrBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := '';
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := '';
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := '';
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := '';
-      end;
-  end;
-end;
-{$ELSE}
 begin
   if Count > 0 then
   begin
@@ -5773,7 +5491,6 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
 
 //=== { TJclIntfWideStrHashMap } ==========================================
 
@@ -6335,51 +6052,6 @@ end;
 //=== { TJclWideStrWideStrBucket } ==========================================
 
 procedure TJclWideStrWideStrBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        Entries[FromIndex + I].Key := '';
-        Entries[FromIndex + I].Value := '';
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := '';
-        Entries[FromIndex + I].Value := '';
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := '';
-        Entries[FromIndex + I].Value := '';
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := '';
-        Entries[FromIndex + I].Value := '';
-      end;
-  end;
-end;
-{$ELSE}
 begin
   if Count > 0 then
   begin
@@ -6402,7 +6074,6 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
 
 //=== { TJclWideStrWideStrHashMap } ==========================================
 
@@ -6960,51 +6631,6 @@ end;
 //=== { TJclUnicodeStrIntfBucket } ==========================================
 
 procedure TJclUnicodeStrIntfBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        Entries[FromIndex + I].Key := '';
-        Entries[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := '';
-        Entries[FromIndex + I].Value := nil;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := '';
-        Entries[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := '';
-        Entries[FromIndex + I].Value := nil;
-      end;
-  end;
-end;
-{$ELSE}
 begin
   if Count > 0 then
   begin
@@ -7027,7 +6653,6 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
 
 //=== { TJclUnicodeStrIntfHashMap } ==========================================
 
@@ -7584,51 +7209,6 @@ end;
 //=== { TJclIntfUnicodeStrBucket } ==========================================
 
 procedure TJclIntfUnicodeStrBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := '';
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := '';
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := '';
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := '';
-      end;
-  end;
-end;
-{$ELSE}
 begin
   if Count > 0 then
   begin
@@ -7651,7 +7231,6 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
 
 //=== { TJclIntfUnicodeStrHashMap } ==========================================
 
@@ -8213,51 +7792,6 @@ end;
 //=== { TJclUnicodeStrUnicodeStrBucket } ==========================================
 
 procedure TJclUnicodeStrUnicodeStrBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        Entries[FromIndex + I].Key := '';
-        Entries[FromIndex + I].Value := '';
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := '';
-        Entries[FromIndex + I].Value := '';
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := '';
-        Entries[FromIndex + I].Value := '';
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := '';
-        Entries[FromIndex + I].Value := '';
-      end;
-  end;
-end;
-{$ELSE}
 begin
   if Count > 0 then
   begin
@@ -8280,7 +7814,6 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
 
 //=== { TJclUnicodeStrUnicodeStrHashMap } ==========================================
 
@@ -8839,51 +8372,6 @@ end;
 //=== { TJclSingleIntfBucket } ==========================================
 
 procedure TJclSingleIntfBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0.0;
-        Entries[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0.0;
-        Entries[FromIndex + I].Value := nil;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0.0;
-        Entries[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0.0;
-        Entries[FromIndex + I].Value := nil;
-      end;
-  end;
-end;
-{$ELSE}
 begin
   if Count > 0 then
   begin
@@ -8906,7 +8394,6 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
 
 //=== { TJclSingleIntfHashMap } ==========================================
 
@@ -9463,51 +8950,6 @@ end;
 //=== { TJclIntfSingleBucket } ==========================================
 
 procedure TJclIntfSingleBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := 0.0;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := 0.0;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := 0.0;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := 0.0;
-      end;
-  end;
-end;
-{$ELSE}
 begin
   if Count > 0 then
   begin
@@ -9530,7 +8972,6 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
 
 //=== { TJclIntfSingleHashMap } ==========================================
 
@@ -10092,51 +9533,6 @@ end;
 //=== { TJclSingleSingleBucket } ==========================================
 
 procedure TJclSingleSingleBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0.0;
-        Entries[FromIndex + I].Value := 0.0;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0.0;
-        Entries[FromIndex + I].Value := 0.0;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0.0;
-        Entries[FromIndex + I].Value := 0.0;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0.0;
-        Entries[FromIndex + I].Value := 0.0;
-      end;
-  end;
-end;
-{$ELSE}
 begin
   if Count > 0 then
   begin
@@ -10159,7 +9555,6 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
 
 //=== { TJclSingleSingleHashMap } ==========================================
 
@@ -10716,51 +10111,6 @@ end;
 //=== { TJclDoubleIntfBucket } ==========================================
 
 procedure TJclDoubleIntfBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0.0;
-        Entries[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0.0;
-        Entries[FromIndex + I].Value := nil;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0.0;
-        Entries[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0.0;
-        Entries[FromIndex + I].Value := nil;
-      end;
-  end;
-end;
-{$ELSE}
 begin
   if Count > 0 then
   begin
@@ -10783,7 +10133,6 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
 
 //=== { TJclDoubleIntfHashMap } ==========================================
 
@@ -11340,51 +10689,6 @@ end;
 //=== { TJclIntfDoubleBucket } ==========================================
 
 procedure TJclIntfDoubleBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := 0.0;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := 0.0;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := 0.0;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := 0.0;
-      end;
-  end;
-end;
-{$ELSE}
 begin
   if Count > 0 then
   begin
@@ -11407,7 +10711,6 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
 
 //=== { TJclIntfDoubleHashMap } ==========================================
 
@@ -11969,51 +11272,6 @@ end;
 //=== { TJclDoubleDoubleBucket } ==========================================
 
 procedure TJclDoubleDoubleBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0.0;
-        Entries[FromIndex + I].Value := 0.0;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0.0;
-        Entries[FromIndex + I].Value := 0.0;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0.0;
-        Entries[FromIndex + I].Value := 0.0;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0.0;
-        Entries[FromIndex + I].Value := 0.0;
-      end;
-  end;
-end;
-{$ELSE}
 begin
   if Count > 0 then
   begin
@@ -12036,7 +11294,6 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
 
 //=== { TJclDoubleDoubleHashMap } ==========================================
 
@@ -12593,51 +11850,6 @@ end;
 //=== { TJclExtendedIntfBucket } ==========================================
 
 procedure TJclExtendedIntfBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0.0;
-        Entries[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0.0;
-        Entries[FromIndex + I].Value := nil;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0.0;
-        Entries[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0.0;
-        Entries[FromIndex + I].Value := nil;
-      end;
-  end;
-end;
-{$ELSE}
 begin
   if Count > 0 then
   begin
@@ -12660,7 +11872,6 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
 
 //=== { TJclExtendedIntfHashMap } ==========================================
 
@@ -13217,51 +12428,6 @@ end;
 //=== { TJclIntfExtendedBucket } ==========================================
 
 procedure TJclIntfExtendedBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := 0.0;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := 0.0;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := 0.0;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := 0.0;
-      end;
-  end;
-end;
-{$ELSE}
 begin
   if Count > 0 then
   begin
@@ -13284,7 +12450,6 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
 
 //=== { TJclIntfExtendedHashMap } ==========================================
 
@@ -13846,51 +13011,6 @@ end;
 //=== { TJclExtendedExtendedBucket } ==========================================
 
 procedure TJclExtendedExtendedBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0.0;
-        Entries[FromIndex + I].Value := 0.0;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0.0;
-        Entries[FromIndex + I].Value := 0.0;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0.0;
-        Entries[FromIndex + I].Value := 0.0;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0.0;
-        Entries[FromIndex + I].Value := 0.0;
-      end;
-  end;
-end;
-{$ELSE}
 begin
   if Count > 0 then
   begin
@@ -13913,7 +13033,6 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
 
 //=== { TJclExtendedExtendedHashMap } ==========================================
 
@@ -14470,51 +13589,6 @@ end;
 //=== { TJclIntegerIntfBucket } ==========================================
 
 procedure TJclIntegerIntfBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0;
-        Entries[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0;
-        Entries[FromIndex + I].Value := nil;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0;
-        Entries[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0;
-        Entries[FromIndex + I].Value := nil;
-      end;
-  end;
-end;
-{$ELSE}
 begin
   if Count > 0 then
   begin
@@ -14537,7 +13611,6 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
 
 //=== { TJclIntegerIntfHashMap } ==========================================
 
@@ -15094,51 +14167,6 @@ end;
 //=== { TJclIntfIntegerBucket } ==========================================
 
 procedure TJclIntfIntegerBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := 0;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := 0;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := 0;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := 0;
-      end;
-  end;
-end;
-{$ELSE}
 begin
   if Count > 0 then
   begin
@@ -15161,7 +14189,6 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
 
 //=== { TJclIntfIntegerHashMap } ==========================================
 
@@ -15723,51 +14750,6 @@ end;
 //=== { TJclIntegerIntegerBucket } ==========================================
 
 procedure TJclIntegerIntegerBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0;
-        Entries[FromIndex + I].Value := 0;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0;
-        Entries[FromIndex + I].Value := 0;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0;
-        Entries[FromIndex + I].Value := 0;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0;
-        Entries[FromIndex + I].Value := 0;
-      end;
-  end;
-end;
-{$ELSE}
 begin
   if Count > 0 then
   begin
@@ -15790,7 +14772,6 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
 
 //=== { TJclIntegerIntegerHashMap } ==========================================
 
@@ -16347,51 +15328,6 @@ end;
 //=== { TJclCardinalIntfBucket } ==========================================
 
 procedure TJclCardinalIntfBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0;
-        Entries[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0;
-        Entries[FromIndex + I].Value := nil;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0;
-        Entries[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0;
-        Entries[FromIndex + I].Value := nil;
-      end;
-  end;
-end;
-{$ELSE}
 begin
   if Count > 0 then
   begin
@@ -16414,7 +15350,6 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
 
 //=== { TJclCardinalIntfHashMap } ==========================================
 
@@ -16971,51 +15906,6 @@ end;
 //=== { TJclIntfCardinalBucket } ==========================================
 
 procedure TJclIntfCardinalBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := 0;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := 0;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := 0;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := 0;
-      end;
-  end;
-end;
-{$ELSE}
 begin
   if Count > 0 then
   begin
@@ -17038,7 +15928,6 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
 
 //=== { TJclIntfCardinalHashMap } ==========================================
 
@@ -17600,51 +16489,6 @@ end;
 //=== { TJclCardinalCardinalBucket } ==========================================
 
 procedure TJclCardinalCardinalBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0;
-        Entries[FromIndex + I].Value := 0;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0;
-        Entries[FromIndex + I].Value := 0;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0;
-        Entries[FromIndex + I].Value := 0;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0;
-        Entries[FromIndex + I].Value := 0;
-      end;
-  end;
-end;
-{$ELSE}
 begin
   if Count > 0 then
   begin
@@ -17667,7 +16511,6 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
 
 //=== { TJclCardinalCardinalHashMap } ==========================================
 
@@ -18224,51 +17067,6 @@ end;
 //=== { TJclInt64IntfBucket } ==========================================
 
 procedure TJclInt64IntfBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0;
-        Entries[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0;
-        Entries[FromIndex + I].Value := nil;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0;
-        Entries[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0;
-        Entries[FromIndex + I].Value := nil;
-      end;
-  end;
-end;
-{$ELSE}
 begin
   if Count > 0 then
   begin
@@ -18291,7 +17089,6 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
 
 //=== { TJclInt64IntfHashMap } ==========================================
 
@@ -18848,51 +17645,6 @@ end;
 //=== { TJclIntfInt64Bucket } ==========================================
 
 procedure TJclIntfInt64Bucket.MoveArray(FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := 0;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := 0;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := 0;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := 0;
-      end;
-  end;
-end;
-{$ELSE}
 begin
   if Count > 0 then
   begin
@@ -18915,7 +17667,6 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
 
 //=== { TJclIntfInt64HashMap } ==========================================
 
@@ -19477,51 +18228,6 @@ end;
 //=== { TJclInt64Int64Bucket } ==========================================
 
 procedure TJclInt64Int64Bucket.MoveArray(FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0;
-        Entries[FromIndex + I].Value := 0;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0;
-        Entries[FromIndex + I].Value := 0;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0;
-        Entries[FromIndex + I].Value := 0;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0;
-        Entries[FromIndex + I].Value := 0;
-      end;
-  end;
-end;
-{$ELSE}
 begin
   if Count > 0 then
   begin
@@ -19544,7 +18250,6 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
 
 //=== { TJclInt64Int64HashMap } ==========================================
 
@@ -20098,55 +18803,9 @@ begin
   Result := ItemsEqual(A, B);
 end;
 
-{$IFNDEF CLR}
 //=== { TJclPtrIntfBucket } ==========================================
 
 procedure TJclPtrIntfBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := nil;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := nil;
-      end;
-  end;
-end;
-{$ELSE}
 begin
   if Count > 0 then
   begin
@@ -20169,7 +18828,6 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
 
 //=== { TJclPtrIntfHashMap } ==========================================
 
@@ -20726,51 +19384,6 @@ end;
 //=== { TJclIntfPtrBucket } ==========================================
 
 procedure TJclIntfPtrBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := nil;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := nil;
-      end;
-  end;
-end;
-{$ELSE}
 begin
   if Count > 0 then
   begin
@@ -20793,7 +19406,6 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
 
 //=== { TJclIntfPtrHashMap } ==========================================
 
@@ -21355,51 +19967,6 @@ end;
 //=== { TJclPtrPtrBucket } ==========================================
 
 procedure TJclPtrPtrBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := nil;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := nil;
-      end;
-  end;
-end;
-{$ELSE}
 begin
   if Count > 0 then
   begin
@@ -21422,7 +19989,6 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
 
 //=== { TJclPtrPtrHashMap } ==========================================
 
@@ -21975,56 +20541,10 @@ function TJclPtrPtrHashMap.ValuesEqual(A, B: Pointer): Boolean;
 begin
   Result := ItemsEqual(A, B);
 end;
-{$ENDIF ~CLR}
 
 //=== { TJclIntfBucket } ==========================================
 
 procedure TJclIntfBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := nil;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := nil;
-      end;
-  end;
-end;
-{$ELSE}
 begin
   if Count > 0 then
   begin
@@ -22047,7 +20567,6 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
 
 //=== { TJclIntfHashMap } ==========================================
 
@@ -22623,51 +21142,6 @@ end;
 //=== { TJclAnsiStrBucket } ==========================================
 
 procedure TJclAnsiStrBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        Entries[FromIndex + I].Key := '';
-        Entries[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := '';
-        Entries[FromIndex + I].Value := nil;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := '';
-        Entries[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := '';
-        Entries[FromIndex + I].Value := nil;
-      end;
-  end;
-end;
-{$ELSE}
 begin
   if Count > 0 then
   begin
@@ -22690,7 +21164,6 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
 
 //=== { TJclAnsiStrHashMap } ==========================================
 
@@ -23261,51 +21734,6 @@ end;
 //=== { TJclWideStrBucket } ==========================================
 
 procedure TJclWideStrBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        Entries[FromIndex + I].Key := '';
-        Entries[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := '';
-        Entries[FromIndex + I].Value := nil;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := '';
-        Entries[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := '';
-        Entries[FromIndex + I].Value := nil;
-      end;
-  end;
-end;
-{$ELSE}
 begin
   if Count > 0 then
   begin
@@ -23328,7 +21756,6 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
 
 //=== { TJclWideStrHashMap } ==========================================
 
@@ -23900,51 +22327,6 @@ end;
 //=== { TJclUnicodeStrBucket } ==========================================
 
 procedure TJclUnicodeStrBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        Entries[FromIndex + I].Key := '';
-        Entries[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := '';
-        Entries[FromIndex + I].Value := nil;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := '';
-        Entries[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := '';
-        Entries[FromIndex + I].Value := nil;
-      end;
-  end;
-end;
-{$ELSE}
 begin
   if Count > 0 then
   begin
@@ -23967,7 +22349,6 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
 
 //=== { TJclUnicodeStrHashMap } ==========================================
 
@@ -24539,51 +22920,6 @@ end;
 //=== { TJclSingleBucket } ==========================================
 
 procedure TJclSingleBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0.0;
-        Entries[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0.0;
-        Entries[FromIndex + I].Value := nil;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0.0;
-        Entries[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0.0;
-        Entries[FromIndex + I].Value := nil;
-      end;
-  end;
-end;
-{$ELSE}
 begin
   if Count > 0 then
   begin
@@ -24606,7 +22942,6 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
 
 //=== { TJclSingleHashMap } ==========================================
 
@@ -25177,51 +23512,6 @@ end;
 //=== { TJclDoubleBucket } ==========================================
 
 procedure TJclDoubleBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0.0;
-        Entries[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0.0;
-        Entries[FromIndex + I].Value := nil;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0.0;
-        Entries[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0.0;
-        Entries[FromIndex + I].Value := nil;
-      end;
-  end;
-end;
-{$ELSE}
 begin
   if Count > 0 then
   begin
@@ -25244,7 +23534,6 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
 
 //=== { TJclDoubleHashMap } ==========================================
 
@@ -25815,51 +24104,6 @@ end;
 //=== { TJclExtendedBucket } ==========================================
 
 procedure TJclExtendedBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0.0;
-        Entries[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0.0;
-        Entries[FromIndex + I].Value := nil;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0.0;
-        Entries[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0.0;
-        Entries[FromIndex + I].Value := nil;
-      end;
-  end;
-end;
-{$ELSE}
 begin
   if Count > 0 then
   begin
@@ -25882,7 +24126,6 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
 
 //=== { TJclExtendedHashMap } ==========================================
 
@@ -26453,51 +24696,6 @@ end;
 //=== { TJclIntegerBucket } ==========================================
 
 procedure TJclIntegerBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0;
-        Entries[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0;
-        Entries[FromIndex + I].Value := nil;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0;
-        Entries[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0;
-        Entries[FromIndex + I].Value := nil;
-      end;
-  end;
-end;
-{$ELSE}
 begin
   if Count > 0 then
   begin
@@ -26520,7 +24718,6 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
 
 //=== { TJclIntegerHashMap } ==========================================
 
@@ -27091,51 +25288,6 @@ end;
 //=== { TJclCardinalBucket } ==========================================
 
 procedure TJclCardinalBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0;
-        Entries[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0;
-        Entries[FromIndex + I].Value := nil;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0;
-        Entries[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0;
-        Entries[FromIndex + I].Value := nil;
-      end;
-  end;
-end;
-{$ELSE}
 begin
   if Count > 0 then
   begin
@@ -27158,7 +25310,6 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
 
 //=== { TJclCardinalHashMap } ==========================================
 
@@ -27729,51 +25880,6 @@ end;
 //=== { TJclInt64Bucket } ==========================================
 
 procedure TJclInt64Bucket.MoveArray(FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0;
-        Entries[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0;
-        Entries[FromIndex + I].Value := nil;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0;
-        Entries[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := 0;
-        Entries[FromIndex + I].Value := nil;
-      end;
-  end;
-end;
-{$ELSE}
 begin
   if Count > 0 then
   begin
@@ -27796,7 +25902,6 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
 
 //=== { TJclInt64HashMap } ==========================================
 
@@ -28364,55 +26469,9 @@ begin
   Result := Integer(A) = Integer(B);
 end;
 
-{$IFNDEF CLR}
 //=== { TJclPtrBucket } ==========================================
 
 procedure TJclPtrBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := nil;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := nil;
-      end;
-  end;
-end;
-{$ELSE}
 begin
   if Count > 0 then
   begin
@@ -28435,7 +26494,6 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
 
 //=== { TJclPtrHashMap } ==========================================
 
@@ -29002,56 +27060,10 @@ function TJclPtrHashMap.ValuesEqual(A, B: TObject): Boolean;
 begin
   Result := Integer(A) = Integer(B);
 end;
-{$ENDIF ~CLR}
 
 //=== { TJclBucket } ==========================================
 
 procedure TJclBucket.MoveArray(FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := nil;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := nil;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := nil;
-        Entries[FromIndex + I].Value := nil;
-      end;
-  end;
-end;
-{$ELSE}
 begin
   if Count > 0 then
   begin
@@ -29074,7 +27086,6 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
 
 //=== { TJclHashMap } ==========================================
 
@@ -29665,51 +27676,6 @@ end;
 //=== { TJclBucket<TKey, TValue> } ==========================================
 
 procedure TJclBucket<TKey, TValue>.MoveArray(FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        Entries[FromIndex + I].Key := Default(TKey);
-        Entries[FromIndex + I].Value := Default(TValue);
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := Default(TKey);
-        Entries[FromIndex + I].Value := Default(TValue);
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := Default(TKey);
-        Entries[FromIndex + I].Value := Default(TValue);
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := Default(TKey);
-        Entries[FromIndex + I].Value := Default(TValue);
-      end;
-  end;
-end;
-{$ELSE}
 begin
   if Count > 0 then
   begin
@@ -29732,7 +27698,6 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
 
 //=== { TJclHashMap<TKey, TValue> } ==========================================
 

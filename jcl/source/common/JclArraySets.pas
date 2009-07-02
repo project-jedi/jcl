@@ -29,7 +29,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -47,9 +47,6 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$IFDEF SUPPORTS_GENERICS}
-  {$IFDEF CLR}
-  System.Collections.Generic,
-  {$ENDIF CLR}
   JclAlgorithms,
   {$ENDIF SUPPORTS_GENERICS}
   JclBase, JclAbstractContainers, JclContainerIntf, JclArrayLists, JclSynch;
@@ -287,7 +284,6 @@ type
   public
   end;
 
-  {$IFNDEF CLR}
   TJclPtrArraySet = class(TJclPtrArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclPtrEqualityComparer, IJclPtrComparer,
     IJclPtrCollection, IJclPtrList, IJclPtrArray, IJclPtrSet)
@@ -308,7 +304,6 @@ type
     procedure Union(const ACollection: IJclPtrCollection);
   public
   end;
-  {$ENDIF ~CLR}
 
   TJclArraySet = class(TJclArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclObjectOwner, IJclEqualityComparer, IJclComparer,
@@ -1829,7 +1824,6 @@ begin
   AssignPropertiesTo(Result);
 end;
 
-{$IFNDEF CLR}
 //=== { TJclPtrArraySet } ====================================================
 
 function TJclPtrArraySet.Add(APtr: Pointer): Boolean;
@@ -1971,7 +1965,6 @@ begin
   Result := TJclPtrArraySet.Create(Size);
   AssignPropertiesTo(Result);
 end;
-{$ENDIF ~CLR}
 
 //=== { TJclArraySet } ====================================================
 

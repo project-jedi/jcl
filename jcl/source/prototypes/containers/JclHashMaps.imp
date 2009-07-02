@@ -2,51 +2,6 @@
 //=== { BUCKETTYPENAME } ==========================================
 
 procedure BUCKETTYPENAME.MoveArray(FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        Entries[FromIndex + I].Key := KEYDEFAULT;
-        Entries[FromIndex + I].Value := VALUEDEFAULT;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := KEYDEFAULT;
-        Entries[FromIndex + I].Value := VALUEDEFAULT;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      Entries[ToIndex + I] := Entries[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := KEYDEFAULT;
-        Entries[FromIndex + I].Value := VALUEDEFAULT;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        Entries[FromIndex + I].Key := KEYDEFAULT;
-        Entries[FromIndex + I].Value := VALUEDEFAULT;
-      end;
-  end;
-end;
-{$ELSE}
 begin
   if Count > 0 then
   begin
@@ -68,8 +23,7 @@ begin
         FillChar(Entries[FromIndex], Count * SizeOf(Entries[0]), 0);
     end;
   end;
-end;
-{$ENDIF CLR}*)
+end;*)
 (*$JPPDEFINEMACRO JCLHASHMAPIMP(SELFCLASSNAME, BUCKETTYPENAME,
   MAPINTERFACENAME, KEYSETINTERFACENAME, KEYITRINTERFACENAME, VALUECOLLECTIONINTERFACENAME,
   KEYOWNERSHIPDECLARATION, VALUEOWNERSHIPDECLARATION, OWNERSHIPASSIGNMENTS,

@@ -62,9 +62,7 @@ function FloatSimpleCompare(const Obj1, Obj2: Float): Integer;
 function IntegerSimpleCompare(Obj1, Obj2: Integer): Integer;
 function CardinalSimpleCompare(Obj1, Obj2: Cardinal): Integer;
 function Int64SimpleCompare(const Obj1, Obj2: Int64): Integer;
-{$IFNDEF CLR}
 function PtrSimpleCompare(Obj1, Obj2: Pointer): Integer;
-{$ENDIF ~CLR}
 function SimpleCompare(Obj1, Obj2: TObject): Integer;
 
 function IntegerCompare(Obj1, Obj2: TObject): Integer;
@@ -84,9 +82,7 @@ function FloatSimpleEqualityCompare(const Obj1, Obj2: Float): Boolean;
 function IntegerSimpleEqualityCompare(Obj1, Obj2: Integer): Boolean;
 function CardinalSimpleEqualityCompare(Obj1, Obj2: Cardinal): Boolean;
 function Int64SimpleEqualityCompare(const Obj1, Obj2: Int64): Boolean;
-{$IFNDEF CLR}
 function PtrSimpleEqualityCompare(Obj1, Obj2: Pointer): Boolean;
-{$ENDIF ~CLR}
 function SimpleEqualityCompare(Obj1, Obj2: TObject): Boolean;
 
 // Apply algorithms
@@ -102,9 +98,7 @@ procedure Apply(const First: IJclExtendedIterator; Count: Integer; F: TExtendedA
 procedure Apply(const First: IJclIntegerIterator; Count: Integer; F: TIntegerApplyFunction); overload;
 procedure Apply(const First: IJclCardinalIterator; Count: Integer; F: TCardinalApplyFunction); overload;
 procedure Apply(const First: IJclInt64Iterator; Count: Integer; F: TInt64ApplyFunction); overload;
-{$IFNDEF CLR}
 procedure Apply(const First: IJclPtrIterator; Count: Integer; F: TPtrApplyFunction); overload;
-{$ENDIF ~CLR}
 procedure Apply(const First: IJclIterator; Count: Integer; F: TApplyFunction); overload;
 
 // Find algorithms
@@ -150,12 +144,10 @@ function Find(const First: IJclInt64Iterator; Count: Integer; const AValue: Int6
   AComparator: TInt64Compare): IJclInt64Iterator; overload;
 function Find(const First: IJclInt64Iterator; Count: Integer; const AValue: Int64;
   AEqualityComparator: TInt64EqualityCompare): IJclInt64Iterator; overload;
-{$IFNDEF CLR}
 function Find(const First: IJclPtrIterator; Count: Integer; APtr: Pointer;
   AComparator: TPtrCompare): IJclPtrIterator; overload;
 function Find(const First: IJclPtrIterator; Count: Integer; APtr: Pointer;
   AEqualityComparator: TPtrEqualityCompare): IJclPtrIterator; overload;
-{$ENDIF ~CLR}
 function Find(const First: IJclIterator; Count: Integer; AObject: TObject;
   AComparator: TCompare): IJclIterator; overload;
 function Find(const First: IJclIterator; Count: Integer; AObject: TObject;
@@ -204,12 +196,10 @@ function CountObject(const First: IJclInt64Iterator; Count: Integer;
   const AValue: Int64; AComparator: TInt64Compare): Integer; overload;
 function CountObject(const First: IJclInt64Iterator; Count: Integer;
   const AValue: Int64; AEqualityComparator: TInt64EqualityCompare): Integer; overload;
-{$IFNDEF CLR}
 function CountObject(const First: IJclPtrIterator; Count: Integer;
   APtr: Pointer; AComparator: TPtrCompare): Integer; overload;
 function CountObject(const First: IJclPtrIterator; Count: Integer;
   APtr: Pointer; AEqualityComparator: TPtrEqualityCompare): Integer; overload;
-{$ENDIF ~CLR}
 function CountObject(const First: IJclIterator; Count: Integer;
   AObject: TObject; AComparator: TCompare): Integer; overload;
 function CountObject(const First: IJclIterator; Count: Integer;
@@ -238,10 +228,8 @@ procedure Copy(const First: IJclCardinalIterator; Count: Integer;
   const Output: IJclCardinalIterator); overload;
 procedure Copy(const First: IJclInt64Iterator; Count: Integer;
   const Output: IJclInt64Iterator); overload;
-{$IFNDEF CLR}
 procedure Copy(const First: IJclPtrIterator; Count: Integer;
   const Output: IJclPtrIterator); overload;
-{$ENDIF ~CLR}
 procedure Copy(const First: IJclIterator; Count: Integer;
   const Output: IJclIterator); overload;
 
@@ -258,9 +246,7 @@ procedure Generate(const List: IJclExtendedList; Count: Integer; const AValue: E
 procedure Generate(const List: IJclIntegerList; Count: Integer; AValue: Integer); overload;
 procedure Generate(const List: IJclCardinalList; Count: Integer; AValue: Cardinal); overload;
 procedure Generate(const List: IJclInt64List; Count: Integer; const AValue: Int64); overload;
-{$IFNDEF CLR}
 procedure Generate(const List: IJclPtrList; Count: Integer; APtr: Pointer); overload;
-{$ENDIF CLR}
 procedure Generate(const List: IJclList; Count: Integer; AObject: TObject); overload;
 
 // Fill algorithms
@@ -276,10 +262,8 @@ procedure Fill(const First: IJclExtendedIterator; Count: Integer; const AValue: 
 procedure Fill(const First: IJclIntegerIterator; Count: Integer; AValue: Integer); overload;
 procedure Fill(const First: IJclCardinalIterator; Count: Integer; AValue: Cardinal); overload;
 procedure Fill(const First: IJclInt64Iterator; Count: Integer; const AValue: Int64); overload;
-{$IFNDEF CLR}
 procedure Fill(const First: IJclPtrIterator; Count: Integer; APtr: Pointer); overload;
-{$ENDIF ~CLR}
-procedure Fill(const First: IJclIterator; Count: Integer; AObject: TObject); overload;
+procedure Fill(const First: IJclIterator; Count: Integer; AObject: TObject); overload
 
 // Reverse algorithms
 procedure Reverse(const First, Last: IJclIntfIterator); overload;
@@ -294,9 +278,7 @@ procedure Reverse(const First, Last: IJclExtendedIterator); overload;
 procedure Reverse(const First, Last: IJclIntegerIterator); overload;
 procedure Reverse(const First, Last: IJclCardinalIterator); overload;
 procedure Reverse(const First, Last: IJclInt64Iterator); overload;
-{$IFNDEF CLR}
 procedure Reverse(const First, Last: IJclPtrIterator); overload;
-{$ENDIF CLR}
 procedure Reverse(const First, Last: IJclIterator); overload;
 
 procedure QuickSort(const AList: IJclIntfList; L, R: Integer; AComparator: TIntfCompare); overload;
@@ -311,9 +293,7 @@ procedure QuickSort(const AList: IJclExtendedList; L, R: Integer; AComparator: T
 procedure QuickSort(const AList: IJclIntegerList; L, R: Integer; AComparator: TIntegerCompare); overload;
 procedure QuickSort(const AList: IJclCardinalList; L, R: Integer; AComparator: TCardinalCompare); overload;
 procedure QuickSort(const AList: IJclInt64List; L, R: Integer; AComparator: TInt64Compare); overload;
-{$IFNDEF CLR}
 procedure QuickSort(const AList: IJclPtrList; L, R: Integer; AComparator: TPtrCompare); overload;
-{$ENDIF ~CLR}
 procedure QuickSort(const AList: IJclList; L, R: Integer; AComparator: TCompare); overload;
 
 var
@@ -329,9 +309,7 @@ var
   IntegerSortProc: TIntegerSortProc = QuickSort;
   CardinalSortProc: TCardinalSortProc = QuickSort;
   Int64SortProc: TInt64SortProc = QuickSort;
-  {$IFNDEF CLR}
   PtrSortProc: TPtrSortProc = QuickSort;
-  {$ENDIF ~CLR}
   SortProc: TSortProc = QuickSort;
 
 // Sort algorithms
@@ -347,9 +325,7 @@ procedure Sort(const AList: IJclExtendedList; First, Last: Integer; AComparator:
 procedure Sort(const AList: IJclIntegerList; First, Last: Integer; AComparator: TIntegerCompare); overload;
 procedure Sort(const AList: IJclCardinalList; First, Last: Integer; AComparator: TCardinalCompare); overload;
 procedure Sort(const AList: IJclInt64List; First, Last: Integer; AComparator: TInt64Compare); overload;
-{$IFNDEF CLR}
 procedure Sort(const AList: IJclPtrList; First, Last: Integer; AComparator: TPtrCompare); overload;
-{$ENDIF ~CLR}
 procedure Sort(const AList: IJclList; First, Last: Integer; AComparator: TCompare); overload;
 
 {$IFDEF SUPPORTS_GENERICS}
@@ -523,7 +499,6 @@ begin
     Result := 0;
 end;
 
-{$IFNDEF CLR}
 function PtrSimpleCompare(Obj1, Obj2: Pointer): Integer;
 begin
   if Integer(Obj1) < Integer(Obj2) then
@@ -534,7 +509,6 @@ begin
   else
     Result := 0;
 end;
-{$ENDIF ~CLR}
 
 function SimpleCompare(Obj1, Obj2: TObject): Integer;
 begin
@@ -629,12 +603,10 @@ begin
   Result := Obj1 = Obj2;
 end;
 
-{$IFNDEF CLR}
 function PtrSimpleEqualityCompare(Obj1, Obj2: Pointer): Boolean;
 begin
   Result := Integer(Obj1) = Integer(Obj2);
 end;
-{$ENDIF ~CLR}
 
 function SimpleEqualityCompare(Obj1, Obj2: TObject): Boolean;
 begin
@@ -753,7 +725,6 @@ begin
       Break;
 end;
 
-{$IFNDEF CLR}
 procedure Apply(const First: IJclPtrIterator; Count: Integer; F: TPtrApplyFunction);
 var
   I: Integer;
@@ -764,7 +735,6 @@ begin
     else
       Break;
 end;
-{$ENDIF ~CLR}
 
 procedure Apply(const First: IJclIterator; Count: Integer; F: TApplyFunction);
 var
@@ -1159,7 +1129,6 @@ begin
       Break;
 end;
 
-{$IFNDEF CLR}
 function Find(const First: IJclPtrIterator; Count: Integer;
   APtr: Pointer; AComparator: TPtrCompare): IJclPtrIterator;
 var
@@ -1197,7 +1166,6 @@ begin
     else
       Break;
 end;
-{$ENDIF ~CLR}
 
 function Find(const First: IJclIterator; Count: Integer;
   AObject: TObject; AComparator: TCompare): IJclIterator;
@@ -1499,7 +1467,6 @@ begin
       Break;
 end;
 
-{$IFNDEF CLR}
 function CountObject(const First: IJclPtrIterator; Count: Integer;
   APtr: Pointer; AComparator: TPtrCompare): Integer;
 var
@@ -1525,7 +1492,6 @@ begin
     else
       Break;
 end;
-{$ENDIF ~CLR}
 
 function CountObject(const First: IJclIterator; Count: Integer;
   AObject: TObject; AComparator: TCompare): Integer;
@@ -1705,7 +1671,6 @@ begin
       Break;
 end;
 
-{$IFNDEF CLR}
 procedure Copy(const First: IJclPtrIterator; Count: Integer;
   const Output: IJclPtrIterator);
 var
@@ -1720,7 +1685,6 @@ begin
     else
       Break;
 end;
-{$ENDIF ~CLR}
 
 procedure Copy(const First: IJclIterator; Count: Integer;
   const Output: IJclIterator);
@@ -1839,7 +1803,6 @@ begin
     List.Add(AValue);
 end;
 
-{$IFNDEF CLR}
 procedure Generate(const List: IJclPtrList; Count: Integer;
   APtr: Pointer);
 var
@@ -1849,7 +1812,6 @@ begin
   for I := 0 to Count - 1 do
     List.Add(APtr);
 end;
-{$ENDIF ~CLR}
 
 procedure Generate(const List: IJclList; Count: Integer;
   AObject: TObject);
@@ -2013,7 +1975,6 @@ begin
       Break;
 end;
 
-{$IFNDEF CLR}
 procedure Fill(const First: IJclPtrIterator; Count: Integer;
   APtr: Pointer);
 var
@@ -2028,7 +1989,6 @@ begin
     else
       Break;
 end;
-{$ENDIF ~CLR}
 
 procedure Fill(const First: IJclIterator; Count: Integer;
   AObject: TObject);
@@ -2217,7 +2177,6 @@ begin
   end;
 end;
 
-{$IFNDEF CLR}
 procedure Reverse(const First, Last: IJclPtrIterator);
 var
   Obj: Pointer;
@@ -2234,7 +2193,6 @@ begin
     Last.SetPointer(Obj);
   end;
 end;
-{$ENDIF ~CLR}
 
 procedure Reverse(const First, Last: IJclIterator);
 var
@@ -2615,7 +2573,6 @@ begin
   until I >= R;
 end;
 
-{$IFNDEF CLR}
 procedure QuickSort(const AList: IJclPtrList; L, R: Integer;
   AComparator: TPtrCompare);
 var
@@ -2651,7 +2608,6 @@ begin
     L := I;
   until I >= R;
 end;
-{$ENDIF ~CLR}
 
 procedure QuickSort(const AList: IJclList; L, R: Integer;
   AComparator: TCompare);
@@ -2741,12 +2697,10 @@ begin
   Int64SortProc(AList, First, Last, AComparator);
 end;
 
-{$IFNDEF CLR}
 procedure Sort(const AList: IJclPtrList; First, Last: Integer; AComparator: TPtrCompare);
 begin
   PtrSortProc(AList, First, Last, AComparator);
 end;
-{$ENDIF ~CLR}
 
 procedure Sort(const AList: IJclList; First, Last: Integer; AComparator: TCompare);
 begin

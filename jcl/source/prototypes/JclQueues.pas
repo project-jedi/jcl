@@ -42,9 +42,6 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$IFDEF SUPPORTS_GENERICS}
-  {$IFDEF CLR}
-  System.Collections.Generic,
-  {$ENDIF CLR}
   JclAlgorithms,
   {$ENDIF SUPPORTS_GENERICS}
   JclBase, JclAbstractContainers, JclContainerIntf, JclSynch;
@@ -114,11 +111,9 @@ type
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;,,const ,AValue,Int64)*)
 
-  {$IFNDEF CLR}
 (*$JPPEXPANDMACRO JCLQUEUEINT(TJclPtrQueue,IJclPtrQueue,TJclPtrAbstractContainer,TDynPointerArray, IJclPtrEqualityComparer\,,
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,APtr,Pointer)*)
-  {$ENDIF ~CLR}
 
 (*$JPPEXPANDMACRO JCLQUEUEINT(TJclQueue,IJclQueue,TJclAbstractContainer,TDynObjectArray, IJclEqualityComparer\, IJclObjectOwner\,,
   protected
@@ -262,7 +257,6 @@ begin
   AssignPropertiesTo(Result);
 end;
 
-{$IFNDEF CLR}
 (*$JPPEXPANDMACRO JCLQUEUEIMP(TJclPtrQueue,,,,APtr,Pointer,nil,FreePointer)*)
 
 function TJclPtrQueue.CreateEmptyContainer: TJclAbstractContainerBase;
@@ -270,7 +264,6 @@ begin
   Result := TJclPtrQueue.Create(Size + 1);
   AssignPropertiesTo(Result);
 end;
-{$ENDIF ~CLR}
 
 (*$JPPEXPANDMACRO JCLQUEUEIMP(TJclQueue,; AOwnsObjects: Boolean,AOwnsObjects,,AObject,TObject,nil,FreeObject)*)
 

@@ -108,8 +108,8 @@ begin
   inherited Create;
   FListeners := TInterfaceList.Create;
   {$IFDEF THREADSAFE}
-  FSynchronizer := TJclMultiReadExclusiveWrite.Create{$IFNDEF CLR}(mpReaders){$ENDIF !CLR};
-  {$ENDIF}
+  FSynchronizer := TJclMultiReadExclusiveWrite.Create(mpReaders);
+  {$ENDIF THREADSAFE}
 end;
 
 destructor TJclBaseNotifier.Destroy;
@@ -117,14 +117,14 @@ begin
   {$IFDEF THREADSAFE}
   FSynchronizer.BeginWrite;
   try
-  {$ENDIF}
+  {$ENDIF THREADSAFE}
   FreeAndNil(FListeners);
   {$IFDEF THREADSAFE}
   finally
     FSynchronizer.EndWrite;
     FreeAndNil(FSynchronizer);
   end;
-  {$ENDIF}
+  {$ENDIF THREADSAFE}
   inherited Destroy;
 end;
 
@@ -133,14 +133,14 @@ begin
   {$IFDEF THREADSAFE}
   FSynchronizer.BeginWrite;
   try
-  {$ENDIF}
+  {$ENDIF THREADSAFE}
     if FListeners.IndexOf(listener) < 0 then
       FListeners.Add(listener);
   {$IFDEF THREADSAFE}
   finally
     FSynchronizer.EndWrite;
   end;
-  {$ENDIF}
+  {$ENDIF THREADSAFE}
 end;
 
 procedure TJclBaseNotifier.Notify(msg: IJclNotificationMessage);
@@ -150,14 +150,14 @@ begin
   {$IFDEF THREADSAFE}
   FSynchronizer.BeginRead;
   try
-  {$ENDIF}
+  {$ENDIF THREADSAFE}
     for idx := 0 to FListeners.Count - 1 do
       IJclListener(FListeners[idx]).Notification(msg);
   {$IFDEF THREADSAFE}
   finally
     FSynchronizer.EndRead;
   end;
-  {$ENDIF}
+  {$ENDIF THREADSAFE}
 end;
 
 procedure TJclBaseNotifier.Remove(listener: IJclListener);
@@ -167,7 +167,7 @@ begin
   {$IFDEF THREADSAFE}
   FSynchronizer.BeginWrite;
   try
-  {$ENDIF}
+  {$ENDIF THREADSAFE}
     idx := FListeners.IndexOf(listener);
     if idx < 0 then
       FListeners.Delete(idx);
@@ -175,7 +175,7 @@ begin
   finally
     FSynchronizer.EndWrite;
   end;
-  {$ENDIF}
+  {$ENDIF THREADSAFE}
 end;
 
 { TJclBaseListener }

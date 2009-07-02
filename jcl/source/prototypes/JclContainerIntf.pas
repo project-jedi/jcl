@@ -95,9 +95,7 @@ type
   {$JPPEXPANDMACRO APPLYFUNCTION(TIntegerApplyFunction,,AValue,Integer)}
   {$JPPEXPANDMACRO APPLYFUNCTION(TCardinalApplyFunction,,AValue,Cardinal)}
   {$JPPEXPANDMACRO APPLYFUNCTION(TInt64ApplyFunction,const ,AValue,Int64)}
-  {$IFNDEF CLR}
   {$JPPEXPANDMACRO APPLYFUNCTION(TPtrApplyFunction,,APtr,Pointer)}
-  {$ENDIF ~CLR}
   {$JPPEXPANDMACRO APPLYFUNCTION(TApplyFunction,,AObject,TObject)}
   {$IFDEF SUPPORTS_GENERICS}
   {$JPPEXPANDMACRO APPLYFUNCTION(TApplyFunction<T>,const ,AItem,T)}
@@ -134,9 +132,7 @@ type
   {$JPPEXPANDMACRO COMPAREFUNCTION(TIntegerCompare,,Integer)}
   {$JPPEXPANDMACRO COMPAREFUNCTION(TCardinalCompare,,Cardinal)}
   {$JPPEXPANDMACRO COMPAREFUNCTION(TInt64Compare,,Int64)}
-  {$IFNDEF CLR}
   {$JPPEXPANDMACRO COMPAREFUNCTION(TPtrCompare,,Pointer)}
-  {$ENDIF ~CLR}
   {$JPPEXPANDMACRO COMPAREFUNCTION(TCompare,,TObject)}
   {$IFDEF SUPPORTS_GENERICS}
   {$JPPEXPANDMACRO COMPAREFUNCTION(TCompare<T>,const ,T)}
@@ -173,9 +169,7 @@ type
   {$JPPEXPANDMACRO EQUALITYCOMPAREFUNCTION(TIntegerEqualityCompare,,Integer)}
   {$JPPEXPANDMACRO EQUALITYCOMPAREFUNCTION(TCardinalEqualityCompare,,Cardinal)}
   {$JPPEXPANDMACRO EQUALITYCOMPAREFUNCTION(TInt64EqualityCompare,const ,Int64)}
-  {$IFNDEF CLR}
   {$JPPEXPANDMACRO EQUALITYCOMPAREFUNCTION(TPtrEqualityCompare,,Pointer)}
-  {$ENDIF ~CLR}
   {$JPPEXPANDMACRO EQUALITYCOMPAREFUNCTION(TEqualityCompare,,TObject)}
   {$IFDEF SUPPORTS_GENERICS}
   {$JPPEXPANDMACRO EQUALITYCOMPAREFUNCTION(TEqualityCompare<T>,const ,T)}
@@ -212,9 +206,7 @@ type
   {$JPPEXPANDMACRO HASHFUNCTION(TIntegerHashConvert,,AValue,Integer)}
   {$JPPEXPANDMACRO HASHFUNCTION(TCardinalHashConvert,,AValue,Cardinal)}
   {$JPPEXPANDMACRO HASHFUNCTION(TInt64HashConvert,const ,AValue,Int64)}
-  {$IFNDEF CLR}
   {$JPPEXPANDMACRO HASHFUNCTION(TPtrHashConvert,,APtr,Pointer)}
-  {$ENDIF ~CLR}
   {$JPPEXPANDMACRO HASHFUNCTION(THashConvert,,AObject,TObject)}
   {$IFDEF SUPPORTS_GENERICS}
   {$JPPEXPANDMACRO HASHFUNCTION(THashConvert<T>,const ,AItem,T)}
@@ -400,9 +392,7 @@ type
 
 {$JPPEXPANDMACRO EQUALITYCOMPARER(IJclInt64EqualityComparer,8B2825E2-0C81-42BA-AC0D-104344CE7E56,TInt64EqualityCompare,const ,Int64)}
 
-  {$IFNDEF CLR}
 {$JPPEXPANDMACRO EQUALITYCOMPARER(IJclPtrEqualityComparer,C6B7CBF9-ECD9-4D70-85CC-4E2367A1D806,TPtrEqualityCompare,,Pointer)}
-  {$ENDIF ~CLR}
 
 {$JPPEXPANDMACRO EQUALITYCOMPARER(IJclEqualityComparer,82C67986-8365-44AB-8D56-7B0CF4F6B918,TEqualityCompare,,TObject)}
 
@@ -452,9 +442,7 @@ type
 
 {$JPPEXPANDMACRO COMPARER(IJclInt64Comparer,87C935BF-3A42-4F1F-A474-9C823939EE1C,TInt64Compare,const ,Int64)}
 
-  {$IFNDEF CLR}
 {$JPPEXPANDMACRO COMPARER(IJclPtrComparer,85557D4C-A036-477E-BA73-B5EEF43A8696,TPtrCompare,,Pointer)}
-  {$ENDIF ~CLR}
 
 {$JPPEXPANDMACRO COMPARER(IJclComparer,7B376028-56DC-4C4A-86A9-1AC19E3EDF75,TCompare,,TObject)}
 
@@ -504,9 +492,7 @@ type
 
 {$JPPEXPANDMACRO HASHCONVERTER(IJclInt64HashConverter,96CF2A71-9185-4E26-B283-457ABC3584E7,TInt64HashConvert,const ,AValue,Int64)}
 
-  {$IFNDEF CLR}
 {$JPPEXPANDMACRO HASHCONVERTER(IJclPtrHashConverter,D704CC67-CFED-44E6-9504-65D5E468FCAF,TPtrHashConvert,,Ptr,Pointer)}
-  {$ENDIF ~CLR}
 
 {$JPPEXPANDMACRO HASHCONVERTER(IJclHashConverter,2D0DD6F4-162E-41D6-8A34-489E7EACABCD,THashConvert,,AObject,TObject)}
 
@@ -651,9 +637,7 @@ type
 
 {$JPPEXPANDMACRO ITERATOR(IJclInt64Iterator,IJclAbstractIterator,573E5A51-BF76-43D7-9F93-46305BED20A8,const ,AValue,Int64,GetValue,SetValue)}
 
-  {$IFNDEF CLR}
 {$JPPEXPANDMACRO ITERATOR(IJclPtrIterator,IJclAbstractIterator,62B5501C-07AA-4D00-A85B-713B39912CDF,,APtr,Pointer,GetPointer,SetPointer)}
-  {$ENDIF ~CLR}
 
 {$JPPEXPANDMACRO ITERATOR(IJclIterator,IJclAbstractIterator,997DF9B7-9AA2-4239-8B94-14DFFD26D790,,AObject,TObject,GetObject,SetObject)}
 
@@ -703,9 +687,7 @@ type
 
 {$JPPEXPANDMACRO TREEITERATOR(IJclInt64TreeIterator,IJclInt64Iterator,C5A5E504-E19B-43AC-90B9-E4B8984BFA23,const ,AValue,Int64)}
 
-  {$IFNDEF CLR}
 {$JPPEXPANDMACRO TREEITERATOR(IJclPtrTreeIterator,IJclPtrIterator,ED4C08E6-60FC-4ED3-BD19-E6605B9BD943,,APtr,Pointer)}
-  {$ENDIF ~CLR}
 
 {$JPPEXPANDMACRO TREEITERATOR(IJclTreeIterator,IJclIterator,8B4863B0-B6B9-426E-B5B8-7AF71D264237,,AObject,TObject)}
 
@@ -755,9 +737,7 @@ type
 
 {$JPPEXPANDMACRO BINTREEITERATOR(IJclInt64BinaryTreeIterator,IJclInt64TreeIterator,5605E164-5CDD-40B1-9323-DE1CB584E289,Int64)}
 
-  {$IFNDEF CLR}
 {$JPPEXPANDMACRO BINTREEITERATOR(IJclPtrBinaryTreeIterator,IJclPtrTreeIterator,75D3DF0D-C491-43F7-B078-E658197E8051,Pointer)}
-  {$ENDIF ~CLR}
 
 {$JPPEXPANDMACRO BINTREEITERATOR(IJclBinaryTreeIterator,IJclTreeIterator,821DE28D-631C-4F23-A0B2-CC0F35B4C64D,TObject)}
 
@@ -807,9 +787,7 @@ type
 
 {$JPPEXPANDMACRO COLLECTION(IJclInt64Collection,IJclContainer,93A45BDE-3C4C-48D6-9874-5322914DFDDA,const ,AValue,Int64,IJclInt64Iterator)}
 
-  {$IFNDEF CLR}
 {$JPPEXPANDMACRO COLLECTION(IJclPtrCollection,IJclContainer,02E909A7-5B1D-40D4-82EA-A0CD97D5C811,,APtr,Pointer,IJclPtrIterator)}
-  {$ENDIF ~CLR}
 
 {$JPPEXPANDMACRO COLLECTION(IJclCollection,IJclContainer,58947EF1-CD21-4DD1-AE3D-225C3AAD7EE5,,AObject,TObject,IJclIterator)}
 
@@ -859,9 +837,7 @@ type
 
 {$JPPEXPANDMACRO LIST(IJclInt64List,IJclInt64Collection,E8D49200-91D3-4BD0-A59B-B93EC7E2074B,const ,AValue,Int64,GetValue,SetValue,Values)}
 
-  {$IFNDEF CLR}
 {$JPPEXPANDMACRO LIST(IJclPtrList,IJclPtrCollection,2CF5CF1F-C012-480C-A4CE-38BDAFB15D05,,APtr,Pointer,GetPointer,SetPointer,Pointers)}
-  {$ENDIF ~CLR}
 
 {$JPPEXPANDMACRO LIST(IJclList,IJclCollection,8ABC70AC-5C06-43EA-AFE0-D066379BCC28,,AObject,TObject,GetObject,SetObject,Objects)}
 
@@ -891,9 +867,7 @@ type
   {$JPPEXPANDMACRO SORTPROC(TIntegerSortProc,IJclIntegerList,TIntegerCompare)}
   {$JPPEXPANDMACRO SORTPROC(TCardinalSortProc,IJclCardinalList,TCardinalCompare)}
   {$JPPEXPANDMACRO SORTPROC(TInt64SortProc,IJclInt64List,TInt64Compare)}
-  {$IFNDEF CLR}
   {$JPPEXPANDMACRO SORTPROC(TPtrSortProc,IJclPtrList,TPtrCompare)}
-  {$ENDIF ~CLR}
   {$JPPEXPANDMACRO SORTPROC(TSortProc,IJclList,TCompare)}
   {$IFDEF SUPPORTS_GENERICS}
   {$JPPEXPANDMACRO SORTPROC(TSortProc<T>,IJclList<T>,TCompare<T>)}
@@ -941,9 +915,7 @@ type
 
 {$JPPEXPANDMACRO ARRAY(IJclInt64Array,IJclInt64List,D947C43D-2D04-442A-A707-39EDE7D96FC9,const ,AValue,Int64,GetValue,SetValue,Values)}
 
-  {$IFNDEF CLR}
 {$JPPEXPANDMACRO ARRAY(IJclPtrArray,IJclPtrList,D43E8D18-26B3-41A2-8D52-ED7EA2FE1AB7,,APtr,Pointer,GetPointer,SetPointer,Pointers)}
-  {$ENDIF ~CLR}
 
 {$JPPEXPANDMACRO ARRAY(IJclArray,IJclList,A69F6D35-54B2-4361-852E-097ED75E648A,,AObject,TObject,GetObject,SetObject,Objects)}
 
@@ -993,9 +965,7 @@ type
 
 {$JPPEXPANDMACRO SET(IJclInt64Set,IJclInt64Collection,ACB3127A-48EE-4F9F-B988-6AE9057780E9)}
 
-  {$IFNDEF CLR}
 {$JPPEXPANDMACRO SET(IJclPtrSet,IJclPtrCollection,26717C68-4F83-4CCB-973A-7324FBD09632)}
-  {$ENDIF ~CLR}
 
 {$JPPEXPANDMACRO SET(IJclSet,IJclCollection,0B7CDB90-8588-4260-A54C-D87101C669EA)}
 
@@ -1047,9 +1017,7 @@ type
 
 {$JPPEXPANDMACRO TREE(IJclInt64Tree,IJclInt64Collection,1925B973-8B75-4A79-A993-DF2598FF19BE,IJclInt64TreeIterator)}
 
-  {$IFNDEF CLR}
 {$JPPEXPANDMACRO TREE(IJclPtrTree,IJclPtrCollection,2C1ACA3E-3F23-4E3C-984D-151CF9776E14,IJclPtrTreeIterator)}
-  {$ENDIF ~CLR}
 
 {$JPPEXPANDMACRO TREE(IJclTree,IJclCollection,B0C658CC-FEF5-4178-A4C5-442C0DEDE207,IJclTreeIterator)}
 
@@ -1171,13 +1139,11 @@ type
 
 {$JPPEXPANDMACRO MAP(IJclInt64Int64Map,IJclContainer,EF2A2726-408A-4984-9971-DDC1B6EFC9F5,const ,Int64,IJclInt64Set,IJclInt64Collection)}
 
-  {$IFNDEF CLR}
 {$JPPEXPANDMACRO MAP(IJclPtrIntfMap,IJclContainer,B7C48542-39A0-453F-8F03-8C8CFAB0DCCF,,Pointer,IJclPtrSet,const ,IInterface,IJclIntfCollection)}
 
 {$JPPEXPANDMACRO MAP(IJclIntfPtrMap,IJclContainer,DA51D823-58DB-4D7C-9B8E-07E0FD560B57,const ,IInterface,IJclIntfSet,,Pointer,IJclPtrCollection)}
 
 {$JPPEXPANDMACRO MAP(IJclPtrPtrMap,IJclContainer,1200CB0F-A766-443F-9030-5A804C11B798,,Pointer,IJclPtrSet,IJclPtrCollection)}
-  {$ENDIF ~CLR}
 
 {$JPPEXPANDMACRO MAP(IJclIntfMap,IJclContainer,C70570C6-EDDB-47B4-9003-C637B486731D,const ,IInterface,IJclIntfSet,,TObject,IJclCollection)}
 
@@ -1221,9 +1187,7 @@ type
 
 {$JPPEXPANDMACRO MAP(IJclInt64Map,IJclContainer,4C720CE0-7A7C-41D5-BFC1-8D58A47E648F,const ,Int64,IJclInt64Set,,TObject,IJclCollection)}
 
-  {$IFNDEF CLR}
 {$JPPEXPANDMACRO MAP(IJclPtrMap,IJclContainer,2FE029A9-026C-487D-8204-AD3A28BD2FA2,,Pointer,IJclPtrSet,,TObject,IJclCollection)}
-  {$ENDIF ~CLR}
 
 {$JPPEXPANDMACRO MAP(IJclMap,IJclContainer,A7D0A882-6952-496D-A258-23D47DDCCBC4,,TObject,IJclSet,IJclCollection)}
 
@@ -1277,9 +1241,7 @@ type
 
 {$JPPEXPANDMACRO QUEUE(IJclInt64Queue,IJclContainer,96B620BB-9A90-43D5-82A7-2D818A11C8E1,const ,AValue,Int64)}
 
-  {$IFNDEF CLR}
 {$JPPEXPANDMACRO QUEUE(IJclPtrQueue,IJclContainer,1052DD37-3035-4C44-A793-54AC4B9C0B29,,APtr,Pointer)}
-  {$ENDIF ~CLR}
 
 {$JPPEXPANDMACRO QUEUE(IJclQueue,IJclContainer,7D0F9DE4-71EA-46EF-B879-88BCFD5D9610,,AObject,TObject)}
 
@@ -1395,13 +1357,11 @@ type
 
 {$JPPEXPANDMACRO SORTEDMAP(IJclInt64Int64SortedMap,IJclInt64Int64Map,168581D2-9DD3-46D0-934E-EA0CCE5E3C0C,const ,Int64)}
 
-  {$IFNDEF CLR}
 {$JPPEXPANDMACRO SORTEDMAP(IJclPtrIntfSortedMap,IJclPtrIntfMap,6D7B8042-3CBC-4C8F-98B5-69AFAA104532,,Pointer)}
 
 {$JPPEXPANDMACRO SORTEDMAP(IJclIntfPtrSortedMap,IJclIntfPtrMap,B054BDA2-536F-4C16-B6BB-BB64FA0818B3,const ,IInterface)}
 
 {$JPPEXPANDMACRO SORTEDMAP(IJclPtrPtrSortedMap,IJclPtrPtrMap,F1FAE922-0212-41D0-BB4E-76A8AB2CAB86,,Pointer)}
-  {$ENDIF ~CLR}
 
 {$JPPEXPANDMACRO SORTEDMAP(IJclIntfSortedMap,IJclIntfMap,3CED1477-B958-4109-9BDA-7C84B9E063B2,const ,IInterface)}
 
@@ -1445,9 +1405,7 @@ type
 
 {$JPPEXPANDMACRO SORTEDMAP(IJclInt64SortedMap,IJclInt64Map,06C03F90-7DE9-4043-AA56-AAE071D8BD50,const ,Int64)}
 
-  {$IFNDEF CLR}
 {$JPPEXPANDMACRO SORTEDMAP(IJclPtrSortedMap,IJclPtrMap,578918DB-6A4A-4A9D-B44E-AE3E8FF70818,,Pointer)}
-  {$ENDIF ~CLR}
 
 {$JPPEXPANDMACRO SORTEDMAP(IJclSortedMap,IJclMap,F317A70F-7851-49C2-9DCF-092D8F4D4F98,,TObject)}
 
@@ -1497,9 +1455,7 @@ type
 
 {$JPPEXPANDMACRO SORTEDSET(IJclInt64SortedSet,IJclInt64Set,4C1C3FCA-6169-4A2F-B044-91AC2AA2E954,const ,Int64)}
 
-  {$IFNDEF CLR}
 {$JPPEXPANDMACRO SORTEDSET(IJclPtrSortedSet,IJclPtrSet,F3A3183C-0820-425C-9446-E0838F0ADAD8,,Pointer)}
-  {$ENDIF ~CLR}
 
 {$JPPEXPANDMACRO SORTEDSET(IJclSortedSet,IJclSet,A3D23E76-ADE9-446C-9B97-F49FCE895D9F,,TObject)}
 
@@ -1549,9 +1505,7 @@ type
 
 {$JPPEXPANDMACRO STACK(IJclInt64Stack,IJclContainer,D689EB8F-2746-40E9-AD1B-7E656475FC64,const ,AValue,Int64)}
 
-  {$IFNDEF CLR}
 {$JPPEXPANDMACRO STACK(IJclPtrStack,IJclContainer,AD11D06C-E0E1-4EDE-AA2F-BC8BDD972B73,,APtr,Pointer)}
-  {$ENDIF ~CLR}
 
 {$JPPEXPANDMACRO STACK(IJclStack,IJclContainer,E07E0BD8-A831-41B9-B9A0-7199BD4873B9,,AObject,TObject)}
 
@@ -1657,132 +1611,84 @@ uses
 
 constructor EJclOutOfBoundsError.Create;
 begin
-  {$IFDEF CLR}
-  inherited Create(RsEOutOfBounds);
-  {$ELSE ~CLR}
   inherited CreateRes(@RsEOutOfBounds);
-  {$ENDIF ~CLR}
 end;
 
 //=== { EJclNoSuchElementError } =============================================
 
 constructor EJclNoSuchElementError.Create(const Value: string);
 begin
-  {$IFDEF CLR}
-  inherited Create(Format(RsEValueNotFound, [Value]));
-  {$ELSE ~CLR}
   inherited CreateResFmt(@RsEValueNotFound, [Value]);
-  {$ENDIF ~CLR}
 end;
 
 //=== { EJclDuplicateElementError } ==========================================
 
 constructor EJclDuplicateElementError.Create;
 begin
-  {$IFDEF CLR}
-  inherited Create(RsEDuplicateElement);
-  {$ELSE ~CLR}
   inherited CreateRes(@RsEDuplicateElement);
-  {$ENDIF ~CLR}
 end;
 
 //=== { EJclIllegalQueueCapacityError } ======================================
 
 constructor EJclIllegalQueueCapacityError.Create;
 begin
-  {$IFDEF CLR}
-  inherited Create(RsEIllegalQueueCapacity);
-  {$ELSE ~CLR}
   inherited CreateRes(@RsEIllegalQueueCapacity);
-  {$ENDIF ~CLR}
 end;
 
 //=== { EJclNoCollectionError } ==============================================
 
 constructor EJclNoCollectionError.Create;
 begin
-  {$IFDEF CLR}
-  inherited Create(RsENoCollection);
-  {$ELSE ~CLR}
   inherited CreateRes(@RsENoCollection);
-  {$ENDIF ~CLR}
 end;
 
 //=== { EJclOperationNotSupportedError } =====================================
 
 constructor EJclOperationNotSupportedError.Create;
 begin
-  {$IFDEF CLR}
-  inherited Create(RsEOperationNotSupported);
-  {$ELSE ~CLR}
   inherited CreateRes(@RsEOperationNotSupported);
-  {$ENDIF ~CLR}
 end;
 
 //=== { EJclIllegalStateOperationError } =====================================
 
 constructor EJclIllegalStateOperationError.Create;
 begin
-  {$IFDEF CLR}
-  inherited Create(RsEIllegalStateOperation);
-  {$ELSE ~CLR}
   inherited CreateRes(@RsEIllegalStateOperation);
-  {$ENDIF ~CLR}
 end;
 
 //=== { EJclNoComparerError } ================================================
 
 constructor EJclNoComparerError.Create;
 begin
-  {$IFDEF CLR}
-  inherited Create(RsENoComparer);
-  {$ELSE ~CLR}
   inherited CreateRes(@RsENoComparer);
-  {$ENDIF ~CLR}
 end;
 
 //=== { EJclNoEqualityComparerError } ========================================
 
 constructor EJclNoEqualityComparerError.Create;
 begin
-  {$IFDEF CLR}
-  inherited Create(RsENoEqualityComparer);
-  {$ELSE ~CLR}
   inherited CreateRes(@RsENoEqualityComparer);
-  {$ENDIF ~CLR}
 end;
 
 //=== { EJclNoHashConverterError } ===========================================
 
 constructor EJclNoHashConverterError.Create;
 begin
-  {$IFDEF CLR}
-  inherited Create(RsENoHashConverter);
-  {$ELSE ~CLR}
   inherited CreateRes(@RsENoHashConverter);
-  {$ENDIF ~CLR}
 end;
 
 //=== { EJclAssignError } ====================================================
 
 constructor EJclAssignError.Create;
 begin
-  {$IFDEF CLR}
-  inherited Create(RsEAssignError);
-  {$ELSE ~CLR}
   inherited CreateRes(@RsEAssignError);
-  {$ENDIF ~CLR}
 end;
 
 //=== { EJclReadOnlyError } ==================================================
 
 constructor EJclReadOnlyError.Create;
 begin
-  {$IFDEF CLR}
-  inherited Create(RsEReadOnlyError);
-  {$ELSE ~CLR}
   inherited CreateRes(@RsEReadOnlyError);
-  {$ENDIF ~CLR}
 end;
 
 {$IFDEF UNITVERSIONING}

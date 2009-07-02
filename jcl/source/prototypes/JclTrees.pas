@@ -42,9 +42,6 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$IFDEF SUPPORTS_GENERICS}
-  {$IFDEF CLR}
-  System.Collections.Generic,
-  {$ENDIF CLR}
   JclAlgorithms,
   {$ENDIF SUPPORTS_GENERICS}
   JclBase, JclAbstractContainers, JclContainerIntf, JclSynch;
@@ -156,7 +153,6 @@ type
 
 {$JPPEXPANDMACRO JCLTREEITRINT(TJclInt64TreeIterator,TJclPreOrderInt64TreeIterator,TJclPostOrderInt64TreeIterator,TJclInt64TreeNode,TJclInt64Tree,IJclInt64Iterator,IJclInt64TreeIterator,IJclInt64EqualityComparer,const ,AValue,Int64,0,GetValue,SetValue)}
 
-{$IFNDEF CLR}
 {$JPPEXPANDMACRO JCLTREETYPESINT(TJclPtrTreeNode,IJclPtrEqualityComparer,,APtr,Pointer)}
 
 {$JPPEXPANDMACRO JCLTREEINT(TJclPtrTreeNode,TJclPtrTree,TJclPtrAbstractContainer,IJclPtrEqualityComparer,IJclPtrCollection,IJclPtrTree,IJclPtrIterator,IJclPtrTreeIterator,,
@@ -164,7 +160,6 @@ type
     function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,,APtr,Pointer,nil)}
 
 {$JPPEXPANDMACRO JCLTREEITRINT(TJclPtrTreeIterator,TJclPreOrderPtrTreeIterator,TJclPostOrderPtrTreeIterator,TJclPtrTreeNode,TJclPtrTree,IJclPtrIterator,IJclPtrTreeIterator,IJclPtrEqualityComparer,,APtr,Pointer,nil,GetPointer,SetPointer)}
-{$ENDIF ~CLR}
 
 {$JPPEXPANDMACRO JCLTREETYPESINT(TJclTreeNode,IJclEqualityComparer,,AObject,TObject)}
 
@@ -363,7 +358,6 @@ end;
 
 {$JPPEXPANDMACRO JCLTREEITRIMP(TJclInt64TreeIterator,TJclPreOrderInt64TreeIterator,TJclPostOrderInt64TreeIterator,TJclInt64TreeNode,TJclInt64Tree,IJclInt64Iterator,IJclInt64TreeIterator,IJclInt64EqualityComparer,const ,AValue,Int64,0,GetValue,SetValue,FreeInt64)}
 
-{$IFNDEF CLR}
 {$JPPEXPANDMACRO JCLTREETYPESIMP(TJclPtrTreeNode,IJclPtrEqualityComparer,,APtr,Pointer)}
 
 {$JPPEXPANDMACRO JCLTREEIMP(TJclPtrTreeNode,TJclPtrTree,TJclPreOrderPtrTreeIterator,TJclPostOrderPtrTreeIterator,IJclPtrCollection,IJclPtrIterator,IJclPtrTreeIterator,IJclPtrEqualityComparer,,,,APtr,Pointer,nil,FreePointer)}
@@ -375,7 +369,6 @@ begin
 end;
 
 {$JPPEXPANDMACRO JCLTREEITRIMP(TJclPtrTreeIterator,TJclPreOrderPtrTreeIterator,TJclPostOrderPtrTreeIterator,TJclPtrTreeNode,TJclPtrTree,IJclPtrIterator,IJclPtrTreeIterator,IJclPtrEqualityComparer,,APtr,Pointer,nil,GetPointer,SetPointer,FreePointer)}
-{$ENDIF ~CLR}
 
 {$JPPEXPANDMACRO JCLTREETYPESIMP(TJclTreeNode,IJclEqualityComparer,,AObject,TObject)}
 

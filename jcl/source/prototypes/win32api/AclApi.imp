@@ -1,6 +1,5 @@
 {$IFDEF MSWINDOWS}
 
-{$IFNDEF CLR}
 const
   aclapilib = 'advapi32.dll';
 
@@ -16,6 +15,5 @@ begin
     jmp [_SetNamedSecurityInfoW]
   end;
 end;
-{$ENDIF ~CLR}
 
 {$ENDIF MSWINDOWS}

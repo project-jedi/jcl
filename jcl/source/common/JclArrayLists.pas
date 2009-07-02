@@ -47,9 +47,6 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$IFDEF SUPPORTS_GENERICS}
-  {$IFDEF CLR}
-  System.Collections.Generic,
-  {$ENDIF CLR}
   JclAlgorithms,
   {$ENDIF SUPPORTS_GENERICS}
   JclBase, JclAbstractContainers, JclContainerIntf, JclSynch;
@@ -889,7 +886,6 @@ type
     constructor Create(const AOwnList: IJclInt64List; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
   end;
 
-  {$IFNDEF CLR}
   TJclPtrArrayList = class(TJclPtrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
      IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclPtrEqualityComparer,
      IJclPtrCollection, IJclPtrList, IJclPtrArray)
@@ -970,7 +966,6 @@ type
   public
     constructor Create(const AOwnList: IJclPtrList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
   end;
-  {$ENDIF ~CLR}
 
   TJclArrayList = class(TJclAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
      IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclObjectOwner, IJclEqualityComparer,
@@ -9758,7 +9753,6 @@ begin
   FOwnList.SetValue(FCursor, AValue);
 end;
 
-{$IFNDEF CLR}
 //=== { TJclPtrArrayList } ======================================================
 
 constructor TJclPtrArrayList.Create(ACapacity: Integer);
@@ -10614,7 +10608,6 @@ begin
   CheckValid;
   FOwnList.SetPointer(FCursor, APtr);
 end;
-{$ENDIF ~CLR}
 
 //=== { TJclArrayList } ======================================================
 

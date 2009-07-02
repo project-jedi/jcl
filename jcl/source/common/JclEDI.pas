@@ -34,7 +34,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -137,11 +137,7 @@ type
 
   TEDIDataObjectDataState = (ediCreated, ediAssembled, ediDisassembled);
 
-  {$IFDEF CLR}
-  TCustomData = TObject;
-  {$ELSE ~CLR}
   TCustomData = Pointer; // backward compatibility
-  {$ENDIF ~CLR}
 
   TEDIDataObject = class(TEDIObject)
   private
@@ -541,20 +537,12 @@ end;
 
 constructor EJclEDIError.CreateID(ID: Cardinal);
 begin
-  {$IFDEF CLR}
-  Create(RsEDIErrors[ID]);
-  {$ELSE ~CLR}
   CreateRes(RsEDIErrors[ID]);
-  {$ENDIF ~CLR}
 end;
 
 constructor EJclEDIError.CreateIDFmt(ID: Cardinal; const Args: array of const);
 begin
-  {$IFDEF CLR}
-  Create(Format(RsEDIErrors[ID], Args));
-  {$ELSE ~CLR}
   CreateResFmt(RsEDIErrors[ID], Args);
-  {$ENDIF ~CLR}
 end;
 
 //=== { TEDIDelimiters } =====================================================

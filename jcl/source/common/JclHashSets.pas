@@ -48,9 +48,6 @@ uses
   {$ENDIF UNITVERSIONING}
   Classes,
   {$IFDEF SUPPORTS_GENERICS}
-  {$IFDEF CLR}
-  System.Collections.Generic,
-  {$ENDIF CLR}
   JclAlgorithms,
   {$ENDIF SUPPORTS_GENERICS}
   JclBase, JclAbstractContainers, JclContainerIntf, JclHashMaps, JclSynch;
@@ -718,7 +715,6 @@ type
     destructor Destroy; override;
   end;
 
-  {$IFNDEF CLR}
   TJclPtrHashSet = class(TJclPtrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclPtrEqualityComparer,
     IJclPtrCollection, IJclPtrSet)
@@ -778,7 +774,6 @@ type
     constructor Create(const AMap: IJclPtrMap); overload;
     destructor Destroy; override;
   end;
-  {$ENDIF ~CLR}
 
   TJclHashSet = class(TJclAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclObjectOwner, IJclEqualityComparer,
@@ -4691,7 +4686,6 @@ begin
   AssignPropertiesTo(Result);
 end;
 
-{$IFNDEF CLR}
 //=== { TJclPtrHashSet } =====================================================
 
 constructor TJclPtrHashSet.Create(const AMap: IJclPtrMap);
@@ -5051,7 +5045,6 @@ begin
   Result := TJclPtrHashSet.Create(GetCapacity);
   AssignPropertiesTo(Result);
 end;
-{$ENDIF ~CLR}
 
 //=== { TJclHashSet } =====================================================
 

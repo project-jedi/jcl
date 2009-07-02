@@ -104,11 +104,7 @@ uses
 
 procedure NoCounterError;
 begin
-  {$IFDEF CLR}
-  raise EJclCounterError.Create(RsNoCounter);
-  {$ELSE ~CLR}
   raise EJclCounterError.CreateRes(@RsNoCounter);
-  {$ENDIF ~CLR}
 end;
 
 constructor TJclCounter.Create(const Compensate: Boolean);

@@ -1,7 +1,5 @@
 {$IFDEF MSWINDOWS}
 
-{$IFNDEF CLR}
-
 const
   Ole32Lib = 'ole32.dll';
   
@@ -30,7 +28,5 @@ begin
     jmp [_StgOpenStorageEx]
   end;
 end;
-
-{$ENDIF ~CLR}
 
 {$ENDIF MSWINDOWS}

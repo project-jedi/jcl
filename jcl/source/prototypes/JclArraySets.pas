@@ -25,7 +25,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -43,9 +43,6 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$IFDEF SUPPORTS_GENERICS}
-  {$IFDEF CLR}
-  System.Collections.Generic,
-  {$ENDIF CLR}
   JclAlgorithms,
   {$ENDIF SUPPORTS_GENERICS}
   JclBase, JclAbstractContainers, JclContainerIntf, JclArrayLists, JclSynch;
@@ -115,11 +112,9 @@ type
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;,,const ,AValue,Int64)*)
 
-  {$IFNDEF CLR}
 (*$JPPEXPANDMACRO JCLARRAYSETINT(TJclPtrArraySet,TJclPtrArrayList,IJclPtrCollection,IJclPtrList,IJclPtrArray,IJclPtrSet, IJclPtrEqualityComparer\, IJclPtrComparer\,,
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,APtr,Pointer)*)
-  {$ENDIF ~CLR}
 
 (*$JPPEXPANDMACRO JCLARRAYSETINT(TJclArraySet,TJclArrayList,IJclCollection,IJclList,IJclArray,IJclSet, IJclObjectOwner\, IJclEqualityComparer\, IJclComparer\,,
   protected
@@ -266,7 +261,6 @@ begin
   AssignPropertiesTo(Result);
 end;
 
-{$IFNDEF CLR}
 (*$JPPEXPANDMACRO JCLARRAYSETIMP(TJclPtrArraySet,IJclPtrCollection,IJclPtrIterator,,APtr,Pointer,nil,GetPointer)*)
 
 function TJclPtrArraySet.CreateEmptyContainer: TJclAbstractContainerBase;
@@ -274,7 +268,6 @@ begin
   Result := TJclPtrArraySet.Create(Size);
   AssignPropertiesTo(Result);
 end;
-{$ENDIF ~CLR}
 
 (*$JPPEXPANDMACRO JCLARRAYSETIMP(TJclArraySet,IJclCollection,IJclIterator,,AObject,TObject,nil,GetObject)*)
 

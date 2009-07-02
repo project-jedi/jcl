@@ -1,5 +1,3 @@
-{$IFNDEF CLR}
-
 const
   PowrprofLib = 'PowrProf.dll';
   
@@ -54,5 +52,3 @@ begin
     jmp [_SetSuspendState]
   end;
 end;
-
-{$ENDIF ~CLR}

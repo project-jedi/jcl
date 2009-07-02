@@ -1,6 +1,4 @@
 
-{$IFNDEF CLR}
-
 const
   IMAGE_SEPARATION = (64*1024);
   {$EXTERNALSYM IMAGE_SEPARATION}
@@ -82,8 +80,6 @@ function ImageRvaToSection(NtHeaders: PImageNtHeaders; Base: Pointer; Rva: ULONG
 function ImageRvaToVa(NtHeaders: PImageNtHeaders; Base: Pointer; Rva: ULONG;
   LastRvaSection: PPImageSectionHeader): Pointer; stdcall;
 {$EXTERNALSYM ImageRvaToVa}
-
-{$ENDIF ~CLR}
 
 // line 461
 

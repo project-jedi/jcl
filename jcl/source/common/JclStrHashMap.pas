@@ -59,38 +59,12 @@ function CaseSensitiveTraits: TStringHashMapTraits;
 function CaseInsensitiveTraits: TStringHashMapTraits;
 
 type
-  {$IFDEF CLR}
-  PUserData = TObject;
-  PData = TObject;
-
-  TIterateFunc = function(AUserData: PUserData; const AStr: string; var APtr): Boolean;
-  TIterateMethod = function(AUserData: PUserData; const AStr: string; var APtr): Boolean of object;
-  {$ELSE ~CLR}
   PUserData = Pointer;
   PData = Pointer;
 
   TIterateFunc = function(AUserData: PUserData; const AStr: string; var APtr: PData): Boolean;
   TIterateMethod = function(AUserData: PUserData; const AStr: string; var APtr: PData): Boolean of object;
-  {$ENDIF ~CLR}
 
-  {$IFDEF CLR}
-  THashNode = class;
-  PHashNode = THashNode;
-  PPHashNode = PHashNode;
-  THashNode = class
-    Str: string;
-    Ptr: TObject;
-    Left: PHashNode;
-    Right: PHashNode;
-  end;
-
-  { Internal iterate function pointer type used by the protected
-    TStringHashMap.NodeIterate method. }
-  TNodeIterateFunc = procedure(AUserData: TObject; ANode: PPHashNode);
-
-  THashArray = array of PHashNode;
-  PHashArray = THashArray;
-  {$ELSE ~CLR}
   PPHashNode = ^PHashNode;
   PHashNode = ^THashNode;
   THashNode = record
@@ -106,8 +80,6 @@ type
 
   PHashArray = ^THashArray;
   THashArray = array [0..MaxInt div SizeOf(PHashNode) - 1] of PHashNode;
-  {$ENDIF ~CLR}
-
 
   TStringHashMap = class(TObject)
   private
@@ -151,9 +123,9 @@ type
 function StrHash(const S: string): THashValue;
 function TextHash(const S: string): THashValue;
 function DataHash(var AValue; ASize: Cardinal): THashValue;
-function Iterate_FreeObjects(AUserData: PUserData; const AStr: string; var AData {$IFNDEF CLR}: PData{$ENDIF}): Boolean;
-function Iterate_Dispose(AUserData: PUserData; const AStr: string; var AData {$IFNDEF CLR}: PData{$ENDIF}): Boolean;
-function Iterate_FreeMem(AUserData: PUserData; const AStr: string; var AData {$IFNDEF CLR}: PData{$ENDIF}): Boolean;
+function Iterate_FreeObjects(AUserData: PUserData; const AStr: string; var AData: PData): Boolean;
+function Iterate_Dispose(AUserData: PUserData; const AStr: string; var AData: PData): Boolean;
+function Iterate_FreeMem(AUserData: PUserData; const AStr: string; var AData: PData): Boolean;
 
 type
   TCaseSensitiveTraits = class(TStringHashMapTraits)
@@ -221,31 +193,23 @@ begin
   Result := GlobalCaseInsensitiveTraits;
 end;
 
-function Iterate_FreeObjects(AUserData: PUserData; const AStr: string; var AData {$IFNDEF CLR}: PData{$ENDIF}): Boolean;
+function Iterate_FreeObjects(AUserData: PUserData; const AStr: string; var AData: PData): Boolean;
 begin
   TObject(AData).Free;
   AData := nil;
   Result := True;
 end;
 
-function Iterate_Dispose(AUserData: PUserData; const AStr: string; var AData {$IFNDEF CLR}: PData{$ENDIF}): Boolean;
+function Iterate_Dispose(AUserData: PUserData; const AStr: string; var AData: PData): Boolean;
 begin
-  {$IFDEF CLR}
-  TObject(AData).Free;
-  {$ELSE ~CLR}
   Dispose(AData);
-  {$ENDIF ~CLR}
   AData := nil;
   Result := True;
 end;
 
-function Iterate_FreeMem(AUserData: PUserData; const AStr: string; var AData {$IFNDEF CLR}: PData{$ENDIF}): Boolean;
+function Iterate_FreeMem(AUserData: PUserData; const AStr: string; var AData: PData): Boolean;
 begin
-  {$IFDEF CLR}
-  TObject(AData).Free;
-  {$ELSE ~CLR}
   FreeMem(AData);
-  {$ENDIF ~CLR}
   AData := nil;
   Result := True;
 end;
@@ -256,13 +220,6 @@ end;
 {$ENDIF}
 
 function StrHash(const S: string): Cardinal;
-{$IFDEF CLR}
-begin
-  Result := 0;
-  if S <> nil then
-    Result := S.GetHashCode
-end;
-{$ELSE ~CLR}
 const
   cLongBits = 32;
   cOneEight = 4;
@@ -288,16 +245,8 @@ begin
     Inc(P);
   end;
 end;
-{$ENDIF ~CLR}
 
 function TextHash(const S: string): Cardinal;
-{$IFDEF CLR}
-begin
-  Result := 0;
-  if S <> nil then
-    Result := S.GetHashCode
-end;
-{$ELSE ~CLR}
 const
   cLongBits = 32;
   cOneEight = 4;
@@ -323,16 +272,8 @@ begin
     Inc(P);
   end;
 end;
-{$ENDIF ~CLR}
 
 function DataHash(var AValue; ASize: Cardinal): THashValue;
-{$IFDEF CLR}
-begin
-  Result := 0;
-  if TObject(AValue) <> nil then
-    Result := TObject(AValue).GetHashCode
-end;
-{$ELSE ~CLR}
 const
   cLongBits = 32;
   cOneEight = 4;
@@ -356,7 +297,6 @@ begin
     Inc(P);
   end;
 end;
-{$ENDIF ~CLR}
 
 {$IFDEF OVERFLOWCHECKS_ON}
 {$Q+}
@@ -367,11 +307,7 @@ end;
 constructor TStringHashMap.Create(ATraits: TStringHashMapTraits; AHashSize: Cardinal);
 begin
   inherited Create;
-  {$IFDEF CLR}
-  Assert(ATraits <> nil, RsStringHashMapNoTraits);
-  {$ELSE ~CLR}
   Assert(ATraits <> nil, LoadResString(@RsStringHashMapNoTraits));
-  {$ENDIF ~CLR}
   SetHashSize(AHashSize);
   FTraits := ATraits;
 end;
@@ -384,15 +320,6 @@ begin
 end;
 
 type
-  {$IFDEF CLR}
-  TCollectNodeNode = class;
-  PCollectNodeNode = TCollectNodeNode;
-  TCollectNodeNode = class
-    Next: PCollectNodeNode;
-    Str: string;
-    Ptr: TObject;
-  end;
-  {$ELSE ~CLR}
   PPCollectNodeNode = ^PCollectNodeNode;
   PCollectNodeNode = ^TCollectNodeNode;
   TCollectNodeNode = record
@@ -400,10 +327,8 @@ type
     Str: string;
     Ptr: Pointer;
   end;
-  {$ENDIF ~CLR}
 
 
-{$IFNDEF CLR}
 procedure NodeIterate_CollectNodes(AUserData: PUserData; ANode: PPHashNode);
 var
   PPCnn: PPCollectNodeNode;
@@ -417,7 +342,6 @@ begin
   PCnn^.Str := ANode^^.Str;
   PCnn^.Ptr := ANode^^.Ptr;
 end;
-{$ENDIF ~CLR}
 
 procedure TStringHashMap.SetHashSize(AHashSize: Cardinal);
 var

@@ -32,7 +32,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                       $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -49,9 +49,6 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$IFDEF SUPPORTS_GENERICS}
-  {$IFDEF CLR}
-  System.Collections.Generic,
-  {$ENDIF CLR}
   JclAlgorithms,
   {$ENDIF SUPPORTS_GENERICS}
   Classes,
@@ -892,7 +889,6 @@ type
     constructor Create(const OwnList: IJclInt64List; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
   end;
 
-  {$IFNDEF CLR}
   TJclPtrVector = class(TJclPtrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclPtrEqualityComparer,
     IJclPtrCollection, IJclPtrList, IJclPtrArray)
@@ -973,7 +969,6 @@ type
   public
     constructor Create(const OwnList: IJclPtrList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
   end;
-  {$ENDIF ~CLR}
 
   TJclVector = class(TJclAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclObjectOwner, IJclEqualityComparer,
@@ -9195,7 +9190,6 @@ begin
   FOwnList.SetValue(FCursor, AValue);
 end;
 
-{$IFNDEF CLR}
 //=== { TJclPtrVector } ======================================================
 
 constructor TJclPtrVector.Create(ACapacity: Integer);
@@ -9995,7 +9989,6 @@ begin
   CheckValid;
   FOwnList.SetPointer(FCursor, APtr);
 end;
-{$ENDIF ~CLR}
 
 //=== { TJclVector } ======================================================
 

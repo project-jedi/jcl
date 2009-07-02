@@ -626,7 +626,6 @@ const
     (Range:(RangeStart: $F0000; RangeEnd: $FFFFF); Name: 'Supplementary Private Use Area-A'),
     (Range:(RangeStart: $100000; RangeEnd: $10FFFF); Name: 'Supplementary Private Use Area-B'));
 
-{$IFNDEF CLR}
 type
   TWideStrings = class;
 
@@ -1131,7 +1130,6 @@ function WideDecompose(const S: WideString; Compatible: Boolean): WideString;
 function WideExtractQuotedStr(var Src: PWideChar; Quote: WideChar): WideString;
 function WideQuotedStr(const S: WideString; Quote: WideChar): WideString;
 function WideStringOfChar(C: WideChar; Count: Cardinal): WideString;
-{$ENDIF ~CLR}
 
 // case conversion function
 type
@@ -1148,13 +1146,11 @@ function WideTitleCase(const S: WideString): WideString; overload; {$IFDEF SUPPO
 function WideUpperCase(C: WideChar): WideString; overload; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 function WideUpperCase(const S: WideString): WideString; overload; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 
-{$IFNDEF CLR}
 function WideNormalize(const S: WideString; Form: TNormalizationForm): WideString;
 function WideSameText(const Str1, Str2: WideString): Boolean;
 function WideTrim(const S: WideString): WideString;
 function WideTrimLeft(const S: WideString): WideString;
 function WideTrimRight(const S: WideString): WideString;
-{$ENDIF ~CLR}
 
 type
   // result type for number retrieval functions
@@ -1234,7 +1230,6 @@ function UnicodeIsHan(C: UCS4): Boolean;
 function UnicodeIsHangul(C: UCS4): Boolean;
 
 // Utility functions
-{$IFNDEF CLR}
 function CharSetFromLocale(Language: LCID): Byte;
 function GetCharSetFromLocale(Language: LCID; out FontCharSet: Byte): Boolean;
 function CodePageFromLocale(Language: LCID): Integer;
@@ -1246,7 +1241,6 @@ function KeyUnicode(C: Char): WideChar;
 function StringToWideStringEx(const S: AnsiString; CodePage: Word): WideString;
 function TranslateString(const S: AnsiString; CP1, CP2: Word): AnsiString;
 function WideStringToStringEx(const WS: WideString; CodePage: Word): AnsiString;
-{$ENDIF ~CLR}
 
 type
   TCompareFunc = function (const W1, W2: WideString; Locale: LCID): Integer;
@@ -1312,9 +1306,6 @@ uses
   {$IFNDEF UNICODE_RAW_DATA}
   JclCompression,
   {$ENDIF ~UNICODE_RAW_DATA}
-  {$IFDEF CLR}
-  Borland.Vcl.WinUtils,
-  {$ENDIF CLR}
   JclResources, JclSynch, JclSysUtils, JclSysInfo, JclStringConversions;
 
 const
@@ -1452,9 +1443,7 @@ begin
             for J := 0 to Size - 1 do
               for K := Buffer[J].Start to Buffer[J].Stop do
               begin
-                {$IFNDEF CLR}
                 Assert(K < $1000000, LoadResString(@RsCategoryUnicodeChar));
-                {$ENDIF ~CLR}
 
                 First := (K shr 16) and $FF;
                 Second := (K shr 8) and $FF;
@@ -1482,9 +1471,7 @@ function CategoryLookup(Code: Cardinal; Cats: TCharacterCategories): Boolean; ov
 var
   First, Second, Third: Byte;
 begin
-  {$IFNDEF CLR}
   Assert(Code < $1000000, LoadResString(@RsCategoryUnicodeChar));
-  {$ENDIF ~CLR}
 
   // load property data if not already done
   if not CategoriesLoaded then
@@ -1533,9 +1520,7 @@ begin
         begin
           // a) read actual code point
           Code := Stream.ReadInteger;
-          {$IFNDEF CLR}
           Assert(Code < $1000000, LoadResString(@RsCasedUnicodeChar));
-          {$ENDIF ~CLR}
 
           // if there is no high byte entry in the first stage table then create one
           First := (Code shr 16) and $FF;
@@ -1596,9 +1581,7 @@ function CaseLookup(Code: Cardinal; CaseType: TCaseType; var Mapping: TUCS4Array
 var
   First, Second, Third: Byte;
 begin
-  {$IFNDEF CLR}
   Assert(Code < $1000000, LoadResString(@RsCasedUnicodeChar));
-  {$ENDIF ~CLR}
 
   // load case mapping data if not already done
   if not CaseDataLoaded then
@@ -1710,9 +1693,7 @@ begin
         begin
           Code := Stream.ReadInteger;
 
-          {$IFNDEF CLR}
           Assert((Code and not $40000000) < $1000000, LoadResString(@RsDecomposedUnicodeChar));
-          {$ENDIF ~CLR}
 
           // if there is no high byte entry in the first stage table then create one
           First := (Code shr 16) and $FF;
@@ -1782,9 +1763,7 @@ function UnicodeDecompose(Code: UCS4; Compatible: Boolean): TUCS4Array;
 var
   First, Second, Third: Byte;
 begin
-  {$IFNDEF CLR}
   Assert((Code and not $40000000) < $1000000, LoadResString(@RsDecomposedUnicodeChar));
-  {$ENDIF ~CLR}
 
   // load decomposition data if not already done
   if not DecompositionsLoaded then
@@ -1875,9 +1854,7 @@ begin
               for K := Buffer[J].Start to Buffer[J].Stop do
               begin
                 // (outchy) TODO: handle in a cleaner way
-                {$IFNDEF CLR}
                 Assert(K < $1000000, LoadResString(@RsCombiningClassUnicodeChar));
-                {$ENDIF ~CLR}
                 First := (K shr 16) and $FF;
                 Second := (K shr 8) and $FF;
                 Third := K and $FF;
@@ -1903,9 +1880,7 @@ function CanonicalCombiningClass(Code: Cardinal): Cardinal;
 var
   First, Second, Third: Byte;
 begin
-  {$IFNDEF CLR}
   Assert(Code < $1000000, LoadResString(@RsCombiningClassUnicodeChar));
-  {$ENDIF ~CLR}
 
   // load combining class data if not already done
   if not CCCsLoaded then
@@ -2134,8 +2109,6 @@ begin
 end;
 
 //=== { TSearchEngine } ======================================================
-
-{$IFNDEF CLR}
 
 constructor TSearchEngine.Create(AOwner: TWideStrings);
 begin
@@ -6889,7 +6862,6 @@ begin
   if Result then
     Result := StrICompW(PWideChar(Str1), PWideChar(Str2)) = 0;
 end;
-{$ENDIF ~CLR}
 
 //----------------- general purpose case mapping ---------------------------------------------------
 
@@ -7349,7 +7321,6 @@ begin
   Result := (C >= $AC00) and (C <= $D7FF);
 end;
 
-{$IFNDEF CLR}
 // I need to fix a problem (introduced by MS) here. The first parameter can be a pointer
 // (and is so defined) or can be a normal DWORD, depending on the dwFlags parameter.
 // As usual, lpSrc has been translated to a var parameter. But this does not work in
@@ -7510,19 +7481,15 @@ begin
   Result:= WideStringToStringEx(StringToWideStringEx(S, CP1), CP2);
 end;
 
-{$ENDIF ~CLR}
-
 procedure PrepareUnicodeData;
 // Prepares structures which are globally needed.
 begin
   LoadInProgress := TJclCriticalSection.Create;
 
-  {$IFNDEF CLR}
   if (Win32Platform and VER_PLATFORM_WIN32_NT) <> 0 then
     @WideCompareText := @CompareTextWinNT
   else
     @WideCompareText := @CompareTextWin95;
-  {$ENDIF ~CLR}
 end;
 
 procedure FreeUnicodeData;

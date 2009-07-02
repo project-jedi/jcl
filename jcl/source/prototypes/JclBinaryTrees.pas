@@ -25,7 +25,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -43,9 +43,6 @@ uses
   {$ENDIF UNITVERSIONING}
   Classes,
   {$IFDEF SUPPORTS_GENERICS}
-  {$IFDEF CLR}
-  System.Collections.Generic,
-  {$ENDIF CLR}
   {$ENDIF SUPPORTS_GENERICS}
   JclBase, JclAbstractContainers, JclAlgorithms, JclContainerIntf, JclSynch;
 {$I containers\JclContainerCommon.imp}
@@ -157,7 +154,6 @@ type
 
 {$JPPEXPANDMACRO JCLBINARYTREEITRINT(TJclInt64BinaryTreeIterator,TJclPreOrderInt64BinaryTreeIterator,TJclInOrderInt64BinaryTreeIterator,TJclPostOrderInt64BinaryTreeIterator,IJclInt64Iterator,IJclInt64TreeIterator,IJclInt64BinaryTreeIterator,IJclInt64Collection,IJclInt64EqualityComparer,TJclInt64BinaryNode,const ,AValue,Int64,GetValue,SetValue)}
 
-  {$IFNDEF CLR}
 (*$JPPEXPANDMACRO JCLBINARYTREETYPESINT(TJclPtrBinaryNode,Pointer)*)
 
 (*$JPPEXPANDMACRO JCLBINARYTREEINT(TJclPtrBinaryNode,TJclPtrBinaryTree,TJclPtrAbstractContainer,IJclPtrCollection,IJclPtrTree,IJclPtrIterator,IJclPtrTreeIterator, IJclPtrEqualityComparer\, IJclPtrComparer\,,
@@ -165,7 +161,6 @@ type
     function CreateEmptyContainer: TJclAbstractContainerBase; override;,ACompare: TPtrCompare,,,APtr,Pointer)*)
 
 {$JPPEXPANDMACRO JCLBINARYTREEITRINT(TJclPtrBinaryTreeIterator,TJclPreOrderPtrBinaryTreeIterator,TJclInOrderPtrBinaryTreeIterator,TJclPostOrderPtrBinaryTreeIterator,IJclPtrIterator,IJclPtrTreeIterator,IJclPtrBinaryTreeIterator,IJclPtrCollection,IJclPtrEqualityComparer,TJclPtrBinaryNode,,APtr,Pointer,GetPointer,SetPointer)}
-  {$ENDIF ~CLR}
 
 (*$JPPEXPANDMACRO JCLBINARYTREETYPESINT(TJclBinaryNode,TObject)*)
 
@@ -362,7 +357,6 @@ end;
 
 {$JPPEXPANDMACRO JCLBINARYTREEITRIMP(TJclInt64BinaryTreeIterator,TJclPreOrderInt64BinaryTreeIterator,TJclInOrderInt64BinaryTreeIterator,TJclPostOrderInt64BinaryTreeIterator,IJclInt64Iterator,IJclInt64Collection,IJclInt64EqualityComparer,TJclInt64BinaryNode,const ,AValue,Int64,0,GetValue,SetValue,FreeValue)}
 
-{$IFNDEF CLR}
 (*$JPPEXPANDMACRO JCLBINARYTREEIMP(TJclPtrBinaryTree,TJclPtrBinaryNode,TJclPreOrderPtrBinaryTreeIterator,TJclInOrderPtrBinaryTreeIterator,TJclPostOrderPtrBinaryTreeIterator,IJclPtrCollection,IJclPtrIterator,IJclPtrTreeIterator,ACompare: TPtrCompare,
   SetCompare(ACompare);,,,APtr,Pointer,nil,FreePointer)*)
 
@@ -373,7 +367,6 @@ begin
 end;
 
 {$JPPEXPANDMACRO JCLBINARYTREEITRIMP(TJclPtrBinaryTreeIterator,TJclPreOrderPtrBinaryTreeIterator,TJclInOrderPtrBinaryTreeIterator,TJclPostOrderPtrBinaryTreeIterator,IJclPtrIterator,IJclPtrCollection,IJclPtrEqualityComparer,TJclPtrBinaryNode,,APtr,Pointer,nil,GetPointer,SetPointer,FreePointer)}
-{$ENDIF ~CLR}
 
 (*$JPPEXPANDMACRO JCLBINARYTREEIMP(TJclBinaryTree,TJclBinaryNode,TJclPreOrderBinaryTreeIterator,TJclInOrderBinaryTreeIterator,TJclPostOrderBinaryTreeIterator,IJclCollection,IJclIterator,IJclTreeIterator,ACompare: TCompare; AOwnsObjects: Boolean,
   SetCompare(ACompare);,AOwnsObjects,,AObject,TObject,nil,FreeObject)*)

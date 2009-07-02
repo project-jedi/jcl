@@ -25,7 +25,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -43,9 +43,6 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$IFDEF SUPPORTS_GENERICS}
-  {$IFDEF CLR}
-  System.Collections.Generic,
-  {$ENDIF CLR}
   JclAlgorithms,
   {$ENDIF SUPPORTS_GENERICS}
   JclBase, JclSynch,
@@ -381,7 +378,6 @@ type
     function KeysEqual(const A\, B: Int64): Boolean;
     function ValuesEqual(const A\, B: Int64): Boolean;,,,const ,Int64,const ,Int64)*)
 
-  {$IFNDEF CLR}
 (*$JPPEXPANDMACRO JCLHASHMAPTYPESINT(TJclPtrIntfHashEntry,TJclPtrIntfBucket,Pointer,IInterface)*)
 
 (*$JPPEXPANDMACRO JCLHASHMAPINT(TJclPtrIntfBucket,TJclPtrIntfHashMap,TJclPtrAbstractContainer,IJclPtrIntfMap,IJclPtrSet,IJclIntfCollection,,
@@ -412,7 +408,6 @@ type
     function FreeValue(var Value: Pointer): Pointer;
     function KeysEqual(A\, B: Pointer): Boolean;
     function ValuesEqual(A\, B: Pointer): Boolean;,,,,Pointer,,Pointer)*)
-  {$ENDIF ~CLR}
 
 (*$JPPEXPANDMACRO JCLHASHMAPTYPESINT(TJclIntfHashEntry,TJclIntfBucket,IInterface,TObject)*)
 
@@ -597,7 +592,6 @@ type
   public
     property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,const ,Int64,,TObject)*)
 
-  {$IFNDEF CLR}
 (*$JPPEXPANDMACRO JCLHASHMAPTYPESINT(TJclPtrHashEntry,TJclPtrBucket,Pointer,TObject)*)
 
 (*$JPPEXPANDMACRO JCLHASHMAPINT(TJclPtrBucket,TJclPtrHashMap,TJclPtrAbstractContainer,IJclPtrMap,IJclPtrSet,IJclCollection, IJclValueOwner\,,
@@ -613,7 +607,6 @@ type
     function ValuesEqual(A\, B: TObject): Boolean;
   public
     property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,,Pointer,,TObject)*)
-  {$ENDIF ~CLR}
 
 (*$JPPEXPANDMACRO JCLHASHMAPTYPESINT(TJclHashEntry,TJclBucket,TObject,TObject)*)
 
@@ -1827,7 +1820,6 @@ begin
   Result := ItemsEqual(A, B);
 end;
 
-{$IFNDEF CLR}
 {$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(TJclPtrIntfBucket,nil,nil)}
 
 {$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclPtrArraySet.Create(Param)}
@@ -1940,7 +1932,6 @@ function TJclPtrPtrHashMap.ValuesEqual(A, B: Pointer): Boolean;
 begin
   Result := ItemsEqual(A, B);
 end;
-{$ENDIF ~CLR}
 
 {$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(TJclIntfBucket,nil,nil)}
 
@@ -2449,7 +2440,6 @@ begin
   Result := Integer(A) = Integer(B);
 end;
 
-{$IFNDEF CLR}
 {$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(TJclPtrBucket,nil,nil)}
 
 {$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclPtrArraySet.Create(Param)}
@@ -2499,7 +2489,6 @@ function TJclPtrHashMap.ValuesEqual(A, B: TObject): Boolean;
 begin
   Result := Integer(A) = Integer(B);
 end;
-{$ENDIF ~CLR}
 
 {$JPPEXPANDMACRO JCLHASHMAPTYPESIMP(TJclBucket,nil,nil)}
 

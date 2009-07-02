@@ -247,51 +247,6 @@ begin
 end;
 
 procedure SELFCLASSNAME.MoveArray(FromIndex, ToIndex, Count: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-begin
-  if FromIndex < ToIndex then
-  begin
-    for I := Count - 1 downto 0 do
-      FEntries[ToIndex + I] := FEntries[FromIndex + I];
-    if (ToIndex - FromIndex) < Count then
-      // overlapped source and target
-      for I := 0 to ToIndex - FromIndex - 1 do
-      begin
-        FEntries[FromIndex + I].Key := KEYDEFAULT;
-        FEntries[FromIndex + I].Value := VALUEDEFAULT;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        FEntries[FromIndex + I].Key := KEYDEFAULT;
-        FEntries[FromIndex + I].Value := VALUEDEFAULT;
-      end;
-  end
-  else
-  if FromIndex > ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      FEntries[ToIndex + I] := FEntries[FromIndex + I];
-    if (FromIndex - ToIndex) < Count then
-      // overlapped source and target
-      for I := Count - FromIndex + ToIndex to Count - 1 do
-      begin
-        FEntries[FromIndex + I].Key := KEYDEFAULT;
-        FEntries[FromIndex + I].Value := VALUEDEFAULT;
-      end
-    else
-      // independant
-      for I := 0 to Count - 1 do
-      begin
-        FEntries[FromIndex + I].Key := KEYDEFAULT;
-        FEntries[FromIndex + I].Value := VALUEDEFAULT;
-      end;
-  end;
-end;
-{$ELSE}
 begin
   if Count > 0 then
   begin
@@ -314,7 +269,6 @@ begin
     end;
   end;
 end;
-{$ENDIF CLR}
 
 procedure SELFCLASSNAME.PutAll(const AMap: STDMAPINTERFACENAME);
 var

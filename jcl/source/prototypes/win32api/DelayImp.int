@@ -1,5 +1,3 @@
-{$IFNDEF CLR}
-
 type
   // Microsoft version (64 bit SDK)
   {$EXTERNALSYM RVA}
@@ -47,5 +45,3 @@ type
   //{$EXTERNALSYM PImgDelayDescr}
   //PImgDelayDescr = ImgDelayDescr;
   //TImgDelayDescr = ImgDelayDescr;
-
-{$ENDIF ~CLR}

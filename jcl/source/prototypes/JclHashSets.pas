@@ -44,9 +44,6 @@ uses
   {$ENDIF UNITVERSIONING}
   Classes,
   {$IFDEF SUPPORTS_GENERICS}
-  {$IFDEF CLR}
-  System.Collections.Generic,
-  {$ENDIF CLR}
   JclAlgorithms,
   {$ENDIF SUPPORTS_GENERICS}
   JclBase, JclAbstractContainers, JclContainerIntf, JclHashMaps, JclSynch;
@@ -176,13 +173,11 @@ type
   public
     constructor Create(ACapacity: Integer); overload;,,const ,AValue,Int64)*)
 
-  {$IFNDEF CLR}
 (*$JPPEXPANDMACRO JCLHASHSETINT(TJclPtrHashSet,TJclPtrAbstractContainer,IJclPtrCollection,IJclPtrSet,IJclPtrMap,IJclPtrIterator, IJclPtrEqualityComparer\,,
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACapacity: Integer); overload;,,,AValue,Pointer)*)
-  {$ENDIF ~CLR}
 
 (*$JPPEXPANDMACRO JCLHASHSETINT(TJclHashSet,TJclAbstractContainer,IJclCollection,IJclSet,IJclMap,IJclIterator, IJclObjectOwner\, IJclEqualityComparer\,,
   protected
@@ -518,7 +513,6 @@ begin
   AssignPropertiesTo(Result);
 end;
 
-{$IFNDEF CLR}
 (*$JPPEXPANDMACRO JCLHASHSETIMP(TJclPtrHashSet,IJclPtrMap,IJclPtrCollection,IJclPtrIterator,,,AValue,Pointer)*)
 
 constructor TJclPtrHashSet.Create(ACapacity: Integer);
@@ -531,7 +525,6 @@ begin
   Result := TJclPtrHashSet.Create(GetCapacity);
   AssignPropertiesTo(Result);
 end;
-{$ENDIF ~CLR}
 
 (*$JPPEXPANDMACRO JCLHASHSETIMP(TJclHashSet,IJclMap,IJclCollection,IJclIterator,False,,AObject,TObject)*)
 

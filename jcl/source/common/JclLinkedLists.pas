@@ -46,9 +46,6 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$IFDEF SUPPORTS_GENERICS}
-  {$IFDEF CLR}
-  System.Collections.Generic,
-  {$ENDIF CLR}
   JclAlgorithms,
   {$ENDIF SUPPORTS_GENERICS}
   Classes,
@@ -919,7 +916,6 @@ type
     constructor Create(const AOwnList: IJclInt64List; ACursor: TJclInt64LinkedListItem; AValid: Boolean; AStart: TItrStart);
   end;
 
-{$IFNDEF CLR}
   TJclPtrLinkedListItem = class
   public
     Value: Pointer;
@@ -1003,7 +999,6 @@ type
   public
     constructor Create(const AOwnList: IJclPtrList; ACursor: TJclPtrLinkedListItem; AValid: Boolean; AStart: TItrStart);
   end;
-{$ENDIF ~CLR}
 
   TJclLinkedListItem = class
   public
@@ -13785,7 +13780,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-{$IFNDEF CLR}
 //=== { TJclLinkedList<T> } ==================================================
 
 constructor TJclPtrLinkedList.Create(const ACollection: IJclPtrCollection);
@@ -15040,7 +15034,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-{$ENDIF ~CLR}
 
 //=== { TJclLinkedList<T> } ==================================================
 

@@ -47,10 +47,6 @@ uses
   {$IFDEF MSWINDOWS}
   Windows, // Delphi 2005 inline
   {$ENDIF MSWINDOWS}
-  {$IFDEF CLR}
-  System.Text,
-  System.IO,
-  {$ENDIF CLR}
   SysUtils, Classes,
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
@@ -85,24 +81,6 @@ type
   //Those hash stuffs are for future use only
   //Plans are to replace current hash by this mechanism
   TJclHashKind = (hkList, hkDirect);
-  {$IFDEF CLR}
-  TJclHashElem = class(TObject)
-    Next: TJclHashElem;
-    Obj: TObject;
-  end;
-  PJclHashElem = TJclHashElem;
-  TJclHashRecord = class;
-  TJclHashList = array [0..25] of TJclHashRecord;
-  PJclHashList = TJclHashList;
-  TJclHashRecord = class(TObject)
-  public
-    Count: Byte;
-    Kind: TJclHashKind;
-    List: PJclHashList;
-    FirstElem: PJclHashElem;
-  end;
-  PJclHashRecord = TJclHashRecord;
-  {$ELSE ~CLR}
   PJclHashElem = ^TJclHashElem;
   TJclHashElem = packed record
     Next: PJclHashElem;
@@ -117,7 +95,6 @@ type
       hkList: (List: PJclHashList);
       hkDirect: (FirstElem: PJclHashElem);
   end;
-  {$ENDIF ~CLR}
 
   TJclSimpleHashTable = class(TObject)
   private
@@ -136,7 +113,7 @@ type
     FValue: string;
     FParent: TJclSimpleXMLProps;
     FNameSpace: string;
-    FData: {$IFDEF CLR} TObject {$ELSE} Pointer {$ENDIF};
+    FData: Pointer;
     function GetBoolValue: Boolean;
     procedure SetBoolValue(const Value: Boolean);
     procedure SetName(const Value: string);
@@ -160,7 +137,7 @@ type
     property FloatValue: Extended read GetFloatValue write SetFloatValue;
     property NameSpace: string read FNameSpace write FNameSpace;
 
-    property Data: {$IFDEF CLR} TObject {$ELSE} Pointer {$ENDIF} read FData write FData;
+    property Data: Pointer read FData write FData;
   end;
 
   TJclSimpleXMLProps = class(TObject)
@@ -341,7 +318,7 @@ type
     FProps: TJclSimpleXMLProps;
     FValue: string;
     FNameSpace: string;
-    FData: {$IFDEF CLR} TObject {$ELSE} Pointer {$ENDIF};
+    FData: Pointer;
     FSimpleXML: TJclSimpleXML;
     FContainer: TJclSimpleXMLElems;
     function GetFloatValue: Extended;
@@ -371,7 +348,7 @@ type
     procedure LoadFromString(const Value: string);
     function SaveToString: string;
     procedure GetBinaryValue(Stream: TStream);
-    property Data: {$IFDEF CLR} TObject {$ELSE} Pointer {$ENDIF} read FData write FData;
+    property Data: Pointer read FData write FData;
     function GetChildIndex(const AChild: TJclSimpleXMLElem): Integer;
     function GetNamedIndex(const AChild: TJclSimpleXMLElem): Integer;
 
@@ -513,7 +490,6 @@ type
     property OnDecodeStream: TJclSimpleXMLEncodeStreamEvent read FOnDecodeStream write FOnDecodeStream;
   end;
 
-{$IFNDEF CLR}
 {$IFDEF COMPILER6_UP}
 
   TXMLVariant = class(TInvokeableVariantType)
@@ -548,7 +524,6 @@ function XMLCreate: Variant; overload;
 function VarXML: TVarType;
 
 {$ENDIF COMPILER6_UP}
-{$ENDIF !CLR}
 
 // Encodes a string into an internal format:
 // any character <= #127 is preserved
@@ -596,11 +571,9 @@ const
 var
   GlobalSorts: TList = nil;
 
-  {$IFNDEF CLR}
   {$IFDEF COMPILER6_UP}
   GlobalXMLVariant: TXMLVariant = nil;
   {$ENDIF COMPILER6_UP}
-  {$ENDIF !CLR}
 
   {$IFDEF COMPILER5}
   TrueBoolStrs: array of string;
@@ -617,7 +590,6 @@ begin
   Result := GlobalSorts;
 end;
 
-{$IFNDEF CLR}
 {$IFDEF COMPILER6_UP}
 
 function XMLVariant: TXMLVariant;
@@ -627,7 +599,6 @@ begin
   Result := GlobalXMLVariant;
 end;
 {$ENDIF COMPILER6_UP}
-{$ENDIF !CLR}
 
 procedure AddEntity(var Res: string; var ResIndex, ResLen: Integer; const Entity: string);
 var
@@ -838,19 +809,6 @@ begin
 end;
 
 {$ENDIF COMPILER5}
-
-{$IFDEF CLR}
-function TryStrToFloat(const S: string; out Value: Extended): Boolean;
-var
-  Temp: Double;
-begin
-  Result := SysUtils.TryStrToFloat(S, Temp);
-  if Result then
-    Value := Temp
-  else
-    Value := 0;
-end;
-{$ENDIF CLR}
 
 function SimpleXMLEncode(const S: string): string;
 var
@@ -3738,11 +3696,7 @@ constructor TJclSimpleHashTable.Create;
 begin
   inherited Create;
   //XXX
-  {$IFDEF CLR}
-  FList := TJclHashRecord.Create;
-  {$ELSE ~CLR}
   New(FList);
-  {$ENDIF ~CLR}
   FList.Count := 0;
   FList.Kind := hkDirect;
   FList.FirstElem := nil;
@@ -3751,9 +3705,7 @@ end;
 destructor TJclSimpleHashTable.Destroy;
 begin
   Clear;
-  {$IFNDEF CLR}
   Dispose(FList);
-  {$ENDIF !CLR}
   inherited Destroy;
 end;
 
@@ -3761,11 +3713,7 @@ procedure TJclSimpleHashTable.AddObject(const AName: string;
   AObject: TObject);
 begin
   //XXX
-  {$IFDEF CLR}
-  FList.FirstElem := TJclHashElem.Create;
-  {$ELSE ~CLR}
   New(FList.FirstElem);
-  {$ENDIF ~CLR}
   //FList.FirstElem.Value := AName;
   //FList.FirstElem.Obj := nil;
 end;
@@ -3775,7 +3723,6 @@ begin
   //XXX
 end;
 
-{$IFNDEF CLR}
 {$IFDEF COMPILER6_UP}
 
 function VarXML: TVarType;
@@ -4003,7 +3950,6 @@ begin
 end;
 
 {$ENDIF COMPILER6_UP}
-{$ENDIF !CLR}
 
 procedure TJclSimpleXMLElemsProlog.Error(const S: string);
 begin
@@ -4155,11 +4101,9 @@ initialization
   {$ENDIF UNITVERSIONING}
 
 finalization
-  {$IFNDEF CLR}
   {$IFDEF COMPILER6_UP}
   FreeAndNil(GlobalXMLVariant);
   {$ENDIF COMPILER6_UP}
-  {$ENDIF !CLR}
   FreeAndNil(GlobalSorts);
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);

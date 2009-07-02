@@ -42,9 +42,6 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$IFDEF SUPPORTS_GENERICS}
-  {$IFDEF CLR}
-  System.Collections.Generic,
-  {$ENDIF CLR}
   JclAlgorithms,
   {$ENDIF SUPPORTS_GENERICS}
   Classes,
@@ -157,7 +154,6 @@ type
 
 (*$JPPEXPANDMACRO JCLLINKEDLISTITRINT(TJclInt64LinkedListIterator,IJclInt64Iterator,IJclInt64List,IJclInt64EqualityComparer,TJclInt64LinkedListItem,const ,AValue,Int64,0,GetValue,SetValue)*)
 
-{$IFNDEF CLR}
 (*$JPPEXPANDMACRO JCLLINKEDLISTTYPESINT(TJclPtrLinkedListItem,Pointer)*)
 
 (*$JPPEXPANDMACRO JCLLINKEDLISTINT(TJclPtrLinkedListItem,TJclPtrLinkedList,TJclPtrAbstractContainer,IJclPtrCollection,IJclPtrList,IJclPtrIterator, IJclPtrEqualityComparer\,,
@@ -165,7 +161,6 @@ type
     function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,,APtr,Pointer,GetPointer,SetPointer)*)
 
 (*$JPPEXPANDMACRO JCLLINKEDLISTITRINT(TJclPtrLinkedListIterator,IJclPtrIterator,IJclPtrList,IJclPtrEqualityComparer,TJclPtrLinkedListItem,,AValue,Pointer,nil,GetPointer,SetPointer)*)
-{$ENDIF ~CLR}
 
 (*$JPPEXPANDMACRO JCLLINKEDLISTTYPESINT(TJclLinkedListItem,TObject)*)
 
@@ -363,7 +358,6 @@ end;
 (*$JPPEXPANDMACRO JCLLINKEDLISTITRIMP(TJclInt64LinkedListIterator,IJclInt64Iterator,IJclInt64List,IJclInt64EqualityComparer,TJclInt64LinkedListItem,const ,AValue,Int64,0,GetValue,SetValue)*)
 {$JPPUNDEFMACRO ITEMFREE(Item)}
 
-{$IFNDEF CLR}
 {$JPPEXPANDMACRO JCLLINKEDLISTIMP(TJclPtrLinkedList,TJclPtrLinkedListItem,IJclPtrCollection,IJclPtrList,IJclPtrIterator,TJclPtrLinkedListIterator,,,,APtr,Pointer,nil,GetPointer,SetPointer,FreePointer)}
 
 function TJclPtrLinkedList.CreateEmptyContainer: TJclAbstractContainerBase;
@@ -375,7 +369,6 @@ end;
 {$JPPDEFINEMACRO ITEMFREE(Item)Item := nil}
 (*$JPPEXPANDMACRO JCLLINKEDLISTITRIMP(TJclPtrLinkedListIterator,IJclPtrIterator,IJclPtrList,IJclPtrEqualityComparer,TJclPtrLinkedListItem,,AValue,Pointer,nil,GetPointer,SetPointer)*)
 {$JPPUNDEFMACRO ITEMFREE(Item)}
-{$ENDIF ~CLR}
 
 {$JPPEXPANDMACRO JCLLINKEDLISTIMP(TJclLinkedList,TJclLinkedListItem,IJclCollection,IJclList,IJclIterator,TJclLinkedListIterator,; AOwnsObjects: Boolean,AOwnsObjects,,AObject,TObject,nil,GetObject,SetObject,FreeObject)}
 

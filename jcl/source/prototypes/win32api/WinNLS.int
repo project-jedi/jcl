@@ -121,8 +121,6 @@ type
 
 {$IFDEF MSWINDOWS}
 
-{$IFNDEF CLR}
-
 function GetCalendarInfoA(Locale: LCID; Calendar: CALID; CalType: CALTYPE;
   lpCalData: LPSTR; cchData: Integer; lpValue: LPDWORD): Integer; stdcall;
 {$EXTERNALSYM GetCalendarInfoA}
@@ -135,7 +133,5 @@ function GetCalendarInfoW(Locale: LCID; Calendar: CALID; CalType: CALTYPE;
 function EnumCalendarInfoExW(lpCalInfoEnumProcEx: CALINFO_ENUMPROCEXW;
   Locale: LCID; Calendar: CALID; CalType: CALTYPE): BOOL; stdcall;
 {$EXTERNALSYM EnumCalendarInfoExW}
-
-{$ENDIF ~CLR}
 
 {$ENDIF MSWINDOWS}

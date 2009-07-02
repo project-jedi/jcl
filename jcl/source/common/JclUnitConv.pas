@@ -263,11 +263,7 @@ end;
 
 procedure TemperatureBelowAbsoluteError;
 begin
-  {$IFDEF CLR}
-  raise ETemperatureConversionError.Create(RsConvTempBelowAbsoluteZero);
-  {$ELSE ~CLR}
   raise ETemperatureConversionError.CreateRes(@RsConvTempBelowAbsoluteZero);
-  {$ENDIF ~CLR}
 end;
 
 function CelsiusToFahrenheit(const Temperature: Float): Float;
@@ -481,11 +477,7 @@ begin
           ttReaumur:
             Result := CelsiusToReaumur(Temperature);
         else
-          {$IFDEF CLR}
-          raise EInvalidOp.CreateFmt(RsTempConvTypeError, [cToType]);
-          {$ELSE ~CLR}
           raise EInvalidOp.CreateResFmt(@RsTempConvTypeError, [cToType]);
-          {$ENDIF ~CLR}
         end;
       end;
     { All conversions from Fahrenheit to other formats are listed here }
@@ -501,11 +493,7 @@ begin
           ttReaumur:
             Result := FahrenheitToReaumur(Temperature);
         else
-          {$IFDEF CLR}
-          raise EInvalidOp.CreateFmt(RsTempConvTypeError, [cToType]);
-          {$ELSE ~CLR}
           raise EInvalidOp.CreateResFmt(@RsTempConvTypeError, [cToType]);
-          {$ENDIF ~CLR}
         end;
       end;
     { All conversions from Kelvin to other formats are listed here }
@@ -521,11 +509,7 @@ begin
           ttReaumur:
             Result := KelvinToReaumur(Temperature);
         else
-          {$IFDEF CLR}
-          raise EInvalidOp.CreateFmt(RsTempConvTypeError, [cToType]);
-          {$ELSE ~CLR}
           raise EInvalidOp.CreateResFmt(@RsTempConvTypeError, [cToType]);
-          {$ENDIF ~CLR}
         end;
       end;
     { All conversions from Kelvin to other formats are listed here }
@@ -541,11 +525,7 @@ begin
           ttReaumur:
             Result := RankineToReaumur(Temperature);
         else
-          {$IFDEF CLR}
-          raise EInvalidOp.CreateFmt(RsTempConvTypeError, [cToType]);
-          {$ELSE ~CLR}
           raise EInvalidOp.CreateResFmt(@RsTempConvTypeError, [cToType]);
-          {$ENDIF ~CLR}
         end;
       end;
     { All conversions from Reaumur to other formats are listed here }
@@ -561,19 +541,11 @@ begin
           ttRankine:
             Result := ReaumurToRankine(Temperature);
         else
-          {$IFDEF CLR}
-          raise EInvalidOp.CreateFmt(RsTempConvTypeError, [cToType]);
-          {$ELSE ~CLR}
           raise EInvalidOp.CreateResFmt(@RsTempConvTypeError, [cToType]);
-          {$ENDIF ~CLR}
         end;
       end;
   else
-    {$IFDEF CLR}
-    raise EInvalidOp.CreateFmt(RsTempConvTypeError, [cFromType]);
-    {$ELSE ~CLR}
     raise EInvalidOp.CreateResFmt(@RsTempConvTypeError, [cFromType]);
-    {$ENDIF ~CLR}
   end;
 end;
 

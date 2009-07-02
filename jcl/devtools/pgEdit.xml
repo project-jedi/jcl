@@ -70,10 +70,7 @@
         <target name="cs1" IsBds="1"/>
         <target name="d9" IsBds="1"/>
         <target name="d10" defines="BCB" IsBds="1"/>
-        <target name="d9.net" IsDotNet="1"/>
-        <target name="d10.net" IsDotNet="1"/>
         <target name="d11" defines="BCB" IsBds="1"/>
-        <target name="d11.net" IsDotNet="1"/>
         <target name="d12" defines="BCB" IsBds="1"/>
       </targets>
       <aliases>
@@ -91,7 +88,6 @@
         <alias name="Clx" value="c6,d6,d7"/>
         <alias name="Vcl" value="c5,d5,c6,d6,d7,d9,d10,d11,d12"/>
         <alias name="Bds" value="cs1,d8,d9,d10,d11,d12"/>
-        <alias name="JclDotNet" value="d9.net,d10.net,d11.net"/>
         <alias name="OldStyleIDE" value="c5,c6,d5,d6,d7"/>
       </aliases>
       <ProjectProperties>

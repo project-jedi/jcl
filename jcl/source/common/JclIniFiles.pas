@@ -66,11 +66,6 @@ const
 
 implementation
 
-{$IFDEF CLR}
-type
-  TIniFile = TMemIniFile;
-{$ENDIF CLR}
-
 // Initialization Files
 function IniReadBool(const FileName, Section, Line: string): Boolean;
 var
@@ -115,9 +110,6 @@ begin
   Ini := TIniFile.Create(FileName);
   try
     Ini.WriteBool(Section, Line, Value);
-    {$IFDEF CLR}
-    Ini.UpdateFile;
-    {$ENDIF CLR}
   finally
     Ini.Free;
   end;
@@ -130,9 +122,6 @@ begin
   Ini := TIniFile.Create(FileName);
   try
     Ini.WriteInteger(Section, Line, Value);
-    {$IFDEF CLR}
-    Ini.UpdateFile;
-    {$ENDIF CLR}
   finally
     Ini.Free;
   end;
@@ -145,9 +134,6 @@ begin
   Ini := TIniFile.Create(FileName);
   try
     Ini.WriteString(Section, Line, Value);
-    {$IFDEF CLR}
-    Ini.UpdateFile;
-    {$ENDIF CLR}
   finally
     Ini.Free;
   end;

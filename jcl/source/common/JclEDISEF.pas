@@ -33,7 +33,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -1453,25 +1453,10 @@ end;
 procedure ParseSEGSDataOfSETSDefinition(Data: string; Segment: TEDISEFSegment;
   SEFFile: TEDISEFFile);
 
-  {$IFDEF CLR}
-  function ToPChar(const S: string): string;
-  var
-    I: Integer;
-  begin
-    for I := 1 to Length(S) do
-      if S[I] = #0 then
-      begin
-        Result := Copy(S, 1, I - 1);
-        Exit;
-      end;
-    Result := S;
-  end;
-  {$ELSE ~CLR}
   function ToPChar(const S: string): PChar;
   begin
     Result := PChar(S);
   end;
-  {$ENDIF ~CLR}
 
 var
   Temp: TStringList;
@@ -4077,12 +4062,8 @@ begin
   begin
     EDIFileStream := TFileStream.Create(FFileName, fmOpenRead or fmShareDenyNone);
     try
-      {$IFDEF CLR}
-      EDIFileStream.ReadStringAnsiBuffer(FData, EDIFileStream.Size);
-      {$ELSE ~CLR}
       SetLength(FData, EDIFileStream.Size);
       EDIFileStream.Read(Pointer(FData)^, EDIFileStream.Size);
-      {$ENDIF ~CLR}
     finally
       EDIFileStream.Free;
     end;
@@ -4363,11 +4344,7 @@ begin
   begin
     EDIFileStream := TFileStream.Create(FFileName, fmCreate or fmShareDenyNone);
     try
-      {$IFDEF CLR}
-      EDIFileStream.WriteStringAnsiBuffer(FData);
-      {$ELSE ~CLR}
       EDIFileStream.Write(Pointer(FData)^, Length(FData));
-      {$ENDIF ~CLR}
     finally
       EDIFileStream.Free;
     end;

@@ -48,9 +48,7 @@ uses
   {$ENDIF HAS_UNIT_LIBC}
   Classes,
   JclBase, JclContainerIntf, JclSynch, JclSysUtils,
-  {$IFNDEF CLR}
   JclWideStrings,
-  {$ENDIF ~CLR}
   JclAnsiStrings;
 
 type
@@ -476,7 +474,6 @@ type
     property HashConvert: TInt64HashConvert read GetHashConvert write SetHashConvert;
   end;
 
-  {$IFNDEF CLR}
   TJclPtrAbstractContainer = class(TJclAbstractContainerBase, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclCloneable, IJclIntfCloneable, IJclContainer, IJclPtrEqualityComparer, IJclPtrComparer, IJclPtrHashConverter)
   protected
@@ -502,7 +499,6 @@ type
     property Compare: TPtrCompare read GetCompare write SetCompare;
     property HashConvert: TPtrHashConvert read GetHashConvert write SetHashConvert;
   end;
-  {$ENDIF ~CLR}
 
   TJclAbstractContainer = class(TJclAbstractContainerBase, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclCloneable, IJclIntfCloneable, IJclContainer, IJclObjectOwner, IJclEqualityComparer, IJclComparer,
@@ -724,7 +720,7 @@ constructor TJclAbstractLockable.Create;
 begin
   inherited Create;
   FThreadSafe := True;
-  FSyncReaderWriter := TJclMultiReadExclusiveWrite.Create{$IFNDEF CLR}(mpReaders){$ENDIF ~CLR};
+  FSyncReaderWriter := TJclMultiReadExclusiveWrite.Create(mpReaders);
 end;
 
 destructor TJclAbstractLockable.Destroy;
@@ -1549,9 +1545,9 @@ begin
     case FEncoding of
       seUTF16:
         if FCaseSensitive then
-          Result := {$IFNDEF CLR}JclWideStrings.{$ENDIF ~CLR}WideCompareStr(A, B)
+          Result := JclWideStrings.WideCompareStr(A, B)
         else
-          Result := {$IFNDEF CLR}JclWideStrings.{$ENDIF ~CLR}WideCompareText(A, B);
+          Result := JclWideStrings.WideCompareText(A, B);
     else
       raise EJclOperationNotSupportedError.Create;
     end;
@@ -1570,9 +1566,9 @@ begin
     case FEncoding of
       seUTF16:
         if FCaseSensitive then
-          Result := {$IFNDEF CLR}JclWideStrings.{$ENDIF ~CLR}WideCompareStr(A, B) = 0
+          Result := JclWideStrings.WideCompareStr(A, B) = 0
         else
-          Result := {$IFNDEF CLR}JclWideStrings.{$ENDIF ~CLR}WideCompareText(A, B) = 0;
+          Result := JclWideStrings.WideCompareText(A, B) = 0;
     else
       raise EJclOperationNotSupportedError.Create;
     end;
@@ -2290,8 +2286,6 @@ begin
   FHashConvert := Value;
 end;
 
-{$IFNDEF CLR}
-
 //=== { TJclPtrAbstractContainer } ===========================================
 
 procedure TJclPtrAbstractContainer.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
@@ -2375,8 +2369,6 @@ procedure TJclPtrAbstractContainer.SetHashConvert(Value: TPtrHashConvert);
 begin
   FHashConvert := Value;
 end;
-
-{$ENDIF ~CLR}
 
 //=== { TJclAbstractContainer } ==============================================
 
@@ -2588,27 +2580,6 @@ end;
 // TODO: common implementation, need a function to search for a string starting from
 // a predefined index
 procedure TJclAnsiStrAbstractCollection.AppendDelimited(const AString, Separator: AnsiString);
-{$IFDEF CLR}
-var
-  I, StartIndex: Integer;
-  BString: string;
-begin
-  I := Pos(Separator, AString);
-  if I <> 0 then
-  begin
-    BString := AString;
-    Dec(I); // to .NET string index base
-    StartIndex := 0;
-    repeat
-      Add(BString.Substring(StartIndex, I - StartIndex + 1));
-      StartIndex := I + 1;
-      I := BString.IndexOf(Separator, StartIndex);
-    until I < 0;
-  end
-  else
-    Add(AString);
-end;
-{$ELSE}
 var
   Item: AnsiString;
   SepLen: Integer;
@@ -2635,7 +2606,6 @@ begin
   else //There isnt a Separator in AString
     Add(AString);
 end;
-{$ENDIF CLR}
 
 procedure TJclAnsiStrAbstractCollection.AppendFromStrings(Strings: TJclAnsiStrings);
 var
@@ -2705,27 +2675,6 @@ end;
 // TODO: common implementation, need a function to search for a string starting from
 // a predefined index
 procedure TJclWideStrAbstractCollection.AppendDelimited(const AString, Separator: WideString);
-{$IFDEF CLR}
-var
-  I, StartIndex: Integer;
-  BString: string;
-begin
-  I := Pos(Separator, AString);
-  if I <> 0 then
-  begin
-    BString := AString;
-    Dec(I); // to .NET string index base
-    StartIndex := 0;
-    repeat
-      Add(BString.Substring(StartIndex, I - StartIndex + 1));
-      StartIndex := I + 1;
-      I := BString.IndexOf(Separator, StartIndex);
-    until I < 0;
-  end
-  else
-    Add(AString);
-end;
-{$ELSE}
 var
   Item: WideString;
   SepLen: Integer;
@@ -2752,7 +2701,6 @@ begin
   else //There isnt a Separator in AString
     Add(AString);
 end;
-{$ENDIF CLR}
 
 procedure TJclWideStrAbstractCollection.AppendFromStrings(Strings: TJclWideStrings);
 var
@@ -2823,27 +2771,6 @@ end;
 // TODO: common implementation, need a function to search for a string starting from
 // a predefined index
 procedure TJclUnicodeStrAbstractCollection.AppendDelimited(const AString, Separator: UnicodeString);
-{$IFDEF CLR}
-var
-  I, StartIndex: Integer;
-  BString: string;
-begin
-  I := Pos(Separator, AString);
-  if I <> 0 then
-  begin
-    BString := AString;
-    Dec(I); // to .NET string index base
-    StartIndex := 0;
-    repeat
-      Add(BString.Substring(StartIndex, I - StartIndex + 1));
-      StartIndex := I + 1;
-      I := BString.IndexOf(Separator, StartIndex);
-    until I < 0;
-  end
-  else
-    Add(AString);
-end;
-{$ELSE}
 var
   Item: UnicodeString;
   SepLen: Integer;
@@ -2870,7 +2797,6 @@ begin
   else //There isnt a Separator in AString
     Add(AString);
 end;
-{$ENDIF CLR}
 
 procedure TJclUnicodeStrAbstractCollection.AppendFromStrings(Strings: TJclUnicodeStrings);
 var

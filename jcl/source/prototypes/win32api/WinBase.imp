@@ -1,7 +1,5 @@
 {$IFDEF MSWINDOWS}
 
-{$IFNDEF CLR}
-
 var
   _BackupSeek: Pointer;
 
@@ -164,7 +162,5 @@ begin
     jmp [_GetVolumeNameForVolMountPointW]
   end;
 end;
-
-{$ENDIF ~CLR}
 
 {$ENDIF MSWINDOWS}

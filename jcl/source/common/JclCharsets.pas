@@ -512,11 +512,7 @@ begin
     Result := JclCharsetInfos[Index].FamilyCodePage;
     Exit;
   end;
-  {$IFDEF CLR}
-  raise EJclCharsetError.Create(RsENoCharset);
-  {$ELSE ~CLR}
   raise EJclCharsetError.CreateRes(@RsENoCharset);
-  {$ENDIF ~CLR}
 end;
 
 function CodePageFromCharsetName(const CharsetName: string): Word;
@@ -531,11 +527,7 @@ begin
     Result := JclCharsetInfos[Index].CodePage;
     Exit;
   end;
-  {$IFDEF CLR}
-  raise EJclCharsetError.Create(RsENoCharset);
-  {$ELSE ~CLR}
   raise EJclCharsetError.CreateRes(@RsENoCharset);
-  {$ENDIF ~CLR}
 end;
 
 function CharsetInfoFromCharsetName(const CharsetName: string): TJclCharsetInfo;
@@ -550,11 +542,7 @@ begin
     Result := JclCharsetInfos[Index];
     Exit;
   end;
-  {$IFDEF CLR}
-  raise EJclCharsetError.Create(RsENoCharset);
-  {$ELSE ~CLR}
   raise EJclCharsetError.CreateRes(@RsENoCharset);
-  {$ENDIF ~CLR}
 end;
 
 function FamilyCodePageFromCodePage(CodePage: Word): Word;
@@ -567,11 +555,7 @@ begin
     Result := JclCharsetInfos[Index].FamilyCodePage;
     Exit;
   end;
-  {$IFDEF CLR}
-  raise EJclCharsetError.Create(RsENoCharset);
-  {$ELSE ~CLR}
   raise EJclCharsetError.CreateRes(@RsENoCharset);
-  {$ENDIF ~CLR}
 end;
 
 function CharsetNameFromCodePage(CodePage: Word): string;
@@ -584,11 +568,7 @@ begin
     Result := JclCharsetInfos[Index].Name;
     Exit;
   end;
-  {$IFDEF CLR}
-  raise EJclCharsetError.Create(RsENoCharset);
-  {$ELSE ~CLR}
   raise EJclCharsetError.CreateRes(@RsENoCharset);
-  {$ENDIF ~CLR}
 end;
 
 {$IFDEF UNITVERSIONING}

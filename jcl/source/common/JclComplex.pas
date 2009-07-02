@@ -222,10 +222,6 @@ type
     //----------- format output
     property AsString: string read GetRectangularString write SetRectangularString;
     property AsPolarString: string read GetPolarString write SetPolarString;
-
-    {$IFDEF CLR}
-    { TODO : Implement operators }
-    {$ENDIF CLR}
   end;
 
 var
@@ -319,7 +315,7 @@ begin
       else
       begin
         FCoord.R := AbsoluteValue;
-        FCoord.Theta := {$IFDEF CLR}Borland.Delphi.{$ENDIF}System.ArcTan(FCoord.Y / FCoord.X);
+        FCoord.Theta := System.ArcTan(FCoord.Y / FCoord.X);
         if FCoord.X < 0.0 then
           FCoord.Theta := FCoord.Theta + Pi * Sgn(FCoord.Y);
       end;
@@ -411,20 +407,12 @@ begin
     try
       RealPart := StrToFloat(Copy(StrToParse, 1, SignPos - 1));
     except
-      {$IFDEF CLR}
-      raise EJclMathError.Create(RsComplexInvalidString);
-      {$ELSE ~CLR}
       raise EJclMathError.CreateRes(@RsComplexInvalidString);
-      {$ENDIF ~CLR}
     end;
     try
       ImagPart := StrToFloat(Copy(StrToParse, SignPos, Length(StrToParse) - SignPos));
     except
-      {$IFDEF CLR}
-      raise EJclMathError.Create(RsComplexInvalidString);
-      {$ELSE ~CLR}
       raise EJclMathError.CreateRes(@RsComplexInvalidString);
-      {$ENDIF ~CLR}
     end;
   end
   else
@@ -435,11 +423,7 @@ begin
       try
         ImagPart := StrToFloat(Copy(StrToParse, 1, Length(StrToParse) - 1));
       except
-        {$IFDEF CLR}
-        raise EJclMathError.Create(RsComplexInvalidString);
-        {$ELSE ~CLR}
         raise EJclMathError.CreateRes(@RsComplexInvalidString);
-        {$ENDIF ~CLR}
       end;
     end
     else
@@ -447,11 +431,7 @@ begin
       try
         RealPart := StrToFloat(StrToParse);
       except
-        {$IFDEF CLR}
-        raise EJclMathError.Create(RsComplexInvalidString);
-        {$ELSE ~CLR}
         raise EJclMathError.CreateRes(@RsComplexInvalidString);
-        {$ENDIF ~CLR}
       end;
       ImagPart := 0.0;
     end;
@@ -464,42 +444,22 @@ var
   AstPos: Integer;
   Radius, Angle: Float;
 begin
-  {$IFDEF CLR}
-  StrToParse := StrRemoveChars(StrToParse, CharIsSpace).toUpper;
-  {$ELSE ~CLR}
   StrToParse := AnsiUpperCase(StrRemoveChars(StrToParse, CharIsSpace));
-  {$ENDIF ~CLR}
   AstPos := Pos('*', StrToParse);
   if AstPos = 0 then
-    {$IFDEF CLR}
-    raise EJclMathError.Create(RsComplexInvalidString);
-    {$ELSE ~CLR}
     raise EJclMathError.CreateRes(@RsComplexInvalidString);
-    {$ENDIF ~CLR}
   try
     Radius := StrToFloat(StrLeft(StrToParse, AstPos - 1));
   except
-    {$IFDEF CLR}
-    raise EJclMathError.Create(RsComplexInvalidString);
-    {$ELSE ~CLR}
     raise EJclMathError.CreateRes(@RsComplexInvalidString);
-    {$ENDIF ~CLR}
   end;
   AstPos := Pos('(', StrToParse);
   if AstPos = 0 then
-    {$IFDEF CLR}
-    raise EJclMathError.Create(RsComplexInvalidString);
-    {$ELSE ~CLR}
     raise EJclMathError.CreateRes(@RsComplexInvalidString);
-    {$ENDIF ~CLR}
   try
     Angle := StrToFloat(Copy(StrToParse, AstPos + 1, Length(StrToParse) - AstPos - 1));
   except
-    {$IFDEF CLR}
-    raise EJclMathError.Create(RsComplexInvalidString);
-    {$ELSE ~CLR}
     raise EJclMathError.CreateRes(@RsComplexInvalidString);
-    {$ENDIF ~CLR}
   end;
   Assign(Radius, Angle, crPolar);
 end;
@@ -740,7 +700,7 @@ end;
 
 function TJclComplex.CoreLn(const LnValue: TRectCoord): TRectCoord;
 begin
-  Result.X := {$IFDEF CLR}Borland.Delphi.{$ENDIF}System.Ln(LnValue.X);
+  Result.X := System.Ln(LnValue.X);
   Result.Y := NormalizeAngle(LnValue.Y);
 end;
 

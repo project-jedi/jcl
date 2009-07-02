@@ -2,7 +2,6 @@
 // presumable from any older WinNT.h or from WinIfs.h
 //==================================================================================================
 
-{$IFNDEF CLR}
 //--------------------------------------------------------------------------------------------------
 // NTFS Reparse Points
 //--------------------------------------------------------------------------------------------------
@@ -99,7 +98,6 @@ type
 const
   {$EXTERNALSYM IO_REPARSE_TAG_VALID_VALUES}
   IO_REPARSE_TAG_VALID_VALUES = DWORD($E000FFFF);
-{$ENDIF ~CLR}
 
 //==================================================================================================
 
@@ -288,10 +286,8 @@ const
   SID_RECOMMENDED_SUB_AUTHORITIES = (1); // Will change to around 6 in a future release.
   {$EXTERNALSYM SID_RECOMMENDED_SUB_AUTHORITIES}
 
-  {$IFNDEF CLR}
   SECURITY_MAX_SID_SIZE = SizeOf(SID) - SizeOf(DWORD) + (SID_MAX_SUB_AUTHORITIES * SizeOf(DWORD));
   {$EXTERNALSYM SECURITY_MAX_SID_SIZE}
-  {$ENDIF ~CLR}
 
 {$IFNDEF FPC}
   SidTypeUser           = 1;
@@ -1014,8 +1010,6 @@ const
 //
 // File header format.
 //
-
-{$IFNDEF CLR}
 
 type
   PIMAGE_FILE_HEADER = ^IMAGE_FILE_HEADER;
@@ -2441,8 +2435,6 @@ const
   {$EXTERNALSYM MAX_CLASS_NAME}
   MAX_PACKAGE_NAME                    = 1024;
   {$EXTERNALSYM MAX_PACKAGE_NAME}
-
-{$ENDIF ~CLR}
 
 // COM+ 2.0 header structure.
 

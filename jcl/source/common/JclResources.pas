@@ -66,10 +66,6 @@ resourcestring
   RsDynArrayError      = 'DynArrayInitialize: ElementSize out of bounds';
   RsSysErrorMessageFmt = 'Win32 Error %d (%x)';
   RsCantConvertAddr64  = 'The address %s%.16x cannot be converted to 32 bit';
-  {$IFDEF CLR}
-  RsEGetBytesExFmt     = 'GetBytesEx(): Unsupported value type: %s';
-  RsESetBytesExFmt     = 'SetBytesEx(): Unsupported value type: %s';
-  {$ENDIF CLR}
   RsEReplacementChar   = 'Failed to get ANSI replacement character';
 
 //=== JclBorlandTools ========================================================
@@ -999,18 +995,6 @@ resourcestring
 
 
 const
-  {$IFDEF CLR}
-  RsEDIErrors: array [1..58] of string =
-    ( RsEDIError001, RsEDIError002, RsEDIError003, RsEDIError004, RsEDIError005, RsEDIError006, RsEDIError007,
-      RsEDIError008, RsEDIError009, RsEDIError010, RsEDIError011, RsEDIError012, RsEDIError013, RsEDIError014,
-      RsEDIError015, RsEDIError016, RsEDIError017, RsEDIError018, RsEDIError019, RsEDIError020, RsEDIError021,
-      RsEDIError022, RsEDIError023, RsEDIError024, RsEDIError025, RsEDIError026, RsEDIError027, RsEDIError028,
-      RsEDIError029, RsEDIError030, RsEDIError031, RsEDIError032, RsEDIError033, RsEDIError034, RsEDIError035,
-      RsEDIError036, RsEDIError037, RsEDIError038, RsEDIError039, RsEDIError040, RsEDIError041, RsEDIError042,
-      RsEDIError043, RsEDIError044, RsEDIError045, RsEDIError046, RsEDIError047, RsEDIError048, RsEDIError049,
-      RsEDIError050, RsEDIError051, RsEDIError052, RsEDIError053, RsEDIError054, RsEDIError055, RsEDIError056,
-      RsEDIError057, RsEDIError058 );
-  {$ELSE ~CLR}
   RsEDIErrors: array [1..58] of PResStringRec =
     ( @RsEDIError001, @RsEDIError002, @RsEDIError003, @RsEDIError004, @RsEDIError005, @RsEDIError006, @RsEDIError007,
       @RsEDIError008, @RsEDIError009, @RsEDIError010, @RsEDIError011, @RsEDIError012, @RsEDIError013, @RsEDIError014,
@@ -1021,7 +1005,6 @@ const
       @RsEDIError043, @RsEDIError044, @RsEDIError045, @RsEDIError046, @RsEDIError047, @RsEDIError048, @RsEDIError049,
       @RsEDIError050, @RsEDIError051, @RsEDIError052, @RsEDIError053, @RsEDIError054, @RsEDIError055, @RsEDIError056,
       @RsEDIError057, @RsEDIError058 );
-  {$ENDIF ~CLR}
 
 //== JclEDISEF ===============================================================
 resourcestring
@@ -1791,10 +1774,8 @@ resourcestring
   RsTabs_StopExpected = 'A tab stop was expected but not found.';
   RsTabs_CloseBracketExpected = 'Closing bracket expected.';
   RsTabs_TabWidthExpected = 'Tab width expected.';
-{$IFNDEF CLR}
   // Default text for the NullReferenceException in .NET
   RsArg_NullReferenceException = 'Object reference not set to an instance of an object.';
-{$ENDIF ~CLR}
 
 //=== JclStructStorage =======================================================
 resourcestring

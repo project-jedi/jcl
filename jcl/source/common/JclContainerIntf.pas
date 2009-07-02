@@ -49,10 +49,8 @@ uses
   {$ENDIF UNITVERSIONING}
   Classes,
   JclBase,
-  {$IFNDEF CLR}
-  JclWideStrings,
-  {$ENDIF ~CLR}
-  JclAnsiStrings;
+  JclAnsiStrings,
+  JclWideStrings;
 
 {$IFDEF BCB6}
 {$DEFINE BUGGY_DEFAULT_INDEXED_PROP}
@@ -63,14 +61,6 @@ uses
 {$IFDEF BCB11}
 {$DEFINE BUGGY_DEFAULT_INDEXED_PROP}
 {$ENDIF BCB11}
-
-{$IFDEF CLR}
-type
-  TJclWideStrings = TStrings;
-  TJclWideStringList = TStringList;
-const
-  WideLineBreak = #13#10;
-{$ENDIF CLR}
 
 const
   DefaultContainerCapacity = 16;
@@ -109,9 +99,7 @@ type
   TIntegerApplyFunction = function(AValue: Integer): Integer;
   TCardinalApplyFunction = function(AValue: Cardinal): Cardinal;
   TInt64ApplyFunction = function(const AValue: Int64): Int64;
-  {$IFNDEF CLR}
   TPtrApplyFunction = function(APtr: Pointer): Pointer;
-  {$ENDIF ~CLR}
   TApplyFunction = function(AObject: TObject): TObject;
   {$IFDEF SUPPORTS_GENERICS}
   TApplyFunction<T> = function(const AItem: T): T;
@@ -148,9 +136,7 @@ type
   TIntegerCompare = function(Obj1, Obj2: Integer): Integer;
   TCardinalCompare = function(Obj1, Obj2: Cardinal): Integer;
   TInt64Compare = function(Obj1, Obj2: Int64): Integer;
-  {$IFNDEF CLR}
   TPtrCompare = function(Obj1, Obj2: Pointer): Integer;
-  {$ENDIF ~CLR}
   TCompare = function(Obj1, Obj2: TObject): Integer;
   {$IFDEF SUPPORTS_GENERICS}
   TCompare<T> = function(const Obj1, Obj2: T): Integer;
@@ -187,9 +173,7 @@ type
   TIntegerEqualityCompare = function(Obj1, Obj2: Integer): Boolean;
   TCardinalEqualityCompare = function(Obj1, Obj2: Cardinal): Boolean;
   TInt64EqualityCompare = function(const Obj1, Obj2: Int64): Boolean;
-  {$IFNDEF CLR}
   TPtrEqualityCompare = function(Obj1, Obj2: Pointer): Boolean;
-  {$ENDIF ~CLR}
   TEqualityCompare = function(Obj1, Obj2: TObject): Boolean;
   {$IFDEF SUPPORTS_GENERICS}
   TEqualityCompare<T> = function(const Obj1, Obj2: T): Boolean;
@@ -226,9 +210,7 @@ type
   TIntegerHashConvert = function(AValue: Integer): Integer;
   TCardinalHashConvert = function(AValue: Cardinal): Integer;
   TInt64HashConvert = function(const AValue: Int64): Integer;
-  {$IFNDEF CLR}
   TPtrHashConvert = function(APtr: Pointer): Integer;
-  {$ENDIF ~CLR}
   THashConvert = function(AObject: TObject): Integer;
   {$IFDEF SUPPORTS_GENERICS}
   THashConvert<T> = function(const AItem: T): Integer;
@@ -474,7 +456,6 @@ type
     property EqualityCompare: TInt64EqualityCompare read GetEqualityCompare write SetEqualityCompare;
   end;
 
-  {$IFNDEF CLR}
   IJclPtrEqualityComparer = interface
     ['{C6B7CBF9-ECD9-4D70-85CC-4E2367A1D806}']
     function GetEqualityCompare: TPtrEqualityCompare;
@@ -482,7 +463,6 @@ type
     function ItemsEqual(A, B: Pointer): Boolean;
     property EqualityCompare: TPtrEqualityCompare read GetEqualityCompare write SetEqualityCompare;
   end;
-  {$ENDIF ~CLR}
 
   IJclEqualityComparer = interface
     ['{82C67986-8365-44AB-8D56-7B0CF4F6B918}']
@@ -604,7 +584,6 @@ type
     property Compare: TInt64Compare read GetCompare write SetCompare;
   end;
 
-  {$IFNDEF CLR}
   IJclPtrComparer = interface
     ['{85557D4C-A036-477E-BA73-B5EEF43A8696}']
     function GetCompare: TPtrCompare;
@@ -612,7 +591,6 @@ type
     function ItemsCompare(A, B: Pointer): Integer;
     property Compare: TPtrCompare read GetCompare write SetCompare;
   end;
-  {$ENDIF ~CLR}
 
   IJclComparer = interface
     ['{7B376028-56DC-4C4A-86A9-1AC19E3EDF75}']
@@ -734,7 +712,6 @@ type
     property HashConvert: TInt64HashConvert read GetHashConvert write SetHashConvert;
   end;
 
-  {$IFNDEF CLR}
   IJclPtrHashConverter = interface
     ['{D704CC67-CFED-44E6-9504-65D5E468FCAF}']
     function GetHashConvert: TPtrHashConvert;
@@ -742,7 +719,6 @@ type
     function Hash(Ptr: Pointer): Integer;
     property HashConvert: TPtrHashConvert read GetHashConvert write SetHashConvert;
   end;
-  {$ENDIF ~CLR}
 
   IJclHashConverter = interface
     ['{2D0DD6F4-162E-41D6-8A34-489E7EACABCD}']
@@ -1099,7 +1075,6 @@ type
     {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-  {$IFNDEF CLR}
   IJclPtrIterator = interface(IJclAbstractIterator)
     ['{62B5501C-07AA-4D00-A85B-713B39912CDF}']
     function Add(APtr: Pointer): Boolean;
@@ -1121,7 +1096,6 @@ type
     property Current: Pointer read GetPointer;
     {$ENDIF SUPPORTS_FOR_IN}
   end;
-  {$ENDIF ~CLR}
 
   IJclIterator = interface(IJclAbstractIterator)
     ['{997DF9B7-9AA2-4239-8B94-14DFFD26D790}']
@@ -1371,7 +1345,6 @@ type
     property Children[Index: Integer]: Int64 read GetChild write SetChild;
   end;
 
-  {$IFNDEF CLR}
   IJclPtrTreeIterator = interface(IJclPtrIterator)
     ['{ED4C08E6-60FC-4ED3-BD19-E6605B9BD943}']
     function AddChild(APtr: Pointer): Boolean;
@@ -1389,7 +1362,6 @@ type
     procedure SetChild(Index: Integer; APtr: Pointer);
     property Children[Index: Integer]: Pointer read GetChild write SetChild;
   end;
-  {$ENDIF ~CLR}
 
   IJclTreeIterator = interface(IJclIterator)
     ['{8B4863B0-B6B9-426E-B5B8-7AF71D264237}']
@@ -1531,7 +1503,6 @@ type
     function Right: Int64;
   end;
 
-  {$IFNDEF CLR}
   IJclPtrBinaryTreeIterator = interface(IJclPtrTreeIterator)
     ['{75D3DF0D-C491-43F7-B078-E658197E8051}']
     function HasLeft: Boolean;
@@ -1539,7 +1510,6 @@ type
     function Left: Pointer;
     function Right: Pointer;
   end;
-  {$ENDIF ~CLR}
 
   IJclBinaryTreeIterator = interface(IJclTreeIterator)
     ['{821DE28D-631C-4F23-A0B2-CC0F35B4C64D}']
@@ -1801,7 +1771,6 @@ type
     {$ENDIF SUPPORTS_FOR_IN}
   end;
 
-  {$IFNDEF CLR}
   IJclPtrCollection = interface(IJclContainer)
     ['{02E909A7-5B1D-40D4-82EA-A0CD97D5C811}']
     function Add(APtr: Pointer): Boolean;
@@ -1823,7 +1792,6 @@ type
     function GetEnumerator: IJclPtrIterator;
     {$ENDIF SUPPORTS_FOR_IN}
   end;
-  {$ENDIF ~CLR}
 
   IJclCollection = interface(IJclContainer)
     ['{58947EF1-CD21-4DD1-AE3D-225C3AAD7EE5}']
@@ -2033,7 +2001,6 @@ type
     property Values[Key: Integer]: Int64 read GetValue write SetValue; default;
   end;
 
-  {$IFNDEF CLR}
   IJclPtrList = interface(IJclPtrCollection)
     ['{2CF5CF1F-C012-480C-A4CE-38BDAFB15D05}']
     function Delete(Index: Integer): Pointer;
@@ -2047,7 +2014,6 @@ type
     function SubList(First, Count: Integer): IJclPtrList;
     property Pointers[Key: Integer]: Pointer read GetPointer write SetPointer; default;
   end;
-  {$ENDIF ~CLR}
 
   IJclList = interface(IJclCollection)
     ['{8ABC70AC-5C06-43EA-AFE0-D066379BCC28}']
@@ -2101,9 +2067,7 @@ type
   TIntegerSortProc = procedure(const AList: IJclIntegerList; L, R: Integer; AComparator: TIntegerCompare);
   TCardinalSortProc = procedure(const AList: IJclCardinalList; L, R: Integer; AComparator: TCardinalCompare);
   TInt64SortProc = procedure(const AList: IJclInt64List; L, R: Integer; AComparator: TInt64Compare);
-  {$IFNDEF CLR}
   TPtrSortProc = procedure(const AList: IJclPtrList; L, R: Integer; AComparator: TPtrCompare);
-  {$ENDIF ~CLR}
   TSortProc = procedure(const AList: IJclList; L, R: Integer; AComparator: TCompare);
   {$IFDEF SUPPORTS_GENERICS}
   TSortProc<T> = procedure(const AList: IJclList<T>; L, R: Integer; AComparator: TCompare<T>);
@@ -2201,14 +2165,12 @@ type
     property Values[Index: Integer]: Int64 read GetValue write SetValue; default;
   end;
 
-  {$IFNDEF CLR}
   IJclPtrArray = interface(IJclPtrList)
     ['{D43E8D18-26B3-41A2-8D52-ED7EA2FE1AB7}']
     function GetPointer(Index: Integer): Pointer;
     procedure SetPointer(Index: Integer; APtr: Pointer);
     property Pointers[Index: Integer]: Pointer read GetPointer write SetPointer; default;
   end;
-  {$ENDIF ~CLR}
 
   IJclArray = interface(IJclList)
     ['{A69F6D35-54B2-4361-852E-097ED75E648A}']
@@ -2318,14 +2280,12 @@ type
     procedure Union(const ACollection: IJclInt64Collection);
   end;
 
-  {$IFNDEF CLR}
   IJclPtrSet = interface(IJclPtrCollection)
     ['{26717C68-4F83-4CCB-973A-7324FBD09632}']
     procedure Intersect(const ACollection: IJclPtrCollection);
     procedure Subtract(const ACollection: IJclPtrCollection);
     procedure Union(const ACollection: IJclPtrCollection);
   end;
-  {$ENDIF ~CLR}
 
   IJclSet = interface(IJclCollection)
     ['{0B7CDB90-8588-4260-A54C-D87101C669EA}']
@@ -2457,7 +2417,6 @@ type
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
 
-  {$IFNDEF CLR}
   IJclPtrTree = interface(IJclPtrCollection)
     ['{2C1ACA3E-3F23-4E3C-984D-151CF9776E14}']
     function GetRoot: IJclPtrTreeIterator;
@@ -2466,7 +2425,6 @@ type
     property Root: IJclPtrTreeIterator read GetRoot;
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
-  {$ENDIF ~CLR}
 
   IJclTree = interface(IJclCollection)
     ['{B0C658CC-FEF5-4178-A4C5-442C0DEDE207}']
@@ -3106,7 +3064,6 @@ type
       {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
   end;
 
-  {$IFNDEF CLR}
   IJclPtrIntfMap = interface(IJclContainer)
     ['{B7C48542-39A0-453F-8F03-8C8CFAB0DCCF}']
     procedure Clear;
@@ -3166,7 +3123,6 @@ type
     property Items[Key: Pointer]: Pointer read GetValue write PutValue;
       {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
   end;
-  {$ENDIF ~CLR}
 
   IJclIntfMap = interface(IJclContainer)
     ['{C70570C6-EDDB-47B4-9003-C637B486731D}']
@@ -3390,7 +3346,6 @@ type
       {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
   end;
 
-  {$IFNDEF CLR}
   IJclPtrMap = interface(IJclContainer)
     ['{2FE029A9-026C-487D-8204-AD3A28BD2FA2}']
     procedure Clear;
@@ -3410,7 +3365,6 @@ type
     property Items[Key: Pointer]: TObject read GetValue write PutValue;
       {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
   end;
-  {$ENDIF ~CLR}
 
   IJclMap = interface(IJclContainer)
     ['{A7D0A882-6952-496D-A258-23D47DDCCBC4}']
@@ -3590,7 +3544,6 @@ type
     function Size: Integer;
   end;
 
-  {$IFNDEF CLR}
   IJclPtrQueue = interface(IJclContainer)
     ['{1052DD37-3035-4C44-A793-54AC4B9C0B29}']
     procedure Clear;
@@ -3601,7 +3554,6 @@ type
     function Peek: Pointer;
     function Size: Integer;
   end;
-  {$ENDIF ~CLR}
 
   IJclQueue = interface(IJclContainer)
     ['{7D0F9DE4-71EA-46EF-B879-88BCFD5D9610}']
@@ -3931,7 +3883,6 @@ type
     function TailMap(const FromKey: Int64): IJclInt64Int64SortedMap;
   end;
 
-  {$IFNDEF CLR}
   IJclPtrIntfSortedMap = interface(IJclPtrIntfMap)
     ['{6D7B8042-3CBC-4C8F-98B5-69AFAA104532}']
     function FirstKey: Pointer;
@@ -3958,7 +3909,6 @@ type
     function SubMap(FromKey, ToKey: Pointer): IJclPtrPtrSortedMap;
     function TailMap(FromKey: Pointer): IJclPtrPtrSortedMap;
   end;
-  {$ENDIF ~CLR}
 
   IJclIntfSortedMap = interface(IJclIntfMap)
     ['{3CED1477-B958-4109-9BDA-7C84B9E063B2}']
@@ -4072,7 +4022,6 @@ type
     function TailMap(const FromKey: Int64): IJclInt64SortedMap;
   end;
 
-  {$IFNDEF CLR}
   IJclPtrSortedMap = interface(IJclPtrMap)
     ['{578918DB-6A4A-4A9D-B44E-AE3E8FF70818}']
     function FirstKey: Pointer;
@@ -4081,7 +4030,6 @@ type
     function SubMap(FromKey, ToKey: Pointer): IJclPtrSortedMap;
     function TailMap(FromKey: Pointer): IJclPtrSortedMap;
   end;
-  {$ENDIF ~CLR}
 
   IJclSortedMap = interface(IJclMap)
     ['{F317A70F-7851-49C2-9DCF-092D8F4D4F98}']
@@ -4195,14 +4143,12 @@ type
     function TailSet(const Start: Int64): IJclInt64SortedSet;
   end;
 
-  {$IFNDEF CLR}
   IJclPtrSortedSet = interface(IJclPtrSet)
     ['{F3A3183C-0820-425C-9446-E0838F0ADAD8}']
     function HeadSet(Finish: Pointer): IJclPtrSortedSet;
     function SubSet(Start, Finish: Pointer): IJclPtrSortedSet;
     function TailSet(Start: Pointer): IJclPtrSortedSet;
   end;
-  {$ENDIF ~CLR}
 
   IJclSortedSet = interface(IJclSet)
     ['{A3D23E76-ADE9-446C-9B97-F49FCE895D9F}']
@@ -4352,7 +4298,6 @@ type
     function Size: Integer;
   end;
 
-  {$IFNDEF CLR}
   IJclPtrStack = interface(IJclContainer)
     ['{AD11D06C-E0E1-4EDE-AA2F-BC8BDD972B73}']
     procedure Clear;
@@ -4363,7 +4308,6 @@ type
     function Push(APtr: Pointer): Boolean;
     function Size: Integer;
   end;
-  {$ENDIF ~CLR}
 
   IJclStack = interface(IJclContainer)
     ['{E07E0BD8-A831-41B9-B9A0-7199BD4873B9}']
@@ -4487,132 +4431,84 @@ uses
 
 constructor EJclOutOfBoundsError.Create;
 begin
-  {$IFDEF CLR}
-  inherited Create(RsEOutOfBounds);
-  {$ELSE ~CLR}
   inherited CreateRes(@RsEOutOfBounds);
-  {$ENDIF ~CLR}
 end;
 
 //=== { EJclNoSuchElementError } =============================================
 
 constructor EJclNoSuchElementError.Create(const Value: string);
 begin
-  {$IFDEF CLR}
-  inherited Create(Format(RsEValueNotFound, [Value]));
-  {$ELSE ~CLR}
   inherited CreateResFmt(@RsEValueNotFound, [Value]);
-  {$ENDIF ~CLR}
 end;
 
 //=== { EJclDuplicateElementError } ==========================================
 
 constructor EJclDuplicateElementError.Create;
 begin
-  {$IFDEF CLR}
-  inherited Create(RsEDuplicateElement);
-  {$ELSE ~CLR}
   inherited CreateRes(@RsEDuplicateElement);
-  {$ENDIF ~CLR}
 end;
 
 //=== { EJclIllegalQueueCapacityError } ======================================
 
 constructor EJclIllegalQueueCapacityError.Create;
 begin
-  {$IFDEF CLR}
-  inherited Create(RsEIllegalQueueCapacity);
-  {$ELSE ~CLR}
   inherited CreateRes(@RsEIllegalQueueCapacity);
-  {$ENDIF ~CLR}
 end;
 
 //=== { EJclNoCollectionError } ==============================================
 
 constructor EJclNoCollectionError.Create;
 begin
-  {$IFDEF CLR}
-  inherited Create(RsENoCollection);
-  {$ELSE ~CLR}
   inherited CreateRes(@RsENoCollection);
-  {$ENDIF ~CLR}
 end;
 
 //=== { EJclOperationNotSupportedError } =====================================
 
 constructor EJclOperationNotSupportedError.Create;
 begin
-  {$IFDEF CLR}
-  inherited Create(RsEOperationNotSupported);
-  {$ELSE ~CLR}
   inherited CreateRes(@RsEOperationNotSupported);
-  {$ENDIF ~CLR}
 end;
 
 //=== { EJclIllegalStateOperationError } =====================================
 
 constructor EJclIllegalStateOperationError.Create;
 begin
-  {$IFDEF CLR}
-  inherited Create(RsEIllegalStateOperation);
-  {$ELSE ~CLR}
   inherited CreateRes(@RsEIllegalStateOperation);
-  {$ENDIF ~CLR}
 end;
 
 //=== { EJclNoComparerError } ================================================
 
 constructor EJclNoComparerError.Create;
 begin
-  {$IFDEF CLR}
-  inherited Create(RsENoComparer);
-  {$ELSE ~CLR}
   inherited CreateRes(@RsENoComparer);
-  {$ENDIF ~CLR}
 end;
 
 //=== { EJclNoEqualityComparerError } ========================================
 
 constructor EJclNoEqualityComparerError.Create;
 begin
-  {$IFDEF CLR}
-  inherited Create(RsENoEqualityComparer);
-  {$ELSE ~CLR}
   inherited CreateRes(@RsENoEqualityComparer);
-  {$ENDIF ~CLR}
 end;
 
 //=== { EJclNoHashConverterError } ===========================================
 
 constructor EJclNoHashConverterError.Create;
 begin
-  {$IFDEF CLR}
-  inherited Create(RsENoHashConverter);
-  {$ELSE ~CLR}
   inherited CreateRes(@RsENoHashConverter);
-  {$ENDIF ~CLR}
 end;
 
 //=== { EJclAssignError } ====================================================
 
 constructor EJclAssignError.Create;
 begin
-  {$IFDEF CLR}
-  inherited Create(RsEAssignError);
-  {$ELSE ~CLR}
   inherited CreateRes(@RsEAssignError);
-  {$ENDIF ~CLR}
 end;
 
 //=== { EJclReadOnlyError } ==================================================
 
 constructor EJclReadOnlyError.Create;
 begin
-  {$IFDEF CLR}
-  inherited Create(RsEReadOnlyError);
-  {$ELSE ~CLR}
   inherited CreateRes(@RsEReadOnlyError);
-  {$ENDIF ~CLR}
 end;
 
 {$IFDEF UNITVERSIONING}

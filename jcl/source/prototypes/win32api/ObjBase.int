@@ -1,7 +1,5 @@
 {$IFDEF MSWINDOWS}
 
-{$IFNDEF CLR}
-
 // objbase.h line 390
 const
   STGFMT_STORAGE  = 0;
@@ -42,7 +40,5 @@ function StgOpenStorageEx(const pwcsName: PWideChar; grfMode: DWORD;
   stgfmt: DWORD; grfAttrs: DWORD; pStgOptions: PSTGOPTIONS; reserved2:Pointer;
   riid: PGUID; out stgOpen: IInterface):HResult; stdcall;
 {$EXTERNALSYM StgOpenStorageEx}
-
-{$ENDIF ~CLR}
 
 {$ENDIF MSWINDOWS}
