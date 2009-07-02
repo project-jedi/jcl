@@ -42,7 +42,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$IFDEF SUPPORTS_GENERICS}
-  System.Collections.Generic,
+  Generics.Collections,
   JclAlgorithms,
   {$ENDIF SUPPORTS_GENERICS}
   JclBase, JclAbstractContainers, JclContainerIntf, JclSynch;
