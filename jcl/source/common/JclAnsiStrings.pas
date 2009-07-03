@@ -4197,7 +4197,7 @@ begin
   begin
     SetLength(Result, List.Count);
     for I := 0 to List.Count - 1 do
-      Result[I] := List[I];
+      Result[I] := string(List[I]);
   end
   else
     Result := nil;

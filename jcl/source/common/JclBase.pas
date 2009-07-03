@@ -758,7 +758,7 @@ var
   I: Integer;
   AnsiS: AnsiString;
 begin
-  AnsiS := S; // convert to AnsiString
+  AnsiS := AnsiString(S); // convert to AnsiString
   SetLength(Result, Length(AnsiS));
   for I := 0 to High(Result) do
     Result[I] := Byte(AnsiS[I + 1]);
@@ -774,7 +774,7 @@ begin
   SetLength(AnsiS, Count);
   for I := 0 to Length(AnsiS) - 1 do
     AnsiS[I + 1] := AnsiChar(Data[I]);
-  Result := AnsiS; // convert to System.String
+  Result := string(AnsiS); // convert to System.String
 end;
 
 function BytesOf(const Value: AnsiString): TBytes;
