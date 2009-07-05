@@ -214,10 +214,7 @@ begin
   Result := True;
 end;
 
-{$IFOPT Q+}
-{$DEFINE OVERFLOWCHECKS_ON}
 {$Q-}
-{$ENDIF}
 
 function StrHash(const S: string): Cardinal;
 const
@@ -300,7 +297,7 @@ end;
 
 {$IFDEF OVERFLOWCHECKS_ON}
 {$Q+}
-{$ENDIF}
+{$ENDIF OVERFLOWCHECKS_ON}
 
 //=== { TStringHashMap } =====================================================
 
