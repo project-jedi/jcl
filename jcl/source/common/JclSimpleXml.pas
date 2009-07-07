@@ -3306,7 +3306,7 @@ begin
   else
   if StringStream is TJclAnsiStream then
     TJclAnsiStream(StringStream).CodePage := CodePage
-  else
+  else if not (StringStream is TJclUTF8Stream) and not (StringStream is TJclUTF16Stream) then
     Error(RsENoCharset);
 end;
 
