@@ -290,7 +290,7 @@ class function TJclTaskSchedule.IsRunning: Boolean;
   begin
     with TJclSCManager.Create do
     try
-      Refresh;
+      Refresh(True);
       Result := FindService('Schedule', NtSvc) and (NtSvc.ServiceState = ssRunning);
     finally
       Free;
