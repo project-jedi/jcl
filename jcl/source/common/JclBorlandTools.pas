@@ -341,52 +341,6 @@ type
     property PackageDisabled[Index: Integer]: Boolean read GetPackageDisabled;
   end;
 
-{$HPPEMIT 'namespace Jclborlandtools'}
-{$HPPEMIT '{'}
-{$HPPEMIT '  // For some reason, the generator puts this interface after its first'}
-{$HPPEMIT '  // usage, resulting in an unusable header file. We fix this by forward'}
-{$HPPEMIT '  // declaring the interface.'}
-{$HPPEMIT '  __interface IJclCommandLineTool;'}
-(*$HPPEMIT '}'*)
-
-  IJclCommandLineTool = interface
-    ['{A0034B09-A074-D811-847D-0030849E4592}']
-    function GetExeName: string;
-    function GetOptions: TStrings;
-    function GetOutput: string;
-    function GetOutputCallback: TTextHandler;
-    procedure AddPathOption(const Option, Path: string);
-    function Execute(const CommandLine: string): Boolean;
-    procedure SetOutputCallback(const CallbackMethod: TTextHandler);
-    property ExeName: string read GetExeName;
-    property Options: TStrings read GetOptions;
-    property OutputCallback: TTextHandler write SetOutputCallback;
-    property Output: string read GetOutput;
-  end;
-
-  EJclCommandLineToolError = class(EJclError);
-
-  TJclCommandLineTool = class(TInterfacedObject, IJclCommandLineTool)
-  private
-    FExeName: string;
-    FOptions: TStringList;
-    FOutput: string;
-    FOutputCallback: TTextHandler;
-  protected
-    function GetExeName: string;
-    function GetOutput: string;
-    function GetOptions: TStrings;
-    function GetOutputCallback: TTextHandler;
-    procedure SetOutputCallback(const CallbackMethod: TTextHandler);
-    constructor Create(const AExeName: string);
-    procedure AddPathOption(const Option, Path: string);
-    function Execute(const CommandLine: string): Boolean;
-    property ExeName: string read GetExeName;
-    property Output: string read GetOutput;
-  public
-    destructor Destroy; override;
-  end;
-
   TJclBorlandCommandLineTool = class;
   TJclBorlandCommandLineToolEvent = procedure(Sender:TJclBorlandCommandLineTool) of object;
 
@@ -5533,68 +5487,6 @@ begin
   finally
     VersionNumbers.Free;
   end;
-end;
-
-//=== { TJclCommandLineTool } ================================================
-
-constructor TJclCommandLineTool.Create(const AExeName: string);
-begin
-  inherited Create;
-  FOptions := TStringList.Create;
-  FExeName := AExeName;
-end;
-
-destructor TJclCommandLineTool.Destroy;
-begin
-  FreeAndNil(FOptions);
-  inherited Destroy;
-end;
-
-procedure TJclCommandLineTool.AddPathOption(const Option, Path: string);
-var
-  S: string;
-begin
-  S := PathRemoveSeparator(Path);
-  {$IFDEF MSWINDOWS}
-  S := LowerCase(S); // file names are case insensitive
-  {$ENDIF MSWINDOWS}
-  S := Format('-%s%s', [Option, S]);
-  // avoid duplicate entries (note that search is case sensitive)
-  if GetOptions.IndexOf(S) = -1 then
-    GetOptions.Add(S);
-end;
-
-function TJclCommandLineTool.Execute(const CommandLine: string): Boolean;
-begin
-  if Assigned(FOutputCallback) then
-    Result := JclSysUtils.Execute(Format('"%s" %s', [ExeName, CommandLine]), FOutputCallback) = 0
-  else
-    Result := JclSysUtils.Execute(Format('"%s" %s', [ExeName, CommandLine]), FOutput) = 0;
-end;
-
-function TJclCommandLineTool.GetExeName: string;
-begin
-  Result := FExeName;
-end;
-
-function TJclCommandLineTool.GetOptions: TStrings;
-begin
-  Result := FOptions;
-end;
-
-function TJclCommandLineTool.GetOutput: string;
-begin
-  Result := FOutput;
-end;
-
-function TJclCommandLineTool.GetOutputCallback: TTextHandler;
-begin
-  Result := FOutputCallback;
-end;
-
-procedure TJclCommandLineTool.SetOutputCallback(const CallbackMethod: TTextHandler);
-begin
-  FOutputCallback := CallbackMethod;
 end;
 
 {$IFDEF UNITVERSIONING}
