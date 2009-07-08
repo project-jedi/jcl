@@ -91,15 +91,6 @@
   <Target Name="JclSIMDViewExpert:Make">
     <MSBuild Projects="d11\JclSIMDViewExpert.dproj" Targets="Make" />
   </Target>
-  <Target Name="JclVersionControlExpert">
-    <MSBuild Projects="d11\JclVersionControlExpert.dproj" Targets="" />
-  </Target>
-  <Target Name="JclVersionControlExpert:Clean">
-    <MSBuild Projects="d11\JclVersionControlExpert.dproj" Targets="Clean" />
-  </Target>
-  <Target Name="JclVersionControlExpert:Make">
-    <MSBuild Projects="d11\JclVersionControlExpert.dproj" Targets="Make" />
-  </Target>
   <Target Name="JclStackTraceViewerExpert">
     <MSBuild Projects="d11\JclStackTraceViewerExpert.dproj" Targets="" />
   </Target>
@@ -109,13 +100,22 @@
   <Target Name="JclStackTraceViewerExpert:Make">
     <MSBuild Projects="d11\JclStackTraceViewerExpert.dproj" Targets="Make" />
   </Target>
+  <Target Name="JclVersionControlExpert">
+    <MSBuild Projects="d11\JclVersionControlExpert.dproj" Targets="" />
+  </Target>
+  <Target Name="JclVersionControlExpert:Clean">
+    <MSBuild Projects="d11\JclVersionControlExpert.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JclVersionControlExpert:Make">
+    <MSBuild Projects="d11\JclVersionControlExpert.dproj" Targets="Make" />
+  </Target>
   <Target Name="Build">
-    <CallTarget Targets="Jcl;JclVcl;JclContainers;JclBaseExpert;JclDebugExpert;JclFavoriteFoldersExpert;JclProjectAnalysisExpert;JclRepositoryExpert;JclSIMDViewExpert;JclVersionControlExpert;JclStackTraceViewerExpert" />
+    <CallTarget Targets="Jcl;JclVcl;JclContainers;JclBaseExpert;JclDebugExpert;JclFavoriteFoldersExpert;JclProjectAnalysisExpert;JclRepositoryExpert;JclSIMDViewExpert;JclStackTraceViewerExpert;JclVersionControlExpert" />
   </Target>
   <Target Name="Clean">
-    <CallTarget Targets="Jcl:Clean;JclVcl:Clean;JclContainers:Clean;JclBaseExpert:Clean;JclDebugExpert:Clean;JclFavoriteFoldersExpert:Clean;JclProjectAnalysisExpert:Clean;JclRepositoryExpert:Clean;JclSIMDViewExpert:Clean;JclVersionControlExpert:Clean;JclStackTraceViewerExpert:Clean" />
+    <CallTarget Targets="Jcl:Clean;JclVcl:Clean;JclContainers:Clean;JclBaseExpert:Clean;JclDebugExpert:Clean;JclFavoriteFoldersExpert:Clean;JclProjectAnalysisExpert:Clean;JclRepositoryExpert:Clean;JclSIMDViewExpert:Clean;JclStackTraceViewerExpert:Clean;JclVersionControlExpert:Clean" />
   </Target>
   <Target Name="Make">
-    <CallTarget Targets="Jcl:Make;JclVcl:Make;JclContainers:Make;JclBaseExpert:Make;JclDebugExpert:Make;JclFavoriteFoldersExpert:Make;JclProjectAnalysisExpert:Make;JclRepositoryExpert:Make;JclSIMDViewExpert:Make;JclVersionControlExpert:Make;JclStackTraceViewerExpert:Make" />
+    <CallTarget Targets="Jcl:Make;JclVcl:Make;JclContainers:Make;JclBaseExpert:Make;JclDebugExpert:Make;JclFavoriteFoldersExpert:Make;JclProjectAnalysisExpert:Make;JclRepositoryExpert:Make;JclSIMDViewExpert:Make;JclStackTraceViewerExpert:Make;JclVersionControlExpert:Make" />
   </Target>
 </Project>

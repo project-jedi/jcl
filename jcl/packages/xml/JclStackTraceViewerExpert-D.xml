@@ -23,7 +23,7 @@
     <File Name="..\..\experts\stacktraceviewer\JclStackTraceViewerStackFrame.pas" Targets="Delphi" Formname="frmStack: TFrame" Condition=""/>
     <File Name="..\..\experts\stacktraceviewer\JclStackTraceViewerThreadFrame.pas" Targets="Delphi" Formname="frmThread: TFrame" Condition=""/>
     <File Name="..\..\experts\stacktraceviewer\JclStackTraceViewerModuleFrame.pas" Targets="Delphi" Formname="frmModule: TFrame" Condition=""/>
-    <File Name="..\..\experts\stacktraceviewer\JclStackTraceViewerMainFormDelphi.pas" Targets="d5,d6,d7" Formname="frmStackView" Condition=""/>
+    <File Name="..\..\experts\stacktraceviewer\JclStackTraceViewerMainFormDelphi.pas" Targets="c5,c6,d5,d6,d7" Formname="frmStackView" Condition=""/>
     <File Name="..\..\experts\stacktraceviewer\JclStackTraceViewerMainFormBDS.pas" Targets="d9,d10,d11,d12" Formname="frmStackView" Condition=""/>
     <File Name="..\..\experts\stacktraceviewer\JclStackTraceViewerMainFrame.pas" Targets="Delphi" Formname="frmMain: TFrame" Condition=""/>
     <File Name="..\..\experts\stacktraceviewer\JclStackTraceViewerConfigFrame.pas" Targets="Delphi" Formname="JclStackTraceViewerConfigFrame: TFrame" Condition=""/>

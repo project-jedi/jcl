@@ -12,8 +12,9 @@ BRCC = $(ROOT)\bin\brcc32.exe $**
 PROJECTS = JclD50.bpl JclVclD50.bpl JclContainersD50.bpl JclBaseExpertD50.bpl \
   JclDebugExpertD50.bpl JclFavoriteFoldersExpertD50.bpl \
   JclProjectAnalysisExpertD50.bpl JclRepositoryExpertD50.bpl \
-  JclSIMDViewExpertD50.bpl JclThreadNameExpertD50.bpl JclUsesExpertD50.bpl \
-  JclVersionControlExpertD50.bpl JclStackTraceViewerExpertD50.bpl
+  JclSIMDViewExpertD50.bpl JclStackTraceViewerExpertD50.bpl \
+  JclThreadNameExpertD50.bpl JclUsesExpertD50.bpl \
+  JclVersionControlExpertD50.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -45,6 +46,9 @@ JclRepositoryExpertD50.bpl: d5\JclRepositoryExpertD50.dpk
 JclSIMDViewExpertD50.bpl: d5\JclSIMDViewExpertD50.dpk
   $(DCC)
 
+JclStackTraceViewerExpertD50.bpl: d5\JclStackTraceViewerExpertD50.dpk
+  $(DCC)
+
 JclThreadNameExpertD50.bpl: d5\JclThreadNameExpertD50.dpk
   $(DCC)
 
@@ -52,9 +56,6 @@ JclUsesExpertD50.bpl: d5\JclUsesExpertD50.dpk
   $(DCC)
 
 JclVersionControlExpertD50.bpl: d5\JclVersionControlExpertD50.dpk
-  $(DCC)
-
-JclStackTraceViewerExpertD50.bpl: d5\JclStackTraceViewerExpertD50.dpk
   $(DCC)
 
 

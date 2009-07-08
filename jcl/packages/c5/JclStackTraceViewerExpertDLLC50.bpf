@@ -1,0 +1,4 @@
+USEUNIT("..\..\experts\stacktraceviewer\JclStackTraceViewerMainFormDelphi.pas");
+USEDEF("JclStackTraceViewerExpertDLLC50.def");
+Project file
+DllEntryPoint

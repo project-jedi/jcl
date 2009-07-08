@@ -12,8 +12,8 @@ BRCC = $(ROOT)\bin\brcc32.exe $**
 PROJECTS = Jcl70.bpl JclVcl70.bpl JclContainers70.bpl \
   JclBaseExpert70.bpl JclDebugExpert70.bpl JclFavoriteFoldersExpert70.bpl \
   JclProjectAnalysisExpert70.bpl JclRepositoryExpert70.bpl \
-  JclSIMDViewExpert70.bpl JclUsesExpert70.bpl JclVersionControlExpert70.bpl \
-  JclStackTraceViewerExpert70.bpl
+  JclSIMDViewExpert70.bpl JclStackTraceViewerExpert70.bpl \
+  JclUsesExpert70.bpl JclVersionControlExpert70.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -45,13 +45,13 @@ JclRepositoryExpert70.bpl: d7\JclRepositoryExpert.dpk
 JclSIMDViewExpert70.bpl: d7\JclSIMDViewExpert.dpk
   $(DCC)
 
+JclStackTraceViewerExpert70.bpl: d7\JclStackTraceViewerExpert.dpk
+  $(DCC)
+
 JclUsesExpert70.bpl: d7\JclUsesExpert.dpk
   $(DCC)
 
 JclVersionControlExpert70.bpl: d7\JclVersionControlExpert.dpk
-  $(DCC)
-
-JclStackTraceViewerExpert70.bpl: d7\JclStackTraceViewerExpert.dpk
   $(DCC)
 
 

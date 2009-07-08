@@ -12,7 +12,8 @@ BRCC = $(ROOT)\bin\brcc32.exe $**
 PROJECTS = JclC60.bpl JclVclC60.bpl JclContainersC60.bpl \
   JclBaseExpertC60.bpl JclDebugExpertC60.bpl JclFavoriteFoldersExpertC60.bpl \
   JclProjectAnalysisExpertC60.bpl JclRepositoryExpertC60.bpl \
-  JclSIMDViewExpertC60.bpl JclThreadNameExpertC60.bpl JclUsesExpertC60.bpl \
+  JclSIMDViewExpertC60.bpl JclStackTraceViewerExpertC60.bpl \
+  JclThreadNameExpertC60.bpl JclUsesExpertC60.bpl \
   JclVersionControlExpertC60.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
@@ -51,6 +52,10 @@ JclRepositoryExpertC60.bpl: c6\JclRepositoryExpert.bpk
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
 JclSIMDViewExpertC60.bpl: c6\JclSIMDViewExpert.bpk
+  $(ROOT)\bin\bpr2mak $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JclStackTraceViewerExpertC60.bpl: c6\JclStackTraceViewerExpert.bpk
   $(ROOT)\bin\bpr2mak $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
