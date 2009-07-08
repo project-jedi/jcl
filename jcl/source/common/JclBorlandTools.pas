@@ -891,7 +891,7 @@ uses
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
   JclFileUtils, JclLogic, JclResources,
-  JclStrings, JclAnsiStrings, JclWideStrings,
+  JclAnsiStrings, JclWideStrings, JclStrings,
   JclSysInfo, JclSimpleXml;
 
 // Internal
@@ -5455,7 +5455,7 @@ var
     if RegKeyExists(HKEY_LOCAL_MACHINE, KeyName) and
       RegGetKeyNames(HKEY_LOCAL_MACHINE, KeyName, VersionNumbers) then
       for I := 0 to VersionNumbers.Count - 1 do
-        if JclStrings.StrIsSubSet(VersionNumbers[I], CharIsFracDigit) then
+        if StrIsSubSet(VersionNumbers[I], CharIsFracDigit) then
         begin
           VersionKeyName := KeyName + DirDelimiter + VersionNumbers[I];
           if RegKeyExists(HKEY_LOCAL_MACHINE, VersionKeyName) then
