@@ -665,9 +665,6 @@ type
   public
     property BaseType: IJclEnumerationTypeInfo read GetBaseType;
     property Names[const I: Integer]: string read GetNames; default;
-    {$IFDEF RTL140_UP}
-    property UnitName: string read GetUnitName;
-    {$ENDIF RTL140_UP}
   end;
 
 function TJclEnumerationTypeInfo.GetBaseType: IJclEnumerationTypeInfo;
