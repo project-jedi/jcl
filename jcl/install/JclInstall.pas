@@ -160,7 +160,7 @@ type
   protected
     constructor Create(JclDistribution: TJclDistribution;
       InstallTarget: TJclBorRADToolInstallation; ATargetPlatform: TJclBorPlatform = bp32bit;
-      AGUIPage: IJediInstallPage = nil);
+      const AGUIPage: IJediInstallPage = nil);
     function CompileLibraryUnits(const SubDir: string; Debug: Boolean): Boolean;
     function CompilePackage(const Name: string): Boolean;
     function CompileApplication(FileName: string): Boolean;
@@ -799,7 +799,7 @@ end;
 
 constructor TJclInstallation.Create(JclDistribution: TJclDistribution;
   InstallTarget: TJclBorRADToolInstallation; ATargetPlatform: TJclBorPlatform;
-  AGUIPage: IJediInstallPage);
+  const AGUIPage: IJediInstallPage);
 begin
   inherited Create;
 

@@ -245,7 +245,7 @@ type
     constructor Create; reintroduce;
     destructor Destroy; override;
 
-    function AddProduct(AProduct: IJediProduct): Integer;
+    function AddProduct(const AProduct: IJediProduct): Integer;
     procedure Execute;
     function Install: Boolean;
     function Uninstall: Boolean;
@@ -253,8 +253,8 @@ type
     function AddInstallOption(const Name: string): Integer;
     function GetInstallOptionName(Id: Integer): string;
     function GetOptionCount: Integer;
-    function ProcessLogLine(const Line: string; var LineType: TCompileLineType;
-      Page: IJediInstallPage): string;
+    function ProcessLogLine(const Line: string; out LineType: TCompileLineType;
+      const Page: IJediInstallPage): string;
 
     property ProductCount: Integer read GetProductCount;
     property Products[Index: Integer]: IJediProduct read GetProduct;
@@ -312,7 +312,7 @@ begin
     Result := FOptions.Add(Name);
 end;
 
-function TJediInstallCore.AddProduct(AProduct: IJediProduct): Integer;
+function TJediInstallCore.AddProduct(const AProduct: IJediProduct): Integer;
 begin
   Result := FProducts.Size;
   FProducts.Add(AProduct);
@@ -443,7 +443,7 @@ begin
 end;
 
 function TJediInstallCore.ProcessLogLine(const Line: string;
-  var LineType: TCompileLineType; Page: IJediInstallPage): string;
+  out LineType: TCompileLineType; const Page: IJediInstallPage): string;
 
   function HasText(Text: string; const Values: array of string): Boolean;
   var
