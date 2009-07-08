@@ -351,6 +351,7 @@ type
     FOutput: string;
     FOnAfterExecute: TJclBorlandCommandLineToolEvent;
     FOnBeforeExecute: TJclBorlandCommandLineToolEvent;
+    procedure OemTextHandler(const Text: string);
   protected
     constructor Create(AInstallation: TJclBorRADToolInstallation); virtual;
     procedure CheckOutputValid;
@@ -889,7 +890,9 @@ uses
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
-  JclFileUtils, JclLogic, JclResources, JclStrings, JclWideStrings, JclSysInfo, JclSimpleXml;
+  JclFileUtils, JclLogic, JclResources,
+  JclStrings, JclAnsiStrings, JclWideStrings,
+  JclSysInfo, JclSimpleXml;
 
 // Internal
 
@@ -2428,10 +2431,31 @@ begin
   if Assigned(FOutputCallback) then
   begin
     FOutputCallback(LaunchCommand);
-    Result := JclSysUtils.Execute(LaunchCommand, FOutputCallback) = 0;
+    Result := JclSysUtils.Execute(LaunchCommand, OemTextHandler) = 0;
   end
   else
+  begin
     Result := JclSysUtils.Execute(LaunchCommand, FOutput) = 0;
+    {$IFDEF MSWINDOWS}
+    FOutput := string(StrOemToAnsi(AnsiString(FOutput)));
+    {$ENDIF MSWINDOWS}
+  end;
+end;
+
+procedure TJclBorlandCommandLineTool.OemTextHandler(const Text: string);
+var
+  AnsiText: string;
+begin
+  if Assigned(FOutputCallback) then
+  begin
+    {$IFDEF MSWINDOWS}
+    // Text is OEM
+    AnsiText := string(StrOemToAnsi(AnsiString(Text)));
+    {$ELSE ~MSWINDOWS}
+    AnsiText := Text;
+    {$ENDIF ~MSWINDOWS}
+    FOutputCallback(AnsiText);
+  end;
 end;
 
 procedure TJclBorlandCommandLineTool.SetOutputCallback(const CallbackMethod: TTextHandler);
@@ -5431,7 +5455,7 @@ var
     if RegKeyExists(HKEY_LOCAL_MACHINE, KeyName) and
       RegGetKeyNames(HKEY_LOCAL_MACHINE, KeyName, VersionNumbers) then
       for I := 0 to VersionNumbers.Count - 1 do
-        if StrIsSubSet(VersionNumbers[I], CharIsFracDigit) then
+        if JclStrings.StrIsSubSet(VersionNumbers[I], CharIsFracDigit) then
         begin
           VersionKeyName := KeyName + DirDelimiter + VersionNumbers[I];
           if RegKeyExists(HKEY_LOCAL_MACHINE, VersionKeyName) then
