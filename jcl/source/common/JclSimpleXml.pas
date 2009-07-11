@@ -427,7 +427,7 @@ type
   public
     procedure LoadFromStringStream(StringStream: TJclStringStream; AParent: TJclSimpleXML = nil); override;
     procedure SaveToStringStream(StringStream: TJclStringStream; const Level: string = ''; AParent: TJclSimpleXML = nil); override;
-  end; 
+  end;
 
   TJclSimpleXMLOptions = set of (sxoAutoCreate, sxoAutoIndent, sxoAutoEncodeValue,
     sxoAutoEncodeEntity, sxoDoNotSaveProlog, sxoTrimPrecedingTextWhitespace);
@@ -1336,7 +1336,7 @@ begin
   begin
     // Create from the class type, so that the virtual constructor is called
     // creating an element of the correct class type.
-    Elem := TJclSimpleXMLElemClass(Elems.Items[I].ClassType).Create(Elems.Items[I].Parent);
+    Elem := TJclSimpleXMLElemClass(Elems.Items[I].ClassType).Create(Self);
     Elem.Assign(Elems.Items[I]);
     Items.Add(Elem);
   end;
