@@ -836,6 +836,8 @@ resourcestring
   RsCompressionNsisExtensions        = '*.nsis';
   RsCompressionLzmaName              = 'Lzma archive';
   RsCompressionLzmaExtensions        = '*.lzma';
+  RsCompressionLzma86Name            = 'Lzma86 archive';
+  RsCompressionLzma86Extensions      = '*.lzma86';
   RsCompressionPeName                = 'Pe archive';
   // TODO: extension might be *.*, but then TJclCompressionStreamFormats.FindDecompressFormat can fail
   RsCompressionPeExtensions          = '*.';
@@ -876,6 +878,16 @@ resourcestring
   RsCompressionTarExtensions         = '*.tar';
   RsCompressionGZipName              = 'GZip archive';
   RsCompressionGZipExtensions        = '*.gz;*.gzip;*.tgz;*.tpz';
+  RsCompressionXzName                = 'xz archive';
+  RsCompressionXzExtensions          = '*.xz;*.txz';
+  RsCompressionNtfsName              = 'Ntfs archive';
+  RsCompressionNtfsExtensions        = '*.ntfs;*.img';
+  RsCompressionFatName               = 'Fat archive';
+  RsCompressionFatExtensions         = '*.fat;*.img';
+  RsCompressionMbrName               = 'Mbr archive';
+  RsCompressionMbrExtensions         = '*.mbr';
+  RsCompressionVhdName               = 'Vhd archive';
+  RsCompressionVhdExtensions         = '*.vhd;*.mbr';
   RsCompressionDuplicate             = 'The file %s already exists in the archive';
   RsCompressionReplaceError          = 'At least one compression volumes could not be replaced after an archive out-of-place update';
 

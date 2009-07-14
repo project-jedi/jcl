@@ -36,11 +36,6 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ This unit is still in alpha state. It is likely that it will change a lot. Suggestions are       }
-{ welcome.                                                                                         }
-{                                                                                                  }
-{**************************************************************************************************}
-{                                                                                                  }
 { Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
@@ -105,6 +100,7 @@ uses
    |         |-- TJcl7zCompressArchive      handled by sevenzip http://sevenzip.sourceforge.net/
    |         |-- TJclTarCompressArchive     handled by sevenzip http://sevenzip.sourceforge.net/
    |         |-- TJclGZipCompressArchive    handled by sevenzip http://sevenzip.sourceforge.net/
+   |         |-- TJclXzCompressArchive      handled by sevenzip http://sevenzip.sourceforge.net/
    |
    |-- TJclDecompressArchive
    |    |
@@ -120,6 +116,7 @@ uses
    |         |-- TJclCabDecompressArchive      handled by sevenzip http://sevenzip.sourceforge.net/
    |         |-- TJclNsisDecompressArchive     handled by sevenzip http://sevenzip.sourceforge.net/
    |         |-- TJclLzmaDecompressArchive     handled by sevenzip http://sevenzip.sourceforge.net/
+   |         |-- TJclLzma86DecompressArchive   handled by sevenzip http://sevenzip.sourceforge.net/
    |         |-- TJclPeDecompressArchive       handled by sevenzip http://sevenzip.sourceforge.net/
    |         |-- TJclElfDecompressArchive      handled by sevenzip http://sevenzip.sourceforge.net/
    |         |-- TJclMachoDecompressArchive    handled by sevenzip http://sevenzip.sourceforge.net/
@@ -131,6 +128,7 @@ uses
    |         |-- TJclCompoundDecompressArchive handled by sevenzip http://sevenzip.sourceforge.net/
    |         |-- TJclWimDecompressArchive      handled by sevenzip http://sevenzip.sourceforge.net/
    |         |-- TJclIsoDecompressArchive      handled by sevenzip http://sevenzip.sourceforge.net/
+   |         |-- TJclBkfDecompressArchive      handled by sevenzip http://sevenzip.sourceforge.net/
    |         |-- TJclChmDecompressArchive      handled by sevenzip http://sevenzip.sourceforge.net/
    |         |-- TJclSplitDecompressArchive    handled by sevenzip http://sevenzip.sourceforge.net/
    |         |-- TJclRpmDecompressArchive      handled by sevenzip http://sevenzip.sourceforge.net/
@@ -138,6 +136,12 @@ uses
    |         |-- TJclCpioDecompressArchive     handled by sevenzip http://sevenzip.sourceforge.net/
    |         |-- TJclTarDecompressArchive      handled by sevenzip http://sevenzip.sourceforge.net/
    |         |-- TJclGZipDecompressArchive     handled by sevenzip http://sevenzip.sourceforge.net/
+   |         |-- TJclXzDecompressArchive       handled by sevenzip http://sevenzip.sourceforge.net/
+   |         |-- TJclNtfsDecompressArchive     handled by sevenzip http://sevenzip.sourceforge.net/
+   |         |-- TJclFatDecompressArchive      handled by sevenzip http://sevenzip.sourceforge.net/
+   |         |-- TJclMbrDecompressArchive      handled by sevenzip http://sevenzip.sourceforge.net/
+   |         |-- TJclVhdDecompressArchive      handled by sevenzip http://sevenzip.sourceforge.net/
+
    |
    |-- TJclUpdateArchive
         |
@@ -148,6 +152,7 @@ uses
              |-- TJcl7zUpdateArchive        handled by sevenzip http://sevenzip.sourceforge.net/
              |-- TJclTarUpdateArchive       handled by sevenzip http://sevenzip.sourceforge.net/
              |-- TJclGZipUpdateArchive      handled by sevenzip http://sevenzip.sourceforge.net/
+             |-- TJclXzUpdateArchive        handled by sevenzip http://sevenzip.sourceforge.net/
   
 **************************************************************************************************}
 
@@ -1296,6 +1301,21 @@ type
     procedure SetAlgorithm(Value: Cardinal);
   end;
 
+  TJclXzCompressArchive = class(TJclSevenzipCompressArchive, IJclArchiveCompressionMethod, IInterface)
+  private
+    FCompressionMethod: TJclCompressionMethod;
+  protected
+    function GetCLSID: TGUID; override;
+    procedure CreateCompressionObject; override;
+  public
+    class function ArchiveExtensions: string; override;
+    class function ArchiveName: string; override;
+    { IJclArchiveCompressionMethod }
+    function GetCompressionMethod: TJclCompressionMethod;
+    function GetSupportedCompressionMethods: TJclCompressionMethods;
+    procedure SetCompressionMethod(Value: TJclCompressionMethod);
+  end;
+
 // sevenzip classes for decompression
 type
   TJclSevenzipDecompressArchive = class(TJclDecompressArchive, IInterface)
@@ -1425,6 +1445,15 @@ type
     class function ArchiveName: string; override;
   end;
 
+  TJclLzma86DecompressArchive = class(TJclSevenzipDecompressArchive, IInterface)
+  protected
+    function GetCLSID: TGUID; override;
+  public
+    class function MultipleItemContainer: Boolean; override;
+    class function ArchiveExtensions: string; override;
+    class function ArchiveName: string; override;
+  end;
+
   TJclPeDecompressArchive = class(TJclSevenzipDecompressArchive, IInterface)
   protected
     function GetCLSID: TGUID; override;
@@ -1524,6 +1553,7 @@ type
     class function ArchiveName: string; override;
   end;
 
+  // not implemented in 9.04
   {TJclBkfDecompressArchive = class(TJclSevenzipDecompressArchive, IInterface)
   protected
     function GetCLSID: TGUID; override;
@@ -1587,6 +1617,49 @@ type
   end;
 
   TJclGZipDecompressArchive = class(TJclSevenzipDecompressArchive, IInterface)
+  protected
+    function GetCLSID: TGUID; override;
+  public
+    class function ArchiveExtensions: string; override;
+    class function ArchiveName: string; override;
+  end;
+
+  TJclXzDecompressArchive = class(TJclSevenzipDecompressArchive, IInterface)
+  protected
+    function GetCLSID: TGUID; override;
+  public
+    class function ArchiveExtensions: string; override;
+    class function ArchiveName: string; override;
+  end;
+
+  TJclNtfsDecompressArchive = class(TJclSevenzipDecompressArchive, IInterface)
+  protected
+    function GetCLSID: TGUID; override;
+  public
+    class function MultipleItemContainer: Boolean; override;
+    class function ArchiveExtensions: string; override;
+    class function ArchiveName: string; override;
+  end;
+
+  TJclFatDecompressArchive = class(TJclSevenzipDecompressArchive, IInterface)
+  protected
+    function GetCLSID: TGUID; override;
+  public
+    class function MultipleItemContainer: Boolean; override;
+    class function ArchiveExtensions: string; override;
+    class function ArchiveName: string; override;
+  end;
+
+  TJclMbrDecompressArchive = class(TJclSevenzipDecompressArchive, IInterface)
+  protected
+    function GetCLSID: TGUID; override;
+  public
+    class function MultipleItemContainer: Boolean; override;
+    class function ArchiveExtensions: string; override;
+    class function ArchiveName: string; override;
+  end;
+
+  TJclVhdDecompressArchive = class(TJclSevenzipDecompressArchive, IInterface)
   protected
     function GetCLSID: TGUID; override;
   public
@@ -1780,6 +1853,21 @@ type
     function GetAlgorithm: Cardinal;
     function GetSupportedAlgorithms: TDynCardinalArray;
     procedure SetAlgorithm(Value: Cardinal);
+  end;
+
+  TJclXzUpdateArchive = class(TJclSevenzipUpdateArchive, IJclArchiveCompressionMethod, IInterface)
+  private
+    FCompressionMethod: TJclCompressionMethod;
+  protected
+    function GetCLSID: TGUID; override;
+    procedure CreateCompressionObject; override;
+  public
+    class function ArchiveExtensions: string; override;
+    class function ArchiveName: string; override;
+    { IJclArchiveCompressionMethod }
+    function GetCompressionMethod: TJclCompressionMethod;
+    function GetSupportedCompressionMethods: TJclCompressionMethods;
+    procedure SetCompressionMethod(Value: TJclCompressionMethod);
   end;
 {$ENDIF MSWINDOWS}
 
@@ -3759,6 +3847,7 @@ begin
   RegisterFormat(TJcl7zCompressArchive);
   RegisterFormat(TJclTarCompressArchive);
   RegisterFormat(TJclGZipCompressArchive);
+  RegisterFormat(TJclXzCompressArchive);
   RegisterFormat(TJclZipDecompressArchive);
   RegisterFormat(TJclBZ2DecompressArchive);
   RegisterFormat(TJclRarDecompressArchive);
@@ -3769,6 +3858,7 @@ begin
   RegisterFormat(TJclCabDecompressArchive);
   RegisterFormat(TJclNsisDecompressArchive);
   RegisterFormat(TJclLzmaDecompressArchive);
+  RegisterFormat(TJclLzma86DecompressArchive);
   RegisterFormat(TJclPeDecompressArchive);
   RegisterFormat(TJclElfDecompressArchive);
   RegisterFormat(TJclMachoDecompressArchive);
@@ -3787,6 +3877,10 @@ begin
   RegisterFormat(TJclCpioDecompressArchive);
   RegisterFormat(TJclTarDecompressArchive);
   RegisterFormat(TJclGZipDecompressArchive);
+  RegisterFormat(TJclNtfsDecompressArchive);
+  RegisterFormat(TJclFatDecompressArchive);
+  RegisterFormat(TJclMbrDecompressArchive);
+  RegisterFormat(TJclVhdDecompressArchive);
   RegisterFormat(TJclZipUpdateArchive);
   RegisterFormat(TJclBZ2UpdateArchive);
   RegisterFormat(TJcl7zUpdateArchive);
@@ -6383,6 +6477,47 @@ begin
   FNumberOfPasses := Value;
 end;
 
+//=== { TJclXzCompressArchive } ==============================================
+
+class function TJclXzCompressArchive.ArchiveExtensions: string;
+begin
+  Result := LoadResString(@RsCompressionXzExtensions);
+end;
+
+class function TJclXzCompressArchive.ArchiveName: string;
+begin
+  Result := LoadResString(@RsCompressionXzName);
+end;
+
+procedure TJclXzCompressArchive.CreateCompressionObject;
+begin
+  inherited CreateCompressionObject;
+  FCompressionMethod := cmLZMA;
+end;
+
+function TJclXzCompressArchive.GetCLSID: TGUID;
+begin
+  Result := CLSID_CFormatXz;
+end;
+
+function TJclXzCompressArchive.GetCompressionMethod: TJclCompressionMethod;
+begin
+  CheckNotCompressing;
+  Result := FCompressionMethod;
+end;
+
+function TJclXzCompressArchive.GetSupportedCompressionMethods: TJclCompressionMethods;
+begin
+  Result := [cmLZMA];
+end;
+
+procedure TJclXzCompressArchive.SetCompressionMethod(
+  Value: TJclCompressionMethod);
+begin
+  CheckNotCompressing;
+  FCompressionMethod := Value;
+end;
+
 //=== { TJclSevenzipOpenCallback } ===========================================
 
 type
@@ -6985,7 +7120,29 @@ end;
 
 class function TJclLzmaDecompressArchive.MultipleItemContainer: Boolean;
 begin
-  Result := True;
+  Result := False;
+end;
+
+//=== { TJclLzma86DecompressArchive } ========================================
+
+class function TJclLzma86DecompressArchive.ArchiveExtensions: string;
+begin
+  Result := LoadResString(@RsCompressionLzma86Extensions);
+end;
+
+class function TJclLzma86DecompressArchive.ArchiveName: string;
+begin
+  Result := LoadResString(@RsCompressionLzma86Name);
+end;
+
+function TJclLzma86DecompressArchive.GetCLSID: TGUID;
+begin
+  Result := CLSID_CFormatLzma86;
+end;
+
+class function TJclLzma86DecompressArchive.MultipleItemContainer: Boolean;
+begin
+  Result := False;
 end;
 
 //=== { TJclPeDecompressArchive } ============================================
@@ -7372,6 +7529,106 @@ end;
 function TJclGZipDecompressArchive.GetCLSID: TGUID;
 begin
   Result := CLSID_CFormatGZip;
+end;
+
+//=== { TJclXzDecompressArchive } ============================================
+
+class function TJclXzDecompressArchive.ArchiveExtensions: string;
+begin
+  Result := LoadResString(@RsCompressionXzExtensions);
+end;
+
+class function TJclXzDecompressArchive.ArchiveName: string;
+begin
+  Result := LoadResString(@RsCompressionXzName);
+end;
+
+function TJclXzDecompressArchive.GetCLSID: TGUID;
+begin
+  Result := CLSID_CFormatXz;
+end;
+
+//=== { TJclNtfsDecompressArchive } ==========================================
+
+class function TJclNtfsDecompressArchive.ArchiveExtensions: string;
+begin
+  Result := LoadResString(@RsCompressionNtfsExtensions);
+end;
+
+class function TJclNtfsDecompressArchive.ArchiveName: string;
+begin
+  Result := LoadResString(@RsCompressionNtfsName);
+end;
+
+function TJclNtfsDecompressArchive.GetCLSID: TGUID;
+begin
+  Result := CLSID_CFormatNtfs;
+end;
+
+class function TJclNtfsDecompressArchive.MultipleItemContainer: Boolean;
+begin
+  Result := True;
+end;
+
+//=== { TJclFatDecompressArchive } ===========================================
+
+class function TJclFatDecompressArchive.ArchiveExtensions: string;
+begin
+  Result := LoadResString(@RsCompressionFatExtensions);
+end;
+
+class function TJclFatDecompressArchive.ArchiveName: string;
+begin
+  Result := LoadResString(@RsCompressionFatName);
+end;
+
+function TJclFatDecompressArchive.GetCLSID: TGUID;
+begin
+  Result := CLSID_CFormatFat;
+end;
+
+class function TJclFatDecompressArchive.MultipleItemContainer: Boolean;
+begin
+  Result := True;
+end;
+
+//=== { TJclMbrDecompressArchive } ===========================================
+
+class function TJclMbrDecompressArchive.ArchiveExtensions: string;
+begin
+  Result := LoadResString(@RsCompressionMbrExtensions);
+end;
+
+class function TJclMbrDecompressArchive.ArchiveName: string;
+begin
+  Result := LoadResString(@RsCompressionMbrName);
+end;
+
+function TJclMbrDecompressArchive.GetCLSID: TGUID;
+begin
+  Result := CLSID_CFormatMbr;
+end;
+
+class function TJclMbrDecompressArchive.MultipleItemContainer: Boolean;
+begin
+  Result := True;
+end;
+
+//=== { TJclVhdDecompressArchive } ===========================================
+
+class function TJclVhdDecompressArchive.ArchiveExtensions: string;
+begin
+  Result := LoadResString(@RsCompressionVhdExtensions);
+end;
+
+class function TJclVhdDecompressArchive.ArchiveName: string;
+begin
+  Result := LoadResString(@RsCompressionVhdName);
+end;
+
+function TJclVhdDecompressArchive.GetCLSID: TGUID;
+begin
+  Result := CLSID_CFormatVhd;
 end;
 
 //=== { TJclSevenzipUpdateArchive } ==========================================
@@ -8257,6 +8514,49 @@ begin
   CheckNotCompressing;
   CheckNotDecompressing;
   FNumberOfPasses := Value;
+end;
+
+//=== { TJclXzUpdateArchive } ================================================
+
+class function TJclXzUpdateArchive.ArchiveExtensions: string;
+begin
+  Result := LoadResString(@RsCompressionXzExtensions);
+end;
+
+class function TJclXzUpdateArchive.ArchiveName: string;
+begin
+  Result := LoadResString(@RsCompressionXzExtensions);
+end;
+
+procedure TJclXzUpdateArchive.CreateCompressionObject;
+begin
+  inherited CreateCompressionObject;
+  FCompressionMethod := cmLZMA
+end;
+
+function TJclXzUpdateArchive.GetCLSID: TGUID;
+begin
+  Result := CLSID_CFormatXz;
+end;
+
+function TJclXzUpdateArchive.GetCompressionMethod: TJclCompressionMethod;
+begin
+  CheckNotDecompressing;
+  CheckNotCompressing;
+  Result := FCompressionMethod;
+end;
+
+function TJclXzUpdateArchive.GetSupportedCompressionMethods: TJclCompressionMethods;
+begin
+  Result := [cmLZMA];
+end;
+
+procedure TJclXzUpdateArchive.SetCompressionMethod(
+  Value: TJclCompressionMethod);
+begin
+  CheckNotDecompressing;
+  CheckNotCompressing;
+  FCompressionMethod := Value;
 end;
 
 {$ENDIF MSWINDOWS}

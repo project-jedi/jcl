@@ -45,7 +45,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -97,6 +97,12 @@ const
   CLSID_CFormatCab      : TGUID = '{23170F69-40C1-278A-1000-000110080000}';
   CLSID_CFormatNsis     : TGUID = '{23170F69-40C1-278A-1000-000110090000}';
   CLSID_CFormatLzma     : TGUID = '{23170F69-40C1-278A-1000-0001100A0000}';
+  CLSID_CFormatLzma86   : TGUID = '{23170F69-40C1-278A-1000-0001100B0000}';
+  CLSID_CFormatXz       : TGUID = '{23170F69-40C1-278A-1000-0001100C0000}';
+  CLSID_CFormatNtfs     : TGUID = '{23170F69-40C1-278A-1000-000110D90000}';
+  CLSID_CFormatFat      : TGUID = '{23170F69-40C1-278A-1000-000110DA0000}';
+  CLSID_CFormatMbr      : TGUID = '{23170F69-40C1-278A-1000-000110DB0000}';
+  CLSID_CFormatVhd      : TGUID = '{23170F69-40C1-278A-1000-000110DC0000}';
   CLSID_CFormatPe       : TGUID = '{23170F69-40C1-278A-1000-000110DD0000}';
   CLSID_CFormatElf      : TGUID = '{23170F69-40C1-278A-1000-000110DE0000}';
   CLSID_CFormatMacho    : TGUID = '{23170F69-40C1-278A-1000-000110DF0000}';
