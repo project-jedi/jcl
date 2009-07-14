@@ -1693,18 +1693,8 @@ begin
 end;
 
 function GetWindowsTempFolder: string;
-var
-  Required: Cardinal;
 begin
-  Result := '';
-  Required := GetTempPath(0, nil);
-  if Required <> 0 then
-  begin
-    SetLength(Result, Required);
-    GetTempPath(Required, PChar(Result));
-    StrResetLength(Result);
-    Result := PathRemoveSeparator(Result);
-  end;
+  Result := PathRemoveSeparator(PathGetTempPath);
 end;
 
 function GetDesktopFolder: string;
