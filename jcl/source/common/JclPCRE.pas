@@ -26,7 +26,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -80,7 +80,7 @@ type
     roNotEmpty, roUTF8, roNoAutoCapture, roNoUTF8Check, roAutoCallout,
     roPartial, roDfaShortest, roDfaRestart, roDfaFirstLine, roDupNames,
     roNewLineCR, roNewLineLF, roNewLineCRLF, roNewLineAny, roBSRAnyCRLF,
-    roBSRUnicode, roJavascriptCompat);
+    roBSRUnicode, roJavascriptCompat, roNoStartOptimize);
   TJclRegExOptions = set of TJclRegExOption;
   TJclCaptureRange = record
     FirstPos: Integer;
@@ -398,12 +398,12 @@ const
     PCRE_NO_AUTO_CAPTURE, PCRE_NO_UTF8_CHECK, PCRE_AUTO_CALLOUT, 0, 0, 0, 0,
     PCRE_DUPNAMES, PCRE_NEWLINE_CR, PCRE_NEWLINE_LF, PCRE_NEWLINE_CRLF,
     PCRE_NEWLINE_ANY, PCRE_BSR_ANYCRLF, PCRE_BSR_UNICODE,
-    PCRE_JAVASCRIPT_COMPAT);
+    PCRE_JAVASCRIPT_COMPAT, PCRE_NO_START_OPTIMIZE);
   cRunOptions: array [TJclRegExOption] of Integer =
    (0, 0, 0, 0, 0, 0, 0, PCRE_NOTBOL, PCRE_NOTEOL, 0, PCRE_NOTEMPTY, 0, 0,
    PCRE_NO_UTF8_CHECK, 0, PCRE_PARTIAL, 0, 0, 0, 0, PCRE_NEWLINE_CR,
    PCRE_NEWLINE_LF, PCRE_NEWLINE_CRLF, PCRE_NEWLINE_ANY, PCRE_BSR_ANYCRLF,
-   PCRE_BSR_UNICODE, PCRE_JAVASCRIPT_COMPAT);
+   PCRE_BSR_UNICODE, PCRE_JAVASCRIPT_COMPAT, PCRE_NO_START_OPTIMIZE);
 var
   I: TJclRegExOption;
   SUPPORT_UTF8: Integer;
