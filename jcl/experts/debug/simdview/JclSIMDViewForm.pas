@@ -105,6 +105,7 @@ type
     FDisplay: TJclXMMContentType;
     FFormat: TJclSIMDFormat;
     FCpuInfo: TCpuInfo;
+    FEnabledFeatures: TOSEnabledFeatures;
     FSIMDCaption: string;
     FNbMMRegister: Integer;
     FNbXMMRegister: Integer;
@@ -129,6 +130,7 @@ type
     procedure SetThreadValues;
     procedure GetThreadValues;
     property CpuInfo: TCpuInfo read FCpuInfo;
+    property EnabledFeatures: TOSEnabledFeatures read FEnabledFeatures;
     property Format: TJclSIMDFormat read FFormat write SetFormat;
     property Display: TJclXMMContentType read FDisplay write SetDisplay;
     property SIMDCaption: string read FSIMDCaption write FSIMDCaption;
@@ -171,6 +173,7 @@ begin
   FSettings := ASettings;
 
   JclSysInfo.GetCpuInfo(FCpuInfo);
+  FEnabledFeatures := GetOSEnabledFeatures;
 
   // the behaviour of Delphi and C++Builder overrides all changes made on
   // the floating point context of the debugged thread when it is run
@@ -657,7 +660,7 @@ begin
   try
     FormCPUInfo := TJclFormCpuInfo.Create(Self);
     try
-      FormCPUInfo.Execute(CpuInfo);
+      FormCPUInfo.Execute(CpuInfo, EnabledFeatures);
     finally
       FormCPUInfo.Free;
     end;

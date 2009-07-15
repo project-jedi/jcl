@@ -205,4 +205,34 @@ object JclFormCpuInfo: TJclFormCpuInfo
     Enabled = False
     TabOrder = 16
   end
+  object CheckBoxEnabledFPU: TCheckBox
+    Left = 8
+    Top = 187
+    Width = 137
+    Height = 17
+    Alignment = taLeftJustify
+    Caption = 'Enabled FPU'
+    Enabled = False
+    TabOrder = 17
+  end
+  object CheckBoxEnabledSSE: TCheckBox
+    Left = 8
+    Top = 210
+    Width = 137
+    Height = 17
+    Alignment = taLeftJustify
+    Caption = 'Enabled SSE'
+    Enabled = False
+    TabOrder = 18
+  end
+  object CheckBoxEnabledAVX: TCheckBox
+    Left = 8
+    Top = 233
+    Width = 137
+    Height = 17
+    Alignment = taLeftJustify
+    Caption = 'Enabled AVX'
+    Enabled = False
+    TabOrder = 19
+  end
 end

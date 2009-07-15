@@ -1241,6 +1241,12 @@ function GetIntelCacheDescription(const D: Byte): string;
 function RoundFrequency(const Frequency: Integer): Integer;
 {$IFDEF MSWINDOWS}
 function GetCPUSpeed(var CpuSpeed: TFreqInfo): Boolean;
+
+type
+  TOSEnabledFeature = (oefFPU, oefSSE, oefAVX);
+  TOSEnabledFeatures = set of TOSEnabledFeature;
+
+function GetOSEnabledFeatures: TOSEnabledFeatures;
 {$ENDIF MSWINDOWS}
 function CPUID: TCpuInfo;
 function TestFDIVInstruction: Boolean;
@@ -4098,6 +4104,28 @@ begin
     CpuSpeed.NormFreq := RoundFrequency(CpuSpeed.NormFreq);
     Result := True;
   end;
+end;
+
+function GetOSEnabledFeatures: TOSEnabledFeatures;
+var
+  EnabledFeatures: DWORD64;
+begin
+  if IsWin7 or IsWinServer2008 or IsWinServer2008R2 then
+  begin
+    EnabledFeatures := $FFFFFFFF;
+    EnabledFeatures := EnabledFeatures shl 32;
+    EnabledFeatures := EnabledFeatures or $FFFFFFFF;
+    EnabledFeatures := GetEnabledExtendedFeatures(EnabledFeatures);
+    Result := [];
+    if (EnabledFeatures and XSTATE_MASK_LEGACY_FLOATING_POINT) <> 0 then
+      Include(Result, oefFPU);
+    if (EnabledFeatures and XSTATE_MASK_LEGACY_SSE) <> 0 then
+      Include(Result, oefSSE);
+    if (EnabledFeatures and XSTATE_MASK_GSSE) <> 0 then
+      Include(Result, oefAVX);
+  end
+  else
+    Result := [];
 end;
 {$ENDIF MSWINDOWS}
 

@@ -163,4 +163,108 @@ begin
   end;
 end;
 
+var
+  _CopyExtendedContext: Pointer;
+
+function CopyExtendedContext;
+begin
+  GetProcedureAddress(_CopyExtendedContext, kernel32, 'CopyExtendedContext');
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_CopyExtendedContext]
+  end;
+end;
+
+var
+  _InitializeExtendedContext: Pointer;
+
+function InitializeExtendedContext;
+begin
+  GetProcedureAddress(_InitializeExtendedContext, kernel32, 'InitializeExtendedContext');
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_InitializeExtendedContext]
+  end;
+end;
+
+var
+  _GetEnabledExtendedFeatures: Pointer;
+
+function GetEnabledExtendedFeatures;
+begin
+  GetProcedureAddress(_GetEnabledExtendedFeatures, kernel32, 'GetEnabledExtendedFeatures');
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_GetEnabledExtendedFeatures]
+  end;
+end;
+
+var
+  _GetExtendedContextLength: Pointer;
+
+function GetExtendedContextLength;
+begin
+  GetProcedureAddress(_GetExtendedContextLength, kernel32, 'GetExtendedContextLength');
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_GetExtendedContextLength]
+  end;
+end;
+
+var
+  _GetExtendedFeaturesMask: Pointer;
+
+function GetExtendedFeaturesMask;
+begin
+  GetProcedureAddress(_GetExtendedFeaturesMask, kernel32, 'GetExtendedFeaturesMask');
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_GetExtendedFeaturesMask]
+  end;
+end;
+
+var
+  _LocateExtendedFeature: Pointer;
+
+function LocateExtendedFeature;
+begin
+  GetProcedureAddress(_LocateExtendedFeature, kernel32, 'LocateExtendedFeature');
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_LocateExtendedFeature]
+  end;
+end;
+
+var
+  _LocateLegacyContext: Pointer;
+
+function LocateLegacyContext;
+begin
+  GetProcedureAddress(_LocateLegacyContext, kernel32, 'LocateLegacyContext');
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_LocateLegacyContext]
+  end;
+end;
+
+var
+  _SetExtendedFeaturesMask: Pointer;
+
+procedure SetExtendedFeaturesMask;
+begin
+  GetProcedureAddress(_SetExtendedFeaturesMask, kernel32, 'SetExtendedFeaturesMask');
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_SetExtendedFeaturesMask]
+  end;
+end;
+
 {$ENDIF MSWINDOWS}

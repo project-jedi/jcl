@@ -2786,6 +2786,83 @@ const
   REG_QWORD_LITTLE_ENDIAN        = ( 11 ); // 64-bit number (same as REG_QWORD)
   {$EXTERNALSYM REG_QWORD_LITTLE_ENDIAN}
 
+  // Windows 7 debugging types
+
+type
+  _CONTEXT_CHUNK = packed record
+    Offset: Integer;
+    Length: DWORD;
+  end;
+  CONTEXT_CHUNK = _CONTEXT_CHUNK;
+  PCONTEXT_CHUNK = ^_CONTEXT_CHUNK;
+
+type
+  _CONTEXT_EX = packed record
+    //
+    // The total length of the structure starting from the chunk with
+    // the smallest offset. N.B. that the offset may be negative.
+    //
+    All: CONTEXT_CHUNK;
+
+    //
+    // Wrapper for the traditional CONTEXT structure. N.B. the size of
+    // the chunk may be less than sizeof(CONTEXT) is some cases (when
+    // CONTEXT_EXTENDED_REGISTERS is not set on x86 for instance).
+    //
+
+    Legacy: CONTEXT_CHUNK;
+
+    //
+    // CONTEXT_XSTATE: Extended processor state chunk. The state is
+    // stored in the same format XSAVE operation strores it with
+    // exception of the first 512 bytes, i.e. staring from
+    // XSAVE_AREA_HEADER. The lower two bits corresponding FP and
+    // SSE state must be zero.
+    //
+
+    XState: CONTEXT_CHUNK;
+  end;
+  CONTEXT_EX = _CONTEXT_EX;
+  PCONTEXT_EX = ^_CONTEXT_EX;
+
+//
+// Known extended CPU state feature IDs
+//
+
+const
+  XSTATE_LEGACY_FLOATING_POINT = 0;
+  XSTATE_LEGACY_SSE            = 1;
+  XSTATE_GSSE                  = 2;
+
+  XSTATE_MASK_LEGACY_FLOATING_POINT = Int64(1) shl XSTATE_LEGACY_FLOATING_POINT;
+  XSTATE_MASK_LEGACY_SSE            = Int64(1) shl XSTATE_LEGACY_SSE;
+  XSTATE_MASK_LEGACY                = XSTATE_MASK_LEGACY_FLOATING_POINT or XSTATE_MASK_LEGACY_SSE;
+  XSTATE_MASK_GSSE                  = Int64(1) shl XSTATE_GSSE;
+
+  MAXIMUM_XSTATE_FEATURES = 64;
+
+//
+// The following flags control the contents of the CONTEXT structure.
+//
+const
+  CONTEXT_i386 = $00010000;    // this assumes that i386 and
+  CONTEXT_i486 = $00010000;    // i486 have identical context records
+
+  CONTEXT_CONTROL            = CONTEXT_i386 or $00000001; // SS:SP, CS:IP, FLAGS, BP
+  CONTEXT_INTEGER            = CONTEXT_i386 or $00000002; // AX, BX, CX, DX, SI, DI
+  CONTEXT_SEGMENTS           = CONTEXT_i386 or $00000004; // DS, ES, FS, GS
+  CONTEXT_FLOATING_POINT     = CONTEXT_i386 or $00000008; // 387 state
+  CONTEXT_DEBUG_REGISTERS    = CONTEXT_i386 or $00000010; // DB 0-3,6,7
+  CONTEXT_EXTENDED_REGISTERS = CONTEXT_i386 or $00000020; // cpu specific extensions
+
+  CONTEXT_FULL = CONTEXT_CONTROL or CONTEXT_INTEGER or CONTEXT_SEGMENTS;
+
+  CONTEXT_ALL  = CONTEXT_CONTROL or CONTEXT_INTEGER or CONTEXT_SEGMENTS or CONTEXT_FLOATING_POINT or
+                 CONTEXT_DEBUG_REGISTERS or CONTEXT_EXTENDED_REGISTERS;
+
+  CONTEXT_XSTATE = CONTEXT_i386 or $00000040;
+
+
 // line 160
 
 //
@@ -2916,6 +2993,31 @@ function DeleteVolumeMountPointW(lpszVolumeMountPoint: LPCWSTR): BOOL; stdcall;
 function GetVolumeNameForVolumeMountPointW(lpszVolumeMountPoint: LPCWSTR;
   lpszVolumeName: LPWSTR; cchBufferLength: DWORD): BOOL; stdcall;
 {$EXTERNALSYM GetVolumeNameForVolumeMountPointW}
+
+// new Windows 7 debugging API
+function CopyExtendedContext(Destination: PCONTEXT_EX; ContextFlags: DWORD; Source: PCONTEXT_EX): BOOL; stdcall;
+{$EXTERNALSYM CopyExtendedContext}
+
+function InitializeExtendedContext(Context: Pointer; ContextFlags: DWORD; out ContextEx: PCONTEXT_EX): BOOL; stdcall;
+{$EXTERNALSYM InitializeExtendedContext}
+
+function GetEnabledExtendedFeatures(const FeatureMask: DWORD64): DWORD64; stdcall;
+{$EXTERNALSYM GetEnabledExtendedFeatures}
+
+function GetExtendedContextLength(ContextFlags: DWORD; ContextLength: PDWORD): BOOL; stdcall;
+{$EXTERNALSYM GetExtendedContextLength}
+
+function GetExtendedFeaturesMask(ContextEx: PCONTEXT_EX): DWORD64; stdcall;
+{$EXTERNALSYM GetExtendedFeaturesMask}
+
+function LocateExtendedFeature(ContextEx: PCONTEXT_EX; FeatureId: DWORD; Length: PDWORD): Pointer; stdcall;
+{$EXTERNALSYM LocateExtendedFeature}
+
+function LocateLegacyContext(ContextEx: PCONTEXT_EX; Length: PDWORD): PCONTEXT; stdcall;
+{$EXTERNALSYM LocateLegacyContext}
+
+procedure SetExtendedFeaturesMask(ContextEx: PCONTEXT_EX; const FeatureMask: DWORD64);
+{$EXTERNALSYM SetExtendedFeaturesMask}
 
 
 {$IFNDEF COMPILER11_UP}
@@ -8043,6 +8145,110 @@ begin
     mov esp, ebp
     pop ebp
     jmp [_GetVolumeNameForVolMountPointW]
+  end;
+end;
+
+var
+  _CopyExtendedContext: Pointer;
+
+function CopyExtendedContext;
+begin
+  GetProcedureAddress(_CopyExtendedContext, kernel32, 'CopyExtendedContext');
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_CopyExtendedContext]
+  end;
+end;
+
+var
+  _InitializeExtendedContext: Pointer;
+
+function InitializeExtendedContext;
+begin
+  GetProcedureAddress(_InitializeExtendedContext, kernel32, 'InitializeExtendedContext');
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_InitializeExtendedContext]
+  end;
+end;
+
+var
+  _GetEnabledExtendedFeatures: Pointer;
+
+function GetEnabledExtendedFeatures;
+begin
+  GetProcedureAddress(_GetEnabledExtendedFeatures, kernel32, 'GetEnabledExtendedFeatures');
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_GetEnabledExtendedFeatures]
+  end;
+end;
+
+var
+  _GetExtendedContextLength: Pointer;
+
+function GetExtendedContextLength;
+begin
+  GetProcedureAddress(_GetExtendedContextLength, kernel32, 'GetExtendedContextLength');
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_GetExtendedContextLength]
+  end;
+end;
+
+var
+  _GetExtendedFeaturesMask: Pointer;
+
+function GetExtendedFeaturesMask;
+begin
+  GetProcedureAddress(_GetExtendedFeaturesMask, kernel32, 'GetExtendedFeaturesMask');
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_GetExtendedFeaturesMask]
+  end;
+end;
+
+var
+  _LocateExtendedFeature: Pointer;
+
+function LocateExtendedFeature;
+begin
+  GetProcedureAddress(_LocateExtendedFeature, kernel32, 'LocateExtendedFeature');
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_LocateExtendedFeature]
+  end;
+end;
+
+var
+  _LocateLegacyContext: Pointer;
+
+function LocateLegacyContext;
+begin
+  GetProcedureAddress(_LocateLegacyContext, kernel32, 'LocateLegacyContext');
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_LocateLegacyContext]
+  end;
+end;
+
+var
+  _SetExtendedFeaturesMask: Pointer;
+
+procedure SetExtendedFeaturesMask;
+begin
+  GetProcedureAddress(_SetExtendedFeaturesMask, kernel32, 'SetExtendedFeaturesMask');
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_SetExtendedFeaturesMask]
   end;
 end;
 

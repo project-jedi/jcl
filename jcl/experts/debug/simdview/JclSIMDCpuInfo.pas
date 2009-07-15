@@ -64,10 +64,13 @@ type
     CheckBoxSSE5: TCheckBox;
     CheckBoxSSE4B: TCheckBox;
     CheckBoxAVX: TCheckBox;
+    CheckBoxEnabledFPU: TCheckBox;
+    CheckBoxEnabledSSE: TCheckBox;
+    CheckBoxEnabledAVX: TCheckBox;
   protected
     procedure CreateParams(var Params: TCreateParams); override;
   public
-    procedure Execute(const CpuInfo: TCPUInfo);
+    procedure Execute(const CpuInfo: TCPUInfo; const EnabledFeatures: TOSEnabledFeatures);
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -100,7 +103,7 @@ begin
     Params.WndParent := Application.Handle;
 end;
 
-procedure TJclFormCpuInfo.Execute(const CpuInfo: TCPUInfo);
+procedure TJclFormCpuInfo.Execute(const CpuInfo: TCPUInfo; const EnabledFeatures: TOSEnabledFeatures);
 begin
   EditName.Text := string(AnsiString(CpuInfo.CpuName));
   EditVendor.Text := string(AnsiString(CpuInfo.VendorIDString));
@@ -118,6 +121,9 @@ begin
   CheckBoxSSE4B.Checked := sse4B in CpuInfo.SSE;
   CheckBoxSSE5.Checked := sse5 in CpuInfo.SSE;
   CheckBoxAVX.Checked := avx in CpuInfo.SSE;
+  CheckBoxEnabledFPU.Checked := oefFPU in EnabledFeatures;
+  CheckBoxEnabledSSE.Checked := oefSSE in EnabledFeatures;
+  CheckBoxEnabledAVX.Checked := oefAVX in EnabledFeatures;
   ShowModal;
 end;
 
