@@ -815,19 +815,19 @@ end;
 {$ELSE COMPILER9_UP}
 var
   ContextMemory: Pointer;
-  JvContext: PJclContext;
+  JclContext: PJclContext;
 begin
   GetMem(ContextMemory, SizeOf(TJclContext) + 15);
   try
     if (Cardinal(ContextMemory) and 15) <> 0 then
-      JvContext := PJclContext((Cardinal(ContextMemory) + 16) and $FFFFFFF0)
+      JclContext := PJclContext((Cardinal(ContextMemory) + 16) and $FFFFFFF0)
     else
-      JvContext := ContextMemory;
-    JvContext^.ScalarContext.ContextFlags := CONTEXT_EXTENDED_REGISTERS;
-    Result := GetThreadContext(AThread.Handle,JvContext^) and
-      ((JvContext^.ScalarContext.ContextFlags and CONTEXT_EXTENDED_REGISTERS)<>0);
+      JclContext := ContextMemory;
+    JclContext^.ScalarContext.ContextFlags := CONTEXT_EXTENDED_REGISTERS;
+    Result := GetThreadContext(AThread.Handle,JclContext^) and
+      ((JclContext^.ScalarContext.ContextFlags and CONTEXT_EXTENDED_REGISTERS)<>0);
     if Result then
-      VectorContext := JvContext^.VectorContext
+      VectorContext := JclContext^.VectorContext
     else                                                  
       FillChar(VectorContext, SizeOf(VectorContext), 0);
   finally
@@ -852,30 +852,30 @@ begin
 end;
 {$ELSE COMPILER9_UP}
 // MM registers can not saved (changes are overriden by the Borland's debugger)
-{const                                      
+{const
   CONTEXT_FLAGS =    CONTEXT_CONTROL or CONTEXT_INTEGER or CONTEXT_SEGMENTS
                   or CONTEXT_FLOATING_POINT or CONTEXT_EXTENDED_REGISTERS;
 var
   ContextMemory: Pointer;
-  JvContext: PJclContext;
+  JclContext: PJclContext;
   Index: Integer;
 begin
   GetMem(ContextMemory,SizeOf(TJclContext)+15);
   try
     if ((Cardinal(ContextMemory) and 15)<>0) then
-      JvContext := PJclContext((Cardinal(ContextMemory)+16) and $FFFFFFF0)
+      JclContext := PJclContext((Cardinal(ContextMemory)+16) and $FFFFFFF0)
     else
-      JvContext := ContextMemory;
-    JvContext^.ScalarContext.ContextFlags := CONTEXT_FLAGS;
-    Result := GetThreadContext(hThread,JvContext^) and
-             ((JvContext^.ScalarContext.ContextFlags and CONTEXT_FLAGS) = CONTEXT_FLAGS);
+      JclContext := ContextMemory;
+    JclContext^.ScalarContext.ContextFlags := CONTEXT_FLAGS;
+    Result := GetThreadContext(hThread,JclContext^) and
+             ((JclContext^.ScalarContext.ContextFlags and CONTEXT_FLAGS) = CONTEXT_FLAGS);
     if (Result) then
     begin
-      JvContext^.ScalarContext.ContextFlags := CONTEXT_FLAGS;
-      JvContext^.VectorContext := VectorContext;
+      JclContext^.ScalarContext.ContextFlags := CONTEXT_FLAGS;
+      JclContext^.VectorContext := VectorContext;
       for Index := 0 to 7 do
-        Move(VectorContext.FPURegisters[Index].Data.FloatValue,JvContext^.ScalarContext.FloatSave.RegisterArea[Index*SizeOf(Extended)],SizeOf(Extended));
-      Result := SetThreadContext(hThread,JvContext^);
+        Move(VectorContext.FPURegisters[Index].Data.FloatValue,JclContext^.ScalarContext.FloatSave.RegisterArea[Index*SizeOf(Extended)],SizeOf(Extended));
+      Result := SetThreadContext(hThread,JclContext^);
     end;
   finally
     FreeMem(ContextMemory);
@@ -883,19 +883,19 @@ begin
 end;}
 var
   ContextMemory: Pointer;
-  JvContext: PJclContext;
+  JclContext: PJclContext;
 begin
   GetMem(ContextMemory, SizeOf(TJclContext) + 15);
   try
     if (Cardinal(ContextMemory) and 15) <> 0 then
-      JvContext := PJclContext((Cardinal(ContextMemory) + 16) and $FFFFFFF0)
+      JclContext := PJclContext((Cardinal(ContextMemory) + 16) and $FFFFFFF0)
     else
-      JvContext := ContextMemory;
-    JvContext^.ScalarContext.ContextFlags := CONTEXT_EXTENDED_REGISTERS;
-    Result := GetThreadContext(AThread.Handle,JvContext^) and
-      ((JvContext^.ScalarContext.ContextFlags and CONTEXT_EXTENDED_REGISTERS) = CONTEXT_EXTENDED_REGISTERS);
+      JclContext := ContextMemory;
+    JclContext^.ScalarContext.ContextFlags := CONTEXT_EXTENDED_REGISTERS;
+    Result := GetThreadContext(AThread.Handle,JclContext^) and
+      ((JclContext^.ScalarContext.ContextFlags and CONTEXT_EXTENDED_REGISTERS) = CONTEXT_EXTENDED_REGISTERS);
     if Result then
-      Result := SetThreadContext(AThread.Handle,JvContext^);
+      Result := SetThreadContext(AThread.Handle,JclContext^);
   finally
     FreeMem(ContextMemory);
   end;
