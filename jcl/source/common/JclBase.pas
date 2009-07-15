@@ -126,6 +126,7 @@ type
   PInt64 = type System.PInt64;
   PPInt64 = ^JclBase.PInt64;
   DWORD64 = UInt64;
+  {$EXTERNALSYM DWORD64}
 
 // Interface compatibility
 {$IFDEF SUPPORTS_INTERFACE}
