@@ -3,7 +3,7 @@ object JclFormCpuInfo: TJclFormCpuInfo
   Top = 438
   BorderStyle = bsDialog
   Caption = 'Local CPU Informations'
-  ClientHeight = 264
+  ClientHeight = 296
   ClientWidth = 322
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -148,7 +148,7 @@ object JclFormCpuInfo: TJclFormCpuInfo
   end
   object ButtonClose: TButton
     Left = 128
-    Top = 233
+    Top = 263
     Width = 83
     Height = 25
     Caption = 'Close'
@@ -194,5 +194,15 @@ object JclFormCpuInfo: TJclFormCpuInfo
     Caption = 'SSE Version 4 B'
     Enabled = False
     TabOrder = 13
+  end
+  object CheckBoxAVX: TCheckBox
+    Left = 161
+    Top = 233
+    Width = 153
+    Height = 17
+    Alignment = taLeftJustify
+    Caption = 'AVX'
+    Enabled = False
+    TabOrder = 16
   end
 end

@@ -63,6 +63,7 @@ type
     CheckBoxSSE4A: TCheckBox;
     CheckBoxSSE5: TCheckBox;
     CheckBoxSSE4B: TCheckBox;
+    CheckBoxAVX: TCheckBox;
   protected
     procedure CreateParams(var Params: TCreateParams); override;
   public
@@ -116,6 +117,7 @@ begin
   CheckBoxSSE4A.Checked := sse4A in CpuInfo.SSE;
   CheckBoxSSE4B.Checked := sse4B in CpuInfo.SSE;
   CheckBoxSSE5.Checked := sse5 in CpuInfo.SSE;
+  CheckBoxAVX.Checked := avx in CpuInfo.SSE;
   ShowModal;
 end;
 
