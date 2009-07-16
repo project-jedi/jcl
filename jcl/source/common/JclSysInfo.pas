@@ -4108,7 +4108,7 @@ end;
 
 function GetOSEnabledFeatures: TOSEnabledFeatures;
 var
-  EnabledFeatures: DWORD64;
+  EnabledFeatures: Int64;
 begin
   if IsWin7 or IsWinServer2008 or IsWinServer2008R2 then
   begin

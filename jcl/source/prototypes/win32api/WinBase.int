@@ -137,13 +137,13 @@ function CopyExtendedContext(Destination: PCONTEXT_EX; ContextFlags: DWORD; Sour
 function InitializeExtendedContext(Context: Pointer; ContextFlags: DWORD; out ContextEx: PCONTEXT_EX): BOOL; stdcall;
 {$EXTERNALSYM InitializeExtendedContext}
 
-function GetEnabledExtendedFeatures(const FeatureMask: DWORD64): DWORD64; stdcall;
+function GetEnabledExtendedFeatures(const FeatureMask: Int64): Int64; stdcall;
 {$EXTERNALSYM GetEnabledExtendedFeatures}
 
 function GetExtendedContextLength(ContextFlags: DWORD; ContextLength: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM GetExtendedContextLength}
 
-function GetExtendedFeaturesMask(ContextEx: PCONTEXT_EX): DWORD64; stdcall;
+function GetExtendedFeaturesMask(ContextEx: PCONTEXT_EX): Int64; stdcall;
 {$EXTERNALSYM GetExtendedFeaturesMask}
 
 function LocateExtendedFeature(ContextEx: PCONTEXT_EX; FeatureId: DWORD; Length: PDWORD): Pointer; stdcall;
@@ -152,7 +152,7 @@ function LocateExtendedFeature(ContextEx: PCONTEXT_EX; FeatureId: DWORD; Length:
 function LocateLegacyContext(ContextEx: PCONTEXT_EX; Length: PDWORD): PCONTEXT; stdcall;
 {$EXTERNALSYM LocateLegacyContext}
 
-procedure SetExtendedFeaturesMask(ContextEx: PCONTEXT_EX; const FeatureMask: DWORD64);
+procedure SetExtendedFeaturesMask(ContextEx: PCONTEXT_EX; const FeatureMask: Int64);
 {$EXTERNALSYM SetExtendedFeaturesMask}
 
 {$ENDIF MSWINDOWS}
