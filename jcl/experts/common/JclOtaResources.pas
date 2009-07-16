@@ -305,6 +305,8 @@ resourcestring
   RsModifyMM = 'Modification of MM%d';
   RsModifyXMM1 = 'Modification of XMM%d';
   RsModifyXMM2 = 'Modification of XMM%.2d';
+  RsModifyYMM1 = 'Modification of YMM%d';
+  RsModifyYMM2 = 'Modification of YMM%.2d';
 
   RsVectorIE = 'IE  ';
   RsVectorDE = 'DE  ';

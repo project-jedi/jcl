@@ -46,8 +46,8 @@ const
   WM_MODIFYCONTINUE = WM_USER + 100;
 
 type
-  TJclRegisterType = (rtXMM, rtMM);
-  
+  TJclRegisterType = (rtYMM, rtXMM, rtMM);
+
   TJclSIMDModifyFrm = class(TForm)
     ComboBoxDisplay: TComboBox;
     ComboBoxFormat: TComboBox;
@@ -64,8 +64,9 @@ type
   private
     FRegisterType: TJclRegisterType;
     FXMMRegister: TJclXMMRegister;
+    FYMMRegister: TJclYMMRegister;
     FMMRegister: TJclMMRegister;
-    FDisplay: TJclXMMContentType;
+    FDisplay: TJclPackedContentType;
     FFormat: TJclSIMDFormat;
     FDebuggerServices: IOTADebuggerServices;
     FComboBoxList: TComponentList;
@@ -77,6 +78,7 @@ type
     FResultStr: string;
     FReturnCode: Cardinal;
     FCPUInfo: TCpuInfo;
+    FYMMEnabled: Boolean;
     FSettings: TJclOTASettings;
     procedure ContinueModify;
     procedure StartModify;
@@ -85,18 +87,22 @@ type
     procedure CreateParams(var Params: TCreateParams); override;
     property RegisterType: TJclRegisterType read FRegisterType;
     property XMMRegister: TJclXMMRegister read FXMMRegister;
+    property YMMRegister: TJclYMMRegister read FYMMRegister;
     property MMRegister: TJclMMRegister read FMMRegister;
     property DebuggerServices: IOTADebuggerServices read FDebuggerServices;
   public
     constructor Create(AOwner: TComponent;
       ADebuggerServices: IOTADebuggerServices; ASettings: TJclOTASettings); reintroduce;
     destructor Destroy; override;
-    function Execute(AThread: IOTAThread; ADisplay: TJclXMMContentType;
+    function Execute(AThread: IOTAThread; ADisplay: TJclPackedContentType;
       AFormat: TJclSIMDFormat; var ARegister: TJclXMMRegister;
-      const ACpuInfo: TCpuInfo): Boolean; overload;
-    function Execute(AThread: IOTAThread; ADisplay: TJclXMMContentType;
+      const ACpuInfo: TCpuInfo; AYMMEnabled: Boolean): Boolean; overload;
+    function Execute(AThread: IOTAThread; ADisplay: TJclPackedContentType;
+      AFormat: TJclSIMDFormat; var AXMMRegister: TJclXMMRegister; var AYMMRegister: TJclYMMRegister;
+      const ACpuInfo: TCpuInfo; AYMMEnabled: Boolean): Boolean; overload;
+    function Execute(AThread: IOTAThread; ADisplay: TJclPackedContentType;
       AFormat: TJclSIMDFormat; var ARegister: TJclMMRegister;
-      const ACpuInfo: TCpuInfo): Boolean; overload;
+      const ACpuInfo: TCpuInfo; AYMMEnabled: Boolean): Boolean; overload;
     procedure ThreadEvaluate(const ExprStr, ResultStr: string; ReturnCode: Integer);
     procedure UpdateDisplay;
     procedure UpdateFormat;
@@ -104,7 +110,7 @@ type
     procedure SaveHistory;
     procedure MergeHistory;
 
-    property Display: TJclXMMContentType read FDisplay;
+    property Display: TJclPackedContentType read FDisplay;
     property Format: TJclSIMDFormat read FFormat;
     property History: TStringList read FHistory;
     property Thread: IOTAThread read FThread;
@@ -126,13 +132,14 @@ implementation
 {$R *.dfm}
 
 const
-  NbEdits: array [TJclRegisterType, TJclXMMContentType] of Byte =
+  NbEdits: array [TJclRegisterType, TJclPackedContentType] of Byte =
    (
-    (16, 8, 4, 2, 4, 2),
-    ( 8, 4, 2, 1, 2, 1)
+    (32, 16, 8, 4, 8, 4), // YMM
+    (16,  8, 4, 2, 4, 2), // XMM
+    ( 8,  4, 2, 1, 2, 1)  // MM
    );
 
-  Texts: array [TJclXMMContentType] of string =
+  Texts: array [TJclPackedContentType] of string =
     ('Byte', 'Word', 'DWord', 'QWord', 'Single', 'Double');
 
   ItemFormat = 'Item%d';
@@ -180,9 +187,9 @@ begin
   inherited Destroy;
 end;
 
-function TJclSIMDModifyFrm.Execute(AThread: IOTAThread; ADisplay: TJclXMMContentType;
+function TJclSIMDModifyFrm.Execute(AThread: IOTAThread; ADisplay: TJclPackedContentType;
   AFormat: TJclSIMDFormat; var ARegister: TJclXMMRegister;
-  const ACPUInfo: TCPUInfo): Boolean;
+  const ACPUInfo: TCPUInfo; AYMMEnabled: Boolean): Boolean;
 begin
   FTextIndex := 0;
   FRegisterType := rtXMM;
@@ -191,11 +198,12 @@ begin
   FDisplay := ADisplay;
   FThread := AThread;
   FCpuInfo := ACpuInfo;
+  FYMMEnabled := AYMMEnabled;
 
   LoadHistory;
 
   ComboBoxDisplay.ItemIndex := Integer(Display);
-  ComboBoxFormat.Enabled := Display in [xt16Bytes..xt2QWords];
+  ComboBoxFormat.Enabled := Display in [pctBytes..pctQWords];
   ComboBoxFormat.ItemIndex := Integer(Format);
   UpdateDisplay;
 
@@ -208,9 +216,42 @@ begin
   SaveHistory;
 end;
 
+function TJclSIMDModifyFrm.Execute(AThread: IOTAThread; ADisplay: TJclPackedContentType;
+  AFormat: TJclSIMDFormat; var AXMMRegister: TJclXMMRegister; var AYMMRegister: TJclYMMRegister;
+  const ACPUInfo: TCPUInfo; AYMMEnabled: Boolean): Boolean;
+begin
+  FTextIndex := 0;
+  FRegisterType := rtYMM;
+  FXMMRegister := AXMMRegister;
+  FYMMRegister := AYMMRegister;
+  FFormat := AFormat;
+  FDisplay := ADisplay;
+  FThread := AThread;
+  FCpuInfo := ACpuInfo;
+  FYMMEnabled := AYMMEnabled;
+
+  LoadHistory;
+
+  ComboBoxDisplay.ItemIndex := Integer(Display);
+  ComboBoxFormat.Enabled := Display in [pctBytes..pctQWords];
+  ComboBoxFormat.ItemIndex := Integer(Format);
+  UpdateDisplay;
+
+  Result := ShowModal = mrOk;
+
+  if Result then
+  begin
+    AXMMRegister := XMMRegister;
+    AYMMRegister := YMMRegister;
+  end;
+
+  MergeHistory;
+  SaveHistory;
+end;
+
 function TJclSIMDModifyFrm.Execute(AThread: IOTAThread;
-  ADisplay: TJclXMMContentType; AFormat: TJclSIMDFormat;
-  var ARegister: TJclMMRegister; const ACpuInfo: TCpuInfo): Boolean;
+  ADisplay: TJclPackedContentType; AFormat: TJclSIMDFormat;
+  var ARegister: TJclMMRegister; const ACpuInfo: TCpuInfo; AYMMEnabled: Boolean): Boolean;
 begin
   FTextIndex := 0;
   FRegisterType := rtMM;
@@ -219,11 +260,12 @@ begin
   FDisplay := ADisplay;
   FThread := AThread;
   FCpuInfo := ACpuInfo;
+  FYMMEnabled := AYMMEnabled;
 
   LoadHistory;
 
   ComboBoxDisplay.ItemIndex := Integer(Display);
-  ComboBoxFormat.Enabled := Display in [xt16Bytes..xt2QWords];
+  ComboBoxFormat.Enabled := Display in [pctBytes..pctQWords];
   ComboBoxFormat.ItemIndex := Integer(Format);
   UpdateDisplay;
 
@@ -250,7 +292,7 @@ begin
   FLabelList.Clear;
 
   ComboBoxDisplay.ItemIndex := Integer(Display);
-  ComboBoxFormat.Enabled := Display in [xt16Bytes..xt2QWords];
+  ComboBoxFormat.Enabled := Display in [pctBytes..pctQWords];
   ComboBoxFormat.ItemIndex := Integer(Format);
 
   X := 0;
@@ -269,10 +311,10 @@ begin
     ALabel.SetBounds(X + 5, Y + 2, 60, ALabel.Height);
     ALabel.Tag := Index;
     FLabelList.Add(ALabel);
-    if Index = 7 then
+    if (Index and 7) = 7 then
     begin
       Y := 12;
-      X := 230;
+      Inc(X, 230);
     end
     else
       Inc(Y, 32);
@@ -291,34 +333,67 @@ begin
   begin
     ALabel := FLabelList.Items[Index] as TLabel;
     case RegisterType of
+      rtYMM:
+        case Display of
+          pctBytes:
+            if ALabel.Tag >= Low(YMMRegister.Bytes) then
+              Value.ValueByte := YMMRegister.Bytes[ALabel.Tag]
+            else
+              Value.ValueByte := XMMRegister.Bytes[ALabel.Tag];
+          pctWords:
+            if ALabel.Tag >= Low(YMMRegister.Words) then
+              Value.ValueWord := YMMRegister.Words[ALabel.Tag]
+            else
+              Value.ValueWord := XMMRegister.Words[ALabel.Tag];
+          pctDWords:
+            if ALabel.Tag >= Low(YMMRegister.DWords) then
+              Value.ValueDWord := YMMRegister.DWords[ALabel.Tag]
+            else
+              Value.ValueDWord := XMMRegister.DWords[ALabel.Tag];
+          pctQWords:
+            if ALabel.Tag >= Low(YMMRegister.QWords) then
+              Value.ValueQWord := YMMRegister.QWords[ALabel.Tag]
+            else
+              Value.ValueQWord := XMMRegister.QWords[ALabel.Tag];
+          pctSingles:
+            if ALabel.Tag >= Low(YMMRegister.Singles) then
+              Value.ValueSingle := YMMRegister.Singles[ALabel.Tag]
+            else
+              Value.ValueSingle := XMMRegister.Singles[ALabel.Tag];
+          pctDoubles:
+            if ALabel.Tag >= Low(YMMRegister.Doubles) then
+              Value.ValueDouble := YMMRegister.Doubles[ALabel.Tag]
+            else
+              Value.ValueDouble := XMMRegister.Doubles[ALabel.Tag];
+        end;
       rtXMM:
         case Display of
-          xt16Bytes:
+          pctBytes:
             Value.ValueByte := XMMRegister.Bytes[ALabel.Tag];
-          xt8Words:
+          pctWords:
             Value.ValueWord := XMMRegister.Words[ALabel.Tag];
-          xt4DWords:
+          pctDWords:
             Value.ValueDWord := XMMRegister.DWords[ALabel.Tag];
-          xt2QWords:
+          pctQWords:
             Value.ValueQWord := XMMRegister.QWords[ALabel.Tag];
-          xt4Singles:
+          pctSingles:
             Value.ValueSingle := XMMRegister.Singles[ALabel.Tag];
-          xt2Doubles:
+          pctDoubles:
             Value.ValueDouble := XMMRegister.Doubles[ALabel.Tag];
         end;
       rtMM:
         case Display of
-          xt16Bytes:
+          pctBytes:
             Value.ValueByte := MMRegister.Bytes[ALabel.Tag];
-          xt8Words:
+          pctWords:
             Value.ValueWord := MMRegister.Words[ALabel.Tag];
-          xt4DWords:
+          pctDWords:
             Value.ValueDWord := MMRegister.DWords[ALabel.Tag];
-          xt2QWords:
+          pctQWords:
             Value.ValueQWord := MMRegister.QWords;
-          xt4Singles:
+          pctSingles:
             Value.ValueSingle := MMRegister.Singles[ALabel.Tag];
-          xt2Doubles:
+          pctDoubles:
             begin
               ALabel.Caption := '';
               Break;
@@ -332,7 +407,7 @@ end;
 procedure TJclSIMDModifyFrm.ComboBoxDisplayChange(Sender: TObject);
 begin
   try
-    FDisplay := TJclXMMContentType((Sender as TComboBox).ItemIndex);
+    FDisplay := TJclPackedContentType((Sender as TComboBox).ItemIndex);
     UpdateDisplay;
   except
     on ExceptionObj: TObject do
@@ -427,48 +502,81 @@ var
   ResultBuffer: array [0..ResultBufferSize-1] of Char;
   ResultAddr, ResultSize: Cardinal;
   CanModify: Boolean;
-  VectorFrame: TJclVectorFrame;
+  JclContext: TJclContext;
 begin
   if (FReturnCode <> 0) then
     EvaluateResult := erError
   else
     EvaluateResult := erOK;
   AValue.Display := Display;
-  GetVectorContext(Thread, VectorFrame);
+  GetThreadJclContext(Thread, JclContext);
   while (FTextIndex < FComboBoxList.Count) and (EvaluateResult = erOK) do
   begin
     if (FTextIndex >= 0) and (FResultStr <> '') then
     begin
       if (ParseValue(FResultStr,AValue,Format)) then
         case RegisterType of
+          rtYMM:
+            case AValue.Display of
+              pctBytes:
+                if FTextIndex >= Low(FYMMRegister.Bytes) then
+                  FYMMRegister.Bytes[FTextIndex] := AValue.ValueByte
+                else
+                  FXMMRegister.Bytes[FTextIndex] := AValue.ValueByte;
+              pctWords:
+                if FTextIndex >= Low(FYMMRegister.Words) then
+                  FYMMRegister.Words[FTextIndex] := AValue.ValueWord
+                else
+                  FXMMRegister.Words[FTextIndex] := AValue.ValueWord;
+              pctDWords:
+                if FTextIndex >= Low(FYMMRegister.DWords) then
+                  FYMMRegister.DWords[FTextIndex] := AValue.ValueDWord
+                else
+                  FXMMRegister.DWords[FTextIndex] := AValue.ValueDWord;
+              pctQWords:
+                if FTextIndex >= Low(FYMMRegister.QWords) then
+                  FYMMRegister.QWords[FTextIndex] := AValue.ValueQWord
+                else
+                  FXMMRegister.QWords[FTextIndex] := AValue.ValueQWord;
+              pctSingles:
+                if FTextIndex >= Low(FYMMRegister.Singles) then
+                  FYMMRegister.Singles[FTextIndex] := AValue.ValueSingle
+                else
+                  FXMMRegister.Singles[FTextIndex] := AValue.ValueSingle;
+              pctDoubles:
+                if FTextIndex >= Low(FYMMRegister.Doubles) then
+                  FYMMRegister.Doubles[FTextIndex] := AValue.ValueDouble
+                else
+                  FXMMRegister.Doubles[FTextIndex] := AValue.ValueDouble;
+            end;
           rtXMM:
             case AValue.Display of
-              xt16Bytes:
+              pctBytes:
                 FXMMRegister.Bytes[FTextIndex] := AValue.ValueByte;
-              xt8Words:
+              pctWords:
                 FXMMRegister.Words[FTextIndex] := AValue.ValueWord;
-              xt4DWords:
+              pctDWords:
                 FXMMRegister.DWords[FTextIndex] := AValue.ValueDWord;
-              xt2QWords:
+              pctQWords:
                 FXMMRegister.QWords[FTextIndex] := AValue.ValueQWord;
-              xt4Singles:
+              pctSingles:
                 FXMMRegister.Singles[FTextIndex] := AValue.ValueSingle;
-              xt2Doubles:
+              pctDoubles:
                 FXMMRegister.Doubles[FTextIndex] := AValue.ValueDouble;
             end;
           rtMM:
             case AValue.Display of
-              xt16Bytes:
+              pctBytes:
                 FMMRegister.Bytes[FTextIndex] := AValue.ValueByte;
-              xt8Words:
+              pctWords:
                 FMMRegister.Words[FTextIndex] := AValue.ValueWord;
-              xt4DWords:
+              pctDWords:
                 FMMRegister.DWords[FTextIndex] := AValue.ValueDWord;
-              xt2QWords:
+              pctQWords:
                 FMMRegister.QWords := AValue.ValueQWord;
-              xt4Singles:
+              pctSingles:
                 FMMRegister.Singles[FTextIndex] := AValue.ValueSingle;
-              xt2Doubles:
+              pctDoubles:
                 EvaluateResult := erError;
             end;
           else
@@ -488,7 +596,7 @@ begin
         begin
           if not ParseValue(FExprStr, AValue, Format) then
           begin
-            if ReplaceSIMDRegisters(FExprStr, FCPUInfo.Is64Bits, VectorFrame) then
+            if ReplaceSIMDRegisters(FExprStr, FCPUInfo.Is64Bits, FYMMEnabled, JclContext) then
               EvaluateResult := Thread.Evaluate(FExprStr, ResultBuffer,
                 ResultBufferSize, CanModify, True, '', ResultAddr, ResultSize, FReturnCode)
             else

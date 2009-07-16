@@ -78,21 +78,21 @@ type
 
   TJclFPURegisters = array [0..7] of TJclFPURegister;
 
-  TJclXMMContentType = (xt16Bytes, xt8Words, xt4DWords, xt2QWords, xt4Singles, xt2Doubles);
+  TJclPackedContentType = (pctBytes, pctWords, pctDWords, pctQWords, pctSingles, pctDoubles);
 
   TJclXMMRegister = packed record
-    case TJclXMMContentType of
-      xt16Bytes:
+    case TJclPackedContentType of
+      pctBytes:
         (Bytes: array [0..15] of Byte;);
-      xt8Words:
+      pctWords:
         (Words: array [0..7] of Word;);
-      xt4DWords:
+      pctDWords:
         (DWords: array [0..3] of Cardinal;);
-      xt2QWords:
+      pctQWords:
         (QWords: array [0..1] of Int64;);
-      xt4Singles:
+      pctSingles:
         (Singles: array [0..3] of Single;);
-      xt2Doubles:
+      pctDoubles:
         (Doubles: array [0..1] of Double;);
   end;
 
@@ -128,14 +128,52 @@ type
     MXCSRMask: Cardinal;                 // bytes from 28  to 31
     FPURegisters: TJclFPURegisters;      // bytes from 32  to 159
     XMMRegisters: TJclXMMRegisters;      // bytes from 160 to 415
-    Reserved4: array [416..511] of Byte; // bytes from 416 to 512
+    Reserved4: array [416..511] of Byte; // bytes from 416 to 511
+  end;
+
+  // upper 128-bit of YMM registers (lower 128 bits are aliased to XMM registers)
+  TJclYMMRegister = packed record
+    case TJclPackedContentType of
+      pctBytes:
+        (Bytes: array [16..31] of Byte;);
+      pctWords:
+        (Words: array [8..15] of Word;);
+      pctDWords:
+        (DWords: array [4..7] of Cardinal;);
+      pctQWords:
+        (QWords: array [2..3] of Int64;);
+      pctSingles:
+        (Singles: array [4..7] of Single;);
+      pctDoubles:
+        (Doubles: array [2..3] of Double;);
+  end;
+
+  TJclXStateHeader = packed record
+    XState_BV: Int64;
+    Reserved: array [0..55] of Byte;
+  end;
+
+  TJclExtSaveArea2 = packed record
+    case TJclProcessorSize of
+      ps32Bits:
+        (LegacyYMM: array [0..7] of TJclYMMRegister;
+         LegacyReserved: array [0..127] of Byte;);
+      ps64Bits:
+        (LongYMM: array [0..15] of TJclYMMRegister;);
+  end;
+  PJclExtSaveArea2 = ^TJclExtSaveArea2;
+
+  TJclXStateContext = packed record
+    // vector context
+    SaveArea: TJclVectorFrame;      // bytes 0 to 511
+    Header: TJclXStateHeader;       // bytes 512 to 575
+    ExtSaveArea2: TJclExtSaveArea2; // bytes 576 to 831
   end;
 
   TJclContext = packed record
     ScalarContext: Windows.TContext;
-    VectorContext: TJclVectorFrame;
+    ExtendedContext: TJclXStateContext;
   end;
-
   PJclContext = ^TJclContext;
 
   TBitDescription = record
@@ -169,18 +207,18 @@ const
 
 type
   TJclSIMDValue = packed record
-    case Display: TJclXMMContentType of
-      xt16Bytes:
+    case Display: TJclPackedContentType of
+      pctBytes:
         (ValueByte: Byte;);
-      xt8Words:
+      pctWords:
         (ValueWord: Word;);
-      xt4DWords:
+      pctDWords:
         (ValueDWord: Cardinal;);
-      xt2QWords:
+      pctQWords:
         (ValueQWord: Int64;);
-      xt4Singles:
+      pctSingles:
         (ValueSingle: Single;);
-      xt2Doubles:
+      pctDoubles:
         (ValueDouble: Double;);
   end;
 
@@ -189,22 +227,13 @@ type
 function FormatValue(Value: TJclSIMDValue; Format: TJclSIMDFormat): string;
 function ParseValue(const StringValue: string; var Value: TJclSIMDValue;
   Format: TJclSIMDFormat): Boolean;
-function ReplaceSIMDRegisters(var Expression: string; Is64Bits: Boolean;
-  var VectorFrame: TJclVectorFrame): Boolean;
-
-const
-  CONTEXT_EXTENDED_REGISTERS = CONTEXT_i386 or $00000020;
-
-// return the processor frame for the specified thread, this thread must be suspended
-function GetThreadContext(hThread: THandle; var lpContext: TJclContext): BOOL; stdcall;
-
-// set the processor frame for the specified thread, this thread must be suspended
-function SetThreadContext(hThread: THandle; const lpContext: TJclContext): BOOL; stdcall;
+function ReplaceSIMDRegisters(var Expression: string; Is64Bits, YMMEnabled: Boolean;
+  var JclContext: TJclContext): Boolean;
 
 // return the XMM registers for the specified thread, this thread must be suspended
-function GetVectorContext(AThread: IOTAThread; out VectorContext: TJclVectorFrame): Boolean;
+function GetThreadJclContext(AThread: IOTAThread; out JclContext: TJclContext): Boolean;
 // return the XMM registers for the specified thread, this thread must be suspended
-function SetVectorContext(AThread: IOTAThread; const VectorContext: TJclVectorFrame): Boolean;
+function SetThreadJclContext(AThread: IOTAThread; const JclContext: TJclContext): Boolean;
 
 {$IFDEF UNITVERSIONING}
 const
@@ -221,18 +250,19 @@ implementation
 uses
   SysUtils, Math,
   JclStrings,
+  JclWin32,
   JclOtaUtils;
 
 function FormatBinary(Value: TJclSIMDValue): string;
 var
   I: Byte;
 const
-  Width: array [xt16Bytes..xt2QWords] of Byte = (8, 16, 32, 64);
+  Width: array [pctBytes..pctQWords] of Byte = (8, 16, 32, 64);
 begin
-  if not (Value.Display in [xt16Bytes, xt8Words, xt4DWords, XT2QWords]) then
+  if not (Value.Display in [pctBytes, pctWords, pctDWords, pctQWords]) then
     raise EJclExpertException.CreateTrace(RsEBadRegisterDisplay);
 
-  Assert(Value.Display < xt4Singles);
+  Assert(Value.Display < pctSingles);
   Result := StringOfChar('0', Width[Value.Display]);
   for I := 1 to Width[Value.Display] do
   begin
@@ -244,19 +274,19 @@ end;
 
 function FormatSigned(Value: TJclSIMDValue): string;
 const
-  Width: array [xt16Bytes..xt2QWords] of Byte = (4, 6, 11, 20);
+  Width: array [pctBytes..pctQWords] of Byte = (4, 6, 11, 20);
 begin
-  if not (Value.Display in [xt16Bytes, xt8Words, xt4DWords, XT2QWords]) then
+  if not (Value.Display in [pctBytes, pctWords, pctDWords, pctQWords]) then
     raise EJclExpertException.CreateTrace(RsEBadRegisterDisplay);
     
   case Value.Display of
-    xt16Bytes:
+    pctBytes:
       Result := IntToStr(Shortint(Value.ValueByte));
-    xt8Words:
+    pctWords:
       Result := IntToStr(Smallint(Value.ValueWord));
-    xt4DWords:
+    pctDWords:
       Result := IntToStr(Integer(Value.ValueDWord));
-    xt2QWords:
+    pctQWords:
       Result := IntToStr(Value.ValueQWord);
   else
     Result := '';
@@ -267,19 +297,19 @@ end;
 
 function FormatUnsigned(Value: TJclSIMDValue): string;
 const
-  Width: array [xt16Bytes..xt2QWords] of Byte = (3, 5, 10, 20);
+  Width: array [pctBytes..pctQWords] of Byte = (3, 5, 10, 20);
 begin
-  if not (Value.Display in [xt16Bytes, xt8Words, xt4DWords, XT2QWords]) then
+  if not (Value.Display in [pctBytes, pctWords, pctDWords, pctQWords]) then
     raise EJclExpertException.CreateTrace(RsEBadRegisterDisplay);
     
   case Value.Display of
-    xt16Bytes:
+    pctBytes:
       Result := IntToStr(Byte(Value.ValueByte));
-    xt8Words:
+    pctWords:
       Result := IntToStr(Word(Value.ValueWord));
-    xt4DWords:
+    pctDWords:
       Result := IntToStr(Cardinal(Value.ValueDWord));
-    xt2QWords:
+    pctQWords:
       Result := IntToStr(Value.ValueQWord);
   else
     Result := '';
@@ -290,20 +320,20 @@ end;
 
 function FormatHexa(Value: TJclSIMDValue): string;
 const
-  Width: array [xt16Bytes..xt2QWords] of Byte = (2, 4, 8, 16);
+  Width: array [pctBytes..pctQWords] of Byte = (2, 4, 8, 16);
 begin
-  if not (Value.Display in [xt16Bytes, xt8Words, xt4DWords, XT2QWords]) then
+  if not (Value.Display in [pctBytes, pctWords, pctDWords, pctQWords]) then
     raise EJclExpertException.CreateTrace(RsEBadRegisterDisplay);
     
   case Value.Display of
-    xt16Bytes:
-      Result := IntToHex(Value.ValueByte, Width[xt16Bytes]);
-    xt8Words:
-      Result := IntToHex(Value.ValueWord, Width[xt8Words]);
-    xt4DWords:
-      Result := IntToHex(Value.ValueDWord, Width[xt4DWords]);
-    xt2QWords:
-      Result := IntToHex(Value.ValueQWord, Width[xt2QWords]);
+    pctBytes:
+      Result := IntToHex(Value.ValueByte, Width[pctBytes]);
+    pctWords:
+      Result := IntToHex(Value.ValueWord, Width[pctWords]);
+    pctDWords:
+      Result := IntToHex(Value.ValueDWord, Width[pctDWords]);
+    pctQWords:
+      Result := IntToHex(Value.ValueQWord, Width[pctQWords]);
   else
     Result := '';
   end;
@@ -311,13 +341,13 @@ end;
 
 function FormatFloat(Value: TJclSIMDValue): string;
 begin
-  if not (Value.Display in [xt4Singles, xt2Doubles]) then
+  if not (Value.Display in [pctSingles, pctDoubles]) then
     raise EJclExpertException.CreateTrace(RsEBadRegisterDisplay);
     
   case Value.Display of
-    xt4Singles:
+    pctSingles:
       Result := FloatToStr(Value.ValueSingle);
-    xt2Doubles:
+    pctDoubles:
       Result := FloatToStr(Value.ValueDouble);
   else
     Result := '';
@@ -345,9 +375,9 @@ begin
     Exit;
   end;
   case Value.Display of
-    xt16Bytes..xt2QWords:
+    pctBytes..pctQWords:
       Result := FormatFunction(Value);
-    xt4Singles..xt2Doubles:
+    pctSingles..pctDoubles:
       Result := FormatFloat(Value);
   end;
 end;
@@ -375,22 +405,22 @@ begin
   end;
   Result := True;
   case Value.Display of
-    xt16Bytes:
+    pctBytes:
       if (TestValue >= Byte($00)) and (TestValue <= Byte($FF)) then
         Value.ValueByte := TestValue
       else
         Result := False;
-    xt8Words:
+    pctWords:
       if (TestValue >= Word($0000)) and (TestValue <= Word($FFFF)) then
         Value.ValueWord := TestValue
       else
         Result := False;
-    xt4DWords:
+    pctDWords:
       if (TestValue >= Cardinal($00000000)) and (TestValue <= Cardinal($FFFFFFFF)) then
         Value.ValueDWord := TestValue
       else
         Result := False;
-    xt2QWords:
+    pctQWords:
       Value.ValueQWord := TestValue;
   else
     Result := False;
@@ -406,22 +436,22 @@ begin
   Result := ErrorCode = 0;
   if Result then
     case Value.Display of
-      xt16Bytes:
+      pctBytes:
         if (TestValue >= Shortint($80)) and (TestValue <= Shortint($7F)) then
           Value.ValueByte := TestValue
         else
           Result := False;
-      xt8Words:
+      pctWords:
         if (TestValue >= Smallint($8000)) and (TestValue <= Smallint($7FFF)) then
           Value.ValueWord := TestValue
         else
           Result := False;
-      xt4DWords:
+      pctDWords:
         if (TestValue >= Integer($80000000)) and (TestValue <= Integer($7FFFFFFF)) then
           Value.ValueDWord := TestValue
         else
           Result := False;
-      xt2QWords:
+      pctQWords:
         Value.ValueQWord := TestValue;
     else
       Result := False;
@@ -437,22 +467,22 @@ begin
   Result := ErrorCode = 0;
   if Result then
     case Value.Display of
-      xt16Bytes:
+      pctBytes:
         if (TestValue >= Byte($00)) and (TestValue <= Byte($FF)) then
           Value.ValueByte := TestValue
         else
           Result := False;
-      xt8Words:
+      pctWords:
         if (TestValue >= Word($0000)) and (TestValue <= Word($FFFF)) then
           Value.ValueWord := TestValue
         else
           Result := False;
-      xt4DWords:
+      pctDWords:
         if (TestValue >= Cardinal($00000000)) and (TestValue <= Cardinal($FFFFFFFF)) then
           Value.ValueDWord := TestValue
         else
           Result := False;
-      xt2QWords:
+      pctQWords:
         Value.ValueQWord := TestValue;
     else
       Result := False;
@@ -486,22 +516,22 @@ begin
   end;
   Result := True;
   case Value.Display of
-    xt16Bytes:
+    pctBytes:
       if (TestValue >= Byte($00)) and (TestValue <= Byte($FF)) then
         Value.ValueByte := TestValue
       else
         Result := False;
-    xt8Words:
+    pctWords:
       if (TestValue >= Word($0000)) and (TestValue <= Word($FFFF)) then
         Value.ValueWord := TestValue
       else
         Result := False;
-    xt4DWords:
+    pctDWords:
       if (TestValue >= Cardinal($00000000)) and (TestValue <= Cardinal($FFFFFFFF)) then
         Value.ValueDWord := TestValue
       else
         Result := False;
-    xt2QWords:
+    pctQWords:
       Value.ValueQWord := TestValue;
   else
     Result := False;
@@ -519,12 +549,12 @@ begin
   Result := ErrorCode = 0;
   if Result then
     case Value.Display of
-      xt4Singles:
+      pctSingles:
         if (TestValue >= -MaxSingle) and (TestValue <= MaxSingle) then
           Value.ValueSingle := TestValue
         else
           Result := False;
-      xt2Doubles:
+      pctDoubles:
         if (TestValue >= MaxDouble) and (TestValue <= MaxDouble) then
           Value.ValueDouble := TestValue
         else
@@ -555,15 +585,15 @@ begin
     Exit;
   end;
   case Value.Display of
-    xt16Bytes..xt2QWords:
+    pctBytes..pctQWords:
       Result := ParseFunction(StringValue, Value);
-    xt4Singles..xt2Doubles:
+    pctSingles..pctDoubles:
       Result := ParseFloat(StringValue, Value);
   end;
 end;
 
-function ReplaceSIMDRegisters(var Expression: string; Is64Bits: Boolean;
-  var VectorFrame: TJclVectorFrame): Boolean;
+function ReplaceSIMDRegisters(var Expression: string; Is64Bits, YMMEnabled: Boolean;
+  var JclContext: TJclContext): Boolean;
 var
   LocalString: string;
   RegisterPosition: Integer;
@@ -577,6 +607,7 @@ var
   AValue: TJclSIMDValue;
   ValueStr: string;
   OldLength: Integer;
+  XMMMatch: Boolean;
 begin
   if Is64Bits then
     NumberOfXMMRegister := 16
@@ -585,7 +616,12 @@ begin
   Result := False;
   LocalString := AnsiUpperCase(Expression);
 
+  XMMMatch := False;
   RegisterPosition := AnsiPos('XMM', LocalString);
+  if YMMEnabled and (RegisterPosition = 0) then
+    RegisterPosition := AnsiPos('YMM', LocalString)
+  else
+    XMMMatch := True;
   while (RegisterPosition > 0) do
   begin
     for Index := RegisterPosition to Length(LocalString) do
@@ -617,50 +653,80 @@ begin
 
     if CompareStr(DataType, 'BYTE') = 0 then
     begin
-      if DataIndex >= 16 then
-        Exit;
-      AValue.Display := xt16Bytes;
-      AValue.ValueByte := VectorFrame.XMMRegisters.LongXMM[RegisterIndex].Bytes[DataIndex];
+      AValue.Display := pctBytes;
+      if DataIndex >= Low(JclContext.ExtendedContext.ExtSaveArea2.LongYMM[RegisterIndex].Bytes) then
+      begin
+        if XMMMatch then
+          Exit;
+        AValue.ValueByte := JclContext.ExtendedContext.ExtSaveArea2.LongYMM[RegisterIndex].Bytes[DataIndex];
+      end
+      else
+        AValue.ValueByte := JclContext.ExtendedContext.SaveArea.XMMRegisters.LongXMM[RegisterIndex].Bytes[DataIndex];
     end
     else
     if CompareStr(DataType, 'WORD') = 0 then
     begin
-      if DataIndex >= 8 then
-        Exit;
-      AValue.Display := xt8Words;
-      AValue.ValueWord := VectorFrame.XMMRegisters.LongXMM[RegisterIndex].Words[DataIndex];
+      AValue.Display := pctWords;
+      if DataIndex >= Low(JclContext.ExtendedContext.ExtSaveArea2.LongYMM[RegisterIndex].Words) then
+      begin
+        if XMMMatch then
+          Exit;
+        AValue.ValueWord := JclContext.ExtendedContext.ExtSaveArea2.LongYMM[RegisterIndex].Words[DataIndex];
+      end
+      else
+        AValue.ValueWord := JclContext.ExtendedContext.SaveArea.XMMRegisters.LongXMM[RegisterIndex].Words[DataIndex];
     end
     else
     if CompareStr(DataType, 'DWORD') = 0 then
     begin
-      if DataIndex >= 4 then
-        Exit;
-      AValue.Display := xt4DWords;
-      AValue.ValueDWord := VectorFrame.XMMRegisters.LongXMM[RegisterIndex].DWords[DataIndex];
+      AValue.Display := pctDWords;
+      if DataIndex >= Low(JclContext.ExtendedContext.ExtSaveArea2.LongYMM[RegisterIndex].DWords) then
+      begin
+        if XMMMatch then
+          Exit;
+        AValue.ValueDWord := JclContext.ExtendedContext.ExtSaveArea2.LongYMM[RegisterIndex].DWords[DataIndex];
+      end
+      else
+        AValue.ValueDWord := JclContext.ExtendedContext.SaveArea.XMMRegisters.LongXMM[RegisterIndex].DWords[DataIndex];
     end
     else
     if CompareStr(DataType, 'QWORD') = 0 then
     begin
-      if DataIndex >= 2 then
-        Exit;
-      AValue.Display := xt2QWords;
-      AValue.ValueQWord := VectorFrame.XMMRegisters.LongXMM[RegisterIndex].QWords[DataIndex];
+      AValue.Display := pctQWords;
+      if DataIndex >= Low(JclContext.ExtendedContext.ExtSaveArea2.LongYMM[RegisterIndex].QWords) then
+      begin
+        if XMMMatch then
+          Exit;
+        AValue.ValueQWord := JclContext.ExtendedContext.ExtSaveArea2.LongYMM[RegisterIndex].QWords[DataIndex];
+      end
+      else
+        AValue.ValueQWord := JclContext.ExtendedContext.SaveArea.XMMRegisters.LongXMM[RegisterIndex].QWords[DataIndex];
     end
     else
     if CompareStr(DataType, 'SINGLE') = 0 then
     begin
-      if DataIndex >= 4 then
-        Exit;
-      AValue.Display := xt4Singles;
-      AValue.ValueSingle := VectorFrame.XMMRegisters.LongXMM[RegisterIndex].Singles[DataIndex];
+      AValue.Display := pctSingles;
+      if DataIndex >= Low(JclContext.ExtendedContext.ExtSaveArea2.LongYMM[RegisterIndex].Singles) then
+      begin
+        if XMMMatch then
+          Exit;
+        AValue.ValueSingle := JclContext.ExtendedContext.ExtSaveArea2.LongYMM[RegisterIndex].Singles[DataIndex];
+      end
+      else
+        AValue.ValueSingle := JclContext.ExtendedContext.SaveArea.XMMRegisters.LongXMM[RegisterIndex].Singles[DataIndex];
     end
     else
     if CompareStr(DataType, 'DOUBLE') = 0 then
     begin
-      if DataIndex >= 2 then
-        Exit;
-      AValue.Display := xt2Doubles;
-      AValue.ValueDouble := VectorFrame.XMMRegisters.LongXMM[RegisterIndex].Doubles[DataIndex];
+      AValue.Display := pctDoubles;
+      if DataIndex >= Low(JclContext.ExtendedContext.ExtSaveArea2.LongYMM[RegisterIndex].Doubles) then
+      begin
+        if XMMMatch then
+          Exit;
+        AValue.ValueDouble := JclContext.ExtendedContext.ExtSaveArea2.LongYMM[RegisterIndex].Doubles[DataIndex];
+      end
+      else
+        AValue.ValueDouble := JclContext.ExtendedContext.SaveArea.XMMRegisters.LongXMM[RegisterIndex].Doubles[DataIndex];
     end
     else
       Exit;
@@ -682,7 +748,12 @@ begin
       SetLength(Expression, Length(Expression) + Length(ValueStr) - (Index - RegisterPosition));
     end;
     LocalString := AnsiUpperCase(Expression);
+    XMMMatch := False;
     RegisterPosition := AnsiPos('XMM', LocalString);
+    if YMMEnabled and (RegisterPosition = 0) then
+      RegisterPosition := AnsiPos('YMM', LocalString)
+    else
+      XMMMatch := True;
   end;
 
   RegisterPosition := AnsiPos('MM', LocalString);
@@ -719,40 +790,40 @@ begin
     begin
       if DataIndex >= 8 then
         Exit;
-      AValue.Display := xt16Bytes;
-      AValue.ValueByte := VectorFrame.FPURegisters[RegisterIndex].Data.MMRegister.Bytes[DataIndex];
+      AValue.Display := pctBytes;
+      AValue.ValueByte := JclContext.ExtendedContext.SaveArea.FPURegisters[RegisterIndex].Data.MMRegister.Bytes[DataIndex];
     end
     else
     if CompareStr(DataType, 'WORD') = 0 then
     begin
       if DataIndex >= 4 then
         Exit;
-      AValue.Display := xt8Words;
-      AValue.ValueWord := VectorFrame.FPURegisters[RegisterIndex].Data.MMRegister.Words[DataIndex];
+      AValue.Display := pctWords;
+      AValue.ValueWord := JclContext.ExtendedContext.SaveArea.FPURegisters[RegisterIndex].Data.MMRegister.Words[DataIndex];
     end
     else
     if CompareStr(DataType, 'DWORD') = 0 then
     begin
       if DataIndex >= 2 then
         Exit;
-      AValue.Display := xt4DWords;
-      AValue.ValueDWord := VectorFrame.FPURegisters[RegisterIndex].Data.MMRegister.DWords[DataIndex];
+      AValue.Display := pctDWords;
+      AValue.ValueDWord := JclContext.ExtendedContext.SaveArea.FPURegisters[RegisterIndex].Data.MMRegister.DWords[DataIndex];
     end
     else
     if CompareStr(DataType, 'QWORD') = 0 then
     begin
       if DataIndex >= 1 then
         Exit;
-      AValue.Display := xt2QWords;
-      AValue.ValueQWord := VectorFrame.FPURegisters[RegisterIndex].Data.MMRegister.QWords;
+      AValue.Display := pctQWords;
+      AValue.ValueQWord := JclContext.ExtendedContext.SaveArea.FPURegisters[RegisterIndex].Data.MMRegister.QWords;
     end
     else
     if CompareStr(DataType, 'SINGLE') = 0 then
     begin
       if DataIndex >= 2 then
         Exit;
-      AValue.Display := xt4Singles;
-      AValue.ValueSingle := VectorFrame.FPURegisters[RegisterIndex].Data.MMRegister.Singles[DataIndex];
+      AValue.Display := pctSingles;
+      AValue.ValueSingle := JclContext.ExtendedContext.SaveArea.FPURegisters[RegisterIndex].Data.MMRegister.Singles[DataIndex];
     end
     else
       Exit;
@@ -780,127 +851,190 @@ begin
   Result := True;
 end;
 
-function GetThreadContext(hThread: THandle;
-  var lpContext: TJclContext): BOOL; stdcall; external kernel32 name 'GetThreadContext';
+// return the processor frame for the specified thread, this thread must be suspended
+function GetThreadContext(hThread: THandle; lpContext: Pointer): BOOL; stdcall; external kernel32 name 'GetThreadContext';
 
-function SetThreadContext(hThread: THandle;
-  const lpContext: TJclContext): BOOL; stdcall; external kernel32 name 'SetThreadContext';
+// set the processor frame for the specified thread, this thread must be suspended
+function SetThreadContext(hThread: THandle; lpContext: Pointer): BOOL; stdcall; external kernel32 name 'SetThreadContext';
 
-function GetVectorContext(AThread: IOTAThread; out VectorContext: TJclVectorFrame): Boolean;
-{$IFDEF COMPILER9_UP}
+function GetThreadJclContext(AThread: IOTAThread; out JclContext: TJclContext): Boolean;
 var
+  {$IFDEF COMPILER9_UP}
   OTAXMMRegs: TOTAXMMRegs;
   OTAThreadContext: TOTAThreadContext;
+  {$ELSE ~COMPILER9_UP}
+  ContextMemory: Pointer;
+  AlignedContext: PJclContext;
+  {$ENDIF ~COMPILER9_UP}
+  ExtendedContextLength: DWORD;
+  ExtendedContextMemory: Pointer;
+  ExtendedContext: PCONTEXT_EX;
+  LegacyContext: PContext;
+  AVXContext: PJclExtSaveArea2;
 begin
-  Result := AThread.GetOTAXMMRegisters(OTAXMMRegs);
+  // get YMM registers
+  if oefAVX in GetOSEnabledFeatures then
+  begin
+    // allocate enough memory to get this extended context
+    Result := GetExtendedContextLength(CONTEXT_XSTATE, @ExtendedContextLength);
+    if Result then
+    begin
+      GetMem(ExtendedContextMemory, ExtendedContextLength);
+      try
+        Result := InitializeExtendedContext(ExtendedContextMemory, CONTEXT_XSTATE, ExtendedContext);
+        if Result then
+        begin
+          // find usefull part locations in this extended context
+          LegacyContext := LocateLegacyContext(ExtendedContext, nil);
+          AVXContext := LocateExtendedFeature(ExtendedContext, XSTATE_GSSE, nil);
+          // get the context
+          Result := GetThreadContext(AThread.Handle, LegacyContext) and
+            ((LegacyContext.ContextFlags and CONTEXT_XSTATE) <> 0);
+          if Result then
+            // copy the data
+            JclContext.ExtendedContext.ExtSaveArea2 := AVXContext^
+          else
+            FillChar(JclContext.ExtendedContext.ExtSaveArea2, SizeOf(JclContext.ExtendedContext.ExtSaveArea2), 0);
+        end;
+      finally
+        FreeMem(ExtendedContextMemory);
+      end;
+    end;
+  end
+  else
+  begin
+    Result := True;
+    FillChar(JclContext.ExtendedContext.ExtSaveArea2, SizeOf(JclContext.ExtendedContext.ExtSaveArea2), 0);
+  end;
+  {$IFDEF COMPILER9_UP}
+  // get XMM registers
+  if Result then
+    Result := AThread.GetOTAXMMRegisters(OTAXMMRegs);
   if Result then
   begin
-    VectorContext.MXCSR := OTAXMMRegs.MXCSR;
-    VectorContext.MXCSRMask := $FFFFFFFF;
-    Move(OTAXMMRegs,VectorContext.XMMRegisters, SizeOf(TOTAXMMReg) * 8);
+    // get other registers
+    JclContext.ExtendedContext.SaveArea.MXCSR := OTAXMMRegs.MXCSR;
+    JclContext.ExtendedContext.SaveArea.MXCSRMask := $FFFFFFFF;
+    Move(OTAXMMRegs,JclContext.ExtendedContext.SaveArea.XMMRegisters, SizeOf(TOTAXMMReg) * 8);
     OTAThreadContext := AThread.OTAThreadContext;
-    VectorContext.FCW := OTAThreadContext.FloatSave.ControlWord;
-    VectorContext.FSW := OTAThreadContext.FloatSave.StatusWord;
-    VectorContext.FTW := OTAThreadContext.FloatSave.TagWord;
-    Move(OTAThreadContext.FloatSave.RegisterArea[00],VectorContext.FPURegisters[0],SizeOf(Extended));
-    Move(OTAThreadContext.FloatSave.RegisterArea[10],VectorContext.FPURegisters[1],SizeOf(Extended));
-    Move(OTAThreadContext.FloatSave.RegisterArea[20],VectorContext.FPURegisters[2],SizeOf(Extended));
-    Move(OTAThreadContext.FloatSave.RegisterArea[30],VectorContext.FPURegisters[3],SizeOf(Extended));
-    Move(OTAThreadContext.FloatSave.RegisterArea[40],VectorContext.FPURegisters[4],SizeOf(Extended));
-    Move(OTAThreadContext.FloatSave.RegisterArea[50],VectorContext.FPURegisters[5],SizeOf(Extended));
-    Move(OTAThreadContext.FloatSave.RegisterArea[60],VectorContext.FPURegisters[6],SizeOf(Extended));
-    Move(OTAThreadContext.FloatSave.RegisterArea[70],VectorContext.FPURegisters[7],SizeOf(Extended));
+    JclContext.ExtendedContext.SaveArea.FCW := OTAThreadContext.FloatSave.ControlWord;
+    JclContext.ExtendedContext.SaveArea.FSW := OTAThreadContext.FloatSave.StatusWord;
+    JclContext.ExtendedContext.SaveArea.FTW := OTAThreadContext.FloatSave.TagWord;
+    Move(OTAThreadContext.FloatSave.RegisterArea[00],JclContext.ExtendedContext.SaveArea.FPURegisters[0],SizeOf(Extended));
+    Move(OTAThreadContext.FloatSave.RegisterArea[10],JclContext.ExtendedContext.SaveArea.FPURegisters[1],SizeOf(Extended));
+    Move(OTAThreadContext.FloatSave.RegisterArea[20],JclContext.ExtendedContext.SaveArea.FPURegisters[2],SizeOf(Extended));
+    Move(OTAThreadContext.FloatSave.RegisterArea[30],JclContext.ExtendedContext.SaveArea.FPURegisters[3],SizeOf(Extended));
+    Move(OTAThreadContext.FloatSave.RegisterArea[40],JclContext.ExtendedContext.SaveArea.FPURegisters[4],SizeOf(Extended));
+    Move(OTAThreadContext.FloatSave.RegisterArea[50],JclContext.ExtendedContext.SaveArea.FPURegisters[5],SizeOf(Extended));
+    Move(OTAThreadContext.FloatSave.RegisterArea[60],JclContext.ExtendedContext.SaveArea.FPURegisters[6],SizeOf(Extended));
+    Move(OTAThreadContext.FloatSave.RegisterArea[70],JclContext.ExtendedContext.SaveArea.FPURegisters[7],SizeOf(Extended));
   end;
-end;
-{$ELSE COMPILER9_UP}
-var
-  ContextMemory: Pointer;
-  JclContext: PJclContext;
-begin
-  GetMem(ContextMemory, SizeOf(TJclContext) + 15);
-  try
-    if (Cardinal(ContextMemory) and 15) <> 0 then
-      JclContext := PJclContext((Cardinal(ContextMemory) + 16) and $FFFFFFF0)
-    else
-      JclContext := ContextMemory;
-    JclContext^.ScalarContext.ContextFlags := CONTEXT_EXTENDED_REGISTERS;
-    Result := GetThreadContext(AThread.Handle,JclContext^) and
-      ((JclContext^.ScalarContext.ContextFlags and CONTEXT_EXTENDED_REGISTERS)<>0);
-    if Result then
-      VectorContext := JclContext^.VectorContext
-    else                                                  
-      FillChar(VectorContext, SizeOf(VectorContext), 0);
-  finally
-    FreeMem(ContextMemory);
-  end;
-end;
-{$ENDIF COMPILER9_UP}
-
-function SetVectorContext(AThread: IOTAThread; const VectorContext: TJclVectorFrame): Boolean;
-{$IFDEF COMPILER9_UP}
-var
-  OTAXMMRegs: TOTAXMMRegs;
-begin
-  Result := True;
-  try
-    OTAXMMRegs.MXCSR := VectorContext.MXCSR;
-    Move(VectorContext.XMMRegisters,OTAXMMRegs,SizeOf(TOTAXMMReg) * 8);
-    AThread.SetOTAXMMRegisters(OTAXMMRegs);
-  except
-    Result := False;
-  end;
-end;
-{$ELSE COMPILER9_UP}
-// MM registers can not saved (changes are overriden by the Borland's debugger)
-{const
-  CONTEXT_FLAGS =    CONTEXT_CONTROL or CONTEXT_INTEGER or CONTEXT_SEGMENTS
-                  or CONTEXT_FLOATING_POINT or CONTEXT_EXTENDED_REGISTERS;
-var
-  ContextMemory: Pointer;
-  JclContext: PJclContext;
-  Index: Integer;
-begin
-  GetMem(ContextMemory,SizeOf(TJclContext)+15);
-  try
-    if ((Cardinal(ContextMemory) and 15)<>0) then
-      JclContext := PJclContext((Cardinal(ContextMemory)+16) and $FFFFFFF0)
-    else
-      JclContext := ContextMemory;
-    JclContext^.ScalarContext.ContextFlags := CONTEXT_FLAGS;
-    Result := GetThreadContext(hThread,JclContext^) and
-             ((JclContext^.ScalarContext.ContextFlags and CONTEXT_FLAGS) = CONTEXT_FLAGS);
-    if (Result) then
-    begin
-      JclContext^.ScalarContext.ContextFlags := CONTEXT_FLAGS;
-      JclContext^.VectorContext := VectorContext;
-      for Index := 0 to 7 do
-        Move(VectorContext.FPURegisters[Index].Data.FloatValue,JclContext^.ScalarContext.FloatSave.RegisterArea[Index*SizeOf(Extended)],SizeOf(Extended));
-      Result := SetThreadContext(hThread,JclContext^);
+  {$ELSE COMPILER9_UP}
+  // get XMM registers
+  if Result then
+  begin
+    GetMem(ContextMemory, SizeOf(TJclContext) + 15);
+    try
+      if (Cardinal(ContextMemory) and 15) <> 0 then
+        AlignedContext := PJclContext((Cardinal(ContextMemory) + 16) and $FFFFFFF0)
+      else
+        AlignedContext := ContextMemory;
+      AlignedContext^.ScalarContext.ContextFlags := CONTEXT_EXTENDED_REGISTERS;
+      Result := GetThreadContext(AThread.Handle,AlignedContext) and
+        ((AlignedContext^.ScalarContext.ContextFlags and CONTEXT_EXTENDED_REGISTERS)<>0);
+      FillChar(AlignedContext.ExtendedContext.ExtSaveArea2, SizeOf(AlignedContext.ExtendedContext.ExtSaveArea2), 0);
+      if Result then
+        JclContext := AlignedContext^
+      else
+        FillChar(JclContext, SizeOf(JclContext), 0);
+    finally
+      FreeMem(ContextMemory);
     end;
-  finally
-    FreeMem(ContextMemory);
   end;
-end;}
-var
-  ContextMemory: Pointer;
-  JclContext: PJclContext;
-begin
-  GetMem(ContextMemory, SizeOf(TJclContext) + 15);
-  try
-    if (Cardinal(ContextMemory) and 15) <> 0 then
-      JclContext := PJclContext((Cardinal(ContextMemory) + 16) and $FFFFFFF0)
-    else
-      JclContext := ContextMemory;
-    JclContext^.ScalarContext.ContextFlags := CONTEXT_EXTENDED_REGISTERS;
-    Result := GetThreadContext(AThread.Handle,JclContext^) and
-      ((JclContext^.ScalarContext.ContextFlags and CONTEXT_EXTENDED_REGISTERS) = CONTEXT_EXTENDED_REGISTERS);
-    if Result then
-      Result := SetThreadContext(AThread.Handle,JclContext^);
-  finally
-    FreeMem(ContextMemory);
-  end;
+  {$ENDIF COMPILER9_UP}
 end;
-{$ENDIF COMPILER9_UP}
+
+function SetThreadJclContext(AThread: IOTAThread; const JclContext: TJclContext): Boolean;
+var
+  {$IFDEF COMPILER9_UP}
+  OTAXMMRegs: TOTAXMMRegs;
+  {$ELSE ~COMPILER9_UP}
+  ContextMemory: Pointer;
+  AlignedContext: PJclContext;
+  {$ENDIF ~COMPILER9_UP}
+  ExtendedContextLength: DWORD;
+  ExtendedContextMemory: Pointer;
+  ExtendedContext: PCONTEXT_EX;
+  LegacyContext: PContext;
+  AVXContext: PJclExtSaveArea2;
+begin
+  // save YMM registers
+  if oefAVX in GetOSEnabledFeatures then
+  begin
+    // allocate enough memory to get this extended context
+    Result := GetExtendedContextLength(CONTEXT_XSTATE, @ExtendedContextLength);
+    if Result then
+    begin
+      GetMem(ExtendedContextMemory, ExtendedContextLength);
+      try
+        Result := InitializeExtendedContext(ExtendedContextMemory, CONTEXT_XSTATE, ExtendedContext);
+        if Result then
+        begin
+          // find usefull part locations in this extended context
+          LegacyContext := LocateLegacyContext(ExtendedContext, nil);
+          AVXContext := LocateExtendedFeature(ExtendedContext, XSTATE_GSSE, nil);
+          // get the context
+          Result := GetThreadContext(AThread.Handle, LegacyContext) and
+            ((LegacyContext.ContextFlags and CONTEXT_XSTATE) <> 0);
+          if Result then
+          begin
+            // copy the data
+            AVXContext^ := JclContext.ExtendedContext.ExtSaveArea2;
+            // set the context
+            Result := SetThreadContext(AThread.Handle, LegacyContext);
+          end;
+        end;
+      finally
+        FreeMem(ExtendedContextMemory);
+      end;
+    end;
+  end
+  else
+    Result := True;
+  {$IFDEF COMPILER9_UP}
+  if Result then
+  begin
+    try
+      // save XMM registers
+      OTAXMMRegs.MXCSR := JclContext.ExtendedContext.SaveArea.MXCSR;
+      Move(JclContext.ExtendedContext.SaveArea.XMMRegisters,OTAXMMRegs,SizeOf(TOTAXMMReg) * 8);
+      AThread.SetOTAXMMRegisters(OTAXMMRegs);
+    except
+      Result := False;
+    end;
+  end;
+  {$ELSE ~COMPILER9_UP}
+  if Result then
+  begin
+    GetMem(ContextMemory, SizeOf(TJclContext) + 15);
+    try
+      if (Cardinal(ContextMemory) and 15) <> 0 then
+        AlignedContext := PJclContext((Cardinal(ContextMemory) + 16) and $FFFFFFF0)
+      else
+        AlignedContext := ContextMemory;
+      AlignedContext^.ScalarContext.ContextFlags := CONTEXT_EXTENDED_REGISTERS;
+      Result := GetThreadContext(AThread.Handle,AlignedContext) and
+        ((AlignedContext^.ScalarContext.ContextFlags and CONTEXT_EXTENDED_REGISTERS) = CONTEXT_EXTENDED_REGISTERS);
+      AlignedContext^ := JclContext;
+      if Result then
+        Result := SetThreadContext(AThread.Handle,AlignedContext);
+      // TODO set the YMM registers
+    finally
+      FreeMem(ContextMemory);
+    end;
+  end;
+  {$ENDIF COMPILER9_UP}
+end;
 
 {$IFDEF UNITVERSIONING}
 initialization

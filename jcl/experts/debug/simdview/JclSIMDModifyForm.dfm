@@ -3,8 +3,8 @@ object JclSIMDModifyFrm: TJclSIMDModifyFrm
   Top = 175
   BorderStyle = bsDialog
   Caption = 'JclSIMDModifyFrm'
-  ClientHeight = 417
-  ClientWidth = 481
+  ClientHeight = 388
+  ClientWidth = 936
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -32,8 +32,8 @@ object JclSIMDModifyFrm: TJclSIMDModifyFrm
     Layout = tlCenter
   end
   object LabelBlank: TLabel
-    Left = 8
-    Top = 48
+    Left = 480
+    Top = 16
     Width = 123
     Height = 13
     Caption = 'Keep blank for no change'
@@ -72,15 +72,15 @@ object JclSIMDModifyFrm: TJclSIMDModifyFrm
   end
   object PanelModify: TPanel
     Left = 8
-    Top = 72
-    Width = 465
+    Top = 40
+    Width = 920
     Height = 265
     BevelInner = bvLowered
     TabOrder = 2
   end
   object ButtonOK: TButton
-    Left = 336
-    Top = 384
+    Left = 789
+    Top = 355
     Width = 139
     Height = 25
     Caption = '&OK'
@@ -89,8 +89,8 @@ object JclSIMDModifyFrm: TJclSIMDModifyFrm
     OnClick = ButtonOKClick
   end
   object ButtonCancel: TButton
-    Left = 336
-    Top = 352
+    Left = 789
+    Top = 324
     Width = 139
     Height = 25
     Cancel = True
@@ -100,15 +100,22 @@ object JclSIMDModifyFrm: TJclSIMDModifyFrm
   end
   object MemoTip: TMemo
     Left = 8
-    Top = 352
-    Width = 313
-    Height = 57
+    Top = 311
+    Width = 595
+    Height = 65
     BorderStyle = bsNone
     Lines.Strings = (
-      'Tip: xmm0.byte0 will return the first byte of xmm0'
-      'Valid registers are: xmm0..xmm7 (32-bit processor) or '
-      'xmm0..xmm15 (64-bit processor)'
-      'Valid fields are byteX, wordX, dwordX, qwordX, singleX, doubleX')
+      
+        'Tip: xmm0.byte0 will return the first byte of xmm0, valid fields' +
+        ' are byteX, wordX, dwordX, qwordX, singleX, doubleX'
+      'Valid registers are:'
+      ' - mm0..mm7 (all processors)'
+      
+        ' - xmm0..xmm7 (32-bit processor with SSE) or xmm0..xmm15 (64-bit' +
+        ' processor with SSE)'
+      
+        ' - ymm0..ymm7 (32-bit processor with AVX) or ymm0..ymm15 (64-bit' +
+        ' processor with AVX)')
     ParentColor = True
     TabOrder = 5
   end

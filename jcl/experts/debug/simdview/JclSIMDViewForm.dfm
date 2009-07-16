@@ -133,6 +133,9 @@ object JclSIMDViewFrm: TJclSIMDViewFrm
     object MenuItemEmptyAll: TMenuItem
       Action = ActionEmptyAll
     end
+    object MenuItemYMMEnabled: TMenuItem
+      Action = ActionYMMEnabled
+    end
     object MenuItemSeparator2: TMenuItem
       Caption = '-'
     end
@@ -179,6 +182,11 @@ object JclSIMDViewFrm: TJclSIMDViewFrm
       Caption = 'Empty &all MM registers'
       OnExecute = ActionEmptyAllExecute
       OnUpdate = ActionEmptyAllUpdate
+    end
+    object ActionYMMEnabled: TAction
+      Caption = 'View &YMM registers'
+      OnExecute = ActionYMMEnabledExecute
+      OnUpdate = ActionYMMEnabledUpdate
     end
   end
 end

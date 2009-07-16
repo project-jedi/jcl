@@ -76,6 +76,8 @@ type
     ActionEmptyAll: TAction;
     MenuItemEmptyMM: TMenuItem;
     MenuItemEmptyAll: TMenuItem;
+    ActionYMMEnabled: TAction;
+    MenuItemYMMEnabled: TMenuItem;
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure ListBoxMXCSRDrawItem(Control: TWinControl; Index: Integer;
@@ -99,24 +101,28 @@ type
     procedure ActionEmptyAllExecute(Sender: TObject);
     procedure ListBoxesMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
+    procedure ActionYMMEnabledUpdate(Sender: TObject);
+    procedure ActionYMMEnabledExecute(Sender: TObject);
   private
     FDebuggerServices: IOTADebuggerServices;
-    FVectorFrame: TJclVectorFrame;
-    FDisplay: TJclXMMContentType;
+    FJclContext: TJclContext;
+    FDisplay: TJclPackedContentType;
     FFormat: TJclSIMDFormat;
     FCpuInfo: TCpuInfo;
     FEnabledFeatures: TOSEnabledFeatures;
     FSIMDCaption: string;
     FNbMMRegister: Integer;
     FNbXMMRegister: Integer;
+    FYMMEnabled: Boolean;
     FOldThreadID: LongWord;
     FOldThreadState: TOTAThreadState;
     FModifyForm: TJclSIMDModifyFrm;
     FMXCSRChanged: array [TMXCSRRange] of Boolean;
     FRegisterChanged: array of Boolean;
     FSettings: TJclOtaSettings;
-    procedure SetDisplay(const Value: TJclXMMContentType);
+    procedure SetDisplay(const Value: TJclPackedContentType);
     procedure SetFormat(const Value: TJclSIMDFormat);
+    procedure SetYMMEnabled(const Value: Boolean);
   protected
     procedure DoClose(var Action: TCloseAction); override;
     procedure UpdateActions; override;
@@ -132,11 +138,12 @@ type
     property CpuInfo: TCpuInfo read FCpuInfo;
     property EnabledFeatures: TOSEnabledFeatures read FEnabledFeatures;
     property Format: TJclSIMDFormat read FFormat write SetFormat;
-    property Display: TJclXMMContentType read FDisplay write SetDisplay;
+    property Display: TJclPackedContentType read FDisplay write SetDisplay;
     property SIMDCaption: string read FSIMDCaption write FSIMDCaption;
     property DebuggerServices: IOTADebuggerServices read FDebuggerServices;
     property NbMMRegister: Integer read FNbMMRegister;
     property NbXMMRegister: Integer read FNbXMMRegister;
+    property YMMEnabled: Boolean read FYMMEnabled write SetYMMEnabled;
     property Settings: TJclOtaSettings read FSettings;
   end;
 
@@ -194,12 +201,13 @@ begin
   else
     FNbXMMRegister := 9;
 
-  ListBoxMXCSR.Items.Clear;
-  with CpuInfo do
-    for I := Low(TMXCSRRange) to High(TMXCSRRange) do
-      ListBoxMXCSR.Items.Add('0');
-  ListBoxRegs.Items.Clear;
+  FYMMEnabled := (avx in CpuInfo.SSE) and (oefAVX in EnabledFeatures);
 
+  ListBoxMXCSR.Items.Clear;
+  for I := Low(TMXCSRRange) to High(TMXCSRRange) do
+    ListBoxMXCSR.Items.Add('0');
+
+  ListBoxRegs.Items.Clear;
   SetLength(FRegisterChanged,NbMMRegister + NbXMMRegister);
   for J := 0 to NbMMRegister + NbXMMRegister - 1 do
   // MM registers (MMX) + XMM registers (SSE) + 1 cardinal (MXCSR)
@@ -209,15 +217,15 @@ begin
   MenuItemSigned.Tag := Integer(sfSigned);
   MenuItemUnsigned.Tag := Integer(sfUnsigned);
   MenuItemHexa.Tag := Integer(sfHexa);
-  MenuItemBytes.Tag := Integer(xt16Bytes);
-  MenuItemWords.Tag := Integer(xt8Words);
-  MenuItemDWords.Tag := Integer(xt4DWords);
-  MenuItemQWords.Tag := Integer(xt2QWords);
-  MenuItemSingles.Tag := Integer(xt4Singles);
-  MenuItemDoubles.Tag := Integer(xt2Doubles);
+  MenuItemBytes.Tag := Integer(pctBytes);
+  MenuItemWords.Tag := Integer(pctWords);
+  MenuItemDWords.Tag := Integer(pctDWords);
+  MenuItemQWords.Tag := Integer(pctQWords);
+  MenuItemSingles.Tag := Integer(pctSingles);
+  MenuItemDoubles.Tag := Integer(pctDoubles);
 
   Format := sfHexa;
-  Display := xt8Words;
+  Display := pctWords;
 
   GetThreadValues;
 end;
@@ -291,7 +299,7 @@ begin
           begin
             AText := LongName;
             if AndMask = MXCSR_RC then
-              case (FVectorFrame.MXCSR and AndMask) shr Shifting of
+              case (FJclContext.ExtendedContext.SaveArea.MXCSR and AndMask) shr Shifting of
                 0:
                   AText := SysUtils.Format('%s (%s)', [AText, RsRoundToNearest]);
                 1:
@@ -327,7 +335,7 @@ end;
 procedure TJclSIMDViewFrm.ListBoxRegsDrawItem(Control: TWinControl; Index: Integer;
   Rect: TRect; State: TOwnerDrawState);
 var
-  AText: string;
+  AText, RegName: string;
 begin
   try
     with (Control as TListBox), Canvas do
@@ -344,10 +352,14 @@ begin
       else
       if Index < NbMMRegister + NbXMMRegister - 1 then
       begin
-        if CpuInfo.Is64Bits then
-          AText := SysUtils.Format('XMM%.2d ', [Index - NbMMRegister])
+        if YMMEnabled then
+          RegName := 'YMM'
         else
-          AText := SysUtils.Format('XMM%d ', [Index - NbMMRegister]);
+          RegName := 'XMM';
+        if CpuInfo.Is64Bits then
+          AText := SysUtils.Format('%s%.2d ', [RegName, Index - NbMMRegister])
+        else
+          AText := SysUtils.Format('%s%d ', [RegName, Index - NbMMRegister]);
       end
       else
         AText := 'MXCSR ';
@@ -367,7 +379,7 @@ end;
 
 procedure TJclSIMDViewFrm.GetThreadValues;
 var
-  NewVectorFrame: TJclVectorFrame;
+  NewJclContext: TJclContext;
   NewBitValue, OldBitValue: Cardinal;
   Index: Integer;
   AProcess: IOTAProcess;
@@ -378,12 +390,17 @@ var
     Result := (Value1.QWords[0] <> Value2.QWords[0]) or (Value1.QWords[1] <> Value2.QWords[1]);
   end;
 
+  function ChangedFlag(const Value1, Value2: TJclYMMRegister): Boolean; overload;
+  begin
+    Result := (Value1.QWords[2] <> Value2.QWords[2]) or (Value1.QWords[3] <> Value2.QWords[3]);
+  end;
+
   function ChangedFlag(const Value1, Value2: TJclMMRegister): Boolean; overload;
   begin
     Result := Value1.QWords <> Value2.QWords;
   end;
 
-  function FormatReg(const AReg: TJclXMMRegister): string; overload;
+  function FormatReg(const XMMReg: TJclXMMRegister; const YMMReg: TJclYMMRegister): string; overload;
   var
     I: Integer;
     Value: TJclSIMDValue;
@@ -391,41 +408,89 @@ var
     Result := '';
     Value.Display := Display;
     case Display of
-      xt16Bytes:
-        for I := High(AReg.Bytes) downto Low(AReg.Bytes) do
+      pctBytes:
         begin
-          Value.ValueByte := AReg.Bytes[I];
-          Result := Result + ' ' + FormatValue(Value, Format);
+          if YMMEnabled then
+            for I := High(YMMReg.Bytes) downto Low(YMMReg.Bytes) do
+          begin
+            Value.ValueByte := YMMReg.Bytes[I];
+            Result := Result + ' ' + FormatValue(Value, Format);
+          end;
+          for I := High(XMMReg.Bytes) downto Low(XMMReg.Bytes) do
+          begin
+            Value.ValueByte := XMMReg.Bytes[I];
+            Result := Result + ' ' + FormatValue(Value, Format);
+          end;
         end;
-      xt8Words:
-        for I := High(AReg.Words) downto Low(AReg.Words) do
+      pctWords:
         begin
-          Value.ValueWord := AReg.Words[I];
-          Result := Result + ' ' + FormatValue(Value, Format);
+          if YMMEnabled then
+            for I := High(YMMReg.Words) downto Low(YMMReg.Words) do
+          begin
+            Value.ValueWord := YMMReg.Words[I];
+            Result := Result + ' ' + FormatValue(Value, Format);
+          end;
+          for I := High(XMMReg.Words) downto Low(XMMReg.Words) do
+          begin
+            Value.ValueWord := XMMReg.Words[I];
+            Result := Result + ' ' + FormatValue(Value, Format);
+          end;
         end;
-      xt4DWords:
-        for I := High(AReg.DWords) downto Low(AReg.DWords) do
+      pctDWords:
         begin
-          Value.ValueDWord := AReg.DWords[I];
-          Result := Result + ' ' + FormatValue(Value, Format);
+          if YMMEnabled then
+            for I := High(YMMReg.DWords) downto Low(YMMReg.DWords) do
+          begin
+            Value.ValueDWord := YMMReg.DWords[I];
+            Result := Result + ' ' + FormatValue(Value, Format);
+          end;
+          for I := High(XMMReg.DWords) downto Low(XMMReg.DWords) do
+          begin
+            Value.ValueDWord := XMMReg.DWords[I];
+            Result := Result + ' ' + FormatValue(Value, Format);
+          end;
         end;
-      xt2QWords:
-        for I := High(AReg.QWords) downto Low(AReg.QWords) do
+      pctQWords:
         begin
-          Value.ValueQWord := AReg.QWords[I];
-          Result := Result + ' ' + FormatValue(Value, Format);
+          if YMMEnabled then
+            for I := High(YMMReg.QWords) downto Low(YMMReg.QWords) do
+          begin
+            Value.ValueQWord := YMMReg.QWords[I];
+            Result := Result + ' ' + FormatValue(Value, Format);
+          end;
+          for I := High(XMMReg.QWords) downto Low(XMMReg.QWords) do
+          begin
+            Value.ValueQWord := XMMReg.QWords[I];
+            Result := Result + ' ' + FormatValue(Value, Format);
+          end;
         end;
-      xt4Singles:
-        for I := High(AReg.Singles) downto Low(AReg.Singles) do
+      pctSingles:
         begin
-          Value.ValueSingle := AReg.Singles[I];
-          Result := Result + ' ' + FormatValue(Value, sfBinary);
+          if YMMEnabled then
+            for I := High(YMMReg.Singles) downto Low(YMMReg.Singles) do
+          begin
+            Value.ValueSingle := YMMReg.Singles[I];
+            Result := Result + ' ' + FormatValue(Value, Format);
+          end;
+          for I := High(XMMReg.Singles) downto Low(XMMReg.Singles) do
+          begin
+            Value.ValueSingle := XMMReg.Singles[I];
+            Result := Result + ' ' + FormatValue(Value, sfBinary);
+          end;
         end;
-      xt2Doubles:
-        for I := High(AReg.Doubles) downto Low(AReg.Doubles) do
+      pctDoubles:
         begin
-          Value.ValueDouble := AReg.Doubles[I];
-          Result := Result + ' ' + FormatValue(Value, sfBinary);
+          if YMMEnabled then
+            for I := High(YMMReg.Doubles) downto Low(YMMReg.Doubles) do
+          begin
+            Value.ValueDouble := YMMReg.Doubles[I];
+            Result := Result + ' ' + FormatValue(Value, Format);
+          end;
+          for I := High(XMMReg.Doubles) downto Low(XMMReg.Doubles) do
+          begin
+            Value.ValueDouble := XMMReg.Doubles[I];
+            Result := Result + ' ' + FormatValue(Value, sfBinary);
+          end;
         end;
     end;
   end;
@@ -438,38 +503,38 @@ var
     Result := '';
     Value.Display := Display;
 
-    if (AReg.Reserved = $FFFF) and ((NewVectorFrame.FTW and (1 shl Index)) <> 0) then
+    if (AReg.Reserved = $FFFF) and ((NewJclContext.ExtendedContext.SaveArea.FTW and (1 shl Index)) <> 0) then
       case Display of
-        xt16Bytes:
+        pctBytes:
           for I := High(AReg.MMRegister.Bytes) downto Low(AReg.MMRegister.Bytes) do
           begin
             Value.ValueByte := AReg.MMRegister.Bytes[I];
             Result := Result + ' ' + FormatValue(Value, Format);
           end;
-        xt8Words:
+        pctWords:
           for I := High(AReg.MMRegister.Words) downto Low(AReg.MMRegister.Words) do
           begin
             Value.ValueWord := AReg.MMRegister.Words[I];
             Result := Result + ' ' + FormatValue(Value, Format);
           end;
-        xt4DWords:
+        pctDWords:
           for I := High(AReg.MMRegister.DWords) downto Low(AReg.MMRegister.DWords) do
           begin
             Value.ValueDWord := AReg.MMRegister.DWords[I];
             Result := Result + ' ' + FormatValue(Value, Format);
           end;
-        xt2QWords:
+        pctQWords:
           begin
             Value.ValueQWord := AReg.MMRegister.QWords;
             Result := FormatValue(Value, Format);
           end;
-        xt4Singles:
+        pctSingles:
           for I := High(AReg.MMRegister.Singles) downto Low(AReg.MMRegister.Singles) do
           begin
             Value.ValueSingle := AReg.MMRegister.Singles[I];
             Result := Result + ' ' + FormatValue(Value, sfBinary);
           end;
-        xt2Doubles:
+        pctDoubles:
           Result := RsNotSupportedFormat;
       end
     else
@@ -499,13 +564,13 @@ begin
         else
           Caption := SIMDCaption;
 
-        GetVectorContext(AThread,NewVectorFrame);
+        GetThreadJclContext(AThread,NewJclContext);
 
         for Index := 0 to ListBoxMXCSR.Items.Count - 1 do
           with ListBoxMXCSR, Items, MXCSRBitsDescriptions[Index] do
           begin
-            NewBitValue := NewVectorFrame.MXCSR and AndMask;
-            OldBitValue := FVectorFrame.MXCSR and AndMask;
+            NewBitValue := NewJclContext.ExtendedContext.SaveArea.MXCSR and AndMask;
+            OldBitValue := FJclContext.ExtendedContext.SaveArea.MXCSR and AndMask;
             FMXCSRChanged[Index] := NewBitValue <> OldBitValue;
             Strings[Index] := IntToStr(NewBitValue shr Shifting);
           end;
@@ -513,26 +578,29 @@ begin
 
         for Index := 0 to NbMMRegister - 1 do
         begin
-          FRegisterChanged[Index] := ChangedFlag(NewVectorFrame.FPURegisters[Index].Data.MMRegister,
-            FVectorFrame.FPURegisters[Index].Data.MMRegister);
-          ListBoxRegs.Items.Strings[Index] := FormatReg(NewVectorFrame.FPURegisters[Index].Data, Index);
+          FRegisterChanged[Index] := ChangedFlag(NewJclContext.ExtendedContext.SaveArea.FPURegisters[Index].Data.MMRegister,
+            FJclContext.ExtendedContext.SaveArea.FPURegisters[Index].Data.MMRegister);
+          ListBoxRegs.Items.Strings[Index] := FormatReg(NewJclContext.ExtendedContext.SaveArea.FPURegisters[Index].Data, Index);
         end;
 
         if FNbXMMRegister > 0 then
         begin
           for Index := 0 to FNbXMMRegister - 2 do
           begin
-            FRegisterChanged[Index + NbMMRegister] := ChangedFlag(NewVectorFrame.XMMRegisters.LongXMM[Index],
-              FVectorFrame.XMMRegisters.LongXMM[Index]);
-            ListBoxRegs.Items.Strings[Index + NbMMRegister] := FormatReg(NewVectorFrame.XMMRegisters.LongXMM[Index]);
+            FRegisterChanged[Index + NbMMRegister] := ChangedFlag(NewJclContext.ExtendedContext.SaveArea.XMMRegisters.LongXMM[Index],
+                                                                  FJclContext.ExtendedContext.SaveArea.XMMRegisters.LongXMM[Index]) or
+                                                      (YMMEnabled and ChangedFlag(NewJclContext.ExtendedContext.ExtSaveArea2.LongYMM[Index],
+                                                                                  FJclContext.ExtendedContext.ExtSaveArea2.LongYMM[Index]));
+            ListBoxRegs.Items.Strings[Index + NbMMRegister] := FormatReg(NewJclContext.ExtendedContext.SaveArea.XMMRegisters.LongXMM[Index],
+                                                                         NewJclContext.ExtendedContext.ExtSaveArea2.LongYMM[Index]);
           end;
 
-          FRegisterChanged[NbMMRegister + NbXMMRegister - 1] := NewVectorFrame.MXCSR <> FVectorFrame.MXCSR;
-          ListBoxRegs.Items.Strings[NbMMRegister + NbXMMRegister - 1] := IntToHex(NewVectorFrame.MXCSR, 8);
+          FRegisterChanged[NbMMRegister + NbXMMRegister - 1] := NewJclContext.ExtendedContext.SaveArea.MXCSR <> FJclContext.ExtendedContext.SaveArea.MXCSR;
+          ListBoxRegs.Items.Strings[NbMMRegister + NbXMMRegister - 1] := IntToHex(NewJclContext.ExtendedContext.SaveArea.MXCSR, 8);
         end;
         ListBoxRegs.Invalidate;
 
-        FVectorFrame := NewVectorFrame;
+        FJclContext := NewJclContext;
       end;
     tsRunnable:
       Caption := SysUtils.Format('%s <running>', [SIMDCaption]);
@@ -543,8 +611,14 @@ end;
 
 procedure TJclSIMDViewFrm.SetThreadValues;
 begin
-  if not SetVectorContext(DebuggerServices.CurrentProcess.CurrentThread,FVectorFrame) then
+  if not SetThreadJclContext(DebuggerServices.CurrentProcess.CurrentThread,FJclContext) then
     raise EJclExpertException.Create(RsECantUpdateThreadContext);
+end;
+
+procedure TJclSIMDViewFrm.SetYMMEnabled(const Value: Boolean);
+begin
+  FYMMEnabled := Value;
+  GetThreadValues;
 end;
 
 procedure TJclSIMDViewFrm.MenuItemFormatClick(Sender: TObject);
@@ -560,19 +634,19 @@ begin
   end;
 end;
 
-procedure TJclSIMDViewFrm.SetDisplay(const Value: TJclXMMContentType);
+procedure TJclSIMDViewFrm.SetDisplay(const Value: TJclPackedContentType);
 var
   AEnabled: Boolean;
 begin
   FDisplay := Value;
-  MenuItemBytes.Checked := Value = xt16Bytes;
-  MenuItemWords.Checked := Value = xt8Words;
-  MenuItemDWords.Checked := Value = xt4DWords;
-  MenuItemQWords.Checked := Value = xt2QWords;
-  MenuItemSingles.Checked := Value = xt4Singles;
-  MenuItemDoubles.Checked := Value = xt2Doubles;
+  MenuItemBytes.Checked := Value = pctBytes;
+  MenuItemWords.Checked := Value = pctWords;
+  MenuItemDWords.Checked := Value = pctDWords;
+  MenuItemQWords.Checked := Value = pctQWords;
+  MenuItemSingles.Checked := Value = pctSingles;
+  MenuItemDoubles.Checked := Value = pctDoubles;
 
-  AEnabled := not (Value in [xt4Singles, xt2Doubles]);
+  AEnabled := not (Value in [pctSingles, pctDoubles]);
   MenuItemBinary.Enabled := AEnabled;
   MenuItemSigned.Enabled := AEnabled;
   MenuItemUnsigned.Enabled := AEnabled;
@@ -595,7 +669,7 @@ end;
 procedure TJclSIMDViewFrm.MenuItemDisplayClick(Sender: TObject);
 begin
   try
-    Display := TJclXMMContentType((Sender as TMenuItem).Tag);
+    Display := TJclPackedContentType((Sender as TMenuItem).Tag);
   except
     on ExceptionObj: TObject do
     begin
@@ -633,8 +707,9 @@ begin
 
   Format := TJclSIMDFormat(GetEnumValue(TypeInfo(TJclSIMDFormat),
     Settings.LoadString('Format', GetEnumName(TypeInfo(TJclSIMDFormat), Integer(sfHexa)))));
-  Display := TJclXMMContentType(GetEnumValue(TypeInfo(TJclXMMContentType),
-    Settings.LoadString('Display', GetEnumName(TypeInfo(TJclXMMContentType), Integer(xt8Words)))));
+  Display := TJclPackedContentType(GetEnumValue(TypeInfo(TJclPackedContentType),
+    Settings.LoadString('Display', GetEnumName(TypeInfo(TJclPackedContentType), Integer(pctWords)))));
+  YMMEnabled := Settings.LoadInteger('YMMEnabled', 0) <> 0;
 
   if Settings.LoadInteger('StayOnTop', 0) = 1 then
     FormStyle := fsStayOnTop
@@ -648,8 +723,9 @@ begin
   Settings.SaveInteger('Top', Top);
   Settings.SaveInteger('Width', Width);
   Settings.SaveInteger('Height', Height);
-  Settings.SaveString('Display', GetEnumName(TypeInfo(TJclXMMContentType), Integer(Display)));
+  Settings.SaveString('Display', GetEnumName(TypeInfo(TJclPackedContentType), Integer(Display)));
   Settings.SaveString('Format', GetEnumName(TypeInfo(TJclSIMDFormat), Integer(Format)));
+  Settings.SaveInteger('YMMEnabled', Ord(YMMEnabled));
   Settings.SaveInteger('StayOnTop', Ord(FormStyle = fsStayOnTop));
 end;
 
@@ -728,6 +804,37 @@ begin
   end;
 end;
 
+procedure TJclSIMDViewFrm.ActionYMMEnabledExecute(Sender: TObject);
+begin
+  try
+    YMMEnabled := not YMMEnabled;
+    GetThreadValues;
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
+  end;
+end;
+
+procedure TJclSIMDViewFrm.ActionYMMEnabledUpdate(Sender: TObject);
+var
+  AAction: TAction;
+begin
+  try
+    AAction := Sender as TAction;
+    AAction.Checked := YMMEnabled;
+    AAction.Enabled := True;
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
+  end;
+end;
+
 procedure TJclSIMDViewFrm.ActionStayOnTopExecute(Sender: TObject);
 begin
   try
@@ -786,10 +893,10 @@ begin
       begin
         FModifyForm.Caption := SysUtils.Format(RsModifyMM, [AItemIndex]);
         if FModifyForm.Execute(DebuggerServices.CurrentProcess.CurrentThread, Display,
-          Format, FVectorFrame.FPURegisters[AItemIndex].Data.MMRegister ,FCpuInfo) then
+          Format, FJclContext.ExtendedContext.SaveArea.FPURegisters[AItemIndex].Data.MMRegister ,FCpuInfo, YMMEnabled) then
         begin
-          FVectorFrame.FPURegisters[AItemIndex].Data.Reserved := $FFFF;
-          FVectorFrame.FTW := FVectorFrame.FTW or (1 shl AItemIndex);
+          FJclContext.ExtendedContext.SaveArea.FPURegisters[AItemIndex].Data.Reserved := $FFFF;
+          FJclContext.ExtendedContext.SaveArea.FTW := FJclContext.ExtendedContext.SaveArea.FTW or (1 shl AItemIndex);
           SetThreadValues;
           GetThreadValues;
           FRegisterChanged[AItemIndex] := True;
@@ -797,12 +904,25 @@ begin
         end;
       end else
       begin
-        if CpuInfo.Is64Bits then
-          FModifyForm.Caption := SysUtils.Format(RsModifyXMM2, [AItemIndex - NbMMRegister])
+        if YMMEnabled then
+        begin
+          if CpuInfo.Is64Bits then
+            FModifyForm.Caption := SysUtils.Format(RsModifyYMM2, [AItemIndex - NbMMRegister])
+          else
+            FModifyForm.Caption := SysUtils.Format(RsModifyYMM1, [AItemIndex - NbMMRegister]);
+          if FModifyForm.Execute(DebuggerServices.CurrentProcess.CurrentThread, Display,
+            Format, FJclContext.ExtendedContext.SaveArea.XMMRegisters.LongXMM[AItemIndex - NbMMRegister],
+            FJclContext.ExtendedContext.ExtSaveArea2.LongYMM[AItemIndex - NbMMRegister], FCpuInfo, YMMEnabled) then
+        end
         else
-          FModifyForm.Caption := SysUtils.Format(RsModifyXMM1, [AItemIndex - NbMMRegister]);
-        if FModifyForm.Execute(DebuggerServices.CurrentProcess.CurrentThread, Display,
-          Format, FVectorFrame.XMMRegisters.LongXMM[AItemIndex - NbMMRegister], FCpuInfo) then
+        begin
+          if CpuInfo.Is64Bits then
+            FModifyForm.Caption := SysUtils.Format(RsModifyXMM2, [AItemIndex - NbMMRegister])
+          else
+            FModifyForm.Caption := SysUtils.Format(RsModifyXMM1, [AItemIndex - NbMMRegister]);
+          if FModifyForm.Execute(DebuggerServices.CurrentProcess.CurrentThread, Display,
+            Format, FJclContext.ExtendedContext.SaveArea.XMMRegisters.LongXMM[AItemIndex - NbMMRegister], FCpuInfo, YMMEnabled) then
+        end;
         begin
           SetThreadValues;
           GetThreadValues;
@@ -836,8 +956,8 @@ begin
       AThread := AProcess.CurrentThread;
     (Sender as TAction).Enabled := Assigned(AThread) and (AThread.State = tsStopped) and
       (AItemIndex >= 0) and (AItemIndex < NbMMRegister) and
-      ((FVectorFrame.FTW and (1 shl AItemIndex)) <> 0) and
-      (FVectorFrame.FPURegisters[AItemIndex].Data.Reserved = $FFFF);
+      ((FJclContext.ExtendedContext.SaveArea.FTW and (1 shl AItemIndex)) <> 0) and
+      (FJclContext.ExtendedContext.SaveArea.FPURegisters[AItemIndex].Data.Reserved = $FFFF);
   except
     on ExceptionObj: TObject do
     begin
@@ -853,8 +973,8 @@ var
 begin
   try
     AItemIndex := ListBoxRegs.ItemIndex;
-    FVectorFrame.FTW := FVectorFrame.FTW and not (1 shl AItemIndex);
-    FVectorFrame.FPURegisters[AItemIndex].Data.FloatValue := 0.0;
+    FJclContext.ExtendedContext.SaveArea.FTW := FJclContext.ExtendedContext.SaveArea.FTW and not (1 shl AItemIndex);
+    FJclContext.ExtendedContext.SaveArea.FPURegisters[AItemIndex].Data.FloatValue := 0.0;
     SetThreadValues;
     GetThreadValues;
     FRegisterChanged[AItemIndex] := True;
@@ -895,9 +1015,9 @@ var
   Index: Integer;
 begin
   try
-    FVectorFrame.FTW := 0;
-    for Index := Low(FVectorFrame.FPURegisters) to High(FVectorFrame.FPURegisters) do
-      FVectorFrame.FPURegisters[Index].Data.FloatValue := 0.0;
+    FJclContext.ExtendedContext.SaveArea.FTW := 0;
+    for Index := Low(FJclContext.ExtendedContext.SaveArea.FPURegisters) to High(FJclContext.ExtendedContext.SaveArea.FPURegisters) do
+      FJclContext.ExtendedContext.SaveArea.FPURegisters[Index].Data.FloatValue := 0.0;
     SetThreadValues;
     GetThreadValues;
   except
@@ -931,12 +1051,12 @@ begin
     if ListBoxMXCSR.ItemIndex >= 0 then
       with MXCSRBitsDescriptions[ListBoxMXCSR.ItemIndex] do
     begin
-      OldMXCSRValue := FVectorFrame.MXCSR;
-      BitValue := (Cardinal(FVectorFrame.MXCSR) and AndMask) shr Shifting;
+      OldMXCSRValue := FJclContext.ExtendedContext.SaveArea.MXCSR;
+      BitValue := (Cardinal(FJclContext.ExtendedContext.SaveArea.MXCSR) and AndMask) shr Shifting;
       Inc(BitValue);
-      FVectorFrame.MXCSR := (FVectorFrame.MXCSR and (not AndMask)) or ((BitValue shl Shifting) and AndMask);
+      FJclContext.ExtendedContext.SaveArea.MXCSR := (FJclContext.ExtendedContext.SaveArea.MXCSR and (not AndMask)) or ((BitValue shl Shifting) and AndMask);
       SetThreadValues;
-      FVectorFrame.MXCSR := OldMXCSRValue;
+      FJclContext.ExtendedContext.SaveArea.MXCSR := OldMXCSRValue;
       GetThreadValues;
     end;
   except
