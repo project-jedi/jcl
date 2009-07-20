@@ -3,7 +3,6 @@
 			<ProjectGuid>{44DB645B-C167-410D-9334-38AF9F0C7913}</ProjectGuid>
 			<MainSource>Jcl.dpk</MainSource>
 			<ProjectVersion>12</ProjectVersion>
-			<ProjectVersion>11.1</ProjectVersion>
 			<Config Condition="'$(Config)'==''">Release</Config>
 			<DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
 			<DCC_Define>BCB;RELEASE</DCC_Define>

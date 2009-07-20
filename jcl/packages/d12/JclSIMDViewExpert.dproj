@@ -3,7 +3,6 @@
 			<ProjectGuid>{2F16B01B-57C8-4EB1-A0C4-421B3008A4F6}</ProjectGuid>
 			<MainSource>JclSIMDViewExpert.dpk</MainSource>
 			<ProjectVersion>12</ProjectVersion>
-			<ProjectVersion>11.1</ProjectVersion>
 			<Config Condition="'$(Config)'==''">Release</Config>
 			<DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
 			<DCC_Define>BCB;RELEASE</DCC_Define>

@@ -3,7 +3,6 @@
 			<ProjectGuid>{851E8773-ADE0-479D-94F9-FE3AAB64A847}</ProjectGuid>
 			<MainSource>JclStackTraceViewerExpertDLL.dpr</MainSource>
 			<ProjectVersion>12</ProjectVersion>
-			<ProjectVersion>11.1</ProjectVersion>
 			<Config Condition="'$(Config)'==''">Release</Config>
 			<DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
 			<DCC_Define>BCB;RELEASE</DCC_Define>

@@ -3,7 +3,6 @@
 			<ProjectGuid>{2B548932-6654-4E44-8B06-3288D7A884C4}</ProjectGuid>
 			<MainSource>JclRepositoryExpert.dpk</MainSource>
 			<ProjectVersion>12</ProjectVersion>
-			<ProjectVersion>11.1</ProjectVersion>
 			<Config Condition="'$(Config)'==''">Release</Config>
 			<DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
 			<DCC_Define>BCB;RELEASE</DCC_Define>

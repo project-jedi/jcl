@@ -3,7 +3,6 @@
 			<ProjectGuid>{587944EE-7D27-4950-95F5-430FFBFC465C}</ProjectGuid>
 			<MainSource>JclBaseExpert.dpk</MainSource>
 			<ProjectVersion>12</ProjectVersion>
-			<ProjectVersion>11.1</ProjectVersion>
 			<Config Condition="'$(Config)'==''">Release</Config>
 			<DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
 			<DCC_Define>BCB;RELEASE</DCC_Define>

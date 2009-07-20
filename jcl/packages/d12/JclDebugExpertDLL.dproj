@@ -3,7 +3,6 @@
 			<ProjectGuid>{36195812-0F7A-45E7-BE07-04EABA463169}</ProjectGuid>
 			<MainSource>JclDebugExpertDLL.dpr</MainSource>
 			<ProjectVersion>12</ProjectVersion>
-			<ProjectVersion>11.1</ProjectVersion>
 			<Config Condition="'$(Config)'==''">Release</Config>
 			<DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
 			<DCC_Define>BCB;RELEASE</DCC_Define>

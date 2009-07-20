@@ -3,7 +3,6 @@
 			<ProjectGuid>{518D9A98-4B3B-40B4-83EE-BD9D8CED6181}</ProjectGuid>
 			<MainSource>JclProjectAnalysisExpert.dpk</MainSource>
 			<ProjectVersion>12</ProjectVersion>
-			<ProjectVersion>11.1</ProjectVersion>
 			<Config Condition="'$(Config)'==''">Release</Config>
 			<DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
 			<DCC_Define>BCB;RELEASE</DCC_Define>
