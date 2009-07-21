@@ -161,24 +161,15 @@ end;*)
 constructor SELFCLASSNAME.Create(ACapacity: IntegerOWNERSHIPDECLARATION);
 begin
   inherited Create(OWNERSHIPPARAMETER);
-  FSize := 0;
-  if ACapacity < 0 then
-    FCapacity := 0
-  else
-    FCapacity := ACapacity;
-  SetLength(FElementData, FCapacity);
+  SetCapacity(ACapacity);
 end;
 
 constructor SELFCLASSNAME.Create(const ACollection: COLLECTIONINTERFACENAMEOWNERSHIPDECLARATION);
 begin
-  // (rom) disabled because the following Create already calls inherited
-  // inherited Create;
+  inherited Create(OWNERSHIPPARAMETER);
   if ACollection = nil then
     raise EJclNoCollectionError.Create;
-  Create(OWNERSHIPPARAMETER);
-  FSize := 0;
-  FCapacity := ACollection.Size;
-  SetLength(FElementData, FCapacity);
+  SetCapacity(ACollection.Size);
   AddAll(ACollection);
 end;
 
@@ -223,9 +214,6 @@ end;
 function SELFCLASSNAME.AddAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;
 var
   It: ITRINTERFACENAME;
-  Item: TYPENAME;
-  AddItem: Boolean;
-  Index: Integer;
 begin
   {$JPPEXPANDMACRO WRITEBEGIN}
     Result := False;
@@ -234,33 +222,7 @@ begin
     Result := True;
     It := ACollection.First;
     while It.HasNext do
-    begin
-      Item := It.Next;
-      // (rom) inlining Add() gives about 5 percent performance increase
-      AddItem := FAllowDefaultElements or not ItemsEqual(Item, DEFAULTVALUE);
-      if AddItem then
-      begin
-        if FDuplicates <> dupAccept then
-          for Index := 0 to FSize - 1 do
-            if ItemsEqual(Item, FElementData[Index]) then
-            begin
-              AddItem := CheckDuplicate;
-              Break;
-            end;
-        if AddItem then
-        begin
-          if FSize = FCapacity then
-            AutoGrow;
-          AddItem := FSize < FCapacity;
-          if AddItem then
-          begin
-            FElementData[FSize] := Item;
-            Inc(FSize);
-          end;
-        end;
-      end;
-      Result := Result and AddItem;
-    end;
+      Result := Add(It.Next) and Result;
   {$JPPEXPANDMACRO WRITEEND}
 end;
 
@@ -335,10 +297,9 @@ var
   It: ITRINTERFACENAME;
 begin
   {$JPPEXPANDMACRO READBEGIN}
-    Result := False;
+    Result := True;
     if ACollection = nil then
       Exit;
-    Result := True;
     It := ACollection.First;
     while Result and It.HasNext do
       Result := Contains(It.Next);
@@ -366,7 +327,7 @@ begin
       begin
         FElementData[I] := DEFAULTVALUE;
         if I < (FSize - 1) then
-          MoveArray(FElementData, I + 1, I, FSize - I - 1);
+          MoveArray(FElementData, I + 1, I, FSize - I);
         Dec(FSize);
         Result := True;
         if FRemoveSingleElement then
@@ -398,7 +359,7 @@ begin
     begin
       Result := FElementData[Index];
       if Index < (FSize - 1) then
-        MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
+        MoveArray(FElementData, Index + 1, Index, FSize - Index);
       Dec(FSize);
       AutoPack;
     end
@@ -447,6 +408,8 @@ begin
 end;
 
 function SELFCLASSNAME.Insert(Index: Integer; CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
+var
+  I: Integer;
 begin
   {$JPPEXPANDMACRO WRITEBEGIN}
     Result := FAllowDefaultElements or not ItemsEqual(PARAMETERNAME, DEFAULTVALUE);
@@ -457,8 +420,8 @@ begin
     if Result then
     begin
       if FDuplicates <> dupAccept then
-        for Index := 0 to FSize - 1 do
-          if ItemsEqual(PARAMETERNAME, FElementData[Index]) then
+        for I := 0 to FSize - 1 do
+          if ItemsEqual(PARAMETERNAME, FElementData[I]) then
           begin
             Result := CheckDuplicate;
             Break;

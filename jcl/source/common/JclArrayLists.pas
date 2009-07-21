@@ -1195,24 +1195,15 @@ uses
 constructor TJclIntfArrayList.Create(ACapacity: Integer);
 begin
   inherited Create();
-  FSize := 0;
-  if ACapacity < 0 then
-    FCapacity := 0
-  else
-    FCapacity := ACapacity;
-  SetLength(FElementData, FCapacity);
+  SetCapacity(ACapacity);
 end;
 
 constructor TJclIntfArrayList.Create(const ACollection: IJclIntfCollection);
 begin
-  // (rom) disabled because the following Create already calls inherited
-  // inherited Create;
+  inherited Create();
   if ACollection = nil then
     raise EJclNoCollectionError.Create;
-  Create();
-  FSize := 0;
-  FCapacity := ACollection.Size;
-  SetLength(FElementData, FCapacity);
+  SetCapacity(ACollection.Size);
   AddAll(ACollection);
 end;
 
@@ -1268,9 +1259,6 @@ end;
 function TJclIntfArrayList.AddAll(const ACollection: IJclIntfCollection): Boolean;
 var
   It: IJclIntfIterator;
-  Item: IInterface;
-  AddItem: Boolean;
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -1285,33 +1273,7 @@ begin
     Result := True;
     It := ACollection.First;
     while It.HasNext do
-    begin
-      Item := It.Next;
-      // (rom) inlining Add() gives about 5 percent performance increase
-      AddItem := FAllowDefaultElements or not ItemsEqual(Item, nil);
-      if AddItem then
-      begin
-        if FDuplicates <> dupAccept then
-          for Index := 0 to FSize - 1 do
-            if ItemsEqual(Item, FElementData[Index]) then
-            begin
-              AddItem := CheckDuplicate;
-              Break;
-            end;
-        if AddItem then
-        begin
-          if FSize = FCapacity then
-            AutoGrow;
-          AddItem := FSize < FCapacity;
-          if AddItem then
-          begin
-            FElementData[FSize] := Item;
-            Inc(FSize);
-          end;
-        end;
-      end;
-      Result := Result and AddItem;
-    end;
+      Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -1424,10 +1386,9 @@ begin
     SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
+    Result := True;
     if ACollection = nil then
       Exit;
-    Result := True;
     It := ACollection.First;
     while Result and It.HasNext do
       Result := Contains(It.Next);
@@ -1477,7 +1438,7 @@ begin
       begin
         FElementData[I] := nil;
         if I < (FSize - 1) then
-          MoveArray(FElementData, I + 1, I, FSize - I - 1);
+          MoveArray(FElementData, I + 1, I, FSize - I);
         Dec(FSize);
         Result := True;
         if FRemoveSingleElement then
@@ -1531,7 +1492,7 @@ begin
     begin
       Result := FElementData[Index];
       if Index < (FSize - 1) then
-        MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
+        MoveArray(FElementData, Index + 1, Index, FSize - Index);
       Dec(FSize);
       AutoPack;
     end
@@ -1603,6 +1564,8 @@ begin
 end;
 
 function TJclIntfArrayList.Insert(Index: Integer; const AInterface: IInterface): Boolean;
+var
+  I: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -1619,8 +1582,8 @@ begin
     if Result then
     begin
       if FDuplicates <> dupAccept then
-        for Index := 0 to FSize - 1 do
-          if ItemsEqual(AInterface, FElementData[Index]) then
+        for I := 0 to FSize - 1 do
+          if ItemsEqual(AInterface, FElementData[I]) then
           begin
             Result := CheckDuplicate;
             Break;
@@ -2051,24 +2014,15 @@ end;
 constructor TJclAnsiStrArrayList.Create(ACapacity: Integer);
 begin
   inherited Create();
-  FSize := 0;
-  if ACapacity < 0 then
-    FCapacity := 0
-  else
-    FCapacity := ACapacity;
-  SetLength(FElementData, FCapacity);
+  SetCapacity(ACapacity);
 end;
 
 constructor TJclAnsiStrArrayList.Create(const ACollection: IJclAnsiStrCollection);
 begin
-  // (rom) disabled because the following Create already calls inherited
-  // inherited Create;
+  inherited Create();
   if ACollection = nil then
     raise EJclNoCollectionError.Create;
-  Create();
-  FSize := 0;
-  FCapacity := ACollection.Size;
-  SetLength(FElementData, FCapacity);
+  SetCapacity(ACollection.Size);
   AddAll(ACollection);
 end;
 
@@ -2124,9 +2078,6 @@ end;
 function TJclAnsiStrArrayList.AddAll(const ACollection: IJclAnsiStrCollection): Boolean;
 var
   It: IJclAnsiStrIterator;
-  Item: AnsiString;
-  AddItem: Boolean;
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -2141,33 +2092,7 @@ begin
     Result := True;
     It := ACollection.First;
     while It.HasNext do
-    begin
-      Item := It.Next;
-      // (rom) inlining Add() gives about 5 percent performance increase
-      AddItem := FAllowDefaultElements or not ItemsEqual(Item, '');
-      if AddItem then
-      begin
-        if FDuplicates <> dupAccept then
-          for Index := 0 to FSize - 1 do
-            if ItemsEqual(Item, FElementData[Index]) then
-            begin
-              AddItem := CheckDuplicate;
-              Break;
-            end;
-        if AddItem then
-        begin
-          if FSize = FCapacity then
-            AutoGrow;
-          AddItem := FSize < FCapacity;
-          if AddItem then
-          begin
-            FElementData[FSize] := Item;
-            Inc(FSize);
-          end;
-        end;
-      end;
-      Result := Result and AddItem;
-    end;
+      Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -2280,10 +2205,9 @@ begin
     SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
+    Result := True;
     if ACollection = nil then
       Exit;
-    Result := True;
     It := ACollection.First;
     while Result and It.HasNext do
       Result := Contains(It.Next);
@@ -2333,7 +2257,7 @@ begin
       begin
         FElementData[I] := '';
         if I < (FSize - 1) then
-          MoveArray(FElementData, I + 1, I, FSize - I - 1);
+          MoveArray(FElementData, I + 1, I, FSize - I);
         Dec(FSize);
         Result := True;
         if FRemoveSingleElement then
@@ -2387,7 +2311,7 @@ begin
     begin
       Result := FElementData[Index];
       if Index < (FSize - 1) then
-        MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
+        MoveArray(FElementData, Index + 1, Index, FSize - Index);
       Dec(FSize);
       AutoPack;
     end
@@ -2459,6 +2383,8 @@ begin
 end;
 
 function TJclAnsiStrArrayList.Insert(Index: Integer; const AString: AnsiString): Boolean;
+var
+  I: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -2475,8 +2401,8 @@ begin
     if Result then
     begin
       if FDuplicates <> dupAccept then
-        for Index := 0 to FSize - 1 do
-          if ItemsEqual(AString, FElementData[Index]) then
+        for I := 0 to FSize - 1 do
+          if ItemsEqual(AString, FElementData[I]) then
           begin
             Result := CheckDuplicate;
             Break;
@@ -2907,24 +2833,15 @@ end;
 constructor TJclWideStrArrayList.Create(ACapacity: Integer);
 begin
   inherited Create();
-  FSize := 0;
-  if ACapacity < 0 then
-    FCapacity := 0
-  else
-    FCapacity := ACapacity;
-  SetLength(FElementData, FCapacity);
+  SetCapacity(ACapacity);
 end;
 
 constructor TJclWideStrArrayList.Create(const ACollection: IJclWideStrCollection);
 begin
-  // (rom) disabled because the following Create already calls inherited
-  // inherited Create;
+  inherited Create();
   if ACollection = nil then
     raise EJclNoCollectionError.Create;
-  Create();
-  FSize := 0;
-  FCapacity := ACollection.Size;
-  SetLength(FElementData, FCapacity);
+  SetCapacity(ACollection.Size);
   AddAll(ACollection);
 end;
 
@@ -2980,9 +2897,6 @@ end;
 function TJclWideStrArrayList.AddAll(const ACollection: IJclWideStrCollection): Boolean;
 var
   It: IJclWideStrIterator;
-  Item: WideString;
-  AddItem: Boolean;
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -2997,33 +2911,7 @@ begin
     Result := True;
     It := ACollection.First;
     while It.HasNext do
-    begin
-      Item := It.Next;
-      // (rom) inlining Add() gives about 5 percent performance increase
-      AddItem := FAllowDefaultElements or not ItemsEqual(Item, '');
-      if AddItem then
-      begin
-        if FDuplicates <> dupAccept then
-          for Index := 0 to FSize - 1 do
-            if ItemsEqual(Item, FElementData[Index]) then
-            begin
-              AddItem := CheckDuplicate;
-              Break;
-            end;
-        if AddItem then
-        begin
-          if FSize = FCapacity then
-            AutoGrow;
-          AddItem := FSize < FCapacity;
-          if AddItem then
-          begin
-            FElementData[FSize] := Item;
-            Inc(FSize);
-          end;
-        end;
-      end;
-      Result := Result and AddItem;
-    end;
+      Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -3136,10 +3024,9 @@ begin
     SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
+    Result := True;
     if ACollection = nil then
       Exit;
-    Result := True;
     It := ACollection.First;
     while Result and It.HasNext do
       Result := Contains(It.Next);
@@ -3189,7 +3076,7 @@ begin
       begin
         FElementData[I] := '';
         if I < (FSize - 1) then
-          MoveArray(FElementData, I + 1, I, FSize - I - 1);
+          MoveArray(FElementData, I + 1, I, FSize - I);
         Dec(FSize);
         Result := True;
         if FRemoveSingleElement then
@@ -3243,7 +3130,7 @@ begin
     begin
       Result := FElementData[Index];
       if Index < (FSize - 1) then
-        MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
+        MoveArray(FElementData, Index + 1, Index, FSize - Index);
       Dec(FSize);
       AutoPack;
     end
@@ -3315,6 +3202,8 @@ begin
 end;
 
 function TJclWideStrArrayList.Insert(Index: Integer; const AString: WideString): Boolean;
+var
+  I: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -3331,8 +3220,8 @@ begin
     if Result then
     begin
       if FDuplicates <> dupAccept then
-        for Index := 0 to FSize - 1 do
-          if ItemsEqual(AString, FElementData[Index]) then
+        for I := 0 to FSize - 1 do
+          if ItemsEqual(AString, FElementData[I]) then
           begin
             Result := CheckDuplicate;
             Break;
@@ -3764,24 +3653,15 @@ end;
 constructor TJclUnicodeStrArrayList.Create(ACapacity: Integer);
 begin
   inherited Create();
-  FSize := 0;
-  if ACapacity < 0 then
-    FCapacity := 0
-  else
-    FCapacity := ACapacity;
-  SetLength(FElementData, FCapacity);
+  SetCapacity(ACapacity);
 end;
 
 constructor TJclUnicodeStrArrayList.Create(const ACollection: IJclUnicodeStrCollection);
 begin
-  // (rom) disabled because the following Create already calls inherited
-  // inherited Create;
+  inherited Create();
   if ACollection = nil then
     raise EJclNoCollectionError.Create;
-  Create();
-  FSize := 0;
-  FCapacity := ACollection.Size;
-  SetLength(FElementData, FCapacity);
+  SetCapacity(ACollection.Size);
   AddAll(ACollection);
 end;
 
@@ -3837,9 +3717,6 @@ end;
 function TJclUnicodeStrArrayList.AddAll(const ACollection: IJclUnicodeStrCollection): Boolean;
 var
   It: IJclUnicodeStrIterator;
-  Item: UnicodeString;
-  AddItem: Boolean;
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -3854,33 +3731,7 @@ begin
     Result := True;
     It := ACollection.First;
     while It.HasNext do
-    begin
-      Item := It.Next;
-      // (rom) inlining Add() gives about 5 percent performance increase
-      AddItem := FAllowDefaultElements or not ItemsEqual(Item, '');
-      if AddItem then
-      begin
-        if FDuplicates <> dupAccept then
-          for Index := 0 to FSize - 1 do
-            if ItemsEqual(Item, FElementData[Index]) then
-            begin
-              AddItem := CheckDuplicate;
-              Break;
-            end;
-        if AddItem then
-        begin
-          if FSize = FCapacity then
-            AutoGrow;
-          AddItem := FSize < FCapacity;
-          if AddItem then
-          begin
-            FElementData[FSize] := Item;
-            Inc(FSize);
-          end;
-        end;
-      end;
-      Result := Result and AddItem;
-    end;
+      Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -3993,10 +3844,9 @@ begin
     SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
+    Result := True;
     if ACollection = nil then
       Exit;
-    Result := True;
     It := ACollection.First;
     while Result and It.HasNext do
       Result := Contains(It.Next);
@@ -4046,7 +3896,7 @@ begin
       begin
         FElementData[I] := '';
         if I < (FSize - 1) then
-          MoveArray(FElementData, I + 1, I, FSize - I - 1);
+          MoveArray(FElementData, I + 1, I, FSize - I);
         Dec(FSize);
         Result := True;
         if FRemoveSingleElement then
@@ -4100,7 +3950,7 @@ begin
     begin
       Result := FElementData[Index];
       if Index < (FSize - 1) then
-        MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
+        MoveArray(FElementData, Index + 1, Index, FSize - Index);
       Dec(FSize);
       AutoPack;
     end
@@ -4172,6 +4022,8 @@ begin
 end;
 
 function TJclUnicodeStrArrayList.Insert(Index: Integer; const AString: UnicodeString): Boolean;
+var
+  I: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -4188,8 +4040,8 @@ begin
     if Result then
     begin
       if FDuplicates <> dupAccept then
-        for Index := 0 to FSize - 1 do
-          if ItemsEqual(AString, FElementData[Index]) then
+        for I := 0 to FSize - 1 do
+          if ItemsEqual(AString, FElementData[I]) then
           begin
             Result := CheckDuplicate;
             Break;
@@ -4622,24 +4474,15 @@ end;
 constructor TJclSingleArrayList.Create(ACapacity: Integer);
 begin
   inherited Create();
-  FSize := 0;
-  if ACapacity < 0 then
-    FCapacity := 0
-  else
-    FCapacity := ACapacity;
-  SetLength(FElementData, FCapacity);
+  SetCapacity(ACapacity);
 end;
 
 constructor TJclSingleArrayList.Create(const ACollection: IJclSingleCollection);
 begin
-  // (rom) disabled because the following Create already calls inherited
-  // inherited Create;
+  inherited Create();
   if ACollection = nil then
     raise EJclNoCollectionError.Create;
-  Create();
-  FSize := 0;
-  FCapacity := ACollection.Size;
-  SetLength(FElementData, FCapacity);
+  SetCapacity(ACollection.Size);
   AddAll(ACollection);
 end;
 
@@ -4695,9 +4538,6 @@ end;
 function TJclSingleArrayList.AddAll(const ACollection: IJclSingleCollection): Boolean;
 var
   It: IJclSingleIterator;
-  Item: Single;
-  AddItem: Boolean;
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -4712,33 +4552,7 @@ begin
     Result := True;
     It := ACollection.First;
     while It.HasNext do
-    begin
-      Item := It.Next;
-      // (rom) inlining Add() gives about 5 percent performance increase
-      AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0.0);
-      if AddItem then
-      begin
-        if FDuplicates <> dupAccept then
-          for Index := 0 to FSize - 1 do
-            if ItemsEqual(Item, FElementData[Index]) then
-            begin
-              AddItem := CheckDuplicate;
-              Break;
-            end;
-        if AddItem then
-        begin
-          if FSize = FCapacity then
-            AutoGrow;
-          AddItem := FSize < FCapacity;
-          if AddItem then
-          begin
-            FElementData[FSize] := Item;
-            Inc(FSize);
-          end;
-        end;
-      end;
-      Result := Result and AddItem;
-    end;
+      Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -4851,10 +4665,9 @@ begin
     SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
+    Result := True;
     if ACollection = nil then
       Exit;
-    Result := True;
     It := ACollection.First;
     while Result and It.HasNext do
       Result := Contains(It.Next);
@@ -4904,7 +4717,7 @@ begin
       begin
         FElementData[I] := 0.0;
         if I < (FSize - 1) then
-          MoveArray(FElementData, I + 1, I, FSize - I - 1);
+          MoveArray(FElementData, I + 1, I, FSize - I);
         Dec(FSize);
         Result := True;
         if FRemoveSingleElement then
@@ -4958,7 +4771,7 @@ begin
     begin
       Result := FElementData[Index];
       if Index < (FSize - 1) then
-        MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
+        MoveArray(FElementData, Index + 1, Index, FSize - Index);
       Dec(FSize);
       AutoPack;
     end
@@ -5030,6 +4843,8 @@ begin
 end;
 
 function TJclSingleArrayList.Insert(Index: Integer; const AValue: Single): Boolean;
+var
+  I: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -5046,8 +4861,8 @@ begin
     if Result then
     begin
       if FDuplicates <> dupAccept then
-        for Index := 0 to FSize - 1 do
-          if ItemsEqual(AValue, FElementData[Index]) then
+        for I := 0 to FSize - 1 do
+          if ItemsEqual(AValue, FElementData[I]) then
           begin
             Result := CheckDuplicate;
             Break;
@@ -5478,24 +5293,15 @@ end;
 constructor TJclDoubleArrayList.Create(ACapacity: Integer);
 begin
   inherited Create();
-  FSize := 0;
-  if ACapacity < 0 then
-    FCapacity := 0
-  else
-    FCapacity := ACapacity;
-  SetLength(FElementData, FCapacity);
+  SetCapacity(ACapacity);
 end;
 
 constructor TJclDoubleArrayList.Create(const ACollection: IJclDoubleCollection);
 begin
-  // (rom) disabled because the following Create already calls inherited
-  // inherited Create;
+  inherited Create();
   if ACollection = nil then
     raise EJclNoCollectionError.Create;
-  Create();
-  FSize := 0;
-  FCapacity := ACollection.Size;
-  SetLength(FElementData, FCapacity);
+  SetCapacity(ACollection.Size);
   AddAll(ACollection);
 end;
 
@@ -5551,9 +5357,6 @@ end;
 function TJclDoubleArrayList.AddAll(const ACollection: IJclDoubleCollection): Boolean;
 var
   It: IJclDoubleIterator;
-  Item: Double;
-  AddItem: Boolean;
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -5568,33 +5371,7 @@ begin
     Result := True;
     It := ACollection.First;
     while It.HasNext do
-    begin
-      Item := It.Next;
-      // (rom) inlining Add() gives about 5 percent performance increase
-      AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0.0);
-      if AddItem then
-      begin
-        if FDuplicates <> dupAccept then
-          for Index := 0 to FSize - 1 do
-            if ItemsEqual(Item, FElementData[Index]) then
-            begin
-              AddItem := CheckDuplicate;
-              Break;
-            end;
-        if AddItem then
-        begin
-          if FSize = FCapacity then
-            AutoGrow;
-          AddItem := FSize < FCapacity;
-          if AddItem then
-          begin
-            FElementData[FSize] := Item;
-            Inc(FSize);
-          end;
-        end;
-      end;
-      Result := Result and AddItem;
-    end;
+      Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -5707,10 +5484,9 @@ begin
     SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
+    Result := True;
     if ACollection = nil then
       Exit;
-    Result := True;
     It := ACollection.First;
     while Result and It.HasNext do
       Result := Contains(It.Next);
@@ -5760,7 +5536,7 @@ begin
       begin
         FElementData[I] := 0.0;
         if I < (FSize - 1) then
-          MoveArray(FElementData, I + 1, I, FSize - I - 1);
+          MoveArray(FElementData, I + 1, I, FSize - I);
         Dec(FSize);
         Result := True;
         if FRemoveSingleElement then
@@ -5814,7 +5590,7 @@ begin
     begin
       Result := FElementData[Index];
       if Index < (FSize - 1) then
-        MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
+        MoveArray(FElementData, Index + 1, Index, FSize - Index);
       Dec(FSize);
       AutoPack;
     end
@@ -5886,6 +5662,8 @@ begin
 end;
 
 function TJclDoubleArrayList.Insert(Index: Integer; const AValue: Double): Boolean;
+var
+  I: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -5902,8 +5680,8 @@ begin
     if Result then
     begin
       if FDuplicates <> dupAccept then
-        for Index := 0 to FSize - 1 do
-          if ItemsEqual(AValue, FElementData[Index]) then
+        for I := 0 to FSize - 1 do
+          if ItemsEqual(AValue, FElementData[I]) then
           begin
             Result := CheckDuplicate;
             Break;
@@ -6334,24 +6112,15 @@ end;
 constructor TJclExtendedArrayList.Create(ACapacity: Integer);
 begin
   inherited Create();
-  FSize := 0;
-  if ACapacity < 0 then
-    FCapacity := 0
-  else
-    FCapacity := ACapacity;
-  SetLength(FElementData, FCapacity);
+  SetCapacity(ACapacity);
 end;
 
 constructor TJclExtendedArrayList.Create(const ACollection: IJclExtendedCollection);
 begin
-  // (rom) disabled because the following Create already calls inherited
-  // inherited Create;
+  inherited Create();
   if ACollection = nil then
     raise EJclNoCollectionError.Create;
-  Create();
-  FSize := 0;
-  FCapacity := ACollection.Size;
-  SetLength(FElementData, FCapacity);
+  SetCapacity(ACollection.Size);
   AddAll(ACollection);
 end;
 
@@ -6407,9 +6176,6 @@ end;
 function TJclExtendedArrayList.AddAll(const ACollection: IJclExtendedCollection): Boolean;
 var
   It: IJclExtendedIterator;
-  Item: Extended;
-  AddItem: Boolean;
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -6424,33 +6190,7 @@ begin
     Result := True;
     It := ACollection.First;
     while It.HasNext do
-    begin
-      Item := It.Next;
-      // (rom) inlining Add() gives about 5 percent performance increase
-      AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0.0);
-      if AddItem then
-      begin
-        if FDuplicates <> dupAccept then
-          for Index := 0 to FSize - 1 do
-            if ItemsEqual(Item, FElementData[Index]) then
-            begin
-              AddItem := CheckDuplicate;
-              Break;
-            end;
-        if AddItem then
-        begin
-          if FSize = FCapacity then
-            AutoGrow;
-          AddItem := FSize < FCapacity;
-          if AddItem then
-          begin
-            FElementData[FSize] := Item;
-            Inc(FSize);
-          end;
-        end;
-      end;
-      Result := Result and AddItem;
-    end;
+      Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -6563,10 +6303,9 @@ begin
     SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
+    Result := True;
     if ACollection = nil then
       Exit;
-    Result := True;
     It := ACollection.First;
     while Result and It.HasNext do
       Result := Contains(It.Next);
@@ -6616,7 +6355,7 @@ begin
       begin
         FElementData[I] := 0.0;
         if I < (FSize - 1) then
-          MoveArray(FElementData, I + 1, I, FSize - I - 1);
+          MoveArray(FElementData, I + 1, I, FSize - I);
         Dec(FSize);
         Result := True;
         if FRemoveSingleElement then
@@ -6670,7 +6409,7 @@ begin
     begin
       Result := FElementData[Index];
       if Index < (FSize - 1) then
-        MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
+        MoveArray(FElementData, Index + 1, Index, FSize - Index);
       Dec(FSize);
       AutoPack;
     end
@@ -6742,6 +6481,8 @@ begin
 end;
 
 function TJclExtendedArrayList.Insert(Index: Integer; const AValue: Extended): Boolean;
+var
+  I: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -6758,8 +6499,8 @@ begin
     if Result then
     begin
       if FDuplicates <> dupAccept then
-        for Index := 0 to FSize - 1 do
-          if ItemsEqual(AValue, FElementData[Index]) then
+        for I := 0 to FSize - 1 do
+          if ItemsEqual(AValue, FElementData[I]) then
           begin
             Result := CheckDuplicate;
             Break;
@@ -7190,24 +6931,15 @@ end;
 constructor TJclIntegerArrayList.Create(ACapacity: Integer);
 begin
   inherited Create();
-  FSize := 0;
-  if ACapacity < 0 then
-    FCapacity := 0
-  else
-    FCapacity := ACapacity;
-  SetLength(FElementData, FCapacity);
+  SetCapacity(ACapacity);
 end;
 
 constructor TJclIntegerArrayList.Create(const ACollection: IJclIntegerCollection);
 begin
-  // (rom) disabled because the following Create already calls inherited
-  // inherited Create;
+  inherited Create();
   if ACollection = nil then
     raise EJclNoCollectionError.Create;
-  Create();
-  FSize := 0;
-  FCapacity := ACollection.Size;
-  SetLength(FElementData, FCapacity);
+  SetCapacity(ACollection.Size);
   AddAll(ACollection);
 end;
 
@@ -7263,9 +6995,6 @@ end;
 function TJclIntegerArrayList.AddAll(const ACollection: IJclIntegerCollection): Boolean;
 var
   It: IJclIntegerIterator;
-  Item: Integer;
-  AddItem: Boolean;
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -7280,33 +7009,7 @@ begin
     Result := True;
     It := ACollection.First;
     while It.HasNext do
-    begin
-      Item := It.Next;
-      // (rom) inlining Add() gives about 5 percent performance increase
-      AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0);
-      if AddItem then
-      begin
-        if FDuplicates <> dupAccept then
-          for Index := 0 to FSize - 1 do
-            if ItemsEqual(Item, FElementData[Index]) then
-            begin
-              AddItem := CheckDuplicate;
-              Break;
-            end;
-        if AddItem then
-        begin
-          if FSize = FCapacity then
-            AutoGrow;
-          AddItem := FSize < FCapacity;
-          if AddItem then
-          begin
-            FElementData[FSize] := Item;
-            Inc(FSize);
-          end;
-        end;
-      end;
-      Result := Result and AddItem;
-    end;
+      Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -7419,10 +7122,9 @@ begin
     SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
+    Result := True;
     if ACollection = nil then
       Exit;
-    Result := True;
     It := ACollection.First;
     while Result and It.HasNext do
       Result := Contains(It.Next);
@@ -7472,7 +7174,7 @@ begin
       begin
         FElementData[I] := 0;
         if I < (FSize - 1) then
-          MoveArray(FElementData, I + 1, I, FSize - I - 1);
+          MoveArray(FElementData, I + 1, I, FSize - I);
         Dec(FSize);
         Result := True;
         if FRemoveSingleElement then
@@ -7526,7 +7228,7 @@ begin
     begin
       Result := FElementData[Index];
       if Index < (FSize - 1) then
-        MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
+        MoveArray(FElementData, Index + 1, Index, FSize - Index);
       Dec(FSize);
       AutoPack;
     end
@@ -7598,6 +7300,8 @@ begin
 end;
 
 function TJclIntegerArrayList.Insert(Index: Integer; AValue: Integer): Boolean;
+var
+  I: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -7614,8 +7318,8 @@ begin
     if Result then
     begin
       if FDuplicates <> dupAccept then
-        for Index := 0 to FSize - 1 do
-          if ItemsEqual(AValue, FElementData[Index]) then
+        for I := 0 to FSize - 1 do
+          if ItemsEqual(AValue, FElementData[I]) then
           begin
             Result := CheckDuplicate;
             Break;
@@ -8046,24 +7750,15 @@ end;
 constructor TJclCardinalArrayList.Create(ACapacity: Integer);
 begin
   inherited Create();
-  FSize := 0;
-  if ACapacity < 0 then
-    FCapacity := 0
-  else
-    FCapacity := ACapacity;
-  SetLength(FElementData, FCapacity);
+  SetCapacity(ACapacity);
 end;
 
 constructor TJclCardinalArrayList.Create(const ACollection: IJclCardinalCollection);
 begin
-  // (rom) disabled because the following Create already calls inherited
-  // inherited Create;
+  inherited Create();
   if ACollection = nil then
     raise EJclNoCollectionError.Create;
-  Create();
-  FSize := 0;
-  FCapacity := ACollection.Size;
-  SetLength(FElementData, FCapacity);
+  SetCapacity(ACollection.Size);
   AddAll(ACollection);
 end;
 
@@ -8119,9 +7814,6 @@ end;
 function TJclCardinalArrayList.AddAll(const ACollection: IJclCardinalCollection): Boolean;
 var
   It: IJclCardinalIterator;
-  Item: Cardinal;
-  AddItem: Boolean;
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -8136,33 +7828,7 @@ begin
     Result := True;
     It := ACollection.First;
     while It.HasNext do
-    begin
-      Item := It.Next;
-      // (rom) inlining Add() gives about 5 percent performance increase
-      AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0);
-      if AddItem then
-      begin
-        if FDuplicates <> dupAccept then
-          for Index := 0 to FSize - 1 do
-            if ItemsEqual(Item, FElementData[Index]) then
-            begin
-              AddItem := CheckDuplicate;
-              Break;
-            end;
-        if AddItem then
-        begin
-          if FSize = FCapacity then
-            AutoGrow;
-          AddItem := FSize < FCapacity;
-          if AddItem then
-          begin
-            FElementData[FSize] := Item;
-            Inc(FSize);
-          end;
-        end;
-      end;
-      Result := Result and AddItem;
-    end;
+      Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -8275,10 +7941,9 @@ begin
     SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
+    Result := True;
     if ACollection = nil then
       Exit;
-    Result := True;
     It := ACollection.First;
     while Result and It.HasNext do
       Result := Contains(It.Next);
@@ -8328,7 +7993,7 @@ begin
       begin
         FElementData[I] := 0;
         if I < (FSize - 1) then
-          MoveArray(FElementData, I + 1, I, FSize - I - 1);
+          MoveArray(FElementData, I + 1, I, FSize - I);
         Dec(FSize);
         Result := True;
         if FRemoveSingleElement then
@@ -8382,7 +8047,7 @@ begin
     begin
       Result := FElementData[Index];
       if Index < (FSize - 1) then
-        MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
+        MoveArray(FElementData, Index + 1, Index, FSize - Index);
       Dec(FSize);
       AutoPack;
     end
@@ -8454,6 +8119,8 @@ begin
 end;
 
 function TJclCardinalArrayList.Insert(Index: Integer; AValue: Cardinal): Boolean;
+var
+  I: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -8470,8 +8137,8 @@ begin
     if Result then
     begin
       if FDuplicates <> dupAccept then
-        for Index := 0 to FSize - 1 do
-          if ItemsEqual(AValue, FElementData[Index]) then
+        for I := 0 to FSize - 1 do
+          if ItemsEqual(AValue, FElementData[I]) then
           begin
             Result := CheckDuplicate;
             Break;
@@ -8902,24 +8569,15 @@ end;
 constructor TJclInt64ArrayList.Create(ACapacity: Integer);
 begin
   inherited Create();
-  FSize := 0;
-  if ACapacity < 0 then
-    FCapacity := 0
-  else
-    FCapacity := ACapacity;
-  SetLength(FElementData, FCapacity);
+  SetCapacity(ACapacity);
 end;
 
 constructor TJclInt64ArrayList.Create(const ACollection: IJclInt64Collection);
 begin
-  // (rom) disabled because the following Create already calls inherited
-  // inherited Create;
+  inherited Create();
   if ACollection = nil then
     raise EJclNoCollectionError.Create;
-  Create();
-  FSize := 0;
-  FCapacity := ACollection.Size;
-  SetLength(FElementData, FCapacity);
+  SetCapacity(ACollection.Size);
   AddAll(ACollection);
 end;
 
@@ -8975,9 +8633,6 @@ end;
 function TJclInt64ArrayList.AddAll(const ACollection: IJclInt64Collection): Boolean;
 var
   It: IJclInt64Iterator;
-  Item: Int64;
-  AddItem: Boolean;
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -8992,33 +8647,7 @@ begin
     Result := True;
     It := ACollection.First;
     while It.HasNext do
-    begin
-      Item := It.Next;
-      // (rom) inlining Add() gives about 5 percent performance increase
-      AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0);
-      if AddItem then
-      begin
-        if FDuplicates <> dupAccept then
-          for Index := 0 to FSize - 1 do
-            if ItemsEqual(Item, FElementData[Index]) then
-            begin
-              AddItem := CheckDuplicate;
-              Break;
-            end;
-        if AddItem then
-        begin
-          if FSize = FCapacity then
-            AutoGrow;
-          AddItem := FSize < FCapacity;
-          if AddItem then
-          begin
-            FElementData[FSize] := Item;
-            Inc(FSize);
-          end;
-        end;
-      end;
-      Result := Result and AddItem;
-    end;
+      Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -9131,10 +8760,9 @@ begin
     SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
+    Result := True;
     if ACollection = nil then
       Exit;
-    Result := True;
     It := ACollection.First;
     while Result and It.HasNext do
       Result := Contains(It.Next);
@@ -9184,7 +8812,7 @@ begin
       begin
         FElementData[I] := 0;
         if I < (FSize - 1) then
-          MoveArray(FElementData, I + 1, I, FSize - I - 1);
+          MoveArray(FElementData, I + 1, I, FSize - I);
         Dec(FSize);
         Result := True;
         if FRemoveSingleElement then
@@ -9238,7 +8866,7 @@ begin
     begin
       Result := FElementData[Index];
       if Index < (FSize - 1) then
-        MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
+        MoveArray(FElementData, Index + 1, Index, FSize - Index);
       Dec(FSize);
       AutoPack;
     end
@@ -9310,6 +8938,8 @@ begin
 end;
 
 function TJclInt64ArrayList.Insert(Index: Integer; const AValue: Int64): Boolean;
+var
+  I: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -9326,8 +8956,8 @@ begin
     if Result then
     begin
       if FDuplicates <> dupAccept then
-        for Index := 0 to FSize - 1 do
-          if ItemsEqual(AValue, FElementData[Index]) then
+        for I := 0 to FSize - 1 do
+          if ItemsEqual(AValue, FElementData[I]) then
           begin
             Result := CheckDuplicate;
             Break;
@@ -9758,24 +9388,15 @@ end;
 constructor TJclPtrArrayList.Create(ACapacity: Integer);
 begin
   inherited Create();
-  FSize := 0;
-  if ACapacity < 0 then
-    FCapacity := 0
-  else
-    FCapacity := ACapacity;
-  SetLength(FElementData, FCapacity);
+  SetCapacity(ACapacity);
 end;
 
 constructor TJclPtrArrayList.Create(const ACollection: IJclPtrCollection);
 begin
-  // (rom) disabled because the following Create already calls inherited
-  // inherited Create;
+  inherited Create();
   if ACollection = nil then
     raise EJclNoCollectionError.Create;
-  Create();
-  FSize := 0;
-  FCapacity := ACollection.Size;
-  SetLength(FElementData, FCapacity);
+  SetCapacity(ACollection.Size);
   AddAll(ACollection);
 end;
 
@@ -9831,9 +9452,6 @@ end;
 function TJclPtrArrayList.AddAll(const ACollection: IJclPtrCollection): Boolean;
 var
   It: IJclPtrIterator;
-  Item: Pointer;
-  AddItem: Boolean;
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -9848,33 +9466,7 @@ begin
     Result := True;
     It := ACollection.First;
     while It.HasNext do
-    begin
-      Item := It.Next;
-      // (rom) inlining Add() gives about 5 percent performance increase
-      AddItem := FAllowDefaultElements or not ItemsEqual(Item, nil);
-      if AddItem then
-      begin
-        if FDuplicates <> dupAccept then
-          for Index := 0 to FSize - 1 do
-            if ItemsEqual(Item, FElementData[Index]) then
-            begin
-              AddItem := CheckDuplicate;
-              Break;
-            end;
-        if AddItem then
-        begin
-          if FSize = FCapacity then
-            AutoGrow;
-          AddItem := FSize < FCapacity;
-          if AddItem then
-          begin
-            FElementData[FSize] := Item;
-            Inc(FSize);
-          end;
-        end;
-      end;
-      Result := Result and AddItem;
-    end;
+      Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -9987,10 +9579,9 @@ begin
     SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
+    Result := True;
     if ACollection = nil then
       Exit;
-    Result := True;
     It := ACollection.First;
     while Result and It.HasNext do
       Result := Contains(It.Next);
@@ -10040,7 +9631,7 @@ begin
       begin
         FElementData[I] := nil;
         if I < (FSize - 1) then
-          MoveArray(FElementData, I + 1, I, FSize - I - 1);
+          MoveArray(FElementData, I + 1, I, FSize - I);
         Dec(FSize);
         Result := True;
         if FRemoveSingleElement then
@@ -10094,7 +9685,7 @@ begin
     begin
       Result := FElementData[Index];
       if Index < (FSize - 1) then
-        MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
+        MoveArray(FElementData, Index + 1, Index, FSize - Index);
       Dec(FSize);
       AutoPack;
     end
@@ -10166,6 +9757,8 @@ begin
 end;
 
 function TJclPtrArrayList.Insert(Index: Integer; APtr: Pointer): Boolean;
+var
+  I: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -10182,8 +9775,8 @@ begin
     if Result then
     begin
       if FDuplicates <> dupAccept then
-        for Index := 0 to FSize - 1 do
-          if ItemsEqual(APtr, FElementData[Index]) then
+        for I := 0 to FSize - 1 do
+          if ItemsEqual(APtr, FElementData[I]) then
           begin
             Result := CheckDuplicate;
             Break;
@@ -10614,24 +10207,15 @@ end;
 constructor TJclArrayList.Create(ACapacity: Integer; AOwnsObjects: Boolean);
 begin
   inherited Create(AOwnsObjects);
-  FSize := 0;
-  if ACapacity < 0 then
-    FCapacity := 0
-  else
-    FCapacity := ACapacity;
-  SetLength(FElementData, FCapacity);
+  SetCapacity(ACapacity);
 end;
 
 constructor TJclArrayList.Create(const ACollection: IJclCollection; AOwnsObjects: Boolean);
 begin
-  // (rom) disabled because the following Create already calls inherited
-  // inherited Create;
+  inherited Create(AOwnsObjects);
   if ACollection = nil then
     raise EJclNoCollectionError.Create;
-  Create(AOwnsObjects);
-  FSize := 0;
-  FCapacity := ACollection.Size;
-  SetLength(FElementData, FCapacity);
+  SetCapacity(ACollection.Size);
   AddAll(ACollection);
 end;
 
@@ -10687,9 +10271,6 @@ end;
 function TJclArrayList.AddAll(const ACollection: IJclCollection): Boolean;
 var
   It: IJclIterator;
-  Item: TObject;
-  AddItem: Boolean;
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -10704,33 +10285,7 @@ begin
     Result := True;
     It := ACollection.First;
     while It.HasNext do
-    begin
-      Item := It.Next;
-      // (rom) inlining Add() gives about 5 percent performance increase
-      AddItem := FAllowDefaultElements or not ItemsEqual(Item, nil);
-      if AddItem then
-      begin
-        if FDuplicates <> dupAccept then
-          for Index := 0 to FSize - 1 do
-            if ItemsEqual(Item, FElementData[Index]) then
-            begin
-              AddItem := CheckDuplicate;
-              Break;
-            end;
-        if AddItem then
-        begin
-          if FSize = FCapacity then
-            AutoGrow;
-          AddItem := FSize < FCapacity;
-          if AddItem then
-          begin
-            FElementData[FSize] := Item;
-            Inc(FSize);
-          end;
-        end;
-      end;
-      Result := Result and AddItem;
-    end;
+      Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -10843,10 +10398,9 @@ begin
     SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
+    Result := True;
     if ACollection = nil then
       Exit;
-    Result := True;
     It := ACollection.First;
     while Result and It.HasNext do
       Result := Contains(It.Next);
@@ -10896,7 +10450,7 @@ begin
       begin
         FElementData[I] := nil;
         if I < (FSize - 1) then
-          MoveArray(FElementData, I + 1, I, FSize - I - 1);
+          MoveArray(FElementData, I + 1, I, FSize - I);
         Dec(FSize);
         Result := True;
         if FRemoveSingleElement then
@@ -10950,7 +10504,7 @@ begin
     begin
       Result := FElementData[Index];
       if Index < (FSize - 1) then
-        MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
+        MoveArray(FElementData, Index + 1, Index, FSize - Index);
       Dec(FSize);
       AutoPack;
     end
@@ -11022,6 +10576,8 @@ begin
 end;
 
 function TJclArrayList.Insert(Index: Integer; AObject: TObject): Boolean;
+var
+  I: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -11038,8 +10594,8 @@ begin
     if Result then
     begin
       if FDuplicates <> dupAccept then
-        for Index := 0 to FSize - 1 do
-          if ItemsEqual(AObject, FElementData[Index]) then
+        for I := 0 to FSize - 1 do
+          if ItemsEqual(AObject, FElementData[I]) then
           begin
             Result := CheckDuplicate;
             Break;
@@ -11472,24 +11028,15 @@ end;
 constructor TJclArrayList<T>.Create(ACapacity: Integer; AOwnsItems: Boolean);
 begin
   inherited Create(AOwnsItems);
-  FSize := 0;
-  if ACapacity < 0 then
-    FCapacity := 0
-  else
-    FCapacity := ACapacity;
-  SetLength(FElementData, FCapacity);
+  SetCapacity(ACapacity);
 end;
 
 constructor TJclArrayList<T>.Create(const ACollection: IJclCollection<T>; AOwnsItems: Boolean);
 begin
-  // (rom) disabled because the following Create already calls inherited
-  // inherited Create;
+  inherited Create(AOwnsItems);
   if ACollection = nil then
     raise EJclNoCollectionError.Create;
-  Create(AOwnsItems);
-  FSize := 0;
-  FCapacity := ACollection.Size;
-  SetLength(FElementData, FCapacity);
+  SetCapacity(ACollection.Size);
   AddAll(ACollection);
 end;
 
@@ -11545,9 +11092,6 @@ end;
 function TJclArrayList<T>.AddAll(const ACollection: IJclCollection<T>): Boolean;
 var
   It: IJclIterator<T>;
-  Item: T;
-  AddItem: Boolean;
-  Index: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -11562,33 +11106,7 @@ begin
     Result := True;
     It := ACollection.First;
     while It.HasNext do
-    begin
-      Item := It.Next;
-      // (rom) inlining Add() gives about 5 percent performance increase
-      AddItem := FAllowDefaultElements or not ItemsEqual(Item, Default(T));
-      if AddItem then
-      begin
-        if FDuplicates <> dupAccept then
-          for Index := 0 to FSize - 1 do
-            if ItemsEqual(Item, FElementData[Index]) then
-            begin
-              AddItem := CheckDuplicate;
-              Break;
-            end;
-        if AddItem then
-        begin
-          if FSize = FCapacity then
-            AutoGrow;
-          AddItem := FSize < FCapacity;
-          if AddItem then
-          begin
-            FElementData[FSize] := Item;
-            Inc(FSize);
-          end;
-        end;
-      end;
-      Result := Result and AddItem;
-    end;
+      Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     if FThreadSafe then
@@ -11701,10 +11219,9 @@ begin
     SyncReaderWriter.BeginRead;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
+    Result := True;
     if ACollection = nil then
       Exit;
-    Result := True;
     It := ACollection.First;
     while Result and It.HasNext do
       Result := Contains(It.Next);
@@ -11754,7 +11271,7 @@ begin
       begin
         FElementData[I] := Default(T);
         if I < (FSize - 1) then
-          MoveArray(FElementData, I + 1, I, FSize - I - 1);
+          MoveArray(FElementData, I + 1, I, FSize - I);
         Dec(FSize);
         Result := True;
         if FRemoveSingleElement then
@@ -11808,7 +11325,7 @@ begin
     begin
       Result := FElementData[Index];
       if Index < (FSize - 1) then
-        MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
+        MoveArray(FElementData, Index + 1, Index, FSize - Index);
       Dec(FSize);
       AutoPack;
     end
@@ -11880,6 +11397,8 @@ begin
 end;
 
 function TJclArrayList<T>.Insert(Index: Integer; const AItem: T): Boolean;
+var
+  I: Integer;
 begin
   if ReadOnly then
     raise EJclReadOnlyError.Create;
@@ -11896,8 +11415,8 @@ begin
     if Result then
     begin
       if FDuplicates <> dupAccept then
-        for Index := 0 to FSize - 1 do
-          if ItemsEqual(AItem, FElementData[Index]) then
+        for I := 0 to FSize - 1 do
+          if ItemsEqual(AItem, FElementData[I]) then
           begin
             Result := CheckDuplicate;
             Break;

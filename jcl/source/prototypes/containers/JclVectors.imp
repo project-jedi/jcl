@@ -2,12 +2,12 @@
   CONSTKEYWORD, PARAMETERNAME, TYPENAME, GETTERNAME, SETTERNAME)
 //=== { SELFCLASSNAME } ===========================================================
 
-constructor SELFCLASSNAME.Create(const OwnList: LISTINTERFACENAME; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+constructor SELFCLASSNAME.Create(const AOwnList: LISTINTERFACENAME; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
 begin
   inherited Create(AValid);
-  FOwnList := OwnList;
-  FCursor := ACursor;
+  FOwnList := AOwnList;
   FStart := AStart;
+  FCursor := ACursor;
 end;
 
 function SELFCLASSNAME.Add(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
@@ -164,6 +164,15 @@ begin
   SetCapacity(ACapacity);
 end;
 
+constructor SELFCLASSNAME.Create(const ACollection: COLLECTIONINTERFACENAMEOWNERSHIPDECLARATION);
+begin
+  inherited Create(OWNERSHIPPARAMETER);
+  if ACollection = nil then
+    raise EJclNoCollectionError.Create;
+  SetCapacity(ACollection.Size);
+  AddAll(ACollection);
+end;
+
 destructor SELFCLASSNAME.Destroy;
 begin
   FReadOnly := False;
@@ -173,15 +182,15 @@ end;
 
 function SELFCLASSNAME.Add(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
 var
-  I: Integer;
+  Index: Integer;
 begin
   {$JPPEXPANDMACRO WRITEBEGIN}
     Result := FAllowDefaultElements or not ItemsEqual(PARAMETERNAME, DEFAULTVALUE);
     if Result then
     begin
       if FDuplicates <> dupAccept then
-        for I := 0 to FSize - 1 do
-          if ItemsEqual(PARAMETERNAME, FItems[I]) then
+        for Index := 0 to FSize - 1 do
+          if ItemsEqual(PARAMETERNAME, FItems[Index]) then
           begin
             Result := CheckDuplicate;
             Break;
@@ -219,6 +228,7 @@ end;
 procedure SELFCLASSNAME.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   ADest: SELFCLASSNAME;
+  ACollection: COLLECTIONINTERFACENAME;
 begin
   inherited AssignDataTo(Dest);
   if Dest is SELFCLASSNAME then
@@ -226,6 +236,12 @@ begin
     ADest := SELFCLASSNAME(Dest);
     ADest.Clear;
     ADest.AddAll(Self);
+  end
+  else
+  if Supports(IInterface(Dest), COLLECTIONINTERFACENAME, ACollection) then
+  begin
+    ACollection.Clear;
+    ACollection.AddAll(Self);
   end;
 end;
 
@@ -237,6 +253,7 @@ begin
     for I := 0 to FSize - 1 do
       RELEASERNAME(FItems[I]);
     FSize := 0;
+    AutoPack;
   {$JPPEXPANDMACRO WRITEEND}
 end;
 
@@ -251,14 +268,11 @@ begin
       Exit;
     if FSize <> ACollection.Size then
       Exit;
-    Result := True;
     It := ACollection.First;
     for I := 0 to FSize - 1 do
-      if not ItemsEqual(Items[I], It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+      if not ItemsEqual(FItems[I], It.Next) then
+        Exit;
+    Result := True;
   {$JPPEXPANDMACRO READEND}
 end;
 
@@ -269,7 +283,7 @@ begin
   {$JPPEXPANDMACRO READBEGIN}
     Result := False;
     for I := 0 to FSize - 1 do
-      if ItemsEqual(Items[I], PARAMETERNAME) then
+      if ItemsEqual(FItems[I], PARAMETERNAME) then
       begin
         Result := True;
         Break;
@@ -292,17 +306,12 @@ begin
 end;
 
 function SELFCLASSNAME.Delete(Index: Integer): TYPENAME;
+var
+  Extracted: TYPENAME;
 begin
   {$JPPEXPANDMACRO WRITEBEGIN}
-    if (Index >= 0) and (Index < FSize) then
-    begin
-      Result := RELEASERNAME(FItems[Index]);
-      MoveArray(FItems, Index + 1, Index, FSize - Index);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := RaiseOutOfBoundsError;
+    Extracted := ExtractIndex(Index);
+    Result := RELEASERNAME(Extracted);
   {$JPPEXPANDMACRO WRITEEND}
 end;
 
@@ -316,12 +325,14 @@ begin
       if ItemsEqual(FItems[I], PARAMETERNAME) then
       begin
         FItems[I] := DEFAULTVALUE;
-        MoveArray(FItems, I + 1, I, FSize - I);
+        if I < (FSize - 1) then
+          MoveArray(FItems, I + 1, I, FSize - I);
         Dec(FSize);
         Result := True;
         if FRemoveSingleElement then
           Break;
       end;
+    AutoPack;
   {$JPPEXPANDMACRO WRITEEND}
 end;
 
@@ -346,7 +357,8 @@ begin
     if (Index >= 0) and (Index < FSize) then
     begin
       Result := FItems[Index];
-      MoveArray(FItems, Index + 1, Index, FSize - Index);
+      if Index < (FSize - 1) then
+        MoveArray(FItems, Index + 1, Index, FSize - Index);
       Dec(FSize);
       AutoPack;
     end
@@ -372,10 +384,10 @@ begin
   {$JPPEXPANDMACRO READBEGIN}
     Result := DEFAULTVALUE;
     if (Index >= 0) or (Index < FSize) then
-      Result := Items[Index]
+      Result := FItems[Index]
     else
     if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+      raise EJclNoSuchElementError.Create(IntToStr(Index));
   {$JPPEXPANDMACRO READEND}
 end;
 
@@ -386,7 +398,7 @@ begin
   {$JPPEXPANDMACRO READBEGIN}
     Result := -1;
     for I := 0 to FSize - 1 do
-      if ItemsEqual(Items[I], PARAMETERNAME) then
+      if ItemsEqual(FItems[I], PARAMETERNAME) then
       begin
         Result := I;
         Break;
@@ -418,7 +430,8 @@ begin
         Result := FSize < FCapacity;
         if Result then
         begin
-          MoveArray(FItems, Index, Index + 1, FSize - Index);
+          if Index < FSize then
+            MoveArray(FItems, Index, Index + 1, FSize - Index);
           FItems[Index] := PARAMETERNAME;
           Inc(FSize);
         end;
@@ -461,7 +474,7 @@ begin
   {$JPPEXPANDMACRO READBEGIN}
     Result := -1;
     for I := FSize - 1 downto 0 do
-      if ItemsEqual(Items[I], PARAMETERNAME) then
+      if ItemsEqual(FItems[I], PARAMETERNAME) then
       begin
         Result := I;
         Break;
@@ -469,8 +482,6 @@ begin
   {$JPPEXPANDMACRO READEND}
 end;
 
-// fix ambiguous warnings when compiled on Delphi.net and earlier versions of Delphi.win32
-// complaining about possible unaffected result.
 function SELFCLASSNAME.RaiseOutOfBoundsError: TYPENAME;
 begin
   raise EJclOutOfBoundsError.Create;
@@ -515,7 +526,7 @@ begin
       Exit;
     Result := True;
     for I := FSize - 1 downto 0 do
-      if not ACollection.Contains(Items[I]) then
+      if not ACollection.Contains(FItems[I]) then
         Delete(I);
   {$JPPEXPANDMACRO WRITEEND}
 end;
@@ -523,10 +534,13 @@ end;
 procedure SELFCLASSNAME.SetCapacity(Value: Integer);
 begin
   {$JPPEXPANDMACRO WRITEBEGIN}
-    if Value < FSize then
+    if Value >= FSize then
+    begin
+      SetLength(FItems, Value);
+      inherited SetCapacity(Value);
+    end
+    else
       raise EJclOutOfBoundsError.Create;
-    SetLength(FItems, Value);
-    inherited SetCapacity(Value);
   {$JPPEXPANDMACRO WRITEEND}
 end;
 
@@ -536,9 +550,9 @@ var
   I: Integer;
 begin
   {$JPPEXPANDMACRO WRITEBEGIN}
-    ReplaceItem := FAllowDefaultElements or not ItemsEqual(PARAMETERNAME, DEFAULTVALUE);
     if (Index < 0) or (Index >= FSize) then
       raise EJclOutOfBoundsError.Create;
+    ReplaceItem := FAllowDefaultElements or not ItemsEqual(PARAMETERNAME, DEFAULTVALUE);
     if ReplaceItem then
     begin
       if FDuplicates <> dupAccept then
@@ -575,6 +589,6 @@ begin
       Last := FSize - 1;
     Result := CreateEmptyContainer as LISTINTERFACENAME;
     for I := First to Last do
-      Result.Add(Items[I]);
+      Result.Add(FItems[I]);
   {$JPPEXPANDMACRO READEND}
 end;*)
