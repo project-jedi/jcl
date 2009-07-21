@@ -2,7 +2,7 @@
 		<PropertyGroup>
 			<ProjectGuid>%GUID%</ProjectGuid>
 			<MainSource>%NAME%%SOURCEEXTENSION%</MainSource>
-			<ProjectVersion>12</ProjectVersion>
+			<ProjectVersion>12.0</ProjectVersion>
 			<Config Condition="'$(Config)'==''">Release</Config>
 			<DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
 			<DCC_Define>%DEFINES%</DCC_Define>
@@ -80,49 +80,48 @@
 		</ItemGroup>
 		<Import Project="$(BDS)\Bin\CodeGear.Delphi.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Delphi.Targets')"/>
 		<ProjectExtensions>
-			<Borland.Personality>Delphi.Personality</Borland.Personality>
+			<Borland.Personality>Delphi.Personality.12</Borland.Personality>
 			<Borland.ProjectType>Package</Borland.ProjectType>
 			<Borland.PersonalityVersion>1.0</Borland.PersonalityVersion>
 			<BorlandProject>
-				<BorlandProject>
-					<Delphi.Personality>
-						<Parameters>
-							<Parameters Name="UseLauncher">False</Parameters>
-							<Parameters Name="LoadAllSymbols">True</Parameters>
-							<Parameters Name="LoadUnspecifiedSymbols">False</Parameters>
-						</Parameters>
-						<VersionInfo>
-							<VersionInfo Name="IncludeVerInfo">True</VersionInfo>
-							<VersionInfo Name="AutoIncBuild">False</VersionInfo>
-							<VersionInfo Name="MajorVer">%VERSION_MAJOR_NUMBER%</VersionInfo>
-							<VersionInfo Name="MinorVer">%VERSION_MINOR_NUMBER%</VersionInfo>
-							<VersionInfo Name="Release">%RELEASE_NUMBER%</VersionInfo>
-							<VersionInfo Name="Build">%BUILD_NUMBER%</VersionInfo>
-							<VersionInfo Name="Debug">False</VersionInfo>
-							<VersionInfo Name="PreRelease">False</VersionInfo>
-							<VersionInfo Name="Special">False</VersionInfo>
-							<VersionInfo Name="Private">False</VersionInfo>
-							<VersionInfo Name="DLL">False</VersionInfo>
-							<VersionInfo Name="Locale">1031</VersionInfo>
-							<VersionInfo Name="CodePage">1252</VersionInfo>
-						</VersionInfo>
-						<VersionInfoKeys>
-							<VersionInfoKeys Name="CompanyName">Project JEDI</VersionInfoKeys>
-							<VersionInfoKeys Name="FileDescription">%DESCRIPTION%</VersionInfoKeys>
-							<VersionInfoKeys Name="FileVersion">%VERSION_MAJOR_NUMBER%.%VERSION_MINOR_NUMBER%.%RELEASE_NUMBER%.%BUILD_NUMBER%</VersionInfoKeys>
-							<VersionInfoKeys Name="InternalName">%NAME%</VersionInfoKeys>
-							<VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2009 Project JEDI</VersionInfoKeys>
-							<VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
-							<VersionInfoKeys Name="OriginalFilename">%NAME%120%BINEXTENSION%</VersionInfoKeys>
-							<VersionInfoKeys Name="ProductName">JEDI Code Library</VersionInfoKeys>
-							<VersionInfoKeys Name="ProductVersion">%VERSION_MAJOR_NUMBER%.%VERSION_MINOR_NUMBER% Build %BUILD_NUMBER%</VersionInfoKeys>
-						</VersionInfoKeys>
-						<Source>
-							<Source Name="MainSource">%NAME%%SOURCEEXTENSION%</Source>
-						</Source>
-						<Excluded_Packages/>
-					</Delphi.Personality>
-				</BorlandProject>
+				<Delphi.Personality>
+					<Parameters>
+						<Parameters Name="UseLauncher">False</Parameters>
+						<Parameters Name="LoadAllSymbols">True</Parameters>
+						<Parameters Name="LoadUnspecifiedSymbols">False</Parameters>
+					</Parameters>
+					<VersionInfo>
+						<VersionInfo Name="IncludeVerInfo">True</VersionInfo>
+						<VersionInfo Name="AutoIncBuild">False</VersionInfo>
+						<VersionInfo Name="MajorVer">%VERSION_MAJOR_NUMBER%</VersionInfo>
+						<VersionInfo Name="MinorVer">%VERSION_MINOR_NUMBER%</VersionInfo>
+						<VersionInfo Name="Release">%RELEASE_NUMBER%</VersionInfo>
+						<VersionInfo Name="Build">%BUILD_NUMBER%</VersionInfo>
+						<VersionInfo Name="Debug">False</VersionInfo>
+						<VersionInfo Name="PreRelease">False</VersionInfo>
+						<VersionInfo Name="Special">False</VersionInfo>
+						<VersionInfo Name="Private">False</VersionInfo>
+						<VersionInfo Name="DLL">False</VersionInfo>
+						<VersionInfo Name="Locale">1031</VersionInfo>
+						<VersionInfo Name="CodePage">1252</VersionInfo>
+					</VersionInfo>
+					<VersionInfoKeys>
+						<VersionInfoKeys Name="CompanyName">Project JEDI</VersionInfoKeys>
+						<VersionInfoKeys Name="FileDescription">%DESCRIPTION%</VersionInfoKeys>
+						<VersionInfoKeys Name="FileVersion">%VERSION_MAJOR_NUMBER%.%VERSION_MINOR_NUMBER%.%RELEASE_NUMBER%.%BUILD_NUMBER%</VersionInfoKeys>
+						<VersionInfoKeys Name="InternalName">%NAME%</VersionInfoKeys>
+						<VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2009 Project JEDI</VersionInfoKeys>
+						<VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
+						<VersionInfoKeys Name="OriginalFilename">%NAME%120%BINEXTENSION%</VersionInfoKeys>
+						<VersionInfoKeys Name="ProductName">JEDI Code Library</VersionInfoKeys>
+						<VersionInfoKeys Name="ProductVersion">%VERSION_MAJOR_NUMBER%.%VERSION_MINOR_NUMBER% Build %BUILD_NUMBER%</VersionInfoKeys>
+					</VersionInfoKeys>
+					<Source>
+						<Source Name="MainSource">%NAME%%SOURCEEXTENSION%</Source>
+					</Source>
+					<Excluded_Packages/>
+				</Delphi.Personality>
 			</BorlandProject>
+			<ProjectFileVersion>12</ProjectFileVersion>
 		</ProjectExtensions>
 	</Project>

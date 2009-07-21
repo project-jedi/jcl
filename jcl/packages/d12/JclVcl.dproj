@@ -2,7 +2,7 @@
 		<PropertyGroup>
 			<ProjectGuid>{EB88BAFD-FD11-4F14-A6F6-9036D67B1F8F}</ProjectGuid>
 			<MainSource>JclVcl.dpk</MainSource>
-			<ProjectVersion>12</ProjectVersion>
+			<ProjectVersion>12.0</ProjectVersion>
 			<Config Condition="'$(Config)'==''">Release</Config>
 			<DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
 			<DCC_Define>BCB;RELEASE</DCC_Define>
@@ -85,49 +85,48 @@
 		</ItemGroup>
 		<Import Project="$(BDS)\Bin\CodeGear.Delphi.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Delphi.Targets')"/>
 		<ProjectExtensions>
-			<Borland.Personality>Delphi.Personality</Borland.Personality>
+			<Borland.Personality>Delphi.Personality.12</Borland.Personality>
 			<Borland.ProjectType>Package</Borland.ProjectType>
 			<Borland.PersonalityVersion>1.0</Borland.PersonalityVersion>
 			<BorlandProject>
-				<BorlandProject>
-					<Delphi.Personality>
-						<Parameters>
-							<Parameters Name="UseLauncher">False</Parameters>
-							<Parameters Name="LoadAllSymbols">True</Parameters>
-							<Parameters Name="LoadUnspecifiedSymbols">False</Parameters>
-						</Parameters>
-						<VersionInfo>
-							<VersionInfo Name="IncludeVerInfo">True</VersionInfo>
-							<VersionInfo Name="AutoIncBuild">False</VersionInfo>
-							<VersionInfo Name="MajorVer">2</VersionInfo>
-							<VersionInfo Name="MinorVer">0</VersionInfo>
-							<VersionInfo Name="Release">0</VersionInfo>
-							<VersionInfo Name="Build">3401</VersionInfo>
-							<VersionInfo Name="Debug">False</VersionInfo>
-							<VersionInfo Name="PreRelease">False</VersionInfo>
-							<VersionInfo Name="Special">False</VersionInfo>
-							<VersionInfo Name="Private">False</VersionInfo>
-							<VersionInfo Name="DLL">False</VersionInfo>
-							<VersionInfo Name="Locale">1031</VersionInfo>
-							<VersionInfo Name="CodePage">1252</VersionInfo>
-						</VersionInfo>
-						<VersionInfoKeys>
-							<VersionInfoKeys Name="CompanyName">Project JEDI</VersionInfoKeys>
-							<VersionInfoKeys Name="FileDescription">JEDI Code Library VCL package</VersionInfoKeys>
-							<VersionInfoKeys Name="FileVersion">2.0.0.3401</VersionInfoKeys>
-							<VersionInfoKeys Name="InternalName">JclVcl</VersionInfoKeys>
-							<VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2009 Project JEDI</VersionInfoKeys>
-							<VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
-							<VersionInfoKeys Name="OriginalFilename">JclVcl120.bpl</VersionInfoKeys>
-							<VersionInfoKeys Name="ProductName">JEDI Code Library</VersionInfoKeys>
-							<VersionInfoKeys Name="ProductVersion">2.0 Build 3401</VersionInfoKeys>
-						</VersionInfoKeys>
-						<Source>
-							<Source Name="MainSource">JclVcl.dpk</Source>
-						</Source>
-						<Excluded_Packages/>
-					</Delphi.Personality>
-				</BorlandProject>
+				<Delphi.Personality>
+					<Parameters>
+						<Parameters Name="UseLauncher">False</Parameters>
+						<Parameters Name="LoadAllSymbols">True</Parameters>
+						<Parameters Name="LoadUnspecifiedSymbols">False</Parameters>
+					</Parameters>
+					<VersionInfo>
+						<VersionInfo Name="IncludeVerInfo">True</VersionInfo>
+						<VersionInfo Name="AutoIncBuild">False</VersionInfo>
+						<VersionInfo Name="MajorVer">2</VersionInfo>
+						<VersionInfo Name="MinorVer">0</VersionInfo>
+						<VersionInfo Name="Release">0</VersionInfo>
+						<VersionInfo Name="Build">3401</VersionInfo>
+						<VersionInfo Name="Debug">False</VersionInfo>
+						<VersionInfo Name="PreRelease">False</VersionInfo>
+						<VersionInfo Name="Special">False</VersionInfo>
+						<VersionInfo Name="Private">False</VersionInfo>
+						<VersionInfo Name="DLL">False</VersionInfo>
+						<VersionInfo Name="Locale">1031</VersionInfo>
+						<VersionInfo Name="CodePage">1252</VersionInfo>
+					</VersionInfo>
+					<VersionInfoKeys>
+						<VersionInfoKeys Name="CompanyName">Project JEDI</VersionInfoKeys>
+						<VersionInfoKeys Name="FileDescription">JEDI Code Library VCL package</VersionInfoKeys>
+						<VersionInfoKeys Name="FileVersion">2.0.0.3401</VersionInfoKeys>
+						<VersionInfoKeys Name="InternalName">JclVcl</VersionInfoKeys>
+						<VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2009 Project JEDI</VersionInfoKeys>
+						<VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
+						<VersionInfoKeys Name="OriginalFilename">JclVcl120.bpl</VersionInfoKeys>
+						<VersionInfoKeys Name="ProductName">JEDI Code Library</VersionInfoKeys>
+						<VersionInfoKeys Name="ProductVersion">2.0 Build 3401</VersionInfoKeys>
+					</VersionInfoKeys>
+					<Source>
+						<Source Name="MainSource">JclVcl.dpk</Source>
+					</Source>
+					<Excluded_Packages/>
+				</Delphi.Personality>
 			</BorlandProject>
+			<ProjectFileVersion>12</ProjectFileVersion>
 		</ProjectExtensions>
 	</Project>
