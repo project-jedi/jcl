@@ -763,6 +763,7 @@ begin
     JclDebugThreadList.OnSyncException := T%FORMNAME%.ExceptionThreadHandler;
     JclStartExceptionTracking;
 %if CatchMainThread    JclStackTrackingOptions := JclStackTrackingOptions + [stMainThreadOnly];%endif
+%if DisableIfDebuggerAttached    JclStackTrackingOptions := JclStackTrackingOptions + [stDisableIfDebuggerAttached];%endif
 %if HookDll    if HookTApplicationHandleException then
       JclTrackExceptionsFromLibraries;%endif
   end;

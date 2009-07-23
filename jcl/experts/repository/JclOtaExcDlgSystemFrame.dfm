@@ -56,4 +56,12 @@ inherited JclOtaExcDlgSystemPage: TJclOtaExcDlgSystemPage
     Caption = 'RsUnitVersioning'
     TabOrder = 4
   end
+  object CheckBoxDisableIfDebuggerAttached: TCheckBox
+    Left = 120
+    Top = 242
+    Width = 265
+    Height = 17
+    Caption = 'RsDisableIfDebuggerAttached'
+    TabOrder = 7
+  end
 end

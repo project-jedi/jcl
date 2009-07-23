@@ -49,6 +49,7 @@ type
     CheckBoxActiveControls: TCheckBox;
     CheckBoxCatchMainThread: TCheckBox;
     CheckBoxUnitVersioning: TCheckBox;
+    CheckBoxDisableIfDebuggerAttached: TCheckBox;
     procedure CheckBoxModuleListClick(Sender: TObject);
   private
     FParams: TJclOtaExcDlgParams;
@@ -99,6 +100,7 @@ begin
   CheckBoxOSInfo.Caption := RsOSInfo;
   CheckBoxActiveControls.Caption := RsActiveControls;
   CheckBoxCatchMainThread.Caption := RsCatchMainThread;
+  CheckBoxDisableIfDebuggerAttached.Caption := RsDisableIfDebuggerAttached;
 end;
 
 procedure TJclOtaExcDlgSystemPage.PageActivated(Direction: TJclWizardDirection);
@@ -112,6 +114,7 @@ begin
   CheckBoxOSInfo.Checked := Params.OSInfo;
   CheckBoxActiveControls.Checked := Params.ActiveControls;
   CheckBoxCatchMainThread.Checked := Params.CatchMainThread;
+  CheckBoxDisableIfDebuggerAttached.Checked := Params.DisableIfDebuggerAttached;
 end;
 
 procedure TJclOtaExcDlgSystemPage.PageDesactivated(
@@ -126,6 +129,7 @@ begin
   Params.OSInfo := CheckBoxOSInfo.Checked;
   Params.ActiveControls := CheckBoxActiveControls.Checked;
   Params.CatchMainThread := CheckBoxCatchMainThread.Checked;
+  Params.DisableIfDebuggerAttached := CheckBoxDisableIfDebuggerAttached.Checked;
 end;
 
 {$IFDEF UNITVERSIONING}

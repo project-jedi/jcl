@@ -72,6 +72,7 @@ type
     FUnitVersioning: Boolean;
     FOSInfo: Boolean;
     FActiveControls: Boolean;
+    FDisableIfDebuggerAttached: Boolean;
     FStackList: Boolean;
     FAutoScrollBars: Boolean;
     FCatchMainThread: Boolean;
@@ -107,6 +108,7 @@ type
     property UnitVersioning: Boolean read FUnitVersioning write FUnitVersioning;
     property ActiveControls: Boolean read FActiveControls write FActiveControls;
     property CatchMainThread: Boolean read FCatchMainThread write FCatchMainThread;
+    property DisableIfDebuggerAttached: Boolean read FDisableIfDebuggerAttached write FDisableIfDebuggerAttached;
     // log options
     property LogFile: Boolean read FLogFile write FLogFile;
     property LogFileName: string read FLogFileName write FLogFileName;
@@ -181,6 +183,7 @@ begin
   FUnitVersioning := True;
   FOSInfo := True;
   FActiveControls := True;
+  FDisableIfDebuggerAttached := False;
   FStackList := True;
   FAutoScrollBars := True;
   FCatchMainThread := False;

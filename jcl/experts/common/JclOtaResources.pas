@@ -158,6 +158,7 @@ resourcestring
   RsOSInfo = '&Operating system informations';
   RsActiveControls = '&List of active controls';
   RsCatchMainThread = '&Catch only exceptions of main thread';
+  RsDisableIfDebuggerAttached = 'Disable if the debu&gger is attached';
 
 //=== JclOtaExcDlgLogFrame.pas ===============================================
 resourcestring
