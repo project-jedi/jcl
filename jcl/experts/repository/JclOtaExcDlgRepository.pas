@@ -77,10 +77,17 @@ type
     FAutoScrollBars: Boolean;
     FCatchMainThread: Boolean;
     FAllThreads: Boolean;
+    FAllRegisteredThreads: Boolean;
+    FMainExceptionThreads: Boolean;
+    FExceptionThread: Boolean;
+    FMainThread: Boolean;
     FTraceEAbort: Boolean;
     FIgnoredExceptions: TStrings;
     FTraceAllExceptions: Boolean;
     function GetIgnoredExceptionsCount: Integer;
+    function GetReportAllThreads: Boolean;
+    function GetReportExceptionThread: Boolean;
+    function GetReportMainThread: Boolean;
   public
     constructor Create; reintroduce;
     destructor Destroy; override; 
@@ -127,7 +134,16 @@ type
     property RawData: Boolean read FRawData write FRawData;
     property ModuleName: Boolean read FModuleName write FModuleName;
     property ModuleOffset: Boolean read FModuleOffset write FModuleOffset;
+    // thread options (mutually exclusives)
     property AllThreads: Boolean read FAllThreads write FAllThreads;
+    property AllRegisterThreads: Boolean read FAllRegisteredThreads write FAllRegisteredThreads;
+    property MainExceptionThreads: Boolean read FMainExceptionThreads write FMainExceptionThreads;
+    property ExceptionThread: Boolean read FExceptionThread write FExceptionThread;
+    property MainThread: Boolean read FMainThread write FMainThread;
+    // composite properties
+    property ReportMainThread: Boolean read GetReportMainThread;
+    property ReportAllThreads: Boolean read GetReportAllThreads;
+    property ReportExceptionThread: Boolean read GetReportExceptionThread; 
     //property AddressOffset: Boolean read FAddressOffset write FAddressOffset;
     property CodeDetails: Boolean read FCodeDetails write FCodeDetails;
     property VirtualAddress: Boolean read FVirtualAddress write FVirtualAddress;
@@ -190,6 +206,11 @@ begin
   FTraceEAbort := False;
   FTraceAllExceptions := False;
   FIgnoredExceptions := TStringList.Create;
+  FAllThreads := True;
+  FAllRegisteredThreads := False;
+  FMainExceptionThreads := False;
+  FExceptionThread := False;
+  FMainThread := False;
 end;
 
 destructor TJclOtaExcDlgParams.Destroy;
@@ -201,6 +222,21 @@ end;
 function TJclOtaExcDlgParams.GetIgnoredExceptionsCount: Integer;
 begin
   Result := FIgnoredExceptions.Count;
+end;
+
+function TJclOtaExcDlgParams.GetReportAllThreads: Boolean;
+begin
+  Result := FAllThreads or FAllRegisteredThreads;
+end;
+
+function TJclOtaExcDlgParams.GetReportExceptionThread: Boolean;
+begin
+  Result := FExceptionThread or FMainExceptionThreads;
+end;
+
+function TJclOtaExcDlgParams.GetReportMainThread: Boolean;
+begin
+  Result := FMainThread or FMainExceptionThreads or FAllThreads or FAllRegisteredThreads;
 end;
 
 {$IFDEF UNITVERSIONING}

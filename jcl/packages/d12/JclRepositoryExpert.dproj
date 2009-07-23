@@ -74,6 +74,7 @@
 			<DCCReference Include="..\..\experts\repository\JclOtaExcDlgSystemFrame.pas" />
 			<DCCReference Include="..\..\experts\repository\JclOtaExcDlgLogFrame.pas" />
 			<DCCReference Include="..\..\experts\repository\JclOtaExcDlgTraceFrame.pas" />
+			<DCCReference Include="..\..\experts\repository\JclOtaExcDlgThreadFrame.pas" />
 			<DCCReference Include="..\..\experts\repository\JclOtaExcDlgIgnoreFrame.pas" />
 			<DCCReference Include="..\..\experts\repository\JclOtaRepositoryReg.pas" />
 			<BuildConfiguration Include="Base">

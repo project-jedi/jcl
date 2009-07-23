@@ -10,7 +10,7 @@
 { ANY KIND, either express or implied. See the License for the specific language governing rights  }
 { and limitations under the License.                                                               }
 {                                                                                                  }
-{ The Original Code is JclOtaExcDlgTraceFrame.pas.                                                 }
+{ The Original Code is JclOtaExcDlgThreadFrame.pas.                                                }
 {                                                                                                  }
 { The Initial Developer of the Original Code is Florent Ouchet                                     }
 {         <outchy att users dott sourceforge dott net>                                             }
@@ -26,7 +26,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-unit JclOtaExcDlgTraceFrame;
+unit JclOtaExcDlgThreadFrame;
 
 interface
 
@@ -41,28 +41,39 @@ uses
   JclOtaExcDlgRepository, JclOtaWizardFrame;
 
 type
-  TJclOtaExcDlgTracePage = class(TJclWizardFrame)
-    CheckBoxRawData: TCheckBox;
-    CheckBoxModuleName: TCheckBox;
-    CheckBoxCodeDetails: TCheckBox;
-    CheckBoxVirtualAddress: TCheckBox;
-    CheckBoxModuleOffset: TCheckBox;
+  TJclOtaExcDlgThreadPage = class(TJclWizardFrame)
     MemoStack: TMemo;
     LabelPreview: TLabel;
     CheckBoxStackList: TCheckBox;
-    procedure CheckBoxClick(Sender: TObject);
+    RadioButtonAllThreads: TRadioButton;
+    RadioButtonAllRegisteredThreads: TRadioButton;
+    RadioButtonMainExceptionThreads: TRadioButton;
+    RadioButtonExceptionThread: TRadioButton;
+    RadioButtonMainThread: TRadioButton;
+    procedure RadioButtonClick(Sender: TObject);
     procedure CheckBoxStackListClick(Sender: TObject);
   private
     FParams: TJclOtaExcDlgParams;
+    FTestThread: TJclDebugThread;
     procedure UpdatePreview;
     procedure UpdateCheckBoxes;
   public
     constructor Create(AOwner: TComponent; AParams: TJclOtaExcDlgParams); reintroduce;
+    destructor Destroy; override;
 
     procedure PageActivated(Direction: TJclWizardDirection); override;
     procedure PageDesactivated(Direction: TJclWizardDirection); override;
 
     property Params: TJclOtaExcDlgParams read FParams write FParams;
+  end;
+
+  // in interface to be exported and have basic debug informations based on exports
+  TTestThread = class(TJclDebugThread)
+  private
+    procedure ExecuteTask;
+    procedure ExecuteSubTask;
+  protected
+    procedure Execute; override;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -82,89 +93,134 @@ implementation
 uses
   JclOtaResources;
 
-//=== { TJclOtaExcDlgTracePage } =============================================
+//=== { TTestThread } ========================================================
 
-procedure TJclOtaExcDlgTracePage.CheckBoxClick(Sender: TObject);
+{$W+}
+
+procedure TTestThread.Execute;
+begin
+  ExecuteTask;
+end;
+
+{$IFNDEF STACKFRAMES_ON}
+{$W-}
+{$ENDIF ~STACKFRAMES_ON}
+
+procedure TTestThread.ExecuteTask;
+begin
+  ExecuteSubTask;
+end;
+
+procedure TTestThread.ExecuteSubTask;
+begin
+  while not Terminated do
+    Sleep(100);
+end;
+
+//=== { TJclOtaExcDlgThreadPage } ============================================
+
+procedure TJclOtaExcDlgThreadPage.RadioButtonClick(Sender: TObject);
 begin
   UpdatePreview;
 end;
 
-procedure TJclOtaExcDlgTracePage.CheckBoxStackListClick(Sender: TObject);
+procedure TJclOtaExcDlgThreadPage.CheckBoxStackListClick(Sender: TObject);
 begin
   UpdateCheckBoxes;
 end;
 
-constructor TJclOtaExcDlgTracePage.Create(AOwner: TComponent;
+constructor TJclOtaExcDlgThreadPage.Create(AOwner: TComponent;
   AParams: TJclOtaExcDlgParams);
 begin
   FParams := AParams;
   inherited Create(AOwner);
+  FTestThread := TTestThread.Create(False, 'MyTaskThread');
 
-  Caption := RsExcDlgTraceOptions;
+  Caption := RsExcDlgThreadOptions;
   CheckBoxStackList.Caption := RsStackList;
-  CheckBoxRawData.Caption := RsRawData;
-  CheckBoxModuleName.Caption := RsModuleName;
-//  CheckBoxAddressOffset.Caption := RsAddressOffset;
-  CheckBoxCodeDetails.Caption := RsCodeDetails;
-  CheckBoxVirtualAddress.Caption := RsVirtualAddress;
-  CheckBoxModuleOffset.Caption := RsModuleOffset;
   LabelPreview.Caption := RsPreview;
+  RadioButtonAllThreads.Caption := RsAllThreads;
+  RadioButtonAllRegisteredThreads.Caption := RsAllRegisteredThreads;
+  RadioButtonMainExceptionThreads.Caption := RsMainExceptionThreads;
+  RadioButtonExceptionThread.Caption := RsExceptionThread;
+  RadioButtonMainThread.Caption := RsMainThread;
 end;
 
-procedure TJclOtaExcDlgTracePage.PageActivated(Direction: TJclWizardDirection);
+destructor TJclOtaExcDlgThreadPage.Destroy;
+begin
+  FTestThread.Free;
+  inherited Destroy;
+end;
+
+procedure TJclOtaExcDlgThreadPage.PageActivated(Direction: TJclWizardDirection);
 begin
   inherited PageActivated(Direction);
 
   CheckBoxStackList.Checked := Params.StackList;
-  CheckBoxRawData.Checked := Params.RawData;
-  CheckBoxModuleName.Checked := Params.ModuleName;
-//  CheckBoxAddressOffset.Checked := Params.AddressOffset;
-  CheckBoxCodeDetails.Checked := Params.CodeDetails;
-  CheckBoxVirtualAddress.Checked := Params.VirtualAddress;
-  CheckBoxModuleOffset.Checked := Params.ModuleOffset;
+  RadioButtonAllThreads.Checked := Params.AllThreads;
+  RadioButtonAllRegisteredThreads.Checked := Params.AllRegisterThreads;
+  RadioButtonMainExceptionThreads.Checked := Params.MainExceptionThreads;
+  RadioButtonExceptionThread.Checked := Params.ExceptionThread;
+  RadioButtonMainThread.Checked := Params.MainThread;
 
   UpdateCheckBoxes;
 end;
 
-procedure TJclOtaExcDlgTracePage.PageDesactivated(
+procedure TJclOtaExcDlgThreadPage.PageDesactivated(
   Direction: TJclWizardDirection);
 begin
   inherited PageDesactivated(Direction);
 
   Params.StackList := CheckBoxStackList.Checked;
-  Params.RawData := CheckBoxRawData.Checked;
-  Params.ModuleName := CheckBoxModuleName.Checked;
-//  Params.AddressOffset := CheckBoxAddressOffset.Checked;
-  Params.CodeDetails := CheckBoxCodeDetails.Checked;
-  Params.VirtualAddress := CheckBoxVirtualAddress.Checked;
-  Params.ModuleOffset := CheckBoxModuleOffset.Checked;
+  Params.AllThreads := RadioButtonAllThreads.Checked;
+  Params.AllRegisterThreads := RadioButtonAllRegisteredThreads.Checked;
+  Params.MainExceptionThreads := RadioButtonMainExceptionThreads.Checked;
+  Params.ExceptionThread := RadioButtonExceptionThread.Checked;
+  Params.MainThread := RadioButtonMainThread.Checked;
 end;
 
-procedure TJclOtaExcDlgTracePage.UpdateCheckBoxes;
+procedure TJclOtaExcDlgThreadPage.UpdateCheckBoxes;
 var
   AEnabled: Boolean;
 begin
   AEnabled := CheckBoxStackList.Enabled;
 
-  CheckBoxRawData.Enabled := AEnabled;
-  CheckBoxModuleName.Enabled := AEnabled;
-  CheckBoxCodeDetails.Enabled := AEnabled;
-  CheckBoxVirtualAddress.Enabled := AEnabled;
-  CheckBoxModuleOffset.Enabled := AEnabled;
+  RadioButtonAllThreads.Enabled := AEnabled;
 end;
 
-procedure TJclOtaExcDlgTracePage.UpdatePreview;
+procedure TJclOtaExcDlgThreadPage.UpdatePreview;
 var
   AStack: TJclStackInfoList;
+  Index: Integer;
+  ThreadID: DWORD;
 begin
   MemoStack.Lines.Clear;
-  
-  AStack := TJclStackInfoList.Create(CheckBoxRawData.Checked, 0, nil, False);
-  try
-    AStack.AddToStrings(MemoStack.Lines, CheckBoxModuleName.Checked,
-      CheckBoxModuleOffset.Checked, CheckBoxCodeDetails.Checked, CheckBoxVirtualAddress.Checked);
-  finally
-    AStack.Free;
+
+  if RadioButtonAllThreads.Checked or RadioButtonAllRegisteredThreads.Checked or RadioButtonMainExceptionThreads.Checked then
+    MemoStack.Lines.Add('Main thread stack trace');
+
+  if RadioButtonAllThreads.Checked or RadioButtonAllRegisteredThreads.Checked or RadioButtonMainExceptionThreads.Checked or RadioButtonMainThread.Checked then
+  begin
+    AStack := TJclStackInfoList.Create(Params.RawData, 0, nil, False);
+    try
+      AStack.AddToStrings(MemoStack.Lines, Params.ModuleName, Params.ModuleOffset, Params.CodeDetails, Params.VirtualAddress);
+    finally
+      AStack.Free;
+    end;
+  end;
+
+  if RadioButtonAllThreads.Checked or RadioButtonAllRegisteredThreads.Checked or RadioButtonMainExceptionThreads.Checked or RadioButtonExceptionThread.Checked then
+    for Index := 0 to JclDebugThreadList.ThreadIDCount - 1 do
+  begin
+    ThreadID := JclDebugThreadList.ThreadIDs[Index];
+    MemoStack.Lines.Add('');
+    MemoStack.Lines.Add(Format('Stack trace for thread: "%s"', [JclDebugThreadList.ThreadNames[ThreadID]]));
+    AStack := JclCreateThreadStackTrace(Params.RawData, JclDebugThreadList.ThreadHandles[Index]);
+    try
+      AStack.AddToStrings(MemoStack.Lines, Params.ModuleName, Params.ModuleOffset, Params.CodeDetails, Params.VirtualAddress);
+    finally
+      AStack.Free;
+    end;
   end;
 end;
 

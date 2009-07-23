@@ -71,7 +71,8 @@ uses
   JclOtaResources, 
   JclOtaExcDlgFileFrame, JclOtaExcDlgFormFrame,
   JclOtaExcDlgSystemFrame, JclOtaExcDlgLogFrame,
-  JclOtaExcDlgTraceFrame, JclOtaExcDlgIgnoreFrame;
+  JclOtaExcDlgTraceFrame, JclOtaExcDlgThreadFrame,
+  JclOtaExcDlgIgnoreFrame;
 
 function ExcDlgWizard(var AParams: TJclOtaExcDlgParams): Boolean;
 var
@@ -119,6 +120,7 @@ begin
   AddPage(TJclOtaExcDlgLogPage.Create(Self, Params));
   AddPage(TJclOtaExcDlgIgnorePage.Create(Self, Params));
   AddPage(TJclOtaExcDlgTracePage.Create(Self, Params));
+  AddPage(TJclOtaExcDlgThreadPage.Create(Self, Params));
 end;
 
 {$IFDEF UNITVERSIONING}

@@ -2,7 +2,7 @@ inherited JclOtaExcDlgTracePage: TJclOtaExcDlgTracePage
   object LabelPreview: TLabel
     Left = 303
     Top = 7
-    Width = 51
+    Width = 50
     Height = 13
     Caption = 'RsPreview'
   end
@@ -17,7 +17,7 @@ inherited JclOtaExcDlgTracePage: TJclOtaExcDlgTracePage
   end
   object CheckBoxModuleName: TCheckBox
     Left = 56
-    Top = 95
+    Top = 87
     Width = 233
     Height = 17
     Caption = 'RsModuleName'
@@ -26,7 +26,7 @@ inherited JclOtaExcDlgTracePage: TJclOtaExcDlgTracePage
   end
   object CheckBoxCodeDetails: TCheckBox
     Left = 56
-    Top = 175
+    Top = 147
     Width = 233
     Height = 17
     Caption = 'RsCodeDetails'
@@ -35,7 +35,7 @@ inherited JclOtaExcDlgTracePage: TJclOtaExcDlgTracePage
   end
   object CheckBoxVirtualAddress: TCheckBox
     Left = 56
-    Top = 214
+    Top = 177
     Width = 233
     Height = 17
     Caption = 'RsVirtualAddress'
@@ -44,7 +44,7 @@ inherited JclOtaExcDlgTracePage: TJclOtaExcDlgTracePage
   end
   object CheckBoxModuleOffset: TCheckBox
     Left = 56
-    Top = 136
+    Top = 117
     Width = 233
     Height = 17
     Caption = 'RsModuleOffset'
@@ -59,7 +59,7 @@ inherited JclOtaExcDlgTracePage: TJclOtaExcDlgTracePage
     ParentColor = True
     ReadOnly = True
     ScrollBars = ssBoth
-    TabOrder = 7
+    TabOrder = 6
     WordWrap = False
   end
   object CheckBoxStackList: TCheckBox
@@ -70,14 +70,5 @@ inherited JclOtaExcDlgTracePage: TJclOtaExcDlgTracePage
     Caption = 'RsStackList'
     TabOrder = 0
     OnClick = CheckBoxStackListClick
-  end
-  object CheckBoxAllThreads: TCheckBox
-    Left = 56
-    Top = 248
-    Width = 233
-    Height = 17
-    Caption = 'RsAllThreads'
-    TabOrder = 6
-    OnClick = CheckBoxClick
   end
 end

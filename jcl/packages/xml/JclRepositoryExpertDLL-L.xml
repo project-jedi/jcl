@@ -27,6 +27,7 @@
     <File Name="..\..\experts\repository\JclOtaExcDlgSystemFrame.pas" Targets="Windows" Formname="JclOtaExcDlgSystemPage: TFrame" Condition=""/>
     <File Name="..\..\experts\repository\JclOtaExcDlgLogFrame.pas" Targets="Windows" Formname="JclOtaExcDlgLogPage: TFrame" Condition=""/>
     <File Name="..\..\experts\repository\JclOtaExcDlgTraceFrame.pas" Targets="Windows" Formname="JclOtaExcDlgTracePage: TFrame" Condition=""/>
+    <File Name="..\..\experts\repository\JclOtaExcDlgThreadFrame.pas" Targets="Windows" Formname="JclOtaExcDlgThreadPage: TFrame" Condition=""/>
     <File Name="..\..\experts\repository\JclOtaExcDlgIgnoreFrame.pas" Targets="Windows" Formname="JclOtaExcDlgIgnorePage: TFrame" Condition=""/>
     <File Name="..\..\experts\repository\JclOtaRepositoryReg.pas" Targets="Windows" Formname="" Condition=""/>
   </Contains>

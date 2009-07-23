@@ -180,7 +180,15 @@ resourcestring
   RsVirtualAddress = '&Virtual address';
   RsModuleOffset = 'Module &offset';
   RsPreview = '&Preview:';
-  RsAllThreads = 'Include traces for registered &threads';
+
+//=== JclOtaExcDlgThreadFrame.pas ============================================
+resourcestring
+  RsExcDlgThreadOptions = 'thread options';
+  RsAllThreads = 'Traces for &all threads';
+  RsAllRegisteredThreads = 'Traces for &registered threads';
+  RsMainExceptionThreads = 'Traces for main a&nd exception threads';
+  RsExceptionThread = 'Trace for &exception thread';
+  RsMainThread = 'Trace for &main thread';
 
 //=== JclOtaExcDlgIgnoreFrame.pas ============================================
 resourcestring

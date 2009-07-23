@@ -110,8 +110,12 @@ resourcestring
   RsActiveControl = 'Active Controls hierarchy:';
   RsThread = 'Thread: %s';
   RsMissingVersionInfo = '(no module version info)';
-%if AllThreads  RsMainThreadCallStack = 'Call stack for main thread';
-  RsThreadCallStack = 'Call stack for thread %s';%endif
+  RsExceptionStack = 'Exception stack';
+  RsMainThreadID = 'Main thread ID = %d';
+  RsExceptionThreadID = 'Exception thread ID = %d';
+  RsMainThreadCallStack = 'Call stack for main thread';
+  RsThreadCallStack = 'Call stack for thread %d %s "%s"';
+  RsExceptionThreadCallStack = 'Call stack for exception thread %s';
   RsErrorMessage = 'There was an error during the execution of this program.' + NativeLineBreak +
                    'The application might become unstable and even useless.' + NativeLineBreak +
                    'It''s recommended that you save your work and close this application.' + NativeLineBreak + NativeLineBreak;
@@ -334,7 +338,7 @@ var
 %if OSInfo  CpuInfo: TCpuInfo;
   ProcessorDetails: string;%endif
 %if StackList  StackList: TJclStackInfoList;
-%if AllThreads  ThreadList: TJclDebugThreadList;
+%if ReportAllThreads  ThreadList: TJclDebugThreadList;
   AThreadID: DWORD;%endif %endif
   PETarget: TJclPeTarget;
 %if UnitVersioning  UnitVersioning: TUnitVersioning;
@@ -342,29 +346,44 @@ var
   UnitVersion: TUnitVersion;
   ModuleIndex, UnitIndex: Integer;%endif
 begin
+  DetailsMemo.Lines.Add(Format(RsMainThreadID, [MainThreadID]));
+  DetailsMemo.Lines.Add(Format(RsExceptionThreadID, [MainThreadID]));
+  NextDetailBlock;
+
   SL := TStringList.Create;
   try
-%if StackList    // Stack list
+%if StackList    // Except stack list
     StackList := JclGetExceptStackList(FThreadID);
     if Assigned(StackList) then
     begin
+      DetailsMemo.Lines.Add(RsExceptionStack);
       DetailsMemo.Lines.Add(Format(RsStackList, [DateTimeToStr(StackList.TimeStamp)]));
       StackList.AddToStrings(DetailsMemo.Lines, %BoolValue ModuleName, %BoolValue ModuleOffset, %BoolValue CodeDetails, %BoolValue VirtualAddress);
       NextDetailBlock;
     end;
-%if AllThreads    // Main thread
-    if FThreadID <> MainThreadID then
+
+%if ReportMainThread    // Main thread
+    StackList := JclCreateThreadStackTraceFromID(%BoolValue RawData, MainThreadID);
+    if Assigned(StackList) then
     begin
-      StackList := JclCreateThreadStackTraceFromID(%BoolValue RawData, MainThreadID);
+      DetailsMemo.Lines.Add(RsMainThreadCallStack);
+      DetailsMemo.Lines.Add(Format(RsStackList, [DateTimeToStr(StackList.TimeStamp)]));
+      StackList.AddToStrings(DetailsMemo.Lines, %BoolValue ModuleName, %BoolValue ModuleOffset, %BoolValue CodeDetails, %BoolValue VirtualAddress);
+      NextDetailBlock;
+    end;%endif
+%if ReportExceptionThread    // Exception thread
+    if MainThreadID <> FThreadID then
+    begin
+      StackList := JclCreateThreadStackTraceFromID(%BoolValue RawData, FThreadID);
       if Assigned(StackList) then
       begin
-        DetailsMemo.Lines.Add(RsMainThreadCallStack);
+        DetailsMemo.Lines.Add(Format(RsExceptionThreadCallStack, [FThreadID]));
         DetailsMemo.Lines.Add(Format(RsStackList, [DateTimeToStr(StackList.TimeStamp)]));
         StackList.AddToStrings(DetailsMemo.Lines, %BoolValue ModuleName, %BoolValue ModuleOffset, %BoolValue CodeDetails, %BoolValue VirtualAddress);
         NextDetailBlock;
       end;
-    end;
-    // All threads
+    end;%endif
+%if ReportAllThreads    // All threads
     ThreadList := JclDebugThreadList;
     ThreadList.Lock.Enter; // avoid modifications
     try
@@ -376,7 +395,7 @@ begin
           StackList := JclCreateThreadStackTrace(%BoolValue RawData, ThreadList.ThreadHandles[I]);
           if Assigned(StackList) then
           begin
-            DetailsMemo.Lines.Add(Format(RsThreadCallStack, [ThreadList.ThreadInfos[AThreadID]]));
+            DetailsMemo.Lines.Add(Format(RsThreadCallStack, [AThreadID, ThreadList.ThreadInfos[AThreadID], ThreadList.ThreadNames[AThreadID]]));
             DetailsMemo.Lines.Add(Format(RsStackList, [DateTimeToStr(StackList.TimeStamp)]));
             StackList.AddToStrings(DetailsMemo.Lines, %BoolValue ModuleName, %BoolValue ModuleOffset, %BoolValue CodeDetails, %BoolValue VirtualAddress);
             NextDetailBlock;
@@ -385,8 +404,7 @@ begin
       end;
     finally
       ThreadList.Lock.Leave;
-    end;
-%endif
+    end;%endif
 %endif
 
 %if OSInfo    // System and OS information
@@ -761,6 +779,7 @@ begin
 %if HookDll    JclStackTrackingOptions := JclStackTrackingOptions + [stStaticModuleList];%endif
 %if DelayedTrace    JclStackTrackingOptions := JclStackTrackingOptions + [stDelayedTrace];%endif
     JclDebugThreadList.OnSyncException := T%FORMNAME%.ExceptionThreadHandler;
+%if AllThreads    JclHookThreads;%endif
     JclStartExceptionTracking;
 %if CatchMainThread    JclStackTrackingOptions := JclStackTrackingOptions + [stMainThreadOnly];%endif
 %if DisableIfDebuggerAttached    JclStackTrackingOptions := JclStackTrackingOptions + [stDisableIfDebuggerAttached];%endif
@@ -779,6 +798,7 @@ begin
     JclDebugThreadList.OnSyncException := nil;
     JclUnhookExceptions;
     JclStopExceptionTracking;
+%if AllThreads    JclUnhookThreads;%endif
   end;
 end;
 
