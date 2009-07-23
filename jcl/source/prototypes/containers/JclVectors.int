@@ -43,7 +43,8 @@
     procedure SETTERNAME(Index: Integer; CONSTKEYWORDPARAMETERNAME: TYPENAME);
     function SubList(First, Count: Integer): LISTINTERFACENAME;
   public
-    constructor Create(ACapacity: IntegerOWNERSHIPDECLARATION);
+    constructor Create(ACapacity: IntegerOWNERSHIPDECLARATION); overload;
+    constructor Create(const ACollection: COLLECTIONINTERFACENAMEOWNERSHIPDECLARATION); overload;
     destructor Destroy; override;
     property Items: DYNARRAYTYPE read FItems;
   end;*)
@@ -78,5 +79,5 @@
     property Current: TYPENAME read GETTERNAME;
     {$ENDIF SUPPORTS_FOR_IN}
   public
-    constructor Create(const OwnList: LISTINTERFACENAME; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
+    constructor Create(const AOwnList: LISTINTERFACENAME; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
   end;*)
