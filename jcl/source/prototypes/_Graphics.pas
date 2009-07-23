@@ -2388,7 +2388,7 @@ begin
   if FHandle = 0 then
   begin
     if FOwnsHandle then
-      raise EJclWin32Error.CreateRes(@RsRegionCouldNotCreated)
+      raise EJclGraphicsError.CreateRes(@RsRegionCouldNotCreated)
     else
       raise EJclGraphicsError.CreateRes(@RsInvalidHandleForRegion);
   end;

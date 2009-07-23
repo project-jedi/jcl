@@ -48,7 +48,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$IFDEF MSWINDOWS}
-  Windows,
+  Windows, JclWin32,
   {$ENDIF MSWINDOWS}
   JclBase;
 
@@ -331,7 +331,7 @@ implementation
 
 uses
   SysUtils,
-  JclLogic, JclWin32, JclRegistry, JclResources,
+  JclLogic, JclRegistry, JclResources,
   JclSysInfo, JclStrings;
 
 const

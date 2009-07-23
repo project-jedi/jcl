@@ -75,7 +75,7 @@ uses
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
   {$IFDEF Win32API}
-  Windows,
+  Windows, JclWin32,
   {$ENDIF Win32API}
   Classes, SysUtils,
   JclBase;
@@ -1051,7 +1051,7 @@ uses
   {$ELSE ~FPC}
   ActiveX, ComObj, ShlObj, JclShell,
   {$ENDIF ~FPC}
-  JclSysInfo, JclWin32, JclSecurity,
+  JclSysInfo, JclSecurity,
   {$ENDIF Win32API}
   JclSysUtils, JclDateTime, JclResources,
   JclStrings;

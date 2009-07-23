@@ -103,6 +103,21 @@ uses
 {$HPPEMIT '#include <ntsecapi.h>'}
 {$HPPEMIT ''}
 
+// EJclWin32Error
+type
+  EJclWin32Error = class(EJclError)
+  private
+    FLastError: DWORD;
+    FLastErrorMsg: string;
+  public
+    constructor Create(const Msg: string);
+    constructor CreateFmt(const Msg: string; const Args: array of const);
+    constructor CreateRes(Ident: Integer); overload;
+    constructor CreateRes(ResStringRec: PResStringRec); overload;
+    property LastError: DWORD read FLastError;
+    property LastErrorMsg: string read FLastErrorMsg;
+  end;
+
 type
 
 //
@@ -7418,6 +7433,42 @@ begin
       raise EJclError.CreateResFmt(@RsEFunctionNotFound, [ModuleName, ProcName]);
   end;
 end;
+
+//== { EJclWin32Error } ======================================================
+
+
+constructor EJclWin32Error.Create(const Msg: string);
+begin
+  FLastError := GetLastError;
+  FLastErrorMsg := SysErrorMessage(FLastError);
+  inherited CreateFmt(Msg + NativeLineBreak + RsWin32Prefix, [FLastErrorMsg, FLastError]);
+end;
+
+constructor EJclWin32Error.CreateFmt(const Msg: string; const Args: array of const);
+begin
+  FLastError := GetLastError;
+  FLastErrorMsg := SysErrorMessage(FLastError);
+  inherited CreateFmt(Msg + NativeLineBreak + Format(RsWin32Prefix, [FLastErrorMsg, FLastError]), Args);
+end;
+
+constructor EJclWin32Error.CreateRes(Ident: Integer);
+begin
+  FLastError := GetLastError;
+  FLastErrorMsg := SysErrorMessage(FLastError);
+  inherited CreateFmt(LoadStr(Ident) + NativeLineBreak + RsWin32Prefix, [FLastErrorMsg, FLastError]);
+end;
+
+constructor EJclWin32Error.CreateRes(ResStringRec: PResStringRec);
+begin
+  FLastError := GetLastError;
+  FLastErrorMsg := SysErrorMessage(FLastError);
+  {$IFDEF FPC}
+  inherited CreateFmt(ResStringRec^ + AnsiLineBreak + RsWin32Prefix, [FLastErrorMsg, FLastError]);
+  {$ELSE ~FPC}
+  inherited CreateFmt(LoadResString(ResStringRec) + NativeLineBreak + RsWin32Prefix, [FLastErrorMsg, FLastError]);
+  {$ENDIF ~FPC}
+end;
+
 
 
 const

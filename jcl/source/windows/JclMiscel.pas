@@ -46,7 +46,9 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows,
+  {$IFDEF MSWINDOWS}
+  Windows, JclWin32,
+  {$ENDIF MSWINDOWS}
   JclBase;
 
 // StrLstLoadSave
@@ -111,7 +113,7 @@ implementation
 
 uses
   SysUtils,
-  JclResources, JclSecurity, JclStrings, JclSysUtils, JclWin32, JclSysInfo;
+  JclResources, JclSecurity, JclStrings, JclSysUtils, JclSysInfo;
 
 function SetDisplayResolution(const XRes, YRes: DWORD): Longint;
 var
