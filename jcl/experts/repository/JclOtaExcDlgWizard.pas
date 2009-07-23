@@ -70,7 +70,8 @@ implementation
 uses
   JclOtaResources, 
   JclOtaExcDlgFileFrame, JclOtaExcDlgFormFrame,
-  JclOtaExcDlgSystemFrame, JclOtaExcDlgTraceFrame, JclOtaExcDlgIgnoreFrame;
+  JclOtaExcDlgSystemFrame, JclOtaExcDlgLogFrame,
+  JclOtaExcDlgTraceFrame, JclOtaExcDlgIgnoreFrame;
 
 function ExcDlgWizard(var AParams: TJclOtaExcDlgParams): Boolean;
 var
@@ -115,6 +116,7 @@ begin
   AddPage(TJclOtaExcDlgFilePage.Create(Self, Params));
   AddPage(TJclOtaExcDlgFormPage.Create(Self, Params));
   AddPage(TJclOtaExcDlgSystemPage.Create(Self, Params));
+  AddPage(TJclOtaExcDlgLogPage.Create(Self, Params));
   AddPage(TJclOtaExcDlgIgnorePage.Create(Self, Params));
   AddPage(TJclOtaExcDlgTracePage.Create(Self, Params));
 end;

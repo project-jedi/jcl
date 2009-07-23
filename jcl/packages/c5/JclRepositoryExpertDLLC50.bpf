@@ -5,6 +5,7 @@ USEUNIT("..\..\experts\repository\JclOtaExcDlgWizard.pas");
 USEUNIT("..\..\experts\repository\JclOtaExcDlgFileFrame.pas");
 USEUNIT("..\..\experts\repository\JclOtaExcDlgFormFrame.pas");
 USEUNIT("..\..\experts\repository\JclOtaExcDlgSystemFrame.pas");
+USEUNIT("..\..\experts\repository\JclOtaExcDlgLogFrame.pas");
 USEUNIT("..\..\experts\repository\JclOtaExcDlgTraceFrame.pas");
 USEUNIT("..\..\experts\repository\JclOtaExcDlgIgnoreFrame.pas");
 USEUNIT("..\..\experts\repository\JclOtaRepositoryReg.pas");

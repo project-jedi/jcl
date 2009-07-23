@@ -5,7 +5,7 @@ object %FORMNAME%: T%FORMNAME%
   BorderIcons = [biSystemMenu]
 %ifnot SizeableDialog  BorderStyle = bsDialog%endif
   Caption = '%FORMNAME%'
-  ClientHeight = 255
+  ClientHeight = 283
   ClientWidth = 483
   Color = clBtnFace
   Constraints.MinWidth = 200
@@ -28,7 +28,7 @@ object %FORMNAME%: T%FORMNAME%
   TextHeight = 13
   object BevelDetails: TBevel
     Left = 3
-    Top = 91
+    Top = 119
     Width = 473
     Height = 9
     Anchors = [akLeft, akTop, akRight]
@@ -46,11 +46,23 @@ object %FORMNAME%: T%FORMNAME%
     TabOrder = 0
     OnClick = SendBtnClick
   end%endif
+%if LogSaveDialog
+  object SaveBtn: TButton
+    Left = 403
+    Top = 60
+    Width = 75
+    Height = 25
+    Hint = 'Save bug report'
+    Anchors = [akTop, akRight]
+    Caption = '&Save'
+    TabOrder = 0
+    OnClick = SaveBtnClick
+  end%endif
   object TextMemo: TMemo
     Left = 56
     Top = 8
     Width = 332
-    Height = 75
+    Height = 105
     Hint = 'Use Ctrl+C to copy the report to the clipboard'
     Anchors = [akLeft, akTop, akRight]
     BorderStyle = bsNone
@@ -74,7 +86,7 @@ object %FORMNAME%: T%FORMNAME%
   end
   object DetailsBtn: TButton
     Left = 403
-    Top = 60
+    Top = 88
     Width = 75
     Height = 25
     Hint = 'Show or hide additional information|'
@@ -86,7 +98,7 @@ object %FORMNAME%: T%FORMNAME%
   end
   object DetailsMemo: TMemo
     Left = 4
-    Top = 101
+    Top = 129
     Width = 472
     Height = 147
     Anchors = [akLeft, akTop, akRight, akBottom]

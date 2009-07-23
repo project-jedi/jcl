@@ -10,7 +10,7 @@
 { ANY KIND, either express or implied. See the License for the specific language governing rights  }
 { and limitations under the License.                                                               }
 {                                                                                                  }
-{ The Original Code is JclOtaExcDlgSystemFrame.pas.                                                }
+{ The Original Code is JclOtaExcDlgLogFrame.pas.                                                   }
 {                                                                                                  }
 { The Initial Developer of the Original Code is Florent Ouchet                                     }
 {         <outchy att users dott sourceforge dott net>                                             }
@@ -26,7 +26,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-unit JclOtaExcDlgSystemFrame;
+unit JclOtaExcDlgLogFrame;
 
 interface
 
@@ -41,17 +41,20 @@ uses
   JclOtaExcDlgRepository, JclOtaWizardFrame;
 
 type
-  TJclOtaExcDlgSystemPage = class(TJclWizardFrame)
-    CheckBoxDelayed: TCheckBox;
-    CheckBoxHookDll: TCheckBox;
-    CheckBoxModuleList: TCheckBox;
-    CheckBoxOSInfo: TCheckBox;
-    CheckBoxActiveControls: TCheckBox;
-    CheckBoxCatchMainThread: TCheckBox;
-    CheckBoxUnitVersioning: TCheckBox;
-    procedure CheckBoxModuleListClick(Sender: TObject);
+  TJclOtaExcDlgLogPage = class(TJclWizardFrame)
+    CheckBoxLogFile: TCheckBox;
+    LabelLogFileName: TLabel;
+    EditLogFileName: TEdit;
+    CheckBoxLogInWorkingDirectory: TCheckBox;
+    CheckBoxLogInApplicationDirectory: TCheckBox;
+    CheckBoxLogInDesktopDirectory: TCheckBox;
+    CheckBoxSaveDialog: TCheckBox;
+    procedure CheckBoxLogFileClick(Sender: TObject);
   private
     FParams: TJclOtaExcDlgParams;
+    procedure UpdateLogControls;
+  protected
+    function GetSupportsNext: Boolean; override;
   public
     constructor Create(AOwner: TComponent; AParams: TJclOtaExcDlgParams); reintroduce;
 
@@ -78,54 +81,74 @@ implementation
 uses
   JclOtaResources;
 
-//=== { TJclOtaExcDlgSystemPage } ============================================
+//=== { TJclOtaExcDlgLogPage } ===============================================
 
-procedure TJclOtaExcDlgSystemPage.CheckBoxModuleListClick(Sender: TObject);
+procedure TJclOtaExcDlgLogPage.CheckBoxLogFileClick(Sender: TObject);
 begin
-  CheckBoxUnitVersioning.Enabled := CheckBoxModuleList.Checked;
+  UpdateLogControls;
 end;
 
-constructor TJclOtaExcDlgSystemPage.Create(AOwner: TComponent;
+constructor TJclOtaExcDlgLogPage.Create(AOwner: TComponent;
   AParams: TJclOtaExcDlgParams);
 begin
   FParams := AParams;
   inherited Create(AOwner);
 
-  Caption := RsExcDlgSystemOptions;
-  CheckBoxDelayed.Caption := RsDelayedStackTrace;
-  CheckBoxHookDll.Caption := RsHookDll;
-  CheckBoxModuleList.Caption := RsModuleList;
-  CheckBoxUnitVersioning.Caption := RsUnitVersioning;
-  CheckBoxOSInfo.Caption := RsOSInfo;
-  CheckBoxActiveControls.Caption := RsActiveControls;
-  CheckBoxCatchMainThread.Caption := RsCatchMainThread;
+  Caption := RsExcDlgLogOptions;
+  CheckBoxLogFile.Caption := RsLogTrace;
+  LabelLogFileName.Caption := RsFileName;
+  CheckBoxLogInWorkingDirectory.Caption := RsLogInWorkingDirectory;
+  CheckBoxLogInApplicationDirectory.Caption := RsLogInApplicationDirectory;
+  CheckBoxLogInDesktopDirectory.Caption := RsLogInDesktopDirectory;
+  CheckBoxSaveDialog.Caption := RsLogSaveDialog;
 end;
 
-procedure TJclOtaExcDlgSystemPage.PageActivated(Direction: TJclWizardDirection);
+function TJclOtaExcDlgLogPage.GetSupportsNext: Boolean;
+begin
+  Result := (not CheckBoxLogFile.Checked) or (EditLogFileName.Text <> '');
+end;
+
+procedure TJclOtaExcDlgLogPage.PageActivated(Direction: TJclWizardDirection);
 begin
   inherited PageActivated(Direction);
 
-  CheckBoxDelayed.Checked := Params.DelayedTrace;
-  CheckBoxHookDll.Checked := Params.HookDll;
-  CheckBoxModuleList.Checked := Params.ModuleList;
-  CheckBoxUnitVersioning.Checked := Params.UnitVersioning;
-  CheckBoxOSInfo.Checked := Params.OSInfo;
-  CheckBoxActiveControls.Checked := Params.ActiveControls;
-  CheckBoxCatchMainThread.Checked := Params.CatchMainThread;
+  CheckBoxLogFile.Checked := Params.LogFile;
+  EditLogFileName.Text := Params.LogFileName;
+  CheckBoxLogInWorkingDirectory.Checked := Params.AutoSaveWorkingDirectory;
+  CheckBoxLogInApplicationDirectory.Checked := Params.AutoSaveApplicationDirectory;
+  CheckBoxLogInDesktopDirectory.Checked := Params.AutoSaveDesktopDirectory;
+  CheckBoxSaveDialog.Checked := Params.LogSaveDialog;
+
+  UpdateLogControls;
 end;
 
-procedure TJclOtaExcDlgSystemPage.PageDesactivated(
+procedure TJclOtaExcDlgLogPage.PageDesactivated(
   Direction: TJclWizardDirection);
 begin
   inherited PageDesactivated(Direction);
 
-  Params.DelayedTrace := CheckBoxDelayed.Checked;
-  Params.HookDll := CheckBoxHookDll.Checked;
-  Params.ModuleList := CheckBoxModuleList.Checked;
-  Params.UnitVersioning := CheckBoxUnitVersioning.Checked;
-  Params.OSInfo := CheckBoxOSInfo.Checked;
-  Params.ActiveControls := CheckBoxActiveControls.Checked;
-  Params.CatchMainThread := CheckBoxCatchMainThread.Checked;
+  Params.LogFile := CheckBoxLogFile.Checked;
+  Params.LogFileName := EditLogFileName.Text;
+  Params.AutoSaveWorkingDirectory := CheckBoxLogInWorkingDirectory.Checked;
+  Params.AutoSaveApplicationDirectory := CheckBoxLogInApplicationDirectory.Checked;
+  Params.AutoSaveDesktopDirectory := CheckBoxLogInDesktopDirectory.Checked;
+  Params.LogSaveDialog := CheckBoxSaveDialog.Checked;
+end;
+
+procedure TJclOtaExcDlgLogPage.UpdateLogControls;
+var
+  AEnabled: Boolean;
+begin
+  AEnabled := CheckBoxLogFile.Checked;
+  EditLogFileName.Enabled := AEnabled;
+  if AEnabled then
+    EditLogFileName.Color := clWindow
+  else
+    EditLogFileName.ParentColor := True;
+  CheckBoxLogInWorkingDirectory.Enabled := AEnabled;
+  CheckBoxLogInApplicationDirectory.Enabled := AEnabled;
+  CheckBoxLogInDesktopDirectory.Enabled := AEnabled;
+  CheckBoxSaveDialog.Enabled := AEnabled;
 end;
 
 {$IFDEF UNITVERSIONING}

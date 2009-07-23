@@ -212,18 +212,6 @@ begin
         if IfCount = 0 then
         begin
           StrValue := Params.GetStrValue(Symbol);
-          case Params.Language of
-            bpDelphi32:
-              begin
-                StrValue := StringReplace(StrValue, NativeSingleQuote, NativeSingleQuote + NativeSingleQuote, [rfReplaceAll]);
-                StrValue := NativeSingleQuote + StrValue + NativeSingleQuote;
-              end;
-            bpBCBuilder32:
-              begin
-                StrValue := StringReplace(StrValue, NativeDoubleQuote, NativeBackslash + NativeDoubleQuote, [rfReplaceAll]);
-                StrValue := NativeDoubleQuote + StrValue + NativeDoubleQuote;
-              end;
-          end;
           CopyStr(Result, IndexOutput, CharCountOut, StrValue, 1, Length(StrValue));
         end;
       end

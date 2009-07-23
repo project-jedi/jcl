@@ -152,13 +152,21 @@ resourcestring
 resourcestring
   RsExcDlgSystemOptions = 'system options';
   RsDelayedStackTrace = '&Delayed stack traces (faster)';
-  RsLogTrace = '&Add crash data to log file';
   RsHookDll = '&Hook DLL';
   RsModuleList = '&Module list';
   RsUnitVersioning = '&Unit versioning';
   RsOSInfo = '&Operating system informations';
   RsActiveControls = '&List of active controls';
   RsCatchMainThread = '&Catch only exceptions of main thread';
+
+//=== JclOtaExcDlgLogFrame.pas ===============================================
+resourcestring
+  RsExcDlgLogOptions = 'log options';
+  RsLogTrace = '&Add crash data to log file';
+  RsLogInWorkingDirectory = 'Autosave in &working directory';
+  RsLogInApplicationDirectory = 'Autosave in &application directory (not recommended)';
+  RsLogInDesktopDirectory = 'Autosave in &desktop directory';
+  RsLogSaveDialog = 'Add a save &button on dialog';
 
 //=== JclOtaExcDlgTraceFrame.pas =============================================
 resourcestring

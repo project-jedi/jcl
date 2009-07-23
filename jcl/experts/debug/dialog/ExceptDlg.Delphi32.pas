@@ -38,12 +38,14 @@ const
 type
   T%FORMNAME% = class(%ANCESTORNAME%)
 %if SendEMail    SendBtn: TButton;%endif
+%if LogSaveDialog    SaveBtn: TButton;%endif
     TextMemo: TMemo;
     OkBtn: TButton;
     DetailsBtn: TButton;
     BevelDetails: TBevel;
     DetailsMemo: TMemo;
 %if SendEMail    procedure SendBtnClick(Sender: TObject);%endif
+%if LogSaveDialog    procedure SaveBtnClick(Sender: TObject);%endif
     procedure FormPaint(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -58,8 +60,7 @@ type
 %if ActiveControls    FLastActiveControl: TWinControl;%endif
     FNonDetailsHeight: Integer;
     FFullHeight: Integer;
-%if LogFile    FSimpleLog: TJclSimpleLog;
-    procedure ReportToLog;%endif
+%if LogFile    procedure SaveToLogFile(const FileName: TFileName);%endif
     function GetReportAsText: string;
     procedure SetDetailsVisible(const Value: Boolean);
     procedure UMCreateDetails(var Message: TMessage); message UM_CREATEDETAILS;
@@ -80,7 +81,6 @@ type
     property DetailsVisible: Boolean read FDetailsVisible
       write SetDetailsVisible;
     property ReportAsText: string read GetReportAsText;
-%if LogFile    property SimpleLog: TJclSimpleLog read FSimpleLog;%endif
   end;
 
   T%FORMNAME%Class = class of T%FORMNAME%;
@@ -217,7 +217,7 @@ begin
 end;
 
 //============================================================================
-// Exception dialog with Send
+// Exception dialog
 //============================================================================
 
 var
@@ -228,6 +228,7 @@ var
 procedure T%FORMNAME%.AfterCreateDetails;
 begin
 %if SendEMail  SendBtn.Enabled := True;%endif
+%if LogSaveDialog  SaveBtn.Enabled := True;%endif
 end;
 
 //----------------------------------------------------------------------------
@@ -235,6 +236,7 @@ end;
 procedure T%FORMNAME%.BeforeCreateDetails;
 begin
 %if SendEMail  SendBtn.Enabled := False;%endif
+%if LogSaveDialog  SaveBtn.Enabled := False;%endif
 end;
 
 //----------------------------------------------------------------------------
@@ -251,8 +253,8 @@ begin
   with TJclEmail.Create do
   try
     ParentWnd := Application.Handle;
-    Recipients.Add(%StrValue EMailAddress);
-    Subject := %StrValue EMailSubject;
+    Recipients.Add('%StrValue EMailAddress');
+    Subject := '%StrValue EMailSubject';
     Body := AnsiString(ReportAsText);
     SaveTaskWindows;
     try
@@ -265,6 +267,26 @@ begin
   end;
 end;
 %endif
+
+%if LogSaveDialog//----------------------------------------------------------------------------
+
+procedure T%FORMNAME%.SaveBtnClick(Sender: TObject);
+begin
+  with TSaveDialog.Create(Self) do
+  try
+    DefaultExt := '.log';
+    FileName := %StrValue LogFileName;
+    Filter := 'Log Files (*.log)|*.log|All files (*.*)|*.*';
+    Title := 'Save log as...';
+    Options := [ofHideReadOnly,ofPathMustExist,ofNoReadOnlyReturn,ofEnableSizing,ofDontAddToRecent];
+    if Execute then
+      SaveToLogFile(FileName);
+  finally
+    Free;    
+  end;
+end;
+%endif
+
 //----------------------------------------------------------------------------
 
 procedure T%FORMNAME%.CopyReportToClipboard;
@@ -280,7 +302,11 @@ begin
   DetailsMemo.Lines.BeginUpdate;
   try
     CreateReport;
-%if LogFile    ReportToLog;%endif
+%if LogFile
+%if AutoSaveWorkingDirectory    SaveToLogFile(%StrValue LogFileName);%endif
+%if AutoSaveApplicationDirectory    SaveToLogFile(PathAddSeparator(ExtractFilePath(Application.ExeName)) + %StrValue LogFileName);%endif
+%if AutoSaveDesktopDirectory    SaveToLogFile(PathAddSeparator(GetDesktopFolder) + %StrValue LogFileName);%endif
+%endif
     DetailsMemo.SelStart := 0;
     SendMessage(DetailsMemo.Handle, EM_SCROLLCARET, 0, 0);
     AfterCreateDetails;
@@ -535,7 +561,6 @@ end;
 
 procedure T%FORMNAME%.FormCreate(Sender: TObject);
 begin
-%if LogFile  FSimpleLog := TJclSimpleLog.Create(%StrValue LogFileName);%endif
   FFullHeight := ClientHeight;
   DetailsVisible := False;
   Caption := Format(RsAppError, [Application.Title]);
@@ -545,7 +570,7 @@ end;
 
 procedure T%FORMNAME%.FormDestroy(Sender: TObject);
 begin
-%if LogFile  FreeAndNil(FSimpleLog);%endif
+
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -609,13 +634,17 @@ end;
 
 %if LogFile//--------------------------------------------------------------------------------------------------
 
-procedure T%FORMNAME%.ReportToLog;
+procedure T%FORMNAME%.SaveToLogFile(const FileName: TFileName);
+var
+  SimpleLog: TJclSimpleLog;
 begin
-  FSimpleLog.WriteStamp(ReportMaxColumns);
+  SimpleLog := TJclSimpleLog.Create(FileName);
   try
-    FSimpleLog.Write(ReportAsText);
+    SimpleLog.WriteStamp(ReportMaxColumns);
+    SimpleLog.Write(ReportAsText);
+    SimpleLog.CloseLog;
   finally
-    FSimpleLog.CloseLog;
+    SimpleLog.Free;
   end;
 end;
 %endif

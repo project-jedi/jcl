@@ -52,6 +52,10 @@ type
     FFormName: string;
     FLogFile: Boolean;
     FLogFileName: string;
+    FAutoSaveWorkingDirectory: Boolean;
+    FAutoSaveApplicationDirectory: Boolean;
+    FAutoSaveDesktopDirectory: Boolean;
+    FLogSaveDialog: Boolean;
     FAddressOffset: Boolean;
     FVirtualAddress: Boolean;
     FActivePersonality: TJclBorPersonality;
@@ -98,13 +102,18 @@ type
     // system options
     property DelayedTrace: Boolean read FDelayedTrace write FDelayedTrace;
     property HookDll: Boolean read FHookDll write FHookDll;
-    property LogFile: Boolean read FLogFile write FLogFile;
-    property LogFileName: string read FLogFileName write FLogFileName;
     property OSInfo: Boolean read FOSInfo write FOSInfo;
     property ModuleList: Boolean read FModuleList write FModuleList;
     property UnitVersioning: Boolean read FUnitVersioning write FUnitVersioning;
     property ActiveControls: Boolean read FActiveControls write FActiveControls;
     property CatchMainThread: Boolean read FCatchMainThread write FCatchMainThread;
+    // log options
+    property LogFile: Boolean read FLogFile write FLogFile;
+    property LogFileName: string read FLogFileName write FLogFileName;
+    property AutoSaveWorkingDirectory: Boolean read FAutoSaveWorkingDirectory write FAutoSaveWorkingDirectory;
+    property AutoSaveApplicationDirectory: Boolean read FAutoSaveApplicationDirectory write FAutoSaveApplicationDirectory;
+    property AutoSaveDesktopDirectory: Boolean read FAutoSaveDesktopDirectory write FAutoSaveDesktopDirectory;
+    property LogSaveDialog: Boolean read FLogSaveDialog write FLogSaveDialog;
     // ignored exceptions
     property TraceAllExceptions: Boolean read FTraceAllExceptions
       write FTraceAllExceptions;
@@ -153,7 +162,11 @@ begin
   FFormName := 'ExceptionDialog';
   FFormAncestor := TForm.ClassName;
   FLogFile := False;
-  FLogFileName := '';
+  FLogFileName := 'ExtractFileName(Application.ExeName) + ''-exception-'' + FormatDateTime(''yyyy-mm-dd'', Date) + ''.log''';
+  FAutoSaveWorkingDirectory := False;
+  FAutoSaveApplicationDirectory := False;
+  FAutoSaveDesktopDirectory := False;
+  FLogSaveDialog := False;
   FAddressOffset := True;
   FVirtualAddress := False;
   FActivePersonality := bpUnknown;
