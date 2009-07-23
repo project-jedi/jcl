@@ -50,7 +50,7 @@ type
     CheckBoxModuleList: TCheckBox;
     CheckBoxOSInfo: TCheckBox;
     CheckBoxActiveControls: TCheckBox;
-    CheckBoxMainThreadOnly: TCheckBox;
+    CheckBoxCatchMainThread: TCheckBox;
     CheckBoxUnitVersioning: TCheckBox;
     procedure CheckBoxLogFileClick(Sender: TObject);
     procedure CheckBoxModuleListClick(Sender: TObject);
@@ -112,7 +112,7 @@ begin
   CheckBoxUnitVersioning.Caption := RsUnitVersioning;
   CheckBoxOSInfo.Caption := RsOSInfo;
   CheckBoxActiveControls.Caption := RsActiveControls;
-  CheckBoxMainThreadOnly.Caption := RsMainThreadOnly;
+  CheckBoxCatchMainThread.Caption := RsCatchMainThread;
 end;
 
 function TJclOtaExcDlgSystemPage.GetSupportsNext: Boolean;
@@ -132,7 +132,7 @@ begin
   CheckBoxUnitVersioning.Checked := Params.UnitVersioning;
   CheckBoxOSInfo.Checked := Params.OSInfo;
   CheckBoxActiveControls.Checked := Params.ActiveControls;
-  CheckBoxMainThreadOnly.Checked := Params.MainThreadOnly;
+  CheckBoxCatchMainThread.Checked := Params.CatchMainThread;
 
   UpdateLogEdits;
 end;
@@ -150,7 +150,7 @@ begin
   Params.UnitVersioning := CheckBoxUnitVersioning.Checked;
   Params.OSInfo := CheckBoxOSInfo.Checked;
   Params.ActiveControls := CheckBoxActiveControls.Checked;
-  Params.MainThreadOnly := CheckBoxMainThreadOnly.Checked;
+  Params.CatchMainThread := CheckBoxCatchMainThread.Checked;
 end;
 
 procedure TJclOtaExcDlgSystemPage.UpdateLogEdits;

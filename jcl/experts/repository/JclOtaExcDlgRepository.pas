@@ -70,7 +70,7 @@ type
     FActiveControls: Boolean;
     FStackList: Boolean;
     FAutoScrollBars: Boolean;
-    FMainThreadOnly: Boolean;
+    FCatchMainThread: Boolean;
     FAllThreads: Boolean;
     FTraceEAbort: Boolean;
     FIgnoredExceptions: TStrings;
@@ -104,7 +104,7 @@ type
     property ModuleList: Boolean read FModuleList write FModuleList;
     property UnitVersioning: Boolean read FUnitVersioning write FUnitVersioning;
     property ActiveControls: Boolean read FActiveControls write FActiveControls;
-    property MainThreadOnly: Boolean read FMainThreadOnly write FMainThreadOnly;
+    property CatchMainThread: Boolean read FCatchMainThread write FCatchMainThread;
     // ignored exceptions
     property TraceAllExceptions: Boolean read FTraceAllExceptions
       write FTraceAllExceptions;
@@ -170,7 +170,7 @@ begin
   FActiveControls := True;
   FStackList := True;
   FAutoScrollBars := True;
-  FMainThreadOnly := False;
+  FCatchMainThread := False;
   FTraceEAbort := False;
   FTraceAllExceptions := False;
   FIgnoredExceptions := TStringList.Create;

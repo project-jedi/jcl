@@ -17,7 +17,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -733,6 +733,7 @@ begin
 %if DelayedTrace    JclStackTrackingOptions := JclStackTrackingOptions + [stDelayedTrace];%endif
     JclDebugThreadList.OnSyncException := T%FORMNAME%.ExceptionThreadHandler;
     JclStartExceptionTracking;
+%if CatchMainThread    JclStackTrackingOptions := JclStackTrackingOptions + [stMainThreadOnly];%endif
 %if HookDll    if HookTApplicationHandleException then
       JclTrackExceptionsFromLibraries;%endif
   end;

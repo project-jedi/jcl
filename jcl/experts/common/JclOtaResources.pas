@@ -158,7 +158,7 @@ resourcestring
   RsUnitVersioning = '&Unit versioning';
   RsOSInfo = '&Operating system informations';
   RsActiveControls = '&List of active controls';
-  RsMainThreadOnly = '&Catch only exceptions of main thread';
+  RsCatchMainThread = '&Catch only exceptions of main thread';
 
 //=== JclOtaExcDlgTraceFrame.pas =============================================
 resourcestring

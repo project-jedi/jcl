@@ -2,7 +2,7 @@ inherited JclOtaExcDlgSystemPage: TJclOtaExcDlgSystemPage
   object LabelLogFileName: TLabel
     Left = 170
     Top = 139
-    Width = 57
+    Width = 55
     Height = 13
     Caption = 'RsFileName'
   end
@@ -63,12 +63,12 @@ inherited JclOtaExcDlgSystemPage: TJclOtaExcDlgSystemPage
     Caption = 'RsActiveControls'
     TabOrder = 8
   end
-  object CheckBoxMainThreadOnly: TCheckBox
+  object CheckBoxCatchMainThread: TCheckBox
     Left = 120
     Top = 81
     Width = 265
     Height = 17
-    Caption = 'RsMainThreadOnly'
+    Caption = 'RsCatchMainThread'
     TabOrder = 2
   end
   object CheckBoxUnitVersioning: TCheckBox
