@@ -27,7 +27,7 @@
 			<GenDll>true</GenDll>
 			<GenPackage>true</GenPackage>
 			<DCC_ImageBase>$48400000</DCC_ImageBase>
-			<DCC_UsePackage>rtl;vcl;Jcl;vclimg</DCC_UsePackage>
+			<DCC_UsePackage>rtl;vcl;vclimg;Jcl</DCC_UsePackage>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Cfg_Release)'!=''">
 			<DCC_AssertionsAtRuntime>false</DCC_AssertionsAtRuntime>
@@ -62,8 +62,8 @@
 			</DelphiCompile>
 			<DCCReference Include="rtl.dcp" />
 			<DCCReference Include="vcl.dcp" />
-			<DCCReference Include="Jcl.dcp" />
 			<DCCReference Include="vclimg.dcp" />
+			<DCCReference Include="Jcl.dcp" />
 			<DCCReference Include="..\..\source\vcl\JclPrint.pas" />
 			<DCCReference Include="..\..\source\vcl\JclGraphUtils.pas" />
 			<DCCReference Include="..\..\source\vcl\JclGraphics.pas" />

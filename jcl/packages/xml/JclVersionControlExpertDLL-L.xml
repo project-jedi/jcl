@@ -9,17 +9,17 @@
   <CompilerDefines>RELEASE</CompilerDefines>
   <ImageBase>580E0000</ImageBase>
   <Requires>
-    <Package Name="rtl" Targets="WinLibSuffix" Condition=""/>
+    <Package Name="rtl" Targets="allLibSuffix" Condition=""/>
     <Package Name="vcl50" Targets="noLibSuffix" Condition=""/>
-    <Package Name="vcl" Targets="WinLibSuffix" Condition=""/>
+    <Package Name="vcl" Targets="allLibSuffix" Condition=""/>
     <Package Name="dsnide50" Targets="noLibSuffix" Condition=""/>
-    <Package Name="designide" Targets="WinLibSuffix" Condition=""/>
-    <Package Name="Jcl-R" Targets="WinDev" Condition=""/>
-    <Package Name="JclVcl-R" Targets="WinDev" Condition=""/>
-    <Package Name="JclBaseExpert-D" Targets="WinDev" Condition=""/>
+    <Package Name="designide" Targets="allLibSuffix" Condition=""/>
+	<Package Name="Jcl-R" Targets="all" Condition=""/>
+	<Package Name="JclVcl-R" Targets="all" Condition=""/>
+    <Package Name="JclBaseExpert-D" Targets="all" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\experts\versioncontrol\JclVersionControlImpl.pas" Targets="WinDev" Formname="" Condition=""/>
-    <File Name="..\..\experts\versioncontrol\JclVersionCtrlCommonOptions.pas" Targets="WinDev" Formname="JclVersionCtrlOptionsFrame: TFrame" Condition=""/>
+	<File Name="..\..\experts\versioncontrol\JclVersionControlImpl.pas" Targets="designtimeIDE" Formname="" Condition=""/>
+    <File Name="..\..\experts\versioncontrol\JclVersionCtrlCommonOptions.pas" Targets="designtimeIDE" Formname="JclVersionCtrlOptionsFrame: TFrame" Condition=""/>
   </Contains>
 </Package>

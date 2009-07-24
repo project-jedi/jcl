@@ -9,22 +9,22 @@
   <CompilerDefines>RELEASE</CompilerDefines>
   <ImageBase>58000000</ImageBase>
   <Requires>
-    <Package Name="rtl" Targets="WinLibSuffix" Condition=""/>
+    <Package Name="rtl" Targets="allLibSuffix" Condition=""/>
     <Package Name="vcl50" Targets="noLibSuffix" Condition=""/>
-    <Package Name="vcl" Targets="WinLibSuffix" Condition=""/>
+    <Package Name="vcl" Targets="allLibSuffix" Condition=""/>
     <Package Name="dsnide50" Targets="noLibSuffix" Condition=""/>
-    <Package Name="designide" Targets="WinLibSuffix" Condition=""/>
-    <Package Name="Jcl-R" Targets="WinDev" Condition=""/>
+    <Package Name="designide" Targets="allLibSuffix" Condition=""/>
+    <Package Name="Jcl-R" Targets="all" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\experts\common\JclOtaUtils.pas" Targets="WinDev" Formname="" Condition=""/>
-    <File Name="..\..\experts\common\JclOtaResources.pas" Targets="WinDev" Formname="" Condition=""/>
-    <File Name="..\..\experts\common\JclOtaConsts.pas" Targets="WinDev" Formname="" Condition=""/>
-    <File Name="..\..\experts\common\JclOtaExceptionForm.pas" Targets="WinDev" Formname="JclExpertExceptionForm" Condition=""/>
-    <File Name="..\..\experts\common\JclOtaConfigurationForm.pas" Targets="WinDev" Formname="JclOtaOptionsForm" Condition=""/>
-    <File Name="..\..\experts\common\JclOtaActionConfigureSheet.pas" Targets="WinDev" Formname="JclOtaActionConfigureFrame: TFrame" Condition=""/>
-    <File Name="..\..\experts\common\JclOtaUnitVersioningSheet.pas" Targets="WinDev" Formname="JclOtaUnitVersioningFrame: TFrame" Condition=""/>
-    <File Name="..\..\experts\common\JclOtaWizardForm.pas" Targets="WinDev" Formname="JclWizardForm" Condition=""/>
-    <File Name="..\..\experts\common\JclOtaWizardFrame.pas" Targets="WinDev" Formname="JclWizardFrame: TFrame" Condition=""/>
+	<File Name="..\..\experts\common\JclOtaUtils.pas" Targets="designtimeIDE" Formname="" Condition=""/>
+	<File Name="..\..\experts\common\JclOtaResources.pas" Targets="designtimeIDE" Formname="" Condition=""/>
+	<File Name="..\..\experts\common\JclOtaConsts.pas" Targets="designtimeIDE" Formname="" Condition=""/>
+	<File Name="..\..\experts\common\JclOtaExceptionForm.pas" Targets="designtimeIDE" Formname="JclExpertExceptionForm" Condition=""/>
+	<File Name="..\..\experts\common\JclOtaConfigurationForm.pas" Targets="designtimeIDE" Formname="JclOtaOptionsForm" Condition=""/>
+	<File Name="..\..\experts\common\JclOtaActionConfigureSheet.pas" Targets="designtimeIDE" Formname="JclOtaActionConfigureFrame: TFrame" Condition=""/>
+	<File Name="..\..\experts\common\JclOtaUnitVersioningSheet.pas" Targets="designtimeIDE" Formname="JclOtaUnitVersioningFrame: TFrame" Condition=""/>
+	<File Name="..\..\experts\common\JclOtaWizardForm.pas" Targets="designtimeIDE" Formname="JclWizardForm" Condition=""/>
+    <File Name="..\..\experts\common\JclOtaWizardFrame.pas" Targets="designtimeIDE" Formname="JclWizardFrame: TFrame" Condition=""/>
   </Contains>
 </Package>

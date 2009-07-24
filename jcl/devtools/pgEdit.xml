@@ -74,21 +74,26 @@
         <target name="d12" defines="BCB" IsBds="1"/>
       </targets>
       <aliases>
+        <!-- language aliases -->
         <alias name="Delphi" value="d5,d6,d7,d9,d10,d11,d12"/>
         <alias name="Bcb" value="c5,c6,d10,d11,d12"/>
+        <alias name="Pascal" value="d5,d6,d7,d9,d10,d11,d12"/>
+        <!-- platform aliases -->
         <alias name="Windows" value="c5,c6,d5,d6,d7,d9,d10,d11,d12"/>
         <alias name="Linux" value=""/>
-        <alias name="WinDev" value="c5,c6,d5,d6,d7,d8,d9,d10,cs1,d11,d12"/>
-        <alias name="JclDev" value="c5,c6,d5,d6,d7,d8,d9,d10,cs1,d11,d12"/>
-        <alias name="DelphiDev" value="d5,d6,d7,d8,d9,d10,d11,d12"/>
-        <alias name="WinLibSuffix" value="c6,d6,d7,d8,d9,d10,cs1,d11,d12"/>
+        <!-- package aliases -->
         <alias name="allLibSuffix" value="c6,d6,d7,d8,d9,d10,cs1,d11,d12"/>
         <alias name="allv12up" value="d12"/>
         <alias name="noLibSuffix" value="c5,d5"/>
+        <!-- GUI aliases -->
         <alias name="Clx" value="c6,d6,d7"/>
         <alias name="Vcl" value="c5,d5,c6,d6,d7,d9,d10,d11,d12"/>
-        <alias name="Bds" value="cs1,d8,d9,d10,d11,d12"/>
+        <!-- IDE aliases -->
+        <alias name="BDS" value="cs1,d8,d9,d10,d11,d12"/>
+        <alias name="runtimeBDS" value="d9,d10,d11,d12"/>
         <alias name="OldStyleIDE" value="c5,c6,d5,d6,d7"/>
+        <alias name="runtimeIDE" value="c5,c6,d5,d6,d7,d9,d10,d11,d12"/>
+        <alias name="designtimeIDE" value="c5,c6,d5,d6,d7,d8,d9,d10,cs1,d11,d12"/>
       </aliases>
       <ProjectProperties>
         <ProjectProperty name="VersionMajorNumber" value="2"/>
