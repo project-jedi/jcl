@@ -311,15 +311,6 @@ function ConvertMapFileToJdbgFile(const MapFileName: TFileName; var LinkerBugUni
 function ConvertMapFileToJdbgFile(const MapFileName: TFileName; var LinkerBugUnit: string;
   var LineNumberErrors, MapFileSize, JdbgFileSize: Integer): Boolean; overload;
 
-// do not change this function, it is used by the JVCL installer using dynamic
-// linking (to avoid dependencies in the installer), the signature and name are
-// sensible
-// AnsiString and String types cannot be used because they are managed in
-// memory, the memory manager of the JVCL installer is different of the memory
-// manager used by the JCL package; only pointers and direct values are acceptable
-function InsertDebugDataIntoExecutableFile(ExecutableFileName, MapFileName: PChar;
-  var MapFileSize, JclDebugDataSize: Integer): Boolean; overload;
-
 function InsertDebugDataIntoExecutableFile(const ExecutableFileName,
   MapFileName: TFileName; var LinkerBugUnit: string;
   var MapFileSize, JclDebugDataSize: Integer): Boolean; overload;
@@ -2074,19 +2065,6 @@ begin
   finally
     Generator.Free;
   end;
-end;
-
-// do not change this function, it is used by the JVCL installer using dynamic
-// linking (to avoid dependencies in the installer), the signature and name are
-// sensible
-function InsertDebugDataIntoExecutableFile(ExecutableFileName, MapFileName: PChar;
-  var MapFileSize, JclDebugDataSize: Integer): Boolean;
-var
-  LinkerBugUnit: string;
-begin
-  LinkerBugUnit := '';
-  Result := InsertDebugDataIntoExecutableFile(ExecutableFileName, MapFileName,
-    LinkerBugUnit, MapFileSize, JclDebugDataSize);
 end;
 
 function InsertDebugDataIntoExecutableFile(const ExecutableFileName, MapFileName: TFileName;
