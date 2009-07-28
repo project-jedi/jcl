@@ -724,16 +724,16 @@ type
 
   TJclExceptFrame = class(TObject)
   private
-    FExcFrame: PExcFrame;
     FFrameKind: TExceptFrameKind;
+    FCodeLocation: Pointer;
+    FExcTab: array of TExcDescEntry;
   protected
-    procedure DoDetermineFrameKind;
+    procedure AnalyseExceptFrame(AExcDesc: PExcDesc);
   public
-    constructor Create(AExcFrame: PExcFrame);
+    constructor Create(AExcDesc: PExcDesc);
     function Handles(ExceptObj: TObject): Boolean;
     function HandlerInfo(ExceptObj: TObject; var HandlerAt: Pointer): Boolean;
-    function CodeLocation: Pointer;
-    property ExcFrame: PExcFrame read FExcFrame;
+    property CodeLocation: Pointer read FCodeLocation;
     property FrameKind: TExceptFrameKind read FFrameKind;
   end;
 
@@ -5037,11 +5037,11 @@ end;
 function GetJmpDest(Jmp: PJmpInstruction): Pointer;
 begin
   // TODO : 64 bit version
-  if Jmp.opCode = $E9 then
-    Result := Pointer(INT_PTR(Jmp) + Jmp.distance + 5)
+  if Jmp^.opCode = $E9 then
+    Result := Pointer(INT_PTR(Jmp) + Jmp^.distance + 5)
   else
   if Jmp.opCode = $EB then
-    Result := Pointer(INT_PTR(Jmp) + ShortInt(Jmp.distance) + 2)
+    Result := Pointer(INT_PTR(Jmp) + ShortInt(Jmp^.distance) + 2)
   else
     Result := nil;
   if (Result <> nil) and (PJmpTable(Result).OPCode = $25FF) then
@@ -5051,44 +5051,72 @@ end;
 
 //=== { TJclExceptFrame } ====================================================
 
-constructor TJclExceptFrame.Create(AExcFrame: PExcFrame);
+constructor TJclExceptFrame.Create(AExcDesc: PExcDesc);
 begin
   inherited Create;
-  FExcFrame := AExcFrame;
-  DoDetermineFrameKind;
+  FFrameKind := efkUnknown;
+  FCodeLocation := nil;
+  AnalyseExceptFrame(AExcDesc);
 end;
 
-procedure TJclExceptFrame.DoDetermineFrameKind;
+procedure TJclExceptFrame.AnalyseExceptFrame(AExcDesc: PExcDesc);
 var
   Dest: Pointer;
   LocInfo: TJclLocationInfo;
   FixedProcedureName: string;
-  DotPos: Integer;
+  DotPos, I: Integer;
 begin
-  FFrameKind := efkUnknown;
-  if FExcFrame <> nil then
+  Dest := GetJmpDest(@AExcDesc^.Jmp);
+  if Dest <> nil then
   begin
-    Dest := GetJmpDest(@ExcFrame.desc.Jmp);
-    if Dest <> nil then
+    // get frame kind
+    LocInfo := GetLocationInfo(Dest);
+    if CompareText(LocInfo.UnitName, 'system') = 0 then
     begin
-      LocInfo := GetLocationInfo(Dest);
-      if CompareText(LocInfo.UnitName, 'system') = 0 then
+      FixedProcedureName := LocInfo.ProcedureName;
+      DotPos := Pos('.', FixedProcedureName);
+      if DotPos > 0 then
+        FixedProcedureName := Copy(FixedProcedureName, DotPos + 1, Length(FixedProcedureName) - DotPos);
+      if CompareText(FixedProcedureName, '@HandleAnyException') = 0 then
+        FFrameKind := efkAnyException
+      else
+      if CompareText(FixedProcedureName, '@HandleOnException') = 0 then
+        FFrameKind := efkOnException
+      else
+      if CompareText(FixedProcedureName, '@HandleAutoException') = 0 then
+        FFrameKind := efkAutoException
+      else
+      if CompareText(FixedProcedureName, '@HandleFinally') = 0 then
+        FFrameKind := efkFinally;
+    end;
+
+    // get location
+    if FFrameKind <> efkUnknown then
+    begin
+      FCodeLocation := GetJmpDest(PJmpInstruction(DWORD(@AExcDesc^.Instructions)));
+      if FCodeLocation = nil then
+        FCodeLocation := @AExcDesc^.Instructions;
+    end
+    else
+    begin
+      FCodeLocation := GetJmpDest(PJmpInstruction(DWORD(AExcDesc)));
+      if FCodeLocation = nil then
+        FCodeLocation := AExcDesc;
+    end;
+
+    // get on handlers
+    if FFrameKind = efkOnException then
+    begin
+      SetLength(FExcTab, AExcDesc^.Cnt);
+      for I := 0 to AExcDesc^.Cnt - 1 do
       begin
-        FixedProcedureName := LocInfo.ProcedureName;
-        DotPos := Pos('.', FixedProcedureName);
-        if DotPos > 0 then
-          FixedProcedureName := Copy(FixedProcedureName, DotPos + 1, Length(FixedProcedureName) - DotPos);
-        if CompareText(FixedProcedureName, '@HandleAnyException') = 0 then
-          FFrameKind := efkAnyException
+        if AExcDesc^.ExcTab[I].VTable = nil then
+        begin
+          SetLength(FExcTab, I);
+          Break;
+        end
         else
-        if CompareText(FixedProcedureName, '@HandleOnException') = 0 then
-          FFrameKind := efkOnException
-        else
-        if CompareText(FixedProcedureName, '@HandleAutoException') = 0 then
-          FFrameKind := efkAutoException
-        else
-        if CompareText(FixedProcedureName, '@HandleFinally') = 0 then
-          FFrameKind := efkFinally;
+          FExcTab[I] := AExcDesc^.ExcTab[I];
       end;
     end;
   end;
@@ -5103,18 +5131,19 @@ end;
 
 function TJclExceptFrame.HandlerInfo(ExceptObj: TObject; var HandlerAt: Pointer): Boolean;
 var
-  I: Integer;
+  I, Count: Integer;
   VTable: Pointer;
 begin
   Result := FrameKind in [efkAnyException, efkAutoException];
   if not Result and (FrameKind = efkOnException) then
   begin
     I := 0;
+    Count := Length(FExcTab);
     VTable := Pointer(INT_PTR(ExceptObj.ClassType) + vmtSelfPtr);
-    while (I < ExcFrame.Desc.Cnt) and not Result and (VTable <> nil) do
+    while (I < Count) and not Result and (VTable <> nil) do
     begin
-      Result := (ExcFrame.Desc.ExcTab[I].VTable = nil) or
-        (ExcFrame.Desc.ExcTab[I].VTable = VTable);
+      Result := (FExcTab[I].VTable = nil) or
+        (FExcTab[I].VTable = VTable);
       if not Result then
       begin
         Move(PAnsiChar(VTable)[vmtParent - vmtSelfPtr], VTable, 4);
@@ -5126,33 +5155,13 @@ begin
       end;
     end;
     if Result then
-      HandlerAt := ExcFrame.Desc.ExcTab[I].Handler;
+      HandlerAt := FExcTab[I].Handler;
   end
   else
   if Result then
-  begin
-    HandlerAt := GetJmpDest(@ExcFrame.Desc.Instructions);
-    if HandlerAt = nil then
-      HandlerAt := @ExcFrame.Desc.Instructions;
-  end
+    HandlerAt := FCodeLocation
   else
     HandlerAt := nil;
-end;
-
-function TJclExceptFrame.CodeLocation: Pointer;
-begin
-  if FrameKind <> efkUnknown then
-  begin
-    Result := GetJmpDest(PJmpInstruction(DWORD(@ExcFrame.Desc.Instructions)));
-    if Result = nil then
-      Result := @ExcFrame.Desc.Instructions;
-  end
-  else
-  begin
-    Result := GetJmpDest(PJmpInstruction(DWORD(@ExcFrame.Desc)));
-    if Result = nil then
-      Result := @ExcFrame.Desc;
-  end;
 end;
 
 //=== { TJclExceptFrameList } ================================================
@@ -5166,7 +5175,7 @@ end;
 
 function TJclExceptFrameList.AddFrame(AFrame: PExcFrame): TJclExceptFrame;
 begin
-  Result := TJclExceptFrame.Create(AFrame);
+  Result := TJclExceptFrame.Create(AFrame^.Desc);
   Add(Result);
 end;
 
