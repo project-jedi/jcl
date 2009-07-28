@@ -54,7 +54,7 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  Classes, SysUtils, Contnrs, 
+  Classes, SysUtils, Contnrs,
   JclBase, JclFileUtils, JclPeImage, JclSynch, JclTD32;
 
 // Diagnostics
@@ -108,13 +108,13 @@ function JclValidateModuleAddress(Addr: Pointer): Boolean;
 
 // MAP file abstract parser
 type
-  PJclMapAddress = ^TJclMapAddress;      
+  PJclMapAddress = ^TJclMapAddress;
   TJclMapAddress = packed record
     Segment: Word;
     Offset: Integer;
   end;
 
-  PJclMapString = PAnsiChar;  
+  PJclMapString = PAnsiChar;
 
   TJclAbstractMapParser = class(TObject)
   private
@@ -339,7 +339,7 @@ type
     OffsetFromLineNumber: Integer;  // Offset from Address to LineNumber symbol location
     SourceName: string;             // Module file name
     DebugInfo: TJclDebugInfoSource; // Location object
-    BinaryFileName: string;         // Name of the binary file containing the symbol 
+    BinaryFileName: string;         // Name of the binary file containing the symbol
   end;
 
   TJclLocationInfoExValues = set of (lievLocationInfo, lievProcedureStartLocationInfo, lievUnitVersionInfo);
@@ -1635,7 +1635,7 @@ begin
   FSegmentClasses[C].GroupName := GroupName;
 
   if FModule <> 0 then
-  begin                                                         
+  begin
     { Fix the section addresses }
     SectionHeader := PeMapImgFindSectionFromModule(Pointer(FModule), MapStringToStr(SectionName));
     if SectionHeader = nil then
@@ -2005,12 +2005,12 @@ begin
       C := $3F;
     end;
     case I and $03 of
-      0: 
+      0:
         begin
           Inc(P);
           P^ := C;
         end;
-      1: 
+      1:
         begin
           P^ := P^ or (C and $03) shl 6;
           Inc(P);
@@ -2159,7 +2159,7 @@ begin
         Inc(LastSection, NtHeaders32^.FileHeader.NumberOfSections - 1);
         JclDebugSection := LastSection;
         Inc(JclDebugSection);
-  
+
         // Increase the number of sections
         Inc(NtHeaders32^.FileHeader.NumberOfSections);
         FillChar(JclDebugSection^, SizeOf(TImageSectionHeader), #0);
@@ -2173,7 +2173,7 @@ begin
         StrPLCopy(PAnsiChar(@JclDebugSection^.Name), JclDbgDataResName, IMAGE_SIZEOF_SHORT_NAME);
         // JCLDEBUG Characteristics flags
         JclDebugSection^.Characteristics := IMAGE_SCN_MEM_READ or IMAGE_SCN_CNT_INITIALIZED_DATA;
-  
+
         // Size of virtual data area
         JclDebugSection^.Misc.VirtualSize := JclDebugDataSize;
         VirtualAlignedSize := JclDebugDataSize;
@@ -2185,10 +2185,10 @@ begin
         RoundUpToAlignment(JclDebugSection^.SizeOfRawData, NtHeaders32^.OptionalHeader.FileAlignment);
         // Update Initialized data size
         Inc(NtHeaders32^.OptionalHeader.SizeOfInitializedData, JclDebugSection^.SizeOfRawData);
-  
+
         // Fill data to alignment
         NeedFill := INT_PTR(JclDebugSection^.SizeOfRawData) - JclDebugDataSize;
-  
+
         // Note: Delphi linker seems to generate incorrect (unaligned) size of
         // the executable when adding TD32 debug data so the position could be
         // behind the size of the file then.
@@ -2197,14 +2197,14 @@ begin
         X := 0;
         for I := 1 to NeedFill do
           ImageStream.WriteBuffer(X, 1);
-  
+
         ImageStream.SaveToFile(ExecutableFileName);
       end
       else
         Result := False;
     except
       Result := False;
-    end;    
+    end;
   finally
     ImageStream.Free;
   end;
@@ -2482,7 +2482,7 @@ begin
     SecondWord := 0;
     CurrAddr := 0;
     C := 0;
-    Ln := 0;    
+    Ln := 0;
     P := MakePtr(PJclDbgHeader(FStream.Memory)^.Symbols);
     while ReadValue(P, Value) do
     begin
@@ -3152,7 +3152,7 @@ begin
       Result := TempItem;
       Break;
     end;
-  end;  
+  end;
   if Result = nil then
   begin
     Result := CreateDebugInfo(Module);
@@ -3616,7 +3616,7 @@ end;
 class function TJclDebugInfoSymbols.CleanupDebugSymbols: Boolean;
 begin
   Result := True;
-  
+
   if DebugSymbolsInitialized then
     Result := SymCleanupFunc(GetCurrentProcess);
 
@@ -5035,8 +5035,6 @@ begin
 end;
 
 function GetJmpDest(Jmp: PJmpInstruction): Pointer;
-type
-  PDWORD_PTR = ^DWORD_PTR;
 begin
   // TODO : 64 bit version
   if Jmp.opCode = $E9 then
@@ -5064,6 +5062,8 @@ procedure TJclExceptFrame.DoDetermineFrameKind;
 var
   Dest: Pointer;
   LocInfo: TJclLocationInfo;
+  FixedProcedureName: string;
+  DotPos: Integer;
 begin
   FFrameKind := efkUnknown;
   if FExcFrame <> nil then
@@ -5074,16 +5074,20 @@ begin
       LocInfo := GetLocationInfo(Dest);
       if CompareText(LocInfo.UnitName, 'system') = 0 then
       begin
-        if CompareText(LocInfo.ProcedureName, '@HandleAnyException') = 0 then
+        FixedProcedureName := LocInfo.ProcedureName;
+        DotPos := Pos('.', FixedProcedureName);
+        if DotPos > 0 then
+          FixedProcedureName := Copy(FixedProcedureName, DotPos + 1, Length(FixedProcedureName) - DotPos);
+        if CompareText(FixedProcedureName, '@HandleAnyException') = 0 then
           FFrameKind := efkAnyException
         else
-        if CompareText(LocInfo.ProcedureName, '@HandleOnException') = 0 then
+        if CompareText(FixedProcedureName, '@HandleOnException') = 0 then
           FFrameKind := efkOnException
         else
-        if CompareText(LocInfo.ProcedureName, '@HandleAutoException') = 0 then
+        if CompareText(FixedProcedureName, '@HandleAutoException') = 0 then
           FFrameKind := efkAutoException
         else
-        if CompareText(LocInfo.ProcedureName, '@HandleFinally') = 0 then
+        if CompareText(FixedProcedureName, '@HandleFinally') = 0 then
           FFrameKind := efkFinally;
       end;
     end;
@@ -5519,7 +5523,7 @@ end;
 function TJclDebugThreadList.AddStackListToLocationInfoList(ThreadID: DWORD; AList: TJclLocationInfoList): Boolean;
 var
   I: Integer;
-  List: TJclStackInfoList;  
+  List: TJclStackInfoList;
 begin
   Result := False;
   FReadLock.Enter;
@@ -6165,7 +6169,7 @@ begin
   if IsWinNT then
     Result := GetHandleInformation(Handle, Flags)
   else
-    Result := False;  
+    Result := False;
   if not Result then
   begin
     // DuplicateHandle is used as an additional check for those object types not
