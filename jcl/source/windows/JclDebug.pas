@@ -5131,31 +5131,37 @@ end;
 
 function TJclExceptFrame.HandlerInfo(ExceptObj: TObject; var HandlerAt: Pointer): Boolean;
 var
-  I, Count: Integer;
-  VTable: Pointer;
+  I: Integer;
+  ObjVTable, VTable, ParentVTable: Pointer;
 begin
   Result := FrameKind in [efkAnyException, efkAutoException];
   if not Result and (FrameKind = efkOnException) then
   begin
-    I := 0;
-    Count := Length(FExcTab);
-    VTable := Pointer(INT_PTR(ExceptObj.ClassType) + vmtSelfPtr);
-    while (I < Count) and not Result and (VTable <> nil) do
+    HandlerAt := nil;
+    ObjVTable := Pointer(ExceptObj.ClassType);
+    for I := Low(FExcTab) to High(FExcTab) do
     begin
-      Result := (FExcTab[I].VTable = nil) or
-        (FExcTab[I].VTable = VTable);
-      if not Result then
+      VTable := ObjVTable;
+      Result := FExcTab[I].VTable = nil;
+      while (not Result) and (VTable <> nil) do
       begin
-        Move(PAnsiChar(VTable)[vmtParent - vmtSelfPtr], VTable, 4);
-        if VTable = nil then
+        Result := (FExcTab[I].VTable = VTable) or
+          (PShortString(PPointer(PInteger(FExcTab[I].VTable)^ + vmtClassName)^)^ =
+           PShortString(PPointer(INT_PTR(VTable) + vmtClassName)^)^);
+        if Result then
+          HandlerAt := FExcTab[I].Handler
+        else
         begin
-          VTable := Pointer(INT_PTR(ExceptObj.ClassType) + vmtSelfPtr);
-          Inc(I);
+          ParentVTable := PPointer(INT_PTR(VTable) + vmtParent)^;
+          if ParentVTable = VTable then
+            VTable := nil
+          else
+            VTable := ParentVTable;
         end;
       end;
+      if Result then
+        Break;
     end;
-    if Result then
-      HandlerAt := FExcTab[I].Handler;
   end
   else
   if Result then
