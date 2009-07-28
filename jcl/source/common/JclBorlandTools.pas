@@ -1585,31 +1585,6 @@ begin
     Result := LoadResRec.EnglishStr;
 end;
 
-function RegGetValueNamesAndValues(const RootKey: HKEY; const Key: string; const List: TStrings): Boolean;
-var
-  I: Integer;
-  TempList: TStringList;
-  Name: string;
-  DataType: DWORD;
-begin
-  TempList := TStringList.Create;
-  try
-    Result := RegKeyExists(RootKey, Key) and RegGetValueNames(RootKey, Key, TempList);
-    if Result then
-    begin
-      for I := 0 to TempList.Count - 1 do
-      begin
-        Name := TempList[I];
-        if RegGetDataType(RootKey, Key, Name, DataType) and
-          ((DataType = REG_SZ) or (DataType = REG_EXPAND_SZ) or (DataType = REG_BINARY)) then
-          TempList[I] := Name + '=' + RegReadStringDef(RootKey, Key, Name, '');
-      end;
-      List.AddStrings(TempList);
-    end;
-  finally
-    TempList.Free;
-  end;
-end;
 {$ENDIF MSWINDOWS}
 
 //=== { TJclBorRADToolInstallationObject } ===================================
@@ -3977,15 +3952,6 @@ begin
 end;
 
 procedure TJclBorRADToolInstallation.ReadInformation;
-const
-  BinDir = 'bin\';
-  UpdateKeyName = 'Update #';
-  BDSUpdateKeyName = 'UpdatePackInstalled';
-var
-  KeyLen, I: Integer;
-  Key, GlobalKey: string;
-  Ed: TJclBorRADToolEdition;
-
   function FormatVersionNumber(const Num: Integer): string;
   begin
     Result := '';
@@ -4004,14 +3970,32 @@ var
     end;
   end;
 
+const
+  BinDir = 'bin\';
+  UpdateKeyName = 'Update #';
+  BDSUpdateKeyName = 'UpdatePackInstalled';
+var
+  KeyLen, I: Integer;
+  Key, GlobalKey: string;
+  Ed: TJclBorRADToolEdition;
+  GlobalsBuffer: TStrings;
 begin
   Key := ConfigData.FileName;
   GlobalKey := StrEnsureSuffix('\', Key) + GlobalsKeyName;
-  // overriden settings first
-  RegGetValueNamesAndValues(HKCU, GlobalKey, Globals);
-  RegGetValueNamesAndValues(HKCU, Key, Globals);
-  RegGetValueNamesAndValues(HKLM, GlobalKey, Globals);
-  RegGetValueNamesAndValues(HKLM, Key, Globals);
+  GlobalsBuffer := TStringList.Create;
+  try
+    // overriden settings first
+    RegGetValueNamesAndValues(HKCU, GlobalKey, GlobalsBuffer);
+    Globals.AddStrings(GlobalsBuffer);
+    RegGetValueNamesAndValues(HKCU, Key, GlobalsBuffer);
+    Globals.AddStrings(GlobalsBuffer);
+    RegGetValueNamesAndValues(HKLM, GlobalKey, GlobalsBuffer);
+    Globals.AddStrings(GlobalsBuffer);
+    RegGetValueNamesAndValues(HKLM, Key, GlobalsBuffer);
+    Globals.AddStrings(GlobalsBuffer);
+  finally
+    GlobalsBuffer.Free;
+  end;
 
   KeyLen := Length(Key);
   if (KeyLen > 3) and StrIsDigit(Key[KeyLen - 2]) and (Key[KeyLen - 1] = '.') and (Key[KeyLen] = '0') then

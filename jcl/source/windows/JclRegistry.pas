@@ -248,6 +248,7 @@ procedure RegWriteBinary(const RootKey: DelphiHKEY; const Key, Name: string; con
 
 function RegGetValueNames(const RootKey: DelphiHKEY; const Key: string; const List: TStrings): Boolean;
 function RegGetKeyNames(const RootKey: DelphiHKEY; const Key: string; const List: TStrings): Boolean;
+function RegGetValueNamesAndValues(const RootKey: HKEY; const Key: string; const List: TStrings): Boolean;
 function RegHasSubKeys(const RootKey: DelphiHKEY; const Key: string): Boolean;
 
 function AllowRegKeyForEveryone(const RootKey: DelphiHKEY; Path: string): Boolean;
@@ -1822,6 +1823,34 @@ begin
       ReadError(RootKey, Key);
   finally
     List.EndUpdate;
+  end;
+end;
+
+function RegGetValueNamesAndValues(const RootKey: HKEY; const Key: string; const List: TStrings): Boolean;
+var
+  I: Integer;
+  TempList: TStringList;
+  Name: string;
+  DataType: DWORD;
+begin
+  List.BeginUpdate;
+  TempList := TStringList.Create;
+  try
+    List.Clear;
+    Result := RegKeyExists(RootKey, Key) and RegGetValueNames(RootKey, Key, TempList);
+    if Result then
+    begin
+      for I := 0 to TempList.Count - 1 do
+      begin
+        Name := TempList[I];
+        if RegGetDataType(RootKey, Key, Name, DataType) and
+          ((DataType = REG_SZ) or (DataType = REG_EXPAND_SZ) or (DataType = REG_BINARY)) then
+          List.Values[Name] := RegReadStringDef(RootKey, Key, Name, '');
+      end;
+    end;
+  finally
+    List.EndUpdate;
+    TempList.Free;
   end;
 end;
 
