@@ -3988,7 +3988,7 @@ const
   BDSUpdateKeyName = 'UpdatePackInstalled';
 var
   KeyLen, I: Integer;
-  Key: string;
+  Key, GlobalKey: string;
   Ed: TJclBorRADToolEdition;
 
   function FormatVersionNumber(const Num: Integer): string;
@@ -4011,7 +4011,12 @@ var
 
 begin
   Key := ConfigData.FileName;
-  RegGetValueNamesAndValues(HKEY_LOCAL_MACHINE, Key, Globals);
+  GlobalKey := StrEnsureSuffix('\', Key) + GlobalsKeyName;
+  // overriden settings first
+  RegGetValueNamesAndValues(HKCU, GlobalKey, Globals);
+  RegGetValueNamesAndValues(HKCU, Key, Globals);
+  RegGetValueNamesAndValues(HKLM, GlobalKey, Globals);
+  RegGetValueNamesAndValues(HKLM, Key, Globals);
 
   KeyLen := Length(Key);
   if (KeyLen > 3) and StrIsDigit(Key[KeyLen - 2]) and (Key[KeyLen - 1] = '.') and (Key[KeyLen] = '0') then
