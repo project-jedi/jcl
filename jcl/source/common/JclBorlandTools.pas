@@ -804,7 +804,7 @@ type
     function CleanPackageCache(const BinaryFileName: string): Boolean;
 
     function CompileDelphiDotNetProject(const ProjectName, OutputDir: string; PEFormat: TJclBorPlatform = bp32bit;
-      const CLRVersion: string = ''; const ExtraOptions: string = ''): Boolean;
+      const ExtraOptions: string = ''): Boolean;
 
     property DualPackageInstallation: Boolean read FDualPackageInstallation write SetDualPackageInstallation;
     property Help2Manager: TJclHelp2Manager read FHelp2Manager;
@@ -896,13 +896,8 @@ uses
 
 // Internal
 
+{$IFDEF MSWINDOWS}
 type
-  TUpdatePack = record
-    Version: Byte;
-    LatestUpdatePack: Integer;
-  end;
-
-  {$IFDEF MSWINDOWS}
   TBDSVersionInfo = record
     Name: string;
     VersionStr: string;
@@ -910,7 +905,7 @@ type
     CoreIdeVersion: string;
     Supported: Boolean;
   end;
-  {$ENDIF MSWINDOWS}
+{$ENDIF MSWINDOWS}
 
 const
   {$IFDEF MSWINDOWS}
@@ -4767,8 +4762,7 @@ begin
 end;
 
 function TJclBDSInstallation.CompileDelphiDotNetProject(const ProjectName,
-  OutputDir: string; PEFormat: TJclBorPlatform; const CLRVersion,
-  ExtraOptions: string): Boolean;
+  OutputDir: string; PEFormat: TJclBorPlatform; const ExtraOptions: string): Boolean;
 var
   DCCILOptions, PlatformOption, PdbOption: string;
 begin
