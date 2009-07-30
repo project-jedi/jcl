@@ -87,6 +87,7 @@
   CPUx86_64           Defined when target platform is native x86_64 (win64)
   CPU32               Defined when target is 32-bit
   CPU64	              Defined when target is 64-bit
+  CPUASM              Defined when target assembler is available
 
 - Visual library Directives
 
@@ -446,7 +447,8 @@
   {$MODE DELPHI}
   {$ASMMODE Intel}
   {$UNDEF BORLAND}
-   // FPC defines CPU* and Unix automatically
+  {$DEFINE CPUASM}
+   // FPC defines CPU32, CPU64 and Unix automatically
 {$ENDIF}
 
 {$IFDEF BORLAND}
@@ -456,6 +458,7 @@
   {$IFNDEF CLR}
     {$DEFINE CPU386}  // For Borland compilers select the x86 compat assembler by default
     {$DEFINE CPU32}   // Assume Borland compilers are 32-bit (rather than 64-bit)
+    {$DEFINE CPUASM}
   {$ENDIF ~CLR}
 {$ENDIF BORLAND}
 
@@ -1138,9 +1141,9 @@
 { Cross-platform related defines                                               }
 {------------------------------------------------------------------------------}
 
-{$IFNDEF CPU386}
+{$IFNDEF CPUASM}
   {$DEFINE PUREPASCAL}
-{$ENDIF}
+{$ENDIF ~CPUASM}
 
 {$IFDEF WIN32}
   {$DEFINE MSWINDOWS} // predefined for D6+/BCB6+

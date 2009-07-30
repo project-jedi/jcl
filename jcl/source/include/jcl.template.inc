@@ -39,6 +39,7 @@
 // $Id$
 
 // Math precision selection, mutually exclusive
+// FPC does not support EXTENDED when targetting x86_64, MATH_DOUBLE_PRECISION is the default in this situation
 {.$DEFINE MATH_EXTENDED_PRECISION} // default
 {.$DEFINE MATH_DOUBLE_PRECISION}
 {.$DEFINE MATH_SINGLE_PRECISION}

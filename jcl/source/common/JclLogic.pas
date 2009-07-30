@@ -540,7 +540,7 @@ end;
 {$ENDIF ~PUREPASCAL}
 
 const
-  BitSetPerNibble: array[0..15] of Byte = (0,1,1,2,1,2,2,3,1,2,2,3,2,3,3,4);
+  BitSetPerNibble: array[0..15] of Integer = (0,1,1,2,1,2,2,3,1,2,2,3,2,3,3,4);
 
 function CountBitsSet(X: Cardinal): Integer;
 var

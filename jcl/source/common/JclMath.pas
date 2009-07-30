@@ -126,11 +126,15 @@ var
   PrecisionTolerance: Float = 0.0000001;
   EpsSingle: Single;
   EpsDouble: Double;
+  {$IFDEF SUPPORTS_EXTENDED}
   EpsExtended: Extended;
+  {$ENDIF SUPPORTS_EXTENDED}
   Epsilon: Float;
   ThreeEpsSingle: Single;
   ThreeEpsDouble: Double;
+  {$IFDEF SUPPORTS_EXTENDED}
   ThreeEpsExtended: Extended;
+  {$ENDIF SUPPORTS_EXTENDED}
   ThreeEpsilon: Float;
 
 type
@@ -145,52 +149,64 @@ function DoubleToHex(const D: Double): string; {$IFDEF SUPPORTS_INLINE}inline;{$
 function HexToDouble(const Hex: string): Double;
 
 // Converts degrees to radians.
+{$IFDEF SUPPORTS_EXTENDED}
 function DegToRad(const Value: Extended): Extended; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+{$ENDIF SUPPORTS_EXTENDED}
 function DegToRad(const Value: Double): Double; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 function DegToRad(const Value: Single): Single; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
-{$IFDEF CPU386}
+{$IFDEF CPUASM}
 procedure FastDegToRad;
-{$ENDIF CPU386}
+{$ENDIF CPUASM}
 
 // Converts radians to degrees.
+{$IFDEF SUPPORTS_EXTENDED}
 function RadToDeg(const Value: Extended): Extended; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+{$ENDIF SUPPORTS_EXTENDED}
 function RadToDeg(const Value: Double): Double; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 function RadToDeg(const Value: Single): Single; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
-{$IFDEF CPU386}
+{$IFDEF CPUASM}
 procedure FastRadToDeg;
-{$ENDIF CPU386}
+{$ENDIF CPUASM}
 
 // Converts grads to radians.
+{$IFDEF SUPPORTS_EXTENDED}
 function GradToRad(const Value: Extended): Extended; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+{$ENDIF SUPPORTS_EXTENDED}
 function GradToRad(const Value: Double): Double; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 function GradToRad(const Value: Single): Single; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
-{$IFDEF CPU386}
+{$IFDEF CPUASM}
 procedure FastGradToRad;
-{$ENDIF CPU386}
+{$ENDIF CPUASM}
 
 // Converts radians to grads.
+{$IFDEF SUPPORTS_EXTENDED}
 function RadToGrad(const Value: Extended): Extended; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+{$ENDIF SUPPORTS_EXTENDED}
 function RadToGrad(const Value: Double): Double; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 function RadToGrad(const Value: Single): Single; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
-{$IFDEF CPU386}
+{$IFDEF CPUASM}
 procedure FastRadToGrad;
-{$ENDIF CPU386}
+{$ENDIF CPUASM}
 
 // Converts degrees to grads.
+{$IFDEF SUPPORTS_EXTENDED}
 function DegToGrad(const Value: Extended): Extended; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+{$ENDIF SUPPORTS_EXTENDED}
 function DegToGrad(const Value: Double): Double; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 function DegToGrad(const Value: Single): Single; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
-{$IFDEF CPU386}
+{$IFDEF CPUASM}
 procedure FastDegToGrad;
-{$ENDIF CPU386}
+{$ENDIF CPUASM}
 
 // Converts grads to degrees.
+{$IFDEF SUPPORTS_EXTENDED}
 function GradToDeg(const Value: Extended): Extended; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+{$ENDIF SUPPORTS_EXTENDED}
 function GradToDeg(const Value: Double): Double; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 function GradToDeg(const Value: Single): Single; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
-{$IFDEF CPU386}
+{$IFDEF CPUASM}
 procedure FastGradToDeg;
-{$ENDIF CPU386}
+{$ENDIF CPUASM}
 
 { Logarithmic }
 
@@ -260,7 +276,9 @@ function SetPrecisionTolerance(NewTolerance: Float): Float; {$IFDEF SUPPORTS_INL
 procedure SwapFloats(var X, Y: Float); {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 procedure CalcMachineEpsSingle;
 procedure CalcMachineEpsDouble;
+{$IFDEF SUPPORTS_EXTENDED}
 procedure CalcMachineEpsExtended;
+{$ENDIF SUPPORTS_EXTENDED}
 procedure CalcMachineEps;
 procedure SetPrecisionToleranceToEpsilon; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 
@@ -289,20 +307,20 @@ function EnsureRange(const AValue, AMin, AMax: Double): Double; overload;
 
 function IsRelativePrime(const X, Y: Cardinal): Boolean; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 function IsPrimeTD(N: Cardinal): Boolean;
-{$IFDEF CPU386}
+{$IFDEF CPUASM}
 function IsPrimeRM(N: Cardinal): Boolean;
-{$ENDIF CPU386}
+{$ENDIF CPUASM}
 function IsPrimeFactor(const F, N: Cardinal): Boolean; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 function PrimeFactors(N: Cardinal): TDynCardinalArray;
 
 var
   IsPrime: function(N: Cardinal): Boolean = IsPrimeTD;
 
-{$IFDEF CPU386}
+{$IFDEF CPUASM}
 procedure SetPrimalityTest(const Method: TPrimalityTestMethod);
-{$ENDIF CPU386}
+{$ENDIF CPUASM}
 
-{$IFDEF CPU386}
+{$IFDEF CPUASM}
 { Floating point value classification }
 
 type
@@ -319,8 +337,10 @@ type
 
 function FloatingPointClass(const Value: Single): TFloatingPointClass; overload;
 function FloatingPointClass(const Value: Double): TFloatingPointClass; overload;
+{$IFDEF SUPPORTS_EXTENDED}
 function FloatingPointClass(const Value: Extended): TFloatingPointClass; overload;
-{$ENDIF CPU386}
+{$ENDIF SUPPORTS_EXTENDED}
+{$ENDIF CPUASM}
 
 { NaN and INF support }
 
@@ -345,21 +365,29 @@ const
 
 function IsInfinite(const Value: Single): Boolean; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 function IsInfinite(const Value: Double): Boolean; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+{$IFDEF SUPPORTS_EXTENDED}
 function IsInfinite(const Value: Extended): Boolean; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+{$ENDIF SUPPORTS_EXTENDED}
 
 function IsNaN(const Value: Single): Boolean; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 function IsNaN(const Value: Double): Boolean; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+{$IFDEF SUPPORTS_EXTENDED}
 function IsNaN(const Value: Extended): Boolean; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+{$ENDIF SUPPORTS_EXTENDED}
 
 function IsSpecialValue(const X: Float): Boolean; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 
 procedure MakeQuietNaN(var X: Single; Tag: TNaNTag = 0); overload;
 procedure MakeQuietNaN(var X: Double; Tag: TNaNTag = 0); overload;
+{$IFDEF SUPPORTS_EXTENDED}
 procedure MakeQuietNaN(var X: Extended; Tag: TNaNTag = 0); overload;
+{$ENDIF SUPPORTS_EXTENDED}
 
 procedure MakeSignalingNaN(var X: Single; Tag: TNaNTag = 0); overload;
 procedure MakeSignalingNaN(var X: Double; Tag: TNaNTag = 0); overload;
+{$IFDEF SUPPORTS_EXTENDED}
 procedure MakeSignalingNaN(var X: Extended; Tag: TNaNTag = 0); overload;
+{$ENDIF SUPPORTS_EXTENDED}
 
 { Mine*Buffer fills "Buffer" with consecutive tagged signaling NaNs.
 
@@ -378,7 +406,9 @@ function MinedDoubleArray(Length: Integer): TDynDoubleArray;
 
 function GetNaNTag(const NaN: Single): TNaNTag; overload;
 function GetNaNTag(const NaN: Double): TNaNTag; overload;
+{$IFDEF SUPPORTS_EXTENDED}
 function GetNaNTag(const NaN: Extended): TNaNTag; overload;
+{$ENDIF SUPPORTS_EXTENDED}
 
 { Set support }
 
@@ -780,9 +810,9 @@ uses
   {$IFDEF Win32API}
   Windows,
   {$ENDIF Win32API}
-  {$IFDEF CPU386}
+  {$IFDEF CPUASM}
   Jcl8087,
-  {$ENDIF CPU386}
+  {$ENDIF CPUASM}
   JclResources;
 
 // Internal helper routines
@@ -846,10 +876,12 @@ end;
 
 // Converts degrees to radians.
 
+{$IFDEF SUPPORTS_EXTENDED}
 function DegToRad(const Value: Extended): Extended;
 begin
   Result := Value * RatioDegToRad;
 end;
+{$ENDIF SUPPORTS_EXTENDED}
 
 function DegToRad(const Value: Double): Double;
 begin
@@ -861,7 +893,7 @@ begin
   Result := Value * RatioDegToRad;
 end;
 
-{$IFDEF CPU386}
+{$IFDEF CPUASM}
 // Expects degrees in ST(0), leaves radians in ST(0)
 // ST(0) := ST(0) * PI / 180
 procedure FastDegToRad; assembler;
@@ -875,14 +907,16 @@ asm
         FMULP
         FWAIT
 end;
-{$ENDIF CPU386}
+{$ENDIF CPUASM}
 
 // Converts radians to degrees.
 
+{$IFDEF SUPPORTS_EXTENDED}
 function RadToDeg(const Value: Extended): Extended;
 begin
   Result := Value * RatioRadToDeg;
 end;
+{$ENDIF SUPPORTS_EXTENDED}
 
 function RadToDeg(const Value: Double): Double;
 begin
@@ -894,7 +928,7 @@ begin
   Result := Value * RatioRadToDeg;
 end;
 
-{$IFDEF CPU386}
+{$IFDEF CPUASM}
 // Expects radians in ST(0), leaves degrees in ST(0)
 // ST(0) := ST(0) * (180 / PI);
 procedure FastRadToDeg; assembler;
@@ -908,14 +942,16 @@ asm
         FMULP
         FWAIT
 end;
-{$ENDIF CPU386}
+{$ENDIF CPUASM}
 
 // Converts grads to radians.
 
+{$IFDEF SUPPORTS_EXTENDED}
 function GradToRad(const Value: Extended): Extended;
 begin
   Result := Value * RatioGradToRad;
 end;
+{$ENDIF SUPPORTS_EXTENDED}
 
 function GradToRad(const Value: Double): Double;
 begin
@@ -927,7 +963,7 @@ begin
   Result := Value * RatioGradToRad;
 end;
 
-{$IFDEF CPU386}
+{$IFDEF CPUASM}
 // Expects grads in ST(0), leaves radians in ST(0)
 // ST(0) := ST(0) * PI / 200
 procedure FastGradToRad; assembler;
@@ -941,14 +977,16 @@ asm
         FMULP
         FWAIT
 end;
-{$ENDIF CPU386}
+{$ENDIF CPUASM}
 
 // Converts radians to grads.
 
+{$IFDEF SUPPORTS_EXTENDED}
 function RadToGrad(const Value: Extended): Extended;
 begin
   Result := Value * RatioRadToGrad;
 end;
+{$ENDIF SUPPORTS_EXTENDED}
 
 function RadToGrad(const Value: Double): Double;
 begin
@@ -960,7 +998,7 @@ begin
   Result := Value * RatioRadToGrad;
 end;
 
-{$IFDEF CPU386}
+{$IFDEF CPUASM}
 // Expects radians in ST(0), leaves grads in ST(0)
 // ST(0) := ST(0) * (200 / PI);
 procedure FastRadToGrad; assembler;
@@ -974,14 +1012,16 @@ asm
         FMULP
         FWAIT
 end;
-{$ENDIF CPU386}
+{$ENDIF CPUASM}
 
 // Converts degrees to grads.
 
+{$IFDEF SUPPORTS_EXTENDED}
 function DegToGrad(const Value: Extended): Extended;
 begin
   Result := Value * RatioDegToGrad;
 end;
+{$ENDIF SUPPORTS_EXTENDED}
 
 function DegToGrad(const Value: Double): Double;
 begin
@@ -993,7 +1033,7 @@ begin
   Result := Value * RatioDegToGrad;
 end;
 
-{$IFDEF CPU386}
+{$IFDEF CPUASM}
 // Expects Degrees in ST(0), leaves grads in ST(0)
 // ST(0) := ST(0) * (200 / 180);
 procedure FastDegToGrad; assembler;
@@ -1007,14 +1047,16 @@ asm
         FMULP
         FWAIT
 end;
-{$ENDIF CPU386}
+{$ENDIF CPUASM}
 
 // Converts grads to degrees.
 
+{$IFDEF SUPPORTS_EXTENDED}
 function GradToDeg(const Value: Extended): Extended;
 begin
   Result := Value * RatioGradToDeg;
 end;
+{$ENDIF SUPPORTS_EXTENDED}
 
 function GradToDeg(const Value: Double): Double;
 begin
@@ -1026,7 +1068,7 @@ begin
   Result := Value * RatioGradToDeg;
 end;
 
-{$IFDEF CPU386}
+{$IFDEF CPUASM}
 // Expects grads in ST(0), leaves radians in ST(0)
 // ST(0) := ST(0) * PI / 200
 procedure FastGradToDeg; assembler;
@@ -1040,7 +1082,7 @@ asm
         FMULP
         FWAIT
 end;
-{$ENDIF CPU386}
+{$ENDIF CPUASM}
 
 procedure DomainCheck(Err: Boolean);
 begin
@@ -1052,7 +1094,7 @@ end;
 
 function LogBase10(X: Float): Float;
 
-  {$IFDEF CPU386}
+  {$IFDEF CPUASM}
   function FLogBase10(X: Float): Float; assembler;
   asm
           FLDLG2
@@ -1060,7 +1102,7 @@ function LogBase10(X: Float): Float;
           FYL2X
           FWAIT
   end;
-  {$ENDIF CPU386}
+  {$ENDIF CPUASM}
 
 begin
   DomainCheck(X <= 0.0);
@@ -1069,7 +1111,7 @@ end;
 
 function LogBase2(X: Float): Float;
 
-  {$IFDEF CPU386}
+  {$IFDEF CPUASM}
   function FLogBase2(X: Float): Float; assembler;
   asm
           FLD1
@@ -1077,7 +1119,7 @@ function LogBase2(X: Float): Float;
           FYL2X
           FWAIT
   end;
-  {$ENDIF CPU386}
+  {$ENDIF CPUASM}
 
 begin
   DomainCheck(X <= 0.0);
@@ -1086,7 +1128,7 @@ end;
 
 function LogBaseN(Base, X: Float): Float;
 
-  {$IFDEF CPU386}
+  {$IFDEF CPUASM}
   function FLogBaseN(Base, X: Float): Float; assembler;
   asm
           FLD1
@@ -1098,7 +1140,7 @@ function LogBaseN(Base, X: Float): Float;
           FDIVP   ST(1), ST(0)
           FWAIT
   end;
-  {$ENDIF CPU386}
+  {$ENDIF CPUASM}
 
 begin
   DomainCheck((X <= 0.0) or (Base <= 0.0) or (Base = 1.0));
@@ -1109,7 +1151,7 @@ end;
 
 function ArcCos(X: Float): Float;
 
-  {$IFDEF CPU386}
+  {$IFDEF CPUASM}
   function FArcCos(X: Float): Float; assembler;
   asm
           FLD     X
@@ -1122,7 +1164,7 @@ function ArcCos(X: Float): Float;
           FPATAN
           FWAIT
   end;
-  {$ENDIF CPU386}
+  {$ENDIF CPUASM}
 
 begin
   DomainCheck(Abs(X) > 1.0);
@@ -1142,7 +1184,7 @@ end;
 
 function ArcSec(X: Float): Float;
 
-  {$IFDEF CPU386}
+  {$IFDEF CPUASM}
   function FArcTan(X: Float): Float; assembler;
   asm
           FLD     X
@@ -1150,7 +1192,7 @@ function ArcSec(X: Float): Float;
           FPATAN
           FWAIT
   end;
-  {$ENDIF CPU386}
+  {$ENDIF CPUASM}
 
 begin
   Result := FArcTan(Sqrt(X*X - 1));
@@ -1158,7 +1200,7 @@ end;
 
 function ArcSin(X: Float): Float;
 
-  {$IFDEF CPU386}
+  {$IFDEF CPUASM}
   function FArcSin(X: Float): Float; assembler;
   asm
           FLD     X
@@ -1170,15 +1212,15 @@ function ArcSin(X: Float): Float;
           FPATAN
           FWAIT
   end;
-  {$ENDIF CPU386}
+  {$ENDIF CPUASM}
 
 begin
   DomainCheck(Abs(X) > 1.0);
-  {$IFDEF CPU386}
+  {$IFDEF CPUASM}
   Result := FArcSin(X);
-  {$ELSE ~CPU386}
+  {$ELSE ~CPUASM}
   Result := System.Math.Asin(X);
-  {$ENDIF ~CPU386}
+  {$ENDIF ~CPUASM}
 end;
 
 function ArcTan(X: Float): Float;
@@ -1206,14 +1248,14 @@ end;
 
 function Cos(X: Float): Float;
 
-  {$IFDEF CPU386}
+  {$IFDEF CPUASM}
   function FCos(X: Float): Float; assembler;
   asm
           FLD     X
           FCOS
           FWAIT
   end;
-  {$ENDIF CPU386}
+  {$ENDIF CPUASM}
 
 begin
   DomainCheck(Abs(X) > MaxAngle);
@@ -1222,7 +1264,7 @@ end;
 
 function Cot(X: Float): Float;
 
-  {$IFDEF CPU386}
+  {$IFDEF CPUASM}
   function FCot(X: Float): Float; assembler;
   asm
           FLD     X
@@ -1230,7 +1272,7 @@ function Cot(X: Float): Float;
           FDIVRP  ST(1), ST(0)
           FWAIT
   end;
-  {$ENDIF CPU386}
+  {$ENDIF CPUASM}
 
 begin
   DomainCheck(Abs(X) > MaxAngle);
@@ -1266,7 +1308,7 @@ end;
 
 function Sec(X: Float): Float;
 
-  {$IFDEF CPU386}
+  {$IFDEF CPUASM}
   function FSec(X: Float): Float; assembler;
   asm
           FLD     X
@@ -1275,7 +1317,7 @@ function Sec(X: Float): Float;
           FDIVRP  ST(1), ST(0)
           FWAIT
   end;
-  {$ENDIF CPU386}
+  {$ENDIF CPUASM}
 
 begin
   DomainCheck(Abs(X) > MaxAngle);
@@ -1285,14 +1327,14 @@ end;
 
 function Sin(X: Float): Float;
 
-  {$IFDEF CPU386}
+  {$IFDEF CPUASM}
   function FSin(X: Float): Float; assembler;
   asm
           FLD     X
           FSIN
           FWAIT
   end;
-  {$ENDIF CPU386}
+  {$ENDIF CPUASM}
 
 begin
   {$IFNDEF MATH_EXT_SPECIALVALUES}
@@ -1303,7 +1345,7 @@ end;
 
 procedure SinCos(X: Float; out Sin, Cos: Float);
 
-  {$IFDEF CPU386}
+  {$IFDEF CPUASM}
   procedure FSinCos(X: Float; out Sin, Cos: Float); assembler;
   asm
           FLD     X
@@ -1312,7 +1354,7 @@ procedure SinCos(X: Float; out Sin, Cos: Float);
           FSTP    Float PTR [EAX]
           FWAIT
   end;
-  {$ENDIF CPU386}
+  {$ENDIF CPUASM}
 
 begin
   DomainCheck(Abs(X) > MaxAngle);
@@ -1321,7 +1363,7 @@ end;
 
 function Tan(X: Float): Float;
 
-  {$IFDEF CPU386}
+  {$IFDEF CPUASM}
   function FTan(X: Float): Float; assembler;
   asm
           FLD     X
@@ -1329,7 +1371,7 @@ function Tan(X: Float): Float;
           FSTP    ST(0)
           FWAIT
   end;
-  {$ENDIF CPU386}
+  {$ENDIF CPUASM}
 
 begin
   DomainCheck(Abs(X) > MaxAngle);
@@ -1345,7 +1387,7 @@ end;
 
 function ArcCosH(X: Float): Float;
 
-  {$IFDEF CPU386}
+  {$IFDEF CPUASM}
   function FArcCosH(X: Float): Float; assembler;
   asm
           FLDLN2
@@ -1358,7 +1400,7 @@ function ArcCosH(X: Float): Float;
           FADDP   ST(1), ST
           FYL2X
   end;
-  {$ENDIF CPU386}
+  {$ENDIF CPUASM}
 
 begin
   DomainCheck(X < 1.0);
@@ -1398,7 +1440,7 @@ end;
 
 function ArcTanH(X: Float): Float;
 
-  {$IFDEF CPU386}
+  {$IFDEF CPUASM}
   function FArcTanH(X: Float): Float; assembler;
   asm
           FLDLN2
@@ -1414,7 +1456,7 @@ function ArcTanH(X: Float): Float;
           FYL2X
           FWAIT
   end;
-  {$ENDIF CPU386}
+  {$ENDIF CPUASM}
 
 begin
   DomainCheck(Abs(X) >= 1.0);
@@ -1779,6 +1821,7 @@ begin
   ThreeEpsDouble := 3.0 * EpsDouble;
 end;
 
+{$IFDEF SUPPORTS_EXTENDED}
 procedure CalcMachineEpsExtended;
 var
   One: Extended;
@@ -1793,6 +1836,7 @@ begin
   EpsExtended := 2.0 * EpsExtended;
   ThreeEpsExtended := 3.0 * EpsExtended;
 end;
+{$ENDIF SUPPORTS_EXTENDED}
 
 procedure CalcMachineEps;
 begin
@@ -2472,7 +2516,7 @@ begin
   end;
 end;
 
-{$IFDEF CPU386}
+{$IFDEF CPUASM}
 { Rabin-Miller Strong Primality Test }
 
 function IsPrimeRM(N: Cardinal): Boolean;
@@ -2560,7 +2604,7 @@ asm
         JNL   @@D
 @@E:    SETE  AL
 end;
-{$ENDIF CPU386}
+{$ENDIF CPUASM}
 
 function PrimeFactors(N: Cardinal): TDynCardinalArray;
 var
@@ -2630,7 +2674,7 @@ begin
   end;
 end;
 
-{$IFDEF CPU386}
+{$IFDEF CPUASM}
 //=== Floating point value classification ====================================
 
 const
@@ -2687,6 +2731,7 @@ asm
         CALL    _FPClass
 end;
 
+{$IFDEF SUPPORTS_EXTENDED}
 function FloatingPointClass(const Value: Extended): TFloatingPointClass; overload;
 asm
         {$IFDEF PIC}
@@ -2696,7 +2741,8 @@ asm
         FLD     Value
         CALL    _FPClass
 end;
-{$ENDIF CPU386}
+{$ENDIF SUPPORTS_EXTENDED}
+{$ENDIF CPUASM}
 
 //=== NaN and Infinity support ===============================================
 
@@ -2710,10 +2756,12 @@ begin
   Result := FloatingPointClass(Value) = fpInfinite;
 end;
 
+{$IFDEF SUPPORTS_EXTENDED}
 function IsInfinite(const Value: Extended): Boolean; overload;
 begin
   Result := FloatingPointClass(Value) = fpInfinite;
 end;
+{$ENDIF SUPPORTS_EXTENDED}
 
 const
   sSignBit = 31;
@@ -2771,10 +2819,12 @@ begin
   Result := FloatingPointClass(Value) = fpNaN;
 end;
 
+{$IFDEF SUPPORTS_EXTENDED}
 function IsNaN(const Value: Extended): Boolean; overload;
 begin
   Result := FloatingPointClass(Value) = fpNaN;
 end;
+{$ENDIF SUPPORTS_EXTENDED}
 
 procedure CheckNaN(const Value: Single); overload;
 var
@@ -2802,6 +2852,7 @@ begin
   end;
 end;
 
+{$IFDEF SUPPORTS_EXTENDED}
 procedure CheckNaN(const Value: Extended); overload;
 var
   SaveExMask: T8087Exceptions;
@@ -2814,6 +2865,7 @@ begin
     SetMasked8087Exceptions(SaveExMask);
   end;
 end;
+{$ENDIF SUPPORTS_EXTENDED}
 
 function GetNaNTag(const NaN: Single): TNaNTag;
 var
@@ -2849,6 +2901,7 @@ begin
     Result := Temp;
 end;
 
+{$IFDEF SUPPORTS_EXTENDED}
 function GetNaNTag(const NaN: Extended): TNaNTag;
 var
   Temp: Integer;
@@ -2867,6 +2920,7 @@ begin
   else
     Result := Temp;
 end;
+{$ENDIF SUPPORTS_EXTENDED}
 
 {$IFDEF MSWINDOWS}
 // ExceptObjProc is not used in FPC
@@ -3014,6 +3068,7 @@ begin
     {$ENDIF ~FPC}
 end;
 
+{$IFDEF SUPPORTS_EXTENDED}
 procedure MakeQuietNaN(var X: Extended; Tag: TNaNTag);
 const
   QuietNaNSignificand = $C000000000000000;
@@ -3035,6 +3090,7 @@ begin
     Include(TExtendedBits(X), xSignBit);
     {$ENDIF ~FPC}
 end;
+{$ENDIF SUPPORTS_EXTENDED}
 
 procedure MakeSignalingNaN(var X: Single; Tag: TNaNTag);
 begin
@@ -3063,6 +3119,7 @@ begin
   {$ENDIF ~FPC}
 end;
 
+{$IFDEF SUPPORTS_EXTENDED}
 procedure MakeSignalingNaN(var X: Extended; Tag: TNaNTag);
 begin
   {$IFDEF FPC}
@@ -3076,6 +3133,7 @@ begin
   Exclude(TExtendedBits(X), xNaNQuietFlag);
   {$ENDIF ~FPC}
 end;
+{$ENDIF SUPPORTS_EXTENDED}
 
 procedure MineSingleBuffer(var Buffer; Count: Integer; StartTag: TNaNTag);
 var

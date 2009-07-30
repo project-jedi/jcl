@@ -312,10 +312,11 @@ end;
 // EAX contains Source, EDX contains Target, ECX contains Count
 
 procedure ExpandASCIIString(const Source: PAnsiChar; Target: PWideChar; Count: Cardinal);
-// Source in EAX
-// Target in EDX
-// Count in ECX
+// Source in EAX/RAX
+// Target in EDX/RDX
+// Count  in ECX/RCX
 asm
+       {$IFDEF CPU32}
        JECXZ   @@Finish           // go out if there is nothing to do (ECX = 0)
        PUSH    ESI
        MOV     ESI, EAX
@@ -328,6 +329,21 @@ asm
        DEC     ECX
        JNZ     @@1
        POP     ESI
+       {$ENDIF CPU32}
+       {$IFDEF CPU64}
+       JRCXZ   @@Finish           // go out if there is nothing to do (ECX = 0)
+       PUSH    RSI
+       MOV     RSI, RAX
+       XOR     RAX, RAX
+@@1:
+       MOV     AL, [RSI]
+       INC     RSI
+       MOV     [RDX], AX
+       ADD     RDX, 2
+       DEC     RCX
+       JNZ     @@1
+       POP     RSI
+       {$ENDIF CPU64}
 @@Finish:
 end;
 
@@ -1571,8 +1587,8 @@ begin
     if Result then
     begin
       Ch := Ch - HalfBase;
-      S[StrPos] := WideChar((Ch shr HalfShift) + SurrogateHighStart);
-      S[StrPos + 1] := WideChar((Ch and HalfMask) + SurrogateLowStart);
+      S[StrPos] := WideChar((Ch shr HalfShift) or SurrogateHighStart);
+      S[StrPos + 1] := WideChar((Ch and HalfMask) or SurrogateLowStart);
       Inc(StrPos, 2);
     end;
   end
@@ -1649,8 +1665,8 @@ begin
   else
   if Ch <= MaximumUTF16 then
     // stores a surrogate pair
-    Result := StreamWriteWord(S, (Ch shr HalfShift) + SurrogateHighStart) and
-              StreamWriteWord(S, (Ch and HalfMask) + SurrogateLowStart)
+    Result := StreamWriteWord(S, (Ch shr HalfShift) or SurrogateHighStart) and
+              StreamWriteWord(S, (Ch and HalfMask) or SurrogateLowStart)
   else
   begin
     {$IFDEF UNICOLE_SILENT_FAILURE}
