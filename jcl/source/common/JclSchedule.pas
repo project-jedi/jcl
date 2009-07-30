@@ -183,7 +183,9 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\source\common'
+    LogPath: 'JCL\source\common';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
@@ -193,6 +195,7 @@ uses
   JclDateTime, JclResources;  
 
 {$IFNDEF RTL140_UP}
+{$IFNDEF FPC}
 
 const
   S_OK    = $00000000;
@@ -253,6 +256,7 @@ begin
   if GetInterface(IID, Obj) then Result := S_OK else Result := E_NOINTERFACE;
 end;
 
+{$ENDIF ~FPC}
 {$ENDIF ~RTL140_UP}
 
 //=== { TScheduleAggregate } =================================================
@@ -294,7 +298,7 @@ end;
 //=== { TDailyFreq } =========================================================
 
 type
-  TDailyFreq = class(TAggregatedObject)
+  TDailyFreq = class(TAggregatedObject, IJclScheduleDayFrequency, IInterface)
   private
     FStartTime: Cardinal;
     FEndTime: Cardinal;
@@ -403,7 +407,7 @@ end;
 //=== { TDailySchedule } =====================================================
 
 type
-  TDailySchedule = class(TScheduleAggregate)
+  TDailySchedule = class(TScheduleAggregate, IJclDailySchedule, IInterface)
   private
     FEveryWeekDay: Boolean;
     FInterval: Cardinal;
@@ -504,7 +508,7 @@ end;
 //=== { TWeeklySchedule } ====================================================
 
 type
-  TWeeklySchedule = class(TScheduleAggregate)
+  TWeeklySchedule = class(TScheduleAggregate, IJclWeeklySchedule, IInterface)
   private
     FDaysOfWeek: TScheduleWeekDays;
     FInterval: Cardinal;
@@ -599,7 +603,7 @@ end;
 //=== { TMonthlySchedule } ===================================================
 
 type
-  TMonthlySchedule = class(TScheduleAggregate)
+  TMonthlySchedule = class(TScheduleAggregate, IJclMonthlySchedule, IInterface)
   private
     FIndexKind: TScheduleIndexKind;
     FIndexValue: Integer;
@@ -948,7 +952,7 @@ end;
 //=== { TYearlySchedule } ====================================================
 
 type
-  TYearlySchedule = class(TMonthlySchedule)
+  TYearlySchedule = class(TMonthlySchedule, IJclYearlySchedule, IInterface)
   private
     FMonth: Cardinal;
   protected
@@ -1043,6 +1047,9 @@ end;
 //=== { TSchedule } ==========================================================
 
 type
+
+  { TSchedule }
+
   TSchedule = class(TInterfacedObject, IJclSchedule, IJclScheduleDayFrequency, IJclDailySchedule,
     IJclWeeklySchedule, IJclMonthlySchedule, IJclYearlySchedule)
   private
@@ -1061,13 +1068,19 @@ type
     FDayCount: Cardinal;
     FLastEvent: TTimeStamp;
 
+    function GetDailyFreq: IJclScheduleDayFrequency;
+    function GetDailySchedule: IJclDailySchedule;
+    function GetWeeklySchedule: IJclWeeklySchedule;
+    function GetMonthlySchedule: IJclMonthlySchedule;
+    function GetYearlySchedule: IJclYearlySchedule;
+
     function GetNextEventStamp(const From: TTimeStamp): TTimeStamp;
 
-    property DailyFreq: TDailyFreq read FDailyFreq implements IJclScheduleDayFrequency;
-    property DailySchedule: TDailySchedule read FDailySchedule implements IJclDailySchedule;
-    property WeeklySchedule: TWeeklySchedule read FWeeklySchedule implements IJclWeeklySchedule;
-    property MonthlySchedule: TMonthlySchedule read FMonthlySchedule implements IJclMonthlySchedule;
-    property YearlySchedule: TYearlySchedule read FYearlySchedule implements IJclYearlySchedule;
+    property DailyFreq: IJclScheduleDayFrequency read GetDailyFreq implements IJclScheduleDayFrequency;
+    property DailySchedule: IJclDailySchedule read GetDailySchedule implements IJclDailySchedule;
+    property WeeklySchedule: IJclWeeklySchedule read GetWeeklySchedule implements IJclWeeklySchedule;
+    property MonthlySchedule: IJclMonthlySchedule read GetMonthlySchedule implements IJclMonthlySchedule;
+    property YearlySchedule: IJclYearlySchedule read GetYearlySchedule implements IJclYearlySchedule;
   public
     constructor Create;
     destructor Destroy; override;
@@ -1130,6 +1143,31 @@ begin
   inherited Destroy;
 end;
 
+function TSchedule.GetDailyFreq: IJclScheduleDayFrequency;
+begin
+  Result := FDailyFreq;
+end;
+
+function TSchedule.GetDailySchedule: IJclDailySchedule;
+begin
+  Result := FDailySchedule;
+end;
+
+function TSchedule.GetWeeklySchedule: IJclWeeklySchedule;
+begin
+  Result := FWeeklySchedule;
+end;
+
+function TSchedule.GetMonthlySchedule: IJclMonthlySchedule;
+begin
+  Result := FMonthlySchedule;
+end;
+
+function TSchedule.GetYearlySchedule: IJclYearlySchedule;
+begin
+  Result := FYearlySchedule;
+end;
+
 function TSchedule.GetNextEventStamp(const From: TTimeStamp): TTimeStamp;
 var
   UseFrom: TTimeStamp;
@@ -1147,51 +1185,51 @@ begin
         Result := StartDate;
     srkDaily:
       begin
-        Result := DailyFreq.NextValidStamp(UseFrom);
+        Result := FDailyFreq.NextValidStamp(UseFrom);
         if IsNullTimeStamp(Result) then
         begin
           Result.Date := UseFrom.Date;
           Result.Time := DailyFreq.StartTime;
-          Result := DailySchedule.NextValidStamp(Result);
+          Result := FDailySchedule.NextValidStamp(Result);
         end
         else
-          DailySchedule.MakeValidStamp(Result);
+          FDailySchedule.MakeValidStamp(Result);
       end;
     srkWeekly:
       begin
-        Result := DailyFreq.NextValidStamp(UseFrom);
+        Result := FDailyFreq.NextValidStamp(UseFrom);
         if IsNullTimeStamp(Result) then
         begin
           Result.Date := UseFrom.Date;
           Result.Time := DailyFreq.StartTime;
-          Result := WeeklySchedule.NextValidStamp(Result);
+          Result := FWeeklySchedule.NextValidStamp(Result);
         end
         else
-          WeeklySchedule.MakeValidStamp(Result);
+          FWeeklySchedule.MakeValidStamp(Result);
       end;
     srkMonthly:
       begin
-        Result := DailyFreq.NextValidStamp(UseFrom);
+        Result := FDailyFreq.NextValidStamp(UseFrom);
         if IsNullTimeStamp(Result) then
         begin
           Result.Date := UseFrom.Date;
           Result.Time := DailyFreq.StartTime;
-          Result := MonthlySchedule.NextValidStamp(Result);
+          Result := FMonthlySchedule.NextValidStamp(Result);
         end
         else
-          MonthlySchedule.MakeValidStamp(Result);
+          FMonthlySchedule.MakeValidStamp(Result);
       end;
     srkYearly:
       begin
-        Result := DailyFreq.NextValidStamp(UseFrom);
+        Result := FDailyFreq.NextValidStamp(UseFrom);
         if IsNullTimeStamp(Result) then
         begin
           Result.Date := UseFrom.Date;
           Result.Time := DailyFreq.StartTime;
-          Result := YearlySchedule.NextValidStamp(Result);
+          Result := FYearlySchedule.NextValidStamp(Result);
         end
         else
-          YearlySchedule.MakeValidStamp(Result);
+          FYearlySchedule.MakeValidStamp(Result);
       end;
   end;
   if CompareTimeStamps(Result, UseFrom) < 0 then

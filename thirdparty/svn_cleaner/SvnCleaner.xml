@@ -18,12 +18,12 @@
     </property>
 
     <!-- general properties based on extensions -->
-    <setting path="" mask="*.pas *.cpp *.h *.dpr *.dpk *.inc *.mak *.fpc *.pl *.cs" recurse="yes" dironly="no">
+    <setting path="" mask="*.pas *.cpp *.h *.dpr *.dpk *.lpk *.inc *.mak *.pl *.cs" recurse="yes" dironly="no">
       <property name="svn:keywords">
         <value>URL HeadURL Author LastChangedBy Date LastChangedDate Rev Revision LastChangedRevision Id</value>
       </property>
     </setting>
-    <setting path="" mask="*.pas *.cpp *.inc *.h *.dpr *.dpk *.bpr *.bpk *.bpf *.bmk *.def *.conf *.sh *.txt *.bat *.xml *.html *.css *.exc *.bpg *.bdsgroup *.bdsproj *.groupproj *.dproj *.cproj *.dof *.rc *.dfm *.xfm *.dtx *.dsf *.dox *.dfg *.ini *.fpc *.mak *.int *.imp *.pl *.cmd *.manifest *.iss *.cs *.resx *.htaccess *.cfg" recurse="yes"  dironly="no">
+    <setting path="" mask="*.pas *.cpp *.inc *.h *.dpr *.dpk *.lpk *.bpr *.bpk *.bpf *.bmk *.def *.conf *.sh *.txt *.bat *.xml *.html *.css *.exc *.bpg *.bdsgroup *.bdsproj *.groupproj *.dproj *.cproj *.dof *.rc *.dfm *.xfm *.dtx *.dsf *.dox *.dfg *.ini *.mak *.int *.imp *.pl *.cmd *.manifest *.iss *.cs *.resx *.htaccess *.cfg" recurse="yes"  dironly="no">
       <property name="svn:eol-style">
         <value>native</value>
       </property>
@@ -73,7 +73,7 @@
         <value>text/html</value>
       </property>
     </setting>
-    <setting path="" mask="*.xml *.XML *.dproj *.DPROJ *.cproj *.CPROJ *.bpk *.BPK *.bpr *.BPR *.bdsproj *.groupproj" recurse="yes" dironly="no">
+    <setting path="" mask="*.xml *.XML *.dproj *.DPROJ *.cproj *.CPROJ *.bpk *.BPK *.lpk *.bpr *.BPR *.bdsproj *.groupproj" recurse="yes" dironly="no">
       <property name="svn:mime-type">
         <value>text/xml</value>
       </property>
@@ -140,6 +140,7 @@
           <value>*.hpp</value>
           <value>*.dcu</value>
           <value>__history</value>
+          <value>*.bak</value>
         </property>
       </setting>
 
@@ -147,29 +148,32 @@
         <property name="svn:ignore">
           <value>*.drc</value>
           <value>*.dcu</value>
-          <value>*.~* </value>
+          <value>*.~*</value>
           <value>__history</value>
           <value>*.identcache</value>
           <value>*.local</value>
           <value>*.dproj</value>
+          <value>*.bak</value>
         </property>
 
         <setting path="" mask="build" recurse="no" dironly="yes">
           <property name="svn:ignore">
             <value>*.drc</value>
             <value>*.dcu</value>
-            <value>*.~* </value>
+            <value>*.~*</value>
             <value>__history</value>
             <value>*.identcache</value>
             <value>*.local</value>
             <value>*.dproj</value>
+            <value>*.bak</value>
           </property>
         </setting>
 
         <setting path="" mask="prototypes" recurse="no" dironly="yes">
           <property name="svn:ignore">
-            <value>*.~* </value>
+            <value>*.~*</value>
             <value>__history</value>
+            <value>*.bak</value>
           </property>
         </setting>
 
@@ -179,16 +183,18 @@
             <value>JediGUIMain.pas</value>
             <value>JediGUIReadme.pas</value>
             <value>*.dcu</value>
-            <value>*.~* </value>
+            <value>*.~*</value>
             <value>__history</value>
+            <value>*.bak</value>
           </property>
         </setting>
 
         <setting path="" mask="HeaderTest" recurse="no" dironly="yes">
           <property name="svn:ignore">
             <value>*.obj</value>
-            <value>*.~* </value>
+            <value>*.~*</value>
             <value>__history</value>
+            <value>*.bak</value>
           </property>
         </setting>
       </setting>
@@ -213,6 +219,17 @@
             <value>*.res</value>
           </property>
         </setting>
+
+        <setting path="" mask="fpc" recurse="yes" dironly="yes">
+          <property name="svn:ignore">
+            <value>*.o</value>
+            <value>*.ppu</value>
+            <value>*.compiled</value>
+            <value>*.a</value>
+            <value>*.res</value>
+            <value>*.rst</value>
+          </property>
+        </setting>
       </setting>
 
       <setting path="packages" mask="" recurse="no" dironly="yes">
@@ -223,6 +240,7 @@
           <value>*.~*</value>
           <value>*.identcache</value>
           <value>*.cfg</value>
+          <value>*.bak</value>
         </property>
 
         <setting path="" mask="c?" recurse="no" dironly="yes">
@@ -247,6 +265,24 @@
           </property>
         </setting>
 
+        <setting path="" mask="fpc" recurse="no" dironly="yes">
+          <property name="svn:ignore">
+            <value>*.bak</value>
+            <value>*.~*</value>
+            <value>*.o</value>
+            <value>*.ppu</value>
+            <value>*.exe</value>
+            <value>*.or</value>
+            <value>*.ico</value>
+            <value>*.lpi</value>
+            <value>*.lpr</value>
+            <value>*.lrs</value>
+            <value>*.exe</value>
+            <value>*.rc</value>
+            <value>*.res</value>
+          </property>
+        </setting>
+
       </setting>
 
       <setting path="source" mask="" recurse="no" dironly="yes">
@@ -260,6 +296,7 @@
             <value>*.ppu</value>
             <value>*.rst</value>
             <value>__history</value>
+            <value>*.bak</value>
           </property>
         </setting>
 
@@ -272,6 +309,7 @@
             <value>*.ppu</value>
             <value>*.rst</value>
             <value>__history</value>
+            <value>*.bak</value>
           </property>
         </setting>
 
@@ -284,6 +322,7 @@
             <value>*.ppu</value>
             <value>*.rst</value>
             <value>__history</value>
+            <value>*.bak</value>
           </property>
         </setting>
 
@@ -296,6 +335,7 @@
             <value>*.ppu</value>
             <value>*.rst</value>
             <value>__history</value>
+            <value>*.bak</value>
           </property>
         </setting>
 
@@ -308,11 +348,13 @@
             <value>*.ppu</value>
             <value>*.rst</value>
             <value>__history</value>
+            <value>*.bak</value>
           </property>
         </setting>
 
         <setting path="" mask="include" recurse="no" dironly="yes">
           <property name="svn:ignore">
+            <value>jclfpc.inc</value>
             <value>jclc5.inc</value>
             <value>jclc6.inc</value>
             <value>jcld5.inc</value>
@@ -331,6 +373,7 @@
           <property name="svn:ignore">
             <value>*.~*</value>
             <value>__history</value>
+            <value>*.bak</value>
           </property>
         </setting>
 

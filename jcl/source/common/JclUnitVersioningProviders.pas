@@ -106,7 +106,6 @@ const
   JclUnitVersioningDataResName = 'JCLUV';
 
 type
-  PJclUnitVersioningHeader = ^TJclUnitVersioningHeader;
   TJclUnitVersioningHeader = record
     UnitCount: Integer;
   end;
@@ -138,9 +137,13 @@ end;
 procedure TJclUnitVersioningList.Clear;
 var
   I: Integer;
+  Item: PUnitVersionInfo;
 begin
   for I := FItems.Count - 1 downto 0 do
-    Dispose(FItems[I]);
+  begin
+    Item := PUnitVersionInfo(FItems[I]);
+    Dispose(Item);
+  end;
   FItems.Clear;
 end;
 
@@ -177,6 +180,7 @@ begin
   begin
     if AStream.Size - AStream.Position >= SizeOf(StringLength) then
     begin
+      StringLength := 0;
       AStream.Read(StringLength, SizeOf(StringLength));
       if StringLength <= AStream.Size - AStream.Position then
       begin
@@ -259,6 +263,7 @@ begin
   if Assigned(AStream) then
   begin
     Clear;
+    Header.UnitCount := 0;
     AStream.Read(Header, SizeOf(Header));
     UnitsToRead := Header.UnitCount;
     LastReadOkay := True;
@@ -395,6 +400,8 @@ const
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JCL\source\common';
+    Extra: '';
+    Data: nil
   );
 
 initialization

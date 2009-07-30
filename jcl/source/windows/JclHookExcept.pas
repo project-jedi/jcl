@@ -1,4 +1,4 @@
-{**************************************************************************************************}
+﻿{**************************************************************************************************}
 {                                                                                                  }
 { Project JEDI Code Library (JCL)                                                                  }
 {                                                                                                  }
@@ -84,7 +84,7 @@ type
   TJclModuleArray = array of HMODULE;
 
 function JclInitializeLibrariesHookExcept: Boolean;
-function JclHookedExceptModulesList(var ModulesList: TJclModuleArray): Boolean;
+function JclHookedExceptModulesList(out ModulesList: TJclModuleArray): Boolean;
 
 // Hooking routines location info helper
 function JclBelongsHookedCode(Address: Pointer): Boolean;
@@ -95,7 +95,9 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\source\windows'
+    LogPath: 'JCL\source\windows';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
@@ -103,7 +105,9 @@ implementation
 
 uses
   Classes,
-  JclBase, JclPeImage, JclSysInfo, JclSysUtils;
+  JclBase,
+  JclPeImage,
+  JclSysInfo, JclSysUtils;
 
 type
   PExceptionArguments = ^TExceptionArguments;
@@ -130,7 +134,12 @@ var
   ExceptionsHooked: Boolean;
   Kernel32_RaiseException: procedure (dwExceptionCode, dwExceptionFlags,
     nNumberOfArguments: DWORD; lpArguments: PDWORD); stdcall;
+  {$IFDEF BORLAND}
   SysUtils_ExceptObjProc: function (P: PExceptionRecord): Exception;
+  {$ENDIF BORLAND}
+  {$IFDEF FPC}
+  SysUtils_ExceptProc: TExceptProc;
+  {$ENDIF FPC}
   Notifiers: TThreadList;
 
 {$IFDEF HOOK_DLL_EXCEPTIONS}
@@ -150,7 +159,7 @@ type
     destructor Destroy; override;
     class function JclHookExceptDebugHookAddr: Pointer;
     procedure HookModule(Module: HMODULE);
-    procedure List(var ModulesList: TJclModuleArray);
+    procedure List(out ModulesList: TJclModuleArray);
     procedure UnhookModule(Module: HMODULE);
   end;
 
@@ -233,7 +242,7 @@ end;
 
 {$STACKFRAMES ON}
 
-procedure DoExceptNotify(ExceptObj: Exception; ExceptAddr: Pointer; OSException: Boolean; ESP: Pointer);
+procedure DoExceptNotify(ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean; ESP: Pointer);
 var
   Priorities: TJclExceptNotifyPriority;
   I: Integer;
@@ -287,6 +296,7 @@ begin
   Kernel32_RaiseException(ExceptionCode, ExceptionFlags, NumberOfArguments, PDWORD(Arguments));
 end;
 
+{$IFDEF BORLAND}
 function HookedExceptObjProc(P: PExceptionRecord): Exception;
 var
   NewResultExcCache: Exception; // TLS optimization
@@ -297,6 +307,21 @@ begin
   if NewResultExcCache <> nil then
     Result := NewResultExcCache;
 end;
+{$ENDIF BORLAND}
+
+{$IFDEF FPC}
+procedure HookedExceptProc(Obj : TObject; Addr : Pointer; FrameCount:Longint; Frame: PPointer);
+var
+  NewResultExcCache: Exception; // TLS optimization
+begin
+  DoExceptNotify(Obj, Addr, True, GetEBP);
+  NewResultExcCache := NewResultExc;
+  if NewResultExcCache <> nil then
+    SysUtils_ExceptProc(NewResultExcCache, Addr, FrameCount, Frame)
+  else
+    SysUtils_ExceptProc(Obj, Addr, FrameCount, Frame)
+end;
+{$ENDIF FPC}
 
 {$IFNDEF STACKFRAMES_ON}
 {$STACKFRAMES OFF}
@@ -439,8 +464,14 @@ begin
     if Result then
     begin
       @Kernel32_RaiseException := RaiseExceptionAddressCache;
+      {$IFDEF BORLAND}
       SysUtils_ExceptObjProc := System.ExceptObjProc;
       System.ExceptObjProc := @HookedExceptObjProc;
+      {$ENDIF BORLAND}
+      {$IFDEF FPC}
+      SysUtils_ExceptProc := System.ExceptProc;
+      System.ExceptProc := @HookedExceptProc;
+      {$ENDIF FPC}
     end;
     ExceptionsHooked := Result;
   end
@@ -454,8 +485,14 @@ begin
   begin
     with TJclPeMapImgHooks do
       ReplaceImport(SystemBase, kernel32, @HookedRaiseException, @Kernel32_RaiseException);
+    {$IFDEF BORLAND}
     System.ExceptObjProc := @SysUtils_ExceptObjProc;
     @SysUtils_ExceptObjProc := nil;
+    {$ENDIF BORLAND}
+    {$IFDEF FPC}
+    System.ExceptProc := @SysUtils_ExceptProc;
+    @SysUtils_ExceptProc := nil;
+    {$ENDIF FPC}
     @Kernel32_RaiseException := nil;
     Result := True;
     ExceptionsHooked := False;
@@ -524,7 +561,7 @@ begin
   {$ENDIF HOOK_DLL_EXCEPTIONS}
 end;
 
-function JclHookedExceptModulesList(var ModulesList: TJclModuleArray): Boolean;
+function JclHookedExceptModulesList(out ModulesList: TJclModuleArray): Boolean;
 begin
   {$IFDEF HOOK_DLL_EXCEPTIONS}
   Result := Assigned(HookExceptModuleList);
@@ -532,6 +569,7 @@ begin
     HookExceptModuleList.List(ModulesList);
   {$ELSE HOOK_DLL_EXCEPTIONS}
   Result := False;
+  SetLength(ModulesList, 0);
   {$ENDIF HOOK_DLL_EXCEPTIONS}
 end;
 
@@ -605,7 +643,7 @@ begin
   Result := GetProcAddress(HostModule, JclHookExceptDebugHookName);
 end;
 
-procedure TJclHookExceptModuleList.List(var ModulesList: TJclModuleArray);
+procedure TJclHookExceptModuleList.List(out ModulesList: TJclModuleArray);
 var
   I: Integer;
 begin

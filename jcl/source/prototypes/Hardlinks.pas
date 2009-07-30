@@ -251,11 +251,6 @@ const
 // =================================================================
 type
   NTSTATUS = Longint;
-  PPWideChar = ^PWideChar;
-
-type
-  LARGE_INTEGER = TLargeInteger;
-  PLARGE_INTEGER = ^LARGE_INTEGER;
 
 type
   UNICODE_STRING = record
@@ -265,13 +260,13 @@ type
   end;
   PUNICODE_STRING = ^UNICODE_STRING;
 
-type
-  ANSI_STRING = record
-    Length: WORD;
-    MaximumLength: WORD;
-    Buffer: PAnsiChar;
-  end;
-  PANSI_STRING = ^ANSI_STRING;
+// type
+  // ANSI_STRING = record
+  //   Length: WORD;
+  //   MaximumLength: WORD;
+  //   Buffer: PAnsiChar;
+  // end;
+  // PANSI_STRING = ^ANSI_STRING;
 
 type
   OBJECT_ATTRIBUTES = record
@@ -282,7 +277,7 @@ type
     SecurityDescriptor: Pointer;       // Points to type SECURITY_DESCRIPTOR
     SecurityQualityOfService: Pointer; // Points to type SECURITY_QUALITY_OF_SERVICE
   end;
-  POBJECT_ATTRIBUTES = ^OBJECT_ATTRIBUTES;
+  // POBJECT_ATTRIBUTES = ^OBJECT_ATTRIBUTES;
 
 type
   IO_STATUS_BLOCK = record
@@ -293,7 +288,7 @@ type
        (Pointer: Pointer;
         Information: ULONG); // 'Information' does not belong to the union!
   end;
-  PIO_STATUS_BLOCK = ^IO_STATUS_BLOCK;
+  // PIO_STATUS_BLOCK = ^IO_STATUS_BLOCK;
 
 type
   _FILE_LINK_RENAME_INFORMATION = record // File Information Classes 10 and 11
@@ -304,8 +299,8 @@ type
   end;
   FILE_LINK_INFORMATION = _FILE_LINK_RENAME_INFORMATION;
   PFILE_LINK_INFORMATION = ^FILE_LINK_INFORMATION;
-  FILE_RENAME_INFORMATION = _FILE_LINK_RENAME_INFORMATION;
-  PFILE_RENAME_INFORMATION = ^FILE_RENAME_INFORMATION;
+  // FILE_RENAME_INFORMATION = _FILE_LINK_RENAME_INFORMATION;
+  // PFILE_RENAME_INFORMATION = ^FILE_RENAME_INFORMATION;
 
 // =================================================================
 // Constants
@@ -340,14 +335,14 @@ const
   HEAP_ZERO_MEMORY             = $00000008;
 
   // Related constant(s) for RtlDetermineDosPathNameType_U()
-  INVALID_PATH                 = 0;
+  // INVALID_PATH                 = 0;
   UNC_PATH                     = 1;
-  ABSOLUTE_DRIVE_PATH          = 2;
-  RELATIVE_DRIVE_PATH          = 3;
-  ABSOLUTE_PATH                = 4;
-  RELATIVE_PATH                = 5;
-  DEVICE_PATH                  = 6;
-  UNC_DOT_PATH                 = 7;
+  // ABSOLUTE_DRIVE_PATH          = 2;
+  // RELATIVE_DRIVE_PATH          = 3;
+  // ABSOLUTE_PATH                = 4;
+  // RELATIVE_PATH                = 5;
+  // DEVICE_PATH                  = 6;
+  // UNC_DOT_PATH                 = 7;
 
 // =================================================================
 // Function prototypes
@@ -602,6 +597,7 @@ begin
     Exit;
   end;
   // Convert the link target into a UNICODE_STRING
+  usNtName_LinkTarget.Length := 0;
   if not RtlDosPathNameToNtPathName_U(szLinkTarget, usNtName_LinkTarget, nil, nil) then
   begin
     SetLastError(ERROR_PATH_NOT_FOUND);
@@ -627,6 +623,7 @@ begin
         Preparation of the checking for mapped network drives
         -----------------------------------------------------}
         // Get the full unicode path name
+        wcsFilePart_LinkTarget := nil;
         if GetFullPathNameW(szLinkTarget, NeededSize, wcsNtName_LinkTarget, wcsFilePart_LinkTarget) <> 0 then
         begin
           // Allocate memory to check the drive object
@@ -650,6 +647,7 @@ begin
               Checking for (illegal!) mapped network drives
               ---------------------------------------------}
               // Open symbolic link object
+              hDrive := 0;
               if ZwOpenSymbolicLinkObject(hDrive, SYMBOLIC_LINK_QUERY, oaMisc) = STATUS_SUCCESS then
                 try
                   usSymLinkDrive.Buffer := RtlAllocateHeap(hHeap, HEAP_ZERO_MEMORY, MAX_PATH * SizeOf(WideChar));
@@ -658,6 +656,7 @@ begin
                       // Query the path the symbolic link points to ...
                       ZwQuerySymbolicLinkObject(hDrive, usSymLinkDrive, nil);
                       // Initialise the length members
+                      usLanMan.Length := 0;
                       RtlInitUnicodeString(usLanMan, wcsLanMan);
                       // The path must not be a mapped drive ... check this!
                       if not RtlPrefixUnicodeString(usLanMan, usSymLinkDrive, True) then
@@ -676,11 +675,14 @@ begin
                         {----------------------
                         Opening the target file
                         -----------------------}
+                        IOStats.Status := 0;
+                        hLinkTarget := 0;
                         Status := ZwOpenFile(hLinkTarget, dwDesiredAccessHL, oaMisc,
                           IOStats, dwShareAccessHL, dwOpenOptionsHL);
                         if Status = STATUS_SUCCESS then
                           try
                             // Wow ... target opened ... let's try to
+                            usNtName_LinkName.Length := 0;
                             if RtlDosPathNameToNtPathName_U(szLinkName, usNtName_LinkName, nil, nil) then
                               try
                                 // Initialise the length members
@@ -785,8 +787,10 @@ begin
   // Get the process' heap
   hHeap := NtpGetProcessHeap;
   // Create and allocate a UNICODE_STRING from the zero-terminated parameters
+  usLinkName.Length := 0;
   if RtlCreateUnicodeStringFromAsciiz(usLinkName, szLinkName) then
   try
+    usLinkTarget.Length := 0;
     if RtlCreateUnicodeStringFromAsciiz(usLinkTarget, szLinkTarget) then
     try
       // Call the Unicode version

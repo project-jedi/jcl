@@ -1,4 +1,4 @@
-{**************************************************************************************************}
+﻿{**************************************************************************************************}
 {                                                                                                  }
 { Project JEDI Code Library (JCL)                                                                  }
 {                                                                                                  }
@@ -77,7 +77,9 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\experts\repository'
+    LogPath: 'JCL\experts\repository';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 

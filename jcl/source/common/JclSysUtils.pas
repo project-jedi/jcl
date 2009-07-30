@@ -62,6 +62,10 @@ uses
   SysUtils, Classes, TypInfo, SyncObjs,
   JclBase;
 
+// memory initialization
+// first parameter is "out" to make FPC happy with uninitialized values
+procedure ResetMemory(out P; Size: Longint);
+
 // Pointer manipulation
 procedure GetAndFillMem(var P: Pointer; const Size: Integer; const Value: Byte);
 procedure FreeMemAndNil(var P: Pointer);
@@ -416,9 +420,6 @@ function IntToStrZeroPad(Value, Count: Integer): string;
 type
   // e.g. TStrings.Append
   TTextHandler = procedure(const Text: string) of object;
-  {$IFDEF FPC}
-  PBoolean = System.PBoolean; // as opposed to Windows.PBoolean, which is a pointer to Byte?!
-  {$ENDIF FPC}
 
 const
   ABORT_EXIT_CODE = {$IFDEF MSWINDOWS} ERROR_CANCELLED {$ELSE} 1223 {$ENDIF};
@@ -466,12 +467,12 @@ type
     function GetOptions: TStrings;
     function GetOutputCallback: TTextHandler;
     procedure SetOutputCallback(const CallbackMethod: TTextHandler);
-    constructor Create(const AExeName: string);
     procedure AddPathOption(const Option, Path: string);
     function Execute(const CommandLine: string): Boolean;
     property ExeName: string read GetExeName;
     property Output: string read GetOutput;
   public
+    constructor Create(const AExeName: string);
     destructor Destroy; override;
   end;
 
@@ -537,10 +538,8 @@ procedure ListSetItem(var List: string; const Separator: string;
 function ListItemIndex(const List, Separator, Item: string): Integer;
 
 // RTL package information
-{$IFNDEF FPC}
 function SystemTObjectInstance: LongWord;
 function IsCompiledWithPackages: Boolean;
-{$ENDIF ~FPC}
 
 // GUID
 function JclGUIDToString(const GUID: TGUID): string;
@@ -600,7 +599,9 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\source\common'
+    LogPath: 'JCL\source\common';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
@@ -628,6 +629,16 @@ uses
   JclWideStrings,
   {$ENDIF COMPILER5}
   JclFileUtils, JclMath, JclResources, JclStrings, JclStringConversions, JclSysInfo;
+
+// memory initialization
+procedure ResetMemory(out P; Size: Longint);
+begin
+  if Size > 0 then
+  begin
+    Byte(P) := 0;
+    FillChar(P, Size, 0);
+  end;
+end;
 
 // Pointer manipulation
 procedure GetAndFillMem(var P: Pointer; const Size: Integer; const Value: Byte);
@@ -722,6 +733,7 @@ begin
   if Size > 0 then
   begin
     // (outchy) VirtualProtect for DEP issues
+    OldProtect := 0;
     Result := VirtualProtect(BaseAddress, Size, PAGE_EXECUTE_READWRITE, OldProtect);
     if Result then
     try
@@ -730,6 +742,7 @@ begin
       if OldProtect in [PAGE_EXECUTE, PAGE_EXECUTE_READ, PAGE_EXECUTE_READWRITE, PAGE_EXECUTE_WRITECOPY] then
         FlushInstructionCache(GetCurrentProcess, BaseAddress, Size);
     finally
+      Dummy := 0;
       VirtualProtect(BaseAddress, Size, OldProtect, Dummy);
     end;
   end;
@@ -1002,10 +1015,10 @@ type
 
 var
   MMFHandleList: PMMFHandleList = nil;
-  MMFFinalized: Boolean = False;
   {$IFDEF THREADSAFE}
+  MMFFinalized: Boolean = False;
   GlobalMMFHandleListCS: TJclIntfCriticalSection = nil;
-  {$ENDIF THREADSAGE}
+  {$ENDIF THREADSAFE}
 
 {$IFDEF THREADSAFE}
 function GetAccessToHandleList: IInterface;
@@ -1127,10 +1140,11 @@ end;
 function SharedAllocMem(const Name: string; Size: Cardinal;
   DesiredAccess: Cardinal = FILE_MAP_ALL_ACCESS): Pointer;
 begin
+  Result := nil;
   if (SharedGetMem(Result, Name, Size, DesiredAccess) <> ERROR_ALREADY_EXISTS) and
     ((DesiredAccess and (FILE_MAP_WRITE or FILE_MAP_COPY)) <> 0) and
     (Size > 0) and (Result <> nil) then
-      FillChar(Pointer(Result)^, Size, 0);
+      ResetMemory(Pointer(Result)^, Size);
 end;
 
 function SharedFreeMem(var P{: Pointer}): Boolean;
@@ -1190,6 +1204,7 @@ end;
 function SharedOpenMem(const Name: string;
   DesiredAccess: Cardinal = FILE_MAP_ALL_ACCESS): Pointer;
 begin
+  Result := nil;
   SharedGetMem(Result, Name, 0, DesiredAccess);
 end;
 
@@ -1756,14 +1771,6 @@ procedure SetVirtualMethod(AClass: TClass; const Index: Integer; const Method: P
 begin
   SetVMTPointer(AClass, Index * SizeOf(Pointer), Method);
 end;
-
-// Dynamic Methods
-type
-  TvmtDynamicTable = packed record
-    Count: Word;
-   {IndexList: array [1..Count] of Word;
-    AddressList: array [1..Count] of Pointer;}
-  end;
 
 function GetDynamicMethodCount(AClass: TClass): Integer; assembler;
 asm
@@ -2463,12 +2470,14 @@ begin
   SecurityAttr.nLength := SizeOf(SecurityAttr);
   SecurityAttr.lpSecurityDescriptor := nil;
   SecurityAttr.bInheritHandle := True;
+  PipeWrite := 0;
+  PipeRead := 0;
   if not CreatePipe(PipeRead, PipeWrite, @SecurityAttr, 0) then
   begin
     Result := GetLastError;
     Exit;
   end;
-  FillChar(StartupInfo, SizeOf(TStartupInfo), #0);
+  ResetMemory(StartupInfo, SizeOf(TStartupInfo));
   StartupInfo.cb := SizeOf(TStartupInfo);
   StartupInfo.dwFlags := STARTF_USESHOWWINDOW or STARTF_USESTDHANDLES;
   StartupInfo.wShowWindow := SW_HIDE;
@@ -2476,16 +2485,22 @@ begin
   StartupInfo.hStdOutput := PipeWrite;
   StartupInfo.hStdError := PipeWrite;
   UniqueString(CommandLine); // CommandLine must be in a writable memory block
+  ProcessInfo.dwProcessId := 0;
   if CreateProcess(nil, PChar(CommandLine), nil, nil, True, NORMAL_PRIORITY_CLASS,
     nil, nil, StartupInfo, ProcessInfo) then
   begin
     CloseHandle(PipeWrite);
     if AbortPtr <> nil then
+      {$IFDEF FPC}
+      AbortPtr^ := 0;
+      {$ELSE ~FPC}
       AbortPtr^ := False;
-    while ((AbortPtr = nil) or not AbortPtr^) and
+      {$ENDIF ~FPC}
+    PipeBytesRead := 0;
+    while ((AbortPtr = nil) or not LongBool(AbortPtr^)) and
       ReadFile(PipeRead, Buffer, BufferSize, PipeBytesRead, nil) and (PipeBytesRead > 0) do
       ProcessBuffer;
-    if (AbortPtr <> nil) and AbortPtr^ then
+    if (AbortPtr <> nil) and LongBool(AbortPtr^) then
       TerminateProcess(ProcessInfo.hProcess, Cardinal(ABORT_EXIT_CODE));
     if (WaitForSingleObject(ProcessInfo.hProcess, INFINITE) = WAIT_OBJECT_0) and
       not GetExitCodeProcess(ProcessInfo.hProcess, Result) then
@@ -2544,6 +2559,7 @@ function Execute(const CommandLine: string; OutputLineCallback: TTextHandler; Ra
 var
   Dummy: string;
 begin
+  Dummy := '';
   Result := InternalExecute(CommandLine, Dummy, OutputLineCallback, RawOutput, AbortPtr);
 end;
 
@@ -2821,19 +2837,15 @@ end;
 
 //=== RTL package information ================================================
 
-{$IFNDEF FPC}
-
 function SystemTObjectInstance: LongWord;
 begin
-  Result := FindClassHInstance(System.TObject);
+  Result := ModuleFromAddr(Pointer(System.TObject));
 end;
 
 function IsCompiledWithPackages: Boolean;
 begin
   Result := SystemTObjectInstance <> HInstance;
 end;
-
-{$ENDIF ~FPC}
 
 //=== GUID ===================================================================
 

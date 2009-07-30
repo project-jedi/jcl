@@ -99,15 +99,17 @@ type
   PBoolean = ^Boolean;
   PByte = Windows.PByte;
   {$ENDIF ~RTL140_UP}
-  {$ENDIF ~FPC}
   PCardinal = ^Cardinal;
   {$IFNDEF COMPILER7_UP}
   UInt64 = Int64;
   {$ENDIF ~COMPILER7_UP}
   PWideChar = System.PWideChar;
   PPWideChar = ^JclBase.PWideChar;
+  PPAnsiChar = ^PAnsiChar;
   PInt64 = type System.PInt64;
-  PPInt64 = ^JclBase.PInt64;
+  {$ENDIF ~FPC}
+  PPInt64 = ^PInt64;
+  PPPAnsiChar = ^PPAnsiChar;
 
 // Interface compatibility
 {$IFDEF SUPPORTS_INTERFACE}
@@ -122,17 +124,21 @@ type
 {$ENDIF SUPPORTS_INTERFACE}
 
 // Int64 support
-procedure I64ToCardinals(I: Int64; var LowPart, HighPart: Cardinal);
-procedure CardinalsToI64(var I: Int64; const LowPart, HighPart: Cardinal);
+procedure I64ToCardinals(I: Int64; out LowPart, HighPart: Cardinal);
+procedure CardinalsToI64(out I: Int64; const LowPart, HighPart: Cardinal);
 
 // Redefinition of TLargeInteger to relieve dependency on Windows.pas
 
+{$IFNDEF FPC}
 type
   PLargeInteger = ^TLargeInteger;
   TLargeInteger = Int64;
-  {$IFNDEF COMPILER11_UP}
+{$ENDIF ~FPC}
+
+{$IFNDEF COMPILER11_UP}
+type
   TBytes = array of Byte;
-  {$ENDIF ~COMPILER11_UP}
+{$ENDIF ~COMPILER11_UP}
 
 // Redefinition of PByteArray to avoid range check exceptions.
 type
@@ -140,10 +146,12 @@ type
   PJclByteArray = ^TJclByteArray;
   TJclBytes = Pointer; // under .NET System.pas: TBytes = array of Byte;
 
-// Redefinition of TULargeInteger to relieve dependency on Windows.pas
+// Redefinition of ULARGE_INTEGER to relieve dependency on Windows.pas
 type
-  PULargeInteger = ^TULargeInteger;
-  TULargeInteger = record
+  {$IFNDEF FPC}
+  PULARGE_INTEGER = ^ULARGE_INTEGER;
+  {$EXTERNALSYM PULARGE_INTEGER}
+  ULARGE_INTEGER = record
     case Integer of
     0:
      (LowPart: LongWord;
@@ -151,6 +159,10 @@ type
     1:
      (QuadPart: Int64);
   end;
+  {$EXTERNALSYM ULARGE_INTEGER}
+  {$ENDIF ~FPC}
+  TJclULargeInteger = ULARGE_INTEGER;
+  PJclULargeInteger = PULARGE_INTEGER;
 
 // Dynamic Array support
 type
@@ -297,6 +309,7 @@ function BytesOf(const Value: AnsiChar): TBytes; overload;
 function StringOf(const Bytes: array of Byte): AnsiString; overload;
 function StringOf(const Bytes: Pointer; Size: Cardinal): AnsiString; overload;
 
+{$IFNDEF FPC}
 {$IFNDEF COMPILER11_UP}
 type // Definitions for 32 Bit Compilers
   // From BaseTsd.h
@@ -310,19 +323,26 @@ type // Definitions for 32 Bit Compilers
   {$EXTERNALSYM ULONG_PTR}
   DWORD_PTR = ULONG_PTR;
   {$EXTERNALSYM DWORD_PTR}
+{$ENDIF ~COMPILER11_UP}
 
-{$ENDIF COMPILER11_UP}
-
+type
+  PDWORD_PTR = ^DWORD_PTR;
+  {$EXTERNALSYM PDWORD_PTR}
+{$ENDIF ~FPC}
 
 type
   TJclAddr64 = Int64;
   TJclAddr32 = Cardinal;
 
+  {$IFDEF FPC}
+  TJclAddr = PtrInt;
+  {$ELSE ~FPC}
   {$IFDEF 64BIT}
   TJclAddr = TJclAddr64;
   {$ELSE ~64BIT}
   TJclAddr = TJclAddr32;
-  {$ENDIF}
+  {$ENDIF ~64BIT}
+  {$ENDIF ~FPC}
 
   EJclAddr64Exception = class(EJclError);
 
@@ -360,13 +380,21 @@ const
   AWSuffix = 'A';
   {$ENDIF ~SUPPORTS_UNICODE}
 
+{$IFDEF FPC}
+// FPC emits a lot of warning because the first parameter of its internal
+// GetMem is a var parameter, which is not initialized before the call to GetMem
+procedure GetMem(out P; Size: Longint);
+{$ENDIF FPC}
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\source\common'
+    LogPath: 'JCL\source\common';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
@@ -812,16 +840,16 @@ end;
 
 // Int64 support
 
-procedure I64ToCardinals(I: Int64; var LowPart, HighPart: Cardinal);
+procedure I64ToCardinals(I: Int64; out LowPart, HighPart: Cardinal);
 begin
-  LowPart := TULargeInteger(I).LowPart;
-  HighPart := TULargeInteger(I).HighPart;
+  LowPart := TJclULargeInteger(I).LowPart;
+  HighPart := TJclULargeInteger(I).HighPart;
 end;
 
-procedure CardinalsToI64(var I: Int64; const LowPart, HighPart: Cardinal);
+procedure CardinalsToI64(out I: Int64; const LowPart, HighPart: Cardinal);
 begin
-  TULargeInteger(I).LowPart := LowPart;
-  TULargeInteger(I).HighPart := HighPart;
+  TJclULargeInteger(I).LowPart := LowPart;
+  TJclULargeInteger(I).HighPart := HighPart;
 end;
 
 // Cross Platform Compatibility
@@ -889,6 +917,7 @@ procedure LoadAnsiReplacementCharacter;
 var
   CpInfo: TCpInfo;
 begin
+  CpInfo.MaxCharSize := 0;
   if GetCPInfo(CP_ACP, CpInfo) then
     AnsiReplacementCharacter := AnsiChar(Chr(CpInfo.DefaultChar[0]))
   else
@@ -899,6 +928,16 @@ begin
   AnsiReplacementCharacter := '?';
 end;
 {$ENDIF ~MSWINDOWS}
+
+{$IFDEF FPC}
+// FPC emits a lot of warning because the first parameter of its internal
+// GetMem is a var parameter, which is not initialized before the call to GetMem
+procedure GetMem(out P; Size: Longint);
+begin
+  Pointer(P) := nil;
+  GetMem(Pointer(P), Size);
+end;
+{$ENDIF FPC}
 
 initialization
 

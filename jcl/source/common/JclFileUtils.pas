@@ -68,9 +68,6 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF HAS_UNIT_TYPES}
-  Types,
-  {$ENDIF HAS_UNIT_TYPES}
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
@@ -79,11 +76,6 @@ uses
   {$ENDIF Win32API}
   Classes, SysUtils,
   JclBase;
-
-{$IFDEF FPC}
-type
-  PBoolean = System.PBoolean; // as opposed to Windows.PBoolean, which is a pointer to Byte?!
-{$ENDIF FPC}
 
 // Path Manipulation
 //
@@ -180,6 +172,7 @@ type
   TFileMatchFunc = function(const Attr: Integer; const FileInfo: TSearchRec): Boolean;
   TFileHandler = procedure (const FileName: string) of object;
   TFileHandlerEx = procedure (const Directory: string; const FileInfo: TSearchRec) of object;
+  TFileInfoHandlerEx = procedure (const FileInfo: TSearchRec) of object;
 
 function BuildFileList(const Path: string; const Attr: Integer; const List: TStrings): Boolean;
 function AdvBuildFileList(const Path: string; const Attr: Integer; const Files: TStrings;
@@ -193,7 +186,10 @@ function IsFileNameMatch(FileName: string; const Mask: string;
   const CaseSensitive: Boolean = {$IFDEF MSWINDOWS} False {$ELSE} True {$ENDIF}): Boolean;
 procedure EnumFiles(const Path: string; HandleFile: TFileHandlerEx;
   RejectedAttributes: Integer = faRejectedByDefault; RequiredAttributes: Integer = 0;
-  Abort: PBoolean = nil);
+  Abort: PBoolean = nil); overload;
+procedure EnumFiles(const Path: string; HandleFile: TFileInfoHandlerEx;
+  RejectedAttributes: Integer = faRejectedByDefault; RequiredAttributes: Integer = 0;
+  Abort: PBoolean = nil); overload;
 procedure EnumDirectories(const Root: string; const HandleDirectory: TFileHandler;
   const IncludeHiddenDirectories: Boolean = False; const SubDirectoriesMask: string = '';
   Abort: PBoolean = nil {$IFDEF UNIX}; ResolveSymLinks: Boolean = True {$ENDIF});
@@ -642,7 +638,7 @@ type
     constructor Attach(VersionInfoData: Pointer; Size: Integer);
     constructor Create(const FileName: string); overload;
     {$IFDEF MSWINDOWS}
-    constructor Create(const Window: HWND); overload;
+    constructor Create(const Window: HWND; Dummy: Integer = 0); overload;
     constructor Create(const Module: HMODULE); overload;
     {$ENDIF MSWINDOWS}
     destructor Destroy; override;
@@ -771,8 +767,8 @@ type
       const Protect: Cardinal; MaximumSize: Int64; SecAttr: PSecurityAttributes);
     procedure InternalOpen(const Name: string; const InheritHandle: Boolean;
       const DesiredAccess: Cardinal);
-    constructor Create;
   public
+    constructor Create;
     constructor Open(const Name: string; const InheritHandle: Boolean; const DesiredAccess: Cardinal);
     destructor Destroy; override;
     function Add(const Access, Count: Cardinal; const Offset: Int64): Integer;
@@ -1037,7 +1033,9 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\source\common'
+    LogPath: 'JCL\source\common';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
@@ -1045,13 +1043,8 @@ implementation
 
 uses
   {$IFDEF Win32API}
-  ShellApi,
-  {$IFDEF FPC}
-  WinSysUt,
-  {$ELSE ~FPC}
-  ActiveX, ComObj, ShlObj, JclShell,
-  {$ENDIF ~FPC}
-  JclSysInfo, JclSecurity,
+  ShellApi, ActiveX, ComObj, ShlObj,
+  JclShell, JclSysInfo, JclSecurity,
   {$ENDIF Win32API}
   JclSysUtils, JclDateTime, JclResources,
   JclStrings;
@@ -2924,6 +2917,7 @@ var
   P: PChar;
 begin
   Result := '';
+  StrRet.utype := 0;
 
   ShellFolder.GetDisplayNameOf(PIDL, Flags[ForParsing], StrRet);
   case StrRet.uType of
@@ -2993,12 +2987,14 @@ begin
     Name := CutFirstDirectory(Path);
     Found := False;
     pidl := nil;
+    Attributes := 0;
     if Succeeded( DesktopFolder.ParseDisplayName(0, nil, PWideChar(ParsePath), Eaten, pidl, Attributes) ) then
     begin
       OleCheck( DesktopFolder.BindToObject(pidl, nil, IShellFolder, RootFolder) );
       Malloc.Free(pidl);
 
       OleCheck( RootFolder.EnumObjects(0, SHCONTF_FOLDERS or SHCONTF_NONFOLDERS or SHCONTF_INCLUDEHIDDEN, EnumIDL) );
+      Featched := 0;
       while EnumIDL.Next(1, pidl, Featched) = NOERROR do
       begin
         if AnsiCompareText(Name, SHGetDisplayName(RootFolder, pidl, False)) = 0 then
@@ -3056,12 +3052,14 @@ begin
     Name := CutFirstDirectory(Path);
     Found := False;
     pidl := nil;
+    Attributes := 0;
     if Succeeded( DesktopFolder.ParseDisplayName(0, nil, PWideChar(ParsePath), Eaten, pidl, Attributes) ) then
     begin
       OleCheck( DesktopFolder.BindToObject(pidl, nil, IShellFolder, RootFolder) );
       Malloc.Free(pidl);
 
       OleCheck( RootFolder.EnumObjects(0, SHCONTF_FOLDERS or SHCONTF_NONFOLDERS or SHCONTF_INCLUDEHIDDEN, EnumIDL) );
+      Featched := 0;
       while EnumIDL.Next(1, pidl, Featched) = NOERROR do
       begin
         ParseName := SHGetDisplayName(RootFolder, pidl, True);
@@ -3209,7 +3207,7 @@ function CopyDirectory(ExistingDirectoryName, NewDirectoryName: string): Boolean
 var
   SH: SHFILEOPSTRUCT;
 begin
-  FillChar(SH, SizeOf(SH), 0);
+  ResetMemory(SH, SizeOf(SH));
   with SH do
   begin
     Wnd    := 0;
@@ -3225,7 +3223,7 @@ function MoveDirectory(ExistingDirectoryName, NewDirectoryName: string): Boolean
 var
   SH: SHFILEOPSTRUCT;
 begin
-  FillChar(SH, SizeOf(SH), 0);
+  ResetMemory(SH, SizeOf(SH));
   with SH do
   begin
     Wnd    := 0;
@@ -3446,11 +3444,9 @@ end;
 function FileDelete(const FileName: string; MoveToRecycleBin: Boolean = False): Boolean;
 {$IFDEF MSWINDOWS}
 begin
-  {$IFNDEF FPC}  // needs JclShell
   if MoveToRecycleBin then
     Result := SHDeleteFiles(0, FileName, [doSilent, doAllowUndo, doFilesOnly])
   else
-  {$ENDIF ~FPC}
     Result := Windows.DeleteFile(PChar(FileName));
 end;
 {$ENDIF MSWINDOWS}
@@ -3539,7 +3535,7 @@ function FileGetDisplayName(const FileName: string): string;
 var
   FileInfo: TSHFileInfo;
 begin
-  FillChar(FileInfo, SizeOf(FileInfo), #0);
+  ResetMemory(FileInfo, SizeOf(FileInfo));
   if SHGetFileInfo(PChar(FileName), 0, FileInfo, SizeOf(FileInfo), SHGFI_DISPLAYNAME) <> 0 then
     Result := FileInfo.szDisplayName
   else
@@ -3562,6 +3558,7 @@ var
 begin
   if IsWinNT then
   begin
+    BufSize := 0;
     GetFileSecurity(PChar(FileName), GROUP_SECURITY_INFORMATION, nil, 0, BufSize);
     if BufSize > 0 then
     begin
@@ -3602,6 +3599,7 @@ var
 begin
   if IsWinNT then
   begin
+    BufSize := 0;
     GetFileSecurity(PChar(FileName), OWNER_SECURITY_INFORMATION, nil, 0, BufSize);
     if BufSize > 0 then
     begin
@@ -3640,7 +3638,7 @@ function FileGetSize(const FileName: string): Int64;
 var
   FileAttributesEx: WIN32_FILE_ATTRIBUTE_DATA;
   OldMode: Cardinal;
-  Size: TULargeInteger;
+  Size: TJclULargeInteger;
 begin
   Result := -1;
   OldMode := SetErrorMode(SEM_FAILCRITICALERRORS);
@@ -3716,7 +3714,7 @@ var
   FileInfo: TSHFileInfo;
   RetVal: DWORD;
 begin
-  FillChar(FileInfo, SizeOf(FileInfo), #0);
+  ResetMemory(FileInfo, SizeOf(FileInfo));
   RetVal := SHGetFileInfo(PChar(FileName), 0, FileInfo, SizeOf(FileInfo),
     SHGFI_TYPENAME or SHGFI_USEFILEATTRIBUTES);
   if RetVal <> 0 then
@@ -3781,7 +3779,7 @@ function GetDirectorySize(const Path: string): Int64;
     F: TSearchRec;
     R: Integer;
     {$IFDEF MSWINDOWS}
-    TempSize: TULargeInteger;
+    TempSize: TJclULargeInteger;
     {$ENDIF MSWINDOWS}
   begin
     Result := 0;
@@ -3860,7 +3858,11 @@ var
 begin
   Result := False;
   if GetFileAttributesEx(PChar(FileName), GetFileExInfoStandard, @FileAttributesEx) then
+    {$IFDEF FPC}
+    Result := CompareFileTime(@FileAttributesEx.ftCreationTime, @FileAttributesEx.ftLastWriteTime) <= 0;
+    {$ELSE ~FPC}
     Result := CompareFileTime(FileAttributesEx.ftCreationTime, FileAttributesEx.ftLastWriteTime) <= 0;
+    {$ENDIF ~FPC}
 end;
 
 {$ENDIF Win32API}
@@ -4134,7 +4136,7 @@ function GetSizeOfFile(const FileName: string): Int64;
 {$IFDEF MSWINDOWS}
 var
   FileAttributesEx: WIN32_FILE_ATTRIBUTE_DATA;
-  Size: TULargeInteger;
+  Size: TJclULargeInteger;
 begin
   Result := 0;
   if GetFileAttributesEx(PChar(FileName), GetFileExInfoStandard, @FileAttributesEx) then
@@ -4160,7 +4162,7 @@ end;
 {$IFDEF Win32API}
 function GetSizeOfFile(Handle: THandle): Int64; overload;
 var
-  Size: TULargeInteger;
+  Size: TJclULargeInteger;
 begin
   Size.LowPart := GetFileSize(Handle, @Size.HighPart);
   Result := Size.QuadPart;
@@ -4212,6 +4214,7 @@ begin
     Handle := CreateFile(PChar(FileName), GENERIC_READ, FILE_SHARE_READ, nil, OPEN_EXISTING, 0, 0);
     if Handle <> INVALID_HANDLE_VALUE then
     try
+      FileInfo.dwFileAttributes := 0;
       if not GetFileInformationByHandle(Handle, FileInfo) then
         raise EJclFileUtilsError.CreateResFmt(@RsFileUtilsAttrUnavailable, [FileName]);
       Result.dwFileAttributes := FileInfo.dwFileAttributes;
@@ -4282,6 +4285,7 @@ begin
     FILE_FLAG_NO_BUFFERING, 0);
   if Handle <> INVALID_HANDLE_VALUE then
   begin
+    BytesReturned := 0;
     Result := DeviceIoControl(Handle, FSCTL_LOCK_VOLUME, nil, 0, nil, 0,
       BytesReturned, nil);
     if not Result then
@@ -4322,6 +4326,8 @@ begin
   try
     //SysUtils.DateTimeToSystemTime(DateTimeToLocalDateTime(DateTime), SystemTime);
     SysUtils.DateTimeToSystemTime(DateTime, SystemTime);
+    FileTime.dwLowDateTime := 0;
+    FileTime.dwHighDateTime := 0;
     if Windows.SystemTimeToFileTime(SystemTime, FileTime) then
     begin
       case Times of
@@ -4402,6 +4408,8 @@ begin
     if Handle <> INVALID_HANDLE_VALUE then
     try
       SysUtils.DateTimeToSystemTime(DateTime, SystemTime);
+      FileTime.dwLowDateTime := 0;
+      FileTime.dwHighDateTime := 0;
       Windows.SystemTimeToFileTime(SystemTime, FileTime);
       case Times of
         ftLastAccess:
@@ -4499,6 +4507,7 @@ begin
   Result := False;
   if Handle <> INVALID_HANDLE_VALUE then
   begin
+    BytesReturned := 0;
     Result := DeviceIoControl(Handle, FSCTL_UNLOCK_VOLUME, nil, 0, nil, 0,
       BytesReturned, nil);
     if Result then
@@ -4686,6 +4695,7 @@ var
   Buffer: string;
 begin
   Result := False;
+  Handle := 0;
   Size := GetFileVersionInfoSize(PChar(FileName), Handle);
   if Size > 0 then
   begin
@@ -4747,10 +4757,13 @@ var
   FixInfoBuf: PVSFixedFileInfo;
 begin
   Result := False;
+  Handle := 0;
   Size := GetFileVersionInfoSize(PChar(FileName), Handle);
   if Size > 0 then
   begin
     SetLength(Buffer, Size);
+    FixInfoLen := 0;
+    FixInfoBuf := nil;
     if GetFileVersionInfo(PChar(FileName), Handle, Size, Pointer(Buffer)) and
       VerQueryValue(Pointer(Buffer), DirDelimiter, Pointer(FixInfoBuf), FixInfoLen) and
       (FixInfoLen = SizeOf(TVSFixedFileInfo)) then
@@ -4766,6 +4779,7 @@ function VersionFixedFileInfoString(const FileName: string; VersionFormat: TFile
 var
   FixedInfo: TVSFixedFileInfo;
 begin
+  FixedInfo.dwSignature := 0;
   if VersionFixedFileInfo(FileName, FixedInfo) then
     Result := FormatVersionString(FixedInfo, VersionFormat)
   else
@@ -4786,6 +4800,7 @@ var
   Handle: THandle;
   Size: DWORD;
 begin
+  Handle := 0;
   Size := GetFileVersionInfoSize(PChar(FileName), Handle);
   if Size = 0 then
     raise EJclFileVersionInfoError.CreateRes(@RsFileUtilsNoVersionInfo);
@@ -4795,7 +4810,7 @@ begin
 end;
 
 {$IFDEF MSWINDOWS}
-constructor TJclFileVersionInfo.Create(const Window: HWND);
+constructor TJclFileVersionInfo.Create(const Window: HWND; Dummy: Integer = 0);
 type
   {$IFDEF SUPPORTS_UNICODE}
   TGetModuleFileNameEx =function(hProcess: THandle; hModule: HMODULE; FileName: PWideChar; nSize: DWORD): DWORD; stdcall;
@@ -4807,8 +4822,7 @@ var
   DllHinst: HMODULE;
   ProcessID: DWORD;
   HProcess: THandle;
-const
-  GetModuleFileNameExAddress: TGetModuleFileNameEx = nil;
+  GetModuleFileNameExAddress: TGetModuleFileNameEx;
 begin
   if Window <>0 then
   begin
@@ -5013,7 +5027,7 @@ var
     end;
   end;
 
-  procedure ProcessVarInfo(Size: Integer);
+  procedure ProcessVarInfo;
   var
     TranslationIndex: Integer;
   begin
@@ -5053,7 +5067,7 @@ begin
         ProcessStringInfo(Len)
       else
       if SameText(Key, 'VarFileInfo') then
-        ProcessVarInfo(Len)
+        ProcessVarInfo
       else
         Break;
     end;
@@ -5652,12 +5666,42 @@ begin
   try
     while Found do
     begin
-      if (Abort <> nil) and Abort^ then
+      if (Abort <> nil) and LongBool(Abort^) then
         Exit;
       if AttributeMatch(FileInfo.Attr, RejectedAttributes, RequiredAttributes) then
         if ((FileInfo.Attr and faDirectory = 0)
         or ((FileInfo.Name <> '.') and (FileInfo.Name <> '..'))) then
           HandleFile(Directory, FileInfo);
+      Found := FindNext(FileInfo) = 0;
+    end;
+  finally
+    FindClose(FileInfo);
+  end;
+end;
+
+procedure EnumFiles(const Path: string; HandleFile: TFileInfoHandlerEx;
+  RejectedAttributes: Integer; RequiredAttributes: Integer; Abort: PBoolean);
+var
+  FileInfo: TSearchRec;
+  Attr: Integer;
+  Found: Boolean;
+begin
+  Assert(Assigned(HandleFile));
+  Assert(VerifyFileAttributeMask(RejectedAttributes, RequiredAttributes),
+    RsFileSearchAttrInconsistency);
+
+  Attr := faAnyFile and not RejectedAttributes;
+
+  Found := SysUtils.FindFirst(Path, Attr, FileInfo) = 0;
+  try
+    while Found do
+    begin
+      if (Abort <> nil) and LongBool(Abort^) then
+        Exit;
+      if AttributeMatch(FileInfo.Attr, RejectedAttributes, RequiredAttributes) then
+        if ((FileInfo.Attr and faDirectory = 0)
+        or ((FileInfo.Name <> '.') and (FileInfo.Name <> '..'))) then
+          HandleFile(FileInfo);
       Found := FindNext(FileInfo) = 0;
     end;
   finally
@@ -5684,7 +5728,7 @@ var
     try
       while Found do
       begin
-        if (Abort <> nil) and Abort^ then
+        if (Abort <> nil) and LongBool(Abort^) then
           Exit;
         if (DirInfo.Name <> '.') and (DirInfo.Name <> '..') and
           {$IFDEF UNIX}
@@ -5859,7 +5903,7 @@ type
     FFileHandlerEx: TFileHandlerEx;
     FFileHandler: TFileHandler;
     FInternalDirHandler: TFileHandler;
-    FInternalFileHandler: TFileHandlerEx;
+    FInternalFileInfoHandler: TFileInfoHandlerEx;
     FFileInfo: TSearchRec;
     FRejectedAttr: Integer;
     FRequiredAttr: Integer;
@@ -5876,8 +5920,8 @@ type
     procedure EnterDirectory;
     procedure AsyncProcessDirectory(const Directory: string);
     procedure SyncProcessDirectory(const Directory: string);
-    procedure AsyncProcessFile(const Directory: string; const FileInfo: TSearchRec);
-    procedure SyncProcessFile(const Directory: string; const FileInfo: TSearchRec);
+    procedure AsyncProcessFile(const FileInfo: TSearchRec);
+    procedure SyncProcessFile(const FileInfo: TSearchRec);
     function GetDirectories: TStrings;
     function GetFileMasks: TStrings;
     procedure SetDirectories(const Value: TStrings);
@@ -5949,12 +5993,12 @@ begin
   if SynchronizationMode = smPerDirectory then
   begin
     FInternalDirHandler := SyncProcessDirectory;
-    FInternalFileHandler := AsyncProcessFile;
+    FInternalFileInfoHandler := AsyncProcessFile;
   end
   else // SynchronizationMode = smPerFile
   begin
     FInternalDirHandler := AsyncProcessDirectory;
-    FInternalFileHandler := SyncProcessFile;
+    FInternalFileInfoHandler := SyncProcessFile;
   end;
 
   if FIncludeSubDirectories then
@@ -6004,7 +6048,7 @@ end;
 
 procedure TEnumFileThread.ProcessDirFiles;
 begin
-  EnumFiles(FCurrentDirectory + '*', FInternalFileHandler, FRejectedAttr, FRequiredAttr, @Terminated);
+  EnumFiles(FCurrentDirectory + '*', FInternalFileInfoHandler, FRejectedAttr, FRequiredAttr, @Terminated);
 end;
 
 function TEnumFileThread.FileMatch: Boolean;
@@ -6041,14 +6085,14 @@ begin
     FFileHandler(FCurrentDirectory + FFileInfo.Name);
 end;
 
-procedure TEnumFileThread.AsyncProcessFile(const Directory: string; const FileInfo: TSearchRec);
+procedure TEnumFileThread.AsyncProcessFile(const FileInfo: TSearchRec);
 begin
   FFileInfo := FileInfo;
   if FileMatch then
     ProcessFile;
 end;
 
-procedure TEnumFileThread.SyncProcessFile(const Directory: string; const FileInfo: TSearchRec);
+procedure TEnumFileThread.SyncProcessFile(const FileInfo: TSearchRec);
 begin
   FFileInfo := FileInfo;
   if FileMatch then

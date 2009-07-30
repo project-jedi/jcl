@@ -63,7 +63,9 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\experts\favfolders'
+    LogPath: 'JCL\experts\favfolders';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 

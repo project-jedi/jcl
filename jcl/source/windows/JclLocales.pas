@@ -313,7 +313,9 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\source\windows'
+    LogPath: 'JCL\source\windows';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
@@ -991,6 +993,7 @@ var
   Cnt, I: Integer;
   Layouts: array [1..JclMaxKeyboardLayouts] of HKL;
 begin
+  Layouts[1] := 0;
   Cnt := Windows.GetKeyboardLayoutList(JclMaxKeyboardLayouts, Layouts);
   // Note: GetKeyboardLayoutList doesn't work as expected, when pass 0 to nBuff it always returns 0
   // on Win95.

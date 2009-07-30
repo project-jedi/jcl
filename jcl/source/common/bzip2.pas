@@ -313,53 +313,31 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\source\common'
+    LogPath: 'JCL\source\common';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
 implementation
 
 uses
-  SysUtils,
+  {$IFDEF BZIP2_LINKONREQUEST}
   {$IFDEF MSWINDOWS}
-  Windows;
+  Windows,
   {$ENDIF MSWINDOWS}
+  {$ENDIF BZIP2_LINKONREQUEST}
   {$IFDEF UNIX}
   {$IFDEF HAS_UNIT_TYPES}
   Types,
   {$ENDIF HAS_UNIT_TYPES}
   {$IFDEF HAS_UNIT_LIBC}
-  Libc;
+  Libc,
   {$ELSE ~HAS_UNIT_LIBC}
-  dl;
+  dl,
   {$ENDIF ~HAS_UNIT_LIBC}
   {$ENDIF UNIX}
-
-type
-  {$IFDEF MSWINDOWS}
-  TModuleHandle = HINST;
-  {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
-  TModuleHandle = Pointer;
-  {$ENDIF LINUX}
-
-const
-  {$IFDEF MSWINDOWS}
-  szBZIP2 = 'bzip2.dll'; // from http://gnuwin32.sourceforge.net/
-  {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
-  szBZIP2 = 'libbz2.so.1';
-  {$ENDIF UNIX}
-  BZ2CompressInitExportName = 'BZ2_bzCompressInit';
-  BZ2CompressExportName = 'BZ2_bzCompress';
-  BZ2CompressEndExportName = 'BZ2_bzCompressEnd';
-  BZ2DecompressInitExportName = 'BZ2_bzDecompressInit';
-  BZ2DecompressExportName = 'BZ2_bzDecompress';
-  BZ2DecompressEndExportName = 'BZ2_bzDecompressEnd';
-  BZ2BuffToBuffCompressExportName = 'BZ2_bzBuffToBuffCompress';
-  BZ2BuffToBuffDecompressExportName = 'BZ2_bzBuffToBuffDecompress';
-  BZ2LibVersionExportName = 'BZ2_bzlibVersion';
-  INVALID_MODULEHANDLE_VALUE = TModuleHandle(0);
+  SysUtils;
 
 {$IFDEF BZIP2_STATICLINK}
 function BZ2_bzCompressInit; external;
@@ -387,10 +365,7 @@ function _BZ2_indexIntoF: Pointer;
 {$LINK ..\windows\obj\bzip2\huffman.obj}
 {$LINK ..\windows\obj\bzip2\blocksort.obj}
 
-type
-  size_t = Longint;
-
-function _malloc(size: size_t): Pointer; cdecl;
+function _malloc(size: Longint): Pointer; cdecl;
 begin
   GetMem(Result, Size);
 end;
@@ -405,7 +380,36 @@ begin
   if Assigned(bz2_internal_error_event) then
     bz2_internal_error_event(errcode);
 end;
-{$ENDIF BZIP2_STATICLINK}
+
+{$ELSE ~BZIP2_STATICLINK}
+
+type
+  {$IFDEF MSWINDOWS}
+  TModuleHandle = HINST;
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  TModuleHandle = Pointer;
+  {$ENDIF LINUX}
+
+const
+  {$IFDEF MSWINDOWS}
+  szBZIP2 = 'bzip2.dll'; // from http://gnuwin32.sourceforge.net/
+  {$ENDIF MSWINDOWS}
+  {$IFDEF UNIX}
+  szBZIP2 = 'libbz2.so.1';
+  {$ENDIF UNIX}
+  BZ2CompressInitExportName = 'BZ2_bzCompressInit';
+  BZ2CompressExportName = 'BZ2_bzCompress';
+  BZ2CompressEndExportName = 'BZ2_bzCompressEnd';
+  BZ2DecompressInitExportName = 'BZ2_bzDecompressInit';
+  BZ2DecompressExportName = 'BZ2_bzDecompress';
+  BZ2DecompressEndExportName = 'BZ2_bzDecompressEnd';
+  BZ2BuffToBuffCompressExportName = 'BZ2_bzBuffToBuffCompress';
+  BZ2BuffToBuffDecompressExportName = 'BZ2_bzBuffToBuffDecompress';
+  BZ2LibVersionExportName = 'BZ2_bzlibVersion';
+  INVALID_MODULEHANDLE_VALUE = TModuleHandle(0);
+
+{$ENDIF ~BZIP2_STATICLINK}
 
 {$IFDEF BZIP2_LINKDLL}
 function BZ2_bzCompressInit; external szBZIP2 name BZ2CompressInitExportName;

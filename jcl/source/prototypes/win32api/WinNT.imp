@@ -59,16 +59,13 @@ end;
 
 // IMAGE_FIRST_SECTION by Nico Bendlin - supplied by Markus Fuchs
 
-function FieldOffset(const Struc; const Field): Cardinal;
-begin
-  Result := Cardinal(@Field) - Cardinal(@Struc);
-end;
-
 function IMAGE_FIRST_SECTION(NtHeader: PImageNtHeaders): PImageSectionHeader;
+var
+  OptionalHeaderAddr: PByte;
 begin
-  Result := PImageSectionHeader(Cardinal(NtHeader) +
-    FieldOffset(NtHeader^, NtHeader^.OptionalHeader) +
-    NtHeader^.FileHeader.SizeOfOptionalHeader);
+  OptionalHeaderAddr := @NtHeader^.OptionalHeader;
+  Inc(OptionalHeaderAddr, NtHeader^.FileHeader.SizeOfOptionalHeader);
+  Result := PImageSectionHeader(OptionalHeaderAddr);
 end;
 
 // line 9204

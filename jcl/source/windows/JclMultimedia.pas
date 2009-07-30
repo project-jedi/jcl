@@ -50,16 +50,6 @@ uses
   JclBase, JclSynch, JclStrings;
 
 type
-  {$IFDEF FPC}
-  // declarations missing from mmsystem.pp
-  // see also implementation section
-  TTimeCaps = TIMECAPS;
-  TMixerControl = MIXERCONTROL;
-  TMixerCaps = MIXERCAPS;
-  TMixerLine = MIXERLINE;
-  TMCI_Open_Parms = MCI_OPEN_PARMS;
-  {$ENDIF FPC}
-
   // Multimedia timer
   TMmTimerKind = (tkOneShot, tkPeriodic);
   TMmNotificationKind = (nkCallback, nkSetEvent, nkPulseEvent);
@@ -126,9 +116,9 @@ type
     procedure SetUniformValue(const Value: Cardinal);
     procedure SetValue(const Value: TDynCardinalArray);
   protected
-    constructor Create(AMixerLine: TJclMixerLine; const AControlInfo: TMixerControl);
-    procedure PrepareControlDetailsStruc(var ControlDetails: TMixerControlDetails; AUniform, AMultiple: Boolean);
+    procedure PrepareControlDetailsStruc(out ControlDetails: TMixerControlDetails; AUniform, AMultiple: Boolean);
   public
+    constructor Create(AMixerLine: TJclMixerLine; const AControlInfo: TMixerControl);
     destructor Destroy; override;
     function FormatValue(AValue: Cardinal): string;
     property ControlInfo: TMixerControl read FControlInfo;
@@ -159,8 +149,8 @@ type
     function GetName: string;
   protected
     procedure BuildLineControls;
-    constructor Create(AMixerDevice: TJclMixerDevice);
   public
+    constructor Create(AMixerDevice: TJclMixerDevice);
     destructor Destroy; override;
     class function ComponentTypeToString(const ComponentType: DWORD): string;
     property ComponentString: string read GetComponentString;
@@ -177,9 +167,8 @@ type
   TJclMixerSource = class(TJclMixerLine)
   private
     FMixerDestination: TJclMixerDestination;
-  protected
-    constructor Create(AMixerDestination: TJclMixerDestination; ASourceIndex: Cardinal);
   public
+    constructor Create(AMixerDestination: TJclMixerDestination; ASourceIndex: Cardinal);
     property MixerDestination: TJclMixerDestination read FMixerDestination;
   end;
 
@@ -189,9 +178,9 @@ type
     function GetSourceCount: Integer;
     function GetSources(Index: Integer): TJclMixerSource;
   protected
-    constructor Create(AMixerDevice: TJclMixerDevice; ADestinationIndex: Cardinal);
     procedure BuildSources;
   public
+    constructor Create(AMixerDevice: TJclMixerDevice; ADestinationIndex: Cardinal);
     destructor Destroy; override;
     property Sources[Index: Integer]: TJclMixerSource read GetSources; default;
     property SourceCount: Integer read GetSourceCount;
@@ -215,12 +204,12 @@ type
     function GetLineUniformValue(ComponentType, ControlType: DWORD): Cardinal;
     procedure SetLineUniformValue(ComponentType, ControlType: DWORD; const Value: Cardinal);
   protected
-    constructor Create(ADeviceIndex: Cardinal; ACallBackWnd: THandle);
     procedure BuildDestinations;
     procedure BuildLines;
     procedure Close;
     procedure Open(ACallBackWnd: THandle);
   public
+    constructor Create(ADeviceIndex: Cardinal; ACallBackWnd: THandle);
     destructor Destroy; override;
     function FindLineControl(ComponentType, ControlType: DWORD): TJclMixerLineControl;
     property Capabilities: TMixerCaps read FCapabilities;
@@ -269,6 +258,14 @@ type
 
   function MixerLeftRightToArray(Left, Right: Cardinal): TDynCardinalArray;
 
+const
+  {$IFDEF BORLAND}
+  INVALID_MIXER_HANDLE: HMIXER = -1;
+  {$ENDIF BORLAND}
+  {$IFDEF FPC}
+  INVALID_MIXER_HANDLE: HMIXER = $FFFFFFFF;
+  {$ENDIF FPC}
+
 type
   // MCI Error checking
   EJclMciError = class(EJclError)
@@ -287,7 +284,7 @@ function MMCheck(const MciError: MCIERROR; const Msg: string = ''): MCIERROR;
 function GetMciErrorMessage(const MciErrNo: MCIERROR): string;
 
 // CD Drive MCI Routines
-function OpenCdMciDevice(var OpenParams: TMCI_Open_Parms; Drive: Char = #0): MCIERROR;
+function OpenCdMciDevice(out OpenParams: TMCI_Open_Parms; Drive: Char = #0): MCIERROR;
 function CloseCdMciDevice(var OpenParams: TMCI_Open_Parms): MCIERROR;
 
 // CD Drive specific routines
@@ -308,7 +305,7 @@ type
 
 function GetCdInfo(InfoType: TJclCdMediaInfo; Drive: Char = #0): string;
 
-function GetCDAudioTrackList(var TrackList: TJclCdTrackInfoArray; Drive: Char = #0): TJclCdTrackInfo; overload;
+function GetCDAudioTrackList(out TrackList: TJclCdTrackInfoArray; Drive: Char = #0): TJclCdTrackInfo; overload;
 function GetCDAudioTrackList(TrackList: TStrings; IncludeTrackType: Boolean = False; Drive: Char = #0): string; overload;
 
 {$IFDEF UNITVERSIONING}
@@ -317,7 +314,9 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\source\windows'
+    LogPath: 'JCL\source\windows';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
@@ -326,29 +325,6 @@ implementation
 uses
   SysUtils,
   JclResources, JclSysUtils;
-
-{ TODO : move to JclWin32? }  
-{$IFDEF FPC}
-// declarations missing from mmsystem.pp
-const
-  mmsyst = 'winmm.dll';
-
-type
-  TFNTimeCallBack = procedure(uTimerID, uMessage: UINT;
-    dwUser, dw1, dw2: DWORD) stdcall;
-
-  PMixerControlDetailsListText = ^TMixerControlDetailsListText;
-  TMixerControlDetailsListText = MIXERCONTROLDETAILS_LISTTEXTA;
-
-  TMixerLineControlsA          = MIXERLINECONTROLSA;
-  TMixerLineControls           = TMixerLineControlsA;
-  TMCI_Status_Parms            = MCI_STATUS_PARMS;
-  TMCI_Info_Parms              = MCI_INFO_PARMS;
-  TMCI_Set_Parms               = MCI_SET_PARMS;
-  
-function mixerSetControlDetails(hmxobj: HMIXEROBJ; pmxcd: PMixerControlDetails; fdwDetails: DWORD): MMRESULT; stdcall;
-  external mmsyst name 'mixerSetControlDetails';
-{$ENDIF FPC}
 
 //=== { TJclMultimediaTimer } ================================================
 
@@ -359,7 +335,7 @@ begin
   FPeriod := 0;
   FTimerID := 0;
   FEvent := nil;
-  FillChar(FTimeCaps, SizeOf(FTimeCaps), #0);
+  ResetMemory(FTimeCaps, SizeOf(FTimeCaps));
   if timeGetDevCaps(@FTimeCaps, SizeOf(FTimeCaps)) = TIMERR_STRUCT then
     raise EJclMmTimerError.CreateRes(@RsMmTimerGetCaps);
   FPeriod := FTimeCaps.wPeriodMin;
@@ -557,8 +533,8 @@ end;
 
 function TJclMixerLineControl.GetListText: TStrings;
 var
-  ControlDetails: TMixerControlDetails;
-  ListTexts, P: PMixerControlDetailsListText;
+  ControlDetails: TMIXERCONTROLDETAILS;
+  ListTexts, P: ^MIXERCONTROLDETAILS_LISTTEXT;
   I: Cardinal;
 begin
   if FListText = nil then
@@ -567,8 +543,8 @@ begin
     if IsMultiple and IsList then
     begin
       PrepareControlDetailsStruc(ControlDetails, True, IsMultiple);
-      ControlDetails.cbDetails := SizeOf(TMixerControlDetailsListText);
-      GetMem(ListTexts, SizeOf(TMixerControlDetailsListText) * ControlDetails.cMultipleItems);
+      ControlDetails.cbDetails := SizeOf(MIXERCONTROLDETAILS_LISTTEXT);
+      GetMem(ListTexts, SizeOf(MIXERCONTROLDETAILS_LISTTEXT) * ControlDetails.cMultipleItems);
       try
         ControlDetails.paDetails := ListTexts;
         if mixerGetControlDetails(MixerLine.MixerDevice.Handle, @ControlDetails, MIXER_GETCONTROLDETAILSF_LISTTEXT) = MMSYSERR_NOERROR then
@@ -633,10 +609,10 @@ begin
   Delete(Result, 1, 1);
 end;
 
-procedure TJclMixerLineControl.PrepareControlDetailsStruc(var ControlDetails: TMixerControlDetails;
+procedure TJclMixerLineControl.PrepareControlDetailsStruc(out ControlDetails: TMixerControlDetails;
   AUniform, AMultiple: Boolean);
 begin
-  FillChar(ControlDetails, SizeOf(ControlDetails), 0);
+  ResetMemory(ControlDetails, SizeOf(ControlDetails));
   ControlDetails.cbStruct := SizeOf(ControlDetails);
   ControlDetails.dwControlID := FControlInfo.dwControlID;
   if AUniform then
@@ -881,7 +857,7 @@ end;
 constructor TJclMixerDevice.Create(ADeviceIndex: Cardinal; ACallBackWnd: THandle);
 begin
   FDeviceIndex := ADeviceIndex;
-  FHandle := -1;
+  FHandle := INVALID_MIXER_HANDLE;
   FDestinations := TObjectList.Create;
   FLines := TList.Create;
   MMCheck(mixerGetDevCaps(ADeviceIndex, @FCapabilities, SizeOf(FCapabilities)));
@@ -926,10 +902,10 @@ end;
 
 procedure TJclMixerDevice.Close;
 begin
-  if FHandle <> -1 then
+  if FHandle <> INVALID_MIXER_HANDLE then
   begin
     mixerClose(FHandle);
-    FHandle := -1;
+    FHandle := INVALID_MIXER_HANDLE;
   end;
 end;
 
@@ -1030,7 +1006,7 @@ procedure TJclMixerDevice.Open(ACallBackWnd: THandle);
 var
   Flags: DWORD;
 begin
-  if FHandle = -1 then
+  if FHandle = INVALID_MIXER_HANDLE then
   begin
     Flags := MIXER_OBJECTF_HMIXER;
     if ACallBackWnd <> 0 then
@@ -1194,12 +1170,12 @@ end;
 
 //=== CD Drive MCI Routines ==================================================
 
-function OpenCdMciDevice(var OpenParams: TMCI_Open_Parms; Drive: Char): MCIERROR;
+function OpenCdMciDevice(out OpenParams: TMCI_Open_Parms; Drive: Char): MCIERROR;
 var
   OpenParam: DWORD;
   DriveName: array [0..2] of Char;
 begin
-  FillChar(OpenParams, SizeOf(OpenParams), 0);
+  ResetMemory(OpenParams, SizeOf(OpenParams));
   OpenParam := MCI_OPEN_TYPE or MCI_OPEN_TYPE_ID or MCI_OPEN_SHAREABLE;
   OpenParams.lpstrDeviceType := PChar(MCI_DEVTYPE_CD_AUDIO);
   if Drive <> #0 then
@@ -1214,7 +1190,7 @@ function CloseCdMciDevice(var OpenParams: TMCI_Open_Parms): MCIERROR;
 begin
   Result := mciSendCommand(OpenParams.wDeviceID, MCI_CLOSE, MCI_WAIT, 0);
   if Result = MMSYSERR_NOERROR then
-    FillChar(OpenParams, SizeOf(OpenParams), 0);
+    ResetMemory(OpenParams, SizeOf(OpenParams));
 end;
 
 //=== CD Drive specific routines =============================================
@@ -1241,7 +1217,7 @@ var
 begin
   MMCheck(OpenCdMciDevice(Mci, Drive), LoadResString(@RsMmNoCdAudio));
   try
-    FillChar(StatusParams, SizeOf(StatusParams), 0);
+    ResetMemory(StatusParams, SizeOf(StatusParams));
     StatusParams.dwItem := MCI_STATUS_MEDIA_PRESENT;
     MMCheck(mciSendCommand(Mci.wDeviceID, MCI_STATUS, MCI_STATUS_ITEM or MCI_WAIT, Cardinal(@StatusParams)));
     Result := Boolean(StatusParams.dwReturn);
@@ -1262,6 +1238,7 @@ begin
   Result := '';
   MMCheck(OpenCdMciDevice(Mci, Drive), LoadResString(@RsMmNoCdAudio));
   try
+    ResetMemory(Buffer, SizeOf(Buffer));
     InfoParams.dwCallback := 0;
     InfoParams.lpstrReturn := Buffer;
     InfoParams.dwRetSize := SizeOf(Buffer) - 1;
@@ -1272,7 +1249,7 @@ begin
   end;
 end;
 
-function GetCDAudioTrackList(var TrackList: TJclCdTrackInfoArray; Drive: Char): TJclCdTrackInfo;
+function GetCDAudioTrackList(out TrackList: TJclCdTrackInfoArray; Drive: Char): TJclCdTrackInfo;
 var
   Mci: TMCI_Open_Parms;
   SetParams: TMCI_Set_Parms;
@@ -1283,7 +1260,7 @@ var
   var
     StatusParams: TMCI_Status_Parms;
   begin
-    FillChar(StatusParams, SizeOf(StatusParams), 0);
+    ResetMemory(StatusParams, SizeOf(StatusParams));
     StatusParams.dwItem := Item;
     StatusParams.dwTrack := Track;
     if mciSendCommand(Mci.wDeviceID, MCI_STATUS, Command, Cardinal(@StatusParams)) = MMSYSERR_NOERROR then
@@ -1295,7 +1272,7 @@ var
 begin
   MMCheck(OpenCdMciDevice(Mci, Drive), LoadResString(@RsMmNoCdAudio));
   try
-    FillChar(SetParams, SizeOf(SetParams), 0);
+    ResetMemory(SetParams, SizeOf(SetParams));
     SetParams.dwTimeFormat := MCI_FORMAT_MSF;
     MMCheck(mciSendCommand(Mci.wDeviceID, MCI_SET, MCI_SET_TIME_FORMAT, Cardinal(@SetParams)));
     Result.TrackType := ttOther;

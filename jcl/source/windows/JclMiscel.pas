@@ -81,10 +81,10 @@ function ShutDownDialog(const MachineName, DialogMessage: string; TimeOut: DWORD
 function AbortShutDown: Boolean; overload;
 function AbortShutDown(const MachineName: string): Boolean; overload;
 
-type                                              
+type
   TJclAllowedPowerOperation = (apoHibernate, apoShutdown, apoSuspend);
   TJclAllowedPowerOperations = set of TJclAllowedPowerOperation;
-  
+
 function GetAllowedPowerOperations: TJclAllowedPowerOperations;
 
 // CreateProcAsUser
@@ -105,7 +105,9 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\source\windows'
+    LogPath: 'JCL\source\windows';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
@@ -120,7 +122,7 @@ var
   DevMode: TDeviceMode;
 begin
   Result := DISP_CHANGE_FAILED;
-  FillChar(DevMode, SizeOf(DevMode), #0);
+  ResetMemory(DevMode, SizeOf(DevMode));
   DevMode.dmSize := SizeOf(DevMode);
   if EnumDisplaySettings(nil, 0, DevMode) then
   begin
@@ -148,7 +150,8 @@ begin
       FILE_ATTRIBUTE_TEMPORARY, 0);
     if hOutputFile <> INVALID_HANDLE_VALUE then
     begin
-      FillChar(StartupInfo, SizeOf(StartupInfo), #0);
+      ResetMemory(StartupInfo, SizeOf(StartupInfo));
+      ResetMemory(ProcessInfo, SizeOf(ProcessInfo));
       StartupInfo.cb := SizeOf(StartupInfo);
       StartupInfo.dwFlags := STARTF_USESHOWWINDOW or STARTF_USESTDHANDLES;
       StartupInfo.wShowWindow := SW_HIDE;
@@ -175,7 +178,8 @@ var
   StartupInfo: TStartupInfo;
   ProcessInfo: TProcessInformation;
 begin
-  FillChar(StartupInfo, SizeOf(TStartupInfo), #0);
+  ResetMemory(StartupInfo, SizeOf(TStartupInfo));
+  ResetMemory(ProcessInfo, SizeOf(ProcessInfo));
   StartupInfo.cb := SizeOf(TStartupInfo);
   StartupInfo.dwFlags := STARTF_USESHOWWINDOW;
   StartupInfo.wShowWindow := CmdShow;
@@ -196,7 +200,8 @@ var
   ProcessInfo: TProcessInformation;
 begin
   Result := Cardinal($FFFFFFFF);
-  FillChar(StartupInfo, SizeOf(TStartupInfo), #0);
+  ResetMemory(StartupInfo, SizeOf(TStartupInfo));
+  ResetMemory(ProcessInfo, SizeOf(ProcessInfo));
   StartupInfo.cb := SizeOf(TStartupInfo);
   StartupInfo.dwFlags := STARTF_USESHOWWINDOW;
   StartupInfo.wShowWindow := CmdShow;
@@ -411,7 +416,7 @@ const
   // default values for window stations and desktops
   CreateProcDEFWINSTATION = 'WinSta0';
   CreateProcDEFDESKTOP    = 'Default';
-  CreateProcDOMUSERSEP    = '\';
+  // CreateProcDOMUSERSEP    = '\';
 var
   ConsoleTitle: string;
   Help: string;
@@ -428,6 +433,7 @@ begin
   CheckOSVersion;
 
   // Step 2: logon as the specified user
+  hUserToken := 0;
   if not LogonUser(PChar(UserName), PChar(UserDomain), PChar(Password),
     LOGON32_LOGON_INTERACTIVE, LOGON32_PROVIDER_DEFAULT, hUserToken) then
   begin
@@ -469,7 +475,7 @@ begin
 
   // Step 4: set the startup info for the new process
   ConsoleTitle := UserDomain + UserName;
-  FillChar(StartUpInfo, SizeOf(StartUpInfo), #0);
+  ResetMemory(StartUpInfo, SizeOf(StartUpInfo));
   with StartUpInfo do
   begin
     cb:= SizeOf(StartUpInfo);

@@ -103,19 +103,19 @@ const
 
 // from JwaWinNT.pas (few declarations from JwaWinType)
 
-type
-  ULONGLONG = Int64;
-  {$EXTERNALSYM ULONGLONG}
-
 const
   MAXLONGLONG = $7fffffffffffffff;
   {$EXTERNALSYM MAXLONGLONG}
 
+{$IFNDEF FPC}
 type
+  ULONGLONG = Int64;
+  {$EXTERNALSYM ULONGLONG}
   PLONGLONG = ^LONGLONG;
   {$EXTERNALSYM PLONGLONG}
   PULONGLONG = ^ULONGLONG;
   {$EXTERNALSYM PULONGLONG}
+{$ENDIF ~FPC}
 
 const
   ANYSIZE_ARRAY = 1;
@@ -254,6 +254,7 @@ function SORTVERSIONFROMLCID(LocaleId: LCID): WORD;
 //
 //
 
+{$IFNDEF FPC}
 type
   _SID_IDENTIFIER_AUTHORITY = record
     Value: array [0..5] of Byte;
@@ -277,6 +278,7 @@ type
   PPSID = ^PSID;
   {$NODEFINE PPSID}
   TSid = SID;
+{$ENDIF ~FPC}
 
 const
   SID_REVISION                    = (1); // Current revision level
@@ -308,7 +310,6 @@ const
   {$EXTERNALSYM SidTypeUnknown}
   SidTypeComputer       = 9;
   {$EXTERNALSYM SidTypeComputer}
-{$ENDIF ~FPC}
 
 type
   _SID_NAME_USE = DWORD;
@@ -338,6 +339,7 @@ type
   {$EXTERNALSYM PSID_AND_ATTRIBUTES_ARRAY}
   PSidAndAttributesArray = ^TSidAndAttributesArray;
   TSidAndAttributesArray = SID_AND_ATTRIBUTES_ARRAY;
+{$ENDIF ~FPC}
 
 /////////////////////////////////////////////////////////////////////////////
 //                                                                         //
@@ -707,6 +709,7 @@ type
 // Token information class structures
 //
 
+{$IFNDEF FPC}
 type
   PTOKEN_USER = ^TOKEN_USER;
   {$EXTERNALSYM PTOKEN_USER}
@@ -718,6 +721,7 @@ type
   {$EXTERNALSYM TOKEN_USER}
   TTokenUser = TOKEN_USER;
   PTokenUser = PTOKEN_USER;
+{$ENDIF ~FPC}
 
 // line 3858
 
@@ -1011,6 +1015,7 @@ const
 // File header format.
 //
 
+{$IFNDEF FPC}
 type
   PIMAGE_FILE_HEADER = ^IMAGE_FILE_HEADER;
   {$EXTERNALSYM PIMAGE_FILE_HEADER}
@@ -1028,6 +1033,7 @@ type
   {$EXTERNALSYM IMAGE_FILE_HEADER}
   TImageFileHeader = IMAGE_FILE_HEADER;
   PImageFileHeader = PIMAGE_FILE_HEADER;
+{$ENDIF ~FPC}
 
 const
   IMAGE_SIZEOF_FILE_HEADER = 20;
@@ -1135,6 +1141,7 @@ const
 // Optional header format.
 //
 
+{$IFNDEF FPC}
 type
   PIMAGE_OPTIONAL_HEADER32 = ^IMAGE_OPTIONAL_HEADER32;
   {$EXTERNALSYM PIMAGE_OPTIONAL_HEADER32}
@@ -1206,6 +1213,7 @@ type
   {$EXTERNALSYM IMAGE_OPTIONAL_HEADER64}
   TImageOptionalHeader64 = IMAGE_OPTIONAL_HEADER64;
   PImageOptionalHeader64 = PIMAGE_OPTIONAL_HEADER64;
+{$ENDIF ~FPC}
 
 const
   IMAGE_SIZEOF_ROM_OPTIONAL_HEADER  = 56;
@@ -1238,6 +1246,7 @@ const
   IMAGE_NT_OPTIONAL_HDR_MAGIC     = IMAGE_NT_OPTIONAL_HDR32_MAGIC;
   {$EXTERNALSYM IMAGE_NT_OPTIONAL_HDR_MAGIC}
 
+{$IFNDEF FPC}
 type
   PIMAGE_NT_HEADERS64 = ^IMAGE_NT_HEADERS64;
   {$EXTERNALSYM PIMAGE_NT_HEADERS64}
@@ -1264,6 +1273,7 @@ type
   {$EXTERNALSYM IMAGE_NT_HEADERS32}
   TImageNtHeaders32 = IMAGE_NT_HEADERS32;
   PImageNtHeaders32 = PIMAGE_NT_HEADERS32;
+{$ENDIF ~FPC}
 
 // Subsystem Values
 
@@ -1977,6 +1987,7 @@ type
 // Load Configuration Directory Entry
 //
 
+{$IFNDEF FPC}
 type
   PIMAGE_LOAD_CONFIG_DIRECTORY32 = ^IMAGE_LOAD_CONFIG_DIRECTORY32;
   {$EXTERNALSYM PIMAGE_LOAD_CONFIG_DIRECTORY32}
@@ -2040,6 +2051,7 @@ type
   {$EXTERNALSYM PIMAGE_LOAD_CONFIG_DIRECTORY}
   TImageLoadConfigDirectory = TImageLoadConfigDirectory32;
   PImageLoadConfigDirectory = PImageLoadConfigDirectory32;
+{$ENDIF ~FPC}
 
 // line 6802
 
@@ -2092,6 +2104,8 @@ const
   IMAGE_DEBUG_TYPE_CLSID         = 11;
   {$EXTERNALSYM IMAGE_DEBUG_TYPE_CLSID}
 *)
+
+{$IFNDEF FPC}
 type
   PIMAGE_COFF_SYMBOLS_HEADER = ^IMAGE_COFF_SYMBOLS_HEADER;
   {$EXTERNALSYM PIMAGE_COFF_SYMBOLS_HEADER}
@@ -2110,6 +2124,7 @@ type
   {$EXTERNALSYM IMAGE_COFF_SYMBOLS_HEADER}
   TImageCoffSymbolsHeader = IMAGE_COFF_SYMBOLS_HEADER;
   PImageCoffSymbolsHeader = PIMAGE_COFF_SYMBOLS_HEADER;
+{$ENDIF ~FPC}
 
 const
   FRAME_FPO    = 0;
@@ -2128,6 +2143,7 @@ const
   FPOFLAGS_RESERVED = $2000; // reserved for future use
   FPOFLAGS_FRAME    = $C000; // frame type
 
+{$IFNDEF FPC}
 type
   PFPO_DATA = ^FPO_DATA;
   {$EXTERNALSYM PFPO_DATA}
@@ -2143,6 +2159,7 @@ type
   {$EXTERNALSYM FPO_DATA}
   TFpoData = FPO_DATA;
   PFpoData = PFPO_DATA;
+{$ENDIF ~FPC}
 
 const
   SIZEOF_RFPO_DATA = 16;
@@ -2173,6 +2190,7 @@ type
 // each entry needed by a debugger.
 //
 
+{$IFNDEF FPC}
   PIMAGE_FUNCTION_ENTRY = ^IMAGE_FUNCTION_ENTRY;
   {$EXTERNALSYM PIMAGE_FUNCTION_ENTRY}
   _IMAGE_FUNCTION_ENTRY = record
@@ -2200,6 +2218,8 @@ type
   {$EXTERNALSYM IMAGE_FUNCTION_ENTRY64}
   TImageFunctionEntry64 = IMAGE_FUNCTION_ENTRY64;
   PImageFunctionEntry64 = PIMAGE_FUNCTION_ENTRY64;
+
+{$ENDIF ~FPC}
 
 //
 // Debugging information can be stripped from an image file and placed

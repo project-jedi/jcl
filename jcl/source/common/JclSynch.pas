@@ -265,7 +265,7 @@ type
     destructor Destroy; override;
     function Enter(TimeOut: Longword): TJclWaitResult;
     function Leave(ReleaseCount: Longint): Boolean; overload;
-    function Leave(ReleaseCount: Longint; var PrevCount: Longint): Boolean; overload;
+    function Leave(ReleaseCount: Longint; out PrevCount: Longint): Boolean; overload;
   end;
 
 // Debugging
@@ -323,7 +323,9 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\source\common'
+    LogPath: 'JCL\source\common';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
@@ -683,6 +685,7 @@ var
   DT: Int64;
 begin
   DT := DueTime;
+  FResume := Resume;
   Result := SetWaitableTimer(FHandle, DT, Period, nil, nil, FResume);
 end;
 
@@ -693,6 +696,7 @@ var
   DT: Int64;
 begin
   DT := DueTime;
+  FResume := Resume;
   Result := RtdlSetWaitableTimer(FHandle, DT, Period, Apc, Arg, FResume);
   { TODO : Exception for Win9x, older WinNT? }
   // if not Result and (GetLastError = ERROR_CALL_NOT_IMPLEMENTED) then
@@ -1307,7 +1311,7 @@ begin
     Result := CreateMetSectFileView(InitialCount, MaxCount, Name, OpenOnly);
 end;
 
-function TJclMeteredSection.Leave(ReleaseCount: Integer; var PrevCount: Integer): Boolean;
+function TJclMeteredSection.Leave(ReleaseCount: Integer; out PrevCount: Integer): Boolean;
 var
   Count: Integer;
 begin

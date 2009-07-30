@@ -73,14 +73,16 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\source\windows'
+    LogPath: 'JCL\source\windows';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
 implementation
 
 uses
-  JclResources, JclStrings;
+  JclResources, JclStrings, JclSysUtils;
 
 var
   FMidiOutputs: TStringList = nil;
@@ -211,7 +213,7 @@ procedure TMidiOut.LongMessage(const Data: array of Byte);
 var
   Hdr: MIDIHDR;
 begin
-  FillChar(Hdr, SizeOf(Hdr), 0);
+  ResetMemory(Hdr, SizeOf(Hdr));
   Hdr.dwBufferLength := High(Data) - Low(Data) + 1;;
   Hdr.dwBytesRecorded := Hdr.dwBufferLength;
   Hdr.lpData := @Data;

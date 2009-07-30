@@ -69,9 +69,6 @@ uses
   {$IFDEF HAS_UNIT_ANSISTRINGS}
   AnsiStrings,
   {$ENDIF HAS_UNIT_ANSISTRINGS}
-  {$IFDEF HAS_UNIT_RTLCONSTS}
-  RTLConsts,
-  {$ENDIF HAS_UNIT_RTLCONSTS}
   JclBase;
 
 // Ansi types
@@ -356,7 +353,6 @@ function StrAnsiToOem(const S: AnsiString): AnsiString;
 
 // String Management
 procedure StrAddRef(var S: AnsiString);
-function StrAllocSize(const S: AnsiString): Longint;
 procedure StrDecRef(var S: AnsiString);
 function StrLength(const S: AnsiString): Longint;
 function StrRefCount(const S: AnsiString): Longint;
@@ -430,12 +426,12 @@ function CharReplace(var S: AnsiString; const Search, Replace: AnsiChar): Intege
 
 // PCharVector
 type
-  PCharVector = ^PAnsiChar;
+  PAnsiCharVector = ^PAnsiChar;
 
-function StringsToPCharVector(var Dest: PCharVector; const Source: TJclAnsiStrings): PCharVector;
-function PCharVectorCount(Source: PCharVector): Integer;
-procedure PCharVectorToStrings(const Dest: TJclAnsiStrings; Source: PCharVector);
-procedure FreePCharVector(var Dest: PCharVector);
+function StringsToPCharVector(var Dest: PAnsiCharVector; const Source: TJclAnsiStrings): PAnsiCharVector;
+function PCharVectorCount(Source: PAnsiCharVector): Integer;
+procedure PCharVectorToStrings(const Dest: TJclAnsiStrings; Source: PAnsiCharVector);
+procedure FreePCharVector(var Dest: PAnsiCharVector);
 
 // MultiSz Routines
 type
@@ -495,7 +491,9 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\source\common'
+    LogPath: 'JCL\source\common';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
@@ -505,23 +503,24 @@ uses
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
+  {$IFDEF SUPPORTS_UNICODE}
+  {$IFDEF HAS_UNIT_RTLCONSTS}
+  RtlConsts,
+  {$ENDIF HAS_UNIT_RTLCONSTS}
+  {$ENDIF SUPPORTS_UNICODE}
   JclLogic, JclResources, JclStreams;
 
 //=== Internal ===============================================================
 
 type
   TAnsiStrRec = packed record
-    AllocSize: Longint;
     RefCount: Longint;
     Length: Longint;
   end;
+  PAnsiStrRec = ^TAnsiStrRec;
 
 const
-  AnsiAlOffset    = 12;                      // offset to AllocSize in StrRec
-  AnsiRfOffset    = 8;                       // offset to RefCount in StrRec
-  AnsiLnOffset    = 4;                       // offset to Length in StrRec
   AnsiStrRecSize  = SizeOf(TAnsiStrRec);     // size of the AnsiString header rec
-
 procedure LoadCharTypes;
 var
   CurrChar: AnsiChar;
@@ -530,6 +529,7 @@ begin
   for CurrChar := Low(AnsiChar) to High(AnsiChar) do
   begin
     {$IFDEF MSWINDOWS}
+    CurrType := 0;
     GetStringTypeExA(LOCALE_USER_DEFAULT, CT_CTYPE1, @CurrChar, SizeOf(AnsiChar), CurrType);
     {$DEFINE CHAR_TYPES_INITIALIZED}
     {$ENDIF MSWINDOWS}
@@ -604,6 +604,10 @@ end;
 // passed offset. (UpOffset or LoOffset)
 
 procedure StrCase(var Str: AnsiString; const Offset: Integer); register; assembler;
+type
+  TAnsiUniqueStringType = procedure (var S : AnsiString);
+const
+  AnsiUniqueString: TAnsiUniqueStringType = UniqueString;
 asm
         // make sure that the string is not null
 
@@ -613,7 +617,7 @@ asm
         // create unique string if this one is ref-counted
 
         PUSH    EDX
-        CALL    UniqueString
+        CALL    AnsiUniqueString
         POP     EDX
 
         // make sure that the new string is not null
@@ -2234,71 +2238,64 @@ end;
 
 procedure StrAddRef(var S: AnsiString);
 var
-  Foo: AnsiString;
+  P: PAnsiStrRec;
 begin
-  if StrRefCount(S) = -1 then
-    UniqueString(S)
-  else
+  P := Pointer(S);
+  if P <> nil then
   begin
-    Foo := S;
-    Pointer(Foo) := nil;
-  end;
-end;
-
-function StrAllocSize(const S: AnsiString): Longint;
-var
-  P: Pointer;
-begin
-  Result := 0;
-  if Pointer(S) <> nil then
-  begin
-    P := Pointer(INT_PTR(Pointer(S)) - AnsiRfOffset);
-    if Longint(P^) <> -1 then
-    begin
-      P := Pointer(INT_PTR(Pointer(S)) - AnsiAlOffset);
-      Result := Longint(P^);
-    end;
+    Dec(P);
+    if P^.RefCount = -1 then
+      UniqueString(S)
+    else
+      InterLockedIncrement(P^.RefCount);
   end;
 end;
 
 procedure StrDecRef(var S: AnsiString);
 var
-  Foo: AnsiString;
+  P: PAnsiStrRec;
 begin
-  case StrRefCount(S) of
-    -1, 0:
-      { nothing } ;
-     1:
-       begin
-         Finalize(S);
-         Pointer(S) := nil;
-       end;
-  else
-    Pointer(Foo) := Pointer(S);
+  P := Pointer(S);
+  if P <> nil then
+  begin
+    Dec(P);
+    case P^.RefCount of
+      -1, 0:
+        { nothing } ;
+      1:
+        begin
+          Finalize(S);
+          Pointer(S) := nil;
+        end;
+    else
+      InterLockedDecrement(P^.RefCount);
+    end;
   end;
 end;
 
 function StrLength(const S: AnsiString): Longint;
 var
-  P: Pointer;
+  P: PAnsiStrRec;
 begin
   Result := 0;
-  if Pointer(S) <> nil then
+  P := Pointer(S);
+  if P <> nil then
   begin
-    P := Pointer(INT_PTR(Pointer(S)) - AnsiLnOffset);
-    Result := Longint(P^) and (not $80000000 shr 1);
+    Dec(P);
+    Result := P^.Length and (not $80000000 shr 1);
   end;
 end;
 
 function StrRefCount(const S: AnsiString): Longint;
 var
-  P: Pointer;
+  P: PAnsiStrRec;
 begin
   Result := 0;
-  if Pointer(S) <> nil then
+  P := Pointer(S);
+  if P <> nil then
   begin
-    P := Pointer(INT_PTR(Pointer(S)) - AnsiRfOffset);
-    Result := Longint(P^);
+    Dec(P);
+    Result := P^.RefCount;
   end;
 end;
 
@@ -3555,7 +3552,7 @@ end;
 
 //=== PCharVector ============================================================
 
-function StringsToPCharVector(var Dest: PCharVector; const Source: TJclAnsiStrings): PCharVector;
+function StringsToPCharVector(var Dest: PAnsiCharVector; const Source: TJclAnsiStrings): PAnsiCharVector;
 var
   I: Integer;
   S: AnsiString;
@@ -3579,23 +3576,18 @@ begin
   Result := Dest;
 end;
 
-function PCharVectorCount(Source: PCharVector): Integer;
-var
-  P: PAnsiChar;
+function PCharVectorCount(Source: PAnsiCharVector): Integer;
 begin
   Result := 0;
   if Source <> nil then
+    while Source^ <> nil do
   begin
-    P := Source^;
-    while P <> nil do
-    begin
-      Inc(Result);
-      P := PCharVector(INT_PTR(Source) + (SizeOf(PAnsiChar) * Result))^;
-    end;
+    Inc(Source);
+    Inc(Result);
   end;
 end;
 
-procedure PCharVectorToStrings(const Dest: TJclAnsiStrings; Source: PCharVector);
+procedure PCharVectorToStrings(const Dest: TJclAnsiStrings; Source: PAnsiCharVector);
 var
   I, Count: Integer;
   List: array of PAnsiChar;
@@ -3617,7 +3609,7 @@ begin
   end;
 end;
 
-procedure FreePCharVector(var Dest: PCharVector);
+procedure FreePCharVector(var Dest: PAnsiCharVector);
 var
   I, Count: Integer;
   List: array of PAnsiChar;
@@ -3807,6 +3799,7 @@ begin
   if Source <> nil then
   begin
     Len := MultiSzLength(Source);
+    Result := nil;
     AllocateMultiSz(Result, Len);
     Move(Source^, Result^, Len * SizeOf(AnsiChar));
   end

@@ -44,6 +44,9 @@ unit pcre;
 
 interface
 
+uses
+  JclBase;
+
 (*************************************************
 *       Perl-Compatible Regular Expressions      *
 *************************************************)
@@ -247,14 +250,6 @@ const
   {$EXTERNALSYM PCRE_EXTRA_MATCH_LIMIT_RECURSION}
 
 type
-  (* Types *)
-  PPAnsiChar = ^PAnsiChar;
-  {$EXTERNALSYM PPAnsiChar}
-  PPPAnsiChar = ^PPAnsiChar;
-  {$EXTERNALSYM PPPAnsiChar}
-  PInteger = ^Integer;
-  {$EXTERNALSYM PInteger}
-
   real_pcre = packed record
     {magic_number: Longword;
     size: Integer;

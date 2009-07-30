@@ -70,7 +70,9 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\experts\debug\threadnames'
+    LogPath: 'JCL\experts\debug\threadnames';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 

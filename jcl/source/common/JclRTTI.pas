@@ -345,7 +345,7 @@ function JclGenerateEnumTypeBasedOn(const TypeName: ShortString;
 function JclGenerateSubRange(BaseType: PTypeInfo; const TypeName: string;
   const MinValue, MaxValue: Integer): PTypeInfo;
 
-  
+
 // Integer types
 function JclStrToTypedInt(Value: string; TypeInfo: PTypeInfo): Integer;
 function JclTypedIntToStr(Value: Integer; TypeInfo: PTypeInfo): string;
@@ -373,16 +373,15 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\source\common'
+    LogPath: 'JCL\source\common';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
 implementation
 
 uses
-  {$IFDEF HAS_UNIT_RTLCONSTS}
-  RtlConsts,
-  {$ENDIF HAS_UNIT_RTLCONSTS}
   SysConst,
   JclLogic, JclResources, JclStrings, JclSysUtils;
 
@@ -669,10 +668,10 @@ type
 
 function TJclEnumerationTypeInfo.GetBaseType: IJclEnumerationTypeInfo;
 begin
-  if TypeData.BaseType^ = TypeInfo then
+  if TypeData.BaseType{$IFDEF BORLAND}^{$ENDIF} = TypeInfo then
     Result := Self
   else
-    Result := TJclEnumerationTypeInfo.Create(TypeData.BaseType^);
+    Result := TJclEnumerationTypeInfo.Create(TypeData.BaseType{$IFDEF BORLAND}^{$ENDIF});
 end;
 
 function TJclEnumerationTypeInfo.GetNames(const I: Integer): string;
@@ -789,7 +788,7 @@ type
 
 function TJclSetTypeInfo.GetBaseType: IJclOrdinalTypeInfo;
 begin
-  Result := JclTypeInfo(TypeData.CompType^) as IJclOrdinalTypeInfo;
+  Result := JclTypeInfo(TypeData.CompType{$IFDEF BORLAND}^{$ENDIF}) as IJclOrdinalTypeInfo;
 end;
 
 procedure TJclSetTypeInfo.GetAsList(const Value; const WantRanges: Boolean;
@@ -884,7 +883,7 @@ var
     ByteCount := (LastBit - FirstBit) div 8;
     if LastBit mod 8 <> 0 then
       Inc(ByteCount);
-    FillChar(Value, ByteCount, 0);
+    ResetMemory(Value, ByteCount);
   end;
 
 begin
@@ -1094,7 +1093,7 @@ end;
 
 function TJclPropInfo.GetPropType: IJclTypeInfo;
 begin
-  Result := JclTypeInfo(PropInfo.PropType^);
+  Result := JclTypeInfo(PropInfo.PropType{$IFDEF BORLAND}^{$ENDIF});
 end;
 
 function TJclPropInfo.GetReader: Pointer;
@@ -1241,8 +1240,8 @@ end;
 
 function TJclClassTypeInfo.GetParent: IJclClassTypeInfo;
 begin
-  if (TypeData.ParentInfo <> nil) and (TypeData.ParentInfo^ <> nil) then
-    Result := JclTypeInfo(TypeData.ParentInfo^) as IJclClassTypeInfo
+  if (TypeData.ParentInfo <> nil) {$IFDEF BORLAND}and (TypeData.ParentInfo^ <> nil){$ENDIF BORLAND} then
+    Result := JclTypeInfo(TypeData.ParentInfo{$IFDEF BORLAND}^{$ENDIF}) as IJclClassTypeInfo
   else
     Result := nil;
 end;
@@ -1395,7 +1394,8 @@ begin
     IntfTbl := ClassRef.GetInterfaceTable;
     if IntfTbl <> nil then
       for I := 0 to IntfTbl.EntryCount-1 do
-        Dest.Write(', [''' + JclGUIDToString(IntfTbl.Entries[I].IID) + ''']');
+        {$IFDEF FPC}if IntfTbl.Entries[I].IID <> nil then{$ENDIF FPC}
+        Dest.Write(', [''' + JclGUIDToString(IntfTbl.Entries[I].IID{$IFDEF FPC}^{$ENDIF}) + ''']');
     Dest.Writeln(') // unit ' + GetUnitName);
   end
   else
@@ -1483,8 +1483,10 @@ begin
 end;
 
 function TJclEventParamInfo.GetFlags: TParamFlags;
+type
+  PParamFlags = ^TParamFlags;
 begin
-  Result := TParamFlags(PByte(Param)^);
+  Result := PParamFlags(Param)^;
 end;
 
 function TJclEventParamInfo.GetName: string;
@@ -1571,7 +1573,7 @@ begin
     if ParameterCount > 0 then
     begin
       LastParam := Parameters[ParameterCount-1];
-      ResPtr := Pointer(INT_PTR(LastParam.Param) + LastParam.RecSize);
+      ResPtr := Pointer(Integer(LastParam.Param) + LastParam.RecSize);
     end
     else
       ResPtr := @TypeData.ParamList[0];
@@ -1680,8 +1682,8 @@ type
 
 function TJclInterfaceTypeInfo.GetParent: IJclInterfaceTypeInfo;
 begin
-  if (TypeData.IntfParent <> nil) and (TypeData.IntfParent^ <> nil) then
-    Result := JclTypeInfo(TypeData.IntfParent^) as IJclInterfaceTypeInfo
+  if (TypeData.IntfParent <> nil) {$IFDEF BORLAND}and (TypeData.IntfParent^ <> nil){$ENDIF BORLAND} then
+    Result := JclTypeInfo(TypeData.IntfParent{$IFDEF BORLAND}^{$ENDIF}) as IJclInterfaceTypeInfo
   else
     Result := nil;
 end;
@@ -1944,10 +1946,10 @@ var
 begin
   TD := GetTypeData(TypeInfo);
   if TypeInfo.Kind = tkSet then
-    RemoveTypeInfo(TD^.CompType^)
+    RemoveTypeInfo(TD^.CompType{$IFDEF BORLAND}^{$ENDIF})
   else
-  if (TypeInfo.Kind = tkEnumeration) and (TD^.BaseType^ <> TypeInfo) then
-    RemoveTypeInfo(GetTypeData(TypeInfo)^.BaseType^);
+  if (TypeInfo.Kind = tkEnumeration) and (TD^.BaseType{$IFDEF BORLAND}^{$ENDIF} <> TypeInfo) then
+    RemoveTypeInfo(GetTypeData(TypeInfo)^.BaseType{$IFDEF BORLAND}^{$ENDIF});
   FreeMem(GetTypeData(TypeInfo)^.BaseType);
   FreeMem(TypeInfo);
 end;
@@ -2083,8 +2085,6 @@ end;
 
 function JclGenerateEnumType(const TypeName: ShortString;
   const Literals: array of string): PTypeInfo;
-type
-  PInteger = ^Integer;
 var
   StringSize: Integer;
   I: Integer;
@@ -2114,7 +2114,7 @@ begin
       TypeData^.OrdType := otULong;
     TypeData^.MinValue := 0;
     TypeData^.MaxValue := Length(Literals)-1;
-    TypeData^.BaseType^ := Result;   // No sub-range: basetype points to itself
+    TypeData^.BaseType{$IFDEF BORLAND}^{$ENDIF} := Result;   // No sub-range: basetype points to itself
     CurName := @TypeData^.NameList;
     for I := Low(Literals) to High(Literals) do
     begin
@@ -2204,7 +2204,7 @@ begin
     TypeData^.MinValue := MinValue;
     TypeData^.MaxValue := MaxValue;
     TypeData^.BaseType := AllocMem(SizeOf(Pointer));
-    TypeData^.BaseType^ := BaseType;
+    TypeData^.BaseType{$IFDEF BORLAND}^{$ENDIF} := BaseType;
     AddType(Result);
   except
     try
@@ -2231,6 +2231,7 @@ begin
     Conv := FindIdentToInt(TypeInfo)
   else
     Conv := nil;
+  Result := 0;
   HaveConversion := (@Conv <> nil) and Conv(Value, Result);
   if not HaveConversion then
   begin
@@ -2259,6 +2260,7 @@ begin
     Conv := FindIntToIdent(TypeInfo)
   else
     Conv := nil;
+  Result := '';
   HaveConversion := (@Conv <> nil) and Conv(Value, Result);
   if not HaveConversion then
   begin
@@ -2337,7 +2339,7 @@ var
   ResBytes: Integer;
   CompType: PTypeInfo;
 begin
-  CompType := GetTypeData(TypeInfo).CompType^;
+  CompType := GetTypeData(TypeInfo).CompType{$IFDEF BORLAND}^{$ENDIF};
   EnumMin := GetTypeData(CompType).MinValue;
   BitShift := EnumMin mod 8;
   TmpInt64 := Longword(Value) shl BitShift;
@@ -2355,7 +2357,7 @@ var
   ResBytes: Integer;
   CompType: PTypeInfo;
 begin
-  CompType := GetTypeData(TypeInfo).CompType^;
+  CompType := GetTypeData(TypeInfo).CompType{$IFDEF BORLAND}^{$ENDIF};
   EnumMin := GetTypeData(CompType).MinValue;
   EnumMax := GetTypeData(CompType).MaxValue;
   ResBytes := (EnumMax div 8) - (EnumMin div 8) + 1;
@@ -2402,8 +2404,13 @@ begin
     else
       Byte(TypeData^.OrdType) := 255;
     end;
+    {$IFDEF BORLAND}
     TypeData^.CompType := AllocMem(SizeOf(Pointer));
     TypeData^.CompType^ := BaseType;
+    {$ENDIF BORLAND}
+    {$IFDEF FPC}
+    TypeData^.CompType := BaseType;
+    {$ENDIF FPC}
     AddType(Result);
   except
     try
@@ -2418,28 +2425,6 @@ end;
 
 //=== Is/As hooking ==========================================================
 
-type
-  PReadLoc = ^TReadLoc;
-  TReadLoc = packed record
-    {$IFDEF OPTIMIZATION_ON}
-    Code: array [0..9] of Byte;
-    {$ELSE ~OPTIMIZATION_ON}
-    Code: array [0..17] of Byte;
-    {$ENDIF ~OPTIMIZATION_ON}
-    OpCode_Call: Byte;
-    CallOffset: Longint;
-  end;
-
-  PJmp = ^TJmp;
-  TJmp = packed record
-    case OpCodeJmp: Byte of
-      $E9:
-        (JmpOffset: Longint);
-      $FF:
-        (OpCode2: Byte;
-         EntryOffset: Longint);
-  end;
-  
 // Copied from System.pas (_IsClass function)
 
 function JclIsClass(const AnObj: TObject; const AClass: TClass): Boolean;

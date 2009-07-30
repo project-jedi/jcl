@@ -241,7 +241,9 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\experts\debug\simdview'
+    LogPath: 'JCL\experts\debug\simdview';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
@@ -250,6 +252,7 @@ implementation
 uses
   SysUtils, Math,
   JclStrings,
+  JclSysUtils,
   JclWin32,
   JclOtaUtils;
 
@@ -894,7 +897,7 @@ begin
             // copy the data
             JclContext.ExtendedContext.ExtSaveArea2 := AVXContext^
           else
-            FillChar(JclContext.ExtendedContext.ExtSaveArea2, SizeOf(JclContext.ExtendedContext.ExtSaveArea2), 0);
+            ResetMemory(JclContext.ExtendedContext.ExtSaveArea2, SizeOf(JclContext.ExtendedContext.ExtSaveArea2));
         end;
       finally
         FreeMem(ExtendedContextMemory);
@@ -904,7 +907,7 @@ begin
   else
   begin
     Result := True;
-    FillChar(JclContext.ExtendedContext.ExtSaveArea2, SizeOf(JclContext.ExtendedContext.ExtSaveArea2), 0);
+    ResetMemory(JclContext.ExtendedContext.ExtSaveArea2, SizeOf(JclContext.ExtendedContext.ExtSaveArea2));
   end;
   {$IFDEF COMPILER9_UP}
   // get XMM registers
@@ -942,11 +945,11 @@ begin
       AlignedContext^.ScalarContext.ContextFlags := CONTEXT_EXTENDED_REGISTERS;
       Result := GetThreadContext(AThread.Handle,AlignedContext) and
         ((AlignedContext^.ScalarContext.ContextFlags and CONTEXT_EXTENDED_REGISTERS)<>0);
-      FillChar(AlignedContext.ExtendedContext.ExtSaveArea2, SizeOf(AlignedContext.ExtendedContext.ExtSaveArea2), 0);
+      ResetMemory(AlignedContext.ExtendedContext.ExtSaveArea2, SizeOf(AlignedContext.ExtendedContext.ExtSaveArea2));
       if Result then
         JclContext := AlignedContext^
       else
-        FillChar(JclContext, SizeOf(JclContext), 0);
+        ResetMemory(JclContext, SizeOf(JclContext));
     finally
       FreeMem(ContextMemory);
     end;

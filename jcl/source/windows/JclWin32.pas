@@ -118,16 +118,17 @@ type
     property LastErrorMsg: string read FLastErrorMsg;
   end;
 
-type
+{$IFNDEF FPC}
 
 //
 // Unsigned Basics
 //
 
+type
   USHORT = Word;
   {$EXTERNALSYM USHORT}
 
-
+{$ENDIF ~FPC}
 //==================================================================================================
 // presumable from any older WinNT.h or from WinIfs.h
 //==================================================================================================
@@ -233,19 +234,19 @@ const
 
 // from JwaWinNT.pas (few declarations from JwaWinType)
 
-type
-  ULONGLONG = Int64;
-  {$EXTERNALSYM ULONGLONG}
-
 const
   MAXLONGLONG = $7fffffffffffffff;
   {$EXTERNALSYM MAXLONGLONG}
 
+{$IFNDEF FPC}
 type
+  ULONGLONG = Int64;
+  {$EXTERNALSYM ULONGLONG}
   PLONGLONG = ^LONGLONG;
   {$EXTERNALSYM PLONGLONG}
   PULONGLONG = ^ULONGLONG;
   {$EXTERNALSYM PULONGLONG}
+{$ENDIF ~FPC}
 
 const
   ANYSIZE_ARRAY = 1;
@@ -384,6 +385,7 @@ function SORTVERSIONFROMLCID(LocaleId: LCID): WORD;
 //
 //
 
+{$IFNDEF FPC}
 type
   _SID_IDENTIFIER_AUTHORITY = record
     Value: array [0..5] of Byte;
@@ -407,6 +409,7 @@ type
   PPSID = ^PSID;
   {$NODEFINE PPSID}
   TSid = SID;
+{$ENDIF ~FPC}
 
 const
   SID_REVISION                    = (1); // Current revision level
@@ -438,7 +441,6 @@ const
   {$EXTERNALSYM SidTypeUnknown}
   SidTypeComputer       = 9;
   {$EXTERNALSYM SidTypeComputer}
-{$ENDIF ~FPC}
 
 type
   _SID_NAME_USE = DWORD;
@@ -468,6 +470,7 @@ type
   {$EXTERNALSYM PSID_AND_ATTRIBUTES_ARRAY}
   PSidAndAttributesArray = ^TSidAndAttributesArray;
   TSidAndAttributesArray = SID_AND_ATTRIBUTES_ARRAY;
+{$ENDIF ~FPC}
 
 /////////////////////////////////////////////////////////////////////////////
 //                                                                         //
@@ -837,6 +840,7 @@ type
 // Token information class structures
 //
 
+{$IFNDEF FPC}
 type
   PTOKEN_USER = ^TOKEN_USER;
   {$EXTERNALSYM PTOKEN_USER}
@@ -848,6 +852,7 @@ type
   {$EXTERNALSYM TOKEN_USER}
   TTokenUser = TOKEN_USER;
   PTokenUser = PTOKEN_USER;
+{$ENDIF ~FPC}
 
 // line 3858
 
@@ -1141,6 +1146,7 @@ const
 // File header format.
 //
 
+{$IFNDEF FPC}
 type
   PIMAGE_FILE_HEADER = ^IMAGE_FILE_HEADER;
   {$EXTERNALSYM PIMAGE_FILE_HEADER}
@@ -1158,6 +1164,7 @@ type
   {$EXTERNALSYM IMAGE_FILE_HEADER}
   TImageFileHeader = IMAGE_FILE_HEADER;
   PImageFileHeader = PIMAGE_FILE_HEADER;
+{$ENDIF ~FPC}
 
 const
   IMAGE_SIZEOF_FILE_HEADER = 20;
@@ -1265,6 +1272,7 @@ const
 // Optional header format.
 //
 
+{$IFNDEF FPC}
 type
   PIMAGE_OPTIONAL_HEADER32 = ^IMAGE_OPTIONAL_HEADER32;
   {$EXTERNALSYM PIMAGE_OPTIONAL_HEADER32}
@@ -1336,6 +1344,7 @@ type
   {$EXTERNALSYM IMAGE_OPTIONAL_HEADER64}
   TImageOptionalHeader64 = IMAGE_OPTIONAL_HEADER64;
   PImageOptionalHeader64 = PIMAGE_OPTIONAL_HEADER64;
+{$ENDIF ~FPC}
 
 const
   IMAGE_SIZEOF_ROM_OPTIONAL_HEADER  = 56;
@@ -1368,6 +1377,7 @@ const
   IMAGE_NT_OPTIONAL_HDR_MAGIC     = IMAGE_NT_OPTIONAL_HDR32_MAGIC;
   {$EXTERNALSYM IMAGE_NT_OPTIONAL_HDR_MAGIC}
 
+{$IFNDEF FPC}
 type
   PIMAGE_NT_HEADERS64 = ^IMAGE_NT_HEADERS64;
   {$EXTERNALSYM PIMAGE_NT_HEADERS64}
@@ -1394,6 +1404,7 @@ type
   {$EXTERNALSYM IMAGE_NT_HEADERS32}
   TImageNtHeaders32 = IMAGE_NT_HEADERS32;
   PImageNtHeaders32 = PIMAGE_NT_HEADERS32;
+{$ENDIF ~FPC}
 
 // Subsystem Values
 
@@ -2107,6 +2118,7 @@ type
 // Load Configuration Directory Entry
 //
 
+{$IFNDEF FPC}
 type
   PIMAGE_LOAD_CONFIG_DIRECTORY32 = ^IMAGE_LOAD_CONFIG_DIRECTORY32;
   {$EXTERNALSYM PIMAGE_LOAD_CONFIG_DIRECTORY32}
@@ -2170,6 +2182,7 @@ type
   {$EXTERNALSYM PIMAGE_LOAD_CONFIG_DIRECTORY}
   TImageLoadConfigDirectory = TImageLoadConfigDirectory32;
   PImageLoadConfigDirectory = PImageLoadConfigDirectory32;
+{$ENDIF ~FPC}
 
 // line 6802
 
@@ -2222,6 +2235,8 @@ const
   IMAGE_DEBUG_TYPE_CLSID         = 11;
   {$EXTERNALSYM IMAGE_DEBUG_TYPE_CLSID}
 *)
+
+{$IFNDEF FPC}
 type
   PIMAGE_COFF_SYMBOLS_HEADER = ^IMAGE_COFF_SYMBOLS_HEADER;
   {$EXTERNALSYM PIMAGE_COFF_SYMBOLS_HEADER}
@@ -2240,6 +2255,7 @@ type
   {$EXTERNALSYM IMAGE_COFF_SYMBOLS_HEADER}
   TImageCoffSymbolsHeader = IMAGE_COFF_SYMBOLS_HEADER;
   PImageCoffSymbolsHeader = PIMAGE_COFF_SYMBOLS_HEADER;
+{$ENDIF ~FPC}
 
 const
   FRAME_FPO    = 0;
@@ -2258,6 +2274,7 @@ const
   FPOFLAGS_RESERVED = $2000; // reserved for future use
   FPOFLAGS_FRAME    = $C000; // frame type
 
+{$IFNDEF FPC}
 type
   PFPO_DATA = ^FPO_DATA;
   {$EXTERNALSYM PFPO_DATA}
@@ -2273,6 +2290,7 @@ type
   {$EXTERNALSYM FPO_DATA}
   TFpoData = FPO_DATA;
   PFpoData = PFPO_DATA;
+{$ENDIF ~FPC}
 
 const
   SIZEOF_RFPO_DATA = 16;
@@ -2303,6 +2321,7 @@ type
 // each entry needed by a debugger.
 //
 
+{$IFNDEF FPC}
   PIMAGE_FUNCTION_ENTRY = ^IMAGE_FUNCTION_ENTRY;
   {$EXTERNALSYM PIMAGE_FUNCTION_ENTRY}
   _IMAGE_FUNCTION_ENTRY = record
@@ -2330,6 +2349,8 @@ type
   {$EXTERNALSYM IMAGE_FUNCTION_ENTRY64}
   TImageFunctionEntry64 = IMAGE_FUNCTION_ENTRY64;
   PImageFunctionEntry64 = PIMAGE_FUNCTION_ENTRY64;
+
+{$ENDIF ~FPC}
 
 //
 // Debugging information can be stripped from an image file and placed
@@ -3058,25 +3079,6 @@ function LocateLegacyContext(ContextEx: PCONTEXT_EX; Length: PDWORD): PCONTEXT; 
 procedure SetExtendedFeaturesMask(ContextEx: PCONTEXT_EX; const FeatureMask: Int64);
 {$EXTERNALSYM SetExtendedFeaturesMask}
 
-
-{$IFNDEF COMPILER11_UP}
-type
-  // Need to have the same size like Pointer
-  INT_PTR = JclBase.INT_PTR;
-  {$EXTERNALSYM INT_PTR}
-  LONG_PTR = JclBase.LONG_PTR;
-  {$EXTERNALSYM LONG_PTR}
-  UINT_PTR = JclBase.UINT_PTR;
-  {$EXTERNALSYM UINT_PTR}
-  ULONG_PTR = JclBase.ULONG_PTR;
-  {$EXTERNALSYM ULONG_PTR}
-  DWORD_PTR = JclBase.DWORD_PTR;
-  {$EXTERNALSYM DWORD_PTR}
-{$ENDIF ~COMPILER11_UP}
-
-type
-  PDWORD_PTR = ^DWORD_PTR;
-  {$EXTERNALSYM PDWORD_PTR}
 
 // From JwaAclApi
 
@@ -4596,6 +4598,7 @@ function NetUserChangePassword(domainname, username, oldpassword, newpassword: L
 //
 
 type
+  {$IFNDEF FPC}
   LPUSER_INFO_0 = ^USER_INFO_0;
   {$EXTERNALSYM LPUSER_INFO_0}
   PUSER_INFO_0 = ^USER_INFO_0;
@@ -4608,6 +4611,7 @@ type
   {$EXTERNALSYM USER_INFO_0}
   TUserInfo0 = USER_INFO_0;
   PUserInfo0 = PUSER_INFO_0;
+  {$ENDIF ~FPC}
 
   LPUSER_INFO_1 = ^USER_INFO_1;
   {$EXTERNALSYM LPUSER_INFO_1}
@@ -4629,6 +4633,7 @@ type
   TUserInfo1 = USER_INFO_1;
   PUserInfo1 = PUSER_INFO_1;
 
+  {$IFNDEF FPC}
   LPUSER_INFO_2 = ^USER_INFO_2;
   {$EXTERNALSYM LPUSER_INFO_2}
   PUSER_INFO_2 = ^USER_INFO_2;
@@ -4664,6 +4669,7 @@ type
   {$EXTERNALSYM USER_INFO_2}
   TUserInfo2 = USER_INFO_2;
   PUserInfo2 = puser_info_2;
+  {$ENDIF ~FPC}
 
 // line 799
 
@@ -4909,6 +4915,7 @@ function NetLocalGroupDelMembers(servername, groupname: LPCWSTR; level: DWORD; b
 //
 
 type
+  {$IFNDEF FPC}
   LPLOCALGROUP_INFO_0 = ^LOCALGROUP_INFO_0;
   {$EXTERNALSYM LPLOCALGROUP_INFO_0}
   PLOCALGROUP_INFO_0 = ^LOCALGROUP_INFO_0;
@@ -4921,6 +4928,7 @@ type
   {$EXTERNALSYM LOCALGROUP_INFO_0}
   TLocalGroupInfo0 = LOCALGROUP_INFO_0;
   PLocalGroupInfo0 = PLOCALGROUP_INFO_0;
+  {$ENDIF ~FPC}
 
   LPLOCALGROUP_INFO_1 = ^LOCALGROUP_INFO_1;
   {$EXTERNALSYM LPLOCALGROUP_INFO_1}
@@ -4949,6 +4957,7 @@ type
   TLocalGroupInfo1002 = LOCALGROUP_INFO_1002;
   PLocalGroupInfo1002 = PLOCALGROUP_INFO_1002;
 
+  {$IFNDEF FPC}
   LPLOCALGROUP_MEMBERS_INFO_0 = ^LOCALGROUP_MEMBERS_INFO_0;
   {$EXTERNALSYM LPLOCALGROUP_MEMBERS_INFO_0}
   PLOCALGROUP_MEMBERS_INFO_0 = ^LOCALGROUP_MEMBERS_INFO_0;
@@ -4961,6 +4970,7 @@ type
   {$EXTERNALSYM LOCALGROUP_MEMBERS_INFO_0}
   TLocalGroupMembersInfo0 = LOCALGROUP_MEMBERS_INFO_0;
   PLocalGroupMembersInfo0 = PLOCALGROUP_MEMBERS_INFO_0;
+  {$ENDIF ~FPC}
 
   LPLOCALGROUP_MEMBERS_INFO_1 = ^LOCALGROUP_MEMBERS_INFO_1;
   {$EXTERNALSYM LPLOCALGROUP_MEMBERS_INFO_1}
@@ -4992,6 +5002,7 @@ type
   TLocalGroupMembersInfo2 = LOCALGROUP_MEMBERS_INFO_2;
   PLocalGroupMembersInfo2 = PLOCALGROUP_MEMBERS_INFO_2;
 
+  {$IFNDEF FPC}
   LPLOCALGROUP_MEMBERS_INFO_3 = ^LOCALGROUP_MEMBERS_INFO_3;
   {$EXTERNALSYM LPLOCALGROUP_MEMBERS_INFO_3}
   PLOCALGROUP_MEMBERS_INFO_3 = ^LOCALGROUP_MEMBERS_INFO_3;
@@ -5004,6 +5015,7 @@ type
   {$EXTERNALSYM LOCALGROUP_MEMBERS_INFO_3}
   TLocalGroupMembersInfo3 = LOCALGROUP_MEMBERS_INFO_3;
   PLocalGroupMembersInfo3 = PLOCALGROUP_MEMBERS_INFO_3;
+  {$ENDIF ~FPC}
 
 function NetApiBufferFree(Buffer: Pointer): NET_API_STATUS; stdcall;
 {$EXTERNALSYM NetApiBufferFree}
@@ -5025,10 +5037,13 @@ const
 //
 
 type
+  {$IFNDEF FPC}
   PNCB = ^NCB;
+  {$ENDIF ~FPC}
 
   TNcbPost = procedure (P: PNCB); stdcall;
 
+  {$IFNDEF FPC}
   _NCB = record
     ncb_command: UCHAR;  // command code
     ncb_retcode: UCHAR;  // return code
@@ -5057,12 +5072,14 @@ type
   NCB = _NCB;
   {$EXTERNALSYM NCB}
   TNcb = NCB;
+  {$ENDIF ~FPC}
 
 //
 //  Structure returned to the NCB command NCBASTAT is ADAPTER_STATUS followed
 //  by an array of NAME_BUFFER structures.
 //
-
+{$IFNDEF FPC}
+type
   _ADAPTER_STATUS = record
     adapter_address: array [0..5] of UCHAR;
     rev_major: UCHAR;
@@ -5112,6 +5129,7 @@ type
   {$EXTERNALSYM PNAME_BUFFER}
   TNameBuffer = NAME_BUFFER;
   PNameBuffer = PNAME_BUFFER;
+{$ENDIF ~FPC}
 
 //  values for name_flags bits.
 
@@ -5142,6 +5160,7 @@ const
 //  status for all names.
 //
 
+{$IFNDEF FPC}
 type
   _SESSION_HEADER = record
     sess_name: UCHAR;
@@ -5172,6 +5191,7 @@ type
   {$EXTERNALSYM PSESSION_BUFFER}
   TSessionBuffer = SESSION_BUFFER;
   PSessionBuffer = PSESSION_BUFFER;
+{$ENDIF ~FPC}
 
 //  Values for state
 
@@ -5196,6 +5216,7 @@ const
 //  length =3, lana[0]=0, lana[1]=2 and lana[2]=3 will be returned.
 //
 
+{$IFNDEF FPC}
 type
   _LANA_ENUM = record
     length: UCHAR; // Number of valid entries in lana[]
@@ -5208,12 +5229,14 @@ type
   {$EXTERNALSYM PLANA_ENUM}
   TLanaEnum = LANA_ENUM;
   PLanaEnum = PLANA_ENUM;
+{$ENDIF ~FPC}
 
 //
 //  Structure returned to the NCB command NCBFINDNAME is FIND_NAME_HEADER followed
 //  by an array of FIND_NAME_BUFFER structures.
 //
 
+{$IFNDEF FPC}
 type
   _FIND_NAME_HEADER = record
     node_count: WORD;
@@ -5261,6 +5284,7 @@ type
   {$EXTERNALSYM PACTION_HEADER}
   TActionHeader = ACTION_HEADER;
   PActionHeader = PACTION_HEADER;
+{$ENDIF ~FPC}
 
 //  Values for transport_id
 
@@ -6611,6 +6635,7 @@ function EnumCalendarInfoExW(lpCalInfoEnumProcEx: CALINFO_ENUMPROCEXW;
 {$EXTERNALSYM EnumCalendarInfoExW}
 
 
+{$IFNDEF FPC}
 type
   MAKEINTRESOURCEA = LPSTR;
   {$EXTERNALSYM MAKEINTRESOURCEA}
@@ -6623,6 +6648,7 @@ type
   MAKEINTRESOURCE = MAKEINTRESOURCEA;
   {$EXTERNALSYM MAKEINTRESOURCE}
 {$ENDIF ~SUPPORTS_UNICODE}
+{$ENDIF ~FPC}
 
 //
 // Predefined Resource Types
@@ -7335,6 +7361,76 @@ function LsaClose(ObjectHandle: LSA_HANDLE): NTSTATUS; stdcall;
 function LsaNtStatusToWinError(Status: NTSTATUS): ULONG; stdcall;
 
 
+// Snapshot function
+
+function CreateToolhelp32Snapshot(dwFlags, th32ProcessID: DWORD): THandle; stdcall;
+{$EXTERNALSYM CreateToolhelp32Snapshot}
+
+//
+// The th32ProcessID argument is only used if TH32CS_SNAPHEAPLIST or
+// TH32CS_SNAPMODULE is specified. th32ProcessID == 0 means the current
+// process.
+//
+// NOTE that all of the snapshots are global except for the heap and module
+//      lists which are process specific. To enumerate the heap or module
+//      state for all WIN32 processes call with TH32CS_SNAPALL and the
+//      current process. Then for each process in the TH32CS_SNAPPROCESS
+//      list that isn't the current process, do a call with just
+//      TH32CS_SNAPHEAPLIST and/or TH32CS_SNAPMODULE.
+//
+// dwFlags
+//
+
+const
+  TH32CS_SNAPHEAPLIST = $00000001;
+  {$EXTERNALSYM TH32CS_SNAPHEAPLIST}
+  TH32CS_SNAPPROCESS  = $00000002;
+  {$EXTERNALSYM TH32CS_SNAPPROCESS}
+  TH32CS_SNAPTHREAD   = $00000004;
+  {$EXTERNALSYM TH32CS_SNAPTHREAD}
+  TH32CS_SNAPMODULE   = $00000008;
+  {$EXTERNALSYM TH32CS_SNAPMODULE}
+  TH32CS_SNAPMODULE32 = $00000010;
+  {$EXTERNALSYM TH32CS_SNAPMODULE32}
+  TH32CS_SNAPALL      = TH32CS_SNAPHEAPLIST or TH32CS_SNAPPROCESS or
+                        TH32CS_SNAPTHREAD or TH32CS_SNAPMODULE;
+  {$EXTERNALSYM TH32CS_SNAPALL}
+  TH32CS_INHERIT      = $80000000;
+  {$EXTERNALSYM TH32CS_INHERIT}
+
+//
+// Use CloseHandle to destroy the snapshot
+//
+
+// Thread walking
+
+type
+  PTHREADENTRY32 = ^THREADENTRY32;
+  {$EXTERNALSYM PTHREADENTRY32}
+  tagTHREADENTRY32 = record
+    dwSize: DWORD;
+    cntUsage: DWORD;
+    th32ThreadID: DWORD;       // this thread
+    th32OwnerProcessID: DWORD; // Process this thread is associated with
+    tpBasePri: Longint;
+    tpDeltaPri: Longint;
+    dwFlags: DWORD;
+  end;
+  {$EXTERNALSYM tagTHREADENTRY32}
+  THREADENTRY32 = tagTHREADENTRY32;
+  {$EXTERNALSYM THREADENTRY32}
+  LPTHREADENTRY32 = ^THREADENTRY32;
+  {$EXTERNALSYM LPTHREADENTRY32}
+  TThreadEntry32 = THREADENTRY32;
+  {$EXTERNALSYM TThreadEntry32}
+
+function Thread32First(hSnapshot: THandle; var lpte: THREADENTRY32): BOOL; stdcall;
+{$EXTERNALSYM Thread32First}
+function Thread32Next(hSnapshot: THandle; var lpte: THREADENTRY32): BOOL; stdcall;
+{$EXTERNALSYM Thread32Next}
+
+
+
 
 const
   RtdlSetNamedSecurityInfoW: function(pObjectName: LPWSTR; ObjectType: SE_OBJECT_TYPE;
@@ -7462,11 +7558,7 @@ constructor EJclWin32Error.CreateRes(ResStringRec: PResStringRec);
 begin
   FLastError := GetLastError;
   FLastErrorMsg := SysErrorMessage(FLastError);
-  {$IFDEF FPC}
-  inherited CreateFmt(ResStringRec^ + AnsiLineBreak + RsWin32Prefix, [FLastErrorMsg, FLastError]);
-  {$ELSE ~FPC}
   inherited CreateFmt(LoadResString(ResStringRec) + NativeLineBreak + RsWin32Prefix, [FLastErrorMsg, FLastError]);
-  {$ENDIF ~FPC}
 end;
 
 
@@ -8457,16 +8549,13 @@ end;
 
 // IMAGE_FIRST_SECTION by Nico Bendlin - supplied by Markus Fuchs
 
-function FieldOffset(const Struc; const Field): Cardinal;
-begin
-  Result := Cardinal(@Field) - Cardinal(@Struc);
-end;
-
 function IMAGE_FIRST_SECTION(NtHeader: PImageNtHeaders): PImageSectionHeader;
+var
+  OptionalHeaderAddr: PByte;
 begin
-  Result := PImageSectionHeader(Cardinal(NtHeader) +
-    FieldOffset(NtHeader^, NtHeader^.OptionalHeader) +
-    NtHeader^.FileHeader.SizeOfOptionalHeader);
+  OptionalHeaderAddr := @NtHeader^.OptionalHeader;
+  Inc(OptionalHeaderAddr, NtHeader^.FileHeader.SizeOfOptionalHeader);
+  Result := PImageSectionHeader(OptionalHeaderAddr);
 end;
 
 // line 9204
@@ -8664,6 +8753,47 @@ begin
     jmp [_LsaNtStatusToWinError]
   end;
 end;
+
+
+var
+  _CreateToolhelp32Snapshot: Pointer;
+
+function CreateToolhelp32Snapshot;
+begin
+  GetProcedureAddress(_CreateToolhelp32Snapshot, kernel32, 'CreateToolhelp32Snapshot');
+  asm
+        MOV     ESP, EBP
+        POP     EBP
+        JMP     [_CreateToolhelp32Snapshot]
+  end;
+end;
+
+var
+  _Thread32First: Pointer;
+
+function Thread32First;
+begin
+  GetProcedureAddress(_Thread32First, kernel32, 'Thread32First');
+  asm
+        MOV     ESP, EBP
+        POP     EBP
+        JMP     [_Thread32First]
+  end;
+end;
+
+var
+  _Thread32Next: Pointer;
+
+function Thread32Next;
+begin
+  GetProcedureAddress(_Thread32Next, kernel32, 'Thread32Next');
+  asm
+        MOV     ESP, EBP
+        POP     EBP
+        JMP     [_Thread32Next]
+  end;
+end;
+
 
 
 {$IFDEF UNITVERSIONING}

@@ -287,7 +287,9 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\source\windows'
+    LogPath: 'JCL\source\windows';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
@@ -1013,7 +1015,7 @@ begin
         SetLength(AttachmentPathNames, Attachments.Count);
         for I := 0 to Attachments.Count - 1 do
         begin
-          FillChar(AttachArray[I], SizeOf(TMapiFileDesc), #0);
+          ResetMemory(AttachArray[I], SizeOf(TMapiFileDesc));
           AttachArray[I].nPosition := DWORD(-1);
           if (AttachmentFiles.Count > I) and (AttachmentFiles[I] <> '') then
           begin
@@ -1041,7 +1043,7 @@ begin
         SetLength(RealNames, Recipients.Count);
         for I := 0 to Recipients.Count - 1 do
         begin
-          FillChar(RecipArray[I], SizeOf(TMapiRecipDesc), #0);
+          ResetMemory(RecipArray[I], SizeOf(TMapiRecipDesc));
           with RecipArray[I], Recipients[I] do
           begin
             ulRecipClass := RecipClasses[Kind];
@@ -1075,7 +1077,7 @@ begin
       // Load MAPI client library
       LoadClientLib;
       // Fill MapiMessage structure
-      FillChar(MapiMessage, SizeOf(MapiMessage), #0);
+      ResetMemory(MapiMessage, SizeOf(MapiMessage));
       MapiMessage.lpszSubject := PAnsiChar(FSubject);
       if FHtmlBody then
         MapiMessage.lpszNoteText := #0
@@ -1216,7 +1218,7 @@ var
   var
     T: TSystemTime;
   begin
-    FillChar(T, SizeOf(T), #0);
+    ResetMemory(T, SizeOf(T));
     with T do
     begin
       wYear := CopyAndStrToInt(S, 1, 4);

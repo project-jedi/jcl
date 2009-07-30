@@ -12,3 +12,4 @@ copy ..\source\include\jcl.template.inc ..\source\include\jcld10.inc
 copy ..\source\include\jcl.template.inc ..\source\include\jcld11.inc
 copy ..\source\include\jcl.template.inc ..\source\include\jcld12.inc
 
+copy ..\source\include\jcl.template.inc ..\source\include\jclfpc.inc

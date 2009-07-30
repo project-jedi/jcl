@@ -96,17 +96,6 @@ type
       hkDirect: (FirstElem: PJclHashElem);
   end;
 
-  TJclSimpleHashTable = class(TObject)
-  private
-    FList: PJclHashRecord;
-  public
-    constructor Create;
-    destructor Destroy; override;
-
-    procedure AddObject(const AName: string; AObject: TObject);
-    procedure Clear;
-  end;
-
   TJclSimpleXMLProp = class(TObject)
   private
     FName: string;
@@ -551,7 +540,9 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\source\common'
+    LogPath: 'JCL\source\common';
+    Extra: '';
+    Data: nil
   );
 {$ENDIF UNITVERSIONING}
 
@@ -560,13 +551,14 @@ implementation
 uses
   JclCharsets,
   JclStrings,
-  JclStringConversions,
   JclResources;
 
 const
   cBufferSize = 8192;
+  {$IFDEF COMPILER5}
   DefaultTrueBoolStr = 'True'; // DO NOT LOCALIZE
   DefaultFalseBoolStr = 'False'; // DO NOT LOCALIZE
+  {$ENDIF COMPILER5}
 
 var
   GlobalSorts: TList = nil;
@@ -1451,20 +1443,20 @@ begin
   end;
   while I < ValueLength do
   begin
-    if J = cBufferSize - 1 then //Buffered write to speed up the process a little
-    begin
-      Stream.Write(Buf, J);
-      J := 0;
-    end;
     //faster replacement for St := '$' + Value[I] + Value[I + 1]; Buf[J] := StrToIntDef(St, 0);
     N1 := NibbleCharMapping[Value[I]];
     N2 := NibbleCharMapping[Value[I + 1]];
+    Inc(I, 2);
     if (N1 > 15) or (N2 > 15) then
       Buf[J] := 0
     else
       Buf[J] := N1 shl 4 + N2;
     Inc(J);
-    Inc(I, 2);
+    if J = cBufferSize - 1 then //Buffered write to speed up the process a little
+    begin
+      Stream.Write(Buf, J);
+      J := 0;
+    end;
   end;
   Stream.Write(Buf, J);
 end;
@@ -1495,6 +1487,7 @@ end;
 
 function TJclSimpleXMLElem.GetFloatValue: Extended;
 begin
+  Result := 0.0;
   if not TryStrToFloat(Value, Result) then
     Result := 0.0;
 end;
@@ -1782,6 +1775,7 @@ var
 begin
   Stream := TStringStream.Create('');
   try
+    Buf[0] := 0;
     repeat
       Count := Value.Read(Buf, Length(Buf));
       St := '';
@@ -2096,12 +2090,10 @@ type
 var
   lPos: TReadStatus;
   St: string;
-  Po: string;
   lElem: TJclSimpleXMLElem;
   Ch: Char;
   lContainsText: Boolean;
 begin
-  Po := '';
   St := '';
   lPos := rsWaitingTag;
   lContainsText := False;
@@ -2713,6 +2705,7 @@ end;
 
 function TJclSimpleXMLProp.GetFloatValue: Extended;
 begin
+  Result := 0.0;
   if not TryStrToFloat(Value, Result) then
     Result := 0.0;
 end;
@@ -3402,7 +3395,7 @@ procedure TJclSimpleXMLElemDocType.SaveToStringStream(StringStream: TJclStringSt
 var
   St: string;
 begin
-  St := '<!DOCTYPE ' + Value + '>' + sLineBreak;
+  St := Level + '<!DOCTYPE ' + Value + '>' + sLineBreak;
   StringStream.WriteString(St, 1, Length(St));
   if AParent <> nil then
     AParent.DoSaveProgress;
@@ -3688,39 +3681,6 @@ begin
   FindHeader;
   for I := 0 to Count - 1 do
     Item[I].SaveToStringStream(StringStream, '', AParent);
-end;
-
-//=== { TJclSimpleHashTable } ================================================
-
-constructor TJclSimpleHashTable.Create;
-begin
-  inherited Create;
-  //XXX
-  New(FList);
-  FList.Count := 0;
-  FList.Kind := hkDirect;
-  FList.FirstElem := nil;
-end;
-
-destructor TJclSimpleHashTable.Destroy;
-begin
-  Clear;
-  Dispose(FList);
-  inherited Destroy;
-end;
-
-procedure TJclSimpleHashTable.AddObject(const AName: string;
-  AObject: TObject);
-begin
-  //XXX
-  New(FList.FirstElem);
-  //FList.FirstElem.Value := AName;
-  //FList.FirstElem.Obj := nil;
-end;
-
-procedure TJclSimpleHashTable.Clear;
-begin
-  //XXX
 end;
 
 {$IFDEF COMPILER6_UP}

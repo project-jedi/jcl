@@ -87,7 +87,7 @@ function GlobalGroupExists(const Server, Group: string): Boolean;
 
 function AddAccountToLocalGroup(const Accountname, Groupname: string): Boolean;
 function LookupGroupName(const Server: string; const RID: TNetWellKnownRID): string;
-procedure ParseAccountName(const QualifiedName: string; var Domain, UserName: string);
+procedure ParseAccountName(const QualifiedName: string; out Domain, UserName: string);
 function IsLocalAccount(const AccountName: string): Boolean;
 
 {$IFDEF UNITVERSIONING}
@@ -96,14 +96,16 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\source\windows'
+    LogPath: 'JCL\source\windows';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
 implementation
 
 uses
-  JclBase, JclStrings, JclSysInfo, JclWin32;
+  JclBase, JclStrings, JclSysUtils, JclSysInfo, JclWin32;
 
 function CreateAccount(const Server, Username, Fullname, Password, Description,
   Homedir, Script: string; const PasswordNeverExpires: Boolean): Boolean;
@@ -122,7 +124,7 @@ begin
   wScript := Script;
   wHomedir := Homedir;
 
-  FillChar(Details, SizeOf(Details), #0);
+  ResetMemory(Details, SizeOf(Details));
   with Details do
   begin
     usri2_name := PWideChar(wUsername);
@@ -176,7 +178,7 @@ begin
   wGroupname := Groupname;
   wDescription := Description;
 
-  FillChar(Details, SizeOf(Details), #0);
+  ResetMemory(Details, SizeOf(Details));
   Details.grpi1_name := PWideChar(wGroupName);
   Details.grpi1_comment := PWideChar(wDescription);
 
@@ -195,7 +197,7 @@ begin
   wGroupname := Groupname;
   wDescription := Description;
 
-  FillChar(Details, SizeOf(Details), #0);
+  ResetMemory(Details, SizeOf(Details));
   Details.lgrpi1_name := PWideChar(wGroupName);
   Details.lgrpi1_comment := PWideChar(wDescription);
 
@@ -400,10 +402,12 @@ begin
     rd2 := RIDToDWORD(RID);
     ridCount := 2;
   end;
+  sd := nil;
   if AllocateAndInitializeSid(sia, ridCount, rd1, rd2, 0, 0, 0, 0, 0, 0, sd) then
   try
     AccountNameLen := 0;
     DomainNameLen := 0;
+    SidNameUse := SidTypeUnknown;
     if not LookupAccountSID(PChar(Server), sd, PChar(Result), AccountNameLen,
       nil, DomainNameLen, SidNameUse) then
       SetLength(Result, AccountNamelen);
@@ -418,7 +422,7 @@ begin
   end;
 end;
 
-procedure ParseAccountName(const QualifiedName: string; var Domain, UserName: string);
+procedure ParseAccountName(const QualifiedName: string; out Domain, UserName: string);
 var
   Parts: TStringList;
 begin

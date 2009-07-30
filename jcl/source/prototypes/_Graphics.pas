@@ -557,9 +557,9 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    {$IFDEF VCL}
-    LogPath: 'JCL\source\vcl'
-    {$ENDIF VCL}
+    LogPath: 'JCL\source\vcl';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
@@ -574,6 +574,7 @@ uses
   JclResources,
   {$ENDIF VCL}
   {$ENDIF MSWINDOWS}
+  JclSysUtils,
   JclLogic;
 
 type
@@ -1800,8 +1801,8 @@ var
   List: TIconRec;
   Length: Longint;
 begin
-  FillChar(CI, SizeOf(CI), 0);
-  FillChar(List, SizeOf(List), 0);
+  ResetMemory(CI, SizeOf(CI));
+  ResetMemory(List, SizeOf(List));
   GetDIBSizes(MaskBitmap, MonoInfoSize, MonoBitsSize);
   GetDIBSizes(ColorBitmap, ColorInfoSize, ColorBitsSize);
   MonoInfo := nil;
@@ -2110,7 +2111,7 @@ begin
   // Palette-device?
   if (GetDeviceCaps(WinDC, RASTERCAPS) and RC_PALETTE) = RC_PALETTE then
   begin
-    FillChar(Pal, SizeOf(TMaxLogPalette), #0);  // fill the structure with zeros
+    ResetMemory(Pal, SizeOf(TMaxLogPalette));  // fill the structure with zeros
     Pal.palVersion := $300;                     // fill in the palette version
 
     // grab the system palette entries...
@@ -2662,7 +2663,7 @@ begin
 
   FResetAlphaOnAssign := True;
 
-  FillChar(FBitmapInfo, SizeOf(TBitmapInfo), #0);
+  ResetMemory(FBitmapInfo, SizeOf(TBitmapInfo));
   with FBitmapInfo.bmiHeader do
   begin
     biSize := SizeOf(TBitmapInfoHeader);

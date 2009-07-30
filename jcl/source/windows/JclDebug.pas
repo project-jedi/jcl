@@ -55,7 +55,11 @@ uses
   Windows,
   {$ENDIF MSWINDOWS}
   Classes, SysUtils, Contnrs,
-  JclBase, JclFileUtils, JclPeImage, JclSynch, JclTD32;
+  JclBase, JclFileUtils, JclPeImage,
+  {$IFDEF BORLAND}
+  JclTD32,
+  {$ENDIF BORLAND}
+  JclSynch;
 
 // Diagnostics
 procedure AssertKindOf(const ClassName: string; const Obj: TObject); overload;
@@ -233,11 +237,11 @@ type
     constructor Create(const MapFileName: TFileName; Module: HMODULE); override;
     // Addr are virtual addresses relative to (module base address + $10000)
     function LineNumberFromAddr(Addr: DWORD): Integer; overload;
-    function LineNumberFromAddr(Addr: DWORD; var Offset: Integer): Integer; overload;
+    function LineNumberFromAddr(Addr: DWORD; out Offset: Integer): Integer; overload;
     function ModuleNameFromAddr(Addr: DWORD): string;
     function ModuleStartFromAddr(Addr: DWORD): DWORD;
     function ProcNameFromAddr(Addr: DWORD): string; overload;
-    function ProcNameFromAddr(Addr: DWORD; var Offset: Integer): string; overload;
+    function ProcNameFromAddr(Addr: DWORD; out Offset: Integer): string; overload;
     function SourceNameFromAddr(Addr: DWORD): string;
     property LineNumberErrors: Integer read FLineNumberErrors;
   end;
@@ -295,9 +299,9 @@ type
     constructor Create(AStream: TCustomMemoryStream; CacheData: Boolean);
     function IsModuleNameValid(const Name: TFileName): Boolean;
     function LineNumberFromAddr(Addr: DWORD): Integer; overload;
-    function LineNumberFromAddr(Addr: DWORD; var Offset: Integer): Integer; overload;
+    function LineNumberFromAddr(Addr: DWORD; out Offset: Integer): Integer; overload;
     function ProcNameFromAddr(Addr: DWORD): string; overload;
-    function ProcNameFromAddr(Addr: DWORD; var Offset: Integer): string; overload;
+    function ProcNameFromAddr(Addr: DWORD; out Offset: Integer): string; overload;
     function ModuleNameFromAddr(Addr: DWORD): string;
     function ModuleStartFromAddr(Addr: DWORD): DWORD;
     function SourceNameFromAddr(Addr: DWORD): string;
@@ -306,24 +310,24 @@ type
   end;
 
 function ConvertMapFileToJdbgFile(const MapFileName: TFileName): Boolean; overload;
-function ConvertMapFileToJdbgFile(const MapFileName: TFileName; var LinkerBugUnit: string;
-  var LineNumberErrors: Integer): Boolean; overload;
-function ConvertMapFileToJdbgFile(const MapFileName: TFileName; var LinkerBugUnit: string;
-  var LineNumberErrors, MapFileSize, JdbgFileSize: Integer): Boolean; overload;
+function ConvertMapFileToJdbgFile(const MapFileName: TFileName; out LinkerBugUnit: string;
+  out LineNumberErrors: Integer): Boolean; overload;
+function ConvertMapFileToJdbgFile(const MapFileName: TFileName; out LinkerBugUnit: string;
+  out LineNumberErrors, MapFileSize, JdbgFileSize: Integer): Boolean; overload;
 
 function InsertDebugDataIntoExecutableFile(const ExecutableFileName,
-  MapFileName: TFileName; var LinkerBugUnit: string;
-  var MapFileSize, JclDebugDataSize: Integer): Boolean; overload;
+  MapFileName: TFileName; out LinkerBugUnit: string;
+  out MapFileSize, JclDebugDataSize: Integer): Boolean; overload;
 function InsertDebugDataIntoExecutableFile(const ExecutableFileName,
-  MapFileName: TFileName; var LinkerBugUnit: string;
-  var MapFileSize, JclDebugDataSize, LineNumberErrors: Integer): Boolean; overload;
+  MapFileName: TFileName; out LinkerBugUnit: string;
+  out MapFileSize, JclDebugDataSize, LineNumberErrors: Integer): Boolean; overload;
 
 function InsertDebugDataIntoExecutableFile(const ExecutableFileName: TFileName;
-  BinDebug: TJclBinDebugGenerator; var LinkerBugUnit: string;
-  var MapFileSize, JclDebugDataSize: Integer): Boolean; overload;
+  BinDebug: TJclBinDebugGenerator; out LinkerBugUnit: string;
+  out MapFileSize, JclDebugDataSize: Integer): Boolean; overload;
 function InsertDebugDataIntoExecutableFile(const ExecutableFileName: TFileName;
-  BinDebug: TJclBinDebugGenerator; var LinkerBugUnit: string;
-  var MapFileSize, JclDebugDataSize, LineNumberErrors: Integer): Boolean; overload;
+  BinDebug: TJclBinDebugGenerator; out LinkerBugUnit: string;
+  out MapFileSize, JclDebugDataSize, LineNumberErrors: Integer): Boolean; overload;
 
 // Source Locations
 type
@@ -441,7 +445,7 @@ type
   public
     constructor Create(AModule: HMODULE); virtual;
     function InitializeSource: Boolean; virtual; abstract;
-    function GetLocationInfo(const Addr: Pointer; var Info: TJclLocationInfo): Boolean; virtual; abstract;
+    function GetLocationInfo(const Addr: Pointer; out Info: TJclLocationInfo): Boolean; virtual; abstract;
     property Module: HMODULE read FModule;
     property FileName: TFileName read GetFileName;
   end;
@@ -462,7 +466,7 @@ type
     class procedure RegisterDebugInfoSourceFirst(
       const InfoSourceClass: TJclDebugInfoSourceClass);
     class procedure NeedInfoSourceClassList;
-    function GetLocationInfo(const Addr: Pointer; var Info: TJclLocationInfo): Boolean;
+    function GetLocationInfo(const Addr: Pointer; out Info: TJclLocationInfo): Boolean;
     property ItemFromModule[const Module: HMODULE]: TJclDebugInfoSource read GetItemFromModule;
     property Items[Index: Integer]: TJclDebugInfoSource read GetItems;
   end;
@@ -474,7 +478,7 @@ type
   public
     destructor Destroy; override;
     function InitializeSource: Boolean; override;
-    function GetLocationInfo(const Addr: Pointer; var Info: TJclLocationInfo): Boolean; override;
+    function GetLocationInfo(const Addr: Pointer; out Info: TJclLocationInfo): Boolean; override;
   end;
 
   TJclDebugInfoBinary = class(TJclDebugInfoSource)
@@ -484,27 +488,34 @@ type
   public
     destructor Destroy; override;
     function InitializeSource: Boolean; override;
-    function GetLocationInfo(const Addr: Pointer; var Info: TJclLocationInfo): Boolean; override;
+    function GetLocationInfo(const Addr: Pointer; out Info: TJclLocationInfo): Boolean; override;
   end;
 
   TJclDebugInfoExports = class(TJclDebugInfoSource)
   private
-    FBorImage: TJclPeBorImage;
+    {$IFDEF BORLAND}
+    FImage: TJclPeBorImage;
+    {$ENDIF BORLAND}
+    {$IFDEF FPC}
+    FImage: TJclPeImage;
+    {$ENDIF FPC}
     function IsAddressInThisExportedFunction(Addr: PByteArray; FunctionStartAddr: DWORD_PTR): Boolean;
   public
     destructor Destroy; override;
     function InitializeSource: Boolean; override;
-    function GetLocationInfo(const Addr: Pointer; var Info: TJclLocationInfo): Boolean; override;
+    function GetLocationInfo(const Addr: Pointer; out Info: TJclLocationInfo): Boolean; override;
   end;
 
+  {$IFDEF BORLAND}
   TJclDebugInfoTD32 = class(TJclDebugInfoSource)
   private
     FImage: TJclPeBorTD32Image;
   public
     destructor Destroy; override;
     function InitializeSource: Boolean; override;
-    function GetLocationInfo(const Addr: Pointer; var Info: TJclLocationInfo): Boolean; override;
+    function GetLocationInfo(const Addr: Pointer; out Info: TJclLocationInfo): Boolean; override;
   end;
+  {$ENDIF BORLAND}
 
   TJclDebugInfoSymbols = class(TJclDebugInfoSource)
   public
@@ -513,14 +524,14 @@ type
     class function InitializeDebugSymbols: Boolean;
     class function CleanupDebugSymbols: Boolean;
     function InitializeSource: Boolean; override;
-    function GetLocationInfo(const Addr: Pointer; var Info: TJclLocationInfo): Boolean; override;
+    function GetLocationInfo(const Addr: Pointer; out Info: TJclLocationInfo): Boolean; override;
   end;
 
 // Source location functions
 function Caller(Level: Integer = 0; FastStackWalk: Boolean = False): Pointer;
 
 function GetLocationInfo(const Addr: Pointer): TJclLocationInfo; overload;
-function GetLocationInfo(const Addr: Pointer; var Info: TJclLocationInfo): Boolean; overload;
+function GetLocationInfo(const Addr: Pointer; out Info: TJclLocationInfo): Boolean; overload;
 function GetLocationInfoStr(const Addr: Pointer; IncludeModuleName: Boolean = False;
   IncludeAddressOffset: Boolean = False; IncludeStartProcLineOffset: Boolean = False;
   IncludeVAdress: Boolean = False): string;
@@ -575,7 +586,9 @@ type
 type
   PDWORD_PTRArray = ^TDWORD_PTRArray;
   TDWORD_PTRArray = array [0..(MaxInt - $F) div SizeOf(DWORD_PTR)] of DWORD_PTR;
+  {$IFNDEF FPC}
   PDWORD_PTR = ^DWORD_PTR;
+  {$ENDIF ~FPC}
 
   PStackFrame = ^TStackFrame;
   TStackFrame = record
@@ -629,7 +642,7 @@ type
     procedure TraceStackFrames;
     procedure TraceStackRaw;
     procedure DelayStoreStack;
-    function ValidCallSite(CodeAddr: DWORD_PTR; var CallInstructionSize: Cardinal): Boolean;
+    function ValidCallSite(CodeAddr: DWORD_PTR; out CallInstructionSize: Cardinal): Boolean;
     function ValidStackAddr(StackAddr: DWORD_PTR): Boolean;
     function GetCount: Integer;
     procedure CorrectOnAccess(ASkipFirstItem: Boolean);
@@ -732,7 +745,7 @@ type
   public
     constructor Create(AExcDesc: PExcDesc);
     function Handles(ExceptObj: TObject): Boolean;
-    function HandlerInfo(ExceptObj: TObject; var HandlerAt: Pointer): Boolean;
+    function HandlerInfo(ExceptObj: TObject; out HandlerAt: Pointer): Boolean;
     property CodeLocation: Pointer read FCodeLocation;
     property FrameKind: TExceptFrameKind read FFrameKind;
   end;
@@ -987,7 +1000,9 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\source\windows'
+    LogPath: 'JCL\source\windows';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
@@ -997,8 +1012,8 @@ uses
   {$IFDEF MSWINDOWS}
   JclRegistry,
   {$ENDIF MSWINDOWS}
-  JclHookExcept, JclLogic, JclStrings, JclSysInfo, JclSysUtils, JclWin32,
-  JclStringConversions, JclResources, TLHelp32;
+  JclHookExcept, JclStrings, JclSysInfo, JclSysUtils, JclWin32,
+  JclStringConversions, JclResources;
 
 //=== Helper assembler routines ==============================================
 
@@ -1299,7 +1314,6 @@ const
   PublicsByNameHeader  : array [0..3] of string = ('Address', 'Publics', 'by', 'Name');
   PublicsByValueHeader : array [0..3] of string = ('Address', 'Publics', 'by', 'Value');
   LineNumbersPrefix    : string = 'Line numbers for';
-  ResourceFilesHeader  : array [0..2] of string = ('Bound', 'resource', 'files');
 var
   CurrPos, EndPos: PJclMapString;
 {$IFNDEF COMPILER9_UP}
@@ -1662,7 +1676,7 @@ begin
   Result := Integer(PJclMapLineNumber(Item1)^.VA) - PInteger(Item2)^;
 end;
 
-function TJclMapScanner.LineNumberFromAddr(Addr: DWORD; var Offset: Integer): Integer;
+function TJclMapScanner.LineNumberFromAddr(Addr: DWORD; out Offset: Integer): Integer;
 var
   I: Integer;
   ModuleStartAddr: DWORD;
@@ -1762,7 +1776,7 @@ begin
   Result := Integer(PJclMapProcName(Item1)^.VA) - PInteger(Item2)^;
 end;
 
-function TJclMapScanner.ProcNameFromAddr(Addr: DWORD; var Offset: Integer): string;
+function TJclMapScanner.ProcNameFromAddr(Addr: DWORD; out Offset: Integer): string;
 var
   I: Integer;
   ModuleStartAddr: DWORD;
@@ -2037,8 +2051,8 @@ begin
   Result := ConvertMapFileToJdbgFile(MapFileName, Dummy1, Dummy2, Dummy3, Dummy4);
 end;
 
-function ConvertMapFileToJdbgFile(const MapFileName: TFileName; var LinkerBugUnit: string;
-  var LineNumberErrors: Integer): Boolean;
+function ConvertMapFileToJdbgFile(const MapFileName: TFileName; out LinkerBugUnit: string;
+  out LineNumberErrors: Integer): Boolean;
 var
   Dummy1, Dummy2: Integer;
 begin
@@ -2046,8 +2060,8 @@ begin
     Dummy1, Dummy2);
 end;
 
-function ConvertMapFileToJdbgFile(const MapFileName: TFileName; var LinkerBugUnit: string;
-  var LineNumberErrors, MapFileSize, JdbgFileSize: Integer): Boolean;
+function ConvertMapFileToJdbgFile(const MapFileName: TFileName; out LinkerBugUnit: string;
+  out LineNumberErrors, MapFileSize, JdbgFileSize: Integer): Boolean;
 var
   JDbgFileName: TFileName;
   Generator: TJclBinDebugGenerator;
@@ -2068,7 +2082,7 @@ begin
 end;
 
 function InsertDebugDataIntoExecutableFile(const ExecutableFileName, MapFileName: TFileName;
-  var LinkerBugUnit: string; var MapFileSize, JclDebugDataSize: Integer): Boolean;
+  out LinkerBugUnit: string; out MapFileSize, JclDebugDataSize: Integer): Boolean;
 var
   Dummy: Integer;
 begin
@@ -2077,7 +2091,7 @@ begin
 end;
 
 function InsertDebugDataIntoExecutableFile(const ExecutableFileName, MapFileName: TFileName;
-  var LinkerBugUnit: string; var MapFileSize, JclDebugDataSize, LineNumberErrors: Integer): Boolean;
+  out LinkerBugUnit: string; out MapFileSize, JclDebugDataSize, LineNumberErrors: Integer): Boolean;
 var
   BinDebug: TJclBinDebugGenerator;
 begin
@@ -2091,8 +2105,8 @@ begin
 end;
 
 function InsertDebugDataIntoExecutableFile(const ExecutableFileName: TFileName;
-  BinDebug: TJclBinDebugGenerator; var LinkerBugUnit: string;
-  var MapFileSize, JclDebugDataSize: Integer): Boolean;
+  BinDebug: TJclBinDebugGenerator; out LinkerBugUnit: string;
+  out MapFileSize, JclDebugDataSize: Integer): Boolean;
 var
   Dummy: Integer;
 begin
@@ -2102,8 +2116,8 @@ end;
 
 // TODO 64 bit version
 function InsertDebugDataIntoExecutableFile(const ExecutableFileName: TFileName;
-  BinDebug: TJclBinDebugGenerator; var LinkerBugUnit: string;
-  var MapFileSize, JclDebugDataSize, LineNumberErrors: Integer): Boolean;
+  BinDebug: TJclBinDebugGenerator; out LinkerBugUnit: string;
+  out MapFileSize, JclDebugDataSize, LineNumberErrors: Integer): Boolean;
 var
   ImageStream: TMemoryStream;
   NtHeaders32: PImageNtHeaders32;
@@ -2162,7 +2176,7 @@ begin
 
         // Increase the number of sections
         Inc(NtHeaders32^.FileHeader.NumberOfSections);
-        FillChar(JclDebugSection^, SizeOf(TImageSectionHeader), #0);
+        ResetMemory(JclDebugSection^, SizeOf(TImageSectionHeader));
         // JCLDEBUG Virtual Address
         JclDebugSection^.VirtualAddress := LastSection^.VirtualAddress + LastSection^.Misc.VirtualSize;
         RoundUpToAlignment(JclDebugSection^.VirtualAddress, NtHeaders32^.OptionalHeader.SectionAlignment);
@@ -2449,6 +2463,7 @@ begin
     C := 0;
     Ln := 0;
     P := MakePtr(PJclDbgHeader(FStream.Memory)^.LineNumbers);
+    Value := 0;
     while ReadValue(P, Value) do
     begin
       Inc(CurrVA, Value);
@@ -2484,6 +2499,7 @@ begin
     C := 0;
     Ln := 0;
     P := MakePtr(PJclDbgHeader(FStream.Memory)^.Symbols);
+    Value := 0;
     while ReadValue(P, Value) do
     begin
       Inc(CurrAddr, Value);
@@ -2563,7 +2579,7 @@ begin
   Result := LineNumberFromAddr(Addr, Dummy);
 end;
 
-function TJclBinDebugScanner.LineNumberFromAddr(Addr: DWORD; var Offset: Integer): Integer;
+function TJclBinDebugScanner.LineNumberFromAddr(Addr: DWORD; out Offset: Integer): Integer;
 var
   P: Pointer;
   Value, LineNumber: Integer;
@@ -2629,6 +2645,7 @@ begin
   P := MakePtr(PJclDbgHeader(FStream.Memory)^.Units);
   Name := 0;
   StartAddr := 0;
+  Value := 0;
   while ReadValue(P, Value) do
   begin
     Inc(StartAddr, Value);
@@ -2652,6 +2669,7 @@ begin
   P := MakePtr(PJclDbgHeader(FStream.Memory)^.Units);
   StartAddr := 0;
   ModuleStartAddr := DWORD(-1);
+  Value := 0;
   while ReadValue(P, Value) do
   begin
     Inc(StartAddr, Value);
@@ -2673,7 +2691,7 @@ begin
   Result := ProcNameFromAddr(Addr, Dummy);
 end;
 
-function TJclBinDebugScanner.ProcNameFromAddr(Addr: DWORD; var Offset: Integer): string;
+function TJclBinDebugScanner.ProcNameFromAddr(Addr: DWORD; out Offset: Integer): string;
 var
   P: Pointer;
   Value, FirstWord, SecondWord: Integer;
@@ -2768,6 +2786,7 @@ begin
   StartAddr := 0;
   ItemAddr := 0;
   Found := False;
+  Value := 0;
   while ReadValue(P, Value) do
   begin
     Inc(StartAddr, Value);
@@ -3166,12 +3185,11 @@ begin
   Result := TJclDebugInfoSource(Get(Index));
 end;
 
-function TJclDebugInfoList.GetLocationInfo(const Addr: Pointer; var Info: TJclLocationInfo): Boolean;
+function TJclDebugInfoList.GetLocationInfo(const Addr: Pointer; out Info: TJclLocationInfo): Boolean;
 var
   Item: TJclDebugInfoSource;
 begin
-  Finalize(Info);
-  FillChar(Info, SizeOf(Info), #0);
+  ResetMemory(Info, SizeOf(Info));
   Item := ItemFromModule[ModuleFromAddr(Addr)];
   if Item <> nil then
     Result := Item.GetLocationInfo(Addr, Info)
@@ -3233,7 +3251,7 @@ begin
   inherited Destroy;
 end;
 
-function TJclDebugInfoMap.GetLocationInfo(const Addr: Pointer; var Info: TJclLocationInfo): Boolean;
+function TJclDebugInfoMap.GetLocationInfo(const Addr: Pointer; out Info: TJclLocationInfo): Boolean;
 var
   VA: DWORD;
 begin
@@ -3273,7 +3291,7 @@ begin
   inherited Destroy;
 end;
 
-function TJclDebugInfoBinary.GetLocationInfo(const Addr: Pointer; var Info: TJclLocationInfo): Boolean;
+function TJclDebugInfoBinary.GetLocationInfo(const Addr: Pointer; out Info: TJclLocationInfo): Boolean;
 var
   VA: DWORD;
 begin
@@ -3325,7 +3343,7 @@ end;
 
 destructor TJclDebugInfoExports.Destroy;
 begin
-  FreeAndNil(FBorImage);
+  FreeAndNil(FImage);
   inherited Destroy;
 end;
 
@@ -3364,7 +3382,7 @@ begin
   Result := True;
 end;
 
-function TJclDebugInfoExports.GetLocationInfo(const Addr: Pointer; var Info: TJclLocationInfo): Boolean;
+function TJclDebugInfoExports.GetLocationInfo(const Addr: Pointer; out Info: TJclLocationInfo): Boolean;
 var
   I, BasePos: Integer;
   VA: DWORD;
@@ -3374,11 +3392,16 @@ var
 begin
   Result := False;
   VA := DWORD_PTR(Addr) - FModule;
-  RawName := not FBorImage.IsPackage;
+  {$IFDEF BORLAND}
+  RawName := not FImage.IsPackage;
+  {$ENDIF BORLAND}
+  {$IFDEF FPC}
+  RawName := True;
+  {$ENDIF FPC}
   Info.OffsetFromProcName := 0;
   Info.OffsetFromLineNumber := 0;
   Info.BinaryFileName := FileName;
-  with FBorImage.ExportList do
+  with FImage.ExportList do
   begin
     SortList(esAddress, False);
     for I := Count - 1 downto 0 do
@@ -3433,10 +3456,17 @@ end;
 
 function TJclDebugInfoExports.InitializeSource: Boolean;
 begin
-  FBorImage := TJclPeBorImage.Create(True);
-  FBorImage.AttachLoadedModule(FModule);
-  Result := FBorImage.StatusOK and (FBorImage.ExportList.Count > 0);
+  {$IFDEF BORLAND}
+  FImage := TJclPeBorImage.Create(True);
+  {$ENDIF BORLAND}
+  {$IFDEF FPC}
+  FImage := TJclPeImage.Create(True);
+  {$ENDIF FPC}
+  FImage.AttachLoadedModule(FModule);
+  Result := FImage.StatusOK and (FImage.ExportList.Count > 0);
 end;
+
+{$IFDEF BORLAND}
 
 //=== { TJclDebugInfoTD32 } ==================================================
 
@@ -3446,7 +3476,7 @@ begin
   inherited Destroy;
 end;
 
-function TJclDebugInfoTD32.GetLocationInfo(const Addr: Pointer; var Info: TJclLocationInfo): Boolean;
+function TJclDebugInfoTD32.GetLocationInfo(const Addr: Pointer; out Info: TJclLocationInfo): Boolean;
 var
   VA: DWORD;
 begin
@@ -3475,6 +3505,8 @@ begin
     Result := False;
   end;
 end;
+
+{$ENDIF BORLAND}
 
 //=== { TJclDebugInfoSymbols } ===============================================
 
@@ -3624,7 +3656,7 @@ begin
 end;
 
 function TJclDebugInfoSymbols.GetLocationInfo(const Addr: Pointer;
-  var Info: TJclLocationInfo): Boolean;
+  out Info: TJclLocationInfo): Boolean;
 const
   SymbolNameLength = 1000;
   SymbolSizeA = SizeOf(TImagehlpSymbolA) + SymbolNameLength * SizeOf(AnsiChar);
@@ -3887,11 +3919,11 @@ begin
     end;
   except
     Finalize(Result);
-    FillChar(Result, SizeOf(Result), #0);
+    ResetMemory(Result, SizeOf(Result));
   end;
 end;
 
-function GetLocationInfo(const Addr: Pointer; var Info: TJclLocationInfo): Boolean;
+function GetLocationInfo(const Addr: Pointer; out Info: TJclLocationInfo): Boolean;
 begin
   try
     DebugInfoCritSect.Enter;
@@ -4486,12 +4518,17 @@ begin
   GlobalStackList.AddObject(Result);
 end;
 
-function GetThreadFs(const Context: TContext; const Entry: TLDTEntry): DWORD;
+function GetThreadFs(const Entry: TLDTEntry): DWORD;
 // TODO: 64 bit version
 var
   FsBase: PNT_TIB32;
 begin
+  {$IFDEF BORLAND}
   FsBase := PNT_TIB32((DWORD(Entry.BaseHi) shl 24) or (DWORD(Entry.BaseMid) shl 16) or DWORD(Entry.BaseLow));
+  {$ENDIF BORLAND}
+  {$IFDEF FPC}
+  FsBase := PNT_TIB32((DWORD(Entry.HighWord.Bytes.BaseHi) shl 24) or (DWORD(Entry.HighWord.Bytes.BaseMid) shl 16) or DWORD(Entry.BaseLow));
+  {$ENDIF FPC}
   Result := FsBase^.StackBase;
 end;
 
@@ -4501,13 +4538,13 @@ var
   Entry: TLDTEntry;
 begin
   Result := nil;
-  FillChar(C, SizeOf(C), 0);
-  FillChar(Entry, SizeOf(Entry), #0);
+  ResetMemory(C, SizeOf(C));
+  ResetMemory(Entry, SizeOf(Entry));
   C.ContextFlags := CONTEXT_FULL;
   if GetThreadContext(ThreadHandle, C)
     and GetThreadSelectorEntry(ThreadHandle, C.SegFs, Entry) then
     Result := JclCreateStackList(Raw, DWORD(-1), Pointer(C.Eip), False, Pointer(C.Ebp),
-                Pointer(GetThreadFs(C, Entry)));
+                Pointer(GetThreadFs(Entry)));
 end;
 
 function JclCreateThreadStackTraceFromID(Raw: Boolean; ThreadID: DWORD): TJclStackInfoList;
@@ -4840,7 +4877,7 @@ begin
 
   // We will not be able to fill in all the fields in the StackInfo record,
   // so just blank it all out first
-  FillChar(StackInfo, SizeOf(StackInfo), 0);
+  ResetMemory(StackInfo, SizeOf(StackInfo));
   // Clear the previous call address
   PrevCaller := 0;
   // Loop through all of the valid stack space
@@ -4907,7 +4944,7 @@ end;
 // http://developer.intel.com/design/pentiumii/manuals/243191.htm
 // Instruction format, Chapter 2 and The CALL instruction: page 3-53, 3-54
 
-function TJclStackInfoList.ValidCallSite(CodeAddr: DWORD; var CallInstructionSize: Cardinal): Boolean;
+function TJclStackInfoList.ValidCallSite(CodeAddr: DWORD; out CallInstructionSize: Cardinal): Boolean;
 var
   CodeDWORD4: DWORD;
   CodeDWORD8: DWORD;
@@ -5129,7 +5166,7 @@ begin
   Result := HandlerInfo(ExceptObj, Handler);
 end;
 
-function TJclExceptFrame.HandlerInfo(ExceptObj: TObject; var HandlerAt: Pointer): Boolean;
+function TJclExceptFrame.HandlerInfo(ExceptObj: TObject; out HandlerAt: Pointer): Boolean;
 var
   I: Integer;
   ObjVTable, VTable, ParentVTable: Pointer;
@@ -6182,7 +6219,10 @@ var
   Flags: DWORD;
 begin
   if IsWinNT then
-    Result := GetHandleInformation(Handle, Flags)
+  begin
+    Flags := 0;
+    Result := GetHandleInformation(Handle, Flags);
+  end
   else
     Result := False;
   if not Result then

@@ -33,7 +33,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                          $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -67,7 +67,7 @@ type
 type
   TFileCompressionState = (fcNoCompression, fcDefaultCompression, fcLZNT1Compression);
 
-function NtfsGetCompression(const FileName: TFileName; var State: Short): Boolean; overload;
+function NtfsGetCompression(const FileName: TFileName; out State: Short): Boolean; overload;
 function NtfsGetCompression(const FileName: TFileName): TFileCompressionState; overload;
 function NtfsSetCompression(const FileName: TFileName; const State: Short): Boolean;
 procedure NtfsSetFileCompression(const FileName: TFileName; const State: TFileCompressionState);
@@ -564,7 +564,9 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\source\windows'
+    LogPath: 'JCL\source\windows';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
@@ -575,7 +577,7 @@ uses
   WinSysUt,
   {$ENDIF FPC}
   ComObj, Hardlinks,
-  JclFileUtils, JclSysInfo, JclResources, JclSecurity;
+  JclSysUtils, JclFileUtils, JclSysInfo, JclResources;
 
 //=== NTFS - Compression =====================================================
 
@@ -634,6 +636,7 @@ begin
   if Handle <> INVALID_HANDLE_VALUE then
   try
     Buffer := State;
+    BytesReturned := 0;
     Result := DeviceIoControl(Handle, FSCTL_SET_COMPRESSION, @Buffer,
       SizeOf(Short), nil, 0, BytesReturned, nil);
   finally
@@ -678,16 +681,18 @@ begin
   end;
 end;
 
-function NtfsGetCompression(const FileName: TFileName; var State: Short): Boolean;
+function NtfsGetCompression(const FileName: TFileName; out State: Short): Boolean;
 var
   Handle: THandle;
   BytesReturned: DWORD;
 begin
+  State := 0;
   Result := False;
   Handle := CreateFile(PChar(FileName), 0, 0, nil, OPEN_EXISTING,
     FileFlag[IsDirectory(FileName)], 0);
   if Handle <> INVALID_HANDLE_VALUE then
     try
+      BytesReturned := 0;
       Result := DeviceIoControl(Handle, FSCTL_GET_COMPRESSION, nil, 0, @State,
         SizeOf(Short), BytesReturned, nil);
     finally
@@ -779,6 +784,7 @@ begin
   Handle := CreateFile(PChar(FileName), GENERIC_WRITE, 0, nil, OPEN_EXISTING, 0, 0);
   if Handle <> INVALID_HANDLE_VALUE then
     try
+      BytesReturned := 0;
       Result := DeviceIoControl(Handle, FSCTL_SET_SPARSE, nil, 0, nil, 0, BytesReturned, nil);
     finally
       CloseHandle(Handle);
@@ -796,12 +802,14 @@ begin
   begin
     // Continue only if the file is a sparse file, this avoids the overhead
     // associated with an IOCTL when the file isn't even a sparse file.
+    ResetMemory(Info, SizeOf(Info));
     GetFileInformationByHandle(Handle, Info);
     Result := (Info.dwFileAttributes and FILE_ATTRIBUTE_SPARSE_FILE) <> 0;
     if Result then
     begin
       ZeroDataInfo.FileOffset.QuadPart := First;
       ZeroDataInfo.BeyondFinalZero.QuadPart := Last;
+      BytesReturned := 0;
       Result := DeviceIoControl(Handle, FSCTL_SET_ZERO_DATA, @ZeroDataInfo,
         SizeOf(ZeroDataInfo), nil, 0, BytesReturned, nil);
     end;
@@ -843,6 +851,7 @@ begin
   SearchRange.Length.QuadPart := Count;
   BufferSize := 4 * 64 * SizeOf(TFileAllocatedRangeBuffer);
   Ranges := AllocMem(BufferSize);
+  BytesReturned := 0;
   Result := DeviceIoControl(Handle, FSCTL_QUERY_ALLOCATED_RANGES, @SearchRange,
     SizeOf(SearchRange), Ranges, BufferSize, BytesReturned, nil);
   MoreData := GetLastError = ERROR_MORE_DATA;
@@ -868,6 +877,9 @@ begin
   Handle := CreateFile(PChar(FileName), GENERIC_READ, FILE_SHARE_READ, nil, OPEN_EXISTING, 0, 0);
   if Handle <> INVALID_HANDLE_VALUE then
   try
+    Size := 0;
+    MoreData := False;
+    CurrRanges := 0;
     R := __QueryAllocRanges(Handle, Offset, Count, CurrRanges, MoreData, Size);
     Ranges.MoreData := MoreData;
     Result := R;
@@ -901,6 +913,7 @@ begin
     nil, OPEN_EXISTING, 0, 0);
   if Handle <> INVALID_HANDLE_VALUE then
     try
+      ResetMemory(Info, SizeOf(Info));
       GetFileInformationByHandle(Handle, Info);
       Result := (Info.dwFileAttributes and FILE_ATTRIBUTE_SPARSE_FILE) <> 0;
     finally
@@ -956,8 +969,9 @@ begin
     OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS or FILE_FLAG_OPEN_REPARSE_POINT, 0);
   if Handle <> INVALID_HANDLE_VALUE then
     try
-      FillChar(ReparseData, SizeOf(ReparseData), #0);
+      ResetMemory(ReparseData, SizeOf(ReparseData));
       ReparseData.ReparseTag := ReparseTag;
+      BytesReturned := 0;
       Result := DeviceIoControl(Handle, FSCTL_DELETE_REPARSE_POINT, @ReparseData,
         REPARSE_GUID_DATA_BUFFER_HEADER_SIZE, nil, 0, BytesReturned, nil);
     finally
@@ -975,6 +989,7 @@ begin
     OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS or FILE_FLAG_OPEN_REPARSE_POINT, 0);
   if Handle <> INVALID_HANDLE_VALUE then
     try
+      BytesReturned := 0;
       Result := DeviceIoControl(Handle, FSCTL_SET_REPARSE_POINT, @ReparseData,
         Size, nil, 0, BytesReturned, nil);
     finally
@@ -994,6 +1009,7 @@ begin
   LastError := GetLastError;
   if Handle <> INVALID_HANDLE_VALUE then
     try
+      BytesReturned := 0;
       Result := DeviceIoControl(Handle, FSCTL_GET_REPARSE_POINT, nil, 0, @ReparseData,
         ReparseData.ReparseDataLength + SizeOf(ReparseData), BytesReturned, nil);
       if not Result then
@@ -1013,6 +1029,7 @@ function NtfsIsFolderMountPoint(const Path: string): Boolean;
 var
   Tag: DWORD;
 begin
+  Tag := 0;
   Result := NtfsGetReparseTag(Path, Tag);
   if Result then
     Result := (Tag = IO_REPARSE_TAG_MOUNT_POINT);
@@ -1068,6 +1085,7 @@ function NtfsOpLockAckClosePending(Handle: THandle; Overlapped: TOverlapped): Bo
 var
   BytesReturned: Cardinal;
 begin
+  BytesReturned := 0;
   Result := DeviceIoControl(Handle, FSCTL_OPBATCH_ACK_CLOSE_PENDING, nil, 0, nil,
     0, BytesReturned, @Overlapped);
 end;
@@ -1076,6 +1094,7 @@ function NtfsOpLockBreakAckNo2(Handle: THandle; Overlapped: TOverlapped): Boolea
 var
   BytesReturned: Cardinal;
 begin
+  BytesReturned := 0;
   Result := DeviceIoControl(Handle, FSCTL_OPLOCK_BREAK_ACK_NO_2, nil, 0, nil, 0,
     BytesReturned, @Overlapped);
 end;
@@ -1084,6 +1103,7 @@ function NtfsOpLockBreakAcknowledge(Handle: THandle; Overlapped: TOverlapped): B
 var
   BytesReturned: Cardinal;
 begin
+  BytesReturned := 0;
   Result := DeviceIoControl(Handle, FSCTL_OPLOCK_BREAK_ACKNOWLEDGE, nil, 0, nil,
     0, BytesReturned, @Overlapped);
   Result := Result or (GetLastError = ERROR_IO_PENDING);
@@ -1093,6 +1113,7 @@ function NtfsOpLockBreakNotify(Handle: THandle; Overlapped: TOverlapped): Boolea
 var
   BytesReturned: Cardinal;
 begin
+  BytesReturned := 0;
   Result := DeviceIoControl(Handle, FSCTL_OPLOCK_BREAK_NOTIFY, nil, 0, nil, 0,
     BytesReturned, @Overlapped);
 end;
@@ -1105,6 +1126,7 @@ const
 var
   BytesReturned: Cardinal;
 begin
+  BytesReturned := 0;
   Result := DeviceIoControl(Handle, IoCodes[Kind], nil, 0, nil, 0, BytesReturned, @Overlapped);
   Result := Result or (GetLastError = ERROR_IO_PENDING);
 end;
@@ -1143,6 +1165,7 @@ begin
   else
   begin
     // Make sure Destination is a directory or again, the IOCTL will fail.
+    FilePart := nil;
     if (GetFullPathName(PChar(Destination), 1024, FullDir, FilePart) = 0) or
       (GetFileAttributes(FullDir) = DWORD(-1)) then
     begin
@@ -1151,7 +1174,7 @@ begin
     end;
     StrPCopy(Dest, '\??\' + Destination);
   end;
-  FillChar(ReparseData, SizeOf(ReparseData), #0);
+  ResetMemory(ReparseData, SizeOf(ReparseData));
   NameLength := StrLen(Dest) * SizeOf(WideChar);
   ReparseData.Reparse.ReparseTag := IO_REPARSE_TAG_MOUNT_POINT;
   ReparseData.Reparse.ReparseDataLength := NameLength + 12;
@@ -1183,6 +1206,7 @@ begin
       OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS or FILE_FLAG_OPEN_REPARSE_POINT, 0);
     if Handle <> INVALID_HANDLE_VALUE then
     try
+      BytesReturned := 0;
       if DeviceIoControl(Handle, FSCTL_GET_REPARSE_POINT, nil, 0, @ReparseData,
         MAXIMUM_REPARSE_DATA_BUFFER_SIZE, BytesReturned, nil) {and
         IsReparseTagValid(ReparseData.Reparse.ReparseTag) then}
@@ -1213,18 +1237,20 @@ function FindStream(var Data: TFindStreamData): Boolean;
 var
   Header: TWin32StreamId;
   BytesToRead, BytesRead: DWORD;
-  BytesToSeek: TULargeInteger;
+  BytesToSeek: TJclULargeInteger;
   Hi, Lo: DWORD;
   FoundStream: Boolean;
   StreamName: PWideChar;
 begin
   Result := False;
   FoundStream := False;
+  ResetMemory(Header, SizeOf(Header));
   // We loop until we either found a stream or an error occurs.
   while not FoundStream do
   begin
     // Read stream header
     BytesToRead := DWORD_PTR(@Header.cStreamName[0]) - DWORD_PTR(@Header.dwStreamId);
+    BytesRead := 0;
     if not Windows.BackupRead(Data.Internal.FileHandle, (@Header), BytesToRead, BytesRead,
       False, True, Data.Internal.Context) then
     begin
@@ -1339,6 +1365,7 @@ begin
   if Result then
   begin
     // Call BackupRead one last time to signal that we're done with it
+    BytesRead := 0;
     Result := Windows.BackupRead(0, nil, 0, BytesRead, True, False, Data.Internal.Context);
     if not Result then
       LastError := GetLastError;
@@ -1429,6 +1456,7 @@ begin
   F := CreateFile(PChar(FileName), GENERIC_READ, FILE_SHARE_READ or FILE_SHARE_WRITE, nil, OPEN_EXISTING, 0, 0);
   if F <> INVALID_HANDLE_VALUE then
   try
+    ResetMemory(FileInfo, SizeOf(FileInfo));
     if GetFileInformationByHandle(F, FileInfo) then
     begin
       Info.LinkCount := FileInfo.nNumberOfLinks;
@@ -1468,6 +1496,7 @@ begin
           else
           begin
             // found a file, is it a hard link?
+            ResetMemory(Info, SizeOf(Info));
             if NtfsGetHardLinkInfo(Path + '\' + SearchRec.Name, Info) then
             begin
               if (Info.FileIndexHigh = FileIndexHigh) and (Info.FileIndexLow = FileIndexLow) then
@@ -1498,9 +1527,11 @@ begin
   Result := False;
   // get the full pathname of the specified file
   SetLength(FullPathName, MAX_PATH);
+  FilePart := nil;
   GetFullPathName(PChar(FileName), MAX_PATH, PChar(FullPathName), FilePart);
   SetLength(FullPathName, StrLen(PChar(FullPathName)));
   // get hard link information
+  ResetMemory(Info, SizeOf(Info));
   if NtfsGetHardLinkInfo(FullPathName, Info) then
   begin
     Files := TStringList.Create;
@@ -2089,6 +2120,7 @@ procedure TJclFilePropertySet.SetPropertyName(ID: TPropID;
 var
   AName: PWideChar;
 begin
+  AName := PWideChar(Name);
   OleCheck(FPropertyStorage.WritePropertyNames(1, @ID, @AName));
 end;
 

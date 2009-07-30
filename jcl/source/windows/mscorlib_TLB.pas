@@ -4622,9 +4622,11 @@ type
     m_value: LongWord;
   end;
 
+  {$IFNDEF FPC}
   UInt64 = packed record
     m_value: Largeuint;
   end;
+  {$ENDIF ~FPC}
 
   UIntPtr = packed record
     m_value: Pointer;

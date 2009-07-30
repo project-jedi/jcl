@@ -231,7 +231,9 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\source\common'
+    LogPath: 'JCL\source\common';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
@@ -272,6 +274,7 @@ type
     FLastRegExPattern: string;
     FRegEx: TJclAnsiRegEx;
     FUpdateControl: TUpdateControl;
+    FCompareFunction: TJclStringListSortCompare;
     function AutoUpdateControl: IInterface;
     function CanFreeObjects: Boolean;
     function MatchRegEx(const S, APattern: string): Boolean;
@@ -1005,14 +1008,14 @@ begin
   Result := FSelfAsInterface;
 end;
 
-function TJclStringListImpl.Sort(ACompareFunction: TJclStringListSortCompare = nil): IJclStringList;
-
-  function LocalSort(List: TStringList; Index1, Index2: Integer): Integer;
-  begin
-    Result := ACompareFunction(FSelfAsInterface, Index1, Index2);
-  end;
-
+function LocalSort(List: TStringList; Index1, Index2: Integer): Integer;
 begin
+  Result := TJclStringListImpl(List).FCompareFunction(TJclStringListImpl(List).FSelfAsInterface, Index1, Index2);
+end;
+
+function TJclStringListImpl.Sort(ACompareFunction: TJclStringListSortCompare = nil): IJclStringList;
+begin
+  FCompareFunction := ACompareFunction;
   if not Assigned(ACompareFunction) then
     inherited Sort
   else
@@ -1279,6 +1282,7 @@ var
   I, X: Integer;
 begin
   AutoUpdateControl;
+  X := 0;
   for I := LastIndex downto 0 do
     if not TryStrToInt(Strings[I], X) then
       Delete(I);
@@ -1290,6 +1294,7 @@ var
   I, X: Integer;
 begin
   AutoUpdateControl;
+  X := 0;
   for I := LastIndex downto 0 do
     if TryStrToInt(Strings[I], X) then
       Delete(I);

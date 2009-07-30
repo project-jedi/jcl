@@ -32,7 +32,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                          $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -58,8 +58,8 @@ type
   EJclSecurityError = class(EJclError);
 
 // Access Control
-function CreateNullDacl(var Sa: TSecurityAttributes; const Inheritable: Boolean): PSecurityAttributes;
-function CreateInheritable(var Sa: TSecurityAttributes): PSecurityAttributes;
+function CreateNullDacl(out Sa: TSecurityAttributes; const Inheritable: Boolean): PSecurityAttributes;
+function CreateInheritable(out Sa: TSecurityAttributes): PSecurityAttributes;
 
 // Privileges
 function IsAdministrator: Boolean;
@@ -95,7 +95,9 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\source\windows'
+    LogPath: 'JCL\source\windows';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
@@ -105,7 +107,6 @@ uses
   Classes,
   {$IFDEF FPC}
   WinSysUt,
-  JwaAccCtrl,
   {$ELSE ~FPC}
   AccCtrl,
   {$ENDIF ~FPC}
@@ -113,7 +114,7 @@ uses
 
 //=== Access Control =========================================================
 
-function CreateNullDacl(var Sa: TSecurityAttributes; const Inheritable: Boolean): PSecurityAttributes;
+function CreateNullDacl(out Sa: TSecurityAttributes; const Inheritable: Boolean): PSecurityAttributes;
 begin
   if IsWinNT then
   begin
@@ -137,7 +138,7 @@ begin
   end;
 end;
 
-function CreateInheritable(var Sa: TSecurityAttributes): PSecurityAttributes;
+function CreateInheritable(out Sa: TSecurityAttributes): PSecurityAttributes;
 begin
   Sa.nLength := SizeOf(Sa);
   Sa.lpSecurityDescriptor := nil;
@@ -168,6 +169,7 @@ begin
   TokenInfo := nil;
   HaveToken := False;
   try
+    Token := 0;
     HaveToken := OpenThreadToken(GetCurrentThread, TOKEN_QUERY, True, Token);
     if (not HaveToken) and (GetLastError = ERROR_NO_TOKEN) then
       HaveToken := OpenProcessToken(GetCurrentProcess, TOKEN_QUERY, Token);
@@ -228,6 +230,7 @@ begin
   Result := not IsWinNT;
   if Result then  // if Win9x, then function return True
     Exit;
+  Token := 0;
   if OpenProcessToken(GetCurrentProcess, TOKEN_ADJUST_PRIVILEGES, Token) then
   begin
     TokenPriv.PrivilegeCount := 1;
@@ -285,6 +288,7 @@ begin
     TokenPriv.PrivilegeCount := 1;
     TokenPriv.Control := 0;
     LookupPrivilegeValue(nil, PChar(Privilege), TokenPriv.Privilege[0].Luid);
+    Res := False;
     Result := PrivilegeCheck(Token, TokenPriv, Res) and Res;
     CloseHandle(Token);
   end;
@@ -301,6 +305,7 @@ begin
     LangID := LANG_USER_DEFAULT;
 
     // have the the API function determine the required string length
+    Result := '';
     if not LookupPrivilegeDisplayName(nil, PChar(PrivilegeName), PChar(Result), Count, LangID) then
       Count := 256;
     SetLength(Result, Count + 1);
@@ -340,6 +345,8 @@ begin
   if IsWinNT then
   begin
     // have the API function determine the required string length
+    Count := 0;
+    Result := '';
     GetUserObjectInformation(hUserObject, UOI_NAME, PChar(Result), 0, Count);
     SetLength(Result, Count + 1);
 
@@ -363,6 +370,7 @@ begin
   begin
     NameSize := 0;
     DomainSize := 0;
+    Use := SidTypeUnknown;
     LookupAccountSidA(nil, Sid, nil, NameSize, nil, DomainSize, Use);
     if NameSize > 0 then
       SetLength(Name, NameSize - 1);
@@ -386,6 +394,7 @@ begin
   begin
     NameSize := 0;
     DomainSize := 0;
+    Use := SidTypeUnknown;
     LookupAccountSidW(nil, Sid, nil, NameSize, nil, DomainSize, Use);
     if NameSize > 0 then
       SetLength(Name, NameSize - 1);
@@ -455,8 +464,10 @@ begin
     Exit;
   Handle := GetShellProcessHandle;
   try
+    Token := 0;
     Win32Check(OpenProcessToken(Handle, TOKEN_QUERY, Token));
     try
+      User := nil;
       QueryTokenInformation(Token, TokenUser, Pointer(User));
       try
         LookupAccountBySid(User.User.Sid, Name, Domain);
@@ -624,11 +635,15 @@ begin
   begin
     ZeroMemory(@ObjectAttributes,SizeOf(ObjectAttributes));
 
+    {$IFDEF FPC}
+    PolicyHandle := 0;
+    {$ENDIF FPC}
     LsaNTCheck(LsaOpenPolicy(nil, // Use local system
       ObjectAttributes, //Object attributes.
       POLICY_VIEW_LOCAL_INFORMATION, // We're just looking
       PolicyHandle)); //Receives the policy handle.
     try
+      Info := nil;
       LsaNTCheck(LsaQueryInformationPolicy(PolicyHandle, PolicyAccountDomainInformation,
         Pointer(Info)));
       try
@@ -667,9 +682,11 @@ var
 begin
   if (IsWinVista or IsWinServer2008 or IsWin7 or IsWinServer2008R2) then
   begin
+    TokenHandle := 0;
     if OpenProcessToken(GetCurrentProcess, TOKEN_QUERY, TokenHandle) then
     begin
       try
+        ResultLength := 0;
         if GetTokenInformation(TokenHandle, TokenElevation, @ATokenElevation, SizeOf(ATokenElevation), ResultLength) then
           Result := ATokenElevation.TokenIsElevated <> 0
         else

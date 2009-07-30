@@ -68,7 +68,9 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\experts\useswizard'
+    LogPath: 'JCL\experts\useswizard';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 

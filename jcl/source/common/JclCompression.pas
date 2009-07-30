@@ -171,7 +171,7 @@ type
     class function StreamName: string; virtual;
     class function StreamExtensions: string; virtual;
 
-    constructor Create(Stream: TStream);
+    constructor Create(AStream: TStream);
     destructor Destroy; override;
 
     function Read(var Buffer; Count: Longint): Longint; override;
@@ -492,7 +492,7 @@ type
     class function StreamName: string; override;
     class function StreamExtensions: string; override;
 
-    constructor Create(Destination: TStream; CompressionLevel: TJclCompressionLevel = -1);
+    constructor Create(Destination: TStream; ACompressionLevel: TJclCompressionLevel = 9);
     destructor Destroy; override;
 
     function Flush: Integer; override;
@@ -1881,7 +1881,9 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\source\common'
+    LogPath: 'JCL\source\common';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
@@ -1908,11 +1910,12 @@ var
 
 //=== { TJclCompressionStream } ==============================================
 
-constructor TJclCompressionStream.Create(Stream: TStream);
+constructor TJclCompressionStream.Create(AStream: TStream);
 begin
   inherited Create;
   FBuffer := nil;
   SetBufferSize(JclDefaultBufferSize);
+  FStream := AStream;
 end;
 
 destructor TJclCompressionStream.Destroy;
@@ -1977,7 +1980,6 @@ end;
 constructor TJclCompressStream.Create(Destination: TStream);
 begin
   inherited Create(Destination);
-  FStream := Destination;
 end;
 
 //=== { TJclDecompressStream } ===============================================
@@ -1985,7 +1987,6 @@ end;
 constructor TJclDecompressStream.Create(Source: TStream; AOwnsStream: Boolean);
 begin
   inherited Create(Source);
-  FStream := Source;
   FOwnsStream := AOwnsStream;
 end;
 
@@ -2640,11 +2641,13 @@ var
   var
     Dummy: Char;
   begin
+    Result := '';
     repeat
+      Dummy := #0;
       Source.ReadBuffer(Dummy, SizeOf(Dummy));
-      FOriginalFileName := FOriginalFileName + Dummy;
+      Result := Result + Dummy;
     until Dummy = #0;
-    SetLength(FOriginalFileName, Length(FOriginalFileName) - 1);
+    SetLength(Result, Length(Result) - 1);
   end;
 
 begin
@@ -2665,6 +2668,7 @@ begin
 
   if (FHeader.Flags and JCL_GZIP_FLAG_EXTRA) <> 0 then
   begin
+    ExtraFieldLength := 0;
     ReadBuffer(ExtraFieldLength, SizeOf(ExtraFieldLength));
     SetLength(FExtraField, ExtraFieldLength);
     ReadBuffer(FExtraField[1], ExtraFieldLength);
@@ -2761,6 +2765,8 @@ begin
     StartPos := FStream.Position;
     try
       FStream.Seek(-SizeOf(AFooter), soFromEnd);
+      AFooter.DataCRC32 := 0;
+      AFooter.DataSize := 0;
       FStream.ReadBuffer(AFooter, SizeOf(AFooter));
       Result := AFooter.DataSize;
     finally
@@ -2784,6 +2790,8 @@ begin
     StartPos := FStream.Position;
     try
       FStream.Seek(-SizeOf(AFooter), soFromEnd);
+      AFooter.DataSize := 0;
+      AFooter.DataCRC32 := 0;
       FStream.ReadBuffer(AFooter, SizeOf(AFooter));
       Result := AFooter.DataCRC32;
     finally
@@ -2911,7 +2919,7 @@ begin
   end;
 end;
 
-constructor TJclBZIP2CompressionStream.Create(Destination: TStream; CompressionLevel: TJclCompressionLevel);
+constructor TJclBZIP2CompressionStream.Create(Destination: TStream; ACompressionLevel: TJclCompressionLevel);
 begin
   inherited Create(Destination);
 
@@ -2930,7 +2938,7 @@ begin
 
   FDeflateInitialized := False;
 
-  FCompressionLevel := 9;
+  FCompressionLevel := ACompressionLevel;
 end;
 
 destructor TJclBZIP2CompressionStream.Destroy;
@@ -3741,6 +3749,7 @@ begin
     if FArchive is TJclCompressArchive then
       with FArchive as TJclCompressArchive do
       begin
+        PackedNamesIndex := -1;
         if (FPackedNames <> nil) and FPackedNames.Find(FPackedName, PackedNamesIndex) then
         begin
           FPackedNames.Delete(PackedNamesIndex);
@@ -5508,14 +5517,14 @@ const
       kAES192MethodName {emAES192},
       kAES256MethodName {emAES256},
       kZipCryptoMethodName {emZipCrypto} );
-  CompressionMethodNames: array [TJclCompressionMethod] of WideString =
-    ( kCopyMethodName {cmCopy},
-      kDeflateMethodName {cmDeflate},
-      kDeflate64MethodName {cmDeflate64},
-      kBZip2MethodName {cmBZip2},
-      kLZMAMethodName {cmLZMA},
-      kLZMA2MethodName {cmLZMA2},
-      kPPMdMethodName {cmPPMd} );
+  // CompressionMethodNames: array [TJclCompressionMethod] of WideString =
+  //   ( kCopyMethodName {cmCopy},
+  //     kDeflateMethodName {cmDeflate},
+  //     kDeflate64MethodName {cmDeflate64},
+  //     kBZip2MethodName {cmBZip2},
+  //     kLZMAMethodName {cmLZMA},
+  //     kLZMA2MethodName {cmLZMA2},
+  //     kPPMdMethodName {cmPPMd} );
 begin
   if Supports(ASevenzipArchive, Sevenzip.ISetProperties, PropertySetter) and Assigned(PropertySetter) then
   begin
@@ -7904,6 +7913,7 @@ begin
       if (AItem.Attributes and faDirectory) <> 0 then
         IsDirectory := True;
       FItems.Delete(Index);
+      PackedNamesIndex := -1;
       if (FPackedNames <> nil) and FPackedNames.Find(PackedName, PackedNamesIndex) then
         FPackedNames.Delete(PackedNamesIndex);
       Break;

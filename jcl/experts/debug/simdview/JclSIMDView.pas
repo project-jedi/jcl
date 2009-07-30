@@ -132,7 +132,9 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\experts\debug\simdview'
+    LogPath: 'JCL\experts\debug\simdview';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 

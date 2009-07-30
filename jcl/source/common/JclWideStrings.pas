@@ -340,7 +340,9 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\source\common'
+    LogPath: 'JCL\source\common';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
@@ -517,7 +519,7 @@ var
 begin
   S1 := Str1;
   S2 := Str2;
-  Result := WideCompareText(Str1, Str2);
+  Result := WideCompareText(S1, S2);
 end;
 
 function StrPosW(const Str, SubStr: PWideChar): PWideChar;
@@ -1536,6 +1538,7 @@ begin
   BeginUpdate;
   try
     Clear;
+    WC := #0;
     Stream.Read(WC, SizeOf(WC));
     if (foAnsiFile in WideFileOptions) and (Hi(Word(WC)) <> 0) and (WC <> BOM_LSB_FIRST) and (WC <> BOM_MSB_FIRST) then
     begin
@@ -1976,6 +1979,7 @@ function TJclWideStringList.IndexOf(const S: WideString): Integer;
 begin
   if Sorted then
   begin
+    Result := -1;
     if not Find(S, Result) then
       Result := -1;
   end
@@ -2162,6 +2166,7 @@ begin
   if Source <> nil then
   begin
     Len := MultiSzLength(Source);
+    Result := nil;
     AllocateMultiSz(Result, Len);
     Move(Source^, Result^, Len * SizeOf(WideChar));
   end

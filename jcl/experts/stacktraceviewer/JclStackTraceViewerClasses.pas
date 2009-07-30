@@ -191,7 +191,9 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: ''
+    LogPath: '';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 

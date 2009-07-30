@@ -215,7 +215,7 @@ function Exsecans(X: Float): Float; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 function Haversine(X: Float): Float; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 function Sec(X: Float): Float; overload;
 function Sin(X: Float): Float; overload;
-procedure SinCos(X: Float; var Sin, Cos: Float);
+procedure SinCos(X: Float; out Sin, Cos: Float);
 function Tan(X: Float): Float; overload;
 function Versine(X: Float): Float; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 
@@ -313,7 +313,8 @@ type
     fpDenormal, // denormalized finite
     fpInfinite, // infinite
     fpNaN,      // not a number
-    fpInvalid   // unsupported floating point format
+    fpInvalid,  // unsupported floating point format
+    fpEmpty     // should not happen
    );
 
 function FloatingPointClass(const Value: Single): TFloatingPointClass; overload;
@@ -324,7 +325,11 @@ function FloatingPointClass(const Value: Extended): TFloatingPointClass; overloa
 { NaN and INF support }
 
 type
-  TNaNTag = -$3FFFFF..$3FFFFE;
+  TNaNTag = type Integer;
+
+const
+  LowValidNaNTag = -$3FFFFF;
+  HighValidNaNTag = $3FFFFE;
 
 const
   Infinity    = 1/0;       // tricky
@@ -404,8 +409,10 @@ type
   end;
 
 type
+  {$IFNDEF FPC}
   TPointerArray = array [0..MaxLongint div 256] of Pointer;
   PPointerArray = ^TPointerArray;
+  {$ENDIF ~FPC}
   TDelphiSet = set of Byte; // 256 elements
   PDelphiSet = ^TDelphiSet;
 
@@ -761,7 +768,9 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\source\common'
+    LogPath: 'JCL\source\common';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
@@ -1086,7 +1095,7 @@ function LogBaseN(Base, X: Float): Float;
           FLD1
           FLD     Base
           FYL2X
-          FDIV
+          FDIVP   ST(1), ST(0)
           FWAIT
   end;
   {$ENDIF CPU386}
@@ -1218,7 +1227,7 @@ function Cot(X: Float): Float;
   asm
           FLD     X
           FPTAN
-          FDIVRP
+          FDIVRP  ST(1), ST(0)
           FWAIT
   end;
   {$ENDIF CPU386}
@@ -1263,7 +1272,7 @@ function Sec(X: Float): Float;
           FLD     X
           FCOS
           FLD1
-          FDIVRP
+          FDIVRP  ST(1), ST(0)
           FWAIT
   end;
   {$ENDIF CPU386}
@@ -1292,10 +1301,10 @@ begin
   Result := FSin(X);
 end;
 
-procedure SinCos(X: Float; var Sin, Cos: Float);
+procedure SinCos(X: Float; out Sin, Cos: Float);
 
   {$IFDEF CPU386}
-  procedure FSinCos(X: Float; var Sin, Cos: Float); assembler;
+  procedure FSinCos(X: Float; out Sin, Cos: Float); assembler;
   asm
           FLD     X
           FSINCOS
@@ -2625,8 +2634,6 @@ end;
 //=== Floating point value classification ====================================
 
 const
-  fpEmpty = TFloatingPointClass(Ord(High(TFloatingPointClass))+1);
-
   FPClasses: array [0..6] of TFloatingPointClass =
    (
     fpInvalid,
@@ -2634,7 +2641,7 @@ const
     fpNormal,
     fpInfinite,
     fpZero,
-    fpEmpty,    // should not happen
+    fpEmpty,
     fpDenormal
    );
 
@@ -2726,7 +2733,9 @@ type
   dExponentBits = 52..dSignBit-1;
   xExponentBits = 64..xSignBit-1;
 
+  {$IFNDEF FPC}
   QWord = Int64;
+  {$ENDIF ~FPC}
 
   PExtendedRec = ^TExtendedRec;
   TExtendedRec = packed record
@@ -2860,6 +2869,8 @@ begin
 end;
 
 {$IFDEF MSWINDOWS}
+// ExceptObjProc is not used in FPC
+{$IFNDEF FPC}
 
 type
   TRealType = (rtUndef, rtSingle, rtDouble, rtExtended);
@@ -2945,10 +2956,6 @@ begin
     Result := EJclNaNSignal.Create(Tag);
 end;
 
-{$ENDIF MSWINDOWS}
-
-{$IFDEF MSWINDOWS}
-{$IFNDEF FPC}
 procedure InitExceptObjProc;
 
   function IsInitialized: Boolean;
@@ -2960,14 +2967,18 @@ procedure InitExceptObjProc;
 begin
  if not IsInitialized then
     if Win32Platform = VER_PLATFORM_WIN32_NT then
+      {$IFDEF FPC}
+      PrevExceptObjProc := Pointer(InterlockedExchange(TJclAddr(ExceptObjProc), TJclAddr(@GetExceptionObject)));
+      {$ELSE ~FPC}
       PrevExceptObjProc := Pointer(InterlockedExchange(Integer(ExceptObjProc), Integer(@GetExceptionObject)));
+      {$ENDIF ~FPC}
 end;
 {$ENDIF ~FPC}
 {$ENDIF MSWINDOWS}
 
 procedure CheckTag(Tag: TNaNTag);
 begin
-  if (Tag < Low(TNaNTag)) or (Tag > High(TNaNTag)) then
+  if (Tag < LowValidNaNTag) or (Tag > HighValidNaNTag) then
     raise EJclMathError.CreateResFmt(@RsNaNTagError, [Tag]);
 end;
 
@@ -3038,13 +3049,15 @@ end;
 
 procedure MakeSignalingNaN(var X: Double; Tag: TNaNTag);
 begin
+  {$IFDEF MSWINDOWS}
+  {$IFNDEF FPC}
+  InitExceptObjProc;
+  {$ENDIF ~FPC}
+  {$ENDIF MSWINDOWS}
   {$IFDEF FPC}
   MakeQuietNaN(X, Tag);
   QWord(X) := QWord(X) and not (1 shl dNaNQuietFlag);
   {$ELSE ~FPC}
-  {$IFDEF MSWINDOWS}
-  InitExceptObjProc;
-  {$ENDIF MSWINDOWS}
   MakeQuietNaN(X, Tag);
   Exclude(TDoubleBits(X), dNaNQuietFlag);
   {$ENDIF ~FPC}
@@ -3057,7 +3070,7 @@ begin
   TExtendedRec(X).Significand := TExtendedRec(X).Significand and not (1 shl xNaNQuietFlag);
   {$ELSE ~FPC}
   {$IFDEF MSWINDOWS}
-  //InitExceptObjProc;
+  InitExceptObjProc;
   {$ENDIF MSWINDOWS}
   MakeQuietNaN(X, Tag);
   Exclude(TExtendedBits(X), xNaNQuietFlag);

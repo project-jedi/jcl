@@ -99,7 +99,7 @@ type
 
   TJclFileStream = class(TJclHandleStream)
   public
-    constructor Create(const FileName: TFileName; Mode: Word; Rights: Cardinal = 0);
+    constructor Create(const FileName: TFileName; Mode: Word; Rights: Cardinal = $666);
     destructor Destroy; override;
   end;
 
@@ -386,6 +386,9 @@ type
   {$IFDEF COMPILER7_UP}
     {$DEFINE SIZE64}
   {$ENDIF ~COMPILER7_UP}
+  {$IFDEF FPC}
+    {$DEFINE SIZE64}
+  {$ENDIF FPC}
   TJclSplitStream = class(TJclStream)
   private
     FVolume: TStream;
@@ -457,7 +460,7 @@ type
     FBOM: array of Byte;
     FPeekPosition: Int64;
     function GetCalcedSize: Int64; override;
-    function InternalGetNextChar(S: TStream; var Ch: UCS4): Boolean; virtual; abstract;
+    function InternalGetNextChar(S: TStream; out Ch: UCS4): Boolean; virtual; abstract;
     function InternalSetNextChar(S: TStream; Ch: UCS4): Boolean; virtual; abstract;
     procedure SetSize(const NewSize: Int64); override;
   public
@@ -472,12 +475,12 @@ type
     function WriteString(const Buffer: string; Start, Count: Longint): Longint;
     function WriteAnsiString(const Buffer: AnsiString; Start, Count: Longint): Longint;
     function WriteWideString(const Buffer: WideString; Start, Count: Longint): Longint;
-    function PeekChar(var Buffer: Char): Boolean;
-    function PeekAnsiChar(var Buffer: AnsiChar): Boolean;
-    function PeekWideChar(var Buffer: WideChar): Boolean;
-    function ReadChar(var Buffer: Char): Boolean;
-    function ReadAnsiChar(var Buffer: AnsiChar): Boolean;
-    function ReadWideChar(var Buffer: WideChar): Boolean;
+    function PeekChar(out Buffer: Char): Boolean;
+    function PeekAnsiChar(out Buffer: AnsiChar): Boolean;
+    function PeekWideChar(out Buffer: WideChar): Boolean;
+    function ReadChar(out Buffer: Char): Boolean;
+    function ReadAnsiChar(out Buffer: AnsiChar): Boolean;
+    function ReadWideChar(out Buffer: WideChar): Boolean;
     function WriteChar(Value: Char): Boolean;
     function WriteAnsiChar(Value: AnsiChar): Boolean;
     function WriteWideChar(Value: WideChar): Boolean;
@@ -491,7 +494,7 @@ type
   private
     FCodePage: Word;
   protected
-    function InternalGetNextChar(S: TStream; var Ch: UCS4): Boolean; override;
+    function InternalGetNextChar(S: TStream; out Ch: UCS4): Boolean; override;
     function InternalSetNextChar(S: TStream; Ch: UCS4): Boolean; override;
   public
     constructor Create(AStream: TStream; AOwnsStream: Boolean = False); override;
@@ -500,7 +503,7 @@ type
 
   TJclUTF8Stream = class(TJclStringStream)
   protected
-    function InternalGetNextChar(S: TStream; var Ch: UCS4): Boolean; override;
+    function InternalGetNextChar(S: TStream; out Ch: UCS4): Boolean; override;
     function InternalSetNextChar(S: TStream; Ch: UCS4): Boolean; override;
   public
     constructor Create(AStream: TStream; AOwnsStream: Boolean = False); override;
@@ -508,7 +511,7 @@ type
 
   TJclUTF16Stream = class(TJclStringStream)
   protected
-    function InternalGetNextChar(S: TStream; var Ch: UCS4): Boolean; override;
+    function InternalGetNextChar(S: TStream; out Ch: UCS4): Boolean; override;
     function InternalSetNextChar(S: TStream; Ch: UCS4): Boolean; override;
   public
     constructor Create(AStream: TStream; AOwnsStream: Boolean = False); override;
@@ -521,7 +524,7 @@ type
     FCodePage: Word;
     FEncoding: TJclStringEncoding;
   protected
-    function InternalGetNextChar(S: TStream; var Ch: UCS4): Boolean; override;
+    function InternalGetNextChar(S: TStream; out Ch: UCS4): Boolean; override;
     function InternalSetNextChar(S: TStream; Ch: UCS4): Boolean; override;
   public
     constructor Create(AStream: TStream; AOwnsStream: Boolean = False); override;
@@ -556,14 +559,16 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\source\common'
+    LogPath: 'JCL\source\common';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
 implementation
 
 uses
-  JclResources, JclCharsets, JclMath;
+  JclResources, JclCharsets, JclMath, JclSysUtils;
 
 function StreamSeek(Stream: TStream; const Offset: Int64;
   const Origin: TSeekOrigin): Int64; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF SUPPORTS_INLINE}
@@ -728,7 +733,7 @@ var
 begin
   FS := TFileStream.Create(FileName, fmCreate or fmShareExclusive);
   try
-    SaveToStream(FS);
+    SaveToStream(FS, BufferSize);
   finally
     FS.Free;
   end;
@@ -765,6 +770,7 @@ end;
 
 function TJclHandleStream.Read(var Buffer; Count: Longint): Longint;
 begin
+  Result := 0;
   {$IFDEF MSWINDOWS}
   if (Count <= 0) or not ReadFile(Handle, Buffer, DWORD(Count), DWORD(Result), nil) then
     Result := 0;
@@ -776,6 +782,7 @@ end;
 
 function TJclHandleStream.Write(const Buffer; Count: Longint): Longint;
 begin
+  Result := 0;
   {$IFDEF MSWINDOWS}
   if (Count <= 0) or not WriteFile(Handle, Buffer, DWORD(Count), DWORD(Result), nil) then
     Result := 0;
@@ -844,11 +851,12 @@ begin
   if Mode = fmCreate then
   begin
     {$IFDEF LINUX}
-    H := open(PChar(FileName), O_CREAT or O_RDWR, $666);
-    {$ELSE ~LINUX}
+    H := open(PChar(FileName), O_CREAT or O_RDWR, Rights);
+    {$ENDIF LINUX}
+    {$IFDEF MSWINDOWS}
     H := CreateFile(PChar(FileName), GENERIC_READ or GENERIC_WRITE,
       0, nil, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
-    {$ENDIF ~LINUX}
+    {$ENDIF MSWINDOWS}
     inherited Create(H);
     if Handle = INVALID_HANDLE_VALUE then
       raise EJclStreamError.CreateResFmt(@RsStreamsCreateError, [FileName]);
@@ -930,7 +938,7 @@ begin
   // does not read if beyond EOF
   if Count > 0 then
   begin
-    FillChar(Buffer, Count, 0);
+    ResetMemory(Buffer, Count);
     FPosition := FPosition + Count;
   end;
   Result := Count;
@@ -1453,56 +1461,67 @@ end;
 
 function TJclEasyStream.ReadBoolean: Boolean;
 begin
+  Result := False;
   ReadBuffer(Result, SizeOf(Result));
 end;
 
 function TJclEasyStream.ReadChar: Char;
 begin
+  Result := #0;
   ReadBuffer(Result, SizeOf(Result));
 end;
 
 function TJclEasyStream.ReadAnsiChar: AnsiChar;
 begin
+  Result := #0;
   ReadBuffer(Result, SizeOf(Result));
 end;
 
 function TJclEasyStream.ReadWideChar: WideChar;
 begin
+  Result := #0;
   ReadBuffer(Result, SizeOf(Result));
 end;
 
 function TJclEasyStream.ReadByte: Byte;
 begin
+  Result := 0;
   ReadBuffer(Result, SizeOf(Result));
 end;
 
 function TJclEasyStream.ReadCurrency: Currency;
 begin
+  Result := 0;
   ReadBuffer(Result, SizeOf(Result));
 end;
 
 function TJclEasyStream.ReadDateTime: TDateTime;
 begin
+  Result := 0;
   ReadBuffer(Result, SizeOf(Result));
 end;
 
 function TJclEasyStream.ReadDouble: Double;
 begin
+  Result := 0;
   ReadBuffer(Result, SizeOf(Result));
 end;
 
 function TJclEasyStream.ReadExtended: Extended;
 begin
+  Result := 0;
   ReadBuffer(Result, SizeOf(Result));
 end;
 
 function TJclEasyStream.ReadInt64: Int64;
 begin
+  Result := 0;
   ReadBuffer(Result, SizeOf(Result));
 end;
 
 function TJclEasyStream.ReadInteger: Integer;
 begin
+  Result := 0;
   ReadBuffer(Result, SizeOf(Result));
 end;
 
@@ -1556,6 +1575,7 @@ end;
 
 function TJclEasyStream.ReadSingle: Single;
 begin
+  Result := 0;
   ReadBuffer(Result, SizeOf(Result));
 end;
 
@@ -1879,8 +1899,8 @@ end;
 
 function TJclSectoredStream.FlatToSectored(const Position: Int64): Int64;
 begin
-  Result := (Position div BufferSize) * (BufferSize + FSectorOverHead) // add overheads of previous buffers
-    + Position mod BufferSize; // offset in sector
+  Result := (Position div BufferSize) * (Int64(BufferSize) + FSectorOverHead) // add overheads of previous buffers
+    + (Position mod BufferSize); // offset in sector
 end;
 
 procedure TJclSectoredStream.Flush;
@@ -1936,7 +1956,7 @@ function TJclSectoredStream.SectoredToFlat(const Position: Int64): Int64;
 var
   TotalSectorSize: Int64;
 begin
-  TotalSectorSize := BufferSize + FSectorOverHead;
+  TotalSectorSize := Int64(BufferSize) + FSectorOverHead;
   Result := (Position div TotalSectorSize) * BufferSize // remove previous overheads
     + Position mod TotalSectorSize; // offset in sector
 end;
@@ -2337,7 +2357,7 @@ begin
   raise EJclStreamError.CreateRes(@RsStreamsSeekError);
 end;
 
-function TJclStringStream.PeekAnsiChar(var Buffer: AnsiChar): Boolean;
+function TJclStringStream.PeekAnsiChar(out Buffer: AnsiChar): Boolean;
 var
   Pos: Int64;
   Ch: UCS4;
@@ -2351,7 +2371,7 @@ begin
   FPeekPosition := FPeekPosition + 1;
 end;
 
-function TJclStringStream.PeekChar(var Buffer: Char): Boolean;
+function TJclStringStream.PeekChar(out Buffer: Char): Boolean;
 var
   Pos: Int64;
   Ch: UCS4;
@@ -2365,7 +2385,7 @@ begin
   FPeekPosition := FPeekPosition + 1;
 end;
 
-function TJclStringStream.PeekWideChar(var Buffer: WideChar): Boolean;
+function TJclStringStream.PeekWideChar(out Buffer: WideChar): Boolean;
 var
   Pos: Int64;
   Ch: UCS4;
@@ -2416,7 +2436,7 @@ begin
   until ProcessedLength = 0;
 end;
 
-function TJclStringStream.ReadAnsiChar(var Buffer: AnsiChar): Boolean;
+function TJclStringStream.ReadAnsiChar(out Buffer: AnsiChar): Boolean;
 var
   Ch: UCS4;
 begin
@@ -2463,7 +2483,7 @@ begin
   until ProcessedLength = 0;
 end;
 
-function TJclStringStream.ReadChar(var Buffer: Char): Boolean;
+function TJclStringStream.ReadChar(out Buffer: Char): Boolean;
 var
   Ch: UCS4;
 begin
@@ -2473,7 +2493,7 @@ begin
   FPeekPosition := FPosition;
 end;
 
-function TJclStringStream.ReadWideChar(var Buffer: WideChar): Boolean;
+function TJclStringStream.ReadWideChar(out Buffer: WideChar): Boolean;
 var
   Ch: UCS4;
 begin
@@ -2649,7 +2669,7 @@ begin
   FCodePage := CP_ACP;
 end;
 
-function TJclAnsiStream.InternalGetNextChar(S: TStream; var Ch: UCS4): Boolean;
+function TJclAnsiStream.InternalGetNextChar(S: TStream; out Ch: UCS4): Boolean;
 begin
   if FCodePage = CP_ACP then
     Result := AnsiGetNextCharFromStream(S, Ch)
@@ -2677,7 +2697,7 @@ begin
     FBOM[I - Low(BOM_UTF8)] := BOM_UTF8[I];
 end;
 
-function TJclUTF8Stream.InternalGetNextChar(S: TStream; var Ch: UCS4): Boolean;
+function TJclUTF8Stream.InternalGetNextChar(S: TStream; out Ch: UCS4): Boolean;
 begin
   Result := UTF8GetNextCharFromStream(S, Ch);
 end;
@@ -2699,7 +2719,7 @@ begin
     FBOM[I - Low(BOM_UTF16_LSB)] := BOM_UTF16_LSB[I];
 end;
 
-function TJclUTF16Stream.InternalGetNextChar(S: TStream; var Ch: UCS4): Boolean;
+function TJclUTF16Stream.InternalGetNextChar(S: TStream; out Ch: UCS4): Boolean;
 begin
   Result := UTF16GetNextCharFromStream(S, Ch);
 end;
@@ -2785,7 +2805,7 @@ begin
   FPeekPosition := FPosition;
 end;
 
-function TJclAutoStream.InternalGetNextChar(S: TStream; var Ch: UCS4): Boolean;
+function TJclAutoStream.InternalGetNextChar(S: TStream; out Ch: UCS4): Boolean;
 begin
   case FCodePage of
     CP_UTF8:

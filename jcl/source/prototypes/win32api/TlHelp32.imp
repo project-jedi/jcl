@@ -1,0 +1,42 @@
+{$IFDEF MSWINDOWS}
+
+var
+  _CreateToolhelp32Snapshot: Pointer;
+
+function CreateToolhelp32Snapshot;
+begin
+  GetProcedureAddress(_CreateToolhelp32Snapshot, kernel32, 'CreateToolhelp32Snapshot');
+  asm
+        MOV     ESP, EBP
+        POP     EBP
+        JMP     [_CreateToolhelp32Snapshot]
+  end;
+end;
+
+var
+  _Thread32First: Pointer;
+
+function Thread32First;
+begin
+  GetProcedureAddress(_Thread32First, kernel32, 'Thread32First');
+  asm
+        MOV     ESP, EBP
+        POP     EBP
+        JMP     [_Thread32First]
+  end;
+end;
+
+var
+  _Thread32Next: Pointer;
+
+function Thread32Next;
+begin
+  GetProcedureAddress(_Thread32Next, kernel32, 'Thread32Next');
+  asm
+        MOV     ESP, EBP
+        POP     EBP
+        JMP     [_Thread32Next]
+  end;
+end;
+
+{$ENDIF MSWINDOWS}

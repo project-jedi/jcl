@@ -1,7 +1,22 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Configuration>
   <!-- These are the values stored by jaxStore -->
-  <pgEdit/>
+  <pgEdit>
+    <FormVersion>0</FormVersion>
+    <ShowCmd>1</ShowCmd>
+    <Flags>0</Flags>
+    <PixelsPerInch>96</PixelsPerInch>
+    <MinMaxPos_1024x768_>-1,-1,-1,-1</MinMaxPos_1024x768_>
+    <MinMaxPos>-1,-1,-1,-1</MinMaxPos>
+    <NormPos_1024x768_>104,56,919,683</NormPos_1024x768_>
+    <NormPos>104,56,919,683</NormPos>
+    <pnlList_Width>137</pnlList_Width>
+    <jsgDependencies_Height>165</jsgDependencies_Height>
+    <pnlEdit_Width>668</pnlEdit_Width>
+    <jsgFiles_Height>196</jsgFiles_Height>
+    <odlAddFiles_InitialDir>..\..\run</odlAddFiles_InitialDir>
+    <cmbModel_ItemIndex>0</cmbModel_ItemIndex>
+  </pgEdit>
   <!--
     The nodes below are read by the generation process.
     Packages are generated according to a model. The models are defined
@@ -61,6 +76,7 @@
   <models>
     <Model format="%p%n" name="JCL" prefix="Jcl" packages="..\packages" incfile="" nolibsuffixformat="%p%n%e%v0" dotnetprefix="Jedi.Jcl">
       <targets>
+        <target name="fpc"/>
         <target name="c5" defines="BCB"/>
         <target name="c6" defines="BCB"/>
         <target name="d5"/>
@@ -77,10 +93,10 @@
         <!-- language aliases -->
         <alias name="Delphi" value="d5,d6,d7,d9,d10,d11,d12"/>
         <alias name="Bcb" value="c5,c6,d10,d11,d12"/>
-        <alias name="Pascal" value="d5,d6,d7,d9,d10,d11,d12"/>
+        <alias name="Pascal" value="fpc,d5,d6,d7,d9,d10,d11,d12"/>
         <!-- platform aliases -->
-        <alias name="Windows" value="c5,c6,d5,d6,d7,d9,d10,d11,d12"/>
-        <alias name="Linux" value=""/>
+        <alias name="Windows" value="fpc,c5,c6,d5,d6,d7,d9,d10,d11,d12"/>
+        <alias name="Linux" value="fpc"/>
         <!-- package aliases -->
         <alias name="allLibSuffix" value="c6,d6,d7,d8,d9,d10,cs1,d11,d12"/>
         <alias name="allv12up" value="d12"/>

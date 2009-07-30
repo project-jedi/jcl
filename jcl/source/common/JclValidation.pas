@@ -49,14 +49,17 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\source\common'
+    LogPath: 'JCL\source\common';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
 implementation
 
 uses
-  JclBase;
+  JclBase,
+  JclSysUtils;
   
 { TODO -cDoc : Donator: Ivo Bauer }
 function IsValidISBN(const ISBN: string): Boolean;
@@ -127,7 +130,7 @@ begin
   Accumulator := 0;
   Counter := 10;
   Part := ipGroupID;
-  FillChar(PartSizes[Low(PartSizes)], SizeOf(PartSizes), 0);
+  ResetMemory(PartSizes[Low(PartSizes)], SizeOf(PartSizes));
 
   while CurPtr <= EndPtr do
   begin

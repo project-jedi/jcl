@@ -159,6 +159,7 @@ const
   SERVICE_CONFIG_FAILURE_ACTIONS = 2;
   {$EXTERNALSYM SERVICE_CONFIG_FAILURE_ACTIONS}
 
+{$IFNDEF FPC}
 type
   LPSERVICE_DESCRIPTIONA = ^SERVICE_DESCRIPTIONA;
   {$EXTERNALSYM LPSERVICE_DESCRIPTIONA}
@@ -168,6 +169,7 @@ type
   {$EXTERNALSYM SERVICE_DESCRIPTIONA}
   TServiceDescriptionA = SERVICE_DESCRIPTIONA;
   PServiceDescriptionA = LPSERVICE_DESCRIPTIONA;
+{$ENDIF ~FPC}
 
 type
   TQueryServiceConfig2A = function(hService: SC_HANDLE; dwInfoLevel: DWORD;
@@ -208,7 +210,6 @@ type
     function GetDependentByService(const Idx: Integer): TJclNtService;
     function GetDependentByServiceCount: Integer;
   protected
-    constructor Create(const ASCManager: TJclSCManager; const SvcStatus: TEnumServiceStatus);
     procedure Open(const ADesiredAccess: DWORD = DefaultSvcDesiredAccess);
     procedure Close;
     function GetServiceStatus: TServiceStatus;
@@ -219,6 +220,7 @@ type
     procedure CommitConfig(var SvcConfig: TQueryServiceConfig);
     procedure SetStartType(AStartType: TJclServiceStartType);
   public
+    constructor Create(const ASCManager: TJclSCManager; const SvcStatus: TEnumServiceStatus);
     destructor Destroy; override;
     procedure Refresh;
     procedure Commit;
@@ -263,10 +265,10 @@ type
     function GetService(const Idx: Integer): TJclNtService;
     function GetServiceCount: Integer;
   protected
-    constructor Create(const ASCManager: TJclSCManager; const AName: string; const AOrder: Integer);
     function Add(const AService: TJclNtService): Integer;
     function Remove(const AService: TJclNtService): Integer;
   public
+    constructor Create(const ASCManager: TJclSCManager; const AName: string; const AOrder: Integer);
     destructor Destroy; override;
     property SCManager: TJclSCManager read FSCManager;
     property Name: string read FName;
@@ -322,8 +324,8 @@ type
       const LoadOrderGroup: TJclServiceGroup = nil; const Dependencies: PChar = nil;
       const Account: PChar = nil; const Password: PChar = nil): TJclNtService;
     procedure Sort(const AOrderType: TJclServiceSortOrderType; const AOrderAsc: Boolean = True);
-    function FindService(const SvcName: string; var NtSvc: TJclNtService): Boolean;
-    function FindGroup(const GrpName: string; var SvcGrp: TJclServiceGroup;
+    function FindService(const SvcName: string; out NtSvc: TJclNtService): Boolean;
+    function FindGroup(const GrpName: string; out SvcGrp: TJclServiceGroup;
       const AutoAdd: Boolean = True): Boolean;
     procedure Lock;
     procedure Unlock;
@@ -361,7 +363,9 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\source\windows'
+    LogPath: 'JCL\source\windows';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
@@ -484,6 +488,7 @@ begin
       BytesNeeded := 40960;
       repeat
         ReallocMem(PBuf, BytesNeeded);
+        ServicesReturned := 0;
         Ret := EnumDependentServices(FHandle, SERVICE_STATE_ALL,
           PEnumServiceStatus(PBuf){$IFNDEF FPC}^{$ENDIF}, BytesNeeded, BytesNeeded, ServicesReturned);
       until Ret or (GetLastError <> ERROR_INSUFFICIENT_BUFFER);
@@ -1027,6 +1032,7 @@ procedure TJclSCManager.Refresh(const RefreshAll: Boolean);
 
       repeat
         ReallocMem(PBuf, BytesNeeded);
+        ServicesReturned := 0;
         Ret := EnumServicesStatus(FHandle, SERVICE_TYPE_ALL, SERVICE_STATE_ALL,
           PEnumServiceStatus(PBuf){$IFNDEF FPC}^{$ENDIF},
           BytesNeeded, BytesNeeded, ServicesReturned, ResumeHandle);
@@ -1163,7 +1169,7 @@ begin
   FServices.Sort(ServiceSortFunc);
 end;
 
-function TJclSCManager.FindService(const SvcName: string; var NtSvc: TJclNtService): Boolean;
+function TJclSCManager.FindService(const SvcName: string; out NtSvc: TJclNtService): Boolean;
 var
   I: Integer;
 begin
@@ -1180,7 +1186,7 @@ begin
   NtSvc := nil;
 end;
 
-function TJclSCManager.FindGroup(const GrpName: string; var SvcGrp: TJclServiceGroup;
+function TJclSCManager.FindGroup(const GrpName: string; out SvcGrp: TJclServiceGroup;
   const AutoAdd: Boolean): Boolean;
 var
   I: Integer;
@@ -1379,6 +1385,7 @@ begin
     ServiceHandle:=OpenService(SCMHandle,PChar(AServiceName),Access);
     if ServiceHandle <> 0 then
     try
+      ResetMemory(ServiceStatus, SizeOf(ServiceStatus));
       if QueryServiceStatus(ServiceHandle,ServiceStatus) then
         Result:=TJclServiceState(ServiceStatus.dwCurrentState);
     finally
@@ -1417,14 +1424,17 @@ var
   SCMHandle: DWORD;
   SS: _Service_Status;
 begin
-  Result:=False;
+  Result := False;
 
-  SCMHandle:= OpenSCManager(PChar(AServer), nil, SC_MANAGER_ALL_ACCESS);
+  SCMHandle := OpenSCManager(PChar(AServer), nil, SC_MANAGER_ALL_ACCESS);
   if SCMHandle <> 0 then
   try
-    ServiceHandle:=OpenService(SCMHandle,PChar(AServiceName),SERVICE_ALL_ACCESS);
+    ServiceHandle := OpenService(SCMHandle, PChar(AServiceName), SERVICE_ALL_ACCESS);
     if ServiceHandle <> 0 then
-      Result:=ControlService(ServiceHandle,SERVICE_CONTROL_STOP,SS);
+    begin
+      ResetMemory(SS, SizeOf(SS));
+      Result := ControlService(ServiceHandle, SERVICE_CONTROL_STOP, SS);
+    end;
 
     CloseServiceHandle(ServiceHandle);
   finally
@@ -1436,6 +1446,7 @@ function GetServiceStatus(ServiceHandle: SC_HANDLE): DWORD;
 var
   ServiceStatus: TServiceStatus;
 begin
+  ResetMemory(ServiceStatus, SizeOf(ServiceStatus));
   if not QueryServiceStatus(ServiceHandle, ServiceStatus) then
     RaiseLastOSError;
 
@@ -1448,6 +1459,7 @@ var
   WaitDuration: DWORD;
   LastCheckPoint: DWORD;
 begin
+  ResetMemory(ServiceStatus, SizeOf(ServiceStatus));
   if not QueryServiceStatus(ServiceHandle, ServiceStatus) then
     RaiseLastOSError;
 

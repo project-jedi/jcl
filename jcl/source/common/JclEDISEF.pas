@@ -821,7 +821,9 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\source\common'
+    LogPath: 'JCL\source\common';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 {$ENDIF ~EDI_WEAK_PACKAGE_UNITS}
@@ -1059,6 +1061,7 @@ var
   CompareElement: TEDISEFElement;
   ListItem: TEDISEFDataObjectListItem;
 begin
+  Result := '';
   if Element.UserAttribute <> '' then
     Result := Result + Element.UserAttribute;
   Result := Result + Element.Id;
@@ -1332,6 +1335,7 @@ end;
 
 function CombineCOMSDataOfSEGSDefinition(CompositeElement: TEDISEFCompositeElement): string;
 begin
+  Result := '';
   if CompositeElement.UserAttribute <> '' then
     Result := Result + CompositeElement.UserAttribute;
   Result := Result + CompositeElement.Id;
@@ -1536,6 +1540,7 @@ end;
 
 function CombineSEGSDataOfSETSDefinition(Segment: TEDISEFSegment): string;
 begin
+  Result := '';
   if Segment.UserAttribute <> '' then
     Result := Result + Segment.UserAttribute;
   Result := Result + Segment.Id;

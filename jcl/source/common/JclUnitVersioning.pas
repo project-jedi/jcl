@@ -674,6 +674,8 @@ const
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JCL\source\common';
+    Extra: '';
+    Data: nil
   );
 
 initialization

@@ -58,9 +58,9 @@ interface
 {$I jcl.inc}
 
 uses
-  JclBase,
   Windows,
-  ActiveX;
+  ActiveX,
+  JclBase;
 
 // Guid.txt  
 const

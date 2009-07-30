@@ -52,7 +52,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Classes, SysUtils, TypInfo, Contnrs,
   JclBase, JclDateTime, JclFileUtils, JclSysInfo, JclWin32;
-  
+
 type
   // Smart name compare function
   TJclSmartCompOption = (scSimpleCompare, scIgnoreCase);
@@ -68,7 +68,6 @@ type
   EJclPeImageError = class(EJclError);
 
   TJclPeImage = class;
-  TJclPeBorImage = class;
 
   TJclPeImageClass = class of TJclPeImage;
 
@@ -94,15 +93,6 @@ type
     procedure Clear;
     property Images[const FileName: TFileName]: TJclPeImage read GetImages; default;
     property Count: Integer read GetCount;
-  end;
-
-  TJclPeBorImagesCache = class(TJclPeImagesCache)
-  private
-    function GetImages(const FileName: TFileName): TJclPeBorImage;
-  protected
-    function GetPeImageClass: TJclPeImageClass; override;
-  public
-    property Images[const FileName: TFileName]: TJclPeBorImage read GetImages; default;
   end;
 
   // Import section related classes
@@ -513,7 +503,7 @@ type
     procedure ReadHeader;
   public
     constructor Create(AImage: TJclPeImage);
-    property HasMetadata: Boolean read GetHasMetadata; 
+    property HasMetadata: Boolean read GetHasMetadata;
     property Header: TImageCor20Header read FHeader;
     property VersionString: string read GetVersionString;
     property Image: TJclPeImage read FImage;
@@ -651,7 +641,7 @@ type
     procedure AttachLoadedModule(const Handle: HMODULE);
     function CalculateCheckSum: DWORD;
     function DirectoryEntryToData(Directory: Word): Pointer;
-    function GetSectionHeader(const SectionName: string; var Header: PImageSectionHeader): Boolean;
+    function GetSectionHeader(const SectionName: string; out Header: PImageSectionHeader): Boolean;
     function GetSectionName(Header: PImageSectionHeader): string;
     function IsBrokenFormat: Boolean;
     function IsCLR: Boolean;
@@ -698,13 +688,25 @@ type
     property OptionalHeader64: TImageOptionalHeader64 read GetOptionalHeader64;
     property ReadOnlyAccess: Boolean read FReadOnlyAccess write FReadOnlyAccess;
     property RelocationList: TJclPeRelocList read GetRelocationList;
-    property ResourceVA: DWORD read FResourceVA;
+    property ResourceVA: TJclAddr read FResourceVA;
     property ResourceList: TJclPeRootResourceList read GetResourceList;
     property Status: TJclPeImageStatus read FStatus;
     property Target: TJclPeTarget read FTarget;
     property UnusedHeaderBytes: TImageDataDirectory read GetUnusedHeaderBytes;
     property VersionInfo: TJclFileVersionInfo read GetVersionInfo;
     property VersionInfoAvailable: Boolean read GetVersionInfoAvailable;
+  end;
+
+  {$IFDEF BORLAND}
+  TJclPeBorImage = class;
+
+  TJclPeBorImagesCache = class(TJclPeImagesCache)
+  private
+    function GetImages(const FileName: TFileName): TJclPeBorImage;
+  protected
+    function GetPeImageClass: TJclPeImageClass; override;
+  public
+    property Images[const FileName: TFileName]: TJclPeBorImage read GetImages; default;
   end;
 
   // Borland Delphi PE Image specific information
@@ -731,9 +733,9 @@ type
   public
     constructor Create(ALibHandle: THandle);
     destructor Destroy; override;
-    class function PackageModuleTypeToString(Flags: Integer): string;
-    class function PackageOptionsToString(Flags: Integer): string;
-    class function ProducerToString(Flags: Integer): string;
+    class function PackageModuleTypeToString(Flags: Cardinal): string;
+    class function PackageOptionsToString(Flags: Cardinal): string;
+    class function ProducerToString(Flags: Cardinal): string;
     class function UnitInfoFlagsToString(UnitFlags: Byte): string;
     property Available: Boolean read FAvailable;
     property Contains: TStrings read GetContains;
@@ -805,6 +807,7 @@ type
     property PackageInfo: TJclPePackageInfo read GetPackageInfo;
     property PackageInfoSorted: Boolean read FPackageInfoSorted write FPackageInfoSorted;
   end;
+  {$ENDIF BORLAND}
 
   // Threaded function search
   TJclPeNameSearchOption = (seImports, seDelayImports, seBoundImports, seExports);
@@ -863,10 +866,10 @@ type
 function IsValidPeFile(const FileName: TFileName): Boolean;
 
 {$IFDEF KEEP_DEPRECATED}
-function PeGetNtHeaders(const FileName: TFileName; var NtHeaders: TImageNtHeaders): Boolean;
+function PeGetNtHeaders(const FileName: TFileName; out NtHeaders: TImageNtHeaders): Boolean;
 {$ENDIF KEEP_DEPRECATED}
-function PeGetNtHeaders32(const FileName: TFileName; var NtHeaders: TImageNtHeaders32): Boolean;
-function PeGetNtHeaders64(const FileName: TFileName; var NtHeaders: TImageNtHeaders64): Boolean;
+function PeGetNtHeaders32(const FileName: TFileName; out NtHeaders: TImageNtHeaders32): Boolean;
+function PeGetNtHeaders64(const FileName: TFileName; out NtHeaders: TImageNtHeaders64): Boolean;
 
 { Image modifications }
 
@@ -899,7 +902,7 @@ function PeDoesExportFunction(const FileName: TFileName; const FunctionName: str
   Options: TJclSmartCompOptions = []): Boolean;
 
 function PeIsExportFunctionForwardedEx(const FileName: TFileName; const FunctionName: string;
-  var ForwardedName: string; Options: TJclSmartCompOptions = []): Boolean;
+  out ForwardedName: string; Options: TJclSmartCompOptions = []): Boolean;
 function PeIsExportFunctionForwarded(const FileName: TFileName; const FunctionName: string;
   Options: TJclSmartCompOptions = []): Boolean;
 
@@ -932,10 +935,12 @@ function PeResourceKindNames(const FileName: TFileName; ResourceType: TJclPeReso
 
 { Borland packages specific }
 
+{$IFDEF BORLAND}
 function PeBorFormNames(const FileName: TFileName; const NamesList: TStrings): Boolean;
 
 function PeBorDependedPackages(const FileName: TFileName; PackagesList: TStrings;
   FullPathName, Descriptions: Boolean): Boolean;
+{$ENDIF BORLAND}
 
 // Missing imports checking routines
 function PeFindMissingImports(const FileName: TFileName; MissingImportsList: TStrings): Boolean; overload;
@@ -1067,17 +1072,17 @@ type
   TJclBorUmResult = (urOk, urNotMangled, urMicrosoft, urError);
   TJclPeUmResult = (umNotMangled, umBorland, umMicrosoft);
 
-function PeBorUnmangleName(const Name: string; var Unmangled: string;
-  var Description: TJclBorUmDescription; var BasePos: Integer): TJclBorUmResult; overload;
-function PeBorUnmangleName(const Name: string; var Unmangled: string;
-  var Description: TJclBorUmDescription): TJclBorUmResult; overload;
-function PeBorUnmangleName(const Name: string; var Unmangled: string): TJclBorUmResult; overload;
+function PeBorUnmangleName(const Name: string; out Unmangled: string;
+  out Description: TJclBorUmDescription; out BasePos: Integer): TJclBorUmResult; overload;
+function PeBorUnmangleName(const Name: string; out Unmangled: string;
+  out Description: TJclBorUmDescription): TJclBorUmResult; overload;
+function PeBorUnmangleName(const Name: string; out Unmangled: string): TJclBorUmResult; overload;
 function PeBorUnmangleName(const Name: string): string; overload;
 
 function PeIsNameMangled(const Name: string): TJclPeUmResult;
 
-function UndecorateSymbolName(const DecoratedName: string; var UnMangled: string; Flags: DWORD): Boolean;
-function PeUnmangleName(const Name: string; var Unmangled: string): TJclPeUmResult;
+function UndecorateSymbolName(const DecoratedName: string; out UnMangled: string; Flags: DWORD): Boolean;
+function PeUnmangleName(const Name: string; out Unmangled: string): TJclPeUmResult;
 
 {$IFDEF UNITVERSIONING}
 const
@@ -1085,7 +1090,9 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\source\windows'
+    LogPath: 'JCL\source\windows';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
@@ -1097,20 +1104,23 @@ uses
 const
   MANIFESTExtension = '.manifest';
 
+  DebugSectionName    = '.debug';
+  ReadOnlySectionName = '.rdata';
+
+  BinaryExtensionLibrary = '.dll';
+
+  {$IFDEF BORLAND}
+  CompilerExtensionDCP   = '.dcp';
+  BinaryExtensionPackage = '.bpl';
+
   PackageInfoResName    = 'PACKAGEINFO';
   DescriptionResName    = 'DESCRIPTION';
   PackageOptionsResName = 'PACKAGEOPTIONS';
   DVclAlResName         = 'DVCLAL';
-
-  DebugSectionName    = '.debug';
-  ReadOnlySectionName = '.rdata';
-
-  BinaryExtensionPackage = '.bpl';
-  BinaryExtensionLibrary = '.dll';
-  CompilerExtensionDCP   = '.dcp';
+  {$ENDIF BORLAND}
 
 // Helper routines
-function AddFlagTextRes(var Text: string; const FlagText: PResStringRec; const Value, Mask: Integer): Boolean;
+function AddFlagTextRes(var Text: string; const FlagText: PResStringRec; const Value, Mask: Cardinal): Boolean;
 begin
   Result := (Value and Mask <> 0);
   if Result then
@@ -1273,18 +1283,6 @@ end;
 function TJclPeImagesCache.GetPeImageClass: TJclPeImageClass;
 begin
   Result := TJclPeImage;
-end;
-
-//=== { TJclPeBorImagesCache } ===============================================
-
-function TJclPeBorImagesCache.GetImages(const FileName: TFileName): TJclPeBorImage;
-begin
-  Result := TJclPeBorImage(inherited Images[FileName]);
-end;
-
-function TJclPeBorImagesCache.GetPeImageClass: TJclPeImageClass;
-begin
-  Result := TJclPeBorImage;
 end;
 
 //=== { TJclPeImageBaseList } ================================================
@@ -2799,7 +2797,7 @@ begin
         FManifestContent.LoadFromStream(ResStream);
       finally
         ResStream.Free;
-      end;    
+      end;
     end;
   end;
   Result := FManifestContent;
@@ -3165,7 +3163,7 @@ begin
   FreeAndNil(FVersionInfo);
   if not FAttachedImage and StatusOK then
     UnMapAndLoad(FLoadedImage);
-  FillChar(FLoadedImage, SizeOf(FLoadedImage), #0);
+  ResetMemory(FLoadedImage, SizeOf(FLoadedImage));
   FStatus := stNotLoaded;
   FAttachedImage := False;
 end;
@@ -3205,6 +3203,7 @@ function TJclPeImage.DirectoryEntryToData(Directory: Word): Pointer;
 var
   Size: DWORD;
 begin
+  Size := 0;
   Result := ImageDirectoryEntryToData(FLoadedImage.MappedAddress, FAttachedImage, Directory, Size);
 end;
 
@@ -3254,6 +3253,7 @@ begin
   Result := PathAddSeparator(ExtractFilePath(BasePath)) + ModuleName;
   if FileExists(Result) then
     Exit;
+  FilePart := nil;
   if SearchPath(nil, PChar(ModuleName), nil, Length(FullName), FullName, FilePart) = 0 then
     Result := ModuleName
   else
@@ -3269,14 +3269,14 @@ function TJclPeImage.GetCertificateList: TJclPeCertificateList;
 begin
   if FCertificateList = nil then
     FCertificateList := TJclPeCertificateList.Create(Self);
-  Result := FCertificateList;   
+  Result := FCertificateList;
 end;
 
 function TJclPeImage.GetCLRHeader: TJclPeCLRHeader;
 begin
   if FCLRHeader = nil then
     FCLRHeader := TJclPeCLRHeader.Create(Self);
-  Result := FCLRHeader;  
+  Result := FCLRHeader;
 end;
 
 function TJclPeImage.GetDebugList: TJclPeDebugList;
@@ -3334,13 +3334,11 @@ begin
 end;
 
 function TJclPeImage.GetFileProperties: TJclPeFileProperties;
-const
-  faFile = faReadOnly or faHidden or faSysFile or faArchive;
 var
   FileAttributesEx: WIN32_FILE_ATTRIBUTE_DATA;
-  Size: TULargeInteger;
+  Size: TJclULargeInteger;
 begin
-  FillChar(Result, SizeOf(Result), #0);
+  ResetMemory(Result, SizeOf(Result));
   if GetFileAttributesEx(PChar(FileName), GetFileExInfoStandard, @FileAttributesEx) then
   begin
     Size.LowPart := FileAttributesEx.nFileSizeLow;
@@ -3414,7 +3412,7 @@ function TJclPeImage.GetHeaderValues(Index: TJclPeHeader): string;
       IMAGE_FILE_MACHINE_M32R:
         Result := RsPeMACHINE_M32R;       // M32R little-endian
       IMAGE_FILE_MACHINE_CEE:
-        Result := RsPeMACHINE_CEE;       
+        Result := RsPeMACHINE_CEE;
     else
       Result := Format('[%.8x]', [Value]);
     end;
@@ -3631,7 +3629,7 @@ end;
 function TJclPeImage.GetLoadConfigValues(Index: TJclLoadConfig): string;
   function GetLoadConfigValues32(Index: TJclLoadConfig): string;
   var
-    LoadConfig: PImageLoadConfigDirectory32;
+    LoadConfig: PIMAGE_LOAD_CONFIG_DIRECTORY32;
   begin
     LoadConfig := DirectoryEntryToData(IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG);
     if LoadConfig <> nil then
@@ -3675,7 +3673,7 @@ function TJclPeImage.GetLoadConfigValues(Index: TJclLoadConfig): string;
   end;
   function GetLoadConfigValues64(Index: TJclLoadConfig): string;
   var
-    LoadConfig: PImageLoadConfigDirectory64;
+    LoadConfig: PIMAGE_LOAD_CONFIG_DIRECTORY64;
   begin
     LoadConfig := DirectoryEntryToData(IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG);
     if LoadConfig <> nil then
@@ -3781,7 +3779,7 @@ begin
 end;
 
 function TJclPeImage.GetSectionHeader(const SectionName: string;
-  var Header: PImageSectionHeader): Boolean;
+  out Header: PImageSectionHeader): Boolean;
 var
   I: Integer;
 begin
@@ -3966,7 +3964,7 @@ begin
 end;
 
 function TJclPeImage.IsSystemImage: Boolean;
-begin       
+begin
   Result := StatusOK and FLoadedImage.fSystemImage;
 end;
 
@@ -4238,6 +4236,20 @@ begin
   end;
 end;
 
+{$IFDEF BORLAND}
+
+//=== { TJclPeBorImagesCache } ===============================================
+
+function TJclPeBorImagesCache.GetImages(const FileName: TFileName): TJclPeBorImage;
+begin
+  Result := TJclPeBorImage(inherited Images[FileName]);
+end;
+
+function TJclPeBorImagesCache.GetPeImageClass: TJclPeImageClass;
+begin
+  Result := TJclPeBorImage;
+end;
+
 //=== { TJclPePackageInfo } ==================================================
 
 constructor TJclPePackageInfo.Create(ALibHandle: THandle);
@@ -4293,7 +4305,7 @@ begin
     StrEnsureSuffix(BinaryExtensionPackage, Result);
 end;
 
-class function TJclPePackageInfo.PackageModuleTypeToString(Flags: Integer): string;
+class function TJclPePackageInfo.PackageModuleTypeToString(Flags: Cardinal): string;
 begin
   case Flags and pfModuleTypeMask of
     pfExeModule, pfModuleTypeMask:
@@ -4307,7 +4319,7 @@ begin
   end;
 end;
 
-class function TJclPePackageInfo.PackageOptionsToString(Flags: Integer): string;
+class function TJclPePackageInfo.PackageOptionsToString(Flags: Cardinal): string;
 begin
   Result := '';
   AddFlagTextRes(Result, @RsPePkgNeverBuild, Flags, pfNeverBuild);
@@ -4316,7 +4328,7 @@ begin
   AddFlagTextRes(Result, @RsPePkgIgnoreDupUnits, Flags, pfIgnoreDupUnits);
 end;
 
-class function TJclPePackageInfo.ProducerToString(Flags: Integer): string;
+class function TJclPePackageInfo.ProducerToString(Flags: Cardinal): string;
 begin
   case Flags and pfProducerMask of
     pfV3Produced:
@@ -4429,7 +4441,7 @@ begin
     Strings.LoadFromStream(TempStream);
   finally
     TempStream.Free;
-  end;    
+  end;
 end;
 
 function TJclPeBorForm.GetDisplayName: string;
@@ -4644,7 +4656,7 @@ begin
     begin
       ImportName := ExtractFileName(FileName);
       CheckName;
-    end;  
+    end;
   end;
   Result := FPackageCompilerVersion;
 end;
@@ -4660,6 +4672,7 @@ begin
   end;
   Result := FPackageInfo;
 end;
+{$ENDIF BORLAND}
 
 //=== { TJclPeNameSearch } ===================================================
 
@@ -4802,7 +4815,7 @@ begin
   Result := PeGetNtHeaders32(FileName, NtHeaders);
 end;
 
-function InternalGetNtHeaders32(const FileName: TFileName; var NtHeaders): Boolean;
+function InternalGetNtHeaders32(const FileName: TFileName; out NtHeaders): Boolean;
 var
   FileHandle: THandle;
   Mapping: TJclFileMapping;
@@ -4810,7 +4823,7 @@ var
   HeadersPtr: PImageNtHeaders32;
 begin
   Result := False;
-  FillChar(NtHeaders, SizeOf(NtHeaders), #0);
+  ResetMemory(NtHeaders, SizeOf(TImageNtHeaders32));
   FileHandle := FileOpen(FileName, fmOpenRead or fmShareDenyWrite);
   if FileHandle = INVALID_HANDLE_VALUE then
     Exit;
@@ -4836,18 +4849,18 @@ begin
 end;
 
 {$IFDEF KEEP_DEPRECATED}
-function PeGetNtHeaders(const FileName: TFileName; var NtHeaders: TImageNtHeaders): Boolean;
+function PeGetNtHeaders(const FileName: TFileName; out NtHeaders: TImageNtHeaders): Boolean;
 begin
   Result := InternalGetNtHeaders32(FileName, NtHeaders);
 end;
 {$ENDIF KEEP_DEPRECATED}
 
-function PeGetNtHeaders32(const FileName: TFileName; var NtHeaders: TImageNtHeaders32): Boolean;
+function PeGetNtHeaders32(const FileName: TFileName; out NtHeaders: TImageNtHeaders32): Boolean;
 begin
   Result := InternalGetNtHeaders32(FileName, NtHeaders);
 end;
 
-function PeGetNtHeaders64(const FileName: TFileName; var NtHeaders: TImageNtHeaders64): Boolean;
+function PeGetNtHeaders64(const FileName: TFileName; out NtHeaders: TImageNtHeaders64): Boolean;
 var
   FileHandle: THandle;
   Mapping: TJclFileMapping;
@@ -4855,7 +4868,7 @@ var
   HeadersPtr: PImageNtHeaders64;
 begin
   Result := False;
-  FillChar(NtHeaders, SizeOf(NtHeaders), #0);
+  ResetMemory(NtHeaders, SizeOf(NtHeaders));
   FileHandle := FileOpen(FileName, fmOpenRead or fmShareDenyWrite);
   if FileHandle = INVALID_HANDLE_VALUE then
     Exit;
@@ -5118,7 +5131,7 @@ function PeInsertSection(const FileName: TFileName; SectionStream: TStream; Sect
 
       // Increase the number of sections
       Inc(NtHeaders^.FileHeader.NumberOfSections);
-      FillChar(NewSection^, SizeOf(TImageSectionHeader), #0);
+      ResetMemory(NewSection^, SizeOf(TImageSectionHeader));
       // JCLDEBUG Virtual Address
       NewSection^.VirtualAddress := LastSection^.VirtualAddress + LastSection^.Misc.VirtualSize;
       RoundUpToAlignment(NewSection^.VirtualAddress, NtHeaders^.OptionalHeader.SectionAlignment);
@@ -5189,7 +5202,7 @@ function PeInsertSection(const FileName: TFileName; SectionStream: TStream; Sect
 
       // Increase the number of sections
       Inc(NtHeaders^.FileHeader.NumberOfSections);
-      FillChar(NewSection^, SizeOf(TImageSectionHeader), #0);
+      ResetMemory(NewSection^, SizeOf(TImageSectionHeader));
       // JCLDEBUG Virtual Address
       NewSection^.VirtualAddress := LastSection^.VirtualAddress + LastSection^.Misc.VirtualSize;
       RoundUpToAlignment(NewSection^.VirtualAddress, NtHeaders^.OptionalHeader.SectionAlignment);
@@ -5311,6 +5324,7 @@ function PeUpdateCheckSum(const FileName: TFileName): Boolean;
 var
   LI: TLoadedImage;
 begin
+  LI.ModuleName := nil;
   // OF: possible loss of data
   Result := MapAndLoad(PAnsiChar(AnsiString(FileName)), nil, LI, True, False);
   if Result then
@@ -5331,7 +5345,7 @@ begin
 end;
 
 function PeIsExportFunctionForwardedEx(const FileName: TFileName; const FunctionName: string;
-  var ForwardedName: string; Options: TJclSmartCompOptions): Boolean;
+  out ForwardedName: string; Options: TJclSmartCompOptions): Boolean;
 var
   ExportItem: TJclPeExportFuncItem;
 begin
@@ -5543,6 +5557,8 @@ begin
   end;
 end;
 
+{$IFDEF BORLAND}
+
 function PeBorFormNames(const FileName: TFileName; const NamesList: TStrings): Boolean;
 var
   I: Integer;
@@ -5584,6 +5600,8 @@ begin
     BorImage.Free;
   end;
 end;
+
+{$ENDIF BORLAND}
 
 // Missing imports checking routines
 
@@ -5960,6 +5978,7 @@ begin
 end;
 
 function PeMapImgResolvePackageThunk(Address: Pointer): Pointer;
+{$IFDEF BORLAND}
 const
   JmpInstructionCode = $25FF;
 type
@@ -5978,6 +5997,12 @@ begin
   else
     Result := nil;
 end;
+{$ENDIF BORLAND}
+{$IFDEF FPC}
+begin
+  Result := Address;
+end;
+{$ENDIF FPC}
 
 function PeMapFindResource(const Module: HMODULE; const ResourceType: PChar;
   const ResourceName: string): Pointer;
@@ -5993,7 +6018,7 @@ begin
       ResItem := ResourceList.FindResource(ResourceType, PChar(ResourceName));
       if (ResItem <> nil) and ResItem.IsDirectory then
         Result := ResItem.List[0].RawEntryData;
-    end;  
+    end;
   finally
     Free;
   end;
@@ -6073,6 +6098,7 @@ function TJclPeMapImgHookItem.InternalUnhook: Boolean;
 var
   Buf: TMemoryBasicInformation;
 begin
+  Buf.AllocationBase := nil;
   if (VirtualQuery(FBaseAddress, Buf, SizeOf(Buf)) = SizeOf(Buf)) and (Buf.State and MEM_FREE = 0) then
     Result := TJclPeMapImgHooks.ReplaceImport(FBaseAddress, ModuleName, NewAddress, OriginalAddress)
   else
@@ -6270,6 +6296,7 @@ function InternalReadProcMem(ProcessHandle: THandle; Address: DWORD;
 var
   BR: DWORD;
 begin
+  BR := 0;
   Result := ReadProcessMemory(ProcessHandle, Pointer(Address), Buffer, Size, BR);
 end;
 
@@ -6288,8 +6315,8 @@ var
   DosHeader: TImageDosHeader;
 begin
   Result := False;
-  FillChar(NtHeaders, SizeOf(NtHeaders), 0);
-  FillChar(DosHeader, SizeOf(DosHeader), 0);
+  ResetMemory(NtHeaders, SizeOf(NtHeaders));
+  ResetMemory(DosHeader, SizeOf(DosHeader));
   if not InternalReadProcMem(ProcessHandle, TJclAddr32(BaseAddress), @DosHeader, SizeOf(DosHeader)) then
     Exit;
   if DosHeader.e_magic <> IMAGE_DOS_SIGNATURE then
@@ -6317,6 +6344,7 @@ var
 begin
   Name := '';
 
+  NtHeaders32.Signature := 0;
   Result := PeDbgImgNtHeaders32(ProcessHandle, BaseAddress, NtHeaders32);
   if not Result then
     Exit;
@@ -6341,8 +6369,8 @@ end;
 
 // Borland BPL packages name unmangling
 
-function PeBorUnmangleName(const Name: string; var Unmangled: string;
-  var Description: TJclBorUmDescription; var BasePos: Integer): TJclBorUmResult;
+function PeBorUnmangleName(const Name: string; out Unmangled: string;
+  out Description: TJclBorUmDescription; out BasePos: Integer): TJclBorUmResult;
 var
   NameP, NameU, NameUFirst: PAnsiChar;
   QualifierFound, LinkProcFound: Boolean;
@@ -6501,15 +6529,15 @@ begin
     Unmangled := string(UTF8Unmangled);
 end;
 
-function PeBorUnmangleName(const Name: string; var Unmangled: string;
-  var Description: TJclBorUmDescription): TJclBorUmResult;
+function PeBorUnmangleName(const Name: string; out Unmangled: string;
+  out Description: TJclBorUmDescription): TJclBorUmResult;
 var
   BasePos: Integer;
 begin
   Result := PeBorUnmangleName(Name, Unmangled, Description, BasePos);
 end;
 
-function PeBorUnmangleName(const Name: string; var Unmangled: string): TJclBorUmResult;
+function PeBorUnmangleName(const Name: string; out Unmangled: string): TJclBorUmResult;
 var
   Description: TJclBorUmDescription;
   BasePos: Integer;
@@ -6556,7 +6584,7 @@ var
   UndecorateSymbolNameW: TUndecorateSymbolNameW = nil;
   UndecorateSymbolNameWFailed: Boolean = False;
 
-function UndecorateSymbolName(const DecoratedName: string; var UnMangled: string; Flags: DWORD): Boolean;
+function UndecorateSymbolName(const DecoratedName: string; out UnMangled: string; Flags: DWORD): Boolean;
 const
   ModuleName = 'imagehlp.dll';
   BufferSize = 512;
@@ -6607,7 +6635,7 @@ begin
   end;
 end;
 
-function PeUnmangleName(const Name: string; var Unmangled: string): TJclPeUmResult;
+function PeUnmangleName(const Name: string; out Unmangled: string): TJclPeUmResult;
 begin
   Result := umNotMangled;
   case PeBorUnmangleName(Name, Unmangled) of

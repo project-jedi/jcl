@@ -128,7 +128,9 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\source\common'
+    LogPath: 'JCL\source\common';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
@@ -141,10 +143,6 @@ implementation
 // multiples of four. The chosen size is a multiple of 3 and of 4 as well.
 // The following numbers are, in addition, also divisible by 1024:
 // $2400, $3000, $3C00, $4800, $5400, $6000, $6C00.
-
-const
-  BUFFER_SIZE = $3000;
-  EqualSign = Byte('=');
 
 const
   { The mime encoding table. Do not alter. }
@@ -843,6 +841,7 @@ var
   BytesRead: Cardinal;
   IDelta, ODelta: Cardinal;
 begin
+  InputBuffer[0] := 0;
   BytesRead := InputStream.Read(InputBuffer, SizeOf(InputBuffer));
 
   while BytesRead = Cardinal(Length(InputBuffer)) do
@@ -869,6 +868,7 @@ var
   OutputBuffer: array [0..((MIME_BUFFER_SIZE + 2) div 3) * 4 - 1] of Byte;
   BytesRead: Cardinal;
 begin
+  InputBuffer[0] := 0;
   BytesRead := InputStream.Read(InputBuffer, SizeOf(InputBuffer));
 
   while BytesRead = Cardinal(Length(InputBuffer)) do
@@ -891,6 +891,7 @@ var
 begin
   ByteBuffer := 0;
   ByteBufferSpace := 4;
+  InputBuffer[0] := 0;
   BytesRead := InputStream.Read(InputBuffer, SizeOf(InputBuffer));
 
   while BytesRead > 0 do

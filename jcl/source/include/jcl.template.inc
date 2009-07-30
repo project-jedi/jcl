@@ -67,7 +67,7 @@
 // debug sources
 // defining these symbols will the debug source to be automatically registered
 {.$DEFINE DEBUG_NO_BINARY}
-{.$DEFINE DEBUG_NO_TD32}
+{.$DEFINE DEBUG_NO_TD32}     // automatically defined for FPC
 {.$DEFINE DEBUG_NO_MAP}
 {.$DEFINE DEBUG_NO_EXPORTS}
 {.$DEFINE DEBUG_NO_SYMBOLS}

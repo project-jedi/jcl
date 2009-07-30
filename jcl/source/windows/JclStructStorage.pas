@@ -231,7 +231,9 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\source\windows'
+    LogPath: 'JCL\source\windows';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
@@ -244,30 +246,30 @@ uses
 var
   FMalloc: IMalloc = nil;
 
-type
-  PStgOptions = ^TStgOptions;
-  tagSTGOPTIONS = record
-    usVersion: Byte;
-    reserved: Byte;
-    ulSectorSize: DWORD;
-    pwcsTemplateFile: POleStr;
-  end;
-  {$EXTERNALSYM tagSTGOPTIONS}
-  TStgOptions = tagSTGOPTIONS;
+// type
+  // PStgOptions = ^TStgOptions;
+  // tagSTGOPTIONS = record
+  //   usVersion: Byte;
+  //   reserved: Byte;
+  //   ulSectorSize: DWORD;
+  //   pwcsTemplateFile: POleStr;
+  // end;
+  // {$EXTERNALSYM tagSTGOPTIONS}
+  // TStgOptions = tagSTGOPTIONS;
 
-  TStgCreateStorageExFunc = function(pwcsName: POleStr; grfMode: Longint; StgFmt: Longint; grfAttrs: DWORD; pStgOptions:
-    PStgOptions;
-    reserved2: Pointer; riid: TIID; out ppObjectOpen: IUnknown): HRESULT; stdcall;
-  TStgOpenStorageExFunc = function(pwcsName: POleStr; grfMode: Longint; StgFmt: Longint; grfAttrs: DWORD; pStgOptions:
-    PStgOptions;
-    reserved2: Pointer; riid: TIID; out ppObjectOpen: IUnknown): HRESULT; stdcall;
+  // TStgCreateStorageExFunc = function(pwcsName: POleStr; grfMode: Longint; StgFmt: Longint; grfAttrs: DWORD; pStgOptions:
+  //   PStgOptions;
+  //   reserved2: Pointer; riid: TIID; out ppObjectOpen: IUnknown): HRESULT; stdcall;
+  // TStgOpenStorageExFunc = function(pwcsName: POleStr; grfMode: Longint; StgFmt: Longint; grfAttrs: DWORD; pStgOptions:
+  //   PStgOptions;
+  //   reserved2: Pointer; riid: TIID; out ppObjectOpen: IUnknown): HRESULT; stdcall;
 
-var
+//var
   // replacements for StgCreateDocFile and StgOpenStorage on Win2k and XP - not currently used
-  StgCreateStorageEx: TStgCreateStorageExFunc = nil;
-  {$EXTERNALSYM StgCreateStorageEx}
-  StgOpenStorageEx: TStgOpenStorageExFunc = nil;
-  {$EXTERNALSYM StgOpenStorageEx}
+  // StgCreateStorageEx: TStgCreateStorageExFunc = nil;
+  // {$EXTERNALSYM StgCreateStorageEx}
+  // StgOpenStorageEx: TStgOpenStorageExFunc = nil;
+  // {$EXTERNALSYM StgOpenStorageEx}
 
 procedure CoMallocFree(P: Pointer);
 begin

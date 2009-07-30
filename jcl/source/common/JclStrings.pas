@@ -71,7 +71,7 @@ uses
   Classes, SysUtils,
   JclAnsiStrings,
   JclWideStrings,
-  JclBase, JclSysUtils;
+  JclBase;
 
 // Exceptions
 type
@@ -223,16 +223,11 @@ function StrUpper(const S: string): string;
 procedure StrUpperInPlace(var S: string);
 procedure StrUpperBuff(S: PChar);
 
-{$IFNDEF SUPPORTS_UNICODE}
-{$IFDEF KEEP_DEPRECATED}
 // String Management
-procedure StrAddRef(var S: string); {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
-function StrAllocSize(const S: string): Longint; {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
-procedure StrDecRef(var S: string); {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
-function StrLength(const S: string): Longint; {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
-function StrRefCount(const S: string): Longint; {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
-{$ENDIF KEEP_DEPRECATED}
-{$ENDIF ~SUPPORTS_UNICODE}
+procedure StrAddRef(var S: string);
+procedure StrDecRef(var S: string);
+function StrLength(const S: string): Longint;
+function StrRefCount(const S: string): Longint;
 
 // String Search and Replace Routines
 function StrCharCount(const S: string; C: Char): Integer; overload;
@@ -488,7 +483,6 @@ type
     function GetStops(Index: Integer): Integer;
     function GetTabWidth: Integer;
     function GetZeroBased: Boolean;
-    constructor InternalCreate(Data: TObject); 
     procedure SetStops(Index, Value: Integer);
     procedure SetTabWidth(Value: Integer);
     procedure SetZeroBased(Value: Boolean);
@@ -499,6 +493,7 @@ type
     procedure RemoveAt(Index: Integer);
   public
     constructor Create; overload;
+    constructor Create(Data: TObject); overload;
     constructor Create(TabWidth: Integer); overload;
     constructor Create(const Tabstops: array of Integer; ZeroBased: Boolean); overload;
     constructor Create(const Tabstops: array of Integer; ZeroBased: Boolean; TabWidth: Integer); overload;
@@ -600,7 +595,9 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\source\common'
+    LogPath: 'JCL\source\common';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
@@ -617,20 +614,15 @@ uses
 
 //=== Internal ===============================================================
 
-{$IFNDEF SUPPORTS_UNICODE}
 type
   TStrRec = packed record
-    AllocSize: Longint;
     RefCount: Longint;
     Length: Longint;
   end;
+  PStrRec = ^TStrRec;
 
 const
   StrRecSize = SizeOf(TStrRec);           // size of the string header rec
-  StrAllocOffset = 12;                        // offset to AllocSize in StrRec
-  StrRefCountOffset = 8;                         // offset to RefCount in StrRec
-  StrLengthOffset = 4;                         // offset to Length in StrRec
-{$ENDIF ~SUPPORTS_UNICODE}
 
 procedure LoadCharTypes;
 var
@@ -640,6 +632,7 @@ begin
   for CurrChar := Low(CurrChar) to High(CurrChar) do
   begin
     {$IFDEF MSWINDOWS}
+    CurrType := 0;
     GetStringTypeEx(LOCALE_USER_DEFAULT, CT_CTYPE1, @CurrChar, 1, CurrType);
     {$DEFINE CHAR_TYPES_INITIALIZED}
     {$ENDIF MSWINDOWS}
@@ -741,6 +734,10 @@ begin
   Str := RetValue;
 end;
 {$ELSE ~SUPPORTS_UNICODE}
+type
+  TAnsiUniqueStringType = procedure (var S : AnsiString);
+const
+  AnsiUniqueString: TAnsiUniqueStringType = UniqueString;
 asm
         // make sure that the string is not null
 
@@ -750,7 +747,7 @@ asm
         // create unique string if this one is ref-counted
 
          PUSH    EDX
-         CALL    UniqueString
+         CALL    AnsiUniqueString
          POP     EDX
 
         // make sure that the new string is not null
@@ -2082,78 +2079,67 @@ end;
 
 //=== String Management ======================================================
 
-{$IFNDEF SUPPORTS_UNICODE}
-{$IFDEF KEEP_DEPRECATED}
 procedure StrAddRef(var S: string);
 var
-  Foo: string;
+  P: PStrRec;
 begin
-  if StrRefCount(S) = -1 then
-    UniqueString(S)
-  else
+  P := Pointer(S);
+  if P <> nil then
   begin
-    Foo := S;
-    Pointer(Foo) := nil;
-  end;
-end;
-
-function StrAllocSize(const S: string): Longint;
-var
-  P: Pointer;
-begin
-  Result := 0;
-  if Pointer(S) <> nil then
-  begin
-    P := Pointer(INT_PTR(Pointer(S)) - StrRefCountOffset);
-    if Integer(P^) <> -1 then
-    begin
-      P := Pointer(INT_PTR(Pointer(S)) - StrAllocOffset);
-      Result := Integer(P^);
-    end;
+    Dec(P);
+    if P^.RefCount = -1 then
+      UniqueString(S)
+    else
+      InterLockedIncrement(P^.RefCount);
   end;
 end;
 
 procedure StrDecRef(var S: string);
 var
-  Foo: string;
+  P: PStrRec;
 begin
-  case StrRefCount(S) of
-    -1, 0: { nothing } ;
-     1:
-       begin
-         Finalize(S);
-         Pointer(S) := nil;
-       end;
-  else
-    Pointer(Foo) := Pointer(S);
+  P := Pointer(S);
+  if P <> nil then
+  begin
+    Dec(P);
+    case P^.RefCount of
+      -1, 0: { nothing } ;
+      1:
+        begin
+          Finalize(S);
+          Pointer(S) := nil;
+        end;
+    else
+      InterLockedDecrement(P^.RefCount);
+    end;
   end;
 end;
 
 function StrLength(const S: string): Longint;
 var
-  P: Pointer;
+  P: PStrRec;
 begin
   Result := 0;
-  if Pointer(S) <> nil then
+  P := Pointer(S);
+  if P <> nil then
   begin
-    P := Pointer(INT_PTR(Pointer(S)) - StrLengthOffset);
-    Result := Longint(P^) and (not $80000000 shr 1);
+    Dec(P);
+    Result := P^.Length and (not $80000000 shr 1);
   end;
 end;
 
 function StrRefCount(const S: string): Longint;
 var
-  P: Pointer;
+  P: PStrRec;
 begin
   Result := 0;
-  if Pointer(S) <> nil then
+  P := Pointer(S);
+  if P <> nil then
   begin
-    P := Pointer(INT_PTR(Pointer(S)) - StrRefCountOffset);
-    Result := Longint(P^);
+    Dec(P);
+    Result := P^.RefCount;
   end;
 end;
-{$ENDIF KEEP_DEPRECATED}
-{$ENDIF ~SUPPORTS_UNICODE}
 
 procedure StrResetLength(var S: WideString);
 var
@@ -3505,17 +3491,14 @@ begin
 end;
 
 function PCharVectorCount(Source: PCharVector): Integer;
-var
-  P: PChar;
 begin
   Result := 0;
   if Source <> nil then
   begin
-    P := Source^;
-    while P <> nil do
+    while Source^ <> nil do
     begin
+      Inc(Source);
       Inc(Result);
-      P := PCharVector(INT_PTR(Source) + (SizeOf(PChar) * Result))^;
     end;
   end;
 end;
@@ -3736,6 +3719,7 @@ begin
   if Source <> nil then
   begin
     Len := MultiSzLength(Source);
+    Result := nil;
     AllocateMultiSz(Result, Len);
     Move(Source^, Result^, Len * SizeOf(Char));
   end
@@ -4430,7 +4414,7 @@ var
       vtString:
         Result := string(V.VString^);
       vtPointer:
-        Result := IntToHex(DWORD_PTR(V.VPointer), 8);
+        Result := IntToHex(TJclAddr(V.VPointer), 8);
       vtPChar:
         Result := string(AnsiString(V.VPChar));
       vtObject:
@@ -5130,6 +5114,15 @@ begin
   FData := TTabSetData.Create(Tabstops, ZeroBased, TabWidth);
 end;
 
+constructor TJclTabSet.Create(Data: TObject);
+begin
+  inherited Create;
+  // add a reference to the data
+  TTabSetData(Data).AddRef;
+  // assign the data to this instance
+  FData := TTabSetData(Data);
+end;
+
 destructor TJclTabSet.Destroy;
 begin
   // release the reference to the tab set data
@@ -5230,6 +5223,7 @@ var
     head := cur;
     while CharIsDigit(cur^) do
       Inc(cur);
+    Result := -1;
     if (cur <= head) or not TryStrToInt(Copy(head, 1, cur - head), Result) then
       Result := -1;
   end;
@@ -5495,15 +5489,6 @@ begin
     raise NullReferenceException.Create;
 end;
 
-constructor TJclTabSet.InternalCreate(Data: TObject);
-begin
-  inherited Create;
-  // add a reference to the data
-  TTabSetData(Data).AddRef;
-  // assign the data to this instance
-  FData := TTabSetData(Data);
-end;
-
 function TJclTabSet.InternalTabStops: TDynIntegerArray;
 begin
   if Self <> nil then
@@ -5523,7 +5508,7 @@ end;
 function TJclTabSet.NewReference: TJclTabSet;
 begin
   if Self <> nil then
-    Result := TJclTabSet.InternalCreate(FData)
+    Result := TJclTabSet.Create(FData)
   else
     Result := nil;
 end;
@@ -5637,20 +5622,22 @@ end;
 
 function TJclTabSet.UpdatePosition(const S: string): Integer;
 var
-  lines: Integer;
+  Line: Integer;
 begin
   Result := StartColumn;
-  UpdatePosition(S, Result, lines);
+  Line := -1;
+  UpdatePosition(S, Result, Line);
 end;
 
 function TJclTabSet.UpdatePosition(const S: string; Column: Integer): Integer;
 var
-  lines: Integer;
+  Line: Integer;
 begin
   if Column < StartColumn then
     raise ArgumentOutOfRangeException.Create('Column');
   Result := Column;
-  UpdatePosition(S, Result, lines);
+  Line := -1;
+  UpdatePosition(S, Result, Line);
 end;
 
 function TJclTabSet.UpdatePosition(const S: string; var Column, Line: Integer): Integer;

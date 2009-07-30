@@ -45,9 +45,6 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF MSWINDOWS}
-  Windows,
-  {$ENDIF MSWINDOWS}
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
@@ -177,7 +174,9 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\source\common'
+    LogPath: 'JCL\source\common';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
@@ -607,12 +606,12 @@ begin
   if FDfaMode then
   begin
     ExecRslt := pcre_dfa_exec(FCode, Extra, PAnsiChar(EncodedSubject), Length(EncodedSubject),
-      StartOffset - 1, GetAPIOptions(True), pcre.PInteger(FVector), FVectorSize, @Workspace, 20);
+      StartOffset - 1, GetAPIOptions(True), PInteger(FVector), FVectorSize, @Workspace, 20);
   end
   else
   begin
     ExecRslt := pcre_exec(FCode, Extra, PAnsiChar(EncodedSubject), Length(EncodedSubject),
-      StartOffset - 1, GetAPIOptions(True), pcre.PInteger(FVector), FVectorSize);
+      StartOffset - 1, GetAPIOptions(True), PInteger(FVector), FVectorSize);
   end;
   Result := ExecRslt >= 0;
   if Result then

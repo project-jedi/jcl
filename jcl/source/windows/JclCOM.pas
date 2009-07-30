@@ -127,7 +127,9 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\source\windows'
+    LogPath: 'JCL\source\windows';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
@@ -310,6 +312,7 @@ var
   itfStream: IStream;
 begin
   { TODO -cTest : D4 (CBx ??) }
+  itfStream := nil;
   Result := MarshalInterProcessInterfaceInStream(iid, unk, itfStream);
 
   if Result <> S_OK then
@@ -364,6 +367,7 @@ var
   itfStream: IStream;
 begin
   { TODO -cTest : D4 (CBx ??) }
+  itfStream := nil;
   Result := MarshalInterMachineInterfaceInStream(iid, unk, itfStream);
 
   if Result <> S_OK then

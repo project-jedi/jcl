@@ -60,14 +60,16 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\source\vcl'
+    LogPath: 'JCL\source\vcl';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
 implementation
 
 uses
-  JclFileUtils, JclRegistry, JclStrings;
+  JclFileUtils, JclSysUtils, JclRegistry, JclStrings;
 
 const
 //  JclVersionCtrlCVSTrtseShlDLL = 'TrtseShl.dll';
@@ -119,8 +121,8 @@ function TJclVersionControlCVS.ExecuteAction(const FileName: TFileName;
     ProcessInfo: TProcessInformation;
     CurrentDir, CommandLine: TFileName;
   begin
-    FillChar(StartupInfo,SizeOf(TStartupInfo),#0);
-    FillChar(ProcessInfo,SizeOf(TProcessInformation),#0);
+    ResetMemory(StartupInfo, SizeOf(TStartupInfo));
+    ResetMemory(ProcessInfo, SizeOf(TProcessInformation));
     startupInfo.cb := SizeOf(TStartupInfo);
     startupInfo.dwFlags := STARTF_USESHOWWINDOW;
     startupInfo.wShowWindow := SW_SHOW;

@@ -119,7 +119,6 @@ type
 {$I win32api\WinDef.int}
 {$I win32api\WinNT.int}
 {$I win32api\WinBase.int}
-{$I win32api\BaseTsd.int}
 {$I win32api\AclApi.int}
 {$I win32api\ImageHlp.int}
 {$I win32api\LmErr.int}
@@ -143,6 +142,7 @@ type
 {$I win32api\imgguids.int}
 {$I win32api\ObjBase.int}
 {$I win32api\NtSecApi.int}
+{$I win32api\TlHelp32.int}
 
 {$IFDEF MSWINDOWS}
 
@@ -274,11 +274,7 @@ constructor EJclWin32Error.CreateRes(ResStringRec: PResStringRec);
 begin
   FLastError := GetLastError;
   FLastErrorMsg := SysErrorMessage(FLastError);
-  {$IFDEF FPC}
-  inherited CreateFmt(ResStringRec^ + AnsiLineBreak + RsWin32Prefix, [FLastErrorMsg, FLastError]);
-  {$ELSE ~FPC}
   inherited CreateFmt(LoadResString(ResStringRec) + NativeLineBreak + RsWin32Prefix, [FLastErrorMsg, FLastError]);
-  {$ENDIF ~FPC}
 end;
 
 {$ENDIF MSWINDOWS}
@@ -295,6 +291,7 @@ end;
 {$I win32api\PowrProf.imp}
 {$I win32api\ObjBase.imp}
 {$I win32api\NtSecApi.imp}
+{$I win32api\TlHelp32.imp}
 
 {$IFDEF UNITVERSIONING}
 initialization

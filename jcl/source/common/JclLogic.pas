@@ -287,7 +287,9 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\source\common'
+    LogPath: 'JCL\source\common';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
@@ -295,9 +297,6 @@ implementation
 
 uses
   JclBase;
-
-type
-  PByte = ^Byte;
 
 // Conversion
 function OrdToBinary(Value: Byte): string;
@@ -430,10 +429,10 @@ end;
 
 function BitsHighest(X: Int64): Integer;
 begin
-  if TULargeInteger(X).HighPart = 0 then
-    Result := BitsHighest(TULargeInteger(X).LowPart)
+  if TJclULargeInteger(X).HighPart = 0 then
+    Result := BitsHighest(TJclULargeInteger(X).LowPart)
   else
-    Result := BitsHighest(TULargeInteger(X).HighPart) + 32;
+    Result := BitsHighest(TJclULargeInteger(X).HighPart) + 32;
 end;
 
 function BitsLowest(X: Cardinal): Integer;
@@ -478,10 +477,10 @@ end;
 
 function BitsLowest(X: Int64): Integer;
 begin
-  if TULargeInteger(X).LowPart = 0 then
-    Result := BitsLowest(TULargeInteger(X).HighPart) + 32
+  if TJclULargeInteger(X).LowPart = 0 then
+    Result := BitsLowest(TJclULargeInteger(X).HighPart) + 32
   else
-    Result := BitsLowest(TULargeInteger(X).LowPart);
+    Result := BitsLowest(TJclULargeInteger(X).LowPart);
 end;
 
 function ClearBit(const Value: Byte; const Bit: TBitRange): Byte;
@@ -622,7 +621,7 @@ end;
 
 function CountBitsSet(X: Int64): Integer;
 begin
-  Result := CountBitsSet(TULargeInteger(X).LowPart) + CountBitsSet(TULargeInteger(X).HighPart);
+  Result := CountBitsSet(TJclULargeInteger(X).LowPart) + CountBitsSet(TJclULargeInteger(X).HighPart);
 end;
 
 function CountBitsCleared(X: Byte): Integer;
@@ -743,8 +742,8 @@ end;
 
 function ReverseBits(Value: Int64): Int64;
 begin
-  TULargeInteger(Result).LowPart := ReverseBits(TULargeInteger(Value).HighPart);
-  TULargeInteger(Result).HighPart := ReverseBits(TULargeInteger(Value).LowPart);
+  TJclULargeInteger(Result).LowPart := ReverseBits(TJclULargeInteger(Value).HighPart);
+  TJclULargeInteger(Result).HighPart := ReverseBits(TJclULargeInteger(Value).LowPart);
 end;
 
 const
@@ -791,8 +790,9 @@ begin
   if (P <> nil) and (Count > 0) then
   begin
     P1 := P;
-    P2 := PByte(Integer(P) + Count - 1);
-    while Integer(P1) < Integer(P2) do
+    P2 := P;
+    Inc(P2, Count - 1);
+    while P1 < P2 do
     begin
       T := ReverseTable[P1^];
       P1^ := ReverseTable[P2^];
@@ -1217,8 +1217,9 @@ begin
   if (P <> nil) and (Count > 0) then
   begin
     P1 := P;
-    P2 := PByte(Integer(P) + Count - 1);
-    while Integer(P1) < Integer(P2) do
+    P2 := P;
+    Inc(P2, Count - 1);
+    while P1 < P2 do
     begin
       T := P1^;
       P1^ := P2^;

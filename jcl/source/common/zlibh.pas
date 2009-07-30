@@ -56,25 +56,28 @@ unit zlibh;
 
 interface
 
-{$IFDEF MSWINDOWS}
 uses
-  Windows;
-{$ENDIF MSWINDOWS}
-{$IFDEF HAS_UNIT_LIBC}
-uses
-  Libc;
-{$ELSE ~HAS_UNIT_LIBC}
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF MSWINDOWS}
+  {$IFDEF HAS_UNIT_LIBC}
+  Libc,
+  {$ELSE ~HAS_UNIT_LIBC}
+  JclBase;
+
+{$IFNDEF FPC}
 type
-{$IFDEF UNIX}
+  {$IFDEF UNIX}
   uLong = LongWord;
   {$EXTERNALSYM uLong}
   uInt = Cardinal;
   {$EXTERNALSYM uInt}
-{$ENDIF UNIX}
+  {$ENDIF UNIX}
   uShort = Word;
   {$EXTERNALSYM uShort}
   size_t = Longint;
   {$EXTERNALSYM size_t}
+{$ENDIF ~FPC}
 {$ENDIF ~HAS_UNIT_LIBC}
 
 //-----------------------------------------------------------------------------
@@ -2039,48 +2042,6 @@ type
   TModuleHandle = Pointer;
 {$ENDIF LINUX}
 
-const
-  {$IFDEF MSWINDOWS}
-  szZLIB = 'zlib1.dll';
-  {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
-  szZLIB = 'libz.so';
-  {$ENDIF UNIX}
-  INVALID_MODULEHANDLE_VALUE = TModuleHandle(0);
-
-  ZLIBzlibVersionExportName = 'zlibVersion';
-  ZLIBdeflateInit_ExportName = 'deflateInit_';
-  ZLIBdeflateExportName = 'deflate';
-  ZLIBdeflateEndExportName = 'deflateEnd';
-  ZLIBinflateInit_ExportName = 'inflateInit_';
-  ZLIBinflateExportName = 'inflate';
-  ZLIBinflateEndExportName = 'inflateEnd';
-  ZLIBdeflateInit2_ExportName = 'deflateInit2_';
-  ZLIBdeflateSetDictionaryExportName = 'deflateSetDictionary';
-  ZLIBdeflateCopyExportName = 'deflateCopy';
-  ZLIBdeflateResetExportName = 'deflateReset';
-  ZLIBdeflateParamsExportName = 'deflateParams';
-  ZLIBdeflateBoundExportName = 'deflateBound';
-  ZLIBdeflatePrimeExportName = 'deflatePrime';
-  ZLIBinflateInit2_ExportName = 'inflateInit2_';
-  ZLIBinflateSetDictionaryExportName = 'inflateSetDictionary';
-  ZLIBinflateSyncExportName = 'inflateSync';
-  ZLIBinflateCopyExportName = 'inflateCopy';
-  ZLIBinflateResetExportName = 'inflateReset';
-  ZLIBinflateBackInit_ExportName = 'inflateBackInit_';
-  ZLIBinflateBackExportName = 'inflateBack';
-  ZLIBinflateBackEndExportName = 'inflateBackEnd';
-  ZLIBzlibCompileFlagsExportName = 'zlibCompileFlags';
-  ZLIBcompressExportName = 'compress';
-  ZLIBcompress2ExportName = 'compress2';
-  ZLIBcompressBoundExportName = 'compressBound';
-  ZLIBuncompressExportName = 'uncompress';
-  ZLIBadler32ExportName = 'adler32';
-  ZLIBcrc32ExportName = 'crc32';
-  ZLIBzErrorExportName = 'zError';
-  ZLIBinflateSyncPointExportName = 'inflateSyncPoint';
-  ZLIBget_crc_tableExportName = 'get_crc_table';
-
 {$IFDEF ZLIB_STATICLINK}
 
 {$LINK ..\windows\obj\zlib\adler32.obj} // OS: CHECKTHIS - Unix version may need forward slashes?
@@ -2217,6 +2178,49 @@ end;
 
 {$ENDIF ~LINK_TO_MSVCRT}
 {$ELSE ~ZLIB_STATICLINK}
+
+const
+  {$IFDEF MSWINDOWS}
+  szZLIB = 'zlib1.dll';
+  {$ENDIF MSWINDOWS}
+  {$IFDEF UNIX}
+  szZLIB = 'libz.so';
+  {$ENDIF UNIX}
+  INVALID_MODULEHANDLE_VALUE = TModuleHandle(0);
+
+  ZLIBzlibVersionExportName = 'zlibVersion';
+  ZLIBdeflateInit_ExportName = 'deflateInit_';
+  ZLIBdeflateExportName = 'deflate';
+  ZLIBdeflateEndExportName = 'deflateEnd';
+  ZLIBinflateInit_ExportName = 'inflateInit_';
+  ZLIBinflateExportName = 'inflate';
+  ZLIBinflateEndExportName = 'inflateEnd';
+  ZLIBdeflateInit2_ExportName = 'deflateInit2_';
+  ZLIBdeflateSetDictionaryExportName = 'deflateSetDictionary';
+  ZLIBdeflateCopyExportName = 'deflateCopy';
+  ZLIBdeflateResetExportName = 'deflateReset';
+  ZLIBdeflateParamsExportName = 'deflateParams';
+  ZLIBdeflateBoundExportName = 'deflateBound';
+  ZLIBdeflatePrimeExportName = 'deflatePrime';
+  ZLIBinflateInit2_ExportName = 'inflateInit2_';
+  ZLIBinflateSetDictionaryExportName = 'inflateSetDictionary';
+  ZLIBinflateSyncExportName = 'inflateSync';
+  ZLIBinflateCopyExportName = 'inflateCopy';
+  ZLIBinflateResetExportName = 'inflateReset';
+  ZLIBinflateBackInit_ExportName = 'inflateBackInit_';
+  ZLIBinflateBackExportName = 'inflateBack';
+  ZLIBinflateBackEndExportName = 'inflateBackEnd';
+  ZLIBzlibCompileFlagsExportName = 'zlibCompileFlags';
+  ZLIBcompressExportName = 'compress';
+  ZLIBcompress2ExportName = 'compress2';
+  ZLIBcompressBoundExportName = 'compressBound';
+  ZLIBuncompressExportName = 'uncompress';
+  ZLIBadler32ExportName = 'adler32';
+  ZLIBcrc32ExportName = 'crc32';
+  ZLIBzErrorExportName = 'zError';
+  ZLIBinflateSyncPointExportName = 'inflateSyncPoint';
+  ZLIBget_crc_tableExportName = 'get_crc_table';
+
 var
   ZLibModuleHandle: TModuleHandle = INVALID_MODULEHANDLE_VALUE;
 {$ENDIF ~ZLIB_STATICLINK}

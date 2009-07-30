@@ -92,7 +92,9 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\source\common'
+    LogPath: 'JCL\source\common';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
@@ -182,6 +184,7 @@ var
   TimeNow: Int64;
 begin
   {$IFDEF MSWINDOWS}
+  TimeNow := 0;
   if not QueryPerformanceCounter(TimeNow) then
     NoCounterError;
   {$ENDIF MSWINDOWS}

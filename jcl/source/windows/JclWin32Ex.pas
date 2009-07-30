@@ -59,7 +59,7 @@ function JclInitializeCriticalSectionAndSpinCount(lpCriticalSection: TRTLCritica
 function JclGetFileAttributesEx(const lpFileName: string;
   fInfoLevelId: TGetFileExInfoLevels; lpFileInformation: Pointer): Boolean;
 function JclCreateWaitableTimer(lpTimerAttributes: PSecurityAttributes;
-  bManualReset: Boolean; const lpTimerName: string): THandle;
+  bManualReset: Boolean; const lpTimerName: AnsiString): THandle;
 function JclCancelWaitableTimer(hTimer: THandle): Boolean;
 
 function JclglGetString(name: Cardinal): PChar;
@@ -81,7 +81,9 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\source\windows'
+    LogPath: 'JCL\source\windows';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
@@ -175,7 +177,7 @@ const
       DllName: opengl32; DllHandle: @OpenGl32DllHandle),
      // jwfgluErrorString
      (FunctionName: 'gluErrorString'; FunctionAddr: nil;
-      DllName: opengl32; DllHandle: @Glu32DllHandle)
+      DllName: Glu32; DllHandle: @Glu32DllHandle)
    );
 
 function LoadWin32ExFunction(const Win32ExFunction: TJclWin32ExFunction): Pointer;
@@ -216,7 +218,7 @@ begin
   if not Assigned(FunctionAddr) then
     FunctionAddr := LoadWin32ExFunction(jwfSignalObjectAndWait);
 
-  Result := TSignalObjectAndWaitProc(FunctionAddr)(hObjectToSignal, hObjectToSignal, dwMilliseconds, bAlertable);
+  Result := TSignalObjectAndWaitProc(FunctionAddr)(hObjectToSignal, hObjectToWaitOn, dwMilliseconds, bAlertable);
 end;
 
 function JclSetCriticalSectionSpinCount(lpCriticalSection: TRTLCriticalSection; dwSpinCount: Cardinal): Cardinal;
@@ -263,7 +265,7 @@ begin
   Result := TGetFileAttributesExAProc(FunctionAddr)(PChar(lpFileName), fInfoLevelId, lpFileInformation);
 end;
 
-function JclCreateWaitableTimer(lpTimerAttributes: PSecurityAttributes; bManualReset: Boolean; const lpTimerName: string): THandle;
+function JclCreateWaitableTimer(lpTimerAttributes: PSecurityAttributes; bManualReset: Boolean; const lpTimerName: AnsiString): THandle;
 var
   FunctionAddr: Pointer;
 begin
@@ -271,7 +273,7 @@ begin
   if not Assigned(FunctionAddr) then
     FunctionAddr := LoadWin32ExFunction(jwfCreateWaitableTimer);
 
-  Result := TCreateWaitableTimerAProc(FunctionAddr)(lpTimerAttributes, bManualReset, PAnsiChar(lpTimerAttributes));
+  Result := TCreateWaitableTimerAProc(FunctionAddr)(lpTimerAttributes, bManualReset, PAnsiChar(lpTimerName));
 end;
 
 function JclCancelWaitableTimer(hTimer: THandle): Boolean;

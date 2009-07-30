@@ -300,9 +300,9 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    {$IFDEF VCL}
-    LogPath: 'JCL\source\vcl'
-    {$ENDIF VCL}
+    LogPath: 'JCL\source\vcl';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 

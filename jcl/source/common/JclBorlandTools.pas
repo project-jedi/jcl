@@ -171,11 +171,11 @@ type
     bpDelphiNet32, bpDelphiNet64, bpCSBuilder32, bpCSBuilder64,
     bpVisualBasic32, bpVisualBasic64, bpDesign, bpUnknown);
   //  bpDelphi64, bpBCBuilder64);
-  
+
   TJclBorPersonalities = set of TJclBorPersonality;
 
   TJclBorDesigner = (bdVCL, bdCLX);
-  
+
   TJclBorDesigners = set of TJClBorDesigner;
 
   TJclBorPlatform = (bp32bit, bp64bit);
@@ -208,9 +208,8 @@ type
   TJclBorRADToolInstallationObject = class(TInterfacedObject)
   private
     FInstallation: TJclBorRADToolInstallation;
-  protected
-    constructor Create(AInstallation: TJclBorRADToolInstallation);
   public
+    constructor Create(AInstallation: TJclBorRADToolInstallation);
     property Installation: TJclBorRADToolInstallation read FInstallation;
   end;
 
@@ -246,10 +245,9 @@ type
     function GetHxPlugin: IHxPlugin;
     function GetHxRegister: IHxRegister;
     function GetHxRegisterSession: IHxRegisterSession;
-  protected
-    constructor Create(AInstallation: TJclBorRADToolInstallation); overload;
   public
     constructor Create; overload;
+    constructor Create(AInstallation: TJclBorRADToolInstallation); overload;
     destructor Destroy; override;
     function CreateTransaction: Boolean;
     function CommitTransaction: Boolean;
@@ -286,9 +284,9 @@ type
     procedure SetTitle(Index: Integer; const Value: string);
     procedure SetWorkingDir(Index: Integer; const Value: string);
   protected
-    constructor Create(AInstallation: TJclBorRADToolInstallation);
     procedure CheckIndex(Index: Integer);
   public
+    constructor Create(AInstallation: TJclBorRADToolInstallation);
     property Count: Integer read GetCount write SetCount;
     function IndexOfPath(const Value: string): Integer;
     function IndexOfTitle(const Value: string): Integer;
@@ -317,11 +315,11 @@ type
     function GetIDEPackageFileNames(Index: Integer): string;
     function GetExpertFileNames(Index: Integer): string;
   protected
-    constructor Create(AInstallation: TJclBorRADToolInstallation);
     function PackageEntryToFileName(const Entry: string): string;
     procedure ReadPackages;
     procedure RemoveDisabled(const FileName: string);
   public
+    constructor Create(AInstallation: TJclBorRADToolInstallation);
     destructor Destroy; override;
     function AddPackage(const FileName, Description: string): Boolean;
     function AddIDEPackage(const FileName, Description: string): Boolean;
@@ -353,7 +351,6 @@ type
     FOnBeforeExecute: TJclBorlandCommandLineToolEvent;
     procedure OemTextHandler(const Text: string);
   protected
-    constructor Create(AInstallation: TJclBorRADToolInstallation); virtual;
     procedure CheckOutputValid;
     function GetExeName: string; virtual;
     function GetFileName: string;
@@ -363,6 +360,7 @@ type
     procedure SetOutputCallback(const CallbackMethod: TTextHandler);
     function GetOutput: string;
   public
+    constructor Create(AInstallation: TJclBorRADToolInstallation); virtual;
     destructor Destroy; override;
     procedure AddPathOption(const Option, Path: string);
     function Execute(const CommandLine: string): Boolean; virtual;
@@ -377,9 +375,9 @@ type
 
   TJclBCC32 = class(TJclBorlandCommandLineTool)
   protected
-    constructor Create(AInstallation: TJclBorRADToolInstallation); override;
     function GetExeName: string; override;
   public
+    constructor Create(AInstallation: TJclBorRADToolInstallation); override;
     {$IFDEF KEEP_DEPRECATED}
     function SupportsLibSuffix: Boolean;
     {$ENDIF KEEP_DEPRECATED}
@@ -396,11 +394,11 @@ type
 
   TJclDCC32 = class(TJclBorlandCommandLineTool)
   protected
-    constructor Create(AInstallation: TJclBorRADToolInstallation); override;
     function GetExeName: string; override;
     procedure AddProjectOptions(const ProjectFileName, DCPPath: string);
     function Compile(const ProjectFileName: string): Boolean;
   public
+    constructor Create(AInstallation: TJclBorRADToolInstallation); override;
     function Execute(const CommandLine: string): Boolean; override;
     function MakePackage(const PackageName, BPLPath, DCPPath: string; ExtraOptions: string = ''): Boolean;
     function MakeProject(const ProjectName, OutputDir, DcpSearchPath: string; ExtraOptions: string = ''): Boolean;
@@ -435,9 +433,8 @@ type
     function GetTabNameCount: Integer;
     function GetTabNames(Index: Integer): string;
     procedure ReadTabNames;
-  protected
-    constructor Create(AInstallation: TJclBorRADToolInstallation);
   public
+    constructor Create(AInstallation: TJclBorRADToolInstallation);
     destructor Destroy; override;
     procedure ComponentsOnTabToStrings(Index: Integer; Strings: TStrings; IncludeUnitName: Boolean = False;
       IncludeHiddenComponents: Boolean = True);
@@ -457,9 +454,8 @@ type
     FPages: TStringList;
     function GetIniFile: TIniFile;
     function GetPages: TStrings;
-  protected
-    constructor Create(AInstallation: TJclBorRADToolInstallation);
   public
+    constructor Create(AInstallation: TJclBorRADToolInstallation);
     destructor Destroy; override;
     procedure AddObject(const FileName, ObjectType, PageName, ObjectName, IconFileName, Description,
       Author, Designer: string; const Ancestor: string = '');
@@ -575,7 +571,7 @@ type
     function GetValid: Boolean; virtual;
   public
     constructor Create(const AConfigDataLocation: string; ARootKey: Cardinal = 0); virtual;
-    
+
     destructor Destroy; override;
     class procedure ExtractPaths(const Path: TJclBorRADToolPath; List: TStrings);
     class function GetLatestUpdatePackForVersion(Version: Integer): Integer; virtual;
@@ -874,7 +870,9 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\source\common'
+    LogPath: 'JCL\source\common';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
@@ -1021,7 +1019,7 @@ const
   HelpIndexFileName          = '%s\Help\%s%d.ohi';
   HelpLinkFileName           = '%s\Help\%s%d.ohl';
   HelpProjectFileName        = '%s\Help\%s%d.ohp';
-  HelpGidFileName            = '%s\Help\%s%d.gid';      
+  HelpGidFileName            = '%s\Help\%s%d.gid';
   {$ENDIF MSWINDOWS}
 
   DelphiLibSuffixOption   = '{$LIBSUFFIX ''';
@@ -1030,7 +1028,6 @@ const
   DelphiBinaryExtOption   = '{$E ';
   BCBLFlagsOption     = '<LFLAGS ';
   BCBDSwitchOption    = '-D';
-  BCBLibSuffixOption  = 'LibSuffix=';
   BCBGprSwitchOption  = '-Gpr';
   BCBProjectOption    = '<PROJECT ';
 
@@ -1093,7 +1090,7 @@ const
 begin
   DPRFile := TStringList.Create;
   try
-    DPRFile.LoadFromFile(DPRFileName);                              
+    DPRFile.LoadFromFile(DPRFileName);
 
     if Assigned(LibSuffix) then
       LibSuffix^ := '';
@@ -1549,7 +1546,7 @@ begin
 
   FileName := '';
 
-  FillChar(LocaleName, SizeOf(LocaleName[0]), 0);
+  ResetMemory(LocaleName, SizeOf(LocaleName));
   GetLocaleInfo(GetThreadLocale, LOCALE_SABBREVLANGNAME, LocaleName, SizeOf(LocaleName));
   if LocaleName[0] <> #0 then
   begin
@@ -2743,7 +2740,7 @@ var
 begin
   if Assigned(FOnBeforeExecute) then
     FOnBeforeExecute(Self);
-    
+
   FOutput := '';
   Arguments := '';
   CurrentFolder := GetCurrentFolder;
@@ -4871,6 +4868,7 @@ begin
   if IDEVersionNumber >= 5 then
   begin
     Result := '';
+    RsVarsOutput := '';
     if GetEnvironmentVar('COMSPEC', ComSpec) and (JclSysUtils.Execute(Format('%s /C "%s%sbin%srsvars.bat && set BDS"',
       [ComSpec, ExtractShortPathName(RootDir), DirDelimiter, DirDelimiter]), RsVarsOutput) = 0) then
     begin
@@ -5117,7 +5115,7 @@ begin
   if IDEVersionNumber in [Low(BDSVersions)..High(BDSVersions)] then
   begin
     Result := BDSVersions[IDEVersionNumber].Name;
-    // IDE Version 5 comes in three flavors: 
+    // IDE Version 5 comes in three flavors:
     // - Delphi only  (Spacely)
     // - C++Builder only  (Cogswell)
     // - Delphi and C++Builder
@@ -5460,7 +5458,7 @@ var
                 PersonalitiesKeyName := VersionKeyName + '\Personalities';
                 if RegKeyExists(HKEY_LOCAL_MACHINE, PersonalitiesKeyName) then
                   RegGetValueNames(HKEY_LOCAL_MACHINE, PersonalitiesKeyName, PersonalitiesList);
-              
+
                 for J := Low(Personalities) to High(Personalities) do
                   if PersonalitiesList.IndexOf(Personalities[J]) >= 0 then
                   begin

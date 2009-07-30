@@ -111,7 +111,7 @@ function JclAppInstances(const UniqueAppIdGuidStr: string): TJclAppInstances; ov
 // Interprocess communication routines
 function ReadMessageCheck(var Message: TMessage; const IgnoredOriginatorWnd: THandle): TJclAppInstDataKind;
 procedure ReadMessageData(const Message: TMessage; var Data: Pointer; var Size: Integer);
-procedure ReadMessageString(const Message: TMessage; var S: string);
+procedure ReadMessageString(const Message: TMessage; out S: string);
 procedure ReadMessageStrings(const Message: TMessage; const Strings: TStrings);
 
 function SendData(const Wnd, OriginatorWnd: HWND;
@@ -128,7 +128,9 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\source\windows'
+    LogPath: 'JCL\source\windows';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
@@ -568,7 +570,7 @@ begin
     end;
 end;
 
-procedure ReadMessageString(const Message: TMessage; var S: string);
+procedure ReadMessageString(const Message: TMessage; out S: string);
 begin
   with TWMCopyData(Message) do
     if Msg = WM_COPYDATA then

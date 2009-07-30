@@ -83,7 +83,9 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\experts\projectanalyser'
+    LogPath: 'JCL\experts\projectanalyser';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 

@@ -331,3 +331,8 @@ ALERT_jedi_inc_incompatible
  {$DEFINE PIC}
  {$DEFINE PUREPASCAL}
 {$ENDIF CLR}
+
+{$IFDEF FPC}
+  {$DEFINE DEBUG_NO_TD32}
+{$ENDIF FPC}
+

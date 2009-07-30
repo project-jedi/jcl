@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Package Version="3">
+    <PathDelim Value="\"/>
+    <Name Value="%NAME%"/>
+    <AddToProjectUsesSection Value="False"/>
+    <Author Value="Project JEDI"/>
+    <CompilerOptions>
+      <Version Value="8"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <IncludeFiles Value="..\..\source\include\"/>
+        <OtherUnitFiles Value="%PATHPAS%"/>
+        <UnitOutputDirectory Value="..\..\lib\fpc\$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <Parsing>
+        <Style Value="1"/>
+        <SyntaxOptions>
+          <SyntaxMode Value="Delphi"/>
+          <CStyleOperator Value="False"/>
+        </SyntaxOptions>
+      </Parsing>
+      <CodeGeneration>
+        <Optimizations>
+          <VariablesInRegisters Value="True"/>
+          <OptimizationLevel Value="3"/>
+        </Optimizations>
+      </CodeGeneration>
+      <Linking>
+        <Debugging>
+          <UseLineInfoUnit Value="False"/>
+        </Debugging>
+      </Linking>
+      <Other>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="%DESCRIPTION%"/>
+    <License Value="Copyright (C) 1999, 2009 Project JEDI"/>
+    <Version Major="%VERSION_MAJOR_NUMBER%" Minor="%VERSION_MINOR_NUMBER%" Release="%RELEASE_NUMBER%" Build="%BUILD_NUMBER%"/>
+    <Files Count="%CONTAINCOUNT%">
+<%%% START FILES %%%>
+      <Item%INDEX%>
+        <Filename Value="%FILENAME%"/>
+        <UnitName Value="%UNITNAME%"/>
+      </Item%INDEX%>
+<%%% END FILES %%%>
+    </Files>
+    <RequiredPkgs Count="%REQUIRECOUNT%">
+<%%% START REQUIRES %%%>
+      <Item%INDEX%>
+        <PackageName Value="%NAME%"/>
+        <MinVersion Major="1" Valid="True"/>
+      </Item%INDEX%>
+<%%% END REQUIRES %%%>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)\"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

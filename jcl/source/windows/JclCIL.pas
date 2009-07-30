@@ -53,7 +53,7 @@ uses
   {$IFDEF HAS_UNIT_CONTNRS}
   Contnrs,
   {$ENDIF HAS_UNIT_CONTNRS}
-  JclBase, JclSysUtils, JclCLR, JclMetadata;
+  JclBase, JclSysUtils, JclMetadata;
 
 type
   TJclOpCode =
@@ -209,7 +209,9 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\source\windows'
+    LogPath: 'JCL\source\windows';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
@@ -219,7 +221,7 @@ uses
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
-  JclStrings, JclResources;
+  JclStrings, JclResources, JclClr, JclPeImage;
 
 type
   TJclOpCodeInfoType = (itName, itFullName, itDescription);
@@ -751,6 +753,7 @@ var
 begin
   FOffset := Stream.Position;
   try
+    Code := 0;
     Stream.Read(Code, SizeOf(Code));
     if WideOpCode then
     begin
@@ -791,10 +794,12 @@ begin
         end;
       ptArray:
         begin
+          ArraySize := 0;
           Stream.Read(ArraySize, SizeOf(ArraySize));
           FParam := VarArrayCreate([0, ArraySize-1], varInteger);
           for I := 0 to ArraySize-1 do  { TODO : ArraySize = 0 and we have a nearly endless loop }
           begin
+            Value := 0;
             Stream.Read(Value, SizeOf(Value));
             FParam[I] := Value;
           end;
