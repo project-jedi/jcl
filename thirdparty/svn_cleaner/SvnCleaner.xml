@@ -220,7 +220,7 @@
           </property>
         </setting>
 
-        <setting path="" mask="fpc" recurse="yes" dironly="yes">
+        <setting path="" mask="fpc/*" recurse="yes" dironly="yes">
           <property name="svn:ignore">
             <value>*.o</value>
             <value>*.ppu</value>
@@ -250,6 +250,7 @@
             <value>*.cfg</value>
             <value>*.mak</value>
             <value>*.def</value>
+            <value>*.hpp</value>
           </property>
         </setting>
 
@@ -262,6 +263,7 @@
             <value>*.identcache</value>
             <value>*.cfg</value>
             <value>ModelSupport</value>
+            <value>*.hpp</value>
           </property>
         </setting>
 
@@ -280,6 +282,8 @@
             <value>*.exe</value>
             <value>*.rc</value>
             <value>*.res</value>
+            <value>*.compiled</value>
+            <value>*.manifest</value>
           </property>
         </setting>
 
