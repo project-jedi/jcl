@@ -50,12 +50,14 @@
 <%%% START REQUIRES %%%>
       <Item%INDEX%>
         <PackageName Value="%NAME%"/>
-        <MinVersion Major="1" Valid="True"/>
       </Item%INDEX%>
 <%%% END REQUIRES %%%>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)\"/>
+      <IncludePath Value="..\..\source\include\"/>
+      <LibraryPath Value="$(PkgOutDir)\"/>
+      <ObjectPath Value="..\..\lib\fpc\$(TargetCPU)-$(TargetOS)\"/>
     </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>
