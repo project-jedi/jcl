@@ -208,6 +208,8 @@ function GradToDeg(const Value: Single): Single; overload; {$IFDEF SUPPORTS_INLI
 procedure FastGradToDeg;
 {$ENDIF CPUASM}
 
+{$IFDEF CPUASM}
+
 { Logarithmic }
 
 function LogBase10(X: Float): Float;
@@ -249,6 +251,8 @@ function CscH(X: Float): Float; overload;
 function SecH(X: Float): Float; overload;
 function SinH(X: Float): Float; overload; {IFDEF SUPPORTS_INLINE inline; ENDIF}
 function TanH(X: Float): Float; overload;
+
+{$ENDIF CPUASM}
 
 { Coordinate conversion }
 
@@ -900,7 +904,12 @@ procedure FastDegToRad; assembler;
 asm
         {$IFDEF PIC}
         CALL    GetGOT
+        {$IFDEF CPU32}
         FLD     [EAX][RatioDegToRad]
+        {$ENDIF CPU32}
+        {$IFDEF CPU64}
+        FLD     [RAX][RatioDegToRad]
+        {$ENDIF CPU64}
         {$ELSE ~PIC}
         FLD     [RatioDegToRad]
         {$ENDIF ~PIC}
@@ -935,7 +944,12 @@ procedure FastRadToDeg; assembler;
 asm
         {$IFDEF PIC}
         CALL    GetGOT
+        {$IFDEF CPU32}
         FLD     [EAX][RatioRadToDeg]
+        {$ENDIF CPU32}
+        {$IFDEF CPU64}
+        FLD     [RAX][RatioRadToDeg]
+        {$ENDIF CPU64}
         {$ELSE ~PIC}
         FLD     [RatioRadToDeg]
         {$ENDIF ~PIC}
@@ -970,7 +984,12 @@ procedure FastGradToRad; assembler;
 asm
         {$IFDEF PIC}
         CALL    GetGOT
+        {$IFDEF CPU32}
         FLD     [EAX][RatioGradToRad]
+        {$ENDIF CPU32}
+        {$IFDEF CPU64}
+        FLD     [RAX][RatioGradToRad]
+        {$ENDIF CPU64}
         {$ELSE ~PIC}
         FLD     [RatioGradToRad]
         {$ENDIF ~PIC}
@@ -1005,7 +1024,12 @@ procedure FastRadToGrad; assembler;
 asm
         {$IFDEF PIC}
         CALL    GetGOT
+        {$IFDEF CPU32}
         FLD     [EAX][RatioRadToGrad]
+        {$ENDIF CPU32}
+        {$IFDEF CPU64}
+        FLD     [RAX][RatioRadToGrad]
+        {$ENDIF CPU64}
         {$ELSE ~PIC}
         FLD     [RatioRadToGrad]
         {$ENDIF ~PIC}
@@ -1040,7 +1064,12 @@ procedure FastDegToGrad; assembler;
 asm
         {$IFDEF PIC}
         CALL    GetGOT
+        {$IFDEF CPU32}
         FLD     [EAX][RatioDegToGrad]
+        {$ENDIF CPU32}
+        {$IFDEF CPU64}
+        FLD     [RAX][RatioDegToGrad]
+        {$ENDIF CPU64}
         {$ELSE ~PIC}
         FLD     [RatioDegToGrad]
         {$ENDIF ~PIC}
@@ -1075,7 +1104,12 @@ procedure FastGradToDeg; assembler;
 asm
         {$IFDEF PIC}
         CALL    GetGOT
+        {$IFDEF CPU32}
         FLD     [EAX][RatioGradToDeg]
+        {$ENDIF CPU32}
+        {$IFDEF CPU64}
+        FLD     [RAX][RatioGradToDeg]
+        {$ENDIF CPU64}
         {$ELSE ~PIC}
         FLD     [RatioGradToDeg]
         {$ENDIF ~PIC}
@@ -1092,44 +1126,34 @@ end;
 
 //=== Logarithmic ============================================================
 
+{$IFDEF CPUASM}
 function LogBase10(X: Float): Float;
-
-  {$IFDEF CPUASM}
-  function FLogBase10(X: Float): Float; assembler;
+begin
+  DomainCheck(X <= 0.0);
   asm
           FLDLG2
           FLD     X
           FYL2X
           FWAIT
+          FSTP    Result
   end;
-  {$ENDIF CPUASM}
-
-begin
-  DomainCheck(X <= 0.0);
-  Result := FLogBase10(X);
 end;
 
 function LogBase2(X: Float): Float;
-
-  {$IFDEF CPUASM}
-  function FLogBase2(X: Float): Float; assembler;
+begin
+  DomainCheck(X <= 0.0);
   asm
           FLD1
           FLD     X
           FYL2X
           FWAIT
+          FSTP    Result
   end;
-  {$ENDIF CPUASM}
-
-begin
-  DomainCheck(X <= 0.0);
-  Result := FLogBase2(X);
 end;
 
 function LogBaseN(Base, X: Float): Float;
-
-  {$IFDEF CPUASM}
-  function FLogBaseN(Base, X: Float): Float; assembler;
+begin
+  DomainCheck((X <= 0.0) or (Base <= 0.0) or (Base = 1.0));
   asm
           FLD1
           FLD     X
@@ -1139,36 +1163,27 @@ function LogBaseN(Base, X: Float): Float;
           FYL2X
           FDIVP   ST(1), ST(0)
           FWAIT
+          FSTP    Result
   end;
-  {$ENDIF CPUASM}
-
-begin
-  DomainCheck((X <= 0.0) or (Base <= 0.0) or (Base = 1.0));
-  Result := FLogBaseN(Base, X);
 end;
 
 //=== Transcendental =========================================================
 
 function ArcCos(X: Float): Float;
-
-  {$IFDEF CPUASM}
-  function FArcCos(X: Float): Float; assembler;
+begin
+  DomainCheck(Abs(X) > 1.0);
   asm
           FLD     X
           FLD     ST(0)
-          FMUL    ST(0), ST
+          FMUL    ST(0), ST(0)
           FLD1
-          FSUBRP  ST(1), ST
+          FSUBRP  ST(1), ST(0)
           FSQRT
           FXCH
           FPATAN
           FWAIT
+          FSTP    Result
   end;
-  {$ENDIF CPUASM}
-
-begin
-  DomainCheck(Abs(X) > 1.0);
-  Result := FArcCos(X);
 end;
 
 function ArcCot(X: Float): Float;
@@ -1183,101 +1198,83 @@ begin
 end;
 
 function ArcSec(X: Float): Float;
-
-  {$IFDEF CPUASM}
-  function FArcTan(X: Float): Float; assembler;
+begin
+  DomainCheck((X > -1) and (X < 1));
+  // FArcTan(Sqrt(X*X - 1));
   asm
+          FLD1
           FLD     X
+          FLD     ST(0)
+          FMULP
+          FSUBRP  ST(1), ST(0)
+          FSQRT
           FLD1
           FPATAN
           FWAIT
+          FSTP    Result
   end;
-  {$ENDIF CPUASM}
-
-begin
-  Result := FArcTan(Sqrt(X*X - 1));
 end;
 
 function ArcSin(X: Float): Float;
-
-  {$IFDEF CPUASM}
-  function FArcSin(X: Float): Float; assembler;
+begin
+  DomainCheck(Abs(X) > 1.0);
   asm
           FLD     X
           FLD     ST(0)
-          FMUL    ST(0), ST
+          FMUL    ST(0), ST(0)
           FLD1
-          FSUBRP  ST(1), ST
+          FSUBRP  ST(1), ST(0)
           FSQRT
           FPATAN
           FWAIT
+          FSTP    Result
   end;
-  {$ENDIF CPUASM}
-
-begin
-  DomainCheck(Abs(X) > 1.0);
-  {$IFDEF CPUASM}
-  Result := FArcSin(X);
-  {$ELSE ~CPUASM}
-  Result := System.Math.Asin(X);
-  {$ENDIF ~CPUASM}
 end;
 
 function ArcTan(X: Float): Float;
-{$IFDEF PUREPASCAL}
 begin
-  Result := ArcTan2(X, 1);
+  asm
+          FLD     X
+          FLD1
+          FPATAN
+          FWAIT
+          FSTP    Result
+  end;
 end;
-{$ELSE ~PUREPASCAL}
-assembler;
-asm
-        FLD     X
-        FLD1
-        FPATAN
-        FWAIT
-end;
-{$ENDIF ~PUREPASCAL}
 
-function ArcTan2(Y, X: Float): Float; assembler;
-asm
-        FLD     Y
-        FLD     X
-        FPATAN
-        FWAIT
+function ArcTan2(Y, X: Float): Float;
+begin
+  asm
+          FLD     Y
+          FLD     X
+          FPATAN
+          FWAIT
+          FSTP    Result
+  end;
 end;
 
 function Cos(X: Float): Float;
-
-  {$IFDEF CPUASM}
-  function FCos(X: Float): Float; assembler;
+begin
+  DomainCheck(Abs(X) > MaxAngle);
   asm
           FLD     X
           FCOS
           FWAIT
+          FSTP    Result
   end;
-  {$ENDIF CPUASM}
-
-begin
-  DomainCheck(Abs(X) > MaxAngle);
-  Result := FCos(X);
 end;
 
 function Cot(X: Float): Float;
-
-  {$IFDEF CPUASM}
-  function FCot(X: Float): Float; assembler;
+begin
+  DomainCheck(Abs(X) > MaxAngle);
+  { TODO : Cot = 1 / Tan -> Tan(X) <> 0.0 }
   asm
           FLD     X
           FPTAN
           FDIVRP  ST(1), ST(0)
           FWAIT
+          FSTP    Result
   end;
-  {$ENDIF CPUASM}
-
-begin
-  DomainCheck(Abs(X) > MaxAngle);
-  { TODO : Cot = 1 / Tan -> Tan(X) <> 0.0 }
-  Result := FCot(X);
 end;
 
 function Coversine(X: Float): Float;
@@ -1307,75 +1304,65 @@ begin
 end;
 
 function Sec(X: Float): Float;
-
-  {$IFDEF CPUASM}
-  function FSec(X: Float): Float; assembler;
+begin
+  DomainCheck(Abs(X) > MaxAngle);
+  { TODO : Sec = 1 / Cos -> Cos(X) <> 0! }
   asm
           FLD     X
           FCOS
           FLD1
           FDIVRP  ST(1), ST(0)
           FWAIT
+          FSTP    Result
   end;
-  {$ENDIF CPUASM}
-
-begin
-  DomainCheck(Abs(X) > MaxAngle);
-  { TODO : Sec = 1 / Cos -> Cos(X) <> 0! }
-  Result := FSec(X);
 end;
 
 function Sin(X: Float): Float;
-
-  {$IFDEF CPUASM}
-  function FSin(X: Float): Float; assembler;
-  asm
-          FLD     X
-          FSIN
-          FWAIT
-  end;
-  {$ENDIF CPUASM}
-
 begin
   {$IFNDEF MATH_EXT_SPECIALVALUES}
   DomainCheck(Abs(X) > MaxAngle);
   {$ENDIF ~MATH_EXT_SPECIALVALUES}
-  Result := FSin(X);
+  asm
+          FLD     X
+          FSIN
+          FWAIT
+          FSTP    Result
+  end;
 end;
 
 procedure SinCos(X: Float; out Sin, Cos: Float);
-
-  {$IFDEF CPUASM}
-  procedure FSinCos(X: Float; out Sin, Cos: Float); assembler;
+begin
+  DomainCheck(Abs(X) > MaxAngle);
   asm
           FLD     X
+          {$IFDEF CPU32}
+          MOV     EDX, Cos
+          MOV     EAX, Sin
           FSINCOS
           FSTP    Float PTR [EDX]
           FSTP    Float PTR [EAX]
+          {$ENDIF CPU32}
+          {$IFDEF CPU64}
+          MOV     RDX, Cos
+          MOV     RAX, Sin
+          FSINCOS
+          FSTP    Float PTR [RDX]
+          FSTP    Float PTR [RAX]
+          {$ENDIF CPU64}
           FWAIT
   end;
-  {$ENDIF CPUASM}
-
-begin
-  DomainCheck(Abs(X) > MaxAngle);
-  FSinCos(X, Sin, Cos);
 end;
 
 function Tan(X: Float): Float;
-
-  {$IFDEF CPUASM}
-  function FTan(X: Float): Float; assembler;
+begin
+  DomainCheck(Abs(X) > MaxAngle);
   asm
           FLD     X
           FPTAN
           FSTP    ST(0)
           FWAIT
+          FSTP    Result
   end;
-  {$ENDIF CPUASM}
-
-begin
-  DomainCheck(Abs(X) > MaxAngle);
-  Result := FTan(X);
 end;
 
 function Versine(X: Float): Float;
@@ -1386,25 +1373,20 @@ end;
 //=== Hyperbolic =============================================================
 
 function ArcCosH(X: Float): Float;
-
-  {$IFDEF CPUASM}
-  function FArcCosH(X: Float): Float; assembler;
+begin
+  DomainCheck(X < 1.0);
   asm
           FLDLN2
           FLD     X
           FLD     ST(0)
-          FMUL    ST(0), ST
+          FMUL    ST(0), ST(0)
           FLD1
-          FSUBP   ST(1), ST
+          FSUBP   ST(1), ST(0)
           FSQRT
-          FADDP   ST(1), ST
+          FADDP   ST(1), ST(0)
           FYL2X
+          FSTP    Result
   end;
-  {$ENDIF CPUASM}
-
-begin
-  DomainCheck(X < 1.0);
-  Result := FArcCosH(X);
 end;
 
 function ArcCotH(X: Float): Float;
@@ -1425,42 +1407,40 @@ begin
   Result := System.Ln((Sqrt(1.0 - Sqr(X)) + 1.0) / X);
 end;
 
-function ArcSinH(X: Float): Float; assembler;
-asm
-        FLDLN2
-        FLD     X
-        FLD     ST(0)
-        FMUL    ST(0), ST
-        FLD1
-        FADDP   ST(1), ST
-        FSQRT
-        FADDP   ST(1), ST
-        FYL2X
+function ArcSinH(X: Float): Float;
+begin
+  asm
+          FLDLN2
+          FLD     X
+          FLD     ST(0)
+          FMUL    ST(0), ST(0)
+          FLD1
+          FADDP   ST(1), ST(0)
+          FSQRT
+          FADDP   ST(1), ST(0)
+          FYL2X
+          FSTP    Result
+  end;
 end;
 
 function ArcTanH(X: Float): Float;
-
-  {$IFDEF CPUASM}
-  function FArcTanH(X: Float): Float; assembler;
+begin
+  DomainCheck(Abs(X) >= 1.0);
   asm
           FLDLN2
           FLD     X
           FLD     ST(0)
           FLD1
-          FADDP   ST(1), ST
+          FADDP   ST(1), ST(0)
           FXCH
           FLD1
-          FSUBRP  ST(1), ST
-          FDIVP   ST(1), ST
+          FSUBRP  ST(1), ST(0)
+          FDIVP   ST(1), ST(0)
           FSQRT
           FYL2X
           FWAIT
+          FSTP    Result
   end;
-  {$ENDIF CPUASM}
-
-begin
-  DomainCheck(Abs(X) >= 1.0);
-  Result := FArcTanH(X);
 end;
 
 function CosH(X: Float): Float;
@@ -1474,39 +1454,52 @@ const
   OneHalf: Float = 0.5;
 var
   ControlWW: Word;
-asm
-        {$IFDEF PIC}
-        CALL    GetGOT
-        {$ENDIF PIC}
-        FLD     X    { TODO : Legal values for X? }
-        FLDL2E
-        FMULP   ST(1), ST
-        FSTCW   ControlWW
-        {$IFDEF PIC}
-        FLDCW   [EAX].RoundDown
-        {$ELSE ~PIC}
-        FLDCW   RoundDown
-        {$ENDIF ~PIC}
-        FLD     ST(0)
-        FRNDINT
-        FLDCW   ControlWW
-        FXCH
-        FSUB    ST, ST(1)
-        F2XM1
-        FLD1
-        FADDP   ST(1), ST
-        FSCALE
-        FST     ST(1)
-        FLD1
-        FDIVRP  ST(1), ST
-        FADDP   ST(1), ST
-        {$IFDEF PIC}
-        FLD     [EAX].OneHalf
-        {$ELSE ~PIC}
-        FLD     OneHalf
-        {$ENDIF ~PIC}
-        FMULP   ST(1), ST
-        FWAIT
+begin
+  asm
+          {$IFDEF PIC}
+          CALL    GetGOT
+          {$ENDIF PIC}
+          FLD     X    { TODO : Legal values for X? }
+          FLDL2E
+          FMULP   ST(1), ST(0)
+          FSTCW   ControlWW
+          {$IFDEF PIC}
+          {$IFDEF CPU32}
+          FLDCW   [EAX].RoundDown
+          {$ENDIF CPU32}
+          {$IFDEF CPU64}
+          FLDCW   [RAX].RoundDown
+          {$ENDIF CPU64}
+          {$ELSE ~PIC}
+          FLDCW   RoundDown
+          {$ENDIF ~PIC}
+          FLD     ST(0)
+          FRNDINT
+          FLDCW   ControlWW
+          FXCH
+          FSUB    ST(0), ST(1)
+          F2XM1
+          FLD1
+          FADDP   ST(1), ST(0)
+          FSCALE
+          FST     ST(1)
+          FLD1
+          FDIVRP  ST(1), ST(0)
+          FADDP   ST(1), ST(0)
+          {$IFDEF PIC}
+          {$IFDEF CPU32}
+          FLD     [EAX].OneHalf
+          {$ENDIF CPU32}
+          {$IFDEF CPU64}
+          FLD     [RAX].OneHalf
+          {$ENDIF CPU64}
+          {$ELSE ~PIC}
+          FLD     OneHalf
+          {$ENDIF ~PIC}
+          FMULP   ST(1), ST(0)
+          FWAIT
+          FSTP    Result
+  end;
 end;
 {$ENDIF ~PUREPASCAL}
 
@@ -1529,46 +1522,65 @@ begin
   Result := 2.0 / Result;
 end;
 
-function SinH(X: Float): Float; assembler;
+function SinH(X: Float): Float;
+{$IFDEF PUREPASCAL}
+begin
+  Result := 0.5 * (Exp(X) - Exp(-X));
+end;
+{$ELSE ~PUREPASCAL}
 const
   RoundDown: Word = $177F;
   OneHalf: Float = 0.5;
 var
   ControlWW: Word;
-asm
-        {$IFDEF PIC}
-        CALL    GetGOT
-        {$ENDIF PIC}
-        FLD     X  { TODO : Legal values for X? }
-        FLDL2E
-        FMULP   ST(1), ST
-        FSTCW   ControlWW
-        {$IFDEF PIC}
-        FLDCW   [EAX].RoundDown
-        {$ELSE ~PIC}
-        FLDCW   RoundDown
-        {$ENDIF ~PIC}
-        FLD     ST(0)
-        FRNDINT
-        FLDCW   ControlWW
-        FXCH
-        FSUB    ST, ST(1)
-        F2XM1
-        FLD1
-        FADDP   ST(1), ST
-        FSCALE
-        FST     ST(1)
-        FLD1
-        FDIVRP  ST(1), ST
-        FSUBP   ST(1), ST
-        {$IFDEF PIC}
-        FLD     [EAX].OneHalf
-        {$ELSE ~PIC}
-        FLD     OneHalf
-        {$ENDIF ~PIC}
-        FMULP   ST(1), ST
-        FWAIT
+begin
+  asm
+          {$IFDEF PIC}
+          CALL    GetGOT
+          {$ENDIF PIC}
+          FLD     X  { TODO : Legal values for X? }
+          FLDL2E
+          FMULP   ST(1), ST(0)
+          FSTCW   ControlWW
+          {$IFDEF PIC}
+          {$IFDEF CPU32}
+          FLDCW   [EAX].RoundDown
+          {$ENDIF CPU32}
+          {$IFDEF CPU64}
+          FLDCW   [RAX].RoundDown
+          {$ENDIF CPU64}
+          {$ELSE ~PIC}
+          FLDCW   RoundDown
+          {$ENDIF ~PIC}
+          FLD     ST(0)
+          FRNDINT
+          FLDCW   ControlWW
+          FXCH
+          FSUB    ST(0), ST(1)
+          F2XM1
+          FLD1
+          FADDP   ST(1), ST(0)
+          FSCALE
+          FST     ST(1)
+          FLD1
+          FDIVRP  ST(1), ST(0)
+          FSUBP   ST(1), ST(0)
+          {$IFDEF PIC}
+          {$IFDEF CPU32}
+          FLD     [EAX].OneHalf
+          {$ENDIF CPU32}
+          {$IFDEF CPU64}
+          FLD     [RAX].OneHalf
+          {$ENDIF CPU64}
+          {$ELSE ~PIC}
+          FLD     OneHalf
+          {$ENDIF ~PIC}
+          FMULP   ST(1), ST(0)
+          FWAIT
+          FSTP    Result
+  end;
 end;
+{$ENDIF ~PUREPASCAL}
 
 function TanH(X: Float): Float;
 begin
@@ -1586,6 +1598,8 @@ begin
     end;
   end;
 end;
+
+{$ENDIF CPUASM}
 
 //=== Coordinate conversion ==================================================
 
@@ -2533,7 +2547,8 @@ asm
         PUSH  EBX
         PUSH  EBP
         PUSH  EAX              // save N as Param for @@5
-        LEA   EBP,[EAX - 1]    // M == N -1, Exponent
+        MOV   EBP, EAX
+        DEC   EBP              // M == N -1, Exponent
         MOV   ECX,32           // calc remaining Bits of M and shift M'
         MOV   ESI,EBP
 @@2:    DEC   ECX
@@ -2567,9 +2582,17 @@ asm
         POP   ESI
         RET
 // do a Strong Pseudo Prime Test
-@@5:    MOV   EBX,[ESP + 12]   // N on stack
+@@5:
+        {$IFDEF CPU32}
+        MOV   EBX,[ESP + 12]   // N on stack
         MOV   ECX,[ESP +  8]   // remaining Bits
         MOV   ESI,[ESP +  4]   // M'
+        {$ENDIF CPU32}
+        {$IFDEF CPU64}
+        MOV   EBX,[RSP + 12]   // N on stack
+        MOV   ECX,[RSP +  8]   // remaining Bits
+        MOV   ESI,[RSP +  4]   // M'
+        {$ENDIF CPU64}
         MOV   EDI,EAX          // T = b, temp. Base
 @@6:    DEC   ECX
         MUL   EAX
@@ -2596,13 +2619,24 @@ asm
 @@9:    STC
 @@A:    RET
 @@B:    DB    3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73
-@@C:    MOV   EDX,OFFSET @@B
-        MOV   ECX,19
+        {$IFDEF CPU32}
+@@C:    MOV   ECX,19
+        MOV   EDX,OFFSET @@B
 @@D:    CMP   AL,[EDX + ECX]
         JE    @@E
         DEC   ECX
         JNL   @@D
 @@E:    SETE  AL
+        {$ENDIF CPU32}
+        {$IFDEF CPU64}
+@@C:    MOV   RCX,19
+        MOV   RDX,OFFSET @@B
+@@D:    CMP   AL,[RDX + RCX]
+        JE    @@E
+        DEC   RCX
+        JNL   @@D
+@@E:    SETE  AL
+        {$ENDIF CPU64}
 end;
 {$ENDIF CPUASM}
 
@@ -2691,10 +2725,15 @@ const
 
 function _FPClass: TFloatingPointClass;
 // In: ST(0) Value to examine
-//     ECX   address of GOT (PIC only)
+//     ECX/RCX   address of GOT (PIC only)
 asm
         FXAM
+        {$IFDEF CPU32}
         XOR     EDX, EDX
+        {$ENDIF CPU32}
+        {$IFDEF CPU64}
+        XOR     RDX, RDX
+        {$ENDIF CPU64}
         FNSTSW  AX
         FFREE   ST(0)
         FINCSTP
@@ -2704,42 +2743,80 @@ asm
         RCL     EDX, 1
         BT      EAX, 8  // C0
         RCL     EDX, 1
+        {$IFDEF CPU32}
         {$IFDEF PIC}
+        {$IFDEF CPU32}
         MOVZX   EAX, TFloatingPointClass([ECX].FPClasses[EDX])
+        {$ENDIF CPU32}
+        {$IFDEF CPU64}
+        MOVZX   EAX, TFloatingPointClass([RCX].FPClasses[RDX])
+        {$ENDIF CPU64}
         {$ELSE ~PIC}
         MOVZX   EAX, TFloatingPointClass(FPClasses[EDX])
         {$ENDIF ~PIC}
+        {$ENDIF CPU32}
+        {$IFDEF CPU64}
+        {$IFDEF PIC}
+        MOVZX   EAX, TFloatingPointClass([RCX].FPClasses[RDX])
+        {$ELSE ~PIC}
+        MOVZX   EAX, TFloatingPointClass(FPClasses[RDX])
+        {$ENDIF ~PIC}
+        {$ENDIF CPU64}
 end;
 
 function FloatingPointClass(const Value: Single): TFloatingPointClass; overload;
-asm
-        {$IFDEF PIC}
-        CALL    GetGOT
-        MOV     ECX, EAX
-        {$ENDIF PIC}
-        FLD     Value
-        CALL    _FPClass
+begin
+  asm
+          {$IFDEF PIC}
+          CALL    GetGOT
+          {$IFDEF CPU32}
+          MOV     ECX, EAX
+          {$ENDIF CPU32}
+          {$IFDEF CPU64}
+          MOV     RCX, RAX
+          {$ENDIF CPU64}
+          {$ENDIF PIC}
+          FLD     Value
+          CALL    _FPClass
+          MOV     Result, AL
+  end;
 end;
 
 function FloatingPointClass(const Value: Double): TFloatingPointClass; overload;
-asm
-        {$IFDEF PIC}
-        CALL    GetGOT
-        MOV     ECX, EAX
-        {$ENDIF PIC}
-        FLD     Value
-        CALL    _FPClass
+begin
+  asm
+          {$IFDEF PIC}
+          CALL    GetGOT
+          {$IFDEF CPU32}
+          MOV     ECX, EAX
+          {$ENDIF CPU32}
+          {$IFDEF CPU64}
+          MOV     RCX, RAX
+          {$ENDIF CPU64}
+          {$ENDIF PIC}
+          FLD     Value
+          CALL    _FPClass
+          MOV     Result, AL
+  end;
 end;
 
 {$IFDEF SUPPORTS_EXTENDED}
 function FloatingPointClass(const Value: Extended): TFloatingPointClass; overload;
-asm
-        {$IFDEF PIC}
-        CALL    GetGOT
-        MOV     ECX, EAX
-        {$ENDIF PIC}
-        FLD     Value
-        CALL    _FPClass
+begin
+  asm
+          {$IFDEF PIC}
+          CALL    GetGOT
+          {$IFDEF CPU32}
+          MOV     ECX, EAX
+          {$ENDIF CPU32}
+          {$IFDEF CPU64}
+          MOV     RCX, RAX
+          {$ENDIF CPU64}
+          {$ENDIF PIC}
+          FLD     Value
+          CALL    _FPClass
+          MOV     Result, AL
+  end;
 end;
 {$ENDIF SUPPORTS_EXTENDED}
 {$ENDIF CPUASM}
