@@ -123,10 +123,10 @@
     <DCCReference Include="..\..\source\common\JclStringConversions.pas" />
     <DCCReference Include="..\..\source\common\JclStringLists.pas" />
     <DCCReference Include="..\..\source\common\JclStrings.pas" />
-    <DCCReference Include="..\..\source\Common\JclSynch.pas" />
+    <DCCReference Include="..\..\source\common\JclSynch.pas" />
     <DCCReference Include="..\..\source\common\JclSysInfo.pas" />
     <DCCReference Include="..\..\source\common\JclSysUtils.pas" />
-    <DCCReference Include="..\..\source\Common\JclUnicode.pas" />
+    <DCCReference Include="..\..\source\common\JclUnicode.pas" />
     <DCCReference Include="..\..\source\common\JclUnitConv.pas" />
     <DCCReference Include="..\..\source\common\JclUnitVersioning.pas" />
     <DCCReference Include="..\..\source\common\JclUnitVersioningProviders.pas" />

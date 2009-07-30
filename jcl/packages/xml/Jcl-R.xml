@@ -51,10 +51,10 @@
     <File Name="..\..\source\common\JclStringConversions.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclStringLists.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclStrings.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\source\Common\JclSynch.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclSynch.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclSysInfo.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclSysUtils.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\source\Common\JclUnicode.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclUnicode.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclUnitConv.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclUnitVersioning.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclUnitVersioningProviders.pas" Targets="all" Formname="" Condition=""/>

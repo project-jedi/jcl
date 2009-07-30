@@ -10,7 +10,7 @@
       <PathDelim Value="\"/>
       <SearchPaths>
         <IncludeFiles Value="..\..\source\include\"/>
-        <OtherUnitFiles Value=".;..\..\source\common;..\..\source\Common;..\..\source\windows;"/>
+        <OtherUnitFiles Value=".;..\..\source\common;..\..\source\windows;"/>
         <UnitOutputDirectory Value="..\..\lib\fpc\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Parsing>
@@ -188,7 +188,7 @@
         <UnitName Value="JclStrings"/>
       </Item37>
       <Item38>
-        <Filename Value="..\..\source\Common\JclSynch.pas"/>
+        <Filename Value="..\..\source\common\JclSynch.pas"/>
         <UnitName Value="JclSynch"/>
       </Item38>
       <Item39>
@@ -200,7 +200,7 @@
         <UnitName Value="JclSysUtils"/>
       </Item40>
       <Item41>
-        <Filename Value="..\..\source\Common\JclUnicode.pas"/>
+        <Filename Value="..\..\source\common\JclUnicode.pas"/>
         <UnitName Value="JclUnicode"/>
       </Item41>
       <Item42>
