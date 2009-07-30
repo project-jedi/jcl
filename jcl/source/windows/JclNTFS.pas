@@ -879,7 +879,7 @@ begin
   try
     Size := 0;
     MoreData := False;
-    CurrRanges := 0;
+    CurrRanges := nil;
     R := __QueryAllocRanges(Handle, Offset, Count, CurrRanges, MoreData, Size);
     Ranges.MoreData := MoreData;
     Result := R;
