@@ -113,7 +113,7 @@ uses
   Forms,
   {$ENDIF ~RTL140_UP}
   CommDlg, Dlgs,
-  JclFileUtils, JclStrings, JclSysInfo, JclSysUtils,
+  JclBase, JclFileUtils, JclStrings, JclSysInfo, JclSysUtils,
   JclOtaConsts, JclOtaResources, JclOtaUtils;
 
 {$R FavDlg.res}
