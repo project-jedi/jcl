@@ -811,9 +811,11 @@ const
 implementation
 
 uses
-  {$IFDEF Win32API}
+  {$IFDEF MSWINDOWS}
+  {$IFNDEF FPC}
   Windows,
-  {$ENDIF Win32API}
+  {$ENDIF ~FPC}
+  {$ENDIF MSWINDOWS}
   {$IFDEF CPUASM}
   Jcl8087,
   {$ENDIF CPUASM}

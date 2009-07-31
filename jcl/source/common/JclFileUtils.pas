@@ -71,9 +71,9 @@ uses
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
-  {$IFDEF Win32API}
+  {$IFDEF MSWINDOWS}
   Windows, JclWin32,
-  {$ENDIF Win32API}
+  {$ENDIF MSWINDOWS}
   Classes, SysUtils,
   JclBase;
 
@@ -129,19 +129,19 @@ function PathAppend(const Path, Append: string): string;
 function PathBuildRoot(const Drive: Byte): string;
 function PathCanonicalize(const Path: string): string;
 function PathCommonPrefix(const Path1, Path2: string): Integer;
-{$IFDEF Win32API}
+{$IFDEF MSWINDOWS}
 function PathCompactPath(const DC: HDC; const Path: string; const Width: Integer;
   CmpFmt: TCompactPath): string;
-{$ENDIF Win32API}
+{$ENDIF MSWINDOWS}
 procedure PathExtractElements(const Source: string; var Drive, Path, FileName, Ext: string);
 function PathExtractFileDirFixed(const S: string): string;
 function PathExtractFileNameNoExt(const Path: string): string;
 function PathExtractPathDepth(const Path: string; Depth: Integer): string;
 function PathGetDepth(const Path: string): Integer;
-{$IFDEF Win32API}
+{$IFDEF MSWINDOWS}
 function PathGetLongName(const Path: string): string;
 function PathGetShortName(const Path: string): string;
-{$ENDIF Win32API}
+{$ENDIF MSWINDOWS}
 function PathGetRelativePath(Origin, Destination: string): string;
 function PathGetTempPath: string;
 function PathIsAbsolute(const Path: string): Boolean;
@@ -195,8 +195,6 @@ procedure EnumDirectories(const Root: string; const HandleDirectory: TFileHandle
   Abort: PBoolean = nil {$IFDEF UNIX}; ResolveSymLinks: Boolean = True {$ENDIF});
 {$IFDEF MSWINDOWS}
 procedure CreateEmptyFile(const FileName: string);
-{$ENDIF MSWINDOWS}
-{$IFDEF Win32API}
 function CloseVolume(var Volume: THandle): Boolean;
 {$IFNDEF FPC}
 function DeleteDirectory(const DirectoryName: string; MoveToRecycleBin: Boolean): Boolean;
@@ -206,7 +204,7 @@ function MoveDirectory(ExistingDirectoryName, NewDirectoryName: string): Boolean
 function DelTree(const Path: string): Boolean;
 function DelTreeEx(const Path: string; AbortOnFailure: Boolean; Progress: TDelTreeProgress): Boolean;
 function DiskInDrive(Drive: Char): Boolean;
-{$ENDIF Win32API}
+{$ENDIF MSWINDOWS}
 function DirectoryExists(const Name: string {$IFDEF UNIX}; ResolveSymLinks: Boolean = True {$ENDIF}): Boolean;
 function FileCreateTemp(var Prefix: string): THandle;
 function FileBackup(const FileName: string; Move: Boolean = False): Boolean;
@@ -222,20 +220,20 @@ function FileGetGroupName(const FileName: string {$IFDEF UNIX}; ResolveSymLinks:
 function FileGetOwnerName(const FileName: string {$IFDEF UNIX}; ResolveSymLinks: Boolean = True {$ENDIF}): string;
 function FileGetSize(const FileName: string): Int64;
 function FileGetTempName(const Prefix: string): string;
-{$IFDEF Win32API}
+{$IFDEF MSWINDOWS}
 function FileGetTypeName(const FileName: string): string;
-{$ENDIF Win32API}
+{$ENDIF MSWINDOWS}
 function FindUnusedFileName(FileName: string; const FileExt: string; NumberPrefix: string = ''): string;
 function ForceDirectories(Name: string): Boolean;
 function GetDirectorySize(const Path: string): Int64;
-{$IFDEF Win32API}
+{$IFDEF MSWINDOWS}
 function GetDriveTypeStr(const Drive: Char): string;
 function GetFileAgeCoherence(const FileName: string): Boolean;
-{$ENDIF Win32API}
+{$ENDIF MSWINDOWS}
 procedure GetFileAttributeList(const Items: TStrings; const Attr: Integer);
-{$IFDEF Win32API}
+{$IFDEF MSWINDOWS}
 procedure GetFileAttributeListEx(const Items: TStrings; const Attr: Integer);
-{$ENDIF Win32API}
+{$ENDIF MSWINDOWS}
 function GetFileInformation(const FileName: string; out FileInfo: TSearchRec): Boolean; overload;
 function GetFileInformation(const FileName: string): TSearchRec; overload;
 {$IFDEF UNIX}
@@ -264,10 +262,10 @@ function GetFileLastAttrChange(const FileName: string; ResolveSymLinks: Boolean 
 function GetModulePath(const Module: HMODULE): string;
 function GetSizeOfFile(const FileName: string): Int64; overload;
 function GetSizeOfFile(const FileInfo: TSearchRec): Int64; overload;
-{$IFDEF Win32API}
+{$IFDEF MSWINDOWS}
 function GetSizeOfFile(Handle: THandle): Int64; overload;
 function GetStandardFileInfo(const FileName: string): TWin32FileAttributeData;
-{$ENDIF Win32API}
+{$ENDIF MSWINDOWS}
 function IsDirectory(const FileName: string {$IFDEF UNIX}; ResolveSymLinks: Boolean = True {$ENDIF}): Boolean;
 function IsRootDirectory(const CanonicFileName: string): Boolean;
 {$IFDEF MSWINDOWS}
@@ -574,7 +572,7 @@ type
 
 function FileSearch: IJclFileEnumerator;
 
-{$IFDEF Win32API}
+{$IFDEF MSWINDOWS}
 
 // TFileVersionInfo
 //
@@ -687,7 +685,7 @@ function OSFileTypeToString(const OSFileType: DWORD; const OSFileSubType: DWORD 
 
 function VersionResourceAvailable(const FileName: string): Boolean;
 
-{$ENDIF Win32API}
+{$ENDIF MSWINDOWS}
 
 // Version Info formatting
 type
@@ -696,7 +694,7 @@ type
 function FormatVersionString(const HiV, LoV: Word): string; overload;
 function FormatVersionString(const Major, Minor, Build, Revision: Word): string; overload;
 
-{$IFDEF Win32API}
+{$IFDEF MSWINDOWS}
 
 function FormatVersionString(const FixedInfo: TVSFixedFileInfo; VersionFormat: TFileVersionFormat = vfFull): string; overload;
 
@@ -709,7 +707,7 @@ function VersionFixedFileInfo(const FileName: string; var FixedInfo: TVSFixedFil
 function VersionFixedFileInfoString(const FileName: string; VersionFormat: TFileVersionFormat = vfFull;
   const NotAvailableText: string = ''): string;
 
-{$ENDIF Win32API}
+{$ENDIF MSWINDOWS}
 
 // Streams
 //
@@ -724,7 +722,7 @@ type
     property FileName: string read FFileName;
   end;
 
-{$IFDEF Win32API}
+{$IFDEF MSWINDOWS}
 
   TJclCustomFileMapping = class;
 
@@ -815,7 +813,7 @@ type
     function Write(const Buffer; Count: Longint): Longint; override;
   end;
 
-{$ENDIF Win32API}
+{$ENDIF MSWINDOWS}
 
   TJclMappedTextReaderIndex = (tiNoIndex, tiFull);
 
@@ -962,7 +960,7 @@ type
 
 {$IFDEF KEEP_DEPRECATED}
 // Deprecated, do not use
-{$IFDEF Win32API}
+{$IFDEF MSWINDOWS}
 function PathGetLongName2(const Path: string): string;
   {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
 {$IFNDEF FPC}
@@ -975,7 +973,7 @@ function Win32BackupFile(const FileName: string; Move: Boolean): Boolean;
   {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
 function Win32RestoreFile(const FileName: string): Boolean;
   {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
-{$ENDIF Win32API}
+{$ENDIF MSWINDOWS}
 
 {$ENDIF KEEP_DEPRECATED}
 
@@ -1042,10 +1040,10 @@ const
 implementation
 
 uses
-  {$IFDEF Win32API}
+  {$IFDEF MSWINDOWS}
   ShellApi, ActiveX, ComObj, ShlObj,
   JclShell, JclSysInfo, JclSecurity,
-  {$ENDIF Win32API}
+  {$ENDIF MSWINDOWS}
   JclSysUtils, JclDateTime, JclResources,
   JclStrings;
 
@@ -2332,7 +2330,7 @@ begin
   end;
 end;
 
-{$IFDEF Win32API}
+{$IFDEF MSWINDOWS}
 function PathCompactPath(const DC: HDC; const Path: string;
   const Width: Integer; CmpFmt: TCompactPath): string;
 const
@@ -2357,7 +2355,7 @@ begin
       Result := '';  // in case of error
   end;
 end;
-{$ENDIF Win32API}
+{$ENDIF MSWINDOWS}
 
 procedure PathExtractElements(const Source: string; var Drive, Path, FileName, Ext: string);
 begin
@@ -2440,7 +2438,7 @@ begin
   end;
 end;
 
-{$IFDEF Win32API}
+{$IFDEF MSWINDOWS}
 
 {$IFDEF KEEP_DEPRECATED}
 
@@ -2552,7 +2550,7 @@ begin
   end;
 end;
 
-{$ENDIF Win32API}
+{$ENDIF MSWINDOWS}
 
 function PathGetRelativePath(Origin, Destination: string): string;
 var
@@ -3180,7 +3178,7 @@ begin
 end;
 {$ENDIF MSWINDOWS}
 
-{$IFDEF Win32API}
+{$IFDEF MSWINDOWS}
 
 function CloseVolume(var Volume: THandle): Boolean;
 begin
@@ -3310,7 +3308,7 @@ begin
   end;
 end;
 
-{$ENDIF Win32API}
+{$ENDIF MSWINDOWS}
 
 {$IFDEF MSWINDOWS}
 function DirectoryExists(const Name: string): Boolean;
@@ -3329,7 +3327,7 @@ begin
 end;
 {$ENDIF UNIX}
 
-{$IFDEF Win32API}
+{$IFDEF MSWINDOWS}
 function DiskInDrive(Drive: Char): Boolean;
 var
   ErrorMode: Cardinal;
@@ -3350,7 +3348,7 @@ begin
     end;
   end;
 end;
-{$ENDIF Win32API}
+{$ENDIF MSWINDOWS}
 
 function FileCreateTemp(var Prefix: string): THandle;
 {$IFDEF MSWINDOWS}
@@ -3531,7 +3529,7 @@ begin
 end;
 
 function FileGetDisplayName(const FileName: string): string;
-{$IFDEF Win32API}
+{$IFDEF MSWINDOWS}
 var
   FileInfo: TSHFileInfo;
 begin
@@ -3541,12 +3539,12 @@ begin
   else
     Result := FileName;
 end;
-{$ELSE ~Win32API}
+{$ELSE ~MSWINDOWS}
 begin
   { TODO -cHelp : mention this reduced solution }
   Result := FileName;
 end;
-{$ENDIF ~Win32API}
+{$ENDIF ~MSWINDOWS}
 
 function FileGetGroupName(const FileName: string {$IFDEF UNIX}; ResolveSymLinks: Boolean = True {$ENDIF}): string;
 {$IFDEF MSWINDOWS}
@@ -3708,7 +3706,7 @@ begin
 end;
 {$ENDIF UNIX}
 
-{$IFDEF Win32API}
+{$IFDEF MSWINDOWS}
 function FileGetTypeName(const FileName: string): string;
 var
   FileInfo: TSHFileInfo;
@@ -3727,7 +3725,7 @@ begin
     Result := TrimLeft(UpperCase(Result) + RsDefaultFileTypeName);
   end;
 end;
-{$ENDIF Win32API}
+{$ENDIF MSWINDOWS}
 
 function FindUnusedFileName(FileName: string; const FileExt: string; NumberPrefix: string = ''): string;
 var
@@ -3825,7 +3823,7 @@ begin
   end;
 end;
 
-{$IFDEF Win32API}
+{$IFDEF MSWINDOWS}
 
 function GetDriveTypeStr(const Drive: Char): string;
 var
@@ -3865,7 +3863,7 @@ begin
     {$ENDIF ~FPC}
 end;
 
-{$ENDIF Win32API}
+{$ENDIF MSWINDOWS}
 
 procedure GetFileAttributeList(const Items: TStrings; const Attr: Integer);
 begin
@@ -3893,7 +3891,7 @@ begin
   end;
 end;
 
-{$IFDEF Win32API}
+{$IFDEF MSWINDOWS}
 
 { TODO : GetFileAttributeListEx - Unix version }
 procedure GetFileAttributeListEx(const Items: TStrings; const Attr: Integer);
@@ -3933,7 +3931,7 @@ begin
   end;
 end;
 
-{$ENDIF Win32API}
+{$ENDIF MSWINDOWS}
 
 function GetFileInformation(const FileName: string; out FileInfo: TSearchRec): Boolean;
 begin
@@ -4159,7 +4157,7 @@ begin
 end;
 {$ENDIF UNIX}
 
-{$IFDEF Win32API}
+{$IFDEF MSWINDOWS}
 function GetSizeOfFile(Handle: THandle): Int64; overload;
 var
   Size: TJclULargeInteger;
@@ -4167,7 +4165,7 @@ begin
   Size.LowPart := GetFileSize(Handle, @Size.HighPart);
   Result := Size.QuadPart;
 end;
-{$ENDIF Win32API}
+{$ENDIF MSWINDOWS}
 
 function GetSizeOfFile(const FileInfo: TSearchRec): Int64;
 {$IFDEF MSWINDOWS}
@@ -4193,7 +4191,7 @@ begin
 end;
 {$ENDIF UNIX}
 
-{$IFDEF Win32API}
+{$IFDEF MSWINDOWS}
 
 {$IFDEF FPC}
 { TODO : Move this over to JclWin32 when JclWin32 gets overhauled. }
@@ -4236,7 +4234,7 @@ begin
   end;
 end;
 
-{$ENDIF Win32API}
+{$ENDIF MSWINDOWS}
 
 {$IFDEF MSWINDOWS}
 function IsDirectory(const FileName: string): Boolean;
@@ -4273,7 +4271,7 @@ begin
 end;
 {$ENDIF UNIX}
 
-{$IFDEF Win32API}
+{$IFDEF MSWINDOWS}
 
 function LockVolume(const Volume: string; var Handle: THandle): Boolean;
 var
@@ -4306,7 +4304,7 @@ begin
     nil, OPEN_EXISTING, 0, 0);
 end;
 
-{$ENDIF Win32API}
+{$ENDIF MSWINDOWS}
 
 type
   // indicates the file time to set, used by SetFileTimesHelper and SetDirTimesHelper
@@ -4572,7 +4570,7 @@ end;
 
 //=== File Version info routines =============================================
 
-{$IFDEF Win32API}
+{$IFDEF MSWINDOWS}
 
 const
   VerKeyNames: array [1..12] of string =
@@ -4704,7 +4702,7 @@ begin
   end;
 end;
 
-{$ENDIF Win32API}
+{$ENDIF MSWINDOWS}
 
 // Version Info formatting
 function FormatVersionString(const HiV, LoV: Word): string;
@@ -4717,7 +4715,7 @@ begin
   Result := Format('%u.%u.%u.%u', [Major, Minor, Build, Revision]);
 end;
 
-{$IFDEF Win32API}
+{$IFDEF MSWINDOWS}
 
 function FormatVersionString(const FixedInfo: TVSFixedFileInfo; VersionFormat: TFileVersionFormat): string;
 begin
@@ -5310,7 +5308,7 @@ begin
   SetLength(Result, R);
 end;
 
-{$ENDIF Win32API}
+{$ENDIF MSWINDOWS}
 
 //=== { TJclFileMaskComparator } =============================================
 
