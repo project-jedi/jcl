@@ -1646,7 +1646,7 @@ begin
     Result := (StrPos > 0) and (StrPos <= StrLength);
     if Result then
     begin
-      S[StrPos] := WideChar(ReplacementCharacter);
+      S[StrPos] := WideChar(UCS4ReplacementCharacter);
       Inc(StrPos, 1);
     end;
     {$ELSE ~UNICODE_SILENT_FAILURE}
