@@ -792,7 +792,7 @@ begin
     P1 := P;
     P2 := P;
     Inc(P2, Count - 1);
-    while P1 < P2 do
+    while TJclAddr(P1) < TJclAddr(P2) do
     begin
       T := ReverseTable[P1^];
       P1^ := ReverseTable[P2^];
@@ -1219,7 +1219,7 @@ begin
     P1 := P;
     P2 := P;
     Inc(P2, Count - 1);
-    while P1 < P2 do
+    while TJclAddr(P1) < TJclAddr(P2) do
     begin
       T := P1^;
       P1^ := P2^;
