@@ -1058,7 +1058,7 @@ begin
   end
   else
   begin
-    {$IFDEF UNICOLE_SILENT_FAILURE}
+    {$IFDEF UNICODE_SILENT_FAILURE}
     // add ReplacementCharacter
     Result := (StrPos > 0) and (StrPos < (StrLength - 1));
     if Result then
@@ -1116,7 +1116,7 @@ begin
               StreamWriteByte(S, ((Ch shr 6) and $3F) or $80)  and // 6 bits
               StreamWriteByte(S, (Ch and $3F) or $80)              // 6 bits
   else
-    {$IFDEF UNICOLE_SILENT_FAILURE}
+    {$IFDEF UNICODE_SILENT_FAILURE}
     // add ReplacementCharacter
     Result := StreamWriteByte(S, $E0 or (UCS4ReplacementCharacter shr 12))          and // 4 bits
               StreamWriteByte(S, ((UCS4ReplacementCharacter shr 6) and $3F) or $80) and // 6 bits
@@ -1594,7 +1594,7 @@ begin
   end
   else
   begin
-    {$IFDEF UNICOLE_SILENT_FAILURE}
+    {$IFDEF UNICODE_SILENT_FAILURE}
     // add ReplacementCharacter
     Result := (StrPos > 0) and (StrPos <= StrLength);
     if Result then
@@ -1641,7 +1641,7 @@ begin
   end
   else
   begin
-    {$IFDEF UNICOLE_SILENT_FAILURE}
+    {$IFDEF UNICODE_SILENT_FAILURE}
     // add ReplacementCharacter
     Result := (StrPos > 0) and (StrPos <= StrLength);
     if Result then
@@ -1669,7 +1669,7 @@ begin
               StreamWriteWord(S, (Ch and HalfMask) or SurrogateLowStart)
   else
   begin
-    {$IFDEF UNICOLE_SILENT_FAILURE}
+    {$IFDEF UNICODE_SILENT_FAILURE}
     // add ReplacementCharacter
     Result := StreamWriteWord(S, UCS4ReplacementCharacter);
     {$ELSE ~UNICODE_SILENT_FAILURE}
