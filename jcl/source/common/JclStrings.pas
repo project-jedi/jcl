@@ -166,7 +166,7 @@ function StrConsistsOfNumberChars(const S: string): Boolean;
 function StrIsDigit(const S: string): Boolean;
 function StrIsSubset(const S: string; const ValidChars: TCharValidator): Boolean; overload;
 function StrIsSubset(const S: string; const ValidChars: array of Char): Boolean; overload;
-function StrSame(const S1, S2: string): Boolean;
+function StrSame(const S1, S2: string; CaseSensitive: Boolean = False): Boolean;
 
 // String Transformation Routines
 function StrCenter(const S: string; L: Integer; C: Char = ' '): string;
@@ -234,20 +234,21 @@ function StrCharCount(const S: string; C: Char): Integer; overload;
 function StrCharsCount(const S: string; const Chars: TCharValidator): Integer; overload;
 function StrCharsCount(const S: string; const Chars: array of Char): Integer; overload;
 function StrStrCount(const S, SubS: string): Integer;
-function StrCompare(const S1, S2: string): Integer;
-function StrCompareRange(const S1, S2: string; const Index, Count: Integer): Integer;
+function StrCompare(const S1, S2: string; CaseSensitive: Boolean = False): Integer;
+function StrCompareRange(const S1, S2: string; Index, Count: Integer; CaseSensitive: Boolean = True): Integer;
+function StrCompareRangeEx(const S1, S2: string; Index, Count: Integer; CaseSensitive: Boolean): Integer;
 procedure StrFillChar(var S; Count: Integer; C: Char);
 function StrRepeatChar(C: Char; Count: Integer): string;
 function StrFind(const Substr, S: string; const Index: Integer = 1): Integer;
 function StrHasPrefix(const S: string; const Prefixes: array of string): Boolean;
-function StrIndex(const S: string; const List: array of string): Integer;
+function StrIndex(const S: string; const List: array of string; CaseSensitive: Boolean = False): Integer;
 function StrIHasPrefix(const S: string; const Prefixes: array of string): Boolean;
 function StrILastPos(const SubStr, S: string): Integer;
 function StrIPos(const SubStr, S: string): Integer;
 function StrIPrefixIndex(const S: string; const Prefixes: array of string): Integer;
 function StrIsOneOf(const S: string; const List: array of string): Boolean;
 function StrLastPos(const SubStr, S: string): Integer;
-function StrMatch(const Substr, S: string; const Index: Integer = 1): Integer;
+function StrMatch(const Substr, S: string; Index: Integer = 1): Integer;
 function StrMatches(const Substr, S: string; const Index: Integer = 1): Boolean;
 function StrNIPos(const S, SubStr: string; N: Integer): Integer;
 function StrNPos(const S, SubStr: string; N: Integer): Integer;
@@ -1149,9 +1150,9 @@ begin
   Result := Length(S) > 0;
 end;
 
-function StrSame(const S1, S2: string): Boolean;
+function StrSame(const S1, S2: string; CaseSensitive: Boolean): Boolean;
 begin
-  Result := StrCompare(S1, S2) = 0;
+  Result := StrCompare(S1, S2, CaseSensitive) = 0;
 end;
 
 //=== String Transformation Routines =========================================
@@ -2250,7 +2251,6 @@ begin
   end;
 end;
 
-{$IFDEF SUPPORTS_UNICODE}
 (*
 { 1}  Test(StrCompareRange('', '', 1, 5), 0);
 { 2}  Test(StrCompareRange('A', '', 1, 5), -1);
@@ -2340,7 +2340,7 @@ begin
   end;
 end;
 
-function StrCompare(const S1, S2: string): Integer;
+function StrCompare(const S1, S2: string; CaseSensitive: Boolean): Integer;
 var
   Len1, Len2: Integer;
 begin
@@ -2352,261 +2352,14 @@ begin
     Len2 := Length(S2);
     Result := Len1 - Len2;
     if Result = 0 then
-      Result := StrCompareRangeEx(S1, S2, 1, Len1, False);
+      Result := StrCompareRangeEx(S1, S2, 1, Len1, CaseSensitive);
   end;
 end;
 
-{$ELSE ~SUPPORTS_UNICODE}
-
-{$IFDEF PIC}
-function _StrCompare(const S1, S2: string): Integer; forward;
-
-function StrCompare(const S1, S2: string): Integer;
+function StrCompareRange(const S1, S2: string; Index, Count: Integer; CaseSensitive: Boolean): Integer;
 begin
-  Result := _StrCompare(S1, S2);
+  Result := StrCompareRangeEx(S1, S2, Index, Count, CaseSensitive);
 end;
-
-function _StrCompare(const S1, S2: string): Integer;
-{$ELSE ~PIC}
-function StrCompare(const S1, S2: string): Integer;
-{$ENDIF ~PIC}
-asm
-        // check if pointers are equal
-
-         CMP     EAX, EDX
-         JE      @@Equal
-
-        // if S1 is nil return - Length(S2)
-
-         TEST    EAX, EAX
-         JZ      @@Str1Null
-
-        // if S2 is nil return  Length(S1)
-
-         TEST    EDX, EDX
-         JZ      @@Str2Null
-
-        // EBX will hold case map, ESI S1, EDI S2
-
-         PUSH    EBX
-         PUSH    ESI
-         PUSH    EDI
-
-        // move string pointers
-
-         MOV     ESI, EAX
-         MOV     EDI, EDX
-
-        // get the length of strings
-
-         MOV     EAX, [ESI-StrRecSize].TStrRec.Length
-         MOV     EDX, [EDI-StrRecSize].TStrRec.Length
-
-        // exit if Length(S1) <> Length(S2)
-
-         CMP     EAX, EDX
-         JNE     @@MissMatch
-
-        // check the length just in case
-
-         DEC     EDX
-         JS      @@InvalidStr
-
-         DEC     EAX
-         JS      @@InvalidStr
-
-        // load case map
-
-         LEA     EBX, StrCaseMap
-
-        // make ECX our loop counter
-
-         MOV     ECX, EAX
-
-        // clear working regs
-
-         XOR     EAX, EAX
-         XOR     EDX, EDX
-
-        // get last chars
-
-         MOV     AL, [ESI+ECX]
-         MOV     DL, [EDI+ECX]
-
-        // lower case them
-
-         MOV     AL, [EBX+EAX]
-         MOV     DL, [EBX+EDX]
-
-        // compare them
-
-         CMP     AL, DL
-         JNE     @@MissMatch
-
-        // if there was only 1 char then exit
-
-         JECXZ   @@Match
-
-         @@NextChar:
-        // case sensitive compare of strings
-
-         REPE    CMPSB
-         JE      @@Match
-
-        // if there was a missmatch try case insensitive compare, get the chars
-
-         MOV     AL, [ESI-1]
-         MOV     DL, [EDI-1]
-
-        // lowercase and compare them, if equal then continue
-
-         MOV     AL, [EBX+EAX]
-         MOV     DL, [EBX+EDX]
-         CMP     AL, DL
-         JE      @@NextChar
-
-        // if we make it here then strings don't match,  return the difference
-
-         @@MissMatch:
-         SUB     EAX, EDX
-         POP     EDI
-         POP     ESI
-         POP     EBX
-         RET
-
-         @@Match:
-        // match, return 0
-
-         XOR     EAX, EAX
-         POP     EDI
-         POP     ESI
-         POP     EBX
-         RET
-
-         @@InvalidStr:
-         XOR     EAX, EAX
-         DEC     EAX
-         POP     EDI
-         POP     ESI
-         POP     EBX
-         RET
-
-         @@Str1Null:
-        // return = - Length(Str2);
-
-         MOV     EDX, [EDX-StrRecSize].TStrRec.Length
-         SUB     EAX, EDX
-         RET
-
-         @@Str2Null:
-        // return = Length(Str2);
-
-         MOV     EAX, [EAX-StrRecSize].TStrRec.Length
-         RET
-
-         @@Equal:
-         XOR     EAX, EAX
-end;
-{$ENDIF ~SUPPORTS_UNICODE}
-
-function StrCompareRange(const S1, S2: string; const Index, Count: Integer): Integer;
-{$IFDEF SUPPORTS_UNICODE}
-begin
-  Result := StrCompareRangeEx(S1, S2, Index, Count, True);
-end;
-{$ELSE ~SUPPORTS_UNICODE}
-asm
-         TEST    EAX, EAX
-         JZ      @@Str1Null
-
-         TEST    EDX, EDX
-         JZ      @@StrNull
-
-         DEC     ECX
-         JS      @@StrNull
-
-         PUSH    EBX
-         PUSH    ESI
-         PUSH    EDI
-
-         MOV     EBX, Count
-         DEC     EBX
-         JS      @@NoWork
-
-         MOV     ESI, EAX
-         MOV     EDI, EDX
-
-         MOV     EDX, [ESI - StrRecSize].TStrRec.Length
-
-        // # of chars in S1 - (Index - 1)
-         SUB     EDX, ECX
-         JLE     @@NoWork
-
-        // move to index'th char
-         ADD     ESI, ECX
-
-         MOV     ECX, [EDI - StrRecSize].TStrRec.Length
-         DEC     ECX
-         JS      @@NoWork
-
-        // if Length(S2) > Count then ECX := Count else ECX := Length(S2)
-
-         CMP     ECX, EBX
-         JLE     @@Skip1
-         MOV     ECX, EBX
-
-         @@Skip1:
-        // # of chars in S1 - (Min(Count, Length(S2)) - 1)
-         SUB     EDX, ECX
-         JLE     @@NoWork
-
-         XOR     EAX, EAX
-         XOR     EDX, EDX
-
-         @@Loop:
-         MOV     AL, [ESI]
-         INC     ESI
-         MOV     DL, [EDI]
-         INC     EDI
-
-         CMP     AL, DL
-         JNE     @@MisMatch
-
-         DEC     ECX
-         JGE     @@Loop
-
-         @@Match:
-         XOR     EAX, EAX
-         POP     EDI
-         POP     ESI
-         POP     EBX
-         JMP     @@Exit
-
-         @@MisMatch:
-         SUB     EAX, EDX
-         POP     EDI
-         POP     ESI
-         POP     EBX
-         JMP     @@Exit
-
-         @@NoWork:
-         MOV     EAX, -2
-         POP     EDI
-         POP     ESI
-         POP     EBX
-         JMP     @@Exit
-
-         @@Str1Null:
-         MOV     EAX, 0
-         TEST    EDX, EDX
-         JZ      @@Exit
-
-         @@StrNull:
-         MOV     EAX, -1
-
-         @@Exit:
-end;
-{$ENDIF ~SUPPORTS_UNICODE}
 
 procedure StrFillChar(var S; Count: Integer; C: Char);
 {$IFDEF SUPPORTS_UNICODE}
@@ -2655,14 +2408,14 @@ begin
   Result := StrPrefixIndex(S, Prefixes) > -1;
 end;
 
-function StrIndex(const S: string; const List: array of string): Integer;
+function StrIndex(const S: string; const List: array of string; CaseSensitive: Boolean): Integer;
 var
   I: Integer;
 begin
   Result := -1;
   for I := Low(List) to High(List) do
   begin
-    if StrCompare(S, List[I]) = 0 then
+    if StrCompare(S, List[I], CaseSensitive) = 0 then
     begin
       Result := I;
       Break;
@@ -2729,190 +2482,41 @@ begin
 end;
 
 // IMPORTANT NOTE: The StrMatch function does currently not work with the Asterix (*)
+// (*) acts like (?)
 
-function StrMatch(const Substr, S: string; const Index: Integer): Integer;
-{$IFDEF SUPPORTS_UNICODE}
+function StrMatch(const Substr, S: string; Index: Integer): Integer;
+var
+  SI, SubI, SLen, SubLen: Integer;
+  SubC: Char;
 begin
-  { TODO : StrMatch }
-  Assert(False, 'Not implemented yet');
+  SLen := Length(S);
+  SubLen := Length(Substr);
   Result := 0;
+  if (Index > SLen) or (SubLen = 0) then
+    Exit;
+  while Index <= SLen do
+  begin
+    SubI := 1;
+    SI := Index;
+    while (SI <= SLen) and (SubI <= SubLen) do
+    begin
+      SubC := Substr[SubI];
+      if (SubC = '*') or (SubC = '?') or (SubC = S[SI]) then
+      begin
+        Inc(SI);
+        Inc(SubI);
+      end
+      else
+        Break;
+    end;
+    if SubI > SubLen then
+    begin
+      Result := Index;
+      Break;
+    end;
+    Inc(Index);
+  end;
 end;
-{$ELSE ~SUPPORTS_UNICODE}
-asm
-        // make sure that strings are not null
-
-         TEST    EAX, EAX
-         JZ      @@SubstrIsNull
-
-         TEST    EDX, EDX
-         JZ      @@StrIsNull
-
-        // limit index to satisfy 1 <= index, and dec it
-
-         DEC     ECX
-         JL      @@IndexIsSmall
-
-        // EBX will hold the case table, ESI pointer to Str, EDI pointer
-        // to Substr and EBP # of chars in Substr to compare
-
-         PUSH    EBX
-         PUSH    ESI
-         PUSH    EDI
-         PUSH    EBP
-
-        // set the string pointers
-
-         MOV     ESI, EDX
-         MOV     EDI, EAX
-
-        // save the Index in EDX
-
-         MOV     EDX, ECX
-
-        // save the address of Str to compute the result
-
-         PUSH    ESI
-
-        // temporary get the length of Substr and Str
-
-         MOV     EBX, [EDI - StrRecSize].TStrRec.Length
-         MOV     ECX, [ESI - StrRecSize].TStrRec.Length
-
-        // dec the length of Substr because the first char is brought out of it
-
-         DEC     EBX
-         JS      @@NotFound
-
-        // #positions in Str to look at = Length(Str) - Length(Substr) - Index - 2
-
-         SUB     ECX, EBX
-         JLE     @@NotFound
-
-         SUB     ECX, EDX
-         JLE     @@NotFound
-
-        // # of chars in Substr to compare
-
-         MOV     EBP, EBX
-
-        // point Str to Index'th char
-
-         ADD     ESI, EDX
-
-        // load case map into EBX, and clear EAX & ECX
-
-         LEA     EBX, StrCaseMap
-         XOR     EAX, EAX
-         XOR     ECX, ECX
-
-        // bring the first char out of the Substr and point Substr to the next char
-
-         MOV     CL, [EDI]
-         INC     EDI
-
-        // lower case it
-
-         MOV     CL, [EBX + ECX]
-
-         @@FindNext:
-
-        // get the current char from Str into al
-
-         MOV     AL, [ESI]
-         INC     ESI
-
-        // check the end of string
-
-         TEST    AL, AL
-         JZ      @@NotFound
-
-
-         CMP     CL, '*'    // Wild Card?
-         JE      @@Compare
-
-         CMP     CL, '?'    // Wild Card?
-         JE      @@Compare
-
-        // lower case current char
-
-         MOV     AL, [EBX + EAX]
-
-        // check if the current char matches the primary search char,
-        // if not continue searching
-
-         CMP     AL, CL
-         JNE     @@FindNext
-
-         @@Compare:
-
-        // # of chars in Substr to compare }
-
-         MOV     EDX, EBP
-
-         @@CompareNext:
-
-        // dec loop counter and check if we reached the end. If yes then we found it
-
-         DEC     EDX
-         JL      @@Found
-
-        // get the chars from Str and Substr, if they are equal then continue comparing
-
-         MOV     AL, [EDI + EDX]               // char from  Substr
-
-         CMP     AL, '*'                     // wild card?
-         JE      @@CompareNext
-
-         CMP     AL, '?'                     // wild card?
-         JE      @@CompareNext
-
-         CMP     AL, [ESI + EDX]               // equal to PChar(Str)^ ?
-         JE      @@CompareNext
-
-         MOV     AL, [EBX + EAX + StrReOffset]  // reverse case?
-         CMP     AL, [ESI + EDX]
-         JNE     @@FindNext                  // if still no, go back to the main loop
-
-        // if they matched, continue comparing
-
-         JMP     @@CompareNext
-
-         @@Found:
-        // we found it, calculate the result
-
-         MOV     EAX, ESI
-         POP     ESI
-         SUB     EAX, ESI
-
-         POP     EBP
-         POP     EDI
-         POP     ESI
-         POP     EBX
-         RET
-
-         @@NotFound:
-
-        // not found it, clear the result
-
-         XOR     EAX, EAX
-         POP     ESI
-         POP     EBP
-         POP     EDI
-         POP     ESI
-         POP     EBX
-         RET
-
-         @@IndexIsSmall:
-         @@StrIsNull:
-
-        // clear the result
-
-         XOR     EAX, EAX
-
-         @@SubstrIsNull:
-         @@Exit:
-end;
-{$ENDIF ~SUPPORTS_UNICODE}
 
 // Derived from "Like" by Michael Winter
 function StrMatches(const Substr, S: string; const Index: Integer): Boolean;
@@ -3097,166 +2701,24 @@ begin
 end;
 
 function StrSearch(const Substr, S: string; const Index: Integer): Integer;
-{$IFDEF SUPPORTS_UNICODE}
+var
+  SP, SPI, SubP: PChar;
 begin
-  Result := PosEx(SubStr, S, Index);
+  if Index <= Length(S) then
+  begin
+    SP := PChar(S);
+    SubP := PChar(Substr);
+    SPI := SP;
+    Inc(SPI, Index);
+    SPI := StrPos(SPI, SubP);
+    if SPI <> nil then
+      Result := SPI - SP
+    else
+      Result := 0;
+  end
+  else
+    Result := 0;
 end;
-{$ELSE ~SUPPORTS_UNICODE}
-asm
-        // make sure that strings are not null
-
-         TEST    EAX, EAX
-         JZ      @@SubstrIsNull
-
-         TEST    EDX, EDX
-         JZ      @@StrIsNull
-
-        // limit index to satisfy 1 <= index, and dec it
-
-         DEC     ECX
-         JL      @@IndexIsSmall
-
-        // ebp will hold # of chars in Substr to compare, esi pointer to Str,
-        // edi pointer to Substr, ebx primary search char
-
-         PUSH    EBX
-         PUSH    ESI
-         PUSH    EDI
-         PUSH    EBP
-
-        // set the string pointers
-
-         MOV     ESI, EDX
-         MOV     EDI, EAX
-
-        // save the (Index - 1) in edx
-
-         MOV     EDX, ECX
-
-        // save the address of Str to compute the result
-
-         PUSH    ESI
-
-        // temporary get the length of Substr and Str
-
-         MOV     EBX, [EDI-StrRecSize].TStrRec.Length
-         MOV     ECX, [ESI-StrRecSize].TStrRec.Length
-
-        // dec the length of Substr because the first char is brought out of it
-
-         DEC     EBX
-         JS      @@NotFound
-
-        // # of positions in Str to look at = Length(Str) - Length(Substr) - Index - 2
-
-         SUB     ECX, EBX
-         JLE     @@NotFound
-
-         SUB     ECX, EDX
-         JLE     @@NotFound
-
-        // point Str to Index'th char
-
-         ADD     ESI, EDX
-
-        // # of chars in Substr to compare
-
-         MOV     EBP, EBX
-
-        // clear EAX & ECX (working regs)
-
-         XOR     EAX, EAX
-         XOR     EBX, EBX
-
-        // bring the first char out of the Substr, and
-        // point Substr to the next char
-
-         MOV     BL, [EDI]
-         INC     EDI
-
-        // jump into the loop
-
-         JMP     @@Find
-
-         @@FindNext:
-
-        // update the loop counter and check the end of string.
-        // if we reached the end, Substr was not found.
-
-         DEC     ECX
-         JL      @@NotFound
-
-         @@Find:
-
-        // get current char from the string, and /point Str to the next one.
-         MOV     AL, [ESI]
-         INC     ESI
-
-        // does current char match primary search char? if not, go back to the main loop
-
-         CMP     AL, BL
-         JNE     @@FindNext
-
-        // otherwise compare SubStr
-
-         @@Compare:
-
-        // move # of char to compare into edx, edx will be our compare loop counter.
-
-         MOV     EDX, EBP
-
-         @@CompareNext:
-
-        // check if we reached the end of Substr. If yes we found it.
-
-         DEC     EDX
-         JL      @@Found
-
-        // get last chars from Str and SubStr and compare them,
-        // if they don't match go back to out main loop.
-
-         MOV     AL, [EDI+EDX]
-         CMP     AL, [ESI+EDX]
-         JNE     @@FindNext
-
-        // if they matched, continue comparing
-
-         JMP     @@CompareNext
-
-         @@Found:
-        // we found it, calculate the result and exit.
-
-         MOV     EAX, ESI
-         POP     ESI
-         SUB     EAX, ESI
-
-         POP     EBP
-         POP     EDI
-         POP     ESI
-         POP     EBX
-         RET
-
-         @@NotFound:
-        // not found it, clear result and exit.
-
-         XOR     EAX, EAX
-         POP     ESI
-         POP     EBP
-         POP     EDI
-         POP     ESI
-         POP     EBX
-         RET
-
-         @@IndexIsSmall:
-         @@StrIsNull:
-        // clear result and exit.
-
-         XOR     EAX, EAX
-
-         @@SubstrIsNull:
-         @@Exit:
-end;
-{$ENDIF ~SUPPORTS_UNICODE}
 
 //=== String Extraction ======================================================
 

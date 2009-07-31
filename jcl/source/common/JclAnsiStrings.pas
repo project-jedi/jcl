@@ -123,9 +123,9 @@ type
     procedure InsertObject(Index: Integer; const S: AnsiString; AObject: TObject); virtual; abstract;
     procedure Delete(Index: Integer); virtual; abstract;
     procedure Clear; virtual; abstract;
-    procedure LoadFromFile(const FileName: string); virtual;
+    procedure LoadFromFile(const FileName: TFileName); virtual;
     procedure LoadFromStream(Stream: TStream); virtual;
-    procedure SaveToFile(const FileName: string); virtual;
+    procedure SaveToFile(const FileName: TFileName); virtual;
     procedure SaveToStream(Stream: TStream); virtual;
     procedure BeginUpdate;
     procedure EndUpdate;
@@ -991,7 +991,7 @@ procedure TJclAnsiStrings.EndUpdate;
 begin
 end;
 
-procedure TJclAnsiStrings.LoadFromFile(const FileName: string);
+procedure TJclAnsiStrings.LoadFromFile(const FileName: TFileName);
 var
   Stream: TStream;
 begin
@@ -1019,7 +1019,7 @@ begin
   end;
 end;
 
-procedure TJclAnsiStrings.SaveToFile(const FileName: string);
+procedure TJclAnsiStrings.SaveToFile(const FileName: TFileName);
 var
   Stream: TStream;
 begin

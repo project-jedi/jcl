@@ -172,12 +172,12 @@ type
     procedure Insert(Index: Integer; const S: WideString); virtual;
     procedure InsertObject(Index: Integer; const S: WideString;
       AObject: TObject); virtual;
-    procedure LoadFromFile(const FileName: string;
+    procedure LoadFromFile(const FileName: TFileName;
       WideFileOptions: TWideFileOptions = []); virtual;
     procedure LoadFromStream(Stream: TStream;
       WideFileOptions: TWideFileOptions = []); virtual;
     procedure Move(CurIndex, NewIndex: Integer); virtual;
-    procedure SaveToFile(const FileName: string;
+    procedure SaveToFile(const FileName: TFileName;
       WideFileOptions: TWideFileOptions = []); virtual;
     procedure SaveToStream(Stream: TStream;
       WideFileOptions: TWideFileOptions = []); virtual;
@@ -277,9 +277,9 @@ function StrCopyW(Dest: PWideChar; const Source: PWideChar): PWideChar;
 function StrECopyW(Dest: PWideChar; const Source: PWideChar): PWideChar;
 function StrLCopyW(Dest: PWideChar; const Source: PWideChar; MaxLen: Cardinal): PWideChar;
 function StrPCopyWW(Dest: PWideChar; const Source: WideString): PWideChar;
-function StrPCopyW(Dest: PWideChar; const Source: string): PWideChar;
+function StrPCopyW(Dest: PWideChar; const Source: AnsiString): PWideChar;
 function StrPLCopyWW(Dest: PWideChar; const Source: WideString; MaxLen: Cardinal): PWideChar;
-function StrPLCopyW(Dest: PWideChar; const Source: string; MaxLen: Cardinal): PWideChar;
+function StrPLCopyW(Dest: PWideChar; const Source: AnsiString; MaxLen: Cardinal): PWideChar;
 function StrCatW(Dest: PWideChar; const Source: PWideChar): PWideChar;
 function StrLCatW(Dest: PWideChar; const Source: PWideChar; MaxLen: Cardinal): PWideChar;
 function StrCompW(const Str1, Str2: PWideChar): Integer;
@@ -792,14 +792,14 @@ begin
     Result := 0;
 end;
 
-function StrPCopyW(Dest: PWideChar; const Source: string): PWideChar;
+function StrPCopyW(Dest: PWideChar; const Source: AnsiString): PWideChar;
 // copies a Pascal-style string to a null-terminated wide string
 begin
   Result := StrPLCopyW(Dest, Source, Cardinal(Length(Source)));
   Result[Length(Source)] := WideNull;
 end;
 
-function StrPLCopyW(Dest: PWideChar; const Source: string; MaxLen: Cardinal): PWideChar;
+function StrPLCopyW(Dest: PWideChar; const Source: AnsiString; MaxLen: Cardinal): PWideChar;
 // copies characters from a Pascal-style string into a null-terminated wide string
 asm
        PUSH EDI
@@ -1515,7 +1515,7 @@ procedure TJclWideStrings.InsertObject(Index: Integer; const S: WideString; AObj
 begin
 end;
 
-procedure TJclWideStrings.LoadFromFile(const FileName: string;
+procedure TJclWideStrings.LoadFromFile(const FileName: TFileName;
   WideFileOptions: TWideFileOptions = []);
 var
   Stream: TFileStream;
@@ -1598,7 +1598,7 @@ begin
   end;
 end;
 
-procedure TJclWideStrings.SaveToFile(const FileName: string; WideFileOptions: TWideFileOptions = []);
+procedure TJclWideStrings.SaveToFile(const FileName: TFileName; WideFileOptions: TWideFileOptions = []);
 var
   Stream: TFileStream;
 begin
