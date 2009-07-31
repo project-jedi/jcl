@@ -765,7 +765,7 @@ function StrScanW(Str: PWideChar; Chr: WideChar; StrLen: Cardinal): PWideChar;
 asm
        TEST    EAX, EAX
        JZ      @@Exit        // get out if the string is nil or StrLen is 0
-       JCXZ    @@Exit
+       JECXZ   @@Exit
 @@Loop:
        CMP     [EAX], DX     // this unrolled loop is actually faster on modern processors
        JE      @@Exit        // than REP SCASW
