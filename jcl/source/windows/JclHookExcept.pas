@@ -44,7 +44,7 @@ interface
   JCL package but cannot MAKE it without failing with an internal error.
   Furthermore the JVCL Installer cannot be compiled without the compiler internal
   error L1496. }
-{$Y+}
+{$REFERENCEINFO ON}
 {$ENDIF COMPILER5}
 
 uses

@@ -515,9 +515,11 @@ begin
     Wnd := Handle;
     lpVerb := cVerbProperties;
   end;
-  {$T+}  // need this because ShellExecuteEx is overloaded in FPC -A -W
+  {$TYPEDADDRESS ON}  // need this because ShellExecuteEx is overloaded in FPC -A -W
   Result := ShellExecuteEx(@Info);
-  {$T-}
+  {$IFNDEF TYPEDADDRESS_ON}
+  {$TYPEDADDRESS OFF}
+  {$ENDIF ~TYPEDADDRESS_ON}
 end;
 
 function DisplayPropDialog(const Handle: THandle; Item: PItemIdList): Boolean;
@@ -534,9 +536,11 @@ begin
     Wnd := Handle;
     lpVerb := cVerbProperties;
   end;
-  {$T+}
+  {$TYPEDADDRESS ON}
   Result := ShellExecuteEx(@Info);
-  {$T-}
+  {$IFNDEF TYPEDADDRESS_ON}
+  {$TYPEDADDRESS OFF}
+  {$ENDIF ~TYPEDADDRESS_ON}
 end;
 
 // Window procedure for the callback window created by DisplayContextMenu.
@@ -671,9 +675,11 @@ begin
       lpFile := PChar(Path);
       nShow := SW_SHOWNORMAL;
     end;
-    {$T+}
+    {$TYPEDADDRESS ON}
     Result := ShellExecuteEx(@Sei);
-    {$T-}
+    {$IFNDEF TYPEDADDRESS_ON}
+    {$TYPEDADDRESS OFF}
+    {$ENDIF ~TYPEDADDRESS_ON}
   end;
 end;
 
@@ -707,9 +713,11 @@ begin
       else
         lpFile := PChar(PidlToPath(Pidl));
     end;
-    {$T+}
+    {$TYPEDADDRESS ON}
     Result := ShellExecuteEx(@Sei);
-    {$T-}
+    {$IFNDEF TYPEDADDRESS_ON}
+    {$TYPEDADDRESS OFF}
+    {$ENDIF ~TYPEDADDRESS_ON}
     Malloc.Free(Pidl);
   end;
 end;
@@ -1365,9 +1373,11 @@ begin
   Sei.lpParameters := PCharOrNil(Parameters);
   Sei.lpVerb := PCharOrNil(Verb);
   Sei.nShow := CmdShow;
-  {$T+}
+  {$TYPEDADDRESS ON}
   Result := ShellExecuteEx(@Sei);
-  {$T-}
+  {$IFNDEF TYPEDADDRESS_ON}
+  {$TYPEDADDRESS OFF}
+  {$ENDIF ~TYPEDADDRESS_ON}
 end;
 
 { TODO -cHelp : author Jean-Fabien Connault note, ShellExecEx() above used to be ShellExec()... }
@@ -1394,9 +1404,11 @@ begin
   Sei.lpVerb := PCharOrNil(Verb);
   Sei.nShow := CmdShow;
   Sei.lpDirectory := PCharOrNil(Directory);
-  {$T+}
+  {$TYPEDADDRESS ON}
   Result := ShellExecuteEx(@Sei);
-  {$T-}
+  {$IFNDEF TYPEDADDRESS_ON}
+  {$TYPEDADDRESS OFF}
+  {$ENDIF ~TYPEDADDRESS_ON}
   if Result then
   begin
     WaitForInputIdle(Sei.hProcess, INFINITE);

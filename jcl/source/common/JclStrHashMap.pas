@@ -216,7 +216,7 @@ begin
   Result := True;
 end;
 
-{$Q-}
+{$OVERFLOWCHECKS OFF}
 
 function StrHash(const S: string): Cardinal;
 const
@@ -298,7 +298,7 @@ begin
 end;
 
 {$IFDEF OVERFLOWCHECKS_ON}
-{$Q+}
+{$OVERFLOWCHECKS ON}
 {$ENDIF OVERFLOWCHECKS_ON}
 
 //=== { TStringHashMap } =====================================================

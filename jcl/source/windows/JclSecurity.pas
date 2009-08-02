@@ -599,10 +599,10 @@ begin
     else
       Authority := Copy(SIDString, CurrentPos, TempPos - CurrentPos);
 
-    {$R-}
+    {$RANGECHECKS OFF}
     ASID^.SubAuthority[ASID^.SubAuthorityCount] := StrToInt64(Authority);
     {$IFDEF RANGECHECKS_ON}
-    {$R+}
+    {$RANGECHECKS ON}
     {$ENDIF RANGECHECKS_ON}
     Inc(ASID^.SubAuthorityCount);
 

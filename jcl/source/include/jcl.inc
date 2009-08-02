@@ -33,10 +33,10 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-{$B-} // Boolean shortcut evaluation
-{$H+} // Long strings
-{$J-} // Read-only typed constants
-{$T-} // Type checked pointers off
+{$BOOLEVAL OFF}       // Boolean shortcut evaluation
+{$LONGSTRINGS ON}     // Long strings
+{$WRITEABLECONST OFF} // Read-only typed constants
+{$TYPEDADDRESS OFF}   // Type checked pointers off
 
 {$I jedi.inc} // Pull in the JCL/J-VCL shared directives
 

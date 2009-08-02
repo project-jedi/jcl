@@ -45,7 +45,8 @@ unit JclDebug;
 interface
 
 {$I jcl.inc}
-{$R-,Q-}
+{$RANGECHECKS OFF}
+{$OVERFLOWCHECKS OFF}
 
 uses
   {$IFDEF UNITVERSIONING}

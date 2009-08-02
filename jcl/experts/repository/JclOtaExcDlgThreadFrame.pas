@@ -97,7 +97,7 @@ uses
 
 //=== { TTestThread } ========================================================
 
-{$W+}
+{$STACKFRAMES ON}
 
 procedure TTestThread.Execute;
 begin
@@ -105,7 +105,7 @@ begin
 end;
 
 {$IFNDEF STACKFRAMES_ON}
-{$W-}
+{$STACKFRAMES OFF}
 {$ENDIF ~STACKFRAMES_ON}
 
 procedure TTestThread.ExecuteTask;

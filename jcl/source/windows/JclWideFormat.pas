@@ -525,7 +525,7 @@ end;
   procedures, which negate integers. For the rest of the code in this unit,
   overflow isn't relevant. }
 
-{$Q-}
+{$OVERFLOWCHECKS OFF}
 
 procedure SafeNegate32(var Int: Integer);
 begin
@@ -538,7 +538,7 @@ begin
 end;
 
 {$IFDEF OVERFLOWCHECKS_ON}
-{$Q+}
+{$OVERFLOWCHECKS ON}
 {$ENDIF OVERFLOWCHECKS_ON}
 
 // === Argument-preparation routines ===========================================

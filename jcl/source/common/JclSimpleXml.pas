@@ -61,9 +61,11 @@ type
   {$ENDIF COMPILER5}
   TJclSimpleXML = class;
   EJclSimpleXMLError = class(EJclError);
-  {$M+} // generate RTTI for published properties
+  {$TYPEINFO ON} // generate RTTI for published properties
   TJclSimpleXMLElem = class;
-  {$M-}
+  {$IFNDEF TYPEINFO_ON}
+  {$TYPEINFO OFF}
+  {$ENDIF ~TYPEINFO_ON}
   TJclSimpleXMLElems = class;
   TJclSimpleXMLProps = class;
   TJclSimpleXMLElemComment = class;
@@ -298,7 +300,7 @@ type
     property NamedElems[const Name: string]: TJclSimpleXMLNamedElems read GetNamedElems;
   end;
 
-  {$M+}
+  {$TYPEINFO ON}
   TJclSimpleXMLElem = class(TObject)
   private
     FName: string;
@@ -357,7 +359,9 @@ type
     property Value: string read FValue write FValue;
     property AnsiValue: AnsiString read GetAnsiValue write SetAnsiValue;
   end;
-  {$M-}
+  {$IFNDEF TYPEINFO_ON}
+  {$TYPEINFO OFF}
+  {$ENDIF ~TYPEINFO_ON}
   TJclSimpleXMLElemClass = class of TJclSimpleXMLElem;
 
   TJclSimpleXMLElemComment = class(TJclSimpleXMLElem)
