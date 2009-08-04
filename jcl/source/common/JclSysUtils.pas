@@ -563,8 +563,10 @@ type
 type
   TJclSimpleLog = class (TObject)
   private
+    FDateTimeFormatStr: String;
     FLogFileHandle: Integer;
     FLogFileName: string;
+    FLoggingActive: Boolean;
     FLogWasEmpty: Boolean;
     function GetLogOpen: Boolean;
   protected
@@ -575,18 +577,23 @@ type
     procedure ClearLog;
     procedure CloseLog;
     procedure OpenLog;
-    procedure Write(const Text: string; Indent: Integer = 0); overload;
-    procedure Write(Strings: TStrings; Indent: Integer = 0); overload;
+    procedure Write(const Text: string; Indent: Integer = 0; KeepOpen: Boolean = true); overload;
+    procedure Write(Strings: TStrings; Indent: Integer = 0; KeepOpen: Boolean = true); overload;
     //Writes a line to the log file. The current timestamp is written before the line.
-    procedure TimeWrite(const Text: string; Indent: Integer = 0); overload;
-    procedure TimeWrite(Strings: TStrings; Indent: Integer = 0); overload;
-    procedure WriteStamp(SeparatorLen: Integer = 0);
+    procedure TimeWrite(const Text: string; Indent: Integer = 0; KeepOpen: Boolean = true); overload;
+    procedure TimeWrite(Strings: TStrings; Indent: Integer = 0; KeepOpen: Boolean = true); overload;
+    procedure WriteStamp(SeparatorLen: Integer = 0; KeepOpen: Boolean = true);
+    // DateTimeFormatStr property assumes the values described in "FormatDateTime Function" in Delphi Help
+    property DateTimeFormatStr: String read FDateTimeFormatStr write FDateTimeFormatStr;
     property LogFileName: string read FLogFileName;
+    //1 Property to activate / deactivate the logging
+    property LoggingActive: Boolean read FLoggingActive write FLoggingActive default True;
     property LogOpen: Boolean read GetLogOpen;
+  published
   end;
 
 // Procedure to initialize the SimpleLog Variable
-procedure InitSimpleLog (const ALogFileName: string = '');
+procedure InitSimpleLog(const ALogFileName: string = ''; AOpenLog: Boolean = true);
 
 // Global Variable to make it easier for an application wide log handling.
 // Must be initialized with InitSimpleLog before using
@@ -3087,13 +3094,14 @@ const
   INVALID_HANDLE_VALUE = 0;
 {$ENDIF LINUX}
 
-constructor TJclSimpleLog.Create(const ALogFileName: string);
+constructor TJclSimpleLog.Create(const ALogFileName: string = '');
 begin
   if ALogFileName = '' then
     FLogFileName := CreateDefaultFileName
   else
     FLogFileName := ALogFileName;
   DWORD_PTR(FLogFileHandle) := INVALID_HANDLE_VALUE;
+  FLoggingActive := True;
 end;
 
 function TJclSimpleLog.CreateDefaultFileName: string;
@@ -3109,10 +3117,15 @@ begin
 end;
 
 procedure TJclSimpleLog.ClearLog;
+var
+  WasOpen: Boolean;
 begin
+  WasOpen := LogOpen;
   CloseLog;
   FLogFileHandle := FileCreate(FLogFileName);
   FLogWasEmpty := True;
+  if Not WasOpen then
+    CloseLog;
 end;
 
 procedure TJclSimpleLog.CloseLog;
@@ -3149,88 +3162,124 @@ begin
     FLogWasEmpty := False;
 end;
 
-procedure TJclSimpleLog.Write(const Text: string; Indent: Integer);
+procedure TJclSimpleLog.Write(const Text: string; Indent: Integer = 0; KeepOpen: Boolean = true);
 var
   S: string;
   UTF8S: TUTF8String;
   SL: TStringList;
   I: Integer;
+  WasOpen: Boolean;
 begin
-  if LogOpen then
+  if LoggingActive then
   begin
-    SL := TStringList.Create;
-    try
-      SL.Text := Text;
-      for I := 0 to SL.Count - 1 do
-      begin
-        S := StringOfChar(' ', Indent) + StrEnsureSuffix(NativeLineBreak, TrimRight(SL[I]));
-        UTF8S := StringToUTF8(S);
-        FileWrite(FLogFileHandle, UTF8S[1], Length(UTF8S));
+    WasOpen := LogOpen;
+    if not WasOpen then
+      OpenLog;
+    if LogOpen then
+    begin
+      SL := TStringList.Create;
+      try
+        SL.Text := Text;
+        for I := 0 to SL.Count - 1 do
+        begin
+          S := StringOfChar(' ', Indent) + StrEnsureSuffix(NativeLineBreak, TrimRight(SL[I]));
+          UTF8S := StringToUTF8(S);
+          FileWrite(FLogFileHandle, UTF8S[1], Length(UTF8S));
+        end;
+      finally
+        SL.Free;
       end;
-    finally
-      SL.Free;
+      // Keep the logfile Open when it was opened before and the KeepOpen is active
+      if Not (WasOpen and KeepOpen) then
+        CloseLog;
     end;
   end;
 end;
 
-procedure TJclSimpleLog.Write(Strings: TStrings; Indent: Integer);
-var
-  I: Integer;
+procedure TJclSimpleLog.Write(Strings: TStrings; Indent: Integer = 0; KeepOpen: Boolean = true);
 begin
-  for I := 0 to Strings.Count - 1 do
-    Write(Strings[I], Indent);
+  if Assigned(Strings) then
+    Write(Strings.Text, Indent, KeepOpen);
 end;
 
-procedure TJclSimpleLog.TimeWrite(const Text: string; Indent: Integer = 0);
+procedure TJclSimpleLog.TimeWrite(const Text: string; Indent: Integer = 0; KeepOpen: Boolean = true);
 var
   S: string;
   UTF8S: TUTF8String;
   SL: TStringList;
   I: Integer;
+  WasOpen: Boolean;
 begin
-  if LogOpen then
+  if LoggingActive then
   begin
-    SL := TStringList.Create;
-    try
-      SL.Text := Text;
-      for I := 0 to SL.Count - 1 do
-      begin
-        S := DateTimeToStr(Now)+' : '+StringOfChar(' ', Indent) + StrEnsureSuffix(NativeLineBreak, TrimRight(SL[I]));
-        UTF8S := StringToUTF8(S);
-        FileWrite(FLogFileHandle, UTF8S[1], Length(UTF8S));
+    WasOpen := LogOpen;
+    if not LogOpen then
+      OpenLog;
+    if LogOpen then
+    begin
+      SL := TStringList.Create;
+      try
+        SL.Text := Text;
+        for I := 0 to SL.Count - 1 do
+        begin
+          if DateTimeFormatStr = '' then
+            S := DateTimeToStr(Now)+' : '+StringOfChar(' ', Indent) + StrEnsureSuffix(NativeLineBreak, TrimRight(SL[I]))
+          else
+            S := FormatDateTime( DateTimeFormatStr, Now)+' : '+StringOfChar(' ', Indent) + StrEnsureSuffix(NativeLineBreak, TrimRight(SL[I]));
+          UTF8S := StringToUTF8(S);
+          FileWrite(FLogFileHandle, UTF8S[1], Length(UTF8S));
+        end;
+      finally
+        SL.Free;
       end;
-    finally
-      SL.Free;
+      if Not WasOpen and Not KeepOpen then
+        CloseLog;
     end;
   end;
 end;
 
-procedure TJclSimpleLog.TimeWrite(Strings: TStrings; Indent: Integer = 0);
-var
-  I: Integer;
+procedure TJclSimpleLog.TimeWrite(Strings: TStrings; Indent: Integer = 0; KeepOpen: Boolean = true);
 begin
-  for I := 0 to Strings.Count - 1 do
-    TimeWrite(Strings[I], Indent);
+  if Assigned(Strings) then
+    TimeWrite(Strings.Text, Indent, KeepOpen);
 end;
 
-procedure TJclSimpleLog.WriteStamp(SeparatorLen: Integer);
+procedure TJclSimpleLog.WriteStamp(SeparatorLen: Integer = 0; KeepOpen: Boolean = true);
+var
+  WasOpen: Boolean;
 begin
-  if SeparatorLen = 0 then
+  if SeparatorLen <= 0 then
     SeparatorLen := 40;
-  OpenLog;
-  if not FLogWasEmpty then
-    Write(NativeLineBreak);
-  Write(StrRepeat('=', SeparatorLen));
-  Write(Format('= %-*s =', [SeparatorLen - 4, DateTimeToStr(Now)]));
-  Write(StrRepeat('=', SeparatorLen));
+  if LoggingActive then
+  begin
+    WasOpen := LogOpen;
+    if not LogOpen then
+    begin
+      OpenLog;
+      if LogOpen and not FLogWasEmpty then
+        Write(NativeLineBreak);
+    end;
+    if LogOpen then
+    begin
+      Write(StrRepeat('=', SeparatorLen), 0, True);
+      if DateTimeFormatStr = '' then
+        Write(Format('= %-*s =', [SeparatorLen - 4, DateTimeToStr(Now)]), 0, True)
+      else
+        Write(Format('= %-*s =', [SeparatorLen - 4, FormatDateTime( DateTimeFormatStr, Now)]), 0, True);
+      Write(StrRepeat('=', SeparatorLen), 0, True);
+      if Not WasOpen and Not KeepOpen then
+        CloseLog;
+    end;
+  end;
 end;
 
-procedure InitSimpleLog (const ALogFileName: string = '');
+procedure InitSimpleLog(const ALogFileName: string = ''; AOpenLog: Boolean = true);
 begin
   if Assigned(SimpleLog) then
     FreeAndNil(SimpleLog);
   SimpleLog := TJclSimpleLog.Create(ALogFileName);
-  SimpleLog.OpenLog;
+  if AOpenLog then
+    SimpleLog.OpenLog;
 end;
 
 initialization
