@@ -3121,7 +3121,10 @@ var
   WasOpen: Boolean;
 begin
   WasOpen := LogOpen;
-  CloseLog;
+  if WasOpen then
+    CloseLog;
+  if not FileExists(FlogFileName) then
+    Exit;
   FLogFileHandle := FileCreate(FLogFileName);
   FLogWasEmpty := True;
   if Not WasOpen then
