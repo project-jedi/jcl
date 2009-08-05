@@ -1023,13 +1023,12 @@ begin
   Result := FSelfAsInterface;
 end;
 
+function LocalSortAsInteger(List: TStringList; Index1, Index2: Integer): Integer;
+begin
+  Result := StrToInt(List[Index1]) - StrToInt(List[Index2]);
+end;
+
 function TJclStringListImpl.SortAsInteger: IJclStringList;
-
-  function LocalSortAsInteger(List: TStringList; Index1, Index2: Integer): Integer;
-  begin
-    Result := StrToInt(List[Index1]) - StrToInt(List[Index2]);
-  end;
-
 begin
   inherited CustomSort(@LocalSortAsInteger);
   Result := FSelfAsInterface;
@@ -1042,13 +1041,12 @@ begin
 end;
 {$ENDIF ~HAS_TSTRINGS_COMPARESTRINGS}
 
+function LocalSortByName(List: TStringList; Index1, Index2: Integer): Integer;
+begin
+  Result := TJclStringListImpl(List).CompareStrings(List.Names[Index1], List.Names[Index2]);
+end;
+
 function TJclStringListImpl.SortByName: IJclStringList;
-
-  function LocalSortByName(List: TStringList; Index1, Index2: Integer): Integer;
-  begin
-    Result := TJclStringListImpl(List).CompareStrings(List.Names[Index1], List.Names[Index2]);
-  end;
-
 begin
   inherited CustomSort(@LocalSortByName);
   Result := FSelfAsInterface;

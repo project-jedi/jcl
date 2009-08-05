@@ -2676,21 +2676,20 @@ begin
   end;
 end;
 
+function EnumTaskWindowsProc(Wnd: THandle; List: TStrings): Boolean; stdcall;
+var
+  Caption: array [0..1024] of Char;
+begin
+  if IsMainAppWindow(Wnd) and (GetWindowText(Wnd, Caption, SizeOf(Caption)) > 0) then
+    List.AddObject(Caption, Pointer(Wnd));
+  Result := True;
+end;
+
 function GetTasksList(const List: TStrings): Boolean;
-
-  function EnumWindowsProc(Wnd: THandle; List: TStrings): Boolean; stdcall;
-  var
-    Caption: array [0..1024] of Char;
-  begin
-    if IsMainAppWindow(Wnd) and (GetWindowText(Wnd, Caption, SizeOf(Caption)) > 0) then
-      List.AddObject(Caption, Pointer(Wnd));
-    Result := True;
-  end;
-
 begin
   List.BeginUpdate;
   try
-    Result := EnumWindows(@EnumWindowsProc, LPARAM(List));
+    Result := EnumWindows(@EnumTaskWindowsProc, LPARAM(List));
   finally
     List.EndUpdate;
   end;
@@ -2797,20 +2796,19 @@ end;
 // Q178893
 // http://support.microsoft.com/default.aspx?scid=kb;en-us;178893
 
+function EnumTerminateAppWindowsProc(Wnd: THandle; ProcessID: DWORD): Boolean; stdcall;
+var
+  PID: DWORD;
+begin
+  GetWindowThreadProcessId(Wnd, @PID);
+  if ProcessID = PID then
+    PostMessage(Wnd, WM_CLOSE, 0, 0);
+  Result := True;
+end;
+
 function TerminateApp(ProcessID: DWORD; Timeout: Integer): TJclTerminateAppResult;
 var
   ProcessHandle: THandle;
-
-  function EnumWindowsProc(Wnd: THandle; ProcessID: DWORD): Boolean; stdcall;
-  var
-    PID: DWORD;
-  begin
-    GetWindowThreadProcessId(Wnd, @PID);
-    if ProcessID = PID then
-      PostMessage(Wnd, WM_CLOSE, 0, 0);
-    Result := True;
-  end;
-
 begin
   Result := taError;
   if ProcessID <> GetCurrentProcessId then
@@ -2818,7 +2816,7 @@ begin
     ProcessHandle := OpenProcess(SYNCHRONIZE or PROCESS_TERMINATE, False, ProcessID);
     if ProcessHandle <> 0 then
     try
-      EnumWindows(@EnumWindowsProc, LPARAM(ProcessID));
+      EnumWindows(@EnumTerminateAppWindowsProc, LPARAM(ProcessID));
       if WaitForSingleObject(ProcessHandle, Timeout) = WAIT_OBJECT_0 then
         Result := taClean
       else
@@ -2908,39 +2906,38 @@ begin
   end;
 end;
 
-function GetMainAppWndFromPid(PID: DWORD): THandle;
 type
   PSearch = ^TSearch;
   TSearch = record
     PID: DWORD;
     Wnd: THandle;
   end;
+
+function EnumMainAppWindowsProc(Wnd: THandle; Res: PSearch): Boolean; stdcall;
+var
+  WindowPid: DWORD;
+begin
+  WindowPid := 0;
+  GetWindowThreadProcessId(Wnd, @WindowPid);
+  if (WindowPid = Res^.PID) and IsMainAppWindow(Wnd) then
+  begin
+    Res^.Wnd := Wnd;
+    Result := False;
+  end
+  else
+    Result := True;
+end;
+
+function GetMainAppWndFromPid(PID: DWORD): THandle;
 var
   SearchRec: TSearch;
-
-  function EnumWindowsProc(Wnd: THandle; Res: PSearch): Boolean; stdcall;
-  var
-    WindowPid: DWORD;
-  begin
-    WindowPid := 0;
-    GetWindowThreadProcessId(Wnd, @WindowPid);
-    if (WindowPid = Res^.PID) and IsMainAppWindow(Wnd) then
-    begin
-      Res^.Wnd := Wnd;
-      Result := False;
-    end
-    else
-      Result := True;
-  end;
-
 begin
   SearchRec.PID := PID;
   SearchRec.Wnd := 0;
-  EnumWindows(@EnumWindowsProc, LPARAM(@SearchRec));
+  EnumWindows(@EnumMainAppWindowsProc, LPARAM(@SearchRec));
   Result := SearchRec.Wnd;
 end;
 
-function GetWndFromPid(PID: DWORD; const WindowClassName: string): HWND;
 type
   PEnumWndStruct = ^TEnumWndStruct;
   TEnumWndStruct = record
@@ -2949,37 +2946,36 @@ type
       ResultWnd: HWND;
   end;
 
-  function EnumWinProc(Wnd: HWND; Enum: PEnumWndStruct): BOOL; stdcall;
-  var
-    PID: DWORD;
-    C: PChar;
-    CLen: Integer;
-  begin
-    Result := True;
-    GetWindowThreadProcessId(Wnd, @PID);
-    if (PID = Enum.PID) then
-    begin
-      CLen := Length(Enum.WndClassName)+1;
-      C := StrAlloc(CLen);
-
-      if (GetClassName(Wnd, C, CLen) > 0) then
-      if (C = Enum.WndClassName) then
-      begin
-        Result := False;
-        Enum.ResultWnd := Wnd;
-      end;
-
-      StrDispose(C);
-    end;
-  end;
-
+function EnumPidWinProc(Wnd: HWND; Enum: PEnumWndStruct): BOOL; stdcall;
 var
-    EnumWndStruct: TEnumWndStruct;
+  PID: DWORD;
+  C: PChar;
+  CLen: Integer;
+begin
+  Result := True;
+  GetWindowThreadProcessId(Wnd, @PID);
+  if (PID = Enum.PID) then
+  begin
+    CLen := Length(Enum.WndClassName)+1;
+    C := StrAlloc(CLen);
+    if (GetClassName(Wnd, C, CLen) > 0) then
+      if (C = Enum.WndClassName) then
+    begin
+      Result := False;
+      Enum.ResultWnd := Wnd;
+    end;
+    StrDispose(C);
+  end;
+end;
+
+function GetWndFromPid(PID: DWORD; const WindowClassName: string): HWND;
+var
+  EnumWndStruct: TEnumWndStruct;
 begin
   EnumWndStruct.PID := PID;
   EnumWndStruct.WndClassName := WindowClassName;
   EnumWndStruct.ResultWnd := 0;
-  EnumWindows(@EnumWinProc, LPARAM(@EnumWndStruct));
+  EnumWindows(@EnumPidWinProc, LPARAM(@EnumWndStruct));
   Result := EnumWndStruct.ResultWnd;
 end;
 

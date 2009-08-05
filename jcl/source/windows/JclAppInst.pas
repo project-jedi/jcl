@@ -239,37 +239,37 @@ begin
   CheckMultipleInstances(1);
 end;
 
-class function TJclAppInstances.GetApplicationWnd(const ProcessID: DWORD): THandle;
 type
   PTopLevelWnd = ^TTopLevelWnd;
   TTopLevelWnd = record
     ProcessID: DWORD;
     Wnd: THandle;
   end;
+
+function EnumApplicationWinProc(Wnd: THandle; Param: PTopLevelWnd): BOOL; stdcall;
+var
+  PID: DWORD;
+  C: array [0..Length(ClassNameOfTApplication) + 1] of Char;
+begin
+  GetWindowThreadProcessId(Wnd, @PID);
+  if (PID = Param^.ProcessID) and (GetClassName(Wnd, C, Length(C)) > 0) and (C = ClassNameOfTApplication) then
+  begin
+    Result := False;
+    Param^.Wnd := Wnd;
+  end
+  else
+  begin
+    Result := True;
+  end;
+end;
+
+class function TJclAppInstances.GetApplicationWnd(const ProcessID: DWORD): THandle;
 var
   TopLevelWnd: TTopLevelWnd;
-
-  function EnumWinProc(Wnd: THandle; Param: PTopLevelWnd): BOOL; stdcall;
-  var
-    PID: DWORD;
-    C: array [0..Length(ClassNameOfTApplication) + 1] of Char;
-  begin
-    GetWindowThreadProcessId(Wnd, @PID);
-    if (PID = Param^.ProcessID) and (GetClassName(Wnd, C, Length(C)) > 0) and (C = ClassNameOfTApplication) then
-    begin
-      Result := False;
-      Param^.Wnd := Wnd;
-    end
-    else
-    begin
-      Result := True;
-    end;
-  end;
-
 begin
   TopLevelWnd.ProcessID := ProcessID;
   TopLevelWnd.Wnd := 0;
-  EnumWindows(@EnumWinProc, LPARAM(@TopLevelWnd));
+  EnumWindows(@EnumApplicationWinProc, LPARAM(@TopLevelWnd));
   Result := TopLevelWnd.Wnd;
 end;
 
@@ -351,20 +351,19 @@ begin
   Halt(0);
 end;
 
+function EnumNotifyWinProc(Wnd: THandle; Message: PMessage): BOOL; stdcall;
+begin
+  with Message^ do
+    SendNotifyMessage(Wnd, Msg, WParam, LParam);
+  Result := True;
+end;
+
 procedure TJclAppInstances.NotifyInstances(const W, L: Integer);
 var
   I: Integer;
   Wnd: THandle;
   TID: DWORD;
   Msg: TMessage;
-
-  function EnumWinProc(Wnd: THandle; Message: PMessage): BOOL; stdcall;
-  begin 
-    with Message^ do
-      SendNotifyMessage(Wnd, Msg, WParam, LParam);
-    Result := True;
-  end;
-
 begin
   FOptex.Enter;
   try
@@ -383,7 +382,7 @@ begin
         Msg.Msg := FMessageID;
         Msg.WParam := W;
         Msg.LParam := L;
-        EnumThreadWindows(TID, @EnumWinProc, LPARAM(@Msg));
+        EnumThreadWindows(TID, @EnumNotifyWinProc, LPARAM(@Msg));
       end;
   finally
     FOptex.Leave;
@@ -426,10 +425,6 @@ begin
   end;
 end;
 
-function TJclAppInstances.SendData(const WindowClassName: string;
-  const DataKind: TJclAppInstDataKind;
-  Data: Pointer; const Size: Integer;
-  OriginatorWnd: THandle): Boolean;
 type
   PEnumWinRec = ^TEnumWinRec;
   TEnumWinRec = record
@@ -439,39 +434,42 @@ type
     Self: TJclAppInstances;
   end;
 
+function EnumWinProc(Wnd: THandle; Data: PEnumWinRec): BOOL; stdcall;
+var
+  ClassName: array [0..200] of Char;
+  I: Integer;
+  PID: DWORD;
+  Found: Boolean;
+begin
+  if (GetClassName(Wnd, ClassName, SizeOf(ClassName)) > 0) and
+    (StrComp(ClassName, Data.WindowClassName) = 0) then
+  begin
+    GetWindowThreadProcessId(Wnd, @PID);
+    Found := False;
+    Data.Self.FOptex.Enter;
+    try
+      with PJclAISharedData(Data.Self.FMappingView.Memory)^ do
+        for I := 0 to Count - 1 do
+          if ProcessIDs[I] = PID then
+          begin
+            Found := True;
+            Break;
+          end;
+    finally
+      Data.Self.FOptex.Leave;
+    end;
+    if Found then
+      SendMessage(Wnd, WM_COPYDATA, Data.OriginatorWnd, LPARAM(@Data.CopyData));
+  end;
+  Result := True;
+end;
+
+function TJclAppInstances.SendData(const WindowClassName: string;
+  const DataKind: TJclAppInstDataKind;
+  Data: Pointer; const Size: Integer;
+  OriginatorWnd: THandle): Boolean;
 var
   EnumWinRec: TEnumWinRec;
-
-  function EnumWinProc(Wnd: THandle; Data: PEnumWinRec): BOOL; stdcall;
-  var
-    ClassName: array [0..200] of Char;
-    I: Integer;
-    PID: DWORD;
-    Found: Boolean;
-  begin
-    if (GetClassName(Wnd, ClassName, SizeOf(ClassName)) > 0) and
-      (StrComp(ClassName, Data.WindowClassName) = 0) then
-    begin
-      GetWindowThreadProcessId(Wnd, @PID);
-      Found := False;
-      Data.Self.FOptex.Enter;
-      try
-        with PJclAISharedData(Data.Self.FMappingView.Memory)^ do
-          for I := 0 to Count - 1 do
-            if ProcessIDs[I] = PID then
-            begin
-              Found := True;
-              Break;
-            end;
-      finally
-        Data.Self.FOptex.Leave;
-      end;
-      if Found then
-        SendMessage(Wnd, WM_COPYDATA, Data.OriginatorWnd, LPARAM(@Data.CopyData));
-    end;
-    Result := True;
-  end;
-
 begin
   Assert(DataKind <> AppInstDataKindNoData);
   EnumWinRec.WindowClassName := PChar(WindowClassName);
