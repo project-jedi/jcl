@@ -589,7 +589,6 @@ type
     //1 Property to activate / deactivate the logging
     property LoggingActive: Boolean read FLoggingActive write FLoggingActive default True;
     property LogOpen: Boolean read GetLogOpen;
-  published
   end;
 
 // Procedure to initialize the SimpleLog Variable
