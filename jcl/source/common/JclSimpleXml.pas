@@ -55,10 +55,6 @@ uses
   JclBase, JclStreams;
 
 type
-  {$IFDEF COMPILER5}
-  THashedStringList = class(TStringList);
-  THandle = Longword;
-  {$ENDIF COMPILER5}
   TJclSimpleXML = class;
   EJclSimpleXMLError = class(EJclError);
   {$TYPEINFO ON} // generate RTTI for published properties
@@ -483,8 +479,6 @@ type
     property OnDecodeStream: TJclSimpleXMLEncodeStreamEvent read FOnDecodeStream write FOnDecodeStream;
   end;
 
-{$IFDEF COMPILER6_UP}
-
   TXMLVariant = class(TInvokeableVariantType)
   public
     procedure Clear(var V: TVarData); override;
@@ -515,8 +509,6 @@ procedure XMLCreateInto(var ADest: Variant; const AXML: TJclSimpleXMLElem);
 function XMLCreate(const AXML: TJclSimpleXMLElem): Variant; overload;
 function XMLCreate: Variant; overload;
 function VarXML: TVarType;
-
-{$ENDIF COMPILER6_UP}
 
 // Encodes a string into an internal format:
 // any character <= #127 is preserved
@@ -559,22 +551,11 @@ uses
 
 const
   cBufferSize = 8192;
-  {$IFDEF COMPILER5}
-  DefaultTrueBoolStr = 'True'; // DO NOT LOCALIZE
-  DefaultFalseBoolStr = 'False'; // DO NOT LOCALIZE
-  {$ENDIF COMPILER5}
 
 var
   GlobalSorts: TList = nil;
 
-  {$IFDEF COMPILER6_UP}
   GlobalXMLVariant: TXMLVariant = nil;
-  {$ENDIF COMPILER6_UP}
-
-  {$IFDEF COMPILER5}
-  TrueBoolStrs: array of string;
-  FalseBoolStrs: array of string;
-  {$ENDIF COMPILER5}
 
   PreparedNibbleCharMapping: Boolean = False;
   NibbleCharMapping: array [Low(Char)..High(Char)] of Byte;
@@ -586,15 +567,12 @@ begin
   Result := GlobalSorts;
 end;
 
-{$IFDEF COMPILER6_UP}
-
 function XMLVariant: TXMLVariant;
 begin
   if not Assigned(GlobalXMLVariant) then
     GlobalXMLVariant := TXMLVariant.Create;
   Result := GlobalXMLVariant;
 end;
-{$ENDIF COMPILER6_UP}
 
 procedure AddEntity(var Res: string; var ResIndex, ResLen: Integer; const Entity: string);
 var
@@ -721,90 +699,6 @@ begin
   else
     SetLength(Result, 0);
 end;
-
-{$IFDEF COMPILER5}
-
-procedure VerifyBoolStrArray;
-begin
-  if Length(TrueBoolStrs) = 0 then
-  begin
-    SetLength(TrueBoolStrs, 1);
-    TrueBoolStrs[0] := DefaultTrueBoolStr;
-  end;
-  if Length(FalseBoolStrs) = 0 then
-  begin
-    SetLength(FalseBoolStrs, 1);
-    FalseBoolStrs[0] := DefaultFalseBoolStr;
-  end;
-end;
-
-function TryStrToBool(const S: string; out Value: Boolean): Boolean;
-var
-  lResult: Extended;
-
-  function CompareWith(const AStrings: array of string): Boolean;
-  var
-    I: Integer;
-  begin
-    Result := False;
-    for I := Low(AStrings) to High(AStrings) do
-      if StrSame(S, AStrings[I]) then
-      begin
-        Result := True;
-        Break;
-      end;
-  end;
-
-begin
-  Result := TryStrToFloat(S, lResult);
-  if Result then
-    Value := lResult <> 0
-  else
-  begin
-    VerifyBoolStrArray;
-    Result := CompareWith(TrueBoolStrs);
-    if Result then
-      Value := True
-    else
-    begin
-      Result := CompareWith(FalseBoolStrs);
-      if Result then
-        Value := False;
-    end;
-  end;
-end;
-
-function StrToBoolDef(const S: string; const Default: Boolean): Boolean;
-begin
-  if not TryStrToBool(S, Result) then
-    Result := Default;
-end;
-
-(*  make Delphi 5 compiler happy // andreas
-function StrToBool(const S: string): Boolean;
-begin
-  if not TryStrToBool(S, Result) then
-    ConvertErrorFmt(@SInvalidBoolean, [S]);
-end;
-*)
-
-function BoolToStr(B: Boolean; UseBoolStrs: Boolean = False): string;
-const
-  cSimpleBoolStrs: array [Boolean] of string = ('0', '-1');
-begin
-  if UseBoolStrs then
-  begin
-    VerifyBoolStrArray;
-    if B then
-      Result := TrueBoolStrs[0]
-    else
-      Result := FalseBoolStrs[0];
-  end
-  else
-    Result := cSimpleBoolStrs[B];
-end;
-
-{$ENDIF COMPILER5}
 
 function SimpleXMLEncode(const S: string): string;
 var
@@ -1443,7 +1337,7 @@ begin
   begin
     CurrentStreamPosition := Stream.Position;
     Stream.Size := RequiredStreamSize;
-    Stream.Seek(CurrentStreamPosition, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
+    Stream.Seek(CurrentStreamPosition, soBeginning);
   end;
   while I < ValueLength do
   begin
@@ -3687,8 +3581,6 @@ begin
     Item[I].SaveToStringStream(StringStream, '', AParent);
 end;
 
-{$IFDEF COMPILER6_UP}
-
 function VarXML: TVarType;
 begin
   Result := XMLVariant.VarType;
@@ -3913,8 +3805,6 @@ begin
   end;
 end;
 
-{$ENDIF COMPILER6_UP}
-
 procedure TJclSimpleXMLElemsProlog.Error(const S: string);
 begin
   raise EJclSimpleXMLError.Create(S);
@@ -4065,9 +3955,7 @@ initialization
   {$ENDIF UNITVERSIONING}
 
 finalization
-  {$IFDEF COMPILER6_UP}
   FreeAndNil(GlobalXMLVariant);
-  {$ENDIF COMPILER6_UP}
   FreeAndNil(GlobalSorts);
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);

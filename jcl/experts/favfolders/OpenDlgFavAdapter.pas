@@ -158,10 +158,8 @@ begin
         begin
           if FavOpenDialog.DisableHelpButton then
             Flags := Flags and (not OFN_SHOWHELP);
-          {$IFDEF DELPHI6_UP}
           if FavOpenDialog.DisablePlacesBar and (lStructSize = SizeOf(TOpenFilename)) then
             FlagsEx := FlagsEx or OFN_EX_NOPLACESBAR;
-          {$ENDIF DELPHI6_UP}
         end;
       end
       else

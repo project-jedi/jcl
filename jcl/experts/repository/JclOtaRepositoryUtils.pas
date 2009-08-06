@@ -46,9 +46,7 @@ type
   TJclRepositoryItemType = (ritForm, ritProject);
 
   // abstraction layer for all versions of Delphi from 5 to 2006
-  TJclOTARepositoryExpert = class(TJclOTAExpert,
-    {$IFDEF COMPILER6_UP} IInterface, {$ELSE COMPILER6_UP} IUnknown, {$ENDIF COMPILER6_UP}
-    {$IFDEF COMPILER6_UP} IOTARepositoryWizard60, {$ENDIF COMPILER6_UP}
+  TJclOTARepositoryExpert = class(TJclOTAExpert, IInterface, IOTARepositoryWizard60,
     {$IFDEF COMPILER8_UP} IOTARepositoryWizard80, {$ENDIF COMPILER8_UP}
     IOTARepositoryWizard,
     {$IFDEF COMPILER10_UP} IOTAProjectWizard100, {$ENDIF COMPILER10_UP}
@@ -84,12 +82,10 @@ type
     function GetAuthor: string;
     function GetComment: string;
     function GetPage: string;
-    function GetGlyph: {$IFDEF COMPILER6_UP} Cardinal {$ELSE COMPILER6_UP} HICON {$ENDIF COMPILER6_UP};
+    function GetGlyph: Cardinal;
 
-    {$IFDEF COMPILER6_UP}
     // IOTARepositoryWizard60
     function GetDesigner: string;
-    {$ENDIF COMPILER6_UP}
 
     {$IFDEF COMPILER8_UP}
     // IOTARepositoryWizard80
@@ -264,13 +260,11 @@ begin
   Result := FDescription;
 end;
 
-{$IFDEF COMPILER6_UP}
 //IOTARepositoryWizard60.GetDesigner
 function TJclOTARepositoryExpert.GetDesigner: string;
 begin
   Result := FDesigner;
 end;
-{$ENDIF COMPILER6_UP}
 
 {$IFDEF COMPILER8_UP}
 // IOTARepositoryWizard80.GetGalleryCategory
@@ -289,7 +283,7 @@ end;
 {$ENDIF COMPILER8_UP}
 
 //IOTARepositoryWizard.GetGlyph
-function TJclOTARepositoryExpert.GetGlyph: {$IFDEF COMPILER6_UP} Cardinal {$ELSE COMPILER6_UP} HICON {$ENDIF COMPILER6_UP};
+function TJclOTARepositoryExpert.GetGlyph: Cardinal;
 begin
   Result := FGlyph;
 end;

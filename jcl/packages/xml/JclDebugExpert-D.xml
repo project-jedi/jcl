@@ -2,7 +2,7 @@
 <Package Name="JclDebugExpert" Design="-1">
   <Description>JCL Debug IDE extension</Description>
   <GUID>{FC16FA9B-0429-42EB-9B53-30D19AAB3EE4}</GUID>
-  <C5PFlags>-LUvcl50 -LUdsnide50 -LUJclC50 -LUJclBaseExpertC50</C5PFlags>
+  <C5PFlags/>
   <C6PFlags>-LUdesignide</C6PFlags>
   <C5Libs/>
   <C6Libs/>
@@ -10,16 +10,14 @@
   <ImageBase>58020000</ImageBase>
   <Requires>
     <Package Name="rtl" Targets="allLibSuffix" Condition=""/>
-    <Package Name="vcl50" Targets="noLibSuffix" Condition=""/>
     <Package Name="vcl" Targets="allLibSuffix" Condition=""/>
-    <Package Name="dsnide50" Targets="noLibSuffix" Condition=""/>
     <Package Name="designide" Targets="allLibSuffix" Condition=""/>
-	<Package Name="Jcl-R" Targets="all" Condition=""/>
+    <Package Name="Jcl-R" Targets="all" Condition=""/>
     <Package Name="JclBaseExpert-D" Targets="all" Condition=""/>
   </Requires>
   <Contains>
-	<File Name="..\..\experts\debug\converter\JclDebugIdeResult.pas" Targets="runtimeIDE" Formname="JclDebugResultForm" Condition=""/>
-	<File Name="..\..\experts\debug\converter\JclDebugIdeImpl.pas" Targets="runtimeIDE" Formname="" Condition=""/>
+    <File Name="..\..\experts\debug\converter\JclDebugIdeResult.pas" Targets="runtimeIDE" Formname="JclDebugResultForm" Condition=""/>
+    <File Name="..\..\experts\debug\converter\JclDebugIdeImpl.pas" Targets="runtimeIDE" Formname="" Condition=""/>
     <File Name="..\..\experts\debug\converter\JclDebugIdeConfigFrame.pas" Targets="runtimeIDE" Formname="JclDebugIdeConfigFrame: TFrame" Condition=""/>
   </Contains>
 </Package>

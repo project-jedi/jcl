@@ -271,9 +271,6 @@ var
   ConfigurationMenuItem: TMenuItem = nil;
   ActionConfigureSheet: TJclOtaActionConfigureFrame = nil;
   UnitVersioningSheet: TJclOtaUnitVersioningFrame = nil;
-  {$IFNDEF COMPILER6_UP}
-  OldFindGlobalComponentProc: TFindGlobalComponent = nil;
-  {$ENDIF COMPILER6_UP}
 
 function FindActions(const Name: string): TComponent;
 var
@@ -289,10 +286,6 @@ begin
         if (CompareText(Name,TestAction.Name) = 0) then
           Result := TestAction;
       end;
-    {$IFNDEF COMPILER6_UP}
-    if (not Assigned(Result)) and Assigned(OldFindGlobalComponentProc) then
-      Result := OldFindGlobalComponentProc(Name)
-    {$ENDIF COMPILER6_UP}
   except
     on ExceptionObj: TObject do
     begin
@@ -954,11 +947,7 @@ end;
 
 function TJclOTAExpertBase.GetDesigner: string;
 begin
-  {$IFDEF COMPILER6_UP}
   Result := GetOTAServices.GetActiveDesignerType;
-  {$ELSE COMPILER6_UP}
-  Result := JclDesignerAny;
-  {$ENDIF COMPILER6_UP}
 end;
 
 function TJclOTAExpertBase.GetDrcFileName(const Project: IOTAProject): TFileName;
@@ -1319,14 +1308,12 @@ end;
 {$ENDIF BDS}
 
 procedure TJclOTAExpertBase.ReadEnvVariables;
-{$IFDEF COMPILER6_UP}
 var
   I: Integer;
   EnvNames: TStringList;
   {$IFDEF MSWINDOWS}
   EnvVarKeyName: string;
   {$ENDIF MSWINDOWS}
-{$ENDIF COMPILER6_UP}
 begin
   FEnvVariables.Clear;
 
@@ -1334,7 +1321,6 @@ begin
   GetEnvironmentVars(FEnvVariables, False);
 
   // read Delphi environment variables
-  {$IFDEF COMPILER6_UP}
   EnvNames := TStringList.Create;
   try
     {$IFDEF MSWINDOWS}
@@ -1348,7 +1334,6 @@ begin
   finally
     EnvNames.Free;
   end;
-  {$ENDIF COMPILER6_UP}
 
   // add the Delphi directory
   FEnvVariables.Values[DelphiEnvironmentVar] := RootDir;
@@ -1384,15 +1369,7 @@ begin
   if not Assigned(GlobalActionList) then
   begin
     GlobalActionList := TList.Create;
-    {$IFDEF COMPILER6_UP}
     RegisterFindGlobalComponentProc(FindActions);
-    {$ELSE COMPILER6_UP}
-    if not Assigned(OldFindGlobalComponentProc) then
-    begin
-      OldFindGlobalComponentProc := FindGlobalComponent;
-      FindGlobalComponent := FindActions;
-    end;
-    {$ENDIF COMPILER6_UP}
   end;
 
   GlobalActionList.Add(Action);
@@ -1411,11 +1388,7 @@ begin
     if (GlobalActionList.Count = 0) then
     begin
       FreeAndNil(GlobalActionList);
-      {$IFDEF COMPILER6_UP}
       UnRegisterFindGlobalComponentProc(FindActions);
-      {$ELSE COMPILER6_UP}
-      FindGlobalComponent := OldFindGlobalComponentProc;
-      {$ENDIF COMPILER6_UP}
     end;
   end;
 

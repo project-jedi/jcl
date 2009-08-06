@@ -54,9 +54,6 @@ uses
 {$IFDEF FPC}
  {$UNDEF HAS_TSTRINGS_COMPARESTRINGS}
 {$ENDIF FPC}
-{$IFDEF COMPILER5}
- {$UNDEF HAS_TSTRINGS_COMPARESTRINGS}
-{$ENDIF COMPILER5}
 
 type
   IJclStringList = interface;
@@ -78,9 +75,7 @@ type
     function GetValue(const Name: string): string;
     function Find(const S: string; var Index: Integer): Boolean;
     function IndexOf(const S: string): Integer;
-    {$IFDEF COMPILER6_UP}
     function GetCaseSensitive: Boolean;
-    {$ENDIF COMPILER6_UP}
     function GetDuplicates: TDuplicates;
     function GetOnChange: TNotifyEvent;
     function GetOnChanging: TNotifyEvent;
@@ -93,39 +88,29 @@ type
     function SaveToFile(const FileName: string): IJclStringList;
     function SaveToStream(Stream: TStream): IJclStringList;
     function GetCommaText: string;
-    {$IFDEF COMPILER6_UP}
     function GetDelimitedText: string;
     function GetDelimiter: Char;
-    {$ENDIF COMPILER6_UP}
     function GetName(Index: Integer): string;
     {$IFDEF COMPILER7_UP}
     function GetNameValueSeparator: Char;
     function GetValueFromIndex(Index: Integer): string;
     {$ENDIF COMPILER7_UP}
-    {$IFDEF COMPILER6_UP}
     function GetQuoteChar: Char;
-    {$ENDIF COMPILER6_UP}
     procedure SetCommaText(const Value: string);
-    {$IFDEF COMPILER6_UP}
     procedure SetDelimitedText(const Value: string);
     procedure SetDelimiter(const Value: Char);
-    {$ENDIF COMPILER6_UP}
     {$IFDEF COMPILER7_UP}
     procedure SetNameValueSeparator(const Value: Char);
     procedure SetValueFromIndex(Index: Integer; const Value: string);
     {$ENDIF COMPILER7_UP}
-    {$IFDEF COMPILER6_UP}
     procedure SetQuoteChar(const Value: Char);
-    {$ENDIF COMPILER6_UP}
     procedure AddStrings(Strings: TStrings); overload;
     procedure SetObjects(Index: Integer; const Value: TObject);
     procedure Put(Index: Integer; const S: string);
     procedure SetCapacity(NewCapacity: Integer);
     procedure SetTextStr(const Value: string);
     procedure SetValue(const Name, Value: string);
-    {$IFDEF COMPILER6_UP}
     procedure SetCaseSensitive(const Value: Boolean);
-    {$ENDIF COMPILER6_UP}
     procedure SetDuplicates(const Value: TDuplicates);
     procedure SetOnChange(const Value: TNotifyEvent);
     procedure SetOnChanging(const Value: TNotifyEvent);
@@ -138,19 +123,13 @@ type
     property Values[const Name: string]: string read GetValue write SetValue;
     property Duplicates: TDuplicates read GetDuplicates write SetDuplicates;
     property Sorted: Boolean read GetSorted write SetSorted;
-    {$IFDEF COMPILER6_UP}
     property CaseSensitive: Boolean read GetCaseSensitive write SetCaseSensitive;
-    {$ENDIF COMPILER6_UP}
     property OnChange: TNotifyEvent read GetOnChange write SetOnChange;
     property OnChanging: TNotifyEvent read GetOnChanging write SetOnChanging;
-    {$IFDEF COMPILER6_UP}
     property DelimitedText: string read GetDelimitedText write SetDelimitedText;
     property Delimiter: Char read GetDelimiter write SetDelimiter;
-    {$ENDIF COMPILER6_UP}
     property Names[Index: Integer]: string read GetName;
-    {$IFDEF COMPILER6_UP}
     property QuoteChar: Char read GetQuoteChar write SetQuoteChar;
-    {$ENDIF COMPILER6_UP}
     property CommaText: string read GetCommaText write SetCommaText;
     {$IFDEF COMPILER7_UP}
     property ValueFromIndex[Index: Integer]: string read GetValueFromIndex write SetValueFromIndex;
@@ -285,26 +264,20 @@ type
     function GetValue(const Name: string): string;
     function GetVariants(AIndex: Integer): Variant;
     function GetKeyList(const AKey: string): IJclStringList;
-    {$IFDEF COMPILER6_UP}
     function GetCaseSensitive: Boolean;
-    {$ENDIF COMPILER6_UP}
     function GetDuplicates: TDuplicates;
     function GetOnChange: TNotifyEvent;
     function GetOnChanging: TNotifyEvent;
     function GetSorted: Boolean;
     function GetCommaText: string;
-    {$IFDEF COMPILER6_UP}
     function GetDelimitedText: string;
     function GetDelimiter: Char;
-    {$ENDIF COMPILER6_UP}
     function GetName(Index: Integer): string;
     {$IFDEF COMPILER7_UP}
     function GetNameValueSeparator: Char;
     function GetValueFromIndex(Index: Integer): string;
     {$ENDIF COMPILER7_UP}
-    {$IFDEF COMPILER6_UP}
     function GetQuoteChar: Char;
-    {$ENDIF COMPILER6_UP}
     function GetInterfaceByIndex(AIndex: Integer): IInterface;
     function GetObjects(Index: Integer): TObject;
     procedure SetValue(const Name, Value: string);
@@ -314,25 +287,19 @@ type
     procedure SetKeyVariant(const AKey: string; const Value: Variant);
     procedure SetLists(Index: Integer; const Value: IJclStringList);
     procedure SetVariants(Index: Integer; const Value: Variant);
-    {$IFDEF COMPILER6_UP}
     procedure SetCaseSensitive(const Value: Boolean);
-    {$ENDIF COMPILER6_UP}
     procedure SetDuplicates(const Value: TDuplicates);
     procedure SetOnChange(const Value: TNotifyEvent);
     procedure SetOnChanging(const Value: TNotifyEvent);
     procedure SetSorted(const Value: Boolean);
     procedure SetCommaText(const Value: string);
-    {$IFDEF COMPILER6_UP}
     procedure SetDelimitedText(const Value: string);
     procedure SetDelimiter(const Value: Char);
-    {$ENDIF COMPILER6_UP}
     {$IFDEF COMPILER7_UP}
     procedure SetNameValueSeparator(const Value: Char);
     procedure SetValueFromIndex(Index: Integer; const Value: string);
     {$ENDIF COMPILER7_UP}
-    {$IFDEF COMPILER6_UP}
     procedure SetQuoteChar(const Value: Char);
-    {$ENDIF COMPILER6_UP}
     procedure SetInterfaceByIndex(Index: Integer; const Value: IInterface);
     procedure SetObjects(Index: Integer; const Value: TObject);
     procedure EnsureObjectsMode(AMode: TJclStringListObjectsMode);
@@ -393,14 +360,10 @@ type
     function Assign(Source: TPersistent): IJclStringList; reintroduce;
     { From TStrings/TStringList }
     property Values[const Name: string]: string read GetValue write SetValue;
-    {$IFDEF COMPILER6_UP}
     property DelimitedText: string read GetDelimitedText write SetDelimitedText;
     property Delimiter: Char read GetDelimiter write SetDelimiter;
-    {$ENDIF COMPILER6_UP}
     property Names[Index: Integer]: string read GetName;
-    {$IFDEF COMPILER6_UP}
     property QuoteChar: Char read GetQuoteChar write SetQuoteChar;
-    {$ENDIF COMPILER6_UP}
     property CommaText: string read GetCommaText write SetCommaText;
     {$IFDEF COMPILER7_UP}
     property ValueFromIndex[Index: Integer]: string read GetValueFromIndex write SetValueFromIndex;
@@ -408,9 +371,7 @@ type
     {$ENDIF COMPILER7_UP}
     property Duplicates: TDuplicates read GetDuplicates write SetDuplicates;
     property Sorted: Boolean read GetSorted write SetSorted;
-    {$IFDEF COMPILER6_UP}
     property CaseSensitive: Boolean read GetCaseSensitive write SetCaseSensitive;
-    {$ENDIF COMPILER6_UP}
     property OnChange: TNotifyEvent read GetOnChange write SetOnChange;
     property OnChanging: TNotifyEvent read GetOnChanging write SetOnChanging;
     { New }
@@ -669,12 +630,10 @@ begin
     FRegEx := TJclAnsiRegEx.Create;
   if FLastRegExPattern <> APattern then
   begin
-    {$IFDEF COMPILER6_UP}
     if CaseSensitive then
       FRegEx.Options := FRegEx.Options - [roIgnoreCase]
     else
       FRegEx.Options := FRegEx.Options + [roIgnoreCase];
-    {$ENDIF COMPILER6_UP}
     FRegEx.Compile(APattern, False, True);
     FLastRegExPattern := APattern;
   end;
@@ -782,11 +741,7 @@ begin
   inherited Create;
   FUpdateControl := TUpdateControl.Create(Self);
   if QueryInterface(IJclStringList, FSelfAsInterface) <> 0 then
-    {$IFDEF COMPILER5}
-    RunError(228 { reIntfCastError });
-    {$ELSE ~COMPILER5}
     System.Error(reIntfCastError);
-    {$ENDIF ~COMPILER5}
 end;
 
 function TJclStringListImpl.GetLists(Index: Integer): IJclStringList;
@@ -1064,12 +1019,10 @@ begin
   Result := FSelfAsInterface;
 end;
 
-{$IFDEF COMPILER6_UP}
 function TJclStringListImpl.GetCaseSensitive: Boolean;
 begin
   Result := inherited CaseSensitive;
 end;
-{$ENDIF COMPILER6_UP}
 
 function TJclStringListImpl.GetDuplicates: TDuplicates;
 begin
@@ -1091,12 +1044,10 @@ begin
   Result := inherited Sorted;
 end;
 
-{$IFDEF COMPILER6_UP}
 procedure TJclStringListImpl.SetCaseSensitive(const Value: Boolean);
 begin
   inherited CaseSensitive := Value;
 end;
-{$ENDIF COMPILER6_UP}
 
 procedure TJclStringListImpl.SetDuplicates(const Value: TDuplicates);
 begin
@@ -1147,8 +1098,6 @@ begin
   Result := inherited CommaText;
 end;
 
-{$IFDEF COMPILER6_UP}
-
 function TJclStringListImpl.GetDelimitedText: string;
 begin
   Result := inherited DelimitedText;
@@ -1158,8 +1107,6 @@ function TJclStringListImpl.GetDelimiter: Char;
 begin
   Result := inherited Delimiter;
 end;
-
-{$ENDIF COMPILER6_UP}
 
 function TJclStringListImpl.GetName(Index: Integer): string;
 begin
@@ -1180,19 +1127,15 @@ end;
 
 {$ENDIF COMPILER7_UP}
 
-{$IFDEF COMPILER6_UP}
 function TJclStringListImpl.GetQuoteChar: Char;
 begin
   Result := inherited QuoteChar;
 end;
-{$ENDIF COMPILER6_UP}
 
 procedure TJclStringListImpl.SetCommaText(const Value: string);
 begin
   inherited CommaText := Value;
 end;
-
-{$IFDEF COMPILER6_UP}
 
 procedure TJclStringListImpl.SetDelimitedText(const Value: string);
 begin
@@ -1203,8 +1146,6 @@ procedure TJclStringListImpl.SetDelimiter(const Value: Char);
 begin
   inherited Delimiter := Value;
 end;
-
-{$ENDIF COMPILER6_UP}
 
 {$IFDEF COMPILER7_UP}
 
@@ -1220,12 +1161,10 @@ end;
 
 {$ENDIF COMPILER7_UP}
 
-{$IFDEF COMPILER6_UP}
 procedure TJclStringListImpl.SetQuoteChar(const Value: Char);
 begin
   inherited QuoteChar := Value;
 end;
-{$ENDIF COMPILER6_UP}
 
 function TJclStringListImpl.Delimit(const ADelimiter: string): IJclStringList;
 var

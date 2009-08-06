@@ -59,10 +59,6 @@ const
   StreamDefaultBufferSize = 4096;
 
 type
-  {$IFDEF COMPILER5}
-  TSeekOrigin = (soBeginning, soCurrent, soEnd);
-  {$ENDIF COMPILER5}
-
   EJclStreamError = class(EJclError);
 
   // abstraction layer to support Delphi 5 and C++Builder 5 streams
@@ -70,12 +66,10 @@ type
   TJclStream = class(TStream)
   protected
     procedure SetSize(NewSize: Longint); overload; override;
-    procedure SetSize(const NewSize: Int64);
-      {$IFDEF COMPILER5} reintroduce; overload; virtual; {$ELSE} overload; override; {$ENDIF}
+    procedure SetSize(const NewSize: Int64); overload; override;
   public
     function Seek(Offset: Longint; Origin: Word): Longint; overload; override;
-    function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64;
-      {$IFDEF COMPILER5} reintroduce; overload; virtual; {$ELSE} overload; override; {$ENDIF}
+    function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64; overload; override;
     procedure LoadFromStream(Source: TStream; BufferSize: Longint = StreamDefaultBufferSize); virtual;
     procedure LoadFromFile(const FileName: TFileName; BufferSize: Longint = StreamDefaultBufferSize); virtual;
     procedure SaveToStream(Dest: TStream; BufferSize: Longint = StreamDefaultBufferSize); virtual;
@@ -574,19 +568,7 @@ function StreamSeek(Stream: TStream; const Offset: Int64;
   const Origin: TSeekOrigin): Int64; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF SUPPORTS_INLINE}
 begin
   if Assigned(Stream) then
-  begin
-    {$IFDEF COMPILER5}
-    if Stream is TJclStream then
-      Result := TJclStream(Stream).Seek(Offset, Origin)
-    else
-    if (Offset > -MaxLongint) and (Offset <= MaxLongint) then
-      Result := Stream.Seek(Longint(Offset), Ord(Origin))
-    else
-      Result := -1;
-    {$ELSE ~COMPILER5}
-    Result := Stream.Seek(Offset, Origin);
-    {$ENDIF ~COMPILER5}
-  end
+    Result := Stream.Seek(Offset, Origin)
   else
     Result := -1;
 end;
@@ -1973,7 +1955,7 @@ var
   CRC: Word;
 begin
   CRC := FBuffer[FBufferCurrentSize] + (FBuffer[FBufferCurrentSize + 1] shl 8);
-  if {$IFDEF COMPILER5}CheckCrc16D5{$ELSE}CheckCrc16{$ENDIF COMPILER5}(FBuffer, FBufferCurrentSize, CRC) < 0 then
+  if CheckCrc16(FBuffer, FBufferCurrentSize, CRC) < 0 then
     raise EJclStreamError.CreateRes(@RsStreamsCRCError);
 end;
 
@@ -1999,7 +1981,7 @@ var
 begin
   CRC := FBuffer[FBufferCurrentSize] + (FBuffer[FBufferCurrentSize + 1] shl 8)
     + (FBuffer[FBufferCurrentSize + 2] shl 16) + (FBuffer[FBufferCurrentSize + 3] shl 24);
-  if {$IFDEF COMPILER5}CheckCrc32D5{$ELSE}CheckCrc32{$ENDIF COMPILER5}(FBuffer, FBufferCurrentSize, CRC) < 0 then
+  if CheckCrc32(FBuffer, FBufferCurrentSize, CRC) < 0 then
     raise EJclStreamError.CreateRes(@RsStreamsCRCError);
 end;
 

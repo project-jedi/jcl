@@ -38,15 +38,6 @@ interface
 
 {$I jcl.inc}
 
-{$IFDEF COMPILER5}
-{ The Delphi 5 compiler crashes with the internal compiler error L1496 if the Y+
-  option is missing for this file. Without this Y+ line the compiler can BUILD the
-  JCL package but cannot MAKE it without failing with an internal error.
-  Furthermore the JVCL Installer cannot be compiled without the compiler internal
-  error L1496. }
-{$REFERENCEINFO ON}
-{$ENDIF COMPILER5}
-
 uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
@@ -281,11 +272,7 @@ end;
 procedure HookedRaiseException(ExceptionCode, ExceptionFlags, NumberOfArguments: DWORD;
   Arguments: PExceptionArguments); stdcall;
 const
-  {$IFDEF DELPHI2}
-  cDelphiException = $0EEDFACE;
-  {$ELSE ~DELPHI2}
   cDelphiException = $0EEDFADE;
-  {$ENDIF ~DELPHI2}
   cNonContinuable = 1;
 begin
   if (ExceptionFlags = cNonContinuable) and (ExceptionCode = cDelphiException) and

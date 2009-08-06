@@ -1703,16 +1703,10 @@ var
 
         for I := Low(JclSourceDirs) to High(JclSourceDirs) do
         begin
-          if (JclSourceDirs[I] = JclSrcDirVcl) then
-          begin
-            if OptionChecked[joJCLMakeReleaseVCL] or
-              ((Target.VersionNumber <= 5) and (Target.RadToolKind <> brBorlandDevStudio)) then
-              MarkOptionBegin(joJCLMakeReleaseVCL)
-            else
-              Continue;
-          end;
+          if (JclSourceDirs[I] = JclSrcDirVcl) and OptionChecked[joJCLMakeReleaseVCL] then
+            MarkOptionBegin(joJCLMakeReleaseVCL);
           Result := Result and CompileLibraryUnits(JclSourceDirs[I], False);
-          if (JclSourceDirs[I] = JclSrcDirVcl) then
+          if (JclSourceDirs[I] = JclSrcDirVcl) and OptionChecked[joJCLMakeReleaseVCL] then
             MarkOptionEnd(joJCLMakeReleaseVCL, Result);
         end;
         MarkOptionEnd(joJCLMakeRelease, Result);
@@ -1723,16 +1717,10 @@ var
         MarkOptionBegin(joJCLMakeDebug);
         for I := Low(JclSourceDirs) to High(JclSourceDirs) do
         begin
-          if (JclSourceDirs[I] = JclSrcDirVcl) then
-          begin
-            if OptionChecked[joJCLMakeDebugVCL] or
-              ((Target.VersionNumber <= 5) and (Target.RadToolKind <> brBorlandDevStudio)) then
-              MarkOptionBegin(joJCLMakeDebugVCL)
-            else
-              Continue;
-          end;
+          if (JclSourceDirs[I] = JclSrcDirVcl) and OptionChecked[joJCLMakeDebugVCL] then
+            MarkOptionBegin(joJCLMakeDebugVCL);
           Result := Result and CompileLibraryUnits(JclSourceDirs[I], True);
-          if (JclSourceDirs[I] = JclSrcDirVcl) then
+          if (JclSourceDirs[I] = JclSrcDirVcl) and OptionChecked[joJCLMakeDebugVCL] then
             MarkOptionEnd(joJCLMakeDebugVCL, Result);
         end;
         MarkOptionEnd(joJCLMakeDebug, Result);
@@ -2864,7 +2852,6 @@ var
   FirstCompilationOk: Boolean;
 const
   WizardEntryPoint = 'INITWIZARD0001';
-  // @*@JCLWizardInit$qqsx56System@%DelphiInterface$t28Toolsapi@IBorlandIDEServices%pqqrx47System@%DelphiInterface$t19Toolsapi@IOTAWizard%$orpqqrv$v
   InternalEntryPoint = '@JCLWizardInit$';
 begin
   ProjectFileName := PathAddSeparator(Distribution.JclPath) + Name;
@@ -3151,9 +3138,9 @@ function TJclDistribution.CreateInstall(Target: TJclBorRADToolInstallation): Boo
   begin
     case Target.RadToolKind of
       brDelphi :
-        Result := Target.VersionNumber in [5, 6, 7];
+        Result := Target.VersionNumber in [6, 7];
       brCppBuilder :
-        Result := Target.VersionNumber in [5, 6];
+        Result := Target.VersionNumber in [6];
       brBorlandDevStudio :
         Result := ((Target.VersionNumber in [1, 2]) and (bpDelphi32 in Target.Personalities))
           or (Target.VersionNumber in [3, 4, 5, 6]);

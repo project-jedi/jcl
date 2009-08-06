@@ -523,13 +523,8 @@ var
 
   procedure LoadDcc32Strings;
   const
-    {$IFDEF COMPILER6}
     SErrorID = 4147; // 'Error'
     SUndeclaredIdentID = 47; // 'Undeclared identifier: ''%s'''
-    {$ELSE}
-    SErrorID = 4200;
-    SUndeclaredIdentID = 2;
-    {$ENDIF COMPILER6}
   var
     Dcc32FileName: string;
     Dcc32: HMODULE;
@@ -543,11 +538,9 @@ var
 
     // try to retrieve and prepend Delphi bin path
     S := (BorlandIDEServices as IOTAServices).GetBaseRegistryKey;
-    {$IFDEF COMPILER6_UP}
     if RegKeyExists(HKEY_CURRENT_USER, S) then
       Dcc32FileName := PathAddSeparator(RegReadString(HKEY_CURRENT_USER, S, 'RootDir')) + 'Bin\' + Dcc32FileName
     else
-    {$ENDIF COMPILER6_UP}
     if RegKeyExists(HKEY_LOCAL_MACHINE, S) then
       Dcc32FileName := PathAddSeparator(RegReadString(HKEY_LOCAL_MACHINE, S, 'RootDir')) + 'Bin\' + Dcc32FileName;
 

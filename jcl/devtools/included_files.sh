@@ -2,9 +2,7 @@
 #
 # shell script to create templates
 
-cp ../source/include/jcl.template.inc ../source/include/jclc5.inc
 cp ../source/include/jcl.template.inc ../source/include/jclc6.inc
-cp ../source/include/jcl.template.inc ../source/include/jcld5.inc
 cp ../source/include/jcl.template.inc ../source/include/jcld6.inc
 cp ../source/include/jcl.template.inc ../source/include/jcld7.inc
 cp ../source/include/jcl.template.inc ../source/include/jclcs1.inc

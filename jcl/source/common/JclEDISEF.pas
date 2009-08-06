@@ -4197,11 +4197,7 @@ var
   SearchResult, SearchResult2: Integer;
 begin
   INI.Clear;
-  {$IFDEF COMPILER6_UP}
   INI.Delimiter := SEFDelimiter_Comma;
-  {$ELSE ~COMPILER6_UP}
-  // TODO : (rom) ?
-  {$ENDIF ~COMPILER6_UP}
   SearchResult := StrSearch(SectionTag_INI, FData, 1);
   if SearchResult > 0 then
   begin
@@ -4287,32 +4283,16 @@ var
   SearchResult, SearchResult2: Integer;
 begin
   STD.Clear;
-  {$IFDEF COMPILER6_UP}
   STD.Delimiter := SEFDelimiter_Comma;
-  {$ELSE ~COMPILER6_UP}
-  // TODO : (rom) ?
-  {$ENDIF ~COMPILER6_UP}
   SearchResult := StrSearch(SectionTag_STD, FData, 1);
   if SearchResult > 0 then
   begin
     SearchResult := SearchResult + Length(SectionTag_STD + NativeLineBreak);
     SearchResult2 := StrSearch(NativeLineBreak + SEFDelimiter_Period, FData, SearchResult + 1);
     if SearchResult2 <> 0 then
-    begin
-      {$IFDEF COMPILER6_UP}
-      STD.DelimitedText := Copy(FData, SearchResult, SearchResult2 - SearchResult);
-      {$ELSE ~COMPILER6_UP}
-      STD.Text := Copy(FData, SearchResult, SearchResult2 - SearchResult);
-      {$ENDIF ~COMPILER6_UP}
-    end
+      STD.DelimitedText := Copy(FData, SearchResult, SearchResult2 - SearchResult)
     else
-    begin
-      {$IFDEF COMPILER6_UP}
       STD.DelimitedText := Copy(FData, SearchResult, (Length(FData) - SearchResult) + 1);
-      {$ELSE ~COMPILER6_UP}
-      STD.Text := Copy(FData, SearchResult, (Length(FData) - SearchResult) + 1);
-      {$ENDIF ~COMPILER6_UP}
-    end;
   end;
 end;
 

@@ -999,10 +999,7 @@ var
   P1, P2: PWideChar;
   C: WideChar;
 begin
-  // WideString are ref counted starting from COMPILER6_UP (Linux only)
-  {$IFDEF COMPILER6_UP}
   UniqueString(S);
-  {$ENDIF COMPILER6_UP}
   P1 := PWideChar(S);
   P2 := PWideChar(S) + Length(S) - 1;
   while P1 < P2 do

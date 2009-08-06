@@ -639,7 +639,6 @@ var
   AOTAModule: IOTAModule;
 begin
   AOTAModule := GetOTAModuleServices.CurrentModule;
-  {$IFDEF COMPILER6_UP}
   //SC  20/03/2007
   if Assigned(AOTAModule) and Assigned(AOTAModule.CurrentEditor) then
   begin
@@ -648,7 +647,6 @@ begin
   end
   //SC  20/03/2007
   else
-  {$ENDIF COMPILER6_UP}
   if Assigned(AOTAModule) and (AOTAModule.FileSystem = '') then
     Result := AOTAModule.FileName
   else

@@ -2,7 +2,7 @@
 <Package Name="JclUsesExpert" Design="-1">
   <Description>JCL Uses Wizard</Description>
   <GUID>{76252B53-2477-4C6C-B7DA-1020496C7C72}</GUID>
-  <C5PFlags>-LUvcl50 -LUdsnide50 -LUJclC50 -LUJclBaseExpertC50</C5PFlags>
+  <C5PFlags/>
   <C6PFlags>-LUdesignide</C6PFlags>
   <C5Libs/>
   <C6Libs/>
@@ -10,11 +10,9 @@
   <ImageBase>580C0000</ImageBase>
   <Requires>
     <Package Name="rtl" Targets="allLibSuffix" Condition=""/>
-    <Package Name="vcl50" Targets="noLibSuffix" Condition=""/>
     <Package Name="vcl" Targets="allLibSuffix" Condition=""/>
-    <Package Name="dsnide50" Targets="noLibSuffix" Condition=""/>
     <Package Name="designide" Targets="allLibSuffix" Condition=""/>
-	<Package Name="Jcl-R" Targets="all" Condition=""/>
+    <Package Name="Jcl-R" Targets="all" Condition=""/>
     <Package Name="JclBaseExpert-D" Targets="all" Condition=""/>
   </Requires>
   <Contains>

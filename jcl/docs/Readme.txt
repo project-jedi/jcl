@@ -43,10 +43,7 @@ Head changes:
 
 Important:
 
- - This release is the last one to support Delphi 5 and C++Builder 5, the upcoming
-   JCL 2.x release will NOT support these tools;
-
- - The support for Delphi 2005 is broken because of various compiler internal failures;
+ - As of JCL 2.0, the library does not support Delphi 5 and C++Builder 5 anymore;
 
  - Note that the package naming has changed: the same package name is used by
    all versions of the compiler supporting suffixes (C++Builder 6, Delphi 6,
@@ -98,8 +95,8 @@ Only design-time support (only experts):
  - Delphi 8.net (cf Installation notes).
 
 Both supports (run time and design time):
- - Delphi version 5, 6, 7;
- - C++Builder version 5 & 6;
+ - Delphi 6 and Delphi 7;
+ - C++Builder 6;
  - Borland Developer Studio 2006 (Delphi for Win32, C++Builder for Win32,
    Delphi.net and C#Builder personalities);
  - Turbo Delphi (explorer and professional - cf Installation notes);
@@ -169,9 +166,7 @@ included file.
 For each tool you want to install the JCL in, repeat the following steps:
 
 1. Open and edit included file to customize options:
- - For C++Builder 5: source\include\jclc5.inc
  - For C++Builder 6: source\include\jclc6.inc
- - For Delphi 5: source\include\jcld5.inc
  - For Delphi 6: source\include\jcld6.inc
  - For Delphi 7: source\include\jcld7.inc
  - For Delphi 2005: source\include\jcld9.inc

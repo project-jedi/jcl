@@ -4043,15 +4043,6 @@ end;
 {$ENDIF UNIX}
 {$IFDEF MSWINDOWS}
 
-  {$IFDEF COMPILER5}
-  function IsZero(const A: Double): Boolean;
-  const
-    DoubleResolution = 1E-15 * 1000;
-  begin
-    Result := Abs(A) <= DoubleResolution;
-  end;
-  {$ENDIF COMPILER5}
-
 var
   T0, T1: Int64;
   CountFreq: Int64;

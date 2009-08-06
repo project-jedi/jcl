@@ -300,8 +300,8 @@ type
     FSESegment: TEDISegment;
     function GetSegment(Index: Integer): TEDISegment;
     procedure SetSegment(Index: Integer; Segment: TEDISegment);
-    procedure SetSTSegment({$IFNDEF BCB6} const {$ENDIF} STSegment: TEDISegment);
-    procedure SetSESegment({$IFNDEF BCB6} const {$ENDIF} SESegment: TEDISegment);
+    procedure SetSTSegment(STSegment: TEDISegment);
+    procedure SetSESegment(SESegment: TEDISegment);
   protected
     procedure InternalCreateHeaderTrailerSegments; virtual;
     function InternalCreateSegment: TEDISegment; virtual;
@@ -1177,7 +1177,7 @@ begin
   SetEDIDataObject(Index, Segment);
 end;
 
-procedure TEDITransactionSet.SetSESegment({$IFNDEF BCB6} const {$ENDIF} SESegment: TEDISegment);
+procedure TEDITransactionSet.SetSESegment(SESegment: TEDISegment);
 begin
   FreeAndNil(FSESegment);
   FSESegment := SESegment;
@@ -1185,7 +1185,7 @@ begin
     FSESegment.Parent := Self;
 end;
 
-procedure TEDITransactionSet.SetSTSegment({$IFNDEF BCB6} const {$ENDIF} STSegment: TEDISegment);
+procedure TEDITransactionSet.SetSTSegment(STSegment: TEDISegment);
 begin
   FreeAndNil(FSTSegment);
   FSTSegment := STSegment;

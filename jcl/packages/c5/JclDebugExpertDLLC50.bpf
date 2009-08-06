@@ -1,6 +1,0 @@
-USEUNIT("..\..\experts\debug\converter\JclDebugIdeResult.pas");
-USEUNIT("..\..\experts\debug\converter\JclDebugIdeImpl.pas");
-USEUNIT("..\..\experts\debug\converter\JclDebugIdeConfigFrame.pas");
-USEDEF("JclDebugExpertDLLC50.def");
-Project file
-DllEntryPoint

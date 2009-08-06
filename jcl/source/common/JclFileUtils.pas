@@ -4471,11 +4471,7 @@ begin
           FillByteArray(ContentPtr, BUFSIZE, EVEN_FILL)
         else
           FillByteArray(ContentPtr, BUFSIZE, ODD_FILL);
-        {$IFDEF COMPILER6_UP}
         Fs.Seek(0, soBeginning);
-        {$ELSE ~COMPILER6_UP}
-        Fs.Seek(0, soFromBeginning);
-        {$ENDIF ~COMPILER6_UP}
         N := Size div BUFSIZE;
         while N > 0 do
         begin

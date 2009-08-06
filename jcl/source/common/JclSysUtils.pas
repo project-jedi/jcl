@@ -255,10 +255,7 @@ function Iff(const Condition: Boolean; const TruePart, FalsePart: Boolean): Bool
 function Iff(const Condition: Boolean; const TruePart, FalsePart: Pointer): Pointer; overload;
 function Iff(const Condition: Boolean; const TruePart, FalsePart: Int64): Int64; overload;
 {$IFDEF SUPPORTS_VARIANT}
-{$IFDEF COMPILER6_UP}  { TODO -cFPC : Check FPC }
-// because Compiler 5 can not differentiate between Variant and Byte, Integer, ... in case of overload
 function Iff(const Condition: Boolean; const TruePart, FalsePart: Variant): Variant; overload;
-{$ENDIF COMPILER6_UP}
 {$ENDIF SUPPORTS_VARIANT}
 
 // Classes information and manipulation
@@ -631,9 +628,6 @@ uses
   {$IFDEF HAS_UNIT_ANSISTRINGS}
   AnsiStrings,
   {$ENDIF HAS_UNIT_ANSISTRINGS}
-  {$IFDEF COMPILER5}
-  JclWideStrings,
-  {$ENDIF COMPILER5}
   JclFileUtils, JclMath, JclResources, JclStrings, JclStringConversions, JclSysInfo;
 
 // memory initialization
@@ -1109,11 +1103,7 @@ begin
   else
   begin
     if FileMappingHandle = 0 then
-      {$IFDEF COMPILER6_UP}
       RaiseLastOSError;
-      {$ELSE ~COMPILER6_UP}
-      RaiseLastWin32Error;
-      {$ENDIF ~COMPILER6_UP}
   end;
 
   // map view
@@ -1121,11 +1111,7 @@ begin
   if Pointer(P) = nil then
   begin
     try
-      {$IFDEF COMPILER6_UP}
       RaiseLastOSError;
-      {$ELSE ~COMPILER6_UP}
-      RaiseLastWin32Error;
-      {$ENDIF ~COMPILER6_UP}
     except
       CloseHandle(FileMappingHandle);
       raise;
@@ -1703,7 +1689,6 @@ begin
 end;
 
 {$IFDEF SUPPORTS_VARIANT}
-{$IFDEF COMPILER6_UP}
 function Iff(const Condition: Boolean; const TruePart, FalsePart: Variant): Variant; overload;
 begin
   if Condition then
@@ -1711,7 +1696,6 @@ begin
   else
     Result := FalsePart;
 end;
-{$ENDIF COMPILER6_UP}
 {$ENDIF SUPPORTS_VARIANT}
 
 //=== Classes information and manipulation ===================================

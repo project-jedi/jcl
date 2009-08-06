@@ -44,9 +44,7 @@ const
   RegJclKey             = 'Jedi\JCL\';
   RegJclIDEKey          = RegJclKey + 'IDE\';
   DelphiEnvironmentVar  = 'DELPHI';
-  {$IFDEF COMPILER6_UP}
   EnvironmentVarsKey    = 'Environment Variables';
-  {$ENDIF COMPILER6_UP}
 
   //=== Various constants shared by different experts ========================
   JclLeft   = 'Left';
@@ -54,8 +52,8 @@ const
   JclWidth  = 'Right';
   JclHeight = 'Height';
 
-  JclDesignerAny = {$IFDEF COMPILER6_UP} dAny {$ELSE COMPILER6_UP} '' {$ENDIF COMPILER6_UP};
-  JclDesignerVcl = {$IFDEF COMPILER6_UP} dVcl {$ELSE COMPILER6_UP} '' {$ENDIF COMPILER6_UP};
+  JclDesignerAny = dAny;
+  JclDesignerVcl = dVcl;
   JclDelphiPersonality = {$IFDEF BDS} sDelphiPersonality {$ELSE BDS} '' {$ENDIF BDS};
   JclCBuilderPersonality = {$IFDEF BDS} sCBuilderPersonality {$ELSE BDS} '' {$ENDIF BDS};
 
@@ -134,7 +132,7 @@ const
   //=== Repository Expert ====================================================
   JclRepositoryCategoryDelphiFiles = {$IFDEF BDS} sCategoryDelphiNewFiles {$ELSE BDS} '' {$ENDIF BDS};
   JclRepositoryCategoryCBuilderFiles = {$IFDEF BDS} sCategoryCBuilderNewFiles {$ELSE BDS} '' {$ENDIF BDS};
-  JclRepositoryModuleTypeForm = {$IFDEF COMPILER6_UP} omtForm {$ELSE COMPILER6_UP} 0 {$ENDIF COMPILER6_UP};  
+  JclRepositoryModuleTypeForm = omtForm;  
 
   //=== Version Control Expert ===============================================
   JclVersionCtrlMenuName = 'JclVersionCtrlMenu';

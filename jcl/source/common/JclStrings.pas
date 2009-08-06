@@ -372,15 +372,6 @@ procedure StrNormIndex(const StrLen: Integer; var Index: Integer; var Count: Int
 
 function ArrayOf(List: TStrings): TDynStringArray; overload;
 
-{$IFDEF COMPILER5} // missing Delphi 5 functions
-function TryStrToInt(const S: string; out Value: Integer): Boolean;
-function TryStrToInt64(const S: string; out Value: Int64): Boolean;
-function TryStrToFloat(const S: string; out Value: Extended): Boolean; overload;
-function TryStrToFloat(const S: string; out Value: Double): Boolean; overload;
-function TryStrToFloat(const S: string; out Value: Single): Boolean; overload;
-function TryStrToCurr(const S: string; out Value: Currency): Boolean;
-{$ENDIF COMPILER5}
-
 type
   FormatException = class(EJclError);
   ArgumentException = class(EJclError);
@@ -3687,62 +3678,8 @@ begin
     Result := nil;
 end;
 
-{$IFDEF COMPILER5} // missing Delphi 5 functions
-function TryStrToInt(const S: string; out Value: Integer): Boolean;
-var
-  Err: Integer;
-begin
-  Val(S, Value, Err);
-  Result := Err = 0;
-end;
-
-function TryStrToInt64(const S: string; out Value: Int64): Boolean;
-var
-  Err: Integer;
-begin
-  Val(S, Value, Err);
-  Result := Err = 0;
-end;
-
-function TryStrToFloat(const S: string; out Value: Extended): Boolean;
-begin
-  Result := TextToFloat(PChar(S), Value, fvExtended);
-end;
-
-function TryStrToFloat(const S: string; out Value: Double): Boolean;
-var
-  F: Extended;
-begin
-  Result := TryStrToFloat(S, F);
-  if Result then
-    Value := F;
-end;
-
-function TryStrToFloat(const S: string; out Value: Single): Boolean;
-var
-  F: Extended;
-begin
-  Result := TryStrToFloat(S, F);
-  if Result then
-    Value := F;
-end;
-
-function TryStrToCurr(const S: string; out Value: Currency): Boolean;
-begin
-  Result := TextToFloat(PChar(S), Value, fvCurrency);
-end;
-{$ENDIF COMPILER5}
-
 const
   BoolToStr: array [Boolean] of string = ('false', 'true');
-  {$IFDEF COMPILER5}
-  MaxCurrency: Currency = 922337203685477.5807;
-
-  varShortInt = $0010; { vt_i1     16 }
-  varWord     = $0012; { vt_ui2    18 }
-  varLongWord = $0013; { vt_ui4    19 }
-  varInt64    = $0014; { vt_i8     20 }
-  {$ENDIF COMPILER5}
 
 type
   TInterfacedObjectAccess = class(TInterfacedObject);
@@ -3819,14 +3756,6 @@ var
         Result := BoolToStr[V.VBoolean <> False];
       varByte:
         Result := IntToStr(V.VByte);
-      {$IFDEF COMPILER5}
-      varWord:
-        Result := IntToStr(Word(V.VSmallint));
-      varShortInt:
-        Result := IntToStr(ShortInt(V.VByte));
-      varLongWord:
-        Result := IntToStr(V.VError);
-      {$ELSE ~COMPILER5}
       varWord:
         Result := IntToStr(V.VWord);
       varShortInt:
@@ -3835,7 +3764,6 @@ var
         Result := IntToStr(V.VLongWord);
       varInt64:
         Result := IntToStr(V.VInt64);
-      {$ENDIF ~COMPILER5}
       varString:
         Result := string(V.VString);
       {$IFDEF SUPPORTS_UNICODE_STRING}

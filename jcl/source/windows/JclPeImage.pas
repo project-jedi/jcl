@@ -4352,10 +4352,8 @@ begin
         Contains.AddObject(Name, Pointer(AFlags));
       ntRequiresPackage:
         Requires.Add(Name);
-      {$IFDEF COMPILER6_UP}
       ntDcpBpiName:
         SetDcpName(Name);
-      {$ENDIF COMPILER6_UP}
     end;
 end;
 

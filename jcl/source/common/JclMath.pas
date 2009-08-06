@@ -615,10 +615,6 @@ function CheckCrc16_P(X: PJclByteArray; N: Integer; Crc: Word): Integer; overloa
 function CheckCrc16(var X: array of Byte; N: Integer; Crc: Word): Integer; overload;
 function CheckCrc16_A(var X: array of Byte; Crc: Word): Integer; overload;
 
-{$IFDEF COMPILER5}
-function CheckCrc16D5(var X: array of Byte; N: Integer; Crc: Word): Integer;
-{$ENDIF COMPILER5}
-
 // change the default polynom
 procedure InitCrc16(Polynom, Start: Word); overload;
 
@@ -690,10 +686,6 @@ const
 function Crc32_P(X: PJclByteArray; N: Integer; Crc: Cardinal = 0): Cardinal; overload;
 function Crc32(const X: array of Byte; N: Integer; Crc: Cardinal = 0): Cardinal; overload;
 function Crc32_A(const X: array of Byte; Crc: Cardinal = 0): Cardinal; overload;
-
-{$IFDEF COMPILER5}
-function CheckCrc32D5(var X: array of Byte; N: Integer; Crc: Word): Integer;
-{$ENDIF COMPILER5}
 
 function CheckCrc32_P(X: PJclByteArray; N: Integer; Crc: Cardinal): Integer; overload;
 function CheckCrc32(var X: array of Byte; N: Integer; Crc: Cardinal): Integer; overload;
@@ -3759,13 +3751,6 @@ begin
   Result := CheckCRC16_P(Crc16Table, @X, N, CRC);
 end;
 
-{$IFDEF COMPILER5}
-function CheckCrc16D5(var X: array of Byte; N: Integer; Crc: Word): Integer;
-begin
-  Result := CheckCRC16_P(Crc16DefaultTable, @X, N, CRC);
-end;
-{$ENDIF COMPILER5}
-
 function CheckCrc16(var X: array of Byte; N: Integer; Crc: Word): Integer;
 begin
   Result := CheckCRC16_P(Crc16DefaultTable, @X, N, CRC);
@@ -3944,13 +3929,6 @@ function CheckCrc32(const Crc32Table: TCrc32Table; var X: array of Byte; N: Inte
 begin
   Result := CheckCRC32_P(Crc32Table, @X, N, CRC);
 end;
-
-{$IFDEF COMPILER5}
-function CheckCrc32D5(var X: array of Byte; N: Integer; Crc: Word): Integer;
-begin
-  Result := CheckCRC32_P(Crc32DefaultTable, @X, N, CRC);
-end;
-{$ENDIF COMPILER5}
 
 function CheckCrc32(var X: array of Byte; N: Integer; Crc: Cardinal): Integer;
 begin

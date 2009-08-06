@@ -359,9 +359,7 @@
         <setting path="" mask="include" recurse="no" dironly="yes">
           <property name="svn:ignore">
             <value>jclfpc.inc</value>
-            <value>jclc5.inc</value>
             <value>jclc6.inc</value>
-            <value>jcld5.inc</value>
             <value>jcld6.inc</value>
             <value>jcld7.inc</value>
             <value>jclcs1.inc</value>

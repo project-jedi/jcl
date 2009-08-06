@@ -1893,10 +1893,7 @@ uses
   {$IFDEF MSWINDOWS}
   ActiveX,
   {$ENDIF MSWINDOWS}
-  {$IFDEF COMPILER5}
-  ComObj, // GUIDToString
-  JclUnicode, // WideSameText // TODO: should we use WideSameText from JclUnicode also for D6 and higher?
-  {$ENDIF COMPILER5}
+  JclUnicode, // WideSameText
   JclDateTime, JclFileUtils, JclResources, JclStrings, JclSysUtils;
 
 const
@@ -2757,7 +2754,7 @@ end;
 
 function TJclGZIPDecompressionStream.GetOriginalDataSize: Cardinal;
 var
-  StartPos: {$IFDEF COMPILER5} Longint; {$ELSE} Int64; {$ENDIF}
+  StartPos: Int64;
   AFooter: TJclGZIPFooter;
 begin
   if not FDataStarted then
@@ -2770,7 +2767,7 @@ begin
       FStream.ReadBuffer(AFooter, SizeOf(AFooter));
       Result := AFooter.DataSize;
     finally
-      FStream.Seek(StartPos, {$IFDEF COMPILER5} soFromBeginning {$ELSE} soBeginning {$ENDIF});
+      FStream.Seek(StartPos, soBeginning);
     end;
   end
   else
@@ -2782,7 +2779,7 @@ end;
 
 function TJclGZIPDecompressionStream.GetStoredDataCRC32: Cardinal;
 var
-  StartPos: {$IFDEF COMPILER5} Longint; {$ELSE} Int64; {$ENDIF}
+  StartPos: Int64;
   AFooter: TJclGZIPFooter;
 begin
   if not FDataStarted then
@@ -2795,7 +2792,7 @@ begin
       FStream.ReadBuffer(AFooter, SizeOf(AFooter));
       Result := AFooter.DataCRC32;
     finally
-      FStream.Seek(StartPos, {$IFDEF COMPILER5} soFromBeginning {$ELSE} soBeginning {$ENDIF});
+      FStream.Seek(StartPos, soBeginning);
     end;
   end
   else

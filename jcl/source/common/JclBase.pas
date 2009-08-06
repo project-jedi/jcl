@@ -301,10 +301,8 @@ function StringToAnsiByteArray(const S: string): TBytes;
 function AnsiByteArrayToString(const Data: TBytes; Count: Integer): string;
 
 function BytesOf(const Value: AnsiString): TBytes; overload;
-{$IFDEF COMPILER6_UP}
 function BytesOf(const Value: WideString): TBytes; overload;
 function BytesOf(const Value: WideChar): TBytes; overload;
-{$ENDIF COMPILER6_UP}
 function BytesOf(const Value: AnsiChar): TBytes; overload;
 function StringOf(const Bytes: array of Byte): AnsiString; overload;
 function StringOf(const Bytes: Pointer; Size: Cardinal): AnsiString; overload;
@@ -795,7 +793,6 @@ begin
     Move(Pointer(Value)^, Result[0], Length(Value));
 end;
 
-{$IFDEF COMPILER6_UP}
 function BytesOf(const Value: WideString): TBytes;
 begin
   if Value <> '' then
@@ -808,7 +805,6 @@ function BytesOf(const Value: WideChar): TBytes;
 begin
   Result := JclBase.BytesOf(WideString(Value));
 end;
-{$ENDIF COMPILER6_UP}
 
 function BytesOf(const Value: AnsiChar): TBytes;
 begin
