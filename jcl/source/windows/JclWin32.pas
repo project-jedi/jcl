@@ -70,12 +70,6 @@ uses
   {$ENDIF ~FPC}
   JclBase;
 
-{$HPPEMIT ''}
-{$IFDEF COMPILER5}
-{$HPPEMIT '// To lift ambiguity between LONG64 and System::LONG64'}
-{$HPPEMIT '#define LONG64 System::LONG64'}
-{$HPPEMIT ''}
-{$ENDIF COMPILER5}
 {$HPPEMIT '#include <WinDef.h>'}
 {$HPPEMIT '#include <WinNT.h>'}
 {$HPPEMIT '#include <WinBase.h>'}
@@ -84,9 +78,7 @@ uses
 {$HPPEMIT '#include <lm.h>'}
 {$HPPEMIT '#include <Nb30.h>'}
 {$HPPEMIT '#include <RasDlg.h>'}
-{$IFDEF COMPILER6_UP}
 {$HPPEMIT '#include <Reason.h>'}
-{$ENDIF COMPILER6_UP}
 {$HPPEMIT '#include <ShlWApi.h>'}
 {$HPPEMIT '#include <WinError.h>'}
 {$HPPEMIT '#include <WinIoCtl.h>'}
@@ -96,9 +88,7 @@ uses
 {$HPPEMIT '#include <propidl.h>'}
 {$HPPEMIT '#include <msidefs.h>'}
 {$HPPEMIT '#include <shlguid.h>'}
-{$IFDEF COMPILER6_UP}
 {$HPPEMIT '#include <imgguids.h>'}
-{$ENDIF COMPILER6_UP}
 {$HPPEMIT '#include <objbase.h>'}
 {$HPPEMIT '#include <ntsecapi.h>'}
 {$HPPEMIT ''}
@@ -2619,13 +2609,7 @@ type
 
     ManagedNativeHeader: IMAGE_DATA_DIRECTORY;
   end;
-  {$IFDEF COMPILER6_UP}
-  {$EXTERNALSYM IMAGE_COR20_HEADER}
-  {$ENDIF COMPILER6_UP}
   PIMAGE_COR20_HEADER = ^IMAGE_COR20_HEADER;
-  {$IFDEF COMPILER6_UP}
-  {$EXTERNALSYM PIMAGE_COR20_HEADER}
-  {$ENDIF COMPILER6_UP}
   TImageCor20Header = IMAGE_COR20_HEADER;
   PImageCor20Header = PIMAGE_COR20_HEADER;
 
