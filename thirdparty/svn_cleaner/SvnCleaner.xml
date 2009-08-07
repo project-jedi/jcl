@@ -358,6 +358,8 @@
 
         <setting path="" mask="include" recurse="no" dironly="yes">
           <property name="svn:ignore">
+            <value>*~</value>
+            <value>*.bak</value>
             <value>jclfpc.inc</value>
             <value>jclc6.inc</value>
             <value>jcld6.inc</value>
