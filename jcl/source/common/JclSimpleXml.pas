@@ -3154,8 +3154,10 @@ begin
           Properties.LoadFromStringStream(StringStream);
           Inc(lPos);
 
-          FVersion := Properties.Value('version');
-          FEncoding := Properties.Value('encoding');
+          // Use current value as default value, this will allow reading
+          // xml file that do not specify encoding.
+          FVersion := Properties.Value('version', FVersion);
+          FEncoding := Properties.Value('encoding', FEncoding);
           FStandalone := Properties.Value('standalone') = 'yes';
 
           Properties.Clear;
