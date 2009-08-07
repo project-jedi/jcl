@@ -348,6 +348,11 @@ ALERT_jedi_inc_incompatible
  {$DEFINE PUREPASCAL}
 {$ENDIF CLR}
 
+// Delphi 2005 has a compiler internal failure when compiling the JCL with UNITVERSIONING enabled
+{$IFDEF DELPHI2005}
+  {$UNDEF UNITVERSIONING}
+{$ENDIF DELPHI2005}
+
 {$IFDEF FPC}
   {$DEFINE DEBUG_NO_TD32}
 {$ENDIF FPC}

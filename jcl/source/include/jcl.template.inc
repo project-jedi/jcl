@@ -61,7 +61,7 @@
 {.$DEFINE DROP_OBSOLETE_CODE}
 
 
-//Support for JclUnitVersioning.pas)
+//Support for JclUnitVersioning.pas, not supported by Delphi 2005 (automatically disabled afterward)
 {.$DEFINE UNITVERSIONING}
 
 

@@ -95,7 +95,7 @@ Only design-time support (only experts):
  - Delphi 8.net (cf Installation notes).
 
 Both supports (run time and design time):
- - Delphi 6 and Delphi 7;
+ - Delphi 6, Delphi 7 and Delphi 2005;
  - C++Builder 6;
  - Borland Developer Studio 2006 (Delphi for Win32, C++Builder for Win32,
    Delphi.net and C#Builder personalities);

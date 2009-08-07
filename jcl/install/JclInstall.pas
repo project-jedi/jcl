@@ -21,7 +21,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -983,7 +983,9 @@ procedure TJclInstallation.Init;
   begin
     AddOption(joJCLDefThreadSafe, [goChecked], Parent);
     AddOption(joJCLDefDropObsoleteCode, [goChecked], Parent);
-    AddOption(joJCLDefUnitVersioning, [goChecked], Parent);
+    if (Target.RadToolKind <> brBorlandDevStudio) or (Target.IDEVersionNumber <> 3) then
+      // Delphi 2005 has a compiler internal failure when compiling the JCL with UNITVERSIONING enabled
+      AddOption(joJCLDefUnitVersioning, [goChecked], Parent);
 
     AddOption(joJCLDefMath, [goChecked], Parent);
     AddOption(joJCLDefMathPrecSingle, [goRadioButton], joJCLDefMath);
