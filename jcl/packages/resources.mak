@@ -1,29 +1,7 @@
 ROOTDIR = $(MAKEDIR)\..
 
 # ---------------------------------------------------------------------------
-RESFILES = c5\JclBaseExpertC50.res                  \
-           c5\JclC50.res                            \
-           c5\JclContainersC50.res                  \
-           c5\JclDebugExpertC50.res                 \
-           c5\JclDebugExpertDLLC50.res              \
-           c5\JclFavoriteFoldersExpertC50.res       \
-           c5\JclFavoriteFoldersExpertDLLC50.res    \
-           c5\JclProjectAnalysisExpertC50.res       \
-           c5\JclProjectAnalysisExpertDLLC50.res    \
-           c5\JclRepositoryExpertC50.res            \
-           c5\JclRepositoryExpertDLLC50.res         \
-           c5\JclSIMDViewExpertC50.res              \
-           c5\JclSIMDViewExpertDLLC50.res           \
-           c5\JclStackTraceViewerExpertC50.res      \
-           c5\JclStackTraceViewerExpertDLLC50.res   \
-           c5\JclThreadNameExpertC50.res            \
-           c5\JclThreadNameExpertDLLC50.res         \
-           c5\JclUsesExpertC50.res                  \
-           c5\JclUsesExpertDLLC50.res               \
-           c5\JclVclC50.res                         \
-           c5\JclVersionControlExpertC50.res        \
-           c5\JclVersionControlExpertDLLC50.res     \
-           c6\Jcl.res                               \
+RESFILES = c6\Jcl.res                               \
            c6\JclBaseExpert.res                     \
            c6\JclContainers.res                     \
            c6\JclDebugExpert.res                    \
@@ -104,28 +82,6 @@ RESFILES = c5\JclBaseExpertC50.res                  \
            d12\JclVcl.res                           \
            d12\JclVersionControlExpert.res          \
            d12\JclVersionControlExpertDLL.res       \
-           d5\JclBaseExpertD50.res                  \
-           d5\JclContainersD50.res                  \
-           d5\JclD50.res                            \
-           d5\JclDebugExpertD50.res                 \
-           d5\JclDebugExpertDLLD50.res              \
-           d5\JclFavoriteFoldersExpertD50.res       \
-           d5\JclFavoriteFoldersExpertDLLD50.res    \
-           d5\JclProjectAnalysisExpertD50.res       \
-           d5\JclProjectAnalysisExpertDLLD50.res    \
-           d5\JclRepositoryExpertD50.res            \
-           d5\JclRepositoryExpertDLLD50.res         \
-           d5\JclSIMDViewExpertD50.res              \
-           d5\JclSIMDViewExpertDLLD50.res           \
-           d5\JclStackTraceViewerExpertD50.res      \
-           d5\JclStackTraceViewerExpertDLLD50.res   \
-           d5\JclThreadNameExpertD50.res            \
-           d5\JclThreadNameExpertDLLD50.res         \
-           d5\JclUsesExpertD50.res                  \
-           d5\JclUsesExpertDLLD50.res               \
-           d5\JclVclD50.res                         \
-           d5\JclVersionControlExpertD50.res        \
-           d5\JclVersionControlExpertDLLD50.res     \
            d6\Jcl.res                               \
            d6\JclBaseExpert.res                     \
            d6\JclContainers.res                     \
