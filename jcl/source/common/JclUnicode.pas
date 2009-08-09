@@ -1355,7 +1355,7 @@ begin
     try
       RawStream := TMemoryStream.Create;
       StreamCopy(DecompressionStream, RawStream);
-      StreamSeek(RawStream, 0, soBeginning);
+      RawStream.Seek(0, soBeginning);
       Result := TJclEasyStream.Create(RawStream, True);
     finally
       DecompressionStream.Free;
@@ -1371,7 +1371,7 @@ begin
     try
       RawStream := TMemoryStream.Create;
       StreamCopy(DecompressionStream, RawStream);
-      StreamSeek(RawStream, 0, soBeginning);
+      RawStream.Seek(0, soBeginning);
       Result := TJclEasyStream.Create(RawStream, True);
     finally
       DecompressionStream.Free;

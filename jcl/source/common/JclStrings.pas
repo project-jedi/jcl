@@ -49,7 +49,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -3240,7 +3240,7 @@ begin
     FS := TFileStream.Create(FileName, fmCreate);
   try
     if Append then
-      StreamSeek(FS, 0, soEnd);  // faster than .Position := .Size
+      FS.Seek(0, soEnd);  // faster than .Position := .Size
     Len := Length(Contents);
     if Len > 0 then
       FS.WriteBuffer(Contents[1], Len);

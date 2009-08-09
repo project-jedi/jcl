@@ -527,10 +527,12 @@ type
     property Encoding: TJclStringEncoding read FEncoding;
   end;
 
+{$IFDEF KEEP_DEPRECATED}
 // call TStream.Seek(Int64,TSeekOrigin) if present (TJclStream or COMPILER6_UP)
 // otherwize call TStream.Seek(LongInt,Word) with range checking
 function StreamSeek(Stream: TStream; const Offset: Int64;
   const Origin: TSeekOrigin): Int64;
+{$ENDIF KEEP_DEPRECATED}
 
 // buffered copy of all available bytes from Source to Dest
 // returns the number of bytes that were copied
@@ -564,6 +566,7 @@ implementation
 uses
   JclResources, JclCharsets, JclMath, JclSysUtils;
 
+{$IFDEF KEEP_DEPRECATED}
 function StreamSeek(Stream: TStream; const Offset: Int64;
   const Origin: TSeekOrigin): Int64; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF SUPPORTS_INLINE}
 begin
@@ -572,6 +575,7 @@ begin
   else
     Result := -1;
 end;
+{$ENDIF KEEP_DEPRECATED}
 
 function StreamCopy(Source: TStream; Dest: TStream; BufferSize: Longint): Int64;
 var
@@ -1157,7 +1161,7 @@ end;
 
 function TJclStreamDecorator.Seek(const Offset: Int64; Origin: TSeekOrigin): Int64;
 begin
-  Result := StreamSeek(Stream, Offset, Origin);
+  Result := Stream.Seek(Offset, Origin);
 end;
 
 procedure TJclStreamDecorator.SetSize(const NewSize: Int64);
@@ -1756,7 +1760,7 @@ begin
         if (Offset < 0) or ((MaxSize >= 0) and (Offset > MaxSize)) then
           Result := -1            // low and high bound check
         else
-          Result := StreamSeek(ParentStream, StartPos + Offset, soBeginning) - StartPos;
+          Result := ParentStream.Seek(StartPos + Offset, soBeginning) - StartPos;
       end;
     soCurrent:
       begin
@@ -1766,7 +1770,7 @@ begin
           and ((FCurrentPos + Offset) > MaxSize)) then
           Result := -1            // low and high bound check
         else
-          Result := StreamSeek(ParentStream, Offset, soCurrent) - StartPos;
+          Result := ParentStream.Seek(Offset, soCurrent) - StartPos;
       end;
     soEnd:
       begin
@@ -1775,15 +1779,15 @@ begin
           if (Offset > 0) or (MaxSize < -Offset) then // low and high bound check
             Result := -1
           else
-            Result := StreamSeek(ParentStream, StartPos + MaxSize + Offset, soBeginning) - StartPos;
+            Result := ParentStream.Seek(StartPos + MaxSize + Offset, soBeginning) - StartPos;
         end
         else
         begin
-          Result := StreamSeek(ParentStream, Offset, soEnd);
+          Result := ParentStream.Seek(Offset, soEnd);
           if (Result <> -1) and (Result < StartPos) then // low bound check
           begin
             Result := -1;
-            StreamSeek(ParentStream, StartPos + FCurrentPos, soBeginning);
+            ParentStream.Seek(StartPos + FCurrentPos, soBeginning);
           end;
         end;
       end;
@@ -2036,7 +2040,7 @@ begin
     InternalLoadVolume(OldVolumeIndex);
     FPosition := OldPosition;
     if Assigned(FVolume) then
-      FVolumePosition := StreamSeek(FVolume, OldVolumePosition, soBeginning);
+      FVolumePosition := FVolume.Seek(OldVolumePosition, soBeginning);
   end;
 end;
 
@@ -2063,7 +2067,7 @@ begin
     FVolumeMaxSize := GetVolumeMaxSize(Index);
     Result := Assigned(FVolume);
     if Result then
-      StreamSeek(FVolume, 0, soBeginning)
+      FVolume.Seek(0, soBeginning)
     else
     begin
       // restore old pointers if volume load failed
@@ -2093,7 +2097,7 @@ begin
   repeat
     // force position
     if ForcePosition then
-      StreamSeek(FVolume, FVolumePosition, soBeginning);
+      FVolume.Seek(FVolumePosition, soBeginning);
 
     // try to read (Count) bytes from current stream
     LoopRead := FVolume.Read(Data^, Count);
@@ -2138,7 +2142,7 @@ begin
       if FVolumePosition >= -RemainingOffset then
       begin
         // seek in current volume
-        FVolumePosition := StreamSeek(FVolume, FVolumePosition + RemainingOffset, soBeginning);
+        FVolumePosition := FVolume.Seek(FVolumePosition + RemainingOffset, soBeginning);
         Result := Result + RemainingOffset;
         FPosition := Result;
         RemainingOffset := 0;
@@ -2152,7 +2156,7 @@ begin
         RemainingOffset := RemainingOffset + FVolumePosition;
         Result := Result - FVolumePosition;
         FPosition := Result;
-        FVolumePosition := StreamSeek(FVolume, 0, soBeginning);
+        FVolumePosition := FVolume.Seek(0, soBeginning);
         // load previous volume
         if not InternalLoadVolume(FVolumeIndex - 1) then
           Break;
@@ -2167,7 +2171,7 @@ begin
       if (FVolumeMaxSize = 0) or ((FVolumePosition + RemainingOffset) < FVolumeMaxSize) then
       begin
         // can seek in current volume
-        FVolumePosition := StreamSeek(FVolume, FVolumePosition + RemainingOffset, soBeginning);
+        FVolumePosition := FVolume.Seek(FVolumePosition + RemainingOffset, soBeginning);
         Result := Result + RemainingOffset;
         FPosition := Result;
         RemainingOffset := 0;
@@ -2213,7 +2217,7 @@ begin
     InternalLoadVolume(OldVolumeIndex);
     FPosition := OldPosition;
     if Assigned(FVolume) then
-      FVolumePosition := StreamSeek(FVolume, OldVolumePosition, soBeginning);
+      FVolumePosition := FVolume.Seek(OldVolumePosition, soBeginning);
   end;
 end;
 
@@ -2233,7 +2237,7 @@ begin
   repeat
     // force position
     if ForcePosition then
-      StreamSeek(FVolume, FVolumePosition, soBeginning);
+      FVolume.Seek(FVolumePosition, soBeginning);
 
     // do not write more than (VolumeMaxSize) bytes in current stream
     if (FVolumeMaxSize > 0) and ((Count + FVolumePosition) > FVolumeMaxSize) then

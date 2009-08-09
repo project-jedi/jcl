@@ -4297,7 +4297,7 @@ begin
     AVolume := TJclCompressionVolume(FVolumes.Items[Index]);
     Result := AVolume.Stream;
     if Assigned(Result) then
-      StreamSeek(Result, 0, soBeginning);
+      Result.Seek(0, soBeginning);
   end
   else
     FVolumeIndex := Index;
@@ -4860,8 +4860,8 @@ begin
         if (SrcFileName = '') and (DestFileName = '') and Assigned(SrcStream) and Assigned(DestStream) then
         begin
           // in-memory moves
-          StreamSeek(SrcStream, 0, soBeginning);
-          StreamSeek(DestStream, 0, soBeginning);
+          SrcStream.Seek(0, soBeginning);
+          DestStream.Seek(0, soBeginning);
           CopiedSize := StreamCopy(SrcStream, DestStream);
           // reset size
           DestStream.Size := CopiedSize;
@@ -4970,7 +4970,7 @@ begin
     AVolume := TJclCompressionVolume(FVolumes.Items[Index]);
     Result := AVolume.TmpStream;
     if Assigned(Result) then
-      StreamSeek(Result, 0, soBeginning);
+      Result.Seek(0, soBeginning);
   end
   else
     FTmpVolumeIndex := Index;
@@ -5070,7 +5070,7 @@ begin
   // STREAM_SEEK_SET	= 0 = soFromBeginning
   // STREAM_SEEK_CUR	= 1 = soFromCurrent
   // STREAM_SEEK_END  = 2 = soFromEnd
-  NewPos := StreamSeek(FStream, Offset, TSeekOrigin(SeekOrigin));
+  NewPos := FStream.Seek(Offset, TSeekOrigin(SeekOrigin));
   if Assigned(NewPosition) then
     NewPosition^ := NewPos;
 end;
@@ -5205,7 +5205,7 @@ begin
   // STREAM_SEEK_SET	= 0 = soFromBeginning
 	// STREAM_SEEK_CUR	= 1 = soFromCurrent
 	// STREAM_SEEK_END  = 2 = soFromEnd
-  NewPos := StreamSeek(FStream, Offset, TSeekOrigin(SeekOrigin));
+  NewPos := FStream.Seek(Offset, TSeekOrigin(SeekOrigin));
   if Assigned(NewPosition) then
     NewPosition^ := NewPos;
   Result := S_OK;

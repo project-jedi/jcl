@@ -988,7 +988,7 @@ begin
       AOutStream := TMemoryStream.Create;
       DoFree := True;
       FOnDecodeStream(Self, Stream, AOutStream);
-      StreamSeek(AOutStream, 0, soBeginning);
+      AOutStream.Seek(0, soBeginning);
     end
     else
       AOutStream := Stream;
@@ -1148,7 +1148,7 @@ begin
     end;
     if Assigned(FOnEncodeStream) then
     begin
-      StreamSeek(AOutStream, 0, soBeginning);
+      AOutStream.Seek(0, soBeginning);
       FOnEncodeStream(Self, AOutStream, Stream);
     end;
   finally
