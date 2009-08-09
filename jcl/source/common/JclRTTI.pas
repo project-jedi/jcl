@@ -690,7 +690,7 @@ begin
     P := @TypeData.NameList;
     while I >= 0 do
     begin
-      Inc(Integer(P), Length(P^) + 1);
+      Inc(TJclAddr(P), Length(P^) + 1);
       Dec(I);
     end;
     Result := string(P^);
@@ -1702,7 +1702,7 @@ var
   PropData: ^TPropData;
 begin
   PropData := @TypeData.IntfUnit;
-  Inc(Integer(PropData), 1 + Length(GetUnitName));
+  Inc(TJclAddr(PropData), 1 + Length(GetUnitName));
   Result := PropData.PropCount;
 end;
 
