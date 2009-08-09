@@ -154,9 +154,7 @@ function DegToRad(const Value: Extended): Extended; overload; {$IFDEF SUPPORTS_I
 {$ENDIF SUPPORTS_EXTENDED}
 function DegToRad(const Value: Double): Double; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 function DegToRad(const Value: Single): Single; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
-{$IFDEF CPUASM}
 procedure FastDegToRad;
-{$ENDIF CPUASM}
 
 // Converts radians to degrees.
 {$IFDEF SUPPORTS_EXTENDED}
@@ -164,9 +162,7 @@ function RadToDeg(const Value: Extended): Extended; overload; {$IFDEF SUPPORTS_I
 {$ENDIF SUPPORTS_EXTENDED}
 function RadToDeg(const Value: Double): Double; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 function RadToDeg(const Value: Single): Single; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
-{$IFDEF CPUASM}
 procedure FastRadToDeg;
-{$ENDIF CPUASM}
 
 // Converts grads to radians.
 {$IFDEF SUPPORTS_EXTENDED}
@@ -174,9 +170,7 @@ function GradToRad(const Value: Extended): Extended; overload; {$IFDEF SUPPORTS_
 {$ENDIF SUPPORTS_EXTENDED}
 function GradToRad(const Value: Double): Double; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 function GradToRad(const Value: Single): Single; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
-{$IFDEF CPUASM}
 procedure FastGradToRad;
-{$ENDIF CPUASM}
 
 // Converts radians to grads.
 {$IFDEF SUPPORTS_EXTENDED}
@@ -184,9 +178,7 @@ function RadToGrad(const Value: Extended): Extended; overload; {$IFDEF SUPPORTS_
 {$ENDIF SUPPORTS_EXTENDED}
 function RadToGrad(const Value: Double): Double; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 function RadToGrad(const Value: Single): Single; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
-{$IFDEF CPUASM}
 procedure FastRadToGrad;
-{$ENDIF CPUASM}
 
 // Converts degrees to grads.
 {$IFDEF SUPPORTS_EXTENDED}
@@ -194,9 +186,7 @@ function DegToGrad(const Value: Extended): Extended; overload; {$IFDEF SUPPORTS_
 {$ENDIF SUPPORTS_EXTENDED}
 function DegToGrad(const Value: Double): Double; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 function DegToGrad(const Value: Single): Single; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
-{$IFDEF CPUASM}
 procedure FastDegToGrad;
-{$ENDIF CPUASM}
 
 // Converts grads to degrees.
 {$IFDEF SUPPORTS_EXTENDED}
@@ -204,11 +194,7 @@ function GradToDeg(const Value: Extended): Extended; overload; {$IFDEF SUPPORTS_
 {$ENDIF SUPPORTS_EXTENDED}
 function GradToDeg(const Value: Double): Double; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 function GradToDeg(const Value: Single): Single; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
-{$IFDEF CPUASM}
 procedure FastGradToDeg;
-{$ENDIF CPUASM}
-
-{$IFDEF CPUASM}
 
 { Logarithmic }
 
@@ -251,8 +237,6 @@ function CscH(X: Float): Float; overload;
 function SecH(X: Float): Float; overload;
 function SinH(X: Float): Float; overload; {IFDEF SUPPORTS_INLINE inline; ENDIF}
 function TanH(X: Float): Float; overload;
-
-{$ENDIF CPUASM}
 
 { Coordinate conversion }
 
@@ -320,11 +304,8 @@ function PrimeFactors(N: Cardinal): TDynCardinalArray;
 var
   IsPrime: function(N: Cardinal): Boolean = IsPrimeTD;
 
-{$IFDEF CPUASM}
 procedure SetPrimalityTest(const Method: TPrimalityTestMethod);
-{$ENDIF CPUASM}
 
-{$IFDEF CPUASM}
 { Floating point value classification }
 
 type
@@ -344,7 +325,6 @@ function FloatingPointClass(const Value: Double): TFloatingPointClass; overload;
 {$IFDEF SUPPORTS_EXTENDED}
 function FloatingPointClass(const Value: Extended): TFloatingPointClass; overload;
 {$ENDIF SUPPORTS_EXTENDED}
-{$ENDIF CPUASM}
 
 { NaN and INF support }
 
@@ -808,9 +788,7 @@ uses
   Windows,
   {$ENDIF ~FPC}
   {$ENDIF MSWINDOWS}
-  {$IFDEF CPUASM}
   Jcl8087,
-  {$ENDIF CPUASM}
   JclResources,
   JclSynch;
 
@@ -897,7 +875,6 @@ begin
   Result := Value * RatioDegToRad;
 end;
 
-{$IFDEF CPUASM}
 // Expects degrees in ST(0), leaves radians in ST(0)
 // ST(0) := ST(0) * PI / 180
 procedure FastDegToRad; assembler;
@@ -916,7 +893,6 @@ asm
         FMULP
         FWAIT
 end;
-{$ENDIF CPUASM}
 
 // Converts radians to degrees.
 
@@ -937,7 +913,6 @@ begin
   Result := Value * RatioRadToDeg;
 end;
 
-{$IFDEF CPUASM}
 // Expects radians in ST(0), leaves degrees in ST(0)
 // ST(0) := ST(0) * (180 / PI);
 procedure FastRadToDeg; assembler;
@@ -956,7 +931,6 @@ asm
         FMULP
         FWAIT
 end;
-{$ENDIF CPUASM}
 
 // Converts grads to radians.
 
@@ -977,7 +951,6 @@ begin
   Result := Value * RatioGradToRad;
 end;
 
-{$IFDEF CPUASM}
 // Expects grads in ST(0), leaves radians in ST(0)
 // ST(0) := ST(0) * PI / 200
 procedure FastGradToRad; assembler;
@@ -996,7 +969,6 @@ asm
         FMULP
         FWAIT
 end;
-{$ENDIF CPUASM}
 
 // Converts radians to grads.
 
@@ -1017,7 +989,6 @@ begin
   Result := Value * RatioRadToGrad;
 end;
 
-{$IFDEF CPUASM}
 // Expects radians in ST(0), leaves grads in ST(0)
 // ST(0) := ST(0) * (200 / PI);
 procedure FastRadToGrad; assembler;
@@ -1036,7 +1007,6 @@ asm
         FMULP
         FWAIT
 end;
-{$ENDIF CPUASM}
 
 // Converts degrees to grads.
 
@@ -1057,7 +1027,6 @@ begin
   Result := Value * RatioDegToGrad;
 end;
 
-{$IFDEF CPUASM}
 // Expects Degrees in ST(0), leaves grads in ST(0)
 // ST(0) := ST(0) * (200 / 180);
 procedure FastDegToGrad; assembler;
@@ -1076,7 +1045,6 @@ asm
         FMULP
         FWAIT
 end;
-{$ENDIF CPUASM}
 
 // Converts grads to degrees.
 
@@ -1097,7 +1065,6 @@ begin
   Result := Value * RatioGradToDeg;
 end;
 
-{$IFDEF CPUASM}
 // Expects grads in ST(0), leaves radians in ST(0)
 // ST(0) := ST(0) * PI / 200
 procedure FastGradToDeg; assembler;
@@ -1116,7 +1083,6 @@ asm
         FMULP
         FWAIT
 end;
-{$ENDIF CPUASM}
 
 procedure DomainCheck(Err: Boolean);
 begin
@@ -1126,7 +1092,6 @@ end;
 
 //=== Logarithmic ============================================================
 
-{$IFDEF CPUASM}
 function LogBase10(X: Float): Float;
 begin
   DomainCheck(X <= 0.0);
@@ -1598,8 +1563,6 @@ begin
     end;
   end;
 end;
-
-{$ENDIF CPUASM}
 
 //=== Coordinate conversion ==================================================
 
@@ -2720,7 +2683,6 @@ begin
   end;
 end;
 
-{$IFDEF CPUASM}
 //=== Floating point value classification ====================================
 
 const
@@ -2831,7 +2793,6 @@ begin
   end;
 end;
 {$ENDIF SUPPORTS_EXTENDED}
-{$ENDIF CPUASM}
 
 //=== NaN and Infinity support ===============================================
 
