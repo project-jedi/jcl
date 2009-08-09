@@ -496,15 +496,6 @@ type
       const Value: TVarData): Boolean; override;
   end;
 
-  TXMLVarData = packed record
-    vType: TVarType;
-    Reserved1: Word;
-    Reserved2: Word;
-    Reserved3: Word;
-    XML: TJclSimpleXMLElem;
-    Reserved4: Longint;
-  end;
-
 procedure XMLCreateInto(var ADest: Variant; const AXML: TJclSimpleXMLElem);
 function XMLCreate(const AXML: TJclSimpleXMLElem): Variant; overload;
 function XMLCreate: Variant; overload;
@@ -1348,7 +1339,7 @@ begin
     if (N1 > 15) or (N2 > 15) then
       Buf[J] := 0
     else
-      Buf[J] := N1 shl 4 + N2;
+      Buf[J] := (N1 shl 4) or N2;
     Inc(J);
     if J = cBufferSize - 1 then //Buffered write to speed up the process a little
     begin
@@ -3590,8 +3581,8 @@ end;
 
 procedure XMLCreateInto(var ADest: Variant; const AXML: TJclSimpleXMLElem);
 begin
-  TXMLVarData(ADest).vType := VarXML;
-  TXMLVarData(ADest).XML := AXML;
+  TVarData(ADest).vType := VarXML;
+  TVarData(ADest).vAny := AXML;
 end;
 
 function XMLCreate(const AXML: TJclSimpleXMLElem): Variant;
@@ -3622,7 +3613,7 @@ begin
             ConversionString := TJclUTF16Stream.Create(StorageStream, False);
             try
               ConversionString.WriteBOM;
-              TXMLVarData(Source).XML.SaveToStringStream(ConversionString, '', nil);
+              TJclSimpleXmlElem(Source.vAny).SaveToStringStream(ConversionString, '', nil);
               ConversionString.Flush;
             finally
               ConversionString.Free;
@@ -3643,7 +3634,7 @@ begin
             {$ENDIF ~SUPPORTS_UNICODE}
             try
               ConversionString.WriteBOM;
-              TXMLVarData(Source).XML.SaveToStringStream(ConversionString, '', nil);
+              TJclSimpleXmlElem(Source.vAny).SaveToStringStream(ConversionString, '', nil);
               ConversionString.Flush;
             finally
               ConversionString.Free;
@@ -3661,7 +3652,7 @@ begin
             ConversionString := TJclUTF16Stream.Create(StorageStream, False);
             try
               ConversionString.WriteBOM;
-              TXMLVarData(Source).XML.SaveToStringStream(ConversionString, '', nil);
+              TJclSimpleXmlElem(Source.vAny).SaveToStringStream(ConversionString, '', nil);
               ConversionString.Flush;
             finally
               ConversionString.Free;
@@ -3686,7 +3677,7 @@ end;
 procedure TXMLVariant.Clear(var V: TVarData);
 begin
   V.vType := varEmpty;
-  TXMLVarData(V).XML := nil;
+  V.vAny := nil;
 end;
 
 procedure TXMLVariant.Copy(var Dest: TVarData; const Source: TVarData;
@@ -3695,79 +3686,79 @@ begin
   if Indirect and VarDataIsByRef(Source) then
     VarDataCopyNoInd(Dest, Source)
   else
-    with TXMLVarData(Dest) do
-    begin
-      vType := VarType;
-      XML := TXMLVarData(Source).XML;
-    end;
+  begin
+    Dest.vType := Source.vType;
+    Dest.vAny := Source.vAny;
+  end;
 end;
 
 function TXMLVariant.DoFunction(var Dest: TVarData; const V: TVarData;
   const Name: string; const Arguments: TVarDataArray): Boolean;
 var
-  LXML: TJclSimpleXMLElem;
+  VXML, LXML: TJclSimpleXMLElem;
   I, J, K: Integer;
 begin
   Result := False;
   if (Length(Arguments) = 1) and (Arguments[0].vType in [vtInteger, vtExtended]) then
-    with TXMLVarData(V) do
-    begin
-      K := Arguments[0].vInteger;
-      J := 0;
+  begin
+    VXML := TJclSimpleXmlElem(V.VAny);
+    K := Arguments[0].vInteger;
+    J := 0;
 
-      if K > 0 then
-        for I := 0 to XML.Items.Count - 1 do
-          if UpperCase(XML.Items[I].Name) = Name then
-          begin
-            Inc(J);
-            if J = K then
-              Break;
-          end;
-
-      if (J = K) and (J < XML.Items.Count) then
-      begin
-        LXML := XML.Items[J];
-        if LXML <> nil then
+    if K > 0 then
+      for I := 0 to VXML.Items.Count - 1 do
+        if UpperCase(VXML.Items[I].Name) = Name then
         begin
-          Dest.vType := VarXML;
-          TXMLVarData(Dest).XML := LXML;
-          Result := True;
-        end
-      end;
+          Inc(J);
+          if J = K then
+            Break;
+        end;
+
+    if (J = K) and (J < VXML.Items.Count) then
+    begin
+      LXML := VXML.Items[J];
+      if LXML <> nil then
+      begin
+        Dest.vType := VarXML;
+        Dest.vAny := Pointer(LXML);
+        Result := True;
+      end
     end;
+  end
 end;
 
 function TXMLVariant.GetProperty(var Dest: TVarData; const V: TVarData;
   const Name: string): Boolean;
 var
-  LXML: TJclSimpleXMLElem;
+  VXML, LXML: TJclSimpleXMLElem;
   lProp: TJclSimpleXMLProp;
 begin
   Result := False;
-  with TXMLVarData(V) do
+  VXML := TJclSimpleXMLElem(V.VAny);
+  LXML := VXML.Items.ItemNamed[Name];
+  if LXML <> nil then
   begin
-    LXML := XML.Items.ItemNamed[Name];
-    if LXML <> nil then
+    Dest.vType := VarXML;
+    Dest.vAny := Pointer(LXML);
+    Result := True;
+  end
+  else
+  begin
+    lProp := VXML.Properties.ItemNamed[Name];
+    if lProp <> nil then
     begin
-      Dest.vType := VarXML;
-      TXMLVarData(Dest).XML := LXML;
+      VarDataFromOleStr(Dest, lProp.Value);
       Result := True;
-    end
-    else
-    begin
-      lProp := XML.Properties.ItemNamed[Name];
-      if lProp <> nil then
-      begin
-        VarDataFromOleStr(Dest, lProp.Value);
-        Result := True;
-      end;
     end;
   end;
 end;
 
 function TXMLVariant.IsClear(const V: TVarData): Boolean;
+var
+  VXML: TJclSimpleXMLElem;
 begin
-  Result := (TXMLVarData(V).XML = nil) or (TXMLVarData(V).XML.Items.Count = 0);
+  VXML := TJclSimpleXMLElem(V.VAny);
+  Result := (VXML = nil) or (VXML.Items.Count = 0);
 end;
 
 function TXMLVariant.SetProperty(const V: TVarData; const Name: string;
@@ -3783,27 +3774,25 @@ function TXMLVariant.SetProperty(const V: TVarData; const Name: string;
   end;
 
 var
-  LXML: TJclSimpleXMLElem;
+  VXML, LXML: TJclSimpleXMLElem;
   lProp: TJclSimpleXMLProp;
 begin
   Result := False;
-  with TXMLVarData(V) do
+  VXML := TJclSimpleXmlElem(V.VAny);
+  LXML := VXML.Items.ItemNamed[Name];
+  if LXML = nil then
   begin
-    LXML := XML.Items.ItemNamed[Name];
-    if LXML = nil then
+    lProp := VXML.Properties.ItemNamed[Name];
+    if lProp <> nil then
     begin
-      lProp := XML.Properties.ItemNamed[Name];
-      if lProp <> nil then
-      begin
-        lProp.Value := GetStrValue;
-        Result := True;
-      end;
-    end
-    else
-    begin
-      LXML.Value := GetStrValue;
+      lProp.Value := GetStrValue;
       Result := True;
     end;
+  end
+  else
+  begin
+    LXML.Value := GetStrValue;
+    Result := True;
   end;
 end;
 
