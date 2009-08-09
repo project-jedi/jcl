@@ -2046,6 +2046,7 @@ var
   Index: Integer;
   ATarget: TJclBorRADToolInstallation;
 begin
+  FLogLines.OpenLog;
   AProfilesManager := InstallCore.ProfilesManager;
   try
     Target.OutputCallback := WriteLog;
@@ -2097,6 +2098,7 @@ begin
     WriteLog('');
     if Assigned(GUIPage) then
       GUIPage.EndInstall;
+    FLogLines.CloseLog;
   end;
 end;
 
@@ -2366,6 +2368,7 @@ var
   AProfilesManager: IJediProfilesManager;
   ATarget: TJclBorRADToolInstallation;
 begin
+  FLogLines.OpenLog;
   AProfilesManager := InstallCore.ProfilesManager;
   try
     Target.OutputCallback := WriteLog;
@@ -2418,6 +2421,7 @@ begin
     // TODO: ioJclMakeDemos:
   finally
     Target.OutputCallback := nil;
+    FLogLines.CloseLog;
   end;
 
   Result := True;
