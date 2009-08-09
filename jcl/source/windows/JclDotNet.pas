@@ -453,252 +453,283 @@ end;
 
 {$WARNINGS OFF}
 
-var
-  _GetCORSystemDirectory: Pointer = nil;
+type
+  TGetCORSystemDirectory = function (pbuffer: PWideChar; const cchBuffer: DWORD;
+    var dwLength: DWORD): HRESULT; stdcall;
 
-function GetCORSystemDirectory;
+var
+  _GetCORSystemDirectory: TGetCORSystemDirectory = nil;
+
+function GetCORSystemDirectory(pbuffer: PWideChar; const cchBuffer: DWORD; var dwLength: DWORD): HRESULT;
 begin
-  GetProcedureAddress(_GetCORSystemDirectory, mscoree_dll, 'GetCORSystemDirectory');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_GetCORSystemDirectory]
-  end;
+  GetProcedureAddress(Pointer(@_GetCORSystemDirectory), mscoree_dll, 'GetCORSystemDirectory');
+  Result := _GetCORSystemDirectory(pbuffer, cchBuffer, dwLength);
 end;
 
-var
-  _GetCORVersion: Pointer = nil;
+type
+  TGetCORVersion = function (pbuffer: PWideChar; const cchBuffer: DWORD;
+    var dwLength: DWORD): HRESULT; stdcall;
 
-function GetCORVersion;
+var
+  _GetCORVersion: TGetCORVersion = nil;
+
+function GetCORVersion(pbuffer: PWideChar; const cchBuffer: DWORD;
+  var dwLength: DWORD): HRESULT;
 begin
-  GetProcedureAddress(_GetCORVersion, mscoree_dll, 'GetCORVersion');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_GetCORVersion]
-  end;
+  GetProcedureAddress(Pointer(@_GetCORVersion), mscoree_dll, 'GetCORVersion');
+  Result := _GetCORVersion(pbuffer, cchBuffer, dwLength);
 end;
 
-var
-  _GetFileVersion: Pointer = nil;
+type
+  TGetFileVersion = function (szFileName, szBuffer: PWideChar; const cchBuffer: DWORD;
+    var dwLength: DWORD): HRESULT; stdcall;
 
-function GetFileVersion;
+var
+  _GetFileVersion: TGetFileVersion = nil;
+
+function GetFileVersion(szFileName, szBuffer: PWideChar; const cchBuffer: DWORD;
+  var dwLength: DWORD): HRESULT;
 begin
-  GetProcedureAddress(_GetFileVersion, mscoree_dll, 'GetFileVersion');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_GetFileVersion]
-  end;
+  GetProcedureAddress(Pointer(@_GetFileVersion), mscoree_dll, 'GetFileVersion');
+  Result := _GetFileVersion(szFileName, szBuffer, cchBuffer, dwLength);
 end;
 
-var
-  _GetCORRequiredVersion: Pointer = nil;
+type
+  TGetCORRequiredVersion = function (pbuffer: PWideChar; const cchBuffer: DWORD;
+    var dwLength: DWORD): HRESULT; stdcall;
 
-function GetCORRequiredVersion;
+var
+  _GetCORRequiredVersion: TGetCORRequiredVersion = nil;
+
+function GetCORRequiredVersion(pbuffer: PWideChar; const cchBuffer: DWORD;
+  var dwLength: DWORD): HRESULT;
 begin
-  GetProcedureAddress(_GetCORRequiredVersion, mscoree_dll, 'GetCORRequiredVersion');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_GetCORRequiredVersion]
-  end;
+  GetProcedureAddress(Pointer(@_GetCORRequiredVersion), mscoree_dll, 'GetCORRequiredVersion');
+  Result := _GetCORRequiredVersion(pbuffer, cchBuffer, dwLength);
 end;
 
-var
-  _GetRequestedRuntimeInfo: Pointer = nil;
+type
+  TGetRequestedRuntimeInfo = function (pExe, pwszVersion, pConfigurationFile: PWideChar;
+    const startupFlags, reserved: DWORD; pDirectory: PWideChar; const dwDirectory: DWORD;
+    var dwDirectoryLength: DWORD; pVersion: PWideChar; const cchBuffer: DWORD;
+    var dwLength: DWORD): HRESULT; stdcall;
 
-function GetRequestedRuntimeInfo;
+var
+  _GetRequestedRuntimeInfo: TGetRequestedRuntimeInfo = nil;
+
+function GetRequestedRuntimeInfo(pExe, pwszVersion, pConfigurationFile: PWideChar;
+  const startupFlags, reserved: DWORD; pDirectory: PWideChar; const dwDirectory: DWORD;
+  var dwDirectoryLength: DWORD; pVersion: PWideChar; const cchBuffer: DWORD;
+  var dwLength: DWORD): HRESULT;
 begin
-  GetProcedureAddress(_GetRequestedRuntimeInfo, mscoree_dll, 'GetRequestedRuntimeInfo');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_GetRequestedRuntimeInfo]
-  end;
+  GetProcedureAddress(Pointer(@_GetRequestedRuntimeInfo), mscoree_dll, 'GetRequestedRuntimeInfo');
+  Result := _GetRequestedRuntimeInfo(pExe, pwszVersion, pConfigurationFile, startupFlags, reserved, pDirectory,
+                                     dwDirectory, dwDirectoryLength, pVersion, cchBuffer, dwLength);
 end;
 
-var
-  _GetRequestedRuntimeVersion: Pointer = nil;
+type
+  TGetRequestedRuntimeVersion = function (pExe, pVersion: PWideChar;
+    const cchBuffer: DWORD; var dwLength: DWORD): HRESULT; stdcall;
 
-function GetRequestedRuntimeVersion;
+var
+  _GetRequestedRuntimeVersion: TGetRequestedRuntimeVersion = nil;
+
+function GetRequestedRuntimeVersion(pExe, pVersion: PWideChar;
+  const cchBuffer: DWORD; var dwLength: DWORD): HRESULT;
 begin
-  GetProcedureAddress(_GetRequestedRuntimeVersion, mscoree_dll, 'GetRequestedRuntimeVersion');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_GetRequestedRuntimeVersion]
-  end;
+  GetProcedureAddress(Pointer(@_GetRequestedRuntimeVersion), mscoree_dll, 'GetRequestedRuntimeVersion');
+  Result := _GetRequestedRuntimeVersion(pExe, pVersion, cchBuffer, dwLength);
 end;
 
-var
-  _CorBindToRuntimeHost: Pointer = nil;
+type
+  TCorBindToRuntimeHost = function (pwszVersion, pwszBuildFlavor,
+    pwszHostConfigFile: PWideChar; const pReserved: Pointer;
+    const startupFlags: DWORD; const rclsid: TCLSID; const riid: TIID;
+    out pv): HRESULT; stdcall;
 
-function CorBindToRuntimeHost;
+var
+  _CorBindToRuntimeHost: TCorBindToRuntimeHost = nil;
+
+function CorBindToRuntimeHost(pwszVersion, pwszBuildFlavor,
+  pwszHostConfigFile: PWideChar; const pReserved: Pointer;
+  const startupFlags: DWORD; const rclsid: TCLSID; const riid: TIID;
+  out pv): HRESULT;
 begin
-  GetProcedureAddress(_CorBindToRuntimeHost, mscoree_dll, 'CorBindToRuntimeHost');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_CorBindToRuntimeHost]
-  end;
+  GetProcedureAddress(Pointer(@_CorBindToRuntimeHost), mscoree_dll, 'CorBindToRuntimeHost');
+  Result := _CorBindToRuntimeHost(pwszVersion, pwszBuildFlavor, pwszHostConfigFile, pReserved,
+                                  startupFlags, rclsid, riid, pv);
 end;
 
-var
-  _CorBindToRuntimeEx: Pointer = nil;
+type
+  TCorBindToRuntimeEx = function (pwszVersion, pwszBuildFlavor: PWideChar;
+    startupFlags: DWORD; const rclsid: TCLSID; const riid: TIID;
+    out pv): HRESULT; stdcall;
 
-function CorBindToRuntimeEx;
+var
+  _CorBindToRuntimeEx: TCorBindToRuntimeEx = nil;
+
+function CorBindToRuntimeEx(pwszVersion, pwszBuildFlavor: PWideChar;
+  startupFlags: DWORD; const rclsid: TCLSID; const riid: TIID;
+  out pv): HRESULT;
 begin
-  GetProcedureAddress(_CorBindToRuntimeEx, mscoree_dll, 'CorBindToRuntimeEx');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_CorBindToRuntimeEx]
-  end;
+  GetProcedureAddress(Pointer(@_CorBindToRuntimeEx), mscoree_dll, 'CorBindToRuntimeEx');
+  Result := _CorBindToRuntimeEx(pwszVersion, pwszBuildFlavor, startupFlags, rclsid, riid, pv);
 end;
 
-var
-  _CorBindToRuntimeByCfg: Pointer = nil;
+type
+  TCorBindToRuntimeByCfg = function (const pCfgStream: IStream;
+    const reserved, startupFlags: DWORD; const rclsid: TCLSID;
+    const riid: TIID; out pv): HRESULT; stdcall;
 
-function CorBindToRuntimeByCfg;
+var
+  _CorBindToRuntimeByCfg: TCorBindToRuntimeByCfg = nil;
+
+function CorBindToRuntimeByCfg(const pCfgStream: IStream;
+  const reserved, startupFlags: DWORD; const rclsid: TCLSID;
+  const riid: TIID; out pv): HRESULT;
 begin
-  GetProcedureAddress(_CorBindToRuntimeByCfg, mscoree_dll, 'CorBindToRuntimeByCfg');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_CorBindToRuntimeByCfg]
-  end;
+  GetProcedureAddress(Pointer(@_CorBindToRuntimeByCfg), mscoree_dll, 'CorBindToRuntimeByCfg');
+  Result := _CorBindToRuntimeByCfg(pCfgStream, reserved, startupFlags, rclsid, riid, pv);
 end;
 
-var
-  _CorBindToRuntime: Pointer = nil;
+type
+  TCorBindToRuntime = function (pwszVersion, pwszBuildFlavor: PWideChar;
+    const rclsid: TCLSID; const riid: TIID; out pv): HRESULT; stdcall;
 
-function CorBindToRuntime;
+var
+  _CorBindToRuntime: TCorBindToRuntime = nil;
+
+function CorBindToRuntime(pwszVersion, pwszBuildFlavor: PWideChar;
+  const rclsid: TCLSID; const riid: TIID; out pv): HRESULT;
 begin
-  GetProcedureAddress(_CorBindToRuntime, mscoree_dll, 'CorBindToRuntime');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_CorBindToRuntime]
-  end;
+  GetProcedureAddress(Pointer(@_CorBindToRuntime), mscoree_dll, 'CorBindToRuntime');
+  Result := _CorBindToRuntime(pwszVersion, pwszBuildFlavor, rclsid, riid, pv);
 end;
 
-var
-  _CorBindToCurrentRuntime: Pointer = nil;
+type
+  TCorBindToCurrentRuntime = function (pwszFileName: PWideChar;
+    const rclsid: TCLSID; const riid: TIID; out pv): HRESULT; stdcall;
 
-function CorBindToCurrentRuntime;
+var
+  _CorBindToCurrentRuntime: TCorBindToCurrentRuntime = nil;
+
+function CorBindToCurrentRuntime(pwszFileName: PWideChar;
+  const rclsid: TCLSID; const riid: TIID; out pv): HRESULT;
 begin
-  GetProcedureAddress(_CorBindToCurrentRuntime, mscoree_dll, 'CorBindToCurrentRuntime');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_CorBindToCurrentRuntime]
-  end;
+  GetProcedureAddress(Pointer(@_CorBindToCurrentRuntime), mscoree_dll, 'CorBindToCurrentRuntime');
+  Result := _CorBindToCurrentRunTime(pwszFileName, rclsid, riid, pv);
 end;
 
-var
-  _ClrCreateManagedInstance: Pointer = nil;
+type
+  TClrCreateManagedInstance = function (pTypeName: PWideChar;
+    const riid: TIID; out pv): HRESULT; stdcall;
 
-function ClrCreateManagedInstance;
+var
+  _ClrCreateManagedInstance: TClrCreateManagedInstance = nil;
+
+function ClrCreateManagedInstance(pTypeName: PWideChar;
+  const riid: TIID; out pv): HRESULT;
 begin
-  GetProcedureAddress(_ClrCreateManagedInstance, mscoree_dll, 'ClrCreateManagedInstance');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_ClrCreateManagedInstance]
-  end;
+  GetProcedureAddress(Pointer(@_ClrCreateManagedInstance), mscoree_dll, 'ClrCreateManagedInstance');
+  Result := _ClrCreateManagedInstance(pTypeName, riid, pv);
 end;
 
+type
+  TCorMarkThreadInThreadPool = procedure; stdcall;
+
 var
-  _CorMarkThreadInThreadPool: Pointer = nil;
+  _CorMarkThreadInThreadPool: TCorMarkThreadInThreadPool = nil;
 
 procedure CorMarkThreadInThreadPool;
 begin
-  GetProcedureAddress(_CorMarkThreadInThreadPool, mscoree_dll, 'CorMarkThreadInThreadPool');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_CorMarkThreadInThreadPool]
-  end;
+  GetProcedureAddress(Pointer(@_CorMarkThreadInThreadPool), mscoree_dll, 'CorMarkThreadInThreadPool');
+  _CorMarkThreadInThreadPool;
 end;
 
-var
-  _RunDll32ShimW: Pointer = nil;
+type
+  TRunDll32ShimW = function (const hwnd: THandle; const hinst: HMODULE;
+    lpszCmdLine: PWideChar; const nCmdShow: Integer): HRESULT; stdcall;
 
-function RunDll32ShimW;
+var
+  _RunDll32ShimW: TRunDll32ShimW = nil;
+
+function RunDll32ShimW(const hwnd: THandle; const hinst: HMODULE;
+  lpszCmdLine: PWideChar; const nCmdShow: Integer): HRESULT;
 begin
-  GetProcedureAddress(_RunDll32ShimW, mscoree_dll, 'RunDll32ShimW');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_RunDll32ShimW]
-  end;
+  GetProcedureAddress(Pointer(@_RunDll32ShimW), mscoree_dll, 'RunDll32ShimW');
+  Result := _RunDll32ShimW(hwnd, hinst, lpszCmdLine, nCmdShow);
 end;
 
-var
-  _LoadLibraryShim: Pointer = nil;
+type
+  TLoadLibraryShim = function (szDllName, szVersion: PWideChar;
+    const pvReserved: Pointer; out phModDll: HMODULE): HRESULT; stdcall;
 
-function LoadLibraryShim;
+var
+  _LoadLibraryShim: TLoadLibraryShim = nil;
+
+function LoadLibraryShim(szDllName, szVersion: PWideChar;
+  const pvReserved: Pointer; out phModDll: HMODULE): HRESULT;
 begin
-  GetProcedureAddress(_LoadLibraryShim, mscoree_dll, 'LoadLibraryShim');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_LoadLibraryShim]
-  end;
+  GetProcedureAddress(Pointer(@_LoadLibraryShim), mscoree_dll, 'LoadLibraryShim');
+  Result := _LoadLibraryShim(szDllName, szVersion, pvReserved, phModDll);
 end;
 
-var
-  _CallFunctionShim: Pointer = nil;
+type
+  TCallFunctionShim = function (szDllName: PWideChar; const szFunctionName: PChar;
+    const lpvArgument1, lpvArgument2: Pointer; szVersion: PWideChar;
+    const pvReserved: Pointer): HRESULT; stdcall;
 
-function CallFunctionShim;
+var
+  _CallFunctionShim: TCallFunctionShim = nil;
+
+function CallFunctionShim(szDllName: PWideChar; const szFunctionName: PChar;
+  const lpvArgument1, lpvArgument2: Pointer; szVersion: PWideChar;
+  const pvReserved: Pointer): HRESULT;
 begin
-  GetProcedureAddress(_CallFunctionShim, mscoree_dll, 'CallFunctionShim');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_CallFunctionShim]
-  end;
+  GetProcedureAddress(Pointer(@_CallFunctionShim), mscoree_dll, 'CallFunctionShim');
+  Result := _CallFunctionShim(szDllName, szFunctionName, lpvArgument1, lpvArgument2, szVersion, pvReserved);
 end;
 
-var
-  _GetRealProcAddress: Pointer = nil;
+type
+  TGetRealProcAddress = function (const pwszProcName: PChar;
+    out ppv: Pointer): HRESULT; stdcall;
 
-function GetRealProcAddress;
+var
+  _GetRealProcAddress: TGetRealProcAddress = nil;
+
+function GetRealProcAddress(const pwszProcName: PChar;
+  out ppv: Pointer): HRESULT;
 begin
-  GetProcedureAddress(_GetRealProcAddress, mscoree_dll, 'GetRealProcAddress');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_GetRealProcAddress]
-  end;
+  GetProcedureAddress(Pointer(@_GetRealProcAddress), mscoree_dll, 'GetRealProcAddress');
+  Result := _GetRealProcAddress(pwszProcName, ppv);
 end;
 
-var
-  _CorExitProcess: Pointer = nil;
+type
+  TCorExitProcess = procedure (const exitCode: Integer); stdcall;
 
-procedure CorExitProcess;
+var
+  _CorExitProcess: TCorExitProcess = nil;
+
+procedure CorExitProcess(const exitCode: Integer);
 begin
-  GetProcedureAddress(_CorExitProcess, mscoree_dll, 'CorExitProcess');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_CorExitProcess]
-  end;
+  GetProcedureAddress(Pointer(@_CorExitProcess), mscoree_dll, 'CorExitProcess');
+  _CorExitProcess(exitCode);
 end;
 
-// truncated because the symbol was not found in assembler
-var
-  _GetRequestedRuntimeVersionForCL: Pointer = nil;
+type
+  TGetRequestedRuntimeVersionForCLSID = function (rclsid: TGuid; pVersion: PWideChar;
+    const cchBuffer: DWORD; var dwLength: DWORD;
+    const dwResolutionFlags: CLSID_RESOLUTION_FLAGS): HRESULT; stdcall;
 
-function GetRequestedRuntimeVersionForCLSID;
+var
+  _GetRequestedRuntimeVersionForCLSID: TGetRequestedRuntimeVersionForCLSID = nil;
+
+function GetRequestedRuntimeVersionForCLSID(rclsid: TGuid; pVersion: PWideChar;
+  const cchBuffer: DWORD; var dwLength: DWORD;
+  const dwResolutionFlags: CLSID_RESOLUTION_FLAGS): HRESULT;
 begin
-  GetProcedureAddress(_GetRequestedRuntimeVersionForCL, mscoree_dll, 'GetRequestedRuntimeVersionForCLSID');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_GetRequestedRuntimeVersionForCL]
-  end;
+  GetProcedureAddress(Pointer(@_GetRequestedRuntimeVersionForCLSID), mscoree_dll, 'GetRequestedRuntimeVersionForCLSID');
+  Result := _GetRequestedRuntimeVersionForCLSID(rclsid, pVersion, cchBuffer, dwLength, dwResolutionFlags);
 end;
 
 {$WARNINGS ON}

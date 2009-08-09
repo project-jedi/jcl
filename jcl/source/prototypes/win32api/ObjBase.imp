@@ -2,31 +2,37 @@
 
 const
   Ole32Lib = 'ole32.dll';
+
+type
+  TStgCreateStorageEx = function (const pwcsName: PWideChar; grfMode: DWORD;
+    stgfmt: DWORD; grfAttrs: DWORD; pStgOptions: PSTGOPTIONS; reserved2: Pointer;
+    riid: PGUID; out stgOpen: IInterface): HResult; stdcall;
   
 var
-  _StgCreateStorageEx: Pointer;
+  _StgCreateStorageEx: TStgCreateStorageEx = nil;
 
-function StgCreateStorageEx;
+function StgCreateStorageEx(const pwcsName: PWideChar; grfMode: DWORD;
+  stgfmt: DWORD; grfAttrs: DWORD; pStgOptions: PSTGOPTIONS; reserved2: Pointer;
+  riid: PGUID; out stgOpen: IInterface): HResult;
 begin
-  GetProcedureAddress(_StgCreateStorageEx, Ole32Lib, 'StgCreateStorageEx');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_StgCreateStorageEx]
-  end;
+  GetProcedureAddress(Pointer(@_StgCreateStorageEx), Ole32Lib, 'StgCreateStorageEx');
+  Result := _StgCreateStorageEx(pwcsName, grfMode, stgfmt, grfAttrs, pStgOptions, reserved2, riid, stgOpen);
 end;
 
-var
-  _StgOpenStorageEx: Pointer;
+type
+  TStgOpenStorageEx = function (const pwcsName: PWideChar; grfMode: DWORD;
+    stgfmt: DWORD; grfAttrs: DWORD; pStgOptions: PSTGOPTIONS; reserved2: Pointer;
+    riid: PGUID; out stgOpen: IInterface): HResult; stdcall;
 
-function StgOpenStorageEx;
+var
+  _StgOpenStorageEx: TStgOpenStorageEx = nil;
+
+function StgOpenStorageEx(const pwcsName: PWideChar; grfMode: DWORD;
+  stgfmt: DWORD; grfAttrs: DWORD; pStgOptions: PSTGOPTIONS; reserved2: Pointer;
+  riid: PGUID; out stgOpen: IInterface): HResult;
 begin
-  GetProcedureAddress(_StgOpenStorageEx, Ole32Lib, 'StgOpenStorageEx');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_StgOpenStorageEx]
-  end;
+  GetProcedureAddress(Pointer(@_StgOpenStorageEx), Ole32Lib, 'StgOpenStorageEx');
+  Result := _StgOpenStorageEx(pwcsName, grfMode, stgfmt, grfAttrs, pStgOptions, reserved2, riid, stgOpen);
 end;
 
 {$ENDIF MSWINDOWS}

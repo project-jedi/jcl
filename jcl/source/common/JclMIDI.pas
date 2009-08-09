@@ -431,7 +431,7 @@ end;
 
 procedure CheckMIDIChannelNum(Channel: TMIDIChannel);
 begin
-  if (Channel < Low(TMIDIChannel)) or (Channel > High(TMIDIChannel)) then
+  if (Integer(Channel) < Low(TMIDIChannel)) or (Integer(Channel) > High(TMIDIChannel)) then
     raise EJclMIDIError.CreateResFmt(@RsMidiInvalidChannelNum, [Channel]);
 end;
 

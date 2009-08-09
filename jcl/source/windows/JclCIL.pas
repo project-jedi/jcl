@@ -221,7 +221,11 @@ uses
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
-  JclStrings, JclResources, JclClr, JclPeImage;
+  {$IFDEF RTL140_UP}
+  JclCLR,
+  JclPeImage,
+  {$ENDIF RTL140_UP}
+  JclStrings, JclResources;
 
 type
   TJclOpCodeInfoType = (itName, itFullName, itDescription);
@@ -742,7 +746,7 @@ begin
   else
     Result := 0;
   end;
-  Result := OpCodeSize[OpCode in [opNop..opPrefixRef]] + Result;
+  Inc(Result, OpCodeSize[OpCode in [opNop..opPrefixRef]]);
 end;
 
 procedure TJclInstruction.Load(Stream: TStream);
@@ -956,7 +960,7 @@ begin
         ptVoid:
           ; // do nothing
         ptLOff:
-          Result := FormatLabel(Integer(Offset + Size) + TVarData(Param).VInteger - 1);
+          Result := FormatLabel(Integer(Offset) + + Integer(Size) + TVarData(Param).VInteger - 1);
         {$IFDEF RTL140_UP}  { TODO -cTest : since RTL 14.0 or 15.0? }
         ptToken:
           begin

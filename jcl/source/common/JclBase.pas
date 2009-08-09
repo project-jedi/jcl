@@ -30,7 +30,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                          $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -86,6 +86,13 @@ type
   {$IFDEF FPC}
   Largeint = Int64;
   {$ELSE ~FPC}
+  {$IFDEF CPU32}
+  SizeInt = Integer;
+  {$ENDIF CPU32}
+  {$IFDEF CPU64}
+  SizeInt = Int64;
+  {$ENDIF CPU64}
+  PSizeInt = ^SizeInt;
   PPointer = ^Pointer;
   {$IFDEF RTL140_UP}
   PByte = System.PByte;
@@ -174,6 +181,7 @@ type
   TDynInt64Array         = array of Int64;
   TDynCardinalArray      = array of Cardinal;
   TDynIntegerArray       = array of Integer;
+  TDynSizeIntArray       = array of SizeInt;
   TDynExtendedArray      = array of Extended;
   TDynDoubleArray        = array of Double;
   TDynSingleArray        = array of Single;
@@ -273,32 +281,33 @@ type
 procedure RaiseLastOSError;
 {$ENDIF ~XPLATFORM_RTL}
 
-procedure MoveArray(var List: TDynIInterfaceArray; FromIndex, ToIndex, Count: Integer); overload;
-procedure MoveArray(var List: TDynStringArray; FromIndex, ToIndex, Count: Integer); overload;
-procedure MoveArray(var List: TDynFloatArray; FromIndex, ToIndex, Count: Integer); overload;
-procedure MoveArray(var List: TDynPointerArray; FromIndex, ToIndex, Count: Integer); overload;
+procedure MoveArray(var List: TDynIInterfaceArray; FromIndex, ToIndex, Count: SizeInt); overload;
+procedure MoveArray(var List: TDynStringArray; FromIndex, ToIndex, Count: SizeInt); overload;
+procedure MoveArray(var List: TDynFloatArray; FromIndex, ToIndex, Count: SizeInt); overload;
+procedure MoveArray(var List: TDynPointerArray; FromIndex, ToIndex, Count: SizeInt); overload;
 {$IFDEF SUPPORTS_UNICODE_STRING}
-procedure MoveArray(var List: TDynUnicodeStringArray; FromIndex, ToIndex, Count: Integer); overload;
+procedure MoveArray(var List: TDynUnicodeStringArray; FromIndex, ToIndex, Count: SizeInt); overload;
 {$ENDIF SUPPORTS_UNICODE_STRING}
 {$IFNDEF FPC}
-procedure MoveArray(var List: TDynAnsiStringArray; FromIndex, ToIndex, Count: Integer); overload;
+procedure MoveArray(var List: TDynAnsiStringArray; FromIndex, ToIndex, Count: SizeInt); overload;
 {$ENDIF}
-procedure MoveArray(var List: TDynWideStringArray; FromIndex, ToIndex, Count: Integer); overload;
-procedure MoveArray(var List: TDynObjectArray; FromIndex, ToIndex, Count: Integer); overload;
-procedure MoveArray(var List: TDynSingleArray; FromIndex, ToIndex, Count: Integer); overload;
-procedure MoveArray(var List: TDynDoubleArray; FromIndex, ToIndex, Count: Integer); overload;
+procedure MoveArray(var List: TDynWideStringArray; FromIndex, ToIndex, Count: SizeInt); overload;
+procedure MoveArray(var List: TDynObjectArray; FromIndex, ToIndex, Count: SizeInt); overload;
+procedure MoveArray(var List: TDynSingleArray; FromIndex, ToIndex, Count: SizeInt); overload;
+procedure MoveArray(var List: TDynDoubleArray; FromIndex, ToIndex, Count: SizeInt); overload;
 {$IFNDEF FPC}
-procedure MoveArray(var List: TDynExtendedArray; FromIndex, ToIndex, Count: Integer); overload;
+procedure MoveArray(var List: TDynExtendedArray; FromIndex, ToIndex, Count: SizeInt); overload;
 {$ENDIF}
-procedure MoveArray(var List: TDynIntegerArray; FromIndex, ToIndex, Count: Integer); overload;
-procedure MoveArray(var List: TDynCardinalArray; FromIndex, ToIndex, Count: Integer); overload;
-procedure MoveArray(var List: TDynInt64Array; FromIndex, ToIndex, Count: Integer); overload;
-procedure MoveChar(const Source: string; FromIndex: Integer;
-  var Dest: string; ToIndex, Count: Integer); overload; // Index: 0..n-1
+procedure MoveArray(var List: TDynIntegerArray; FromIndex, ToIndex, Count: SizeInt); overload;
+procedure MoveArray(var List: TDynCardinalArray; FromIndex, ToIndex, Count: SizeInt); overload;
+procedure MoveArray(var List: TDynInt64Array; FromIndex, ToIndex, Count: SizeInt); overload;
+procedure MoveArray(var List: TDynSizeIntArray; FromIndex, ToIndex, Count: SizeInt); overload;
+procedure MoveChar(const Source: string; FromIndex: SizeInt;
+  var Dest: string; ToIndex, Count: SizeInt); overload; // Index: 0..n-1
 
-function AnsiByteArrayStringLen(Data: TBytes): Integer;
+function AnsiByteArrayStringLen(Data: TBytes): SizeInt;
 function StringToAnsiByteArray(const S: string): TBytes;
-function AnsiByteArrayToString(const Data: TBytes; Count: Integer): string;
+function AnsiByteArrayToString(const Data: TBytes; Count: SizeInt): string;
 
 function BytesOf(const Value: AnsiString): TBytes; overload;
 function BytesOf(const Value: WideString): TBytes; overload;
@@ -329,18 +338,21 @@ type
 {$ENDIF ~FPC}
 
 type
-  TJclAddr64 = Int64;
   TJclAddr32 = Cardinal;
-
   {$IFDEF FPC}
-  TJclAddr = PtrInt;
-  {$ELSE ~FPC}
-  {$IFDEF 64BIT}
-  TJclAddr = TJclAddr64;
-  {$ELSE ~64BIT}
+  TJclAddr64 = QWord;
+  {$IFDEF CPU64}
+  TJclAddr = QWord;
+  {$ENDIF CPU64}
+  {$IFDEF CPU32}
+  TJclAddr = Cardinal;
+  {$ENDIF CPU32}
+  {$ENDIF FPC}
+  {$IFDEF BORLAND}
+  TJclAddr64 = Int64;
   TJclAddr = TJclAddr32;
-  {$ENDIF ~64BIT}
-  {$ENDIF ~FPC}
+  {$ENDIF BORLAND}
+  PJclAddr = ^TJclAddr;
 
   EJclAddr64Exception = class(EJclError);
 
@@ -401,7 +413,7 @@ implementation
 uses
   JclResources;
 
-procedure MoveArray(var List: TDynIInterfaceArray; FromIndex, ToIndex, Count: Integer); overload;
+procedure MoveArray(var List: TDynIInterfaceArray; FromIndex, ToIndex, Count: SizeInt); overload;
 begin
   if Count > 0 then
   begin
@@ -425,7 +437,7 @@ begin
   end;
 end;
 
-procedure MoveArray(var List: TDynStringArray; FromIndex, ToIndex, Count: Integer); overload;
+procedure MoveArray(var List: TDynStringArray; FromIndex, ToIndex, Count: SizeInt); overload;
 begin
   if Count > 0 then
   begin
@@ -449,7 +461,7 @@ begin
   end;
 end;
 
-procedure MoveArray(var List: TDynFloatArray; FromIndex, ToIndex, Count: Integer); overload;
+procedure MoveArray(var List: TDynFloatArray; FromIndex, ToIndex, Count: SizeInt); overload;
 begin
   if Count > 0 then
   begin
@@ -473,7 +485,7 @@ begin
   end;
 end;
 
-procedure MoveArray(var List: TDynPointerArray; FromIndex, ToIndex, Count: Integer); overload;
+procedure MoveArray(var List: TDynPointerArray; FromIndex, ToIndex, Count: SizeInt); overload;
 begin
   if Count > 0 then
   begin
@@ -498,7 +510,7 @@ begin
 end;
 
 {$IFDEF SUPPORTS_UNICODE_STRING}
-procedure MoveArray(var List: TDynUnicodeStringArray; FromIndex, ToIndex, Count: Integer); overload;
+procedure MoveArray(var List: TDynUnicodeStringArray; FromIndex, ToIndex, Count: SizeInt); overload;
 begin
   if Count > 0 then
   begin
@@ -524,7 +536,7 @@ end;
 {$ENDIF SUPPORTS_UNICODE_STRING}
 
 {$IFNDEF FPC}
-procedure MoveArray(var List: TDynAnsiStringArray; FromIndex, ToIndex, Count: Integer); overload;
+procedure MoveArray(var List: TDynAnsiStringArray; FromIndex, ToIndex, Count: SizeInt); overload;
 begin
   if Count > 0 then
   begin
@@ -549,7 +561,7 @@ begin
 end;
 {$ENDIF ~FPC}
 
-procedure MoveArray(var List: TDynWideStringArray; FromIndex, ToIndex, Count: Integer); overload;
+procedure MoveArray(var List: TDynWideStringArray; FromIndex, ToIndex, Count: SizeInt); overload;
 begin
   if Count > 0 then
   begin
@@ -573,7 +585,7 @@ begin
   end;
 end;
 
-procedure MoveArray(var List: TDynObjectArray; FromIndex, ToIndex, Count: Integer); overload;
+procedure MoveArray(var List: TDynObjectArray; FromIndex, ToIndex, Count: SizeInt); overload;
 begin
   if Count > 0 then
   begin
@@ -597,7 +609,7 @@ begin
   end;
 end;
 
-procedure MoveArray(var List: TDynSingleArray; FromIndex, ToIndex, Count: Integer); overload;
+procedure MoveArray(var List: TDynSingleArray; FromIndex, ToIndex, Count: SizeInt); overload;
 begin
   if Count > 0 then
   begin
@@ -621,7 +633,7 @@ begin
   end;
 end;
 
-procedure MoveArray(var List: TDynDoubleArray; FromIndex, ToIndex, Count: Integer); overload;
+procedure MoveArray(var List: TDynDoubleArray; FromIndex, ToIndex, Count: SizeInt); overload;
 begin
   if Count > 0 then
   begin
@@ -646,7 +658,7 @@ begin
 end;
 
 {$IFNDEF FPC}
-procedure MoveArray(var List: TDynExtendedArray; FromIndex, ToIndex, Count: Integer); overload;
+procedure MoveArray(var List: TDynExtendedArray; FromIndex, ToIndex, Count: SizeInt); overload;
 begin
   if Count > 0 then
   begin
@@ -671,7 +683,7 @@ begin
 end;
 {$ENDIF ~FPC}
 
-procedure MoveArray(var List: TDynIntegerArray; FromIndex, ToIndex, Count: Integer); overload;
+procedure MoveArray(var List: TDynIntegerArray; FromIndex, ToIndex, Count: SizeInt); overload;
 begin
   if Count > 0 then
   begin
@@ -695,7 +707,7 @@ begin
   end;
 end;
 
-procedure MoveArray(var List: TDynCardinalArray; FromIndex, ToIndex, Count: Integer); overload;
+procedure MoveArray(var List: TDynCardinalArray; FromIndex, ToIndex, Count: SizeInt); overload;
 begin
   if Count > 0 then
   begin
@@ -719,7 +731,7 @@ begin
   end;
 end;
 
-procedure MoveArray(var List: TDynInt64Array; FromIndex, ToIndex, Count: Integer); overload;
+procedure MoveArray(var List: TDynInt64Array; FromIndex, ToIndex, Count: SizeInt); overload;
 begin
   if Count > 0 then
   begin
@@ -743,15 +755,39 @@ begin
   end;
 end;
 
-procedure MoveChar(const Source: string; FromIndex: Integer;
-  var Dest: string; ToIndex, Count: Integer);
+procedure MoveArray(var List: TDynSizeIntArray; FromIndex, ToIndex, Count: SizeInt); overload;
+begin
+  if Count > 0 then
+  begin
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    { Clean array }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
+      else
+        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
+      else
+        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+    end;
+  end;
+end;
+
+procedure MoveChar(const Source: string; FromIndex: SizeInt;
+  var Dest: string; ToIndex, Count: SizeInt);
 begin
   Move(Source[FromIndex + 1], Dest[ToIndex + 1], Count * SizeOf(Char));
 end;
 
-function AnsiByteArrayStringLen(Data: TBytes): Integer;
+function AnsiByteArrayStringLen(Data: TBytes): SizeInt;
 var
-  I: Integer;
+  I: SizeInt;
 begin
   Result := Length(Data);
   for I := 0 to Result - 1 do
@@ -764,7 +800,7 @@ end;
 
 function StringToAnsiByteArray(const S: string): TBytes;
 var
-  I: Integer;
+  I: SizeInt;
   AnsiS: AnsiString;
 begin
   AnsiS := AnsiString(S); // convert to AnsiString
@@ -773,9 +809,9 @@ begin
     Result[I] := Byte(AnsiS[I + 1]);
 end;
 
-function AnsiByteArrayToString(const Data: TBytes; Count: Integer): string;
+function AnsiByteArrayToString(const Data: TBytes; Count: SizeInt): string;
 var
-  I: Integer;
+  I: SizeInt;
   AnsiS: AnsiString;
 begin
   if Length(Data) < Count then

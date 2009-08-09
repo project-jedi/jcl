@@ -225,7 +225,8 @@ var
 implementation
 
 const
-  szNtDll           = 'NTDLL.DLL'; // Import native APIs from this DLL
+  szNtDll           = 'NTDLL.DLL';    // Import native APIs from this DLL
+  szKernel32        = 'KERNEL32.DLL';
 {$IFDEF PREFERAPI}
   szCreateHardLinkA = 'CreateHardLinkA';
   szCreateHardLinkW = 'CreateHardLinkW';
@@ -372,6 +373,8 @@ function ZwOpenFile(var FileHandle: THandle; DesiredAccess: DWORD;
   const ObjectAttributes: OBJECT_ATTRIBUTES; var IoStatusBlock: IO_STATUS_BLOCK;
   ShareAccess: ULONG; OpenOptions: ULONG): NTSTATUS; stdcall; external szNtDll;
 
+function GetProcessHeap: Pointer; stdcall; external szKernel32;
+
 function RtlAllocateHeap(HeapHandle: Pointer;
   Flags, Size: ULONG): Pointer; stdcall; external szNtDll;
 
@@ -414,6 +417,8 @@ type
     const ObjectAttributes: OBJECT_ATTRIBUTES; var IoStatusBlock: IO_STATUS_BLOCK;
     ShareAccess: ULONG; OpenOptions: ULONG): NTSTATUS; stdcall;
 
+  TGetProcessHeap = function: Pointer; stdcall;
+
   TRtlAllocateHeap = function(HeapHandle: Pointer; Flags, Size: ULONG): Pointer; stdcall;
 
   TRtlFreeHeap = function(HeapHandle: Pointer; Flags: ULONG;
@@ -439,6 +444,7 @@ var
   ZwOpenSymbolicLinkObject: TZwOpenSymbolicLinkObject = nil;
   ZwQuerySymbolicLinkObject: TZwQuerySymbolicLinkObject = nil;
   ZwOpenFile: TZwOpenFile = nil;
+  GetProcessHeap: TGetProcessHeap = nil;
   RtlAllocateHeap: TRtlAllocateHeap = nil;
   RtlFreeHeap: TRtlFreeHeap = nil;
   RtlDosPathNameToNtPathName_U: TRtlDosPathNameToNtPathName_U = nil;
@@ -446,23 +452,6 @@ var
   RtlDetermineDosPathNameType_U: TRtlDetermineDosPathNameType_U = nil;
   RtlNtStatusToDosError: TRtlNtStatusToDosError = nil;
 {$ENDIF RTDL}
-
-
-function NtpGetProcessHeap: Pointer; assembler;
-asm
-  // The structure offsets are now hardcoded to be able to remove otherwise
-  // obsolete structure definitions.
-//MOV    EAX, FS:[0]._TEB.Peb
-  MOV    EAX, FS:[$30]    // FS points to TEB/TIB which has a pointer to the PEB
-//MOV    EAX, [EAX]._PEB.ProcessHeap
-  MOV    EAX, [EAX+$18] // Get the process heap's handle
-(*
-An alternative way to achieve exactly the same (at least in usermode) as above:
-  MOV    EAX, FS:$18
-  MOV    EAX, [EAX+$30]
-  MOV    EAX, [EAX+$18]
-*)
-end;
 
 (******************************************************************************
 
@@ -579,7 +568,7 @@ begin
     Exit;
 {$ENDIF RTDL}
   // Get process' heap
-  hHeap := NtpGetProcessHeap;
+  hHeap := GetProcessHeap;
   {-------------------------------------------------------------
   Preliminary parameter checks which do Exit with error code set
   --------------------------------------------------------------}
@@ -785,7 +774,7 @@ begin
     Exit;
 {$ENDIF RTDL}
   // Get the process' heap
-  hHeap := NtpGetProcessHeap;
+  hHeap := GetProcessHeap;
   // Create and allocate a UNICODE_STRING from the zero-terminated parameters
   usLinkName.Length := 0;
   if RtlCreateUnicodeStringFromAsciiz(usLinkName, szLinkName) then
@@ -815,6 +804,7 @@ const
   szZwOpenSymbolicLinkObject         = 'ZwOpenSymbolicLinkObject';
   szZwQuerySymbolicLinkObject        = 'ZwQuerySymbolicLinkObject';
   szZwOpenFile                       = 'ZwOpenFile';
+  szGetProcessHeap                   = 'GetProcessHeap';
   szRtlAllocateHeap                  = 'RtlAllocateHeap';
   szRtlFreeHeap                      = 'RtlFreeHeap';
   szRtlDosPathNameToNtPathName_U     = 'RtlDosPathNameToNtPathName_U';
@@ -823,17 +813,15 @@ const
   szRtlNtStatusToDosError            = 'RtlNtStatusToDosError';
 {$ENDIF RTDL}
 
-{$IFDEF PREFERAPI}
 var
   hKernel32: THandle = 0;
-{$ENDIF PREFERAPI}
 
 initialization
-  {$IFDEF PREFERAPI}
   // GetModuleHandle because this DLL is loaded into any Win32 subsystem process anyway
   // implicitly. And Delphi cannot create applications for other subsystems without
   // major changes in SysInit und System units.
   hKernel32 := GetModuleHandle(kernel32);
+  {$IFDEF PREFERAPI}
   // If we prefer the real Windows APIs try to get their addresses
   @CreateHardLinkA := GetProcAddress(hKernel32, szCreateHardLinkA);
   @CreateHardLinkW := GetProcAddress(hKernel32, szCreateHardLinkW);
@@ -857,6 +845,7 @@ initialization
     @ZwOpenSymbolicLinkObject := GetProcAddress(hNtDll, szZwOpenSymbolicLinkObject);
     @ZwQuerySymbolicLinkObject := GetProcAddress(hNtDll, szZwQuerySymbolicLinkObject);
     @ZwOpenFile := GetProcAddress(hNtDll, szZwOpenFile);
+    @GetProcessHeap := GetProcAddress(hKernel32, szGetProcessHeap);
     @RtlAllocateHeap := GetProcAddress(hNtDll, szRtlAllocateHeap);
     @RtlFreeHeap := GetProcAddress(hNtDll, szRtlFreeHeap);
     @RtlDosPathNameToNtPathName_U := GetProcAddress(hNtDll, szRtlDosPathNameToNtPathName_U);
@@ -872,6 +861,7 @@ initialization
       Assigned(@ZwOpenSymbolicLinkObject) and
       Assigned(@ZwQuerySymbolicLinkObject) and
       Assigned(@ZwOpenFile) and
+      Assigned(@GetProcessHeap) and
       Assigned(@RtlAllocateHeap) and
       Assigned(@RtlFreeHeap) and
       Assigned(@RtlDosPathNameToNtPathName_U) and

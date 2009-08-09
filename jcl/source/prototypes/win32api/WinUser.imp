@@ -1,26 +1,24 @@
+type
+  TGetWindowLongPtr = function (hWnd: HWND; nIndex: Integer): TJclAddr; stdcall;
 
 var
-  _GetWindowLongPtr: Pointer;
+  _GetWindowLongPtr: TGetWindowLongPtr = nil;
 
-function GetWindowLongPtr;
+function GetWindowLongPtr(hWnd: HWND; nIndex: Integer): TJclAddr;
 begin
-  GetProcedureAddress(_GetWindowLongPtr, user32, 'GetWindowLong' + AWSuffix);
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_GetWindowLongPtr]
-  end;
+  GetProcedureAddress(Pointer(@_GetWindowLongPtr), user32, 'GetWindowLong' + AWSuffix);
+  Result := _GetWindowLongPtr(hWnd, nIndex);
 end;
+
+type
+  TSetWindowLongPtr = function (hWnd: HWND; nIndex: Integer; dwNewLong: TJclAddr): Longint; stdcall;
 
 var
-  _SetWindowLongPtr: Pointer;
+  _SetWindowLongPtr: TSetWindowLongPtr = nil;
 
-function SetWindowLongPtr;
+function SetWindowLongPtr(hWnd: HWND; nIndex: Integer; dwNewLong: TJclAddr): Longint;
 begin
-  GetProcedureAddress(_SetWindowLongPtr, user32, 'SetWindowLong' + AWSuffix);
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_SetWindowLongPtr]
-  end;
+  GetProcedureAddress(Pointer(@_SetWindowLongPtr), user32, 'SetWindowLong' + AWSuffix);
+  Result := _SetWindowLongPtr(hWnd, nIndex, dwNewLong);
 end;
+

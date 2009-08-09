@@ -78,28 +78,38 @@ type
   TFloat64 = Double;
   PFloat64 = ^TFloat64;
 
+  {$IFDEF SUPPORTS_EXTENDED}
   TFloat80 = Extended;
   PFloat80 = ^TFloat80;
+  {$ENDIF SUPPORTS_EXTENDED}
 
   TFloatFunc = function: TFloat;
   TFloat32Func = function: TFloat32;
   TFloat64Func = function: TFloat64;
+  {$IFDEF SUPPORTS_EXTENDED}
   TFloat80Func = function: TFloat80;
+  {$ENDIF SUPPORTS_EXTENDED}
 
   TUnaryFunc = function(X: TFloat): TFloat;
   TUnary32Func = function(X: TFloat32): TFloat32;
   TUnary64Func = function(X: TFloat64): TFloat64;
+  {$IFDEF SUPPORTS_EXTENDED}
   TUnary80Func = function(X: TFloat80): TFloat80;
+  {$ENDIF SUPPORTS_EXTENDED}
 
   TBinaryFunc = function(X, Y: TFloat): TFloat;
   TBinary32Func = function(X, Y: TFloat32): TFloat32;
   TBinary64Func = function(X, Y: TFloat64): TFloat64;
+  {$IFDEF SUPPORTS_EXTENDED}
   TBinary80Func = function(X, Y: TFloat80): TFloat80;
+  {$ENDIF SUPPORTS_EXTENDED}
 
   TTernaryFunc = function(X, Y, Z: TFloat): TFloat;
   TTernary32Func = function(X, Y, Z: TFloat32): TFloat32;
   TTernary64Func = function(X, Y, Z: TFloat64): TFloat64;
+  {$IFDEF SUPPORTS_EXTENDED}
   TTernary80Func = function(X, Y, Z: TFloat80): TFloat80;
+  {$ENDIF SUPPORTS_EXTENDED}
 
 type
   { Forward Declarations }
@@ -388,28 +398,40 @@ type
   public
     function LoadVar32(ALoc: PFloat32): TExprNode; virtual; abstract;
     function LoadVar64(ALoc: PFloat64): TExprNode; virtual; abstract;
+    {$IFDEF SUPPORTS_EXTENDED}
     function LoadVar80(ALoc: PFloat80): TExprNode; virtual; abstract;
+    {$ENDIF SUPPORTS_EXTENDED}
 
     function LoadConst32(AValue: TFloat32): TExprNode; virtual; abstract;
     function LoadConst64(AValue: TFloat64): TExprNode; virtual; abstract;
+    {$IFDEF SUPPORTS_EXTENDED}
     function LoadConst80(AValue: TFloat80): TExprNode; virtual; abstract;
+    {$ENDIF SUPPORTS_EXTENDED}
 
     function CallFloatFunc(AFunc: TFloatFunc): TExprNode; virtual; abstract;
     function CallFloat32Func(AFunc: TFloat32Func): TExprNode; virtual; abstract;
     function CallFloat64Func(AFunc: TFloat64Func): TExprNode; virtual; abstract;
+    {$IFDEF SUPPORTS_EXTENDED}
     function CallFloat80Func(AFunc: TFloat80Func): TExprNode; virtual; abstract;
+    {$ENDIF SUPPORTS_EXTENDED}
     function CallUnaryFunc(AFunc: TUnaryFunc; X: TExprNode): TExprNode; virtual; abstract;
     function CallUnary32Func(AFunc: TUnary32Func; X: TExprNode): TExprNode; virtual; abstract;
     function CallUnary64Func(AFunc: TUnary64Func; X: TExprNode): TExprNode; virtual; abstract;
+    {$IFDEF SUPPORTS_EXTENDED}
     function CallUnary80Func(AFunc: TUnary80Func; X: TExprNode): TExprNode; virtual; abstract;
+    {$ENDIF SUPPORTS_EXTENDED}
     function CallBinaryFunc(AFunc: TBinaryFunc; X, Y: TExprNode): TExprNode; virtual; abstract;
     function CallBinary32Func(AFunc: TBinary32Func; X, Y: TExprNode): TExprNode; virtual; abstract;
     function CallBinary64Func(AFunc: TBinary64Func; X, Y: TExprNode): TExprNode; virtual; abstract;
+    {$IFDEF SUPPORTS_EXTENDED}
     function CallBinary80Func(AFunc: TBinary80Func; X, Y: TExprNode): TExprNode; virtual; abstract;
+    {$ENDIF SUPPORTS_EXTENDED}
     function CallTernaryFunc(AFunc: TTernaryFunc; X, Y, Z: TExprNode): TExprNode; virtual; abstract;
     function CallTernary32Func(AFunc: TTernary32Func; X, Y, Z: TExprNode): TExprNode; virtual; abstract;
     function CallTernary64Func(AFunc: TTernary64Func; X, Y, Z: TExprNode): TExprNode; virtual; abstract;
+    {$IFDEF SUPPORTS_EXTENDED}
     function CallTernary80Func(AFunc: TTernary80Func; X, Y, Z: TExprNode): TExprNode; virtual; abstract;
+    {$ENDIF SUPPORTS_EXTENDED}
 
     function Add(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
     function Subtract(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
@@ -440,10 +462,14 @@ type
 
     function LoadVar(ALoc: PFloat32): TExprNode; overload;
     function LoadVar(ALoc: PFloat64): TExprNode; overload;
+    {$IFDEF SUPPORTS_EXTENDED}
     function LoadVar(ALoc: PFloat80): TExprNode; overload;
+    {$ENDIF SUPPORTS_EXTENDED}
     function LoadConst(AValue: TFloat32): TExprNode; overload;
     function LoadConst(AValue: TFloat64): TExprNode; overload;
+    {$IFDEF SUPPORTS_EXTENDED}
     function LoadConst(AValue: TFloat80): TExprNode; overload;
+    {$ENDIF SUPPORTS_EXTENDED}
   end;
 
   TExprCompileParser = class(TObject)
@@ -539,27 +565,39 @@ type
 
     function LoadVar32(ALoc: PFloat32): TExprNode; override;
     function LoadVar64(ALoc: PFloat64): TExprNode; override;
+    {$IFDEF SUPPORTS_EXTENDED}
     function LoadVar80(ALoc: PFloat80): TExprNode; override;
+    {$ENDIF SUPPORTS_EXTENDED}
     function LoadConst32(AValue: TFloat32): TExprNode; override;
     function LoadConst64(AValue: TFloat64): TExprNode; override;
+    {$IFDEF SUPPORTS_EXTENDED}
     function LoadConst80(AValue: TFloat80): TExprNode; override;
+    {$ENDIF SUPPORTS_EXTENDED}
 
     function CallFloatFunc(AFunc: TFloatFunc): TExprNode; override;
     function CallFloat32Func(AFunc: TFloat32Func): TExprNode; override;
     function CallFloat64Func(AFunc: TFloat64Func): TExprNode; override;
+    {$IFDEF SUPPORTS_EXTENDED}
     function CallFloat80Func(AFunc: TFloat80Func): TExprNode; override;
+    {$ENDIF SUPPORTS_EXTENDED}
     function CallUnaryFunc(AFunc: TUnaryFunc; X: TExprNode): TExprNode; override;
     function CallUnary32Func(AFunc: TUnary32Func; X: TExprNode): TExprNode; override;
     function CallUnary64Func(AFunc: TUnary64Func; X: TExprNode): TExprNode; override;
+    {$IFDEF SUPPORTS_EXTENDED}
     function CallUnary80Func(AFunc: TUnary80Func; X: TExprNode): TExprNode; override;
+    {$ENDIF SUPPORTS_EXTENDED}
     function CallBinaryFunc(AFunc: TBinaryFunc; X, Y: TExprNode): TExprNode; override;
     function CallBinary32Func(AFunc: TBinary32Func; X, Y: TExprNode): TExprNode; override;
     function CallBinary64Func(AFunc: TBinary64Func; X, Y: TExprNode): TExprNode; override;
+    {$IFDEF SUPPORTS_EXTENDED}
     function CallBinary80Func(AFunc: TBinary80Func; X, Y: TExprNode): TExprNode; override;
+    {$ENDIF SUPPORTS_EXTENDED}
     function CallTernaryFunc(AFunc: TTernaryFunc; X, Y, Z: TExprNode): TExprNode; override;
     function CallTernary32Func(AFunc: TTernary32Func; X, Y, Z: TExprNode): TExprNode; override;
     function CallTernary64Func(AFunc: TTernary64Func; X, Y, Z: TExprNode): TExprNode; override;
+    {$IFDEF SUPPORTS_EXTENDED}
     function CallTernary80Func(AFunc: TTernary80Func; X, Y, Z: TExprNode): TExprNode; override;
+    {$ENDIF SUPPORTS_EXTENDED}
 
     function Add(ALeft, ARight: TExprNode): TExprNode; override;
     function Subtract(ALeft, ARight: TExprNode): TExprNode; override;
@@ -618,6 +656,7 @@ type
     function Compile: TExprNode; override;
   end;
 
+  {$IFDEF SUPPORTS_EXTENDED}
   TExprConst80Sym = class(TExprSym)
   private
     FValue: TFloat80;
@@ -626,6 +665,7 @@ type
     function Evaluate: TFloat; override;
     function Compile: TExprNode; override;
   end;
+  {$ENDIF SUPPORTS_EXTENDED}
 
   TExprVar32Sym = class(TExprSym)
   private
@@ -647,6 +687,7 @@ type
     function Compile: TExprNode; override;
   end;
 
+  {$IFDEF SUPPORTS_EXTENDED}
   TExprVar80Sym = class(TExprSym)
   private
     FLoc: PFloat80;
@@ -656,6 +697,7 @@ type
     function Evaluate: TFloat; override;
     function Compile: TExprNode; override;
   end;
+  {$ENDIF SUPPORTS_EXTENDED}
 
   TExprAbstractFuncSym = class(TExprSym)
   protected
@@ -693,6 +735,7 @@ type
     function Compile: TExprNode; override;
   end;
 
+  {$IFDEF SUPPORTS_EXTENDED}
   TExprFloat80FuncSym = class(TExprAbstractFuncSym)
   private
     FFunc: TFloat80Func;
@@ -701,6 +744,7 @@ type
     function Evaluate: TFloat; override;
     function Compile: TExprNode; override;
   end;
+  {$ENDIF SUPPORTS_EXTENDED}
 
   TExprUnaryFuncSym = class(TExprAbstractFuncSym)
   private
@@ -729,6 +773,7 @@ type
     function Compile: TExprNode; override;
   end;
 
+  {$IFDEF SUPPORTS_EXTENDED}
   TExprUnary80FuncSym = class(TExprAbstractFuncSym)
   private
     FFunc: TUnary80Func;
@@ -737,6 +782,7 @@ type
     function Evaluate: TFloat; override;
     function Compile: TExprNode; override;
   end;
+  {$ENDIF SUPPORTS_EXTENDED}
 
   TExprBinaryFuncSym = class(TExprAbstractFuncSym)
   private
@@ -765,6 +811,7 @@ type
     function Compile: TExprNode; override;
   end;
 
+  {$IFDEF SUPPORTS_EXTENDED}
   TExprBinary80FuncSym = class(TExprAbstractFuncSym)
   private
     FFunc: TBinary80Func;
@@ -773,6 +820,7 @@ type
     function Evaluate: TFloat; override;
     function Compile: TExprNode; override;
   end;
+  {$ENDIF SUPPORTS_EXTENDED}
 
   TExprTernaryFuncSym = class(TExprAbstractFuncSym)
   private
@@ -801,6 +849,7 @@ type
     function Compile: TExprNode; override;
   end;
 
+  {$IFDEF SUPPORTS_EXTENDED}
   TExprTernary80FuncSym = class(TExprAbstractFuncSym)
   private
     FFunc: TTernary80Func;
@@ -809,6 +858,7 @@ type
     function Evaluate: TFloat; override;
     function Compile: TExprNode; override;
   end;
+  {$ENDIF SUPPORTS_EXTENDED}
 
   TEasyEvaluator = class(TObject)
   private
@@ -823,24 +873,36 @@ type
 
     procedure AddVar(const AName: string; var AVar: TFloat32); overload;
     procedure AddVar(const AName: string; var AVar: TFloat64); overload;
+    {$IFDEF SUPPORTS_EXTENDED}
     procedure AddVar(const AName: string; var AVar: TFloat80); overload;
+    {$ENDIF SUPPORTS_EXTENDED}
 
     procedure AddConst(const AName: string; AConst: TFloat32); overload;
     procedure AddConst(const AName: string; AConst: TFloat64); overload;
+    {$IFDEF SUPPORTS_EXTENDED}
     procedure AddConst(const AName: string; AConst: TFloat80); overload;
+    {$ENDIF SUPPORTS_EXTENDED}
 
     procedure AddFunc(const AName: string; AFunc: TFloat32Func); overload;
     procedure AddFunc(const AName: string; AFunc: TFloat64Func); overload;
+    {$IFDEF SUPPORTS_EXTENDED}
     procedure AddFunc(const AName: string; AFunc: TFloat80Func); overload;
+    {$ENDIF SUPPORTS_EXTENDED}
     procedure AddFunc(const AName: string; AFunc: TUnary32Func); overload;
     procedure AddFunc(const AName: string; AFunc: TUnary64Func); overload;
+    {$IFDEF SUPPORTS_EXTENDED}
     procedure AddFunc(const AName: string; AFunc: TUnary80Func); overload;
+    {$ENDIF SUPPORTS_EXTENDED}
     procedure AddFunc(const AName: string; AFunc: TBinary32Func); overload;
     procedure AddFunc(const AName: string; AFunc: TBinary64Func); overload;
+    {$IFDEF SUPPORTS_EXTENDED}
     procedure AddFunc(const AName: string; AFunc: TBinary80Func); overload;
+    {$ENDIF SUPPORTS_EXTENDED}
     procedure AddFunc(const AName: string; AFunc: TTernary32Func); overload;
     procedure AddFunc(const AName: string; AFunc: TTernary64Func); overload;
+    {$IFDEF SUPPORTS_EXTENDED}
     procedure AddFunc(const AName: string; AFunc: TTernary80Func); overload;
+    {$ENDIF SUPPORTS_EXTENDED}
     procedure Remove(const AName: string);
 
     procedure Clear; virtual;
@@ -1692,10 +1754,12 @@ begin
   Result := LoadVar64(ALoc);
 end;
 
+{$IFDEF SUPPORTS_EXTENDED}
 function TExprNodeFactory.LoadVar(ALoc: PFloat80): TExprNode;
 begin
   Result := LoadVar80(ALoc);
 end;
+{$ENDIF SUPPORTS_EXTENDED}
 
 function TExprNodeFactory.LoadConst(AValue: TFloat32): TExprNode;
 begin
@@ -1707,10 +1771,12 @@ begin
   Result := LoadConst64(AValue);
 end;
 
+{$IFDEF SUPPORTS_EXTENDED}
 function TExprNodeFactory.LoadConst(AValue: TFloat80): TExprNode;
 begin
   Result := LoadConst80(AValue);
 end;
+{$ENDIF SUPPORTS_EXTENDED}
 
 //=== { TEvaluator } =========================================================
 
@@ -1767,10 +1833,12 @@ type
     procedure Execute; override;
   end;
 
+  {$IFDEF SUPPORTS_EXTENDED}
   TExprVar80VmOp = class(TExprVarVmOp)
   public
     procedure Execute; override;
   end;
+  {$ENDIF SUPPORTS_EXTENDED}
 
   { the const holder }
   TExprConstVmOp = class(TExprVirtMachOp)
@@ -1954,6 +2022,7 @@ type
     procedure Execute; override;
   end;
 
+  {$IFDEF SUPPORTS_EXTENDED}
   TExprCallFloat80VmOp = class(TExprVirtMachOp)
   private
     FFunc: TFloat80Func;
@@ -1961,6 +2030,7 @@ type
     constructor Create(AFunc: TFloat80Func);
     procedure Execute; override;
   end;
+  {$ENDIF SUPPORTS_EXTENDED}
 
   TExprCallUnaryVmOp = class(TExprVirtMachOp)
   private
@@ -1989,6 +2059,7 @@ type
     procedure Execute; override;
   end;
 
+  {$IFDEF SUPPORTS_EXTENDED}
   TExprCallUnary80VmOp = class(TExprVirtMachOp)
   private
     FFunc: TUnary80Func;
@@ -1997,6 +2068,7 @@ type
     constructor Create(AFunc: TUnary80Func; X: PFloat);
     procedure Execute; override;
   end;
+  {$ENDIF SUPPORTS_EXTENDED}
 
   TExprCallBinaryVmOp = class(TExprVirtMachOp)
   private
@@ -2025,6 +2097,7 @@ type
     procedure Execute; override;
   end;
 
+  {$IFDEF SUPPORTS_EXTENDED}
   TExprCallBinary80VmOp = class(TExprVirtMachOp)
   private
     FFunc: TBinary80Func;
@@ -2033,6 +2106,7 @@ type
     constructor Create(AFunc: TBinary80Func; X, Y: PFloat);
     procedure Execute; override;
   end;
+  {$ENDIF SUPPORTS_EXTENDED}
 
   TExprCallTernaryVmOp = class(TExprVirtMachOp)
   private
@@ -2061,6 +2135,7 @@ type
     procedure Execute; override;
   end;
 
+  {$IFDEF SUPPORTS_EXTENDED}
   TExprCallTernary80VmOp = class(TExprVirtMachOp)
   private
     FFunc: TTernary80Func;
@@ -2069,6 +2144,7 @@ type
     constructor Create(AFunc: TTernary80Func; X, Y, Z: PFloat);
     procedure Execute; override;
   end;
+  {$ENDIF SUPPORTS_EXTENDED}
 
 //=== { TExprVar32VmOp } =====================================================
 
@@ -2084,12 +2160,16 @@ begin
   FOutput := PFloat64(FVarLoc)^;
 end;
 
+{$IFDEF SUPPORTS_EXTENDED}
+
 //=== { TExprVar80VmOp } =====================================================
 
 procedure TExprVar80VmOp.Execute;
 begin
   FOutput := PFloat80(FVarLoc)^;
 end;
+
+{$ENDIF SUPPORTS_EXTENDED}
 
 //=== { TExprConstVmOp } =====================================================
 
@@ -2370,6 +2450,8 @@ begin
   FOutput := FFunc;
 end;
 
+{$IFDEF SUPPORTS_EXTENDED}
+
 //=== { TExprCallFloat80VmOp } ===============================================
 
 constructor TExprCallFloat80VmOp.Create(AFunc: TFloat80Func);
@@ -2382,6 +2464,8 @@ procedure TExprCallFloat80VmOp.Execute;
 begin
   FOutput := FFunc;
 end;
+
+{$ENDIF SUPPORTS_EXTENDED}
 
 //=== { TExprCallUnaryVmOp } =================================================
 
@@ -2425,6 +2509,8 @@ begin
   FOutput := FFunc(FX^);
 end;
 
+{$IFDEF SUPPORTS_EXTENDED}
+
 //=== { TExprCallUnary80VmOp } ===============================================
 
 constructor TExprCallUnary80VmOp.Create(AFunc: TUnary80Func; X: PFloat);
@@ -2438,6 +2524,8 @@ procedure TExprCallUnary80VmOp.Execute;
 begin
   FOutput := FFunc(FX^);
 end;
+
+{$ENDIF SUPPORTS_EXTENDED}
 
 //=== { TExprCallBinaryVmOp } ================================================
 
@@ -2484,6 +2572,8 @@ begin
   FOutput := FFunc(FX^, FY^);
 end;
 
+{$IFDEF SUPPORTS_EXTENDED}
+
 //=== { TExprCallBinary80VmOp } ==============================================
 
 constructor TExprCallBinary80VmOp.Create(AFunc: TBinary80Func; X, Y: PFloat);
@@ -2498,6 +2588,8 @@ procedure TExprCallBinary80VmOp.Execute;
 begin
   FOutput := FFunc(FX^, FY^);
 end;
+
+{$ENDIF SUPPORTS_EXTENDED}
 
 //=== { TExprCallTernaryVmOp } ===============================================
 
@@ -2547,6 +2639,8 @@ begin
   FOutput := FFunc(FX^, FY^, FZ^);
 end;
 
+{$IFDEF SUPPORTS_EXTENDED}
+
 //=== { TExprCallTernary80VmOp } =============================================
 
 constructor TExprCallTernary80VmOp.Create(AFunc: TTernary80Func; X, Y, Z: PFloat);
@@ -2562,6 +2656,8 @@ procedure TExprCallTernary80VmOp.Execute;
 begin
   FOutput := FFunc(FX^, FY^, FZ^);
 end;
+
+{$ENDIF SUPPORTS_EXTENDED}
 
 { End of virtual machine operators }
 
@@ -2694,6 +2790,7 @@ type
     procedure GenCode(AVirtMach: TExprVirtMach); override;
   end;
 
+  {$IFDEF SUPPORTS_EXTENDED}
   TExprVar80VmNode = class(TExprVirtMachNode)
   private
     FValue: PFloat80;
@@ -2701,6 +2798,7 @@ type
     constructor Create(AValue: PFloat80);
     procedure GenCode(AVirtMach: TExprVirtMach); override;
   end;
+  {$ENDIF SUPPORTS_EXTENDED}
 
   TExprCallFloatVmNode = class(TExprVirtMachNode)
   private
@@ -2726,6 +2824,7 @@ type
     procedure GenCode(AVirtMach: TExprVirtMach); override;
   end;
 
+  {$IFDEF SUPPORTS_EXTENDED}
   TExprCallFloat80VmNode = class(TExprVirtMachNode)
   private
     FFunc: TFloat80Func;
@@ -2733,6 +2832,7 @@ type
     constructor Create(AFunc: TFloat80Func);
     procedure GenCode(AVirtMach: TExprVirtMach); override;
   end;
+  {$ENDIF SUPPORTS_EXTENDED}
 
   TExprCallUnaryVmNode = class(TExprVirtMachNode)
   private
@@ -2758,6 +2858,7 @@ type
     procedure GenCode(AVirtMach: TExprVirtMach); override;
   end;
 
+  {$IFDEF SUPPORTS_EXTENDED}
   TExprCallUnary80VmNode = class(TExprVirtMachNode)
   private
     FFunc: TUnary80Func;
@@ -2765,6 +2866,7 @@ type
     constructor Create(AFunc: TUnary80Func; X: TExprNode);
     procedure GenCode(AVirtMach: TExprVirtMach); override;
   end;
+  {$ENDIF SUPPORTS_EXTENDED}
 
   TExprCallBinaryVmNode = class(TExprVirtMachNode)
   private
@@ -2790,6 +2892,7 @@ type
     procedure GenCode(AVirtMach: TExprVirtMach); override;
   end;
 
+  {$IFDEF SUPPORTS_EXTENDED}
   TExprCallBinary80VmNode = class(TExprVirtMachNode)
   private
     FFunc: TBinary80Func;
@@ -2797,6 +2900,7 @@ type
     constructor Create(AFunc: TBinary80Func; X, Y: TExprNode);
     procedure GenCode(AVirtMach: TExprVirtMach); override;
   end;
+  {$ENDIF SUPPORTS_EXTENDED}
 
   TExprCallTernaryVmNode = class(TExprVirtMachNode)
   private
@@ -2822,6 +2926,7 @@ type
     procedure GenCode(AVirtMach: TExprVirtMach); override;
   end;
 
+  {$IFDEF SUPPORTS_EXTENDED}
   TExprCallTernary80VmNode = class(TExprVirtMachNode)
   private
     FFunc: TTernary80Func;
@@ -2829,6 +2934,7 @@ type
     constructor Create(AFunc: TTernary80Func; X, Y, Z: TExprNode);
     procedure GenCode(AVirtMach: TExprVirtMach); override;
   end;
+  {$ENDIF SUPPORTS_EXTENDED}
 
 //== { TExprUnaryVmNode } ====================================================
 
@@ -2904,6 +3010,8 @@ begin
   AVirtMach.Add(FExprVmCode);
 end;
 
+{$IFDEF SUPPORTS_EXTENDED}
+
 //=== { TExprVar80VmNode } ===================================================
 
 constructor TExprVar80VmNode.Create(AValue: PFloat80);
@@ -2917,6 +3025,8 @@ begin
   FExprVmCode := TExprVar80VmOp.Create(FValue);
   AVirtMach.Add(FExprVmCode);
 end;
+
+{$ENDIF SUPPORTS_EXTENDED}
 
 { End of expression nodes for virtual machine }
 
@@ -2964,10 +3074,12 @@ begin
   Result := AddNode(TExprVar64VmNode.Create(ALoc));
 end;
 
+{$IFDEF SUPPORTS_EXTENDED}
 function TExprVirtMachNodeFactory.LoadVar80(ALoc: PFloat80): TExprNode;
 begin
   Result := AddNode(TExprVar80VmNode.Create(ALoc));
 end;
+{$ENDIF SUPPORTS_EXTENDED}
 
 function TExprVirtMachNodeFactory.LoadConst32(AValue: TFloat32): TExprNode;
 begin
@@ -2979,10 +3091,12 @@ begin
   Result := AddNode(TExprConstVmNode.Create(AValue));
 end;
 
+{$IFDEF SUPPORTS_EXTENDED}
 function TExprVirtMachNodeFactory.LoadConst80(AValue: TFloat80): TExprNode;
 begin
   Result := AddNode(TExprConstVmNode.Create(AValue));
 end;
+{$ENDIF SUPPORTS_EXTENDED}
 
 function TExprVirtMachNodeFactory.Add(ALeft, ARight: TExprNode): TExprNode;
 begin
@@ -3072,10 +3186,12 @@ begin
   Result := AddNode(TExprCallFloat64VmNode.Create(AFunc));
 end;
 
+{$IFDEF SUPPORTS_EXTENDED}
 function TExprVirtMachNodeFactory.CallFloat80Func(AFunc: TFloat80Func): TExprNode;
 begin
   Result := AddNode(TExprCallFloat80VmNode.Create(AFunc));
 end;
+{$ENDIF SUPPORTS_EXTENDED}
 
 function TExprVirtMachNodeFactory.CallUnaryFunc(AFunc: TUnaryFunc; X: TExprNode): TExprNode;
 begin
@@ -3092,10 +3208,12 @@ begin
   Result := AddNode(TExprCallUnary64VmNode.Create(AFunc, X));
 end;
 
+{$IFDEF SUPPORTS_EXTENDED}
 function TExprVirtMachNodeFactory.CallUnary80Func(AFunc: TUnary80Func; X: TExprNode): TExprNode;
 begin
   Result := AddNode(TExprCallUnary80VmNode.Create(AFunc, X));
 end;
+{$ENDIF SUPPORTS_EXTENDED}
 
 function TExprVirtMachNodeFactory.CallBinaryFunc(AFunc: TBinaryFunc; X, Y: TExprNode): TExprNode;
 begin
@@ -3112,10 +3230,12 @@ begin
   Result := AddNode(TExprCallBinary64VmNode.Create(AFunc, X, Y));
 end;
 
+{$IFDEF SUPPORTS_EXTENDED}
 function TExprVirtMachNodeFactory.CallBinary80Func(AFunc: TBinary80Func; X, Y: TExprNode): TExprNode;
 begin
   Result := AddNode(TExprCallBinary80VmNode.Create(AFunc, X, Y));
 end;
+{$ENDIF SUPPORTS_EXTENDED}
 
 function TExprVirtMachNodeFactory.CallTernaryFunc(AFunc: TTernaryFunc; X, Y, Z: TExprNode): TExprNode;
 begin
@@ -3132,10 +3252,12 @@ begin
   Result := AddNode(TExprCallTernary64VmNode.Create(AFunc, X, Y, Z));
 end;
 
+{$IFDEF SUPPORTS_EXTENDED}
 function TExprVirtMachNodeFactory.CallTernary80Func(AFunc: TTernary80Func; X, Y, Z: TExprNode): TExprNode;
 begin
   Result := AddNode(TExprCallTernary80VmNode.Create(AFunc, X, Y, Z));
 end;
+{$ENDIF SUPPORTS_EXTENDED}
 
 function TExprVirtMachNodeFactory.Compare(ALeft, ARight: TExprNode): TExprNode;
 begin
@@ -3307,6 +3429,8 @@ begin
   Result := FLoc^;
 end;
 
+{$IFDEF SUPPORTS_EXTENDED}
+
 //=== { TExprVar80Sym } ======================================================
 
 constructor TExprVar80Sym.Create(const AIdent: string; ALoc: PFloat80);
@@ -3325,6 +3449,8 @@ function TExprVar80Sym.Evaluate: TFloat;
 begin
   Result := FLoc^;
 end;
+
+{$ENDIF SUPPORTS_EXTENDED}
 
 //=== { TExprCallFloatVmNode } ===============================================
 
@@ -3368,6 +3494,8 @@ begin
   AVirtMach.Add(FExprVmCode);
 end;
 
+{$IFDEF SUPPORTS_EXTENDED}
+
 //=== { TExprCallFloat80VmNode } =============================================
 
 constructor TExprCallFloat80VmNode.Create(AFunc: TFloat80Func);
@@ -3381,6 +3509,8 @@ begin
   FExprVmCode := TExprCallFloat80VmOp.Create(FFunc);
   AVirtMach.Add(FExprVmCode);
 end;
+
+{$ENDIF SUPPORTS_EXTENDED}
 
 //=== { TExprCallUnaryVmNode } ===============================================
 
@@ -3430,6 +3560,8 @@ begin
   AVirtMach.Add(FExprVmCode);
 end;
 
+{$IFDEF SUPPORTS_EXTENDED}
+
 //=== { TExprCallUnary80VmNode } =============================================
 
 constructor TExprCallUnary80VmNode.Create(AFunc: TUnary80Func; X: TExprNode);
@@ -3445,6 +3577,8 @@ begin
     VmDeps[0].ExprVmCode.OutputLoc);
   AVirtMach.Add(FExprVmCode);
 end;
+
+{$ENDIF SUPPORTS_EXTENDED}
 
 //=== { TExprCallBinaryVmNode } ==============================================
 
@@ -3497,6 +3631,8 @@ begin
   AVirtMach.Add(FExprVmCode);
 end;
 
+{$IFDEF SUPPORTS_EXTENDED}
+
 //=== { TExprCallBinary80VmNode } ============================================
 
 constructor TExprCallBinary80VmNode.Create(AFunc: TBinary80Func; X, Y: TExprNode);
@@ -3513,6 +3649,8 @@ begin
     VmDeps[1].ExprVmCode.OutputLoc);
   AVirtMach.Add(FExprVmCode);
 end;
+
+{$ENDIF SUPPORTS_EXTENDED}
 
 //=== { TExprCallTernaryVmNode } =============================================
 
@@ -3568,6 +3706,8 @@ begin
   AVirtMach.Add(FExprVmCode);
 end;
 
+{$IFDEF SUPPORTS_EXTENDED}
+
 //=== { TExprCallTernary80VmNode } ===========================================
 
 constructor TExprCallTernary80VmNode.Create(AFunc: TTernary80Func; X, Y, Z: TExprNode);
@@ -3585,6 +3725,8 @@ begin
     VmDeps[2].ExprVmCode.OutputLoc);
   AVirtMach.Add(FExprVmCode);
 end;
+
+{$ENDIF SUPPORTS_EXTENDED}
 
 //=== { TExprAbstractFuncSym } ===============================================
 
@@ -3680,6 +3822,8 @@ begin
   Result := FFunc;
 end;
 
+{$IFDEF SUPPORTS_EXTENDED}
+
 //=== { TExprFloat80FuncSym } ================================================
 
 constructor TExprFloat80FuncSym.Create(const AIdent: string; AFunc: TFloat80Func);
@@ -3698,6 +3842,8 @@ function TExprFloat80FuncSym.Evaluate: TFloat;
 begin
   Result := FFunc;
 end;
+
+{$ENDIF SUPPORTS_EXTENDED}
 
 //=== { TExprUnaryFuncSym } ==================================================
 
@@ -3780,6 +3926,8 @@ begin
   Result := FFunc(X);
 end;
 
+{$IFDEF SUPPORTS_EXTENDED}
+
 //=== { TExprUnary80FuncSym } ================================================
 
 constructor TExprUnary80FuncSym.Create(const AIdent: string; AFunc: TUnary80Func);
@@ -3806,6 +3954,8 @@ begin
   EndArgs;
   Result := FFunc(X);
 end;
+
+{$ENDIF SUPPORTS_EXTENDED}
 
 //=== { TExprBinaryFuncSym } =================================================
 
@@ -3897,6 +4047,8 @@ begin
   Result := FFunc(X, Y);
 end;
 
+{$IFDEF SUPPORTS_EXTENDED}
+
 //=== { TExprBinary80FuncSym } ===============================================
 
 constructor TExprBinary80FuncSym.Create(const AIdent: string; AFunc: TBinary80Func);
@@ -3925,6 +4077,8 @@ begin
   EndArgs;
   Result := FFunc(X, Y);
 end;
+
+{$ENDIF SUPPORTS_EXTENDED}
 
 //=== { TExprTernaryFuncSym } ================================================
 
@@ -4019,6 +4173,8 @@ begin
   Result := FFunc(X, Y, Z);
 end;
 
+{$IFDEF SUPPORTS_EXTENDED}
+
 //=== { TExprTernary80FuncSym } ==============================================
 
 constructor TExprTernary80FuncSym.Create(const AIdent: string; AFunc: TTernary80Func);
@@ -4049,6 +4205,8 @@ begin
   EndArgs;
   Result := FFunc(X, Y, Z);
 end;
+
+{$ENDIF SUPPORTS_EXTENDED}
 
 //=== { TExprConstSym } ======================================================
 
@@ -4104,6 +4262,8 @@ begin
   Result := FValue;
 end;
 
+{$IFDEF SUPPORTS_EXTENDED}
+
 //=== { TExprConst80Sym } ====================================================
 
 constructor TExprConst80Sym.Create(const AIdent: string; AValue: TFloat80);
@@ -4121,6 +4281,8 @@ function TExprConst80Sym.Evaluate: TFloat;
 begin
   Result := FValue;
 end;
+
+{$ENDIF SUPPORTS_EXTENDED}
 
 //=== { TEasyEvaluator } =====================================================
 
@@ -4144,10 +4306,12 @@ begin
   inherited Destroy;
 end;
 
+{$IFDEF SUPPORTS_EXTENDED}
 procedure TEasyEvaluator.AddConst(const AName: string; AConst: TFloat80);
 begin
   FOwnContext.Add(TExprConst80Sym.Create(AName, AConst));
 end;
+{$ENDIF SUPPORTS_EXTENDED}
 
 procedure TEasyEvaluator.AddConst(const AName: string; AConst: TFloat64);
 begin
@@ -4169,10 +4333,12 @@ begin
   FOwnContext.Add(TExprVar64Sym.Create(AName, @AVar));
 end;
 
+{$IFDEF SUPPORTS_EXTENDED}
 procedure TEasyEvaluator.AddVar(const AName: string; var AVar: TFloat80);
 begin
   FOwnContext.Add(TExprVar80Sym.Create(AName, @AVar));
 end;
+{$ENDIF SUPPORTS_EXTENDED}
 
 procedure TEasyEvaluator.AddFunc(const AName: string; AFunc: TFloat32Func);
 begin
@@ -4184,10 +4350,12 @@ begin
   FOwnContext.Add(TExprFloat64FuncSym.Create(AName, AFunc));
 end;
 
+{$IFDEF SUPPORTS_EXTENDED}
 procedure TEasyEvaluator.AddFunc(const AName: string; AFunc: TFloat80Func);
 begin
   FOwnContext.Add(TExprFloat80FuncSym.Create(AName, AFunc));
 end;
+{$ENDIF SUPPORTS_EXTENDED}
 
 procedure TEasyEvaluator.AddFunc(const AName: string; AFunc: TUnary32Func);
 begin
@@ -4199,10 +4367,12 @@ begin
   FOwnContext.Add(TExprUnary64FuncSym.Create(AName, AFunc));
 end;
 
+{$IFDEF SUPPORTS_EXTENDED}
 procedure TEasyEvaluator.AddFunc(const AName: string; AFunc: TUnary80Func);
 begin
   FOwnContext.Add(TExprUnary80FuncSym.Create(AName, AFunc));
 end;
+{$ENDIF SUPPORTS_EXTENDED}
 
 procedure TEasyEvaluator.AddFunc(const AName: string; AFunc: TBinary32Func);
 begin
@@ -4214,10 +4384,12 @@ begin
   FOwnContext.Add(TExprBinary64FuncSym.Create(AName, AFunc));
 end;
 
+{$IFDEF SUPPORTS_EXTENDED}
 procedure TEasyEvaluator.AddFunc(const AName: string; AFunc: TBinary80Func);
 begin
   FOwnContext.Add(TExprBinary80FuncSym.Create(AName, AFunc));
 end;
+{$ENDIF SUPPORTS_EXTENDED}
 
 procedure TEasyEvaluator.AddFunc(const AName: string; AFunc: TTernary32Func);
 begin
@@ -4229,10 +4401,12 @@ begin
   FOwnContext.Add(TExprTernary64FuncSym.Create(AName, AFunc));
 end;
 
+{$IFDEF SUPPORTS_EXTENDED}
 procedure TEasyEvaluator.AddFunc(const AName: string; AFunc: TTernary80Func);
 begin
   FOwnContext.Add(TExprTernary80FuncSym.Create(AName, AFunc));
 end;
+{$ENDIF SUPPORTS_EXTENDED}
 
 procedure TEasyEvaluator.Clear;
 begin

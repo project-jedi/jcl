@@ -220,7 +220,6 @@ end;
 
 function StrHash(const S: string): Cardinal;
 const
-  cLongBits = 32;
   cOneEight = 4;
   cThreeFourths = 24;
   cHighBits = $F0000000;
@@ -236,7 +235,7 @@ begin
   I := Length(S);
   while I > 0 do
   begin
-    Result := (Result shl cOneEight) + Ord(P^);
+    Result := (Result shl cOneEight) or Ord(P^);
     Temp := Result and cHighBits;
     if Temp <> 0 then
       Result := (Result xor (Temp shr cThreeFourths)) and (not cHighBits);
@@ -247,7 +246,6 @@ end;
 
 function TextHash(const S: string): Cardinal;
 const
-  cLongBits = 32;
   cOneEight = 4;
   cThreeFourths = 24;
   cHighBits = $F0000000;
@@ -263,7 +261,7 @@ begin
   I := Length(S);
   while I > 0 do
   begin
-    Result := (Result shl cOneEight) + Ord(UpCase(P^));
+    Result := (Result shl cOneEight) or Ord(UpCase(P^));
     Temp := Result and cHighBits;
     if Temp <> 0 then
       Result := (Result xor (Temp shr cThreeFourths)) and (not cHighBits);
@@ -274,7 +272,6 @@ end;
 
 function DataHash(var AValue; ASize: Cardinal): THashValue;
 const
-  cLongBits = 32;
   cOneEight = 4;
   cThreeFourths = 24;
   cHighBits = $F0000000;
@@ -288,7 +285,7 @@ begin
 
   while ASize > 0 do
   begin
-    Result := (Result shl cOneEight) + Ord(P^);
+    Result := (Result shl cOneEight) or Ord(P^);
     Temp := Result and cHighBits;
     if Temp <> 0 then
       Result := (Result xor (Temp shr cThreeFourths)) and (not cHighBits);

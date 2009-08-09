@@ -1,54 +1,50 @@
 const
   PowrprofLib = 'PowrProf.dll';
   
-var
-  _IsPwrSuspendAllowed: Pointer;
+type
+  TIsPwrSuspendAllowed = function : BOOL; stdcall;
 
-function IsPwrSuspendAllowed;
+var
+  _IsPwrSuspendAllowed: TIsPwrSuspendAllowed = nil;
+
+function IsPwrSuspendAllowed: BOOL;
 begin
-  GetProcedureAddress(_IsPwrSuspendAllowed, PowrprofLib, 'IsPwrSuspendAllowed');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_IsPwrSuspendAllowed]
-  end;
+  GetProcedureAddress(Pointer(@_IsPwrSuspendAllowed), PowrprofLib, 'IsPwrSuspendAllowed');
+  Result := _IsPwrSuspendAllowed;
 end;
 
-var
-  _IsPwrHibernateAllowed: Pointer;
+type
+  TIsPwrHibernateAllowed = function : BOOL; stdcall;
 
-function IsPwrHibernateAllowed;
+var
+  _IsPwrHibernateAllowed: TIsPwrHibernateAllowed = nil;
+
+function IsPwrHibernateAllowed: BOOL;
 begin
-  GetProcedureAddress(_IsPwrHibernateAllowed, PowrprofLib, 'IsPwrHibernateAllowed');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_IsPwrHibernateAllowed]
-  end;
+  GetProcedureAddress(Pointer(@_IsPwrHibernateAllowed), PowrprofLib, 'IsPwrHibernateAllowed');
+  Result := _IsPwrHibernateAllowed;
 end;
 
-var
-  _IsPwrShutdownAllowed: Pointer;
+type
+  TIsPwrShutdownAllowed = function : BOOL; stdcall;
 
-function IsPwrShutdownAllowed;
+var
+  _IsPwrShutdownAllowed: TIsPwrShutdownAllowed = nil;
+
+function IsPwrShutdownAllowed: BOOL;
 begin
-  GetProcedureAddress(_IsPwrShutdownAllowed, PowrprofLib, 'IsPwrShutdownAllowed');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_IsPwrShutdownAllowed]
-  end;
+  GetProcedureAddress(Pointer(@_IsPwrShutdownAllowed), PowrprofLib, 'IsPwrShutdownAllowed');
+  Result := _IsPwrShutdownAllowed;
 end;
 
-var
-  _SetSuspendState: Pointer;
+type
+  TSetSuspendState = function (Hibernate, ForceCritical, DisableWakeEvent: BOOL): BOOL; stdcall;
 
-function SetSuspendState;
+var
+  _SetSuspendState: TSetSuspendState = nil;
+
+function SetSuspendState(Hibernate, ForceCritical, DisableWakeEvent: BOOL): BOOL;
 begin
-  GetProcedureAddress(_SetSuspendState, PowrprofLib, 'SetSuspendState');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_SetSuspendState]
-  end;
+  GetProcedureAddress(Pointer(@_SetSuspendState), PowrprofLib, 'SetSuspendState');
+  Result := _SetSuspendState(Hibernate, ForceCritical, DisableWakeEvent);
 end;

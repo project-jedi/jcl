@@ -32,7 +32,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                          $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -268,33 +268,33 @@ function CharToWideChar(Ch: AnsiChar): WideChar;
 function WideCharToChar(Ch: WideChar): AnsiChar;
 
 // PWideChar functions
-procedure MoveWideChar(const Source; var Dest; Count: Integer);
+procedure MoveWideChar(const Source; var Dest; Count: SizeInt);
 
-function StrLenW(const Str: PWideChar): Cardinal;
+function StrLenW(const Str: PWideChar): SizeInt;
 function StrEndW(const Str: PWideChar): PWideChar;
-function StrMoveW(Dest: PWideChar; const Source: PWideChar; Count: Cardinal): PWideChar;
+function StrMoveW(Dest: PWideChar; const Source: PWideChar; Count: SizeInt): PWideChar;
 function StrCopyW(Dest: PWideChar; const Source: PWideChar): PWideChar;
 function StrECopyW(Dest: PWideChar; const Source: PWideChar): PWideChar;
-function StrLCopyW(Dest: PWideChar; const Source: PWideChar; MaxLen: Cardinal): PWideChar;
+function StrLCopyW(Dest: PWideChar; const Source: PWideChar; MaxLen: SizeInt): PWideChar;
 function StrPCopyWW(Dest: PWideChar; const Source: WideString): PWideChar;
 function StrPCopyW(Dest: PWideChar; const Source: AnsiString): PWideChar;
-function StrPLCopyWW(Dest: PWideChar; const Source: WideString; MaxLen: Cardinal): PWideChar;
-function StrPLCopyW(Dest: PWideChar; const Source: AnsiString; MaxLen: Cardinal): PWideChar;
+function StrPLCopyWW(Dest: PWideChar; const Source: WideString; MaxLen: SizeInt): PWideChar;
+function StrPLCopyW(Dest: PWideChar; const Source: AnsiString; MaxLen: SizeInt): PWideChar;
 function StrCatW(Dest: PWideChar; const Source: PWideChar): PWideChar;
-function StrLCatW(Dest: PWideChar; const Source: PWideChar; MaxLen: Cardinal): PWideChar;
-function StrCompW(const Str1, Str2: PWideChar): Integer;
-function StrICompW(const Str1, Str2: PWideChar): Integer;
-function StrLCompW(const Str1, Str2: PWideChar; MaxLen: Cardinal): Integer;
-function StrLICompW(const Str1, Str2: PWideChar; MaxLen: Cardinal): Integer;
-function StrLICompW2(const Str1, Str2: PWideChar; MaxLen: Cardinal): Integer;
-function StrNScanW(const Str1, Str2: PWideChar): Integer;
-function StrRNScanW(const Str1, Str2: PWideChar): Integer;
+function StrLCatW(Dest: PWideChar; const Source: PWideChar; MaxLen: SizeInt): PWideChar;
+function StrCompW(const Str1, Str2: PWideChar): SizeInt;
+function StrICompW(const Str1, Str2: PWideChar): SizeInt;
+function StrLCompW(const Str1, Str2: PWideChar; MaxLen: SizeInt): SizeInt;
+function StrLICompW(const Str1, Str2: PWideChar; MaxLen: SizeInt): SizeInt;
+function StrLICompW2(const Str1, Str2: PWideChar; MaxLen: SizeInt): SizeInt;
+function StrNScanW(const Str1, Str2: PWideChar): SizeInt;
+function StrRNScanW(const Str1, Str2: PWideChar): SizeInt;
 function StrScanW(const Str: PWideChar; Ch: WideChar): PWideChar; overload;
-function StrScanW(Str: PWideChar; Chr: WideChar; StrLen: Cardinal): PWideChar; overload;
+function StrScanW(Str: PWideChar; Chr: WideChar; StrLen: SizeInt): PWideChar; overload;
 function StrRScanW(const Str: PWideChar; Chr: WideChar): PWideChar;
 function StrPosW(const Str, SubStr: PWideChar): PWideChar;
-function StrAllocW(WideSize: Cardinal): PWideChar;
-function StrBufSizeW(const Str: PWideChar): Cardinal;
+function StrAllocW(WideSize: SizeInt): PWideChar;
+function StrBufSizeW(const Str: PWideChar): SizeInt;
 function StrNewW(const Str: PWideChar): PWideChar; overload;
 function StrNewW(const Str: WideString): PWideChar; overload;
 procedure StrDisposeW(Str: PWideChar);
@@ -302,11 +302,11 @@ procedure StrDisposeAndNilW(var Str: PWideChar);
 procedure StrSwapByteOrder(Str: PWideChar);
 
 // WideString functions
-function WidePos(const SubStr, S: WideString): Integer;
+function WidePos(const SubStr, S: WideString): SizeInt;
 function WideQuotedStr(const S: WideString; Quote: WideChar): WideString;
 function WideExtractQuotedStr(var Src: PWideChar; Quote: WideChar): WideString;
-function WideCompareText(const S1, S2: WideString): Integer;
-function WideCompareStr(const S1, S2: WideString): Integer;
+function WideCompareText(const S1, S2: WideString): SizeInt;
+function WideCompareStr(const S1, S2: WideString): SizeInt;
 function WideUpperCase(const S: WideString): WideString;
 function WideLowerCase(const S: WideString): WideString;
 function TrimW(const S: WideString): WideString;
@@ -315,8 +315,8 @@ function TrimRightW(const S: WideString): WideString;
 function WideReverse(const AText: Widestring): Widestring;
 procedure WideReverseInPlace(var S: WideString);
 
-function TrimLeftLengthW(const S: WideString): Integer;
-function TrimRightLengthW(const S: WideString): Integer;
+function TrimLeftLengthW(const S: WideString): SizeInt;
+function TrimRightLengthW(const S: WideString): SizeInt;
 
 {$IFNDEF FPC}
 function WideStartsText(const SubStr, S: WideString): Boolean;
@@ -329,8 +329,8 @@ type
 
 function StringsToMultiSz(var Dest: PWideMultiSz; const Source: TJclWideStrings): PWideMultiSz;
 procedure MultiSzToStrings(const Dest: TJclWideStrings; const Source: PWideMultiSz);
-function MultiSzLength(const Source: PWideMultiSz): Integer;
-procedure AllocateMultiSz(var Dest: PWideMultiSz; Len: Integer);
+function MultiSzLength(const Source: PWideMultiSz): SizeInt;
+procedure AllocateMultiSz(var Dest: PWideMultiSz; Len: SizeInt);
 procedure FreeMultiSz(var Dest: PWideMultiSz);
 function MultiSzDup(const Source: PWideMultiSz): PWideMultiSz;
 
@@ -358,9 +358,9 @@ uses
   Windows,
   {$ENDIF MSWINDOWS}
   Math,
-  JclResources;
+  JclResources, JclUnicode;
 
-procedure SwapWordByteOrder(P: PWideChar; Len: Cardinal);
+procedure SwapWordByteOrder(P: PWideChar; Len: SizeInt);
 begin
   while Len > 0 do
   begin
@@ -390,23 +390,23 @@ end;
 
 //=== PWideChar functions ====================================================
 
-procedure MoveWideChar(const Source; var Dest; Count: Integer);
+procedure MoveWideChar(const Source; var Dest; Count: SizeInt);
 begin
   Move(Source, Dest, Count * SizeOf(WideChar));
 end;
 
-function StrAllocW(WideSize: Cardinal): PWideChar;
+function StrAllocW(WideSize: SizeInt): PWideChar;
 begin
-  WideSize := SizeOf(WideChar) * WideSize + SizeOf(Cardinal);
+  WideSize := SizeOf(WideChar) * WideSize + SizeOf(SizeInt);
   Result := AllocMem(WideSize);
-  Cardinal(Pointer(Result)^) := WideSize;
-  Inc(Result, SizeOf(Cardinal) div SizeOf(WideChar));
+  SizeInt(Pointer(Result)^) := WideSize;
+  Inc(Result, SizeOf(SizeInt) div SizeOf(WideChar));
 end;
 
 function StrNewW(const Str: PWideChar): PWideChar;
 // Duplicates the given string (if not nil) and returns the address of the new string.
 var
-  Size: Cardinal;
+  Size: SizeInt;
 begin
   if Str = nil then
     Result := nil
@@ -427,27 +427,196 @@ procedure StrDisposeW(Str: PWideChar);
 begin
   if Str <> nil then
   begin
-    Dec(Str, SizeOf(Cardinal) div SizeOf(WideChar));
+    Dec(Str, SizeOf(SizeInt) div SizeOf(WideChar));
     FreeMem(Str);
   end;
 end;
 
 procedure StrDisposeAndNilW(var Str: PWideChar);
-begin
-  StrDisposeW(Str);
-  Str := nil;
-end;
-
-function StrLICompW(const Str1, Str2: PWideChar; MaxLen: Cardinal): Integer;
 var
-  P1, P2: WideString;
+  Buff: PWideChar;
 begin
-  SetString(P1, Str1, Min(MaxLen, StrLenW(Str1)));
-  SetString(P2, Str2, Min(MaxLen, StrLenW(Str2)));
-  Result := WideCompareText(P1, P2);
+  Buff := Str;
+  Str := nil;
+  StrDisposeW(Buff);
 end;
 
-function StrLICompW2(const Str1, Str2: PWideChar; MaxLen: Cardinal): Integer;
+const
+  // data used to bring UTF-16 coded strings into correct UTF-32 order for correct comparation
+  UTF16Fixup: array [0..31] of Word = (
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    $2000, $F800, $F800, $F800, $F800
+  );
+
+function StrCompW(const Str1, Str2: PWideChar): SizeInt;
+// Binary comparation of Str1 and Str2 with surrogate fix-up.
+// Returns < 0 if Str1 is smaller in binary order than Str2, = 0 if both strings are
+// equal and > 0 if Str1 is larger than Str2.
+//
+// This code is based on an idea of Markus W. Scherer (IBM).
+// Note: The surrogate fix-up is necessary because some single value code points have
+//       larger values than surrogates which are in UTF-32 actually larger.
+var
+  C1, C2: Word;
+  Run1, Run2: PWideChar;
+begin
+  Run1 := Str1;
+  Run2 := Str2;
+  repeat
+    C1 := Word(Run1^);
+    C1 := Word(C1 or UTF16Fixup[C1 shr 11]);
+    C2 := Word(Run2^);
+    C2 := Word(C2 or UTF16Fixup[C2 shr 11]);
+
+    // now C1 and C2 are in UTF-32-compatible order
+    Result := SizeInt(C1) - SizeInt(C2);
+    if(Result <> 0) or (C1 = 0) or (C2 = 0) then
+      Break;
+    Inc(Run1);
+    Inc(Run2);
+  until False;
+
+  // If the strings have different lengths but the comparation returned equity so far
+  // then adjust the result so that the longer string is marked as the larger one.
+  if Result = 0 then
+    Result := (Run1 - Str1) - (Run2 - Str2);
+end;
+
+function StrLCompW(const Str1, Str2: PWideChar; MaxLen: SizeInt): SizeInt;
+// compares strings up to MaxLen code points
+// see also StrCompW
+var
+  S1, S2: PWideChar;
+  C1, C2: Word;
+begin
+  if MaxLen > 0 then
+  begin
+    S1 := Str1;
+    S2 := Str2;
+    repeat
+      C1 := Word(S1^);
+      C1 := Word(C1 or UTF16Fixup[C1 shr 11]);
+      C2 := Word(S2^);
+      C2 := Word(C2 or UTF16Fixup[C2 shr 11]);
+
+      // now C1 and C2 are in UTF-32-compatible order
+      { TODO : surrogates take up 2 words and are counted twice here, count them only once }
+      Result := SizeInt(C1) - SizeInt(C2);
+      Dec(MaxLen);
+      if(Result <> 0) or (C1 = 0) or (C2 = 0) or (MaxLen = 0) then
+        Break;
+      Inc(S1);
+      Inc(S2);
+    until False;
+  end
+  else
+    Result := 0;
+end;
+
+function StrICompW(const Str1, Str2: PWideChar): SizeInt;
+// Compares Str1 to Str2 without case sensitivity.
+// See also comments in StrCompW, but keep in mind that case folding might result in
+// one-to-many mappings which must be considered here.
+var
+  C1, C2: Word;
+  S1, S2: PWideChar;
+  Run1, Run2: PWideChar;
+  Folded1, Folded2: WideString;
+begin
+  // Because of size changes of the string when doing case folding
+  // it is unavoidable to convert both strings completely in advance.
+  S1 := Str1;
+  S2 := Str2;
+  Folded1 := '';
+  while S1^ <> #0 do
+  begin
+    Folded1 := Folded1 + WideCaseFolding(S1^);
+    Inc(S1);
+  end;
+
+  Folded2 := '';
+  while S2^ <> #0 do
+  begin
+    Folded2 := Folded2 + WideCaseFolding(S2^);
+    Inc(S2);
+  end;
+
+  Run1 := PWideChar(Folded1);
+  Run2 := PWideChar(Folded2);
+  repeat
+    C1 := Word(Run1^);
+    C1 := Word(C1 or UTF16Fixup[C1 shr 11]);
+    C2 := Word(Run2^);
+    C2 := Word(C2 or UTF16Fixup[C2 shr 11]);
+
+    // now C1 and C2 are in UTF-32-compatible order
+    Result := SizeInt(C1) - SizeInt(C2);
+    if(Result <> 0) or (C1 = 0) or (C2 = 0) then
+      Break;
+    Inc(Run1);
+    Inc(Run2);
+  until False;
+
+  // If the strings have different lengths but the comparation returned equity so far
+  // then adjust the result so that the longer string is marked as the larger one.
+  if Result = 0 then
+    Result := (Run1 - PWideChar(Folded1)) - (Run2 - PWideChar(Folded2));
+end;
+
+function StrLICompW(const Str1, Str2: PWideChar; MaxLen: SizeInt): SizeInt;
+// compares strings up to MaxLen code points
+// see also StrICompW
+var
+  S1, S2: PWideChar;
+  C1, C2: Word;
+  Run1, Run2: PWideChar;
+  Folded1, Folded2: WideString;
+begin
+  if MaxLen > 0 then
+  begin
+    // Because of size changes of the string when doing case folding
+    // it is unavoidable to convert both strings completely in advance.
+    S1 := Str1;
+    S2 := Str2;
+    Folded1 := '';
+    while S1^ <> #0 do
+    begin
+      Folded1 := Folded1 + WideCaseFolding(S1^);
+      Inc(S1);
+    end;
+
+    Folded2 := '';
+    while S2^ <> #0 do
+    begin
+      Folded2 := Folded2 + WideCaseFolding(S2^);
+      Inc(S2);
+    end;
+
+    Run1 := PWideChar(Folded1);
+    Run2 := PWideChar(Folded2);
+
+    repeat
+      C1 := Word(Run1^);
+      C1 := Word(C1 or UTF16Fixup[C1 shr 11]);
+      C2 := Word(Run2^);
+      C2 := Word(C2 or UTF16Fixup[C2 shr 11]);
+
+      // now C1 and C2 are in UTF-32-compatible order
+      { TODO : surrogates take up 2 words and are counted twice here, count them only once }
+      Result := SizeInt(C1) - SizeInt(C2);
+      Dec(MaxLen);
+      if(Result <> 0) or (C1 = 0) or (C2 = 0) or (MaxLen = 0) then
+        Break;
+      Inc(Run1);
+      Inc(Run2);
+    until False;
+  end
+  else
+    Result := 0;
+end;
+
+function StrLICompW2(const Str1, Str2: PWideChar; MaxLen: SizeInt): SizeInt;
 var
   P1, P2: WideString;
 begin
@@ -457,75 +626,10 @@ begin
   Result := WideCompareText(P1, P2);
 end;
 
-function StrCompW(const Str1, Str2: PWideChar): Integer;
-var
-  NullWide: WideChar;
-  SA, SB: PWideChar;
-begin
-  Result := 0;
-  if Str1 = Str2 then // "equal" and "nil" case
-    Exit;
-  NullWide := #0;
-
-  if Str1 = nil then
-    SA := @NullWide
-  else
-    SA := Str1;
-  if Str2 = nil then
-    SB := @NullWide
-  else
-    SB := Str2;
-  while (SA^ = SB^) and (SA^ <> #0) and (SB^ <> #0) do
-  begin
-    Inc(SA);
-    Inc(SB);
-  end;
-  Result := Integer(SA^) - Integer(SB^);
-end;
-
-function StrLCompW(const Str1, Str2: PWideChar; MaxLen: Cardinal): Integer;
-var
-  NullWide: WideChar;
-  SA, SB: PWideChar;
-begin
-  Result := 0;
-  if Str1 = Str2 then // "equal" and "nil" case
-    Exit;
-  NullWide := #0;
-
-  if Str1 = nil then
-    SA := @NullWide
-  else
-    SA := Str1;
-  if Str2 = nil then
-    SB := @NullWide
-  else
-    SB := Str2;
-  while (MaxLen > 0) and (SA^ = SB^) and (SA^ <> #0) and (SB^ <> #0) do
-  begin
-    Inc(SA);
-    Inc(SB);
-    Dec(MaxLen);
-  end;
-  if MaxLen > 0 then
-    Result := Integer(SA^) - Integer(SB^)
-  else
-    Result := 0;
-end;
-
-function StrICompW(const Str1, Str2: PWideChar): Integer;
-var
-  S1, S2: WideString;
-begin
-  S1 := Str1;
-  S2 := Str2;
-  Result := WideCompareText(S1, S2);
-end;
-
 function StrPosW(const Str, SubStr: PWideChar): PWideChar;
 var
   P: PWideChar;
-  I: Integer;
+  I: SizeInt;
 begin
   Result := nil;
   if (Str = nil) or (SubStr = nil) or (Str^ = #0) or (SubStr^ = #0) then
@@ -553,7 +657,7 @@ begin
   Result := nil;
 end;
 
-function StrLenW(const Str: PWideChar): Cardinal;
+function StrLenW(const Str: PWideChar): SizeInt;
 begin
   Result := 0;
   if Str <> nil then
@@ -619,7 +723,7 @@ begin
   Result := Dest;
 end;
 
-function StrLCopyW(Dest: PWideChar; const Source: PWideChar; MaxLen: Cardinal): PWideChar;
+function StrLCopyW(Dest: PWideChar; const Source: PWideChar; MaxLen: SizeInt): PWideChar;
 var
   Src: PWideChar;
 begin
@@ -645,17 +749,17 @@ begin
   StrCopyW(StrEndW(Dest), Source);
 end;
 
-function StrLCatW(Dest: PWideChar; const Source: PWideChar; MaxLen: Cardinal): PWideChar;
+function StrLCatW(Dest: PWideChar; const Source: PWideChar; MaxLen: SizeInt): PWideChar;
 begin
   Result := Dest;
   StrLCopyW(StrEndW(Dest), Source, MaxLen);
 end;
 
-function StrMoveW(Dest: PWideChar; const Source: PWideChar; Count: Cardinal): PWideChar;
+function StrMoveW(Dest: PWideChar; const Source: PWideChar; Count: SizeInt): PWideChar;
 begin
   Result := Dest;
   if Count > 0 then
-    Move(Source^, Dest^, Integer(Count) * SizeOf(WideChar));
+    Move(Source^, Dest^, Count * SizeOf(WideChar));
 end;
 
 function StrPCopyWW(Dest: PWideChar; const Source: WideString): PWideChar;
@@ -663,7 +767,7 @@ begin
   Result := StrLCopyW(Dest, PWideChar(Source), Length(Source));
 end;
 
-function StrPLCopyWW(Dest: PWideChar; const Source: WideString; MaxLen: Cardinal): PWideChar;
+function StrPLCopyWW(Dest: PWideChar; const Source: WideString; MaxLen: SizeInt): PWideChar;
 begin
   Result := StrLCopyW(Dest, PWideChar(Source), MaxLen);
 end;
@@ -688,10 +792,13 @@ end;
 
 // exchanges in each character of the given string the low order and high order
 // byte to go from LSB to MSB and vice versa.
-// EAX contains address of string
+// EAX/RAX contains address of string
+// stop at the first #0 character
 
 procedure StrSwapByteOrder(Str: PWideChar);
 asm
+       {$IFDEF CPU32}
+       // --> EAX Str
        PUSH    ESI
        PUSH    EDI
        MOV     ESI, EAX
@@ -707,9 +814,24 @@ asm
 @@2:
        POP     EDI
        POP     ESI
+       {$ENDIF CPU32}
+       {$IFDEF CPU64}
+       // --> RCX Str
+       MOV     RSI, RCX
+       MOV     RDI, RSI
+       XOR     RAX, RAX // clear high order byte to be able to use 64bit operand below
+@@1:
+       LODSW
+       OR      RAX, RAX
+       JZ      @@2
+       XCHG    AL, AH
+       STOSW
+       JMP     @@1
+@@2:
+       {$ENDIF CPU64}
 end;
 
-function StrNScanW(const Str1, Str2: PWideChar): Integer;
+function StrNScanW(const Str1, Str2: PWideChar): SizeInt;
 // Determines where (in Str1) the first time one of the characters of Str2 appear.
 // The result is the length of a string part of Str1 where none of the characters of
 // Str2 do appear (not counting the trailing #0 and starting with position 0 in Str1).
@@ -730,7 +852,7 @@ begin
   end;
 end;
 
-function StrRNScanW(const Str1, Str2: PWideChar): Integer;
+function StrRNScanW(const Str1, Str2: PWideChar): SizeInt;
 // This function does the same as StrRNScanW but uses Str1 in reverse order. This
 // means Str1 points to the last character of a string, is traversed reversely
 // and terminates with a starting #0. This is useful for parsing strings stored
@@ -758,11 +880,13 @@ end;
 //       check for a terminating null. Instead at most StrLen characters are
 //       searched. This makes this function extremly fast.
 //
-// on enter EAX contains Str, EDX contains Chr and ECX StrLen
-// on exit EAX contains result pointer or nil
-
-function StrScanW(Str: PWideChar; Chr: WideChar; StrLen: Cardinal): PWideChar;
+function StrScanW(Str: PWideChar; Chr: WideChar; StrLen: SizeInt): PWideChar;
 asm
+       {$IFDEF CPU32}
+       // --> EAX Str
+       //     DX  Chr
+       //     ECX StrLen
+       // <-- EAX Result
        TEST    EAX, EAX
        JZ      @@Exit        // get out if the string is nil or StrLen is 0
        JECXZ   @@Exit
@@ -773,10 +897,28 @@ asm
        DEC     ECX
        JNZ     @@Loop
        XOR     EAX, EAX
+       {$ENDIF CPU32}
+       {$IFDEF CPU64}
+       // --> RCX Str
+       //     DX  Chr
+       //     R8  StrLen
+       // <-- EAX Result
+       TEST    R8, R8
+       JZ      @@Exit        // get out if the string is nil or StrLen is 0
+       JRCXZ   @@Exit
+       MOV     RAX, RCX
+@@Loop:
+       CMP     [RAX], DX     // this unrolled loop is actually faster on modern processors
+       JE      @@Exit        // than REP SCASW
+       ADD     RAX, 2
+       DEC     R8
+       JNZ     @@Loop
+       XOR     RAX, RAX
+       {$ENDIF CPU64}
 @@Exit:
 end;
 
-function StrBufSizeW(const Str: PWideChar): Cardinal;
+function StrBufSizeW(const Str: PWideChar): SizeInt;
 // Returns max number of wide characters that can be stored in a buffer
 // allocated by StrAllocW.
 var
@@ -785,8 +927,8 @@ begin
   if Str <> nil then
   begin
     P := Str;
-    Dec(P, SizeOf(Cardinal) div SizeOf(WideChar));
-    Result := (Cardinal(PInteger(P)^) - SizeOf(Cardinal)) div SizeOf(WideChar);
+    Dec(P, SizeOf(SizeInt) div SizeOf(WideChar));
+    Result := (PSizeInt(P)^ - SizeOf(SizeInt)) div SizeOf(WideChar);
   end
   else
     Result := 0;
@@ -795,13 +937,18 @@ end;
 function StrPCopyW(Dest: PWideChar; const Source: AnsiString): PWideChar;
 // copies a Pascal-style string to a null-terminated wide string
 begin
-  Result := StrPLCopyW(Dest, Source, Cardinal(Length(Source)));
+  Result := StrPLCopyW(Dest, Source, SizeInt(Length(Source)));
   Result[Length(Source)] := WideNull;
 end;
 
-function StrPLCopyW(Dest: PWideChar; const Source: AnsiString; MaxLen: Cardinal): PWideChar;
+function StrPLCopyW(Dest: PWideChar; const Source: AnsiString; MaxLen: SizeInt): PWideChar;
 // copies characters from a Pascal-style string into a null-terminated wide string
 asm
+       {$IFDEF CPU32}
+       // --> EAX Dest
+       //     EDX Source
+       //     ECX MaxLen
+       // <-- EAX Result
        PUSH EDI
        PUSH ESI
        MOV EDI, EAX
@@ -815,11 +962,26 @@ asm
        MOV EAX, EDX
        POP ESI
        POP EDI
+       {$ENDIF CPU32}
+       {$IFDEF CPU64}
+       // --> RCX Dest
+       //     RDX Source
+       //     R8  MaxLen
+       // <-- RAX Result
+       MOV RDI, RCX
+       MOV RSI, RDX
+       XOR AX, AX
+@@1:   LODSB
+       STOSW
+       DEC ECX
+       JNZ @@1
+       MOV RAX, RCX
+       {$ENDIF CPU64}
 end;
 
 //=== WideString functions ===================================================
 
-function WidePos(const SubStr, S: WideString): Integer;
+function WidePos(const SubStr, S: WideString): SizeInt;
 var
   P: PWideChar;
 begin
@@ -836,7 +998,7 @@ function WideQuotedStr(const S: WideString; Quote: WideChar): WideString;
 var
   P, Src,
   Dest: PWideChar;
-  AddCount: Integer;
+  AddCount: SizeInt;
 begin
   AddCount := 0;
   P := StrScanW(PWideChar(S), Quote);
@@ -878,7 +1040,7 @@ end;
 function WideExtractQuotedStr(var Src: PWideChar; Quote: WideChar): WideString;
 var
   P, Dest: PWideChar;
-  DropCount: Integer;
+  DropCount: SizeInt;
 begin
   Result := '';
   if (Src = nil) or (Src^ <> Quote) then
@@ -936,7 +1098,7 @@ begin
 end;
 {$ELSE ~RTL150_UP}
 var
-  I, L: Integer;
+  I, L: SizeInt;
 begin
   L := Length(S);
   I := 1;
@@ -961,7 +1123,7 @@ begin
 end;
 {$ELSE ~RTL150_UP}
 var
-  I, L: Integer;
+  I, L: SizeInt;
 begin
   L := Length(S);
   I := 1;
@@ -979,7 +1141,7 @@ begin
 end;
 {$ELSE ~RTL150_UP}
 var
-  I: Integer;
+  I: SizeInt;
 begin
   I := Length(S);
   while (I > 0) and (S[I] <= ' ') do
@@ -1012,7 +1174,7 @@ begin
   end;
 end;
 
-function WideCompareText(const S1, S2: WideString): Integer;
+function WideCompareText(const S1, S2: WideString): SizeInt;
 begin
   {$IFDEF MSWINDOWS}
   if Win32Platform = VER_PLATFORM_WIN32_WINDOWS then
@@ -1026,7 +1188,7 @@ begin
   {$ENDIF MSWINDOWS}
 end;
 
-function WideCompareStr(const S1, S2: WideString): Integer;
+function WideCompareStr(const S1, S2: WideString): SizeInt;
 begin
   {$IFDEF MSWINDOWS}
   if Win32Platform = VER_PLATFORM_WIN32_WINDOWS then
@@ -1068,9 +1230,9 @@ begin
     {$ENDIF ~MSWINDOWS}
 end;
 
-function TrimLeftLengthW(const S: WideString): Integer;
+function TrimLeftLengthW(const S: WideString): SizeInt;
 var
-  Len: Integer;
+  Len: SizeInt;
 begin
   Len := Length(S);
   Result := 1;
@@ -1079,7 +1241,7 @@ begin
   Result := Len - Result + 1;
 end;
 
-function TrimRightLengthW(const S: WideString): Integer;
+function TrimRightLengthW(const S: WideString): SizeInt;
 begin
   Result := Length(S);
   while (Result > 0) and (S[Result] <= #32) do
@@ -1090,7 +1252,7 @@ end;
 
 function WideStartsText(const SubStr, S: WideString): Boolean;
 var
-  Len: Integer;
+  Len: SizeInt;
 begin
   Len := Length(SubStr);
   Result := (Len <= Length(S)) and (StrLICompW(PWideChar(SubStr), PWideChar(S), Len) = 0);
@@ -1098,7 +1260,7 @@ end;
 
 function WideStartsStr(const SubStr, S: WideString): Boolean;
 var
-  Len: Integer;
+  Len: SizeInt;
 begin
   Len := Length(SubStr);
   Result := (Len <= Length(S)) and (StrLCompW(PWideChar(SubStr), PWideChar(S), Len) = 0);
@@ -2124,7 +2286,7 @@ begin
   end;
 end;
 
-function MultiSzLength(const Source: PWideMultiSz): Integer;
+function MultiSzLength(const Source: PWideMultiSz): SizeInt;
 var
   P: PWideMultiSz;
 begin
@@ -2141,7 +2303,7 @@ begin
   end;
 end;
 
-procedure AllocateMultiSz(var Dest: PWideMultiSz; Len: Integer);
+procedure AllocateMultiSz(var Dest: PWideMultiSz; Len: SizeInt);
 begin
   if Len > 0 then
     GetMem(Dest, Len * SizeOf(WideChar))

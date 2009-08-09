@@ -1,29 +1,39 @@
 {$IFDEF MSWINDOWS}
 
-var
-  _BackupSeek: Pointer;
+type
+  TBackupSeek = function (hFile: THandle; dwLowBytesToSeek, dwHighBytesToSeek: DWORD;
+    out lpdwLowByteSeeked, lpdwHighByteSeeked: DWORD;
+    var lpContext: Pointer): BOOL; stdcall;
 
-function BackupSeek;
+var
+  _BackupSeek: TBackupSeek = nil;
+
+function BackupSeek(hFile: THandle; dwLowBytesToSeek, dwHighBytesToSeek: DWORD;
+  out lpdwLowByteSeeked, lpdwHighByteSeeked: DWORD;
+  var lpContext: Pointer): BOOL;
 begin
-  GetProcedureAddress(_BackupSeek, kernel32, 'BackupSeek');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_BackupSeek]
-  end;
+  GetProcedureAddress(Pointer(@_BackupSeek), kernel32, 'BackupSeek');
+  Result := _BackupSeek(hFile, dwLowBytesToSeek, dwHighBytesToSeek, lpdwLowByteSeeked, lpdwHighByteSeeked, lpContext);
 end;
 
-var
-  _AdjustTokenPrivileges: Pointer;
+type
+  TAdjustTokenPrivileges = function (TokenHandle: THandle; DisableAllPrivileges: BOOL;
+    const NewState: TTokenPrivileges; BufferLength: DWORD;
+    PreviousState: PTokenPrivileges;
+    ReturnLength: PDWORD
+    ): BOOL; stdcall;
 
-function AdjustTokenPrivileges;
+var
+  _AdjustTokenPrivileges: TAdjustTokenPrivileges = nil;
+
+function AdjustTokenPrivileges(TokenHandle: THandle; DisableAllPrivileges: BOOL;
+  const NewState: TTokenPrivileges; BufferLength: DWORD;
+  PreviousState: PTokenPrivileges;
+  ReturnLength: PDWORD
+  ): BOOL;
 begin
-  GetProcedureAddress(_AdjustTokenPrivileges, advapi32, 'AdjustTokenPrivileges');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_AdjustTokenPrivileges]
-  end;
+  GetProcedureAddress(Pointer(@_AdjustTokenPrivileges), advapi32, 'AdjustTokenPrivileges');
+  Result := _AdjustTokenPrivileges(TokenHandle, DisableAllPrivileges, NewState, BufferLength, PreviousState, ReturnLength);
 end;
 
 function CreateMutex(lpMutexAttributes: PSecurityAttributes; bInitialOwner: DWORD; lpName: PChar): THandle; stdcall;
@@ -34,237 +44,242 @@ function GetVersionEx(var lpVersionInformation: TOSVersionInfoEx): BOOL; stdcall
 function GetVersionEx(lpVersionInformation: POSVersionInfoEx): BOOL; stdcall;
   external kernel32 name 'GetVersionEx' + AWSuffix;
 
-var
-  _SetWaitableTimer: Pointer;
+type
+  TSetWaitableTimer = function (hTimer: THandle; var lpDueTime: TLargeInteger;
+    lPeriod: Longint; pfnCompletionRoutine: TFNTimerAPCRoutine;
+    lpArgToCompletionRoutine: Pointer; fResume: BOOL): BOOL; stdcall;
 
-function SetWaitableTimer;
-begin
-  GetProcedureAddress(_SetWaitableTimer, kernel32, 'SetWaitableTimer');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_SetWaitableTimer]
-  end;
-end;
 var
-  _SetFileSecurityA: Pointer;
+  _SetWaitableTimer: TSetWaitableTimer = nil;
 
-function SetFileSecurityA;
+function SetWaitableTimer(hTimer: THandle; var lpDueTime: TLargeInteger;
+  lPeriod: Longint; pfnCompletionRoutine: TFNTimerAPCRoutine;
+  lpArgToCompletionRoutine: Pointer; fResume: BOOL): BOOL;
 begin
-  GetProcedureAddress(_SetFileSecurityA, advapi32, 'SetFileSecurityA');
-  asm
-        MOV     ESP, EBP
-        POP     EBP
-        JMP     [_SetFileSecurityA]
-  end;
+  GetProcedureAddress(Pointer(@_SetWaitableTimer), kernel32, 'SetWaitableTimer');
+  Result := _SetWaitableTimer(hTimer, lpDueTime, lPeriod, pfnCompletionRoutine, lpArgToCompletionRoutine, fResume);
 end;
 
+type
+  TSetFileSecurityA = function (lpFileName: LPCSTR; SecurityInformation: SECURITY_INFORMATION;
+    pSecurityDescriptor: PSECURITY_DESCRIPTOR): BOOL; stdcall;
 var
-  _SetFileSecurityW: Pointer;
+  _SetFileSecurityA: TSetFileSecurityA = nil;
 
-function SetFileSecurityW;
+function SetFileSecurityA(lpFileName: LPCSTR; SecurityInformation: SECURITY_INFORMATION;
+  pSecurityDescriptor: PSECURITY_DESCRIPTOR): BOOL;
 begin
-  GetProcedureAddress(_SetFileSecurityW, advapi32, 'SetFileSecurityW');
-  asm
-        MOV     ESP, EBP
-        POP     EBP
-        JMP     [_SetFileSecurityW]
-  end;
+  GetProcedureAddress(Pointer(@_SetFileSecurityA), advapi32, 'SetFileSecurityA');
+  Result := _SetFileSecurityA(lpFileName, SecurityInformation, pSecurityDescriptor);
 end;
 
-var
-  _SetFileSecurity: Pointer;
+type
+  TSetFileSecurityW = function (lpFileName: LPCWSTR; SecurityInformation: SECURITY_INFORMATION;
+    pSecurityDescriptor: PSECURITY_DESCRIPTOR): BOOL; stdcall;
 
-function SetFileSecurity;
+var
+  _SetFileSecurityW: TSetFileSecurityW = nil;
+
+function SetFileSecurityW(lpFileName: LPCWSTR; SecurityInformation: SECURITY_INFORMATION;
+  pSecurityDescriptor: PSECURITY_DESCRIPTOR): BOOL;
 begin
-  GetProcedureAddress(_SetFileSecurity, advapi32, 'SetFileSecurity' + AWSuffix);
-  asm
-        MOV     ESP, EBP
-        POP     EBP
-        JMP     [_SetFileSecurity]
-  end;
+  GetProcedureAddress(Pointer(@_SetFileSecurityW), advapi32, 'SetFileSecurityW');
+  Result := _SetFileSecurityW(lpFileName, SecurityInformation, pSecurityDescriptor);
 end;
 
-var
-  _GetFileSecurityA: Pointer;
+type
+  TSetFileSecurity = function (lpFileName: LPCTSTR; SecurityInformation: SECURITY_INFORMATION;
+    pSecurityDescriptor: PSECURITY_DESCRIPTOR): BOOL; stdcall;
 
-function GetFileSecurityA;
+var
+  _SetFileSecurity: TSetFileSecurity = nil;
+
+function SetFileSecurity(lpFileName: LPCTSTR; SecurityInformation: SECURITY_INFORMATION;
+  pSecurityDescriptor: PSECURITY_DESCRIPTOR): BOOL;
 begin
-  GetProcedureAddress(_GetFileSecurityA, advapi32, 'GetFileSecurityA');
-  asm
-        MOV     ESP, EBP
-        POP     EBP
-        JMP     [_GetFileSecurityA]
-  end;
+  GetProcedureAddress(Pointer(@_SetFileSecurity), advapi32, 'SetFileSecurity' + AWSuffix);
+  Result := _SetFileSecurity(lpFileName, SecurityInformation, pSecurityDescriptor);
 end;
 
-var
-  _GetFileSecurityW: Pointer;
+type
+  TGetFileSecurityA = function (lpFileName: LPCSTR; RequestedInformation: SECURITY_INFORMATION;
+    pSecurityDescriptor: PSECURITY_DESCRIPTOR; nLength: DWORD;
+    var lpnLengthNeeded: DWORD): BOOL; stdcall;
 
-function GetFileSecurityW;
+var
+  _GetFileSecurityA: TGetFileSecurityA = nil;
+
+function GetFileSecurityA(lpFileName: LPCSTR; RequestedInformation: SECURITY_INFORMATION;
+  pSecurityDescriptor: PSECURITY_DESCRIPTOR; nLength: DWORD;
+  var lpnLengthNeeded: DWORD): BOOL;
 begin
-  GetProcedureAddress(_GetFileSecurityW, advapi32, 'GetFileSecurityW');
-  asm
-        MOV     ESP, EBP
-        POP     EBP
-        JMP     [_GetFileSecurityW]
-  end;
+  GetProcedureAddress(Pointer(@_GetFileSecurityA), advapi32, 'GetFileSecurityA');
+  Result := _GetFileSecurityA(lpFileName, RequestedInformation, pSecurityDescriptor, nLength, lpnLengthNeeded);
 end;
 
-var
-  _GetFileSecurity: Pointer;
+type
+  TGetFileSecurityW = function (lpFileName: LPCWSTR; RequestedInformation: SECURITY_INFORMATION;
+    pSecurityDescriptor: PSECURITY_DESCRIPTOR; nLength: DWORD;
+    var lpnLengthNeeded: DWORD): BOOL; stdcall;
 
-function GetFileSecurity;
+var
+  _GetFileSecurityW: TGetFileSecurityW = nil;
+
+function GetFileSecurityW(lpFileName: LPCWSTR; RequestedInformation: SECURITY_INFORMATION;
+  pSecurityDescriptor: PSECURITY_DESCRIPTOR; nLength: DWORD;
+  var lpnLengthNeeded: DWORD): BOOL;
 begin
-  GetProcedureAddress(_GetFileSecurity, advapi32, 'GetFileSecurity' + AWSuffix);
-  asm
-        MOV     ESP, EBP
-        POP     EBP
-        JMP     [_GetFileSecurity]
-  end;
+  GetProcedureAddress(Pointer(@_GetFileSecurityW), advapi32, 'GetFileSecurityW');
+  Result := _GetFileSecurityW(lpFileName, RequestedInformation, pSecurityDescriptor, nLength, lpnLengthNeeded);
 end;
 
-var
-  _SetVolumeMountPointW: Pointer;
+type
+  TGetFileSecurity = function (lpFileName: LPCTSTR; RequestedInformation: SECURITY_INFORMATION;
+    pSecurityDescriptor: PSECURITY_DESCRIPTOR; nLength: DWORD;
+    var lpnLengthNeeded: DWORD): BOOL; stdcall;
 
-function SetVolumeMountPointW;
+var
+  _GetFileSecurity: TGetFileSecurity = nil;
+
+function GetFileSecurity(lpFileName: LPCTSTR; RequestedInformation: SECURITY_INFORMATION;
+  pSecurityDescriptor: PSECURITY_DESCRIPTOR; nLength: DWORD;
+  var lpnLengthNeeded: DWORD): BOOL;
 begin
-  GetProcedureAddress(_SetVolumeMountPointW, kernel32, 'SetVolumeMountPointW');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_SetVolumeMountPointW]
-  end;
+  GetProcedureAddress(Pointer(@_GetFileSecurity), advapi32, 'GetFileSecurity' + AWSuffix);
+  Result := _GetFileSecurity(lpFileName, RequestedInformation, pSecurityDescriptor, nLength, lpnLengthNeeded);
 end;
 
-var
-  _DeleteVolumeMountPointW: Pointer;
+type
+  TSetVolumeMountPointW = function (lpszVolumeMountPoint, lpszVolumeName: LPCWSTR): BOOL; stdcall;
 
-function DeleteVolumeMountPointW;
+var
+  _SetVolumeMountPointW: TSetVolumeMountPointW = nil;
+
+function SetVolumeMountPointW(lpszVolumeMountPoint, lpszVolumeName: LPCWSTR): BOOL;
 begin
-  GetProcedureAddress(_DeleteVolumeMountPointW, kernel32, 'DeleteVolumeMountPointW');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_DeleteVolumeMountPointW]
-  end;
+  GetProcedureAddress(Pointer(@_SetVolumeMountPointW), kernel32, 'SetVolumeMountPointW');
+  Result := _SetVolumeMountPointW(lpszVolumeMountPoint, lpszVolumeName);
 end;
 
-var
-  _GetVolumeNameForVolMountPointW: Pointer;
+type
+  TDeleteVolumeMountPointW = function (lpszVolumeMountPoint: LPCWSTR): BOOL; stdcall;
 
-function GetVolumeNameForVolumeMountPointW;
+var
+  _DeleteVolumeMountPointW: TDeleteVolumeMountPointW = nil;
+
+function DeleteVolumeMountPointW(lpszVolumeMountPoint: LPCWSTR): BOOL;
 begin
-  GetProcedureAddress(_GetVolumeNameForVolMountPointW, kernel32, 'GetVolumeNameForVolumeMountPointW');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_GetVolumeNameForVolMountPointW]
-  end;
+  GetProcedureAddress(Pointer(@_DeleteVolumeMountPointW), kernel32, 'DeleteVolumeMountPointW');
+  Result := _DeleteVolumeMountPointW(lpszVolumeMountPoint);
 end;
 
-var
-  _CopyExtendedContext: Pointer;
+type
+  TGetVolumeNameForVolumeMountPointW = function (lpszVolumeMountPoint: LPCWSTR;
+  lpszVolumeName: LPWSTR; cchBufferLength: DWORD): BOOL; stdcall;
 
-function CopyExtendedContext;
+var
+  _GetVolumeNameForVolMountPointW: TGetVolumeNameForVolumeMountPointW = nil;
+
+function GetVolumeNameForVolumeMountPointW(lpszVolumeMountPoint: LPCWSTR;
+  lpszVolumeName: LPWSTR; cchBufferLength: DWORD): BOOL;
 begin
-  GetProcedureAddress(_CopyExtendedContext, kernel32, 'CopyExtendedContext');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_CopyExtendedContext]
-  end;
+  GetProcedureAddress(Pointer(@_GetVolumeNameForVolMountPointW), kernel32, 'GetVolumeNameForVolumeMountPointW');
+  Result := _GetVolumeNameForVolMountPointW(lpszVolumeMountPoint, lpszVolumeName, cchBufferLength);
 end;
 
-var
-  _InitializeExtendedContext: Pointer;
+type
+  TCopyExtendedContext = function (Destination: PCONTEXT_EX; ContextFlags: DWORD; Source: PCONTEXT_EX): BOOL; stdcall;
 
-function InitializeExtendedContext;
+var
+  _CopyExtendedContext: TCopyExtendedContext = nil;
+
+function CopyExtendedContext(Destination: PCONTEXT_EX; ContextFlags: DWORD; Source: PCONTEXT_EX): BOOL;
 begin
-  GetProcedureAddress(_InitializeExtendedContext, kernel32, 'InitializeExtendedContext');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_InitializeExtendedContext]
-  end;
+  GetProcedureAddress(Pointer(@_CopyExtendedContext), kernel32, 'CopyExtendedContext');
+  Result := _CopyExtendedContext(Destination, ContextFlags, Source);
 end;
 
-var
-  _GetEnabledExtendedFeatures: Pointer;
+type
+  TInitializeExtendedContext = function (Context: Pointer; ContextFlags: DWORD; out ContextEx: PCONTEXT_EX): BOOL; stdcall;
 
-function GetEnabledExtendedFeatures;
+var
+  _InitializeExtendedContext: TInitializeExtendedContext = nil;
+
+function InitializeExtendedContext(Context: Pointer; ContextFlags: DWORD; out ContextEx: PCONTEXT_EX): BOOL;
 begin
-  GetProcedureAddress(_GetEnabledExtendedFeatures, kernel32, 'GetEnabledExtendedFeatures');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_GetEnabledExtendedFeatures]
-  end;
+  GetProcedureAddress(Pointer(@_InitializeExtendedContext), kernel32, 'InitializeExtendedContext');
+  Result := _InitializeExtendedContext(Context, ContextFlags, ContextEx);
 end;
 
+type
+  TGetEnabledExtendedFeatures = function (const FeatureMask: Int64): Int64; stdcall;
 var
-  _GetExtendedContextLength: Pointer;
+  _GetEnabledExtendedFeatures: TGetEnabledExtendedFeatures = nil;
 
-function GetExtendedContextLength;
+function GetEnabledExtendedFeatures(const FeatureMask: Int64): Int64;
 begin
-  GetProcedureAddress(_GetExtendedContextLength, kernel32, 'GetExtendedContextLength');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_GetExtendedContextLength]
-  end;
+  GetProcedureAddress(Pointer(@_GetEnabledExtendedFeatures), kernel32, 'GetEnabledExtendedFeatures');
+  Result := _GetEnabledExtendedFeatures(FeatureMask);
 end;
 
-var
-  _GetExtendedFeaturesMask: Pointer;
+type
+  TGetExtendedContextLength = function (ContextFlags: DWORD; ContextLength: PDWORD): BOOL; stdcall;
 
-function GetExtendedFeaturesMask;
+var
+  _GetExtendedContextLength: TGetExtendedContextLength = nil;
+
+function GetExtendedContextLength(ContextFlags: DWORD; ContextLength: PDWORD): BOOL;
 begin
-  GetProcedureAddress(_GetExtendedFeaturesMask, kernel32, 'GetExtendedFeaturesMask');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_GetExtendedFeaturesMask]
-  end;
+  GetProcedureAddress(Pointer(@_GetExtendedContextLength), kernel32, 'GetExtendedContextLength');
+  Result := _GetExtendedContextLength(ContextFlags, ContextLength);
 end;
 
-var
-  _LocateExtendedFeature: Pointer;
+type
+  TGetExtendedFeaturesMask = function (ContextEx: PCONTEXT_EX): Int64; stdcall;
 
-function LocateExtendedFeature;
+var
+  _GetExtendedFeaturesMask: TGetExtendedFeaturesMask = nil;
+
+function GetExtendedFeaturesMask(ContextEx: PCONTEXT_EX): Int64;
 begin
-  GetProcedureAddress(_LocateExtendedFeature, kernel32, 'LocateExtendedFeature');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_LocateExtendedFeature]
-  end;
+  GetProcedureAddress(Pointer(@_GetExtendedFeaturesMask), kernel32, 'GetExtendedFeaturesMask');
+  Result := _GetExtendedFeaturesMask(ContextEx);
 end;
 
-var
-  _LocateLegacyContext: Pointer;
+type
+  TLocateExtendedFeature = function (ContextEx: PCONTEXT_EX; FeatureId: DWORD; Length: PDWORD): Pointer; stdcall;
 
-function LocateLegacyContext;
+var
+  _LocateExtendedFeature: TLocateExtendedFeature = nil;
+
+function LocateExtendedFeature(ContextEx: PCONTEXT_EX; FeatureId: DWORD; Length: PDWORD): Pointer;
 begin
-  GetProcedureAddress(_LocateLegacyContext, kernel32, 'LocateLegacyContext');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_LocateLegacyContext]
-  end;
+  GetProcedureAddress(Pointer(@_LocateExtendedFeature), kernel32, 'LocateExtendedFeature');
+  Result := _LocateExtendedFeature(ContextEx, FeatureId, Length);
 end;
 
-var
-  _SetExtendedFeaturesMask: Pointer;
+type
+  TLocateLegacyContext = function (ContextEx: PCONTEXT_EX; Length: PDWORD): PCONTEXT; stdcall;
 
-procedure SetExtendedFeaturesMask;
+var
+  _LocateLegacyContext: TLocateLegacyContext = nil;
+
+function LocateLegacyContext(ContextEx: PCONTEXT_EX; Length: PDWORD): PCONTEXT;
 begin
-  GetProcedureAddress(_SetExtendedFeaturesMask, kernel32, 'SetExtendedFeaturesMask');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_SetExtendedFeaturesMask]
-  end;
+  GetProcedureAddress(Pointer(@_LocateLegacyContext), kernel32, 'LocateLegacyContext');
+  Result := _LocateLegacyContext(ContextEx, Length);
+end;
+
+type
+  TSetExtendedFeaturesMask = procedure (ContextEx: PCONTEXT_EX; const FeatureMask: Int64);
+
+var
+  _SetExtendedFeaturesMask: TSetExtendedFeaturesMask = nil;
+
+procedure SetExtendedFeaturesMask(ContextEx: PCONTEXT_EX; const FeatureMask: Int64);
+begin
+  GetProcedureAddress(Pointer(@_SetExtendedFeaturesMask), kernel32, 'SetExtendedFeaturesMask');
+  _SetExtendedFeaturesMask(ContextEx, FeatureMask);
 end;
 
 {$ENDIF MSWINDOWS}

@@ -535,7 +535,7 @@ procedure ListSetItem(var List: string; const Separator: string;
 function ListItemIndex(const List, Separator, Item: string): Integer;
 
 // RTL package information
-function SystemTObjectInstance: LongWord;
+function SystemTObjectInstance: TJclAddr;
 function IsCompiledWithPackages: Boolean;
 
 // GUID
@@ -561,7 +561,7 @@ type
   TJclSimpleLog = class (TObject)
   private
     FDateTimeFormatStr: String;
-    FLogFileHandle: Integer;
+    FLogFileHandle: THandle;
     FLogFileName: string;
     FLoggingActive: Boolean;
     FLogWasEmpty: Boolean;
@@ -700,7 +700,7 @@ begin
     if APointer <> nil then
     begin
       U := APointer;
-      U := PUsed(Cardinal(U) - SizeOf(TUsed));
+      U := PUsed(TJclAddr(U) - SizeOf(TUsed));
       if (U.SizeFlags and cThisUsedFlag) <> 0 then
         Result := (U.SizeFlags) and (not cFlags - SizeOf(TUsed));
     end;
@@ -1288,7 +1288,7 @@ var
 
   function ArrayItemPointer(Item: Integer): Pointer;
   begin
-    Result := Pointer(Cardinal(ArrayPtr) + (Cardinal(Item) * ElementSize));
+    Result := Pointer(TJclAddr(ArrayPtr) + (Cardinal(Item) * ElementSize));
   end;
 
   procedure QuickSort(L, R: Integer);
@@ -1352,7 +1352,7 @@ begin
   if ArrayPtr <> nil then
   begin
     SetLength(TempBuf, ElementSize);
-    QuickSort(0, PInteger(Cardinal(ArrayPtr) - 4)^ - 1);
+    QuickSort(0, PInteger(TJclAddr(ArrayPtr) - 4)^ - 1);
   end;
 end;
 
@@ -1366,12 +1366,12 @@ begin
   if ArrayPtr <> nil then
   begin
     L := 0;
-    H := PInteger(Cardinal(ArrayPtr) - 4)^ - 1;
+    H := PInteger(TJclAddr(ArrayPtr) - 4)^ - 1;
     B := False;
     while L <= H do
     begin
       I := (L + H) shr 1;
-      C := SortFunc(Pointer(Cardinal(ArrayPtr) + (Cardinal(I) * ElementSize)), ValuePtr);
+      C := SortFunc(Pointer(TJclAddr(ArrayPtr) + (Cardinal(I) * ElementSize)), ValuePtr);
       if C < 0 then
         L := I + 1
       else
@@ -1707,7 +1707,11 @@ var
   WrittenBytes: DWORD;
   PatchAddress: PPointer;
 begin
-  PatchAddress := Pointer(Integer(AClass) + Offset);
+  {$OVERFLOWCHECKS OFF}
+  PatchAddress := Pointer(TJclAddr(AClass) + TJclAddr(Offset));
+  {$IFDEF OVERFLOWCHECKS_ON}
+  {$OVERFLOWCHECKS ON}
+  {$ENDIF OVERFLOWCHECKS_ON}
   if not WriteProtectedMemory(PatchAddress, @Value, SizeOf(Value), WrittenBytes) then
     raise EJclVMTError.CreateResFmt(@RsVMTMemoryWriteError,
       [SysErrorMessage({$IFDEF FPC}GetLastOSError{$ELSE}GetLastError{$ENDIF})]);
@@ -1754,7 +1758,11 @@ end;
 
 function GetVirtualMethod(AClass: TClass; const Index: Integer): Pointer;
 begin
-  Result := PPointer(Integer(AClass) + Index * SizeOf(Pointer))^;
+  {$OVERFLOWCHECKS OFF}
+  Result := PPointer(TJclAddr(AClass) + TJclAddr(Index * SizeOf(Pointer)))^;
+  {$IFDEF OVERFLOWCHECKS_ON}
+  {$OVERFLOWCHECKS ON}
+  {$ENDIF OVERFLOWCHECKS_ON}
 end;
 
 procedure SetVirtualMethod(AClass: TClass; const Index: Integer; const Method: Pointer);
@@ -1764,34 +1772,70 @@ end;
 
 function GetDynamicMethodCount(AClass: TClass): Integer; assembler;
 asm
+        {$IFDEF CPU32}
+        // --> RAX AClass
+        // <-- EAX Result
         MOV     EAX, [EAX].vmtDynamicTable
         TEST    EAX, EAX
         JE      @@Exit
         MOVZX   EAX, WORD PTR [EAX]
+        {$ENDIF CPU32}
+        {$IFDEF CPU64}
+        // --> RCX AClass
+        // <-- EAX Result
+        MOV     RAX, [RCX].vmtDynamicTable
+        TEST    RAX, RAX
+        JE      @@Exit
+        MOVZX   RAX, WORD PTR [RAX]
+        {$ENDIF CPU64}
 @@Exit:
 end;
 
 function GetDynamicIndexList(AClass: TClass): PDynamicIndexList; assembler;
 asm
+        {$IFDEF CPU32}
+        // --> EAX AClass
+        // <-- EAX Result
         MOV     EAX, [EAX].vmtDynamicTable
         ADD     EAX, 2
+        {$ENDIF CPU32}
+        {$IFDEF CPU64}
+        // --> RCX AClass
+        // <-- RAX Result
+        MOV     RAX, [RCX].vmtDynamicTable
+        ADD     RAX, 2
+        {$ENDIF CPU64}
 end;
 
 function GetDynamicAddressList(AClass: TClass): PDynamicAddressList; assembler;
 asm
+        {$IFDEF CPU32}
+        // --> EAX AClass
+        // <-- EAX Result
         MOV     EAX, [EAX].vmtDynamicTable
         MOVZX   EDX, Word ptr [EAX]
         ADD     EAX, EDX
         ADD     EAX, EDX
         ADD     EAX, 2
+        {$ENDIF CPU32}
+        {$IFDEF CPU64}
+        // --> RCX AClass
+        // <-- RAX Result
+        MOV     RAX, [RCX].vmtDynamicTable
+        MOVZX   RDX, Word ptr [RAX]
+        ADD     RAX, RDX
+        ADD     RAX, RDX
+        ADD     RAX, 2
+        {$ENDIF CPU64}
 end;
 
 function HasDynamicMethod(AClass: TClass; Index: Integer): Boolean; assembler;
 // Mainly copied from System.GetDynaMethod
 asm
-        { ->    EAX     vmt of class            }
-        {       DX      dynamic method index    }
-
+        {$IFDEF CPU32}
+        // --> EAX AClass
+        //     EDX Index
+        // <-- AL  Result
         PUSH    EDI
         XCHG    EAX, EDX
         JMP     @@HaveVMT
@@ -1818,6 +1862,37 @@ asm
         MOV     EAX, 1
 @@Exit:
         POP     EDI
+        {$ENDIF CPU32}
+        {$IFDEF CPU64}
+        // --> RCX AClass
+        //     EDX Index
+        // <-- AL  Result
+        MOV     EAX, EDX
+        MOV     RDX, RCX
+        JMP     @@HaveVMT
+@@OuterLoop:
+        MOV     RDX, [RDX]
+@@HaveVMT:
+        MOV     RDI, [RDX].vmtDynamicTable
+        TEST    RDI, RDI
+        JE      @@Parent
+        MOVZX   RCX, WORD PTR [RDI]
+        PUSH    RCX
+        ADD     RDI,2
+        REPNE   SCASW
+        JE      @@Found
+        POP     RCX
+@@Parent:
+        MOV     RDX,[RDX].vmtParent
+        TEST    RDX,RDX
+        JNE     @@OuterLoop
+        MOV     RAX, 0
+        JMP     @@Exit
+@@Found:
+        POP     RAX
+        MOV     RAX, 1
+@@Exit:
+        {$ENDIF CPU64}
 end;
 
 {$IFNDEF FPC}
@@ -1831,24 +1906,51 @@ end;
 
 function GetInitTable(AClass: TClass): PTypeInfo; assembler;
 asm
+        {$IFDEF CPU32}
+        // --> EAX AClass
+        // <-- EAX Result
         MOV     EAX, [EAX].vmtInitTable
+        {$ENDIF CPU32}
+        {$IFDEF CPU64}
+        // --> RCX AClass
+        // <-- RAX Result
+        MOV     RAX, [RCX].vmtInitTable
+        {$ENDIF CPU64}
 end;
 
 function GetFieldTable(AClass: TClass): PFieldTable; assembler;
 asm
+        {$IFDEF CPU32}
+        // --> EAX AClass
+        // <-- EAX Result
         MOV     EAX, [EAX].vmtFieldTable
+        {$ENDIF CPU32}
+        {$IFDEF CPU64}
+        // --> RCX AClass
+        // <-- RAX Result
+        MOV     RAX, [RCX].vmtFieldTable
+        {$ENDIF CPU64}
 end;
 
 function GetMethodTable(AClass: TClass): PMethodTable; assembler;
 asm
+        {$IFDEF CPU32}
+        // --> EAX AClass
+        // <-- EAX Result
         MOV     EAX, [EAX].vmtMethodTable
+        {$ENDIF CPU32}
+        {$IFDEF CPU64}
+        // --> RCX AClass
+        // <-- RAX Result
+        MOV     RAX, [RCX].vmtMethodTable
+        {$ENDIF CPU64}
 end;
 
 function GetMethodEntry(MethodTable: PMethodTable; Index: Integer): PMethodEntry;
 begin
-  Result := Pointer(Cardinal(MethodTable) + 2);
+  Result := Pointer(TJclAddr(MethodTable) + 2);
   for Index := Index downto 1 do
-    Inc(Cardinal(Result), Result^.EntrySize);
+    Inc(TJclAddr(Result), Result^.EntrySize);
 end;
 
 //=== Class Parent methods ===================================================
@@ -1858,7 +1960,11 @@ var
   WrittenBytes: DWORD;
   PatchAddress: Pointer;
 begin
-  PatchAddress := PPointer(Integer(AClass) + vmtParent)^;
+  {$OVERFLOWCHECKS OFF}
+  PatchAddress := PPointer(TJclAddr(AClass) + TJclAddr(vmtParent))^;
+  {$IFDEF OVERFLOWCHECKS_ON}
+  {$OVERFLOWCHECKS ON}
+  {$ENDIF OVERFLOWCHECKS_ON}
   if not WriteProtectedMemory(PatchAddress, @NewClassParent, SizeOf(Pointer), WrittenBytes) then
     raise EJclVMTError.CreateResFmt(@RsVMTMemoryWriteError,
       [SysErrorMessage({$IFDEF FPC}GetLastOSError{$ELSE}GetLastError{$ENDIF})]);
@@ -1871,14 +1977,26 @@ end;
 
 function GetClassParent(AClass: TClass): TClass; assembler;
 asm
+        {$IFDEF CPU32}
+        // --> EAX AClass
+        // <-- EAX Result
         MOV     EAX, [EAX].vmtParent
         TEST    EAX, EAX
         JE      @@Exit
         MOV     EAX, [EAX]
+        {$ENDIF CPU32}
+        {$IFDEF CPU64}
+        // --> RCX AClass
+        // <-- RAX Result
+        MOV     RAX, [RCX].vmtParent
+        TEST    RAX, RAX
+        JE      @@Exit
+        MOV     RAX, [RAX]
+        {$ENDIF CPU64}
 @@Exit:
 end;
 
-{$IFNDEF FPC}
+{$IFDEF BORLAND}
 function IsClass(Address: Pointer): Boolean; assembler;
 asm
         CMP     Address, Address.vmtSelfPtr
@@ -1889,9 +2007,9 @@ asm
         MOV     Result, False
 @Exit:
 end;
-{$ENDIF ~FPC}
+{$ENDIF BORLAND}
 
-{$IFNDEF FPC}
+{$IFDEF BORLAND}
 function IsObject(Address: Pointer): Boolean; assembler;
 asm
 // or IsClass(Pointer(Address^));
@@ -1904,7 +2022,7 @@ asm
         MOV     Result, False
 @Exit:
 end;
-{$ENDIF ~FPC}
+{$ENDIF BORLAND}
 
 function InheritsFromByName(AClass: TClass; const AClassName: string): Boolean;
 begin
@@ -2827,7 +2945,7 @@ end;
 
 //=== RTL package information ================================================
 
-function SystemTObjectInstance: LongWord;
+function SystemTObjectInstance: TJclAddr;
 begin
   Result := ModuleFromAddr(Pointer(System.TObject));
 end;
@@ -3083,7 +3201,7 @@ begin
     FLogFileName := CreateDefaultFileName
   else
     FLogFileName := ALogFileName;
-  DWORD_PTR(FLogFileHandle) := INVALID_HANDLE_VALUE;
+  FLogFileHandle := INVALID_HANDLE_VALUE;
   FLoggingActive := True;
 end;
 
@@ -3119,7 +3237,7 @@ begin
   if LogOpen then
   begin
     FileClose(FLogFileHandle);
-    DWORD_PTR(FLogFileHandle) := INVALID_HANDLE_VALUE;
+    FLogFileHandle := INVALID_HANDLE_VALUE;
     FLogWasEmpty := False;
   end;
 end;

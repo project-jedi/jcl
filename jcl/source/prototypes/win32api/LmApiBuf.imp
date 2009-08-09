@@ -1,16 +1,15 @@
 {$IFDEF MSWINDOWS}
 
-var
-  _NetApiBufferFree: Pointer;
+type
+  TNetApiBufferFree = function (Buffer: Pointer): NET_API_STATUS; stdcall;
 
-function NetApiBufferFree;
+var
+  _NetApiBufferFree: TNetApiBufferFree = nil;
+
+function NetApiBufferFree(Buffer: Pointer): NET_API_STATUS;
 begin
-  GetProcedureAddress(_NetApiBufferFree, netapi32, 'NetApiBufferFree');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetApiBufferFree]
-  end;
+  GetProcedureAddress(Pointer(@_NetApiBufferFree), netapi32, 'NetApiBufferFree');
+  Result := _NetApiBufferFree(Buffer);
 end;
 
 {$ENDIF MSWINDOWS}

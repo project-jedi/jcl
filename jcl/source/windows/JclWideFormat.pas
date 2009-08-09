@@ -442,6 +442,11 @@ function ModDiv32(const Dividend, Divisor: Cardinal; out Quotient: Cardinal): Ca
   Quotient := Dividend div Divisor;
   Result := Dividend mod Divisor; }
 asm
+        {$IFDEF CPU32}
+        // --> EAX Dividend
+        //     EDX Divisor
+        //     ECX Quotient
+        // <-- EAX Result
         PUSH    ECX
         MOV     ECX, EDX
         XOR     EDX, EDX
@@ -449,6 +454,25 @@ asm
         POP     ECX
         MOV     [ECX], EAX
         MOV     EAX, EDX
+        {$ENDIF CPU32}
+        {$IFDEF CPU64}
+        // --> ECX Dividend
+        //     EDX Divisor
+        //     R8  Quotient
+        // <-- RAX Result
+        MOV     EAX, ECX
+        MOV     ECX, EDX
+        XOR     EDX, EDX
+        //     EAX Dividend
+        //     ECX Divisor
+        //     R8  Quotient
+        DIV     ECX
+        //     EAX Quotient
+        //     EDX Remainder
+        MOV     [R8], EAX
+        XOR     RAX, RAX
+        MOV     EAX, EDX
+        {$ENDIF CPU64}
 end;
 
 function ConvertInt32(Value: Cardinal; const Base: Cardinal; var Buffer: PWideChar): Cardinal;
@@ -465,13 +489,18 @@ begin
   until Value = 0;
 end;
 
-function ModDiv64(var Dividend: Int64; const Divisor: Cardinal; out Quotient: Int64): Int64;
+function ModDiv64({$IFDEF CPU32}var{$ENDIF CPU32} Dividend: Int64; const Divisor: Cardinal; out Quotient: Int64): Int64;
 { Returns the quotient and modulus of the two inputs using unsigned division
   Unsigned 64-bit division is not available in Delphi 5, but the System unit
   does provide division and modulus functions accessible through assembler.
   Quotient := Dividend div Divisor;
   Result := Dividend mod Divisor; }
 asm
+        {$IFDEF CPU32}
+        // --> EAX Dividend
+        //     EDX Divisor
+        //     ECX Quotient
+        // <-- EAX Result
         PUSH    0 // prepare for second division
         PUSH    EDX
 
@@ -492,6 +521,24 @@ asm
         POP     EDX // restore dividend
         POP     EAX
         CALL    System.@_llumod
+        {$ENDIF CPU32}
+        {$IFDEF CPU64}
+        // --> RCX Dividend
+        //     RDX Divisor
+        //     R8  Quotient
+        // <-- RAX Result
+        MOV     RAX, RCX
+        MOV     RCX, RDX
+        XOR     RDX, RDX
+        //     RAX Dividend
+        //     RCX Divisor
+        //     R8  Quotient
+        DIV     RCX
+        //     RAX Quotient
+        //     RDX Remainder
+        MOV     [R8], RAX
+        MOV     RAX, RDX
+        {$ENDIF CPU64}
 end;
 
 function ConvertInt64(Value: Int64; const Base: Cardinal; var Buffer: PWideChar): Cardinal;
@@ -517,7 +564,16 @@ function GetPClassName(const Cls: TClass): PShortString;
   AnsiString.
   Result := JclSysUtils.GetVirtualMethod(Cls, vmtClassName div SizeOf(Pointer)); }
 asm
+        {$IFDEF CPU32}
+        // --> EAX Cls
+        // <-- EAX Result
         MOV     EAX, [EAX].vmtClassName
+        {$ENDIF CPU32}
+        {$IFDEF CPU64}
+        // --> RCX Cls
+        // <-- RAX Result
+        MOV     RAX, [ECX].vmtClassName
+        {$ENDIF CPU64}
 end;
 {$ENDIF FORMAT_EXTENSIONS}
 

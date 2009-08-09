@@ -946,7 +946,7 @@ function TJclMixerDevice.GetLineByID(LineID: DWORD): TJclMixerLine;
 var
   I: Integer;
 begin
-  I := SearchSortedUntyped(Self, LineCount, MixerLineSearchID, Pointer(LineID));
+  I := SearchSortedUntyped(Self, LineCount, MixerLineSearchID, LineID);
   if I = -1 then
     Result := nil
   else
@@ -1183,7 +1183,7 @@ begin
     OpenParams.lpstrElementName := StrFmt(DriveName, '%s:', [UpCase(Drive)]);
     Inc(OpenParam, MCI_OPEN_ELEMENT);
   end;
-  Result := mciSendCommand(0, MCI_OPEN, OpenParam, Cardinal(@OpenParams));
+  Result := mciSendCommand(0, MCI_OPEN, OpenParam, TJclAddr(@OpenParams));
 end;
 
 function CloseCdMciDevice(var OpenParams: TMCI_Open_Parms): MCIERROR;
@@ -1219,7 +1219,7 @@ begin
   try
     ResetMemory(StatusParams, SizeOf(StatusParams));
     StatusParams.dwItem := MCI_STATUS_MEDIA_PRESENT;
-    MMCheck(mciSendCommand(Mci.wDeviceID, MCI_STATUS, MCI_STATUS_ITEM or MCI_WAIT, Cardinal(@StatusParams)));
+    MMCheck(mciSendCommand(Mci.wDeviceID, MCI_STATUS, MCI_STATUS_ITEM or MCI_WAIT, TJclAddr(@StatusParams)));
     Result := Boolean(StatusParams.dwReturn);
   finally
     CloseCdMciDevice(Mci);
@@ -1242,7 +1242,7 @@ begin
     InfoParams.dwCallback := 0;
     InfoParams.lpstrReturn := Buffer;
     InfoParams.dwRetSize := SizeOf(Buffer) - 1;
-    if mciSendCommand(Mci.wDeviceID, MCI_INFO, InfoConsts[InfoType], Cardinal(@InfoParams)) = MMSYSERR_NOERROR then
+    if mciSendCommand(Mci.wDeviceID, MCI_INFO, InfoConsts[InfoType], TJclAddr(@InfoParams)) = MMSYSERR_NOERROR then
       Result := Buffer;
   finally
     CloseCdMciDevice(Mci);
@@ -1263,7 +1263,7 @@ var
     ResetMemory(StatusParams, SizeOf(StatusParams));
     StatusParams.dwItem := Item;
     StatusParams.dwTrack := Track;
-    if mciSendCommand(Mci.wDeviceID, MCI_STATUS, Command, Cardinal(@StatusParams)) = MMSYSERR_NOERROR then
+    if mciSendCommand(Mci.wDeviceID, MCI_STATUS, Command, TJclAddr(@StatusParams)) = MMSYSERR_NOERROR then
       Result := StatusParams.dwReturn
     else
       Result := 0;
@@ -1274,7 +1274,7 @@ begin
   try
     ResetMemory(SetParams, SizeOf(SetParams));
     SetParams.dwTimeFormat := MCI_FORMAT_MSF;
-    MMCheck(mciSendCommand(Mci.wDeviceID, MCI_SET, MCI_SET_TIME_FORMAT, Cardinal(@SetParams)));
+    MMCheck(mciSendCommand(Mci.wDeviceID, MCI_SET, MCI_SET_TIME_FORMAT, TJclAddr(@SetParams)));
     Result.TrackType := ttOther;
     TrackCnt := GetTrackInfo(MCI_STATUS_ITEM, MCI_STATUS_NUMBER_OF_TRACKS, 0);
     SetLength(TrackList, TrackCnt);

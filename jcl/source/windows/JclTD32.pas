@@ -645,7 +645,7 @@ type
     function GetLineCount: Integer;
     function GetSegment(const Idx: Integer): TOffsetPair;
   public
-    constructor Create(pSrcFile: PSourceFileEntry; Base: DWORD_PTR);
+    constructor Create(pSrcFile: PSourceFileEntry; Base: TJclAddr);
     destructor Destroy; override;
     function FindLine(const AAddr: DWORD; out ALine: TJclTD32LineInfo): Boolean;
     property NameIndex: DWORD read FNameIndex;
@@ -922,7 +922,7 @@ end;
 
 //=== { TJclSourceModuleInfo } ===============================================
 
-constructor TJclTD32SourceModuleInfo.Create(pSrcFile: PSourceFileEntry; Base: DWORD_PTR);
+constructor TJclTD32SourceModuleInfo.Create(pSrcFile: PSourceFileEntry; Base: TJclAddr);
 type
   PArrayOfWord = ^TArrayOfWord;
   TArrayOfWord = array [0..0] of Word;
@@ -1192,7 +1192,7 @@ var
   pszName: PAnsiChar;
 begin
   Count := PDWORD(pSubsection)^;
-  pszName := PAnsiChar(DWORD_PTR(pSubsection) + SizeOf(DWORD));
+  pszName := PAnsiChar(TJclAddr(pSubsection) + SizeOf(DWORD));
   if Count > 0 then
   begin
     FNames.Capacity := FNames.Capacity + Count;
@@ -1320,20 +1320,20 @@ begin
     {case pTyp.TypeId of
       TID_VOID: ;
     end;}
-    pTyp := PSymbolTypeInfo(DWORD_PTR(pTyp) + pTyp.Size + SizeOf(pTyp^));
-  until DWORD_PTR(pTyp) >= DWORD_PTR(pTypes) + Size;
+    pTyp := PSymbolTypeInfo(TJclAddr(pTyp) + pTyp.Size + SizeOf(pTyp^));
+  until TJclAddr(pTyp) >= TJclAddr(pTypes) + Size;
 end;
 
 procedure TJclTD32InfoParser.AnalyseAlignSymbols(pSymbols: PSymbolInfos; const Size: DWORD);
 var
-  Offset: DWORD_PTR;
+  Offset: TJclAddr;
   pInfo: PSymbolInfo;
   Symbol: TJclTD32SymbolInfo;
 begin
-  Offset := DWORD_PTR(@pSymbols.Symbols[0]) - DWORD_PTR(pSymbols);
+  Offset := TJclAddr(@pSymbols.Symbols[0]) - TJclAddr(pSymbols);
   while Offset < Size do
   begin
-    pInfo := PSymbolInfo(DWORD_PTR(pSymbols) + Offset);
+    pInfo := PSymbolInfo(TJclAddr(pSymbols) + Offset);
     case pInfo.SymbolType of
       SYMBOL_TYPE_LPROC32:
         begin
@@ -1385,9 +1385,9 @@ begin
   {$RANGECHECKS OFF}
   for I := 0 to pSrcModInfo.FileCount - 1 do
   begin
-    pSrcFile := PSourceFileEntry(DWORD_PTR(pSrcModInfo) + pSrcModInfo.BaseSrcFiles[I]);
+    pSrcFile := PSourceFileEntry(TJclAddr(pSrcModInfo) + pSrcModInfo.BaseSrcFiles[I]);
     if pSrcFile.NameIndex > 0 then
-      FSourceModules.Add(TJclTD32SourceModuleInfo.Create(pSrcFile, DWORD_PTR(pSrcModInfo)));
+      FSourceModules.Add(TJclTD32SourceModuleInfo.Create(pSrcFile, TJclAddr(pSrcModInfo)));
   end;
   {$IFDEF RANGECHECKS_ON}
   {$RANGECHECKS ON}
@@ -1511,11 +1511,11 @@ class function TJclTD32InfoParser.IsTD32DebugInfoValid(
   const DebugData: Pointer; const DebugDataSize: LongWord): Boolean;
 var
   Sign: TJclTD32FileSignature;
-  EndOfDebugData: LongWord;
+  EndOfDebugData: TJclAddr;
 begin
   Assert(not IsBadReadPtr(DebugData, DebugDataSize));
   Result := False;
-  EndOfDebugData := LongWord(DebugData) + DebugDataSize;
+  EndOfDebugData := TJclAddr(DebugData) + DebugDataSize;
   if DebugDataSize > SizeOf(Sign) then
   begin
     Sign := PJclTD32FileSignature(EndOfDebugData - SizeOf(Sign))^;
@@ -1535,7 +1535,7 @@ end;
 
 function TJclTD32InfoParser.LfaToVa(Lfa: DWORD): Pointer;
 begin
-  Result := Pointer(DWORD_PTR(FBase) + Lfa)
+  Result := Pointer(TJclAddr(FBase) + Lfa)
 end;
 
 //=== { TJclTD32InfoScanner } ================================================

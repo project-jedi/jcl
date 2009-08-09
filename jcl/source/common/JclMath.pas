@@ -138,7 +138,7 @@ var
   ThreeEpsilon: Float;
 
 type
-  TPrimalityTestMethod = (ptTrialDivision, ptRabinMiller);
+  TPrimalityTestMethod = (ptTrialDivision {$IFDEF CPU32}, ptRabinMiller{$ENDIF CPU32});
 
 // swaps 2 bytes
 procedure SwapOrd(var X, Y: Integer); {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
@@ -311,9 +311,9 @@ function EnsureRange(const AValue, AMin, AMax: Double): Double; overload;
 
 function IsRelativePrime(const X, Y: Cardinal): Boolean; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 function IsPrimeTD(N: Cardinal): Boolean;
-{$IFDEF CPUASM}
+{$IFDEF CPU32}
 function IsPrimeRM(N: Cardinal): Boolean;
-{$ENDIF CPUASM}
+{$ENDIF CPU32}
 function IsPrimeFactor(const F, N: Cardinal): Boolean; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 function PrimeFactors(N: Cardinal): TDynCardinalArray;
 
@@ -811,7 +811,8 @@ uses
   {$IFDEF CPUASM}
   Jcl8087,
   {$ENDIF CPUASM}
-  JclResources;
+  JclResources,
+  JclSynch;
 
 // Internal helper routines
 // Linux: Get Global Offset Table (GOT) adress for Position Independent Code
@@ -821,7 +822,12 @@ uses
 function GetGOT: Pointer; export;
 begin
   asm
+        {$IFDEF CPU32}
         MOV Result, EBX
+        {$ENDIF CPU32}
+        {$IFDEF CPU64}
+        XOR Result, RBX
+        {$ENDIF CPU64}
   end;
 end;
 {$ENDIF PIC}
@@ -2055,6 +2061,15 @@ end;
 assembler;
 { Euclid's algorithm }
 asm
+   // 32 --> EAX X
+   //        EDX Y
+   //    <-- EAX Result
+   // 64 --> ECX X
+   //        EDX Y
+   //    <-- EAX Result
+        {$IFDEF CPU64}
+        MOV     EAX, ECX
+        {$ENDIF CPU64}
         JMP     @01      // We start with EAX <- X, EDX <- Y, and check to see if Y=0
 @00:
         MOV     ECX, EDX // ECX <- EDX prepare for division
@@ -2084,9 +2099,18 @@ end;
 {$ELSE ~PUREPASCAL}
 assembler;
 asm
+  // 32 --> AX I
+  //    <-- AX Result
+  // 64 --> CX I
+  //    <-- AX Result
+        {$IFDEF CPU32}
         PUSH    EBX
-
         MOV     CX, AX  // load argument
+        {$ENDIF CPU32}
+        {$IFDEF CPU64}
+        PUSH    RBX
+        {$ENDIF CPU64}
+
         MOV     AX, -1  // init Result
         CWD             // init odd numbers to -1
         XOR     BX, BX  // init perfect squares to 0
@@ -2098,7 +2122,12 @@ asm
         CMP     BX, CX  // perfect square > argument ?
         JBE     @LOOP   // until square greater than argument
 
+        {$IFDEF CPU32}
         POP     EBX
+        {$ENDIF CPU32}
+        {$IFDEF CPU64}
+        POP     RBX
+        {$ENDIF CPU64}
 end;
 {$ENDIF ~PUREPASCAL}
 
@@ -2524,11 +2553,16 @@ begin
   end;
 end;
 
-{$IFDEF CPUASM}
+{$IFDEF CPU32}
+// OF: need a complete rewrite for CPU64
+// OF: why is there less pop than push?
+
 { Rabin-Miller Strong Primality Test }
 
 function IsPrimeRM(N: Cardinal): Boolean;
 asm
+        // 32 --> EAX N
+        //    <-- AL  Result
         TEST  EAX,1            // Odd(N) ??
         JNZ   @@1
         CMP   EAX,2            // N == 2 ??
@@ -2577,16 +2611,9 @@ asm
         RET
 // do a Strong Pseudo Prime Test
 @@5:
-        {$IFDEF CPU32}
         MOV   EBX,[ESP + 12]   // N on stack
         MOV   ECX,[ESP +  8]   // remaining Bits
         MOV   ESI,[ESP +  4]   // M'
-        {$ENDIF CPU32}
-        {$IFDEF CPU64}
-        MOV   EBX,[RSP + 12]   // N on stack
-        MOV   ECX,[RSP +  8]   // remaining Bits
-        MOV   ESI,[RSP +  4]   // M'
-        {$ENDIF CPU64}
         MOV   EDI,EAX          // T = b, temp. Base
 @@6:    DEC   ECX
         MUL   EAX
@@ -2613,7 +2640,6 @@ asm
 @@9:    STC
 @@A:    RET
 @@B:    DB    3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73
-        {$IFDEF CPU32}
 @@C:    MOV   ECX,19
         MOV   EDX,OFFSET @@B
 @@D:    CMP   AL,[EDX + ECX]
@@ -2621,18 +2647,8 @@ asm
         DEC   ECX
         JNL   @@D
 @@E:    SETE  AL
-        {$ENDIF CPU32}
-        {$IFDEF CPU64}
-@@C:    MOV   RCX,19
-        MOV   RDX,OFFSET @@B
-@@D:    CMP   AL,[RDX + RCX]
-        JE    @@E
-        DEC   RCX
-        JNL   @@D
-@@E:    SETE  AL
-        {$ENDIF CPU64}
 end;
-{$ENDIF CPUASM}
+{$ENDIF CPU32}
 
 function PrimeFactors(N: Cardinal): TDynCardinalArray;
 var
@@ -2697,8 +2713,10 @@ begin
   case Method of
     ptTrialDivision:
       IsPrime := IsPrimeTD;
+    {$IFDEF CPU32}
     ptRabinMiller:
       IsPrime := IsPrimeRM;
+    {$ENDIF CPU32}
   end;
 end;
 
@@ -3023,7 +3041,7 @@ type
 
 var
   PrevExceptObjProc: TExceptObjProc;
-  ExceptObjProcInitialized: Boolean = False;
+  ExceptObjProcInitialized: Integer = 0;
 
 function GetExceptionObject(P: PExceptionRecord): Exception;
 var
@@ -3082,15 +3100,8 @@ begin
 end;
 
 procedure InitExceptObjProc;
-
-  function IsInitialized: Boolean;
-  asm
-          MOV       AL, True
-          LOCK XCHG AL, ExceptObjProcInitialized
-  end;
-
 begin
- if not IsInitialized then
+  if LockedExchange(ExceptObjProcInitialized, 1) = 0 then
     if Win32Platform = VER_PLATFORM_WIN32_NT then
       {$IFDEF FPC}
       PrevExceptObjProc := Pointer(InterlockedExchange(TJclAddr(ExceptObjProc), TJclAddr(@GetExceptionObject)));

@@ -1,406 +1,378 @@
 {$IFDEF MSWINDOWS}
 
+type
+  TNetUserAdd = function (servername: LPCWSTR; level: DWORD; buf: PByte; parm_err: LPDWORD): NET_API_STATUS; stdcall;
 var
-  _NetUserAdd: Pointer;
+  _NetUserAdd: TNetUserAdd = nil;
 
-function NetUserAdd;
+function NetUserAdd(servername: LPCWSTR; level: DWORD; buf: PByte; parm_err: LPDWORD): NET_API_STATUS;
 begin
-  GetProcedureAddress(_NetUserAdd, netapi32, 'NetUserAdd');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetUserAdd]
-  end;
+  GetProcedureAddress(Pointer(@_NetUserAdd), netapi32, 'NetUserAdd');
+  Result := _NetUserAdd(servername, level, buf, parm_err);
 end;
 
-var
-  _NetUserEnum: Pointer;
+type
+  TNetUserEnum = function (servername: LPCWSTR; level, filter: DWORD; var bufptr: PByte; prefmaxlen: DWORD; entriesread, totalentries, resume_handle: LPDWORD): NET_API_STATUS; stdcall;
 
-function NetUserEnum;
+var
+  _NetUserEnum: TNetUserEnum = nil;
+
+function NetUserEnum(servername: LPCWSTR; level, filter: DWORD; var bufptr: PByte; prefmaxlen: DWORD; entriesread, totalentries, resume_handle: LPDWORD): NET_API_STATUS;
 begin
-  GetProcedureAddress(_NetUserEnum, netapi32, 'NetUserEnum');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetUserEnum]
-  end;
+  GetProcedureAddress(Pointer(@_NetUserEnum), netapi32, 'NetUserEnum');
+  Result := _NetUserEnum(servername, level, filter, bufptr, prefmaxlen, entriesread, totalentries, resume_handle);
 end;
 
-var
-  _NetUserGetInfo: Pointer;
+type
+  TNetUserGetInfo = function (servername, username: LPCWSTR; level: DWORD; var bufptr: PByte): NET_API_STATUS; stdcall;
 
-function NetUserGetInfo;
+var
+  _NetUserGetInfo: TNetUserGetInfo = nil;
+
+function NetUserGetInfo(servername, username: LPCWSTR; level: DWORD; var bufptr: PByte): NET_API_STATUS;
 begin
-  GetProcedureAddress(_NetUserGetInfo, netapi32, 'NetUserGetInfo');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetUserGetInfo]
-  end;
+  GetProcedureAddress(Pointer(@_NetUserGetInfo), netapi32, 'NetUserGetInfo');
+  Result := _NetUserGetInfo(servername, username, level, bufptr);
 end;
 
-var
-  _NetUserSetInfo: Pointer;
+type
+  TNetUserSetInfo = function (servername, username: LPCWSTR; level: DWORD; buf: PByte; parm_err: LPDWORD): NET_API_STATUS; stdcall;
 
-function NetUserSetInfo;
+var
+  _NetUserSetInfo: TNetUserSetInfo = nil;
+
+function NetUserSetInfo(servername, username: LPCWSTR; level: DWORD; buf: PByte; parm_err: LPDWORD): NET_API_STATUS;
 begin
-  GetProcedureAddress(_NetUserSetInfo, netapi32, 'NetUserSetInfo');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetUserSetInfo]
-  end;
+  GetProcedureAddress(Pointer(@_NetUserSetInfo), netapi32, 'NetUserSetInfo');
+  Result := _NetUserSetInfo(servername, username, level, buf, parm_err);
 end;
 
-var
-  _NetUserDel: Pointer;
+type
+  TNetUserDel = function (servername: LPCWSTR; username: LPCWSTR): NET_API_STATUS; stdcall;
 
-function NetUserDel;
+var
+  _NetUserDel: TNetUserDel = nil;
+
+function NetUserDel(servername: LPCWSTR; username: LPCWSTR): NET_API_STATUS;
 begin
-  GetProcedureAddress(_NetUserDel, netapi32, 'NetUserDel');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetUserDel]
-  end;
+  GetProcedureAddress(Pointer(@_NetUserDel), netapi32, 'NetUserDel');
+  Result := _NetUserDel(servername, username);
 end;
 
-var
-  _NetUserGetGroups: Pointer;
+type
+  TNetUserGetGroups = function (servername, username: LPCWSTR; level: DWORD; var bufptr: PByte; prefmaxlen: DWORD; entriesread, totalentries: LPDWORD): NET_API_STATUS; stdcall;
 
-function NetUserGetGroups;
+var
+  _NetUserGetGroups: TNetUserGetGroups = nil;
+
+function NetUserGetGroups(servername, username: LPCWSTR; level: DWORD; var bufptr: PByte; prefmaxlen: DWORD; entriesread, totalentries: LPDWORD): NET_API_STATUS;
 begin
-  GetProcedureAddress(_NetUserGetGroups, netapi32, 'NetUserGetGroups');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetUserGetGroups]
-  end;
+  GetProcedureAddress(Pointer(@_NetUserGetGroups), netapi32, 'NetUserGetGroups');
+  Result := _NetUserGetGroups(servername, username, level, bufptr, prefmaxlen, entriesread, totalentries);
 end;
 
-var
-  _NetUserSetGroups: Pointer;
+type
+  TNetUserSetGroups = function (servername, username: LPCWSTR; level: DWORD; buf: PByte; num_entries: DWORD): NET_API_STATUS; stdcall;
 
-function NetUserSetGroups;
+var
+  _NetUserSetGroups: TNetUserSetGroups = nil;
+
+function NetUserSetGroups(servername, username: LPCWSTR; level: DWORD; buf: PByte; num_entries: DWORD): NET_API_STATUS;
 begin
-  GetProcedureAddress(_NetUserSetGroups, netapi32, 'NetUserSetGroups');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetUserSetGroups]
-  end;
+  GetProcedureAddress(Pointer(@_NetUserSetGroups), netapi32, 'NetUserSetGroups');
+  Result := _NetUserSetGroups(servername, username, level, buf, num_entries);
 end;
 
-var
-  _NetUserGetLocalGroups: Pointer;
+type
+  TNetUserGetLocalGroups = function (servername, username: LPCWSTR; level, flags: DWORD; var bufptr: PByte; prefmaxlen: DWORD; entriesread, totalentries: LPDWORD): NET_API_STATUS; stdcall;
 
-function NetUserGetLocalGroups;
+var
+  _NetUserGetLocalGroups: TNetUserGetLocalGroups = nil;
+
+function NetUserGetLocalGroups(servername, username: LPCWSTR; level, flags: DWORD; var bufptr: PByte; prefmaxlen: DWORD; entriesread, totalentries: LPDWORD): NET_API_STATUS;
 begin
-  GetProcedureAddress(_NetUserGetLocalGroups, netapi32, 'NetUserGetLocalGroups');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetUserGetLocalGroups]
-  end;
+  GetProcedureAddress(Pointer(@_NetUserGetLocalGroups), netapi32, 'NetUserGetLocalGroups');
+  Result := _NetUserGetLocalGroups(servername, username, level, flags, bufptr, prefmaxlen, entriesread, totalentries);
 end;
 
-var
-  _NetUserModalsGet: Pointer;
+type
+ TNetUserModalsGet = function (servername: LPCWSTR; level: DWORD; var bufptr: PByte): NET_API_STATUS; stdcall;
 
-function NetUserModalsGet;
+var
+  _NetUserModalsGet: TNetUserModalsGet = nil;
+
+function NetUserModalsGet(servername: LPCWSTR; level: DWORD; var bufptr: PByte): NET_API_STATUS;
 begin
-  GetProcedureAddress(_NetUserModalsGet, netapi32, 'NetUserModalsGet');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetUserModalsGet]
-  end;
+  GetProcedureAddress(Pointer(@_NetUserModalsGet), netapi32, 'NetUserModalsGet');
+  Result := _NetUserModalsGet(servername, level, bufptr);
 end;
 
-var
-  _NetUserModalsSet: Pointer;
+type
+  TNetUserModalsSet = function (servername: LPCWSTR; level: DWORD; buf: PByte; parm_err: LPDWORD): NET_API_STATUS; stdcall;
 
-function NetUserModalsSet;
+var
+  _NetUserModalsSet: TNetUserModalsSet = nil;
+
+function NetUserModalsSet(servername: LPCWSTR; level: DWORD; buf: PByte; parm_err: LPDWORD): NET_API_STATUS;
 begin
-  GetProcedureAddress(_NetUserModalsSet, netapi32, 'NetUserModalsSet');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetUserModalsSet]
-  end;
+  GetProcedureAddress(Pointer(@_NetUserModalsSet), netapi32, 'NetUserModalsSet');
+  Result := _NetUserModalsSet(servername, level, buf, parm_err);
 end;
 
-var
-  _NetUserChangePassword: Pointer;
+type
+ TNetUserChangePassword = function (domainname, username, oldpassword, newpassword: LPCWSTR): NET_API_STATUS; stdcall;
 
-function NetUserChangePassword;
+var
+  _NetUserChangePassword: TNetUserChangePassword = nil;
+
+function NetUserChangePassword(domainname, username, oldpassword, newpassword: LPCWSTR): NET_API_STATUS;
 begin
-  GetProcedureAddress(_NetUserChangePassword, netapi32, 'NetUserChangePassword');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetUserChangePassword]
-  end;
+  GetProcedureAddress(Pointer(@_NetUserChangePassword), netapi32, 'NetUserChangePassword');
+  Result := _NetUserChangePassword(domainname, username, oldpassword, newpassword);
 end;
 
-var
-  _NetGroupAdd: Pointer;
+type
+  TNetGroupAdd = function (servername: LPCWSTR; level: DWORD; buf: PByte; parm_err: LPDWORD): NET_API_STATUS; stdcall;
 
-function NetGroupAdd;
+var
+  _NetGroupAdd: TNetGroupAdd = nil;
+
+function NetGroupAdd(servername: LPCWSTR; level: DWORD; buf: PByte; parm_err: LPDWORD): NET_API_STATUS;
 begin
-  GetProcedureAddress(_NetGroupAdd, netapi32, 'NetGroupAdd');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetGroupAdd]
-  end;
+  GetProcedureAddress(Pointer(@_NetGroupAdd), netapi32, 'NetGroupAdd');
+  Result := _NetGroupAdd(servername, level, buf, parm_err);
 end;
 
-var
-  _NetGroupAddUser: Pointer;
+type
+  TNetGroupAddUser = function (servername, GroupName, username: LPCWSTR): NET_API_STATUS; stdcall;
 
-function NetGroupAddUser;
+var
+  _NetGroupAddUser: TNetGroupAddUser = nil;
+
+function NetGroupAddUser(servername, GroupName, username: LPCWSTR): NET_API_STATUS;
 begin
-  GetProcedureAddress(_NetGroupAddUser, netapi32, 'NetGroupAddUser');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetGroupAddUser]
-  end;
+  GetProcedureAddress(Pointer(@_NetGroupAddUser), netapi32, 'NetGroupAddUser');
+  Result := _NetGroupAddUser(servername, GroupName, username);
 end;
 
-var
-  _NetGroupEnum: Pointer;
+type
+  TNetGroupEnum = function (servername: LPCWSTR; level: DWORD; out bufptr: PByte;
+    prefmaxlen: DWORD; out entriesread, totalentries: DWORD; resume_handle: PDWORD_PTR): NET_API_STATUS; stdcall;
 
-function NetGroupEnum;
+var
+  _NetGroupEnum: TNetGroupEnum = nil;
+
+function NetGroupEnum(servername: LPCWSTR; level: DWORD; out bufptr: PByte;
+  prefmaxlen: DWORD; out entriesread, totalentries: DWORD; resume_handle: PDWORD_PTR): NET_API_STATUS;
 begin
-  GetProcedureAddress(_NetGroupEnum, netapi32, 'NetGroupEnum');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetGroupEnum]
-  end;
+  GetProcedureAddress(Pointer(@_NetGroupEnum), netapi32, 'NetGroupEnum');
+  Result := _NetGroupEnum(servername, level, bufptr, prefmaxlen, entriesread, totalentries, resume_handle);
 end;
 
-var
-  _NetGroupGetInfo: Pointer;
+type
+  TNetGroupGetInfo = function (servername, groupname: LPCWSTR; level: DWORD; bufptr: PByte): NET_API_STATUS; stdcall;
 
-function NetGroupGetInfo;
+var
+  _NetGroupGetInfo: TNetGroupGetInfo = nil;
+
+function NetGroupGetInfo(servername, groupname: LPCWSTR; level: DWORD; bufptr: PByte): NET_API_STATUS;
 begin
-  GetProcedureAddress(_NetGroupGetInfo, netapi32, 'NetGroupGetInfo');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetGroupGetInfo]
-  end;
+  GetProcedureAddress(Pointer(@_NetGroupGetInfo), netapi32, 'NetGroupGetInfo');
+  Result := _NetGroupGetInfo(servername, groupname, level, bufptr);
 end;
 
-var
-  _NetGroupSetInfo: Pointer;
+type
+  TNetGroupSetInfo = function (servername, groupname: LPCWSTR; level: DWORD; buf: PByte; parm_err: LPDWORD): NET_API_STATUS; stdcall;
 
-function NetGroupSetInfo;
+var
+  _NetGroupSetInfo: TNetGroupSetInfo = nil;
+
+function NetGroupSetInfo(servername, groupname: LPCWSTR; level: DWORD; buf: PByte; parm_err: LPDWORD): NET_API_STATUS;
 begin
-  GetProcedureAddress(_NetGroupSetInfo, netapi32, 'NetGroupSetInfo');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetGroupSetInfo]
-  end;
+  GetProcedureAddress(Pointer(@_NetGroupSetInfo), netapi32, 'NetGroupSetInfo');
+  Result := _NetGroupSetInfo(servername, groupname, level, buf, parm_err);
 end;
 
-var
-  _NetGroupDel: Pointer;
+type
+  TNetGroupDel = function (servername: LPCWSTR; groupname: LPCWSTR): NET_API_STATUS; stdcall;
 
-function NetGroupDel;
+var
+  _NetGroupDel: TNetGroupDel = nil;
+
+function NetGroupDel(servername: LPCWSTR; groupname: LPCWSTR): NET_API_STATUS;
 begin
-  GetProcedureAddress(_NetGroupDel, netapi32, 'NetGroupDel');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetGroupDel]
-  end;
+  GetProcedureAddress(Pointer(@_NetGroupDel), netapi32, 'NetGroupDel');
+  Result := _NetGroupDel(servername, groupname);
 end;
 
-var
-  _NetGroupDelUser: Pointer;
+type
+  TNetGroupDelUser = function (servername: LPCWSTR; GroupName: LPCWSTR; Username: LPCWSTR): NET_API_STATUS; stdcall;
 
-function NetGroupDelUser;
+var
+  _NetGroupDelUser: TNetGroupDelUser = nil;
+
+function NetGroupDelUser(servername: LPCWSTR; GroupName: LPCWSTR; Username: LPCWSTR): NET_API_STATUS;
 begin
-  GetProcedureAddress(_NetGroupDelUser, netapi32, 'NetGroupDelUser');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetGroupDelUser]
-  end;
+  GetProcedureAddress(Pointer(@_NetGroupDelUser), netapi32, 'NetGroupDelUser');
+  Result := _NetGroupDelUser(servername, GroupName, Username);
 end;
 
-var
-  _NetGroupGetUsers: Pointer;
+type
+  TNetGroupGetUsers = function (servername, groupname: LPCWSTR; level: DWORD; var bufptr: PByte; prefmaxlen: DWORD; entriesread, totalentries: LPDWORD; ResumeHandle: PDWORD_PTR): NET_API_STATUS; stdcall;
 
-function NetGroupGetUsers;
+var
+  _NetGroupGetUsers: TNetGroupGetUsers = nil;
+
+function NetGroupGetUsers(servername, groupname: LPCWSTR; level: DWORD; var bufptr: PByte; prefmaxlen: DWORD; entriesread, totalentries: LPDWORD; ResumeHandle: PDWORD_PTR): NET_API_STATUS;
 begin
-  GetProcedureAddress(_NetGroupGetUsers, netapi32, 'NetGroupGetUsers');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetGroupGetUsers]
-  end;
+  GetProcedureAddress(Pointer(@_NetGroupGetUsers), netapi32, 'NetGroupGetUsers');
+  Result := _NetGroupGetUsers(servername, groupname, level, bufptr, prefmaxlen, entriesread, totalentries, ResumeHandle);
 end;
 
-var
-  _NetGroupSetUsers: Pointer;
+type
+  TNetGroupSetUsers = function (servername, groupname: LPCWSTR; level: DWORD; buf: PByte; totalentries: DWORD): NET_API_STATUS; stdcall;
 
-function NetGroupSetUsers;
+var
+  _NetGroupSetUsers: TNetGroupSetUsers = nil;
+
+function NetGroupSetUsers(servername, groupname: LPCWSTR; level: DWORD; buf: PByte; totalentries: DWORD): NET_API_STATUS;
 begin
-  GetProcedureAddress(_NetGroupSetUsers, netapi32, 'NetGroupSetUsers');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetGroupSetUsers]
-  end;
+  GetProcedureAddress(Pointer(@_NetGroupSetUsers), netapi32, 'NetGroupSetUsers');
+  Result := _NetGroupSetUsers(servername, groupname, level, buf, totalentries);
 end;
 
-var
-  _NetLocalGroupAdd: Pointer;
+type
+  TNetLocalGroupAdd = function (servername: LPCWSTR; level: DWORD; buf: PByte; parm_err: LPDWORD): NET_API_STATUS; stdcall;
 
-function NetLocalGroupAdd;
+var
+  _NetLocalGroupAdd: TNetLocalGroupAdd = nil;
+
+function NetLocalGroupAdd(servername: LPCWSTR; level: DWORD; buf: PByte; parm_err: LPDWORD): NET_API_STATUS;
 begin
-  GetProcedureAddress(_NetLocalGroupAdd, netapi32, 'NetLocalGroupAdd');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetLocalGroupAdd]
-  end;
+  GetProcedureAddress(Pointer(@_NetLocalGroupAdd), netapi32, 'NetLocalGroupAdd');
+  Result := _NetLocalGroupAdd(servername, level, buf, parm_err);
 end;
 
-var
-  _NetLocalGroupAddMember: Pointer;
+type
+  TNetLocalGroupAddMember = function (servername, groupname: LPCWSTR; membersid: PSID): NET_API_STATUS; stdcall;
 
-function NetLocalGroupAddMember;
+var
+  _NetLocalGroupAddMember: TNetLocalGroupAddMember = nil;
+
+function NetLocalGroupAddMember(servername, groupname: LPCWSTR; membersid: PSID): NET_API_STATUS;
 begin
-  GetProcedureAddress(_NetLocalGroupAddMember, netapi32, 'NetLocalGroupAddMember');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetLocalGroupAddMember]
-  end;
+  GetProcedureAddress(Pointer(@_NetLocalGroupAddMember), netapi32, 'NetLocalGroupAddMember');
+  Result := _NetLocalGroupAddMember(servername, groupname, membersid);
 end;
 
-var
-  _NetLocalGroupEnum: Pointer;
+type
+  TNetLocalGroupEnum = function (servername: LPCWSTR; level: DWORD; out bufptr: PByte;
+    prefmaxlen: DWORD; out entriesread, totalentries: DWORD; resumehandle: PDWORD_PTR): NET_API_STATUS; stdcall;
 
-function NetLocalGroupEnum;
+var
+  _NetLocalGroupEnum: TNetLocalGroupEnum = nil;
+
+function NetLocalGroupEnum(servername: LPCWSTR; level: DWORD; out bufptr: PByte;
+  prefmaxlen: DWORD; out entriesread, totalentries: DWORD; resumehandle: PDWORD_PTR): NET_API_STATUS;
 begin
-  GetProcedureAddress(_NetLocalGroupEnum, netapi32, 'NetLocalGroupEnum');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetLocalGroupEnum]
-  end;
+  GetProcedureAddress(Pointer(@_NetLocalGroupEnum), netapi32, 'NetLocalGroupEnum');
+  Result := _NetLocalGroupEnum(servername, level, bufptr, prefmaxlen, entriesread, totalentries, resumehandle);
 end;
 
-var
-  _NetLocalGroupGetInfo: Pointer;
+type
+  TNetLocalGroupGetInfo = function (servername, groupname: LPCWSTR; level: DWORD; var bufptr: PByte): NET_API_STATUS; stdcall;
 
-function NetLocalGroupGetInfo;
+var
+  _NetLocalGroupGetInfo: TNetLocalGroupGetInfo = nil;
+
+function NetLocalGroupGetInfo(servername, groupname: LPCWSTR; level: DWORD; var bufptr: PByte): NET_API_STATUS;
 begin
-  GetProcedureAddress(_NetLocalGroupGetInfo, netapi32, 'NetLocalGroupGetInfo');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetLocalGroupGetInfo]
-  end;
+  GetProcedureAddress(Pointer(@_NetLocalGroupGetInfo), netapi32, 'NetLocalGroupGetInfo');
+  Result := _NetLocalGroupGetInfo(servername, groupname, level, bufptr);
 end;
 
-var
-  _NetLocalGroupSetInfo: Pointer;
+type
+  TNetLocalGroupSetInfo = function (servername, groupname: LPCWSTR; level: DWORD; buf: PByte; parm_err: LPDWORD): NET_API_STATUS; stdcall;
 
-function NetLocalGroupSetInfo;
+var
+  _NetLocalGroupSetInfo: TNetLocalGroupSetInfo = nil;
+
+function NetLocalGroupSetInfo(servername, groupname: LPCWSTR; level: DWORD; buf: PByte; parm_err: LPDWORD): NET_API_STATUS;
 begin
-  GetProcedureAddress(_NetLocalGroupSetInfo, netapi32, 'NetLocalGroupSetInfo');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetLocalGroupSetInfo]
-  end;
+  GetProcedureAddress(Pointer(@_NetLocalGroupSetInfo), netapi32, 'NetLocalGroupSetInfo');
+  Result := _NetLocalGroupSetInfo(servername, groupname, level, buf, parm_err);
 end;
 
-var
-  _NetLocalGroupDel: Pointer;
+type
+  TNetLocalGroupDel = function (servername: LPCWSTR; groupname: LPCWSTR): NET_API_STATUS; stdcall;
 
-function NetLocalGroupDel;
+var
+  _NetLocalGroupDel: TNetLocalGroupDel = nil;
+
+function NetLocalGroupDel(servername: LPCWSTR; groupname: LPCWSTR): NET_API_STATUS;
 begin
-  GetProcedureAddress(_NetLocalGroupDel, netapi32, 'NetLocalGroupDel');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetLocalGroupDel]
-  end;
+  GetProcedureAddress(Pointer(@_NetLocalGroupDel), netapi32, 'NetLocalGroupDel');
+  Result := _NetLocalGroupDel(servername, groupname);
 end;
 
-var
-  _NetLocalGroupDelMember: Pointer;
+type
+  TNetLocalGroupDelMember = function (servername: LPCWSTR; groupname: LPCWSTR; membersid: PSID): NET_API_STATUS; stdcall;
 
-function NetLocalGroupDelMember;
+var
+  _NetLocalGroupDelMember: TNetLocalGroupDelMember = nil;
+
+function NetLocalGroupDelMember(servername: LPCWSTR; groupname: LPCWSTR; membersid: PSID): NET_API_STATUS;
 begin
-  GetProcedureAddress(_NetLocalGroupDelMember, netapi32, 'NetLocalGroupDelMember');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetLocalGroupDelMember]
-  end;
+  GetProcedureAddress(Pointer(@_NetLocalGroupDelMember), netapi32, 'NetLocalGroupDelMember');
+  Result := _NetLocalGroupDelMember(servername, groupname, membersid);
 end;
 
-var
-  _NetLocalGroupGetMembers: Pointer;
+type
+  TNetLocalGroupGetMembers = function (servername, localgroupname: LPCWSTR; level: DWORD; var bufptr: PByte; prefmaxlen: DWORD; entriesread, totalentries: LPDWORD; resumehandle: PDWORD_PTR): NET_API_STATUS; stdcall;
 
-function NetLocalGroupGetMembers;
+var
+  _NetLocalGroupGetMembers: TNetLocalGroupGetMembers = nil;
+
+function NetLocalGroupGetMembers(servername, localgroupname: LPCWSTR; level: DWORD; var bufptr: PByte; prefmaxlen: DWORD; entriesread, totalentries: LPDWORD; resumehandle: PDWORD_PTR): NET_API_STATUS;
 begin
-  GetProcedureAddress(_NetLocalGroupGetMembers, netapi32, 'NetLocalGroupGetMembers');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetLocalGroupGetMembers]
-  end;
+  GetProcedureAddress(Pointer(@_NetLocalGroupGetMembers), netapi32, 'NetLocalGroupGetMembers');
+  Result := _NetLocalGroupGetMembers(servername, localgroupname, level, bufptr, prefmaxlen, entriesread, totalentries, resumehandle);
 end;
 
-var
-  _NetLocalGroupSetMembers: Pointer;
+type
+  TNetLocalGroupSetMembers = function (servername, groupname: LPCWSTR; level: DWORD; buf: PByte; totalentries: DWORD): NET_API_STATUS; stdcall;
 
-function NetLocalGroupSetMembers;
+var
+  _NetLocalGroupSetMembers: TNetLocalGroupSetMembers = nil;
+
+function NetLocalGroupSetMembers(servername, groupname: LPCWSTR; level: DWORD; buf: PByte; totalentries: DWORD): NET_API_STATUS;
 begin
-  GetProcedureAddress(_NetLocalGroupSetMembers, netapi32, 'NetLocalGroupSetMembers');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetLocalGroupSetMembers]
-  end;
+  GetProcedureAddress(Pointer(@_NetLocalGroupSetMembers), netapi32, 'NetLocalGroupSetMembers');
+  Result := _NetLocalGroupSetMembers(servername, groupname, level, buf, totalentries);
 end;
 
-var
-  _NetLocalGroupAddMembers: Pointer;
+type
+  TNetLocalGroupAddMembers = function (servername, groupname: LPCWSTR; level: DWORD; buf: PByte; totalentries: DWORD): NET_API_STATUS; stdcall;
 
-function NetLocalGroupAddMembers;
+var
+  _NetLocalGroupAddMembers: TNetLocalGroupAddMembers = nil;
+
+function NetLocalGroupAddMembers(servername, groupname: LPCWSTR; level: DWORD; buf: PByte; totalentries: DWORD): NET_API_STATUS;
 begin
-  GetProcedureAddress(_NetLocalGroupAddMembers, netapi32, 'NetLocalGroupAddMembers');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetLocalGroupAddMembers]
-  end;
+  GetProcedureAddress(Pointer(@_NetLocalGroupAddMembers), netapi32, 'NetLocalGroupAddMembers');
+  Result := _NetLocalGroupAddMembers(servername, groupname, level, buf, totalentries);
 end;
 
-var
-  _NetLocalGroupDelMembers: Pointer;
+type
+  TNetLocalGroupDelMembers = function (servername, groupname: LPCWSTR; level: DWORD; buf: PByte; totalentries: DWORD): NET_API_STATUS; stdcall;
 
-function NetLocalGroupDelMembers;
+var
+  _NetLocalGroupDelMembers: TNetLocalGroupDelMembers = nil;
+
+function NetLocalGroupDelMembers(servername, groupname: LPCWSTR; level: DWORD; buf: PByte; totalentries: DWORD): NET_API_STATUS;
 begin
-  GetProcedureAddress(_NetLocalGroupDelMembers, netapi32, 'NetLocalGroupDelMembers');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetLocalGroupDelMembers]
-  end;
+  GetProcedureAddress(Pointer(@_NetLocalGroupDelMembers), netapi32, 'NetLocalGroupDelMembers');
+  Result := _NetLocalGroupDelMembers(servername, groupname, level, buf, totalentries);
 end;
 
 {$ENDIF MSWINDOWS}

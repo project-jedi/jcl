@@ -28,6 +28,8 @@ type
 
 // line 152
 
+{$IFDEF MSWINDOWS}
+
 function ReBaseImage(CurrentImageName: PAnsiChar; SymbolPath: PAnsiChar; fReBase: BOOL;
   fRebaseSysfileOk: BOOL; fGoingDown: BOOL; CheckImageSize: ULONG;
   var OldImageSize: ULONG; var OldImageBase: ULONG_PTR; var NewImageSize: ULONG;
@@ -80,6 +82,8 @@ function ImageRvaToSection(NtHeaders: PImageNtHeaders; Base: Pointer; Rva: ULONG
 function ImageRvaToVa(NtHeaders: PImageNtHeaders; Base: Pointer; Rva: ULONG;
   LastRvaSection: PPImageSectionHeader): Pointer; stdcall;
 {$EXTERNALSYM ImageRvaToVa}
+
+{$ENDIF MSWINDOWS}
 
 // line 461
 

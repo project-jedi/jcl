@@ -778,6 +778,8 @@ var
   LocalFileTime: TFileTime;
 begin
   LocalFileTime := DateTimeToFileTime(DateTime);
+  Result.dwHighDateTime := 0;
+  Result.dwLowDateTime := 0;
   ResultCheck(LocalFileTimeToFileTime(LocalFileTime, Result));
   { TODO : daylight saving time }
 end;
@@ -863,6 +865,8 @@ end;
 
 function SystemTimeToFileTime(const SystemTime: TSystemTime): TFileTime;  overload;
 begin
+  Result.dwHighDateTime := 0;
+  Result.dwLowDateTime := 0;
   ResultCheck(Windows.SystemTimeToFileTime(SystemTime, Result));
 end;
 
@@ -883,6 +887,8 @@ end;
 
 function DosDateTimeToFileTime(DosTime: TDosDateTime): TFileTime; overload;
 begin
+  Result.dwHighDateTime := 0;
+  Result.dwLowDateTime := 0;
   ResultCheck(Windows.DosDateTimeToFileTime(HIWORD(DosTime), LOWORD(DosTime), Result));
 end;
 

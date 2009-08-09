@@ -391,21 +391,6 @@ end;
 
 function ColorSwap(WinColor: TColor): TColor32;
 // this function swaps R and B bytes in ABGR and writes $FF into A component
-{asm
-// EAX = WinColor
-        MOV     ECX, EAX     // ECX = WinColor
-        MOV     EDX, EAX     // EDX = WinColor
-
-        AND     ECX, $FF0000 // B component
-        AND     EAX, $0000FF // R component
-        AND     EDX, $00FF00 // G component
-
-        OR      EAX, $00FF00 // write $FF into A component
-        SHR     ECX, 16      // shift B
-        SHL     EAX, 16      // shift AR
-        OR      ECX, EDX     // ECX = GB
-        OR      EAX, ECX     // set GB
-end;}
 begin
   Result := $FF000000 or                        // A component
     TColor32((WinColor and $0000FF) shl  16) or // R component
@@ -416,58 +401,6 @@ end;
 //=== Blending routines ======================================================
 
 function _CombineReg(X, Y, W: TColor32): TColor32;
-{asm
-  // combine RGBA channels of colors X and Y with the weight of X given in W
-  // Result Z = W * X + (1 - W) * Y (all channels are combined, including alpha)
-  // EAX <- X
-  // EDX <- Y
-  // ECX <- W
-
-  // W = 0 or $FF?
-        JCXZ    @1              // CX = 0 ?  => Result := EDX
-        CMP     ECX, $FF        // CX = $FF ?  => Result := EAX
-        JE      @2
-
-        PUSH    EBX
-
-  // P = W * X
-        MOV     EBX, EAX        // EBX  <-  Xa Xr Xg Xb
-        AND     EAX, $00FF00FF  // EAX  <-  00 Xr 00 Xb
-        AND     EBX, $FF00FF00  // EBX  <-  Xa 00 Xg 00
-        IMUL    EAX, ECX        // EAX  <-  Pr ** Pb **
-        SHR     EBX, 8          // EBX  <-  00 Xa 00 Xg
-        IMUL    EBX, ECX        // EBX  <-  Pa ** Pg **
-        ADD     EAX, Bias
-        AND     EAX, $FF00FF00  // EAX  <-  Pr 00 Pb 00
-        SHR     EAX, 8          // EAX  <-  00 Pr 00 Pb
-        ADD     EBX, Bias
-        AND     EBX, $FF00FF00  // EBX  <-  Pa 00 Pg 00
-        OR      EAX, EBX        // EAX  <-  Pa Pr Pg Pb
-
-  // W = 1 - W; Q = W * Y
-        XOR     ECX, $000000FF  // ECX  <-  1 - ECX
-        MOV     EBX, EDX        // EBX  <-  Ya Yr Yg Yb
-        AND     EDX, $00FF00FF  // EDX  <-  00 Yr 00 Yb
-        AND     EBX, $FF00FF00  // EBX  <-  Ya 00 Yg 00
-        IMUL    EDX, ECX        // EDX  <-  Qr ** Qb **
-        SHR     EBX, 8          // EBX  <-  00 Ya 00 Yg
-        IMUL    EBX, ECX        // EBX  <-  Qa ** Qg **
-        ADD     EDX, Bias
-        AND     EDX, $FF00FF00  // EDX  <-  Qr 00 Qb 00
-        SHR     EDX, 8          // EDX  <-  00 Qr ** Qb
-        ADD     EBX, Bias
-        AND     EBX, $FF00FF00  // EBX  <-  Qa 00 Qg 00
-        OR      EBX, EDX        // EBX  <-  Qa Qr Qg Qb
-
-  // Z = P + Q (assuming no overflow at each byte)
-        ADD     EAX, EBX        // EAX  <-  Za Zr Zg Zb
-
-        POP     EBX
-        RET
-
-@1:     MOV     EAX, EDX
-@2:     RET
-end;}
 begin
   // combine RGBA channels of colors X and Y with the weight of X given in W
   // Result Z = W * X + (1 - W) * Y (all channels are combined, including alpha)
@@ -497,87 +430,26 @@ begin
 end;
 
 procedure _CombineMem(F: TColor32; var B: TColor32; W: TColor32);
-{asm
-  // EAX <- F
-  // [EDX] <- B
-  // ECX <- W
-        PUSH    EDX
-        MOV     EDX, [EDX]
-        CALL    _CombineReg
-        POP     EDX
-        MOV     [EDX], EAX
-end;}
 begin
   B := _CombineReg(F, B, W);
 end;
 
 function _BlendReg(F, B: TColor32): TColor32;
-{asm
-  // blend foreground color (F) to a background color (B),
-  // using alpha channel value of F
-  // Result Z = Fa * Frgb + (1 - Fa) * Brgb
-  // EAX <- F
-  // EDX <- B
-        MOV     ECX, EAX        // ECX  <-  Fa Fr Fg Fb
-        SHR     ECX, 24         // ECX  <-  00 00 00 Fa
-        JMP    _CombineReg
-end;}
 begin
   Result := _CombineReg(F, B, F shr 24);
 end;
 
 procedure _BlendMem(F: TColor32; var B: TColor32);
-{asm
-  // EAX <- F
-  // [EDX] <- B
-        PUSH    EDX
-        MOV     ECX, EAX        // ECX  <-  Fa Fr Fg Fb
-        SHR     ECX, 24         // ECX  <-  00 00 00 Fa
-        MOV     EDX, [EDX]
-        CALL    _CombineReg
-        POP     EDX
-        MOV     [EDX], EAX
-end;}
 begin
   B := _CombineReg(F, B, F shr 24);
 end;
 
 function _BlendRegEx(F, B, M: TColor32): TColor32;
-{asm
-  // blend foreground color (F) to a background color (B),
-  // using alpha channel value of F multiplied by master alpha (M)
-  // no checking for M = $FF, if this is the case Graphics32 uses BlendReg
-  // Result Z = Fa * M * Frgb + (1 - Fa * M) * Brgb
-  // EAX <- F
-  // EDX <- B
-  // ECX <- M
-        MOV     EBX, EAX        // EBX  <-  Fa Fr Fg Fb
-        SHR     EBX, 24         // EBX  <-  00 00 00 Fa
-        IMUL    ECX, EBX        // ECX  <-  00 00  W **
-        SHR     ECX, 8          // ECX  <-  00 00 00  W
-        JMP    _CombineReg
-end;}
 begin
   Result := _CombineReg(F, B, ((F shr 24) * M) shr 8);
 end;
 
 procedure _BlendMemEx(F: TColor32; var B: TColor32; M: TColor32);
-{asm
-  // EAX <- F
-  // [EDX] <- B
-  // ECX <- M
-        PUSH    EBX
-        MOV     EBX, EAX        // EBX  <-  Fa Fr Fg Fb
-        SHR     EBX, 24         // EBX  <-  00 00 00 Fa
-        IMUL    ECX, EBX        // ECX  <-  00 00  W **
-        SHR     ECX, 8          // ECX  <-  00 00 00  W
-
-        MOV     EBX, EDX
-        MOV     EDX, [EDX]
-        CALL    _BlendRegEx
-        MOV     [EBX], EAX
-        POP     EBX
-end;}
 begin
   B := _CombineReg(F, B, ((F shr 24) * M) shr 8);
 end;
@@ -585,6 +457,7 @@ end;
 
 procedure _BlendLine(Src, Dst: PColor32; Count: Integer); assembler;
 asm
+  {$IFDEF CPU32}
   // EAX <- Src
   // EDX <- Dst
   // ECX <- Count
@@ -663,6 +536,10 @@ asm
         POP     EBX
 
 @4:     RET
+  {$ENDIF CPU32}
+  {$IFDEF CPU64}
+  TODO
+  {$ENDIF CPU64}
 end;
 
 procedure _BlendLineEx(Src, Dst: PColor32; Count: Integer; M: TColor32);
@@ -721,6 +598,7 @@ end;
 
 function M_CombineReg(X, Y, W: TColor32): TColor32; assembler;
 asm
+  {$IFDEF CPU32}
   // EAX - Color X
   // EDX - Color Y
   // ECX - Weight of X [0..255]
@@ -742,26 +620,20 @@ asm
         db $0F, $71, $D1, $08      // PSRLW     MM1, 8
         db $0F, $67, $C8           // PACKUSWB  MM1, MM0
         db $0F, $7E, $C8           // MOVD      EAX, MM1
+  {$ENDIF CPU32}
+  {$IFDEF CPU64}
+  TODO
+  {$ENDIF CPU64}
 end;
 
 procedure M_CombineMem(F: TColor32; var B: TColor32; W: TColor32);
-{asm
-  // EAX - Color X
-  // [EDX] - Color Y
-  // ECX - Weight of X [0..255]
-  // Result := W * (X - Y) + Y
-        PUSH    EDX
-        MOV     EDX, [EDX]
-        CALL    M_CombineReg
-        POP     EDX
-        MOV     [EDX], EAX
-end;}
 begin
   B := M_CombineReg(F, B, W);
 end;
 
 function M_BlendReg(F, B: TColor32): TColor32; assembler;
 asm
+  {$IFDEF CPU32}
   // blend foreground color (F) to a background color (B),
   // using alpha channel value of F
   // EAX <- F
@@ -784,25 +656,20 @@ asm
         db $0F, $71, $D2, $08      // PSRLW     MM2, 8
         db $0F, $67, $D3           // PACKUSWB  MM2, MM3
         db $0F, $7E, $D0           // MOVD      EAX, MM2
+  {$ENDIF CPU32}
+  {$IFDEF CPU64}
+  TODO
+  {$ENDIF CPU64}
 end;
 
 procedure M_BlendMem(F: TColor32; var B: TColor32);
-{asm
-  // EAX - Color X
-  // [EDX] - Color Y
-  // Result := W * (X - Y) + Y
-        PUSH    EDX
-        MOV     EDX, [EDX]
-        CALL    M_BlendReg
-        POP     EDX
-        MOV     [EDX], EAX
-end;}
 begin
   B := M_BlendReg(F, B);
 end;
 
 function M_BlendRegEx(F, B, M: TColor32): TColor32; assembler;
 asm
+  {$IFDEF CPU32}
   // blend foreground color (F) to a background color (B),
   // using alpha channel value of F
   // EAX <- F
@@ -835,28 +702,20 @@ asm
 
 @1:     MOV       EAX, EDX
         POP       EBX
+  {$ENDIF CPU32}
+  {$IFDEF CPU64}
+  TODO
+  {$ENDIF CPU64}
 end;
 
 procedure M_BlendMemEx(F: TColor32; var B: TColor32; M: TColor32);
-{asm
-  // blend foreground color (F) to a background color (B),
-  // using alpha channel value of F
-  // EAX <- F
-  // [EDX] <- B
-  // ECX <- M
-  // Result := M * Fa * (Frgb - Brgb) + Brgb
-        PUSH    EDX
-        MOV     EDX, [EDX]
-        CALL    M_BlendRegEx
-        POP     EDX
-        MOV     [EDX], EAX
-end;}
 begin
   B := M_BlendRegEx(F, B, M);
 end;
 
 procedure M_BlendLine(Src, Dst: PColor32; Count: Integer); assembler;
 asm
+  {$IFDEF CPU32}
   // EAX <- Src
   // EDX <- Dst
   // ECX <- Count
@@ -910,10 +769,15 @@ asm
         POP       ESI
 
 @4:     RET
+  {$ENDIF CPU32}
+  {$IFDEF CPU64}
+  TODO
+  {$ENDIF CPU64}
 end;
 
 procedure M_BlendLineEx(Src, Dst: PColor32; Count: Integer; M: TColor32); assembler;
 asm
+  {$IFDEF CPU32}
   // EAX <- Src
   // EDX <- Dst
   // ECX <- Count
@@ -971,6 +835,10 @@ asm
         POP       EDI
         POP       ESI
 @4:
+  {$ENDIF CPU32}
+  {$IFDEF CPU64}
+  TODO
+  {$ENDIF CPU64}
 end;
 
 { MMX Detection and linking }

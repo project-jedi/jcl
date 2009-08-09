@@ -662,21 +662,6 @@ end;
 //=== Internal low level routines ============================================
 
 procedure FillLongword(var X; Count: Integer; Value: Longword);
-{asm
-// EAX = X
-// EDX = Count
-// ECX = Value
-        TEST    EDX, EDX
-        JLE     @@EXIT
-
-        PUSH    EDI
-        MOV     EDI, EAX  // Point EDI to destination
-        MOV     EAX, ECX
-        MOV     ECX, EDX
-        REP     STOSD    // Fill count dwords
-        POP     EDI
-@@EXIT:
-end;}
 var
   P: PLongword;
 begin
@@ -701,22 +686,6 @@ begin
 end;
 
 procedure TestSwap(var A, B: Integer);
-{asm
-// EAX = [A]
-// EDX = [B]
-        MOV     ECX, [EAX]     // ECX := [A]
-        CMP     ECX, [EDX]     // ECX <= [B]? Exit
-        JLE     @@EXIT
-        //Replaced on more fast code
-        //XCHG    ECX, [EDX]     // ECX <-> [B];
-        //MOV     [EAX], ECX     // [A] := ECX
-        PUSH    EBX
-        MOV     EBX,[EDX]      // EBX := [B]
-        MOV     [EAX],EBX      // [A] := EBX
-        MOV     [EDX],ECX      // [B] := ECX
-        POP     EBX
-@@EXIT:
-end;}
 var
   X: Integer;
 begin

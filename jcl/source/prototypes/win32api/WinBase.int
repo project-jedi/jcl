@@ -103,7 +103,7 @@ function SetFileSecurityW(lpFileName: LPCWSTR; SecurityInformation: SECURITY_INF
 {$EXTERNALSYM SetFileSecurityW}
 function SetFileSecurity(lpFileName: LPCTSTR; SecurityInformation: SECURITY_INFORMATION;
   pSecurityDescriptor: PSECURITY_DESCRIPTOR): BOOL; stdcall;
-{$EXTERNALSYM SetFileSecurityA}
+{$EXTERNALSYM SetFileSecurity}
 
 function GetFileSecurityA(lpFileName: LPCSTR; RequestedInformation: SECURITY_INFORMATION;
   pSecurityDescriptor: PSECURITY_DESCRIPTOR; nLength: DWORD;
@@ -116,7 +116,7 @@ function GetFileSecurityW(lpFileName: LPCWSTR; RequestedInformation: SECURITY_IN
 function GetFileSecurity(lpFileName: LPCTSTR; RequestedInformation: SECURITY_INFORMATION;
   pSecurityDescriptor: PSECURITY_DESCRIPTOR; nLength: DWORD;
   var lpnLengthNeeded: DWORD): BOOL; stdcall;
-{$EXTERNALSYM GetFileSecurityA}
+{$EXTERNALSYM GetFileSecurity}
 
 // WinBase.h line 10251
 

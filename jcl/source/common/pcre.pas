@@ -295,11 +295,11 @@ type
   (* ------------------------------------------------------------------ *)
   end;
 
-  pcre_malloc_callback = function(Size: Integer): Pointer; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
+  pcre_malloc_callback = function(Size: SizeInt): Pointer; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_malloc_callback}
   pcre_free_callback = procedure(P: Pointer); {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_free_callback}
-  pcre_stack_malloc_callback = function(Size: Integer): Pointer; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
+  pcre_stack_malloc_callback = function(Size: SizeInt): Pointer; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_stack_malloc_callback}
   pcre_stack_free_callback = procedure(P: Pointer); {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_stack_free_callback}
@@ -324,7 +324,7 @@ procedure SetPCREMallocCallback(const Value: pcre_malloc_callback);
 {$EXTERNALSYM SetPCREMallocCallback}
 function GetPCREMallocCallback: pcre_malloc_callback;
 {$EXTERNALSYM GetPCREMallocCallback}
-function CallPCREMalloc(Size: Integer): Pointer;
+function CallPCREMalloc(Size: SizeInt): Pointer;
 {$EXTERNALSYM CallPCREMalloc}
 
 procedure SetPCREFreeCallback(const Value: pcre_free_callback);
@@ -338,7 +338,7 @@ procedure SetPCREStackMallocCallback(const Value: pcre_stack_malloc_callback);
 {$EXTERNALSYM SetPCREStackMallocCallback}
 function GetPCREStackMallocCallback: pcre_stack_malloc_callback;
 {$EXTERNALSYM GetPCREStackMallocCallback}
-function CallPCREStackMalloc(Size: Integer): Pointer;
+function CallPCREStackMalloc(Size: SizeInt): Pointer;
 {$EXTERNALSYM CallPCREStackMalloc}
 
 procedure SetPCREStackFreeCallback(const Value: pcre_stack_free_callback);
@@ -664,7 +664,7 @@ function _strchr(__s: PAnsiChar; __c: Integer): PAnsiChar; cdecl; external szMSV
 
 function malloc(size: size_t): Pointer; cdecl; external szMSVCRT name 'malloc';
 
-function pcre_malloc(Size: Integer): Pointer;
+function pcre_malloc(Size: SizeInt): Pointer;
 begin
   if Assigned(pcre_malloc_user) then
     Result := pcre_malloc_user(Size)
@@ -672,7 +672,7 @@ begin
     Result := malloc(Size);
 end;
 
-function pcre_stack_malloc(Size: Integer): Pointer;
+function pcre_stack_malloc(Size: SizeInt): Pointer;
 begin
   if Assigned(pcre_stack_malloc_user) then
     Result := pcre_stack_malloc_user(Size)
@@ -798,7 +798,7 @@ begin
   {$ENDIF ~PCRE_STATICLINK}
 end;
 
-function CallPCREMalloc(Size: Integer): Pointer;
+function CallPCREMalloc(Size: SizeInt): Pointer;
 begin
   {$IFDEF PCRE_STATICLINK}
   Result := pcre_malloc(Size);
@@ -884,7 +884,7 @@ begin
   {$ENDIF ~PCRE_STATICLINK}
 end;
 
-function CallPCREStackMalloc(Size: Integer): Pointer;
+function CallPCREStackMalloc(Size: SizeInt): Pointer;
 begin
   {$IFDEF PCRE_STATICLINK}
   Result := pcre_stack_malloc(Size);

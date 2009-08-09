@@ -322,9 +322,6 @@ const
 implementation
 
 uses
-  {$IFDEF FPC}
-  WinSysUt,
-  {$ENDIF FPC}
   SysConst, JclFileUtils, JclRegistry, JclStrings, JclSysInfo, JclUnicode;
 
 const

@@ -154,7 +154,7 @@ type
   TCharValidator = function(const C: Char): Boolean;
 
 function ArrayContainsChar(const Chars: array of Char; const C: Char): Boolean; overload;
-function ArrayContainsChar(const Chars: array of Char; const C: Char; out Index: Integer): Boolean; overload;
+function ArrayContainsChar(const Chars: array of Char; const C: Char; out Index: SizeInt): Boolean; overload;
 
 // String Test Routines
 function StrIsAlpha(const S: string): Boolean;
@@ -169,9 +169,9 @@ function StrIsSubset(const S: string; const ValidChars: array of Char): Boolean;
 function StrSame(const S1, S2: string; CaseSensitive: Boolean = False): Boolean;
 
 // String Transformation Routines
-function StrCenter(const S: string; L: Integer; C: Char = ' '): string;
-function StrCharPosLower(const S: string; CharPos: Integer): string;
-function StrCharPosUpper(const S: string; CharPos: Integer): string;
+function StrCenter(const S: string; L: SizeInt; C: Char = ' '): string;
+function StrCharPosLower(const S: string; CharPos: SizeInt): string;
+function StrCharPosUpper(const S: string; CharPos: SizeInt): string;
 function StrDoubleQuote(const S: string): string;
 function StrEnsureNoPrefix(const Prefix, Text: string): string;
 function StrEnsureNoSuffix(const Suffix, Text: string): string;
@@ -182,9 +182,9 @@ function StrLower(const S: string): string;
 procedure StrLowerInPlace(var S: string);
 procedure StrLowerBuff(S: PChar);
 procedure StrMove(var Dest: string; const Source: string; const ToIndex,
-  FromIndex, Count: Integer);
-function StrPadLeft(const S: string; Len: Integer; C: Char = NativeSpace): string;
-function StrPadRight(const S: string; Len: Integer; C: Char = NativeSpace): string;
+  FromIndex, Count: SizeInt);
+function StrPadLeft(const S: string; Len: SizeInt; C: Char = NativeSpace): string;
+function StrPadRight(const S: string; Len: SizeInt; C: Char = NativeSpace): string;
 function StrProper(const S: string): string;
 procedure StrProperBuff(S: PChar);
 function StrQuote(const S: string; C: Char): string;
@@ -202,8 +202,8 @@ function StrReplaceChars(const S: string; const Chars: TCharValidator; Replace: 
 function StrReplaceChars(const S: string; const Chars: array of Char; Replace: Char): string; overload;
 function StrReplaceButChars(const S: string; const Chars: TCharValidator; Replace: Char): string; overload;
 function StrReplaceButChars(const S: string; const Chars: array of Char; Replace: Char): string; overload;
-function StrRepeat(const S: string; Count: Integer): string;
-function StrRepeatLength(const S: string; L: Integer): string;
+function StrRepeat(const S: string; Count: SizeInt): string;
+function StrRepeatLength(const S: string; L: SizeInt): string;
 function StrReverse(const S: string): string;
 procedure StrReverseInPlace(var S: string);
 function StrSingleQuote(const S: string): string;
@@ -226,44 +226,44 @@ procedure StrUpperBuff(S: PChar);
 // String Management
 procedure StrAddRef(var S: string);
 procedure StrDecRef(var S: string);
-function StrLength(const S: string): Longint;
-function StrRefCount(const S: string): Longint;
+function StrLength(const S: string): SizeInt;
+function StrRefCount(const S: string): SizeInt;
 
 // String Search and Replace Routines
-function StrCharCount(const S: string; C: Char): Integer; overload;
-function StrCharsCount(const S: string; const Chars: TCharValidator): Integer; overload;
-function StrCharsCount(const S: string; const Chars: array of Char): Integer; overload;
-function StrStrCount(const S, SubS: string): Integer;
-function StrCompare(const S1, S2: string; CaseSensitive: Boolean = False): Integer;
-function StrCompareRange(const S1, S2: string; Index, Count: Integer; CaseSensitive: Boolean = True): Integer;
-function StrCompareRangeEx(const S1, S2: string; Index, Count: Integer; CaseSensitive: Boolean): Integer;
-procedure StrFillChar(var S; Count: Integer; C: Char);
-function StrRepeatChar(C: Char; Count: Integer): string;
-function StrFind(const Substr, S: string; const Index: Integer = 1): Integer;
+function StrCharCount(const S: string; C: Char): SizeInt; overload;
+function StrCharsCount(const S: string; const Chars: TCharValidator): SizeInt; overload;
+function StrCharsCount(const S: string; const Chars: array of Char): SizeInt; overload;
+function StrStrCount(const S, SubS: string): SizeInt;
+function StrCompare(const S1, S2: string; CaseSensitive: Boolean = False): SizeInt;
+function StrCompareRange(const S1, S2: string; Index, Count: SizeInt; CaseSensitive: Boolean = True): SizeInt;
+function StrCompareRangeEx(const S1, S2: string; Index, Count: SizeInt; CaseSensitive: Boolean): SizeInt;
+procedure StrFillChar(var S; Count: SizeInt; C: Char);
+function StrRepeatChar(C: Char; Count: SizeInt): string;
+function StrFind(const Substr, S: string; const Index: SizeInt = 1): SizeInt;
 function StrHasPrefix(const S: string; const Prefixes: array of string): Boolean;
-function StrIndex(const S: string; const List: array of string; CaseSensitive: Boolean = False): Integer;
+function StrIndex(const S: string; const List: array of string; CaseSensitive: Boolean = False): SizeInt;
 function StrIHasPrefix(const S: string; const Prefixes: array of string): Boolean;
-function StrILastPos(const SubStr, S: string): Integer;
-function StrIPos(const SubStr, S: string): Integer;
-function StrIPrefixIndex(const S: string; const Prefixes: array of string): Integer;
+function StrILastPos(const SubStr, S: string): SizeInt;
+function StrIPos(const SubStr, S: string): SizeInt;
+function StrIPrefixIndex(const S: string; const Prefixes: array of string): SizeInt;
 function StrIsOneOf(const S: string; const List: array of string): Boolean;
-function StrLastPos(const SubStr, S: string): Integer;
-function StrMatch(const Substr, S: string; Index: Integer = 1): Integer;
-function StrMatches(const Substr, S: string; const Index: Integer = 1): Boolean;
-function StrNIPos(const S, SubStr: string; N: Integer): Integer;
-function StrNPos(const S, SubStr: string; N: Integer): Integer;
-function StrPrefixIndex(const S: string; const Prefixes: array of string): Integer;
-function StrSearch(const Substr, S: string; const Index: Integer = 1): Integer;
+function StrLastPos(const SubStr, S: string): SizeInt;
+function StrMatch(const Substr, S: string; Index: SizeInt = 1): SizeInt;
+function StrMatches(const Substr, S: string; const Index: SizeInt = 1): Boolean;
+function StrNIPos(const S, SubStr: string; N: SizeInt): SizeInt;
+function StrNPos(const S, SubStr: string; N: SizeInt): SizeInt;
+function StrPrefixIndex(const S: string; const Prefixes: array of string): SizeInt;
+function StrSearch(const Substr, S: string; const Index: SizeInt = 1): SizeInt;
 
 // String Extraction
 function StrAfter(const SubStr, S: string): string;
 function StrBefore(const SubStr, S: string): string;
 function StrBetween(const S: string; const Start, Stop: Char): string;
-function StrChopRight(const S: string; N: Integer): string;
-function StrLeft(const S: string; Count: Integer): string;
-function StrMid(const S: string; Start, Count: Integer): string;
-function StrRestOf(const S: string; N: Integer): string;
-function StrRight(const S: string; Count: Integer): string;
+function StrChopRight(const S: string; N: SizeInt): string;
+function StrLeft(const S: string; Count: SizeInt): string;
+function StrMid(const S: string; Start, Count: SizeInt): string;
+function StrRestOf(const S: string; N: SizeInt): string;
+function StrRight(const S: string; Count: SizeInt): string;
 
 // Character Test Routines
 function CharEqualNoCase(const C1, C2: Char): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
@@ -295,17 +295,17 @@ function CharUpper(const C: Char): Char; {$IFDEF SUPPORTS_INLINE} inline; {$ENDI
 function CharToggleCase(const C: Char): Char;
 
 // Character Search and Replace
-function CharPos(const S: string; const C: Char; const Index: Integer = 1): Integer;
-function CharLastPos(const S: string; const C: Char; const Index: Integer = 1): Integer;
-function CharIPos(const S: string; C: Char; const Index: Integer = 1): Integer;
-function CharReplace(var S: string; const Search, Replace: Char): Integer;
+function CharPos(const S: string; const C: Char; const Index: SizeInt = 1): SizeInt;
+function CharLastPos(const S: string; const C: Char; const Index: SizeInt = 1): SizeInt;
+function CharIPos(const S: string; C: Char; const Index: SizeInt = 1): SizeInt;
+function CharReplace(var S: string; const Search, Replace: Char): SizeInt;
 
 // PCharVector
 type
   PCharVector = ^PChar;
 
 function StringsToPCharVector(var Dest: PCharVector; const Source: TStrings): PCharVector;
-function PCharVectorCount(Source: PCharVector): Integer;
+function PCharVectorCount(Source: PCharVector): SizeInt;
 procedure PCharVectorToStrings(const Dest: TStrings; Source: PCharVector);
 procedure FreePCharVector(var Dest: PCharVector);
 
@@ -322,24 +322,24 @@ type
 
 function StringsToMultiSz(var Dest: PMultiSz; const Source: TStrings): PMultiSz;
 procedure MultiSzToStrings(const Dest: TStrings; const Source: PMultiSz);
-function MultiSzLength(const Source: PMultiSz): Integer;
-procedure AllocateMultiSz(var Dest: PMultiSz; Len: Integer);
+function MultiSzLength(const Source: PMultiSz): SizeInt;
+procedure AllocateMultiSz(var Dest: PMultiSz; Len: SizeInt);
 procedure FreeMultiSz(var Dest: PMultiSz);
 function MultiSzDup(const Source: PMultiSz): PMultiSz;
 
 function AnsiStringsToAnsiMultiSz(var Dest: PAnsiMultiSz; const Source: TAnsiStrings): PAnsiMultiSz;
  {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 procedure AnsiMultiSzToAnsiStrings(const Dest: TAnsiStrings; const Source: PAnsiMultiSz); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-function AnsiMultiSzLength(const Source: PAnsiMultiSz): Integer; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-procedure AllocateAnsiMultiSz(var Dest: PAnsiMultiSz; Len: Integer); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+function AnsiMultiSzLength(const Source: PAnsiMultiSz): SizeInt; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+procedure AllocateAnsiMultiSz(var Dest: PAnsiMultiSz; Len: SizeInt); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 procedure FreeAnsiMultiSz(var Dest: PAnsiMultiSz); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 function AnsiMultiSzDup(const Source: PAnsiMultiSz): PAnsiMultiSz; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
 function WideStringsToWideMultiSz(var Dest: PWideMultiSz; const Source: TWideStrings): PWideMultiSz;
  {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 procedure WideMultiSzToWideStrings(const Dest: TWideStrings; const Source: PWideMultiSz); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-function WideMultiSzLength(const Source: PWideMultiSz): Integer; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
-procedure AllocateWideMultiSz(var Dest: PWideMultiSz; Len: Integer); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+function WideMultiSzLength(const Source: PWideMultiSz): SizeInt; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+procedure AllocateWideMultiSz(var Dest: PWideMultiSz; Len: SizeInt); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 procedure FreeWideMultiSz(var Dest: PWideMultiSz); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 function WideMultiSzDup(const Source: PWideMultiSz): PWideMultiSz; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
@@ -364,11 +364,11 @@ procedure StringToFile(const FileName: string; const Contents: {$IFDEF COMPILER1
 function StrToken(var S: string; Separator: Char): string;
 procedure StrTokens(const S: string; const List: TStrings);
 procedure StrTokenToStrings(S: string; Separator: Char; const List: TStrings);
-function StrWord(const S: string; var Index: Integer; out Word: string): Boolean; overload;
+function StrWord(const S: string; var Index: SizeInt; out Word: string): Boolean; overload;
 function StrWord(var S: PChar; out Word: string): Boolean; overload;
 function StrToFloatSafe(const S: string): Float;
 function StrToIntSafe(const S: string): Integer;
-procedure StrNormIndex(const StrLen: Integer; var Index: Integer; var Count: Integer); overload;
+procedure StrNormIndex(const StrLen: SizeInt; var Index: SizeInt; var Count: SizeInt); overload;
 
 function ArrayOf(List: TStrings): TDynStringArray; overload;
 
@@ -394,28 +394,28 @@ type
   TJclStringBuilder = class(TInterfacedObject, IToString)
   private
     FChars: TCharDynArray;
-    FLength: Integer;
-    FMaxCapacity: Integer;
+    FLength: SizeInt;
+    FMaxCapacity: SizeInt;
 
-    function GetCapacity: Integer;
-    procedure SetCapacity(const Value: Integer);
-    function GetChars(Index: Integer): Char;
-    procedure SetChars(Index: Integer; const Value: Char);
-    procedure Set_Length(const Value: Integer);
+    function GetCapacity: SizeInt;
+    procedure SetCapacity(const Value: SizeInt);
+    function GetChars(Index: SizeInt): Char;
+    procedure SetChars(Index: SizeInt; const Value: Char);
+    procedure Set_Length(const Value: SizeInt);
   protected
-    function AppendPChar(Value: PChar; Count: Integer; RepeatCount: Integer = 1): TJclStringBuilder;
-    function InsertPChar(Index: Integer; Value: PChar; Count: Integer; RepeatCount: Integer = 1): TJclStringBuilder;
+    function AppendPChar(Value: PChar; Count: SizeInt; RepeatCount: SizeInt = 1): TJclStringBuilder;
+    function InsertPChar(Index: SizeInt; Value: PChar; Count: SizeInt; RepeatCount: SizeInt = 1): TJclStringBuilder;
   public
-    constructor Create(const Value: string; Capacity: Integer = 16); overload;
-    constructor Create(Capacity: Integer = 16; MaxCapacity: Integer = MaxInt); overload;
-    constructor Create(const Value: string; StartIndex, Length, Capacity: Integer); overload;
+    constructor Create(const Value: string; Capacity: SizeInt = 16); overload;
+    constructor Create(Capacity: SizeInt = 16; MaxCapacity: SizeInt = MaxInt); overload;
+    constructor Create(const Value: string; StartIndex, Length, Capacity: SizeInt); overload;
 
     function Append(const Value: string): TJclStringBuilder; overload;
-    function Append(const Value: string; StartIndex, Length: Integer): TJclStringBuilder; overload;
+    function Append(const Value: string; StartIndex, Length: SizeInt): TJclStringBuilder; overload;
     function Append(Value: Boolean): TJclStringBuilder; overload;
-    function Append(Value: Char; RepeatCount: Integer = 1): TJclStringBuilder; overload;
+    function Append(Value: Char; RepeatCount: SizeInt = 1): TJclStringBuilder; overload;
     function Append(const Value: array of Char): TJclStringBuilder; overload;
-    function Append(const Value: array of Char; StartIndex, Length: Integer): TJclStringBuilder; overload;
+    function Append(const Value: array of Char; StartIndex, Length: SizeInt): TJclStringBuilder; overload;
     function Append(Value: Cardinal): TJclStringBuilder; overload;
     function Append(Value: Integer): TJclStringBuilder; overload;
     function Append(Value: Double): TJclStringBuilder; overload;
@@ -426,32 +426,32 @@ type
     function AppendFormat(const Fmt: string; Arg0, Arg1: Variant): TJclStringBuilder; overload;
     function AppendFormat(const Fmt: string; Arg0, Arg1, Arg2: Variant): TJclStringBuilder; overload;
 
-    function Insert(Index: Integer; const Value: string; Count: Integer = 1): TJclStringBuilder; overload;
-    function Insert(Index: Integer; Value: Boolean): TJclStringBuilder; overload;
-    function Insert(Index: Integer; const Value: array of Char): TJclStringBuilder; overload;
-    function Insert(Index: Integer; const Value: array of Char; StartIndex, Length: Integer): TJclStringBuilder;
+    function Insert(Index: SizeInt; const Value: string; Count: SizeInt = 1): TJclStringBuilder; overload;
+    function Insert(Index: SizeInt; Value: Boolean): TJclStringBuilder; overload;
+    function Insert(Index: SizeInt; const Value: array of Char): TJclStringBuilder; overload;
+    function Insert(Index: SizeInt; const Value: array of Char; StartIndex, Length: SizeInt): TJclStringBuilder;
       overload;
-    function Insert(Index: Integer; Value: Cardinal): TJclStringBuilder; overload;
-    function Insert(Index: Integer; Value: Integer): TJclStringBuilder; overload;
-    function Insert(Index: Integer; Value: Double): TJclStringBuilder; overload;
-    function Insert(Index: Integer; Value: Int64): TJclStringBuilder; overload;
-    function Insert(Index: Integer; Obj: TObject): TJclStringBuilder; overload;
+    function Insert(Index: SizeInt; Value: Cardinal): TJclStringBuilder; overload;
+    function Insert(Index: SizeInt; Value: Integer): TJclStringBuilder; overload;
+    function Insert(Index: SizeInt; Value: Double): TJclStringBuilder; overload;
+    function Insert(Index: SizeInt; Value: Int64): TJclStringBuilder; overload;
+    function Insert(Index: SizeInt; Obj: TObject): TJclStringBuilder; overload;
 
-    function Replace(OldChar, NewChar: Char; StartIndex: Integer = 0; Count: Integer = -1): TJclStringBuilder;
+    function Replace(OldChar, NewChar: Char; StartIndex: SizeInt = 0; Count: SizeInt = -1): TJclStringBuilder;
       overload;
-    function Replace(OldValue, NewValue: string; StartIndex: Integer = 0; Count: Integer = -1): TJclStringBuilder;
+    function Replace(OldValue, NewValue: string; StartIndex: SizeInt = 0; Count: SizeInt = -1): TJclStringBuilder;
       overload;
 
-    function Remove(StartIndex, Length: Integer): TJclStringBuilder;
-    function EnsureCapacity(Capacity: Integer): Integer;
+    function Remove(StartIndex, Length: SizeInt): TJclStringBuilder;
+    function EnsureCapacity(Capacity: SizeInt): SizeInt;
 
     function ToString: string; {$IFDEF RTL200_UP} override; {$ENDIF RTL200_UP}
 
-    property __Chars__[Index: Integer]: Char read GetChars write SetChars; default;
+    property __Chars__[Index: SizeInt]: Char read GetChars write SetChars; default;
     property Chars: TCharDynArray read FChars;
-    property Length: Integer read FLength write Set_Length;
-    property Capacity: Integer read GetCapacity write SetCapacity;
-    property MaxCapacity: Integer read FMaxCapacity;
+    property Length: SizeInt read FLength write Set_Length;
+    property Capacity: SizeInt read GetCapacity write SetCapacity;
+    property MaxCapacity: SizeInt read FMaxCapacity;
   end;
 
   {$IFDEF RTL200_UP}
@@ -471,24 +471,24 @@ type
   TJclTabSet = class (TInterfacedObject, IToString)
   private
     FData: TObject;
-    function GetCount: Integer;
-    function GetStops(Index: Integer): Integer;
-    function GetTabWidth: Integer;
+    function GetCount: SizeInt;
+    function GetStops(Index: SizeInt): SizeInt;
+    function GetTabWidth: SizeInt;
     function GetZeroBased: Boolean;
-    procedure SetStops(Index, Value: Integer);
-    procedure SetTabWidth(Value: Integer);
+    procedure SetStops(Index, Value: SizeInt);
+    procedure SetTabWidth(Value: SizeInt);
     procedure SetZeroBased(Value: Boolean);
   protected
-    function FindStop(Column: Integer): Integer;
-    function InternalTabStops: TDynIntegerArray;
-    function InternalTabWidth: Integer;
-    procedure RemoveAt(Index: Integer);
+    function FindStop(Column: SizeInt): SizeInt;
+    function InternalTabStops: TDynSizeIntArray;
+    function InternalTabWidth: SizeInt;
+    procedure RemoveAt(Index: SizeInt);
   public
     constructor Create; overload;
     constructor Create(Data: TObject); overload;
-    constructor Create(TabWidth: Integer); overload;
-    constructor Create(const Tabstops: array of Integer; ZeroBased: Boolean); overload;
-    constructor Create(const Tabstops: array of Integer; ZeroBased: Boolean; TabWidth: Integer); overload;
+    constructor Create(TabWidth: SizeInt); overload;
+    constructor Create(const Tabstops: array of SizeInt; ZeroBased: Boolean); overload;
+    constructor Create(const Tabstops: array of SizeInt; ZeroBased: Boolean; TabWidth: SizeInt); overload;
     destructor Destroy; override;
 
     // cloning and referencing
@@ -496,31 +496,31 @@ type
     function NewReference: TJclTabSet;
 
     // Tab stops manipulation
-    function Add(Column: Integer): Integer;
-    function Delete(Column: Integer): Integer;
+    function Add(Column: SizeInt): SizeInt;
+    function Delete(Column: SizeInt): SizeInt;
 
     // Usage
     function Expand(const S: string): string; overload;
-    function Expand(const S: string; Column: Integer): string; overload;
-    procedure OptimalFillInfo(StartColumn, TargetColumn: Integer; out TabsNeeded, SpacesNeeded: Integer);
+    function Expand(const S: string; Column: SizeInt): string; overload;
+    procedure OptimalFillInfo(StartColumn, TargetColumn: SizeInt; out TabsNeeded, SpacesNeeded: SizeInt);
     function Optimize(const S: string): string; overload;
-    function Optimize(const S: string; Column: Integer): string; overload;
-    function StartColumn: Integer;
-    function TabFrom(Column: Integer): Integer;
-    function UpdatePosition(const S: string): Integer; overload;
-    function UpdatePosition(const S: string; Column: Integer): Integer; overload;
-    function UpdatePosition(const S: string; var Column, Line: Integer): Integer; overload;
+    function Optimize(const S: string; Column: SizeInt): string; overload;
+    function StartColumn: SizeInt;
+    function TabFrom(Column: SizeInt): SizeInt;
+    function UpdatePosition(const S: string): SizeInt; overload;
+    function UpdatePosition(const S: string; Column: SizeInt): SizeInt; overload;
+    function UpdatePosition(const S: string; var Column, Line: SizeInt): SizeInt; overload;
 
     // Conversions
     function ToString: string; overload; {$IFDEF RTL200_UP} override; {$ENDIF RTL200_UP}
-    function ToString(FormattingOptions: Integer): string; {$IFDEF RTL200_UP} reintroduce; {$ENDIF RTL200_UP} overload;
+    function ToString(FormattingOptions: SizeInt): string; {$IFDEF RTL200_UP} reintroduce; {$ENDIF RTL200_UP} overload;
     class function FromString(const S: string): TJclTabSet; {$IFDEF SUPPORTS_STATIC} static; {$ENDIF SUPPORTS_STATIC}
 
     // Properties
-    property ActualTabWidth: Integer read InternalTabWidth;
-    property Count: Integer read GetCount;
-    property TabStops[Index: Integer]: Integer read GetStops write SetStops; default;
-    property TabWidth: Integer read GetTabWidth write SetTabWidth;
+    property ActualTabWidth: SizeInt read InternalTabWidth;
+    property Count: SizeInt read GetCount;
+    property TabStops[Index: SizeInt]: SizeInt read GetStops write SetStops; default;
+    property TabWidth: SizeInt read GetTabWidth write SetTabWidth;
     property ZeroBased: Boolean read GetZeroBased write SetZeroBased;
   end;
 
@@ -543,11 +543,11 @@ const
 
 // Tab expansion routines
 function StrExpandTabs(S: string): string; {$IFDEF SUPPORTS_INLINE}inline; {$ENDIF} overload;
-function StrExpandTabs(S: string; TabWidth: Integer): string; {$IFDEF SUPPORTS_INLINE}inline; {$ENDIF} overload;
+function StrExpandTabs(S: string; TabWidth: SizeInt): string; {$IFDEF SUPPORTS_INLINE}inline; {$ENDIF} overload;
 function StrExpandTabs(S: string; TabSet: TJclTabSet): string; {$IFDEF SUPPORTS_INLINE}inline; {$ENDIF} overload;
 // Tab optimization routines
 function StrOptimizeTabs(S: string): string; {$IFDEF SUPPORTS_INLINE}inline; {$ENDIF} overload;
-function StrOptimizeTabs(S: string; TabWidth: Integer): string; {$IFDEF SUPPORTS_INLINE}inline; {$ENDIF} overload;
+function StrOptimizeTabs(S: string; TabWidth: SizeInt): string; {$IFDEF SUPPORTS_INLINE}inline; {$ENDIF} overload;
 function StrOptimizeTabs(S: string; TabSet: TJclTabSet): string; {$IFDEF SUPPORTS_INLINE}inline; {$ENDIF} overload;
 
 // move to JclBase?
@@ -565,8 +565,8 @@ procedure StrResetLength(var S: UnicodeString); overload;
 {$ENDIF SUPPORTS_UNICODE_STRING}
 
 // natural comparison functions
-function CompareNaturalStr(const S1, S2: string): Integer;
-function CompareNaturalText(const S1, S2: string): Integer;
+function CompareNaturalStr(const S1, S2: string): SizeInt;
+function CompareNaturalText(const S1, S2: string): SizeInt;
 
 // internal structures published to make function inlining working
 const
@@ -602,19 +602,16 @@ uses
   {$IFDEF SUPPORTS_UNICODE}
   StrUtils,
   {$ENDIF SUPPORTS_UNICODE}
-  JclLogic, JclResources, JclStreams;
+  JclLogic, JclResources, JclStreams, JclSynch;
 
 //=== Internal ===============================================================
 
 type
   TStrRec = packed record
-    RefCount: Longint;
-    Length: Longint;
+    RefCount: SizeInt;
+    Length: SizeInt;
   end;
   PStrRec = ^TStrRec;
-
-const
-  StrRecSize = SizeOf(TStrRec);           // size of the string header rec
 
 procedure LoadCharTypes;
 var
@@ -698,240 +695,41 @@ end;
 // Uppercases or Lowercases a give string depending on the
 // passed offset. (UpOffset or LoOffset)
 
-procedure StrCase(var Str: string; const Offset: Integer);
-{$IFDEF SUPPORTS_UNICODE}
+procedure StrCase(var Str: string; const Offset: SizeInt);
 var
-  Len: Integer;
-  RetValue: string;
+  P: PChar;
+  I, L: SizeInt;
 begin
-  case Offset of
-    StrUpOffset:
-      begin
-        Len := LCMapString(LOCALE_USER_DEFAULT, LCMAP_UPPERCASE, PChar(Str), Length(Str), nil, 0);
-        SetLength(RetValue, Len);
-        if Len > 0 then
-          LCMapString(LOCALE_USER_DEFAULT, LCMAP_UPPERCASE, PChar(Str), Length(Str), PChar(RetValue), Len);
-      end;
-    StrLoOffset:
-      begin
-        Len := LCMapString(LOCALE_USER_DEFAULT, LCMAP_LOWERCASE, PChar(Str), Length(Str), nil, 0);
-        SetLength(RetValue, Len);
-        if Len > 0 then
-          LCMapString(LOCALE_USER_DEFAULT, LCMAP_LOWERCASE, PChar(Str), Length(Str), PChar(RetValue), Len);
-      end
-  else
-    Assert(False, 'StrReOffset not supported');
-    Exit;
+  L := Length(Str);
+  if L > 0 then
+  begin
+    UniqueString(Str);
+    P := PChar(Str);
+    for I := 1 to L do
+    begin
+      P^ := StrCaseMap[Offset + Ord(P^)];
+      Inc(P);
+    end;
   end;
-  Str := RetValue;
 end;
-{$ELSE ~SUPPORTS_UNICODE}
-type
-  TAnsiUniqueStringType = procedure (var S : AnsiString);
-const
-  AnsiUniqueString: TAnsiUniqueStringType = UniqueString;
-asm
-        // make sure that the string is not null
-
-         TEST    EAX, EAX
-         JZ      @@StrIsNull
-
-        // create unique string if this one is ref-counted
-
-         PUSH    EDX
-         CALL    AnsiUniqueString
-         POP     EDX
-
-        // make sure that the new string is not null
-
-         TEST    EAX, EAX
-         JZ      @@StrIsNull
-
-        // get the length, and prepare the counter
-
-         MOV     ECX, [EAX - StrRecSize].TStrRec.Length
-         DEC     ECX
-         JS      @@StrIsNull
-
-        // ebx will hold the case map, esi pointer to Str
-
-         PUSH    EBX
-         PUSH    ESI
-         PUSH    EDI
-
-        // load case map and prepare variables }
-
-        {$IFDEF PIC}
-        LEA     EBX, [EBX][STRCASEMAP + EDX]
-        {$ELSE ~PIC}
-         LEA     EBX, [StrCaseMap + EDX]
-        {$ENDIF ~PIC}
-         MOV     ESI, EAX
-         XOR     EDX, EDX
-         XOR     EAX, EAX
-
-         @@NextChar:
-        // get current char from the string
-
-         MOV     DL, [ESI]
-
-        // get corresponding char from the case map
-
-         MOV     AL, [EBX + EDX]
-
-        // store it back in the string
-
-         MOV     [ESI], AL
-
-        // update the loop counter and check the end of stirng
-
-         DEC     ECX
-         JL      @@Done
-
-        // do the same thing with next 3 chars
-
-         MOV     DL, [ESI + 1]
-         MOV     AL, [EBX + EDX]
-         MOV     [ESI + 1], AL
-
-         DEC     ECX
-         JL      @@Done
-         MOV     DL, [ESI + 2]
-         MOV     AL, [EBX+EDX]
-         MOV     [ESI + 2], AL
-
-         DEC     ECX
-         JL      @@Done
-         MOV     DL, [ESI + 3]
-         MOV     AL, [EBX + EDX]
-         MOV     [ESI + 3], AL
-
-        // point string to next 4 chars
-
-         ADD     ESI, 4
-
-        // update the loop counter and check the end of stirng
-
-         DEC     ECX
-         JGE     @@NextChar
-
-         @@Done:
-         POP     EDI
-         POP     ESI
-         POP     EBX
-
-         @@StrIsNull:
-end;
-{$ENDIF ~SUPPORTS_UNICODE}
 
 // Internal utility function
 // Uppercases or Lowercases a give null terminated string depending on the
 // passed offset. (UpOffset or LoOffset)
 
-procedure StrCaseBuff(S: PChar; const Offset: Integer);
-{$IFDEF SUPPORTS_UNICODE}
+procedure StrCaseBuff(S: PChar; const Offset: SizeInt);
 var
-  Len, SLen: Integer;
-  RetValue: string;
+  C: Char;
 begin
   if S <> nil then
   begin
-    SLen := StrLen(S);
-    case Offset of
-      StrUpOffset:
-        begin
-          Len := LCMapString(LOCALE_USER_DEFAULT, LCMAP_UPPERCASE, S, SLen, nil, 0);
-          SetLength(RetValue, Len);
-          if Len > 0 then
-            LCMapString(LOCALE_USER_DEFAULT, LCMAP_UPPERCASE, S, SLen, PChar(RetValue), Len);
-        end;
-      StrLoOffset:
-        begin
-          Len := LCMapString(LOCALE_USER_DEFAULT, LCMAP_LOWERCASE, S, SLen, nil, 0);
-          SetLength(RetValue, Len);
-          if Len > 0 then
-            LCMapString(LOCALE_USER_DEFAULT, LCMAP_LOWERCASE, S, SLen, PChar(RetValue), Len);
-        end
-    else
-      Assert(False, 'StrReOffset not supported');
-      Exit;
-    end;
-    Move(PChar(RetValue)^, S^, Len * SizeOf(Char));
+    repeat
+      C := S^;
+      S^ := StrCaseMap[Offset + Ord(C)];
+      Inc(S);
+    until C = #0;
   end;
 end;
-{$ELSE ~SUPPORTS_UNICODE}
-asm
-        // make sure the string is not null
-
-         TEST    EAX, EAX
-         JZ      @@StrIsNull
-
-        // ebx will hold the case map, esi pointer to Str
-
-         PUSH    EBX
-         PUSH    ESI
-
-        // load case map and prepare variables
-
-        {$IFDEF PIC}
-        LEA     EBX, [EBX][STRCASEMAP + EDX]
-        {$ELSE ~PIC}
-         LEA     EBX, [StrCaseMap + EDX]
-        {$ENDIF ~PIC}
-         MOV     ESI, EAX
-         XOR     EDX, EDX
-         XOR     EAX, EAX
-
-         @@NextChar:
-        // get current char from the string
-
-         MOV     DL, [ESI]
-
-        // check for null char
-
-         TEST    DL, DL
-         JZ      @@Done
-
-        // get corresponding char from the case map
-
-         MOV     AL, [EBX + EDX]
-
-        // store it back in the string
-
-         MOV     [ESI], AL
-
-        // do the same thing with next 3 chars
-
-         MOV     DL, [ESI + 1]
-         TEST    DL, DL
-         JZ      @@Done
-         MOV     AL, [EBX+EDX]
-         MOV     [ESI + 1], AL
-
-         MOV     DL, [ESI + 2]
-         TEST    DL, DL
-         JZ      @@Done
-         MOV     AL, [EBX+EDX]
-         MOV     [ESI + 2], AL
-
-         MOV     DL, [ESI + 3]
-         TEST    DL, DL
-         JZ      @@Done
-         MOV     AL, [EBX+EDX]
-         MOV     [ESI + 3], AL
-
-        // point string to next 4 chars
-
-         ADD     ESI, 4
-         JMP     @@NextChar
-
-         @@Done:
-         POP     ESI
-         POP     EBX
-
-         @@StrIsNull:
-end;
-{$ENDIF ~SUPPORTS_UNICODE}
 
 function StrEndW(Str: PWideChar): PWideChar;
 begin
@@ -942,15 +740,15 @@ end;
 
 function ArrayContainsChar(const Chars: array of Char; const C: Char): Boolean;
 var
-  idx: Integer;
+  idx: SizeInt;
 begin
   Result := ArrayContainsChar(Chars, C, idx);
 end;
 
-function ArrayContainsChar(const Chars: array of Char; const C: Char; out Index: Integer): Boolean;
+function ArrayContainsChar(const Chars: array of Char; const C: Char; out Index: SizeInt): Boolean;
 { optimized version for sorted arrays
 var
-  I, L, H: Integer;
+  I, L, H: SizeInt;
 begin
   L := Low(Chars);
   H := High(Chars);
@@ -981,7 +779,7 @@ end;
 // String Test Routines
 function StrIsAlpha(const S: string): Boolean;
 var
-  I: Integer;
+  I: SizeInt;
 begin
   Result := S <> '';
   for I := 1 to Length(S) do
@@ -996,7 +794,7 @@ end;
 
 function StrIsAlphaNum(const S: string): Boolean;
 var
-  I: Integer;
+  I: SizeInt;
 begin
   Result := S <> '';
   for I := 1 to Length(S) do
@@ -1011,7 +809,7 @@ end;
 
 function StrConsistsofNumberChars(const S: string): Boolean;
 var
-  I: Integer;
+  I: SizeInt;
 begin
   Result := S <> '';
   for I := 1 to Length(S) do
@@ -1026,7 +824,7 @@ end;
 
 function StrContainsChars(const S: string; const Chars: TCharValidator; CheckAll: Boolean): Boolean;
 var
-  I: Integer;
+  I: SizeInt;
 begin
   Result := False;
   if CheckAll then
@@ -1055,7 +853,7 @@ end;
 
 function StrContainsChars(const S: string; const Chars: array of Char; CheckAll: Boolean): Boolean;
 var
-  I: Integer;
+  I: SizeInt;
 begin
   if CheckAll then
   begin
@@ -1081,7 +879,7 @@ end;
 
 function StrIsAlphaNumUnderscore(const S: string): Boolean;
 var
-  I: Integer;
+  I: SizeInt;
   C: Char;
 begin
   for I := 1 to Length(S) do
@@ -1100,7 +898,7 @@ end;
 
 function StrIsDigit(const S: string): Boolean;
 var
-  I: Integer;
+  I: SizeInt;
 begin
   Result := S <> '';
   for I := 1 to Length(S) do
@@ -1115,7 +913,7 @@ end;
 
 function StrIsSubset(const S: string; const ValidChars: TCharValidator): Boolean;
 var
-  I: Integer;
+  I: SizeInt;
 begin
   for I := 1 to Length(S) do
   begin
@@ -1129,7 +927,7 @@ end;
 
 function StrIsSubset(const S: string; const ValidChars: array of Char): Boolean;
 var
-  I: Integer;
+  I: SizeInt;
 begin
   for I := 1 to Length(S) do
   begin
@@ -1148,7 +946,7 @@ end;
 
 //=== String Transformation Routines =========================================
 
-function StrCenter(const S: string; L: Integer; C: Char = ' '): string;
+function StrCenter(const S: string; L: SizeInt; C: Char = ' '): string;
 begin
   if Length(S) < L then
   begin
@@ -1159,14 +957,14 @@ begin
     Result := S;
 end;
 
-function StrCharPosLower(const S: string; CharPos: Integer): string;
+function StrCharPosLower(const S: string; CharPos: SizeInt): string;
 begin
   Result := S;
   if (CharPos > 0) and (CharPos <= Length(S)) then
     Result[CharPos] := CharLower(Result[CharPos]);
 end;
 
-function StrCharPosUpper(const S: string; CharPos: Integer): string;
+function StrCharPosUpper(const S: string; CharPos: SizeInt): string;
 begin
   Result := S;
   if (CharPos > 0) and (CharPos <= Length(S)) then
@@ -1180,7 +978,7 @@ end;
 
 function StrEnsureNoPrefix(const Prefix, Text: string): string;
 var
-  PrefixLen: Integer;
+  PrefixLen: SizeInt;
 begin
   PrefixLen := Length(Prefix);
   if Copy(Text, 1, PrefixLen) = Prefix then
@@ -1191,8 +989,8 @@ end;
 
 function StrEnsureNoSuffix(const Suffix, Text: string): string;
 var
-  SuffixLen: Integer;
-  StrLength: Integer;
+  SuffixLen: SizeInt;
+  StrLength: SizeInt;
 begin
   SuffixLen := Length(Suffix);
   StrLength := Length(Text);
@@ -1204,7 +1002,7 @@ end;
 
 function StrEnsurePrefix(const Prefix, Text: string): string;
 var
-  PrefixLen: Integer;
+  PrefixLen: SizeInt;
 begin
   PrefixLen := Length(Prefix);
   if Copy(Text, 1, PrefixLen) = Prefix then
@@ -1215,7 +1013,7 @@ end;
 
 function StrEnsureSuffix(const Suffix, Text: string): string;
 var
-  SuffixLen: Integer;
+  SuffixLen: SizeInt;
 begin
   SuffixLen := Length(Suffix);
   if Copy(Text, Length(Text) - SuffixLen + 1, SuffixLen) = Suffix then
@@ -1226,13 +1024,13 @@ end;
 
 function StrEscapedToString(const S: string): string;
 var
-  I, Len: Integer;
+  I, Len: SizeInt;
 
   procedure HandleHexEscapeSeq;
   const
     HexDigits = string('0123456789abcdefABCDEF');
   var
-    Val, N: Integer;
+    Val, N: SizeInt;
   begin
     N := Pos(S[I + 1], HexDigits) - 1;
     if N < 0 then
@@ -1268,7 +1066,7 @@ var
   const
     OctDigits = string('01234567');
   var
-    Val, N: Integer;
+    Val, N: SizeInt;
   begin
     // first digit
     Val := Pos(S[I], OctDigits) - 1;
@@ -1367,7 +1165,7 @@ begin
 end;
 
 procedure StrMove(var Dest: string; const Source: string;
-  const ToIndex, FromIndex, Count: Integer);
+  const ToIndex, FromIndex, Count: SizeInt);
 begin
   // Check strings
   if (Source = '') or (Length(Dest) = 0) then
@@ -1384,9 +1182,9 @@ begin
   Move(Source[FromIndex], Dest[ToIndex], Count * SizeOf(Char));
 end;
 
-function StrPadLeft(const S: string; Len: Integer; C: Char): string;
+function StrPadLeft(const S: string; Len: SizeInt; C: Char): string;
 var
-  L: Integer;
+  L: SizeInt;
 begin
   L := Length(S);
   if L < Len then
@@ -1395,9 +1193,9 @@ begin
     Result := S;
 end;
 
-function StrPadRight(const S: string; Len: Integer; C: Char): string;
+function StrPadRight(const S: string; Len: SizeInt; C: Char): string;
 var
-  L: Integer;
+  L: SizeInt;
 begin
   L := Length(S);
   if L < Len then
@@ -1424,7 +1222,7 @@ end;
 
 function StrQuote(const S: string; C: Char): string;
 var
-  L: Integer;
+  L: SizeInt;
 begin
   L := Length(S);
   Result := S;
@@ -1443,7 +1241,7 @@ end;
 function StrRemoveChars(const S: string; const Chars: TCharValidator): string;
 var
   Source, Dest: PChar;
-  Len, Index:   Integer;
+  Len, Index:   SizeInt;
 begin
   Len := Length(S);
   SetLength(Result, Len);
@@ -1465,7 +1263,7 @@ end;
 function StrRemoveChars(const S: string; const Chars: array of Char): string;
 var
   Source, Dest: PChar;
-  Len, Index:   Integer;
+  Len, Index:   SizeInt;
 begin
   Len := Length(S);
   SetLength(Result, Len);
@@ -1486,8 +1284,8 @@ end;
 
 function StrRemoveLeadingChars(const S: string; const Chars: TCharValidator): string;
 var
-  Len : Integer;
-  I: Integer;
+  Len : SizeInt;
+  I: SizeInt;
 begin
   Len := Length(S);
   I := 1;
@@ -1498,8 +1296,8 @@ end;
 
 function StrRemoveLeadingChars(const S: string; const Chars: array of Char): string;
 var
-  Len : Integer;
-  I: Integer;
+  Len : SizeInt;
+  I: SizeInt;
 begin
   Len := Length(S);
   I := 1;
@@ -1510,7 +1308,7 @@ end;
 
 function StrRemoveEndChars(const S: string; const Chars: TCharValidator): string;
 var
-  Len :   Integer;
+  Len :   SizeInt;
 begin
   Len := Length(S);
   while (Len > 0) and Chars(s[Len]) do
@@ -1520,7 +1318,7 @@ end;
 
 function StrRemoveEndChars(const S: string; const Chars: array of Char): string;
 var
-  Len :   Integer;
+  Len :   SizeInt;
 begin
   Len := Length(S);
   while (Len > 0) and ArrayContainsChar(Chars, s[Len]) do
@@ -1531,7 +1329,7 @@ end;
 function StrKeepChars(const S: string; const Chars: TCharValidator): string;
 var
   Source, Dest: PChar;
-  Len, Index:   Integer;
+  Len, Index:   SizeInt;
 begin
   Len := Length(S);
   SetLength(Result, Len);
@@ -1553,7 +1351,7 @@ end;
 function StrKeepChars(const S: string; const Chars: array of Char): string;
 var
   Source, Dest: PChar;
-  Len, Index:   Integer;
+  Len, Index:   SizeInt;
 begin
   Len := Length(S);
   SetLength(Result, Len);
@@ -1572,9 +1370,9 @@ begin
   SetLength(Result, Dest - PChar(Result));
 end;
 
-function StrRepeat(const S: string; Count: Integer): string;
+function StrRepeat(const S: string; Count: SizeInt): string;
 var
-  Len, Index: Integer;
+  Len, Index: SizeInt;
   Dest, Source: PChar;
 begin
   Len := Length(S);
@@ -1589,9 +1387,9 @@ begin
     end;
 end;
 
-function StrRepeatLength(const S: string; L: Integer): string;
+function StrRepeatLength(const S: string; L: SizeInt): string;
 var
-  Len: Integer;
+  Len: SizeInt;
   Dest: PChar;
 begin
   Result := '';
@@ -1622,7 +1420,7 @@ var
   SearchLength,          { length of search string }
   ReplaceLength,         { length of replace string }
   BufferLength,          { length of temporary result buffer }
-  ResultLength: Integer; { length of result string }
+  ResultLength: SizeInt; { length of result string }
   C: Char;               { first character of search string }
   IgnoreCase: Boolean;
 begin
@@ -1742,7 +1540,7 @@ end;
 
 function StrReplaceChar(const S: string; const Source, Replace: Char): string;
 var
-  I: Integer;
+  I: SizeInt;
 begin
   Result := S;
   for I := 1 to Length(S) do
@@ -1752,7 +1550,7 @@ end;
 
 function StrReplaceChars(const S: string; const Chars: TCharValidator; Replace: Char): string;
 var
-  I: Integer;
+  I: SizeInt;
 begin
   Result := S;
   for I := 1 to Length(S) do
@@ -1762,7 +1560,7 @@ end;
 
 function StrReplaceChars(const S: string; const Chars: array of Char; Replace: Char): string;
 var
-  I: Integer;
+  I: SizeInt;
 begin
   Result := S;
   for I := 1 to Length(S) do
@@ -1773,7 +1571,7 @@ end;
 function StrReplaceButChars(const S: string; const Chars: TCharValidator;
   Replace: Char): string;
 var
-  I: Integer;
+  I: SizeInt;
 begin
   Result := S;
   for I := 1 to Length(S) do
@@ -1783,7 +1581,7 @@ end;
 
 function StrReplaceButChars(const S: string; const Chars: array of Char; Replace: Char): string;
 var
-  I: Integer;
+  I: SizeInt;
 begin
   Result := S;
   for I := 1 to Length(S) do
@@ -1824,7 +1622,7 @@ end;
 function StrSmartCase(const S: string; const Delimiters: TCharValidator): string;
 var
   Source, Dest: PChar;
-  Index, Len:   Integer;
+  Index, Len:   SizeInt;
   InternalDelimiters: TCharValidator;
 begin
   Result := '';
@@ -1857,7 +1655,7 @@ end;
 function StrSmartCase(const S: string; const Delimiters: array of Char): string;
 var
   Source, Dest: PChar;
-  Index, Len:   Integer;
+  Index, Len:   SizeInt;
 begin
   Result := '';
 
@@ -1884,7 +1682,7 @@ end;
 
 function StrStringToEscaped(const S: string): string;
 var
-  I: Integer;
+  I: SizeInt;
 begin
   Result := '';
   for I := 1 to Length(S) do
@@ -1911,7 +1709,7 @@ begin
     else
       // Characters < ' ' are escaped with hex sequence
       if S[I] < #32 then
-        Result := Result + Format('\x%.2x', [Integer(S[I])])
+        Result := Result + Format('\x%.2x', [SizeInt(S[I])])
       else
         Result := Result + S[I];
     end;
@@ -1920,7 +1718,7 @@ end;
 
 function StrStripNonNumberChars(const S: string): string;
 var
-  I: Integer;
+  I: SizeInt;
   C: Char;
 begin
   Result := '';
@@ -1934,8 +1732,8 @@ end;
 
 function StrToHex(const Source: string): string;
 var
-  Index: Integer;
-  C, L, N: Integer;
+  Index: SizeInt;
+  C, L, N: SizeInt;
   BL, BH: Byte;
   S:     string;
 begin
@@ -1965,7 +1763,7 @@ begin
         Result := '';
         Exit;
       end;
-      Result[N] := Char((BH shl 4) + BL);
+      Result[N] := Char((BH shl 4) or BL);
       Inc(N);
     end;
   end;
@@ -1973,7 +1771,7 @@ end;
 
 function StrTrimCharLeft(const S: string; C: Char): string;
 var
-  I, L: Integer;
+  I, L: SizeInt;
 begin
   I := 1;
   L := Length(S);
@@ -1984,7 +1782,7 @@ end;
 
 function StrTrimCharsLeft(const S: string; const Chars: TCharValidator): string;
 var
-  I, L: Integer;
+  I, L: SizeInt;
 begin
   I := 1;
   L := Length(S);
@@ -1995,7 +1793,7 @@ end;
 
 function StrTrimCharsLeft(const S: string; const Chars: array of Char): string;
 var
-  I, L: Integer;
+  I, L: SizeInt;
 begin
   I := 1;
   L := Length(S);
@@ -2006,7 +1804,7 @@ end;
 
 function StrTrimCharRight(const S: string; C: Char): string;
 var
-  I: Integer;
+  I: SizeInt;
 begin
   I := Length(S);
   while (I >= 1) and (S[I] = C) do
@@ -2016,7 +1814,7 @@ end;
 
 function StrTrimCharsRight(const S: string; const Chars: TCharValidator): string;
 var
-  I: Integer;
+  I: SizeInt;
 begin
   I := Length(S);
   while (I >= 1) and Chars(S[I]) do
@@ -2026,7 +1824,7 @@ end;
 
 function StrTrimCharsRight(const S: string; const Chars: array of Char): string;
 var
-  I: Integer;
+  I: SizeInt;
 begin
   I := Length(S);
   while (I >= 1) and ArrayContainsChar(Chars, S[I]) do
@@ -2037,7 +1835,7 @@ end;
 function StrTrimQuotes(const S: string): string;
 var
   First, Last: Char;
-  L: Integer;
+  L: SizeInt;
 begin
   L := Length(S);
   if L > 1 then
@@ -2082,7 +1880,7 @@ begin
     if P^.RefCount = -1 then
       UniqueString(S)
     else
-      InterLockedIncrement(P^.RefCount);
+      LockedInc(P^.RefCount);
   end;
 end;
 
@@ -2102,12 +1900,12 @@ begin
           Pointer(S) := nil;
         end;
     else
-      InterLockedDecrement(P^.RefCount);
+      LockedDec(P^.RefCount);
     end;
   end;
 end;
 
-function StrLength(const S: string): Longint;
+function StrLength(const S: string): SizeInt;
 var
   P: PStrRec;
 begin
@@ -2120,7 +1918,7 @@ begin
   end;
 end;
 
-function StrRefCount(const S: string): Longint;
+function StrRefCount(const S: string): SizeInt;
 var
   P: PStrRec;
 begin
@@ -2135,7 +1933,7 @@ end;
 
 procedure StrResetLength(var S: WideString);
 var
-  I: Integer;
+  I: SizeInt;
 begin
   for I := 0 to Length(S) - 1 do
     if S[I + 1] = #0 then
@@ -2147,7 +1945,7 @@ end;
 
 procedure StrResetLength(var S: AnsiString);
 var
-  I: Integer;
+  I: SizeInt;
 begin
   for I := 0 to Length(S) - 1 do
     if S[I + 1] = #0 then
@@ -2159,7 +1957,7 @@ end;
 
 procedure StrResetLength(S: TJclStringBuilder);
 var
-  I: Integer;
+  I: SizeInt;
 begin
   if S <> nil then
     for I := 0 to S.Length - 1 do
@@ -2173,7 +1971,7 @@ end;
 {$IFDEF SUPPORTS_UNICODE_STRING}
 procedure StrResetLength(var S: UnicodeString);
 var
-  I: Integer;
+  I: SizeInt;
 begin
   for I := 0 to Length(S) - 1 do
     if S[I + 1] = #0 then
@@ -2186,9 +1984,9 @@ end;
 
 //=== String Search and Replace Routines =====================================
 
-function StrCharCount(const S: string; C: Char): Integer;
+function StrCharCount(const S: string; C: Char): SizeInt;
 var
-  I: Integer;
+  I: SizeInt;
 begin
   Result := 0;
   for I := 1 to Length(S) do
@@ -2196,9 +1994,9 @@ begin
       Inc(Result);
 end;
 
-function StrCharsCount(const S: string; const Chars: TCharValidator): Integer;
+function StrCharsCount(const S: string; const Chars: TCharValidator): SizeInt;
 var
-  I: Integer;
+  I: SizeInt;
 begin
   Result := 0;
   for I := 1 to Length(S) do
@@ -2206,9 +2004,9 @@ begin
       Inc(Result);
 end;
 
-function StrCharsCount(const S: string; const Chars: array of Char): Integer;
+function StrCharsCount(const S: string; const Chars: array of Char): SizeInt;
 var
-  I: Integer;
+  I: SizeInt;
 begin
   Result := 0;
   for I := 1 to Length(S) do
@@ -2216,9 +2014,9 @@ begin
       Inc(Result);
 end;
 
-function StrStrCount(const S, SubS: string): Integer;
+function StrStrCount(const S, SubS: string): SizeInt;
 var
-  I: Integer;
+  I: SizeInt;
 begin
   Result := 0;
   if (Length(SubS) > Length(S)) or (Length(SubS) = 0) or (Length(S) = 0) then
@@ -2264,10 +2062,10 @@ end;
 {19}  Test(StrCompareRange('Aa', 'A', 1, 2), 0);
 {20}  Test(StrCompareRange('Ba', 'A', 1, 2), 1);
 *)
-function StrCompareRangeEx(const S1, S2: string; Index, Count: Integer; CaseSensitive: Boolean): Integer;
+function StrCompareRangeEx(const S1, S2: string; Index, Count: SizeInt; CaseSensitive: Boolean): SizeInt;
 var
-  Len1, Len2: Integer;
-  I: Integer;
+  Len1, Len2: SizeInt;
+  I: SizeInt;
   C1, C2: Char;
 begin
   if Pointer(S1) = Pointer(S2) then
@@ -2331,9 +2129,9 @@ begin
   end;
 end;
 
-function StrCompare(const S1, S2: string; CaseSensitive: Boolean): Integer;
+function StrCompare(const S1, S2: string; CaseSensitive: Boolean): SizeInt;
 var
-  Len1, Len2: Integer;
+  Len1, Len2: SizeInt;
 begin
   if Pointer(S1) = Pointer(S2) then
     Result := 0
@@ -2347,14 +2145,21 @@ begin
   end;
 end;
 
-function StrCompareRange(const S1, S2: string; Index, Count: Integer; CaseSensitive: Boolean): Integer;
+function StrCompareRange(const S1, S2: string; Index, Count: SizeInt; CaseSensitive: Boolean): SizeInt;
 begin
   Result := StrCompareRangeEx(S1, S2, Index, Count, CaseSensitive);
 end;
 
-procedure StrFillChar(var S; Count: Integer; C: Char);
+procedure StrFillChar(var S; Count: SizeInt; C: Char);
 {$IFDEF SUPPORTS_UNICODE}
 asm
+        // 32 --> EAX S
+        //        EDX Count
+        //        ECX C
+        // 64 --> RCX S
+        //        RDX Count
+        //        R8  C
+        {$IFDEF CPU32}
         DEC     EDX
         JS      @@Leave
 @@Loop:
@@ -2362,6 +2167,18 @@ asm
         ADD     EAX, 2
         DEC     EDX
         JNS     @@Loop
+        {$ENDIF CPU32}
+        {$IFDEF CPU64}
+        DEC     RDX
+        MOV     RAX,RCX
+        MOV     RCX,R8
+        JS      @@Leave
+@@Loop:
+        MOV     [RAX], CX
+        ADD     RAX, 2
+        DEC     RDX
+        JNS     @@Loop
+        {$ENDIF CPU64}
 @@Leave:
 end;
 {$ELSE ~SUPPORTS_UNICODE}
@@ -2371,16 +2188,16 @@ begin
 end;
 {$ENDIF ~SUPPORTS_UNICODE}
 
-function StrRepeatChar(C: Char; Count: Integer): string;
+function StrRepeatChar(C: Char; Count: SizeInt): string;
 begin
   SetLength(Result, Count);
   if Count > 0 then
     StrFillChar(Result[1], Count, C);
 end;
 
-function StrFind(const Substr, S: string; const Index: Integer): Integer;
+function StrFind(const Substr, S: string; const Index: SizeInt): SizeInt;
 var
-  pos: Integer;
+  pos: SizeInt;
 begin
   if (SubStr <> '') and (S <> '') then
   begin
@@ -2399,9 +2216,9 @@ begin
   Result := StrPrefixIndex(S, Prefixes) > -1;
 end;
 
-function StrIndex(const S: string; const List: array of string; CaseSensitive: Boolean): Integer;
+function StrIndex(const S: string; const List: array of string; CaseSensitive: Boolean): SizeInt;
 var
-  I: Integer;
+  I: SizeInt;
 begin
   Result := -1;
   for I := Low(List) to High(List) do
@@ -2419,19 +2236,19 @@ begin
   Result := StrIPrefixIndex(S, Prefixes) > -1;
 end;
 
-function StrILastPos(const SubStr, S: string): Integer;
+function StrILastPos(const SubStr, S: string): SizeInt;
 begin
   Result := StrLastPos(StrUpper(SubStr), StrUpper(S));
 end;
 
-function StrIPos(const SubStr, S: string): Integer;
+function StrIPos(const SubStr, S: string): SizeInt;
 begin
   Result := Pos(StrUpper(SubStr), StrUpper(S));
 end;
 
-function StrIPrefixIndex(const S: string; const Prefixes: array of string): Integer;
+function StrIPrefixIndex(const S: string; const Prefixes: array of string): SizeInt;
 var
-  I: Integer;
+  I: SizeInt;
   Test: string;
 begin
   Result := -1;
@@ -2451,7 +2268,7 @@ begin
   Result := StrIndex(S, List) > -1;
 end;
 
-function StrLastPos(const SubStr, S: string): Integer;
+function StrLastPos(const SubStr, S: string): SizeInt;
 var
   Last, Current: PChar;
 begin
@@ -2475,9 +2292,9 @@ end;
 // IMPORTANT NOTE: The StrMatch function does currently not work with the Asterix (*)
 // (*) acts like (?)
 
-function StrMatch(const Substr, S: string; Index: Integer): Integer;
+function StrMatch(const Substr, S: string; Index: SizeInt): SizeInt;
 var
-  SI, SubI, SLen, SubLen: Integer;
+  SI, SubI, SLen, SubLen: SizeInt;
   SubC: Char;
 begin
   SLen := Length(S);
@@ -2510,7 +2327,7 @@ begin
 end;
 
 // Derived from "Like" by Michael Winter
-function StrMatches(const Substr, S: string; const Index: Integer): Boolean;
+function StrMatches(const Substr, S: string; const Index: SizeInt): Boolean;
 var
   StringPtr: PChar;
   PatternPtr: PChar;
@@ -2618,9 +2435,9 @@ begin
   until False;
 end;
 
-function StrNPos(const S, SubStr: string; N: Integer): Integer;
+function StrNPos(const S, SubStr: string; N: SizeInt): SizeInt;
 var
-  I, P: Integer;
+  I, P: SizeInt;
 begin
   if N < 1 then
   begin
@@ -2646,9 +2463,9 @@ begin
   end;
 end;
 
-function StrNIPos(const S, SubStr: string; N: Integer): Integer;
+function StrNIPos(const S, SubStr: string; N: SizeInt): SizeInt;
 var
-  I, P: Integer;
+  I, P: SizeInt;
 begin
   if N < 1 then
   begin
@@ -2674,9 +2491,9 @@ begin
   end;
 end;
 
-function StrPrefixIndex(const S: string; const Prefixes: array of string): Integer;
+function StrPrefixIndex(const S: string; const Prefixes: array of string): SizeInt;
 var
-  I: Integer;
+  I: SizeInt;
   Test: string;
 begin
   Result := -1;
@@ -2691,11 +2508,13 @@ begin
   end;
 end;
 
-function StrSearch(const Substr, S: string; const Index: Integer): Integer;
+function StrSearch(const Substr, S: string; const Index: SizeInt): SizeInt;
 var
   SP, SPI, SubP: PChar;
+  SLen: SizeInt;
 begin
-  if Index <= Length(S) then
+  SLen := Length(S);
+  if Index <= SLen then
   begin
     SP := PChar(S);
     SubP := PChar(Substr);
@@ -2715,7 +2534,7 @@ end;
 
 function StrAfter(const SubStr, S: string): string;
 var
-  P: Integer;
+  P: SizeInt;
 begin
   P := StrFind(SubStr, S, 1); // StrFind is case-insensitive pos
   if P <= 0 then
@@ -2726,7 +2545,7 @@ end;
 
 function StrBefore(const SubStr, S: string): string;
 var
-  P: Integer;
+  P: SizeInt;
 begin
   P := StrFind(SubStr, S, 1);
   if P <= 0 then
@@ -2738,8 +2557,8 @@ end;
 
 function StrBetween(const S: string; const Start, Stop: Char): string;
 var
-  PosStart, PosEnd: Integer;
-  L: Integer;
+  PosStart, PosEnd: SizeInt;
+  L: SizeInt;
 begin
   PosStart := Pos(Start, S);
   PosEnd := StrSearch(Stop, S, PosStart + 1);  // PosEnd has to be after PosStart.
@@ -2753,27 +2572,27 @@ begin
     Result := '';
 end;
 
-function StrChopRight(const S: string; N: Integer): string;
+function StrChopRight(const S: string; N: SizeInt): string;
 begin
   Result := Copy(S, 1, Length(S) - N);
 end;
 
-function StrLeft(const S: string; Count: Integer): string;
+function StrLeft(const S: string; Count: SizeInt): string;
 begin
   Result := Copy(S, 1, Count);
 end;
 
-function StrMid(const S: string; Start, Count: Integer): string;
+function StrMid(const S: string; Start, Count: SizeInt): string;
 begin
   Result := Copy(S, Start, Count);
 end;
 
-function StrRestOf(const S: string; N: Integer): string;
+function StrRestOf(const S: string; N: SizeInt): string;
 begin
   Result := Copy(S, N, (Length(S) - N + 1));
 end;
 
-function StrRight(const S: string; Count: Integer): string;
+function StrRight(const S: string; Count: SizeInt): string;
 begin
   Result := Copy(S, Length(S) - Count + 1, Count);
 end;
@@ -2925,7 +2744,7 @@ end;
 
 function StringsToPCharVector(var Dest: PCharVector; const Source: TStrings): PCharVector;
 var
-  I: Integer;
+  I: SizeInt;
   S: string;
   List: array of PChar;
 begin
@@ -2943,7 +2762,7 @@ begin
   Result := Dest;
 end;
 
-function PCharVectorCount(Source: PCharVector): Integer;
+function PCharVectorCount(Source: PCharVector): SizeInt;
 begin
   Result := 0;
   if Source <> nil then
@@ -2958,7 +2777,7 @@ end;
 
 procedure PCharVectorToStrings(const Dest: TStrings; Source: PCharVector);
 var
-  I, Count: Integer;
+  I, Count: SizeInt;
   List:     array of PChar;
 begin
   Assert(Dest <> nil);
@@ -2980,7 +2799,7 @@ end;
 
 procedure FreePCharVector(var Dest: PCharVector);
 var
-  I, Count: Integer;
+  I, Count: SizeInt;
   List:     array of PChar;
 begin
   if Dest <> nil then
@@ -3028,7 +2847,7 @@ end;
 
 //=== Character Search and Replace ===========================================
 
-function CharLastPos(const S: string; const C: Char; const Index: Integer): Integer;
+function CharLastPos(const S: string; const C: Char; const Index: SizeInt): SizeInt;
 begin
   if (Index > 0) and (Index <= Length(S)) then
   begin
@@ -3039,7 +2858,7 @@ begin
   Result := 0;
 end;
 
-function CharPos(const S: string; const C: Char; const Index: Integer): Integer;
+function CharPos(const S: string; const C: Char; const Index: SizeInt): SizeInt;
 begin
   if (Index > 0) and (Index <= Length(S)) then
   begin
@@ -3050,7 +2869,7 @@ begin
   Result := 0;
 end;
 
-function CharIPos(const S: string; C: Char; const Index: Integer): Integer;
+function CharIPos(const S: string; C: Char; const Index: SizeInt): SizeInt;
 begin
   if (Index > 0) and (Index <= Length(S)) then
   begin
@@ -3062,10 +2881,10 @@ begin
   Result := 0;
 end;
 
-function CharReplace(var S: string; const Search, Replace: Char): Integer;
+function CharReplace(var S: string; const Search, Replace: Char): SizeInt;
 var
   P: PChar;
-  Index, Len: Integer;
+  Index, Len: SizeInt;
 begin
   Result := 0;
   if Search <> Replace then
@@ -3089,7 +2908,7 @@ end;
 
 function StringsToMultiSz(var Dest: PMultiSz; const Source: TStrings): PMultiSz;
 var
-  I, TotalLength: Integer;
+  I, TotalLength: SizeInt;
   P: PMultiSz;
 begin
   Assert(Source <> nil);
@@ -3133,7 +2952,7 @@ begin
   end;
 end;
 
-function MultiSzLength(const Source: PMultiSz): Integer;
+function MultiSzLength(const Source: PMultiSz): SizeInt;
 var
   P: PMultiSz;
 begin
@@ -3150,7 +2969,7 @@ begin
   end;
 end;
 
-procedure AllocateMultiSz(var Dest: PMultiSz; Len: Integer);
+procedure AllocateMultiSz(var Dest: PMultiSz; Len: SizeInt);
 begin
   if Len > 0 then
     GetMem(Dest, Len * SizeOf(Char))
@@ -3167,7 +2986,7 @@ end;
 
 function MultiSzDup(const Source: PMultiSz): PMultiSz;
 var
-  Len: Integer;
+  Len: SizeInt;
 begin
   if Source <> nil then
   begin
@@ -3190,12 +3009,12 @@ begin
   JclAnsiStrings.MultiSzToStrings(Dest, Source);
 end;
 
-function AnsiMultiSzLength(const Source: PAnsiMultiSz): Integer;
+function AnsiMultiSzLength(const Source: PAnsiMultiSz): SizeInt;
 begin
   Result := JclAnsiStrings.MultiSzLength(Source);
 end;
 
-procedure AllocateAnsiMultiSz(var Dest: PAnsiMultiSz; Len: Integer);
+procedure AllocateAnsiMultiSz(var Dest: PAnsiMultiSz; Len: SizeInt);
 begin
   JclAnsiStrings.AllocateMultiSz(Dest, Len);
 end;
@@ -3220,12 +3039,12 @@ begin
   JclWideStrings.MultiSzToStrings(Dest, Source);
 end;
 
-function WideMultiSzLength(const Source: PWideMultiSz): Integer;
+function WideMultiSzLength(const Source: PWideMultiSz): SizeInt;
 begin
   Result := JclWideStrings.MultiSzLength(Source);
 end;
 
-procedure AllocateWideMultiSz(var Dest: PWideMultiSz; Len: Integer);
+procedure AllocateWideMultiSz(var Dest: PWideMultiSz; Len: SizeInt);
 begin
   JclWideStrings.AllocateMultiSz(Dest, Len);
 end;
@@ -3244,7 +3063,7 @@ end;
 
 procedure StrToStrings(S, Sep: string; const List: TStrings; const AllowEmptyString: Boolean = True);
 var
-  I, L: Integer;
+  I, L: SizeInt;
   Left: string;
 begin
   Assert(List <> nil);
@@ -3270,7 +3089,7 @@ end;
 
 procedure StrIToStrings(S, Sep: string; const List: TStrings; const AllowEmptyString: Boolean = True);
 var
-  I, L: Integer;
+  I, L: SizeInt;
   LowerCaseStr: string;
   Left: string;
 begin
@@ -3300,7 +3119,7 @@ end;
 
 function StringsToStr(const List: TStrings; const Sep: string; const AllowEmptyString: Boolean): string;
 var
-  I, L: Integer;
+  I, L: SizeInt;
 begin
   Result := '';
   for I := 0 to List.Count - 1 do
@@ -3322,7 +3141,7 @@ end;
 
 procedure TrimStrings(const List: TStrings; DeleteIfEmpty: Boolean);
 var
-  I: Integer;
+  I: SizeInt;
 begin
   Assert(List <> nil);
   List.BeginUpdate;
@@ -3340,7 +3159,7 @@ end;
 
 procedure TrimStringsRight(const List: TStrings; DeleteIfEmpty: Boolean);
 var
-  I: Integer;
+  I: SizeInt;
 begin
   Assert(List <> nil);
   List.BeginUpdate;
@@ -3358,7 +3177,7 @@ end;
 
 procedure TrimStringsLeft(const List: TStrings; DeleteIfEmpty: Boolean);
 var
-  I: Integer;
+  I: SizeInt;
 begin
   Assert(List <> nil);
   List.BeginUpdate;
@@ -3396,7 +3215,7 @@ end;
 function FileToString(const FileName: string): {$IFDEF COMPILER12_UP}RawByteString{$ELSE}AnsiString{$ENDIF};
 var
   fs: TFileStream;
-  Len: Integer;
+  Len: SizeInt;
 begin
   fs := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);
   try
@@ -3413,7 +3232,7 @@ procedure StringToFile(const FileName: string; const Contents: {$IFDEF COMPILER1
   Append: Boolean);
 var
   FS: TFileStream;
-  Len: Integer;
+  Len: SizeInt;
 begin
   if Append and FileExists(filename) then
     FS := TFileStream.Create(FileName, fmOpenReadWrite or fmShareDenyWrite)
@@ -3432,7 +3251,7 @@ end;
 
 function StrToken(var S: string; Separator: Char): string;
 var
-  I: Integer;
+  I: SizeInt;
 begin
   I := Pos(Separator, S);
   if I <> 0 then
@@ -3471,9 +3290,9 @@ begin
   end;
 end;
 
-function StrWord(const S: string; var Index: Integer; out Word: string): Boolean;
+function StrWord(const S: string; var Index: SizeInt; out Word: string): Boolean;
 var
-  Start: Integer;
+  Start: SizeInt;
   C: Char;
 begin
   Word := '';
@@ -3586,7 +3405,7 @@ end;
 function StrToFloatSafe(const S: string): Float;
 var
   Temp: string;
-  I, J, K: Integer;
+  I, J, K: SizeInt;
   SwapSeparators, IsNegative: Boolean;
   DecSep, ThouSep, C: Char;
 begin
@@ -3658,7 +3477,7 @@ begin
   Result := Trunc(StrToFloatSafe(S));
 end;
 
-procedure StrNormIndex(const StrLen: Integer; var Index: Integer; var Count: Integer); overload;
+procedure StrNormIndex(const StrLen: SizeInt; var Index: SizeInt; var Count: SizeInt); overload;
 begin
   Index := Max(1, Min(Index, StrLen + 1));
   Count := Max(0, Min(Count, StrLen + 1 - Index));
@@ -3666,7 +3485,7 @@ end;
 
 function ArrayOf(List: TStrings): TDynStringArray;
 var
-  I: Integer;
+  I: SizeInt;
 begin
   if List <> nil then
   begin
@@ -3684,7 +3503,7 @@ const
 type
   TInterfacedObjectAccess = class(TInterfacedObject);
 
-procedure MoveChar(const Source; var Dest; Count: Integer);
+procedure MoveChar(const Source; var Dest; Count: SizeInt);
 begin
   if Count > 0 then
     Move(Source, Dest, Count * SizeOf(Char));
@@ -3708,11 +3527,11 @@ end;
 function DotNetFormat(const Fmt: string; const Args: array of const): string;
 var
   F, P: PChar;
-  Len, Capacity, Count: Integer;
-  Index, ErrorCode: Integer;
+  Len, Capacity, Count: SizeInt;
+  Index, ErrorCode: SizeInt;
   S:    string;
 
-  procedure Grow(Count: Integer);
+  procedure Grow(Count: SizeInt);
   begin
     if Len + Count > Capacity then
     begin
@@ -3733,7 +3552,7 @@ var
     Result := False;
   end;
 
-  function GetStringOf(const V: TVarData; Index: Integer): string; overload;
+  function GetStringOf(const V: TVarData; Index: SizeInt): string; overload;
   begin
     case V.VType of
       varEmpty, varNull:
@@ -3781,7 +3600,7 @@ var
     end;
   end;
 
-  function GetStringOf(Index: Integer): string; overload;
+  function GetStringOf(Index: SizeInt): string; overload;
   var
     V: TVarRec;
     Intf: IToString;
@@ -3928,21 +3747,21 @@ end;
 
 //=== { TJclStringBuilder } =====================================================
 
-constructor TJclStringBuilder.Create(Capacity: Integer; MaxCapacity: Integer);
+constructor TJclStringBuilder.Create(Capacity: SizeInt; MaxCapacity: SizeInt);
 begin
   inherited Create;
   SetLength(FChars, Capacity);
   FMaxCapacity := MaxCapacity;
 end;
 
-constructor TJclStringBuilder.Create(const Value: string; Capacity: Integer);
+constructor TJclStringBuilder.Create(const Value: string; Capacity: SizeInt);
 begin
   Create(Capacity);
   Append(Value);
 end;
 
 constructor TJclStringBuilder.Create(const Value: string; StartIndex,
-  Length, Capacity: Integer);
+  Length, Capacity: SizeInt);
 begin
   Create(Capacity);
   Append(Value, StartIndex + 1, Length);
@@ -3956,14 +3775,14 @@ begin
     Result := '';
 end;
 
-function TJclStringBuilder.EnsureCapacity(Capacity: Integer): Integer;
+function TJclStringBuilder.EnsureCapacity(Capacity: SizeInt): SizeInt;
 begin
   if System.Length(FChars) < Capacity then
     SetCapacity(Capacity);
   Result := System.Length(FChars);
 end;
 
-procedure TJclStringBuilder.SetCapacity(const Value: Integer);
+procedure TJclStringBuilder.SetCapacity(const Value: SizeInt);
 begin
   if Value <> System.Length(FChars) then
   begin
@@ -3973,29 +3792,29 @@ begin
   end;
 end;
 
-function TJclStringBuilder.GetChars(Index: Integer): Char;
+function TJclStringBuilder.GetChars(Index: SizeInt): Char;
 begin
   Result := FChars[Index];
 end;
 
-procedure TJclStringBuilder.SetChars(Index: Integer; const Value: Char);
+procedure TJclStringBuilder.SetChars(Index: SizeInt; const Value: Char);
 begin
   FChars[Index] := Value;
 end;
 
-procedure TJclStringBuilder.Set_Length(const Value: Integer);
+procedure TJclStringBuilder.Set_Length(const Value: SizeInt);
 begin
   FLength := Value;
 end;
 
-function TJclStringBuilder.GetCapacity: Integer;
+function TJclStringBuilder.GetCapacity: SizeInt;
 begin
   Result := System.Length(FChars);
 end;
 
-function TJclStringBuilder.AppendPChar(Value: PChar; Count: Integer; RepeatCount: Integer): TJclStringBuilder;
+function TJclStringBuilder.AppendPChar(Value: PChar; Count: SizeInt; RepeatCount: SizeInt): TJclStringBuilder;
 var
-  Capacity: Integer;
+  Capacity: SizeInt;
 begin
   if (Count > 0) and (RepeatCount > 0) then
   begin
@@ -4016,10 +3835,10 @@ begin
   Result := Self;
 end;
 
-function TJclStringBuilder.InsertPChar(Index: Integer; Value: PChar; Count,
-  RepeatCount: Integer): TJclStringBuilder;
+function TJclStringBuilder.InsertPChar(Index: SizeInt; Value: PChar; Count,
+  RepeatCount: SizeInt): TJclStringBuilder;
 var
-  Capacity: Integer;
+  Capacity: SizeInt;
 begin
   if (Index < 0) or (Index > FLength) then
     raise ArgumentOutOfRangeException.CreateRes(@RsArgumentOutOfRange);
@@ -4052,7 +3871,7 @@ end;
 
 function TJclStringBuilder.Append(const Value: array of Char): TJclStringBuilder;
 var
-  Len: Integer;
+  Len: SizeInt;
 begin
   Len := System.Length(Value);
   if Len > 0 then
@@ -4060,9 +3879,9 @@ begin
   Result := Self;
 end;
 
-function TJclStringBuilder.Append(const Value: array of Char; StartIndex, Length: Integer): TJclStringBuilder;
+function TJclStringBuilder.Append(const Value: array of Char; StartIndex, Length: SizeInt): TJclStringBuilder;
 var
-  Len: Integer;
+  Len: SizeInt;
 begin
   Len := System.Length(Value);
   if (Length > 0) and (StartIndex < Len) then
@@ -4074,14 +3893,14 @@ begin
   Result := Self;
 end;
 
-function TJclStringBuilder.Append(Value: Char; RepeatCount: Integer = 1): TJclStringBuilder;
+function TJclStringBuilder.Append(Value: Char; RepeatCount: SizeInt = 1): TJclStringBuilder;
 begin
   Result := AppendPChar(@Value, 1, RepeatCount);
 end;
 
 function TJclStringBuilder.Append(const Value: string): TJclStringBuilder;
 var
-  Len: Integer;
+  Len: SizeInt;
 begin
   Len := System.Length(Value);
   if Len > 0 then
@@ -4089,9 +3908,9 @@ begin
   Result := Self;
 end;
 
-function TJclStringBuilder.Append(const Value: string; StartIndex, Length: Integer): TJclStringBuilder;
+function TJclStringBuilder.Append(const Value: string; StartIndex, Length: SizeInt): TJclStringBuilder;
 var
-  Len: Integer;
+  Len: SizeInt;
 begin
   Len := System.Length(Value);
   if (Length > 0) and (StartIndex < Len) then
@@ -4153,9 +3972,9 @@ begin
   Result := Append(DotNetFormat(Fmt, Args));
 end;
 
-function TJclStringBuilder.Insert(Index: Integer; const Value: array of Char): TJclStringBuilder;
+function TJclStringBuilder.Insert(Index: SizeInt; const Value: array of Char): TJclStringBuilder;
 var
-  Len: Integer;
+  Len: SizeInt;
 begin
   Len := System.Length(Value);
   if Len > 0 then
@@ -4163,9 +3982,9 @@ begin
   Result := Self;
 end;
 
-function TJclStringBuilder.Insert(Index: Integer; const Value: string; Count: Integer): TJclStringBuilder;
+function TJclStringBuilder.Insert(Index: SizeInt; const Value: string; Count: SizeInt): TJclStringBuilder;
 var
-  Len: Integer;
+  Len: SizeInt;
 begin
   Len := System.Length(Value);
   if Len > 0 then
@@ -4173,15 +3992,15 @@ begin
   Result := Self;
 end;
 
-function TJclStringBuilder.Insert(Index: Integer; Value: Boolean): TJclStringBuilder;
+function TJclStringBuilder.Insert(Index: SizeInt; Value: Boolean): TJclStringBuilder;
 begin
   Result := Insert(Index, BoolToStr[Value]);
 end;
 
-function TJclStringBuilder.Insert(Index: Integer; const Value: array of Char;
-  StartIndex, Length: Integer): TJclStringBuilder;
+function TJclStringBuilder.Insert(Index: SizeInt; const Value: array of Char;
+  StartIndex, Length: SizeInt): TJclStringBuilder;
 var
-  Len: Integer;
+  Len: SizeInt;
 begin
   Len := System.Length(Value);
   if (Length > 0) and (StartIndex < Len) then
@@ -4193,32 +4012,32 @@ begin
   Result := Self;
 end;
 
-function TJclStringBuilder.Insert(Index: Integer; Value: Double): TJclStringBuilder;
+function TJclStringBuilder.Insert(Index: SizeInt; Value: Double): TJclStringBuilder;
 begin
   Result := Insert(Index, FloatToStr(Value));
 end;
 
-function TJclStringBuilder.Insert(Index: Integer; Value: Int64): TJclStringBuilder;
+function TJclStringBuilder.Insert(Index: SizeInt; Value: Int64): TJclStringBuilder;
 begin
   Result := Insert(Index, IntToStr(Value));
 end;
 
-function TJclStringBuilder.Insert(Index: Integer; Value: Cardinal): TJclStringBuilder;
+function TJclStringBuilder.Insert(Index: SizeInt; Value: Cardinal): TJclStringBuilder;
 begin
   Result := Insert(Index, IntToStr(Value));
 end;
 
-function TJclStringBuilder.Insert(Index, Value: Integer): TJclStringBuilder;
+function TJclStringBuilder.Insert(Index: SizeInt; Value: Integer): TJclStringBuilder;
 begin
   Result := Insert(Index, IntToStr(Value));
 end;
 
-function TJclStringBuilder.Insert(Index: Integer; Obj: TObject): TJclStringBuilder;
+function TJclStringBuilder.Insert(Index: SizeInt; Obj: TObject): TJclStringBuilder;
 begin
   Result := Insert(Index, Format('{0}', [Obj]));
 end;
 
-function TJclStringBuilder.Remove(StartIndex, Length: Integer): TJclStringBuilder;
+function TJclStringBuilder.Remove(StartIndex, Length: SizeInt): TJclStringBuilder;
 begin
   if (StartIndex < 0) or (Length < 0) or (StartIndex + Length > FLength) then
     raise ArgumentOutOfRangeException.CreateRes(@RsArgumentOutOfRange);
@@ -4231,9 +4050,9 @@ begin
 end;
 
 function TJclStringBuilder.Replace(OldChar, NewChar: Char; StartIndex,
-  Count: Integer): TJclStringBuilder;
+  Count: SizeInt): TJclStringBuilder;
 var
-  I: Integer;
+  I: SizeInt;
 begin
   if Count = -1 then
     Count := FLength;
@@ -4248,11 +4067,11 @@ begin
   Result := Self;
 end;
 
-function TJclStringBuilder.Replace(OldValue, NewValue: string; StartIndex, Count: Integer): TJclStringBuilder;
+function TJclStringBuilder.Replace(OldValue, NewValue: string; StartIndex, Count: SizeInt): TJclStringBuilder;
 var
-  I: Integer;
-  Offset: Integer;
-  NewLen, OldLen, Capacity: Integer;
+  I: SizeInt;
+  Offset: SizeInt;
+  NewLen, OldLen, Capacity: SizeInt;
 begin
   if Count = -1 then
     Count := FLength;
@@ -4306,7 +4125,7 @@ begin
   Result := TJclTabSet(nil).Expand(s);
 end;
 
-function StrExpandTabs(S: string; TabWidth: Integer): string;
+function StrExpandTabs(S: string; TabWidth: SizeInt): string;
 var
   TabSet: TJclTabSet;
 begin
@@ -4331,7 +4150,7 @@ begin
   Result := TJclTabSet(nil).Optimize(s);
 end;
 
-function StrOptimizeTabs(S: string; TabWidth: Integer): string;
+function StrOptimizeTabs(S: string; TabWidth: SizeInt): string;
 var
   TabSet: TJclTabSet;
 begin
@@ -4355,25 +4174,25 @@ end;
 type
   TTabSetData = class
   public
-    FStops: TDynIntegerArray;
-    FRealWidth: Integer;
-    FRefCount: Integer;
-    FWidth: Integer;
+    FStops: TDynSizeIntArray;
+    FRealWidth: SizeInt;
+    FRefCount: SizeInt;
+    FWidth: SizeInt;
     FZeroBased: Boolean;
-    constructor Create(TabStops: array of Integer; ZeroBased: Boolean; TabWidth: Integer);
+    constructor Create(TabStops: array of SizeInt; ZeroBased: Boolean; TabWidth: SizeInt);
 
-    function Add(Column: Integer): Integer;
-    function AddRef: Integer;
+    function Add(Column: SizeInt): SizeInt;
+    function AddRef: SizeInt;
     procedure CalcRealWidth;
-    function FindStop(Column: Integer): Integer;
-    function ReleaseRef: Integer;
-    procedure RemoveAt(Index: Integer);
-    procedure SetStops(Index, Value: Integer);
+    function FindStop(Column: SizeInt): SizeInt;
+    function ReleaseRef: SizeInt;
+    procedure RemoveAt(Index: SizeInt);
+    procedure SetStops(Index, Value: SizeInt);
   end;
 
-constructor TTabSetData.Create(TabStops: array of Integer; ZeroBased: Boolean; TabWidth: Integer);
+constructor TTabSetData.Create(TabStops: array of SizeInt; ZeroBased: Boolean; TabWidth: SizeInt);
 var
-  idx: Integer;
+  idx: SizeInt;
 begin
   inherited Create;
   FRefCount := 1;
@@ -4384,7 +4203,7 @@ begin
   CalcRealWidth;
 end;
 
-function TTabSetData.Add(Column: Integer): Integer;
+function TTabSetData.Add(Column: SizeInt): SizeInt;
 begin
   if Column < Ord(FZeroBased) then
     raise ArgumentOutOfRangeException.Create('Column');
@@ -4407,9 +4226,9 @@ begin
   end;
 end;
 
-function TTabSetData.AddRef: Integer;
+function TTabSetData.AddRef: SizeInt;
 begin
-  Result := InterlockedIncrement(FRefCount);
+  Result := LockedInc(FRefCount);
 end;
 
 procedure TTabSetData.CalcRealWidth;
@@ -4428,7 +4247,7 @@ begin
     FRealWidth := FWidth;
 end;
 
-function TTabSetData.FindStop(Column: Integer): Integer;
+function TTabSetData.FindStop(Column: SizeInt): SizeInt;
 begin
   Result := High(FStops);
   while (Result >= 0) and (FStops[Result] > Column) do
@@ -4437,23 +4256,23 @@ begin
     Result := not Succ(Result);
 end;
 
-function TTabSetData.ReleaseRef: Integer;
+function TTabSetData.ReleaseRef: SizeInt;
 begin
-  Result := InterlockedDecrement(FRefCount);
+  Result := LockedDec(FRefCount);
   if Result <= 0 then
     Destroy;
 end;
 
-procedure TTabSetData.RemoveAt(Index: Integer);
+procedure TTabSetData.RemoveAt(Index: SizeInt);
 begin
   MoveArray(FStops, Succ(Index), Index, High(FStops) - Index);
   SetLength(FStops, High(FStops));
   CalcRealWidth;
 end;
 
-procedure TTabSetData.SetStops(Index, Value: Integer);
+procedure TTabSetData.SetStops(Index, Value: SizeInt);
 var
-  temp: Integer;
+  temp: SizeInt;
 begin
   if (Index < 0) or (Index >= Length(FStops)) then
   begin
@@ -4486,19 +4305,19 @@ begin
   Create([], True, 0);
 end;
 
-constructor TJclTabSet.Create(TabWidth: Integer);
+constructor TJclTabSet.Create(TabWidth: SizeInt);
 begin
   // no tab stops, specified tab width
   Create([], True, TabWidth);
 end;
 
-constructor TJclTabSet.Create(const Tabstops: array of Integer; ZeroBased: Boolean);
+constructor TJclTabSet.Create(const Tabstops: array of SizeInt; ZeroBased: Boolean);
 begin
   // specified tab stops, tab width equal to distance between last two tab stops
   Create(Tabstops, ZeroBased, 0);
 end;
 
-constructor TJclTabSet.Create(const Tabstops: array of Integer; ZeroBased: Boolean; TabWidth: Integer);
+constructor TJclTabSet.Create(const Tabstops: array of SizeInt; ZeroBased: Boolean; TabWidth: SizeInt);
 begin
   inherited Create;
   FData := TTabSetData.Create(Tabstops, ZeroBased, TabWidth);
@@ -4523,7 +4342,7 @@ begin
   inherited Destroy;
 end;
 
-function TJclTabSet.Add(Column: Integer): Integer;
+function TJclTabSet.Add(Column: SizeInt): SizeInt;
 begin
   if Self = nil then
     raise NullReferenceException.Create;
@@ -4538,7 +4357,7 @@ begin
     Result := nil;
 end;
 
-function TJclTabSet.Delete(Column: Integer): Integer;
+function TJclTabSet.Delete(Column: SizeInt): SizeInt;
 begin
   Result := TTabSetData(FData).FindStop(Column);
   if Result >= 0 then
@@ -4550,7 +4369,7 @@ begin
   Result := Expand(s, StartColumn);
 end;
 
-function TJclTabSet.Expand(const S: string; Column: Integer): string;
+function TJclTabSet.Expand(const S: string; Column: SizeInt): string;
 var
   sb: TJclStringBuilder;
   head: PChar;
@@ -4587,7 +4406,7 @@ begin
   end;
 end;
 
-function TJclTabSet.FindStop(Column: Integer): Integer;
+function TJclTabSet.FindStop(Column: SizeInt): SizeInt;
 begin
   if Self <> nil then
     Result := TTabSetData(FData).FindStop(Column)
@@ -4621,7 +4440,7 @@ var
   procedure ParseStops;
   var
     openBracket, hadComma: Boolean;
-    num: Integer;
+    num: SizeInt;
   begin
     SkipWhiteSpace;
     openBracket := cur^ = '[';
@@ -4649,7 +4468,7 @@ var
 
   procedure ParseTabWidth;
   var
-    num: Integer;
+    num: SizeInt;
   begin
     SkipWhiteSpace;
     if cur^ = '+' then
@@ -4696,7 +4515,7 @@ begin
   end;
 end;
 
-function TJclTabSet.GetCount: Integer;
+function TJclTabSet.GetCount: SizeInt;
 begin
   if Self <> nil then
     Result := Length(TTabSetData(FData).FStops)
@@ -4704,7 +4523,7 @@ begin
     Result := 0;
 end;
 
-function TJclTabSet.GetStops(Index: Integer): Integer;
+function TJclTabSet.GetStops(Index: SizeInt): SizeInt;
 begin
   if Self <> nil then
   begin
@@ -4721,7 +4540,7 @@ begin
   end;
 end;
 
-function TJclTabSet.GetTabWidth: Integer;
+function TJclTabSet.GetTabWidth: SizeInt;
 begin
   if Self <> nil then
     Result := TTabSetData(FData).FWidth
@@ -4734,9 +4553,9 @@ begin
   Result := (Self = nil) or TTabSetData(FData).FZeroBased;
 end;
 
-procedure TJclTabSet.OptimalFillInfo(StartColumn, TargetColumn: Integer; out TabsNeeded, SpacesNeeded: Integer);
+procedure TJclTabSet.OptimalFillInfo(StartColumn, TargetColumn: SizeInt; out TabsNeeded, SpacesNeeded: SizeInt);
 var
-  nextTab: Integer;
+  nextTab: SizeInt;
 begin
   if StartColumn < Self.StartColumn then  // starting column less than 1 or 0 (depending on ZeroBased state)
     raise ArgumentOutOfRangeException.Create('StartColumn');
@@ -4759,17 +4578,17 @@ begin
   Result := Optimize(S, StartColumn);
 end;
 
-function TJclTabSet.Optimize(const S: string; Column: Integer): string;
+function TJclTabSet.Optimize(const S: string; Column: SizeInt): string;
 var
   sb: TJclStringBuilder;
   head: PChar;
   cur: PChar;
-  tgt: Integer;
+  tgt: SizeInt;
 
-  procedure AppendOptimalWhiteSpace(Target: Integer);
+  procedure AppendOptimalWhiteSpace(Target: SizeInt);
   var
-    tabCount: Integer;
-    spaceCount: Integer;
+    tabCount: SizeInt;
+    spaceCount: SizeInt;
   begin
     if cur > head then
     begin
@@ -4830,7 +4649,7 @@ begin
   end;
 end;
 
-procedure TJclTabSet.RemoveAt(Index: Integer);
+procedure TJclTabSet.RemoveAt(Index: SizeInt);
 begin
   if Self <> nil then
     TTabSetData(FData).RemoveAt(Index)
@@ -4838,7 +4657,7 @@ begin
     raise NullReferenceException.Create;
 end;
 
-procedure TJclTabSet.SetStops(Index, Value: Integer);
+procedure TJclTabSet.SetStops(Index, Value: SizeInt);
 begin
   if Self <> nil then
     TTabSetData(FData).SetStops(Index, Value)
@@ -4846,7 +4665,7 @@ begin
     raise NullReferenceException.Create;
 end;
 
-procedure TJclTabSet.SetTabWidth(Value: Integer);
+procedure TJclTabSet.SetTabWidth(Value: SizeInt);
 begin
   if Self <> nil then
   begin
@@ -4859,8 +4678,8 @@ end;
 
 procedure TJclTabSet.SetZeroBased(Value: Boolean);
 var
-  shift: Integer;
-  idx:   Integer;
+  shift: SizeInt;
+  idx:   SizeInt;
 begin
   if Self <> nil then
   begin
@@ -4879,7 +4698,7 @@ begin
     raise NullReferenceException.Create;
 end;
 
-function TJclTabSet.InternalTabStops: TDynIntegerArray;
+function TJclTabSet.InternalTabStops: TDynSizeIntArray;
 begin
   if Self <> nil then
     Result := TTabSetData(FData).FStops
@@ -4887,7 +4706,7 @@ begin
     Result := nil;
 end;
 
-function TJclTabSet.InternalTabWidth: Integer;
+function TJclTabSet.InternalTabWidth: SizeInt;
 begin
   if Self <> nil then
     Result := TTabSetData(FData).FRealWidth
@@ -4903,7 +4722,7 @@ begin
     Result := nil;
 end;
 
-function TJclTabSet.StartColumn: Integer;
+function TJclTabSet.StartColumn: SizeInt;
 begin
   if GetZeroBased then
     Result := 0
@@ -4911,7 +4730,7 @@ begin
     Result := 1;
 end;
 
-function TJclTabSet.TabFrom(Column: Integer): Integer;
+function TJclTabSet.TabFrom(Column: SizeInt): SizeInt;
 begin
   if Column < StartColumn then
     raise ArgumentOutOfRangeException.Create('Column');
@@ -4938,10 +4757,10 @@ begin
   Result := ToString(TabSetFormatting_Full);
 end;
 
-function TJclTabSet.ToString(FormattingOptions: Integer): string;
+function TJclTabSet.ToString(FormattingOptions: SizeInt): string;
 var
   sb: TJclStringBuilder;
-  idx: Integer;
+  idx: SizeInt;
 
   function WantBrackets: Boolean;
   begin
@@ -5010,18 +4829,18 @@ begin
   end;
 end;
 
-function TJclTabSet.UpdatePosition(const S: string): Integer;
+function TJclTabSet.UpdatePosition(const S: string): SizeInt;
 var
-  Line: Integer;
+  Line: SizeInt;
 begin
   Result := StartColumn;
   Line := -1;
   UpdatePosition(S, Result, Line);
 end;
 
-function TJclTabSet.UpdatePosition(const S: string; Column: Integer): Integer;
+function TJclTabSet.UpdatePosition(const S: string; Column: SizeInt): SizeInt;
 var
-  Line: Integer;
+  Line: SizeInt;
 begin
   if Column < StartColumn then
     raise ArgumentOutOfRangeException.Create('Column');
@@ -5030,7 +4849,7 @@ begin
   UpdatePosition(S, Result, Line);
 end;
 
-function TJclTabSet.UpdatePosition(const S: string; var Column, Line: Integer): Integer;
+function TJclTabSet.UpdatePosition(const S: string; var Column, Line: SizeInt): SizeInt;
 var
   prevChar: Char;
   cur:      PChar;
@@ -5075,10 +4894,10 @@ begin
   CreateRes(@RsArg_NullReferenceException);
 end;
 
-function CompareNatural(const S1, S2: string; CaseInsensitive: Boolean): Integer;
+function CompareNatural(const S1, S2: string; CaseInsensitive: Boolean): SizeInt;
 var
   Cur1, Len1,
-  Cur2, Len2: Integer;
+  Cur2, Len2: SizeInt;
 
   function IsRealNumberChar(ch: Char): Boolean;
   begin
@@ -5089,7 +4908,7 @@ var
   var
     IsReallyNumber: Boolean;
     FirstDiffBreaks: Boolean;
-    Val1, Val2:     Integer;
+    Val1, Val2:     SizeInt;
   begin
     Result := 0;
     IsReallyNumber := False;
@@ -5157,8 +4976,8 @@ var
 
   procedure SetByCompareLength;
   var
-    Remain1: Integer;
-    Remain2: Integer;
+    Remain1: SizeInt;
+    Remain2: SizeInt;
   begin
     // base result on relative compare length (spaces could be ignored, so even if S1 is longer than S2, they could be
     // completely equal, or S2 could be longer)
@@ -5214,12 +5033,12 @@ begin
   end;
 end;
 
-function CompareNaturalStr(const S1, S2: string): Integer; overload;
+function CompareNaturalStr(const S1, S2: string): SizeInt; overload;
 begin
   Result := CompareNatural(S1, S2, False);
 end;
 
-function CompareNaturalText(const S1, S2: string): Integer; overload;
+function CompareNaturalText(const S1, S2: string): SizeInt; overload;
 begin
   Result := CompareNatural(S1, S2, True);
 end;

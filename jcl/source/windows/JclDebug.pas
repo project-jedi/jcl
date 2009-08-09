@@ -34,7 +34,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                          $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -500,7 +500,7 @@ type
     {$IFDEF FPC}
     FImage: TJclPeImage;
     {$ENDIF FPC}
-    function IsAddressInThisExportedFunction(Addr: PByteArray; FunctionStartAddr: DWORD_PTR): Boolean;
+    function IsAddressInThisExportedFunction(Addr: PByteArray; FunctionStartAddr: TJclAddr): Boolean;
   public
     destructor Destroy; override;
     function InitializeSource: Boolean; override;
@@ -535,7 +535,7 @@ function GetLocationInfo(const Addr: Pointer): TJclLocationInfo; overload;
 function GetLocationInfo(const Addr: Pointer; out Info: TJclLocationInfo): Boolean; overload;
 function GetLocationInfoStr(const Addr: Pointer; IncludeModuleName: Boolean = False;
   IncludeAddressOffset: Boolean = False; IncludeStartProcLineOffset: Boolean = False;
-  IncludeVAdress: Boolean = False): string;
+  IncludeVAddress: Boolean = False): string;
 function DebugInfoAvailable(const Module: HMODULE): Boolean;
 procedure ClearLocationData;
 
@@ -593,15 +593,15 @@ type
 
   PStackFrame = ^TStackFrame;
   TStackFrame = record
-    CallersEBP: DWORD_PTR;
-    CallerAdr: DWORD_PTR;
+    CallerFrame: TJclAddr;
+    CallerAddr: TJclAddr;
   end;
 
   PStackInfo = ^TStackInfo;
   TStackInfo = record
-    CallerAdr: DWORD_PTR;
+    CallerAddr: TJclAddr;
     Level: DWORD;
-    CallersEBP: DWORD_PTR;
+    CallerFrame: TJclAddr;
     DumpSize: DWORD;
     ParamSize: DWORD;
     ParamPtr: PDWORD_PTRArray;
@@ -615,36 +615,36 @@ type
   TJclStackInfoItem = class(TObject)
   private
     FStackInfo: TStackInfo;
-    function GetCallerAdr: Pointer;
-    function GetLogicalAddress: DWORD_PTR;
+    function GetCallerAddr: Pointer;
+    function GetLogicalAddress: TJclAddr;
   public
-    property CallerAdr: Pointer read GetCallerAdr;
-    property LogicalAddress: DWORD read GetLogicalAddress;
+    property CallerAddr: Pointer read GetCallerAddr;
+    property LogicalAddress: TJclAddr read GetLogicalAddress;
     property StackInfo: TStackInfo read FStackInfo;
   end;
 
   TJclStackInfoList = class(TJclStackBaseList)
   private
     FIgnoreLevels: DWORD;
-    TopOfStack: DWORD_PTR;
-    BaseOfStack: DWORD_PTR;
+    TopOfStack: TJclAddr;
+    BaseOfStack: TJclAddr;
     FStackData: PPointer;
-    FFrameEBP: Pointer;
+    FFramePointer: Pointer;
     FModuleInfoList: TJclModuleInfoList;
     FCorrectOnAccess: Boolean;
     FSkipFirstItem: Boolean;
     FDelayedTrace: Boolean;
     FInStackTracing: Boolean;
     FRaw: Boolean;
-    FStackOffset: DWORD_PTR;
+    FStackOffset: TJclAddr;
     function GetItems(Index: Integer): TJclStackInfoItem;
     function NextStackFrame(var StackFrame: PStackFrame; var StackInfo: TStackInfo): Boolean;
     procedure StoreToList(const StackInfo: TStackInfo);
     procedure TraceStackFrames;
     procedure TraceStackRaw;
     procedure DelayStoreStack;
-    function ValidCallSite(CodeAddr: DWORD_PTR; out CallInstructionSize: Cardinal): Boolean;
-    function ValidStackAddr(StackAddr: DWORD_PTR): Boolean;
+    function ValidCallSite(CodeAddr: TJclAddr; out CallInstructionSize: Cardinal): Boolean;
+    function ValidStackAddr(StackAddr: TJclAddr): Boolean;
     function GetCount: Integer;
     procedure CorrectOnAccess(ASkipFirstItem: Boolean);
   public
@@ -660,7 +660,7 @@ type
     procedure ForceStackTracing;
     procedure AddToStrings(Strings: TStrings; IncludeModuleName: Boolean = False;
       IncludeAddressOffset: Boolean = False; IncludeStartProcLineOffset: Boolean = False;
-      IncludeVAdress: Boolean = False);
+      IncludeVAddress: Boolean = False);
     property DelayedTrace: Boolean read FDelayedTrace;
     property Items[Index: Integer]: TJclStackInfoItem read GetItems; default;
     property IgnoreLevels: DWORD read FIgnoreLevels;
@@ -682,12 +682,12 @@ function JclCreateThreadStackTraceFromID(Raw: Boolean; ThreadID: DWORD): TJclSta
 function JclLastExceptStackList: TJclStackInfoList;
 function JclLastExceptStackListToStrings(Strings: TStrings; IncludeModuleName: Boolean = False;
   IncludeAddressOffset: Boolean = False; IncludeStartProcLineOffset: Boolean = False;
-  IncludeVAdress: Boolean = False): Boolean;
+  IncludeVAddress: Boolean = False): Boolean;
 
 function JclGetExceptStackList(ThreadID: DWORD): TJclStackInfoList;
 function JclGetExceptStackListToStrings(ThreadID: DWORD; Strings: TStrings;
   IncludeModuleName: Boolean = False; IncludeAddressOffset: Boolean = False;
-  IncludeStartProcLineOffset: Boolean = False; IncludeVAdress: Boolean = False): Boolean;
+  IncludeStartProcLineOffset: Boolean = False; IncludeVAddress: Boolean = False): Boolean;
 
 // Exception frame info routines
 type
@@ -717,7 +717,7 @@ type
   TExcFrame =  record // from System.pas
     Next: PExcFrame;
     Desc: PExcDesc;
-    HEBP: Pointer;
+    FramePointer: Pointer;
     case Integer of
       0:
         ();
@@ -839,7 +839,7 @@ type
     property SaveCreationStack: Boolean read FSaveCreationStack write FSaveCreationStack;
     property ThreadClassNames[ThreadID: DWORD]: string read GetThreadClassNames;
     property ThreadCreationTime[ThreadID: DWORD]: TDateTime read GetThreadCreationTime;
-    property ThreadHandles[Index: Integer]: DWORD read GetThreadHandle;
+    property ThreadHandles[Index: Integer]: THandle read GetThreadHandle;
     property ThreadIDs[Index: Integer]: DWORD read GetThreadID;
     property ThreadIDCount: Integer read GetThreadIDCount;
     //property ThreadInfos[ThreadID: DWORD]: string index 2 read GetThreadValues;
@@ -1023,29 +1023,49 @@ const
 
 {$STACKFRAMES OFF}
 
-function GetEBP: Pointer;
+function GetFramePointer: Pointer;
 asm
+        {$IFDEF CPU32}
         MOV     EAX, EBP
+        {$ENDIF CPU32}
+        {$IFDEF CPU64}
+        MOV     RAX, RBP
+        {$ENDIF CPU64}
 end;
 
-function GetESP: Pointer;
+function GetStackPointer: Pointer;
 asm
+        {$IFDEF CPU32}
         MOV     EAX, ESP
+        {$ENDIF CPU32}
+        {$IFDEF CPU64}
+        MOV     RAX, RSP
+        {$ENDIF CPU64}
 end;
 
-function GetFS: Pointer;
+function GetExceptionPointer: Pointer;
 asm
+        {$IFDEF CPU32}
         XOR     EAX, EAX
         MOV     EAX, FS:[EAX]
+        {$ENDIF CPU32}
+        {$IFDEF CPU64}
+        XOR     RAX, RAX
+        MOV     RAX, FS:[RAX]
+        {$ENDIF CPU64}
 end;
 
 // Reference: Matt Pietrek, MSJ, Under the hood, on TIBs:
 // http://www.microsoft.com/MSJ/archive/S2CE.HTM
 
-function GetStackTop: DWORD_PTR;
+function GetStackTop: TJclAddr;
 asm
-  // TODO: 64 bit version
+        {$IFDEF CPU32}
         MOV     EAX, FS:[0].NT_TIB32.StackBase
+        {$ENDIF CPU32}
+        {$IFDEF CPU64}
+        MOV     RAX, FS:[0].NT_TIB64.StackBase
+        {$ENDIF CPU64}
 end;
 
 {$IFDEF STACKFRAMES_ON}
@@ -1196,7 +1216,7 @@ begin
   for I := 0 to Count - 1 do
   begin
     Item := Items[I];
-    if (DWORD_PTR(Item.StartAddr) <= DWORD_PTR(Addr)) and (DWORD_PTR(Item.EndAddr) > DWORD_PTR(Addr)) then
+    if (TJclAddr(Item.StartAddr) <= TJclAddr(Addr)) and (TJclAddr(Item.EndAddr) > TJclAddr(Addr)) then
     begin
       Result := Item;
       Break;
@@ -1659,7 +1679,7 @@ begin
 
     if SectionHeader <> nil then
     begin
-      FSegmentClasses[C].Addr := DWORD_PTR(FModule) + SectionHeader.VirtualAddress;
+      FSegmentClasses[C].Addr := TJclAddr(FModule) + SectionHeader.VirtualAddress;
       FSegmentClasses[C].VA := SectionHeader.VirtualAddress;
     end;
   end;
@@ -1704,7 +1724,7 @@ begin
     if (FSegmentClasses[SegIndex].Segment = Address.Segment)
       and (DWORD(Address.Offset) < FSegmentClasses[SegIndex].Len) then
   begin
-    VA := AddrToVA(DWORD(Address.Offset) + FSegmentClasses[SegIndex].Addr);
+    VA := AddrToVA(TJclAddr(Address.Offset) + FSegmentClasses[SegIndex].Addr);
     { Starting with Delphi 2005, "empty" units are listes with the last line and
       the VA 0001:00000000. When we would accept 0 VAs here, System.pas functions
       could be mapped to other units and line numbers. Discaring such items should
@@ -1809,7 +1829,7 @@ begin
     if FProcNamesCnt mod 256 = 0 then
       SetLength(FProcNames, FProcNamesCnt + 256);
     FProcNames[FProcNamesCnt].Segment := FSegmentClasses[SegIndex].Segment;
-    FProcNames[FProcNamesCnt].VA := AddrToVA(DWORD(Address.Offset) + FSegmentClasses[SegIndex].Addr);
+    FProcNames[FProcNamesCnt].VA := AddrToVA(TJclAddr(Address.Offset) + FSegmentClasses[SegIndex].Addr);
     FProcNames[FProcNamesCnt].ProcName := Name;
     Inc(FProcNamesCnt);
     Break;
@@ -1856,7 +1876,7 @@ begin
     if (FSegmentClasses[SegIndex].Segment = Address.Segment)
       and (DWORD(Address.Offset) < FSegmentClasses[SegIndex].Len) then
   begin
-    VA := AddrToVA(DWORD(Address.Offset) + FSegmentClasses[SegIndex].Addr);
+    VA := AddrToVA(TJclAddr(Address.Offset) + FSegmentClasses[SegIndex].Addr);
     if FSegmentCnt mod 16 = 0 then
       SetLength(FSegments, FSegmentCnt + 16);
     FSegments[FSegmentCnt].Segment := FSegmentClasses[SegIndex].Segment;
@@ -2041,7 +2061,7 @@ begin
         P^ := P^ or (C shl 2);
     end;
   end;
-  SetLength(Result, DWORD_PTR(P) - DWORD_PTR(Pointer(Result)) + 1);
+  SetLength(Result, TJclAddr(P) - TJclAddr(Pointer(Result)) + 1);
 end;
 
 function ConvertMapFileToJdbgFile(const MapFileName: TFileName): Boolean;
@@ -2558,7 +2578,7 @@ begin
     Result := ''
   else
   begin
-    P := PAnsiChar(DWORD_PTR(FStream.Memory) + DWORD(A) + DWORD_PTR(PJclDbgHeader(FStream.Memory)^.Words) - 1);
+    P := PAnsiChar(TJclAddr(FStream.Memory) + TJclAddr(A) + TJclAddr(PJclDbgHeader(FStream.Memory)^.Words) - 1);
     Result := DecodeNameString(P);
   end;
 end;
@@ -2634,7 +2654,7 @@ end;
 
 function TJclBinDebugScanner.MakePtr(A: Integer): Pointer;
 begin
-  Result := Pointer(DWORD_PTR(FStream.Memory) + DWORD(A));
+  Result := Pointer(TJclAddr(FStream.Memory) + TJclAddr(A));
 end;
 
 function TJclBinDebugScanner.ModuleNameFromAddr(Addr: DWORD): string;
@@ -2877,7 +2897,7 @@ begin
   if liloAutoGetAddressInfo in AOptions then
   begin
     Module := ModuleFromAddr(FAddress);
-    FVAddress := Pointer(DWORD_PTR(FAddress) - Module - ModuleCodeOffset);
+    FVAddress := Pointer(TJclAddr(FAddress) - Module - ModuleCodeOffset);
     FModuleName := ExtractFileName(GetModulePath(Module));
   end
   else
@@ -2903,7 +2923,7 @@ begin
       FOffsetFromLineNumber := Info.OffsetFromLineNumber
     else
       FOffsetFromLineNumber := 0;
-    if GetLocationInfo(Pointer(DWORD_PTR(Info.Address) -
+    if GetLocationInfo(Pointer(TJclAddr(Info.Address) -
       Cardinal(Info.OffsetFromProcName)), StartProcInfo) and (StartProcInfo.LineNumber > 0) then
     begin
       FLineNumberOffsetFromProcedureStart := Info.LineNumber - StartProcInfo.LineNumber;
@@ -2966,10 +2986,10 @@ const
   IncludeAddressOffset = True;
   IncludeModuleName = True;
 var
-  IncludeVAdress: Boolean;
+  IncludeVAddress: Boolean;
   OffsetStr, StartProcOffsetStr: string;
 begin
-  IncludeVAdress := True;
+  IncludeVAddress := True;
   OffsetStr := '';
   if lievLocationInfo in FValues then
   begin
@@ -3002,11 +3022,11 @@ begin
   else
   begin
     Result := Format('[%p]', [Address]);
-    IncludeVAdress := True;
+    IncludeVAddress := True;
   end;
-  if IncludeVAdress or IncludeModuleName then
+  if IncludeVAddress or IncludeModuleName then
   begin
-    if IncludeVAdress then
+    if IncludeVAddress then
     begin
       OffsetStr :=  Format('(%p) ', [VAddress]);
       Result := OffsetStr + Result;
@@ -3038,7 +3058,7 @@ var
 begin
   TJclStackInfoList(AStackInfoList).ForceStackTracing;
   for I := 0 to TJclStackInfoList(AStackInfoList).Count - 1 do
-    InternalAdd(TJclStackInfoList(AStackInfoList)[I].CallerAdr);
+    InternalAdd(TJclStackInfoList(AStackInfoList)[I].CallerAddr);
 end;
 
 procedure TJclCustomLocationInfoList.AssignTo(Dest: TPersistent);
@@ -3118,7 +3138,7 @@ end;
 
 function TJclDebugInfoSource.VAFromAddr(const Addr: Pointer): DWORD;
 begin
-  Result := DWORD_PTR(Addr) - FModule - ModuleCodeOffset;
+  Result := DWORD(TJclAddr(Addr) - FModule - ModuleCodeOffset);
 end;
 
 //=== { TJclDebugInfoList } ==================================================
@@ -3348,12 +3368,12 @@ begin
   inherited Destroy;
 end;
 
-function TJclDebugInfoExports.IsAddressInThisExportedFunction(Addr: PByteArray; FunctionStartAddr: DWORD_PTR): Boolean;
+function TJclDebugInfoExports.IsAddressInThisExportedFunction(Addr: PByteArray; FunctionStartAddr: TJclAddr): Boolean;
 begin
-  Dec(DWORD_PTR(Addr), 6);
+  Dec(TJclAddr(Addr), 6);
   Result := False;
 
-  while DWORD_PTR(Addr) > FunctionStartAddr do
+  while TJclAddr(Addr) > FunctionStartAddr do
   begin
     if IsBadReadPtr(Addr, 6) then
       Exit;
@@ -3378,7 +3398,7 @@ begin
           ((Addr[2] = $CC) and (Addr[3] = $CC) and (Addr[4] = $CC))) then // int 3
       Exit;
 
-    Dec(DWORD_PTR(Addr));
+    Dec(TJclAddr(Addr));
   end;
   Result := True;
 end;
@@ -3392,7 +3412,7 @@ var
   RawName: Boolean;
 begin
   Result := False;
-  VA := DWORD_PTR(Addr) - FModule;
+  VA := DWORD(TJclAddr(Addr) - FModule);
   {$IFDEF BORLAND}
   RawName := not FImage.IsPackage;
   {$ENDIF BORLAND}
@@ -3681,7 +3701,7 @@ begin
       SymbolW^.MaxNameLength := SymbolNameLength;
       Displacement := 0;
 
-      Result := SymGetSymFromAddrWFunc(ProcessHandle, DWORD_PTR(Addr), @Displacement, SymbolW^);
+      Result := SymGetSymFromAddrWFunc(ProcessHandle, TJclAddr(Addr), @Displacement, SymbolW^);
       if Result then
       begin
         Info.DebugInfo := Self;
@@ -3704,7 +3724,7 @@ begin
       SymbolA^.MaxNameLength := SymbolNameLength;
       Displacement := 0;
 
-      Result := SymGetSymFromAddrAFunc(ProcessHandle, DWORD_PTR(Addr), @Displacement, SymbolA^);
+      Result := SymGetSymFromAddrAFunc(ProcessHandle, TJclAddr(Addr), @Displacement, SymbolA^);
       if Result then
       begin
         Info.DebugInfo := Self;
@@ -3727,7 +3747,7 @@ begin
     LineW.SizeOfStruct := SizeOf(LineW);
     Displacement := 0;
 
-    if SymGetLineFromAddrWFunc(ProcessHandle, DWORD_PTR(Addr), @Displacement, LineW) then
+    if SymGetLineFromAddrWFunc(ProcessHandle, TJclAddr(Addr), @Displacement, LineW) then
     begin
       Info.LineNumber := LineW.LineNumber;
       Info.UnitName := string(LineW.FileName);
@@ -3741,7 +3761,7 @@ begin
     LineA.SizeOfStruct := SizeOf(LineA);
     Displacement := 0;
 
-    if SymGetLineFromAddrAFunc(ProcessHandle, DWORD_PTR(Addr), @Displacement, LineA) then
+    if SymGetLineFromAddrAFunc(ProcessHandle, TJclAddr(Addr), @Displacement, LineA) then
     begin
       Info.LineNumber := LineA.LineNumber;
       Info.UnitName := string(LineA.FileName);
@@ -3869,25 +3889,25 @@ end;
 
 function Caller(Level: Integer; FastStackWalk: Boolean): Pointer;
 var
-  TopOfStack: DWORD_PTR;
-  BaseOfStack: DWORD_PTR;
+  TopOfStack: TJclAddr;
+  BaseOfStack: TJclAddr;
   StackFrame: PStackFrame;
 begin
   Result := nil;
   try
     if FastStackWalk then
     begin
-      StackFrame := GetEBP;
-      BaseOfStack := DWORD_PTR(StackFrame) - 1;
+      StackFrame := GetFramePointer;
+      BaseOfStack := TJclAddr(StackFrame) - 1;
       TopOfStack := GetStackTop;
-      while (BaseOfStack < DWORD_PTR(StackFrame)) and (DWORD_PTR(StackFrame) < TopOfStack) do
+      while (BaseOfStack < TJclAddr(StackFrame)) and (TJclAddr(StackFrame) < TopOfStack) do
       begin
         if Level = 0 then
         begin
-          Result := Pointer(StackFrame^.CallerAdr - 1);
+          Result := Pointer(StackFrame^.CallerAddr - 1);
           Break;
         end;
-        StackFrame := PStackFrame(StackFrame^.CallersEBP);
+        StackFrame := PStackFrame(StackFrame^.CallerFrame);
         Dec(Level);
       end;
     end
@@ -3895,7 +3915,7 @@ begin
     with TJclStackInfoList.Create(False, 1, nil, False, nil, nil) do
     try
       if Level < Count then
-        Result := Items[Level].CallerAdr;
+        Result := Items[Level].CallerAddr;
     finally
       Free;
     end;
@@ -3940,7 +3960,7 @@ begin
 end;
 
 function GetLocationInfoStr(const Addr: Pointer; IncludeModuleName, IncludeAddressOffset,
-  IncludeStartProcLineOffset: Boolean; IncludeVAdress: Boolean): string;
+  IncludeStartProcLineOffset: Boolean; IncludeVAddress: Boolean): string;
 var
   Info, StartProcInfo: TJclLocationInfo;
   OffsetStr, StartProcOffsetStr, FixedProcedureName: string;
@@ -3956,7 +3976,7 @@ begin
 
     if LineNumber > 0 then
     begin
-      if IncludeStartProcLineOffset and GetLocationInfo(Pointer(DWORD_PTR(Info.Address) -
+      if IncludeStartProcLineOffset and GetLocationInfo(Pointer(TJclAddr(Info.Address) -
         Cardinal(Info.OffsetFromProcName)), StartProcInfo) and (StartProcInfo.LineNumber > 0) then
           StartProcOffsetStr := Format(' + %d', [LineNumber - StartProcInfo.LineNumber])
       else
@@ -3984,14 +4004,14 @@ begin
   else
   begin
     Result := Format('[%p]', [Addr]);
-    IncludeVAdress := True;
+    IncludeVAddress := True;
   end;
-  if IncludeVAdress or IncludeModuleName then
+  if IncludeVAddress or IncludeModuleName then
   begin
     Module := ModuleFromAddr(Addr);
-    if IncludeVAdress then
+    if IncludeVAddress then
     begin
-      OffsetStr :=  Format('(%p) ', [Pointer(DWORD_PTR(Addr) - Module - ModuleCodeOffset)]);
+      OffsetStr :=  Format('(%p) ', [Pointer(TJclAddr(Addr) - Module - ModuleCodeOffset)]);
       Result := OffsetStr + Result;
     end;
     if IncludeModuleName then
@@ -4417,7 +4437,7 @@ begin
   with List do
   begin
     for I := Count - 1 downto TopItem do
-      if JclBelongsHookedCode(Items[I].CallerAdr) then
+      if JclBelongsHookedCode(Items[I].CallerAddr) then
       begin
         FoundPos := I;
         Break;
@@ -4442,7 +4462,7 @@ begin
   Delayed := stDelayedTrace in JclStackTrackingOptions;
   if BaseOfStack = nil then
   begin
-    BaseOfStack := GetEBP;
+    BaseOfStack := GetFramePointer;
     IgnoreLevels := 1;
   end
   else
@@ -4463,7 +4483,7 @@ begin
 end;
 
 function JclLastExceptStackListToStrings(Strings: TStrings; IncludeModuleName, IncludeAddressOffset,
-  IncludeStartProcLineOffset, IncludeVAdress: Boolean): Boolean;
+  IncludeStartProcLineOffset, IncludeVAddress: Boolean): Boolean;
 var
   List: TJclStackInfoList;
 begin
@@ -4471,7 +4491,7 @@ begin
   Result := Assigned(List);
   if Result then
     List.AddToStrings(Strings, IncludeModuleName, IncludeAddressOffset, IncludeStartProcLineOffset,
-      IncludeVAdress);
+      IncludeVAddress);
 end;
 
 function JclGetExceptStackList(ThreadID: DWORD): TJclStackInfoList;
@@ -4481,7 +4501,7 @@ end;
 
 function JclGetExceptStackListToStrings(ThreadID: DWORD; Strings: TStrings;
   IncludeModuleName: Boolean = False; IncludeAddressOffset: Boolean = False;
-  IncludeStartProcLineOffset: Boolean = False; IncludeVAdress: Boolean = False): Boolean;
+  IncludeStartProcLineOffset: Boolean = False; IncludeVAddress: Boolean = False): Boolean;
 var
   List: TJclStackInfoList;
 begin
@@ -4489,7 +4509,7 @@ begin
   Result := Assigned(List);
   if Result then
     List.AddToStrings(Strings, IncludeModuleName, IncludeAddressOffset, IncludeStartProcLineOffset,
-      IncludeVAdress);
+      IncludeVAddress);
 end;
 
 function JclCreateStackList(Raw: Boolean; AIgnoreLevels: DWORD; FirstCaller: Pointer): TJclStackInfoList;
@@ -4519,33 +4539,42 @@ begin
   GlobalStackList.AddObject(Result);
 end;
 
-function GetThreadFs(const Entry: TLDTEntry): DWORD;
-// TODO: 64 bit version
+function GetThreadTopOfStack(ThreadHandle: THandle): TJclAddr;
 var
-  FsBase: PNT_TIB32;
+  TBI: THREAD_BASIC_INFORMATION;
+  ReturnedLength: ULONG;
 begin
-  {$IFDEF BORLAND}
-  FsBase := PNT_TIB32((DWORD(Entry.BaseHi) shl 24) or (DWORD(Entry.BaseMid) shl 16) or DWORD(Entry.BaseLow));
-  {$ENDIF BORLAND}
-  {$IFDEF FPC}
-  FsBase := PNT_TIB32((DWORD(Entry.HighWord.Bytes.BaseHi) shl 24) or (DWORD(Entry.HighWord.Bytes.BaseMid) shl 16) or DWORD(Entry.BaseLow));
-  {$ENDIF FPC}
-  Result := FsBase^.StackBase;
+  Result := 0;
+  ReturnedLength := 0;
+  if (NtQueryInformationThread(ThreadHandle, ThreadBasicInformation, @TBI, SizeOf(TBI), @ReturnedLength) < $80000000) and
+     (ReturnedLength = SizeOf(TBI)) then
+    {$IFDEF CPU32}
+    Result := TJclAddr(PNT_TIB32(TBI.TebBaseAddress)^.StackBase)
+    {$ENDIF CPU32}
+    {$IFDEF CPU64}
+    Result := TJclAddr(PNT_TIB64(TBI.TebBaseAddress)^.StackBase)
+    {$ENDIF CPU64}
+  else
+    RaiseLastOSError;
 end;
 
 function JclCreateThreadStackTrace(Raw: Boolean; const ThreadHandle: THandle): TJclStackInfoList;
 var
-  C    : CONTEXT;
-  Entry: TLDTEntry;
+  C: CONTEXT;
 begin
   Result := nil;
   ResetMemory(C, SizeOf(C));
-  ResetMemory(Entry, SizeOf(Entry));
   C.ContextFlags := CONTEXT_FULL;
-  if GetThreadContext(ThreadHandle, C)
-    and GetThreadSelectorEntry(ThreadHandle, C.SegFs, Entry) then
+  {$IFDEF CPU32}
+  if GetThreadContext(ThreadHandle, C) then
     Result := JclCreateStackList(Raw, DWORD(-1), Pointer(C.Eip), False, Pointer(C.Ebp),
-                Pointer(GetThreadFs(Entry)));
+                Pointer(GetThreadTopOfStack(ThreadHandle)));
+  {$ENDIF CPU32}
+  {$IFDEF CPU64}
+  if GetThreadContext(ThreadHandle, C) then
+    Result := JclCreateStackList(Raw, DWORD(-1), Pointer(C.Rip), False, Pointer(C.Rbp),
+                Pointer(GetThreadTopOfStack(ThreadHandle)));
+  {$ENDIF CPU64}
 end;
 
 function JclCreateThreadStackTraceFromID(Raw: Boolean; ThreadID: DWORD): TJclStackInfoList;
@@ -4579,14 +4608,14 @@ end;
 
 //=== { TJclStackInfoItem } ==================================================
 
-function TJclStackInfoItem.GetCallerAdr: Pointer;
+function TJclStackInfoItem.GetCallerAddr: Pointer;
 begin
-  Result := Pointer(FStackInfo.CallerAdr);
+  Result := Pointer(FStackInfo.CallerAddr);
 end;
 
-function TJclStackInfoItem.GetLogicalAddress: DWORD_PTR;
+function TJclStackInfoItem.GetLogicalAddress: TJclAddr;
 begin
-  Result := FStackInfo.CallerAdr - DWORD_PTR(ModuleFromAddr(CallerAdr));
+  Result := FStackInfo.CallerAddr - TJclAddr(ModuleFromAddr(CallerAddr));
 end;
 
 //=== { TJclStackInfoList } ==================================================
@@ -4618,20 +4647,20 @@ begin
   FIgnoreLevels := AIgnoreLevels;
   FDelayedTrace := ADelayedTrace;
   FRaw := ARaw;
-  BaseOfStack := DWORD_PTR(ABaseOfStack);
+  BaseOfStack := TJclAddr(ABaseOfStack);
   FStackOffset := 0;
-  FFrameEBP := ABaseOfStack;
+  FFramePointer := ABaseOfStack;
 
   if ATopOfStack = nil then
     TopOfStack := GetStackTop
   else
-    TopOfStack := DWORD_PTR(ATopOfStack);
+    TopOfStack := TJclAddr(ATopOfStack);
 
   FModuleInfoList := GlobalModulesList.CreateModulesList;
   if AFirstCaller <> nil then
   begin
     Item := TJclStackInfoItem.Create;
-    Item.FStackInfo.CallerAdr := DWORD_PTR(AFirstCaller);
+    Item.FStackInfo.CallerAddr := TJclAddr(AFirstCaller);
     Add(Item);
   end;
   if DelayedTrace then
@@ -4683,7 +4712,7 @@ begin
 end;
 
 procedure TJclStackInfoList.AddToStrings(Strings: TStrings; IncludeModuleName, IncludeAddressOffset,
-  IncludeStartProcLineOffset, IncludeVAdress: Boolean);
+  IncludeStartProcLineOffset, IncludeVAddress: Boolean);
 var
   I: Integer;
 begin
@@ -4691,8 +4720,8 @@ begin
   Strings.BeginUpdate;
   try
     for I := 0 to Count - 1 do
-      Strings.Add(GetLocationInfoStr(Items[I].CallerAdr, IncludeModuleName, IncludeAddressOffset,
-        IncludeStartProcLineOffset, IncludeVAdress));
+      Strings.Add(GetLocationInfoStr(Items[I].CallerAddr, IncludeModuleName, IncludeAddressOffset,
+        IncludeStartProcLineOffset, IncludeVAddress));
   finally
     Strings.EndUpdate;
   end;
@@ -4707,52 +4736,53 @@ end;
 function TJclStackInfoList.NextStackFrame(var StackFrame: PStackFrame; var StackInfo: TStackInfo): Boolean;
 var
   CallInstructionSize: Cardinal;
-  StackFrameCallersEBP, NewEBP: DWORD_PTR;
-  StackFrameCallerAdr: DWORD_PTR;
+  StackFrameCallerFrame, NewFrame: TJclAddr;
+  StackFrameCallerAddr: TJclAddr;
 begin
   // Only report this stack frame into the StockInfo structure
-  // if the StackFrame pointer, EBP on the stack and return
-  // address on the stack are valid addresses
-  StackFrameCallersEBP := StackInfo.CallersEBP;
-  while ValidStackAddr(DWORD_PTR(StackFrame)) do
+  // if the StackFrame pointer, the frame pointer and the return address on the stack
+  // are valid addresses
+  StackFrameCallerFrame := StackInfo.CallerFrame;
+  while ValidStackAddr(TJclAddr(StackFrame)) do
   begin
     // CallersEBP above the previous CallersEBP
-    NewEBP := StackFrame^.CallersEBP;
-    if NewEBP <= StackFrameCallersEBP then
+    NewFrame := StackFrame^.CallerFrame;
+    if NewFrame <= StackFrameCallerFrame then
       Break;
-    StackFrameCallersEBP := NewEBP;
+    StackFrameCallerFrame := NewFrame;
 
-    // CallerAdr within current process space, code segment etc.
-    // CallersEBP within current thread stack. Added Mar 12 2002 per Hallvard's suggestion
-    StackFrameCallerAdr := StackFrame^.CallerAdr;
-    if ValidCodeAddr(StackFrameCallerAdr, FModuleInfoList) and ValidStackAddr(StackFrameCallersEBP + FStackOffset) then
+    // CallerAddr within current process space, code segment etc.
+    // CallerFrame within current thread stack. Added Mar 12 2002 per Hallvard's suggestion
+    StackFrameCallerAddr := StackFrame^.CallerAddr;
+    if ValidCodeAddr(StackFrameCallerAddr, FModuleInfoList) and ValidStackAddr(StackFrameCallerFrame + FStackOffset) then
     begin
       Inc(StackInfo.Level);
       StackInfo.StackFrame := StackFrame;
-      StackInfo.ParamPtr := PDWORD_PTRArray(DWORD_PTR(StackFrame) + SizeOf(TStackFrame));
+      StackInfo.ParamPtr := PDWORD_PTRArray(TJclAddr(StackFrame) + SizeOf(TStackFrame));
 
-      if StackFrameCallersEBP > StackInfo.CallersEBP then
-        StackInfo.CallersEBP := StackFrameCallersEBP
+      if StackFrameCallerFrame > StackInfo.CallerFrame then
+        StackInfo.CallerFrame := StackFrameCallerFrame
       else
-        // EBP points to an address that is below the last EBP, so it must be invalid
+        // the frame pointer points to an address that is below
+        // the last frame pointer, so it must be invalid
         Break;
 
       // Calculate the address of caller by subtracting the CALL instruction size (if possible)
-      if ValidCallSite(StackFrameCallerAdr, CallInstructionSize) then
-        StackInfo.CallerAdr := StackFrameCallerAdr - CallInstructionSize
+      if ValidCallSite(StackFrameCallerAddr, CallInstructionSize) then
+        StackInfo.CallerAddr := StackFrameCallerAddr - CallInstructionSize
       else
-        StackInfo.CallerAdr := StackFrameCallerAdr;
-      StackInfo.DumpSize := StackFrameCallersEBP - DWORD_PTR(StackFrame);
+        StackInfo.CallerAddr := StackFrameCallerAddr;
+      StackInfo.DumpSize := StackFrameCallerFrame - TJclAddr(StackFrame);
       StackInfo.ParamSize := (StackInfo.DumpSize - SizeOf(TStackFrame)) div 4;
-      if PStackFrame(StackFrame^.CallersEBP) = StackFrame then
+      if PStackFrame(StackFrame^.CallerFrame) = StackFrame then
         Break;
-      // Step to the next stack frame by following the EBP pointer
-      StackFrame := PStackFrame(StackFrameCallersEBP + FStackOffset);
+      // Step to the next stack frame by following the frame pointer
+      StackFrame := PStackFrame(StackFrameCallerFrame + FStackOffset);
       Result := True;
       Exit;
     end;
-    // Step to the next stack frame by following the EBP pointer
-    StackFrame := PStackFrame(StackFrameCallersEBP + FStackOffset);
+    // Step to the next stack frame by following the frame pointer
+    StackFrame := PStackFrame(StackFrameCallerFrame + FStackOffset);
   end;
   Result := False;
 end;
@@ -4778,23 +4808,23 @@ begin
 
   // Start at level 0
   StackInfo.Level := 0;
-  StackInfo.CallersEBP := 0;
+  StackInfo.CallerFrame := 0;
   if DelayedTrace then
-    // Get the current stack frame from the EBP register
-    StackFrame := FFrameEBP
+    // Get the current stack frame from the frame register
+    StackFrame := FFramePointer
   else
   begin
     // We define the bottom of the valid stack to be the current ESP pointer
     if BaseOfStack = 0 then
-      BaseOfStack := DWORD_PTR(GetEBP);
+      BaseOfStack := TJclAddr(GetFramePointer);
     // Get a pointer to the current bottom of the stack
     StackFrame := PStackFrame(BaseOfStack);
   end;
 
-  // We define the bottom of the valid stack to be the current EBP Pointer
+  // We define the bottom of the valid stack to be the current frame Pointer
   // There is a TIB field called pvStackUserBase, but this includes more of the
   // stack than what would define valid stack frames.
-  BaseOfStack := DWORD_PTR(StackFrame) - 1;
+  BaseOfStack := TJclAddr(StackFrame) - 1;
   // Loop over and report all valid stackframes
   while NextStackFrame(StackFrame, StackInfo) and (inherited Count <> MaxStackTraceItems) do
     StoreToList(StackInfo);
@@ -4849,10 +4879,10 @@ end;
 procedure TJclStackInfoList.TraceStackRaw;
 var
   StackInfo: TStackInfo;
-  StackPtr: PDWORD_PTR;
-  PrevCaller: DWORD_PTR;
+  StackPtr: PJclAddr;
+  PrevCaller: TJclAddr;
   CallInstructionSize: Cardinal;
-  StackTop: DWORD_PTR;
+  StackTop: TJclAddr;
 begin
   Capacity := 32; // reduce ReallocMem calls, must be > 1 because the caller's EIP register is already in the list
 
@@ -4860,21 +4890,21 @@ begin
   begin
     if not Assigned(FStackData) then
       Exit;
-    StackPtr := PDWORD_PTR(FStackData);
+    StackPtr := PJclAddr(FStackData);
   end
   else
   begin
     // We define the bottom of the valid stack to be the current ESP pointer
     if BaseOfStack = 0 then
-      BaseOfStack := DWORD_PTR(GetESP);
+      BaseOfStack := TJclAddr(GetStackPointer);
     // Get a pointer to the current bottom of the stack
-    StackPtr := PDWORD_PTR(BaseOfStack);
+    StackPtr := PJclAddr(BaseOfStack);
   end;
 
   StackTop := TopOfStack;
 
   if Count > 0 then
-    StackPtr := SearchForStackPtrManipulation(StackPtr, Pointer(Items[0].StackInfo.CallerAdr));
+    StackPtr := SearchForStackPtrManipulation(StackPtr, Pointer(Items[0].StackInfo.CallerAddr));
 
   // We will not be able to fill in all the fields in the StackInfo record,
   // so just blank it all out first
@@ -4882,20 +4912,20 @@ begin
   // Clear the previous call address
   PrevCaller := 0;
   // Loop through all of the valid stack space
-  while (DWORD_PTR(StackPtr) < StackTop) and (inherited Count <> MaxStackTraceItems) do
+  while (TJclAddr(StackPtr) < StackTop) and (inherited Count <> MaxStackTraceItems) do
   begin
     // If the current DWORD on the stack refers to a valid call site...
     if ValidCallSite(StackPtr^, CallInstructionSize) and (StackPtr^ <> PrevCaller) then
     begin
       // then pick up the callers address
-      StackInfo.CallerAdr := StackPtr^ - CallInstructionSize;
+      StackInfo.CallerAddr := StackPtr^ - CallInstructionSize;
       // remember to callers address so that we don't report it repeatedly
       PrevCaller := StackPtr^;
       // increase the stack level
       Inc(StackInfo.Level);
       // then report it back to our caller
       StoreToList(StackInfo);
-      StackPtr := SearchForStackPtrManipulation(StackPtr, Pointer(StackInfo.CallerAdr));
+      StackPtr := SearchForStackPtrManipulation(StackPtr, Pointer(StackInfo.CallerAddr));
     end;
     // Look at the next DWORD on the stack
     Inc(StackPtr);
@@ -4909,7 +4939,7 @@ end;
 
 procedure TJclStackInfoList.DelayStoreStack;
 var
-  StackPtr: PDWORD_PTR;
+  StackPtr: PJclAddr;
   StackDataSize: Cardinal;
 begin
   if Assigned(FStackData) then
@@ -4920,22 +4950,22 @@ begin
   // We define the bottom of the valid stack to be the current ESP pointer
   if BaseOfStack = 0 then
   begin
-    BaseOfStack := DWORD_PTR(GetESP);
-    FFrameEBP := GetEBP;
+    BaseOfStack := TJclAddr(GetStackPointer);
+    FFramePointer := GetFramePointer;
   end;
 
   // Get a pointer to the current bottom of the stack
-  StackPtr := PDWORD_PTR(BaseOfStack);
-  if DWORD_PTR(StackPtr) < TopOfStack then
+  StackPtr := PJclAddr(BaseOfStack);
+  if TJclAddr(StackPtr) < TopOfStack then
   begin
-    StackDataSize := TopOfStack - DWORD_PTR(StackPtr);
+    StackDataSize := TopOfStack - TJclAddr(StackPtr);
     GetMem(FStackData, StackDataSize);
     System.Move(StackPtr^, FStackData^, StackDataSize);
     //CopyMemory(FStackData, StackPtr, StackDataSize);
   end;
 
-  FStackOffset := DWORD_PTR(FStackData) - DWORD_PTR(StackPtr);
-  FFrameEBP := Pointer(DWORD_PTR(FFrameEBP) + FStackOffset);
+  FStackOffset := TJclAddr(FStackData) - TJclAddr(StackPtr);
+  FFramePointer := Pointer(TJclAddr(FFramePointer) + FStackOffset);
   TopOfStack := TopOfStack + FStackOffset;
 end;
 
@@ -4945,7 +4975,7 @@ end;
 // http://developer.intel.com/design/pentiumii/manuals/243191.htm
 // Instruction format, Chapter 2 and The CALL instruction: page 3-53, 3-54
 
-function TJclStackInfoList.ValidCallSite(CodeAddr: DWORD; out CallInstructionSize: Cardinal): Boolean;
+function TJclStackInfoList.ValidCallSite(CodeAddr: TJclAddr; out CallInstructionSize: Cardinal): Boolean;
 var
   CodeDWORD4: DWORD;
   CodeDWORD8: DWORD;
@@ -4957,7 +4987,7 @@ begin
   // First check that the address is within range of our code segment!
   C8P := PDWORD(CodeAddr - 8);
   C4P := PDWORD(CodeAddr - 4);
-  Result := (CodeAddr > 8) and ValidCodeAddr(DWORD(C8P), FModuleInfoList) and not IsBadReadPtr(C8P, 8);
+  Result := (CodeAddr > 8) and ValidCodeAddr(TJclAddr(C8P), FModuleInfoList) and not IsBadReadPtr(C8P, 8);
 
   // Now check to see if the instruction preceding the return address
   // could be a valid CALL instruction
@@ -5041,7 +5071,7 @@ end;
 {$STACKFRAMES OFF}
 {$ENDIF ~STACKFRAMES_ON}
 
-function TJclStackInfoList.ValidStackAddr(StackAddr: DWORD): Boolean;
+function TJclStackInfoList.ValidStackAddr(StackAddr: TJclAddr): Boolean;
 begin
   Result := (BaseOfStack < StackAddr) and (StackAddr < TopOfStack);
 end;
@@ -5074,17 +5104,21 @@ end;
 
 function GetJmpDest(Jmp: PJmpInstruction): Pointer;
 begin
+  {$OVERFLOWCHECKS OFF}
   // TODO : 64 bit version
   if Jmp^.opCode = $E9 then
-    Result := Pointer(INT_PTR(Jmp) + Jmp^.distance + 5)
+    Result := Pointer(TJclAddr(Jmp) + TJclAddr(Jmp^.distance) + 5)
   else
   if Jmp.opCode = $EB then
-    Result := Pointer(INT_PTR(Jmp) + ShortInt(Jmp^.distance) + 2)
+    Result := Pointer(TJclAddr(Jmp) + TJclAddr(ShortInt(Jmp^.distance)) + 2)
   else
     Result := nil;
   if (Result <> nil) and (PJmpTable(Result).OPCode = $25FF) then
     if not IsBadReadPtr(PJmpTable(Result).Ptr, SizeOf(Pointer)) then
-      Result := Pointer(PDWORD_PTR(PJmpTable(Result).Ptr)^);
+      Result := Pointer(PJclAddr(PJmpTable(Result).Ptr)^);
+  {$IFDEF OVERFLOWCHECKS_ON}
+  {$OVERFLOWCHECKS ON}
+  {$ENDIF OVERFLOWCHECKS_ON}
 end;
 
 //=== { TJclExceptFrame } ====================================================
@@ -5131,13 +5165,13 @@ begin
     // get location
     if FFrameKind <> efkUnknown then
     begin
-      FCodeLocation := GetJmpDest(PJmpInstruction(DWORD(@AExcDesc^.Instructions)));
+      FCodeLocation := GetJmpDest(PJmpInstruction(TJclAddr(@AExcDesc^.Instructions)));
       if FCodeLocation = nil then
         FCodeLocation := @AExcDesc^.Instructions;
     end
     else
     begin
-      FCodeLocation := GetJmpDest(PJmpInstruction(DWORD(AExcDesc)));
+      FCodeLocation := GetJmpDest(PJmpInstruction(TJclAddr(AExcDesc)));
       if FCodeLocation = nil then
         FCodeLocation := AExcDesc;
     end;
@@ -5183,19 +5217,23 @@ begin
       Result := FExcTab[I].VTable = nil;
       while (not Result) and (VTable <> nil) do
       begin
+        {$OVERFLOWCHECKS OFF}
         Result := (FExcTab[I].VTable = VTable) or
-          (PShortString(PPointer(PInteger(FExcTab[I].VTable)^ + vmtClassName)^)^ =
-           PShortString(PPointer(INT_PTR(VTable) + vmtClassName)^)^);
+          (PShortString(PPointer(PJclAddr(FExcTab[I].VTable)^ + TJclAddr(vmtClassName))^)^ =
+           PShortString(PPointer(TJclAddr(VTable) + TJclAddr(vmtClassName))^)^);
         if Result then
           HandlerAt := FExcTab[I].Handler
         else
         begin
-          ParentVTable := PPointer(INT_PTR(VTable) + vmtParent)^;
+          ParentVTable := PPointer(TJclAddr(VTable) + TJclAddr(vmtParent))^;
           if ParentVTable = VTable then
             VTable := nil
           else
             VTable := ParentVTable;
         end;
+        {$IFDEF OVERFLOWCHECKS_ON}
+        {$OVERFLOWCHECKS ON}
+        {$ENDIF OVERFLOWCHECKS_ON}
       end;
       if Result then
         Break;
@@ -5230,7 +5268,7 @@ end;
 
 procedure TJclExceptFrameList.TraceExceptionFrames;
 var
-  FS: PExcFrame;
+  ExceptionPointer: PExcFrame;
   Level: Integer;
   ModulesList: TJclModuleInfoList;
 begin
@@ -5238,13 +5276,13 @@ begin
   ModulesList := GlobalModulesList.CreateModulesList;
   try
     Level := 0;
-    FS := GetFS;
-    while INT_PTR(FS) <> -1 do
+    ExceptionPointer := GetExceptionPointer;
+    while TJclAddr(ExceptionPointer) <> High(TJclAddr) do
     begin
-      if (Level >= IgnoreLevels) and ValidCodeAddr(DWORD(FS.Desc), ModulesList) then
-        AddFrame(FS);
+      if (Level >= IgnoreLevels) and ValidCodeAddr(TJclAddr(ExceptionPointer^.Desc), ModulesList) then
+        AddFrame(ExceptionPointer);
       Inc(Level);
-      FS := FS.next;
+      ExceptionPointer := ExceptionPointer^.next;
     end;
   finally
     GlobalModulesList.FreeModulesList(ModulesList);
@@ -5660,7 +5698,7 @@ begin
   end;
 end;
 
-function TJclDebugThreadList.GetThreadHandle(Index: Integer): DWORD;
+function TJclDebugThreadList.GetThreadHandle(Index: Integer): THandle;
 begin
   FReadLock.Enter;
   try
@@ -6146,7 +6184,7 @@ begin
     end;
     for I := 0 to ThreadIDList.Count - 1 do
     begin
-      ThreadHandle := OpenThread(Integer(ThreadIDList[I]));
+      ThreadHandle := OpenThread(TJclAddr(ThreadIDList[I]));
       ThreadHandleList.Add(Pointer(ThreadHandle));
       if ThreadHandle <> 0 then
         SuspendThread(ThreadHandle);
@@ -6155,7 +6193,7 @@ begin
       for I := 0 to ThreadIDList.Count - 1 do
       begin
         ThreadHandle := THandle(ThreadHandleList[I]);
-        TID := Integer(ThreadIDList[I]);
+        TID := TJclAddr(ThreadIDList[I]);
 
         ThreadInfo := Add;
         ThreadInfo.Fill(ThreadHandle, TID, FGatherOptions);
@@ -6210,7 +6248,7 @@ begin
   begin
     // Win9x uses thunk pointer outside the module when under a debugger
     P := GetProcAddress(KernelHandle, 'GetProcAddress');
-    Result := DWORD_PTR(P) < KernelHandle;
+    Result := TJclAddr(P) < KernelHandle;
   end;
 end;
 

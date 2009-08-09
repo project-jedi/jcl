@@ -1227,7 +1227,7 @@ begin
   Result := 0;
   if (Size - Position) >= Count then
   begin
-    System.Move(Buffer, Pointer(INT_PTR(Memory) + INT_PTR(Position))^, Count);
+    System.Move(Buffer, Pointer(TJclAddr(Memory) + TJclAddr(Position))^, Count);
     Position := Position + Count;
     Result := Count;
   end;
@@ -1452,7 +1452,7 @@ begin
   Result := 0;
   if (Size - Position) >= Count then
   begin
-    System.Move(Buffer, Pointer(INT_PTR(Memory) + INT_PTR(Position))^, Count);
+    System.Move(Buffer, Pointer(TJclAddr(Memory) + TJclAddr(Position))^, Count);
     Position := Position + Count;
     Result := Count;
   end;
@@ -3563,7 +3563,7 @@ begin
       GetMem(pSD, BufSize);
       GetFileSecurity(PChar(FileName), GROUP_SECURITY_INFORMATION,
         pSD, BufSize, BufSize);
-      LookupAccountBySid(Pointer(INT_PTR(pSD) + INT_PTR(pSD^.Group)), TmpResult, DomainName);
+      LookupAccountBySid(Pointer(TJclAddr(pSD) + TJclAddr(pSD^.Group)), TmpResult, DomainName);
       FreeMem(pSD);
       Result := Trim(TmpResult);
     end;
@@ -3605,7 +3605,7 @@ begin
       try
         GetFileSecurity(PChar(FileName), OWNER_SECURITY_INFORMATION,
           pSD, BufSize, BufSize);
-        LookupAccountBySid(Pointer(INT_PTR(pSD) + INT_PTR(pSD^.Owner)), TmpResult, DomainName);
+        LookupAccountBySid(Pointer(TJclAddr(pSD) + TJclAddr(pSD^.Owner)), TmpResult, DomainName);
       finally
         FreeMem(pSD);
       end;
@@ -4685,7 +4685,7 @@ end;
 function VersionResourceAvailable(const FileName: string): Boolean;
 var
   Size: DWORD;
-  Handle: THandle;
+  Handle: DWORD;
   Buffer: string;
 begin
   Result := False;
@@ -4746,7 +4746,7 @@ end;
 function VersionFixedFileInfo(const FileName: string; var FixedInfo: TVSFixedFileInfo): Boolean;
 var
   Size, FixInfoLen: DWORD;
-  Handle: THandle;
+  Handle: DWORD;
   Buffer: string;
   FixInfoBuf: PVSFixedFileInfo;
 begin
@@ -4791,7 +4791,7 @@ end;
 
 constructor TJclFileVersionInfo.Create(const FileName: string);
 var
-  Handle: THandle;
+  Handle: DWORD;
   Size: DWORD;
 begin
   Handle := 0;
@@ -4903,7 +4903,7 @@ var
 
   procedure Padding(var DataPtr: PAnsiChar);
   begin
-    while INT_PTR(DataPtr) and 3 <> 0 do
+    while TJclAddr(DataPtr) and 3 <> 0 do
       Inc(DataPtr);
   end;
 
@@ -5041,7 +5041,7 @@ begin
   FItemList := TStringList.Create;
   FItems := TStringList.Create;
   Data := Pointer(FBuffer);
-  Assert(INT_PTR(Data) mod 4 = 0);
+  Assert(TJclAddr(Data) mod 4 = 0);
   IsUnicode := (PWord(Data + 4)^ in [0, 1]);
   Error := True;
   GetHeader;

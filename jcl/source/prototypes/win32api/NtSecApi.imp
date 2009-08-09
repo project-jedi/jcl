@@ -1,77 +1,77 @@
-var
-  _LsaOpenPolicy: Pointer;
+type
+  TLsaOpenPolicy = function (SystemName: PLSA_UNICODE_STRING;
+    var ObjectAttributes: LSA_OBJECT_ATTRIBUTES; DesiredAccess: ACCESS_MASK;
+    var PolicyHandle: LSA_HANDLE): NTSTATUS; stdcall;
 
-function LsaOpenPolicy;
+var
+  _LsaOpenPolicy: TLsaOpenPolicy = nil;
+
+function LsaOpenPolicy(SystemName: PLSA_UNICODE_STRING;
+  var ObjectAttributes: LSA_OBJECT_ATTRIBUTES; DesiredAccess: ACCESS_MASK;
+  var PolicyHandle: LSA_HANDLE): NTSTATUS;
 begin
-  GetProcedureAddress(_LsaOpenPolicy, advapi32, 'LsaOpenPolicy');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_LsaOpenPolicy]
-  end;
+  GetProcedureAddress(Pointer(@_LsaOpenPolicy), advapi32, 'LsaOpenPolicy');
+  Result := _LsaOpenPolicy(SystemName, ObjectAttributes, DesiredAccess, PolicyHandle);
 end;
 
-var
-  _LsaQueryInformationPolicy: Pointer;
+type
+  TLsaQueryInformationPolicy = function (PolicyHandle: LSA_HANDLE;
+    InformationClass: POLICY_INFORMATION_CLASS; var Buffer: Pointer): NTSTATUS; stdcall;
 
-function LsaQueryInformationPolicy;
+var
+  _LsaQueryInformationPolicy: TLsaQueryInformationPolicy = nil;
+
+function LsaQueryInformationPolicy(PolicyHandle: LSA_HANDLE;
+  InformationClass: POLICY_INFORMATION_CLASS; var Buffer: Pointer): NTSTATUS;
 begin
-  GetProcedureAddress(_LsaQueryInformationPolicy, advapi32, 'LsaQueryInformationPolicy');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_LsaQueryInformationPolicy]
-  end;
+  GetProcedureAddress(Pointer(@_LsaQueryInformationPolicy), advapi32, 'LsaQueryInformationPolicy');
+  Result := _LsaQueryInformationPolicy(PolicyHandle, InformationClass, Buffer);
 end;
 
-var
-  _LsaFreeMemory: Pointer;
+type
+  TLsaFreeMemory = function (Buffer: Pointer): NTSTATUS; stdcall;
 
-function LsaFreeMemory;
+var
+  _LsaFreeMemory: TLsaFreeMemory = nil;
+
+function LsaFreeMemory(Buffer: Pointer): NTSTATUS;
 begin
-  GetProcedureAddress(_LsaFreeMemory, advapi32, 'LsaFreeMemory');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_LsaFreeMemory]
-  end;
+  GetProcedureAddress(Pointer(@_LsaFreeMemory), advapi32, 'LsaFreeMemory');
+  Result := _LsaFreeMemory(Buffer);
 end;
 
-var
-  _LsaFreeReturnBuffer: Pointer;
+type
+  TLsaFreeReturnBuffer = function (Buffer: Pointer): NTSTATUS; stdcall;
 
-function LsaFreeReturnBuffer;
+var
+  _LsaFreeReturnBuffer: TLsaFreeReturnBuffer = nil;
+
+function LsaFreeReturnBuffer(Buffer: Pointer): NTSTATUS;
 begin
-  GetProcedureAddress(_LsaFreeReturnBuffer, advapi32, 'LsaFreeReturnBuffer');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_LsaFreeReturnBuffer]
-  end;
+  GetProcedureAddress(Pointer(@_LsaFreeReturnBuffer), advapi32, 'LsaFreeReturnBuffer');
+  Result := _LsaFreeReturnBuffer(Buffer);
 end;
 
-var
-  _LsaClose: Pointer;
+type
+  TLsaClose = function (ObjectHandle: LSA_HANDLE): NTSTATUS; stdcall;
 
-function LsaClose;
+var
+  _LsaClose: TLsaClose = nil;
+
+function LsaClose(ObjectHandle: LSA_HANDLE): NTSTATUS;
 begin
-  GetProcedureAddress(_LsaClose, advapi32, 'LsaClose');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_LsaClose]
-  end;
+  GetProcedureAddress(Pointer(@_LsaClose), advapi32, 'LsaClose');
+  Result := _LsaClose(ObjectHandle);
 end;
 
-var
-  _LsaNtStatusToWinError: Pointer;
+type
+  TLsaNtStatusToWinError = function (Status: NTSTATUS): ULONG; stdcall;
 
-function LsaNtStatusToWinError;
+var
+  _LsaNtStatusToWinError: TLsaNtStatusToWinError = nil;
+
+function LsaNtStatusToWinError(Status: NTSTATUS): ULONG;
 begin
-  GetProcedureAddress(_LsaNtStatusToWinError, advapi32, 'LsaNtStatusToWinError');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_LsaNtStatusToWinError]
-  end;
+  GetProcedureAddress(Pointer(@_LsaNtStatusToWinError), advapi32, 'LsaNtStatusToWinError');
+  Result := _LsaNtStatusToWinError(Status);
 end;

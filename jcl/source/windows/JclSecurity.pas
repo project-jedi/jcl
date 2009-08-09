@@ -105,11 +105,9 @@ implementation
 
 uses
   Classes,
-  {$IFDEF FPC}
-  WinSysUt,
-  {$ELSE ~FPC}
+  {$IFDEF BORLAND}
   AccCtrl,
-  {$ENDIF ~FPC}
+  {$ENDIF BORLAND}
   JclRegistry, JclResources, JclStrings, JclSysInfo, JclWin32;
 
 //=== Access Control =========================================================

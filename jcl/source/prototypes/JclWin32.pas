@@ -133,6 +133,7 @@ type
 {$I win32api\ObjBase.int}
 {$I win32api\NtSecApi.int}
 {$I win32api\TlHelp32.int}
+{$I win32api\Winternl.int}
 
 {$IFDEF MSWINDOWS}
 
@@ -282,6 +283,7 @@ end;
 {$I win32api\ObjBase.imp}
 {$I win32api\NtSecApi.imp}
 {$I win32api\TlHelp32.imp}
+{$I win32api\Winternl.imp}
 
 {$IFDEF UNITVERSIONING}
 initialization

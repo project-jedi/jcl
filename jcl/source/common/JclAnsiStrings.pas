@@ -303,9 +303,9 @@ function StrIsSubset(const S: AnsiString; const ValidChars: TSysCharSet): Boolea
 function StrSame(const S1, S2: AnsiString): Boolean;
 
 // String Transformation Routines
-function StrCenter(const S: AnsiString; L: Integer; C: AnsiChar = ' '): AnsiString;
-function StrCharPosLower(const S: AnsiString; CharPos: Integer): AnsiString;
-function StrCharPosUpper(const S: AnsiString; CharPos: Integer): AnsiString;
+function StrCenter(const S: AnsiString; L: SizeInt; C: AnsiChar = ' '): AnsiString;
+function StrCharPosLower(const S: AnsiString; CharPos: SizeInt): AnsiString;
+function StrCharPosUpper(const S: AnsiString; CharPos: SizeInt): AnsiString;
 function StrDoubleQuote(const S: AnsiString): AnsiString;
 function StrEnsureNoPrefix(const Prefix, Text: AnsiString): AnsiString;
 function StrEnsureNoSuffix(const Suffix, Text: AnsiString): AnsiString;
@@ -316,9 +316,9 @@ function StrLower(const S: AnsiString): AnsiString;
 procedure StrLowerInPlace(var S: AnsiString);
 procedure StrLowerBuff(S: PAnsiChar);
 procedure StrMove(var Dest: AnsiString; const Source: AnsiString; const ToIndex,
-  FromIndex, Count: Integer);
-function StrPadLeft(const S: AnsiString; Len: Integer; C: AnsiChar = AnsiSpace): AnsiString;
-function StrPadRight(const S: AnsiString; Len: Integer; C: AnsiChar = AnsiSpace): AnsiString;
+  FromIndex, Count: SizeInt);
+function StrPadLeft(const S: AnsiString; Len: SizeInt; C: AnsiChar = AnsiSpace): AnsiString;
+function StrPadRight(const S: AnsiString; Len: SizeInt; C: AnsiChar = AnsiSpace): AnsiString;
 function StrProper(const S: AnsiString): AnsiString;
 procedure StrProperBuff(S: PAnsiChar);
 function StrQuote(const S: AnsiString; C: AnsiChar): AnsiString;
@@ -328,8 +328,8 @@ procedure StrReplace(var S: AnsiString; const Search, Replace: AnsiString; Flags
 function StrReplaceChar(const S: AnsiString; const Source, Replace: AnsiChar): AnsiString;
 function StrReplaceChars(const S: AnsiString; const Chars: TSysCharSet; Replace: AnsiChar): AnsiString;
 function StrReplaceButChars(const S: AnsiString; const Chars: TSysCharSet; Replace: AnsiChar): AnsiString;
-function StrRepeat(const S: AnsiString; Count: Integer): AnsiString;
-function StrRepeatLength(const S: AnsiString; const L: Integer): AnsiString;
+function StrRepeat(const S: AnsiString; Count: SizeInt): AnsiString;
+function StrRepeatLength(const S: AnsiString; const L: SizeInt): AnsiString;
 function StrReverse(const S: AnsiString): AnsiString;
 procedure StrReverseInPlace(var S: AnsiString);
 function StrSingleQuote(const S: AnsiString): AnsiString;
@@ -359,35 +359,36 @@ function StrRefCount(const S: AnsiString): Longint;
 procedure StrResetLength(var S: AnsiString);
 
 // String Search and Replace Routines
-function StrCharCount(const S: AnsiString; C: AnsiChar): Integer;
-function StrCharsCount(const S: AnsiString; Chars: TSysCharSet): Integer;
-function StrStrCount(const S, SubS: AnsiString): Integer;
-function StrCompare(const S1, S2: AnsiString): Integer;
-function StrCompareRange(const S1, S2: AnsiString; const Index, Count: Integer): Integer;
-function StrRepeatChar(C: AnsiChar; Count: Integer): AnsiString;
-function StrFind(const Substr, S: AnsiString; const Index: Integer = 1): Integer;
+function StrCharCount(const S: AnsiString; C: AnsiChar): SizeInt;
+function StrCharsCount(const S: AnsiString; Chars: TSysCharSet): SizeInt;
+function StrStrCount(const S, SubS: AnsiString): SizeInt;
+function StrCompare(const S1, S2: AnsiString; CaseSensitive: Boolean = False): SizeInt;
+function StrCompareRangeEx(const S1, S2: AnsiString; Index, Count: SizeInt; CaseSensitive: Boolean = False): SizeInt;
+function StrCompareRange(const S1, S2: AnsiString; Index, Count: SizeInt; CaseSensitive: Boolean = True): SizeInt;
+function StrRepeatChar(C: AnsiChar; Count: SizeInt): AnsiString;
+function StrFind(const Substr, S: AnsiString; const Index: SizeInt = 1): SizeInt;
 function StrHasPrefix(const S: AnsiString; const Prefixes: array of AnsiString): Boolean;
-function StrIndex(const S: AnsiString; const List: array of AnsiString): Integer;
-function StrILastPos(const SubStr, S: AnsiString): Integer;
-function StrIPos(const SubStr, S: AnsiString): Integer;
+function StrIndex(const S: AnsiString; const List: array of AnsiString): SizeInt;
+function StrILastPos(const SubStr, S: AnsiString): SizeInt;
+function StrIPos(const SubStr, S: AnsiString): SizeInt;
 function StrIsOneOf(const S: AnsiString; const List: array of AnsiString): Boolean;
-function StrLastPos(const SubStr, S: AnsiString): Integer;
-function StrMatch(const Substr, S: AnsiString; const Index: Integer = 1): Integer;
-function StrMatches(const Substr, S: AnsiString; const Index: Integer = 1): Boolean;
-function StrNIPos(const S, SubStr: AnsiString; N: Integer): Integer;
-function StrNPos(const S, SubStr: AnsiString; N: Integer): Integer;
-function StrPrefixIndex(const S: AnsiString; const Prefixes: array of AnsiString): Integer;
-function StrSearch(const Substr, S: AnsiString; const Index: Integer = 1): Integer;
+function StrLastPos(const SubStr, S: AnsiString): SizeInt;
+function StrMatch(const Substr, S: AnsiString; Index: SizeInt = 1): SizeInt;
+function StrMatches(const Substr, S: AnsiString; const Index: SizeInt = 1): Boolean;
+function StrNIPos(const S, SubStr: AnsiString; N: SizeInt): SizeInt;
+function StrNPos(const S, SubStr: AnsiString; N: SizeInt): SizeInt;
+function StrPrefixIndex(const S: AnsiString; const Prefixes: array of AnsiString): SizeInt;
+function StrSearch(const Substr, S: AnsiString; const Index: SizeInt = 1): SizeInt;
 
 // String Extraction
 function StrAfter(const SubStr, S: AnsiString): AnsiString;
 function StrBefore(const SubStr, S: AnsiString): AnsiString;
 function StrBetween(const S: AnsiString; const Start, Stop: AnsiChar): AnsiString;
-function StrChopRight(const S: AnsiString; N: Integer): AnsiString;
-function StrLeft(const S: AnsiString; Count: Integer): AnsiString;
-function StrMid(const S: AnsiString; Start, Count: Integer): AnsiString;
-function StrRestOf(const S: AnsiString; N: Integer): AnsiString;
-function StrRight(const S: AnsiString; Count: Integer): AnsiString;
+function StrChopRight(const S: AnsiString; N: SizeInt): AnsiString;
+function StrLeft(const S: AnsiString; Count: SizeInt): AnsiString;
+function StrMid(const S: AnsiString; Start, Count: SizeInt): AnsiString;
+function StrRestOf(const S: AnsiString; N: SizeInt): AnsiString;
+function StrRight(const S: AnsiString; Count: SizeInt): AnsiString;
 
 // Character Test Routines
 function CharEqualNoCase(const C1, C2: AnsiChar): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
@@ -419,17 +420,17 @@ function CharUpper(const C: AnsiChar): AnsiChar;
 function CharToggleCase(const C: AnsiChar): AnsiChar;
 
 // Character Search and Replace
-function CharPos(const S: AnsiString; const C: AnsiChar; const Index: Integer = 1): Integer;
-function CharLastPos(const S: AnsiString; const C: AnsiChar; const Index: Integer = 1): Integer;
-function CharIPos(const S: AnsiString; C: AnsiChar; const Index: Integer = 1): Integer;
-function CharReplace(var S: AnsiString; const Search, Replace: AnsiChar): Integer;
+function CharPos(const S: AnsiString; const C: AnsiChar; const Index: SizeInt = 1): SizeInt;
+function CharLastPos(const S: AnsiString; const C: AnsiChar; const Index: SizeInt = 1): SizeInt;
+function CharIPos(const S: AnsiString; C: AnsiChar; const Index: SizeInt = 1): SizeInt;
+function CharReplace(var S: AnsiString; const Search, Replace: AnsiChar): SizeInt;
 
 // PCharVector
 type
   PAnsiCharVector = ^PAnsiChar;
 
 function StringsToPCharVector(var Dest: PAnsiCharVector; const Source: TJclAnsiStrings): PAnsiCharVector;
-function PCharVectorCount(Source: PAnsiCharVector): Integer;
+function PCharVectorCount(Source: PAnsiCharVector): SizeInt;
 procedure PCharVectorToStrings(const Dest: TJclAnsiStrings; Source: PAnsiCharVector);
 procedure FreePCharVector(var Dest: PAnsiCharVector);
 
@@ -439,8 +440,8 @@ type
 
 function StringsToMultiSz(var Dest: PAnsiMultiSz; const Source: TJclAnsiStrings): PAnsiMultiSz;
 procedure MultiSzToStrings(const Dest: TJclAnsiStrings; const Source: PAnsiMultiSz);
-function MultiSzLength(const Source: PAnsiMultiSz): Integer;
-procedure AllocateMultiSz(var Dest: PAnsiMultiSz; Len: Integer);
+function MultiSzLength(const Source: PAnsiMultiSz): SizeInt;
+procedure AllocateMultiSz(var Dest: PAnsiMultiSz; Len: SizeInt);
 procedure FreeMultiSz(var Dest: PAnsiMultiSz);
 function MultiSzDup(const Source: PAnsiMultiSz): PAnsiMultiSz;
 
@@ -465,12 +466,12 @@ procedure StrTokenToStrings(S: AnsiString; Separator: AnsiChar; const List: TJcl
 function StrWord(var S: PAnsiChar; out Word: AnsiString): Boolean;
 function StrToFloatSafe(const S: AnsiString): Float;
 function StrToIntSafe(const S: AnsiString): Integer;
-procedure StrNormIndex(const StrLen: Integer; var Index: Integer; var Count: Integer); overload;
+procedure StrNormIndex(const StrLen: SizeInt; var Index: SizeInt; var Count: SizeInt); overload;
 
 function ArrayOf(List: TJclAnsiStrings): TDynStringArray; overload;
 
-function AnsiCompareNaturalStr(const S1, S2: AnsiString): Integer;
-function AnsiCompareNaturalText(const S1, S2: AnsiString): Integer;
+function AnsiCompareNaturalStr(const S1, S2: AnsiString): SizeInt;
+function AnsiCompareNaturalText(const S1, S2: AnsiString): SizeInt;
 
 // internal structures published to make function inlining working
 const
@@ -508,19 +509,20 @@ uses
   RtlConsts,
   {$ENDIF HAS_UNIT_RTLCONSTS}
   {$ENDIF SUPPORTS_UNICODE}
-  JclLogic, JclResources, JclStreams;
+  JclLogic, JclResources, JclStreams, JclSynch;
 
 //=== Internal ===============================================================
 
 type
   TAnsiStrRec = packed record
-    RefCount: Longint;
-    Length: Longint;
+    RefCount: SizeInt;
+    Length: SizeInt;
   end;
   PAnsiStrRec = ^TAnsiStrRec;
 
 const
   AnsiStrRecSize  = SizeOf(TAnsiStrRec);     // size of the AnsiString header rec
+
 procedure LoadCharTypes;
 var
   CurrChar: AnsiChar;
@@ -603,179 +605,37 @@ end;
 // Uppercases or Lowercases a give AnsiString depending on the
 // passed offset. (UpOffset or LoOffset)
 
-procedure StrCase(var Str: AnsiString; const Offset: Integer); register; assembler;
-type
-  TAnsiUniqueStringType = procedure (var S : AnsiString);
-const
-  AnsiUniqueString: TAnsiUniqueStringType = UniqueString;
-asm
-        // make sure that the string is not null
-
-        TEST    EAX, EAX
-        JZ      @@StrIsNull
-
-        // create unique string if this one is ref-counted
-
-        PUSH    EDX
-        CALL    AnsiUniqueString
-        POP     EDX
-
-        // make sure that the new string is not null
-
-        TEST    EAX, EAX
-        JZ      @@StrIsNull
-
-        // get the length, and prepare the counter
-
-        MOV     ECX, [EAX - AnsiStrRecSize].TAnsiStrRec.Length
-        DEC     ECX
-        JS      @@StrIsNull
-
-        // ebx will hold the case map, esi pointer to Str
-
-        PUSH    EBX
-        PUSH    ESI
-        PUSH    EDI
-
-        // load case map and prepare variables }
-
-        {$IFDEF PIC}
-        LEA     EBX, [EBX][AnsiCaseMap + EDX]
-        {$ELSE ~PIC}
-        LEA     EBX, [AnsiCaseMap + EDX]
-        {$ENDIF ~PIC}
-        MOV     ESI, EAX
-        XOR     EDX, EDX
-        XOR     EAX, EAX
-
-@@NextChar:
-        // get current char from the AnsiString
-
-        MOV     DL, [ESI]
-
-        // get corresponding char from the case map
-
-        MOV     AL, [EBX + EDX]
-
-        // store it back in the string
-
-        MOV     [ESI], AL
-
-        // update the loop counter and check the end of stirng
-
-        DEC     ECX
-        JL      @@Done
-
-        // do the same thing with next 3 chars
-
-        MOV     DL, [ESI + 1]
-        MOV     AL, [EBX + EDX]
-        MOV     [ESI + 1], AL
-
-        DEC     ECX
-        JL      @@Done
-        MOV     DL, [ESI + 2]
-        MOV     AL, [EBX+EDX]
-        MOV     [ESI + 2], AL
-
-        DEC     ECX
-        JL      @@Done
-        MOV     DL, [ESI + 3]
-        MOV     AL, [EBX + EDX]
-        MOV     [ESI + 3], AL
-
-        // point AnsiString to next 4 chars
-
-        ADD     ESI, 4
-
-        // update the loop counter and check the end of stirng
-
-        DEC     ECX
-        JGE     @@NextChar
-
-@@Done:
-        POP     EDI
-        POP     ESI
-        POP     EBX
-
-@@StrIsNull:
+procedure StrCase(var Str: AnsiString; const Offset: SizeInt);
+var
+  P: PAnsiChar;
+  I, L: SizeInt;
+begin
+  if Str <> '' then
+  begin
+    UniqueString(Str);
+    P := PAnsiChar(Str);
+    L := Length(Str);
+    for I := 1 to L do
+    begin
+      P^ := AnsiCaseMap[Offset + Ord(P^)];
+      Inc(P);
+    end;
+  end;
 end;
 
 // Internal utility function
 // Uppercases or Lowercases a give null terminated string depending on the
 // passed offset. (UpOffset or LoOffset)
 
-procedure StrCaseBuff(S: PAnsiChar; const Offset: Integer); register; assembler;
-asm
-        // make sure the string is not null
-
-        TEST    EAX, EAX
-        JZ      @@StrIsNull
-
-        // ebx will hold the case map, esi pointer to Str
-
-        PUSH    EBX
-        PUSH    ESI
-
-        // load case map and prepare variables
-
-        {$IFDEF PIC}
-        LEA     EBX, [EBX][AnsiCaseMap + EDX]
-        {$ELSE ~PIC}
-        LEA     EBX, [AnsiCaseMap + EDX]
-        {$ENDIF ~PIC}
-        MOV     ESI, EAX
-        XOR     EDX, EDX
-        XOR     EAX, EAX
-
-@@NextChar:
-        // get current char from the string
-
-        MOV     DL, [ESI]
-
-        // check for null char
-
-        TEST    DL, DL
-        JZ      @@Done
-
-        // get corresponding char from the case map
-
-        MOV     AL, [EBX + EDX]
-
-        // store it back in the string
-
-        MOV     [ESI], AL
-
-        // do the same thing with next 3 chars
-
-        MOV     DL, [ESI + 1]
-        TEST    DL, DL
-        JZ      @@Done
-        MOV     AL, [EBX+EDX]
-        MOV     [ESI + 1], AL
-
-        MOV     DL, [ESI + 2]
-        TEST    DL, DL
-        JZ      @@Done
-        MOV     AL, [EBX+EDX]
-        MOV     [ESI + 2], AL
-
-        MOV     DL, [ESI + 3]
-        TEST    DL, DL
-        JZ      @@Done
-        MOV     AL, [EBX+EDX]
-        MOV     [ESI + 3], AL
-
-        // point string to next 4 chars
-
-        ADD     ESI, 4
-        JMP     @@NextChar
-
-@@Done:
-        POP     ESI
-        POP     EBX
-
-@@StrIsNull:
+procedure StrCaseBuff(S: PAnsiChar; const Offset: SizeInt);
+begin
+  if (S <> nil) and (S^ <> #0) then
+  begin
+    repeat
+      S^ := AnsiCaseMap[Offset + Ord(S^)];
+      Inc(S);
+    until S^ = #0;
+  end;
 end;
 
 {$IFDEF SUPPORTS_UNICODE}
@@ -1316,7 +1176,7 @@ end;
 // String Test Routines
 function StrIsAlpha(const S: AnsiString): Boolean;
 var
-  I: Integer;
+  I: SizeInt;
 begin
   Result := S <> '';
   for I := 1 to Length(S) do
@@ -1331,7 +1191,7 @@ end;
 
 function StrIsAlphaNum(const S: AnsiString): Boolean;
 var
-  I: Integer;
+  I: SizeInt;
 begin
   Result := S <> '';
   for I := 1 to Length(S) do
@@ -1346,7 +1206,7 @@ end;
 
 function StrConsistsofNumberChars(const S: AnsiString): Boolean;
 var
-  I: Integer;
+  I: SizeInt;
 begin
   Result := S <> '';
   for I := 1 to Length(S) do
@@ -1361,7 +1221,7 @@ end;
 
 function StrContainsChars(const S: AnsiString; Chars: TSysCharSet; CheckAll: Boolean): Boolean;
 var
-  I: Integer;
+  I: SizeInt;
   C: AnsiChar;
 begin
   Result := Chars = [];
@@ -1395,7 +1255,7 @@ end;
 
 function StrIsAlphaNumUnderscore(const S: AnsiString): Boolean;
 var
-  I: Integer;
+  I: SizeInt;
   C: AnsiChar;
 begin
   for i := 1 to Length(s) do
@@ -1414,7 +1274,7 @@ end;
 
 function StrIsDigit(const S: AnsiString): Boolean;
 var
-  I: Integer;
+  I: SizeInt;
 begin
   Result := S <> '';
   for I := 1 to Length(S) do
@@ -1429,7 +1289,7 @@ end;
 
 function StrIsSubset(const S: AnsiString; const ValidChars: TSysCharSet): Boolean;
 var
-  I: Integer;
+  I: SizeInt;
 begin
   for I := 1 to Length(S) do
   begin
@@ -1450,7 +1310,7 @@ end;
 
 //=== String Transformation Routines =========================================
 
-function StrCenter(const S: AnsiString; L: Integer; C: AnsiChar = ' '): AnsiString;
+function StrCenter(const S: AnsiString; L: SizeInt; C: AnsiChar = ' '): AnsiString;
 begin
   if Length(S) < L then
   begin
@@ -1461,14 +1321,14 @@ begin
     Result := S;
 end;
 
-function StrCharPosLower(const S: AnsiString; CharPos: Integer): AnsiString;
+function StrCharPosLower(const S: AnsiString; CharPos: SizeInt): AnsiString;
 begin
   Result := S;
   if (CharPos > 0) and (CharPos <= Length(S)) then
     Result[CharPos] := CharLower(Result[CharPos]);
 end;
 
-function StrCharPosUpper(const S: AnsiString; CharPos: Integer): AnsiString;
+function StrCharPosUpper(const S: AnsiString; CharPos: SizeInt): AnsiString;
 begin
   Result := S;
   if (CharPos > 0) and (CharPos <= Length(S)) then
@@ -1482,7 +1342,7 @@ end;
 
 function StrEnsureNoPrefix(const Prefix, Text: AnsiString): AnsiString;
 var
-  PrefixLen: Integer;
+  PrefixLen: SizeInt;
 begin
   PrefixLen := Length(Prefix);
   if Copy(Text, 1, PrefixLen) = Prefix then
@@ -1493,8 +1353,8 @@ end;
 
 function StrEnsureNoSuffix(const Suffix, Text: AnsiString): AnsiString;
 var
-  SuffixLen: Integer;
-  StrLength: Integer;
+  SuffixLen: SizeInt;
+  StrLength: SizeInt;
 begin
   SuffixLen := Length(Suffix);
   StrLength := Length(Text);
@@ -1506,7 +1366,7 @@ end;
 
 function StrEnsurePrefix(const Prefix, Text: AnsiString): AnsiString;
 var
-  PrefixLen: Integer;
+  PrefixLen: SizeInt;
 begin
   PrefixLen := Length(Prefix);
   if Copy(Text, 1, PrefixLen) = Prefix then
@@ -1517,7 +1377,7 @@ end;
 
 function StrEnsureSuffix(const Suffix, Text: AnsiString): AnsiString;
 var
-  SuffixLen: Integer;
+  SuffixLen: SizeInt;
 begin
   SuffixLen := Length(Suffix);
   if Copy(Text, Length(Text) - SuffixLen + 1, SuffixLen) = Suffix then
@@ -1528,13 +1388,13 @@ end;
 
 function StrEscapedToString(const S: AnsiString): AnsiString;
 var
-  I, Len: Integer;
+  I, Len: SizeInt;
 
   procedure HandleHexEscapeSeq;
   const
     HexDigits = AnsiString('0123456789abcdefABCDEF');
   var
-    Val, N: Integer;
+    Val, N: SizeInt;
   begin
     N := Pos(S[I + 1], HexDigits) - 1;
     if N < 0 then
@@ -1570,7 +1430,7 @@ var
   const
     OctDigits = AnsiString('01234567');
   var
-    Val, N: Integer;
+    Val, N: SizeInt;
   begin
     // first digit
     Val := Pos(S[I], OctDigits) - 1;
@@ -1669,7 +1529,7 @@ begin
 end;
 
 procedure StrMove(var Dest: AnsiString; const Source: AnsiString;
-  const ToIndex, FromIndex, Count: Integer);
+  const ToIndex, FromIndex, Count: SizeInt);
 begin
   // Check strings
   if (Source = '') or (Length(Dest) = 0) then
@@ -1686,9 +1546,9 @@ begin
   Move(Source[FromIndex], Dest[ToIndex], Count);
 end;
 
-function StrPadLeft(const S: AnsiString; Len: Integer; C: AnsiChar): AnsiString;
+function StrPadLeft(const S: AnsiString; Len: SizeInt; C: AnsiChar): AnsiString;
 var
-  L: Integer;
+  L: SizeInt;
 begin
   L := Length(S);
   if L < Len then
@@ -1697,9 +1557,9 @@ begin
     Result := S;
 end;
 
-function StrPadRight(const S: AnsiString; Len: Integer; C: AnsiChar): AnsiString;
+function StrPadRight(const S: AnsiString; Len: SizeInt; C: AnsiChar): AnsiString;
 var
-  L: Integer;
+  L: SizeInt;
 begin
   L := Length(S);
   if L < Len then
@@ -1726,7 +1586,7 @@ end;
 
 function StrQuote(const S: AnsiString; C: AnsiChar): AnsiString;
 var
-  L: Integer;
+  L: SizeInt;
 begin
   L := Length(S);
   Result := S;
@@ -1745,7 +1605,7 @@ end;
 function StrRemoveChars(const S: AnsiString; const Chars: TSysCharSet): AnsiString;
 var
   Source, Dest: PAnsiChar;
-  Index, Len: Integer;
+  Index, Len: SizeInt;
 begin
   Len := Length(S);
   SetLength(Result, Len);
@@ -1767,7 +1627,7 @@ end;
 function StrKeepChars(const S: AnsiString; const Chars: TSysCharSet): AnsiString;
 var
   Source, Dest: PAnsiChar;
-  Index, Len: Integer;
+  Index, Len: SizeInt;
 begin
   Len := Length(S);
   SetLength(Result, Len);
@@ -1786,9 +1646,9 @@ begin
   SetLength(Result, Dest - PAnsiChar(Result));
 end;
 
-function StrRepeat(const S: AnsiString; Count: Integer): AnsiString;
+function StrRepeat(const S: AnsiString; Count: SizeInt): AnsiString;
 var
-  L: Integer;
+  L: SizeInt;
   P: PAnsiChar;
 begin
   L := Length(S);
@@ -1805,10 +1665,10 @@ begin
   end;
 end;
 
-function StrRepeatLength(const S: AnsiString; const L: Integer): AnsiString;
+function StrRepeatLength(const S: AnsiString; const L: SizeInt): AnsiString;
 var
-  Count: Integer;
-  LenS: Integer;
+  Count: SizeInt;
+  LenS: SizeInt;
   P: PAnsiChar;
 begin
   Result := '';
@@ -1840,11 +1700,11 @@ var
   SourceMatchPtr: PAnsiChar; { pointers into S and Search when first character has }
   SearchMatchPtr: PAnsiChar; { been matched and we're probing for a complete match }
   ResultPtr: PAnsiChar;      { pointer into Result of character being written }
-  ResultIndex: Integer;
-  SearchLength: Integer;     { length of search string }
-  ReplaceLength: Integer;    { length of replace string }
-  BufferLength: Integer;     { length of temporary result buffer }
-  ResultLength: Integer;     { length of result string }
+  ResultIndex: SizeInt;
+  SearchLength: SizeInt;     { length of search string }
+  ReplaceLength: SizeInt;    { length of replace string }
+  BufferLength: SizeInt;     { length of temporary result buffer }
+  ResultLength: SizeInt;     { length of result string }
   C: AnsiChar;               { first character of search string }
   IgnoreCase: Boolean;
 begin
@@ -1964,7 +1824,7 @@ end;
 
 function StrReplaceChar(const S: AnsiString; const Source, Replace: AnsiChar): AnsiString;
 var
-  I: Integer;
+  I: SizeInt;
 begin
   Result := S;
   for I := 1 to Length(S) do
@@ -1974,7 +1834,7 @@ end;
 
 function StrReplaceChars(const S: AnsiString; const Chars: TSysCharSet; Replace: AnsiChar): AnsiString;
 var
-  I: Integer;
+  I: SizeInt;
 begin
   Result := S;
   for I := 1 to Length(S) do
@@ -1985,7 +1845,7 @@ end;
 function StrReplaceButChars(const S: AnsiString; const Chars: TSysCharSet;
   Replace: AnsiChar): AnsiString;
 var
-  I: Integer;
+  I: SizeInt;
 begin
   Result := S;
   for I := 1 to Length(S) do
@@ -2025,7 +1885,7 @@ end;
 function StrSmartCase(const S: AnsiString; Delimiters: TSysCharSet): AnsiString;
 var
   Source, Dest: PAnsiChar;
-  Index, Len: Integer;
+  Index, Len: SizeInt;
 begin
   Result := '';
   if Delimiters = [] then
@@ -2056,7 +1916,7 @@ end;
 
 function StrStringToEscaped(const S: AnsiString): AnsiString;
 var
-  I: Integer;
+  I: SizeInt;
 begin
   Result := '';
   for I := 1 to Length(S) do
@@ -2083,7 +1943,7 @@ begin
     else
       // Characters < ' ' are escaped with hex sequence
       if S[I] < #32 then
-        Result := Result + AnsiString(Format('\x%.2x', [Integer(S[I])]))
+        Result := Result + AnsiString(Format('\x%.2x', [SizeInt(S[I])]))
       else
         Result := Result + S[I];
     end;
@@ -2092,7 +1952,7 @@ end;
 
 function StrStripNonNumberChars(const S: AnsiString): AnsiString;
 var
-  I: Integer;
+  I: SizeInt;
   C: AnsiChar;
 begin
   Result := '';
@@ -2106,8 +1966,8 @@ end;
 
 function StrToHex(const Source: AnsiString): AnsiString;
 var
-  Index: Integer;
-  C, L, N: Integer;
+  Index: SizeInt;
+  C, L, N: SizeInt;
   BL, BH: Byte;
   S: AnsiString;
 begin
@@ -2137,7 +1997,7 @@ begin
         Result := '';
         Exit;
       end;
-      Result[N] := AnsiChar((BH shl 4) + BL);
+      Result[N] := AnsiChar((Cardinal(BH) shl 4) or Cardinal(BL));
       Inc(N);
     end;
   end;
@@ -2145,7 +2005,7 @@ end;
 
 function StrTrimCharLeft(const S: AnsiString; C: AnsiChar): AnsiString;
 var
-  I, L: Integer;
+  I, L: SizeInt;
 begin
   I := 1;
   L := Length(S);
@@ -2156,7 +2016,7 @@ end;
 
 function StrTrimCharsLeft(const S: AnsiString; const Chars: TSysCharSet): AnsiString;
 var
-  I, L: Integer;
+  I, L: SizeInt;
 begin
   I := 1;
   L := Length(S);
@@ -2167,7 +2027,7 @@ end;
 
 function StrTrimCharsRight(const S: AnsiString; const Chars: TSysCharSet): AnsiString;
 var
-  I: Integer;
+  I: SizeInt;
 begin
   I := Length(S);
   while (I >= 1) and (S[I] in Chars) do
@@ -2177,7 +2037,7 @@ end;
 
 function StrTrimCharRight(const S: AnsiString; C: AnsiChar): AnsiString;
 var
-  I: Integer;
+  I: SizeInt;
 begin
   I := Length(S);
   while (I >= 1) and (S[I] = C) do
@@ -2188,7 +2048,7 @@ end;
 function StrTrimQuotes(const S: AnsiString): AnsiString;
 var
   First, Last: AnsiChar;
-  L: Integer;
+  L: SizeInt;
 begin
   L := Length(S);
   if L > 1 then
@@ -2247,7 +2107,7 @@ begin
     if P^.RefCount = -1 then
       UniqueString(S)
     else
-      InterLockedIncrement(P^.RefCount);
+      LockedInc(P^.RefCount);
   end;
 end;
 
@@ -2268,7 +2128,7 @@ begin
           Pointer(S) := nil;
         end;
     else
-      InterLockedDecrement(P^.RefCount);
+      LockedDec(P^.RefCount);
     end;
   end;
 end;
@@ -2301,7 +2161,7 @@ end;
 
 procedure StrResetLength(var S: AnsiString);
 var
-  I: Integer;
+  I: SizeInt;
 begin
   for I := 1 to Length(S) do
     if S[I] = #0 then
@@ -2313,9 +2173,9 @@ end;
 
 //=== String Search and Replace Routines =====================================
 
-function StrCharCount(const S: AnsiString; C: AnsiChar): Integer;
+function StrCharCount(const S: AnsiString; C: AnsiChar): SizeInt;
 var
-  I: Integer;
+  I: SizeInt;
 begin
   Result := 0;
   for I := 1 to Length(S) do
@@ -2323,9 +2183,9 @@ begin
       Inc(Result);
 end;
 
-function StrCharsCount(const S: AnsiString; Chars: TSysCharSet): Integer;
+function StrCharsCount(const S: AnsiString; Chars: TSysCharSet): SizeInt;
 var
-  I: Integer;
+  I: SizeInt;
 begin
   Result := 0;
   for I := 1 to Length(S) do
@@ -2333,9 +2193,9 @@ begin
       Inc(Result);
 end;
 
-function StrStrCount(const S, SubS: AnsiString): Integer;
+function StrStrCount(const S, SubS: AnsiString): SizeInt;
 var
-  I: Integer;
+  I: SizeInt;
 begin
   Result := 0;
   if (Length(SubS) > Length(S)) or (Length(SubS) = 0) or (Length(S) = 0) then
@@ -2358,426 +2218,137 @@ begin
   end;
 end;
 
-{$IFDEF PIC}
-function _StrCompare(const S1, S2: AnsiString): Integer; forward;
-
-function StrCompare(const S1, S2: AnsiString): Integer;
+(*
+{ 1}  Test(StrCompareRange('', '', 1, 5), 0);
+{ 2}  Test(StrCompareRange('A', '', 1, 5), -1);
+{ 3}  Test(StrCompareRange('AB', '', 1, 5), -1);
+{ 4}  Test(StrCompareRange('ABC', '', 1, 5), -1);
+{ 5}  Test(StrCompareRange('', 'A', 1, 5), -1);
+{ 6}  Test(StrCompareRange('', 'AB',  1, 5), -1);
+{ 7}  Test(StrCompareRange('', 'ABC', 1, 5), -1);
+{ 8}  Test(StrCompareRange('A', 'a', 1, 5), -2);
+{ 9}  Test(StrCompareRange('A', 'a', 1, 1), -32);
+{10}  Test(StrCompareRange('aA', 'aB', 1, 1), 0);
+{11}  Test(StrCompareRange('aA', 'aB', 1, 2), -1);
+{12}  Test(StrCompareRange('aB', 'aA', 1, 2), 1);
+{13}  Test(StrCompareRange('aA', 'aa', 1, 2), -32);
+{14}  Test(StrCompareRange('aa', 'aA', 1, 2), 32);
+{15}  Test(StrCompareRange('', '', 1, 0), 0);
+{16}  Test(StrCompareRange('A', 'A', 1, 0), -2);
+{17}  Test(StrCompareRange('Aa', 'A', 1, 0), -2);
+{18}  Test(StrCompareRange('Aa', 'Aa', 1, 2), 0);
+{19}  Test(StrCompareRange('Aa', 'A', 1, 2), 0);
+{20}  Test(StrCompareRange('Ba', 'A', 1, 2), 1);
+*)
+function StrCompareRangeEx(const S1, S2: AnsiString; Index, Count: SizeInt; CaseSensitive: Boolean): SizeInt;
+var
+  Len1, Len2: SizeInt;
+  I: SizeInt;
+  C1, C2: AnsiChar;
 begin
-  Result := _StrCompare(S1, S2);
+  if Pointer(S1) = Pointer(S2) then
+  begin
+    if (Count <= 0) and (S1 <> '') then
+      Result := -2 // no work
+    else
+      Result := 0;
+  end
+  else
+  if (S1 = '') or (S2 = '') then
+    Result := -1 // null string
+  else
+  if Count <= 0 then
+    Result := -2 // no work
+  else
+  begin
+    Len1 := Length(S1);
+    Len2 := Length(S2);
+
+    if (Index - 1) + Count > Len1 then
+      Result := -2
+    else
+    begin
+      if (Index - 1) + Count > Len2 then // strange behaviour, but the assembler code does it
+        Count := Len2 - (Index - 1);
+
+      if CaseSensitive then
+      begin
+        for I := 0 to Count - 1 do
+        begin
+          C1 := S1[Index + I];
+          C2 := S2[Index + I];
+          if C1 <> C2 then
+          begin
+            Result := Ord(C1) - Ord(C2);
+            Exit;
+          end;
+        end;
+      end
+      else
+      begin
+        for I := 0 to Count - 1 do
+        begin
+          C1 := S1[Index + I];
+          C2 := S2[Index + I];
+          if C1 <> C2 then
+          begin
+            C1 := CharLower(C1);
+            C2 := CharLower(C2);
+            if C1 <> C2 then
+            begin
+              Result := Ord(C1) - Ord(C2);
+              Exit;
+            end;
+          end;
+        end;
+      end;
+      Result := 0;
+    end;
+  end;
 end;
 
-function _StrCompare(const S1, S2: AnsiString): Integer; assembler;
-{$ELSE ~PIC}
-function StrCompare(const S1, S2: AnsiString): Integer; assembler;
-{$ENDIF ~PIC}
-asm
-        // check if pointers are equal
-
-        CMP     EAX, EDX
-        JE      @@Equal
-
-        // if S1 is nil return - Length(S2)
-
-        TEST    EAX, EAX
-        JZ      @@Str1Null
-
-        // if S2 is nil return  Length(S1)
-
-        TEST    EDX, EDX
-        JZ      @@Str2Null
-
-        // EBX will hold case map, ESI S1, EDI S2
-
-        PUSH    EBX
-        PUSH    ESI
-        PUSH    EDI
-
-        // move AnsiString pointers
-
-        MOV     ESI, EAX
-        MOV     EDI, EDX
-
-        // get the length of strings
-
-        MOV     EAX, [ESI-AnsiStrRecSize].TAnsiStrRec.Length
-        MOV     EDX, [EDI-AnsiStrRecSize].TAnsiStrRec.Length
-
-        // exit if Length(S1) <> Length(S2)
-
-        CMP     EAX, EDX
-        JNE     @@MissMatch
-
-        // check the length just in case
-
-        DEC     EDX
-        JS      @@InvalidStr
-
-        DEC     EAX
-        JS      @@InvalidStr
-
-        // load case map
-
-        LEA     EBX, AnsiCaseMap
-
-        // make ECX our loop counter
-
-        MOV     ECX, EAX
-
-        // clear working regs
-
-        XOR     EAX, EAX
-        XOR     EDX, EDX
-
-        // get last chars
-
-        MOV     AL, [ESI+ECX]
-        MOV     DL, [EDI+ECX]
-
-        // lower case them
-
-        MOV     AL, [EBX+EAX]
-        MOV     DL, [EBX+EDX]
-
-        // compare them
-
-        CMP     AL, DL
-        JNE     @@MissMatch
-
-        // if there was only 1 char then exit
-
-        JECXZ   @@Match
-
-@@NextChar:
-        // case sensitive compare of strings
-
-        REPE    CMPSB
-        JE      @@Match
-
-        // if there was a missmatch try case insensitive compare, get the chars
-
-        MOV     AL, [ESI-1]
-        MOV     DL, [EDI-1]
-
-        // lowercase and compare them, if equal then continue
-
-        MOV     AL, [EBX+EAX]
-        MOV     DL, [EBX+EDX]
-        CMP     AL, DL
-        JE      @@NextChar
-
-        // if we make it here then strings don't match,  return the difference
-
-@@MissMatch:
-        SUB     EAX, EDX
-        POP     EDI
-        POP     ESI
-        POP     EBX
-        RET
-
-@@Match:
-        // match, return 0
-
-        XOR     EAX, EAX
-        POP     EDI
-        POP     ESI
-        POP     EBX
-        RET
-
-@@InvalidStr:
-        XOR     EAX, EAX
-        DEC     EAX
-        POP     EDI
-        POP     ESI
-        POP     EBX
-        RET
-
-@@Str1Null:
-        // return = - Length(Str2);
-
-        MOV     EDX, [EDX-AnsiStrRecSize].TAnsiStrRec.Length
-        SUB     EAX, EDX
-        RET
-
-@@Str2Null:
-        // return = Length(Str2);
-
-        MOV     EAX, [EAX-AnsiStrRecSize].TAnsiStrRec.Length
-        RET
-
-@@Equal:
-        XOR     EAX, EAX
+function StrCompare(const S1, S2: AnsiString; CaseSensitive: Boolean): SizeInt;
+var
+  Len1, Len2: SizeInt;
+begin
+  if Pointer(S1) = Pointer(S2) then
+    Result := 0
+  else
+  begin
+    Len1 := Length(S1);
+    Len2 := Length(S2);
+    Result := Len1 - Len2;
+    if Result = 0 then
+      Result := StrCompareRangeEx(S1, S2, 1, Len1, CaseSensitive);
+  end;
 end;
 
-function StrCompareRange(const S1, S2: AnsiString; const Index, Count: Integer): Integer; assembler;
-asm
-        TEST    EAX, EAX
-        JZ      @@Str1Null
-
-        TEST    EDX, EDX
-        JZ      @@StrNull
-
-        DEC     ECX
-        JS      @@StrNull
-
-        PUSH    EBX
-        PUSH    ESI
-        PUSH    EDI
-
-        MOV     EBX, Count
-        DEC     EBX
-        JS      @@NoWork
-
-        MOV     ESI, EAX
-        MOV     EDI, EDX
-
-        MOV     EDX, [ESI - AnsiStrRecSize].TAnsiStrRec.Length
-
-        // # of chars in S1 - (Index - 1)
-        SUB     EDX, ECX
-        JLE     @@NoWork
-
-        // # of chars in S1 - (Count - 1)
-        SUB     EDX, EBX
-        JLE     @@NoWork
-
-        // move to index'th char
-        ADD     ESI, ECX
-
-        MOV     ECX, [EDI - AnsiStrRecSize].TAnsiStrRec.Length
-        DEC     ECX
-        JS      @@NoWork
-
-        // if Length(S2) > Count then ECX := Count else ECX := Length(S2)
-
-        CMP     ECX, EBX
-        JLE     @@Skip1
-        MOV     ECX, EBX
-
-@@Skip1:
-        XOR     EAX, EAX
-        XOR     EDX, EDX
-
-@@Loop:
-        MOV     AL, [ESI]
-        INC     ESI
-        MOV     DL, [EDI]
-        INC     EDI
-
-        CMP     AL, DL
-        JNE     @@MisMatch
-
-        DEC     ECX
-        JGE     @@Loop
-
-@@Match:
-        XOR     EAX, EAX
-        POP     EDI
-        POP     ESI
-        POP     EBX
-        JMP     @@Exit
-
-@@MisMatch:
-        SUB     EAX, EDX
-        POP     EDI
-        POP     ESI
-        POP     EBX
-        JMP     @@Exit
-
-@@NoWork:
-        MOV     EAX, -2
-        POP     EDI
-        POP     ESI
-        POP     EBX
-        JMP     @@Exit
-
-@@Str1Null:
-        MOV     EAX, 0
-        TEST    EDX, EDX
-        JZ      @@Exit
-
-@@StrNull:
-        MOV     EAX, -1
-
-@@Exit:
+function StrCompareRange(const S1, S2: AnsiString; Index, Count: SizeInt; CaseSensitive: Boolean): SizeInt;
+begin
+  Result := StrCompareRangeEx(S1, S2, Index, Count, CaseSensitive);
 end;
 
-function StrRepeatChar(C: AnsiChar; Count: Integer): AnsiString;
+function StrRepeatChar(C: AnsiChar; Count: SizeInt): AnsiString;
 begin
   SetLength(Result, Count);
   if Count > 0 then
     FillChar(Result[1], Count, C);
 end;
 
-function StrFind(const Substr, S: AnsiString; const Index: Integer): Integer; assembler;
-const
-   SearchChar: Byte = 0;
-   NumberOfChars: Integer = 0;
-asm
-        // if SubStr = '' then  Return := 0;
-
-        TEST    EAX, EAX
-        JZ      @@SubstrIsNull
-
-        // if Str = '' then  Return := 0;
-
-        TEST    EDX, EDX
-        JZ      @@StrIsNull
-
-        // Index := Index - 1; if Index < 0 then Return := 0;
-
-        DEC     ECX
-        JL      @@IndexIsSmall
-
-        // EBX will hold the case table, ESI pointer to Str, EDI pointer
-        // to Substr and - # of chars in Substr to compare
-
-        PUSH    EBX
-        PUSH    ESI
-        PUSH    EDI
-
-        // set the string pointers
-
-        MOV     ESI, EDX
-        MOV     EDI, EAX
-
-        // save the Index in EDX
-
-        MOV     EDX, ECX
-
-        // temporary get the length of Substr and Str
-
-        MOV     EBX, [EDI - AnsiStrRecSize].TAnsiStrRec.Length
-        MOV     ECX, [ESI - AnsiStrRecSize].TAnsiStrRec.Length
-
-        // save the address of Str to compute the result
-
-        PUSH    ESI
-
-        // dec the length of Substr because the first char is brought out of it
-
-        DEC     EBX
-        JS      @@NotFound
-
-        // #positions in Str to look at = Length(Str) - Length(Substr) - Index - 2
-
-        SUB     ECX, EBX
-        JLE     @@NotFound
-
-        SUB     ECX, EDX
-        JLE     @@NotFound
-
-        // # of chars in Substr to compare
-
-        MOV     NumberOfChars, EBX
-
-        // point Str to Index'th char
-
-        ADD     ESI, EDX
-
-        // load case map into EBX, and clear EAX
-
-        LEA     EBX, AnsiCaseMap
-        XOR     EAX, EAX
-        XOR     EDX, EDX
-
-        // bring the first char out of the Substr and point Substr to the next char
-
-        MOV     DL, [EDI]
-        INC     EDI
-
-        // lower case it
-
-        MOV     DL, [EBX + EDX]
-        MOV     SearchChar, DL
-
-        JMP     @@Find
-
-@@FindNext:
-
-        // update the loop counter and check the end of AnsiString.
-        // if we reached the end, Substr was not found.
-
-        DEC     ECX
-        JL      @@NotFound
-
-@@Find:
-
-        // get current char from the AnsiString, and point Str to the next one
-
-        MOV     AL, [ESI]
-        INC     ESI
-
-
-        // lower case current char
-
-        MOV     AL, [EBX + EAX]
-
-        // does current char match primary search char? if not, go back to the main loop
-
-        CMP     AL, SearchChar
-        JNE     @@FindNext
-
-@@Compare:
-
-        // # of chars in Substr to compare
-
-        MOV     EDX, NumberOfChars
-
-@@CompareNext:
-
-        // dec loop counter and check if we reached the end. If yes then we found it
-
-        DEC     EDX
-        JL      @@Found
-
-        // get the chars from Str and Substr, if they are equal then continue comparing
-
-        MOV     AL, [ESI + EDX]
-        CMP     AL, [EDI + EDX]
-        JE      @@CompareNext
-
-        // otherwise try the reverse case. If they still don't match go back to the Find loop
-
-        MOV     AL, [EBX + EAX + AnsiReOffset]
-        CMP     AL, [EDI + EDX]
-        JNE     @@FindNext
-
-        // if they matched, continue comparing
-
-        JMP     @@CompareNext
-
-@@Found:
-        // we found it, calculate the result
-
-        MOV     EAX, ESI
-        POP     ESI
-        SUB     EAX, ESI
-
-        POP     EDI
-        POP     ESI
-        POP     EBX
-        RET
-
-@@NotFound:
-
-        // not found it, clear the result
-
-        XOR     EAX, EAX
-        POP     ESI
-        POP     EDI
-        POP     ESI
-        POP     EBX
-        RET
-
-@@IndexIsSmall:
-@@StrIsNull:
-
-        // clear the result
-
-        XOR     EAX, EAX
-
-@@SubstrIsNull:
-@@Exit:
+function StrFind(const Substr, S: AnsiString; const Index: SizeInt): SizeInt;
+var
+  pos: SizeInt;
+begin
+  if (SubStr <> '') and (S <> '') then
+  begin
+    pos := StrIPos(Substr, Copy(S, Index, Length(S) - Index + 1));
+    if pos = 0 then
+      Result := 0
+    else
+      Result := Index + Pos - 1;
+  end
+  else
+    Result := 0;
 end;
 
 function StrHasPrefix(const S: AnsiString; const Prefixes: array of AnsiString): Boolean;
@@ -2785,9 +2356,9 @@ begin
   Result := StrPrefixIndex(S, Prefixes) > -1;
 end;
 
-function StrIndex(const S: AnsiString; const List: array of AnsiString): Integer;
+function StrIndex(const S: AnsiString; const List: array of AnsiString): SizeInt;
 var
-  I: Integer;
+  I: SizeInt;
 begin
   Result := -1;
   for I := Low(List) to High(List) do
@@ -2800,12 +2371,12 @@ begin
   end;
 end;
 
-function StrILastPos(const SubStr, S: AnsiString): Integer;
+function StrILastPos(const SubStr, S: AnsiString): SizeInt;
 begin
   Result := StrLastPos(StrUpper(SubStr), StrUpper(S));
 end;
 
-function StrIPos(const SubStr, S: AnsiString): integer;
+function StrIPos(const SubStr, S: AnsiString): SizeInt;
 begin
   Result := Pos(StrUpper(SubStr), StrUpper(S));
 end;
@@ -2815,7 +2386,7 @@ begin
   Result := StrIndex(S, List) > -1;
 end;
 
-function StrLastPos(const SubStr, S: AnsiString): Integer;
+function StrLastPos(const SubStr, S: AnsiString): SizeInt;
 var
   Last, Current: PAnsiChar;
 begin
@@ -2837,186 +2408,46 @@ begin
 end;
 
 // IMPORTANT NOTE: The StrMatch function does currently not work with the Asterix (*)
-
-function StrMatch(const Substr, S: AnsiString; const Index: Integer): Integer; assembler;
-asm
-        // make sure that strings are not null
-
-        TEST    EAX, EAX
-        JZ      @@SubstrIsNull
-
-        TEST    EDX, EDX
-        JZ      @@StrIsNull
-
-        // limit index to satisfy 1 <= index, and dec it
-
-        DEC     ECX
-        JL      @@IndexIsSmall
-
-        // EBX will hold the case table, ESI pointer to Str, EDI pointer
-        // to Substr and EBP # of chars in Substr to compare
-
-        PUSH    EBX
-        PUSH    ESI
-        PUSH    EDI
-        PUSH    EBP
-
-        // set the AnsiString pointers
-
-        MOV     ESI, EDX
-        MOV     EDI, EAX
-
-        // save the Index in EDX
-
-        MOV     EDX, ECX
-
-        // save the address of Str to compute the result
-
-        PUSH    ESI
-
-        // temporary get the length of Substr and Str
-
-        MOV     EBX, [EDI - AnsiStrRecSize].TAnsiStrRec.Length
-        MOV     ECX, [ESI - AnsiStrRecSize].TAnsiStrRec.Length
-
-        // dec the length of Substr because the first char is brought out of it
-
-        DEC     EBX
-        JS      @@NotFound
-
-        // #positions in Str to look at = Length(Str) - Length(Substr) - Index - 2
-
-        SUB     ECX, EBX
-        JLE     @@NotFound
-
-        SUB     ECX, EDX
-        JLE     @@NotFound
-
-        // # of chars in Substr to compare
-
-        MOV     EBP, EBX
-
-        // point Str to Index'th char
-
-        ADD     ESI, EDX
-
-        // load case map into EBX, and clear EAX & ECX
-
-        LEA     EBX, AnsiCaseMap
-        XOR     EAX, EAX
-        XOR     ECX, ECX
-
-        // bring the first char out of the Substr and point Substr to the next char
-
-        MOV     CL, [EDI]
-        INC     EDI
-
-        // lower case it
-
-        MOV     CL, [EBX + ECX]
-
-@@FindNext:
-
-        // get the current char from Str into al
-
-        MOV     AL, [ESI]
-        INC     ESI
-
-        // check the end of AnsiString
-
-        TEST    AL, AL
-        JZ      @@NotFound
-
-
-        CMP     CL, '*'    // Wild Card?
-        JE      @@Compare
-
-        CMP     CL, '?'    // Wild Card?
-        JE      @@Compare
-
-        // lower case current char
-
-        MOV     AL, [EBX + EAX]
-
-        // check if the current char matches the primary search char,
-        // if not continue searching
-
-        CMP     AL, CL
-        JNE     @@FindNext
-
-@@Compare:
-
-        // # of chars in Substr to compare }
-
-        MOV     EDX, EBP
-
-@@CompareNext:
-
-        // dec loop counter and check if we reached the end. If yes then we found it
-
-        DEC     EDX
-        JL      @@Found
-
-        // get the chars from Str and Substr, if they are equal then continue comparing
-
-        MOV     AL, [EDI + EDX]               // char from  Substr
-
-        CMP     AL, '*'                     // wild card?
-        JE      @@CompareNext
-
-        CMP     AL, '?'                     // wild card?
-        JE      @@CompareNext
-
-        CMP     AL, [ESI + EDX]               // equal to PAnsiChar(Str)^ ?
-        JE      @@CompareNext
-
-        MOV     AL, [EBX + EAX + AnsiReOffset]  // reverse case?
-        CMP     AL, [ESI + EDX]
-        JNE     @@FindNext                  // if still no, go back to the main loop
-
-        // if they matched, continue comparing
-
-        JMP     @@CompareNext
-
-@@Found:
-        // we found it, calculate the result
-
-        MOV     EAX, ESI
-        POP     ESI
-        SUB     EAX, ESI
-
-        POP     EBP
-        POP     EDI
-        POP     ESI
-        POP     EBX
-        RET
-
-@@NotFound:
-
-        // not found it, clear the result
-
-        XOR     EAX, EAX
-        POP     ESI
-        POP     EBP
-        POP     EDI
-        POP     ESI
-        POP     EBX
-        RET
-
-@@IndexIsSmall:
-@@StrIsNull:
-
-        // clear the result
-
-        XOR     EAX, EAX
-
-@@SubstrIsNull:
-@@Exit:
+// (*) acts like (?)
+
+function StrMatch(const Substr, S: AnsiString; Index: SizeInt): SizeInt;
+var
+  SI, SubI, SLen, SubLen: SizeInt;
+  SubC: AnsiChar;
+begin
+  SLen := Length(S);
+  SubLen := Length(Substr);
+  Result := 0;
+  if (Index > SLen) or (SubLen = 0) then
+    Exit;
+  while Index <= SLen do
+  begin
+    SubI := 1;
+    SI := Index;
+    while (SI <= SLen) and (SubI <= SubLen) do
+    begin
+      SubC := Substr[SubI];
+      if (SubC = '*') or (SubC = '?') or (SubC = S[SI]) then
+      begin
+        Inc(SI);
+        Inc(SubI);
+      end
+      else
+        Break;
+    end;
+    if SubI > SubLen then
+    begin
+      Result := Index;
+      Break;
+    end;
+    Inc(Index);
+  end;
 end;
+
 
 // Derived from "Like" by Michael Winter
 
-function StrMatches(const Substr, S: AnsiString; const Index: Integer): Boolean;
+function StrMatches(const Substr, S: AnsiString; const Index: SizeInt): Boolean;
 var
   StringPtr: PAnsiChar;
   PatternPtr: PAnsiChar;
@@ -3124,9 +2555,9 @@ begin
   until False;
 end;
 
-function StrNPos(const S, SubStr: AnsiString; N: Integer): Integer;
+function StrNPos(const S, SubStr: AnsiString; N: SizeInt): SizeInt;
 var
-  I, P: Integer;
+  I, P: SizeInt;
 begin
   if N < 1 then
   begin
@@ -3152,9 +2583,9 @@ begin
   end;
 end;
 
-function StrNIPos(const S, SubStr: AnsiString; N: Integer): Integer;
+function StrNIPos(const S, SubStr: AnsiString; N: SizeInt): SizeInt;
 var
-  I, P: Integer;
+  I, P: SizeInt;
 begin
   if N < 1 then
   begin
@@ -3180,9 +2611,9 @@ begin
   end;
 end;
 
-function StrPrefixIndex(const S: AnsiString; const Prefixes: array of AnsiString): Integer;
+function StrPrefixIndex(const S: AnsiString; const Prefixes: array of AnsiString): SizeInt;
 var
-  I: Integer;
+  I: SizeInt;
   Test: AnsiString;
 begin
   Result := -1;
@@ -3197,167 +2628,33 @@ begin
   end;
 end;
 
-function StrSearch(const Substr, S: AnsiString; const Index: Integer): Integer; assembler;
-asm
-        // make sure that strings are not null
-
-        TEST    EAX, EAX
-        JZ      @@SubstrIsNull
-
-        TEST    EDX, EDX
-        JZ      @@StrIsNull
-
-        // limit index to satisfy 1 <= index, and dec it
-
-        DEC     ECX
-        JL      @@IndexIsSmall
-
-        // ebp will hold # of chars in Substr to compare, esi pointer to Str,
-        // edi pointer to Substr, ebx primary search char
-
-        PUSH    EBX
-        PUSH    ESI
-        PUSH    EDI
-        PUSH    EBP
-
-        // set the AnsiString pointers
-
-        MOV     ESI, EDX
-        MOV     EDI, EAX
-
-        // save the (Index - 1) in edx
-
-        MOV     EDX, ECX
-
-        // save the address of Str to compute the result
-
-        PUSH    ESI
-
-        // temporary get the length of Substr and Str
-
-        MOV     EBX, [EDI-AnsiStrRecSize].TAnsiStrRec.Length
-        MOV     ECX, [ESI-AnsiStrRecSize].TAnsiStrRec.Length
-
-        // dec the length of Substr because the first char is brought out of it
-
-        DEC     EBX
-        JS      @@NotFound
-
-        // # of positions in Str to look at = Length(Str) - Length(Substr) - Index - 2
-
-        SUB     ECX, EBX
-        JLE     @@NotFound
-
-        SUB     ECX, EDX
-        JLE     @@NotFound
-
-        // point Str to Index'th char
-
-        ADD     ESI, EDX
-
-        // # of chars in Substr to compare
-
-        MOV     EBP, EBX
-
-        // clear EAX & ECX (working regs)
-
-        XOR     EAX, EAX
-        XOR     EBX, EBX
-
-        // bring the first char out of the Substr, and
-        // point Substr to the next char
-
-        MOV     BL, [EDI]
-        INC     EDI
-
-        // jump into the loop
-
-        JMP     @@Find
-
-@@FindNext:
-
-        // update the loop counter and check the end of AnsiString.
-        // if we reached the end, Substr was not found.
-
-        DEC     ECX
-        JL      @@NotFound
-
-@@Find:
-
-        // get current char from the AnsiString, and /point Str to the next one.
-        MOV     AL, [ESI]
-        INC     ESI
-
-        // does current char match primary search char? if not, go back to the main loop
-
-        CMP     AL, BL
-        JNE     @@FindNext
-
-        // otherwise compare SubStr
-
-@@Compare:
-
-        // move # of char to compare into edx, edx will be our compare loop counter.
-
-        MOV     EDX, EBP
-
-@@CompareNext:
-
-        // check if we reached the end of Substr. If yes we found it.
-
-        DEC     EDX
-        JL      @@Found
-
-        // get last chars from Str and SubStr and compare them,
-        // if they don't match go back to out main loop.
-
-        MOV     AL, [EDI+EDX]
-        CMP     AL, [ESI+EDX]
-        JNE     @@FindNext
-
-        // if they matched, continue comparing
-
-        JMP     @@CompareNext
-
-@@Found:
-        // we found it, calculate the result and exit.
-
-        MOV     EAX, ESI
-        POP     ESI
-        SUB     EAX, ESI
-
-        POP     EBP
-        POP     EDI
-        POP     ESI
-        POP     EBX
-        RET
-
-@@NotFound:
-        // not found it, clear result and exit.
-
-        XOR     EAX, EAX
-        POP     ESI
-        POP     EBP
-        POP     EDI
-        POP     ESI
-        POP     EBX
-        RET
-
-@@IndexIsSmall:
-@@StrIsNull:
-        // clear result and exit.
-
-        XOR     EAX, EAX
-
-@@SubstrIsNull:
-@@Exit:
+function StrSearch(const Substr, S: AnsiString; const Index: SizeInt): SizeInt;
+var
+  SP, SPI, SubP: PAnsiChar;
+  SLen: SizeInt;
+begin
+  SLen := Length(S);
+  if Index <= SLen then
+  begin
+    SP := PAnsiChar(S);
+    SubP := PAnsiChar(Substr);
+    SPI := SP;
+    Inc(SPI, Index);
+    SPI := StrPos(SPI, SubP);
+    if SPI <> nil then
+      Result := SPI - SP
+    else
+      Result := 0;
+  end
+  else
+    Result := 0;
 end;
 
 //=== String Extraction ======================================================
 
 function StrAfter(const SubStr, S: AnsiString): AnsiString;
 var
-  P: Integer;
+  P: SizeInt;
 begin
   P := StrFind(SubStr, S, 1); // StrFind is case-insensitive pos
   if P <= 0 then
@@ -3368,7 +2665,7 @@ end;
 
 function StrBefore(const SubStr, S: AnsiString): AnsiString;
 var
-  P: Integer;
+  P: SizeInt;
 begin
   P := StrFind(SubStr, S, 1);
   if P <= 0 then
@@ -3380,8 +2677,8 @@ end;
 
 function StrBetween(const S: AnsiString; const Start, Stop: AnsiChar): AnsiString;
 var
-  PosStart, PosEnd: Integer;
-  L: Integer;
+  PosStart, PosEnd: SizeInt;
+  L: SizeInt;
 begin
   PosStart := Pos(Start, S);
   PosEnd := StrSearch(Stop, S, PosStart + 1);  // PosEnd has to be after PosStart.
@@ -3395,27 +2692,27 @@ begin
     Result := '';
 end;
 
-function StrChopRight(const S: AnsiString; N: Integer): AnsiString;
+function StrChopRight(const S: AnsiString; N: SizeInt): AnsiString;
 begin
   Result := Copy(S, 1, Length(S) - N);
 end;
 
-function StrLeft(const S: AnsiString; Count: Integer): AnsiString;
+function StrLeft(const S: AnsiString; Count: SizeInt): AnsiString;
 begin
   Result := Copy(S, 1, Count);
 end;
 
-function StrMid(const S: AnsiString; Start, Count: Integer): AnsiString;
+function StrMid(const S: AnsiString; Start, Count: SizeInt): AnsiString;
 begin
   Result := Copy(S, Start, Count);
 end;
 
-function StrRestOf(const S: AnsiString; N: Integer): AnsiString;
+function StrRestOf(const S: AnsiString; N: SizeInt): AnsiString;
 begin
   Result := Copy(S, N, (Length(S) - N + 1));
 end;
 
-function StrRight(const S: AnsiString; Count: Integer): AnsiString;
+function StrRight(const S: AnsiString; Count: SizeInt): AnsiString;
 begin
   Result := Copy(S, Length(S) - Count + 1, Count);
 end;
@@ -3554,7 +2851,7 @@ end;
 
 function StringsToPCharVector(var Dest: PAnsiCharVector; const Source: TJclAnsiStrings): PAnsiCharVector;
 var
-  I: Integer;
+  I: SizeInt;
   S: AnsiString;
   List: array of PAnsiChar;
 begin
@@ -3576,7 +2873,7 @@ begin
   Result := Dest;
 end;
 
-function PCharVectorCount(Source: PAnsiCharVector): Integer;
+function PCharVectorCount(Source: PAnsiCharVector): SizeInt;
 begin
   Result := 0;
   if Source <> nil then
@@ -3589,7 +2886,7 @@ end;
 
 procedure PCharVectorToStrings(const Dest: TJclAnsiStrings; Source: PAnsiCharVector);
 var
-  I, Count: Integer;
+  I, Count: SizeInt;
   List: array of PAnsiChar;
 begin
   Assert(Dest <> nil);
@@ -3611,7 +2908,7 @@ end;
 
 procedure FreePCharVector(var Dest: PAnsiCharVector);
 var
-  I, Count: Integer;
+  I, Count: SizeInt;
   List: array of PAnsiChar;
 begin
   if Dest <> nil then
@@ -3659,7 +2956,7 @@ end;
 
 //=== Character Search and Replace ===========================================
 
-function CharLastPos(const S: AnsiString; const C: AnsiChar; const Index: Integer): Integer;
+function CharLastPos(const S: AnsiString; const C: AnsiChar; const Index: SizeInt): SizeInt;
 begin
   if (Index > 0) and (Index <= Length(S)) then
     for Result := Length(S) downto Index do
@@ -3668,7 +2965,7 @@ begin
   Result := 0;
 end;
 
-function CharPos(const S: AnsiString; const C: AnsiChar; const Index: Integer): Integer;
+function CharPos(const S: AnsiString; const C: AnsiChar; const Index: SizeInt): SizeInt;
 begin
   if (Index > 0) and (Index <= Length(S)) then
     for Result := Index to Length(S) do
@@ -3677,7 +2974,7 @@ begin
   Result := 0;
 end;
 
-function CharIPos(const S: AnsiString; C: AnsiChar; const Index: Integer): Integer;
+function CharIPos(const S: AnsiString; C: AnsiChar; const Index: SizeInt): SizeInt;
 begin
   if (Index > 0) and (Index <= Length(S)) then
   begin
@@ -3689,10 +2986,10 @@ begin
   Result := 0;
 end;
 
-function CharReplace(var S: AnsiString; const Search, Replace: AnsiChar): Integer;
+function CharReplace(var S: AnsiString; const Search, Replace: AnsiChar): SizeInt;
 var
   P: PAnsiChar;
-  Index, Len: Integer;
+  Index, Len: SizeInt;
 begin
   Result := 0;
   if Search <> Replace then
@@ -3716,7 +3013,7 @@ end;
 
 function StringsToMultiSz(var Dest: PAnsiMultiSz; const Source: TJclAnsiStrings): PAnsiMultiSz;
 var
-  I, TotalLength: Integer;
+  I, TotalLength: SizeInt;
   P: PAnsiMultiSz;
 begin
   Assert(Source <> nil);
@@ -3760,7 +3057,7 @@ begin
   end;
 end;
 
-function MultiSzLength(const Source: PAnsiMultiSz): Integer;
+function MultiSzLength(const Source: PAnsiMultiSz): SizeInt;
 var
   P: PAnsiMultiSz;
 begin
@@ -3777,7 +3074,7 @@ begin
   end;
 end;
 
-procedure AllocateMultiSz(var Dest: PAnsiMultiSz; Len: Integer);
+procedure AllocateMultiSz(var Dest: PAnsiMultiSz; Len: SizeInt);
 begin
   if Len > 0 then
     GetMem(Dest, Len * SizeOf(AnsiChar))
@@ -3794,7 +3091,7 @@ end;
 
 function MultiSzDup(const Source: PAnsiMultiSz): PAnsiMultiSz;
 var
-  Len: Integer;
+  Len: SizeInt;
 begin
   if Source <> nil then
   begin
@@ -3811,7 +3108,7 @@ end;
 
 procedure StrToStrings(S, Sep: AnsiString; const List: TJclAnsiStrings; const AllowEmptyString: Boolean = True);
 var
-  I, L: Integer;
+  I, L: SizeInt;
   Left: AnsiString;
 begin
   Assert(List <> nil);
@@ -3837,7 +3134,7 @@ end;
 
 procedure StrIToStrings(S, Sep: AnsiString; const List: TJclAnsiStrings; const AllowEmptyString: Boolean = True);
 var
-  I, L: Integer;
+  I, L: SizeInt;
   LowerCaseStr: AnsiString;
   Left: AnsiString;
 begin
@@ -3868,7 +3165,7 @@ end;
 function StringsToStr(const List: TJclAnsiStrings; const Sep: AnsiString;
   const AllowEmptyString: Boolean): AnsiString;
 var
-  I, L: Integer;
+  I, L: SizeInt;
 begin
   Result := '';
   for I := 0 to List.Count - 1 do
@@ -3890,7 +3187,7 @@ end;
 
 procedure TrimStrings(const List: TJclAnsiStrings; DeleteIfEmpty: Boolean);
 var
-  I: Integer;
+  I: SizeInt;
 begin
   Assert(List <> nil);
   List.BeginUpdate;
@@ -3908,7 +3205,7 @@ end;
 
 procedure TrimStringsRight(const List: TJclAnsiStrings; DeleteIfEmpty: Boolean);
 var
-  I: Integer;
+  I: SizeInt;
 begin
   Assert(List <> nil);
   List.BeginUpdate;
@@ -3926,7 +3223,7 @@ end;
 
 procedure TrimStringsLeft(const List: TJclAnsiStrings; DeleteIfEmpty: Boolean);
 var
-  I: Integer;
+  I: SizeInt;
 begin
   Assert(List <> nil);
   List.BeginUpdate;
@@ -3964,7 +3261,7 @@ end;
 function FileToString(const FileName: TFileName): AnsiString;
 var
   FS: TFileStream;
-  Len: Integer;
+  Len: SizeInt;
 begin
   FS := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);
   try
@@ -3980,7 +3277,7 @@ end;
 procedure StringToFile(const FileName: TFileName; const Contents: AnsiString; Append: Boolean);
 var
   FS: TFileStream;
-  Len: Integer;
+  Len: SizeInt;
 begin
   if Append and FileExists(FileName) then
     FS := TFileStream.Create(FileName, fmOpenReadWrite or fmShareDenyWrite)
@@ -3999,7 +3296,7 @@ end;
 
 function StrToken(var S: AnsiString; Separator: AnsiChar): AnsiString;
 var
-  I: Integer;
+  I: SizeInt;
 begin
   I := Pos(Separator, S);
   if I <> 0 then
@@ -4104,7 +3401,7 @@ end;
 function StrToFloatSafe(const S: AnsiString): Float;
 var
   Temp: AnsiString;
-  I, J, K: Integer;
+  I, J, K: SizeInt;
   SwapSeparators, IsNegative: Boolean;
   DecSep: AnsiChar;
   ThouSep: AnsiChar;
@@ -4176,7 +3473,7 @@ begin
   Result := Trunc(StrToFloatSafe(S));
 end;
 
-procedure StrNormIndex(const StrLen: Integer; var Index: Integer; var Count: Integer); overload;
+procedure StrNormIndex(const StrLen: SizeInt; var Index: SizeInt; var Count: SizeInt); overload;
 begin
   Index := Max(1, Min(Index, StrLen + 1));
   Count := Max(0, Min(Count, StrLen + 1 - Index));
@@ -4184,7 +3481,7 @@ end;
 
 function ArrayOf(List: TJclAnsiStrings): TDynStringArray;
 var
-  I: Integer;
+  I: SizeInt;
 begin
   if List <> nil then
   begin
@@ -4196,16 +3493,16 @@ begin
     Result := nil;
 end;
 
-function AnsiCompareNatural(const S1, S2: AnsiString; CaseInsensitive: Boolean): Integer;
+function AnsiCompareNatural(const S1, S2: AnsiString; CaseInsensitive: Boolean): SizeInt;
 var
   Cur1, Len1,
-  Cur2, Len2: Integer;
+  Cur2, Len2: SizeInt;
 
   procedure NumberCompare;
   var
     IsReallyNumber: Boolean;
     FirstDiffBreaks: Boolean;
-    Val1, Val2: Integer;
+    Val1, Val2: SizeInt;
   begin
     Result := 0;
     IsReallyNumber := False;
@@ -4310,12 +3607,12 @@ begin
   end;
 end;
 
-function AnsiCompareNaturalStr(const S1, S2: AnsiString): Integer; overload;
+function AnsiCompareNaturalStr(const S1, S2: AnsiString): SizeInt; overload;
 begin
   Result := AnsiCompareNatural(S1, S2, False);
 end;
 
-function AnsiCompareNaturalText(const S1, S2: AnsiString): Integer; overload;
+function AnsiCompareNaturalText(const S1, S2: AnsiString): SizeInt; overload;
 begin
   Result := AnsiCompareNatural(S1, S2, True);
 end;

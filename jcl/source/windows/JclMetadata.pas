@@ -987,7 +987,7 @@ type
     function IsModifierType(const AElementType: TJclClrElementType): Boolean;
     function IsPrimitiveType(const AElementType: TJclClrElementType): Boolean;
 
-    function Inc(var DataPtr: PJclByteArray; Step: Integer = 1): PByte;
+    function Inc(var DataPtr: PJclByteArray; Step: TJclAddr = 1): PByte;
 
     function UncompressedDataSize(DataPtr: PJclByteArray): Integer;
     function UncompressData(DataPtr: PJclByteArray; out Value: DWord): Integer;
@@ -2029,13 +2029,13 @@ begin
   else
   if (DataPtr[0] and $C0) = $80 then // 10?? ????
   begin
-    Value  := (DataPtr[0] and $3F) shl 8 + DataPtr[1];
+    Value  := ((DataPtr[0] and $3F) shl 8) or DataPtr[1];
     Result := 2;
   end
   else
   if (DataPtr[0] and $E0) = $C0 then // 110? ????
   begin
-    Value  := (DataPtr[0] and $1F) shl 24 + DataPtr[1] shl 16 + DataPtr[2] shl 8 + DataPtr[3];
+    Value  := ((DataPtr[0] and $1F) shl 24) or (DataPtr[1] shl 16) or (DataPtr[2] shl 8) or DataPtr[3];
     Result := 4;
   end
   else
@@ -2048,7 +2048,7 @@ const
   TableMapping: array [0..3] of TJclClrTableKind = (ttTypeDef, ttTypeRef, ttTypeSpec, TJclClrTableKind(0));
 begin
   Result := UncompressData(DataPtr, Token);
-  Token  := Byte(TableMapping[Token and 3]) shl 24 + Token shr 2;
+  Token  := (Byte(TableMapping[Token and 3]) shl 24) or (Token shr 2);
 end;
 
 function TJclClrSignature.UncompressCallingConv(DataPtr: PJclByteArray): Byte;
@@ -2138,9 +2138,9 @@ begin
   end;
 end;
 
-function TJclClrSignature.Inc(var DataPtr: PJclByteArray; Step: Integer): PByte;
+function TJclClrSignature.Inc(var DataPtr: PJclByteArray; Step: TJclAddr): PByte;
 begin
-  Result := PByte(Integer(DataPtr) + Step);
+  Result := PByte(TJclAddr(DataPtr) + Step);
   DataPtr := PJclByteArray(Result);
 end;
 
@@ -3530,19 +3530,19 @@ begin
   if (ILMethod.Tiny.Flags_CodeSize and CorILMethod_FormatMask) = CorILMethod_TinyFormat then
   begin
     FSize              := (ILMethod.Tiny.Flags_CodeSize shr CorILMethod_FormatShift) and ((1 shl 6) - 1);
-    FCode              := Pointer(DWORD_PTR(ILMethod) + 1);
+    FCode              := Pointer(TJclAddr(ILMethod) + 1);
     FMaxStack          := 0;
     FLocalVarSignToken := 0;
   end
   else
   begin
     FSize              := ILMethod.Fat.CodeSize;
-    FCode              := Pointer(DWORD_PTR(ILMethod) + (ILMethod.Fat.Flags_Size shr 12) * SizeOf(DWORD));
+    FCode              := Pointer(TJclAddr(ILMethod) + (ILMethod.Fat.Flags_Size shr 12) * SizeOf(DWORD));
     FMaxStack          := ILMethod.Fat.MaxStack;
     FLocalVarSignToken := ILMethod.Fat.LocalVarSigTok;
 
     if IsBitSet(ILMethod.Fat.Flags_Size, CorILMethod_MoreSects) then
-      ParseMoreSections(Pointer((DWORD_PTR(FCode) + FSize + 1) and not 1));
+      ParseMoreSections(Pointer((TJclAddr(FCode) + FSize + 1) and not 1));
   end;
 end;
 
@@ -3591,10 +3591,10 @@ begin
     AddEHTable(PImageCorILMethodSectEH(SectHeader))
   else
   if IsBitSet(SectHeader.Small.Kind, CorILMethod_Sect_OptILTable) then
-    AddOptILTable(Pointer(DWORD_PTR(FCode) + FSize), SectSize);
+    AddOptILTable(Pointer(TJclAddr(FCode) + FSize), SectSize);
 
   if IsBitSet(SectHeader.Small.Kind, CorILMethod_Sect_MoreSects) then
-    ParseMoreSections(Pointer(DWORD_PTR(SectHeader) + SectSize));
+    ParseMoreSections(Pointer(TJclAddr(SectHeader) + SectSize));
 end;
 
 function TJclClrMethodBody.GetExceptionHandler(const Idx: Integer): TJclClrExceptionHandler;

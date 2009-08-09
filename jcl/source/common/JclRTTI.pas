@@ -204,9 +204,9 @@ type
     function GetReaderType: TJclPropSpecKind;
     function GetWriterType: TJclPropSpecKind;
     function GetStoredType: TJclPropSpecKind;
-    function GetReaderValue: Integer;
-    function GetWriterValue: Integer;
-    function GetStoredValue: Integer;
+    function GetReaderValue: TJclAddr;
+    function GetWriterValue: TJclAddr;
+    function GetStoredValue: TJclAddr;
 
     function IsStored(const AInstance: TObject): Boolean;
     function HasDefault: Boolean;
@@ -219,9 +219,9 @@ type
     property ReaderType: TJclPropSpecKind read GetReaderType;
     property WriterType: TJclPropSpecKind read GetWriterType;
     property StoredType: TJclPropSpecKind read GetStoredType;
-    property ReaderValue: Integer read GetReaderValue;
-    property WriterValue: Integer read GetWriterValue;
-    property StoredValue: Integer read GetStoredValue;
+    property ReaderValue: TJclAddr read GetReaderValue;
+    property WriterValue: TJclAddr read GetWriterValue;
+    property StoredValue: TJclAddr read GetStoredValue;
     property Index: Integer read GetIndex;
     property Default: Longint read GetDefault;
     property NameIndex: Smallint read GetNameIndex;
@@ -685,7 +685,7 @@ begin
   P := @Base.TypeData.NameList;
   while Idx <> 0 do
   begin
-    Inc(Integer(P), Length(P^) + 1);
+    Inc(TJclAddr(P), Length(P^) + 1);
     Dec(Idx);
   end;
   Result := string(P^);
@@ -1049,14 +1049,14 @@ type
     function GetDefault: Longint;
     function GetNameIndex: Smallint;
     function GetName: string;
-    function GetSpecKind(const Value: Integer): TJclPropSpecKind;
-    function GetSpecValue(const Value: Integer): Integer;
+    function GetSpecKind(const Value: TJclAddr): TJclPropSpecKind;
+    function GetSpecValue(const Value: TJclAddr): TJclAddr;
     function GetReaderType: TJclPropSpecKind;
     function GetWriterType: TJclPropSpecKind;
     function GetStoredType: TJclPropSpecKind;
-    function GetReaderValue: Integer;
-    function GetWriterValue: Integer;
-    function GetStoredValue: Integer;
+    function GetReaderValue: TJclAddr;
+    function GetWriterValue: TJclAddr;
+    function GetStoredValue: TJclAddr;
   public
     constructor Create(const APropInfo: PPropInfo);
     function IsStored(const AInstance: TObject): Boolean;
@@ -1071,9 +1071,9 @@ type
     property ReaderType: TJclPropSpecKind read GetReaderType;
     property WriterType: TJclPropSpecKind read GetWriterType;
     property StoredType: TJclPropSpecKind read GetStoredType;
-    property ReaderValue: Integer read GetReaderValue;
-    property WriterValue: Integer read GetWriterValue;
-    property StoredValue: Integer read GetStoredValue;
+    property ReaderValue: TJclAddr read GetReaderValue;
+    property WriterValue: TJclAddr read GetWriterValue;
+    property StoredValue: TJclAddr read GetStoredValue;
     property Index: Integer read GetIndex;
     property Default: Longint read GetDefault;
     property NameIndex: Smallint read GetNameIndex;
@@ -1131,11 +1131,16 @@ begin
   Result := string(PropInfo.Name);
 end;
 
-function TJclPropInfo.GetSpecKind(const Value: Integer): TJclPropSpecKind;
+function TJclPropInfo.GetSpecKind(const Value: TJclAddr): TJclPropSpecKind;
 var
   P: Integer;
 begin
+  {$IFDEF CPU32}
   P := Value shr 24;
+  {$ENDIF CPU32}
+  {$IFDEF CPU64}
+  P := Value shr 56;
+  {$ENDIF CPU64}
   case P of
     $00:
       if Value < 2 then
@@ -1151,15 +1156,25 @@ begin
   end;
 end;
 
-function TJclPropInfo.GetSpecValue(const Value: Integer): Integer;
+function TJclPropInfo.GetSpecValue(const Value: TJclAddr): TJclAddr;
 begin
   case GetSpecKind(Value) of
     pskStaticMethod, pskConstant:
       Result := Value;
     pskVirtualMethod:
-      Result := Smallint(Value and $0000FFFF);
+      {$IFDEF CPU32}
+      Result := Value and $0000FFFF;
+      {$ENDIF CPU32}
+      {$IFDEF CPU64}
+      Result := Value and $0000FFFFFFFFFFFF;
+      {$ENDIF CPU64}
     pskField:
+      {$IFDEF CPU32}
       Result := Value and $00FFFFFF;
+      {$ENDIF CPU32}
+      {$IFDEF CPU64}
+      Result := Value and $00FFFFFFFFFFFFFF;
+      {$ENDIF CPU64}
   else
     Result := 0;
   end;
@@ -1167,32 +1182,32 @@ end;
 
 function TJclPropInfo.GetReaderType: TJclPropSpecKind;
 begin
-  Result := GetSpecKind(Integer(Reader));
+  Result := GetSpecKind(TJclAddr(Reader));
 end;
 
 function TJclPropInfo.GetWriterType: TJclPropSpecKind;
 begin
-  Result := GetSpecKind(Integer(Writer));
+  Result := GetSpecKind(TJclAddr(Writer));
 end;
 
 function TJclPropInfo.GetStoredType: TJclPropSpecKind;
 begin
-  Result := GetSpecKind(Integer(StoredProc));
+  Result := GetSpecKind(TJclAddr(StoredProc));
 end;
 
-function TJclPropInfo.GetReaderValue: Integer;
+function TJclPropInfo.GetReaderValue: TJclAddr;
 begin
-  Result := GetSpecValue(Integer(Reader));
+  Result := GetSpecValue(TJclAddr(Reader));
 end;
 
-function TJclPropInfo.GetWriterValue: Integer;
+function TJclPropInfo.GetWriterValue: TJclAddr;
 begin
-  Result := GetSpecValue(Integer(Writer));
+  Result := GetSpecValue(TJclAddr(Writer));
 end;
 
-function TJclPropInfo.GetStoredValue: Integer;
+function TJclPropInfo.GetStoredValue: TJclAddr;
 begin
-  Result := GetSpecValue(Integer(StoredProc));
+  Result := GetSpecValue(TJclAddr(StoredProc));
 end;
 
 function TJclPropInfo.IsStored(const AInstance: TObject): Boolean;
@@ -1256,7 +1271,7 @@ var
   PropData: ^TPropData;
 begin
   PropData := @TypeData.UnitName;
-  Inc(Integer(PropData), 1 + Length(GetUnitName));
+  Inc(TJclAddr(PropData), 1 + Length(GetUnitName));
   Result := PropData.PropCount;
 end;
 
@@ -1268,21 +1283,21 @@ var
   RecSize: Integer;
 begin
   PropData := @TypeData.UnitName;
-  Inc(Integer(PropData), 1 + Length(GetUnitName));
+  Inc(TJclAddr(PropData), 1 + Length(GetUnitName));
   if PropIdx + 1 > PropData.PropCount then
     Result := Parent.Properties[PropIdx - PropData.PropCount]
   else
   begin
     Prop := PPropInfo(PropData);
-    Inc(Integer(Prop), 2);
+    Inc(TJclAddr(Prop), 2);
     if PropIdx > 0 then
     begin
       RecSize := SizeOf(TPropInfo) - SizeOf(ShortString);
       Idx := PropIdx;
       while Idx > 0 do
       begin
-        Inc(Integer(Prop), RecSize);
-        Inc(Integer(Prop), 1 + PByte(Prop)^);
+        Inc(TJclAddr(Prop), RecSize);
+        Inc(TJclAddr(Prop), 1 + PByte(Prop)^);
         Dec(Idx);
       end;
     end;
@@ -1494,7 +1509,7 @@ var
   PName: PShortString;
 begin
   PName := Param;
-  Inc(Integer(PName));
+  Inc(TJclAddr(PName));
   Result := string(PName^);
 end;
 
@@ -1508,8 +1523,8 @@ var
   PName: PShortString;
 begin
   PName := Param;
-  Inc(Integer(PName));
-  Inc(Integer(PName), PByte(PName)^ + 1);
+  Inc(TJclAddr(PName));
+  Inc(TJclAddr(PName), PByte(PName)^ + 1);
   Result := string(PName^);
 end;
 
@@ -1558,7 +1573,7 @@ begin
   while I >= 0 do
   begin
     Result := TJclEventParamInfo.Create(Param);
-    Inc(Integer(Param), Result.RecSize);
+    Inc(TJclAddr(Param), Result.RecSize);
     Dec(I);
   end;
 end;
@@ -1573,7 +1588,7 @@ begin
     if ParameterCount > 0 then
     begin
       LastParam := Parameters[ParameterCount-1];
-      ResPtr := Pointer(Integer(LastParam.Param) + LastParam.RecSize);
+      ResPtr := Pointer(TJclAddr(LastParam.Param) + TJclAddr(LastParam.RecSize));
     end
     else
       ResPtr := @TypeData.ParamList[0];
@@ -2119,7 +2134,7 @@ begin
     for I := Low(Literals) to High(Literals) do
     begin
       CurName^ := ShortString(Literals[I]);
-      Inc(Integer(CurName), Length(Literals[I])+1);
+      Inc(TJclAddr(CurName), Length(Literals[I])+1);
     end;
     {$IFDEF RTL140_UP}
     CurName^ := ''; // Unit name unknown
@@ -2429,9 +2444,10 @@ end;
 
 function JclIsClass(const AnObj: TObject; const AClass: TClass): Boolean;
 asm
-        { ->    EAX     left operand (class)    }
-        {       EDX VMT of right operand        }
-        { <-    AL      left is derived from right      }
+        {$IFDEF CPU32}
+        // 32 --> EAX AnObj
+        //        EDX AClass
+        //    <-- AL  Result
         TEST    EAX,EAX
         JE      @@exit
 @@loop:
@@ -2440,6 +2456,21 @@ asm
         JE      @@success
         MOV     EAX,[EAX].vmtParent
         TEST    EAX,EAX
+        {$ENDIF CPU32}
+        {$IFDEF CPU64}
+        // 64 --> RCX AnObj
+        //        RDX AClass
+        //    <-- AL  Result
+        MOV     RAX,RCX
+        TEST    RAX,RAX
+        JE      @@exit
+@@loop:
+        MOV     RAX,[RAX]
+        CMP     RAX,RDX
+        JE      @@success
+        MOV     RAX,[RAX].vmtParent
+        TEST    RAX,RAX
+        {$ENDIF CPU64}
         JNE     @@loop
         JMP     @@exit
 @@success:

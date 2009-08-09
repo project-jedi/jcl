@@ -33,7 +33,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                          $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -78,7 +78,7 @@ procedure NtfsSetPathCompression(const Path: string; const State: TFileCompressi
 // NTFS - Sparse Files
 type
   TNtfsAllocRanges = record
-    Entries: Integer;
+    Entries: Cardinal;
     Data: PFileAllocatedRangeBuffer;
     MoreData: Boolean;
   end;
@@ -87,7 +87,7 @@ function NtfsSetSparse(const FileName: string): Boolean;
 function NtfsZeroDataByHandle(const Handle: THandle; const First, Last: Int64): Boolean;
 function NtfsZeroDataByName(const FileName: string; const First, Last: Int64): Boolean;
 function NtfsQueryAllocRanges(const FileName: string; Offset, Count: Int64; var Ranges: TNtfsAllocRanges): Boolean;
-function NtfsGetAllocRangeEntry(const Ranges: TNtfsAllocRanges; Index: Integer): TFileAllocatedRangeBuffer;
+function NtfsGetAllocRangeEntry(const Ranges: TNtfsAllocRanges; Index: TJclAddr): TFileAllocatedRangeBuffer;
 function NtfsSparseStreamsSupported(const Volume: string): Boolean;
 function NtfsGetSparse(const FileName: string): Boolean;
 
@@ -573,9 +573,6 @@ const
 implementation
 
 uses
-  {$IFDEF FPC}
-  WinSysUt,
-  {$ENDIF FPC}
   ComObj, Hardlinks,
   JclSysUtils, JclFileUtils, JclSysInfo, JclResources;
 
@@ -596,8 +593,8 @@ const
 
 type
   TStackFrame = packed record
-    CallersEBP: DWord;
-    CallerAddress: DWord;
+    CallersEBP: TJclAddr;
+    CallerAddress: TJclAddr;
   end;
 
   EJclInvalidArgument = class(EJclError);
@@ -606,8 +603,14 @@ type
 
 function CallersCallerAddress: Pointer;
 asm
+        {$IFDEF CPU32}
         MOV     EAX, [EBP]
         MOV     EAX, TStackFrame([EAX]).CallerAddress
+        {$ENDIF CPU32}
+        {$IFDEF CPU64}
+        MOV     RAX, [RBP]
+        MOV     RAX, TStackFrame([RAX]).CallerAddress
+        {$ENDIF CPU64}
 end;
 
 {$STACKFRAMES ON}
@@ -831,12 +834,12 @@ begin
 end;
 
 function NtfsGetAllocRangeEntry(const Ranges: TNtfsAllocRanges;
-  Index: Integer): TFileAllocatedRangeBuffer;
+  Index: TJclAddr): TFileAllocatedRangeBuffer;
 var
-  Offset: INT_PTR;
+  Offset: TJclAddr;
 begin
-  Assert((Index >= 0) and (Index < Ranges.Entries));
-  Offset := INT_PTR(Ranges.Data) + Index * SizeOf(TFileAllocatedRangeBuffer);
+  Assert(Index < Ranges.Entries);
+  Offset := TJclAddr(Ranges.Data) + Index * SizeOf(TFileAllocatedRangeBuffer);
   Result := PFileAllocatedRangeBuffer(Offset)^;
 end;
 
@@ -1212,7 +1215,7 @@ begin
         IsReparseTagValid(ReparseData.Reparse.ReparseTag) then}
         then
       begin
-        if BytesReturned >= ReparseData.Reparse.SubstituteNameLength + SizeOf(WideChar) then
+        if BytesReturned >= DWORD(ReparseData.Reparse.SubstituteNameLength + SizeOf(WideChar)) then
         begin
           SetLength(Destination, (ReparseData.Reparse.SubstituteNameLength div SizeOf(WideChar)) + 1);
           Move(ReparseData.Reparse.PathBuffer[0], Destination[1], ReparseData.Reparse.SubstituteNameLength);
@@ -1249,7 +1252,7 @@ begin
   while not FoundStream do
   begin
     // Read stream header
-    BytesToRead := DWORD_PTR(@Header.cStreamName[0]) - DWORD_PTR(@Header.dwStreamId);
+    BytesToRead := DWORD(TJclAddr(@Header.cStreamName[0]) - TJclAddr(@Header.dwStreamId));
     BytesRead := 0;
     if not Windows.BackupRead(Data.Internal.FileHandle, (@Header), BytesToRead, BytesRead,
       False, True, Data.Internal.Context) then

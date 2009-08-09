@@ -369,7 +369,7 @@ type
     function GetResourceType: TJclPeResourceKind;
     function GetResourceTypeStr: string;
   protected
-    function OffsetToRawData(Ofs: DWORD): DWORD;
+    function OffsetToRawData(Ofs: DWORD): TJclAddr;
     function Level1Item: TJclPeResourceItem;
     function SubDirData: PImageResourceDirectory;
   public
@@ -1041,20 +1041,12 @@ type
   end;
 
 // Image access under a debbuger
-{$IFDEF KEEP_DEPRECATED}
-function PeDbgImgNtHeaders(ProcessHandle: THandle; BaseAddress: Pointer;
-  var NtHeaders: TImageNtHeaders32): Boolean;
-{$ENDIF KEEP_DEPRECATED}
 function PeDbgImgNtHeaders32(ProcessHandle: THandle; BaseAddress: TJclAddr32;
   var NtHeaders: TImageNtHeaders32): Boolean;
 // TODO 64 bit version
 //function PeDbgImgNtHeaders64(ProcessHandle: THandle; BaseAddress: TJclAddr64;
 //  var NtHeaders: TImageNtHeaders64): Boolean;
 
-{$IFDEF KEEP_DEPRECATED}
-function PeDbgImgLibraryName(ProcessHandle: THandle; BaseAddress: Pointer;
-  var Name: string): Boolean;
-{$ENDIF KEEP_DEPRECATED}
 function PeDbgImgLibraryName32(ProcessHandle: THandle; BaseAddress: TJclAddr32;
   var Name: string): Boolean;
 //function PeDbgImgLibraryName64(ProcessHandle: THandle; BaseAddress: TJclAddr64;
@@ -1132,9 +1124,20 @@ begin
 end;
 
 function CompareResourceName(T1, T2: PChar): Boolean;
+var
+  Long1, Long2: LongRec;
 begin
-  if (LongRec(T1).Hi = 0) or (LongRec(T2).Hi = 0) then
-    Result := Word(T1) = Word(T2)
+  {$IFDEF CPU64}
+  Long1 := LongRec(Int64Rec(T1).Lo);
+  Long2 := LongRec(Int64Rec(T2).Lo);
+  if (Int64Rec(T1).Hi = 0) and (Int64Rec(T2).Hi = 0) and (Long1.Hi = 0) and (Long2.Hi = 0) then
+  {$ENDIF CPU64}
+  {$IFDEF CPU32}
+  Long1 := LongRec(T1);
+  Long2 := LongRec(T2);
+  if (Long1.Hi = 0) or (Long2.Hi = 0) then
+  {$ENDIF CPU32}
+    Result := Long1.Lo = Long2.Lo
   else
     Result := (StrIComp(T1, T2) = 0);
 end;
@@ -2293,7 +2296,7 @@ begin
     with Directories[IMAGE_DIRECTORY_ENTRY_EXPORT] do
     begin
       ExportVABegin := VirtualAddress;
-      ExportVAEnd := VirtualAddress + Size;
+      ExportVAEnd := VirtualAddress + TJclAddr(Size);
     end;
     FExportDir := DirectoryEntryToData(IMAGE_DIRECTORY_ENTRY_EXPORT);
     if FExportDir <> nil then
@@ -2321,7 +2324,7 @@ begin
         if not TryUTF8ToString(UTF8Name, ExportName) then
           ExportName := string(UTF8Name);
         ExportItem := TJclPeExportFuncItem.Create(Self, ExportName,
-          ForwardedName, Address, I, NameOrdinals^ + FBase, icNotChecked);
+          ForwardedName, Address, I, DWORD(NameOrdinals^) + FBase, icNotChecked);
 
         List^[I] := ExportItem;
         Inc(NameOrdinals);
@@ -2654,7 +2657,7 @@ begin
     Result := Result.FParentItem;
 end;
 
-function TJclPeResourceItem.OffsetToRawData(Ofs: DWORD): DWORD;
+function TJclPeResourceItem.OffsetToRawData(Ofs: DWORD): TJclAddr;
 begin
   Result := (Ofs and $7FFFFFFF) + Image.ResourceVA;
 end;
@@ -2684,7 +2687,7 @@ begin
   if FDirectory = nil then
     Exit;
   Entry := Pointer(TJclAddr(FDirectory) + SizeOf(TImageResourceDirectory));
-  for I := 1 to FDirectory^.NumberOfNamedEntries + FDirectory^.NumberOfIdEntries do
+  for I := 1 to DWORD(FDirectory^.NumberOfNamedEntries) + DWORD(FDirectory^.NumberOfIdEntries) do
   begin
     DirItem := Image.ResourceItemCreate(Entry, AParentItem);
     Add(DirItem);
@@ -2843,7 +2846,7 @@ begin
   Temp := PWord(TJclAddr(FChunk) + SizeOf(TImageBaseRelocation) + DWORD(Index) * SizeOf(Word))^;
   Result.Address := Temp and $0FFF;
   Result.RelocType := (Temp and $F000) shr 12;
-  Result.VirtualAddress := Result.Address + VirtualAddress;
+  Result.VirtualAddress := TJclAddr(Result.Address) + VirtualAddress;
 end;
 
 function TJclPeRelocEntry.GetSize: DWORD;
@@ -3810,6 +3813,7 @@ end;
 function TJclPeImage.GetUnusedHeaderBytes: TImageDataDirectory;
 begin
   CheckNotAttached;
+  Result.Size := 0;
   Result.VirtualAddress := GetImageUnusedHeaderBytes(FLoadedImage, Result.Size);
   if Result.VirtualAddress = 0 then
     RaiseLastOSError;
@@ -4091,7 +4095,7 @@ end;
 function TJclPeImage.RvaToVa(Rva: DWORD): Pointer;
 begin
   if FAttachedImage then
-    Result := Pointer(DWORD(FLoadedImage.MappedAddress) + Rva)
+    Result := Pointer(TJclAddr(FLoadedImage.MappedAddress) + Rva)
   else
     Result := ImageRvaToVa(FLoadedImage.FileHeader, FLoadedImage.MappedAddress, Rva, nil);
 end;
@@ -5012,6 +5016,10 @@ function PeRebaseImage32(const ImageName: TFileName; NewBase: TJclAddr32;
     Result := $60000000 + (((Ord(FirstChar) - Ord('A')) div 3) * $1000000);
   end;
 
+{$IFDEF CPU64}
+var
+  NewIB, OldIB: QWord;
+{$ENDIF CPU64}
 begin
   if NewBase = 0 then
     NewBase := CalculateBaseAddress;
@@ -5019,8 +5027,18 @@ begin
   begin
     NewImageBase := NewBase;
     // OF: possible loss of data
+    {$IFDEF CPU32}
     Win32Check(ReBaseImage(PAnsiChar(AnsiString(ImageName)), nil, True, False, False, MaxNewSize,
       OldImageSize, OldImageBase, NewImageSize, NewImageBase, TimeStamp));
+    {$ENDIF CPU32}
+    {$IFDEF CPU64}
+    NewIB := NewImageBase;
+    OldIB := OldImageBase;
+    Win32Check(ReBaseImage(PAnsiChar(AnsiString(ImageName)), nil, True, False, False, MaxNewSize,
+      OldImageSize, OldIB, NewImageSize, NewIB, TimeStamp));
+    NewImageBase := NewIB;
+    OldImageBase := OldIB;
+    {$ENDIF CPU64}
   end;
 end;
 
@@ -6298,14 +6316,6 @@ begin
   Result := ReadProcessMemory(ProcessHandle, Pointer(Address), Buffer, Size, BR);
 end;
 
-{$IFDEF KEEP_DEPRECATED}
-function PeDbgImgNtHeaders(ProcessHandle: THandle; BaseAddress: Pointer;
-  var NtHeaders: TImageNtHeaders32): Boolean;
-begin
-  Result := PeDbgImgNtHeaders32(ProcessHandle, TJclAddr32(BaseAddress), NtHeaders);
-end;
-{$ENDIF KEEP_DEPRECATED}
-
 // TODO: 64 bit version
 function PeDbgImgNtHeaders32(ProcessHandle: THandle; BaseAddress: TJclAddr32;
   var NtHeaders: TImageNtHeaders32): Boolean;
@@ -6322,14 +6332,6 @@ begin
   Result := InternalReadProcMem(ProcessHandle, TJclAddr32(BaseAddress) + TJclAddr32(DosHeader._lfanew),
     @NtHeaders, SizeOf(TImageNtHeaders32));
 end;
-
-{$IFDEF KEEP_DEPRECATED}
-function PeDbgImgLibraryName(ProcessHandle: THandle; BaseAddress: Pointer;
-  var Name: string): Boolean;
-begin
-  Result := PeDbgImgLibraryName32(ProcessHandle, TJclAddr32(BaseAddress), Name);
-end;
-{$ENDIF KEEP_DEPRECATED}
 
 // TODO: 64 bit version
 function PeDbgImgLibraryName32(ProcessHandle: THandle; BaseAddress: TJclAddr32;

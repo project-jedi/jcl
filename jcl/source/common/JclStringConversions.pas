@@ -34,7 +34,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                    $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -63,12 +63,12 @@ type
 // conversion routines between Ansi, UTF-16, UCS-4 and UTF8 strings
 
 // one shot conversion between PAnsiChar and PWideChar
-procedure ExpandASCIIString(const Source: PAnsiChar; Target: PWideChar; Count: Cardinal);
+procedure ExpandASCIIString(const Source: PAnsiChar; Target: PWideChar; Count: SizeInt);
 
 // tpye of stream related functions
 type
   TJclStreamGetNextCharFunc = function(S: TStream; out Ch: UCS4): Boolean;
-  TJclStreamSkipCharsFunc = function(S: TStream; var NbSeq: Integer): Boolean;
+  TJclStreamSkipCharsFunc = function(S: TStream; var NbSeq: SizeInt): Boolean;
   TJclStreamSetNextCharFunc = function(S: TStream; Ch: UCS4): Boolean;
 
 // iterative conversions
@@ -77,7 +77,7 @@ type
 // if UNICODE_SILENT_FAILURE is defined, invalid sequences will be replaced by ReplacementCharacter
 // otherwise StrPos is set to -1 on return to flag an error (invalid UTF8 sequence)
 // StrPos will be incremented by the number of chars that were read
-function UTF8GetNextChar(const S: TUTF8String; var StrPos: Integer): UCS4;
+function UTF8GetNextChar(const S: TUTF8String; var StrPos: SizeInt): UCS4;
 function UTF8GetNextCharFromStream(S: TStream; out Ch: UCS4): Boolean;
 
 // UTF8SkipChars = skip NbSeq UTF8 sequences starting from StrPos
@@ -85,8 +85,8 @@ function UTF8GetNextCharFromStream(S: TStream; out Ch: UCS4): Boolean;
 // if UNICODE_SILENT_FAILURE is not defined StrPos is set to -1 on error (invalid UTF8 sequence)
 // StrPos will be incremented by the number of chars that were skipped
 // On return, NbSeq contains the number of UTF8 sequences that were skipped
-function UTF8SkipChars(const S: TUTF8String; var StrPos: Integer; var NbSeq: Integer): Boolean;
-function UTF8SkipCharsFromStream(S: TStream; var NbSeq: Integer): Boolean;
+function UTF8SkipChars(const S: TUTF8String; var StrPos: SizeInt; var NbSeq: SizeInt): Boolean;
+function UTF8SkipCharsFromStream(S: TStream; var NbSeq: SizeInt): Boolean;
 
 // UTF8SetNextChar = append an UTF8 sequence at StrPos
 // returns False on error:
@@ -95,16 +95,16 @@ function UTF8SkipCharsFromStream(S: TStream; var NbSeq: Integer): Boolean;
 //        - if UNICODE_SILENT_FAILURE is not defined, StrPos is set to -1
 //    - StrPos > -1 flags string being too small, callee did nothing, caller is responsible for allocating space
 // StrPos will be incremented by the number of chars that were written
-function UTF8SetNextChar(var S: TUTF8String; var StrPos: Integer; Ch: UCS4): Boolean;
+function UTF8SetNextChar(var S: TUTF8String; var StrPos: SizeInt; Ch: UCS4): Boolean;
 function UTF8SetNextCharToStream(S: TStream; Ch: UCS4): Boolean;
 
 // UTF16GetNextChar = read next UTF16 sequence at StrPos
 // if UNICODE_SILENT_FAILURE is defined, invalid sequences will be replaced by ReplacementCharacter
 // otherwise StrPos is set to -1 on return to flag an error (invalid UTF16 sequence)
 // StrPos will be incremented by the number of chars that were read
-function UTF16GetNextChar(const S: TUTF16String; var StrPos: Integer): UCS4; overload;
+function UTF16GetNextChar(const S: TUTF16String; var StrPos: SizeInt): UCS4; overload;
 {$IFDEF SUPPORTS_UNICODE_STRING}
-function UTF16GetNextChar(const S: UnicodeString; var StrPos: Integer): UCS4; overload;
+function UTF16GetNextChar(const S: UnicodeString; var StrPos: SizeInt): UCS4; overload;
 {$ENDIF SUPPORTS_UNICODE_STRING}
 function UTF16GetNextCharFromStream(S: TStream; out Ch: UCS4): Boolean;
 
@@ -112,9 +112,9 @@ function UTF16GetNextCharFromStream(S: TStream; out Ch: UCS4): Boolean;
 // if UNICODE_SILENT_FAILURE is defined, invalid sequences will be replaced by ReplacementCharacter
 // otherwise StrPos is set to -1 on return to flag an error (invalid UTF16 sequence)
 // StrPos will be decremented by the number of chars that were read
-function UTF16GetPreviousChar(const S: TUTF16String; var StrPos: Integer): UCS4; overload;
+function UTF16GetPreviousChar(const S: TUTF16String; var StrPos: SizeInt): UCS4; overload;
 {$IFDEF SUPPORTS_UNICODE_STRING}
-function UTF16GetPreviousChar(const S: UnicodeString; var StrPos: Integer): UCS4; overload;
+function UTF16GetPreviousChar(const S: UnicodeString; var StrPos: SizeInt): UCS4; overload;
 {$ENDIF SUPPORTS_UNICODE_STRING}
 
 // UTF16SkipChars = skip NbSeq UTF16 sequences starting from StrPos
@@ -122,11 +122,11 @@ function UTF16GetPreviousChar(const S: UnicodeString; var StrPos: Integer): UCS4
 // if UNICODE_SILENT_FAILURE is not defined StrPos is set to -1 on error (invalid UTF16 sequence)
 // StrPos will be incremented by the number of chars that were skipped
 // On return, NbChar contains the number of UTF16 sequences that were skipped
-function UTF16SkipChars(const S: TUTF16String; var StrPos: Integer; var NbSeq: Integer): Boolean; overload;
+function UTF16SkipChars(const S: TUTF16String; var StrPos: SizeInt; var NbSeq: SizeInt): Boolean; overload;
 {$IFDEF SUPPORTS_UNICODE_STRING}
-function UTF16SkipChars(const S: UnicodeString; var StrPos: Integer; var NbSeq: Integer): Boolean; overload;
+function UTF16SkipChars(const S: UnicodeString; var StrPos: SizeInt; var NbSeq: SizeInt): Boolean; overload;
 {$ENDIF SUPPORTS_UNICODE_STRING}
-function UTF16SkipCharsFromStream(S: TStream; var NbSeq: Integer): Boolean;
+function UTF16SkipCharsFromStream(S: TStream; var NbSeq: SizeInt): Boolean;
 
 // UTF16SetNextChar = append an UTF16 sequence at StrPos
 // returns False on error:
@@ -135,27 +135,27 @@ function UTF16SkipCharsFromStream(S: TStream; var NbSeq: Integer): Boolean;
 //        - if UNICODE_SILENT_FAILURE is not defined, StrPos is set to -1
 //    - StrPos > -1 flags string being too small, callee did nothing and caller is responsible for allocating space
 // StrPos will be incremented by the number of chars that were written
-function UTF16SetNextChar(var S: TUTF16String; var StrPos: Integer; Ch: UCS4): Boolean; overload;
+function UTF16SetNextChar(var S: TUTF16String; var StrPos: SizeInt; Ch: UCS4): Boolean; overload;
 {$IFDEF SUPPORTS_UNICODE_STRING}
-function UTF16SetNextChar(var S: UnicodeString; var StrPos: Integer; Ch: UCS4): Boolean; overload;
+function UTF16SetNextChar(var S: UnicodeString; var StrPos: SizeInt; Ch: UCS4): Boolean; overload;
 {$ENDIF SUPPORTS_UNICODE_STRING}
 function UTF16SetNextCharToStream(S: TStream; Ch: UCS4): Boolean;
 
 // AnsiGetNextChar = read next character at StrPos
 // StrPos will be incremented by the number of chars that were read (1)
-function AnsiGetNextChar(const S: AnsiString; var StrPos: Integer): UCS4; overload;
+function AnsiGetNextChar(const S: AnsiString; var StrPos: SizeInt): UCS4; overload;
 function AnsiGetNextCharFromStream(S: TStream; out Ch: UCS4): Boolean; overload;
 
 // same as AnsiGetNextChar* with custom codepage
-function AnsiGetNextChar(const S: AnsiString; CodePage: Word; var StrPos: Integer): UCS4; overload;
+function AnsiGetNextChar(const S: AnsiString; CodePage: Word; var StrPos: SizeInt): UCS4; overload;
 function AnsiGetNextCharFromStream(S: TStream; CodePage: Word; out Ch: UCS4): Boolean; overload;
 
 // AnsiSkipChars = skip NbSeq characters starting from StrPos
 // returns False if String is too small
 // StrPos will be incremented by the number of chars that were skipped
 // On return, NbChar contains the number of UTF16 sequences that were skipped
-function AnsiSkipChars(const S: AnsiString; var StrPos: Integer; var NbSeq: Integer): Boolean;
-function AnsiSkipCharsFromStream(S: TStream; var NbSeq: Integer): Boolean;
+function AnsiSkipChars(const S: AnsiString; var StrPos: SizeInt; var NbSeq: SizeInt): Boolean;
+function AnsiSkipCharsFromStream(S: TStream; var NbSeq: SizeInt): Boolean;
 
 // AnsiSetNextChar = append a character at StrPos
 // returns False on error:
@@ -164,25 +164,25 @@ function AnsiSkipCharsFromStream(S: TStream; var NbSeq: Integer): Boolean;
 //        - if UNICODE_SILENT_FAILURE is not defined, StrPos is set to -1
 //    - StrPos > -1 flags string being too small, callee did nothing and caller is responsible for allocating space
 // StrPos will be incremented by the number of chars that were written (1)
-function AnsiSetNextChar(var S: AnsiString; var StrPos: Integer; Ch: UCS4): Boolean; overload;
+function AnsiSetNextChar(var S: AnsiString; var StrPos: SizeInt; Ch: UCS4): Boolean; overload;
 function AnsiSetNextCharToStream(S: TStream; Ch: UCS4): Boolean; overload;
 
 // same as AnsiSetNextChar* with custom codepage
-function AnsiSetNextChar(var S: AnsiString; CodePage: Word; var StrPos: Integer; Ch: UCS4): Boolean; overload;
+function AnsiSetNextChar(var S: AnsiString; CodePage: Word; var StrPos: SizeInt; Ch: UCS4): Boolean; overload;
 function AnsiSetNextCharToStream(S: TStream; CodePage: Word; Ch: UCS4): Boolean; overload;
 
 // StringGetNextChar = read next character/sequence at StrPos
 // if UNICODE_SILENT_FAILURE is defined, invalid sequences will be replaced by ReplacementCharacter
 // otherwise StrPos is set to -1 on return to flag an error (invalid UTF16 sequence for WideString)
 // StrPos will be incremented by the number of chars that were read
-function StringGetNextChar(const S: string; var StrPos: Integer): UCS4; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+function StringGetNextChar(const S: string; var StrPos: SizeInt): UCS4; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
 // StringSkipChars = skip NbSeq characters/sequences starting from StrPos
 // returns False if String is too small
 // if UNICODE_SILENT_FAILURE is not defined StrPos is set to -1 on error (invalid UTF16 sequence for WideString)
 // StrPos will be incremented by the number of chars that were skipped
 // On return, NbChar contains the number of UTF16 sequences that were skipped
-function StringSkipChars(const S: string; var StrPos: Integer; var NbSeq: Integer): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+function StringSkipChars(const S: string; var StrPos: SizeInt; var NbSeq: SizeInt): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
 // StringSetNextChar = append a character/sequence at StrPos
 // returns False on error:
@@ -191,7 +191,7 @@ function StringSkipChars(const S: string; var StrPos: Integer; var NbSeq: Intege
 //        - if UNICODE_SILENT_FAILURE is not defined, StrPos is set to -1
 //    - StrPos > -1 flags string being too small, callee did nothing and caller is responsible for allocating space
 // StrPos will be incremented by the number of chars that were written
-function StringSetNextChar(var S: string; var StrPos: Integer; Ch: UCS4): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+function StringSetNextChar(var S: string; var StrPos: SizeInt; Ch: UCS4): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
 // one shot conversions between WideString and others
 function WideStringToUTF8(const S: WideString): TUTF8String; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
@@ -237,16 +237,16 @@ function TryUTF16ToUCS4(const S: TUTF16String; out D: TUCS4Array): Boolean;
 function TryUCS4ToUTF16(const S: TUCS4Array; out D: TUTF16String): Boolean;
 
 // indexed conversions
-function UTF8CharCount(const S: TUTF8String): Integer;
-function UTF16CharCount(const S: TUTF16String): Integer;
-function UCS2CharCount(const S: TUCS2String): Integer;
-function UCS4CharCount(const S: TUCS4Array): Integer;
+function UTF8CharCount(const S: TUTF8String): SizeInt;
+function UTF16CharCount(const S: TUTF16String): SizeInt;
+function UCS2CharCount(const S: TUCS2String): SizeInt;
+function UCS4CharCount(const S: TUCS4Array): SizeInt;
 // returns False if string is too small
 // if UNICODE_SILENT_FAILURE is not defined and an invalid UTFX sequence is detected, an exception is raised
 // returns True on success and Value contains UCS4 character that was read
-function GetUCS4CharAt(const UTF8Str: TUTF8String; Index: Integer; out Value: UCS4): Boolean; overload;
-function GetUCS4CharAt(const WideStr: TUTF16String; Index: Integer; out Value: UCS4; IsUTF16: Boolean = True): Boolean; overload;
-function GetUCS4CharAt(const UCS4Str: TUCS4Array; Index: Integer; out Value: UCS4): Boolean; overload;
+function GetUCS4CharAt(const UTF8Str: TUTF8String; Index: SizeInt; out Value: UCS4): Boolean; overload;
+function GetUCS4CharAt(const WideStr: TUTF16String; Index: SizeInt; out Value: UCS4; IsUTF16: Boolean = True): Boolean; overload;
+function GetUCS4CharAt(const UCS4Str: TUCS4Array; Index: SizeInt; out Value: UCS4): Boolean; overload;
 
 function UCS4ToAnsiChar(Value: UCS4): AnsiChar;
 function UCS4ToWideChar(Value: UCS4): WideChar;
@@ -311,12 +311,12 @@ end;
 // from one byte to two bytes.
 // EAX contains Source, EDX contains Target, ECX contains Count
 
-procedure ExpandASCIIString(const Source: PAnsiChar; Target: PWideChar; Count: Cardinal);
-// Source in EAX/RAX
-// Target in EDX/RDX
-// Count  in ECX/RCX
+procedure ExpandASCIIString(const Source: PAnsiChar; Target: PWideChar; Count: SizeInt);
 asm
        {$IFDEF CPU32}
+       // --> EAX Source
+       //     EDX Target
+       //     ECX Count
        JECXZ   @@Finish           // go out if there is nothing to do (ECX = 0)
        PUSH    ESI
        MOV     ESI, EAX
@@ -331,8 +331,12 @@ asm
        POP     ESI
        {$ENDIF CPU32}
        {$IFDEF CPU64}
+       // --> RCX Source
+       //     RDX Target
+       //     R8  Count
+       MOV     RAX, RCX
+       MOV     RCX, R8
        JRCXZ   @@Finish           // go out if there is nothing to do (ECX = 0)
-       PUSH    RSI
        MOV     RSI, RAX
        XOR     RAX, RAX
 @@1:
@@ -342,7 +346,6 @@ asm
        ADD     RDX, 2
        DEC     RCX
        JNZ     @@1
-       POP     RSI
        {$ENDIF CPU64}
 @@Finish:
 end;
@@ -353,7 +356,7 @@ const
   HalfBase: UCS4 = $0010000;
   HalfMask: UCS4 = $3FF;
 
-procedure FlagInvalidSequence(var StrPos: Integer; Increment: Integer; out Ch: UCS4); overload;
+procedure FlagInvalidSequence(var StrPos: SizeInt; Increment: SizeInt; out Ch: UCS4); overload;
 begin
   {$IFDEF UNICODE_SILENT_FAILURE}
   Ch := UCS4ReplacementCharacter;
@@ -363,7 +366,7 @@ begin
   {$ENDIF ~UNICODE_SILENT_FAILURE}
 end;
 
-procedure FlagInvalidSequence(var StrPos: Integer; Increment: Integer); overload;
+procedure FlagInvalidSequence(var StrPos: SizeInt; Increment: SizeInt); overload;
 begin
   {$IFDEF UNICODE_SILENT_FAILURE}
   Inc(StrPos, Increment);
@@ -391,9 +394,9 @@ end;
 // if UNICODE_SILENT_FAILURE is defined, invalid sequences will be replaced by ReplacementCharacter
 // otherwise StrPos is set to -1 on return to flag an error (invalid UTF8 sequence)
 // StrPos will be incremented by the number of chars that were read
-function UTF8GetNextChar(const S: TUTF8String; var StrPos: Integer): UCS4;
+function UTF8GetNextChar(const S: TUTF8String; var StrPos: SizeInt): UCS4;
 var
-  StrLength: Integer;
+  StrLength: SizeInt;
   ChNext: UCS4;
 begin
   StrLength := Length(S);
@@ -752,11 +755,11 @@ end;
 // if UNICODE_SILENT_FAILURE is not defined StrPos is set to -1 on error (invalid UTF8 sequence)
 // StrPos will be incremented by the number of ansi chars that were skipped
 // On return, NbSeq contains the number of UTF8 sequences that were skipped
-function UTF8SkipChars(const S: TUTF8String; var StrPos: Integer; var NbSeq: Integer): Boolean;
+function UTF8SkipChars(const S: TUTF8String; var StrPos: SizeInt; var NbSeq: SizeInt): Boolean;
 var
-  StrLength: Integer;
+  StrLength: SizeInt;
   Ch: UCS4;
-  Index: Integer;
+  Index: SizeInt;
 begin
   Result := True;
   StrLength := Length(S);
@@ -845,10 +848,10 @@ begin
   NbSeq := Index;
 end;
 
-function UTF8SkipCharsFromStream(S: TStream; var NbSeq: Integer): Boolean;
+function UTF8SkipCharsFromStream(S: TStream; var NbSeq: SizeInt): Boolean;
 var
   B: Byte;
-  Index: Integer;
+  Index: SizeInt;
 begin
   Index := 0;
   while (Index < NbSeq) do
@@ -970,9 +973,9 @@ end;
 //        - if UNICODE_SILENT_FAILURE is not defined, StrPos is set to -1
 //    - StrPos > -1 flags string being too small, caller is responsible for allocating space
 // StrPos will be incremented by the number of chars that were written
-function UTF8SetNextChar(var S: TUTF8String; var StrPos: Integer; Ch: UCS4): Boolean;
+function UTF8SetNextChar(var S: TUTF8String; var StrPos: SizeInt; Ch: UCS4): Boolean;
 var
-  StrLength: Integer;
+  StrLength: SizeInt;
 begin
   StrLength := Length(S);
 
@@ -1129,9 +1132,9 @@ end;
 // if UNICODE_SILENT_FAILURE is defined, invalid sequences will be replaced by ReplacementCharacter
 // otherwise StrPos is set to -1 on return to flag an error (invalid UTF16 sequence)
 // StrPos will be incremented by the number of chars that were read
-function UTF16GetNextChar(const S: TUTF16String; var StrPos: Integer): UCS4;
+function UTF16GetNextChar(const S: TUTF16String; var StrPos: SizeInt): UCS4;
 var
-  StrLength: Integer;
+  StrLength: SizeInt;
   ChNext: UCS4;
 begin
   StrLength := Length(S);
@@ -1177,9 +1180,9 @@ end;
 // otherwise StrPos is set to -1 on return to flag an error (invalid UTF16 sequence)
 // StrPos will be incremented by the number of chars that were read
 {$IFDEF SUPPORTS_UNICODE_STRING}
-function UTF16GetNextChar(const S: UnicodeString; var StrPos: Integer): UCS4;
+function UTF16GetNextChar(const S: UnicodeString; var StrPos: SizeInt): UCS4;
 var
-  StrLength: Integer;
+  StrLength: SizeInt;
   ChNext: UCS4;
 begin
   StrLength := Length(S);
@@ -1256,9 +1259,9 @@ end;
 // if UNICODE_SILENT_FAILURE is defined, invalid sequences will be replaced by ReplacementCharacter
 // otherwise StrPos is set to -1 on return to flag an error (invalid UTF16 sequence)
 // StrPos will be decremented by the number of chars that were read
-function UTF16GetPreviousChar(const S: TUTF16String; var StrPos: Integer): UCS4;
+function UTF16GetPreviousChar(const S: TUTF16String; var StrPos: SizeInt): UCS4;
 var
-  StrLength: Integer;
+  StrLength: SizeInt;
   ChPrev: UCS4;
 begin
   StrLength := Length(S);
@@ -1304,9 +1307,9 @@ end;
 // otherwise StrPos is set to -1 on return to flag an error (invalid UTF16 sequence)
 // StrPos will be decremented by the number of chars that were read
 {$IFDEF SUPPORTS_UNICODE_STRING}
-function UTF16GetPreviousChar(const S: UnicodeString; var StrPos: Integer): UCS4;
+function UTF16GetPreviousChar(const S: UnicodeString; var StrPos: SizeInt): UCS4;
 var
-  StrLength: Integer;
+  StrLength: SizeInt;
   ChPrev: UCS4;
 begin
   StrLength := Length(S);
@@ -1353,9 +1356,9 @@ end;
 // if UNICODE_SILENT_FAILURE is not defined StrPos is set to -1 on error (invalid UTF16 sequence)
 // StrPos will be incremented by the number of chars that were skipped
 // On return, NbSeq contains the number of UTF16 sequences that were skipped
-function UTF16SkipChars(const S: TUTF16String; var StrPos: Integer; var NbSeq: Integer): Boolean;
+function UTF16SkipChars(const S: TUTF16String; var StrPos: SizeInt; var NbSeq: SizeInt): Boolean;
 var
-  StrLength, Index: Integer;
+  StrLength, Index: SizeInt;
   Ch, ChNext: UCS4;
 begin
   Result := True;
@@ -1366,7 +1369,7 @@ begin
     while (Index < NbSeq) and (StrPos > 0) do
     begin
       Ch := UCS4(S[StrPos]);
-  
+
       case Ch of
         SurrogateHighStart..SurrogateHighEnd:
           // 2 bytes to skip
@@ -1440,9 +1443,9 @@ end;
 // StrPos will be incremented by the number of chars that were skipped
 // On return, NbSeq contains the number of UTF16 sequences that were skipped
 {$IFDEF SUPPORTS_UNICODE_STRING}
-function UTF16SkipChars(const S: UnicodeString; var StrPos: Integer; var NbSeq: Integer): Boolean;
+function UTF16SkipChars(const S: UnicodeString; var StrPos: SizeInt; var NbSeq: SizeInt): Boolean;
 var
-  StrLength, Index: Integer;
+  StrLength, Index: SizeInt;
   Ch, ChNext: UCS4;
 begin
   Result := True;
@@ -1523,9 +1526,9 @@ begin
 end;
 {$ENDIF SUPPORTS_UNICODE_STRING}
 
-function UTF16SkipCharsFromStream(S: TStream; var NbSeq: Integer): Boolean;
+function UTF16SkipCharsFromStream(S: TStream; var NbSeq: SizeInt): Boolean;
 var
-  Index: Integer;
+  Index: SizeInt;
   W: Word;
 begin
   Index := 0;
@@ -1563,9 +1566,9 @@ end;
 //        - if UNICODE_SILENT_FAILURE is not defined, StrPos is set to -1
 //    - StrPos > -1 flags string being too small, caller is responsible for allocating space
 // StrPos will be incremented by the number of chars that were written
-function UTF16SetNextChar(var S: TUTF16String; var StrPos: Integer; Ch: UCS4): Boolean;
+function UTF16SetNextChar(var S: TUTF16String; var StrPos: SizeInt; Ch: UCS4): Boolean;
 var
-  StrLength: Integer;
+  StrLength: SizeInt;
 begin
   StrLength := Length(S);
 
@@ -1610,9 +1613,9 @@ begin
 end;
 
 {$IFDEF SUPPORTS_UNICODE_STRING}
-function UTF16SetNextChar(var S: UnicodeString; var StrPos: Integer; Ch: UCS4): Boolean;
+function UTF16SetNextChar(var S: UnicodeString; var StrPos: SizeInt; Ch: UCS4): Boolean;
 var
-  StrLength: Integer;
+  StrLength: SizeInt;
 begin
   StrLength := Length(S);
 
@@ -1680,9 +1683,9 @@ end;
 
 // AnsiGetNextChar = read next character at StrPos
 // StrPos will be incremented by the number of chars that were read (1)
-function AnsiGetNextChar(const S: AnsiString; var StrPos: Integer): UCS4;
+function AnsiGetNextChar(const S: AnsiString; var StrPos: SizeInt): UCS4;
 var
-  StrLen, TmpPos: Integer;
+  StrLen, TmpPos: SizeInt;
   UTF16Buffer: TUTF16String;
 begin
   StrLen := Length(S);
@@ -1708,7 +1711,7 @@ end;
 function AnsiGetNextCharFromStream(S: TStream; out Ch: UCS4): Boolean;
 var
   B: Byte;
-  TmpPos: Integer;
+  TmpPos: SizeInt;
   UTF16Buffer: TUTF16String;
 begin
   Result := StreamReadByte(S, B);
@@ -1722,9 +1725,9 @@ end;
 
 // AnsiGetNextChar = read next character at StrPos
 // StrPos will be incremented by the number of chars that were read (1)
-function AnsiGetNextChar(const S: AnsiString; CodePage: Word; var StrPos: Integer): UCS4;
+function AnsiGetNextChar(const S: AnsiString; CodePage: Word; var StrPos: SizeInt): UCS4;
 var
-  StrLen, TmpPos: Integer;
+  StrLen, TmpPos: SizeInt;
   UTF16Buffer: TUTF16String;
 begin
   StrLen := Length(S);
@@ -1756,7 +1759,7 @@ end;
 function AnsiGetNextCharFromStream(S: TStream; CodePage: Word; out Ch: UCS4): Boolean;
 var
   B: Byte;
-  TmpPos: Integer;
+  TmpPos: SizeInt;
   UTF16Buffer: TUTF16String;
 begin
   Result := StreamReadByte(S, B);
@@ -1778,9 +1781,9 @@ end;
 // returns False if String is too small
 // StrPos will be incremented by the number of chars that were skipped
 // On return, NbChar contains the number of UTF16 sequences that were skipped
-function AnsiSkipChars(const S: AnsiString; var StrPos: Integer; var NbSeq: Integer): Boolean;
+function AnsiSkipChars(const S: AnsiString; var StrPos: SizeInt; var NbSeq: SizeInt): Boolean;
 var
-  StrLen: Integer;
+  StrLen: SizeInt;
 begin
   StrLen := Length(S);
 
@@ -1808,9 +1811,9 @@ begin
   end;
 end;
 
-function AnsiSkipCharsFromStream(S: TStream; var NbSeq: Integer): Boolean;
+function AnsiSkipCharsFromStream(S: TStream; var NbSeq: SizeInt): Boolean;
 var
-  Index: Integer;
+  Index: SizeInt;
   B: Byte;
 begin
   Index := 0;
@@ -1832,9 +1835,9 @@ end;
 //        - if UNICODE_SILENT_FAILURE is not defined, StrPos is set to -1
 //    - StrPos > -1 flags string being too small, callee did nothing and caller is responsible for allocating space
 // StrPos will be incremented by the number of chars that were written (1)
-function AnsiSetNextChar(var S: AnsiString; var StrPos: Integer; Ch: UCS4): Boolean;
+function AnsiSetNextChar(var S: AnsiString; var StrPos: SizeInt; Ch: UCS4): Boolean;
 var
-  StrLen, TmpPos: Integer;
+  StrLen, TmpPos: SizeInt;
   UTF16Buffer: TUTF16String;
   AnsiBuffer: AnsiString;
 begin
@@ -1876,7 +1879,7 @@ end;
 
 function AnsiSetNextCharToStream(S: TStream; Ch: UCS4): Boolean;
 var
-  TmpPos: Integer;
+  TmpPos: SizeInt;
   UTF16Buffer: TUTF16String;
   AnsiBuffer: AnsiString;
 begin
@@ -1908,9 +1911,9 @@ begin
   end;
 end;
 
-function AnsiSetNextChar(var S: AnsiString; CodePage: Word; var StrPos: Integer; Ch: UCS4): Boolean;
+function AnsiSetNextChar(var S: AnsiString; CodePage: Word; var StrPos: SizeInt; Ch: UCS4): Boolean;
 var
-  StrLen, TmpPos: Integer;
+  StrLen, TmpPos: SizeInt;
   UTF16Buffer: TUTF16String;
   AnsiCharacter: AnsiChar;
 begin
@@ -1943,7 +1946,7 @@ end;
 
 function AnsiSetNextCharToStream(S: TStream; CodePage: Word; Ch: UCS4): Boolean;
 var
-  TmpPos: Integer;
+  TmpPos: SizeInt;
   UTF16Buffer: TUTF16String;
   AnsiCharacter: AnsiChar;
 begin
@@ -1968,7 +1971,7 @@ end;
 // if UNICODE_SILENT_FAILURE is defined, invalid sequences will be replaced by ReplacementCharacter
 // otherwise StrPos is set to -1 on return to flag an error (invalid UTF16 sequence for WideString)
 // StrPos will be incremented by the number of chars that were read
-function StringGetNextChar(const S: string; var StrPos: Integer): UCS4;
+function StringGetNextChar(const S: string; var StrPos: SizeInt): UCS4;
 begin
   {$IFDEF SUPPORTS_UNICODE}
   Result := UTF16GetNextChar(S, StrPos);
@@ -1982,7 +1985,7 @@ end;
 // if UNICODE_SILENT_FAILURE is not defined StrPos is set to -1 on error (invalid UTF16 sequence for WideString)
 // StrPos will be incremented by the number of chars that were skipped
 // On return, NbChar contains the number of UTF16 sequences that were skipped
-function StringSkipChars(const S: string; var StrPos: Integer; var NbSeq: Integer): Boolean;
+function StringSkipChars(const S: string; var StrPos: SizeInt; var NbSeq: SizeInt): Boolean;
 begin
   {$IFDEF SUPPORTS_UNICODE}
   Result := UTF16SkipChars(S, StrPos, NbSeq);
@@ -1998,7 +2001,7 @@ end;
 //        - if UNICODE_SILENT_FAILURE is not defined, StrPos is set to -1
 //    - StrPos > -1 flags string being too small, callee did nothing and caller is responsible for allocating space
 // StrPos will be incremented by the number of chars that were written
-function StringSetNextChar(var S: string; var StrPos: Integer; Ch: UCS4): Boolean;
+function StringSetNextChar(var S: string; var StrPos: SizeInt; Ch: UCS4): Boolean;
 begin
   {$IFDEF SUPPORTS_UNICODE}
   Result := UTF16SetNextChar(S, StrPos, Ch);
@@ -2157,7 +2160,7 @@ end;
 
 function UTF8ToUTF16(const S: TUTF8String): TUTF16String;
 var
-  SrcIndex, SrcLength, DestIndex: Integer;
+  SrcIndex, SrcLength, DestIndex: SizeInt;
   Ch: UCS4;
 begin
   if S = '' then
@@ -2183,7 +2186,7 @@ end;
 
 function TryUTF8ToUTF16(const S: TUTF8String; out D: TUTF16String): Boolean;
 var
-  SrcIndex, SrcLength, DestIndex: Integer;
+  SrcIndex, SrcLength, DestIndex: SizeInt;
   Ch: UCS4;
 begin
   Result := True;
@@ -2214,7 +2217,7 @@ end;
 
 function UTF16ToUTF8(const S: TUTF16String): TUTF8String;
 var
-  SrcIndex, SrcLength, DestIndex: Integer;
+  SrcIndex, SrcLength, DestIndex: SizeInt;
   Ch: UCS4;
 begin
   if S = '' then
@@ -2240,7 +2243,7 @@ end;
 
 function TryUTF16ToUTF8(const S: TUTF16String; out D: TUTF8String): Boolean;
 var
-  SrcIndex, SrcLength, DestIndex: Integer;
+  SrcIndex, SrcLength, DestIndex: SizeInt;
   Ch: UCS4;
 begin
   Result := True;
@@ -2271,7 +2274,7 @@ end;
 
 function UTF8ToUCS4(const S: TUTF8String): TUCS4Array;
 var
-  SrcIndex, SrcLength, DestIndex: Integer;
+  SrcIndex, SrcLength, DestIndex: SizeInt;
   Ch: UCS4;
 begin
   if S <> '' then
@@ -2296,7 +2299,7 @@ end;
 
 function TryUTF8ToUCS4(const S: TUTF8String; out D: TUCS4Array): Boolean;
 var
-  SrcIndex, SrcLength, DestIndex: Integer;
+  SrcIndex, SrcLength, DestIndex: SizeInt;
   Ch: UCS4;
 begin
   Result := True;
@@ -2326,7 +2329,7 @@ end;
 
 function UCS4ToUTF8(const S: TUCS4Array): TUTF8String;
 var
-  SrcIndex, SrcLength, DestIndex: Integer;
+  SrcIndex, SrcLength, DestIndex: SizeInt;
 begin
   SrcLength := Length(S);
   if Length(S) = 0 then
@@ -2349,7 +2352,7 @@ end;
 
 function TryUCS4ToUTF8(const S: TUCS4Array; out D: TUTF8String): Boolean;
 var
-  SrcIndex, SrcLength, DestIndex: Integer;
+  SrcIndex, SrcLength, DestIndex: SizeInt;
 begin
   SrcLength := Length(S);
   Result := True;
@@ -2377,7 +2380,7 @@ end;
 
 function UTF16ToUCS4(const S: TUTF16String): TUCS4Array;
 var
-  SrcIndex, SrcLength, DestIndex: Integer;
+  SrcIndex, SrcLength, DestIndex: SizeInt;
   Ch: UCS4;
 begin
   if S <> '' then
@@ -2402,7 +2405,7 @@ end;
 
 function TryUTF16ToUCS4(const S: TUTF16String; out D: TUCS4Array): Boolean;
 var
-  SrcIndex, SrcLength, DestIndex: Integer;
+  SrcIndex, SrcLength, DestIndex: SizeInt;
   Ch: UCS4;
 begin
   Result := True;
@@ -2432,7 +2435,7 @@ end;
 
 function UCS4ToUTF16(const S: TUCS4Array): TUTF16String;
 var
-  SrcIndex, SrcLength, DestIndex: Integer;
+  SrcIndex, SrcLength, DestIndex: SizeInt;
 begin
   SrcLength := Length(S);
   if SrcLength = 0 then
@@ -2455,7 +2458,7 @@ end;
 
 function TryUCS4ToUTF16(const S: TUCS4Array; out D:TUTF16String): Boolean;
 var
-  SrcIndex, SrcLength, DestIndex: Integer;
+  SrcIndex, SrcLength, DestIndex: SizeInt;
 begin
   SrcLength := Length(S);
   Result := True;
@@ -2481,9 +2484,9 @@ begin
   end;
 end;
 
-function UTF8CharCount(const S: TUTF8String): Integer;
+function UTF8CharCount(const S: TUTF8String): SizeInt;
 var
-  StrPos: Integer;
+  StrPos: SizeInt;
 begin
   StrPos := 1;
   Result := Length(S);
@@ -2492,9 +2495,9 @@ begin
     raise EJclUnexpectedEOSequenceError.Create;
 end;
 
-function UTF16CharCount(const S: TUTF16String): Integer;
+function UTF16CharCount(const S: TUTF16String): SizeInt;
 var
-  StrPos: Integer;
+  StrPos: SizeInt;
 begin
   StrPos := 1;
   Result := Length(S);
@@ -2503,19 +2506,19 @@ begin
     raise EJclUnexpectedEOSequenceError.Create;
 end;
 
-function UCS2CharCount(const S: TUCS2String): Integer;
+function UCS2CharCount(const S: TUCS2String): SizeInt;
 begin
   Result := Length(S);
 end;
 
-function UCS4CharCount(const S: TUCS4Array): Integer;
+function UCS4CharCount(const S: TUCS4Array): SizeInt;
 begin
   Result := Length(S);
 end;
 
-function GetUCS4CharAt(const UTF8Str: TUTF8String; Index: Integer; out Value: UCS4): Boolean; overload;
+function GetUCS4CharAt(const UTF8Str: TUTF8String; Index: SizeInt; out Value: UCS4): Boolean; overload;
 var
-  StrPos: Integer;
+  StrPos: SizeInt;
 begin
   StrPos := 1;
   Result := Index >= 0;
@@ -2532,9 +2535,9 @@ begin
   end;
 end;
 
-function GetUCS4CharAt(const WideStr: WideString; Index: Integer; out Value: UCS4; IsUTF16: Boolean): Boolean; overload;
+function GetUCS4CharAt(const WideStr: WideString; Index: SizeInt; out Value: UCS4; IsUTF16: Boolean): Boolean; overload;
 var
-  StrPos: Integer;
+  StrPos: SizeInt;
 begin
   if IsUTF16 then
   begin
@@ -2559,7 +2562,7 @@ begin
   end;
 end;
 
-function GetUCS4CharAt(const UCS4Str: TUCS4Array; Index: Integer; out Value: UCS4): Boolean; overload;
+function GetUCS4CharAt(const UCS4Str: TUCS4Array; Index: SizeInt; out Value: UCS4): Boolean; overload;
 begin
   Result := (Index >= 0) and (Index < Length(UCS4Str));
   if Result then
@@ -2569,7 +2572,7 @@ end;
 function UCS4ToAnsiChar(Value: UCS4): AnsiChar;
 var
   Buf: WideString;
-  StrPos: Integer;
+  StrPos: SizeInt;
 begin
   StrPos := 1;
   Buf := #0#0;
@@ -2599,7 +2602,7 @@ end;
 function AnsiCharToUCS4(Value: AnsiChar): UCS4;
 var
   Buf: WideString;
-  StrPos: Integer;
+  StrPos: SizeInt;
 begin
   StrPos := 1;
   Buf := WideString(AnsiString(Value));

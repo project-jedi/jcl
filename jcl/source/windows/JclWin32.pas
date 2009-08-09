@@ -3011,7 +3011,7 @@ function SetFileSecurityW(lpFileName: LPCWSTR; SecurityInformation: SECURITY_INF
 {$EXTERNALSYM SetFileSecurityW}
 function SetFileSecurity(lpFileName: LPCTSTR; SecurityInformation: SECURITY_INFORMATION;
   pSecurityDescriptor: PSECURITY_DESCRIPTOR): BOOL; stdcall;
-{$EXTERNALSYM SetFileSecurityA}
+{$EXTERNALSYM SetFileSecurity}
 
 function GetFileSecurityA(lpFileName: LPCSTR; RequestedInformation: SECURITY_INFORMATION;
   pSecurityDescriptor: PSECURITY_DESCRIPTOR; nLength: DWORD;
@@ -3024,7 +3024,7 @@ function GetFileSecurityW(lpFileName: LPCWSTR; RequestedInformation: SECURITY_IN
 function GetFileSecurity(lpFileName: LPCTSTR; RequestedInformation: SECURITY_INFORMATION;
   pSecurityDescriptor: PSECURITY_DESCRIPTOR; nLength: DWORD;
   var lpnLengthNeeded: DWORD): BOOL; stdcall;
-{$EXTERNALSYM GetFileSecurityA}
+{$EXTERNALSYM GetFileSecurity}
 
 // WinBase.h line 10251
 
@@ -3102,6 +3102,7 @@ type
 
 // line 152
 
+
 function ReBaseImage(CurrentImageName: PAnsiChar; SymbolPath: PAnsiChar; fReBase: BOOL;
   fRebaseSysfileOk: BOOL; fGoingDown: BOOL; CheckImageSize: ULONG;
   var OldImageSize: ULONG; var OldImageBase: ULONG_PTR; var NewImageSize: ULONG;
@@ -3154,6 +3155,7 @@ function ImageRvaToSection(NtHeaders: PImageNtHeaders; Base: Pointer; Rva: ULONG
 function ImageRvaToVa(NtHeaders: PImageNtHeaders; Base: Pointer; Rva: ULONG;
   LastRvaSection: PPImageSectionHeader): Pointer; stdcall;
 {$EXTERNALSYM ImageRvaToVa}
+
 
 // line 461
 
@@ -7162,12 +7164,12 @@ type
 
 function StgCreateStorageEx(const pwcsName: PWideChar; grfMode: DWORD;
   stgfmt: DWORD; grfAttrs: DWORD; pStgOptions: PSTGOPTIONS; reserved2: Pointer;
-  riid: PGUID; out stgOpen: IInterface):HResult; stdcall;
+  riid: PGUID; out stgOpen: IInterface): HResult; stdcall;
 {$EXTERNALSYM StgCreateStorageEx}
 
 function StgOpenStorageEx(const pwcsName: PWideChar; grfMode: DWORD;
-  stgfmt: DWORD; grfAttrs: DWORD; pStgOptions: PSTGOPTIONS; reserved2:Pointer;
-  riid: PGUID; out stgOpen: IInterface):HResult; stdcall;
+  stgfmt: DWORD; grfAttrs: DWORD; pStgOptions: PSTGOPTIONS; reserved2: Pointer;
+  riid: PGUID; out stgOpen: IInterface): HResult; stdcall;
 {$EXTERNALSYM StgOpenStorageEx}
 
 
@@ -7415,6 +7417,89 @@ function Thread32Next(hSnapshot: THandle; var lpte: THREADENTRY32): BOOL; stdcal
 
 
 
+type
+  _THREAD_INFORMATION_CLASS = type Cardinal;
+  {$EXTERNALSYM _THREAD_INFORMATION_CLASS}
+  THREAD_INFORMATION_CLASS = _THREAD_INFORMATION_CLASS;
+  {$EXTERNALSYM THREAD_INFORMATION_CLASS}
+  PTHREAD_INFORMATION_CLASS = ^_THREAD_INFORMATION_CLASS;
+  {$EXTERNALSYM PTHREAD_INFORMATION_CLASS}
+
+const
+  ThreadBasicInformation          = 0;
+  {$EXTERNALSYM ThreadBasicInformation}
+  ThreadTimes                     = 1;
+  {$EXTERNALSYM ThreadTimes}
+  ThreadPriority                  = 2;
+  {$EXTERNALSYM ThreadPriority}
+  ThreadBasePriority              = 3;
+  {$EXTERNALSYM ThreadBasePriority}
+  ThreadAffinityMask              = 4;
+  {$EXTERNALSYM ThreadAffinityMask}
+  ThreadImpersonationToken        = 5;
+  {$EXTERNALSYM ThreadImpersonationToken}
+  ThreadDescriptorTableEntry      = 6;
+  {$EXTERNALSYM ThreadDescriptorTableEntry}
+  ThreadEnableAlignmentFaultFixup = 7;
+  {$EXTERNALSYM ThreadEnableAlignmentFaultFixup}
+  ThreadEventPair                 = 8;
+  {$EXTERNALSYM ThreadEventPair}
+  ThreadQuerySetWin32StartAddress = 9;
+  {$EXTERNALSYM ThreadQuerySetWin32StartAddress}
+  ThreadZeroTlsCell               = 10;
+  {$EXTERNALSYM ThreadZeroTlsCell}
+  ThreadPerformanceCount          = 11;
+  {$EXTERNALSYM ThreadPerformanceCount}
+  ThreadAmILastThread             = 12;
+  {$EXTERNALSYM ThreadAmILastThread}
+  ThreadIdealProcessor            = 13;
+  {$EXTERNALSYM ThreadIdealProcessor}
+  ThreadPriorityBoost             = 14;
+  {$EXTERNALSYM ThreadPriorityBoost}
+  ThreadSetTlsArrayAddress        = 15;
+  {$EXTERNALSYM ThreadSetTlsArrayAddress}
+  ThreadIsIoPending               = 16;
+  {$EXTERNALSYM ThreadIsIoPending}
+  ThreadHideFromDebugger          = 17;
+  {$EXTERNALSYM ThreadHideFromDebugger}
+
+type
+  _CLIENT_ID = record
+    UniqueProcess: THandle;
+    UniqueThread: THandle;
+  end;
+  {$EXTERNALSYM _CLIENT_ID}
+  CLIENT_ID = _CLIENT_ID;
+  {$EXTERNALSYM CLIENT_ID}
+  PCLIENT_ID = ^CLIENT_ID;
+  {$EXTERNALSYM PCLIENT_ID}
+
+  KAFFINITY = ULONG;
+  {$EXTERNALSYM KAFFINITY}
+
+  KPRIORITY = LongInt;
+  {$EXTERNALSYM KPRIORITY}
+
+  _THREAD_BASIC_INFORMATION = record
+    ExitStatus: NTSTATUS;
+    TebBaseAddress: Pointer;
+    ClientId: CLIENT_ID;
+    AffinityMask: KAFFINITY;
+    Priority: KPRIORITY;
+    BasePriority: KPRIORITY;
+  end;
+  {$EXTERNALSYM _THREAD_BASIC_INFORMATION}
+  THREAD_BASIC_INFORMATION = _THREAD_BASIC_INFORMATION;
+  {$EXTERNALSYM THREAD_BASIC_INFORMATION}
+  PTHREAD_BASIC_INFORMATION = ^_THREAD_BASIC_INFORMATION;
+  {$EXTERNALSYM PTHREAD_BASIC_INFORMATION}
+
+function NtQueryInformationThread(ThreadHandle: THandle; ThreadInformationClass: THREAD_INFORMATION_CLASS;
+  ThreadInformation: Pointer; ThreadInformationLength: ULONG; ReturnLength: PULONG): NTSTATUS; stdcall;
+{$EXTERNALSYM NtQueryInformationThread}
+
+
+
 
 const
   RtdlSetNamedSecurityInfoW: function(pObjectName: LPWSTR; ObjectType: SE_OBJECT_TYPE;
@@ -7550,616 +7635,610 @@ end;
 const
   aclapilib = 'advapi32.dll';
 
-var
-  _SetNamedSecurityInfoW: Pointer;
+type
+  TSetNamedSecurityInfoW = function (pObjectName: LPWSTR; ObjectType: SE_OBJECT_TYPE;
+    SecurityInfo: SECURITY_INFORMATION; psidOwner, psidGroup: PSID;
+    pDacl, pSacl: PACL): DWORD; stdcall;
 
-function SetNamedSecurityInfoW;
+var
+  _SetNamedSecurityInfoW: TSetNamedSecurityInfoW = nil;
+
+function SetNamedSecurityInfoW(pObjectName: LPWSTR; ObjectType: SE_OBJECT_TYPE;
+  SecurityInfo: SECURITY_INFORMATION; psidOwner, psidGroup: PSID;
+  pDacl, pSacl: PACL): DWORD;
 begin
-  GetProcedureAddress(_SetNamedSecurityInfoW, aclapilib, 'SetNamedSecurityInfoW');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_SetNamedSecurityInfoW]
-  end;
+  GetProcedureAddress(Pointer(@_SetNamedSecurityInfoW), aclapilib, 'SetNamedSecurityInfoW');
+  Result := _SetNamedSecurityInfoW(pObjectName, ObjectType, SecurityInfo, psidOwner, psidGroup, pDacl, pSacl);
 end;
 
 
 
 const
   ImageHlpLib = 'imagehlp.dll';
-  
-var
-  _ReBaseImage: Pointer;
 
-function ReBaseImage;
+type
+  TReBaseImage = function (CurrentImageName: PAnsiChar; SymbolPath: PAnsiChar; fReBase: BOOL;
+    fRebaseSysfileOk: BOOL; fGoingDown: BOOL; CheckImageSize: ULONG;
+    var OldImageSize: ULONG; var OldImageBase: ULONG_PTR; var NewImageSize: ULONG;
+    var NewImageBase: ULONG_PTR; TimeStamp: ULONG): BOOL; stdcall;
+
+var
+  _ReBaseImage: TReBaseImage = nil;
+
+function ReBaseImage(CurrentImageName: PAnsiChar; SymbolPath: PAnsiChar; fReBase: BOOL;
+  fRebaseSysfileOk: BOOL; fGoingDown: BOOL; CheckImageSize: ULONG;
+  var OldImageSize: ULONG; var OldImageBase: ULONG_PTR; var NewImageSize: ULONG;
+  var NewImageBase: ULONG_PTR; TimeStamp: ULONG): BOOL;
 begin
-  GetProcedureAddress(_ReBaseImage, ImageHlpLib, 'ReBaseImage');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_ReBaseImage]
-  end;
+  GetProcedureAddress(Pointer(@_ReBaseImage), ImageHlpLib, 'ReBaseImage');
+  Result := _ReBaseImage(CurrentImageName, SymbolPath, fReBase, fRebaseSysfileOk, fGoingDown, CheckImageSize, OldImageSize, OldImageBase, NewImageSize, NewImageBase, TimeStamp);
 end;
 
-var
-  _ReBaseImage64: Pointer;
+type
+  TReBaseImage64 = function (CurrentImageName: PAnsiChar; SymbolPath: PAnsiChar; fReBase: BOOL;
+    fRebaseSysfileOk: BOOL; fGoingDown: BOOL; CheckImageSize: ULONG;
+    var OldImageSize: ULONG; var OldImageBase: TJclAddr64; var NewImageSize: ULONG;
+    var NewImageBase: TJclAddr64; TimeStamp: ULONG): BOOL; stdcall;
 
-function ReBaseImage64;
+var
+  _ReBaseImage64: TReBaseImage64 = nil;
+
+function ReBaseImage64(CurrentImageName: PAnsiChar; SymbolPath: PAnsiChar; fReBase: BOOL;
+  fRebaseSysfileOk: BOOL; fGoingDown: BOOL; CheckImageSize: ULONG;
+  var OldImageSize: ULONG; var OldImageBase: TJclAddr64; var NewImageSize: ULONG;
+  var NewImageBase: TJclAddr64; TimeStamp: ULONG): BOOL;
 begin
-  GetProcedureAddress(_ReBaseImage64, ImageHlpLib, 'ReBaseImage64');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_ReBaseImage64]
-  end;
+  GetProcedureAddress(Pointer(@_ReBaseImage64), ImageHlpLib, 'ReBaseImage64');
+  Result := _ReBaseImage64(CurrentImageName, SymbolPath, fReBase, fRebaseSysfileOk, fGoingDown, CheckImageSize, OldImageSize, OldImageBase, NewImageSize, NewImageBase, TimeStamp);
 end;
 
-var
-  _CheckSumMappedFile: Pointer;
+type
+  TCheckSumMappedFile = function (BaseAddress: Pointer; FileLength: DWORD;
+    out HeaderSum, CheckSum: DWORD): PImageNtHeaders; stdcall;
 
-function CheckSumMappedFile;
+var
+  _CheckSumMappedFile: TCheckSumMappedFile = nil;
+
+function CheckSumMappedFile(BaseAddress: Pointer; FileLength: DWORD;
+  out HeaderSum, CheckSum: DWORD): PImageNtHeaders;
 begin
-  GetProcedureAddress(_CheckSumMappedFile, ImageHlpLib, 'CheckSumMappedFile');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_CheckSumMappedFile]
-  end;
+  GetProcedureAddress(Pointer(@_CheckSumMappedFile), ImageHlpLib, 'CheckSumMappedFile');
+  Result := _CheckSumMappedFile(BaseAddress, FileLength, HeaderSum, CheckSum);
 end;
 
-var
-  _GetImageUnusedHeaderBytes: Pointer;
+type
+  TGetImageUnusedHeaderBytes = function (const LoadedImage: LOADED_IMAGE;
+    var SizeUnusedHeaderBytes: DWORD): DWORD; stdcall;
 
-function GetImageUnusedHeaderBytes;
+var
+  _GetImageUnusedHeaderBytes: TGetImageUnusedHeaderBytes = nil;
+
+function GetImageUnusedHeaderBytes(const LoadedImage: LOADED_IMAGE;
+  var SizeUnusedHeaderBytes: DWORD): DWORD;
 begin
-  GetProcedureAddress(_GetImageUnusedHeaderBytes, ImageHlpLib, 'GetImageUnusedHeaderBytes');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_GetImageUnusedHeaderBytes]
-  end;
+  GetProcedureAddress(Pointer(@_GetImageUnusedHeaderBytes), ImageHlpLib, 'GetImageUnusedHeaderBytes');
+  Result := _GetImageUnusedHeaderBytes(LoadedImage, SizeUnusedHeaderBytes);
 end;
 
-var
-  _MapAndLoad: Pointer;
+type
+  TMapAndLoad = function (ImageName, DllPath: PAnsiChar; var LoadedImage: LOADED_IMAGE;
+    DotDll: BOOL; ReadOnly: BOOL): BOOL; stdcall;
 
-function MapAndLoad;
+var
+  _MapAndLoad: TMapAndLoad = nil;
+
+function MapAndLoad(ImageName, DllPath: PAnsiChar; var LoadedImage: LOADED_IMAGE;
+  DotDll: BOOL; ReadOnly: BOOL): BOOL;
 begin
-  GetProcedureAddress(_MapAndLoad, ImageHlpLib, 'MapAndLoad');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_MapAndLoad]
-  end;
+  GetProcedureAddress(Pointer(@_MapAndLoad), ImageHlpLib, 'MapAndLoad');
+  Result := _MapAndLoad(ImageName, DllPath, LoadedImage, DotDll, ReadOnly);
 end;
 
-var
-  _UnMapAndLoad: Pointer;
+type
+  TUnMapAndLoad = function (const LoadedImage: LOADED_IMAGE): BOOL; stdcall;
 
-function UnMapAndLoad;
+var
+  _UnMapAndLoad: TUnMapAndLoad = nil;
+
+function UnMapAndLoad(const LoadedImage: LOADED_IMAGE): BOOL;
 begin
-  GetProcedureAddress(_UnMapAndLoad, ImageHlpLib, 'UnMapAndLoad');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_UnMapAndLoad]
-  end;
+  GetProcedureAddress(Pointer(@_UnMapAndLoad), ImageHlpLib, 'UnMapAndLoad');
+  Result := _UnMapAndLoad(LoadedImage);
 end;
 
-var
-  _TouchFileTimes: Pointer;
+type
+  TTouchFileTimes = function (const FileHandle: THandle; const pSystemTime: TSystemTime): BOOL; stdcall;
 
-function TouchFileTimes;
+var
+  _TouchFileTimes: TTouchFileTimes = nil;
+
+function TouchFileTimes(const FileHandle: THandle; const pSystemTime: TSystemTime): BOOL;
 begin
-  GetProcedureAddress(_TouchFileTimes, ImageHlpLib, 'TouchFileTimes');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_TouchFileTimes]
-  end;
+  GetProcedureAddress(Pointer(@_TouchFileTimes), ImageHlpLib, 'TouchFileTimes');
+  Result := _TouchFileTimes(FileHandle, pSystemTime);
 end;
 
-var
-  _ImageDirectoryEntryToData: Pointer;
+type
+  TImageDirectoryEntryToData = function (Base: Pointer; MappedAsImage: ByteBool;
+    DirectoryEntry: USHORT; var Size: ULONG): Pointer; stdcall;
 
-function ImageDirectoryEntryToData;
+var
+  _ImageDirectoryEntryToData: TImageDirectoryEntryToData = nil;
+
+function ImageDirectoryEntryToData(Base: Pointer; MappedAsImage: ByteBool;
+  DirectoryEntry: USHORT; var Size: ULONG): Pointer;
 begin
-  GetProcedureAddress(_ImageDirectoryEntryToData, ImageHlpLib, 'ImageDirectoryEntryToData');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_ImageDirectoryEntryToData]
-  end;
+  GetProcedureAddress(Pointer(@_ImageDirectoryEntryToData), ImageHlpLib, 'ImageDirectoryEntryToData');
+  Result := _ImageDirectoryEntryToData(Base, MappedAsImage, DirectoryEntry, Size);
 end;
 
-var
-  _ImageRvaToSection: Pointer;
+type
+  TImageRvaToSection = function (NtHeaders: PImageNtHeaders; Base: Pointer; Rva: ULONG): PImageSectionHeader; stdcall;
 
-function ImageRvaToSection;
+var
+  _ImageRvaToSection: TImageRvaToSection = nil;
+
+function ImageRvaToSection(NtHeaders: PImageNtHeaders; Base: Pointer; Rva: ULONG): PImageSectionHeader;
 begin
-  GetProcedureAddress(_ImageRvaToSection, ImageHlpLib, 'ImageRvaToSection');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_ImageRvaToSection]
-  end;
+  GetProcedureAddress(Pointer(@_ImageRvaToSection), ImageHlpLib, 'ImageRvaToSection');
+  Result := _ImageRvaToSection(NtHeaders, Base, Rva);
 end;
 
-var
-  _ImageRvaToVa: Pointer;
-
-function ImageRvaToVa;
-begin
-  GetProcedureAddress(_ImageRvaToVa, ImageHlpLib, 'ImageRvaToVa');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_ImageRvaToVa]
-  end;
-end;
-
-
-
+type
+  TImageRvaToVa = function (NtHeaders: PImageNtHeaders; Base: Pointer; Rva: ULONG;
+    LastRvaSection: PPImageSectionHeader): Pointer; stdcall;
 
 var
-  _NetUserAdd: Pointer;
+  _ImageRvaToVa: TImageRvaToVa = nil;
 
-function NetUserAdd;
+function ImageRvaToVa(NtHeaders: PImageNtHeaders; Base: Pointer; Rva: ULONG;
+  LastRvaSection: PPImageSectionHeader): Pointer;
 begin
-  GetProcedureAddress(_NetUserAdd, netapi32, 'NetUserAdd');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetUserAdd]
-  end;
-end;
-
-var
-  _NetUserEnum: Pointer;
-
-function NetUserEnum;
-begin
-  GetProcedureAddress(_NetUserEnum, netapi32, 'NetUserEnum');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetUserEnum]
-  end;
-end;
-
-var
-  _NetUserGetInfo: Pointer;
-
-function NetUserGetInfo;
-begin
-  GetProcedureAddress(_NetUserGetInfo, netapi32, 'NetUserGetInfo');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetUserGetInfo]
-  end;
-end;
-
-var
-  _NetUserSetInfo: Pointer;
-
-function NetUserSetInfo;
-begin
-  GetProcedureAddress(_NetUserSetInfo, netapi32, 'NetUserSetInfo');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetUserSetInfo]
-  end;
-end;
-
-var
-  _NetUserDel: Pointer;
-
-function NetUserDel;
-begin
-  GetProcedureAddress(_NetUserDel, netapi32, 'NetUserDel');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetUserDel]
-  end;
-end;
-
-var
-  _NetUserGetGroups: Pointer;
-
-function NetUserGetGroups;
-begin
-  GetProcedureAddress(_NetUserGetGroups, netapi32, 'NetUserGetGroups');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetUserGetGroups]
-  end;
-end;
-
-var
-  _NetUserSetGroups: Pointer;
-
-function NetUserSetGroups;
-begin
-  GetProcedureAddress(_NetUserSetGroups, netapi32, 'NetUserSetGroups');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetUserSetGroups]
-  end;
-end;
-
-var
-  _NetUserGetLocalGroups: Pointer;
-
-function NetUserGetLocalGroups;
-begin
-  GetProcedureAddress(_NetUserGetLocalGroups, netapi32, 'NetUserGetLocalGroups');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetUserGetLocalGroups]
-  end;
-end;
-
-var
-  _NetUserModalsGet: Pointer;
-
-function NetUserModalsGet;
-begin
-  GetProcedureAddress(_NetUserModalsGet, netapi32, 'NetUserModalsGet');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetUserModalsGet]
-  end;
-end;
-
-var
-  _NetUserModalsSet: Pointer;
-
-function NetUserModalsSet;
-begin
-  GetProcedureAddress(_NetUserModalsSet, netapi32, 'NetUserModalsSet');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetUserModalsSet]
-  end;
-end;
-
-var
-  _NetUserChangePassword: Pointer;
-
-function NetUserChangePassword;
-begin
-  GetProcedureAddress(_NetUserChangePassword, netapi32, 'NetUserChangePassword');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetUserChangePassword]
-  end;
-end;
-
-var
-  _NetGroupAdd: Pointer;
-
-function NetGroupAdd;
-begin
-  GetProcedureAddress(_NetGroupAdd, netapi32, 'NetGroupAdd');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetGroupAdd]
-  end;
-end;
-
-var
-  _NetGroupAddUser: Pointer;
-
-function NetGroupAddUser;
-begin
-  GetProcedureAddress(_NetGroupAddUser, netapi32, 'NetGroupAddUser');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetGroupAddUser]
-  end;
-end;
-
-var
-  _NetGroupEnum: Pointer;
-
-function NetGroupEnum;
-begin
-  GetProcedureAddress(_NetGroupEnum, netapi32, 'NetGroupEnum');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetGroupEnum]
-  end;
-end;
-
-var
-  _NetGroupGetInfo: Pointer;
-
-function NetGroupGetInfo;
-begin
-  GetProcedureAddress(_NetGroupGetInfo, netapi32, 'NetGroupGetInfo');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetGroupGetInfo]
-  end;
-end;
-
-var
-  _NetGroupSetInfo: Pointer;
-
-function NetGroupSetInfo;
-begin
-  GetProcedureAddress(_NetGroupSetInfo, netapi32, 'NetGroupSetInfo');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetGroupSetInfo]
-  end;
-end;
-
-var
-  _NetGroupDel: Pointer;
-
-function NetGroupDel;
-begin
-  GetProcedureAddress(_NetGroupDel, netapi32, 'NetGroupDel');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetGroupDel]
-  end;
-end;
-
-var
-  _NetGroupDelUser: Pointer;
-
-function NetGroupDelUser;
-begin
-  GetProcedureAddress(_NetGroupDelUser, netapi32, 'NetGroupDelUser');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetGroupDelUser]
-  end;
-end;
-
-var
-  _NetGroupGetUsers: Pointer;
-
-function NetGroupGetUsers;
-begin
-  GetProcedureAddress(_NetGroupGetUsers, netapi32, 'NetGroupGetUsers');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetGroupGetUsers]
-  end;
-end;
-
-var
-  _NetGroupSetUsers: Pointer;
-
-function NetGroupSetUsers;
-begin
-  GetProcedureAddress(_NetGroupSetUsers, netapi32, 'NetGroupSetUsers');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetGroupSetUsers]
-  end;
-end;
-
-var
-  _NetLocalGroupAdd: Pointer;
-
-function NetLocalGroupAdd;
-begin
-  GetProcedureAddress(_NetLocalGroupAdd, netapi32, 'NetLocalGroupAdd');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetLocalGroupAdd]
-  end;
-end;
-
-var
-  _NetLocalGroupAddMember: Pointer;
-
-function NetLocalGroupAddMember;
-begin
-  GetProcedureAddress(_NetLocalGroupAddMember, netapi32, 'NetLocalGroupAddMember');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetLocalGroupAddMember]
-  end;
-end;
-
-var
-  _NetLocalGroupEnum: Pointer;
-
-function NetLocalGroupEnum;
-begin
-  GetProcedureAddress(_NetLocalGroupEnum, netapi32, 'NetLocalGroupEnum');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetLocalGroupEnum]
-  end;
-end;
-
-var
-  _NetLocalGroupGetInfo: Pointer;
-
-function NetLocalGroupGetInfo;
-begin
-  GetProcedureAddress(_NetLocalGroupGetInfo, netapi32, 'NetLocalGroupGetInfo');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetLocalGroupGetInfo]
-  end;
-end;
-
-var
-  _NetLocalGroupSetInfo: Pointer;
-
-function NetLocalGroupSetInfo;
-begin
-  GetProcedureAddress(_NetLocalGroupSetInfo, netapi32, 'NetLocalGroupSetInfo');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetLocalGroupSetInfo]
-  end;
-end;
-
-var
-  _NetLocalGroupDel: Pointer;
-
-function NetLocalGroupDel;
-begin
-  GetProcedureAddress(_NetLocalGroupDel, netapi32, 'NetLocalGroupDel');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetLocalGroupDel]
-  end;
-end;
-
-var
-  _NetLocalGroupDelMember: Pointer;
-
-function NetLocalGroupDelMember;
-begin
-  GetProcedureAddress(_NetLocalGroupDelMember, netapi32, 'NetLocalGroupDelMember');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetLocalGroupDelMember]
-  end;
-end;
-
-var
-  _NetLocalGroupGetMembers: Pointer;
-
-function NetLocalGroupGetMembers;
-begin
-  GetProcedureAddress(_NetLocalGroupGetMembers, netapi32, 'NetLocalGroupGetMembers');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetLocalGroupGetMembers]
-  end;
-end;
-
-var
-  _NetLocalGroupSetMembers: Pointer;
-
-function NetLocalGroupSetMembers;
-begin
-  GetProcedureAddress(_NetLocalGroupSetMembers, netapi32, 'NetLocalGroupSetMembers');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetLocalGroupSetMembers]
-  end;
-end;
-
-var
-  _NetLocalGroupAddMembers: Pointer;
-
-function NetLocalGroupAddMembers;
-begin
-  GetProcedureAddress(_NetLocalGroupAddMembers, netapi32, 'NetLocalGroupAddMembers');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetLocalGroupAddMembers]
-  end;
-end;
-
-var
-  _NetLocalGroupDelMembers: Pointer;
-
-function NetLocalGroupDelMembers;
-begin
-  GetProcedureAddress(_NetLocalGroupDelMembers, netapi32, 'NetLocalGroupDelMembers');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetLocalGroupDelMembers]
-  end;
+  GetProcedureAddress(Pointer(@_ImageRvaToVa), ImageHlpLib, 'ImageRvaToVa');
+  Result := _ImageRvaToVa(NtHeaders, Base, Rva, LastRvaSection);
 end;
 
 
 
-var
-  _NetApiBufferFree: Pointer;
 
-function NetApiBufferFree;
+type
+  TNetUserAdd = function (servername: LPCWSTR; level: DWORD; buf: PByte; parm_err: LPDWORD): NET_API_STATUS; stdcall;
+var
+  _NetUserAdd: TNetUserAdd = nil;
+
+function NetUserAdd(servername: LPCWSTR; level: DWORD; buf: PByte; parm_err: LPDWORD): NET_API_STATUS;
 begin
-  GetProcedureAddress(_NetApiBufferFree, netapi32, 'NetApiBufferFree');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_NetApiBufferFree]
-  end;
+  GetProcedureAddress(Pointer(@_NetUserAdd), netapi32, 'NetUserAdd');
+  Result := _NetUserAdd(servername, level, buf, parm_err);
+end;
+
+type
+  TNetUserEnum = function (servername: LPCWSTR; level, filter: DWORD; var bufptr: PByte; prefmaxlen: DWORD; entriesread, totalentries, resume_handle: LPDWORD): NET_API_STATUS; stdcall;
+
+var
+  _NetUserEnum: TNetUserEnum = nil;
+
+function NetUserEnum(servername: LPCWSTR; level, filter: DWORD; var bufptr: PByte; prefmaxlen: DWORD; entriesread, totalentries, resume_handle: LPDWORD): NET_API_STATUS;
+begin
+  GetProcedureAddress(Pointer(@_NetUserEnum), netapi32, 'NetUserEnum');
+  Result := _NetUserEnum(servername, level, filter, bufptr, prefmaxlen, entriesread, totalentries, resume_handle);
+end;
+
+type
+  TNetUserGetInfo = function (servername, username: LPCWSTR; level: DWORD; var bufptr: PByte): NET_API_STATUS; stdcall;
+
+var
+  _NetUserGetInfo: TNetUserGetInfo = nil;
+
+function NetUserGetInfo(servername, username: LPCWSTR; level: DWORD; var bufptr: PByte): NET_API_STATUS;
+begin
+  GetProcedureAddress(Pointer(@_NetUserGetInfo), netapi32, 'NetUserGetInfo');
+  Result := _NetUserGetInfo(servername, username, level, bufptr);
+end;
+
+type
+  TNetUserSetInfo = function (servername, username: LPCWSTR; level: DWORD; buf: PByte; parm_err: LPDWORD): NET_API_STATUS; stdcall;
+
+var
+  _NetUserSetInfo: TNetUserSetInfo = nil;
+
+function NetUserSetInfo(servername, username: LPCWSTR; level: DWORD; buf: PByte; parm_err: LPDWORD): NET_API_STATUS;
+begin
+  GetProcedureAddress(Pointer(@_NetUserSetInfo), netapi32, 'NetUserSetInfo');
+  Result := _NetUserSetInfo(servername, username, level, buf, parm_err);
+end;
+
+type
+  TNetUserDel = function (servername: LPCWSTR; username: LPCWSTR): NET_API_STATUS; stdcall;
+
+var
+  _NetUserDel: TNetUserDel = nil;
+
+function NetUserDel(servername: LPCWSTR; username: LPCWSTR): NET_API_STATUS;
+begin
+  GetProcedureAddress(Pointer(@_NetUserDel), netapi32, 'NetUserDel');
+  Result := _NetUserDel(servername, username);
+end;
+
+type
+  TNetUserGetGroups = function (servername, username: LPCWSTR; level: DWORD; var bufptr: PByte; prefmaxlen: DWORD; entriesread, totalentries: LPDWORD): NET_API_STATUS; stdcall;
+
+var
+  _NetUserGetGroups: TNetUserGetGroups = nil;
+
+function NetUserGetGroups(servername, username: LPCWSTR; level: DWORD; var bufptr: PByte; prefmaxlen: DWORD; entriesread, totalentries: LPDWORD): NET_API_STATUS;
+begin
+  GetProcedureAddress(Pointer(@_NetUserGetGroups), netapi32, 'NetUserGetGroups');
+  Result := _NetUserGetGroups(servername, username, level, bufptr, prefmaxlen, entriesread, totalentries);
+end;
+
+type
+  TNetUserSetGroups = function (servername, username: LPCWSTR; level: DWORD; buf: PByte; num_entries: DWORD): NET_API_STATUS; stdcall;
+
+var
+  _NetUserSetGroups: TNetUserSetGroups = nil;
+
+function NetUserSetGroups(servername, username: LPCWSTR; level: DWORD; buf: PByte; num_entries: DWORD): NET_API_STATUS;
+begin
+  GetProcedureAddress(Pointer(@_NetUserSetGroups), netapi32, 'NetUserSetGroups');
+  Result := _NetUserSetGroups(servername, username, level, buf, num_entries);
+end;
+
+type
+  TNetUserGetLocalGroups = function (servername, username: LPCWSTR; level, flags: DWORD; var bufptr: PByte; prefmaxlen: DWORD; entriesread, totalentries: LPDWORD): NET_API_STATUS; stdcall;
+
+var
+  _NetUserGetLocalGroups: TNetUserGetLocalGroups = nil;
+
+function NetUserGetLocalGroups(servername, username: LPCWSTR; level, flags: DWORD; var bufptr: PByte; prefmaxlen: DWORD; entriesread, totalentries: LPDWORD): NET_API_STATUS;
+begin
+  GetProcedureAddress(Pointer(@_NetUserGetLocalGroups), netapi32, 'NetUserGetLocalGroups');
+  Result := _NetUserGetLocalGroups(servername, username, level, flags, bufptr, prefmaxlen, entriesread, totalentries);
+end;
+
+type
+ TNetUserModalsGet = function (servername: LPCWSTR; level: DWORD; var bufptr: PByte): NET_API_STATUS; stdcall;
+
+var
+  _NetUserModalsGet: TNetUserModalsGet = nil;
+
+function NetUserModalsGet(servername: LPCWSTR; level: DWORD; var bufptr: PByte): NET_API_STATUS;
+begin
+  GetProcedureAddress(Pointer(@_NetUserModalsGet), netapi32, 'NetUserModalsGet');
+  Result := _NetUserModalsGet(servername, level, bufptr);
+end;
+
+type
+  TNetUserModalsSet = function (servername: LPCWSTR; level: DWORD; buf: PByte; parm_err: LPDWORD): NET_API_STATUS; stdcall;
+
+var
+  _NetUserModalsSet: TNetUserModalsSet = nil;
+
+function NetUserModalsSet(servername: LPCWSTR; level: DWORD; buf: PByte; parm_err: LPDWORD): NET_API_STATUS;
+begin
+  GetProcedureAddress(Pointer(@_NetUserModalsSet), netapi32, 'NetUserModalsSet');
+  Result := _NetUserModalsSet(servername, level, buf, parm_err);
+end;
+
+type
+ TNetUserChangePassword = function (domainname, username, oldpassword, newpassword: LPCWSTR): NET_API_STATUS; stdcall;
+
+var
+  _NetUserChangePassword: TNetUserChangePassword = nil;
+
+function NetUserChangePassword(domainname, username, oldpassword, newpassword: LPCWSTR): NET_API_STATUS;
+begin
+  GetProcedureAddress(Pointer(@_NetUserChangePassword), netapi32, 'NetUserChangePassword');
+  Result := _NetUserChangePassword(domainname, username, oldpassword, newpassword);
+end;
+
+type
+  TNetGroupAdd = function (servername: LPCWSTR; level: DWORD; buf: PByte; parm_err: LPDWORD): NET_API_STATUS; stdcall;
+
+var
+  _NetGroupAdd: TNetGroupAdd = nil;
+
+function NetGroupAdd(servername: LPCWSTR; level: DWORD; buf: PByte; parm_err: LPDWORD): NET_API_STATUS;
+begin
+  GetProcedureAddress(Pointer(@_NetGroupAdd), netapi32, 'NetGroupAdd');
+  Result := _NetGroupAdd(servername, level, buf, parm_err);
+end;
+
+type
+  TNetGroupAddUser = function (servername, GroupName, username: LPCWSTR): NET_API_STATUS; stdcall;
+
+var
+  _NetGroupAddUser: TNetGroupAddUser = nil;
+
+function NetGroupAddUser(servername, GroupName, username: LPCWSTR): NET_API_STATUS;
+begin
+  GetProcedureAddress(Pointer(@_NetGroupAddUser), netapi32, 'NetGroupAddUser');
+  Result := _NetGroupAddUser(servername, GroupName, username);
+end;
+
+type
+  TNetGroupEnum = function (servername: LPCWSTR; level: DWORD; out bufptr: PByte;
+    prefmaxlen: DWORD; out entriesread, totalentries: DWORD; resume_handle: PDWORD_PTR): NET_API_STATUS; stdcall;
+
+var
+  _NetGroupEnum: TNetGroupEnum = nil;
+
+function NetGroupEnum(servername: LPCWSTR; level: DWORD; out bufptr: PByte;
+  prefmaxlen: DWORD; out entriesread, totalentries: DWORD; resume_handle: PDWORD_PTR): NET_API_STATUS;
+begin
+  GetProcedureAddress(Pointer(@_NetGroupEnum), netapi32, 'NetGroupEnum');
+  Result := _NetGroupEnum(servername, level, bufptr, prefmaxlen, entriesread, totalentries, resume_handle);
+end;
+
+type
+  TNetGroupGetInfo = function (servername, groupname: LPCWSTR; level: DWORD; bufptr: PByte): NET_API_STATUS; stdcall;
+
+var
+  _NetGroupGetInfo: TNetGroupGetInfo = nil;
+
+function NetGroupGetInfo(servername, groupname: LPCWSTR; level: DWORD; bufptr: PByte): NET_API_STATUS;
+begin
+  GetProcedureAddress(Pointer(@_NetGroupGetInfo), netapi32, 'NetGroupGetInfo');
+  Result := _NetGroupGetInfo(servername, groupname, level, bufptr);
+end;
+
+type
+  TNetGroupSetInfo = function (servername, groupname: LPCWSTR; level: DWORD; buf: PByte; parm_err: LPDWORD): NET_API_STATUS; stdcall;
+
+var
+  _NetGroupSetInfo: TNetGroupSetInfo = nil;
+
+function NetGroupSetInfo(servername, groupname: LPCWSTR; level: DWORD; buf: PByte; parm_err: LPDWORD): NET_API_STATUS;
+begin
+  GetProcedureAddress(Pointer(@_NetGroupSetInfo), netapi32, 'NetGroupSetInfo');
+  Result := _NetGroupSetInfo(servername, groupname, level, buf, parm_err);
+end;
+
+type
+  TNetGroupDel = function (servername: LPCWSTR; groupname: LPCWSTR): NET_API_STATUS; stdcall;
+
+var
+  _NetGroupDel: TNetGroupDel = nil;
+
+function NetGroupDel(servername: LPCWSTR; groupname: LPCWSTR): NET_API_STATUS;
+begin
+  GetProcedureAddress(Pointer(@_NetGroupDel), netapi32, 'NetGroupDel');
+  Result := _NetGroupDel(servername, groupname);
+end;
+
+type
+  TNetGroupDelUser = function (servername: LPCWSTR; GroupName: LPCWSTR; Username: LPCWSTR): NET_API_STATUS; stdcall;
+
+var
+  _NetGroupDelUser: TNetGroupDelUser = nil;
+
+function NetGroupDelUser(servername: LPCWSTR; GroupName: LPCWSTR; Username: LPCWSTR): NET_API_STATUS;
+begin
+  GetProcedureAddress(Pointer(@_NetGroupDelUser), netapi32, 'NetGroupDelUser');
+  Result := _NetGroupDelUser(servername, GroupName, Username);
+end;
+
+type
+  TNetGroupGetUsers = function (servername, groupname: LPCWSTR; level: DWORD; var bufptr: PByte; prefmaxlen: DWORD; entriesread, totalentries: LPDWORD; ResumeHandle: PDWORD_PTR): NET_API_STATUS; stdcall;
+
+var
+  _NetGroupGetUsers: TNetGroupGetUsers = nil;
+
+function NetGroupGetUsers(servername, groupname: LPCWSTR; level: DWORD; var bufptr: PByte; prefmaxlen: DWORD; entriesread, totalentries: LPDWORD; ResumeHandle: PDWORD_PTR): NET_API_STATUS;
+begin
+  GetProcedureAddress(Pointer(@_NetGroupGetUsers), netapi32, 'NetGroupGetUsers');
+  Result := _NetGroupGetUsers(servername, groupname, level, bufptr, prefmaxlen, entriesread, totalentries, ResumeHandle);
+end;
+
+type
+  TNetGroupSetUsers = function (servername, groupname: LPCWSTR; level: DWORD; buf: PByte; totalentries: DWORD): NET_API_STATUS; stdcall;
+
+var
+  _NetGroupSetUsers: TNetGroupSetUsers = nil;
+
+function NetGroupSetUsers(servername, groupname: LPCWSTR; level: DWORD; buf: PByte; totalentries: DWORD): NET_API_STATUS;
+begin
+  GetProcedureAddress(Pointer(@_NetGroupSetUsers), netapi32, 'NetGroupSetUsers');
+  Result := _NetGroupSetUsers(servername, groupname, level, buf, totalentries);
+end;
+
+type
+  TNetLocalGroupAdd = function (servername: LPCWSTR; level: DWORD; buf: PByte; parm_err: LPDWORD): NET_API_STATUS; stdcall;
+
+var
+  _NetLocalGroupAdd: TNetLocalGroupAdd = nil;
+
+function NetLocalGroupAdd(servername: LPCWSTR; level: DWORD; buf: PByte; parm_err: LPDWORD): NET_API_STATUS;
+begin
+  GetProcedureAddress(Pointer(@_NetLocalGroupAdd), netapi32, 'NetLocalGroupAdd');
+  Result := _NetLocalGroupAdd(servername, level, buf, parm_err);
+end;
+
+type
+  TNetLocalGroupAddMember = function (servername, groupname: LPCWSTR; membersid: PSID): NET_API_STATUS; stdcall;
+
+var
+  _NetLocalGroupAddMember: TNetLocalGroupAddMember = nil;
+
+function NetLocalGroupAddMember(servername, groupname: LPCWSTR; membersid: PSID): NET_API_STATUS;
+begin
+  GetProcedureAddress(Pointer(@_NetLocalGroupAddMember), netapi32, 'NetLocalGroupAddMember');
+  Result := _NetLocalGroupAddMember(servername, groupname, membersid);
+end;
+
+type
+  TNetLocalGroupEnum = function (servername: LPCWSTR; level: DWORD; out bufptr: PByte;
+    prefmaxlen: DWORD; out entriesread, totalentries: DWORD; resumehandle: PDWORD_PTR): NET_API_STATUS; stdcall;
+
+var
+  _NetLocalGroupEnum: TNetLocalGroupEnum = nil;
+
+function NetLocalGroupEnum(servername: LPCWSTR; level: DWORD; out bufptr: PByte;
+  prefmaxlen: DWORD; out entriesread, totalentries: DWORD; resumehandle: PDWORD_PTR): NET_API_STATUS;
+begin
+  GetProcedureAddress(Pointer(@_NetLocalGroupEnum), netapi32, 'NetLocalGroupEnum');
+  Result := _NetLocalGroupEnum(servername, level, bufptr, prefmaxlen, entriesread, totalentries, resumehandle);
+end;
+
+type
+  TNetLocalGroupGetInfo = function (servername, groupname: LPCWSTR; level: DWORD; var bufptr: PByte): NET_API_STATUS; stdcall;
+
+var
+  _NetLocalGroupGetInfo: TNetLocalGroupGetInfo = nil;
+
+function NetLocalGroupGetInfo(servername, groupname: LPCWSTR; level: DWORD; var bufptr: PByte): NET_API_STATUS;
+begin
+  GetProcedureAddress(Pointer(@_NetLocalGroupGetInfo), netapi32, 'NetLocalGroupGetInfo');
+  Result := _NetLocalGroupGetInfo(servername, groupname, level, bufptr);
+end;
+
+type
+  TNetLocalGroupSetInfo = function (servername, groupname: LPCWSTR; level: DWORD; buf: PByte; parm_err: LPDWORD): NET_API_STATUS; stdcall;
+
+var
+  _NetLocalGroupSetInfo: TNetLocalGroupSetInfo = nil;
+
+function NetLocalGroupSetInfo(servername, groupname: LPCWSTR; level: DWORD; buf: PByte; parm_err: LPDWORD): NET_API_STATUS;
+begin
+  GetProcedureAddress(Pointer(@_NetLocalGroupSetInfo), netapi32, 'NetLocalGroupSetInfo');
+  Result := _NetLocalGroupSetInfo(servername, groupname, level, buf, parm_err);
+end;
+
+type
+  TNetLocalGroupDel = function (servername: LPCWSTR; groupname: LPCWSTR): NET_API_STATUS; stdcall;
+
+var
+  _NetLocalGroupDel: TNetLocalGroupDel = nil;
+
+function NetLocalGroupDel(servername: LPCWSTR; groupname: LPCWSTR): NET_API_STATUS;
+begin
+  GetProcedureAddress(Pointer(@_NetLocalGroupDel), netapi32, 'NetLocalGroupDel');
+  Result := _NetLocalGroupDel(servername, groupname);
+end;
+
+type
+  TNetLocalGroupDelMember = function (servername: LPCWSTR; groupname: LPCWSTR; membersid: PSID): NET_API_STATUS; stdcall;
+
+var
+  _NetLocalGroupDelMember: TNetLocalGroupDelMember = nil;
+
+function NetLocalGroupDelMember(servername: LPCWSTR; groupname: LPCWSTR; membersid: PSID): NET_API_STATUS;
+begin
+  GetProcedureAddress(Pointer(@_NetLocalGroupDelMember), netapi32, 'NetLocalGroupDelMember');
+  Result := _NetLocalGroupDelMember(servername, groupname, membersid);
+end;
+
+type
+  TNetLocalGroupGetMembers = function (servername, localgroupname: LPCWSTR; level: DWORD; var bufptr: PByte; prefmaxlen: DWORD; entriesread, totalentries: LPDWORD; resumehandle: PDWORD_PTR): NET_API_STATUS; stdcall;
+
+var
+  _NetLocalGroupGetMembers: TNetLocalGroupGetMembers = nil;
+
+function NetLocalGroupGetMembers(servername, localgroupname: LPCWSTR; level: DWORD; var bufptr: PByte; prefmaxlen: DWORD; entriesread, totalentries: LPDWORD; resumehandle: PDWORD_PTR): NET_API_STATUS;
+begin
+  GetProcedureAddress(Pointer(@_NetLocalGroupGetMembers), netapi32, 'NetLocalGroupGetMembers');
+  Result := _NetLocalGroupGetMembers(servername, localgroupname, level, bufptr, prefmaxlen, entriesread, totalentries, resumehandle);
+end;
+
+type
+  TNetLocalGroupSetMembers = function (servername, groupname: LPCWSTR; level: DWORD; buf: PByte; totalentries: DWORD): NET_API_STATUS; stdcall;
+
+var
+  _NetLocalGroupSetMembers: TNetLocalGroupSetMembers = nil;
+
+function NetLocalGroupSetMembers(servername, groupname: LPCWSTR; level: DWORD; buf: PByte; totalentries: DWORD): NET_API_STATUS;
+begin
+  GetProcedureAddress(Pointer(@_NetLocalGroupSetMembers), netapi32, 'NetLocalGroupSetMembers');
+  Result := _NetLocalGroupSetMembers(servername, groupname, level, buf, totalentries);
+end;
+
+type
+  TNetLocalGroupAddMembers = function (servername, groupname: LPCWSTR; level: DWORD; buf: PByte; totalentries: DWORD): NET_API_STATUS; stdcall;
+
+var
+  _NetLocalGroupAddMembers: TNetLocalGroupAddMembers = nil;
+
+function NetLocalGroupAddMembers(servername, groupname: LPCWSTR; level: DWORD; buf: PByte; totalentries: DWORD): NET_API_STATUS;
+begin
+  GetProcedureAddress(Pointer(@_NetLocalGroupAddMembers), netapi32, 'NetLocalGroupAddMembers');
+  Result := _NetLocalGroupAddMembers(servername, groupname, level, buf, totalentries);
+end;
+
+type
+  TNetLocalGroupDelMembers = function (servername, groupname: LPCWSTR; level: DWORD; buf: PByte; totalentries: DWORD): NET_API_STATUS; stdcall;
+
+var
+  _NetLocalGroupDelMembers: TNetLocalGroupDelMembers = nil;
+
+function NetLocalGroupDelMembers(servername, groupname: LPCWSTR; level: DWORD; buf: PByte; totalentries: DWORD): NET_API_STATUS;
+begin
+  GetProcedureAddress(Pointer(@_NetLocalGroupDelMembers), netapi32, 'NetLocalGroupDelMembers');
+  Result := _NetLocalGroupDelMembers(servername, groupname, level, buf, totalentries);
 end;
 
 
 
-var
-  _Netbios: Pointer;
+type
+  TNetApiBufferFree = function (Buffer: Pointer): NET_API_STATUS; stdcall;
 
-function Netbios;
+var
+  _NetApiBufferFree: TNetApiBufferFree = nil;
+
+function NetApiBufferFree(Buffer: Pointer): NET_API_STATUS;
 begin
-  GetProcedureAddress(_Netbios, 'netapi32.dll', 'Netbios');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_Netbios]
-  end;
+  GetProcedureAddress(Pointer(@_NetApiBufferFree), netapi32, 'NetApiBufferFree');
+  Result := _NetApiBufferFree(Buffer);
 end;
 
 
 
+type
+  TNetbios = function (pncb: PNCB): UCHAR; stdcall;
 var
-  _BackupSeek: Pointer;
+  _Netbios: TNetbios = nil;
 
-function BackupSeek;
+function Netbios(pncb: PNCB): UCHAR;
 begin
-  GetProcedureAddress(_BackupSeek, kernel32, 'BackupSeek');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_BackupSeek]
-  end;
+  GetProcedureAddress(Pointer(@_Netbios), 'netapi32.dll', 'Netbios');
+  Result := _Netbios(pncb);
 end;
 
-var
-  _AdjustTokenPrivileges: Pointer;
 
-function AdjustTokenPrivileges;
+
+type
+  TBackupSeek = function (hFile: THandle; dwLowBytesToSeek, dwHighBytesToSeek: DWORD;
+    out lpdwLowByteSeeked, lpdwHighByteSeeked: DWORD;
+    var lpContext: Pointer): BOOL; stdcall;
+
+var
+  _BackupSeek: TBackupSeek = nil;
+
+function BackupSeek(hFile: THandle; dwLowBytesToSeek, dwHighBytesToSeek: DWORD;
+  out lpdwLowByteSeeked, lpdwHighByteSeeked: DWORD;
+  var lpContext: Pointer): BOOL;
 begin
-  GetProcedureAddress(_AdjustTokenPrivileges, advapi32, 'AdjustTokenPrivileges');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_AdjustTokenPrivileges]
-  end;
+  GetProcedureAddress(Pointer(@_BackupSeek), kernel32, 'BackupSeek');
+  Result := _BackupSeek(hFile, dwLowBytesToSeek, dwHighBytesToSeek, lpdwLowByteSeeked, lpdwHighByteSeeked, lpContext);
+end;
+
+type
+  TAdjustTokenPrivileges = function (TokenHandle: THandle; DisableAllPrivileges: BOOL;
+    const NewState: TTokenPrivileges; BufferLength: DWORD;
+    PreviousState: PTokenPrivileges;
+    ReturnLength: PDWORD
+    ): BOOL; stdcall;
+
+var
+  _AdjustTokenPrivileges: TAdjustTokenPrivileges = nil;
+
+function AdjustTokenPrivileges(TokenHandle: THandle; DisableAllPrivileges: BOOL;
+  const NewState: TTokenPrivileges; BufferLength: DWORD;
+  PreviousState: PTokenPrivileges;
+  ReturnLength: PDWORD
+  ): BOOL;
+begin
+  GetProcedureAddress(Pointer(@_AdjustTokenPrivileges), advapi32, 'AdjustTokenPrivileges');
+  Result := _AdjustTokenPrivileges(TokenHandle, DisableAllPrivileges, NewState, BufferLength, PreviousState, ReturnLength);
 end;
 
 function CreateMutex(lpMutexAttributes: PSecurityAttributes; bInitialOwner: DWORD; lpName: PChar): THandle; stdcall;
@@ -8170,307 +8249,313 @@ function GetVersionEx(var lpVersionInformation: TOSVersionInfoEx): BOOL; stdcall
 function GetVersionEx(lpVersionInformation: POSVersionInfoEx): BOOL; stdcall;
   external kernel32 name 'GetVersionEx' + AWSuffix;
 
-var
-  _SetWaitableTimer: Pointer;
+type
+  TSetWaitableTimer = function (hTimer: THandle; var lpDueTime: TLargeInteger;
+    lPeriod: Longint; pfnCompletionRoutine: TFNTimerAPCRoutine;
+    lpArgToCompletionRoutine: Pointer; fResume: BOOL): BOOL; stdcall;
 
-function SetWaitableTimer;
-begin
-  GetProcedureAddress(_SetWaitableTimer, kernel32, 'SetWaitableTimer');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_SetWaitableTimer]
-  end;
-end;
 var
-  _SetFileSecurityA: Pointer;
+  _SetWaitableTimer: TSetWaitableTimer = nil;
 
-function SetFileSecurityA;
+function SetWaitableTimer(hTimer: THandle; var lpDueTime: TLargeInteger;
+  lPeriod: Longint; pfnCompletionRoutine: TFNTimerAPCRoutine;
+  lpArgToCompletionRoutine: Pointer; fResume: BOOL): BOOL;
 begin
-  GetProcedureAddress(_SetFileSecurityA, advapi32, 'SetFileSecurityA');
-  asm
-        MOV     ESP, EBP
-        POP     EBP
-        JMP     [_SetFileSecurityA]
-  end;
+  GetProcedureAddress(Pointer(@_SetWaitableTimer), kernel32, 'SetWaitableTimer');
+  Result := _SetWaitableTimer(hTimer, lpDueTime, lPeriod, pfnCompletionRoutine, lpArgToCompletionRoutine, fResume);
 end;
 
+type
+  TSetFileSecurityA = function (lpFileName: LPCSTR; SecurityInformation: SECURITY_INFORMATION;
+    pSecurityDescriptor: PSECURITY_DESCRIPTOR): BOOL; stdcall;
 var
-  _SetFileSecurityW: Pointer;
+  _SetFileSecurityA: TSetFileSecurityA = nil;
 
-function SetFileSecurityW;
+function SetFileSecurityA(lpFileName: LPCSTR; SecurityInformation: SECURITY_INFORMATION;
+  pSecurityDescriptor: PSECURITY_DESCRIPTOR): BOOL;
 begin
-  GetProcedureAddress(_SetFileSecurityW, advapi32, 'SetFileSecurityW');
-  asm
-        MOV     ESP, EBP
-        POP     EBP
-        JMP     [_SetFileSecurityW]
-  end;
+  GetProcedureAddress(Pointer(@_SetFileSecurityA), advapi32, 'SetFileSecurityA');
+  Result := _SetFileSecurityA(lpFileName, SecurityInformation, pSecurityDescriptor);
 end;
 
-var
-  _SetFileSecurity: Pointer;
+type
+  TSetFileSecurityW = function (lpFileName: LPCWSTR; SecurityInformation: SECURITY_INFORMATION;
+    pSecurityDescriptor: PSECURITY_DESCRIPTOR): BOOL; stdcall;
 
-function SetFileSecurity;
+var
+  _SetFileSecurityW: TSetFileSecurityW = nil;
+
+function SetFileSecurityW(lpFileName: LPCWSTR; SecurityInformation: SECURITY_INFORMATION;
+  pSecurityDescriptor: PSECURITY_DESCRIPTOR): BOOL;
 begin
-  GetProcedureAddress(_SetFileSecurity, advapi32, 'SetFileSecurity' + AWSuffix);
-  asm
-        MOV     ESP, EBP
-        POP     EBP
-        JMP     [_SetFileSecurity]
-  end;
+  GetProcedureAddress(Pointer(@_SetFileSecurityW), advapi32, 'SetFileSecurityW');
+  Result := _SetFileSecurityW(lpFileName, SecurityInformation, pSecurityDescriptor);
 end;
 
-var
-  _GetFileSecurityA: Pointer;
+type
+  TSetFileSecurity = function (lpFileName: LPCTSTR; SecurityInformation: SECURITY_INFORMATION;
+    pSecurityDescriptor: PSECURITY_DESCRIPTOR): BOOL; stdcall;
 
-function GetFileSecurityA;
+var
+  _SetFileSecurity: TSetFileSecurity = nil;
+
+function SetFileSecurity(lpFileName: LPCTSTR; SecurityInformation: SECURITY_INFORMATION;
+  pSecurityDescriptor: PSECURITY_DESCRIPTOR): BOOL;
 begin
-  GetProcedureAddress(_GetFileSecurityA, advapi32, 'GetFileSecurityA');
-  asm
-        MOV     ESP, EBP
-        POP     EBP
-        JMP     [_GetFileSecurityA]
-  end;
+  GetProcedureAddress(Pointer(@_SetFileSecurity), advapi32, 'SetFileSecurity' + AWSuffix);
+  Result := _SetFileSecurity(lpFileName, SecurityInformation, pSecurityDescriptor);
 end;
 
-var
-  _GetFileSecurityW: Pointer;
+type
+  TGetFileSecurityA = function (lpFileName: LPCSTR; RequestedInformation: SECURITY_INFORMATION;
+    pSecurityDescriptor: PSECURITY_DESCRIPTOR; nLength: DWORD;
+    var lpnLengthNeeded: DWORD): BOOL; stdcall;
 
-function GetFileSecurityW;
+var
+  _GetFileSecurityA: TGetFileSecurityA = nil;
+
+function GetFileSecurityA(lpFileName: LPCSTR; RequestedInformation: SECURITY_INFORMATION;
+  pSecurityDescriptor: PSECURITY_DESCRIPTOR; nLength: DWORD;
+  var lpnLengthNeeded: DWORD): BOOL;
 begin
-  GetProcedureAddress(_GetFileSecurityW, advapi32, 'GetFileSecurityW');
-  asm
-        MOV     ESP, EBP
-        POP     EBP
-        JMP     [_GetFileSecurityW]
-  end;
+  GetProcedureAddress(Pointer(@_GetFileSecurityA), advapi32, 'GetFileSecurityA');
+  Result := _GetFileSecurityA(lpFileName, RequestedInformation, pSecurityDescriptor, nLength, lpnLengthNeeded);
 end;
 
-var
-  _GetFileSecurity: Pointer;
+type
+  TGetFileSecurityW = function (lpFileName: LPCWSTR; RequestedInformation: SECURITY_INFORMATION;
+    pSecurityDescriptor: PSECURITY_DESCRIPTOR; nLength: DWORD;
+    var lpnLengthNeeded: DWORD): BOOL; stdcall;
 
-function GetFileSecurity;
+var
+  _GetFileSecurityW: TGetFileSecurityW = nil;
+
+function GetFileSecurityW(lpFileName: LPCWSTR; RequestedInformation: SECURITY_INFORMATION;
+  pSecurityDescriptor: PSECURITY_DESCRIPTOR; nLength: DWORD;
+  var lpnLengthNeeded: DWORD): BOOL;
 begin
-  GetProcedureAddress(_GetFileSecurity, advapi32, 'GetFileSecurity' + AWSuffix);
-  asm
-        MOV     ESP, EBP
-        POP     EBP
-        JMP     [_GetFileSecurity]
-  end;
+  GetProcedureAddress(Pointer(@_GetFileSecurityW), advapi32, 'GetFileSecurityW');
+  Result := _GetFileSecurityW(lpFileName, RequestedInformation, pSecurityDescriptor, nLength, lpnLengthNeeded);
 end;
 
-var
-  _SetVolumeMountPointW: Pointer;
+type
+  TGetFileSecurity = function (lpFileName: LPCTSTR; RequestedInformation: SECURITY_INFORMATION;
+    pSecurityDescriptor: PSECURITY_DESCRIPTOR; nLength: DWORD;
+    var lpnLengthNeeded: DWORD): BOOL; stdcall;
 
-function SetVolumeMountPointW;
+var
+  _GetFileSecurity: TGetFileSecurity = nil;
+
+function GetFileSecurity(lpFileName: LPCTSTR; RequestedInformation: SECURITY_INFORMATION;
+  pSecurityDescriptor: PSECURITY_DESCRIPTOR; nLength: DWORD;
+  var lpnLengthNeeded: DWORD): BOOL;
 begin
-  GetProcedureAddress(_SetVolumeMountPointW, kernel32, 'SetVolumeMountPointW');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_SetVolumeMountPointW]
-  end;
+  GetProcedureAddress(Pointer(@_GetFileSecurity), advapi32, 'GetFileSecurity' + AWSuffix);
+  Result := _GetFileSecurity(lpFileName, RequestedInformation, pSecurityDescriptor, nLength, lpnLengthNeeded);
 end;
 
-var
-  _DeleteVolumeMountPointW: Pointer;
+type
+  TSetVolumeMountPointW = function (lpszVolumeMountPoint, lpszVolumeName: LPCWSTR): BOOL; stdcall;
 
-function DeleteVolumeMountPointW;
+var
+  _SetVolumeMountPointW: TSetVolumeMountPointW = nil;
+
+function SetVolumeMountPointW(lpszVolumeMountPoint, lpszVolumeName: LPCWSTR): BOOL;
 begin
-  GetProcedureAddress(_DeleteVolumeMountPointW, kernel32, 'DeleteVolumeMountPointW');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_DeleteVolumeMountPointW]
-  end;
+  GetProcedureAddress(Pointer(@_SetVolumeMountPointW), kernel32, 'SetVolumeMountPointW');
+  Result := _SetVolumeMountPointW(lpszVolumeMountPoint, lpszVolumeName);
 end;
 
-var
-  _GetVolumeNameForVolMountPointW: Pointer;
+type
+  TDeleteVolumeMountPointW = function (lpszVolumeMountPoint: LPCWSTR): BOOL; stdcall;
 
-function GetVolumeNameForVolumeMountPointW;
+var
+  _DeleteVolumeMountPointW: TDeleteVolumeMountPointW = nil;
+
+function DeleteVolumeMountPointW(lpszVolumeMountPoint: LPCWSTR): BOOL;
 begin
-  GetProcedureAddress(_GetVolumeNameForVolMountPointW, kernel32, 'GetVolumeNameForVolumeMountPointW');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_GetVolumeNameForVolMountPointW]
-  end;
+  GetProcedureAddress(Pointer(@_DeleteVolumeMountPointW), kernel32, 'DeleteVolumeMountPointW');
+  Result := _DeleteVolumeMountPointW(lpszVolumeMountPoint);
 end;
 
-var
-  _CopyExtendedContext: Pointer;
+type
+  TGetVolumeNameForVolumeMountPointW = function (lpszVolumeMountPoint: LPCWSTR;
+  lpszVolumeName: LPWSTR; cchBufferLength: DWORD): BOOL; stdcall;
 
-function CopyExtendedContext;
+var
+  _GetVolumeNameForVolMountPointW: TGetVolumeNameForVolumeMountPointW = nil;
+
+function GetVolumeNameForVolumeMountPointW(lpszVolumeMountPoint: LPCWSTR;
+  lpszVolumeName: LPWSTR; cchBufferLength: DWORD): BOOL;
 begin
-  GetProcedureAddress(_CopyExtendedContext, kernel32, 'CopyExtendedContext');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_CopyExtendedContext]
-  end;
+  GetProcedureAddress(Pointer(@_GetVolumeNameForVolMountPointW), kernel32, 'GetVolumeNameForVolumeMountPointW');
+  Result := _GetVolumeNameForVolMountPointW(lpszVolumeMountPoint, lpszVolumeName, cchBufferLength);
 end;
 
-var
-  _InitializeExtendedContext: Pointer;
+type
+  TCopyExtendedContext = function (Destination: PCONTEXT_EX; ContextFlags: DWORD; Source: PCONTEXT_EX): BOOL; stdcall;
 
-function InitializeExtendedContext;
+var
+  _CopyExtendedContext: TCopyExtendedContext = nil;
+
+function CopyExtendedContext(Destination: PCONTEXT_EX; ContextFlags: DWORD; Source: PCONTEXT_EX): BOOL;
 begin
-  GetProcedureAddress(_InitializeExtendedContext, kernel32, 'InitializeExtendedContext');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_InitializeExtendedContext]
-  end;
+  GetProcedureAddress(Pointer(@_CopyExtendedContext), kernel32, 'CopyExtendedContext');
+  Result := _CopyExtendedContext(Destination, ContextFlags, Source);
 end;
 
-var
-  _GetEnabledExtendedFeatures: Pointer;
+type
+  TInitializeExtendedContext = function (Context: Pointer; ContextFlags: DWORD; out ContextEx: PCONTEXT_EX): BOOL; stdcall;
 
-function GetEnabledExtendedFeatures;
+var
+  _InitializeExtendedContext: TInitializeExtendedContext = nil;
+
+function InitializeExtendedContext(Context: Pointer; ContextFlags: DWORD; out ContextEx: PCONTEXT_EX): BOOL;
 begin
-  GetProcedureAddress(_GetEnabledExtendedFeatures, kernel32, 'GetEnabledExtendedFeatures');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_GetEnabledExtendedFeatures]
-  end;
+  GetProcedureAddress(Pointer(@_InitializeExtendedContext), kernel32, 'InitializeExtendedContext');
+  Result := _InitializeExtendedContext(Context, ContextFlags, ContextEx);
 end;
 
+type
+  TGetEnabledExtendedFeatures = function (const FeatureMask: Int64): Int64; stdcall;
 var
-  _GetExtendedContextLength: Pointer;
+  _GetEnabledExtendedFeatures: TGetEnabledExtendedFeatures = nil;
 
-function GetExtendedContextLength;
+function GetEnabledExtendedFeatures(const FeatureMask: Int64): Int64;
 begin
-  GetProcedureAddress(_GetExtendedContextLength, kernel32, 'GetExtendedContextLength');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_GetExtendedContextLength]
-  end;
+  GetProcedureAddress(Pointer(@_GetEnabledExtendedFeatures), kernel32, 'GetEnabledExtendedFeatures');
+  Result := _GetEnabledExtendedFeatures(FeatureMask);
 end;
 
-var
-  _GetExtendedFeaturesMask: Pointer;
+type
+  TGetExtendedContextLength = function (ContextFlags: DWORD; ContextLength: PDWORD): BOOL; stdcall;
 
-function GetExtendedFeaturesMask;
+var
+  _GetExtendedContextLength: TGetExtendedContextLength = nil;
+
+function GetExtendedContextLength(ContextFlags: DWORD; ContextLength: PDWORD): BOOL;
 begin
-  GetProcedureAddress(_GetExtendedFeaturesMask, kernel32, 'GetExtendedFeaturesMask');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_GetExtendedFeaturesMask]
-  end;
+  GetProcedureAddress(Pointer(@_GetExtendedContextLength), kernel32, 'GetExtendedContextLength');
+  Result := _GetExtendedContextLength(ContextFlags, ContextLength);
 end;
 
-var
-  _LocateExtendedFeature: Pointer;
+type
+  TGetExtendedFeaturesMask = function (ContextEx: PCONTEXT_EX): Int64; stdcall;
 
-function LocateExtendedFeature;
+var
+  _GetExtendedFeaturesMask: TGetExtendedFeaturesMask = nil;
+
+function GetExtendedFeaturesMask(ContextEx: PCONTEXT_EX): Int64;
 begin
-  GetProcedureAddress(_LocateExtendedFeature, kernel32, 'LocateExtendedFeature');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_LocateExtendedFeature]
-  end;
+  GetProcedureAddress(Pointer(@_GetExtendedFeaturesMask), kernel32, 'GetExtendedFeaturesMask');
+  Result := _GetExtendedFeaturesMask(ContextEx);
 end;
 
-var
-  _LocateLegacyContext: Pointer;
+type
+  TLocateExtendedFeature = function (ContextEx: PCONTEXT_EX; FeatureId: DWORD; Length: PDWORD): Pointer; stdcall;
 
-function LocateLegacyContext;
+var
+  _LocateExtendedFeature: TLocateExtendedFeature = nil;
+
+function LocateExtendedFeature(ContextEx: PCONTEXT_EX; FeatureId: DWORD; Length: PDWORD): Pointer;
 begin
-  GetProcedureAddress(_LocateLegacyContext, kernel32, 'LocateLegacyContext');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_LocateLegacyContext]
-  end;
+  GetProcedureAddress(Pointer(@_LocateExtendedFeature), kernel32, 'LocateExtendedFeature');
+  Result := _LocateExtendedFeature(ContextEx, FeatureId, Length);
 end;
 
-var
-  _SetExtendedFeaturesMask: Pointer;
+type
+  TLocateLegacyContext = function (ContextEx: PCONTEXT_EX; Length: PDWORD): PCONTEXT; stdcall;
 
-procedure SetExtendedFeaturesMask;
+var
+  _LocateLegacyContext: TLocateLegacyContext = nil;
+
+function LocateLegacyContext(ContextEx: PCONTEXT_EX; Length: PDWORD): PCONTEXT;
 begin
-  GetProcedureAddress(_SetExtendedFeaturesMask, kernel32, 'SetExtendedFeaturesMask');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_SetExtendedFeaturesMask]
-  end;
+  GetProcedureAddress(Pointer(@_LocateLegacyContext), kernel32, 'LocateLegacyContext');
+  Result := _LocateLegacyContext(ContextEx, Length);
 end;
 
-
-
-var
-  _GetCalendarInfoA: Pointer;
-
-function GetCalendarInfoA;
-begin
-  GetProcedureAddress(_GetCalendarInfoA, kernel32, 'GetCalendarInfoA');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_GetCalendarInfoA]
-  end;
-end;
+type
+  TSetExtendedFeaturesMask = procedure (ContextEx: PCONTEXT_EX; const FeatureMask: Int64);
 
 var
-  _GetCalendarInfoW: Pointer;
+  _SetExtendedFeaturesMask: TSetExtendedFeaturesMask = nil;
 
-function GetCalendarInfoW;
+procedure SetExtendedFeaturesMask(ContextEx: PCONTEXT_EX; const FeatureMask: Int64);
 begin
-  GetProcedureAddress(_GetCalendarInfoW, kernel32, 'GetCalendarInfoW');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_GetCalendarInfoW]
-  end;
-end;
-
-var
-  _EnumCalendarInfoExW: Pointer;
-
-function EnumCalendarInfoExW;
-begin
-  GetProcedureAddress(_EnumCalendarInfoExW, kernel32, 'EnumCalendarInfoExW');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_EnumCalendarInfoExW]
-  end;
+  GetProcedureAddress(Pointer(@_SetExtendedFeaturesMask), kernel32, 'SetExtendedFeaturesMask');
+  _SetExtendedFeaturesMask(ContextEx, FeatureMask);
 end;
 
 
 
-var
-  _GetWindowLongPtr: Pointer;
-
-function GetWindowLongPtr;
-begin
-  GetProcedureAddress(_GetWindowLongPtr, user32, 'GetWindowLong' + AWSuffix);
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_GetWindowLongPtr]
-  end;
-end;
+type
+  TGetCalendarInfoA = function (Locale: LCID; Calendar: CALID; CalType: CALTYPE;
+    lpCalData: LPSTR; cchData: Integer; lpValue: LPDWORD): Integer; stdcall;
 
 var
-  _SetWindowLongPtr: Pointer;
+  _GetCalendarInfoA: TGetCalendarInfoA = nil;
 
-function SetWindowLongPtr;
+function GetCalendarInfoA(Locale: LCID; Calendar: CALID; CalType: CALTYPE;
+  lpCalData: LPSTR; cchData: Integer; lpValue: LPDWORD): Integer;
 begin
-  GetProcedureAddress(_SetWindowLongPtr, user32, 'SetWindowLong' + AWSuffix);
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_SetWindowLongPtr]
-  end;
+  GetProcedureAddress(Pointer(@_GetCalendarInfoA), kernel32, 'GetCalendarInfoA');
+  Result := _GetCalendarInfoA(Locale, Calendar, CalType, lpCalData, cchData, lpValue);
 end;
+
+type
+  TGetCalendarInfoW = function (Locale: LCID; Calendar: CALID; CalType: CALTYPE;
+    lpCalData: LPWSTR; cchData: Integer; lpValue: LPDWORD): Integer; stdcall;
+
+var
+  _GetCalendarInfoW: TGetCalendarInfoW = nil;
+
+function GetCalendarInfoW(Locale: LCID; Calendar: CALID; CalType: CALTYPE;
+  lpCalData: LPWSTR; cchData: Integer; lpValue: LPDWORD): Integer;
+begin
+  GetProcedureAddress(Pointer(@_GetCalendarInfoW), kernel32, 'GetCalendarInfoW');
+  Result := _GetCalendarInfoW(Locale, Calendar, CalType, lpCalData, cchData, lpValue);
+end;
+
+type
+  TEnumCalendarInfoExW = function (lpCalInfoEnumProcEx: CALINFO_ENUMPROCEXW;
+    Locale: LCID; Calendar: CALID; CalType: CALTYPE): BOOL; stdcall;
+
+var
+  _EnumCalendarInfoExW: TEnumCalendarInfoExW = nil;
+
+function EnumCalendarInfoExW(lpCalInfoEnumProcEx: CALINFO_ENUMPROCEXW;
+  Locale: LCID; Calendar: CALID; CalType: CALTYPE): BOOL;
+begin
+  GetProcedureAddress(Pointer(@_EnumCalendarInfoExW), kernel32, 'EnumCalendarInfoExW');
+  Result := _EnumCalendarInfoExW(lpCalInfoEnumProcEx, Locale, Calendar, CalType);
+end;
+
+
+type
+  TGetWindowLongPtr = function (hWnd: HWND; nIndex: Integer): TJclAddr; stdcall;
+
+var
+  _GetWindowLongPtr: TGetWindowLongPtr = nil;
+
+function GetWindowLongPtr(hWnd: HWND; nIndex: Integer): TJclAddr;
+begin
+  GetProcedureAddress(Pointer(@_GetWindowLongPtr), user32, 'GetWindowLong' + AWSuffix);
+  Result := _GetWindowLongPtr(hWnd, nIndex);
+end;
+
+type
+  TSetWindowLongPtr = function (hWnd: HWND; nIndex: Integer; dwNewLong: TJclAddr): Longint; stdcall;
+
+var
+  _SetWindowLongPtr: TSetWindowLongPtr = nil;
+
+function SetWindowLongPtr(hWnd: HWND; nIndex: Integer; dwNewLong: TJclAddr): Longint;
+begin
+  GetProcedureAddress(Pointer(@_SetWindowLongPtr), user32, 'SetWindowLong' + AWSuffix);
+  Result := _SetWindowLongPtr(hWnd, nIndex, dwNewLong);
+end;
+
 
 // line 9078
 
@@ -8577,205 +8662,222 @@ end;
 const
   PowrprofLib = 'PowrProf.dll';
   
-var
-  _IsPwrSuspendAllowed: Pointer;
+type
+  TIsPwrSuspendAllowed = function : BOOL; stdcall;
 
-function IsPwrSuspendAllowed;
+var
+  _IsPwrSuspendAllowed: TIsPwrSuspendAllowed = nil;
+
+function IsPwrSuspendAllowed: BOOL;
 begin
-  GetProcedureAddress(_IsPwrSuspendAllowed, PowrprofLib, 'IsPwrSuspendAllowed');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_IsPwrSuspendAllowed]
-  end;
+  GetProcedureAddress(Pointer(@_IsPwrSuspendAllowed), PowrprofLib, 'IsPwrSuspendAllowed');
+  Result := _IsPwrSuspendAllowed;
 end;
 
-var
-  _IsPwrHibernateAllowed: Pointer;
+type
+  TIsPwrHibernateAllowed = function : BOOL; stdcall;
 
-function IsPwrHibernateAllowed;
+var
+  _IsPwrHibernateAllowed: TIsPwrHibernateAllowed = nil;
+
+function IsPwrHibernateAllowed: BOOL;
 begin
-  GetProcedureAddress(_IsPwrHibernateAllowed, PowrprofLib, 'IsPwrHibernateAllowed');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_IsPwrHibernateAllowed]
-  end;
+  GetProcedureAddress(Pointer(@_IsPwrHibernateAllowed), PowrprofLib, 'IsPwrHibernateAllowed');
+  Result := _IsPwrHibernateAllowed;
 end;
 
-var
-  _IsPwrShutdownAllowed: Pointer;
+type
+  TIsPwrShutdownAllowed = function : BOOL; stdcall;
 
-function IsPwrShutdownAllowed;
+var
+  _IsPwrShutdownAllowed: TIsPwrShutdownAllowed = nil;
+
+function IsPwrShutdownAllowed: BOOL;
 begin
-  GetProcedureAddress(_IsPwrShutdownAllowed, PowrprofLib, 'IsPwrShutdownAllowed');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_IsPwrShutdownAllowed]
-  end;
+  GetProcedureAddress(Pointer(@_IsPwrShutdownAllowed), PowrprofLib, 'IsPwrShutdownAllowed');
+  Result := _IsPwrShutdownAllowed;
 end;
 
-var
-  _SetSuspendState: Pointer;
+type
+  TSetSuspendState = function (Hibernate, ForceCritical, DisableWakeEvent: BOOL): BOOL; stdcall;
 
-function SetSuspendState;
+var
+  _SetSuspendState: TSetSuspendState = nil;
+
+function SetSuspendState(Hibernate, ForceCritical, DisableWakeEvent: BOOL): BOOL;
 begin
-  GetProcedureAddress(_SetSuspendState, PowrprofLib, 'SetSuspendState');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_SetSuspendState]
-  end;
+  GetProcedureAddress(Pointer(@_SetSuspendState), PowrprofLib, 'SetSuspendState');
+  Result := _SetSuspendState(Hibernate, ForceCritical, DisableWakeEvent);
 end;
 
 
 const
   Ole32Lib = 'ole32.dll';
+
+type
+  TStgCreateStorageEx = function (const pwcsName: PWideChar; grfMode: DWORD;
+    stgfmt: DWORD; grfAttrs: DWORD; pStgOptions: PSTGOPTIONS; reserved2: Pointer;
+    riid: PGUID; out stgOpen: IInterface): HResult; stdcall;
   
 var
-  _StgCreateStorageEx: Pointer;
+  _StgCreateStorageEx: TStgCreateStorageEx = nil;
 
-function StgCreateStorageEx;
+function StgCreateStorageEx(const pwcsName: PWideChar; grfMode: DWORD;
+  stgfmt: DWORD; grfAttrs: DWORD; pStgOptions: PSTGOPTIONS; reserved2: Pointer;
+  riid: PGUID; out stgOpen: IInterface): HResult;
 begin
-  GetProcedureAddress(_StgCreateStorageEx, Ole32Lib, 'StgCreateStorageEx');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_StgCreateStorageEx]
-  end;
+  GetProcedureAddress(Pointer(@_StgCreateStorageEx), Ole32Lib, 'StgCreateStorageEx');
+  Result := _StgCreateStorageEx(pwcsName, grfMode, stgfmt, grfAttrs, pStgOptions, reserved2, riid, stgOpen);
 end;
 
-var
-  _StgOpenStorageEx: Pointer;
-
-function StgOpenStorageEx;
-begin
-  GetProcedureAddress(_StgOpenStorageEx, Ole32Lib, 'StgOpenStorageEx');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_StgOpenStorageEx]
-  end;
-end;
-
+type
+  TStgOpenStorageEx = function (const pwcsName: PWideChar; grfMode: DWORD;
+    stgfmt: DWORD; grfAttrs: DWORD; pStgOptions: PSTGOPTIONS; reserved2: Pointer;
+    riid: PGUID; out stgOpen: IInterface): HResult; stdcall;
 
 var
-  _LsaOpenPolicy: Pointer;
+  _StgOpenStorageEx: TStgOpenStorageEx = nil;
 
-function LsaOpenPolicy;
+function StgOpenStorageEx(const pwcsName: PWideChar; grfMode: DWORD;
+  stgfmt: DWORD; grfAttrs: DWORD; pStgOptions: PSTGOPTIONS; reserved2: Pointer;
+  riid: PGUID; out stgOpen: IInterface): HResult;
 begin
-  GetProcedureAddress(_LsaOpenPolicy, advapi32, 'LsaOpenPolicy');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_LsaOpenPolicy]
-  end;
-end;
-
-var
-  _LsaQueryInformationPolicy: Pointer;
-
-function LsaQueryInformationPolicy;
-begin
-  GetProcedureAddress(_LsaQueryInformationPolicy, advapi32, 'LsaQueryInformationPolicy');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_LsaQueryInformationPolicy]
-  end;
-end;
-
-var
-  _LsaFreeMemory: Pointer;
-
-function LsaFreeMemory;
-begin
-  GetProcedureAddress(_LsaFreeMemory, advapi32, 'LsaFreeMemory');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_LsaFreeMemory]
-  end;
-end;
-
-var
-  _LsaFreeReturnBuffer: Pointer;
-
-function LsaFreeReturnBuffer;
-begin
-  GetProcedureAddress(_LsaFreeReturnBuffer, advapi32, 'LsaFreeReturnBuffer');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_LsaFreeReturnBuffer]
-  end;
-end;
-
-var
-  _LsaClose: Pointer;
-
-function LsaClose;
-begin
-  GetProcedureAddress(_LsaClose, advapi32, 'LsaClose');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_LsaClose]
-  end;
-end;
-
-var
-  _LsaNtStatusToWinError: Pointer;
-
-function LsaNtStatusToWinError;
-begin
-  GetProcedureAddress(_LsaNtStatusToWinError, advapi32, 'LsaNtStatusToWinError');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_LsaNtStatusToWinError]
-  end;
+  GetProcedureAddress(Pointer(@_StgOpenStorageEx), Ole32Lib, 'StgOpenStorageEx');
+  Result := _StgOpenStorageEx(pwcsName, grfMode, stgfmt, grfAttrs, pStgOptions, reserved2, riid, stgOpen);
 end;
 
 
-var
-  _CreateToolhelp32Snapshot: Pointer;
+type
+  TLsaOpenPolicy = function (SystemName: PLSA_UNICODE_STRING;
+    var ObjectAttributes: LSA_OBJECT_ATTRIBUTES; DesiredAccess: ACCESS_MASK;
+    var PolicyHandle: LSA_HANDLE): NTSTATUS; stdcall;
 
-function CreateToolhelp32Snapshot;
+var
+  _LsaOpenPolicy: TLsaOpenPolicy = nil;
+
+function LsaOpenPolicy(SystemName: PLSA_UNICODE_STRING;
+  var ObjectAttributes: LSA_OBJECT_ATTRIBUTES; DesiredAccess: ACCESS_MASK;
+  var PolicyHandle: LSA_HANDLE): NTSTATUS;
 begin
-  GetProcedureAddress(_CreateToolhelp32Snapshot, kernel32, 'CreateToolhelp32Snapshot');
-  asm
-        MOV     ESP, EBP
-        POP     EBP
-        JMP     [_CreateToolhelp32Snapshot]
-  end;
+  GetProcedureAddress(Pointer(@_LsaOpenPolicy), advapi32, 'LsaOpenPolicy');
+  Result := _LsaOpenPolicy(SystemName, ObjectAttributes, DesiredAccess, PolicyHandle);
 end;
 
-var
-  _Thread32First: Pointer;
+type
+  TLsaQueryInformationPolicy = function (PolicyHandle: LSA_HANDLE;
+    InformationClass: POLICY_INFORMATION_CLASS; var Buffer: Pointer): NTSTATUS; stdcall;
 
-function Thread32First;
+var
+  _LsaQueryInformationPolicy: TLsaQueryInformationPolicy = nil;
+
+function LsaQueryInformationPolicy(PolicyHandle: LSA_HANDLE;
+  InformationClass: POLICY_INFORMATION_CLASS; var Buffer: Pointer): NTSTATUS;
 begin
-  GetProcedureAddress(_Thread32First, kernel32, 'Thread32First');
-  asm
-        MOV     ESP, EBP
-        POP     EBP
-        JMP     [_Thread32First]
-  end;
+  GetProcedureAddress(Pointer(@_LsaQueryInformationPolicy), advapi32, 'LsaQueryInformationPolicy');
+  Result := _LsaQueryInformationPolicy(PolicyHandle, InformationClass, Buffer);
 end;
 
-var
-  _Thread32Next: Pointer;
+type
+  TLsaFreeMemory = function (Buffer: Pointer): NTSTATUS; stdcall;
 
-function Thread32Next;
+var
+  _LsaFreeMemory: TLsaFreeMemory = nil;
+
+function LsaFreeMemory(Buffer: Pointer): NTSTATUS;
 begin
-  GetProcedureAddress(_Thread32Next, kernel32, 'Thread32Next');
-  asm
-        MOV     ESP, EBP
-        POP     EBP
-        JMP     [_Thread32Next]
-  end;
+  GetProcedureAddress(Pointer(@_LsaFreeMemory), advapi32, 'LsaFreeMemory');
+  Result := _LsaFreeMemory(Buffer);
+end;
+
+type
+  TLsaFreeReturnBuffer = function (Buffer: Pointer): NTSTATUS; stdcall;
+
+var
+  _LsaFreeReturnBuffer: TLsaFreeReturnBuffer = nil;
+
+function LsaFreeReturnBuffer(Buffer: Pointer): NTSTATUS;
+begin
+  GetProcedureAddress(Pointer(@_LsaFreeReturnBuffer), advapi32, 'LsaFreeReturnBuffer');
+  Result := _LsaFreeReturnBuffer(Buffer);
+end;
+
+type
+  TLsaClose = function (ObjectHandle: LSA_HANDLE): NTSTATUS; stdcall;
+
+var
+  _LsaClose: TLsaClose = nil;
+
+function LsaClose(ObjectHandle: LSA_HANDLE): NTSTATUS;
+begin
+  GetProcedureAddress(Pointer(@_LsaClose), advapi32, 'LsaClose');
+  Result := _LsaClose(ObjectHandle);
+end;
+
+type
+  TLsaNtStatusToWinError = function (Status: NTSTATUS): ULONG; stdcall;
+
+var
+  _LsaNtStatusToWinError: TLsaNtStatusToWinError = nil;
+
+function LsaNtStatusToWinError(Status: NTSTATUS): ULONG;
+begin
+  GetProcedureAddress(Pointer(@_LsaNtStatusToWinError), advapi32, 'LsaNtStatusToWinError');
+  Result := _LsaNtStatusToWinError(Status);
+end;
+
+
+type
+  TCreateToolhelp32Snapshot = function (dwFlags, th32ProcessID: DWORD): THandle; stdcall;
+
+var
+  _CreateToolhelp32Snapshot: TCreateToolhelp32Snapshot = nil;
+
+function CreateToolhelp32Snapshot(dwFlags, th32ProcessID: DWORD): THandle;
+begin
+  GetProcedureAddress(Pointer(@_CreateToolhelp32Snapshot), kernel32, 'CreateToolhelp32Snapshot');
+  Result := _CreateToolhelp32Snapshot(dwFlags, th32ProcessID);
+end;
+
+type
+  TThread32First = function (hSnapshot: THandle; var lpte: THREADENTRY32): BOOL; stdcall;
+
+var
+  _Thread32First: TThread32First = nil;
+
+function Thread32First(hSnapshot: THandle; var lpte: THREADENTRY32): BOOL;
+begin
+  GetProcedureAddress(Pointer(@_Thread32First), kernel32, 'Thread32First');
+  Result := _Thread32First(hSnapshot, lpte);
+end;
+
+type
+  TThread32Next = function (hSnapshot: THandle; var lpte: THREADENTRY32): BOOL; stdcall;
+
+var
+  _Thread32Next: TThread32Next = nil;
+
+function Thread32Next(hSnapshot: THandle; var lpte: THREADENTRY32): BOOL;
+begin
+  GetProcedureAddress(Pointer(@_Thread32Next), kernel32, 'Thread32Next');
+  Result := _Thread32Next(hSnapshot, lpte);
+end;
+
+
+const
+  ntdll = 'ntdll.dll';
+
+type
+  TNtQueryInformationThread = function (ThreadHandle: THandle; ThreadInformationClass: THREAD_INFORMATION_CLASS;
+    ThreadInformation: Pointer; ThreadInformationLength: ULONG; ReturnLength: PULONG): NTSTATUS; stdcall;
+
+var
+  _NtQueryInformationThread: TNtQueryInformationThread = nil;
+
+function NtQueryInformationThread(ThreadHandle: THandle; ThreadInformationClass: THREAD_INFORMATION_CLASS;
+  ThreadInformation: Pointer; ThreadInformationLength: ULONG; ReturnLength: PULONG): NTSTATUS;
+begin
+  GetProcedureAddress(Pointer(@_NtQueryInformationThread), ntdll, 'NtQueryInformationThread');
+  Result := _NtQueryInformationThread(ThreadHandle, ThreadInformationClass, ThreadInformation, ThreadInformationLength, ReturnLength);
 end;
 
 

@@ -142,12 +142,12 @@ uses
 
 {$IFDEF FPC}  // missing declaration from unit Messages
 type
-  TWMCopyData = packed record
-    Msg: Cardinal;
-    From: THandle;
-    CopyDataStruct: PCopyDataStruct;
-    Result: Longint;
-  end;
+  TWMCopyData = record
+      Msg: UINT;
+      From: THandle;
+      CopyDataStruct: PCopyDataStruct;
+      Result : LRESULT;
+    End;
 {$ENDIF FPC}
 
 const
@@ -478,7 +478,7 @@ begin
   EnumWinRec.CopyData.cbData := Size;
   EnumWinRec.CopyData.lpData := Data;
   EnumWinRec.Self := Self;
-  Result := EnumWindows(@EnumWinProc, Integer(@EnumWinRec));
+  Result := EnumWindows(@EnumWinProc, LPARAM(@EnumWinRec));
 end;
 
 function TJclAppInstances.SendString(const WindowClassName: string;

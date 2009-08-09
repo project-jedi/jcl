@@ -400,10 +400,10 @@ implementation
 
 uses
   {$IFDEF FPC}
-  WinSysUt, JwaWinNT,
+  JwaWinNT,
   {$ENDIF FPC}
   Math, TypInfo,
-  JclFileUtils, JclResources;
+  JclFileUtils, JclResources, JclSysUtils;
 
 {$IFDEF FPC}
 {$EXTERNALSYM CreateConsoleScreenBuffer}
@@ -648,14 +648,23 @@ begin
 end;
 
 class function TJclConsole.IsConsole(const Module: HMODULE): Boolean;
+var
+  DosHeader: PImageDosHeader;
+  NtHeaders: PImageNtHeaders;
 begin
   Result := False;
   { TODO : Documentation of this solution }
-  with PImageDosHeader(Module)^ do
-  if e_magic = IMAGE_DOS_SIGNATURE then
-    with PImageNtHeaders(Integer(Module) + {$IFDEF FPC} e_lfanew {$ELSE} _lfanew {$ENDIF})^ do
-      if Signature = IMAGE_NT_SIGNATURE then
-        Result := OptionalHeader.Subsystem = IMAGE_SUBSYSTEM_WINDOWS_CUI;
+  DosHeader := PImageDosHeader(Module);
+  if DosHeader^.e_magic = IMAGE_DOS_SIGNATURE then
+  begin
+    {$OVERFLOWCHECKS OFF}
+    NtHeaders := PImageNtHeaders(TJclAddr(Module) + TJclAddr({$IFDEF FPC} DosHeader^.e_lfanew {$ELSE} DosHeader^._lfanew {$ENDIF}));
+    {$IFDEF OVERFLOWCHECKS_ON}
+    {$OVERFLOWCHECKS ON}
+    {$ENDIF OVERFLOWCHECKS_ON}
+    if NtHeaders^.Signature = IMAGE_NT_SIGNATURE then
+      Result := NtHeaders^.OptionalHeader.Subsystem = IMAGE_SUBSYSTEM_WINDOWS_CUI;
+  end;
 end;
 
 class function TJclConsole.IsConsole(const FileName: TFileName): Boolean;
@@ -1144,6 +1153,7 @@ end;
 
 function TJclScreenCursor.GetInfo: TConsoleCursorInfo;
 begin
+  ResetMemory(Result, SizeOf(Result));
   Win32Check(GetConsoleCursorInfo(ScreenBuffer.Handle, Result));
 end;
 

@@ -31,7 +31,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                          $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -371,7 +371,6 @@ implementation
 
 uses
   {$IFDEF FPC}
-  WinSysUt,
   JwaRegStr,
   {$ELSE ~FPC}
   RegStr,

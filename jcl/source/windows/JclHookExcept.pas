@@ -26,7 +26,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                          $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -42,12 +42,12 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, SysUtils;
+  Windows, SysUtils, Classes;
 
 type
   // Exception hooking notifiers routines
   TJclExceptNotifyProc = procedure(ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean);
-  TJclExceptNotifyProcEx = procedure(ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean; ESP: Pointer);
+  TJclExceptNotifyProcEx = procedure(ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean; StackPointer: Pointer);
   TJclExceptNotifyMethod = procedure(ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean) of object;
 
   TJclExceptNotifyPriority = (npNormal, npFirstChain);
@@ -95,7 +95,6 @@ const
 implementation
 
 uses
-  Classes,
   JclBase,
   JclPeImage,
   JclSysInfo, JclSysUtils;
@@ -117,7 +116,7 @@ type
     constructor Create(const NotifyProc: TJclExceptNotifyProc; Priority: TJclExceptNotifyPriority); overload;
     constructor Create(const NotifyProc: TJclExceptNotifyProcEx; Priority: TJclExceptNotifyPriority); overload;
     constructor Create(const NotifyMethod: TJclExceptNotifyMethod; Priority: TJclExceptNotifyPriority); overload;
-    procedure DoNotify(ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean; ESP: Pointer);
+    procedure DoNotify(ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean; StackPointer: Pointer);
     property Priority: TJclExceptNotifyPriority read FPriority;
   end;
 
@@ -214,26 +213,31 @@ begin
 end;
 
 procedure TNotifierItem.DoNotify(ExceptObj: TObject; ExceptAddr: Pointer;
-  OSException: Boolean; ESP: Pointer);
+  OSException: Boolean; StackPointer: Pointer);
 begin
   if Assigned(FNotifyProc) then
     FNotifyProc(ExceptObj, ExceptAddr, OSException)
   else
   if Assigned(FNotifyProcEx) then
-    FNotifyProcEx(ExceptObj, ExceptAddr, OSException, ESP)
+    FNotifyProcEx(ExceptObj, ExceptAddr, OSException, StackPointer)
   else
   if Assigned(FNotifyMethod) then
     FNotifyMethod(ExceptObj, ExceptAddr, OSException);
 end;
 
-function GetEBP: Pointer;
+function GetFramePointer: Pointer;
 asm
+        {$IFDEF CPU32}
         MOV     EAX, EBP
+        {$ENDIF CPU32}
+        {$IFDEF CPU64}
+        MOV     RAX, RBP
+        {$ENDIF CPU64}
 end;
 
 {$STACKFRAMES ON}
 
-procedure DoExceptNotify(ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean; ESP: Pointer);
+procedure DoExceptNotify(ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean; StackPointer: Pointer);
 var
   Priorities: TJclExceptNotifyPriority;
   I: Integer;
@@ -250,7 +254,7 @@ begin
         if Count = 1 then
         begin
           with TNotifierItem(Items[0]) do
-            DoNotify(ExceptObj, ExceptAddr, OSException, ESP);
+            DoNotify( ExceptObj, ExceptAddr, OSException, StackPointer);
         end
         else
         begin
@@ -258,7 +262,7 @@ begin
             for I := 0 to Count - 1 do
               with TNotifierItem(Items[I]) do
                 if Priority = Priorities then
-                  DoNotify(ExceptObj, ExceptAddr, OSException, ESP);
+                  DoNotify(ExceptObj, ExceptAddr, OSException, StackPointer);
         end;
       finally
         Notifiers.UnlockList;
@@ -276,9 +280,9 @@ const
   cNonContinuable = 1;
 begin
   if (ExceptionFlags = cNonContinuable) and (ExceptionCode = cDelphiException) and
-    (NumberOfArguments = 7) and (DWORD_PTR(Arguments) = DWORD_PTR(@Arguments) + 4) then
+    (NumberOfArguments = 7) and (TJclAddr(Arguments) = TJclAddr(@Arguments) + SizeOf(Pointer)) then
   begin
-    DoExceptNotify(Arguments.ExceptObj, Arguments.ExceptAddr, False, GetEBP);
+    DoExceptNotify(Arguments.ExceptObj, Arguments.ExceptAddr, False, GetFramePointer);
   end;
   Kernel32_RaiseException(ExceptionCode, ExceptionFlags, NumberOfArguments, PDWORD(Arguments));
 end;
@@ -289,7 +293,7 @@ var
   NewResultExcCache: Exception; // TLS optimization
 begin
   Result := SysUtils_ExceptObjProc(P);
-  DoExceptNotify(Result, P^.ExceptionAddress, True, GetEBP);
+  DoExceptNotify(Result, P^.ExceptionAddress, True, GetFramePointer);
   NewResultExcCache := NewResultExc;
   if NewResultExcCache <> nil then
     Result := NewResultExcCache;
@@ -301,7 +305,7 @@ procedure HookedExceptProc(Obj : TObject; Addr : Pointer; FrameCount:Longint; Fr
 var
   NewResultExcCache: Exception; // TLS optimization
 begin
-  DoExceptNotify(Obj, Addr, True, GetEBP);
+  DoExceptNotify(Obj, Addr, True, GetFramePointer);
   NewResultExcCache := NewResultExc;
   if NewResultExcCache <> nil then
     SysUtils_ExceptProc(NewResultExcCache, Addr, FrameCount, Frame)
@@ -318,9 +322,9 @@ end;
 
 function JclBelongsHookedCode(Address: Pointer): Boolean;
 begin
-  Result := (Cardinal(@HookedRaiseException) < Cardinal(@JclBelongsHookedCode)) and
-    (Cardinal(@HookedRaiseException) <= Cardinal(Address)) and
-    (Cardinal(@JclBelongsHookedCode) > Cardinal(Address));
+  Result := (TJclAddr(@HookedRaiseException) < TJclAddr(@JclBelongsHookedCode)) and
+    (TJclAddr(@HookedRaiseException) <= TJclAddr(Address)) and
+    (TJclAddr(@JclBelongsHookedCode) > TJclAddr(Address));
 end;
 
 function JclAddExceptNotifier(const NotifyProc: TJclExceptNotifyProc; Priority: TJclExceptNotifyPriority): Boolean;

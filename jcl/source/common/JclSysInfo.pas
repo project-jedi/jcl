@@ -1246,8 +1246,8 @@ function TestFDIVInstruction: Boolean;
 
 // Memory Information
 {$IFDEF MSWINDOWS}
-function GetMaxAppAddress: DWORD_PTR;
-function GetMinAppAddress: DWORD_PTR;
+function GetMaxAppAddress: TJclAddr;
+function GetMinAppAddress: TJclAddr;
 {$ENDIF MSWINDOWS}
 function GetMemoryLoad: Byte;
 function GetSwapFileSize: Cardinal;
@@ -3976,6 +3976,12 @@ end;
 function ReadTimeStampCounter: Int64; assembler;
 asm
         DW      $310F
+        // TSC in EDX:EAX
+        {$IFDEF CPU64}
+        SHL     RDX, 32
+        OR      RAX, RDX
+        // Result in RAX
+        {$ENDIF CPU64}
 end;
 
 function GetIntelCacheDescription(const D: Byte): string;
@@ -4182,6 +4188,7 @@ function CPUID: TCpuInfo;
     ID_FLAG = $200000;
   begin
     asm
+      {$IFDEF CPU32}
       PUSHFD
       POP     EAX
       MOV     ECX, EAX
@@ -4194,19 +4201,40 @@ function CPUID: TCpuInfo;
       AND     EAX, ID_FLAG
       XOR     EAX, ECX
       SETNZ   Result
+      {$ENDIF CPU32}
+      {$IFDEF CPU64}
+      // PUSHFQ
+      PUSHFD
+      POP     RAX
+      MOV     RCX, RAX
+      XOR     RAX, ID_FLAG
+      AND     RCX, ID_FLAG
+      PUSH    RAX
+      // POPFQ
+      POPFD
+      // PUSHFQ
+      PUSHFD
+      POP     RAX
+      AND     RAX, ID_FLAG
+      XOR     RAX, RCX
+      SETNZ   Result
+      {$ENDIF CPU64}
     end;
   end;
   procedure CallCPUID(ValueEAX, ValueECX: Cardinal; out ReturnedEAX, ReturnedEBX, ReturnedECX, ReturnedEDX);
   begin
     asm
+      {$IFDEF CPU32}
+      // save context
       PUSH    EDI
       PUSH    EBX
-
+      // init parameters
       MOV     EAX, ValueEAX
       MOV     ECX, ValueECX
       // CPUID
       DB      0FH
       DB      0A2H
+      // store results
       MOV     EDI, ReturnedEAX
       MOV     Cardinal PTR [EDI], EAX
       MOV     EAX, ReturnedEBX
@@ -4215,9 +4243,30 @@ function CPUID: TCpuInfo;
       MOV     Cardinal PTR [EDI], ECX
       MOV     EAX, ReturnedEDX
       MOV     Cardinal PTR [EAX], EDX
-
+      // restore context
       POP  EBX
       POP  EDI
+      {$ENDIF CPU32}
+      {$IFDEF CPU64}
+      // save context
+      PUSH    RBX
+      // init parameters
+      MOV     EAX, ValueEAX
+      MOV     ECX, ValueECX
+      // CPUID
+      CPUID
+      // store results
+      MOV     RDI, ReturnedEAX
+      MOV     Cardinal PTR [RDI], EAX
+      MOV     RAX, ReturnedEBX
+      MOV     RDI, ReturnedECX
+      MOV     Cardinal PTR [RAX], EBX
+      MOV     Cardinal PTR [RDI], ECX
+      MOV     RAX, ReturnedEDX
+      MOV     Cardinal PTR [RAX], EDX
+      // restore context
+      POP  RBX
+      {$ENDIF CPU64}
     end;
   end;
 
@@ -4855,6 +4904,7 @@ begin
 end;
 
 function TestFDIVInstruction: Boolean;
+{$IFDEF CPU32}
 var
   TopNum: Double;
   BottomNum: Double;
@@ -4882,6 +4932,12 @@ begin
   end;
   Result := ISOK;
 end;
+{$ENDIF CPU32}
+{$IFDEF CPU64}
+begin
+  Result := True;
+end;
+{$ENDIF CPU64}
 
 //=== Alloc granularity ======================================================
 
@@ -4895,12 +4951,18 @@ begin
 end;
 
 procedure RoundToAllocGranularityPtr(var Value: Pointer; Up: Boolean);
+var
+  Addr: TJclAddr;
 begin
-  if (Int64(DWORD_PTR(Value)) mod AllocGranularity) <> 0 then
+  Addr := TJclAddr(Value);
+  if (Addr mod AllocGranularity) <> 0 then
+  begin
     if Up then
-      Value := Pointer(((Int64(DWORD_PTR(Value)) div AllocGranularity) + 1) * AllocGranularity)
+      Addr := ((Addr div AllocGranularity) + 1) * AllocGranularity
     else
-      Value := Pointer((Int64(DWORD_PTR(Value)) div AllocGranularity) * AllocGranularity);
+      Addr := (Addr div AllocGranularity) * AllocGranularity;
+    Value := Pointer(Addr);
+  end;
 end;
 
 //=== Advanced Power Management (APM) ========================================
@@ -5045,22 +5107,22 @@ end;
 
 //=== Memory Information =====================================================
 
-function GetMaxAppAddress: DWORD_PTR;
+function GetMaxAppAddress: TJclAddr;
 var
   SystemInfo: TSystemInfo;
 begin
   ResetMemory(SystemInfo, SizeOf(SystemInfo));
   GetSystemInfo(SystemInfo);
-  Result := DWORD_PTR(SystemInfo.lpMaximumApplicationAddress);
+  Result := TJclAddr(SystemInfo.lpMaximumApplicationAddress);
 end;
 
-function GetMinAppAddress: DWORD_PTR;
+function GetMinAppAddress: TJclAddr;
 var
   SystemInfo: TSystemInfo;
 begin
   ResetMemory(SystemInfo, SizeOf(SystemInfo));
   GetSystemInfo(SystemInfo);
-  Result := DWORD_PTR(SystemInfo.lpMinimumApplicationAddress);
+  Result := TJclAddr(SystemInfo.lpMinimumApplicationAddress);
 end;
 {$ENDIF MSWINDOWS}
 
@@ -5109,8 +5171,7 @@ begin
   ResetMemory(MemoryStatus, SizeOf(MemoryStatus));
   MemoryStatus.dwLength := SizeOf(MemoryStatus);
   GlobalMemoryStatus(MemoryStatus);
-  with MemoryStatus do
-    Result := dwTotalPageFile - dwAvailPageFile;
+  Result := TJclAddr(MemoryStatus.dwTotalPageFile) - TJclAddr(MemoryStatus.dwAvailPageFile);
 end;
 {$ENDIF MSWINDOWS}
 

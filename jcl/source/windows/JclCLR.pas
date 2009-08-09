@@ -595,7 +595,7 @@ end;
 
 function TJclClrStream.GetOffset: DWORD;
 begin
-  Result := DWORD(Data) - DWORD(Metadata.Image.LoadedImage.MappedAddress);
+  Result := TJclAddr(Data) - TJclAddr(Metadata.Image.LoadedImage.MappedAddress);
 end;
 
 function TJclClrStream.GetSize: DWORD;
@@ -699,7 +699,7 @@ var
   ASize: DWORD;
 begin
   FPtr := APtr;
-  FOffset := DWORD_PTR(FPtr) - DWORD_PTR(AStream.Data);
+  FOffset := TJclAddr(FPtr) - TJclAddr(AStream.Data);
 
   b := FPtr[0];
   if b = 0 then
@@ -711,13 +711,13 @@ begin
   if ((b and $C0) = $C0) and ((b and $20) = 0) then    // 110bs
   begin
     AData := @FPtr[4];
-    ASize := ((b and $1F) shl 24) + (FPtr[1] shl 16) + (FPtr[2] shl 8) + FPtr[3];
+    ASize := ((b and $1F) shl 24) or (FPtr[1] shl 16) or (FPtr[2] shl 8) or FPtr[3];
   end
   else
   if ((b and $80) = $80) and ((b and $40) = 0) then    // 10bs
   begin
     AData := @FPtr[2];
-    ASize := ((b and $3F) shl 8) + FPtr[1];
+    ASize := ((b and $3F) shl 8) or FPtr[1];
   end
   else
   begin
@@ -905,7 +905,7 @@ function TJclClrTableRow.GetToken: TJclClrToken;
   end;
 
 begin
-  Result := (DWORD(GetTableId) shl 24) + DWORD(Index + 1);
+  Result := (DWORD(GetTableId) shl 24) or DWORD(Index + 1);
 end;
 
 procedure TJclClrTableRow.Update;
@@ -958,7 +958,7 @@ end;
 
 function TJclClrTable.GetOffset: DWORD;
 begin
-  Result := DWORD_PTR(Data) - DWORD_PTR(Stream.Metadata.Image.LoadedImage.MappedAddress);
+  Result := TJclAddr(Data) - TJclAddr(Stream.Metadata.Image.LoadedImage.MappedAddress);
 end;
 
 function TJclClrTable.GetRow(const Idx: Integer): TJclClrTableRow;
@@ -1050,12 +1050,12 @@ begin
   begin
     Result := Result and $1F;
     for I := 0 to 2 do
-      Result := Result shl 8 + ReadByte;
+      Result := (Result shl 8) or ReadByte;
   end
   else
   if ((Result and $80) = $80) and ((Result and $40) = 0) then    // 10bs
   begin
-    Result := ((Result and $3F) shl 8) + ReadByte;
+    Result := ((Result and $3F) shl 8) or ReadByte;
   end
   else
   begin
@@ -1142,7 +1142,7 @@ constructor TJclClrTableStream.Create(const AMetadata: TJclPeMetadata;
       if (Header.Valid and (Int64(1) shl Integer(AKind))) <> 0 then
       begin
         FTables[AKind] := ValidTableMapping[AKind].Create(Self, pTable, Header.Rows[FTableCount]);
-        pTable := Pointer(DWORD_PTR(pTable) + FTables[AKind].Size);
+        pTable := Pointer(TJclAddr(pTable) + FTables[AKind].Size);
         Inc(FTableCount);
       end
       else
@@ -1243,13 +1243,13 @@ constructor TJclPeMetadata.Create(const AImage: TJclPeImage);
     I: Integer;
     TableStream: TJclClrTableStream;
   begin
-    pStreamPart := PStreamPartitionHeader(DWORD_PTR(@Header.Version[0]) + Header.Length);
+    pStreamPart := PStreamPartitionHeader(TJclAddr(@Header.Version[0]) + Header.Length);
     pStream := @pStreamPart.StreamHeaders[0];
     for I := 0 to pStreamPart.StreamCount - 1 do
     begin
       FStreams.Add(GetStreamClass(string(pStream.Name)).Create(Self, pStream));
 
-      pStream := PClrStreamHeader(DWORD_PTR(@pStream.Name[0]) +
+      pStream := PClrStreamHeader(TJclAddr(@pStream.Name[0]) +
         DWORD_PTR((StrLen(PAnsiChar(@pStream.Name[0]) + 1 + 3) and not $3)));
     end;
     if FindStream(TJclClrTableStream, TJclClrStream(TableStream)) then
@@ -1542,7 +1542,7 @@ begin
   FData := AData;
   FOffset := AOffset;
   FRVA := ARVA;
-  inherited Create(Pointer(DWORD_PTR(Data) + SizeOf(DWORD)), PDWORD(Data)^);
+  inherited Create(Pointer(TJclAddr(Data) + SizeOf(DWORD)), PDWORD(Data)^);
 end;
 
 //=== { TJclClrVTableFixupRecord } ===========================================

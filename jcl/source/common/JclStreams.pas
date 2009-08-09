@@ -1954,7 +1954,7 @@ procedure TJclCRC16Stream.AfterBlockRead;
 var
   CRC: Word;
 begin
-  CRC := FBuffer[FBufferCurrentSize] + (FBuffer[FBufferCurrentSize + 1] shl 8);
+  CRC := Word(FBuffer[FBufferCurrentSize]) or (Word(FBuffer[FBufferCurrentSize + 1]) shl 8);
   if CheckCrc16(FBuffer, FBufferCurrentSize, CRC) < 0 then
     raise EJclStreamError.CreateRes(@RsStreamsCRCError);
 end;
@@ -1979,8 +1979,8 @@ procedure TJclCRC32Stream.AfterBlockRead;
 var
   CRC: Cardinal;
 begin
-  CRC := FBuffer[FBufferCurrentSize] + (FBuffer[FBufferCurrentSize + 1] shl 8)
-    + (FBuffer[FBufferCurrentSize + 2] shl 16) + (FBuffer[FBufferCurrentSize + 3] shl 24);
+  CRC := Cardinal(FBuffer[FBufferCurrentSize]) or (Cardinal(FBuffer[FBufferCurrentSize + 1]) shl 8)
+    or (Cardinal(FBuffer[FBufferCurrentSize + 2]) shl 16) or (Cardinal(FBuffer[FBufferCurrentSize + 3]) shl 24);
   if CheckCrc32(FBuffer, FBufferCurrentSize, CRC) < 0 then
     raise EJclStreamError.CreateRes(@RsStreamsCRCError);
 end;
@@ -2383,7 +2383,8 @@ end;
 
 function TJclStringStream.ReadString(var Buffer: string; Start, Count: Longint): Longint;
 var
-  Index, StrPos: Integer;
+  Index: Integer;
+  StrPos: SizeInt;
   Ch: UCS4;
 begin
   Index := Start;
@@ -2430,7 +2431,8 @@ end;
 
 function TJclStringStream.ReadAnsiString(var Buffer: AnsiString; Start, Count: Longint): Longint;
 var
-  Index, StrPos: Integer;
+  Index: Integer;
+  StrPos: SizeInt;
   Ch: UCS4;
 begin
   Index := Start;
@@ -2487,7 +2489,8 @@ end;
 
 function TJclStringStream.ReadWideString(var Buffer: WideString; Start, Count: Longint): Longint;
 var
-  Index, StrPos: Integer;
+  Index: Integer;
+  StrPos: SizeInt;
   Ch: UCS4;
 begin
   Index := Start;
@@ -2575,7 +2578,8 @@ end;
 
 function TJclStringStream.WriteString(const Buffer: string; Start, Count: Longint): Longint;
 var
-  Index, StrPos: Integer;
+  Index: Integer;
+  StrPos: SizeInt;
   Ch: UCS4;
 begin
   Index := Start;
@@ -2600,7 +2604,8 @@ end;
 
 function TJclStringStream.WriteAnsiString(const Buffer: AnsiString; Start, Count: Longint): Longint;
 var
-  Index, StrPos: Integer;
+  Index: Integer;
+  StrPos: SizeInt;
   Ch: UCS4;
 begin
   Index := Start;
@@ -2625,7 +2630,8 @@ end;
 
 function TJclStringStream.WriteWideString(const Buffer: WideString; Start, Count: Longint): Longint;
 var
-  Index, StrPos: Integer;
+  Index: Integer;
+  StrPos: SizeInt;
   Ch: UCS4;
 begin
   Index := Start;

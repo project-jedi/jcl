@@ -33,12 +33,12 @@ type
 
 function StgCreateStorageEx(const pwcsName: PWideChar; grfMode: DWORD;
   stgfmt: DWORD; grfAttrs: DWORD; pStgOptions: PSTGOPTIONS; reserved2: Pointer;
-  riid: PGUID; out stgOpen: IInterface):HResult; stdcall;
+  riid: PGUID; out stgOpen: IInterface): HResult; stdcall;
 {$EXTERNALSYM StgCreateStorageEx}
 
 function StgOpenStorageEx(const pwcsName: PWideChar; grfMode: DWORD;
-  stgfmt: DWORD; grfAttrs: DWORD; pStgOptions: PSTGOPTIONS; reserved2:Pointer;
-  riid: PGUID; out stgOpen: IInterface):HResult; stdcall;
+  stgfmt: DWORD; grfAttrs: DWORD; pStgOptions: PSTGOPTIONS; reserved2: Pointer;
+  riid: PGUID; out stgOpen: IInterface): HResult; stdcall;
 {$EXTERNALSYM StgOpenStorageEx}
 
 {$ENDIF MSWINDOWS}
