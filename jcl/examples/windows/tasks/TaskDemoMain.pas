@@ -7,10 +7,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, ComCtrls, Menus, ExtCtrls, OleCtrls, SHDocVw,
-  {$IFDEF RTL140_UP}
-  HTTPProd,
-  {$ENDIF}
-  HTTPApp;
+  HTTPProd, HTTPApp;
 
 type
   TfrmMain = class(TForm)
@@ -92,11 +89,7 @@ procedure TfrmMain.Refresh;
 var
   I: Integer;
 begin
-  {$IFDEF RTL140_UP}
   lstTasks.Clear;
-  {$ELSE}
-  lstTasks.Items.Clear;
-  {$ENDIF}
   for I:=0 to DM.Task.TaskCount-1 do
   with lstTasks.Items.Add, DM.Task[I] do
   begin

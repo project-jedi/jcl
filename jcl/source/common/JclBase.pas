@@ -113,18 +113,6 @@ type
   PPInt64 = ^PInt64;
   PPPAnsiChar = ^PPAnsiChar;
 
-// Interface compatibility
-{$IFDEF SUPPORTS_INTERFACE}
-{$IFNDEF FPC}
-{$IFNDEF RTL140_UP}
-
-type
-  IInterface = IUnknown;
-
-{$ENDIF ~RTL140_UP}
-{$ENDIF ~FPC}
-{$ENDIF SUPPORTS_INTERFACE}
-
 // Int64 support
 procedure I64ToCardinals(I: Int64; out LowPart, HighPart: Cardinal);
 procedure CardinalsToI64(out I: Int64; const LowPart, HighPart: Cardinal);

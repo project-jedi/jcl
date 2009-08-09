@@ -80,16 +80,6 @@ implementation
 uses
   Registry;
 
-{$IFNDEF RTL140_UP}
-function ExcludeTrailingPathDelimiter(const Path: string): string;
-begin
-  if (Path <> '') and (Path[Length(Path)] = '\') then
-    Result := Copy(Path, 1, Length(Path) - 1)
-  else
-    Result := Path;
-end;
-{$ENDIF ~RTL140_UP}
-
 function InstallJediRegInformation(const IdeRegKey, ProjectName, Version, DcpDir,
   BplDir, RootDir: string; RootKey: HKEY): Boolean;
 var

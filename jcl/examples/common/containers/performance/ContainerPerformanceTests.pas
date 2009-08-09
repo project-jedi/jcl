@@ -22,19 +22,12 @@ implementation
 
 uses
   SysUtils, Forms, Controls, Math,
-  {$IFDEF RTL140_UP}
   Contnrs, IniFiles,
-  {$ENDIF RTL140_UP}
   JclContainerIntf, JclArrayLists, JclLinkedLists, JclHashMaps, JclVectors;
 
 const
   ResultFormat = '%.1f ms';
   MsecsPerDay = 24 * 60 * 60 * 1000;
-
-{$IFNDEF RTL140_UP}
-const
-  SNeedRTL140Up = 'requires RTL > 14.0';
-{$ENDIF ~RTL140_UP}
 
 var
   Res: Integer;
@@ -194,7 +187,6 @@ begin
 end;
 
 procedure TestBucketList(Results: TStrings);
-{$IFDEF RTL140_UP}
 var
   I: Integer;
   Start: TDateTime;
@@ -220,14 +212,6 @@ begin
     Screen.Cursor := crDefault;
   end;
 end;
-{$ELSE ~RTL140_UP}
-var
-  I: Integer;
-begin
-  for I := 1 to 3 do
-    Results[I] := SNeedRTL140Up;
-end;
-{$ENDIF ~RTL140_UP}
 
 procedure TestJclHashMap(Results: TStrings);
 var
@@ -261,7 +245,6 @@ begin
 end;
 
 procedure TestHashedStringList(Results: TStrings);
-{$IFDEF RTL140_UP}
 var
   I: Integer;
   List: THashedStringList;
@@ -287,14 +270,6 @@ begin
     Screen.Cursor := crDefault;
   end;
 end;
-{$ELSE ~RTL140_UP}
-var
-  I: Integer;
-begin
-  for I := 1 to 3 do
-    Results[I] := SNeedRTL140Up;
-end;
-{$ENDIF ~RTL140_UP}
 
 procedure TestJclAnsiStrAnsiStrHashMap(Results: TStrings);
 var

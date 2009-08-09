@@ -5,11 +5,9 @@
 
 {$I jcl.inc}
 
-{$IFDEF RTL140_UP}
-  {$IFDEF VCL}
-    {$DEFINE HasShellCtrls} // $(Delphi)\Demos\ShellControls\ShellCtrls.pas
-  {$ENDIF VCL}
-{$ENDIF RTL140_UP}
+{$IFDEF VCL}
+  {$DEFINE HasShellCtrls} // $(Delphi)\Demos\ShellControls\ShellCtrls.pas
+{$ENDIF VCL}
 
 unit StretchGraphicDemoMain;
 
