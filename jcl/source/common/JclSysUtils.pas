@@ -2527,47 +2527,49 @@ end;
 
 function InternalExecute(CommandLine: string; var Output: string; OutputLineCallback: TTextHandler;
   RawOutput: Boolean; AbortPtr: PBoolean): Cardinal;
+
 const
   BufferSize = 255;
-var
-  Buffer: array [0..BufferSize] of AnsiChar;
-  TempOutput: string;
-  PipeBytesRead: Cardinal;
+type
+  TBuffer = array [0..BufferSize] of AnsiChar;
 
-  procedure ProcessLine(LineEnd: Integer);
+  procedure ProcessLine(const Line: string; LineEnd: Integer);
   begin
-    if RawOutput or (TempOutput[LineEnd] <> NativeCarriageReturn) then
+    if RawOutput or (Line[LineEnd] <> NativeCarriageReturn) then
     begin
-      while (LineEnd > 0) and CharIsReturn(TempOutput[LineEnd]) do
+      while (LineEnd > 0) and CharIsReturn(Line[LineEnd]) do
         Dec(LineEnd);
-      OutputLineCallback(Copy(TempOutput, 1, LineEnd));
+      OutputLineCallback(Copy(Line, 1, LineEnd));
     end;
   end;
 
-  procedure ProcessBuffer;
+  procedure ProcessBuffer(var Buffer: TBuffer; var Line: string; PipeBytesRead: Cardinal);
   var
     CR, LF: Integer;
   begin
     Buffer[PipeBytesRead] := #0;
-    TempOutput := TempOutput + string(Buffer);
+    Line := Line + string(Buffer);
     if Assigned(OutputLineCallback) then
     repeat
-      CR := Pos(NativeCarriageReturn, TempOutput);
-      if CR = Length(TempOutput) then
+      CR := Pos(NativeCarriageReturn, Line);
+      if CR = Length(Line) then
         CR := 0;        // line feed at CR + 1 might be missing
-      LF := Pos(NativeLineFeed, TempOutput);
+      LF := Pos(NativeLineFeed, Line);
       if (CR > 0) and ((LF > CR + 1) or (LF = 0)) then
         LF := CR;       // accept CR as line end
       if LF > 0 then
       begin
-        ProcessLine(LF);
-        Delete(TempOutput, 1, LF);
+        ProcessLine(Line, LF);
+        Delete(Line, 1, LF);
       end;
     until LF = 0;
   end;
 
+var
+  Buffer: TBuffer;
+  Line: string;
+  PipeBytesRead: Cardinal;
 {$IFDEF MSWINDOWS}
-// "outsourced" from Win32ExecAndRedirectOutput
 var
   StartupInfo: TStartupInfo;
   ProcessInfo: TProcessInformation;
@@ -2580,6 +2582,8 @@ begin
   SecurityAttr.bInheritHandle := True;
   PipeWrite := 0;
   PipeRead := 0;
+  Line := '';
+  ResetMemory(Buffer, SizeOf(Buffer));
   if not CreatePipe(PipeRead, PipeWrite, @SecurityAttr, 0) then
   begin
     Result := GetLastError;
@@ -2594,31 +2598,54 @@ begin
   StartupInfo.hStdError := PipeWrite;
   UniqueString(CommandLine); // CommandLine must be in a writable memory block
   ProcessInfo.dwProcessId := 0;
-  if CreateProcess(nil, PChar(CommandLine), nil, nil, True, NORMAL_PRIORITY_CLASS,
-    nil, nil, StartupInfo, ProcessInfo) then
-  begin
-    CloseHandle(PipeWrite);
-    if AbortPtr <> nil then
-      {$IFDEF FPC}
-      AbortPtr^ := 0;
-      {$ELSE ~FPC}
-      AbortPtr^ := False;
-      {$ENDIF ~FPC}
-    PipeBytesRead := 0;
-    while ((AbortPtr = nil) or not LongBool(AbortPtr^)) and
-      ReadFile(PipeRead, Buffer, BufferSize, PipeBytesRead, nil) and (PipeBytesRead > 0) do
-      ProcessBuffer;
-    if (AbortPtr <> nil) and LongBool(AbortPtr^) then
+  try
+    if CreateProcess(nil, PChar(CommandLine), nil, nil, True, NORMAL_PRIORITY_CLASS,
+      nil, nil, StartupInfo, ProcessInfo) then
+    begin
+      CloseHandle(PipeWrite);
+      PipeWrite := 0;
+      if AbortPtr <> nil then
+        {$IFDEF FPC}
+        AbortPtr^ := 0;
+        {$ELSE ~FPC}
+        AbortPtr^ := False;
+        {$ENDIF ~FPC}
+      PipeBytesRead := 0;
+      while ((AbortPtr = nil) or not LongBool(AbortPtr^)) and
+        ReadFile(PipeRead, Buffer, BufferSize, PipeBytesRead, nil) and (PipeBytesRead > 0) do
+        ProcessBuffer(Buffer, Line, PipeBytesRead);
+      if (AbortPtr <> nil) and LongBool(AbortPtr^) then
+        TerminateProcess(ProcessInfo.hProcess, Cardinal(ABORT_EXIT_CODE));
+      if (WaitForSingleObject(ProcessInfo.hProcess, INFINITE) = WAIT_OBJECT_0) and
+        not GetExitCodeProcess(ProcessInfo.hProcess, Result) then
+          Result := $FFFFFFFF;
+      CloseHandle(ProcessInfo.hThread);
+      ProcessInfo.hThread := 0;
+      CloseHandle(ProcessInfo.hProcess);
+      ProcessInfo.hProcess := 0;
+    end
+    else
+    begin
+      CloseHandle(PipeWrite);
+      PipeWrite := 0;
+    end;
+    CloseHandle(PipeRead);
+    PipeRead := 0;
+  finally
+    if PipeRead <> 0 then
+      CloseHandle(PipeRead);
+    if PipeWrite <> 0 then
+      CloseHandle(PipeWrite);
+    if ProcessInfo.hThread <> 0 then
+      CloseHandle(ProcessInfo.hThread);
+    if ProcessInfo.hProcess <> 0 then
+    begin
       TerminateProcess(ProcessInfo.hProcess, Cardinal(ABORT_EXIT_CODE));
-    if (WaitForSingleObject(ProcessInfo.hProcess, INFINITE) = WAIT_OBJECT_0) and
-      not GetExitCodeProcess(ProcessInfo.hProcess, Result) then
-        Result := $FFFFFFFF;
-    CloseHandle(ProcessInfo.hThread);
-    CloseHandle(ProcessInfo.hProcess);
-  end
-  else
-    CloseHandle(PipeWrite);
-  CloseHandle(PipeRead);
+      WaitForSingleObject(ProcessInfo.hProcess, INFINITE);
+      GetExitCodeProcess(ProcessInfo.hProcess, Result);
+      CloseHandle(ProcessInfo.hProcess);
+    end;
+  end;
 {$ENDIF MSWINDOWS}
 {$IFDEF UNIX}
 var
@@ -2626,26 +2653,34 @@ var
   Cmd: string;
 begin
   Cmd := Format('%s 2>&1', [CommandLine]);
-  Pipe := Libc.popen(PChar(Cmd), 'r');
-  { TODO : handle Abort }
-  repeat
-    PipeBytesRead := fread_unlocked(@Buffer, 1, BufferSize, Pipe);
-    if PipeBytesRead > 0 then
-      ProcessBuffer;
-  until PipeBytesRead = 0;
-  Result := pclose(Pipe);
-  wait(nil);
+  Pipe := nil;
+  try
+    Pipe := Libc.popen(PChar(Cmd), 'r');
+    { TODO : handle Abort }
+    repeat
+      PipeBytesRead := fread_unlocked(@Buffer, 1, BufferSize, Pipe);
+      if PipeBytesRead > 0 then
+        ProcessBuffer(Buffer, Line, PipeBytesRead);
+    until PipeBytesRead = 0;
+    Result := pclose(Pipe);
+    Pipe := nil;
+    wait(nil);
+  finally
+    if Pipe <> nil then
+      pclose(Pipe);
+    wait(nil);
+  end;
 {$ENDIF UNIX}
-  if TempOutput <> '' then
+  if Line <> '' then
     if Assigned(OutputLineCallback) then
       // output wasn't terminated by a line feed...
       // (shouldn't happen, but you never know)
-      ProcessLine(Length(TempOutput))
+      ProcessLine(Line, Length(Line))
     else
       if RawOutput then
-        Output := Output + TempOutput
+        Output := Output + Line
       else
-        Output := Output + MuteCRTerminatedLines(TempOutput);
+        Output := Output + MuteCRTerminatedLines(Line);
 end;
 
 { TODO -cHelp :
