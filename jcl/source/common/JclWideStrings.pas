@@ -32,7 +32,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                          $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -1355,10 +1355,8 @@ begin
       {$IFDEF RTL150_UP}
       FNameValueSeparator := CharToWideChar(TStrings(Source).NameValueSeparator);
       {$ENDIF RTL150_UP}
-      {$IFDEF RTL140_UP}
       FQuoteChar := CharToWideChar(TStrings(Source).QuoteChar);
       FDelimiter := CharToWideChar(TStrings(Source).Delimiter);
-      {$ENDIF RTL140_UP}
       {$ENDIF ~RTL190_UP}
       AddStrings(TStrings(Source));
     finally
@@ -1386,10 +1384,8 @@ begin
       {$IFDEF RTL150_UP}
       TStrings(Dest).NameValueSeparator := WideCharToChar(NameValueSeparator);
       {$ENDIF RTL150_UP}
-      {$IFDEF RTL140_UP}
       TStrings(Dest).QuoteChar := WideCharToChar(QuoteChar);
       TStrings(Dest).Delimiter := WideCharToChar(Delimiter);
-      {$ENDIF RTL140_UP}
       {$ENDIF ~RTL190_UP}
       for I := 0 to Count - 1 do
         TStrings(Dest).AddObject(GetP(I)^, Objects[I]);
