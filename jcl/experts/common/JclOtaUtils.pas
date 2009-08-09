@@ -968,7 +968,6 @@ begin
 
   ProjectFileName := Project.FileName;
   OutputDirectory := GetOutputDirectory(Project);
-  {$IFDEF RTL140_UP}
   if not Assigned(Project.ProjectOptions) then
     raise EJclExpertException.CreateTrace(RsENoProjectOptions);
   LibPrefix := Trim(VarToStr(Project.ProjectOptions.Values[LIBPREFIXOptionName]));
@@ -977,10 +976,6 @@ begin
     LibPrefix := '';
   if LibSuffix = 'false' then
     LibSuffix := '';
-  {$ELSE ~RTL140_UP}
-  LibPrefix := '';
-  LibSuffix := '';
-  {$ENDIF ~RTL140_UP}
   Result := PathAddSeparator(OutputDirectory) + LibPrefix +
     PathExtractFileNameNoExt(ProjectFileName) + LibSuffix + CompilerExtensionMAP;
 end;

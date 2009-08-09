@@ -907,10 +907,6 @@ type
 
 const
   {$IFDEF MSWINDOWS}
-  {$IFNDEF RTL140_UP}
-  PathSep = ';';
-  {$ENDIF ~RTL140_UP}
-
   MSHelpSystemKeyName = '\SOFTWARE\Microsoft\Windows\Help';
 
   BCBKeyName          = '\SOFTWARE\Borland\C++Builder';

@@ -221,10 +221,8 @@ uses
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
-  {$IFDEF RTL140_UP}
   JclCLR,
   JclPeImage,
-  {$ENDIF RTL140_UP}
   JclStrings, JclResources;
 
 type
@@ -808,7 +806,6 @@ begin
             FParam[I] := Value;
           end;
         end;
-      {$IFDEF RTL140_UP}  { TODO -cTest : since RTL 14.0 or 15.0? }
       ptSOff, ptI1:
         begin
           Stream.Read(VShortInt, SizeOf(ShortInt));
@@ -829,7 +826,6 @@ begin
           Stream.Read(VInt64, SizeOf(Int64));
           VType := varInt64;
         end;
-      {$ENDIF RTL140_UP}
     end;
   except
     Stream.Position := FOffset;
@@ -840,10 +836,8 @@ end;
 procedure TJclInstruction.Save(Stream: TStream);
 var
   Code: Byte;
-  {$IFDEF RTL140_UP}  { TODO -cTest : since RTL 14.0 or 15.0? }
   ArraySize: DWORD;
   I, Value: Integer;
-  {$ENDIF RTL140_UP}
 begin
   if WideOpCode then
   begin
@@ -865,7 +859,6 @@ begin
       Stream.Write(TVarData(FParam).VSingle, SizeOf(Single));
     ptR8:
       Stream.Write(TVarData(FParam).VDouble, SizeOf(Double));
-    {$IFDEF RTL140_UP}  { TODO -cTest : since RTL 14.0 or 15.0? }
     ptSOff, ptI1:
       Stream.Write(TVarData(FParam).VShortInt, SizeOf(ShortInt));
     ptU2:
@@ -885,7 +878,6 @@ begin
           Stream.Write(Value, SizeOf(Value));
         end;
       end;
-    {$ENDIF RTL140_UP}
   end;
 end;
 
@@ -916,10 +908,8 @@ function TJclInstruction.DumpILOption(Option: TJclInstructionDumpILOption): stri
   end;
 
 var
-  {$IFDEF RTL140_UP}  { TODO -cTest : since RTL 14.0 or 15.0? }
   I: Integer;
   Row: TJclClrTableRow;
-  {$ENDIF RTL140_UP}
   CodeStr, ParamStr: string;
 begin
   case Option of
@@ -938,7 +928,6 @@ begin
             ParamStr := IntToHex(TVarData(FParam).VByte, 2);
           ptArray:
             ParamStr := 'Array';
-          {$IFDEF RTL140_UP}  { TODO -cTest : since RTL 14.0 or 15.0? }
           ptI2, ptU2:
             ParamStr := IntToHex(TVarData(FParam).VWord, 4);
           ptLOff, ptI4, ptU4, ptR4:
@@ -947,7 +936,6 @@ begin
             ParamStr := IntToHex(TVarData(FParam).VInt64, 16);
           ptToken:
             ParamStr := TokenToString(TVarData(FParam).VLongWord);
-          {$ENDIF RTL140_UP}
         else
           ParamStr := '';
         end;
@@ -961,7 +949,6 @@ begin
           ; // do nothing
         ptLOff:
           Result := FormatLabel(Integer(Offset) + + Integer(Size) + TVarData(Param).VInteger - 1);
-        {$IFDEF RTL140_UP}  { TODO -cTest : since RTL 14.0 or 15.0? }
         ptToken:
           begin
             if Byte(TJclPeMetadata.TokenTable(TVarData(Param).VLongWord)) = $70 then
@@ -1009,7 +996,6 @@ begin
             end;
             Result := ' (' + Result + ')';
           end;
-        {$ENDIF RTL140_UP}
         else
           Result := VarToStr(Param);
         end;

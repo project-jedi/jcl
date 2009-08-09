@@ -373,9 +373,6 @@ uses
   {$IFDEF HAS_UNIT_ANSISTRINGS}
   AnsiStrings,
   {$ENDIF HAS_UNIT_ANSISTRINGS}
-  {$IFNDEF RTL140_UP}
-  JclWideStrings,
-  {$ENDIF ~RTL140_UP}
   SysUtils;
 
 function IntfSimpleCompare(const Obj1, Obj2: IInterface): Integer;

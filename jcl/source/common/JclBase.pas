@@ -30,7 +30,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                          $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -94,7 +94,6 @@ type
   {$ENDIF CPU64}
   PSizeInt = ^SizeInt;
   PPointer = ^Pointer;
-  {$IFDEF RTL140_UP}
   PByte = System.PByte;
   Int8 = ShortInt;
   Int16 = Smallint;
@@ -102,10 +101,6 @@ type
   UInt8 = Byte;
   UInt16 = Word;
   UInt32 = LongWord;
-  {$ELSE ~RTL140_UP}
-  PBoolean = ^Boolean;
-  PByte = Windows.PByte;
-  {$ENDIF ~RTL140_UP}
   PCardinal = ^Cardinal;
   {$IFNDEF COMPILER7_UP}
   UInt64 = Int64;

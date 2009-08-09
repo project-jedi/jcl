@@ -55,11 +55,6 @@ uses
   JclUnitVersioning;
 {$ENDIF UNITVERSIONING}
 
-{$IFNDEF RTL140_UP}
-const
-  sLineBreak = #13#10;
-{$ENDIF ~RTL140_UP}
-
 //=== JclBase ================================================================
 resourcestring
   RsWin32Prefix        = 'Win32: %s (%u)';

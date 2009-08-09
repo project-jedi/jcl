@@ -109,9 +109,6 @@ const
 implementation
 
 uses
-  {$IFNDEF RTL140_UP}
-  Forms,
-  {$ENDIF ~RTL140_UP}
   CommDlg, Dlgs,
   JclBase, JclFileUtils, JclStrings, JclSysInfo, JclSysUtils,
   JclOtaConsts, JclOtaResources, JclOtaUtils;

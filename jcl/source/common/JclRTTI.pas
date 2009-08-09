@@ -147,17 +147,13 @@ type
     ['{7DAD5223-46EA-11D5-B0C0-4854E825F345}']
     function GetBaseType: IJclEnumerationTypeInfo;
     function GetNames(const I: Integer): string;
-    {$IFDEF RTL140_UP}
     function GetUnitName: string;
-    {$ENDIF RTL140_UP}
 
     function IndexOfName(const Name: string): Integer;
 
     property BaseType: IJclEnumerationTypeInfo read GetBaseType;
     property Names[const I: Integer]: string read GetNames; default;
-    {$IFDEF RTL140_UP}
     property UnitName: string read GetUnitName;
-    {$ENDIF RTL140_UP}
   end;
 
   IJclSetTypeInfo = interface(IJclOrdinalTypeInfo)
@@ -283,17 +279,13 @@ type
     function GetParent: IJclInterfaceTypeInfo;
     function GetFlags: TIntfFlagsBase;
     function GetGUID: TGUID;
-    {$IFDEF RTL140_UP}
     function GetPropertyCount: Integer;
-    {$ENDIF RTL140_UP}
     function GetUnitName: string;
 
     property Parent: IJclInterfaceTypeInfo read GetParent;
     property Flags: TIntfFlagsBase read GetFlags;
     property GUID: TGUID read GetGUID;
-    {$IFDEF RTL140_UP}
     property PropertyCount: Integer read GetPropertyCount;
-    {$ENDIF RTL140_UP}
     property UnitName: string read GetUnitName;
   end;
 
@@ -307,7 +299,6 @@ type
     property MaxValue: Int64 read GetMaxValue;
   end;
 
-  {$IFDEF RTL140_UP}
   // Dynamic array types
   IJclDynArrayTypeInfo = interface(IJclTypeInfo)
     ['{7DAD522E-46EA-11D5-B0C0-4854E825F345}']
@@ -323,7 +314,6 @@ type
     property VarType: Integer read GetVarType;
     property UnitName: string read GetUnitName;
   end;
-  {$ENDIF RTL140_UP}
 
   EJclRTTIError = class(EJclError);
 
@@ -655,9 +645,7 @@ type
   protected
     function GetBaseType: IJclEnumerationTypeInfo;
     function GetNames(const I: Integer): string;
-    {$IFDEF RTL140_UP}
     function GetUnitName: string;
-    {$ENDIF RTL140_UP}
     function IndexOfName(const Name: string): Integer;
     procedure WriteTo(const Dest: IJclInfoWriter); override;
     procedure DeclarationTo(const Dest: IJclInfoWriter); override;
@@ -691,8 +679,6 @@ begin
   Result := string(P^);
 end;
 
-{$IFDEF RTL140_UP}
-
 function TJclEnumerationTypeInfo.GetUnitName: string;
 var
   I: Integer;
@@ -713,8 +699,6 @@ begin
     Result := string(TypeData.NameList);
 end;
 
-{$ENDIF RTL140_UP}
-
 function TJclEnumerationTypeInfo.IndexOfName(const Name: string): Integer;
 begin
   Result := MaxValue;
@@ -731,9 +715,7 @@ var
   Prefix: string;
 begin
   inherited WriteTo(Dest);
-  {$IFDEF RTL140_UP}
   Dest.Writeln(LoadResString(@RsRTTIUnitName) + GetUnitName);
-  {$ENDIF RTL140_UP}
   Dest.Write(LoadResString(@RsRTTINameList));
   Prefix := '(';
   for Idx := MinValue to MaxValue do
@@ -1680,9 +1662,7 @@ type
     function GetParent: IJclInterfaceTypeInfo;
     function GetFlags: TIntfFlagsBase;
     function GetGUID: TGUID;
-    {$IFDEF RTL140_UP}
     function GetPropertyCount: Integer;
-    {$ENDIF RTL140_UP}
     function GetUnitName: string;
     procedure WriteTo(const Dest: IJclInfoWriter); override;
     procedure DeclarationTo(const Dest: IJclInfoWriter); override;
@@ -1690,9 +1670,7 @@ type
     property Parent: IJclInterfaceTypeInfo read GetParent;
     property Flags: TIntfFlagsBase read GetFlags;
     property GUID: TGUID read GetGUID;
-    {$IFDEF RTL140_UP}
     property PropertyCount: Integer read GetPropertyCount;
-    {$ENDIF RTL140_UP}
   end;
 
 function TJclInterfaceTypeInfo.GetParent: IJclInterfaceTypeInfo;
@@ -1719,7 +1697,6 @@ begin
     Result := NullGUID;
 end;
 
-{$IFDEF RTL140_UP}
 function TJclInterfaceTypeInfo.GetPropertyCount: Integer;
 var
   PropData: ^TPropData;
@@ -1728,7 +1705,6 @@ begin
   Inc(Integer(PropData), 1 + Length(GetUnitName));
   Result := PropData.PropCount;
 end;
-{$ENDIF RTL140_UP}
 
 function TJclInterfaceTypeInfo.GetUnitName: string;
 begin
@@ -1748,9 +1724,7 @@ begin
   Dest.Writeln(LoadResString(@RsRTTIUnitName) + GetUnitName);
   if Parent <> nil then
     Dest.Writeln(LoadResString(@RsRTTIParent) + Parent.Name);
-  {$IFDEF RTL140_UP}
   Dest.Writeln(LoadResString(@RsRTTIPropCount) + IntToStr(PropertyCount));
-  {$ENDIF RTL140_UP}
 end;
 
 procedure TJclInterfaceTypeInfo.DeclarationTo(const Dest: IJclInfoWriter);
@@ -1811,8 +1785,6 @@ begin
 end;
 
 //=== { TJclDynArrayTypeInfo } ===============================================
-
-{$IFDEF RTL140_UP}
 
 type
   TJclDynArrayTypeInfo = class(TJclTypeInfo, IJclDynArrayTypeInfo)
@@ -1909,8 +1881,6 @@ begin
     Dest.Writeln('; // Unit ' + GetUnitName);
 end;
 
-{$ENDIF RTL140_UP}
-
 //=== Typeinfo retrieval =====================================================
 
 function JclTypeInfo(ATypeInfo: PTypeInfo): IJclTypeInfo;
@@ -1934,10 +1904,8 @@ begin
       Result := TJclInterfaceTypeInfo.Create(ATypeInfo);
     tkInt64:
       Result := TJclInt64TypeInfo.Create(ATypeInfo);
-    {$IFDEF RTL140_UP}
     tkDynArray:
       Result := TJclDynArrayTypeInfo.Create(ATypeInfo);
-    {$ENDIF RTL140_UP}
   else
     Result := TJclTypeInfo.Create(ATypeInfo);
   end;
@@ -2111,7 +2079,7 @@ begin
     StringSize := StringSize + 1 + Length(Literals[I]);
   Result := AllocMem(SizeOf(TTypeInfo) + SizeOf(TOrdType) +
     (2*SizeOf(Integer)) + SizeOf(PPTypeInfo) +
-    StringSize {$IFDEF RTL140_UP}+ 1{$ENDIF RTL140_UP});
+    StringSize + 1);
   try
     with Result^ do
     begin
@@ -2136,9 +2104,7 @@ begin
       CurName^ := ShortString(Literals[I]);
       Inc(TJclAddr(CurName), Length(Literals[I])+1);
     end;
-    {$IFDEF RTL140_UP}
     CurName^ := ''; // Unit name unknown
-    {$ENDIF RTL140_UP}
     AddType(Result);
   except
     try

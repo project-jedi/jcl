@@ -27,7 +27,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                       $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -1106,11 +1106,7 @@ var
   I: Integer;
 begin
   Result := '// Dump ' + ClassName + NativeLineBreak;
-  {$IFDEF RTL140_UP}
   if Supports(ClassType, ITableCanDumpIL) then
-  {$ELSE RTL140_UP}
-  if ClassType.GetInterfaceEntry(ITableCanDumpIL) <> nil then
-  {$ENDIF RTL140_UP}
     for I := 0 to FRows.Count - 1 do
       Result := Result + TJclClrTableRow(FRows[I]).DumpIL;
 end;

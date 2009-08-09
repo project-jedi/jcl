@@ -1060,12 +1060,6 @@ uses
   is about the only routine which doesn't cause the file's last modification/accessed time to be
   changed which is usually an undesired side-effect. }
 
-{$IFNDEF RTL140_UP}
-const
-  MinDateTime: TDateTime = -657434.0;      { 0100-01-01T00:00:00.000 }
-  MaxDateTime: TDateTime =  2958465.99999; { 9999-12-31T23:59:59.999 }
-{$ENDIF ~RTL140_UP}
-
 {$IFDEF UNIX}
 const
   ERROR_NO_MORE_FILES  = -1;
