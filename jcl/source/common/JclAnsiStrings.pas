@@ -2084,13 +2084,13 @@ end;
 function StrOemToAnsi(const S: AnsiString): AnsiString;
 begin
   SetLength(Result, Length(S));
-  OemToAnsiBuff(@S[1], @Result[1], Length(S));
+  OemToAnsiBuff(PAnsiChar(S), PAnsiChar(Result), Length(S));
 end;
 
 function StrAnsiToOem(const S: AnsiString): AnsiString;
 begin
   SetLength(Result, Length(S));
-  AnsiToOemBuff(@S[1], @Result[1], Length(S));
+  AnsiToOemBuff(PAnsiChar(S), PAnsiChar(Result), Length(S));
 end;
 {$ENDIF MSWINDOWS}
 
