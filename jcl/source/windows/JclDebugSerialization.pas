@@ -410,6 +410,7 @@ procedure TJclSerializableLocationInfo.Serialize(ASerializer: TJclCustomSimpleSe
 var
   S: string;
 begin
+  S := '';
   ASerializer.WriteString(Self, 'VAddress', Format('%p', [VAddress]));
   ASerializer.WriteString(Self, 'ModuleName', ModuleName);
   ASerializer.WriteString(Self, 'Address', Format('%p', [Address]));
