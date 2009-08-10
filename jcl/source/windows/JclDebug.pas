@@ -34,7 +34,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                          $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -739,15 +739,17 @@ type
   TJclExceptFrame = class(TObject)
   private
     FFrameKind: TExceptFrameKind;
+    FFrameLocation: Pointer;
     FCodeLocation: Pointer;
     FExcTab: array of TExcDescEntry;
   protected
     procedure AnalyseExceptFrame(AExcDesc: PExcDesc);
   public
-    constructor Create(AExcDesc: PExcDesc);
+    constructor Create(AFrameLocation: Pointer; AExcDesc: PExcDesc);
     function Handles(ExceptObj: TObject): Boolean;
     function HandlerInfo(ExceptObj: TObject; out HandlerAt: Pointer): Boolean;
     property CodeLocation: Pointer read FCodeLocation;
+    property FrameLocation: Pointer read FFrameLocation;
     property FrameKind: TExceptFrameKind read FFrameKind;
   end;
 
@@ -5123,10 +5125,11 @@ end;
 
 //=== { TJclExceptFrame } ====================================================
 
-constructor TJclExceptFrame.Create(AExcDesc: PExcDesc);
+constructor TJclExceptFrame.Create(AFrameLocation: Pointer; AExcDesc: PExcDesc);
 begin
   inherited Create;
   FFrameKind := efkUnknown;
+  FFrameLocation := AFrameLocation;
   FCodeLocation := nil;
   AnalyseExceptFrame(AExcDesc);
 end;
@@ -5257,7 +5260,7 @@ end;
 
 function TJclExceptFrameList.AddFrame(AFrame: PExcFrame): TJclExceptFrame;
 begin
-  Result := TJclExceptFrame.Create(AFrame^.Desc);
+  Result := TJclExceptFrame.Create(AFrame, AFrame^.Desc);
   Add(Result);
 end;
 
