@@ -1,6 +1,7 @@
 unit UMain;
 
 {$I jcl.inc}
+{$I windowsonly.inc}
 
 interface
 

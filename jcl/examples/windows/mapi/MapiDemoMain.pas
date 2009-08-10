@@ -185,7 +185,7 @@ begin
   SimpleMapiMail.Body := AnsiString(BodyEdit.Text);
   SimpleMapiMail.HtmlBody := HtmlCheckBox.Checked;
   if OpenDialog1.FileName <> '' then
-    SimpleMapiMail.Attachments.Add(OpenDialog1.FileName);
+    SimpleMapiMail.Attachments.Add(AnsiString(OpenDialog1.FileName));
   SimpleMapiMail.Save;
 end;
 
@@ -207,7 +207,7 @@ begin
   SimpleMapiMail.Body := AnsiString(BodyEdit.Text);
   SimpleMapiMail.HtmlBody := HtmlCheckBox.Checked;
   if OpenDialog1.FileName <> '' then
-    SimpleMapiMail.Attachments.Add(OpenDialog1.FileName);
+    SimpleMapiMail.Attachments.Add(AnsiString(OpenDialog1.FileName));
   SimpleMapiMail.Send(DialogCheckBox.Checked);
 end;
 

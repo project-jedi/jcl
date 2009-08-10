@@ -1,5 +1,8 @@
 unit FileSummaryDemoMain;
 
+{$I jcl.inc}
+{$I windowsonly.inc}
+
 interface
 
 uses
