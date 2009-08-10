@@ -37,10 +37,12 @@ uses
 
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
+    RCSfile: '$Url:$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: '';
+    LogPath: 'JCL\examples\common\unitversioning';
+    Extra: '';
+    Data: nil
   );
 
 begin

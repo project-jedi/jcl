@@ -28,10 +28,16 @@
 
 unit JclStackTraceViewerAPI;
 
+{$I jcl.inc}
+
 interface
 
 uses
-  Classes, ActiveX, Forms;
+  Classes, ActiveX,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  Forms;
 
 const
   livLocationInfo = 1;
@@ -228,6 +234,18 @@ procedure UnregisterLineNumberTranslator(AIndex: Integer);
 function RegisterRevisionProvider(const ATranslator: IJclRevisionProvider): Integer;
 procedure UnregisterRevisionProvider(AIndex: Integer);
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\experts\stacktraceviewer';
+    Extra: '';
+    Data: nil
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 function RegisterLineNumberTranslator(const ATranslator: IJclLineNumberTranslator): Integer;
@@ -249,5 +267,13 @@ procedure UnregisterRevisionProvider(AIndex: Integer);
 begin
   UnregisterRevisionProviderProc(AIndex);
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

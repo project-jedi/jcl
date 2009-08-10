@@ -60,7 +60,7 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: '';
+    LogPath: 'JCL\experts\stacktraceviewer';
     Extra: '';
     Data: nil
     );
