@@ -1652,9 +1652,9 @@ Description:
   TStackFrame holds stack frame information.
 Donator:
   Hallvard Vassbotn
-@@TStackFrame.CallersEBP
-  Callers EBP register
-@@TStackFrame.CallerAdr
+@@TStackFrame.CallerFrame
+  Callers frame register (EBP/RBP)
+@@TStackFrame.CallerAddr
   Address of caller
 @@PStackFrame
 <GROUP Debugging.Stackinforoutines>
@@ -1668,12 +1668,12 @@ Description:
   TStackInfo holds stack information.
 Donator:
   Hallvard Vassbotn
-@@TStackInfo.CallerAdr
+@@TStackInfo.CallerAddr
   Return address  (the address of the caller)
 @@TStackInfo.Level
   Caller level
-@@TStackInfo.CallersEBP
-  EBP register of caller (only filled if the trace was not a raw stack trace)
+@@TStackInfo.CallerFrame
+  frame register (EBP/RBP) of caller (only filled if the trace was not a raw stack trace)
 @@TStackInfo.DumpSize
   Length of memory block between callers frame and this frame (only filled if the trace was not a raw stack trace)
 @@TStackInfo.ParamSize
@@ -1753,7 +1753,7 @@ Summary:
 Description:
   Create instantiates a stack list and immediately executes the trace.
 Parameters:
-  Raw - When set to False, the stack is traced by means of the EBP frame, when set to True, all DWORDs are checked for valid caller addresses.
+  Raw - When set to False, the stack is traced by means of the frame address, when set to True, all DWORDs are checked for valid caller addresses.
   AIgnoreLevels - Number of callers to ignore upon tracing.
   FirstCaller - If not nil, an explicit TJclStackInfoItem is added to the list, pointing to the FirstCaller.
 Donator:
@@ -1797,7 +1797,7 @@ Description:
   JclCreateStackList creates a list of all stack frames. The resulting TJclStackInfoList
   is also stored internally and can be obtained again by calling JclLastExceptStackList.
 Parameters:
-  Raw - When set to False, the stack is traced by means of the EBP frame, when set to True, all DWORDs are checked for valid caller addresses.
+  Raw - When set to False, the stack is traced by means of the stack frame, when set to True, all DWORDs are checked for valid caller addresses.
   AIgnoreLevels - Number of callers to ignore upon tracing.
   FirstCaller - If not nil, an explicit TJclStackInfoItem is added to the list, pointing to the FirstCaller.
 Result:
@@ -1892,8 +1892,8 @@ Summary:
 Description:
   TExcFrame is an except frame. It holds a reference to the next frame (if any), the
   location of the frame (which should always start with executable code) and the
-  handlers EBP frame. Incase of Borland modules, it could also contain a reference to
-  the object being constructed (this is the case for the implicit except frame for
+  handlers stack frame. Incase of Borland modules, it could also contain a reference
+  to the object being constructed (this is the case for the implicit except frame for
   constructors) or a reference to Self of the method containing the handler.
 Notes:
   This type is copied from System.pas.
@@ -1903,8 +1903,8 @@ Donator:
   Link to next except frame or -1(!) if there is no next frame.
 @@TExcFrame.Desc
   Pointer to handler (non-Borland modules) or frame descriptor (Borland modules)
-@@TExcFrame.HEBP
-  Value of the handlers EBP-frame
+@@TExcFrame.FramePointer
+  Value of the handlers stack frame pointer (EBP/RBP)
 @@TExcFrame.ConstructedObject
   Pointer to object being constructed. This is used by the compiler to allow for destruction of the object when an exception occured.
 @@TExcFrame.SelfOfMethod
@@ -2006,12 +2006,13 @@ Result:
 Donator:
   Marcel Bestebroer
 --------------------------------------------------------------------------------
-@@TJclExceptFrame.ExcFrame
+@@TJclExceptFrame.FrameLocation
 Summary:
-  Reference to the ExceptFrame on the stack.
+  Address of the ExceptFrame on the stack.
 Description:
-  ExcFrame is a reference to except frame on the stack. It is not wise to modify
-  the memory pointed to by ExcFrame
+  FrameLocation is the address of the except frame on the stack. It is not wise
+  to modify the memory pointed to by FrameLocation, and its content may be
+  altered without notice.
 Donator:
   Marcel Bestebroer
 --------------------------------------------------------------------------------

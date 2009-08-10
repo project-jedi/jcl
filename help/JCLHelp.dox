@@ -1,4 +1,4 @@
-﻿; This is a Doc-O-Matic version 6.2.0.1278 project file.
+﻿; This is a Doc-O-Matic version 6.5.1.1382 project file.
 ; This file is maintained by Doc-O-Matic, do not edit manually.
 
 [*Control*]
@@ -50703,6 +50703,11 @@ Vars=1
 
 [Configurations\PDF\Flags]
 Count=5
+FlagAttributeName0=
+FlagAttributeName1=
+FlagAttributeName2=
+FlagAttributeName3=
+FlagAttributeName4=
 FlagImage0=indicator_new
 FlagImage1=indicator_depreciated
 FlagImage2=indicator_beta
@@ -50718,6 +50723,16 @@ FlagName1=depreciated
 FlagName2=beta
 FlagName3=preliminary
 FlagName4=CFW
+FlagSuppressOutput0=0
+FlagSuppressOutput1=0
+FlagSuppressOutput2=0
+FlagSuppressOutput3=0
+FlagSuppressOutput4=0
+FlagUseAsAttribute0=0
+FlagUseAsAttribute1=0
+FlagUseAsAttribute2=0
+FlagUseAsAttribute3=0
+FlagUseAsAttribute4=0
 FlagUseAsIndicator0=1
 FlagUseAsIndicator1=1
 FlagUseAsIndicator2=1
@@ -136596,6 +136611,7 @@ ID28=.php
 ID29=.dproj
 ID3=.h;.hpp;.hxx
 ID31=.dom-snippet
+ID32=.cbproj
 ID4=.pas;.inc;.int
 ID5=.vb
 ID6=.bpr;.bpk
@@ -136680,7 +136696,7 @@ SupportXMLDoc=1
 TabExpandCount=4
 TopicSeparator=@@
 TrailerChars=-+~/#
-UseCodeSkip=0
+UseCodeSkip=1
 UseParameterListInlineComments=1
 WallCharacters="#$%&'*+-/=@[\]^_`{|}~
 
@@ -136696,7 +136712,7 @@ Count=0
 
 [Project File Info]
 Template=
-Version=602
+Version=605
 
 [Section\0]
 Count=2

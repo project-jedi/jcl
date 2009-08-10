@@ -3136,7 +3136,7 @@ See also:
 Donator:
   Marcel Bestebroer
 --------------------------------------------------------------------------------
-@@TJclTabSet.Add@Integer
+@@TJclTabSet.Add@SizeInt
 Summary:
   Adds a fixed tabulation position.
 Description:
@@ -3205,7 +3205,7 @@ Description:
 Donator:
   Marcel Bestebroer
 --------------------------------------------------------------------------------
-@@TJclTabSet.Create@Integer
+@@TJclTabSet.Create@SizeInt
 Summary:
   Initializes a new tab set instance with the specified tab width.
 Description:
@@ -3216,7 +3216,7 @@ Parameters:
 Donator:
   Marcel Bestebroer
 --------------------------------------------------------------------------------
-@@TJclTabSet.Create@array of Integer@Boolean
+@@TJclTabSet.Create@array of SizeInt@Boolean
 Summary:
   Initializes a new tab set instance with the specified fixed tabulation
   positions and automatic tab width calculation.
@@ -3229,7 +3229,7 @@ Parameters:
 Donator:
   Marcel Bestebroer
 --------------------------------------------------------------------------------
-@@TJclTabSet.Create@array of Integer@Boolean@Integer
+@@TJclTabSet.Create@array of SizeInt@Boolean@SizeInt
 Summary:
   Initializes a new tab set instance with the specified fixed tabulation
   positions and tab width.
@@ -3244,7 +3244,7 @@ Parameters:
 Donator:
   Marcel Bestebroer
 --------------------------------------------------------------------------------
-@@TJclTabSet.Delete@Integer
+@@TJclTabSet.Delete@SizeInt
 Summary:
   Removes a fixed tabulation position.
 Description:
@@ -3299,11 +3299,11 @@ Example:
   See the <LINK TJclTabSet, TJclTabSet> help for an example.
 See also:
   TJclTabSet
-  TJclTabSet.Expand@string@Integer
+  TJclTabSet.Expand@string@SizeInt
 Donator:
   Marcel Bestebroer
 --------------------------------------------------------------------------------
-@@TJclTabSet.Expand@string@Integer
+@@TJclTabSet.Expand@string@SizeInt
 Summary:
   Expands tabs to spaces in the provided string.
 Description:
@@ -3318,7 +3318,7 @@ Description:
   (<LINK TJclTabSet.ZeroBased, zero-based> set to <c>False</c>).
 
   The reverse operation (collapse sequences of spaces into tab characters) can
-  be achieved by the <LINK TJclTabSet.Optimize@string@Integer, Optimize> method.
+  be achieved by the <LINK TJclTabSet.Optimize@string@SizeInt, Optimize> method.
 Parameters:
   S - The string to expand tabs in.
   Column - The starting column to use when expanding the tabs.
@@ -3407,7 +3407,7 @@ Description:
   InternalTabStops provides <b>nil</b>-safe access to the actual tab stops
   array.
 Returns:
-  A TDynIntegerArray holding each individual tab position<p>
+  A TDynSizeIntArray holding each individual tab position<p>
    <i>- or -</i><p>
   <b>nil</b> if the method is called on a <b>nil</b>-reference
 Donator:
@@ -3519,11 +3519,11 @@ Notes:
 See also:
   TJclTabSet
   TJclTabSet.OptimalFillInfo
-  TJclTabSet.Optimize@string@Integer
+  TJclTabSet.Optimize@string@SizeInt
 Donator:
   Marcel Bestebroer
 --------------------------------------------------------------------------------
-@@TJclTabSet.Optimize@string@Integer
+@@TJclTabSet.Optimize@string@SizeInt
 Summary:
   Expands tabs to spaces in the provided string.
 Description:
@@ -3538,7 +3538,7 @@ Description:
   (<LINK TJclTabSet.ZeroBased, zero-based> set to <c>False</c>).
 
   The reverse operation (expand sequences of tab characters into spaces) can
-  be achieved by the <LINK TJclTabSet.Expand@string@Integer, Expand> method.
+  be achieved by the <LINK TJclTabSet.Expand@string@SizeInt, Expand> method.
 Parameters:
   S - The string to expand tabs in.
   Column - The starting column to use when expanding the tabs.
@@ -3662,7 +3662,7 @@ Description
   fixed positions.
 
   Using this overload is the same as using the one with the
-  <LINK TJclTabSet.ToString@Integer, formatting options>, specifying the
+  <LINK TJclTabSet.ToString@SizeInt, formatting options>, specifying the
   TabSetFormatting_Full option.
 
   The resulting string will be composed of the following items:
@@ -3688,7 +3688,7 @@ Returns:
 Notes:
   This method is <i><b>nil</b>-safe</i>.
 --------------------------------------------------------------------------------
-@@TJclTabSet.ToString@Integer
+@@TJclTabSet.ToString@SizeInt
 Summary
   Converts the tab set into its string representation using the specified
   formatting.
@@ -3756,12 +3756,12 @@ Example:
   See the <LINK TJclTabSet, TJclTabSet> help for an example.
 See also:
   TJclTabSet
-  TJclTabSet.Expand@string@Integer
+  TJclTabSet.Expand@string@SizeInt
   TJclTabSet.TabFrom
 Donator:
   Marcel Bestebroer
 --------------------------------------------------------------------------------
-@@TJclTabSet.UpdatePosition@string@Integer
+@@TJclTabSet.UpdatePosition@string@SizeInt
 Summary:
   Calculates the ending column after expanding tabs in the provided
   string.
@@ -3787,12 +3787,12 @@ Example:
   See the <LINK TJclTabSet, TJclTabSet> help for an example.
 See also:
   TJclTabSet
-  TJclTabSet.Expand@string@Integer
+  TJclTabSet.Expand@string@SizeInt
   TJclTabSet.TabFrom
 Donator:
   Marcel Bestebroer
 --------------------------------------------------------------------------------
-@@TJclTabSet.UpdatePosition@string@Integer@Integer
+@@TJclTabSet.UpdatePosition@string@SizeInt@SizeInt
 Summary:
   Calculates the ending line and column after expanding tabs in the provided
   string.
@@ -3822,7 +3822,7 @@ Example:
   See the <LINK TJclTabSet, TJclTabSet> help for an example.
 See also:
   TJclTabSet
-  TJclTabSet.Expand@string@Integer
+  TJclTabSet.Expand@string@SizeInt
   TJclTabSet.TabFrom
 Donator:
   Marcel Bestebroer
@@ -3848,7 +3848,7 @@ Notes:
   <b>nil</b>-reference, this property will return <c>True</c>. When written to
   on a <b>nil</b>-reference, a NullReferenceException will be raised.
 See also:
-  TJclTabSet.Expand@string@Integer
+  TJclTabSet.Expand@string@SizeInt
   TJclTabSet.TabStops
   TJclTabSet.TabFrom
 Donator:

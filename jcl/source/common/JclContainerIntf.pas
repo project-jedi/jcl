@@ -1816,6 +1816,7 @@ type
   end;
 
   {$IFDEF SUPPORTS_GENERICS}
+  //DOM-IGNORE-BEGIN
   IJclCollection<T> = interface(IJclContainer)
     ['{67EE8AF3-19B0-4DCA-A730-3C9B261B8EC5}']
     function Add(const AItem: T): Boolean;
@@ -1837,6 +1838,7 @@ type
     function GetEnumerator: IJclIterator<T>;
     {$ENDIF SUPPORTS_FOR_IN}
   end;
+  //DOM-IGNORE-END
   {$ENDIF SUPPORTS_GENERICS}
 
   IJclIntfList = interface(IJclIntfCollection)

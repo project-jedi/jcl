@@ -342,35 +342,10 @@ TDynIntegerArray   array of Integer
 TDynLongintArray   array of Longint
 TDynCardinalArray  array of Cardinal
 TDynInt64Array     array of Int64
+TDynSizeIntArray   array of SizeInt
 TDynExtendedArray  array of Extended
 TDynDoubleArray    array of Double
 TDynSingleArray    array of Single
-</TABLE>
-
-  Compiler does not support dynamic arrays (See the various DynArrayXxx routines).
-  The TDynXxxArray types are declared as a pointer to PDynXxxArray types. The
-  use of the 'P' and 'T' prefix are reversed here to maintain consistency with
-  the situation where dynamic arrays are supported. As an example the full
-  declaration of TDynByteArray is:
-  PDynByteArray = array [0..DynByteArrayHigh] of Byte; 
-  TDynByteArray = ^PDynByteArray; 
-  Keep in mind that it is the TDynArray variant that actually use in your code
-  but that in reality this is a pointer and as such must be dereferenced before
-  you can access an element of the array.
-<TABLE>
-Type               Declaration
------------------  --------------------------------------------
-TDynByteArray      ^array [0..DynByteArrayHigh] of Byte
-TDynShortArray     ^array [0..DynShortintArrayHigh] of Shortint
-TDynSmallintArray  ^array [0..DynSmallintArrayHigh] of Smallint
-TDynWordArray      ^array [0..DynWordArrayHigh] of Word
-TDynIntegerArray   ^array [0..DynIntegerArrayHigh] of Integer
-TDynLongintArray   ^array [0..DynLongintArrayHigh] of Longint
-TDynCardinalArray  ^array [0..DynCardinalArrayHigh] of Cardinal
-TDynInt64Array     ^array [0..DynInt64ArrayHigh] of Int64
-TDynExtendedArray  ^array [0..DynExtendedArrayHigh] of Extended
-TDynDoubleArray    ^array [0..DynDoubleArrayHigh] of Double
-TDynSingleArray    ^array [0..DynSingleArrayHigh] of Single
 </TABLE>
 Donator:
   Marcel van Brakel
@@ -588,7 +563,7 @@ Donator:
 @@JclVersionRelease
 <COMBINE JclVersion>
 --------------------------------------------------------------------------------
-@@MoveChar@string@Integer@string@Integer@Integer
+@@MoveChar@string@SizeInt@string@SizeInt@SizeInt
 Summary:
   This function copies characters from a Source string to a
   destination index at different indexes. There are no checks
@@ -605,9 +580,12 @@ Parameters:
 Result:
   This function has no return value.
 --------------------------------------------------------------------------------
-@@TULargeInteger
+@@TJclULargeInteger
 Summary:
   Redefinition of TUlargeInteger as defined in Windows.pas.
+Description:
+  This type is an alias of ULARGE_INTEGER.
+@@ULARGE_INTEGER
 Description:
   The ULARGE_INTEGER structure is used to specify a 64-bit
   unsigned integer value.
@@ -616,19 +594,23 @@ Notes:
   compiler has built-in support for 64-bit integers, use the
   QuadPart member to store the 64-bit integer. Otherwise, use
   the LowPart and HighPart members to store the 64-bit integer.
-@@TULargeInteger.HighPart
+@@ULARGE_INTEGER.HighPart
   High-order 32 bits.
-@@TULargeInteger.LowPart
+@@ULARGE_INTEGER.LowPart
   Low-order 32 bits.
-@@TULargeInteger.QuadPart
+@@ULARGE_INTEGER.QuadPart
   Unsigned 64-bit integer.
 --------------------------------------------------------------------------------
-@@DWORD
+@@SizeInt
 Summary:
-  Type for a double word (unsigned 32-bit integer).
+  Type for a signed machine-size integer.
 Description:
-  This type is not defined unless the code is compiled
-  targeting a managed environment.
+  The SizeInt type is an alias to Integer for 32-bit executables and an alias to
+  Int64 for 64-bit executables.
+--------------------------------------------------------------------------------
+@@PSizeInt
+Summary:
+  Pointer to a SizeInt value.
 --------------------------------------------------------------------------------
 @@Int16
 Summary:
@@ -645,10 +627,6 @@ Summary:
 @@Largeint
 Summary:
   Type for a signed 64-bit integer.
---------------------------------------------------------------------------------
-@@PBoolean
-Summary:
-  Type for a pointer to a Boolean value.
 --------------------------------------------------------------------------------
 @@PByte
 Summary:
@@ -670,9 +648,12 @@ Summary:
 Summary:
   Type for pointer to a TLargeInteger value.
 --------------------------------------------------------------------------------
-@@PULargeInteger
+@@PJclULargeInteger
 Summary:
-  Type for a pointer to a TULargeInteger value.
+  Alias of type PULARGE_INTEGER.
+@@PULARGE_INTEGER
+Summary:
+  Type for a pointer to a ULARGE_INTEGER value.
 --------------------------------------------------------------------------------
 @@TLargeInteger
 Summary:
@@ -729,6 +710,10 @@ Summary:
 @@TDynInt64Array
 Summary:
   Type for a dynamic array of Int64 (signed 64-bit integer).
+--------------------------------------------------------------------------------
+@@TDynSizeIntArray
+Summary:
+  Type for a dynamic array of SizeInt (signed machine-size integer).
 --------------------------------------------------------------------------------
 @@TDynIntegerArray
 Summary:
