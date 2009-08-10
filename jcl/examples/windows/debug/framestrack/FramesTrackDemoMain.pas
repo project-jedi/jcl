@@ -82,7 +82,7 @@ begin
       ModInfo := GetLocationInfo(HandlerLocation);
       TmpS := Format(
         '    Frame at $%p (type: %s',
-        [ExceptFrame.ExcFrame,
+        [ExceptFrame.FrameLocation,
          GetEnumName(TypeInfo(TExceptFrameKind), Ord(ExceptFrame.FrameKind))]);
       if ExceptionHandled then
         TmpS := TmpS + ', handles exception)'
