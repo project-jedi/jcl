@@ -104,7 +104,5 @@
     <DCCReference Include="..\..\experts\stacktraceviewer\JclStackTraceViewerAPIImpl.pas" />
     <DCCReference Include="..\..\experts\stacktraceviewer\JclStackTraceViewerAPI.pas" />
     <DCCReference Include="..\..\experts\stacktraceviewer\JclStackTraceViewerStackUtils.pas" />
-    <DCCReference Include="..\..\experts\stacktraceviewer\JclDebugSerialization.pas" />
-    <DCCReference Include="..\..\experts\stacktraceviewer\JclDebugXMLDeserializer.pas" />
   </ItemGroup>
 </Project>

@@ -31,7 +31,5 @@
     <File Name="..\..\experts\stacktraceviewer\JclStackTraceViewerAPIImpl.pas" Targets="runtimeIDE" Formname="" Condition=""/>
     <File Name="..\..\experts\stacktraceviewer\JclStackTraceViewerAPI.pas" Targets="runtimeIDE" Formname="" Condition=""/>
     <File Name="..\..\experts\stacktraceviewer\JclStackTraceViewerStackUtils.pas" Targets="runtimeIDE" Formname="" Condition=""/>
-    <File Name="..\..\experts\stacktraceviewer\JclDebugSerialization.pas" Targets="runtimeIDE" Formname="" Condition=""/>
-    <File Name="..\..\experts\stacktraceviewer\JclDebugXMLDeserializer.pas" Targets="runtimeIDE" Formname="" Condition=""/>
   </Contains>
 </Package>

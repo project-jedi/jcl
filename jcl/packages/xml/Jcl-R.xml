@@ -68,6 +68,9 @@
     <File Name="..\..\source\windows\JclCOM.pas" Targets="Windows" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclConsole.pas" Targets="Windows" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclDebug.pas" Targets="Windows" Formname="" Condition=""/>
+    <File Name="..\..\source\windows\JclDebugSerialization.pas" Targets="Windows" Formname="" Condition=""/>
+    <File Name="..\..\source\windows\JclDebugXMLDeserializer.pas" Targets="Windows" Formname="" Condition=""/>
+    <File Name="..\..\source\windows\JclDebugXMLSerializer.pas" Targets="Windows" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclDotNet.pas" Targets="Pascal" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclHookExcept.pas" Targets="Windows" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclLANMan.pas" Targets="Windows" Formname="" Condition=""/>

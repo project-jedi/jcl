@@ -38,7 +38,7 @@
     <Description Value="JEDI Code Library RTL package"/>
     <License Value="Copyright (C) 1999, 2009 Project JEDI"/>
     <Version Major="2" Minor="0" Release="0" Build="3401"/>
-    <Files Count="81">
+    <Files Count="84">
       <Item1>
         <Filename Value="..\..\source\common\bzip2.pas"/>
         <UnitName Value="bzip2"/>
@@ -260,109 +260,121 @@
         <UnitName Value="JclDebug"/>
       </Item55>
       <Item56>
-        <Filename Value="..\..\source\windows\JclDotNet.pas"/>
-        <UnitName Value="JclDotNet"/>
+        <Filename Value="..\..\source\windows\JclDebugSerialization.pas"/>
+        <UnitName Value="JclDebugSerialization"/>
       </Item56>
       <Item57>
-        <Filename Value="..\..\source\windows\JclHookExcept.pas"/>
-        <UnitName Value="JclHookExcept"/>
+        <Filename Value="..\..\source\windows\JclDebugXMLDeserializer.pas"/>
+        <UnitName Value="JclDebugXMLDeserializer"/>
       </Item57>
       <Item58>
-        <Filename Value="..\..\source\windows\JclLANMan.pas"/>
-        <UnitName Value="JclLANMan"/>
+        <Filename Value="..\..\source\windows\JclDebugXMLSerializer.pas"/>
+        <UnitName Value="JclDebugXMLSerializer"/>
       </Item58>
       <Item59>
-        <Filename Value="..\..\source\windows\JclLocales.pas"/>
-        <UnitName Value="JclLocales"/>
+        <Filename Value="..\..\source\windows\JclDotNet.pas"/>
+        <UnitName Value="JclDotNet"/>
       </Item59>
       <Item60>
-        <Filename Value="..\..\source\windows\JclMetadata.pas"/>
-        <UnitName Value="JclMetadata"/>
+        <Filename Value="..\..\source\windows\JclHookExcept.pas"/>
+        <UnitName Value="JclHookExcept"/>
       </Item60>
       <Item61>
-        <Filename Value="..\..\source\windows\JclMiscel.pas"/>
-        <UnitName Value="JclMiscel"/>
+        <Filename Value="..\..\source\windows\JclLANMan.pas"/>
+        <UnitName Value="JclLANMan"/>
       </Item61>
       <Item62>
-        <Filename Value="..\..\source\windows\JclMsdosSys.pas"/>
-        <UnitName Value="JclMsdosSys"/>
+        <Filename Value="..\..\source\windows\JclLocales.pas"/>
+        <UnitName Value="JclLocales"/>
       </Item62>
       <Item63>
-        <Filename Value="..\..\source\windows\JclMultimedia.pas"/>
-        <UnitName Value="JclMultimedia"/>
+        <Filename Value="..\..\source\windows\JclMetadata.pas"/>
+        <UnitName Value="JclMetadata"/>
       </Item63>
       <Item64>
-        <Filename Value="..\..\source\windows\JclNTFS.pas"/>
-        <UnitName Value="JclNTFS"/>
+        <Filename Value="..\..\source\windows\JclMiscel.pas"/>
+        <UnitName Value="JclMiscel"/>
       </Item64>
       <Item65>
-        <Filename Value="..\..\source\windows\JclPeImage.pas"/>
-        <UnitName Value="JclPeImage"/>
+        <Filename Value="..\..\source\windows\JclMsdosSys.pas"/>
+        <UnitName Value="JclMsdosSys"/>
       </Item65>
       <Item66>
-        <Filename Value="..\..\source\windows\JclRegistry.pas"/>
-        <UnitName Value="JclRegistry"/>
+        <Filename Value="..\..\source\windows\JclMultimedia.pas"/>
+        <UnitName Value="JclMultimedia"/>
       </Item66>
       <Item67>
-        <Filename Value="..\..\source\windows\JclSecurity.pas"/>
-        <UnitName Value="JclSecurity"/>
+        <Filename Value="..\..\source\windows\JclNTFS.pas"/>
+        <UnitName Value="JclNTFS"/>
       </Item67>
       <Item68>
-        <Filename Value="..\..\source\windows\JclShell.pas"/>
-        <UnitName Value="JclShell"/>
+        <Filename Value="..\..\source\windows\JclPeImage.pas"/>
+        <UnitName Value="JclPeImage"/>
       </Item68>
       <Item69>
-        <Filename Value="..\..\source\windows\JclStructStorage.pas"/>
-        <UnitName Value="JclStructStorage"/>
+        <Filename Value="..\..\source\windows\JclRegistry.pas"/>
+        <UnitName Value="JclRegistry"/>
       </Item69>
       <Item70>
-        <Filename Value="..\..\source\windows\JclSvcCtrl.pas"/>
-        <UnitName Value="JclSvcCtrl"/>
+        <Filename Value="..\..\source\windows\JclSecurity.pas"/>
+        <UnitName Value="JclSecurity"/>
       </Item70>
       <Item71>
-        <Filename Value="..\..\source\windows\JclTask.pas"/>
-        <UnitName Value="JclTask"/>
+        <Filename Value="..\..\source\windows\JclShell.pas"/>
+        <UnitName Value="JclShell"/>
       </Item71>
       <Item72>
-        <Filename Value="..\..\source\windows\JclTD32.pas"/>
-        <UnitName Value="JclTD32"/>
+        <Filename Value="..\..\source\windows\JclStructStorage.pas"/>
+        <UnitName Value="JclStructStorage"/>
       </Item72>
       <Item73>
-        <Filename Value="..\..\source\windows\JclWin32.pas"/>
-        <UnitName Value="JclWin32"/>
+        <Filename Value="..\..\source\windows\JclSvcCtrl.pas"/>
+        <UnitName Value="JclSvcCtrl"/>
       </Item73>
       <Item74>
-        <Filename Value="..\..\source\windows\JclWin32Ex.pas"/>
-        <UnitName Value="JclWin32Ex"/>
+        <Filename Value="..\..\source\windows\JclTask.pas"/>
+        <UnitName Value="JclTask"/>
       </Item74>
       <Item75>
-        <Filename Value="..\..\source\windows\JclWinMIDI.pas"/>
-        <UnitName Value="JclWinMIDI"/>
+        <Filename Value="..\..\source\windows\JclTD32.pas"/>
+        <UnitName Value="JclTD32"/>
       </Item75>
       <Item76>
-        <Filename Value="..\..\source\windows\mscoree_TLB.pas"/>
-        <UnitName Value="mscoree_TLB"/>
+        <Filename Value="..\..\source\windows\JclWin32.pas"/>
+        <UnitName Value="JclWin32"/>
       </Item76>
       <Item77>
-        <Filename Value="..\..\source\windows\mscorlib_TLB.pas"/>
-        <UnitName Value="mscorlib_TLB"/>
+        <Filename Value="..\..\source\windows\JclWin32Ex.pas"/>
+        <UnitName Value="JclWin32Ex"/>
       </Item77>
       <Item78>
-        <Filename Value="..\..\source\windows\MSHelpServices_TLB.pas"/>
-        <UnitName Value="MSHelpServices_TLB"/>
+        <Filename Value="..\..\source\windows\JclWinMIDI.pas"/>
+        <UnitName Value="JclWinMIDI"/>
       </Item78>
       <Item79>
-        <Filename Value="..\..\source\windows\MSTask.pas"/>
-        <UnitName Value="MSTask"/>
+        <Filename Value="..\..\source\windows\mscoree_TLB.pas"/>
+        <UnitName Value="mscoree_TLB"/>
       </Item79>
       <Item80>
-        <Filename Value="..\..\source\windows\sevenzip.pas"/>
-        <UnitName Value="sevenzip"/>
+        <Filename Value="..\..\source\windows\mscorlib_TLB.pas"/>
+        <UnitName Value="mscorlib_TLB"/>
       </Item80>
       <Item81>
+        <Filename Value="..\..\source\windows\MSHelpServices_TLB.pas"/>
+        <UnitName Value="MSHelpServices_TLB"/>
+      </Item81>
+      <Item82>
+        <Filename Value="..\..\source\windows\MSTask.pas"/>
+        <UnitName Value="MSTask"/>
+      </Item82>
+      <Item83>
+        <Filename Value="..\..\source\windows\sevenzip.pas"/>
+        <UnitName Value="sevenzip"/>
+      </Item83>
+      <Item84>
         <Filename Value="..\..\source\windows\Snmp.pas"/>
         <UnitName Value="Snmp"/>
-      </Item81>
+      </Item84>
     </Files>
     <RequiredPkgs Count="1">
       <Item1>

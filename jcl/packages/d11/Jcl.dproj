@@ -141,6 +141,9 @@
     <DCCReference Include="..\..\source\windows\JclCOM.pas" />
     <DCCReference Include="..\..\source\windows\JclConsole.pas" />
     <DCCReference Include="..\..\source\windows\JclDebug.pas" />
+    <DCCReference Include="..\..\source\windows\JclDebugSerialization.pas" />
+    <DCCReference Include="..\..\source\windows\JclDebugXMLDeserializer.pas" />
+    <DCCReference Include="..\..\source\windows\JclDebugXMLSerializer.pas" />
     <DCCReference Include="..\..\source\windows\JclDotNet.pas" />
     <DCCReference Include="..\..\source\windows\JclHookExcept.pas" />
     <DCCReference Include="..\..\source\windows\JclLANMan.pas" />

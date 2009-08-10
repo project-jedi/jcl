@@ -12,8 +12,6 @@ USEUNIT("..\..\experts\stacktraceviewer\JclStackTraceViewerOptions.pas");
 USEUNIT("..\..\experts\stacktraceviewer\JclStackTraceViewerAPIImpl.pas");
 USEUNIT("..\..\experts\stacktraceviewer\JclStackTraceViewerAPI.pas");
 USEUNIT("..\..\experts\stacktraceviewer\JclStackTraceViewerStackUtils.pas");
-USEUNIT("..\..\experts\stacktraceviewer\JclDebugSerialization.pas");
-USEUNIT("..\..\experts\stacktraceviewer\JclDebugXMLDeserializer.pas");
 USEDEF("JclStackTraceViewerExpertDLL.def");
 Project file
 DllEntryPoint
