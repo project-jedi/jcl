@@ -2412,8 +2412,15 @@ begin
   if Assigned(FOutputCallback) then
   begin
     {$IFDEF MSWINDOWS}
-    // Text is OEM
+    // Text is OEM under Windows
+    // Code below seems to crash older compilers at times, so we only do
+    // the casts when it's absolutely necessary, that is when compiling
+    // with a unicode compiler.
+    {$IFDEF UNICODE}
     AnsiText := string(StrOemToAnsi(AnsiString(Text)));
+    {$ELSE}
+    AnsiText := StrOemToAnsi(Text);
+    {$ENDIF UNICODE}
     {$ELSE ~MSWINDOWS}
     AnsiText := Text;
     {$ENDIF ~MSWINDOWS}
