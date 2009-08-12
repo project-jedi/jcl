@@ -816,6 +816,9 @@ asm
        POP     ESI
        {$ENDIF CPU32}
        {$IFDEF CPU64}
+       // save context
+       PUSH    RDI
+       PUSH    RSI
        // --> RCX Str
        MOV     RSI, RCX
        MOV     RDI, RSI
@@ -828,6 +831,9 @@ asm
        STOSW
        JMP     @@1
 @@2:
+       // restore context
+       POP     RSI
+       POP     RDI
        {$ENDIF CPU64}
 end;
 

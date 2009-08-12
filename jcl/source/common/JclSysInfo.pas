@@ -4256,16 +4256,16 @@ function CPUID: TCpuInfo;
       // CPUID
       CPUID
       // store results
-      MOV     RDI, ReturnedEAX
-      MOV     Cardinal PTR [RDI], EAX
-      MOV     RAX, ReturnedEBX
-      MOV     RDI, ReturnedECX
-      MOV     Cardinal PTR [RAX], EBX
-      MOV     Cardinal PTR [RDI], ECX
-      MOV     RAX, ReturnedEDX
-      MOV     Cardinal PTR [RAX], EDX
+      MOV     R8, ReturnedEAX
+      MOV     R9, ReturnedEBX
+      MOV     R10, ReturnedECX
+      MOV     R11, ReturnedEDX
+      MOV     Cardinal PTR [R8], EAX
+      MOV     Cardinal PTR [R9], EBX
+      MOV     Cardinal PTR [R10], ECX
+      MOV     Cardinal PTR [R11], EDX
       // restore context
-      POP  RBX
+      POP     RBX
       {$ENDIF CPU64}
     end;
   end;
