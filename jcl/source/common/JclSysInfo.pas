@@ -132,6 +132,7 @@ function GetCommonProgramsFolder: string;
 function GetCommonDesktopdirectoryFolder: string;
 function GetCommonAppdataFolder: string;
 function GetAppdataFolder: string;
+function GetLocalAppData: string;
 function GetCommonFavoritesFolder: string;
 function GetTemplatesFolder: string;
 function GetInternetCacheFolder: string;
@@ -1843,6 +1844,11 @@ end;
 function GetAppdataFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_APPDATA);
+end;
+
+function GetLocalAppData: string;
+begin
+  Result := GetSpecialFolderLocation(CSIDL_LOCAL_APPDATA);
 end;
 
 function GetPrinthoodFolder: string;
