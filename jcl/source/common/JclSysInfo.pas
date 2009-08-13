@@ -23,6 +23,7 @@
 {   Carl Clark                                                                                     }
 {   Eric S. Fisher                                                                                 }
 {   Florent Ouchet (outchy)                                                                        }
+{   Heiko Adams                                                                                    }
 {   James Azarja                                                                                   }
 {   Jean-Fabien Connault (cycocrew)                                                                }
 {   John C Molyneux                                                                                }
