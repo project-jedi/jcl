@@ -577,29 +577,38 @@ begin
           RegKinds := [REG_BINARY, REG_SZ, REG_EXPAND_SZ, REG_MULTI_SZ]
         else
           RegKinds := [REG_BINARY, REG_SZ, REG_EXPAND_SZ];
-        if not (DataType in RegKinds) then
-          DataError(RootKey, Key, Name);
-        if Win32Platform = VER_PLATFORM_WIN32_NT then
+        if DataType in RegKinds then
         begin
-          DataLength := DataSize div SizeOf(WideChar);
-          SetLength(TmpRet, DataLength);
-          Result := InternalRegQueryValueEx(RegKey, PWideChar(Name), nil, nil, PWideChar(TmpRet), @DataSize) = ERROR_SUCCESS;
-          if Result then
-            RetValue := AnsiString(Copy(TmpRet, 1, DataLength - 1));
+          if Win32Platform = VER_PLATFORM_WIN32_NT then
+          begin
+            DataLength := DataSize div SizeOf(WideChar);
+            SetLength(TmpRet, DataLength);
+            Result := InternalRegQueryValueEx(RegKey, PWideChar(Name), nil, nil, PWideChar(TmpRet), @DataSize) = ERROR_SUCCESS;
+            if Result then
+              RetValue := AnsiString(Copy(TmpRet, 1, DataLength - 1));
+          end
+          else
+          begin
+            DataLength := DataSize div SizeOf(AnsiChar);
+            SetLength(RetValue, DataLength);
+            Result := InternalRegQueryValueEx(RegKey, PWideChar(Name), nil, nil, PAnsiChar(RetValue), @DataSize) = ERROR_SUCCESS;
+            if Result then
+              SetLength(RetValue, DataLength - 1);
+          end;
+          if not Result then
+          begin
+            RetValue := '';
+            if RaiseException then
+              ValueError(RootKey, Key, Name)
+            else
+              Result := False;
+          end;
         end
         else
         begin
-          DataLength := DataSize div SizeOf(AnsiChar);
-          SetLength(RetValue, DataLength);
-          Result := InternalRegQueryValueEx(RegKey, PWideChar(Name), nil, nil, PAnsiChar(RetValue), @DataSize) = ERROR_SUCCESS;
-          if Result then
-            SetLength(RetValue, DataLength - 1);
-        end;
-        if not Result then
-        begin
           RetValue := '';
           if RaiseException then
-            ValueError(RootKey, Key, Name)
+            DataError(RootKey, Key, Name)
           else
             Result := False;
         end;
@@ -643,17 +652,26 @@ begin
           RegKinds := [REG_BINARY, REG_SZ, REG_EXPAND_SZ, REG_MULTI_SZ]
         else
           RegKinds := [REG_BINARY, REG_SZ, REG_EXPAND_SZ];
-        if not (DataType in RegKinds) then
-          DataError(RootKey, Key, Name);
-        DataLength := DataSize div SizeOf(WideChar);
-        SetLength(RetValue, DataLength);
-        if InternalRegQueryValueEx(RegKey, PWideChar(Name), nil, nil, PWideChar(RetValue), @DataSize) = ERROR_SUCCESS then
-          SetLength(RetValue, DataLength - 1)
+        if DataType in RegKinds then
+        begin
+          DataLength := DataSize div SizeOf(WideChar);
+          SetLength(RetValue, DataLength);
+          if InternalRegQueryValueEx(RegKey, PWideChar(Name), nil, nil, PWideChar(RetValue), @DataSize) = ERROR_SUCCESS then
+            SetLength(RetValue, DataLength - 1)
+          else
+          begin
+            RetValue := '';
+            if RaiseException then
+              ValueError(RootKey, Key, Name)
+            else
+              Result := False;
+          end;
+        end
         else
         begin
           RetValue := '';
           if RaiseException then
-            ValueError(RootKey, Key, Name)
+            DataError(RootKey, Key, Name)
           else
             Result := False;
         end;
