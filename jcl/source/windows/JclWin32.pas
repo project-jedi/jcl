@@ -5588,6 +5588,7 @@ const
 
 
 const
+  CSIDL_LOCAL_APPDATA        = $001C; { <user name>\Local Settings\Application Data (non roaming) }
   CSIDL_COMMON_APPDATA       = $0023; { All Users\Application Data }
   CSIDL_WINDOWS              = $0024; { GetWindowsDirectory() }
   CSIDL_SYSTEM               = $0025; { GetSystemDirectory() }
@@ -5609,6 +5610,7 @@ const
   CSIDL_CDBURN_AREA          = $003B; { USERPROFILE\Local Settings\Application Data\Microsoft\CD Burning }
   CSIDL_COMPUTERSNEARME      = $003D; { Computers Near Me (computered from Workgroup membership) }
 
+  {$EXTERNALSYM CSIDL_LOCAL_APPDATA}
   {$EXTERNALSYM CSIDL_COMMON_APPDATA}
   {$EXTERNALSYM CSIDL_WINDOWS}
   {$EXTERNALSYM CSIDL_SYSTEM}
