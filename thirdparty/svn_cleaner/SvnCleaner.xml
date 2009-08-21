@@ -111,6 +111,7 @@
           <value>*.ini</value>
           <value>*.dll</value>
           <value>*.pdb</value>
+          <value>*.map</value>
         </property>
      </setting>
 
@@ -130,6 +131,8 @@
           <value>*.cfg</value>
           <value>*.drc</value>
           <value>*.dcu</value>
+          <value>*.dproj</value>
+          <value>*.bdsproj</value>
         </property>
       </setting>
 
@@ -153,6 +156,9 @@
           <value>*.local</value>
           <value>*.dproj</value>
           <value>*.bak</value>
+          <value>*.cfg</value>
+          <value>dcc32.cfg</value>
+          <value>dcc32_command.cmd</value>
         </property>
 
         <setting path="" mask="build" recurse="no" dironly="yes">
@@ -357,6 +363,7 @@
 
         <setting path="" mask="include" recurse="no" dironly="yes">
           <property name="svn:ignore">
+            <value>__history</value>
             <value>*~</value>
             <value>*.bak</value>
             <value>jclfpc.inc</value>
