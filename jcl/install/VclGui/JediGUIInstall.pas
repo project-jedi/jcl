@@ -28,11 +28,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-{$IFNDEF PROTOTYPE}
-{$IFDEF VCL}
 unit JediGUIInstall;
-{$ENDIF VCL}
-{$ENDIF ~PROTOTYPE}
 
 {$I jcl.inc}
 {$I crossplatform.inc}
@@ -41,9 +37,7 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF VCL}
   Graphics, Forms, Controls, StdCtrls, ComCtrls, ExtCtrls, FrmCompile,
-  {$ENDIF VCL}
   JclBorlandTools, JediInstall;
 
 type
@@ -56,9 +50,7 @@ type
     Splitter: TSplitter;
     InfoPanel: TPanel;
     Label2: TLabel;
-    {$IFDEF VCL}
     InfoDisplay: TRichEdit;
-    {$ENDIF VCL}
     OptionsGroupBox: TGroupBox;
     ProgressBar: TProgressBar;
     procedure SplitterCanResize(Sender: TObject; var NewSize: Integer;
@@ -75,10 +67,8 @@ type
     FInstallCount: Integer;
     FInstalling: Boolean;
     FOnSetIcon: TSetIconEvent;
-    {$IFDEF VCL}
     FFormCompile: TFormCompile;
     function GetFormCompile: TFormCompile;
-    {$ENDIF VCL}
     function GetNodeChecked(Node: TTreeNode): Boolean;
     function IsAutoChecked(Node: TTreeNode): Boolean;
     function IsRadioButton(Node: TTreeNode): Boolean;
@@ -129,17 +119,11 @@ type
 
 implementation
 
-{$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF VCL}
 
 uses
-  {$IFDEF MSWINDOWS}
   Windows, Messages,
-  {$ENDIF MSWINDOWS}
-  {$IFDEF VCL}
   FileCtrl,
-  {$ENDIF VCL}
   JclStrings;
 
 const
@@ -400,10 +384,10 @@ procedure TInstallFrame.TreeViewCustomDrawItem(Sender: TCustomTreeView; Node: TT
 begin
   case TTreeNode(Node).Level of
     0: begin
-         {$IFDEF VCL}Sender.{$ENDIF}Canvas.Font.Style := [fsBold, fsUnderline];
+         Sender.Canvas.Font.Style := [fsBold, fsUnderline];
        end;
     1: begin
-         {$IFDEF VCL}Sender.{$ENDIF}Canvas.Font.Style := [fsBold];
+         Sender.Canvas.Font.Style := [fsBold];
        end;
   end;
 end;
@@ -425,12 +409,10 @@ begin
     end;
 end;
 
-{$IFDEF VCL}
 function TreeNodeIconHit(TreeView: TTreeView; X, Y: Integer): Boolean;
 begin
   Result := htOnIcon in TreeView.GetHitTestInfoAt(X, Y);
 end;
-{$ENDIF VCL}
 
 procedure TInstallFrame.TreeViewMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -446,7 +428,6 @@ begin
   end;
 end;
 
-{$IFDEF VCL}
 function TInstallFrame.GetFormCompile: TFormCompile;
 begin
   if not Assigned(FFormCompile) then
@@ -459,7 +440,6 @@ begin
   end;
   Result := FFormCompile;
 end;
-{$ENDIF VCL}
 
 // IJediPage
 function TInstallFrame.GetCaption: string;
@@ -678,7 +658,6 @@ var
   Index: Integer;
   ChangeIcon: Boolean;
 begin
-  {$IFDEF VCL}
   if Assigned(FFormCompile) then
   begin
     if FFormCompile.Errors > 0 then // do not make the dialog modal when no error occured
@@ -687,7 +666,6 @@ begin
       FFormCompile.Done;
     FreeAndNil(FFormCompile);
   end;
-  {$ENDIF VCL}
   ANode := GetNode(Id);
   while Assigned(ANode) and GetNodeChecked(ANode) do
   begin
@@ -755,62 +733,36 @@ end;
 
 procedure TInstallFrame.CompilationStart(const ProjectName: string);
 begin
-  {$IFDEF VCL}
   GetFormCompile.Init(ProjectName, True);
-  {$ENDIF VCL}
 end;
 
 procedure TInstallFrame.AddLogLine(const Line: string);
-{$IFDEF VCL}
 begin
   InfoDisplay.Lines.Append(Line);
   InfoDisplay.Perform(EM_SCROLLCARET, 0, 0);
 end;
-{$ELSE ~VCL}
-var
-  NewCaretPos: TCaretPos;
-begin
-  with InfoDisplay do
-  begin
-    Lines.BeginUpdate;
-    Lines.Append(Line);
-    Lines.EndUpdate;
-    NewCaretPos.Line := Lines.Count;
-    NewCaretPos.Col := 0;
-    CaretPos := NewCaretPos;
-  end;
-end;
-{$ENDIF ~VCL}
 
 procedure TInstallFrame.AddHint(const Line: string);
 begin
-  {$IFDEF VCL}
   GetFormCompile.AddHint(Line);
-  {$ENDIF VCL}
   AddLogLine(Line);
 end;
 
 procedure TInstallFrame.AddWarning(const Line: string);
 begin
-  {$IFDEF VCL}
   GetFormCompile.AddWarning(Line);
-  {$ENDIF VCL}
   AddLogLine(Line);
 end;
 
 procedure TInstallFrame.AddError(const Line: string);
 begin
-  {$IFDEF VCL}
   GetFormCompile.AddError(Line);
-  {$ENDIF VCL}
   AddLogLine(Line);
 end;
 
 procedure TInstallFrame.AddFatal(const Line: string);
 begin
-  {$IFDEF VCL}
   GetFormCompile.AddFatal(Line);
-  {$ENDIF VCL}
   AddLogLine(Line);
 end;
 
@@ -824,9 +776,7 @@ end;
 
 procedure TInstallFrame.CompilationProgress(const FileName: string; LineNumber: Integer);
 begin
-  {$IFDEF VCL}
   GetFormCompile.CompilationProgress(FileName, LineNumber);
-  {$ENDIF VCL}
 end;
 
 end.

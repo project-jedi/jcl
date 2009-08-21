@@ -28,11 +28,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-{$IFNDEF PROTOTYPE}
-{$IFDEF VCL}
 unit JediGUIMain;
-{$ENDIF VCL}
-{$ENDIF ~PROTOTYPE}
 
 {$I jcl.inc}
 {$I crossplatform.inc}
@@ -40,13 +36,9 @@ unit JediGUIMain;
 interface
 
 uses
-  {$IFDEF MSWINDOWS}
   Windows, Messages, CommCtrl,
-  {$ENDIF MSWINDOWS}
   SysUtils, Classes,
-  {$IFDEF VCL}
   Graphics, Forms, Controls, Dialogs, StdCtrls, ExtCtrls, Menus, Buttons, ComCtrls, ImgList,
-  {$ENDIF VCL}
   JclBorlandTools, JclContainerIntf, JediInstall;
 
 const
@@ -117,22 +109,13 @@ type
 
 implementation
 
-{$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF VCL}
 
 uses
-  {$IFDEF UNIX}
-  Libc,
-  {$ENDIF UNIX}
-  {$IFDEF MSWINDOWS}
   FileCtrl,
   JclDebug, JclShell, JediGUIProfiles,
-  {$ENDIF MSWINDOWS}
   JclBase, JclFileUtils, JclStrings, JclSysInfo, JclSysUtils, JclArrayLists,
-  {$IFDEF VCL}
   JediGUIReadme, JediGUIInstall;
-  {$ENDIF VCL}
 
 const
   DelphiJediURL     = 'http://www.delphi-jedi.org/';
@@ -178,13 +161,9 @@ begin
 
   SetStatus('');
 
-  {$IFDEF VCL}
   TitlePanel.DoubleBuffered := True;
   {$IFDEF COMPILER7_UP}
   TitlePanel.ParentBackground := False;
-  {$ENDIF}
-  {$ELSE}
-  //WindowState := wsMaximized; // wouldn't work in Form resource
   {$ENDIF}
   Application.HintPause := 500;
   Application.OnShowHint := ShowFeatureHint;
@@ -216,14 +195,11 @@ begin
 end;
 
 procedure TMainForm.SetFrameIcon(Sender: TObject; const FileName: string);
-{$IFDEF MSWINDOWS}
 var
   IconHandle: HICON;
   ModuleHandle: THandle;
   ATabSheet: TTabSheet;
-{$ENDIF MSWINDOWS}
 begin
-  {$IFDEF MSWINDOWS}
   ATabSheet := (Sender as TInstallFrame).Parent as TTabSheet;
 
   IconHandle := 0;
@@ -248,7 +224,6 @@ begin
   finally
     DestroyIcon(IconHandle);
   end;
-  {$ENDIF MSWINDOWS}
 end;
 
 procedure TMainForm.QuitBtnClick(Sender: TObject);
@@ -304,9 +279,7 @@ end;
 procedure TMainForm.JediImageClick(Sender: TObject);
 begin
   { TODO : implement for Unix }
-  {$IFDEF MSWINDOWS}
   ShellExecEx(DelphiJediURL);
-  {$ENDIF MSWINDOWS}
 end;
 
 function TMainForm.Dialog(const Text: string; DialogType: TDialogType = dtInformation;

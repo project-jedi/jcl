@@ -4,16 +4,6 @@ SET DELPHIVERSION=%1
 
 cd install
 
-::jpp prototypes
-
-..\devtools\jpp.exe -c -dVCL -dMSWINDOWS -uUnix -xVclGui\ prototypes\JediGUIMain.pas
-if ERRORLEVEL 1 goto FailedCompile
-..\devtools\jpp.exe -c -dVCL -dMSWINDOWS -uUnix -xVclGui\ prototypes\JediGUIReadme.pas
-if ERRORLEVEL 1 goto FailedCompile
-..\devtools\jpp.exe -c -dVCL -dMSWINDOWS -uUnix -xVclGui\ prototypes\JediGUIInstall.pas
-if ERRORLEVEL 1 goto FailedCompile
-
-
 :: compile installer
 
 build\dcc32ex.exe --runtime-package-rtl --runtime-package-vcl --preserve-config -q -w -dJCLINSTALL -E..\bin -I..\source\include -U..\source\common;..\source\windows JediInstaller.dpr

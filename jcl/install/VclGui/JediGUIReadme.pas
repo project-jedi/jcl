@@ -25,11 +25,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-{$IFNDEF PROTOTYPE}
-{$IFDEF VCL}
 unit JediGUIReadme;
-{$ENDIF VCL}
-{$ENDIF ~PROTOTYPE}
 
 {$I jcl.inc}
 {$I crossplatform.inc}
@@ -37,22 +33,14 @@ unit JediGUIReadme;
 interface
 
 uses
-  {$IFDEF MSWINDOWS}
   Windows, Messages,
-  {$ENDIF MSWINDOWS}
   SysUtils, Classes,
-  {$IFDEF VCL}
   Graphics, Controls, Forms, Dialogs, StdCtrls, ComCtrls,
-  {$ENDIF VCL}
   JediInstall;
 
 type
   TReadmeFrame = class(TFrame, IJediReadmePage, IJediPage)
-    {$IFDEF VCL}
     ReadmePane: TRichEdit;
-    {$ELSE ~VCL}
-    ReadmePane: TTextViewer;
-    {$ENDIF ~VCL}
     procedure ReadmePaneDblClick(Sender: TObject);
   private
     FReadmeFileName: string;
@@ -71,16 +59,10 @@ type
 
 implementation
 
-{$IFDEF VCL}
 {$R *.dfm}
-{$ELSE ~VCL}
-{$R *.xfm}
-{$ENDIF ~VCL}
 
-{$IFDEF MSWINDOWS}
 uses
   JclShell;
-{$ENDIF MSWINDOWS}
 
 function TReadmeFrame.GetCaption: string;
 begin
@@ -95,9 +77,7 @@ end;
 procedure TReadmeFrame.ReadmePaneDblClick(Sender: TObject);
 begin
   { TODO: implement for Unix }
-  {$IFDEF MSWINDOWS}
   ShellExecEx(ReadmeFileName);
-  {$ENDIF MSWINDOWS}
 end;
 
 procedure TReadmeFrame.SetCaption(const Value: string);
@@ -114,7 +94,7 @@ procedure TReadmeFrame.SetReadmeFileName(const Value: string);
 begin
   FReadmeFileName := Value;
   if FileExists(Value) then
-    ReadmePane.{$IFDEF VCL}Lines.{$ENDIF VCL}LoadFromFile(Value);
+    ReadmePane.Lines.LoadFromFile(Value);
 end;
 
 procedure TReadmeFrame.Show;

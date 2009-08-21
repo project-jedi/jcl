@@ -174,19 +174,8 @@
           </property>
         </setting>
 
-        <setting path="" mask="prototypes" recurse="no" dironly="yes">
-          <property name="svn:ignore">
-            <value>*.~*</value>
-            <value>__history</value>
-            <value>*.bak</value>
-          </property>
-        </setting>
-
         <setting path="" mask="VclGui" recurse="no" dironly="yes">
           <property name="svn:ignore">
-            <value>JediGUIInstall.pas</value>
-            <value>JediGUIMain.pas</value>
-            <value>JediGUIReadme.pas</value>
             <value>*.dcu</value>
             <value>*.~*</value>
             <value>__history</value>
