@@ -111,7 +111,6 @@
           <value>*.ini</value>
           <value>*.dll</value>
           <value>*.pdb</value>
-          <value>QJediInstaller</value>
         </property>
      </setting>
 
