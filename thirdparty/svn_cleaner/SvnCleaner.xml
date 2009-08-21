@@ -113,14 +113,11 @@
           <value>*.pdb</value>
           <value>*.map</value>
         </property>
-     </setting>
+      </setting>
 
-     <setting path="devtools" mask="jpp" recurse="no" dironly="no">
-        <property name="svn:mime-type">
-          <value>application/octet-stream</value>
-        </property>
-        <property name="svn:executable">
-          <value>*</value>
+      <setting path="devtools" mask="" recurse="no" dironly="yes">
+        <property name="svn:ignore">
+          <value>*.exe</value>
         </property>
       </setting>
 
