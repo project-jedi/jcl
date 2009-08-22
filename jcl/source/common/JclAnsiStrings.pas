@@ -1387,19 +1387,17 @@ begin
 end;
 
 function StrEscapedToString(const S: AnsiString): AnsiString;
-var
-  I, Len: SizeInt;
-
-  procedure HandleHexEscapeSeq;
+  procedure HandleHexEscapeSeq(const S: AnsiString; var I: SizeInt; Len: SizeInt; var Dest: AnsiString);
   const
     HexDigits = AnsiString('0123456789abcdefABCDEF');
   var
-    Val, N: SizeInt;
+    StartI, Val, N: SizeInt;
   begin
+    StartI := I;
     N := Pos(S[I + 1], HexDigits) - 1;
     if N < 0 then
       // '\x' without hex digit following is not escape sequence
-      Result := Result + '\x'
+      Dest := Dest + '\x'
     else
     begin
       Inc(I); // Jump over x
@@ -1420,18 +1418,19 @@ var
       end;
 
       if Val > Ord(High(AnsiChar)) then
-        raise EJclAnsiStringError.CreateRes(@RsNumericConstantTooLarge);
+        raise EJclAnsiStringError.CreateResFmt(@RsNumericConstantTooLarge, [Val, StartI]);
 
-      Result := Result + AnsiChar(Val);
+      Dest := Dest + AnsiChar(Val);
     end;
   end;
 
-  procedure HandleOctEscapeSeq;
+  procedure HandleOctEscapeSeq(const S: AnsiString; var I: SizeInt; Len: SizeInt; var Dest: AnsiString);
   const
     OctDigits = AnsiString('01234567');
   var
-    Val, N: SizeInt;
+    StartI, Val, N: SizeInt;
   begin
+    StartI := I;
     // first digit
     Val := Pos(S[I], OctDigits) - 1;
     if I < Len then
@@ -1454,11 +1453,13 @@ var
     end;
 
     if Val > Ord(High(AnsiChar)) then
-      raise EJclAnsiStringError.CreateRes(@RsNumericConstantTooLarge);
+      raise EJclAnsiStringError.CreateResFmt(@RsNumericConstantTooLarge, [Val, StartI]);
 
-    Result := Result + AnsiChar(Val);
+    Dest := Dest + AnsiChar(Val);
   end;
 
+var
+  I, Len: SizeInt;
 begin
   Result := '';
   I := 1;
@@ -1496,13 +1497,13 @@ begin
         'x':
           if I < Len then
             // Start of hex escape sequence
-            HandleHexEscapeSeq
+            HandleHexEscapeSeq(S, I, Len, Result)
           else
             // '\x' at end of AnsiString is not escape sequence
             Result := Result + '\x';
         '0'..'7':
           // start of octal escape sequence
-          HandleOctEscapeSeq;
+          HandleOctEscapeSeq(S, I, Len, Result);
       else
         // no escape sequence
         Result := Result + '\' + S[I];
