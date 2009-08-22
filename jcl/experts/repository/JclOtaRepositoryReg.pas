@@ -32,15 +32,16 @@ interface
 
 {$I jcl.inc}
 
-{$IFDEF DELPHI}
+{$IFDEF DELPHI6_UP}
 {$DEFINE DELPHIEXCDLG}
-{$ENDIF DELPHI}
+{$ENDIF DELPHI6_UP}
 
-{$IFDEF BCB}
+{$IFDEF BCB6_UP}
 {$DEFINE CBUILDEREXCDLG}
-{$ENDIF BCB}
+{$ENDIF BCB6_UP}
 
 {$IFDEF COMPILER10_UP}
+{$DEFINE DELPHIEXCDLG}
 {$DEFINE CBUILDEREXCDLG}
 {$ENDIF COMPILER10_UP}
 
@@ -107,14 +108,14 @@ uses
 procedure Register;
 begin
   try
-    {$IFDEF DELPHI}
+    {$IFDEF DELPHIEXCDLG}
     if TJclOTAExpertBase.IsPersonalityLoaded(JclDelphiPersonality) then
       RegisterPackageWizard(TJclExcDlgDelphiExpert.Create);
-    {$ENDIF DELPHI}
-    {$IFDEF BCB}
+    {$ENDIF DELPHIEXCDLG}
+    {$IFDEF CBUILDEREXCDLG}
     if TJclOTAExpertBase.IsPersonalityLoaded(JclCBuilderPersonality) then
       RegisterPackageWizard(TJclExcDlgCBuilderExpert.Create);
-    {$ENDIF BCB}
+    {$ENDIF CBUILDEREXCDLG}
   except
     on ExceptionObj: TObject do
     begin
@@ -125,12 +126,12 @@ begin
 end;
 
 var
-  {$IFDEF DELPHI}
+  {$IFDEF DELPHIEXCDLG}
   JCLDelphiWizardIndex: Integer = -1;
-  {$ENDIF DELPHI}
-  {$IFDEF BCB}
+  {$ENDIF DELPHIEXCDLG}
+  {$IFDEF CBUILDEREXCDLG}
   JclCBuilderWizardIndex: Integer = -1;
-  {$ENDIF BCB}
+  {$ENDIF CBUILDEREXCDLG}
 
 procedure JclWizardTerminate;
 var
@@ -139,15 +140,15 @@ begin
   try
     OTAWizardServices := TJclOTAExpertBase.GetOTAWizardServices;
     
-    {$IFDEF DELPHI}
+    {$IFDEF DELPHIEXCDLG}
     if JCLDelphiWizardIndex <> -1 then
       OTAWizardServices.RemoveWizard(JCLDelphiWizardIndex);
-    {$ENDIF DELPHI}
+    {$ENDIF DELPHIEXCDLG}
 
-    {$IFDEF BCB}
+    {$IFDEF CBUILDEREXCDLG}
     if JclCBuilderWizardIndex <> -1 then
       OTAWizardServices.RemoveWizard(JclCBuilderWizardIndex);
-    {$ENDIF BCB}
+    {$ENDIF CBUILDEREXCDLG}
   except
     on ExceptionObj: TObject do
     begin
@@ -167,14 +168,14 @@ begin
 
     OTAWizardServices := TJclOTAExpertBase.GetOTAWizardServices;
 
-    {$IFDEF DELPHI}
+    {$IFDEF DELPHIEXCDLG}
     //if IsPersonalityLoaded(BorlandIDEServices, JclDelphiPersonality) then
     //  JCLDelphiWizardIndex := OTAWizardServices.AddWizard(TJclExcDlgDelphiExpert.Create);
-    {$ENDIF DELPHI}
-    {$IFDEF BCB}
+    {$ENDIF DELPHIEXCDLG}
+    {$IFDEF CBUILDEREXCDLG}
     //if IsPersonalityLoaded(BorlandIDEServices, JclCBuilderPersonality) then
     //  JclCBuilderWizardIndex := OTAWizardServices.AddWizard(TJclExcDlgCBuilderExpert.Create);
-    {$ENDIF BCB}
+    {$ENDIF CBUILDEREXCDLG}
     Result := True;
   except
     on ExceptionObj: TObject do
