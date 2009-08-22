@@ -38,10 +38,13 @@
 			</Projects>
 		</ItemGroup>
 		<ProjectExtensions>
-			<Borland.Personality>Default.Personality</Borland.Personality>
+			<Borland.Personality>Default.Personality.12</Borland.Personality>
 			<Borland.ProjectType/>
-			<BorlandProject><BorlandProject><Default.Personality></Default.Personality></BorlandProject>
-</BorlandProject>
+			<BorlandProject>
+				<BorlandProject>
+					<Default.Personality/>
+				</BorlandProject>
+			</BorlandProject>
 		</ProjectExtensions>
 		<Target Name="Jcl">
 			<MSBuild Projects="d12\Jcl.dproj"/>
