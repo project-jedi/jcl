@@ -63,6 +63,9 @@
 #include <JclTrees.hpp>
 #endif TEST_COMMON
 #ifdef TEST_WINDOWS
+#include <JclTimeZones.hpp>
+#endif TEST_WINDOWS
+#ifdef TEST_WINDOWS
 #include <JclTD32.hpp>
 #endif TEST_WINDOWS
 #ifdef TEST_WINDOWS

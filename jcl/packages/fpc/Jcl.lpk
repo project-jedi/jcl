@@ -38,7 +38,7 @@
     <Description Value="JEDI Code Library RTL package"/>
     <License Value="Copyright (C) 1999, 2009 Project JEDI"/>
     <Version Major="2" Minor="0" Release="0" Build="3401"/>
-    <Files Count="84">
+    <Files Count="85">
       <Item1>
         <Filename Value="..\..\source\common\bzip2.pas"/>
         <UnitName Value="bzip2"/>
@@ -340,41 +340,45 @@
         <UnitName Value="JclTD32"/>
       </Item75>
       <Item76>
-        <Filename Value="..\..\source\windows\JclWin32.pas"/>
-        <UnitName Value="JclWin32"/>
+        <Filename Value="..\..\source\windows\JclTimeZones.pas"/>
+        <UnitName Value="JclTimeZones"/>
       </Item76>
       <Item77>
-        <Filename Value="..\..\source\windows\JclWin32Ex.pas"/>
-        <UnitName Value="JclWin32Ex"/>
+        <Filename Value="..\..\source\windows\JclWin32.pas"/>
+        <UnitName Value="JclWin32"/>
       </Item77>
       <Item78>
-        <Filename Value="..\..\source\windows\JclWinMIDI.pas"/>
-        <UnitName Value="JclWinMIDI"/>
+        <Filename Value="..\..\source\windows\JclWin32Ex.pas"/>
+        <UnitName Value="JclWin32Ex"/>
       </Item78>
       <Item79>
-        <Filename Value="..\..\source\windows\mscoree_TLB.pas"/>
-        <UnitName Value="mscoree_TLB"/>
+        <Filename Value="..\..\source\windows\JclWinMIDI.pas"/>
+        <UnitName Value="JclWinMIDI"/>
       </Item79>
       <Item80>
-        <Filename Value="..\..\source\windows\mscorlib_TLB.pas"/>
-        <UnitName Value="mscorlib_TLB"/>
+        <Filename Value="..\..\source\windows\mscoree_TLB.pas"/>
+        <UnitName Value="mscoree_TLB"/>
       </Item80>
       <Item81>
-        <Filename Value="..\..\source\windows\MSHelpServices_TLB.pas"/>
-        <UnitName Value="MSHelpServices_TLB"/>
+        <Filename Value="..\..\source\windows\mscorlib_TLB.pas"/>
+        <UnitName Value="mscorlib_TLB"/>
       </Item81>
       <Item82>
-        <Filename Value="..\..\source\windows\MSTask.pas"/>
-        <UnitName Value="MSTask"/>
+        <Filename Value="..\..\source\windows\MSHelpServices_TLB.pas"/>
+        <UnitName Value="MSHelpServices_TLB"/>
       </Item82>
       <Item83>
-        <Filename Value="..\..\source\windows\sevenzip.pas"/>
-        <UnitName Value="sevenzip"/>
+        <Filename Value="..\..\source\windows\MSTask.pas"/>
+        <UnitName Value="MSTask"/>
       </Item83>
       <Item84>
+        <Filename Value="..\..\source\windows\sevenzip.pas"/>
+        <UnitName Value="sevenzip"/>
+      </Item84>
+      <Item85>
         <Filename Value="..\..\source\windows\Snmp.pas"/>
         <UnitName Value="Snmp"/>
-      </Item84>
+      </Item85>
     </Files>
     <RequiredPkgs Count="1">
       <Item1>
