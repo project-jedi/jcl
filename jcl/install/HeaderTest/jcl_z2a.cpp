@@ -2,14 +2,17 @@
 
 //#pragma hdrstop
 
-#ifdef TEST_WINDOWS
+#ifdef TEST_COMMON
 #include <zlibh.hpp>
-#endif TEST_WINDOWS
+#endif TEST_COMMON
 #ifdef TEST_UNIX
 #include <zlibh.hpp>
 #endif TEST_UNIX
 #ifdef TEST_WINDOWS
 #include <Snmp.hpp>
+#endif TEST_WINDOWS
+#ifdef TEST_WINDOWS
+#include <sevenzip.hpp>
 #endif TEST_WINDOWS
 #ifdef TEST_COMMON
 #include <pcre.hpp>
@@ -41,6 +44,15 @@
 #ifdef TEST_WINDOWS
 #include <JclWideFormat.hpp>
 #endif TEST_WINDOWS
+#ifdef TEST_VCL
+#include <JclVersionCtrlSVNImpl.hpp>
+#endif TEST_VCL
+#ifdef TEST_VCL
+#include <JclVersionCtrlCVSImpl.hpp>
+#endif TEST_VCL
+#ifdef TEST_VCL
+#include <JclVersionControl.hpp>
+#endif TEST_VCL
 #ifdef TEST_COMMON
 #include <JclVectors.hpp>
 #endif TEST_COMMON
@@ -56,9 +68,9 @@
 #ifdef TEST_COMMON
 #include <JclUnitConv.hpp>
 #endif TEST_COMMON
-#ifdef TEST_WINDOWS
+#ifdef TEST_COMMON
 #include <JclUnicode.hpp>
-#endif TEST_WINDOWS
+#endif TEST_COMMON
 #ifdef TEST_COMMON
 #include <JclTrees.hpp>
 #endif TEST_COMMON
@@ -77,9 +89,9 @@
 #ifdef TEST_COMMON
 #include <JclSysInfo.hpp>
 #endif TEST_COMMON
-#ifdef TEST_WINDOWS
+#ifdef TEST_COMMON
 #include <JclSynch.hpp>
-#endif TEST_WINDOWS
+#endif TEST_COMMON
 #ifdef TEST_WINDOWS
 #include <JclSvcCtrl.hpp>
 #endif TEST_WINDOWS
@@ -91,6 +103,9 @@
 #endif TEST_COMMON
 #ifdef TEST_COMMON
 #include <JclStringLists.hpp>
+#endif TEST_COMMON
+#ifdef TEST_COMMON
+#include <JclStringConversions.hpp>
 #endif TEST_COMMON
 #ifdef TEST_COMMON
 #include <JclStrHashMap.hpp>
@@ -143,6 +158,9 @@
 //#ifdef TEST_WINDOWS
 //#include <JclNTFS.hpp> no declaration for IPropertyStorage
 //#endif TEST_WINDOWS
+#ifdef TEST_COMMON
+#include <JclNotify.hpp>
+#endif TEST_COMMON
 #ifdef TEST_WINDOWS
 #include <JclMultimedia.hpp>
 #endif TEST_WINDOWS
@@ -234,6 +252,15 @@
 //#include <JclDotNet.hpp> mscorlib_TLB.hpp is known to fail
 //#endif TEST_WINDOWS
 #ifdef TEST_WINDOWS
+#include <JclDebugXMLSerializer.hpp>
+#endif TEST_WINDOWS
+#ifdef TEST_WINDOWS
+#include <JclDebugXMLDeserializer.hpp>
+#endif TEST_WINDOWS
+#ifdef TEST_WINDOWS
+#include <JclDebugSerialization.hpp>
+#endif TEST_WINDOWS
+#ifdef TEST_WINDOWS
 #include <JclDebug.hpp>
 #endif TEST_WINDOWS
 #ifdef TEST_COMMON
@@ -263,6 +290,9 @@
 #ifdef TEST_WINDOWS
 #include <JclCIL.hpp>
 #endif TEST_WINDOWS
+#ifdef TEST_COMMON
+#include <JclCharsets.hpp>
+#endif TEST_COMMON
 #ifdef TEST_COMMON
 #include <JclBorlandTools.hpp>
 #endif TEST_COMMON
