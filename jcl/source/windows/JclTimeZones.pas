@@ -164,7 +164,7 @@ function GetCurrentTimeZoneGMTOffset: string;
 function GetCurrentTimeZoneUTCBias: Integer;
 
 // Misc UTC related functions
-function GetWMIScheduledJobUTCTime(Time: TTime): string;
+function GetWMIScheduledJobUTCTime(Time: TDateTime): string;
 function UTCNow: TDateTime;
 
 {$IFDEF UNITVERSIONING}
@@ -498,7 +498,7 @@ end;
 // like Windows does something a bit odd with remote scheduled jobs, it's not
 // handling the time correctly at all.  So much for UTC.
 
-function GetWMIScheduledJobUTCTime(Time: TTime): string;
+function GetWMIScheduledJobUTCTime(Time: TDateTime): string;
 var
   TimeBias: Integer;
   Hour, Min, Sec, MSec: Word;
