@@ -2643,7 +2643,7 @@ begin
     Inc(SPI, Index);
     SPI := StrPos(SPI, SubP);
     if SPI <> nil then
-      Result := SPI - SP
+      Result := SPI - SP + 1
     else
       Result := 0;
   end
