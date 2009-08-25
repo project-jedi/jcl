@@ -263,7 +263,7 @@ procedure Fill(const First: IJclIntegerIterator; Count: Integer; AValue: Integer
 procedure Fill(const First: IJclCardinalIterator; Count: Integer; AValue: Cardinal); overload;
 procedure Fill(const First: IJclInt64Iterator; Count: Integer; const AValue: Int64); overload;
 procedure Fill(const First: IJclPtrIterator; Count: Integer; APtr: Pointer); overload;
-procedure Fill(const First: IJclIterator; Count: Integer; AObject: TObject); overload
+procedure Fill(const First: IJclIterator; Count: Integer; AObject: TObject); overload;
 
 // Reverse algorithms
 procedure Reverse(const First, Last: IJclIntfIterator); overload;

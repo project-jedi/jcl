@@ -200,7 +200,7 @@ uses
 {$JPPEXPANDMACRO FILLINT(Fill,IJclCardinalIterator,,AValue,Cardinal)} overload;
 {$JPPEXPANDMACRO FILLINT(Fill,IJclInt64Iterator,const ,AValue,Int64)} overload;
 {$JPPEXPANDMACRO FILLINT(Fill,IJclPtrIterator,,APtr,Pointer)} overload;
-{$JPPEXPANDMACRO FILLINT(Fill,IJclIterator,,AObject,TObject)} overload
+{$JPPEXPANDMACRO FILLINT(Fill,IJclIterator,,AObject,TObject)} overload;
 
 // Reverse algorithms
 {$JPPEXPANDMACRO REVERSEINT(Reverse,IJclIntfIterator)} overload;
