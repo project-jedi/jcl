@@ -88,7 +88,9 @@ uses
 {$HPPEMIT '#include <propidl.h>'}
 {$HPPEMIT '#include <msidefs.h>'}
 {$HPPEMIT '#include <shlguid.h>'}
+{$IFNDEF COMPILER14_UP}
 {$HPPEMIT '#include <imgguids.h>'}
+{$ENDIF ~COMPILER14_UP}
 {$HPPEMIT '#include <objbase.h>'}
 {$HPPEMIT '#include <ntsecapi.h>'}
 {$HPPEMIT ''}
@@ -1863,7 +1865,9 @@ type
   IMAGE_TLS_DIRECTORY64 = _IMAGE_TLS_DIRECTORY64;
   {$EXTERNALSYM IMAGE_TLS_DIRECTORY64}
   TImageTlsDirectory64 = IMAGE_TLS_DIRECTORY64;
+  {$EXTERNALSYM TImageTlsDirectory64}
   PImageTlsDirectory64 = PIMAGE_TLS_DIRECTORY64;
+  {$EXTERNALSYM PImageTlsDirectory64}
 
   PIMAGE_TLS_DIRECTORY32 = ^IMAGE_TLS_DIRECTORY32;
   {$EXTERNALSYM PIMAGE_TLS_DIRECTORY32}
@@ -1879,8 +1883,10 @@ type
   IMAGE_TLS_DIRECTORY32 = _IMAGE_TLS_DIRECTORY32;
   {$EXTERNALSYM IMAGE_TLS_DIRECTORY32}
   TImageTlsDirectory32 = IMAGE_TLS_DIRECTORY32;
+  {$EXTERNALSYM TImageTlsDirectory32}
   PImageTlsDirectory32 = PIMAGE_TLS_DIRECTORY32;
-
+  {$EXTERNALSYM PImageTlsDirectory32}
+  
 const
   IMAGE_ORDINAL_FLAG = IMAGE_ORDINAL_FLAG32;
   {$EXTERNALSYM IMAGE_ORDINAL_FLAG}
@@ -1905,7 +1911,9 @@ type
   PIMAGE_TLS_DIRECTORY = PIMAGE_TLS_DIRECTORY32;
   {$EXTERNALSYM PIMAGE_TLS_DIRECTORY}
   TImageTlsDirectory = TImageTlsDirectory32;
+  {$EXTERNALSYM TImageTlsDirectory}
   PImageTlsDirectory = PImageTlsDirectory32;
+  {$EXTERNALSYM PImageTlsDirectory}
 
   TIIDUnion = record
     case Integer of

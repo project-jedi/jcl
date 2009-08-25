@@ -20,7 +20,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -39,7 +39,11 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$IFDEF BDS}
+  {$IFDEF BDS7_UP}
+  JclStackTraceViewerMainFormBDS7,
+  {$ELSE ~BDS7_UP}
   JclStackTraceViewerMainFormBDS,
+  {$ENDIF ~BDS7_UP}
   {$ELSE ~BDS}
   JclStackTraceViewerMainFormDelphi,
   {$ENDIF ~BDS}

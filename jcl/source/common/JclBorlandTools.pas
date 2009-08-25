@@ -80,9 +80,9 @@ type
   TJclBorRADToolPath = string;
 
 const
-  SupportedDelphiVersions = [5, 6, 7, 8, 9, 10, 11, 12];
-  SupportedBCBVersions    = [5, 6, 10, 11, 12];
-  SupportedBDSVersions    = [1, 2, 3, 4, 5, 6];
+  SupportedDelphiVersions = [5, 6, 7, 8, 9, 10, 11, 12, 14];
+  SupportedBCBVersions    = [5, 6, 10, 11, 12, 14];
+  SupportedBDSVersions    = [1, 2, 3, 4, 5, 6, 7];
 
   // Object Repository
   BorRADToolRepositoryPagesSection    = 'Repository Pages';
@@ -914,7 +914,7 @@ const
   CDSKeyName          = '\SOFTWARE\CodeGear\BDS';
   DelphiKeyName       = '\SOFTWARE\Borland\Delphi';
 
-  BDSVersions: array [1..6] of TBDSVersionInfo = (
+  BDSVersions: array [1..7] of TBDSVersionInfo = (
     (
       Name: RsCSharpName;
       VersionStr: '1.0';
@@ -950,6 +950,12 @@ const
       VersionStr: '2009';
       Version: 12;
       CoreIdeVersion: '120';
+      Supported: True),
+    (
+      Name: RsRSName;
+      VersionStr: '2010';
+      Version: 14;
+      CoreIdeVersion: '140';
       Supported: True)
   );
   {$ENDIF MSWINDOWS}
@@ -1752,10 +1758,13 @@ begin
   FHxPlugin := nil;
   if Assigned(Installation) then
   begin
-  if (Installation.IDEVersionNumber = 6) then
-    FIdeNameSpace := 'embarcadero.rs2009'
-  else
-    FIdeNameSpace := Format(Help2BorlandNameSpace, [Installation.IDEVersionNumber]);
+    if (Installation.IDEVersionNumber = 7) then
+      FIdeNameSpace := 'embarcadero.rs2010'
+    else
+    if (Installation.IDEVersionNumber = 6) then
+      FIdeNameSpace := 'embarcadero.rs2009'
+    else
+      FIdeNameSpace := Format(Help2BorlandNameSpace, [Installation.IDEVersionNumber]);
   end
   else
     FIdeNameSpace := '';
@@ -3965,7 +3974,10 @@ procedure TJclBorRADToolInstallation.ReadInformation;
           1:
             Result := 'cs1';
         else
-          Result := Format('d%d', [Num + 6]);  // BDS 2 goes to D8
+          if Num < 7 then
+            Result := Format('d%d', [Num + 6])  // BDS 2 goes to D8
+          else
+            Result := Format('d%d', [Num + 7]); // BDS 7 goes to D14
         end;
     end;
   end;
@@ -5349,7 +5361,8 @@ begin
           Break;
         end;
       brBorlandDevStudio:
-        if (VersionNumber >= 10) and (Installations[I].IDEVersionNumber = (VersionNumber - 6)) then
+        if ((VersionNumber >= 14) and (Installations[I].IDEVersionNumber = (VersionNumber - 7))) or
+          ((VersionNumber >= 10) and (Installations[I].IDEVersionNumber = (VersionNumber - 6))) then
         begin
           Result := Installations[I];
           Break;
@@ -5372,7 +5385,8 @@ begin
           Break;
         end;
       brBorlandDevStudio:
-        if (VersionNumber >= 8) and (Installations[I].IDEVersionNumber = (VersionNumber - 6)) then
+        if ((VersionNumber >= 14) and (Installations[I].IDEVersionNumber = (VersionNumber - 7))) or
+          ((VersionNumber >= 8) and (Installations[I].IDEVersionNumber = (VersionNumber - 6))) then
         begin
           Result := Installations[I];
           Break;

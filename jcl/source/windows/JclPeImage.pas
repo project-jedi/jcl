@@ -33,7 +33,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -4805,7 +4805,11 @@ end;
 
 procedure TJclPeNameSearch.Start;
 begin
+  {$IFDEF RTL210_UP}
+  Suspended := False;
+  {$ELSE ~RTL210_UP}
   Resume;
+  {$ENDIF ~RTL210_UP}
 end;
 
 //=== PE Image miscellaneous functions =======================================

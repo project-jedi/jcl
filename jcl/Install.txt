@@ -1,15 +1,16 @@
-JEDI Code Library v 1.105 Installation
+JEDI Code Library v 2.0 Installation
 
 Supported development tools versions:
 
-- Delphi 2009 and C++Builder 2009
-- CodeGear RAD Studio 2007 (also known as Delphi 2007 for Win32, C++Builder 2007)
-- Borland Developer Studio 2006 (also known as Delphi 2006, C++Builder 2006)
-- Borland Delphi 7
-- Borland Delphi 6 Update Pack #2 (including Personal Edition)
-- Borland Delphi 5 Update Pack #1
-- Borland C++ Builder 6
-- Borland C++ Builder 5
+- Delphi 2010 and C++Builder 2010;
+- Delphi 2009 and C++Builder 2009;
+- CodeGear RAD Studio 2007 (also known as Delphi 2007 for Win32, C++Builder 2007);
+- Borland Developer Studio 2006 (also known as Delphi 2006, C++Builder 2006);
+- Borland Delphi 2005;
+- Borland Delphi 7;
+- Borland Delphi 6 Update Pack #2 (including Personal Edition);
+- Borland C++ Builder 6;
+- FreePascal 2.2.
 
 For more detailed information, see docs\Readme.html.
 
@@ -57,7 +58,7 @@ To execute for
 
         or
 
-        >install d5
+        >install d6
 
 --------------------------------
 Document last updated 2009-06-28

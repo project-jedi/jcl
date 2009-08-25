@@ -145,8 +145,23 @@ type
     constructor Create(ADebugExtension: TJclDebugExtension);
   end;
 
+  {$IFDEF BDS7_UP}
+  // RAD Studio 2010 and newer
+  TProjectManagerMultipleNotifier = class(TNotifierObject, IOTANotifier, IOTAProjectMenuItemCreatorNotifier)
+  private
+    FDebugExtension: TJclDebugExtension;
+  protected
+    procedure MenuExecute(const MenuContextList: IInterfaceList);
+    { IOTAProjectMenuItemCreatorNotifier }
+    procedure AddMenu(const Project: IOTAProject; const Ident: TStrings;
+      const ProjectManagerMenuList: IInterfaceList; IsMultiSelect: Boolean);
+  public
+    constructor Create(ADebugExtension: TJclDebugExtension);
+  end;
+  {$ELSE ~BDS7_UP}
   {$IFDEF BDS4_UP}
-  TProjectManagerNotifier = class(TNotifierObject, IOTANotifier, INTAProjectMenuCreatorNotifier)
+  // BDS 2006, RAD Studio 2007 and RAD Studio 2009
+  TProjectManagerSimpleNotifier = class(TNotifierObject, IOTANotifier, INTAProjectMenuCreatorNotifier)
   private
     FDebugExtension: TJclDebugExtension;
     FOTAProjectManager: IOTAProjectManager;
@@ -163,6 +178,7 @@ type
       const AOTAProjectManager: IOTAProjectManager);
   end;
   {$ENDIF BDS4_UP}
+  {$ENDIF ~BDS7_UP}
 
 // design package entry point
 procedure Register;
@@ -180,6 +196,23 @@ const
     );
   DebugActionValues: array [False..True] of AnsiString =
     ( 'OFF', 'ON' );
+  ProjectManagerSubMenuNames: array[TDebugExpertAction, TDebugExpertState] of string =
+    ( // deGenerateJdbg
+      ( JclGenerateJdbgProjMenuName + 'AD',   // deAlwaysDisabled
+        JclGenerateJdbgProjMenuName + 'PD',   // deProjectDisabled
+        JclGenerateJdbgProjMenuName + 'PE',   // deProjectEnabled
+        JclGenerateJdbgProjMenuName + 'AE'),  // deAlwaysEnabled
+      // deInsertJdbg
+      ( JclInsertJdbgProjMenuName + 'AD',     // deAlwaysDisabled
+        JclInsertJdbgProjMenuName + 'PD',     // deProjectDisabled
+        JclInsertJdbgProjMenuName + 'PE',     // deProjectEnabled
+        JclInsertJdbgProjMenuName + 'AE'),    // deAlwaysEnabled
+      // deDeleteMapFile
+      ( JclDeleteMapFileProjMenuName + 'AD',  // deAlwaysDisabled
+        JclDeleteMapFileProjMenuName + 'PD',  // deProjectDisabled
+        JclDeleteMapFileProjMenuName + 'PE',  // deProjectEnabled
+        JclDeleteMapFileProjMenuName + 'AE')  // deAlwaysEnabled
+    );
 
 {$IFDEF UNITVERSIONING}
 const
@@ -1351,11 +1384,16 @@ begin
 
   // register notifiers
   FIDENotifierIndex := OTAServices.AddNotifier(TIdeNotifier.Create(Self));
+  {$IFDEF BDS7_UP}
+  OTAProjectManager := GetOTAProjectManager;
+  FProjectManagerNotifierIndex := OTAProjectManager.AddMenuItemCreatorNotifier(TProjectManagerMultipleNotifier.Create(Self));
+  {$ELSE ~BDS7_UP}
   {$IFDEF BDS4_UP}
   OTAProjectManager := GetOTAProjectManager;
-  FProjectManagerNotifierIndex := OTAProjectManager.AddMenuCreatorNotifier(TProjectManagerNotifier.Create(Self,
+  FProjectManagerNotifierIndex := OTAProjectManager.AddMenuCreatorNotifier(TProjectManagerSimpleNotifier.Create(Self,
     NTAServices, OTAProjectManager));
   {$ENDIF BDS4_UP}
+  {$ENDIF ~BDS7_UP}
 
   LoadExpertValues;
 
@@ -1419,10 +1457,15 @@ end;
 procedure TJclDebugExtension.UnregisterCommands;
 begin
   inherited UnregisterCommands;
+  {$IFDEF BDS7_UP}
+  if FProjectManagerNotifierIndex <> -1 then
+    GetOTAProjectManager.RemoveMenuItemCreatorNotifier(FProjectManagerNotifierIndex);
+  {$ELSE ~BDS7_UP}
   {$IFDEF BDS4_UP}
   if FProjectManagerNotifierIndex <> -1 then
     GetOTAProjectManager.RemoveMenuCreatorNotifier(FProjectManagerNotifierIndex);
   {$ENDIF BDS4_UP}
+  {$ENDIF ~BDS7_UP}
   if FIDENotifierIndex <> -1 then
     GetOTAServices.RemoveNotifier(FIDENotifierIndex);
   // save settings
@@ -1506,11 +1549,162 @@ procedure TIdeNotifier.FileNotification(NotifyCode: TOTAFileNotification;
 begin
 end;
 
+{$IFDEF BDS7_UP}
+// RAD Studio 2010 and newer
+
+//=== { TProjectManagerMultipleNotifier } ====================================
+
+constructor TProjectManagerMultipleNotifier.Create(ADebugExtension: TJclDebugExtension);
+begin
+  inherited Create;
+  FDebugExtension := ADebugExtension;
+end;
+
+procedure TProjectManagerMultipleNotifier.AddMenu(const Project: IOTAProject; const Ident: TStrings;
+  const ProjectManagerMenuList: IInterfaceList; IsMultiSelect: Boolean);
+  procedure FillProjMenu(const ParentVerb: string; Action: TDebugExpertAction);
+  var
+    BMenu: TJclOTAProjectManagerMenu;
+    State: TDebugExpertState;
+  begin
+    State := FDebugExtension.ProjectStates[Action, Project];
+
+    BMenu := TJclOTAProjectManagerMenu.Create;
+    BMenu.Enabled := True;
+    BMenu.Checked := State = deAlwaysEnabled;
+    BMenu.Caption := RsAlwaysEnabled;
+    BMenu.Verb := ProjectManagerSubMenuNames[Action, deAlwaysEnabled];
+    BMenu.Parent := ParentVerb;
+    BMenu.OnExecute := MenuExecute;
+    BMenu.Position := pmmpUserOptions + 11;
+    ProjectManagerMenuList.Add(BMenu);
+
+    BMenu := TJclOTAProjectManagerMenu.Create;
+    BMenu.Enabled := True;
+    BMenu.Checked := State = deProjectEnabled;
+    BMenu.Caption := RsProjectEnabled;
+    BMenu.Verb := ProjectManagerSubMenuNames[Action, deProjectEnabled];
+    BMenu.Parent := ParentVerb;
+    BMenu.OnExecute := MenuExecute;
+    BMenu.Position := pmmpUserOptions + 12;
+    ProjectManagerMenuList.Add(BMenu);
+
+    BMenu := TJclOTAProjectManagerMenu.Create;
+    BMenu.Enabled := True;
+    BMenu.Checked := State = deProjectDisabled;
+    BMenu.Caption := RsProjectDisabled;
+    BMenu.Verb := ProjectManagerSubMenuNames[Action, deProjectDisabled];
+    BMenu.Parent := ParentVerb;
+    BMenu.OnExecute := MenuExecute;
+    BMenu.Position := pmmpUserOptions + 13;
+    ProjectManagerMenuList.Add(BMenu);
+
+    BMenu := TJclOTAProjectManagerMenu.Create;
+    BMenu.Enabled := True;
+    BMenu.Checked := State = deAlwaysDisabled;
+    BMenu.Caption := RsAlwaysDisabled;
+    BMenu.Verb := ProjectManagerSubMenuNames[Action, deAlwaysDisabled];
+    BMenu.Parent := ParentVerb;
+    BMenu.OnExecute := MenuExecute;
+    BMenu.Position := pmmpUserOptions + 14;
+    ProjectManagerMenuList.Add(BMenu);
+  end;
+
+var
+  AMenu: TJclOTAProjectManagerMenu;
+  Actions: TDebugExpertActions;
+begin
+  try
+    if (not IsMultiSelect) and Assigned(Project) and (Ident.IndexOf(sProjectContainer) <> -1) then
+    begin
+      Actions := FDebugExtension.ProjectActions[Project];
+
+      AMenu := TJclOTAProjectManagerMenu.Create;
+      AMenu.Enabled := True;
+      AMenu.Checked := Actions <> [];
+      AMenu.Caption := RsDebugExpertCaption;
+      AMenu.Verb := JclDebugExpertProjMenuName;
+      AMenu.Position := pmmpUserOptions;
+      ProjectManagerMenuList.Add(AMenu);
+
+      AMenu := TJclOTAProjectManagerMenu.Create;
+      AMenu.Enabled := True;
+      AMenu.Caption := RsDebugGenerateJdbg;
+      AMenu.Parent := JclDebugExpertProjMenuName;
+      AMenu.Verb := JclGenerateJdbgProjMenuName;
+      AMenu.Position := pmmpUserOptions + 1;
+      ProjectManagerMenuList.Add(AMenu);
+      FillProjMenu(JclGenerateJdbgProjMenuName, deGenerateJdbg);
+
+      AMenu := TJclOTAProjectManagerMenu.Create;
+      AMenu.Enabled := True;
+      AMenu.Caption := RsDebugInsertJdbg;
+      AMenu.Parent := JclDebugExpertProjMenuName;
+      AMenu.Verb := JclInsertJdbgProjMenuName;
+      AMenu.Position := pmmpUserOptions + 2;
+      ProjectManagerMenuList.Add(AMenu);
+      FillProjMenu(JclInsertJdbgProjMenuName, deInsertJdbg);
+
+      AMenu := TJclOTAProjectManagerMenu.Create;
+      AMenu.Enabled := True;
+      AMenu.Caption := RsDeleteMapFile;
+      AMenu.IsMultiSelectable := True;
+      AMenu.Parent := JclDebugExpertProjMenuName;
+      AMenu.Verb := JclDeleteMapFileProjMenuName;
+      AMenu.Position := pmmpUserOptions + 3;
+      ProjectManagerMenuList.Add(AMenu);
+      FillProjMenu(JclDeleteMapFileProjMenuName, deDeleteMapFile);
+    end;
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
+  end;
+end;
+
+procedure TProjectManagerMultipleNotifier.MenuExecute(const MenuContextList: IInterfaceList);
+var
+  Index: Integer;
+  MenuContext: IOTAProjectMenuContext;
+  Verb: string;
+  Project: IOTAProject;
+  Action: TDebugExpertAction;
+  State: TDebugExpertState;
+begin
+  try
+    for Index := 0 to MenuContextList.Count - 1 do
+    begin
+      MenuContext := MenuContextList.Items[Index] as IOTAProjectMenuContext;
+      Project := MenuContext.Project;
+      Verb := MenuContext.Verb;
+      if Project <> nil then
+      begin
+        for Action := Low(Action) to High(Action) do
+          for State := Low(State) to High(State) do
+            if ProjectManagerSubMenuNames[Action, State] = Verb then
+              FDebugExtension.ProjectStates[Action, Project] := State;
+      end
+      else
+        raise EJclExpertException.CreateTrace(RsENoActiveProject);
+    end;
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
+  end;
+end;
+
+{$ELSE ~BDS7_UP}
 {$IFDEF BDS4_UP}
+// BDS 2006, RAD Studio 2007 and RAD Studio 2009
 
-//=== { TProjectManagerNotifier } ============================================
+//=== { TProjectManagerSimpleNotifier } ======================================
 
-constructor TProjectManagerNotifier.Create(ADebugExtension: TJclDebugExtension;
+constructor TProjectManagerSimpleNotifier.Create(ADebugExtension: TJclDebugExtension;
   const ANTAServices: INTAServices; const AOTAProjectManager: IOTAProjectManager);
 begin
   inherited Create;
@@ -1519,7 +1713,7 @@ begin
   FOTAProjectManager := AOTAProjectManager;
 end;
 
-function TProjectManagerNotifier.AddMenu(const Ident: string): TMenuItem;
+function TProjectManagerSimpleNotifier.AddMenu(const Ident: string): TMenuItem;
   procedure FillSubMenu(AMenuItem: TMenuItem; const AOnClickEvent: TNotifyEvent; AState: TDebugExpertState);
   var
     SubMenuItem: TMenuItem;
@@ -1641,12 +1835,12 @@ begin
   end;
 end;
 
-function TProjectManagerNotifier.CanHandle(const Ident: string): Boolean;
+function TProjectManagerSimpleNotifier.CanHandle(const Ident: string): Boolean;
 begin
   Result := Ident = sProjectContainer;
 end;
 
-procedure TProjectManagerNotifier.DeleteMapFileSubMenuClick(Sender: TObject);
+procedure TProjectManagerSimpleNotifier.DeleteMapFileSubMenuClick(Sender: TObject);
 var
   AProject: IOTAProject;
   Ident: string;
@@ -1667,7 +1861,7 @@ begin
   end;
 end;
 
-procedure TProjectManagerNotifier.GenerateJdbgSubMenuClick(Sender: TObject);
+procedure TProjectManagerSimpleNotifier.GenerateJdbgSubMenuClick(Sender: TObject);
 var
   AProject: IOTAProject;
   Ident: string;
@@ -1688,7 +1882,7 @@ begin
   end;
 end;
 
-procedure TProjectManagerNotifier.InsertJdbgSubMenuClick(Sender: TObject);
+procedure TProjectManagerSimpleNotifier.InsertJdbgSubMenuClick(Sender: TObject);
 var
   AProject: IOTAProject;
   Ident: string;
@@ -1710,6 +1904,7 @@ begin
 end;
 
 {$ENDIF BDS4_UP}
+{$ENDIF ~BDS7_UP}
 
 {$IFDEF UNITVERSIONING}
 initialization

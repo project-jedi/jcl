@@ -1,9 +1,9 @@
 --------------------------------------------------------------------------------
 
 JEDI Code Library
-Release 1.105
-Build 3400
-22-June-2009
+Release 2.0
+Build 3449
+10-August-2010
 
 --------------------------------------------------------------------------------
 
@@ -22,8 +22,8 @@ Getting involved in JCL development
 --------------------------------------------------------------------------------
 
 About this release
-JCL release 1.105 provides an updated support for all targets
-(including Delphi 2009 and C++Builder 2009).
+JCL release 2.0 provides basic support for RAD Studio 2010 (including
+Delphi 2010 and C++Builder 2010) an updated support for all targets.
 
 As always, multiple bugs have been fixed; for detailed change logs, use the
 facilities of our Subversion repository at Sourceforge.net
@@ -31,32 +31,26 @@ http://sourceforge.net/projects/jcl/, see below.
 
 Head changes:
 
- - improved Unicode support for Delphi 2009 and C++Builder 2009;
- - support for solid archives in JclCompression (backend handled by 7-zip);
- - support for RPM, MUB and DMG archive formats (backend handled by 7-zip);
- - support for out-of-place and in-place archive updates (backend handled by 7-zip);
- - new string class TJclAnsiStrings to store AnsiString (improved Delphi 2009 backward compatibility);
- - JclPCRE update to PCRE 7.8;
- - the exception notifier can be disabled when a debugger is attached to the application;
- - support for multiple roots in TJclFileEnumerator;
- - new unit TJclCharsets.pas that contains the translations of charset names to codepages;
+ - improved Unicode support for Delphi 2009, C++Builder 2009 and newer;
+ - new expert for displaying improved stack traces in the debugger, these stack
+   traces can be serialized to XML files;
+ - support for 32 bit FPC;
+ - support for 64 bit FPC (experimental);
+ - support for Delphi 2005 is back;
+ - removal of support for Delphi 5, C++Builder 5, Delphi.net and Kylix;
+ - added 7-zip 9.4.0 archive formats in JclCompression (.xz, .lzma86, ntfs,
+   fat...);
+ - simple log: new option to release the log files between two accesses;
+ - PCRE (http://www.pcre.org/) precompiled object files updated to PCRE 7.9;
+ - exception dialog: the log can be saved to any arbitrary location;
+ - exception dialog: new option to disable integrated exception tracking when
+   a debugger is attached;
+ - exception dialog: new option to select which thread to report to log;
 
 Important:
 
- - As of JCL 2.0, the library does not support Delphi 5 and C++Builder 5 anymore;
-
- - Note that the package naming has changed: the same package name is used by
-   all versions of the compiler supporting suffixes (C++Builder 6, Delphi 6,
-   Delphi 7, C#Builder 1, Delphi 8, Delphi 2005, BDS 2006, RAD Studio 2007,
-   Delphi 2009 and C++Builder 2009); a different suffix is added for each target
-   to the BPL file name (for Delphi 2009, the library file is named jcl120.bpl).
-   The installer tries to remove old packages. 3rd party packages requiring old
-   DJcl* resp. CJcl* packages need to be changed to accomodate the new naming
-   scheme or they will cause conflicts in the IDE at load time.
-
- - DCP files are now created in the lib\target subdirectory of the JCL
-   installation. 3rd party packages requiring JCL packages need to have this
-   path in their "browse path" option to compile.
+ - As of JCL 2.0, the library does not support Delphi 5, C++Builder 5, Kylix 3
+   and Delphi.net anymore;
 
 (Windows only) Installation options:
 
@@ -72,15 +66,10 @@ informations can be linked into binaries to become JCL debug data or be
 converted to .jdbg files. Once linked MAP files could be deleted. These options
 are subnodes of the "Packages" node.
 
-  For BDS 2006, RAD Studio 2007 and C++Builder 2009, the compiler introduced
-a new option to make the same packages available in C++, by checking the
-"Dual packages" option of the "Packages" node, you will be able to call functions
-of the JCL from C++ code.
-
-.net Framework support:
-
-  A subset of JCL units was worked over to support Delphi.Net (Delphi.net 2006
-and Delphi.net 2007). The packages belong to the Jedi.Jcl namespace.
+  For BDS 2006, RAD Studio 2007, RAD Studio 2009 and RAD Studio 2010, the
+compiler introduced a new option to make the same packages available in C++,
+by checking the "Dual packages" option of the "Packages" node, you will be able
+to call functions of the JCL from C++ code.
 
 --------------------------------------------------------------------------------
 
@@ -88,7 +77,7 @@ Supported Tools
 The JCL can be compiled and installed in the following environments
 
 Only runtime support:
- - None
+ - FreePascal (tested with 2.2.2 and 2.2.4).
 
 Only design-time support (only experts):
  - C#Builder 1 (cf Installation notes);
@@ -97,24 +86,21 @@ Only design-time support (only experts):
 Both supports (run time and design time):
  - Delphi 6, Delphi 7 and Delphi 2005;
  - C++Builder 6;
+ - Delphi 2005 (without unit versioning support);
  - Borland Developer Studio 2006 (Delphi for Win32, C++Builder for Win32,
    Delphi.net and C#Builder personalities);
  - Turbo Delphi (explorer and professional - cf Installation notes);
  - CodeGear RAD Studio 2007 (Delphi for Win32 and C++Builder for Win32
    personalities);
- - CodeGear Delphi 2009 and C++Builder 2009.
+ - CodeGear Delphi 2009 and C++Builder 2009;
+ - CodeGear Delphi 2010 and C++Builder 2010.
 
 --------------------------------------------------------------------------------
 
 Installation notes
 
- - Not every unit supports all tools. Look out for *.exc files in the tool-
-   specific lib/subdirectories for a list of units excluded from compilation.
-
- - Free Pascal (http://www.freepascal.org/) support has not been updated for
-   this release; most units fromsource/common should work with FP 2.0, as tests
-   with a 2.0 beta (1.9.8)indicated, but this has not been verified. Note that
-   there are no plans to support FP versions from the 1.0 branch.
+ - Free Pascal (http://www.freepascal.org/) support has been updated for
+   this release; most units fromsource/common work with FP 2.2.
 
 Installation for Turbo Delphi
 
@@ -176,6 +162,8 @@ For each tool you want to install the JCL in, repeat the following steps:
  - For CodeGear Delphi 2007 for Win32 and C++Builder 2007: source\include\jcld11.inc
  - For Delphi.net 2007: source\include\jcld11.net.inc
  - For Delphi 2009 and C++Builder 2009: source\include\include\jcld12.inc
+ - For Delphi 2010 and C++Builder 2010: source\include\include\jcld14.inc
+ - For FreePascal: source\include\jclfpc.inc
 
 2. In the IDE, open and compile package Jcl.dpk (or Jcl.bpk for C++Builder)
 located in a subdirectory of the "packages" directory matching your version of
@@ -209,6 +197,7 @@ experts\debug\tools           - Tools for creating files with JCL debug informat
 experts\favfolders            - Favorite folders combobox in IDE open/save file dialogs
 experts\projectanalyzer       - Project Analyzer IDE expert
 experts\repository            - Repository expert
+experts\stacktraceviewer      - stack trace expert
 experts\useswizard            - JCL uses wizard
 experts\versioncontrol        - Integration of TortoiseCVS and TortoiseSVN in the IDE
 examples                      - JCL example applications

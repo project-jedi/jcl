@@ -135,6 +135,7 @@ type
 const
   Glu32 = 'glu32.dll';
 
+var
   Win32ExFunctions: array [TJclWin32ExFunction] of TDllFunctionRec =
    ( // jwfTryEnterCriticalSection
      (FunctionName: 'TryEnterCriticalSection'; FunctionAddr: nil;

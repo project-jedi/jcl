@@ -789,7 +789,7 @@ type
     procedure DoSyncHandleException; dynamic;
     procedure HandleException(Sender: TObject = nil);
   public
-    constructor Create(Suspended: Boolean; const AThreadName: string = '');
+    constructor Create(ASuspended: Boolean; const AThreadName: string = '');
     destructor Destroy; override;
     property SyncException: TObject read FSyncException;
     property ThreadInfo: string read GetThreadInfo;
@@ -5535,13 +5535,17 @@ end;
 
 //=== { TJclDebugThread } ====================================================
 
-constructor TJclDebugThread.Create(Suspended: Boolean; const AThreadName: string);
+constructor TJclDebugThread.Create(ASuspended: Boolean; const AThreadName: string);
 begin
   FThreadName := AThreadName;
   inherited Create(True);
   JclDebugThreadList.RegisterThread(Self, AThreadName);
-  if not Suspended then
+  {$IFDEF RTL210_UP}
+  Suspended := False;
+  {$ELSE ~RTL210_UP}
+  if not ASuspended then
     Resume;
+  {$ENDIF ~RTL210_UP}
 end;
 
 destructor TJclDebugThread.Destroy;

@@ -130,6 +130,11 @@ ALERT_jedi_inc_incompatible
       {$DEFINE JCL_CONFIGURED}
     {$ENDIF BDS6}
     {----------------------------}
+    {$IFDEF BDS7}
+      {$I jcld14.inc}
+      {$DEFINE JCL_CONFIGURED}
+    {$ENDIF BDS7}
+    {----------------------------}
     {$IFDEF FPC}
       {$I jclfpc.inc}
       {$DEFINE JCL_CONFIGURED}

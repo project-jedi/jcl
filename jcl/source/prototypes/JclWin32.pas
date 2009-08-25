@@ -84,7 +84,9 @@ uses
 {$HPPEMIT '#include <propidl.h>'}
 {$HPPEMIT '#include <msidefs.h>'}
 {$HPPEMIT '#include <shlguid.h>'}
+{$IFNDEF COMPILER14_UP}
 {$HPPEMIT '#include <imgguids.h>'}
+{$ENDIF ~COMPILER14_UP}
 {$HPPEMIT '#include <objbase.h>'}
 {$HPPEMIT '#include <ntsecapi.h>'}
 {$HPPEMIT ''}

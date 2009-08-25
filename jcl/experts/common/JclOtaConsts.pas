@@ -85,12 +85,16 @@ const
   JclDebugMessagePrefix         = 'Jcl Debug Expert';
   JclDebugExpertActionName      = 'JCLDebugExpertCommand';
   JclDebugExpertMenuName        = 'JCLDebugExpertMenu';
+  JclDebugExpertProjMenuName    = 'JCLDebugExpertProjMenu';
   JclGenerateJdbgActionName     = 'JCLGenerateJdbgCommand';
   JclGenerateJdbgMenuName       = 'JCLGenerateJdbgMenu';
+  JclGenerateJdbgProjMenuName   = 'JCLGenerateJdbgProjMenu';
   JclInsertJdbgActionName       = 'JCLInsertJdbgCommand';
   JclInsertJdbgMenuName         = 'JCLInsertJdbgMenu';
+  JclInsertJdbgProjMenuName     = 'JCLInsertJdbgProjMenu';
   JclDeleteMapFileActionName    = 'JCLDeleteMapFileCommand';
   JclDeleteMapFileMenuName      = 'JCLDeleteMapFileMenu';
+  JclDeleteMapFileProjMenuName  = 'JCLDeleteMapFileProjMenu';
   JclDebugGenerateJdbgSetting   = 'JCL_DEBUG_EXPERT_GENERATEJDBG';
   JclDebugInsertJdbgSetting     = 'JCL_DEBUG_EXPERT_INSERTJDBG';
   JclDebugDeleteMapfileSetting  = 'JCL_DEBUG_EXPERT_DELETEMAPFILE';
