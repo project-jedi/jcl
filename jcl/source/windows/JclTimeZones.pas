@@ -540,7 +540,7 @@ begin
   TimeZoneInfo.DaylightDate := FBiasInfo.DaylightDate;
   TimeZoneInfo.DaylightBias := FBiasInfo.DaylightBias;
 
-  if not SetTimeZoneInformation(TimeZoneInfo) then
+  if not SetTimeZoneInformation({$IFDEF FPC}@{$ENDIF FPC}TimeZoneInfo) then
     RaiseLastOSError;
 
   SendMessage(HWND_BROADCAST, WM_SETTINGCHANGE, 0, 0);
