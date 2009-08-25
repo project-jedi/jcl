@@ -146,6 +146,8 @@ function GetUnitVersioning: TUnitVersioning;
 implementation
 
 uses
+  // make TObjectList functions inlined
+  Classes,
   JclSysUtils, JclSynch;
 
 // Delphi 5 does not know this function //(usc) D6/7 Per does have StartsWith

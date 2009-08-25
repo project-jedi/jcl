@@ -516,7 +516,10 @@ begin
         Result.Id := '';
         Exit;
       end;
-      Inc(Result.Version, 6); // 3.0 => 9
+      if IDEVersion < 7 then
+        Inc(Result.Version, 6)  // 3.0 => 9
+      else
+        Inc(Result.Version, 7); // 7.0 => 14
     end;
     Result.Typ := Typ;
     Result.IDEVersion := IDEVersion;
@@ -536,6 +539,7 @@ begin
           4: Result.Name := 'Borland Developer Studio 2006';
           5: Result.Name := 'CodeGear Delphi 2007 for Win32';
           6: Result.Name := 'CodeGear RAD Studio 2009';
+          7: Result.Name := 'Embarcadero RAD Studio 2010';
         end;
     end;
 
@@ -1179,7 +1183,7 @@ begin
   begin
     WriteLn;
     WriteLn('Additional options (must be specified before any dcc32 parameter):');
-    WriteLn('  --delphi-version=d12   Prefer this version, overrides environment variable');
+    WriteLn('  --delphi-version=d14   Prefer this version, overrides environment variable');
     WriteLn('  --verbose              Show warnings and errors during the compiler detection');
     WriteLn('  --use-search-paths     Use the IDE''s search paths');
     WriteLn('  --preserve-config      Keep the dcc32.cfg file and create a dcc32_command.cmd');
@@ -1191,8 +1195,8 @@ begin
     WriteLn('  --runtime-package-vcl  Link the executable against the vcl package');
     WriteLn;
     WriteLn('Environment variables:');
-    WriteLn('  DELPHIVERSION = d12    Prefer this Delphi/BCB/BDS version');
-    WriteLn('                         (d5, d6, d7, c5, c6, d9, d10, d11, d12, ...)');
+    WriteLn('  DELPHIVERSION = d14    Prefer this Delphi/BCB/BDS version');
+    WriteLn('                         (d5, d6, d7, c5, c6, d9, d10, d11, d12, d14, ...)');
   end;
 
   ExitCode := Status;

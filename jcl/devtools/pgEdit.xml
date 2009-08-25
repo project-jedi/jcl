@@ -71,33 +71,34 @@
         <target name="d10" defines="BCB" IsBds="1"/>
         <target name="d11" defines="BCB" IsBds="1"/>
         <target name="d12" defines="BCB" IsBds="1"/>
+        <target name="d14" defines="BCB" IsBds="1"/>
       </targets>
       <aliases>
         <!-- language aliases -->
-        <alias name="Delphi" value="d6,d7,d9,d10,d11,d12"/>
-        <alias name="Bcb" value="c6,d10,d11,d12"/>
-        <alias name="Pascal" value="fpc,d6,d7,d9,d10,d11,d12"/>
+        <alias name="Delphi" value="d6,d7,d9,d10,d11,d12,d14"/>
+        <alias name="Bcb" value="c6,d10,d11,d12,d14"/>
+        <alias name="Pascal" value="fpc,d6,d7,d9,d10,d11,d12,d14"/>
         <!-- platform aliases -->
-        <alias name="Windows" value="fpc,c6,d6,d7,d9,d10,d11,d12"/>
+        <alias name="Windows" value="fpc,c6,d6,d7,d9,d10,d11,d12,d14"/>
         <alias name="Linux" value="fpc"/>
         <!-- package aliases -->
-        <alias name="allLibSuffix" value="c6,d6,d7,d8,d9,d10,cs1,d11,d12"/>
-        <alias name="allv12up" value="d12"/>
+        <alias name="allLibSuffix" value="c6,d6,d7,d8,d9,d10,cs1,d11,d12,d14"/>
+        <alias name="allv12up" value="d12,d14"/>
         <!-- GUI aliases -->
         <alias name="Clx" value="c6,d6,d7"/>
-        <alias name="Vcl" value="c6,d6,d7,d9,d10,d11,d12"/>
+        <alias name="Vcl" value="c6,d6,d7,d9,d10,d11,d12,d14"/>
         <!-- IDE aliases -->
-        <alias name="BDS" value="cs1,d8,d9,d10,d11,d12"/>
-        <alias name="runtimeBDS" value="d9,d10,d11,d12"/>
+        <alias name="BDS" value="cs1,d8,d9,d10,d11,d12,d14"/>
+        <alias name="runtimeBDS" value="d9,d10,d11,d12,d14"/>
         <alias name="OldStyleIDE" value="c6,d6,d7"/>
-        <alias name="runtimeIDE" value="c6,d6,d7,d9,d10,d11,d12"/>
-        <alias name="designtimeIDE" value="c6,d6,d7,d8,d9,d10,cs1,d11,d12"/>
+        <alias name="runtimeIDE" value="c6,d6,d7,d9,d10,d11,d12,d14"/>
+        <alias name="designtimeIDE" value="c6,d6,d7,d8,d9,d10,cs1,d11,d12,d14"/>
       </aliases>
       <ProjectProperties>
         <ProjectProperty name="VersionMajorNumber" value="2"/>
         <ProjectProperty name="VersionMinorNumber" value="0"/>
-        <ProjectProperty name="ReleaseNumber" value="0"/>
-        <ProjectProperty name="BuildNumber" value="3401"/>
+        <ProjectProperty name="ReleaseNumber" value="1"/>
+        <ProjectProperty name="BuildNumber" value="3449"/>
       </ProjectProperties>
     </Model>
   </models>

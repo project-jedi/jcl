@@ -6259,7 +6259,11 @@ begin
   Task := TEnumFileThread(CreateTask);
   Task.FFileHandlerEx := Handler;
   Result := Task.ID;
+  {$IFDEF RTL210_UP}
+  Task.Suspended := False;
+  {$ELSE ~RTL210_UP}
   Task.Resume;
+  {$ENDIF ~RTL210_UP}
 end;
 
 function TJclFileEnumerator.ForEach(Handler: TFileHandler): TFileSearchTaskID;
@@ -6269,7 +6273,11 @@ begin
   Task := TEnumFileThread(CreateTask);
   Task.FFileHandler := Handler;
   Result := Task.ID;
+  {$IFDEF RTL210_UP}
+  Task.Suspended := False;
+  {$ELSE ~RTL210_UP}
   Task.Resume;
+  {$ENDIF ~RTL210_UP}
 end;
 
 function TJclFileEnumerator.GetRunningTasks: Integer;
