@@ -236,7 +236,7 @@
   BCB14_UP     Defined when compiling with C++Builder Personality of RAD Studio 2010 or higher
 
 
-- CodeGear RAD Studio / Borland Developer Studio Versions
+- RAD Studio / Borland Developer Studio Versions
 
   The following directives are direct mappings from the VERXXX directives to a
   friendly name of the associated IDE. These directives are only defined if
@@ -253,7 +253,7 @@
   BDS4         Defined when compiling with BDS 4.0 (Borland Developer Studio 2006) (Codename DEXTER)
   BDS5         Defined when compiling with BDS 5.0 (CodeGear RAD Studio 2007) (Codename HIGHLANDER)
   BDS6         Defined when compiling with BDS 6.0 (CodeGear RAD Studio 2009) (Codename TIBURON)
-  BDS7         Defined when compiling with BDS 7.0 (CodeGear RAD Studio 2010) (Codename WEAVER)
+  BDS7         Defined when compiling with BDS 7.0 (Embarcadero RAD Studio 2010) (Codename WEAVER)
   BDS2_UP      Defined when compiling with BDS 2.0 or higher
   BDS3_UP      Defined when compiling with BDS 3.0 or higher
   BDS4_UP      Defined when compiling with BDS 4.0 or higher
