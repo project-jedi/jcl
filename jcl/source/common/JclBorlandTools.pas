@@ -3586,6 +3586,8 @@ begin
 end;
 
 function TJclBorRADToolInstallation.GetDefaultBDSCommonDir: string;
+const
+  CSIDL_COMMON_DOCUMENTS = $002E; // All Users\Documents
 var
   CommonDocuments: array[0..MAX_PATH] of Char;
 begin
