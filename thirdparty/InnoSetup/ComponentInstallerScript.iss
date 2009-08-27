@@ -9,7 +9,7 @@ function MapDesignPackage(IdeKind: TIdeKind; Version: Integer; const PackageName
   forward; // user defined mapping function that maps the component name @PackageName to a full qualified DesignPackage file name
 function MapExpert(IdeKind: TIdeKind; Version: Integer; const ExpertName: string): string;
   forward; // user defined mapping function that maps the component name @PackageName to a full qualified IDE expert file name
-procedure GetSearchPaths(IdeKind: TIdeKind; Version: Integer; var SearchPaths, DebugPaths, BrowsePaths: string);
+procedure GetSearchPaths(IdeKind: TIdeKind; Version: Integer; var SearchPaths, DebugPaths, BrowsePaths, IncludePaths: string);
   forward; // user defined function that returns a semicolon separated list of paths that the installer should add to the IDE paths
 procedure UserRegisterComponents(Components: TStrings);
   forward; // user defined function that does additional component registration. In Components[] is the list of selected wizard components
@@ -54,6 +54,15 @@ end;
 function GetBCBRegKey(Version: string): string;
 begin
   Result := GetEnv('BCB' + Version + 'RegKey');
+end;
+
+function GetHPPDir(Version: string): string;
+begin
+  Result := GetEnv('BDSCOMMONDIR' + Version);
+  if Result = '' then
+    Result := ExpandConstant('{app}') + '\HPP\d' + Version
+  else
+    Result := Result + '\HPP';
 end;
 
 {----------------------------------------------------------}
@@ -125,9 +134,9 @@ function compinst_installBCBExpert(Version: Integer; Filename, Description: PCha
   external 'compinst_installBCBExpert@files:CompInstall.dll stdcall';
 
   // search path
-function compinst_addDelphiSearchPaths(Version: Integer; SearchPaths, DebugPaths, BrowsePaths: PChar): Integer;
+function compinst_addDelphiSearchPaths(Version: Integer; SearchPaths, DebugPaths, BrowsePaths, IncludePaths: PChar): Integer;
   external 'compinst_addDelphiSearchPaths@files:CompInstall.dll stdcall';
-function compinst_addBCBSearchPaths(Version: Integer; SearchPaths, DebugPaths, BrowsePaths: PChar): Integer;
+function compinst_addBCBSearchPaths(Version: Integer; SearchPaths, DebugPaths, BrowsePaths, IncludePaths: PChar): Integer;
   external 'compinst_addBCBSearchPaths@files:CompInstall.dll stdcall';
 
 // uninstall only
@@ -154,9 +163,9 @@ function compinst_uninstallBCBExpertsPrefixed(Version: Integer; FilenamePrefix: 
   external 'compinst_uninstallBCBExpertsPrefixed@{app}\CompInstall.dll stdcall uninstallonly';
 
   // search path
-function compinst_removeDelphiSearchPaths(Version: Integer; SearchPaths, DebugPaths, BrowsePaths: PChar): Integer;
+function compinst_removeDelphiSearchPaths(Version: Integer; SearchPaths, DebugPaths, BrowsePaths, IncludePaths: PChar): Integer;
   external 'compinst_removeDelphiSearchPaths@{app}\CompInstall.dll stdcall uninstallonly';
-function compinst_removeBCBSearchPaths(Version: Integer; SearchPaths, DebugPaths, BrowsePaths: PChar): Integer;
+function compinst_removeBCBSearchPaths(Version: Integer; SearchPaths, DebugPaths, BrowsePaths, IncludePaths: PChar): Integer;
   external 'compinst_removeBCBSearchPaths@{app}\CompInstall.dll stdcall uninstallonly';
 
 function IsDelphiInstalled(Version: Integer): Boolean;
@@ -293,10 +302,10 @@ end;
 // Search Paths
 procedure ChangeIdeSearchPaths(Kind: TIdeKind; Version: Integer; Installing: Boolean);
 var
-  SearchPaths, DebugPaths, BrowsePaths: string;
+  SearchPaths, DebugPaths, BrowsePaths, IncludePaths: string;
   Value: Integer;
 begin
-  GetSearchPaths(Kind, Version, SearchPaths, DebugPaths, BrowsePaths);
+  GetSearchPaths(Kind, Version, SearchPaths, DebugPaths, BrowsePaths, IncludePaths);
   if (SearchPaths = '') and (DebugPaths = '') and (BrowsePaths = '') then
     Exit;
 
@@ -305,25 +314,29 @@ begin
     Log('Adding search paths: ' + SearchPaths);
     Log('Adding debug paths: ' + DebugPaths);
     Log('Adding browsing paths: ' + BrowsePaths);
+    if IncludePaths <> '' then
+      Log('Adding include paths: ' + IncludePaths);
   end
   else
   begin
     Log('Removing search paths: ' + SearchPaths);
     Log('Removing debug paths: ' + DebugPaths);
     Log('Removing browsing paths: ' + BrowsePaths);
+    if IncludePaths <> '' then
+      Log('Removing include paths: ' + IncludePaths);
   end;
 
   case Kind of
     ikDelphi:
       if Installing then
-        Value := compinst_addDelphiSearchPaths(Version, PChar(SearchPaths), PChar(DebugPaths), PChar(BrowsePaths))
+        Value := compinst_addDelphiSearchPaths(Version, PChar(SearchPaths), PChar(DebugPaths), PChar(BrowsePaths), PChar(IncludePaths))
       else
-        Value := compinst_removeDelphiSearchPaths(Version, PChar(SearchPaths), PChar(DebugPaths), PChar(BrowsePaths));
+        Value := compinst_removeDelphiSearchPaths(Version, PChar(SearchPaths), PChar(DebugPaths), PChar(BrowsePaths), PChar(IncludePaths));
     ikBCB:
       if Installing then
-        Value := compinst_addBCBSearchPaths(Version, PChar(SearchPaths), PChar(DebugPaths), PChar(BrowsePaths))
+        Value := compinst_addBCBSearchPaths(Version, PChar(SearchPaths), PChar(DebugPaths), PChar(BrowsePaths), PChar(IncludePaths))
       else
-        Value := compinst_removeBCBSearchPaths(Version, PChar(SearchPaths), PChar(DebugPaths), PChar(BrowsePaths));
+        Value := compinst_removeBCBSearchPaths(Version, PChar(SearchPaths), PChar(DebugPaths), PChar(BrowsePaths), PChar(IncludePaths));
   end;
 end;
 
@@ -439,12 +452,12 @@ begin
 
   // Check if there is any Delphi IDE installed
   Result := False;
-  for Version := 5 to 12 do
+  for Version := 6 to 14 do
     if IsDelphiInstalled(Version) then
       Result := True;
 
   if not Result then
-    MsgBox('No Delphi IDE is installed. Installation aborted.', mbError, MB_OK);
+    MsgBox('No supported Delphi IDE is installed. Installation aborted.', mbError, MB_OK);
 end;
 
 function InitComponentUninstaller(): Boolean;

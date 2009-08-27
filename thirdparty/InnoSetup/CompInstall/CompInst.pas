@@ -27,10 +27,10 @@ function compinst_uninstallBCBExpert(Version: Integer; const Filename: PAnsiChar
 function compinst_uninstallDelphiExpertsPrefixed(Version: Integer; FilenamePrefix: PAnsiChar): Integer; stdcall;
 function compinst_uninstallBCBExpertsPrefixed(Version: Integer; FilenamePrefix: PAnsiChar): Integer; stdcall;
 
-function compinst_addDelphiSearchPaths(Version: Integer; SearchPaths, DebugPaths, BrowsePaths: PAnsiChar): Integer; stdcall;
-function compinst_addBCBSearchPaths(Version: Integer; SearchPaths, DebugPaths, BrowsePaths: PAnsiChar): Integer; stdcall;
-function compinst_removeDelphiSearchPaths(Version: Integer; SearchPaths, DebugPaths, BrowsePaths: PAnsiChar): Integer; stdcall;
-function compinst_removeBCBSearchPaths(Version: Integer; SearchPaths, DebugPaths, BrowsePaths: PAnsiChar): Integer; stdcall;
+function compinst_addDelphiSearchPaths(Version: Integer; SearchPaths, DebugPaths, BrowsePaths, IncludePaths: PAnsiChar): Integer; stdcall;
+function compinst_addBCBSearchPaths(Version: Integer; SearchPaths, DebugPaths, BrowsePaths, IncludePaths: PAnsiChar): Integer; stdcall;
+function compinst_removeDelphiSearchPaths(Version: Integer; SearchPaths, DebugPaths, BrowsePaths, IncludePaths: PAnsiChar): Integer; stdcall;
+function compinst_removeBCBSearchPaths(Version: Integer; SearchPaths, DebugPaths, BrowsePaths, IncludePaths: PAnsiChar): Integer; stdcall;
 
 implementation
 
@@ -124,7 +124,10 @@ begin
         end;
       brBorlandDevStudio:
         begin
-          VStr := IntToStr(9 - 3 + Inst.VersionNumber); // Delphi 9 is BDS 3
+          if Inst.VersionNumber >= 7 then
+            VStr := IntToStr(7 + Inst.VersionNumber) // Delphi 14 is RAD Studio 7
+          else
+            VStr := IntToStr(9 - 3 + Inst.VersionNumber); // Delphi 9 is BDS 3
           if bpDelphi32 in Inst.Personalities then
           begin
             SetEnvironmentVariable(PChar('DELPHI' + VStr), PChar(Inst.RootDir));
@@ -139,6 +142,7 @@ begin
             SetEnvironmentVariable(PChar('BCB' + VStr + 'DCP'), PChar(Inst.DCPOutputPath));
             SetEnvironmentVariable(PChar('BCB' + VStr + 'RegKey'), PChar(ConfigDataLocation));
           end;
+          SetEnvironmentVariable(PChar('BDSCOMMONDIR' + VStr), PChar(Inst.EnvironmentVariables.Values['BDSCOMMONDIR']));
         end;
     end;
   end;
@@ -250,7 +254,8 @@ end;
 
 { Search Paths }
 
-function ChangeSearchPaths(Inst: TJclBorRADToolInstallation; Installing: Boolean; const SearchPaths, DebugPaths, BrowsePaths: string): Integer;
+function ChangeSearchPaths(Inst: TJclBorRADToolInstallation; Installing: Boolean;
+  const SearchPaths, DebugPaths, BrowsePaths, IncludePaths: string): Integer;
 begin
   Result := 0;
   if Inst <> nil then
@@ -260,12 +265,26 @@ begin
       Inst.AddToLibrarySearchPath(SearchPaths);
       Inst.AddToDebugDCUPath(DebugPaths);
       Inst.AddToLibraryBrowsingPath(BrowsePaths);
+      if Inst is TJclBDSInstallation then
+      begin
+        TJclBDSInstallation(Inst).AddToCppSearchPath(SearchPaths);
+        TJclBDSInstallation(Inst).AddToCppBrowsingPath(DebugPaths);
+        TJclBDSInstallation(Inst).AddToCppLibraryPath(BrowsePaths);
+        TJclBDSInstallation(Inst).AddToCppIncludePath(IncludePaths);
+      end;
     end
     else
     begin
       Inst.RemoveFromLibrarySearchPath(SearchPaths);
       Inst.RemoveFromDebugDCUPath(DebugPaths);
       Inst.RemoveFromLibraryBrowsingPath(BrowsePaths);
+      if Inst is TJclBDSInstallation then
+      begin
+        TJclBDSInstallation(Inst).RemoveFromCppSearchPath(SearchPaths);
+        TJclBDSInstallation(Inst).RemoveFromCppBrowsingPath(DebugPaths);
+        TJclBDSInstallation(Inst).RemoveFromCppLibraryPath(BrowsePaths);
+        TJclBDSInstallation(Inst).RemoveFromCppIncludePath(IncludePaths);
+      end;
     end;
     Result := 1;
   end;
@@ -337,24 +356,24 @@ end;
 
 { Search Paths }
 
-function compinst_addDelphiSearchPaths(Version: Integer; SearchPaths, DebugPaths, BrowsePaths: PAnsiChar): Integer; stdcall;
+function compinst_addDelphiSearchPaths(Version: Integer; SearchPaths, DebugPaths, BrowsePaths, IncludePaths: PAnsiChar): Integer; stdcall;
 begin
-  Result := ChangeSearchPaths(Installations.DelphiInstallationFromVersion[Version], True, string(SearchPaths), string(DebugPaths), string(BrowsePaths));
+  Result := ChangeSearchPaths(Installations.DelphiInstallationFromVersion[Version], True, string(SearchPaths), string(DebugPaths), string(BrowsePaths), string(IncludePaths));
 end;
 
-function compinst_addBCBSearchPaths(Version: Integer; SearchPaths, DebugPaths, BrowsePaths: PAnsiChar): Integer; stdcall;
+function compinst_addBCBSearchPaths(Version: Integer; SearchPaths, DebugPaths, BrowsePaths, IncludePaths: PAnsiChar): Integer; stdcall;
 begin
-  Result := ChangeSearchPaths(Installations.BCBInstallationFromVersion[Version], True, string(SearchPaths), string(DebugPaths), string(BrowsePaths));
+  Result := ChangeSearchPaths(Installations.BCBInstallationFromVersion[Version], True, string(SearchPaths), string(DebugPaths), string(BrowsePaths), string(IncludePaths));
 end;
 
-function compinst_removeDelphiSearchPaths(Version: Integer; SearchPaths, DebugPaths, BrowsePaths: PAnsiChar): Integer; stdcall;
+function compinst_removeDelphiSearchPaths(Version: Integer; SearchPaths, DebugPaths, BrowsePaths, IncludePaths: PAnsiChar): Integer; stdcall;
 begin
-  Result := ChangeSearchPaths(Installations.DelphiInstallationFromVersion[Version], False, string(SearchPaths), string(DebugPaths), string(BrowsePaths));
+  Result := ChangeSearchPaths(Installations.DelphiInstallationFromVersion[Version], False, string(SearchPaths), string(DebugPaths), string(BrowsePaths), string(IncludePaths));
 end;
 
-function compinst_removeBCBSearchPaths(Version: Integer; SearchPaths, DebugPaths, BrowsePaths: PAnsiChar): Integer; stdcall;
+function compinst_removeBCBSearchPaths(Version: Integer; SearchPaths, DebugPaths, BrowsePaths, IncludePaths: PAnsiChar): Integer; stdcall;
 begin
-  Result := ChangeSearchPaths(Installations.BCBInstallationFromVersion[Version], False, string(SearchPaths), string(DebugPaths), string(BrowsePaths));
+  Result := ChangeSearchPaths(Installations.BCBInstallationFromVersion[Version], False, string(SearchPaths), string(DebugPaths), string(BrowsePaths), string(IncludePaths));
 end;
 
 initialization

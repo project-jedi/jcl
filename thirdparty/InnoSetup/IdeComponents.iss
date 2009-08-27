@@ -1,12 +1,6 @@
 [Components]
 ; IDE selection
 Name: "IDE"; Description: "Install for Professional/Enterprise/Architect IDE"
-#ifdef Include_Delphi5
-Name: "IDE\Delphi5"; Description: "Install for Delphi 5"; Types: full prefered; Check: IsDelphiInstalled(5)
-#endif
-#ifdef Include_BCB5
-Name: "IDE\BCB5"; Description: "Install for C++Builder 5"; Types: full prefered; Check: IsBCBInstalled(5)
-#endif
 #ifdef Include_Delphi6
 Name: "IDE\Delphi6"; Description: "Install for Delphi 6"; Types: full prefered; Check: IsDelphiInstalled(6)
 #endif
@@ -27,4 +21,7 @@ Name: "IDE\Delphi11"; Description: "Install for RAD Studio 2007"; Types: full pr
 #endif
 #ifdef Include_Delphi12
 Name: "IDE\Delphi12"; Description: "Install for RAD Studio 2009"; Types: full prefered; Check: IsDelphiInstalled(12)
+#endif
+#ifdef Include_Delphi14
+Name: "IDE\Delphi14"; Description: "Install for RAD Studio 2010"; Types: full prefered; Check: IsDelphiInstalled(14)
 #endif
