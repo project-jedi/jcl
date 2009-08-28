@@ -267,9 +267,7 @@ begin
       Inst.AddToLibraryBrowsingPath(BrowsePaths);
       if Inst is TJclBDSInstallation then
       begin
-        TJclBDSInstallation(Inst).AddToCppSearchPath(SearchPaths);
-        TJclBDSInstallation(Inst).AddToCppBrowsingPath(DebugPaths);
-        TJclBDSInstallation(Inst).AddToCppLibraryPath(BrowsePaths);
+        TJclBDSInstallation(Inst).AddToCppBrowsingPath(BrowsePaths);
         TJclBDSInstallation(Inst).AddToCppIncludePath(IncludePaths);
       end;
     end
@@ -280,9 +278,7 @@ begin
       Inst.RemoveFromLibraryBrowsingPath(BrowsePaths);
       if Inst is TJclBDSInstallation then
       begin
-        TJclBDSInstallation(Inst).RemoveFromCppSearchPath(SearchPaths);
-        TJclBDSInstallation(Inst).RemoveFromCppBrowsingPath(DebugPaths);
-        TJclBDSInstallation(Inst).RemoveFromCppLibraryPath(BrowsePaths);
+        TJclBDSInstallation(Inst).RemoveFromCppBrowsingPath(BrowsePaths);
         TJclBDSInstallation(Inst).RemoveFromCppIncludePath(IncludePaths);
       end;
     end;
