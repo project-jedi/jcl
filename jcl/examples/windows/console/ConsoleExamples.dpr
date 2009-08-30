@@ -13,7 +13,7 @@ uses
   TypInfo,
   JclConsole;
 
-{$R ..\..\source\windows\JclNoDepAsInvoker.res}
+{$R ..\..\..\source\windows\JclNoDepAsInvoker.res}
 
 type
   TCPInfoEx = packed record
