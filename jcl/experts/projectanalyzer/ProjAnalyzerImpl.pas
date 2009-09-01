@@ -17,7 +17,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                       $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -221,9 +221,13 @@ procedure TJclProjectAnalyzerExpert.AnalyzeProject(const AProject: IOTAProject);
 var
   BuildOK, Succ: Boolean;
   ProjOptions: IOTAProjectOptions;
-  SaveMapFile: Variant;
+  SaveMapFile, SaveDccMapFileType, SaveILinkMapFileType: Variant;
   ProjectName, OutputDirectory: string;
   ProjectFileName, MapFileName, ExecutableFileName: TFileName;
+  {$IFDEF BDS6_UP}
+  ProjOptionsConfigurations: IOTAProjectOptionsConfigurations;
+  ActiveConfiguration: IOTABuildConfiguration;
+  {$ENDIF BDS6_UP}
 begin
   try
     JclDisablePostCompilationProcess := True;
@@ -247,15 +251,44 @@ begin
     ProjectAnalyzerForm.ClearContent;
     ProjectAnalyzerForm.StatusBarText := Format(RsBuildingProject, [ProjectName]);
 
+    {$IFDEF BDS6_UP}
+    Supports(ProjOptions, IOTAProjectOptionsConfigurations, ProjOptionsConfigurations);
+    if not Assigned(ProjOptionsConfigurations) then
+      raise EJclExpertException.CreateTrace(RsENoProjectOptionsConfigurations);
+
+    // get the current build configuration
+    ActiveConfiguration := ProjOptionsConfigurations.ActiveConfiguration;
+
+    // retrieve options from this build configuration
+    SaveMapFile := ActiveConfiguration.GetValue(MapFileOptionName, True);
+    SaveDccMapFileType := ActiveConfiguration.GetValue(DccMapFileOptionName, True);
+    SaveILinkMapFileType := ActiveConfiguration.GetValue(ILinkMapFileTypeOptionName, True);
+    ActiveConfiguration.SetValue(MapFileOptionName, IntToStr(MapFileOptionDetailed));
+    ActiveConfiguration.SetValue(DccMapFileOptionName, IntToStr(MapFileOptionDetailed));
+    ActiveConfiguration.SetValue(ILinkMapFileTypeOptionName, MapFileOptionDetailedSegments);
+    {$ELSE ~BDS6_UP}
     SaveMapFile := ProjOptions.Values[MapFileOptionName];
+    SaveDccMapFileType := ProjOptions.Values[DccMapFileOptionName];
+    SaveILinkMapFileType := ProjOptions.Values[ILinkMapFileTypeOptionName];
     ProjOptions.Values[MapFileOptionName] := MapFileOptionDetailed;
+    ProjOptions.Values[DccMapFileOptionName] := MapFileOptionDetailed;
+    ProjOptions.Values[ILinkMapFileTypeOptionName] := MapFileOptionDetailedSegments;
+    {$ENDIF ~BDS6_UP}
     // workaround for MsBuild, the project has to be saved (seems useless with Delphi 2007 update 1)
     ProjOptions.ModifiedState := True;
     //TempActiveProject.Save(False, True);
 
     BuildOK := AProject.ProjectBuilder.BuildProject(cmOTABuild, False);
 
+    {$IFDEF BDS6_UP}
+    ActiveConfiguration.SetValue(MapFileOptionName, SaveMapFile);
+    ActiveConfiguration.SetValue(DccMapFileOptionName, SaveDccMapFileType);
+    ActiveConfiguration.SetValue(ILinkMapFileTypeOptionName, SaveILinkMapFileType);
+    {$ELSE ~BDS6_UP}
     ProjOptions.Values[MapFileOptionName] := SaveMapFile;
+    ProjOptions.Values[DccMapFileOptionName] := SaveDccMapFileType;
+    ProjOptions.Values[ILinkMapFileTypeOptionName] := SaveILinkMapFileType;
+    {$ENDIF ~BDS6_UP}
     // workaround for MsBuild, the project has to be saved (seems useless with Delphi 2007 update 1)
     ProjOptions.ModifiedState := True;
     //TempActiveProject.Save(False, True);
