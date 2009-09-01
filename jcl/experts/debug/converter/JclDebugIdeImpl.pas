@@ -435,11 +435,15 @@ procedure TJclDebugExtension.BeforeCompile(const Project: IOTAProject; var Cance
 var
   ProjOptions: IOTAProjectOptions;
   EnabledActions: TDebugExpertActions;
+  HasILinkMapFileTypeOption, HasDccMapFileOption, HasMapFileOption,
   ChangeILinkMapFileTypeOption, ChangeDccMapFileOption, ChangeMapFileOption: Boolean;
   {$IFDEF BDS6_UP}
   ProjOptionsConfigurations: IOTAProjectOptionsConfigurations;
   ActiveConfiguration: IOTABuildConfiguration;
-  {$ENDIF BDS6_UP}
+  OptionValue: string;
+  {$ELSE ~BDS6_UP}
+  OptionValue: Variant;
+  {$ENDIF ~BDS6_UP}
 begin
   EnabledActions := GetProjectActions(Project);
   if EnabledActions <> [] then
@@ -473,13 +477,25 @@ begin
       ActiveConfiguration := ProjOptionsConfigurations.ActiveConfiguration;
 
       // retrieve options from this build configuration
-      ChangeILinkMapFileTypeOption := ActiveConfiguration.GetValue(ILinkMapFileTypeOptionName, True) <> MapFileOptionDetailedSegments;
-      ChangeDccMapFileOption := ActiveConfiguration.GetValue(DccMapFileOptionName, True) <> IntToStr(MapFileOptionDetailed);
-      ChangeMapFileOption := ActiveConfiguration.GetValue(MapFileOptionName, True) <> IntToStr(MapFileOptionDetailed);
+      OptionValue := ActiveConfiguration.GetValue(ILinkMapFileTypeOptionName, True);
+      HasILinkMapFileTypeOption := OptionValue <> '';
+      ChangeILinkMapFileTypeOption := HasILinkMapFileTypeOption and (OptionValue <> MapFileOptionDetailedSegments);
+      OptionValue := ActiveConfiguration.GetValue(DccMapFileOptionName, True);
+      HasDccMapFileOption := OptionValue <> '';
+      ChangeDccMapFileOption := HasDccMapFileOption and (OptionValue <> IntToStr(MapFileOptionDetailed));
+      OptionValue := ActiveConfiguration.GetValue(MapFileOptionName, True);
+      HasMapFileOption := OptionValue <> '';
+      ChangeMapFileOption := HasMapFileOption and (OptionValue <> IntToStr(MapFileOptionDetailed));
       {$ELSE ~BDS6_UP}
-      ChangeILinkMapFileTypeOption := VarToStr(ProjOptions.Values[ILinkMapFileTypeOptionName]) <> MapFileOptionDetailedSegments;
-      ChangeDccMapFileOption := VarToStr(ProjOptions.Values[DccMapFileOptionName]) <> IntToStr(MapFileOptionDetailed);
-      ChangeMapFileOption := VarToStr(ProjOptions.Values[MapFileOptionName]) <> IntToStr(MapFileOptionDetailed);
+      OptionValue := ProjOptions.Values[ILinkMapFileTypeOptionName];
+      HasILinkMapFileTypeOption := not VarIsEmpty(OptionValue);
+      ChangeILinkMapFileTypeOption := HasILinkMapFileTypeOption and (VarToStr(OptionValue) <> MapFileOptionDetailedSegments);
+      OptionValue := ProjOptions.Values[DccMapFileOptionName];
+      HasDccMapFileOption := not VarIsEmpty(OptionValue);
+      ChangeDccMapFileOption := HasDccMapFileOption and (VarToStr(OptionValue) <> IntToStr(MapFileOptionDetailed));
+      OptionValue := ProjOptions.Values[MapFileOptionName];
+      HasMapFileOption := not VarIsEmpty(OptionValue);
+      ChangeMapFileOption := HasMapFileOption and (VarToStr(OptionValue) <> IntToStr(MapFileOptionDetailed));
       {$ENDIF ~BDS6_UP}
 
       if ChangeILinkMapFileTypeOption or ChangeDccMapFileOption or ChangeMapFileOption then
