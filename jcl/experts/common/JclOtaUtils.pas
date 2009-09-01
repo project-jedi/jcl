@@ -51,9 +51,6 @@ uses
   JclBorlandTools,
   ToolsAPI;
 
-const
-  MapFileOptionDetailed = 3;
-
 type
   // class of actions with a drop down menu on tool bars
   {$IFDEF COMPILER8_UP}

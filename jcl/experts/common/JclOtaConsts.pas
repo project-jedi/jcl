@@ -56,7 +56,8 @@ const
   JclDesignerVcl = dVcl;
   JclDelphiPersonality = {$IFDEF BDS} sDelphiPersonality {$ELSE BDS} '' {$ENDIF BDS};
   JclCBuilderPersonality = {$IFDEF BDS} sCBuilderPersonality {$ELSE BDS} '' {$ENDIF BDS};
-
+  MapFileOptionDetailed = 3;
+  MapFileOptionDetailedSegments = 'DetailedSegments';
 
   //=== Configuration ========================================================
   JclConfigurationSettings = 'JclExpertConfigurationForm';
@@ -74,6 +75,8 @@ const
   JclDebugInsertJdbgRegValue    = 'JclDebugInsertJdbg';
   JclDebugDeleteMapFileRegValue = 'JclDebugDeleteMapFile';
   MapFileOptionName             = 'MapFile';
+  DccMapFileOptionName          = 'DCC_MapFile';
+  ILinkMapFileTypeOptionName    = 'ILINK_MapFileType';
   OutputDirOptionName           = 'OutputDir';
   FinalOutputDirOptionName      = 'FinalOutputDir';
   RuntimeOnlyOptionName         = 'RuntimeOnly';

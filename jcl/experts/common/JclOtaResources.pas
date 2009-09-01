@@ -21,7 +21,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                    $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -254,6 +254,7 @@ resourcestring
 //=== JclDebugIdeImpl.pas ====================================================
 resourcestring
   RsENoProjectOptions = 'Project options are not available';
+  RsENoProjectOptionsConfigurations = 'Project options configurations are not available';
   RsCantInsertToInstalledPackage = 'JCL Debug IDE Expert: Can not insert debug information to installed package' +
     NativeLineBreak + '%s' + NativeLineBreak + 'Would you like to disable the insertion of JCL Debug data ?';
   RsChangeMapFileOption = 'JCL Debug expert: the project "%s" must be configured to generate a detailled MAP file.' +

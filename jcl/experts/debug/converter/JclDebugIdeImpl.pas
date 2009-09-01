@@ -17,7 +17,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                    $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -435,6 +435,11 @@ procedure TJclDebugExtension.BeforeCompile(const Project: IOTAProject; var Cance
 var
   ProjOptions: IOTAProjectOptions;
   EnabledActions: TDebugExpertActions;
+  ChangeILinkMapFileTypeOption, ChangeDccMapFileOption, ChangeMapFileOption: Boolean;
+  {$IFDEF BDS6_UP}
+  ProjOptionsConfigurations: IOTAProjectOptionsConfigurations;
+  ActiveConfiguration: IOTABuildConfiguration;
+  {$ENDIF BDS6_UP}
 begin
   EnabledActions := GetProjectActions(Project);
   if EnabledActions <> [] then
@@ -459,12 +464,43 @@ begin
       if not Assigned(ProjOptions) then
         raise EJclExpertException.CreateTrace(RsENoProjectOptions);
 
-      // keep EVariantConvert away from us
-      if (VarToStr(ProjOptions.Values[MapFileOptionName]) <> IntToStr(MapFileOptionDetailed)) then
+      {$IFDEF BDS6_UP}
+      Supports(ProjOptions, IOTAProjectOptionsConfigurations, ProjOptionsConfigurations);
+      if not Assigned(ProjOptionsConfigurations) then
+        raise EJclExpertException.CreateTrace(RsENoProjectOptionsConfigurations);
+
+      // get the current build configuration
+      ActiveConfiguration := ProjOptionsConfigurations.ActiveConfiguration;
+
+      // retrieve options from this build configuration
+      ChangeILinkMapFileTypeOption := ActiveConfiguration.GetValue(ILinkMapFileTypeOptionName, True) <> MapFileOptionDetailedSegments;
+      ChangeDccMapFileOption := ActiveConfiguration.GetValue(DccMapFileOptionName, True) <> IntToStr(MapFileOptionDetailed);
+      ChangeMapFileOption := ActiveConfiguration.GetValue(MapFileOptionName, True) <> IntToStr(MapFileOptionDetailed);
+      {$ELSE ~BDS6_UP}
+      ChangeILinkMapFileTypeOption := VarToStr(ProjOptions.Values[ILinkMapFileTypeOptionName]) <> MapFileOptionDetailedSegments);
+      ChangeDccMapFileOption := VarToStr(ProjOptions.Values[DccMapFileOptionName]) <> IntToStr(MapFileOptionDetailed);
+      ChangeMapFileOption := VarToStr(ProjOptions.Values[MapFileOptionName]) <> IntToStr(MapFileOptionDetailed);
+      {$ENDIF ~BDS6_UP}
+
+      if ChangeILinkMapFileTypeOption or ChangeDccMapFileOption or ChangeMapFileOption then
       begin
         if MessageDlg(Format(RsChangeMapFileOption, [ExtractFileName(Project.FileName)]), mtConfirmation, [mbYes, mbNo], 0) = mrYes then
         begin
-          ProjOptions.Values[MapFileOptionName] := MapFileOptionDetailed;
+          {$IFDEF BDS6_UP}
+          if ChangeILinkMapFileTypeOption then
+            ActiveConfiguration.Value[ILinkMapFileTypeOptionName] := MapFileOptionDetailedSegments;
+          if ChangeDccMapFileOption then
+            ActiveConfiguration.Value[DccMapFileOptionName] := IntToStr(MapFileOptionDetailed);
+          if ChangeMapFileOption then
+            ActiveConfiguration.Value[MapFileOptionName] := IntToStr(MapFileOptionDetailed);
+          {$ELSE ~BDS6_UP}
+          if ChangeILinkMapFileTypeOption then
+            ProjOptions.Values[ILinkMapFileTypeOptionName] := MapFileOptionDetailedSegments;
+          if ChangeDccMapFileOption then
+            ProjOptions.Values[DccMapFileOptionName] := MapFileOptionDetailed;
+          if ChangeMapFileOption then
+            ProjOptions.Values[MapFileOptionName] := MapFileOptionDetailed;
+          {$ENDIF ~BDS6_UP}
           ProjOptions.ModifiedState := True;
         end
         else
