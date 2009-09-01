@@ -477,7 +477,7 @@ begin
       ChangeDccMapFileOption := ActiveConfiguration.GetValue(DccMapFileOptionName, True) <> IntToStr(MapFileOptionDetailed);
       ChangeMapFileOption := ActiveConfiguration.GetValue(MapFileOptionName, True) <> IntToStr(MapFileOptionDetailed);
       {$ELSE ~BDS6_UP}
-      ChangeILinkMapFileTypeOption := VarToStr(ProjOptions.Values[ILinkMapFileTypeOptionName]) <> MapFileOptionDetailedSegments);
+      ChangeILinkMapFileTypeOption := VarToStr(ProjOptions.Values[ILinkMapFileTypeOptionName]) <> MapFileOptionDetailedSegments;
       ChangeDccMapFileOption := VarToStr(ProjOptions.Values[DccMapFileOptionName]) <> IntToStr(MapFileOptionDetailed);
       ChangeMapFileOption := VarToStr(ProjOptions.Values[MapFileOptionName]) <> IntToStr(MapFileOptionDetailed);
       {$ENDIF ~BDS6_UP}
