@@ -620,6 +620,7 @@ type
     procedure ExtractFlags;
     function GetBinFileVersion: string;
     function GetBinProductVersion: string;
+    function GetCustomFieldValue(const FieldName: string): string;
     function GetFileOS: DWORD;
     function GetFileSubType: DWORD;
     function GetFileType: DWORD;
@@ -5099,6 +5100,23 @@ begin
     Result := Format('%u.%u.%u.%u', [HiWord(dwProductVersionMS),
       LoWord(dwProductVersionMS), HiWord(dwProductVersionLS),
       LoWord(dwProductVersionLS)]);
+end;
+
+function TJclFileVersionInfo.GetCustomFieldValue(const FieldName: string): string;
+var
+  ItemIndex: Integer;
+begin
+  if FieldName <> '' then
+  begin
+    ItemIndex := FItems.IndexOfName(FieldName);
+    if ItemIndex <> -1 then
+      //Return the required value, the value the user passed in was found.
+      Result := FItems.Values[FieldName]
+    else
+      raise EJclFileVersionInfoError.CreateResFmt(@RsFileUtilsValueNotFound, [FieldName]);
+  end
+  else
+    raise EJclFileVersionInfoError.CreateRes(@RsFileUtilsEmptyValue);
 end;
 
 function TJclFileVersionInfo.GetFileOS: DWORD;
