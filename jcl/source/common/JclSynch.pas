@@ -177,6 +177,7 @@ type
     constructor Create(SecAttr: PSecurityAttributes; InitialOwner: Boolean;
       const Name: string);
     constructor Open(Access: Cardinal; Inheritable: Boolean; const Name: string);
+    function Acquire(const TimeOut: Cardinal = INFINITE): Boolean;
     function Release: Boolean;
   end;
 
@@ -1027,6 +1028,11 @@ begin
 end;
 
 //=== { TJclMutex } ==========================================================
+
+function TJclMutex.Acquire(const TimeOut: Cardinal): Boolean;
+begin
+  Result := WaitFor(TimeOut) = wrSignaled;
+end;
 
 constructor TJclMutex.Create(SecAttr: PSecurityAttributes; InitialOwner: Boolean; const Name: string);
 begin
