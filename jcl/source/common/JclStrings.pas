@@ -2521,6 +2521,7 @@ begin
     SubP := PChar(Substr);
     SPI := SP;
     Inc(SPI, Index);
+    Dec(SPI);
     SPI := StrPos(SPI, SubP);
     if SPI <> nil then
       Result := SPI - SP + 1
