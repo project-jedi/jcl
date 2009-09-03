@@ -487,12 +487,19 @@ begin
       HasMapFileOption := OptionValue <> '';
       ChangeMapFileOption := HasMapFileOption and (OptionValue <> IntToStr(MapFileOptionDetailed));
       {$ELSE ~BDS6_UP}
+      {$IFDEF BDS5}
       OptionValue := ProjOptions.Values[ILinkMapFileTypeOptionName];
       HasILinkMapFileTypeOption := not VarIsEmpty(OptionValue);
       ChangeILinkMapFileTypeOption := HasILinkMapFileTypeOption and (VarToStr(OptionValue) <> MapFileOptionDetailedSegments);
       OptionValue := ProjOptions.Values[DccMapFileOptionName];
       HasDccMapFileOption := not VarIsEmpty(OptionValue);
       ChangeDccMapFileOption := HasDccMapFileOption and (VarToStr(OptionValue) <> IntToStr(MapFileOptionDetailed));
+      {$ELSE ~BDS5}
+      HasILinkMapFileTypeOption := False;
+      ChangeILinkMapFileTypeOption := HasILinkMapFileTypeOption;
+      HasDccMapFileOption := False;
+      ChangeDccMapFileOption := HasDccMapFileOption;
+      {$ENDIF ~BDS5}
       OptionValue := ProjOptions.Values[MapFileOptionName];
       HasMapFileOption := not VarIsEmpty(OptionValue);
       ChangeMapFileOption := HasMapFileOption and (VarToStr(OptionValue) <> IntToStr(MapFileOptionDetailed));
