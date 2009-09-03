@@ -227,7 +227,7 @@ resourcestring
 resourcestring
   RsAnalyzeActionCaption = 'Analyze project %s';
   RsProjectNone = '[none]';
-  RsCantFindFiles = 'Can''t find MAP or executable file';
+  RsCantFindMAPFile = 'Can''t find MAP "%s" for project "%s"';
   RsBuildingProject = 'Building project %s ...';
   RsAnalyseMenuItemNotInserted = 'Can''t insert the analyse menu item';
 

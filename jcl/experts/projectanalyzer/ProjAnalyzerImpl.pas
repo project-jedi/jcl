@@ -311,7 +311,7 @@ begin
     begin
       ProjectAnalyzerForm.StatusBarText := '';
       if BuildOK then
-        MessageDlg(RsCantFindFiles, mtError, [mbOk], 0);
+        MessageDlg(Format(LoadResString(@RsCantFindMAPFile), [MapFileName, ProjectFileName]), mtError, [mbOk], 0);
     end;
   finally
     JclDisablePostCompilationProcess := False;
