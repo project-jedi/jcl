@@ -425,7 +425,7 @@
       </property>
     </setting>
 
-    <setting path="website/daily" mask="" recurse="no" dironly="yes">
+    <setting path="website/sourceforge/daily" mask="" recurse="no" dironly="yes">
       <property name="svn:ignore">
         <value>*.7z</value>
       </property>
