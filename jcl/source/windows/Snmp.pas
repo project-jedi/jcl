@@ -54,6 +54,10 @@ interface
 {$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
 {$ENDIF ~SNMP_DYNAMIC_LINK}
 
+{$IFDEF UNICODE}
+{$A4}  // MANTIS 4931 - GetMacAddress crash in Delphi 2009. record alignment fix.
+{$ENDIF}
+
 uses
   Windows, SysUtils;
 
