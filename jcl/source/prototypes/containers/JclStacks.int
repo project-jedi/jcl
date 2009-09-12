@@ -7,6 +7,9 @@
     FElements: DYNARRAYTYPE;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: IntegerOWNERSHIPDECLARATION);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { STACKINTERFACENAME }
@@ -17,7 +20,4 @@
     function Pop: TYPENAME;
     function Push(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
     function Size: Integer;
-  public
-    constructor Create(ACapacity: IntegerOWNERSHIPDECLARATION);
-    destructor Destroy; override;
   end;*)

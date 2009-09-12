@@ -59,13 +59,12 @@ type
   TProjectManagerMultipleNotifier = class(TNotifierObject, IOTANotifier, IOTAProjectMenuItemCreatorNotifier)
   private
     FProjectAnalyser: TJclProjectAnalyzerExpert;
-  protected
+  public
+    constructor Create(AProjectAnalyzer: TJclProjectAnalyzerExpert);
     procedure MenuExecute(const MenuContextList: IInterfaceList);
     { IOTAProjectMenuItemCreatorNotifier }
     procedure AddMenu(const Project: IOTAProject; const Ident: TStrings;
       const ProjectManagerMenuList: IInterfaceList; IsMultiSelect: Boolean);
-  public
-    constructor Create(AProjectAnalyzer: TJclProjectAnalyzerExpert);
   end;
   {$ELSE ~BDS7_UP}
   {$IFDEF BDS4_UP}
@@ -74,13 +73,12 @@ type
   private
     FProjectAnalyser: TJclProjectAnalyzerExpert;
     FOTAProjectManager: IOTAProjectManager;
+  public
+    constructor Create(AProjectAnalyzer: TJclProjectAnalyzerExpert; const AOTAProjectManager: IOTAProjectManager);
     procedure AnalyzeProjectMenuClick(Sender: TObject);
-  protected
     { INTAProjectMenuCreatorNotifier }
     function AddMenu(const Ident: string): TMenuItem;
     function CanHandle(const Ident: string): Boolean;
-  public
-    constructor Create(AProjectAnalyzer: TJclProjectAnalyzerExpert; const AOTAProjectManager: IOTAProjectManager);
   end;
   {$ENDIF BDS4_UP}
   {$ENDIF ~BDS7_UP}

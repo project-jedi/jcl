@@ -74,8 +74,9 @@ type
     IJclListener and vice versa. }
 type
   TJclBaseListener = class (TInterfacedObject, IJclListener)
-  protected
-    procedure Notification(msg: IJclNotificationMessage); virtual; stdcall; 
+  public
+    { IJclListener }
+    procedure Notification(msg: IJclNotificationMessage); virtual; stdcall;
   end;
 
   TJclBaseNotificationMessage = class (TInterfacedObject, IJclNotificationMessage)
@@ -90,7 +91,8 @@ type
     {$IFDEF THREADSAFE}
     FSynchronizer: TJclMultiReadExclusiveWrite;
     {$ENDIF}
-  protected
+  public
+    { IJclNotifier }
     procedure Add(listener: IJclListener); stdcall;
     procedure Notify(msg: IJclNotificationMessage); stdcall;
     procedure Remove(listener: IJclListener); stdcall;

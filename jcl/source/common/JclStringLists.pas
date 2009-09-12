@@ -228,12 +228,12 @@ type
   TUpdateControl = class(TObject, IInterface)
   private
     FStrings: TStrings;
-  protected
+  public
+    constructor Create(AStrings: TStrings);
+    { IInterface }
     function QueryInterface(const IID: TGUID; out Obj): HRESULT; stdcall;
     function _AddRef: Integer; stdcall;
     function _Release: Integer; stdcall;
-  public
-    constructor Create(AStrings: TStrings);
   end;
 
   TVariantWrapper = class(TObject)
@@ -257,18 +257,42 @@ type
     function AutoUpdateControl: IInterface;
     function CanFreeObjects: Boolean;
     function MatchRegEx(const S, APattern: string): Boolean;
-    function GetLists(Index: Integer): IJclStringList;
-    function GetKeyInterface(const AKey: string): IInterface;
-    function GetKeyObject(const AKey: string): TObject;
-    function GetKeyVariant(const AKey: string): Variant;
+    procedure EnsureObjectsMode(AMode: TJclStringListObjectsMode);
+  protected
+    FRefCount: Integer;
+    {$IFNDEF HAS_TSTRINGS_COMPARESTRINGS}
+    function CompareStrings(const S1, S2: string): Integer; virtual;
+    {$ENDIF ~HAS_TSTRINGS_COMPARESTRINGS}
+  public
+    constructor Create;
+    destructor Destroy; override;
+    { IInterface }
+    function QueryInterface(const IID: TGUID; out Obj): HRESULT; stdcall;
+    function _AddRef: Integer; stdcall;
+    function _Release: Integer; stdcall;
+    { IJclStringList }
+    // function Add(const S: string): Integer; overload;
+    // function AddObject(const S: string; AObject: TObject): Integer;
+    // function Get(Index: Integer): string;
+    // function GetCapacity: Integer;
+    // function GetCount: Integer;
+    function GetObjects(Index: Integer): TObject;
+    // function GetTextStr: string;
     function GetValue(const Name: string): string;
-    function GetVariants(AIndex: Integer): Variant;
-    function GetKeyList(const AKey: string): IJclStringList;
+    // function Find(const S: string; var Index: Integer): Boolean;
+    // function IndexOf(const S: string): Integer;
     function GetCaseSensitive: Boolean;
     function GetDuplicates: TDuplicates;
     function GetOnChange: TNotifyEvent;
     function GetOnChanging: TNotifyEvent;
     function GetSorted: Boolean;
+    // function Equals(Strings: TStrings): Boolean;
+    // function IndexOfName(const Name: string): Integer;
+    // function IndexOfObject(AObject: TObject): Integer;
+    function LoadFromFile(const FileName: string): IJclStringList; reintroduce;
+    function LoadFromStream(Stream: TStream): IJclStringList; reintroduce;
+    function SaveToFile(const FileName: string): IJclStringList; reintroduce;
+    function SaveToStream(Stream: TStream): IJclStringList; reintroduce;
     function GetCommaText: string;
     function GetDelimitedText: string;
     function GetDelimiter: Char;
@@ -278,20 +302,6 @@ type
     function GetValueFromIndex(Index: Integer): string;
     {$ENDIF COMPILER7_UP}
     function GetQuoteChar: Char;
-    function GetInterfaceByIndex(AIndex: Integer): IInterface;
-    function GetObjects(Index: Integer): TObject;
-    procedure SetValue(const Name, Value: string);
-    procedure SetKeyList(const AKey: string; const Value: IJclStringList);
-    procedure SetKeyInterface(const AKey: string; const Value: IInterface);
-    procedure SetKeyObject(const AKey: string; const Value: TObject);
-    procedure SetKeyVariant(const AKey: string; const Value: Variant);
-    procedure SetLists(Index: Integer; const Value: IJclStringList);
-    procedure SetVariants(Index: Integer; const Value: Variant);
-    procedure SetCaseSensitive(const Value: Boolean);
-    procedure SetDuplicates(const Value: TDuplicates);
-    procedure SetOnChange(const Value: TNotifyEvent);
-    procedure SetOnChanging(const Value: TNotifyEvent);
-    procedure SetSorted(const Value: Boolean);
     procedure SetCommaText(const Value: string);
     procedure SetDelimitedText(const Value: string);
     procedure SetDelimiter(const Value: Char);
@@ -300,66 +310,28 @@ type
     procedure SetValueFromIndex(Index: Integer; const Value: string);
     {$ENDIF COMPILER7_UP}
     procedure SetQuoteChar(const Value: Char);
-    procedure SetInterfaceByIndex(Index: Integer; const Value: IInterface);
+    // procedure AddStrings(Strings: TStrings); overload;
     procedure SetObjects(Index: Integer; const Value: TObject);
-    procedure EnsureObjectsMode(AMode: TJclStringListObjectsMode);
-    function GetObjectsMode: TJclStringListObjectsMode;
-  protected
-    FRefCount: Integer;
-    function QueryInterface(const IID: TGUID; out Obj): HRESULT; stdcall;
-    function _AddRef: Integer; stdcall;
-    function _Release: Integer; stdcall;
-    {$IFNDEF HAS_TSTRINGS_COMPARESTRINGS}
-    function CompareStrings(const S1, S2: string): Integer; virtual;
-    {$ENDIF ~HAS_TSTRINGS_COMPARESTRINGS}
-  public
-    constructor Create;
-    destructor Destroy; override;
-    function LoadExeParams: IJclStringList;
-    function Exists(const S: string): Boolean;
-    function ExistsName(const S: string): Boolean;
-    function DeleteBlanks: IJclStringList;
-    function KeepIntegers: IJclStringList;
-    function DeleteIntegers: IJclStringList;
-    function ReleaseInterfaces: IJclStringList;
-    function FreeObjects(AFreeAndNil: Boolean = False): IJclStringList;
-    function Clone: IJclStringList;
-    function Add(const A: array of const): IJclStringList; reintroduce; overload;
-    function AddStrings(const A: array of string): IJclStringList; reintroduce; overload;
-    function BeginUpdate: IJclStringList;
-    function EndUpdate: IJclStringList;
-    function Trim: IJclStringList;
-    function Delimit(const ADelimiter: string): IJclStringList;
-    function Join(const ASeparator: string = ''): string;
-    function Split(const AText, ASeparator: string; AClearBeforeAdd: Boolean = True): IJclStringList;
-    function ExtractWords(const AText: string; const ADelims: TSetOfAnsiChar = [#0..' ']; AClearBeforeAdd: Boolean = True): IJclStringList;
-    function Last: string;
-    function First: string;
-    function LastIndex: Integer;
-    function Clear: IJclStringList; reintroduce;
-    function DeleteRegEx(const APattern: string): IJclStringList;
-    function KeepRegEx(const APattern: string): IJclStringList;
-    function Files(const APattern: string = '*'; ARecursive: Boolean = False;
-      const ARegExPattern: string = ''): IJclStringList;
-    function Directories(const APattern: string = '*'; ARecursive: Boolean = False;
-      const ARegExPattern: string = ''): IJclStringList;
-    function GetStringsRef: TStrings;
-    function ConfigAsSet: IJclStringList;
-    function Delete(AIndex: Integer): IJclStringList; reintroduce; overload;
-    function Delete(const AString: string): IJclStringList; reintroduce; overload;
-    function Exchange(Index1, Index2: Integer): IJclStringList; reintroduce;
-    function Sort(ACompareFunction: TJclStringListSortCompare = nil): IJclStringList; reintroduce;
-    function SortAsInteger: IJclStringList;
-    function SortByName: IJclStringList;
-    function Insert(Index: Integer; const S: string): IJclStringList; reintroduce;
-    function InsertObject(Index: Integer; const S: string; AObject: TObject): IJclStringList; reintroduce;
-    function LoadFromFile(const FileName: string): IJclStringList; reintroduce;
-    function LoadFromStream(Stream: TStream): IJclStringList; reintroduce;
-    function SaveToFile(const FileName: string): IJclStringList; reintroduce;
-    function SaveToStream(Stream: TStream): IJclStringList; reintroduce;
-    function Assign(Source: TPersistent): IJclStringList; reintroduce;
-    { From TStrings/TStringList }
+    // procedure Put(Index: Integer; const S: string);
+    // procedure SetCapacity(NewCapacity: Integer);
+    // procedure SetTextStr(const Value: string);
+    procedure SetValue(const Name, Value: string);
+    procedure SetCaseSensitive(const Value: Boolean);
+    procedure SetDuplicates(const Value: TDuplicates);
+    procedure SetOnChange(const Value: TNotifyEvent);
+    procedure SetOnChanging(const Value: TNotifyEvent);
+    procedure SetSorted(const Value: Boolean);
+    property Count: Integer read GetCount;
+    property Strings[Index: Integer]: string read Get write Put; default;
+    property Text: string read GetTextStr write SetTextStr;
+    property Objects[Index: Integer]: TObject read GetObjects write SetObjects;
+    property Capacity: Integer read GetCapacity write SetCapacity;
     property Values[const Name: string]: string read GetValue write SetValue;
+    property Duplicates: TDuplicates read GetDuplicates write SetDuplicates;
+    property Sorted: Boolean read GetSorted write SetSorted;
+    property CaseSensitive: Boolean read GetCaseSensitive write SetCaseSensitive;
+    property OnChange: TNotifyEvent read GetOnChange write SetOnChange;
+    property OnChanging: TNotifyEvent read GetOnChanging write SetOnChanging;
     property DelimitedText: string read GetDelimitedText write SetDelimitedText;
     property Delimiter: Char read GetDelimiter write SetDelimiter;
     property Names[Index: Integer]: string read GetName;
@@ -369,13 +341,59 @@ type
     property ValueFromIndex[Index: Integer]: string read GetValueFromIndex write SetValueFromIndex;
     property NameValueSeparator: Char read GetNameValueSeparator write SetNameValueSeparator;
     {$ENDIF COMPILER7_UP}
-    property Duplicates: TDuplicates read GetDuplicates write SetDuplicates;
-    property Sorted: Boolean read GetSorted write SetSorted;
-    property CaseSensitive: Boolean read GetCaseSensitive write SetCaseSensitive;
-    property OnChange: TNotifyEvent read GetOnChange write SetOnChange;
-    property OnChanging: TNotifyEvent read GetOnChanging write SetOnChanging;
     { New }
-    property Objects[Index: Integer]: TObject read GetObjects write SetObjects;
+    function Assign(Source: TPersistent): IJclStringList; reintroduce;
+    function LoadExeParams: IJclStringList;
+    function Exists(const S: string): Boolean;
+    function ExistsName(const S: string): Boolean;
+    function DeleteBlanks: IJclStringList;
+    function KeepIntegers: IJclStringList;
+    function DeleteIntegers: IJclStringList;
+    function ReleaseInterfaces: IJclStringList;
+    function FreeObjects(AFreeAndNil: Boolean = False): IJclStringList;
+    function Clone: IJclStringList;
+    function Insert(Index: Integer; const S: string): IJclStringList; reintroduce;
+    function InsertObject(Index: Integer; const S: string; AObject: TObject): IJclStringList; reintroduce;
+    function Sort(ACompareFunction: TJclStringListSortCompare = nil): IJclStringList; reintroduce;
+    function SortAsInteger: IJclStringList;
+    function SortByName: IJclStringList;
+    function Delete(AIndex: Integer): IJclStringList; reintroduce; overload;
+    function Delete(const AString: string): IJclStringList; reintroduce; overload;
+    function Exchange(Index1, Index2: Integer): IJclStringList; reintroduce;
+    function Add(const A: array of const): IJclStringList; reintroduce; overload;
+    function AddStrings(const A: array of string): IJclStringList; reintroduce; overload;
+    function BeginUpdate: IJclStringList;
+    function EndUpdate: IJclStringList;
+    function Trim: IJclStringList;
+    function Join(const ASeparator: string = ''): string;
+    function Split(const AText, ASeparator: string; AClearBeforeAdd: Boolean = True): IJclStringList;
+    function ExtractWords(const AText: string; const ADelims: TSetOfAnsiChar = [#0..' ']; AClearBeforeAdd: Boolean = True): IJclStringList;
+    function Last: string;
+    function First: string;
+    function LastIndex: Integer;
+    function Clear: IJclStringList; reintroduce;
+    function DeleteRegEx(const APattern: string): IJclStringList;
+    function KeepRegEx(const APattern: string): IJclStringList;
+    function Files(const APattern: string = '*'; ARecursive: Boolean = False; const ARegExPattern: string = ''): IJclStringList;
+    function Directories(const APattern: string = '*'; ARecursive: Boolean = False; const ARegExPattern: string = ''): IJclStringList;
+    function GetStringsRef: TStrings;
+    function ConfigAsSet: IJclStringList;
+    function Delimit(const ADelimiter: string): IJclStringList;
+    function GetInterfaceByIndex(Index: Integer): IInterface;
+    function GetLists(Index: Integer): IJclStringList;
+    function GetVariants(AIndex: Integer): Variant;
+    function GetKeyInterface(const AKey: string): IInterface;
+    function GetKeyObject(const AKey: string): TObject;
+    function GetKeyVariant(const AKey: string): Variant;
+    function GetKeyList(const AKey: string): IJclStringList;
+    function GetObjectsMode: TJclStringListObjectsMode;
+    procedure SetInterfaceByIndex(Index: Integer; const Value: IInterface);
+    procedure SetLists(Index: Integer; const Value: IJclStringList);
+    procedure SetVariants(Index: Integer; const Value: Variant);
+    procedure SetKeyInterface(const AKey: string; const Value: IInterface);
+    procedure SetKeyObject(const AKey: string; const Value: TObject);
+    procedure SetKeyVariant(const AKey: string; const Value: Variant);
+    procedure SetKeyList(const AKey: string; const Value: IJclStringList);
     property Interfaces[Index: Integer]: IInterface read GetInterfaceByIndex write SetInterfaceByIndex;
     property Lists[Index: Integer]: IJclStringList read GetLists write SetLists;
     property Variants[Index: Integer]: Variant read GetVariants write SetVariants;
@@ -845,13 +863,13 @@ begin
   inherited Values[Name] := Value;
 end;
 
-function TJclStringListImpl.GetInterfaceByIndex(AIndex: Integer): IInterface;
+function TJclStringListImpl.GetInterfaceByIndex(Index: Integer): IInterface;
 var
   V: TInterfaceWrapper;
 begin
   if FObjectsMode <> omInterfaces then
     EnsureObjectsMode(omInterfaces);
-  V := TInterfaceWrapper(inherited Objects[AIndex]);
+  V := TInterfaceWrapper(inherited Objects[Index]);
   if V = nil then
     Result := nil
   else

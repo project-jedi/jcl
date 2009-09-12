@@ -30,6 +30,9 @@
     procedure PackNode(ANode: NODETYPENAME);
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(OWNERSHIPDECLARATION);
+    destructor Destroy; override;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -56,9 +59,6 @@
     function GetRoot: TREEITRINTERFACENAME;
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
-  public
-    constructor Create(OWNERSHIPDECLARATION);
-    destructor Destroy; override;
     property Root: TREEITRINTERFACENAME read GetRoot;
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;*)
@@ -76,6 +76,8 @@
     // return next node on the same level
     function GetNextSibling: NODETYPENAME; virtual; abstract;
     function GetPreviousCursor: NODETYPENAME; virtual; abstract;
+  public
+    constructor Create(OwnTree: TREECLASSNAME; ACursor: NODETYPENAME; AValid: Boolean; AStart: TItrStart);
     { STDITRINTERFACENAME }
     function Add(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
     procedure Extract;
@@ -109,8 +111,6 @@
     function InsertChild(Index: Integer; CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
     function Parent: TYPENAME;
     procedure SetChild(Index: Integer; CONSTKEYWORDPARAMETERNAME: TYPENAME);
-  public
-    constructor Create(OwnTree: TREECLASSNAME; ACursor: NODETYPENAME; AValid: Boolean; AStart: TItrStart);
   end;
 
   PREORDERITRCLASSNAME = class(BASEITRCLASSNAME, STDITRINTERFACENAME, TREEITRINTERFACENAME, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}

@@ -243,7 +243,7 @@ type
     function NextValidStamp(const Stamp: TTimeStamp): TTimeStamp;
   public
     constructor Create(const Controller: IUnknown);
-    // IJclScheduleDayFrequency
+    { IJclScheduleDayFrequency }
     function GetStartTime: Cardinal;
     function GetEndTime: Cardinal;
     function GetInterval: Cardinal;
@@ -354,7 +354,7 @@ type
     function NextValidStamp(const Stamp: TTimeStamp): TTimeStamp; override;
   public
     constructor Create(const Controller: IUnknown);
-    // IJclDailySchedule
+    { IJclDailySchedule }
     function GetEveryWeekDay: Boolean;
     function GetInterval: Cardinal;
     procedure SetEveryWeekDay(Value: Boolean);
@@ -455,7 +455,7 @@ type
     function NextValidStamp(const Stamp: TTimeStamp): TTimeStamp; override;
   public
     constructor Create(const Controller: IUnknown);
-    // IJclWeeklySchedule
+    { IJclWeeklySchedule }
     function GetDaysOfWeek: TScheduleWeekDays;
     function GetInterval: Cardinal;
     procedure SetDaysOfWeek(Value: TScheduleWeekDays);
@@ -555,7 +555,7 @@ type
     procedure MakeValidStampMonthIndex(var TYear, TMonth, TDay: Word);
   public
     constructor Create(const Controller: IUnknown);
-    // IJclMonthlySchedule
+    { IJclMonthlySchedule }
     function GetIndexKind: TScheduleIndexKind;
     function GetIndexValue: Integer;
     function GetDay: Cardinal;
@@ -898,7 +898,7 @@ type
     function NextValidStamp(const Stamp: TTimeStamp): TTimeStamp; override;
   public
     constructor Create(const Controller: IUnknown);
-    // IJclYearlySchedule
+    { IJclYearlySchedule }
     function GetMonth: Cardinal;
     procedure SetMonth(Value: Cardinal);
     
@@ -1002,25 +1002,12 @@ type
     FTriggerCount: Cardinal;
     FDayCount: Cardinal;
     FLastEvent: TTimeStamp;
-
-    function GetDailyFreq: IJclScheduleDayFrequency;
-    function GetDailySchedule: IJclDailySchedule;
-    function GetWeeklySchedule: IJclWeeklySchedule;
-    function GetMonthlySchedule: IJclMonthlySchedule;
-    function GetYearlySchedule: IJclYearlySchedule;
-
     function GetNextEventStamp(const From: TTimeStamp): TTimeStamp;
-
-    property DailyFreq: IJclScheduleDayFrequency read GetDailyFreq implements IJclScheduleDayFrequency;
-    property DailySchedule: IJclDailySchedule read GetDailySchedule implements IJclDailySchedule;
-    property WeeklySchedule: IJclWeeklySchedule read GetWeeklySchedule implements IJclWeeklySchedule;
-    property MonthlySchedule: IJclMonthlySchedule read GetMonthlySchedule implements IJclMonthlySchedule;
-    property YearlySchedule: IJclYearlySchedule read GetYearlySchedule implements IJclYearlySchedule;
   public
     constructor Create;
     destructor Destroy; override;
 
-    // IJclSchedule
+    { IJclSchedule }
     function GetStartDate: TTimeStamp;
     function GetRecurringType: TScheduleRecurringKind;
     function GetEndType: TScheduleEndKind;
@@ -1049,6 +1036,22 @@ type
     property EndType: TScheduleEndKind read GetEndType write SetEndType;
     property EndDate: TTimeStamp read GetEndDate write SetEndDate;
     property EndCount: Cardinal read GetEndCount write SetEndCount;
+
+    { IJclScheduleDayFrequency }
+    function GetDailyFreq: IJclScheduleDayFrequency;
+    property DailyFreq: IJclScheduleDayFrequency read GetDailyFreq implements IJclScheduleDayFrequency;
+    { IJclDailySchedule }
+    function GetDailySchedule: IJclDailySchedule;
+    property DailySchedule: IJclDailySchedule read GetDailySchedule implements IJclDailySchedule;
+    { IJclWeeklySchedule }
+    function GetWeeklySchedule: IJclWeeklySchedule;
+    property WeeklySchedule: IJclWeeklySchedule read GetWeeklySchedule implements IJclWeeklySchedule;
+    { IJclMonthlySchedule }
+    function GetMonthlySchedule: IJclMonthlySchedule;
+    property MonthlySchedule: IJclMonthlySchedule read GetMonthlySchedule implements IJclMonthlySchedule;
+    { IJclYearlySchedule }
+    function GetYearlySchedule: IJclYearlySchedule;
+    property YearlySchedule: IJclYearlySchedule read GetYearlySchedule implements IJclYearlySchedule;
   end;
 
 constructor TSchedule.Create;

@@ -66,6 +66,10 @@ type
     function RaiseOutOfBoundsError: IInterface;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer); overload;
+    constructor Create(const ACollection: IJclIntfCollection); overload;
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclIntfCollection }
@@ -97,10 +101,6 @@ type
     function LastIndexOf(const AInterface: IInterface): Integer;
     procedure SetObject(Index: Integer; const AInterface: IInterface);
     function SubList(First, Count: Integer): IJclIntfList;
-  public
-    constructor Create(ACapacity: Integer); overload;
-    constructor Create(const ACollection: IJclIntfCollection); overload;
-    destructor Destroy; override;
   end;
 
   TJclIntfArrayIterator = class(TJclAbstractIterator, IJclIntfIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -112,6 +112,8 @@ type
   protected
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(const AOwnList: IJclIntfList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
     { IJclIntfIterator }
     function Add(const AInterface: IInterface): Boolean;
     procedure Extract;
@@ -131,8 +133,6 @@ type
     function MoveNext: Boolean;
     property Current: IInterface read GetObject;
     {$ENDIF SUPPORTS_FOR_IN}
-  public
-    constructor Create(const AOwnList: IJclIntfList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
   end;
 
   TJclAnsiStrArrayList = class(TJclAnsiStrAbstractCollection, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -147,6 +147,10 @@ type
     function RaiseOutOfBoundsError: AnsiString;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer); overload;
+    constructor Create(const ACollection: IJclAnsiStrCollection); overload;
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclAnsiStrCollection }
@@ -178,10 +182,6 @@ type
     function LastIndexOf(const AString: AnsiString): Integer;
     procedure SetString(Index: Integer; const AString: AnsiString);
     function SubList(First, Count: Integer): IJclAnsiStrList;
-  public
-    constructor Create(ACapacity: Integer); overload;
-    constructor Create(const ACollection: IJclAnsiStrCollection); overload;
-    destructor Destroy; override;
   end;
 
   TJclAnsiStrArrayIterator = class(TJclAbstractIterator, IJclAnsiStrIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -193,6 +193,8 @@ type
   protected
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(const AOwnList: IJclAnsiStrList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
     { IJclAnsiStrIterator }
     function Add(const AString: AnsiString): Boolean;
     procedure Extract;
@@ -212,8 +214,6 @@ type
     function MoveNext: Boolean;
     property Current: AnsiString read GetString;
     {$ENDIF SUPPORTS_FOR_IN}
-  public
-    constructor Create(const AOwnList: IJclAnsiStrList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
   end;
 
   TJclWideStrArrayList = class(TJclWideStrAbstractCollection, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -228,6 +228,10 @@ type
     function RaiseOutOfBoundsError: WideString;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer); overload;
+    constructor Create(const ACollection: IJclWideStrCollection); overload;
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclWideStrCollection }
@@ -259,10 +263,6 @@ type
     function LastIndexOf(const AString: WideString): Integer;
     procedure SetString(Index: Integer; const AString: WideString);
     function SubList(First, Count: Integer): IJclWideStrList;
-  public
-    constructor Create(ACapacity: Integer); overload;
-    constructor Create(const ACollection: IJclWideStrCollection); overload;
-    destructor Destroy; override;
   end;
 
   TJclWideStrArrayIterator = class(TJclAbstractIterator, IJclWideStrIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -274,6 +274,8 @@ type
   protected
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(const AOwnList: IJclWideStrList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
     { IJclWideStrIterator }
     function Add(const AString: WideString): Boolean;
     procedure Extract;
@@ -293,8 +295,6 @@ type
     function MoveNext: Boolean;
     property Current: WideString read GetString;
     {$ENDIF SUPPORTS_FOR_IN}
-  public
-    constructor Create(const AOwnList: IJclWideStrList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
   end;
 
 {$IFDEF SUPPORTS_UNICODE_STRING}
@@ -310,6 +310,10 @@ type
     function RaiseOutOfBoundsError: UnicodeString;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer); overload;
+    constructor Create(const ACollection: IJclUnicodeStrCollection); overload;
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclUnicodeStrCollection }
@@ -341,10 +345,6 @@ type
     function LastIndexOf(const AString: UnicodeString): Integer;
     procedure SetString(Index: Integer; const AString: UnicodeString);
     function SubList(First, Count: Integer): IJclUnicodeStrList;
-  public
-    constructor Create(ACapacity: Integer); overload;
-    constructor Create(const ACollection: IJclUnicodeStrCollection); overload;
-    destructor Destroy; override;
   end;
 
   TJclUnicodeStrArrayIterator = class(TJclAbstractIterator, IJclUnicodeStrIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -356,6 +356,8 @@ type
   protected
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(const AOwnList: IJclUnicodeStrList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
     { IJclUnicodeStrIterator }
     function Add(const AString: UnicodeString): Boolean;
     procedure Extract;
@@ -375,8 +377,6 @@ type
     function MoveNext: Boolean;
     property Current: UnicodeString read GetString;
     {$ENDIF SUPPORTS_FOR_IN}
-  public
-    constructor Create(const AOwnList: IJclUnicodeStrList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
   end;
 {$ENDIF SUPPORTS_UNICODE_STRING}
 
@@ -402,6 +402,10 @@ type
     function RaiseOutOfBoundsError: Single;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer); overload;
+    constructor Create(const ACollection: IJclSingleCollection); overload;
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclSingleCollection }
@@ -433,10 +437,6 @@ type
     function LastIndexOf(const AValue: Single): Integer;
     procedure SetValue(Index: Integer; const AValue: Single);
     function SubList(First, Count: Integer): IJclSingleList;
-  public
-    constructor Create(ACapacity: Integer); overload;
-    constructor Create(const ACollection: IJclSingleCollection); overload;
-    destructor Destroy; override;
   end;
 
   TJclSingleArrayIterator = class(TJclAbstractIterator, IJclSingleIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -448,6 +448,8 @@ type
   protected
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(const AOwnList: IJclSingleList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
     { IJclSingleIterator }
     function Add(const AValue: Single): Boolean;
     procedure Extract;
@@ -467,8 +469,6 @@ type
     function MoveNext: Boolean;
     property Current: Single read GetValue;
     {$ENDIF SUPPORTS_FOR_IN}
-  public
-    constructor Create(const AOwnList: IJclSingleList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
   end;
 
   TJclDoubleArrayList = class(TJclDoubleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -483,6 +483,10 @@ type
     function RaiseOutOfBoundsError: Double;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer); overload;
+    constructor Create(const ACollection: IJclDoubleCollection); overload;
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclDoubleCollection }
@@ -514,10 +518,6 @@ type
     function LastIndexOf(const AValue: Double): Integer;
     procedure SetValue(Index: Integer; const AValue: Double);
     function SubList(First, Count: Integer): IJclDoubleList;
-  public
-    constructor Create(ACapacity: Integer); overload;
-    constructor Create(const ACollection: IJclDoubleCollection); overload;
-    destructor Destroy; override;
   end;
 
   TJclDoubleArrayIterator = class(TJclAbstractIterator, IJclDoubleIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -529,6 +529,8 @@ type
   protected
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(const AOwnList: IJclDoubleList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
     { IJclDoubleIterator }
     function Add(const AValue: Double): Boolean;
     procedure Extract;
@@ -548,8 +550,6 @@ type
     function MoveNext: Boolean;
     property Current: Double read GetValue;
     {$ENDIF SUPPORTS_FOR_IN}
-  public
-    constructor Create(const AOwnList: IJclDoubleList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
   end;
 
   TJclExtendedArrayList = class(TJclExtendedAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -564,6 +564,10 @@ type
     function RaiseOutOfBoundsError: Extended;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer); overload;
+    constructor Create(const ACollection: IJclExtendedCollection); overload;
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclExtendedCollection }
@@ -595,10 +599,6 @@ type
     function LastIndexOf(const AValue: Extended): Integer;
     procedure SetValue(Index: Integer; const AValue: Extended);
     function SubList(First, Count: Integer): IJclExtendedList;
-  public
-    constructor Create(ACapacity: Integer); overload;
-    constructor Create(const ACollection: IJclExtendedCollection); overload;
-    destructor Destroy; override;
   end;
 
   TJclExtendedArrayIterator = class(TJclAbstractIterator, IJclExtendedIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -610,6 +610,8 @@ type
   protected
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(const AOwnList: IJclExtendedList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
     { IJclExtendedIterator }
     function Add(const AValue: Extended): Boolean;
     procedure Extract;
@@ -629,8 +631,6 @@ type
     function MoveNext: Boolean;
     property Current: Extended read GetValue;
     {$ENDIF SUPPORTS_FOR_IN}
-  public
-    constructor Create(const AOwnList: IJclExtendedList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
   end;
 
   {$IFDEF MATH_EXTENDED_PRECISION}
@@ -655,6 +655,10 @@ type
     function RaiseOutOfBoundsError: Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer); overload;
+    constructor Create(const ACollection: IJclIntegerCollection); overload;
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclIntegerCollection }
@@ -686,10 +690,6 @@ type
     function LastIndexOf(AValue: Integer): Integer;
     procedure SetValue(Index: Integer; AValue: Integer);
     function SubList(First, Count: Integer): IJclIntegerList;
-  public
-    constructor Create(ACapacity: Integer); overload;
-    constructor Create(const ACollection: IJclIntegerCollection); overload;
-    destructor Destroy; override;
   end;
 
   TJclIntegerArrayIterator = class(TJclAbstractIterator, IJclIntegerIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -701,6 +701,8 @@ type
   protected
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(const AOwnList: IJclIntegerList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
     { IJclIntegerIterator }
     function Add(AValue: Integer): Boolean;
     procedure Extract;
@@ -720,8 +722,6 @@ type
     function MoveNext: Boolean;
     property Current: Integer read GetValue;
     {$ENDIF SUPPORTS_FOR_IN}
-  public
-    constructor Create(const AOwnList: IJclIntegerList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
   end;
 
   TJclCardinalArrayList = class(TJclCardinalAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -736,6 +736,10 @@ type
     function RaiseOutOfBoundsError: Cardinal;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer); overload;
+    constructor Create(const ACollection: IJclCardinalCollection); overload;
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclCardinalCollection }
@@ -767,10 +771,6 @@ type
     function LastIndexOf(AValue: Cardinal): Integer;
     procedure SetValue(Index: Integer; AValue: Cardinal);
     function SubList(First, Count: Integer): IJclCardinalList;
-  public
-    constructor Create(ACapacity: Integer); overload;
-    constructor Create(const ACollection: IJclCardinalCollection); overload;
-    destructor Destroy; override;
   end;
 
   TJclCardinalArrayIterator = class(TJclAbstractIterator, IJclCardinalIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -782,6 +782,8 @@ type
   protected
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(const AOwnList: IJclCardinalList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
     { IJclCardinalIterator }
     function Add(AValue: Cardinal): Boolean;
     procedure Extract;
@@ -801,8 +803,6 @@ type
     function MoveNext: Boolean;
     property Current: Cardinal read GetValue;
     {$ENDIF SUPPORTS_FOR_IN}
-  public
-    constructor Create(const AOwnList: IJclCardinalList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
   end;
 
   TJclInt64ArrayList = class(TJclInt64AbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -817,6 +817,10 @@ type
     function RaiseOutOfBoundsError: Int64;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer); overload;
+    constructor Create(const ACollection: IJclInt64Collection); overload;
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclInt64Collection }
@@ -848,10 +852,6 @@ type
     function LastIndexOf(const AValue: Int64): Integer;
     procedure SetValue(Index: Integer; const AValue: Int64);
     function SubList(First, Count: Integer): IJclInt64List;
-  public
-    constructor Create(ACapacity: Integer); overload;
-    constructor Create(const ACollection: IJclInt64Collection); overload;
-    destructor Destroy; override;
   end;
 
   TJclInt64ArrayIterator = class(TJclAbstractIterator, IJclInt64Iterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -863,6 +863,8 @@ type
   protected
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(const AOwnList: IJclInt64List; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
     { IJclInt64Iterator }
     function Add(const AValue: Int64): Boolean;
     procedure Extract;
@@ -882,8 +884,6 @@ type
     function MoveNext: Boolean;
     property Current: Int64 read GetValue;
     {$ENDIF SUPPORTS_FOR_IN}
-  public
-    constructor Create(const AOwnList: IJclInt64List; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
   end;
 
   TJclPtrArrayList = class(TJclPtrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -898,6 +898,10 @@ type
     function RaiseOutOfBoundsError: Pointer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer); overload;
+    constructor Create(const ACollection: IJclPtrCollection); overload;
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclPtrCollection }
@@ -929,10 +933,6 @@ type
     function LastIndexOf(APtr: Pointer): Integer;
     procedure SetPointer(Index: Integer; APtr: Pointer);
     function SubList(First, Count: Integer): IJclPtrList;
-  public
-    constructor Create(ACapacity: Integer); overload;
-    constructor Create(const ACollection: IJclPtrCollection); overload;
-    destructor Destroy; override;
   end;
 
   TJclPtrArrayIterator = class(TJclAbstractIterator, IJclPtrIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -944,6 +944,8 @@ type
   protected
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(const AOwnList: IJclPtrList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
     { IJclPtrIterator }
     function Add(APtr: Pointer): Boolean;
     procedure Extract;
@@ -963,8 +965,6 @@ type
     function MoveNext: Boolean;
     property Current: Pointer read GetPointer;
     {$ENDIF SUPPORTS_FOR_IN}
-  public
-    constructor Create(const AOwnList: IJclPtrList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
   end;
 
   TJclArrayList = class(TJclAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -979,6 +979,10 @@ type
     function RaiseOutOfBoundsError: TObject;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer; AOwnsObjects: Boolean); overload;
+    constructor Create(const ACollection: IJclCollection; AOwnsObjects: Boolean); overload;
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclCollection }
@@ -1010,10 +1014,6 @@ type
     function LastIndexOf(AObject: TObject): Integer;
     procedure SetObject(Index: Integer; AObject: TObject);
     function SubList(First, Count: Integer): IJclList;
-  public
-    constructor Create(ACapacity: Integer; AOwnsObjects: Boolean); overload;
-    constructor Create(const ACollection: IJclCollection; AOwnsObjects: Boolean); overload;
-    destructor Destroy; override;
   end;
 
   TJclArrayIterator = class(TJclAbstractIterator, IJclIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -1025,6 +1025,8 @@ type
   protected
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(const AOwnList: IJclList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
     { IJclIterator }
     function Add(AObject: TObject): Boolean;
     procedure Extract;
@@ -1044,8 +1046,6 @@ type
     function MoveNext: Boolean;
     property Current: TObject read GetObject;
     {$ENDIF SUPPORTS_FOR_IN}
-  public
-    constructor Create(const AOwnList: IJclList; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
   end;
 
   {$IFDEF SUPPORTS_GENERICS}
@@ -1066,6 +1066,10 @@ type
     function RaiseOutOfBoundsError: T;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer; AOwnsItems: Boolean); overload;
+    constructor Create(const ACollection: IJclCollection<T>; AOwnsItems: Boolean); overload;
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclCollection<T> }
@@ -1097,10 +1101,6 @@ type
     function LastIndexOf(const AItem: T): Integer;
     procedure SetItem(Index: Integer; const AItem: T);
     function SubList(First, Count: Integer): IJclList<T>;
-  public
-    constructor Create(ACapacity: Integer; AOwnsItems: Boolean); overload;
-    constructor Create(const ACollection: IJclCollection<T>; AOwnsItems: Boolean); overload;
-    destructor Destroy; override;
   end;
 
   TJclArrayIterator<T> = class(TJclAbstractIterator, IJclIterator<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -1112,6 +1112,8 @@ type
   protected
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(const AOwnList: IJclList<T>; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
     { IJclIterator<T> }
     function Add(const AItem: T): Boolean;
     procedure Extract;
@@ -1131,8 +1133,6 @@ type
     function MoveNext: Boolean;
     property Current: T read GetItem;
     {$ENDIF SUPPORTS_FOR_IN}
-  public
-    constructor Create(const AOwnList: IJclList<T>; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
   end;
 
   // E = External helper to compare items for equality

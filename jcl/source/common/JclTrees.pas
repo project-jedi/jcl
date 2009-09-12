@@ -84,6 +84,9 @@ type
     procedure PackNode(ANode: TJclIntfTreeNode);
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create();
+    destructor Destroy; override;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -110,9 +113,6 @@ type
     function GetRoot: IJclIntfTreeIterator;
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
-  public
-    constructor Create();
-    destructor Destroy; override;
     property Root: IJclIntfTreeIterator read GetRoot;
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
@@ -128,6 +128,8 @@ type
     // return next node on the same level
     function GetNextSibling: TJclIntfTreeNode; virtual; abstract;
     function GetPreviousCursor: TJclIntfTreeNode; virtual; abstract;
+  public
+    constructor Create(OwnTree: TJclIntfTree; ACursor: TJclIntfTreeNode; AValid: Boolean; AStart: TItrStart);
     { IJclIntfIterator }
     function Add(const AInterface: IInterface): Boolean;
     procedure Extract;
@@ -161,8 +163,6 @@ type
     function InsertChild(Index: Integer; const AInterface: IInterface): Boolean;
     function Parent: IInterface;
     procedure SetChild(Index: Integer; const AInterface: IInterface);
-  public
-    constructor Create(OwnTree: TJclIntfTree; ACursor: TJclIntfTreeNode; AValid: Boolean; AStart: TItrStart);
   end;
 
   TJclPreOrderIntfTreeIterator = class(TJclIntfTreeIterator, IJclIntfIterator, IJclIntfTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -213,6 +213,9 @@ type
     procedure PackNode(ANode: TJclAnsiStrTreeNode);
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create();
+    destructor Destroy; override;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -239,9 +242,6 @@ type
     function GetRoot: IJclAnsiStrTreeIterator;
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
-  public
-    constructor Create();
-    destructor Destroy; override;
     property Root: IJclAnsiStrTreeIterator read GetRoot;
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
@@ -257,6 +257,8 @@ type
     // return next node on the same level
     function GetNextSibling: TJclAnsiStrTreeNode; virtual; abstract;
     function GetPreviousCursor: TJclAnsiStrTreeNode; virtual; abstract;
+  public
+    constructor Create(OwnTree: TJclAnsiStrTree; ACursor: TJclAnsiStrTreeNode; AValid: Boolean; AStart: TItrStart);
     { IJclAnsiStrIterator }
     function Add(const AString: AnsiString): Boolean;
     procedure Extract;
@@ -290,8 +292,6 @@ type
     function InsertChild(Index: Integer; const AString: AnsiString): Boolean;
     function Parent: AnsiString;
     procedure SetChild(Index: Integer; const AString: AnsiString);
-  public
-    constructor Create(OwnTree: TJclAnsiStrTree; ACursor: TJclAnsiStrTreeNode; AValid: Boolean; AStart: TItrStart);
   end;
 
   TJclPreOrderAnsiStrTreeIterator = class(TJclAnsiStrTreeIterator, IJclAnsiStrIterator, IJclAnsiStrTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -342,6 +342,9 @@ type
     procedure PackNode(ANode: TJclWideStrTreeNode);
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create();
+    destructor Destroy; override;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -368,9 +371,6 @@ type
     function GetRoot: IJclWideStrTreeIterator;
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
-  public
-    constructor Create();
-    destructor Destroy; override;
     property Root: IJclWideStrTreeIterator read GetRoot;
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
@@ -386,6 +386,8 @@ type
     // return next node on the same level
     function GetNextSibling: TJclWideStrTreeNode; virtual; abstract;
     function GetPreviousCursor: TJclWideStrTreeNode; virtual; abstract;
+  public
+    constructor Create(OwnTree: TJclWideStrTree; ACursor: TJclWideStrTreeNode; AValid: Boolean; AStart: TItrStart);
     { IJclWideStrIterator }
     function Add(const AString: WideString): Boolean;
     procedure Extract;
@@ -419,8 +421,6 @@ type
     function InsertChild(Index: Integer; const AString: WideString): Boolean;
     function Parent: WideString;
     procedure SetChild(Index: Integer; const AString: WideString);
-  public
-    constructor Create(OwnTree: TJclWideStrTree; ACursor: TJclWideStrTreeNode; AValid: Boolean; AStart: TItrStart);
   end;
 
   TJclPreOrderWideStrTreeIterator = class(TJclWideStrTreeIterator, IJclWideStrIterator, IJclWideStrTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -472,6 +472,9 @@ type
     procedure PackNode(ANode: TJclUnicodeStrTreeNode);
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create();
+    destructor Destroy; override;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -498,9 +501,6 @@ type
     function GetRoot: IJclUnicodeStrTreeIterator;
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
-  public
-    constructor Create();
-    destructor Destroy; override;
     property Root: IJclUnicodeStrTreeIterator read GetRoot;
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
@@ -516,6 +516,8 @@ type
     // return next node on the same level
     function GetNextSibling: TJclUnicodeStrTreeNode; virtual; abstract;
     function GetPreviousCursor: TJclUnicodeStrTreeNode; virtual; abstract;
+  public
+    constructor Create(OwnTree: TJclUnicodeStrTree; ACursor: TJclUnicodeStrTreeNode; AValid: Boolean; AStart: TItrStart);
     { IJclUnicodeStrIterator }
     function Add(const AString: UnicodeString): Boolean;
     procedure Extract;
@@ -549,8 +551,6 @@ type
     function InsertChild(Index: Integer; const AString: UnicodeString): Boolean;
     function Parent: UnicodeString;
     procedure SetChild(Index: Integer; const AString: UnicodeString);
-  public
-    constructor Create(OwnTree: TJclUnicodeStrTree; ACursor: TJclUnicodeStrTreeNode; AValid: Boolean; AStart: TItrStart);
   end;
 
   TJclPreOrderUnicodeStrTreeIterator = class(TJclUnicodeStrTreeIterator, IJclUnicodeStrIterator, IJclUnicodeStrTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -612,6 +612,9 @@ type
     procedure PackNode(ANode: TJclSingleTreeNode);
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create();
+    destructor Destroy; override;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -638,9 +641,6 @@ type
     function GetRoot: IJclSingleTreeIterator;
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
-  public
-    constructor Create();
-    destructor Destroy; override;
     property Root: IJclSingleTreeIterator read GetRoot;
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
@@ -656,6 +656,8 @@ type
     // return next node on the same level
     function GetNextSibling: TJclSingleTreeNode; virtual; abstract;
     function GetPreviousCursor: TJclSingleTreeNode; virtual; abstract;
+  public
+    constructor Create(OwnTree: TJclSingleTree; ACursor: TJclSingleTreeNode; AValid: Boolean; AStart: TItrStart);
     { IJclSingleIterator }
     function Add(const AValue: Single): Boolean;
     procedure Extract;
@@ -689,8 +691,6 @@ type
     function InsertChild(Index: Integer; const AValue: Single): Boolean;
     function Parent: Single;
     procedure SetChild(Index: Integer; const AValue: Single);
-  public
-    constructor Create(OwnTree: TJclSingleTree; ACursor: TJclSingleTreeNode; AValid: Boolean; AStart: TItrStart);
   end;
 
   TJclPreOrderSingleTreeIterator = class(TJclSingleTreeIterator, IJclSingleIterator, IJclSingleTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -741,6 +741,9 @@ type
     procedure PackNode(ANode: TJclDoubleTreeNode);
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create();
+    destructor Destroy; override;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -767,9 +770,6 @@ type
     function GetRoot: IJclDoubleTreeIterator;
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
-  public
-    constructor Create();
-    destructor Destroy; override;
     property Root: IJclDoubleTreeIterator read GetRoot;
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
@@ -785,6 +785,8 @@ type
     // return next node on the same level
     function GetNextSibling: TJclDoubleTreeNode; virtual; abstract;
     function GetPreviousCursor: TJclDoubleTreeNode; virtual; abstract;
+  public
+    constructor Create(OwnTree: TJclDoubleTree; ACursor: TJclDoubleTreeNode; AValid: Boolean; AStart: TItrStart);
     { IJclDoubleIterator }
     function Add(const AValue: Double): Boolean;
     procedure Extract;
@@ -818,8 +820,6 @@ type
     function InsertChild(Index: Integer; const AValue: Double): Boolean;
     function Parent: Double;
     procedure SetChild(Index: Integer; const AValue: Double);
-  public
-    constructor Create(OwnTree: TJclDoubleTree; ACursor: TJclDoubleTreeNode; AValid: Boolean; AStart: TItrStart);
   end;
 
   TJclPreOrderDoubleTreeIterator = class(TJclDoubleTreeIterator, IJclDoubleIterator, IJclDoubleTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -870,6 +870,9 @@ type
     procedure PackNode(ANode: TJclExtendedTreeNode);
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create();
+    destructor Destroy; override;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -896,9 +899,6 @@ type
     function GetRoot: IJclExtendedTreeIterator;
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
-  public
-    constructor Create();
-    destructor Destroy; override;
     property Root: IJclExtendedTreeIterator read GetRoot;
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
@@ -914,6 +914,8 @@ type
     // return next node on the same level
     function GetNextSibling: TJclExtendedTreeNode; virtual; abstract;
     function GetPreviousCursor: TJclExtendedTreeNode; virtual; abstract;
+  public
+    constructor Create(OwnTree: TJclExtendedTree; ACursor: TJclExtendedTreeNode; AValid: Boolean; AStart: TItrStart);
     { IJclExtendedIterator }
     function Add(const AValue: Extended): Boolean;
     procedure Extract;
@@ -947,8 +949,6 @@ type
     function InsertChild(Index: Integer; const AValue: Extended): Boolean;
     function Parent: Extended;
     procedure SetChild(Index: Integer; const AValue: Extended);
-  public
-    constructor Create(OwnTree: TJclExtendedTree; ACursor: TJclExtendedTreeNode; AValid: Boolean; AStart: TItrStart);
   end;
 
   TJclPreOrderExtendedTreeIterator = class(TJclExtendedTreeIterator, IJclExtendedIterator, IJclExtendedTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -1009,6 +1009,9 @@ type
     procedure PackNode(ANode: TJclIntegerTreeNode);
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create();
+    destructor Destroy; override;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1035,9 +1038,6 @@ type
     function GetRoot: IJclIntegerTreeIterator;
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
-  public
-    constructor Create();
-    destructor Destroy; override;
     property Root: IJclIntegerTreeIterator read GetRoot;
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
@@ -1053,6 +1053,8 @@ type
     // return next node on the same level
     function GetNextSibling: TJclIntegerTreeNode; virtual; abstract;
     function GetPreviousCursor: TJclIntegerTreeNode; virtual; abstract;
+  public
+    constructor Create(OwnTree: TJclIntegerTree; ACursor: TJclIntegerTreeNode; AValid: Boolean; AStart: TItrStart);
     { IJclIntegerIterator }
     function Add(AValue: Integer): Boolean;
     procedure Extract;
@@ -1086,8 +1088,6 @@ type
     function InsertChild(Index: Integer; AValue: Integer): Boolean;
     function Parent: Integer;
     procedure SetChild(Index: Integer; AValue: Integer);
-  public
-    constructor Create(OwnTree: TJclIntegerTree; ACursor: TJclIntegerTreeNode; AValid: Boolean; AStart: TItrStart);
   end;
 
   TJclPreOrderIntegerTreeIterator = class(TJclIntegerTreeIterator, IJclIntegerIterator, IJclIntegerTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -1138,6 +1138,9 @@ type
     procedure PackNode(ANode: TJclCardinalTreeNode);
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create();
+    destructor Destroy; override;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1164,9 +1167,6 @@ type
     function GetRoot: IJclCardinalTreeIterator;
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
-  public
-    constructor Create();
-    destructor Destroy; override;
     property Root: IJclCardinalTreeIterator read GetRoot;
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
@@ -1182,6 +1182,8 @@ type
     // return next node on the same level
     function GetNextSibling: TJclCardinalTreeNode; virtual; abstract;
     function GetPreviousCursor: TJclCardinalTreeNode; virtual; abstract;
+  public
+    constructor Create(OwnTree: TJclCardinalTree; ACursor: TJclCardinalTreeNode; AValid: Boolean; AStart: TItrStart);
     { IJclCardinalIterator }
     function Add(AValue: Cardinal): Boolean;
     procedure Extract;
@@ -1215,8 +1217,6 @@ type
     function InsertChild(Index: Integer; AValue: Cardinal): Boolean;
     function Parent: Cardinal;
     procedure SetChild(Index: Integer; AValue: Cardinal);
-  public
-    constructor Create(OwnTree: TJclCardinalTree; ACursor: TJclCardinalTreeNode; AValid: Boolean; AStart: TItrStart);
   end;
 
   TJclPreOrderCardinalTreeIterator = class(TJclCardinalTreeIterator, IJclCardinalIterator, IJclCardinalTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -1267,6 +1267,9 @@ type
     procedure PackNode(ANode: TJclInt64TreeNode);
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create();
+    destructor Destroy; override;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1293,9 +1296,6 @@ type
     function GetRoot: IJclInt64TreeIterator;
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
-  public
-    constructor Create();
-    destructor Destroy; override;
     property Root: IJclInt64TreeIterator read GetRoot;
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
@@ -1311,6 +1311,8 @@ type
     // return next node on the same level
     function GetNextSibling: TJclInt64TreeNode; virtual; abstract;
     function GetPreviousCursor: TJclInt64TreeNode; virtual; abstract;
+  public
+    constructor Create(OwnTree: TJclInt64Tree; ACursor: TJclInt64TreeNode; AValid: Boolean; AStart: TItrStart);
     { IJclInt64Iterator }
     function Add(const AValue: Int64): Boolean;
     procedure Extract;
@@ -1344,8 +1346,6 @@ type
     function InsertChild(Index: Integer; const AValue: Int64): Boolean;
     function Parent: Int64;
     procedure SetChild(Index: Integer; const AValue: Int64);
-  public
-    constructor Create(OwnTree: TJclInt64Tree; ACursor: TJclInt64TreeNode; AValid: Boolean; AStart: TItrStart);
   end;
 
   TJclPreOrderInt64TreeIterator = class(TJclInt64TreeIterator, IJclInt64Iterator, IJclInt64TreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -1396,6 +1396,9 @@ type
     procedure PackNode(ANode: TJclPtrTreeNode);
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create();
+    destructor Destroy; override;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1422,9 +1425,6 @@ type
     function GetRoot: IJclPtrTreeIterator;
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
-  public
-    constructor Create();
-    destructor Destroy; override;
     property Root: IJclPtrTreeIterator read GetRoot;
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
@@ -1440,6 +1440,8 @@ type
     // return next node on the same level
     function GetNextSibling: TJclPtrTreeNode; virtual; abstract;
     function GetPreviousCursor: TJclPtrTreeNode; virtual; abstract;
+  public
+    constructor Create(OwnTree: TJclPtrTree; ACursor: TJclPtrTreeNode; AValid: Boolean; AStart: TItrStart);
     { IJclPtrIterator }
     function Add(APtr: Pointer): Boolean;
     procedure Extract;
@@ -1473,8 +1475,6 @@ type
     function InsertChild(Index: Integer; APtr: Pointer): Boolean;
     function Parent: Pointer;
     procedure SetChild(Index: Integer; APtr: Pointer);
-  public
-    constructor Create(OwnTree: TJclPtrTree; ACursor: TJclPtrTreeNode; AValid: Boolean; AStart: TItrStart);
   end;
 
   TJclPreOrderPtrTreeIterator = class(TJclPtrTreeIterator, IJclPtrIterator, IJclPtrTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -1525,6 +1525,9 @@ type
     procedure PackNode(ANode: TJclTreeNode);
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(AOwnsObjects: Boolean);
+    destructor Destroy; override;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1551,9 +1554,6 @@ type
     function GetRoot: IJclTreeIterator;
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
-  public
-    constructor Create(AOwnsObjects: Boolean);
-    destructor Destroy; override;
     property Root: IJclTreeIterator read GetRoot;
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
@@ -1569,6 +1569,8 @@ type
     // return next node on the same level
     function GetNextSibling: TJclTreeNode; virtual; abstract;
     function GetPreviousCursor: TJclTreeNode; virtual; abstract;
+  public
+    constructor Create(OwnTree: TJclTree; ACursor: TJclTreeNode; AValid: Boolean; AStart: TItrStart);
     { IJclIterator }
     function Add(AObject: TObject): Boolean;
     procedure Extract;
@@ -1602,8 +1604,6 @@ type
     function InsertChild(Index: Integer; AObject: TObject): Boolean;
     function Parent: TObject;
     procedure SetChild(Index: Integer; AObject: TObject);
-  public
-    constructor Create(OwnTree: TJclTree; ACursor: TJclTreeNode; AValid: Boolean; AStart: TItrStart);
   end;
 
   TJclPreOrderTreeIterator = class(TJclTreeIterator, IJclIterator, IJclTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -1661,6 +1661,9 @@ type
     procedure PackNode(ANode: TTreeNode);
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(AOwnsItems: Boolean);
+    destructor Destroy; override;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1687,9 +1690,6 @@ type
     function GetRoot: IJclTreeIterator<T>;
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
-  public
-    constructor Create(AOwnsItems: Boolean);
-    destructor Destroy; override;
     property Root: IJclTreeIterator<T> read GetRoot;
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
@@ -1705,6 +1705,8 @@ type
     // return next node on the same level
     function GetNextSibling: TJclTree<T>.TTreeNode; virtual; abstract;
     function GetPreviousCursor: TJclTree<T>.TTreeNode; virtual; abstract;
+  public
+    constructor Create(OwnTree: TJclTree<T>; ACursor: TJclTree<T>.TTreeNode; AValid: Boolean; AStart: TItrStart);
     { IJclIterator<T> }
     function Add(const AItem: T): Boolean;
     procedure Extract;
@@ -1738,8 +1740,6 @@ type
     function InsertChild(Index: Integer; const AItem: T): Boolean;
     function Parent: T;
     procedure SetChild(Index: Integer; const AItem: T);
-  public
-    constructor Create(OwnTree: TJclTree<T>; ACursor: TJclTree<T>.TTreeNode; AValid: Boolean; AStart: TItrStart);
   end;
 
   TJclPreOrderTreeIterator<T> = class(TJclTreeIterator<T>, IJclIterator<T>, IJclTreeIterator<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}

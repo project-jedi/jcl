@@ -61,6 +61,9 @@ type
     FElements: TDynIInterfaceArray;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclIntfStack }
@@ -71,9 +74,6 @@ type
     function Pop: IInterface;
     function Push(const AInterface: IInterface): Boolean;
     function Size: Integer;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
   end;
 
   TJclAnsiStrStack = class(TJclAnsiStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -85,6 +85,9 @@ type
     FElements: TDynAnsiStringArray;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclAnsiStrStack }
@@ -95,9 +98,6 @@ type
     function Pop: AnsiString;
     function Push(const AString: AnsiString): Boolean;
     function Size: Integer;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
   end;
 
   TJclWideStrStack = class(TJclWideStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -109,6 +109,9 @@ type
     FElements: TDynWideStringArray;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclWideStrStack }
@@ -119,9 +122,6 @@ type
     function Pop: WideString;
     function Push(const AString: WideString): Boolean;
     function Size: Integer;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
   end;
 
 {$IFDEF SUPPORTS_UNICODE_STRING}
@@ -134,6 +134,9 @@ type
     FElements: TDynUnicodeStringArray;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclUnicodeStrStack }
@@ -144,9 +147,6 @@ type
     function Pop: UnicodeString;
     function Push(const AString: UnicodeString): Boolean;
     function Size: Integer;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
   end;
 {$ENDIF SUPPORTS_UNICODE_STRING}
 
@@ -169,6 +169,9 @@ type
     FElements: TDynSingleArray;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclSingleStack }
@@ -179,9 +182,6 @@ type
     function Pop: Single;
     function Push(const AValue: Single): Boolean;
     function Size: Integer;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
   end;
 
   TJclDoubleStack = class(TJclDoubleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -193,6 +193,9 @@ type
     FElements: TDynDoubleArray;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclDoubleStack }
@@ -203,9 +206,6 @@ type
     function Pop: Double;
     function Push(const AValue: Double): Boolean;
     function Size: Integer;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
   end;
 
   TJclExtendedStack = class(TJclExtendedAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -217,6 +217,9 @@ type
     FElements: TDynExtendedArray;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclExtendedStack }
@@ -227,9 +230,6 @@ type
     function Pop: Extended;
     function Push(const AValue: Extended): Boolean;
     function Size: Integer;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
   end;
 
   {$IFDEF MATH_EXTENDED_PRECISION}
@@ -251,6 +251,9 @@ type
     FElements: TDynIntegerArray;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclIntegerStack }
@@ -261,9 +264,6 @@ type
     function Pop: Integer;
     function Push(AValue: Integer): Boolean;
     function Size: Integer;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
   end;
 
   TJclCardinalStack = class(TJclCardinalAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -275,6 +275,9 @@ type
     FElements: TDynCardinalArray;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclCardinalStack }
@@ -285,9 +288,6 @@ type
     function Pop: Cardinal;
     function Push(AValue: Cardinal): Boolean;
     function Size: Integer;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
   end;
 
   TJclInt64Stack = class(TJclInt64AbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -299,6 +299,9 @@ type
     FElements: TDynInt64Array;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclInt64Stack }
@@ -309,9 +312,6 @@ type
     function Pop: Int64;
     function Push(const AValue: Int64): Boolean;
     function Size: Integer;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
   end;
 
   TJclPtrStack = class(TJclPtrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -323,6 +323,9 @@ type
     FElements: TDynPointerArray;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclPtrStack }
@@ -333,9 +336,6 @@ type
     function Pop: Pointer;
     function Push(APtr: Pointer): Boolean;
     function Size: Integer;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
   end;
 
   TJclStack = class(TJclAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -347,6 +347,9 @@ type
     FElements: TDynObjectArray;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer; AOwnsObjects: Boolean);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclStack }
@@ -357,9 +360,6 @@ type
     function Pop: TObject;
     function Push(AObject: TObject): Boolean;
     function Size: Integer;
-  public
-    constructor Create(ACapacity: Integer; AOwnsObjects: Boolean);
-    destructor Destroy; override;
   end;
 
   {$IFDEF SUPPORTS_GENERICS}
@@ -374,6 +374,9 @@ type
     FElements: TDynArray;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer; AOwnsItems: Boolean);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclStack<T> }
@@ -384,9 +387,6 @@ type
     function Pop: T;
     function Push(const AItem: T): Boolean;
     function Size: Integer;
-  public
-    constructor Create(ACapacity: Integer; AOwnsItems: Boolean);
-    destructor Destroy; override;
   end;
 
   // E = external helper to compare items for equality

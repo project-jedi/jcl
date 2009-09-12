@@ -72,6 +72,9 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclIntfIntfMap }
@@ -95,9 +98,6 @@ type
     function LastKey: IInterface;
     function SubMap(const FromKey, ToKey: IInterface): IJclIntfIntfSortedMap;
     function TailMap(const FromKey: IInterface): IJclIntfIntfSortedMap;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
   end;
 
   TJclAnsiStrIntfSortedEntry = record
@@ -120,6 +120,9 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclAnsiStrIntfMap }
@@ -143,9 +146,6 @@ type
     function LastKey: AnsiString;
     function SubMap(const FromKey, ToKey: AnsiString): IJclAnsiStrIntfSortedMap;
     function TailMap(const FromKey: AnsiString): IJclAnsiStrIntfSortedMap;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
   end;
 
   TJclIntfAnsiStrSortedEntry = record
@@ -168,6 +168,9 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclIntfAnsiStrMap }
@@ -191,9 +194,6 @@ type
     function LastKey: IInterface;
     function SubMap(const FromKey, ToKey: IInterface): IJclIntfAnsiStrSortedMap;
     function TailMap(const FromKey: IInterface): IJclIntfAnsiStrSortedMap;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
   end;
 
   TJclAnsiStrAnsiStrSortedEntry = record
@@ -216,6 +216,9 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclAnsiStrAnsiStrMap }
@@ -239,9 +242,6 @@ type
     function LastKey: AnsiString;
     function SubMap(const FromKey, ToKey: AnsiString): IJclAnsiStrAnsiStrSortedMap;
     function TailMap(const FromKey: AnsiString): IJclAnsiStrAnsiStrSortedMap;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
   end;
 
   TJclWideStrIntfSortedEntry = record
@@ -264,6 +264,9 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclWideStrIntfMap }
@@ -287,9 +290,6 @@ type
     function LastKey: WideString;
     function SubMap(const FromKey, ToKey: WideString): IJclWideStrIntfSortedMap;
     function TailMap(const FromKey: WideString): IJclWideStrIntfSortedMap;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
   end;
 
   TJclIntfWideStrSortedEntry = record
@@ -312,6 +312,9 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclIntfWideStrMap }
@@ -335,9 +338,6 @@ type
     function LastKey: IInterface;
     function SubMap(const FromKey, ToKey: IInterface): IJclIntfWideStrSortedMap;
     function TailMap(const FromKey: IInterface): IJclIntfWideStrSortedMap;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
   end;
 
   TJclWideStrWideStrSortedEntry = record
@@ -360,6 +360,9 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclWideStrWideStrMap }
@@ -383,9 +386,6 @@ type
     function LastKey: WideString;
     function SubMap(const FromKey, ToKey: WideString): IJclWideStrWideStrSortedMap;
     function TailMap(const FromKey: WideString): IJclWideStrWideStrSortedMap;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
   end;
 
 {$IFDEF SUPPORTS_UNICODE_STRING}
@@ -409,6 +409,9 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclUnicodeStrIntfMap }
@@ -432,9 +435,6 @@ type
     function LastKey: UnicodeString;
     function SubMap(const FromKey, ToKey: UnicodeString): IJclUnicodeStrIntfSortedMap;
     function TailMap(const FromKey: UnicodeString): IJclUnicodeStrIntfSortedMap;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
   end;
 
   TJclIntfUnicodeStrSortedEntry = record
@@ -457,6 +457,9 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclIntfUnicodeStrMap }
@@ -480,9 +483,6 @@ type
     function LastKey: IInterface;
     function SubMap(const FromKey, ToKey: IInterface): IJclIntfUnicodeStrSortedMap;
     function TailMap(const FromKey: IInterface): IJclIntfUnicodeStrSortedMap;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
   end;
 
   TJclUnicodeStrUnicodeStrSortedEntry = record
@@ -505,6 +505,9 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclUnicodeStrUnicodeStrMap }
@@ -528,9 +531,6 @@ type
     function LastKey: UnicodeString;
     function SubMap(const FromKey, ToKey: UnicodeString): IJclUnicodeStrUnicodeStrSortedMap;
     function TailMap(const FromKey: UnicodeString): IJclUnicodeStrUnicodeStrSortedMap;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
   end;
 {$ENDIF SUPPORTS_UNICODE_STRING}
 
@@ -570,6 +570,9 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclSingleIntfMap }
@@ -593,9 +596,6 @@ type
     function LastKey: Single;
     function SubMap(const FromKey, ToKey: Single): IJclSingleIntfSortedMap;
     function TailMap(const FromKey: Single): IJclSingleIntfSortedMap;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
   end;
 
   TJclIntfSingleSortedEntry = record
@@ -618,6 +618,9 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclIntfSingleMap }
@@ -641,9 +644,6 @@ type
     function LastKey: IInterface;
     function SubMap(const FromKey, ToKey: IInterface): IJclIntfSingleSortedMap;
     function TailMap(const FromKey: IInterface): IJclIntfSingleSortedMap;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
   end;
 
   TJclSingleSingleSortedEntry = record
@@ -666,6 +666,9 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclSingleSingleMap }
@@ -689,9 +692,6 @@ type
     function LastKey: Single;
     function SubMap(const FromKey, ToKey: Single): IJclSingleSingleSortedMap;
     function TailMap(const FromKey: Single): IJclSingleSingleSortedMap;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
   end;
 
   TJclDoubleIntfSortedEntry = record
@@ -714,6 +714,9 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclDoubleIntfMap }
@@ -737,9 +740,6 @@ type
     function LastKey: Double;
     function SubMap(const FromKey, ToKey: Double): IJclDoubleIntfSortedMap;
     function TailMap(const FromKey: Double): IJclDoubleIntfSortedMap;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
   end;
 
   TJclIntfDoubleSortedEntry = record
@@ -762,6 +762,9 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclIntfDoubleMap }
@@ -785,9 +788,6 @@ type
     function LastKey: IInterface;
     function SubMap(const FromKey, ToKey: IInterface): IJclIntfDoubleSortedMap;
     function TailMap(const FromKey: IInterface): IJclIntfDoubleSortedMap;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
   end;
 
   TJclDoubleDoubleSortedEntry = record
@@ -810,6 +810,9 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclDoubleDoubleMap }
@@ -833,9 +836,6 @@ type
     function LastKey: Double;
     function SubMap(const FromKey, ToKey: Double): IJclDoubleDoubleSortedMap;
     function TailMap(const FromKey: Double): IJclDoubleDoubleSortedMap;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
   end;
 
   TJclExtendedIntfSortedEntry = record
@@ -858,6 +858,9 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclExtendedIntfMap }
@@ -881,9 +884,6 @@ type
     function LastKey: Extended;
     function SubMap(const FromKey, ToKey: Extended): IJclExtendedIntfSortedMap;
     function TailMap(const FromKey: Extended): IJclExtendedIntfSortedMap;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
   end;
 
   TJclIntfExtendedSortedEntry = record
@@ -906,6 +906,9 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclIntfExtendedMap }
@@ -929,9 +932,6 @@ type
     function LastKey: IInterface;
     function SubMap(const FromKey, ToKey: IInterface): IJclIntfExtendedSortedMap;
     function TailMap(const FromKey: IInterface): IJclIntfExtendedSortedMap;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
   end;
 
   TJclExtendedExtendedSortedEntry = record
@@ -954,6 +954,9 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclExtendedExtendedMap }
@@ -977,9 +980,6 @@ type
     function LastKey: Extended;
     function SubMap(const FromKey, ToKey: Extended): IJclExtendedExtendedSortedMap;
     function TailMap(const FromKey: Extended): IJclExtendedExtendedSortedMap;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
   end;
 
   {$IFDEF MATH_EXTENDED_PRECISION}
@@ -1018,6 +1018,9 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclIntegerIntfMap }
@@ -1041,9 +1044,6 @@ type
     function LastKey: Integer;
     function SubMap(FromKey, ToKey: Integer): IJclIntegerIntfSortedMap;
     function TailMap(FromKey: Integer): IJclIntegerIntfSortedMap;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
   end;
 
   TJclIntfIntegerSortedEntry = record
@@ -1066,6 +1066,9 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclIntfIntegerMap }
@@ -1089,9 +1092,6 @@ type
     function LastKey: IInterface;
     function SubMap(const FromKey, ToKey: IInterface): IJclIntfIntegerSortedMap;
     function TailMap(const FromKey: IInterface): IJclIntfIntegerSortedMap;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
   end;
 
   TJclIntegerIntegerSortedEntry = record
@@ -1114,6 +1114,9 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclIntegerIntegerMap }
@@ -1137,9 +1140,6 @@ type
     function LastKey: Integer;
     function SubMap(FromKey, ToKey: Integer): IJclIntegerIntegerSortedMap;
     function TailMap(FromKey: Integer): IJclIntegerIntegerSortedMap;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
   end;
 
   TJclCardinalIntfSortedEntry = record
@@ -1162,6 +1162,9 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclCardinalIntfMap }
@@ -1185,9 +1188,6 @@ type
     function LastKey: Cardinal;
     function SubMap(FromKey, ToKey: Cardinal): IJclCardinalIntfSortedMap;
     function TailMap(FromKey: Cardinal): IJclCardinalIntfSortedMap;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
   end;
 
   TJclIntfCardinalSortedEntry = record
@@ -1210,6 +1210,9 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclIntfCardinalMap }
@@ -1233,9 +1236,6 @@ type
     function LastKey: IInterface;
     function SubMap(const FromKey, ToKey: IInterface): IJclIntfCardinalSortedMap;
     function TailMap(const FromKey: IInterface): IJclIntfCardinalSortedMap;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
   end;
 
   TJclCardinalCardinalSortedEntry = record
@@ -1258,6 +1258,9 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclCardinalCardinalMap }
@@ -1281,9 +1284,6 @@ type
     function LastKey: Cardinal;
     function SubMap(FromKey, ToKey: Cardinal): IJclCardinalCardinalSortedMap;
     function TailMap(FromKey: Cardinal): IJclCardinalCardinalSortedMap;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
   end;
 
   TJclInt64IntfSortedEntry = record
@@ -1306,6 +1306,9 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclInt64IntfMap }
@@ -1329,9 +1332,6 @@ type
     function LastKey: Int64;
     function SubMap(const FromKey, ToKey: Int64): IJclInt64IntfSortedMap;
     function TailMap(const FromKey: Int64): IJclInt64IntfSortedMap;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
   end;
 
   TJclIntfInt64SortedEntry = record
@@ -1354,6 +1354,9 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclIntfInt64Map }
@@ -1377,9 +1380,6 @@ type
     function LastKey: IInterface;
     function SubMap(const FromKey, ToKey: IInterface): IJclIntfInt64SortedMap;
     function TailMap(const FromKey: IInterface): IJclIntfInt64SortedMap;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
   end;
 
   TJclInt64Int64SortedEntry = record
@@ -1402,6 +1402,9 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclInt64Int64Map }
@@ -1425,9 +1428,6 @@ type
     function LastKey: Int64;
     function SubMap(const FromKey, ToKey: Int64): IJclInt64Int64SortedMap;
     function TailMap(const FromKey: Int64): IJclInt64Int64SortedMap;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
   end;
 
   TJclPtrIntfSortedEntry = record
@@ -1450,6 +1450,9 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclPtrIntfMap }
@@ -1473,9 +1476,6 @@ type
     function LastKey: Pointer;
     function SubMap(FromKey, ToKey: Pointer): IJclPtrIntfSortedMap;
     function TailMap(FromKey: Pointer): IJclPtrIntfSortedMap;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
   end;
 
   TJclIntfPtrSortedEntry = record
@@ -1498,6 +1498,9 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclIntfPtrMap }
@@ -1521,9 +1524,6 @@ type
     function LastKey: IInterface;
     function SubMap(const FromKey, ToKey: IInterface): IJclIntfPtrSortedMap;
     function TailMap(const FromKey: IInterface): IJclIntfPtrSortedMap;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
   end;
 
   TJclPtrPtrSortedEntry = record
@@ -1546,6 +1546,9 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclPtrPtrMap }
@@ -1569,9 +1572,6 @@ type
     function LastKey: Pointer;
     function SubMap(FromKey, ToKey: Pointer): IJclPtrPtrSortedMap;
     function TailMap(FromKey: Pointer): IJclPtrPtrSortedMap;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
   end;
 
   TJclIntfSortedEntry = record
@@ -1600,6 +1600,9 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+  public
+    constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclIntfMap }
@@ -1623,9 +1626,6 @@ type
     function LastKey: IInterface;
     function SubMap(const FromKey, ToKey: IInterface): IJclIntfSortedMap;
     function TailMap(const FromKey: IInterface): IJclIntfSortedMap;
-  public
-    constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
-    destructor Destroy; override;
   end;
 
   TJclAnsiStrSortedEntry = record
@@ -1654,6 +1654,9 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+  public
+    constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclAnsiStrMap }
@@ -1677,9 +1680,6 @@ type
     function LastKey: AnsiString;
     function SubMap(const FromKey, ToKey: AnsiString): IJclAnsiStrSortedMap;
     function TailMap(const FromKey: AnsiString): IJclAnsiStrSortedMap;
-  public
-    constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
-    destructor Destroy; override;
   end;
 
   TJclWideStrSortedEntry = record
@@ -1708,6 +1708,9 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+  public
+    constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclWideStrMap }
@@ -1731,9 +1734,6 @@ type
     function LastKey: WideString;
     function SubMap(const FromKey, ToKey: WideString): IJclWideStrSortedMap;
     function TailMap(const FromKey: WideString): IJclWideStrSortedMap;
-  public
-    constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
-    destructor Destroy; override;
   end;
 
 {$IFDEF SUPPORTS_UNICODE_STRING}
@@ -1763,6 +1763,9 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+  public
+    constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclUnicodeStrMap }
@@ -1786,9 +1789,6 @@ type
     function LastKey: UnicodeString;
     function SubMap(const FromKey, ToKey: UnicodeString): IJclUnicodeStrSortedMap;
     function TailMap(const FromKey: UnicodeString): IJclUnicodeStrSortedMap;
-  public
-    constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
-    destructor Destroy; override;
   end;
 {$ENDIF SUPPORTS_UNICODE_STRING}
 
@@ -1828,6 +1828,9 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+  public
+    constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclSingleMap }
@@ -1851,9 +1854,6 @@ type
     function LastKey: Single;
     function SubMap(const FromKey, ToKey: Single): IJclSingleSortedMap;
     function TailMap(const FromKey: Single): IJclSingleSortedMap;
-  public
-    constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
-    destructor Destroy; override;
   end;
 
   TJclDoubleSortedEntry = record
@@ -1882,6 +1882,9 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+  public
+    constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclDoubleMap }
@@ -1905,9 +1908,6 @@ type
     function LastKey: Double;
     function SubMap(const FromKey, ToKey: Double): IJclDoubleSortedMap;
     function TailMap(const FromKey: Double): IJclDoubleSortedMap;
-  public
-    constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
-    destructor Destroy; override;
   end;
 
   TJclExtendedSortedEntry = record
@@ -1936,6 +1936,9 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+  public
+    constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclExtendedMap }
@@ -1959,9 +1962,6 @@ type
     function LastKey: Extended;
     function SubMap(const FromKey, ToKey: Extended): IJclExtendedSortedMap;
     function TailMap(const FromKey: Extended): IJclExtendedSortedMap;
-  public
-    constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
-    destructor Destroy; override;
   end;
 
   {$IFDEF MATH_EXTENDED_PRECISION}
@@ -2000,6 +2000,9 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+  public
+    constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclIntegerMap }
@@ -2023,9 +2026,6 @@ type
     function LastKey: Integer;
     function SubMap(FromKey, ToKey: Integer): IJclIntegerSortedMap;
     function TailMap(FromKey: Integer): IJclIntegerSortedMap;
-  public
-    constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
-    destructor Destroy; override;
   end;
 
   TJclCardinalSortedEntry = record
@@ -2054,6 +2054,9 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+  public
+    constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclCardinalMap }
@@ -2077,9 +2080,6 @@ type
     function LastKey: Cardinal;
     function SubMap(FromKey, ToKey: Cardinal): IJclCardinalSortedMap;
     function TailMap(FromKey: Cardinal): IJclCardinalSortedMap;
-  public
-    constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
-    destructor Destroy; override;
   end;
 
   TJclInt64SortedEntry = record
@@ -2108,6 +2108,9 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+  public
+    constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclInt64Map }
@@ -2131,9 +2134,6 @@ type
     function LastKey: Int64;
     function SubMap(const FromKey, ToKey: Int64): IJclInt64SortedMap;
     function TailMap(const FromKey: Int64): IJclInt64SortedMap;
-  public
-    constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
-    destructor Destroy; override;
   end;
 
   TJclPtrSortedEntry = record
@@ -2162,6 +2162,9 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+  public
+    constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclPtrMap }
@@ -2185,9 +2188,6 @@ type
     function LastKey: Pointer;
     function SubMap(FromKey, ToKey: Pointer): IJclPtrSortedMap;
     function TailMap(FromKey: Pointer): IJclPtrSortedMap;
-  public
-    constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
-    destructor Destroy; override;
   end;
 
   TJclSortedEntry = record
@@ -2220,6 +2220,9 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+  public
+    constructor Create(ACapacity: Integer; AOwnsValues: Boolean; AOwnsKeys: Boolean);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclMap }
@@ -2243,9 +2246,6 @@ type
     function LastKey: TObject;
     function SubMap(FromKey, ToKey: TObject): IJclSortedMap;
     function TailMap(FromKey: TObject): IJclSortedMap;
-  public
-    constructor Create(ACapacity: Integer; AOwnsValues: Boolean; AOwnsKeys: Boolean);
-    destructor Destroy; override;
   end;
 
   {$IFDEF SUPPORTS_GENERICS}
@@ -2282,6 +2282,9 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+  public
+    constructor Create(ACapacity: Integer; AOwnsValues: Boolean; AOwnsKeys: Boolean);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclMap<TKey,TValue> }
@@ -2305,9 +2308,6 @@ type
     function LastKey: TKey;
     function SubMap(const FromKey, ToKey: TKey): IJclSortedMap<TKey,TValue>;
     function TailMap(const FromKey: TKey): IJclSortedMap<TKey,TValue>;
-  public
-    constructor Create(ACapacity: Integer; AOwnsValues: Boolean; AOwnsKeys: Boolean);
-    destructor Destroy; override;
   end;
 
   // E = external helper to compare items

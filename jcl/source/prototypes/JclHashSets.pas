@@ -75,37 +75,37 @@ type
 
 (*$JPPEXPANDMACRO JCLHASHSETINT(TJclAnsiStrHashSet,TJclAnsiStrAbstractCollection,IJclAnsiStrCollection,IJclAnsiStrSet,IJclAnsiStrMap,IJclAnsiStrIterator, IJclStrContainer\, IJclAnsiStrContainer\, IJclAnsiStrEqualityComparer\,,
   protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+  public
+    constructor Create(ACapacity: Integer); overload;
     { IJclStrContainer }
     function GetCaseSensitive: Boolean; override;
     procedure SetCaseSensitive(Value: Boolean); override;
     { IJclAnsiStrContainer }
     function GetEncoding: TJclAnsiStrEncoding; override;
-    procedure SetEncoding(Value: TJclAnsiStrEncoding); override;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-  public
-    constructor Create(ACapacity: Integer); overload;, override;,const ,AString,AnsiString)*)
+    procedure SetEncoding(Value: TJclAnsiStrEncoding); override;, override;,const ,AString,AnsiString)*)
 
 (*$JPPEXPANDMACRO JCLHASHSETINT(TJclWideStrHashSet,TJclWideStrAbstractCollection,IJclWideStrCollection,IJclWideStrSet,IJclWideStrMap,IJclWideStrIterator, IJclStrContainer\, IJclWideStrContainer\, IJclWideStrEqualityComparer\,,
   protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+  public
+    constructor Create(ACapacity: Integer); overload;
     { IJclStrContainer }
     function GetCaseSensitive: Boolean; override;
     procedure SetCaseSensitive(Value: Boolean); override;
     { IJclWideStrContainer }
     function GetEncoding: TJclWideStrEncoding; override;
-    procedure SetEncoding(Value: TJclWideStrEncoding); override;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-  public
-    constructor Create(ACapacity: Integer); overload;, override;,const ,AString,WideString)*)
+    procedure SetEncoding(Value: TJclWideStrEncoding); override;, override;,const ,AString,WideString)*)
 
 {$IFDEF SUPPORTS_UNICODE_STRING}
 (*$JPPEXPANDMACRO JCLHASHSETINT(TJclUnicodeStrHashSet,TJclUnicodeStrAbstractCollection,IJclUnicodeStrCollection,IJclUnicodeStrSet,IJclUnicodeStrMap,IJclUnicodeStrIterator, IJclStrContainer\, IJclUnicodeStrContainer\, IJclUnicodeStrEqualityComparer\,,
   protected
-    { IJclStrContainer }
-    function GetCaseSensitive: Boolean; override;
-    procedure SetCaseSensitive(Value: Boolean); override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
-    constructor Create(ACapacity: Integer); overload;, override;,const ,AString,UnicodeString)*)
+    constructor Create(ACapacity: Integer); overload;
+    { IJclStrContainer }
+    function GetCaseSensitive: Boolean; override;
+    procedure SetCaseSensitive(Value: Boolean); override;, override;,const ,AString,UnicodeString)*)
 {$ENDIF SUPPORTS_UNICODE_STRING}
 
   {$IFDEF CONTAINER_ANSISTR}
@@ -120,30 +120,30 @@ type
 
 (*$JPPEXPANDMACRO JCLHASHSETINT(TJclSingleHashSet,TJclSingleAbstractContainer,IJclSingleCollection,IJclSingleSet,IJclSingleMap,IJclSingleIterator, IJclSingleContainer\, IJclSingleEqualityComparer\,,
   protected
-    { IJclSingleContainer }
-    function GetPrecision: Single; override;
-    procedure SetPrecision(const Value: Single); override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
-    constructor Create(ACapacity: Integer); overload;,,const ,AValue,Single)*)
+    constructor Create(ACapacity: Integer); overload;
+    { IJclSingleContainer }
+    function GetPrecision: Single; override;
+    procedure SetPrecision(const Value: Single); override;,,const ,AValue,Single)*)
 
 (*$JPPEXPANDMACRO JCLHASHSETINT(TJclDoubleHashSet,TJclDoubleAbstractContainer,IJclDoubleCollection,IJclDoubleSet,IJclDoubleMap,IJclDoubleIterator, IJclDoubleContainer\, IJclDoubleEqualityComparer\,,
   protected
-    { IJclDoubleContainer }
-    function GetPrecision: Double; override;
-    procedure SetPrecision(const Value: Double); override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
-    constructor Create(ACapacity: Integer); overload;,,const ,AValue,Double)*)
+    constructor Create(ACapacity: Integer); overload;
+    { IJclDoubleContainer }
+    function GetPrecision: Double; override;
+    procedure SetPrecision(const Value: Double); override;,,const ,AValue,Double)*)
 
 (*$JPPEXPANDMACRO JCLHASHSETINT(TJclExtendedHashSet,TJclExtendedAbstractContainer,IJclExtendedCollection,IJclExtendedSet,IJclExtendedMap,IJclExtendedIterator, IJclExtendedContainer\, IJclExtendedEqualityComparer\,,
   protected
-    { IJclExtendedContainer }
-    function GetPrecision: Extended; override;
-    procedure SetPrecision(const Value: Extended); override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
-    constructor Create(ACapacity: Integer); overload;,,const ,AValue,Extended)*)
+    constructor Create(ACapacity: Integer); overload;
+    { IJclExtendedContainer }
+    function GetPrecision: Extended; override;
+    procedure SetPrecision(const Value: Extended); override;,,const ,AValue,Extended)*)
 
   {$IFDEF MATH_EXTENDED_PRECISION}
   TJclFloatHashSet = TJclExtendedHashSet;
@@ -181,12 +181,12 @@ type
 
 (*$JPPEXPANDMACRO JCLHASHSETINT(TJclHashSet,TJclAbstractContainer,IJclCollection,IJclSet,IJclMap,IJclIterator, IJclObjectOwner\, IJclEqualityComparer\,,
   protected
-    { IJclObjectOwner }
-    function FreeObject(var AObject: TObject): TObject; override;
-    function GetOwnsObjects: Boolean; override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
-    constructor Create(ACapacity: Integer; AOwnsObjects: Boolean); overload;,,,AObject,TObject)*)
+    constructor Create(ACapacity: Integer; AOwnsObjects: Boolean); overload;
+    { IJclObjectOwner }
+    function FreeObject(var AObject: TObject): TObject; override;
+    function GetOwnsObjects: Boolean; override;,,,AObject,TObject)*)
 
   {$IFDEF SUPPORTS_GENERICS}
 

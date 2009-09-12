@@ -51,20 +51,23 @@ type
     FStackList: IJclLocationInfoList;
     FOnSelectStackLine: TNotifyEvent;
     procedure DoSelectStackLine;
+    procedure UpdateListView;
+  public
+    procedure LoadState(AIni: TCustomIniFile; const ASection, APrefix: string);
+    procedure SaveState(AIni: TCustomIniFile; const ASection, APrefix: string);
+    { IJclStackTraceViewerStackFrame }
     function GetStackList: IJclLocationInfoList;
     procedure SetStackList(const Value: IJclLocationInfoList);
     procedure UpdateView;
+    { IJclStackTraceViewerPreparableStackFrame }
     function GetPreparableLocationInfoListCount: Integer;
     function GetPreparableLocationInfoList(AIndex: Integer): IJclPreparedLocationInfoList;
     procedure UpdateViews;
-    function GetSelected: IJclLocationInfo;
-    procedure UpdateListView;
-  public
-    { Public declarations }
-    procedure LoadState(AIni: TCustomIniFile; const ASection, APrefix: string);
-    procedure SaveState(AIni: TCustomIniFile; const ASection, APrefix: string);
     property StackList: IJclLocationInfoList read FStackList write SetStackList;
     property OnSelectStackLine: TNotifyEvent read FOnSelectStackLine write FOnSelectStackLine;
+    { IJclStackTraceViewerStackSelection }
+    function GetSelected: IJclLocationInfo;
+    property Selected: IJclLocationInfo read GetSelected;
   end;
 
 {$IFDEF UNITVERSIONING}

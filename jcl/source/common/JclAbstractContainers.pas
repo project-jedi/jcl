@@ -61,15 +61,15 @@ type
   protected
     FThreadSafe: Boolean;
     FSyncReaderWriter: TJclMultiReadExclusiveWrite;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    property SyncReaderWriter: TJclMultiReadExclusiveWrite read FSyncReaderWriter;
+    { IJclLockable }
     procedure ReadLock;
     procedure ReadUnlock;
     procedure WriteLock;
     procedure WriteUnlock;
-  public
-    constructor Create;
-    destructor Destroy; override;
-
-    property SyncReaderWriter: TJclMultiReadExclusiveWrite read FSyncReaderWriter;
   {$ENDIF THREADSAFE}
   end;
 
@@ -93,6 +93,8 @@ type
     function CreateEmptyContainer: TJclAbstractContainerBase; virtual; abstract;
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); virtual;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); virtual;
+  public
+    constructor Create;
     { IJclContainer }
     procedure Assign(const Source: IJclContainer);
     procedure AssignTo(const Dest: IJclContainer);
@@ -109,6 +111,12 @@ type
     procedure SetRemoveSingleElement(Value: Boolean); virtual;
     procedure SetReturnDefaultElements(Value: Boolean); virtual;
     procedure SetThreadSafe(Value: Boolean); virtual;
+    property AllowDefaultElements: Boolean read GetAllowDefaultElements write SetAllowDefaultElements;
+    property Duplicates: TDuplicates read GetDuplicates write SetDuplicates;
+    property ReadOnly: Boolean read GetReadOnly write SetReadOnly;
+    property RemoveSingleElement: Boolean read GetRemoveSingleElement write SetRemoveSingleElement;
+    property ReturnDefaultElements: Boolean read GetReturnDefaultElements write SetReturnDefaultElements;
+    property ThreadSafe: Boolean read GetThreadSafe write SetThreadSafe;
     { IJclCloneable }
     function ObjectClone: TObject;
     { IJclIntfCloneable }
@@ -121,6 +129,8 @@ type
     procedure Grow; virtual;
     procedure SetAutoGrowParameter(Value: Integer); virtual;
     procedure SetAutoGrowStrategy(Value: TJclAutoGrowStrategy); virtual;
+    property AutoGrowParameter: Integer read GetAutoGrowParameter write SetAutoGrowParameter;
+    property AutoGrowStrategy: TJclAutoGrowStrategy read GetAutoGrowStrategy write SetAutoGrowStrategy;
     // IJclPackable is not in interface list because some descendants won't use this code
     { IJclPackable }
     function CalcPackCapacity(ACapacity, ASize: Integer): Integer; virtual;
@@ -131,16 +141,6 @@ type
     procedure SetAutoPackParameter(Value: Integer); virtual;
     procedure SetAutoPackStrategy(Value: TJclAutoPackStrategy); virtual;
     procedure SetCapacity(Value: Integer); virtual;
-  public
-    constructor Create;
-    property AllowDefaultElements: Boolean read GetAllowDefaultElements write SetAllowDefaultElements;
-    property Duplicates: TDuplicates read GetDuplicates write SetDuplicates;
-    property ReadOnly: Boolean read GetReadOnly write SetReadOnly;
-    property RemoveSingleElement: Boolean read GetRemoveSingleElement write SetRemoveSingleElement;
-    property ReturnDefaultElements: Boolean read GetReturnDefaultElements write SetReturnDefaultElements;
-    property ThreadSafe: Boolean read GetThreadSafe write SetThreadSafe;
-    property AutoGrowParameter: Integer read GetAutoGrowParameter write SetAutoGrowParameter;
-    property AutoGrowStrategy: TJclAutoGrowStrategy read GetAutoGrowStrategy write SetAutoGrowStrategy;
     property AutoPackParameter: Integer read GetAutoPackParameter write SetAutoPackParameter;
     property AutoPackStrategy: TJclAutoPackStrategy read GetAutoPackStrategy write SetAutoPackStrategy;
   end;
@@ -153,6 +153,9 @@ type
     procedure CheckValid;
     function CreateEmptyIterator: TJclAbstractIterator; virtual; abstract;
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); virtual;
+  public
+    constructor Create(AValid: Boolean);
+    property Valid: Boolean read FValid write FValid;
     { IJclAbstractIterator }
     procedure Assign(const Source: IJclAbstractIterator);
     procedure AssignTo(const Dest: IJclAbstractIterator);
@@ -161,9 +164,6 @@ type
     function ObjectClone: TObject;
     { IJclIntfCloneable }
     function IntfClone: IInterface;
-  public
-    constructor Create(AValid: Boolean);
-    property Valid: Boolean read FValid write FValid;
   end;
 
   TJclIntfAbstractContainer = class(TJclAbstractContainerBase, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -174,21 +174,21 @@ type
     FHashConvert: TIntfHashConvert;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     function FreeObject(var AInterface: IInterface): IInterface;
+  public
     { IJclIntfEqualityComparer }
     function GetEqualityCompare: TIntfEqualityCompare; virtual;
     procedure SetEqualityCompare(Value: TIntfEqualityCompare); virtual;
     function ItemsEqual(const A, B: IInterface): Boolean; virtual;
+    property EqualityCompare: TIntfEqualityCompare read GetEqualityCompare write SetEqualityCompare;
     { IJclIntfComparer }
     function GetCompare: TIntfCompare; virtual;
     procedure SetCompare(Value: TIntfCompare); virtual;
     function ItemsCompare(const A, B: IInterface): Integer; virtual;
+    property Compare: TIntfCompare read GetCompare write SetCompare;
     { IJclIntfHashConverter }
     function GetHashConvert: TIntfHashConvert; virtual;
     procedure SetHashConvert(Value: TIntfHashConvert); virtual;
     function Hash(const AInterface: IInterface): Integer; virtual;
-  public
-    property EqualityCompare: TIntfEqualityCompare read GetEqualityCompare write SetEqualityCompare;
-    property Compare: TIntfCompare read GetCompare write SetCompare;
     property HashConvert: TIntfHashConvert read GetHashConvert write SetHashConvert;
   end;
 
@@ -197,10 +197,10 @@ type
   protected
     FCaseSensitive: Boolean;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
     { IJclStrContainer }
     function GetCaseSensitive: Boolean; virtual;
     procedure SetCaseSensitive(Value: Boolean); virtual;
-  public
     property CaseSensitive: Boolean read GetCaseSensitive write SetCaseSensitive;
   end;
 
@@ -214,25 +214,25 @@ type
     FHashConvert: TAnsiStrHashConvert;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     function FreeString(var AString: AnsiString): AnsiString;
+  public
     { IJclAnsiStrContainer }
     function GetEncoding: TJclAnsiStrEncoding; virtual;
     procedure SetEncoding(Value: TJclAnsiStrEncoding); virtual;
+    property Encoding: TJclAnsiStrEncoding read GetEncoding write SetEncoding;
     { IJclAnsiStrEqualityComparer }
     function GetEqualityCompare: TAnsiStrEqualityCompare; virtual;
     procedure SetEqualityCompare(Value: TAnsiStrEqualityCompare); virtual;
     function ItemsEqual(const A, B: AnsiString): Boolean; virtual;
+    property EqualityCompare: TAnsiStrEqualityCompare read GetEqualityCompare write SetEqualityCompare;
     { IJclAnsiStrComparer }
     function GetCompare: TAnsiStrCompare; virtual;
     procedure SetCompare(Value: TAnsiStrCompare); virtual;
     function ItemsCompare(const A, B: AnsiString): Integer; virtual;
+    property Compare: TAnsiStrCompare read GetCompare write SetCompare;
     { IJclAnsiStrHashConverter }
     function GetHashConvert: TAnsiStrHashConvert; virtual;
     procedure SetHashConvert(Value: TAnsiStrHashConvert); virtual;
     function Hash(const AString: AnsiString): Integer; virtual;
-  public
-    property Encoding: TJclAnsiStrEncoding read GetEncoding write SetEncoding;
-    property EqualityCompare: TAnsiStrEqualityCompare read GetEqualityCompare write SetEqualityCompare;
-    property Compare: TAnsiStrCompare read GetCompare write SetCompare;
     property HashConvert: TAnsiStrHashConvert read GetHashConvert write SetHashConvert;
   end;
 
@@ -246,25 +246,25 @@ type
     FHashConvert: TWideStrHashConvert;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     function FreeString(var AString: WideString): WideString;
+  public
     { IJclWideStrContainer }
     function GetEncoding: TJclWideStrEncoding; virtual;
     procedure SetEncoding(Value: TJclWideStrEncoding); virtual;
+    property Encoding: TJclWideStrEncoding read GetEncoding write SetEncoding;
     { IJclWideStrEqualityComparer }
     function GetEqualityCompare: TWideStrEqualityCompare; virtual;
     procedure SetEqualityCompare(Value: TWideStrEqualityCompare); virtual;
     function ItemsEqual(const A, B: WideString): Boolean; virtual;
+    property EqualityCompare: TWideStrEqualityCompare read GetEqualityCompare write SetEqualityCompare;
     { IJclWideStrComparer }
     function GetCompare: TWideStrCompare; virtual;
     procedure SetCompare(Value: TWideStrCompare); virtual;
     function ItemsCompare(const A, B: WideString): Integer; virtual;
+    property Compare: TWideStrCompare read GetCompare write SetCompare;
     { IJclWideStrHashConverter }
     function GetHashConvert: TWideStrHashConvert; virtual;
     procedure SetHashConvert(Value: TWideStrHashConvert); virtual;
     function Hash(const AString: WideString): Integer; virtual;
-  public
-    property Encoding: TJclWideStrEncoding read GetEncoding write SetEncoding;
-    property EqualityCompare: TWideStrEqualityCompare read GetEqualityCompare write SetEqualityCompare;
-    property Compare: TWideStrCompare read GetCompare write SetCompare;
     property HashConvert: TWideStrHashConvert read GetHashConvert write SetHashConvert;
   end;
 
@@ -278,21 +278,21 @@ type
     FHashConvert: TUnicodeStrHashConvert;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     function FreeString(var AString: UnicodeString): UnicodeString;
+  public
     { IJclUnicodeStrEqualityComparer }
     function GetEqualityCompare: TUnicodeStrEqualityCompare; virtual;
     procedure SetEqualityCompare(Value: TUnicodeStrEqualityCompare); virtual;
     function ItemsEqual(const A, B: UnicodeString): Boolean; virtual;
+    property EqualityCompare: TUnicodeStrEqualityCompare read GetEqualityCompare write SetEqualityCompare;
     { IJclUnicodeStrComparer }
     function GetCompare: TUnicodeStrCompare; virtual;
     procedure SetCompare(Value: TUnicodeStrCompare); virtual;
     function ItemsCompare(const A, B: UnicodeString): Integer; virtual;
+    property Compare: TUnicodeStrCompare read GetCompare write SetCompare;
     { IJclUnicodeStrHashConverter }
     function GetHashConvert: TUnicodeStrHashConvert; virtual;
     procedure SetHashConvert(Value: TUnicodeStrHashConvert); virtual;
     function Hash(const AString: UnicodeString): Integer; virtual;
-  public
-    property EqualityCompare: TUnicodeStrEqualityCompare read GetEqualityCompare write SetEqualityCompare;
-    property Compare: TUnicodeStrCompare read GetCompare write SetCompare;
     property HashConvert: TUnicodeStrHashConvert read GetHashConvert write SetHashConvert;
   end;
   {$ENDIF SUPPORTS_UNICODE_STRING}
@@ -307,25 +307,25 @@ type
     FHashConvert: TSingleHashConvert;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     function FreeSingle(var AValue: Single): Single;
+  public
+    { IJclSingleContainer }
+    function GetPrecision: Single; virtual;
+    procedure SetPrecision(const Value: Single); virtual;
+    property Precision: Single read GetPrecision write SetPrecision;
     { IJclSingleEqualityComparer }
     function GetEqualityCompare: TSingleEqualityCompare; virtual;
     procedure SetEqualityCompare(Value: TSingleEqualityCompare); virtual;
     function ItemsEqual(const A, B: Single): Boolean; virtual;
+    property EqualityCompare: TSingleEqualityCompare read GetEqualityCompare write SetEqualityCompare;
     { IJclSingleComparer }
     function GetCompare: TSingleCompare; virtual;
     procedure SetCompare(Value: TSingleCompare); virtual;
     function ItemsCompare(const A, B: Single): Integer; virtual;
-    { IJclSingleContainer }
-    function GetPrecision: Single; virtual;
-    procedure SetPrecision(const Value: Single); virtual;
+    property Compare: TSingleCompare read GetCompare write SetCompare;
     { IJclSingleHashConverter }
     function GetHashConvert: TSingleHashConvert; virtual;
     procedure SetHashConvert(Value: TSingleHashConvert); virtual;
     function Hash(const AValue: Single): Integer; virtual;
-  public
-    property Precision: Single read GetPrecision write SetPrecision;
-    property EqualityCompare: TSingleEqualityCompare read GetEqualityCompare write SetEqualityCompare;
-    property Compare: TSingleCompare read GetCompare write SetCompare;
     property HashConvert: TSingleHashConvert read GetHashConvert write SetHashConvert;
   end;
 
@@ -339,25 +339,25 @@ type
     FHashConvert: TDoubleHashConvert;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     function FreeDouble(var AValue: Double): Double;
+  public
+    { IJclDoubleContainer }
+    function GetPrecision: Double; virtual;
+    procedure SetPrecision(const Value: Double); virtual;
+    property Precision: Double read GetPrecision write SetPrecision;
     { IJclDoubleEqualityComparer }
     function GetEqualityCompare: TDoubleEqualityCompare; virtual;
     procedure SetEqualityCompare(Value: TDoubleEqualityCompare); virtual;
     function ItemsEqual(const A, B: Double): Boolean; virtual;
+    property EqualityCompare: TDoubleEqualityCompare read GetEqualityCompare write SetEqualityCompare;
     { IJclDoubleComparer }
     function GetCompare: TDoubleCompare; virtual;
     procedure SetCompare(Value: TDoubleCompare); virtual;
     function ItemsCompare(const A, B: Double): Integer; virtual;
-    { IJclDoubleContainer }
-    function GetPrecision: Double; virtual;
-    procedure SetPrecision(const Value: Double); virtual;
+    property Compare: TDoubleCompare read GetCompare write SetCompare;
     { IJclDoubleHashConverter }
     function GetHashConvert: TDoubleHashConvert; virtual;
     procedure SetHashConvert(Value: TDoubleHashConvert); virtual;
     function Hash(const AValue: Double): Integer; virtual;
-  public
-    property Precision: Double read GetPrecision write SetPrecision;
-    property EqualityCompare: TDoubleEqualityCompare read GetEqualityCompare write SetEqualityCompare;
-    property Compare: TDoubleCompare read GetCompare write SetCompare;
     property HashConvert: TDoubleHashConvert read GetHashConvert write SetHashConvert;
   end;
 
@@ -371,25 +371,25 @@ type
     FHashConvert: TExtendedHashConvert;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     function FreeExtended(var AValue: Extended): Extended;
+  public
+    { IJclExtendedContainer }
+    function GetPrecision: Extended; virtual;
+    procedure SetPrecision(const Value: Extended); virtual;
+    property Precision: Extended read GetPrecision write SetPrecision;
     { IJclExtendedEqualityComparer }
     function GetEqualityCompare: TExtendedEqualityCompare; virtual;
     procedure SetEqualityCompare(Value: TExtendedEqualityCompare); virtual;
     function ItemsEqual(const A, B: Extended): Boolean; virtual;
+    property EqualityCompare: TExtendedEqualityCompare read GetEqualityCompare write SetEqualityCompare;
     { IJclExtendedComparer }
     function GetCompare: TExtendedCompare; virtual;
     procedure SetCompare(Value: TExtendedCompare); virtual;
     function ItemsCompare(const A, B: Extended): Integer; virtual;
-    { IJclExtendedContainer }
-    function GetPrecision: Extended; virtual;
-    procedure SetPrecision(const Value: Extended); virtual;
+    property Compare: TExtendedCompare read GetCompare write SetCompare;
     { IJclExtendedHashConverter }
     function GetHashConvert: TExtendedHashConvert; virtual;
     procedure SetHashConvert(Value: TExtendedHashConvert); virtual;
     function Hash(const AValue: Extended): Integer; virtual;
-  public
-    property Precision: Extended read GetPrecision write SetPrecision;
-    property EqualityCompare: TExtendedEqualityCompare read GetEqualityCompare write SetEqualityCompare;
-    property Compare: TExtendedCompare read GetCompare write SetCompare;
     property HashConvert: TExtendedHashConvert read GetHashConvert write SetHashConvert;
   end;
 
@@ -402,21 +402,21 @@ type
     FHashConvert: TIntegerHashConvert;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     function FreeInteger(var AValue: Integer): Integer;
+  public
     { IJclIntegerEqualityComparer }
     function GetEqualityCompare: TIntegerEqualityCompare; virtual;
     procedure SetEqualityCompare(Value: TIntegerEqualityCompare); virtual;
     function ItemsEqual(A, B: Integer): Boolean; virtual;
+    property EqualityCompare: TIntegerEqualityCompare read GetEqualityCompare write SetEqualityCompare;
     { IJclIntegerComparer }
     function GetCompare: TIntegerCompare; virtual;
     procedure SetCompare(Value: TIntegerCompare); virtual;
     function ItemsCompare(A, B: Integer): Integer; virtual;
+    property Compare: TIntegerCompare read GetCompare write SetCompare;
     { IJclIntegerHashConverter }
     function GetHashConvert: TIntegerHashConvert; virtual;
     procedure SetHashConvert(Value: TIntegerHashConvert); virtual;
     function Hash(AValue: Integer): Integer; virtual;
-  public
-    property EqualityCompare: TIntegerEqualityCompare read GetEqualityCompare write SetEqualityCompare;
-    property Compare: TIntegerCompare read GetCompare write SetCompare;
     property HashConvert: TIntegerHashConvert read GetHashConvert write SetHashConvert;
   end;
 
@@ -429,21 +429,21 @@ type
     FHashConvert: TCardinalHashConvert;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     function FreeCardinal(var AValue: Cardinal): Cardinal;
+  public
     { IJclIntegerEqualityComparer }
     function GetEqualityCompare: TCardinalEqualityCompare; virtual;
     procedure SetEqualityCompare(Value: TCardinalEqualityCompare); virtual;
     function ItemsEqual(A, B: Cardinal): Boolean; virtual;
+    property EqualityCompare: TCardinalEqualityCompare read GetEqualityCompare write SetEqualityCompare;
     { IJclIntegerComparer }
     function GetCompare: TCardinalCompare; virtual;
     procedure SetCompare(Value: TCardinalCompare); virtual;
     function ItemsCompare(A, B: Cardinal): Integer; virtual;
+    property Compare: TCardinalCompare read GetCompare write SetCompare;
     { IJclIntegerHashConverter }
     function GetHashConvert: TCardinalHashConvert; virtual;
     procedure SetHashConvert(Value: TCardinalHashConvert); virtual;
     function Hash(AValue: Cardinal): Integer; virtual;
-  public
-    property EqualityCompare: TCardinalEqualityCompare read GetEqualityCompare write SetEqualityCompare;
-    property Compare: TCardinalCompare read GetCompare write SetCompare;
     property HashConvert: TCardinalHashConvert read GetHashConvert write SetHashConvert;
   end;
 
@@ -456,21 +456,21 @@ type
     FHashConvert: TInt64HashConvert;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     function FreeInt64(var AValue: Int64): Int64;
+  public
     { IJclInt64EqualityComparer }
     function GetEqualityCompare: TInt64EqualityCompare; virtual;
     procedure SetEqualityCompare(Value: TInt64EqualityCompare); virtual;
     function ItemsEqual(const A, B: Int64): Boolean; virtual;
+    property EqualityCompare: TInt64EqualityCompare read GetEqualityCompare write SetEqualityCompare;
     { IJclInt64Comparer }
     function GetCompare: TInt64Compare; virtual;
     procedure SetCompare(Value: TInt64Compare); virtual;
     function ItemsCompare(const A, B: Int64): Integer; virtual;
+    property Compare: TInt64Compare read GetCompare write SetCompare;
     { IJclInt64HashConverter }
     function GetHashConvert: TInt64HashConvert; virtual;
     procedure SetHashConvert(Value: TInt64HashConvert); virtual;
     function Hash(const AValue: Int64): Integer; virtual;
-  public
-    property EqualityCompare: TInt64EqualityCompare read GetEqualityCompare write SetEqualityCompare;
-    property Compare: TInt64Compare read GetCompare write SetCompare;
     property HashConvert: TInt64HashConvert read GetHashConvert write SetHashConvert;
   end;
 
@@ -482,21 +482,21 @@ type
     FHashConvert: TPtrHashConvert;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     function FreePointer(var APtr: Pointer): Pointer;
+  public
     { IJclPtrEqualityComparer }
     function GetEqualityCompare: TPtrEqualityCompare; virtual;
     procedure SetEqualityCompare(Value: TPtrEqualityCompare); virtual;
     function ItemsEqual(A, B: Pointer): Boolean; virtual;
+    property EqualityCompare: TPtrEqualityCompare read GetEqualityCompare write SetEqualityCompare;
     { IJclPtrComparer }
     function GetCompare: TPtrCompare; virtual;
     procedure SetCompare(Value: TPtrCompare); virtual;
     function ItemsCompare(A, B: Pointer): Integer; virtual;
+    property Compare: TPtrCompare read GetCompare write SetCompare;
     { IJclPtrHashConverter }
     function GetHashConvert: TPtrHashConvert; virtual;
     procedure SetHashConvert(Value: TPtrHashConvert); virtual;
     function Hash(APtr: Pointer): Integer; virtual;
-  public
-    property EqualityCompare: TPtrEqualityCompare read GetEqualityCompare write SetEqualityCompare;
-    property Compare: TPtrCompare read GetCompare write SetCompare;
     property HashConvert: TPtrHashConvert read GetHashConvert write SetHashConvert;
   end;
 
@@ -509,26 +509,26 @@ type
     FCompare: TCompare;
     FHashConvert: THashConvert;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(AOwnsObjects: Boolean);
+    { IJclObjectOwner }
+    function FreeObject(var AObject: TObject): TObject; virtual;
+    function GetOwnsObjects: Boolean; virtual;
+    property OwnsObjects: Boolean read FOwnsObjects;
     { IJclEqualityComparer }
     function GetEqualityCompare: TEqualityCompare; virtual;
     procedure SetEqualityCompare(Value: TEqualityCompare); virtual;
     function ItemsEqual(A, B: TObject): Boolean; virtual;
+    property EqualityCompare: TEqualityCompare read GetEqualityCompare write SetEqualityCompare;
     { IJclComparer }
     function GetCompare: TCompare; virtual;
     procedure SetCompare(Value: TCompare); virtual;
     function ItemsCompare(A, B: TObject): Integer; virtual;
-    { IJclObjectOwner }
-    function FreeObject(var AObject: TObject): TObject; virtual;
-    function GetOwnsObjects: Boolean; virtual;
+    property Compare: TCompare read GetCompare write SetCompare;
     { IJclHashConverter }
     function GetHashConvert: THashConvert; virtual;
     procedure SetHashConvert(Value: THashConvert); virtual;
     function Hash(AObject: TObject): Integer; virtual;
-  public
-    constructor Create(AOwnsObjects: Boolean);
-    property OwnsObjects: Boolean read FOwnsObjects;
-    property EqualityCompare: TEqualityCompare read GetEqualityCompare write SetEqualityCompare;
-    property Compare: TCompare read GetCompare write SetCompare;
     property HashConvert: THashConvert read GetHashConvert write SetHashConvert;
   end;
 
@@ -542,26 +542,26 @@ type
     FCompare: TCompare<T>;
     FHashConvert: THashConvert<T>;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(AOwnsItems: Boolean);
+    { IJclItemOwner<T> }
+    function FreeItem(var AItem: T): T; virtual;
+    function GetOwnsItems: Boolean; virtual;
+    property OwnsItems: Boolean read FOwnsItems;
     { IJclEqualityComparer<T> }
     function GetEqualityCompare: TEqualityCompare<T>; virtual;
     procedure SetEqualityCompare(Value: TEqualityCompare<T>); virtual;
     function ItemsEqual(const A, B: T): Boolean; virtual;
+    property EqualityCompare: TEqualityCompare<T> read GetEqualityCompare write SetEqualityCompare;
     { IJclComparer<T> }
     function GetCompare: TCompare<T>; virtual;
     procedure SetCompare(Value: TCompare<T>); virtual;
     function ItemsCompare(const A, B: T): Integer; virtual;
-    { IJclItemOwner<T> }
-    function FreeItem(var AItem: T): T; virtual;
-    function GetOwnsItems: Boolean; virtual;
+    property Compare: TCompare<T> read GetCompare write SetCompare;
     { IJclHashConverter<T> }
     function GetHashConvert: THashConvert<T>; virtual;
     procedure SetHashConvert(Value: THashConvert<T>); virtual;
     function Hash(const AItem: T): Integer; virtual;
-  public
-    constructor Create(AOwnsItems: Boolean);
-    property OwnsItems: Boolean read FOwnsItems;
-    property EqualityCompare: TEqualityCompare<T> read GetEqualityCompare write SetEqualityCompare;
-    property Compare: TCompare<T> read GetCompare write SetCompare;
     property HashConvert: THashConvert<T> read GetHashConvert write SetHashConvert;
   end;
   {$ENDIF SUPPORTS_GENERICS}
@@ -570,7 +570,7 @@ type
     {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclCloneable, IJclIntfCloneable, IJclContainer,
     IJclStrContainer, IJclAnsiStrContainer, IJclAnsiStrFlatContainer, IJclAnsiStrCollection,
     IJclAnsiStrEqualityComparer, IJclAnsiStrComparer)
-  protected
+  public
     { IJclAnsiStrCollection }
     function Add(const AString: AnsiString): Boolean; virtual; abstract;
     function AddAll(const ACollection: IJclAnsiStrCollection): Boolean; virtual; abstract;
@@ -605,7 +605,7 @@ type
     {$IFDEF THREADSAFE}IJclLockable,{$ENDIF THREADSAFE} IJclCloneable, IJclIntfCloneable, IJclContainer,
     IJclStrContainer, IJclWideStrContainer, IJclWideStrFlatContainer, IJclWideStrCollection,
     IJclWideStrEqualityComparer, IJclWideStrComparer)
-  protected
+  public
     { IJclWideStrCollection }
     function Add(const AString: WideString): Boolean; virtual; abstract;
     function AddAll(const ACollection: IJclWideStrCollection): Boolean; virtual; abstract;
@@ -641,7 +641,7 @@ type
     {$IFDEF THREADSAFE}IJclLockable,{$ENDIF THREADSAFE} IJclCloneable, IJclIntfCloneable, IJclContainer,
     IJclStrContainer, IJclUnicodeStrContainer, IJclUnicodeStrFlatContainer, IJclUnicodeStrCollection,
     IJclUnicodeStrEqualityComparer, IJclUnicodeStrComparer)
-  protected
+  public
     { IJclUnicodeStrCollection }
     function Add(const AString: UnicodeString): Boolean; virtual; abstract;
     function AddAll(const ACollection: IJclUnicodeStrCollection): Boolean; virtual; abstract;

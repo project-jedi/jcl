@@ -352,35 +352,36 @@ type
     procedure OemTextHandler(const Text: string);
   protected
     procedure CheckOutputValid;
-    function GetExeName: string; virtual;
     function GetFileName: string;
-    function GetOptions: TStrings;
-    function GetOutputCallback: TTextHandler;
     function InternalExecute(const CommandLine: string): Boolean;
-    procedure SetOutputCallback(const CallbackMethod: TTextHandler);
-    function GetOutput: string;
   public
     constructor Create(AInstallation: TJclBorRADToolInstallation); virtual;
     destructor Destroy; override;
+    { IJclCommandLineTool }
+    function GetExeName: string; virtual;
+    function GetOptions: TStrings;
+    function GetOutput: string;
+    function GetOutputCallback: TTextHandler;
     procedure AddPathOption(const Option, Path: string);
     function Execute(const CommandLine: string): Boolean; virtual;
-    property FileName: string read GetFileName;
-    property Output: string read GetOutput;
-    property OutputCallback: TTextHandler read FOutputCallback write SetOutputCallback;
+    procedure SetOutputCallback(const CallbackMethod: TTextHandler);
+    property ExeName: string read GetExeName;
     property Options: TStrings read GetOptions;
+    property OutputCallback: TTextHandler write SetOutputCallback;
+    property Output: string read GetOutput;
 
+    property FileName: string read GetFileName;
     property OnAfterExecute: TJclBorlandCommandLineToolEvent read FOnAfterExecute write FOnAfterExecute;
     property OnBeforeExecute: TJclBorlandCommandLineToolEvent read FOnBeforeExecute write FOnBeforeExecute;
   end;
 
   TJclBCC32 = class(TJclBorlandCommandLineTool)
-  protected
-    function GetExeName: string; override;
   public
     constructor Create(AInstallation: TJclBorRADToolInstallation); override;
     {$IFDEF KEEP_DEPRECATED}
     function SupportsLibSuffix: Boolean;
     {$ENDIF KEEP_DEPRECATED}
+    function GetExeName: string; override;
   end;
 
   TProjectOptions = record
@@ -394,11 +395,11 @@ type
 
   TJclDCC32 = class(TJclBorlandCommandLineTool)
   protected
-    function GetExeName: string; override;
     procedure AddProjectOptions(const ProjectFileName, DCPPath: string);
     function Compile(const ProjectFileName: string): Boolean;
   public
     constructor Create(AInstallation: TJclBorRADToolInstallation); override;
+    function GetExeName: string; override;
     function Execute(const CommandLine: string): Boolean; override;
     function MakePackage(const PackageName, BPLPath, DCPPath: string; ExtraOptions: string = ''): Boolean;
     function MakeProject(const ProjectName, OutputDir, DcpSearchPath: string; ExtraOptions: string = ''): Boolean;
@@ -415,12 +416,12 @@ type
   {$ENDIF KEEP_DEPRECATED}
 
   TJclBpr2Mak = class(TJclBorlandCommandLineTool)
-  protected
+  public
     function GetExeName: string; override;
   end;
 
   TJclBorlandMake = class(TJclBorlandCommandLineTool)
-  protected
+  public
     function GetExeName: string; override;
   end;
 
@@ -724,9 +725,9 @@ type
   private
     FMaxCLRVersion: string;
   protected
-    function GetExeName: string; override;
     function GetMaxCLRVersion: string;
   public
+    function GetExeName: string; override;
     function MakeProject(const ProjectName, OutputDir, ExtraOptions: string): Boolean; reintroduce;
     procedure SetDefaultOptions; override;
     property MaxCLRVersion: string read GetMaxCLRVersion;

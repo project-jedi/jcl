@@ -80,6 +80,9 @@ type
     FMap: IJclIntfMap;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(const AMap: IJclIntfMap); overload;
+    destructor Destroy; override;
     { IJclPackable }
     function GetAutoPackParameter: Integer; override;
     function GetAutoPackStrategy: TJclAutoPackStrategy; override;
@@ -124,28 +127,28 @@ type
     procedure Intersect(const ACollection: IJclIntfCollection);
     procedure Subtract(const ACollection: IJclIntfCollection);
     procedure Union(const ACollection: IJclIntfCollection);
-  public
-    constructor Create(const AMap: IJclIntfMap); overload;
-    destructor Destroy; override;
   end;
 
   TJclAnsiStrHashSet = class(TJclAnsiStrAbstractCollection, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclStrContainer, IJclAnsiStrContainer, IJclAnsiStrEqualityComparer,
     IJclAnsiStrCollection, IJclAnsiStrSet)
   protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+  public
+    constructor Create(ACapacity: Integer); overload;
     { IJclStrContainer }
     function GetCaseSensitive: Boolean; override;
     procedure SetCaseSensitive(Value: Boolean); override;
     { IJclAnsiStrContainer }
     function GetEncoding: TJclAnsiStrEncoding; override;
     procedure SetEncoding(Value: TJclAnsiStrEncoding); override;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-  public
-    constructor Create(ACapacity: Integer); overload;
   private
     FMap: IJclAnsiStrMap;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(const AMap: IJclAnsiStrMap); overload;
+    destructor Destroy; override;
     { IJclPackable }
     function GetAutoPackParameter: Integer; override;
     function GetAutoPackStrategy: TJclAutoPackStrategy; override;
@@ -190,28 +193,28 @@ type
     procedure Intersect(const ACollection: IJclAnsiStrCollection);
     procedure Subtract(const ACollection: IJclAnsiStrCollection);
     procedure Union(const ACollection: IJclAnsiStrCollection);
-  public
-    constructor Create(const AMap: IJclAnsiStrMap); overload;
-    destructor Destroy; override;
   end;
 
   TJclWideStrHashSet = class(TJclWideStrAbstractCollection, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclStrContainer, IJclWideStrContainer, IJclWideStrEqualityComparer,
     IJclWideStrCollection, IJclWideStrSet)
   protected
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+  public
+    constructor Create(ACapacity: Integer); overload;
     { IJclStrContainer }
     function GetCaseSensitive: Boolean; override;
     procedure SetCaseSensitive(Value: Boolean); override;
     { IJclWideStrContainer }
     function GetEncoding: TJclWideStrEncoding; override;
     procedure SetEncoding(Value: TJclWideStrEncoding); override;
-    function CreateEmptyContainer: TJclAbstractContainerBase; override;
-  public
-    constructor Create(ACapacity: Integer); overload;
   private
     FMap: IJclWideStrMap;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(const AMap: IJclWideStrMap); overload;
+    destructor Destroy; override;
     { IJclPackable }
     function GetAutoPackParameter: Integer; override;
     function GetAutoPackStrategy: TJclAutoPackStrategy; override;
@@ -256,9 +259,6 @@ type
     procedure Intersect(const ACollection: IJclWideStrCollection);
     procedure Subtract(const ACollection: IJclWideStrCollection);
     procedure Union(const ACollection: IJclWideStrCollection);
-  public
-    constructor Create(const AMap: IJclWideStrMap); overload;
-    destructor Destroy; override;
   end;
 
 {$IFDEF SUPPORTS_UNICODE_STRING}
@@ -266,16 +266,19 @@ type
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclStrContainer, IJclUnicodeStrContainer, IJclUnicodeStrEqualityComparer,
     IJclUnicodeStrCollection, IJclUnicodeStrSet)
   protected
-    { IJclStrContainer }
-    function GetCaseSensitive: Boolean; override;
-    procedure SetCaseSensitive(Value: Boolean); override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACapacity: Integer); overload;
+    { IJclStrContainer }
+    function GetCaseSensitive: Boolean; override;
+    procedure SetCaseSensitive(Value: Boolean); override;
   private
     FMap: IJclUnicodeStrMap;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(const AMap: IJclUnicodeStrMap); overload;
+    destructor Destroy; override;
     { IJclPackable }
     function GetAutoPackParameter: Integer; override;
     function GetAutoPackStrategy: TJclAutoPackStrategy; override;
@@ -320,9 +323,6 @@ type
     procedure Intersect(const ACollection: IJclUnicodeStrCollection);
     procedure Subtract(const ACollection: IJclUnicodeStrCollection);
     procedure Union(const ACollection: IJclUnicodeStrCollection);
-  public
-    constructor Create(const AMap: IJclUnicodeStrMap); overload;
-    destructor Destroy; override;
   end;
 {$ENDIF SUPPORTS_UNICODE_STRING}
 
@@ -340,16 +340,19 @@ type
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclSingleContainer, IJclSingleEqualityComparer,
     IJclSingleCollection, IJclSingleSet)
   protected
-    { IJclSingleContainer }
-    function GetPrecision: Single; override;
-    procedure SetPrecision(const Value: Single); override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACapacity: Integer); overload;
+    { IJclSingleContainer }
+    function GetPrecision: Single; override;
+    procedure SetPrecision(const Value: Single); override;
   private
     FMap: IJclSingleMap;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(const AMap: IJclSingleMap); overload;
+    destructor Destroy; override;
     { IJclPackable }
     function GetAutoPackParameter: Integer; override;
     function GetAutoPackStrategy: TJclAutoPackStrategy; override;
@@ -394,25 +397,25 @@ type
     procedure Intersect(const ACollection: IJclSingleCollection);
     procedure Subtract(const ACollection: IJclSingleCollection);
     procedure Union(const ACollection: IJclSingleCollection);
-  public
-    constructor Create(const AMap: IJclSingleMap); overload;
-    destructor Destroy; override;
   end;
 
   TJclDoubleHashSet = class(TJclDoubleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclDoubleContainer, IJclDoubleEqualityComparer,
     IJclDoubleCollection, IJclDoubleSet)
   protected
-    { IJclDoubleContainer }
-    function GetPrecision: Double; override;
-    procedure SetPrecision(const Value: Double); override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACapacity: Integer); overload;
+    { IJclDoubleContainer }
+    function GetPrecision: Double; override;
+    procedure SetPrecision(const Value: Double); override;
   private
     FMap: IJclDoubleMap;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(const AMap: IJclDoubleMap); overload;
+    destructor Destroy; override;
     { IJclPackable }
     function GetAutoPackParameter: Integer; override;
     function GetAutoPackStrategy: TJclAutoPackStrategy; override;
@@ -457,25 +460,25 @@ type
     procedure Intersect(const ACollection: IJclDoubleCollection);
     procedure Subtract(const ACollection: IJclDoubleCollection);
     procedure Union(const ACollection: IJclDoubleCollection);
-  public
-    constructor Create(const AMap: IJclDoubleMap); overload;
-    destructor Destroy; override;
   end;
 
   TJclExtendedHashSet = class(TJclExtendedAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclExtendedContainer, IJclExtendedEqualityComparer,
     IJclExtendedCollection, IJclExtendedSet)
   protected
-    { IJclExtendedContainer }
-    function GetPrecision: Extended; override;
-    procedure SetPrecision(const Value: Extended); override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACapacity: Integer); overload;
+    { IJclExtendedContainer }
+    function GetPrecision: Extended; override;
+    procedure SetPrecision(const Value: Extended); override;
   private
     FMap: IJclExtendedMap;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(const AMap: IJclExtendedMap); overload;
+    destructor Destroy; override;
     { IJclPackable }
     function GetAutoPackParameter: Integer; override;
     function GetAutoPackStrategy: TJclAutoPackStrategy; override;
@@ -520,9 +523,6 @@ type
     procedure Intersect(const ACollection: IJclExtendedCollection);
     procedure Subtract(const ACollection: IJclExtendedCollection);
     procedure Union(const ACollection: IJclExtendedCollection);
-  public
-    constructor Create(const AMap: IJclExtendedMap); overload;
-    destructor Destroy; override;
   end;
 
   {$IFDEF MATH_EXTENDED_PRECISION}
@@ -546,6 +546,9 @@ type
     FMap: IJclIntegerMap;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(const AMap: IJclIntegerMap); overload;
+    destructor Destroy; override;
     { IJclPackable }
     function GetAutoPackParameter: Integer; override;
     function GetAutoPackStrategy: TJclAutoPackStrategy; override;
@@ -590,9 +593,6 @@ type
     procedure Intersect(const ACollection: IJclIntegerCollection);
     procedure Subtract(const ACollection: IJclIntegerCollection);
     procedure Union(const ACollection: IJclIntegerCollection);
-  public
-    constructor Create(const AMap: IJclIntegerMap); overload;
-    destructor Destroy; override;
   end;
 
   TJclCardinalHashSet = class(TJclCardinalAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -606,6 +606,9 @@ type
     FMap: IJclCardinalMap;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(const AMap: IJclCardinalMap); overload;
+    destructor Destroy; override;
     { IJclPackable }
     function GetAutoPackParameter: Integer; override;
     function GetAutoPackStrategy: TJclAutoPackStrategy; override;
@@ -650,9 +653,6 @@ type
     procedure Intersect(const ACollection: IJclCardinalCollection);
     procedure Subtract(const ACollection: IJclCardinalCollection);
     procedure Union(const ACollection: IJclCardinalCollection);
-  public
-    constructor Create(const AMap: IJclCardinalMap); overload;
-    destructor Destroy; override;
   end;
 
   TJclInt64HashSet = class(TJclInt64AbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -666,6 +666,9 @@ type
     FMap: IJclInt64Map;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(const AMap: IJclInt64Map); overload;
+    destructor Destroy; override;
     { IJclPackable }
     function GetAutoPackParameter: Integer; override;
     function GetAutoPackStrategy: TJclAutoPackStrategy; override;
@@ -710,9 +713,6 @@ type
     procedure Intersect(const ACollection: IJclInt64Collection);
     procedure Subtract(const ACollection: IJclInt64Collection);
     procedure Union(const ACollection: IJclInt64Collection);
-  public
-    constructor Create(const AMap: IJclInt64Map); overload;
-    destructor Destroy; override;
   end;
 
   TJclPtrHashSet = class(TJclPtrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -726,6 +726,9 @@ type
     FMap: IJclPtrMap;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(const AMap: IJclPtrMap); overload;
+    destructor Destroy; override;
     { IJclPackable }
     function GetAutoPackParameter: Integer; override;
     function GetAutoPackStrategy: TJclAutoPackStrategy; override;
@@ -770,25 +773,25 @@ type
     procedure Intersect(const ACollection: IJclPtrCollection);
     procedure Subtract(const ACollection: IJclPtrCollection);
     procedure Union(const ACollection: IJclPtrCollection);
-  public
-    constructor Create(const AMap: IJclPtrMap); overload;
-    destructor Destroy; override;
   end;
 
   TJclHashSet = class(TJclAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclObjectOwner, IJclEqualityComparer,
     IJclCollection, IJclSet)
   protected
-    { IJclObjectOwner }
-    function FreeObject(var AObject: TObject): TObject; override;
-    function GetOwnsObjects: Boolean; override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACapacity: Integer; AOwnsObjects: Boolean); overload;
+    { IJclObjectOwner }
+    function FreeObject(var AObject: TObject): TObject; override;
+    function GetOwnsObjects: Boolean; override;
   private
     FMap: IJclMap;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(const AMap: IJclMap); overload;
+    destructor Destroy; override;
     { IJclPackable }
     function GetAutoPackParameter: Integer; override;
     function GetAutoPackStrategy: TJclAutoPackStrategy; override;
@@ -833,9 +836,6 @@ type
     procedure Intersect(const ACollection: IJclCollection);
     procedure Subtract(const ACollection: IJclCollection);
     procedure Union(const ACollection: IJclCollection);
-  public
-    constructor Create(const AMap: IJclMap); overload;
-    destructor Destroy; override;
   end;
 
   {$IFDEF SUPPORTS_GENERICS}
@@ -851,6 +851,9 @@ type
     FMap: IJclMap<T, TRefUnique>;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(const AMap: IJclMap<T, TRefUnique>); overload;
+    destructor Destroy; override;
     { IJclPackable }
     function GetAutoPackParameter: Integer; override;
     function GetAutoPackStrategy: TJclAutoPackStrategy; override;
@@ -895,9 +898,6 @@ type
     procedure Intersect(const ACollection: IJclCollection<T>);
     procedure Subtract(const ACollection: IJclCollection<T>);
     procedure Union(const ACollection: IJclCollection<T>);
-  public
-    constructor Create(const AMap: IJclMap<T, TRefUnique>); overload;
-    destructor Destroy; override;
   end;
 
   // E = External helper to compare items for equality

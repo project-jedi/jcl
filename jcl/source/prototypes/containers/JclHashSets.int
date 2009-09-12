@@ -8,6 +8,9 @@
     FMap: MAPINTERFACENAME;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(const AMap: MAPINTERFACENAME); overload;
+    destructor Destroy; override;
     { IJclPackable }
     function GetAutoPackParameter: Integer; override;
     function GetAutoPackStrategy: TJclAutoPackStrategy; override;
@@ -52,7 +55,4 @@
     procedure Intersect(const ACollection: COLLECTIONINTERFACENAME);
     procedure Subtract(const ACollection: COLLECTIONINTERFACENAME);
     procedure Union(const ACollection: COLLECTIONINTERFACENAME);
-  public
-    constructor Create(const AMap: MAPINTERFACENAME); overload;
-    destructor Destroy; override;
   end;*)

@@ -123,11 +123,12 @@ type
     {$IFNDEF SUPPORTS_UNICODE}
     class procedure GetClrVersions(VersionNames: TStrings); overload;
     {$ENDIF ~SUPPORTS_UNICODE}
-    property DefaultInterface: ICorRuntimeHost read FDefaultInterface implements ICorRuntimeHost;
     property AppDomains[const Idx: Integer]: TJclClrAppDomain read GetAppDomain; default;
     property AppDomainCount: Integer read GetAppDomainCount;
     property DefaultAppDomain: _AppDomain read GetDefaultAppDomain;
     property CurrentAppDomain: _AppDomain read GetCurrentAppDomain;
+    { ICorRuntimeHost }
+    property DefaultInterface: ICorRuntimeHost read FDefaultInterface implements ICorRuntimeHost;
   end;
 
   TJclClrAssemblyArguments = array of WideString;
@@ -182,7 +183,6 @@ type
   public
     constructor Create(Intf: IAppDomainSetup);
 
-    property DefaultInterface: IAppDomainSetup read FDefaultInterface implements IAppDomainSetup;
     property ApplicationBase: WideString read GetApplicationBase write SetApplicationBase;
     property ApplicationName: WideString read GetApplicationName write SetApplicationName;
     property CachePath: WideString read GetCachePath write SetCachePath;
@@ -193,6 +193,8 @@ type
     property PrivateBinPathProbe: WideString read GetPrivateBinPathProbe write SetPrivateBinPathProbe;
     property ShadowCopyDirectories: WideString read GetShadowCopyDirectories write SetShadowCopyDirectories;
     property ShadowCopyFiles: WideString read GetShadowCopyFiles write SetShadowCopyFiles;
+    { IAppDomainSetup }
+    property DefaultInterface: IAppDomainSetup read FDefaultInterface implements IAppDomainSetup;
   end;
 
   TJclClrAssembly = class(TJclClrBase, _Assembly)

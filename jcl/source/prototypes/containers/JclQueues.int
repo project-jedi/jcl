@@ -9,6 +9,9 @@
     FTail: Integer;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: IntegerOWNERSHIPDECLARATION);
+    destructor Destroy; override;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -20,7 +23,4 @@
     function Enqueue(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
     function Peek: TYPENAME;
     function Size: Integer;
-  public
-    constructor Create(ACapacity: IntegerOWNERSHIPDECLARATION);
-    destructor Destroy; override;
   end;*)

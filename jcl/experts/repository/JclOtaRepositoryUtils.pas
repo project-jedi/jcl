@@ -46,7 +46,7 @@ type
   TJclRepositoryItemType = (ritForm, ritProject);
 
   // abstraction layer for all versions of Delphi from 5 to 2006
-  TJclOTARepositoryExpert = class(TJclOTAExpert, IInterface, IOTARepositoryWizard60,
+  TJclOTARepositoryExpert = class(TJclOTAExpert, IInterface, IOTAWizard, IOTARepositoryWizard60,
     {$IFDEF COMPILER8_UP} IOTARepositoryWizard80, {$ENDIF COMPILER8_UP}
     IOTARepositoryWizard,
     {$IFDEF COMPILER10_UP} IOTAProjectWizard100, {$ENDIF COMPILER10_UP}
@@ -63,11 +63,6 @@ type
     FItemType: TJclRepositoryItemType;
     FDesigner: string;
     FPersonality: string;
-  protected
-    procedure Execute; override;
-    function GetName: string; override;
-    function GetState: TWizardState; override;
-    function QueryInterface(const IID: TGUID; out Obj): HResult; stdcall;
   public
     constructor Create(AName, ADescription, AAuthor, APage, AGalleryCategory,
       ADesigner, APersonality: string; AGlyph: Cardinal;
@@ -78,33 +73,39 @@ type
     procedure DoExecute(const Personality: TJclBorPersonality); virtual;
     function IsVisible(const Personality: TJclBorPersonality): Boolean; virtual;
   public
-    // IOTARepositoryWizard
+    { IInterface }
+    function QueryInterface(const IID: TGUID; out Obj): HResult; stdcall;
+    { IOTAWizard }
+    procedure Execute; override;
+    function GetName: string; override;
+    function GetState: TWizardState; override;
+    { IOTARepositoryWizard }
     function GetAuthor: string;
     function GetComment: string;
     function GetPage: string;
     function GetGlyph: Cardinal;
 
-    // IOTARepositoryWizard60
+    { IOTARepositoryWizard60 }
     function GetDesigner: string;
 
     {$IFDEF COMPILER8_UP}
-    // IOTARepositoryWizard80
+    { IOTARepositoryWizard80 }
     function GetGalleryCategory: IOTAGalleryCategory;
     function GetPersonality: string;
     {$ENDIF COMPILER8_UP}
 
-    // IOTAProjectWizard
-      
+    { IOTAProjectWizard }
+
     {$IFDEF COMPILER10_UP}
-    // IOTAProjectWizard100
+    { IOTAProjectWizard100 }
     function IsProjectWizardVisible(Project: IOTAProject): Boolean;
     function IOTAProjectWizard100.IsVisible = IsProjectWizardVisible;
     {$ENDIF COMPILER10_UP}
 
-    // IOTAFormWizard
+    { IOTAFormWizard }
 
     {$IFDEF COMPILER10_UP}
-    // IOTAFormWizard100
+    { IOTAFormWizard100 }
     function IsFormWizardVisible(Project: IOTAProject): Boolean;
     function IOTAFormWizard100.IsVisible = IsFormWizardVisible;
     {$ENDIF COMPILER10_UP}
@@ -136,14 +137,14 @@ type
       const SourceFileName: TFileName; const SourceContent: string;
       const HeaderFileName: TFileName; const HeaderContent: string); reintroduce;
     destructor Destroy; override;
-    // IOTACreator
+    { IOTACreator }
     function GetCreatorType: string;
     function GetExisting: Boolean;
     function GetFileSystem: string;
     function GetOwner: IOTAModule;
     function GetUnnamed: Boolean;
 
-    // IOTAModuleCreator
+    { IOTAModuleCreator }
     function GetAncestorName: string;
     function GetImplFileName: string;
     function GetIntfFileName: string;
@@ -163,6 +164,7 @@ type
     FContent: string;
   public
     constructor Create(const AFileName, AContent: string); reintroduce;
+    { IOTAFile }
     function GetSource: string;
     function GetAge: TDateTime;
   end;

@@ -10,6 +10,10 @@
     function RaiseOutOfBoundsError: TYPENAME;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: IntegerOWNERSHIPDECLARATION); overload;
+    constructor Create(const ACollection: COLLECTIONINTERFACENAMEOWNERSHIPDECLARATION); overload;
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { COLLECTIONINTERFACENAME }
@@ -41,10 +45,6 @@
     function LastIndexOf(CONSTKEYWORDPARAMETERNAME: TYPENAME): Integer;
     procedure SETTERNAME(Index: Integer; CONSTKEYWORDPARAMETERNAME: TYPENAME);
     function SubList(First, Count: Integer): LISTINTERFACENAME;
-  public
-    constructor Create(ACapacity: IntegerOWNERSHIPDECLARATION); overload;
-    constructor Create(const ACollection: COLLECTIONINTERFACENAMEOWNERSHIPDECLARATION); overload;
-    destructor Destroy; override;
   end;*)
 (*$JPPDEFINEMACRO JCLARRAYLISTITRINT(SELFCLASSNAME, ITRINTERFACENAME, LISTINTERFACENAME,
   CONSTKEYWORD, PARAMETERNAME, TYPENAME, GETTERNAME, SETTERNAME)
@@ -57,6 +57,8 @@
   protected
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(const AOwnList: LISTINTERFACENAME; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
     { ITRINTERFACENAME }
     function Add(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
     procedure Extract;
@@ -76,6 +78,4 @@
     function MoveNext: Boolean;
     property Current: TYPENAME read GETTERNAME;
     {$ENDIF SUPPORTS_FOR_IN}
-  public
-    constructor Create(const AOwnList: LISTINTERFACENAME; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
   end;*)

@@ -163,6 +163,10 @@ type
     FLogo: Boolean;
     FNetwork: Boolean;
     FWinVer: string;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    { IJclMsdosSys }
     function GetAutoScan: Boolean;
     function GetBootDelay: Cardinal;
     function GetBootGUI: Boolean;
@@ -211,9 +215,6 @@ type
     procedure SetString(var ANew: string; AOld: string);
     procedure ReadMsdosSys;
     procedure WriteMsdosSys;
-  public
-    constructor Create;
-    destructor Destroy; override;
     property UninstallDir: Char read GetUninstallDir write SetUninstallDir;
     property WinDir: string read GetWinDir write SetWinDir;
     property WinBootDir: string read GetWinBootDir write SetWinBootDir;

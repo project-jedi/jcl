@@ -218,24 +218,28 @@ type
   end;
 
   TJclScreenCustomTextAttribute = class(TInterfacedObject, IJclScreenTextAttribute)
-  private
-    function GetBgColor: TJclScreenBackColor;
-    function GetBgHighlight: Boolean;
-    function GetColor: TJclScreenFontColor;
-    function GetHighlight: Boolean;
-    function GetStyle: TJclScreenFontStyles;
-    procedure SetBgColor(const Value: TJclScreenBackColor);
-    procedure SetBgHighlight(const Value: Boolean);
-    procedure SetColor(const Value: TJclScreenFontColor);
-    procedure SetHighlight(const Value: Boolean);
-    procedure SetStyle(const Value: TJclScreenFontStyles);
-  protected
-    function GetTextAttribute: Word; virtual; abstract;
-    procedure SetTextAttribute(const Value: Word); virtual; abstract;
   public
     constructor Create(const Attr: TJclScreenCustomTextAttribute = nil); overload;
+
     procedure Clear;
+
+    { IJclScreenTextAttribute }
+    function GetTextAttribute: Word; virtual; abstract;
+    procedure SetTextAttribute(const Value: Word); virtual; abstract;
+
     property TextAttribute: Word read GetTextAttribute write SetTextAttribute;
+
+    function GetColor: TJclScreenFontColor;
+    procedure SetColor(const Value: TJclScreenFontColor);
+    function GetBgColor: TJclScreenBackColor;
+    procedure SetBgColor(const Value: TJclScreenBackColor);
+    function GetHighlight: Boolean;
+    procedure SetHighlight(const Value: Boolean);
+    function GetBgHighlight: Boolean;
+    procedure SetBgHighlight(const Value: Boolean);
+    function GetStyle: TJclScreenFontStyles;
+    procedure SetStyle(const Value: TJclScreenFontStyles);
+
     property Color: TJclScreenFontColor read GetColor write SetColor;
     property BgColor: TJclScreenBackColor read GetBgColor write SetBgColor;
     property Highlight: Boolean read GetHighlight write SetHighlight;
@@ -243,23 +247,20 @@ type
     property Style: TJclScreenFontStyles read GetStyle write SetStyle;
   end;
 
-  TJclScreenFont = class(TJclScreenCustomTextAttribute)
+  TJclScreenFont = class(TJclScreenCustomTextAttribute, IJclScreenTextAttribute)
   private
     FScreenBuffer: TJclScreenBuffer;
-  protected
-    function GetTextAttribute: Word; override;
-    procedure SetTextAttribute(const Value: Word); override;
   public
     constructor Create(const AScrBuf: TJclScreenBuffer);
     property ScreenBuffer: TJclScreenBuffer read FScreenBuffer;
-  end;
-
-  TJclScreenTextAttribute = class(TJclScreenCustomTextAttribute)
-  private
-    FAttribute: Word;
-  protected
+    { IJclScreenTextAttribute }
     function GetTextAttribute: Word; override;
     procedure SetTextAttribute(const Value: Word); override;
+  end;
+
+  TJclScreenTextAttribute = class(TJclScreenCustomTextAttribute, IJclScreenTextAttribute)
+  private
+    FAttribute: Word;
   public
     constructor Create(const Attribute: Word); overload;
     constructor Create(const AColor: TJclScreenFontColor = fclWhite;
@@ -267,20 +268,23 @@ type
       const AHighLight: Boolean = False;
       const ABgHighLight: Boolean = False;
       const AStyle: TJclScreenFontStyles = []); overload;
+    { IJclScreenTextAttribute }
+    function GetTextAttribute: Word; override;
+    procedure SetTextAttribute(const Value: Word); override;
   end;
 
-  TJclScreenCharacter = class(TJclScreenCustomTextAttribute)
+  TJclScreenCharacter = class(TJclScreenCustomTextAttribute, IJclScreenTextAttribute)
   private
     FCharInfo: TCharInfo;
     function GetCharacter: Char;
     procedure SetCharacter(const Value: Char);
-  protected
-    function GetTextAttribute: Word; override;
-    procedure SetTextAttribute(const Value: Word); override;
   public
     constructor Create(const CharInfo: TCharInfo);
     property Info: TCharInfo read FCharInfo write FCharInfo;
     property Character: Char read GetCharacter write SetCharacter;
+    { IJclScreenTextAttribute }
+    function GetTextAttribute: Word; override;
+    procedure SetTextAttribute(const Value: Word); override;
   end;
 
   TJclScreenCursorSize = 1..100;

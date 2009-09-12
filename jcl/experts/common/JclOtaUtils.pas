@@ -183,6 +183,7 @@ type
     function IsPackage(const Project: IOTAProject): Boolean;
     function SubstitutePath(const Path: string): string;
 
+    { IJclOTAOptionsCallback }
     procedure AddConfigurationPages(AddPageFunc: TJclOTAAddPageFunc); virtual;
     procedure ConfigurationClosed(AControl: TControl; SaveChanges: Boolean); virtual;
 
@@ -200,7 +201,7 @@ type
   end;
 
   TJclOTAExpert = class(TJclOTAExpertBase, IOTAWizard, IOTANotifier)
-  protected
+  public
     { IOTANotifier }
     procedure AfterSave; virtual;
     procedure BeforeSave; virtual;
@@ -224,13 +225,13 @@ type
     FParent: string;
     FPosition: Integer;
     FVerb: string;
-  protected
+  public
     { IOTANotifier }
     procedure AfterSave;
     procedure BeforeSave;
     procedure Destroyed;
     procedure Modified;
-  protected
+  public
     { IOTALocalMenu }
     function GetCaption: string;
     function GetChecked: Boolean;
@@ -248,7 +249,6 @@ type
     procedure SetParent(const Value: string);
     procedure SetPosition(Value: Integer);
     procedure SetVerb(const Value: string);
-  public
     property Caption: string read GetCaption write SetCaption;
     property Checked: Boolean read GetChecked write SetChecked;
     property Enabled: Boolean read GetEnabled write SetEnabled;
@@ -265,13 +265,13 @@ type
   private
     FIsMultiSelectable: Boolean;
     FOnExecute: TJclProjectManagerMenuExecuteEvent;
-  protected
+  public
+    { IOTAProjectManagerMenu }
     function GetIsMultiSelectable: Boolean;
     procedure SetIsMultiSelectable(Value: Boolean);
     procedure Execute(const MenuContextList: IInterfaceList); overload;
     function PreExecute(const MenuContextList: IInterfaceList): Boolean;
     function PostExecute(const MenuContextList: IInterfaceList): Boolean;
-  public
     property IsMultiSelectable: Boolean read GetIsMultiSelectable write SetIsMultiSelectable;
     property OnExecute: TJclProjectManagerMenuExecuteEvent read FOnExecute write FOnExecute;
   end;

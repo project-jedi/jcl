@@ -446,7 +446,7 @@ type
     procedure SetOutputCallback(const CallbackMethod: TTextHandler);
     property ExeName: string read GetExeName;
     property Options: TStrings read GetOptions;
-    property OutputCallback: TTextHandler write SetOutputCallback;
+    property OutputCallback: TTextHandler read GetOutputCallback write SetOutputCallback;
     property Output: string read GetOutput;
   end;
 
@@ -458,19 +458,21 @@ type
     FOptions: TStringList;
     FOutput: string;
     FOutputCallback: TTextHandler;
-  protected
-    function GetExeName: string;
-    function GetOutput: string;
-    function GetOptions: TStrings;
-    function GetOutputCallback: TTextHandler;
-    procedure SetOutputCallback(const CallbackMethod: TTextHandler);
-    procedure AddPathOption(const Option, Path: string);
-    function Execute(const CommandLine: string): Boolean;
-    property ExeName: string read GetExeName;
-    property Output: string read GetOutput;
   public
     constructor Create(const AExeName: string);
     destructor Destroy; override;
+    { IJclCommandLineTool }
+    function GetExeName: string;
+    function GetOptions: TStrings;
+    function GetOutput: string;
+    function GetOutputCallback: TTextHandler;
+    procedure AddPathOption(const Option, Path: string);
+    function Execute(const CommandLine: string): Boolean;
+    procedure SetOutputCallback(const CallbackMethod: TTextHandler);
+    property ExeName: string read GetExeName;
+    property Options: TStrings read GetOptions;
+    property OutputCallback: TTextHandler read GetOutputCallback write SetOutputCallback;
+    property Output: string read GetOutput;
   end;
 
 // Console Utilities
@@ -548,13 +550,13 @@ type
   TJclIntfCriticalSection = class(TObject, IInterface)
   private
     FCriticalSection: TCriticalSection;
-  protected
-    function QueryInterface(const IID: TGUID; out Obj): HRESULT; stdcall;
-    function _AddRef: Integer; stdcall;
-    function _Release: Integer; stdcall;
   public
     constructor Create;
     destructor Destroy; override;
+    { IInterface }
+    function QueryInterface(const IID: TGUID; out Obj): HRESULT; stdcall;
+    function _AddRef: Integer; stdcall;
+    function _Release: Integer; stdcall;
   end;
 
 type
@@ -796,14 +798,17 @@ type
   public
     constructor Create(Mem: Pointer);
     destructor Destroy; override;
+    { ISafeGuard }
     function ReleaseItem: Pointer;
     function GetItem: Pointer;
     procedure FreeItem; virtual;
+    property Item: Pointer read GetItem;
   end;
 
   TObjSafeGuard = class(TSafeGuard, ISafeGuard)
   public
     constructor Create(Obj: TObject);
+    { ISafeGuard }
     procedure FreeItem; override;
   end;
 
@@ -813,15 +818,19 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    function AddItem(Mem: Pointer): Pointer;
+    { IMultiSafeGuard }
+    function AddItem(Item: Pointer): Pointer;
     procedure FreeItem(Index: Integer); virtual;
     function GetCount: Integer;
     function GetItem(Index: Integer): Pointer;
     function ReleaseItem(Index: Integer): Pointer;
+    property Count: Integer read GetCount;
+    property Items[Index: Integer]: Pointer read GetItem;
   end;
 
   TObjMultiSafeGuard = class(TMultiSafeGuard, IMultiSafeGuard)
   public
+    { IMultiSafeGuard }
     procedure FreeItem(Index: Integer); override;
   end;
 
@@ -891,10 +900,10 @@ begin
   inherited Destroy;
 end;
 
-function TMultiSafeGuard.AddItem(Mem: Pointer): Pointer;
+function TMultiSafeGuard.AddItem(Item: Pointer): Pointer;
 begin
-  Result := Mem;
-  FItems.Add(Mem);
+  Result := Item;
+  FItems.Add(Item);
 end;
 
 procedure TMultiSafeGuard.FreeItem(Index: Integer);
@@ -1576,6 +1585,7 @@ type
   public
     constructor Create(AValue: TObject);
     destructor Destroy; override;
+    { IAutoPtr }
     function AsPointer: Pointer;
     function AsObject: TObject;
     function ReleaseObject: TObject;

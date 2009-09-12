@@ -445,6 +445,7 @@ type
     function Remove(StartIndex, Length: SizeInt): TJclStringBuilder;
     function EnsureCapacity(Capacity: SizeInt): SizeInt;
 
+    { IToString }
     function ToString: string; {$IFDEF RTL200_UP} override; {$ENDIF RTL200_UP}
 
     property __Chars__[Index: SizeInt]: Char read GetChars write SetChars; default;
@@ -511,8 +512,9 @@ type
     function UpdatePosition(const S: string; Column: SizeInt): SizeInt; overload;
     function UpdatePosition(const S: string; var Column, Line: SizeInt): SizeInt; overload;
 
-    // Conversions
+    { IToString }
     function ToString: string; overload; {$IFDEF RTL200_UP} override; {$ENDIF RTL200_UP}
+    // Conversions
     function ToString(FormattingOptions: SizeInt): string; {$IFDEF RTL200_UP} reintroduce; {$ENDIF RTL200_UP} overload;
     class function FromString(const S: string): TJclTabSet; {$IFDEF SUPPORTS_STATIC} static; {$ENDIF SUPPORTS_STATIC}
 

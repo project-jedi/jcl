@@ -11,6 +11,11 @@
     // fix ambiguous warnings when compiled on Delphi.net and earlier versions of Delphi.win32
     // complaining about possible unaffected result.
     function RaiseOutOfBoundsError: TYPENAME;
+  public
+    constructor Create(ACapacity: IntegerOWNERSHIPDECLARATION); overload;
+    constructor Create(const ACollection: COLLECTIONINTERFACENAMEOWNERSHIPDECLARATION); overload;
+    destructor Destroy; override;
+    property Items: DYNARRAYTYPE read FItems;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { COLLECTIONINTERFACENAME }
@@ -42,11 +47,6 @@
     function LastIndexOf(CONSTKEYWORDPARAMETERNAME: TYPENAME): Integer;
     procedure SETTERNAME(Index: Integer; CONSTKEYWORDPARAMETERNAME: TYPENAME);
     function SubList(First, Count: Integer): LISTINTERFACENAME;
-  public
-    constructor Create(ACapacity: IntegerOWNERSHIPDECLARATION); overload;
-    constructor Create(const ACollection: COLLECTIONINTERFACENAMEOWNERSHIPDECLARATION); overload;
-    destructor Destroy; override;
-    property Items: DYNARRAYTYPE read FItems;
   end;*)
 (*$JPPDEFINEMACRO JCLVECTORITRINT(SELFCLASSNAME, ITRINTERFACENAME, LISTINTERFACENAME,
   CONSTKEYWORD, PARAMETERNAME, TYPENAME, GETTERNAME, SETTERNAME)
@@ -59,6 +59,8 @@
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+  public
+    constructor Create(const AOwnList: LISTINTERFACENAME; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
     { ITRINTERFACENAME }
     function Add(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
     procedure Extract;
@@ -78,6 +80,4 @@
     function MoveNext: Boolean;
     property Current: TYPENAME read GETTERNAME;
     {$ENDIF SUPPORTS_FOR_IN}
-  public
-    constructor Create(const AOwnList: LISTINTERFACENAME; ACursor: Integer; AValid: Boolean; AStart: TItrStart);
   end;*)

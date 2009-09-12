@@ -286,19 +286,21 @@ type
     FRunningStatusEnabled: Boolean;
     FActiveNotes: array [TMIDIChannel] of TMIDINotes;
   protected
-    function GetActiveNotes(Channel: TMIDIChannel): TMIDINotes;
-    function GetName: string; virtual; abstract;
-    function GetMIDIStatus: TMIDIStatusByte;
     function IsRunningStatus(StatusByte: TMIDIStatusByte): Boolean;
-    function GetRunningStatusEnabled: Boolean;
-    procedure SetRunningStatusEnabled(const Value: Boolean);
     procedure SendChannelMessage(Msg: TMIDIStatusByte; Channel: TMIDIChannel;
       Data1, Data2: TMIDIDataByte);
     procedure DoSendMessage(const Data: array of Byte); virtual; abstract;
-    procedure SendMessage(const Data: array of Byte);
   public
     destructor Destroy; override;
-    // Channel Voice Messages
+    { IJclMIDIOut }
+    // property access methods
+    function GetActiveNotes(Channel: TMIDIChannel): TMIDINotes;
+    function GetName: string; virtual; abstract;
+    function GetMIDIStatus: TMIDIStatusByte;
+    function GetRunningStatusEnabled: Boolean;
+    procedure SetRunningStatusEnabled(const Value: Boolean);
+    // General message send method
+    procedure SendMessage(const Data: array of Byte);    // Channel Voice Messages
     procedure SendNoteOff(Channel: TMIDIChannel; Key: TMIDINote; Velocity: TMIDIDataByte = $40);
     procedure SendNoteOn(Channel: TMIDIChannel; Key: TMIDINote; Velocity: TMIDIDataByte);
     procedure SendPolyphonicKeyPressure(Channel: TMIDIChannel; Key: TMIDINote; Value: TMIDIDataByte);

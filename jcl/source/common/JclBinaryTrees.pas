@@ -77,6 +77,9 @@ type
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure AutoPack; override;
+  public
+    constructor Create(ACompare: TIntfCompare);
+    destructor Destroy; override;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -103,9 +106,6 @@ type
     function GetRoot: IJclIntfTreeIterator;
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
-  public
-    constructor Create(ACompare: TIntfCompare);
-    destructor Destroy; override;
     property Root: IJclIntfTreeIterator read GetRoot;
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
@@ -119,6 +119,8 @@ type
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function GetNextCursor: TJclIntfBinaryNode; virtual; abstract;
     function GetPreviousCursor: TJclIntfBinaryNode; virtual; abstract;
+  public
+    constructor Create(const AOwnTree: IJclIntfCollection; ACursor: TJclIntfBinaryNode; AValid: Boolean; AStart: TItrStart);
     { IJclIntfIterator }
     function Add(const AInterface: IInterface): Boolean;
     procedure Extract;
@@ -157,8 +159,6 @@ type
     function HasRight: Boolean;
     function Left: IInterface;
     function Right: IInterface;
-  public
-    constructor Create(const AOwnTree: IJclIntfCollection; ACursor: TJclIntfBinaryNode; AValid: Boolean; AStart: TItrStart);
   end;
 
   TJclPreOrderIntfBinaryTreeIterator = class(TJclIntfBinaryTreeIterator, IJclIntfIterator, IJclIntfTreeIterator, IJclIntfBinaryTreeIterator,
@@ -209,6 +209,9 @@ type
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure AutoPack; override;
+  public
+    constructor Create(ACompare: TAnsiStrCompare);
+    destructor Destroy; override;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -235,9 +238,6 @@ type
     function GetRoot: IJclAnsiStrTreeIterator;
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
-  public
-    constructor Create(ACompare: TAnsiStrCompare);
-    destructor Destroy; override;
     property Root: IJclAnsiStrTreeIterator read GetRoot;
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
@@ -251,6 +251,8 @@ type
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function GetNextCursor: TJclAnsiStrBinaryNode; virtual; abstract;
     function GetPreviousCursor: TJclAnsiStrBinaryNode; virtual; abstract;
+  public
+    constructor Create(const AOwnTree: IJclAnsiStrCollection; ACursor: TJclAnsiStrBinaryNode; AValid: Boolean; AStart: TItrStart);
     { IJclAnsiStrIterator }
     function Add(const AString: AnsiString): Boolean;
     procedure Extract;
@@ -289,8 +291,6 @@ type
     function HasRight: Boolean;
     function Left: AnsiString;
     function Right: AnsiString;
-  public
-    constructor Create(const AOwnTree: IJclAnsiStrCollection; ACursor: TJclAnsiStrBinaryNode; AValid: Boolean; AStart: TItrStart);
   end;
 
   TJclPreOrderAnsiStrBinaryTreeIterator = class(TJclAnsiStrBinaryTreeIterator, IJclAnsiStrIterator, IJclAnsiStrTreeIterator, IJclAnsiStrBinaryTreeIterator,
@@ -341,6 +341,9 @@ type
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure AutoPack; override;
+  public
+    constructor Create(ACompare: TWideStrCompare);
+    destructor Destroy; override;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -367,9 +370,6 @@ type
     function GetRoot: IJclWideStrTreeIterator;
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
-  public
-    constructor Create(ACompare: TWideStrCompare);
-    destructor Destroy; override;
     property Root: IJclWideStrTreeIterator read GetRoot;
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
@@ -383,6 +383,8 @@ type
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function GetNextCursor: TJclWideStrBinaryNode; virtual; abstract;
     function GetPreviousCursor: TJclWideStrBinaryNode; virtual; abstract;
+  public
+    constructor Create(const AOwnTree: IJclWideStrCollection; ACursor: TJclWideStrBinaryNode; AValid: Boolean; AStart: TItrStart);
     { IJclWideStrIterator }
     function Add(const AString: WideString): Boolean;
     procedure Extract;
@@ -421,8 +423,6 @@ type
     function HasRight: Boolean;
     function Left: WideString;
     function Right: WideString;
-  public
-    constructor Create(const AOwnTree: IJclWideStrCollection; ACursor: TJclWideStrBinaryNode; AValid: Boolean; AStart: TItrStart);
   end;
 
   TJclPreOrderWideStrBinaryTreeIterator = class(TJclWideStrBinaryTreeIterator, IJclWideStrIterator, IJclWideStrTreeIterator, IJclWideStrBinaryTreeIterator,
@@ -475,6 +475,9 @@ type
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure AutoPack; override;
+  public
+    constructor Create(ACompare: TUnicodeStrCompare);
+    destructor Destroy; override;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -501,9 +504,6 @@ type
     function GetRoot: IJclUnicodeStrTreeIterator;
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
-  public
-    constructor Create(ACompare: TUnicodeStrCompare);
-    destructor Destroy; override;
     property Root: IJclUnicodeStrTreeIterator read GetRoot;
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
@@ -517,6 +517,8 @@ type
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function GetNextCursor: TJclUnicodeStrBinaryNode; virtual; abstract;
     function GetPreviousCursor: TJclUnicodeStrBinaryNode; virtual; abstract;
+  public
+    constructor Create(const AOwnTree: IJclUnicodeStrCollection; ACursor: TJclUnicodeStrBinaryNode; AValid: Boolean; AStart: TItrStart);
     { IJclUnicodeStrIterator }
     function Add(const AString: UnicodeString): Boolean;
     procedure Extract;
@@ -555,8 +557,6 @@ type
     function HasRight: Boolean;
     function Left: UnicodeString;
     function Right: UnicodeString;
-  public
-    constructor Create(const AOwnTree: IJclUnicodeStrCollection; ACursor: TJclUnicodeStrBinaryNode; AValid: Boolean; AStart: TItrStart);
   end;
 
   TJclPreOrderUnicodeStrBinaryTreeIterator = class(TJclUnicodeStrBinaryTreeIterator, IJclUnicodeStrIterator, IJclUnicodeStrTreeIterator, IJclUnicodeStrBinaryTreeIterator,
@@ -618,6 +618,9 @@ type
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure AutoPack; override;
+  public
+    constructor Create(ACompare: TSingleCompare);
+    destructor Destroy; override;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -644,9 +647,6 @@ type
     function GetRoot: IJclSingleTreeIterator;
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
-  public
-    constructor Create(ACompare: TSingleCompare);
-    destructor Destroy; override;
     property Root: IJclSingleTreeIterator read GetRoot;
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
@@ -660,6 +660,8 @@ type
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function GetNextCursor: TJclSingleBinaryNode; virtual; abstract;
     function GetPreviousCursor: TJclSingleBinaryNode; virtual; abstract;
+  public
+    constructor Create(const AOwnTree: IJclSingleCollection; ACursor: TJclSingleBinaryNode; AValid: Boolean; AStart: TItrStart);
     { IJclSingleIterator }
     function Add(const AValue: Single): Boolean;
     procedure Extract;
@@ -698,8 +700,6 @@ type
     function HasRight: Boolean;
     function Left: Single;
     function Right: Single;
-  public
-    constructor Create(const AOwnTree: IJclSingleCollection; ACursor: TJclSingleBinaryNode; AValid: Boolean; AStart: TItrStart);
   end;
 
   TJclPreOrderSingleBinaryTreeIterator = class(TJclSingleBinaryTreeIterator, IJclSingleIterator, IJclSingleTreeIterator, IJclSingleBinaryTreeIterator,
@@ -750,6 +750,9 @@ type
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure AutoPack; override;
+  public
+    constructor Create(ACompare: TDoubleCompare);
+    destructor Destroy; override;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -776,9 +779,6 @@ type
     function GetRoot: IJclDoubleTreeIterator;
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
-  public
-    constructor Create(ACompare: TDoubleCompare);
-    destructor Destroy; override;
     property Root: IJclDoubleTreeIterator read GetRoot;
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
@@ -792,6 +792,8 @@ type
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function GetNextCursor: TJclDoubleBinaryNode; virtual; abstract;
     function GetPreviousCursor: TJclDoubleBinaryNode; virtual; abstract;
+  public
+    constructor Create(const AOwnTree: IJclDoubleCollection; ACursor: TJclDoubleBinaryNode; AValid: Boolean; AStart: TItrStart);
     { IJclDoubleIterator }
     function Add(const AValue: Double): Boolean;
     procedure Extract;
@@ -830,8 +832,6 @@ type
     function HasRight: Boolean;
     function Left: Double;
     function Right: Double;
-  public
-    constructor Create(const AOwnTree: IJclDoubleCollection; ACursor: TJclDoubleBinaryNode; AValid: Boolean; AStart: TItrStart);
   end;
 
   TJclPreOrderDoubleBinaryTreeIterator = class(TJclDoubleBinaryTreeIterator, IJclDoubleIterator, IJclDoubleTreeIterator, IJclDoubleBinaryTreeIterator,
@@ -882,6 +882,9 @@ type
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure AutoPack; override;
+  public
+    constructor Create(ACompare: TExtendedCompare);
+    destructor Destroy; override;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -908,9 +911,6 @@ type
     function GetRoot: IJclExtendedTreeIterator;
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
-  public
-    constructor Create(ACompare: TExtendedCompare);
-    destructor Destroy; override;
     property Root: IJclExtendedTreeIterator read GetRoot;
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
@@ -924,6 +924,8 @@ type
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function GetNextCursor: TJclExtendedBinaryNode; virtual; abstract;
     function GetPreviousCursor: TJclExtendedBinaryNode; virtual; abstract;
+  public
+    constructor Create(const AOwnTree: IJclExtendedCollection; ACursor: TJclExtendedBinaryNode; AValid: Boolean; AStart: TItrStart);
     { IJclExtendedIterator }
     function Add(const AValue: Extended): Boolean;
     procedure Extract;
@@ -962,8 +964,6 @@ type
     function HasRight: Boolean;
     function Left: Extended;
     function Right: Extended;
-  public
-    constructor Create(const AOwnTree: IJclExtendedCollection; ACursor: TJclExtendedBinaryNode; AValid: Boolean; AStart: TItrStart);
   end;
 
   TJclPreOrderExtendedBinaryTreeIterator = class(TJclExtendedBinaryTreeIterator, IJclExtendedIterator, IJclExtendedTreeIterator, IJclExtendedBinaryTreeIterator,
@@ -1024,6 +1024,9 @@ type
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure AutoPack; override;
+  public
+    constructor Create(ACompare: TIntegerCompare);
+    destructor Destroy; override;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1050,9 +1053,6 @@ type
     function GetRoot: IJclIntegerTreeIterator;
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
-  public
-    constructor Create(ACompare: TIntegerCompare);
-    destructor Destroy; override;
     property Root: IJclIntegerTreeIterator read GetRoot;
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
@@ -1066,6 +1066,8 @@ type
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function GetNextCursor: TJclIntegerBinaryNode; virtual; abstract;
     function GetPreviousCursor: TJclIntegerBinaryNode; virtual; abstract;
+  public
+    constructor Create(const AOwnTree: IJclIntegerCollection; ACursor: TJclIntegerBinaryNode; AValid: Boolean; AStart: TItrStart);
     { IJclIntegerIterator }
     function Add(AValue: Integer): Boolean;
     procedure Extract;
@@ -1104,8 +1106,6 @@ type
     function HasRight: Boolean;
     function Left: Integer;
     function Right: Integer;
-  public
-    constructor Create(const AOwnTree: IJclIntegerCollection; ACursor: TJclIntegerBinaryNode; AValid: Boolean; AStart: TItrStart);
   end;
 
   TJclPreOrderIntegerBinaryTreeIterator = class(TJclIntegerBinaryTreeIterator, IJclIntegerIterator, IJclIntegerTreeIterator, IJclIntegerBinaryTreeIterator,
@@ -1156,6 +1156,9 @@ type
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure AutoPack; override;
+  public
+    constructor Create(ACompare: TCardinalCompare);
+    destructor Destroy; override;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1182,9 +1185,6 @@ type
     function GetRoot: IJclCardinalTreeIterator;
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
-  public
-    constructor Create(ACompare: TCardinalCompare);
-    destructor Destroy; override;
     property Root: IJclCardinalTreeIterator read GetRoot;
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
@@ -1198,6 +1198,8 @@ type
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function GetNextCursor: TJclCardinalBinaryNode; virtual; abstract;
     function GetPreviousCursor: TJclCardinalBinaryNode; virtual; abstract;
+  public
+    constructor Create(const AOwnTree: IJclCardinalCollection; ACursor: TJclCardinalBinaryNode; AValid: Boolean; AStart: TItrStart);
     { IJclCardinalIterator }
     function Add(AValue: Cardinal): Boolean;
     procedure Extract;
@@ -1236,8 +1238,6 @@ type
     function HasRight: Boolean;
     function Left: Cardinal;
     function Right: Cardinal;
-  public
-    constructor Create(const AOwnTree: IJclCardinalCollection; ACursor: TJclCardinalBinaryNode; AValid: Boolean; AStart: TItrStart);
   end;
 
   TJclPreOrderCardinalBinaryTreeIterator = class(TJclCardinalBinaryTreeIterator, IJclCardinalIterator, IJclCardinalTreeIterator, IJclCardinalBinaryTreeIterator,
@@ -1288,6 +1288,9 @@ type
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure AutoPack; override;
+  public
+    constructor Create(ACompare: TInt64Compare);
+    destructor Destroy; override;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1314,9 +1317,6 @@ type
     function GetRoot: IJclInt64TreeIterator;
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
-  public
-    constructor Create(ACompare: TInt64Compare);
-    destructor Destroy; override;
     property Root: IJclInt64TreeIterator read GetRoot;
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
@@ -1330,6 +1330,8 @@ type
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function GetNextCursor: TJclInt64BinaryNode; virtual; abstract;
     function GetPreviousCursor: TJclInt64BinaryNode; virtual; abstract;
+  public
+    constructor Create(const AOwnTree: IJclInt64Collection; ACursor: TJclInt64BinaryNode; AValid: Boolean; AStart: TItrStart);
     { IJclInt64Iterator }
     function Add(const AValue: Int64): Boolean;
     procedure Extract;
@@ -1368,8 +1370,6 @@ type
     function HasRight: Boolean;
     function Left: Int64;
     function Right: Int64;
-  public
-    constructor Create(const AOwnTree: IJclInt64Collection; ACursor: TJclInt64BinaryNode; AValid: Boolean; AStart: TItrStart);
   end;
 
   TJclPreOrderInt64BinaryTreeIterator = class(TJclInt64BinaryTreeIterator, IJclInt64Iterator, IJclInt64TreeIterator, IJclInt64BinaryTreeIterator,
@@ -1420,6 +1420,9 @@ type
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure AutoPack; override;
+  public
+    constructor Create(ACompare: TPtrCompare);
+    destructor Destroy; override;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1446,9 +1449,6 @@ type
     function GetRoot: IJclPtrTreeIterator;
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
-  public
-    constructor Create(ACompare: TPtrCompare);
-    destructor Destroy; override;
     property Root: IJclPtrTreeIterator read GetRoot;
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
@@ -1462,6 +1462,8 @@ type
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function GetNextCursor: TJclPtrBinaryNode; virtual; abstract;
     function GetPreviousCursor: TJclPtrBinaryNode; virtual; abstract;
+  public
+    constructor Create(const AOwnTree: IJclPtrCollection; ACursor: TJclPtrBinaryNode; AValid: Boolean; AStart: TItrStart);
     { IJclPtrIterator }
     function Add(APtr: Pointer): Boolean;
     procedure Extract;
@@ -1500,8 +1502,6 @@ type
     function HasRight: Boolean;
     function Left: Pointer;
     function Right: Pointer;
-  public
-    constructor Create(const AOwnTree: IJclPtrCollection; ACursor: TJclPtrBinaryNode; AValid: Boolean; AStart: TItrStart);
   end;
 
   TJclPreOrderPtrBinaryTreeIterator = class(TJclPtrBinaryTreeIterator, IJclPtrIterator, IJclPtrTreeIterator, IJclPtrBinaryTreeIterator,
@@ -1552,6 +1552,9 @@ type
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure AutoPack; override;
+  public
+    constructor Create(ACompare: TCompare; AOwnsObjects: Boolean);
+    destructor Destroy; override;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1578,9 +1581,6 @@ type
     function GetRoot: IJclTreeIterator;
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
-  public
-    constructor Create(ACompare: TCompare; AOwnsObjects: Boolean);
-    destructor Destroy; override;
     property Root: IJclTreeIterator read GetRoot;
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
@@ -1594,6 +1594,8 @@ type
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function GetNextCursor: TJclBinaryNode; virtual; abstract;
     function GetPreviousCursor: TJclBinaryNode; virtual; abstract;
+  public
+    constructor Create(const AOwnTree: IJclCollection; ACursor: TJclBinaryNode; AValid: Boolean; AStart: TItrStart);
     { IJclIterator }
     function Add(AObject: TObject): Boolean;
     procedure Extract;
@@ -1632,8 +1634,6 @@ type
     function HasRight: Boolean;
     function Left: TObject;
     function Right: TObject;
-  public
-    constructor Create(const AOwnTree: IJclCollection; ACursor: TJclBinaryNode; AValid: Boolean; AStart: TItrStart);
   end;
 
   TJclPreOrderBinaryTreeIterator = class(TJclBinaryTreeIterator, IJclIterator, IJclTreeIterator, IJclBinaryTreeIterator,
@@ -1694,6 +1694,9 @@ type
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure AutoPack; override;
+  public
+    constructor Create(AOwnsItems: Boolean);
+    destructor Destroy; override;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1720,9 +1723,6 @@ type
     function GetRoot: IJclTreeIterator<T>;
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
-  public
-    constructor Create(AOwnsItems: Boolean);
-    destructor Destroy; override;
     property Root: IJclTreeIterator<T> read GetRoot;
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
@@ -1736,6 +1736,8 @@ type
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function GetNextCursor: TJclBinaryNode<T>; virtual; abstract;
     function GetPreviousCursor: TJclBinaryNode<T>; virtual; abstract;
+  public
+    constructor Create(const AOwnTree: IJclCollection<T>; ACursor: TJclBinaryNode<T>; AValid: Boolean; AStart: TItrStart);
     { IJclIterator<T> }
     function Add(const AItem: T): Boolean;
     procedure Extract;
@@ -1774,8 +1776,6 @@ type
     function HasRight: Boolean;
     function Left: T;
     function Right: T;
-  public
-    constructor Create(const AOwnTree: IJclCollection<T>; ACursor: TJclBinaryNode<T>; AValid: Boolean; AStart: TItrStart);
   end;
 
   TJclPreOrderBinaryTreeIterator<T> = class(TJclBinaryTreeIterator<T>, IJclIterator<T>, IJclTreeIterator<T>, IJclBinaryTreeIterator<T>,

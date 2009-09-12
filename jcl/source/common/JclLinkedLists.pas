@@ -71,6 +71,9 @@ type
     FEnd: TJclIntfLinkedListItem;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(const ACollection: IJclIntfCollection);
+    destructor Destroy; override;
     { IJclIntfCollection }
     function Add(const AInterface: IInterface): Boolean;
     function AddAll(const ACollection: IJclIntfCollection): Boolean;
@@ -100,9 +103,6 @@ type
     function LastIndexOf(const AInterface: IInterface): Integer;
     procedure SetObject(Index: Integer; const AInterface: IInterface);
     function SubList(First, Count: Integer): IJclIntfList;
-  public
-    constructor Create(const ACollection: IJclIntfCollection);
-    destructor Destroy; override;
   end;
 
   TJclIntfLinkedListIterator = class(TJclAbstractIterator, IJclIntfIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -115,6 +115,8 @@ type
   public
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(const AOwnList: IJclIntfList; ACursor: TJclIntfLinkedListItem; AValid: Boolean; AStart: TItrStart);
     { IJclIntfIterator }
     function Add(const AInterface: IInterface): Boolean;
     procedure Extract;
@@ -134,8 +136,6 @@ type
     function MoveNext: Boolean;
     property Current: IInterface read GetObject;
     {$ENDIF SUPPORTS_FOR_IN}
-  public
-    constructor Create(const AOwnList: IJclIntfList; ACursor: TJclIntfLinkedListItem; AValid: Boolean; AStart: TItrStart);
   end;
 
   TJclAnsiStrLinkedListItem = class
@@ -155,6 +155,9 @@ type
     FEnd: TJclAnsiStrLinkedListItem;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(const ACollection: IJclAnsiStrCollection);
+    destructor Destroy; override;
     { IJclAnsiStrCollection }
     function Add(const AString: AnsiString): Boolean; override;
     function AddAll(const ACollection: IJclAnsiStrCollection): Boolean; override;
@@ -184,9 +187,6 @@ type
     function LastIndexOf(const AString: AnsiString): Integer;
     procedure SetString(Index: Integer; const AString: AnsiString);
     function SubList(First, Count: Integer): IJclAnsiStrList;
-  public
-    constructor Create(const ACollection: IJclAnsiStrCollection);
-    destructor Destroy; override;
   end;
 
   TJclAnsiStrLinkedListIterator = class(TJclAbstractIterator, IJclAnsiStrIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -199,6 +199,8 @@ type
   public
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(const AOwnList: IJclAnsiStrList; ACursor: TJclAnsiStrLinkedListItem; AValid: Boolean; AStart: TItrStart);
     { IJclAnsiStrIterator }
     function Add(const AString: AnsiString): Boolean;
     procedure Extract;
@@ -218,8 +220,6 @@ type
     function MoveNext: Boolean;
     property Current: AnsiString read GetString;
     {$ENDIF SUPPORTS_FOR_IN}
-  public
-    constructor Create(const AOwnList: IJclAnsiStrList; ACursor: TJclAnsiStrLinkedListItem; AValid: Boolean; AStart: TItrStart);
   end;
 
   TJclWideStrLinkedListItem = class
@@ -239,6 +239,9 @@ type
     FEnd: TJclWideStrLinkedListItem;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(const ACollection: IJclWideStrCollection);
+    destructor Destroy; override;
     { IJclWideStrCollection }
     function Add(const AString: WideString): Boolean; override;
     function AddAll(const ACollection: IJclWideStrCollection): Boolean; override;
@@ -268,9 +271,6 @@ type
     function LastIndexOf(const AString: WideString): Integer;
     procedure SetString(Index: Integer; const AString: WideString);
     function SubList(First, Count: Integer): IJclWideStrList;
-  public
-    constructor Create(const ACollection: IJclWideStrCollection);
-    destructor Destroy; override;
   end;
 
   TJclWideStrLinkedListIterator = class(TJclAbstractIterator, IJclWideStrIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -283,6 +283,8 @@ type
   public
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(const AOwnList: IJclWideStrList; ACursor: TJclWideStrLinkedListItem; AValid: Boolean; AStart: TItrStart);
     { IJclWideStrIterator }
     function Add(const AString: WideString): Boolean;
     procedure Extract;
@@ -302,8 +304,6 @@ type
     function MoveNext: Boolean;
     property Current: WideString read GetString;
     {$ENDIF SUPPORTS_FOR_IN}
-  public
-    constructor Create(const AOwnList: IJclWideStrList; ACursor: TJclWideStrLinkedListItem; AValid: Boolean; AStart: TItrStart);
   end;
 
 {$IFDEF SUPPORTS_UNICODE_STRING}
@@ -324,6 +324,9 @@ type
     FEnd: TJclUnicodeStrLinkedListItem;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(const ACollection: IJclUnicodeStrCollection);
+    destructor Destroy; override;
     { IJclUnicodeStrCollection }
     function Add(const AString: UnicodeString): Boolean; override;
     function AddAll(const ACollection: IJclUnicodeStrCollection): Boolean; override;
@@ -353,9 +356,6 @@ type
     function LastIndexOf(const AString: UnicodeString): Integer;
     procedure SetString(Index: Integer; const AString: UnicodeString);
     function SubList(First, Count: Integer): IJclUnicodeStrList;
-  public
-    constructor Create(const ACollection: IJclUnicodeStrCollection);
-    destructor Destroy; override;
   end;
 
   TJclUnicodeStrLinkedListIterator = class(TJclAbstractIterator, IJclUnicodeStrIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -368,6 +368,8 @@ type
   public
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(const AOwnList: IJclUnicodeStrList; ACursor: TJclUnicodeStrLinkedListItem; AValid: Boolean; AStart: TItrStart);
     { IJclUnicodeStrIterator }
     function Add(const AString: UnicodeString): Boolean;
     procedure Extract;
@@ -387,8 +389,6 @@ type
     function MoveNext: Boolean;
     property Current: UnicodeString read GetString;
     {$ENDIF SUPPORTS_FOR_IN}
-  public
-    constructor Create(const AOwnList: IJclUnicodeStrList; ACursor: TJclUnicodeStrLinkedListItem; AValid: Boolean; AStart: TItrStart);
   end;
 {$ENDIF SUPPORTS_UNICODE_STRING}
 
@@ -419,6 +419,9 @@ type
     FEnd: TJclSingleLinkedListItem;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(const ACollection: IJclSingleCollection);
+    destructor Destroy; override;
     { IJclSingleCollection }
     function Add(const AValue: Single): Boolean;
     function AddAll(const ACollection: IJclSingleCollection): Boolean;
@@ -448,9 +451,6 @@ type
     function LastIndexOf(const AValue: Single): Integer;
     procedure SetValue(Index: Integer; const AValue: Single);
     function SubList(First, Count: Integer): IJclSingleList;
-  public
-    constructor Create(const ACollection: IJclSingleCollection);
-    destructor Destroy; override;
   end;
 
   TJclSingleLinkedListIterator = class(TJclAbstractIterator, IJclSingleIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -463,6 +463,8 @@ type
   public
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(const AOwnList: IJclSingleList; ACursor: TJclSingleLinkedListItem; AValid: Boolean; AStart: TItrStart);
     { IJclSingleIterator }
     function Add(const AValue: Single): Boolean;
     procedure Extract;
@@ -482,8 +484,6 @@ type
     function MoveNext: Boolean;
     property Current: Single read GetValue;
     {$ENDIF SUPPORTS_FOR_IN}
-  public
-    constructor Create(const AOwnList: IJclSingleList; ACursor: TJclSingleLinkedListItem; AValid: Boolean; AStart: TItrStart);
   end;
 
   TJclDoubleLinkedListItem = class
@@ -503,6 +503,9 @@ type
     FEnd: TJclDoubleLinkedListItem;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(const ACollection: IJclDoubleCollection);
+    destructor Destroy; override;
     { IJclDoubleCollection }
     function Add(const AValue: Double): Boolean;
     function AddAll(const ACollection: IJclDoubleCollection): Boolean;
@@ -532,9 +535,6 @@ type
     function LastIndexOf(const AValue: Double): Integer;
     procedure SetValue(Index: Integer; const AValue: Double);
     function SubList(First, Count: Integer): IJclDoubleList;
-  public
-    constructor Create(const ACollection: IJclDoubleCollection);
-    destructor Destroy; override;
   end;
 
   TJclDoubleLinkedListIterator = class(TJclAbstractIterator, IJclDoubleIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -547,6 +547,8 @@ type
   public
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(const AOwnList: IJclDoubleList; ACursor: TJclDoubleLinkedListItem; AValid: Boolean; AStart: TItrStart);
     { IJclDoubleIterator }
     function Add(const AValue: Double): Boolean;
     procedure Extract;
@@ -566,8 +568,6 @@ type
     function MoveNext: Boolean;
     property Current: Double read GetValue;
     {$ENDIF SUPPORTS_FOR_IN}
-  public
-    constructor Create(const AOwnList: IJclDoubleList; ACursor: TJclDoubleLinkedListItem; AValid: Boolean; AStart: TItrStart);
   end;
 
   TJclExtendedLinkedListItem = class
@@ -587,6 +587,9 @@ type
     FEnd: TJclExtendedLinkedListItem;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(const ACollection: IJclExtendedCollection);
+    destructor Destroy; override;
     { IJclExtendedCollection }
     function Add(const AValue: Extended): Boolean;
     function AddAll(const ACollection: IJclExtendedCollection): Boolean;
@@ -616,9 +619,6 @@ type
     function LastIndexOf(const AValue: Extended): Integer;
     procedure SetValue(Index: Integer; const AValue: Extended);
     function SubList(First, Count: Integer): IJclExtendedList;
-  public
-    constructor Create(const ACollection: IJclExtendedCollection);
-    destructor Destroy; override;
   end;
 
   TJclExtendedLinkedListIterator = class(TJclAbstractIterator, IJclExtendedIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -631,6 +631,8 @@ type
   public
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(const AOwnList: IJclExtendedList; ACursor: TJclExtendedLinkedListItem; AValid: Boolean; AStart: TItrStart);
     { IJclExtendedIterator }
     function Add(const AValue: Extended): Boolean;
     procedure Extract;
@@ -650,8 +652,6 @@ type
     function MoveNext: Boolean;
     property Current: Extended read GetValue;
     {$ENDIF SUPPORTS_FOR_IN}
-  public
-    constructor Create(const AOwnList: IJclExtendedList; ACursor: TJclExtendedLinkedListItem; AValid: Boolean; AStart: TItrStart);
   end;
 
   {$IFDEF MATH_EXTENDED_PRECISION}
@@ -681,6 +681,9 @@ type
     FEnd: TJclIntegerLinkedListItem;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(const ACollection: IJclIntegerCollection);
+    destructor Destroy; override;
     { IJclIntegerCollection }
     function Add(AValue: Integer): Boolean;
     function AddAll(const ACollection: IJclIntegerCollection): Boolean;
@@ -710,9 +713,6 @@ type
     function LastIndexOf(AValue: Integer): Integer;
     procedure SetValue(Index: Integer; AValue: Integer);
     function SubList(First, Count: Integer): IJclIntegerList;
-  public
-    constructor Create(const ACollection: IJclIntegerCollection);
-    destructor Destroy; override;
   end;
 
   TJclIntegerLinkedListIterator = class(TJclAbstractIterator, IJclIntegerIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -725,6 +725,8 @@ type
   public
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(const AOwnList: IJclIntegerList; ACursor: TJclIntegerLinkedListItem; AValid: Boolean; AStart: TItrStart);
     { IJclIntegerIterator }
     function Add(AValue: Integer): Boolean;
     procedure Extract;
@@ -744,8 +746,6 @@ type
     function MoveNext: Boolean;
     property Current: Integer read GetValue;
     {$ENDIF SUPPORTS_FOR_IN}
-  public
-    constructor Create(const AOwnList: IJclIntegerList; ACursor: TJclIntegerLinkedListItem; AValid: Boolean; AStart: TItrStart);
   end;
 
   TJclCardinalLinkedListItem = class
@@ -765,6 +765,9 @@ type
     FEnd: TJclCardinalLinkedListItem;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(const ACollection: IJclCardinalCollection);
+    destructor Destroy; override;
     { IJclCardinalCollection }
     function Add(AValue: Cardinal): Boolean;
     function AddAll(const ACollection: IJclCardinalCollection): Boolean;
@@ -794,9 +797,6 @@ type
     function LastIndexOf(AValue: Cardinal): Integer;
     procedure SetValue(Index: Integer; AValue: Cardinal);
     function SubList(First, Count: Integer): IJclCardinalList;
-  public
-    constructor Create(const ACollection: IJclCardinalCollection);
-    destructor Destroy; override;
   end;
 
   TJclCardinalLinkedListIterator = class(TJclAbstractIterator, IJclCardinalIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -809,6 +809,8 @@ type
   public
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(const AOwnList: IJclCardinalList; ACursor: TJclCardinalLinkedListItem; AValid: Boolean; AStart: TItrStart);
     { IJclCardinalIterator }
     function Add(AValue: Cardinal): Boolean;
     procedure Extract;
@@ -828,8 +830,6 @@ type
     function MoveNext: Boolean;
     property Current: Cardinal read GetValue;
     {$ENDIF SUPPORTS_FOR_IN}
-  public
-    constructor Create(const AOwnList: IJclCardinalList; ACursor: TJclCardinalLinkedListItem; AValid: Boolean; AStart: TItrStart);
   end;
 
   TJclInt64LinkedListItem = class
@@ -849,6 +849,9 @@ type
     FEnd: TJclInt64LinkedListItem;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(const ACollection: IJclInt64Collection);
+    destructor Destroy; override;
     { IJclInt64Collection }
     function Add(const AValue: Int64): Boolean;
     function AddAll(const ACollection: IJclInt64Collection): Boolean;
@@ -878,9 +881,6 @@ type
     function LastIndexOf(const AValue: Int64): Integer;
     procedure SetValue(Index: Integer; const AValue: Int64);
     function SubList(First, Count: Integer): IJclInt64List;
-  public
-    constructor Create(const ACollection: IJclInt64Collection);
-    destructor Destroy; override;
   end;
 
   TJclInt64LinkedListIterator = class(TJclAbstractIterator, IJclInt64Iterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -893,6 +893,8 @@ type
   public
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(const AOwnList: IJclInt64List; ACursor: TJclInt64LinkedListItem; AValid: Boolean; AStart: TItrStart);
     { IJclInt64Iterator }
     function Add(const AValue: Int64): Boolean;
     procedure Extract;
@@ -912,8 +914,6 @@ type
     function MoveNext: Boolean;
     property Current: Int64 read GetValue;
     {$ENDIF SUPPORTS_FOR_IN}
-  public
-    constructor Create(const AOwnList: IJclInt64List; ACursor: TJclInt64LinkedListItem; AValid: Boolean; AStart: TItrStart);
   end;
 
   TJclPtrLinkedListItem = class
@@ -933,6 +933,9 @@ type
     FEnd: TJclPtrLinkedListItem;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(const ACollection: IJclPtrCollection);
+    destructor Destroy; override;
     { IJclPtrCollection }
     function Add(APtr: Pointer): Boolean;
     function AddAll(const ACollection: IJclPtrCollection): Boolean;
@@ -962,9 +965,6 @@ type
     function LastIndexOf(APtr: Pointer): Integer;
     procedure SetPointer(Index: Integer; APtr: Pointer);
     function SubList(First, Count: Integer): IJclPtrList;
-  public
-    constructor Create(const ACollection: IJclPtrCollection);
-    destructor Destroy; override;
   end;
 
   TJclPtrLinkedListIterator = class(TJclAbstractIterator, IJclPtrIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -977,6 +977,8 @@ type
   public
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(const AOwnList: IJclPtrList; ACursor: TJclPtrLinkedListItem; AValid: Boolean; AStart: TItrStart);
     { IJclPtrIterator }
     function Add(AValue: Pointer): Boolean;
     procedure Extract;
@@ -996,8 +998,6 @@ type
     function MoveNext: Boolean;
     property Current: Pointer read GetPointer;
     {$ENDIF SUPPORTS_FOR_IN}
-  public
-    constructor Create(const AOwnList: IJclPtrList; ACursor: TJclPtrLinkedListItem; AValid: Boolean; AStart: TItrStart);
   end;
 
   TJclLinkedListItem = class
@@ -1017,6 +1017,9 @@ type
     FEnd: TJclLinkedListItem;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(const ACollection: IJclCollection; AOwnsObjects: Boolean);
+    destructor Destroy; override;
     { IJclCollection }
     function Add(AObject: TObject): Boolean;
     function AddAll(const ACollection: IJclCollection): Boolean;
@@ -1046,9 +1049,6 @@ type
     function LastIndexOf(AObject: TObject): Integer;
     procedure SetObject(Index: Integer; AObject: TObject);
     function SubList(First, Count: Integer): IJclList;
-  public
-    constructor Create(const ACollection: IJclCollection; AOwnsObjects: Boolean);
-    destructor Destroy; override;
   end;
 
   TJclLinkedListIterator = class(TJclAbstractIterator, IJclIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -1061,6 +1061,8 @@ type
   public
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(const AOwnList: IJclList; ACursor: TJclLinkedListItem; AValid: Boolean; AStart: TItrStart);
     { IJclIterator }
     function Add(AObject: TObject): Boolean;
     procedure Extract;
@@ -1080,8 +1082,6 @@ type
     function MoveNext: Boolean;
     property Current: TObject read GetObject;
     {$ENDIF SUPPORTS_FOR_IN}
-  public
-    constructor Create(const AOwnList: IJclList; ACursor: TJclLinkedListItem; AValid: Boolean; AStart: TItrStart);
   end;
 
   {$IFDEF SUPPORTS_GENERICS}
@@ -1106,6 +1106,9 @@ type
     FEnd: TLinkedListItem;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(const ACollection: IJclCollection<T>; AOwnsItems: Boolean);
+    destructor Destroy; override;
     { IJclCollection<T> }
     function Add(const AItem: T): Boolean;
     function AddAll(const ACollection: IJclCollection<T>): Boolean;
@@ -1135,9 +1138,6 @@ type
     function LastIndexOf(const AItem: T): Integer;
     procedure SetItem(Index: Integer; const AItem: T);
     function SubList(First, Count: Integer): IJclList<T>;
-  public
-    constructor Create(const ACollection: IJclCollection<T>; AOwnsItems: Boolean);
-    destructor Destroy; override;
   end;
 
   TJclLinkedListIterator<T> = class(TJclAbstractIterator, IJclIterator<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -1150,6 +1150,8 @@ type
   public
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function CreateEmptyIterator: TJclAbstractIterator; override;
+  public
+    constructor Create(const AOwnList: IJclList<T>; ACursor: TJclLinkedList<T>.TLinkedListItem; AValid: Boolean; AStart: TItrStart);
     { IJclIterator<T> }
     function Add(const AItem: T): Boolean;
     procedure Extract;
@@ -1169,8 +1171,6 @@ type
     function MoveNext: Boolean;
     property Current: T read GetItem;
     {$ENDIF SUPPORTS_FOR_IN}
-  public
-    constructor Create(const AOwnList: IJclList<T>; ACursor: TJclLinkedList<T>.TLinkedListItem; AValid: Boolean; AStart: TItrStart);
   end;
 
   // E = External helper to compare items

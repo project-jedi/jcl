@@ -483,12 +483,18 @@ type
     procedure SetCaseSensitiveSearch(const Value: Boolean);
   protected
     FRefCount: Integer;
+    function CreateTask: TThread;
+    procedure TaskTerminated(Sender: TObject);
+    property NextTaskID: TFileSearchTaskID read GetNextTaskID;
+  public
+    constructor Create;
+    destructor Destroy; override;
+
+    { IInterface }
     function QueryInterface(const IID: TGUID; out Obj): HRESULT; virtual; stdcall;
     function _AddRef: Integer; stdcall;
     function _Release: Integer; stdcall;
-    function CreateTask: TThread;
-    procedure TaskTerminated(Sender: TObject);
-    // IJclFileEnumerator property access methods
+    { IJclFileEnumerator }
     function GetAttributeMask: TJclFileAttributeMask;
     function GetRootDirectories: TStrings;
     function GetRootDirectory: string;
@@ -528,10 +534,7 @@ type
     procedure SetSynchronizationMode(const Value: TFileEnumeratorSyncMode);
     procedure SetOnEnterDirectory(const Value: TFileHandler);
     procedure SetOnTerminateTask(const Value: TFileSearchTerminationEvent);
-    property NextTaskID: TFileSearchTaskID read GetNextTaskID;
-  public
-    constructor Create;
-    destructor Destroy; override;
+
     procedure AfterConstruction; override;
     procedure Assign(Source: TPersistent); override;
     function FillList(List: TStrings): TFileSearchTaskID;

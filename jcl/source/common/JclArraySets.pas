@@ -59,7 +59,7 @@ type
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   private
     function BinarySearch(const AInterface: IInterface): Integer;
-  protected
+  public
     { IJclIntfCollection }
     function Add(const AInterface: IInterface): Boolean;
     function AddAll(const ACollection: IJclIntfCollection): Boolean;
@@ -70,7 +70,6 @@ type
     procedure Intersect(const ACollection: IJclIntfCollection);
     procedure Subtract(const ACollection: IJclIntfCollection);
     procedure Union(const ACollection: IJclIntfCollection);
-  public
   end;
 
   TJclAnsiStrArraySet = class(TJclAnsiStrArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -80,7 +79,7 @@ type
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   private
     function BinarySearch(const AString: AnsiString): Integer;
-  protected
+  public
     { IJclAnsiStrCollection }
     function Add(const AString: AnsiString): Boolean; override;
     function AddAll(const ACollection: IJclAnsiStrCollection): Boolean; override;
@@ -91,7 +90,6 @@ type
     procedure Intersect(const ACollection: IJclAnsiStrCollection);
     procedure Subtract(const ACollection: IJclAnsiStrCollection);
     procedure Union(const ACollection: IJclAnsiStrCollection);
-  public
   end;
 
   TJclWideStrArraySet = class(TJclWideStrArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -101,7 +99,7 @@ type
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   private
     function BinarySearch(const AString: WideString): Integer;
-  protected
+  public
     { IJclWideStrCollection }
     function Add(const AString: WideString): Boolean; override;
     function AddAll(const ACollection: IJclWideStrCollection): Boolean; override;
@@ -112,7 +110,6 @@ type
     procedure Intersect(const ACollection: IJclWideStrCollection);
     procedure Subtract(const ACollection: IJclWideStrCollection);
     procedure Union(const ACollection: IJclWideStrCollection);
-  public
   end;
 
 {$IFDEF SUPPORTS_UNICODE_STRING}
@@ -123,7 +120,7 @@ type
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   private
     function BinarySearch(const AString: UnicodeString): Integer;
-  protected
+  public
     { IJclUnicodeStrCollection }
     function Add(const AString: UnicodeString): Boolean; override;
     function AddAll(const ACollection: IJclUnicodeStrCollection): Boolean; override;
@@ -134,7 +131,6 @@ type
     procedure Intersect(const ACollection: IJclUnicodeStrCollection);
     procedure Subtract(const ACollection: IJclUnicodeStrCollection);
     procedure Union(const ACollection: IJclUnicodeStrCollection);
-  public
   end;
 {$ENDIF SUPPORTS_UNICODE_STRING}
 
@@ -155,7 +151,7 @@ type
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   private
     function BinarySearch(const AValue: Single): Integer;
-  protected
+  public
     { IJclSingleCollection }
     function Add(const AValue: Single): Boolean;
     function AddAll(const ACollection: IJclSingleCollection): Boolean;
@@ -166,7 +162,6 @@ type
     procedure Intersect(const ACollection: IJclSingleCollection);
     procedure Subtract(const ACollection: IJclSingleCollection);
     procedure Union(const ACollection: IJclSingleCollection);
-  public
   end;
 
   TJclDoubleArraySet = class(TJclDoubleArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -176,7 +171,7 @@ type
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   private
     function BinarySearch(const AValue: Double): Integer;
-  protected
+  public
     { IJclDoubleCollection }
     function Add(const AValue: Double): Boolean;
     function AddAll(const ACollection: IJclDoubleCollection): Boolean;
@@ -187,7 +182,6 @@ type
     procedure Intersect(const ACollection: IJclDoubleCollection);
     procedure Subtract(const ACollection: IJclDoubleCollection);
     procedure Union(const ACollection: IJclDoubleCollection);
-  public
   end;
 
   TJclExtendedArraySet = class(TJclExtendedArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -197,7 +191,7 @@ type
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   private
     function BinarySearch(const AValue: Extended): Integer;
-  protected
+  public
     { IJclExtendedCollection }
     function Add(const AValue: Extended): Boolean;
     function AddAll(const ACollection: IJclExtendedCollection): Boolean;
@@ -208,7 +202,6 @@ type
     procedure Intersect(const ACollection: IJclExtendedCollection);
     procedure Subtract(const ACollection: IJclExtendedCollection);
     procedure Union(const ACollection: IJclExtendedCollection);
-  public
   end;
 
   {$IFDEF MATH_EXTENDED_PRECISION}
@@ -228,7 +221,7 @@ type
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   private
     function BinarySearch(AValue: Integer): Integer;
-  protected
+  public
     { IJclIntegerCollection }
     function Add(AValue: Integer): Boolean;
     function AddAll(const ACollection: IJclIntegerCollection): Boolean;
@@ -239,7 +232,6 @@ type
     procedure Intersect(const ACollection: IJclIntegerCollection);
     procedure Subtract(const ACollection: IJclIntegerCollection);
     procedure Union(const ACollection: IJclIntegerCollection);
-  public
   end;
 
   TJclCardinalArraySet = class(TJclCardinalArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -249,7 +241,7 @@ type
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   private
     function BinarySearch(AValue: Cardinal): Integer;
-  protected
+  public
     { IJclCardinalCollection }
     function Add(AValue: Cardinal): Boolean;
     function AddAll(const ACollection: IJclCardinalCollection): Boolean;
@@ -260,7 +252,6 @@ type
     procedure Intersect(const ACollection: IJclCardinalCollection);
     procedure Subtract(const ACollection: IJclCardinalCollection);
     procedure Union(const ACollection: IJclCardinalCollection);
-  public
   end;
 
   TJclInt64ArraySet = class(TJclInt64ArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -270,7 +261,7 @@ type
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   private
     function BinarySearch(const AValue: Int64): Integer;
-  protected
+  public
     { IJclInt64Collection }
     function Add(const AValue: Int64): Boolean;
     function AddAll(const ACollection: IJclInt64Collection): Boolean;
@@ -281,7 +272,6 @@ type
     procedure Intersect(const ACollection: IJclInt64Collection);
     procedure Subtract(const ACollection: IJclInt64Collection);
     procedure Union(const ACollection: IJclInt64Collection);
-  public
   end;
 
   TJclPtrArraySet = class(TJclPtrArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -291,7 +281,7 @@ type
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   private
     function BinarySearch(APtr: Pointer): Integer;
-  protected
+  public
     { IJclPtrCollection }
     function Add(APtr: Pointer): Boolean;
     function AddAll(const ACollection: IJclPtrCollection): Boolean;
@@ -302,7 +292,6 @@ type
     procedure Intersect(const ACollection: IJclPtrCollection);
     procedure Subtract(const ACollection: IJclPtrCollection);
     procedure Union(const ACollection: IJclPtrCollection);
-  public
   end;
 
   TJclArraySet = class(TJclArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -312,7 +301,7 @@ type
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   private
     function BinarySearch(AObject: TObject): Integer;
-  protected
+  public
     { IJclCollection }
     function Add(AObject: TObject): Boolean;
     function AddAll(const ACollection: IJclCollection): Boolean;
@@ -323,7 +312,6 @@ type
     procedure Intersect(const ACollection: IJclCollection);
     procedure Subtract(const ACollection: IJclCollection);
     procedure Union(const ACollection: IJclCollection);
-  public
   end;
 
   {$IFDEF SUPPORTS_GENERICS}
@@ -332,7 +320,7 @@ type
     IJclCollection<T>, IJclList<T>, IJclArray<T>, IJclSet<T>)
   private
     function BinarySearch(const AItem: T): Integer;
-  protected
+  public
     { IJclCollection<T> }
     function Add(const AItem: T): Boolean;
     function AddAll(const ACollection: IJclCollection<T>): Boolean;
@@ -343,7 +331,6 @@ type
     procedure Intersect(const ACollection: IJclCollection<T>);
     procedure Subtract(const ACollection: IJclCollection<T>);
     procedure Union(const ACollection: IJclCollection<T>);
-  public
   end;
 
   // E = External helper to compare items

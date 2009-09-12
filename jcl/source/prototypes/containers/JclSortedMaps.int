@@ -16,6 +16,9 @@
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(FromIndex, ToIndex, Count: Integer);
+  public
+    constructor Create(ACapacity: IntegerVALUEOWNERSHIPDECLARATIONKEYOWNERSHIPDECLARATION);
+    destructor Destroy; override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { STDMAPINTERFACENAME }
@@ -39,7 +42,4 @@
     function LastKey: KEYTYPENAME;
     function SubMap(KEYCONSTKEYWORDFromKey, ToKey: KEYTYPENAME): SORTEDMAPINTERFACENAME;
     function TailMap(KEYCONSTKEYWORDFromKey: KEYTYPENAME): SORTEDMAPINTERFACENAME;
-  public
-    constructor Create(ACapacity: IntegerVALUEOWNERSHIPDECLARATIONKEYOWNERSHIPDECLARATION);
-    destructor Destroy; override;
   end;*)

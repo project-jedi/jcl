@@ -146,10 +146,6 @@ type
     FDeviceID: Cardinal;
     FDeviceCaps: MIDIOUTCAPS;
     FVolume: DWORD;
-    function GetChannelVolume(Channel: TStereoChannel): Word;
-    procedure SetChannelVolume(Channel: TStereoChannel; const Value: Word);
-    function GetVolume: Word;
-    procedure SetVolume(const Value: Word);
     procedure SetLRVolume(const LeftValue, RightValue: Word);
   protected
     function GetName: string; override;
@@ -160,6 +156,11 @@ type
     destructor Destroy; override;
     property DeviceID: Cardinal read FDeviceID;
     property Name: string read GetName;
+    { IJclWinMidiOut }
+    function GetChannelVolume(Channel: TStereoChannel): Word;
+    procedure SetChannelVolume(Channel: TStereoChannel; const Value: Word);
+    function GetVolume: Word;
+    procedure SetVolume(const Value: Word);
     property ChannelVolume[Channel: TStereoChannel]: Word read GetChannelVolume write SetChannelVolume;
     property Volume: Word read GetVolume write SetVolume;
   end;

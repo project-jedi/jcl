@@ -22,6 +22,9 @@
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure AutoPack; override;
+  public
+    constructor Create(CONSTRUCTORPARAMETERS);
+    destructor Destroy; override;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -48,9 +51,6 @@
     function GetRoot: TREEITRINTERFACENAME;
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
-  public
-    constructor Create(CONSTRUCTORPARAMETERS);
-    destructor Destroy; override;
     property Root: TREEITRINTERFACENAME read GetRoot;
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;*)
@@ -66,6 +66,8 @@
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function GetNextCursor: NODETYPENAME; virtual; abstract;
     function GetPreviousCursor: NODETYPENAME; virtual; abstract;
+  public
+    constructor Create(const AOwnTree: COLLECTIONINTERFACENAME; ACursor: NODETYPENAME; AValid: Boolean; AStart: TItrStart);
     { STDITRINTERFACENAME }
     function Add(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;
     procedure Extract;
@@ -104,8 +106,6 @@
     function HasRight: Boolean;
     function Left: TYPENAME;
     function Right: TYPENAME;
-  public
-    constructor Create(const AOwnTree: COLLECTIONINTERFACENAME; ACursor: NODETYPENAME; AValid: Boolean; AStart: TItrStart);
   end;
 
   PREORDERITRCLASSNAME = class(BASEITRCLASSNAME, STDITRINTERFACENAME, STDTREEITRINTERFACENAME, BINTREEITRINTERFACENAME,

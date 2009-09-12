@@ -85,6 +85,10 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -103,10 +107,6 @@ type
     function Remove(const Key: IInterface): IInterface;
     function Size: Integer;
     function Values: IJclIntfCollection;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
   TJclAnsiStrIntfHashEntry = record
@@ -136,6 +136,10 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -154,10 +158,6 @@ type
     function Remove(const Key: AnsiString): IInterface;
     function Size: Integer;
     function Values: IJclIntfCollection;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
   TJclIntfAnsiStrHashEntry = record
@@ -188,6 +188,10 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -206,10 +210,6 @@ type
     function Remove(const Key: IInterface): AnsiString;
     function Size: Integer;
     function Values: IJclAnsiStrCollection;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
   TJclAnsiStrAnsiStrHashEntry = record
@@ -239,6 +239,10 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -257,10 +261,6 @@ type
     function Remove(const Key: AnsiString): AnsiString;
     function Size: Integer;
     function Values: IJclAnsiStrCollection;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
   TJclWideStrIntfHashEntry = record
@@ -290,6 +290,10 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -308,10 +312,6 @@ type
     function Remove(const Key: WideString): IInterface;
     function Size: Integer;
     function Values: IJclIntfCollection;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
   TJclIntfWideStrHashEntry = record
@@ -342,6 +342,10 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -360,10 +364,6 @@ type
     function Remove(const Key: IInterface): WideString;
     function Size: Integer;
     function Values: IJclWideStrCollection;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
   TJclWideStrWideStrHashEntry = record
@@ -393,6 +393,10 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -411,10 +415,6 @@ type
     function Remove(const Key: WideString): WideString;
     function Size: Integer;
     function Values: IJclWideStrCollection;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
 {$IFDEF SUPPORTS_UNICODE_STRING}
@@ -445,6 +445,10 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -463,10 +467,6 @@ type
     function Remove(const Key: UnicodeString): IInterface;
     function Size: Integer;
     function Values: IJclIntfCollection;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
   TJclIntfUnicodeStrHashEntry = record
@@ -497,6 +497,10 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -515,10 +519,6 @@ type
     function Remove(const Key: IInterface): UnicodeString;
     function Size: Integer;
     function Values: IJclUnicodeStrCollection;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
   TJclUnicodeStrUnicodeStrHashEntry = record
@@ -548,6 +548,10 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -566,10 +570,6 @@ type
     function Remove(const Key: UnicodeString): UnicodeString;
     function Size: Integer;
     function Values: IJclUnicodeStrCollection;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 {$ENDIF SUPPORTS_UNICODE_STRING}
 
@@ -616,6 +616,10 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -634,10 +638,6 @@ type
     function Remove(const Key: Single): IInterface;
     function Size: Integer;
     function Values: IJclIntfCollection;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
   TJclIntfSingleHashEntry = record
@@ -668,6 +668,10 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -686,10 +690,6 @@ type
     function Remove(const Key: IInterface): Single;
     function Size: Integer;
     function Values: IJclSingleCollection;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
   TJclSingleSingleHashEntry = record
@@ -719,6 +719,10 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -737,10 +741,6 @@ type
     function Remove(const Key: Single): Single;
     function Size: Integer;
     function Values: IJclSingleCollection;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
   TJclDoubleIntfHashEntry = record
@@ -770,6 +770,10 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -788,10 +792,6 @@ type
     function Remove(const Key: Double): IInterface;
     function Size: Integer;
     function Values: IJclIntfCollection;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
   TJclIntfDoubleHashEntry = record
@@ -822,6 +822,10 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -840,10 +844,6 @@ type
     function Remove(const Key: IInterface): Double;
     function Size: Integer;
     function Values: IJclDoubleCollection;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
   TJclDoubleDoubleHashEntry = record
@@ -873,6 +873,10 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -891,10 +895,6 @@ type
     function Remove(const Key: Double): Double;
     function Size: Integer;
     function Values: IJclDoubleCollection;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
   TJclExtendedIntfHashEntry = record
@@ -924,6 +924,10 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -942,10 +946,6 @@ type
     function Remove(const Key: Extended): IInterface;
     function Size: Integer;
     function Values: IJclIntfCollection;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
   TJclIntfExtendedHashEntry = record
@@ -976,6 +976,10 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -994,10 +998,6 @@ type
     function Remove(const Key: IInterface): Extended;
     function Size: Integer;
     function Values: IJclExtendedCollection;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
   TJclExtendedExtendedHashEntry = record
@@ -1027,6 +1027,10 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1045,10 +1049,6 @@ type
     function Remove(const Key: Extended): Extended;
     function Size: Integer;
     function Values: IJclExtendedCollection;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
   {$IFDEF MATH_EXTENDED_PRECISION}
@@ -1094,6 +1094,10 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1112,10 +1116,6 @@ type
     function Remove(Key: Integer): IInterface;
     function Size: Integer;
     function Values: IJclIntfCollection;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
   TJclIntfIntegerHashEntry = record
@@ -1146,6 +1146,10 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1164,10 +1168,6 @@ type
     function Remove(const Key: IInterface): Integer;
     function Size: Integer;
     function Values: IJclIntegerCollection;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
   TJclIntegerIntegerHashEntry = record
@@ -1197,6 +1197,10 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1215,10 +1219,6 @@ type
     function Remove(Key: Integer): Integer;
     function Size: Integer;
     function Values: IJclIntegerCollection;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
   TJclCardinalIntfHashEntry = record
@@ -1248,6 +1248,10 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1266,10 +1270,6 @@ type
     function Remove(Key: Cardinal): IInterface;
     function Size: Integer;
     function Values: IJclIntfCollection;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
   TJclIntfCardinalHashEntry = record
@@ -1300,6 +1300,10 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1318,10 +1322,6 @@ type
     function Remove(const Key: IInterface): Cardinal;
     function Size: Integer;
     function Values: IJclCardinalCollection;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
   TJclCardinalCardinalHashEntry = record
@@ -1351,6 +1351,10 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1369,10 +1373,6 @@ type
     function Remove(Key: Cardinal): Cardinal;
     function Size: Integer;
     function Values: IJclCardinalCollection;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
   TJclInt64IntfHashEntry = record
@@ -1402,6 +1402,10 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1420,10 +1424,6 @@ type
     function Remove(const Key: Int64): IInterface;
     function Size: Integer;
     function Values: IJclIntfCollection;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
   TJclIntfInt64HashEntry = record
@@ -1454,6 +1454,10 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1472,10 +1476,6 @@ type
     function Remove(const Key: IInterface): Int64;
     function Size: Integer;
     function Values: IJclInt64Collection;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
   TJclInt64Int64HashEntry = record
@@ -1505,6 +1505,10 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1523,10 +1527,6 @@ type
     function Remove(const Key: Int64): Int64;
     function Size: Integer;
     function Values: IJclInt64Collection;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
   TJclPtrIntfHashEntry = record
@@ -1556,6 +1556,10 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1574,10 +1578,6 @@ type
     function Remove(Key: Pointer): IInterface;
     function Size: Integer;
     function Values: IJclIntfCollection;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
   TJclIntfPtrHashEntry = record
@@ -1608,6 +1608,10 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1626,10 +1630,6 @@ type
     function Remove(const Key: IInterface): Pointer;
     function Size: Integer;
     function Values: IJclPtrCollection;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
   TJclPtrPtrHashEntry = record
@@ -1659,6 +1659,10 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1677,10 +1681,6 @@ type
     function Remove(Key: Pointer): Pointer;
     function Size: Integer;
     function Values: IJclPtrCollection;
-  public
-    constructor Create(ACapacity: Integer);
-    destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
   TJclIntfHashEntry = record
@@ -1717,6 +1717,10 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
+    destructor Destroy; override;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1735,10 +1739,6 @@ type
     function Remove(const Key: IInterface): TObject;
     function Size: Integer;
     function Values: IJclCollection;
-  public
-    constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
-    destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
   TJclAnsiStrHashEntry = record
@@ -1774,6 +1774,10 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
+    destructor Destroy; override;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1792,10 +1796,6 @@ type
     function Remove(const Key: AnsiString): TObject;
     function Size: Integer;
     function Values: IJclCollection;
-  public
-    constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
-    destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
   TJclWideStrHashEntry = record
@@ -1831,6 +1831,10 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
+    destructor Destroy; override;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1849,10 +1853,6 @@ type
     function Remove(const Key: WideString): TObject;
     function Size: Integer;
     function Values: IJclCollection;
-  public
-    constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
-    destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
 {$IFDEF SUPPORTS_UNICODE_STRING}
@@ -1889,6 +1889,10 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
+    destructor Destroy; override;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1907,10 +1911,6 @@ type
     function Remove(const Key: UnicodeString): TObject;
     function Size: Integer;
     function Values: IJclCollection;
-  public
-    constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
-    destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 {$ENDIF SUPPORTS_UNICODE_STRING}
 
@@ -1957,6 +1957,10 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
+    destructor Destroy; override;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1975,10 +1979,6 @@ type
     function Remove(const Key: Single): TObject;
     function Size: Integer;
     function Values: IJclCollection;
-  public
-    constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
-    destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
   TJclDoubleHashEntry = record
@@ -2014,6 +2014,10 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
+    destructor Destroy; override;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -2032,10 +2036,6 @@ type
     function Remove(const Key: Double): TObject;
     function Size: Integer;
     function Values: IJclCollection;
-  public
-    constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
-    destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
   TJclExtendedHashEntry = record
@@ -2071,6 +2071,10 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
+    destructor Destroy; override;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -2089,10 +2093,6 @@ type
     function Remove(const Key: Extended): TObject;
     function Size: Integer;
     function Values: IJclCollection;
-  public
-    constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
-    destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
   {$IFDEF MATH_EXTENDED_PRECISION}
@@ -2138,6 +2138,10 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
+    destructor Destroy; override;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -2156,10 +2160,6 @@ type
     function Remove(Key: Integer): TObject;
     function Size: Integer;
     function Values: IJclCollection;
-  public
-    constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
-    destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
   TJclCardinalHashEntry = record
@@ -2195,6 +2195,10 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
+    destructor Destroy; override;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -2213,10 +2217,6 @@ type
     function Remove(Key: Cardinal): TObject;
     function Size: Integer;
     function Values: IJclCollection;
-  public
-    constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
-    destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
   TJclInt64HashEntry = record
@@ -2252,6 +2252,10 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
+    destructor Destroy; override;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -2270,10 +2274,6 @@ type
     function Remove(const Key: Int64): TObject;
     function Size: Integer;
     function Values: IJclCollection;
-  public
-    constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
-    destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
   TJclPtrHashEntry = record
@@ -2309,6 +2309,10 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
+    destructor Destroy; override;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -2327,10 +2331,6 @@ type
     function Remove(Key: Pointer): TObject;
     function Size: Integer;
     function Values: IJclCollection;
-  public
-    constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
-    destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
   TJclHashEntry = record
@@ -2371,6 +2371,10 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer; AOwnsValues: Boolean; AOwnsKeys: Boolean);
+    destructor Destroy; override;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -2389,10 +2393,6 @@ type
     function Remove(Key: TObject): TObject;
     function Size: Integer;
     function Values: IJclCollection;
-  public
-    constructor Create(ACapacity: Integer; AOwnsValues: Boolean; AOwnsKeys: Boolean);
-    destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
   {$IFDEF SUPPORTS_GENERICS}
@@ -2437,6 +2437,10 @@ type
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: Integer; AOwnsValues: Boolean; AOwnsKeys: Boolean);
+    destructor Destroy; override;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -2455,10 +2459,6 @@ type
     function Remove(const Key: TKey): TValue;
     function Size: Integer;
     function Values: IJclCollection<TValue>;
-  public
-    constructor Create(ACapacity: Integer; AOwnsValues: Boolean; AOwnsKeys: Boolean);
-    destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
 
   // E = external helper to compare and hash items

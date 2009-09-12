@@ -133,7 +133,8 @@ type
   TIdeNotifier = class(TNotifierObject, IOTANotifier, IOTAIDENotifier, IOTAIDENotifier50)
   private
     FDebugExtension: TJclDebugExtension;
-  protected
+  public
+    constructor Create(ADebugExtension: TJclDebugExtension);
     { IOTAIDENotifier }
     procedure FileNotification(NotifyCode: TOTAFileNotification; const FileName: string; var Cancel: Boolean);
     procedure BeforeCompile(const Project: IOTAProject; var Cancel: Boolean); overload;
@@ -141,8 +142,6 @@ type
     { IOTAIDENotifier50 }
     procedure BeforeCompile(const Project: IOTAProject; IsCodeInsight: Boolean; var Cancel: Boolean); overload;
     procedure AfterCompile(Succeeded: Boolean; IsCodeInsight: Boolean); overload;
-  public
-    constructor Create(ADebugExtension: TJclDebugExtension);
   end;
 
   {$IFDEF BDS7_UP}
@@ -150,13 +149,12 @@ type
   TProjectManagerMultipleNotifier = class(TNotifierObject, IOTANotifier, IOTAProjectMenuItemCreatorNotifier)
   private
     FDebugExtension: TJclDebugExtension;
-  protected
+  public
+    constructor Create(ADebugExtension: TJclDebugExtension);
     procedure MenuExecute(const MenuContextList: IInterfaceList);
     { IOTAProjectMenuItemCreatorNotifier }
     procedure AddMenu(const Project: IOTAProject; const Ident: TStrings;
       const ProjectManagerMenuList: IInterfaceList; IsMultiSelect: Boolean);
-  public
-    constructor Create(ADebugExtension: TJclDebugExtension);
   end;
   {$ELSE ~BDS7_UP}
   {$IFDEF BDS4_UP}
@@ -166,16 +164,15 @@ type
     FDebugExtension: TJclDebugExtension;
     FOTAProjectManager: IOTAProjectManager;
     FNTAServices: INTAServices;
-    procedure GenerateJdbgSubMenuClick(Sender: TObject);
-    procedure InsertJdbgSubMenuClick(Sender: TObject);
-    procedure DeleteMapFileSubMenuClick(Sender: TObject);
-  protected
-    { INTAProjectMenuCreatorNotifier }
-    function AddMenu(const Ident: string): TMenuItem;
-    function CanHandle(const Ident: string): Boolean;
   public
     constructor Create(ADebugExtension: TJclDebugExtension; const ANTAServices: INTAServices;
       const AOTAProjectManager: IOTAProjectManager);
+    procedure GenerateJdbgSubMenuClick(Sender: TObject);
+    procedure InsertJdbgSubMenuClick(Sender: TObject);
+    procedure DeleteMapFileSubMenuClick(Sender: TObject);
+    { INTAProjectMenuCreatorNotifier }
+    function AddMenu(const Ident: string): TMenuItem;
+    function CanHandle(const Ident: string): Boolean;
   end;
   {$ENDIF BDS4_UP}
   {$ENDIF ~BDS7_UP}

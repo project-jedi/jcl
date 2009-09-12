@@ -56,6 +56,10 @@ type
     FRootDir: string;
     procedure DoProgress(AStatus: TLocationInfoProcessorProgressStatus; APos, AMax: Integer; const AText: string);
   public
+    property OnProgress: TJclLocationInfoProgressEvent read FOnProgress write FOnProgress;
+    property Options: TExceptionViewerOption read FOptions write FOptions;
+    property RootDir: string read FRootDir write FRootDir;
+
     { IInterface }
     function QueryInterface(const IID: TGUID; out Obj): HRESULT; stdcall;
     function _AddRef: Integer; stdcall;
@@ -64,9 +68,7 @@ type
     function GetModuleInfoList: IJclModuleInfoList;
     procedure PrepareLocationInfoList(AStack: IJclPreparedLocationInfoList; AForce: Boolean = False);
     procedure SetModuleInfoList(AValue: IJclModuleInfoList);
-    property OnProgress: TJclLocationInfoProgressEvent read FOnProgress write FOnProgress;
-    property Options: TExceptionViewerOption read FOptions write FOptions;
-    property RootDir: string read FRootDir write FRootDir;
+    property ModuleList: IJclModuleInfoList read GetModuleInfoList write SetModuleInfoList;
   end;
 
 {$IFDEF UNITVERSIONING}

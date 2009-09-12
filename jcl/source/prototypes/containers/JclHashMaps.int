@@ -22,6 +22,10 @@
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+  public
+    constructor Create(ACapacity: IntegerVALUEOWNERSHIPDECLARATIONKEYOWNERSHIPDECLARATION);
+    destructor Destroy; override;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -40,8 +44,4 @@
     function Remove(KEYCONSTKEYWORDKey: KEYTYPENAME): VALUETYPENAME;
     function Size: Integer;
     function Values: VALUECOLLECTIONINTERFACENAME;
-  public
-    constructor Create(ACapacity: IntegerVALUEOWNERSHIPDECLARATIONKEYOWNERSHIPDECLARATION);
-    destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;*)

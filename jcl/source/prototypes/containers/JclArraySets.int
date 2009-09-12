@@ -6,7 +6,7 @@
     COLLECTIONINTERFACENAME, LISTINTERFACENAME, ARRAYINTERFACENAME, SETINTERFACENAME)SECTIONADDITIONAL
   private
     function BinarySearch(CONSTKEYWORDPARAMETERNAME: TYPENAME): Integer;
-  protected
+  public
     { COLLECTIONINTERFACENAME }
     function Add(CONSTKEYWORDPARAMETERNAME: TYPENAME): Boolean;COLLECTIONFLAGS
     function AddAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;COLLECTIONFLAGS
@@ -17,5 +17,4 @@
     procedure Intersect(const ACollection: COLLECTIONINTERFACENAME);
     procedure Subtract(const ACollection: COLLECTIONINTERFACENAME);
     procedure Union(const ACollection: COLLECTIONINTERFACENAME);
-  public
   end;*)
