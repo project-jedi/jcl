@@ -142,8 +142,9 @@ type
     constructor Create(const MapFileName: TFileName); overload;
     destructor Destroy; override;
     procedure Parse;
-    class function MapStringToStr(MapString: PJclMapString; IgnoreSpaces: Boolean = False): string;
+    class function MapStringToFileName(MapString: PJclMapString): string;
     class function MapStringToModuleName(MapString: PJclMapString): string;
+    class function MapStringToStr(MapString: PJclMapString; IgnoreSpaces: Boolean = False): string;
     property LinkerBug: Boolean read FLinkerBug;
     property LinkerBugUnitName: string read GetLinkerBugUnitName;
     property Stream: TJclFileMappingStream read FStream;
@@ -1267,6 +1268,28 @@ begin
   Result := MapStringToStr(FLinkerBugUnitName);
 end;
 
+class function TJclAbstractMapParser.MapStringToFileName(MapString: PJclMapString): string;
+var
+  PEnd: PJclMapString;
+begin
+  if MapString = nil then
+  begin
+    Result := '';
+    Exit;
+  end;
+  PEnd := MapString;
+  while (PEnd^ <> '=') and not CharIsReturn(Char(PEnd^)) do
+    Inc(PEnd);
+  if (PEnd^ = '=') then
+  begin
+    while (PEnd >= MapString) and not (PEnd^ = NativeSpace) do
+      Dec(PEnd);
+    while (PEnd >= MapString) and ((PEnd-1)^ = NativeSpace) do
+      Dec(PEnd);
+  end;
+  SetString(Result, MapString, PEnd - MapString);
+end;
+
 class function TJclAbstractMapParser.MapStringToModuleName(MapString: PJclMapString): string;
 var
   PStart, PEnd, PExtension: PJclMapString;
@@ -1896,11 +1919,22 @@ var
   I: Integer;
   ModuleStartVA: DWORD;
 begin
+  // try with line numbers first (Delphi compliance)
   ModuleStartVA := ModuleStartFromAddr(Addr);
   Result := '';
   I := SearchDynArray(FSourceNames, SizeOf(FSourceNames[0]), Search_MapProcName, @Addr, True);
   if (I <> -1) and (FSourceNames[I].VA >= ModuleStartVA) then
     Result := MapStringToStr(FSourceNames[I].ProcName);
+  if Result = '' then
+  begin
+    // try with module names (C++Builder compliance)
+    for I := Length(FSegments) - 1 downto 0 do
+      if (FSegments[I].StartVA <= Addr) and (Addr < FSegments[I].EndVA) then
+    begin
+      Result := MapStringToFileName(FSegments[I].UnitName);
+      Break;
+    end;
+  end;
 end;
 
 // JCL binary debug format string encoding/decoding routines
