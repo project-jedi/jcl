@@ -213,7 +213,7 @@ type
   public
     constructor Create(AKind: TJclLocalesKind = lkInstalled);
     destructor Destroy; override;
-    procedure FillStrings(Strings: TStrings; InfoType: Integer);
+    procedure FillStrings(AStrings: TStrings; InfoType: Integer);
     property CodePages: TStrings read GetCodePages;
     property ItemFromLangID[LangID: LANGID]: TJclLocaleInfo read GetItemFromLangID;
     property ItemFromLangIDPrimary[LangIDPrimary: Word]: TJclLocaleInfo read GetItemFromLangIDPrimary;
@@ -699,17 +699,17 @@ begin
   end;
 end;
 
-procedure TJclLocalesList.FillStrings(Strings: TStrings; InfoType: Integer);
+procedure TJclLocalesList.FillStrings(AStrings: TStrings; InfoType: Integer);
 var
   I: Integer;
 begin
-  Strings.BeginUpdate;
+  AStrings.BeginUpdate;
   try
     for I := 0 to Count - 1 do
       with Items[I] do
-        Strings.AddObject(StringInfo[InfoType], Pointer(LocaleId));
+        AStrings.AddObject(StringInfo[InfoType], Pointer(LocaleId));
   finally
-    Strings.EndUpdate;
+    AStrings.EndUpdate;
   end;
 end;
 

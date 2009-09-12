@@ -5497,12 +5497,16 @@ begin
   Result := RegisteredThreadList;
 end;
 
+type
+  TKernel32_CreateThread = function(SecurityAttributes: Pointer; StackSize: LongWord;
+    ThreadFunc: TThreadFunc; Parameter: Pointer;
+    CreationFlags: LongWord; var ThreadId: LongWord): Integer; stdcall;
+  TKernel32_ExitThread = procedure(ExitCode: Integer); stdcall;
+
 var
   ThreadsHooked: Boolean;
-  Kernel32_CreateThread: function(SecurityAttributes: Pointer; StackSize: LongWord;
-    ThreadFunc: TThreadFunc; Parameter: Pointer;
-    CreationFlags: LongWord; var ThreadId: LongWord): Integer; stdcall = nil;
-  Kernel32_ExitThread: procedure(ExitCode: Integer); stdcall = nil;
+  Kernel32_CreateThread: TKernel32_CreateThread = nil;
+  Kernel32_ExitThread: TKernel32_ExitThread = nil;
 
 function HookedCreateThread(SecurityAttributes: Pointer; StackSize: LongWord;
   ThreadFunc: TThreadFunc; Parameter: Pointer;
