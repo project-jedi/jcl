@@ -442,30 +442,30 @@ const
   HalftonesPerOctave = 12;
 begin
   case Note mod HalftonesPerOctave of
-     0:
-       Result := RsOctaveC;
-     1:
-       Result := RsOctaveCSharp;
-     2:
-       Result := RsOctaveD;
-     3:
-       Result := RsOctaveDSharp;
-     4:
-       Result := RsOctaveE;
-     5:
-       Result := RsOctaveF;
-     6:
-       Result := RsOctaveFSharp;
-     7:
-       Result := RsOctaveG;
-     8:
-       Result := RsOctaveGSharp;
-     9:
-       Result := RsOctaveA;
+    0:
+      Result := LoadResString(@RsOctaveC);
+    1:
+      Result := LoadResString(@RsOctaveCSharp);
+    2:
+      Result := LoadResString(@RsOctaveD);
+    3:
+      Result := LoadResString(@RsOctaveDSharp);
+    4:
+      Result := LoadResString(@RsOctaveE);
+    5:
+      Result := LoadResString(@RsOctaveF);
+    6:
+      Result := LoadResString(@RsOctaveFSharp);
+    7:
+      Result := LoadResString(@RsOctaveG);
+    8:
+      Result := LoadResString(@RsOctaveGSharp);
+    9:
+      Result := LoadResString(@RsOctaveA);
     10:
-      Result := RsOctaveASharp;
+      Result := LoadResString(@RsOctaveASharp);
     11:
-      Result := RsOctaveB;
+      Result := LoadResString(@RsOctaveB);
   end;
   Result := Format('%s%d', [Result, Note div HalftonesPerOctave - 2]);
 end;

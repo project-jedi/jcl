@@ -69,6 +69,7 @@ const
 implementation
 
 uses
+  JclVclResources,
   JclFileUtils, JclSysUtils, JclRegistry, JclStrings;
 
 const
@@ -94,11 +95,6 @@ const
   JclVersionControlCVSUpdateVerb = 'CVSUpdate';
   JclVersionControlCVSUpdateDialogVerb = 'CVSUpdateDialog';
   JclVersionControlCVSUnEditVerb = 'CVSUnedit';
-
-resourcestring
-  RsVersionCtrlCVSName = 'cvs';
-  RsEEmptyFileName = 'Error: empty file name';
-  RSENoTortoiseCVS = 'TortoiseCVS is not detected on the system';
 
 //=== TJclVersionControlCVS ==================================================
 
@@ -258,7 +254,7 @@ end;
 
 function TJclVersionControlCVS.GetName: string;
 begin
-  Result := RsVersionCtrlCVSName;
+  Result := LoadResString(@RsVersionCtrlCVSName);
 end;
 
 function TJclVersionControlCVS.GetSandboxActions(

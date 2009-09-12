@@ -295,7 +295,7 @@ implementation
 uses
   Classes, Consts,
   Math,
-  JclResources, JclSysInfo, JclLogic;
+  JclVclResources, JclSysInfo, JclLogic;
 
 type
   // resampling support types

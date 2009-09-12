@@ -7616,28 +7616,28 @@ constructor EJclWin32Error.Create(const Msg: string);
 begin
   FLastError := GetLastError;
   FLastErrorMsg := SysErrorMessage(FLastError);
-  inherited CreateFmt(Msg + NativeLineBreak + RsWin32Prefix, [FLastErrorMsg, FLastError]);
+  inherited CreateResFmt(@RsWin32Error, [FLastErrorMsg, FLastError, NativeLineBreak, Msg]);
 end;
 
 constructor EJclWin32Error.CreateFmt(const Msg: string; const Args: array of const);
 begin
   FLastError := GetLastError;
   FLastErrorMsg := SysErrorMessage(FLastError);
-  inherited CreateFmt(Msg + NativeLineBreak + Format(RsWin32Prefix, [FLastErrorMsg, FLastError]), Args);
+  inherited CreateResFmt(@RsWin32Error, [FLastErrorMsg, FLastError, NativeLineBreak, Format(Msg, Args)]);
 end;
 
 constructor EJclWin32Error.CreateRes(Ident: Integer);
 begin
   FLastError := GetLastError;
   FLastErrorMsg := SysErrorMessage(FLastError);
-  inherited CreateFmt(LoadStr(Ident) + NativeLineBreak + RsWin32Prefix, [FLastErrorMsg, FLastError]);
+  inherited CreateResFmt(@RsWin32Error, [FLastErrorMsg, FLastError, NativeLineBreak, LoadStr(Ident)]);
 end;
 
 constructor EJclWin32Error.CreateRes(ResStringRec: PResStringRec);
 begin
   FLastError := GetLastError;
   FLastErrorMsg := SysErrorMessage(FLastError);
-  inherited CreateFmt(LoadResString(ResStringRec) + NativeLineBreak + RsWin32Prefix, [FLastErrorMsg, FLastError]);
+  inherited CreateResFmt(@RsWin32Error, [FLastErrorMsg, FLastError, NativeLineBreak, LoadResString(ResStringRec)]);
 end;
 
 

@@ -3180,25 +3180,25 @@ class function TJclPeImage.DebugTypeNames(DebugType: DWORD): string;
 begin
   case DebugType of
     IMAGE_DEBUG_TYPE_UNKNOWN:
-      Result := RsPeDEBUG_UNKNOWN;
+      Result := LoadResString(@RsPeDEBUG_UNKNOWN);
     IMAGE_DEBUG_TYPE_COFF:
-      Result := RsPeDEBUG_COFF;
+      Result := LoadResString(@RsPeDEBUG_COFF);
     IMAGE_DEBUG_TYPE_CODEVIEW:
-      Result := RsPeDEBUG_CODEVIEW;
+      Result := LoadResString(@RsPeDEBUG_CODEVIEW);
     IMAGE_DEBUG_TYPE_FPO:
-      Result := RsPeDEBUG_FPO;
+      Result := LoadResString(@RsPeDEBUG_FPO);
     IMAGE_DEBUG_TYPE_MISC:
-      Result := RsPeDEBUG_MISC;
+      Result := LoadResString(@RsPeDEBUG_MISC);
     IMAGE_DEBUG_TYPE_EXCEPTION:
-      Result := RsPeDEBUG_EXCEPTION;
+      Result := LoadResString(@RsPeDEBUG_EXCEPTION);
     IMAGE_DEBUG_TYPE_FIXUP:
-      Result := RsPeDEBUG_FIXUP;
+      Result := LoadResString(@RsPeDEBUG_FIXUP);
     IMAGE_DEBUG_TYPE_OMAP_TO_SRC:
-      Result := RsPeDEBUG_OMAP_TO_SRC;
+      Result := LoadResString(@RsPeDEBUG_OMAP_TO_SRC);
     IMAGE_DEBUG_TYPE_OMAP_FROM_SRC:
-      Result := RsPeDEBUG_OMAP_FROM_SRC;
+      Result := LoadResString(@RsPeDEBUG_OMAP_FROM_SRC);
   else
-    Result := '???';
+    Result := LoadResString(@RsPeDEBUG_UNKNOWN);
   end;
 end;
 
@@ -3214,37 +3214,37 @@ class function TJclPeImage.DirectoryNames(Directory: Word): string;
 begin
   case Directory of
     IMAGE_DIRECTORY_ENTRY_EXPORT:
-      Result := RsPeImg_00;
+      Result := LoadResString(@RsPeImg_00);
     IMAGE_DIRECTORY_ENTRY_IMPORT:
-      Result := RsPeImg_01;
+      Result := LoadResString(@RsPeImg_01);
     IMAGE_DIRECTORY_ENTRY_RESOURCE:
-      Result := RsPeImg_02;
+      Result := LoadResString(@RsPeImg_02);
     IMAGE_DIRECTORY_ENTRY_EXCEPTION:
-      Result := RsPeImg_03;
+      Result := LoadResString(@RsPeImg_03);
     IMAGE_DIRECTORY_ENTRY_SECURITY:
-      Result := RsPeImg_04;
+      Result := LoadResString(@RsPeImg_04);
     IMAGE_DIRECTORY_ENTRY_BASERELOC:
-      Result := RsPeImg_05;
+      Result := LoadResString(@RsPeImg_05);
     IMAGE_DIRECTORY_ENTRY_DEBUG:
-      Result := RsPeImg_06;
+      Result := LoadResString(@RsPeImg_06);
     IMAGE_DIRECTORY_ENTRY_COPYRIGHT:
-      Result := RsPeImg_07;
+      Result := LoadResString(@RsPeImg_07);
     IMAGE_DIRECTORY_ENTRY_GLOBALPTR:
-      Result := RsPeImg_08;
+      Result := LoadResString(@RsPeImg_08);
     IMAGE_DIRECTORY_ENTRY_TLS:
-      Result := RsPeImg_09;
+      Result := LoadResString(@RsPeImg_09);
     IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG:
-      Result := RsPeImg_10;
+      Result := LoadResString(@RsPeImg_10);
     IMAGE_DIRECTORY_ENTRY_BOUND_IMPORT:
-      Result := RsPeImg_11;
+      Result := LoadResString(@RsPeImg_11);
     IMAGE_DIRECTORY_ENTRY_IAT:
-      Result := RsPeImg_12;
+      Result := LoadResString(@RsPeImg_12);
     IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT:
-      Result := RsPeImg_13;
+      Result := LoadResString(@RsPeImg_13);
     IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR:
-      Result := RsPeImg_14;
+      Result := LoadResString(@RsPeImg_14);
   else
-    Result := Format('reserved [%.2d]', [Directory]);
+    Result := Format(LoadResString(@RsPeImg_Reserved), [Directory]);
   end;
 end;
 
@@ -3360,62 +3360,62 @@ function TJclPeImage.GetHeaderValues(Index: TJclPeHeader): string;
   begin
     case Value of
       IMAGE_FILE_MACHINE_UNKNOWN:
-        Result := RsPeMACHINE_UNKNOWN;
+        Result := LoadResString(@RsPeMACHINE_UNKNOWN);
       IMAGE_FILE_MACHINE_I386:
-        Result := RsPeMACHINE_I386;
+        Result := LoadResString(@RsPeMACHINE_I386);
       IMAGE_FILE_MACHINE_R3000:
-        Result := RsPeMACHINE_R3000;
+        Result := LoadResString(@RsPeMACHINE_R3000);
       IMAGE_FILE_MACHINE_R4000:
-        Result := RsPeMACHINE_R4000;
+        Result := LoadResString(@RsPeMACHINE_R4000);
       IMAGE_FILE_MACHINE_R10000:
-        Result := RsPeMACHINE_R10000;
+        Result := LoadResString(@RsPeMACHINE_R10000);
       IMAGE_FILE_MACHINE_WCEMIPSV2:
-        Result := RsPeMACHINE_WCEMIPSV2;
+        Result := LoadResString(@RsPeMACHINE_WCEMIPSV2);
       IMAGE_FILE_MACHINE_ALPHA:
-        Result := RsPeMACHINE_ALPHA;
+        Result := LoadResString(@RsPeMACHINE_ALPHA);
       IMAGE_FILE_MACHINE_SH3:
-        Result := RsPeMACHINE_SH3;        // SH3 little-endian
+        Result := LoadResString(@RsPeMACHINE_SH3);        // SH3 little-endian
       IMAGE_FILE_MACHINE_SH3DSP:
-        Result := RsPeMACHINE_SH3DSP;
+        Result := LoadResString(@RsPeMACHINE_SH3DSP);
       IMAGE_FILE_MACHINE_SH3E:
-        Result := RsPeMACHINE_SH3E;       // SH3E little-endian
+        Result := LoadResString(@RsPeMACHINE_SH3E);       // SH3E little-endian
       IMAGE_FILE_MACHINE_SH4:
-        Result := RsPeMACHINE_SH4;        // SH4 little-endian
+        Result := LoadResString(@RsPeMACHINE_SH4);        // SH4 little-endian
       IMAGE_FILE_MACHINE_SH5:
-        Result := RsPeMACHINE_SH5;        // SH5
+        Result := LoadResString(@RsPeMACHINE_SH5);        // SH5
       IMAGE_FILE_MACHINE_ARM:
-        Result := RsPeMACHINE_ARM;        // ARM Little-Endian
+        Result := LoadResString(@RsPeMACHINE_ARM);        // ARM Little-Endian
       IMAGE_FILE_MACHINE_THUMB:
-        Result := RsPeMACHINE_THUMB;
+        Result := LoadResString(@RsPeMACHINE_THUMB);
       IMAGE_FILE_MACHINE_AM33:
-        Result := RsPeMACHINE_AM33;
+        Result := LoadResString(@RsPeMACHINE_AM33);
       IMAGE_FILE_MACHINE_POWERPC:
-        Result := RsPeMACHINE_POWERPC;
+        Result := LoadResString(@RsPeMACHINE_POWERPC);
       IMAGE_FILE_MACHINE_POWERPCFP:
-        Result := RsPeMACHINE_POWERPCFP;
+        Result := LoadResString(@RsPeMACHINE_POWERPCFP);
       IMAGE_FILE_MACHINE_IA64:
-        Result := RsPeMACHINE_IA64;       // Intel 64
+        Result := LoadResString(@RsPeMACHINE_IA64);       // Intel 64
       IMAGE_FILE_MACHINE_MIPS16:
-        Result := RsPeMACHINE_MIPS16;     // MIPS
+        Result := LoadResString(@RsPeMACHINE_MIPS16);     // MIPS
       IMAGE_FILE_MACHINE_ALPHA64:
-        Result := RsPeMACHINE_AMPHA64;    // ALPHA64
+        Result := LoadResString(@RsPeMACHINE_AMPHA64);    // ALPHA64
       //IMAGE_FILE_MACHINE_AXP64
       IMAGE_FILE_MACHINE_MIPSFPU:
-        Result := RsPeMACHINE_MIPSFPU;    // MIPS
+        Result := LoadResString(@RsPeMACHINE_MIPSFPU);    // MIPS
       IMAGE_FILE_MACHINE_MIPSFPU16:
-        Result := RsPeMACHINE_MIPSFPU16;  // MIPS
+        Result := LoadResString(@RsPeMACHINE_MIPSFPU16);  // MIPS
       IMAGE_FILE_MACHINE_TRICORE:
-        Result := RsPeMACHINE_TRICORE;    // Infineon
+        Result := LoadResString(@RsPeMACHINE_TRICORE);    // Infineon
       IMAGE_FILE_MACHINE_CEF:
-        Result := RsPeMACHINE_CEF;
+        Result := LoadResString(@RsPeMACHINE_CEF);
       IMAGE_FILE_MACHINE_EBC:
-        Result := RsPeMACHINE_EBC;        // EFI Byte Code
+        Result := LoadResString(@RsPeMACHINE_EBC);        // EFI Byte Code
       IMAGE_FILE_MACHINE_AMD64:
-        Result := RsPeMACHINE_AMD64;      // AMD64 (K8)
+        Result := LoadResString(@RsPeMACHINE_AMD64);      // AMD64 (K8)
       IMAGE_FILE_MACHINE_M32R:
-        Result := RsPeMACHINE_M32R;       // M32R little-endian
+        Result := LoadResString(@RsPeMACHINE_M32R);       // M32R little-endian
       IMAGE_FILE_MACHINE_CEE:
-        Result := RsPeMACHINE_CEE;
+        Result := LoadResString(@RsPeMACHINE_CEE);
     else
       Result := Format('[%.8x]', [Value]);
     end;
@@ -3425,19 +3425,19 @@ function TJclPeImage.GetHeaderValues(Index: TJclPeHeader): string;
   begin
     case Value of
       IMAGE_SUBSYSTEM_UNKNOWN:
-        Result := RsPeSUBSYSTEM_UNKNOWN;
+        Result := LoadResString(@RsPeSUBSYSTEM_UNKNOWN);
       IMAGE_SUBSYSTEM_NATIVE:
-        Result := RsPeSUBSYSTEM_NATIVE;
+        Result := LoadResString(@RsPeSUBSYSTEM_NATIVE);
       IMAGE_SUBSYSTEM_WINDOWS_GUI:
-        Result := RsPeSUBSYSTEM_WINDOWS_GUI;
+        Result := LoadResString(@RsPeSUBSYSTEM_WINDOWS_GUI);
       IMAGE_SUBSYSTEM_WINDOWS_CUI:
-        Result := RsPeSUBSYSTEM_WINDOWS_CUI;
+        Result := LoadResString(@RsPeSUBSYSTEM_WINDOWS_CUI);
       IMAGE_SUBSYSTEM_OS2_CUI:
-        Result := RsPeSUBSYSTEM_OS2_CUI;
+        Result := LoadResString(@RsPeSUBSYSTEM_OS2_CUI);
       IMAGE_SUBSYSTEM_POSIX_CUI:
-        Result := RsPeSUBSYSTEM_POSIX_CUI;
+        Result := LoadResString(@RsPeSUBSYSTEM_POSIX_CUI);
       IMAGE_SUBSYSTEM_RESERVED8:
-        Result := RsPeSUBSYSTEM_RESERVED8;
+        Result := LoadResString(@RsPeSUBSYSTEM_RESERVED8);
     else
       Result := Format('[%.8x]', [Value]);
     end;
@@ -3671,7 +3671,7 @@ function TJclPeImage.GetLoadConfigValues(Index: TJclLoadConfig): string;
           JclLoadConfig_EditList:
             Result := IntToHex(EditList, 8);
           JclLoadConfig_Reserved:
-            Result := RsPeReserved;
+            Result := LoadResString(@RsPeReserved);
         end;
   end;
   function GetLoadConfigValues64(Index: TJclLoadConfig): string;
@@ -3715,7 +3715,7 @@ function TJclPeImage.GetLoadConfigValues(Index: TJclLoadConfig): string;
           JclLoadConfig_EditList:
             Result := IntToHex(EditList, 16);
           JclLoadConfig_Reserved:
-            Result := RsPeReserved;
+            Result := LoadResString(@RsPeReserved);
         end;
   end;
 begin
@@ -3845,73 +3845,73 @@ class function TJclPeImage.HeaderNames(Index: TJclPeHeader): string;
 begin
   case Index of
     JclPeHeader_Signature:
-      Result := RsPeSignature;
+      Result := LoadResString(@RsPeSignature);
     JclPeHeader_Machine:
-      Result := RsPeMachine;
+      Result := LoadResString(@RsPeMachine);
     JclPeHeader_NumberOfSections:
-      Result := RsPeNumberOfSections;
+      Result := LoadResString(@RsPeNumberOfSections);
     JclPeHeader_TimeDateStamp:
-      Result := RsPeTimeDateStamp;
+      Result := LoadResString(@RsPeTimeDateStamp);
     JclPeHeader_PointerToSymbolTable:
-      Result := RsPePointerToSymbolTable;
+      Result := LoadResString(@RsPePointerToSymbolTable);
     JclPeHeader_NumberOfSymbols:
-      Result := RsPeNumberOfSymbols;
+      Result := LoadResString(@RsPeNumberOfSymbols);
     JclPeHeader_SizeOfOptionalHeader:
-      Result := RsPeSizeOfOptionalHeader;
+      Result := LoadResString(@RsPeSizeOfOptionalHeader);
     JclPeHeader_Characteristics:
-      Result := RsPeCharacteristics;
+      Result := LoadResString(@RsPeCharacteristics);
     JclPeHeader_Magic:
-      Result := RsPeMagic;
+      Result := LoadResString(@RsPeMagic);
     JclPeHeader_LinkerVersion:
-      Result := RsPeLinkerVersion;
+      Result := LoadResString(@RsPeLinkerVersion);
     JclPeHeader_SizeOfCode:
-      Result := RsPeSizeOfCode;
+      Result := LoadResString(@RsPeSizeOfCode);
     JclPeHeader_SizeOfInitializedData:
-      Result := RsPeSizeOfInitializedData;
+      Result := LoadResString(@RsPeSizeOfInitializedData);
     JclPeHeader_SizeOfUninitializedData:
-      Result := RsPeSizeOfUninitializedData;
+      Result := LoadResString(@RsPeSizeOfUninitializedData);
     JclPeHeader_AddressOfEntryPoint:
-      Result := RsPeAddressOfEntryPoint;
+      Result := LoadResString(@RsPeAddressOfEntryPoint);
     JclPeHeader_BaseOfCode:
-      Result := RsPeBaseOfCode;
+      Result := LoadResString(@RsPeBaseOfCode);
     JclPeHeader_BaseOfData:
-      Result := RsPeBaseOfData;
+      Result := LoadResString(@RsPeBaseOfData);
     JclPeHeader_ImageBase:
-      Result := RsPeImageBase;
+      Result := LoadResString(@RsPeImageBase);
     JclPeHeader_SectionAlignment:
-      Result := RsPeSectionAlignment;
+      Result := LoadResString(@RsPeSectionAlignment);
     JclPeHeader_FileAlignment:
-      Result := RsPeFileAlignment;
+      Result := LoadResString(@RsPeFileAlignment);
     JclPeHeader_OperatingSystemVersion:
-      Result := RsPeOperatingSystemVersion;
+      Result := LoadResString(@RsPeOperatingSystemVersion);
     JclPeHeader_ImageVersion:
-      Result := RsPeImageVersion;
+      Result := LoadResString(@RsPeImageVersion);
     JclPeHeader_SubsystemVersion:
-      Result := RsPeSubsystemVersion;
+      Result := LoadResString(@RsPeSubsystemVersion);
     JclPeHeader_Win32VersionValue:
-      Result := RsPeWin32VersionValue;
+      Result := LoadResString(@RsPeWin32VersionValue);
     JclPeHeader_SizeOfImage:
-      Result := RsPeSizeOfImage;
+      Result := LoadResString(@RsPeSizeOfImage);
     JclPeHeader_SizeOfHeaders:
-      Result := RsPeSizeOfHeaders;
+      Result := LoadResString(@RsPeSizeOfHeaders);
     JclPeHeader_CheckSum:
-      Result := RsPeCheckSum;
+      Result := LoadResString(@RsPeCheckSum);
     JclPeHeader_Subsystem:
-      Result := RsPeSubsystem;
+      Result := LoadResString(@RsPeSubsystem);
     JclPeHeader_DllCharacteristics:
-      Result := RsPeDllCharacteristics;
+      Result := LoadResString(@RsPeDllCharacteristics);
     JclPeHeader_SizeOfStackReserve:
-      Result := RsPeSizeOfStackReserve;
+      Result := LoadResString(@RsPeSizeOfStackReserve);
     JclPeHeader_SizeOfStackCommit:
-      Result := RsPeSizeOfStackCommit;
+      Result := LoadResString(@RsPeSizeOfStackCommit);
     JclPeHeader_SizeOfHeapReserve:
-      Result := RsPeSizeOfHeapReserve;
+      Result := LoadResString(@RsPeSizeOfHeapReserve);
     JclPeHeader_SizeOfHeapCommit:
-      Result := RsPeSizeOfHeapCommit;
+      Result := LoadResString(@RsPeSizeOfHeapCommit);
     JclPeHeader_LoaderFlags:
-      Result := RsPeLoaderFlags;
+      Result := LoadResString(@RsPeLoaderFlags);
     JclPeHeader_NumberOfRvaAndSizes:
-      Result := RsPeNumberOfRvaAndSizes;
+      Result := LoadResString(@RsPeNumberOfRvaAndSizes);
   else
     Result := '';
   end;
@@ -3976,39 +3976,39 @@ class function TJclPeImage.LoadConfigNames(Index: TJclLoadConfig): string;
 begin
   case Index of
     JclLoadConfig_Characteristics:
-      Result := RsPeCharacteristics;
+      Result := LoadResString(@RsPeCharacteristics);
     JclLoadConfig_TimeDateStamp:
-      Result := RsPeTimeDateStamp;
+      Result := LoadResString(@RsPeTimeDateStamp);
     JclLoadConfig_Version:
-      Result := RsPeVersion;
+      Result := LoadResString(@RsPeVersion);
     JclLoadConfig_GlobalFlagsClear:
-      Result := RsPeGlobalFlagsClear;
+      Result := LoadResString(@RsPeGlobalFlagsClear);
     JclLoadConfig_GlobalFlagsSet:
-      Result := RsPeGlobalFlagsSet;
+      Result := LoadResString(@RsPeGlobalFlagsSet);
     JclLoadConfig_CriticalSectionDefaultTimeout:
-      Result := RsPeCriticalSectionDefaultTimeout;
+      Result := LoadResString(@RsPeCriticalSectionDefaultTimeout);
     JclLoadConfig_DeCommitFreeBlockThreshold:
-      Result := RsPeDeCommitFreeBlockThreshold;
+      Result := LoadResString(@RsPeDeCommitFreeBlockThreshold);
     JclLoadConfig_DeCommitTotalFreeThreshold:
-      Result := RsPeDeCommitTotalFreeThreshold;
+      Result := LoadResString(@RsPeDeCommitTotalFreeThreshold);
     JclLoadConfig_LockPrefixTable:
-      Result := RsPeLockPrefixTable;
+      Result := LoadResString(@RsPeLockPrefixTable);
     JclLoadConfig_MaximumAllocationSize:
-      Result := RsPeMaximumAllocationSize;
+      Result := LoadResString(@RsPeMaximumAllocationSize);
     JclLoadConfig_VirtualMemoryThreshold:
-      Result := RsPeVirtualMemoryThreshold;
+      Result := LoadResString(@RsPeVirtualMemoryThreshold);
     JclLoadConfig_ProcessHeapFlags:
-      Result := RsPeProcessHeapFlags;
+      Result := LoadResString(@RsPeProcessHeapFlags);
     JclLoadConfig_ProcessAffinityMask:
-      Result := RsPeProcessAffinityMask;
+      Result := LoadResString(@RsPeProcessAffinityMask);
     JclLoadConfig_CSDVersion:
-      Result := RsPeCSDVersion;
+      Result := LoadResString(@RsPeCSDVersion);
     JclLoadConfig_Reserved1:
-      Result := RsPeReserved;
+      Result := LoadResString(@RsPeReserved);
     JclLoadConfig_EditList:
-      Result := RsPeEditList;
+      Result := LoadResString(@RsPeEditList);
     JclLoadConfig_Reserved:
-      Result := RsPeReserved;
+      Result := LoadResString(@RsPeReserved);
   else
     Result := '';
   end;
@@ -4313,11 +4313,11 @@ class function TJclPePackageInfo.PackageModuleTypeToString(Flags: Cardinal): str
 begin
   case Flags and pfModuleTypeMask of
     pfExeModule, pfModuleTypeMask:
-      Result := RsPePkgExecutable;
+      Result := LoadResString(@RsPePkgExecutable);
     pfPackageModule:
-      Result := RsPePkgPackage;
+      Result := LoadResString(@RsPePkgPackage);
     pfLibraryModule:
-      Result := PsPePkgLibrary;
+      Result := LoadResString(@PsPePkgLibrary);
   else
     Result := '';
   end;
@@ -4336,13 +4336,13 @@ class function TJclPePackageInfo.ProducerToString(Flags: Cardinal): string;
 begin
   case Flags and pfProducerMask of
     pfV3Produced:
-      Result := RsPePkgV3Produced;
+      Result := LoadResString(@RsPePkgV3Produced);
     pfProducerUndefined:
-      Result := RsPePkgProducerUndefined;
+      Result := LoadResString(@RsPePkgProducerUndefined);
     pfBCB4Produced:
-      Result := RsPePkgBCB4Produced;
+      Result := LoadResString(@RsPePkgBCB4Produced);
     pfDelphi4Produced:
-      Result := RsPePkgDelphi4Produced;
+      Result := LoadResString(@RsPePkgDelphi4Produced);
   else
     Result := '';
   end;

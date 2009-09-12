@@ -70,6 +70,7 @@
 			<DCCReference Include="..\..\source\vcl\JclGraphUtils.pas" />
 			<DCCReference Include="..\..\source\vcl\JclGraphics.pas" />
 			<DCCReference Include="..\..\source\vcl\JclFont.pas" />
+			<DCCReference Include="..\..\source\vcl\JclVclResources.pas" />
 			<DCCReference Include="..\..\source\vcl\JclVersionControl.pas" />
 			<DCCReference Include="..\..\source\vcl\JclVersionCtrlCVSImpl.pas" />
 			<DCCReference Include="..\..\source\vcl\JclVersionCtrlSVNImpl.pas" />

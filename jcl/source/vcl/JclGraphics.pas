@@ -573,7 +573,7 @@ uses
   CommCtrl, ShellApi,
   
   ClipBrd, JPeg, TypInfo,
-  JclResources,
+  JclVclResources,
   
   
   JclSysUtils,

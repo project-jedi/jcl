@@ -71,6 +71,7 @@ const
 implementation
 
 uses
+  JclVclResources,
   JclFileUtils, JclSysUtils, JclRegistry, JclStrings;
 
 const
@@ -101,11 +102,6 @@ const
 
   JclVersionCtrlSVNDirectories: array [0..1] of string =
    ( JclVersionCtrlSVNDirectory1, JclVersionCtrlSVNDirectory2 ); 
-
-resourcestring
-  RsVersionCtrlSVNName = 'subversion';
-  RsEEmptyFileName = 'Error: empty file name';
-  RSENoTortoiseSVN = 'TortoiseSVN is not detected on the system';
 
 //=== TJclVersionControlSVN ==================================================
 
@@ -292,7 +288,7 @@ end;
 
 function TJclVersionControlSVN.GetName: string;
 begin
-  Result := RsVersionCtrlSVNName;
+  Result := LoadResString(@RsVersionCtrlSVNName);
 end;
 
 function TJclVersionControlSVN.GetSandboxActions(

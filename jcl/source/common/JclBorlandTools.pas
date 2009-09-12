@@ -904,7 +904,7 @@ uses
 {$IFDEF MSWINDOWS}
 type
   TBDSVersionInfo = record
-    Name: string;
+    Name: PResStringRec;
     VersionStr: string;
     Version: Integer;
     CoreIdeVersion: string;
@@ -925,43 +925,43 @@ const
 
   BDSVersions: array [1..7] of TBDSVersionInfo = (
     (
-      Name: RsCSharpName;
+      Name: @RsCSharpName;
       VersionStr: '1.0';
       Version: 1;
       CoreIdeVersion: '71';
       Supported: True),
     (
-      Name: RsDelphiName;
+      Name: @RsDelphiName;
       VersionStr: '8';
       Version: 8;
       CoreIdeVersion: '71';
       Supported: True),
     (
-      Name: RsDelphiName;
+      Name: @RsDelphiName;
       VersionStr: '2005';
       Version: 9;
       CoreIdeVersion: '90';
       Supported: True),
     (
-      Name: RsBDSName;
+      Name: @RsBDSName;
       VersionStr: '2006';
       Version: 10;
       CoreIdeVersion: '100';
       Supported: True),
     (
-      Name: RsRSName;
+      Name: @RsRSName;
       VersionStr: '2007';
       Version: 11;
       CoreIdeVersion: '100';
       Supported: True),
     (
-      Name: RsRSName;
+      Name: @RsRSName;
       VersionStr: '2009';
       Version: 12;
       CoreIdeVersion: '120';
       Supported: True),
     (
-      Name: RsRSName;
+      Name: @RsRSName;
       VersionStr: '2010';
       Version: 14;
       CoreIdeVersion: '140';
@@ -1015,6 +1015,7 @@ const
 
   ConfigurationExtension     = '.cfg';
   {$IFDEF MSWINDOWS}
+  VclIncludeDirName          = '%s\Include\Vcl\';
   AsmExeName                 = 'tasm32.exe';
   BCC32ExeName               = 'bcc32.exe';
   DCC32ExeName               = 'dcc32.exe';
@@ -3331,7 +3332,7 @@ function TJclBorRADToolInstallation.CompileBCBPackage(const PackageName, BPLPath
 var
   SaveDir, PackagePath, MakeFileName: string;
 begin
-  OutputString(Format(RsCompilingPackage, [PackageName]));
+  OutputString(Format(LoadResString(@RsCompilingPackage), [PackageName]));
 
   if not IsBCBPackage(PackageName) then
     raise EJclBorRADException.CreateResFmt(@RsENotABCBPackage, [PackageName]);
@@ -3358,16 +3359,16 @@ begin
   end;
 
   if Result then
-    OutputString(RsCompilationOk)
+    OutputString(LoadResString(@RsCompilationOk))
   else
-    OutputString(RsCompilationFailed);
+    OutputString(LoadResString(@RsCompilationFailed));
 end;
 
 function TJclBorRADToolInstallation.CompileBCBProject(const ProjectName, OutputDir, DcpSearchPath: string): Boolean;
 var
   SaveDir, PackagePath, MakeFileName: string;
 begin
-  OutputString(Format(RsCompilingProject, [ProjectName]));
+  OutputString(Format(LoadResString(@RsCompilingProject), [ProjectName]));
 
   if not IsBCBProject(ProjectName) then
     raise EJclBorRADException.CreateResFmt(@RsENotADelphiProject, [ProjectName]);
@@ -3394,9 +3395,9 @@ begin
   end;
 
   if Result then
-    OutputString(RsCompilationOk)
+    OutputString(LoadResString(@RsCompilationOk))
   else
-    OutputString(RsCompilationFailed);
+    OutputString(LoadResString(@RsCompilationFailed));
 end;
 
 function TJclBorRADToolInstallation.CompileDelphiPackage(const PackageName,
@@ -3410,7 +3411,7 @@ function TJclBorRADToolInstallation.CompileDelphiPackage(const PackageName,
 var
   NewOptions: string;
 begin
-  OutputString(Format(RsCompilingPackage, [PackageName]));
+  OutputString(Format(LoadResString(@RsCompilingPackage), [PackageName]));
 
   if not IsDelphiPackage(PackageName) then
     raise EJclBorRADException.CreateResFmt(@RsENotADelphiPackage, [PackageName]);
@@ -3424,9 +3425,9 @@ begin
     ProcessMapFile(BinaryFileName(BPLPath, PackageName));
 
   if Result then
-    OutputString(RsCompilationOk)
+    OutputString(LoadResString(@RsCompilationOk))
   else
-    OutputString(RsCompilationFailed);
+    OutputString(LoadResString(@RsCompilationFailed));
 end;
 
 function TJclBorRADToolInstallation.CompileDelphiProject(const ProjectName,
@@ -3434,7 +3435,7 @@ function TJclBorRADToolInstallation.CompileDelphiProject(const ProjectName,
 var
   ExtraOptions: string;
 begin
-  OutputString(Format(RsCompilingProject, [ProjectName]));
+  OutputString(Format(LoadResString(@RsCompilingProject), [ProjectName]));
 
   if not IsDelphiProject(ProjectName) then
     raise EJclBorRADException.CreateResFmt(@RsENotADelphiProject, [ProjectName]);
@@ -3448,9 +3449,9 @@ begin
     ProcessMapFile(BinaryFileName(OutputDir, ProjectName));
 
   if Result then
-    OutputString(RsCompilationOk)
+    OutputString(LoadResString(@RsCompilationOk))
   else
-    OutputString(RsCompilationFailed);
+    OutputString(LoadResString(@RsCompilationFailed));
 end;
 
 function TJclBorRADToolInstallation.CompilePackage(const PackageName, BPLPath,
@@ -3561,7 +3562,7 @@ function TJclBorRADToolInstallation.GetDescription: TJclBorRADToolPath;
 begin
   Result := Format('%s %s', [Name, EditionAsText]);
   if InstalledUpdatePack > 0 then
-    Result := Result + ' ' + Format(RsUpdatePackName, [InstalledUpdatePack]);
+    Result := Result + ' ' + Format(LoadResString(@RsUpdatePackName), [InstalledUpdatePack]);
 end;
 
 function TJclBorRADToolInstallation.GetEditionAsText: string;
@@ -3571,18 +3572,18 @@ begin
     case Edition of
       deSTD:
         if (VersionNumber >= 6) or (RadToolKind = brBorlandDevStudio) then
-          Result := RsPersonal
+          Result := LoadResString(@RsPersonal)
         else
-          Result := RsStandard;
+          Result := LoadResString(@RsStandard);
       dePRO:
-        Result := RsProfessional;
+        Result := LoadResString(@RsProfessional);
       deCSS:
         if (VersionNumber >= 5) or (RadToolKind = brBorlandDevStudio) then
-          Result := RsEnterprise
+          Result := LoadResString(@RsEnterprise)
         else
-          Result := RsClientServer;
+          Result := LoadResString(@RsClientServer);
       deARC:
-        Result := RsArchitect;
+        Result := LoadResString(@RsArchitect);
     end;
 end;
 
@@ -3743,7 +3744,7 @@ end;
 
 function TJclBorRADToolInstallation.GetVclIncludeDir: string;
 begin
-  Result := RootDir + RsVclIncludeDir;
+  Result := Format(VclIncludeDirName, [RootDir]);
   if not DirectoryExists(Result) then
     Result := '';
 end;
@@ -3752,14 +3753,14 @@ function TJclBorRADToolInstallation.InstallBCBExpert(const ProjectName, OutputDi
 var
   Unused, Description: string;
 begin
-  OutputString(Format(RsExpertInstallationStarted, [ProjectName]));
+  OutputString(Format(LoadResString(@RsExpertInstallationStarted), [ProjectName]));
 
   GetBPRFileInfo(ProjectName, Unused, @Description);
 
   Result := CompileBCBProject(ProjectName, OutputDir, DcpSearchPath) and
     RegisterExpert(BinaryFileName(OutputDir, ProjectName), Description);
 
-  OutputString(RsExpertInstallationFinished);
+  OutputString(LoadResString(@RsExpertInstallationFinished));
 end;
 
 function TJclBorRADToolInstallation.InstallBCBIdePackage(const PackageName, BPLPath, DCPPath: string): Boolean;
@@ -3767,7 +3768,7 @@ var
   RunOnly: Boolean;
   Unused, Description: string;
 begin
-  OutputString(Format(RsIdePackageInstallationStarted, [PackageName]));
+  OutputString(Format(LoadResString(@RsIdePackageInstallationStarted), [PackageName]));
 
   GetBPKFileInfo(PackageName, RunOnly, @Unused, @Description);
   if RunOnly then
@@ -3776,7 +3777,7 @@ begin
   Result := CompileBCBPackage(PackageName, BPLPath, DCPPath) and
     RegisterIdePackage(BinaryFileName(BPLPath, PackageName), Description);
 
-  OutputString(RsIdePackageInstallationFinished);
+  OutputString(LoadResString(@RsIdePackageInstallationFinished));
 end;
 
 function TJclBorRADToolInstallation.InstallBCBPackage(const PackageName, BPLPath, DCPPath: string): Boolean;
@@ -3784,7 +3785,7 @@ var
   RunOnly: Boolean;
   Unused, Description: string;
 begin
-  OutputString(Format(RsPackageInstallationStarted, [PackageName]));
+  OutputString(Format(LoadResString(@RsPackageInstallationStarted), [PackageName]));
 
   GetBPKFileInfo(PackageName, RunOnly, @Unused, @Description);
   if RunOnly then
@@ -3793,21 +3794,21 @@ begin
   Result := CompileBCBPackage(PackageName, BPLPath, DCPPath) and
     RegisterPackage(BinaryFileName(BPLPath, PackageName), Description);
 
-  OutputString(RsPackageInstallationFinished);
+  OutputString(LoadResString(@RsPackageInstallationFinished));
 end;
 
 function TJclBorRADToolInstallation.InstallDelphiExpert(const ProjectName, OutputDir, DcpSearchPath: string): Boolean;
 var
   BaseName: string;
 begin
-  OutputString(Format(RsExpertInstallationStarted, [ProjectName]));
+  OutputString(Format(LoadResString(@RsExpertInstallationStarted), [ProjectName]));
 
   BaseName := PathExtractFileNameNoExt(ProjectName);
 
   Result := CompileDelphiProject(ProjectName, OutputDir, DcpSearchPath) and
     RegisterExpert(BinaryFileName(OutputDir, ProjectName), BaseName);
 
-  OutputString(RsExpertInstallationFinished);
+  OutputString(LoadResString(@RsExpertInstallationFinished));
 end;
 
 function TJclBorRADToolInstallation.InstallDelphiIdePackage(const PackageName, BPLPath, DCPPath: string): Boolean;
@@ -3815,7 +3816,7 @@ var
   RunOnly: Boolean;
   Unused, Description: string;
 begin
-  OutputString(Format(RsIdePackageInstallationStarted, [PackageName]));
+  OutputString(Format(LoadResString(@RsIdePackageInstallationStarted), [PackageName]));
 
   GetDPKFileInfo(PackageName, RunOnly, @Unused, @Description);
   if RunOnly then
@@ -3824,7 +3825,7 @@ begin
   Result := CompileDelphiPackage(PackageName, BPLPath, DCPPath) and
     RegisterIdePackage(BinaryFileName(BPLPath, PackageName), Description);
 
-  OutputString(RsIdePackageInstallationFinished);
+  OutputString(LoadResString(@RsIdePackageInstallationFinished));
 end;
 
 function TJclBorRADToolInstallation.InstallDelphiPackage(const PackageName, BPLPath, DCPPath: string): Boolean;
@@ -3832,7 +3833,7 @@ var
   RunOnly: Boolean;
   Unused, Description: string;
 begin
-  OutputString(Format(RsPackageInstallationStarted, [PackageName]));
+  OutputString(Format(LoadResString(@RsPackageInstallationStarted), [PackageName]));
 
   GetDPKFileInfo(PackageName, RunOnly, @Unused, @Description);
   if RunOnly then
@@ -3841,7 +3842,7 @@ begin
   Result := CompileDelphiPackage(PackageName, BPLPath, DCPPath) and
     RegisterPackage(BinaryFileName(BPLPath, PackageName), Description);
 
-  OutputString(RsPackageInstallationFinished);
+  OutputString(LoadResString(@RsPackageInstallationFinished));
 end;
 
 function TJclBorRADToolInstallation.InstallExpert(const ProjectName, OutputDir, DcpSearchPath: string): Boolean;
@@ -3926,24 +3927,24 @@ begin
 
     if JdbgInsert then
     begin
-      OutputString(Format(RsInsertingJdbg, [BinaryFileName]));
+      OutputString(Format(LoadResString(@RsInsertingJdbg), [BinaryFileName]));
       Result := InsertDebugDataIntoExecutableFile(BinaryFileName, MAPFileName,
         LinkerBugUnit, MAPFileSize, JclDebugDataSize);
-      OutputString(Format(RsJdbgInfo, [LinkerBugUnit, MAPFileSize, JclDebugDataSize]));
+      OutputString(Format(LoadResString(@RsJdbgInfo), [LinkerBugUnit, MAPFileSize, JclDebugDataSize]));
     end
     else
     begin
-      OutputString(Format(RsCreatingJdbg, [BinaryFileName]));
+      OutputString(Format(LoadResString(@RsCreatingJdbg), [BinaryFileName]));
       Result := ConvertMapFileToJdbgFile(MAPFileName);
     end;
     if Result then
     begin
-      OutputString(RsJdbgInfoOk);
+      OutputString(LoadResString(@RsJdbgInfoOk));
       if MapDelete then
         OutputFileDelete(MAPFileName);
     end
     else
-      OutputString(RsJdbgInfoFailed);
+      OutputString(LoadResString(@RsJdbgInfoFailed));
   end
   else
     Result := True;
@@ -3954,12 +3955,12 @@ end;
 
 function TJclBorRADToolInstallation.OutputFileDelete(const FileName: string): Boolean;
 begin
-  OutputString(Format(RsDeletingFile, [FileName]));
+  OutputString(Format(LoadResString(@RsDeletingFile), [FileName]));
   Result := FileDelete(FileName);
   if Result then
-    OutputString(RsFileDeletionOk)
+    OutputString(LoadResString(@RsFileDeletionOk))
   else
-    OutputString(RsFileDeletionFailed);
+    OutputString(LoadResString(@RsFileDeletionFailed));
 end;
 
 procedure TJclBorRADToolInstallation.OutputString(const AText: string);
@@ -4107,7 +4108,7 @@ function TJclBorRADToolInstallation.RegisterExpert(const BinaryFileName, Descrip
 var
   InternalDescription: string;
 begin
-  OutputString(Format(RsRegisteringExpert, [BinaryFileName]));
+  OutputString(Format(LoadResString(@RsRegisteringExpert), [BinaryFileName]));
 
   if Description = '' then
     InternalDescription := PathExtractFileNameNoExt(BinaryFileName)
@@ -4116,9 +4117,9 @@ begin
 
   Result := IdePackages.AddExpert(BinaryFileName, InternalDescription);
   if Result then
-    OutputString(RsRegistrationOk)
+    OutputString(LoadResString(@RsRegistrationOk))
   else
-    OutputString(RsRegistrationFailed);
+    OutputString(LoadResString(@RsRegistrationFailed));
 end;
 
 function TJclBorRADToolInstallation.RegisterIDEPackage(const PackageName, BPLPath, Description: string): Boolean;
@@ -4130,7 +4131,7 @@ function TJclBorRADToolInstallation.RegisterIDEPackage(const BinaryFileName, Des
 var
   InternalDescription: string;
 begin
-  OutputString(Format(RsRegisteringIdePackage, [BinaryFileName]));
+  OutputString(Format(LoadResString(@RsRegisteringIdePackage), [BinaryFileName]));
 
   if Description = '' then
     InternalDescription := PathExtractFileNameNoExt(BinaryFileName)
@@ -4139,9 +4140,9 @@ begin
 
   Result := IdePackages.AddIDEPackage(BinaryFileName, InternalDescription);
   if Result then
-    OutputString(RsRegistrationOk)
+    OutputString(LoadResString(@RsRegistrationOk))
   else
-    OutputString(RsRegistrationFailed);
+    OutputString(LoadResString(@RsRegistrationFailed));
 end;
 
 function TJclBorRADToolInstallation.RegisterPackage(const PackageName, BPLPath, Description: string): Boolean;
@@ -4153,7 +4154,7 @@ function TJclBorRADToolInstallation.RegisterPackage(const BinaryFileName, Descri
 var
   InternalDescription: string;
 begin
-  OutputString(Format(RsRegisteringPackage, [BinaryFileName]));
+  OutputString(Format(LoadResString(@RsRegisteringPackage), [BinaryFileName]));
 
   if Description = '' then
     InternalDescription := PathExtractFileNameNoExt(BinaryFileName)
@@ -4162,9 +4163,9 @@ begin
 
   Result := IdePackages.AddPackage(BinaryFileName, InternalDescription);
   if Result then
-    OutputString(RsRegistrationOk)
+    OutputString(LoadResString(@RsRegistrationOk))
   else
-    OutputString(RsRegistrationFailed);
+    OutputString(LoadResString(@RsRegistrationFailed));
 end;
 
 function TJclBorRADToolInstallation.RemoveFromDebugDCUPath(const Path: string): Boolean;
@@ -4301,7 +4302,7 @@ function TJclBorRADToolInstallation.UninstallBCBExpert(const ProjectName, Output
 var
   DllFileName: string;
 begin
-  OutputString(Format(RsExpertUninstallationStarted, [ProjectName]));
+  OutputString(Format(LoadResString(@RsExpertUninstallationStarted), [ProjectName]));
 
   if not IsBCBProject(ProjectName) then
     raise EJclBorRADException.CreateResFmt(@RsENotABCBProject, [ProjectName]);
@@ -4314,7 +4315,7 @@ begin
   if Result then
     OutputFileDelete(DllFileName);
 
-  OutputString(RsExpertUninstallationFinished);
+  OutputString(LoadResString(@RsExpertUninstallationFinished));
 end;
 
 function TJclBorRADToolInstallation.UninstallBCBIdePackage(const PackageName, BPLPath, DCPPath: string): Boolean;
@@ -4323,7 +4324,7 @@ var
   BPIFileName, LIBFileName, BPLFileName: string;
   RunOnly: Boolean;
 begin
-  OutputString(Format(RsIdePackageUninstallationStarted, [PackageName]));
+  OutputString(Format(LoadResString(@RsIdePackageUninstallationStarted), [PackageName]));
 
   if not IsBCBPackage(PackageName) then
     raise EJclBorRADException.CreateResFmt(@RsENotABCBPackage, [PackageName]);
@@ -4354,7 +4355,7 @@ begin
     OutputFileDelete(TDSFileName);
   end;
 
-  OutputString(RsIdePackageUninstallationFinished);
+  OutputString(LoadResString(@RsIdePackageUninstallationFinished));
 end;
 
 function TJclBorRADToolInstallation.UninstallBCBPackage(const PackageName, BPLPath, DCPPath: string): Boolean;
@@ -4363,7 +4364,7 @@ var
   BPIFileName, LIBFileName, BPLFileName: string;
   RunOnly: Boolean;
 begin
-  OutputString(Format(RsPackageUninstallationStarted, [PackageName]));
+  OutputString(Format(LoadResString(@RsPackageUninstallationStarted), [PackageName]));
 
   if not IsBCBPackage(PackageName) then
     raise EJclBorRADException.CreateResFmt(@RsENotABCBPackage, [PackageName]);
@@ -4394,14 +4395,14 @@ begin
     OutputFileDelete(TDSFileName);
   end;
 
-  OutputString(RsPackageUninstallationFinished);
+  OutputString(LoadResString(@RsPackageUninstallationFinished));
 end;
 
 function TJclBorRADToolInstallation.UninstallDelphiExpert(const ProjectName, OutputDir: string): Boolean;
 var
   DllFileName: string;
 begin
-  OutputString(Format(RsExpertUninstallationStarted, [ProjectName]));
+  OutputString(Format(LoadResString(@RsExpertUninstallationStarted), [ProjectName]));
 
   if not IsDelphiProject(ProjectName) then
     raise EJclBorRADException.CreateResFmt(@RsENotADelphiProject, [ProjectName]);
@@ -4414,7 +4415,7 @@ begin
   if Result then
     OutputFileDelete(DllFileName);
 
-  OutputString(RsExpertUninstallationFinished);
+  OutputString(LoadResString(@RsExpertUninstallationFinished));
 end;
 
 function TJclBorRADToolInstallation.UninstallDelphiIdePackage(const PackageName, BPLPath, DCPPath: string): Boolean;
@@ -4424,7 +4425,7 @@ var
   BaseName: string;
   RunOnly: Boolean;
 begin
-  OutputString(Format(RsIdePackageUninstallationStarted, [PackageName]));
+  OutputString(Format(LoadResString(@RsIdePackageUninstallationStarted), [PackageName]));
 
   if not IsDelphiPackage(PackageName) then
     raise EJclBorRADException.CreateResFmt(@RsENotADelphiPackage, [PackageName]);
@@ -4450,7 +4451,7 @@ begin
     OutputFileDelete(MAPFileName);
   end;
 
-  OutputString(RsIdePackageUninstallationFinished);
+  OutputString(LoadResString(@RsIdePackageUninstallationFinished));
 end;
 
 function TJclBorRADToolInstallation.UninstallDelphiPackage(const PackageName, BPLPath, DCPPath: string): Boolean;
@@ -4459,7 +4460,7 @@ var
   BaseName: string;
   RunOnly: Boolean;
 begin
-  OutputString(Format(RsPackageUninstallationStarted, [PackageName]));
+  OutputString(Format(LoadResString(@RsPackageUninstallationStarted), [PackageName]));
 
   if not IsDelphiPackage(PackageName) then
     raise EJclBorRADException.CreateResFmt(@RsENotADelphiPackage, [PackageName]);
@@ -4485,7 +4486,7 @@ begin
     OutputFileDelete(MAPFileName);
   end;
 
-  OutputString(RsPackageUninstallationFinished);
+  OutputString(LoadResString(@RsPackageUninstallationFinished));
 end;
 
 function TJclBorRADToolInstallation.UninstallExpert(const ProjectName, OutputDir: string): Boolean;
@@ -4537,13 +4538,13 @@ end;
 
 function TJclBorRADToolInstallation.UnregisterExpert(const BinaryFileName: string): Boolean;
 begin
-  OutputString(Format(RsUnregisteringExpert, [BinaryFileName]));
+  OutputString(Format(LoadResString(@RsUnregisteringExpert), [BinaryFileName]));
 
   Result := IdePackages.RemoveExpert(BinaryFileName);
   if Result then
-    OutputString(RsUnregistrationOk)
+    OutputString(LoadResString(@RsUnregistrationOk))
   else
-    OutputString(RsUnregistrationFailed);
+    OutputString(LoadResString(@RsUnregistrationFailed));
 end;
 
 function TJclBorRADToolInstallation.UnregisterIDEPackage(const PackageName, BPLPath: string): Boolean;
@@ -4553,13 +4554,13 @@ end;
 
 function TJclBorRADToolInstallation.UnregisterIDEPackage(const BinaryFileName: string): Boolean;
 begin
-  OutputString(Format(RsUnregisteringIDEPackage, [BinaryFileName]));
+  OutputString(Format(LoadResString(@RsUnregisteringIDEPackage), [BinaryFileName]));
 
   Result := IdePackages.RemoveIDEPackage(BinaryFileName);
   if Result then
-    OutputString(RsUnregistrationOk)
+    OutputString(LoadResString(@RsUnregistrationOk))
   else
-    OutputString(RsUnregistrationFailed);
+    OutputString(LoadResString(@RsUnregistrationFailed));
 end;
 
 function TJclBorRADToolInstallation.UnregisterPackage(const PackageName, BPLPath: string): Boolean;
@@ -4569,13 +4570,13 @@ end;
 
 function TJclBorRADToolInstallation.UnregisterPackage(const BinaryFileName: string): Boolean;
 begin
-  OutputString(Format(RsUnregisteringPackage, [BinaryFileName]));
+  OutputString(Format(LoadResString(@RsUnregisteringPackage), [BinaryFileName]));
 
   Result := IdePackages.RemovePackage(BinaryFileName);
   if Result then
-    OutputString(RsUnregistrationOk)
+    OutputString(LoadResString(@RsUnregistrationOk))
   else
-    OutputString(RsUnregistrationFailed);
+    OutputString(LoadResString(@RsUnregistrationFailed));
 end;
 
 //=== { TJclBCBInstallation } ================================================
@@ -4631,7 +4632,7 @@ end;
 
 function TJclBCBInstallation.RADToolName: string;
 begin
-  Result := RsBCBName;
+  Result := LoadResString(@RsBCBName);
 end;
 
 //=== { TJclDelphiInstallation } =============================================
@@ -4690,7 +4691,7 @@ end;
 
 function TJclDelphiInstallation.RADToolName: string;
 begin
-  Result := RsDelphiName;
+  Result := LoadResString(@RsDelphiName);
 end;
 
 //=== { TJclBDSInstallation } ==================================================
@@ -4800,16 +4801,16 @@ begin
     FileName := ExtractFileName(BinaryFileName);
 
     try
-      OutputString(Format(RsCleaningPackageCache, [FileName]));
+      OutputString(Format(LoadResString(@RsCleaningPackageCache), [FileName]));
       KeyName := PathAddSeparator(ConfigDataLocation) + PackageCacheKeyName + '\' + FileName;
 
       if RegKeyExists(RootKey, KeyName) then
         Result := RegDeleteKeyTree(RootKey, KeyName);
 
       if Result then
-        OutputString(RsCleaningOk)
+        OutputString(LoadResString(@RsCleaningOk))
       else
-        OutputString(RsCleaningFailed);
+        OutputString(LoadResString(@RsCleaningFailed));
     except
       // trap possible exceptions
     end;
@@ -4824,10 +4825,10 @@ begin
   if VersionNumber >= 2 then   // C#Builder 1 doesn't have any Delphi.net compiler
   begin
     if IsDelphiProject(ProjectName) then
-      OutputString(Format(RsCompilingProject, [ProjectName]))
+      OutputString(Format(LoadResString(@RsCompilingProject), [ProjectName]))
     else
     if IsDelphiPackage(ProjectName) then
-      OutputString(Format(RsCompilingPackage, [ProjectName]))
+      OutputString(Format(LoadResString(@RsCompilingPackage), [ProjectName]))
     else
       raise EJclBorRADException.CreateResFmt(@RsENotADelphiProject, [ProjectName]);
 
@@ -4853,9 +4854,9 @@ begin
     Result := DCCIL.MakeProject(ProjectName, OutputDir, DCCILOptions);
 
     if Result then
-      OutputString(RsCompilationOk)
+      OutputString(LoadResString(@RsCompilationOk))
     else
-      OutputString(RsCompilationFailed);
+      OutputString(LoadResString(@RsCompilationFailed));
   end
   else
     raise EJclBorRADException.CreateRes(@RsENoSupportedPersonality);
@@ -4886,7 +4887,7 @@ var
 begin
   if VersionNumber <= 2 then
   begin
-    OutputString(Format(RsCompilingProject, [ProjectName]));
+    OutputString(Format(LoadResString(@RsCompilingProject), [ProjectName]));
 
     if not IsDelphiProject(ProjectName) then
       raise EJclBorRADException.CreateResFmt(@RsENotADelphiProject, [ProjectName]);
@@ -4900,9 +4901,9 @@ begin
       ProcessMapFile(BinaryFileName(OutputDir, ProjectName));
 
     if Result then
-      OutputString(RsCompilationOk)
+      OutputString(LoadResString(@RsCompilationOk))
     else
-      OutputString(RsCompilationFailed);
+      OutputString(LoadResString(@RsCompilationFailed));
   end
   else
     Result := inherited CompileDelphiProject(ProjectName, DcpSearchPath, OutputDir);
@@ -5193,19 +5194,19 @@ begin
   // The name comes from IDEVersionNumber
   if IDEVersionNumber in [Low(BDSVersions)..High(BDSVersions)] then
   begin
-    Result := BDSVersions[IDEVersionNumber].Name;
+    Result := LoadResString(BDSVersions[IDEVersionNumber].Name);
     // IDE Version 5 comes in three flavors:
     // - Delphi only  (Spacely)
     // - C++Builder only  (Cogswell)
     // - Delphi and C++Builder
     if (IDEVersionNumber = 5) and (Personalities = [bpDelphi32]) then
-      Result := RsDelphiName
+      Result := LoadResString(@RsDelphiName)
     else
     if (IDEVersionNumber = 5) and (Personalities = [bpBCBuilder32]) then
-      Result := RsBCBName;
+      Result := LoadResString(@RsBCBName);
   end
   else
-    Result := RsBDSName;
+    Result := LoadResString(@RsBDSName);
 end;
 
 function TJclBDSInstallation.RegisterPackage(const BinaryFileName, Description: string): Boolean;
@@ -5426,7 +5427,7 @@ begin
     if Installations[I].UpdateNeeded then
     begin
       Result := True;
-      Text := Format(RsNeedUpdate, [Installations[I].LatestUpdatePack, Installations[I].Name]);
+      Text := Format(LoadResString(@RsNeedUpdate), [Installations[I].LatestUpdatePack, Installations[I].Name]);
       Break;
     end;
 end;

@@ -21,7 +21,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                     $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -1047,7 +1047,7 @@ begin
       AAction := AStandardAction;
     end;
 
-    AAction.Caption := ControlActionInfo.Caption;
+    AAction.Caption := LoadResString(ControlActionInfo.Caption);
     AAction.Name := ControlActionInfo.ActionName;
     AAction.Visible := True;
     AAction.ActionList := IDEActionList;

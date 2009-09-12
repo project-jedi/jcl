@@ -2818,9 +2818,9 @@ begin
   begin
     if not FDataEnded then
       // the decompressed stream is stopping before the compressed stream
-      raise EJclCompressionError(RsCompressionGZipInternalError);
+      raise EJclCompressionError.CreateRes(@RsCompressionGZipInternalError);
     if AutoCheckDataCRC32 and (FComputedDataCRC32 <> FFooter.DataCRC32) then
-      raise EJclCompressionError(RsCompressionGZipDataCRCFailed);
+      raise EJclCompressionError.CreateRes(@RsCompressionGZipDataCRCFailed);
   end;
 end;
 
@@ -3660,10 +3660,10 @@ begin
     LastWriteTime := AFindData.ftLastWriteTime;
     // TODO: user name and group (using file handle and GetSecurityInfo)
     {$IFDEF MSWINDOWS}
-    HostOS := RsCompression7zWindows;
+    HostOS := LoadResString(@RsCompression7zWindows);
     {$ENDIF MSWINDOWS}
     {$IFDEF UNIX}
-    HostOS := RsCompression7zUnix;
+    HostOS := LoadResString(@RsCompression7zUnix);
     {$ENDIF UNIX}
   end;
 end;
@@ -3753,7 +3753,7 @@ begin
           try
             FPackedNames.Add(Value);
           except
-            raise EJclCompressionError(Format(RsCompressionDuplicate, [Value]));
+            raise EJclCompressionError(Format(LoadResString(@RsCompressionDuplicate), [Value]));
           end;
         end;
       end;
@@ -4484,10 +4484,10 @@ begin
     AItem.LastAccessTime := NowFileTime;
     AItem.LastWriteTime := NowFileTime;
     {$IFDEF MSWINDOWS}
-    AItem.HostOS := RsCompression7zWindows;
+    AItem.HostOS := LoadResString(@RsCompression7zWindows);
     {$ENDIF MSWINDOWS}
     {$IFDEF UNIX}
-    AItem.HostOS := RsCompression7zUnix;
+    AItem.HostOS := LoadResString(@RsCompression7zUnix);
     {$ENDIF UNIX}
   except
     AItem.Destroy;
@@ -4551,7 +4551,7 @@ begin
           end;
         daError:
           begin
-            S := Format(RsCompressionDuplicate, [NewItem.PackedName]);
+            S := Format(LoadResString(@RsCompressionDuplicate), [NewItem.PackedName]);
             NewItem.Free;
             raise EJclCompressionError.Create(S);
           end;

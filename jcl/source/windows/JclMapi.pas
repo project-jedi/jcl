@@ -279,7 +279,7 @@ function JclSimpleBringUpSendMailDialog(const Subject, Body: AnsiString;
 // MAPI Errors
 function MapiCheck(const Res: DWORD; IgnoreUserAbort: Boolean = True): DWORD;
 
-function MapiErrorMessage(const ErrorCode: DWORD): AnsiString;
+function MapiErrorMessage(const ErrorCode: DWORD): string;
 
 {$IFDEF UNITVERSIONING}
 const
@@ -334,59 +334,59 @@ begin
   end;
 end;
 
-function MapiErrorMessage(const ErrorCode: DWORD): AnsiString;
+function MapiErrorMessage(const ErrorCode: DWORD): string;
 begin
    case ErrorCode of
      MAPI_E_USER_ABORT:
-       Result := RsMapiErrUSER_ABORT;
+       Result := LoadResString(@RsMapiErrUSER_ABORT);
      MAPI_E_FAILURE:
-       Result := RsMapiErrFAILURE;
+       Result := LoadResString(@RsMapiErrFAILURE);
      MAPI_E_LOGIN_FAILURE:
-       Result := RsMapiErrLOGIN_FAILURE;
+       Result := LoadResString(@RsMapiErrLOGIN_FAILURE);
      MAPI_E_DISK_FULL:
-       Result := RsMapiErrDISK_FULL;
+       Result := LoadResString(@RsMapiErrDISK_FULL);
      MAPI_E_INSUFFICIENT_MEMORY:
-       Result := RsMapiErrINSUFFICIENT_MEMORY;
+       Result := LoadResString(@RsMapiErrINSUFFICIENT_MEMORY);
      MAPI_E_ACCESS_DENIED:
-       Result := RsMapiErrACCESS_DENIED;
+       Result := LoadResString(@RsMapiErrACCESS_DENIED);
      MAPI_E_TOO_MANY_SESSIONS:
-       Result := RsMapiErrTOO_MANY_SESSIONS;
+       Result := LoadResString(@RsMapiErrTOO_MANY_SESSIONS);
      MAPI_E_TOO_MANY_FILES:
-       Result := RsMapiErrTOO_MANY_FILES;
+       Result := LoadResString(@RsMapiErrTOO_MANY_FILES);
      MAPI_E_TOO_MANY_RECIPIENTS:
-       Result := RsMapiErrTOO_MANY_RECIPIENTS;
+       Result := LoadResString(@RsMapiErrTOO_MANY_RECIPIENTS);
      MAPI_E_ATTACHMENT_NOT_FOUND:
-       Result := RsMapiErrATTACHMENT_NOT_FOUND;
+       Result := LoadResString(@RsMapiErrATTACHMENT_NOT_FOUND);
      MAPI_E_ATTACHMENT_OPEN_FAILURE:
-       Result := RsMapiErrATTACHMENT_OPEN_FAILURE;
+       Result := LoadResString(@RsMapiErrATTACHMENT_OPEN_FAILURE);
      MAPI_E_ATTACHMENT_WRITE_FAILURE:
-       Result := RsMapiErrATTACHMENT_WRITE_FAILURE;
+       Result := LoadResString(@RsMapiErrATTACHMENT_WRITE_FAILURE);
      MAPI_E_UNKNOWN_RECIPIENT:
-       Result := RsMapiErrUNKNOWN_RECIPIENT;
+       Result := LoadResString(@RsMapiErrUNKNOWN_RECIPIENT);
      MAPI_E_BAD_RECIPTYPE:
-       Result := RsMapiErrBAD_RECIPTYPE;
+       Result := LoadResString(@RsMapiErrBAD_RECIPTYPE);
      MAPI_E_NO_MESSAGES:
-       Result := RsMapiErrNO_MESSAGES;
+       Result := LoadResString(@RsMapiErrNO_MESSAGES);
      MAPI_E_INVALID_MESSAGE:
-       Result := RsMapiErrINVALID_MESSAGE;
+       Result := LoadResString(@RsMapiErrINVALID_MESSAGE);
      MAPI_E_TEXT_TOO_LARGE:
-       Result := RsMapiErrTEXT_TOO_LARGE;
+       Result := LoadResString(@RsMapiErrTEXT_TOO_LARGE);
      MAPI_E_INVALID_SESSION:
-       Result := RsMapiErrINVALID_SESSION;
+       Result := LoadResString(@RsMapiErrINVALID_SESSION);
      MAPI_E_TYPE_NOT_SUPPORTED:
-       Result := RsMapiErrTYPE_NOT_SUPPORTED;
+       Result := LoadResString(@RsMapiErrTYPE_NOT_SUPPORTED);
      MAPI_E_AMBIGUOUS_RECIPIENT:
-       Result := RsMapiErrAMBIGUOUS_RECIPIENT;
+       Result := LoadResString(@RsMapiErrAMBIGUOUS_RECIPIENT);
      MAPI_E_MESSAGE_IN_USE:
-       Result := RsMapiErrMESSAGE_IN_USE;
+       Result := LoadResString(@RsMapiErrMESSAGE_IN_USE);
      MAPI_E_NETWORK_FAILURE:
-       Result := RsMapiErrNETWORK_FAILURE;
+       Result := LoadResString(@RsMapiErrNETWORK_FAILURE);
      MAPI_E_INVALID_EDITFIELDS:
-       Result := RsMapiErrINVALID_EDITFIELDS;
+       Result := LoadResString(@RsMapiErrINVALID_EDITFIELDS);
      MAPI_E_INVALID_RECIPS:
-       Result := RsMapiErrINVALID_RECIPS;
+       Result := LoadResString(@RsMapiErrINVALID_RECIPS);
      MAPI_E_NOT_SUPPORTED:
-       Result := RsMapiErrNOT_SUPPORTED;
+       Result := LoadResString(@RsMapiErrNOT_SUPPORTED);
    else
      Result := '';
    end;
@@ -709,19 +709,16 @@ begin
 end;
 
 class function TJclEmailRecip.RecipKindToString(const AKind: TJclEmailRecipKind): AnsiString;
-const
-  Idents: array [TJclEmailRecipKind] of AnsiString = (
-    RsMapiMailORIG, RsMapiMailTO, RsMapiMailCC, RsMapiMailBCC);
 begin
   case AKind of
      rkOriginator:
-       Result := RsMapiMailORIG;
+       Result := AnsiString(LoadResString(@RsMapiMailORIG));
      rkTO:
-       Result := RsMapiMailTO;
+       Result := AnsiString(LoadResString(@RsMapiMailTO));
      rkCC:
-       Result := RsMapiMailCC;
+       Result := AnsiString(LoadResString(@RsMapiMailCC));
      rkBCC:
-       Result := RsMapiMailBCC;
+       Result := AnsiString(LoadResString(@RsMapiMailBCC));
    end;
 end;
 
@@ -1163,10 +1160,11 @@ var
   NamesList: array [TJclEmailRecipKind] of AnsiString;
   ReportKind: TJclEmailRecipKind;
   I, Cnt: Integer;
-  BreakStr, S: AnsiString;
+  MailSubject, BreakStr, S: AnsiString;
 begin
   Cnt := Strings.Count;
-  LabelsWidth := Length(RsMapiMailSubject);
+  MailSubject := AnsiString(LoadResString(@RsMapiMailSubject));
+  LabelsWidth := Length(MailSubject);
   for ReportKind := Low(ReportKind) to High(ReportKind) do
   begin
     NamesList[ReportKind] := '';
@@ -1192,7 +1190,7 @@ begin
           Copy(NamesList[ReportKind], 1, Length(NamesList[ReportKind]) - Length(NameDelimiter));
         Strings.Add(WrapText(string(S), string(BreakStr), [AnsiTab, AnsiSpace], MaxWidth)); // OF AnsiString to TStrings
       end;
-    S := RsMapiMailSubject + ': ' + Subject;
+    S := MailSubject + ': ' + Subject;
     Strings.Add(WrapText(string(S), string(BreakStr), [AnsiTab, AnsiSpace], MaxWidth)); // OF AnsiString to TStrings
     Result := Strings.Count - Cnt;
     Strings.Add('');

@@ -313,7 +313,7 @@ uses
   Classes, Consts,
   {$ENDIF VCL}
   Math,
-  JclResources, JclSysInfo, JclLogic;
+  JclVclResources, JclSysInfo, JclLogic;
 
 type
   // resampling support types

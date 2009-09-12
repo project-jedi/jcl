@@ -91,7 +91,7 @@ type
     Sandbox: Boolean;
     SaveFile: Boolean;
     AllPlugins: Boolean;
-    Caption: string;
+    Caption: PResStringRec;
     ActionName: string;
   end;
 
@@ -219,7 +219,7 @@ implementation
 
 uses
   Windows, Forms, TypInfo,
-  JclResources, JclFileUtils, JclRegistry, JclShell, JclStrings;
+  JclVclResources, JclFileUtils, JclRegistry, JclShell, JclStrings;
 
 //=== JclVersionControl.pas ===================================================
 const
@@ -305,187 +305,189 @@ const
   JclVersionCtrlIconTypeNoIconValue = 'noicon';
   JclVersionCtrlIconTypeJclIconValue = 'jclicons';
 
+{$G+}
+
 const
   VersionControlActionInfos: array [TJclVersionControlActionType] of TJclVersionControlActionInfo =
    ( (SandBox: False;                          // vcaAdd
       SaveFile: True;
       AllPlugins: False;
-      Caption: RsVersionCtrlAddCaption;
+      Caption: @RsVersionCtrlAddCaption;
       ActionName: JclVersionCtrlAddActionName),
      (SandBox: True;                           // vcaAddSandbox
       SaveFile: True;
       AllPlugins: False;
-      Caption: RsVersionCtrlAddSandboxCaption;
+      Caption: @RsVersionCtrlAddSandboxCaption;
       ActionName: JclVersionCtrlAddSandboxActionName),
      (SandBox: False;                          // vcaBlame
       SaveFile: True;
       AllPlugins: False;
-      Caption: RsVersionCtrlBlameCaption;
+      Caption: @RsVersionCtrlBlameCaption;
       ActionName: JclVersionCtrlBlameActionName),
      (SandBox: False;                          // vcaBranch
       SaveFile: True;
       AllPlugins: False;
-      Caption: RsVersionCtrlBranchCaption;
+      Caption: @RsVersionCtrlBranchCaption;
       ActionName: JclVersionCtrlBranchActionName),
      (SandBox: True;                           // vcaBranchSandbox
       SaveFile: True;
       AllPlugins: False;
-      Caption: RsVersionCtrlBranchSandboxCaption;
+      Caption: @RsVersionCtrlBranchSandboxCaption;
       ActionName: JclVersionCtrlBranchSandboxActionName),
      (SandBox: True;                           // vcaCheckOutSandbox
       SaveFile: True;
       AllPlugins: True;
-      Caption: RsVersionCtrlCheckOutSandboxCaption;
+      Caption: @RsVersionCtrlCheckOutSandboxCaption;
       ActionName: JclVersionCtrlCheckOutSandboxActionName),
      (SandBox: False;                          // vcaCommit
       SaveFile: True;
       AllPlugins: False;
-      Caption: RsVersionCtrlCommitCaption;
+      Caption: @RsVersionCtrlCommitCaption;
       ActionName: JclVersionCtrlCommitActionName),
      (SandBox: True;                           // vcaCommitSandbox
       SaveFile: True;
       AllPlugins: False;
-      Caption: RsVersionCtrlCommitSandboxCaption;
+      Caption: @RsVersionCtrlCommitSandboxCaption;
       ActionName: JclVersionCtrlCommitSandboxActionName),
      (SandBox: False;                          // vcaContextMenu
       SaveFile: False;
       AllPlugins: True;
-      Caption: RsVersionCtrlContextMenuCaption;
+      Caption: @RsVersionCtrlContextMenuCaption;
       ActionName: JclVersionCtrlContextMenuActionName),
      (SandBox: False;                          // vcaDiff
       SaveFile: True;
       AllPlugins: False;
-      Caption: RsVersionCtrlDiffCaption;
+      Caption: @RsVersionCtrlDiffCaption;
       ActionName: JclVersionCtrlDiffActionName),
      (SandBox: False;                           // vcaExplore
       SaveFile: False;
       AllPlugins: True;
-      Caption: RsVersionCtrlExploreCaption;
+      Caption: @RsVersionCtrlExploreCaption;
       ActionName: JclVersionCtrlExploreActionName),
      (SandBox: True;                           // vcaExploreSandbox
       SaveFile: False;
       AllPlugins: True;
-      Caption: RsVersionCtrlExploreSandboxCaption;
+      Caption: @RsVersionCtrlExploreSandboxCaption;
       ActionName: JclVersionCtrlExploreSandboxActionName),
      (SandBox: False;                          // vcaGraph
       SaveFile: False;
       AllPlugins: False;
-      Caption: RsVersionCtrlGraphCaption;
+      Caption: @RsVersionCtrlGraphCaption;
       ActionName: JclVersionCtrlGraphActionName),
      (SandBox: False;                          // vcaLog
       SaveFile: False;
       AllPlugins: False;
-      Caption: RsVersionCtrlLogCaption;
+      Caption: @RsVersionCtrlLogCaption;
       ActionName: JclVersionCtrlLogActionName),
      (SandBox: True;                           // vcaLogSandbox
       SaveFile: False;
       AllPlugins: False;
-      Caption: RsVersionCtrlLogSandboxCaption;
+      Caption: @RsVersionCtrlLogSandboxCaption;
       ActionName: JclVersionCtrlLogSandboxActionName),
      (SandBox: False;                          // vcaLock
       SaveFile: True;
       AllPlugins: False;
-      Caption: RsVersionCtrlLockCaption;
+      Caption: @RsVersionCtrlLockCaption;
       ActionName: JclVersionCtrlLockActionName),
      (SandBox: True;                           // vcaLockSandbox
       SaveFile: True;
       AllPlugins: False;
-      Caption: RsVersionCtrlLockSandboxCaption;
+      Caption: @RsVersionCtrlLockSandboxCaption;
       ActionName: JclVersionCtrlLockSandboxActionName),
      (SandBox: False;                          // vcaMerge
       SaveFile: True;
       AllPlugins: False;
-      Caption: RsVersionCtrlMergeCaption;
+      Caption: @RsVersionCtrlMergeCaption;
       ActionName: JclVersionCtrlMergeActionName),
      (SandBox: True;                           // vcaMergeSandbox
       SaveFile: True;
       AllPlugins: False;
-      Caption: RsVersionCtrlMergeSandboxCaption;
+      Caption: @RsVersionCtrlMergeSandboxCaption;
       ActionName: JclVersionCtrlMergeSandboxActionName),
      (SandBox: False;                          // vcaProperties
       SaveFile: True;
       AllPlugins: True;
-      Caption: RsVersionCtrlPropertiesCaption;
+      Caption: @RsVersionCtrlPropertiesCaption;
       ActionName: JclVersionCtrlPropertiesActionName),
      (SandBox: True;                           // vcaPropertiesSandbox
       SaveFile: True;
       AllPlugins: True;
-      Caption: RsVersionCtrlPropertiesSandboxCaption;
+      Caption: @RsVersionCtrlPropertiesSandboxCaption;
       ActionName: JclVersionCtrlPropertiesSandboxActionName),
      (SandBox: False;                          // vcaRename
       SaveFile: True;
       AllPlugins: False;
-      Caption: RsVersionCtrlRenameCaption;
+      Caption: @RsVersionCtrlRenameCaption;
       ActionName: JclVersionCtrlRenameActionName),
      (SandBox: True;                          // vcaRenameSandbox
       SaveFile: True;
       AllPlugins: False;
-      Caption: RsVersionCtrlRenameSandboxCaption;
+      Caption: @RsVersionCtrlRenameSandboxCaption;
       ActionName: JclVersionCtrlRenameSandboxActionName),
      (SandBox: False;                          // vcaRepoBrowser
       SaveFile: False;
       AllPlugins: False;
-      Caption: RsVersionCtrlRepoBrowserCaption;
+      Caption: @RsVersionCtrlRepoBrowserCaption;
       ActionName: JclVersionCtrlRepoBrowserActionName),
      (SandBox: False;                          // vcaRevert
       SaveFile: False;
       AllPlugins: False;
-      Caption: RsVersionCtrlRevertCaption;
+      Caption: @RsVersionCtrlRevertCaption;
       ActionName: JclVersionCtrlRevertActionName),
      (SandBox: True;                           // vcaRevertSandbox
       SaveFile: False;
       AllPlugins: False;
-      Caption: RsVersionCtrlRevertSandboxCaption;
+      Caption: @RsVersionCtrlRevertSandboxCaption;
       ActionName: JclVersionCtrlRevertSandboxActionName),
      (SandBox: False;                          // vcaStatus
       SaveFile: True;
       AllPlugins: False;
-      Caption: RsVersionCtrlStatusCaption;
+      Caption: @RsVersionCtrlStatusCaption;
       ActionName: JclVersionCtrlStatusActionName),
      (SandBox: True;                           // vcaStatusSandbox
       SaveFile: True;
       AllPlugins: False;
-      Caption: RsVersionCtrlStatusSandboxCaption;
+      Caption: @RsVersionCtrlStatusSandboxCaption;
       ActionName: JclVersionCtrlStatusSandboxActionName),
      (SandBox: False;                          // vcaTag
       SaveFile: True;
       AllPlugins: False;
-      Caption: RsVersionCtrlTagCaption;
+      Caption: @RsVersionCtrlTagCaption;
       ActionName: JclVersionCtrlTagActionName),
      (SandBox: True;                           // vcaTagSandBox
       SaveFile: True;
       AllPlugins: False;
-      Caption: RsVersionCtrlTagSandboxCaption;
+      Caption: @RsVersionCtrlTagSandboxCaption;
       ActionName: JclVersionCtrlTagSandboxActionName),
      (SandBox: False;                          // vcaUpdate
       SaveFile: True;
       AllPlugins: False;
-      Caption: RsVersionCtrlUpdateCaption;
+      Caption: @RsVersionCtrlUpdateCaption;
       ActionName: JclVersionCtrlUpdateActionName),
      (SandBox: True;                           // vcaUpdateSandbox
       SaveFile: True;
       AllPlugins: False;
-      Caption: RsVersionCtrlUpdateSandboxCaption;
+      Caption: @RsVersionCtrlUpdateSandboxCaption;
       ActionName: JclVersionCtrlUpdateSandboxActionName),
      (SandBox: False;                          // vcaUpdateTo
       SaveFile: True;
       AllPlugins: False;
-      Caption: RsVersionCtrlUpdateToCaption;
+      Caption: @RsVersionCtrlUpdateToCaption;
       ActionName: JclVersionCtrlUpdateToActionName),
      (SandBox: True;                           // vcaUpdateSandboxTo
       SaveFile: True;
       AllPlugins: False;
-      Caption: RsVersionCtrlUpdateSandboxToCaption;
+      Caption: @RsVersionCtrlUpdateSandboxToCaption;
       ActionName: JclVersionCtrlUpdateSandboxToActionName),
      (SandBox: False;                          // vcaUnlock
       SaveFile: True;
       AllPlugins: False;
-      Caption: RsVersionCtrlUnlockCaption;
+      Caption: @RsVersionCtrlUnlockCaption;
       ActionName: JclVersionCtrlUnlockActionName),
      (SandBox: True;                           // vcaUnlockSandbox
       SaveFile: True;
       AllPlugins: False;
-      Caption: RsVersionCtrlUnlockSandboxCaption;
+      Caption: @RsVersionCtrlUnlockSandboxCaption;
       ActionName: JclVersionCtrlUnlockSandboxActionName)
    );
 

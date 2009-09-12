@@ -3720,7 +3720,7 @@ begin
     // Lookup failed so mimic explorer behaviour by returning "XYZ File"
     Result := ExtractFileExt(FileName);
     Delete(Result, 1, 1);
-    Result := TrimLeft(UpperCase(Result) + RsDefaultFileTypeName);
+    Result := TrimLeft(UpperCase(Result) + LoadResString(@RsDefaultFileTypeName));
   end;
 end;
 {$ENDIF MSWINDOWS}
@@ -3834,17 +3834,17 @@ begin
   DriveType := GetDriveType(PChar(DriveStr));
   case DriveType of
     DRIVE_REMOVABLE:
-      Result := RsRemovableDrive;
+      Result := LoadResString(@RsRemovableDrive);
     DRIVE_FIXED:
-      Result := RsHardDisk;
+      Result := LoadResString(@RsHardDisk);
     DRIVE_REMOTE:
-      Result := RsRemoteDrive;
+      Result := LoadResString(@RsRemoteDrive);
     DRIVE_CDROM:
-      Result := RsCDRomDrive;
+      Result := LoadResString(@RsCDRomDrive);
     DRIVE_RAMDISK:
-      Result := RsRamDisk;
+      Result := LoadResString(@RsRamDisk);
     else
-      Result := RsUnknownDrive;
+      Result := LoadResString(@RsUnknownDrive);
   end;
 end;
 
@@ -3873,17 +3873,17 @@ begin
   try
     { TODO : differentiate Windows/UNIX idents }
     if Attr and faDirectory = faDirectory then
-      Items.Add(RsAttrDirectory);
+      Items.Add(LoadResString(@RsAttrDirectory));
     if Attr and faReadOnly = faReadOnly then
-      Items.Add(RsAttrReadOnly);
+      Items.Add(LoadResString(@RsAttrReadOnly));
     if Attr and faSysFile = faSysFile then
-      Items.Add(RsAttrSystemFile);
+      Items.Add(LoadResString(@RsAttrSystemFile));
     if Attr and faArchive = faArchive then
-      Items.Add(RsAttrArchive);
+      Items.Add(LoadResString(@RsAttrArchive));
     if Attr and faAnyFile = faAnyFile then
-      Items.Add(RsAttrAnyFile);
+      Items.Add(LoadResString(@RsAttrAnyFile));
     if Attr and faHidden = faHidden then
-      Items.Add(RsAttrHidden);
+      Items.Add(LoadResString(@RsAttrHidden));
   finally
     Items.EndUpdate;
   end;
@@ -3901,29 +3901,29 @@ begin
   Items.BeginUpdate;
   try
     if Attr and FILE_ATTRIBUTE_READONLY = FILE_ATTRIBUTE_READONLY then
-      Items.Add(RsAttrReadOnly);
+      Items.Add(LoadResString(@RsAttrReadOnly));
     if Attr and FILE_ATTRIBUTE_HIDDEN = FILE_ATTRIBUTE_HIDDEN then
-      Items.Add(RsAttrHidden);
+      Items.Add(LoadResString(@RsAttrHidden));
     if Attr and FILE_ATTRIBUTE_SYSTEM = FILE_ATTRIBUTE_SYSTEM then
-      Items.Add(RsAttrSystemFile);
+      Items.Add(LoadResString(@RsAttrSystemFile));
     if Attr and FILE_ATTRIBUTE_DIRECTORY = FILE_ATTRIBUTE_DIRECTORY then
-      Items.Add(RsAttrDirectory);
+      Items.Add(LoadResString(@RsAttrDirectory));
     if Attr and FILE_ATTRIBUTE_ARCHIVE = FILE_ATTRIBUTE_ARCHIVE then
-      Items.Add(RsAttrArchive);
+      Items.Add(LoadResString(@RsAttrArchive));
     if Attr and FILE_ATTRIBUTE_NORMAL = FILE_ATTRIBUTE_NORMAL then
-      Items.Add(RsAttrNormal);
+      Items.Add(LoadResString(@RsAttrNormal));
     if Attr and FILE_ATTRIBUTE_TEMPORARY = FILE_ATTRIBUTE_TEMPORARY then
-      Items.Add(RsAttrTemporary);
+      Items.Add(LoadResString(@RsAttrTemporary));
     if Attr and FILE_ATTRIBUTE_COMPRESSED = FILE_ATTRIBUTE_COMPRESSED then
-      Items.Add(RsAttrCompressed);
+      Items.Add(LoadResString(@RsAttrCompressed));
     if Attr and FILE_ATTRIBUTE_OFFLINE = FILE_ATTRIBUTE_OFFLINE then
-      Items.Add(RsAttrOffline);
+      Items.Add(LoadResString(@RsAttrOffline));
     if Attr and FILE_ATTRIBUTE_ENCRYPTED = FILE_ATTRIBUTE_ENCRYPTED then
-      Items.Add(RsAttrEncrypted);
+      Items.Add(LoadResString(@RsAttrEncrypted));
     if Attr and FILE_ATTRIBUTE_REPARSE_POINT = FILE_ATTRIBUTE_REPARSE_POINT then
-      Items.Add(RsAttrReparsePoint);
+      Items.Add(LoadResString(@RsAttrReparsePoint));
     if Attr and FILE_ATTRIBUTE_SPARSE_FILE = FILE_ATTRIBUTE_SPARSE_FILE then
-      Items.Add(RsAttrSparseFile);
+      Items.Add(LoadResString(@RsAttrSparseFile));
   finally
     Items.EndUpdate;
   end;
@@ -4585,95 +4585,97 @@ function OSIdentToString(const OSIdent: DWORD): string;
 begin
   case OSIdent of
     VOS_UNKNOWN:
-      Result := RsVosUnknown;
+      Result := LoadResString(@RsVosUnknown);
     VOS_DOS:
-      Result := RsVosDos;
+      Result := LoadResString(@RsVosDos);
     VOS_OS216:
-      Result := RsVosOS216;
+      Result := LoadResString(@RsVosOS216);
     VOS_OS232:
-      Result := RsVosOS232;
+      Result := LoadResString(@RsVosOS232);
     VOS_NT:
-      Result := RsVosNT;
+      Result := LoadResString(@RsVosNT);
     VOS__WINDOWS16:
-      Result := RsVosWindows16;
+      Result := LoadResString(@RsVosWindows16);
     VOS__PM16:
-      Result := RsVosPM16;
+      Result := LoadResString(@RsVosPM16);
     VOS__PM32:
-      Result := RsVosPM32;
+      Result := LoadResString(@RsVosPM32);
     VOS__WINDOWS32:
-      Result := RsVosWindows32;
+      Result := LoadResString(@RsVosWindows32);
     VOS_DOS_WINDOWS16:
-      Result := RsVosDosWindows16;
+      Result := LoadResString(@RsVosDosWindows16);
     VOS_DOS_WINDOWS32:
-      Result := RsVosDosWindows32;
+      Result := LoadResString(@RsVosDosWindows32);
     VOS_OS216_PM16:
-      Result := RsVosOS216PM16;
+      Result := LoadResString(@RsVosOS216PM16);
     VOS_OS232_PM32:
-      Result := RsVosOS232PM32;
+      Result := LoadResString(@RsVosOS232PM32);
     VOS_NT_WINDOWS32:
-      Result := RsVosNTWindows32;
+      Result := LoadResString(@RsVosNTWindows32);
   else
-    Result := RsVosUnknown;
+    Result := '';
   end;
-  if Result <> RsVosUnknown then
-    Result := RsVosDesignedFor + Result;
+  if Result = '' then
+    Result := LoadResString(@RsVosUnknown)
+  else
+    Result := Format(LoadResString(@RsVosDesignedFor), [Result]);
 end;
 
 function OSFileTypeToString(const OSFileType: DWORD; const OSFileSubType: DWORD): string;
 begin
   case OSFileType of
     VFT_UNKNOWN:
-      Result := RsVftUnknown;
+      Result := LoadResString(@RsVftUnknown);
     VFT_APP:
-      Result := RsVftApp;
+      Result := LoadResString(@RsVftApp);
     VFT_DLL:
-      Result := RsVftDll;
+      Result := LoadResString(@RsVftDll);
     VFT_DRV:
       begin
         case OSFileSubType of
           VFT2_DRV_PRINTER:
-            Result := RsVft2DrvPRINTER;
+            Result := LoadResString(@RsVft2DrvPRINTER);
           VFT2_DRV_KEYBOARD:
-            Result := RsVft2DrvKEYBOARD;
+            Result := LoadResString(@RsVft2DrvKEYBOARD);
           VFT2_DRV_LANGUAGE:
-            Result := RsVft2DrvLANGUAGE;
+            Result := LoadResString(@RsVft2DrvLANGUAGE);
           VFT2_DRV_DISPLAY:
-            Result := RsVft2DrvDISPLAY;
+            Result := LoadResString(@RsVft2DrvDISPLAY);
           VFT2_DRV_MOUSE:
-            Result := RsVft2DrvMOUSE;
+            Result := LoadResString(@RsVft2DrvMOUSE);
           VFT2_DRV_NETWORK:
-            Result := RsVft2DrvNETWORK;
+            Result := LoadResString(@RsVft2DrvNETWORK);
           VFT2_DRV_SYSTEM:
-            Result := RsVft2DrvSYSTEM;
+            Result := LoadResString(@RsVft2DrvSYSTEM);
           VFT2_DRV_INSTALLABLE:
-            Result := RsVft2DrvINSTALLABLE;
+            Result := LoadResString(@RsVft2DrvINSTALLABLE);
           VFT2_DRV_SOUND:
-            Result := RsVft2DrvSOUND;
+            Result := LoadResString(@RsVft2DrvSOUND);
           VFT2_DRV_COMM:
-            Result := RsVft2DrvCOMM;
+            Result := LoadResString(@RsVft2DrvCOMM);
         else
           Result := '';
         end;
-        Result := Result + ' ' + RsVftDrv;
+        Result := Result + ' ' + LoadResString(@RsVftDrv);
       end;
     VFT_FONT:
       begin
         case OSFileSubType of
           VFT2_FONT_RASTER:
-            Result := RsVft2FontRASTER;
+            Result := LoadResString(@RsVft2FontRASTER);
           VFT2_FONT_VECTOR:
-            Result := RsVft2FontVECTOR;
+            Result := LoadResString(@RsVft2FontVECTOR);
           VFT2_FONT_TRUETYPE:
-            Result := RsVft2FontTRUETYPE;
+            Result := LoadResString(@RsVft2FontTRUETYPE);
         else
           Result := '';
         end;
-        Result := Result + ' ' + RsVftFont;
+        Result := Result + ' ' + LoadResString(@RsVftFont);
       end;
     VFT_VXD:
-      Result := RsVftVxd;
+      Result := LoadResString(@RsVftVxd);
     VFT_STATIC_LIB:
-      Result := RsVftStaticLib;
+      Result := LoadResString(@RsVftStaticLib);
   else
     Result := '';
   end;
@@ -5665,7 +5667,7 @@ var
 begin
   Assert(Assigned(HandleFile));
   Assert(VerifyFileAttributeMask(RejectedAttributes, RequiredAttributes),
-    RsFileSearchAttrInconsistency);
+    LoadResString(@RsFileSearchAttrInconsistency));
 
   Directory := ExtractFilePath(Path);
 
@@ -5697,7 +5699,7 @@ var
 begin
   Assert(Assigned(HandleFile));
   Assert(VerifyFileAttributeMask(RejectedAttributes, RequiredAttributes),
-    RsFileSearchAttrInconsistency);
+    LoadResString(@RsFileSearchAttrInconsistency));
 
   Attr := faAnyFile and not RejectedAttributes;
 

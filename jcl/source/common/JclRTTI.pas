@@ -1395,10 +1395,10 @@ var
   Prop: IJclPropInfo;
 begin
   inherited WriteTo(Dest);
-  Dest.Writeln(RsRTTIClassName + ClassRef.ClassName);
-  Dest.Writeln(RsRTTIParent + Parent.ClassRef.ClassName);
-  Dest.Writeln(RsRTTIUnitName + GetUnitName);
-  Dest.Writeln(RsRTTIPropCount + IntToStr(PropertyCount) + ' (' +
+  Dest.Writeln(LoadResString(@RsRTTIClassName) + ClassRef.ClassName);
+  Dest.Writeln(LoadResString(@RsRTTIParent) + Parent.ClassRef.ClassName);
+  Dest.Writeln(LoadResString(@RsRTTIUnitName) + GetUnitName);
+  Dest.Writeln(LoadResString(@RsRTTIPropCount) + IntToStr(PropertyCount) + ' (' +
     IntToStr(TotalPropertyCount) + ')');
   Dest.Indent;
   try
@@ -1409,45 +1409,45 @@ begin
       Dest.Indent;
       try
         if Prop.HasIndex then
-          Dest.Writeln(Format(cFmt1, [RsRTTIIndex, Prop.Index]));
+          Dest.Writeln(Format(cFmt1, [LoadResString(@RsRTTIIndex), Prop.Index]));
         if Prop.HasDefault then
-          Dest.Writeln(Format(cFmt1, [RsRTTIDefault, Prop.Default]));
+          Dest.Writeln(Format(cFmt1, [LoadResString(@RsRTTIDefault), Prop.Default]));
         case Prop.ReaderType of
           pskStaticMethod:
-            Dest.Writeln(Format(cFmt2, [RsRTTIPropRead, RsRTTIStaticMethod,
+            Dest.Writeln(Format(cFmt2, [LoadResString(@RsRTTIPropRead), LoadResString(@RsRTTIStaticMethod),
               Pointer(Prop.ReaderValue)]));
           pskField:
-            Dest.Writeln(Format(cFmt2, [RsRTTIPropRead, RsRTTIField,
+            Dest.Writeln(Format(cFmt2, [LoadResString(@RsRTTIPropRead), LoadResString(@RsRTTIField),
               Pointer(Prop.ReaderValue)]));
           pskVirtualMethod:
-            Dest.Writeln(Format(cFmt2, [RsRTTIPropRead, RsRTTIVirtualMethod,
+            Dest.Writeln(Format(cFmt2, [LoadResString(@RsRTTIPropRead), LoadResString(@RsRTTIVirtualMethod),
               Pointer(Prop.ReaderValue)]));
         end;
         case Prop.WriterType of
           pskStaticMethod:
-            Dest.Writeln(Format(cFmt2, [RsRTTIPropWrite, RsRTTIStaticMethod,
+            Dest.Writeln(Format(cFmt2, [LoadResString(@RsRTTIPropWrite), LoadResString(@RsRTTIStaticMethod),
               Pointer(Prop.WriterValue)]));
           pskField:
-            Dest.Writeln(Format(cFmt2, [RsRTTIPropWrite, RsRTTIField,
+            Dest.Writeln(Format(cFmt2, [LoadResString(@RsRTTIPropWrite), LoadResString(@RsRTTIField),
               Pointer(Prop.WriterValue)]));
           pskVirtualMethod:
-            Dest.Writeln(Format(cFmt2, [RsRTTIPropWrite, RsRTTIVirtualMethod,
+            Dest.Writeln(Format(cFmt2, [LoadResString(@RsRTTIPropWrite), LoadResString(@RsRTTIVirtualMethod),
               Pointer(Prop.WriterValue)]));
         end;
         case Prop.StoredType of
           pskConstant:
             if Boolean(Prop.StoredValue) then
-              Dest.Writeln(Format(cFmt3, [RsRTTIPropStored, RsRTTITrue]))
+              Dest.Writeln(Format(cFmt3, [LoadResString(@RsRTTIPropStored), LoadResString(@RsRTTITrue)]))
             else
-              Dest.Writeln(Format(cFmt3, [RsRTTIPropStored, RsRTTIFalse]));
+              Dest.Writeln(Format(cFmt3, [LoadResString(@RsRTTIPropStored), LoadResString(@RsRTTIFalse)]));
           pskStaticMethod:
-            Dest.Writeln(Format(cFmt4, [RsRTTIPropStored, RsRTTIStaticMethod,
+            Dest.Writeln(Format(cFmt4, [LoadResString(@RsRTTIPropStored), LoadResString(@RsRTTIStaticMethod),
               Pointer(Prop.StoredValue)]));
           pskField:
-            Dest.Writeln(Format(cFmt4, [RsRTTIPropStored, RsRTTIField,
+            Dest.Writeln(Format(cFmt4, [LoadResString(@RsRTTIPropStored), LoadResString(@RsRTTIField),
               Pointer(Prop.StoredValue)]));
           pskVirtualMethod:
-            Dest.Writeln(Format(cFmt4, [RsRTTIPropStored, RsRTTIVirtualMethod,
+            Dest.Writeln(Format(cFmt4, [LoadResString(@RsRTTIPropStored), LoadResString(@RsRTTIVirtualMethod),
               Pointer(Prop.StoredValue)]));
         end;
       finally
@@ -1837,15 +1837,15 @@ end;
 procedure TJclDynArrayTypeInfo.WriteTo(const Dest: IJclInfoWriter);
 begin
   inherited WriteTo(Dest);
-  Dest.Writeln(RsRTTIElSize + IntToStr(ElementSize));
+  Dest.Writeln(LoadResString(@RsRTTIElSize) + IntToStr(ElementSize));
   if ElementType = nil then
-    Dest.Writeln(RsRTTIElType + RsRTTITypeError)
+    Dest.Writeln(LoadResString(@RsRTTIElType) + RsRTTITypeError)
   else
   if ElementType.Name[1] <> '.' then
-    Dest.Writeln(RsRTTIElType + ElementType.Name)
+    Dest.Writeln(LoadResString(@RsRTTIElType) + ElementType.Name)
   else
   begin
-    Dest.Writeln(RsRTTIElType);
+    Dest.Writeln(LoadResString(@RsRTTIElType));
     Dest.Indent;
     try
       ElementType.WriteTo(Dest);
@@ -1853,23 +1853,23 @@ begin
       Dest.Outdent;
     end;
   end;
-  Dest.Write(RsRTTIElNeedCleanup);
+  Dest.Write(LoadResString(@RsRTTIElNeedCleanup));
   if ElementsNeedCleanup then
-    Dest.Writeln(RsRTTITrue)
+    Dest.Writeln(LoadResString(@RsRTTITrue))
   else
-    Dest.Writeln(RsRTTIFalse);
-  Dest.Writeln(RsRTTIVarType + IntToStr(VarType));
-  Dest.Writeln(RsRTTIUnitName + GetUnitName);
+    Dest.Writeln(LoadResString(@RsRTTIFalse));
+  Dest.Writeln(LoadResString(@RsRTTIVarType) + IntToStr(VarType));
+  Dest.Writeln(LoadResString(@RsRTTIUnitName) + GetUnitName);
 end;
 
 procedure TJclDynArrayTypeInfo.DeclarationTo(const Dest: IJclInfoWriter);
 begin
   if Name[1] <> '.' then
-    Dest.Write(Name + ' = ' + RsRTTIArrayOf)
+    Dest.Write(Name + ' = ' + LoadResString(@RsRTTIArrayOf))
   else
-    Dest.Write(RsRTTIArrayOf);
+    Dest.Write(LoadResString(@RsRTTIArrayOf));
   if ElementType = nil then
-    Dest.Write(RsRTTITypeError)
+    Dest.Write(LoadResString(@RsRTTITypeError))
   else
   if ElementType.Name[1] = '.' then
     ElementType.DeclarationTo(Dest)

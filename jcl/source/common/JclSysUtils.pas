@@ -2136,7 +2136,7 @@ end;
 
 function TJclNumericFormat.Digit(DigitValue: TDigitValue): Char;
 begin
-  Assert(DigitValue < Base, Format(RsInvalidDigitValue, [Base, DigitValue]));
+  Assert(DigitValue < Base, Format(LoadResString(@RsInvalidDigitValue), [Base, DigitValue]));
   if DigitValue > 9 then
     Result := Chr(Ord('A') + DigitValue - 10)
   else

@@ -275,6 +275,9 @@
 #ifdef TEST_COMMON
 #include <JclValidation.hpp>
 #endif TEST_COMMON
+#ifdef TEST_VCL
+#include <JclVclResources.hpp>
+#endif TEST_VCL
 #ifdef TEST_COMMON
 #include <JclVectors.hpp>
 #endif TEST_COMMON

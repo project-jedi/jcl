@@ -3,8 +3,7 @@
 { Project JEDI Code Library (JCL)                                                                  }
 {                                                                                                  }
 { The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
-						{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
-		{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
 { License at http://www.mozilla.org/MPL/                                                           }
 {                                                                                                  }
 { Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
@@ -39,7 +38,6 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-	{ Last modified: $Date::                                                                         $ }
 { Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
@@ -59,9 +57,6 @@ uses
 
 //=== JclBase ================================================================
 resourcestring
-  RsWin32Prefix        = 'Win32: %s (%u)';
-  RsDynArrayError      = 'DynArrayInitialize: ElementSize out of bounds';
-  RsSysErrorMessageFmt = 'Win32 Error %d (%x)';
   RsCantConvertAddr64  = 'The address %s%.16x cannot be converted to 32 bit';
   RsEReplacementChar   = 'Failed to get ANSI replacement character';
 
@@ -70,7 +65,6 @@ resourcestring
   RsNeedUpdate          = 'You should install latest Update Pack #%d for %s';
   RsUpdatePackName      = 'Update Pack #%d';
   RsDelphiName          = 'Delphi';
-  RsDelphiNetName       = 'Delphi.net';
   RsBCBName             = 'C++Builder';
   RsCSharpName          = 'C#Builder';
   RsBDSName             = 'Borland Developer Studio';
@@ -78,19 +72,13 @@ resourcestring
   {$IFDEF MSWINDOWS}
   RsClientServer        = 'Client/Server';
   RsStandard            = 'Standard';
-  RsVclIncludeDir       = '\Include\Vcl\';
   {$ENDIF MSWINDOWS}
   RsArchitect           = 'Architect';
   RsEnterprise          = 'Enterprise';
   RsPersonal            = 'Personal';
   RsProfessional        = 'Professional';
 
-  RsCommandLineToolMissing = 'No compiler available for %s';
-
-  RsUnknownProjectType = '%s not a known project type';
-
-  RsBorlandStudioProjects = 'Borland Studio Projects';
-  RsMsBuildNotSupported = 'MSBuild is not supported by this IDE';                 
+  RsMsBuildNotSupported = 'MSBuild is not supported by this IDE';
 
   RsPackageInstallationStarted    = 'Installing package %s';
   RsPackageInstallationFinished   = 'Installation of package finished';
@@ -144,7 +132,7 @@ resourcestring
   RsENotABcbProject             = '%s not a C++Builder project source file';
   RsENoSupportedPersonality     = 'No personalities supported';
   RsEDualPackageNotSupported    = 'This installation of %s doesn''t support dual packages';
-  RsEx64PlatformNotValid        = 'This installation cannot generate x64 binaries'; 
+  RsEx64PlatformNotValid        = 'This installation cannot generate x64 binaries';
   {$IFDEF MSWINDOWS}
   RsENoOpenHelp                 = 'open help not present in Borland Developer Studio';
   {$ENDIF MSWINDOWS}
@@ -156,6 +144,297 @@ resourcestring
 //=== JclCIL =================================================================
 resourcestring
   RsInstructionStreamInvalid = 'Invalid IL instruction stream';
+  RsCILNamenop         = 'nop';
+  RsCILNamebreak       = 'break';
+  RsCILNameldarg0      = 'ldarg.0';
+  RsCILNameldarg1      = 'ldarg.1';
+  RsCILNameldarg2      = 'ldarg.2';
+  RsCILNameldarg3      = 'ldarg.3';
+  RsCILNameldloc0      = 'ldloc.0';
+  RsCILNameldloc1      = 'ldloc.1';
+  RsCILNameldloc2      = 'ldloc.2';
+  RsCILNameldloc3      = 'ldloc.3';
+  RsCILNamestloc0      = 'stloc.0';
+  RsCILNamestloc1      = 'stloc.1';
+  RsCILNamestloc2      = 'stloc.2';
+  RsCILNamestloc3      = 'stloc.3';
+  RsCILNameldargs      = 'ldarg.s';
+  RsCILNameldargas     = 'ldarga.s';
+  RsCILNamestargs      = 'starg.s';
+  RsCILNameldlocs      = 'ldloc.s';
+  RsCILNameldlocas     = 'ldloca.s';
+  RsCILNamestlocs      = 'stloc.s';
+  RsCILNameldnull      = 'ldnull';
+  RsCILNameldci4m1     = 'ldc.i4.m1';
+  RsCILNameldci40      = 'ldc.i4.0';
+  RsCILNameldci41      = 'ldc.i4.1';
+  RsCILNameldci42      = 'ldc.i4.2';
+  RsCILNameldci43      = 'ldc.i4.3';
+  RsCILNameldci44      = 'ldc.i4.4';
+  RsCILNameldci45      = 'ldc.i4.5';
+  RsCILNameldci46      = 'ldc.i4.6';
+  RsCILNameldci47      = 'ldc.i4.7';
+  RsCILNameldci48      = 'ldc.i4.8';
+  RsCILNameldci4s      = 'ldc.i4.s';
+  RsCILNameldci4       = 'ldc.i4';
+  RsCILNameldci8       = 'ldc.i8';
+  RsCILNameldcr4       = 'ldc.r4';
+  RsCILNameldcr8       = 'ldc.r8';
+  RsCILNameunused1     = 'unused';
+  RsCILNamedup         = 'dup';
+  RsCILNamepop         = 'pop';
+  RsCILNamejmp         = 'jmp';
+  RsCILNamecall        = 'call';
+  RsCILNamecalli       = 'calli';
+  RsCILNameret         = 'ret';
+  RsCILNamebrs         = 'br.s';
+  RsCILNamebrfalses    = 'brfalse.s';
+  RsCILNamebrtrues     = 'brtrue.s';
+  RsCILNamebeqs        = 'beq.s';
+  RsCILNamebges        = 'bge.s';
+  RsCILNamebgts        = 'bgt.s';
+  RsCILNamebles        = 'ble.s';
+  RsCILNameblts        = 'blt.s';
+  RsCILNamebneuns      = 'bne.un.s';
+  RsCILNamebgeuns      = 'bge.un.s';
+  RsCILNamebgtuns      = 'bgt.un.s';
+  RsCILNamebleuns      = 'ble.un.s';
+  RsCILNamebltuns      = 'blt.un.s';
+  RsCILNamebr          = 'br';
+  RsCILNamebrfalse     = 'brfalse';
+  RsCILNamebrtrue      = 'brtrue';
+  RsCILNamebeq         = 'beq';
+  RsCILNamebge         = 'bge';
+  RsCILNamebgt         = 'bgt';
+  RsCILNameble         = 'ble';
+  RsCILNameblt         = 'blt';
+  RsCILNamebneun       = 'bne.un';
+  RsCILNamebgeun       = 'bge.un';
+  RsCILNamebgtun       = 'bgt.un';
+  RsCILNamebleun       = 'ble.un';
+  RsCILNamebltun       = 'blt.un';
+  RsCILNameswitch      = 'switch';
+  RsCILNameldindi1     = 'ldind.i1';
+  RsCILNameldindu1     = 'ldind.u1';
+  RsCILNameldindi2     = 'ldind.i2';
+  RsCILNameldindu2     = 'ldind.u2';
+  RsCILNameldindi4     = 'ldind.i4';
+  RsCILNameldindu4     = 'ldind.u4';
+  RsCILNameldindi8     = 'ldind.i8';
+  RsCILNameldindi      = 'ldind.i';
+  RsCILNameldindr4     = 'ldind.r4';
+  RsCILNameldindr8     = 'ldind.r8';
+  RsCILNameldindref    = 'ldind.ref';
+  RsCILNamestindref    = 'stind.ref';
+  RsCILNamestindi1     = 'stind.i1';
+  RsCILNamestindi2     = 'stind.i2';
+  RsCILNamestindi4     = 'stind.i4';
+  RsCILNamestindi8     = 'stind.i8';
+  RsCILNamestindr4     = 'stind.r4';
+  RsCILNamestindr8     = 'stind.r8';
+  RsCILNameadd         = 'add';
+  RsCILNamesub         = 'sub';
+  RsCILNamemul         = 'mul';
+  RsCILNamediv         = 'div';
+  RsCILNamedivun       = 'div.un';
+  RsCILNamerem         = 'rem';
+  RsCILNameremun       = 'rem.un';
+  RsCILNameand         = 'and';
+  RsCILNameor          = 'or';
+  RsCILNamexor         = 'xor';
+  RsCILNameshl         = 'shl';
+  RsCILNameshr         = 'shr';
+  RsCILNameshrun       = 'shr.un';
+  RsCILNameneg         = 'neg';
+  RsCILNamenot         = 'not';
+  RsCILNameconvi1      = 'conv.i1';
+  RsCILNameconvi2      = 'conv.i2';
+  RsCILNameconvi4      = 'conv.i4';
+  RsCILNameconvi8      = 'conv.i8';
+  RsCILNameconvr4      = 'conv.r4';
+  RsCILNameconvr8      = 'conv.r8';
+  RsCILNameconvu4      = 'conv.u4';
+  RsCILNameconvu8      = 'conv.u8';
+  RsCILNamecallvirt    = 'callvirt';
+  RsCILNamecpobj       = 'cpobj';
+  RsCILNameldobj       = 'ldobj';
+  RsCILNameldstr       = 'ldstr';
+  RsCILNamenewobj      = 'newobj';
+  RsCILNamecastclass   = 'castclass';
+  RsCILNameisinst      = 'isinst';
+  RsCILNameconvrun     = 'conv.r.un';
+  RsCILNameunused2     = 'unused';
+  RsCILNameunused3     = 'unused';
+  RsCILNameunbox       = 'unbox';
+  RsCILNamethrow       = 'throw';
+  RsCILNameldfld       = 'ldfld';
+  RsCILNameldflda      = 'ldflda';
+  RsCILNamestfld       = 'stfld';
+  RsCILNameldsfld      = 'ldsfld';
+  RsCILNameldsflda     = 'ldsflda';
+  RsCILNamestsfld      = 'stsfld';
+  RsCILNamestobj       = 'stobj';
+  RsCILNameconvovfi1un = 'conv.ovf.i1.un';
+  RsCILNameconvovfi2un = 'conv.ovf.i2.un';
+  RsCILNameconvovfi4un = 'conv.ovf.i4.un';
+  RsCILNameconvovfi8un = 'conv.ovf.i8.un';
+  RsCILNameconvovfu1un = 'conv.ovf.u1.un';
+  RsCILNameconvovfu2un = 'conv.ovf.u2.un';
+  RsCILNameconvovfu4un = 'conv.ovf.u4.un';
+  RsCILNameconvovfu8un = 'conv.ovf.u8.un';
+  RsCILNameconvovfiun  = 'conv.ovf.i.un';
+  RsCILNameconvovfuun  = 'conv.ovf.u.un';
+  RsCILNamebox         = 'box';
+  RsCILNamenewarr      = 'newarr';
+  RsCILNameldlen       = 'ldlen';
+  RsCILNameldelema     = 'ldelema';
+  RsCILNameldelemi1    = 'ldelem.i1';
+  RsCILNameldelemu1    = 'ldelem.u1';
+  RsCILNameldelemi2    = 'ldelem.i2';
+  RsCILNameldelemu2    = 'ldelem.u2';
+  RsCILNameldelemi4    = 'ldelem.i4';
+  RsCILNameldelemu4    = 'ldelem.u4';
+  RsCILNameldelemi8    = 'ldelem.i8';
+  RsCILNameldelemi     = 'ldelem.i';
+  RsCILNameldelemr4    = 'ldelem.r4';
+  RsCILNameldelemr8    = 'ldelem.r8';
+  RsCILNameldelemref   = 'ldelem.ref';
+  RsCILNamestelemi     = 'stelem.i';
+  RsCILNamestelemi1    = 'stelem.i1';
+  RsCILNamestelemi2    = 'stelem.i2';
+  RsCILNamestelemi4    = 'stelem.i4';
+  RsCILNamestelemi8    = 'stelem.i8';
+  RsCILNamestelemr4    = 'stelem.r4';
+  RsCILNamestelemr8    = 'stelem.r8';
+  RsCILNamestelemref   = 'stelem.ref';
+  RsCILNameunused4     = 'unused';
+  RsCILNameunused5     = 'unused';
+  RsCILNameunused6     = 'unused';
+  RsCILNameunused7     = 'unused';
+  RsCILNameunused8     = 'unused';
+  RsCILNameunused9     = 'unused';
+  RsCILNameunused10    = 'unused';
+  RsCILNameunused11    = 'unused';
+  RsCILNameunused12    = 'unused';
+  RsCILNameunused13    = 'unused';
+  RsCILNameunused14    = 'unused';
+  RsCILNameunused15    = 'unused';
+  RsCILNameunused16    = 'unused';
+  RsCILNameunused17    = 'unused';
+  RsCILNameunused18    = 'unused';
+  RsCILNameunused19    = 'unused';
+  RsCILNameconvovfi1   = 'conv.ovf.i1';
+  RsCILNameconvovfu1   = 'conv.ovf.u1';
+  RsCILNameconvovfi2   = 'conv.ovf.i2';
+  RsCILNameconvovfu2   = 'conv.ovf.u2';
+  RsCILNameconvovfi4   = 'conv.ovf.i4';
+  RsCILNameconvovfu4   = 'conv.ovf.u4';
+  RsCILNameconvovfi8   = 'conv.ovf.i8';
+  RsCILNameconvovfu8   = 'conv.ovf.u8';
+  RsCILNameunused20    = 'unused';
+  RsCILNameunused21    = 'unused';
+  RsCILNameunused22    = 'unused';
+  RsCILNameunused23    = 'unused';
+  RsCILNameunused24    = 'unused';
+  RsCILNameunused25    = 'unused';
+  RsCILNameunused26    = 'unused';
+  RsCILNamerefanyval   = 'refanyval';
+  RsCILNameckfinite    = 'ckfinite';
+  RsCILNameunused27    = 'unused';
+  RsCILNameunused28    = 'unused';
+  RsCILNamemkrefany    = 'mkrefany';
+  RsCILNameunused29    = 'unused';
+  RsCILNameunused30    = 'unused';
+  RsCILNameunused31    = 'unused';
+  RsCILNameunused32    = 'unused';
+  RsCILNameunused33    = 'unused';
+  RsCILNameunused34    = 'unused';
+  RsCILNameunused35    = 'unused';
+  RsCILNameunused36    = 'unused';
+  RsCILNameunused37    = 'unused';
+  RsCILNameldtoken     = 'ldtoken';
+  RsCILNameconvu2      = 'conv.u2';
+  RsCILNameconvu1      = 'conv.u1';
+  RsCILNameconvi       = 'conv.i';
+  RsCILNameconvovfi    = 'conv.ovf.i';
+  RsCILNameconvovfu    = 'conv.ovf.u';
+  RsCILNameaddovf      = 'add.ovf';
+  RsCILNameaddovfun    = 'add.ovf.un';
+  RsCILNamemulovf      = 'mul.ovf';
+  RsCILNamemulovfun    = 'mul.ovf.un';
+  RsCILNamesubovf      = 'sub.ovf';
+  RsCILNamesubovfun    = 'sub.ovf.un';
+  RsCILNameendfinally  = 'endfinally';
+  RsCILNameleave       = 'leave';
+  RsCILNameleaves      = 'leave.s';
+  RsCILNamestindi      = 'stind.i';
+  RsCILNameconvu       = 'conv.u';
+  RsCILNameunused38    = 'unused';
+  RsCILNameunused39    = 'unused';
+  RsCILNameunused40    = 'unused';
+  RsCILNameunused41    = 'unused';
+  RsCILNameunused42    = 'unused';
+  RsCILNameunused43    = 'unused';
+  RsCILNameunused44    = 'unused';
+  RsCILNameunused45    = 'unused';
+  RsCILNameunused46    = 'unused';
+  RsCILNameunused47    = 'unused';
+  RsCILNameunused48    = 'unused';
+  RsCILNameunused49    = 'unused';
+  RsCILNameunused50    = 'unused';
+  RsCILNameunused51    = 'unused';
+  RsCILNameunused52    = 'unused';
+  RsCILNameunused53    = 'unused';
+  RsCILNameunused54    = 'unused';
+  RsCILNameunused55    = 'unused';
+  RsCILNameunused56    = 'unused';
+  RsCILNameunused57    = 'unused';
+  RsCILNameunused58    = 'unused';
+  RsCILNameunused59    = 'unused';
+  RsCILNameunused60    = 'unused';
+  RsCILNameprefix7     = 'prefix7';
+  RsCILNameprefix6     = 'prefix6';
+  RsCILNameprefix5     = 'prefix5';
+  RsCILNameprefix4     = 'prefix4';
+  RsCILNameprefix3     = 'prefix3';
+  RsCILNameprefix2     = 'prefix2';
+  RsCILNameprefix1     = 'prefix1';
+  RsCILNameprefixref   = 'prefixref';
+  RsCILNamearglist     = 'arglist';
+  RsCILNameceq         = 'ceq';
+  RsCILNamecgt         = 'cgt';
+  RsCILNamecgtun       = 'cgt.un';
+  RsCILNameclt         = 'clt';
+  RsCILNamecltun       = 'clt.un';
+  RsCILNameldftn       = 'ldftn';
+  RsCILNameldvirtftn   = 'ldvirtftn';
+  RsCILNameunused61    = 'unused';
+  RsCILNameldarg       = 'ldarg';
+  RsCILNameldarga      = 'ldarga';
+  RsCILNamestarg       = 'starg';
+  RsCILNameldloc       = 'ldloc';
+  RsCILNameldloca      = 'ldloca';
+  RsCILNamestloc       = 'stloc';
+  RsCILNamelocalloc    = 'localloc';
+  RsCILNameunused62    = 'unused';
+  RsCILNameendfilter   = 'endfilter';
+  RsCILNameunaligned   = 'unaligned.';
+  RsCILNamevolatile    = 'volatile.';
+  RsCILNametail        = 'tail.';
+  RsCILNameinitobj     = 'initobj';
+  RsCILNameunused63    = 'unused';
+  RsCILNamecpblk       = 'cpblk';
+  RsCILNameinitblk     = 'initblk';
+  RsCILNameunused64    = 'unused';
+  RsCILNamerethrow     = 'rethrow';
+  RsCILNameunused65    = 'unused';
+  RsCILNamesizeof      = 'sizeof';
+  RsCILNamerefanytype  = 'refanytype';
+  RsCILNameunused66    = 'unused';
+  RsCILNameunused67    = 'unused';
+  RsCILNameunused68    = 'unused';
+  RsCILNameunused69    = 'unused';
+  RsCILNameunused70    = 'unused';
 
   RsCILCmdnop         = 'no operation';
   RsCILCmdbreak       = 'breakpoint instruction';
@@ -741,11 +1020,7 @@ resourcestring
   RsCILDescrunused69    = '';
   RsCILDescrunused70    = '';
 
-//=== JclClasses =============================================================
-resourcestring
-  RsVMTMemoryWriteError = 'Error writing VMT memory (%s)';
-
-//=== JclClr =================================================================
+//=== JclCLR =================================================================
 resourcestring
   RsClrCopyright    = '// Delphi-JEDI .NET Framework IL Disassembler.  Version 0.1' +  sLineBreak +
     '// Project JEDI Code Library (JCL) Team. All rights reserved.' +  sLineBreak;
@@ -765,7 +1040,6 @@ resourcestring
 
 //=== JclCompression =========================================================
 resourcestring
-  RsCompressionOperationNotSupported = 'Operation is not supported.';
   RsCompressionReadNotSupported      = 'read is not an supported operation.';
   RsCompressionWriteNotSupported     = 'write is not an supported operation.';
   RsCompressionResetNotSupported     = 'reset is not an supported operation.';
@@ -918,15 +1192,6 @@ resourcestring
 
 //=== JclDebug ===============================================================
 resourcestring
-  // Diagnostics
-  RsDebugAssertValidPointer = 'Invalid Pointer passed to AssertValid';
-  RsDebugAssertValidString  = 'Invalid string passed to AssertValid';
-
-  // TMapFiles
-  RsDebugNoProcessInfo    = 'Unable to obtain process information';
-  RsDebugSnapshot         = 'Failure creating toolhelp32 snapshot';
-
-  // JclDebugInfoExport
   RsUnknownFunctionAt     = 'Unknown function at %s';
 
 //=== JclDotNet ==============================================================
@@ -1001,19 +1266,6 @@ resourcestring
     'in segment [%s] at index [%s] in transaction set.';
 
   RsUnknownAttribute = 'Unknown Attribute';
-
-
-const
-  RsEDIErrors: array [1..58] of PResStringRec =
-    ( @RsEDIError001, @RsEDIError002, @RsEDIError003, @RsEDIError004, @RsEDIError005, @RsEDIError006, @RsEDIError007,
-      @RsEDIError008, @RsEDIError009, @RsEDIError010, @RsEDIError011, @RsEDIError012, @RsEDIError013, @RsEDIError014,
-      @RsEDIError015, @RsEDIError016, @RsEDIError017, @RsEDIError018, @RsEDIError019, @RsEDIError020, @RsEDIError021,
-      @RsEDIError022, @RsEDIError023, @RsEDIError024, @RsEDIError025, @RsEDIError026, @RsEDIError027, @RsEDIError028,
-      @RsEDIError029, @RsEDIError030, @RsEDIError031, @RsEDIError032, @RsEDIError033, @RsEDIError034, @RsEDIError035,
-      @RsEDIError036, @RsEDIError037, @RsEDIError038, @RsEDIError039, @RsEDIError040, @RsEDIError041, @RsEDIError042,
-      @RsEDIError043, @RsEDIError044, @RsEDIError045, @RsEDIError046, @RsEDIError047, @RsEDIError048, @RsEDIError049,
-      @RsEDIError050, @RsEDIError051, @RsEDIError052, @RsEDIError053, @RsEDIError054, @RsEDIError055, @RsEDIError056,
-      @RsEDIError057, @RsEDIError058 );
 
 //== JclEDISEF ===============================================================
 resourcestring
@@ -1129,6 +1381,10 @@ resourcestring
   RsCannotCreateDir = 'Unable to create directory';
   RsDelTreePathIsEmpty = 'DelTree: Path is empty';
   RsFileSearchAttrInconsistency = 'Some file search attributes are required AND rejected!';
+  RsEWindowsVersionNotSupported = 'This windows version is not supported';
+  RsEWindowNotValid = 'The window with handle %d is not valid';
+  RsEProcessNotValid = 'The process with ID %d is not valid';
+  RsEModuleNotValid = 'The Module with handle %d is not valid';
 
   // TJclFileVersionInfo
   RsFileUtilsNoVersionInfo = 'File contains no version information';
@@ -1150,7 +1406,7 @@ resourcestring
   RsVosOS216PM16    = '16-bit PM, running on 16-bit OS/2';
   RsVosOS232PM32    = '32-bit PM, running on 32-bit OS/2';
   RsVosNTWindows32  = 'Win32 API, running on Windows/NT';
-  RsVosDesignedFor  = 'Designed for ';
+  RsVosDesignedFor  = 'Designed for %s';
 
   // Strings returned from OSFileTypeToString()
   RsVftUnknown         = 'Unknown';
@@ -1220,28 +1476,6 @@ resourcestring
   // FileGetTypeName()
   RsDefaultFileTypeName = ' File';
 
-//=== JclGraphics, JclGraphUtils =============================================
-resourcestring
-  RsBitsPerSampleNotSupported = '%d bits per sample not supported in color space conversion';
-  RsAssertUnpairedEndUpdate   = 'Unpaired BeginUpdate EndUpdate';
-  RsCreateCompatibleDc        = 'Could not create compatible DC';
-  RsDestinationBitmapEmpty    = 'Destination bitmap is empty';
-  RsDibHandleAllocation       = 'Could not allocate handle for DIB';
-  RsMapSizeFmt                = 'Could not set size on class "%s"';
-  RsSelectObjectInDc          = 'Could not select object in DC';
-  RsSourceBitmapEmpty         = 'Source bitmap is empty';
-  RsSourceBitmapInvalid       = 'Source bitmap is invalid';
-  RsNoBitmapForRegion         = 'No bitmap for region';
-  RsNoDeviceContextForWindow  = 'Cannot get device context of the window';
-  RsInvalidRegion             = 'Invalid Region defined for RegionInfo';
-  RsRegionDataOutOfBound      = 'Out of bound index on RegionData';
-  RsRegionCouldNotCreated     = 'Region could not be created';
-  RsInvalidHandleForRegion    = 'Invalid handle for region';
-  RsInvalidRegionInfo         = 'Invalid RegionInfo';
-
-  RsBitmapExtension           = '.bmp';
-  RsJpegExtension             = '.jpg';
-
 //=== JclMapi ================================================================
 resourcestring
   RsMapiError         = 'MAPI Error: (%d) "%s"';
@@ -1249,48 +1483,44 @@ resourcestring
   RsMapiInvalidIndex  = 'Index is out ot range';
   RsMapiMailNoClient  = 'No Simple MAPI client installed, cannot send the message';
 
-const
-  RsMapiErrUSER_ABORT               : AnsiString = 'User abort';
-  RsMapiErrFAILURE                  : AnsiString = 'General MAPI failure';
-  RsMapiErrLOGIN_FAILURE            : AnsiString = 'MAPI login failure';
-  RsMapiErrDISK_FULL                : AnsiString = 'Disk full';
-  RsMapiErrINSUFFICIENT_MEMORY      : AnsiString = 'Insufficient memory';
-  RsMapiErrACCESS_DENIED            : AnsiString = 'Access denied';
-  RsMapiErrTOO_MANY_SESSIONS        : AnsiString = 'Too many sessions';
-  RsMapiErrTOO_MANY_FILES           : AnsiString = 'Too many files were specified';
-  RsMapiErrTOO_MANY_RECIPIENTS      : AnsiString = 'Too many recipients were specified';
-  RsMapiErrATTACHMENT_NOT_FOUND     : AnsiString = 'A specified attachment was not found';
-  RsMapiErrATTACHMENT_OPEN_FAILURE  : AnsiString = 'Attachment open failure';
-  RsMapiErrATTACHMENT_WRITE_FAILURE : AnsiString = 'Attachment write failure';
-  RsMapiErrUNKNOWN_RECIPIENT        : AnsiString = 'Unknown recipient';
-  RsMapiErrBAD_RECIPTYPE            : AnsiString = 'Bad recipient type';
-  RsMapiErrNO_MESSAGES              : AnsiString = 'No messages';
-  RsMapiErrINVALID_MESSAGE          : AnsiString = 'Invalid message';
-  RsMapiErrTEXT_TOO_LARGE           : AnsiString = 'Text too large';
-  RsMapiErrINVALID_SESSION          : AnsiString = 'Invalid session';
-  RsMapiErrTYPE_NOT_SUPPORTED       : AnsiString = 'Type not supported';
-  RsMapiErrAMBIGUOUS_RECIPIENT      : AnsiString = 'A recipient was specified ambiguously';
-  RsMapiErrMESSAGE_IN_USE           : AnsiString = 'Message in use';
-  RsMapiErrNETWORK_FAILURE          : AnsiString = 'Network failure';
-  RsMapiErrINVALID_EDITFIELDS       : AnsiString = 'Invalid edit fields';
-  RsMapiErrINVALID_RECIPS           : AnsiString = 'Invalid recipients';
-  RsMapiErrNOT_SUPPORTED            : AnsiString = 'Not supported';
+  RsMapiErrUSER_ABORT               = 'User abort';
+  RsMapiErrFAILURE                  = 'General MAPI failure';
+  RsMapiErrLOGIN_FAILURE            = 'MAPI login failure';
+  RsMapiErrDISK_FULL                = 'Disk full';
+  RsMapiErrINSUFFICIENT_MEMORY      = 'Insufficient memory';
+  RsMapiErrACCESS_DENIED            = 'Access denied';
+  RsMapiErrTOO_MANY_SESSIONS        = 'Too many sessions';
+  RsMapiErrTOO_MANY_FILES           = 'Too many files were specified';
+  RsMapiErrTOO_MANY_RECIPIENTS      = 'Too many recipients were specified';
+  RsMapiErrATTACHMENT_NOT_FOUND     = 'A specified attachment was not found';
+  RsMapiErrATTACHMENT_OPEN_FAILURE  = 'Attachment open failure';
+  RsMapiErrATTACHMENT_WRITE_FAILURE = 'Attachment write failure';
+  RsMapiErrUNKNOWN_RECIPIENT        = 'Unknown recipient';
+  RsMapiErrBAD_RECIPTYPE            = 'Bad recipient type';
+  RsMapiErrNO_MESSAGES              = 'No messages';
+  RsMapiErrINVALID_MESSAGE          = 'Invalid message';
+  RsMapiErrTEXT_TOO_LARGE           = 'Text too large';
+  RsMapiErrINVALID_SESSION          = 'Invalid session';
+  RsMapiErrTYPE_NOT_SUPPORTED       = 'Type not supported';
+  RsMapiErrAMBIGUOUS_RECIPIENT      = 'A recipient was specified ambiguously';
+  RsMapiErrMESSAGE_IN_USE           = 'Message in use';
+  RsMapiErrNETWORK_FAILURE          = 'Network failure';
+  RsMapiErrINVALID_EDITFIELDS       = 'Invalid edit fields';
+  RsMapiErrINVALID_RECIPS           = 'Invalid recipients';
+  RsMapiErrNOT_SUPPORTED            = 'Not supported';
 
-  RsMapiMailORIG    = AnsiString('From');
-  RsMapiMailTO      = AnsiString('To');
-  RsMapiMailCC      = AnsiString('Cc');
-  RsMapiMailBCC     = AnsiString('Bcc');
-  RsMapiMailSubject = AnsiString('Subject');
-  RsMapiMailBody    = AnsiString('Body');
+  RsMapiMailORIG    = 'From';
+  RsMapiMailTO      = 'To';
+  RsMapiMailCC      = 'Cc';
+  RsMapiMailBCC     = 'Bcc';
+  RsMapiMailSubject = 'Subject';
 
 //=== JclMath ================================================================
 resourcestring
   RsMathDomainError    = 'Domain check failure in JclMath';
   RsEmptyArray         = 'Empty array is not allowed as input parameter';
   RsNonPositiveArray   = 'Input array contains non-positive or zero values';
-  RsUnexpectedDataType = 'Unexpected data type';
   RsUnexpectedValue    = 'Unexpected data value';
-  RsRangeError         = 'Cannot merge range';
   RsInvalidRational    = 'Invalid rational number';
   RsDivByZero          = 'Division by zero';
   RsRationalDivByZero  = 'Rational division by zero';
@@ -1332,7 +1562,6 @@ resourcestring
 //=== JclMiscel ==============================================================
 resourcestring
   // CreateProcAsUser
-  RsCreateProcOSVersionError          = 'Unable to determine OS version';
   RsCreateProcNTRequiredError         = 'Windows NT required';
   RsCreateProcBuild1057Error          = 'NT version 3.51 build 1057 or later required';
 
@@ -1351,7 +1580,6 @@ resourcestring
 resourcestring
   // Multimedia timer
   RsMmTimerGetCaps     = 'Error retrieving multimedia timer device capabilities';
-  RsMmTimerBeginPeriod = 'The supplied timer period value is out of range';
   RsMmSetEvent         = 'Error setting multimedia event timer';
   RsMmInconsistentId   = 'Multimedia timer callback was called with inconsistent Id';
   RsMmTimerActive      = 'This operation cannot be performed while the timer is active';
@@ -1456,6 +1684,7 @@ resourcestring
   RsPeImg_12 = 'IAT';
   RsPeImg_13 = 'Delay load import';
   RsPeImg_14 = 'COM run-time';
+  RsPeImg_Reserved = 'reserved [%.2d]';
 
   // NT Header names
   RsPeSignature               = 'Signature';
@@ -1583,54 +1812,6 @@ resourcestring
   RsPePkgOrgWeak  = 'OrgWeak';
   RsPePkgImplicit = 'Implicit';
 
-//=== JclPrint ===============================================================
-resourcestring
-  RsSpoolerDocName = 'My Document';
-
-  RsInvalidPrinter        = 'Invalid printer';
-  RsNAStartDocument       = 'Unable to "Start document"';
-  RsNASendData            = 'Unable to send data to printer';
-  RsNAStartPage           = 'Unable to "Start page"';
-  RsNAEndPage             = 'Unable to "End page"';
-  RsNAEndDocument         = 'Unable to "End document"';
-  RsNATransmission        = 'Not all chars have been sent correctly to printer';
-  RsDeviceMode            = 'Error retrieving DeviceMode';
-  RsUpdatingPrinter       = 'Error updating printer driver';
-  RsIndexOutOfRange       = 'Index out of range setting bin';
-  RsRetrievingSource      = 'Error retrieving Bin Source Info';
-  RsRetrievingPaperSource = 'Error retrieving Paper Source Info';
-  RsIndexOutOfRangePaper  = 'Index out of range setting paper';
-
-  // Paper Styles (PS)
-  RsPSLetter      = 'Letter 8 1/2 x 11 in';
-  RsPSLetterSmall = 'Letter Small 8 1/2 x 11 in';
-  RsPSTabloid     = 'Tabloid 11 x 17 in';
-  RsPSLedger      = 'Ledger 17 x 11 in';
-  RsPSLegal       = 'Legal 8 1/2 x 14 in';
-  RsPSStatement   = 'Statement 5 1/2 x 8 1/2 in';
-  RsPSExecutive   = 'Executive 7 1/2 x 10 in';
-  RsPSA3          = 'A3 297 x 420 mm';
-  RsPSA4          = 'A4 210 x 297 mm';
-  RsPSA4Small     = 'A4 Small 210 x 297 mm';
-  RsPSA5          = 'A5 148 x 210 mm';
-  RsPSB4          = 'B4 250 x 354';
-  RsPSB5          = 'B5 182 x 257 mm';
-  RsPSFolio       = 'Folio 8 1/2 x 13 in';
-  RsPSQuarto      = 'Quarto 215 x 275 mm';
-  RsPS10X14       = '10 x 14 in';
-  RsPS11X17       = '11 x 17 in';
-  RsPSNote        = 'Note 8 1/2 x 11 in';
-  RsPSEnv9        = 'Envelope #9 3 7/8 x 8 7/8 in';
-  RsPSEnv10       = 'Envelope #10 4 1/8 x 9 1/2 in';
-  RsPSEnv11       = 'Envelope #11 4 1/2 x 10 3/8 in';
-  RsPSEnv12       = 'Envelope #12 4 \276 x 11 in';
-  RsPSEnv14       = 'Envelope #14 5 x 11 1/2 in';
-  RsPSCSheet      = 'C size sheet';
-  RsPSDSheet      = 'D size sheet';
-  RsPSESheet      = 'E size sheet';
-  RsPSUser        = 'User Defined Size';
-  RsPSUnknown     = 'Unknown Paper Size';
-
 //=== JclRegistry ============================================================
 resourcestring
   RsUnableToOpenKeyRead  = 'Unable to open key "%s\%s" for read';
@@ -1638,22 +1819,6 @@ resourcestring
   RsUnableToAccessValue  = 'Unable to open key "%s\%s" and access value "%s"';
   RsWrongDataType        = '"%s\%s\%s" is of wrong kind or size';
   RsInconsistentPath     = '"%s" does not match RootKey';
-
-const
-  RsHKCRLong = 'HKEY_CLASSES_ROOT';
-  RsHKCULong = 'HKEY_CURRENT_USER';
-  RsHKLMLong = 'HKEY_LOCAL_MACHINE';
-  RsHKUSLong = 'HKEY_USERS';
-  RsHKPDLong = 'HKEY_PERFORMANCE_DATA';
-  RsHKCCLong = 'HKEY_CURRENT_CONFIG';
-  RsHKDDLong = 'HKEY_DYN_DATA';
-  RsHKCRShort = 'HKCR';
-  RsHKCUShort = 'HKCU';
-  RsHKLMShort = 'HKLM';
-  RsHKUSShort = 'HKUS';
-  RsHKPDShort = 'HKPD';
-  RsHKCCShort = 'HKCC';
-  RsHKDDShort = 'HKDD';
 
 //=== JclRTTI ================================================================
 resourcestring
@@ -1968,11 +2133,11 @@ resourcestring
   RsInvalidProcessID = 'Invalid process ID %d';
   {$ENDIF UNIX}
 
-const
-  RsOpenGLInfoError : AnsiString = 'Err';
+  RsOpenGLInfoError = 'Err';
 
 //=== JclSysUtils ============================================================
 resourcestring
+  RsVMTMemoryWriteError  = 'Error writing VMT memory (%s)';
   RsCannotWriteRefStream = 'Can not write to a read-only memory stream';
   RsStringToBoolean      = 'Unable to convert the string "%s" to a boolean';
   RsInvalidDigit         = 'Invalid base %d digit ''%s'' encountered.';
@@ -2013,45 +2178,6 @@ resourcestring
   RsTempConvTypeError = 'An invalid type has been provided for the %s parameter';
   RsConvTempBelowAbsoluteZero = 'Temperature can not be below Absolute Zero!';
 
-//=== JclVersionControl ======================================================
-resourcestring
-  RsVersionCtrlAddCaption = '&Add';                                 // vcaAdd
-  RsVersionCtrlAddSandboxCaption = 'Add ...';                       // vcaAddSandbox
-  RsVersionCtrlBlameCaption = '&Blame';                             // vcaBlame
-  RsVersionCtrlBranchCaption = 'Branc&h';                           // vcaBranch
-  RsVersionCtrlBranchSandboxCaption = 'Branch ...';                 // vcaBranchSandbox
-  RsVersionCtrlCheckOutSandboxCaption = 'C&heck out ...';           // vcaCreateSandbox
-  RsVersionCtrlCommitCaption = 'Co&mmit';                           // vcaCommit
-  RsVersionCtrlCommitSandboxCaption = 'Commit ...';                 // vcaCommitSandbox
-  RsVersionCtrlContextMenuCaption = 'Co&ntext Menu (right-click)';  // vcaContextMenu
-  RsVersionCtrlDiffCaption = '&Diff';                               // vcaDiff
-  RsVersionCtrlExploreCaption = 'E&xplore';                         // vcaExplore
-  RsVersionCtrlExploreSandboxCaption = 'E&xplore ...';              // vcaExploreSandbox
-  RsVersionCtrlGraphCaption = 'Revision Gr&aph';                    // vcaGraph
-  RsVersionCtrlLogCaption = '&Log';                                 // vcaLog
-  RsVersionCtrlLogSandboxCaption = 'Log ...';                       // vcaLogSandbox
-  RsVersionCtrlLockCaption = 'Loc&k';                               // vcaLock
-  RsVersionCtrlLockSandboxCaption = 'Lock ...';                     // vcaLockSandbox
-  RsVersionCtrlMergeCaption = '&Merge';                             // vcaMerge
-  RsVersionCtrlMergeSandboxCaption = 'Merge ...';                   // vcaMergeSandbox
-  RsVersionCtrlPropertiesCaption = 'Pr&operties';                   // vcaProperties
-  RsVersionCtrlPropertiesSandboxCaption = 'Properties ...';         // vcaPropertiesSandbox
-  RsVersionCtrlRenameCaption = '&Rename';                           // vcaRename
-  RsVersionCtrlRenameSandboxCaption = '&Rename Sandbox';            // vcaRenameSandbox
-  RsVersionCtrlRepoBrowserCaption = 'Repositor&y Browser';          // vcaRepoBrowser
-  RsVersionCtrlRevertCaption = '&Revert';                           // vcaRevert
-  RsVersionCtrlRevertSandboxCaption = 'Revert ...';                 // vcaRevertSandbox
-  RsVersionCtrlStatusCaption = 'S&tatus';                           // vcaStatus
-  RsVersionCtrlStatusSandboxCaption = 'Status ...';                 // vcaStatusSandbox
-  RsVersionCtrlTagCaption = 'Ta&g';                                 // vcaTag
-  RsVersionCtrlTagSandboxCaption = 'Tag ...';                       // vcaTagSandBox
-  RsVersionCtrlUpdateCaption = 'U&pdate';                           // vcaUpdate
-  RsVersionCtrlUpdateSandboxCaption = 'Update ...';                 // vcaUpdateSandbox
-  RsVersionCtrlUpdateToCaption = 'Update &to ';                     // vcaUpdateTo
-  RsVersionCtrlUpdateSandboxToCaption = 'Update to ...';            // vcaUpdateSandboxTo
-  RsVersionCtrlUnlockCaption = '&Unlock';                           // vcaUnlock
-  RsVersionCtrlUnlockSandboxCaption = 'Unlock ...';                 // vcaUnlockSandbox
-
 //=== JclWideFormat ==========================================================
 resourcestring
   RsFormatSyntaxError = 'Syntax error at index %u';
@@ -2062,12 +2188,10 @@ resourcestring
 
 //=== JclWin32 ===============================================================
 resourcestring
+  RsWin32Error        = 'Win32 error: %s (%u)%s%s';
   RsELibraryNotFound  = 'Library not found: %s';
   RsEFunctionNotFound = 'Function not found: %s.%s';
-  RsEWindowsVersionNotSupported = 'This windows version is not supported';
-  RsEWindowNotValid = 'The window with handle %d is not valid';
-  RsEProcessNotValid = 'The process with ID %d is not valid'; 
-  RsEModuleNotValid = 'The Module with handle %d is not valid'; 
+
 //=== JclWinMidi =============================================================
 resourcestring
   RsMidiInUnknownError  = 'Unknown MIDI-In error No. %d';

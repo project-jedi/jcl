@@ -408,7 +408,7 @@ type
     LineSize: Byte;       // for Normal Cache
     LinePerSector: Byte;  // for L3 Normal Cache
     Entries: Cardinal;        // for TLB
-    I: string;
+    I: PResStringRec;
   end;
 
   TFreqInfo = record
@@ -1140,94 +1140,94 @@ const
 
 const
   IntelCacheDescription: array [0..87] of TCacheInfo = (
-    (D: $00; Family: cfOther;              Size: 0;     WaysOfAssoc: 0;  LineSize: 0;  LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescr00),
-    (D: $01; Family: cfInstructionTLB;     Size: 4;     WaysOfAssoc: 4;  LineSize: 0;  LinePerSector: 0; Entries: 32;  I: RsIntelCacheDescr01),
-    (D: $02; Family: cfInstructionTLB;     Size: 4096;  WaysOfAssoc: 4;  LineSize: 0;  LinePerSector: 0; Entries: 2;   I: RsIntelCacheDescr02),
-    (D: $03; Family: cfDataTLB;            Size: 4;     WaysOfAssoc: 4;  LineSize: 0;  LinePerSector: 0; Entries: 64;  I: RsIntelCacheDescr03),
-    (D: $04; Family: cfDataTLB;            Size: 4096;  WaysOfAssoc: 4;  LineSize: 0;  LinePerSector: 0; Entries: 8;   I: RsIntelCacheDescr04),
-    (D: $05; Family: cfDataTLB;            Size: 4096;  WaysOfAssoc: 4;  LineSize: 0;  LinePerSector: 0; Entries: 32;  I: RsIntelCacheDescr05),
-    (D: $06; Family: cfL1InstructionCache; Size: 8;     WaysOfAssoc: 4;  LineSize: 32; LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescr06),
-    (D: $08; Family: cfL1InstructionCache; Size: 16;    WaysOfAssoc: 4;  LineSize: 32; LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescr08),
-    (D: $09; Family: cfL1InstructionCache; Size: 32;    WaysOfAssoc: 4;  LineSize: 64; LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescr09),
-    (D: $0A; Family: cfL1DataCache;        Size: 8;     WaysOfAssoc: 2;  LineSize: 32; LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescr0A),
-    (D: $0B; Family: cfInstructionTLB;     Size: 4;     WaysOfAssoc: 4;  LineSize: 0;  LinePerSector: 0; Entries: 4;   I: RsIntelCacheDescr0B),
-    (D: $0C; Family: cfL1DataCache;        Size: 16;    WaysOfAssoc: 4;  LineSize: 32; LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescr0C),
-    (D: $0D; Family: cfL1DataCache;        Size: 16;    WaysOfAssoc: 4;  LineSize: 64; LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescr0D),
-    (D: $0E; Family: cfL1DataCache;        Size: 24;    WaysOfAssoc: 4;  LineSize: 64; LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescr0E),
-    (D: $21; Family: cfL2Cache;            Size: 256;   WaysOfAssoc: 4;  LineSize: 64; LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescr21),
-    (D: $22; Family: cfL3Cache;            Size: 512;   WaysOfAssoc: 4;  LineSize: 64; LinePerSector: 2; Entries: 0;   I: RsIntelCacheDescr22),
-    (D: $23; Family: cfL3Cache;            Size: 1024;  WaysOfAssoc: 8;  LineSize: 64; LinePerSector: 2; Entries: 0;   I: RsIntelCacheDescr23),
-    (D: $25; Family: cfL3Cache;            Size: 2048;  WaysOfAssoc: 8;  LineSize: 64; LinePerSector: 2; Entries: 0;   I: RsIntelCacheDescr25),
-    (D: $29; Family: cfL3Cache;            Size: 4096;  WaysOfAssoc: 8;  LineSize: 64; LinePerSector: 2; Entries: 0;   I: RsIntelCacheDescr29),
-    (D: $2C; Family: cfL1DataCache;        Size: 32;    WaysOfAssoc: 8;  LineSize: 64; LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescr2C),
-    (D: $30; Family: cfL1InstructionCache; Size: 32;    WaysOfAssoc: 8;  LineSize: 64; LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescr30),
-    (D: $39; Family: cfL2Cache;            Size: 128;   WaysOfAssoc: 4;  LineSize: 64; LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescr39),
-    (D: $3A; Family: cfL2Cache;            Size: 192;   WaysOfAssoc: 6;  LineSize: 64; LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescr3A),
-    (D: $3B; Family: cfL2Cache;            Size: 128;   WaysOfAssoc: 2;  LineSize: 64; LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescr3B),
-    (D: $3C; Family: cfL2Cache;            Size: 256;   WaysOfAssoc: 4;  LineSize: 64; LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescr3C),
-    (D: $3D; Family: cfL2Cache;            Size: 384;   WaysOfAssoc: 6;  LineSize: 64; LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescr3D),
-    (D: $3E; Family: cfL2Cache;            Size: 512;   WaysOfAssoc: 4;  LineSize: 64; LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescr3E),
-    (D: $40; Family: cfOther;              Size: 0;     WaysOfAssoc: 0;  LineSize: 0;  LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescr40),
-    (D: $41; Family: cfL2Cache;            Size: 128;   WaysOfAssoc: 4;  LineSize: 32; LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescr41),
-    (D: $42; Family: cfL2Cache;            Size: 256;   WaysOfAssoc: 4;  LineSize: 32; LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescr42),
-    (D: $43; Family: cfL2Cache;            Size: 512;   WaysOfAssoc: 4;  LineSize: 32; LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescr43),
-    (D: $44; Family: cfL2Cache;            Size: 1024;  WaysOfAssoc: 4;  LineSize: 32; LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescr44),
-    (D: $45; Family: cfL2Cache;            Size: 2048;  WaysOfAssoc: 4;  LineSize: 32; LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescr45),
-    (D: $46; Family: cfL3Cache;            Size: 4096;  WaysOfAssoc: 4;  LineSize: 64; LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescr46),
-    (D: $47; Family: cfL3Cache;            Size: 8192;  WaysOfAssoc: 8;  LineSize: 64; LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescr47),
-    (D: $48; Family: cfL2Cache;            Size: 3072;  WaysOfAssoc: 12; LineSize: 64; LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescr48),
-    (D: $49; Family: cfL2Cache;            Size: 4096;  WaysOfAssoc: 16; LineSize: 64; LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescr49),
-    (D: $4A; Family: cfL3Cache;            Size: 6144;  WaysOfAssoc: 12; LineSize: 64; LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescr4A),
-    (D: $4B; Family: cfL3Cache;            Size: 8192;  WaysOfAssoc: 16; LineSize: 64; LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescr4B),
-    (D: $4C; Family: cfL3Cache;            Size: 12288; WaysOfAssoc: 12; LineSize: 64; LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescr4C),
-    (D: $4D; Family: cfL3Cache;            Size: 16384; WaysOfAssoc: 16; LineSize: 64; LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescr4D),
-    (D: $4E; Family: cfL3Cache;            Size: 6144;  WaysOfAssoc: 24; LineSize: 64; LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescr4E),
-    (D: $4F; Family: cfInstructionTLB;     Size: 4;     WaysOfAssoc: 0;  LineSize: 0;  LinePerSector: 0; Entries: 32;  I: RsIntelCacheDescr4F),
-    (D: $50; Family: cfInstructionTLB;     Size: 4;     WaysOfAssoc: 0;  LineSize: 0;  LinePerSector: 0; Entries: 64;  I: RsIntelCacheDescr50),
-    (D: $51; Family: cfInstructionTLB;     Size: 4;     WaysOfAssoc: 0;  LineSize: 0;  LinePerSector: 0; Entries: 128; I: RsIntelCacheDescr51),
-    (D: $52; Family: cfInstructionTLB;     Size: 4;     WaysOfAssoc: 0;  LineSize: 0;  LinePerSector: 0; Entries: 256; I: RsIntelCacheDescr52),
-    (D: $55; Family: cfInstructionTLB;     Size: 2048;  WaysOfAssoc: 0;  LineSize: 0;  LinePerSector: 0; Entries: 7;   I: RsIntelCacheDescr55),
-    (D: $56; Family: cfDataTLB;            Size: 4096;  WaysOfAssoc: 4;  LineSize: 0;  LinePerSector: 0; Entries: 16;  I: RsIntelCacheDescr56),
-    (D: $57; Family: cfDataTLB;            Size: 4;     WaysOfAssoc: 4;  LineSize: 0;  LinePerSector: 0; Entries: 16;  I: RsIntelCacheDescr57),
-    (D: $59; Family: cfDataTLB;            Size: 4;     WaysOfAssoc: 0;  LineSize: 0;  LinePerSector: 0; Entries: 16;  I: RsIntelCacheDescr59),
-    (D: $5A; Family: cfDataTLB;            Size: 4096;  WaysOfAssoc: 4;  LineSize: 0;  LinePerSector: 0; Entries: 32;  I: RsIntelCacheDescr5A),
-    (D: $5B; Family: cfDataTLB;            Size: 4096;  WaysOfAssoc: 0;  LineSize: 0;  LinePerSector: 0; Entries: 64;  I: RsIntelCacheDescr5B),
-    (D: $5C; Family: cfDataTLB;            Size: 4096;  WaysOfAssoc: 0;  LineSize: 0;  LinePerSector: 0; Entries: 128; I: RsIntelCacheDescr5C),
-    (D: $5D; Family: cfDataTLB;            Size: 4096;  WaysOfAssoc: 0;  LineSize: 0;  LinePerSector: 0; Entries: 256; I: RsIntelCacheDescr5D),
-    (D: $60; Family: cfL1DataCache;        Size: 16;    WaysOfAssoc: 8;  LineSize: 64; LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescr60),
-    (D: $66; Family: cfL1DataCache;        Size: 8;     WaysOfAssoc: 4;  LineSize: 64; LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescr66),
-    (D: $67; Family: cfL1DataCache;        Size: 16;    WaysOfAssoc: 4;  LineSize: 64; LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescr67),
-    (D: $68; Family: cfL1DataCache;        Size: 32;    WaysOfAssoc: 4;  LineSize: 64; LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescr68),
-    (D: $70; Family: cfTrace;              Size: 12;    WaysOfAssoc: 8;  LineSize: 0;  LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescr70),
-    (D: $71; Family: cfTrace;              Size: 16;    WaysOfAssoc: 8;  LineSize: 0;  LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescr71),
-    (D: $72; Family: cfTrace;              Size: 32;    WaysOfAssoc: 8;  LineSize: 0;  LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescr72),
-    (D: $73; Family: cfTrace;              Size: 64;    WaysOfAssoc: 8;  LineSize: 0;  LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescr73),
-    (D: $78; Family: cfL2Cache;            Size: 1024;  WaysOfAssoc: 4;  LineSize: 64; LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescr78),
-    (D: $79; Family: cfL2Cache;            Size: 128;   WaysOfAssoc: 8;  LineSize: 64; LinePerSector: 2; Entries: 0;   I: RsIntelCacheDescr79),
-    (D: $7A; Family: cfL2Cache;            Size: 256;   WaysOfAssoc: 8;  LineSize: 64; LinePerSector: 2; Entries: 0;   I: RsIntelCacheDescr7A),
-    (D: $7B; Family: cfL2Cache;            Size: 512;   WaysOfAssoc: 8;  LineSize: 64; LinePerSector: 2; Entries: 0;   I: RsIntelCacheDescr7B),
-    (D: $7C; Family: cfL2Cache;            Size: 1024;  WaysOfAssoc: 8;  LineSize: 64; LinePerSector: 2; Entries: 0;   I: RsIntelCacheDescr7C),
-    (D: $7D; Family: cfL2Cache;            Size: 2048;  WaysOfAssoc: 8;  LineSize: 64; LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescr7D),
-    (D: $7F; Family: cfL2Cache;            Size: 512;   WaysOfAssoc: 2;  LineSize: 64; LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescr7F),
-    (D: $80; Family: cfL2Cache;            Size: 512;   WaysOfAssoc: 8;  LineSize: 64; LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescr80),
-    (D: $82; Family: cfL2Cache;            Size: 256;   WaysOfAssoc: 8;  LineSize: 32; LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescr82),
-    (D: $83; Family: cfL2Cache;            Size: 512;   WaysOfAssoc: 8;  LineSize: 32; LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescr83),
-    (D: $84; Family: cfL2Cache;            Size: 1024;  WaysOfAssoc: 8;  LineSize: 32; LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescr84),
-    (D: $85; Family: cfL2Cache;            Size: 2048;  WaysOfAssoc: 8;  LineSize: 32; LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescr85),
-    (D: $86; Family: cfL2Cache;            Size: 512;   WaysOfAssoc: 4;  LineSize: 64; LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescr86),
-    (D: $87; Family: cfL2Cache;            Size: 1024;  WaysOfAssoc: 8;  LineSize: 64; LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescr87),
-    (D: $B0; Family: cfInstructionTLB;     Size: 4;     WaysOfAssoc: 4;  LineSize: 0;  LinePerSector: 0; Entries: 128; I: RsIntelCacheDescrB0),
-    (D: $B1; Family: cfInstructionTLB;     Size: 2048;  WaysOfAssoc: 4;  LineSize: 0;  LinePerSector: 0; Entries: 8;   I: RsIntelCacheDescrB1),
-    (D: $B2; Family: cfInstructionTLB;     Size: 4;     WaysOfAssoc: 4;  LineSize: 0;  LinePerSector: 0; Entries: 64;  I: RsIntelCacheDescrB2),
-    (D: $B3; Family: cfDataTLB;            Size: 4;     WaysOfAssoc: 4;  LineSize: 0;  LinePerSector: 0; Entries: 128; I: RsIntelCacheDescrB3),
-    (D: $B4; Family: cfDataTLB;            Size: 4;     WaysOfAssoc: 4;  LineSize: 0;  LinePerSector: 0; Entries: 256; I: RsIntelCacheDescrB4),
-    (D: $BA; Family: cfDataTLB;            Size: 4;     WaysOfAssoc: 4;  LineSize: 0;  LinePerSector: 0; Entries: 64;  I: RsIntelCacheDescrBA),
-    (D: $C0; Family: cfDataTLB;            Size: 4;     WaysOfAssoc: 4;  LineSize: 0;  LinePerSector: 0; Entries: 8;   I: RsIntelCacheDescrC0),
-    (D: $CA; Family: cfL2TLB;              Size: 4;     WaysOfAssoc: 4;  LineSize: 0;  LinePerSector: 0; Entries: 512; I: RsIntelCacheDescrCA),
-    (D: $E4; Family: cfL3Cache;            Size: 8192;  WaysOfAssoc: 16; LineSize: 64; LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescrE4),
-    (D: $F0; Family: cfOther;              Size: 0;     WaysOfAssoc: 0;  LineSize: 0;  LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescrF0),
-    (D: $F1; Family: cfOther;              Size: 0;     WaysOfAssoc: 0;  LineSize: 0;  LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescrF1),
-    (D: $FF; Family: cfOther;              Size: 0;     WaysOfAssoc: 0;  LineSize: 0;  LinePerSector: 0; Entries: 0;   I: RsIntelCacheDescrFF)
+    (D: $00; Family: cfOther;              Size: 0;     WaysOfAssoc: 0;  LineSize: 0;  LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescr00),
+    (D: $01; Family: cfInstructionTLB;     Size: 4;     WaysOfAssoc: 4;  LineSize: 0;  LinePerSector: 0; Entries: 32;  I: @RsIntelCacheDescr01),
+    (D: $02; Family: cfInstructionTLB;     Size: 4096;  WaysOfAssoc: 4;  LineSize: 0;  LinePerSector: 0; Entries: 2;   I: @RsIntelCacheDescr02),
+    (D: $03; Family: cfDataTLB;            Size: 4;     WaysOfAssoc: 4;  LineSize: 0;  LinePerSector: 0; Entries: 64;  I: @RsIntelCacheDescr03),
+    (D: $04; Family: cfDataTLB;            Size: 4096;  WaysOfAssoc: 4;  LineSize: 0;  LinePerSector: 0; Entries: 8;   I: @RsIntelCacheDescr04),
+    (D: $05; Family: cfDataTLB;            Size: 4096;  WaysOfAssoc: 4;  LineSize: 0;  LinePerSector: 0; Entries: 32;  I: @RsIntelCacheDescr05),
+    (D: $06; Family: cfL1InstructionCache; Size: 8;     WaysOfAssoc: 4;  LineSize: 32; LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescr06),
+    (D: $08; Family: cfL1InstructionCache; Size: 16;    WaysOfAssoc: 4;  LineSize: 32; LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescr08),
+    (D: $09; Family: cfL1InstructionCache; Size: 32;    WaysOfAssoc: 4;  LineSize: 64; LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescr09),
+    (D: $0A; Family: cfL1DataCache;        Size: 8;     WaysOfAssoc: 2;  LineSize: 32; LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescr0A),
+    (D: $0B; Family: cfInstructionTLB;     Size: 4;     WaysOfAssoc: 4;  LineSize: 0;  LinePerSector: 0; Entries: 4;   I: @RsIntelCacheDescr0B),
+    (D: $0C; Family: cfL1DataCache;        Size: 16;    WaysOfAssoc: 4;  LineSize: 32; LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescr0C),
+    (D: $0D; Family: cfL1DataCache;        Size: 16;    WaysOfAssoc: 4;  LineSize: 64; LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescr0D),
+    (D: $0E; Family: cfL1DataCache;        Size: 24;    WaysOfAssoc: 4;  LineSize: 64; LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescr0E),
+    (D: $21; Family: cfL2Cache;            Size: 256;   WaysOfAssoc: 4;  LineSize: 64; LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescr21),
+    (D: $22; Family: cfL3Cache;            Size: 512;   WaysOfAssoc: 4;  LineSize: 64; LinePerSector: 2; Entries: 0;   I: @RsIntelCacheDescr22),
+    (D: $23; Family: cfL3Cache;            Size: 1024;  WaysOfAssoc: 8;  LineSize: 64; LinePerSector: 2; Entries: 0;   I: @RsIntelCacheDescr23),
+    (D: $25; Family: cfL3Cache;            Size: 2048;  WaysOfAssoc: 8;  LineSize: 64; LinePerSector: 2; Entries: 0;   I: @RsIntelCacheDescr25),
+    (D: $29; Family: cfL3Cache;            Size: 4096;  WaysOfAssoc: 8;  LineSize: 64; LinePerSector: 2; Entries: 0;   I: @RsIntelCacheDescr29),
+    (D: $2C; Family: cfL1DataCache;        Size: 32;    WaysOfAssoc: 8;  LineSize: 64; LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescr2C),
+    (D: $30; Family: cfL1InstructionCache; Size: 32;    WaysOfAssoc: 8;  LineSize: 64; LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescr30),
+    (D: $39; Family: cfL2Cache;            Size: 128;   WaysOfAssoc: 4;  LineSize: 64; LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescr39),
+    (D: $3A; Family: cfL2Cache;            Size: 192;   WaysOfAssoc: 6;  LineSize: 64; LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescr3A),
+    (D: $3B; Family: cfL2Cache;            Size: 128;   WaysOfAssoc: 2;  LineSize: 64; LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescr3B),
+    (D: $3C; Family: cfL2Cache;            Size: 256;   WaysOfAssoc: 4;  LineSize: 64; LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescr3C),
+    (D: $3D; Family: cfL2Cache;            Size: 384;   WaysOfAssoc: 6;  LineSize: 64; LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescr3D),
+    (D: $3E; Family: cfL2Cache;            Size: 512;   WaysOfAssoc: 4;  LineSize: 64; LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescr3E),
+    (D: $40; Family: cfOther;              Size: 0;     WaysOfAssoc: 0;  LineSize: 0;  LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescr40),
+    (D: $41; Family: cfL2Cache;            Size: 128;   WaysOfAssoc: 4;  LineSize: 32; LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescr41),
+    (D: $42; Family: cfL2Cache;            Size: 256;   WaysOfAssoc: 4;  LineSize: 32; LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescr42),
+    (D: $43; Family: cfL2Cache;            Size: 512;   WaysOfAssoc: 4;  LineSize: 32; LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescr43),
+    (D: $44; Family: cfL2Cache;            Size: 1024;  WaysOfAssoc: 4;  LineSize: 32; LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescr44),
+    (D: $45; Family: cfL2Cache;            Size: 2048;  WaysOfAssoc: 4;  LineSize: 32; LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescr45),
+    (D: $46; Family: cfL3Cache;            Size: 4096;  WaysOfAssoc: 4;  LineSize: 64; LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescr46),
+    (D: $47; Family: cfL3Cache;            Size: 8192;  WaysOfAssoc: 8;  LineSize: 64; LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescr47),
+    (D: $48; Family: cfL2Cache;            Size: 3072;  WaysOfAssoc: 12; LineSize: 64; LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescr48),
+    (D: $49; Family: cfL2Cache;            Size: 4096;  WaysOfAssoc: 16; LineSize: 64; LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescr49),
+    (D: $4A; Family: cfL3Cache;            Size: 6144;  WaysOfAssoc: 12; LineSize: 64; LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescr4A),
+    (D: $4B; Family: cfL3Cache;            Size: 8192;  WaysOfAssoc: 16; LineSize: 64; LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescr4B),
+    (D: $4C; Family: cfL3Cache;            Size: 12288; WaysOfAssoc: 12; LineSize: 64; LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescr4C),
+    (D: $4D; Family: cfL3Cache;            Size: 16384; WaysOfAssoc: 16; LineSize: 64; LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescr4D),
+    (D: $4E; Family: cfL3Cache;            Size: 6144;  WaysOfAssoc: 24; LineSize: 64; LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescr4E),
+    (D: $4F; Family: cfInstructionTLB;     Size: 4;     WaysOfAssoc: 0;  LineSize: 0;  LinePerSector: 0; Entries: 32;  I: @RsIntelCacheDescr4F),
+    (D: $50; Family: cfInstructionTLB;     Size: 4;     WaysOfAssoc: 0;  LineSize: 0;  LinePerSector: 0; Entries: 64;  I: @RsIntelCacheDescr50),
+    (D: $51; Family: cfInstructionTLB;     Size: 4;     WaysOfAssoc: 0;  LineSize: 0;  LinePerSector: 0; Entries: 128; I: @RsIntelCacheDescr51),
+    (D: $52; Family: cfInstructionTLB;     Size: 4;     WaysOfAssoc: 0;  LineSize: 0;  LinePerSector: 0; Entries: 256; I: @RsIntelCacheDescr52),
+    (D: $55; Family: cfInstructionTLB;     Size: 2048;  WaysOfAssoc: 0;  LineSize: 0;  LinePerSector: 0; Entries: 7;   I: @RsIntelCacheDescr55),
+    (D: $56; Family: cfDataTLB;            Size: 4096;  WaysOfAssoc: 4;  LineSize: 0;  LinePerSector: 0; Entries: 16;  I: @RsIntelCacheDescr56),
+    (D: $57; Family: cfDataTLB;            Size: 4;     WaysOfAssoc: 4;  LineSize: 0;  LinePerSector: 0; Entries: 16;  I: @RsIntelCacheDescr57),
+    (D: $59; Family: cfDataTLB;            Size: 4;     WaysOfAssoc: 0;  LineSize: 0;  LinePerSector: 0; Entries: 16;  I: @RsIntelCacheDescr59),
+    (D: $5A; Family: cfDataTLB;            Size: 4096;  WaysOfAssoc: 4;  LineSize: 0;  LinePerSector: 0; Entries: 32;  I: @RsIntelCacheDescr5A),
+    (D: $5B; Family: cfDataTLB;            Size: 4096;  WaysOfAssoc: 0;  LineSize: 0;  LinePerSector: 0; Entries: 64;  I: @RsIntelCacheDescr5B),
+    (D: $5C; Family: cfDataTLB;            Size: 4096;  WaysOfAssoc: 0;  LineSize: 0;  LinePerSector: 0; Entries: 128; I: @RsIntelCacheDescr5C),
+    (D: $5D; Family: cfDataTLB;            Size: 4096;  WaysOfAssoc: 0;  LineSize: 0;  LinePerSector: 0; Entries: 256; I: @RsIntelCacheDescr5D),
+    (D: $60; Family: cfL1DataCache;        Size: 16;    WaysOfAssoc: 8;  LineSize: 64; LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescr60),
+    (D: $66; Family: cfL1DataCache;        Size: 8;     WaysOfAssoc: 4;  LineSize: 64; LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescr66),
+    (D: $67; Family: cfL1DataCache;        Size: 16;    WaysOfAssoc: 4;  LineSize: 64; LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescr67),
+    (D: $68; Family: cfL1DataCache;        Size: 32;    WaysOfAssoc: 4;  LineSize: 64; LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescr68),
+    (D: $70; Family: cfTrace;              Size: 12;    WaysOfAssoc: 8;  LineSize: 0;  LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescr70),
+    (D: $71; Family: cfTrace;              Size: 16;    WaysOfAssoc: 8;  LineSize: 0;  LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescr71),
+    (D: $72; Family: cfTrace;              Size: 32;    WaysOfAssoc: 8;  LineSize: 0;  LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescr72),
+    (D: $73; Family: cfTrace;              Size: 64;    WaysOfAssoc: 8;  LineSize: 0;  LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescr73),
+    (D: $78; Family: cfL2Cache;            Size: 1024;  WaysOfAssoc: 4;  LineSize: 64; LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescr78),
+    (D: $79; Family: cfL2Cache;            Size: 128;   WaysOfAssoc: 8;  LineSize: 64; LinePerSector: 2; Entries: 0;   I: @RsIntelCacheDescr79),
+    (D: $7A; Family: cfL2Cache;            Size: 256;   WaysOfAssoc: 8;  LineSize: 64; LinePerSector: 2; Entries: 0;   I: @RsIntelCacheDescr7A),
+    (D: $7B; Family: cfL2Cache;            Size: 512;   WaysOfAssoc: 8;  LineSize: 64; LinePerSector: 2; Entries: 0;   I: @RsIntelCacheDescr7B),
+    (D: $7C; Family: cfL2Cache;            Size: 1024;  WaysOfAssoc: 8;  LineSize: 64; LinePerSector: 2; Entries: 0;   I: @RsIntelCacheDescr7C),
+    (D: $7D; Family: cfL2Cache;            Size: 2048;  WaysOfAssoc: 8;  LineSize: 64; LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescr7D),
+    (D: $7F; Family: cfL2Cache;            Size: 512;   WaysOfAssoc: 2;  LineSize: 64; LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescr7F),
+    (D: $80; Family: cfL2Cache;            Size: 512;   WaysOfAssoc: 8;  LineSize: 64; LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescr80),
+    (D: $82; Family: cfL2Cache;            Size: 256;   WaysOfAssoc: 8;  LineSize: 32; LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescr82),
+    (D: $83; Family: cfL2Cache;            Size: 512;   WaysOfAssoc: 8;  LineSize: 32; LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescr83),
+    (D: $84; Family: cfL2Cache;            Size: 1024;  WaysOfAssoc: 8;  LineSize: 32; LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescr84),
+    (D: $85; Family: cfL2Cache;            Size: 2048;  WaysOfAssoc: 8;  LineSize: 32; LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescr85),
+    (D: $86; Family: cfL2Cache;            Size: 512;   WaysOfAssoc: 4;  LineSize: 64; LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescr86),
+    (D: $87; Family: cfL2Cache;            Size: 1024;  WaysOfAssoc: 8;  LineSize: 64; LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescr87),
+    (D: $B0; Family: cfInstructionTLB;     Size: 4;     WaysOfAssoc: 4;  LineSize: 0;  LinePerSector: 0; Entries: 128; I: @RsIntelCacheDescrB0),
+    (D: $B1; Family: cfInstructionTLB;     Size: 2048;  WaysOfAssoc: 4;  LineSize: 0;  LinePerSector: 0; Entries: 8;   I: @RsIntelCacheDescrB1),
+    (D: $B2; Family: cfInstructionTLB;     Size: 4;     WaysOfAssoc: 4;  LineSize: 0;  LinePerSector: 0; Entries: 64;  I: @RsIntelCacheDescrB2),
+    (D: $B3; Family: cfDataTLB;            Size: 4;     WaysOfAssoc: 4;  LineSize: 0;  LinePerSector: 0; Entries: 128; I: @RsIntelCacheDescrB3),
+    (D: $B4; Family: cfDataTLB;            Size: 4;     WaysOfAssoc: 4;  LineSize: 0;  LinePerSector: 0; Entries: 256; I: @RsIntelCacheDescrB4),
+    (D: $BA; Family: cfDataTLB;            Size: 4;     WaysOfAssoc: 4;  LineSize: 0;  LinePerSector: 0; Entries: 64;  I: @RsIntelCacheDescrBA),
+    (D: $C0; Family: cfDataTLB;            Size: 4;     WaysOfAssoc: 4;  LineSize: 0;  LinePerSector: 0; Entries: 8;   I: @RsIntelCacheDescrC0),
+    (D: $CA; Family: cfL2TLB;              Size: 4;     WaysOfAssoc: 4;  LineSize: 0;  LinePerSector: 0; Entries: 512; I: @RsIntelCacheDescrCA),
+    (D: $E4; Family: cfL3Cache;            Size: 8192;  WaysOfAssoc: 16; LineSize: 64; LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescrE4),
+    (D: $F0; Family: cfOther;              Size: 0;     WaysOfAssoc: 0;  LineSize: 0;  LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescrF0),
+    (D: $F1; Family: cfOther;              Size: 0;     WaysOfAssoc: 0;  LineSize: 0;  LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescrF1),
+    (D: $FF; Family: cfOther;              Size: 0;     WaysOfAssoc: 0;  LineSize: 0;  LinePerSector: 0; Entries: 0;   I: @RsIntelCacheDescrFF)
   );
 
 procedure GetCpuInfo(var CpuInfo: TCpuInfo);
@@ -2482,7 +2482,7 @@ function RunningProcessesList(const List: TStrings; FullPath: Boolean): Boolean;
         begin
           // PID 0 is always the "System Idle Process" but this name cannot be
           // retrieved from the system and has to be fabricated.
-          FileName := RsSystemIdleProcess;
+          FileName := LoadResString(@RsSystemIdleProcess);
         end
         else
         begin
@@ -2525,19 +2525,19 @@ function RunningProcessesList(const List: TStrings; FullPath: Boolean): Boolean;
           0:
             // PID 0 is always the "System Idle Process" but this name cannot be
             // retrieved from the system and has to be fabricated.
-            FileName := RsSystemIdleProcess;
+            FileName := LoadResString(@RsSystemIdleProcess);
           2:
             // On NT 4 PID 2 is the "System Process" but this name cannot be
             // retrieved from the system and has to be fabricated.
             if IsWinNT4 then
-              FileName := RsSystemProcess
+              FileName := LoadResString(@RsSystemProcess)
             else
               FileName := ProcessFileName(PIDs[I]);
           8:
             // On Win2K PID 8 is the "System Process" but this name cannot be
             // retrieved from the system and has to be fabricated.
             if IsWin2k or IsWinXP then
-              FileName := RsSystemProcess
+              FileName := LoadResString(@RsSystemProcess)
             else
               FileName := ProcessFileName(PIDs[I]);
         else
@@ -3335,37 +3335,37 @@ function GetWindowsVersionString: string;
 begin
   case GetWindowsVersion of
     wvWin95:
-      Result := RsOSVersionWin95;
+      Result := LoadResString(@RsOSVersionWin95);
     wvWin95OSR2:
-      Result := RsOSVersionWin95OSR2;
+      Result := LoadResString(@RsOSVersionWin95OSR2);
     wvWin98:
-      Result := RsOSVersionWin98;
+      Result := LoadResString(@RsOSVersionWin98);
     wvWin98SE:
-      Result := RsOSVersionWin98SE;
+      Result := LoadResString(@RsOSVersionWin98SE);
     wvWinME:
-      Result := RsOSVersionWinME;
+      Result := LoadResString(@RsOSVersionWinME);
     wvWinNT31, wvWinNT35, wvWinNT351:
-      Result := Format(RsOSVersionWinNT3, [Win32MinorVersion]);
+      Result := Format(LoadResString(@RsOSVersionWinNT3), [Win32MinorVersion]);
     wvWinNT4:
-      Result := Format(RsOSVersionWinNT4, [Win32MinorVersion]);
+      Result := Format(LoadResString(@RsOSVersionWinNT4), [Win32MinorVersion]);
     wvWin2000:
-      Result := RsOSVersionWin2000;
+      Result := LoadResString(@RsOSVersionWin2000);
     wvWinXP:
-      Result := RsOSVersionWinXP;
+      Result := LoadResString(@RsOSVersionWinXP);
     wvWin2003:
-      Result := RsOSVersionWin2003;
+      Result := LoadResString(@RsOSVersionWin2003);
     wvWin2003R2:
-      Result := RsOSVersionWin2003R2;
+      Result := LoadResString(@RsOSVersionWin2003R2);
     wvWinXP64:
-      Result := RsOSVersionWinXP64;
+      Result := LoadResString(@RsOSVersionWinXP64);
     wvWinVista:
-      Result := RsOSVersionWinVista;
+      Result := LoadResString(@RsOSVersionWinVista);
     wvWinServer2008:
-      Result := RsOSVersionWinServer2008;
+      Result := LoadResString(@RsOSVersionWinServer2008);
     wvWin7:
-      Result := RsOSVersionWin7;
+      Result := LoadResString(@RsOSVersionWin7);
     wvWinServer2008R2:
-      Result := RsOSVersionWinServer2008R2;
+      Result := LoadResString(@RsOSVersionWinServer2008R2);
   else
     Result := '';
   end;
@@ -3375,55 +3375,55 @@ function GetWindowsEditionString: string;
 begin
   case GetWindowsEdition of
     weWinXPHome:
-      Result := RsEditionWinXPHome;
+      Result := LoadResString(@RsEditionWinXPHome);
     weWinXPPro:
-      Result := RsEditionWinXPPro;
+      Result := LoadResString(@RsEditionWinXPPro);
     weWinXPHomeN:
-      Result := RsEditionWinXPHomeN;
+      Result := LoadResString(@RsEditionWinXPHomeN);
     weWinXPProN:
-      Result := RsEditionWinXPProN;
+      Result := LoadResString(@RsEditionWinXPProN);
     weWinXPHomeK:
-      Result := RsEditionWinXPHomeK;
+      Result := LoadResString(@RsEditionWinXPHomeK);
     weWinXPProK:
-      Result := RsEditionWinXPProK;
+      Result := LoadResString(@RsEditionWinXPProK);
     weWinXPHomeKN:
-      Result := RsEditionWinXPHomeKN;
+      Result := LoadResString(@RsEditionWinXPHomeKN);
     weWinXPProKN:
-      Result := RsEditionWinXPProKN;
+      Result := LoadResString(@RsEditionWinXPProKN);
     weWinXPStarter:
-      Result := RsEditionWinXPStarter;
+      Result := LoadResString(@RsEditionWinXPStarter);
     weWinXPMediaCenter:
-      Result := RsEditionWinXPMediaCenter;
+      Result := LoadResString(@RsEditionWinXPMediaCenter);
     weWinXPTablet:
-      Result := RsEditionWinXPTablet;
+      Result := LoadResString(@RsEditionWinXPTablet);
     weWinVistaStarter:
-      Result := RsEditionWinVistaStarter;
+      Result := LoadResString(@RsEditionWinVistaStarter);
     weWinVistaHomeBasic:
-      Result := RsEditionWinVistaHomeBasic;
+      Result := LoadResString(@RsEditionWinVistaHomeBasic);
     weWinVistaHomeBasicN:
-      Result := RsEditionWinVistaHomeBasicN;
+      Result := LoadResString(@RsEditionWinVistaHomeBasicN);
     weWinVistaHomePremium:
-      Result := RsEditionWinVistaHomePremium;
+      Result := LoadResString(@RsEditionWinVistaHomePremium);
     weWinVistaBusiness:
-      Result := RsEditionWinVistaBusiness;
+      Result := LoadResString(@RsEditionWinVistaBusiness);
     weWinVistaBusinessN:
-      Result := RsEditionWinVistaBusinessN;
+      Result := LoadResString(@RsEditionWinVistaBusinessN);
     weWinVistaEnterprise:
-      Result := RsEditionWinVistaEnterprise;
+      Result := LoadResString(@RsEditionWinVistaEnterprise);
     weWinVistaUltimate:
-      Result := RsEditionWinVistaUltimate;
+      Result := LoadResString(@RsEditionWinVistaUltimate);
     weWin7Starter:
-      Result := RsEditionWin7Starter;
+      Result := LoadResString(@RsEditionWin7Starter);
     weWin7HomeBasic:
-      Result := RsEditionWin7HomeBasic;
+      Result := LoadResString(@RsEditionWin7HomeBasic);
     weWin7HomePremium:
-      Result := RsEditionWin7HomePremium;
+      Result := LoadResString(@RsEditionWin7HomePremium);
     weWin7Professional:
-      Result := RsEditionWin7Professional;
+      Result := LoadResString(@RsEditionWin7Professional);
     weWin7Enterprise:
-      Result := RsEditionWin7Enterprise;
+      Result := LoadResString(@RsEditionWin7Enterprise);
     weWin7Ultimate:
-      Result := RsEditionWin7Ultimate;
+      Result := LoadResString(@RsEditionWin7Ultimate);
   else
     Result := '';
   end;
@@ -3440,21 +3440,21 @@ function NtProductTypeString: string;
 begin
   case NtProductType of
    ptWorkStation:
-     Result := RsProductTypeWorkStation;
+     Result := LoadResString(@RsProductTypeWorkStation);
    ptServer:
-     Result := RsProductTypeServer;
+     Result := LoadResString(@RsProductTypeServer);
    ptAdvancedServer:
-     Result := RsProductTypeAdvancedServer;
+     Result := LoadResString(@RsProductTypeAdvancedServer);
    ptPersonal:
-     Result := RsProductTypePersonal;
+     Result := LoadResString(@RsProductTypePersonal);
    ptProfessional:
-     Result := RsProductTypeProfessional;
+     Result := LoadResString(@RsProductTypeProfessional);
    ptDatacenterServer:
-     Result := RsProductTypeDatacenterServer;
+     Result := LoadResString(@RsProductTypeDatacenterServer);
    ptEnterprise:
-     Result := RsProductTypeEnterprise;
+     Result := LoadResString(@RsProductTypeEnterprise);
    ptWebEdition:
-     Result := RsProductTypeWebEdition;
+     Result := LoadResString(@RsProductTypeWebEdition);
   else
     Result := '';
   end;
@@ -3488,7 +3488,7 @@ var
 begin
   SP := GetWindowsServicePackVersion;
   if SP > 0 then
-    Result := Format(RsSPInfo, [SP])
+    Result := Format(LoadResString(@RsSPInfo), [SP])
   else
     Result := '';
 end;
@@ -3584,8 +3584,8 @@ begin
     begin
       @glGetStringFunc := nil;
       Result := False;
-      Vendor := RsOpenGLInfoError;
-      Version := RsOpenGLInfoError;
+      Vendor := AnsiString(LoadResString(@RsOpenGLInfoError));
+      Version := AnsiString(LoadResString(@RsOpenGLInfoError));
       Exit;
     end;
 
@@ -3601,8 +3601,8 @@ begin
       if Win = 0 then
       begin
         Result := False;
-        Vendor := RsOpenGLInfoError;
-        Version := RsOpenGLInfoError;
+        Vendor := AnsiString(LoadResString(@RsOpenGLInfoError));
+        Version := AnsiString(LoadResString(@RsOpenGLInfoError));
         Exit;
       end;
 
@@ -4000,12 +4000,12 @@ begin
     for I := Low(IntelCacheDescription) to High(IntelCacheDescription) do
       if IntelCacheDescription[I].D = D then
       begin
-        Result := IntelCacheDescription[I].I;
+        Result := LoadResString(IntelCacheDescription[I].I);
         Break;
       end;
   // (outchy) added a return value for unknow D value
   if Result = '' then
-    Result := Format(RsIntelUnknownCache,[D]);
+    Result := Format(LoadResString(@RsIntelUnknownCache),[D]);
 end;
 
 procedure GetCpuInfo(var CpuInfo: TCpuInfo);
@@ -4622,7 +4622,7 @@ function CPUID: TCpuInfo;
             9:
               CPUInfo.CpuName := 'AMD-K6®-III (Model 9)';
             else
-              StrFmt(CPUInfo.CpuName, PAnsiChar(AnsiString(RsUnknownAMDModel)),[CPUInfo.Model]);
+              StrFmt(CPUInfo.CpuName, PAnsiChar(AnsiString(LoadResString(@RsUnknownAMDModel))),[CPUInfo.Model]);
           end;
         6:
           case CPUInfo.Model of
@@ -4643,7 +4643,7 @@ function CPUID: TCpuInfo;
             10:
               CPUInfo.CpuName := 'AMD Athlon™ XP (Model 10)';
             else
-              StrFmt(CPUInfo.CpuName, PAnsiChar(AnsiString(RsUnknownAMDModel)), [CPUInfo.Model]);
+              StrFmt(CPUInfo.CpuName, PAnsiChar(AnsiString(LoadResString(@RsUnknownAMDModel))), [CPUInfo.Model]);
           end;
         8:
 

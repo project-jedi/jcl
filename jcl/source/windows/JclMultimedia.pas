@@ -712,37 +712,37 @@ class function TJclMixerLine.ComponentTypeToString(const ComponentType: DWORD): 
 begin
   case ComponentType of
     MIXERLINE_COMPONENTTYPE_DST_UNDEFINED:
-      Result := RsMmMixerUndefined;
+      Result := LoadResString(@RsMmMixerUndefined);
     MIXERLINE_COMPONENTTYPE_DST_DIGITAL, MIXERLINE_COMPONENTTYPE_SRC_DIGITAL:
-      Result := RsMmMixerDigital;
+      Result := LoadResString(@RsMmMixerDigital);
     MIXERLINE_COMPONENTTYPE_DST_LINE, MIXERLINE_COMPONENTTYPE_SRC_LINE:
-      Result := RsMmMixerLine;
+      Result := LoadResString(@RsMmMixerLine);
     MIXERLINE_COMPONENTTYPE_DST_MONITOR:
-      Result := RsMmMixerMonitor;
+      Result := LoadResString(@RsMmMixerMonitor);
     MIXERLINE_COMPONENTTYPE_DST_SPEAKERS:
-      Result := RsMmMixerSpeakers;
+      Result := LoadResString(@RsMmMixerSpeakers);
     MIXERLINE_COMPONENTTYPE_DST_HEADPHONES:
-      Result := RsMmMixerHeadphones;
+      Result := LoadResString(@RsMmMixerHeadphones);
     MIXERLINE_COMPONENTTYPE_DST_TELEPHONE, MIXERLINE_COMPONENTTYPE_SRC_TELEPHONE:
-      Result := RsMmMixerTelephone;
+      Result := LoadResString(@RsMmMixerTelephone);
     MIXERLINE_COMPONENTTYPE_DST_WAVEIN:
-      Result := RsMmMixerWaveIn;
+      Result := LoadResString(@RsMmMixerWaveIn);
     MIXERLINE_COMPONENTTYPE_DST_VOICEIN:
-      Result := RsMmMixerVoiceIn;
+      Result := LoadResString(@RsMmMixerVoiceIn);
     MIXERLINE_COMPONENTTYPE_SRC_MICROPHONE:
-      Result := RsMmMixerMicrophone;
+      Result := LoadResString(@RsMmMixerMicrophone);
     MIXERLINE_COMPONENTTYPE_SRC_SYNTHESIZER:
-      Result := RsMmMixerSynthesizer;
+      Result := LoadResString(@RsMmMixerSynthesizer);
     MIXERLINE_COMPONENTTYPE_SRC_COMPACTDISC:
-      Result := RsMmMixerCompactDisc;
+      Result := LoadResString(@RsMmMixerCompactDisc);
     MIXERLINE_COMPONENTTYPE_SRC_PCSPEAKER:
-      Result := RsMmMixerPcSpeaker;
+      Result := LoadResString(@RsMmMixerPcSpeaker);
     MIXERLINE_COMPONENTTYPE_SRC_WAVEOUT:
-      Result := RsMmMixerWaveOut;
+      Result := LoadResString(@RsMmMixerWaveOut);
     MIXERLINE_COMPONENTTYPE_SRC_AUXILIARY:
-      Result := RsMmMixerAuxiliary;
+      Result := LoadResString(@RsMmMixerAuxiliary);
     MIXERLINE_COMPONENTTYPE_SRC_ANALOG:
-      Result := RsMmMixerAnalog;
+      Result := LoadResString(@RsMmMixerAnalog);
   else
     Result := '';
   end;
@@ -1133,7 +1133,7 @@ constructor EJclMciError.Create(MciErrNo: MCIERROR; const Msg: string);
 begin
   FMciErrorNo := MciErrNo;
   FMciErrorMsg := GetMciErrorMessage(MciErrNo);
-  inherited Create(Msg + NativeLineBreak + RsMmMciErrorPrefix + FMciErrorMsg);
+  inherited Create(Msg + NativeLineBreak + LoadResString(@RsMmMciErrorPrefix) + FMciErrorMsg);
 end;
 
 constructor EJclMciError.CreateFmt(MciErrNo: MCIERROR; const Msg: string;
@@ -1141,14 +1141,14 @@ constructor EJclMciError.CreateFmt(MciErrNo: MCIERROR; const Msg: string;
 begin
   FMciErrorNo := MciErrNo;
   FMciErrorMsg := GetMciErrorMessage(MciErrNo);
-  inherited CreateFmt(Msg + NativeLineBreak + RsMmMciErrorPrefix + FMciErrorMsg, Args);
+  inherited CreateFmt(Msg + NativeLineBreak + LoadResString(@RsMmMciErrorPrefix) + FMciErrorMsg, Args);
 end;
 
 constructor EJclMciError.CreateRes(MciErrNo: MCIERROR; Ident: Integer);
 begin
   FMciErrorNo := MciErrNo;
   FMciErrorMsg := GetMciErrorMessage(MciErrNo);
-  inherited Create(LoadStr(Ident)+ NativeLineBreak + RsMmMciErrorPrefix + FMciErrorMsg);
+  inherited Create(LoadStr(Ident)+ NativeLineBreak + LoadResString(@RsMmMciErrorPrefix) + FMciErrorMsg);
 end;
 
 function GetMciErrorMessage(const MciErrNo: MCIERROR): string;
@@ -1158,7 +1158,7 @@ begin
   if mciGetErrorString(MciErrNo, Buffer, SizeOf(Buffer)) then
     Result := Buffer
   else
-    Result := Format(RsMmUnknownError, [MciErrNo]);
+    Result := Format(LoadResString(@RsMmUnknownError), [MciErrNo]);
 end;
 
 function MMCheck(const MciError: MCIERROR; const Msg: string): MCIERROR;
@@ -1317,22 +1317,22 @@ begin
         begin
           case TrackType of
             ttAudio:
-              S := RsMMTrackAudio;
+              S := LoadResString(@RsMMTrackAudio);
             ttOther:
-              S := RsMMTrackOther;
+              S := LoadResString(@RsMMTrackOther);
           end;
           S := Format('[%s]', [S]);
         end
         else
           S := '';
-        S := Format(RsMmCdTrackNo, [I + 1]) + ' ' + S;
-        S := S + ' ' + Format(RsMMCdTimeFormat, [I + 1, Minute, Second]);
+        S := Format(LoadResString(@RsMmCdTrackNo), [I + 1]) + ' ' + S;
+        S := S + ' ' + Format(LoadResString(@RsMMCdTimeFormat), [I + 1, Minute, Second]);
         TrackList.Add(S);
       end;
   finally
     TrackList.EndUpdate;
   end;
-  Result := Format(RsMMCdTimeFormat, [TotalTime.Minute, TotalTime.Second]);
+  Result := Format(LoadResString(@RsMMCdTimeFormat), [TotalTime.Minute, TotalTime.Second]);
 end;
 
 {$IFDEF UNITVERSIONING}

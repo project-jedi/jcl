@@ -33,8 +33,6 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// Last modified: $Date$
-
 unit JclCLR;
 
 interface
@@ -1756,7 +1754,7 @@ function TJclClrHeaderEx.DumpIL: string;
 begin
   with TStringList.Create do
   try
-    Add(RsClrCopyright);
+    Add(LoadResString(@RsClrCopyright));
     Add(Format('.corflags 0x%.8x', [Header.Flags]));
     Result := Text + NativeLineBreak + Metadata.DumpIL;
   finally

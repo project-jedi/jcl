@@ -293,6 +293,48 @@ function RegLoadList(const RootKey: DelphiHKEY; const Key: string; const ListNam
   const SaveTo: TStrings): Boolean;
 function RegDelList(const RootKey: DelphiHKEY; const Key: string; const ListName: string): Boolean;
 
+const
+  HKCRLongName = 'HKEY_CLASSES_ROOT';
+  HKCULongName = 'HKEY_CURRENT_USER';
+  HKLMLongName = 'HKEY_LOCAL_MACHINE';
+  HKUSLongName = 'HKEY_USERS';
+  HKPDLongName = 'HKEY_PERFORMANCE_DATA';
+  HKCCLongName = 'HKEY_CURRENT_CONFIG';
+  HKDDLongName = 'HKEY_DYN_DATA';
+  HKCRShortName = 'HKCR';
+  HKCUShortName = 'HKCU';
+  HKLMShortName = 'HKLM';
+  HKUSShortName = 'HKUS';
+  HKPDShortName = 'HKPD';
+  HKCCShortName = 'HKCC';
+  HKDDShortName = 'HKDD';
+
+type
+  TRootKey = record
+    Key: DelphiHKEY;
+    AnsiName: AnsiString;
+    WideName: WideString;
+  end;
+
+const
+  RootKeys: array [0..13] of TRootKey =
+   (
+    (Key: HKCR; AnsiName: HKCRLongName; WideName: HKCRLongName),
+    (Key: HKCU; AnsiName: HKCULongName; WideName: HKCULongName),
+    (Key: HKLM; AnsiName: HKLMLongName; WideName: HKLMLongName),
+    (Key: HKUS; AnsiName: HKUSLongName; WideName: HKUSLongName),
+    (Key: HKPD; AnsiName: HKPDLongName; WideName: HKPDLongName),
+    (Key: HKCC; AnsiName: HKCCLongName; WideName: HKCCLongName),
+    (Key: HKDD; AnsiName: HKDDLongName; WideName: HKDDLongName),
+    (Key: HKCR; AnsiName: HKCRShortName; WideName: HKCRShortName),
+    (Key: HKCU; AnsiName: HKCUShortName; WideName: HKCUShortName),
+    (Key: HKLM; AnsiName: HKLMShortName; WideName: HKLMShortName),
+    (Key: HKUS; AnsiName: HKUSShortName; WideName: HKUSShortName),
+    (Key: HKPD; AnsiName: HKPDShortName; WideName: HKPDShortName),
+    (Key: HKCC; AnsiName: HKCCShortName; WideName: HKCCShortName),
+    (Key: HKDD; AnsiName: HKDDShortName; WideName: HKDDShortName)
+   );
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -331,13 +373,13 @@ const
 function RootKeyName(const RootKey: THandle): string;
 begin
   case RootKey of
-    HKCR : Result := RsHKCRLong;
-    HKCU : Result := RsHKCULong;
-    HKLM : Result := RsHKLMLong;
-    HKUS : Result := RsHKUSLong;
-    HKPD : Result := RsHKPDLong;
-    HKCC : Result := RsHKCCLong;
-    HKDD : Result := RsHKDDLong;
+    HKCR : Result := HKCRLongName;
+    HKCU : Result := HKCULongName;
+    HKLM : Result := HKLMLongName;
+    HKUS : Result := HKUSLongName;
+    HKPD : Result := HKPDLongName;
+    HKCC : Result := HKCCLongName;
+    HKDD : Result := HKDDLongName;
     else
     {$IFDEF DELPHICOMPILER}
       Result := Format('$%.8x', [RootKey]);
@@ -392,29 +434,6 @@ begin
 end;
 
 function RelativeKey(const RootKey: DelphiHKEY; Key: PAnsiChar): PAnsiChar; overload;
-type
-  TRootKey = record
-    Key: DelphiHKEY;
-    Name: AnsiString;
-  end;
-const
-  RootKeys: array [0..13] of TRootKey =
-   (
-    (Key: HKCR; Name: RsHKCRLong),
-    (Key: HKCU; Name: RsHKCULong),
-    (Key: HKLM; Name: RsHKLMLong),
-    (Key: HKUS; Name: RsHKUSLong),
-    (Key: HKPD; Name: RsHKPDLong),
-    (Key: HKCC; Name: RsHKCCLong),
-    (Key: HKDD; Name: RsHKDDLong),
-    (Key: HKCR; Name: RsHKCRShort),
-    (Key: HKCU; Name: RsHKCUShort),
-    (Key: HKLM; Name: RsHKLMShort),
-    (Key: HKUS; Name: RsHKUSShort),
-    (Key: HKPD; Name: RsHKPDShort),
-    (Key: HKCC; Name: RsHKCCShort),
-    (Key: HKDD; Name: RsHKDDShort)
-   );
 var
   I: Integer;
 begin
@@ -422,40 +441,17 @@ begin
   if Result^ = RegKeyDelimiter then
     Inc(Result);
   for I := Low(RootKeys) to High(RootKeys) do
-    if StrPos(Key, PAnsiChar(RootKeys[I].Name + RegKeyDelimiter)) = Result then
+    if StrPos(Key, PAnsiChar(RootKeys[I].AnsiName + RegKeyDelimiter)) = Result then
     begin
       if RootKey <> RootKeys[I].Key then
         raise EJclRegistryError.CreateResFmt(@RsInconsistentPath, [Key])
       else
-        Inc(Result, Length(RootKeys[I].Name));
+        Inc(Result, Length(RootKeys[I].AnsiName));
       Break;
     end;
 end;
 
 function RelativeKey(const RootKey: DelphiHKEY; Key: PWideChar): PWideChar; overload;
-type
-  TRootKey = record
-    Key: DelphiHKEY;
-    Name: WideString;
-  end;
-const
-  RootKeys: array [0..13] of TRootKey =
-   (
-    (Key: HKCR; Name: RsHKCRLong),
-    (Key: HKCU; Name: RsHKCULong),
-    (Key: HKLM; Name: RsHKLMLong),
-    (Key: HKUS; Name: RsHKUSLong),
-    (Key: HKPD; Name: RsHKPDLong),
-    (Key: HKCC; Name: RsHKCCLong),
-    (Key: HKDD; Name: RsHKDDLong),
-    (Key: HKCR; Name: RsHKCRShort),
-    (Key: HKCU; Name: RsHKCUShort),
-    (Key: HKLM; Name: RsHKLMShort),
-    (Key: HKUS; Name: RsHKUSShort),
-    (Key: HKPD; Name: RsHKPDShort),
-    (Key: HKCC; Name: RsHKCCShort),
-    (Key: HKDD; Name: RsHKDDShort)
-   );
 var
   I: Integer;
 begin
@@ -463,12 +459,12 @@ begin
   if Result^ = RegKeyDelimiter then
     Inc(Result);
   for I := Low(RootKeys) to High(RootKeys) do
-    if StrPosW(Key, PWideChar(RootKeys[I].Name + RegKeyDelimiter)) = Result then
+    if StrPosW(Key, PWideChar(RootKeys[I].WideName + RegKeyDelimiter)) = Result then
     begin
       if RootKey <> RootKeys[I].Key then
         raise EJclRegistryError.CreateResFmt(@RsInconsistentPath, [Key])
       else
-        Inc(Result, Length(RootKeys[I].Name));
+        Inc(Result, Length(RootKeys[I].WideName));
       Break;
     end;
 end;
@@ -1994,13 +1990,13 @@ begin
   begin
     case RootKey of
       HKLM:
-        Path := RsHKLMLong + RegKeyDelimiter + RelativeKey(RootKey, PChar(Path));
+        Path := HKLMLongName + RegKeyDelimiter + RelativeKey(RootKey, PChar(Path));
       HKCU:
-        Path := RsHKCULong + RegKeyDelimiter + RelativeKey(RootKey, PChar(Path));
+        Path := HKCULongName + RegKeyDelimiter + RelativeKey(RootKey, PChar(Path));
       HKCR:
-        Path := RsHKCRLong + RegKeyDelimiter + RelativeKey(RootKey, PChar(Path));
+        Path := HKCRLongName + RegKeyDelimiter + RelativeKey(RootKey, PChar(Path));
       HKUS:
-        Path := RsHKUSLong + RegKeyDelimiter + RelativeKey(RootKey, PChar(Path));
+        Path := HKUSLongName + RegKeyDelimiter + RelativeKey(RootKey, PChar(Path));
     end;
     Len := (Length(Path) + 1) * SizeOf(WideChar);
     GetMem(WidePath, Len);

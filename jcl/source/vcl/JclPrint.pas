@@ -190,7 +190,7 @@ implementation
 
 uses
   Graphics, IniFiles, Messages, Printers, WinSpool,
-  JclSysInfo, JclResources;
+  JclSysInfo, JclVclResources;
 
 const
   PrintIniPrinterName   = 'PrinterName';
@@ -240,7 +240,7 @@ begin
     raise EJclPrinterError.CreateRes(@RsInvalidPrinter);
   // Fill in the structure with info about this "document"
   if DocumentName = '' then
-    DocInfo.DocName := PChar(RsSpoolerDocName)
+    DocInfo.DocName := PChar(LoadResString(@RsSpoolerDocName))
   else
     DocInfo.DocName := PChar(DocumentName);
   DocInfo.OutputFile := nil;
@@ -591,61 +591,61 @@ function TJclPrintSet.DefaultPaperName(const PaperID: Word): string;
 begin
   case PaperID of
     dmpaper_Letter:
-      Result := RsPSLetter;
+      Result := LoadResString(@RsPSLetter);
     dmpaper_LetterSmall:
-      Result := RsPSLetter;
+      Result := LoadResString(@RsPSLetter);
     dmpaper_Tabloid:
-      Result := RsPSTabloid;
+      Result := LoadResString(@RsPSTabloid);
     dmpaper_Ledger:
-      Result := RsPSLedger;
+      Result := LoadResString(@RsPSLedger);
     dmpaper_Legal:
-      Result := RsPSLegal;
+      Result := LoadResString(@RsPSLegal);
     dmpaper_Statement:
-      Result := RsPSStatement;
+      Result := LoadResString(@RsPSStatement);
     dmpaper_Executive:
-      Result := RsPSExecutive;
+      Result := LoadResString(@RsPSExecutive);
     dmpaper_A3:
-      Result := RsPSA3;
+      Result := LoadResString(@RsPSA3);
     dmpaper_A4:
-      Result := RsPSA4;
+      Result := LoadResString(@RsPSA4);
     dmpaper_A4Small:
-      Result := RsPSA4;
+      Result := LoadResString(@RsPSA4);
     dmpaper_A5:
-      Result := RsPSA5;
+      Result := LoadResString(@RsPSA5);
     dmpaper_B4:
-      Result := RsPSB4;
+      Result := LoadResString(@RsPSB4);
     dmpaper_B5:
-      Result := RsPSB5;
+      Result := LoadResString(@RsPSB5);
     dmpaper_Folio:
-      Result := RsPSFolio;
+      Result := LoadResString(@RsPSFolio);
     dmpaper_Quarto:
-      Result := RsPSQuarto;
+      Result := LoadResString(@RsPSQuarto);
     dmpaper_10X14:
-      Result := RsPS10x14;
+      Result := LoadResString(@RsPS10x14);
     dmpaper_11X17:
-      Result := RsPS11x17;
+      Result := LoadResString(@RsPS11x17);
     dmpaper_Note:
-      Result := RsPSNote;
+      Result := LoadResString(@RsPSNote);
     dmpaper_Env_9:
-      Result := RsPSEnv9;
+      Result := LoadResString(@RsPSEnv9);
     dmpaper_Env_10:
-      Result := RsPSEnv10;
+      Result := LoadResString(@RsPSEnv10);
     dmpaper_Env_11:
-      Result := RsPSEnv11;
+      Result := LoadResString(@RsPSEnv11);
     dmpaper_Env_12:
-      Result := RsPSEnv12;
+      Result := LoadResString(@RsPSEnv12);
     dmpaper_Env_14:
-      Result := RsPSEnv14;
+      Result := LoadResString(@RsPSEnv14);
     dmpaper_CSheet:
-      Result := RsPSCSheet;
+      Result := LoadResString(@RsPSCSheet);
     dmpaper_DSheet:
-      Result := RsPSDSheet;
+      Result := LoadResString(@RsPSDSheet);
     dmpaper_ESheet:
-      Result := RsPSESheet;
+      Result := LoadResString(@RsPSESheet);
     dmpaper_User:
-      Result := RsPSUser;
+      Result := LoadResString(@RsPSUser);
   else
-    Result := RsPSUnknown;
+    Result := LoadResString(@RsPSUnknown);
   end;
 end;
 

@@ -571,7 +571,7 @@ uses
   CommCtrl, ShellApi,
   {$IFDEF VCL}
   ClipBrd, JPeg, TypInfo,
-  JclResources,
+  JclVclResources,
   {$ENDIF VCL}
   {$ENDIF MSWINDOWS}
   JclSysUtils,
