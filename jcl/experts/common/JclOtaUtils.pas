@@ -1133,45 +1133,67 @@ end;
 function TJclOTAExpertBase.GetOutputDirectory(const Project: IOTAProject): string;
 var
   EnvironmentOptions: IOTAEnvironmentOptions;
+  OptionValue: Variant;
 begin
   if not Assigned(Project) then
     raise EJclExpertException.CreateTrace(RsENoActiveProject);
   if not Assigned(Project.ProjectOptions) then
       raise EJclExpertException.CreateTrace(RsENoProjectOptions);
 
+  Result := '';
+
   if IsPackage(Project) then
   begin
-    Result := VarToStr(Project.ProjectOptions.Values[PkgDllDirOptionName]);
+    OptionValue := Project.ProjectOptions.Values[PkgDllDirOptionName];
 
-    if Result = 'false' then
+    if VarIsStr(OptionValue) then
+      Result := VarToStr(OptionValue);
+
+    {$IFDEF BDS5}
+    if (Project.Personality = JclCBuilderPersonality) and (Result = 'false') then
       Result := '';
+    {$ENDIF BDS5}
 
     if Result = '' then
     begin
       EnvironmentOptions := GetOTAServices.GetEnvironmentOptions;
       if not Assigned(EnvironmentOptions) then
         raise EJclExpertException.CreateTrace(RsENoEnvironmentOptions);
-      Result := EnvironmentOptions.Values[BPLOutputDirOptionName];
+      OptionValue := EnvironmentOptions.Values[BPLOutputDirOptionName];
+      if VarIsStr(OptionValue) then
+        Result := VarToStr(OptionValue);
     end;
   end
   else
   begin
-    Result := VarToStr(Project.ProjectOptions.Values[OutputDirOptionName]);
+    OptionValue := Project.ProjectOptions.Values[OutputDirOptionName];
 
-    if Result = 'false' then
+    if VarIsStr(OptionValue) then
+      Result := VarToStr(OptionValue);
+
+    {$IFDEF BDS5}
+    if (Project.Personality = JclCBuilderPersonality) and (Result = 'false') then
       Result := '';
+    {$ENDIF BDS5}
 
     if Result = '' then
-      Result := VarToStr(Project.ProjectOptions.Values[FinalOutputDirOptionName]);
+    begin
+      OptionValue := Project.ProjectOptions.Values[FinalOutputDirOptionName];
+      if VarIsStr(OptionValue) then
+        Result := VarToStr(OptionValue);
+    end;
   end;
 
-  if Result = 'false' then
+  {$IFDEF BDS5}
+  if (Project.Personality = JclCBuilderPersonality) and (Result = 'false') then
     Result := '';
+  {$ENDIF BDS5}
 
   Result := SubstitutePath(Trim(Result));
   if Result = '' then
     Result := ExtractFilePath(Project.FileName)
-  else if not PathIsAbsolute(Result) then
+  else
+  if not PathIsAbsolute(Result) then
     Result := PathGetRelativePath(ExtractFilePath(Project.FileName), Result);
 end;
 
