@@ -39,7 +39,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -441,6 +441,7 @@
   IOCHECKS_ON            Compiling in the I+ state (I/O checking enabled)
   WRITEABLECONST_ON      Compiling in the J+ state (typed constants can be modified)
   LOCALSYMBOLS           Compiling in the L+ state (local symbol generation)
+  LOCALSYMBOLS_ON        Alias of LOCALSYMBOLS
   TYPEINFO_ON            Compiling in the M+ state (RTTI generation on)
   OPTIMIZATION_ON        Compiling in the O+ state (code optimization on)
   OPENSTRINGS_ON         Compiling in the P+ state (variable string parameters are openstrings)
@@ -1224,7 +1225,7 @@
 {$IFDEF COMPILER2_UP}
   {$IFOPT J+} {$DEFINE WRITEABLECONST_ON} {$ENDIF}
 {$ENDIF}
-{$IFOPT L+} {$DEFINE LOCALSYMBOLS} {$ENDIF}
+{$IFOPT L+} {$DEFINE LOCALSYMBOLS} {$DEFINE LOCALSYMBOLS_ON} {$ENDIF}
 {$IFOPT M+} {$DEFINE TYPEINFO_ON} {$ENDIF}
 {$IFOPT O+} {$DEFINE OPTIMIZATION_ON} {$ENDIF}
 {$IFOPT P+} {$DEFINE OPENSTRINGS_ON} {$ENDIF}
