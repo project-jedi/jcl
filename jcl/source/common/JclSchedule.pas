@@ -69,7 +69,7 @@ type
   IJclMonthlySchedule = interface;
   IJclYearlySchedule = interface;
 
-  ESchedule = class(EJclError);
+  EJclScheduleError = class(EJclError);
 
   IJclSchedule = interface(IUnknown)
     ['{1CC54450-7F84-4F27-B1C1-418C451DAD80}']
@@ -304,7 +304,7 @@ begin
   if Value <> FStartTime then
   begin
     if Value >= Cardinal(HoursToMSecs(24)) then
-      raise ESchedule.CreateRes(@RsScheduleInvalidTime);
+      raise EJclScheduleError.CreateRes(@RsScheduleInvalidTime);
     FStartTime := Value;
     if EndTime < StartTime then
       FEndTime := Value;
@@ -316,9 +316,9 @@ begin
   if Value <> FEndTime then
   begin
     if Value < FStartTime then
-      raise ESchedule.CreateRes(@RsScheduleEndBeforeStart);
+      raise EJclScheduleError.CreateRes(@RsScheduleEndBeforeStart);
     if Value >= Cardinal(HoursToMSecs(24)) then
-      raise ESchedule.CreateRes(@RsScheduleInvalidTime);
+      raise EJclScheduleError.CreateRes(@RsScheduleInvalidTime);
     FEndTime := Value;
   end;
 end;
@@ -328,7 +328,7 @@ begin
   if Value <> FInterval then
   begin
     if Value >= Cardinal(HoursToMSecs(24)) then
-      raise ESchedule.CreateRes(@RsScheduleInvalidTime);
+      raise EJclScheduleError.CreateRes(@RsScheduleInvalidTime);
     if Value = 0 then
     begin
       FEndTime := FStartTime;
@@ -433,7 +433,7 @@ procedure TJclDailySchedule.SetInterval(Value: Cardinal);
 begin
   CheckInterfaceAllowed;
   if Value = 0 then
-    raise ESchedule.CreateRes(@RsScheduleIntervalZero);
+    raise EJclScheduleError.CreateRes(@RsScheduleIntervalZero);
   if FEveryWeekDay then
     FEveryWeekDay := False;
   if Value <> FInterval then
@@ -523,7 +523,7 @@ procedure TJclWeeklySchedule.SetDaysOfWeek(Value: TScheduleWeekDays);
 begin
   CheckInterfaceAllowed;
   if Value = [] then
-    raise ESchedule.CreateRes(@RsScheduleNoDaySpecified);
+    raise EJclScheduleError.CreateRes(@RsScheduleNoDaySpecified);
   FDaysOfWeek := Value;
 end;
 
@@ -531,7 +531,7 @@ procedure TJclWeeklySchedule.SetInterval(Value: Cardinal);
 begin
   CheckInterfaceAllowed;
   if Value = 0 then
-    raise ESchedule.CreateRes(@RsScheduleIntervalZero);
+    raise EJclScheduleError.CreateRes(@RsScheduleIntervalZero);
   FInterval := Value;
 end;
 
@@ -834,7 +834,7 @@ function TJclMonthlySchedule.GetIndexValue: Integer;
 begin
   CheckInterfaceAllowed;
   if not (FIndexKind in [sikDay .. sikSunday]) then
-    raise ESchedule.CreateRes(@RsScheduleIndexValueSup);
+    raise EJclScheduleError.CreateRes(@RsScheduleIndexValueSup);
   Result := FIndexValue;
 end;
 
@@ -860,9 +860,9 @@ procedure TJclMonthlySchedule.SetIndexValue(Value: Integer);
 begin
   CheckInterfaceAllowed;
   if not (FIndexKind in [sikDay .. sikSunday]) then
-    raise ESchedule.CreateRes(@RsScheduleIndexValueSup);
+    raise EJclScheduleError.CreateRes(@RsScheduleIndexValueSup);
   if Value = 0 then
-    raise ESchedule.CreateRes(@RsScheduleIndexValueZero);
+    raise EJclScheduleError.CreateRes(@RsScheduleIndexValueZero);
   FIndexValue := Value;
 end;
 
@@ -870,9 +870,9 @@ procedure TJclMonthlySchedule.SetDay(Value: Cardinal);
 begin
   CheckInterfaceAllowed;
   if not (FIndexKind in [sikNone]) then
-    raise ESchedule.CreateRes(@RsScheduleDayNotSupported);
+    raise EJclScheduleError.CreateRes(@RsScheduleDayNotSupported);
   if (Value = 0) or (Value > 31) then
-    raise ESchedule.CreateRes(@RsScheduleDayInRange);
+    raise EJclScheduleError.CreateRes(@RsScheduleDayInRange);
   FDay := Value;
 end;
 
@@ -880,7 +880,7 @@ procedure TJclMonthlySchedule.SetInterval(Value: Cardinal);
 begin
   CheckInterfaceAllowed;
   if Value = 0 then
-    raise ESchedule.CreateRes(@RsScheduleIntervalZero);
+    raise EJclScheduleError.CreateRes(@RsScheduleIntervalZero);
   FInterval := Value;
 end;
 
@@ -975,7 +975,7 @@ procedure TJclYearlySchedule.SetMonth(Value: Cardinal);
 begin
   CheckInterfaceAllowed;
   if (Value < 1) or (Value > 12) then
-    raise ESchedule.CreateRes(@RsScheduleMonthInRange);
+    raise EJclScheduleError.CreateRes(@RsScheduleMonthInRange);
   FMonth := Value;
 end;
 
