@@ -1585,14 +1585,14 @@ type
   private
     FOwnsValues: Boolean;
   protected
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: IInterface): IInterface;
     function KeysCompare(const A, B: IInterface): Integer;
     function ValuesCompare(A, B: TObject): Integer;
   public
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
     FEntries: array of TJclIntfSortedEntry;
@@ -1639,14 +1639,14 @@ type
   private
     FOwnsValues: Boolean;
   protected
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: AnsiString): AnsiString;
     function KeysCompare(const A, B: AnsiString): Integer;
     function ValuesCompare(A, B: TObject): Integer;
   public
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
     FEntries: array of TJclAnsiStrSortedEntry;
@@ -1693,14 +1693,14 @@ type
   private
     FOwnsValues: Boolean;
   protected
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: WideString): WideString;
     function KeysCompare(const A, B: WideString): Integer;
     function ValuesCompare(A, B: TObject): Integer;
   public
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
     FEntries: array of TJclWideStrSortedEntry;
@@ -1748,14 +1748,14 @@ type
   private
     FOwnsValues: Boolean;
   protected
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: UnicodeString): UnicodeString;
     function KeysCompare(const A, B: UnicodeString): Integer;
     function ValuesCompare(A, B: TObject): Integer;
   public
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
     FEntries: array of TJclUnicodeStrSortedEntry;
@@ -1813,14 +1813,14 @@ type
   private
     FOwnsValues: Boolean;
   protected
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Single): Single;
     function KeysCompare(const A, B: Single): Integer;
     function ValuesCompare(A, B: TObject): Integer;
   public
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
     FEntries: array of TJclSingleSortedEntry;
@@ -1867,14 +1867,14 @@ type
   private
     FOwnsValues: Boolean;
   protected
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Double): Double;
     function KeysCompare(const A, B: Double): Integer;
     function ValuesCompare(A, B: TObject): Integer;
   public
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
     FEntries: array of TJclDoubleSortedEntry;
@@ -1921,14 +1921,14 @@ type
   private
     FOwnsValues: Boolean;
   protected
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Extended): Extended;
     function KeysCompare(const A, B: Extended): Integer;
     function ValuesCompare(A, B: TObject): Integer;
   public
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
     FEntries: array of TJclExtendedSortedEntry;
@@ -1985,14 +1985,14 @@ type
   private
     FOwnsValues: Boolean;
   protected
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Integer): Integer;
     function KeysCompare(A, B: Integer): Integer;
     function ValuesCompare(A, B: TObject): Integer;
   public
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
     FEntries: array of TJclIntegerSortedEntry;
@@ -2039,14 +2039,14 @@ type
   private
     FOwnsValues: Boolean;
   protected
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Cardinal): Cardinal;
     function KeysCompare(A, B: Cardinal): Integer;
     function ValuesCompare(A, B: TObject): Integer;
   public
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
     FEntries: array of TJclCardinalSortedEntry;
@@ -2093,14 +2093,14 @@ type
   private
     FOwnsValues: Boolean;
   protected
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Int64): Int64;
     function KeysCompare(const A, B: Int64): Integer;
     function ValuesCompare(A, B: TObject): Integer;
   public
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
     FEntries: array of TJclInt64SortedEntry;
@@ -2147,14 +2147,14 @@ type
   private
     FOwnsValues: Boolean;
   protected
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Pointer): Pointer;
     function KeysCompare(A, B: Pointer): Integer;
     function ValuesCompare(A, B: TObject): Integer;
   public
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
     FEntries: array of TJclPtrSortedEntry;
@@ -2202,17 +2202,17 @@ type
     FOwnsKeys: Boolean;
     FOwnsValues: Boolean;
   protected
-    { IJclKeyOwner }
-    function FreeKey(var Key: TObject): TObject;
-    function GetOwnsKeys: Boolean;
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function KeysCompare(A, B: TObject): Integer;
     function ValuesCompare(A, B: TObject): Integer;
   public
+    { IJclKeyOwner }
+    function FreeKey(var Key: TObject): TObject;
+    function GetOwnsKeys: Boolean;
     property OwnsKeys: Boolean read FOwnsKeys;
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
     FEntries: array of TJclSortedEntry;
@@ -2264,16 +2264,16 @@ type
     FOwnsKeys: Boolean;
     FOwnsValues: Boolean;
   protected
-    { IJclPairOwner }
-    function FreeKey(var Key: TKey): TKey;
-    function FreeValue(var Value: TValue): TValue;
-    function GetOwnsKeys: Boolean;
-    function GetOwnsValues: Boolean;
     function KeysCompare(const A, B: TKey): Integer; virtual; abstract;
     function ValuesCompare(const A, B: TValue): Integer; virtual; abstract;
     function CreateEmptyArrayList(ACapacity: Integer; AOwnsObjects: Boolean): IJclCollection<TValue>; virtual; abstract;
     function CreateEmptyArraySet(ACapacity: Integer; AOwnsObjects: Boolean): IJclSet<TKey>; virtual; abstract;
   public
+    { IJclPairOwner }
+    function FreeKey(var Key: TKey): TKey;
+    function FreeValue(var Value: TValue): TValue;
+    function GetOwnsKeys: Boolean;
+    function GetOwnsValues: Boolean;
     property OwnsKeys: Boolean read FOwnsKeys;
     property OwnsValues: Boolean read FOwnsValues;
   private

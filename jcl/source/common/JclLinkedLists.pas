@@ -1182,11 +1182,12 @@ type
     FEqualityComparer: IJclEqualityComparer<T>;
   protected
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    function ItemsEqual(const A, B: T): Boolean; override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(const AEqualityComparer: IJclEqualityComparer<T>; const ACollection: IJclCollection<T>;
       AOwnsItems: Boolean);
+    { IJclEqualityComparer<T> }
+    function ItemsEqual(const A, B: T): Boolean; override;
     property EqualityComparer: IJclEqualityComparer<T> read FEqualityComparer write FEqualityComparer;
   end;
 
@@ -1206,8 +1207,10 @@ type
     IJclIntfCloneable, IJclCloneable, IJclContainer, IJclCollection<T>, IJclList<T>, IJclEqualityComparer<T>,
     IJclItemOwner<T>)
   protected
-    function ItemsEqual(const A, B: T): Boolean; override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
+  public
+    { IJclEqualityComparer<T> }
+    function ItemsEqual(const A, B: T): Boolean; override;
   end;
   {$ENDIF SUPPORTS_GENERICS}
 

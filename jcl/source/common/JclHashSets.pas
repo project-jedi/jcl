@@ -843,7 +843,7 @@ type
   TJclHashSet<T> = class(TJclAbstractContainer<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclItemOwner<T>, IJclEqualityComparer<T>,
     IJclCollection<T>, IJclSet<T>)
-  protected
+  public
     { IJclItemOwner<T> }
     function FreeItem(var AItem: T): T; override;
     function GetOwnsItems: Boolean; override;
@@ -910,13 +910,13 @@ type
   protected
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function ItemsEqual(const A, B: T): Boolean; override;
   public
     constructor Create(const AEqualityComparer: IJclEqualityComparer<T>; const AHashConverter: IJclHashConverter<T>;
       const AMap: IJclMap<T, TRefUnique>); overload;
     constructor Create(const AEqualityComparer: IJclEqualityComparer<T>; const AHashConverter: IJclHashConverter<T>;
       const AComparer: IJclComparer<T>; ACapacity: Integer; AOwnsItems: Boolean); overload;
-
+    { IJclEqualityComparer<T> }
+    function ItemsEqual(const A, B: T): Boolean; override;
     property EqualityComparer: IJclEqualityComparer<T> read FEqualityComparer write FEqualityComparer;
     property HashConverter: IJclHashConverter<T> read FHashConverter write FHashConverter;
   end;
@@ -939,10 +939,11 @@ type
     IJclContainer, IJclCollection<T>, IJclSet<T>, IJclItemOwner<T>, IJclEqualityComparer<T>)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function ItemsEqual(const A, B: T): Boolean; override;
   public
     constructor Create(const AMap: IJclMap<T, TRefUnique>); overload;
     constructor Create(ACapacity: Integer; AOwnsItems: Boolean); overload;
+    { IJclEqualityComparer<T> }
+    function ItemsEqual(const A, B: T): Boolean; override;
   end;
   {$ENDIF SUPPORTS_GENERICS}
 

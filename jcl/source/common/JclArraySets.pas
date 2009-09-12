@@ -341,13 +341,14 @@ type
     FComparer: IJclComparer<T>;
   protected
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    function ItemsCompare(const A, B: T): Integer; override;
-    function ItemsEqual(const A, B: T): Boolean; override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(const AComparer: IJclComparer<T>; ACapacity: Integer; AOwnsItems: Boolean); overload;
     constructor Create(const AComparer: IJclComparer<T>; const ACollection: IJclCollection<T>; AOwnsItems: Boolean); overload;
-
+    { IJclEqualityComparer<T> }
+    function ItemsCompare(const A, B: T): Integer; override;
+    { IJclComparer<T> }
+    function ItemsEqual(const A, B: T): Boolean; override;
     property Comparer: IJclComparer<T> read FComparer write FComparer;
   end;
 
@@ -367,9 +368,12 @@ type
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclItemOwner<T>, IJclEqualityComparer<T>, IJclComparer<T>,
     IJclCollection<T>, IJclList<T>, IJclArray<T>, IJclSet<T>)
   protected
-    function ItemsCompare(const A, B: T): Integer; override;
-    function ItemsEqual(const A, B: T): Boolean; override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
+  public
+    { IJclEqualityComparer<T> }
+    function ItemsCompare(const A, B: T): Integer; override;
+    { IJclComparer<T> }
+    function ItemsEqual(const A, B: T): Boolean; override;
   end;
 
   {$ENDIF SUPPORTS_GENERICS}

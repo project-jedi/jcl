@@ -1811,12 +1811,12 @@ type
   protected
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
+  public
+    constructor Create(const AComparer: IJclComparer<T>; AOwnsItems: Boolean);
     { IJclComparer<T> }
     function ItemsCompare(const A, B: T): Integer; override;
     { IJclEqualityComparer<T> }
     function ItemsEqual(const A, B: T): Boolean; override;
-  public
-    constructor Create(const AComparer: IJclComparer<T>; AOwnsItems: Boolean);
     property Comparer: IJclComparer<T> read FComparer write FComparer;
   end;
 
@@ -1836,6 +1836,7 @@ type
     IJclCollection<T>, IJclTree<T>)
   protected
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
+  public
     { IJclComparer<T> }
     function ItemsCompare(const A, B: T): Integer; override;
     { IJclEqualityComparer<T> }

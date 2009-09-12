@@ -415,15 +415,15 @@ type
   private
     FOwnsValues: Boolean;
   protected
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: IInterface): IInterface;
     function Hash(const AInterface: IInterface): Integer; reintroduce;
     function KeysEqual(const A\, B: IInterface): Boolean;
     function ValuesEqual(A\, B: TObject): Boolean;
   public
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,const ,IInterface,,TObject)*)
 
 (*$JPPEXPANDMACRO JCLHASHMAPTYPESINT(TJclAnsiStrHashEntry,TJclAnsiStrBucket,AnsiString,TObject)*)
@@ -432,14 +432,14 @@ type
   private
     FOwnsValues: Boolean;
   protected
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: AnsiString): AnsiString;
     function KeysEqual(const A\, B: AnsiString): Boolean;
     function ValuesEqual(A\, B: TObject): Boolean;
   public
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,const ,AnsiString,,TObject)*)
 
 (*$JPPEXPANDMACRO JCLHASHMAPTYPESINT(TJclWideStrHashEntry,TJclWideStrBucket,WideString,TObject)*)
@@ -448,14 +448,14 @@ type
   private
     FOwnsValues: Boolean;
   protected
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: WideString): WideString;
     function KeysEqual(const A\, B: WideString): Boolean;
     function ValuesEqual(A\, B: TObject): Boolean;
   public
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,const ,WideString,,TObject)*)
 
 {$IFDEF SUPPORTS_UNICODE_STRING}
@@ -465,14 +465,14 @@ type
   private
     FOwnsValues: Boolean;
   protected
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: UnicodeString): UnicodeString;
     function KeysEqual(const A\, B: UnicodeString): Boolean;
     function ValuesEqual(A\, B: TObject): Boolean;
   public
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,const ,UnicodeString,,TObject)*)
 {$ENDIF SUPPORTS_UNICODE_STRING}
 
@@ -492,14 +492,14 @@ type
   private
     FOwnsValues: Boolean;
   protected
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Single): Single;
     function KeysEqual(const A\, B: Single): Boolean;
     function ValuesEqual(A\, B: TObject): Boolean;
   public
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,const ,Single,,TObject)*)
 
 (*$JPPEXPANDMACRO JCLHASHMAPTYPESINT(TJclDoubleHashEntry,TJclDoubleBucket,Double,TObject)*)
@@ -508,14 +508,14 @@ type
   private
     FOwnsValues: Boolean;
   protected
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Double): Double;
     function KeysEqual(const A\, B: Double): Boolean;
     function ValuesEqual(A\, B: TObject): Boolean;
   public
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,const ,Double,,TObject)*)
 
 (*$JPPEXPANDMACRO JCLHASHMAPTYPESINT(TJclExtendedHashEntry,TJclExtendedBucket,Extended,TObject)*)
@@ -524,14 +524,14 @@ type
   private
     FOwnsValues: Boolean;
   protected
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Extended): Extended;
     function KeysEqual(const A\, B: Extended): Boolean;
     function ValuesEqual(A\, B: TObject): Boolean;
   public
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,const ,Extended,,TObject)*)
 
   {$IFDEF MATH_EXTENDED_PRECISION}
@@ -550,14 +550,14 @@ type
   private
     FOwnsValues: Boolean;
   protected
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Integer): Integer;
     function KeysEqual(A\, B: Integer): Boolean;
     function ValuesEqual(A\, B: TObject): Boolean;
   public
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,,Integer,,TObject)*)
 
 (*$JPPEXPANDMACRO JCLHASHMAPTYPESINT(TJclCardinalHashEntry,TJclCardinalBucket,Cardinal,TObject)*)
@@ -566,14 +566,14 @@ type
   private
     FOwnsValues: Boolean;
   protected
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Cardinal): Cardinal;
     function KeysEqual(A\, B: Cardinal): Boolean;
     function ValuesEqual(A\, B: TObject): Boolean;
   public
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,,Cardinal,,TObject)*)
 
 (*$JPPEXPANDMACRO JCLHASHMAPTYPESINT(TJclInt64HashEntry,TJclInt64Bucket,Int64,TObject)*)
@@ -582,14 +582,14 @@ type
   private
     FOwnsValues: Boolean;
   protected
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Int64): Int64;
     function KeysEqual(const A\, B: Int64): Boolean;
     function ValuesEqual(A\, B: TObject): Boolean;
   public
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,const ,Int64,,TObject)*)
 
 (*$JPPEXPANDMACRO JCLHASHMAPTYPESINT(TJclPtrHashEntry,TJclPtrBucket,Pointer,TObject)*)
@@ -598,14 +598,14 @@ type
   private
     FOwnsValues: Boolean;
   protected
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Pointer): Pointer;
     function KeysEqual(A\, B: Pointer): Boolean;
     function ValuesEqual(A\, B: TObject): Boolean;
   public
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,,Pointer,,TObject)*)
 
 (*$JPPEXPANDMACRO JCLHASHMAPTYPESINT(TJclHashEntry,TJclBucket,TObject,TObject)*)
@@ -615,18 +615,18 @@ type
     FOwnsKeys: Boolean;
     FOwnsValues: Boolean;
   protected
-    { IJclKeyOwner }
-    function FreeKey(var Key: TObject): TObject;
-    function GetOwnsKeys: Boolean;
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function Hash(AObject: TObject): Integer;
     function KeysEqual(A\, B: TObject): Boolean;
     function ValuesEqual(A\, B: TObject): Boolean;
   public
+    { IJclKeyOwner }
+    function FreeKey(var Key: TObject): TObject;
+    function GetOwnsKeys: Boolean;
     property OwnsKeys: Boolean read FOwnsKeys;
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;,; AOwnsKeys: Boolean,; AOwnsValues: Boolean,,TObject,,TObject)*)
 
   {$IFDEF SUPPORTS_GENERICS}
@@ -640,17 +640,17 @@ type
     FOwnsKeys: Boolean;
     FOwnsValues: Boolean;
   protected
-    { IJclPairOwner }
-    function FreeKey(var Key: TKey): TKey;
-    function FreeValue(var Value: TValue): TValue;
-    function GetOwnsKeys: Boolean;
-    function GetOwnsValues: Boolean;
     function Hash(const AKey: TKey): Integer; virtual; abstract;
     function KeysEqual(const A\, B: TKey): Boolean; virtual; abstract;
     function ValuesEqual(const A\, B: TValue): Boolean; virtual; abstract;
     function CreateEmptyArrayList(ACapacity: Integer; AOwnsObjects: Boolean): IJclCollection<TValue>; virtual; abstract;
     function CreateEmptyArraySet(ACapacity: Integer; AOwnsObjects: Boolean): IJclSet<TKey>; virtual; abstract;
   public
+    { IJclPairOwner }
+    function FreeKey(var Key: TKey): TKey;
+    function FreeValue(var Value: TValue): TValue;
+    function GetOwnsKeys: Boolean;
+    function GetOwnsValues: Boolean;
     property OwnsKeys: Boolean read FOwnsKeys;
     property OwnsValues: Boolean read FOwnsValues;,; AOwnsKeys: Boolean,; AOwnsValues: Boolean,const ,TKey,const ,TValue)*)
 

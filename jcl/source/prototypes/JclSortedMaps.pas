@@ -400,14 +400,14 @@ type
   private
     FOwnsValues: Boolean;
   protected
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: IInterface): IInterface;
     function KeysCompare(const A\, B: IInterface): Integer;
     function ValuesCompare(A\, B: TObject): Integer;
   public
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,const ,IInterface,,TObject)*)
 
 (*$JPPEXPANDMACRO JCLSORTEDMAPTYPESINT(TJclAnsiStrSortedEntry,AnsiString,TObject)*)
@@ -416,14 +416,14 @@ type
   private
     FOwnsValues: Boolean;
   protected
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: AnsiString): AnsiString;
     function KeysCompare(const A\, B: AnsiString): Integer;
     function ValuesCompare(A\, B: TObject): Integer;
   public
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,const ,AnsiString,,TObject)*)
 
 (*$JPPEXPANDMACRO JCLSORTEDMAPTYPESINT(TJclWideStrSortedEntry,WideString,TObject)*)
@@ -432,14 +432,14 @@ type
   private
     FOwnsValues: Boolean;
   protected
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: WideString): WideString;
     function KeysCompare(const A\, B: WideString): Integer;
     function ValuesCompare(A\, B: TObject): Integer;
   public
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,const ,WideString,,TObject)*)
 
 {$IFDEF SUPPORTS_UNICODE_STRING}
@@ -449,14 +449,14 @@ type
   private
     FOwnsValues: Boolean;
   protected
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: UnicodeString): UnicodeString;
     function KeysCompare(const A\, B: UnicodeString): Integer;
     function ValuesCompare(A\, B: TObject): Integer;
   public
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,const ,UnicodeString,,TObject)*)
 {$ENDIF SUPPORTS_UNICODE_STRING}
 
@@ -476,14 +476,14 @@ type
   private
     FOwnsValues: Boolean;
   protected
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Single): Single;
     function KeysCompare(const A\, B: Single): Integer;
     function ValuesCompare(A\, B: TObject): Integer;
   public
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,const ,Single,,TObject)*)
 
 (*$JPPEXPANDMACRO JCLSORTEDMAPTYPESINT(TJclDoubleSortedEntry,Double,TObject)*)
@@ -492,14 +492,14 @@ type
   private
     FOwnsValues: Boolean;
   protected
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Double): Double;
     function KeysCompare(const A\, B: Double): Integer;
     function ValuesCompare(A\, B: TObject): Integer;
   public
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,const ,Double,,TObject)*)
 
 (*$JPPEXPANDMACRO JCLSORTEDMAPTYPESINT(TJclExtendedSortedEntry,Extended,TObject)*)
@@ -508,14 +508,14 @@ type
   private
     FOwnsValues: Boolean;
   protected
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Extended): Extended;
     function KeysCompare(const A\, B: Extended): Integer;
     function ValuesCompare(A\, B: TObject): Integer;
   public
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,const ,Extended,,TObject)*)
 
   {$IFDEF MATH_EXTENDED_PRECISION}
@@ -534,14 +534,14 @@ type
   private
     FOwnsValues: Boolean;
   protected
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Integer): Integer;
     function KeysCompare(A\, B: Integer): Integer;
     function ValuesCompare(A\, B: TObject): Integer;
   public
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,,Integer,,TObject)*)
 
 (*$JPPEXPANDMACRO JCLSORTEDMAPTYPESINT(TJclCardinalSortedEntry,Cardinal,TObject)*)
@@ -550,14 +550,14 @@ type
   private
     FOwnsValues: Boolean;
   protected
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Cardinal): Cardinal;
     function KeysCompare(A\, B: Cardinal): Integer;
     function ValuesCompare(A\, B: TObject): Integer;
   public
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,,Cardinal,,TObject)*)
 
 (*$JPPEXPANDMACRO JCLSORTEDMAPTYPESINT(TJclInt64SortedEntry,Int64,TObject)*)
@@ -566,14 +566,14 @@ type
   private
     FOwnsValues: Boolean;
   protected
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Int64): Int64;
     function KeysCompare(const A\, B: Int64): Integer;
     function ValuesCompare(A\, B: TObject): Integer;
   public
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,const ,Int64,,TObject)*)
 
 (*$JPPEXPANDMACRO JCLSORTEDMAPTYPESINT(TJclPtrSortedEntry,Pointer,TObject)*)
@@ -582,14 +582,14 @@ type
   private
     FOwnsValues: Boolean;
   protected
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Pointer): Pointer;
     function KeysCompare(A\, B: Pointer): Integer;
     function ValuesCompare(A\, B: TObject): Integer;
   public
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,,Pointer,,TObject)*)
 
 (*$JPPEXPANDMACRO JCLSORTEDMAPTYPESINT(TJclSortedEntry,TObject,TObject)*)
@@ -599,17 +599,17 @@ type
     FOwnsKeys: Boolean;
     FOwnsValues: Boolean;
   protected
-    { IJclKeyOwner }
-    function FreeKey(var Key: TObject): TObject;
-    function GetOwnsKeys: Boolean;
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function KeysCompare(A\, B: TObject): Integer;
     function ValuesCompare(A\, B: TObject): Integer;
   public
+    { IJclKeyOwner }
+    function FreeKey(var Key: TObject): TObject;
+    function GetOwnsKeys: Boolean;
     property OwnsKeys: Boolean read FOwnsKeys;
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;,; AOwnsKeys: Boolean,; AOwnsValues: Boolean,,TObject,,TObject)*)
 
   {$IFDEF SUPPORTS_GENERICS}
@@ -623,16 +623,16 @@ type
     FOwnsKeys: Boolean;
     FOwnsValues: Boolean;
   protected
-    { IJclPairOwner }
-    function FreeKey(var Key: TKey): TKey;
-    function FreeValue(var Value: TValue): TValue;
-    function GetOwnsKeys: Boolean;
-    function GetOwnsValues: Boolean;
     function KeysCompare(const A\, B: TKey): Integer; virtual; abstract;
     function ValuesCompare(const A\, B: TValue): Integer; virtual; abstract;
     function CreateEmptyArrayList(ACapacity: Integer; AOwnsObjects: Boolean): IJclCollection<TValue>; virtual; abstract;
     function CreateEmptyArraySet(ACapacity: Integer; AOwnsObjects: Boolean): IJclSet<TKey>; virtual; abstract;
   public
+    { IJclPairOwner }
+    function FreeKey(var Key: TKey): TKey;
+    function FreeValue(var Value: TValue): TValue;
+    function GetOwnsKeys: Boolean;
+    function GetOwnsValues: Boolean;
     property OwnsKeys: Boolean read FOwnsKeys;
     property OwnsValues: Boolean read FOwnsValues;,; AOwnsKeys: Boolean,; AOwnsValues: Boolean,const ,TKey,const ,TValue)*)
 

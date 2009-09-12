@@ -1701,15 +1701,15 @@ type
   private
     FOwnsValues: Boolean;
   protected
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: IInterface): IInterface;
     function Hash(const AInterface: IInterface): Integer; reintroduce;
     function KeysEqual(const A, B: IInterface): Boolean;
     function ValuesEqual(A, B: TObject): Boolean;
   public
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
     FBuckets: array of TJclIntfBucket;
@@ -1759,14 +1759,14 @@ type
   private
     FOwnsValues: Boolean;
   protected
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: AnsiString): AnsiString;
     function KeysEqual(const A, B: AnsiString): Boolean;
     function ValuesEqual(A, B: TObject): Boolean;
   public
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
     FBuckets: array of TJclAnsiStrBucket;
@@ -1816,14 +1816,14 @@ type
   private
     FOwnsValues: Boolean;
   protected
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: WideString): WideString;
     function KeysEqual(const A, B: WideString): Boolean;
     function ValuesEqual(A, B: TObject): Boolean;
   public
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
     FBuckets: array of TJclWideStrBucket;
@@ -1874,14 +1874,14 @@ type
   private
     FOwnsValues: Boolean;
   protected
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: UnicodeString): UnicodeString;
     function KeysEqual(const A, B: UnicodeString): Boolean;
     function ValuesEqual(A, B: TObject): Boolean;
   public
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
     FBuckets: array of TJclUnicodeStrBucket;
@@ -1942,14 +1942,14 @@ type
   private
     FOwnsValues: Boolean;
   protected
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Single): Single;
     function KeysEqual(const A, B: Single): Boolean;
     function ValuesEqual(A, B: TObject): Boolean;
   public
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
     FBuckets: array of TJclSingleBucket;
@@ -1999,14 +1999,14 @@ type
   private
     FOwnsValues: Boolean;
   protected
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Double): Double;
     function KeysEqual(const A, B: Double): Boolean;
     function ValuesEqual(A, B: TObject): Boolean;
   public
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
     FBuckets: array of TJclDoubleBucket;
@@ -2056,14 +2056,14 @@ type
   private
     FOwnsValues: Boolean;
   protected
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Extended): Extended;
     function KeysEqual(const A, B: Extended): Boolean;
     function ValuesEqual(A, B: TObject): Boolean;
   public
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
     FBuckets: array of TJclExtendedBucket;
@@ -2123,14 +2123,14 @@ type
   private
     FOwnsValues: Boolean;
   protected
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Integer): Integer;
     function KeysEqual(A, B: Integer): Boolean;
     function ValuesEqual(A, B: TObject): Boolean;
   public
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
     FBuckets: array of TJclIntegerBucket;
@@ -2180,14 +2180,14 @@ type
   private
     FOwnsValues: Boolean;
   protected
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Cardinal): Cardinal;
     function KeysEqual(A, B: Cardinal): Boolean;
     function ValuesEqual(A, B: TObject): Boolean;
   public
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
     FBuckets: array of TJclCardinalBucket;
@@ -2237,14 +2237,14 @@ type
   private
     FOwnsValues: Boolean;
   protected
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Int64): Int64;
     function KeysEqual(const A, B: Int64): Boolean;
     function ValuesEqual(A, B: TObject): Boolean;
   public
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
     FBuckets: array of TJclInt64Bucket;
@@ -2294,14 +2294,14 @@ type
   private
     FOwnsValues: Boolean;
   protected
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: Pointer): Pointer;
     function KeysEqual(A, B: Pointer): Boolean;
     function ValuesEqual(A, B: TObject): Boolean;
   public
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
     FBuckets: array of TJclPtrBucket;
@@ -2352,18 +2352,18 @@ type
     FOwnsKeys: Boolean;
     FOwnsValues: Boolean;
   protected
-    { IJclKeyOwner }
-    function FreeKey(var Key: TObject): TObject;
-    function GetOwnsKeys: Boolean;
-    { IJclValueOwner }
-    function FreeValue(var Value: TObject): TObject;
-    function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function Hash(AObject: TObject): Integer;
     function KeysEqual(A, B: TObject): Boolean;
     function ValuesEqual(A, B: TObject): Boolean;
   public
+    { IJclKeyOwner }
+    function FreeKey(var Key: TObject): TObject;
+    function GetOwnsKeys: Boolean;
     property OwnsKeys: Boolean read FOwnsKeys;
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
     property OwnsValues: Boolean read FOwnsValues;
   private
     FBuckets: array of TJclBucket;
@@ -2418,17 +2418,17 @@ type
     FOwnsKeys: Boolean;
     FOwnsValues: Boolean;
   protected
-    { IJclPairOwner }
-    function FreeKey(var Key: TKey): TKey;
-    function FreeValue(var Value: TValue): TValue;
-    function GetOwnsKeys: Boolean;
-    function GetOwnsValues: Boolean;
     function Hash(const AKey: TKey): Integer; virtual; abstract;
     function KeysEqual(const A, B: TKey): Boolean; virtual; abstract;
     function ValuesEqual(const A, B: TValue): Boolean; virtual; abstract;
     function CreateEmptyArrayList(ACapacity: Integer; AOwnsObjects: Boolean): IJclCollection<TValue>; virtual; abstract;
     function CreateEmptyArraySet(ACapacity: Integer; AOwnsObjects: Boolean): IJclSet<TKey>; virtual; abstract;
   public
+    { IJclPairOwner }
+    function FreeKey(var Key: TKey): TKey;
+    function FreeValue(var Value: TValue): TValue;
+    function GetOwnsKeys: Boolean;
+    function GetOwnsValues: Boolean;
     property OwnsKeys: Boolean read FOwnsKeys;
     property OwnsValues: Boolean read FOwnsValues;
   private
