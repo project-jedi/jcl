@@ -192,12 +192,12 @@ const
 implementation
 
 uses
-  JclDateTime, JclResources;  
+  JclDateTime, JclResources;
 
-//=== { TScheduleAggregate } =================================================
+//=== { TJclScheduleAggregate } ==============================================
 
 type
-  TScheduleAggregate = class(TAggregatedObject)
+  TJclScheduleAggregate = class(TAggregatedObject)
   protected
     procedure CheckInterfaceAllowed;
     function InterfaceAllowed: Boolean;
@@ -209,31 +209,31 @@ type
     function NextValidStamp(const Stamp: TTimeStamp): TTimeStamp; virtual; abstract;
   end;
 
-procedure TScheduleAggregate.CheckInterfaceAllowed;
+procedure TJclScheduleAggregate.CheckInterfaceAllowed;
 begin
   if not InterfaceAllowed then
     RunError(23); // reIntfCastError
 end;
 
-function TScheduleAggregate.InterfaceAllowed: Boolean;
+function TJclScheduleAggregate.InterfaceAllowed: Boolean;
 begin
   Result := Schedule.RecurringType = RecurringType;
 end;
 
-function TScheduleAggregate.Schedule: IJclSchedule;
+function TJclScheduleAggregate.Schedule: IJclSchedule;
 begin
   Result := Controller as IJclSchedule;
 end;
 
-class function TScheduleAggregate.RecurringType: TScheduleRecurringKind;
+class function TJclScheduleAggregate.RecurringType: TScheduleRecurringKind;
 begin
   Result := srkOneShot;
 end;
 
-//=== { TDailyFreq } =========================================================
+//=== { TJclDayFrequency } ===================================================
 
 type
-  TDailyFreq = class(TAggregatedObject, IJclScheduleDayFrequency, IInterface)
+  TJclDayFrequency = class(TAggregatedObject, IJclScheduleDayFrequency, IInterface)
   private
     FStartTime: Cardinal;
     FEndTime: Cardinal;
@@ -256,7 +256,7 @@ type
     property Interval: Cardinal read GetInterval write SetInterval;
   end;
 
-constructor TDailyFreq.Create(const Controller: IUnknown);
+constructor TJclDayFrequency.Create(const Controller: IUnknown);
 begin
   inherited Create(Controller);
   FStartTime := 0;
@@ -264,13 +264,13 @@ begin
   FInterval := 500;
 end;
 
-function TDailyFreq.ValidStamp(const Stamp: TTimeStamp): Boolean;
+function TJclDayFrequency.ValidStamp(const Stamp: TTimeStamp): Boolean;
 begin
   Result := (Cardinal(Stamp.Time) >= FStartTime) and (Cardinal(Stamp.Time) <= FEndTime) and
     ((Cardinal(Stamp.Time) - FStartTime) mod FInterval = 0);
 end;
 
-function TDailyFreq.NextValidStamp(const Stamp: TTimeStamp): TTimeStamp;
+function TJclDayFrequency.NextValidStamp(const Stamp: TTimeStamp): TTimeStamp;
 begin
   Result := Stamp;
   if Stamp.Time < Integer(FStartTime) then
@@ -284,22 +284,22 @@ begin
     Result := NullStamp;
 end;
 
-function TDailyFreq.GetStartTime: Cardinal;
+function TJclDayFrequency.GetStartTime: Cardinal;
 begin
   Result := FStartTime;
 end;
 
-function TDailyFreq.GetEndTime: Cardinal;
+function TJclDayFrequency.GetEndTime: Cardinal;
 begin
   Result := FEndTime;
 end;
 
-function TDailyFreq.GetInterval: Cardinal;
+function TJclDayFrequency.GetInterval: Cardinal;
 begin
   Result := FInterval;
 end;
 
-procedure TDailyFreq.SetStartTime(Value: Cardinal);
+procedure TJclDayFrequency.SetStartTime(Value: Cardinal);
 begin
   if Value <> FStartTime then
   begin
@@ -311,7 +311,7 @@ begin
   end;
 end;
 
-procedure TDailyFreq.SetEndTime(Value: Cardinal);
+procedure TJclDayFrequency.SetEndTime(Value: Cardinal);
 begin
   if Value <> FEndTime then
   begin
@@ -323,7 +323,7 @@ begin
   end;
 end;
 
-procedure TDailyFreq.SetInterval(Value: Cardinal);
+procedure TJclDayFrequency.SetInterval(Value: Cardinal);
 begin
   if Value <> FInterval then
   begin
@@ -339,10 +339,10 @@ begin
   end;
 end;
 
-//=== { TDailySchedule } =====================================================
+//=== { TJclDailySchedule } ==================================================
 
 type
-  TDailySchedule = class(TScheduleAggregate, IJclDailySchedule, IInterface)
+  TJclDailySchedule = class(TJclScheduleAggregate, IJclDailySchedule, IInterface)
   private
     FEveryWeekDay: Boolean;
     FInterval: Cardinal;
@@ -364,25 +364,25 @@ type
     property Interval: Cardinal read GetInterval write SetInterval;
   end;
 
-constructor TDailySchedule.Create(const Controller: IUnknown);
+constructor TJclDailySchedule.Create(const Controller: IUnknown);
 begin
   inherited Create(Controller);
   FEveryWeekDay := True;
   FInterval := 1;
 end;
 
-class function TDailySchedule.RecurringType: TScheduleRecurringKind;
+class function TJclDailySchedule.RecurringType: TScheduleRecurringKind;
 begin
   Result := srkDaily;
 end;
 
-function TDailySchedule.ValidStamp(const Stamp: TTimeStamp): Boolean;
+function TJclDailySchedule.ValidStamp(const Stamp: TTimeStamp): Boolean;
 begin
   Result := (FEveryWeekDay and (TimeStampDOW(Stamp) < 6)) or
     (not FEveryWeekDay and (Cardinal(Stamp.Date - Schedule.StartDate.Date) mod Interval = 0));
 end;
 
-procedure TDailySchedule.MakeValidStamp(var Stamp: TTimeStamp);
+procedure TJclDailySchedule.MakeValidStamp(var Stamp: TTimeStamp);
 begin
   if FEveryWeekDay and (TimeStampDOW(Stamp) >= 6) then
     Inc(Stamp.Date, 2 - (TimeStampDOW(Stamp) - 6))
@@ -391,7 +391,7 @@ begin
     Inc(Stamp.Date, Interval - Cardinal(Stamp.Date - Schedule.StartDate.Date) mod Interval);
 end;
 
-function TDailySchedule.NextValidStamp(const Stamp: TTimeStamp): TTimeStamp;
+function TJclDailySchedule.NextValidStamp(const Stamp: TTimeStamp): TTimeStamp;
 begin
   Result := Stamp;
   MakeValidStamp(Result);
@@ -408,13 +408,13 @@ begin
   end;
 end;
 
-function TDailySchedule.GetEveryWeekDay: Boolean;
+function TJclDailySchedule.GetEveryWeekDay: Boolean;
 begin
   CheckInterfaceAllowed;
   Result := FEveryWeekDay;
 end;
 
-function TDailySchedule.GetInterval: Cardinal;
+function TJclDailySchedule.GetInterval: Cardinal;
 begin
   CheckInterfaceAllowed;
   if EveryWeekDay then
@@ -423,13 +423,13 @@ begin
     Result := FInterval;
 end;
 
-procedure TDailySchedule.SetEveryWeekDay(Value: Boolean);
+procedure TJclDailySchedule.SetEveryWeekDay(Value: Boolean);
 begin
   CheckInterfaceAllowed;
   FEveryWeekDay := Value;
 end;
 
-procedure TDailySchedule.SetInterval(Value: Cardinal);
+procedure TJclDailySchedule.SetInterval(Value: Cardinal);
 begin
   CheckInterfaceAllowed;
   if Value = 0 then
@@ -440,10 +440,10 @@ begin
     FInterval := Value;
 end;
 
-//=== { TWeeklySchedule } ====================================================
+//=== { TJclWeeklySchedule } =================================================
 
 type
-  TWeeklySchedule = class(TScheduleAggregate, IJclWeeklySchedule, IInterface)
+  TJclWeeklySchedule = class(TJclScheduleAggregate, IJclWeeklySchedule, IInterface)
   private
     FDaysOfWeek: TScheduleWeekDays;
     FInterval: Cardinal;
@@ -465,25 +465,25 @@ type
     property Interval: Cardinal read GetInterval write SetInterval;
   end;
 
-constructor TWeeklySchedule.Create(const Controller: IUnknown);
+constructor TJclWeeklySchedule.Create(const Controller: IUnknown);
 begin
   inherited Create(Controller);
   FDaysOfWeek := [swdMonday];
   FInterval := 1;
 end;
 
-class function TWeeklySchedule.RecurringType: TScheduleRecurringKind;
+class function TJclWeeklySchedule.RecurringType: TScheduleRecurringKind;
 begin
   Result := srkWeekly;
 end;
 
-function TWeeklySchedule.ValidStamp(const Stamp: TTimeStamp): Boolean;
+function TJclWeeklySchedule.ValidStamp(const Stamp: TTimeStamp): Boolean;
 begin
   Result := (TScheduleWeekDay(TimeStampDOW(Stamp)) in DaysOfWeek) and
     (Cardinal((Stamp.Date - Schedule.StartDate.Date) div 7) mod Interval = 0);
 end;
 
-procedure TWeeklySchedule.MakeValidStamp(var Stamp: TTimeStamp);
+procedure TJclWeeklySchedule.MakeValidStamp(var Stamp: TTimeStamp);
 begin
   while not (TScheduleWeekDay(TimeStampDOW(Stamp) - 1) in DaysOfWeek) do
     Inc(Stamp.Date);
@@ -495,7 +495,7 @@ begin
   end;
 end;
 
-function TWeeklySchedule.NextValidStamp(const Stamp: TTimeStamp): TTimeStamp;
+function TJclWeeklySchedule.NextValidStamp(const Stamp: TTimeStamp): TTimeStamp;
 begin
   Result := Stamp;
   MakeValidStamp(Result);
@@ -507,19 +507,19 @@ begin
   end;
 end;
 
-function TWeeklySchedule.GetDaysOfWeek: TScheduleWeekDays;
+function TJclWeeklySchedule.GetDaysOfWeek: TScheduleWeekDays;
 begin
   CheckInterfaceAllowed;
   Result := FDaysOfWeek;
 end;
 
-function TWeeklySchedule.GetInterval: Cardinal;
+function TJclWeeklySchedule.GetInterval: Cardinal;
 begin
   CheckInterfaceAllowed;
   Result := FInterval;
 end;
 
-procedure TWeeklySchedule.SetDaysOfWeek(Value: TScheduleWeekDays);
+procedure TJclWeeklySchedule.SetDaysOfWeek(Value: TScheduleWeekDays);
 begin
   CheckInterfaceAllowed;
   if Value = [] then
@@ -527,7 +527,7 @@ begin
   FDaysOfWeek := Value;
 end;
 
-procedure TWeeklySchedule.SetInterval(Value: Cardinal);
+procedure TJclWeeklySchedule.SetInterval(Value: Cardinal);
 begin
   CheckInterfaceAllowed;
   if Value = 0 then
@@ -535,10 +535,10 @@ begin
   FInterval := Value;
 end;
 
-//=== { TMonthlySchedule } ===================================================
+//=== { TJclMonthlySchedule } ================================================
 
 type
-  TMonthlySchedule = class(TScheduleAggregate, IJclMonthlySchedule, IInterface)
+  TJclMonthlySchedule = class(TJclScheduleAggregate, IJclMonthlySchedule, IInterface)
   private
     FIndexKind: TScheduleIndexKind;
     FIndexValue: Integer;
@@ -571,7 +571,7 @@ type
     property Interval: Cardinal read GetInterval write SetInterval;
   end;
 
-constructor TMonthlySchedule.Create(const Controller: IUnknown);
+constructor TJclMonthlySchedule.Create(const Controller: IUnknown);
 begin
   inherited Create(Controller);
   FIndexKind := sikNone;
@@ -580,12 +580,12 @@ begin
   FInterval := 1;
 end;
 
-class function TMonthlySchedule.RecurringType: TScheduleRecurringKind;
+class function TJclMonthlySchedule.RecurringType: TScheduleRecurringKind;
 begin
   Result := srkMonthly;
 end;
 
-function TMonthlySchedule.ValidStamp(const Stamp: TTimeStamp): Boolean;
+function TJclMonthlySchedule.ValidStamp(const Stamp: TTimeStamp): Boolean;
 var
   SYear, SMonth, SDay: Word;
   TYear, TMonth, TDay: Word;
@@ -596,7 +596,7 @@ begin
     ValidStampMonthIndex(TYear, TMonth, TDay);
 end;
 
-procedure TMonthlySchedule.MakeValidStamp(var Stamp: TTimeStamp);
+procedure TJclMonthlySchedule.MakeValidStamp(var Stamp: TTimeStamp);
 var
   SYear, SMonth, SDay: Word;
   TYear, TMonth, TDay: Word;
@@ -629,7 +629,7 @@ begin
   Stamp.Date := DateTimeToTimeStamp(JclDateTime.EncodeDate(TYear, TMonth, TDay)).Date;
 end;
 
-function TMonthlySchedule.NextValidStamp(const Stamp: TTimeStamp): TTimeStamp;
+function TJclMonthlySchedule.NextValidStamp(const Stamp: TTimeStamp): TTimeStamp;
 begin
   Result := Stamp;
   MakeValidStamp(Result);
@@ -641,7 +641,7 @@ begin
   end;
 end;
 
-function TMonthlySchedule.ValidStampMonthIndex(const TYear, TMonth, TDay: Word): Boolean;
+function TJclMonthlySchedule.ValidStampMonthIndex(const TYear, TMonth, TDay: Word): Boolean;
 var
   DIM: Integer;
   TempDay: Integer;
@@ -732,7 +732,7 @@ begin
   end;
 end;
 
-procedure TMonthlySchedule.MakeValidStampMonthIndex(var TYear, TMonth, TDay: Word);
+procedure TJclMonthlySchedule.MakeValidStampMonthIndex(var TYear, TMonth, TDay: Word);
 var
   DIM: Integer;
 begin
@@ -824,13 +824,13 @@ begin
   end;
 end;
 
-function TMonthlySchedule.GetIndexKind: TScheduleIndexKind;
+function TJclMonthlySchedule.GetIndexKind: TScheduleIndexKind;
 begin
   CheckInterfaceAllowed;
   Result := FIndexKind;
 end;
 
-function TMonthlySchedule.GetIndexValue: Integer;
+function TJclMonthlySchedule.GetIndexValue: Integer;
 begin
   CheckInterfaceAllowed;
   if not (FIndexKind in [sikDay .. sikSunday]) then
@@ -838,25 +838,25 @@ begin
   Result := FIndexValue;
 end;
 
-function TMonthlySchedule.GetDay: Cardinal;
+function TJclMonthlySchedule.GetDay: Cardinal;
 begin
   CheckInterfaceAllowed;
   Result := FDay;
 end;
 
-function TMonthlySchedule.GetInterval: Cardinal;
+function TJclMonthlySchedule.GetInterval: Cardinal;
 begin
   CheckInterfaceAllowed;
   Result := FInterval;
 end;
 
-procedure TMonthlySchedule.SetIndexKind(Value: TScheduleIndexKind);
+procedure TJclMonthlySchedule.SetIndexKind(Value: TScheduleIndexKind);
 begin
   CheckInterfaceAllowed;
   FIndexKind := Value;
 end;
 
-procedure TMonthlySchedule.SetIndexValue(Value: Integer);
+procedure TJclMonthlySchedule.SetIndexValue(Value: Integer);
 begin
   CheckInterfaceAllowed;
   if not (FIndexKind in [sikDay .. sikSunday]) then
@@ -866,7 +866,7 @@ begin
   FIndexValue := Value;
 end;
 
-procedure TMonthlySchedule.SetDay(Value: Cardinal);
+procedure TJclMonthlySchedule.SetDay(Value: Cardinal);
 begin
   CheckInterfaceAllowed;
   if not (FIndexKind in [sikNone]) then
@@ -876,7 +876,7 @@ begin
   FDay := Value;
 end;
 
-procedure TMonthlySchedule.SetInterval(Value: Cardinal);
+procedure TJclMonthlySchedule.SetInterval(Value: Cardinal);
 begin
   CheckInterfaceAllowed;
   if Value = 0 then
@@ -884,10 +884,10 @@ begin
   FInterval := Value;
 end;
 
-//=== { TYearlySchedule } ====================================================
+//=== { TJclYearlySchedule } =================================================
 
 type
-  TYearlySchedule = class(TMonthlySchedule, IJclYearlySchedule, IInterface)
+  TJclYearlySchedule = class(TJclMonthlySchedule, IJclYearlySchedule, IInterface)
   private
     FMonth: Cardinal;
   protected
@@ -905,18 +905,18 @@ type
     property Month: Cardinal read GetMonth write SetMonth;
   end;
 
-constructor TYearlySchedule.Create(const Controller: IUnknown);
+constructor TJclYearlySchedule.Create(const Controller: IUnknown);
 begin
   inherited Create(Controller);
   FMonth := 1;
 end;
 
-class function TYearlySchedule.RecurringType: TScheduleRecurringKind;
+class function TJclYearlySchedule.RecurringType: TScheduleRecurringKind;
 begin
   Result := srkYearly;
 end;
 
-function TYearlySchedule.ValidStamp(const Stamp: TTimeStamp): Boolean;
+function TJclYearlySchedule.ValidStamp(const Stamp: TTimeStamp): Boolean;
 var
   SYear, SMonth, SDay: Word;
   TYear, TMonth, TDay: Word;
@@ -927,7 +927,7 @@ begin
     ValidStampMonthIndex(TYear, TMonth, TDay);
 end;
 
-procedure TYearlySchedule.MakeValidStamp(var Stamp: TTimeStamp);
+procedure TJclYearlySchedule.MakeValidStamp(var Stamp: TTimeStamp);
 var
   SYear, SMonth, SDay: Word;
   TYear, TMonth, TDay: Word;
@@ -953,7 +953,7 @@ begin
   Stamp.Date := DateTimeToTimeStamp(JclDateTime.EncodeDate(TYear, TMonth, TDay)).Date;
 end;
 
-function TYearlySchedule.NextValidStamp(const Stamp: TTimeStamp): TTimeStamp;
+function TJclYearlySchedule.NextValidStamp(const Stamp: TTimeStamp): TTimeStamp;
 begin
   Result := Stamp;
   MakeValidStamp(Result);
@@ -965,13 +965,13 @@ begin
   end;
 end;
 
-function TYearlySchedule.GetMonth: Cardinal;
+function TJclYearlySchedule.GetMonth: Cardinal;
 begin
   CheckInterfaceAllowed;
   Result := FMonth;
 end;
 
-procedure TYearlySchedule.SetMonth(Value: Cardinal);
+procedure TJclYearlySchedule.SetMonth(Value: Cardinal);
 begin
   CheckInterfaceAllowed;
   if (Value < 1) or (Value > 12) then
@@ -979,13 +979,10 @@ begin
   FMonth := Value;
 end;
 
-//=== { TSchedule } ==========================================================
+//=== { TJclSchedule } =======================================================
 
 type
-
-  { TSchedule }
-
-  TSchedule = class(TInterfacedObject, IJclSchedule, IJclScheduleDayFrequency, IJclDailySchedule,
+  TJclSchedule = class(TInterfacedObject, IJclSchedule, IJclScheduleDayFrequency, IJclDailySchedule,
     IJclWeeklySchedule, IJclMonthlySchedule, IJclYearlySchedule)
   private
     FStartDate: TTimeStamp;
@@ -993,11 +990,11 @@ type
     FEndType: TScheduleEndKind;
     FEndDate: TTimeStamp;
     FEndCount: Cardinal;
-    FDailyFreq: TDailyFreq;
-    FDailySchedule: TDailySchedule;
-    FWeeklySchedule: TWeeklySchedule;
-    FMonthlySchedule: TMonthlySchedule;
-    FYearlySchedule: TYearlySchedule;
+    FDayFrequency: TJclDayFrequency;
+    FDailySchedule: TJclDailySchedule;
+    FWeeklySchedule: TJclWeeklySchedule;
+    FMonthlySchedule: TJclMonthlySchedule;
+    FYearlySchedule: TJclYearlySchedule;
   protected
     FTriggerCount: Cardinal;
     FDayCount: Cardinal;
@@ -1038,8 +1035,8 @@ type
     property EndCount: Cardinal read GetEndCount write SetEndCount;
 
     { IJclScheduleDayFrequency }
-    function GetDailyFreq: IJclScheduleDayFrequency;
-    property DailyFreq: IJclScheduleDayFrequency read GetDailyFreq implements IJclScheduleDayFrequency;
+    function GetDayFrequency: IJclScheduleDayFrequency;
+    property DayFrequency: IJclScheduleDayFrequency read GetDayFrequency implements IJclScheduleDayFrequency;
     { IJclDailySchedule }
     function GetDailySchedule: IJclDailySchedule;
     property DailySchedule: IJclDailySchedule read GetDailySchedule implements IJclDailySchedule;
@@ -1054,16 +1051,16 @@ type
     property YearlySchedule: IJclYearlySchedule read GetYearlySchedule implements IJclYearlySchedule;
   end;
 
-constructor TSchedule.Create;
+constructor TJclSchedule.Create;
 var
   InitialStamp: TTimeStamp;
 begin
   inherited Create;
-  FDailyFreq := TDailyFreq.Create(Self);
-  FDailySchedule := TDailySchedule.Create(Self);
-  FWeeklySchedule := TWeeklySchedule.Create(Self);
-  FMonthlySchedule := TMonthlySchedule.Create(Self);
-  FYearlySchedule := TYearlySchedule.Create(Self);
+  FDayFrequency := TJclDayFrequency.Create(Self);
+  FDailySchedule := TJclDailySchedule.Create(Self);
+  FWeeklySchedule := TJclWeeklySchedule.Create(Self);
+  FMonthlySchedule := TJclMonthlySchedule.Create(Self);
+  FYearlySchedule := TJclYearlySchedule.Create(Self);
   InitialStamp := DateTimeToTimeStamp(Now);
   InitialStamp.Time := 1000 * (InitialStamp.Time div 1000); // strip of milliseconds
   StartDate := InitialStamp;
@@ -1071,42 +1068,42 @@ begin
   RecurringType := srkOneShot;
 end;
 
-destructor TSchedule.Destroy;
+destructor TJclSchedule.Destroy;
 begin
   FreeAndNil(FYearlySchedule);
   FreeAndNil(FMonthlySchedule);
   FreeAndNil(FWeeklySchedule);
   FreeAndNil(FDailySchedule);
-  FreeAndNil(FDailyFreq);
+  FreeAndNil(FDayFrequency);
   inherited Destroy;
 end;
 
-function TSchedule.GetDailyFreq: IJclScheduleDayFrequency;
+function TJclSchedule.GetDayFrequency: IJclScheduleDayFrequency;
 begin
-  Result := FDailyFreq;
+  Result := FDayFrequency;
 end;
 
-function TSchedule.GetDailySchedule: IJclDailySchedule;
+function TJclSchedule.GetDailySchedule: IJclDailySchedule;
 begin
   Result := FDailySchedule;
 end;
 
-function TSchedule.GetWeeklySchedule: IJclWeeklySchedule;
+function TJclSchedule.GetWeeklySchedule: IJclWeeklySchedule;
 begin
   Result := FWeeklySchedule;
 end;
 
-function TSchedule.GetMonthlySchedule: IJclMonthlySchedule;
+function TJclSchedule.GetMonthlySchedule: IJclMonthlySchedule;
 begin
   Result := FMonthlySchedule;
 end;
 
-function TSchedule.GetYearlySchedule: IJclYearlySchedule;
+function TJclSchedule.GetYearlySchedule: IJclYearlySchedule;
 begin
   Result := FYearlySchedule;
 end;
 
-function TSchedule.GetNextEventStamp(const From: TTimeStamp): TTimeStamp;
+function TJclSchedule.GetNextEventStamp(const From: TTimeStamp): TTimeStamp;
 var
   UseFrom: TTimeStamp;
 begin
@@ -1123,11 +1120,11 @@ begin
         Result := StartDate;
     srkDaily:
       begin
-        Result := FDailyFreq.NextValidStamp(UseFrom);
+        Result := FDayFrequency.NextValidStamp(UseFrom);
         if IsNullTimeStamp(Result) then
         begin
           Result.Date := UseFrom.Date;
-          Result.Time := DailyFreq.StartTime;
+          Result.Time := FDayFrequency.StartTime;
           Result := FDailySchedule.NextValidStamp(Result);
         end
         else
@@ -1135,11 +1132,11 @@ begin
       end;
     srkWeekly:
       begin
-        Result := FDailyFreq.NextValidStamp(UseFrom);
+        Result := FDayFrequency.NextValidStamp(UseFrom);
         if IsNullTimeStamp(Result) then
         begin
           Result.Date := UseFrom.Date;
-          Result.Time := DailyFreq.StartTime;
+          Result.Time := FDayFrequency.StartTime;
           Result := FWeeklySchedule.NextValidStamp(Result);
         end
         else
@@ -1147,11 +1144,11 @@ begin
       end;
     srkMonthly:
       begin
-        Result := FDailyFreq.NextValidStamp(UseFrom);
+        Result := FDayFrequency.NextValidStamp(UseFrom);
         if IsNullTimeStamp(Result) then
         begin
           Result.Date := UseFrom.Date;
-          Result.Time := DailyFreq.StartTime;
+          Result.Time := FDayFrequency.StartTime;
           Result := FMonthlySchedule.NextValidStamp(Result);
         end
         else
@@ -1159,11 +1156,11 @@ begin
       end;
     srkYearly:
       begin
-        Result := FDailyFreq.NextValidStamp(UseFrom);
+        Result := FDayFrequency.NextValidStamp(UseFrom);
         if IsNullTimeStamp(Result) then
         begin
           Result.Date := UseFrom.Date;
-          Result.Time := DailyFreq.StartTime;
+          Result.Time := FDayFrequency.StartTime;
           Result := FYearlySchedule.NextValidStamp(Result);
         end
         else
@@ -1188,72 +1185,72 @@ begin
   end;
 end;
 
-function TSchedule.GetStartDate: TTimeStamp;
+function TJclSchedule.GetStartDate: TTimeStamp;
 begin
   Result := FStartDate;
 end;
 
-function TSchedule.GetRecurringType: TScheduleRecurringKind;
+function TJclSchedule.GetRecurringType: TScheduleRecurringKind;
 begin
   Result := FRecurringType;
 end;
 
-function TSchedule.GetEndType: TScheduleEndKind;
+function TJclSchedule.GetEndType: TScheduleEndKind;
 begin
   Result := FEndType;
 end;
 
-function TSchedule.GetEndDate: TTimeStamp;
+function TJclSchedule.GetEndDate: TTimeStamp;
 begin
   Result := FEndDate;
 end;
 
-function TSchedule.GetEndCount: Cardinal;
+function TJclSchedule.GetEndCount: Cardinal;
 begin
   Result := FEndCount;
 end;
 
-procedure TSchedule.SetStartDate(const Value: TTimeStamp);
+procedure TJclSchedule.SetStartDate(const Value: TTimeStamp);
 begin
   FStartDate := Value;
 end;
 
-procedure TSchedule.SetRecurringType(Value: TScheduleRecurringKind);
+procedure TJclSchedule.SetRecurringType(Value: TScheduleRecurringKind);
 begin
   FRecurringType := Value;
 end;
 
-procedure TSchedule.SetEndType(Value: TScheduleEndKind);
+procedure TJclSchedule.SetEndType(Value: TScheduleEndKind);
 begin
   FEndType := Value;
 end;
 
-procedure TSchedule.SetEndDate(const Value: TTimeStamp);
+procedure TJclSchedule.SetEndDate(const Value: TTimeStamp);
 begin
   FEndDate := Value;
 end;
 
-procedure TSchedule.SetEndCount(Value: Cardinal);
+procedure TJclSchedule.SetEndCount(Value: Cardinal);
 begin
   FEndCount := Value;
 end;
 
-function TSchedule.TriggerCount: Cardinal;
+function TJclSchedule.TriggerCount: Cardinal;
 begin
   Result := FTriggerCount;
 end;
 
-function TSchedule.DayCount: Cardinal;
+function TJclSchedule.DayCount: Cardinal;
 begin
   Result := FDayCount;
 end;
 
-function TSchedule.LastTriggered: TTimeStamp;
+function TJclSchedule.LastTriggered: TTimeStamp;
 begin
   Result := FLastEvent;
 end;
 
-procedure TSchedule.InitToSavedState(const LastTriggerStamp: TTimeStamp; const LastTriggerCount,
+procedure TJclSchedule.InitToSavedState(const LastTriggerStamp: TTimeStamp; const LastTriggerCount,
   LastDayCount: Cardinal);
 begin
   FLastEvent := LastTriggerStamp;
@@ -1261,19 +1258,19 @@ begin
   FDayCount := LastDayCount;
 end;
 
-procedure TSchedule.Reset;
+procedure TJclSchedule.Reset;
 begin
   FLastEvent := NullStamp;
   FTriggerCount := 0;
   FDayCount := 0;
 end;
 
-function TSchedule.NextEvent(CountMissedEvents: Boolean = False): TTimeStamp;
+function TJclSchedule.NextEvent(CountMissedEvents: Boolean = False): TTimeStamp;
 begin
   Result := NextEventFrom(FLastEvent, CountMissedEvents);
 end;
 
-function TSchedule.NextEventFrom(const FromEvent: TTimeStamp;
+function TJclSchedule.NextEventFrom(const FromEvent: TTimeStamp;
   CountMissedEvent: Boolean = False): TTimeStamp;
 begin
   if CountMissedEvent then
@@ -1287,14 +1284,14 @@ begin
     Result := GetNextEventStamp(FromEvent);
 end;
 
-function TSchedule.NextEventFromNow(CountMissedEvents: Boolean = False): TTimeStamp;
+function TJclSchedule.NextEventFromNow(CountMissedEvents: Boolean = False): TTimeStamp;
 begin
   Result := NextEventFrom(DateTimeToTimeStamp(Now), CountMissedEvents);
 end;
 
 function CreateSchedule: IJclSchedule;
 begin
-  Result := TSchedule.Create;
+  Result := TJclSchedule.Create;
 end;
 
 {$IFDEF UNITVERSIONING}

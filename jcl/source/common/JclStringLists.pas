@@ -48,7 +48,8 @@ uses
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
   Classes, SysUtils,
-  JclBase;
+  JclBase,
+  JclPCRE;
 
 {$DEFINE HAS_TSTRINGS_COMPARESTRINGS}
 {$IFDEF FPC}
@@ -198,34 +199,8 @@ type
     property ObjectsMode: TJclStringListObjectsMode read GetObjectsMode;
   end;
 
-function JclStringList: IJclStringList; overload;
-function JclStringListStrings(AStrings: TStrings): IJclStringList; overload;
-function JclStringListStrings(const A: array of string): IJclStringList; overload;
-function JclStringList(const A: array of const): IJclStringList; overload;
-function JclStringList(const AText: string): IJclStringList; overload;
-
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JCL\source\common';
-    Extra: '';
-    Data: nil
-    );
-{$ENDIF UNITVERSIONING}
-
-implementation
-
-uses
-  TypInfo,
-  JclFileUtils,
-  JclPCRE,
-  JclStrings;
-
 type
-  TUpdateControl = class(TObject, IInterface)
+  TJclUpdateControl = class(TObject, IInterface)
   private
     FStrings: TStrings;
   public
@@ -236,23 +211,13 @@ type
     function _Release: Integer; stdcall;
   end;
 
-  TVariantWrapper = class(TObject)
-  private
-    FValue: Variant;
-  end;
-
-  TInterfaceWrapper = class(TObject)
-  private
-    FValue: IInterface;
-  end;
-
-  TJclStringListImpl = class(TStringList, IJclStringList)
+  TJclStringList = class(TStringList, IJclStringList)
   private
     FObjectsMode: TJclStringListObjectsMode;
     FSelfAsInterface: IJclStringList;
     FLastRegExPattern: string;
     FRegEx: TJclAnsiRegEx;
-    FUpdateControl: TUpdateControl;
+    FUpdateControl: TJclUpdateControl;
     FCompareFunction: TJclStringListSortCompare;
     function AutoUpdateControl: IInterface;
     function CanFreeObjects: Boolean;
@@ -404,9 +369,45 @@ type
     property ObjectsMode: TJclStringListObjectsMode read GetObjectsMode;
   end;
 
+function JclStringList: IJclStringList; overload;
+function JclStringListStrings(AStrings: TStrings): IJclStringList; overload;
+function JclStringListStrings(const A: array of string): IJclStringList; overload;
+function JclStringList(const A: array of const): IJclStringList; overload;
+function JclStringList(const AText: string): IJclStringList; overload;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\common';
+    Extra: '';
+    Data: nil
+    );
+{$ENDIF UNITVERSIONING}
+
+implementation
+
+uses
+  TypInfo,
+  JclFileUtils,
+  JclStrings;
+
+type
+  TVariantWrapper = class(TObject)
+  private
+    FValue: Variant;
+  end;
+
+  TInterfaceWrapper = class(TObject)
+  private
+    FValue: IInterface;
+  end;
+
 function JclStringList: IJclStringList;
 begin
-  Result := TJclStringListImpl.Create;
+  Result := TJclStringList.Create;
 end;
 
 function JclStringList(const AText: string): IJclStringList; overload;
@@ -431,9 +432,9 @@ begin
   Result := JclStringList.Add(A);
 end;
 
-//=== { TJclStringListImpl } =================================================
+//=== { TJclStringList } =====================================================
 
-function TJclStringListImpl.Add(const A: array of const): IJclStringList;
+function TJclStringList.Add(const A: array of const): IJclStringList;
 const
   BoolToStr: array [Boolean] of string[5] = ('false', 'true');
 var
@@ -478,7 +479,7 @@ begin
   Result := FSelfAsInterface;
 end;
 
-function TJclStringListImpl.AddStrings(const A: array of string): IJclStringList;
+function TJclStringList.AddStrings(const A: array of string): IJclStringList;
 var
   I: Integer;
 begin
@@ -488,18 +489,18 @@ begin
   Result := FSelfAsInterface;
 end;
 
-function TJclStringListImpl.BeginUpdate: IJclStringList;
+function TJclStringList.BeginUpdate: IJclStringList;
 begin
   inherited BeginUpdate;
   Result := FSelfAsInterface;
 end;
 
-function TJclStringListImpl.AutoUpdateControl: IInterface;
+function TJclStringList.AutoUpdateControl: IInterface;
 begin
   Result := FUpdateControl as IInterface;
 end;
 
-function TJclStringListImpl.Clear: IJclStringList;
+function TJclStringList.Clear: IJclStringList;
 begin
   if CanFreeObjects then
     FreeObjects(False);
@@ -507,13 +508,13 @@ begin
   Result := FSelfAsInterface;
 end;
 
-function TJclStringListImpl.EndUpdate: IJclStringList;
+function TJclStringList.EndUpdate: IJclStringList;
 begin
   inherited EndUpdate;
   Result := FSelfAsInterface;
 end;
 
-function TJclStringListImpl.ExtractWords(const AText: string; const ADelims: TSetOfAnsiChar;
+function TJclStringList.ExtractWords(const AText: string; const ADelims: TSetOfAnsiChar;
   AClearBeforeAdd: Boolean): IJclStringList;
 var
   L, I, X: Integer;
@@ -536,12 +537,12 @@ begin
   Result := FSelfAsInterface;
 end;
 
-function TJclStringListImpl.First: string;
+function TJclStringList.First: string;
 begin
   Result := Strings[0];
 end;
 
-function TJclStringListImpl.Join(const ASeparator: string): string;
+function TJclStringList.Join(const ASeparator: string): string;
 var
   I: Integer;
 begin
@@ -552,12 +553,12 @@ begin
     Result := Result + Last;
 end;
 
-function TJclStringListImpl.Last: string;
+function TJclStringList.Last: string;
 begin
   Result := Strings[LastIndex];
 end;
 
-function TJclStringListImpl.Split(const AText, ASeparator: string;
+function TJclStringList.Split(const AText, ASeparator: string;
   AClearBeforeAdd: Boolean = True): IJclStringList;
 var
   LStartIndex, LEndIndex: Integer;
@@ -582,7 +583,7 @@ begin
   Result := FSelfAsInterface;
 end;
 
-function TJclStringListImpl.Trim: IJclStringList;
+function TJclStringList.Trim: IJclStringList;
 var
   I: Integer;
 begin
@@ -592,7 +593,7 @@ begin
   Result := FSelfAsInterface;
 end;
 
-function TJclStringListImpl.QueryInterface(const IID: TGUID; out Obj): HRESULT;
+function TJclStringList.QueryInterface(const IID: TGUID; out Obj): HRESULT;
 begin
   if GetInterface(IID, Obj) then
     Result := 0
@@ -600,12 +601,12 @@ begin
     Result := E_NOINTERFACE;
 end;
 
-function TJclStringListImpl._AddRef: Integer;
+function TJclStringList._AddRef: Integer;
 begin
   Result := InterlockedIncrement(FRefCount);
 end;
 
-function TJclStringListImpl._Release: Integer;
+function TJclStringList._Release: Integer;
 begin
   Result := InterlockedDecrement(FRefCount);
   if Result = 1 then
@@ -620,7 +621,7 @@ begin
     Destroy;
 end;
 
-function TJclStringListImpl.DeleteRegEx(const APattern: string): IJclStringList;
+function TJclStringList.DeleteRegEx(const APattern: string): IJclStringList;
 var
   I: Integer;
 begin
@@ -631,7 +632,7 @@ begin
   Result := FSelfAsInterface;
 end;
 
-function TJclStringListImpl.KeepRegEx(const APattern: string): IJclStringList;
+function TJclStringList.KeepRegEx(const APattern: string): IJclStringList;
 var
   I: Integer;
 begin
@@ -642,7 +643,7 @@ begin
   Result := FSelfAsInterface;
 end;
 
-function TJclStringListImpl.MatchRegEx(const S, APattern: string): Boolean;
+function TJclStringList.MatchRegEx(const S, APattern: string): Boolean;
 begin
   if FRegEx = nil then
     FRegEx := TJclAnsiRegEx.Create;
@@ -658,7 +659,7 @@ begin
   Result := FRegEx.Match(S);
 end;
 
-destructor TJclStringListImpl.Destroy;
+destructor TJclStringList.Destroy;
 begin
   if CanFreeObjects then
     FreeObjects(False);
@@ -667,7 +668,7 @@ begin
   inherited Destroy;
 end;
 
-function TJclStringListImpl.Directories(const APattern: string = '*';
+function TJclStringList.Directories(const APattern: string = '*';
   ARecursive: Boolean = False; const ARegExPattern: string = ''): IJclStringList;
 
   procedure DoDirectories(const APattern: string);
@@ -703,7 +704,7 @@ begin
   Result := FSelfAsInterface;
 end;
 
-function TJclStringListImpl.Files(const APattern: string = '*';
+function TJclStringList.Files(const APattern: string = '*';
   ARecursive: Boolean = False; const ARegExPattern: string = ''): IJclStringList;
 
   procedure DoFiles(const APattern: string);
@@ -747,22 +748,22 @@ begin
   Result := FSelfAsInterface;
 end;
 
-function TJclStringListImpl.LastIndex: Integer;
+function TJclStringList.LastIndex: Integer;
 begin
   { The code bellow is more optimized than "Result := Count - 1". }
   Result := Count;
   Dec(Result);
 end;
 
-constructor TJclStringListImpl.Create;
+constructor TJclStringList.Create;
 begin
   inherited Create;
-  FUpdateControl := TUpdateControl.Create(Self);
+  FUpdateControl := TJclUpdateControl.Create(Self);
   if QueryInterface(IJclStringList, FSelfAsInterface) <> 0 then
     System.Error(reIntfCastError);
 end;
 
-function TJclStringListImpl.GetLists(Index: Integer): IJclStringList;
+function TJclStringList.GetLists(Index: Integer): IJclStringList;
 begin
   Result := Interfaces[Index] as IJclStringList;
   if Result = nil then
@@ -772,17 +773,17 @@ begin
   end;
 end;
 
-procedure TJclStringListImpl.SetLists(Index: Integer; const Value: IJclStringList);
+procedure TJclStringList.SetLists(Index: Integer; const Value: IJclStringList);
 begin
   Interfaces[Index] := Value;
 end;
 
-function TJclStringListImpl.GetStringsRef: TStrings;
+function TJclStringList.GetStringsRef: TStrings;
 begin
   Result := Self;
 end;
 
-function TJclStringListImpl.GetKeyInterface(const AKey: string): IInterface;
+function TJclStringList.GetKeyInterface(const AKey: string): IInterface;
 var
   I: Integer;
 begin
@@ -793,7 +794,7 @@ begin
     Result := nil;
 end;
 
-function TJclStringListImpl.GetKeyObject(const AKey: string): TObject;
+function TJclStringList.GetKeyObject(const AKey: string): TObject;
 var
   I: Integer;
 begin
@@ -804,7 +805,7 @@ begin
     Result := nil;
 end;
 
-procedure TJclStringListImpl.SetKeyInterface(const AKey: string; const Value: IInterface);
+procedure TJclStringList.SetKeyInterface(const AKey: string; const Value: IInterface);
 var
   I: Integer;
 begin
@@ -814,7 +815,7 @@ begin
   Interfaces[I] := Value
 end;
 
-procedure TJclStringListImpl.SetKeyObject(const AKey: string; const Value: TObject);
+procedure TJclStringList.SetKeyObject(const AKey: string; const Value: TObject);
 var
   I: Integer;
 begin
@@ -825,14 +826,14 @@ begin
     Objects[I] := Value;
 end;
 
-function TJclStringListImpl.ConfigAsSet: IJclStringList;
+function TJclStringList.ConfigAsSet: IJclStringList;
 begin
   Sorted := True;
   Duplicates := dupIgnore;
   Result := FSelfAsInterface;
 end;
 
-function TJclStringListImpl.GetKeyVariant(const AKey: string): Variant;
+function TJclStringList.GetKeyVariant(const AKey: string): Variant;
 var
   I: Integer;
 begin
@@ -843,7 +844,7 @@ begin
     Result := Unassigned;
 end;
 
-procedure TJclStringListImpl.SetKeyVariant(const AKey: string; const Value: Variant);
+procedure TJclStringList.SetKeyVariant(const AKey: string; const Value: Variant);
 var
   I: Integer;
 begin
@@ -853,17 +854,17 @@ begin
   Variants[I] := Value
 end;
 
-function TJclStringListImpl.GetValue(const Name: string): string;
+function TJclStringList.GetValue(const Name: string): string;
 begin
   Result := inherited Values[Name];
 end;
 
-procedure TJclStringListImpl.SetValue(const Name, Value: string);
+procedure TJclStringList.SetValue(const Name, Value: string);
 begin
   inherited Values[Name] := Value;
 end;
 
-function TJclStringListImpl.GetInterfaceByIndex(Index: Integer): IInterface;
+function TJclStringList.GetInterfaceByIndex(Index: Integer): IInterface;
 var
   V: TInterfaceWrapper;
 begin
@@ -876,7 +877,7 @@ begin
     Result := V.FValue;
 end;
 
-procedure TJclStringListImpl.SetInterfaceByIndex(Index: Integer; const Value: IInterface);
+procedure TJclStringList.SetInterfaceByIndex(Index: Integer; const Value: IInterface);
 var
   V: TInterfaceWrapper;
 begin
@@ -891,21 +892,21 @@ begin
   V.FValue := Value;
 end;
 
-function TJclStringListImpl.GetObjects(Index: Integer): TObject;
+function TJclStringList.GetObjects(Index: Integer): TObject;
 begin
   if FObjectsMode <> omObjects then
     EnsureObjectsMode(omObjects);
   Result := inherited Objects[Index];
 end;
 
-procedure TJclStringListImpl.SetObjects(Index: Integer; const Value: TObject);
+procedure TJclStringList.SetObjects(Index: Integer; const Value: TObject);
 begin
   if FObjectsMode <> omObjects then
     EnsureObjectsMode(omObjects);
   inherited Objects[Index] := Value;
 end;
 
-function TJclStringListImpl.GetVariants(AIndex: Integer): Variant;
+function TJclStringList.GetVariants(AIndex: Integer): Variant;
 var
   V: TVariantWrapper;
 begin
@@ -918,7 +919,7 @@ begin
     Result := V.FValue;
 end;
 
-procedure TJclStringListImpl.SetVariants(Index: Integer; const Value: Variant);
+procedure TJclStringList.SetVariants(Index: Integer; const Value: Variant);
 var
   V: TVariantWrapper;
 begin
@@ -933,7 +934,7 @@ begin
   V.FValue := Value;
 end;
 
-procedure TJclStringListImpl.EnsureObjectsMode(AMode: TJclStringListObjectsMode);
+procedure TJclStringList.EnsureObjectsMode(AMode: TJclStringListObjectsMode);
 begin
   if FObjectsMode <> AMode then
   begin
@@ -947,7 +948,7 @@ begin
   end;
 end;
 
-function TJclStringListImpl.GetKeyList(const AKey: string): IJclStringList;
+function TJclStringList.GetKeyList(const AKey: string): IJclStringList;
 begin
   Result := KeyInterface[AKey] as IJclStringList;
   if Result = nil then
@@ -957,12 +958,12 @@ begin
   end;
 end;
 
-procedure TJclStringListImpl.SetKeyList(const AKey: string; const Value: IJclStringList);
+procedure TJclStringList.SetKeyList(const AKey: string; const Value: IJclStringList);
 begin
   KeyInterface[AKey] := Value;
 end;
 
-function TJclStringListImpl.Delete(AIndex: Integer): IJclStringList;
+function TJclStringList.Delete(AIndex: Integer): IJclStringList;
 begin
   if CanFreeObjects then
     inherited Objects[AIndex].Free;
@@ -970,12 +971,12 @@ begin
   Result := FSelfAsInterface;
 end;
 
-function TJclStringListImpl.Delete(const AString: string): IJclStringList;
+function TJclStringList.Delete(const AString: string): IJclStringList;
 begin
   Result := Delete(IndexOf(AString));
 end;
 
-function TJclStringListImpl.Exchange(Index1, Index2: Integer): IJclStringList;
+function TJclStringList.Exchange(Index1, Index2: Integer): IJclStringList;
 begin
   inherited Exchange(Index1, Index2);
   Result := FSelfAsInterface;
@@ -983,10 +984,10 @@ end;
 
 function LocalSort(List: TStringList; Index1, Index2: Integer): Integer;
 begin
-  Result := TJclStringListImpl(List).FCompareFunction(TJclStringListImpl(List).FSelfAsInterface, Index1, Index2);
+  Result := TJclStringList(List).FCompareFunction(TJclStringList(List).FSelfAsInterface, Index1, Index2);
 end;
 
-function TJclStringListImpl.Sort(ACompareFunction: TJclStringListSortCompare = nil): IJclStringList;
+function TJclStringList.Sort(ACompareFunction: TJclStringListSortCompare = nil): IJclStringList;
 begin
   FCompareFunction := ACompareFunction;
   if not Assigned(ACompareFunction) then
@@ -1001,14 +1002,14 @@ begin
   Result := StrToInt(List[Index1]) - StrToInt(List[Index2]);
 end;
 
-function TJclStringListImpl.SortAsInteger: IJclStringList;
+function TJclStringList.SortAsInteger: IJclStringList;
 begin
   inherited CustomSort(@LocalSortAsInteger);
   Result := FSelfAsInterface;
 end;
 
 {$IFNDEF HAS_TSTRINGS_COMPARESTRINGS}
-function TJclStringListImpl.CompareStrings(const S1, S2: string): Integer;
+function TJclStringList.CompareStrings(const S1, S2: string): Integer;
 begin
   Result := AnsiCompareText(S1, S2);
 end;
@@ -1016,175 +1017,175 @@ end;
 
 function LocalSortByName(List: TStringList; Index1, Index2: Integer): Integer;
 begin
-  Result := TJclStringListImpl(List).CompareStrings(List.Names[Index1], List.Names[Index2]);
+  Result := TJclStringList(List).CompareStrings(List.Names[Index1], List.Names[Index2]);
 end;
 
-function TJclStringListImpl.SortByName: IJclStringList;
+function TJclStringList.SortByName: IJclStringList;
 begin
   inherited CustomSort(@LocalSortByName);
   Result := FSelfAsInterface;
 end;
 
-function TJclStringListImpl.Insert(Index: Integer; const S: string): IJclStringList;
+function TJclStringList.Insert(Index: Integer; const S: string): IJclStringList;
 begin
   inherited Insert(Index, S);
   Result := FSelfAsInterface;
 end;
 
-function TJclStringListImpl.InsertObject(Index: Integer; const S: string; AObject: TObject): IJclStringList;
+function TJclStringList.InsertObject(Index: Integer; const S: string; AObject: TObject): IJclStringList;
 begin
   inherited InsertObject(Index, S, AObject);
   Result := FSelfAsInterface;
 end;
 
-function TJclStringListImpl.GetCaseSensitive: Boolean;
+function TJclStringList.GetCaseSensitive: Boolean;
 begin
   Result := inherited CaseSensitive;
 end;
 
-function TJclStringListImpl.GetDuplicates: TDuplicates;
+function TJclStringList.GetDuplicates: TDuplicates;
 begin
   Result := inherited Duplicates;
 end;
 
-function TJclStringListImpl.GetOnChange: TNotifyEvent;
+function TJclStringList.GetOnChange: TNotifyEvent;
 begin
   Result := inherited OnChange;
 end;
 
-function TJclStringListImpl.GetOnChanging: TNotifyEvent;
+function TJclStringList.GetOnChanging: TNotifyEvent;
 begin
   Result := inherited OnChanging;
 end;
 
-function TJclStringListImpl.GetSorted: Boolean;
+function TJclStringList.GetSorted: Boolean;
 begin
   Result := inherited Sorted;
 end;
 
-procedure TJclStringListImpl.SetCaseSensitive(const Value: Boolean);
+procedure TJclStringList.SetCaseSensitive(const Value: Boolean);
 begin
   inherited CaseSensitive := Value;
 end;
 
-procedure TJclStringListImpl.SetDuplicates(const Value: TDuplicates);
+procedure TJclStringList.SetDuplicates(const Value: TDuplicates);
 begin
   inherited Duplicates := Value;
 end;
 
-procedure TJclStringListImpl.SetOnChange(const Value: TNotifyEvent);
+procedure TJclStringList.SetOnChange(const Value: TNotifyEvent);
 begin
   inherited OnChange := Value;
 end;
 
-procedure TJclStringListImpl.SetOnChanging(const Value: TNotifyEvent);
+procedure TJclStringList.SetOnChanging(const Value: TNotifyEvent);
 begin
   inherited OnChanging := Value;
 end;
 
-procedure TJclStringListImpl.SetSorted(const Value: Boolean);
+procedure TJclStringList.SetSorted(const Value: Boolean);
 begin
   inherited Sorted := Value;
 end;
 
-function TJclStringListImpl.LoadFromFile(const FileName: string): IJclStringList;
+function TJclStringList.LoadFromFile(const FileName: string): IJclStringList;
 begin
   inherited LoadFromFile(FileName);
   Result := FSelfAsInterface;
 end;
 
-function TJclStringListImpl.LoadFromStream(Stream: TStream): IJclStringList;
+function TJclStringList.LoadFromStream(Stream: TStream): IJclStringList;
 begin
   inherited LoadFromStream(Stream);
   Result := FSelfAsInterface;
 end;
 
-function TJclStringListImpl.SaveToFile(const FileName: string): IJclStringList;
+function TJclStringList.SaveToFile(const FileName: string): IJclStringList;
 begin
   inherited SaveToFile(FileName);
   Result := FSelfAsInterface;
 end;
 
-function TJclStringListImpl.SaveToStream(Stream: TStream): IJclStringList;
+function TJclStringList.SaveToStream(Stream: TStream): IJclStringList;
 begin
   inherited SaveToStream(Stream);
   Result := FSelfAsInterface;
 end;
 
-function TJclStringListImpl.GetCommaText: string;
+function TJclStringList.GetCommaText: string;
 begin
   Result := inherited CommaText;
 end;
 
-function TJclStringListImpl.GetDelimitedText: string;
+function TJclStringList.GetDelimitedText: string;
 begin
   Result := inherited DelimitedText;
 end;
 
-function TJclStringListImpl.GetDelimiter: Char;
+function TJclStringList.GetDelimiter: Char;
 begin
   Result := inherited Delimiter;
 end;
 
-function TJclStringListImpl.GetName(Index: Integer): string;
+function TJclStringList.GetName(Index: Integer): string;
 begin
   Result := inherited Names[Index];
 end;
 
 {$IFDEF COMPILER7_UP}
 
-function TJclStringListImpl.GetNameValueSeparator: Char;
+function TJclStringList.GetNameValueSeparator: Char;
 begin
   Result := inherited NameValueSeparator;
 end;
 
-function TJclStringListImpl.GetValueFromIndex(Index: Integer): string;
+function TJclStringList.GetValueFromIndex(Index: Integer): string;
 begin
   Result := inherited ValueFromIndex[Index];
 end;
 
 {$ENDIF COMPILER7_UP}
 
-function TJclStringListImpl.GetQuoteChar: Char;
+function TJclStringList.GetQuoteChar: Char;
 begin
   Result := inherited QuoteChar;
 end;
 
-procedure TJclStringListImpl.SetCommaText(const Value: string);
+procedure TJclStringList.SetCommaText(const Value: string);
 begin
   inherited CommaText := Value;
 end;
 
-procedure TJclStringListImpl.SetDelimitedText(const Value: string);
+procedure TJclStringList.SetDelimitedText(const Value: string);
 begin
   inherited DelimitedText := Value;
 end;
 
-procedure TJclStringListImpl.SetDelimiter(const Value: Char);
+procedure TJclStringList.SetDelimiter(const Value: Char);
 begin
   inherited Delimiter := Value;
 end;
 
 {$IFDEF COMPILER7_UP}
 
-procedure TJclStringListImpl.SetNameValueSeparator(const Value: Char);
+procedure TJclStringList.SetNameValueSeparator(const Value: Char);
 begin
   inherited NameValueSeparator := Value;
 end;
 
-procedure TJclStringListImpl.SetValueFromIndex(Index: Integer; const Value: string);
+procedure TJclStringList.SetValueFromIndex(Index: Integer; const Value: string);
 begin
   inherited ValueFromIndex[Index] := Value;
 end;
 
 {$ENDIF COMPILER7_UP}
 
-procedure TJclStringListImpl.SetQuoteChar(const Value: Char);
+procedure TJclStringList.SetQuoteChar(const Value: Char);
 begin
   inherited QuoteChar := Value;
 end;
 
-function TJclStringListImpl.Delimit(const ADelimiter: string): IJclStringList;
+function TJclStringList.Delimit(const ADelimiter: string): IJclStringList;
 var
   I: Integer;
 begin
@@ -1194,7 +1195,7 @@ begin
   Result := FSelfAsInterface;
 end;
 
-function TJclStringListImpl.LoadExeParams: IJclStringList;
+function TJclStringList.LoadExeParams: IJclStringList;
 var
   I: Integer;
   S: string;
@@ -1211,17 +1212,17 @@ begin
   Result := FSelfAsInterface;
 end;
 
-function TJclStringListImpl.Exists(const S: string): Boolean;
+function TJclStringList.Exists(const S: string): Boolean;
 begin
   Result := IndexOf(S) >= 0;
 end;
 
-function TJclStringListImpl.ExistsName(const S: string): Boolean;
+function TJclStringList.ExistsName(const S: string): Boolean;
 begin
   Result := IndexOfName(S) >= 0;
 end;
 
-function TJclStringListImpl.DeleteBlanks: IJclStringList;
+function TJclStringList.DeleteBlanks: IJclStringList;
 var
   I: Integer;
 begin
@@ -1232,7 +1233,7 @@ begin
   Result := FSelfAsInterface;
 end;
 
-function TJclStringListImpl.KeepIntegers: IJclStringList;
+function TJclStringList.KeepIntegers: IJclStringList;
 var
   I, X: Integer;
 begin
@@ -1244,7 +1245,7 @@ begin
   Result := FSelfAsInterface;
 end;
 
-function TJclStringListImpl.DeleteIntegers: IJclStringList;
+function TJclStringList.DeleteIntegers: IJclStringList;
 var
   I, X: Integer;
 begin
@@ -1256,7 +1257,7 @@ begin
   Result := FSelfAsInterface;
 end;
 
-function TJclStringListImpl.FreeObjects(AFreeAndNil: Boolean = False): IJclStringList;
+function TJclStringList.FreeObjects(AFreeAndNil: Boolean = False): IJclStringList;
 var
   I: Integer;
 begin
@@ -1271,7 +1272,7 @@ begin
   Result := FSelfAsInterface;
 end;
 
-function TJclStringListImpl.ReleaseInterfaces: IJclStringList;
+function TJclStringList.ReleaseInterfaces: IJclStringList;
 var
   I: Integer;
 begin
@@ -1281,20 +1282,20 @@ begin
   Result := FSelfAsInterface;
 end;
 
-function TJclStringListImpl.Clone: IJclStringList;
+function TJclStringList.Clone: IJclStringList;
 begin
   Result := JclStringList.Assign(Self);
 end;
 
-function TJclStringListImpl.Assign(Source: TPersistent): IJclStringList;
+function TJclStringList.Assign(Source: TPersistent): IJclStringList;
 var
-  L: TJclStringListImpl;
+  L: TJclStringList;
   I: Integer;
 begin
   inherited Assign(Source);
-  if Source is TJclStringListImpl then
+  if Source is TJclStringList then
   begin
-    L := TJclStringListImpl(Source);
+    L := TJclStringList(Source);
     FObjectsMode := L.FObjectsMode;
     if not (FObjectsMode in [omNone, omObjects]) then
     begin
@@ -1314,37 +1315,37 @@ begin
   Result := FSelfAsInterface;
 end;
 
-function TJclStringListImpl.CanFreeObjects: Boolean;
+function TJclStringList.CanFreeObjects: Boolean;
 begin
   Result := not (FObjectsMode in [omNone, omObjects]);
 end;
 
-function TJclStringListImpl.GetObjectsMode: TJclStringListObjectsMode;
+function TJclStringList.GetObjectsMode: TJclStringListObjectsMode;
 begin
   Result := FObjectsMode;
 end;
 
-//=== { TUpdateControl } =====================================================
+//=== { TJclUpdateControl } ==================================================
 
-constructor TUpdateControl.Create(AStrings: TStrings);
+constructor TJclUpdateControl.Create(AStrings: TStrings);
 begin
   inherited Create;
   FStrings := AStrings;
 end;
 
-function TUpdateControl._AddRef: Integer;
+function TJclUpdateControl._AddRef: Integer;
 begin
   FStrings.BeginUpdate;
   Result := 0;
 end;
 
-function TUpdateControl._Release: Integer;
+function TJclUpdateControl._Release: Integer;
 begin
   FStrings.EndUpdate;
   Result := 0;
 end;
 
-function TUpdateControl.QueryInterface(const IID: TGUID; out Obj): HRESULT;
+function TJclUpdateControl.QueryInterface(const IID: TGUID; out Obj): HRESULT;
 begin
   if GetInterface(IID, Obj) then
     Result := S_OK

@@ -99,6 +99,48 @@ type
     property Items[Index: Integer]: Pointer read GetItem;
   end;
 
+    TJclSafeGuard = class(TInterfacedObject, ISafeGuard)
+  private
+    FItem: Pointer;
+  public
+    constructor Create(Mem: Pointer);
+    destructor Destroy; override;
+    { ISafeGuard }
+    function ReleaseItem: Pointer;
+    function GetItem: Pointer;
+    procedure FreeItem; virtual;
+    property Item: Pointer read GetItem;
+  end;
+
+  TJclObjSafeGuard = class(TJclSafeGuard, ISafeGuard)
+  public
+    constructor Create(Obj: TObject);
+    { ISafeGuard }
+    procedure FreeItem; override;
+  end;
+
+  TJclMultiSafeGuard = class(TInterfacedObject, IMultiSafeGuard)
+  private
+    FItems: TList;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    { IMultiSafeGuard }
+    function AddItem(Item: Pointer): Pointer;
+    procedure FreeItem(Index: Integer); virtual;
+    function GetCount: Integer;
+    function GetItem(Index: Integer): Pointer;
+    function ReleaseItem(Index: Integer): Pointer;
+    property Count: Integer read GetCount;
+    property Items[Index: Integer]: Pointer read GetItem;
+  end;
+
+  TJclObjMultiSafeGuard = class(TJclMultiSafeGuard, IMultiSafeGuard)
+  public
+    { IMultiSafeGuard }
+    procedure FreeItem(Index: Integer); override;
+  end;
+
 function Guard(Mem: Pointer; out SafeGuard: ISafeGuard): Pointer; overload;
 function Guard(Obj: TObject; out SafeGuard: ISafeGuard): TObject; overload;
 
@@ -239,6 +281,18 @@ type
     function AsObject: TObject;
     { Releases the object from the AutoPtr. The AutoPtr looses the control over
       the object. }
+    function ReleaseObject: TObject;
+  end;
+
+  TJclAutoPtr = class(TInterfacedObject, IAutoPtr)
+  private
+    FValue: TObject;
+  public
+    constructor Create(AValue: TObject);
+    destructor Destroy; override;
+    { IAutoPtr }
+    function AsPointer: Pointer;
+    function AsObject: TObject;
     function ReleaseObject: TObject;
   end;
 
@@ -791,89 +845,47 @@ end;
 {$ENDIF LINUX}
 
 // Guards
-type
-  TSafeGuard = class(TInterfacedObject, ISafeGuard)
-  private
-    FItem: Pointer;
-  public
-    constructor Create(Mem: Pointer);
-    destructor Destroy; override;
-    { ISafeGuard }
-    function ReleaseItem: Pointer;
-    function GetItem: Pointer;
-    procedure FreeItem; virtual;
-    property Item: Pointer read GetItem;
-  end;
 
-  TObjSafeGuard = class(TSafeGuard, ISafeGuard)
-  public
-    constructor Create(Obj: TObject);
-    { ISafeGuard }
-    procedure FreeItem; override;
-  end;
+//=== { TJclSafeGuard } ======================================================
 
-  TMultiSafeGuard = class(TInterfacedObject, IMultiSafeGuard)
-  private
-    FItems: TList;
-  public
-    constructor Create;
-    destructor Destroy; override;
-    { IMultiSafeGuard }
-    function AddItem(Item: Pointer): Pointer;
-    procedure FreeItem(Index: Integer); virtual;
-    function GetCount: Integer;
-    function GetItem(Index: Integer): Pointer;
-    function ReleaseItem(Index: Integer): Pointer;
-    property Count: Integer read GetCount;
-    property Items[Index: Integer]: Pointer read GetItem;
-  end;
-
-  TObjMultiSafeGuard = class(TMultiSafeGuard, IMultiSafeGuard)
-  public
-    { IMultiSafeGuard }
-    procedure FreeItem(Index: Integer); override;
-  end;
-
-//=== { TSafeGuard } =========================================================
-
-constructor TSafeGuard.Create(Mem: Pointer);
+constructor TJclSafeGuard.Create(Mem: Pointer);
 begin
   inherited Create;
   FItem := Mem;
 end;
 
-destructor TSafeGuard.Destroy;
+destructor TJclSafeGuard.Destroy;
 begin
   FreeItem;
   inherited Destroy;
 end;
 
-function TSafeGuard.ReleaseItem: Pointer;
+function TJclSafeGuard.ReleaseItem: Pointer;
 begin
   Result := FItem;
   FItem := nil;
 end;
 
-function TSafeGuard.GetItem: Pointer;
+function TJclSafeGuard.GetItem: Pointer;
 begin
   Result := FItem;
 end;
 
-procedure TSafeGuard.FreeItem;
+procedure TJclSafeGuard.FreeItem;
 begin
   if FItem <> nil then
     FreeMem(FItem);
   FItem := nil;
 end;
 
-//=== { TObjSafeGuard } ======================================================
+//=== { TJclObjSafeGuard } ===================================================
 
-constructor TObjSafeGuard.Create(Obj: TObject);
+constructor TJclObjSafeGuard.Create(Obj: TObject);
 begin
   inherited Create(Pointer(Obj));
 end;
 
-procedure TObjSafeGuard.FreeItem;
+procedure TJclObjSafeGuard.FreeItem;
 begin
   if FItem <> nil then
   begin
@@ -882,15 +894,15 @@ begin
   end;
 end;
 
-//=== { TMultiSafeGuard } ====================================================
+//=== { TJclMultiSafeGuard } =================================================
 
-constructor TMultiSafeGuard.Create;
+constructor TJclMultiSafeGuard.Create;
 begin
   inherited Create;
   FItems := TList.Create;
 end;
 
-destructor TMultiSafeGuard.Destroy;
+destructor TJclMultiSafeGuard.Destroy;
 var
   I: Integer;
 begin
@@ -900,29 +912,29 @@ begin
   inherited Destroy;
 end;
 
-function TMultiSafeGuard.AddItem(Item: Pointer): Pointer;
+function TJclMultiSafeGuard.AddItem(Item: Pointer): Pointer;
 begin
   Result := Item;
   FItems.Add(Item);
 end;
 
-procedure TMultiSafeGuard.FreeItem(Index: Integer);
+procedure TJclMultiSafeGuard.FreeItem(Index: Integer);
 begin
   FreeMem(FItems[Index]);
   FItems.Delete(Index);
 end;
 
-function TMultiSafeGuard.GetCount: Integer;
+function TJclMultiSafeGuard.GetCount: Integer;
 begin
   Result := FItems.Count;
 end;
 
-function TMultiSafeGuard.GetItem(Index: Integer): Pointer;
+function TJclMultiSafeGuard.GetItem(Index: Integer): Pointer;
 begin
   Result := FItems[Index];
 end;
 
-function TMultiSafeGuard.ReleaseItem(Index: Integer): Pointer;
+function TJclMultiSafeGuard.ReleaseItem(Index: Integer): Pointer;
 begin
   Result := FItems[Index];
   FItems.Delete(Index);
@@ -931,13 +943,13 @@ end;
 function Guard(Mem: Pointer; var SafeGuard: IMultiSafeGuard): Pointer; overload;
 begin
   if SafeGuard = nil then
-    SafeGuard := TMultiSafeGuard.Create;
+    SafeGuard := TJclMultiSafeGuard.Create;
   Result := SafeGuard.AddItem(Mem);
 end;
 
-//=== { TObjMultiSafeGuard } =================================================
+//=== { TJclObjMultiSafeGuard } ==============================================
 
-procedure TObjMultiSafeGuard.FreeItem(Index: Integer);
+procedure TJclObjMultiSafeGuard.FreeItem(Index: Integer);
 begin
   TObject(FItems[Index]).Free;
   FItems.Delete(Index);
@@ -946,20 +958,20 @@ end;
 function Guard(Obj: TObject; var SafeGuard: IMultiSafeGuard): TObject; overload;
 begin
   if SafeGuard = nil then
-    SafeGuard := TObjMultiSafeGuard.Create;
+    SafeGuard := TJclObjMultiSafeGuard.Create;
   Result := SafeGuard.AddItem(Obj);
 end;
 
 function Guard(Mem: Pointer; out SafeGuard: ISafeGuard): Pointer; overload;
 begin
   Result := Mem;
-  SafeGuard := TSafeGuard.Create(Mem);
+  SafeGuard := TJclSafeGuard.Create(Mem);
 end;
 
 function Guard(Obj: TObject; out SafeGuard: ISafeGuard): TObject; overload;
 begin
   Result := Obj;
-  SafeGuard := TObjSafeGuard.Create(Obj);
+  SafeGuard := TJclObjSafeGuard.Create(Obj);
 end;
 
 function GuardGetMem(Size: Cardinal; out SafeGuard: ISafeGuard): Pointer;
@@ -1576,52 +1588,39 @@ begin
   raise EJclError.CreateRes(@RsCannotWriteRefStream);
 end;
 
-//=== { TAutoPtr } ===========================================================
+//=== { TJclAutoPtr } ========================================================
 
-type
-  TAutoPtr = class(TInterfacedObject, IAutoPtr)
-  private
-    FValue: TObject;
-  public
-    constructor Create(AValue: TObject);
-    destructor Destroy; override;
-    { IAutoPtr }
-    function AsPointer: Pointer;
-    function AsObject: TObject;
-    function ReleaseObject: TObject;
-  end;
-
-function CreateAutoPtr(Value: TObject): IAutoPtr;
-begin
-  Result := TAutoPtr.Create(Value);
-end;
-
-constructor TAutoPtr.Create(AValue: TObject);
+constructor TJclAutoPtr.Create(AValue: TObject);
 begin
   inherited Create;
   FValue := AValue;
 end;
 
-destructor TAutoPtr.Destroy;
+destructor TJclAutoPtr.Destroy;
 begin
   FValue.Free;
   inherited Destroy;
 end;
 
-function TAutoPtr.AsObject: TObject;
+function TJclAutoPtr.AsObject: TObject;
 begin
   Result := FValue;
 end;
 
-function TAutoPtr.AsPointer: Pointer;
+function TJclAutoPtr.AsPointer: Pointer;
 begin
   Result := FValue;
 end;
 
-function TAutoPtr.ReleaseObject: TObject;
+function TJclAutoPtr.ReleaseObject: TObject;
 begin
   Result := FValue;
   FValue := nil;
+end;
+
+function CreateAutoPtr(Value: TObject): IAutoPtr;
+begin
+  Result := TJclAutoPtr.Create(Value);
 end;
 
 //=== replacement for the C distfix operator ? : =============================

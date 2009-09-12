@@ -119,25 +119,6 @@ type
     property WinVer: string read GetWinVer write SetWinVer;
   end;
 
-function GetMsdosSys: IJclMsdosSys;
-
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JCL\source\windows';
-    Extra: '';
-    Data: nil
-    );
-{$ENDIF UNITVERSIONING}
-
-implementation
-
-const
-  cMsdosSys = 'C:\MSDOS.SYS';
-
 type
   TJclMsdosSys = class(TInterfacedObject, IJclMsdosSys)
   private
@@ -239,10 +220,32 @@ type
     property WinVer: string read GetWinVer write SetWinVer;
   end;
 
+
+function GetMsdosSys: IJclMsdosSys;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\windows';
+    Extra: '';
+    Data: nil
+    );
+{$ENDIF UNITVERSIONING}
+
+implementation
+
+const
+  cMsdosSys = 'C:\MSDOS.SYS';
+
 function GetMsdosSys: IJclMsdosSys;
 begin
   Result := TJclMsdosSys.Create;
 end;
+
+//=== { TJclMsdosSys } =======================================================
 
 constructor TJclMsdosSys.Create;
 begin
