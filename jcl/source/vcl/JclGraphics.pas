@@ -493,6 +493,16 @@ function IconToBitmap(Icon: HICON): HBITMAP;
 procedure BitmapToJPeg(const FileName: string);
 procedure JPegToBitmap(const FileName: string);
 
+{$IFDEF HAS_UNIT_GIFIMG}
+procedure BitmapToGif(const FileName: string);
+procedure GifToBitmap(const FileName: string);
+{$ENDIF HAS_UNIT_GIFIMG}
+
+{$IFDEF HAS_UNIT_PNGIMAGE}
+procedure BitmapToPng(const FileName: string);
+procedure PngToBitmap(const FileName: string);
+{$ENDIF HAS_UNIT_PNGIMAGE}
+
 procedure SaveIconToFile(Icon: HICON; const FileName: string);
 procedure WriteIcon(Stream: TStream; ColorBitmap, MaskBitmap: HBITMAP;
   WriteLength: Boolean = False); overload;
@@ -572,6 +582,12 @@ uses
   
   CommCtrl, ShellApi,
   
+  {$IFDEF HAS_UNIT_GIFIMG}
+  GifImg,
+  {$ENDIF HAS_UNIT_GIFIMG}
+  {$IFDEF HAS_UNIT_PNGIMAGE}
+  PngImage,
+  {$ENDIF HAS_UNIT_PNGIMAGE}
   ClipBrd, JPeg, TypInfo,
   JclVclResources,
   
@@ -1636,43 +1652,77 @@ begin
   Result := Antialias;
 end;
 
-procedure JPegToBitmap(const FileName: string);
+procedure ImgToBitmap(const FileName: string; GraphicClass: TGraphicClass);
 var
   Bitmap: TBitmap;
-  JPeg: TJPegImage;
+  Img: TGraphic;
 begin
   Bitmap := nil;
-  JPeg := nil;
+  Img := nil;
   try
-    JPeg := TJPegImage.Create;
-    JPeg.LoadFromFile(FileName);
+    Img := GraphicClass.Create;
+    Img.LoadFromFile(FileName);
     Bitmap := TBitmap.Create;
-    Bitmap.Assign(JPeg);
+    Bitmap.Assign(Img);
     Bitmap.SaveToFile(ChangeFileExt(FileName, LoadResString(@RsBitmapExtension)));
   finally
-    FreeAndNil(Bitmap);
-    FreeAndNil(JPeg);
+    Bitmap.Free;
+    Img.Free;
   end;
 end;
 
-procedure BitmapToJPeg(const FileName: string);
+procedure BitmapToImg(const FileName, FileExtension: string; GraphicClass: TGraphicClass);
 var
   Bitmap: TBitmap;
-  JPeg: TJPegImage;
+  Img: TGraphic;
 begin
   Bitmap := nil;
-  JPeg := nil;
+  Img := nil;
   try
     Bitmap := TBitmap.Create;
     Bitmap.LoadFromFile(FileName);
-    JPeg := TJPegImage.Create;
-    JPeg.Assign(Bitmap);
-    JPeg.SaveToFile(ChangeFileExt(FileName, LoadResString(@RsJpegExtension)));
+    Img := GraphicClass.Create;
+    Img.Assign(Bitmap);
+    Img.SaveToFile(ChangeFileExt(FileName, FileExtension));
   finally
-    FreeAndNil(Bitmap);
-    FreeAndNil(JPeg);
+    Bitmap.Free;
+    Img.Free;
   end;
 end;
+
+procedure JPegToBitmap(const FileName: string);
+begin
+  ImgToBitmap(FileName, TJPegImage);
+end;
+
+procedure BitmapToJPeg(const FileName: string);
+begin
+  BitmapToImg(FileName, LoadResString(@RsJpegExtension), TJPEGImage);
+end;
+
+{$IFDEF HAS_UNIT_GIFIMG}
+procedure GifToBitmap(const FileName: string);
+begin
+  ImgToBitmap(FileName, TGifImage);
+end;
+
+procedure BitmapToGif(const FileName: string);
+begin
+  BitmapToImg(FileName, LoadResString(@RsGifExtension), TGifImage);
+end;
+{$ENDIF HAS_UNIT_GIFIMG}
+
+{$IFDEF HAS_UNIT_PNGIMAGE}
+procedure PngToBitmap(const FileName: string);
+begin
+  ImgToBitmap(FileName, TPngImage);
+end;
+
+procedure BitmapToPng(const FileName: string);
+begin
+  BitmapToImg(FileName, LoadResString(@RsPngExtension), TPngImage);
+end;
+{$ENDIF HAS_UNIT_PNGIMAGE}
 
 
 

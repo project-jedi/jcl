@@ -417,6 +417,7 @@
   HAS_UNIT_DATEUTILS             Unit DateUtils exists (D6+/BCB6+/FPC)
   HAS_UNIT_CONTNRS               Unit contnrs exists (D6+/BCB6+/FPC)
   HAS_UNIT_HTTPPROD              Unit HTTPProd exists (D9+)
+  HAS_UNIT_GIFIMG                Unit GifImg exists (D11+)
   HAS_UNIT_ANSISTRINGS           Unit AnsiStrings exists (D12+)
   HAS_UNIT_PNGIMAGE              Unit PngImage exists (D12+)
   XPLATFORM_RTL                  The RTL supports crossplatform function names (e.g. RaiseLastOSError) (D6+/BCB6+/FPC)
@@ -1171,6 +1172,10 @@
 {$IFDEF RTL170_UP}
   {$DEFINE HAS_UNIT_HTTPPROD}
 {$ENDIF RTL170_UP}
+
+{$IFDEF RTL185_UP}
+  {$DEFINE HAS_UNIT_GIFIMG}
+{$ENDIF RTL185_UP}
 
 {$IFDEF RTL200_UP}
   {$DEFINE HAS_UNIT_ANSISTRINGS}

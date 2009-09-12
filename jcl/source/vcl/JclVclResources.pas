@@ -75,6 +75,8 @@ resourcestring
 
   RsBitmapExtension           = '.bmp';
   RsJpegExtension             = '.jpg';
+  RsGifExtension              = '.gif';
+  RsPngExtension              = '.png';
 
 //=== JclGraphUtils ==========================================================
 resourcestring
