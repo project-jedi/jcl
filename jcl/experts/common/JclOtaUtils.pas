@@ -1035,10 +1035,14 @@ begin
     raise EJclExpertException.CreateTrace(RsENoProjectOptions);
   LibPrefix := Trim(VarToStr(Project.ProjectOptions.Values[LIBPREFIXOptionName]));
   LibSuffix := Trim(VarToStr(Project.ProjectOptions.Values[LIBSUFFIXOptionName]));
-  if LibPrefix = 'false' then
+  {$IFDEF BDS}
+  if Project.Personality = JclCBuilderPersonality then
+  begin
+    // C++Builder 2007 does not support lib prefix and lib suffix
     LibPrefix := '';
-  if LibSuffix = 'false' then
     LibSuffix := '';
+  end;
+  {$ENDIF BDS}
   Result := PathAddSeparator(OutputDirectory) + LibPrefix +
     PathExtractFileNameNoExt(ProjectFileName) + LibSuffix + CompilerExtensionMAP;
 end;
