@@ -143,7 +143,7 @@ type
     destructor Destroy; override;
     procedure Parse;
     class function MapStringToStr(MapString: PJclMapString; IgnoreSpaces: Boolean = False): string;
-    class function MapStringToFileName(MapString: PJclMapString): string;
+    class function MapStringToModuleName(MapString: PJclMapString): string;
     property LinkerBug: Boolean read FLinkerBug;
     property LinkerBugUnitName: string read GetLinkerBugUnitName;
     property Stream: TJclFileMappingStream read FStream;
@@ -1267,7 +1267,7 @@ begin
   Result := MapStringToStr(FLinkerBugUnitName);
 end;
 
-class function TJclAbstractMapParser.MapStringToFileName(MapString: PJclMapString): string;
+class function TJclAbstractMapParser.MapStringToModuleName(MapString: PJclMapString): string;
 var
   PStart, PEnd, PExtension: PJclMapString;
 begin
@@ -1281,22 +1281,23 @@ begin
     Inc(PEnd);
   if (PEnd^ = '=') then
   begin
-    while not (PEnd^ = NativeSpace) do
+    while (PEnd >= MapString) and not (PEnd^ = NativeSpace) do
       Dec(PEnd);
-    while ((PEnd-1)^ = NativeSpace) do
+    while (PEnd >= MapString) and ((PEnd-1)^ = NativeSpace) do
       Dec(PEnd);
   end;
   PExtension := PEnd;
-  while (PExtension^ <> '.') and (PExtension^ <> '|') and (PExtension >= MapString) do
+  while (PExtension >= MapString) and (PExtension^ <> '.') and (PExtension^ <> '|') do
     Dec(PExtension);
   if (PExtension^ = '.') then
     PEnd := PExtension;
   PExtension := PEnd;
-  while (PExtension^ <> '|') and (PExtension^ <> '\') and (PExtension >= MapString) do
+  while (PExtension >= MapString) and (PExtension^ <> '|') and (PExtension^ <> '\') do
     Dec(PExtension);
-  if (PExtension^ = '|') or (PExtension^ = '\') then
+  if PExtension >= MapString then
     PStart := PExtension + 1
-  else PStart := MapString;
+  else
+    PStart := MapString;
   SetString(Result, PStart, PEnd - PStart);
 end;
 
@@ -1629,7 +1630,7 @@ procedure TJclMapParser.SegmentItem(const Address: TJclMapAddress;
   Len: Integer; GroupName, UnitName: PJclMapString);
 begin
   if Assigned(FOnSegmentItem) then
-    FOnSegmentItem(Self, Address, Len, MapStringToStr(GroupName), MapStringToFileName(UnitName));
+    FOnSegmentItem(Self, Address, Len, MapStringToStr(GroupName), MapStringToModuleName(UnitName));
 end;
 
 //=== { TJclMapScanner } =====================================================
@@ -1769,7 +1770,7 @@ begin
   for I := Length(FSegments) - 1 downto 0 do
     if (FSegments[I].StartVA <= Addr) and (Addr < FSegments[I].EndVA) then
     begin
-      Result := MapStringToStr(FSegments[I].UnitName);
+      Result := MapStringToModuleName(FSegments[I].UnitName);
       Break;
     end;
 end;
@@ -2392,7 +2393,7 @@ begin
       if IsSegmentStored(FSegments[I].Segment) then
     begin
       WriteValueOfs(FSegments[I].StartVA, L1);
-      WriteValueOfs(AddWord(MapStringToStr(FSegments[I].UnitName)), L2);
+      WriteValueOfs(AddWord(MapStringToModuleName(FSegments[I].UnitName)), L2);
     end;
     WriteValue(MaxInt);
 
