@@ -30,6 +30,8 @@
 
 unit JclFont;
 
+{$I jcl.inc}
+
 interface
 
 type
