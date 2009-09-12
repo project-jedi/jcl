@@ -5,6 +5,7 @@
     <Name Value="Jcl"/>
     <AddToProjectUsesSection Value="False"/>
     <Author Value="Project JEDI"/>
+    <AutoUpdate Value="OnRebuildingAll"/>
     <CompilerOptions>
       <Version Value="8"/>
       <PathDelim Value="\"/>
