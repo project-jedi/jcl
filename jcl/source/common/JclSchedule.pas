@@ -70,6 +70,7 @@ type
   IJclYearlySchedule = interface;
 
   EJclScheduleError = class(EJclError);
+  ESchedule = EJclScheduleError;
 
   IJclSchedule = interface(IUnknown)
     ['{1CC54450-7F84-4F27-B1C1-418C451DAD80}']
