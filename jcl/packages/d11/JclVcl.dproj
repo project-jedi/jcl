@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
-    <DCC_UsePackage>rtl;vcl;vcljpg;Jcl</DCC_UsePackage>
+    <DCC_UsePackage>rtl;vcl;vcljpg;vclimg;Jcl</DCC_UsePackage>
     <DCC_Define>BCB;RELEASE</DCC_Define>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -88,6 +88,7 @@
     <DCCReference Include="rtl.dcp" />
     <DCCReference Include="vcl.dcp" />
     <DCCReference Include="vcljpg.dcp" />
+    <DCCReference Include="vclimg.dcp" />
     <DCCReference Include="Jcl.dcp" />
     <DCCReference Include="..\..\source\vcl\JclPrint.pas" />
     <DCCReference Include="..\..\source\vcl\JclGraphUtils.pas" />
