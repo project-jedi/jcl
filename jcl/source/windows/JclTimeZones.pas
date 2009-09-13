@@ -183,12 +183,8 @@ implementation
 
 uses
   Messages,
+  JclResources,
   JclDateTime, JclRegistry;
-
-resourcestring
-  RsEDaylightSavingsNotSupported = 'Daylight Savings not supported by this timezone';
-  RsEAutoAdjustNotEnabled = 'Auto adjust for Daylight Savings is not enabled.  Date is not available';
-  RsENoCallbackFunc = 'No callback function assigned';
 
 const
   cAutoAdjustKey = '\System\CurrentControlSet\Control\TimeZoneInformation';

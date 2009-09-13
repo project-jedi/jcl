@@ -2156,6 +2156,12 @@ resourcestring
 resourcestring
   RsHasNotTD32Info = 'File [%s] has not TD32 debug information!';
 
+//=== JclTimeZones ===========================================================
+resourcestring
+  RsEDaylightSavingsNotSupported = 'Daylight Savings not supported by this timezone';
+  RsEAutoAdjustNotEnabled = 'Auto adjust for Daylight Savings is not enabled.  Date is not available';
+  RsENoCallbackFunc = 'No callback function assigned';
+
 //=== JclUnicode =============================================================
 resourcestring
   RsUREErrorFmt               = '%s%s%s';
