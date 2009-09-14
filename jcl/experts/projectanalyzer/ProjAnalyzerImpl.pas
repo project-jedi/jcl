@@ -108,6 +108,7 @@ implementation
 {$R ProjAnalyzerIcon.res}
 
 uses
+  Variants,
   JclDebug, JclFileUtils, JclOtaConsts, 
   JclOtaResources;
 
@@ -299,7 +300,7 @@ begin
         ProjectAnalyzerForm.SetFileName(ExecutableFileName, MapFileName, ProjectName);
         ProjectAnalyzerForm.Show;
       end;
-      if Integer(SaveMapFile) <> MapFileOptionDetailed then
+      if (not VarIsOrdinal(SaveMapFile)) or (Integer(SaveMapFile) <> MapFileOptionDetailed) then
       begin // delete MAP and DRC file
         DeleteFile(MapFileName);
         DeleteFile(ChangeFileExt(MapFileName, DrcFileExtension));
