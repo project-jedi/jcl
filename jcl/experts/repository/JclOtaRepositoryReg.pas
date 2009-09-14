@@ -284,8 +284,8 @@ end;
 
 constructor TJclExcDlgDelphiExpert.Create;
 begin
-  inherited Create(RsRepositoryExcDlgDelphiName, RsRepositoryExcDlgDelphiDescription,
-    RsAboutDialogTitle, RsRepositoryExcDlgPage, JclRepositoryCategoryDelphiFiles,
+  inherited Create(LoadResString(@RsRepositoryExcDlgDelphiName), LoadResString(@RsRepositoryExcDlgDelphiDescription),
+    LoadResString(@RsAboutDialogTitle), LoadResString(@RsRepositoryExcDlgPage), JclRepositoryCategoryDelphiFiles,
     JclDesignerVcl, JclDelphiPersonality, LoadIcon(FindResourceHInstance(HInstance), 'JclExcDlg'), ritForm);
 end;
 
@@ -320,8 +320,8 @@ end;
 
 constructor TJclExcDlgCBuilderExpert.Create;
 begin
-  inherited Create(RsRepositoryExcDlgCBuilderName, RsRepositoryExcDlgCBuilderDescription,
-    RsAboutDialogTitle, RsRepositoryExcDlgPage, JclRepositoryCategoryCBuilderFiles,
+  inherited Create(LoadResString(@RsRepositoryExcDlgCBuilderName), LoadResString(@RsRepositoryExcDlgCBuilderDescription),
+    LoadResString(@RsAboutDialogTitle), LoadResString(@RsRepositoryExcDlgPage), JclRepositoryCategoryCBuilderFiles,
     JclDesignerVcl, JclCBuilderPersonality, LoadIcon(FindResourceHInstance(HInstance), 'JclExcDlgCPP'), ritForm);
 end;
 

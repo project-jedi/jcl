@@ -300,7 +300,7 @@ begin
     StackList := JclGetExceptStackList(FThreadID);
     if Assigned(StackList) then
     begin
-      DetailsMemo.Lines.Add(Format(RsStackList, [DateTimeToStr(StackList.TimeStamp)]));
+      DetailsMemo.Lines.Add(Format(LoadResString(@RsStackList), [DateTimeToStr(StackList.TimeStamp)]));
       StackList.AddToStrings(DetailsMemo.Lines, True, True, True, True);
       NextDetailBlock;
     end;
@@ -392,7 +392,7 @@ begin
           if UnitVersioningModule.Instance = ModuleBase then
           begin
             if UnitVersioningModule.Count > 0 then
-              DetailsMemo.Lines.Add(StrRepeat(' ', 11) + RsUnitVersioningIntro);
+              DetailsMemo.Lines.Add(StrRepeat(' ', 11) + LoadResString(@RsUnitVersioningIntro));
             for UnitIndex := 0 to UnitVersioningModule.Count - 1 do
             begin
               UnitVersion := UnitVersioningModule.Items[UnitIndex];

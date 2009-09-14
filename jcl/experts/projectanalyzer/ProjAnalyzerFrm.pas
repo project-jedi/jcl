@@ -303,6 +303,18 @@ begin
             Settings.LoadInteger(JclWidth, Width),
             Settings.LoadInteger(JclHeight, Height));
 
+  ActionCopy.Caption := LoadResString(@RsCopy);
+  ActionSave.Caption := LoadResString(@RsSave);
+  ActionShowDetails.Caption := LoadResString(@RsDetails);
+  ActionShowSummary.Caption := LoadResString(@RsSummary);
+  ActionShowDfms.Caption := LoadResString(@RsForms);
+  ActionShowPackages.Caption := LoadResString(@RsShowPackages);
+  TextLabelsItem.Caption := LoadResString(@RsTextLabels);
+  UnitListView.Columns[0].Caption := LoadResString(@RsName);
+  UnitListView.Columns[1].Caption := LoadResString(@RsSize);
+  UnitListView.Columns[2].Caption := LoadResString(@RsGroup);
+  UnitListView.Columns[3].Caption := LoadResString(@RsPackage);
+
   FView := TProjectAnalyserView(Settings.LoadInteger(AnalyzerViewName, Integer(pavDetails)));
   FShowPackages := Settings.LoadBool(AnalyzerShowPackagesName, True);
 
@@ -336,7 +348,7 @@ var
   ShortPackageName: string;
 begin
   ClearData;
-  Caption := Format(RsFormCaption, [ProjectName]);
+  Caption := Format(LoadResString(@RsFormCaption), [ProjectName]);
   MapParser := TJclMapParser.Create(MapFileName);
   try
     MapParser.OnSegment := OnMapSegmentEvent;
@@ -380,7 +392,7 @@ begin
     BorImage.Free;
     PackagesList.Free;
   end;
-  StatusBarMain.Panels[0].Text := Format(RsStatusText,
+  StatusBarMain.Panels[0].Text := Format(LoadResString(@RsStatusText),
     [FUnitsSum.Count, Length(FDfms), FCodeSize, FICodeSize, FDataSize, FBssSize, ResourcesSize]);
   case View of
     pavDetails:
@@ -446,7 +458,7 @@ begin
         AItem := UnitListView.Items.Add;
         AItem.Caption := FUnitsSum.Strings[I];
         AItem.SubItems.Add(Format('%.0n', [IntToExtended(Integer(FUnitsSum.Objects[I]))]));
-        AItem.SubItems.Add(RsCodeData);
+        AItem.SubItems.Add(LoadResString(@RsCodeData));
         AItem.SubItems.Add(PackageName);
         AItem.ImageIndex := 2;
       end;

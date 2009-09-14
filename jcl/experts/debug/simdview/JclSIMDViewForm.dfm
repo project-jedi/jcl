@@ -66,7 +66,7 @@ object JclSIMDViewFrm: TJclSIMDViewFrm
     Left = 64
     Top = 48
     object MenuItemDisplay: TMenuItem
-      Caption = '&Display'
+      Caption = 'RsDisplay'
       object MenuItemBytes: TMenuItem
         Caption = '&Bytes'
         ShortCut = 16437
@@ -102,24 +102,24 @@ object JclSIMDViewFrm: TJclSIMDViewFrm
       end
     end
     object MenuItemFormat: TMenuItem
-      Caption = '&Format'
+      Caption = 'RsFormat'
       object MenuItemBinary: TMenuItem
-        Caption = '&Binary'
+        Caption = 'RsBinary'
         ShortCut = 16433
         OnClick = MenuItemFormatClick
       end
       object MenuItemSigned: TMenuItem
-        Caption = '&Signed decimal'
+        Caption = 'RsSignedDecimal'
         ShortCut = 16434
         OnClick = MenuItemFormatClick
       end
       object MenuItemUnsigned: TMenuItem
-        Caption = '&Unsigned decimal'
+        Caption = 'RsUnsignedDecimal'
         ShortCut = 16435
         OnClick = MenuItemFormatClick
       end
       object MenuItemHexa: TMenuItem
-        Caption = '&Hexadecimal'
+        Caption = 'RsHexadecimal'
         ShortCut = 16436
         OnClick = MenuItemFormatClick
       end
@@ -143,7 +143,7 @@ object JclSIMDViewFrm: TJclSIMDViewFrm
       Action = ActionStayOnTop
     end
     object MenuItemCpuInfo: TMenuItem
-      Caption = 'CPU Informations...'
+      Caption = 'RsCPUInfo'
       OnClick = MenuItemCpuInfoClick
     end
   end
@@ -158,33 +158,33 @@ object JclSIMDViewFrm: TJclSIMDViewFrm
     Left = 120
     Top = 48
     object ActionStayOnTop: TAction
-      Caption = '&Stay on top'
+      Caption = 'RsStayOnTop'
       OnExecute = ActionStayOnTopExecute
       OnUpdate = ActionStayOnTopUpdate
     end
     object ActionModify: TAction
-      Caption = '&Modify'
+      Caption = 'RsModify'
       OnExecute = ActionModifyExecute
       OnUpdate = ActionModifyUpdate
     end
     object ActionComplement: TAction
-      Caption = '&Complement bit'
+      Caption = 'RsComplementBit'
       ShortCut = 16468
       OnExecute = ActionComplementExecute
       OnUpdate = ActionComplementUpdate
     end
     object ActionEmpty: TAction
-      Caption = '&Empty MM register'
+      Caption = 'RsEmptyMM'
       OnExecute = ActionEmptyExecute
       OnUpdate = ActionEmptyUpdate
     end
     object ActionEmptyAll: TAction
-      Caption = 'Empty &all MM registers'
+      Caption = 'RsEmptyAllMM'
       OnExecute = ActionEmptyAllExecute
       OnUpdate = ActionEmptyAllUpdate
     end
     object ActionYMMEnabled: TAction
-      Caption = 'View &YMM registers'
+      Caption = 'RsViewYMM'
       OnExecute = ActionYMMEnabledExecute
       OnUpdate = ActionYMMEnabledUpdate
     end

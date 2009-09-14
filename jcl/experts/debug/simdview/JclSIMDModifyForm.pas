@@ -133,6 +133,9 @@ implementation
 
 {$R *.dfm}
 
+uses
+  JclOtaResources;
+
 const
   NbEdits: array [TJclRegisterType, TJclPackedContentType] of Byte =
    (
@@ -153,8 +156,23 @@ const
 
 constructor TJclSIMDModifyFrm.Create(AOwner: TComponent;
   ADebuggerServices: IOTADebuggerServices; ASettings: TJclOTASettings);
+var
+  ContentType: TJclPackedContentType;
 begin
   inherited Create(AOwner);
+
+  for ContentType := Low(TJclPackedContentType) to High(TJClPackedContentType) do
+    ComboBoxDisplay.Items.Add(Texts[ContentType] + 's');
+  ComboBoxFormat.Items.Add(LoadResString(@RsBinary));
+  ComboBoxFormat.Items.Add(LoadResString(@RsSignedDecimal));
+  ComboBoxFormat.Items.Add(LoadResString(@RsUnsignedDecimal));
+  ComboBoxFormat.Items.Add(LoadResString(@RsHexadecimal));
+  LabelDisplay.Caption := LoadResString(@RsDisplay);
+  LabelFormat.Caption := LoadResString(@RsFormat);
+  LabelBlank.Caption := LoadResString(@RsKeepBlank);
+  ButtonOK.Caption := LoadResString(@RsOk);
+  ButtonCancel.Caption := LoadResString(@RsCancel);
+  MemoTip.Lines.Text := LoadResString(@RsSIMDModificationDescription);
 
   FDebuggerServices := ADebuggerServices;
   FSettings := ASettings;

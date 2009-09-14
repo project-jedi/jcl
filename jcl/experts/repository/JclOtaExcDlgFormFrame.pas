@@ -97,13 +97,13 @@ begin
   FParams := AParams;
   inherited Create(AOwner);
 
-  Caption := RsExcDlgFormOptions;
-  CheckBoxMail.Caption := RsDialogWithMailButton;
-  LabelEMailAddress.Caption := RsEMail;
-  LabelSubject.Caption := RsSubject;
-  CheckBoxModalDialog.Caption := RsModalDialog;
-  CheckBoxSizeable.Caption := RsSizeableDialog;
-  CheckBoxAutoScrollBars.Caption := RsAutoScrollBars;
+  Caption := LoadResString(@RsExcDlgFormOptions);
+  CheckBoxMail.Caption := LoadResString(@RsDialogWithMailButton);
+  LabelEMailAddress.Caption := LoadResString(@RsEMail);
+  LabelSubject.Caption := LoadResString(@RsSubject);
+  CheckBoxModalDialog.Caption := LoadResString(@RsModalDialog);
+  CheckBoxSizeable.Caption := LoadResString(@RsSizeableDialog);
+  CheckBoxAutoScrollBars.Caption := LoadResString(@RsAutoScrollBars);
 end;
 
 function TJclOtaExcDlgFormPage.GetSupportsNext: Boolean;

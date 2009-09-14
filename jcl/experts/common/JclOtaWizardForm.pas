@@ -180,11 +180,11 @@ begin
   PanelTitle.ParentBackground := False;
   {$ENDIF COMPILER7_UP}
 
-  ActionPrevious.Caption := RsPrevious;
-  ActionNext.Caption := RsNext;
-  ActionFinish.Caption := RsFinish;
-  ButtonCancel.Caption := RsCancel;
-  LabelJcl.Caption := RsAboutDialogTitle;
+  ActionPrevious.Caption := LoadResString(@RsPrevious);
+  ActionNext.Caption := LoadResString(@RsNext);
+  ActionFinish.Caption := LoadResString(@RsFinish);
+  ButtonCancel.Caption := LoadResString(@RsCancel);
+  LabelJcl.Caption := LoadResString(@RsAboutDialogTitle);
   try
     ImageJcl.Picture.Bitmap.TransparentMode := tmAuto;
     ImageJcl.Picture.Bitmap.Transparent := True;
@@ -247,7 +247,7 @@ begin
   begin
     AFrame.PageActivated(Direction);
     AFrame.Visible := True;
-    LabelProgression.Caption := Format(RsWizardProgression, [PageIndex+1 {one based}, PageCount, AFrame.Caption]);
+    LabelProgression.Caption := Format(LoadResString(@RsWizardProgression), [PageIndex+1 {one based}, PageCount, AFrame.Caption]);
   end;
 end;
 

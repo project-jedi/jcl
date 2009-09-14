@@ -182,7 +182,7 @@ begin
     if ActiveProject <> nil then
       AnalyzeProject(ActiveProject)
     else
-      raise EJclExpertException.CreateTrace(RsENoActiveProject);
+      raise EJclExpertException.CreateRes(@RsENoActiveProject);
   except
     on ExceptionObj: TObject do
     begin
@@ -205,8 +205,8 @@ begin
       ProjectName := '';
     FBuildAction.Enabled := Assigned(ActiveProject);
     if not FBuildAction.Enabled then
-      ProjectName := RsProjectNone;
-    FBuildAction.Caption := Format(RsAnalyzeActionCaption, [ProjectName]);
+      ProjectName := LoadResString(@RsProjectNone);
+    FBuildAction.Caption := Format(LoadResString(@RsAnalyzeActionCaption), [ProjectName]);
   except
     on ExceptionObj: TObject do
     begin
@@ -237,8 +237,8 @@ begin
 
     ProjOptions := AProject.ProjectOptions;
     if not Assigned(ProjOptions) then
-      raise EJclExpertException.CreateTrace(RsENoProjectOptions);
-      
+      raise EJclExpertException.CreateRes(@RsENoProjectOptions);
+
     OutputDirectory := GetOutputDirectory(AProject);
     MapFileName := GetMapFileName(AProject);
 
@@ -248,12 +248,12 @@ begin
       ProjectAnalyzerForm.Show;
     end;
     ProjectAnalyzerForm.ClearContent;
-    ProjectAnalyzerForm.StatusBarText := Format(RsBuildingProject, [ProjectName]);
+    ProjectAnalyzerForm.StatusBarText := Format(LoadResString(@RsBuildingProject), [ProjectName]);
 
     {$IFDEF BDS6_UP}
     Supports(ProjOptions, IOTAProjectOptionsConfigurations, ProjOptionsConfigurations);
     if not Assigned(ProjOptionsConfigurations) then
-      raise EJclExpertException.CreateTrace(RsENoProjectOptionsConfigurations);
+      raise EJclExpertException.CreateRes(@RsENoProjectOptionsConfigurations);
 
     // get the current build configuration
     ActiveConfiguration := ProjOptionsConfigurations.ActiveConfiguration;
@@ -335,7 +335,7 @@ begin
 
   // create actions
   FBuildAction := TAction.Create(nil);
-  FBuildAction.Caption := Format(RsAnalyzeActionCaption, [RsProjectNone]);
+  FBuildAction.Caption := Format(LoadResString(@RsAnalyzeActionCaption), [LoadResString(@RsProjectNone)]);
   FBuildAction.Visible := True;
   FBuildAction.OnExecute := ActionExecute;
   FBuildAction.OnUpdate := ActionUpdate;
@@ -371,7 +371,7 @@ begin
         Break;
       end;
   if not Assigned(IDEProjectItem) then
-    raise EJclExpertException.CreateTrace(RsENoProjectMenuItem);
+    raise EJclExpertException.CreateRes(@RsENoProjectMenuItem);
 
   with IDEProjectItem do
     for I := 0 to Count - 1 do
@@ -391,7 +391,7 @@ begin
         System.Break;
       end;
   if not Assigned(FBuildMenuItem.Parent) then
-    raise EJclExpertException.CreateTrace(RsAnalyseMenuItemNotInserted);
+    raise EJclExpertException.CreateRes(@RsAnalyseMenuItemNotInserted);
 end;
 
 procedure TJclProjectAnalyzerExpert.UnregisterCommands;
@@ -435,7 +435,7 @@ begin
   begin
     AMenu := TJclOTAProjectManagerMenu.Create;
     AMenu.Enabled := True;
-    AMenu.Caption := Format(RsAnalyzeActionCaption, [ExtractFileName(Project.FileName)]);
+    AMenu.Caption := Format(LoadResString(@RsAnalyzeActionCaption), [ExtractFileName(Project.FileName)]);
     AMenu.IsMultiSelectable := True;
     AMenu.OnExecute := MenuExecute;
     AMenu.Position := pmmpUserBuild;
@@ -457,7 +457,7 @@ begin
       if Project <> nil then
         FProjectAnalyser.AnalyzeProject(Project)
       else
-        raise EJclExpertException.CreateTrace(RsENoActiveProject);
+        raise EJclExpertException.CreateRes(@RsENoActiveProject);
     end;
   except
     on ExceptionObj: TObject do
@@ -495,11 +495,11 @@ begin
       // root item
       Result := TMenuItem.Create(nil);
       Result.Visible := True;
-      Result.Caption := Format(RsAnalyzeActionCaption, [ExtractFileName(AProject.FileName)]);
+      Result.Caption := Format(LoadResString(@RsAnalyzeActionCaption), [ExtractFileName(AProject.FileName)]);
       Result.OnClick := AnalyzeProjectMenuClick;
     end
     else
-      raise EJclExpertException.CreateTrace(RsENoActiveProject);
+      raise EJclExpertException.CreateRes(@RsENoActiveProject);
   except
     on ExceptionObj: TObject do
     begin
@@ -520,7 +520,7 @@ begin
     if TempProject <> nil then
       FProjectAnalyser.AnalyzeProject(TempProject)
     else
-      raise EJclExpertException.CreateTrace(RsENoActiveProject);
+      raise EJclExpertException.CreateRes(@RsENoActiveProject);
   except
     on ExceptionObj: TObject do
     begin

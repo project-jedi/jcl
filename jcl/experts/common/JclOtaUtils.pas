@@ -87,11 +87,9 @@ type
   {$IFDEF MSWINDOWS}
   private
     FStackInfo: TJclStackInfoList;
-  {$ENDIF MSWINDOWS}
   public
-    constructor CreateTrace(const Msg: string);
-  {$IFDEF MSWINDOWS}
     destructor Destroy; override;
+    procedure AfterConstruction; override;
     property StackInfo: TJclStackInfoList read FStackInfo;
   {$ENDIF MSWINDOWS}
   end;
@@ -663,15 +661,13 @@ end;
 
 //=== { EJclExpertException } ================================================
 
-constructor EJclExpertException.CreateTrace(const Msg: string);
+{$IFDEF MSWINDOWS}
+procedure EJclExpertException.AfterConstruction;
 begin
-  inherited Create(Msg);
-  {$IFDEF MSWINDOWS}
+  inherited AfterConstruction;
   FStackInfo := JclCreateStackList(False, 0, nil, False);
-  {$ENDIF MSWINDOWS}
 end;
 
-{$IFDEF MSWINDOWS}
 destructor EJclExpertException.Destroy;
 begin
   FreeAndNil(FStackInfo);
@@ -689,7 +685,7 @@ begin
 
   Supports(BorlandIDEServices,IOTAServices,OTAServices);
   if not Assigned(OTAServices) then
-    raise EJclExpertException.CreateTrace(RsENoOTAServices);
+    raise EJclExpertException.CreateRes(@RsENoOTAServices);
 
   FBaseKeyName := StrEnsureSuffix(NativeBackSlash, OTAServices.GetBaseRegistryKey);
   
@@ -900,12 +896,12 @@ begin
   if not Assigned(ActionConfigureSheet) then
   begin
     ActionConfigureSheet := TJclOtaActionConfigureFrame.Create(Application);
-    AddPageFunc(ActionConfigureSheet, RsActionSheet, Self);
+    AddPageFunc(ActionConfigureSheet, LoadResString(@RsActionSheet), Self);
   end;
   if not Assigned(UnitVersioningSheet) then
   begin
     UnitVersioningSheet := TJclOtaUnitVersioningFrame.Create(Application);
-    AddPageFunc(UnitVersioningSheet, RsUnitVersioningSheet, Self);
+    AddPageFunc(UnitVersioningSheet, LoadResString(@RsUnitVersioningSheet), Self);
   end;
   // override to customize
 end;
@@ -1016,7 +1012,7 @@ end;
 function TJclOTAExpertBase.GetDrcFileName(const Project: IOTAProject): TFileName;
 begin
   if not Assigned(Project) then
-    raise EJclExpertException.CreateTrace(RsENoActiveProject);
+    raise EJclExpertException.CreateRes(@RsENoActiveProject);
     
   Result := ChangeFileExt(Project.FileName, CompilerExtensionDRC);
 end;
@@ -1027,12 +1023,12 @@ var
   OutputDirectory, LibPrefix, LibSuffix: string;
 begin
   if not Assigned(Project) then
-    raise EJclExpertException.CreateTrace(RsENoActiveProject);
+    raise EJclExpertException.CreateRes(@RsENoActiveProject);
 
   ProjectFileName := Project.FileName;
   OutputDirectory := GetOutputDirectory(Project);
   if not Assigned(Project.ProjectOptions) then
-    raise EJclExpertException.CreateTrace(RsENoProjectOptions);
+    raise EJclExpertException.CreateRes(@RsENoProjectOptions);
   LibPrefix := Trim(VarToStr(Project.ProjectOptions.Values[LIBPREFIXOptionName]));
   LibSuffix := Trim(VarToStr(Project.ProjectOptions.Values[LIBSUFFIXOptionName]));
   {$IFDEF BDS}
@@ -1051,14 +1047,14 @@ function TJclOTAExpertBase.GetModuleHInstance: Cardinal;
 begin
   Result := FindClassHInstance(ClassType);
   if Result = 0 then
-    raise EJclExpertException.CreateTrace(RsBadModuleHInstance);
+    raise EJclExpertException.CreateRes(@RsBadModuleHInstance);
 end;
 
 class function TJclOTAExpertBase.GetNTAServices: INTAServices;
 begin
   Supports(BorlandIDEServices, INTAServices, Result);
   if not Assigned(Result) then
-    raise EJclExpertException.CreateTrace(RsENoNTAServices);
+    raise EJclExpertException.CreateRes(@RsENoNTAServices);
 end;
 
 {$IFDEF BDS}
@@ -1066,7 +1062,7 @@ class function TJclOTAExpertBase.GetOTAGalleryCategoryManager: IOTAGalleryCatego
 begin
   Supports(BorlandIDEServices, IOTAGalleryCategoryManager, Result);
   if not Assigned(Result) then
-    raise EJclExpertException.CreateTrace(RsENoOTAGalleryCategoryManager);
+    raise EJclExpertException.CreateRes(@RsENoOTAGalleryCategoryManager);
 end;
 {$ENDIF BDS}
 
@@ -1074,28 +1070,28 @@ class function TJclOTAExpertBase.GetOTADebuggerServices: IOTADebuggerServices;
 begin
   Supports(BorlandIDEServices, IOTADebuggerServices, Result);
   if not Assigned(Result) then
-    raise EJclExpertException.CreateTrace(RsENoDebuggerServices);
+    raise EJclExpertException.CreateRes(@RsENoDebuggerServices);
 end;
 
 class function TJclOTAExpertBase.GetOTAMessageServices: IOTAMessageServices;
 begin
   Supports(BorlandIDEServices, IOTAMessageServices, Result);
   if not Assigned(Result) then
-    raise EJclExpertException.CreateTrace(RsENoOTAMessageServices);
+    raise EJclExpertException.CreateRes(@RsENoOTAMessageServices);
 end;
 
 class function TJclOTAExpertBase.GetOTAModuleServices: IOTAModuleServices;
 begin
   Supports(BorlandIDEServices, IOTAModuleServices, Result);
   if not Assigned(Result) then
-    raise EJclExpertException.CreateTrace(RsENoOTAModuleServices);
+    raise EJclExpertException.CreateRes(@RsENoOTAModuleServices);
 end;
 
 class function TJclOTAExpertBase.GetOTAPackageServices: IOTAPackageServices;
 begin
   Supports(BorlandIDEServices, IOTAPackageServices, Result);
   if not Assigned(Result) then
-    raise EJclExpertException.CreateTrace(RsENoOTAPackageServices);
+    raise EJclExpertException.CreateRes(@RsENoOTAPackageServices);
 end;
 
 {$IFDEF BDS}
@@ -1103,7 +1099,7 @@ class function TJclOTAExpertBase.GetOTAPersonalityServices: IOTAPersonalityServi
 begin
   Supports(BorlandIDEServices, IOTAPersonalityServices, Result);
   if not Assigned(Result) then
-    raise EJclExpertException.CreateTrace(RsENoOTAPersonalityServices);
+    raise EJclExpertException.CreateRes(@RsENoOTAPersonalityServices);
 end;
 {$ENDIF BDS}
 
@@ -1120,14 +1116,14 @@ class function TJclOTAExpertBase.GetOTAServices: IOTAServices;
 begin
   Supports(BorlandIDEServices, IOTAServices, Result);
   if not Assigned(Result) then
-    raise EJclExpertException.CreateTrace(RsENoOTAServices);
+    raise EJclExpertException.CreateRes(@RsENoOTAServices);
 end;
 
 class function TJclOTAExpertBase.GetOTAWizardServices: IOTAWizardServices;
 begin
   Supports(BorlandIDEServices, IOTAWizardServices, Result);
   if not Assigned(Result) then
-    raise EJclExpertException.CreateTrace(RsENoOTAWizardServices);
+    raise EJclExpertException.CreateRes(@RsENoOTAWizardServices);
 end;
 
 function TJclOTAExpertBase.GetOutputDirectory(const Project: IOTAProject): string;
@@ -1136,9 +1132,9 @@ var
   OptionValue: Variant;
 begin
   if not Assigned(Project) then
-    raise EJclExpertException.CreateTrace(RsENoActiveProject);
+    raise EJclExpertException.CreateRes(@RsENoActiveProject);
   if not Assigned(Project.ProjectOptions) then
-      raise EJclExpertException.CreateTrace(RsENoProjectOptions);
+      raise EJclExpertException.CreateRes(@RsENoProjectOptions);
 
   Result := '';
 
@@ -1158,7 +1154,7 @@ begin
     begin
       EnvironmentOptions := GetOTAServices.GetEnvironmentOptions;
       if not Assigned(EnvironmentOptions) then
-        raise EJclExpertException.CreateTrace(RsENoEnvironmentOptions);
+        raise EJclExpertException.CreateRes(@RsENoEnvironmentOptions);
       OptionValue := EnvironmentOptions.Values[BPLOutputDirOptionName];
       if VarIsStr(OptionValue) then
         Result := VarToStr(OptionValue);
@@ -1238,7 +1234,7 @@ begin
   begin
     AModule := OTAModuleServices.Modules[I];
     if not Assigned(AModule) then
-      raise EJclExpertException.CreateTrace(RsENoModule);
+      raise EJclExpertException.CreateRes(@RsENoModule);
     if AModule.QueryInterface(IOTAProjectGroup, Result) = S_OK then
       Exit;
   end;
@@ -1257,7 +1253,7 @@ begin
       FRootDir := RegReadStringDef(HKEY_CURRENT_USER, Settings.BaseKeyName, DelphiRootDirKeyValue, '');
     {$ENDIF MSWINDOWS}
     if FRootDir = '' then
-      raise EJclExpertException.CreateTrace(RsENoRootDir);
+      raise EJclExpertException.CreateRes(@RsENoRootDir);
   end;
   Result := FRootDir;
 end;
@@ -1269,7 +1265,7 @@ var
   I: Integer;
 begin
   if not Assigned(Project) then
-    raise EJclExpertException.CreateTrace(RsENoActiveProject);
+    raise EJclExpertException.CreateRes(@RsENoActiveProject);
 
   Result := IsPackage(Project);
   if Result then
@@ -1277,7 +1273,7 @@ begin
     Result := False;
 
     if not Assigned(Project.ProjectOptions) then
-      raise EJclExpertException.CreateTrace(RsENoProjectOptions);
+      raise EJclExpertException.CreateRes(@RsENoProjectOptions);
 
     if not Project.ProjectOptions.Values[RuntimeOnlyOptionName] then
     begin
@@ -1308,7 +1304,7 @@ var
   NameProp: TJclSimpleXMLProp;
 begin
   if not Assigned(Project) then
-    raise EJclExpertException.CreateTrace(RsENoActiveProject);
+    raise EJclExpertException.CreateRes(@RsENoActiveProject);
 
   FileName := Project.FileName;
   FileExtension := ExtractFileExt(FileName);
@@ -1515,7 +1511,7 @@ begin
     finally
       JclIcon.Free;
     end;
-    ConfigurationAction.Caption := RsJCLOptions;
+    ConfigurationAction.Caption := LoadResString(@RsJCLOptions);
     ConfigurationAction.Name := JclConfigureActionName;
     ConfigurationAction.Category := Category;
     ConfigurationAction.Visible := True;
@@ -1530,14 +1526,14 @@ begin
   begin
     IDEMenuItem := NTAServices.MainMenu.Items;
     if not Assigned(IDEMenuItem) then
-      raise EJclExpertException.CreateTrace(RsENoIDEMenu);
+      raise EJclExpertException.CreateRes(@RsENoIDEMenu);
 
     ToolsMenuItem := nil;
     for Index := 0 to IDEMenuItem.Count - 1 do
       if CompareText(IDEMenuItem.Items[Index].Name, 'ToolsMenu') = 0 then
         ToolsMenuItem := IDEMenuItem.Items[Index];
     if not Assigned(ToolsMenuItem) then
-      raise EJclExpertException.CreateTrace(RsENoToolsMenu);
+      raise EJclExpertException.CreateRes(@RsENoToolsMenu);
 
     ConfigurationMenuItem := TMenuItem.Create(nil);
     ConfigurationMenuItem.Name := JclConfigureMenuName;
@@ -1747,12 +1743,12 @@ begin
   begin
     Supports(BorlandIDEServices,IOTAAboutBoxServices, AboutBoxServices);
     if not Assigned(AboutBoxServices) then
-      raise EJclExpertException.CreateTrace(RsENoOTAAboutServices);
+      raise EJclExpertException.CreateRes(@RsENoOTAAboutServices);
     ProductImage := LoadBitmap(FindResourceHInstance(HInstance), 'JCLSPLASH');
     if ProductImage = 0 then
-      raise EJclExpertException.CreateTrace(RsENoBitmapResources);
-    AboutBoxIndex := AboutBoxServices.AddPluginInfo(RsAboutTitle, RsAboutDescription, 
-      ProductImage, False, RsAboutLicenceStatus);
+      raise EJclExpertException.CreateRes(@RsENoBitmapResources);
+    AboutBoxIndex := AboutBoxServices.AddPluginInfo(LoadResString(@RsAboutTitle), LoadResString(@RsAboutDescription),
+      ProductImage, False, LoadResString(@RsAboutLicenceStatus));
   end;
 end;
 
@@ -1774,12 +1770,9 @@ begin
   begin
     ProductImage := LoadBitmap(FindResourceHInstance(HInstance), 'JCLSPLASH');
     if ProductImage = 0 then
-      raise EJclExpertException.CreateTrace(RsENoBitmapResources);
-    // C#Builder 1 doesn't display AddProductBitmap
-    //SplashScreenServices.AddProductBitmap(RsAboutDialogTitle, ProductImage,
-    //  False, RsAboutLicenceStatus);
-    SplashScreenServices.AddPluginBitmap(RsAboutDialogTitle, ProductImage,
-      False, RsAboutLicenceStatus);
+      raise EJclExpertException.CreateRes(@RsENoBitmapResources);
+    SplashScreenServices.AddPluginBitmap(LoadResString(@RsAboutDialogTitle), ProductImage,
+      False, LoadResString(@RsAboutLicenceStatus));
     SplashScreenInitialized := True;
   end;
 end;

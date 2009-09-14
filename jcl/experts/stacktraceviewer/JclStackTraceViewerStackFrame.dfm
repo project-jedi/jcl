@@ -12,34 +12,34 @@ object frmStack: TfrmStack
     Align = alClient
     Columns = <
       item
-        Caption = 'ModuleName'
+        Caption = 'RsModuleName'
       end
       item
-        Caption = 'SourceUnitName'
+        Caption = 'RsSourceUnitName'
       end
       item
-        Caption = 'ProcedureName'
+        Caption = 'RsProcedureName'
       end
       item
-        Caption = 'SourceName'
-      end
-      item
-        Alignment = taRightJustify
-        Caption = 'LineNumber'
+        Caption = 'RsSourceName'
       end
       item
         Alignment = taRightJustify
-        Caption = 'LineNumberOffsetFromProcedureStart'
-      end
-      item
-        Caption = 'Revision'
-      end
-      item
-        Caption = 'Project/File'
+        Caption = 'RsLineNumber'
       end
       item
         Alignment = taRightJustify
-        Caption = 'TranslatedLineNumber'
+        Caption = 'RsLineNumberOffsetFromProcedureStart'
+      end
+      item
+        Caption = 'RsRevision'
+      end
+      item
+        Caption = 'RsProjectFile'
+      end
+      item
+        Alignment = taRightJustify
+        Caption = 'RsTranslatedLineNumber'
       end>
     GridLines = True
     HideSelection = False

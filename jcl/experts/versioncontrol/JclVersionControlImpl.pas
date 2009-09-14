@@ -314,7 +314,7 @@ begin
   if AAction is TJclVersionControlStandardAction then
     Result := TJclVersionControlStandardAction(AAction).ControlAction
   else
-    raise EJclExpertException.CreateTrace('Internal error: invalid action');
+    raise EJclExpertException.CreateRes(@RsEInvalidAction);
 end;
 
 //=== { TJclVersionControlExpert } ===================================================
@@ -509,7 +509,7 @@ begin
   // after SetActions
   FOptionsFrame.MenuTree := FMenuOrganization;
   FOptionsFrame.IconType := IconType;
-  AddPageFunc(FOptionsFrame, RsVersionControlSheet, Self);
+  AddPageFunc(FOptionsFrame, LoadResString(@RsVersionControlSheet), Self);
 end;
 
 procedure TJclVersionControlExpert.ConfigurationClosed(AControl: TControl;
@@ -1013,17 +1013,17 @@ begin
     Break;
   end;
   if not Assigned(IDEToolsItem) then
-    raise EJclExpertException.CreateTrace(RsENoToolsMenuItem);
+    raise EJclExpertException.CreateRes(@RsENoToolsMenuItem);
 
   IDEActionList := NTAServices.ActionList;
 
   FVersionCtrlMenu := TMenuItem.Create(nil);
-  FVersionCtrlMenu.Caption := RsVersionCtrlMenuCaption;
+  FVersionCtrlMenu.Caption := LoadResString(@RsVersionCtrlMenuCaption);
   FVersionCtrlMenu.Name := JclVersionCtrlMenuName;
   FVersionCtrlMenu.OnClick := IDEVersionCtrlMenuClick;
   IDEMainMenu.Items.Insert(IDEToolsItem.MenuIndex + 1, FVersionCtrlMenu);
   if not Assigned(FVersionCtrlMenu.Parent) then
-    raise EJclExpertException.CreateTrace(Format(RsSvnMenuItemNotInserted, [FVersionCtrlMenu.Caption]));
+    raise EJclExpertException.CreateResFmt(@RsSvnMenuItemNotInserted, [FVersionCtrlMenu.Caption]);
 
   for ControlAction := Low(TJclVersionControlActionType) to High(TJclVersionControlActionType) do
   begin
@@ -1053,7 +1053,7 @@ begin
     AAction.ActionList := IDEActionList;
     AAction.OnExecute := ActionExecute;
     AAction.OnUpdate := ActionUpdate;
-    AAction.Category := RsActionCategory;
+    AAction.Category := LoadResString(@RsActionCategory);
     RegisterAction(AAction);
     FActions[ControlAction] := AAction;
   end;

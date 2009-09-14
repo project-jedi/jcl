@@ -2,7 +2,7 @@ inherited JclOtaExcDlgFilePage: TJclOtaExcDlgFilePage
   object LabelLanguage: TLabel
     Left = 23
     Top = 27
-    Width = 61
+    Width = 59
     Height = 13
     Caption = 'RsLanguage'
     FocusControl = ComboBoxLanguage
@@ -10,7 +10,7 @@ inherited JclOtaExcDlgFilePage: TJclOtaExcDlgFilePage
   object LabelFormName: TLabel
     Left = 23
     Top = 182
-    Width = 64
+    Width = 63
     Height = 13
     Caption = 'RsFormName'
     FocusControl = EditFormName
@@ -18,7 +18,7 @@ inherited JclOtaExcDlgFilePage: TJclOtaExcDlgFilePage
   object LabelFileName: TLabel
     Left = 23
     Top = 75
-    Width = 57
+    Width = 55
     Height = 13
     Caption = 'RsFileName'
     FocusControl = EditFileName
@@ -26,7 +26,7 @@ inherited JclOtaExcDlgFilePage: TJclOtaExcDlgFilePage
   object LabelFormAncestor: TLabel
     Left = 23
     Top = 222
-    Width = 78
+    Width = 79
     Height = 13
     Caption = 'RsFormAncestor'
     FocusControl = EditFormAncestor
@@ -37,7 +37,7 @@ inherited JclOtaExcDlgFilePage: TJclOtaExcDlgFilePage
     Width = 249
     Height = 21
     Style = csDropDownList
-    ItemHeight = 13
+    ItemHeight = 0
     TabOrder = 0
     OnClick = ComboBoxLanguageClick
   end

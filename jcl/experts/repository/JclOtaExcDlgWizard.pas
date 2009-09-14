@@ -114,7 +114,7 @@ end;
 procedure TJclOtaExcDlgForm.FormCreate(Sender: TObject);
 begin
   inherited FormCreate(Sender);
-  Caption := RsExceptionDialogConfigure;
+  Caption := LoadResString(@RsExceptionDialogConfigure);
 
   AddPage(TJclOtaExcDlgFilePage.Create(Self, Params));
   AddPage(TJclOtaExcDlgFormPage.Create(Self, Params));

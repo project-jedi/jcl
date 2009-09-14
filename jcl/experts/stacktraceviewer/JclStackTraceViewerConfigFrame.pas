@@ -69,12 +69,17 @@ implementation
 
 {$R *.dfm}
 
+uses
+  JclOtaResources;
+
 //=== { TJclStackTraceViewerConfigFrame } ====================================
 
 constructor TJclStackTraceViewerConfigFrame.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FOptions := TExceptionViewerOption.Create;
+  cbExpandTreeView.Caption := LoadResString(@RsExpandTreeView);
+  cbModuleVersionAsRevision.Caption := LoadResString(@RsModuleVersionAsRevision);
 end;
 
 destructor TJclStackTraceViewerConfigFrame.Destroy;

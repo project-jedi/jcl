@@ -7,16 +7,16 @@ object frmException: TfrmException
   object Label1: TLabel
     Left = 3
     Top = 3
-    Width = 56
+    Width = 111
     Height = 13
-    Caption = 'ClassName:'
+    Caption = 'RsExceptionClassName'
   end
   object Label2: TLabel
     Left = 3
     Top = 22
-    Width = 46
+    Width = 101
     Height = 13
-    Caption = 'Message:'
+    Caption = 'RsExceptionMessage'
   end
   object lbExceptionClassName: TLabel
     Left = 65

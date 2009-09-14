@@ -138,14 +138,14 @@ begin
   inherited Create(AOwner);
   FTestThread := TTestThread.Create(False, 'MyTaskThread');
 
-  Caption := RsExcDlgThreadOptions;
-  CheckBoxStackList.Caption := RsStackList;
-  LabelPreview.Caption := RsPreview;
-  RadioButtonAllThreads.Caption := RsAllThreads;
-  RadioButtonAllRegisteredThreads.Caption := RsAllRegisteredThreads;
-  RadioButtonMainExceptionThreads.Caption := RsMainExceptionThreads;
-  RadioButtonExceptionThread.Caption := RsExceptionThread;
-  RadioButtonMainThread.Caption := RsMainThread;
+  Caption := LoadResString(@RsExcDlgThreadOptions);
+  CheckBoxStackList.Caption := LoadResString(@RsStackList);
+  LabelPreview.Caption := LoadResString(@RsPreview);
+  RadioButtonAllThreads.Caption := LoadResString(@RsAllThreads);
+  RadioButtonAllRegisteredThreads.Caption := LoadResString(@RsAllRegisteredThreads);
+  RadioButtonMainExceptionThreads.Caption := LoadResString(@RsMainExceptionThreads);
+  RadioButtonExceptionThread.Caption := LoadResString(@RsExceptionThread);
+  RadioButtonMainThread.Caption := LoadResString(@RsMainThread);
 end;
 
 destructor TJclOtaExcDlgThreadPage.Destroy;

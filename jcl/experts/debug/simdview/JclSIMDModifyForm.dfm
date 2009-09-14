@@ -18,25 +18,25 @@ object JclSIMDModifyFrm: TJclSIMDModifyFrm
   object LabelDisplay: TLabel
     Left = 8
     Top = 16
-    Width = 40
+    Width = 47
     Height = 13
-    Caption = 'Display :'
+    Caption = 'RsDisplay'
     Layout = tlCenter
   end
   object LabelFormat: TLabel
     Left = 240
     Top = 16
-    Width = 38
+    Width = 45
     Height = 13
-    Caption = 'Format :'
+    Caption = 'RsFormat'
     Layout = tlCenter
   end
   object LabelBlank: TLabel
     Left = 480
     Top = 16
-    Width = 123
+    Width = 65
     Height = 13
-    Caption = 'Keep blank for no change'
+    Caption = 'RsKeepBlank'
   end
   object ComboBoxDisplay: TComboBox
     Left = 56
@@ -47,13 +47,6 @@ object JclSIMDModifyFrm: TJclSIMDModifyFrm
     ItemHeight = 13
     TabOrder = 0
     OnChange = ComboBoxDisplayChange
-    Items.Strings = (
-      'Bytes'
-      'Words'
-      'DWords'
-      'QWords'
-      'Singles'
-      'Doubles')
   end
   object ComboBoxFormat: TComboBox
     Left = 288
@@ -65,10 +58,10 @@ object JclSIMDModifyFrm: TJclSIMDModifyFrm
     TabOrder = 1
     OnChange = ComboBoxFormatChange
     Items.Strings = (
-      'Binary'
-      'Signed Decimal'
-      'Unsigned Decimal'
-      'Hexadecimal')
+      'RsBinary'
+      'RsSignedDecimal'
+      'RsUnsignedDecimal'
+      'RsHexadecimal')
   end
   object PanelModify: TPanel
     Left = 8
@@ -83,7 +76,7 @@ object JclSIMDModifyFrm: TJclSIMDModifyFrm
     Top = 355
     Width = 139
     Height = 25
-    Caption = '&OK'
+    Caption = 'RsOk'
     Default = True
     TabOrder = 3
     OnClick = ButtonOKClick
@@ -94,28 +87,18 @@ object JclSIMDModifyFrm: TJclSIMDModifyFrm
     Width = 139
     Height = 25
     Cancel = True
-    Caption = '&Cancel'
+    Caption = 'RsCancel'
     ModalResult = 2
     TabOrder = 4
   end
   object MemoTip: TMemo
     Left = 8
     Top = 311
-    Width = 595
+    Width = 761
     Height = 65
     BorderStyle = bsNone
     Lines.Strings = (
-      
-        'Tip: xmm0.byte0 will return the first byte of xmm0, valid fields' +
-        ' are byteX, wordX, dwordX, qwordX, singleX, doubleX'
-      'Valid registers are:'
-      ' - mm0..mm7 (all processors)'
-      
-        ' - xmm0..xmm7 (32-bit processor with SSE) or xmm0..xmm15 (64-bit' +
-        ' processor with SSE)'
-      
-        ' - ymm0..ymm7 (32-bit processor with AVX) or ymm0..ymm15 (64-bit' +
-        ' processor with AVX)')
+      'RsSIMDModificationDescription')
     ParentColor = True
     TabOrder = 5
   end

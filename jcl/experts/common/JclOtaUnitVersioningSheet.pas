@@ -94,8 +94,8 @@ var
   LongFileName: string;
 begin
   inherited Create(AOwner);
-  ButtonCopyToClipboard.Caption := RsCopyToClipboard;
-  ButtonSaveAsText.Caption := RsSaveAsText;
+  ButtonCopyToClipboard.Caption := LoadResString(@RsCopyToClipboard);
+  ButtonSaveAsText.Caption := LoadResString(@RsSaveAsText);
   
   UnitVersioning := GetUnitVersioning;
   UnitVersioning.RegisterProvider(TJclDefaultUnitVersioningProvider);

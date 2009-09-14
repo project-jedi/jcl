@@ -45,7 +45,6 @@ resourcestring
   RsENoOTAServices = 'Unable to get Borland IDE Services';
   RsENoNTAServices = 'Unable to get Borland NTA Services';
   RsENoDebuggerServices = 'Unable to get Borland Debugger Services';
-  RsENoNTASplashServices = 'Unable to get Borland Splash Services';
   RsENoOTAAboutServices = 'Unable to get Borland About Services';
   RsENoOTAModuleServices = 'Unable to get Borland Module Services';
   RsENoOTAWizardServices = 'Unable to get Borland Wizard Services';
@@ -61,7 +60,6 @@ resourcestring
   RsENoToolsMenu = 'Unable to get Tools menu';
 
   RsAboutDialogTitle = 'JEDI Code Library';
-  RsAboutCopyright = 'Copyright the JCL development team';
   RsAboutTitle = 'JEDI Code Library';
   RsAboutDescription = 'JEDI Code Library http://jcl.delphi-jedi.org/' + NativeLineBreak +
                        'The JCL is a member of the JEDI Project http://www.delphi-jedi.org' + NativeLineBreak +
@@ -92,8 +90,8 @@ resourcestring
   { TODO : Should this link lead directly to the issue tracker at http://issuetracker.delphi-jedi.org/ ?}
   RsReportURL = 'http://jcl.delphi-jedi.org/page24.html';
   RsReportCaption = 'JCL - Feedback&&Support - Report a bug page';
-  RsDetailsExceptionName = 'Exception class name: ';
-  RsDetailsExceptionMessage = 'Exception message: ';
+  RsDetailsExceptionName = 'Exception class name: %s';
+  RsDetailsExceptionMessage = 'Exception message: %s';
   RsErrorWhileFormatting = 'An exception was raised while formatting details for the report';
   RsReportClose = '&Close';
 
@@ -233,13 +231,23 @@ resourcestring
 
 //=== ProjAnalyzerFrm.pas ====================================================
 resourcestring
+  RsCopy = 'Copy';
+  RsSave = 'Save';
+  RsDetails = 'Details';
+  RsSummary = 'Summary';
+  RsForms = 'Forms';
+  RsShowPackages = 'Show Packages';
+  RsTextLabels = 'Text labels';
+  RsName = 'Name';
+  RsSize = 'Size';
+  RsGroup = 'Group';
+  RsPackage = 'Package';
   RsFormCaption = 'Project Analyzer - %s';
   RsStatusText = 'Units: %d, Forms: %d, Code: %d, ICode: %d, Data: %d, Bss: %d, Resources: %d';
   RsCodeData = '(CODE+ICODE+DATA)';
 
 //=== JclUsesWizard.pas ======================================================
 resourcestring
-  RsJediOptionsCaption = 'JEDI Options';
   RsEErrorReadingBuffer = 'Error reading from edit buffer';
   RsUsesSheet = 'Uses wizard';
 
@@ -277,14 +285,11 @@ resourcestring
   RsEMapConversion = 'Failed to convert MAP file "%s"';
   RsENoActiveProject = 'No active project';
   RsENoProjectMenuItem = 'Project menu item not found';
-  RsENoBuildMenuItem = 'Build menu item not found';
-  RsEBuildMenuItemNotInserted = 'Can''t insert the build menu item';
   RsEInsertDataMenuItemNotInserted = 'Can''t insert the insert data menu item';
   RsENoBuildAction = 'Build action not found';
   RsENoBuildAllAction = 'Build All action not found';
-  RsENoProjectGroup = 'No project group';
   RsDebugConfigPageCaption = 'Debug info converter';
-  RsEProjectPropertyFailed = 'Unable to save project properties, project file may be read-only';  
+  RsEProjectPropertyFailed = 'Unable to save project properties, project file may be read-only';
 
 //=== JclDebugIdeConfigFrame.pas =============================================
 resourcestring
@@ -295,6 +300,49 @@ resourcestring
   RsDeleteMapFile = 'Delete map files after conversion';
   RsEInvalidDebugExpertState = '%d is not a valid debug expert state';
 
+//=== JclDebugIdeResult.pas ==================================================
+resourcestring
+  RsProject = 'Project';
+  RsMapFileSize = 'MAP file size';
+  RsJCLDebugSize = 'JCLDebug size';
+  RsRatio = 'Ratio';
+  RsExecutableFileName = 'Executable file name';
+  RsLinkerBug = 'Linker bug';
+  RsLineErrors = 'Line errors';
+
+//=== JclSIMDCpuInfo.pas =====================================================
+resourcestring
+  RsCpuInfoTitle = 'Local CPU Informations';
+  RsVendor = 'Vendor';
+  RsFrequency = 'Frequency';
+  RsEnabledFPU = 'Enabled FPU';
+  RsEnabledSSE = 'Enabled SSE';
+  RsEnabledAVX = 'Enabled AVX';
+  RsSSE1 = 'SSE Version 1';
+  RsSSE2 = 'SSE Version 2';
+  RsSSE3 = 'SSE Version 3';
+  RsSSE3Ext = 'SSE Version 3 Ext.';
+  RsSSE4A = 'SSE Version 4 A';
+  RsSSE4B = 'SSE Version 4 B';
+  RsSSE5 = 'SSE Version 5';
+  RsAVX = 'AVX';
+
+//=== JclSIMDModifyForm.pas ==================================================
+resourcestring
+  RsDisplay = 'Display';
+  RsFormat = 'Format';
+  RsBinary = 'Binary';
+  RsSignedDecimal = 'Signed Decimal';
+  RsUnsignedDecimal = 'Unsigned Decimal';
+  RsHexadecimal = 'Hexadecimal';
+  RsKeepBlank = 'Keep blank for no change';
+  RsSIMDModificationDescription = 'Tip: xmm0.byte0 will return the first byte of xmm0, ' +
+    'valid fields are byteX, wordX, dwordX, qwordX, singleX, doubleX' + NativeLineBreak +
+    'Valid registers are:' + NativeLineBreak +
+    ' - mm0..mm7 (all processors)' + NativeLineBreak +
+    ' - xmm0..xmm7 (32-bit processor with SSE) or xmm0..xmm15 (64-bit processor with SSE)' + NativeLineBreak +
+    ' - ymm0..ymm7 (32-bit processor with AVX) or ymm0..ymm15 (64-bit processor with AVX)' + NativeLineBreak;
+
 //=== JclSIMDView.pas ========================================================
 resourcestring
   RsENoViewMenuItem = 'View menu item not found';
@@ -304,59 +352,51 @@ resourcestring
 resourcestring
   RsSIMD = 'SIMD';
   RsMMX = 'MMX';
-  RsExMMX = 'Ex MMX';
+  RsMMXExt = 'MMX Ext.';
   Rs3DNow = '3DNow!';
-  RsEx3DNow = 'Ex 3DNow!';
+  Rs3DNowExt = '3DNow! Ext.';
   RsLong = '64-bit Core';
 
-  RsTrademarks =
-    'MMX is a trademark of Intel Corporation.' + NativeLineBreak +
-    '3DNow! is a registered trademark of Advanced Micro Devices.';
-
-  RsNoSIMD = 'No SIMD registers found';
   RsNoSSE = 'SSE are not supported on this processor';
-  RsNo128SIMD = 'No 128-bit-register SIMD';
-  RsNo64SIMD = 'No 64-bit-register SIMD';
   RsNotSupportedFormat = '<Unsupported format>';
   RsNoPackedData = '<No packed data>';
-  RsFormCreateError = 'An exception was triggered while creating the debug window : ';
   RsModifyMM = 'Modification of MM%d';
   RsModifyXMM1 = 'Modification of XMM%d';
   RsModifyXMM2 = 'Modification of XMM%.2d';
   RsModifyYMM1 = 'Modification of YMM%d';
   RsModifyYMM2 = 'Modification of YMM%.2d';
 
-  RsVectorIE = 'IE  ';
-  RsVectorDE = 'DE  ';
-  RsVectorZE = 'ZE  ';
-  RsVectorOE = 'OE  ';
-  RsVectorUE = 'UE  ';
-  RsVectorPE = 'PE  ';
+  RsVectorIE  = 'IE  ';
+  RsVectorDE  = 'DE  ';
+  RsVectorZE  = 'ZE  ';
+  RsVectorOE  = 'OE  ';
+  RsVectorUE  = 'UE  ';
+  RsVectorPE  = 'PE  ';
   RsVectorDAZ = 'DAZ '; //  (Only in Intel P4, Intel Xeon and AMD)
-  RsVectorIM = 'IM  ';
-  RsVectorDM = 'DM  ';
-  RsVectorZM = 'ZM  ';
-  RsVectorOM = 'OM  ';
-  RsVectorUM = 'UM  ';
-  RsVectorPM = 'PM  ';
-  RsVectorRC = 'RC  ';
-  RsVectorFZ = 'FZ  ';
+  RsVectorIM  = 'IM  ';
+  RsVectorDM  = 'DM  ';
+  RsVectorZM  = 'ZM  ';
+  RsVectorOM  = 'OM  ';
+  RsVectorUM  = 'UM  ';
+  RsVectorPM  = 'PM  ';
+  RsVectorRC  = 'RC  ';
+  RsVectorFZ  = 'FZ  ';
 
-  RsVectorIEText = 'Invalid-operation exception';
-  RsVectorDEText = 'Denormal-operand exception';
-  RsVectorZEText = 'Zero-divide exception';
-  RsVectorOEText = 'Overflow exception';
-  RsVectorUEText = 'Underflow exception';
-  RsVectorPEText = 'Precision exception';
+  RsVectorIEText  = 'Invalid-operation exception';
+  RsVectorDEText  = 'Denormal-operand exception';
+  RsVectorZEText  = 'Zero-divide exception';
+  RsVectorOEText  = 'Overflow exception';
+  RsVectorUEText  = 'Underflow exception';
+  RsVectorPEText  = 'Precision exception';
   RsVectorDAZText = 'Denormal are zeros'; //  (Only in Intel P4, Intel Xeon and AMD)
-  RsVectorIMText = 'Invalid-operation mask';
-  RsVectorDMText = 'Denormal-operand mask';
-  RsVectorZMText = 'Zero-divide mask';
-  RsVectorOMText = 'Overflow mask';
-  RsVectorUMText = 'Underflow mask';
-  RsVectorPMText = 'Precision mask';
-  RsVectorRCText = 'Rounding control';
-  RsVectorFZText = 'Flush to zero';
+  RsVectorIMText  = 'Invalid-operation mask';
+  RsVectorDMText  = 'Denormal-operand mask';
+  RsVectorZMText  = 'Zero-divide mask';
+  RsVectorOMText  = 'Overflow mask';
+  RsVectorUMText  = 'Underflow mask';
+  RsVectorPMText  = 'Precision mask';
+  RsVectorRCText  = 'Rounding control';
+  RsVectorFZText  = 'Flush to zero';
 
   RsRoundToNearest = 'Round to nearest';
   RsRoundDown = 'Round down';
@@ -367,6 +407,14 @@ resourcestring
 
 //=== JclSIMDViewForm.pas ====================================================
 resourcestring
+  RsStayOnTop = 'Stay on top';
+  RsModify = 'Modify';
+  RsComplementBit = 'Complement bit';
+  RsEmptyMM = 'Empty MM register';
+  RsEmptyAllMM = 'Empty all MM registers';
+  RsViewYMM = 'View YMM registers';
+  RsCPUInfo = 'CPU Informations...';
+
   RsECantUpdateThreadContext = 'Unable to update the thread context';
 
 //=== JclOtaExcDlgRepository.pas =============================================
@@ -386,19 +434,80 @@ resourcestring
   RsENoToolsMenuItem = 'Tools menu item not found';
   RsVersionControlSheet = 'Version control';
   RsActionCategory = 'JEDI Code Library';
-  RsVersionCtrlSystemName = 'System';
+
+//=== JclStackTraceViewerConfigFrame.pas =====================================
+resourcestring
+  RsExpandTreeView = 'Expand TreeView';
+  RsModuleVersionAsRevision = 'Module FileVersion as Revision';
+
+//=== JclStackTraceViewerExceptInfoFrame.pas =================================
+resourcestring
+  RsExceptionClassName = 'ClassName:';
+  RsExceptionMessage = 'Message:';
 
 //=== JclStackTraceViewerImpl.pas ============================================
 resourcestring
-  rsStackTraceViewerCaption = 'Stack Traces';
-  rsStackTraceViewerOptionsPageName = 'Stack Trace Viewer';
+  RsStackTraceViewerCaption = 'Stack Traces';
+  RsStackTraceViewerOptionsPageName = 'Stack Trace Viewer';
 
 //=== JclStackTraceViewerMainFrame.pas =======================================
 resourcestring
-  rsSTVFindFilesInProjectGroup = 'Find files in active project group';
-  rsSTVFindFileInProjectGroup  = 'Find %s in active project group';
-  rsSTVFindFilesInBrowsingPath = 'Find files in browsing path';
+  RsSTVFindFilesInProjectGroup = 'Find files in active project group';
+  RsSTVFindFileInProjectGroup  = 'Find %s in active project group';
+  RsSTVFindFilesInBrowsingPath = 'Find files in browsing path';
 
+//=== JclStackTraceViewerMainFrame.pas =======================================
+resourcestring
+  RsJumpToCodeLine = 'Jump to code line';
+  RsLoadStack = 'Load Stack';
+  RsOptions = 'Options';
+  RsUpdateLocalInfo = 'Update Local Info';
+
+//=== JclStackTraceViewerModuleFrame.pas =====================================
+resourcestring
+  RsStartAddr = 'Start address';
+  RsEndAddr = 'End address';
+  RsSystemModule = 'System module';
+  RsBinFileName = 'Bin file name';
+  RsBinFileVersion = 'Bin file version';
+  RsFileVersion = 'File version';
+  RsFileDescription = 'File description';
+
+//=== JclStackTraceViewerStackFrame.pas ======================================
+resourcestring
+  RsStackModuleName = 'Module name';
+  RsSourceUnitName = 'Source unit name';
+  RsProcedureName = 'Procedure name';
+  RsSourceName = 'Source name';
+  RsLineNumber = 'Line number';
+  RsLineNumberOffsetFromProcedureStart = 'Line number offset from procedure start';
+  RsRevision = 'Revision';
+  RsProjectFile = 'Project file';
+  RsTranslatedLineNumber = 'Translated line number';
+
+//=== JclVersionCtrlCommonOptions.pas ========================================
+resourcestring
+  RsEInvalidMenuCaption = 'Menu caption cannot contain \, _ and numbers';
+  RsDisableActions = '&Enable/disable actions';
+  RsHideUnsupportedActions = '&Hide unsupported actions';
+  RsSaveConfirmation = '&Save confirmation';
+  RsActOnTopSandBox = '&Act on top sandbox';
+  RsIcons = '&Icons:';
+  RsNewItem = 'New item';
+  RsNewSeparator = 'New &separator';
+  RsNewSubMenu = 'New s&ub menu';
+  RsNewAction = 'New &action';
+  RsDeleteItem = '&Delete';
+  RsRenameItem = '&Rename';
+  RsMoveItemUp = 'Move &up';
+  RsMoveItemDown = 'Move &down';
+  RsMenuOrganization = 'Menu &organization:';
+  RsNoIcon = 'No icon';
+  RsJCLIcons = 'JCL icons';
+
+//=== JclVersionCtrlImpl.pas =================================================
+resourcestring
+  RsEInvalidAction = 'Internal error: invalid action';
 
 {$IFDEF UNITVERSIONING}
 const

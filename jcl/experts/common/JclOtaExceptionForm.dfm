@@ -1,10 +1,10 @@
 object JclExpertExceptionForm: TJclExpertExceptionForm
   Left = 157
   Top = 183
-  ClientWidth = 551
-  ClientHeight = 423
   BorderIcons = [biSystemMenu]
   Caption = 'RsReportFormCaption'
+  ClientHeight = 423
+  ClientWidth = 551
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -14,6 +14,9 @@ object JclExpertExceptionForm: TJclExpertExceptionForm
   OldCreateOrder = False
   Position = poScreenCenter
   OnCreate = FormCreate
+  DesignSize = (
+    551
+    423)
   PixelsPerInch = 96
   TextHeight = 13
   object LabelURL: TLabel

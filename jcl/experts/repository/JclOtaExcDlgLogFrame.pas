@@ -96,13 +96,13 @@ begin
   FParams := AParams;
   inherited Create(AOwner);
 
-  Caption := RsExcDlgLogOptions;
-  CheckBoxLogFile.Caption := RsLogTrace;
-  LabelLogFileName.Caption := RsFileName;
-  CheckBoxLogInWorkingDirectory.Caption := RsLogInWorkingDirectory;
-  CheckBoxLogInApplicationDirectory.Caption := RsLogInApplicationDirectory;
-  CheckBoxLogInDesktopDirectory.Caption := RsLogInDesktopDirectory;
-  CheckBoxSaveDialog.Caption := RsLogSaveDialog;
+  Caption := LoadResString(@RsExcDlgLogOptions);
+  CheckBoxLogFile.Caption := LoadResString(@RsLogTrace);
+  LabelLogFileName.Caption := LoadResString(@RsFileName);
+  CheckBoxLogInWorkingDirectory.Caption := LoadResString(@RsLogInWorkingDirectory);
+  CheckBoxLogInApplicationDirectory.Caption := LoadResString(@RsLogInApplicationDirectory);
+  CheckBoxLogInDesktopDirectory.Caption := LoadResString(@RsLogInDesktopDirectory);
+  CheckBoxSaveDialog.Caption := LoadResString(@RsLogSaveDialog);
 end;
 
 function TJclOtaExcDlgLogPage.GetSupportsNext: Boolean;

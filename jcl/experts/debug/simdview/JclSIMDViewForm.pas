@@ -268,10 +268,10 @@ begin
           Font.Color := clWindow;
       end;
       Rectangle(Rect);
-      TextOut(Rect.Left + 2, Rect.Top, MXCSRBitsDescriptions[Index].ShortName);
+      TextOut(Rect.Left + 2, Rect.Top, LoadResString(MXCSRBitsDescriptions[Index].ShortName));
       if FMXCSRChanged[Index] then
         Font.Color := clRed;
-      TextOut(Rect.Left + 2 + TextExtent(MXCSRBitsDescriptions[Index].ShortName).cx, Rect.Top, Items[Index]);
+      TextOut(Rect.Left + 2 + TextExtent(LoadResString(MXCSRBitsDescriptions[Index].ShortName)).cx, Rect.Top, Items[Index]);
     end;
   except
     on ExceptionObj: TObject do
@@ -299,17 +299,17 @@ begin
         begin
           with MXCSRBitsDescriptions[AIndex] do
           begin
-            AText := LongName;
+            AText := LoadResString(LongName);
             if AndMask = MXCSR_RC then
               case (FJclContext.ExtendedContext.SaveArea.MXCSR and AndMask) shr Shifting of
                 0:
-                  AText := SysUtils.Format('%s (%s)', [AText, RsRoundToNearest]);
+                  AText := SysUtils.Format('%s (%s)', [AText, LoadResString(@RsRoundToNearest)]);
                 1:
-                  AText := SysUtils.Format('%s (%s)', [AText, RsRoundDown]);
+                  AText := SysUtils.Format('%s (%s)', [AText, LoadResString(@RsRoundDown)]);
                 2:
-                  AText := SysUtils.Format('%s (%s)', [AText, RsRoundUp]);
+                  AText := SysUtils.Format('%s (%s)', [AText, LoadResString(@RsRoundUp)]);
                 3:
-                  AText := SysUtils.Format('%s (%s)', [AText, RsRoundTowardZero]);
+                  AText := SysUtils.Format('%s (%s)', [AText, LoadResString(@RsRoundTowardZero)]);
             end;
             if AText <> Hint then
             begin
@@ -537,10 +537,10 @@ var
             Result := Result + ' ' + FormatValue(Value, sfBinary);
           end;
         pctDoubles:
-          Result := RsNotSupportedFormat;
+          Result := LoadResString(@RsNotSupportedFormat);
       end
     else
-      Result := RsNoPackedData;
+      Result := LoadResString(@RsNoPackedData);
   end;
 
 begin
@@ -614,7 +614,7 @@ end;
 procedure TJclSIMDViewFrm.SetThreadValues;
 begin
   if not SetThreadJclContext(DebuggerServices.CurrentProcess.CurrentThread,FJclContext) then
-    raise EJclExpertException.Create(RsECantUpdateThreadContext);
+    raise EJclExpertException.CreateRes(@RsECantUpdateThreadContext);
 end;
 
 procedure TJclSIMDViewFrm.SetYMMEnabled(const Value: Boolean);
@@ -688,6 +688,51 @@ end;
 
 procedure TJclSIMDViewFrm.FormCreate(Sender: TObject);
 begin
+  MXCSRBitsDescriptions[0].ShortName := @RsVectorIE;
+  MXCSRBitsDescriptions[0].LongName := @RsVectorIEText;
+  MXCSRBitsDescriptions[1].ShortName := @RsVectorDE;
+  MXCSRBitsDescriptions[1].LongName := @RsVectorDEText;
+  MXCSRBitsDescriptions[2].ShortName := @RsVectorZE;
+  MXCSRBitsDescriptions[2].LongName := @RsVectorZEText;
+  MXCSRBitsDescriptions[3].ShortName := @RsVectorOE;
+  MXCSRBitsDescriptions[3].LongName := @RsVectorOEText;
+  MXCSRBitsDescriptions[4].ShortName := @RsVectorUE;
+  MXCSRBitsDescriptions[4].LongName := @RsVectorUEText;
+  MXCSRBitsDescriptions[5].ShortName := @RsVectorPE;
+  MXCSRBitsDescriptions[5].LongName := @RsVectorPEText;
+  MXCSRBitsDescriptions[6].ShortName := @RsVectorDAZ;
+  MXCSRBitsDescriptions[6].LongName := @RsVectorDAZText;
+  MXCSRBitsDescriptions[7].ShortName := @RsVectorIM;
+  MXCSRBitsDescriptions[7].LongName := @RsVectorIMText;
+  MXCSRBitsDescriptions[8].ShortName := @RsVectorDM;
+  MXCSRBitsDescriptions[8].LongName := @RsVectorDMText;
+  MXCSRBitsDescriptions[9].ShortName := @RsVectorZM;
+  MXCSRBitsDescriptions[9].LongName := @RsVectorZMText;
+  MXCSRBitsDescriptions[10].ShortName := @RsVectorOM;
+  MXCSRBitsDescriptions[10].LongName := @RsVectorOMText;
+  MXCSRBitsDescriptions[11].ShortName := @RsVectorUM;
+  MXCSRBitsDescriptions[11].LongName := @RsVectorUMText;
+  MXCSRBitsDescriptions[12].ShortName := @RsVectorPM;
+  MXCSRBitsDescriptions[12].LongName := @RsVectorPMText;
+  MXCSRBitsDescriptions[13].ShortName := @RsVectorRC;
+  MXCSRBitsDescriptions[13].LongName := @RsVectorRCText;
+  MXCSRBitsDescriptions[14].ShortName := @RsVectorFZ;
+  MXCSRBitsDescriptions[14].LongName := @RsVectorFZText;
+
+  ActionStayOnTop.Caption := LoadResString(@RsStayOnTop);
+  ActionModify.Caption := LoadResString(@RsModify);
+  ActionComplement.Caption := LoadResString(@RsComplementBit);
+  ActionEmpty.Caption := LoadResString(@RsEmptyMM);
+  ActionEmptyAll.Caption := LoadResString(@RsEmptyAllMM);
+  ActionYMMEnabled.Caption := LoadResString(@RsViewYMM);
+  MenuItemDisplay.Caption := LoadResString(@RsDisplay);
+  MenuItemFormat.Caption := LoadResString(@RsFormat);
+  MenuItemBinary.Caption := LoadResString(@RsBinary);
+  MenuItemSigned.Caption := LoadResString(@RsSignedDecimal);
+  MenuItemUnsigned.Caption := LoadResString(@RsUnsignedDecimal);
+  MenuItemHexa.Caption := LoadResString(@RsHexadecimal);
+  MenuItemCpuInfo.Caption := LoadResString(@RsCPUInfo);
+
   SetBounds(
     Settings.LoadInteger('Left', Left),
     Settings.LoadInteger('Top', Top),
@@ -893,7 +938,7 @@ begin
 
       if AItemIndex < NbMMRegister then
       begin
-        FModifyForm.Caption := SysUtils.Format(RsModifyMM, [AItemIndex]);
+        FModifyForm.Caption := SysUtils.Format(LoadResString(@RsModifyMM), [AItemIndex]);
         if FModifyForm.Execute(DebuggerServices.CurrentProcess.CurrentThread, Display,
           Format, FJclContext.ExtendedContext.SaveArea.FPURegisters[AItemIndex].Data.MMRegister ,FCpuInfo, YMMEnabled) then
         begin
@@ -909,9 +954,9 @@ begin
         if YMMEnabled then
         begin
           if CpuInfo.Is64Bits then
-            FModifyForm.Caption := SysUtils.Format(RsModifyYMM2, [AItemIndex - NbMMRegister])
+            FModifyForm.Caption := SysUtils.Format(LoadResString(@RsModifyYMM2), [AItemIndex - NbMMRegister])
           else
-            FModifyForm.Caption := SysUtils.Format(RsModifyYMM1, [AItemIndex - NbMMRegister]);
+            FModifyForm.Caption := SysUtils.Format(LoadResString(@RsModifyYMM1), [AItemIndex - NbMMRegister]);
           if FModifyForm.Execute(DebuggerServices.CurrentProcess.CurrentThread, Display,
             Format, FJclContext.ExtendedContext.SaveArea.XMMRegisters.LongXMM[AItemIndex - NbMMRegister],
             FJclContext.ExtendedContext.ExtSaveArea2.LongYMM[AItemIndex - NbMMRegister], FCpuInfo, YMMEnabled) then
@@ -919,9 +964,9 @@ begin
         else
         begin
           if CpuInfo.Is64Bits then
-            FModifyForm.Caption := SysUtils.Format(RsModifyXMM2, [AItemIndex - NbMMRegister])
+            FModifyForm.Caption := SysUtils.Format(LoadResString(@RsModifyXMM2), [AItemIndex - NbMMRegister])
           else
-            FModifyForm.Caption := SysUtils.Format(RsModifyXMM1, [AItemIndex - NbMMRegister]);
+            FModifyForm.Caption := SysUtils.Format(LoadResString(@RsModifyXMM1), [AItemIndex - NbMMRegister]);
           if FModifyForm.Execute(DebuggerServices.CurrentProcess.CurrentThread, Display,
             Format, FJclContext.ExtendedContext.SaveArea.XMMRegisters.LongXMM[AItemIndex - NbMMRegister], FCpuInfo, YMMEnabled) then
         end;

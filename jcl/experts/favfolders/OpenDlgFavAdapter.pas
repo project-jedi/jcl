@@ -222,7 +222,7 @@ begin
     begin
       AutoSize := False;
       SetBounds(6, 0, 100, 14);
-      Caption := RsFavorites;
+      Caption := LoadResString(@RsFavorites);
       FocusControl := FFavoriteComboBox;
       Parent := FFavoritePanel;
     end;
@@ -230,7 +230,7 @@ begin
     with FAddButton do
     begin
       SetBounds(333, 14, 75, 23);
-      Caption := RsAdd;
+      Caption := LoadResString(@RsAdd);
       OnClick := AddButtonClick;
       Parent := FFavoritePanel;
     end;
@@ -257,7 +257,7 @@ begin
   begin
     I := FFavoriteComboBox.ItemIndex;
     Path := FFavoriteComboBox.Items[I];
-    if MessageBox(FHandle, PChar(Format(RsDelConfirm, [Path])), PChar(RsConfirmation),
+    if MessageBox(FHandle, PChar(Format(LoadResString(@RsDelConfirm), [Path])), PChar(LoadResString(@RsConfirmation)),
       MB_YESNO or MB_ICONQUESTION or MB_DEFBUTTON2) = ID_YES then
     begin
       FFavoriteComboBox.Items.Delete(I);
@@ -455,9 +455,9 @@ begin
   begin
     FDeleteMode := Value;
     if FDeleteMode then
-      FAddButton.Caption := RsDelete
+      FAddButton.Caption := LoadResString(@RsDelete)
     else
-      FAddButton.Caption := RsAdd;
+      FAddButton.Caption := LoadResString(@RsAdd);
     FFavoriteComboBox.Invalidate;
   end;
 end;

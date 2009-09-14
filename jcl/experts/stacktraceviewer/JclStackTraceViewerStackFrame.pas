@@ -47,12 +47,12 @@ type
     procedure lvDblClick(Sender: TObject);
     procedure lvChange(Sender: TObject; Item: TListItem; Change: TItemChange);
   private
-    { Private declarations }
     FStackList: IJclLocationInfoList;
     FOnSelectStackLine: TNotifyEvent;
     procedure DoSelectStackLine;
     procedure UpdateListView;
   public
+    constructor Create(AOwner: TComponent); override;
     procedure LoadState(AIni: TCustomIniFile; const ASection, APrefix: string);
     procedure SaveState(AIni: TCustomIniFile; const ASection, APrefix: string);
     { IJclStackTraceViewerStackFrame }
@@ -86,7 +86,24 @@ implementation
 
 {$R *.dfm}
 
+uses
+  JclOtaResources;
+
 { TfrmStack }
+
+constructor TfrmStack.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  lv.Columns.Items[0].Caption := LoadResString(@RsStackModuleName);
+  lv.Columns.Items[0].Caption := LoadResString(@RsSourceUnitName);
+  lv.Columns.Items[0].Caption := LoadResString(@RsProcedureName);
+  lv.Columns.Items[0].Caption := LoadResString(@RsSourceName);
+  lv.Columns.Items[0].Caption := LoadResString(@RsLineNumber);
+  lv.Columns.Items[0].Caption := LoadResString(@RsLineNumberOffsetFromProcedureStart);
+  lv.Columns.Items[0].Caption := LoadResString(@RsRevision);
+  lv.Columns.Items[0].Caption := LoadResString(@RsProjectFile);
+  lv.Columns.Items[0].Caption := LoadResString(@RsTranslatedLineNumber);
+end;
 
 procedure TfrmStack.DoSelectStackLine;
 begin

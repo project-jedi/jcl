@@ -102,15 +102,15 @@ var
 begin
   inherited Create(AOwner);
 
-  ButtonRestore.Caption := RsRestore;
-  LabelActions.Caption := RsActions;
-  LabelShortcut.Caption := RsShortcut;
-  ListViewActions.Columns.Items[0].Caption := RsCaption;
-  ListViewActions.Columns.Items[1].Caption := RsShortcut;
+  ButtonRestore.Caption := LoadResString(@RsRestore);
+  LabelActions.Caption := LoadResString(@RsActions);
+  LabelShortcut.Caption := LoadResString(@RsShortcut);
+  ListViewActions.Columns.Items[0].Caption := LoadResString(@RsCaption);
+  ListViewActions.Columns.Items[1].Caption := LoadResString(@RsShortcut);
 
   Supports(BorlandIDEServices, INTAServices, ANTAServices);
   if not Assigned(ANTAServices) then
-    raise EJclExpertException.CreateTrace(RsENoNTAServices);
+    raise EJclExpertException.CreateRes(@RsENoNTAServices);
 
   ListViewActions.SmallImages := ANTAServices.ImageList;
 

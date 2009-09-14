@@ -2,7 +2,7 @@ inherited JclOtaExcDlgFormPage: TJclOtaExcDlgFormPage
   object LabelEMailAddress: TLabel
     Left = 97
     Top = 186
-    Width = 38
+    Width = 36
     Height = 13
     Caption = 'RsEmail'
     FocusControl = EditEMail
@@ -10,7 +10,7 @@ inherited JclOtaExcDlgFormPage: TJclOtaExcDlgFormPage
   object LabelSubject: TLabel
     Left = 97
     Top = 226
-    Width = 49
+    Width = 48
     Height = 13
     Caption = 'RsSubject'
     FocusControl = EditSubject

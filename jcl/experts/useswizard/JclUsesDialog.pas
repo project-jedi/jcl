@@ -78,10 +78,10 @@ uses
 
 constructor TFormUsesConfirm.Create(AOwner: TComponent; AChangeList: TStrings; Errors: TList);
 const
-  ActionStrings: array [TWizardAction] of string =
-    (RsActionSkip, RsActionAdd, RsActionAdd, RsActionMove);
-  SectionStrings: array [TWizardAction] of string =
-    ('', RsSectionImpl, RsSectionIntf, RsSectionIntf);
+  ActionStrings: array [TWizardAction] of PResStringRec =
+    (@RsActionSkip, @RsActionAdd, @RsActionAdd, @RsActionMove);
+  SectionStrings: array [TWizardAction] of PResStringRec =
+    (nil, @RsSectionImpl, @RsSectionIntf, @RsSectionIntf);
 var
   I, J: Integer;
   Node: TTreeNode;
@@ -92,12 +92,12 @@ begin
   for I := 0 to FChangeList.Count - 1 do
   begin
     Node := TreeViewChanges.Items.AddChildObject(nil, Format('%d. %s %s %s',
-      [I + 1, ActionStrings[TWizardAction(FChangeList.Objects[I])], FChangeList[I],
-      SectionStrings[TWizardAction(FChangeList.Objects[I])]]), Pointer(I));
+      [I + 1, LoadResString(ActionStrings[TWizardAction(FChangeList.Objects[I])]), FChangeList[I],
+      LoadResString(SectionStrings[TWizardAction(FChangeList.Objects[I])])]), Pointer(I));
     for J := 0 to FErrors.Count - 1 do
       with PErrorInfo(FErrors[J])^ do
         if AnsiCompareText(UsesName, FChangeList[I]) = 0 then
-          with TreeViewChanges.Items.AddChild(Node, Format(RsUndeclIdent,
+          with TreeViewChanges.Items.AddChild(Node, Format(LoadResString(@RsUndeclIdent),
             [UnitName, LineNumber, Identifier, UsesName])) do
           begin
             ImageIndex := -1;
@@ -115,7 +115,7 @@ begin
   end;
   if FErrors.Count > 0 then
     with PErrorInfo(FErrors[0])^ do
-      Caption := Format(RsConfirmChanges, [UnitName]);
+      Caption := Format(LoadResString(@RsConfirmChanges), [UnitName]);
 end;
 
 function TFormUsesConfirm.ToggleNode(Node: TTreeNode): Boolean;

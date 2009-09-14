@@ -230,11 +230,11 @@ end;
 
 procedure TJclOtaOptionsForm.FormCreate(Sender: TObject);
 begin
-  Caption := RsConfigurationCaption;
-  ButtonOk.Caption := RsOk;
-  ButtonCancel.Caption := RsCancel;
-  LabelSelectPage.Caption := RsSelectPage;
-  LabelHomePage.Caption := RsHomePage;
+  Caption := LoadResString(@RsConfigurationCaption);
+  ButtonOk.Caption := LoadResString(@RsOk);
+  ButtonCancel.Caption := LoadResString(@RsCancel);
+  LabelSelectPage.Caption := LoadResString(@RsSelectPage);
+  LabelHomePage.Caption := LoadResString(@RsHomePage);
 
   SetBounds(Settings.LoadInteger(JclLeft, Left),
             Settings.LoadInteger(JclTop, Top),
@@ -254,7 +254,7 @@ end;
 
 procedure TJclOtaOptionsForm.LabelHomePageClick(Sender: TObject);
 begin
-  ShellExecute(Handle, 'open', PChar(RsHomePageURL), '', '', SW_SHOW);
+  ShellExecute(Handle, 'open', PChar(LoadResString(@RsHomePageURL)), '', '', SW_SHOW);
 end;
 
 procedure TJclOtaOptionsForm.TreeViewCategoriesChange(Sender: TObject;

@@ -49,9 +49,8 @@ type
   private
     FException: TJclSerializableException;
     procedure SetException(const Value: TJclSerializableException);
-    { Private declarations }
   public
-    { Public declarations }
+    constructor Create(AOwner: TComponent); override;
     property Exception: TJclSerializableException read FException write SetException;
   end;
 
@@ -71,7 +70,17 @@ implementation
 
 {$R *.dfm}
 
+uses
+  JclOtaResources;
+
 { TfrmException }
+
+constructor TfrmException.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  Label1.Caption := LoadResString(@RsExceptionClassName);
+  Label2.Caption := LoadResString(@RsExceptionMessage);
+end;
 
 procedure TfrmException.SetException(const Value: TJclSerializableException);
 begin

@@ -1,9 +1,9 @@
 object JclOtaOptionsForm: TJclOtaOptionsForm
   Left = 0
   Top = 0
-  ClientWidth = 554
-  ClientHeight = 486
   Caption = 'RsOtaConfigurationCaption'
+  ClientHeight = 486
+  ClientWidth = 554
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -19,18 +19,21 @@ object JclOtaOptionsForm: TJclOtaOptionsForm
   object SplitterSep: TSplitter
     Left = 185
     Top = 0
-    Width = 3
-    Height = 450
-    Cursor = crHSplit
+    Height = 448
+    ExplicitHeight = 450
   end
   object PanelName: TPanel
     Left = 0
-    Top = 450
+    Top = 448
     Width = 554
     Height = 38
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
+    ExplicitTop = 450
+    DesignSize = (
+      554
+      38)
     object LabelHomePage: TLabel
       Left = 8
       Top = 8
@@ -73,10 +76,14 @@ object JclOtaOptionsForm: TJclOtaOptionsForm
     Left = 0
     Top = 0
     Width = 185
-    Height = 450
+    Height = 448
     Align = alLeft
     BevelOuter = bvNone
     TabOrder = 1
+    ExplicitHeight = 450
+    DesignSize = (
+      185
+      448)
     object TreeViewCategories: TTreeView
       Left = 8
       Top = 8
@@ -95,10 +102,11 @@ object JclOtaOptionsForm: TJclOtaOptionsForm
     Left = 188
     Top = 0
     Width = 366
-    Height = 450
+    Height = 448
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 2
+    ExplicitHeight = 450
     object LabelSelectPage: TLabel
       Left = 152
       Top = 184

@@ -92,10 +92,10 @@ begin
   FParams := AParams;
   inherited Create(AOwner);
 
-  Caption := RsExcDlgIgnoreOptions;
-  CheckBoxTraceAllExceptions.Caption := RsTraceAllExceptions;
-  CheckBoxTraceEAbort.Caption := RsTraceEAbort;
-  LabelIgnoredExceptions.Caption := RsIgnoredExceptions;
+  Caption := LoadResString(@RsExcDlgIgnoreOptions);
+  CheckBoxTraceAllExceptions.Caption := LoadResString(@RsTraceAllExceptions);
+  CheckBoxTraceEAbort.Caption := LoadResString(@RsTraceEAbort);
+  LabelIgnoredExceptions.Caption := LoadResString(@RsIgnoredExceptions);
 end;
 
 procedure TJclOtaExcDlgIgnorePage.PageActivated(Direction: TJclWizardDirection);

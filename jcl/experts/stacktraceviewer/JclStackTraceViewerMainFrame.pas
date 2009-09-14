@@ -477,6 +477,12 @@ end;
 constructor TfrmMain.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+
+  acJumpToCodeLine.Caption := LoadResString(@RsJumpToCodeLine);
+  acLoadStack.Caption := LoadResString(@RsLoadStack);
+  acOptions.Caption := LoadResString(@RsOptions);
+  acUpdateLocalInfo.Caption := LoadResString(@RsUpdateLocalInfo);
+
   FExceptionInfo := TJclStackTraceViewerExceptionInfo.Create;
   FThreadInfoList := FExceptionInfo.ThreadInfoList;
   FTreeViewLinkList := TObjectList.Create;
@@ -657,7 +663,7 @@ end;
 procedure TfrmMain.acOptionsExecute(Sender: TObject);
 begin
   inherited;
-  TJclOTAExpertBase.ConfigurationDialog(rsStackTraceViewerOptionsPageName);
+  TJclOTAExpertBase.ConfigurationDialog(LoadResString(@RsStackTraceViewerOptionsPageName));
 end;
 
 procedure TfrmMain.acUpdateLocalInfoExecute(Sender: TObject);

@@ -315,7 +315,7 @@ begin
   FConfigFrame.GenerateJdbgState := GlobalStates[deGenerateJdbg];
   FConfigFrame.InsertJdbgState := GlobalStates[deInsertJdbg];
   FConfigFrame.DeleteMapFileState := GlobalStates[deDeleteMapFile];
-  AddPageFunc(FConfigFrame, RsDebugConfigPageCaption, Self);
+  AddPageFunc(FConfigFrame, LoadResString(@RsDebugConfigPageCaption), Self);
 end;
 
 procedure TJclDebugExtension.AfterCompile(Succeeded: Boolean);
@@ -359,7 +359,7 @@ begin
 
         Succ := FileExists(MapFileName);
         if not Succ then
-          OutputToolMessage(Format(RsEMapFileNotFound, [MapFileName, ProjectFileName]));
+          OutputToolMessage(Format(LoadResString(@RsEMapFileNotFound), [MapFileName, ProjectFileName]));
 
         // creation of .jdbg
         if Succ and (deGenerateJdbg in EnabledActions) then
@@ -367,9 +367,9 @@ begin
           Succ := ConvertMapFileToJdbgFile(MapFileName, LinkerBugUnit, LineNumberErrors,
             MapFileSize, JclDebugDataSize);
           if Succ then
-            OutputToolMessage(Format(RsConvertedMapToJdbg, [MapFileName, MapFileSize, JclDebugDataSize]))
+            OutputToolMessage(Format(LoadResString(@RsConvertedMapToJdbg), [MapFileName, MapFileSize, JclDebugDataSize]))
           else
-            OutputToolMessage(Format(RsEMapConversion, [MapFileName]));
+            OutputToolMessage(Format(LoadResString(@RsEMapConversion), [MapFileName]));
         end;
 
         // insertion of JEDI Debug Information into the binary
@@ -381,12 +381,12 @@ begin
             Succ := InsertDebugDataIntoExecutableFile(ExecutableFileName, MapFileName,
               LinkerBugUnit, MapFileSize, JclDebugDataSize, LineNumberErrors);
             if Succ then
-              OutputToolMessage(Format(RsInsertedJdbg, [MapFileName, MapFileSize, JclDebugDataSize]))
+              OutputToolMessage(Format(LoadResString(@RsInsertedJdbg), [MapFileName, MapFileSize, JclDebugDataSize]))
             else
-              OutputToolMessage(Format(RsEMapConversion, [MapFileName]));
+              OutputToolMessage(Format(LoadResString(@RsEMapConversion), [MapFileName]));
           end
           else
-            OutputToolMessage(Format(RsEExecutableNotFound, [ProjectFileName]));
+            OutputToolMessage(Format(LoadResString(@RsEExecutableNotFound), [ProjectFileName]));
         end;
 
         // deletion of MAP files
@@ -394,13 +394,13 @@ begin
         begin
           Succ := DeleteFile(MapFileName);
           if Succ then
-            OutputToolMessage(Format(RsDeletedMapFile, ['MAP', MapFileName]))
+            OutputToolMessage(Format(LoadResString(@RsDeletedMapFile), ['MAP', MapFileName]))
           else
-            OutputToolMessage(Format(RsEFailedToDeleteMapFile, ['MAP', MapFileName]));
+            OutputToolMessage(Format(LoadResString(@RsEFailedToDeleteMapFile), ['MAP', MapFileName]));
           if DeleteFile(DrcFileName) then
-            OutputToolMessage(Format(RsDeletedMapFile, ['DRC', DrcFileName]))
+            OutputToolMessage(Format(LoadResString(@RsDeletedMapFile), ['DRC', DrcFileName]))
           else
-            OutputToolMessage(Format(RsEFailedToDeleteMapFile, ['DRC', DrcFileName]));
+            OutputToolMessage(Format(LoadResString(@RsEFailedToDeleteMapFile), ['DRC', DrcFileName]));
         end;
 
         Screen.Cursor := crDefault;
@@ -447,15 +447,15 @@ begin
   begin
     if IsInstalledPackage(Project) then
     begin
-      if MessageDlg(Format(RsCantInsertToInstalledPackage, [Project.FileName]), mtError, [mbYes, mbNo], 0) = mrYes then
+      if MessageDlg(Format(LoadResString(@RsCantInsertToInstalledPackage), [Project.FileName]), mtError, [mbYes, mbNo], 0) = mrYes then
       begin
         DisableExpert(Project);
-        MessageDlg(RsDisabledDebugExpert, mtInformation, [mbOK], 0);
+        MessageDlg(LoadResString(@RsDisabledDebugExpert), mtInformation, [mbOK], 0);
       end
       else
       begin
         Cancel := True;
-        MessageDlg(RsCompilationAborted, mtError, [mbOK], 0);
+        MessageDlg(LoadResString(@RsCompilationAborted), mtError, [mbOK], 0);
       end;
     end
     else
@@ -463,12 +463,12 @@ begin
       FCurrentProject := Project;
       ProjOptions := Project.ProjectOptions;
       if not Assigned(ProjOptions) then
-        raise EJclExpertException.CreateTrace(RsENoProjectOptions);
+        raise EJclExpertException.CreateRes(@RsENoProjectOptions);
 
       {$IFDEF BDS6_UP}
       Supports(ProjOptions, IOTAProjectOptionsConfigurations, ProjOptionsConfigurations);
       if not Assigned(ProjOptionsConfigurations) then
-        raise EJclExpertException.CreateTrace(RsENoProjectOptionsConfigurations);
+        raise EJclExpertException.CreateRes(@RsENoProjectOptionsConfigurations);
 
       // get the current build configuration
       ActiveConfiguration := ProjOptionsConfigurations.ActiveConfiguration;
@@ -504,7 +504,7 @@ begin
 
       if ChangeILinkMapFileTypeOption or ChangeDccMapFileOption or ChangeMapFileOption then
       begin
-        if MessageDlg(Format(RsChangeMapFileOption, [ExtractFileName(Project.FileName)]), mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+        if MessageDlg(Format(LoadResString(@RsChangeMapFileOption), [ExtractFileName(Project.FileName)]), mtConfirmation, [mbYes, mbNo], 0) = mrYes then
         begin
           {$IFDEF BDS6_UP}
           if ChangeILinkMapFileTypeOption then
@@ -526,7 +526,7 @@ begin
         else
         begin
           DisableExpert(Project);
-          MessageDlg(RsDisabledDebugExpert, mtInformation, [mbOK], 0);
+          MessageDlg(LoadResString(@RsDisabledDebugExpert), mtInformation, [mbOK], 0);
         end;
       end;
     end;
@@ -1257,7 +1257,7 @@ begin
         SetLength(PropValues, 1);
         PropValues[0] := DebugActionValues[False];
         if SetProjectProperties(AProject, PropIDs, PropValues) <> 1 then
-          MessageDlg(RsEProjectPropertyFailed,mtError,[mbAbort],0);
+          MessageDlg(LoadResString(@RsEProjectPropertyFailed),mtError,[mbAbort],0);
       end;
     deProjectEnabled:
       begin
@@ -1268,7 +1268,7 @@ begin
         SetLength(PropValues, 1);
         PropValues[0] := DebugActionValues[True];
         if SetProjectProperties(AProject, PropIDs, PropValues) <> 1 then
-          MessageDlg(RsEProjectPropertyFailed,mtError,[mbAbort],0);
+          MessageDlg(LoadResString(@RsEProjectPropertyFailed),mtError,[mbAbort],0);
       end;
     deAlwaysEnabled:
       FGlobalStates[Index] := deAlwaysEnabled;
@@ -1281,28 +1281,28 @@ procedure TJclDebugExtension.RegisterCommands;
     BMenuItem: TMenuItem;
   begin
     BMenuItem := TMenuItem.Create(AMenuItem);
-    BMenuItem.Caption := RsAlwaysEnabled;
+    BMenuItem.Caption := LoadResString(@RsAlwaysEnabled);
     BMenuItem.RadioItem := True;
     BMenuItem.Tag := DebugExpertStateToInt(deAlwaysEnabled);
     BMenuItem.OnClick := AEvent;
     AMenuItem.Add(BMenuItem);
 
     BMenuItem := TMenuItem.Create(AMenuItem);
-    BMenuItem.Caption := RsProjectEnabled;
+    BMenuItem.Caption := LoadResString(@RsProjectEnabled);
     BMenuItem.RadioItem := True;
     BMenuItem.Tag := DebugExpertStateToInt(deProjectEnabled);
     BMenuItem.OnClick := AEvent;
     AMenuItem.Add(BMenuItem);
 
     BMenuItem := TMenuItem.Create(AMenuItem);
-    BMenuItem.Caption := RsProjectDisabled;
+    BMenuItem.Caption := LoadResString(@RsProjectDisabled);
     BMenuItem.RadioItem := True;
     BMenuItem.Tag := DebugExpertStateToInt(deProjectDisabled);
     BMenuItem.OnClick := AEvent;
     AMenuItem.Add(BMenuItem);
 
     BMenuItem := TMenuItem.Create(AMenuItem);
-    BMenuItem.Caption := RsAlwaysDisabled;
+    BMenuItem.Caption := LoadResString(@RsAlwaysDisabled);
     BMenuItem.RadioItem := True;
     BMenuItem.Tag := DebugExpertStateToInt(deAlwaysDisabled);
     BMenuItem.OnClick := AEvent;
@@ -1349,7 +1349,7 @@ begin
 
     // create actions
     FDebugExpertAction := TDropDownAction.Create(nil);
-    FDebugExpertAction.Caption := RsDebugExpertCaption;
+    FDebugExpertAction.Caption := LoadResString(@RsDebugExpertCaption);
     FDebugExpertAction.Visible := True;
     FDebugExpertAction.ImageIndex := FDebugImageIndex;
     FDebugExpertAction.OnUpdate := DebugExpertActionUpdate;
@@ -1363,7 +1363,7 @@ begin
     RegisterAction(FDebugExpertAction);
 
     FGenerateJdbgAction := TDropDownAction.Create(nil);
-    FGenerateJdbgAction.Caption := RsDebugGenerateJdbg;
+    FGenerateJdbgAction.Caption := LoadResString(@RsDebugGenerateJdbg);
     FGenerateJdbgAction.Visible := True;
     FGenerateJdbgAction.ImageIndex := FGenerateJdbgImageIndex;
     FGenerateJdbgAction.OnUpdate := GenerateJdbgActionUpdate;
@@ -1377,7 +1377,7 @@ begin
     RegisterAction(FGenerateJdbgAction);
 
     FInsertJdbgAction := TDropDownAction.Create(nil);
-    FInsertJdbgAction.Caption := RsDebugInsertJdbg;
+    FInsertJdbgAction.Caption := LoadResString(@RsDebugInsertJdbg);
     FInsertJdbgAction.Visible := True;
     FInsertJdbgAction.ImageIndex := FInsertJdbgImageIndex;
     FInsertJdbgAction.OnUpdate := InsertJdbgActionUpdate;
@@ -1391,7 +1391,7 @@ begin
     RegisterAction(FInsertJdbgAction);
 
     FDeleteMapFileAction := TDropDownAction.Create(nil);
-    FDeleteMapFileAction.Caption := RsDeleteMapFile;
+    FDeleteMapFileAction.Caption := LoadResString(@RsDeleteMapFile);
     FDeleteMapFileAction.Visible := True;
     FDeleteMapFileAction.ImageIndex := FDeleteMapFileImageIndex;
     FDeleteMapFileAction.OnUpdate := DeleteMapFileActionUpdate;
@@ -1407,13 +1407,13 @@ begin
     // create menu items
     FDebugExpertItem := TMenuItem.Create(nil);
     FDebugExpertItem.Name := JclDebugExpertMenuName;
-    FDebugExpertItem.Caption := RsDebugExpertCaption;
+    FDebugExpertItem.Caption := LoadResString(@RsDebugExpertCaption);
     FDebugExpertItem.OnClick := DebugExpertMenuClick;
     FDebugExpertItem.ImageIndex := FDebugImageIndex;
 
     FGenerateJdbgItem := TMenuItem.Create(nil);
     FGenerateJdbgItem.Name := JclGenerateJdbgMenuName;
-    FGenerateJdbgItem.Caption := RsDebugGenerateJdbg;
+    FGenerateJdbgItem.Caption := LoadResString(@RsDebugGenerateJdbg);
     FGenerateJdbgItem.OnClick := GenerateJdbgMenuClick;
     FGenerateJdbgItem.ImageIndex := FGenerateJdbgImageIndex;
     FillMenu(FGenerateJdbgItem, GenerateJdbgSubMenuClick);
@@ -1421,7 +1421,7 @@ begin
 
     FInsertJdbgItem := TMenuItem.Create(nil);
     FInsertJdbgItem.Name := JclInsertJdbgMenuName;
-    FInsertJdbgItem.Caption := RsDebugInsertJdbg;
+    FInsertJdbgItem.Caption := LoadResString(@RsDebugInsertJdbg);
     FInsertJdbgItem.OnClick := InsertJdbgMenuClick;
     FInsertJdbgItem.ImageIndex := FInsertJdbgImageIndex;
     FillMenu(FInsertJdbgItem, InsertJdbgSubMenuClick);
@@ -1429,7 +1429,7 @@ begin
 
     FDeleteMapFileItem := TMenuItem.Create(nil);
     FDeleteMapFileItem.Name := JclDeleteMapFileMenuName;
-    FDeleteMapFileItem.Caption := RsDeleteMapFile;
+    FDeleteMapFileItem.Caption := LoadResString(@RsDeleteMapFile);
     FDeleteMapFileItem.OnClick := DeleteMapFileMenuClick;
     FDeleteMapFileItem.ImageIndex := FDeleteMapFileImageIndex;
     FillMenu(FDeleteMapFileItem, DeleteMapFileSubMenuClick);
@@ -1463,7 +1463,7 @@ begin
         Break;
       end;
   if not Assigned(IDEProjectItem) then
-    raise EJclExpertException.CreateTrace(RsENoProjectMenuItem);
+    raise EJclExpertException.CreateRes(@RsENoProjectMenuItem);
 
   with IDEProjectItem do
     for I := 0 to Count - 1 do
@@ -1480,7 +1480,7 @@ begin
         System.Break;
       end;
   if not Assigned(FDebugExpertItem.Parent) then
-     raise EJclExpertException.CreateTrace(RsEInsertDataMenuItemNotInserted);
+     raise EJclExpertException.CreateRes(@RsEInsertDataMenuItemNotInserted);
 
   // hook actions
   FSaveBuildProjectAction := nil;
@@ -1494,7 +1494,7 @@ begin
         Break;
       end;
   if not Assigned(FSaveBuildProjectAction) then
-     raise EJclExpertException.CreateTrace(RsENoBuildAction);
+     raise EJclExpertException.CreateRes(@RsENoBuildAction);
 
   FSaveBuildAllProjectsAction := nil;
   with IDEActionList do
@@ -1507,7 +1507,7 @@ begin
         Break;
       end;
   if not Assigned(FSaveBuildAllProjectsAction) then
-     raise EJclExpertException.CreateTrace(RsENoBuildAllAction);
+     raise EJclExpertException.CreateRes(@RsENoBuildAllAction);
 end;
 
 procedure TJclDebugExtension.UnregisterCommands;
@@ -1628,7 +1628,7 @@ procedure TProjectManagerMultipleNotifier.AddMenu(const Project: IOTAProject; co
     BMenu := TJclOTAProjectManagerMenu.Create;
     BMenu.Enabled := True;
     BMenu.Checked := State = deAlwaysEnabled;
-    BMenu.Caption := RsAlwaysEnabled;
+    BMenu.Caption := LoadResString(@RsAlwaysEnabled);
     BMenu.Verb := ProjectManagerSubMenuNames[Action, deAlwaysEnabled];
     BMenu.Parent := ParentVerb;
     BMenu.OnExecute := MenuExecute;
@@ -1638,7 +1638,7 @@ procedure TProjectManagerMultipleNotifier.AddMenu(const Project: IOTAProject; co
     BMenu := TJclOTAProjectManagerMenu.Create;
     BMenu.Enabled := True;
     BMenu.Checked := State = deProjectEnabled;
-    BMenu.Caption := RsProjectEnabled;
+    BMenu.Caption := LoadResString(@RsProjectEnabled);
     BMenu.Verb := ProjectManagerSubMenuNames[Action, deProjectEnabled];
     BMenu.Parent := ParentVerb;
     BMenu.OnExecute := MenuExecute;
@@ -1648,7 +1648,7 @@ procedure TProjectManagerMultipleNotifier.AddMenu(const Project: IOTAProject; co
     BMenu := TJclOTAProjectManagerMenu.Create;
     BMenu.Enabled := True;
     BMenu.Checked := State = deProjectDisabled;
-    BMenu.Caption := RsProjectDisabled;
+    BMenu.Caption := LoadResString(@RsProjectDisabled);
     BMenu.Verb := ProjectManagerSubMenuNames[Action, deProjectDisabled];
     BMenu.Parent := ParentVerb;
     BMenu.OnExecute := MenuExecute;
@@ -1658,7 +1658,7 @@ procedure TProjectManagerMultipleNotifier.AddMenu(const Project: IOTAProject; co
     BMenu := TJclOTAProjectManagerMenu.Create;
     BMenu.Enabled := True;
     BMenu.Checked := State = deAlwaysDisabled;
-    BMenu.Caption := RsAlwaysDisabled;
+    BMenu.Caption := LoadResString(@RsAlwaysDisabled);
     BMenu.Verb := ProjectManagerSubMenuNames[Action, deAlwaysDisabled];
     BMenu.Parent := ParentVerb;
     BMenu.OnExecute := MenuExecute;
@@ -1678,14 +1678,14 @@ begin
       AMenu := TJclOTAProjectManagerMenu.Create;
       AMenu.Enabled := True;
       AMenu.Checked := Actions <> [];
-      AMenu.Caption := RsDebugExpertCaption;
+      AMenu.Caption := LoadResString(@RsDebugExpertCaption);
       AMenu.Verb := JclDebugExpertProjMenuName;
       AMenu.Position := pmmpUserOptions;
       ProjectManagerMenuList.Add(AMenu);
 
       AMenu := TJclOTAProjectManagerMenu.Create;
       AMenu.Enabled := True;
-      AMenu.Caption := RsDebugGenerateJdbg;
+      AMenu.Caption := LoadResString(@RsDebugGenerateJdbg);
       AMenu.Parent := JclDebugExpertProjMenuName;
       AMenu.Verb := JclGenerateJdbgProjMenuName;
       AMenu.Position := pmmpUserOptions + 1;
@@ -1694,7 +1694,7 @@ begin
 
       AMenu := TJclOTAProjectManagerMenu.Create;
       AMenu.Enabled := True;
-      AMenu.Caption := RsDebugInsertJdbg;
+      AMenu.Caption := LoadResString(@RsDebugInsertJdbg);
       AMenu.Parent := JclDebugExpertProjMenuName;
       AMenu.Verb := JclInsertJdbgProjMenuName;
       AMenu.Position := pmmpUserOptions + 2;
@@ -1703,7 +1703,7 @@ begin
 
       AMenu := TJclOTAProjectManagerMenu.Create;
       AMenu.Enabled := True;
-      AMenu.Caption := RsDeleteMapFile;
+      AMenu.Caption := LoadResString(@RsDeleteMapFile);
       AMenu.IsMultiSelectable := True;
       AMenu.Parent := JclDebugExpertProjMenuName;
       AMenu.Verb := JclDeleteMapFileProjMenuName;
@@ -1743,7 +1743,7 @@ begin
               FDebugExtension.ProjectStates[Action, Project] := State;
       end
       else
-        raise EJclExpertException.CreateTrace(RsENoActiveProject);
+        raise EJclExpertException.CreateRes(@RsENoActiveProject);
     end;
   except
     on ExceptionObj: TObject do
@@ -1776,7 +1776,7 @@ function TProjectManagerSimpleNotifier.AddMenu(const Ident: string): TMenuItem;
   begin
     SubMenuItem := TMenuItem.Create(AMenuItem);
     SubMenuItem.Visible := True;
-    SubMenuItem.Caption := RsAlwaysEnabled;
+    SubMenuItem.Caption := LoadResString(@RsAlwaysEnabled);
     SubMenuItem.RadioItem := True;
     SubMenuItem.Checked := AState = deAlwaysEnabled;
     SubMenuItem.Tag := DebugExpertStateToInt(deAlwaysEnabled);
@@ -1785,7 +1785,7 @@ function TProjectManagerSimpleNotifier.AddMenu(const Ident: string): TMenuItem;
 
     SubMenuItem := TMenuItem.Create(AMenuItem);
     SubMenuItem.Visible := True;
-    SubMenuItem.Caption := RsProjectEnabled;
+    SubMenuItem.Caption := LoadResString(@RsProjectEnabled);
     SubMenuItem.RadioItem := True;
     SubMenuItem.Checked := AState = deProjectEnabled;
     SubMenuItem.Tag := DebugExpertStateToInt(deProjectEnabled);
@@ -1794,7 +1794,7 @@ function TProjectManagerSimpleNotifier.AddMenu(const Ident: string): TMenuItem;
 
     SubMenuItem := TMenuItem.Create(AMenuItem);
     SubMenuItem.Visible := True;
-    SubMenuItem.Caption := RsProjectDisabled;
+    SubMenuItem.Caption := LoadResString(@RsProjectDisabled);
     SubMenuItem.RadioItem := True;
     SubMenuItem.Checked := AState = deProjectDisabled;
     SubMenuItem.Tag := DebugExpertStateToInt(deProjectDisabled);
@@ -1803,7 +1803,7 @@ function TProjectManagerSimpleNotifier.AddMenu(const Ident: string): TMenuItem;
 
     SubMenuItem := TMenuItem.Create(AMenuItem);
     SubMenuItem.Visible := True;
-    SubMenuItem.Caption := RsAlwaysDisabled;
+    SubMenuItem.Caption := LoadResString(@RsAlwaysDisabled);
     SubMenuItem.RadioItem := True;
     SubMenuItem.Checked := AState = deAlwaysDisabled;
     SubMenuItem.Tag := DebugExpertStateToInt(deAlwaysDisabled);
@@ -1828,7 +1828,7 @@ begin
       // root item
       Result := TMenuItem.Create(nil);
       Result.Visible := True;
-      Result.Caption := RsDebugExpertCaption;
+      Result.Caption := LoadResString(@RsDebugExpertCaption);
       if (ADeleteMapFileState in [deAlwaysEnabled, deProjectEnabled])
         or (AGenerateJdbgState in [deAlwaysEnabled, deProjectEnabled])
         or (AInsertJdbgState in [deAlwaysEnabled, deProjectEnabled]) then
@@ -1843,7 +1843,7 @@ begin
       // actions items
       ActionMenuItem := TMenuItem.Create(Result);
       ActionMenuItem.Visible := True;
-      ActionMenuItem.Caption := RsDebugGenerateJdbg;
+      ActionMenuItem.Caption := LoadResString(@RsDebugGenerateJdbg);
       if AGenerateJdbgState in [deAlwaysEnabled, deProjectEnabled] then
       begin
         ActionMenuItem.Checked := True;
@@ -1856,7 +1856,7 @@ begin
 
       ActionMenuItem := TMenuItem.Create(Result);
       ActionMenuItem.Visible := True;
-      ActionMenuItem.Caption := RsDebugInsertJdbg;
+      ActionMenuItem.Caption := LoadResString(@RsDebugInsertJdbg);
       if AInsertJdbgState in [deAlwaysEnabled, deProjectEnabled] then
       begin
         ActionMenuItem.Checked := True;
@@ -1869,7 +1869,7 @@ begin
 
       ActionMenuItem := TMenuItem.Create(Result);
       ActionMenuItem.Visible := True;
-      ActionMenuItem.Caption := RsDeleteMapFile;
+      ActionMenuItem.Caption := LoadResString(@RsDeleteMapFile);
       if ADeleteMapFileState in [deAlwaysEnabled, deProjectEnabled] then
       begin
         ActionMenuItem.Checked := True;

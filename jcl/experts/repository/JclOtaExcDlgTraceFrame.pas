@@ -102,15 +102,15 @@ begin
   FParams := AParams;
   inherited Create(AOwner);
 
-  Caption := RsExcDlgTraceOptions;
-  CheckBoxStackList.Caption := RsStackList;
-  CheckBoxRawData.Caption := RsRawData;
-  CheckBoxModuleName.Caption := RsModuleName;
-//  CheckBoxAddressOffset.Caption := RsAddressOffset;
-  CheckBoxCodeDetails.Caption := RsCodeDetails;
-  CheckBoxVirtualAddress.Caption := RsVirtualAddress;
-  CheckBoxModuleOffset.Caption := RsModuleOffset;
-  LabelPreview.Caption := RsPreview;
+  Caption := LoadResString(@RsExcDlgTraceOptions);
+  CheckBoxStackList.Caption := LoadResString(@RsStackList);
+  CheckBoxRawData.Caption := LoadResString(@RsRawData);
+  CheckBoxModuleName.Caption := LoadResString(@RsModuleName);
+//  CheckBoxAddressOffset.Caption := LoadResString(@RsAddressOffset);
+  CheckBoxCodeDetails.Caption := LoadResString(@RsCodeDetails);
+  CheckBoxVirtualAddress.Caption := LoadResString(@RsVirtualAddress);
+  CheckBoxModuleOffset.Caption := LoadResString(@RsModuleOffset);
+  LabelPreview.Caption := LoadResString(@RsPreview);
 end;
 
 procedure TJclOtaExcDlgTracePage.PageActivated(Direction: TJclWizardDirection);

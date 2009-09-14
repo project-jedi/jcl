@@ -216,7 +216,7 @@ procedure TJclSIMDWizard.SIMDActionExecute(Sender: TObject);
 begin
   try
     if CpuInfo.SSE = [] then
-      raise EJclExpertException.CreateTrace(RsNoSSE);
+      raise EJclExpertException.CreateRes(@RsNoSSE);
 
     if not Assigned(FForm) then
     begin
@@ -311,7 +311,7 @@ begin
   FIcon.Handle := LoadIcon(FindResourceHInstance(ModuleHInstance), 'SIMDICON');
 
   FSIMDAction := TAction.Create(nil);
-  FSIMDAction.Caption := RsSIMD;
+  FSIMDAction.Caption := LoadResString(@RsSIMD);
   FSIMDAction.Visible := True;
   FSIMDAction.OnExecute := SIMDActionExecute;
   FSIMDAction.OnUpdate := SIMDActionUpdate;
@@ -327,21 +327,21 @@ begin
 
   IDEMenu := NTAServices.MainMenu;
   if not Assigned(IDEMenu) then
-    raise EJclExpertException.CreateTrace(RsENoIDEMenu);
+    raise EJclExpertException.CreateRes(@RsENoIDEMenu);
 
   ViewMenu := nil;
   for I := 0 to IDEMenu.Items.Count - 1 do
     if CompareText(IDEMenu.Items[I].Name, 'ViewsMenu') = 0 then
       ViewMenu := IDEMenu.Items[I];
   if not Assigned(ViewMenu) then
-    raise EJclExpertException.CreateTrace(RsENoViewMenuItem);
+    raise EJclExpertException.CreateRes(@RsENoViewMenuItem);
 
   FViewDebugMenu := nil;
   for I := 0 to ViewMenu.Count - 1 do
     if CompareText(ViewMenu.Items[I].Name, 'ViewDebugItem') = 0 then
       FViewDebugMenu := ViewMenu.Items[I];
   if not Assigned(FViewDebugMenu) then
-    raise EJclExpertException.CreateTrace(RsENoDebugWindowsMenuItem);
+    raise EJclExpertException.CreateRes(@RsENoDebugWindowsMenuItem);
 
   FViewDebugMenu.Add(FSIMDMenuItem);
 
@@ -383,18 +383,18 @@ begin
   with CpuInfo do
   begin
     if MMX then
-      Result := RsMMX;
+      Result := LoadResString(@RsMMX);
     if ExMMX then
-      Result := Concat(Result, RsExMMX);
+      Result := Concat(Result, LoadResString(@RsMMXExt));
     if _3DNow then
-      Result := Concat(Result, Rs3DNow);
+      Result := Concat(Result, LoadResString(@Rs3DNow));
     if Ex3DNow then
-      Result := Concat(Result, RsEx3DNow);
+      Result := Concat(Result, LoadResString(@Rs3DNowExt));
     for SSESupport := Low(TSSESupport) to High(TSSESupport) do
       if SSESupport in SSE then
         Result := Concat(Result, GetEnumName(TypeInfo(TSSESupport), Integer(SSESupport)));
     if Is64Bits then
-      Result := Result + ',' + RsLong;
+      Result := Result + ',' + LoadResString(@RsLong);
   end;
 end;
 

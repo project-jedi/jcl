@@ -20,7 +20,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -202,7 +202,7 @@ begin
   inherited AddConfigurationPages(AddPageFunc);
   FOptionsFrame := TJclStackTraceViewerConfigFrame.Create(nil);
   FOptionsFrame.Options := FOptions;
-  AddPageFunc(FOptionsFrame, rsStackTraceViewerOptionsPageName, Self);
+  AddPageFunc(FOptionsFrame, LoadResString(@RsStackTraceViewerOptionsPageName), Self);
 end;
 
 procedure TJclStackTraceViewerExpert.ConfigurationClosed(AControl: TControl; SaveChanges: Boolean);
@@ -250,7 +250,7 @@ begin
 
   // create actions
   FStackTraceViewAction := TAction.Create(nil);
-  FStackTraceViewAction.Caption := rsStackTraceViewerCaption;
+  FStackTraceViewAction.Caption := LoadResString(@RsStackTraceViewerCaption);
   FStackTraceViewAction.Visible := True;
   FStackTraceViewAction.OnExecute := ActionExecute;
   FStackTraceViewAction.Category := Category;
@@ -271,7 +271,7 @@ begin
     if CompareText(IDEMenu.Items[I].Name, 'ViewsMenu') = 0 then
       ViewMenu := IDEMenu.Items[I];
   if not Assigned(ViewMenu) then
-    raise EJclExpertException.CreateTrace(RsENoViewMenuItem);
+    raise EJclExpertException.CreateRes(@RsENoViewMenuItem);
 
   ViewDebugMenuIdx := -1;
   for I := 0 to ViewMenu.Count - 1 do
@@ -281,7 +281,7 @@ begin
       Break;
     end;
   if ViewDebugMenuIdx = -1 then
-    raise EJclExpertException.CreateTrace(RsENoDebugWindowsMenuItem);
+    raise EJclExpertException.CreateRes(@RsENoDebugWindowsMenuItem);
 
   ViewMenu.Insert(ViewDebugMenuIdx + 1, FStackTraceViewMenuItem);
 

@@ -46,9 +46,8 @@ type
   private
     FModuleList: TJclSerializableModuleInfoList;
     procedure SetModuleList(const Value: TJclSerializableModuleInfoList);
-    { Private declarations }
   public
-    { Public declarations }
+    constructor Create(AOwner: TComponent); override;
     property ModuleList: TJclSerializableModuleInfoList read FModuleList write SetModuleList;
     procedure LoadState(AIni: TCustomIniFile; const ASection: string);
     procedure SaveState(AIni: TCustomIniFile; const ASection: string);
@@ -70,7 +69,22 @@ implementation
 
 {$R *.dfm}
 
+uses
+  JclOtaResources;
+
 { TfrmModule }
+
+constructor TfrmModule.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  lv.Columns.Items[0].Caption := LoadResString(@RsStartAddr);
+  lv.Columns.Items[1].Caption := LoadResString(@RsEndAddr);
+  lv.Columns.Items[2].Caption := LoadResString(@RsSystemModule);
+  lv.Columns.Items[3].Caption := LoadResString(@RsBinFileName);
+  lv.Columns.Items[4].Caption := LoadResString(@RsBinFileVersion);
+  lv.Columns.Items[5].Caption := LoadResString(@RsFileVersion);
+  lv.Columns.Items[6].Caption := LoadResString(@RsFileDescription);
+end;
 
 procedure TfrmModule.LoadState(AIni: TCustomIniFile; const ASection: string);
 var

@@ -94,15 +94,15 @@ begin
   FParams := AParams;
   inherited Create(AOwner);
 
-  Caption := RsExcDlgSystemOptions;
-  CheckBoxDelayed.Caption := RsDelayedStackTrace;
-  CheckBoxHookDll.Caption := RsHookDll;
-  CheckBoxModuleList.Caption := RsModuleList;
-  CheckBoxUnitVersioning.Caption := RsUnitVersioning;
-  CheckBoxOSInfo.Caption := RsOSInfo;
-  CheckBoxActiveControls.Caption := RsActiveControls;
-  CheckBoxCatchMainThread.Caption := RsCatchMainThread;
-  CheckBoxDisableIfDebuggerAttached.Caption := RsDisableIfDebuggerAttached;
+  Caption := LoadResString(@RsExcDlgSystemOptions);
+  CheckBoxDelayed.Caption := LoadResString(@RsDelayedStackTrace);
+  CheckBoxHookDll.Caption := LoadResString(@RsHookDll);
+  CheckBoxModuleList.Caption := LoadResString(@RsModuleList);
+  CheckBoxUnitVersioning.Caption := LoadResString(@RsUnitVersioning);
+  CheckBoxOSInfo.Caption := LoadResString(@RsOSInfo);
+  CheckBoxActiveControls.Caption := LoadResString(@RsActiveControls);
+  CheckBoxCatchMainThread.Caption := LoadResString(@RsCatchMainThread);
+  CheckBoxDisableIfDebuggerAttached.Caption := LoadResString(@RsDisableIfDebuggerAttached);
 end;
 
 procedure TJclOtaExcDlgSystemPage.PageActivated(Direction: TJclWizardDirection);

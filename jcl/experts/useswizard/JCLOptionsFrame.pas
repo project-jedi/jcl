@@ -86,11 +86,11 @@ uses
 constructor TFrameJclOptions.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  OpenDialog.Filter := RsUsesOpenFilters;
-  OpenDialog.Title := RsUsesOpenTitle;
-  LabelIniFile.Caption := RsUsesConfigurationFile;
-  CheckBoxWizardActive.Caption := RsUsesActive;
-  CheckBoxWizardConfirm.Caption := RsUsesConfirm;
+  OpenDialog.Filter := LoadResString(@RsUsesOpenFilters);
+  OpenDialog.Title := LoadResString(@RsUsesOpenTitle);
+  LabelIniFile.Caption := LoadResString(@RsUsesConfigurationFile);
+  CheckBoxWizardActive.Caption := LoadResString(@RsUsesActive);
+  CheckBoxWizardConfirm.Caption := LoadResString(@RsUsesConfirm);
 end;
 
 function TFrameJclOptions.GetActive: Boolean;

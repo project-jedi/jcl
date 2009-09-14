@@ -97,15 +97,15 @@ end;
 
 procedure TJclExpertExceptionForm.FormCreate(Sender: TObject);
 begin
-  Caption := RsReportFormCaption;
-  MemoDetails.Lines.Text := RsExceptionDetails;
-  LabelURL.Caption := RsReportCaption;
-  ButtonClose.Caption := RsReportClose;
+  Caption := LoadResString(@RsReportFormCaption);
+  MemoDetails.Lines.Text := LoadResString(@RsExceptionDetails);
+  LabelURL.Caption := LoadResString(@RsReportCaption);
+  ButtonClose.Caption := LoadResString(@RsReportClose);
 end;
 
 procedure TJclExpertExceptionForm.LabelURLClick(Sender: TObject);
 begin
-  ShellExecute(Handle, 'open', PChar(RsReportURL), '', '', SW_SHOW);    // do not localize
+  ShellExecute(Handle, 'open', PChar(LoadResString(@RsReportURL)), '', '', SW_SHOW);    // do not localize
 end;
 
 procedure TJclExpertExceptionForm.ShowException(AExceptionObj: TObject);
@@ -116,11 +116,11 @@ begin
 
   try
     if Assigned(AExceptionObj) then
-      MemoCallStack.Lines.Add(RsDetailsExceptionName + AExceptionObj.ClassName);
+      MemoCallStack.Lines.Add(Format(LoadResString(@RsDetailsExceptionName), [AExceptionObj.ClassName]));
 
     if AExceptionObj is Exception then
     begin
-      MemoCallStack.Lines.Add(RsDetailsExceptionMessage + Exception(AExceptionObj).Message);
+      MemoCallStack.Lines.Add(Format(LoadResString(@RsDetailsExceptionMessage), [Exception(AExceptionObj).Message]));
 {$IFDEF MSWINDOWS}
       if (AExceptionObj is EJclExpertException) then
         with EJclExpertException(AExceptionObj) do
@@ -141,7 +141,7 @@ begin
     end;
 {$ENDIF MSWINDOWS}
   except
-    MemoCallStack.Lines.Add(RsErrorWhileFormatting);
+    MemoCallStack.Lines.Add(LoadResString(@RsErrorWhileFormatting));
   end;
 end;
 

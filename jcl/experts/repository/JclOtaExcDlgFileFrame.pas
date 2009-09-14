@@ -124,7 +124,7 @@ procedure TJclOtaExcDlgFilePage.ButtonFileBrowseClick(Sender: TObject);
   end;
 begin
   SaveDialogFileName.FileName := EditFileName.Text;
-  SaveDialogFileName.Title := RsFileNameDialog;
+  SaveDialogFileName.Title := LoadResString(@RsFileNameDialog);
 
   SaveDialogFileName.Filter := '';
   AddFilter('All files', '.*');
@@ -161,11 +161,11 @@ begin
   FParams := AParams;
   inherited Create(AOwner);
   
-  Caption := RsExcDlgFileOptions;
-  LabelLanguage.Caption := RsLanguage;
-  LabelFileName.Caption := RsFileName;
-  LabelFormName.Caption := RsFormName;
-  LabelFormAncestor.Caption := RsFormAncestor;
+  Caption := LoadResString(@RsExcDlgFileOptions);
+  LabelLanguage.Caption := LoadResString(@RsLanguage);
+  LabelFileName.Caption := LoadResString(@RsFileName);
+  LabelFormName.Caption := LoadResString(@RsFormName);
+  LabelFormAncestor.Caption := LoadResString(@RsFormAncestor);
 end;
 
 function TJclOtaExcDlgFilePage.GetSelectedLanguage: TJclBorPersonality;

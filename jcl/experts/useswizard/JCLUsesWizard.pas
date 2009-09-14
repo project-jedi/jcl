@@ -19,7 +19,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -305,7 +305,7 @@ begin
       Read := Reader.GetText(ReaderPos, @Buf, BufSize);
       Inc(ReaderPos, Read);
       if (Read < 0) or (Read > BufSize) then
-        raise EJclExpertException.CreateTrace(RsEErrorReadingBuffer);
+        raise EJclExpertException.CreateRes(@RsEErrorReadingBuffer);
       Buf[Read] := #0;
       Stream.WriteString(Buf);
     until Read < BufSize;
@@ -381,7 +381,7 @@ begin
   FFrameJclOptions.Active := Active;
   FFrameJclOptions.ConfirmChanges := ConfirmChanges;
   FFrameJclOptions.ConfigFileName := IniFile;
-  AddPageFunc(FFrameJclOptions, RsUsesSheet, Self);
+  AddPageFunc(FFrameJclOptions, LoadResString(@RsUsesSheet), Self);
 end;
 
 procedure TJCLUsesWizard.ConfigurationClosed(AControl: TControl;

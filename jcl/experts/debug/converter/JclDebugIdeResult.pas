@@ -74,7 +74,8 @@ implementation
 uses
   Clipbrd, Math,
   JclStrings,
-  JclOtaConsts;
+  JclOtaConsts,
+  JclOtaResources;
 
 procedure ListViewToStrings(ListView: TListView; Strings: TStrings;
   SelectedOnly: Boolean = False; Headers: Boolean = True);
@@ -188,6 +189,15 @@ begin
             Settings.LoadInteger(JclTop, Top),
             Settings.LoadInteger(JclWidth, Width),
             Settings.LoadInteger(JclHeight, Height));
+
+  OkBtn.Caption := LoadResString(@RsOk);
+  ResultListView.Columns.Items[0].Caption := LoadResString(@RsProject);
+  ResultListView.Columns.Items[1].Caption := LoadResString(@RsMapFileSize);
+  ResultListView.Columns.Items[2].Caption := LoadResString(@RsJCLDebugSize);
+  ResultListView.Columns.Items[3].Caption := LoadResString(@RsRatio);
+  ResultListView.Columns.Items[4].Caption := LoadResString(@RsExecutableFileName);
+  ResultListView.Columns.Items[5].Caption := LoadResString(@RsLinkerBug);
+  ResultListView.Columns.Items[6].Caption := LoadResString(@RsLineErrors);
 
   with ResultListView.Columns do
     for Index := 0 to Count - 1 do

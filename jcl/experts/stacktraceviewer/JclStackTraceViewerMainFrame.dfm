@@ -47,22 +47,22 @@ object frmMain: TfrmMain
     Left = 56
     Top = 216
     object acJumpToCodeLine: TAction
-      Caption = 'Jump to code line'
+      Caption = 'RsJumpToCodeLine'
       Hint = 'Jump to the code line of the selected stack line'
       OnExecute = acJumpToCodeLineExecute
       OnUpdate = acJumpToCodeLineUpdate
     end
     object acLoadStack: TAction
-      Caption = 'Load Stack'
+      Caption = 'RsLoadStack'
       Hint = 'Load Stack from file'
       OnExecute = acLoadStackExecute
     end
     object acOptions: TAction
-      Caption = 'Options'
+      Caption = 'RsOptions'
       OnExecute = acOptionsExecute
     end
     object acUpdateLocalInfo: TAction
-      Caption = 'Update Local Info'
+      Caption = 'RsUpdateLocalInfo'
       OnExecute = acUpdateLocalInfoExecute
       OnUpdate = acUpdateLocalInfoUpdate
     end

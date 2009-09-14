@@ -89,6 +89,9 @@ implementation
 
 {$R *.dfm}
 
+uses
+  JclOtaResources;
+
 //=== { TJclFormCpuInfo } ====================================================
 
 procedure TJclFormCpuInfo.CreateParams(var Params: TCreateParams);
@@ -107,6 +110,28 @@ end;
 
 procedure TJclFormCpuInfo.Execute(const CpuInfo: TCPUInfo; const EnabledFeatures: TOSEnabledFeatures);
 begin
+  Caption := LoadResString(@RsCpuInfoTitle);
+  LabelName.Caption := LoadResString(@RsName);
+  LabelVendor.Caption := LoadResString(@RsVendor);
+  LabelFrequency.Caption := LoadResString(@RsFrequency);
+  CheckBoxMMX.Caption := LoadResString(@RsMMX);
+  CheckBoxExMMX.Caption := LoadResString(@RsMMXExt);
+  CheckBox3DNow.Caption := LoadResString(@Rs3DNow);
+  CheckBoxEx3DNow.Caption := LoadResString(@Rs3DNowExt);
+  CheckBox64Bits.Caption := LoadResString(@RsLong);
+  CheckBoxEnabledFPU.Caption := LoadResString(@RsEnabledFPU);
+  CheckBoxEnabledSSE.Caption := LoadResString(@RsEnabledSSE);
+  CheckBoxEnabledAVX.Caption := LoadResString(@RsEnabledAVX);
+  CheckBoxSSE1.Caption := LoadResString(@RsSSE1);
+  CheckBoxSSE2.Caption := LoadResString(@RsSSE2);
+  CheckBoxSSE3.Caption := LoadResString(@RsSSE3);
+  CheckBoxSSSE3.Caption := LoadResString(@RsSSE3Ext);
+  CheckBoxSSE4A.Caption := LoadResString(@RsSSE4A);
+  CheckBoxSSE4B.Caption := LoadResString(@RsSSE4B);
+  CheckBoxSSE5.Caption := LoadResString(@RsSSE5);
+  CheckBoxAVX.Caption := LoadResString(@RsAVX);
+  ButtonClose.Caption := LoadResString(@RsClose);
+
   EditName.Text := string(AnsiString(CpuInfo.CpuName));
   EditVendor.Text := string(AnsiString(CpuInfo.VendorIDString));
   EditFrequency.Text := IntToStr(CpuInfo.FrequencyInfo.NormFreq);

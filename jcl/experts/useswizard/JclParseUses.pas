@@ -267,7 +267,7 @@ begin
     begin
       SkipCommentsAndBlanks(P);
       if not CheckIdentifier(P) then
-        raise EUsesListError.CreateTrace(RsEInvalidUses);
+        raise EUsesListError.CreateRes(@RsEInvalidUses);
       SkipCommentsAndBlanks(P);
 
       if PeekKeyword(P, 'in') then
@@ -275,13 +275,13 @@ begin
         Inc(P, 2);
         SkipCommentsAndBlanks(P);
         if P^ <> '''' then
-          raise EUsesListError.CreateTrace(RsEInvalidUses);
+          raise EUsesListError.CreateRes(@RsEInvalidUses);
         Inc(P);
 
         while not (P^ in [#0, '''']) do
           Inc(P);
         if P^ <> '''' then
-          raise EUsesListError.CreateTrace(RsEInvalidUses);
+          raise EUsesListError.CreateRes(@RsEInvalidUses);
         Inc(P);
         SkipCommentsAndBlanks(P);
       end;
@@ -295,7 +295,7 @@ begin
             Break;
           end;
         else
-          raise EUsesListError.CreateTrace(RsEInvalidUses);
+          raise EUsesListError.CreateRes(@RsEInvalidUses);
       end;
     end;
 
@@ -320,13 +320,13 @@ begin
     Exit;
 
   if not CheckKeyword(P, SUses) then
-    raise EUsesListError.CreateTrace(RsEInvalidUses);
+    raise EUsesListError.CreateRes(@RsEInvalidUses);
 
   while P^ <> #0 do
   begin
     SkipCommentsAndBlanks(P);
     if not CheckIdentifier(P) then
-      raise EUsesListError.CreateTrace(RsEInvalidUses);
+      raise EUsesListError.CreateRes(@RsEInvalidUses);
     Inc(Result);
     SkipCommentsAndBlanks(P);
 
@@ -335,13 +335,13 @@ begin
       Inc(P, 2);
       SkipCommentsAndBlanks(P);
       if P^ <> '''' then
-        raise EUsesListError.CreateTrace(RsEInvalidUses);
+        raise EUsesListError.CreateRes(@RsEInvalidUses);
       Inc(P);
         
       while not (P^ in [#0, '''']) do
         Inc(P);
       if P^ <> '''' then
-        raise EUsesListError.CreateTrace(RsEInvalidUses);
+        raise EUsesListError.CreateRes(@RsEInvalidUses);
       Inc(P);
       SkipCommentsAndBlanks(P);
     end;
@@ -352,7 +352,7 @@ begin
       ';':
         Break;
       else
-        raise EUsesListError.CreateTrace(RsEInvalidUses);
+        raise EUsesListError.CreateRes(@RsEInvalidUses);
     end;
   end;
 end;
@@ -365,18 +365,18 @@ begin
   Result := '';
 
   if (Index < 0) or (Index > Count - 1) then
-    raise EUsesListError.CreateTrace(Format(SListIndexError, [Index]));
+    raise EUsesListError.CreateResFmt(@SListIndexError, [Index]);
 
   P := PChar(FText);
   if not CheckKeyword(P, SUses) then
-    raise EUsesListError.CreateTrace(RsEInvalidUses);
+    raise EUsesListError.CreateRes(@RsEInvalidUses);
   I := -1;
   while P^ <> #0 do
   begin
     SkipCommentsAndBlanks(P);
     PIdentifier := P;
     if not CheckIdentifier(P) then
-      raise EUsesListError.CreateTrace(RsEInvalidUses);
+      raise EUsesListError.CreateRes(@RsEInvalidUses);
 
     Inc(I);
     if I = Index then
@@ -395,13 +395,13 @@ begin
       Inc(P, 2);
       SkipCommentsAndBlanks(P);
       if P^ <> '''' then
-        raise EUsesListError.CreateTrace(RsEInvalidUses);
+        raise EUsesListError.CreateRes(@RsEInvalidUses);
       Inc(P);
 
       while not (P^ in [#0, '''']) do
         Inc(P);
       if P^ <> '''' then
-        raise EUsesListError.CreateTrace(RsEInvalidUses);
+        raise EUsesListError.CreateRes(@RsEInvalidUses);
       Inc(P);
       SkipCommentsAndBlanks(P);
     end;
@@ -412,7 +412,7 @@ begin
       ';':
         Break;
       else
-        raise EUsesListError.CreateTrace(RsEInvalidUses);
+        raise EUsesListError.CreateRes(@RsEInvalidUses);
     end;
   end;
 end;
@@ -426,7 +426,7 @@ begin
 
   I := IndexOf(UnitName);
   if I <> -1 then
-    raise EUsesListError.CreateTrace(Format(RsEDuplicateUnit, [UnitName]));
+    raise EUsesListError.CreateResFmt(@RsEDuplicateUnit, [UnitName]);
 
   if FText = '' then
   begin
@@ -442,13 +442,13 @@ begin
   begin
     P := PChar(FText);
     if not CheckKeyword(P, SUses) then
-      raise EUsesListError.CreateTrace(RsEInvalidUses);
+      raise EUsesListError.CreateRes(@RsEInvalidUses);
 
     while P^ <> #0 do
     begin
       SkipCommentsAndBlanks(P);
       if not CheckIdentifier(P) then
-        raise EUsesListError.CreateTrace(RsEInvalidUses);
+        raise EUsesListError.CreateRes(@RsEInvalidUses);
 
       SkipCommentsAndBlanks(P);
 
@@ -457,13 +457,13 @@ begin
         Inc(P, 2);
         SkipCommentsAndBlanks(P);
         if P^ <> '''' then
-          raise EUsesListError.CreateTrace(RsEInvalidUses);
+          raise EUsesListError.CreateRes(@RsEInvalidUses);
         Inc(P);
 
         while not (P^ in [#0, '''']) do
           Inc(P);
         if P^ <> '''' then
-          raise EUsesListError.CreateTrace(RsEInvalidUses);
+          raise EUsesListError.CreateRes(@RsEInvalidUses);
         Inc(P);
         SkipCommentsAndBlanks(P);
       end;
@@ -478,7 +478,7 @@ begin
             Break;
           end;
         else
-          raise EUsesListError.CreateTrace(RsEInvalidUses);
+          raise EUsesListError.CreateRes(@RsEInvalidUses);
       end;
     end;
   end;
@@ -497,7 +497,7 @@ begin
 
   P := PChar(FText);
   if not CheckKeyword(P, SUses) then
-    raise EUsesListError.CreateTrace(RsEInvalidUses);
+    raise EUsesListError.CreateRes(@RsEInvalidUses);
 
   I := -1;
   while P^ <> #0 do
@@ -505,7 +505,7 @@ begin
     SkipCommentsAndBlanks(P);
     PIdentifier := P;
     if not CheckIdentifier(P) then
-      raise EUsesListError.CreateTrace(RsEInvalidUses);
+      raise EUsesListError.CreateRes(@RsEInvalidUses);
     SetString(Identifier, PIdentifier, P - PIdentifier);
 
     Inc(I);
@@ -521,13 +521,13 @@ begin
       Inc(P, 2);
       SkipCommentsAndBlanks(P);
       if P^ <> '''' then
-        raise EUsesListError.CreateTrace(RsEInvalidUses);
+        raise EUsesListError.CreateRes(@RsEInvalidUses);
       Inc(P);
 
       while not (P^ in [#0, '''']) do
         Inc(P);
       if P^ <> '''' then
-        raise EUsesListError.CreateTrace(RsEInvalidUses);
+        raise EUsesListError.CreateRes(@RsEInvalidUses);
       Inc(P);
       SkipCommentsAndBlanks(P);
     end;
@@ -538,7 +538,7 @@ begin
       ';':
         Break;
       else
-        raise EUsesListError.CreateTrace(RsEInvalidUses);
+        raise EUsesListError.CreateRes(@RsEInvalidUses);
     end;
   end;
 end;
@@ -549,10 +549,10 @@ var
   P: PChar;
 begin
   if (Index < 0) or (Index > Count - 1) then
-    raise EUsesListError.CreateTrace(Format(SListIndexError, [Index]));
+    raise EUsesListError.CreateResFmt(@SListIndexError, [Index]);
   I := IndexOf(UnitName);
   if I <> -1 then
-    raise EUsesListError.CreateTrace(Format(RsEDuplicateUnit, [UnitName]));
+    raise EUsesListError.CreateResFmt(@RsEDuplicateUnit, [UnitName]);
 
   if FText = '' then
   begin
@@ -569,7 +569,7 @@ begin
   begin
     P := PChar(FText);
     if not CheckKeyword(P, SUses) then
-      raise EUsesListError.CreateTrace(RsEInvalidUses);
+      raise EUsesListError.CreateRes(@RsEInvalidUses);
 
     I := -1;
     while P^ <> #0 do
@@ -583,7 +583,7 @@ begin
       end;
 
       if not CheckIdentifier(P) then
-        raise EUsesListError.CreateTrace(RsEInvalidUses);
+        raise EUsesListError.CreateRes(@RsEInvalidUses);
       SkipCommentsAndBlanks(P);
 
       if PeekKeyword(P, 'in') then
@@ -591,13 +591,13 @@ begin
         Inc(P, 2);
         SkipCommentsAndBlanks(P);
         if P^ <> '''' then
-          raise EUsesListError.CreateTrace(RsEInvalidUses);
+          raise EUsesListError.CreateRes(@RsEInvalidUses);
         Inc(P);
 
         while not (P^ in [#0, '''']) do
           Inc(P);
         if P^ <> '''' then
-          raise EUsesListError.CreateTrace(RsEInvalidUses);
+          raise EUsesListError.CreateRes(@RsEInvalidUses);
         Inc(P);
         SkipCommentsAndBlanks(P);
       end;
@@ -606,7 +606,7 @@ begin
         ',':
           Inc(P);
         else
-          raise EUsesListError.CreateTrace(RsEInvalidUses);
+          raise EUsesListError.CreateRes(@RsEInvalidUses);
       end;
     end;
   end;
@@ -619,11 +619,11 @@ var
 begin
   Count := GetCount;
   if (Index < 0) or (Index > Count - 1) then
-    raise EUsesListError.CreateTrace(Format(SListIndexError, [Index]));
+    raise EUsesListError.CreateResFmt(@SListIndexError, [Index]);
 
   P := PChar(FText);
   if not CheckKeyword(P, SUses) then
-    raise EUsesListError.CreateTrace(RsEInvalidUses);
+    raise EUsesListError.CreateRes(@RsEInvalidUses);
 
   if (Count = 1) and (Index = 0) then
   begin
@@ -642,7 +642,7 @@ begin
       // remove unit
       PIdentifier := P;
       if not CheckIdentifier(P) then
-        raise EUsesListError.CreateTrace(RsEInvalidUses);
+        raise EUsesListError.CreateRes(@RsEInvalidUses);
       DelPos := PIdentifier - PChar(FText) + 1;
       Delete(FText, DelPos, P - PIdentifier);
       // skip comments and blanks
@@ -655,13 +655,13 @@ begin
         Inc(P, 2);
         SkipCommentsAndBlanks(P);
         if P^ <> '''' then
-          raise EUsesListError.CreateTrace(RsEInvalidUses);
+          raise EUsesListError.CreateRes(@RsEInvalidUses);
         Inc(P);
 
         while not (P^ in [#0, '''']) do
           Inc(P);
         if P^ <> '''' then
-          raise EUsesListError.CreateTrace(RsEInvalidUses);
+          raise EUsesListError.CreateRes(@RsEInvalidUses);
         Inc(P);
         SkipCommentsAndBlanks(P);
         DelPos := PIdentifier - PChar(FText) + 1;
@@ -677,7 +677,7 @@ begin
             Delete(FText, DelPos, 1);
           end;
         else
-          raise EUsesListError.CreateTrace(RsEInvalidUses);
+          raise EUsesListError.CreateRes(@RsEInvalidUses);
       end;
       // remove trailing spaces, if any
       PIdentifier := PChar(FText) + DelPos - 1;
@@ -691,7 +691,7 @@ begin
       Exit;
     end;
     if not CheckIdentifier(P) then
-      raise EUsesListError.CreateTrace(RsEInvalidUses);
+      raise EUsesListError.CreateRes(@RsEInvalidUses);
 
     SkipCommentsAndBlanks(P);
     if PeekKeyword(P, 'in') then
@@ -699,13 +699,13 @@ begin
       Inc(P, 2);
       SkipCommentsAndBlanks(P);
       if P^ <> '''' then
-        raise EUsesListError.CreateTrace(RsEInvalidUses);
+        raise EUsesListError.CreateRes(@RsEInvalidUses);
       Inc(P);
 
       while not (P^ in [#0, '''']) do
         Inc(P);
       if P^ <> '''' then
-        raise EUsesListError.CreateTrace(RsEInvalidUses);
+        raise EUsesListError.CreateRes(@RsEInvalidUses);
       Inc(P);
       SkipCommentsAndBlanks(P);
     end;
@@ -719,7 +719,7 @@ begin
           Inc(P);
         end;
       else
-        raise EUsesListError.CreateTrace(RsEInvalidUses);
+        raise EUsesListError.CreateRes(@RsEInvalidUses);
     end;
   end;
 end;
@@ -739,13 +739,13 @@ begin
   // check 'program' label
   SkipCommentsAndBlanks(P);
   if not CheckKeyword(P, SProgram) then
-    raise EUsesListError.CreateTrace(RsEInvalidProgram);
+    raise EUsesListError.CreateRes(@RsEInvalidProgram);
   SkipCommentsAndBlanks(P);
   if not CheckIdentifier(P) then
-    raise EUsesListError.CreateTrace(RsEInvalidProgram);
+    raise EUsesListError.CreateRes(@RsEInvalidProgram);
   SkipCommentsAndBlanks(P);
   if P^ <> ';' then
-    raise EUsesListError.CreateTrace(RsEInvalidProgram);
+    raise EUsesListError.CreateRes(@RsEInvalidProgram);
   Inc(P);
   SkipCommentsAndBlanks(P);
 
@@ -788,13 +788,13 @@ begin
   // check 'library' label
   SkipCommentsAndBlanks(P);
   if not CheckKeyword(P, SLibrary) then
-    raise EUsesListError.CreateTrace(RsEInvalidLibrary);
+    raise EUsesListError.CreateRes(@RsEInvalidLibrary);
   SkipCommentsAndBlanks(P);
   if not CheckIdentifier(P) then
-    raise EUsesListError.CreateTrace(RsEInvalidLibrary);
+    raise EUsesListError.CreateRes(@RsEInvalidLibrary);
   SkipCommentsAndBlanks(P);
   if P^ <> ';' then
-    raise EUsesListError.CreateTrace(RsEInvalidLibrary);
+    raise EUsesListError.CreateRes(@RsEInvalidLibrary);
   Inc(P);
   SkipCommentsAndBlanks(P);
 
@@ -838,18 +838,18 @@ begin
   // check 'unit' label
   SkipCommentsAndBlanks(P);
   if not CheckKeyword(P, SUnit) then
-    raise EUsesListError.CreateTrace(RsEInvalidUnit);
+    raise EUsesListError.CreateRes(@RsEInvalidUnit);
   SkipCommentsAndBlanks(P);
   if not CheckIdentifier(P) then
-    raise EUsesListError.CreateTrace(RsEInvalidUnit);
+    raise EUsesListError.CreateRes(@RsEInvalidUnit);
   SkipCommentsAndBlanks(P);
   if P^ <> ';' then
-    raise EUsesListError.CreateTrace(RsEInvalidUnit);
+    raise EUsesListError.CreateRes(@RsEInvalidUnit);
   Inc(P);
   // check 'interface' label
   SkipCommentsAndBlanks(P);
   if not CheckKeyword(P, 'interface') then
-    raise EUsesListError.CreateTrace(RsEInvalidUnit);
+    raise EUsesListError.CreateRes(@RsEInvalidUnit);
   SkipCommentsAndBlanks(P);
 
   // remember text before interface uses
@@ -871,7 +871,7 @@ begin
     SkipCommentsAndBlanks(P);
   end;
   if not CheckKeyword(P, 'implementation') then
-    raise EUsesListError.CreateTrace(RsEInvalidUnit);
+    raise EUsesListError.CreateRes(@RsEInvalidUnit);
   SkipCommentsAndBlanks(P);
 
   // remember text after interface uses

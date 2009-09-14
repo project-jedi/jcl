@@ -179,30 +179,30 @@ type
   TBitDescription = record
     AndMask: Cardinal;
     Shifting: Cardinal;
-    ShortName: string;
-    LongName: string;
+    ShortName: PResStringRec;
+    LongName: PResStringRec;
   end;
 
   TMXCSRRange = 0..14;
 
-const
+var
   MXCSRBitsDescriptions: array [TMXCSRRange] of TBitDescription =
    (
-    (AndMask: MXCSR_IE;  Shifting: 0;  ShortName: RsVectorIE;  LongName: RsVectorIEText),
-    (AndMask: MXCSR_DE;  Shifting: 1;  ShortName: RsVectorDE;  LongName: RsVectorDEText),
-    (AndMask: MXCSR_ZE;  Shifting: 2;  ShortName: RsVectorZE;  LongName: RsVectorZEText),
-    (AndMask: MXCSR_OE;  Shifting: 3;  ShortName: RsVectorOE;  LongName: RsVectorOEText),
-    (AndMask: MXCSR_UE;  Shifting: 4;  ShortName: RsVectorUE;  LongName: RsVectorUEText),
-    (AndMask: MXCSR_PE;  Shifting: 5;  ShortName: RsVectorPE;  LongName: RsVectorPEText),
-    (AndMask: MXCSR_DAZ; Shifting: 6;  ShortName: RsVectorDAZ; LongName: RsVectorDAZText),
-    (AndMask: MXCSR_IM;  Shifting: 7;  ShortName: RsVectorIM;  LongName: RsVectorIMText),
-    (AndMask: MXCSR_DM;  Shifting: 8;  ShortName: RsVectorDM;  LongName: RsVectorDMText),
-    (AndMask: MXCSR_ZM;  Shifting: 9;  ShortName: RsVectorZM;  LongName: RsVectorZMText),
-    (AndMask: MXCSR_OM;  Shifting: 10; ShortName: RsVectorOM;  LongName: RsVectorOMText),
-    (AndMask: MXCSR_UM;  Shifting: 11; ShortName: RsVectorUM;  LongName: RsVectorUMText),
-    (AndMask: MXCSR_PM;  Shifting: 12; ShortName: RsVectorPM;  LongName: RsVectorPMText),
-    (AndMask: MXCSR_RC;  Shifting: 13; ShortName: RsVectorRC;  LongName: RsVectorRCText),
-    (AndMask: MXCSR_FZ;  Shifting: 15; ShortName: RsVectorFZ;  LongName: RsVectorFZText)
+    (AndMask: MXCSR_IE;  Shifting: 0;  ShortName: nil; LongName: nil),
+    (AndMask: MXCSR_DE;  Shifting: 1;  ShortName: nil; LongName: nil),
+    (AndMask: MXCSR_ZE;  Shifting: 2;  ShortName: nil; LongName: nil),
+    (AndMask: MXCSR_OE;  Shifting: 3;  ShortName: nil; LongName: nil),
+    (AndMask: MXCSR_UE;  Shifting: 4;  ShortName: nil; LongName: nil),
+    (AndMask: MXCSR_PE;  Shifting: 5;  ShortName: nil; LongName: nil),
+    (AndMask: MXCSR_DAZ; Shifting: 6;  ShortName: nil; LongName: nil),
+    (AndMask: MXCSR_IM;  Shifting: 7;  ShortName: nil; LongName: nil),
+    (AndMask: MXCSR_DM;  Shifting: 8;  ShortName: nil; LongName: nil),
+    (AndMask: MXCSR_ZM;  Shifting: 9;  ShortName: nil; LongName: nil),
+    (AndMask: MXCSR_OM;  Shifting: 10; ShortName: nil; LongName: nil),
+    (AndMask: MXCSR_UM;  Shifting: 11; ShortName: nil; LongName: nil),
+    (AndMask: MXCSR_PM;  Shifting: 12; ShortName: nil; LongName: nil),
+    (AndMask: MXCSR_RC;  Shifting: 13; ShortName: nil; LongName: nil),
+    (AndMask: MXCSR_FZ;  Shifting: 15; ShortName: nil; LongName: nil)
    );
 
 type
@@ -263,7 +263,7 @@ const
   Width: array [pctBytes..pctQWords] of Byte = (8, 16, 32, 64);
 begin
   if not (Value.Display in [pctBytes, pctWords, pctDWords, pctQWords]) then
-    raise EJclExpertException.CreateTrace(RsEBadRegisterDisplay);
+    raise EJclExpertException.CreateRes(@RsEBadRegisterDisplay);
 
   Assert(Value.Display < pctSingles);
   Result := StringOfChar('0', Width[Value.Display]);
@@ -280,7 +280,7 @@ const
   Width: array [pctBytes..pctQWords] of Byte = (4, 6, 11, 20);
 begin
   if not (Value.Display in [pctBytes, pctWords, pctDWords, pctQWords]) then
-    raise EJclExpertException.CreateTrace(RsEBadRegisterDisplay);
+    raise EJclExpertException.CreateRes(@RsEBadRegisterDisplay);
     
   case Value.Display of
     pctBytes:
@@ -303,7 +303,7 @@ const
   Width: array [pctBytes..pctQWords] of Byte = (3, 5, 10, 20);
 begin
   if not (Value.Display in [pctBytes, pctWords, pctDWords, pctQWords]) then
-    raise EJclExpertException.CreateTrace(RsEBadRegisterDisplay);
+    raise EJclExpertException.CreateRes(@RsEBadRegisterDisplay);
     
   case Value.Display of
     pctBytes:
@@ -326,7 +326,7 @@ const
   Width: array [pctBytes..pctQWords] of Byte = (2, 4, 8, 16);
 begin
   if not (Value.Display in [pctBytes, pctWords, pctDWords, pctQWords]) then
-    raise EJclExpertException.CreateTrace(RsEBadRegisterDisplay);
+    raise EJclExpertException.CreateRes(@RsEBadRegisterDisplay);
     
   case Value.Display of
     pctBytes:
@@ -345,7 +345,7 @@ end;
 function FormatFloat(Value: TJclSIMDValue): string;
 begin
   if not (Value.Display in [pctSingles, pctDoubles]) then
-    raise EJclExpertException.CreateTrace(RsEBadRegisterDisplay);
+    raise EJclExpertException.CreateRes(@RsEBadRegisterDisplay);
     
   case Value.Display of
     pctSingles:
