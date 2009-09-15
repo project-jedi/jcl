@@ -326,6 +326,7 @@ resourcestring
   RsSSE4B = 'SSE Version 4 B';
   RsSSE5 = 'SSE Version 5';
   RsAVX = 'AVX';
+  RsClose = 'Close';
 
 //=== JclSIMDModifyForm.pas ==================================================
 resourcestring
