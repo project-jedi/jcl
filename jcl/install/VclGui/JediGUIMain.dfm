@@ -235,7 +235,6 @@ object MainForm: TMainForm
     Height = 25
     Anchors = [akRight, akBottom]
     Caption = 'RsGUIInstall'
-    DoubleBuffered = True
     Glyph.Data = {
       36030000424D3603000000000000360000002800000010000000100000000100
       18000000000000030000230B0000230B00000000000000000000C6CED6C6CED6
@@ -263,7 +262,6 @@ object MainForm: TMainForm
       ADDEBD9CD6ADBDB5A563635A8C947394C69CB5CEBDC6CED6C6CED6C6CECEC6CE
       D6C6CED6C6CECEC6CED6C6CED6C6CECEC6CED6C6CED6C6C6BD9C9C9CB5BDBDC6
       CED6C6CECEC6CED6C6CED6C6CECEC6CED6C6CECEC6CED6C6CED6}
-    ParentDoubleBuffered = False
     TabOrder = 0
     OnClick = InstallBtnClick
   end
@@ -274,7 +272,6 @@ object MainForm: TMainForm
     Height = 25
     Anchors = [akRight, akBottom]
     Caption = 'RsGUIQuit'
-    DoubleBuffered = True
     Glyph.Data = {
       36050000424D3605000000000000360400002800000010000000100000000100
       08000000000000010000230B0000230B000000010000000100000026B5000026
@@ -318,7 +315,6 @@ object MainForm: TMainForm
       554C464174A7792B10A7A7687E7893A795777194A78D40280EA7A7728C87758E
       A4A7A7A2894D472C0CA7A77C908B7D78706B6A67645C4D280AA7A6977B6D6663
       5D5A59524A48422084A69DA6A7A7A7A7A7A7A7A7A7A7A7A7A69D}
-    ParentDoubleBuffered = False
     TabOrder = 2
     OnClick = QuitBtnClick
   end
@@ -348,8 +344,6 @@ object MainForm: TMainForm
     Height = 25
     Anchors = [akRight, akBottom]
     Caption = 'RsGUIUninstall'
-    DoubleBuffered = True
-    ParentDoubleBuffered = False
     TabOrder = 1
     OnClick = UninstallBtnClick
   end
