@@ -53,6 +53,9 @@ implementation
 
 {$R *.dfm}
 
+uses
+  JediInstallResources;
+
 //=== { TProfilesFrame } =====================================================
 
 constructor TProfilesFrame.Create(AOwner: TComponent);
@@ -62,6 +65,7 @@ var
   AProfilesManager: IJediProfilesManager;
 begin
   inherited Create(AOwner);
+  MemoComment.Lines.Text := LoadResString(@RsGUIProfiles);
   MemoComment.WordWrap := True;
   AProfilesManager := InstallCore.ProfilesManager;
   for Index := 0 to AProfilesManager.ProfileCount - 1 do

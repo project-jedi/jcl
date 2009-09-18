@@ -3,7 +3,7 @@ object FormCompile: TFormCompile
   Top = 311
   BorderIcons = []
   BorderStyle = bsDialog
-  Caption = 'Compiling'
+  Caption = 'RsGUICompiling'
   ClientHeight = 165
   ClientWidth = 361
   Color = clBtnFace
@@ -15,6 +15,7 @@ object FormCompile: TFormCompile
   OldCreateOrder = False
   Position = poMainFormCenter
   OnCloseQuery = FormCloseQuery
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object PanelClient: TPanel
@@ -50,18 +51,17 @@ object FormCompile: TFormCompile
     object LblProject: TLabel
       Left = 64
       Top = 9
-      Width = 265
+      Width = 264
       Height = 13
       AutoSize = False
-      Caption = 'Project filename'
       Transparent = True
     end
     object LblStatusCaption: TLabel
       Left = 14
       Top = 33
-      Width = 29
+      Width = 58
       Height = 13
-      Caption = 'Done:'
+      Caption = 'RsGUIDone'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
@@ -78,9 +78,9 @@ object FormCompile: TFormCompile
     object LblCurrentLineCaption: TLabel
       Left = 14
       Top = 57
-      Width = 56
+      Width = 86
       Height = 13
-      Caption = 'Current line:'
+      Caption = 'RsGUICurrentLine'
     end
     object LblCurrentLine: TLabel
       Left = 158
@@ -93,9 +93,9 @@ object FormCompile: TFormCompile
     object LblTotalLinesCaption: TLabel
       Left = 178
       Top = 57
-      Width = 51
+      Width = 81
       Height = 13
-      Caption = 'Total lines:'
+      Caption = 'RsGUITotalLines'
     end
     object LblTotalLines: TLabel
       Left = 322
@@ -120,9 +120,9 @@ object FormCompile: TFormCompile
     object LblHintsCaption: TLabel
       Left = 14
       Top = 81
-      Width = 27
+      Width = 56
       Height = 13
-      Caption = 'Hints:'
+      Caption = 'RsGUIHints'
     end
     object LblHints: TLabel
       Left = 104
@@ -135,9 +135,9 @@ object FormCompile: TFormCompile
     object LblWarningsCaption: TLabel
       Left = 124
       Top = 81
-      Width = 48
+      Width = 77
       Height = 13
-      Caption = 'Warnings:'
+      Caption = 'RsGUIWarnings'
     end
     object LblWarnings: TLabel
       Left = 213
@@ -150,9 +150,9 @@ object FormCompile: TFormCompile
     object LblErrorsCaption: TLabel
       Left = 234
       Top = 81
-      Width = 30
+      Width = 59
       Height = 13
-      Caption = 'Errors:'
+      Caption = 'RsGUIErrors'
     end
     object LblErrors: TLabel
       Left = 322
@@ -165,16 +165,16 @@ object FormCompile: TFormCompile
     object LblProjectCaption: TLabel
       Left = 14
       Top = 9
-      Width = 36
+      Width = 65
       Height = 13
-      Caption = 'Project:'
+      Caption = 'RsGUIProject'
     end
     object LblStatus: TLabel
       Left = 110
       Top = 33
-      Width = 78
+      Width = 218
       Height = 13
-      Caption = 'There are errors.'
+      AutoSize = False
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
@@ -202,7 +202,7 @@ object FormCompile: TFormCompile
     Top = 134
     Width = 75
     Height = 25
-    Caption = 'OK'
+    Caption = 'RsGUIOk'
     Default = True
     Enabled = False
     TabOrder = 0

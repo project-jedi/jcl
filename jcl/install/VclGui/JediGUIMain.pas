@@ -115,6 +115,7 @@ uses
   FileCtrl,
   JclDebug, JclShell, JediGUIProfiles,
   JclBase, JclFileUtils, JclStrings, JclSysInfo, JclSysUtils, JclArrayLists,
+  JediInstallResources,
   JediGUIReadme, JediGUIInstall;
 
 const
@@ -156,6 +157,12 @@ end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
+  Caption := LoadResString(@RsGUIJEDIInstaller);
+  Title.Caption := LoadResString(@RsGUIProjectJEDIInstaller);
+  InstallBtn.Caption := LoadResString(@RsGUIInstall);
+  UninstallBtn.Caption := LoadResString(@RsGUIUninstall);
+  QuitBtn.Caption := LoadResString(@RsGUIQuit);
+
   Application.OnException := HandleException;
   JediImage.Hint := DelphiJediURL;
 

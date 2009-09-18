@@ -24,7 +24,9 @@ uses
   JediGUIInstall in 'VclGui\JediGUIInstall.pas' {InstallFrame: TFrame},
   JediGUIMain in 'VclGui\JediGUIMain.pas' {MainForm},
   JediGUIProfiles in 'VclGui\JediGUIProfiles.pas' {ProfilesFrame: TFrame},
-  JediProfiles in 'JediProfiles.pas';
+  JediProfiles in 'JediProfiles.pas',
+  JclInstallResources in 'JclInstallResources.pas',
+  JediInstallResources in 'JediInstallResources.pas';
 
 {$R *.res}
 {$R ..\source\windows\JclCommCtrlAsInvoker.res}

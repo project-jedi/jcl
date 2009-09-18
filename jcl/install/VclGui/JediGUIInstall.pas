@@ -45,11 +45,11 @@ type
 
   TInstallFrame = class(TFrame, IJediInstallPage, IJediPage)
     ComponentsTreePanel: TPanel;
-    Label1: TLabel;
+    LabelSelectComponents: TLabel;
     TreeView: TTreeView;
     Splitter: TSplitter;
     InfoPanel: TPanel;
-    Label2: TLabel;
+    LabelInstallationLog: TLabel;
     InfoDisplay: TRichEdit;
     OptionsGroupBox: TGroupBox;
     ProgressBar: TProgressBar;
@@ -124,7 +124,8 @@ implementation
 uses
   Windows, Messages,
   FileCtrl,
-  JclStrings;
+  JclStrings,
+  JediInstallResources;
 
 const
   // Icon indexes
@@ -137,7 +138,7 @@ const
   IcoInstalled      = 6;
 
   IconIndexes: array [Boolean {RadioButton}, Boolean {Checked}] of Integer =
-   ( (IcoUnchecked, IcoChecked), (IcoRadioUnchecked, IcoRadioChecked) ); 
+   ( (IcoUnchecked, IcoChecked), (IcoRadioUnchecked, IcoRadioChecked) );
 
 type
   TNodeRec = record
@@ -154,13 +155,6 @@ type
   end;
 
   PDirectoryRec = ^TDirectoryRec;
-
-resourcestring
-  RsSelectPath      = 'Select path';
-  RsEnterValidPath  = '(Enter valid path)';
-  RsInvalidOption   = 'Invalid option: %d';
-  //RsDuplicateOption = 'Duplicate option: %s';
-  //RsCannotFindNode  = 'Cannot find node for Id %d';
 
 constructor TInstallFrame.Create(AOwner: TComponent);
 begin
@@ -450,7 +444,7 @@ end;
 procedure TInstallFrame.SetCaption(const Value: string);
 begin
   (Parent as TTabSheet).Caption := Value;
-  AddInstallOption(JediTargetOption, [goExpandable], Value, RsHintTarget, -1);
+  AddInstallOption(JediTargetOption, [goExpandable], Value, LoadResString(@RsHintTarget), -1);
 end;
 
 function TInstallFrame.GetHintAtPos(ScreenX, ScreenY: Integer): string;
@@ -510,6 +504,10 @@ procedure TInstallFrame.InitDisplay;
 var
   ANode: TTreeNode;
 begin
+  LabelSelectComponents.Caption := LoadResString(@RsGUISelectComponents);
+  LabelInstallationLog.Caption := LoadResString(@RsGUIInstallationLog);
+  OptionsGroupBox.Caption := LoadResString(@RsGUIAdvancedOptions);
+
   ANode := TreeView.Items.GetFirstNode;
   while Assigned(ANode) do
   begin

@@ -76,6 +76,7 @@ type
     LblErrorReason: TLabel;
     procedure BtnOkClick(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+    procedure FormCreate(Sender: TObject);
   private
     FHints: Cardinal;
     FWarnings: Cardinal;
@@ -113,20 +114,11 @@ implementation
 {$IFDEF MSWINDOWS}
 {$I windowsonly.inc}
 uses
+  JediInstallResources,
   FileCtrl;
 {$ENDIF MSWINDOWS}
 
 {$R *.dfm}
-
-resourcestring
-  RsPreparing = 'Preparing...';
-  RsCompiling = 'Compiling';
-  RsLinking = 'Linking';
-  RsDone = 'Done';
-  RsThereAreErrors = 'There are errors.';
-  RsThereAreWarnings = 'There are warnings.';
-  RsThereAreHints = 'There are hints.';
-  RsCompiled = 'compiled.';
 
 { TFormCompile }
 
@@ -161,7 +153,7 @@ begin
   LblErrors.Caption := IntToStr(FErrors);
   LblCurrentLine.Caption := IntToStr(FCurrentLine);
   LblTotalLines.Caption := IntToStr(FTotalLines);
-  LblStatusCaption.Caption := RsPreparing;
+  LblStatusCaption.Caption := LoadResString(@RsGUIPreparing);
   LblStatus.Caption := '';
 
   BtnOk.Enabled := False;
@@ -177,7 +169,7 @@ begin
     CurrentLine := 0; // updates total lines and current lines
     LblStatusCaption.Font.Style := [];
     LblStatus.Font.Style := [];
-    LblStatusCaption.Caption := RsCompiling + ':';
+    LblStatusCaption.Caption := LoadResString(@RsGUICompiling) + ':';
     LblStatus.Caption := ExtractFileName(Filename);
     Application.ProcessMessages;
   end;
@@ -190,7 +182,7 @@ begin
 
   LblStatusCaption.Font.Style := [];
   LblStatus.Font.Style := [];
-  LblStatusCaption.Caption := RsLinking + ':';
+  LblStatusCaption.Caption := LoadResString(@RsGUILinking) + ':';
   LblStatus.Caption := ExtractFileName(Filename);
   Application.ProcessMessages;
 end;
@@ -205,16 +197,16 @@ begin
   LblErrorReason.Visible := ErrorReason <> '';
   LblStatusCaption.Font.Style := [fsBold];
   LblStatus.Font.Style := [fsBold];
-  LblStatusCaption.Caption := RsDone + ':';
+  LblStatusCaption.Caption := LoadResString(@RsGUIDone) + ':';
 
   if FErrors > 0 then
-    LblStatus.Caption := RsThereAreErrors
+    LblStatus.Caption := LoadResString(@RsGUIThereAreErrors)
   else if FWarnings > 0 then
-    LblStatus.Caption := RsThereAreWarnings
+    LblStatus.Caption := LoadResString(@RsGUIThereAreWarnings)
   else if FHints > 0 then
-    LblStatus.Caption := RsThereAreHints
+    LblStatus.Caption := LoadResString(@RsGUIThereAreHints)
   else
-    LblStatus.Caption := RsCompiled;
+    LblStatus.Caption := LoadResString(@RsGUICompiled);
   BtnOk.Enabled := ErrorReason <> '';
   if ErrorReason <> '' then
   begin
@@ -284,6 +276,19 @@ procedure TFormCompile.FormCloseQuery(Sender: TObject;
   var CanClose: Boolean);
 begin
   CanClose := Tag = 1;
+end;
+
+procedure TFormCompile.FormCreate(Sender: TObject);
+begin
+  Caption := LoadResString(@RsGUICompiling);
+  LblProjectCaption.Caption := LoadResString(@RsGUIProject) + ':';
+  LblStatusCaption.Caption := LoadResString(@RsGUIDone) + ':';
+  LblCurrentLineCaption.Caption := LoadResString(@RsGUICurrentLine) + ':';
+  LblTotalLinesCaption.Caption := LoadResString(@RsGUITotalLines) + ':';
+  LblHintsCaption.Caption := LoadResString(@RsGUIHints) + ':';
+  LblWarningsCaption.Caption := LoadResString(@RsGUIWarnings) + ':';
+  LblErrorsCaption.Caption := LoadResString(@RsGUIErrors) + ':';
+  BtnOk.Caption := LoadResString(@RsGUIOk);
 end;
 
 end.

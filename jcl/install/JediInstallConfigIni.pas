@@ -86,8 +86,8 @@ uses
   SysUtils, Classes,
   JclSysInfo, JclFileUtils;
 
-resourcestring
-  RsIniFileName = 'JCL-install.ini';
+const
+  DefaultIniFileName = 'JCL-install.ini';
 
 function CreateConfigIni: IJediConfiguration;
 begin
@@ -113,7 +113,7 @@ begin
     AFileName := '';
 
   if AFileName = '' then
-    AFileName := RsIniFileName;
+    AFileName := DefaultIniFileName;
 
   if not PathIsAbsolute(AFileName) then
     AFileName := ExtractFilePath(ParamStr(0)) + AFileName;

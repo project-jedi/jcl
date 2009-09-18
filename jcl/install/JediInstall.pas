@@ -275,22 +275,11 @@ var
 
 function InstallCore: TJediInstallCore;
 
-resourcestring
-  RsCantFindFiles    = 'Can not find installation files, check your installation.';
-  RsCloseRADTool     = 'Please close all running instances of Delphi/C++Builder IDE before the installation.';
-  RsConfirmInstall   = 'Are you sure to install all selected features?';
-  RsConfirmUninstall = 'Do you really want to uninstall the JCL?';
-  RsInstallSuccess   = 'Installation finished';
-  RsInstallFailure   = 'Installation failed.'#10'Check compiler output for details.';
-  RsNoInstall        = 'There is no Delphi/C++Builder installation on this machine. Installer will close.';
-  RsUpdateNeeded     = 'You should install latest Update Pack #%d for %s.'#13#10 +
-                       'Would you like to open Borland support web page?';
-  RsHintTarget       = 'Installation target';
-
 implementation
 
 uses
   JclArrayLists, JclFileUtils,
+  JediInstallResources,
   JediProfiles;
 
 var
@@ -432,13 +421,27 @@ end;
 function TJediInstallCore.Install: Boolean;
 var
   Index: Integer;
+  AInstallGUI: IJediInstallGUI;
 begin
-  Result := True;
+  AInstallGUI := InstallGUI;
+  if Assigned(AInstallGUI) then
+    Result := AInstallGUI.Dialog(LoadResString(@RsConfirmInstall), dtConfirmation, [drYes, drNo]) = drYes
+  else
+    Result := True;
+
   for Index := FProducts.Size - 1 downto 0 do
   begin
     Result := (FProducts.GetObject(Index) as IJediProduct).Install;
     if not Result then
       Break;
+  end;
+
+  if Assigned(AInstallGUI) then
+  begin
+    if Result then
+      AInstallGUI.Dialog(LoadResString(@RsInstallSuccess), dtInformation, [drOK])
+    else
+      AInstallGUI.Dialog(LoadResString(@RsInstallFailure), dtError, [drOK]);
   end;
 end;
 
@@ -547,10 +550,25 @@ end;
 function TJediInstallCore.Uninstall: Boolean;
 var
   Index: Integer;
+  AInstallGUI: IJediInstallGUI;
 begin
-  Result := True;
-  for Index := FProducts.Size - 1 downto 0 do
-    Result := (FProducts.GetObject(Index) as IJediProduct).Uninstall and Result;
+  AInstallGUI := InstallGUI;
+  if Assigned(AInstallGUI) then
+    Result := AInstallGUI.Dialog(LoadResString(@RsConfirmUninstall), dtConfirmation, [drYes, drNo]) = drYes
+  else
+    Result := True;
+
+  if Result then
+    for Index := FProducts.Size - 1 downto 0 do
+      Result := (FProducts.GetObject(Index) as IJediProduct).Uninstall and Result;
+
+  if Assigned(AInstallGUI) then
+  begin
+    if Result then
+      AInstallGUI.Dialog(LoadResString(@RsUninstallSuccess), dtInformation, [drOK])
+    else
+      AInstallGUI.Dialog(LoadResString(@RsUninstallFailure), dtError, [drOK]);
+  end;
 end;
 
 initialization

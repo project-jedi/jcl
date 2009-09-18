@@ -24,12 +24,12 @@ object InstallFrame: TInstallFrame
     Align = alRight
     BevelOuter = bvNone
     TabOrder = 0
-    object Label2: TLabel
+    object LabelInstallationLog: TLabel
       Left = 6
       Top = 5
-      Width = 73
+      Width = 100
       Height = 13
-      Caption = 'Installation &Log'
+      Caption = 'RsGUIInstallationLog'
     end
     object InfoDisplay: TRichEdit
       Left = 6
@@ -38,7 +38,7 @@ object InstallFrame: TInstallFrame
       Height = 298
       Anchors = [akLeft, akTop, akRight, akBottom]
       Color = clInfoBk
-      Font.Charset = OEM_CHARSET
+      Font.Charset = ANSI_CHARSET
       Font.Color = clInfoText
       Font.Height = -11
       Font.Name = 'Lucida Console'
@@ -56,7 +56,7 @@ object InstallFrame: TInstallFrame
       Width = 348
       Height = 86
       Anchors = [akLeft, akRight, akBottom]
-      Caption = '&Advanced Options'
+      Caption = 'RsGUIAdvancedOptions'
       TabOrder = 1
     end
     object ProgressBar: TProgressBar
@@ -76,12 +76,12 @@ object InstallFrame: TInstallFrame
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
-    object Label1: TLabel
+    object LabelSelectComponents: TLabel
       Left = 8
       Top = 5
-      Width = 133
+      Width = 119
       Height = 13
-      Caption = '&Select components to install'
+      Caption = 'RsGUISelectComponents'
     end
     object TreeView: TTreeView
       Left = 8
