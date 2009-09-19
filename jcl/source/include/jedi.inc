@@ -390,6 +390,7 @@
   SUPPORTS_CLASS_FIELDS          Compiler supports class fields (D9.NET, D10+)
   SUPPORTS_CLASS_HELPERS         Compiler supports class helpers (D9.NET, D10+)
   SUPPORTS_CLASS_OPERATORS       Compiler supports class operators (D9.NET, D10+)
+  SUPPORTS_CLASS_CTORDTORS       Compiler supports class contructors/destructors (D14+)
   SUPPORTS_STRICT                Compiler supports strict keyword (D9.NET, D10+)
   SUPPORTS_STATIC                Compiler supports static keyword (D9.NET, D10+)
   SUPPORTS_FINAL                 Compiler supports final keyword (D9.NET, D10+)
@@ -1152,6 +1153,10 @@
     {$DEFINE SUPPORTS_UNICODE_STRING}
   {$ENDIF  CLR}
 {$ENDIF COMPILER12_UP}
+
+{$IFDEF COMPILER14_UP}
+  {$DEFINE SUPPORTS_CLASS_CTORDTORS}
+{$ENDIF COMPILER14_UP}
 
 {$IFDEF RTL130_UP}
   {$DEFINE HAS_UNIT_CONTNRS}
