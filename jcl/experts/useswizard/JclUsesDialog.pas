@@ -77,23 +77,31 @@ uses
 {$R *.dfm}
 
 constructor TFormUsesConfirm.Create(AOwner: TComponent; AChangeList: TStrings; Errors: TList);
-const
-  ActionStrings: array [TWizardAction] of PResStringRec =
-    (@RsActionSkip, @RsActionAdd, @RsActionAdd, @RsActionMove);
-  SectionStrings: array [TWizardAction] of PResStringRec =
-    (nil, @RsSectionImpl, @RsSectionIntf, @RsSectionIntf);
 var
   I, J: Integer;
   Node: TTreeNode;
+  ActionStrings: array [TWizardAction] of string;
+  SectionStrings: array [TWizardAction] of string;
 begin
   inherited Create(AOwner);
+
+  ActionStrings[waSkip] := LoadResString(@RsActionSkip);
+  ActionStrings[waAddToImpl] := LoadResString(@RsActionAdd);
+  ActionStrings[waAddToIntf] := LoadResString(@RsActionAdd);
+  ActionStrings[waMoveToIntf] := LoadResString(@RsActionMove);
+
+  SectionStrings[waSkip] := '';
+  SectionStrings[waAddToImpl] := LoadResString(@RsSectionImpl);
+  SectionStrings[waAddToIntf] := LoadResString(@RsSectionIntf);
+  SectionStrings[waMoveToIntf] := LoadResString(@RsSectionIntf);
+
   FChangeList := AChangeList;
   FErrors := Errors;
   for I := 0 to FChangeList.Count - 1 do
   begin
     Node := TreeViewChanges.Items.AddChildObject(nil, Format('%d. %s %s %s',
-      [I + 1, LoadResString(ActionStrings[TWizardAction(FChangeList.Objects[I])]), FChangeList[I],
-      LoadResString(SectionStrings[TWizardAction(FChangeList.Objects[I])])]), Pointer(I));
+      [I + 1, ActionStrings[TWizardAction(FChangeList.Objects[I])], FChangeList[I],
+      SectionStrings[TWizardAction(FChangeList.Objects[I])]]), Pointer(I));
     for J := 0 to FErrors.Count - 1 do
       with PErrorInfo(FErrors[J])^ do
         if AnsiCompareText(UsesName, FChangeList[I]) = 0 then

@@ -116,7 +116,7 @@ type
   public
     constructor Create; override;
     function Add(Addr: Pointer): TJclStackTraceViewerLocationInfo;
-    property Items[AIndex: Integer]: TJclStackTraceViewerLocationInfo read GetItems; default;
+    property Items[AIndex: Integer]: TJclStackTraceViewerLocationInfo read GetItems;
 
     { IInterface }
     function QueryInterface(const IID: TGUID; out Obj): HRESULT; stdcall;
@@ -126,7 +126,7 @@ type
     function GetCount: Integer;
     function GetLocationItems(AIndex: Integer): IJclLocationInfo;
     property Count: Integer read GetCount;
-    property Items[AIndex: Integer]: IJclLocationInfo read GetLocationItems; default;
+    property LocationItems[AIndex: Integer]: IJclLocationInfo read GetLocationItems; default;
     { IJclPreparedLocationInfoList }
     function GetPrepared: Boolean;
     procedure SetPrepared(AValue: Boolean);
