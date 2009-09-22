@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
-    <DCC_UsePackage>rtl;vcl;designide;Jcl;JclBaseExpert</DCC_UsePackage>
+    <DCC_UsePackage>rtl;vcl;designide;Jcl;JclVcl;JclBaseExpert</DCC_UsePackage>
     <DCC_Define>BCB;RELEASE</DCC_Define>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -89,8 +89,8 @@
     <DCCReference Include="vcl.dcp" />
     <DCCReference Include="designide.dcp" />
     <DCCReference Include="Jcl.dcp" />
+    <DCCReference Include="JclVcl.dcp" />
     <DCCReference Include="JclBaseExpert.dcp" />
     <DCCReference Include="..\..\experts\favfolders\IdeOpenDlgFavoriteUnit.pas" />
-    <DCCReference Include="..\..\experts\favfolders\OpenDlgFavAdapter.pas" />
   </ItemGroup>
 </Project>

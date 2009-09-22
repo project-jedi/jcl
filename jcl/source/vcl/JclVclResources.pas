@@ -82,6 +82,18 @@ resourcestring
 resourcestring
   RsBitsPerSampleNotSupported = '%d bits per sample not supported in color space conversion';
 
+//=== JclOpenDialogFavorites.pas =============================================
+resourcestring
+  RsOpenDialogAdd          = '<- Add';
+  RsOpenDialogDelete       = '&Delete';
+  RsOpenDialogFavorites    = '&Favorites';
+  RsOpenDialogConfirmation = 'Confirmation';
+  RsOpenDialogDelConfirm   = 'Are you sure to delete "%s" from favorite folders?';
+
+//=== JclOpenDialogHooks.pas =================================================
+resourcestring
+  RsEOpenDialogHookExists = 'An open dialog hook is already installed (existing ClassName = %s)';
+
 //=== JclPrint ===============================================================
 resourcestring
   RsSpoolerDocName = 'My Document';

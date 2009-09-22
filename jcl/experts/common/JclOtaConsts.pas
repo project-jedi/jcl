@@ -107,8 +107,6 @@ const
   JclFavoritesListSubKey     = 'Favorites';
   PictDialogFolderItemName   = 'PictureDialogPath';
   BorlandImagesPath          = 'Borland Shared\Images';
-  FavDialogTemplateName      = 'FAVDLGTEMPLATE';
-  OpenPictDialogTemplateName = 'DLGTEMPLATE';
 
   //=== Threads Expert =======================================================
   JclThreadsExpertName = 'JclThreadsExpert';

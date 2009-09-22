@@ -195,14 +195,6 @@ resourcestring
   RsTraceEAbort = 'Trace &EAbort and its descendants';
   RsIgnoredExceptions = '&Ancestor exception classes to ignore (one per line)';
 
-//=== OpenDlgFavAdapter.pas ==================================================
-resourcestring
-  RsAdd          = '<- Add';
-  RsDelete       = '&Delete';
-  RsFavorites    = '&Favorites';
-  RsConfirmation = 'Confirmation';
-  RsDelConfirm   = 'Are you sure to delete "%s" from favorite folders?';
-
 //=== JclUsesDialog.pas ======================================================
 resourcestring
   RsActionSkip = 'Skip';

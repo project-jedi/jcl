@@ -31,7 +31,7 @@ interface
 
 uses
   SysUtils,
-  ToolsAPI, OpenDlgFavAdapter,
+  ToolsAPI, JclOpenDialogFavorites,
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
@@ -40,7 +40,7 @@ uses
 type
   TJclOpenDialogsFavoriteExpert = class(TJclOTAExpert)
   private
-    FFavOpenDialog: TFavOpenDialog;
+    FOpenDialog: TJclOpenDialogFavoritesHook;
     procedure DialogClose(Sender: TObject);
     procedure DialogShow(Sender: TObject);
   public
@@ -130,30 +130,31 @@ end;
 
 procedure TJclOpenDialogsFavoriteExpert.DialogClose(Sender: TObject);
 begin
-  Settings.SaveStrings(JclFavoritesListSubKey, FFavOpenDialog.FavoriteFolders);
-  Settings.SaveString(PictDialogFolderItemName, FFavOpenDialog.PictureDialogLastFolder);
+  Settings.SaveStrings(JclFavoritesListSubKey, FOpenDialog.FavoriteFolders);
+  Settings.SaveString(PictDialogFolderItemName, FOpenDialog.PictureDialogLastFolder);
 end;
 
 procedure TJclOpenDialogsFavoriteExpert.DialogShow(Sender: TObject);
 begin
-  Settings.LoadStrings(JclFavoritesListSubKey, FFavOpenDialog.FavoriteFolders);
+  Settings.LoadStrings(JclFavoritesListSubKey, FOpenDialog.FavoriteFolders);
 end;
 
 procedure TJclOpenDialogsFavoriteExpert.RegisterCommands;
 begin
   inherited RegisterCommands;
-  FFavOpenDialog := InitializeFavOpenDialog;
-  FFavOpenDialog.DisableHelpButton := True;
-  FFavOpenDialog.HookDialogs;
-  FFavOpenDialog.OnClose := DialogClose;
-  FFavOpenDialog.OnShow := DialogShow;
-  FFavOpenDialog.PictureDialogLastFolder := Settings.LoadString(PictDialogFolderItemName,
+  FOpenDialog := InitializeOpenDialogFavorites;
+  FOpenDialog.DisableHelpButton := True;
+  FOpenDialog.HookDialogs;
+  FOpenDialog.OnClose := DialogClose;
+  FOpenDialog.OnShow := DialogShow;
+  FOpenDialog.PictureDialogLastFolder := Settings.LoadString(PictDialogFolderItemName,
     PathAddSeparator(GetCommonFilesFolder) + BorlandImagesPath);
 end;
 
 procedure TJclOpenDialogsFavoriteExpert.UnregisterCommands;
 begin
-  FFavOpenDialog.UnhookDialogs;
+  FOpenDialog.UnhookDialogs;
+  FinalizeOpenDialogFavorites;
   inherited UnregisterCommands;
 end;
 
