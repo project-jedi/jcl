@@ -1199,6 +1199,7 @@ begin
   if Stream <> nil then
     FPosition := Stream.Position;
   BufferSize := StreamDefaultBufferSize;
+  LoadBuffer;
 end;
 
 destructor TJclBufferedStream.Destroy;
@@ -1342,16 +1343,8 @@ begin
   Result := Count + Offset;
   while Count > 0 do
   begin
-    if not BufferHit then
-    begin
-      if (FBufferStart <= FPosition) and (FPosition < (FBufferStart + FBufferSize)) then
-      begin
-        if Length(FBuffer) <> FBufferSize then
-          SetLength(FBuffer, FBufferSize);
-      end
-      else
-        LoadBuffer;
-    end;
+    if (FBufferStart > FPosition) or (FPosition >= (FBufferStart + FBufferSize)) then
+      LoadBuffer;
     Dec(Count, WriteToBuffer(Buffer, Count, Result - Count));
   end;
   Result := Result - Count - Offset;
