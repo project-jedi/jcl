@@ -11,9 +11,5 @@ object frmLeakSummary: TfrmLeakSummary
     Height = 240
     Align = alClient
     TabOrder = 0
-    ExplicitLeft = 72
-    ExplicitTop = 80
-    ExplicitWidth = 185
-    ExplicitHeight = 89
   end
 end

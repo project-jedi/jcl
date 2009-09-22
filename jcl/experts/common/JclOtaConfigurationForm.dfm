@@ -20,7 +20,6 @@ object JclOtaOptionsForm: TJclOtaOptionsForm
     Left = 185
     Top = 0
     Height = 448
-    ExplicitHeight = 450
   end
   object PanelName: TPanel
     Left = 0
@@ -30,10 +29,6 @@ object JclOtaOptionsForm: TJclOtaOptionsForm
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitTop = 450
-    DesignSize = (
-      554
-      38)
     object LabelHomePage: TLabel
       Left = 8
       Top = 8
@@ -80,10 +75,6 @@ object JclOtaOptionsForm: TJclOtaOptionsForm
     Align = alLeft
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitHeight = 450
-    DesignSize = (
-      185
-      448)
     object TreeViewCategories: TTreeView
       Left = 8
       Top = 8
@@ -106,7 +97,6 @@ object JclOtaOptionsForm: TJclOtaOptionsForm
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 2
-    ExplicitHeight = 450
     object LabelSelectPage: TLabel
       Left = 152
       Top = 184

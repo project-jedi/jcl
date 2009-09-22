@@ -83,26 +83,14 @@ object frmFreedObject: TfrmFreedObject
     object tsStack2: TTabSheet
       Caption = 'Stack (freed by)'
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
     end
     object tsStack3: TTabSheet
       Caption = 'Stack (current)'
       ImageIndex = 2
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
     end
     object tsMemory: TTabSheet
       Caption = 'Memory Dump'
       ImageIndex = 3
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
     end
   end
 end
