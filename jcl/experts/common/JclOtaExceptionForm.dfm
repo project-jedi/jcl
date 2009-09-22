@@ -14,9 +14,6 @@ object JclExpertExceptionForm: TJclExpertExceptionForm
   OldCreateOrder = False
   Position = poScreenCenter
   OnCreate = FormCreate
-  DesignSize = (
-    551
-    423)
   PixelsPerInch = 96
   TextHeight = 13
   object LabelURL: TLabel

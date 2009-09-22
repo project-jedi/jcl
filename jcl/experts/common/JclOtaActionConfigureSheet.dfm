@@ -6,9 +6,6 @@ object JclOtaActionConfigureFrame: TJclOtaActionConfigureFrame
   Anchors = [akLeft, akTop, akRight, akBottom]
   TabOrder = 0
   TabStop = True
-  DesignSize = (
-    369
-    375)
   object LabelActions: TLabel
     Left = 16
     Top = 16

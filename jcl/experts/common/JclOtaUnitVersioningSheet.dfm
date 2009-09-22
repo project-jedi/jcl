@@ -6,9 +6,6 @@ object JclOtaUnitVersioningFrame: TJclOtaUnitVersioningFrame
   Anchors = [akLeft, akTop, akRight, akBottom]
   TabOrder = 0
   TabStop = True
-  DesignSize = (
-    369
-    375)
   object MemoUnitVersioning: TMemo
     Left = 8
     Top = 8
