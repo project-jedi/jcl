@@ -143,7 +143,7 @@ procedure TForm1.Button3Click(Sender: TObject);
 begin
   mmLog.Lines.Add(TButton(Sender).Caption);
   try
-    PChar(nil)^ := 'a';
+    ShowMessage(IntToStr(StrToInt('a')));
   except
     on E: EConvertError do
       ShowMessage('EConvertError or descendant');
