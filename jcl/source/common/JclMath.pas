@@ -2685,8 +2685,11 @@ end;
 
 //=== Floating point value classification ====================================
 
+type
+  TC3C2C0 = 0..6;
+
 const
-  FPClasses: array [0..6] of TFloatingPointClass =
+  FPClasses: array [TC3C2C0] of TFloatingPointClass =
    (
     fpInvalid,
     fpNaN,
@@ -2697,21 +2700,17 @@ const
     fpDenormal
    );
 
-{$IFDEF PIC}
-{ TODO : BUG!! In newer Delphi version asm sections inside a function
-  (as in the FloatingPointClass functions) are expected to leave EAX unchanged! }
+// _C3C2C0 returns the set of condition code flags C0, C2, and C3 of the FPU status word
+// to indicate the class of value or number in register ST(0) as follows:
+// C0 in Bit 0 of EAX
+// C2 in Bit 1 of EAX
+// C3 in Bit 2 of EAX
 
-function _FPClass: TFloatingPointClass;
+function _C3C2C0: TC3C2C0;
 // In: ST(0) Value to examine
-//     ECX/RCX   address of GOT (PIC only)
 asm
         FXAM
-        {$IFDEF CPU32}
         XOR     EDX, EDX
-        {$ENDIF CPU32}
-        {$IFDEF CPU64}
-        XOR     RDX, RDX
-        {$ENDIF CPU64}
         FNSTSW  AX
         FFREE   ST(0)
         FINCSTP
@@ -2721,120 +2720,45 @@ asm
         RCL     EDX, 1
         BT      EAX, 8  // C0
         RCL     EDX, 1
-        {$IFDEF CPU32}
-        MOVZX   EAX, TFloatingPointClass([ECX].FPClasses[EDX])
-        {$ENDIF CPU32}
-        {$IFDEF CPU64}
-        MOVZX   EAX, TFloatingPointClass([RCX].FPClasses[RDX])
-        {$ENDIF CPU64}
+        MOV     EAX, EDX
 end;
+
+function C3C2C0(const Value: Single): TC3C2C0; overload;
+asm
+        FLD     Value
+        CALL    _C3C2C0
+end;
+
+function C3C2C0(const Value: Double): TC3C2C0; overload;
+asm
+        FLD     Value
+        CALL    _C3C2C0
+end;
+
+{$IFDEF SUPPORTS_EXTENDED}
+function C3C2C0(const Value: Extended): TC3C2C0; overload;
+asm
+        FLD     Value
+        CALL    _C3C2C0
+end;
+{$ENDIF SUPPORTS_EXTENDED}
 
 function FloatingPointClass(const Value: Single): TFloatingPointClass; overload;
 begin
-  asm
-          {$IFDEF PIC}
-          CALL    GetGOT
-          {$IFDEF CPU32}
-          MOV     ECX, EAX
-          {$ENDIF CPU32}
-          {$IFDEF CPU64}
-          MOV     RCX, RAX
-          {$ENDIF CPU64}
-          {$ENDIF PIC}
-          FLD     Value
-          CALL    _FPClass
-          MOV     Result, AL
-  end;
+  Result := FPClasses[C3C2C0(Value)];
 end;
 
 function FloatingPointClass(const Value: Double): TFloatingPointClass; overload;
 begin
-  asm
-          {$IFDEF PIC}
-          CALL    GetGOT
-          {$IFDEF CPU32}
-          MOV     ECX, EAX
-          {$ENDIF CPU32}
-          {$IFDEF CPU64}
-          MOV     RCX, RAX
-          {$ENDIF CPU64}
-          {$ENDIF PIC}
-          FLD     Value
-          CALL    _FPClass
-          MOV     Result, AL
-  end;
+  Result := FPClasses[C3C2C0(Value)];
 end;
 
 {$IFDEF SUPPORTS_EXTENDED}
 function FloatingPointClass(const Value: Extended): TFloatingPointClass; overload;
 begin
-  asm
-          {$IFDEF PIC}
-          CALL    GetGOT
-          {$IFDEF CPU32}
-          MOV     ECX, EAX
-          {$ENDIF CPU32}
-          {$IFDEF CPU64}
-          MOV     RCX, RAX
-          {$ENDIF CPU64}
-          {$ENDIF PIC}
-          FLD     Value
-          CALL    _FPClass
-          MOV     Result, AL
-  end;
+  Result := FPClasses[C3C2C0(Value)];
 end;
 {$ENDIF SUPPORTS_EXTENDED}
-
-{$ELSE ~PIC}
-
-function _FPClass: TFloatingPointClass;
-// In: ST(0) Value to examine
-asm
-        FXAM
-        {$IFDEF CPU32}
-        XOR     EDX, EDX
-        {$ENDIF CPU32}
-        {$IFDEF CPU64}
-        XOR     RDX, RDX
-        {$ENDIF CPU64}
-        FNSTSW  AX
-        FFREE   ST(0)
-        FINCSTP
-        BT      EAX, 14 // C3
-        RCL     EDX, 1
-        BT      EAX, 10 // C2
-        RCL     EDX, 1
-        BT      EAX, 8  // C0
-        RCL     EDX, 1
-        {$IFDEF CPU32}
-        MOVZX   EAX, TFloatingPointClass(FPClasses[EDX])
-        {$ENDIF CPU32}
-        {$IFDEF CPU64}
-        MOVZX   EAX, TFloatingPointClass(FPClasses[RDX])
-        {$ENDIF CPU64}
-end;
-
-function FloatingPointClass(const Value: Single): TFloatingPointClass; overload;
-asm
-          FLD     Value
-          CALL    _FPClass
-end;
-
-function FloatingPointClass(const Value: Double): TFloatingPointClass; overload;
-asm
-          FLD     Value
-          CALL    _FPClass
-end;
-
-{$IFDEF SUPPORTS_EXTENDED}
-function FloatingPointClass(const Value: Extended): TFloatingPointClass; overload;
-asm
-          FLD     Value
-          CALL    _FPClass
-end;
-{$ENDIF SUPPORTS_EXTENDED}
-
-{$ENDIF ~PIC}
 
 //=== NaN and Infinity support ===============================================
 
