@@ -2306,9 +2306,9 @@ constructor TJclRegion.CreatePoly(const Points: TDynPointArray; Count: Integer;
 begin
   case FillMode of
     fmAlternate:
-      Create(CreatePolygonRgn(Points, Count, ALTERNATE), True);
+      Create(CreatePolygonRgn(Points[0], Count, ALTERNATE), True);
     fmWinding:
-      Create(CreatePolygonRgn(Points, Count, WINDING), True);
+      Create(CreatePolygonRgn(Points[0], Count, WINDING), True);
   end;
 end;
 
@@ -2317,9 +2317,9 @@ constructor TJclRegion.CreatePolyPolygon(const Points: TDynPointArray;
 begin
   case FillMode of
     fmAlternate:
-      Create(CreatePolyPolygonRgn(Points, Vertex, Count, ALTERNATE), True);
+      Create(CreatePolyPolygonRgn(Points[0], Vertex[0], Count, ALTERNATE), True);
     fmWinding:
-      Create(CreatePolyPolygonRgn(Points, Vertex, Count, WINDING), True);
+      Create(CreatePolyPolygonRgn(Points[0], Vertex[0], Count, WINDING), True);
   end;
 end;
 
