@@ -219,7 +219,11 @@ function Exsecans(X: Float): Float; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 function Haversine(X: Float): Float; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 function Sec(X: Float): Float; overload;
 function Sin(X: Float): Float; overload;
-procedure SinCos(X: Float; out Sin, Cos: Float);
+procedure SinCos(X: Single; out Sin, Cos: Single); overload;
+procedure SinCos(X: Double; out Sin, Cos: Double); overload;
+{$IFDEF SUPPORTS_EXTENDED}
+procedure SinCos(X: Extended; out Sin, Cos: Extended); overload;
+{$ENDIF SUPPORTS_EXTENDED}
 function Tan(X: Float): Float; overload;
 function Versine(X: Float): Float; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 
@@ -692,6 +696,15 @@ type
   TPolarComplex = record
     Radius: Float;
     Angle: Float;
+    {$IFDEF SUPPORTS_CLASS_OPERATORS}
+    class operator Implicit(const Value: Float): TPolarComplex;
+    class operator Implicit(const Value: Integer): TPolarComplex;
+    class operator Implicit(const Value: Int64): TPolarComplex;
+    class operator Equal(const Z1, Z2: TPolarComplex): Boolean;
+    class operator NotEqual(const Z1, Z2: TPolarComplex): Boolean;
+    class operator Multiply(const Z1, Z2: TPolarComplex): TPolarComplex;
+    class operator Divide(const Z1, Z2: TPolarComplex): TPolarComplex;
+    {$ENDIF SUPPORTS_CLASS_OPERATORS}
   end;
 
   TRectComplex = record
@@ -702,11 +715,12 @@ type
     class operator Implicit(const Value: Integer): TRectComplex;
     class operator Implicit(const Value: Int64): TRectComplex;
     class operator Implicit(const Z: TPolarComplex): TRectComplex;
+    class operator Implicit(const Z: TRectComplex): TPolarComplex;
 
     class operator Equal(const Z1, Z2: TRectComplex): Boolean;
     class operator NotEqual(const Z1, Z2: TRectComplex): Boolean;
 
-    class operator Add(const Z1, Z2: TRectComplex): TRectComplex; inline;
+    class operator Add(const Z1, Z2: TRectComplex): TRectComplex;
     class operator Subtract(const Z1, Z2: TRectComplex): TRectComplex;
     class operator Multiply(const Z1, Z2: TRectComplex): TRectComplex;
     class operator Divide(const Z1, Z2: TRectComplex): TRectComplex;
@@ -791,6 +805,9 @@ uses
   Jcl8087,
   JclResources,
   JclSynch;
+
+// Note (rrossmair): Usage of the "assembler" directive seems to be an Free Pascal requirement
+// (it's obsolete in Delphi since v. 2 I believe).
 
 // Internal helper routines
 // Linux: Get Global Offset Table (GOT) adress for Position Independent Code
@@ -1196,26 +1213,20 @@ begin
   end;
 end;
 
-function ArcTan(X: Float): Float;
-begin
-  asm
+function ArcTan(X: Float): Float; assembler;
+asm
           FLD     X
           FLD1
           FPATAN
           FWAIT
-          FSTP    Result
-  end;
 end;
 
-function ArcTan2(Y, X: Float): Float;
-begin
-  asm
+function ArcTan2(Y, X: Float): Float; assembler;
+asm
           FLD     Y
           FLD     X
           FPATAN
           FWAIT
-          FSTP    Result
-  end;
 end;
 
 function Cos(X: Float): Float;
@@ -1295,7 +1306,8 @@ begin
   end;
 end;
 
-procedure SinCos(X: Float; out Sin, Cos: Float);
+{$IFDEF SUPPORTS_EXTENDED}
+procedure SinCos(X: Extended; out Sin, Cos: Extended);
 begin
   DomainCheck(Abs(X) > MaxAngle);
   asm
@@ -1304,15 +1316,62 @@ begin
           MOV     EDX, Cos
           MOV     EAX, Sin
           FSINCOS
-          FSTP    Float PTR [EDX]
-          FSTP    Float PTR [EAX]
+          FSTP    Extended PTR [EDX]
+          FSTP    Extended PTR [EAX]
           {$ENDIF CPU32}
           {$IFDEF CPU64}
           MOV     RDX, Cos
           MOV     RAX, Sin
           FSINCOS
-          FSTP    Float PTR [RDX]
-          FSTP    Float PTR [RAX]
+          FSTP    Extended PTR [RDX]
+          FSTP    Extended PTR [RAX]
+          {$ENDIF CPU64}
+          FWAIT
+  end;
+end;
+{$ENDIF SUPPORTS_EXTENDED}
+
+procedure SinCos(X: Double; out Sin, Cos: Double);
+begin
+  DomainCheck(Abs(X) > MaxAngle);
+  asm
+          FLD     X
+          {$IFDEF CPU32}
+          MOV     EDX, Cos
+          MOV     EAX, Sin
+          FSINCOS
+          FSTP    Double PTR [EDX]
+          FSTP    Double PTR [EAX]
+          {$ENDIF CPU32}
+          {$IFDEF CPU64}
+          MOV     RDX, Cos
+          MOV     RAX, Sin
+          FSINCOS
+          FSTP    Double PTR [RDX]
+          FSTP    Double PTR [RAX]
+          {$ENDIF CPU64}
+          FWAIT
+  end;
+end;
+
+procedure SinCos(X: Single; out Sin, Cos: Single);
+begin
+  DomainCheck(Abs(X) > MaxAngle);
+  asm
+          FLD     X
+          {$IFDEF CPU32}
+          MOV     EDX, Cos
+          MOV     EAX, Sin
+          FSINCOS
+          FSTP    Single PTR [EDX]
+          FSTP    Single PTR [EAX]
+          {$ENDIF CPU32}
+          {$IFDEF CPU64}
+          MOV     RDX, Cos
+          MOV     RAX, Sin
+          FSINCOS
+          FSTP    Single PTR [RDX]
+          FSTP    Single PTR [RAX]
           {$ENDIF CPU64}
           FWAIT
   end;
@@ -1372,9 +1431,8 @@ begin
   Result := System.Ln((Sqrt(1.0 - Sqr(X)) + 1.0) / X);
 end;
 
-function ArcSinH(X: Float): Float;
-begin
-  asm
+function ArcSinH(X: Float): Float; assembler;
+asm
           FLDLN2
           FLD     X
           FLD     ST(0)
@@ -1384,8 +1442,6 @@ begin
           FSQRT
           FADDP   ST(1), ST(0)
           FYL2X
-          FSTP    Result
-  end;
 end;
 
 function ArcTanH(X: Float): Float;
@@ -2522,7 +2578,7 @@ end;
 
 { Rabin-Miller Strong Primality Test }
 
-function IsPrimeRM(N: Cardinal): Boolean;
+function IsPrimeRM(N: Cardinal): Boolean; assembler;
 asm
         // 32 --> EAX N
         //    <-- AL  Result
@@ -2706,7 +2762,7 @@ const
 // C2 in Bit 1 of EAX
 // C3 in Bit 2 of EAX
 
-function _C3C2C0: TC3C2C0;
+function _C3C2C0: TC3C2C0; assembler;
 // In: ST(0) Value to examine
 asm
         FXAM
@@ -2723,20 +2779,20 @@ asm
         MOV     EAX, EDX
 end;
 
-function C3C2C0(const Value: Single): TC3C2C0; overload;
+function C3C2C0(const Value: Single): TC3C2C0; overload; assembler;
 asm
         FLD     Value
         CALL    _C3C2C0
 end;
 
-function C3C2C0(const Value: Double): TC3C2C0; overload;
+function C3C2C0(const Value: Double): TC3C2C0; overload; assembler;
 asm
         FLD     Value
         CALL    _C3C2C0
 end;
 
 {$IFDEF SUPPORTS_EXTENDED}
-function C3C2C0(const Value: Extended): TC3C2C0; overload;
+function C3C2C0(const Value: Extended): TC3C2C0; overload; assembler;
 asm
         FLD     Value
         CALL    _C3C2C0
@@ -4256,21 +4312,62 @@ begin
 end;
 
 {$IFDEF SUPPORTS_CLASS_OPERATORS}
+class operator TPolarComplex.Implicit(const Value: Float): TPolarComplex;
+begin
+  Result.Radius := Value;
+  Result.Angle := 0.0;
+end;
+
+class operator TPolarComplex.Implicit(const Value: Integer): TPolarComplex;
+begin
+  Result.Radius := Value;
+  Result.Angle := 0.0;
+end;
+
+class operator TPolarComplex.Implicit(const Value: Int64): TPolarComplex;
+begin
+  Result.Radius := Value;
+  Result.Angle := 0.0;
+end;
+
+class operator TPolarComplex.Equal(const Z1, Z2: TPolarComplex): Boolean;
+begin
+  Result := (Z1.Radius = Z2.Radius) and (Z1.Angle = Z2.Angle);
+end;
+
+class operator TPolarComplex.NotEqual(const Z1, Z2: TPolarComplex): Boolean;
+begin
+  Result := not Equal(Z1, Z2);
+end;
+
+class operator TPolarComplex.Multiply(const Z1, Z2: TPolarComplex): TPolarComplex;
+begin
+  Result.Radius := Z1.Radius * Z2.Radius;
+  Result.Angle := NormalizeAngle(Z1.Angle + Z2.Angle);
+end;
+
+class operator TPolarComplex.Divide(const Z1, Z2: TPolarComplex): TPolarComplex;
+begin
+  Result.Radius := Z1.Radius / Z2.Radius;
+  Result.Angle := Z1.Angle - Z2.Angle;
+end;
 
 class operator TRectComplex.Implicit(const Value: Float): TRectComplex;
 begin
   Result.Re := Value;
-  Result.Im := 0;
+  Result.Im := 0.0;
 end;
 
 class operator TRectComplex.Implicit(const Value: Integer): TRectComplex;
 begin
   Result.Re := Value;
+  Result.Im := 0.0;
 end;
 
 class operator TRectComplex.Implicit(const Value: Int64): TRectComplex;
 begin
   Result.Re := Value;
+  Result.Im := 0.0;
 end;
 
 class operator TRectComplex.Implicit(const Z: TPolarComplex): TRectComplex;
@@ -4280,6 +4377,12 @@ begin
   SinCos(Z.Angle, ASin, ACos);
   Result.Re := Z.Radius * ACos;
   Result.Im := Z.Radius * ASin;
+end;
+
+class operator TRectComplex.Implicit(const Z: TRectComplex): TPolarComplex;
+begin
+  Result.Radius := Sqrt(Z.Re * Z.Re + Z.Im * Z.Im);
+  Result.Angle := ArcTan2(Z.Im, Z.Re);
 end;
 
 class operator TRectComplex.Equal(const Z1, Z2: TRectComplex): Boolean;
