@@ -698,10 +698,10 @@ type
     Angle: Float;
     {$IFDEF SUPPORTS_CLASS_OPERATORS}
     class operator Implicit(const Value: Float): TPolarComplex;
-    class operator Implicit(const Value: Integer): TPolarComplex;
-    class operator Implicit(const Value: Int64): TPolarComplex;
     class operator Equal(const Z1, Z2: TPolarComplex): Boolean;
     class operator NotEqual(const Z1, Z2: TPolarComplex): Boolean;
+    class operator Add(const Z1, Z2: TPolarComplex): TPolarComplex;
+    class operator Subtract(const Z1, Z2: TPolarComplex): TPolarComplex;
     class operator Multiply(const Z1, Z2: TPolarComplex): TPolarComplex;
     class operator Divide(const Z1, Z2: TPolarComplex): TPolarComplex;
     class operator Negative(const Z: TPolarComplex): TPolarComplex;
@@ -713,8 +713,6 @@ type
     Im: Float;
     {$IFDEF SUPPORTS_CLASS_OPERATORS}
     class operator Implicit(const Value: Float): TRectComplex;
-    class operator Implicit(const Value: Integer): TRectComplex;
-    class operator Implicit(const Value: Int64): TRectComplex;
     class operator Implicit(const Z: TPolarComplex): TRectComplex;
     class operator Implicit(const Z: TRectComplex): TPolarComplex;
 
@@ -760,7 +758,8 @@ function Sum(const Z: array of TRectComplex): TRectComplex; overload;
 function Diff(const Z1, Z2: TRectComplex): TRectComplex;
 function Product(const Z1, Z2: TRectComplex): TRectComplex; overload;
 function Product(const Z1, Z2: TPolarComplex): TPolarComplex; overload;
-function Quotient(const Z1, Z2: TRectComplex): TRectComplex;
+function Quotient(const Z1, Z2: TRectComplex): TRectComplex; overload;
+function Quotient(const Z1, Z2: TPolarComplex): TPolarComplex; overload;
 
 function Ln(const Z: TPolarComplex): TRectComplex;
 function Exp(const Z: TRectComplex): TPolarComplex; overload;
@@ -4043,7 +4042,7 @@ end;
 
 function PolarComplex(const Z: TRectComplex): TPolarComplex;
 begin
-  Result.Radius := Sqrt(Sqr(Z.Re) + Sqr(Z.Im));
+  Result.Radius := Norm(Z);
   Result.Angle := ArcTan2(Z.Im, Z.Re);
 end;
 
@@ -4054,7 +4053,8 @@ end;
 
 function Equal(const Z1, Z2: TPolarComplex): Boolean;
 begin
-  Result := (Z1.Radius = Z2.Radius) and IsFloatZero(NormalizeAngle(Z1.Angle - Z2.Angle));
+  Result := (Z1.Radius = Z2.Radius)
+    and ((Z1.Radius = 0) or IsFloatZero(NormalizeAngle(Z1.Angle - Z2.Angle)));
 end;
 
 function IsZero(const Z: TRectComplex): Boolean;
@@ -4169,7 +4169,7 @@ end;
 function Product(const Z1, Z2: TPolarComplex): TPolarComplex;
 begin
   Result.Radius := Z1.Radius * Z2.Radius;
-  Result.Angle := Z1.Angle + Z2.Angle;
+  Result.Angle := NormalizeAngle(Z1.Angle + Z2.Angle);
 end;
 
 function Quotient(const Z1, Z2: TRectComplex): TRectComplex;
@@ -4179,6 +4179,12 @@ begin
   Denom := Sqr(Z2.Re) + Sqr(Z2.Im);
   Result.Re := (Z1.Re * Z2.Re + Z1.Im * Z2.Im) / Denom;
   Result.Im := (Z1.Im * Z2.Re - Z1.Re * Z2.Im) / Denom;
+end;
+
+function Quotient(const Z1, Z2: TPolarComplex): TPolarComplex;
+begin
+  Result.Radius := Z1.Radius / Z2.Radius;
+  Result.Angle := NormalizeAngle(Z1.Angle - Z2.Angle);
 end;
 
 function Ln(const Z: TPolarComplex): TRectComplex;
@@ -4321,24 +4327,17 @@ begin
 end;
 
 {$IFDEF SUPPORTS_CLASS_OPERATORS}
+
+{ TPolarComplex }
+
 class operator TPolarComplex.Implicit(const Value: Float): TPolarComplex;
-begin
-  Result := PolarComplex(Value);
-end;
-
-class operator TPolarComplex.Implicit(const Value: Integer): TPolarComplex;
-begin
-  Result := PolarComplex(Value);
-end;
-
-class operator TPolarComplex.Implicit(const Value: Int64): TPolarComplex;
 begin
   Result := PolarComplex(Value);
 end;
 
 class operator TPolarComplex.Equal(const Z1, Z2: TPolarComplex): Boolean;
 begin
-  Result := (Z1.Radius = Z2.Radius) and (Z1.Angle = Z2.Angle);
+  Result := Equal(Z1, Z2);
 end;
 
 class operator TPolarComplex.NotEqual(const Z1, Z2: TPolarComplex): Boolean;
@@ -4346,60 +4345,51 @@ begin
   Result := not Equal(Z1, Z2);
 end;
 
+class operator TPolarComplex.Add(const Z1, Z2: TPolarComplex): TPolarComplex;
+begin
+  Result := Sum(Z1, Z2);
+end;
+
+class operator TPolarComplex.Subtract(const Z1, Z2: TPolarComplex): TPolarComplex;
+begin
+  Result := Diff(Z1, Z2);
+end;
+
 class operator TPolarComplex.Multiply(const Z1, Z2: TPolarComplex): TPolarComplex;
 begin
-  Result.Radius := Z1.Radius * Z2.Radius;
-  Result.Angle := NormalizeAngle(Z1.Angle + Z2.Angle);
+  Result := Product(Z1, Z2);
 end;
 
 class operator TPolarComplex.Divide(const Z1, Z2: TPolarComplex): TPolarComplex;
 begin
-  Result.Radius := Z1.Radius / Z2.Radius;
-  Result.Angle := Z1.Angle - Z2.Angle;
+  Result := Quotient(Z1, Z2);
 end;
 
 class operator TPolarComplex.Negative(const Z: TPolarComplex): TPolarComplex;
 begin
-  Result.Radius := Z.Radius;
-  Result.Angle := NormalizeAngle(Z.Angle + Pi);
+  Result := Neg(Z);
 end;
+
+{ TRectComplex }
 
 class operator TRectComplex.Implicit(const Value: Float): TRectComplex;
 begin
-  Result.Re := Value;
-  Result.Im := 0.0;
-end;
-
-class operator TRectComplex.Implicit(const Value: Integer): TRectComplex;
-begin
-  Result.Re := Value;
-  Result.Im := 0.0;
-end;
-
-class operator TRectComplex.Implicit(const Value: Int64): TRectComplex;
-begin
-  Result.Re := Value;
-  Result.Im := 0.0;
+  Result := RectComplex(Value);
 end;
 
 class operator TRectComplex.Implicit(const Z: TPolarComplex): TRectComplex;
-var
-  ASin, ACos: Float;
 begin
-  SinCos(Z.Angle, ASin, ACos);
-  Result.Re := Z.Radius * ACos;
-  Result.Im := Z.Radius * ASin;
+  Result := RectComplex(Z);
 end;
 
 class operator TRectComplex.Implicit(const Z: TRectComplex): TPolarComplex;
 begin
-  Result.Radius := Sqrt(Z.Re * Z.Re + Z.Im * Z.Im);
-  Result.Angle := ArcTan2(Z.Im, Z.Re);
+  Result := PolarComplex(Z);
 end;
 
 class operator TRectComplex.Equal(const Z1, Z2: TRectComplex): Boolean;
 begin
-  Result := (Z1.Re = Z2.Re) and (Z1.Im = Z2.Im);
+  Result := Equal(Z1, Z2);
 end;
 
 class operator TRectComplex.NotEqual(const Z1, Z2: TRectComplex): Boolean;
@@ -4409,41 +4399,32 @@ end;
 
 class operator TRectComplex.Add(const Z1, Z2: TRectComplex): TRectComplex;
 begin
-  Result.Re := Z1.Re + Z2.Re;
-  Result.Im := Z1.Im + Z2.Im;
+  Result := Sum(Z1, Z2);
 end;
 
 class operator TRectComplex.Subtract(const Z1, Z2: TRectComplex): TRectComplex;
 begin
-  Result.Re := Z1.Re - Z2.Re;
-  Result.Im := Z1.Im - Z2.Im;
+  Result := Diff(Z1, Z2);
 end;
 
 class operator TRectComplex.Multiply(const Z1, Z2: TRectComplex): TRectComplex;
 begin
-  Result.Re := Z1.Re * Z2.Re - Z1.Im * Z2.Im;
-  Result.Im := Z1.Re * Z2.Im + Z1.Im * Z2.Re;
+  Result := Product(Z1, Z2);
 end;
 
 class operator TRectComplex.Divide(const Z1, Z2: TRectComplex): TRectComplex;
-var
-  Denom: Float;
 begin
-  Denom := Sqr(Z2.Re) + Sqr(Z2.Im);
-  Result.Re := (Z1.Re * Z2.Re + Z1.Im * Z2.Im) / Denom;
-  Result.Im := (Z1.Im * Z2.Re - Z1.Re * Z2.Im) / Denom;
+  Result := Quotient(Z1, Z2);
 end;
 
 class operator TRectComplex.Negative(const Z: TRectComplex): TRectComplex;
 begin
-  Result.Re := -Z.Re;
-  Result.Im := -Z.Im;
+  Result := Neg(Z);
 end;
 
 class function TRectComplex.Exp(const Z: TRectComplex): TPolarComplex;
 begin
-  Result.Radius := System.Exp(Z.Re);
-  Result.Angle := Z.Im;
+  Result := Exp(Z);
 end;
 
 {$ENDIF SUPPORTS_CLASS_OPERATORS}
