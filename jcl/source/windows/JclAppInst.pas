@@ -441,7 +441,7 @@ var
   PID: DWORD;
   Found: Boolean;
 begin
-  if (GetClassName(Wnd, ClassName, SizeOf(ClassName)) > 0) and
+  if (GetClassName(Wnd, ClassName, Length(ClassName) - 1) > 0) and
     (StrComp(ClassName, Data.WindowClassName) = 0) then
   begin
     GetWindowThreadProcessId(Wnd, @PID);
