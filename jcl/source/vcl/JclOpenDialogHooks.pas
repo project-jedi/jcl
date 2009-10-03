@@ -238,6 +238,7 @@ begin
   FParentWnd := GetParent(FHandle);
   if IsWin2k or IsWinXP then
     FOldParentWndInstance := Pointer(SetWindowLongPtr(FParentWnd, GWLP_WNDPROC, LONG_PTR(FParentWndInstance)));
+  DoShow;
 end;
 
 procedure TJclOpenDialogHook.DoClose;
