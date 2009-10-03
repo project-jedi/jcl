@@ -640,7 +640,11 @@ type
     constructor Attach(VersionInfoData: Pointer; Size: Integer);
     constructor Create(const FileName: string); overload;
     {$IFDEF MSWINDOWS}
+    {$IFDEF FPC}
+    constructor Create(const Window: HWND; Dummy: Pointer = nil); overload;
+    {$ELSE}
     constructor Create(const Window: HWND); overload;
+    {$ENDIF}
     constructor Create(const Module: HMODULE); overload;
     {$ENDIF MSWINDOWS}
     destructor Destroy; override;
@@ -4804,7 +4808,11 @@ begin
 end;
 
 {$IFDEF MSWINDOWS}
+{$IFDEF FPC}
+constructor TJclFileVersionInfo.Create(const Window: HWND; Dummy: Pointer = nil);
+{$ELSE}
 constructor TJclFileVersionInfo.Create(const Window: HWND);
+{$ENDIF}
 type
   {$IFDEF SUPPORTS_UNICODE}
   TGetModuleFileNameEx =function(hProcess: THandle; hModule: HMODULE; FileName: PWideChar; nSize: DWORD): DWORD; stdcall;
