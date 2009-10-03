@@ -697,14 +697,14 @@ type
     Radius: Float;
     Angle: Float;
     {$IFDEF SUPPORTS_CLASS_OPERATORS}
-    class operator Implicit(const Value: Float): TPolarComplex; // inline;
-    class operator Equal(const Z1, Z2: TPolarComplex): Boolean; // inline;
-    class operator NotEqual(const Z1, Z2: TPolarComplex): Boolean; // inline;
-    class operator Add(const Z1, Z2: TPolarComplex): TPolarComplex; // inline;
-    class operator Subtract(const Z1, Z2: TPolarComplex): TPolarComplex; // inline;
-    class operator Multiply(const Z1, Z2: TPolarComplex): TPolarComplex; // inline;
-    class operator Divide(const Z1, Z2: TPolarComplex): TPolarComplex; // inline;
-    class operator Negative(const Z: TPolarComplex): TPolarComplex; // inline;
+    class operator Implicit(const Value: Float): TPolarComplex;
+    class operator Equal(const Z1, Z2: TPolarComplex): Boolean;
+    class operator NotEqual(const Z1, Z2: TPolarComplex): Boolean;
+    class operator Add(const Z1, Z2: TPolarComplex): TPolarComplex;
+    class operator Subtract(const Z1, Z2: TPolarComplex): TPolarComplex;
+    class operator Multiply(const Z1, Z2: TPolarComplex): TPolarComplex;
+    class operator Divide(const Z1, Z2: TPolarComplex): TPolarComplex;
+    class operator Negative(const Z: TPolarComplex): TPolarComplex;
     {$ENDIF SUPPORTS_CLASS_OPERATORS}
   end;
 
@@ -712,19 +712,19 @@ type
     Re: Float;
     Im: Float;
     {$IFDEF SUPPORTS_CLASS_OPERATORS}
-    class operator Implicit(const Value: Float): TRectComplex; // inline;
-    class operator Implicit(const Z: TPolarComplex): TRectComplex; // inline;
-    class operator Implicit(const Z: TRectComplex): TPolarComplex; // inline;
+    class operator Implicit(const Value: Float): TRectComplex;
+    class operator Implicit(const Z: TPolarComplex): TRectComplex;
+    class operator Implicit(const Z: TRectComplex): TPolarComplex;
     // OK with Delphi, but will yield errors in .hpp files:
-    // class operator Explicit(const Z: TPolarComplex): TRectComplex; // inline;
-    // class operator Explicit(const Z: TRectComplex): TPolarComplex; // inline;
-    class operator Equal(const Z1, Z2: TRectComplex): Boolean; // inline;
-    class operator NotEqual(const Z1, Z2: TRectComplex): Boolean; // inline;
-    class operator Add(const Z1, Z2: TRectComplex): TRectComplex; // inline;
-    class operator Subtract(const Z1, Z2: TRectComplex): TRectComplex; // inline;
-    class operator Multiply(const Z1, Z2: TRectComplex): TRectComplex; // inline;
-    class operator Divide(const Z1, Z2: TRectComplex): TRectComplex; // inline;
-    class operator Negative(const Z: TRectComplex): TRectComplex; // inline;
+    // class operator Explicit(const Z: TPolarComplex): TRectComplex;
+    // class operator Explicit(const Z: TRectComplex): TPolarComplex;
+    class operator Equal(const Z1, Z2: TRectComplex): Boolean;
+    class operator NotEqual(const Z1, Z2: TRectComplex): Boolean;
+    class operator Add(const Z1, Z2: TRectComplex): TRectComplex;
+    class operator Subtract(const Z1, Z2: TRectComplex): TRectComplex;
+    class operator Multiply(const Z1, Z2: TRectComplex): TRectComplex;
+    class operator Divide(const Z1, Z2: TRectComplex): TRectComplex;
+    class operator Negative(const Z: TRectComplex): TRectComplex;
     // added in rev. 1482; what does it offer over function Exp below??
     class function Exp(const Z: TRectComplex): TPolarComplex; static; inline;
     {$ENDIF SUPPORTS_CLASS_OPERATORS}
