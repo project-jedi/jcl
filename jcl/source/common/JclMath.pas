@@ -30,9 +30,9 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Various mathematics classes and routines. Includes prime numbers, rational                       }
-{ numbers, generic floating point routines, hyperbolic and transcendenatal                         }
-{ routines, NAN and INF support and more.                                                          }
+{ Various mathematics classes and routines. Includes prime numbers, rational numbers,              }
+{ complex numbers, generic floating point routines, hyperbolic and transcendenatal routines,       }
+{ NAN and INF support and more.                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -86,7 +86,7 @@ const
   LogE: Float      = 0.43429448190325182765112891891661; // Log10(E)
   E: Float         = 2.7182818284590452353602874713527;  // Natural constant
   hLn2Pi: Float    = 0.91893853320467274178032973640562; // Ln(2*PI)/2
-  inv2Pi: Float    = 0.159154943091895;                  // 0.5 / Pi
+  inv2Pi: Float    = 0.15915494309189533576888376337251436203445964574046; // 0.5 / Pi
   TwoToPower63: Float = 9223372036854775808.0;           // 2^63
   GoldenMean: Float   = 1.618033988749894848204586834365638;  // GoldenMean
   EulerMascheroni: Float = 0.5772156649015328606065120900824;  // Euler GAMMA
@@ -697,14 +697,14 @@ type
     Radius: Float;
     Angle: Float;
     {$IFDEF SUPPORTS_CLASS_OPERATORS}
-    class operator Implicit(const Value: Float): TPolarComplex;
-    class operator Equal(const Z1, Z2: TPolarComplex): Boolean;
-    class operator NotEqual(const Z1, Z2: TPolarComplex): Boolean;
-    class operator Add(const Z1, Z2: TPolarComplex): TPolarComplex;
-    class operator Subtract(const Z1, Z2: TPolarComplex): TPolarComplex;
-    class operator Multiply(const Z1, Z2: TPolarComplex): TPolarComplex;
-    class operator Divide(const Z1, Z2: TPolarComplex): TPolarComplex;
-    class operator Negative(const Z: TPolarComplex): TPolarComplex;
+    class operator Implicit(const Value: Float): TPolarComplex; // inline;
+    class operator Equal(const Z1, Z2: TPolarComplex): Boolean; // inline;
+    class operator NotEqual(const Z1, Z2: TPolarComplex): Boolean; // inline;
+    class operator Add(const Z1, Z2: TPolarComplex): TPolarComplex; // inline;
+    class operator Subtract(const Z1, Z2: TPolarComplex): TPolarComplex; // inline;
+    class operator Multiply(const Z1, Z2: TPolarComplex): TPolarComplex; // inline;
+    class operator Divide(const Z1, Z2: TPolarComplex): TPolarComplex; // inline;
+    class operator Negative(const Z: TPolarComplex): TPolarComplex; // inline;
     {$ENDIF SUPPORTS_CLASS_OPERATORS}
   end;
 
@@ -712,20 +712,21 @@ type
     Re: Float;
     Im: Float;
     {$IFDEF SUPPORTS_CLASS_OPERATORS}
-    class operator Implicit(const Value: Float): TRectComplex;
-    class operator Implicit(const Z: TPolarComplex): TRectComplex;
-    class operator Implicit(const Z: TRectComplex): TPolarComplex;
-
-    class operator Equal(const Z1, Z2: TRectComplex): Boolean;
-    class operator NotEqual(const Z1, Z2: TRectComplex): Boolean;
-
-    class operator Add(const Z1, Z2: TRectComplex): TRectComplex;
-    class operator Subtract(const Z1, Z2: TRectComplex): TRectComplex;
-    class operator Multiply(const Z1, Z2: TRectComplex): TRectComplex;
-    class operator Divide(const Z1, Z2: TRectComplex): TRectComplex;
-    class operator Negative(const Z: TRectComplex): TRectComplex;
-
-    class function Exp(const Z: TRectComplex): TPolarComplex; static;
+    class operator Implicit(const Value: Float): TRectComplex; // inline;
+    class operator Implicit(const Z: TPolarComplex): TRectComplex; // inline;
+    class operator Implicit(const Z: TRectComplex): TPolarComplex; // inline;
+    // OK with Delphi, but will yield errors in .hpp files:
+    // class operator Explicit(const Z: TPolarComplex): TRectComplex; // inline;
+    // class operator Explicit(const Z: TRectComplex): TPolarComplex; // inline;
+    class operator Equal(const Z1, Z2: TRectComplex): Boolean; // inline;
+    class operator NotEqual(const Z1, Z2: TRectComplex): Boolean; // inline;
+    class operator Add(const Z1, Z2: TRectComplex): TRectComplex; // inline;
+    class operator Subtract(const Z1, Z2: TRectComplex): TRectComplex; // inline;
+    class operator Multiply(const Z1, Z2: TRectComplex): TRectComplex; // inline;
+    class operator Divide(const Z1, Z2: TRectComplex): TRectComplex; // inline;
+    class operator Negative(const Z: TRectComplex): TRectComplex; // inline;
+    // added in rev. 1482; what does it offer over function Exp below??
+    class function Exp(const Z: TRectComplex): TPolarComplex; static; inline;
     {$ENDIF SUPPORTS_CLASS_OPERATORS}
   end;
 
@@ -1213,6 +1214,7 @@ begin
   end;
 end;
 
+{$IFDEF CPU32}
 function ArcTan(X: Float): Float; assembler;
 asm
           FLD     X
@@ -1220,7 +1222,22 @@ asm
           FPATAN
           FWAIT
 end;
+{$ENDIF CPU32}
 
+{$IFDEF CPU64}
+function ArcTan(X: Float): Float;
+begin
+  asm
+          FLD     X
+          FLD1
+          FPATAN
+          FWAIT
+          FSTP    Result
+  end;
+end;
+{$ENDIF CPU64}
+
+{$IFDEF CPU32}
 function ArcTan2(Y, X: Float): Float; assembler;
 asm
           FLD     Y
@@ -1228,6 +1245,20 @@ asm
           FPATAN
           FWAIT
 end;
+{$ENDIF CPU32}
+
+{$IFDEF CPU64}
+function ArcTan2(Y, X: Float): Float;
+begin
+  asm
+          FLD     Y
+          FLD     X
+          FPATAN
+          FWAIT
+          FSTP    Result
+  end;
+end;
+{$ENDIF CPU64}
 
 function Cos(X: Float): Float;
 begin
@@ -1431,6 +1462,7 @@ begin
   Result := System.Ln((Sqrt(1.0 - Sqr(X)) + 1.0) / X);
 end;
 
+{$IFDEF CPU32}
 function ArcSinH(X: Float): Float; assembler;
 asm
           FLDLN2
@@ -1443,6 +1475,25 @@ asm
           FADDP   ST(1), ST(0)
           FYL2X
 end;
+{$ENDIF CPU32}
+
+{$IFDEF CPU64}
+function ArcSinH(X: Float): Float;
+begin
+  asm
+          FLDLN2
+          FLD     X
+          FLD     ST(0)
+          FMUL    ST(0), ST(0)
+          FLD1
+          FADDP   ST(1), ST(0)
+          FSQRT
+          FADDP   ST(1), ST(0)
+          FYL2X
+          FSTP    Result
+  end;
+end;
+{$ENDIF CPU64}
 
 function ArcTanH(X: Float): Float;
 begin
@@ -2164,6 +2215,9 @@ end;
 function NormalizeAngle(const Angle: Float): Float;
 begin
   Result := Angle;
+  if Result = 0 then
+    Exit;
+
   {$IFDEF MATH_ANGLE_DEGREES}
   Result := DegToRad(Result);
   {$ENDIF MATH_ANGLE_DEGREES}
@@ -2171,14 +2225,15 @@ begin
   Result := GradToRad(Result);
   {$ENDIF MATH_ANGLE_GRADS}
 
-  Result := Frac(Result * Inv2Pi);
-  if Result < -0.5 then
-    Result := Result + 1.0
-  else
-  if Result >= 0.5 then
-    Result := Result - 1.0;
-
-  Result := Result * TwoPi;
+  if (Result < -Pi) or (Result >= Pi) then
+  begin
+    Result := Frac(Result * Inv2Pi);
+    if Result < 0 then
+      Result := Result + 1.0
+    else
+      Result := Result - 1.0;
+    Result := Result * TwoPi;
+  end;
 
   {$IFDEF MATH_ANGLE_DEGREES}
   Result := RadToDeg(Result);
@@ -4386,7 +4441,17 @@ class operator TRectComplex.Implicit(const Z: TRectComplex): TPolarComplex;
 begin
   Result := PolarComplex(Z);
 end;
+{
+class operator TRectComplex.Explicit(const Z: TPolarComplex): TRectComplex;
+begin
+  Result := RectComplex(Z);
+end;
 
+class operator TRectComplex.Explicit(const Z: TRectComplex): TPolarComplex;
+begin
+  Result := PolarComplex(Z);
+end;
+}
 class operator TRectComplex.Equal(const Z1, Z2: TRectComplex): Boolean;
 begin
   Result := Equal(Z1, Z2);
@@ -4424,7 +4489,7 @@ end;
 
 class function TRectComplex.Exp(const Z: TRectComplex): TPolarComplex;
 begin
-  Result := Exp(Z);
+  Result := JclMath.Exp(Z);
 end;
 
 {$ENDIF SUPPORTS_CLASS_OPERATORS}
