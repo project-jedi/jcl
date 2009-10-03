@@ -617,7 +617,7 @@ type
   TJclSimpleLog = class (TObject)
   private
     FDateTimeFormatStr: String;
-    FLogFileHandle: {$IFDEF DELPHI}Integer{$ELSE}THandle{$ENDIF};
+    FLogFileHandle: {$IFDEF BORLAND}Integer{$ELSE}THandle{$ENDIF};
     FLogFileName: string;
     FLoggingActive: Boolean;
     FLogWasEmpty: Boolean;
@@ -3245,11 +3245,11 @@ begin
     FLogFileName := CreateDefaultFileName
   else
     FLogFileName := ALogFileName;
-  {$IFDEF DELPHI}
+  {$IFDEF BORLAND}
   FLogFileHandle := Integer(INVALID_HANDLE_VALUE);
-  {$ELSE ~DELPHI}
+  {$ELSE ~BORLAND}
   FLogFileHandle := INVALID_HANDLE_VALUE;
-  {$ENDIF ~DELPHI}
+  {$ENDIF ~BORLAND}
   FLoggingActive := True;
 end;
 
@@ -3285,11 +3285,11 @@ begin
   if LogOpen then
   begin
     FileClose(FLogFileHandle);
-    {$IFDEF DELPHI}
+    {$IFDEF BORLAND}
     FLogFileHandle := Integer(INVALID_HANDLE_VALUE);
-    {$ELSE ~DELPHI}
+    {$ELSE ~BORLAND}
     FLogFileHandle := INVALID_HANDLE_VALUE;
-    {$ENDIF ~DELPHI}
+    {$ENDIF ~BORLAND}
     FLogWasEmpty := False;
   end;
 end;
