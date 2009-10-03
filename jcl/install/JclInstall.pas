@@ -1570,9 +1570,11 @@ var
         MarkOptionBegin(Option);
         if Option = joJCLExpertsDsgnPackages then
           // nothing, default value
-        else if Option = joJCLExpertsDLL then
+        else
+        if Option = joJCLExpertsDLL then
           DLLExperts := OptionChecked[Option]
-        else if DLLExperts then
+        else
+        if DLLExperts then
         begin
           ProjectFileName := Distribution.JclPath + FullLibraryFileName(ATarget, SupportedExperts[Option]);
           Result := ATarget.RegisterExpert(ProjectFileName, GetBplPath, PathExtractFileNameNoExt(ProjectFileName));
@@ -1837,7 +1839,11 @@ var
   VersionStr: string;
 begin
   VersionStr := Target.VersionNumberStr;
-  Result := PathGetShortName(Format(FormatStr, [VersionStr]));
+  Result := Format(FormatStr, [VersionStr]);
+  {$IFDEF MSWINDOWS}
+  if (Target.RadToolKind <> brBorlandDevStudio) or (Target.VersionNumber < 3) then
+    Result := PathGetShortName(Result);
+  {$ENDIF MSWINDOWS}
 end;
 
 function TJclInstallation.RemoveSettings: Boolean;
@@ -2183,9 +2189,10 @@ begin
     else
       Result := Target.BPLOutputPath;
   end;
-  //{$IFDEF MSWINDOWS}
-  //Result := PathGetShortName(Result);
-  //{$ENDIF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
+  if (Target.RadToolKind <> brBorlandDevStudio) or (Target.VersionNumber < 3) then
+    Result := PathGetShortName(Result);
+  {$ENDIF MSWINDOWS}
 end;
 
 function TJclInstallation.GetDcpPath: string;
@@ -2202,9 +2209,10 @@ begin
     else
       Result := FJclDcpPath;
   end;
-  //{$IFDEF MSWINDOWS}
-  //Result := PathGetShortName(Result);
-  //{$ENDIF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
+  if (Target.RadToolKind <> brBorlandDevStudio) or (Target.VersionNumber < 3) then
+    Result := PathGetShortName(Result);
+  {$ENDIF MSWINDOWS}
 end;
 
 procedure TJclInstallation.Close;
@@ -2558,7 +2566,7 @@ begin
   if clProj2Mak in Target.CommandLineTools then
   begin
     Target.Bpr2Mak.Options.Clear;
-    Target.Bpr2Mak.Options.Add('-t' + ExtractRelativePath(PackageDirectory,Distribution.JclPath + Bcb2MakTemplate));
+    Target.Bpr2Mak.AddPathOption('t', ExtractRelativePath(PackageDirectory,Distribution.JclPath + Bcb2MakTemplate));
   end;
   if clMake in Target.CommandLineTools then
   begin
@@ -2997,9 +3005,6 @@ procedure TJclDistribution.Init;
     InstallerFileName := ParamStr(0);
 
     FJclPath := PathAddSeparator(ExpandFileName(PathExtractFileDirFixed(InstallerFileName) + '..'));
-    {$IFDEF MSWINDOWS}
-    FJclPath := PathGetShortName(FJclPath);
-    {$ENDIF MSWINDOWS}
     FLibReleaseDirMask := Format('%slib' + VersionDirExp, [FJclPath]);
     FLibDebugDirMask := FLibReleaseDirMask + DirDelimiter + 'debug';
     FJclBinDir := FJclPath + 'bin';
@@ -3199,7 +3204,7 @@ begin
   LogFileName := JclBinDir + '\RegHelper.log';
   if FileExists(LogFileName) then
     FileDelete(LogFileName);
-  Parameters := '-c -o' + LogFileName;
+  Parameters := Format('-c -o"%s"', [LogFileName]);
   for Index := 0 to FRegHelpCommands.Count - 1 do
   begin
     case Integer(FRegHelpCommands.Objects[Index]) of

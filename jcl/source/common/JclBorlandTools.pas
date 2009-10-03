@@ -2323,7 +2323,7 @@ procedure TJclBorlandCommandLineTool.AddPathOption(const Option, Path: string);
 var
   S: string;
 
-  {$IFDEF MSWINDOWS}
+  // path before Delphi 2005 must be shortened
   // to avoid the 126 character limit of DCC32 (and eventually other command line tools)
   // which shows up with misleading error messages ("Fatal: System.pas not found") or
   // might even cause AVs
@@ -2332,24 +2332,25 @@ var
     List: TStringList;
     I: Integer;
   begin
-    List := TStringList.Create;
-    try
-      StrToStrings(Paths, PathSep, List);
-      for I := 0 to List.Count - 1 do
-        List[I] := PathGetShortName(List[I]);
-      Paths := StringsToStr(List, PathSep);
-    finally
-      List.Free;
+    {$IFDEF MSWINDOWS}
+    if (Installation.RadToolKind <> brBorlandDevStudio) or (Installation.VersionNumber < 3) then
+    begin
+      List := TStringList.Create;
+      try
+        StrToStrings(Paths, PathSep, List);
+        for I := 0 to List.Count - 1 do
+          List[I] := PathGetShortName(List[I]);
+        Paths := StringsToStr(List, PathSep);
+      finally
+        List.Free;
+      end;
     end;
+    {$ENDIF MSWINDOWS}
   end;
-  {$ENDIF MSWINDOWS}
 
 begin
   S := PathRemoveSeparator(Path);
-  {$IFDEF MSWINDOWS}
-  S := LowerCase(S); // file names are case insensitive
   ConvertToShortPathNames(S);
-  {$ENDIF MSWINDOWS}
   { TODO : If we were sure that options are always case-insensitive
            for Borland tools, we could use UpperCase(Option) below. }
   S := Format('-%s"%s"', [Option, S]);
