@@ -1110,8 +1110,7 @@ resourcestring
   RsCompressionLzma86Name            = 'Lzma86 archive';
   RsCompressionLzma86Extensions      = '*.lzma86';
   RsCompressionPeName                = 'Pe archive';
-  // TODO: extension might be *.*, but then TJclCompressionStreamFormats.FindDecompressFormat can fail
-  RsCompressionPeExtensions          = '*.';
+  RsCompressionPeExtensions          = '*.exe;*.dll;*.sys;*.bpl';
   RsCompressionElfName               = 'Elf archive';
   // TODO: extension might be *.*, but then TJclCompressionStreamFormats.FindDecompressFormat can fail
   RsCompressionElfExtensions         = '*.';
@@ -1130,7 +1129,7 @@ resourcestring
   RsCompressionDmgName               = 'Dmg archive';
   RsCompressionDmgExtensions         = '*.dmg';
   RsCompressionCompoundName          = 'Compound archive';
-  RsCompressionCompoundExtensions    = '*.msi;*.doc;*.xls;*.ppt';
+  RsCompressionCompoundExtensions    = '*.msi;*.msp;*.doc;*.xls;*.ppt';
   RsCompressionWimName               = 'Wim archive';
   RsCompressionWimExtensions         = '*.wim;*.swm';
   RsCompressionIsoName               = 'Iso archive';
@@ -1149,7 +1148,7 @@ resourcestring
   RsCompressionTarExtensions         = '*.tar';
   RsCompressionGZipName              = 'GZip archive';
   RsCompressionGZipExtensions        = '*.gz;*.gzip;*.tgz;*.tpz';
-  RsCompressionXzName                = 'xz archive';
+  RsCompressionXzName                = 'Xz archive';
   RsCompressionXzExtensions          = '*.xz;*.txz';
   RsCompressionNtfsName              = 'Ntfs archive';
   RsCompressionNtfsExtensions        = '*.ntfs;*.img';
@@ -1159,6 +1158,15 @@ resourcestring
   RsCompressionMbrExtensions         = '*.mbr';
   RsCompressionVhdName               = 'Vhd archive';
   RsCompressionVhdExtensions         = '*.vhd;*.mbr';
+  RsCompressionFlvName               = 'Flv archive';
+  RsCompressionFlvExtensions         = '*.flv';
+  RsCompressionMsLZName              = 'MsLZ archive';
+  // TODO: extension might be *.*, but then TJclCompressionStreamFormats.FindDecompressFormat can fail
+  RsCompressionMsLZExtensions        = '*.';
+  RsCompressionSwfName               = 'Swf archive';
+  RsCompressionSwfExtensions         = '*.swf';
+  RsCompressionSwfcName              = 'Swf archive';
+  RsCompressionSwfcExtensions        = '*.swf';
   RsCompressionDuplicate             = 'The file %s already exists in the archive';
   RsCompressionReplaceError          = 'At least one compression volumes could not be replaced after an archive out-of-place update';
 
