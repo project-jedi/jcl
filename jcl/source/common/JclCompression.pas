@@ -2084,7 +2084,7 @@ begin
       AFormat := CompressFormats[IndexFormat];
       StrTokenToStrings(AFormat.StreamExtensions, DirSeparator, Filters);
       for IndexFilter := 0 to Filters.Count - 1 do
-        if IsFileNameMatch(Filters.Strings[IndexFilter], AFileName) then
+        if IsFileNameMatch(AFileName, Filters.Strings[IndexFilter]) then
       begin
         Result := AFormat;
         Break;
@@ -2111,7 +2111,7 @@ begin
       AFormat := DecompressFormats[IndexFormat];
       StrTokenToStrings(AFormat.StreamExtensions, DirSeparator, Filters);
       for IndexFilter := 0 to Filters.Count - 1 do
-        if IsFileNameMatch(Filters.Strings[IndexFilter], AFileName) then
+        if IsFileNameMatch(AFileName, Filters.Strings[IndexFilter]) then
       begin
         Result := AFormat;
         Break;
@@ -3983,7 +3983,7 @@ begin
       AFormat := CompressFormats[IndexFormat];
       StrTokenToStrings(AFormat.ArchiveExtensions, DirSeparator, Filters);
       for IndexFilter := 0 to Filters.Count - 1 do
-        if IsFileNameMatch(Filters.Strings[IndexFilter], AFileName) then
+        if IsFileNameMatch(AFileName, Filters.Strings[IndexFilter]) then
       begin
         Result := AFormat;
         Break;
@@ -4010,7 +4010,7 @@ begin
       AFormat := DecompressFormats[IndexFormat];
       StrTokenToStrings(AFormat.ArchiveExtensions, DirSeparator, Filters);
       for IndexFilter := 0 to Filters.Count - 1 do
-        if IsFileNameMatch(Filters.Strings[IndexFilter], AFileName) then
+        if IsFileNameMatch(AFileName, Filters.Strings[IndexFilter]) then
       begin
         Result := AFormat;
         Break;
@@ -4037,7 +4037,7 @@ begin
       AFormat := UpdateFormats[IndexFormat];
       StrTokenToStrings(AFormat.ArchiveExtensions, DirSeparator, Filters);
       for IndexFilter := 0 to Filters.Count - 1 do
-        if StrMatches(Filters.Strings[IndexFilter], AFileName) then
+        if IsFileNameMatch(AFileName, Filters.Strings[IndexFilter]) then
       begin
         Result := AFormat;
         Break;
