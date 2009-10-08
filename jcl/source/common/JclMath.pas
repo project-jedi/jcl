@@ -693,31 +693,11 @@ procedure InitCrc32(Polynom, Start: Cardinal; out Crc32Table: TCrc32Table); over
 { Complex numbers }
 
 type
-  TPolarComplex = record
-    Radius: Float;
-    Angle: Float;
-    {$IFDEF SUPPORTS_CLASS_OPERATORS}
-    class operator Implicit(const Value: Float): TPolarComplex;
-    class operator Equal(const Z1, Z2: TPolarComplex): Boolean;
-    class operator NotEqual(const Z1, Z2: TPolarComplex): Boolean;
-    class operator Add(const Z1, Z2: TPolarComplex): TPolarComplex;
-    class operator Subtract(const Z1, Z2: TPolarComplex): TPolarComplex;
-    class operator Multiply(const Z1, Z2: TPolarComplex): TPolarComplex;
-    class operator Divide(const Z1, Z2: TPolarComplex): TPolarComplex;
-    class operator Negative(const Z: TPolarComplex): TPolarComplex;
-    {$ENDIF SUPPORTS_CLASS_OPERATORS}
-  end;
-
   TRectComplex = record
     Re: Float;
     Im: Float;
     {$IFDEF SUPPORTS_CLASS_OPERATORS}
     class operator Implicit(const Value: Float): TRectComplex;
-    class operator Implicit(const Z: TPolarComplex): TRectComplex;
-    class operator Implicit(const Z: TRectComplex): TPolarComplex;
-    // OK with Delphi, but will yield errors in .hpp files:
-    // class operator Explicit(const Z: TPolarComplex): TRectComplex;
-    // class operator Explicit(const Z: TRectComplex): TPolarComplex;
     class operator Equal(const Z1, Z2: TRectComplex): Boolean;
     class operator NotEqual(const Z1, Z2: TRectComplex): Boolean;
     class operator Add(const Z1, Z2: TRectComplex): TRectComplex;
@@ -725,10 +705,59 @@ type
     class operator Multiply(const Z1, Z2: TRectComplex): TRectComplex;
     class operator Divide(const Z1, Z2: TRectComplex): TRectComplex;
     class operator Negative(const Z: TRectComplex): TRectComplex;
-    // added in rev. 1482; what does it offer over function Exp below??
-    class function Exp(const Z: TRectComplex): TPolarComplex; static; inline;
+    class operator Positive(const Z: TRectComplex): TRectComplex;
+    function AsString: string;
+    function Conjugate: TRectComplex;
+    function IsZero: Boolean;
+    function IsInfinite: Boolean;
     {$ENDIF SUPPORTS_CLASS_OPERATORS}
   end;
+
+  TPolarComplex = record
+    Radius: Float;
+    Angle: Float;
+    {$IFDEF SUPPORTS_CLASS_OPERATORS}
+    class operator Implicit(const Value: Float): TPolarComplex;
+    class operator Implicit(const Z: TPolarComplex): TRectComplex;
+    class operator Implicit(const Z: TRectComplex): TPolarComplex;
+    {$IFNDEF CPPBUILDER}
+    // OK with Delphi, but will yield errors in .hpp files:
+    class operator Explicit(const Z: TPolarComplex): TRectComplex;
+    class operator Explicit(const Z: TRectComplex): TPolarComplex;
+    {$ENDIF CPPBUILDER}
+    class operator Equal(const Z1, Z2: TPolarComplex): Boolean;
+    class operator NotEqual(const Z1, Z2: TPolarComplex): Boolean;
+    class operator Add(const Z1, Z2: TPolarComplex): TRectComplex;
+    class operator Subtract(const Z1, Z2: TPolarComplex): TRectComplex;
+    class operator Multiply(const Z1, Z2: TPolarComplex): TPolarComplex;
+    class operator Divide(const Z1, Z2: TPolarComplex): TPolarComplex;
+    class operator Negative(const Z: TPolarComplex): TPolarComplex;
+    class operator Positive(const Z: TPolarComplex): TPolarComplex;
+    function AsString: string;
+    function Conjugate: TPolarComplex;
+    function IsZero: Boolean;
+    function IsInfinite: Boolean;
+    function Power(const Exponent: TRectComplex): TPolarComplex; overload;
+    function Power(const Exponent: Float): TPolarComplex; overload;
+    function Power(const Exponent: Integer): TPolarComplex; overload;
+    // computes the kth nth root, k in 1..n
+    function Root(const K, N: Cardinal): TPolarComplex;
+    {$ENDIF SUPPORTS_CLASS_OPERATORS}
+  end;
+
+{$IFDEF DEBUG}
+var
+  // accumulated count of (computational costly) TRectComplex <-> TPolarComplex conversions
+  ComplexTypeConversions: Cardinal;
+{$ENDIF DEBUG}
+
+// sets format string for ComplexToStr(TRectComplex) and TRectComplex.AsString
+procedure SetRectComplexFormatStr(const S: string);
+// sets format string for ComplexToStr(TPolarComplex) and TPolarComplex.AsString
+procedure SetPolarComplexFormatStr(const S: string);
+
+function ComplexToStr(const Z: TRectComplex): string; overload;
+function ComplexToStr(const Z: TPolarComplex): string; overload;
 
 function RectComplex(const Re: Float; const Im: Float = 0): TRectComplex; overload;
 function RectComplex(const Z: TPolarComplex): TRectComplex; overload;
@@ -759,6 +788,7 @@ function Sum(const Z: array of TRectComplex): TRectComplex; overload;
 function Diff(const Z1, Z2: TRectComplex): TRectComplex;
 function Product(const Z1, Z2: TRectComplex): TRectComplex; overload;
 function Product(const Z1, Z2: TPolarComplex): TPolarComplex; overload;
+function Product(const Z: array of TPolarComplex): TPolarComplex; overload;
 function Quotient(const Z1, Z2: TRectComplex): TRectComplex; overload;
 function Quotient(const Z1, Z2: TPolarComplex): TPolarComplex; overload;
 
@@ -767,6 +797,8 @@ function Exp(const Z: TRectComplex): TPolarComplex; overload;
 function Power(const Z: TPolarComplex; const Exponent: TRectComplex): TPolarComplex; overload;
 function Power(const Z: TPolarComplex; const Exponent: Float): TPolarComplex; overload;
 function PowerInt(const Z: TPolarComplex; const Exponent: Integer): TPolarComplex; overload;
+// a complex number has n different nth roots in the complex plane
+// Root() computes the kth nth root, k in 1..n
 function Root(const Z: TPolarComplex; const K, N: Cardinal): TPolarComplex;
 
 function Cos(const Z: TRectComplex): TRectComplex; overload;
@@ -4064,7 +4096,30 @@ end;
 const
   RectOne: TRectComplex = (Re: 1.0; Im: 0.0);
   RectZero: TRectComplex = (Re: 0.0; Im: 0.0);
-  //RectInfinity: TRectComplex = (Re: Infinity; Im: Infinity);
+
+var
+  RectComplexFormatStr: string = '%g + %gi';
+  PolarComplexFormatStr: string = '%g e^%gi';
+
+procedure SetRectComplexFormatStr(const S: string);
+begin
+  RectComplexFormatStr := S;
+end;
+
+procedure SetPolarComplexFormatStr(const S: string);
+begin
+  PolarComplexFormatStr := S;
+end;
+
+function ComplexToStr(const Z: TRectComplex): string;
+begin
+  Result := Format(RectComplexFormatStr, [Z.Re, Z.Im]);
+end;
+
+function ComplexToStr(const Z: TPolarComplex): string;
+begin
+  Result := Format(PolarComplexFormatStr, [Z.Radius, Z.Angle]);
+end;
 
 function RectComplex(const Re: Float; const Im: Float = 0): TRectComplex;
 begin
@@ -4076,6 +4131,9 @@ function RectComplex(const Z: TPolarComplex): TRectComplex;
 var
   ASin, ACos: Float;
 begin
+  {$IFDEF DEBUG}
+  Inc(ComplexTypeConversions);
+  {$ENDIF DEBUG}
   SinCos(Z.Angle, ASin, ACos);
   Result.Re := Z.Radius * ACos;
   Result.Im := Z.Radius * ASin;
@@ -4085,7 +4143,7 @@ function PolarComplex(const Radius: Float; const Angle: Float = 0): TPolarComple
 begin
   if Radius < 0 then
   begin
-    Result.Radius := Abs(Radius);
+    Result.Radius := -Radius;
     Result.Angle := Pi;
   end
   else
@@ -4097,6 +4155,9 @@ end;
 
 function PolarComplex(const Z: TRectComplex): TPolarComplex;
 begin
+  {$IFDEF DEBUG}
+  Inc(ComplexTypeConversions);
+  {$ENDIF DEBUG}
   Result.Radius := Norm(Z);
   Result.Angle := ArcTan2(Z.Im, Z.Re);
 end;
@@ -4152,13 +4213,13 @@ begin
   Result := Sqr(Z.Radius);
 end;
 
-function Conjugate(const Z: TRectComplex): TRectComplex; overload;
+function Conjugate(const Z: TRectComplex): TRectComplex;
 begin
   Result.Re :=  Z.Re;
   Result.Im := -Z.Im;
 end;
 
-function Conjugate(const Z: TPolarComplex): TPolarComplex; overload;
+function Conjugate(const Z: TPolarComplex): TPolarComplex;
 begin
   Result.Radius :=  Z.Radius;
   Result.Angle := -Z.Angle;
@@ -4179,13 +4240,13 @@ begin
   Result.Angle := - Z.Angle;
 end;
 
-function Neg(const Z: TRectComplex): TRectComplex; overload;
+function Neg(const Z: TRectComplex): TRectComplex;
 begin
   Result.Re := -Z.Re;
   Result.Im := -Z.Im;
 end;
 
-function Neg(const Z: TPolarComplex): TPolarComplex; overload;
+function Neg(const Z: TPolarComplex): TPolarComplex;
 begin
   Result.Radius := Z.Radius;
   Result.Angle := NormalizeAngle(Z.Angle + Pi);
@@ -4226,6 +4287,21 @@ begin
   Result.Radius := Z1.Radius * Z2.Radius;
   Result.Angle := NormalizeAngle(Z1.Angle + Z2.Angle);
 end;
+
+function Product(const Z: array of TPolarComplex): TPolarComplex;
+var
+  I: Integer;
+begin
+  Result.Radius := 1.0;
+  Result.Angle := 0;
+  for I := Low(Z) to High(Z) do
+  begin
+    Result.Radius := Result.Radius * Z[I].Radius;
+    Result.Angle := Result.Angle + Z[I].Angle;
+  end;
+  Result.Angle := NormalizeAngle(Result.Angle);
+end;
+
 
 function Quotient(const Z1, Z2: TRectComplex): TRectComplex;
 var
@@ -4383,48 +4459,6 @@ end;
 
 {$IFDEF SUPPORTS_CLASS_OPERATORS}
 
-{ TPolarComplex }
-
-class operator TPolarComplex.Implicit(const Value: Float): TPolarComplex;
-begin
-  Result := PolarComplex(Value);
-end;
-
-class operator TPolarComplex.Equal(const Z1, Z2: TPolarComplex): Boolean;
-begin
-  Result := Equal(Z1, Z2);
-end;
-
-class operator TPolarComplex.NotEqual(const Z1, Z2: TPolarComplex): Boolean;
-begin
-  Result := not Equal(Z1, Z2);
-end;
-
-class operator TPolarComplex.Add(const Z1, Z2: TPolarComplex): TPolarComplex;
-begin
-  Result := Sum(Z1, Z2);
-end;
-
-class operator TPolarComplex.Subtract(const Z1, Z2: TPolarComplex): TPolarComplex;
-begin
-  Result := Diff(Z1, Z2);
-end;
-
-class operator TPolarComplex.Multiply(const Z1, Z2: TPolarComplex): TPolarComplex;
-begin
-  Result := Product(Z1, Z2);
-end;
-
-class operator TPolarComplex.Divide(const Z1, Z2: TPolarComplex): TPolarComplex;
-begin
-  Result := Quotient(Z1, Z2);
-end;
-
-class operator TPolarComplex.Negative(const Z: TPolarComplex): TPolarComplex;
-begin
-  Result := Neg(Z);
-end;
-
 { TRectComplex }
 
 class operator TRectComplex.Implicit(const Value: Float): TRectComplex;
@@ -4432,26 +4466,6 @@ begin
   Result := RectComplex(Value);
 end;
 
-class operator TRectComplex.Implicit(const Z: TPolarComplex): TRectComplex;
-begin
-  Result := RectComplex(Z);
-end;
-
-class operator TRectComplex.Implicit(const Z: TRectComplex): TPolarComplex;
-begin
-  Result := PolarComplex(Z);
-end;
-{
-class operator TRectComplex.Explicit(const Z: TPolarComplex): TRectComplex;
-begin
-  Result := RectComplex(Z);
-end;
-
-class operator TRectComplex.Explicit(const Z: TRectComplex): TPolarComplex;
-begin
-  Result := PolarComplex(Z);
-end;
-}
 class operator TRectComplex.Equal(const Z1, Z2: TRectComplex): Boolean;
 begin
   Result := Equal(Z1, Z2);
@@ -4487,9 +4501,138 @@ begin
   Result := Neg(Z);
 end;
 
-class function TRectComplex.Exp(const Z: TRectComplex): TPolarComplex;
+class operator TRectComplex.Positive(const Z: TRectComplex): TRectComplex;
 begin
-  Result := JclMath.Exp(Z);
+  Result := Z;
+end;
+
+function TRectComplex.AsString: string;
+begin
+  Result := ComplexToStr(Self);
+end;
+
+function TRectComplex.Conjugate: TRectComplex;
+begin
+  Result := JclMath.Conjugate(Self);
+end;
+
+function TRectComplex.IsZero: Boolean;
+begin
+  Result := JclMath.IsZero(Self);
+end;
+
+function TRectComplex.IsInfinite: Boolean;
+begin
+  Result := JclMath.IsInfinite(Self);
+end;
+
+{ TPolarComplex }
+
+class operator TPolarComplex.Implicit(const Value: Float): TPolarComplex;
+begin
+  Result := PolarComplex(Value);
+end;
+
+class operator TPolarComplex.Implicit(const Z: TPolarComplex): TRectComplex;
+begin
+  Result := RectComplex(Z);
+end;
+
+class operator TPolarComplex.Implicit(const Z: TRectComplex): TPolarComplex;
+begin
+  Result := PolarComplex(Z);
+end;
+
+{$IFNDEF CPPBUILDER}
+class operator TPolarComplex.Explicit(const Z: TPolarComplex): TRectComplex;
+begin
+  Result := RectComplex(Z);
+end;
+
+class operator TPolarComplex.Explicit(const Z: TRectComplex): TPolarComplex;
+begin
+  Result := PolarComplex(Z);
+end;
+{$ENDIF CPPBUILDER}
+
+class operator TPolarComplex.Equal(const Z1, Z2: TPolarComplex): Boolean;
+begin
+  Result := Equal(Z1, Z2);
+end;
+
+class operator TPolarComplex.NotEqual(const Z1, Z2: TPolarComplex): Boolean;
+begin
+  Result := not Equal(Z1, Z2);
+end;
+
+class operator TPolarComplex.Add(const Z1, Z2: TPolarComplex): TRectComplex;
+begin
+  Result := Sum(Z1, Z2);
+end;
+
+class operator TPolarComplex.Subtract(const Z1, Z2: TPolarComplex): TRectComplex;
+begin
+  Result := Diff(Z1, Z2);
+end;
+
+class operator TPolarComplex.Multiply(const Z1, Z2: TPolarComplex): TPolarComplex;
+begin
+  Result := Product(Z1, Z2);
+end;
+
+class operator TPolarComplex.Divide(const Z1, Z2: TPolarComplex): TPolarComplex;
+begin
+  Result := Quotient(Z1, Z2);
+end;
+
+class operator TPolarComplex.Negative(const Z: TPolarComplex): TPolarComplex;
+begin
+  Result := Neg(Z);
+end;
+
+class operator TPolarComplex.Positive(const Z: TPolarComplex): TPolarComplex;
+begin
+  Result := Z;
+end;
+
+function TPolarComplex.AsString: string;
+begin
+  Result := ComplexToStr(Self);
+end;
+
+function TPolarComplex.Conjugate: TPolarComplex;
+begin
+  Result := JclMath.Conjugate(Self);
+end;
+
+function TPolarComplex.IsZero: Boolean;
+begin
+  Result := JclMath.IsZero(Self);
+end;
+
+function TPolarComplex.IsInfinite: Boolean;
+begin
+  Result := JclMath.IsInfinite(Self);
+end;
+
+function TPolarComplex.Power(const Exponent: TRectComplex): TPolarComplex;
+begin
+  Result := JclMath.Power(Self, Exponent);
+end;
+
+function TPolarComplex.Power(const Exponent: Float): TPolarComplex;
+begin
+  Result := JclMath.Power(Self, Exponent);
+end;
+
+function TPolarComplex.Power(const Exponent: Integer): TPolarComplex;
+begin
+  Result := JclMath.PowerInt(Self, Exponent);
+end;
+
+function TPolarComplex.Root(const K, N: Cardinal): TPolarComplex;
+begin
+  Result := JclMath.Root(Self, K, N);
 end;
 
 {$ENDIF SUPPORTS_CLASS_OPERATORS}
