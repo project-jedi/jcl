@@ -2257,7 +2257,10 @@ begin
   I := Pos(':', Path); // for Windows' sake
   K := Pos(DirDelimiter, Path);
   IsAbsolute := K - I = 1;
-  if not IsAbsolute then
+  if IsAbsolute then begin
+    if Copy(Path, 1, Length(PathUncPrefix)) = PathUncPrefix then // UNC path
+      K := 2;
+  end else
     K := I;
   if K = 0 then
     S := Path
