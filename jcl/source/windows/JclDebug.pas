@@ -116,7 +116,7 @@ type
   PJclMapAddress = ^TJclMapAddress;
   TJclMapAddress = packed record
     Segment: Word;
-    Offset: Integer;
+    Offset: TJclAddr;
   end;
 
   PJclMapString = PAnsiChar;
@@ -1750,7 +1750,7 @@ begin
     if (FSegmentClasses[SegIndex].Segment = Address.Segment)
       and (DWORD(Address.Offset) < FSegmentClasses[SegIndex].Len) then
   begin
-    VA := AddrToVA(TJclAddr(Address.Offset) + FSegmentClasses[SegIndex].Addr);
+    VA := AddrToVA(Address.Offset + FSegmentClasses[SegIndex].Addr);
     { Starting with Delphi 2005, "empty" units are listes with the last line and
       the VA 0001:00000000. When we would accept 0 VAs here, System.pas functions
       could be mapped to other units and line numbers. Discaring such items should
@@ -1855,7 +1855,7 @@ begin
     if FProcNamesCnt mod 256 = 0 then
       SetLength(FProcNames, FProcNamesCnt + 256);
     FProcNames[FProcNamesCnt].Segment := FSegmentClasses[SegIndex].Segment;
-    FProcNames[FProcNamesCnt].VA := AddrToVA(TJclAddr(Address.Offset) + FSegmentClasses[SegIndex].Addr);
+    FProcNames[FProcNamesCnt].VA := AddrToVA(Address.Offset + FSegmentClasses[SegIndex].Addr);
     FProcNames[FProcNamesCnt].ProcName := Name;
     Inc(FProcNamesCnt);
     Break;
@@ -1902,7 +1902,7 @@ begin
     if (FSegmentClasses[SegIndex].Segment = Address.Segment)
       and (DWORD(Address.Offset) < FSegmentClasses[SegIndex].Len) then
   begin
-    VA := AddrToVA(TJclAddr(Address.Offset) + FSegmentClasses[SegIndex].Addr);
+    VA := AddrToVA(Address.Offset + FSegmentClasses[SegIndex].Addr);
     if FSegmentCnt mod 16 = 0 then
       SetLength(FSegments, FSegmentCnt + 16);
     FSegments[FSegmentCnt].Segment := FSegmentClasses[SegIndex].Segment;
