@@ -5139,9 +5139,10 @@ begin
   JclCreateExceptFrameList(4);
 end;
 
+{$OVERFLOWCHECKS OFF}
+
 function GetJmpDest(Jmp: PJmpInstruction): Pointer;
 begin
-  {$OVERFLOWCHECKS OFF}
   // TODO : 64 bit version
   if Jmp^.opCode = $E9 then
     Result := Pointer(TJclAddr(Jmp) + TJclAddr(Jmp^.distance) + 5)
@@ -5153,10 +5154,11 @@ begin
   if (Result <> nil) and (PJmpTable(Result).OPCode = $25FF) then
     if not IsBadReadPtr(PJmpTable(Result).Ptr, SizeOf(Pointer)) then
       Result := Pointer(PJclAddr(PJmpTable(Result).Ptr)^);
-  {$IFDEF OVERFLOWCHECKS_ON}
-  {$OVERFLOWCHECKS ON}
-  {$ENDIF OVERFLOWCHECKS_ON}
 end;
+
+{$IFDEF OVERFLOWCHECKS_ON}
+{$OVERFLOWCHECKS ON}
+{$ENDIF OVERFLOWCHECKS_ON}
 
 //=== { TJclExceptFrame } ====================================================
 
@@ -5239,6 +5241,8 @@ begin
   Result := HandlerInfo(ExceptObj, Handler);
 end;
 
+{$OVERFLOWCHECKS OFF}
+
 function TJclExceptFrame.HandlerInfo(ExceptObj: TObject; out HandlerAt: Pointer): Boolean;
 var
   I: Integer;
@@ -5255,7 +5259,6 @@ begin
       Result := FExcTab[I].VTable = nil;
       while (not Result) and (VTable <> nil) do
       begin
-        {$OVERFLOWCHECKS OFF}
         Result := (FExcTab[I].VTable = VTable) or
           (PShortString(PPointer(PJclAddr(FExcTab[I].VTable)^ + TJclAddr(vmtClassName))^)^ =
            PShortString(PPointer(TJclAddr(VTable) + TJclAddr(vmtClassName))^)^);
@@ -5269,9 +5272,6 @@ begin
           else
             VTable := ParentVTable;
         end;
-        {$IFDEF OVERFLOWCHECKS_ON}
-        {$OVERFLOWCHECKS ON}
-        {$ENDIF OVERFLOWCHECKS_ON}
       end;
       if Result then
         Break;
@@ -5283,6 +5283,10 @@ begin
   else
     HandlerAt := nil;
 end;
+
+{$IFDEF OVERFLOWCHECKS_ON}
+{$OVERFLOWCHECKS ON}
+{$ENDIF OVERFLOWCHECKS_ON}
 
 //=== { TJclExceptFrameList } ================================================
 
