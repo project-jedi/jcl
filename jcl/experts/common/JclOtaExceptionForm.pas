@@ -111,6 +111,7 @@ end;
 procedure TJclExpertExceptionForm.ShowException(AExceptionObj: TObject);
 var
   AStackInfoList: TJclStackInfoList;
+  AJclExpertException: EJclExpertException;
 begin
   MemoCallStack.Lines.Clear;
 
@@ -121,25 +122,23 @@ begin
     if AExceptionObj is Exception then
     begin
       MemoCallStack.Lines.Add(Format(LoadResString(@RsDetailsExceptionMessage), [Exception(AExceptionObj).Message]));
-{$IFDEF MSWINDOWS}
       if (AExceptionObj is EJclExpertException) then
-        with EJclExpertException(AExceptionObj) do
-          if Assigned(StackInfo) then
       begin
-        StackInfo.AddToStrings(MemoCallStack.Lines, True, True, True, True);
-        Exit;
+        AJclExpertException := EJclExpertException(AExceptionObj);
+        if Assigned(AJclExpertException.StackInfo) then
+        begin
+          AJclExpertException.StackInfo.AddToStrings(MemoCallStack.Lines, True, True, True, True);
+          Exit;
+        end;
       end;
-{$ENDIF MSWINDOWS}
     end;
 
-{$IFDEF MSWINDOWS}
-    AStackInfoList := JclCreateStackList(False, 0, nil);
+    AStackInfoList := JclCreateStackList(True, 0, nil, False);
     try
       AStackInfoList.AddToStrings(MemoCallStack.Lines, True, True, True, True);
     finally
       AStackInfoList.Free;
     end;
-{$ENDIF MSWINDOWS}
   except
     MemoCallStack.Lines.Add(LoadResString(@RsErrorWhileFormatting));
   end;

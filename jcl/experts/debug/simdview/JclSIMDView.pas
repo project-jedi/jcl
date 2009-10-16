@@ -153,7 +153,6 @@ begin
     on ExceptObj: TObject do
     begin
       JclExpertShowExceptionDialog(ExceptObj);
-      raise;
     end;
   end;
 end;
@@ -234,7 +233,6 @@ begin
     on ExceptObj: TObject do
     begin
       JclExpertShowExceptionDialog(ExceptObj);
-      raise;
     end;
   end;
 end;
@@ -262,12 +260,11 @@ begin
         AAction.Enabled := False;
     end
     else
-      AAction.Enabled := False
+      AAction.Enabled := False;
   except
     on ExceptObj: TObject do
     begin
       JclExpertShowExceptionDialog(ExceptObj);
-      raise;
     end;
   end;
 end;
@@ -468,7 +465,6 @@ begin
     on ExceptObj: TObject do
     begin
       JclExpertShowExceptionDialog(ExceptObj);
-      raise;
     end;
   end;
 end;
@@ -521,7 +517,6 @@ begin
     on ExceptObj: TObject do
     begin
       JclExpertShowExceptionDialog(ExceptObj);
-      raise;
     end;
   end;
 end;
@@ -558,7 +553,6 @@ begin
     on ExceptObj: TObject do
     begin
       JclExpertShowExceptionDialog(ExceptObj);
-      raise;
     end;
   end;
 end;
@@ -591,7 +585,6 @@ begin
     on ExceptObj: TObject do
     begin
       JclExpertShowExceptionDialog(ExceptObj);
-      raise;
     end;
   end;
 end;
@@ -612,7 +605,6 @@ begin
     on ExceptObj: TObject do
     begin
       JclExpertShowExceptionDialog(ExceptObj);
-      raise;
     end;
   end;
 end;
@@ -625,7 +617,6 @@ begin
     on ExceptObj: TObject do
     begin
       JclExpertShowExceptionDialog(ExceptObj);
-      raise;
     end;
   end;
 end;
