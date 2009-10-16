@@ -45,8 +45,6 @@ unit JclDebug;
 interface
 
 {$I jcl.inc}
-{$RANGECHECKS OFF}
-{$OVERFLOWCHECKS OFF}
 
 uses
   {$IFDEF UNITVERSIONING}
@@ -2299,6 +2297,8 @@ begin
   inherited Destroy;
 end;
 
+{$OVERFLOWCHECKS OFF}
+
 function TJclBinDebugGenerator.CalculateCheckSum: Boolean;
 var
   Header: PJclDbgHeader;
@@ -2322,6 +2322,10 @@ begin
     Header^.CheckSum := CheckSum;
   end;
 end;
+
+{$IFDEF OVERFLOWCHECKS_ON}
+{$OVERFLOWCHECKS ON}
+{$ENDIF OVERFLOWCHECKS_ON}
 
 procedure TJclBinDebugGenerator.CreateData;
 var
@@ -2582,6 +2586,8 @@ begin
   end;
 end;
 
+{$OVERFLOWCHECKS OFF}
+
 procedure TJclBinDebugScanner.CheckFormat;
 var
   CheckSum: Integer;
@@ -2606,6 +2612,10 @@ begin
     FValidFormat := (CheckSum = Header^.CheckSum);
   end;
 end;
+
+{$IFDEF OVERFLOWCHECKS_ON}
+{$OVERFLOWCHECKS ON}
+{$ENDIF OVERFLOWCHECKS_ON}
 
 function TJclBinDebugScanner.DataToStr(A: Integer): string;
 var
@@ -4506,7 +4516,10 @@ begin
     IgnoreLevels := Cardinal(-1); // because of the "IgnoreLevels + 1" in TJclStackInfoList.StoreToList()
   if OSException then
   begin
-    Inc(IgnoreLevels); // => HandleAnyException
+    if IgnoreLevels = Cardinal(-1) then
+      IgnoreLevels := 0
+    else
+      Inc(IgnoreLevels); // => HandleAnyException
     FirstCaller := ExceptAddr;
   end
   else
@@ -4828,7 +4841,8 @@ procedure TJclStackInfoList.StoreToList(const StackInfo: TStackInfo);
 var
   Item: TJclStackInfoItem;
 begin
-  if StackInfo.Level > IgnoreLevels + 1 then
+  if ((IgnoreLevels = Cardinal(-1)) and (StackInfo.Level > 0)) or
+     (StackInfo.Level > (IgnoreLevels + 1)) then
   begin
     Item := TJclStackInfoItem.Create;
     Item.FStackInfo := StackInfo;
@@ -5171,6 +5185,8 @@ begin
   AnalyseExceptFrame(AExcDesc);
 end;
 
+{$RANGECHECKS OFF}
+
 procedure TJclExceptFrame.AnalyseExceptFrame(AExcDesc: PExcDesc);
 var
   Dest: Pointer;
@@ -5233,6 +5249,10 @@ begin
     end;
   end;
 end;
+
+{$IFDEF RANGECHECKS_ON}
+{$RANGECHECKS ON}
+{$ENDIF RANGECHECKS_ON}
 
 function TJclExceptFrame.Handles(ExceptObj: TObject): Boolean;
 var
