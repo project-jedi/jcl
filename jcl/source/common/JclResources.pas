@@ -1074,6 +1074,7 @@ resourcestring
   RsCompressionUnavailableProperty   = 'Property is not available';
   RsCompressionCompressingError      = 'Operation is not supported while compressing';
   RsCompressionDecompressingError    = 'Operation is not supported while decompressing';
+  RsCompressionNoFileName            = 'File name not supplied';
   RsCompressionUnsupportedMethod     = 'Unsupported method';
   RsCompressionDataError             = 'Data error';
   RsCompressionCRCError              = 'CRC error';

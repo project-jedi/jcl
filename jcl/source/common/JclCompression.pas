@@ -3477,6 +3477,13 @@ begin
       if FileName <> '' then
         Result := TFileStream.Create(FileName, fmCreate);
   end;
+  if not Assigned(Result) then
+  begin
+    if FileName = '' then
+      raise EJclCompressionError.CreateRes(@RsCompressionNoFileName)
+    else
+      RaiseLastOSError;
+  end;
 end;
 
 //=== { TJclCompressionItem } ================================================
