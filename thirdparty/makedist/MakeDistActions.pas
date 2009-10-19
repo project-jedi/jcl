@@ -337,19 +337,34 @@ type
     function Execute(const AMessageHandler: TTextHandler): Boolean; override;
   end;
 
+  // arbitrary delay
+  TDelay = class(TDistAction)
+  private
+    FDelay: string;
+  protected
+    function GetCaption: string; override;
+    function GetConfigCount: Integer; override;
+    function GetConfigCaption(Index: Integer): string; override;
+    function GetConfigValue(Index: Integer): string; override;
+    procedure SetConfigValue(Index: Integer; const Value: string); override;
+  public
+    class function GetDescription: string; override;
+    function Execute(const AMessageHandler: TTextHandler): Boolean; override;
+  end;
+
 implementation
 
 uses
   DateUtils, JclDateTime, JclStrings, JclFileUtils, JclSysInfo, JclSimpleXml, JclCompression;
 
 const
-  StdActionsClasses: array [0..17] of TDistActionClass =
+  StdActionsClasses: array [0..18] of TDistActionClass =
     ( TBuildCalculator, TConstantParser,
       TVariableReader, TVariableSetter, TVariableWriter,
       TDirectoryCreator, TDirectoryRemover, TEolConverter,
       TFileCopier, TFileCreator, TFileMover, TFileRemover, TFileTouch,
       TXmlGetter, TCommandLineCaller, TArchiveMaker,
-      TLogSaver, TLogCleaner );
+      TLogSaver, TLogCleaner, TDelay );
 
 procedure RegisterStandardActions;
 var
@@ -2102,6 +2117,73 @@ begin
       FFileName := Value;
     1:
       FAppend := Value;
+  end;
+end;
+
+//=== { TDelay } =============================================================
+
+function TDelay.Execute(const AMessageHandler: TTextHandler): Boolean;
+var
+  Delay: string;
+  DelayInt: Integer;
+begin
+  Delay := FDelay;
+  ExpandEnvironmentVar(Delay);
+  Result := TryStrToInt(Delay, DelayInt);
+  if Result then
+  begin
+    AMessageHandler(Format('Sleep for %d s', [DelayInt]));
+    while DelayInt > 0 do
+    begin
+      Sleep(1000);
+      Dec(DelayInt);
+    end;
+  end
+  else
+    AMessageHandler('invalid numeric value');
+end;
+
+function TDelay.GetCaption: string;
+var
+  Delay: string;
+begin
+  Delay := FDelay;
+  ExpandEnvironmentVar(Delay);
+  Result := Format('Sleep for %s s', [Delay]);
+end;
+
+function TDelay.GetConfigCaption(Index: Integer): string;
+begin
+  case Index of
+    0: Result := 'Delay';
+  else
+    Result := '';
+  end;
+end;
+
+function TDelay.GetConfigCount: Integer;
+begin
+  Result := 1;
+end;
+
+function TDelay.GetConfigValue(Index: Integer): string;
+begin
+  case Index of
+    0: Result := FDelay;
+  else
+    Result := '';
+  end;
+end;
+
+class function TDelay.GetDescription: string;
+begin
+  Result := 'Sleep for an arbitrary delay';
+end;
+
+procedure TDelay.SetConfigValue(Index: Integer; const Value: string);
+begin
+  case Index of
+    0: FDelay := Value;
   end;
 end;
 
