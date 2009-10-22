@@ -1530,7 +1530,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := nil;
-    if (Index >= 0) or (Index < FSize) then
+    if (Index >= 0) and (Index < FSize) then
       Result := FElementData[Index]
     else
     if not FReturnDefaultElements then
@@ -2349,7 +2349,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := '';
-    if (Index >= 0) or (Index < FSize) then
+    if (Index >= 0) and (Index < FSize) then
       Result := FElementData[Index]
     else
     if not FReturnDefaultElements then
@@ -3168,7 +3168,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := '';
-    if (Index >= 0) or (Index < FSize) then
+    if (Index >= 0) and (Index < FSize) then
       Result := FElementData[Index]
     else
     if not FReturnDefaultElements then
@@ -3988,7 +3988,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := '';
-    if (Index >= 0) or (Index < FSize) then
+    if (Index >= 0) and (Index < FSize) then
       Result := FElementData[Index]
     else
     if not FReturnDefaultElements then
@@ -4809,7 +4809,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := 0.0;
-    if (Index >= 0) or (Index < FSize) then
+    if (Index >= 0) and (Index < FSize) then
       Result := FElementData[Index]
     else
     if not FReturnDefaultElements then
@@ -5628,7 +5628,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := 0.0;
-    if (Index >= 0) or (Index < FSize) then
+    if (Index >= 0) and (Index < FSize) then
       Result := FElementData[Index]
     else
     if not FReturnDefaultElements then
@@ -6447,7 +6447,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := 0.0;
-    if (Index >= 0) or (Index < FSize) then
+    if (Index >= 0) and (Index < FSize) then
       Result := FElementData[Index]
     else
     if not FReturnDefaultElements then
@@ -7266,7 +7266,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := 0;
-    if (Index >= 0) or (Index < FSize) then
+    if (Index >= 0) and (Index < FSize) then
       Result := FElementData[Index]
     else
     if not FReturnDefaultElements then
@@ -8085,7 +8085,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := 0;
-    if (Index >= 0) or (Index < FSize) then
+    if (Index >= 0) and (Index < FSize) then
       Result := FElementData[Index]
     else
     if not FReturnDefaultElements then
@@ -8904,7 +8904,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := 0;
-    if (Index >= 0) or (Index < FSize) then
+    if (Index >= 0) and (Index < FSize) then
       Result := FElementData[Index]
     else
     if not FReturnDefaultElements then
@@ -9723,7 +9723,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := nil;
-    if (Index >= 0) or (Index < FSize) then
+    if (Index >= 0) and (Index < FSize) then
       Result := FElementData[Index]
     else
     if not FReturnDefaultElements then
@@ -10542,7 +10542,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := nil;
-    if (Index >= 0) or (Index < FSize) then
+    if (Index >= 0) and (Index < FSize) then
       Result := FElementData[Index]
     else
     if not FReturnDefaultElements then
@@ -11363,7 +11363,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := Default(T);
-    if (Index >= 0) or (Index < FSize) then
+    if (Index >= 0) and (Index < FSize) then
       Result := FElementData[Index]
     else
     if not FReturnDefaultElements then
