@@ -511,7 +511,7 @@ begin
 end;
 
 function InternalRegOpenKeyEx(Key: HKEY; SubKey: PWideChar;
-  ulOptions: DWORD; samDesired: REGSAM; var RegKey: HKEY): Longint;
+  ulOptions: DWORD; samDesired: REGSAM; var RegKey: HKEY): Longint; overload;
 var
   RelKey: AnsiString;
 begin
@@ -522,6 +522,15 @@ begin
     RelKey := AnsiString(WideString(RelativeKey(Key, SubKey)));
     Result := RegOpenKeyExA(Key, PAnsiChar(RelKey), ulOptions, samDesired, RegKey);
   end;
+end;
+
+function InternalRegOpenKeyEx(Key: HKEY; SubKey: PAnsiChar;
+  ulOptions: DWORD; samDesired: REGSAM; var RegKey: HKEY): Longint; overload;
+begin
+  if Win32Platform = VER_PLATFORM_WIN32_NT then
+    Result := RegOpenKeyExA(Key, RelativeKey(Key, SubKey), ulOptions, GetWOW64AccessMode(samDesired), RegKey)
+  else
+    Result := RegOpenKeyExA(Key, RelativeKey(Key, SubKey), ulOptions, samDesired, RegKey);
 end;
 
 function InternalRegQueryValueEx(Key: HKEY; ValueName: PWideChar;
