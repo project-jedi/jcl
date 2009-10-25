@@ -335,6 +335,21 @@ const
     (Key: HKDD; AnsiName: HKDDShortName; WideName: HKDDShortName)
    );
 
+type
+  { clRegWOW64Access allows the user to switch all registry functions to the 64 bit registry
+    key on a 64bit system.
+
+    OS/Application   32bit/32bit   64bit/32bit   64bit/64bit
+    raDefault        Software      Wow6432Node   Software
+    raNative         Software      Software      Software
+    ra32Key          Software      Wow6432Node   Wow6432Node
+    ra64Key          Software      Software      Software
+  }
+  TJclRegWOW64Access = (raDefault, raNative, ra32Key, ra64Key);
+
+threadvar
+  JclRegWOW64Access: TJclRegWOW64Access {= raDefault};
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -357,7 +372,7 @@ uses
   AccCtrl,
   JclSysUtils,
   {$ENDIF ~FPC}
-  JclResources, JclWin32,
+  JclResources, JclWin32, JclSysInfo,
   JclAnsiStrings, JclWideStrings;
 
 type
@@ -368,7 +383,33 @@ const
   cItems = 'Items';
   cRegBinKinds = [REG_SZ..REG_QWORD];  // all types
 
+var
+  CachedIsWindows64: Integer = -1;
+
 //=== Internal helper routines ===============================================
+
+function GetWOW64AccessMode(samDesired: REGSAM): REGSAM;
+const
+  KEY_WOW64_32KEY = $0200;
+  KEY_WOW64_64KEY = $0100;
+  KEY_WOW64_RES = $0300;
+  RegWOW64Accesses: array[Boolean, TJclRegWOW64Access] of HKEY = (
+    (HKEY(0), HKEY(0), HKEY(0), HKEY(0)),
+    (HKEY(0), KEY_WOW64_64KEY, KEY_WOW64_32KEY, KEY_WOW64_64KEY)
+  );
+begin
+  Result := samDesired;
+  if (Win32Platform = VER_PLATFORM_WIN32_NT) and (samDesired and KEY_WOW64_RES = 0) then
+  begin
+    if CachedIsWindows64 = -1 then
+      if IsWindows64 then
+        CachedIsWindows64 := 1
+      else
+        CachedIsWindows64 := 0;
+
+    Result := Result or RegWOW64Accesses[CachedIsWindows64 = 1, JclRegWOW64Access];
+  end;
+end;
 
 function RootKeyName(const RootKey: THandle): string;
 begin
@@ -380,12 +421,12 @@ begin
     HKPD : Result := HKPDLongName;
     HKCC : Result := HKCCLongName;
     HKDD : Result := HKDDLongName;
-    else
+  else
     {$IFDEF DELPHICOMPILER}
-      Result := Format('$%.8x', [RootKey]);
+    Result := Format('$%.8x', [RootKey]);
     {$ENDIF DELPHICOMPILER}
     {$IFDEF BCB}
-      Result := Format('0x%.8x', [RootKey]);
+    Result := Format('0x%.8x', [RootKey]);
     {$ENDIF BCB}
   end;
 end;
@@ -475,7 +516,7 @@ var
   RelKey: AnsiString;
 begin
   if Win32Platform = VER_PLATFORM_WIN32_NT then
-    Result := RegOpenKeyExW(Key, RelativeKey(Key, SubKey), ulOptions, samDesired, RegKey)
+    Result := RegOpenKeyExW(Key, RelativeKey(Key, SubKey), ulOptions, GetWOW64AccessMode(samDesired), RegKey)
   else
   begin
     RelKey := AnsiString(WideString(RelativeKey(Key, SubKey)));
@@ -739,7 +780,8 @@ var
   RegKey: HKEY;
 begin
   RegKey := 0;
-  Result := Windows.RegCreateKey(RootKey, RelativeKey(RootKey, PChar(Key)), RegKey);
+  Result := Windows.RegCreateKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, nil, 0,
+    GetWOW64AccessMode(KEY_ALL_ACCESS), nil, RegKey, nil);
   if Result = ERROR_SUCCESS then
     RegCloseKey(RegKey);
 end;
@@ -755,7 +797,7 @@ var
 begin
   Result := False;
   RegKey := 0;
-  if RegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_SET_VALUE, RegKey) = ERROR_SUCCESS then
+  if InternalRegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_SET_VALUE, RegKey) = ERROR_SUCCESS then
   begin
     Result := RegDeleteValue(RegKey, PChar(Name)) = ERROR_SUCCESS;
     RegCloseKey(RegKey);
@@ -776,7 +818,7 @@ var
   KeyName: string;
 begin
   RegKey := 0;
-  Result := RegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_ALL_ACCESS, RegKey) = ERROR_SUCCESS;
+  Result := InternalRegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_ALL_ACCESS, RegKey) = ERROR_SUCCESS;
   if Result then
   begin
     RegQueryInfoKey(RegKey, nil, nil, nil, @NumSubKeys, @MaxSubKeyLen, nil, nil, nil, nil, nil, nil);
@@ -806,7 +848,7 @@ var
 begin
   DataSize := 0;
   RegKey := 0;
-  Result := RegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_READ, RegKey) = ERROR_SUCCESS;
+  Result := InternalRegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_READ, RegKey) = ERROR_SUCCESS;
   if Result then
   begin
     Result := RegQueryValueEx(RegKey, PChar(Name), nil, nil, nil, @DataSize) = ERROR_SUCCESS;
@@ -821,7 +863,7 @@ var
 begin
   DataType := REG_NONE;
   RegKey := 0;
-  Result := RegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_READ, RegKey) = ERROR_SUCCESS;
+  Result := InternalRegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_READ, RegKey) = ERROR_SUCCESS;
   if Result then
   begin
     Result := RegQueryValueEx(RegKey, PChar(Name), nil, @DataType, nil, nil) = ERROR_SUCCESS;
@@ -1796,7 +1838,7 @@ begin
   try
     List.Clear;
     RegKey := 0;
-    if RegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
+    if InternalRegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
     begin
       if RegQueryInfoKey(RegKey, nil, nil, nil, @NumSubKeys, nil, nil,
         @NumSubValues, @MaxSubValueLen, nil, nil, nil) = ERROR_SUCCESS then
@@ -1834,7 +1876,7 @@ begin
   try
     List.Clear;
     RegKey := 0;
-    if RegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
+    if InternalRegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
     begin
       if RegQueryInfoKey(RegKey, nil, nil, nil,
         @NumSubKeys, @MaxSubKeyLen, nil, nil, nil, nil, nil, nil) = ERROR_SUCCESS then
@@ -1893,7 +1935,7 @@ var
 begin
   Result := False;
   RegKey := 0;
-  if RegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
+  if InternalRegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
   begin
     RegQueryInfoKey(RegKey, nil, nil, nil, @NumSubKeys, nil, nil, nil, nil, nil, nil, nil);
     Result := NumSubKeys <> 0;
@@ -1908,7 +1950,7 @@ var
   RegKey: HKEY;
 begin
   RegKey := 0;
-  Result := (RegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_READ, RegKey) = ERROR_SUCCESS);
+  Result := (InternalRegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_READ, RegKey) = ERROR_SUCCESS);
   if Result then
     RegCloseKey(RegKey);
 end;
@@ -1918,7 +1960,7 @@ var
   RegKey: HKEY;
 begin
   RegKey := 0;
-  Result := (RegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_READ, RegKey) = ERROR_SUCCESS);
+  Result := (InternalRegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_READ, RegKey) = ERROR_SUCCESS);
   if Result then
   begin
     Result := RegQueryValueEx(RegKey, PChar(Name), nil, nil, nil, nil) = ERROR_SUCCESS;
