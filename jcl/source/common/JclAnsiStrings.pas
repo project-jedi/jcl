@@ -1077,7 +1077,11 @@ begin
     Error(@SListIndexError, Index);
 
   for I := Index to Count - 2 do
-    FStrings[Index] := FStrings[Index + 1];
+    FStrings[I] := FStrings[I + 1];
+    
+  SetLength(FStrings[FCount - 1], 0);  // the last string is no longer useful
+    
+  Dec(FCount);
 end;
 
 procedure TJclAnsiStringList.Clear;
