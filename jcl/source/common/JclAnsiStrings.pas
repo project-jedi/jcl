@@ -1079,7 +1079,7 @@ begin
   for I := Index to Count - 2 do
     FStrings[I] := FStrings[I + 1];
     
-  SetLength(FStrings[FCount - 1], 0);  // the last string is no longer useful
+  SetLength(FStrings[FCount - 1].Str, 0);  // the last string is no longer useful
     
   Dec(FCount);
 end;
