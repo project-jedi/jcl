@@ -623,7 +623,6 @@ type
     procedure ExtractFlags;
     function GetBinFileVersion: string;
     function GetBinProductVersion: string;
-    function GetCustomFieldValue(const FieldName: string): string;
     function GetFileOS: DWORD;
     function GetFileSubType: DWORD;
     function GetFileType: DWORD;
@@ -648,6 +647,7 @@ type
     constructor Create(const Module: HMODULE); overload;
     {$ENDIF MSWINDOWS}
     destructor Destroy; override;
+    function GetCustomFieldValue(const FieldName: string): string;
     class function VersionLanguageId(const LangIdRec: TLangIdRec): string;
     class function VersionLanguageName(const LangId: Word): string;
     function TranslationMatchesLanguages(Exact: Boolean = True): Boolean;
