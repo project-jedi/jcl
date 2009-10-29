@@ -349,6 +349,9 @@ type
 
 threadvar
   JclRegWOW64Access: TJclRegWOW64Access {= raDefault};
+  {$IFNDEF CBUILDER6}
+  {$EXTERNALSYM JclRegWOW64Access}
+  {$ENDIF ~CBUILDER6}
 
 {$IFDEF UNITVERSIONING}
 const
