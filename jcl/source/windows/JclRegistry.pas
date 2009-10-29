@@ -347,11 +347,12 @@ type
   }
   TJclRegWOW64Access = (raDefault, raNative, ra32Key, ra64Key);
 
+{$IFDEF BCB6}
+var
+{$ELSE}
 threadvar
+{$ENDIF BCB6}
   JclRegWOW64Access: TJclRegWOW64Access {= raDefault};
-  {$IFNDEF CBUILDER6}
-  {$EXTERNALSYM JclRegWOW64Access}
-  {$ENDIF ~CBUILDER6}
 
 {$IFDEF UNITVERSIONING}
 const
