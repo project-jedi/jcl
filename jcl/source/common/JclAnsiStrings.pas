@@ -825,9 +825,9 @@ begin
       S := Copy(Value, Start, Index - Start);
       Add(S);
 
-      if Value[Index] = #13 then
+      if (Index <= Len) and (Value[Index] = #13) then
         Inc(Index);
-      if Value[Index] = #10 then
+      if (Index <= Len) and (Value[Index] = #10) then
         Inc(Index);
     end;
   end;
