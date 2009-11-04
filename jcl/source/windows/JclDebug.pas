@@ -5036,9 +5036,13 @@ begin
   // todo: 64 bit version
 
   // First check that the address is within range of our code segment!
-  C8P := PDWORD(CodeAddr - 8);
-  C4P := PDWORD(CodeAddr - 4);
-  Result := (CodeAddr > 8) and ValidCodeAddr(TJclAddr(C8P), FModuleInfoList) and not IsBadReadPtr(C8P, 8);
+  Result := CodeAddr > 8;
+  if Result then
+  begin
+    C8P := PDWORD(CodeAddr - 8);
+    C4P := PDWORD(CodeAddr - 4);
+    Result := ValidCodeAddr(TJclAddr(C8P), FModuleInfoList) and not IsBadReadPtr(C8P, 8);
+  end;
 
   // Now check to see if the instruction preceding the return address
   // could be a valid CALL instruction
