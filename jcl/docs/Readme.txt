@@ -1,9 +1,9 @@
 --------------------------------------------------------------------------------
 
 JEDI Code Library
-Release 2.0
-Build 3449
-10-August-2010
+Release 2.1
+Build 3536
+05-November-2009
 
 --------------------------------------------------------------------------------
 
@@ -22,30 +22,28 @@ Getting involved in JCL development
 --------------------------------------------------------------------------------
 
 About this release
-JCL release 2.0 provides basic support for RAD Studio 2010 (including
+JCL release 2.0 provides improved support for RAD Studio 2010 (including
 Delphi 2010 and C++Builder 2010) an updated support for all targets.
 
-As always, multiple bugs have been fixed; for detailed change logs, use the
-facilities of our Subversion repository at Sourceforge.net
-http://sourceforge.net/projects/jcl/, see below.
+This new version of the JCL is mainly a bugfix release. Multiple bugs have been
+fixed; for detailed change logs, use the facilities of our Subversion repository
+at Sourceforge.net http://sourceforge.net/projects/jcl/, see below.
 
 Head changes:
+ - fix major issues in JclAnsiStrings: wrong index arithmetics in StrSearch,
+   flawed implementation of TJclAnsiStrings...
+ - fix issue in JclRegistry: wrong exceptions were raised under some rare
+   circumstances;
+ - experts: the compilation of projects with type library was not possible,
+   fixed wrong MAP file name computations...
+ - debug information from MAP file: better handling of the MAP files generated
+   by C++Builder;
+ - all resources are now loaded using LoadResString;
+ - streams: TJclBufferedStream wipes data on append;
+ - open and save dialog hooks: moved to runtime code (they can now be added to
+   any application);
+ - compression: new 7z 9.7.0 compression classes.
 
- - improved Unicode support for Delphi 2009, C++Builder 2009 and newer;
- - new expert for displaying improved stack traces in the debugger, these stack
-   traces can be serialized to XML files;
- - support for 32 bit FPC;
- - support for 64 bit FPC (experimental);
- - support for Delphi 2005 is back;
- - removal of support for Delphi 5, C++Builder 5, Delphi.net and Kylix;
- - added 7-zip 9.4.0 archive formats in JclCompression (.xz, .lzma86, ntfs,
-   fat...);
- - simple log: new option to release the log files between two accesses;
- - PCRE (http://www.pcre.org/) precompiled object files updated to PCRE 7.9;
- - exception dialog: the log can be saved to any arbitrary location;
- - exception dialog: new option to disable integrated exception tracking when
-   a debugger is attached;
- - exception dialog: new option to select which thread to report to log;
 
 Important:
 

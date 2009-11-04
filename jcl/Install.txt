@@ -1,4 +1,4 @@
-JEDI Code Library v 2.0 Installation
+JEDI Code Library v 2.1 Installation
 
 Supported development tools versions:
 
@@ -61,4 +61,4 @@ To execute for
         >install d6
 
 --------------------------------
-Document last updated 2009-06-28
+Document last updated 2009-11-05
