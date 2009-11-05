@@ -277,6 +277,7 @@ type
 
   IJclPropInfo = interface
     ['{7DAD5227-46EA-11D5-B0C0-4854E825F345}']
+    function GetPropInfo: PPropInfo;
     function GetPropType: IJclTypeInfo;
     function GetReader: Pointer;
     function GetWriter: Pointer;
@@ -296,6 +297,7 @@ type
     function HasDefault: Boolean;
     function HasIndex: Boolean;
 
+    property PropInfo: PPropInfo read GetPropInfo;
     property PropType: IJclTypeInfo read GetPropType;
     property Reader: Pointer read GetReader;
     property Writer: Pointer read GetWriter;
