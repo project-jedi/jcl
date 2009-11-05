@@ -415,6 +415,7 @@
         <value>*.gz</value>
         <value>*.7z</value>
         <value>sandbox</value>
+        <value>files</value>
         <value>jcl-daily-source-0.txt</value>
         <value>jcl-daily-source-1.txt</value>
         <value>jcl-daily-source-2.txt</value>

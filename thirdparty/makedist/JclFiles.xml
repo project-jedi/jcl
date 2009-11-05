@@ -63,6 +63,22 @@
       <configuration index="0" caption="Directory" value="sandbox"/>
       <configuration index="1" caption="Move to recycle bin" value="no"/>
     </action>
+    <action classname="TDirectoryCreator">
+      <configuration index="0" caption="Directory" value="files"/>
+    </action>
+    <action classname="TFileMover">
+      <configuration index="0" caption="Old file name" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%.zip"/>
+      <configuration index="1" caption="New file name" value="files\jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%.zip"/>
+    </action>
+  </task>
+  <task name="Jcl-win.sync" selected="0">
+    <action classname="TCommandLineCaller">
+      <configuration index="0" caption="Application" value="%WINSCP%"/>
+      <configuration index="1" caption="Working directory" value="."/>
+      <configuration index="2" caption="Parameters" value="/console /script=winscp-jcl-files.txt"/>
+      <configuration index="3" caption="Valid exit codes" value=""/>
+      <configuration index="4" caption="Result file" value=""/>
+    </action>
   </task>
   <task name="Jcl-linux.zip" selected="-1">
     <action classname="TLogCleaner"/>
@@ -139,6 +155,22 @@
       <configuration index="0" caption="Directory" value="."/>
       <configuration index="1" caption="Filter" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-linux.tar"/>
       <configuration index="2" caption="Move to recycle bin" value="no"/>
+    </action>
+    <action classname="TDirectoryCreator">
+      <configuration index="0" caption="Directory" value="files"/>
+    </action>
+    <action classname="TFileMover">
+      <configuration index="0" caption="Old file name" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-linux.tar.gz"/>
+      <configuration index="1" caption="New file name" value="files\jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-linux.tar.gz"/>
+    </action>
+  </task>
+  <task name="Jcl-linux.sync" selected="0">
+    <action classname="TCommandLineCaller">
+      <configuration index="0" caption="Application" value="%WINSCP%"/>
+      <configuration index="1" caption="Working directory" value="."/>
+      <configuration index="2" caption="Parameters" value="/console /script=winscp-jcl-files.txt"/>
+      <configuration index="3" caption="Valid exit codes" value=""/>
+      <configuration index="4" caption="Result file" value=""/>
     </action>
   </task>
   <task name="Jcl-turbo.zip" selected="-1">
@@ -235,6 +267,22 @@
     <action classname="TDirectoryRemover">
       <configuration index="0" caption="Directory" value="sandbox"/>
       <configuration index="1" caption="Move to recycle bin" value="no"/>
+    </action>
+    <action classname="TDirectoryCreator">
+      <configuration index="0" caption="Directory" value="files"/>
+    </action>
+    <action classname="TFileMover">
+      <configuration index="0" caption="Old file name" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-turbo.zip"/>
+      <configuration index="1" caption="New file name" value="files\jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-turbo.zip"/>
+    </action>
+  </task>
+  <task name="Jcl-turbo.sync" selected="0">
+    <action classname="TCommandLineCaller">
+      <configuration index="0" caption="Application" value="%WINSCP%"/>
+      <configuration index="1" caption="Working directory" value="."/>
+      <configuration index="2" caption="Parameters" value="/console /script=winscp-jcl-files.txt"/>
+      <configuration index="3" caption="Valid exit codes" value=""/>
+      <configuration index="4" caption="Result file" value=""/>
     </action>
   </task>
   <task name="jcl-html.zip" selected="-1">
@@ -336,6 +384,26 @@
       <configuration index="1" caption="Filter" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-htmlhelp-linux.tar"/>
       <configuration index="2" caption="Move to recycle bin" value="no"/>
     </action>
+    <action classname="TDirectoryCreator">
+      <configuration index="0" caption="Directory" value="files"/>
+    </action>
+    <action classname="TFileMover">
+      <configuration index="0" caption="Old file name" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-htmlhelp-win.zip"/>
+      <configuration index="1" caption="New file name" value="files\jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-htmlhelp-win.zip"/>
+    </action>
+    <action classname="TFileMover">
+      <configuration index="0" caption="Old file name" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-htmlhelp-linux.tar.gz"/>
+      <configuration index="1" caption="New file name" value="files\jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-htmlhelp-linux.tar.gz"/>
+    </action>
+  </task>
+  <task name="Jcl-html.sync" selected="0">
+    <action classname="TCommandLineCaller">
+      <configuration index="0" caption="Application" value="%WINSCP%"/>
+      <configuration index="1" caption="Working directory" value="."/>
+      <configuration index="2" caption="Parameters" value="/console /script=winscp-jcl-files.txt"/>
+      <configuration index="3" caption="Valid exit codes" value=""/>
+      <configuration index="4" caption="Result file" value=""/>
+    </action>
   </task>
   <task name="jcl-chm.zip" selected="-1">
     <action classname="TLogCleaner"/>
@@ -414,6 +482,22 @@
     <action classname="TDirectoryRemover">
       <configuration index="0" caption="Directory" value="sandbox"/>
       <configuration index="1" caption="Move to recycle bin" value="no"/>
+    </action>
+    <action classname="TDirectoryCreator">
+      <configuration index="0" caption="Directory" value="files"/>
+    </action>
+    <action classname="TFileMover">
+      <configuration index="0" caption="Old file name" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-chmhelp.zip"/>
+      <configuration index="1" caption="New file name" value="files\jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-chmhelp.zip"/>
+    </action>
+  </task>
+  <task name="Jcl-chm.sync" selected="0">
+    <action classname="TCommandLineCaller">
+      <configuration index="0" caption="Application" value="%WINSCP%"/>
+      <configuration index="1" caption="Working directory" value="."/>
+      <configuration index="2" caption="Parameters" value="/console /script=winscp-jcl-files.txt"/>
+      <configuration index="3" caption="Valid exit codes" value=""/>
+      <configuration index="4" caption="Result file" value=""/>
     </action>
   </task>
   <task name="jcl-h2.zip" selected="-1">
@@ -494,6 +578,22 @@
       <configuration index="0" caption="Directory" value="sandbox"/>
       <configuration index="1" caption="Move to recycle bin" value="no"/>
     </action>
+    <action classname="TDirectoryCreator">
+      <configuration index="0" caption="Directory" value="files"/>
+    </action>
+    <action classname="TFileMover">
+      <configuration index="0" caption="Old file name" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-htmlhelp2.zip"/>
+      <configuration index="1" caption="New file name" value="files\jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-htmlhelp2.zip"/>
+    </action>
+  </task>
+  <task name="Jcl-h2.sync" selected="0">
+    <action classname="TCommandLineCaller">
+      <configuration index="0" caption="Application" value="%WINSCP%"/>
+      <configuration index="1" caption="Working directory" value="."/>
+      <configuration index="2" caption="Parameters" value="/console /script=winscp-jcl-files.txt"/>
+      <configuration index="3" caption="Valid exit codes" value=""/>
+      <configuration index="4" caption="Result file" value=""/>
+    </action>
   </task>
   <task name="jcl-hlp.zip" selected="-1">
     <action classname="TLogCleaner"/>
@@ -567,6 +667,22 @@
     <action classname="TDirectoryRemover">
       <configuration index="0" caption="Directory" value="sandbox"/>
       <configuration index="1" caption="Move to recycle bin" value="no"/>
+    </action>
+    <action classname="TDirectoryCreator">
+      <configuration index="0" caption="Directory" value="files"/>
+    </action>
+    <action classname="TFileMover">
+      <configuration index="0" caption="Old file name" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-winhelp.zip"/>
+      <configuration index="1" caption="New file name" value="files\jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-winhelp.zip"/>
+    </action>
+  </task>
+  <task name="Jcl-hlp.sync" selected="0">
+    <action classname="TCommandLineCaller">
+      <configuration index="0" caption="Application" value="%WINSCP%"/>
+      <configuration index="1" caption="Working directory" value="."/>
+      <configuration index="2" caption="Parameters" value="/console /script=winscp-jcl-files.txt"/>
+      <configuration index="3" caption="Valid exit codes" value=""/>
+      <configuration index="4" caption="Result file" value=""/>
     </action>
   </task>
   <task name="jcl-xml.zip" selected="-1">
@@ -642,6 +758,22 @@
       <configuration index="0" caption="Directory" value="sandbox"/>
       <configuration index="1" caption="Move to recycle bin" value="no"/>
     </action>
+    <action classname="TDirectoryCreator">
+      <configuration index="0" caption="Directory" value="files"/>
+    </action>
+    <action classname="TFileMover">
+      <configuration index="0" caption="Old file name" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-xml.zip"/>
+      <configuration index="1" caption="New file name" value="files\jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-xml.zip"/>
+    </action>
+  </task>
+  <task name="Jcl-xml.sync" selected="0">
+    <action classname="TCommandLineCaller">
+      <configuration index="0" caption="Application" value="%WINSCP%"/>
+      <configuration index="1" caption="Working directory" value="."/>
+      <configuration index="2" caption="Parameters" value="/console /script=winscp-jcl-files.txt"/>
+      <configuration index="3" caption="Valid exit codes" value=""/>
+      <configuration index="4" caption="Result file" value=""/>
+    </action>
   </task>
   <task name="jcl-pdf.zip" selected="-1">
     <action classname="TLogCleaner"/>
@@ -715,6 +847,22 @@
     <action classname="TDirectoryRemover">
       <configuration index="0" caption="Directory" value="sandbox"/>
       <configuration index="1" caption="Move to recycle bin" value="no"/>
+    </action>
+    <action classname="TDirectoryCreator">
+      <configuration index="0" caption="Directory" value="files"/>
+    </action>
+    <action classname="TFileMover">
+      <configuration index="0" caption="Old file name" value="jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-pdf.zip"/>
+      <configuration index="1" caption="New file name" value="files\jcl-%VersionMajor%.%VersionMinor%.%VersionRelease%.%VersionBuild%-pdf.zip"/>
+    </action>
+  </task>
+  <task name="Jcl-pdf.sync" selected="0">
+    <action classname="TCommandLineCaller">
+      <configuration index="0" caption="Application" value="%WINSCP%"/>
+      <configuration index="1" caption="Working directory" value="."/>
+      <configuration index="2" caption="Parameters" value="/console /script=winscp-jcl-files.txt"/>
+      <configuration index="3" caption="Valid exit codes" value=""/>
+      <configuration index="4" caption="Result file" value=""/>
     </action>
   </task>
 </makedist>
