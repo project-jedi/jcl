@@ -639,7 +639,8 @@ begin
 end;
 
 {$IFDEF SUPPORTS_UNICODE}
-{ TJclAnsiStrings }
+
+//=== { TJclAnsiStrings } ====================================================
 
 constructor TJclAnsiStrings.Create;
 begin
@@ -650,26 +651,32 @@ begin
 end;
 
 procedure TJclAnsiStrings.Assign(Source: TPersistent);
+var
+  StringsSource: TStrings;
+  I: Integer;
 begin
-  if Source is TJclAnsiStrings then
+  if Source is TStrings then
   begin
+    StringsSource := TStrings(Source);
     BeginUpdate;
     try
       Clear;
-      FNameValueSeparator := TJclAnsiStrings(Source).FNameValueSeparator;
-      FDelimiter := TJclAnsiStrings(Source).FDelimiter;
-      AddStrings(TJclAnsiStrings(Source));
+      FDelimiter := AnsiChar(StringsSource.Delimiter);
+      FNameValueSeparator := AnsiChar(StringsSource.NameValueSeparator);
+      for I := 0 to StringsSource.Count - 1 do
+        AddObject(AnsiString(StringsSource.Strings[I]), StringsSource.Objects[I]);
     finally
       EndUpdate;
     end;
-    Exit;
-  end;
-  inherited Assign(Source);
+  end
+  else
+    inherited Assign(Source);
 end;
 
 procedure TJclAnsiStrings.AssignTo(Dest: TPersistent);
 var
   StringsDest: TStrings;
+  AnsiStringsDest: TJclAnsiStrings;
   I: Integer;
 begin
   if Dest is TStrings then
@@ -685,7 +692,24 @@ begin
     finally
       StringsDest.EndUpdate;
     end;
-  end;
+  end
+  else
+  if Dest is TJclAnsiStrings then
+  begin
+    AnsiStringsDest := TJclAnsiStrings(Dest);
+    BeginUpdate;
+    try
+      AnsiStringsDest.Clear;
+      AnsiStringsDest.FNameValueSeparator := FNameValueSeparator;
+      AnsiStringsDest.FDelimiter := FDelimiter;
+      for I := 0 to Count - 1 do
+        AnsiStringsDest.AddObject(Strings[I], Objects[I]);
+    finally
+      EndUpdate;
+    end;
+  end
+  else
+    inherited AssignTo(Dest);
 end;
 
 function TJclAnsiStrings.Add(const S: AnsiString): Integer;
@@ -719,7 +743,8 @@ end;
 function TJclAnsiStrings.IndexOf(const S: AnsiString): Integer;
 begin
   for Result := 0 to Count - 1 do
-    if CompareStrings(Strings[Result], S) = 0 then Exit;
+    if CompareStrings(Strings[Result], S) = 0 then
+      Exit;
   Result := -1;
 end;
 
@@ -728,19 +753,21 @@ var
   P: Integer;
   S: AnsiString;
 begin
-  for Result := 0 to GetCount - 1 do
+  for Result := 0 to Count - 1 do
   begin
-    S := GetString(Result);
+    S := Strings[Result];
     P := AnsiPos(NameValueSeparator, S);
-    if (P <> 0) and (CompareStrings(Copy(S, 1, P - 1), Name) = 0) then Exit;
+    if (P > 0) and (CompareStrings(Copy(S, 1, P - 1), Name) = 0) then
+      Exit;
   end;
   Result := -1;
 end;
 
 function TJclAnsiStrings.IndexOfObject(AObject: TObject): Integer;
 begin
-  for Result := 0 to GetCount - 1 do
-    if GetObject(Result) = AObject then Exit;
+  for Result := 0 to Count - 1 do
+    if Objects[Result] = AObject then
+      Exit;
   Result := -1;
 end;
 
@@ -813,23 +840,20 @@ var
 begin
   Clear;
   Len := Length(Value);
-  if Len > 0 then
+  Index := 1;
+  while Index <= Len do
   begin
-    Index := 1;
-    while Index <= Len do
-    begin
-      Start := Index;
-      while (Index <= Len) and not (Value[Index] in [#10, #13]) do
-        Inc(Index);
+    Start := Index;
+    while (Index <= Len) and not CharIsReturn(Value[Index]) do
+      Inc(Index);
 
-      S := Copy(Value, Start, Index - Start);
-      Add(S);
+    S := Copy(Value, Start, Index - Start);
+    Add(S);
 
-      if (Index <= Len) and (Value[Index] = #13) then
-        Inc(Index);
-      if (Index <= Len) and (Value[Index] = #10) then
-        Inc(Index);
-    end;
+    if (Index <= Len) and (Value[Index] = AnsiCarriageReturn) then
+      Inc(Index);
+    if (Index <= Len) and (Value[Index] = AnsiLineFeed) then
+      Inc(Index);
   end;
 end;
 
@@ -872,7 +896,7 @@ begin
   try
     Size := Stream.Size - Stream.Position;
     System.SetString(S, nil, Size);
-    Stream.Read(Pointer(S)^, Size);
+    Stream.Read(PAnsiChar(S)^, Size);
     SetText(S);
   finally
     EndUpdate;
@@ -896,7 +920,7 @@ var
   S: AnsiString;
 begin
   S := GetText;
-  Stream.WriteBuffer(Pointer(S)^, Length(S));
+  Stream.WriteBuffer(PAnsiChar(S)^, Length(S));
 end;
 
 function TJclAnsiStrings.ExtractName(const S: AnsiString): AnsiString;
@@ -905,15 +929,15 @@ var
 begin
   Result := S;
   P := AnsiPos(NameValueSeparator, Result);
-  if P <> 0 then
-    SetLength(Result, P-1)
+  if P > 0 then
+    SetLength(Result, P - 1)
   else
     SetLength(Result, 0);
 end;
 
 function TJclAnsiStrings.GetName(Index: Integer): AnsiString;
 begin
-  Result := ExtractName(GetString(Index));
+  Result := ExtractName(Strings[Index]);
 end;
 
 function TJclAnsiStrings.GetValue(const Name: AnsiString): AnsiString;
@@ -946,9 +970,19 @@ begin
 end;
 
 function TJclAnsiStrings.GetValueFromIndex(Index: Integer): AnsiString;
+var
+  S: AnsiString;
+  P: Integer;
 begin
   if Index >= 0 then
-    Result := Copy(GetString(Index), Length(Names[Index]) + 2, MaxInt)
+  begin
+    S := Strings[Index];
+    P := AnsiPos(NameValueSeparator, S);
+    if P > 0 then
+      Result := Copy(S, P + 1, Length(S) - P)
+    else
+      Result := '';
+  end
   else
     Result := '';
 end;
@@ -957,16 +991,18 @@ procedure TJclAnsiStrings.SetValueFromIndex(Index: Integer; const Value: AnsiStr
 begin
   if Value <> '' then
   begin
-    if Index < 0 then Index := Add('');
+    if Index < 0 then
+      Index := Add('');
     SetString(Index, Names[Index] + NameValueSeparator + Value);
   end
   else
   begin
-    if Index >= 0 then Delete(Index);
+    if Index >= 0 then
+      Delete(Index);
   end;
 end;
 
-{ TJclAnsiStringList }
+//=== { TJclAnsiStringList } =================================================
 
 procedure TJclAnsiStringList.Grow;
 var
@@ -1059,11 +1095,15 @@ begin
   end
   else
   begin
-    if Find(S, Result) then
-      case Duplicates of
-        dupIgnore: Exit;
-        dupError: Error(@SDuplicateString, 0);
-      end;
+    case Duplicates of
+      dupAccept: ;
+      dupIgnore:
+        if Find(S, Result) then
+          Exit;
+      dupError:
+        if Find(S, Result) then
+          Error(@SDuplicateString, 0);
+    end;
   end;
 
   InsertObject(Result, S, AObject);
@@ -1107,13 +1147,16 @@ begin
   begin
     I := (L + H) shr 1;
     C := CompareStrings(FStrings[I].Str, S);
-    if C < 0 then L := I + 1 else
+    if C < 0 then
+      L := I + 1
+    else
     begin
       H := I - 1;
       if C = 0 then
       begin
         Result := True;
-        if Duplicates <> dupAccept then L := I;
+        if Duplicates <> dupAccept then
+          L := I;
       end;
     end;
   end;
@@ -1146,21 +1189,25 @@ begin
     J := R;
     P := (L + R) shr 1;
     repeat
-      while SCompare(Self, I, P) < 0 do Inc(I);
-      while SCompare(Self, J, P) > 0 do Dec(J);
+      while SCompare(Self, I, P) < 0 do
+        Inc(I);
+      while SCompare(Self, J, P) > 0 do
+        Dec(J);
       if I <= J then
       begin
         if I <> J then
           Exchange(I, J);
         if P = I then
           P := J
-        else if P = J then
+        else
+        if P = J then
           P := I;
         Inc(I);
         Dec(J);
       end;
     until I > J;
-    if L < J then QuickSort(L, J, SCompare);
+    if L < J then
+      QuickSort(L, J, SCompare);
     L := I;
   until I >= R;
 end;
