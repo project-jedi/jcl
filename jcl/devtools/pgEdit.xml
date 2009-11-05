@@ -96,9 +96,9 @@
       </aliases>
       <ProjectProperties>
         <ProjectProperty name="VersionMajorNumber" value="2"/>
-        <ProjectProperty name="VersionMinorNumber" value="1"/>
+        <ProjectProperty name="VersionMinorNumber" value="2"/>
         <ProjectProperty name="ReleaseNumber" value="0"/>
-        <ProjectProperty name="BuildNumber" value="3450"/>
+        <ProjectProperty name="BuildNumber" value="3537"/>
       </ProjectProperties>
     </Model>
   </models>
