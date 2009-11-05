@@ -123,6 +123,9 @@ function GetDistActions: TDistActions;
 
 implementation
 
+uses
+  JclFileUtils;
+
 var
   GlobalDistActions: TDistActions = nil;
 
@@ -517,12 +520,16 @@ begin
   if Copy(Text, 1, Length(LogSaveCommand)) = LogSaveCommand then
   begin
     FLogFileName := Copy(Text, Length(LogSaveCommand) + 1, Length(Text) - Length(LogSaveCommand));
+    if not PathIsAbsolute(FLogFileName) then
+      FLogFileName := PathGetRelativePath(GetCurrentDir, FLogFileName);
     FLogAppend := False;
   end
   else
   if Copy(Text, 1, Length(LogAppendCommand)) = LogAppendCommand then
   begin
     FLogFileName := Copy(Text, Length(LogAppendCommand) + 1, Length(Text) - Length(LogAppendCommand));
+    if not PathIsAbsolute(FLogFileName) then
+      FLogFileName := PathGetRelativePath(GetCurrentDir, FLogFileName);
     FLogAppend := True;
   end
   else
