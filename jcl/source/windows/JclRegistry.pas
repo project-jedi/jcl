@@ -347,12 +347,10 @@ type
   }
   TJclRegWOW64Access = (raDefault, raNative, ra32Key, ra64Key);
 
-{$IFDEF BCB6}
-var
-{$ELSE}
-threadvar
-{$ENDIF BCB6}
-  JclRegWOW64Access: TJclRegWOW64Access {= raDefault};
+// cannot access variable JclRegWOW64Access from outside package
+// so these helper functions can be used.
+function RegGetWOW64AccessMode: TJclRegWOW64Access;
+procedure RegSetWOW64AccessMode(Access: TJclRegWOW64Access);
 
 {$IFDEF UNITVERSIONING}
 const
@@ -389,6 +387,19 @@ const
 
 var
   CachedIsWindows64: Integer = -1;
+
+threadvar
+  JclRegWOW64Access: TJclRegWOW64Access {= raDefault};
+
+function RegGetWOW64AccessMode: TJclRegWOW64Access;
+begin
+  Result := JclRegWOW64Access;
+end;
+
+procedure RegSetWOW64AccessMode(Access: TJclRegWOW64Access);
+begin
+  JclRegWOW64Access := Access;
+end;
 
 //=== Internal helper routines ===============================================
 
