@@ -6,6 +6,10 @@
       <configuration index="0" caption="File name" value="jcl-win.log"/>
       <configuration index="1" caption="Append" value="no"/>
     </action>
+    <action classname="TDirectoryRemover">
+      <configuration index="0" caption="Directory" value="sandbox"/>
+      <configuration index="1" caption="Move to recycle bin" value="no"/>
+    </action>
     <action classname="TDirectoryCreator">
       <configuration index="0" caption="Directory" value="sandbox"/>
     </action>
@@ -47,6 +51,9 @@
       <configuration index="3" caption="Valid exit codes" value=""/>
       <configuration index="4" caption="Result file" value=""/>
     </action>
+    <action classname="TDelay">
+      <configuration index="0" caption="Delay" value="60"/>
+    </action>
     <action classname="TArchiveMaker">
       <configuration index="0" caption="Directory" value="sandbox"/>
       <configuration index="1" caption="Filter" value="*"/>
@@ -62,6 +69,10 @@
     <action classname="TLogSaver">
       <configuration index="0" caption="File name" value="jcl-linux.log"/>
       <configuration index="1" caption="Append" value="no"/>
+    </action>
+    <action classname="TDirectoryRemover">
+      <configuration index="0" caption="Directory" value="sandbox"/>
+      <configuration index="1" caption="Move to recycle bin" value="no"/>
     </action>
     <action classname="TDirectoryCreator">
       <configuration index="0" caption="Directory" value="sandbox"/>
@@ -104,6 +115,9 @@
       <configuration index="3" caption="Valid exit codes" value=""/>
       <configuration index="4" caption="Result file" value=""/>
     </action>
+    <action classname="TDelay">
+      <configuration index="0" caption="Delay" value="60"/>
+    </action>
     <action classname="TArchiveMaker">
       <configuration index="0" caption="Directory" value="sandbox"/>
       <configuration index="1" caption="Filter" value="*"/>
@@ -112,6 +126,9 @@
     <action classname="TDirectoryRemover">
       <configuration index="0" caption="Directory" value="sandbox"/>
       <configuration index="1" caption="Move to recycle bin" value="no"/>
+    </action>
+    <action classname="TDelay">
+      <configuration index="0" caption="Delay" value="60"/>
     </action>
     <action classname="TArchiveMaker">
       <configuration index="0" caption="Directory" value=""/>
@@ -129,6 +146,10 @@
     <action classname="TLogSaver">
       <configuration index="0" caption="File name" value="jcl-turbo.log"/>
       <configuration index="1" caption="Append" value="no"/>
+    </action>
+    <action classname="TDirectoryRemover">
+      <configuration index="0" caption="Directory" value="sandbox"/>
+      <configuration index="1" caption="Move to recycle bin" value="no"/>
     </action>
     <action classname="TDirectoryCreator">
       <configuration index="0" caption="Directory" value="sandbox"/>
@@ -203,6 +224,9 @@
       <configuration index="0" caption="Old file name" value="sandbox\Install turbo delphi.bat"/>
       <configuration index="1" caption="New file name" value="sandbox\Install.bat"/>
     </action>
+    <action classname="TDelay">
+      <configuration index="0" caption="Delay" value="60"/>
+    </action>
     <action classname="TArchiveMaker">
       <configuration index="0" caption="Directory" value="sandbox"/>
       <configuration index="1" caption="Filter" value="*"/>
@@ -218,6 +242,10 @@
     <action classname="TLogSaver">
       <configuration index="0" caption="File name" value="jcl-html.log"/>
       <configuration index="1" caption="Append" value="no"/>
+    </action>
+    <action classname="TDirectoryRemover">
+      <configuration index="0" caption="Directory" value="sandbox"/>
+      <configuration index="1" caption="Move to recycle bin" value="no"/>
     </action>
     <action classname="TDirectoryCreator">
       <configuration index="0" caption="Directory" value="sandbox"/>
@@ -270,6 +298,9 @@
       <configuration index="3" caption="Valid exit codes" value="0;20;30"/>
       <configuration index="4" caption="Result file" value=""/>
     </action>
+    <action classname="TDelay">
+      <configuration index="0" caption="Delay" value="60"/>
+    </action>
     <action classname="TArchiveMaker">
       <configuration index="0" caption="Directory" value="sandbox\jcl"/>
       <configuration index="1" caption="Filter" value="*help*"/>
@@ -280,6 +311,9 @@
       <configuration index="1" caption="Filters" value="*.html;*.css;*.js"/>
       <configuration index="2" caption="New EOL" value="LF"/>
     </action>
+    <action classname="TDelay">
+      <configuration index="0" caption="Delay" value="60"/>
+    </action>
     <action classname="TArchiveMaker">
       <configuration index="0" caption="Directory" value="sandbox\jcl"/>
       <configuration index="1" caption="Filter" value="*help*"/>
@@ -288,6 +322,9 @@
     <action classname="TDirectoryRemover">
       <configuration index="0" caption="Directory" value="sandbox"/>
       <configuration index="1" caption="Move to recycle bin" value="no"/>
+    </action>
+    <action classname="TDelay">
+      <configuration index="0" caption="Delay" value="60"/>
     </action>
     <action classname="TArchiveMaker">
       <configuration index="0" caption="Directory" value=""/>
@@ -305,6 +342,10 @@
     <action classname="TLogSaver">
       <configuration index="0" caption="File name" value="jcl-chm.log"/>
       <configuration index="1" caption="Append" value="no"/>
+    </action>
+    <action classname="TDirectoryRemover">
+      <configuration index="0" caption="Directory" value="sandbox"/>
+      <configuration index="1" caption="Move to recycle bin" value="no"/>
     </action>
     <action classname="TDirectoryCreator">
       <configuration index="0" caption="Directory" value="sandbox"/>
@@ -362,6 +403,9 @@
       <configuration index="1" caption="Filter" value="*.html;*.css;*.js;*.gif;*.jpg;*.png;*.c;*.h;*.inc;*.hhc;*.hhk;*.hhp"/>
       <configuration index="2" caption="Move to recycle bin" value="no"/>
     </action>
+    <action classname="TDelay">
+      <configuration index="0" caption="Delay" value="60"/>
+    </action>
     <action classname="TArchiveMaker">
       <configuration index="0" caption="Directory" value="sandbox\jcl"/>
       <configuration index="1" caption="Filter" value="*help*"/>
@@ -377,6 +421,10 @@
     <action classname="TLogSaver">
       <configuration index="0" caption="File name" value="jcl-h2.log"/>
       <configuration index="1" caption="Append" value="no"/>
+    </action>
+    <action classname="TDirectoryRemover">
+      <configuration index="0" caption="Directory" value="sandbox"/>
+      <configuration index="1" caption="Move to recycle bin" value="no"/>
     </action>
     <action classname="TDirectoryCreator">
       <configuration index="0" caption="Directory" value="sandbox"/>
@@ -434,6 +482,9 @@
       <configuration index="1" caption="Filter" value="*.html;*.css;*.js;*.gif;*.jpg;*.png;*.c;*.h;*.inc;*.log"/>
       <configuration index="2" caption="Move to recycle bin" value="no"/>
     </action>
+    <action classname="TDelay">
+      <configuration index="0" caption="Delay" value="60"/>
+    </action>
     <action classname="TArchiveMaker">
       <configuration index="0" caption="Directory" value="sandbox\jcl"/>
       <configuration index="1" caption="Filter" value="*help*"/>
@@ -449,6 +500,10 @@
     <action classname="TLogSaver">
       <configuration index="0" caption="File name" value="jcl-hlp.log"/>
       <configuration index="1" caption="Append" value="no"/>
+    </action>
+    <action classname="TDirectoryRemover">
+      <configuration index="0" caption="Directory" value="sandbox"/>
+      <configuration index="1" caption="Move to recycle bin" value="no"/>
     </action>
     <action classname="TDirectoryCreator">
       <configuration index="0" caption="Directory" value="sandbox"/>
@@ -501,6 +556,9 @@
       <configuration index="3" caption="Valid exit codes" value="0;20;30"/>
       <configuration index="4" caption="Result file" value=""/>
     </action>
+    <action classname="TDelay">
+      <configuration index="0" caption="Delay" value="60"/>
+    </action>
     <action classname="TArchiveMaker">
       <configuration index="0" caption="Directory" value="sandbox\jcl"/>
       <configuration index="1" caption="Filter" value="*help*"/>
@@ -516,6 +574,10 @@
     <action classname="TLogSaver">
       <configuration index="0" caption="File name" value="jcl-xml.log"/>
       <configuration index="1" caption="Append" value="no"/>
+    </action>
+    <action classname="TDirectoryRemover">
+      <configuration index="0" caption="Directory" value="sandbox"/>
+      <configuration index="1" caption="Move to recycle bin" value="no"/>
     </action>
     <action classname="TDirectoryCreator">
       <configuration index="0" caption="Directory" value="sandbox"/>
@@ -568,6 +630,9 @@
       <configuration index="3" caption="Valid exit codes" value="0;20;30"/>
       <configuration index="4" caption="Result file" value=""/>
     </action>
+    <action classname="TDelay">
+      <configuration index="0" caption="Delay" value="60"/>
+    </action>
     <action classname="TArchiveMaker">
       <configuration index="0" caption="Directory" value="sandbox\jcl"/>
       <configuration index="1" caption="Filter" value="*help*"/>
@@ -583,6 +648,10 @@
     <action classname="TLogSaver">
       <configuration index="0" caption="File name" value="jcl-pdf.log"/>
       <configuration index="1" caption="Append" value="no"/>
+    </action>
+    <action classname="TDirectoryRemover">
+      <configuration index="0" caption="Directory" value="sandbox"/>
+      <configuration index="1" caption="Move to recycle bin" value="no"/>
     </action>
     <action classname="TDirectoryCreator">
       <configuration index="0" caption="Directory" value="sandbox"/>
@@ -634,6 +703,9 @@
       <configuration index="2" caption="Parameters" value="-config &quot;PDF&quot; -noshow -w3 JclHelp.dox"/>
       <configuration index="3" caption="Valid exit codes" value="0;20;30"/>
       <configuration index="4" caption="Result file" value=""/>
+    </action>
+    <action classname="TDelay">
+      <configuration index="0" caption="Delay" value="60"/>
     </action>
     <action classname="TArchiveMaker">
       <configuration index="0" caption="Directory" value="sandbox\jcl"/>
