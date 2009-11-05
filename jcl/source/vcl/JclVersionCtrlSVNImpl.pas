@@ -72,7 +72,7 @@ implementation
 
 uses
   JclVclResources,
-  JclFileUtils, JclSysUtils, JclRegistry, JclStrings;
+  JclFileUtils, JclSysInfo, JclSysUtils, JclRegistry, JclStrings;
 
 const
   JclVersionCtrlRegKeyName = 'SOFTWARE\TortoiseSVN';
@@ -97,18 +97,33 @@ const
   JclVersionCtrlSVNUnlockVerb = 'unlock';
 //  JclVersionCtrlSVNTortoiseDLL = 'TortoiseSVN.dll';
   JclVersionCtrlSVNDirectory1 = '.svn\';
-  JclVersionCtrlSVNDirectory2 = '_svn\';  
+  JclVersionCtrlSVNDirectory2 = '_svn\';
   JclVersionCtrlSVNEntryFile = 'entries';
 
   JclVersionCtrlSVNDirectories: array [0..1] of string =
-   ( JclVersionCtrlSVNDirectory1, JclVersionCtrlSVNDirectory2 ); 
+   ( JclVersionCtrlSVNDirectory1, JclVersionCtrlSVNDirectory2 );
 
 //=== TJclVersionControlSVN ==================================================
 
 constructor TJclVersionControlSVN.Create;
+var
+  SaveAcc: TJclRegWOW64Access;
 begin
   inherited Create;
-  FTortoiseSVNProc := RegReadStringDef(HKLM, JclVersionCtrlRegKeyName, JclVersionCtrlRegValueName, '');
+
+  if IsWindows64 then
+  begin
+    // on 64 bit machines look in the 64bit section of registy for tortoise SVN (64bit) registry stuff
+    SaveAcc := RegGetWOW64AccessMode;
+    try
+      RegSetWOW64AccessMode(ra64Key);
+      FTortoiseSVNProc := RegReadStringDef(HKLM, JclVersionCtrlRegKeyName, JclVersionCtrlRegValueName, '');
+    finally
+      RegSetWOW64AccessMode(SaveAcc);
+    end;
+  end
+  else
+    FTortoiseSVNProc := RegReadStringDef(HKLM, JclVersionCtrlRegKeyName, JclVersionCtrlRegValueName, '');
 end;
 
 destructor TJclVersionControlSVN.Destroy;
