@@ -3599,13 +3599,6 @@ begin
       if FileName <> '' then
         Result := TFileStream.Create(FileName, fmCreate);
   end;
-  if not Assigned(Result) then
-  begin
-    if FileName = '' then
-      raise EJclCompressionError.CreateRes(@RsCompressionNoFileName)
-    else
-      RaiseLastOSError;
-  end;
 end;
 
 //=== { TJclCompressionItem } ================================================
@@ -5210,9 +5203,6 @@ procedure TJclSevenzipOutStream.NeedStream;
 begin
   if Assigned(FArchive) and not Assigned(FStream) then
     FStream := FArchive.Items[FItemIndex].Stream;
-
-  if not Assigned(FStream) then
-    raise EJclCompressionError.CreateRes(@RsCompression7zUnassignedStream);
 end;
 
 procedure TJclSevenzipOutStream.ReleaseStream;
@@ -5235,23 +5225,33 @@ var
 begin
   NeedStream;
 
-  Result := S_OK;
-  // STREAM_SEEK_SET	= 0 = soFromBeginning
-  // STREAM_SEEK_CUR	= 1 = soFromCurrent
-  // STREAM_SEEK_END  = 2 = soFromEnd
-  NewPos := FStream.Seek(Offset, TSeekOrigin(SeekOrigin));
-  if Assigned(NewPosition) then
-    NewPosition^ := NewPos;
+  if Assigned(FStream) then
+  begin
+    Result := S_OK;
+    // STREAM_SEEK_SET = 0 = soFromBeginning
+    // STREAM_SEEK_CUR = 1 = soFromCurrent
+    // STREAM_SEEK_END = 2 = soFromEnd
+    NewPos := FStream.Seek(Offset, TSeekOrigin(SeekOrigin));
+    if Assigned(NewPosition) then
+      NewPosition^ := NewPos;
+  end
+  else
+    Result := S_FALSE;
 end;
 
 function TJclSevenzipOutStream.SetSize(NewSize: Int64): HRESULT;
 begin
   NeedStream;
 
-  Result := S_OK;
-  FStream.Size := NewSize;
-  if FTruncateOnRelease and (FMaximumPosition < NewSize) then
-    FMaximumPosition := NewSize;
+  if Assigned(FStream) then
+  begin
+    Result := S_OK;
+    FStream.Size := NewSize;
+    if FTruncateOnRelease and (FMaximumPosition < NewSize) then
+      FMaximumPosition := NewSize;
+  end
+  else
+    Result := S_FALSE;
 end;
 
 function TJclSevenzipOutStream.Write(Data: Pointer; Size: Cardinal;
@@ -5262,16 +5262,21 @@ var
 begin
   NeedStream;
 
-  Result := S_OK;
-  Processed := FStream.Write(Data^, Size);
-  if Assigned(ProcessedSize) then
-    ProcessedSize^ := Processed;
-  if FTruncateOnRelease then
+  if Assigned(FStream) then
   begin
-    APosition := FStream.Position;
-    if FMaximumPosition < APosition then
-      FMaximumPosition := APosition;
-  end;
+    Result := S_OK;
+    Processed := FStream.Write(Data^, Size);
+    if Assigned(ProcessedSize) then
+      ProcessedSize^ := Processed;
+    if FTruncateOnRelease then
+    begin
+      APosition := FStream.Position;
+      if FMaximumPosition < APosition then
+        FMaximumPosition := APosition;
+    end;
+  end
+  else
+    Result := S_FALSE;
 end;
 
 //=== { TJclSevenzipInStream } ===============================================
@@ -5306,18 +5311,20 @@ function TJclSevenzipInStream.GetSize(Size: PInt64): HRESULT;
 begin
   NeedStream;
 
-  if Assigned(Size) then
-    Size^ := FStream.Size;
-  Result := S_OK;
+  if Assigned(FStream) then
+  begin
+    if Assigned(Size) then
+      Size^ := FStream.Size;
+    Result := S_OK;
+  end
+  else
+    Result := S_FALSE;
 end;
 
 procedure TJclSevenzipInStream.NeedStream;
 begin
   if Assigned(FArchive) and not Assigned(FStream) then
     FStream := FArchive.Items[FItemIndex].Stream;
-
-  if not Assigned(FStream) then
-    raise EJclCompressionError.CreateRes(@RsCompression7zUnassignedStream);
 end;
 
 function TJclSevenzipInStream.Read(Data: Pointer; Size: Cardinal;
@@ -5327,10 +5334,15 @@ var
 begin
   NeedStream;
 
-  Processed := FStream.Read(Data^, Size);
-  if Assigned(ProcessedSize) then
-    ProcessedSize^ := Processed;
-  Result := S_OK;
+  if Assigned(FStream) then
+  begin
+    Processed := FStream.Read(Data^, Size);
+    if Assigned(ProcessedSize) then
+      ProcessedSize^ := Processed;
+    Result := S_OK;
+  end
+  else
+    Result := S_FALSE;
 end;
 
 procedure TJclSevenzipInStream.ReleaseStream;
@@ -5349,13 +5361,18 @@ var
 begin
   NeedStream;
 
-  // STREAM_SEEK_SET	= 0 = soFromBeginning
-	// STREAM_SEEK_CUR	= 1 = soFromCurrent
-	// STREAM_SEEK_END  = 2 = soFromEnd
-  NewPos := FStream.Seek(Offset, TSeekOrigin(SeekOrigin));
-  if Assigned(NewPosition) then
-    NewPosition^ := NewPos;
-  Result := S_OK;
+  if Assigned(FStream) then
+  begin
+    // STREAM_SEEK_SET = 0 = soFromBeginning
+    // STREAM_SEEK_CUR = 1 = soFromCurrent
+    // STREAM_SEEK_END = 2 = soFromEnd
+    NewPos := FStream.Seek(Offset, TSeekOrigin(SeekOrigin));
+    if Assigned(NewPosition) then
+      NewPosition^ := NewPos;
+    Result := S_OK;
+  end
+  else
+    Result := S_FALSE;
 end;
 
 // sevenzip helper functions
