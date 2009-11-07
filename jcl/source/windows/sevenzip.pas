@@ -173,6 +173,7 @@ type
 // PropID.h
 const
   kpidNoProperty = 0;
+  kpidMainSubfile = 1;
   kpidHandlerItemIndex = 2;
   kpidPath = 3;
   kpidName = 4;
@@ -226,6 +227,12 @@ const
   kpidChecksum = 46;
   kpidCharacts = 47;
   kpidVa = 48;
+  kpidId = 49;
+  kpidShortName = 50;
+  kpidCreatorApp = 51;
+  kpidSectorSize = 52;
+  kpidPosixAttrib = 53;
+  kpidLink = 54;
 
   kpidTotalSize = $1100;
   kpidFreeSpace = $1101;

@@ -5780,7 +5780,8 @@ begin
   case PropID of
     kpidNoProperty:
       Value.vt := VT_NULL;
-    //kpidHandlerItemIndex: (seems unused)
+    // kpidMainSubfile: ;
+    // kpidHandlerItemIndex: ;
     kpidPath:
       begin
         Value.vt := VT_BSTR;
@@ -5802,7 +5803,7 @@ begin
         Value.vt := VT_UI8;
         Value.uhVal.QuadPart := AItem.FileSize;
       end;
-    //kpidPackSize:
+    // kpidPackSize: ;
     kpidAttrib:
       begin
         Value.vt := VT_UI4;
@@ -5828,32 +5829,73 @@ begin
         Value.vt := VT_BOOL;
         Value.bool := True;
       end;
-    {kpidCommented:
-    kpidEncrypted:
-    kpidSplitBefore:
-    kpidSplitAfter:
-    kpidDictionarySize:
-    kpidCRC:
-    kpidType:}
+    // kpidCommented: ;
+    // kpidEncrypted: ;
+    // kpidSplitBefore: ;
+    // kpidSplitAfter: ;
+    // kpidDictionarySize: ;
+    // kpidCRC: ;
+    // kpidType: ;
     kpidIsAnti:
       begin
         Value.vt := VT_BOOL;
         Value.bool := False;
       end;
-    {kpidMethod:
-    kpidHostOS:
-    kpidFileSystem:
+    // kpidMethod: ;
+    // kpidHostOS: ;
+    // kpidFileSystem: ;
     kpidUser:
+      begin
+        Value.vt := VT_BSTR;
+        Value.bstrVal := SysAllocString(PWideChar(AItem.User));
+      end;
     kpidGroup:
-    kpidBlock:
-    kpidComment:
-    kpidPosition:
-    kpidPrefix:}
+      begin
+        Value.vt := VT_BSTR;
+        Value.bstrVal := SysAllocString(PWideChar(AItem.Group));
+      end;
+    // kpidBlock: ;
+    // kpidComment: ;
+    // kpidPosition: ;
+    // kpidPrefix: ;
+    // kpidNumSubDirs: ;
+    // kpidNumSubFiles: ;
+    // kpidUnpackVer: ;
+    // kpidVolume: ;
+    // kpidIsVolume: ;
+    // kpidOffset: ;
+    // kpidLinks: ;
+    // kpidNumBlocks: ;
+    // kpidNumVolumes: ;
     kpidTimeType:
       begin
         Value.vt := VT_UI4;
         Value.ulVal := kWindows;
       end;
+    // kpidBit64: ;
+    // kpidBigEndian: ;
+    // kpidCpu: ;
+    // kpidPhySize: ;
+    // kpidHeadersSize: ;
+    // kpidChecksum: ;
+    // kpidCharacts: ;
+    // kpidVa: ;
+    // kpidId: ;
+    // kpidShortName: ;
+    // kpidCreatorApp: ;
+    // kpidSectorSize: ;
+    kpidPosixAttrib:
+      begin
+        Value.vt := VT_EMPTY;
+      end;
+    // kpidLink: ;
+    // kpidTotalSize: ;
+    // kpidFreeSpace: ;
+    // kpidClusterSize: ;
+    // kpidVolumeName: ;
+    // kpidLocalName: ;
+    // kpidProvider: ;
+    // kpidUserDefined: ;
   else
     Value.vt := VT_EMPTY;
     Result := S_FALSE;
