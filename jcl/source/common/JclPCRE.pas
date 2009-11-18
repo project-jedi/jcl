@@ -77,7 +77,8 @@ type
     roNotEmpty, roUTF8, roNoAutoCapture, roNoUTF8Check, roAutoCallout,
     roPartial, roDfaShortest, roDfaRestart, roDfaFirstLine, roDupNames,
     roNewLineCR, roNewLineLF, roNewLineCRLF, roNewLineAny, roBSRAnyCRLF,
-    roBSRUnicode, roJavascriptCompat, roNoStartOptimize);
+    roBSRUnicode, roJavascriptCompat, roNoStartOptimize, roPartialHard,
+    roNotEmptyAtStart);
   TJclRegExOptions = set of TJclRegExOption;
   TJclCaptureRange = record
     FirstPos: Integer;
@@ -390,19 +391,23 @@ const
     roAnchored, roDollarEndOnly, roExtra, roNotBOL, roNotEOL, roUnGreedy,
     roNotEmpty, roUTF8, roNoAutoCapture, roNoUTF8Check, roAutoCallout,
     roPartial, roDfaShortest, roDfaRestart, roDfaFirstLine, roDupNames,
-    roNewLineCR, roNewLineLF, roNewLineCRLF, roNewLineAny }
+    roNewLineCR, roNewLineLF, roNewLineCRLF, roNewLineAny, roBSRAnyCRLF,
+    roBSRUnicode, roJavascriptCompat, roNoStartOptimize, roPartialHard,
+    roNotEmptyAtStart }
   cDesignOptions: array [TJclRegExOption] of Integer =
    (PCRE_CASELESS, PCRE_MULTILINE, PCRE_DOTALL, PCRE_EXTENDED, PCRE_ANCHORED,
     PCRE_DOLLAR_ENDONLY, PCRE_EXTRA, 0, 0, PCRE_UNGREEDY, 0, PCRE_UTF8,
     PCRE_NO_AUTO_CAPTURE, PCRE_NO_UTF8_CHECK, PCRE_AUTO_CALLOUT, 0, 0, 0, 0,
     PCRE_DUPNAMES, PCRE_NEWLINE_CR, PCRE_NEWLINE_LF, PCRE_NEWLINE_CRLF,
     PCRE_NEWLINE_ANY, PCRE_BSR_ANYCRLF, PCRE_BSR_UNICODE,
-    PCRE_JAVASCRIPT_COMPAT, PCRE_NO_START_OPTIMIZE);
+    PCRE_JAVASCRIPT_COMPAT, PCRE_NO_START_OPTIMIZE, PCRE_PARTIAL_HARD,
+    PCRE_NOTEMPTY_ATSTART);
   cRunOptions: array [TJclRegExOption] of Integer =
    (0, 0, 0, 0, 0, 0, 0, PCRE_NOTBOL, PCRE_NOTEOL, 0, PCRE_NOTEMPTY, 0, 0,
    PCRE_NO_UTF8_CHECK, 0, PCRE_PARTIAL, 0, 0, 0, 0, PCRE_NEWLINE_CR,
    PCRE_NEWLINE_LF, PCRE_NEWLINE_CRLF, PCRE_NEWLINE_ANY, PCRE_BSR_ANYCRLF,
-   PCRE_BSR_UNICODE, PCRE_JAVASCRIPT_COMPAT, PCRE_NO_START_OPTIMIZE);
+   PCRE_BSR_UNICODE, PCRE_JAVASCRIPT_COMPAT, PCRE_NO_START_OPTIMIZE,
+   PCRE_PARTIAL_HARD, PCRE_NOTEMPTY_ATSTART);
 var
   I: TJclRegExOption;
   SUPPORT_UTF8: Integer;

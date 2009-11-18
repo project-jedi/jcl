@@ -103,7 +103,9 @@ const
   {$EXTERNALSYM PCRE_NO_UTF8_CHECK}
   PCRE_AUTO_CALLOUT = $00004000;
   {$EXTERNALSYM PCRE_AUTO_CALLOUT}
-  PCRE_PARTIAL = $00008000;
+  PCRE_PARTIAL_SOFT = $00008000;
+  {$EXTERNALSYM PCRE_PARTIAL_SOFT}
+  PCRE_PARTIAL = PCRE_PARTIAL_SOFT; // Backwards compatible synonym
   {$EXTERNALSYM PCRE_PARTIAL}
   PCRE_DFA_SHORTEST = $00010000;
   {$EXTERNALSYM PCRE_DFA_SHORTEST}
@@ -133,6 +135,10 @@ const
   {$EXTERNALSYM PCRE_NO_START_OPTIMIZE}
   PCRE_NO_START_OPTIMISE = $04000000;
   {$EXTERNALSYM PCRE_NO_START_OPTIMISE}
+  PCRE_PARTIAL_HARD = $08000000;
+  {$EXTERNALSYM PCRE_PARTIAL_HARD}
+  PCRE_NOTEMPTY_ATSTART = $10000000;
+  {$EXTERNALSYM PCRE_NOTEMPTY_ATSTART}
 
   (* Exec-time and get-time error codes *)
 
@@ -215,6 +221,8 @@ const
   {$EXTERNALSYM PCRE_INFO_JCHANGED}
   PCRE_INFO_HASCRORLF = 14;
   {$EXTERNALSYM PCRE_INFO_HASCRORLF}
+  PCRE_INFO_MINLENGTH = 15;
+  {$EXTERNALSYM PCRE_INFO_MINLENGTH}
 
   (* Request types for pcre_config() *)
   PCRE_CONFIG_UTF8 = 0;
@@ -585,6 +593,10 @@ uses
   {$ENDIF UNIX}
 
 {$IFDEF PCRE_STATICLINK}
+
+// make the linker happy with PCRE 8.00
+procedure _pcre_find_bracket; external;
+
 {$LINK ..\windows\obj\pcre\pcre_compile.obj}
 {$LINK ..\windows\obj\pcre\pcre_config.obj}
 {$LINK ..\windows\obj\pcre\pcre_dfa_exec.obj}
