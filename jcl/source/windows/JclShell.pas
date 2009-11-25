@@ -932,6 +932,7 @@ begin
     Result := True
   else
   begin
+    Malloc := nil;
     if Succeeded(SHGetMalloc(Malloc)) and (Malloc.DidAlloc(IdList) > 0) then
     begin
       Malloc.Free(IdList);

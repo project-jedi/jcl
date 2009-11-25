@@ -1342,27 +1342,6 @@ uses
 {$IFDEF FPC}
 {$IFDEF MSWINDOWS}
 
-function PidlFree(var IdList: PItemIdList): Boolean;
-var
-  Malloc: IMalloc;
-begin
-  Result := False;
-  if IdList = nil then
-    Result := True
-  else
-  begin
-    Malloc := nil;
-    if Succeeded(SHGetMalloc(Malloc)) and (Malloc.DidAlloc(IdList) > 0) then
-    begin
-      Malloc.Free(IdList);
-      IdList := nil;
-      Result := True;
-    end;
-  end;
-end;
-
-//----------------------------------------------------------------------------
-
 function PidlToPath(IdList: PItemIdList): string;
 begin
   SetLength(Result, MAX_PATH);
