@@ -1060,7 +1060,7 @@ begin
               else
                 RealAddresses[I] := FAddress;
             lpszName := PAnsiChar(AnsiString(RealNames[I]));
-            lpszAddress := PAnsiChar(AnsiString(RealAddresses[I]));
+            lpszAddress := PAnsiCharOrNil(AnsiString(RealAddresses[I]));
           end;
         end;
       end
