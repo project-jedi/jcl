@@ -2230,8 +2230,42 @@ begin
 end;
 {$ENDIF UNIX}
 {$IFDEF MSWINDOWS}
+//091123 HA Use LookupAccountSid to fetch the current users domain ...
+//begin
+//  Result := GetUserDomainName(GetLocalUserName);
+//end;
+var
+  hProcess, hAccessToken: THandle;
+  InfoBuffer: PChar;
+  AccountName: array [0..UNLEN] of Char;
+  DomainName: array [0..UNLEN] of Char;
+
+  InfoBufferSize: Cardinal;
+  AccountSize: Cardinal;
+  DomainSize: Cardinal;
+  snu: SID_NAME_USE;
 begin
-  Result := GetUserDomainName(GetLocalUserName);
+  InfoBufferSize := 1000;
+  AccountSize := SizeOf(AccountName);
+  DomainSize := SizeOf(DomainName);
+
+  hProcess := GetCurrentProcess;
+  if OpenProcessToken(hProcess, TOKEN_READ, hAccessToken) then
+  try
+    GetMem(InfoBuffer, InfoBufferSize);
+    try
+      if GetTokenInformation(hAccessToken, TokenUser, InfoBuffer, InfoBufferSize, InfoBufferSize) then
+        LookupAccountSid(nil, PSIDAndAttributes(InfoBuffer)^.sid, AccountName, AccountSize,
+                         DomainName, DomainSize, snu)
+      else
+        RaiseLastOSError;
+    finally
+      FreeMem(InfoBuffer)
+    end;
+    Result := DomainName;
+  finally
+    CloseHandle(hAccessToken);
+  end
 end;
 {$ENDIF MSWINDOWS}
 
