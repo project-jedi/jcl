@@ -1381,8 +1381,11 @@ begin
   FolderPidl := nil;
   if Succeeded(SHGetSpecialFolderLocation(0, Folder, FolderPidl)) then
   begin
-    Result := PidlToPath(FolderPidl);
-    PidlFree(FolderPidl);
+    try
+      Result := PidlToPath(FolderPidl);
+    finally
+      CoTaskMemFree(FolderPidl);
+    end;
   end
   else
     Result := '';
