@@ -5358,7 +5358,7 @@ end;
 //=== Exception hooking ======================================================
 
 var
-  TrackingActive: Boolean;
+  TrackingActiveCount: Integer;
   IgnoredExceptions: TThreadList = nil;
   IgnoredExceptionClassNames: TStringList = nil;
   IgnoredExceptionClassNamesCritSect: TJclCriticalSection = nil;
@@ -5468,7 +5468,7 @@ end;
 procedure DoExceptNotify(ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean;
   BaseOfStack: Pointer);
 begin
-  if TrackingActive and (not (stDisableIfDebuggerAttached in JclStackTrackingOptions) or (not IsDebuggerAttached)) and
+  if (TrackingActiveCount > 0) and (not (stDisableIfDebuggerAttached in JclStackTrackingOptions) or (not IsDebuggerAttached)) and
     Assigned(ExceptObj) and (not IsIgnoredException(ExceptObj.ClassType)) and
     (not (stMainThreadOnly in JclStackTrackingOptions) or (GetCurrentThreadId = MainThreadID)) then
   begin
@@ -5481,34 +5481,51 @@ end;
 
 function JclStartExceptionTracking: Boolean;
 begin
-  if TrackingActive then
-    Result := False
+  {Increment the tracking count only if exceptions are already being tracked or tracking can be started
+   successfully.}
+  if TrackingActiveCount = 0 then
+  begin
+    if JclHookExceptions and JclAddExceptNotifier(DoExceptNotify, npFirstChain) then
+    begin
+      TrackingActiveCount := 1;
+      Result := True;
+    end
+    else
+      Result := False;
+  end
   else
   begin
-    Result := JclHookExceptions and JclAddExceptNotifier(DoExceptNotify, npFirstChain);
-    TrackingActive := Result;
+    Inc(TrackingActiveCount);
+    Result := False;
   end;
 end;
 
 function JclStopExceptionTracking: Boolean;
 begin
-  if TrackingActive then
+  {If the current tracking count is 1, an attempt is made to stop tracking exceptions. If successful the
+   tracking count is set back to 0. If the current tracking count is > 1 it is simply decremented.}
+  if TrackingActiveCount = 1 then
   begin
     Result := JclRemoveExceptNotifier(DoExceptNotify);
-    TrackingActive := False;
+    if Result then
+      Dec(TrackingActiveCount);
   end
   else
+  begin
+    if TrackingActiveCount > 0 then
+      Dec(TrackingActiveCount);
     Result := False;
+  end;
 end;
 
 function JclExceptionTrackingActive: Boolean;
 begin
-  Result := TrackingActive;
+  Result := TrackingActiveCount > 0;
 end;
 
 function JclTrackExceptionsFromLibraries: Boolean;
 begin
-  Result := TrackingActive;
+  Result := TrackingActiveCount > 0;
   if Result then
     JclInitializeLibrariesHookExcept;
 end;
