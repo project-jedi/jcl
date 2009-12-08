@@ -548,8 +548,13 @@ begin
       DisplayResults;
     except
       on ExceptionObj: TObject do
-        JclExpertShowExceptionDialog(ExceptionObj);
-      // raise is useless because trapped by the finally section
+      begin
+        if ExceptionObj is EFOpenError then
+          // when ".ridl" files are not found by IDE, reraise the exception
+          raise
+        else
+          JclExpertShowExceptionDialog(ExceptionObj);
+      end;
     end;
   finally
     EndStoreResults;
@@ -565,8 +570,13 @@ begin
       DisplayResults;
     except
       on ExceptionObj: TObject do
-        JclExpertShowExceptionDialog(ExceptionObj);
-      // raise is useless because trapped by the finally section
+      begin
+        if ExceptionObj is EFOpenError then
+          // when ".ridl" files are not found by IDE, reraise the exception
+          raise
+        else
+          JclExpertShowExceptionDialog(ExceptionObj);
+      end;
     end;
   finally
     EndStoreResults;
