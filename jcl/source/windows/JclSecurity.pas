@@ -32,7 +32,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                          $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -62,7 +62,26 @@ function CreateNullDacl(out Sa: TSecurityAttributes; const Inheritable: Boolean)
 function CreateInheritable(out Sa: TSecurityAttributes): PSecurityAttributes;
 
 // Privileges
+function IsGroupMember(RelativeGroupID: DWORD): Boolean;
 function IsAdministrator: Boolean;
+function IsUser: Boolean;
+function IsGuest: Boolean;
+function IsPowerUser: Boolean;
+function IsAccountOperator: Boolean;
+function IsSystemOperator: Boolean;
+function IsPrintOperator: Boolean;
+function IsBackupOperator: Boolean;
+function IsReplicator: Boolean;
+function IsRASServer: Boolean;
+function IsPreWin2000CompAccess: Boolean;
+function IsRemoteDesktopUser: Boolean;
+function IsNetworkConfigurationOperator: Boolean;
+function IsIncomingForestTrustBuilder: Boolean;
+function IsMonitoringUser: Boolean;
+function IsLoggingUser: Boolean;
+function IsAuthorizationAccess: Boolean;
+function IsTSLicenseServer: Boolean;
+
 function EnableProcessPrivilege(const Enable: Boolean; const Privilege: string): Boolean;
 function EnableThreadPrivilege(const Enable: Boolean; const Privilege: string): Boolean;
 function IsPrivilegeEnabled(const Privilege: string): Boolean;
@@ -149,7 +168,7 @@ end;
 
 //=== Privileges =============================================================
 
-function IsAdministrator: Boolean;
+function IsGroupMember(RelativeGroupID: DWORD): Boolean;
 var
   psidAdmin: Pointer;
   Token: THandle;
@@ -161,7 +180,7 @@ const
   SE_GROUP_USE_FOR_DENY_ONLY = $00000010;
 begin
   Result := not IsWinNT;
-  if Result then // Win9x/ME
+  if Result then // Win9x and ME don't have user groups
     Exit;
   psidAdmin := nil;
   TokenInfo := nil;
@@ -175,7 +194,7 @@ begin
     begin
       {$IFDEF FPC}
       Win32Check(AllocateAndInitializeSid(SECURITY_NT_AUTHORITY, 2,
-        SECURITY_BUILTIN_DOMAIN_RID, DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0,
+        SECURITY_BUILTIN_DOMAIN_RID, RelativeGroupID, 0, 0, 0, 0, 0, 0,
         psidAdmin));
       if GetTokenInformation(Token, TokenGroups, nil, 0, @Count) or
        (GetLastError <> ERROR_INSUFFICIENT_BUFFER) then
@@ -184,7 +203,7 @@ begin
       Win32Check(GetTokenInformation(Token, TokenGroups, TokenInfo, Count, @Count));
       {$ELSE FPC}
       Win32Check(AllocateAndInitializeSid(SECURITY_NT_AUTHORITY, 2,
-        SECURITY_BUILTIN_DOMAIN_RID, DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0,
+        SECURITY_BUILTIN_DOMAIN_RID, RelativeGroupID, 0, 0, 0, 0, 0, 0,
         psidAdmin));
       if GetTokenInformation(Token, TokenGroups, nil, 0, Count) or
        (GetLastError <> ERROR_INSUFFICIENT_BUFFER) then
@@ -216,6 +235,96 @@ begin
     if psidAdmin <> nil then
       FreeSid(psidAdmin);
   end;
+end;
+
+function IsAdministrator: Boolean;
+begin
+  Result := IsGroupMember(DOMAIN_ALIAS_RID_ADMINS);
+end;
+
+function IsUser: Boolean;
+begin
+  Result := IsGroupMember(DOMAIN_ALIAS_RID_USERS);
+end;
+
+function IsGuest: Boolean;
+begin
+  Result := IsGroupMember(DOMAIN_ALIAS_RID_GUESTS);
+end;
+
+function IsPowerUser: Boolean;
+begin
+  Result := IsGroupMember(DOMAIN_ALIAS_RID_POWER_USERS);
+end;
+
+function IsAccountOperator: Boolean;
+begin
+  Result := IsGroupMember(DOMAIN_ALIAS_RID_ACCOUNT_OPS);
+end;
+
+function IsSystemOperator: Boolean;
+begin
+  Result := IsGroupMember(DOMAIN_ALIAS_RID_SYSTEM_OPS);
+end;
+
+function IsPrintOperator: Boolean;
+begin
+  Result := IsGroupMember(DOMAIN_ALIAS_RID_PRINT_OPS);
+end;
+
+function IsBackupOperator: Boolean;
+begin
+  Result := IsGroupMember(DOMAIN_ALIAS_RID_BACKUP_OPS);
+end;
+
+function IsReplicator: Boolean;
+begin
+  Result := IsGroupMember(DOMAIN_ALIAS_RID_REPLICATOR);
+end;
+
+function IsRASServer: Boolean;
+begin
+  Result := IsGroupMember(DOMAIN_ALIAS_RID_RAS_SERVERS);
+end;
+
+function IsPreWin2000CompAccess: Boolean;
+begin
+  Result := IsGroupMember(DOMAIN_ALIAS_RID_PREW2KCOMPACCESS);
+end;
+
+function IsRemoteDesktopUser: Boolean;
+begin
+  Result := IsGroupMember(DOMAIN_ALIAS_RID_REMOTE_DESKTOP_USERS);
+end;
+
+function IsNetworkConfigurationOperator: Boolean;
+begin
+  Result := IsGroupMember(DOMAIN_ALIAS_RID_NETWORK_CONFIGURATION_OPS);
+end;
+
+function IsIncomingForestTrustBuilder: Boolean;
+begin
+  Result := IsGroupMember(DOMAIN_ALIAS_RID_INCOMING_FOREST_TRUST_BUILDERS);
+end;
+
+function IsMonitoringUser: Boolean;
+begin
+  Result := IsGroupMember(DOMAIN_ALIAS_RID_MONITORING_USERS);
+end;
+
+function IsLoggingUser: Boolean;
+begin
+  Result := IsGroupMember(DOMAIN_ALIAS_RID_LOGGING_USERS);
+end;
+
+function IsAuthorizationAccess: Boolean;
+begin
+  Result := IsGroupMember(DOMAIN_ALIAS_RID_AUTHORIZATIONACCESS);
+end;
+
+function IsTSLicenseServer: Boolean;
+begin
+  Result := IsGroupMember(DOMAIN_ALIAS_RID_TS_LICENSE_SERVERS);
 end;
 
 function EnableProcessPrivilege(const Enable: Boolean; const Privilege: string): Boolean;
