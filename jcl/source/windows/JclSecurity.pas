@@ -91,8 +91,8 @@ function SetUserObjectFullAccess(hUserObject: THandle): Boolean;
 function GetUserObjectName(hUserObject: THandle): string;
 
 // Account Information
-procedure LookupAccountBySid(Sid: PSID; out Name, Domain: AnsiString); overload;
-procedure LookupAccountBySid(Sid: PSID; out Name, Domain: WideString); overload;
+procedure LookupAccountBySid(Sid: PSID; out Name, Domain: AnsiString; Silent: Boolean = False); overload;
+procedure LookupAccountBySid(Sid: PSID; out Name, Domain: WideString; Silent: Boolean = False); overload;
 procedure QueryTokenInformation(Token: THandle; InformationClass: TTokenInformationClass; var Buffer: Pointer);
 procedure FreeTokenInformation(var Buffer: Pointer);
 function GetInteractiveUserName: string;
@@ -468,10 +468,11 @@ end;
 
 //=== Account Information ====================================================
 
-procedure LookupAccountBySid(Sid: PSID; out Name, Domain: AnsiString);
+procedure LookupAccountBySid(Sid: PSID; out Name, Domain: AnsiString; Silent: Boolean);
 var
   NameSize, DomainSize: DWORD;
   Use: SID_NAME_USE;
+  Success: Boolean;
 begin
   if IsWinNT then
   begin
@@ -483,7 +484,14 @@ begin
       SetLength(Name, NameSize - 1);
     if DomainSize > 0 then
       SetLength(Domain, DomainSize - 1);
-    Win32Check(LookupAccountSidA(nil, Sid, PAnsiChar(Name), NameSize, PAnsiChar(Domain), DomainSize, Use));
+    Success := LookupAccountSidA(nil, Sid, PAnsiChar(Name), NameSize, PAnsiChar(Domain), DomainSize, Use);
+    if Silent and not Success then
+    begin
+      Name := AnsiString(SIDToString(Sid));
+      Domain := '';
+    end
+    else
+      Win32Check(Success);
   end
   else
   begin             // if Win9x, then function return ''
@@ -492,10 +500,11 @@ begin
   end;
 end;
 
-procedure LookupAccountBySid(Sid: PSID; out Name, Domain: WideString);
+procedure LookupAccountBySid(Sid: PSID; out Name, Domain: WideString; Silent: Boolean);
 var
   NameSize, DomainSize: DWORD;
   Use: SID_NAME_USE;
+  Success: Boolean;
 begin
   if IsWinNT then
   begin
@@ -507,7 +516,14 @@ begin
       SetLength(Name, NameSize - 1);
     if DomainSize > 0 then
       SetLength(Domain, DomainSize - 1);
-    Win32Check(LookupAccountSidW(nil, Sid, PWideChar(Name), NameSize, PWideChar(Domain), DomainSize, Use));
+    Success := LookupAccountSidW(nil, Sid, PWideChar(Name), NameSize, PWideChar(Domain), DomainSize, Use);
+    if Silent and not Success then
+    begin
+      Name := WideString(SIDToString(Sid));
+      Domain := '';
+    end
+    else
+      Win32Check(Success);
   end
   else
   begin

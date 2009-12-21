@@ -3590,7 +3590,7 @@ begin
       GetMem(pSD, BufSize);
       GetFileSecurity(PChar(FileName), GROUP_SECURITY_INFORMATION,
         pSD, BufSize, BufSize);
-      LookupAccountBySid(Pointer(TJclAddr(pSD) + TJclAddr(pSD^.Group)), TmpResult, DomainName);
+      LookupAccountBySid(Pointer(TJclAddr(pSD) + TJclAddr(pSD^.Group)), TmpResult, DomainName, True);
       FreeMem(pSD);
       Result := Trim(TmpResult);
     end;
@@ -3632,7 +3632,7 @@ begin
       try
         GetFileSecurity(PChar(FileName), OWNER_SECURITY_INFORMATION,
           pSD, BufSize, BufSize);
-        LookupAccountBySid(Pointer(TJclAddr(pSD) + TJclAddr(pSD^.Owner)), TmpResult, DomainName);
+        LookupAccountBySid(Pointer(TJclAddr(pSD) + TJclAddr(pSD^.Owner)), TmpResult, DomainName, True);
       finally
         FreeMem(pSD);
       end;
