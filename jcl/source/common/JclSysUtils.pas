@@ -402,6 +402,20 @@ function InheritsFromByName(AClass: TClass; const AClassName: string): Boolean;
 // Interface information
 function GetImplementorOfInterface(const I: IInterface): TObject;
 
+// interfaced persistent
+type
+  TJclInterfacedPersistent = class(TPersistent, IInterface)
+  protected
+    FOwnerInterface: IInterface;
+    FRefCount: Integer;
+  public
+    procedure AfterConstruction; override;
+    { IInterface }
+    function QueryInterface(const IID: TGUID; out Obj): HRESULT; virtual; stdcall;
+    function _AddRef: Integer; stdcall;
+    function _Release: Integer; stdcall;
+  end;
+
 // Numeric formatting routines
 type
   TDigitCount = 0..255;
@@ -2079,6 +2093,44 @@ begin
     end;
   except
     Result := nil;
+  end;
+end;
+
+//=== { TJclInterfacedPersistent } ===========================================
+
+procedure TJclInterfacedPersistent.AfterConstruction;
+begin
+  inherited AfterConstruction;
+  if GetOwner <> nil then
+    GetOwner.GetInterface(IInterface, FOwnerInterface);
+end;
+
+function TJclInterfacedPersistent.QueryInterface(const IID: TGUID;
+  out Obj): HRESULT;
+begin
+  if GetInterface(IID, Obj) then
+    Result := S_OK
+  else
+    Result := E_NOINTERFACE;
+end;
+
+function TJclInterfacedPersistent._AddRef: Integer;
+begin
+  if FOwnerInterface <> nil then
+    Result := FOwnerInterface._AddRef
+  else
+    Result := InterlockedIncrement(FRefCount);
+end;
+
+function TJclInterfacedPersistent._Release: Integer;
+begin
+  if FOwnerInterface <> nil then
+    Result := FOwnerInterface._Release
+  else
+  begin
+    Result := InterlockedDecrement(FRefCount);
+    if Result = 0 then
+      Destroy;
   end;
 end;
 
