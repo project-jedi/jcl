@@ -5290,7 +5290,7 @@ begin
           HandlerAt := FExcTab[I].Handler
         else
         begin
-          ParentVTable := PPointer(TJclAddr(VTable) + TJclAddr(vmtParent))^;
+          ParentVTable := TClass(VTable).ClassParent;
           if ParentVTable = VTable then
             VTable := nil
           else
