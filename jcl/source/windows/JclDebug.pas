@@ -688,6 +688,9 @@ function JclGetExceptStackListToStrings(ThreadID: DWORD; Strings: TStrings;
   IncludeModuleName: Boolean = False; IncludeAddressOffset: Boolean = False;
   IncludeStartProcLineOffset: Boolean = False; IncludeVAddress: Boolean = False): Boolean;
 
+// helper function for DUnit runtime memory leak check
+procedure JclClearGlobalStackData;
+
 // Exception frame info routines
 type
   PJmpInstruction = ^TJmpInstruction;
@@ -4254,6 +4257,7 @@ type
   public
     destructor Destroy; override;
     procedure AddObject(AObject: TJclStackBaseList);
+    procedure Clear;
     procedure LockThreadID(TID: DWORD);
     procedure UnlockThreadID;
     function FindObject(TID: DWORD; AClass: TJclStackBaseListClass): TJclStackBaseList;
@@ -4290,6 +4294,22 @@ begin
       ReplacedObj.Free;
     end;
     Add(AObject);
+  finally
+    UnlockList;
+  end;
+end;
+
+procedure TJclGlobalStackList.Clear;
+begin
+  with LockList do
+  try
+    while Count > 0 do
+      TObject(Items[0]).Free;
+    { The following call to Clear seems to be useless, but it deallocates memory
+      by setting the lists capacity back to zero. For the runtime memory leak check
+      within DUnit it is important that the allocated memory before and after the
+      test is equal. }
+    Clear; // do not remove
   finally
     UnlockList;
   end;
@@ -4560,6 +4580,11 @@ begin
   if Result then
     List.AddToStrings(Strings, IncludeModuleName, IncludeAddressOffset, IncludeStartProcLineOffset,
       IncludeVAddress);
+end;
+
+procedure JclClearGlobalStackData;
+begin
+  GlobalStackList.Clear;
 end;
 
 function JclCreateStackList(Raw: Boolean; AIgnoreLevels: DWORD; FirstCaller: Pointer): TJclStackInfoList;
