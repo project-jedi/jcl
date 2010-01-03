@@ -67,15 +67,15 @@
 			<DCCReference Include="JclBaseExpert.dcp" />
 			<DCCReference Include="..\..\experts\repository\JclOtaTemplates.pas" />
 			<DCCReference Include="..\..\experts\repository\JclOtaRepositoryUtils.pas" />
-			<DCCReference Include="..\..\experts\repository\JclOtaExcDlgRepository.pas" />
-			<DCCReference Include="..\..\experts\repository\JclOtaExcDlgWizard.pas" />
-			<DCCReference Include="..\..\experts\repository\JclOtaExcDlgFileFrame.pas" />
-			<DCCReference Include="..\..\experts\repository\JclOtaExcDlgFormFrame.pas" />
-			<DCCReference Include="..\..\experts\repository\JclOtaExcDlgSystemFrame.pas" />
-			<DCCReference Include="..\..\experts\repository\JclOtaExcDlgLogFrame.pas" />
-			<DCCReference Include="..\..\experts\repository\JclOtaExcDlgTraceFrame.pas" />
-			<DCCReference Include="..\..\experts\repository\JclOtaExcDlgThreadFrame.pas" />
-			<DCCReference Include="..\..\experts\repository\JclOtaExcDlgIgnoreFrame.pas" />
+			<DCCReference Include="..\..\experts\repository\ExceptionDialog\JclOtaExcDlgRepository.pas" />
+			<DCCReference Include="..\..\experts\repository\ExceptionDialog\JclOtaExcDlgWizard.pas" />
+			<DCCReference Include="..\..\experts\repository\ExceptionDialog\JclOtaExcDlgFileFrame.pas" />
+			<DCCReference Include="..\..\experts\repository\ExceptionDialog\JclOtaExcDlgFormFrame.pas" />
+			<DCCReference Include="..\..\experts\repository\ExceptionDialog\JclOtaExcDlgSystemFrame.pas" />
+			<DCCReference Include="..\..\experts\repository\ExceptionDialog\JclOtaExcDlgLogFrame.pas" />
+			<DCCReference Include="..\..\experts\repository\ExceptionDialog\JclOtaExcDlgTraceFrame.pas" />
+			<DCCReference Include="..\..\experts\repository\ExceptionDialog\JclOtaExcDlgThreadFrame.pas" />
+			<DCCReference Include="..\..\experts\repository\ExceptionDialog\JclOtaExcDlgIgnoreFrame.pas" />
 			<DCCReference Include="..\..\experts\repository\JclOtaRepositoryReg.pas" />
 			<BuildConfiguration Include="Base">
 				<Key>Base</Key>

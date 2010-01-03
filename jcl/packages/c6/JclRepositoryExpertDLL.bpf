@@ -1,14 +1,14 @@
 USEUNIT("..\..\experts\repository\JclOtaTemplates.pas");
 USEUNIT("..\..\experts\repository\JclOtaRepositoryUtils.pas");
-USEUNIT("..\..\experts\repository\JclOtaExcDlgRepository.pas");
-USEUNIT("..\..\experts\repository\JclOtaExcDlgWizard.pas");
-USEUNIT("..\..\experts\repository\JclOtaExcDlgFileFrame.pas");
-USEUNIT("..\..\experts\repository\JclOtaExcDlgFormFrame.pas");
-USEUNIT("..\..\experts\repository\JclOtaExcDlgSystemFrame.pas");
-USEUNIT("..\..\experts\repository\JclOtaExcDlgLogFrame.pas");
-USEUNIT("..\..\experts\repository\JclOtaExcDlgTraceFrame.pas");
-USEUNIT("..\..\experts\repository\JclOtaExcDlgThreadFrame.pas");
-USEUNIT("..\..\experts\repository\JclOtaExcDlgIgnoreFrame.pas");
+USEUNIT("..\..\experts\repository\ExceptionDialog\JclOtaExcDlgRepository.pas");
+USEUNIT("..\..\experts\repository\ExceptionDialog\JclOtaExcDlgWizard.pas");
+USEUNIT("..\..\experts\repository\ExceptionDialog\JclOtaExcDlgFileFrame.pas");
+USEUNIT("..\..\experts\repository\ExceptionDialog\JclOtaExcDlgFormFrame.pas");
+USEUNIT("..\..\experts\repository\ExceptionDialog\JclOtaExcDlgSystemFrame.pas");
+USEUNIT("..\..\experts\repository\ExceptionDialog\JclOtaExcDlgLogFrame.pas");
+USEUNIT("..\..\experts\repository\ExceptionDialog\JclOtaExcDlgTraceFrame.pas");
+USEUNIT("..\..\experts\repository\ExceptionDialog\JclOtaExcDlgThreadFrame.pas");
+USEUNIT("..\..\experts\repository\ExceptionDialog\JclOtaExcDlgIgnoreFrame.pas");
 USEUNIT("..\..\experts\repository\JclOtaRepositoryReg.pas");
 USEDEF("JclRepositoryExpertDLL.def");
 Project file
