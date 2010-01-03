@@ -90,8 +90,8 @@
 			<DCCReference Include="..\..\source\common\JclPCRE.pas" />
 			<DCCReference Include="..\..\source\common\JclResources.pas" />
 			<DCCReference Include="..\..\source\common\JclRTTI.pas" />
-			<DCCReference Include="..\..\source\common\JclSimpleXml.pas" />
 			<DCCReference Include="..\..\source\common\JclSchedule.pas" />
+			<DCCReference Include="..\..\source\common\JclSimpleXml.pas" />
 			<DCCReference Include="..\..\source\common\JclStatistics.pas" />
 			<DCCReference Include="..\..\source\common\JclStreams.pas" />
 			<DCCReference Include="..\..\source\common\JclStrHashMap.pas" />

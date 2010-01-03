@@ -42,8 +42,8 @@
     <File Name="..\..\source\common\JclPCRE.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclResources.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclRTTI.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclSimpleXml.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclSchedule.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclSimpleXml.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclStatistics.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclStreams.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclStrHashMap.pas" Targets="all" Formname="" Condition=""/>

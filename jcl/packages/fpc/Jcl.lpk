@@ -157,12 +157,12 @@
         <UnitName Value="JclRTTI"/>
       </Item29>
       <Item30>
-        <Filename Value="..\..\source\common\JclSimpleXml.pas"/>
-        <UnitName Value="JclSimpleXml"/>
-      </Item30>
-      <Item31>
         <Filename Value="..\..\source\common\JclSchedule.pas"/>
         <UnitName Value="JclSchedule"/>
+      </Item30>
+      <Item31>
+        <Filename Value="..\..\source\common\JclSimpleXml.pas"/>
+        <UnitName Value="JclSimpleXml"/>
       </Item31>
       <Item32>
         <Filename Value="..\..\source\common\JclStatistics.pas"/>
