@@ -11,7 +11,7 @@ uses
   ToolsUtils in '..\Common\ToolsUtils.pas',
   About in '..\Common\About.pas' {AboutBox},
   FindDlg in '..\Common\FindDlg.pas' {FindTextForm},
-  ExceptDlg in '..\..\..\..\experts\debug\dialog\ExceptDlg.pas' {ExceptionDialog};
+  ExceptDlg in '..\..\..\..\experts\repository\ExceptionDialog\StandardDialogs\ExceptDlg.pas' {ExceptionDialog};
 
 {$R *.RES}
 {$R ..\..\..\..\source\windows\JclCommCtrlAsInvoker.res}

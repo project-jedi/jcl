@@ -188,13 +188,14 @@ docs\MPL FAQ.html             - Frequently Asked Questions about the MPL
 docs\cps.html                 - Cross Platform Strategy
 experts                       - JCL IDE experts source code
 experts\debug                 - JCL Debug IDE expert for using JclDebug unit
-experts\debug\dialog          - Application exception dialog replacement
 experts\debug\simdview        - Low-level debug window for XMM registers
 experts\debug\threadnames     - IDE expert showing class names for debugged threads
 experts\debug\tools           - Tools for creating files with JCL debug information
 experts\favfolders            - Favorite folders combobox in IDE open/save file dialogs
 experts\projectanalyzer       - Project Analyzer IDE expert
 experts\repository            - Repository expert
+experts\repository\ExceptionDialog - Repository expert for exception dialogs
+experts\repository\ExceptionDialog\StandardDialogs - standard exception dialogs
 experts\stacktraceviewer      - stack trace expert
 experts\useswizard            - JCL uses wizard
 experts\versioncontrol        - Integration of TortoiseCVS and TortoiseSVN in the IDE

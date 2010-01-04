@@ -34,8 +34,8 @@ uses
   SysUtils,
   Classes,
   JclBorlandTools,
-  JclOtaTemplates in '..\..\repository\JclOtaTemplates.pas',
-  JclOtaExcDlgRepository in '..\..\repository\JclOtaExcDlgRepository.pas';
+  JclOtaTemplates in '..\JclOtaTemplates.pas',
+  JclOtaExcDlgParams in 'JclOtaExcDlgParams.pas';
 
 function LoadTemplate(const FileName: TFileName): string;
 var
@@ -87,7 +87,7 @@ begin
       Params.OSInfo := True;
       Params.ModuleList := True;
       Params.ActiveControls := True;
-      Params.MainThreadOnly := False;
+      Params.AllThreads := True;
       Params.TraceAllExceptions := False;
       Params.StackList := True;
       Params.RawData := True;
@@ -96,16 +96,16 @@ begin
       Params.CodeDetails := True;
       Params.VirtualAddress := True;
 
-      SaveFile('ExceptDlg.pas', GetFinalSourceContent(ApplyTemplate(LoadTemplate('ExceptDlg.Delphi32.pas'), Params), 'ExceptDlg', 'ExceptionDialog', 'TForm'));
-      SaveFile('ExceptDlg.dfm', GetFinalSourceContent(ApplyTemplate(LoadTemplate('ExceptDlg.Delphi32.dfm'), Params), 'ExceptDlg', 'ExceptionDialog', 'TForm'));
+      SaveFile('StandardDialogs\ExceptDlg.pas', GetFinalSourceContent(ApplyTemplate(LoadTemplate('Templates\ExceptDlg.Delphi32.pas'), Params), 'ExceptDlg', 'ExceptionDialog', 'TForm'));
+      SaveFile('StandardDialogs\ExceptDlg.dfm', GetFinalSourceContent(ApplyTemplate(LoadTemplate('Templates\ExceptDlg.Delphi32.dfm'), Params), 'ExceptDlg', 'ExceptionDialog', 'TForm'));
 
       Params.FormName := 'ExceptionDialogMail';
       Params.SendEMail := True;
       Params.EMailAddress := '''name@domain.ext''';
       Params.EMailSubject := '''email subject''';
 
-      SaveFile('ExceptDlgMail.pas', GetFinalSourceContent(ApplyTemplate(LoadTemplate('ExceptDlg.Delphi32.pas'), Params), 'ExceptDlgMail', 'ExceptionDialogMail', 'TForm'));
-      SaveFile('ExceptDlgMail.dfm', GetFinalSourceContent(ApplyTemplate(LoadTemplate('ExceptDlg.Delphi32.dfm'), Params), 'ExceptDlgMail', 'ExceptionDialogMail', 'TForm'));
+      SaveFile('StandardDialogs\ExceptDlgMail.pas', GetFinalSourceContent(ApplyTemplate(LoadTemplate('Templates\ExceptDlg.Delphi32.pas'), Params), 'ExceptDlgMail', 'ExceptionDialogMail', 'TForm'));
+      SaveFile('StandardDialogs\ExceptDlgMail.dfm', GetFinalSourceContent(ApplyTemplate(LoadTemplate('Templates\ExceptDlg.Delphi32.dfm'), Params), 'ExceptDlgMail', 'ExceptionDialogMail', 'TForm'));
     finally
       Params.Free;
     end;

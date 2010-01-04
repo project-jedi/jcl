@@ -1,11 +1,11 @@
-object ExceptionDialogMail: TExceptionDialogMail
+object ExceptionDialog: TExceptionDialog
   Left = 310
   Top = 255
   AutoScroll = False
   BorderIcons = [biSystemMenu]
 
-  Caption = 'ExceptionDialogMail'
-  ClientHeight = 255
+  Caption = 'ExceptionDialog'
+  ClientHeight = 283
   ClientWidth = 483
   Color = clBtnFace
   Constraints.MinWidth = 200
@@ -28,29 +28,19 @@ object ExceptionDialogMail: TExceptionDialogMail
   TextHeight = 13
   object BevelDetails: TBevel
     Left = 3
-    Top = 91
+    Top = 119
     Width = 473
     Height = 9
     Anchors = [akLeft, akTop, akRight]
     Shape = bsTopLine
   end
 
-  object SendBtn: TButton
-    Left = 403
-    Top = 32
-    Width = 75
-    Height = 25
-    Hint = 'Send bug report using default mail client'
-    Anchors = [akTop, akRight]
-    Caption = '&Send'
-    TabOrder = 0
-    OnClick = SendBtnClick
-  end
+
   object TextMemo: TMemo
     Left = 56
     Top = 8
     Width = 332
-    Height = 75
+    Height = 105
     Hint = 'Use Ctrl+C to copy the report to the clipboard'
     Anchors = [akLeft, akTop, akRight]
     BorderStyle = bsNone
@@ -74,7 +64,7 @@ object ExceptionDialogMail: TExceptionDialogMail
   end
   object DetailsBtn: TButton
     Left = 403
-    Top = 60
+    Top = 88
     Width = 75
     Height = 25
     Hint = 'Show or hide additional information|'
@@ -86,7 +76,7 @@ object ExceptionDialogMail: TExceptionDialogMail
   end
   object DetailsMemo: TMemo
     Left = 4
-    Top = 101
+    Top = 129
     Width = 472
     Height = 147
     Anchors = [akLeft, akTop, akRight, akBottom]

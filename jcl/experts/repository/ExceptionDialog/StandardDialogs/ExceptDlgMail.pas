@@ -17,7 +17,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -30,7 +30,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, AppEvnts,
-  JclSysUtils, JclMapi, JclUnitVersioning, JclUnitVersioningProviders, JclDebug;
+  JclSysUtils, JclMapi,  JclUnitVersioning, JclUnitVersioningProviders, JclDebug;
 
 const
   UM_CREATEDETAILS = WM_USER + $100;
@@ -38,12 +38,14 @@ const
 type
   TExceptionDialogMail = class(TForm)
     SendBtn: TButton;
+
     TextMemo: TMemo;
     OkBtn: TButton;
     DetailsBtn: TButton;
     BevelDetails: TBevel;
     DetailsMemo: TMemo;
     procedure SendBtnClick(Sender: TObject);
+
     procedure FormPaint(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -58,8 +60,7 @@ type
     FLastActiveControl: TWinControl;
     FNonDetailsHeight: Integer;
     FFullHeight: Integer;
-    FSimpleLog: TJclSimpleLog;
-    procedure ReportToLog;
+    procedure SaveToLogFile(const FileName: TFileName);
     function GetReportAsText: string;
     procedure SetDetailsVisible(const Value: Boolean);
     procedure UMCreateDetails(var Message: TMessage); message UM_CREATEDETAILS;
@@ -80,7 +81,6 @@ type
     property DetailsVisible: Boolean read FDetailsVisible
       write SetDetailsVisible;
     property ReportAsText: string read GetReportAsText;
-    property SimpleLog: TJclSimpleLog read FSimpleLog;
   end;
 
   TExceptionDialogMailClass = class of TExceptionDialogMail;
@@ -110,7 +110,12 @@ resourcestring
   RsActiveControl = 'Active Controls hierarchy:';
   RsThread = 'Thread: %s';
   RsMissingVersionInfo = '(no module version info)';
-
+  RsExceptionStack = 'Exception stack';
+  RsMainThreadID = 'Main thread ID = %d';
+  RsExceptionThreadID = 'Exception thread ID = %d';
+  RsMainThreadCallStack = 'Call stack for main thread';
+  RsThreadCallStack = 'Call stack for thread %d %s "%s"';
+  RsExceptionThreadCallStack = 'Call stack for exception thread %s';
   RsErrorMessage = 'There was an error during the execution of this program.' + NativeLineBreak +
                    'The application might become unstable and even useless.' + NativeLineBreak +
                    'It''s recommended that you save your work and close this application.' + NativeLineBreak + NativeLineBreak;
@@ -216,7 +221,7 @@ begin
 end;
 
 //============================================================================
-// Exception dialog with Send
+// Exception dialog
 //============================================================================
 
 var
@@ -227,6 +232,7 @@ var
 procedure TExceptionDialogMail.AfterCreateDetails;
 begin
   SendBtn.Enabled := True;
+
 end;
 
 //----------------------------------------------------------------------------
@@ -234,6 +240,7 @@ end;
 procedure TExceptionDialogMail.BeforeCreateDetails;
 begin
   SendBtn.Enabled := False;
+
 end;
 
 //----------------------------------------------------------------------------
@@ -250,8 +257,8 @@ begin
   with TJclEmail.Create do
   try
     ParentWnd := Application.Handle;
-    Recipients.Add('name@domain.ext');
-    Subject := 'email subject';
+    Recipients.Add(''name@domain.ext'');
+    Subject := ''email subject'';
     Body := AnsiString(ReportAsText);
     SaveTaskWindows;
     try
@@ -263,6 +270,9 @@ begin
     Free;
   end;
 end;
+
+
+
 
 //----------------------------------------------------------------------------
 
@@ -279,7 +289,11 @@ begin
   DetailsMemo.Lines.BeginUpdate;
   try
     CreateReport;
-    ReportToLog;
+
+
+
+
+
     DetailsMemo.SelStart := 0;
     SendMessage(DetailsMemo.Handle, EM_SCROLLCARET, 0, 0);
     AfterCreateDetails;
@@ -307,24 +321,62 @@ var
   CpuInfo: TCpuInfo;
   ProcessorDetails: string;
   StackList: TJclStackInfoList;
- 
+  ThreadList: TJclDebugThreadList;
+  AThreadID: DWORD; 
   PETarget: TJclPeTarget;
   UnitVersioning: TUnitVersioning;
   UnitVersioningModule: TUnitVersioningModule;
   UnitVersion: TUnitVersion;
   ModuleIndex, UnitIndex: Integer;
 begin
+  DetailsMemo.Lines.Add(Format(LoadResString(@RsMainThreadID), [MainThreadID]));
+  DetailsMemo.Lines.Add(Format(LoadResString(@RsExceptionThreadID), [MainThreadID]));
+  NextDetailBlock;
+
   SL := TStringList.Create;
   try
-    // Stack list
+    // Except stack list
     StackList := JclGetExceptStackList(FThreadID);
     if Assigned(StackList) then
     begin
+      DetailsMemo.Lines.Add(RsExceptionStack);
       DetailsMemo.Lines.Add(Format(LoadResString(@RsStackList), [DateTimeToStr(StackList.TimeStamp)]));
       StackList.AddToStrings(DetailsMemo.Lines, True, True, True, True);
       NextDetailBlock;
     end;
 
+    // Main thread
+    StackList := JclCreateThreadStackTraceFromID(True, MainThreadID);
+    if Assigned(StackList) then
+    begin
+      DetailsMemo.Lines.Add(LoadResString(@RsMainThreadCallStack));
+      DetailsMemo.Lines.Add(Format(LoadResString(@RsStackList), [DateTimeToStr(StackList.TimeStamp)]));
+      StackList.AddToStrings(DetailsMemo.Lines, True, True, True, True);
+      NextDetailBlock;
+    end;
+
+    // All threads
+    ThreadList := JclDebugThreadList;
+    ThreadList.Lock.Enter; // avoid modifications
+    try
+      for I := 0 to ThreadList.ThreadIDCount - 1 do
+      begin
+        AThreadID := ThreadList.ThreadIDs[I];
+        if (AThreadID <> FThreadID) then
+        begin
+          StackList := JclCreateThreadStackTrace(True, ThreadList.ThreadHandles[I]);
+          if Assigned(StackList) then
+          begin
+            DetailsMemo.Lines.Add(Format(RsThreadCallStack, [AThreadID, ThreadList.ThreadInfos[AThreadID], ThreadList.ThreadNames[AThreadID]]));
+            DetailsMemo.Lines.Add(Format(LoadResString(@RsStackList), [DateTimeToStr(StackList.TimeStamp)]));
+            StackList.AddToStrings(DetailsMemo.Lines, True, True, True, True);
+            NextDetailBlock;
+          end;
+        end;
+      end;
+    finally
+      ThreadList.Lock.Leave;
+    end;
 
 
     // System and OS information
@@ -499,7 +551,6 @@ end;
 
 procedure TExceptionDialogMail.FormCreate(Sender: TObject);
 begin
-  FSimpleLog := TJclSimpleLog.Create('filename.log');
   FFullHeight := ClientHeight;
   DetailsVisible := False;
   Caption := Format(RsAppError, [Application.Title]);
@@ -509,7 +560,7 @@ end;
 
 procedure TExceptionDialogMail.FormDestroy(Sender: TObject);
 begin
-  FreeAndNil(FSimpleLog);
+
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -573,13 +624,17 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TExceptionDialogMail.ReportToLog;
+procedure TExceptionDialogMail.SaveToLogFile(const FileName: TFileName);
+var
+  SimpleLog: TJclSimpleLog;
 begin
-  FSimpleLog.WriteStamp(ReportMaxColumns);
+  SimpleLog := TJclSimpleLog.Create(FileName);
   try
-    FSimpleLog.Write(ReportAsText);
+    SimpleLog.WriteStamp(ReportMaxColumns);
+    SimpleLog.Write(ReportAsText);
+    SimpleLog.CloseLog;
   finally
-    FSimpleLog.CloseLog;
+    SimpleLog.Free;
   end;
 end;
 
@@ -696,7 +751,10 @@ begin
     JclStackTrackingOptions := JclStackTrackingOptions + [stStaticModuleList];
     JclStackTrackingOptions := JclStackTrackingOptions + [stDelayedTrace];
     JclDebugThreadList.OnSyncException := TExceptionDialogMail.ExceptionThreadHandler;
+    JclHookThreads;
     JclStartExceptionTracking;
+
+
     if HookTApplicationHandleException then
       JclTrackExceptionsFromLibraries;
   end;
@@ -712,6 +770,7 @@ begin
     JclDebugThreadList.OnSyncException := nil;
     JclUnhookExceptions;
     JclStopExceptionTracking;
+    JclUnhookThreads;
   end;
 end;
 

@@ -5,7 +5,7 @@ program ExceptionReportConverter;
 uses
   Forms,
   formConverter in 'formConverter.pas' {frmConverter},
-  ExceptDlgMail in '..\..\..\..\EXPERTS\DEBUG\DIALOG\EXCEPTDLGMAIL.pas' {ExceptionDialogMail};
+  ExceptDlgMail in '..\..\..\..\experts\repository\ExceptionDialog\StandardDialogs\ExceptDlgMail.pas' {ExceptionDialogMail};
 
 {$R *.res}
 {$R ..\..\..\..\source\windows\JclCommCtrlAsInvoker.res}

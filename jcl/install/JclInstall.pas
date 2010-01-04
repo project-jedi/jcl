@@ -457,9 +457,13 @@ const
   JclSourceDirs: array[0..1] of string = (JclSrcDirCommon, JclSrcDirUnix);
   {$ENDIF UNIX}
 
-  ExceptDlgPath = 'experts' + DirDelimiter + 'debug' + DirDelimiter + 'dialog' + DirDelimiter;
+  ExceptDlgPath = 'experts' + DirDelimiter + 'repository' + DirDelimiter + 'ExceptionDialog' + DirDelimiter + 'StandardDialogs' + DirDelimiter;
   ExceptDlgVclFileName    = 'ExceptDlg.pas';
   ExceptDlgVclSndFileName = 'ExceptDlgMail.pas';
+
+  ExceptIcoPath = 'experts' + DirDelimiter + 'repository' + DirDelimiter + 'ExceptionDialog' + DirDelimiter + 'Icons' + DirDelimiter;
+  ExceptIcoVclFileName    = 'ExceptDlg.ico';
+  ExceptIcoVclSndFileName = 'ExceptDlgMail.ico';
 
   JclChmHelpFile    = 'help' + DirDelimiter + 'JCLHelp.chm';
   JclHlpHelpFile    = 'help' + DirDelimiter + 'JCLHelp.hlp';
@@ -3017,9 +3021,10 @@ procedure TJclDistribution.Init;
 
     ExceptDialogsPath := FJclPath + ExceptDlgPath;
     FVclDialogFileName := ExceptDialogsPath + ExceptDlgVclFileName;
-    FVclDialogIconFileName := ChangeFileExt(FVclDialogFileName, '.ico');
     FVclDialogSendFileName := ExceptDialogsPath + ExceptDlgVclSndFileName;
-    FVclDialogSendIconFileName := ChangeFileExt(FVclDialogSendFileName, '.ico');
+    ExceptDialogsPath := FJclPath + ExceptIcoPath;
+    FVclDialogIconFileName := ExceptDialogsPath + ExceptIcoVclFileName;
+    FVclDialogSendIconFileName := ExceptDialogsPath + ExceptIcoVclSndFileName;
     FJclChmHelpFileName := FJclPath + JclChmHelpFile;
     FJclHlpHelpFileName := FJclPath + JclHlpHelpFile;
     FJclHxSHelpFileName := FJclPath + JclHxSHelpFile;

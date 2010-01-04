@@ -123,7 +123,7 @@ procedure TJclExcDlgExpert.CreateExceptionDialog(
     Result := string(AnsiResult);
   end;
 const
-  TemplateSubDir = 'experts\debug\dialog\';
+  TemplateSubDir = 'experts\repository\ExceptionDialog\Templates\';
   DelphiTemplate = 'ExceptDlg.Delphi32';
   BCBTemplate = 'ExceptDlg.CBuilder32';
 var

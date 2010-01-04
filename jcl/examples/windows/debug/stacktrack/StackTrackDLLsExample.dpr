@@ -5,7 +5,7 @@ program StackTrackDLLsExample;
 uses
   Forms,
   StackTrackDLLsDemoMain in 'StackTrackDLLsDemoMain.pas' {MainForm},
-  ExceptDlg in '..\..\..\..\experts\debug\dialog\ExceptDlg.pas' {ExceptionDialog};
+  ExceptDlg in '..\..\..\..\experts\repository\ExceptionDialog\StandardDialogs\ExceptDlg.pas' {ExceptionDialog};
 
 {$R *.res}
 {$R ..\..\..\..\source\windows\JclCommCtrlAsInvoker.res}
