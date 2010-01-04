@@ -67,6 +67,7 @@
 			<DCCReference Include="JclBaseExpert.dcp" />
 			<DCCReference Include="..\..\experts\repository\JclOtaTemplates.pas" />
 			<DCCReference Include="..\..\experts\repository\JclOtaRepositoryUtils.pas" />
+			<DCCReference Include="..\..\experts\repository\ExceptionDialog\JclOtaExcDlgRepository.pas" />
 			<DCCReference Include="..\..\experts\repository\ExceptionDialog\JclOtaExcDlgParams.pas" />
 			<DCCReference Include="..\..\experts\repository\ExceptionDialog\JclOtaExcDlgWizard.pas" />
 			<DCCReference Include="..\..\experts\repository\ExceptionDialog\JclOtaExcDlgFileFrame.pas" />

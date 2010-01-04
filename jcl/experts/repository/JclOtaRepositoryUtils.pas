@@ -64,9 +64,10 @@ type
     FDesigner: string;
     FPersonality: string;
   public
-    constructor Create(AName, ADescription, AAuthor, APage, AGalleryCategory,
+    constructor Create(const AName, ADescription, AAuthor, APage, AGalleryCategory,
       ADesigner, APersonality: string; AGlyph: Cardinal;
-      AItemType: TJclRepositoryItemType); reintroduce;
+      AItemType: TJclRepositoryItemType); reintroduce; overload; virtual;
+    constructor Create; reintroduce; overload; virtual; abstract;
     destructor Destroy; override;
 
     // override to customize
@@ -117,6 +118,8 @@ type
       const SourceFileName: TFileName; const SourceContent: string;
       const HeaderFileName: TFileName; const HeaderContent: string): IOTAModule;
   end;
+
+  TJclOTARepositoryExpertClass = class of TJclOTARepositoryExpert;
 
   TJclOtaFormCreator = class(TInterfacedObject, IOTACreator, IOTAModuleCreator)
   private
@@ -187,9 +190,9 @@ uses
   Classes, ActiveX,
   JclDateTime, JclFileUtils, JclOtaResources, JclOtaTemplates;
 
-//=== { TJclOTARepositoryExpert } ============================================
+//=== { TJclOTARepositoryExpertBase } ========================================
 
-constructor TJclOTARepositoryExpert.Create(AName, ADescription, AAuthor, APage,
+constructor TJclOTARepositoryExpert.Create(const AName, ADescription, AAuthor, APage,
   AGalleryCategory, ADesigner, APersonality: string; AGlyph: Cardinal;
   AItemType: TJclRepositoryItemType);
 begin
