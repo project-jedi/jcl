@@ -82,7 +82,6 @@
         <alias name="Windows" value="fpc,c6,d6,d7,d9,d10,d11,d12,d14"/>
         <alias name="Linux" value="fpc"/>
         <!-- package aliases -->
-        <alias name="allLibSuffix" value="c6,d6,d7,d8,d9,d10,cs1,d11,d12,d14"/>
         <alias name="allv11up" value="d11,d12,d14"/>
         <!-- GUI aliases -->
         <alias name="Clx" value="c6,d6,d7"/>
