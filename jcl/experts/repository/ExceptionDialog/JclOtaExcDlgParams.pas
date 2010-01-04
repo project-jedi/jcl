@@ -26,7 +26,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-unit JclOtaExcDlgRepository;
+unit JclOtaExcDlgParams;
 
 interface
 

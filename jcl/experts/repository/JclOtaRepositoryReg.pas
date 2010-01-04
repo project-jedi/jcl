@@ -52,7 +52,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   JclBorlandTools,
-  JclOtaUtils, JclOtaRepositoryUtils, JclOtaExcDlgRepository;
+  JclOtaUtils, JclOtaRepositoryUtils, JclOtaExcDlgParams;
 
 type
   TJclExcDlgExpert = class(TJclOtaRepositoryExpert)

@@ -38,7 +38,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JclOtaExcDlgRepository, JclOtaWizardFrame;
+  JclOtaExcDlgParams, JclOtaWizardFrame;
 
 type
   TJclOtaExcDlgIgnorePage = class(TJclWizardFrame)
