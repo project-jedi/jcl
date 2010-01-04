@@ -155,7 +155,7 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\experts\repository';
+    LogPath: 'JCL\experts\repository\ExceptionDialog';
     Extra: '';
     Data: nil
     );
