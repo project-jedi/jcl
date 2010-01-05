@@ -98,26 +98,41 @@ uses
   JclOtaResources, JclOtaConsts,
   JclOtaTemplates, JclOtaRepositoryReg, JclOtaExcDlgWizard;
 
+{$R JclOtaExcDlgTemplates.res}
+
 //=== { TJclExcDlgExpert } ===================================================
 
 procedure TJclExcDlgExpert.CreateExceptionDialog(
   const Params: TJclOtaExcDlgParams);
-  function LoadTemplate(const FileName: string): string;
+  function LoadTemplate(const TemplatePath, FileName: string): string;
   var
     AFileStream: TFileStream;
+    AResourceStream: TResourceStream;
     StreamLength: Int64;
     AnsiResult: AnsiString;
   begin
     AnsiResult := '';
-    if FileName <> '' then
+    if (TemplatePath <> '') and (FileName <> '') then
     begin
-      AFileStream := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);
+      AFileStream := TFileStream.Create(TemplatePath + FileName, fmOpenRead or fmShareDenyWrite);
       try
         StreamLength := AFileStream.Size;
         SetLength(AnsiResult, StreamLength);
         AFileStream.ReadBuffer(AnsiResult[1], StreamLength);
       finally
         AFileStream.Free;
+      end;
+    end
+    else
+    if (FileName <> '') then
+    begin
+      AResourceStream := TResourceStream.Create(HInstance, StringReplace(FileName, '.', '', [rfReplaceAll]), 'EXCDLG');
+      try
+        StreamLength := AResourceStream.Size;
+        SetLength(AnsiResult, StreamLength);
+        AResourceStream.ReadBuffer(AnsiResult[1], StreamLength);
+      finally
+        AResourceStream.Free;
       end;
     end;
     Result := string(AnsiResult);
@@ -135,26 +150,29 @@ var
 begin
   OTAServices := GetOTAServices;
   JclSettingsKeyName := StrEnsureSuffix('\', OTAServices.GetBaseRegistryKey) + RegJclKey;
-  TemplatePath := PathAddSeparator(RegReadString(HKCU, JclSettingsKeyName, 'RootDir')) + TemplateSubDir;
+
+  TemplatePath := RegReadStringDef(HKCU, JclSettingsKeyName, JclRootDirValueName, '');
+  if TemplatePath <> '' then
+    TemplatePath := PathAddSeparator(TemplatePath) + TemplateSubDir;
 
   case Params.Language of
     bpDelphi32:
       begin
         FormExtension := JclBorDesignerFormExtension[Params.Designer];
-        FormTemplate := TemplatePath + DelphiTemplate + FormExtension;
+        FormTemplate := DelphiTemplate + FormExtension;
         HeaderExtension := '';
         HeaderTemplate := '';
         SourceExtension := SourceExtensionPAS;
-        SourceTemplate := TemplatePath + DelphiTemplate + SourceExtension;
+        SourceTemplate := DelphiTemplate + SourceExtension;
       end;
     bpBCBuilder32:
       begin
         FormExtension := JclBorDesignerFormExtension[Params.Designer];
-        FormTemplate := TemplatePath + BCBTemplate + FormExtension;
+        FormTemplate := BCBTemplate + FormExtension;
         HeaderExtension := SourceExtensionH;
-        HeaderTemplate := TemplatePath + BCBTemplate + HeaderExtension;
+        HeaderTemplate := BCBTemplate + HeaderExtension;
         SourceExtension := SourceExtensionCPP;
-        SourceTemplate := TemplatePath + BCBTemplate + SourceExtension;
+        SourceTemplate := BCBTemplate + SourceExtension;
       end;
   else
       begin
@@ -167,9 +185,9 @@ begin
       end;
   end;
 
-  FormTemplate := LoadTemplate(FormTemplate);
-  HeaderTemplate := LoadTemplate(HeaderTemplate);
-  SourceTemplate := LoadTemplate(SourceTemplate);
+  FormTemplate := LoadTemplate(TemplatePath, FormTemplate);
+  HeaderTemplate := LoadTemplate(TemplatePath, HeaderTemplate);
+  SourceTemplate := LoadTemplate(TemplatePath, SourceTemplate);
 
   FormContent := ApplyTemplate(FormTemplate, Params);
   HeaderContent := ApplyTemplate(HeaderTemplate, Params);
