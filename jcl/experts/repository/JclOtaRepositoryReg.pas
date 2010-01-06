@@ -44,7 +44,7 @@ uses
 procedure RegisterJclOTARepositoryExpert(ExpertClass: TJclOTARepositoryExpertClass;
   const ExpertPersonality: string);
 
-procedure UnregisterJclOTARepositoryExpert(ExpertClass: TJclOTARepositoryExpertClass);
+// procedure UnregisterJclOTARepositoryExpert(ExpertClass: TJclOTARepositoryExpertClass);
 
 // design package entry point
 procedure Register;
@@ -95,7 +95,7 @@ begin
   ExpertClassList[I].ExpertIndex := -1;
 end;
 
-procedure UnregisterJclOTARepositoryExpert(ExpertClass: TJclOTARepositoryExpertClass);
+{procedure UnregisterJclOTARepositoryExpert(ExpertClass: TJclOTARepositoryExpertClass);
 var
   I, J, K: Integer;
   OTAWizardServices: IOTAWizardServices;
@@ -115,7 +115,7 @@ begin
       ExpertClassList[K] := ExpertClassList[K + 1];
     SetLength(ExpertClassList, J);
   end;
-end;
+end;}
 
 procedure Register;
 var

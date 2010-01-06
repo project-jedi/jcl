@@ -297,10 +297,10 @@ initialization
 
 finalization
   {$IFDEF DELPHIEXCDLG}
-  UnregisterJclOTARepositoryExpert(TJclExcDlgDelphiExpert);
+  //UnregisterJclOTARepositoryExpert(TJclExcDlgDelphiExpert);
   {$ENDIF DELPHIEXCDLG}
   {$IFDEF CBUILDEREXCDLG}
-  UnregisterJclOTARepositoryExpert(TJclExcDlgCBuilderExpert);
+  //UnregisterJclOTARepositoryExpert(TJclExcDlgCBuilderExpert);
   {$ENDIF CBUILDEREXCDLG}
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
