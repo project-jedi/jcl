@@ -421,7 +421,8 @@ type
   end;
 
   TJclSimpleXMLOptions = set of (sxoAutoCreate, sxoAutoIndent, sxoAutoEncodeValue,
-    sxoAutoEncodeEntity, sxoDoNotSaveProlog, sxoTrimPrecedingTextWhitespace);
+    sxoAutoEncodeEntity, sxoDoNotSaveProlog, sxoTrimPrecedingTextWhitespace,
+    sxoTrimFollowingTextWhitespace);
   TJclSimpleXMLEncodeEvent = procedure(Sender: TObject; var Value: string) of object;
   TJclSimpleXMLEncodeStreamEvent = procedure(Sender: TObject; InStream, OutStream: TStream) of object;
 
@@ -3051,14 +3052,11 @@ procedure TJclSimpleXMLElemText.LoadFromStringStream(StringStream: TJclStringStr
 var
   Ch: Char;
   St: string;
-  lTrimWhiteSpace: Boolean;
 begin
   St := '';
 
   if AParent <> nil then
     AParent.DoLoadProgress(StringStream.Stream.Position, StringStream.Stream.Size);
-
-  lTrimWhiteSpace := Assigned(SimpleXML) and (sxoTrimPrecedingTextWhitespace in SimpleXML.Options);
 
   while StringStream.PeekChar(Ch) do
     case Ch of
@@ -3071,12 +3069,18 @@ begin
         St := St + Ch;
       end;
   end;
-  if GetSimpleXML <> nil then
+
+  if Assigned(SimpleXML) then
+  begin
     GetSimpleXML.DoDecodeValue(St);
-  if lTrimWhiteSpace then
-    Value := TrimLeft(St)
-  else
-    Value := St;
+
+    if sxoTrimPrecedingTextWhitespace in SimpleXML.Options then
+      St := TrimLeft(St);
+    if sxoTrimFollowingTextWhitespace in SimpleXML.Options then
+      St := TrimRight(St);
+  end;
+
+  Value := St;
   Name := '';
 
   if AParent <> nil then
