@@ -5221,7 +5221,7 @@ end;
 function TJclSevenzipOutStream.Seek(Offset: Int64; SeekOrigin: Cardinal;
   NewPosition: PInt64): HRESULT;
 var
-  NewPos: Integer;
+  NewPos: Int64;
 begin
   NeedStream;
 
