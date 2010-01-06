@@ -2,9 +2,7 @@
 <Package Name="JclSIMDViewExpert" Design="-1">
   <Description>JCL Debug Window of XMM registers</Description>
   <GUID>{2F16B01B-57C8-4EB1-A0C4-421B3008A4F6}</GUID>
-  <C5PFlags/>
   <C6PFlags>-LUdesignide</C6PFlags>
-  <C5Libs/>
   <C6Libs/>
   <CompilerDefines>RELEASE</CompilerDefines>
   <ImageBase>58080000</ImageBase>

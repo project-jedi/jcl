@@ -2,9 +2,7 @@
 <Package Name="JclThreadNameExpert" Design="-1">
   <Description>JCL Thread Name IDE expert</Description>
   <GUID>{69899FCE-ECA9-4BE8-8511-AA0ADBE93EC4}</GUID>
-  <C5PFlags/>
   <C6PFlags>-LUdesignide</C6PFlags>
-  <C5Libs/>
   <C6Libs/>
   <CompilerDefines>RELEASE</CompilerDefines>
   <ImageBase>580A0000</ImageBase>

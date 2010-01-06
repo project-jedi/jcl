@@ -2,9 +2,7 @@
 <Package Name="JclUsesExpertDLL" Type="L">
   <Description>JCL Uses Wizard</Description>
   <GUID>{23E5A735-D70C-4C34-B05C-E847A010077F}</GUID>
-  <C5PFlags/>
   <C6PFlags>-LUdesignide</C6PFlags>
-  <C5Libs/>
   <C6Libs/>
   <CompilerDefines>RELEASE</CompilerDefines>
   <ImageBase>580C0000</ImageBase>

@@ -2,9 +2,7 @@
 <Package Name="JclRepositoryExpertDLL" Type="L">
   <Description>JCL Package containing repository wizards</Description>
   <GUID>{D93FF823-44C6-49D4-B9B3-30F1F60082F5}</GUID>
-  <C5PFlags/>
   <C6PFlags>-LUdesignide</C6PFlags>
-  <C5Libs/>
   <C6Libs/>
   <CompilerDefines>RELEASE</CompilerDefines>
   <ImageBase>58100000</ImageBase>

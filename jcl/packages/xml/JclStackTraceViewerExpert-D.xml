@@ -2,9 +2,7 @@
 <Package Name="JclStackTraceViewerExpert" Design="-1">
   <Description>JCL Stack Trace Viewer</Description>
   <GUID>{85153A85-6CA4-4CD5-92E6-C39A5C5161E2}</GUID>
-  <C5PFlags/>
   <C6PFlags>-LUdesignide</C6PFlags>
-  <C5Libs/>
   <C6Libs/>
   <CompilerDefines>RELEASE</CompilerDefines>
   <ImageBase>58120000</ImageBase>

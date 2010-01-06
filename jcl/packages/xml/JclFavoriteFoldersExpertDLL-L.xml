@@ -2,9 +2,7 @@
 <Package Name="JclFavoriteFoldersExpertDLL" Type="L">
   <Description>JCL Open and Save IDE dialogs with favorite folders</Description>
   <GUID>{DCDB1939-E79B-4AF6-855E-78310CAF8467}</GUID>
-  <C5PFlags/>
   <C6PFlags>-LUdesignide</C6PFlags>
-  <C5Libs/>
   <C6Libs/>
   <CompilerDefines>RELEASE</CompilerDefines>
   <ImageBase>58040000</ImageBase>

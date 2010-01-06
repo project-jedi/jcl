@@ -2,9 +2,7 @@
 <Package Name="Jcl" Design="0">
   <Description>JEDI Code Library RTL package</Description>
   <GUID>{44DB645B-C167-410D-9334-38AF9F0C7913}</GUID>
-  <C5PFlags/>
   <C6PFlags/>
-  <C5Libs/>
   <C6Libs/>
   <CompilerDefines>RELEASE</CompilerDefines>
   <ImageBase>48000000</ImageBase>

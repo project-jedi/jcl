@@ -2,9 +2,7 @@
 <Package Name="JclRepositoryExpert" Design="-1">
   <Description>JCL Package containing repository wizards</Description>
   <GUID>{2B548932-6654-4E44-8B06-3288D7A884C4}</GUID>
-  <C5PFlags/>
   <C6PFlags>-LUdesignide</C6PFlags>
-  <C5Libs/>
   <C6Libs/>
   <CompilerDefines>RELEASE</CompilerDefines>
   <ImageBase>58100000</ImageBase>

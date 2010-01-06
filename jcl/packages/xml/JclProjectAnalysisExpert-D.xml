@@ -2,9 +2,7 @@
 <Package Name="JclProjectAnalysisExpert" Design="-1">
   <Description>JCL Project Analyzer</Description>
   <GUID>{518D9A98-4B3B-40B4-83EE-BD9D8CED6181}</GUID>
-  <C5PFlags/>
   <C6PFlags>-LUdesignide</C6PFlags>
-  <C5Libs/>
   <C6Libs/>
   <CompilerDefines>RELEASE</CompilerDefines>
   <ImageBase>58060000</ImageBase>

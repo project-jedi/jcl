@@ -2,9 +2,7 @@
 <Package Name="JclVersionControlExpert" Design="-1">
   <Description>JCL Integration of version control systems in the IDE</Description>
   <GUID>{25BAE228-713B-4418-BDC7-9327F48A663B}</GUID>
-  <C5PFlags/>
   <C6PFlags>-LUdesignide</C6PFlags>
-  <C5Libs/>
   <C6Libs/>
   <CompilerDefines>RELEASE</CompilerDefines>
   <ImageBase>580E0000</ImageBase>

@@ -2,9 +2,7 @@
 <Package Name="JclVcl" Design="0">
   <Description>JEDI Code Library VCL package</Description>
   <GUID>{EB88BAFD-FD11-4F14-A6F6-9036D67B1F8F}</GUID>
-  <C5PFlags/>
   <C6PFlags/>
-  <C5Libs/>
   <C6Libs/>
   <CompilerDefines>RELEASE</CompilerDefines>
   <ImageBase>48400000</ImageBase>

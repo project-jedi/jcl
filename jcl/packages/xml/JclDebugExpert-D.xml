@@ -2,9 +2,7 @@
 <Package Name="JclDebugExpert" Design="-1">
   <Description>JCL Debug IDE extension</Description>
   <GUID>{FC16FA9B-0429-42EB-9B53-30D19AAB3EE4}</GUID>
-  <C5PFlags/>
   <C6PFlags>-LUdesignide</C6PFlags>
-  <C5Libs/>
   <C6Libs/>
   <CompilerDefines>RELEASE</CompilerDefines>
   <ImageBase>58020000</ImageBase>
