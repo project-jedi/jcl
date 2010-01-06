@@ -480,6 +480,7 @@ type
     function WriteWideChar(Value: WideChar): Boolean;
     function SkipBOM: LongInt; virtual;
     function WriteBOM: Longint; virtual;
+    property PeekPosition: Int64 read FPeekPosition;
   end;
 
   TJclStringStreamClass = class of TJclStringStream;

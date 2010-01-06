@@ -1903,26 +1903,26 @@ resourcestring
 //=== JclSimpleXml ===========================================================
 resourcestring
   RsEInvalidXMLElementUnexpectedCharacte =
-    'Invalid XML Element: Unexpected character in property declaration ("%s" found)';
+    'Invalid XML Element: Unexpected character in property declaration ("%s" found at position %d)';
   RsEInvalidXMLElementUnexpectedCharacte_ =
-    'Invalid XML Element: Unexpected character in property declaration. Expecting " or '' but "%s"  found';
-  RsEUnexpectedValueForLPos = 'Unexpected value for lPos';
-  RsEInvalidXMLElementExpectedBeginningO = 'Invalid XML Element: Expected beginning of tag but "%s" found';
-  RsEInvalidXMLElementExpectedEndOfTagBu = 'Invalid XML Element: Expected end of tag but "%s" found';
-  RsEInvalidXMLElementMalformedTagFoundn = 'Invalid XML Element: malformed tag found (no valid name)';
+    'Invalid XML Element: Unexpected character in property declaration. Expecting " or '' but "%s"  found at position %d';
+  RsEUnexpectedValueForLPos = 'Unexpected value for lPos at position %d';
+  RsEInvalidXMLElementExpectedBeginningO = 'Invalid XML Element: Expected beginning of tag but "%s" found at position %d';
+  RsEInvalidXMLElementExpectedEndOfTagBu = 'Invalid XML Element: Expected end of tag but "%s" found at position %d';
+  RsEInvalidXMLElementMalformedTagFoundn = 'Invalid XML Element: malformed tag found (no valid name) at position %d';
   RsEInvalidXMLElementErroneousEndOfTagE =
-    'Invalid XML Element: Erroneous end of tag, expecting </%0:s> but </%1:s> found';
-  RsEInvalidCommentExpectedsButFounds = 'Invalid Comment: expected "%0:s" but found "%1:s"';
-  RsEInvalidCommentNotAllowedInsideComme = 'Invalid Comment: "--" not allowed inside comments';
-  RsEInvalidCommentUnexpectedEndOfData = 'Invalid Comment: Unexpected end of data';
-  RsEInvalidCDATAExpectedsButFounds = 'Invalid CDATA: expected "%0:s" but found "%1:s"';
-  RsEInvalidCDATAUnexpectedEndOfData = 'Invalid CDATA: Unexpected end of data';
-  RsEInvalidHeaderExpectedsButFounds = 'Invalid Header: expected "%0:s" but found "%1:s"';
-  RsEInvalidStylesheetExpectedsButFounds = 'Invalid Stylesheet: expected "%0:s" but found "%1:s"';
-  RsEInvalidStylesheetUnexpectedEndOfDat = 'Invalid Stylesheet: Unexpected end of data';
-  RsEInvalidMSOExpectedsButFounds = 'Invalid MSO: expected "%0:s" but found "%1:s"';
-  RsEInvalidMSOUnexpectedEndOfDat = 'Invalid MSO: Unexpected end of data';
-  RsEInvalidDocumentUnexpectedTextInFile = 'Invalid Document: Unexpected text in file prolog';
+    'Invalid XML Element: Erroneous end of tag, expecting </%0:s> but </%1:s> found at position %d';
+  RsEInvalidCommentExpectedsButFounds = 'Invalid Comment: expected "%0:s" but found "%1:s" at position %d';
+  RsEInvalidCommentNotAllowedInsideComme = 'Invalid Comment: "--" not allowed inside comments at position %d';
+  RsEInvalidCommentUnexpectedEndOfData = 'Invalid Comment: Unexpected end of data at position %d';
+  RsEInvalidCDATAExpectedsButFounds = 'Invalid CDATA: expected "%0:s" but found "%1:s" at position %d';
+  RsEInvalidCDATAUnexpectedEndOfData = 'Invalid CDATA: Unexpected end of data at position %d';
+  RsEInvalidHeaderExpectedsButFounds = 'Invalid Header: expected "%0:s" but found "%1:s" at position %d';
+  RsEInvalidStylesheetExpectedsButFounds = 'Invalid Stylesheet: expected "%0:s" but found "%1:s" at position %d';
+  RsEInvalidStylesheetUnexpectedEndOfDat = 'Invalid Stylesheet: Unexpected end of data at position %d';
+  RsEInvalidMSOExpectedsButFounds = 'Invalid MSO: expected "%0:s" but found "%1:s" at position %d';
+  RsEInvalidMSOUnexpectedEndOfDat = 'Invalid MSO: Unexpected end of data at position %d';
+  RsEInvalidDocumentUnexpectedTextInFile = 'Invalid Document: Unexpected text in file prolog at position %d';
 
 //=== JclStatistics ==========================================================
 resourcestring

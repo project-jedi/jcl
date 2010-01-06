@@ -2486,7 +2486,7 @@ begin
             // end of properties
             Break
           else
-            FmtError(LoadResString(@RsEInvalidXMLElementUnexpectedCharacte), [Ch]);
+            FmtError(LoadResString(@RsEInvalidXMLElementUnexpectedCharacte), [Ch, StringStream.PeekPosition]);
         end;
 
       ptReadingName: //We are reading a property name
@@ -2509,7 +2509,7 @@ begin
           if CharIsWhiteSpace(Ch) then
             lPos := ptSpaceBeforeEqual
           else
-            FmtError(LoadResString(@RsEInvalidXMLElementUnexpectedCharacte), [Ch]);
+            FmtError(LoadResString(@RsEInvalidXMLElementUnexpectedCharacte), [Ch, StringStream.PeekPosition]);
         end;
 
       ptStartingContent: //We are going to start a property content
@@ -2525,7 +2525,7 @@ begin
             lPos := ptReadingValue;
           end
           else
-            FmtError(LoadResString(@RsEInvalidXMLElementUnexpectedCharacte_), [Ch]);
+            FmtError(LoadResString(@RsEInvalidXMLElementUnexpectedCharacte_), [Ch, StringStream.PeekPosition]);
         end;
 
       ptReadingValue: //We are reading a property
@@ -2552,7 +2552,7 @@ begin
           if Ch = '=' then
             lPos := ptStartingContent
           else
-            FmtError(LoadResString(@RsEInvalidXMLElementUnexpectedCharacte), [Ch]);
+            FmtError(LoadResString(@RsEInvalidXMLElementUnexpectedCharacte), [Ch, StringStream.PeekPosition]);
         end;
     else
       Assert(False, RsEUnexpectedValueForLPos);
@@ -2696,7 +2696,7 @@ begin
           lPos := rsOpeningName // read name
         else
         if not CharIsWhiteSpace(Ch) then
-          FmtError(LoadResString(@RsEInvalidXMLElementExpectedBeginningO), [Ch]);
+          FmtError(LoadResString(@RsEInvalidXMLElementExpectedBeginningO), [Ch, StringStream.PeekPosition]);
 
       rsOpeningName:
         if CharIsValidIdentifierLetter(Ch) or (Ch = '-') or (Ch = '.') then
@@ -2710,7 +2710,7 @@ begin
         else
         if CharIsWhiteSpace(Ch) and (St = '') then
           // whitespace after "<" (no name)
-          Error(LoadResString(@RsEInvalidXMLElementMalformedTagFoundn))
+          FmtError(LoadResString(@RsEInvalidXMLElementMalformedTagFoundn), [StringStream.PeekPosition])
         else
         if CharIsWhiteSpace(Ch) then
         begin
@@ -2736,7 +2736,7 @@ begin
         end
         else
           // other invalid characters
-          Error(LoadResString(@RsEInvalidXMLElementMalformedTagFoundn));
+          FmtError(LoadResString(@RsEInvalidXMLElementMalformedTagFoundn), [StringStream.PeekPosition]);
 
       rsTypeOpeningTag:
         if CharIsWhiteSpace(Ch) then
@@ -2752,13 +2752,13 @@ begin
           lPos := rsWaitingClosingTag1;
         end
         else
-          Error(Format(LoadResString(@RsEInvalidXMLElementExpectedEndOfTagBu), [Ch]));
+          FmtError(LoadResString(@RsEInvalidXMLElementExpectedEndOfTagBu), [Ch, StringStream.PeekPosition]);
 
       rsEndSingleTag:
         if Ch = '>' then
           Break
         else
-          Error(Format(LoadResString(@RsEInvalidXMLElementExpectedEndOfTagBu), [Ch]));
+          FmtError(LoadResString(@RsEInvalidXMLElementExpectedEndOfTagBu), [Ch, StringStream.PeekPosition]);
 
       rsWaitingClosingTag1:
         if CharIsWhiteSpace(Ch) then
@@ -2767,13 +2767,13 @@ begin
         if Ch = '<' then
           lPos := rsWaitingClosingTag2
         else
-          Error(Format(LoadResString(@RsEInvalidXMLElementExpectedEndOfTagBu), [Ch]));
+          FmtError(LoadResString(@RsEInvalidXMLElementExpectedEndOfTagBu), [Ch, StringStream.PeekPosition]);
 
       rsWaitingClosingTag2:
         if Ch = '/' then
           lPos := rsClosingName
         else
-          Error(Format(LoadResString(@RsEInvalidXMLElementExpectedEndOfTagBu), [Ch]));
+          FmtError(LoadResString(@RsEInvalidXMLElementExpectedEndOfTagBu), [Ch, StringStream.PeekPosition]);
 
       rsClosingName:
         if CharIsWhiteSpace(Ch) or (Ch = '>') then
@@ -2781,11 +2781,11 @@ begin
           if lNameSpace <> '' then
           begin
             if not StrSame(lNameSpace + ':' + lName, St) then
-              FmtError(LoadResString(@RsEInvalidXMLElementErroneousEndOfTagE), [lName, St]);
+              FmtError(LoadResString(@RsEInvalidXMLElementErroneousEndOfTagE), [lName, St, StringStream.PeekPosition]);
           end
           else
             if not StrSame(lName, St) then
-              FmtError(LoadResString(@RsEInvalidXMLElementErroneousEndOfTagE), [lName, St]);
+              FmtError(LoadResString(@RsEInvalidXMLElementErroneousEndOfTagE), [lName, St, StringStream.PeekPosition]);
           //Set value if only one sub element
           //This might reduce speed, but this is for compatibility issues
           if (Items.Count = 1) and (Items[0] is TJclSimpleXMLElemText) then
@@ -2800,7 +2800,7 @@ begin
           St := St + Ch
         else
           // other invalid characters
-          Error(LoadResString(@RsEInvalidXMLElementMalformedTagFoundn));
+          FmtError(LoadResString(@RsEInvalidXMLElementMalformedTagFoundn), [StringStream.PeekPosition]);
     end;
   end;
 
@@ -2908,7 +2908,7 @@ begin
           Inc(lPos)
         else
         if not CharIsWhiteSpace(Ch) then
-          FmtError(LoadResString(@RsEInvalidCommentExpectedsButFounds), [CS_START_COMMENT[lPos], Ch]);
+          FmtError(LoadResString(@RsEInvalidCommentExpectedsButFounds), [CS_START_COMMENT[lPos], Ch, StringStream.PeekPosition]);
       5:
         if Ch = CS_STOP_COMMENT[lPos] then
           Inc(lPos)
@@ -2929,12 +2929,12 @@ begin
           Break; //End if
         end
         else // -- is not authorized in comments
-          Error(LoadResString(@RsEInvalidCommentNotAllowedInsideComme));
+          FmtError(LoadResString(@RsEInvalidCommentNotAllowedInsideComme), [StringStream.PeekPosition]);
     end;
   end;
 
   if not lOk then
-    Error(LoadResString(@RsEInvalidCommentUnexpectedEndOfData));
+    FmtError(LoadResString(@RsEInvalidCommentUnexpectedEndOfData), [StringStream.PeekPosition]);
 
   Value := St;
   Name := '';
@@ -2985,7 +2985,7 @@ begin
           Inc(lPos)
         else
         if not CharIsWhiteSpace(Ch) then
-          FmtError(LoadResString(@RsEInvalidCDATAExpectedsButFounds), [CS_START_CDATA[lPos], Ch]);
+          FmtError(LoadResString(@RsEInvalidCDATAExpectedsButFounds), [CS_START_CDATA[lPos], Ch, StringStream.PeekPosition]);
       10:
         if Ch = CS_STOP_CDATA[lPos] then
           Inc(lPos)
@@ -3014,7 +3014,7 @@ begin
   end;
 
   if not lOk then
-    Error(LoadResString(@RsEInvalidCDATAUnexpectedEndOfData));
+    FmtError(LoadResString(@RsEInvalidCDATAUnexpectedEndOfData), [StringStream.PeekPosition]);
 
   Value := St;
   Name := '';
@@ -3138,7 +3138,7 @@ begin
           Inc(lPos)
         else
         if not CharIsWhiteSpace(Ch) then
-          FmtError(LoadResString(@RsEInvalidHeaderExpectedsButFounds), [CS_START_HEADER[lPos], Ch]);
+          FmtError(LoadResString(@RsEInvalidHeaderExpectedsButFounds), [CS_START_HEADER[lPos], Ch, StringStream.PeekPosition]);
       5: //l
         if Ch = CS_START_HEADER[lPos] then
         begin
@@ -3154,7 +3154,7 @@ begin
           Properties.Clear;
         end
         else
-          FmtError(LoadResString(@RsEInvalidHeaderExpectedsButFounds), [CS_START_HEADER[lPos], Ch]);
+          FmtError(LoadResString(@RsEInvalidHeaderExpectedsButFounds), [CS_START_HEADER[lPos], Ch, StringStream.PeekPosition]);
       6: //?
         if Ch = CS_STOP_HEADER[lPos] then
           Inc(lPos)
@@ -3162,7 +3162,7 @@ begin
         if CharIsWhiteSpace(Ch) then
           // spaces before ?>
         else
-          FmtError(LoadResString(@RsEInvalidHeaderExpectedsButFounds), [CS_STOP_HEADER[lPos], Ch]);
+          FmtError(LoadResString(@RsEInvalidHeaderExpectedsButFounds), [CS_STOP_HEADER[lPos], Ch, StringStream.PeekPosition]);
       7: //>
         if Ch = CS_STOP_HEADER[lPos] then
         begin
@@ -3170,12 +3170,12 @@ begin
           Break; //End if
         end
         else
-          FmtError(LoadResString(@RsEInvalidHeaderExpectedsButFounds), [CS_STOP_HEADER[lPos], Ch]);
+          FmtError(LoadResString(@RsEInvalidHeaderExpectedsButFounds), [CS_STOP_HEADER[lPos], Ch, StringStream.PeekPosition]);
     end;
   end;
 
   if not lOk then
-    Error(LoadResString(@RsEInvalidCommentUnexpectedEndOfData));
+    FmtError(LoadResString(@RsEInvalidCommentUnexpectedEndOfData), [StringStream.PeekPosition]);
 
   Name := '';
 
@@ -3248,7 +3248,7 @@ begin
           Inc(lPos)
         else
         if not CharIsWhiteSpace(Ch) then
-          FmtError(LoadResString(@RsEInvalidHeaderExpectedsButFounds), [CS_START_DOCTYPE[lPos], Ch]);
+          FmtError(LoadResString(@RsEInvalidHeaderExpectedsButFounds), [CS_START_DOCTYPE[lPos], Ch, StringStream.PeekPosition]);
       10: //]> or >
         if lChar = Ch then
         begin
@@ -3273,7 +3273,7 @@ begin
   end;
 
   if not lOk then
-    Error(LoadResString(@RsEInvalidCommentUnexpectedEndOfData));
+    FmtError(LoadResString(@RsEInvalidCommentUnexpectedEndOfData), [StringStream.PeekPosition]);
 
   Name := '';
   Value := StrTrimCharsLeft(St, CharIsWhiteSpace);
@@ -3320,7 +3320,7 @@ begin
           Inc(lPos)
         else
         if not CharIsWhiteSpace(Ch) then
-          FmtError(LoadResString(@RsEInvalidStylesheetExpectedsButFounds), [CS_START_PI[lPos], Ch]);
+          FmtError(LoadResString(@RsEInvalidStylesheetExpectedsButFounds), [CS_START_PI[lPos], Ch, StringStream.PeekPosition]);
       16: //t
         if Ch = CS_START_PI[lPos] then
         begin
@@ -3328,7 +3328,7 @@ begin
           Inc(lPos);
         end
         else
-          FmtError(LoadResString(@RsEInvalidStylesheetExpectedsButFounds), [CS_START_PI[lPos], Ch]);
+          FmtError(LoadResString(@RsEInvalidStylesheetExpectedsButFounds), [CS_START_PI[lPos], Ch, StringStream.PeekPosition]);
       17: //?
         if Ch = CS_STOP_PI[lPos] then
           Inc(lPos)
@@ -3336,7 +3336,7 @@ begin
         if CharIsWhiteSpace(Ch) then
           // space after properties
         else
-          FmtError(LoadResString(@RsEInvalidStylesheetExpectedsButFounds), [CS_STOP_PI[lPos], Ch]);
+          FmtError(LoadResString(@RsEInvalidStylesheetExpectedsButFounds), [CS_STOP_PI[lPos], Ch, StringStream.PeekPosition]);
       18: //>
         if Ch = CS_STOP_PI[lPos] then
         begin
@@ -3344,12 +3344,12 @@ begin
           Break; //End if
         end
         else
-          FmtError(LoadResString(@RsEInvalidStylesheetExpectedsButFounds), [CS_STOP_PI[lPos], Ch]);
+          FmtError(LoadResString(@RsEInvalidStylesheetExpectedsButFounds), [CS_STOP_PI[lPos], Ch, StringStream.PeekPosition]);
     end;
   end;
 
   if not lOk then
-    Error(LoadResString(@RsEInvalidStylesheetUnexpectedEndOfDat));
+    FmtError(LoadResString(@RsEInvalidStylesheetUnexpectedEndOfDat), [StringStream.PeekPosition]);
 
   Name := '';
 end;
@@ -3397,7 +3397,7 @@ begin
           Inc(lPos)
         else
         if not CharIsWhiteSpace(Ch) then
-          FmtError(LoadResString(@RsEInvalidMSOExpectedsButFounds), [CS_START_PI[lPos], Ch]);
+          FmtError(LoadResString(@RsEInvalidMSOExpectedsButFounds), [CS_START_PI[lPos], Ch, StringStream.PeekPosition]);
       17: //n
         if Ch = CS_START_PI[lPos] then
         begin
@@ -3405,7 +3405,7 @@ begin
           Inc(lPos);
         end
         else
-          FmtError(LoadResString(@RsEInvalidMSOExpectedsButFounds), [CS_START_PI[lPos], Ch]);
+          FmtError(LoadResString(@RsEInvalidMSOExpectedsButFounds), [CS_START_PI[lPos], Ch, StringStream.PeekPosition]);
       18: //?
         if Ch = CS_STOP_PI[lPos] then
           Inc(lPos)
@@ -3413,7 +3413,7 @@ begin
         if CharIsWhiteSpace(Ch) then
           // space after properties
         else
-          FmtError(LoadResString(@RsEInvalidMSOExpectedsButFounds), [CS_STOP_PI[lPos], Ch]);
+          FmtError(LoadResString(@RsEInvalidMSOExpectedsButFounds), [CS_STOP_PI[lPos], Ch, StringStream.PeekPosition]);
       19: //>
         if Ch = CS_STOP_PI[lPos] then
         begin
@@ -3421,12 +3421,12 @@ begin
           Break; //End if
         end
         else
-          FmtError(LoadResString(@RsEInvalidMSOExpectedsButFounds), [CS_STOP_PI[lPos], Ch]);
+          FmtError(LoadResString(@RsEInvalidMSOExpectedsButFounds), [CS_STOP_PI[lPos], Ch, StringStream.PeekPosition]);
     end;
   end;
 
   if not lOk then
-    Error(LoadResString(@RsEInvalidMSOUnexpectedEndOfDat));
+    FmtError(LoadResString(@RsEInvalidMSOUnexpectedEndOfDat), [StringStream.PeekPosition]);
 
   Name := '';
 end;
@@ -3521,7 +3521,7 @@ begin
             St := Ch;
           end
           else
-            Error(LoadResString(@RsEInvalidDocumentUnexpectedTextInFile));
+            FmtError(LoadResString(@RsEInvalidDocumentUnexpectedTextInFile), [StringStream.PeekPosition]);
         end;
       1: //We are trying to determine the kind of the tag
         begin
