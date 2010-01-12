@@ -2347,8 +2347,8 @@ begin
   Result := InternalGetNextChar(Self, Ch);
   if Result then
     Buffer := UCS4ToAnsiChar(Ch);
+  FPeekPosition := FPosition;
   FPosition := Pos;
-  FPeekPosition := FPeekPosition + 1;
 end;
 
 function TJclStringStream.PeekChar(out Buffer: Char): Boolean;
@@ -2361,8 +2361,8 @@ begin
   Result := InternalGetNextChar(Self, Ch);
   if Result then
     Buffer := UCS4ToChar(Ch);
+  FPeekPosition := FPosition;
   FPosition := Pos;
-  FPeekPosition := FPeekPosition + 1;
 end;
 
 function TJclStringStream.PeekWideChar(out Buffer: WideChar): Boolean;
@@ -2375,8 +2375,8 @@ begin
   Result := InternalGetNextChar(Self, Ch);
   if Result then
     Buffer := UCS4ToWideChar(Ch);
+  FPeekPosition := FPosition;
   FPosition := Pos;
-  FPeekPosition := FPeekPosition + 1;
 end;
 
 function TJclStringStream.ReadString(var Buffer: string; Start, Count: Longint): Longint;
