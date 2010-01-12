@@ -7185,7 +7185,6 @@ begin
   AssignPropertiesTo(Result);
 end;
 
-
 //=== { TJclSingleLinkedListIterator } ============================================================
 
 constructor TJclSingleLinkedListIterator.Create(const AOwnList: IJclSingleList; ACursor: TJclSingleLinkedListItem; AValid: Boolean; AStart: TItrStart);
@@ -7508,7 +7507,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
 
 //=== { TJclLinkedList<T> } ==================================================
 

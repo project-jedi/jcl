@@ -53,6 +53,18 @@ uses
   JclContainerIntf, JclAbstractContainers, JclArrayLists, JclArraySets;
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 type
   // Hash Function
   // Result must be in 0..Range-1

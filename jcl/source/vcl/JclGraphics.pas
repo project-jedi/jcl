@@ -46,27 +46,19 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-
-
 unit JclGraphics;
-
-
 
 {$I jcl.inc}
 
 interface
 
 uses
-  
   Windows,
-  
   Classes, SysUtils,
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  
   Graphics, JclGraphUtils, Controls,
-  
   JclBase;
 
 type
@@ -136,7 +128,6 @@ var
 
 // Classes
 type
-  
   TJclDesktopCanvas = class(TCanvas)
   private
     FDesktop: HDC;
@@ -212,17 +203,13 @@ type
     property Handle: HRGN read GetHandle;
     property RegionType: TJclRegionKind read GetRegionType;
   end;
-  
 
-  
   { TJclThreadPersistent }
   { TJclThreadPersistent is an ancestor for TJclBitmap32 object. In addition to
     TPersistent methods, it provides thread-safe locking and change notification }
   TJclThreadPersistent = class(TPersistent)
   private
-    
     FLock: TRTLCriticalSection;
-    
     FLockCount: Integer;
     FUpdateCount: Integer;
     FOnChanging: TNotifyEvent;
@@ -440,7 +427,6 @@ type
     property ValPtr[X, Y: Integer]: PByte read GetValPtr;
     property Value[X, Y: Integer]: Byte read GetValue write SetValue; default;
   end;
-  
 
   TJclTransformation = class(TObject)
   public
@@ -480,15 +466,12 @@ procedure Stretch(NewWidth, NewHeight: Cardinal; Filter: TResamplingFilter;
 procedure Stretch(NewWidth, NewHeight: Cardinal; Filter: TResamplingFilter;
   Radius: Single; Bitmap: TBitmap); overload;
 
-
 procedure DrawBitmap(DC: HDC; Bitmap: HBITMAP; X, Y, Width, Height: Integer);
 
 function ExtractIconCount(const FileName: string): Integer;
 function BitmapToIcon(Bitmap: HBITMAP; cx, cy: Integer): HICON; overload;
 function BitmapToIcon(Bitmap, Mask: HBITMAP; cx, cy: Integer): HICON; overload;
 function IconToBitmap(Icon: HICON): HBITMAP;
-
-
 
 procedure BitmapToJPeg(const FileName: string);
 procedure JPegToBitmap(const FileName: string);
@@ -511,8 +494,6 @@ procedure GetIconFromBitmap(Icon: TIcon; Bitmap: TBitmap);
 
 function GetAntialiasedBitmap(const Bitmap: TBitmap): TBitmap;
 
-
-
 procedure BlockTransfer(Dst: TJclBitmap32; DstX: Integer; DstY: Integer; Src: TJclBitmap32;
   SrcRect: TRect; CombineOp: TDrawMode);
 
@@ -522,20 +503,14 @@ procedure StretchTransfer(Dst: TJclBitmap32; DstRect: TRect; Src: TJclBitmap32; 
 procedure Transform(Dst, Src: TJclBitmap32; SrcRect: TRect; Transformation: TJclTransformation);
 procedure SetBorderTransparent(ABitmap: TJclBitmap32; ARect: TRect);
 
-
-
 function FillGradient(DC: HDC; ARect: TRect; ColorCount: Integer;
   StartColor, EndColor: TColor; ADirection: TGradientDirection): Boolean; overload;
-
-
 
 function CreateRegionFromBitmap(Bitmap: TBitmap; RegionColor: TColor;
   RegionBitmapMode: TJclRegionBitmapMode): HRGN;
 procedure ScreenShot(bm: TBitmap; Left, Top, Width, Height: Integer; Window: THandle = HWND_DESKTOP); overload;
 procedure ScreenShot(bm: TBitmap; IncludeTaskBar: Boolean = True); overload;
 function MapWindowRect(hWndFrom, hWndTo: THandle; ARect: TRect):TRect;
-
-
 
 // PolyLines and Polygons
 procedure PolyLineTS(Bitmap: TJclBitmap32; const Points: TDynPointArray; Color: TColor32);
@@ -562,7 +537,6 @@ procedure ColorToGrayscale(Dst, Src: TJclBitmap32);
 procedure ApplyLUT(Dst, Src: TJclBitmap32; const LUT: TLUT8);
 procedure SetGamma(Gamma: Single = 0.7);
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -579,9 +553,7 @@ implementation
 
 uses
   Math,
-  
   CommCtrl, ShellApi,
-  
   {$IFDEF HAS_UNIT_GIFIMG}
   GifImg,
   {$ENDIF HAS_UNIT_GIFIMG}
@@ -590,8 +562,6 @@ uses
   {$ENDIF HAS_UNIT_PNGIMAGE}
   ClipBrd, JPeg, TypInfo,
   JclVclResources,
-  
-  
   JclSysUtils,
   JclLogic;
 
@@ -654,7 +624,6 @@ begin
   Result := Math.Max(0, Math.Min(255, Value));
 end;
 
-
 procedure CheckBitmaps(Dst, Src: TJclBitmap32);
 begin
   if (Dst = nil) or Dst.Empty then
@@ -673,7 +642,6 @@ begin
     raise EJclGraphicsError.CreateRes(@RsSourceBitmapInvalid);
   Result := True;
 end;
-
 
 //=== Internal low level routines ============================================
 
@@ -1340,7 +1308,6 @@ begin
   Stretch(NewWidth, NewHeight, Filter, Radius, Bitmap, Bitmap);
 end;
 
-
 procedure StretchNearest(Dst: TJclBitmap32; DstRect: TRect;
   Src: TJclBitmap32; SrcRect: TRect; CombineOp: TDrawMode);
 var
@@ -1600,8 +1567,6 @@ begin
   end;
 end;
 
-
-
 procedure DrawBitmap(DC: HDC; Bitmap: HBITMAP; X, Y, Width, Height: Integer);
 var
   MemDC: HDC;
@@ -1613,8 +1578,6 @@ begin
   SelectObject(MemDC, OldBitmap);
   DeleteObject(MemDC);
 end;
-
-
 
 { TODO : remove VCL-dependency by replacing pf24bit by pf32bit }
 
@@ -1724,8 +1687,6 @@ begin
 end;
 {$ENDIF HAS_UNIT_PNGIMAGE}
 
-
-
 function ExtractIconCount(const FileName: string): Integer;
 begin
   Result := ExtractIcon(HInstance, PChar(FileName), $FFFFFFFF);
@@ -1770,8 +1731,6 @@ begin
     Result := IconInfo.hbmColor;
   end;
 end;
-
-
 
 procedure GetIconFromBitmap(Icon: TIcon; Bitmap: TBitmap);
 var
@@ -1900,8 +1859,6 @@ begin
   end;
 end;
 
-
-
 procedure Transform(Dst, Src: TJclBitmap32; SrcRect: TRect;
   Transformation: TJclTransformation);
 var
@@ -2027,8 +1984,6 @@ begin
     ABitmap.Changed;
   end;
 end;
-
-
 
 function CreateRegionFromBitmap(Bitmap: TBitmap; RegionColor: TColor;
   RegionBitmapMode: TJclRegionBitmapMode): HRGN;

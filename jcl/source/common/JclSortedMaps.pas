@@ -51,6 +51,17 @@ uses
   JclBase, JclSynch,
   JclAbstractContainers, JclContainerIntf, JclArrayLists, JclArraySets;
 
+
+
+
+
+
+
+
+
+
+
+
 type
   TJclIntfIntfSortedEntry = record
     Key: IInterface;
