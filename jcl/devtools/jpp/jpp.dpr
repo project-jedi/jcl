@@ -61,7 +61,6 @@ uses
   JclSysUtils,
   JppState in 'JppState.pas',
   JppParser in 'JppParser.pas',
-  FindFileIter in 'FindFileIter.pas',
   JppLexer in 'JppLexer.pas',
   PCharUtils in 'PCharUtils.pas';
 
@@ -300,35 +299,45 @@ var
 
   function HandleFiles(cp: PChar): PChar;
   var
-    NewName, tmp: string;
-    iter: IFindFileIterator;
+    FileName, NewName, tmp: string;
+    Files: TStrings;
+    I: Integer;
   begin
     while (cp^ <> '-') and (cp^ <> #0) do
     begin
       cp := SkipWhite(ReadStringDoubleQuotedMaybe(cp, tmp));
 
-      if CreateFindFile(ExpandUNCFileName(tmp), faAnyFile and not faDirectory, iter) then
-        repeat
-          try
-            if StripLength > 0 then
-              NewName := Copy(ExtractFileName(iter.Name), StripLength + 1, Length(iter.Name))
-            else
-              NewName := ExtractFileName(iter.Name);
+      Files := TStringList.Create;
+      try
+        AdvBuildFileList( ExpandUNCFileName(tmp), faAnyFile, Files, amAny);
 
-            Substitute(NewName, SubstChar, ReplaceStrings);
+        if Files.Count > 0 then
+          for I := 0 to Files.Count - 1 do
+          begin
+            FileName := Files.Strings[I];
+            try
+              if StripLength > 0 then
+                NewName := Copy(ExtractFileName(FileName), StripLength + 1, Length(FileName))
+              else
+                NewName := ExtractFileName(FileName);
 
-            NewName := ExpandUNCFileName(Prefix + NewName);
+              Substitute(NewName, SubstChar, ReplaceStrings);
 
-            if iter.Name = NewName then
-              ChangeFileExt(NewName, ProcessedExtension);
-            Process(pppState, iter.Name, NewName);
-          except
-            on e: Exception do
-              Writeln(Format('Error: %s %s', [e.Message, iter.Name]));
-          end;
-        until not iter.Next
-      else
-        Writeln('Could not find ', tmp);
+              NewName := ExpandUNCFileName(Prefix + NewName);
+
+              if FileName = NewName then
+                ChangeFileExt(NewName, ProcessedExtension);
+              Process(pppState, FileName, NewName);
+            except
+              on e: Exception do
+                Writeln(Format('Error: %s %s', [e.Message, FileName]));
+            end;
+          end
+        else
+          Writeln('Could not find ', tmp);
+      finally
+        Files.Free;
+      end;
     end;
     Result := cp;
   end;
