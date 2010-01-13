@@ -161,11 +161,12 @@ type
     FCount: Integer;
     FDuplicates: TDuplicates;
     FSorted: Boolean;
-
+    FCaseSensitive: Boolean;
     procedure Grow;
     procedure QuickSort(L, R: Integer; SCompare: TJclAnsiStringListSortCompare);
     procedure SetSorted(Value: Boolean);
   protected
+    procedure AssignTo(Dest: TPersistent); override;
     function GetString(Index: Integer): AnsiString; override;
     procedure SetString(Index: Integer; const Value: AnsiString); override;
     function GetObject(Index: Integer): TObject; override;
@@ -173,8 +174,12 @@ type
     function GetCapacity: Integer; override;
     procedure SetCapacity(const Value: Integer); override;
     function GetCount: Integer; override;
+    function CompareStrings(const S1, S2: AnsiString): Integer; override;
   public
+    constructor Create;
+
     function AddObject(const S: AnsiString; AObject: TObject): Integer; override;
+    procedure Assign(Source: TPersistent); override;
     procedure InsertObject(Index: Integer; const S: AnsiString; AObject: TObject); override;
     procedure Delete(Index: Integer); override;
     function Find(const S: AnsiString; var Index: Integer): Boolean; virtual;
@@ -182,6 +187,7 @@ type
     procedure Sort; virtual;
     procedure Clear; override;
 
+    property CaseSensitive: Boolean read FCaseSensitive write FCaseSensitive;
     property Duplicates: TDuplicates read FDuplicates write FDuplicates;
     property Sorted: Boolean read FSorted write SetSorted;
   end;
@@ -1003,6 +1009,59 @@ begin
 end;
 
 //=== { TJclAnsiStringList } =================================================
+
+constructor TJclAnsiStringList.Create;
+begin
+  inherited Create;
+  FCaseSensitive := True;
+end;
+
+procedure TJclAnsiStringList.Assign(Source: TPersistent);
+var
+  StringListSource: TStringList;
+begin
+  if Source is TStringList then
+  begin
+    StringListSource := TStringList(Source);
+    FDuplicates := StringListSource.Duplicates;
+    FSorted := StringListSource.Sorted;
+    FCaseSensitive := StringListSource.CaseSensitive;
+  end;
+  inherited Assign(Source);
+end;
+
+procedure TJclAnsiStringList.AssignTo(Dest: TPersistent);
+var
+  StringListDest: TStringList;
+  AnsiStringListDest: TJclAnsiStringList;
+begin
+  if Dest is TStringList then
+  begin
+    StringListDest := TStringList(Dest);
+    StringListDest.Clear; // make following assignments a lot faster
+    StringListDest.Duplicates := FDuplicates;
+    StringListDest.Sorted := FSorted;
+    StringListDest.CaseSensitive := FCaseSensitive;
+  end
+  else
+  if Dest is TJclAnsiStringList then
+  begin
+    AnsiStringListDest := TJclAnsiStringList(Dest);
+    AnsiStringListDest.Clear;
+    AnsiStringListDest.FDuplicates := FDuplicates;
+    AnsiStringListDest.FSorted := FSorted;
+    AnsiStringListDest.FCaseSensitive := FCaseSensitive;
+  end;
+  inherited AssignTo(Dest);
+end;
+
+function TJclAnsiStringList.CompareStrings(const S1: AnsiString; const S2: AnsiString): Integer;
+begin
+  if FCaseSensitive then
+    Result := CompareStr(S1, S2)
+  else
+    Result := CompareText(S1, S2);
+end;
 
 procedure TJclAnsiStringList.Grow;
 var
