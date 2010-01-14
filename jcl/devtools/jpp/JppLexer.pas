@@ -52,8 +52,7 @@ interface
 
 uses
   SysUtils, Classes,
-  JclStrHashMap, JclStrings, JclStreams,
-  PCharUtils;
+  JclStrHashMap, JclStrings, JclStreams;
 
 type
   TJppToken = (ptEof, ptComment, ptText, ptEol,
@@ -166,7 +165,7 @@ procedure TJppLexer.NextTok;
     end;
 
   var
-    start: PChar;
+    BPos, start: PChar;
     ident: string;
     tokInt: Integer;
   begin
@@ -189,9 +188,17 @@ procedure TJppLexer.NextTok;
         ptUndef,
         ptIfdef,
         ptIfndef:
-          ReadIdent(SkipWhite(APos), FTokenAsString);
+          begin
+            BPos := APos;
+            StrSkipChars(BPos, CharIsWhiteSpace);
+            StrIdent(BPos, FTokenAsString);
+          end;
         ptInclude:
-          ReadString(SkipWhite(APos), FTokenAsString);
+          begin
+            BPos := APos;
+            StrSkipChars(BPos, CharIsWhiteSpace);
+            ReadString(BPos, FTokenAsString);
+          end;
       end;
     end
     else

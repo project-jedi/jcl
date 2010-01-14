@@ -57,12 +57,12 @@ uses
   Classes,
   TypInfo,
   JclFileUtils,
+  JclStrings,
   JclStreams,
   JclSysUtils,
   JppState in 'JppState.pas',
   JppParser in 'JppParser.pas',
-  JppLexer in 'JppLexer.pas',
-  PCharUtils in 'PCharUtils.pas';
+  JppLexer in 'JppLexer.pas';
 
 const
   SubstChar = '_';
@@ -192,6 +192,27 @@ var
   N: Integer;
   ReplaceStrings: TStringList;
 
+  function ReadStringDoubleQuotedMaybe(cp: PChar; var AStr: string): PChar;
+  begin
+    { possibly quoted string }
+    Result := cp;
+    if Result^ = '"' then
+    begin
+      while (Result^ <> #0) and (Result^ <> '"') do
+        Inc(Result);
+      if Result^ = #0 then
+        raise Exception.Create('Unterminated string');
+      Inc(Result); // skip over final "
+      SetString(AStr, cp, Result - cp);
+    end
+    else
+    begin
+      while (Result^ <> #0) and not CharIsSpace(Result^) do
+        Inc(Result);
+      SetString(AStr, cp, Result - cp);
+    end;
+  end;
+
   function HandleOptions(cp: PChar): PChar;
 
     function CheckOpt(cp: PChar; AOpt: TPppOption): PChar;
@@ -217,7 +238,7 @@ var
     tmp: string;
     i: Integer;
   begin
-    cp := SkipWhite(cp);
+    StrSkipChars(cp, CharIsWhiteSpace);
 
     while cp^ = '-' do
     begin
@@ -260,7 +281,7 @@ var
         'd':
           begin
             Inc(cp);
-            cp := ReadIdent(cp, tmp);
+            StrIdent(cp, tmp);
             pppState.Define(tmp);
           end;
 
@@ -274,7 +295,7 @@ var
         'u': // RR
           begin
             Inc(cp);
-            cp := ReadIdent(cp, tmp);
+            StrIdent(cp, tmp);
             pppState.Undef(tmp);
           end;
 
@@ -292,7 +313,7 @@ var
         Syntax;
       end;
 
-      cp := SkipWhite(cp);
+      StrSkipChars(cp, CharIsWhiteSpace);
     end;
     Result := cp;
   end;
@@ -305,7 +326,8 @@ var
   begin
     while (cp^ <> '-') and (cp^ <> #0) do
     begin
-      cp := SkipWhite(ReadStringDoubleQuotedMaybe(cp, tmp));
+      cp := ReadStringDoubleQuotedMaybe(cp, tmp);
+      StrSkipChars(cp, CharIsWhiteSpace);
 
       Files := TStringList.Create;
       try

@@ -339,6 +339,8 @@ function StrRepeatLength(const S: AnsiString; const L: SizeInt): AnsiString;
 function StrReverse(const S: AnsiString): AnsiString;
 procedure StrReverseInPlace(var S: AnsiString);
 function StrSingleQuote(const S: AnsiString): AnsiString;
+procedure StrSkipChars(var S: PAnsiChar; const Chars: TSysCharSet); overload;
+procedure StrSkipChars(const S: AnsiString; var Index: SizeInt; const Chars: TSysCharSet); overload;
 function StrSmartCase(const S: AnsiString; Delimiters: TSysCharSet): AnsiString;
 function StrStringToEscaped(const S: AnsiString): AnsiString;
 function StrStripNonNumberChars(const S: AnsiString): AnsiString;
@@ -469,7 +471,10 @@ procedure StringToFile(const FileName: TFileName; const Contents: AnsiString; Ap
 function StrToken(var S: AnsiString; Separator: AnsiChar): AnsiString;
 procedure StrTokens(const S: AnsiString; const List: TJclAnsiStrings);
 procedure StrTokenToStrings(S: AnsiString; Separator: AnsiChar; const List: TJclAnsiStrings);
-function StrWord(var S: PAnsiChar; out Word: AnsiString): Boolean;
+function StrWord(const S: AnsiString; var Index: SizeInt; out Word: AnsiString): Boolean; overload;
+function StrWord(var S: PAnsiChar; out Word: AnsiString): Boolean; overload;
+function StrIdent(const S: AnsiString; var Index: SizeInt; out Ident: AnsiString): Boolean; overload;
+function StrIdent(var S: PAnsiChar; out Ident: AnsiString): Boolean; overload;
 function StrToFloatSafe(const S: AnsiString): Float;
 function StrToIntSafe(const S: AnsiString): Integer;
 procedure StrNormIndex(const StrLen: SizeInt; var Index: SizeInt; var Count: SizeInt); overload;
@@ -1993,6 +1998,18 @@ begin
   Result := AnsiSingleQuote + S + AnsiSingleQuote;
 end;
 
+procedure StrSkipChars(var S: PAnsiChar; const Chars: TSysCharSet);
+begin
+  while S^ in Chars do
+    Inc(S);
+end;
+
+procedure StrSkipChars(const S: AnsiString; var Index: SizeInt; const Chars: TSysCharSet);
+begin
+  while S[Index] in Chars do
+    Inc(Index);
+end;
+
 function StrSmartCase(const S: AnsiString; Delimiters: TSysCharSet): AnsiString;
 var
   Source, Dest: PAnsiChar;
@@ -3469,6 +3486,54 @@ begin
   end;
 end;
 
+function StrWord(const S: AnsiString; var Index: SizeInt; out Word: AnsiString): Boolean;
+var
+  Start: SizeInt;
+  C: AnsiChar;
+begin
+  Word := '';
+  if (S = '') then
+  begin
+    Result := True;
+    Exit;
+  end;
+  Start := Index;
+  Result := False;
+  while True do
+  begin
+    C := S[Index];
+    case C of
+      #0:
+        begin
+          if Start <> 0 then
+            Word := Copy(S, Start, Index - Start);
+          Result := True;
+          Exit;
+        end;
+      AnsiSpace, AnsiLineFeed, AnsiCarriageReturn:
+        begin
+          if Start <> 0 then
+          begin
+            Word := Copy(S, Start, Index - Start);
+            Exit;
+          end
+          else
+          begin
+            while CharIsWhiteSpace(C) do
+            begin
+              Inc(Index);
+              C := S[Index];
+            end;
+          end;
+        end;
+    else
+      if Start = 0 then
+        Start := Index;
+      Inc(Index);
+    end;
+  end;
+end;
+
 function StrWord(var S: PAnsiChar; out Word: AnsiString): Boolean;
 var
   Start: PAnsiChar;
@@ -3485,28 +3550,110 @@ begin
   begin
     case S^ of
       #0:
-        begin
-          if Start <> nil then
-            SetString(Word, Start, S - Start);
-          Result := True;
-          Exit;
-        end;
+      begin
+        if Start <> nil then
+          SetString(Word, Start, S - Start);
+        Result := True;
+        Exit;
+      end;
       AnsiSpace, AnsiLineFeed, AnsiCarriageReturn:
+      begin
+        if Start <> nil then
         begin
-          if Start <> nil then
-          begin
-            SetString(Word, Start, S - Start);
-            Exit;
-          end
-          else
-            while S^ in [AnsiSpace, AnsiLineFeed, AnsiCarriageReturn] do
-              Inc(S);
-        end;
+          SetString(Word, Start, S - Start);
+          Exit;
+        end
+        else
+          while CharIsWhiteSpace(S^) do
+            Inc(S);
+      end;
     else
       if Start = nil then
         Start := S;
       Inc(S);
     end;
+  end;
+end;
+
+function StrIdent(const S: AnsiString; var Index: SizeInt; out Ident: AnsiString): Boolean;
+var
+  Start: SizeInt;
+  C: AnsiChar;
+begin
+  Ident := '';
+  if (S = '') then
+  begin
+    Result := True;
+    Exit;
+  end;
+  Start := Index;
+  Result := False;
+  while True do
+  begin
+    C := S[Index];
+    if CharIsValidIdentifierLetter(C) then
+    begin
+      if Start = 0 then
+        Start := Index;
+    end
+    else
+    if C = #0 then
+    begin
+      if Start <> 0 then
+        Ident := Copy(S, Start, Index - Start);
+      Result := True;
+      Exit;
+    end
+    else
+    begin
+      if Start <> 0 then
+      begin
+        Ident := Copy(S, Start, Index - Start);
+        Exit;
+      end;
+    end;
+    Inc(Index);
+  end;
+end;
+
+function StrIdent(var S: PAnsiChar; out Ident: AnsiString): Boolean;
+var
+  Start: PAnsiChar;
+  C: AnsiChar;
+begin
+  Ident := '';
+  if S = nil then
+  begin
+    Result := True;
+    Exit;
+  end;
+  Start := nil;
+  Result := False;
+  while True do
+  begin
+    C := S^;
+    if CharIsValidIdentifierLetter(C) then
+    begin
+      if Start = nil then
+        Start := S;
+    end
+    else
+    if C = #0 then
+    begin
+      if Start <> nil then
+        SetString(Ident, Start, S - Start);
+      Result := True;
+      Exit;
+    end
+    else
+    begin
+      if Start <> nil then
+      begin
+        SetString(Ident, Start, S - Start);
+        Exit;
+      end
+    end;
+    Inc(S);
   end;
 end;
 
