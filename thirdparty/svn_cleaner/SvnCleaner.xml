@@ -119,10 +119,23 @@
         <property name="svn:ignore">
           <value>*.exe</value>
         </property>
+        <setting path="jpp" mask="" recurse="no" dironly="yes">
+          <property name="svn:ignore">
+            <value>__history</value>
+            <value>*.identcache</value>
+            <value>*.local</value>
+            <value>*.cfg</value>
+            <value>*.drc</value>
+            <value>*.dcu</value>
+            <value>*.dproj</value>
+            <value>*.bdsproj</value>
+          </property>
+        </setting>
       </setting>
 
       <setting path="" mask="examples*" recurse="yes" dironly="yes">
         <property name="svn:ignore">
+          <value>__history</value>
           <value>*.identcache</value>
           <value>*.local</value>
           <value>*.cfg</value>
@@ -385,6 +398,7 @@
 
     <setting path="thirdparty/svn_cleaner" mask="" recurse="no" dironly="yes">
       <property name="svn:ignore">
+        <value>__history</value>
         <value>*.exe</value>
         <value>*.dproj</value>
         <value>*.local</value>
@@ -395,6 +409,12 @@
 
     <setting path="thirdparty/unicode_data_extractor" mask="" recurse="no" dironly="yes">
       <property name="svn:ignore">
+        <value>__history</value>
+        <value>*.exe</value>
+        <value>*.dproj</value>
+        <value>*.local</value>
+        <value>*.identcache</value>
+        <value>*.dcu</value>
         <value>CaseFolding.txt</value>
         <value>SpecialCasing.txt</value>
         <value>UnicodeData.txt</value>
@@ -405,6 +425,7 @@
 
     <setting path="thirdparty/makedist" mask="" recurse="no" dironly="yes">
       <property name="svn:ignore">
+        <value>__history</value>
         <value>*.exe</value>
         <value>*.dproj</value>
         <value>*.local</value>
