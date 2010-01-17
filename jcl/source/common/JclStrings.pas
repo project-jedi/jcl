@@ -3315,7 +3315,7 @@ begin
     List.Clear;
     Start := Pointer(S);
     repeat
-      Done := StrWord(Start, Token);
+      Done := JclStrings.StrWord(Start, Token);
       if Token <> '' then
         List.Add(Token);
     until Done;
