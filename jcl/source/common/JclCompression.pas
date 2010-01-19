@@ -146,6 +146,7 @@ uses
    |         |-- TJclFlvDecompressArchive      handled by sevenzip http://sevenzip.sourceforge.net/
    |         |-- TJclSwfDecompressArchive      handled by sevenzip http://sevenzip.sourceforge.net/
    |         |-- TJclSwfcDecompressArchive     handled by sevenzip http://sevenzip.sourceforge.net/
+   |         |-- TJclAPMDecompressArchive      handled by sevenzip http://sevenzip.sourceforge.net/
    |
    |-- TJclUpdateArchive
         |
@@ -1706,6 +1707,14 @@ type
   end;
 
   TJclSwfcDecompressArchive = class(TJclSevenzipDecompressArchive, IInterface)
+  protected
+    function GetCLSID: TGUID; override;
+  public
+    class function ArchiveExtensions: string; override;
+    class function ArchiveName: string; override;
+  end;
+
+  TJclAPMDecompressArchive = class(TJclSevenzipDecompressArchive, IInterface)
   protected
     function GetCLSID: TGUID; override;
   public
@@ -7867,6 +7876,23 @@ end;
 function TJclSwfcDecompressArchive.GetCLSID: TGUID;
 begin
   Result := CLSID_CFormatSwfc;
+end;
+
+//=== { TJclAPMDecompressArchive } ===========================================
+
+class function TJclAPMDecompressArchive.ArchiveExtensions: string;
+begin
+  Result := LoadResString(@RsCompressionApmExtensions);
+end;
+
+class function TJclAPMDecompressArchive.ArchiveName: string;
+begin
+  Result := LoadResString(@RsCompressionApmName);
+end;
+
+function TJclAPMDecompressArchive.GetCLSID: TGUID;
+begin
+  Result := CLSID_CFormatAPM;
 end;
 
 //=== { TJclSevenzipUpdateArchive } ==========================================

@@ -1167,6 +1167,8 @@ resourcestring
   RsCompressionSwfExtensions         = '*.swf';
   RsCompressionSwfcName              = 'Swf archive';
   RsCompressionSwfcExtensions        = '*.swf';
+  RsCompressionApmName               = 'APM archive';
+  RsCompressionApmExtensions         = '*.';
   RsCompressionDuplicate             = 'The file %s already exists in the archive';
   RsCompressionReplaceError          = 'At least one compression volumes could not be replaced after an archive out-of-place update';
 
