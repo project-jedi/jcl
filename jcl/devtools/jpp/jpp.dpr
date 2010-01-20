@@ -103,7 +103,7 @@ begin
   Halt(2);
 end;
 
-procedure Process(AState: TSimplePppState; const AOld, ANew: string);
+procedure Process(AState: TPppState; const AOld, ANew: string);
 var
   parse: TJppParser;
   fsIn, fsOut: TStream;
@@ -186,7 +186,7 @@ end;
 
 procedure Params(ACommandLine: PChar);
 var
-  pppState: TSimplePppState;
+  pppState: TPppState;
   StripLength: Integer; // RR
   Prefix, ReplaceString: string; // RR
   N: Integer;
@@ -372,7 +372,7 @@ begin
   pppState := nil;
   ReplaceStrings := nil;
   try
-    pppState := TSimplePppState.Create;
+    pppState := TPppState.Create;
     ReplaceStrings := TStringList.Create;
     repeat
       cp := HandleOptions(cp);

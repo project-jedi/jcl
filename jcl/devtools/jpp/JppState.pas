@@ -59,37 +59,6 @@ type
   TTriState = (ttUnknown, ttUndef, ttDefined);
 
   TPppState = class
-  protected
-    function GetOptions: TPppOptions; virtual; abstract;
-    function GetDefineTriState(const ASymbol: string): TTriState; virtual; abstract;
-    procedure SetDefineTriState(const ASymbol: string; const Value: TTriState); virtual; abstract;
-  public
-    { PushState is called at the start of every unit, and PopState at the
-      end. This means that any declarations like $DEFINE will be file-local
-      in scope. }
-    procedure PushState; virtual; abstract;
-    procedure PopState; virtual; abstract;
-
-    function IsDefined(const ASymbol: string): Boolean; virtual; abstract;
-    procedure Define(const ASymbol: string); virtual; abstract;
-    procedure Undef(const ASymbol: string); virtual; abstract;
-
-    function FindFile(const AName: string): TStream; virtual; abstract;
-    procedure AddToSearchPath(const AName: string); virtual; abstract;
-
-    procedure AddFileToExclusionList(const AName: string); virtual; abstract;
-    function IsFileExcluded(const AName: string): Boolean; virtual; abstract;
-
-    function ExpandMacro(const AName: string; const ParamValues: TDynStringArray): string; virtual; abstract;
-    procedure DefineMacro(const AName: string; const ParamNames: TDynStringArray;
-      const Value: string); virtual; abstract;
-    procedure UndefMacro(const AName: string; const ParamNames: TDynStringArray); virtual; abstract;
-
-    property Options: TPppOptions read GetOptions;
-    property DefineTriState[const ASymbol: string]: TTriState read GetDefineTriState write SetDefineTriState;
-  end;
-
-  TSimplePppState = class(TPppState)
   private
     FStateStack: IJclStack;
     FOptions: TPppOptions;
@@ -100,11 +69,11 @@ type
     function InternalPeekMacros: IJclStrStrMap;
     function InternalPeekSearchPath: IJclStrList;
   protected
-    function GetOptions: TPppOptions; override;
+    function GetOptions: TPppOptions;
     procedure SetOptions(AOptions: TPppOptions);
 
-    function GetDefineTriState(const ASymbol: string): TTriState; override;
-    procedure SetDefineTriState(const ASymbol: string; const Value: TTriState); override;
+    function GetDefineTriState(const ASymbol: string): TTriState;
+    procedure SetDefineTriState(const ASymbol: string; const Value: TTriState);
   public
     constructor Create;
     destructor Destroy; override;
@@ -112,29 +81,26 @@ type
     { PushState is called at the start of every unit, and PopState at the
       end. This means that any declarations like $DEFINE will be file-local
       in scope. }
-    procedure PushState; override;
-    procedure PopState; override;
+    procedure PushState;
+    procedure PopState;
 
-    function IsDefined(const ASymbol: string): Boolean; override;
-    procedure Define(const ASymbol: string); override;
-    procedure Undef(const ASymbol: string); override;
+    function IsDefined(const ASymbol: string): Boolean;
+    procedure Define(const ASymbol: string);
+    procedure Undef(const ASymbol: string);
 
-    function FindFile(const AName: string): TStream; override;
-    procedure AddToSearchPath(const AName: string); override;
+    function FindFile(const AName: string): TStream;
+    procedure AddToSearchPath(const AName: string);
 
-    procedure AddFileToExclusionList(const AName: string); override;
-    function IsFileExcluded(const AName: string): Boolean; override;
+    procedure AddFileToExclusionList(const AName: string);
+    function IsFileExcluded(const AName: string): Boolean;
 
-    function ExpandMacro(const AName: string; const ParamValues: TDynStringArray): string; override;
+    function ExpandMacro(const AName: string; const ParamValues: TDynStringArray): string;
     procedure DefineMacro(const AName: string; const ParamNames: TDynStringArray;
-      const Value: string); override;
-    procedure UndefMacro(const AName: string; const ParamNames: TDynStringArray); override;
+      const Value: string);
+    procedure UndefMacro(const AName: string; const ParamNames: TDynStringArray);
 
     property Options: TPppOptions read GetOptions write SetOptions;
-
-    { new stuff }
-    //property SearchPath: TStringList read FSearchPath;
-    //property ExcludedIncludes: TStrings read FExcludedIncludes;
+    property DefineTriState[const ASymbol: string]: TTriState read GetDefineTriState write SetDefineTriState;
   end;
 
 implementation
@@ -151,32 +117,32 @@ type
     SearchPath: IJclStrList;
   end;
 
-{ TSimplePppState }
+//=== { TPppState } ==========================================================
 
-constructor TSimplePppState.Create;
+constructor TPppState.Create;
 begin
   FStateStack := TJclStack.Create(16, True);
   InternalPushState(TJclStrArrayList.Create(16), TJclStrArrayList.Create(16),
     TJclStrStrHashMap.Create(16), TJclStrHashMap.Create(16, False));
 end;
 
-destructor TSimplePppState.Destroy;
+destructor TPppState.Destroy;
 begin
   FStateStack := nil;
   inherited Destroy;
 end;
 
-procedure TSimplePppState.AddFileToExclusionList(const AName: string);
+procedure TPppState.AddFileToExclusionList(const AName: string);
 begin
   InternalPeekExcludedFiles.Add(AName);
 end;
 
-procedure TSimplePppState.AddToSearchPath(const AName: string);
+procedure TPppState.AddToSearchPath(const AName: string);
 begin
   InternalPeekSearchPath.Add(AName);
 end;
 
-function TSimplePppState.ExpandMacro(const AName: string;
+function TPppState.ExpandMacro(const AName: string;
   const ParamValues: TDynStringArray): string;
 var
   AMacros: IJclStrStrMap;
@@ -210,12 +176,12 @@ begin
   raise EPppState.CreateFmt('unknown macro "%s"', [AMacroName]);
 end;
 
-procedure TSimplePppState.Define(const ASymbol: string);
+procedure TPppState.Define(const ASymbol: string);
 begin
   SetDefineTriState(ASymbol, ttDefined);
 end;
 
-procedure TSimplePppState.DefineMacro(const AName: string;
+procedure TPppState.DefineMacro(const AName: string;
   const ParamNames: TDynStringArray; const Value: string);
 var
   AMacros: IJclStrStrMap;
@@ -235,7 +201,7 @@ begin
   AMacros.Items[AMacroName] := AMacroFormat;
 end;
 
-function TSimplePppState.FindFile(const AName: string): TStream;
+function TPppState.FindFile(const AName: string): TStream;
 var
   i: Integer;
   fn: string;
@@ -260,12 +226,12 @@ begin
   Result := TFileStream.Create(fn, fmOpenRead or fmShareDenyWrite);
 end;
 
-function TSimplePppState.GetOptions: TPppOptions;
+function TPppState.GetOptions: TPppOptions;
 begin
   Result := FOptions;
 end;
 
-function TSimplePppState.GetDefineTriState(const ASymbol: string): TTriState;
+function TPppState.GetDefineTriState(const ASymbol: string): TTriState;
 var
   ADefines: IJclStrMap;
   ASymbolNames: IJclStrIterator;
@@ -283,35 +249,35 @@ begin
   end;
 end;
 
-function TSimplePppState.InternalPeekDefines: IJclStrMap;
+function TPppState.InternalPeekDefines: IJclStrMap;
 begin
   if FStateStack.Empty then
     raise EPppState.Create('Internal error: PPP State stack is empty');
   Result := (FStateStack.Peek as TSimplePppStateItem).DefinedKeywords;
 end;
 
-function TSimplePppState.InternalPeekExcludedFiles: IJclStrList;
+function TPppState.InternalPeekExcludedFiles: IJclStrList;
 begin
   if FStateStack.Empty then
     raise EPppState.Create('Internal error: PPP State stack is empty');
   Result := (FStateStack.Peek as TSimplePppStateItem).ExcludedFiles;
 end;
 
-function TSimplePppState.InternalPeekMacros: IJclStrStrMap;
+function TPppState.InternalPeekMacros: IJclStrStrMap;
 begin
   if FStateStack.Empty then
     raise EPppState.Create('Internal error: PPP State stack is empty');
   Result := (FStateStack.Peek as TSimplePppStateItem).Macros;
 end;
 
-function TSimplePppState.InternalPeekSearchPath: IJclStrList;
+function TPppState.InternalPeekSearchPath: IJclStrList;
 begin
   if FStateStack.Empty then
     raise EPppState.Create('Internal error: PPP State stack is empty');
   Result := (FStateStack.Peek as TSimplePppStateItem).SearchPath;
 end;
 
-procedure TSimplePppState.InternalPushState(const ExcludedFiles,
+procedure TPppState.InternalPushState(const ExcludedFiles,
   SearchPath: IJclStrList; const Macros: IJclStrStrMap; const Defines: IJclStrMap);
 var
   AStateItem: TSimplePppStateItem;
@@ -324,12 +290,12 @@ begin
   FStateStack.Push(AStateItem);
 end;
 
-function TSimplePppState.IsDefined(const ASymbol: string): Boolean;
+function TPppState.IsDefined(const ASymbol: string): Boolean;
 begin
   Result := DefineTriState[ASymbol] = ttDefined;
 end;
 
-function TSimplePppState.IsFileExcluded(const AName: string): Boolean;
+function TPppState.IsFileExcluded(const AName: string): Boolean;
 var
   AExcludedFiles: IJclStrList;
   AFileNames: IJclStrIterator;
@@ -347,14 +313,14 @@ begin
   end;
 end;
 
-procedure TSimplePppState.PopState;
+procedure TPppState.PopState;
 begin
   if FStateStack.Size <= 1 then
     raise EPppState.Create('Internal error: PPP State stack underflow');
   FStateStack.Pop.Free;
 end;
 
-procedure TSimplePppState.PushState;
+procedure TPppState.PushState;
 var
   AExcludedFiles, ASearchPath: IJclStrList;
   ADefines: IJclStrMap;
@@ -368,12 +334,12 @@ begin
   InternalPushState(AExcludedFiles, ASearchPath, AMacros, ADefines);
 end;
 
-procedure TSimplePppState.SetOptions(AOptions: TPppOptions);
+procedure TPppState.SetOptions(AOptions: TPppOptions);
 begin
   FOptions := AOptions;
 end;
 
-procedure TSimplePppState.SetDefineTriState(const ASymbol: string;
+procedure TPppState.SetDefineTriState(const ASymbol: string;
   const Value: TTriState);
 var
   ADefines: IJclStrMap;
@@ -396,12 +362,12 @@ begin
     ADefines.Items[ASymbol] := TObject(Value);
 end;
 
-procedure TSimplePppState.Undef(const ASymbol: string);
+procedure TPppState.Undef(const ASymbol: string);
 begin
   SetDefineTriState(ASymbol, ttUndef);
 end;
 
-procedure TSimplePppState.UndefMacro(const AName: string; const ParamNames: TDynStringArray);
+procedure TPppState.UndefMacro(const AName: string; const ParamNames: TDynStringArray);
 var
   AMacros: IJclStrStrMap;
   AMacroNames: IJclStrIterator;

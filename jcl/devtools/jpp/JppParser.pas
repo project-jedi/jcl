@@ -57,7 +57,7 @@ type
   TJppParser = class
   private
     FLexer: TJppLexer;
-    FState: TSimplePppState;
+    FState: TPppState;
     FTriState: TTriState;
     FResult: string;
     FResultLen: Integer;
@@ -88,9 +88,9 @@ type
     procedure Skip;
 
     property Lexer: TJppLexer read FLexer;
-    property State: TSimplePppState read FState;
+    property State: TPppState read FState;
   public
-    constructor Create(AStream: TJclStringStream; APppState: TSimplePppState);
+    constructor Create(AStream: TJclStringStream; APppState: TPppState);
     destructor Destroy; override;
     function Parse: string;
   end;
@@ -236,7 +236,7 @@ end;
 
 { TJppParser }
 
-constructor TJppParser.Create(AStream: TJclStringStream; APppState: TSimplePppState);
+constructor TJppParser.Create(AStream: TJclStringStream; APppState: TPppState);
 begin
   Assert(AStream <> nil);
   Assert(APppState <> nil);
