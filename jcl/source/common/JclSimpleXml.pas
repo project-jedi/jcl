@@ -1008,7 +1008,8 @@ begin
         AStringStream := TJclUTF16Stream.Create(AOutStream, False);
     else
       AStringStream := TJclAutoStream.Create(AOutStream, False);
-      TJclAutoStream(AStringStream).CodePage := CodePage;
+      if CodePage <> CP_ACP then
+        TJclAutoStream(AStringStream).CodePage := CodePage;
     end;
     try
       AStringStream.SkipBOM;
