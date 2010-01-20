@@ -3259,8 +3259,8 @@ end;
 procedure TJclSimpleXMLElemHeader.SaveToStringStream(
   StringStream: TJclStringStream; const Level: string; AParent: TJclSimpleXML);
 begin
-  SetEncoding(GetEncoding);
   SetVersion(GetVersion);
+  SetEncoding(GetEncoding);
   SetStandalone(GetStandalone);
   inherited SaveToStringStream(StringStream, Level, AParent);
 end;
