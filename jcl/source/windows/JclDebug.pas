@@ -2040,7 +2040,7 @@ end;
 
 function EncodeNameString(const S: string): AnsiString;
 var
-  I, StartIndex: Integer;
+  I, StartIndex, EndIndex: Integer;
   C: Byte;
   P: PByte;
 begin
@@ -2060,9 +2060,13 @@ begin
     P^ := 2 // store '@' leading char information
   else
     Dec(P);
-  for I := 0 to Length(S) - StartIndex do // including null char
+  EndIndex := Length(S) - StartIndex;
+  for I := 0 to EndIndex do // including null char
   begin
-    C := Byte(S[I + 1 + StartIndex]);
+    if I = EndIndex then
+      C := 0
+    else
+      C := Byte(S[I + 1 + StartIndex]);
     case AnsiChar(C) of
       #0:
         C := 0;
@@ -2091,7 +2095,7 @@ begin
         end;
       2:
         begin
-          P^ := P^ or (C shl 4);
+          P^ := P^ or Byte(C shl 4);
           Inc(P);
           P^ := (C shr 4) and $03;
         end;
