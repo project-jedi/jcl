@@ -120,7 +120,7 @@ begin
   try
     fsIn := TFileStream.Create(AOld, fmOpenRead);
     ssIn := TJclAutoStream.Create(fsIn);
-    parse := TJppParser.Create(ssIn, AState);
+    parse := TJppParser.Create(ssIn.ReadString, AState);
     answer := Format('%s'#13#10'%s', [SWarningJppGenerated, parse.Parse]);
     fsOut := TFileStream.Create(ANew, fmCreate);
     case ssIn.Encoding of

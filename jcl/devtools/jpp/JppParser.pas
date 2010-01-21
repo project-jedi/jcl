@@ -48,7 +48,6 @@ interface
 
 uses
   SysUtils, Classes,
-  JclStreams,
   JppState, JppLexer;
 
 type
@@ -90,7 +89,7 @@ type
     property Lexer: TJppLexer read FLexer;
     property State: TPppState read FState;
   public
-    constructor Create(AStream: TJclStringStream; APppState: TPppState);
+    constructor Create(const ABuffer: string; APppState: TPppState);
     destructor Destroy; override;
     function Parse: string;
   end;
@@ -98,7 +97,7 @@ type
 implementation
 
 uses
-  JclBase, JclStrings;
+  JclBase, JclStrings, JclStreams;
   
 {$IFDEF MSWINDOWS}
 const
@@ -236,12 +235,11 @@ end;
 
 { TJppParser }
 
-constructor TJppParser.Create(AStream: TJclStringStream; APppState: TPppState);
+constructor TJppParser.Create(const ABuffer: string; APppState: TPppState);
 begin
-  Assert(AStream <> nil);
   Assert(APppState <> nil);
 
-  FLexer := TJppLexer.Create(AStream);
+  FLexer := TJppLexer.Create(ABuffer);
   FState := APppState;
   FTriState := ttUnknown;
   FState.Undef('PROTOTYPE');
@@ -271,7 +269,7 @@ begin
       try
         TempStringStream.WriteString(S, 1, Length(S));
         TempStringStream.Seek(0, soBeginning);
-        TempParser := TJppParser.Create(TempStringStream, State);
+        TempParser := TJppParser.Create(TempStringStream.ReadString, State);
         try
           AResult := TempParser.Parse;
         finally
@@ -520,7 +518,7 @@ begin
           Lexer.Error(e.Message);
       end;
       ssIn := TJclAutoStream.Create(fsIn);
-      newLexer := TJppLexer.Create(ssIn);
+      newLexer := TJppLexer.Create(ssIn.ReadString);
       FLexer := newLexer;
       ParseText;
     finally

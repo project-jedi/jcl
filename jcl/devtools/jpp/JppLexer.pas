@@ -52,7 +52,7 @@ interface
 
 uses
   SysUtils, Classes,
-  JclStrHashMap, JclStrings, JclStreams;
+  JclStrHashMap, JclStrings;
 
 type
   TJppToken = (ptEof, ptComment, ptText, ptEol,
@@ -71,7 +71,7 @@ type
     FTokenAsString: string;
     FRawComment: string;
   public
-    constructor Create(AStream: TJclStringStream);
+    constructor Create(const ABuffer: string);
     destructor Destroy; override;
 
     procedure Error(const AMsg: string);
@@ -91,7 +91,7 @@ implementation
 
 { TJppLexer }
 
-constructor TJppLexer.Create(AStream: TJclStringStream);
+constructor TJppLexer.Create(const ABuffer: string);
 
   procedure AddToken(const AIdent: string; AValue: TJppToken);
   var
@@ -117,7 +117,7 @@ begin
   AddToken('jppexpandmacro', ptJppExpandMacro);
   AddToken('jppundefmacro', ptJppUndefMacro);
 
-  FBuf := AStream.ReadString;
+  FBuf := ABuffer;
   Reset;
 end;
 
