@@ -122,7 +122,7 @@
       <Directories Name="PackageDLLOutputDir"></Directories>
       <Directories Name="PackageDCPOutputDir">..\..\lib\d9</Directories>
       <Directories Name="SearchPath">..\..\lib\d9;..\..\source\include</Directories>
-      <Directories Name="Packages">rtl;vcl;designide;Jcl;JclBaseExpert</Directories>
+      <Directories Name="Packages">rtl;vcl;designide;Jcl;JclContainers;JclBaseExpert</Directories>
       <Directories Name="Conditionals">RELEASE</Directories>
       <Directories Name="DebugSourceDirs"></Directories>
       <Directories Name="UsePackages">True</Directories>

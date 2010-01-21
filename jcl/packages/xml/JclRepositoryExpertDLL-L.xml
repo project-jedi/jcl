@@ -11,9 +11,11 @@
     <Package Name="vcl" Targets="Delphi,Bcb,Bds" Condition=""/>
     <Package Name="designide" Targets="Delphi,Bcb,Bds" Condition=""/>
     <Package Name="Jcl-R" Targets="all" Condition=""/>
+    <Package Name="JclContainers-R" Targets="all" Condition=""/>
     <Package Name="JclBaseExpert-D" Targets="all" Condition=""/>
   </Requires>
   <Contains>
+    <File Name="..\..\devtools\jpp\JppState.pas" Targets="runtimeIDE" Formname="" Condition=""/>
     <File Name="..\..\experts\repository\JclOtaTemplates.pas" Targets="runtimeIDE" Formname="" Condition=""/>
     <File Name="..\..\experts\repository\JclOtaRepositoryUtils.pas" Targets="runtimeIDE" Formname="" Condition=""/>
     <File Name="..\..\experts\repository\ExceptionDialog\JclOtaExcDlgRepository.pas" Targets="runtimeIDE" Formname="" Condition=""/>

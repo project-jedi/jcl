@@ -37,21 +37,11 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JclBorlandTools;
+  JclBorlandTools,
+  JppState;
 
 type
-  TJclOtaTemplateParams = class(TPersistent)
-  protected
-    FLanguage: TJclBorPersonality;
-  public
-    function GetBoolValue(const Name: string): Boolean; virtual;
-    function IsDefined(const Name: string): Boolean; virtual;
-    function GetStrValue(const Name: string): string; virtual;
-    function GetIntValue(const Name: string): Integer; virtual;
-    function GetStringsValue(const Name: string): TStrings; virtual;
-
-    property Language: TJclBorPersonality read FLanguage write FLanguage;
-  end;
+  TJclOtaTemplateParams = TPppState;
 
 const
   ModulePattern = '%MODULENAME%';
@@ -274,52 +264,10 @@ begin
       end
       else if IfCount = 0 then
         CopyStr(Result, IndexOutput, CharCountOut, Identifier, 1, Length(Identifier));
-        
+
       IndexInput := TokenPos;
     end;
   end;
-end;
-
-//=== { TJclOtaTemplateParams } ==============================================
-
-function TJclOtaTemplateParams.GetBoolValue(const Name: string): Boolean;
-var
-  VariantValue: Variant;
-begin
-  VariantValue := GetPropValue(Self, Name);
-  Result := Boolean(VariantValue);
-end;
-
-function TJclOtaTemplateParams.GetIntValue(const Name: string): Integer;
-var
-  VariantValue: Variant;
-begin
-  VariantValue := GetPropValue(Self, Name);
-  Result := Integer(VariantValue);
-end;
-
-function TJclOtaTemplateParams.GetStringsValue(const Name: string): TStrings;
-var
-  Instance: TObject;
-begin
-  Instance := TObject(GetOrdProp(Self, Name));
-  if Instance is TStrings then
-    Result := TStrings(Instance)
-  else
-    Result := nil;
-end;
-
-function TJclOtaTemplateParams.GetStrValue(const Name: string): string;
-var
-  VariantValue: Variant;
-begin
-  VariantValue := GetPropValue(Self, Name, True);
-  Result := string(VariantValue);
-end;
-
-function TJclOtaTemplateParams.IsDefined(const Name: string): Boolean;
-begin
-  Result := GetBoolValue(Name);
 end;
 
 {$IFDEF UNITVERSIONING}

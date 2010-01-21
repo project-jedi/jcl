@@ -27,7 +27,7 @@
 			<GenDll>true</GenDll>
 			<GenPackage>true</GenPackage>
 			<DCC_ImageBase>$58100000</DCC_ImageBase>
-			<DCC_UsePackage>rtl;vcl;designide;Jcl;JclBaseExpert</DCC_UsePackage>
+			<DCC_UsePackage>rtl;vcl;designide;Jcl;JclContainers;JclBaseExpert</DCC_UsePackage>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Cfg_Release)'!=''">
 			<DCC_AssertionsAtRuntime>false</DCC_AssertionsAtRuntime>
@@ -64,7 +64,9 @@
 			<DCCReference Include="vcl.dcp" />
 			<DCCReference Include="designide.dcp" />
 			<DCCReference Include="Jcl.dcp" />
+			<DCCReference Include="JclContainers.dcp" />
 			<DCCReference Include="JclBaseExpert.dcp" />
+			<DCCReference Include="..\..\devtools\jpp\JppState.pas" />
 			<DCCReference Include="..\..\experts\repository\JclOtaTemplates.pas" />
 			<DCCReference Include="..\..\experts\repository\JclOtaRepositoryUtils.pas" />
 			<DCCReference Include="..\..\experts\repository\ExceptionDialog\JclOtaExcDlgRepository.pas" />

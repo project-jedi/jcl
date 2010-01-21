@@ -1,3 +1,4 @@
+USEUNIT("..\..\devtools\jpp\JppState.pas");
 USEUNIT("..\..\experts\repository\JclOtaTemplates.pas");
 USEUNIT("..\..\experts\repository\JclOtaRepositoryUtils.pas");
 USEUNIT("..\..\experts\repository\ExceptionDialog\JclOtaExcDlgRepository.pas");

@@ -58,7 +58,7 @@ type
 
   TTriState = (ttUnknown, ttUndef, ttDefined);
 
-  TPppState = class
+  TPppState = class(TPersistent)
   private
     FStateStack: IJclStack;
     FOptions: TPppOptions;
@@ -85,6 +85,11 @@ type
     procedure PopState;
 
     function IsDefined(const ASymbol: string): Boolean;
+    function GetBoolValue(const Name: string): Boolean;
+    function GetStrValue(const Name: string): string;
+    function GetIntValue(const Name: string): Integer;
+    function GetStringsValue(const Name: string): TStrings;
+
     procedure Define(const ASymbol: string);
     procedure Undef(const ASymbol: string);
 
@@ -106,6 +111,7 @@ type
 implementation
 
 uses
+  TypInfo,
   JclStrings, JclArrayLists, JclHashMaps, JclStacks;
 
 type
@@ -226,6 +232,41 @@ begin
   Result := TFileStream.Create(fn, fmOpenRead or fmShareDenyWrite);
 end;
 
+function TPppState.GetBoolValue(const Name: string): Boolean;
+var
+  VariantValue: Variant;
+begin
+  VariantValue := GetPropValue(Self, Name);
+  Result := Boolean(VariantValue);
+end;
+
+function TPppState.GetIntValue(const Name: string): Integer;
+var
+  VariantValue: Variant;
+begin
+  VariantValue := GetPropValue(Self, Name);
+  Result := Integer(VariantValue);
+end;
+
+function TPppState.GetStringsValue(const Name: string): TStrings;
+var
+  Instance: TObject;
+begin
+  Instance := TObject(GetOrdProp(Self, Name));
+  if Instance is TStrings then
+    Result := TStrings(Instance)
+  else
+    Result := nil;
+end;
+
+function TPppState.GetStrValue(const Name: string): string;
+var
+  VariantValue: Variant;
+begin
+  VariantValue := GetPropValue(Self, Name, True);
+  Result := string(VariantValue);
+end;
+
 function TPppState.GetOptions: TPppOptions;
 begin
   Result := FOptions;
@@ -235,6 +276,8 @@ function TPppState.GetDefineTriState(const ASymbol: string): TTriState;
 var
   ADefines: IJclStrMap;
   ASymbolNames: IJclStrIterator;
+  PI: PPropInfo;
+  PV: Variant;
 begin
   Result := ttUnknown;
   ADefines := InternalPeekDefines;
@@ -245,6 +288,18 @@ begin
     begin
       Result := TTriState(ADefines.Items[ASymbolNames.GetString]);
       Break;
+    end;
+  end;
+  if Result = ttUnknown then
+  begin
+    PI := GetPropInfo(Self, ASymbol);
+    if Assigned(PI) then
+    begin
+      PV := GetPropValue(Self, ASymbol);
+      if Boolean(PV) then
+        Result := ttDefined
+      else
+        Result := ttUndef;
     end;
   end;
 end;

@@ -59,6 +59,7 @@ type
     FAddressOffset: Boolean;
     FVirtualAddress: Boolean;
     FActivePersonality: TJclBorPersonality;
+    FLanguage: TJclBorPersonality;
     FLanguages: TJclBorPersonalities;
     FRawData: Boolean;
     FSendEMail: Boolean;
@@ -93,6 +94,7 @@ type
     destructor Destroy; override; 
   published
     // file options
+    property Language: TJclBorPersonality read FLanguage write FLanguage;
     property Languages: TJclBorPersonalities read FLanguages write FLanguages;
     property ActivePersonality: TJclBorPersonality read FActivePersonality
       write FActivePersonality;
