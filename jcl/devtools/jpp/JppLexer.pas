@@ -57,7 +57,8 @@ uses
 type
   TJppToken = (ptEof, ptComment, ptText, ptEol,
     ptDefine, ptUndef, ptIfdef, ptIfndef, ptIfopt, ptElse, ptEndif,
-    ptInclude, ptJppDefineMacro, ptJppExpandMacro, ptJppUndefMacro);
+    ptInclude, ptJppDefineMacro, ptJppExpandMacro, ptJppUndefMacro,
+    ptJppStrValue, ptJppIntValue, ptJppBoolValue, ptJppRepeat, ptJppRepeatStrValue);
 
   EJppLexerError = class(Exception);
 
@@ -116,6 +117,11 @@ begin
   AddToken('jppdefinemacro', ptjppDefineMacro);
   AddToken('jppexpandmacro', ptJppExpandMacro);
   AddToken('jppundefmacro', ptJppUndefMacro);
+  AddToken('jppstrvalue', ptJppStrValue);
+  AddToken('jpprepeatstrvalue', ptJppRepeatStrValue);
+  AddToken('jppintvalue', ptJppIntValue);
+  AddToken('jppboolvalue', ptJppBoolValue);
+  AddToken('jpprepeat', ptJppRepeat);
 
   FBuf := ABuffer;
   Reset;
@@ -187,7 +193,11 @@ procedure TJppLexer.NextTok;
         ptDefine,
         ptUndef,
         ptIfdef,
-        ptIfndef:
+        ptIfndef,
+        ptJppStrValue,
+        ptJppIntValue,
+        ptJppBoolValue,
+        ptJppRepeatStrValue:
           begin
             BPos := APos;
             StrSkipChars(BPos, CharIsWhiteSpace);

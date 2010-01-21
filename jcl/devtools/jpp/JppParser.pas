@@ -64,6 +64,7 @@ type
     FSkipLevel: Integer;
     FAllWhiteSpaceIn: Boolean;
     FAllWhiteSpaceOut: Boolean;
+    FRepeatIndex: Integer;
     procedure RemoveOrphanedLineBreaks;
   protected
     procedure AddResult(const S: string);
@@ -82,6 +83,12 @@ type
     procedure ParseDefineMacro;
     procedure ParseExpandMacro;
     procedure ParseUndefMacro;
+
+    procedure ParseBoolValue;
+    procedure ParseIntValue;
+    procedure ParseRepeat;
+    procedure ParseStrValue;
+    procedure ParseRepeatStrValue;
 
     // same as ParseText, but throws result away
     procedure Skip;
@@ -243,6 +250,7 @@ begin
   FState := APppState;
   FTriState := ttUnknown;
   FState.Undef('PROTOTYPE');
+  FRepeatIndex := -1;
 end;
 
 destructor TJppParser.Destroy;
@@ -348,7 +356,12 @@ begin
     ptEndif,
     ptJppDefineMacro,
     ptJppExpandMacro,
-    ptJppUndefMacro:
+    ptJppUndefMacro,
+    ptJppStrValue,
+    ptJppIntValue,
+    ptJppBoolValue,
+    ptJppRepeat,
+    ptJppRepeatStrValue:
       FAllWhiteSpaceIn := False;
     ptInclude:
       FAllWhiteSpaceIn := IsExcludedInclude(Lexer.TokenAsString);
@@ -531,6 +544,81 @@ begin
   NextToken;
 end;
 
+procedure TJppParser.ParseStrValue;
+var
+  Name: string;
+begin
+  Name := Lexer.TokenAsString;
+  AddResult(State.GetStrValue(Name));
+  NextToken;
+end;
+
+procedure TJppParser.ParseIntValue;
+var
+  Name: string;
+begin
+  Name := Lexer.TokenAsString;
+  AddResult(IntToStr(State.GetIntValue(Name)));
+  NextToken;
+end;
+
+procedure TJppParser.ParseBoolValue;
+var
+  Name: string;
+begin
+  Name := Lexer.TokenAsString;
+  AddResult(BoolToStr(State.GetBoolValue(Name), True));
+  NextToken;
+end;
+
+procedure TJppParser.ParseRepeat;
+var
+  I, J: Integer;
+  RepeatText, CountName: string;
+begin
+  if FRepeatIndex = -1 then
+  begin
+    I := 1;
+    RepeatText := Lexer.RawComment;
+    while (I <= Length(RepeatText)) and not CharIsWhiteSpace(RepeatText[I]) do
+      Inc(I);
+    while (I <= Length(RepeatText)) and CharIsWhiteSpace(RepeatText[I]) do
+      Inc(I);
+    J := I;
+    while (J <= Length(RepeatText)) and CharIsValidIdentifierLetter(RepeatText[J]) do
+      Inc(J);
+    CountName := Copy(RepeatText, I, J - I);
+    I := Length(RepeatText);
+    if RepeatText[I] = ')' then
+      Dec(I);
+    RepeatText := Copy(RepeatText, J, I - J);
+    FRepeatIndex := State.GetIntValue(CountName);
+    while FRepeatIndex > 0 do
+    begin
+      Dec(FRepeatIndex);
+      AddResult(RepeatText);
+    end;
+    FRepeatIndex := -1;
+    NextToken;
+  end
+  else
+    raise EPppParserError.Create('Nested repeat');
+end;
+
+procedure TJppParser.ParseRepeatStrValue;
+var
+  Name: string;
+begin
+  if FRepeatIndex > -1 then
+  begin
+    Name := Lexer.TokenAsString;
+    AddResult(State.GetStringsValue(Name).Strings[FRepeatIndex]);
+    NextToken;
+  end
+  else
+    raise EPppParserError.Create('JPPREPEATSTRVALUE outside JPPREPEAT');
+end;
+
 procedure TJppParser.ParseText;
 
   procedure AddRawComment;
@@ -597,6 +685,22 @@ begin
         else
           AddRawComment;
 
+      ptJppStrValue, ptJppIntValue, ptJppBoolValue, ptJppRepeat, ptJppRepeatStrValue:
+        if poProcessValues in State.Options then
+          case Lexer.CurrTok of
+            ptJppStrValue:
+              ParseStrValue;
+            ptJppIntValue:
+              ParseIntValue;
+            ptJppBoolValue:
+              ParseBoolValue;
+            ptJppRepeat:
+              ParseRepeat;
+            ptJppRepeatStrValue:
+              ParseRepeatStrValue;
+          end
+        else
+          AddRawComment;
     else
       Break;
     end;

@@ -35,7 +35,10 @@ uses
   Classes,
   JclBorlandTools,
   JclOtaTemplates in '..\JclOtaTemplates.pas',
-  JclOtaExcDlgParams in 'JclOtaExcDlgParams.pas';
+  JclOtaExcDlgParams in 'JclOtaExcDlgParams.pas',
+  JppState in '..\..\..\devtools\jpp\JppState.pas',
+  JppLexer in '..\..\..\devtools\jpp\JppLexer.pas',
+  JppParser in '..\..\..\devtools\jpp\JppParser.pas';
 
 function LoadTemplate(const FileName: TFileName): string;
 var
@@ -83,7 +86,8 @@ begin
       Params.DelayedTrace := True;
       Params.HookDll := True;
       Params.LogFile := True;
-      Params.LogFileName := '''filename.log''';
+      Params.LogSaveDialog := True;
+      Params.LogFileName := 'filename.log';
       Params.OSInfo := True;
       Params.ModuleList := True;
       Params.ActiveControls := True;
@@ -101,8 +105,8 @@ begin
 
       Params.FormName := 'ExceptionDialogMail';
       Params.SendEMail := True;
-      Params.EMailAddress := '''name@domain.ext''';
-      Params.EMailSubject := '''email subject''';
+      Params.EMailAddress := 'name@domain.ext';
+      Params.EMailSubject := 'email subject';
 
       SaveFile('StandardDialogs\ExceptDlgMail.pas', GetFinalSourceContent(ApplyTemplate(LoadTemplate('Templates\ExceptDlg.Delphi32.pas'), Params), 'ExceptDlgMail', 'ExceptionDialogMail', 'TForm'));
       SaveFile('StandardDialogs\ExceptDlgMail.dfm', GetFinalSourceContent(ApplyTemplate(LoadTemplate('Templates\ExceptDlg.Delphi32.dfm'), Params), 'ExceptDlgMail', 'ExceptionDialogMail', 'TForm'));

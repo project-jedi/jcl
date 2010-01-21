@@ -84,6 +84,7 @@ begin
     'Options:'#10,
     '  -c'#9#9'Process conditional directives'#10,
     '  -m'#9#9'Process macro directive'#10,
+    '  -v'#9#9'Process value directive'#10,
     '  -C'#9#9'Strip comments'#10,
     '  -fxxx'#9#9'Prefix xxx to filename'#10,
     '  -h, -?'#9'This help'#10,
@@ -267,6 +268,9 @@ var
 
         'm':
           cp := CheckOpt(cp + 1, poProcessMacros);
+
+        'v':
+          cp := CheckOpt(cp + 1, poProcessValues);
 
         'C':
           cp := CheckOpt(cp + 1, poStripComments);

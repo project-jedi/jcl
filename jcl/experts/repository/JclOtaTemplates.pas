@@ -41,7 +41,10 @@ uses
   JppState;
 
 type
-  TJclOtaTemplateParams = TPppState;
+  TJclOtaTemplateParams = class(TPppState)
+  public
+    constructor Create;
+  end;
 
 const
   ModulePattern = '%MODULENAME%';
@@ -78,7 +81,16 @@ uses
 //  Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
   TypInfo,
-  JclStrings, JclSysUtils;
+  JclStrings, JclSysUtils,
+  JppParser;
+
+//=== { TJclOtaTemplateParams } ==============================================
+
+constructor TJclOtaTemplateParams.Create;
+begin
+  inherited Create;
+  Options := Options + [poProcessDefines, poProcessMacros, poProcessValues];
+end;
 
 function GetFinalFormContent(const Content, FormIdent,
   AncestorIdent: string): string;
@@ -104,169 +116,19 @@ end;
 
 function ApplyTemplate(const Template: string;
   const Params: TJclOtaTemplateParams): string;
-  procedure CopyStr(var Dest: string; var IndexDest: Integer;
-    var DestCharCount: Integer; const Src: string; IndexSrc: Integer;
-    CharCount: Integer);
-  begin
-    if (Length(Src) - IndexSrc + 1) < CharCount then
-      CharCount := Length(Src) - IndexSrc + 1;
-    while (DestCharCount - IndexDest + 1) < CharCount do
-    begin
-      DestCharCount := 2 * DestCharCount;
-      SetLength(Dest, DestCharCount);
-    end;
-
-    if CharCount > 0 then
-    begin
-      Move(Src[IndexSrc], Dest[IndexDest], CharCount*SizeOf(Char));
-      Inc(IndexDest, CharCount);
-    end;
-  end;
-  function SkipBlanks(const Str: string; const Index: Integer;
-    Count: Integer): Integer;
-  begin
-    Result := Index;
-    while (Result <= Count) and CharIsWhiteSpace(Str[Result]) do
-      Inc(Result);
-  end;
-  function GetIdentifier(const Str: string; var Index: Integer;
-    Count: Integer): string;
-  var
-    IndexStart: Integer;
-  begin
-    IndexStart := Index;
-    while (Index <= Count) and CharIsValidIdentifierLetter(Str[Index]) or (Str[Index] = '%') do
-      Inc(Index);
-    Result := Copy(Str, IndexStart, Index - IndexStart);
-  end;
 var
-  IndexInput, IndexOutput, TokenPos, CharCountIn, CharCountOut,
-  IfCount, StrIndex, RepeatCount: Integer;
-  Identifier, Command, Symbol, StrValue, RepeatPattern, RepeatValue: string;
-  StrList: TStrings;
+  JppParser: TJppParser;
 begin
-  CharCountIn := Length(Template);
-  CharCountOut := 2*CharCountIn;
-  SetLength(Result, CharCountOut);
-  IndexInput := 1;
-  IndexOutput := 1;
-  IfCount := 0;
-  while IndexInput < CharCountIn do
-  begin
-    TokenPos := CharPos(Template, '%', IndexInput);
-
-    if TokenPos = 0 then
-    begin
-      CopyStr(Result, IndexOutput, CharCountOut, Template, IndexInput, CharCountIn - IndexInput + 1);
-      SetLength(Result, IndexOutput - 1);
-      Exit;
-    end
-    else
-    begin
-      if IfCount = 0 then
-        CopyStr(Result, IndexOutput, CharCountOut, Template, IndexInput, TokenPos - IndexInput);
-
-      Identifier := GetIdentifier(Template, TokenPos, CharCountIn);
-      Command := StrUpper(Identifier);
-
-      if Command = '%IF' then
-      begin
-        TokenPos := SkipBlanks(Template, TokenPos, CharCountIn);
-        Symbol := GetIdentifier(Template, TokenPos, CharCountIn);
-        if (IfCount > 0) or not Params.IsDefined(Symbol) then
-        begin
-          Inc(IfCount);
-        end;
-      end
-      else if Command = '%IFNOT' then
-      begin
-        TokenPos := SkipBlanks(Template, TokenPos, CharCountIn);
-        Symbol := GetIdentifier(Template, TokenPos, CharCountIn);
-        if (IfCount > 0) or Params.IsDefined(Symbol) then
-          Inc(IfCount);
-      end
-      else if Command = '%ELSE' then
-      begin
-        if IfCount = 1 then
-          IfCount := 0
-        else if IfCount = 0 then
-          IfCount := 1;
-      end
-      else if Command = '%ENDIF' then
-      begin
-        if IfCount > 0 then
-          Dec(IfCount);
-      end
-      else if Command = '%STRVALUE' then
-      begin
-        TokenPos := SkipBlanks(Template, TokenPos, CharCountIn);
-        Symbol := GetIdentifier(Template, TokenPos, CharCountIn);
-        if IfCount = 0 then
-        begin
-          StrValue := Params.GetStrValue(Symbol);
-          CopyStr(Result, IndexOutput, CharCountOut, StrValue, 1, Length(StrValue));
-        end;
-      end
-      else if Command = '%INTVALUE' then
-      begin
-        TokenPos := SkipBlanks(Template, TokenPos, CharCountIn);
-        Symbol := GetIdentifier(Template, TokenPos, CharCountIn);
-        if IfCount = 0 then
-        begin
-          StrValue := IntToStr(Params.GetIntValue(Symbol));
-          CopyStr(Result, IndexOutput, CharCountOut, StrValue, 1, Length(StrValue));
-        end;
-      end
-      else if Command = '%BOOLVALUE' then
-      begin
-        TokenPos := SkipBlanks(Template, TokenPos, CharCountIn);
-        Symbol := GetIdentifier(Template, TokenPos, CharCountIn);
-        if IfCount = 0 then
-        begin
-          StrValue := BooleanToStr(Params.GetBoolValue(Symbol));
-          CopyStr(Result, IndexOutput, CharCountOut, StrValue, 1, Length(StrValue));
-        end;
-      end
-      else if Command = '%REPEATLINE' then
-      begin
-        TokenPos := SkipBlanks(Template, TokenPos, CharCountIn);
-        Symbol := GetIdentifier(Template, TokenPos, CharCountIn);
-        if IfCount = 0 then
-        begin
-          RepeatCount := Params.GetIntValue(Symbol);
-          StrIndex := TokenPos;
-          while (StrIndex <= CharCountIn) and not CharIsReturn(Template[StrIndex]) do
-            Inc(StrIndex);
-          RepeatPattern := Copy(Template, TokenPos, StrIndex - TokenPos);
-          TokenPos := StrIndex;
-
-          while RepeatCount > 0 do
-          begin
-            StrValue := RepeatPattern;
-            StrIndex := Pos('%', StrValue);
-            while StrIndex > 0 do
-            begin
-              Inc(StrIndex);
-              Symbol := GetIdentifier(StrValue, StrIndex, Length(StrValue));
-              StrList := Params.GetStringsValue(Symbol);
-              if Assigned(StrList) then
-                RepeatValue := StrList.Strings[RepeatCount - 1]
-              else
-                RepeatValue := '';
-              StrReplace(StrValue, '%' + Symbol, RepeatValue, [rfReplaceAll, rfIgnoreCase]);
-              StrIndex := Pos('%', StrValue);
-            end;
-            CopyStr(Result, IndexOutput, CharCountOut, StrValue, 1, Length(StrValue));
-            CopyStr(Result, IndexOutput, CharCountOut, NativeLineBreak, 1, Length(NativeLineBreak));
-            Dec(RepeatCount);
-          end;
-        end;
-      end
-      else if IfCount = 0 then
-        CopyStr(Result, IndexOutput, CharCountOut, Identifier, 1, Length(Identifier));
-
-      IndexInput := TokenPos;
+  Params.PushState;
+  try
+    JppParser := TJppParser.Create(Template, Params);
+    try
+      Result := JppParser.Parse;
+    finally
+      JppParser.Free;
     end;
+  finally
+    Params.PopState;
   end;
 end;
 

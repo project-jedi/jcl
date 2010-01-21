@@ -53,7 +53,8 @@ uses
 type
   EPppState = class(Exception);
 
-  TPppOption = (poProcessIncludes, poProcessDefines, poStripComments, poProcessMacros);
+  TPppOption = (poProcessIncludes, poProcessDefines, poStripComments,
+    poProcessMacros, poProcessValues);
   TPppOptions = set of TPppOption;
 
   TTriState = (ttUnknown, ttUndef, ttDefined);

@@ -30,22 +30,24 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, AppEvnts,
-  JclSysUtils,%if SendEMail JclMapi,%endif %if UnitVersioning JclUnitVersioning, JclUnitVersioningProviders,%endif JclDebug;
+  JclSysUtils,{$IFDEF SendEMail} JclMapi,{$ENDIF}{$IFDEF UnitVersioning} JclUnitVersioning, JclUnitVersioningProviders,{$ENDIF} JclDebug;
+
+{$JPPDEFINEMACRO QUOTE '}
 
 const
   UM_CREATEDETAILS = WM_USER + $100;
 
 type
   T%FORMNAME% = class(%ANCESTORNAME%)
-%if SendEMail    SendBtn: TButton;%endif
-%if LogSaveDialog    SaveBtn: TButton;%endif
+{$IFDEF SendEMail}    SendBtn: TButton;{$ENDIF}
+{$IFDEF LogSaveDialog}    SaveBtn: TButton;{$ENDIF}
     TextMemo: TMemo;
     OkBtn: TButton;
     DetailsBtn: TButton;
     BevelDetails: TBevel;
     DetailsMemo: TMemo;
-%if SendEMail    procedure SendBtnClick(Sender: TObject);%endif
-%if LogSaveDialog    procedure SaveBtnClick(Sender: TObject);%endif
+{$IFDEF SendEMail}    procedure SendBtnClick(Sender: TObject);{$ENDIF}
+{$IFDEF LogSaveDialog}    procedure SaveBtnClick(Sender: TObject);{$ENDIF}
     procedure FormPaint(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -57,10 +59,10 @@ type
     private
     FDetailsVisible: Boolean;
     FThreadID: DWORD;
-%if ActiveControls    FLastActiveControl: TWinControl;%endif
+{$IFDEF ActiveControls}    FLastActiveControl: TWinControl;{$ENDIF}
     FNonDetailsHeight: Integer;
     FFullHeight: Integer;
-%if LogFile    procedure SaveToLogFile(const FileName: TFileName);%endif
+{$IFDEF LogFile}    procedure SaveToLogFile(const FileName: TFileName);{$ENDIF}
     function GetReportAsText: string;
     procedure SetDetailsVisible(const Value: Boolean);
     procedure UMCreateDetails(var Message: TMessage); message UM_CREATEDETAILS;
@@ -123,7 +125,7 @@ resourcestring
                    'You may send it to the application vendor, helping him to understand what had happened.' + NativeLineBreak +
                    ' Application title: %s' + NativeLineBreak +
                    ' Application file: %s';
-%if UnitVersioning  RsUnitVersioningIntro = 'Unit versioning information:';%endif
+{$IFDEF UnitVersioning}  RsUnitVersioningIntro = 'Unit versioning information:';{$ENDIF}
 
 var
   %FORMNAME%: T%FORMNAME%;
@@ -231,16 +233,16 @@ var
 
 procedure T%FORMNAME%.AfterCreateDetails;
 begin
-%if SendEMail  SendBtn.Enabled := True;%endif
-%if LogSaveDialog  SaveBtn.Enabled := True;%endif
+{$IFDEF SendEMail}  SendBtn.Enabled := True;{$ENDIF}
+{$IFDEF LogSaveDialog}  SaveBtn.Enabled := True;{$ENDIF}
 end;
 
 //----------------------------------------------------------------------------
 
 procedure T%FORMNAME%.BeforeCreateDetails;
 begin
-%if SendEMail  SendBtn.Enabled := False;%endif
-%if LogSaveDialog  SaveBtn.Enabled := False;%endif
+{$IFDEF SendEMail}  SendBtn.Enabled := False;{$ENDIF}
+{$IFDEF LogSaveDialog}  SaveBtn.Enabled := False;{$ENDIF}
 end;
 
 //----------------------------------------------------------------------------
@@ -250,15 +252,15 @@ begin
   Result := 78;
 end;
 
-%if SendEMail//----------------------------------------------------------------------------
+{$IFDEF SendEMail}//----------------------------------------------------------------------------
 
 procedure T%FORMNAME%.SendBtnClick(Sender: TObject);
 begin
   with TJclEmail.Create do
   try
     ParentWnd := Application.Handle;
-    Recipients.Add('%StrValue EMailAddress');
-    Subject := '%StrValue EMailSubject';
+    Recipients.Add({$JPPEXPANDMACRO QUOTE}{$JPPSTRVALUE EMailAddress}{$JPPEXPANDMACRO QUOTE});
+    Subject := {$JPPEXPANDMACRO QUOTE}{$JPPSTRVALUE EMailSubject}{$JPPEXPANDMACRO QUOTE};
     Body := AnsiString(ReportAsText);
     SaveTaskWindows;
     try
@@ -270,16 +272,16 @@ begin
     Free;
   end;
 end;
-%endif
+{$ENDIF}
 
-%if LogSaveDialog//----------------------------------------------------------------------------
+{$IFDEF LogSaveDialog}//----------------------------------------------------------------------------
 
 procedure T%FORMNAME%.SaveBtnClick(Sender: TObject);
 begin
   with TSaveDialog.Create(Self) do
   try
     DefaultExt := '.log';
-    FileName := %StrValue LogFileName;
+    FileName := {$JPPEXPANDMACRO QUOTE}{$JPPSTRVALUE LogFileName}{$JPPEXPANDMACRO QUOTE};
     Filter := 'Log Files (*.log)|*.log|All files (*.*)|*.*';
     Title := 'Save log as...';
     Options := [ofHideReadOnly,ofPathMustExist,ofNoReadOnlyReturn,ofEnableSizing,ofDontAddToRecent];
@@ -289,7 +291,7 @@ begin
     Free;    
   end;
 end;
-%endif
+{$ENDIF}
 
 //----------------------------------------------------------------------------
 
@@ -306,11 +308,11 @@ begin
   DetailsMemo.Lines.BeginUpdate;
   try
     CreateReport;
-%if LogFile
-%if AutoSaveWorkingDirectory    SaveToLogFile(%StrValue LogFileName);%endif
-%if AutoSaveApplicationDirectory    SaveToLogFile(PathAddSeparator(ExtractFilePath(Application.ExeName)) + %StrValue LogFileName);%endif
-%if AutoSaveDesktopDirectory    SaveToLogFile(PathAddSeparator(GetDesktopFolder) + %StrValue LogFileName);%endif
-%endif
+{$IFDEF LogFile}
+{$IFDEF AutoSaveWorkingDirectory}    SaveToLogFile(%StrValue LogFileName);{$ENDIF}
+{$IFDEF AutoSaveApplicationDirectory}    SaveToLogFile(PathAddSeparator(ExtractFilePath(Application.ExeName)) + %StrValue LogFileName);{$ENDIF}
+{$IFDEF AutoSaveDesktopDirectory}    SaveToLogFile(PathAddSeparator(GetDesktopFolder) + %StrValue LogFileName);{$ENDIF}
+{$ENDIF}
     DetailsMemo.SelStart := 0;
     SendMessage(DetailsMemo.Handle, EM_SCROLLCARET, 0, 0);
     AfterCreateDetails;
@@ -327,24 +329,24 @@ end;
 
 procedure T%FORMNAME%.CreateReport;
 var
-%if ModuleList  SL: TStringList;
+{$IFDEF ModuleList}  SL: TStringList;
   I: Integer;
   ModuleName: TFileName;
   NtHeaders32: PImageNtHeaders32;
   NtHeaders64: PImageNtHeaders64;
   ModuleBase: Cardinal;
-  ImageBaseStr: string;%endif
-%if ActiveControls  C: TWinControl;%endif
-%if OSInfo  CpuInfo: TCpuInfo;
-  ProcessorDetails: string;%endif
-%if StackList  StackList: TJclStackInfoList;
-%if ReportAllThreads  ThreadList: TJclDebugThreadList;
-  AThreadID: DWORD;%endif %endif
+  ImageBaseStr: string;{$ENDIF}
+{$IFDEF ActiveControls}  C: TWinControl;{$ENDIF}
+{$IFDEF OSInfo}  CpuInfo: TCpuInfo;
+  ProcessorDetails: string;{$ENDIF}
+{$IFDEF StackList}  StackList: TJclStackInfoList;
+{$IFDEF ReportAllThreads}  ThreadList: TJclDebugThreadList;
+  AThreadID: DWORD;{$ENDIF}{$ENDIF}
   PETarget: TJclPeTarget;
-%if UnitVersioning  UnitVersioning: TUnitVersioning;
+{$IFDEF UnitVersioning}  UnitVersioning: TUnitVersioning;
   UnitVersioningModule: TUnitVersioningModule;
   UnitVersion: TUnitVersion;
-  ModuleIndex, UnitIndex: Integer;%endif
+  ModuleIndex, UnitIndex: Integer;{$ENDIF}
 begin
   DetailsMemo.Lines.Add(Format(LoadResString(@RsMainThreadID), [MainThreadID]));
   DetailsMemo.Lines.Add(Format(LoadResString(@RsExceptionThreadID), [MainThreadID]));
@@ -352,38 +354,38 @@ begin
 
   SL := TStringList.Create;
   try
-%if StackList    // Except stack list
+{$IFDEF StackList}    // Except stack list
     StackList := JclGetExceptStackList(FThreadID);
     if Assigned(StackList) then
     begin
       DetailsMemo.Lines.Add(RsExceptionStack);
       DetailsMemo.Lines.Add(Format(LoadResString(@RsStackList), [DateTimeToStr(StackList.TimeStamp)]));
-      StackList.AddToStrings(DetailsMemo.Lines, %BoolValue ModuleName, %BoolValue ModuleOffset, %BoolValue CodeDetails, %BoolValue VirtualAddress);
+      StackList.AddToStrings(DetailsMemo.Lines, {$JPPBOOLVALUE ModuleName}, {$JPPBOOLVALUE ModuleOffset}, {$JPPBOOLVALUE CodeDetails}, {$JPPBOOLVALUE VirtualAddress});
       NextDetailBlock;
     end;
 
-%if ReportMainThread    // Main thread
-    StackList := JclCreateThreadStackTraceFromID(%BoolValue RawData, MainThreadID);
+{$IFDEF ReportMainThread}    // Main thread
+    StackList := JclCreateThreadStackTraceFromID({$JPPBOOLVALUE RawData}, MainThreadID);
     if Assigned(StackList) then
     begin
       DetailsMemo.Lines.Add(LoadResString(@RsMainThreadCallStack));
       DetailsMemo.Lines.Add(Format(LoadResString(@RsStackList), [DateTimeToStr(StackList.TimeStamp)]));
-      StackList.AddToStrings(DetailsMemo.Lines, %BoolValue ModuleName, %BoolValue ModuleOffset, %BoolValue CodeDetails, %BoolValue VirtualAddress);
+      StackList.AddToStrings(DetailsMemo.Lines, {$JPPBOOLVALUE ModuleName}, {$JPPBOOLVALUE ModuleOffset}, {$JPPBOOLVALUE CodeDetails}, {$JPPBOOLVALUE VirtualAddress});
       NextDetailBlock;
-    end;%endif
-%if ReportExceptionThread    // Exception thread
+    end;{$ENDIF}
+{$IFDEF ReportExceptionThread}    // Exception thread
     if MainThreadID <> FThreadID then
     begin
-      StackList := JclCreateThreadStackTraceFromID(%BoolValue RawData, FThreadID);
+      StackList := JclCreateThreadStackTraceFromID({$JPPBOOLVALUE RawData}, FThreadID);
       if Assigned(StackList) then
       begin
         DetailsMemo.Lines.Add(Format(LoadResString(@RsExceptionThreadCallStack), [FThreadID]));
         DetailsMemo.Lines.Add(Format(LoadResString(@RsStackList), [DateTimeToStr(StackList.TimeStamp)]));
-        StackList.AddToStrings(DetailsMemo.Lines, %BoolValue ModuleName, %BoolValue ModuleOffset, %BoolValue CodeDetails, %BoolValue VirtualAddress);
+        StackList.AddToStrings(DetailsMemo.Lines, {$JPPBOOLVALUE ModuleName}, {$JPPBOOLVALUE ModuleOffset}, {$JPPBOOLVALUE CodeDetails}, {$JPPBOOLVALUE VirtualAddress});
         NextDetailBlock;
       end;
-    end;%endif
-%if ReportAllThreads    // All threads
+    end;{$ENDIF}
+{$IFDEF ReportAllThreads}    // All threads
     ThreadList := JclDebugThreadList;
     ThreadList.Lock.Enter; // avoid modifications
     try
@@ -392,22 +394,22 @@ begin
         AThreadID := ThreadList.ThreadIDs[I];
         if (AThreadID <> FThreadID) then
         begin
-          StackList := JclCreateThreadStackTrace(%BoolValue RawData, ThreadList.ThreadHandles[I]);
+          StackList := JclCreateThreadStackTrace({$JPPBOOLVALUE RawData}, ThreadList.ThreadHandles[I]);
           if Assigned(StackList) then
           begin
             DetailsMemo.Lines.Add(Format(RsThreadCallStack, [AThreadID, ThreadList.ThreadInfos[AThreadID], ThreadList.ThreadNames[AThreadID]]));
             DetailsMemo.Lines.Add(Format(LoadResString(@RsStackList), [DateTimeToStr(StackList.TimeStamp)]));
-            StackList.AddToStrings(DetailsMemo.Lines, %BoolValue ModuleName, %BoolValue ModuleOffset, %BoolValue CodeDetails, %BoolValue VirtualAddress);
+            StackList.AddToStrings(DetailsMemo.Lines, {$JPPBOOLVALUE ModuleName}, {$JPPBOOLVALUE ModuleOffset}, {$JPPBOOLVALUE CodeDetails}, {$JPPBOOLVALUE VirtualAddress});
             NextDetailBlock;
           end;
         end;
       end;
     finally
       ThreadList.Lock.Leave;
-    end;%endif
-%endif
+    end;{$ENDIF}
+{$ENDIF}
 
-%if OSInfo    // System and OS information
+{$IFDEF OSInfo}    // System and OS information
     DetailsMemo.Lines.Add(Format(RsOSVersion, [GetWindowsVersionString, NtProductTypeString,
       Win32MajorVersion, Win32MinorVersion, Win32BuildNumber, Win32CSDVersion]));
     GetCpuInfo(CpuInfo);
@@ -446,13 +448,13 @@ begin
       GetFreePhysicalMemory div 1024 div 1024]));
     DetailsMemo.Lines.Add(Format(RsScreenRes, [Screen.Width, Screen.Height, GetBPP]));
     NextDetailBlock;
-%endif
+{$ENDIF}
 
-%if ModuleList    // Modules list
+{$IFDEF ModuleList}    // Modules list
     if LoadedModulesList(SL, GetCurrentProcessId) then
     begin
-%if UnitVersioning      UnitVersioning := GetUnitVersioning;
-      UnitVersioning.RegisterProvider(TJclDefaultUnitVersioningProvider);%endif
+{$IFDEF UnitVersioning}      UnitVersioning := GetUnitVersioning;
+      UnitVersioning.RegisterProvider(TJclDefaultUnitVersioningProvider);{$ENDIF}
       DetailsMemo.Lines.Add(RsModulesList);
       SL.CustomSort(SortModulesListByAddressCompare);
       for I := 0 to SL.Count - 1 do
@@ -486,7 +488,7 @@ begin
           end
         else
           DetailsMemo.Lines.Add(ImageBaseStr + RsMissingVersionInfo);
-%if UnitVersioning        for ModuleIndex := 0 to UnitVersioning.ModuleCount - 1 do
+{$IFDEF UnitVersioning}        for ModuleIndex := 0 to UnitVersioning.ModuleCount - 1 do
         begin
           UnitVersioningModule := UnitVersioning.Modules[ModuleIndex];
           if UnitVersioningModule.Instance = ModuleBase then
@@ -499,13 +501,13 @@ begin
               DetailsMemo.Lines.Add(Format('%s%s %s %s %s', [StrRepeat(' ', 13), UnitVersion.LogPath, UnitVersion.RCSfile, UnitVersion.Revision, UnitVersion.Date]));
             end;
           end;
-        end;%endif
+        end;{$ENDIF}
       end;
       NextDetailBlock;
     end;
-%endif
+{$ENDIF}
 
-%if ActiveControls    // Active controls
+{$IFDEF ActiveControls}    // Active controls
     if (FLastActiveControl <> nil) then
     begin
       DetailsMemo.Lines.Add(RsActiveControl);
@@ -517,7 +519,7 @@ begin
       end;
       NextDetailBlock;
     end;
-%endif
+{$ENDIF}
   finally
     SL.Free;
   end;
@@ -650,7 +652,7 @@ begin
   Result := '-';
 end;
 
-%if LogFile//--------------------------------------------------------------------------------------------------
+{$IFDEF LogFile}//--------------------------------------------------------------------------------------------------
 
 procedure T%FORMNAME%.SaveToLogFile(const FileName: TFileName);
 var
@@ -665,7 +667,7 @@ begin
     SimpleLog.Free;
   end;
 end;
-%endif
+{$ENDIF}
 //--------------------------------------------------------------------------------------------------
 
 procedure T%FORMNAME%.SetDetailsVisible(const Value: Boolean);
@@ -715,7 +717,7 @@ begin
         FThreadID := Thread.ThreadID
       else
         FThreadID := MainThreadID;
-%if ActiveControls      FLastActiveControl := Screen.ActiveControl;%endif
+{$IFDEF ActiveControls}      FLastActiveControl := Screen.ActiveControl;{$ENDIF}
       if E is Exception then
         TextMemo.Text := RsErrorMessage + AdjustLineBreaks(StrEnsureSuffix('.', Exception(E).Message))
       else
@@ -752,11 +754,11 @@ end;
 
 procedure T%FORMNAME%.UpdateTextMemoScrollbars;
 begin
-%if AutoScrollBars  Canvas.Font := TextMemo.Font;
+{$IFDEF AutoScrollBars}  Canvas.Font := TextMemo.Font;
   if TextMemo.Lines.Count * Canvas.TextHeight('Wg') > TextMemo.ClientHeight then
     TextMemo.ScrollBars := ssVertical
   else
-    TextMemo.ScrollBars := ssNone;%endif   
+    TextMemo.ScrollBars := ssNone;{$ENDIF}   
 end;
 
 //==================================================================================================
@@ -772,19 +774,19 @@ begin
   begin
     AppEvents := TApplicationEvents.Create(nil);
     AppEvents.OnException := T%FORMNAME%.ExceptionHandler;
-%repeatline IgnoredExceptionsCount    AddIgnoredException(%IgnoredExceptions);
-%if TraceEAbort    RemoveIgnoredException(EAbort);%endif
-%if TraceAllExceptions    JclStackTrackingOptions := JclStackTrackingOptions + [stTraceAllExceptions];%endif
-%if RawData    JclStackTrackingOptions := JclStackTrackingOptions + [stRawMode];%endif
-%if HookDll    JclStackTrackingOptions := JclStackTrackingOptions + [stStaticModuleList];%endif
-%if DelayedTrace    JclStackTrackingOptions := JclStackTrackingOptions + [stDelayedTrace];%endif
+(*$JPPREPEAT IgnoredExceptionsCount    AddIgnoredException({$JPPREPEATSTRVALUE IgnoredExceptions});*)
+{$IFDEF TraceEAbort}    RemoveIgnoredException(EAbort);{$ENDIF}
+{$IFDEF TraceAllExceptions}    JclStackTrackingOptions := JclStackTrackingOptions + [stTraceAllExceptions];{$ENDIF}
+{$IFDEF RawData}    JclStackTrackingOptions := JclStackTrackingOptions + [stRawMode];{$ENDIF}
+{$IFDEF HookDll}    JclStackTrackingOptions := JclStackTrackingOptions + [stStaticModuleList];{$ENDIF}
+{$IFDEF DelayedTrace}    JclStackTrackingOptions := JclStackTrackingOptions + [stDelayedTrace];{$ENDIF}
     JclDebugThreadList.OnSyncException := T%FORMNAME%.ExceptionThreadHandler;
-%if AllThreads    JclHookThreads;%endif
+{$IFDEF AllThreads}    JclHookThreads;{$ENDIF}
     JclStartExceptionTracking;
-%if CatchMainThread    JclStackTrackingOptions := JclStackTrackingOptions + [stMainThreadOnly];%endif
-%if DisableIfDebuggerAttached    JclStackTrackingOptions := JclStackTrackingOptions + [stDisableIfDebuggerAttached];%endif
-%if HookDll    if HookTApplicationHandleException then
-      JclTrackExceptionsFromLibraries;%endif
+{$IFDEF CatchMainThread}    JclStackTrackingOptions := JclStackTrackingOptions + [stMainThreadOnly];{$ENDIF}
+{$IFDEF DisableIfDebuggerAttached}    JclStackTrackingOptions := JclStackTrackingOptions + [stDisableIfDebuggerAttached];{$ENDIF}
+{$IFDEF HookDll}    if HookTApplicationHandleException then
+      JclTrackExceptionsFromLibraries;{$ENDIF}
   end;
 end;
 
@@ -798,7 +800,7 @@ begin
     JclDebugThreadList.OnSyncException := nil;
     JclUnhookExceptions;
     JclStopExceptionTracking;
-%if AllThreads    JclUnhookThreads;%endif
+{$IFDEF AllThreads}    JclUnhookThreads;{$ENDIF}
   end;
 end;
 

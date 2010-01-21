@@ -30,22 +30,21 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, AppEvnts,
-  JclSysUtils,  JclUnitVersioning, JclUnitVersioningProviders, JclDebug;
+  JclSysUtils, JclUnitVersioning, JclUnitVersioningProviders, JclDebug;
+
 
 const
   UM_CREATEDETAILS = WM_USER + $100;
 
 type
   TExceptionDialog = class(TForm)
-
-
+    SaveBtn: TButton;
     TextMemo: TMemo;
     OkBtn: TButton;
     DetailsBtn: TButton;
     BevelDetails: TBevel;
     DetailsMemo: TMemo;
-
-
+    procedure SaveBtnClick(Sender: TObject);
     procedure FormPaint(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -231,16 +230,14 @@ var
 
 procedure TExceptionDialog.AfterCreateDetails;
 begin
-
-
+  SaveBtn.Enabled := True;
 end;
 
 //----------------------------------------------------------------------------
 
 procedure TExceptionDialog.BeforeCreateDetails;
 begin
-
-
+  SaveBtn.Enabled := False;
 end;
 
 //----------------------------------------------------------------------------
@@ -251,8 +248,23 @@ begin
 end;
 
 
+//----------------------------------------------------------------------------
 
-
+procedure TExceptionDialog.SaveBtnClick(Sender: TObject);
+begin
+  with TSaveDialog.Create(Self) do
+  try
+    DefaultExt := '.log';
+    FileName := 'filename.log';
+    Filter := 'Log Files (*.log)|*.log|All files (*.*)|*.*';
+    Title := 'Save log as...';
+    Options := [ofHideReadOnly,ofPathMustExist,ofNoReadOnlyReturn,ofEnableSizing,ofDontAddToRecent];
+    if Execute then
+      SaveToLogFile(FileName);
+  finally
+    Free;    
+  end;
+end;
 
 //----------------------------------------------------------------------------
 
@@ -269,11 +281,6 @@ begin
   DetailsMemo.Lines.BeginUpdate;
   try
     CreateReport;
-
-
-
-
-
     DetailsMemo.SelStart := 0;
     SendMessage(DetailsMemo.Handle, EM_SCROLLCARET, 0, 0);
     AfterCreateDetails;
@@ -302,7 +309,7 @@ var
   ProcessorDetails: string;
   StackList: TJclStackInfoList;
   ThreadList: TJclDebugThreadList;
-  AThreadID: DWORD; 
+  AThreadID: DWORD;
   PETarget: TJclPeTarget;
   UnitVersioning: TUnitVersioning;
   UnitVersioningModule: TUnitVersioningModule;
@@ -334,7 +341,6 @@ begin
       StackList.AddToStrings(DetailsMemo.Lines, True, True, True, True);
       NextDetailBlock;
     end;
-
     // All threads
     ThreadList := JclDebugThreadList;
     ThreadList.Lock.Enter; // avoid modifications
@@ -357,7 +363,6 @@ begin
     finally
       ThreadList.Lock.Leave;
     end;
-
 
     // System and OS information
     DetailsMemo.Lines.Add(Format(RsOSVersion, [GetWindowsVersionString, NtProductTypeString,
@@ -398,7 +403,6 @@ begin
       GetFreePhysicalMemory div 1024 div 1024]));
     DetailsMemo.Lines.Add(Format(RsScreenRes, [Screen.Width, Screen.Height, GetBPP]));
     NextDetailBlock;
-
 
     // Modules list
     if LoadedModulesList(SL, GetCurrentProcessId) then
@@ -456,7 +460,6 @@ begin
       NextDetailBlock;
     end;
 
-
     // Active controls
     if (FLastActiveControl <> nil) then
     begin
@@ -469,7 +472,6 @@ begin
       end;
       NextDetailBlock;
     end;
-
   finally
     SL.Free;
   end;
@@ -617,7 +619,6 @@ begin
     SimpleLog.Free;
   end;
 end;
-
 //--------------------------------------------------------------------------------------------------
 
 procedure TExceptionDialog.SetDetailsVisible(const Value: Boolean);
@@ -724,17 +725,12 @@ begin
   begin
     AppEvents := TApplicationEvents.Create(nil);
     AppEvents.OnException := TExceptionDialog.ExceptionHandler;
-
-
-
     JclStackTrackingOptions := JclStackTrackingOptions + [stRawMode];
     JclStackTrackingOptions := JclStackTrackingOptions + [stStaticModuleList];
     JclStackTrackingOptions := JclStackTrackingOptions + [stDelayedTrace];
     JclDebugThreadList.OnSyncException := TExceptionDialog.ExceptionThreadHandler;
     JclHookThreads;
     JclStartExceptionTracking;
-
-
     if HookTApplicationHandleException then
       JclTrackExceptionsFromLibraries;
   end;

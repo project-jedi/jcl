@@ -3,7 +3,7 @@ object %FORMNAME%: T%FORMNAME%
   Top = 255
   AutoScroll = False
   BorderIcons = [biSystemMenu]
-%ifnot SizeableDialog  BorderStyle = bsDialog%endif
+{$IFNDEF SizeableDialog}  BorderStyle = bsDialog{$ENDIF}
   Caption = '%FORMNAME%'
   ClientHeight = 283
   ClientWidth = 483
@@ -34,7 +34,7 @@ object %FORMNAME%: T%FORMNAME%
     Anchors = [akLeft, akTop, akRight]
     Shape = bsTopLine
   end
-%if SendEMail
+{$IFDEF SendEMail}
   object SendBtn: TButton
     Left = 403
     Top = 32
@@ -45,8 +45,8 @@ object %FORMNAME%: T%FORMNAME%
     Caption = '&Send'
     TabOrder = 0
     OnClick = SendBtnClick
-  end%endif
-%if LogSaveDialog
+  end{$ENDIF}
+{$IFDEF LogSaveDialog}
   object SaveBtn: TButton
     Left = 403
     Top = 60
@@ -57,7 +57,7 @@ object %FORMNAME%: T%FORMNAME%
     Caption = '&Save'
     TabOrder = 0
     OnClick = SaveBtnClick
-  end%endif
+  end{$ENDIF}
   object TextMemo: TMemo
     Left = 56
     Top = 8
