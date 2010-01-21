@@ -66,6 +66,7 @@
 			<DCCReference Include="vcl.dcp" />
 			<DCCReference Include="designide.dcp" />
 			<DCCReference Include="Jcl.dcp" />
+			<DCCReference Include="..\..\install\JediRegInfo.pas" />
 			<DCCReference Include="..\..\experts\common\JclOtaUtils.pas" />
 			<DCCReference Include="..\..\experts\common\JclOtaResources.pas" />
 			<DCCReference Include="..\..\experts\common\JclOtaConsts.pas" />

@@ -130,9 +130,13 @@ type
   private
     FEnvVariables: TStringList;
     FRootDir: string;
+    FJCLRootDir: string;
     FSettings: TJclOTASettings;
+    FJCLSettings: TStrings;
     function GetModuleHInstance: Cardinal;
     function GetRootDir: string;
+    function GetJCLRootDir: string;
+    function GetJCLSettings: TStrings;
     procedure ReadEnvVariables;
     procedure ConfigurationActionUpdate(Sender: TObject);
     procedure ConfigurationActionExecute(Sender: TObject);
@@ -170,7 +174,7 @@ type
     destructor Destroy; override;
     procedure AfterConstruction; override;
     procedure BeforeDestruction; override;
-    
+
     function FindExecutableName(const MapFileName: TFileName; const OutputDirectory: string;
       var ExecutableFileName: TFileName): Boolean;
     function GetDrcFileName(const Project: IOTAProject): TFileName;
@@ -190,6 +194,8 @@ type
     procedure UnregisterAction(Action: TCustomAction);
 
     property Settings: TJclOTASettings read FSettings;
+    property JCLRootDir: string read GetJCLRootDir;
+    property JCLSettings: TStrings read GetJCLSettings;
     property RootDir: string read GetRootDir;
     property ActivePersonality: TJclBorPersonality read GetActivePersonality;
     property Designer: string read GetDesigner;
@@ -312,7 +318,8 @@ uses
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
-  Forms, Graphics, Dialogs, ActiveX,
+  Forms, Graphics, Dialogs, ActiveX, FileCtrl, IniFiles,
+  JediRegInfo,
   {$IFDEF MSWINDOWS}
   ImageHlp, JclRegistry,
   {$ENDIF MSWINDOWS}
@@ -789,6 +796,68 @@ begin
     Result := 0;
 end;
 
+function TJclOTAExpertBase.GetJCLRootDir: string;
+var
+  IDERegKey, JclVersion, JclDcpDir, JclBplDir: string;
+begin
+  if FJCLRootDir = '' then
+  begin
+    IDERegKey := StrEnsureNoSuffix('\', GetOTAServices.GetBaseRegistryKey);
+    if not ReadJediRegInformation(IDERegKey, 'JCL', JclVersion, JclDcpDir, JclBplDir, FJCLRootDir)
+       or (FJCLRootDir = '') then
+    begin
+      if SelectDirectory(LoadResString(@RsBrowseToJCLRootDir), '', FJCLRootDir, [sdNewUI])
+         and DirectoryExists(FJCLRootDir) then
+      begin
+        FJCLRootDir := PathRemoveSeparator(FJCLRootDir);
+        JclVersion := Format('%d.%d.%d.%d', [JclVersionMajor, JclVersionMinor, JclVersionRelease, JclVersionBuild]);
+        JclDcpDir := JCLSettings.Values['DCP-Path'];
+        JclBplDir := JCLSettings.Values['BPL-Path'];
+        InstallJediRegInformation(IDERegKey, 'JCL', JclVersion, JclDcpDir, JclBplDir, FJCLRootDir);
+      end
+      else
+        raise EJclExpertException.CreateRes(@RsENoRootDir);
+    end;
+  end;
+  Result := FJCLRootDir;
+end;
+
+function TJclOTAExpertBase.GetJCLSettings: TStrings;
+var
+  Installations: TJclBorRADToolInstallations;
+  Installation: TJclBorRADToolInstallation;
+  I: Integer;
+  IDERegKey: string;
+  ConfigIni: TIniFile;
+const
+  JclConfigIni = 'bin\JCL-install.ini';
+begin
+  if not Assigned(FJCLSettings) then
+  begin
+    IDERegKey := StrEnsureNoSuffix('\', GetOTAServices.GetBaseRegistryKey);
+    Installations := TJclBorRADToolInstallations.Create;
+    try
+      for I := 0 to Installations.Count - 1 do
+      begin
+        Installation := Installations.Installations[I];
+        if StrSame(IDERegKey, StrEnsureNoSuffix('\', Installation.ConfigDataLocation)) then
+        begin
+          ConfigIni := TIniFile.Create(PathAddSeparator(FJCLRootDir) + JclConfigIni);
+          try
+            FJCLSettings := TStringList.Create;
+            ConfigIni.ReadSectionValues(Installation.Name, FJCLSettings);
+          finally
+            ConfigIni.Free;
+          end;
+        end;
+      end;
+    finally
+      Installations.Free;
+    end;
+  end;
+  Result := FJCLSettings;
+end;
+
 class procedure TJclOTAExpertBase.AddExpert(AExpert: TJclOTAExpertBase);
 begin
   if not Assigned(GlobalExpertList) then
@@ -936,7 +1005,7 @@ destructor TJclOTAExpertBase.Destroy;
 begin
   FreeAndNil(FSettings);
   FreeAndNil(FEnvVariables);
-
+  FreeAndNil(FJCLSettings);
   inherited Destroy;
 end;
 

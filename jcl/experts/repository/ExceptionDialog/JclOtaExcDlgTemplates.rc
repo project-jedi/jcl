@@ -1,5 +1,0 @@
-ExceptDlgDelphi32pas EXCDLG LOADONCALL MOVEABLE DISCARDABLE "Templates\ExceptDlg.Delphi32.pas"
-ExceptDlgDelphi32dfm EXCDLG LOADONCALL MOVEABLE DISCARDABLE "Templates\ExceptDlg.Delphi32.dfm"
-ExceptDlgCBuilder32h EXCDLG LOADONCALL MOVEABLE DISCARDABLE "Templates\ExceptDlg.CBuilder32.h"
-ExceptDlgCBuilder32cpp EXCDLG LOADONCALL MOVEABLE DISCARDABLE "Templates\ExceptDlg.CBuilder32.cpp"
-ExceptDlgCBuilder32dfm EXCDLG LOADONCALL MOVEABLE DISCARDABLE "Templates\ExceptDlg.CBuilder32.dfm"

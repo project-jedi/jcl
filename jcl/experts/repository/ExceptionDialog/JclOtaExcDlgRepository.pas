@@ -98,41 +98,26 @@ uses
   JclOtaResources, JclOtaConsts,
   JclOtaTemplates, JclOtaRepositoryReg, JclOtaExcDlgWizard;
 
-{$R JclOtaExcDlgTemplates.res}
-
 //=== { TJclExcDlgExpert } ===================================================
 
 procedure TJclExcDlgExpert.CreateExceptionDialog(
   const Params: TJclOtaExcDlgParams);
-  function LoadTemplate(const TemplatePath, FileName: string): string;
+  function LoadTemplate(const FileName: string): string;
   var
     AFileStream: TFileStream;
-    AResourceStream: TResourceStream;
     StreamLength: Int64;
     AnsiResult: AnsiString;
   begin
     AnsiResult := '';
-    if (TemplatePath <> '') and (FileName <> '') then
+    if FileExists(FileName) then
     begin
-      AFileStream := TFileStream.Create(TemplatePath + FileName, fmOpenRead or fmShareDenyWrite);
+      AFileStream := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);
       try
         StreamLength := AFileStream.Size;
         SetLength(AnsiResult, StreamLength);
         AFileStream.ReadBuffer(AnsiResult[1], StreamLength);
       finally
         AFileStream.Free;
-      end;
-    end
-    else
-    if (FileName <> '') then
-    begin
-      AResourceStream := TResourceStream.Create(HInstance, StringReplace(FileName, '.', '', [rfReplaceAll]), 'EXCDLG');
-      try
-        StreamLength := AResourceStream.Size;
-        SetLength(AnsiResult, StreamLength);
-        AResourceStream.ReadBuffer(AnsiResult[1], StreamLength);
-      finally
-        AResourceStream.Free;
       end;
     end;
     Result := string(AnsiResult);
@@ -142,18 +127,11 @@ const
   DelphiTemplate = 'ExceptDlg.Delphi32';
   BCBTemplate = 'ExceptDlg.CBuilder32';
 var
-  JclSettingsKeyName, TemplatePath,
-  FormExtension, FormTemplate, FormContent, FormFileName,
+  TemplatePath, FormExtension, FormTemplate, FormContent, FormFileName,
   HeaderExtension, HeaderTemplate, HeaderContent, HeaderFileName,
   SourceExtension, SourceTemplate, SourceContent, SourceFileName: string;
-  OTAServices: IOTAServices;
 begin
-  OTAServices := GetOTAServices;
-  JclSettingsKeyName := StrEnsureSuffix('\', OTAServices.GetBaseRegistryKey) + RegJclKey;
-
-  TemplatePath := RegReadStringDef(HKCU, JclSettingsKeyName, JclRootDirValueName, '');
-  if TemplatePath <> '' then
-    TemplatePath := PathAddSeparator(TemplatePath) + TemplateSubDir;
+  TemplatePath := PathAddSeparator(JCLRootDir) + TemplateSubDir;
 
   case Params.Language of
     bpDelphi32:
@@ -185,9 +163,9 @@ begin
       end;
   end;
 
-  FormTemplate := LoadTemplate(TemplatePath, FormTemplate);
-  HeaderTemplate := LoadTemplate(TemplatePath, HeaderTemplate);
-  SourceTemplate := LoadTemplate(TemplatePath, SourceTemplate);
+  FormTemplate := LoadTemplate(TemplatePath + FormTemplate);
+  HeaderTemplate := LoadTemplate(TemplatePath + HeaderTemplate);
+  SourceTemplate := LoadTemplate(TemplatePath + SourceTemplate);
 
   FormContent := ApplyTemplate(FormTemplate, Params);
   HeaderContent := ApplyTemplate(HeaderTemplate, Params);

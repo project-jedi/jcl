@@ -13,6 +13,7 @@
     <Package Name="Jcl-R" Targets="all" Condition=""/>
   </Requires>
   <Contains>
+    <File Name="..\..\install\JediRegInfo.pas" Targets="designtimeIDE" Formname="" Condition=""/>
     <File Name="..\..\experts\common\JclOtaUtils.pas" Targets="designtimeIDE" Formname="" Condition=""/>
     <File Name="..\..\experts\common\JclOtaResources.pas" Targets="designtimeIDE" Formname="" Condition=""/>
     <File Name="..\..\experts\common\JclOtaConsts.pas" Targets="designtimeIDE" Formname="" Condition=""/>

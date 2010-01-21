@@ -42,6 +42,7 @@ uses
 const
   DelphiRootDirKeyValue = 'RootDir';
   RegJclKey             = 'Jedi\JCL\';
+  JclRootDirValueName   = 'RootDir';
   RegJclIDEKey          = RegJclKey + 'IDE\';
   DelphiEnvironmentVar  = 'DELPHI';
   EnvironmentVarsKey    = 'Environment Variables';
@@ -124,7 +125,6 @@ const
   SRegWizardActive    = 'Uses Wizard Active';
   SRegWizardConfirm   = 'Uses Wizard Confirm';
   SRegWizardIniFile   = 'Configuration File';
-  JclRootDirValueName = 'RootDir';
   JclIniFileLocation  = 'experts\useswizard\JediUsesWizard.ini';
 
   //=== Project analyser =====================================================

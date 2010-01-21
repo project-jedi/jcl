@@ -73,6 +73,7 @@ resourcestring
   RsENoEnvironmentOptions = 'Environment options are not available';
   RsELineTooLong = 'Line too long in project file';
   RsEUnterminatedComment = 'Unterminated comment in project file';
+  RsBrowseToJCLRootDir = 'Browse to JCL root directory';
 
 //=== JclExceptionForm.pas ===================================================
 resourcestring
