@@ -806,7 +806,7 @@ begin
     if not ReadJediRegInformation(IDERegKey, 'JCL', JclVersion, JclDcpDir, JclBplDir, FJCLRootDir)
        or (FJCLRootDir = '') then
     begin
-      if SelectDirectory(LoadResString(@RsBrowseToJCLRootDir), '', FJCLRootDir, [sdNewUI])
+      if SelectDirectory(LoadResString(@RsBrowseToJCLRootDir), '', FJCLRootDir)
          and DirectoryExists(FJCLRootDir) then
       begin
         FJCLRootDir := PathRemoveSeparator(FJCLRootDir);
