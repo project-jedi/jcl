@@ -1451,9 +1451,8 @@ begin
     for I := FSize - 1 downto 0 do
       if ItemsEqual(FItems[I], AInterface) then
       begin
-        FItems[I] := nil;
         if I < (FSize - 1) then
-          MoveArray(FItems, I + 1, I, FSize - I);
+          MoveArray(FItems, I + 1, I, FSize - 1 - I);
         Dec(FSize);
         Result := True;
         if FRemoveSingleElement then
@@ -1507,7 +1506,7 @@ begin
     begin
       Result := FItems[Index];
       if Index < (FSize - 1) then
-        MoveArray(FItems, Index + 1, Index, FSize - Index);
+        MoveArray(FItems, Index + 1, Index, FSize - 1 - Index);
       Dec(FSize);
       AutoPack;
     end
@@ -2265,9 +2264,8 @@ begin
     for I := FSize - 1 downto 0 do
       if ItemsEqual(FItems[I], AString) then
       begin
-        FItems[I] := '';
         if I < (FSize - 1) then
-          MoveArray(FItems, I + 1, I, FSize - I);
+          MoveArray(FItems, I + 1, I, FSize - 1 - I);
         Dec(FSize);
         Result := True;
         if FRemoveSingleElement then
@@ -2321,7 +2319,7 @@ begin
     begin
       Result := FItems[Index];
       if Index < (FSize - 1) then
-        MoveArray(FItems, Index + 1, Index, FSize - Index);
+        MoveArray(FItems, Index + 1, Index, FSize - 1 - Index);
       Dec(FSize);
       AutoPack;
     end
@@ -3079,9 +3077,8 @@ begin
     for I := FSize - 1 downto 0 do
       if ItemsEqual(FItems[I], AString) then
       begin
-        FItems[I] := '';
         if I < (FSize - 1) then
-          MoveArray(FItems, I + 1, I, FSize - I);
+          MoveArray(FItems, I + 1, I, FSize - 1 - I);
         Dec(FSize);
         Result := True;
         if FRemoveSingleElement then
@@ -3135,7 +3132,7 @@ begin
     begin
       Result := FItems[Index];
       if Index < (FSize - 1) then
-        MoveArray(FItems, Index + 1, Index, FSize - Index);
+        MoveArray(FItems, Index + 1, Index, FSize - 1 - Index);
       Dec(FSize);
       AutoPack;
     end
@@ -3894,9 +3891,8 @@ begin
     for I := FSize - 1 downto 0 do
       if ItemsEqual(FItems[I], AString) then
       begin
-        FItems[I] := '';
         if I < (FSize - 1) then
-          MoveArray(FItems, I + 1, I, FSize - I);
+          MoveArray(FItems, I + 1, I, FSize - 1 - I);
         Dec(FSize);
         Result := True;
         if FRemoveSingleElement then
@@ -3950,7 +3946,7 @@ begin
     begin
       Result := FItems[Index];
       if Index < (FSize - 1) then
-        MoveArray(FItems, Index + 1, Index, FSize - Index);
+        MoveArray(FItems, Index + 1, Index, FSize - 1 - Index);
       Dec(FSize);
       AutoPack;
     end
@@ -4709,9 +4705,8 @@ begin
     for I := FSize - 1 downto 0 do
       if ItemsEqual(FItems[I], AValue) then
       begin
-        FItems[I] := 0.0;
         if I < (FSize - 1) then
-          MoveArray(FItems, I + 1, I, FSize - I);
+          MoveArray(FItems, I + 1, I, FSize - 1 - I);
         Dec(FSize);
         Result := True;
         if FRemoveSingleElement then
@@ -4765,7 +4760,7 @@ begin
     begin
       Result := FItems[Index];
       if Index < (FSize - 1) then
-        MoveArray(FItems, Index + 1, Index, FSize - Index);
+        MoveArray(FItems, Index + 1, Index, FSize - 1 - Index);
       Dec(FSize);
       AutoPack;
     end
@@ -5523,9 +5518,8 @@ begin
     for I := FSize - 1 downto 0 do
       if ItemsEqual(FItems[I], AValue) then
       begin
-        FItems[I] := 0.0;
         if I < (FSize - 1) then
-          MoveArray(FItems, I + 1, I, FSize - I);
+          MoveArray(FItems, I + 1, I, FSize - 1 - I);
         Dec(FSize);
         Result := True;
         if FRemoveSingleElement then
@@ -5579,7 +5573,7 @@ begin
     begin
       Result := FItems[Index];
       if Index < (FSize - 1) then
-        MoveArray(FItems, Index + 1, Index, FSize - Index);
+        MoveArray(FItems, Index + 1, Index, FSize - 1 - Index);
       Dec(FSize);
       AutoPack;
     end
@@ -6337,9 +6331,8 @@ begin
     for I := FSize - 1 downto 0 do
       if ItemsEqual(FItems[I], AValue) then
       begin
-        FItems[I] := 0.0;
         if I < (FSize - 1) then
-          MoveArray(FItems, I + 1, I, FSize - I);
+          MoveArray(FItems, I + 1, I, FSize - 1 - I);
         Dec(FSize);
         Result := True;
         if FRemoveSingleElement then
@@ -6393,7 +6386,7 @@ begin
     begin
       Result := FItems[Index];
       if Index < (FSize - 1) then
-        MoveArray(FItems, Index + 1, Index, FSize - Index);
+        MoveArray(FItems, Index + 1, Index, FSize - 1 - Index);
       Dec(FSize);
       AutoPack;
     end
@@ -7151,9 +7144,8 @@ begin
     for I := FSize - 1 downto 0 do
       if ItemsEqual(FItems[I], AValue) then
       begin
-        FItems[I] := 0;
         if I < (FSize - 1) then
-          MoveArray(FItems, I + 1, I, FSize - I);
+          MoveArray(FItems, I + 1, I, FSize - 1 - I);
         Dec(FSize);
         Result := True;
         if FRemoveSingleElement then
@@ -7207,7 +7199,7 @@ begin
     begin
       Result := FItems[Index];
       if Index < (FSize - 1) then
-        MoveArray(FItems, Index + 1, Index, FSize - Index);
+        MoveArray(FItems, Index + 1, Index, FSize - 1 - Index);
       Dec(FSize);
       AutoPack;
     end
@@ -7965,9 +7957,8 @@ begin
     for I := FSize - 1 downto 0 do
       if ItemsEqual(FItems[I], AValue) then
       begin
-        FItems[I] := 0;
         if I < (FSize - 1) then
-          MoveArray(FItems, I + 1, I, FSize - I);
+          MoveArray(FItems, I + 1, I, FSize - 1 - I);
         Dec(FSize);
         Result := True;
         if FRemoveSingleElement then
@@ -8021,7 +8012,7 @@ begin
     begin
       Result := FItems[Index];
       if Index < (FSize - 1) then
-        MoveArray(FItems, Index + 1, Index, FSize - Index);
+        MoveArray(FItems, Index + 1, Index, FSize - 1 - Index);
       Dec(FSize);
       AutoPack;
     end
@@ -8779,9 +8770,8 @@ begin
     for I := FSize - 1 downto 0 do
       if ItemsEqual(FItems[I], AValue) then
       begin
-        FItems[I] := 0;
         if I < (FSize - 1) then
-          MoveArray(FItems, I + 1, I, FSize - I);
+          MoveArray(FItems, I + 1, I, FSize - 1 - I);
         Dec(FSize);
         Result := True;
         if FRemoveSingleElement then
@@ -8835,7 +8825,7 @@ begin
     begin
       Result := FItems[Index];
       if Index < (FSize - 1) then
-        MoveArray(FItems, Index + 1, Index, FSize - Index);
+        MoveArray(FItems, Index + 1, Index, FSize - 1 - Index);
       Dec(FSize);
       AutoPack;
     end
@@ -9593,9 +9583,8 @@ begin
     for I := FSize - 1 downto 0 do
       if ItemsEqual(FItems[I], APtr) then
       begin
-        FItems[I] := nil;
         if I < (FSize - 1) then
-          MoveArray(FItems, I + 1, I, FSize - I);
+          MoveArray(FItems, I + 1, I, FSize - 1 - I);
         Dec(FSize);
         Result := True;
         if FRemoveSingleElement then
@@ -9649,7 +9638,7 @@ begin
     begin
       Result := FItems[Index];
       if Index < (FSize - 1) then
-        MoveArray(FItems, Index + 1, Index, FSize - Index);
+        MoveArray(FItems, Index + 1, Index, FSize - 1 - Index);
       Dec(FSize);
       AutoPack;
     end
@@ -10407,9 +10396,8 @@ begin
     for I := FSize - 1 downto 0 do
       if ItemsEqual(FItems[I], AObject) then
       begin
-        FItems[I] := nil;
         if I < (FSize - 1) then
-          MoveArray(FItems, I + 1, I, FSize - I);
+          MoveArray(FItems, I + 1, I, FSize - 1 - I);
         Dec(FSize);
         Result := True;
         if FRemoveSingleElement then
@@ -10463,7 +10451,7 @@ begin
     begin
       Result := FItems[Index];
       if Index < (FSize - 1) then
-        MoveArray(FItems, Index + 1, Index, FSize - Index);
+        MoveArray(FItems, Index + 1, Index, FSize - 1 - Index);
       Dec(FSize);
       AutoPack;
     end
@@ -11222,9 +11210,8 @@ begin
     for I := FSize - 1 downto 0 do
       if ItemsEqual(FItems[I], AItem) then
       begin
-        FItems[I] := Default(T);
         if I < (FSize - 1) then
-          MoveArray(FItems, I + 1, I, FSize - I);
+          MoveArray(FItems, I + 1, I, FSize - 1 - I);
         Dec(FSize);
         Result := True;
         if FRemoveSingleElement then
@@ -11278,7 +11265,7 @@ begin
     begin
       Result := FItems[Index];
       if Index < (FSize - 1) then
-        MoveArray(FItems, Index + 1, Index, FSize - Index);
+        MoveArray(FItems, Index + 1, Index, FSize - 1 - Index);
       Dec(FSize);
       AutoPack;
     end
