@@ -68,7 +68,6 @@ type
     procedure RemoveOrphanedLineBreaks;
   protected
     procedure AddResult(const S: string);
-    procedure Emit(const AText: string);
     function IsExcludedInclude(const FileName: string): Boolean;
 
     procedure NextToken;
@@ -299,11 +298,6 @@ begin
   if FAllWhiteSpaceOut then
     FAllWhiteSpaceOut := AllWhiteSpace(@FResult[FLineBreakPos]);
   Inc(FResultLen, Length(AResult));
-end;
-
-procedure TJppParser.Emit(const AText: string);
-begin
-  FResult := FResult + AText;
 end;
 
 function TJppParser.IsExcludedInclude(const FileName: string): Boolean;
