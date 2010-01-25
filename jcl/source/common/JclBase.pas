@@ -411,6 +411,21 @@ begin
   end;
 end;
 
+procedure InitializeArray(var List: TDynIInterfaceArray; FromIndex, Count: SizeInt); overload;
+{$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+begin
+  {$IFDEF FPC}
+  while Count > 0 do
+  begin
+    Initialize(List[FromIndex]);
+    Inc(FromIndex);
+    Dec(Count);
+  end;
+  {$ELSE ~FPC}
+  Initialize(List[FromIndex], Count);
+  {$ENDIF ~FPC}
+end;
+
 procedure InitializeArrayAfterMove(var List: TDynIInterfaceArray; FromIndex, ToIndex, Count: SizeInt); overload;
 {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 begin
@@ -419,15 +434,15 @@ begin
   begin
     if (ToIndex - FromIndex) < Count then
       Count := ToIndex - FromIndex;
-    Initialize(List[FromIndex], Count);
+    InitializeArray(List, FromIndex, Count);
   end
   else
   if FromIndex > ToIndex then
   begin
     if (FromIndex - ToIndex) < Count then
-      Initialize(List[ToIndex + Count], FromIndex - ToIndex)
+      InitializeArray(List, ToIndex + Count, FromIndex - ToIndex)
     else
-      Initialize(List[FromIndex], Count);
+      InitializeArray(List, FromIndex, Count);
   end;
 end;
 
@@ -456,6 +471,21 @@ begin
   end;
 end;
 
+procedure InitializeArray(var List: TDynStringArray; FromIndex, Count: SizeInt); overload;
+{$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+begin
+  {$IFDEF FPC}
+  while Count > 0 do
+  begin
+    Initialize(List[FromIndex]);
+    Inc(FromIndex);
+    Dec(Count);
+  end;
+  {$ELSE ~FPC}
+  Initialize(List[FromIndex], Count);
+  {$ENDIF ~FPC}
+end;
+
 procedure InitializeArrayAfterMove(var List: TDynStringArray; FromIndex, ToIndex, Count: SizeInt); overload;
 {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 begin
@@ -464,15 +494,15 @@ begin
   begin
     if (ToIndex - FromIndex) < Count then
       Count := ToIndex - FromIndex;
-    Initialize(List[FromIndex], Count);
+    InitializeArray(List, FromIndex, Count);
   end
   else
   if FromIndex > ToIndex then
   begin
     if (FromIndex - ToIndex) < Count then
-      Initialize(List[ToIndex + Count], FromIndex - ToIndex)
+      InitializeArray(List, ToIndex + Count, FromIndex - ToIndex)
     else
-      Initialize(List[FromIndex], Count);
+      InitializeArray(List, FromIndex, Count);
   end;
 end;
 
@@ -560,6 +590,21 @@ begin
   end;
 end;
 
+procedure InitializeArray(var List: TDynUnicodeStringArray; FromIndex, Count: SizeInt); overload;
+{$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+begin
+  {$IFDEF FPC}
+  while Count > 0 do
+  begin
+    Initialize(List[FromIndex]);
+    Inc(FromIndex);
+    Dec(Count);
+  end;
+  {$ELSE ~FPC}
+  Initialize(List[FromIndex], Count);
+  {$ENDIF ~FPC}
+end;
+
 procedure InitializeArrayAfterMove(var List: TDynUnicodeStringArray; FromIndex, ToIndex, Count: SizeInt); overload;
 {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 begin
@@ -568,15 +613,15 @@ begin
   begin
     if (ToIndex - FromIndex) < Count then
       Count := ToIndex - FromIndex;
-    Initialize(List[FromIndex], Count);
+    InitializeArray(List, FromIndex, Count);
   end
   else
   if FromIndex > ToIndex then
   begin
     if (FromIndex - ToIndex) < Count then
-      Initialize(List[ToIndex + Count], FromIndex - ToIndex)
+      InitializeArray(List, ToIndex + Count, FromIndex - ToIndex)
     else
-      Initialize(List[FromIndex], Count);
+      InitializeArray(List, FromIndex, Count);
   end;
 end;
 
@@ -607,6 +652,21 @@ begin
   end;
 end;
 
+procedure InitializeArray(var List: TDynAnsiStringArray; FromIndex, Count: SizeInt); overload;
+{$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+begin
+  {$IFDEF FPC}
+  while Count > 0 do
+  begin
+    Initialize(List[FromIndex]);
+    Inc(FromIndex);
+    Dec(Count);
+  end;
+  {$ELSE ~FPC}
+  Initialize(List[FromIndex], Count);
+  {$ENDIF ~FPC}
+end;
+
 procedure InitializeArrayAfterMove(var List: TDynAnsiStringArray; FromIndex, ToIndex, Count: SizeInt); overload;
 {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 begin
@@ -615,15 +675,15 @@ begin
   begin
     if (ToIndex - FromIndex) < Count then
       Count := ToIndex - FromIndex;
-    Initialize(List[FromIndex], Count);
+    InitializeArray(List, FromIndex, Count);
   end
   else
   if FromIndex > ToIndex then
   begin
     if (FromIndex - ToIndex) < Count then
-      Initialize(List[ToIndex + Count], FromIndex - ToIndex)
+      InitializeArray(List, ToIndex + Count, FromIndex - ToIndex)
     else
-      Initialize(List[FromIndex], Count);
+      InitializeArray(List, FromIndex, Count);
   end;
 end;
 
@@ -653,6 +713,21 @@ begin
   end;
 end;
 
+procedure InitializeArray(var List: TDynWideStringArray; FromIndex, Count: SizeInt); overload;
+{$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+begin
+  {$IFDEF FPC}
+  while Count > 0 do
+  begin
+    Initialize(List[FromIndex]);
+    Inc(FromIndex);
+    Dec(Count);
+  end;
+  {$ELSE ~FPC}
+  Initialize(List[FromIndex], Count);
+  {$ENDIF ~FPC}
+end;
+
 procedure InitializeArrayAfterMove(var List: TDynWideStringArray; FromIndex, ToIndex, Count: SizeInt); overload;
 {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 begin
@@ -661,15 +736,15 @@ begin
   begin
     if (ToIndex - FromIndex) < Count then
       Count := ToIndex - FromIndex;
-    Initialize(List[FromIndex], Count);
+    InitializeArray(List, FromIndex, Count);
   end
   else
   if FromIndex > ToIndex then
   begin
     if (FromIndex - ToIndex) < Count then
-      Initialize(List[ToIndex + Count], FromIndex - ToIndex)
+      InitializeArray(List, ToIndex + Count, FromIndex - ToIndex)
     else
-      Initialize(List[FromIndex], Count);
+      InitializeArray(List, FromIndex, Count);
   end;
 end;
 
