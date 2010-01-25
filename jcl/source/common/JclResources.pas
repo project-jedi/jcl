@@ -2208,14 +2208,6 @@ resourcestring
   RsTempConvTypeError = 'An invalid type has been provided for the %s parameter';
   RsConvTempBelowAbsoluteZero = 'Temperature can not be below Absolute Zero!';
 
-//=== JclWideFormat ==========================================================
-resourcestring
-  RsFormatSyntaxError = 'Syntax error at index %u';
-  RsFormatNoArgument = 'No argument at index %u';
-  RsFormatBadArgumentType = 'Invalid argument type (%s) at index %u. Expected [%s]';
-  RsFormatBadArgumentTypeEx = 'Invalid argument type (%s) at index %u for format ''%s''. Expected [%s]';
-  RsFormatNoArgumentEx = 'No argument at index %u for format ''%s''';
-
 //=== JclWin32 ===============================================================
 resourcestring
   RsWin32Error        = 'Win32 error: %s (%u)%s%s';

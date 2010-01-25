@@ -88,7 +88,6 @@
     <File Name="..\..\source\windows\JclTask.pas" Targets="Windows" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclTD32.pas" Targets="Windows" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclTimeZones.pas" Targets="Windows" Formname="" Condition=""/>
-    <File Name="..\..\source\windows\JclWideFormat.pas" Targets="Delphi" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclWin32.pas" Targets="Windows" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclWin32Ex.pas" Targets="Windows" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclWinMIDI.pas" Targets="Windows" Formname="" Condition=""/>

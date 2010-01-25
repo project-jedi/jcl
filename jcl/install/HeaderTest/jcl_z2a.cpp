@@ -41,9 +41,6 @@
 #ifdef TEST_COMMON
 #include <JclWideStrings.hpp>
 #endif TEST_COMMON
-#ifdef TEST_WINDOWS
-#include <JclWideFormat.hpp>
-#endif TEST_WINDOWS
 #ifdef TEST_VCL
 #include <JclVersionCtrlSVNImpl.hpp>
 #endif TEST_VCL

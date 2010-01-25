@@ -138,7 +138,6 @@
 			<DCCReference Include="..\..\source\windows\JclTask.pas" />
 			<DCCReference Include="..\..\source\windows\JclTD32.pas" />
 			<DCCReference Include="..\..\source\windows\JclTimeZones.pas" />
-			<DCCReference Include="..\..\source\windows\JclWideFormat.pas" />
 			<DCCReference Include="..\..\source\windows\JclWin32.pas" />
 			<DCCReference Include="..\..\source\windows\JclWin32Ex.pas" />
 			<DCCReference Include="..\..\source\windows\JclWinMIDI.pas" />
