@@ -273,14 +273,14 @@ procedure MoveArray(var List: TDynUnicodeStringArray; FromIndex, ToIndex, Count:
 {$ENDIF SUPPORTS_UNICODE_STRING}
 {$IFNDEF FPC}
 procedure MoveArray(var List: TDynAnsiStringArray; FromIndex, ToIndex, Count: SizeInt); overload;
-{$ENDIF}
+{$ENDIF ~FPC}
 procedure MoveArray(var List: TDynWideStringArray; FromIndex, ToIndex, Count: SizeInt); overload;
 procedure MoveArray(var List: TDynObjectArray; FromIndex, ToIndex, Count: SizeInt); overload;
 procedure MoveArray(var List: TDynSingleArray; FromIndex, ToIndex, Count: SizeInt); overload;
 procedure MoveArray(var List: TDynDoubleArray; FromIndex, ToIndex, Count: SizeInt); overload;
-{$IFNDEF FPC}
+{$IFDEF SUPPORTS_EXTENDED}
 procedure MoveArray(var List: TDynExtendedArray; FromIndex, ToIndex, Count: SizeInt); overload;
-{$ENDIF}
+{$ENDIF SUPPORTS_EXTENDED}
 procedure MoveArray(var List: TDynIntegerArray; FromIndex, ToIndex, Count: SizeInt); overload;
 procedure MoveArray(var List: TDynCardinalArray; FromIndex, ToIndex, Count: SizeInt); overload;
 procedure MoveArray(var List: TDynInt64Array; FromIndex, ToIndex, Count: SizeInt); overload;
@@ -770,7 +770,7 @@ begin
   end;
 end;
 
-{$IFNDEF FPC}
+{$IFDEF SUPPORTS_EXTENDED}
 procedure InitializeArrayAfterMove(var List: TDynExtendedArray; FromIndex, ToIndex, Count: SizeInt); overload;
 {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 begin
@@ -799,7 +799,7 @@ begin
     InitializeArrayAfterMove(List, FromIndex, ToIndex, Count);
   end;
 end;
-{$ENDIF ~FPC}
+{$ENDIF SUPPORTS_EXTENDED}
 
 procedure InitializeArrayAfterMove(var List: TDynIntegerArray; FromIndex, ToIndex, Count: SizeInt); overload;
 {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
