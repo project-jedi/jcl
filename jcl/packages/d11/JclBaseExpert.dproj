@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
-    <DCC_UsePackage>rtl;vcl;designide;Jcl</DCC_UsePackage>
+    <DCC_UsePackage>rtl;vcl;vclx;designide;Jcl</DCC_UsePackage>
     <DCC_Define>BCB;RELEASE</DCC_Define>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -87,6 +87,7 @@
     </DelphiCompile>
     <DCCReference Include="rtl.dcp" />
     <DCCReference Include="vcl.dcp" />
+    <DCCReference Include="vclx.dcp" />
     <DCCReference Include="designide.dcp" />
     <DCCReference Include="Jcl.dcp" />
     <DCCReference Include="..\..\install\JediRegInfo.pas" />
