@@ -262,32 +262,65 @@ procedure TJppParser.AddResult(const S: string);
 var
   TempMemoryStream: TMemoryStream;
   TempStringStream: TJclAutoStream;
+  TempLexer: TJppLexer;
   TempParser: TJppParser;
   AResult: string;
+  Recurse: Boolean;
 begin
   if FSkipLevel > 0 then
     Exit;
   // recurse macro expanding
   if StrIPos('$JPP', S) > 0 then
   begin
-    TempMemoryStream := TMemoryStream.Create;
+    Recurse := False;
+    TempLexer := TJppLexer.Create(S);
     try
-      TempStringStream := TJclAutoStream.Create(TempMemoryStream);
-      try
-        TempStringStream.WriteString(S, 1, Length(S));
-        TempStringStream.Seek(0, soBeginning);
-        TempParser := TJppParser.Create(TempStringStream.ReadString, State);
-        try
-          AResult := TempParser.Parse;
-        finally
-          TempParser.Free;
+      while True do
+      begin
+        case TempLexer.CurrTok of
+          ptEof:
+            Break;
+          ptJppDefineMacro,
+          ptJppExpandMacro,
+          ptJppUndefMacro,
+          ptJppStrValue,
+          ptJppIntValue,
+          ptJppBoolValue,
+          ptJppRepeat,
+          ptJppRepeatStrValue:
+            begin
+              Recurse := True;
+              Break;
+            end;
         end;
-      finally
-        TempStringStream.Free;
+        TempLexer.NextTok;
       end;
     finally
-      TempMemoryStream.Free;
+      TempLexer.Free;
     end;
+    if Recurse then
+    begin
+      TempMemoryStream := TMemoryStream.Create;
+      try
+        TempStringStream := TJclAutoStream.Create(TempMemoryStream);
+        try
+          TempStringStream.WriteString(S, 1, Length(S));
+          TempStringStream.Seek(0, soBeginning);
+          TempParser := TJppParser.Create(TempStringStream.ReadString, State);
+          try
+            AResult := TempParser.Parse;
+          finally
+            TempParser.Free;
+          end;
+        finally
+          TempStringStream.Free;
+        end;
+      finally
+        TempMemoryStream.Free;
+      end;
+    end
+    else
+      AResult := S;
   end
   else
     AResult := S;
