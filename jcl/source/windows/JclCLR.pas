@@ -46,10 +46,7 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  Classes, SysUtils,
-  {$IFDEF HAS_UNIT_CONTNRS}
-  Contnrs,
-  {$ENDIF HAS_UNIT_CONTNRS}
+  Classes, SysUtils, Contnrs,
   JclBase, JclFileUtils, JclStrings, JclPeImage, JclSysUtils;
 
 type

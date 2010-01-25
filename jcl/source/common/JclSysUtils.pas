@@ -681,16 +681,10 @@ const
 implementation
 
 uses
-  {$IFDEF HAS_UNIT_TYPES}
   Types,
-  {$ENDIF HAS_UNIT_TYPES}
-  {$IFDEF UNIX}
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
-  {$ELSE ~HAS_UNIT_LIBC}
-  dl,
-  {$ENDIF ~HAS_UNIT_LIBC}
-  {$ENDIF UNIX}
+  {$ENDIF HAS_UNIT_LIBC}
   {$IFDEF MSWINDOWS}
   JclConsole,
   {$ENDIF MSWINDOWS}

@@ -47,10 +47,7 @@ uses
   {$IFDEF MSWINDOWS}
   Windows, 
   {$ENDIF MSWINDOWS}
-  Classes, SysUtils,
-  {$IFDEF HAS_UNIT_CONTNRS}
-  Contnrs,
-  {$ENDIF HAS_UNIT_CONTNRS}
+  Classes, SysUtils, Contnrs,
   JclBase, JclSysUtils, JclMetadata;
 
 type
@@ -216,9 +213,7 @@ const
 implementation
 
 uses
-  {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
   JclCLR,
   JclPeImage,
   JclStrings, JclResources;

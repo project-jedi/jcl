@@ -30,7 +30,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                          $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -97,9 +97,7 @@ implementation
 uses
   Windows,              // for MultiBytetoWideChar
   {$IFDEF FORMAT_EXTENSIONS}
-  {$IFDEF HAS_UNIT_VARIANTS}
   Variants,             // for VarType
-  {$ENDIF HAS_UNIT_VARIANTS}
   {$ENDIF FORMAT_EXTENSIONS}
   SysUtils,             // for exceptions and FloatToText
   Classes,              // for TStrings, in error-reporting code

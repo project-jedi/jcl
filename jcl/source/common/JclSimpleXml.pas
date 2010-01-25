@@ -48,9 +48,7 @@ uses
   Windows, // Delphi 2005 inline
   {$ENDIF MSWINDOWS}
   SysUtils, Classes,
-  {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
   IniFiles,
   JclBase, JclStreams;
 

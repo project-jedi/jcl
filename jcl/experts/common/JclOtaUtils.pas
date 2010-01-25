@@ -315,9 +315,7 @@ const
 implementation
 
 uses
-  {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
   Forms, Graphics, Dialogs, ActiveX, FileCtrl, IniFiles,
   JediRegInfo,
   {$IFDEF MSWINDOWS}

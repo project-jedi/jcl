@@ -229,9 +229,7 @@ implementation
 
 uses
   TypInfo,
-  {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
   JclBase, JclBorlandTools, JclDebug, JclDebugIdeResult,
   JclOtaResources;
 

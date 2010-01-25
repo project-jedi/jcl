@@ -77,9 +77,6 @@ implementation
 
 uses
   SysUtils,
-  {$IFDEF HAS_UNIT_VARIANTS}
-//  Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
   TypInfo,
   JclStrings, JclSysUtils,
   JppParser;

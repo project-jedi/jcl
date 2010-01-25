@@ -516,9 +516,7 @@ uses
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
   {$IFDEF SUPPORTS_UNICODE}
-  {$IFDEF HAS_UNIT_RTLCONSTS}
   RtlConsts,
-  {$ENDIF HAS_UNIT_RTLCONSTS}
   {$ENDIF SUPPORTS_UNICODE}
   JclLogic, JclResources, JclStreams, JclSynch;
 

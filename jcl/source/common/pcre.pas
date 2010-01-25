@@ -577,20 +577,14 @@ procedure UnloadPCRE;
 implementation
 
 uses
-  SysUtils,
   {$IFDEF MSWINDOWS}
-  Windows;
+  Windows,
   {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
-  {$IFDEF HAS_UNIT_TYPES}
   Types,
-  {$ENDIF HAS_UNIT_TYPES}
   {$IFDEF HAS_UNIT_LIBC}
-  Libc;
-  {$ELSE ~HAS_UNIT_LIBC}
-  dl;
-  {$ENDIF ~HAS_UNIT_LIBC}
-  {$ENDIF UNIX}
+  Libc,
+  {$ENDIF HAS_UNIT_LIBC}
+  SysUtils;
 
 {$IFDEF PCRE_STATICLINK}
 

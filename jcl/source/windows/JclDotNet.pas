@@ -57,10 +57,7 @@ uses
   {$IFDEF MSWINDOWS}
   Windows, ActiveX,
   {$ENDIF MSWINDOWS}
-  Classes, SysUtils,
-  {$IFDEF HAS_UNIT_CONTNRS}
-  Contnrs,
-  {$ENDIF HAS_UNIT_CONTNRS}
+  Classes, SysUtils, Contnrs,
   JclBase, JclWideStrings,
   mscoree_TLB, mscorlib_TLB;
 
@@ -353,9 +350,7 @@ implementation
 
 uses
   ComObj,
-  {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
   JclSysUtils, JclResources, JclStrings;
 
 function CompareCLRVersions(const LeftVersion, RightVersion: string): Integer;

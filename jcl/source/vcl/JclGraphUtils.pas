@@ -45,9 +45,7 @@ interface
 {$I jcl.inc}
 
 uses
-  {$IFDEF HAS_UNIT_TYPES}
   Types,
-  {$ENDIF HAS_UNIT_TYPES}
   Windows,
   SysUtils,
   Graphics,

@@ -29,7 +29,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -62,7 +62,7 @@ uses
   {$ENDIF MSWINDOWS}
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
-  {$ELSE ~HAS_UNIT_LIBC}
+  {$ENDIF HAS_UNIT_LIBC}
   JclBase;
 
 {$IFNDEF FPC}
@@ -78,7 +78,6 @@ type
   size_t = Longint;
   {$EXTERNALSYM size_t}
 {$ENDIF ~FPC}
-{$ENDIF ~HAS_UNIT_LIBC}
 
 //-----------------------------------------------------------------------------
 // START of the contents of the converted ZCONF.H
@@ -1994,11 +1993,6 @@ procedure UnloadZLib;
 implementation
 
 uses
-  {$IFNDEF HAS_UNIT_LIBC}
-  {$IFDEF UNIX}
-  dl,
-  {$ENDIF UNIX}
-  {$ENDIF ~HAS_UNIT_LIBC}
   SysUtils;
 
 //-----------------------------------------------------------------------------

@@ -140,9 +140,7 @@ uses
   Types,
   {$ENDIF FPC}
   SysUtils,
-  {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
   JclFileUtils, JclRegistry, JclResources, JclSysInfo, JclWin32;
 
 {implementation Constants - may be reused by more than one routine }

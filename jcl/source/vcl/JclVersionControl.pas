@@ -38,10 +38,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  SysUtils, Classes,
-  {$IFDEF HAS_UNIT_CONTNRS}
-  Contnrs,
-  {$ENDIF HAS_UNIT_CONTNRS}
+  SysUtils, Classes, Contnrs,
   Graphics, Controls, ActnList, ImgList;
 
 type

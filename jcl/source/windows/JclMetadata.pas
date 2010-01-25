@@ -26,7 +26,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -45,10 +45,7 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  Classes, SysUtils,
-  {$IFDEF HAS_UNIT_CONTNRS}
-  Contnrs,
-  {$ENDIF HAS_UNIT_CONTNRS}
+  Classes, SysUtils, Contnrs,
   JclBase, JclClr, JclFileUtils, JclSysUtils;
 
 type

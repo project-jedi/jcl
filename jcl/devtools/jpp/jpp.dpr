@@ -47,12 +47,10 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
+  {$IFDEF HAS_UNIT_LIBC}
   Libc,
-  {$ENDIF}
-  {$IFDEF HAS_UNIT_TYPES}
+  {$ENDIF HAS_UNIT_LIBC}
   Types,
-  {$ENDIF HAS_UNIT_TYPES}
   SysUtils,
   Classes,
   TypInfo,

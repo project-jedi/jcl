@@ -46,13 +46,11 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF HAS_UNIT_LIBC}
   Libc,
-  {$ENDIF LINUX}
+  {$ENDIF HAS_UNIT_LIBC}
   SysUtils, Classes,
-  {$IFDEF HAS_UNIT_CONTNRS}
   Contnrs,
-  {$ENDIF HAS_UNIT_CONTNRS}
   JclBase, JclStringConversions;
 
 const

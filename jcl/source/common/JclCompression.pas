@@ -59,9 +59,7 @@ uses
   {$IFDEF MSWINDOWS}
   Windows, Sevenzip, ActiveX,
   {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
   Types,
-  {$ENDIF UNIX}
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}

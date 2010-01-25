@@ -47,14 +47,10 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF HAS_UNIT_TYPES}
   Types,
-  {$IFDEF SUPPORTS_INLINE}
+  {$IFDEF MSWINDOWS}
   Windows,
-  {$ENDIF SUPPORTS_INLINE}
-  {$ELSE ~HAS_UNIT_TYPES}
-  Windows,
-  {$ENDIF ~HAS_UNIT_TYPES}
+  {$ENDIF MSWINDOWS}
   Classes, SysUtils, TypInfo,
   JclBase;
 
