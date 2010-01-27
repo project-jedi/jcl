@@ -28,9 +28,9 @@
 
 unit JclOtaExcDlgRepository;
 
-interface
-
 {$I jcl.inc}
+
+interface
 
 {$IFDEF DELPHI6_UP}
 {$DEFINE DELPHIEXCDLG}
@@ -63,7 +63,6 @@ type
   TJclExcDlgDelphiExpert = class(TJclExcDlgExpert)
   public
     constructor Create; override;
-    destructor Destroy; override;
 
     procedure DoExecute(const Personality: TJclBorPersonality); override;
     function IsVisible(const Personality: TJclBorPersonality): Boolean; override;
@@ -72,7 +71,6 @@ type
   TJclExcDlgCBuilderExpert = class(TJclExcDlgExpert)
   public
     constructor Create; override;
-    destructor Destroy; override;
 
     procedure DoExecute(const Personality: TJclBorPersonality); override;
     function IsVisible(const Personality: TJclBorPersonality): Boolean; override;
@@ -197,11 +195,6 @@ begin
     JclDesignerVcl, JclDelphiPersonality, LoadIcon(FindResourceHInstance(HInstance), 'JclExcDlg'), ritForm);
 end;
 
-destructor TJclExcDlgDelphiExpert.Destroy;
-begin
-  inherited Destroy;
-end;
-
 procedure TJclExcDlgDelphiExpert.DoExecute(const Personality: TJclBorPersonality);
 var
   AParams: TJclOtaExcDlgParams;
@@ -231,11 +224,6 @@ begin
   inherited Create(LoadResString(@RsRepositoryExcDlgCBuilderName), LoadResString(@RsRepositoryExcDlgCBuilderDescription),
     LoadResString(@RsAboutDialogTitle), LoadResString(@RsRepositoryExcDlgPage), JclRepositoryCategoryCBuilderFiles,
     JclDesignerVcl, JclCBuilderPersonality, LoadIcon(FindResourceHInstance(HInstance), 'JclExcDlgCPP'), ritForm);
-end;
-
-destructor TJclExcDlgCBuilderExpert.Destroy;
-begin
-  inherited Destroy;
 end;
 
 procedure TJclExcDlgCBuilderExpert.DoExecute(
