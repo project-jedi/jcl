@@ -61,10 +61,10 @@
 				<MainSource>MainSource</MainSource>
 			</DelphiCompile>
 <%%% START REQUIRES %%%>
-			<DCCReference Include="%NAME%.dcp" />
+			<DCCReference Include="%NAME%.dcp"/>
 <%%% END REQUIRES %%%>
 <%%% START FILES %%%>
-			<DCCReference Include="%FILENAME%" />
+			<DCCReference Include="%FILENAME%"/>
 <%%% END FILES %%%>
 			<BuildConfiguration Include="Base">
 				<Key>Base</Key>
@@ -111,7 +111,7 @@
 						<VersionInfoKeys Name="FileVersion">%VERSION_MAJOR_NUMBER%.%VERSION_MINOR_NUMBER%.%RELEASE_NUMBER%.%BUILD_NUMBER%</VersionInfoKeys>
 						<VersionInfoKeys Name="InternalName">%NAME%</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2009 Project JEDI</VersionInfoKeys>
-						<VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
+						<VersionInfoKeys Name="LegalTrademarks"/>
 						<VersionInfoKeys Name="OriginalFilename">%NAME%120%BINEXTENSION%</VersionInfoKeys>
 						<VersionInfoKeys Name="ProductName">JEDI Code Library</VersionInfoKeys>
 						<VersionInfoKeys Name="ProductVersion">%VERSION_MAJOR_NUMBER%.%VERSION_MINOR_NUMBER% Build %BUILD_NUMBER%</VersionInfoKeys>

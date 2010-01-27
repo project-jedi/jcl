@@ -62,28 +62,28 @@
 			<DelphiCompile Include="JclRepositoryExpert.dpk">
 				<MainSource>MainSource</MainSource>
 			</DelphiCompile>
-			<DCCReference Include="rtl.dcp" />
-			<DCCReference Include="vcl.dcp" />
-			<DCCReference Include="designide.dcp" />
-			<DCCReference Include="Jcl.dcp" />
-			<DCCReference Include="JclContainers.dcp" />
-			<DCCReference Include="JclBaseExpert.dcp" />
-			<DCCReference Include="..\..\devtools\jpp\JppState.pas" />
-			<DCCReference Include="..\..\devtools\jpp\JppLexer.pas" />
-			<DCCReference Include="..\..\devtools\jpp\JppParser.pas" />
-			<DCCReference Include="..\..\experts\repository\JclOtaTemplates.pas" />
-			<DCCReference Include="..\..\experts\repository\JclOtaRepositoryUtils.pas" />
-			<DCCReference Include="..\..\experts\repository\ExceptionDialog\JclOtaExcDlgRepository.pas" />
-			<DCCReference Include="..\..\experts\repository\ExceptionDialog\JclOtaExcDlgParams.pas" />
-			<DCCReference Include="..\..\experts\repository\ExceptionDialog\JclOtaExcDlgWizard.pas" />
-			<DCCReference Include="..\..\experts\repository\ExceptionDialog\JclOtaExcDlgFileFrame.pas" />
-			<DCCReference Include="..\..\experts\repository\ExceptionDialog\JclOtaExcDlgFormFrame.pas" />
-			<DCCReference Include="..\..\experts\repository\ExceptionDialog\JclOtaExcDlgSystemFrame.pas" />
-			<DCCReference Include="..\..\experts\repository\ExceptionDialog\JclOtaExcDlgLogFrame.pas" />
-			<DCCReference Include="..\..\experts\repository\ExceptionDialog\JclOtaExcDlgTraceFrame.pas" />
-			<DCCReference Include="..\..\experts\repository\ExceptionDialog\JclOtaExcDlgThreadFrame.pas" />
-			<DCCReference Include="..\..\experts\repository\ExceptionDialog\JclOtaExcDlgIgnoreFrame.pas" />
-			<DCCReference Include="..\..\experts\repository\JclOtaRepositoryReg.pas" />
+			<DCCReference Include="rtl.dcp"/>
+			<DCCReference Include="vcl.dcp"/>
+			<DCCReference Include="designide.dcp"/>
+			<DCCReference Include="Jcl.dcp"/>
+			<DCCReference Include="JclContainers.dcp"/>
+			<DCCReference Include="JclBaseExpert.dcp"/>
+			<DCCReference Include="..\..\devtools\jpp\JppState.pas"/>
+			<DCCReference Include="..\..\devtools\jpp\JppLexer.pas"/>
+			<DCCReference Include="..\..\devtools\jpp\JppParser.pas"/>
+			<DCCReference Include="..\..\experts\repository\JclOtaTemplates.pas"/>
+			<DCCReference Include="..\..\experts\repository\JclOtaRepositoryUtils.pas"/>
+			<DCCReference Include="..\..\experts\repository\ExceptionDialog\JclOtaExcDlgRepository.pas"/>
+			<DCCReference Include="..\..\experts\repository\ExceptionDialog\JclOtaExcDlgParams.pas"/>
+			<DCCReference Include="..\..\experts\repository\ExceptionDialog\JclOtaExcDlgWizard.pas"/>
+			<DCCReference Include="..\..\experts\repository\ExceptionDialog\JclOtaExcDlgFileFrame.pas"/>
+			<DCCReference Include="..\..\experts\repository\ExceptionDialog\JclOtaExcDlgFormFrame.pas"/>
+			<DCCReference Include="..\..\experts\repository\ExceptionDialog\JclOtaExcDlgSystemFrame.pas"/>
+			<DCCReference Include="..\..\experts\repository\ExceptionDialog\JclOtaExcDlgLogFrame.pas"/>
+			<DCCReference Include="..\..\experts\repository\ExceptionDialog\JclOtaExcDlgTraceFrame.pas"/>
+			<DCCReference Include="..\..\experts\repository\ExceptionDialog\JclOtaExcDlgThreadFrame.pas"/>
+			<DCCReference Include="..\..\experts\repository\ExceptionDialog\JclOtaExcDlgIgnoreFrame.pas"/>
+			<DCCReference Include="..\..\experts\repository\JclOtaRepositoryReg.pas"/>
 			<BuildConfiguration Include="Base">
 				<Key>Base</Key>
 			</BuildConfiguration>
@@ -129,7 +129,7 @@
 						<VersionInfoKeys Name="FileVersion">2.2.0.3537</VersionInfoKeys>
 						<VersionInfoKeys Name="InternalName">JclRepositoryExpert</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2009 Project JEDI</VersionInfoKeys>
-						<VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
+						<VersionInfoKeys Name="LegalTrademarks"/>
 						<VersionInfoKeys Name="OriginalFilename">JclRepositoryExpert140.bpl</VersionInfoKeys>
 						<VersionInfoKeys Name="ProductName">JEDI Code Library</VersionInfoKeys>
 						<VersionInfoKeys Name="ProductVersion">2.2 Build 3537</VersionInfoKeys>

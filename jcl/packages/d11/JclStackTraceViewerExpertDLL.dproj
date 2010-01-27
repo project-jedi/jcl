@@ -65,7 +65,7 @@
           <VersionInfoKeys Name="FileVersion">2.2.0.3537</VersionInfoKeys>
           <VersionInfoKeys Name="InternalName">JclStackTraceViewerExpertDLL</VersionInfoKeys>
           <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2009 Project JEDI</VersionInfoKeys>
-          <VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
+          <VersionInfoKeys Name="LegalTrademarks"/>
           <VersionInfoKeys Name="OriginalFilename">JclStackTraceViewerExpertDLL110.dll</VersionInfoKeys>
           <VersionInfoKeys Name="ProductName">JEDI Code Library</VersionInfoKeys>
           <VersionInfoKeys Name="ProductVersion">2.2 Build 3537</VersionInfoKeys>
@@ -85,24 +85,24 @@
     <DelphiCompile Include="JclStackTraceViewerExpertDLL.dpr">
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
-    <DCCReference Include="rtl.dcp" />
-    <DCCReference Include="vcl.dcp" />
-    <DCCReference Include="designide.dcp" />
-    <DCCReference Include="Jcl.dcp" />
-    <DCCReference Include="JclBaseExpert.dcp" />
-    <DCCReference Include="..\..\experts\stacktraceviewer\JclStackTraceViewerImpl.pas" />
-    <DCCReference Include="..\..\experts\stacktraceviewer\JclStackTraceViewerExceptInfoFrame.pas" />
-    <DCCReference Include="..\..\experts\stacktraceviewer\JclStackTraceViewerStackFrame.pas" />
-    <DCCReference Include="..\..\experts\stacktraceviewer\JclStackTraceViewerThreadFrame.pas" />
-    <DCCReference Include="..\..\experts\stacktraceviewer\JclStackTraceViewerModuleFrame.pas" />
-    <DCCReference Include="..\..\experts\stacktraceviewer\JclStackTraceViewerMainFormBDS.pas" />
-    <DCCReference Include="..\..\experts\stacktraceviewer\JclStackTraceViewerMainFrame.pas" />
-    <DCCReference Include="..\..\experts\stacktraceviewer\JclStackTraceViewerConfigFrame.pas" />
-    <DCCReference Include="..\..\experts\stacktraceviewer\JclStackTraceViewerClasses.pas" />
-    <DCCReference Include="..\..\experts\stacktraceviewer\JclStackTraceViewerStackCodeUtils.pas" />
-    <DCCReference Include="..\..\experts\stacktraceviewer\JclStackTraceViewerOptions.pas" />
-    <DCCReference Include="..\..\experts\stacktraceviewer\JclStackTraceViewerAPIImpl.pas" />
-    <DCCReference Include="..\..\experts\stacktraceviewer\JclStackTraceViewerAPI.pas" />
-    <DCCReference Include="..\..\experts\stacktraceviewer\JclStackTraceViewerStackUtils.pas" />
+    <DCCReference Include="rtl.dcp"/>
+    <DCCReference Include="vcl.dcp"/>
+    <DCCReference Include="designide.dcp"/>
+    <DCCReference Include="Jcl.dcp"/>
+    <DCCReference Include="JclBaseExpert.dcp"/>
+    <DCCReference Include="..\..\experts\stacktraceviewer\JclStackTraceViewerImpl.pas"/>
+    <DCCReference Include="..\..\experts\stacktraceviewer\JclStackTraceViewerExceptInfoFrame.pas"/>
+    <DCCReference Include="..\..\experts\stacktraceviewer\JclStackTraceViewerStackFrame.pas"/>
+    <DCCReference Include="..\..\experts\stacktraceviewer\JclStackTraceViewerThreadFrame.pas"/>
+    <DCCReference Include="..\..\experts\stacktraceviewer\JclStackTraceViewerModuleFrame.pas"/>
+    <DCCReference Include="..\..\experts\stacktraceviewer\JclStackTraceViewerMainFormBDS.pas"/>
+    <DCCReference Include="..\..\experts\stacktraceviewer\JclStackTraceViewerMainFrame.pas"/>
+    <DCCReference Include="..\..\experts\stacktraceviewer\JclStackTraceViewerConfigFrame.pas"/>
+    <DCCReference Include="..\..\experts\stacktraceviewer\JclStackTraceViewerClasses.pas"/>
+    <DCCReference Include="..\..\experts\stacktraceviewer\JclStackTraceViewerStackCodeUtils.pas"/>
+    <DCCReference Include="..\..\experts\stacktraceviewer\JclStackTraceViewerOptions.pas"/>
+    <DCCReference Include="..\..\experts\stacktraceviewer\JclStackTraceViewerAPIImpl.pas"/>
+    <DCCReference Include="..\..\experts\stacktraceviewer\JclStackTraceViewerAPI.pas"/>
+    <DCCReference Include="..\..\experts\stacktraceviewer\JclStackTraceViewerStackUtils.pas"/>
   </ItemGroup>
 </Project>

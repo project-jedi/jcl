@@ -60,14 +60,14 @@
 			<DelphiCompile Include="JclVersionControlExpert.dpk">
 				<MainSource>MainSource</MainSource>
 			</DelphiCompile>
-			<DCCReference Include="rtl.dcp" />
-			<DCCReference Include="vcl.dcp" />
-			<DCCReference Include="designide.dcp" />
-			<DCCReference Include="Jcl.dcp" />
-			<DCCReference Include="JclVcl.dcp" />
-			<DCCReference Include="JclBaseExpert.dcp" />
-			<DCCReference Include="..\..\experts\versioncontrol\JclVersionControlImpl.pas" />
-			<DCCReference Include="..\..\experts\versioncontrol\JclVersionCtrlCommonOptions.pas" />
+			<DCCReference Include="rtl.dcp"/>
+			<DCCReference Include="vcl.dcp"/>
+			<DCCReference Include="designide.dcp"/>
+			<DCCReference Include="Jcl.dcp"/>
+			<DCCReference Include="JclVcl.dcp"/>
+			<DCCReference Include="JclBaseExpert.dcp"/>
+			<DCCReference Include="..\..\experts\versioncontrol\JclVersionControlImpl.pas"/>
+			<DCCReference Include="..\..\experts\versioncontrol\JclVersionCtrlCommonOptions.pas"/>
 			<BuildConfiguration Include="Base">
 				<Key>Base</Key>
 			</BuildConfiguration>
@@ -113,7 +113,7 @@
 						<VersionInfoKeys Name="FileVersion">2.2.0.3537</VersionInfoKeys>
 						<VersionInfoKeys Name="InternalName">JclVersionControlExpert</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2009 Project JEDI</VersionInfoKeys>
-						<VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
+						<VersionInfoKeys Name="LegalTrademarks"/>
 						<VersionInfoKeys Name="OriginalFilename">JclVersionControlExpert120.bpl</VersionInfoKeys>
 						<VersionInfoKeys Name="ProductName">JEDI Code Library</VersionInfoKeys>
 						<VersionInfoKeys Name="ProductVersion">2.2 Build 3537</VersionInfoKeys>

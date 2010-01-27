@@ -60,20 +60,20 @@
 			<DelphiCompile Include="JclVcl.dpk">
 				<MainSource>MainSource</MainSource>
 			</DelphiCompile>
-			<DCCReference Include="rtl.dcp" />
-			<DCCReference Include="vcl.dcp" />
-			<DCCReference Include="vclimg.dcp" />
-			<DCCReference Include="Jcl.dcp" />
-			<DCCReference Include="..\..\source\vcl\JclPrint.pas" />
-			<DCCReference Include="..\..\source\vcl\JclGraphUtils.pas" />
-			<DCCReference Include="..\..\source\vcl\JclGraphics.pas" />
-			<DCCReference Include="..\..\source\vcl\JclFont.pas" />
-			<DCCReference Include="..\..\source\vcl\JclOpenDialogHooks.pas" />
-			<DCCReference Include="..\..\source\vcl\JclOpenDialogFavorites.pas" />
-			<DCCReference Include="..\..\source\vcl\JclVclResources.pas" />
-			<DCCReference Include="..\..\source\vcl\JclVersionControl.pas" />
-			<DCCReference Include="..\..\source\vcl\JclVersionCtrlCVSImpl.pas" />
-			<DCCReference Include="..\..\source\vcl\JclVersionCtrlSVNImpl.pas" />
+			<DCCReference Include="rtl.dcp"/>
+			<DCCReference Include="vcl.dcp"/>
+			<DCCReference Include="vclimg.dcp"/>
+			<DCCReference Include="Jcl.dcp"/>
+			<DCCReference Include="..\..\source\vcl\JclPrint.pas"/>
+			<DCCReference Include="..\..\source\vcl\JclGraphUtils.pas"/>
+			<DCCReference Include="..\..\source\vcl\JclGraphics.pas"/>
+			<DCCReference Include="..\..\source\vcl\JclFont.pas"/>
+			<DCCReference Include="..\..\source\vcl\JclOpenDialogHooks.pas"/>
+			<DCCReference Include="..\..\source\vcl\JclOpenDialogFavorites.pas"/>
+			<DCCReference Include="..\..\source\vcl\JclVclResources.pas"/>
+			<DCCReference Include="..\..\source\vcl\JclVersionControl.pas"/>
+			<DCCReference Include="..\..\source\vcl\JclVersionCtrlCVSImpl.pas"/>
+			<DCCReference Include="..\..\source\vcl\JclVersionCtrlSVNImpl.pas"/>
 			<BuildConfiguration Include="Base">
 				<Key>Base</Key>
 			</BuildConfiguration>
@@ -119,7 +119,7 @@
 						<VersionInfoKeys Name="FileVersion">2.2.0.3537</VersionInfoKeys>
 						<VersionInfoKeys Name="InternalName">JclVcl</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2009 Project JEDI</VersionInfoKeys>
-						<VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
+						<VersionInfoKeys Name="LegalTrademarks"/>
 						<VersionInfoKeys Name="OriginalFilename">JclVcl120.bpl</VersionInfoKeys>
 						<VersionInfoKeys Name="ProductName">JEDI Code Library</VersionInfoKeys>
 						<VersionInfoKeys Name="ProductVersion">2.2 Build 3537</VersionInfoKeys>

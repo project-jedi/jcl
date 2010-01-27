@@ -65,7 +65,7 @@
           <VersionInfoKeys Name="FileVersion">2.2.0.3537</VersionInfoKeys>
           <VersionInfoKeys Name="InternalName">JclProjectAnalysisExpert</VersionInfoKeys>
           <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2009 Project JEDI</VersionInfoKeys>
-          <VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
+          <VersionInfoKeys Name="LegalTrademarks"/>
           <VersionInfoKeys Name="OriginalFilename">JclProjectAnalysisExpert110.bpl</VersionInfoKeys>
           <VersionInfoKeys Name="ProductName">JEDI Code Library</VersionInfoKeys>
           <VersionInfoKeys Name="ProductVersion">2.2 Build 3537</VersionInfoKeys>
@@ -85,12 +85,12 @@
     <DelphiCompile Include="JclProjectAnalysisExpert.dpk">
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
-    <DCCReference Include="rtl.dcp" />
-    <DCCReference Include="vcl.dcp" />
-    <DCCReference Include="designide.dcp" />
-    <DCCReference Include="Jcl.dcp" />
-    <DCCReference Include="JclBaseExpert.dcp" />
-    <DCCReference Include="..\..\experts\projectanalyzer\ProjAnalyzerFrm.pas" />
-    <DCCReference Include="..\..\experts\projectanalyzer\ProjAnalyzerImpl.pas" />
+    <DCCReference Include="rtl.dcp"/>
+    <DCCReference Include="vcl.dcp"/>
+    <DCCReference Include="designide.dcp"/>
+    <DCCReference Include="Jcl.dcp"/>
+    <DCCReference Include="JclBaseExpert.dcp"/>
+    <DCCReference Include="..\..\experts\projectanalyzer\ProjAnalyzerFrm.pas"/>
+    <DCCReference Include="..\..\experts\projectanalyzer\ProjAnalyzerImpl.pas"/>
   </ItemGroup>
 </Project>
