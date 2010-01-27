@@ -259,78 +259,15 @@ begin
 end;
 
 procedure TJppParser.AddResult(const S: string);
-var
-  TempMemoryStream: TMemoryStream;
-  TempStringStream: TJclAutoStream;
-  TempLexer: TJppLexer;
-  TempParser: TJppParser;
-  AResult: string;
-  Recurse: Boolean;
 begin
   if FSkipLevel > 0 then
     Exit;
-  // recurse macro expanding
-  if StrIPos('$JPP', S) > 0 then
-  begin
-    Recurse := False;
-    TempLexer := TJppLexer.Create(S);
-    try
-      while True do
-      begin
-        case TempLexer.CurrTok of
-          ptEof:
-            Break;
-          ptJppDefineMacro,
-          ptJppExpandMacro,
-          ptJppUndefMacro,
-          ptJppStrValue,
-          ptJppIntValue,
-          ptJppBoolValue,
-          ptJppRepeat,
-          ptJppRepeatStrValue:
-            begin
-              Recurse := True;
-              Break;
-            end;
-        end;
-        TempLexer.NextTok;
-      end;
-    finally
-      TempLexer.Free;
-    end;
-    if Recurse then
-    begin
-      TempMemoryStream := TMemoryStream.Create;
-      try
-        TempStringStream := TJclAutoStream.Create(TempMemoryStream);
-        try
-          TempStringStream.WriteString(S, 1, Length(S));
-          TempStringStream.Seek(0, soBeginning);
-          TempParser := TJppParser.Create(TempStringStream.ReadString, State);
-          try
-            AResult := TempParser.Parse;
-          finally
-            TempParser.Free;
-          end;
-        finally
-          TempStringStream.Free;
-        end;
-      finally
-        TempMemoryStream.Free;
-      end;
-    end
-    else
-      AResult := S;
-  end
-  else
-    AResult := S;
-
-  while FResultLen + Length(AResult) > Length(FResult) do
+  while FResultLen + Length(S) > Length(FResult) do
     SetLength(FResult, Length(FResult) * 2);
-  Move(AResult[1], FResult[FResultLen + 1], Length(AResult) * SizeOf(Char));
+  Move(S[1], FResult[FResultLen + 1], Length(S) * SizeOf(Char));
   if FAllWhiteSpaceOut then
     FAllWhiteSpaceOut := AllWhiteSpace(@FResult[FLineBreakPos]);
-  Inc(FResultLen, Length(AResult));
+  Inc(FResultLen, Length(S));
 end;
 
 function TJppParser.IsExcludedInclude(const FileName: string): Boolean;
@@ -497,12 +434,70 @@ end;
 
 procedure TJppParser.ParseExpandMacro;
 var
-  MacroText, MacroName: string;
+  MacroText, MacroName, AResult: string;
   ParamNames: TDynStringArray;
+  TempMemoryStream: TMemoryStream;
+  TempStringStream: TJclAutoStream;
+  TempLexer: TJppLexer;
+  TempParser: TJppParser;
+  Recurse: Boolean;
 begin
   MacroText := Lexer.TokenAsString;
   ParseMacro(MacroText, MacroName, ParamNames, False);
-  AddResult(State.ExpandMacro(MacroName, ParamNames));
+  AResult := State.ExpandMacro(MacroName, ParamNames);
+  // recurse macro expanding
+  if StrIPos('$JPP', AResult) > 0 then
+  begin
+    Recurse := False;
+    TempLexer := TJppLexer.Create(AResult);
+    try
+      while True do
+      begin
+        case TempLexer.CurrTok of
+          ptEof:
+            Break;
+          ptJppDefineMacro,
+          ptJppExpandMacro,
+          ptJppUndefMacro,
+          ptJppStrValue,
+          ptJppIntValue,
+          ptJppBoolValue,
+          ptJppRepeat,
+          ptJppRepeatStrValue:
+            begin
+              Recurse := True;
+              Break;
+            end;
+        end;
+        TempLexer.NextTok;
+      end;
+    finally
+      TempLexer.Free;
+    end;
+    if Recurse then
+    begin
+      TempMemoryStream := TMemoryStream.Create;
+      try
+        TempStringStream := TJclAutoStream.Create(TempMemoryStream);
+        try
+          TempStringStream.WriteString(AResult, 1, Length(AResult));
+          TempStringStream.Seek(0, soBeginning);
+          TempParser := TJppParser.Create(TempStringStream.ReadString, State);
+          try
+            AResult := TempParser.Parse;
+          finally
+            TempParser.Free;
+          end;
+        finally
+          TempStringStream.Free;
+        end;
+      finally
+        TempMemoryStream.Free;
+      end;
+    end;
+  end;
+  // add result to buffer
+  AddResult(AResult);
   NextToken;
 end;
 
