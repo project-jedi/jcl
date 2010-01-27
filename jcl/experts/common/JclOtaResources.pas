@@ -415,10 +415,10 @@ resourcestring
 resourcestring
   RsRepositoryExcDlgPage = 'Exception dialog';
 
-  RsRepositoryExcDlgDelphiName = 'Jcl Exception dialog for Delphi';
+  RsRepositoryExcDlgDelphiName = 'JCL Exception dialog for Delphi';
   RsRepositoryExcDlgDelphiDescription = 'Create an exception dialog for your Delphi project';
 
-  RsRepositoryExcDlgCBuilderName = 'Jcl Exception dialog for C++Builder';
+  RsRepositoryExcDlgCBuilderName = 'JCL Exception dialog for C++Builder';
   RsRepositoryExcDlgCBuilderDescription = 'Create an exception dialog for your C++Builder';
 
 //=== JclVersionControlImpl.pas ==============================================

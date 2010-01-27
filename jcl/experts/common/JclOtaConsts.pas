@@ -86,7 +86,7 @@ const
   LIBPREFIXOptionName           = 'SOPrefix';
   LIBSUFFIXOptionName           = 'SOSuffix';
   ColumnRegName                 = 'Column%d';
-  JclDebugMessagePrefix         = 'Jcl Debug Expert';
+  JclDebugMessagePrefix         = 'JCL Debug Expert';
   JclDebugExpertActionName      = 'JCLDebugExpertCommand';
   JclDebugExpertMenuName        = 'JCLDebugExpertMenu';
   JclDebugExpertProjMenuName    = 'JCLDebugExpertProjMenu';
