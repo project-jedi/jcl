@@ -2163,6 +2163,7 @@ begin
   AssignPropertiesTo(Result);
 end;
 
+
 //=== { TJclIntfLinkedListIterator } ============================================================
 
 constructor TJclIntfLinkedListIterator.Create(const AOwnList: IJclIntfList; ACursor: TJclIntfLinkedListItem; AValid: Boolean; AStart: TItrStart);
@@ -2485,6 +2486,7 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
+
 
 //=== { TJclLinkedList<T> } ==================================================
 

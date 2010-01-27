@@ -1354,7 +1354,6 @@ begin
   AddAll(ACollection);
 end;
 
-
 constructor TJclIntfHashSet.Create(ACapacity: Integer);
 begin
   Create(TJclIntfHashMap.Create(ACapacity, False));
@@ -1713,7 +1712,6 @@ procedure TJclAnsiStrHashSet.Union(const ACollection: IJclAnsiStrCollection);
 begin
   AddAll(ACollection);
 end;
-
 
 constructor TJclAnsiStrHashSet.Create(ACapacity: Integer);
 begin
@@ -2093,7 +2091,6 @@ procedure TJclWideStrHashSet.Union(const ACollection: IJclWideStrCollection);
 begin
   AddAll(ACollection);
 end;
-
 
 constructor TJclWideStrHashSet.Create(ACapacity: Integer);
 begin
@@ -2475,7 +2472,6 @@ begin
   AddAll(ACollection);
 end;
 
-
 constructor TJclUnicodeStrHashSet.Create(ACapacity: Integer);
 begin
   Create(TJclUnicodeStrHashMap.Create(ACapacity, False));
@@ -2847,7 +2843,6 @@ begin
   AddAll(ACollection);
 end;
 
-
 constructor TJclSingleHashSet.Create(ACapacity: Integer);
 begin
   Create(TJclSingleHashMap.Create(ACapacity, False));
@@ -3216,7 +3211,6 @@ procedure TJclDoubleHashSet.Union(const ACollection: IJclDoubleCollection);
 begin
   AddAll(ACollection);
 end;
-
 
 constructor TJclDoubleHashSet.Create(ACapacity: Integer);
 begin
@@ -3587,7 +3581,6 @@ begin
   AddAll(ACollection);
 end;
 
-
 constructor TJclExtendedHashSet.Create(ACapacity: Integer);
 begin
   Create(TJclExtendedHashMap.Create(ACapacity, False));
@@ -3957,7 +3950,6 @@ begin
   AddAll(ACollection);
 end;
 
-
 constructor TJclIntegerHashSet.Create(ACapacity: Integer);
 begin
   Create(TJclIntegerHashMap.Create(ACapacity, False));
@@ -4316,7 +4308,6 @@ procedure TJclCardinalHashSet.Union(const ACollection: IJclCardinalCollection);
 begin
   AddAll(ACollection);
 end;
-
 
 constructor TJclCardinalHashSet.Create(ACapacity: Integer);
 begin
@@ -4677,7 +4668,6 @@ begin
   AddAll(ACollection);
 end;
 
-
 constructor TJclInt64HashSet.Create(ACapacity: Integer);
 begin
   Create(TJclInt64HashMap.Create(ACapacity, False));
@@ -5037,7 +5027,6 @@ begin
   AddAll(ACollection);
 end;
 
-
 constructor TJclPtrHashSet.Create(ACapacity: Integer);
 begin
   Create(TJclPtrHashMap.Create(ACapacity, False));
@@ -5396,7 +5385,6 @@ procedure TJclHashSet.Union(const ACollection: IJclCollection);
 begin
   AddAll(ACollection);
 end;
-
 
 constructor TJclHashSet.Create(ACapacity: Integer; AOwnsObjects: Boolean);
 begin
@@ -5768,7 +5756,6 @@ procedure TJclHashSet<T>.Union(const ACollection: IJclCollection<T>);
 begin
   AddAll(ACollection);
 end;
-
 
 function TJclHashSet<T>.FreeItem(var AItem: T): T;
 begin

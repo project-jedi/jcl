@@ -434,15 +434,18 @@ end;
 
 procedure TJppParser.ParseExpandMacro;
 var
-  MacroText, MacroName, AResult: string;
+  MacroText, MacroName, AResult, LinePrefix: string;
   ParamNames: TDynStringArray;
+  I, J: Integer;
   TempMemoryStream: TMemoryStream;
   TempStringStream: TJclAutoStream;
   TempLexer: TJppLexer;
   TempParser: TJppParser;
   Recurse: Boolean;
+  Lines: TStrings;
 begin
   MacroText := Lexer.TokenAsString;
+  // expand the macro
   ParseMacro(MacroText, MacroName, ParamNames, False);
   AResult := State.ExpandMacro(MacroName, ParamNames);
   // recurse macro expanding
@@ -495,6 +498,42 @@ begin
         TempMemoryStream.Free;
       end;
     end;
+  end;
+  // find the number of white space at the beginning of the current line (indentation level)
+  I := FResultLen + 1;
+  while (I > 1) and not CharIsReturn(FResult[I - 1]) do
+    Dec(I);
+  J := I;
+  while (J <= FResultLen) and CharIsWhiteSpace(FResult[J]) do
+    Inc(J);
+  LinePrefix := StrRepeat(NativeSpace, J - I);
+
+  Lines := TStringList.Create;
+  try
+    StrToStrings(AResult, NativeLineBreak, Lines);
+    // remove first empty lines
+    while Lines.Count > 0 do
+    begin
+      if Lines.Strings[0] = '' then
+        Lines.Delete(0)
+      else
+        Break;
+    end;
+    // remove last empty lines
+    for I := Lines.Count - 1 downto 0 do
+    begin
+      if Lines.Strings[I] = '' then
+        Lines.Delete(I)
+      else
+        Break;
+    end;
+    // fix line offsets
+    if LinePrefix <> '' then
+      for I := 1 to Lines.Count - 1 do
+        Lines.Strings[I] := LinePrefix + Lines.Strings[I];
+    AResult := StringsToStr(Lines, NativeLineBreak);
+  finally
+    Lines.Free;
   end;
   // add result to buffer
   AddResult(AResult);

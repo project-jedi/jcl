@@ -337,15 +337,15 @@ type
   public
     class procedure Apply(const First: IJclIterator<T>; Count: Integer; F: TApplyFunction<T>);
     class function Find(const First: IJclIterator<T>; Count: Integer; const AItem: T;
-  AComparator: TCompare<T>): IJclIterator<T>; overload;
+      AComparator: TCompare<T>): IJclIterator<T>; overload;
     class function Find(const First: IJclIterator<T>; Count: Integer; const AItem: T;
-  AEqualityComparator: TEqualityCompare<T>): IJclIterator<T>; overload;
+      AEqualityComparator: TEqualityCompare<T>): IJclIterator<T>; overload;
     class function CountObject(const First: IJclIterator<T>; Count: Integer;
-  const AItem: T; AComparator: TCompare<T>): Integer; overload;
+      const AItem: T; AComparator: TCompare<T>): Integer; overload;
     class function CountObject(const First: IJclIterator<T>; Count: Integer;
-  const AItem: T; AEqualityComparator: TEqualityCompare<T>): Integer; overload;
+      const AItem: T; AEqualityComparator: TEqualityCompare<T>): Integer; overload;
     class procedure Copy(const First: IJclIterator<T>; Count: Integer;
-  const Output: IJclIterator<T>);
+      const Output: IJclIterator<T>);
     class procedure Generate(const List: IJclList<T>; Count: Integer; const AItem: T);
     class procedure Fill(const First: IJclIterator<T>; Count: Integer; const AItem: T);
     class procedure Reverse(const First, Last: IJclIterator<T>);
