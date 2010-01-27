@@ -327,10 +327,9 @@ var
   procedure OutputToolMessage(const Msg: string);
   begin
     if Assigned(FCurrentProject) then
-      OTAMessageServices.AddToolMessage(FCurrentProject.FileName, Msg,
-        JclDebugMessagePrefix, 1, 1)
+      OTAMessageServices.AddToolMessage(FCurrentProject.FileName, Msg, LoadResString(@RsJclDebugMessagePrefix), 1, 1)
     else
-      OTAMessageServices.AddToolMessage('', Msg, JclDebugMessagePrefix, 1, 1);
+      OTAMessageServices.AddToolMessage('', Msg, LoadResString(@RsJclDebugMessagePrefix), 1, 1);
   end;
 
 begin

@@ -283,6 +283,7 @@ resourcestring
   RsENoBuildAllAction = 'Build All action not found';
   RsDebugConfigPageCaption = 'Debug info converter';
   RsEProjectPropertyFailed = 'Unable to save project properties, project file may be read-only';
+  RsJclDebugMessagePrefix = 'JCL Debug Expert';
 
 //=== JclDebugIdeConfigFrame.pas =============================================
 resourcestring
