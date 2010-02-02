@@ -12,6 +12,7 @@
       <Projects Name="Jcl100.bpl">d10\Jcl.bdsproj</Projects>
       <Projects Name="JclVcl100.bpl">d10\JclVcl.bdsproj</Projects>
       <Projects Name="JclContainers100.bpl">d10\JclContainers.bdsproj</Projects>
+      <Projects Name="JclDeveloperTools100.bpl">d10\JclDeveloperTools.bdsproj</Projects>
       <Projects Name="JclBaseExpert100.bpl">d10\JclBaseExpert.bdsproj</Projects>
       <Projects Name="JclDebugExpert100.bpl">d10\JclDebugExpert.bdsproj</Projects>
       <Projects Name="JclFavoriteFoldersExpert100.bpl">d10\JclFavoriteFoldersExpert.bdsproj</Projects>
@@ -20,7 +21,7 @@
       <Projects Name="JclSIMDViewExpert100.bpl">d10\JclSIMDViewExpert.bdsproj</Projects>
       <Projects Name="JclStackTraceViewerExpert100.bpl">d10\JclStackTraceViewerExpert.bdsproj</Projects>
       <Projects Name="JclVersionControlExpert100.bpl">d10\JclVersionControlExpert.bdsproj</Projects>
-      <Projects Name="Targets">Jcl100.bpl JclVcl100.bpl JclContainers100.bpl JclBaseExpert100.bpl JclDebugExpert100.bpl JclFavoriteFoldersExpert100.bpl JclProjectAnalysisExpert100.bpl JclRepositoryExpert100.bpl JclSIMDViewExpert100.bpl JclStackTraceViewerExpert100.bpl JclVersionControlExpert100.bpl</Projects>
+      <Projects Name="Targets">Jcl100.bpl JclVcl100.bpl JclContainers100.bpl JclDeveloperTools100.bpl JclBaseExpert100.bpl JclDebugExpert100.bpl JclFavoriteFoldersExpert100.bpl JclProjectAnalysisExpert100.bpl JclRepositoryExpert100.bpl JclSIMDViewExpert100.bpl JclStackTraceViewerExpert100.bpl JclVersionControlExpert100.bpl</Projects>
     </Projects>
     <Dependencies/>
   </Default.Personality>

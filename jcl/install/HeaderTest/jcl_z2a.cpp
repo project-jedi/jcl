@@ -251,6 +251,9 @@
 //#ifdef TEST_WINDOWS
 //#include <JclDotNet.hpp> mscorlib_TLB.hpp is known to fail
 //#endif TEST_WINDOWS
+#ifdef TEST_COMMON
+#include <JclDevToolsResources.hpp>
+#endif TEST_COMMON
 #ifdef TEST_WINDOWS
 #include <JclDebugXMLSerializer.hpp>
 #endif TEST_WINDOWS

@@ -29,7 +29,7 @@
 			<GenDll>true</GenDll>
 			<GenPackage>true</GenPackage>
 			<DCC_ImageBase>$58100000</DCC_ImageBase>
-			<DCC_UsePackage>rtl;vcl;designide;Jcl;JclContainers;JclBaseExpert</DCC_UsePackage>
+			<DCC_UsePackage>rtl;vcl;designide;Jcl;JclContainers;JclBaseExpert;JclDeveloperTools</DCC_UsePackage>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Cfg_Release)'!=''">
 			<DCC_AssertionsAtRuntime>false</DCC_AssertionsAtRuntime>
@@ -68,6 +68,7 @@
 			<DCCReference Include="Jcl.dcp"/>
 			<DCCReference Include="JclContainers.dcp"/>
 			<DCCReference Include="JclBaseExpert.dcp"/>
+			<DCCReference Include="JclDeveloperTools.dcp"/>
 			<DCCReference Include="..\..\devtools\jpp\JppState.pas"/>
 			<DCCReference Include="..\..\devtools\jpp\JppLexer.pas"/>
 			<DCCReference Include="..\..\devtools\jpp\JppParser.pas"/>

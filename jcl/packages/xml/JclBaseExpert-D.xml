@@ -12,6 +12,7 @@
     <Package Name="vclx" Targets="Delphi,Bcb,Bds" Condition=""/>
     <Package Name="designide" Targets="Delphi,Bcb,Bds" Condition=""/>
     <Package Name="Jcl-R" Targets="all" Condition=""/>
+    <Package Name="JclDeveloperTools-R" Targets="all" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\install\JediRegInfo.pas" Targets="designtimeIDE" Formname="" Condition=""/>

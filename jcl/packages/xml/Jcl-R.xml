@@ -15,7 +15,6 @@
     <File Name="..\..\source\common\Jcl8087.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclAnsiStrings.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclBase.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclBorlandTools.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclCharsets.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclComplex.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclCompression.pas" Targets="all" Formname="" Condition=""/>

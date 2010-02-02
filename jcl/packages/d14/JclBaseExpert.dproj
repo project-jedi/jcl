@@ -29,7 +29,7 @@
 			<GenDll>true</GenDll>
 			<GenPackage>true</GenPackage>
 			<DCC_ImageBase>$58000000</DCC_ImageBase>
-			<DCC_UsePackage>rtl;vcl;vclx;designide;Jcl</DCC_UsePackage>
+			<DCC_UsePackage>rtl;vcl;vclx;designide;Jcl;JclDeveloperTools</DCC_UsePackage>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Cfg_Release)'!=''">
 			<DCC_AssertionsAtRuntime>false</DCC_AssertionsAtRuntime>
@@ -67,6 +67,7 @@
 			<DCCReference Include="vclx.dcp"/>
 			<DCCReference Include="designide.dcp"/>
 			<DCCReference Include="Jcl.dcp"/>
+			<DCCReference Include="JclDeveloperTools.dcp"/>
 			<DCCReference Include="..\..\install\JediRegInfo.pas"/>
 			<DCCReference Include="..\..\experts\common\JclOtaUtils.pas"/>
 			<DCCReference Include="..\..\experts\common\JclOtaResources.pas"/>

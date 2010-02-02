@@ -12,6 +12,7 @@
     <Package Name="designide" Targets="Delphi,Bcb,Bds" Condition=""/>
     <Package Name="Jcl-R" Targets="all" Condition=""/>
     <Package Name="JclBaseExpert-D" Targets="all" Condition=""/>
+    <Package Name="JclDeveloperTools-R" Targets="all" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\experts\debug\converter\JclDebugIdeResult.pas" Targets="runtimeIDE" Formname="JclDebugResultForm" Condition=""/>

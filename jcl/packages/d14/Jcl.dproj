@@ -67,7 +67,6 @@
 			<DCCReference Include="..\..\source\common\Jcl8087.pas"/>
 			<DCCReference Include="..\..\source\common\JclAnsiStrings.pas"/>
 			<DCCReference Include="..\..\source\common\JclBase.pas"/>
-			<DCCReference Include="..\..\source\common\JclBorlandTools.pas"/>
 			<DCCReference Include="..\..\source\common\JclCharsets.pas"/>
 			<DCCReference Include="..\..\source\common\JclComplex.pas"/>
 			<DCCReference Include="..\..\source\common\JclCompression.pas"/>

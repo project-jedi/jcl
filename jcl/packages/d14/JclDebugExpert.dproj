@@ -29,7 +29,7 @@
 			<GenDll>true</GenDll>
 			<GenPackage>true</GenPackage>
 			<DCC_ImageBase>$58020000</DCC_ImageBase>
-			<DCC_UsePackage>rtl;vcl;designide;Jcl;JclBaseExpert</DCC_UsePackage>
+			<DCC_UsePackage>rtl;vcl;designide;Jcl;JclBaseExpert;JclDeveloperTools</DCC_UsePackage>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Cfg_Release)'!=''">
 			<DCC_AssertionsAtRuntime>false</DCC_AssertionsAtRuntime>
@@ -67,6 +67,7 @@
 			<DCCReference Include="designide.dcp"/>
 			<DCCReference Include="Jcl.dcp"/>
 			<DCCReference Include="JclBaseExpert.dcp"/>
+			<DCCReference Include="JclDeveloperTools.dcp"/>
 			<DCCReference Include="..\..\experts\debug\converter\JclDebugIdeResult.pas"/>
 			<DCCReference Include="..\..\experts\debug\converter\JclDebugIdeImpl.pas"/>
 			<DCCReference Include="..\..\experts\debug\converter\JclDebugIdeConfigFrame.pas"/>

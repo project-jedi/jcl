@@ -13,6 +13,7 @@
     <Package Name="Jcl-R" Targets="all" Condition=""/>
     <Package Name="JclContainers-R" Targets="all" Condition=""/>
     <Package Name="JclBaseExpert-D" Targets="all" Condition=""/>
+    <Package Name="JclDeveloperTools-R" Targets="all" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\devtools\jpp\JppState.pas" Targets="runtimeIDE" Formname="" Condition=""/>

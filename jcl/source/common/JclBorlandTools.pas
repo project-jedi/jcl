@@ -895,7 +895,7 @@ uses
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
-  JclFileUtils, JclLogic, JclResources,
+  JclFileUtils, JclLogic, JclDevToolsResources,
   JclAnsiStrings, JclWideStrings, JclStrings,
   JclSysInfo, JclSimpleXml;
 

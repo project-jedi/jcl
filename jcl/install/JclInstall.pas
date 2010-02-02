@@ -417,9 +417,10 @@ const
   VersionDirExp = '\%%s';
 
   // native packages
-  JclDpk           = 'Jcl';
-  JclContainersDpk = 'JclContainers';
-  JclVclDpk        = 'JclVcl';
+  JclDpk               = 'Jcl';
+  JclContainersDpk     = 'JclContainers';
+  JclDeveloperToolsDpk = 'JclDeveloperTools';
+  JclVclDpk            = 'JclVcl';
 
   JclExpertBase             = 'JclBaseExpert';
   JclExpertDebug            = 'JclDebugExpert';
@@ -1482,7 +1483,8 @@ var
       MarkOptionBegin(joJCLPackages);
 
       Result := CompilePackage(FullPackageFileName(Target, JclDpk))
-        and CompilePackage(FullPackageFileName(Target, JclContainersDpk));
+        and CompilePackage(FullPackageFileName(Target, JclContainersDpk))
+        and CompilePackage(FullPackageFileName(Target, JclDeveloperToolsDpk));
 
       if Result and OptionChecked[joJCLVclPackage] then
       begin
@@ -1948,12 +1950,14 @@ function TJclInstallation.Uninstall(AUninstallHelp: Boolean): Boolean;
       ABDSTarget := ATarget as TJclBDSInstallation;
       ABDSTarget.CleanPackageCache(BinaryFileName(GetBPLPath, Distribution.JclPath + FullPackageFileName(ATarget, JclDpk)));
       ABDSTarget.CleanPackageCache(BinaryFileName(GetBPLPath, Distribution.JclPath + FullPackageFileName(ATarget, JclContainersDpk)));
+      ABDSTarget.CleanPackageCache(BinaryFileName(GetBPLPath, Distribution.JclPath + FullPackageFileName(ATarget, JclDeveloperToolsDpk)));
       if RuntimeInstallation and ATarget.SupportsVCL then
         ABDSTarget.CleanPackageCache(BinaryFileName(GetBPLPath, Distribution.JclPath + FullPackageFileName(ATarget, JclVclDpk)));
     end;
     //ioJclPackages
     ATarget.UnregisterPackage(Distribution.JclPath + FullPackageFileName(ATarget, JclDpk), GetBplPath);
     ATarget.UnregisterPackage(Distribution.JclPath + FullPackageFileName(ATarget, JclContainersDpk), GetBplPath);
+    ATarget.UnregisterPackage(Distribution.JclPath + FullPackageFileName(ATarget, JclDeveloperToolsDpk), GetBplPath);
     if RuntimeInstallation and ATarget.SupportsVCL then
       ATarget.UnregisterPackage(Distribution.JclPath + FullPackageFileName(ATarget, JclVclDpk), GetBplPath);
     {$IFDEF MSWINDOWS}
@@ -1965,6 +1969,7 @@ function TJclInstallation.Uninstall(AUninstallHelp: Boolean): Boolean;
   begin
     DeletePackage(FullPackageFileName(Target, JclDpk));
     DeletePackage(FullPackageFileName(Target, JclContainersDpk));
+    DeletePackage(FullPackageFileName(Target, JclDeveloperToolsDpk));
     if RuntimeInstallation and Target.SupportsVCL then
       DeletePackage(FullPackageFileName(Target, JclVclDpk));
   end;

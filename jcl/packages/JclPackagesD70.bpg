@@ -9,7 +9,7 @@ MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
 DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
-PROJECTS = Jcl70.bpl JclVcl70.bpl JclContainers70.bpl \
+PROJECTS = Jcl70.bpl JclVcl70.bpl JclContainers70.bpl JclDeveloperTools70.bpl \
   JclBaseExpert70.bpl JclDebugExpert70.bpl JclFavoriteFoldersExpert70.bpl \
   JclProjectAnalysisExpert70.bpl JclRepositoryExpert70.bpl \
   JclSIMDViewExpert70.bpl JclStackTraceViewerExpert70.bpl \
@@ -25,6 +25,9 @@ JclVcl70.bpl: d7\JclVcl.dpk
   $(DCC)
 
 JclContainers70.bpl: d7\JclContainers.dpk
+  $(DCC)
+
+JclDeveloperTools70.bpl: d7\JclDeveloperTools.dpk
   $(DCC)
 
 JclBaseExpert70.bpl: d7\JclBaseExpert.dpk

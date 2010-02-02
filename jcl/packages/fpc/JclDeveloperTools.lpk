@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Package Version="3">
+    <PathDelim Value="\"/>
+    <Name Value="JclDeveloperTools"/>
+    <AddToProjectUsesSection Value="False"/>
+    <Author Value="Project JEDI"/>
+    <AutoUpdate Value="OnRebuildingAll"/>
+    <CompilerOptions>
+      <Version Value="8"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <IncludeFiles Value="..\..\source\include\"/>
+        <OtherUnitFiles Value=".;..\..\source\common;"/>
+        <UnitOutputDirectory Value="..\..\lib\fpc\$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <Parsing>
+        <Style Value="1"/>
+        <SyntaxOptions>
+          <SyntaxMode Value="Delphi"/>
+          <CStyleOperator Value="False"/>
+        </SyntaxOptions>
+      </Parsing>
+      <CodeGeneration>
+        <Optimizations>
+          <VariablesInRegisters Value="True"/>
+          <OptimizationLevel Value="3"/>
+        </Optimizations>
+      </CodeGeneration>
+      <Linking>
+        <Debugging>
+          <UseLineInfoUnit Value="False"/>
+        </Debugging>
+      </Linking>
+      <Other>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="JEDI Code Library Developer Tools package"/>
+    <License Value="Copyright (C) 1999, 2009 Project JEDI"/>
+    <Version Major="2" Minor="2" Release="0" Build="3537"/>
+    <Files Count="2">
+      <Item1>
+        <Filename Value="..\..\source\common\JclBorlandTools.pas"/>
+        <UnitName Value="JclBorlandTools"/>
+      </Item1>
+      <Item2>
+        <Filename Value="..\..\source\common\JclDevToolsResources.pas"/>
+        <UnitName Value="JclDevToolsResources"/>
+      </Item2>
+    </Files>
+    <RequiredPkgs Count="2">
+      <Item1>
+        <PackageName Value="FCL"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="Jcl"/>
+      </Item2>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)\"/>
+      <IncludePath Value="..\..\source\include\"/>
+      <LibraryPath Value="$(PkgOutDir)\"/>
+      <ObjectPath Value="..\..\lib\fpc\$(TargetCPU)-$(TargetOS)\"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

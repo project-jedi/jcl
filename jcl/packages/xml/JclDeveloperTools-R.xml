@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JclDeveloperTools" Design="0">
+  <Description>JEDI Code Library Developer Tools package</Description>
+  <GUID>{2AE59B42-1430-423F-99D0-FB8F17DF798B}</GUID>
+  <C5PFlags/>
+  <C6PFlags/>
+  <C5Libs/>
+  <C6Libs/>
+  <CompilerDefines>RELEASE</CompilerDefines>
+  <ImageBase>48000000</ImageBase>
+  <Requires>
+    <Package Name="rtl" Targets="Delphi,Bcb,Bds" Condition=""/>
+    <Package Name="FCL" Targets="fpc" Condition=""/>
+    <Package Name="Jcl-R" Targets="all" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\source\common\JclBorlandTools.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclDevToolsResources.pas" Targets="all" Formname="" Condition=""/>
+  </Contains>
+</Package>
