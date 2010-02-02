@@ -278,9 +278,7 @@ type
     procedure WriteCString(const Value: string); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
     procedure WriteCAnsiString(const Value: AnsiString);
     procedure WriteCWideString(const Value: WideString);
-    {$IFDEF KEEP_DEPRECATED}
-    procedure WriteStringDelimitedByNull(const Value: string);
-    {$ENDIF KEEP_DEPRECATED}
+    // use WriteCString
     procedure WriteShortString(const Value: ShortString);
     procedure WriteSingle(const Value: Single);
     procedure WriteSizedString(const Value: string); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
@@ -526,13 +524,6 @@ type
     property Encoding: TJclStringEncoding read FEncoding;
   end;
 
-{$IFDEF KEEP_DEPRECATED}
-// call TStream.Seek(Int64,TSeekOrigin) if present (TJclStream or COMPILER6_UP)
-// otherwize call TStream.Seek(LongInt,Word) with range checking
-function StreamSeek(Stream: TStream; const Offset: Int64;
-  const Origin: TSeekOrigin): Int64;
-{$ENDIF KEEP_DEPRECATED}
-
 // buffered copy of all available bytes from Source to Dest
 // returns the number of bytes that were copied
 function StreamCopy(Source: TStream; Dest: TStream; BufferSize: Longint = StreamDefaultBufferSize): Int64;
@@ -564,17 +555,6 @@ implementation
 
 uses
   JclResources, JclCharsets, JclMath, JclSysUtils;
-
-{$IFDEF KEEP_DEPRECATED}
-function StreamSeek(Stream: TStream; const Offset: Int64;
-  const Origin: TSeekOrigin): Int64; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF SUPPORTS_INLINE}
-begin
-  if Assigned(Stream) then
-    Result := Stream.Seek(Offset, Origin)
-  else
-    Result := -1;
-end;
-{$ENDIF KEEP_DEPRECATED}
 
 function StreamCopy(Source: TStream; Dest: TStream; BufferSize: Longint): Int64;
 var
@@ -1663,13 +1643,6 @@ begin
   StrSize := Length(Value);
   WriteBuffer(Value[1], (StrSize + 1) * SizeOf(Value[1]));
 end;
-
-{$IFDEF KEEP_DEPRECATED}
-procedure TJclEasyStream.WriteStringDelimitedByNull(const Value: string);
-begin
-  WriteCString(Value);
-end;
-{$ENDIF KEEP_DEPRECATED}
 
 procedure TJclEasyStream.WriteShortString(const Value: ShortString);
 begin

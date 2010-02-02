@@ -463,9 +463,8 @@ procedure TrimStringsLeft(const List: TJclAnsiStrings; DeleteIfEmpty: Boolean = 
 function AddStringToStrings(const S: AnsiString; Strings: TJclAnsiStrings; const Unique: Boolean): Boolean;
 
 // Miscellaneous
-{$IFDEF KEEP_DEPRECATED}
-function BooleanToStr(B: Boolean): AnsiString;
-{$ENDIF KEEP_DEPRECATED}
+// (OF) moved to JclSysUtils
+//function BooleanToStr(B: Boolean): AnsiString;
 function FileToString(const FileName: TFileName): AnsiString;
 procedure StringToFile(const FileName: TFileName; const Contents: AnsiString; Append: Boolean = False);
 function StrToken(var S: AnsiString; Separator: AnsiChar): AnsiString;
@@ -3375,15 +3374,6 @@ begin
 end;
 
 //=== Miscellaneous ==========================================================
-
-{$IFDEF KEEP_DEPRECATED}
-function BooleanToStr(B: Boolean): AnsiString;
-const
-  Bools: array [Boolean] of AnsiString = ('False', 'True');
-begin
-  Result := Bools[B];
-end;
-{$ENDIF KEEP_DEPRECATED}
 
 function FileToString(const FileName: TFileName): AnsiString;
 var

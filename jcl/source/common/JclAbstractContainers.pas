@@ -52,9 +52,8 @@ uses
   JclAnsiStrings;
 
 type
-  {$IFDEF KEEP_DEPRECATED}
-  TJclIntfCriticalSection = JclSysUtils.TJclIntfCriticalSection;
-  {$ENDIF KEEP_DEPRECATED}
+  // (OF) was moved to JclSysUtils
+  // TJclIntfCriticalSection = JclSysUtils.TJclIntfCriticalSection;
 
   TJclAbstractLockable = class(TInterfacedObject {$IFDEF THREADSAFE}, IJclLockable {$ENDIF THREADSAFE})
   {$IFDEF THREADSAFE}

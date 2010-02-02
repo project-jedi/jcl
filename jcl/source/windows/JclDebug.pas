@@ -64,10 +64,8 @@ uses
 procedure AssertKindOf(const ClassName: string; const Obj: TObject); overload;
 procedure AssertKindOf(const ClassType: TClass; const Obj: TObject); overload;
 
-{$IFDEF KEEP_DEPRECATED}
-procedure Trace(const Msg: string);
-{$EXTERNALSYM Trace}
-{$ENDIF KEEP_DEPRECATED}
+// use TraceMsg
+// procedure Trace(const Msg: string);
 procedure TraceMsg(const Msg: string);
 procedure TraceFmt(const Fmt: string; const Args: array of const);
 procedure TraceLoc(const Msg: string);
@@ -979,11 +977,9 @@ type
      stDelayedTrace, stTraceAllExceptions, stMainThreadOnly, stDisableIfDebuggerAttached);
   TJclStackTrackingOptions = set of TJclStackTrackingOption;
 
-{$IFDEF KEEP_DEPRECATED}
-const
+//const
   // replaced by RemoveIgnoredException(EAbort)
-  stTraceEAbort = stTraceAllExceptions;
-{$ENDIF KEEP_DEPRECATED}
+  // stTraceEAbort = stTraceAllExceptions;
 
 var
   JclStackTrackingOptions: TJclStackTrackingOptions = [stStack];
@@ -1095,14 +1091,6 @@ procedure AssertKindOf(const ClassType: TClass; const Obj: TObject);
 begin
   Assert(Obj.InheritsFrom(ClassType));
 end;
-
-
-{$IFDEF KEEP_DEPRECATED}
-procedure Trace(const Msg: string);
-begin
-  TraceMsg(Msg);
-end;
-{$ENDIF KEEP_DEPRECATED}
 
 procedure TraceMsg(const Msg: string);
 begin

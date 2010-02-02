@@ -378,9 +378,6 @@ type
   TJclBCC32 = class(TJclBorlandCommandLineTool)
   public
     constructor Create(AInstallation: TJclBorRADToolInstallation); override;
-    {$IFDEF KEEP_DEPRECATED}
-    function SupportsLibSuffix: Boolean;
-    {$ENDIF KEEP_DEPRECATED}
     function GetExeName: string; override;
   end;
 
@@ -404,16 +401,10 @@ type
     function MakePackage(const PackageName, BPLPath, DCPPath: string; ExtraOptions: string = ''): Boolean;
     function MakeProject(const ProjectName, OutputDir, DcpSearchPath: string; ExtraOptions: string = ''): Boolean;
     procedure SetDefaultOptions; virtual;
-    {$IFDEF KEEP_DEPRECATED}
-    function SupportsLibSuffix: Boolean;
-    {$ENDIF KEEP_DEPRECATED}
     function AddBDSProjOptions(const ProjectFileName: string; var ProjectOptions: TProjectOptions): Boolean;
     function AddDOFOptions(const ProjectFileName: string; var ProjectOptions: TProjectOptions): Boolean;
     function AddDProjOptions(const ProjectFileName: string; var ProjectOptions: TProjectOptions): Boolean;
   end;
-  {$IFDEF KEEP_DEPRECATED}
-  TJclDCC = TJclDCC32;
-  {$ENDIF KEEP_DEPRECATED}
 
   TJclBpr2Mak = class(TJclBorlandCommandLineTool)
   public
@@ -617,18 +608,12 @@ type
     function UnregisterExpert(const BinaryFileName: string): Boolean; overload; virtual;
     function UnregisterExpert(const ProjectName, OutputDir: string): Boolean; overload; virtual;
 
-    {$IFDEF KEEP_DEPRECATED}
-    function IsBDSPersonality: Boolean;
-    {$ENDIF KEEP_DEPRECATED}
     function GetDefaultProjectsDir: string; virtual;
     function GetCommonProjectsDir: string; virtual;
     function RemoveFromDebugDCUPath(const Path: string): Boolean;
     function RemoveFromLibrarySearchPath(const Path: string): Boolean;
     function RemoveFromLibraryBrowsingPath(const Path: string): Boolean;
     function SubstitutePath(const Path: string): string;
-    {$IFDEF KEEP_DEPRECATED}
-    function SupportsBCB: Boolean;
-    {$ENDIF KEEP_DEPRECATED}
     function SupportsVisualCLX: Boolean;
     function SupportsVCL: Boolean;
     function LibFolderName: string;
@@ -684,9 +669,6 @@ type
     property VersionNumber: Integer read FVersionNumber;
     property VersionNumberStr: string read FVersionNumberStr;
     property Personalities: TJclBorPersonalities read FPersonalities;
-    {$IFDEF KEEP_DEPRECATED}
-    property DCC: TJclDCC32 read GetDCC32;
-    {$ENDIF KEEP_DEPRECATED}
     property SupportsLibSuffix: Boolean read GetSupportsLibSuffix;
     property OutputCallback: TTextHandler read FOutputCallback write SetOutputCallback;
     property IsTurboExplorer: Boolean read GetIsTurboExplorer;
@@ -852,9 +834,6 @@ type
     property BDSVersionInstalled[VersionNumber: Integer]: Boolean read GetBDSVersionInstalled;
   end;
 
-{$IFDEF KEEP_DEPRECATED}
-function BPLFileName(const BPLPath, PackageFileName: string): string;
-{$ENDIF KEEP_DEPRECATE}
 function BinaryFileName(const OutputPath, ProjectFileName: string): string;
 
 function IsDelphiPackage(const FileName: string): Boolean;
@@ -2467,13 +2446,6 @@ begin
   Result := BCC32ExeName;
 end;
 
-{$IFDEF KEEP_DEPRECATED}
-function TJclBCC32.SupportsLibSuffix: Boolean;
-begin
-  Result := Installation.SupportsLibSuffix;
-end;
-{$ENDIF KEEP_DEPRECATED}
-
 //=== { TJclDCC32 } ============================================================
 
 function TJclDCC32.AddDProjOptions(const ProjectFileName: string; var ProjectOptions: TProjectOptions): Boolean;
@@ -2884,13 +2856,6 @@ begin
       Options.Add('-LUrtl');
   end;
 end;
-
-{$IFDEF KEEP_DEPRECATED}
-function TJclDCC32.SupportsLibSuffix: Boolean;
-begin
-  Result := Installation.SupportsLibSuffix;
-end;
-{$ENDIF KEEP_DEPRECATED}
 
 {$IFDEF MSWINDOWS}
 //=== { TJclDCCIL } ==========================================================
@@ -3888,17 +3853,6 @@ begin
     raise EJclBorRADException.CreateResFmt(@RsEUnknownPackageExtension, [PackageExtension]);
 end;
 
-{$IFDEF KEEP_DEPRECATED}
-function TJclBorRADToolInstallation.IsBDSPersonality: Boolean;
-begin
-  {$IFDEF MSWINDOWS}
-  Result := InheritsFrom(TJclBDSInstallation);
-  {$ELSE ~MSWINDOWS}
-  Result := False;
-  {$ENDIF ~MSWINDOWS}
-end;
-{$ENDIF KEEP_DEPRECATED}
-
 function TJclBorRADToolInstallation.LibDebugFolderName: string;
 begin
   Result := LibFolderName + PathAddSeparator('debug');
@@ -4275,13 +4229,6 @@ begin
   // remove duplicate path delimiters '\\'
   Result := StringReplace(Result, DirDelimiter + DirDelimiter, DirDelimiter, [rfReplaceAll]);
 end;
-
-{$IFDEF KEEP_DEPRECATED}
-function TJclBorRADToolInstallation.SupportsBCB: Boolean;
-begin
-  Result := clBCC32 in CommandLineTools;
-end;
-{$ENDIF KEEP_DEPRECATED}
 
 function TJclBorRADToolInstallation.SupportsVCL: Boolean;
 const

@@ -149,9 +149,6 @@ type
     function GetFileName: TFileName;
     function GetItems(Index: Integer): TJclPeImportFuncItem;
     function GetName: string;
-    {$IFDEF KEEP_DEPRECATED}
-    function GetThunkData: PImageThunkData;
-    {$ENDIF KEEP_DEPRECATED}
     function GetThunkData32: PImageThunkData32;
     function GetThunkData64: PImageThunkData64;
   protected
@@ -173,9 +170,8 @@ type
     property Items[Index: Integer]: TJclPeImportFuncItem read GetItems; default;
     property Name: string read GetName;
     property OriginalName: string read FName;
-    {$IFDEF KEEP_DEPRECATED}
-    property ThunkData: PImageThunkData read GetThunkData;
-    {$ENDIF KEEP_DEPRECATED}
+    // use the following properties
+    // property ThunkData: PImageThunkData
     property ThunkData32: PImageThunkData32 read GetThunkData32;
     property ThunkData64: PImageThunkData64 read GetThunkData64;
     property TotalResolveCheck: TJclPeResolveCheck read FTotalResolveCheck;
@@ -612,9 +608,6 @@ type
     function GetHeaderValues(Index: TJclPeHeader): string;
     function GetLoadConfigValues(Index: TJclLoadConfig): string;
     function GetMappedAddress: TJclAddr;
-    {$IFDEF KEEP_DEPRECATED}
-    function GetOptionalHeader: TImageOptionalHeader;
-    {$ENDIF KEEP_DEPRECATED}
     function GetOptionalHeader32: TImageOptionalHeader32;
     function GetOptionalHeader64: TImageOptionalHeader64;
     function GetRelocationList: TJclPeRelocList;
@@ -681,9 +674,8 @@ type
     property LoadConfigValues[Index: TJclLoadConfig]: string read GetLoadConfigValues;
     property LoadedImage: TLoadedImage read FLoadedImage;
     property MappedAddress: TJclAddr read GetMappedAddress;
-    {$IFDEF KEEP_DEPRECATED}
-    property OptionalHeader: TImageOptionalHeader read GetOptionalHeader;
-    {$ENDIF KEEP_DEPRECATED}
+    // use the following properties
+    // property OptionalHeader: TImageOptionalHeader
     property OptionalHeader32: TImageOptionalHeader32 read GetOptionalHeader32;
     property OptionalHeader64: TImageOptionalHeader64 read GetOptionalHeader64;
     property ReadOnlyAccess: Boolean read FReadOnlyAccess write FReadOnlyAccess;
@@ -856,18 +848,16 @@ type
     NewImageSize: DWORD;
     NewImageBase: TJclAddr64;
   end;
-{$IFDEF KEEP_DEPRECATED}
-type
-  TJclRebaseImageInfo = TJclRebaseImageInfo32;
-{$ENDIF KEEP_DEPRECATED}
+
+  // renamed
+  // TJclRebaseImageInfo = TJclRebaseImageInfo32;
 
 { Image validity }
 
 function IsValidPeFile(const FileName: TFileName): Boolean;
 
-{$IFDEF KEEP_DEPRECATED}
-function PeGetNtHeaders(const FileName: TFileName; out NtHeaders: TImageNtHeaders): Boolean;
-{$ENDIF KEEP_DEPRECATED}
+// use PeGetNtHeaders32 for backward compatibility
+// function PeGetNtHeaders(const FileName: TFileName; out NtHeaders: TImageNtHeaders): Boolean;
 function PeGetNtHeaders32(const FileName: TFileName; out NtHeaders: TImageNtHeaders32): Boolean;
 function PeGetNtHeaders64(const FileName: TFileName; out NtHeaders: TImageNtHeaders64): Boolean;
 
@@ -875,10 +865,9 @@ function PeGetNtHeaders64(const FileName: TFileName; out NtHeaders: TImageNtHead
 
 function PeCreateNameHintTable(const FileName: TFileName): Boolean;
 
-{$IFDEF KEEP_DEPRECATED}
-function PeRebaseImage(const ImageName: TFileName; NewBase: DWORD = 0; TimeStamp: DWORD = 0;
-  MaxNewSize: DWORD = 0): TJclRebaseImageInfo;
-{$ENDIF KEEP_DEPRECATED}
+// use PeRebaseImage32
+//function PeRebaseImage(const ImageName: TFileName; NewBase: DWORD = 0; TimeStamp: DWORD = 0;
+//  MaxNewSize: DWORD = 0): TJclRebaseImageInfo;
 function PeRebaseImage32(const ImageName: TFileName; NewBase: TJclAddr32 = 0; TimeStamp: DWORD = 0;
   MaxNewSize: DWORD = 0): TJclRebaseImageInfo32;
 function PeRebaseImage64(const ImageName: TFileName; NewBase: TJclAddr64 = 0; TimeStamp: DWORD = 0;
@@ -949,9 +938,8 @@ function PeFindMissingImports(RequiredImportsList, MissingImportsList: TStrings)
 function PeCreateRequiredImportList(const FileName: TFileName; RequiredImportsList: TStrings): Boolean;
 
 // Mapped or loaded image related routines
-{$IFDEF KEEP_DEPRECATED}
-function PeMapImgNtHeaders(const BaseAddress: Pointer): PImageNtHeaders;
-{$ENDIF KEEP_DEPRECATED}
+// use PeMapImgNtHeaders32
+// function PeMapImgNtHeaders(const BaseAddress: Pointer): PImageNtHeaders;
 function PeMapImgNtHeaders32(const BaseAddress: Pointer): PImageNtHeaders32;
 function PeMapImgNtHeaders64(const BaseAddress: Pointer): PImageNtHeaders64;
 
@@ -959,16 +947,14 @@ function PeMapImgLibraryName(const BaseAddress: Pointer): string;
 function PeMapImgSize(const BaseAddress: Pointer): DWORD;
 function PeMapImgTarget(const BaseAddress: Pointer): TJclPeTarget;
 
-{$IFDEF KEEP_DEPRECATED}
-function PeMapImgSections(NtHeaders: PImageNtHeaders): PImageSectionHeader;
-{$ENDIF KEEP_DEPRECATED}
+// use PeMapImgSections32
+// function PeMapImgSections(NtHeaders: PImageNtHeaders): PImageSectionHeader;
 function PeMapImgSections32(NtHeaders: PImageNtHeaders32): PImageSectionHeader;
 function PeMapImgSections64(NtHeaders: PImageNtHeaders64): PImageSectionHeader;
 
-{$IFDEF KEEP_DEPRECATED}
-function PeMapImgFindSection(NtHeaders: PImageNtHeaders;
-  const SectionName: string): PImageSectionHeader;
-{$ENDIF KEEP_DEPRECATED}
+// use PeMapImgFindSection32
+// function PeMapImgFindSection(NtHeaders: PImageNtHeaders;
+//   const SectionName: string): PImageSectionHeader;
 function PeMapImgFindSection32(NtHeaders: PImageNtHeaders32;
   const SectionName: string): PImageSectionHeader;
 function PeMapImgFindSection64(NtHeaders: PImageNtHeaders64;
@@ -1589,13 +1575,6 @@ function TJclPeImportLibItem.GetName: string;
 begin
   Result := AnsiLowerCase(OriginalName);
 end;
-
-{$IFDEF KEEP_DEPRECATED}
-function TJclPeImportLibItem.GetThunkData: PImageThunkData;
-begin
-  Result := FThunkData;
-end;
-{$ENDIF KEEP_DEPRECATED}
 
 function TJclPeImportLibItem.GetThunkData32: PImageThunkData32;
 begin
@@ -3736,16 +3715,6 @@ begin
     Result := 0;
 end;
 
-{$IFDEF KEEP_DEPRECATED}
-function TJclPeImage.GetOptionalHeader: TImageOptionalHeader;
-begin
-  if Target = taWin32 then
-    Result := PImageNtHeaders(FLoadedImage.FileHeader)^.OptionalHeader
-  else
-    ZeroMemory(@Result, SizeOf(Result));
-end;
-{$ENDIF KEEP_DEPRECATED}
-
 function TJclPeImage.GetOptionalHeader32: TImageOptionalHeader32;
 begin
   if Target = taWin32 then
@@ -4854,13 +4823,6 @@ begin
   end;
 end;
 
-{$IFDEF KEEP_DEPRECATED}
-function PeGetNtHeaders(const FileName: TFileName; out NtHeaders: TImageNtHeaders): Boolean;
-begin
-  Result := InternalGetNtHeaders32(FileName, NtHeaders);
-end;
-{$ENDIF KEEP_DEPRECATED}
-
 function PeGetNtHeaders32(const FileName: TFileName; out NtHeaders: TImageNtHeaders32): Boolean;
 begin
   Result := InternalGetNtHeaders32(FileName, NtHeaders);
@@ -4994,13 +4956,6 @@ begin
     Cache.Free;
   end;
 end;
-
-{$IFDEF KEEP_DEPRECATED}
-function PeRebaseImage(const ImageName: TFileName; NewBase, TimeStamp, MaxNewSize: DWORD): TJclRebaseImageInfo;
-begin
-  Result := PeRebaseImage32(ImageName, NewBase, TimeStamp, MaxNewSize);
-end;
-{$ENDIF KEEP_DEPRECATED}
 
 function PeRebaseImage32(const ImageName: TFileName; NewBase: TJclAddr32;
   TimeStamp, MaxNewSize: DWORD): TJclRebaseImageInfo32;
@@ -5713,13 +5668,6 @@ end;
 
 // Mapped or loaded image related functions
 
-{$IFDEF KEEP_DEPRECATED}
-function PeMapImgNtHeaders(const BaseAddress: Pointer): PImageNtHeaders;
-begin
-  Result := PImageNtHeaders(PeMapImgNtHeaders32(BaseAddress));
-end;
-{$ENDIF KEEP_DEPRECATED}
-
 function PeMapImgNtHeaders32(const BaseAddress: Pointer): PImageNtHeaders32;
 begin
   Result := nil;
@@ -5850,13 +5798,6 @@ begin
     end;
 end;
 
-{$IFDEF KEEP_DEPRECATED}
-function PeMapImgSections(NtHeaders: PImageNtHeaders): PImageSectionHeader;
-begin
-  Result := PeMapImgSections32(PImageNtHeaders32(NtHeaders));
-end;
-{$ENDIF KEEP_DEPRECATED}
-
 function PeMapImgSections32(NtHeaders: PImageNtHeaders32): PImageSectionHeader;
 begin
   if NtHeaders = nil then
@@ -5874,14 +5815,6 @@ begin
     Result := PImageSectionHeader(TJclAddr(@NtHeaders^.OptionalHeader) +
       NtHeaders^.FileHeader.SizeOfOptionalHeader);
 end;
-
-{$IFDEF KEEP_DEPRECATED}
-function PeMapImgFindSection(NtHeaders: PImageNtHeaders;
-  const SectionName: string): PImageSectionHeader;
-begin
-  Result := PeMapImgFindSection32(PImageNtHeaders32(NtHeaders), SectionName);
-end;
-{$ENDIF KEEP_DEPRECATED}
 
 function PeMapImgFindSection32(NtHeaders: PImageNtHeaders32;
   const SectionName: string): PImageSectionHeader;

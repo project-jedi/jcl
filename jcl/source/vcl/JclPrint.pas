@@ -118,11 +118,9 @@ type
   public
     constructor Create; virtual;
     destructor Destroy; override;
-    {$IFDEF KEEP_DEPRECATED}
-    { TODO : Find a solution for deprecated }
-    function GetBinSourceList: TStringList; overload; {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
-    function GetPaperList: TStringList; overload; {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
-    {$ENDIF KEEP_DEPRECATED}
+    // use the other implementations
+    //function GetBinSourceList: TStringList; overload;
+    //function GetPaperList: TStringList; overload;
     procedure GetBinSourceList(List: TStrings); overload;
     procedure GetPaperList(List: TStrings); overload;
     procedure SetDeviceMode(Creating: Boolean);
@@ -649,19 +647,6 @@ begin
   end;
 end;
 
-{$IFDEF KEEP_DEPRECATED}
-function TJclPrintSet.GetBinSourceList: TStringList;
-begin
-  Result := TStringList.Create;
-  try
-    GetBinSourceList(Result);
-  except
-    FreeAndNil(Result);
-    raise;
-  end;
-end;
-{$ENDIF KEEP_DEPRECATED}
-
 procedure TJclPrintSet.GetBinSourceList(List: TStrings);
 type
   TBinName = array [0..CCHBinName - 1] of Char;
@@ -696,19 +681,6 @@ begin
       FreeMem(BinArray, FNumBins * SizeOf(TBinName));
   end;
 end;
-
-{$IFDEF KEEP_DEPRECATED}
-function TJclPrintSet.GetPaperList: TStringList;
-begin
-  Result := TStringList.Create;
-  try
-    GetPaperList(Result);
-  except
-    FreeAndNil(Result);
-    raise;
-  end;
-end;
-{$ENDIF KEEP_DEPRECATED}
 
 procedure TJclPrintSet.GetPaperList(List: TStrings);
 type

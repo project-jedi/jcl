@@ -357,9 +357,8 @@ procedure TrimStringsLeft(const List: TStrings; DeleteIfEmpty: Boolean = True);
 function AddStringToStrings(const S: string; Strings: TStrings; const Unique: Boolean): Boolean;
 
 // Miscellaneous
-{$IFDEF KEEP_DEPRECATED}
-function BooleanToStr(B: Boolean): string;
-{$ENDIF KEEP_DEPRECATED}
+// (OF) moved to JclSysUtils
+// function BooleanToStr(B: Boolean): string;
  // AnsiString here because it is binary data
 function FileToString(const FileName: string): {$IFDEF COMPILER12_UP}RawByteString{$ELSE}AnsiString{$ENDIF};
 procedure StringToFile(const FileName: string; const Contents: {$IFDEF COMPILER12_UP}RawByteString{$ELSE}AnsiString{$ENDIF};
@@ -3236,15 +3235,6 @@ begin
 end;
 
 //=== Miscellaneous ==========================================================
-
-{$IFDEF KEEP_DEPRECATED}
-function BooleanToStr(B: Boolean): string;
-const
-  Bools: array [Boolean] of string = ('False', 'True');
-begin
-  Result := Bools[B];
-end;
-{$ENDIF KEEP_DEPRECATED}
 
 function FileToString(const FileName: string): {$IFDEF COMPILER12_UP}RawByteString{$ELSE}AnsiString{$ENDIF};
 var

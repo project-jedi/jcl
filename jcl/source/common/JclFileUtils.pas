@@ -84,17 +84,15 @@ uses
 // paths.
 const
   {$IFDEF UNIX}
-  {$IFDEF KEEP_DEPRECATED}
-  PathSeparator    = '/';
-  {$ENDIF KEEP_DEPRECATED}
+  // renamed to DirDelimiter
+  // PathSeparator    = '/';
   DirDelimiter = '/';
   DirSeparator = ':';
   {$ENDIF UNIX}
   {$IFDEF MSWINDOWS}
   PathDevicePrefix = '\\.\';
-  {$IFDEF KEEP_DEPRECATED}
-  PathSeparator    = '\';
-  {$ENDIF KEEP_DEPRECATED}
+  // renamed to DirDelimiter
+  // PathSeparator    = '\';
   DirDelimiter = '\';
   DirSeparator = ';';
   PathUncPrefix    = '\\';
@@ -987,25 +985,6 @@ type
   EJclFileMappingError = class(EJclWin32Error);
   EJclFileMappingViewError = class(EJclWin32Error);
   {$ENDIF MSWINDOWS}
-
-{$IFDEF KEEP_DEPRECATED}
-// Deprecated, do not use
-{$IFDEF MSWINDOWS}
-function PathGetLongName2(const Path: string): string;
-  {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
-{$IFNDEF FPC}
-function Win32DeleteFile(const FileName: string; MoveToRecycleBin: Boolean): Boolean;
-  {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
-{$ENDIF ~FPC}
-function Win32MoveFileReplaceExisting(const SrcFileName, DstFileName: string): Boolean;
-  {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
-function Win32BackupFile(const FileName: string; Move: Boolean): Boolean;
-  {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
-function Win32RestoreFile(const FileName: string): Boolean;
-  {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
-{$ENDIF MSWINDOWS}
-
-{$ENDIF KEEP_DEPRECATED}
 
 function SamePath(const Path1, Path2: string): Boolean;
 
@@ -2466,15 +2445,6 @@ begin
 end;
 
 {$IFDEF MSWINDOWS}
-
-{$IFDEF KEEP_DEPRECATED}
-
-function PathGetLongName2(const Path: string): string;
-begin
-  Result := PathGetLongName(Path);
-end;
-
-{$ENDIF KEEP_DEPRECATED}
 
 function ShellGetLongPathName(const Path: string): string;
 {$IFDEF FPC}
@@ -4539,29 +4509,6 @@ begin
   end;
 end;
 
-{$IFDEF KEEP_DEPRECATED}
-
-function Win32DeleteFile(const FileName: string; MoveToRecycleBin: Boolean): Boolean;
-begin
-  Result := FileDelete(FileName, MoveToRecycleBin);
-end;
-
-function Win32MoveFileReplaceExisting(const SrcFileName, DstFileName: string): Boolean;
-begin
-  Result := FileMove(SrcFilename, DstFilename, True);
-end;
-
-function Win32BackupFile(const FileName: string; Move: Boolean): Boolean;
-begin
-  Result := FileBackup(FileName, Move);
-end;
-
-function Win32RestoreFile(const FileName: string): Boolean;
-begin
-  Result := FileRestore(FileName);
-end;
-
-{$ENDIF KEEP_DEPRECATED}
 {$ENDIF MSWINDOWS}
 
 {$IFDEF UNIX}
