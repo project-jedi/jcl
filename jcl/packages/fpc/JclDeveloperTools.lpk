@@ -11,7 +11,7 @@
       <PathDelim Value="\"/>
       <SearchPaths>
         <IncludeFiles Value="..\..\source\include\"/>
-        <OtherUnitFiles Value=".;..\..\source\common;..\..\source\windows;"/>
+        <OtherUnitFiles Value=".;..\..\devtools\jpp;..\..\source\common;..\..\source\windows;"/>
         <UnitOutputDirectory Value="..\..\lib\fpc\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Parsing>
@@ -39,31 +39,43 @@
     <Description Value="JEDI Code Library Developer Tools package"/>
     <License Value="Copyright (C) 1999, 2009 Project JEDI"/>
     <Version Major="2" Minor="2" Release="0" Build="3537"/>
-    <Files Count="6">
+    <Files Count="9">
       <Item1>
-        <Filename Value="..\..\source\common\JclCompilerUtils.pas"/>
-        <UnitName Value="JclCompilerUtils"/>
+        <Filename Value="..\..\devtools\jpp\JppState.pas"/>
+        <UnitName Value="JppState"/>
       </Item1>
       <Item2>
-        <Filename Value="..\..\source\common\JclDevToolsResources.pas"/>
-        <UnitName Value="JclDevToolsResources"/>
+        <Filename Value="..\..\devtools\jpp\JppLexer.pas"/>
+        <UnitName Value="JppLexer"/>
       </Item2>
       <Item3>
-        <Filename Value="..\..\source\common\JclIDEUtils.pas"/>
-        <UnitName Value="JclIDEUtils"/>
+        <Filename Value="..\..\devtools\jpp\JppParser.pas"/>
+        <UnitName Value="JppParser"/>
       </Item3>
       <Item4>
-        <Filename Value="..\..\source\common\JclUsesUtils.pas"/>
-        <UnitName Value="JclUsesUtils"/>
+        <Filename Value="..\..\source\common\JclCompilerUtils.pas"/>
+        <UnitName Value="JclCompilerUtils"/>
       </Item4>
       <Item5>
-        <Filename Value="..\..\source\windows\JclHelpUtils.pas"/>
-        <UnitName Value="JclHelpUtils"/>
+        <Filename Value="..\..\source\common\JclDevToolsResources.pas"/>
+        <UnitName Value="JclDevToolsResources"/>
       </Item5>
       <Item6>
+        <Filename Value="..\..\source\common\JclIDEUtils.pas"/>
+        <UnitName Value="JclIDEUtils"/>
+      </Item6>
+      <Item7>
+        <Filename Value="..\..\source\common\JclUsesUtils.pas"/>
+        <UnitName Value="JclUsesUtils"/>
+      </Item7>
+      <Item8>
+        <Filename Value="..\..\source\windows\JclHelpUtils.pas"/>
+        <UnitName Value="JclHelpUtils"/>
+      </Item8>
+      <Item9>
         <Filename Value="..\..\source\windows\MSHelpServices_TLB.pas"/>
         <UnitName Value="MSHelpServices_TLB"/>
-      </Item6>
+      </Item9>
     </Files>
     <RequiredPkgs Count="3">
       <Item1>
