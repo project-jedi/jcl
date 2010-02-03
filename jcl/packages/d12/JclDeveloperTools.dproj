@@ -27,7 +27,7 @@
 			<GenDll>true</GenDll>
 			<GenPackage>true</GenPackage>
 			<DCC_ImageBase>$48000000</DCC_ImageBase>
-			<DCC_UsePackage>rtl;Jcl</DCC_UsePackage>
+			<DCC_UsePackage>rtl;Jcl;JclContainers</DCC_UsePackage>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Cfg_Release)'!=''">
 			<DCC_AssertionsAtRuntime>false</DCC_AssertionsAtRuntime>
@@ -62,6 +62,10 @@
 			</DelphiCompile>
 			<DCCReference Include="rtl.dcp"/>
 			<DCCReference Include="Jcl.dcp"/>
+			<DCCReference Include="JclContainers.dcp"/>
+			<DCCReference Include="..\..\devtools\jpp\JppState.pas"/>
+			<DCCReference Include="..\..\devtools\jpp\JppLexer.pas"/>
+			<DCCReference Include="..\..\devtools\jpp\JppParser.pas"/>
 			<DCCReference Include="..\..\source\common\JclCompilerUtils.pas"/>
 			<DCCReference Include="..\..\source\common\JclDevToolsResources.pas"/>
 			<DCCReference Include="..\..\source\common\JclIDEUtils.pas"/>

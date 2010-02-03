@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
-    <DCC_UsePackage>rtl;Jcl</DCC_UsePackage>
+    <DCC_UsePackage>rtl;Jcl;JclContainers</DCC_UsePackage>
     <DCC_Define>BCB;RELEASE</DCC_Define>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -87,6 +87,10 @@
     </DelphiCompile>
     <DCCReference Include="rtl.dcp"/>
     <DCCReference Include="Jcl.dcp"/>
+    <DCCReference Include="JclContainers.dcp"/>
+    <DCCReference Include="..\..\devtools\jpp\JppState.pas"/>
+    <DCCReference Include="..\..\devtools\jpp\JppLexer.pas"/>
+    <DCCReference Include="..\..\devtools\jpp\JppParser.pas"/>
     <DCCReference Include="..\..\source\common\JclCompilerUtils.pas"/>
     <DCCReference Include="..\..\source\common\JclDevToolsResources.pas"/>
     <DCCReference Include="..\..\source\common\JclIDEUtils.pas"/>

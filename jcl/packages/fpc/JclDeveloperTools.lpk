@@ -61,13 +61,16 @@
         <UnitName Value="MSHelpServices_TLB"/>
       </Item5>
     </Files>
-    <RequiredPkgs Count="2">
+    <RequiredPkgs Count="3">
       <Item1>
         <PackageName Value="FCL"/>
       </Item1>
       <Item2>
         <PackageName Value="Jcl"/>
       </Item2>
+      <Item3>
+        <PackageName Value="JclContainers"/>
+      </Item3>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)\"/>

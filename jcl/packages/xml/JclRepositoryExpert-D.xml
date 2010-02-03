@@ -16,9 +16,6 @@
     <Package Name="JclDeveloperTools-R" Targets="all" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\devtools\jpp\JppState.pas" Targets="runtimeIDE" Formname="" Condition=""/>
-    <File Name="..\..\devtools\jpp\JppLexer.pas" Targets="runtimeIDE" Formname="" Condition=""/>
-    <File Name="..\..\devtools\jpp\JppParser.pas" Targets="runtimeIDE" Formname="" Condition=""/>
     <File Name="..\..\experts\repository\JclOtaTemplates.pas" Targets="runtimeIDE" Formname="" Condition=""/>
     <File Name="..\..\experts\repository\JclOtaRepositoryUtils.pas" Targets="runtimeIDE" Formname="" Condition=""/>
     <File Name="..\..\experts\repository\ExceptionDialog\JclOtaExcDlgRepository.pas" Targets="runtimeIDE" Formname="" Condition=""/>

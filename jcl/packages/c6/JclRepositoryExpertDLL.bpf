@@ -1,6 +1,3 @@
-USEUNIT("..\..\devtools\jpp\JppState.pas");
-USEUNIT("..\..\devtools\jpp\JppLexer.pas");
-USEUNIT("..\..\devtools\jpp\JppParser.pas");
 USEUNIT("..\..\experts\repository\JclOtaTemplates.pas");
 USEUNIT("..\..\experts\repository\JclOtaRepositoryUtils.pas");
 USEUNIT("..\..\experts\repository\ExceptionDialog\JclOtaExcDlgRepository.pas");
