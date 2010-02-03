@@ -49,12 +49,12 @@
         <UnitName Value="JclDevToolsResources"/>
       </Item2>
       <Item3>
-        <Filename Value="..\..\source\common\JclHelpUtils.pas"/>
-        <UnitName Value="JclHelpUtils"/>
-      </Item3>
-      <Item4>
         <Filename Value="..\..\source\common\JclIDEUtils.pas"/>
         <UnitName Value="JclIDEUtils"/>
+      </Item3>
+      <Item4>
+        <Filename Value="..\..\source\windows\JclHelpUtils.pas"/>
+        <UnitName Value="JclHelpUtils"/>
       </Item4>
       <Item5>
         <Filename Value="..\..\source\windows\MSHelpServices_TLB.pas"/>

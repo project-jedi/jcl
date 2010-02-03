@@ -1,4 +1,4 @@
-{**************************************************************************************************}
+﻿{**************************************************************************************************}
 {                                                                                                  }
 { Project JEDI Code Library (JCL)                                                                  }
 {                                                                                                  }
@@ -65,10 +65,10 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$IFDEF MSWINDOWS}
-  Windows, ShlObj,
+  Windows, ShlObj, JclHelpUtils,
   {$ENDIF MSWINDOWS}
   Classes, SysUtils, IniFiles, Contnrs,
-  JclBase, JclSysUtils, JclCompilerUtils, JclHelpUtils;
+  JclBase, JclSysUtils, JclCompilerUtils;
 
 // Various definitions
 type

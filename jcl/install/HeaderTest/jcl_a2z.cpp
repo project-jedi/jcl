@@ -131,9 +131,9 @@
 #ifdef TEST_COMMON
 #include <JclHashSets.hpp>
 #endif TEST_COMMON
-#ifdef TEST_COMMON
+#ifdef TEST_WINDOWS
 #include <JclHelpUtils.hpp>
-#endif TEST_COMMON
+#endif TEST_WINDOWS
 #ifdef TEST_WINDOWS
 #include <JclHookExcept.hpp>
 #endif TEST_WINDOWS

@@ -41,13 +41,9 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF MSWINDOWS}
   MSHelpServices_TLB,
-  {$ENDIF MSWINDOWS}
   Classes, SysUtils,
   JclBase, JclSysUtils;
-
-{$IFDEF MSWINDOWS}
 
 // Various definitions
 type
@@ -113,8 +109,6 @@ type
     property IdeNamespace: WideString read FIdeNameSpace;
   end;
 
-{$ENDIF MSWINDOWS}
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -130,15 +124,11 @@ const
 implementation
 
 uses
-  {$IFDEF MSWINDOWS}
   Windows, JclRegistry,
-  {$ENDIF MSWINDOWS}
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
   JclFileUtils, JclDevToolsResources;
-
-{$IFDEF MSWINDOWS}
 
 type
   TBDSVersionInfo = record
@@ -516,8 +506,6 @@ begin
     end;
   end;
 end;
-
-{$ENDIF MSWINDOWS}
 
 {$IFDEF UNITVERSIONING}
 initialization
