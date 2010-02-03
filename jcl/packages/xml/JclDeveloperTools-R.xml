@@ -14,7 +14,9 @@
     <Package Name="Jcl-R" Targets="all" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\source\common\JclBorlandTools.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclCompilerUtils.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclDevToolsResources.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclHelpUtils.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclIDEUtils.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>

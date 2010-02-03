@@ -36,9 +36,6 @@
 #include <JclBinaryTrees.hpp>
 #endif TEST_COMMON
 #ifdef TEST_COMMON
-#include <JclBorlandTools.hpp>
-#endif TEST_COMMON
-#ifdef TEST_COMMON
 #include <JclCharsets.hpp>
 #endif TEST_COMMON
 #ifdef TEST_WINDOWS
@@ -50,6 +47,9 @@
 #ifdef TEST_WINDOWS
 #include <JclCOM.hpp>
 #endif TEST_WINDOWS
+#ifdef TEST_COMMON
+#include <JclCompilerUtils.hpp>
+#endif TEST_COMMON
 #ifdef TEST_COMMON
 #include <JclComplex.hpp>
 #endif TEST_COMMON
@@ -131,9 +131,15 @@
 #ifdef TEST_COMMON
 #include <JclHashSets.hpp>
 #endif TEST_COMMON
+#ifdef TEST_COMMON
+#include <JclHelpUtils.hpp>
+#endif TEST_COMMON
 #ifdef TEST_WINDOWS
 #include <JclHookExcept.hpp>
 #endif TEST_WINDOWS
+#ifdef TEST_COMMON
+#include <JclIDEUtils.hpp>
+#endif TEST_COMMON
 #ifdef TEST_COMMON
 #include <JclIniFiles.hpp>
 #endif TEST_COMMON

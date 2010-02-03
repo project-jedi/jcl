@@ -1,4 +1,4 @@
-{**************************************************************************************************}
+﻿{**************************************************************************************************}
 {                                                                                                  }
 { Project JEDI Code Library (JCL)                                                                  }
 {                                                                                                  }
@@ -55,7 +55,7 @@ uses
   JclUnitVersioning;
 {$ENDIF UNITVERSIONING}
 
-//=== JclBorlandTools ========================================================
+//=== JclIDEUtils ============================================================
 resourcestring
   RsNeedUpdate          = 'You should install latest Update Pack #%d for %s';
   RsUpdatePackName      = 'Update Pack #%d';

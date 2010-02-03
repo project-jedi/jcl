@@ -64,8 +64,10 @@
 			</DelphiCompile>
 			<DCCReference Include="rtl.dcp"/>
 			<DCCReference Include="Jcl.dcp"/>
-			<DCCReference Include="..\..\source\common\JclBorlandTools.pas"/>
+			<DCCReference Include="..\..\source\common\JclCompilerUtils.pas"/>
 			<DCCReference Include="..\..\source\common\JclDevToolsResources.pas"/>
+			<DCCReference Include="..\..\source\common\JclHelpUtils.pas"/>
+			<DCCReference Include="..\..\source\common\JclIDEUtils.pas"/>
 			<BuildConfiguration Include="Base">
 				<Key>Base</Key>
 			</BuildConfiguration>

@@ -39,15 +39,23 @@
     <Description Value="JEDI Code Library Developer Tools package"/>
     <License Value="Copyright (C) 1999, 2009 Project JEDI"/>
     <Version Major="2" Minor="2" Release="0" Build="3537"/>
-    <Files Count="2">
+    <Files Count="4">
       <Item1>
-        <Filename Value="..\..\source\common\JclBorlandTools.pas"/>
-        <UnitName Value="JclBorlandTools"/>
+        <Filename Value="..\..\source\common\JclCompilerUtils.pas"/>
+        <UnitName Value="JclCompilerUtils"/>
       </Item1>
       <Item2>
         <Filename Value="..\..\source\common\JclDevToolsResources.pas"/>
         <UnitName Value="JclDevToolsResources"/>
       </Item2>
+      <Item3>
+        <Filename Value="..\..\source\common\JclHelpUtils.pas"/>
+        <UnitName Value="JclHelpUtils"/>
+      </Item3>
+      <Item4>
+        <Filename Value="..\..\source\common\JclIDEUtils.pas"/>
+        <UnitName Value="JclIDEUtils"/>
+      </Item4>
     </Files>
     <RequiredPkgs Count="2">
       <Item1>
