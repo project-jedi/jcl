@@ -7,6 +7,7 @@
     <Projects Include="d11\Jcl.dproj" />
     <Projects Include="d11\JclBaseExpert.dproj" />
     <Projects Include="d11\JclContainers.dproj" />
+    <Projects Include="d11\JclDeveloperTools.dproj" />
     <Projects Include="d11\JclDebugExpert.dproj" />
     <Projects Include="d11\JclFavoriteFoldersExpert.dproj" />
     <Projects Include="d11\JclProjectAnalysisExpert.dproj" />

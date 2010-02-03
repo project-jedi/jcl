@@ -12,7 +12,7 @@
 			<Projects Include="d12\JclContainers.dproj">
 				<Dependencies/>
 			</Projects>
-			<Projects Include="d12\Jcldevelopertools.dproj">
+			<Projects Include="d12\JclDeveloperTools.dproj">
 				<Dependencies/>
 			</Projects>
 			<Projects Include="d12\JclBaseExpert.dproj">
@@ -76,14 +76,14 @@
 		<Target Name="JclContainers:Make">
 			<MSBuild Targets="Make" Projects="d12\JclContainers.dproj"/>
 		</Target>
-		<Target Name="Jcldevelopertools">
-			<MSBuild Projects="d12\Jcldevelopertools.dproj"/>
+		<Target Name="JclDeveloperTools">
+			<MSBuild Projects="d12\JclDeveloperTools.dproj"/>
 		</Target>
-		<Target Name="Jcldevelopertools:Clean">
-			<MSBuild Targets="Clean" Projects="d12\Jcldevelopertools.dproj"/>
+		<Target Name="JclDeveloperTools:Clean">
+			<MSBuild Targets="Clean" Projects="d12\JclDeveloperTools.dproj"/>
 		</Target>
-		<Target Name="Jcldevelopertools:Make">
-			<MSBuild Targets="Make" Projects="d12\Jcldevelopertools.dproj"/>
+		<Target Name="JclDeveloperTools:Make">
+			<MSBuild Targets="Make" Projects="d12\JclDeveloperTools.dproj"/>
 		</Target>
 		<Target Name="JclBaseExpert">
 			<MSBuild Projects="d12\JclBaseExpert.dproj"/>
@@ -158,13 +158,13 @@
 			<MSBuild Targets="Make" Projects="d12\JclVersionControlExpert.dproj"/>
 		</Target>
 		<Target Name="Build">
-			<CallTarget Targets="Jcl;JclVcl;JclContainers;Jcldevelopertools;JclBaseExpert;JclDebugExpert;JclFavoriteFoldersExpert;JclProjectAnalysisExpert;JclRepositoryExpert;JclSIMDViewExpert;JclStackTraceViewerExpert;JclVersionControlExpert"/>
+			<CallTarget Targets="Jcl;JclVcl;JclContainers;JclDeveloperTools;JclBaseExpert;JclDebugExpert;JclFavoriteFoldersExpert;JclProjectAnalysisExpert;JclRepositoryExpert;JclSIMDViewExpert;JclStackTraceViewerExpert;JclVersionControlExpert"/>
 		</Target>
 		<Target Name="Clean">
-			<CallTarget Targets="Jcl:Clean;JclVcl:Clean;JclContainers:Clean;Jcldevelopertools:Clean;JclBaseExpert:Clean;JclDebugExpert:Clean;JclFavoriteFoldersExpert:Clean;JclProjectAnalysisExpert:Clean;JclRepositoryExpert:Clean;JclSIMDViewExpert:Clean;JclStackTraceViewerExpert:Clean;JclVersionControlExpert:Clean"/>
+			<CallTarget Targets="Jcl:Clean;JclVcl:Clean;JclContainers:Clean;JclDeveloperTools:Clean;JclBaseExpert:Clean;JclDebugExpert:Clean;JclFavoriteFoldersExpert:Clean;JclProjectAnalysisExpert:Clean;JclRepositoryExpert:Clean;JclSIMDViewExpert:Clean;JclStackTraceViewerExpert:Clean;JclVersionControlExpert:Clean"/>
 		</Target>
 		<Target Name="Make">
-			<CallTarget Targets="Jcl:Make;JclVcl:Make;JclContainers:Make;Jcldevelopertools:Make;JclBaseExpert:Make;JclDebugExpert:Make;JclFavoriteFoldersExpert:Make;JclProjectAnalysisExpert:Make;JclRepositoryExpert:Make;JclSIMDViewExpert:Make;JclStackTraceViewerExpert:Make;JclVersionControlExpert:Make"/>
+			<CallTarget Targets="Jcl:Make;JclVcl:Make;JclContainers:Make;JclDeveloperTools:Make;JclBaseExpert:Make;JclDebugExpert:Make;JclFavoriteFoldersExpert:Make;JclProjectAnalysisExpert:Make;JclRepositoryExpert:Make;JclSIMDViewExpert:Make;JclStackTraceViewerExpert:Make;JclVersionControlExpert:Make"/>
 		</Target>
 		<Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 	</Project>
