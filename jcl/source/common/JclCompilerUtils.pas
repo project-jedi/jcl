@@ -50,7 +50,7 @@ uses
 type
   EJclCompilerUtilsException = class(EJclError);
 
-  TJclCompilerSettingFormat = (csfDOF, csfBDSProj, csfMsBuild);
+  TJclCompilerSettingsFormat = (csfDOF, csfBDSProj, csfMsBuild);
 
   TJclBorlandCommandLineTool = class;
   TJclBorlandCommandLineToolEvent = procedure(Sender:TJclBorlandCommandLineTool) of object;
@@ -58,7 +58,7 @@ type
   TJclBorlandCommandLineTool = class(TInterfacedObject, IJclCommandLineTool)
   private
     FBinDirectory: string;
-    FCompilerSettingFormat: TJclCompilerSettingFormat;
+    FCompilerSettingsFormat: TJclCompilerSettingsFormat;
     FLongPathBug: Boolean;
     FOptions: TStringList;
     FOutputCallback: TTextHandler;
@@ -72,7 +72,7 @@ type
     function InternalExecute(const CommandLine: string): Boolean;
   public
     constructor Create(const ABinDirectory: string; ALongPathBug: Boolean;
-      ACompilerSettingsFormat: TJclCompilerSettingFormat);
+      ACompilerSettingsFormat: TJclCompilerSettingsFormat);
     destructor Destroy; override;
     { IJclCommandLineTool }
     function GetExeName: string; virtual;
@@ -83,7 +83,7 @@ type
     function Execute(const CommandLine: string): Boolean; virtual;
     procedure SetOutputCallback(const CallbackMethod: TTextHandler);
     property BinDirectory: string read FBinDirectory;
-    property CompilerSettingFormat: TJclCompilerSettingFormat read FCompilerSettingFormat;
+    property CompilerSettingsFormat: TJclCompilerSettingsFormat read FCompilerSettingsFormat;
     property ExeName: string read GetExeName;
     property LongPathBug: Boolean read FLongPathBug;
     property Options: TStrings read GetOptions;
@@ -120,7 +120,7 @@ type
     function Compile(const ProjectFileName: string): Boolean;
   public
     constructor Create(const ABinDirectory: string; ALongPathBug: Boolean;
-      ACompilerSettingsFormat: TJclCompilerSettingFormat; ASupportsNoConfig: Boolean;
+      ACompilerSettingsFormat: TJclCompilerSettingsFormat; ASupportsNoConfig: Boolean;
       const ADCPSearchPath, ALibrarySearchPath, ACppSearchPath: string);
     function GetExeName: string; override;
     function Execute(const CommandLine: string): Boolean; override;
@@ -624,11 +624,12 @@ end;
 //=== { TJclBorlandCommandLineTool } =========================================
 
 constructor TJclBorlandCommandLineTool.Create(const ABinDirectory: string; ALongPathBug: Boolean;
-  ACompilerSettingsFormat: TJclCompilerSettingFormat);
+  ACompilerSettingsFormat: TJclCompilerSettingsFormat);
 begin
   inherited Create;
   FBinDirectory := ABinDirectory;
   FLongPathBug := ALongPathBug;
+  FCompilerSettingsFormat := ACompilerSettingsFormat;
   FOptions := TStringList.Create;
 end;
 
@@ -794,7 +795,7 @@ var
 begin
   Version := '';
   DProjFileName := ChangeFileExt(ProjectFileName, SourceExtensionDProject);
-  Result := FileExists(DProjFileName) and (CompilerSettingFormat = csfMsBuild);
+  Result := FileExists(DProjFileName) and (CompilerSettingsFormat = csfMsBuild);
   if Result then
   begin
     OptionsXmlFile := TJclSimpleXML.Create;
@@ -1020,7 +1021,7 @@ begin
 end;
 
 constructor TJclDCC32.Create(const ABinDirectory: string; ALongPathBug: Boolean;
-  ACompilerSettingsFormat: TJclCompilerSettingFormat; ASupportsNoConfig: Boolean;
+  ACompilerSettingsFormat: TJclCompilerSettingsFormat; ASupportsNoConfig: Boolean;
   const ADCPSearchPath, ALibrarySearchPath, ACppSearchPath: string);
 begin
   inherited Create(ABinDirectory, ALongPathBug, ACompilerSettingsFormat);

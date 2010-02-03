@@ -406,7 +406,7 @@ type
 
     function GetValid: Boolean; virtual;
     function GetLongPathBug: Boolean;
-    function GetCompilerSettingsFormat: TJclCompilerSettingFormat;
+    function GetCompilerSettingsFormat: TJclCompilerSettingsFormat;
     function GetSupportsNoConfig: Boolean;
   public
     constructor Create(const AConfigDataLocation: string; ARootKey: Cardinal = 0); virtual;
@@ -520,7 +520,7 @@ type
     property IsTurboExplorer: Boolean read GetIsTurboExplorer;
     property RootKey: Cardinal read FRootKey;
     property LongPathBug: Boolean read GetLongPathBug;
-    property CompilerSettingsFormat: TJclCompilerSettingFormat read GetCompilerSettingsFormat;
+    property CompilerSettingsFormat: TJclCompilerSettingsFormat read GetCompilerSettingsFormat;
     property SupportsNoConfig: Boolean read GetSupportsNoConfig;
   end;
 
@@ -1877,7 +1877,7 @@ begin
   Result := DefaultProjectsDir;
 end;
 
-function TJclBorRADToolInstallation.GetCompilerSettingsFormat: TJclCompilerSettingFormat;
+function TJclBorRADToolInstallation.GetCompilerSettingsFormat: TJclCompilerSettingsFormat;
 begin
   if (RadToolKind = brBorlandDevStudio) and (VersionNumber >= 5) then
     Result := csfMsBuild
