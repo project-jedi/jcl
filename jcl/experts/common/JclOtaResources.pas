@@ -206,14 +206,6 @@ resourcestring
   RsUndeclIdent = '[Error] %s(%d) Undeclared identifier: ''%s''';
   RsConfirmChanges = '%s: Confirm changes';
 
-//=== JclParseUses.pas =======================================================
-resourcestring
-  RsEDuplicateUnit = 'Duplicate unit ''%s''';
-  RsEInvalidLibrary = 'Invalid library';
-  RsEInvalidProgram = 'Invalid program';
-  RsEInvalidUnit = 'Invalid unit';
-  RsEInvalidUses = 'Invalid uses clause';
-
 //=== ProjAnalyserImpl.pas ===================================================
 resourcestring
   RsAnalyzeActionCaption = 'Analyze project %s';

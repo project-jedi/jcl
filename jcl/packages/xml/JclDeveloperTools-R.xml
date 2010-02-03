@@ -21,6 +21,7 @@
     <File Name="..\..\source\common\JclCompilerUtils.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclDevToolsResources.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclIDEUtils.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclUsesUtils.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclHelpUtils.pas" Targets="Windows" Formname="" Condition=""/>
     <File Name="..\..\source\windows\MSHelpServices_TLB.pas" Targets="Windows" Formname="" Condition=""/>
   </Contains>

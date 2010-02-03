@@ -11,12 +11,12 @@
     <Package Name="vcl" Targets="Delphi,Bcb,Bds" Condition=""/>
     <Package Name="designide" Targets="Delphi,Bcb,Bds" Condition=""/>
     <Package Name="Jcl-R" Targets="all" Condition=""/>
+    <Package Name="JclDeveloperTools-R" Targets="all" Condition=""/>
     <Package Name="JclBaseExpert-D" Targets="all" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\experts\useswizard\JCLUsesWizard.pas" Targets="OldStyleIDE" Formname="" Condition=""/>
     <File Name="..\..\experts\useswizard\JCLOptionsFrame.pas" Targets="OldStyleIDE" Formname="FrameJclOptions: TFrame" Condition=""/>
     <File Name="..\..\experts\useswizard\JclUsesDialog.pas" Targets="OldStyleIDE" Formname="FormUsesConfirm" Condition=""/>
-    <File Name="..\..\experts\useswizard\JclParseUses.pas" Targets="OldStyleIDE" Formname="" Condition=""/>
   </Contains>
 </Package>

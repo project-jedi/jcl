@@ -71,6 +71,7 @@
 			<DCCReference Include="..\..\source\common\JclCompilerUtils.pas"/>
 			<DCCReference Include="..\..\source\common\JclDevToolsResources.pas"/>
 			<DCCReference Include="..\..\source\common\JclIDEUtils.pas"/>
+			<DCCReference Include="..\..\source\common\JclUsesUtils.pas"/>
 			<DCCReference Include="..\..\source\windows\JclHelpUtils.pas"/>
 			<DCCReference Include="..\..\source\windows\MSHelpServices_TLB.pas"/>
 			<BuildConfiguration Include="Base">

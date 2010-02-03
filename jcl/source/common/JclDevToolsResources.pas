@@ -1,4 +1,4 @@
-{**************************************************************************************************}
+﻿{**************************************************************************************************}
 {                                                                                                  }
 { Project JEDI Code Library (JCL)                                                                  }
 {                                                                                                  }
@@ -131,6 +131,14 @@ resourcestring
   {$IFDEF MSWINDOWS}
   RsENoOpenHelp                 = 'open help not present in Borland Developer Studio';
   {$ENDIF MSWINDOWS}
+
+//=== JclUsesUtils.pas =======================================================
+resourcestring
+  RsEDuplicateUnit = 'Duplicate unit ''%s''';
+  RsEInvalidLibrary = 'Invalid library';
+  RsEInvalidProgram = 'Invalid program';
+  RsEInvalidUnit = 'Invalid unit';
+  RsEInvalidUses = 'Invalid uses clause';
 
 {$IFDEF UNITVERSIONING}
 const

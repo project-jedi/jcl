@@ -25,7 +25,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-unit JclParseUses;
+unit JclUsesUtils;
 
 {$I jcl.inc}
 
@@ -114,7 +114,7 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JCL\experts\useswizard';
+    LogPath: 'JCL\source\common';
     Extra: '';
     Data: nil
     );
@@ -124,7 +124,8 @@ implementation
 
 uses
   RtlConsts,
-  JclStrings, JclOtaResources;
+  JclStrings,
+  JclDevToolsResources;
 
 const
   SLibrary = 'library';

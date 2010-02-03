@@ -5,5 +5,5 @@ Conditionals=BCB;RELEASE
 [Compiler]
 PackageNoLink=1
 [Linker]
-Packages=rtl;vcl;designide;Jcl;JclBaseExpert
+Packages=rtl;vcl;designide;Jcl;JclDeveloperTools;JclBaseExpert
 
