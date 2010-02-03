@@ -127,14 +127,19 @@ uses
   {$ELSE}
   Consts,
   {$ENDIF HAS_UNIT_RTLCONSTS}
+  JclStrings,
   JclOtaResources;
 
 const
-  Blanks: TSysCharSet = [#9, #10, #13, ' '];
   SLibrary = 'library';
   SProgram = 'program';
   SUnit = 'unit';
   SUses = 'uses';
+
+function CharIsNotWhiteSpace(const C: Char): Boolean;
+begin
+  Result := not CharIsWhiteSpace(C);
+end;
 
 function PeekKeyword(var P: PChar; Keyword: PChar): Boolean; forward;
 function ReadIdentifier(var P: PChar): string; forward;
@@ -142,11 +147,11 @@ procedure SkipCommentsAndBlanks(var P: PChar); forward;
 
 function CheckIdentifier(var P: PChar): Boolean;
 begin
-  Result := P^ in ['A'..'Z', '_', 'a'..'z'];
+  Result := CharIsAlpha(P^) or (P^ = '_');
   if Result then
   begin
     Inc(P);
-    while P^ in ['0'..'9', 'A'..'Z', '_', 'a'..'z'] do
+    while CharIsValidIdentifierLetter(P^) do
       Inc(P);
   end;
 end;
@@ -193,22 +198,16 @@ var
 begin
   Result := '';
 
-  if P^ in ['A'..'Z', '_', 'a'..'z'] then
+  if CharIsAlpha(P^) then
   begin
     PStart := P;
-    
+
     Inc(P);
-    while P^ in ['0'..'9', 'A'..'Z', '_', 'a'..'z'] do
+    while CharIsValidIdentifierLetter(P^) do
       Inc(P);
 
     SetString(Result, PStart, P - PStart);
   end;
-end;
-
-procedure SkipChars(var P: PChar; Chars: TSysCharSet);
-begin
-  while P^ in Chars do
-    Inc(P);
 end;
 
 procedure SkipComments(var P: PChar);
@@ -243,7 +242,7 @@ var
 begin
   repeat
     Test := P;
-    SkipChars(P, Blanks);
+    StrSkipChars(P, CharIsWhiteSpace);
     SkipComments(P);
   until Test = P;
 end;
@@ -278,7 +277,7 @@ begin
           raise EUsesListError.CreateRes(@RsEInvalidUses);
         Inc(P);
 
-        while not (P^ in [#0, '''']) do
+        while (P^ <> #0) and (P^ <> '''') do
           Inc(P);
         if P^ <> '''' then
           raise EUsesListError.CreateRes(@RsEInvalidUses);
@@ -338,7 +337,7 @@ begin
         raise EUsesListError.CreateRes(@RsEInvalidUses);
       Inc(P);
         
-      while not (P^ in [#0, '''']) do
+      while (P^ <> #0) and (P^ <> '''') do
         Inc(P);
       if P^ <> '''' then
         raise EUsesListError.CreateRes(@RsEInvalidUses);
@@ -381,7 +380,7 @@ begin
     Inc(I);
     if I = Index then
     begin
-      while PIdentifier^ in ['0'..'9', 'A'..'Z', '_', 'a'..'z'] do
+      while CharIsValidIdentifierLetter(PIdentifier^) do
       begin
         Result := Result + PIdentifier^;
         Inc(PIdentifier);
@@ -398,7 +397,7 @@ begin
         raise EUsesListError.CreateRes(@RsEInvalidUses);
       Inc(P);
 
-      while not (P^ in [#0, '''']) do
+      while (P^ <> #0) and (P^ <> '''') do
         Inc(P);
       if P^ <> '''' then
         raise EUsesListError.CreateRes(@RsEInvalidUses);
@@ -460,7 +459,7 @@ begin
           raise EUsesListError.CreateRes(@RsEInvalidUses);
         Inc(P);
 
-        while not (P^ in [#0, '''']) do
+        while (P^ <> #0) and (P^ <> '''') do
           Inc(P);
         if P^ <> '''' then
           raise EUsesListError.CreateRes(@RsEInvalidUses);
@@ -524,7 +523,7 @@ begin
         raise EUsesListError.CreateRes(@RsEInvalidUses);
       Inc(P);
 
-      while not (P^ in [#0, '''']) do
+      while (P^ <> #0) and (P^ <> '''') do
         Inc(P);
       if P^ <> '''' then
         raise EUsesListError.CreateRes(@RsEInvalidUses);
@@ -594,7 +593,7 @@ begin
           raise EUsesListError.CreateRes(@RsEInvalidUses);
         Inc(P);
 
-        while not (P^ in [#0, '''']) do
+        while (P^ <> #0) and (P^ <> '''') do
           Inc(P);
         if P^ <> '''' then
           raise EUsesListError.CreateRes(@RsEInvalidUses);
@@ -658,7 +657,7 @@ begin
           raise EUsesListError.CreateRes(@RsEInvalidUses);
         Inc(P);
 
-        while not (P^ in [#0, '''']) do
+        while (P^ <> #0) and (P^ <> '''') do
           Inc(P);
         if P^ <> '''' then
           raise EUsesListError.CreateRes(@RsEInvalidUses);
@@ -682,7 +681,7 @@ begin
       // remove trailing spaces, if any
       PIdentifier := PChar(FText) + DelPos - 1;
       P := PIdentifier;
-      SkipChars(P, Blanks);
+      StrSkipChars(P, CharIsWhiteSpace);
       DelPos := PIdentifier - PChar(FText) + 1;
       Delete(FText, DelPos, P - PIdentifier);
       // skip further comments and blanks
@@ -702,7 +701,7 @@ begin
         raise EUsesListError.CreateRes(@RsEInvalidUses);
       Inc(P);
 
-      while not (P^ in [#0, '''']) do
+      while (P^ <> #0) and (P^ <> '''') do
         Inc(P);
       if P^ <> '''' then
         raise EUsesListError.CreateRes(@RsEInvalidUses);
@@ -867,7 +866,7 @@ begin
   // locate implementation
   while (P^ <> #0) and not PeekKeyword(P, 'implementation') do
   begin
-    SkipChars(P, [#1..#255] - Blanks);
+    StrSkipChars(P, CharIsNotWhiteSpace);
     SkipCommentsAndBlanks(P);
   end;
   if not CheckKeyword(P, 'implementation') then

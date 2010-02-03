@@ -125,7 +125,7 @@ implementation
 
 uses
   IniFiles,
-  JclFileUtils, JclParseUses, JclRegistry, JclStrings,
+  JclFileUtils, JclParseUses, JclRegistry, JclStrings, JclStringConversions,
   JclUsesDialog,
   JclOtaConsts, JclOtaResources;
 
@@ -764,7 +764,7 @@ begin
                 try
                   Writer.CopyTo(Length(TextBeforeUses));
                   Writer.DeleteTo(Length(TextBeforeUses) + IntfLength);
-                  Writer.Insert(PChar(UsesList.Text));
+                  Writer.Insert(PAnsiChar(StringToUTF8(UsesList.Text)));
                   Writer.CopyTo(Length(GoalSource));
                 finally
                   Writer := nil;
@@ -810,7 +810,7 @@ begin
                 try
                   Writer.CopyTo(Length(TextBeforeUses));
                   Writer.DeleteTo(Length(TextBeforeUses) + IntfLength);
-                  Writer.Insert(PChar(UsesList.Text));
+                  Writer.Insert(PAnsiChar(StringToUTF8(UsesList.Text)));
                   Writer.CopyTo(Length(GoalSource));
                 finally
                   Writer := nil;
@@ -886,10 +886,10 @@ begin
                 try
                   Writer.CopyTo(Length(TextBeforeIntf));
                   Writer.DeleteTo(Length(TextBeforeIntf) + IntfLength);
-                  Writer.Insert(PChar(UsesIntf.Text));
+                  Writer.Insert(PAnsiChar(StringToUTF8(UsesIntf.Text)));
                   Writer.CopyTo(Length(TextBeforeIntf) + IntfLength + Length(TextAfterIntf));
                   Writer.DeleteTo(Length(TextBeforeIntf) + IntfLength + Length(TextAfterIntf) + ImplLength);
-                  Writer.Insert(PChar(UsesImpl.Text));
+                  Writer.Insert(PAnsiChar(StringToUTF8(UsesImpl.Text)));
                   Writer.CopyTo(Length(GoalSource));
                 finally
                   Writer := nil;
