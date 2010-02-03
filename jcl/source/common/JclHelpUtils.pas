@@ -131,7 +131,7 @@ implementation
 
 uses
   {$IFDEF MSWINDOWS}
-  JclRegistry,
+  Windows, JclRegistry,
   {$ENDIF MSWINDOWS}
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
