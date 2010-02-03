@@ -19,7 +19,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                        $ }
+{ Last modified: $Date::                                                                         $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -303,6 +303,7 @@ begin
             Break;
           end;
         else
+        if not PeekIdentifier(P) then
           raise EUsesListError.CreateRes(@RsEInvalidUses);
       end;
     end;
