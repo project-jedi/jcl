@@ -37,7 +37,7 @@ interface
 
 uses
   SysUtils, Classes, Contnrs,
-  JclSysUtils, JclBorlandTools, JediInstall;
+  JclSysUtils, JclIDEUtils, JediInstall;
 
 type
   TInstallerOption = (
@@ -307,6 +307,7 @@ uses
   JclShell,
   {$ENDIF MSWINDOWS}
   JclFileUtils, JclStrings,
+  JclCompilerUtils,
   JediInstallResources,
   JclInstallResources;
 

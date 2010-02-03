@@ -48,7 +48,7 @@ uses
   {$IFDEF MSWINDOWS}
   JclDebug,
   {$ENDIF MSWINDOWS}
-  JclBorlandTools,
+  JclIDEUtils,
   ToolsAPI;
 
 type
@@ -321,7 +321,7 @@ uses
   {$IFDEF MSWINDOWS}
   ImageHlp, JclRegistry,
   {$ENDIF MSWINDOWS}
-  JclFileUtils, JclStrings, JclSysInfo, JclSimpleXml,
+  JclFileUtils, JclStrings, JclSysInfo, JclSimpleXml, JclCompilerUtils,
   JclOtaConsts, JclOtaResources, JclOtaExceptionForm, JclOtaConfigurationForm,
   JclOtaActionConfigureSheet, JclOtaUnitVersioningSheet,
   JclOtaWizardForm, JclOtaWizardFrame;

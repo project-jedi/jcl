@@ -38,7 +38,7 @@ interface
 uses
   SysUtils, Classes,
   Graphics, Forms, Controls, StdCtrls, ComCtrls, ExtCtrls, FrmCompile,
-  JclBorlandTools, JediInstall;
+  JclIDEUtils, JediInstall;
 
 type
   TSetIconEvent = procedure(Sender: TObject; const FileName: string) of object;

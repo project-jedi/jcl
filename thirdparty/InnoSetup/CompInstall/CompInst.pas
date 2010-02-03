@@ -3,7 +3,7 @@ unit CompInst;
 interface
 
 uses
-  Windows, SysUtils, Classes, JclBorlandTools;
+  Windows, SysUtils, Classes, JclIDEUtils;
 
 function Installations: TJclBorRADToolInstallations;
 

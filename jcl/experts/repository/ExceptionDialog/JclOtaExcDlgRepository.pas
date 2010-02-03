@@ -51,7 +51,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JclBorlandTools,
+  JclIDEUtils,
   JclOtaUtils, JclOtaRepositoryUtils, JclOtaExcDlgParams;
 
 type

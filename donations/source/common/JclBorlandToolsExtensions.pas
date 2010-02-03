@@ -54,7 +54,7 @@ uses
   {$IFNDEF RTL140_UP}
   JclBase,
   {$ENDIF ~RTL140_UP}
-  SysUtils, Classes, IniFiles, Contnrs, JclSysUtils, JclBorlandTools;
+  SysUtils, Classes, IniFiles, Contnrs, JclSysUtils, JclIDEUtils;
 
 type
   TJclDCCMessageKind = (mkUnknown, mkHint, mkWarning, mkError, mkFatal);

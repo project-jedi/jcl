@@ -33,7 +33,7 @@ program RegHelper;
 
 uses
   SysUtils, Windows, ActiveX,
-  JclAnsiStrings, JclBorlandTools, JclSysUtils;
+  JclAnsiStrings, JclIDEUtils, JclSysUtils;
 
 {$R ..\source\windows\JclNoDepAdmin.res}
 {$R RegHelper.res}

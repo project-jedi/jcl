@@ -37,7 +37,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JclBorlandTools,
+  JclIDEUtils,
   JppState;
 
 type

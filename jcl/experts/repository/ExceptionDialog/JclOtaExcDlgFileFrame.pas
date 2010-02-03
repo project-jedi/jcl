@@ -38,7 +38,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JclBorlandTools, JclOtaWizardFrame, JclOtaExcDlgParams, JclOtaConsts, JclOtaUtils;
+  JclIDEUtils, JclOtaWizardFrame, JclOtaExcDlgParams, JclOtaConsts, JclOtaUtils;
 
 type
   TJclOtaExcDlgFilePage = class(TJclWizardFrame)

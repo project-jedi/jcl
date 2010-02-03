@@ -230,7 +230,7 @@ implementation
 uses
   TypInfo,
   Variants,
-  JclBase, JclBorlandTools, JclDebug, JclDebugIdeResult,
+  JclBase, JclIDEUtils, JclDebug, JclDebugIdeResult,
   JclOtaResources;
 
 procedure Register;

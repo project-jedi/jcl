@@ -15,7 +15,7 @@ uses
   JclInstall in 'JclInstall.pas',
   JediInstall in 'JediInstall.pas',
   JediInstallConfigIni in 'JediInstallConfigIni.pas',
-  JclBorlandTools in '..\source\common\JclBorlandTools.pas',
+  JclIDEUtils in '..\source\common\JclIDEUtils.pas',
   JclResources in '..\source\common\JclResources.pas',
   JediRegInfo in 'JediRegInfo.pas',
   JclDotNet in '..\source\windows\JclDotNet.pas',

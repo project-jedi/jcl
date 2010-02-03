@@ -33,7 +33,7 @@ program CreateStdDialogs;
 uses
   SysUtils,
   Classes,
-  JclBorlandTools,
+  JclIDEUtils,
   JclOtaTemplates in '..\JclOtaTemplates.pas',
   JclOtaExcDlgParams in 'JclOtaExcDlgParams.pas',
   JppState in '..\..\..\devtools\jpp\JppState.pas',
