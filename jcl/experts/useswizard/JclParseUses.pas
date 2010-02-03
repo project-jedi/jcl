@@ -19,7 +19,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date::                                                                         $ }
+{ Last modified: $Date::                                                                        $ }
 { Revision:      $Rev::                                                                          $ }
 { Author:        $Author::                                                                       $ }
 {                                                                                                  }
@@ -36,12 +36,13 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JclOtaUtils;
+  Windows,
+  JclBase;
 
 type
-  EUsesListError = class(EJclExpertException);
+  EUsesListError = class(EJclError);
 
-  TUsesList = class(TObject)
+  TUsesList = class
   private
     FText: string;
     function GetCount: Integer;
@@ -57,7 +58,7 @@ type
     property Items[Index: Integer]: string read GetItems; default;
   end;
 
-  TCustomGoal = class(TObject)
+  TCustomGoal = class
   public
     constructor Create(Text: PChar); virtual; abstract;
   end;
@@ -122,13 +123,8 @@ const
 implementation
 
 uses
-  {$IFDEF HAS_UNIT_RTLCONSTS}
   RtlConsts,
-  {$ELSE}
-  Consts,
-  {$ENDIF HAS_UNIT_RTLCONSTS}
-  JclStrings,
-  JclOtaResources;
+  JclStrings, JclOtaResources;
 
 const
   SLibrary = 'library';
@@ -140,6 +136,8 @@ function CharIsNotWhiteSpace(const C: Char): Boolean;
 begin
   Result := not CharIsWhiteSpace(C);
 end;
+
+function PeekIdentifier(var P:PChar):boolean;forward;
 
 function PeekKeyword(var P: PChar; Keyword: PChar): Boolean; forward;
 function ReadIdentifier(var P: PChar): string; forward;
@@ -161,7 +159,7 @@ var
   KeywordLen: Integer;
 begin
   KeywordLen := StrLen(Keyword);
-  Result := StrLComp(P, Keyword, KeywordLen) = 0;
+  Result := StrLIComp(P, Keyword, KeywordLen) = 0;
   if Result then
     Inc(P, KeywordLen);
 end;
@@ -189,8 +187,19 @@ var
   KeywordLen: Integer;
 begin
   KeywordLen := StrLen(Keyword);
-  Result := StrLComp(P, Keyword, KeywordLen) = 0;
+  Result := StrLIComp(P, KeyWord, KeywordLen) = 0;
 end;
+
+//----------------------------------------------------------------------------
+
+function PeekIdentifier(var P: PChar):boolean;
+var Q:PChar;
+begin
+  Q := P;
+  Result := CheckIdentifier(P);
+  P := Q;
+end;
+
 
 function ReadIdentifier(var P: PChar): string;
 var
@@ -351,6 +360,7 @@ begin
       ';':
         Break;
       else
+      if not PeekIdentifier(P) then
         raise EUsesListError.CreateRes(@RsEInvalidUses);
     end;
   end;
@@ -411,6 +421,7 @@ begin
       ';':
         Break;
       else
+      if not PeekIdentifier(P) then
         raise EUsesListError.CreateRes(@RsEInvalidUses);
     end;
   end;
@@ -836,6 +847,11 @@ begin
 
   // check 'unit' label
   SkipCommentsAndBlanks(P);
+  while (P^ <> #0) and not PeekKeyword(P, 'unit') do
+  begin
+    StrSkipChars(P, CharIsNotWhiteSpace);
+    SkipCommentsAndBlanks(P);
+  end;
   if not CheckKeyword(P, SUnit) then
     raise EUsesListError.CreateRes(@RsEInvalidUnit);
   SkipCommentsAndBlanks(P);
@@ -846,7 +862,12 @@ begin
     raise EUsesListError.CreateRes(@RsEInvalidUnit);
   Inc(P);
   // check 'interface' label
-  SkipCommentsAndBlanks(P);
+//  SkipCommentsAndBlanks(P);
+  while (P^ <> #0) and not PeekKeyword(P, 'interface') do
+  begin
+    StrSkipChars(P, CharIsNotWhiteSpace);
+    SkipCommentsAndBlanks(P);
+  end;
   if not CheckKeyword(P, 'interface') then
     raise EUsesListError.CreateRes(@RsEInvalidUnit);
   SkipCommentsAndBlanks(P);
