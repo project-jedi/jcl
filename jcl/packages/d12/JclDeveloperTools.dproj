@@ -66,6 +66,7 @@
 			<DCCReference Include="..\..\source\common\JclDevToolsResources.pas"/>
 			<DCCReference Include="..\..\source\common\JclHelpUtils.pas"/>
 			<DCCReference Include="..\..\source\common\JclIDEUtils.pas"/>
+			<DCCReference Include="..\..\source\windows\MSHelpServices_TLB.pas"/>
 			<BuildConfiguration Include="Base">
 				<Key>Base</Key>
 			</BuildConfiguration>

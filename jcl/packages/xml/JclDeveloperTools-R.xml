@@ -18,5 +18,6 @@
     <File Name="..\..\source\common\JclDevToolsResources.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclHelpUtils.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclIDEUtils.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\source\windows\MSHelpServices_TLB.pas" Targets="Windows" Formname="" Condition=""/>
   </Contains>
 </Package>

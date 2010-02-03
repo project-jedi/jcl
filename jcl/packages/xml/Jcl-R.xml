@@ -92,7 +92,6 @@
     <File Name="..\..\source\windows\JclWinMIDI.pas" Targets="Windows" Formname="" Condition=""/>
     <File Name="..\..\source\windows\mscoree_TLB.pas" Targets="Pascal" Formname="" Condition=""/>
     <File Name="..\..\source\windows\mscorlib_TLB.pas" Targets="Pascal" Formname="" Condition=""/>
-    <File Name="..\..\source\windows\MSHelpServices_TLB.pas" Targets="Windows" Formname="" Condition=""/>
     <File Name="..\..\source\windows\MSTask.pas" Targets="Windows" Formname="" Condition=""/>
     <File Name="..\..\source\windows\sevenzip.pas" Targets="Windows" Formname="" Condition=""/>
     <File Name="..\..\source\windows\Snmp.pas" Targets="Windows" Formname="" Condition=""/>
