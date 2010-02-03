@@ -129,6 +129,7 @@
             <value>*.dcu</value>
             <value>*.dproj</value>
             <value>*.bdsproj</value>
+            <value>*.hpp</value>
           </property>
         </setting>
       </setting>
