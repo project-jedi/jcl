@@ -273,7 +273,7 @@ begin
   Exclude(Options, doFilesOnly);
   Result := SHDeleteFiles(Parent, PathAddSeparator(Folder) + '*.*', Options);
   if Result then
-    SHDeleteFiles(Parent, Folder, Options);
+    Result := SHDeleteFiles(Parent, PathRemoveSeparator(Folder), Options);
 end;
 
 // Helper function to map a TSHRenameOptions set to a cardinal
