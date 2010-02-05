@@ -502,13 +502,13 @@ begin
   if rfReplaceAll in Flags then
     while SearchResult <> 0 do
     begin
-      Inc(SearchResult);
+      Inc(SearchResult, SearchPatternLength); // Increment match position, by length of match
       Inc(ReplaceCount);
       SearchResult := StrSearch(SearchPattern, SearchString, SearchResult);
     end
   else
-    if SearchResult <> 0 then
-      Inc(ReplaceCount);
+  if SearchResult <> 0 then
+    Inc(ReplaceCount);
   SetLength(Result, Length(S) + ((ReplacePatternLength - SearchPatternLength) * ReplaceCount));
   // Copy the characters by looping through the result and source at the same time
   ReplaceCount := 0;
