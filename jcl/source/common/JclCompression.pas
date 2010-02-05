@@ -7012,7 +7012,7 @@ var
 begin
   if not FOpened then
   begin
-    if (FVolumeMaxSize <> 0) or (FVolumes.Count <> 0) then
+    if (VolumeFileNameMask <> '') or (VolumeMaxSize <> 0) or (FVolumes.Count <> 0) then
     begin
       SplitStream := TJclDynamicSplitStream.Create(False);
       SplitStream.OnVolume := NeedStream;
