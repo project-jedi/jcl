@@ -17,8 +17,6 @@
 {                                                                                                  }
 { Contributor(s):                                                                                  }
 {                                                                                                  }
-{ Last modified: $Date$                           }
-{                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { Last modified: $Date::                                                                         $ }
@@ -33,7 +31,7 @@ program RegHelper;
 
 uses
   SysUtils, Windows, ActiveX,
-  JclAnsiStrings, JclIDEUtils, JclSysUtils;
+  JclAnsiStrings, JclHelpUtils, JclSysUtils;
 
 {$R ..\source\windows\JclNoDepAdmin.res}
 {$R RegHelper.res}
@@ -312,7 +310,7 @@ begin
   try
     CoInitialize(nil); // Help2 interfaces are COM
     try
-      Help2Manager := TJclHelp2Manager.Create;
+      Help2Manager := TJclHelp2Manager.Create(0);
       try
         Assign(RegHelperOutput, ''); // stdout
         Rewrite(RegHelperOutput);
