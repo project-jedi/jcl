@@ -125,7 +125,7 @@ implementation
 
 uses
   IniFiles,
-  JclFileUtils, JclParseUses, JclRegistry, JclStrings, JclStringConversions,
+  JclFileUtils, JclUsesUtils, JclRegistry, JclStrings, JclStringConversions,
   JclUsesDialog,
   JclOtaConsts, JclOtaResources;
 
