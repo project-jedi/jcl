@@ -424,6 +424,7 @@
   XPLATFORM_RTL                  The RTL supports crossplatform function names (e.g. RaiseLastOSError) (D6+/BCB6+/FPC)
   SUPPORTS_UNICODE               string type is aliased to an unicode string (WideString or UnicodeString) (DX.NET, D12+)
   SUPPORTS_UNICODE_STRING        Compiler supports UnicodeString (D12+)
+  SUPPORTS_INT_ALIASES           Types Int8, Int16, Int32, UInt8, UInt16 and UInt32 are defined in the unit System
 
 
 - Compiler Settings
