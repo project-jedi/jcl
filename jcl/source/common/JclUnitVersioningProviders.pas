@@ -100,6 +100,16 @@ function InsertUnitVersioningSection(const ExecutableFileName: TFileName;
   AUnitList: TJclUnitVersioningList): Boolean;
 {$ENDIF MSWINDOWS}
 
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\common';
+    Extra: '';
+    Data: nil
+  );
+
 implementation
 
 const
@@ -393,16 +403,6 @@ begin
   if Idx <> -1 then
     FModules.Delete(Idx);
 end;
-
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JCL\source\common';
-    Extra: '';
-    Data: nil
-  );
 
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);

@@ -60,6 +60,9 @@ interface
 uses
   Windows,
   ActiveX,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JclBase;
 
 // Guid.txt  
@@ -624,6 +627,18 @@ function Load7Zip: Boolean;
 function Is7ZipLoaded: Boolean;
 procedure Unload7Zip;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\windows';
+    Extra: '';
+    Data: nil
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 type
@@ -719,5 +734,13 @@ begin
   SevenzipLib := INVALID_MODULEHANDLE_VALUE;
   {$ENDIF 7ZIP_LINKONREQUEST}
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

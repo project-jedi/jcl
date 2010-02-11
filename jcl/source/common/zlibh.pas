@@ -63,6 +63,9 @@ uses
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JclBase;
 
 {$IFNDEF FPC}
@@ -1990,6 +1993,18 @@ function IsZLibLoaded: Boolean;
 function LoadZLib: Boolean;
 procedure UnloadZLib;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\common';
+    Extra: '';
+    Data: nil
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
@@ -2348,8 +2363,13 @@ function inflateSyncPoint;     external szZLIB name ZLIBinflateSyncPointExportNa
 function get_crc_table;        external szZLIB name ZLIBget_crc_tableExportName;
 {$ENDIF ZLIB_LINKDLL}
 
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
+
 end.
-
-
-
 

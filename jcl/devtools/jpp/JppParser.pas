@@ -42,12 +42,15 @@
 
 unit JppParser;
 
-{$I jedi.inc}
+{$I jcl.inc}
 
 interface
 
 uses
   SysUtils, Classes,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JppState, JppLexer;
 
 type
@@ -99,6 +102,18 @@ type
     destructor Destroy; override;
     function Parse: string;
   end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\devtools\jpp';
+    Extra: '';
+    Data: nil
+    );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
@@ -776,5 +791,13 @@ begin
     Dec(FSkipLevel);
   end;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

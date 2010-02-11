@@ -59,6 +59,9 @@ interface
 {$ENDIF}
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Windows, SysUtils;
 
 (*$HPPEMIT '#include <snmp.h>'*)
@@ -663,6 +666,18 @@ function UnloadSnmp: Boolean;
 {$ENDIF SNMP_DYNAMIC_LINK_EXPLICIT}
 {$ENDIF SNMP_DYNAMIC_LINK}
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\windows';
+    Extra: '';
+    Data: nil
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 const
@@ -888,16 +903,34 @@ function SNMP_DBG_realloc; external snmpapilib name 'SnmpUtilMemReAlloc';
 
 {$ENDIF ~SNMP_DYNAMIC_LINK}
 
-{$IFDEF SNMP_DYNAMIC_LINK}
-{$IFNDEF SNMP_DYNAMIC_LINK_EXPLICIT}
+procedure InitializeSnmp;
+begin
+  {$IFDEF SNMP_DYNAMIC_LINK}
+  {$IFNDEF SNMP_DYNAMIC_LINK_EXPLICIT}
+  LoadSnmp;
+  {$ENDIF ~SNMP_DYNAMIC_LINK_EXPLICIT}
+  {$ENDIF SNMP_DYNAMIC_LINK}
+end;
+
+procedure FinalizeSnmp;
+begin
+  {$IFDEF SNMP_DYNAMIC_LINK}
+  {$IFNDEF SNMP_DYNAMIC_LINK_EXPLICIT}
+  UnloadSnmp;
+  {$ENDIF ~SNMP_DYNAMIC_LINK_EXPLICIT}
+  {$ENDIF SNMP_DYNAMIC_LINK}
+end;
 
 initialization
-  LoadSnmp;
+  InitializeSnmp;
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
 
 finalization
-  UnloadSnmp;
-
-{$ENDIF ~SNMP_DYNAMIC_LINK_EXPLICIT}
-{$ENDIF SNMP_DYNAMIC_LINK}
+  FinalizeSnmp;
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
 
 end.

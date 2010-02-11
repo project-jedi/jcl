@@ -55,7 +55,7 @@ unit MSHelpServices_TLB;
 { $WRITEABLECONST ON}
 { $VARPROPSETTER ON}
 
-{$I jedi.inc}
+{$I jcl.inc}
 
 {$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
 {$WEAKPACKAGEUNIT ON}
@@ -63,7 +63,11 @@ unit MSHelpServices_TLB;
 
 interface
 
-uses ActiveX, Classes;
+uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  ActiveX, Classes;
   
 
 // *********************************************************************//
@@ -1582,6 +1586,18 @@ type
     class function CreateRemote(const MachineName: string): IHxRegisterProtocol;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\windows';
+    Extra: '';
+    Data: nil
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses ComObj;
@@ -1625,5 +1641,13 @@ class function CoHxRegisterProtocol.CreateRemote(const MachineName: string): IHx
 begin
   Result := CreateRemoteComObject(MachineName, CLASS_HxRegisterProtocol) as IHxRegisterProtocol;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

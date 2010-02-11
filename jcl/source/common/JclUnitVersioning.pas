@@ -143,6 +143,16 @@ procedure UnregisterUnitVersion(Instance: THandle);
 
 function GetUnitVersioning: TUnitVersioning;
 
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\common';
+    Extra: '';
+    Data: nil
+  );
+
 implementation
 
 uses
@@ -669,16 +679,6 @@ begin
   if Assigned(UnitVersioning) then
     UnitVersioning.UnregisterModule(Instance);
 end;
-
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JCL\source\common';
-    Extra: '';
-    Data: nil
-  );
 
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);

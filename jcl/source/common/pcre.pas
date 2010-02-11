@@ -45,6 +45,9 @@ unit pcre;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JclBase;
 
 (*************************************************
@@ -573,6 +576,18 @@ var
 function IsPCRELoaded: Boolean;
 function LoadPCRE: Boolean;
 procedure UnloadPCRE;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\common';
+    Extra: '';
+    Data: nil
+  );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
@@ -1128,6 +1143,14 @@ function pcre_refcount; external libpcremodulename name PCRERefCountExportName;
 function pcre_study; external libpcremodulename name PCREStudyExportName;
 function pcre_version; external libpcremodulename name PCREVersionExportName;
 {$ENDIF PCRE_LINKDLL}
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

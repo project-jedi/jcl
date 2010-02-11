@@ -38,7 +38,7 @@ unit mscoree_TLB;
 { $WRITEABLECONST ON}
 { $VARPROPSETTER ON}
 
-{$I jedi.inc}
+{$I jcl.inc}
 
 {$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
 {$WEAKPACKAGEUNIT ON}
@@ -46,7 +46,12 @@ unit mscoree_TLB;
 
 interface
 
-uses ActiveX, Classes;
+uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  ActiveX,
+  Classes;
 
 {$HPPEMIT '#include <winnt.h>'}
 
@@ -428,6 +433,18 @@ type
     class function CreateRemote(const MachineName: string): ICorRuntimeHost;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\windows';
+    Extra: '';
+    Data: nil
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses ComObj;
@@ -451,5 +468,13 @@ class function CoCorRuntimeHost.CreateRemote(const MachineName: string): ICorRun
 begin
   Result := CreateRemoteComObject(MachineName, CLASS_CorRuntimeHost) as ICorRuntimeHost;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

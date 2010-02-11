@@ -48,7 +48,11 @@ interface
 {$I jcl.inc}
 
 uses
-  SysUtils, Classes, JclBase, JclContainerIntf;
+  SysUtils, Classes,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  JclBase, JclContainerIntf;
 
 type
   EPppState = class(Exception);
@@ -108,6 +112,18 @@ type
     property Options: TPppOptions read GetOptions write SetOptions;
     property DefineTriState[const ASymbol: string]: TTriState read GetDefineTriState write SetDefineTriState;
   end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\devtools\jpp';
+    Extra: '';
+    Data: nil
+    );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
@@ -436,5 +452,13 @@ begin
     if JclStrings.StrSame(AMacroNames.Next, AMacroName) then
       AMacros.Remove(AMacroNames.GetString);
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

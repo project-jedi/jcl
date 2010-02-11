@@ -37,10 +37,13 @@ unit JclNotify;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JclBase,
   {$IFDEF THREADSAFE}
   JclSynch,
-  {$ENDIF}
+  {$ENDIF THREADSAFE}
   Classes;
 
   { The following interfaces provide a basic notifier/listener setup. Whenever code issues a notification through the
@@ -98,12 +101,24 @@ type
     procedure Remove(listener: IJclListener); stdcall;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\common';
+    Extra: '';
+    Data: nil
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
   SysUtils;
 
-{ TJclBaseNotifier }
+//=== { TJclBaseNotifier } ===================================================
 
 constructor TJclBaseNotifier.Create;
 begin
@@ -180,11 +195,19 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-{ TJclBaseListener }
+//=== { TJclBaseListener } ===================================================
 
 procedure TJclBaseListener.Notification(msg: IJclNotificationMessage);
 begin
   // do nothing; descendants should override this method to process incoming notifications
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

@@ -48,9 +48,14 @@
 
 unit JppLexer;
 
+{$I jcl.inc}
+
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   JclStrHashMap, JclStrings;
 
@@ -87,6 +92,18 @@ type
       file name / preprocessor symbol. }
     property RawComment: string read FRawComment;
   end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\devtools\jpp';
+    Extra: '';
+    Data: nil
+    );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
@@ -389,6 +406,14 @@ begin
   FCurrLine := 1;
   NextTok;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

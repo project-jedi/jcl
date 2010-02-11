@@ -56,7 +56,7 @@ unit mscorlib_TLB;
 { $WRITEABLECONST ON}
 { $VARPROPSETTER ON}
 
-{$I jedi.inc}
+{$I jcl.inc}
 
 {$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
 {$WEAKPACKAGEUNIT ON}
@@ -64,7 +64,12 @@ unit mscorlib_TLB;
 
 interface
 
-uses ActiveX, Classes;
+uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  ActiveX,
+  Classes;
 
 
 // *********************************************************************//
@@ -26618,6 +26623,18 @@ type
     class function CreateRemote(const MachineName: string): _EnumBuilder;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\windows';
+    Extra: '';
+    Data: nil
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses ComObj;
@@ -32331,5 +32348,13 @@ class function CoEnumBuilder.CreateRemote(const MachineName: string): _EnumBuild
 begin
   Result := CreateRemoteComObject(MachineName, CLASS_EnumBuilder) as _EnumBuilder;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

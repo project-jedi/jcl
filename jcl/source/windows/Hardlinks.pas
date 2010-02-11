@@ -52,6 +52,9 @@ unit Hardlinks;
 
 interface
 
+{$I jcl.inc}
+
+
 (*
   All possible combinations of the above DEFINEs have been tested and work fine.
 
@@ -65,6 +68,9 @@ interface
    6 | X  X  X
 *)
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Windows;
 
 
@@ -83,6 +89,18 @@ var
 var
   hNtDll: THandle = 0; // For runtime dynamic linking
   bRtdlFunctionsLoaded: Boolean = False; // To show wether the RTDL functions had been loaded
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\windows';
+    Extra: '';
+    Data: nil
+    );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
@@ -618,6 +636,10 @@ var
   hKernel32: THandle = 0;
 
 initialization
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
+
   // GetModuleHandle because this DLL is loaded into any Win32 subsystem process anyway
   // implicitly. And Delphi cannot create applications for other subsystems without
   // major changes in SysInit und System units.
@@ -671,6 +693,10 @@ initialization
     @CreateHardLinkA := @MyCreateHardLinkA;
     @CreateHardLinkW := @MyCreateHardLinkW;
   end; // if not (Assigned(@CreateHardLinkA) and Assigned(@CreateHardLinkW)) then ...
+
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
 
 
 end.
