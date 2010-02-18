@@ -93,7 +93,7 @@ type
     FListeners: TInterfaceList;
     {$IFDEF THREADSAFE}
     FSynchronizer: TJclMultiReadExclusiveWrite;
-    {$ENDIF}
+    {$ENDIF THREADSAFE}
   public
     { IJclNotifier }
     procedure Add(listener: IJclListener); stdcall;
@@ -186,7 +186,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     idx := FListeners.IndexOf(listener);
-    if idx < 0 then
+    if idx >= 0 then
       FListeners.Delete(idx);
   {$IFDEF THREADSAFE}
   finally
