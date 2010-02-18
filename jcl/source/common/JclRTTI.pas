@@ -590,6 +590,9 @@ procedure RemoveTypeInfo(TypeInfo: PTypeInfo);
 function JclIsClass(const AnObj: TObject; const AClass: TClass): Boolean;
 function JclIsClassByName(const AnObj: TObject; const AClass: TClass): Boolean;
 
+// returns all properties of type string (kind = tkString or kind = tkUString when Unicode is enabled)
+function GetStringPropList(TypeInfo: PTypeInfo; out PropList: PPropList): Integer;
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -2478,6 +2481,26 @@ begin
     Result := AnObj
   else
     raise EInvalidCast.CreateRes(@SInvalidCast);
+end;
+
+function GetStringPropList(TypeInfo: PTypeInfo; out PropList: PPropList): Integer;
+begin
+  PropList := nil;
+  {$IFDEF SUPPORTS_UNICODE_STRING}
+  Result := GetPropList(TypeInfo, [tkUString], PropList);
+  if Result > 0 then
+  begin
+    GetMem(PropList, Result * SizeOf(PropList[0]));
+    Result := GetPropList(TypeInfo, [tkUString], PropList);
+  end;
+  {$ELSE ~SUPPORTS_UNICODE_STRING}
+  Result := GetPropList(TypeInfo, [tkString], PropList);
+  if Result > 0 then
+  begin
+    GetMem(PropList, Result * SizeOf(PropList[0]));
+    Result := GetPropList(TypeInfo, [tkString], PropList);
+  end;
+  {$ENDIF ~SUPPORTS_UNICODE_STRING}
 end;
 
 initialization
