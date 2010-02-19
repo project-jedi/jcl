@@ -68,10 +68,10 @@ type
     FStateStack: IJclStack;
     FOptions: TPppOptions;
     procedure InternalPushState(const ExcludedFiles, SearchPath: IJclStrList;
-      const Macros: IJclStrStrMap; const Defines: IJclStrMap);
+      const Macros: IJclStrIntfMap; const Defines: IJclStrMap);
     function InternalPeekDefines: IJclStrMap;
     function InternalPeekExcludedFiles: IJclStrList;
-    function InternalPeekMacros: IJclStrStrMap;
+    function InternalPeekMacros: IJclStrIntfMap;
     function InternalPeekSearchPath: IJclStrList;
   protected
     function GetOptions: TPppOptions;
@@ -136,7 +136,7 @@ type
   public
     DefinedKeywords: IJclStrMap;
     ExcludedFiles: IJclStrList;
-    Macros: IJclStrStrMap;
+    Macros: IJclStrIntfMap;
     SearchPath: IJclStrList;
   end;
 
@@ -146,7 +146,7 @@ constructor TPppState.Create;
 begin
   FStateStack := TJclStack.Create(16, True);
   InternalPushState(TJclStrArrayList.Create(16), TJclStrArrayList.Create(16),
-    TJclStrStrHashMap.Create(16), TJclStrHashMap.Create(16, False));
+    TJclStrIntfHashMap.Create(16), TJclStrHashMap.Create(16, False));
 end;
 
 destructor TPppState.Destroy;
@@ -168,9 +168,10 @@ end;
 function TPppState.ExpandMacro(const AName: string;
   const ParamValues: TDynStringArray): string;
 var
-  AMacros: IJclStrStrMap;
+  AMacros: IJclStrIntfMap;
+  AMacro: IJclStrList;
   AMacroNames: IJclStrIterator;
-  AMacroName: string;
+  AMacroName, AMacroText: string;
   Index: Integer;
   Params: array of TVarRec;
 begin
@@ -192,7 +193,9 @@ begin
         Params[Index].VPChar := PAnsiChar(ParamValues[Index]);
         {$ENDIF ~SUPPORTS_UNICODE}
       end;
-      Result := Format(AMacros.Items[AMacroNames.GetString], Params);
+      AMacro := AMacros.Items[AMacroNames.GetString] as IJclStrList;
+      AMacroText := AMacro.Strings[AMacro.Size - 1];
+      Result := Format(AMacroText, Params);
       Exit;
     end;
   end;
@@ -207,7 +210,8 @@ end;
 procedure TPppState.DefineMacro(const AName: string;
   const ParamNames: TDynStringArray; const Value: string);
 var
-  AMacros: IJclStrStrMap;
+  AMacro: IJclStrList;
+  AMacros: IJclStrIntfMap;
   AMacroNames: IJclStrIterator;
   AMacroName, AMacroFormat: string;
   Index: Integer;
@@ -219,9 +223,16 @@ begin
     if JclStrings.StrSame(AMacroNames.Next, AMacroName) then
       raise EPppState.CreateFmt('macro "%s" is already defined', [AName]);
   AMacroFormat := Value;
+  AMacro := TJclStrArrayList.Create(16);
   for Index := Low(ParamNames) to High(ParamNames) do
+  begin
     StrReplace(AMacroFormat, ParamNames[Index], '%' + IntToStr(Index) + ':s', [rfReplaceAll, rfIgnoreCase]);
-  AMacros.Items[AMacroName] := AMacroFormat;
+    // the first elements in the list are the macro parameter names
+    AMacro.Add(ParamNames[Index]);
+  end;
+  // the macro text is the last element in the list
+  AMacro.Add(AMacroFormat);
+  AMacros.Items[AMacroName] := AMacro;
 end;
 
 function TPppState.FindFile(const AName: string): TStream;
@@ -335,7 +346,7 @@ begin
   Result := (FStateStack.Peek as TSimplePppStateItem).ExcludedFiles;
 end;
 
-function TPppState.InternalPeekMacros: IJclStrStrMap;
+function TPppState.InternalPeekMacros: IJclStrIntfMap;
 begin
   if FStateStack.Empty then
     raise EPppState.Create('Internal error: PPP State stack is empty');
@@ -350,7 +361,7 @@ begin
 end;
 
 procedure TPppState.InternalPushState(const ExcludedFiles,
-  SearchPath: IJclStrList; const Macros: IJclStrStrMap; const Defines: IJclStrMap);
+  SearchPath: IJclStrList; const Macros: IJclStrIntfMap; const Defines: IJclStrMap);
 var
   AStateItem: TSimplePppStateItem;
 begin
@@ -396,12 +407,12 @@ procedure TPppState.PushState;
 var
   AExcludedFiles, ASearchPath: IJclStrList;
   ADefines: IJclStrMap;
-  AMacros: IJclStrStrMap;
+  AMacros: IJclStrIntfMap;
 begin
   ADefines := (InternalPeekDefines as IJclIntfCloneable).IntfClone as IJclStrMap;
   AExcludedFiles := (InternalPeekExcludedFiles as IJclIntfCloneable).IntfClone as IJclStrList;
   ASearchPath := (InternalPeekSearchPath as IJclIntfCloneable).IntfClone as IJclStrList;
-  AMacros := (InternalPeekMacros as IJclIntfCloneable).IntfClone as IJclStrStrMap;
+  AMacros := (InternalPeekMacros as IJclIntfCloneable).IntfClone as IJclStrIntfMap;
 
   InternalPushState(AExcludedFiles, ASearchPath, AMacros, ADefines);
 end;
@@ -441,7 +452,7 @@ end;
 
 procedure TPppState.UndefMacro(const AName: string; const ParamNames: TDynStringArray);
 var
-  AMacros: IJclStrStrMap;
+  AMacros: IJclStrIntfMap;
   AMacroNames: IJclStrIterator;
   AMacroName: string;
 begin
