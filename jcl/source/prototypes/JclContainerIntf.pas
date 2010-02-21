@@ -65,7 +65,7 @@ type
   // function pointer types
 
   // apply functions Type -> Type
-  {$JPPEXPANDMACRO APPLYFUNCTION(TIntfApplyFunction,const ,AInterface,IInterface)}
+  {$JPPEXPANDMACRO APPLYFUNCTION(TYPENAME=IInterface,FUNCNAME=TIntfApplyFunction,CONSTKEYWORD=const ,PARAMETERNAME=AInterface)}
   {$JPPEXPANDMACRO APPLYFUNCTION(TAnsiStrApplyFunction,const ,AString,AnsiString)}
   {$JPPEXPANDMACRO APPLYFUNCTION(TWideStrApplyFunction,const ,AString,WideString)}
   {$IFDEF SUPPORTS_UNICODE_STRING}

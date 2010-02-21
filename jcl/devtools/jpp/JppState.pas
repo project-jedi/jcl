@@ -171,9 +171,11 @@ var
   AMacros: IJclStrIntfMap;
   AMacro: IJclStrList;
   AMacroNames: IJclStrIterator;
-  AMacroName, AMacroText: string;
-  Index: Integer;
+  AMacroName, AMacroText, AParamName, AParamText: string;
+  Index, ParamIndex: Integer;
   Params: array of TVarRec;
+  StrParams: TStrings;
+  AssociationByName: Boolean;
 begin
   AMacros := InternalPeekMacros;
   AMacroName := Format('%s`%d', [AName, Length(ParamValues)]);
@@ -182,20 +184,45 @@ begin
   begin
     if JclStrings.StrSame(AMacroNames.Next, AMacroName) then
     begin
-      SetLength(Params, Length(ParamValues));
-      for Index := Low(ParamValues) to High(ParamValues) do
-      begin
-        {$IFDEF SUPPORTS_UNICODE}
-        Params[Index].VType := vtPWideChar;
-        Params[Index].VPWideChar := PWideChar(ParamValues[Index]);
-        {$ELSE ~SUPPORTS_UNICODE}
-        Params[Index].VType := vtPChar;
-        Params[Index].VPChar := PAnsiChar(ParamValues[Index]);
-        {$ENDIF ~SUPPORTS_UNICODE}
-      end;
       AMacro := AMacros.Items[AMacroNames.GetString] as IJclStrList;
+      // the macro text is the last item, previous items are the macro parameter names
       AMacroText := AMacro.Strings[AMacro.Size - 1];
-      Result := Format(AMacroText, Params);
+      AssociationByName := True;
+      StrParams := TStringList.Create;
+      try
+        for Index := Low(ParamValues) to High(ParamValues) do
+        begin
+          StrParams.Add(ParamValues[Index]);
+          AParamName := StrParams.Names[Index];
+          if AParamName <> '' then
+          begin
+            // verify parameter names
+            ParamIndex := AMacro.IndexOf(AParamName);
+            if (ParamIndex < 0) or (ParamIndex > (AMacro.Size - 1)) then
+              AssociationByName := False;
+          end
+          else
+            AssociationByName := False;
+        end;
+        SetLength(Params, Length(ParamValues));
+        for Index := Low(ParamValues) to High(ParamValues) do
+        begin
+          if AssociationByName then
+            AParamText := StrParams.Values[AMacro.Strings[Index]]
+          else
+            AParamText := StrParams.Strings[Index];
+          {$IFDEF SUPPORTS_UNICODE}
+          Params[Index].VType := vtPWideChar;
+          Params[Index].VPWideChar := PWideChar(AParamText);
+          {$ELSE ~SUPPORTS_UNICODE}
+          Params[Index].VType := vtPChar;
+          Params[Index].VPChar := PAnsiChar(AParamText);
+          {$ENDIF ~SUPPORTS_UNICODE}
+        end;
+        Result := Format(AMacroText, Params);
+      finally
+        StrParams.Free;
+      end;
       Exit;
     end;
   end;
