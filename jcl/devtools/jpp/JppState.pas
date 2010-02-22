@@ -66,17 +66,18 @@ type
   TPppProvider = class(TPersistent)
   protected
     function GetBoolValue(const Name: string): Boolean; virtual; abstract;
-    function GetStringValue(const Name: string): string; virtual; abstract;
-    function GetIntegerValue(const Name: string): Integer; virtual; abstract;
-    function GetStringsValue(const Name: string): TStrings; virtual; abstract;
     function GetDefine(const ASymbol: string): TTriState; virtual; abstract;
+    function GetIntegerValue(const Name: string): Integer; virtual; abstract;
+    function GetStringValue(const Name: string): string; virtual; abstract;
+    procedure SetBoolValue(const Name: string; Value: Boolean); virtual; abstract;
     procedure SetDefine(const ASymbol: string; const Value: TTriState); virtual; abstract;
+    procedure SetIntegerValue(const Name: string; Value: Integer); virtual; abstract;
+    procedure SetStringValue(const Name, Value: string); virtual; abstract;
   public
     property Defines[const ASymbol: string]: TTriState read GetDefine write SetDefine;
-    property BoolValues[const Name: string]: Boolean read GetBoolValue;
-    property StringValues[const Name: string]: string read GetStringValue;
-    property IntegerValues[const Name: string]: Integer read GetIntegerValue;
-    property StringsValues[const Name: string]: TStrings read GetStringsValue;
+    property BoolValues[const Name: string]: Boolean read GetBoolValue write SetBoolValue;
+    property StringValues[const Name: string]: string read GetStringValue write SetStringValue;
+    property IntegerValues[const Name: string]: Integer read GetIntegerValue write SetIntegerValue;
   end;
 
   TPppState = class(TPppProvider)
@@ -93,12 +94,14 @@ type
     function GetOptions: TPppOptions;
     procedure SetOptions(AOptions: TPppOptions);
 
-    function GetDefine(const ASymbol: string): TTriState; override;
-    procedure SetDefine(const ASymbol: string; const Value: TTriState); override;
     function GetBoolValue(const Name: string): Boolean; override;
-    function GetStringValue(const Name: string): string; override;
+    function GetDefine(const ASymbol: string): TTriState; override;
     function GetIntegerValue(const Name: string): Integer; override;
-    function GetStringsValue(const Name: string): TStrings; override;
+    function GetStringValue(const Name: string): string; override;
+    procedure SetBoolValue(const Name: string; Value: Boolean); override;
+    procedure SetDefine(const ASymbol: string; const Value: TTriState); override;
+    procedure SetIntegerValue(const Name: string; Value: Integer); override;
+    procedure SetStringValue(const Name, Value: string); override;
   public
     constructor Create;
     destructor Destroy; override;
@@ -316,17 +319,6 @@ begin
   Result := Integer(VariantValue);
 end;
 
-function TPppState.GetStringsValue(const Name: string): TStrings;
-var
-  Instance: TObject;
-begin
-  Instance := TObject(GetOrdProp(Self, Name));
-  if Instance is TStrings then
-    Result := TStrings(Instance)
-  else
-    Result := nil;
-end;
-
 function TPppState.GetStringValue(const Name: string): string;
 var
   VariantValue: Variant;
@@ -457,12 +449,21 @@ begin
   FOptions := AOptions;
 end;
 
+procedure TPppState.SetBoolValue(const Name: string; Value: Boolean);
+var
+  VariantValue: Variant;
+begin
+  VariantValue := Value;
+  SetPropValue(Self, Name, VariantValue);
+end;
+
 procedure TPppState.SetDefine(const ASymbol: string;
   const Value: TTriState);
 var
   ADefines: IJclStrMap;
   ASymbolNames: IJclStrIterator;
   Found: Boolean;
+  PI: PPropInfo;
 begin
   Found := False;
   ADefines := InternalPeekDefines;
@@ -476,8 +477,35 @@ begin
       Break;
     end;
   end;
+  if (not Found) and (Value <> ttUnknown) then
+  begin
+    PI := GetPropInfo(Self, ASymbol);
+    if Assigned(PI) then
+    begin
+      if Value = ttDefined then
+        SetPropValue(Self, PI, True)
+      else
+        SetPropValue(Self, PI, False);
+    end;
+  end;
   if not Found then
     ADefines.Items[ASymbol] := TObject(Value);
+end;
+
+procedure TPppState.SetIntegerValue(const Name: string; Value: Integer);
+var
+  VariantValue: Variant;
+begin
+  VariantValue := Value;
+  SetPropValue(Self, Name, VariantValue);
+end;
+
+procedure TPppState.SetStringValue(const Name, Value: string);
+var
+  VariantValue: Variant;
+begin
+  VariantValue := Value;
+  SetPropValue(Self, Name, VariantValue);
 end;
 
 procedure TPppState.Undef(const ASymbol: string);

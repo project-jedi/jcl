@@ -84,11 +84,13 @@ type
     FMainThread: Boolean;
     FTraceEAbort: Boolean;
     FIgnoredExceptions: TStrings;
+    FIgnoredExceptionsIndex: Integer;
     FTraceAllExceptions: Boolean;
     function GetIgnoredExceptionsCount: Integer;
     function GetReportAllThreads: Boolean;
     function GetReportExceptionThread: Boolean;
     function GetReportMainThread: Boolean;
+    function GetIgnoredException: string;
   public
     constructor Create; reintroduce;
     destructor Destroy; override; 
@@ -129,7 +131,9 @@ type
     property TraceAllExceptions: Boolean read FTraceAllExceptions
       write FTraceAllExceptions;
     property TraceEAbort: Boolean read FTraceEAbort write FTraceEAbort;
+    property IgnoredException: string read GetIgnoredException;
     property IgnoredExceptions: TStrings read FIgnoredExceptions write FIgnoredExceptions;
+    property IgnoredExceptionsIndex: Integer read FIgnoredExceptionsIndex write FIgnoredExceptionsIndex;
     property IgnoredExceptionsCount: Integer read GetIgnoredExceptionsCount;
     // trace options
     property StackList: Boolean read FStackList write FStackList;
@@ -221,6 +225,11 @@ destructor TJclOtaExcDlgParams.Destroy;
 begin
   FIgnoredExceptions.Free;
   inherited Destroy;
+end;
+
+function TJclOtaExcDlgParams.GetIgnoredException: string;
+begin
+  Result := FIgnoredExceptions.Strings[FIgnoredExceptionsIndex];
 end;
 
 function TJclOtaExcDlgParams.GetIgnoredExceptionsCount: Integer;

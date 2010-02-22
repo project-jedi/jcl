@@ -774,7 +774,7 @@ begin
   begin
     AppEvents := TApplicationEvents.Create(nil);
     AppEvents.OnException := T%FORMNAME%.ExceptionHandler;
-(*$JPPREPEAT IgnoredExceptionsCount    AddIgnoredException({$JPPREPEATSTRVALUE IgnoredExceptions});*)
+(*$JPPLOOP IgnoredExceptionsIndex IgnoredExceptionsCount    AddIgnoredException({$JPPSTRVALUE IgnoredException});*)
 {$IFDEF TraceEAbort}    RemoveIgnoredException(EAbort);{$ENDIF}
 {$IFDEF TraceAllExceptions}    JclStackTrackingOptions := JclStackTrackingOptions + [stTraceAllExceptions];{$ENDIF}
 {$IFDEF RawData}    JclStackTrackingOptions := JclStackTrackingOptions + [stRawMode];{$ENDIF}
