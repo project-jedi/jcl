@@ -281,7 +281,7 @@ begin
   with TSaveDialog.Create(Self) do
   try
     DefaultExt := '.log';
-    FileName := {$JPPEXPANDMACRO QUOTE}{$JPPSTRVALUE LogFileName}{$JPPEXPANDMACRO QUOTE};
+    FileName := {$JPPSTRVALUE LogFileName};
     Filter := 'Log Files (*.log)|*.log|All files (*.*)|*.*';
     Title := 'Save log as...';
     Options := [ofHideReadOnly,ofPathMustExist,ofNoReadOnlyReturn,ofEnableSizing,ofDontAddToRecent];
@@ -309,9 +309,9 @@ begin
   try
     CreateReport;
 {$IFDEF LogFile}
-{$IFDEF AutoSaveWorkingDirectory}    SaveToLogFile(%StrValue LogFileName);{$ENDIF}
-{$IFDEF AutoSaveApplicationDirectory}    SaveToLogFile(PathAddSeparator(ExtractFilePath(Application.ExeName)) + %StrValue LogFileName);{$ENDIF}
-{$IFDEF AutoSaveDesktopDirectory}    SaveToLogFile(PathAddSeparator(GetDesktopFolder) + %StrValue LogFileName);{$ENDIF}
+{$IFDEF AutoSaveWorkingDirectory}    SaveToLogFile({$JPPSTRVALUE LogFileName});{$ENDIF}
+{$IFDEF AutoSaveApplicationDirectory}    SaveToLogFile(PathAddSeparator(ExtractFilePath(Application.ExeName)) + {$JPPSTRVALUE LogFileName});{$ENDIF}
+{$IFDEF AutoSaveDesktopDirectory}    SaveToLogFile(PathAddSeparator(GetDesktopFolder) + {$JPPSTRVALUE LogFileName});{$ENDIF}
 {$ENDIF}
     DetailsMemo.SelStart := 0;
     SendMessage(DetailsMemo.Handle, EM_SCROLLCARET, 0, 0);
