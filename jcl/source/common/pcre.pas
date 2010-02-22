@@ -54,7 +54,13 @@ uses
 *       Perl-Compatible Regular Expressions      *
 *************************************************)
 
-{$WEAKPACKAGEUNIT ON}
+{$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
+  {$IFDEF UNITVERSIONING}
+    {$WEAKPACKAGEUNIT OFF}
+  {$ELSE ~UNITVERSIONING}
+    {$WEAKPACKAGEUNIT ON}
+  {$ENDIF ~UNITVERSIONING}
+{$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
 
 // (p3) this is the switch to change between static and dynamic linking.
 // It is set to dynamic by default. To disable simply insert a '.' before the '$'
