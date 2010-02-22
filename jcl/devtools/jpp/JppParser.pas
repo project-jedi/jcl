@@ -366,7 +366,7 @@ var
   SavedTriState: TTriState;
 begin
   SavedTriState := FTriState;
-  FTriState := State.DefineTriState[Lexer.TokenAsString];
+  FTriState := State.Defines[Lexer.TokenAsString];
   try
     if FTriState = ttUnknown then
     begin
@@ -418,7 +418,7 @@ begin
   case FTriState of
     ttUnknown:
       begin
-        State.DefineTriState[Lexer.TokenAsString] := ttUnknown;
+        State.Defines[Lexer.TokenAsString] := ttUnknown;
         AddResult(Lexer.RawComment);
       end;
     ttDefined: State.Define(Lexer.TokenAsString);
@@ -560,7 +560,7 @@ begin
   case FTriState of
     ttUnknown:
       begin
-        State.DefineTriState[Lexer.TokenAsString] := ttUnknown;
+        State.Defines[Lexer.TokenAsString] := ttUnknown;
         AddResult(Lexer.RawComment);
       end;
     ttDefined: State.Undef(Lexer.TokenAsString);
@@ -625,7 +625,7 @@ var
   Name: string;
 begin
   Name := Lexer.TokenAsString;
-  AddResult(State.GetStrValue(Name));
+  AddResult(State.StringValues[Name]);
   NextToken;
 end;
 
@@ -634,7 +634,7 @@ var
   Name: string;
 begin
   Name := Lexer.TokenAsString;
-  AddResult(IntToStr(State.GetIntValue(Name)));
+  AddResult(IntToStr(State.IntegerValues[Name]));
   NextToken;
 end;
 
@@ -643,7 +643,7 @@ var
   Name: string;
 begin
   Name := Lexer.TokenAsString;
-  AddResult(BoolToStr(State.GetBoolValue(Name), True));
+  AddResult(BoolToStr(State.BoolValues[Name], True));
   NextToken;
 end;
 
@@ -668,7 +668,7 @@ begin
     if RepeatText[I] = ')' then
       Dec(I);
     RepeatText := Copy(RepeatText, J, I - J);
-    FRepeatIndex := State.GetIntValue(CountName);
+    FRepeatIndex := State.IntegerValues[CountName];
     while FRepeatIndex > 0 do
     begin
       Dec(FRepeatIndex);
@@ -688,7 +688,7 @@ begin
   if FRepeatIndex > -1 then
   begin
     Name := Lexer.TokenAsString;
-    AddResult(State.GetStringsValue(Name).Strings[FRepeatIndex]);
+    AddResult(State.StringsValues[Name].Strings[FRepeatIndex]);
     NextToken;
   end
   else

@@ -63,7 +63,23 @@ type
 
   TTriState = (ttUnknown, ttUndef, ttDefined);
 
-  TPppState = class(TPersistent)
+  TPppProvider = class(TPersistent)
+  protected
+    function GetBoolValue(const Name: string): Boolean; virtual; abstract;
+    function GetStringValue(const Name: string): string; virtual; abstract;
+    function GetIntegerValue(const Name: string): Integer; virtual; abstract;
+    function GetStringsValue(const Name: string): TStrings; virtual; abstract;
+    function GetDefine(const ASymbol: string): TTriState; virtual; abstract;
+    procedure SetDefine(const ASymbol: string; const Value: TTriState); virtual; abstract;
+  public
+    property Defines[const ASymbol: string]: TTriState read GetDefine write SetDefine;
+    property BoolValues[const Name: string]: Boolean read GetBoolValue;
+    property StringValues[const Name: string]: string read GetStringValue;
+    property IntegerValues[const Name: string]: Integer read GetIntegerValue;
+    property StringsValues[const Name: string]: TStrings read GetStringsValue;
+  end;
+
+  TPppState = class(TPppProvider)
   private
     FStateStack: IJclStack;
     FOptions: TPppOptions;
@@ -77,8 +93,12 @@ type
     function GetOptions: TPppOptions;
     procedure SetOptions(AOptions: TPppOptions);
 
-    function GetDefineTriState(const ASymbol: string): TTriState;
-    procedure SetDefineTriState(const ASymbol: string; const Value: TTriState);
+    function GetDefine(const ASymbol: string): TTriState; override;
+    procedure SetDefine(const ASymbol: string; const Value: TTriState); override;
+    function GetBoolValue(const Name: string): Boolean; override;
+    function GetStringValue(const Name: string): string; override;
+    function GetIntegerValue(const Name: string): Integer; override;
+    function GetStringsValue(const Name: string): TStrings; override;
   public
     constructor Create;
     destructor Destroy; override;
@@ -88,12 +108,6 @@ type
       in scope. }
     procedure PushState;
     procedure PopState;
-
-    function IsDefined(const ASymbol: string): Boolean;
-    function GetBoolValue(const Name: string): Boolean;
-    function GetStrValue(const Name: string): string;
-    function GetIntValue(const Name: string): Integer;
-    function GetStringsValue(const Name: string): TStrings;
 
     procedure Define(const ASymbol: string);
     procedure Undef(const ASymbol: string);
@@ -110,7 +124,6 @@ type
     procedure UndefMacro(const AName: string; const ParamNames: TDynStringArray);
 
     property Options: TPppOptions read GetOptions write SetOptions;
-    property DefineTriState[const ASymbol: string]: TTriState read GetDefineTriState write SetDefineTriState;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -231,7 +244,7 @@ end;
 
 procedure TPppState.Define(const ASymbol: string);
 begin
-  SetDefineTriState(ASymbol, ttDefined);
+  Defines[ASymbol] := ttDefined;
 end;
 
 procedure TPppState.DefineMacro(const AName: string;
@@ -295,7 +308,7 @@ begin
   Result := Boolean(VariantValue);
 end;
 
-function TPppState.GetIntValue(const Name: string): Integer;
+function TPppState.GetIntegerValue(const Name: string): Integer;
 var
   VariantValue: Variant;
 begin
@@ -314,7 +327,7 @@ begin
     Result := nil;
 end;
 
-function TPppState.GetStrValue(const Name: string): string;
+function TPppState.GetStringValue(const Name: string): string;
 var
   VariantValue: Variant;
 begin
@@ -327,7 +340,7 @@ begin
   Result := FOptions;
 end;
 
-function TPppState.GetDefineTriState(const ASymbol: string): TTriState;
+function TPppState.GetDefine(const ASymbol: string): TTriState;
 var
   ADefines: IJclStrMap;
   ASymbolNames: IJclStrIterator;
@@ -400,11 +413,6 @@ begin
   FStateStack.Push(AStateItem);
 end;
 
-function TPppState.IsDefined(const ASymbol: string): Boolean;
-begin
-  Result := DefineTriState[ASymbol] = ttDefined;
-end;
-
 function TPppState.IsFileExcluded(const AName: string): Boolean;
 var
   AExcludedFiles: IJclStrList;
@@ -449,7 +457,7 @@ begin
   FOptions := AOptions;
 end;
 
-procedure TPppState.SetDefineTriState(const ASymbol: string;
+procedure TPppState.SetDefine(const ASymbol: string;
   const Value: TTriState);
 var
   ADefines: IJclStrMap;
@@ -474,7 +482,7 @@ end;
 
 procedure TPppState.Undef(const ASymbol: string);
 begin
-  SetDefineTriState(ASymbol, ttUndef);
+  Defines[ASymbol] := ttUndef;
 end;
 
 procedure TPppState.UndefMacro(const AName: string; const ParamNames: TDynStringArray);
