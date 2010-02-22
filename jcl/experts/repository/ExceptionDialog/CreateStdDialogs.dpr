@@ -87,7 +87,7 @@ begin
       Params.HookDll := True;
       Params.LogFile := True;
       Params.LogSaveDialog := True;
-      Params.LogFileName := 'filename.log';
+      Params.LogFileName := '''filename.log''';
       Params.OSInfo := True;
       Params.ModuleList := True;
       Params.ActiveControls := True;
