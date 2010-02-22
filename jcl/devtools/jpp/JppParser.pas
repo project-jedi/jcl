@@ -85,10 +85,13 @@ type
     procedure ParseExpandMacro;
     procedure ParseUndefMacro;
 
-    procedure ParseBoolValue;
-    procedure ParseIntValue;
+    procedure ParseGetBoolValue;
+    procedure ParseGetIntValue;
+    procedure ParseGetStrValue;
     procedure ParseLoop;
-    procedure ParseStrValue;
+    procedure ParseSetBoolValue;
+    procedure ParseSetIntValue;
+    procedure ParseSetStrValue;
 
     // same as ParseText, but throws result away
     procedure Skip;
@@ -116,7 +119,7 @@ const
 implementation
 
 uses
-  JclBase, JclStrings, JclStreams;
+  JclBase, JclStrings, JclStreams, JclSysUtils;
   
 {$IFDEF MSWINDOWS}
 const
@@ -296,9 +299,12 @@ begin
           ptJppDefineMacro,
           ptJppExpandMacro,
           ptJppUndefMacro,
-          ptJppStrValue,
-          ptJppIntValue,
-          ptJppBoolValue,
+          ptJppGetStrValue,
+          ptJppGetIntValue,
+          ptJppGetBoolValue,
+          ptJppSetStrValue,
+          ptJppSetIntValue,
+          ptJppSetBoolValue,
           ptJppLoop:
             begin
               Recurse := True;
@@ -432,9 +438,12 @@ begin
     ptJppDefineMacro,
     ptJppExpandMacro,
     ptJppUndefMacro,
-    ptJppStrValue,
-    ptJppIntValue,
-    ptJppBoolValue,
+    ptJppGetStrValue,
+    ptJppGetIntValue,
+    ptJppGetBoolValue,
+    ptJppSetStrValue,
+    ptJppSetIntValue,
+    ptJppSetBoolValue,
     ptJppLoop:
       FAllWhiteSpaceIn := False;
     ptInclude:
@@ -621,7 +630,7 @@ begin
   NextToken;
 end;
 
-procedure TJppParser.ParseStrValue;
+procedure TJppParser.ParseGetStrValue;
 var
   Name: string;
 begin
@@ -630,7 +639,7 @@ begin
   NextToken;
 end;
 
-procedure TJppParser.ParseIntValue;
+procedure TJppParser.ParseGetIntValue;
 var
   Name: string;
 begin
@@ -639,7 +648,7 @@ begin
   NextToken;
 end;
 
-procedure TJppParser.ParseBoolValue;
+procedure TJppParser.ParseGetBoolValue;
 var
   Name: string;
 begin
@@ -680,6 +689,81 @@ begin
     State.IntegerValues[IndexName] := RepeatIndex;
     AddResult(RepeatText);
   end;
+  NextToken;
+end;
+
+procedure TJppParser.ParseSetStrValue;
+var
+  I, J: Integer;
+  Text, Name, Value: string;
+begin
+  I := 1;
+  Text := Lexer.RawComment;
+  while (I <= Length(Text)) and not CharIsWhiteSpace(Text[I]) do
+    Inc(I);
+  while (I <= Length(Text)) and CharIsWhiteSpace(Text[I]) do
+    Inc(I);
+  J := I;
+  while (J <= Length(Text)) and CharIsValidIdentifierLetter(Text[J]) do
+    Inc(J);
+  Name := Copy(Text, I, J - I);
+  while (J <= Length(Text)) and CharIsWhiteSpace(Text[J]) do
+    Inc(J);
+  I := Length(Text);
+  if Text[I] = ')' then
+    Dec(I);
+  Value := Copy(Text, J, I - J);
+  State.StringValues[Name] := Value;
+  NextToken;
+end;
+
+procedure TJppParser.ParseSetIntValue;
+var
+  I, J: Integer;
+  Text, Name, Value: string;
+begin
+  I := 1;
+  Text := Lexer.RawComment;
+  while (I <= Length(Text)) and not CharIsWhiteSpace(Text[I]) do
+    Inc(I);
+  while (I <= Length(Text)) and CharIsWhiteSpace(Text[I]) do
+    Inc(I);
+  J := I;
+  while (J <= Length(Text)) and CharIsValidIdentifierLetter(Text[J]) do
+    Inc(J);
+  Name := Copy(Text, I, J - I);
+  while (J <= Length(Text)) and CharIsWhiteSpace(Text[J]) do
+    Inc(J);
+  I := Length(Text);
+  if Text[I] = ')' then
+    Dec(I);
+  Value := Copy(Text, J, I - J);
+  State.IntegerValues[Name] := StrToInt(Value);
+  NextToken;
+end;
+
+procedure TJppParser.ParseSetBoolValue;
+var
+  I, J: Integer;
+  Text, Name, Value: string;
+begin
+  I := 1;
+  Text := Lexer.RawComment;
+  while (I <= Length(Text)) and not CharIsWhiteSpace(Text[I]) do
+    Inc(I);
+  while (I <= Length(Text)) and CharIsWhiteSpace(Text[I]) do
+    Inc(I);
+  J := I;
+  while (J <= Length(Text)) and CharIsValidIdentifierLetter(Text[J]) do
+    Inc(J);
+  Name := Copy(Text, I, J - I);
+  while (J <= Length(Text)) and CharIsWhiteSpace(Text[J]) do
+    Inc(J);
+  I := Length(Text);
+  if Text[I] = ')' then
+    Dec(I);
+  Value := Copy(Text, J, I - J);
+  State.BoolValues[Name] := StrToBoolean(Value);
   NextToken;
 end;
 
@@ -749,15 +833,27 @@ begin
         else
           AddRawComment;
 
-      ptJppStrValue, ptJppIntValue, ptJppBoolValue, ptJppLoop:
+      ptJppGetStrValue,
+      ptJppGetIntValue,
+      ptJppGetBoolValue,
+      ptJppSetStrValue,
+      ptJppSetIntValue,
+      ptJppSetBoolValue,
+      ptJppLoop:
         if poProcessValues in State.Options then
           case Lexer.CurrTok of
-            ptJppStrValue:
-              ParseStrValue;
-            ptJppIntValue:
-              ParseIntValue;
-            ptJppBoolValue:
-              ParseBoolValue;
+            ptJppGetStrValue:
+              ParseGetStrValue;
+            ptJppGetIntValue:
+              ParseGetIntValue;
+            ptJppGetBoolValue:
+              ParseGetBoolValue;
+            ptJppSetStrValue:
+              ParseSetStrValue;
+            ptJppSetIntValue:
+              ParseSetIntValue;
+            ptJppSetBoolValue:
+              ParseSetBoolValue;
             ptJppLoop:
               ParseLoop;
           end

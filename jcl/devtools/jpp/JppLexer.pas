@@ -63,7 +63,8 @@ type
   TJppToken = (ptEof, ptComment, ptText, ptEol,
     ptDefine, ptUndef, ptIfdef, ptIfndef, ptIfopt, ptElse, ptEndif,
     ptInclude, ptJppDefineMacro, ptJppExpandMacro, ptJppUndefMacro,
-    ptJppStrValue, ptJppIntValue, ptJppBoolValue, ptJppLoop);
+    ptJppGetStrValue, ptJppGetIntValue, ptJppGetBoolValue,
+    ptJppSetStrValue, ptJppSetIntValue, ptJppSetBoolValue, ptJppLoop);
 
   EJppLexerError = class(Exception);
 
@@ -134,9 +135,15 @@ begin
   AddToken('jppdefinemacro', ptjppDefineMacro);
   AddToken('jppexpandmacro', ptJppExpandMacro);
   AddToken('jppundefmacro', ptJppUndefMacro);
-  AddToken('jppstrvalue', ptJppStrValue);
-  AddToken('jppintvalue', ptJppIntValue);
-  AddToken('jppboolvalue', ptJppBoolValue);
+  AddToken('jppstrvalue', ptJppGetStrValue);   // backward compatibility
+  AddToken('jppintvalue', ptJppGetIntValue);   // backward compatibility
+  AddToken('jppboolvalue', ptJppGetBoolValue); // backward compatibility
+  AddToken('jppgetstrvalue', ptJppGetStrValue);
+  AddToken('jppgetintvalue', ptJppGetIntValue);
+  AddToken('jppgetboolvalue', ptJppGetBoolValue);
+  AddToken('jppsetstrvalue', ptJppSetStrValue);
+  AddToken('jppsetintvalue', ptJppSetIntValue);
+  AddToken('jppsetboolvalue', ptJppSetBoolValue);
   AddToken('jpploop', ptJppLoop);
 
   FBuf := ABuffer;
@@ -210,9 +217,12 @@ procedure TJppLexer.NextTok;
         ptUndef,
         ptIfdef,
         ptIfndef,
-        ptJppStrValue,
-        ptJppIntValue,
-        ptJppBoolValue:
+        ptJppGetStrValue,
+        ptJppGetIntValue,
+        ptJppGetBoolValue,
+        ptJppSetStrValue,
+        ptJppSetIntValue,
+        ptJppSetBoolValue:
           begin
             BPos := APos;
             StrSkipChars(BPos, CharIsWhiteSpace);

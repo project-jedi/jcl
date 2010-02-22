@@ -355,7 +355,7 @@ begin
     PI := GetPropInfo(Self, ASymbol);
     if Assigned(PI) then
     begin
-      PV := GetPropValue(Self, ASymbol);
+      PV := GetPropValue(Self, PI);
       if Boolean(PV) then
         Result := ttDefined
       else
@@ -392,8 +392,8 @@ begin
   Result := (FStateStack.Peek as TSimplePppStateItem).SearchPath;
 end;
 
-procedure TPppState.InternalPushState(const ExcludedFiles,
-  SearchPath: IJclStrList; const Macros: IJclStrIntfMap; const Defines: IJclStrMap);
+procedure TPppState.InternalPushState(const ExcludedFiles, SearchPath: IJclStrList;
+  const Macros: IJclStrIntfMap; const Defines: IJclStrMap);
 var
   AStateItem: TSimplePppStateItem;
 begin
@@ -462,10 +462,8 @@ procedure TPppState.SetDefine(const ASymbol: string;
 var
   ADefines: IJclStrMap;
   ASymbolNames: IJclStrIterator;
-  Found: Boolean;
   PI: PPropInfo;
 begin
-  Found := False;
   ADefines := InternalPeekDefines;
   ASymbolNames := ADefines.KeySet.First;
   while ASymbolNames.HasNext do
@@ -473,11 +471,10 @@ begin
     if JclStrings.StrSame(ASymbolNames.Next, ASymbol) then
     begin
       ADefines.Items[ASymbolNames.GetString] := TObject(Value);
-      Found := True;
-      Break;
+      Exit;
     end;
   end;
-  if (not Found) and (Value <> ttUnknown) then
+  if Value <> ttUnknown then
   begin
     PI := GetPropInfo(Self, ASymbol);
     if Assigned(PI) then
@@ -486,10 +483,10 @@ begin
         SetPropValue(Self, PI, True)
       else
         SetPropValue(Self, PI, False);
+      Exit;
     end;
   end;
-  if not Found then
-    ADefines.Items[ASymbol] := TObject(Value);
+  ADefines.Items[ASymbol] := TObject(Value);
 end;
 
 procedure TPppState.SetIntegerValue(const Name: string; Value: Integer);
