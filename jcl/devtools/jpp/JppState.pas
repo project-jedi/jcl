@@ -355,7 +355,11 @@ begin
     PI := GetPropInfo(Self, ASymbol);
     if Assigned(PI) then
     begin
+      {$IFDEF DELPHI8_UP}   	  
       PV := GetPropValue(Self, PI);
+      {$ELSE}
+      PV := GetPropValue(Self, PI^.Name);
+      {$ENDIF}
       if Boolean(PV) then
         Result := ttDefined
       else
@@ -480,9 +484,17 @@ begin
     if Assigned(PI) then
     begin
       if Value = ttDefined then
+        {$IFDEF DELPHI8_UP}   	  
         SetPropValue(Self, PI, True)
+        {$ELSE}
+        SetPropValue(Self, PI^.Name, True)
+        {$ENDIF}
       else
+        {$IFDEF DELPHI8_UP}   	  
         SetPropValue(Self, PI, False);
+		{$ELSE}
+        SetPropValue(Self, PI^.Name, False);
+		{$ENDIF}
       Exit;
     end;
   end;
