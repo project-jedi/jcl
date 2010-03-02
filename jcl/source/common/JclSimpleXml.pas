@@ -439,11 +439,13 @@ type
     FSaveCount: Integer;
     FSaveCurrent: Integer;
     FIndentString: string;
+    FBaseIndentString: string;
     FOnEncodeValue: TJclSimpleXMLEncodeEvent;
     FOnDecodeValue: TJclSimpleXMLEncodeEvent;
     FOnDecodeStream: TJclSimpleXMLEncodeStreamEvent;
     FOnEncodeStream: TJclSimpleXMLEncodeStreamEvent;
     procedure SetIndentString(const Value: string);
+    procedure SetBaseIndentString(const Value: string);
     procedure SetRoot(const Value: TJclSimpleXMLElemClassic);
     procedure SetFileName(const Value: TFileName);
     procedure DoLoadProgress(const APosition, ATotal: Integer);
@@ -469,6 +471,7 @@ type
     property XMLData: string read SaveToString write LoadFromString;
     property FileName: TFileName read FFileName write SetFileName;
     property IndentString: string read FIndentString write SetIndentString;
+    property BaseIndentString: string read FBaseIndentString write SetBaseIndentString;
     property Options: TJclSimpleXMLOptions read FOptions write FOptions;
     property OnSaveProgress: TJclOnSimpleProgress read FOnSaveProg write FOnSaveProg;
     property OnLoadProgress: TJclOnSimpleProgress read FOnLoadProg write FOnLoadProg;
@@ -1173,7 +1176,7 @@ begin
   if not (sxoDoNotSaveProlog in FOptions) then
     Prolog.SaveToStringStream(StringStream, Self);
 
-  Root.SaveToStringStream(StringStream, '', Self);
+  Root.SaveToStringStream(StringStream, BaseIndentString, Self);
 
   if Assigned(FOnSaveProg) then
     FOnSaveProg(Self, lCount, lCount);
@@ -1190,6 +1193,15 @@ begin
   finally
     Stream.Free;
   end;
+end;
+
+procedure TJclSimpleXML.SetBaseIndentString(const Value: string);
+begin
+  // test if the new value is only made of spaces or tabs
+  if not StrContainsChars(Value, CharIsWhiteSpace, True) then
+    Exit;
+
+  FBaseIndentString := Value;
 end;
 
 procedure TJclSimpleXML.SetFileName(const Value: TFileName);
@@ -3748,7 +3760,7 @@ end;
 procedure TJclSimpleXML.SetIndentString(const Value: string);
 begin
   // test if the new value is only made of spaces or tabs
-  if StrContainsChars(Value,CharIsWhiteSpace,True) then
+  if not StrContainsChars(Value, CharIsWhiteSpace, True) then
     Exit;
   FIndentString := Value;
 end;
