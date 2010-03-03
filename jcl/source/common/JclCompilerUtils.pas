@@ -113,6 +113,7 @@ type
   private
     FDCPSearchPath: string;
     FLibrarySearchPath: string;
+    FLibraryDebugSearchPath: string;
     FCppSearchPath: string;
     FSupportsNoConfig: Boolean;
   protected
@@ -121,18 +122,21 @@ type
   public
     constructor Create(const ABinDirectory: string; ALongPathBug: Boolean;
       ACompilerSettingsFormat: TJclCompilerSettingsFormat; ASupportsNoConfig: Boolean;
-      const ADCPSearchPath, ALibrarySearchPath, ACppSearchPath: string);
+      const ADCPSearchPath, ALibrarySearchPath, ALibraryDebugSearchPath, ACppSearchPath: string);
     function GetExeName: string; override;
     function Execute(const CommandLine: string): Boolean; override;
-    function MakePackage(const PackageName, BPLPath, DCPPath: string; ExtraOptions: string = ''): Boolean;
-    function MakeProject(const ProjectName, OutputDir, DcpSearchPath: string; ExtraOptions: string = ''): Boolean;
-    procedure SetDefaultOptions; virtual;
+    function MakePackage(const PackageName, BPLPath, DCPPath: string;
+      ExtraOptions: string = ''; ADebug: Boolean = False): Boolean;
+    function MakeProject(const ProjectName, OutputDir, DcpSearchPath: string;
+      ExtraOptions: string = ''; ADebug: Boolean = False): Boolean;
+    procedure SetDefaultOptions(ADebug: Boolean); virtual;
     function AddBDSProjOptions(const ProjectFileName: string; var ProjectOptions: TProjectOptions): Boolean;
     function AddDOFOptions(const ProjectFileName: string; var ProjectOptions: TProjectOptions): Boolean;
     function AddDProjOptions(const ProjectFileName: string; var ProjectOptions: TProjectOptions): Boolean;
     property CppSearchPath: string read FCppSearchPath;
     property DCPSearchPath: string read FDCPSearchPath;
     property LibrarySearchPath: string read FLibrarySearchPath;
+    property LibraryDebugSearchPath: string read FLibraryDebugSearchPath;
     property SupportsNoConfig: Boolean read FSupportsNoConfig;
   end;
 
@@ -144,8 +148,9 @@ type
     function GetMaxCLRVersion: string;
   public
     function GetExeName: string; override;
-    function MakeProject(const ProjectName, OutputDir, ExtraOptions: string): Boolean; reintroduce;
-    procedure SetDefaultOptions; override;
+    function MakeProject(const ProjectName, OutputDir, ExtraOptions: string;
+      ADebug: Boolean = False): Boolean; reintroduce;
+    procedure SetDefaultOptions(ADebug: Boolean); override;
     property MaxCLRVersion: string read GetMaxCLRVersion;
   end;
   {$ENDIF MSWINDOWS}
@@ -1022,14 +1027,15 @@ end;
 
 constructor TJclDCC32.Create(const ABinDirectory: string; ALongPathBug: Boolean;
   ACompilerSettingsFormat: TJclCompilerSettingsFormat; ASupportsNoConfig: Boolean;
-  const ADCPSearchPath, ALibrarySearchPath, ACppSearchPath: string);
+  const ADCPSearchPath, ALibrarySearchPath, ALibraryDebugSearchPath, ACppSearchPath: string);
 begin
   inherited Create(ABinDirectory, ALongPathBug, ACompilerSettingsFormat);
   FSupportsNoConfig := ASupportsNoConfig;
   FDCPSearchPath := ADCPSearchPath;
   FLibrarySearchPath := ALibrarySearchPath;
+  FLibraryDebugSearchPath := ALibraryDebugSearchPath;
   FCppSearchPath := ACppSearchPath;
-  SetDefaultOptions; // in case $(DELPHI)\bin\dcc32.cfg (replace as appropriate) is invalid
+  SetDefaultOptions(False); // in case $(DELPHI)\bin\dcc32.cfg (replace as appropriate) is invalid
 end;
 
 function TJclDCC32.Execute(const CommandLine: string): Boolean;
@@ -1117,7 +1123,7 @@ begin
   Result := DCC32ExeName;
 end;
 
-function TJclDCC32.MakePackage(const PackageName, BPLPath, DCPPath: string; ExtraOptions: string): Boolean;
+function TJclDCC32.MakePackage(const PackageName, BPLPath, DCPPath: string; ExtraOptions: string = ''; ADebug: Boolean = False): Boolean;
 var
   SaveDir: string;
   ConfigurationFileName, BackupFileName: string;
@@ -1131,7 +1137,7 @@ begin
       FileBackup(ConfigurationFileName, True);
 
     Options.Clear;
-    SetDefaultOptions;
+    SetDefaultOptions(ADebug);
     AddProjectOptions(PackageName, DCPPath);
     try
       AddPathOption('LN', DCPPath);
@@ -1150,7 +1156,7 @@ begin
 end;
 
 function TJclDCC32.MakeProject(const ProjectName, OutputDir, DcpSearchPath: string;
-  ExtraOptions: string): Boolean;
+  ExtraOptions: string = ''; ADebug: Boolean = False): Boolean;
 var
   SaveDir: string;
   ConfigurationFileName, BackupFileName: string;
@@ -1164,7 +1170,7 @@ begin
       FileBackup(ConfigurationFileName, True);
 
     Options.Clear;
-    SetDefaultOptions;
+    SetDefaultOptions(ADebug);
     AddProjectOptions(ProjectName, DcpSearchPath);
     try
       AddPathOption('E', OutputDir);
@@ -1181,11 +1187,13 @@ begin
   end;
 end;
 
-procedure TJclDCC32.SetDefaultOptions;
+procedure TJclDCC32.SetDefaultOptions(ADebug: Boolean);
 begin
   Options.Clear;
   if SupportsNoConfig then
     Options.Add('--no-config');
+  if ADebug then
+    AddPathOption('U', LibraryDebugSearchPath);
   AddPathOption('U', LibrarySearchPath);
   if CppSearchPath <> '' then
   begin
@@ -1232,7 +1240,7 @@ begin
 end;
 
 function TJclDCCIL.MakeProject(const ProjectName, OutputDir,
-  ExtraOptions: string): Boolean;
+  ExtraOptions: string; ADebug: Boolean = False): Boolean;
 var
   SaveDir: string;
 begin
@@ -1240,7 +1248,7 @@ begin
   SetCurrentDir(ExtractFilePath(ProjectName) + '.');
   try
     Options.Clear;
-    SetDefaultOptions;
+    SetDefaultOptions(ADebug);
     AddProjectOptions(ProjectName, '');
     AddPathOption('E', OutputDir);
     Options.Add(ExtraOptions);
@@ -1250,9 +1258,11 @@ begin
   end;
 end;
 
-procedure TJclDCCIL.SetDefaultOptions;
+procedure TJclDCCIL.SetDefaultOptions(ADebug: Boolean);
 begin
   Options.Clear;
+  if ADebug then
+    AddPathOption('U', LibraryDebugSearchPath);
   AddPathOption('U', LibrarySearchPath);
 end;
 

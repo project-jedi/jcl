@@ -1895,7 +1895,7 @@ begin
     if not (clDcc32 in CommandLineTools) then
       raise EJclBorRadException.CreateResFmt(@RsENotFound, [Dcc32ExeName]);
     FDCC32 := TJclDCC32.Create(BinFolderName, LongPathBug, CompilerSettingsFormat,
-                               SupportsNoConfig, DCPOutputPath, LibFolderName, ObjFolderName);
+                               SupportsNoConfig, DCPOutputPath, LibFolderName, LibDebugFolderName, ObjFolderName);
   end;
   Result := FDCC32;
 end;
@@ -3358,7 +3358,7 @@ begin
     if not (clDccIL in CommandLineTools) then
       raise EJclBorRadException.CreateResFmt(@RsENotFound, [DccILExeName]);
     FDCCIL := TJclDCCIL.Create(BinFolderName, LongPathBug, CompilerSettingsFormat,
-                               SupportsNoConfig, DCPOutputPath, LibFolderName, ObjFolderName);
+                               SupportsNoConfig, DCPOutputPath, LibFolderName, LibDebugFolderName, ObjFolderName);
   end;
   Result := FDCCIL;
 end;

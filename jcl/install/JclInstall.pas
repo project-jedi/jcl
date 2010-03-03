@@ -2369,7 +2369,7 @@ begin
 
     Compiler := Target.DCC32;
 
-    Compiler.SetDefaultOptions;
+    Compiler.SetDefaultOptions(Debug);
     //Options.Add('-D' + StringsToStr(Defines, ';'));
     Compiler.Options.Add('-M');   // make modified units
     Compiler.Options.Add('-$X+'); // extended syntax
@@ -2528,7 +2528,7 @@ begin
   try
     SetCurrentDir(NewDirectory);
     Target.DCC32.Options.Clear;
-    Target.DCC32.SetDefaultOptions;
+    Target.DCC32.SetDefaultOptions(False);
     Target.DCC32.AddPathOption('E', Distribution.JclBinDir);
     Target.DCC32.AddPathOption('N', '.');
     Target.DCC32.AddPathOption('U', FLibReleaseDir + DirSeparator + Distribution.JclSourcePath);
