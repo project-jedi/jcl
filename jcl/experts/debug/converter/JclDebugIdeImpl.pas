@@ -71,7 +71,6 @@ type
     FNoInsertJdbgImageIndex: Integer;
     FDeleteMapFileImageIndex: Integer;
     FNoDeleteMapFileImageIndex: Integer;
-    FCurrentProject: IOTAProject;
     FSaveBuildProjectAction: TCustomAction;
     FSaveBuildProjectActionExecute: TNotifyEvent;
     FSaveBuildAllProjectsAction: TCustomAction;
@@ -116,7 +115,7 @@ type
     function GetProjectActions(const AProject: IOTAProject): TDebugExpertActions;
   public
     constructor Create; reintroduce;
-    procedure AfterCompile(Succeeded: Boolean);
+    procedure AfterCompile(Succeeded: Boolean; const Project: IOTAProject);
     procedure BeforeCompile(const Project: IOTAProject; var Cancel: Boolean);
     procedure RegisterCommands; override;
     procedure UnregisterCommands; override;
@@ -130,9 +129,13 @@ type
     property ProjectActions[const AProject: IOTAProject]: TDebugExpertActions read GetProjectActions;
   end;
 
-  TIdeNotifier = class(TNotifierObject, IOTANotifier, IOTAIDENotifier, IOTAIDENotifier50)
+  TIdeNotifier = class(TNotifierObject, IOTANotifier, IOTAIDENotifier, IOTAIDENotifier50
+                       {$IFDEF BDS7_UP}, IOTAIDENotifier80{$ENDIF})
   private
     FDebugExtension: TJclDebugExtension;
+    {$IFNDEF BDS7_UP}
+    FCurrentProject: IOTAProject;
+    {$ENDIF ~BDS7_UP}
   public
     constructor Create(ADebugExtension: TJclDebugExtension);
     { IOTAIDENotifier }
@@ -142,6 +145,8 @@ type
     { IOTAIDENotifier50 }
     procedure BeforeCompile(const Project: IOTAProject; IsCodeInsight: Boolean; var Cancel: Boolean); overload;
     procedure AfterCompile(Succeeded: Boolean; IsCodeInsight: Boolean); overload;
+    { IOTAIDENotifier80 }
+    procedure AfterCompile(const Project: IOTAProject; Succeeded: Boolean; IsCodeInsight: Boolean); overload;
   end;
 
   {$IFDEF BDS7_UP}
@@ -233,20 +238,18 @@ uses
   JclBase, JclIDEUtils, JclDebug, JclDebugIdeResult,
   JclOtaResources;
 
+var
+  JCLWizardIndex: Integer = -1;
+
 procedure Register;
 begin
   try
     RegisterPackageWizard(TJclDebugExtension.Create);
   except
     on ExceptionObj: TObject do
-    begin
       JclExpertShowExceptionDialog(ExceptionObj);
-    end;
   end;
 end;
-
-var
-  JCLWizardIndex: Integer = -1;
 
 procedure JclWizardTerminate;
 begin
@@ -255,15 +258,12 @@ begin
       TJclOTAExpertBase.GetOTAWizardServices.RemoveWizard(JCLWizardIndex);
   except
     on ExceptionObj: TObject do
-    begin
       JclExpertShowExceptionDialog(ExceptionObj);
-    end;
   end;
 end;
 
 function JCLWizardInit(const BorlandIDEServices: IBorlandIDEServices;
-    RegisterProc: TWizardRegisterProc;
-    var TerminateProc: TWizardTerminateProc): Boolean stdcall;
+  RegisterProc: TWizardRegisterProc; var TerminateProc: TWizardTerminateProc): Boolean stdcall;
 begin
   try
     TerminateProc := JclWizardTerminate;
@@ -282,8 +282,7 @@ end;
 
 //=== { TJclDebugExtension } =================================================
 
-procedure TJclDebugExtension.ConfigurationClosed(AControl: TControl;
-  SaveChanges: Boolean);
+procedure TJclDebugExtension.ConfigurationClosed(AControl: TControl; SaveChanges: Boolean);
 begin
   if Assigned(AControl) and (AControl = FConfigFrame) then
   begin
@@ -304,8 +303,7 @@ begin
   inherited Create(JclDebugExpertRegKey);
 end;
 
-procedure TJclDebugExtension.AddConfigurationPages(
-  AddPageFunc: TJclOTAAddPageFunc);
+procedure TJclDebugExtension.AddConfigurationPages(AddPageFunc: TJclOTAAddPageFunc);
 begin
   inherited AddConfigurationPages(AddPageFunc);
   FConfigFrame := TJclDebugIdeConfigFrame.Create(nil);
@@ -315,7 +313,7 @@ begin
   AddPageFunc(FConfigFrame, LoadResString(@RsDebugConfigPageCaption), Self);
 end;
 
-procedure TJclDebugExtension.AfterCompile(Succeeded: Boolean);
+procedure TJclDebugExtension.AfterCompile(Succeeded: Boolean; const Project: IOTAProject);
 var
   ProjectFileName, MapFileName, DrcFileName, ExecutableFileName, JdbgFileName: TFileName;
   OutputDirectory, LinkerBugUnit: string;
@@ -326,24 +324,24 @@ var
 
   procedure OutputToolMessage(const Msg: string);
   begin
-    if Assigned(FCurrentProject) then
-      OTAMessageServices.AddToolMessage(FCurrentProject.FileName, Msg, LoadResString(@RsJclDebugMessagePrefix), 1, 1)
+    if Assigned(Project) then
+      OTAMessageServices.AddToolMessage(Project.FileName, Msg, LoadResString(@RsJclDebugMessagePrefix), 1, 1)
     else
       OTAMessageServices.AddToolMessage('', Msg, LoadResString(@RsJclDebugMessagePrefix), 1, 1);
   end;
 
 begin
-  if JclDisablePostCompilationProcess or (FCurrentProject = nil) then
+  if JclDisablePostCompilationProcess or (Project = nil) then
     Exit;
 
   OTAMessageServices := GetOTAMessageServices;
-  EnabledActions := GetProjectActions(FCurrentProject);
+  EnabledActions := GetProjectActions(Project);
   if EnabledActions <> [] then
   begin
-    ProjectFileName := FCurrentProject.FileName;
-    OutputDirectory := GetOutputDirectory(FCurrentProject);
-    MapFileName := GetMapFileName(FCurrentProject);
-    DrcFileName := GetDrcFileName(FCurrentProject);
+    ProjectFileName := Project.FileName;
+    OutputDirectory := GetOutputDirectory(Project);
+    MapFileName := GetMapFileName(Project);
+    DrcFileName := GetDrcFileName(Project);
     JdbgFileName := ChangeFileExt(MapFileName, JclDbgFileExtension);
 
     if Succeeded then
@@ -420,8 +418,7 @@ begin
     end
     else
       FBuildError := True;
-    FCurrentProject := nil;
-  end;
+  end
 end;
 
 procedure TJclDebugExtension.BeforeCompile(const Project: IOTAProject; var Cancel: Boolean);
@@ -456,7 +453,6 @@ begin
     end
     else
     begin
-      FCurrentProject := Project;
       ProjOptions := Project.ProjectOptions;
       if not Assigned(ProjOptions) then
         raise EJclExpertException.CreateRes(@RsENoProjectOptions);
@@ -660,9 +656,7 @@ begin
     end;
   except
     on ExceptionObj: TObject do
-    begin
       JclExpertShowExceptionDialog(ExceptionObj);
-    end;
   end;
 end;
 
@@ -686,9 +680,7 @@ begin
       AAction.ImageIndex := FNoDebugImageIndex;
   except
     on ExceptionObj: TObject do
-    begin
       JclExpertShowExceptionDialog(ExceptionObj);
-    end;
   end;
 end;
 
@@ -708,9 +700,7 @@ begin
     FDeleteMapFileItem.Checked := deDeleteMapFile in EnabledActions;
   except
     on ExceptionObj: TObject do
-    begin
       JclExpertShowExceptionDialog(ExceptionObj);
-    end;
   end;
 end;
 
@@ -757,9 +747,7 @@ begin
     end;
   except
     on ExceptionObj: TObject do
-    begin
       JclExpertShowExceptionDialog(ExceptionObj);
-    end;
   end;
 end;
 
@@ -785,9 +773,7 @@ begin
     end;
   except
     on ExceptionObj: TObject do
-    begin
       JclExpertShowExceptionDialog(ExceptionObj);
-    end;
   end;
 end;
 
@@ -803,9 +789,7 @@ begin
       GlobalStates[deDeleteMapFile] := ToggleDebugExpertState(GlobalStates[deDeleteMapFile]);
   except
     on ExceptionObj: TObject do
-    begin
       JclExpertShowExceptionDialog(ExceptionObj);
-    end;
   end;
 end;
 
@@ -832,9 +816,7 @@ begin
     end;
   except
     on ExceptionObj: TObject do
-    begin
       JclExpertShowExceptionDialog(ExceptionObj);
-    end;
   end;
 end;
 
@@ -860,9 +842,7 @@ begin
     end;
   except
     on ExceptionObj: TObject do
-    begin
       JclExpertShowExceptionDialog(ExceptionObj);
-    end;
   end;
 end;
 
@@ -889,9 +869,7 @@ begin
     end;
   except
     on ExceptionObj: TObject do
-    begin
       JclExpertShowExceptionDialog(ExceptionObj);
-    end;
   end;
 end;
 
@@ -909,9 +887,7 @@ begin
       GlobalStates[deDeleteMapFile] := AState;
   except
     on ExceptionObj: TObject do
-    begin
       JclExpertShowExceptionDialog(ExceptionObj);
-    end;
   end;
 end;
 
@@ -927,9 +903,7 @@ begin
       GlobalStates[deGenerateJdbg] := ToggleDebugExpertState(GlobalStates[deGenerateJdbg]);
   except
     on ExceptionObj: TObject do
-    begin
       JclExpertShowExceptionDialog(ExceptionObj);
-    end;
   end;
 end;
 
@@ -956,9 +930,7 @@ begin
     end;
   except
     on ExceptionObj: TObject do
-    begin
       JclExpertShowExceptionDialog(ExceptionObj);
-    end;
   end;
 end;
 
@@ -984,9 +956,7 @@ begin
     end;
   except
     on ExceptionObj: TObject do
-    begin
       JclExpertShowExceptionDialog(ExceptionObj);
-    end;
   end;
 end;
 
@@ -1013,9 +983,7 @@ begin
     end;
   except
     on ExceptionObj: TObject do
-    begin
       JclExpertShowExceptionDialog(ExceptionObj);
-    end;
   end;
 end;
 
@@ -1033,9 +1001,7 @@ begin
       GlobalStates[deGenerateJdbg] := AState;
   except
     on ExceptionObj: TObject do
-    begin
       JclExpertShowExceptionDialog(ExceptionObj);
-    end;
   end;
 end;
 
@@ -1111,9 +1077,7 @@ begin
       GlobalStates[deInsertJdbg] := ToggleDebugExpertState(GlobalStates[deInsertJdbg]);
   except
     on ExceptionObj: TObject do
-    begin
       JclExpertShowExceptionDialog(ExceptionObj);
-    end;
   end;
 end;
 
@@ -1140,9 +1104,7 @@ begin
     end;
   except
     on ExceptionObj: TObject do
-    begin
       JclExpertShowExceptionDialog(ExceptionObj);
-    end;
   end;
 end;
 
@@ -1168,9 +1130,7 @@ begin
     end;
   except
     on ExceptionObj: TObject do
-    begin
       JclExpertShowExceptionDialog(ExceptionObj);
-    end;
   end;
 end;
 
@@ -1197,9 +1157,7 @@ begin
     end;
   except
     on ExceptionObj: TObject do
-    begin
       JclExpertShowExceptionDialog(ExceptionObj);
-    end;
   end;
 end;
 
@@ -1217,9 +1175,7 @@ begin
       GlobalStates[deInsertJdbg] := AState;
   except
     on ExceptionObj: TObject do
-    begin
       JclExpertShowExceptionDialog(ExceptionObj);
-    end;
   end;
 end;
 
@@ -1572,14 +1528,29 @@ end;
 
 procedure TIdeNotifier.AfterCompile(Succeeded, IsCodeInsight: Boolean);
 begin
+  {$IFNDEF BDS7_UP}
+  try
+    try
+      if not IsCodeInsight then
+        FDebugExtension.AfterCompile(Succeeded, FCurrentProject);
+    finally
+      FCurrentProject := nil;
+    end;
+  except
+    on ExceptionObj: Exception do
+      JclExpertShowExceptionDialog(ExceptionObj);
+  end;
+  {$ENDIF ~BDS7_UP}
+end;
+
+procedure TIdeNotifier.AfterCompile(const Project: IOTAProject; Succeeded: Boolean; IsCodeInsight: Boolean);
+begin
   try
     if not IsCodeInsight then
-      FDebugExtension.AfterCompile(Succeeded);
+      FDebugExtension.AfterCompile(Succeeded, Project);
   except
-    on ExceptionObj: TObject do
-    begin
+    on ExceptionObj: Exception do
       JclExpertShowExceptionDialog(ExceptionObj);
-    end;
   end;
 end;
 
@@ -1587,12 +1558,15 @@ procedure TIdeNotifier.BeforeCompile(const Project: IOTAProject; IsCodeInsight: 
 begin
   try
     if not IsCodeInsight then
+    begin
+      {$IFNDEF BDS7_UP}
+      FCurrentProject := Project;
+      {$ENDIF ~BDS7_UP}
       FDebugExtension.BeforeCompile(Project, Cancel);
+    end;
   except
     on ExceptionObj: TObject do
-    begin
       JclExpertShowExceptionDialog(ExceptionObj);
-    end;
   end;
 end;
 
@@ -1713,9 +1687,7 @@ begin
     end;
   except
     on ExceptionObj: TObject do
-    begin
       JclExpertShowExceptionDialog(ExceptionObj);
-    end;
   end;
 end;
 
@@ -1746,9 +1718,7 @@ begin
     end;
   except
     on ExceptionObj: TObject do
-    begin
       JclExpertShowExceptionDialog(ExceptionObj);
-    end;
   end;
 end;
 
@@ -1908,9 +1878,7 @@ begin
       raise EJclExpertException.CreateRes(@RsENoActiveProject);
   except
     on ExceptionObj: TObject do
-    begin
       JclExpertShowExceptionDialog(ExceptionObj);
-    end;
   end;
 end;
 
@@ -1928,9 +1896,7 @@ begin
       raise EJclExpertException.CreateRes(@RsENoActiveProject);
   except
     on ExceptionObj: TObject do
-    begin
       JclExpertShowExceptionDialog(ExceptionObj);
-    end;
   end;
 end;
 
@@ -1948,9 +1914,7 @@ begin
       raise EJclExpertException.CreateRes(@RsENoActiveProject);
   except
     on ExceptionObj: TObject do
-    begin
       JclExpertShowExceptionDialog(ExceptionObj);
-    end;
   end;
 end;
 

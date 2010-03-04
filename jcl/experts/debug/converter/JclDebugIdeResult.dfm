@@ -18,10 +18,10 @@ object JclDebugResultForm: TJclDebugResultForm
   OldCreateOrder = False
   Position = poScreenCenter
   ShowHint = True
-  OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnKeyDown = FormKeyDown
   OnResize = FormResize
+  OnShow = FormShow
   Width = 772
   Height = 303
   PixelsPerInch = 96

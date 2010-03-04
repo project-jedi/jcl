@@ -42,7 +42,7 @@ type
     ResultListView: TListView;
     ImageList1: TImageList;
     procedure FormDestroy(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
+    procedure FormShow(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
@@ -181,7 +181,7 @@ begin
     Params.WndParent := Application.Handle;
 end;
 
-procedure TJclDebugResultForm.FormCreate(Sender: TObject);
+procedure TJclDebugResultForm.FormShow(Sender: TObject);
 var
   Index: Integer;
 begin
