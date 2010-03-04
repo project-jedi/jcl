@@ -115,7 +115,7 @@ type
     function GetProjectActions(const AProject: IOTAProject): TDebugExpertActions;
   public
     constructor Create; reintroduce;
-    procedure AfterCompile(Succeeded: Boolean; const Project: IOTAProject);
+    procedure AfterCompile(const Project: IOTAProject; Succeeded: Boolean);
     procedure BeforeCompile(const Project: IOTAProject; var Cancel: Boolean);
     procedure RegisterCommands; override;
     procedure UnregisterCommands; override;
@@ -313,7 +313,7 @@ begin
   AddPageFunc(FConfigFrame, LoadResString(@RsDebugConfigPageCaption), Self);
 end;
 
-procedure TJclDebugExtension.AfterCompile(Succeeded: Boolean; const Project: IOTAProject);
+procedure TJclDebugExtension.AfterCompile(const Project: IOTAProject; Succeeded: Boolean);
 var
   ProjectFileName, MapFileName, DrcFileName, ExecutableFileName, JdbgFileName: TFileName;
   OutputDirectory, LinkerBugUnit: string;
