@@ -1532,7 +1532,7 @@ begin
   try
     try
       if not IsCodeInsight then
-        FDebugExtension.AfterCompile(Succeeded, FCurrentProject);
+        FDebugExtension.AfterCompile(FCurrentProject, Succeeded);
     finally
       FCurrentProject := nil;
     end;
@@ -1547,7 +1547,7 @@ procedure TIdeNotifier.AfterCompile(const Project: IOTAProject; Succeeded: Boole
 begin
   try
     if not IsCodeInsight then
-      FDebugExtension.AfterCompile(Succeeded, Project);
+      FDebugExtension.AfterCompile(Project, Succeeded);
   except
     on ExceptionObj: Exception do
       JclExpertShowExceptionDialog(ExceptionObj);
