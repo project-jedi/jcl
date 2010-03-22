@@ -945,6 +945,8 @@ type
     class function VolumeAccess: TJclStreamAccess; override;
     class function ItemAccess: TJclStreamAccess; override;
 
+    destructor Destroy; override;
+    
     function AddDirectory(const PackedName: WideString;
       const DirName: string = ''; RecurseIntoDir: Boolean = False;
       AddFilesInDir: Boolean = False): Integer; overload; virtual;
@@ -4600,6 +4602,12 @@ begin
 end;
 
 //=== { TJclCompressArchive } ================================================
+
+destructor TJclCompressArchive.Destroy;
+begin
+  FPackedNames.Free;
+  inherited Destroy;
+end;
 
 function TJclCompressArchive.AddDirectory(const PackedName: WideString;
   const DirName: string; RecurseIntoDir: Boolean; AddFilesInDir: Boolean): Integer;
