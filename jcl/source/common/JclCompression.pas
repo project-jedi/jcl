@@ -3984,7 +3984,7 @@ begin
   Result := FFileName <> '';
   if Result then
   begin
-    FileHandle := CreateFile(PChar(FFileName), FILE_WRITE_ATTRIBUTES, FILE_SHARE_READ, nil, OPEN_EXISTING, 0, 0);
+    FileHandle := CreateFile(PChar(FFileName), FILE_WRITE_ATTRIBUTES, FILE_SHARE_READ, nil, OPEN_ALWAYS, 0, 0);
     try
       // creation time should be the oldest
       if ipCreationTime in FValidProperties then
