@@ -63,9 +63,7 @@ uses
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
-  {$IFNDEF SUPPORTS_UNICODE}
   JclWideStrings,
-  {$ENDIF ~SUPPORTS_UNICODE}
   SysUtils, Classes, Contnrs,
   zlibh, bzip2,
   JclBase, JclStreams;
@@ -938,7 +936,7 @@ type
     procedure InternalAddDirectory(const Directory: string);
   protected
     FCompressing: Boolean;
-    FPackedNames: {$IFDEF SUPPORTS_UNICODE}TStringList{$ELSE}TWStringList{$ENDIF};
+    FPackedNames: TJclWideStringList;
     procedure CheckNotCompressing;
     function AddFileCheckDuplicate(NewItem: TJclCompressionItem): Integer;
   public
@@ -4708,7 +4706,7 @@ begin
   begin
     if FPackedNames = nil then
     begin
-      FPackedNames := {$IFDEF SUPPORTS_UNICODE}TStringList{$ELSE}TWStringList{$ENDIF}.Create;
+      FPackedNames := TJclWideStringList.Create;
       FPackedNames.Sorted := True;
       {$IFDEF UNIX}
       FPackedNames.CaseSensitive := True;
