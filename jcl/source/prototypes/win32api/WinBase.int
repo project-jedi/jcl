@@ -29,6 +29,30 @@ const
   FILE_FLAG_FIRST_PIPE_INSTANCE = $00080000;
   {$EXTERNALSYM FILE_FLAG_FIRST_PIPE_INSTANCE}
 
+// line 2727
+type
+  _MEMORYSTATUSEX = packed record
+    dwLength: DWORD;
+    dwMemoryLoad: DWORD;
+    ullTotalPhys: Int64;
+    ullAvailPhys: Int64;
+    ullTotalPageFile: Int64;
+    ullAvailPageFile: Int64;
+    ullTotalVirtual: Int64;
+    ullAvailVirtual: Int64;
+    ullAvailExtendedVirtual: Int64;
+  end;
+  {$EXTERNALSYM _MEMORYSTATUSEX}
+
+  MEMORYSTATUSEX = _MEMORYSTATUSEX;
+  {$EXTERNALSYM MEMORYSTATUSEX}
+  LPMEMORYSTATUSEX = ^_MEMORYSTATUSEX;
+  {$EXTERNALSYM LPMEMORYSTATUSEX}
+
+  TMemoryStatusEx = _MEMORYSTATUSEX;
+
+function GlobalMemoryStatusEx(out lpBuffer: TMemoryStatusEx): BOOL; stdcall;
+
 // line 3189
   
 {$IFDEF MSWINDOWS}

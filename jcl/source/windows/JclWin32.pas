@@ -2946,9 +2946,32 @@ const
   FILE_FLAG_FIRST_PIPE_INSTANCE = $00080000;
   {$EXTERNALSYM FILE_FLAG_FIRST_PIPE_INSTANCE}
 
+// line 2727
+type
+  _MEMORYSTATUSEX = packed record
+    dwLength: DWORD;
+    dwMemoryLoad: DWORD;
+    ullTotalPhys: Int64;
+    ullAvailPhys: Int64;
+    ullTotalPageFile: Int64;
+    ullAvailPageFile: Int64;
+    ullTotalVirtual: Int64;
+    ullAvailVirtual: Int64;
+    ullAvailExtendedVirtual: Int64;
+  end;
+  {$EXTERNALSYM _MEMORYSTATUSEX}
+
+  MEMORYSTATUSEX = _MEMORYSTATUSEX;
+  {$EXTERNALSYM MEMORYSTATUSEX}
+  LPMEMORYSTATUSEX = ^_MEMORYSTATUSEX;
+  {$EXTERNALSYM LPMEMORYSTATUSEX}
+
+  TMemoryStatusEx = _MEMORYSTATUSEX;
+
+function GlobalMemoryStatusEx(out lpBuffer: TMemoryStatusEx): BOOL; stdcall;
+
 // line 3189
   
-
 
 function BackupSeek(hFile: THandle; dwLowBytesToSeek, dwHighBytesToSeek: DWORD;
   out lpdwLowByteSeeked, lpdwHighByteSeeked: DWORD;
@@ -3073,17 +3096,14 @@ procedure SetExtendedFeaturesMask(ContextEx: PCONTEXT_EX; const FeatureMask: Int
 {$EXTERNALSYM SetExtendedFeaturesMask}
 
 
-
 // From JwaAclApi
 
 // line 185
-
 
 function SetNamedSecurityInfoW(pObjectName: LPWSTR; ObjectType: SE_OBJECT_TYPE;
   SecurityInfo: SECURITY_INFORMATION; psidOwner, psidGroup: PSID;
   pDacl, pSacl: PACL): DWORD; stdcall;
 {$EXTERNALSYM SetNamedSecurityInfoW}
-
 
 const
   IMAGE_SEPARATION = (64*1024);
@@ -3113,7 +3133,6 @@ type
   PLoadedImage = PLOADED_IMAGE;
 
 // line 152
-
 
 
 function ReBaseImage(CurrentImageName: PAnsiChar; SymbolPath: PAnsiChar; fReBase: BOOL;
@@ -3168,7 +3187,6 @@ function ImageRvaToSection(NtHeaders: PImageNtHeaders; Base: Pointer; Rva: ULONG
 function ImageRvaToVa(NtHeaders: PImageNtHeaders; Base: Pointer; Rva: ULONG;
   LastRvaSection: PPImageSectionHeader): Pointer; stdcall;
 {$EXTERNALSYM ImageRvaToVa}
-
 
 
 // line 461
@@ -4559,6 +4577,7 @@ const
 //
 
 
+
 function NetUserAdd(servername: LPCWSTR; level: DWORD; buf: PByte; parm_err: LPDWORD): NET_API_STATUS; stdcall;
 {$EXTERNALSYM NetUserAdd}
 
@@ -4591,6 +4610,7 @@ function NetUserModalsSet(servername: LPCWSTR; level: DWORD; buf: PByte; parm_er
 
 function NetUserChangePassword(domainname, username, oldpassword, newpassword: LPCWSTR): NET_API_STATUS; stdcall;
 {$EXTERNALSYM NetUserChangePassword}
+
 
 
 //
@@ -4803,6 +4823,7 @@ const
 //
 
 
+
 function NetGroupAdd(servername: LPCWSTR; level: DWORD; buf: PByte; parm_err: LPDWORD): NET_API_STATUS; stdcall;
 {$EXTERNALSYM NetGroupAdd}
 
@@ -4830,6 +4851,7 @@ function NetGroupGetUsers(servername, groupname: LPCWSTR; level: DWORD; var bufp
 
 function NetGroupSetUsers(servername, groupname: LPCWSTR; level: DWORD; buf: PByte; totalentries: DWORD): NET_API_STATUS; stdcall;
 {$EXTERNALSYM NetGroupSetUsers}
+
 
 
 //
@@ -4875,6 +4897,7 @@ type
 //
 
 
+
 function NetLocalGroupAdd(servername: LPCWSTR; level: DWORD; buf: PByte; parm_err: LPDWORD): NET_API_STATUS; stdcall;
 {$EXTERNALSYM NetLocalGroupAdd}
 
@@ -4908,6 +4931,7 @@ function NetLocalGroupAddMembers(servername, groupname: LPCWSTR; level: DWORD; b
 
 function NetLocalGroupDelMembers(servername, groupname: LPCWSTR; level: DWORD; buf: PByte; totalentries: DWORD): NET_API_STATUS; stdcall;
 {$EXTERNALSYM NetLocalGroupDelMembers}
+
 
 
 //
@@ -5017,8 +5041,10 @@ type
   PLocalGroupMembersInfo3 = PLOCALGROUP_MEMBERS_INFO_3;
   {$ENDIF ~FPC}
 
+
 function NetApiBufferFree(Buffer: Pointer): NET_API_STATUS; stdcall;
 {$EXTERNALSYM NetApiBufferFree}
+
 
 (****************************************************************
  *                                                              *
@@ -5452,8 +5478,10 @@ const
  * Usage: result = Netbios( pncb );                             *
  ****************************************************************)
 
+
 function Netbios(pncb: PNCB): UCHAR; stdcall;
 {$EXTERNALSYM Netbios}
+
 
 type
   PRasDialDlg = ^TRasDialDlg;
@@ -6623,6 +6651,7 @@ type
 // line 1635
 
 
+
 function GetCalendarInfoA(Locale: LCID; Calendar: CALID; CalType: CALTYPE;
   lpCalData: LPSTR; cchData: Integer; lpValue: LPDWORD): Integer; stdcall;
 {$EXTERNALSYM GetCalendarInfoA}
@@ -6635,6 +6664,7 @@ function GetCalendarInfoW(Locale: LCID; Calendar: CALID; CalType: CALTYPE;
 function EnumCalendarInfoExW(lpCalInfoEnumProcEx: CALINFO_ENUMPROCEXW;
   Locale: LCID; Calendar: CALID; CalType: CALTYPE): BOOL; stdcall;
 {$EXTERNALSYM EnumCalendarInfoExW}
+
 
 
 {$IFNDEF FPC}
@@ -8220,6 +8250,18 @@ begin
 end;
 
 
+
+type
+  TGlobalMemoryStatusEx = function (out lpBuffer: TMemoryStatusEx): BOOL; stdcall;
+
+var
+  _GlobalMemoryStatusEx: TGlobalMemoryStatusEx = nil;
+
+function GlobalMemoryStatusEx(out lpBuffer: TMemoryStatusEx): BOOL; stdcall;
+begin
+  GetProcedureAddress(Pointer(@_GlobalMemoryStatusEx), kernel32, 'GlobalMemoryStatusEx');
+  Result := _GlobalMemoryStatusEx(lpBuffer);
+end;
 
 type
   TBackupSeek = function (hFile: THandle; dwLowBytesToSeek, dwHighBytesToSeek: DWORD;

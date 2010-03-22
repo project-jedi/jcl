@@ -1266,15 +1266,15 @@ function GetMaxAppAddress: TJclAddr;
 function GetMinAppAddress: TJclAddr;
 {$ENDIF MSWINDOWS}
 function GetMemoryLoad: Byte;
-function GetSwapFileSize: Cardinal;
+function GetSwapFileSize: Int64;
 function GetSwapFileUsage: Byte;
-function GetTotalPhysicalMemory: Cardinal;
-function GetFreePhysicalMemory: Cardinal;
+function GetTotalPhysicalMemory: Int64;
+function GetFreePhysicalMemory: Int64;
 {$IFDEF MSWINDOWS}
-function GetTotalPageFileMemory: Cardinal;
-function GetFreePageFileMemory: Cardinal;
-function GetTotalVirtualMemory: Cardinal;
-function GetFreeVirtualMemory: Cardinal;
+function GetTotalPageFileMemory: Int64;
+function GetFreePageFileMemory: Int64;
+function GetTotalVirtualMemory: Int64;
+function GetFreeVirtualMemory: Int64;
 {$ENDIF MSWINDOWS}
 
 // Alloc granularity
@@ -5179,16 +5179,17 @@ end;
 {$ENDIF UNIX}
 {$IFDEF MSWINDOWS}
 var
-  MemoryStatus: TMemoryStatus;
+  MemoryStatusEx: TMemoryStatusEx;
 begin
-  ResetMemory(MemoryStatus, SizeOf(MemoryStatus));
-  MemoryStatus.dwLength := SizeOf(MemoryStatus);
-  GlobalMemoryStatus(MemoryStatus);
-  Result := MemoryStatus.dwMemoryLoad;
+  ResetMemory(MemoryStatusEx, SizeOf(MemoryStatusEx));
+  MemoryStatusEx.dwLength := SizeOf(MemoryStatusEx);
+  if not GlobalMemoryStatusEx(MemoryStatusEx) then
+    RaiseLastOSError;
+  Result := MemoryStatusEx.dwMemoryLoad;
 end;
 {$ENDIF MSWINDOWS}
 
-function GetSwapFileSize: Cardinal;
+function GetSwapFileSize: Int64;
 {$IFDEF UNIX}
 var
   SystemInf: TSysInfo;
@@ -5203,12 +5204,13 @@ end;
 {$ENDIF UNIX}
 {$IFDEF MSWINDOWS}
 var
-  MemoryStatus: TMemoryStatus;
+  MemoryStatusEx: TMemoryStatusEx;
 begin
-  ResetMemory(MemoryStatus, SizeOf(MemoryStatus));
-  MemoryStatus.dwLength := SizeOf(MemoryStatus);
-  GlobalMemoryStatus(MemoryStatus);
-  Result := TJclAddr(MemoryStatus.dwTotalPageFile) - TJclAddr(MemoryStatus.dwAvailPageFile);
+  ResetMemory(MemoryStatusEx, SizeOf(MemoryStatusEx));
+  MemoryStatusEx.dwLength := SizeOf(MemoryStatusEx);
+  if not GlobalMemoryStatusEx(MemoryStatusEx) then
+    RaiseLastOSError;
+  Result := MemoryStatusEx.ullTotalPageFile - MemoryStatusEx.ullAvailPageFile;
 end;
 {$ENDIF MSWINDOWS}
 
@@ -5228,20 +5230,20 @@ end;
 {$ENDIF UNIX}
 {$IFDEF MSWINDOWS}
 var
-  MemoryStatus: TMemoryStatus;
+  MemoryStatusEx: TMemoryStatusEx;
 begin
-  ResetMemory(MemoryStatus, SizeOf(MemoryStatus));
-  MemoryStatus.dwLength := SizeOf(MemoryStatus);
-  GlobalMemoryStatus(MemoryStatus);
-  with MemoryStatus do
-    if dwTotalPageFile > 0 then
-      Result := 100 - Trunc(dwAvailPageFile / dwTotalPageFile * 100)
+  ResetMemory(MemoryStatusEx, SizeOf(MemoryStatusEx));
+  MemoryStatusEx.dwLength := SizeOf(MemoryStatusEx);
+  if not GlobalMemoryStatusEx(MemoryStatusEx) then
+    RaiseLastOSError;
+  if MemoryStatusEx.ullTotalPageFile > 0 then
+      Result := 100 - Trunc(MemoryStatusEx.ullAvailPageFile / MemoryStatusEx.ullTotalPageFile * 100)
     else
       Result := 0;
 end;
 {$ENDIF MSWINDOWS}
 
-function GetTotalPhysicalMemory: Cardinal;
+function GetTotalPhysicalMemory: Int64;
 {$IFDEF UNIX}
 var
   SystemInf: TSysInfo;
@@ -5256,16 +5258,17 @@ end;
 {$ENDIF UNIX}
 {$IFDEF MSWINDOWS}
 var
-  MemoryStatus: TMemoryStatus;
+  MemoryStatusEx: TMemoryStatusEx;
 begin
-  ResetMemory(MemoryStatus, SizeOf(MemoryStatus));
-  MemoryStatus.dwLength := SizeOf(MemoryStatus);
-  GlobalMemoryStatus(MemoryStatus);
-  Result := MemoryStatus.dwTotalPhys;
+  ResetMemory(MemoryStatusEx, SizeOf(MemoryStatusEx));
+  MemoryStatusEx.dwLength := SizeOf(MemoryStatusEx);
+  if not GlobalMemoryStatusEx(MemoryStatusEx) then
+    RaiseLastOSError;
+  Result := MemoryStatusEx.ullTotalPhys;
 end;
 {$ENDIF MSWINDOWS}
 
-function GetFreePhysicalMemory: Cardinal;
+function GetFreePhysicalMemory: Int64;
 {$IFDEF UNIX}
 var
   SystemInf: TSysInfo;
@@ -5280,52 +5283,57 @@ end;
 {$ENDIF UNIX}
 {$IFDEF MSWINDOWS}
 var
-  MemoryStatus: TMemoryStatus;
+  MemoryStatusEx: TMemoryStatusEx;
 begin
-  ResetMemory(MemoryStatus, SizeOf(MemoryStatus));
-  MemoryStatus.dwLength := SizeOf(MemoryStatus);
-  GlobalMemoryStatus(MemoryStatus);
-  Result := MemoryStatus.dwAvailPhys;
+  ResetMemory(MemoryStatusEx, SizeOf(MemoryStatusEx));
+  MemoryStatusEx.dwLength := SizeOf(MemoryStatusEx);
+  if not GlobalMemoryStatusEx(MemoryStatusEx) then
+    RaiseLastOSError;
+  Result := MemoryStatusEx.ullAvailPhys;
 end;
 
-function GetTotalPageFileMemory: Cardinal;
+function GetTotalPageFileMemory: Int64;
 var
-  MemoryStatus: TMemoryStatus;
+  MemoryStatusEx: TMemoryStatusEx;
 begin
-  ResetMemory(MemoryStatus, SizeOf(MemoryStatus));
-  MemoryStatus.dwLength := SizeOf(MemoryStatus);
-  GlobalMemoryStatus(MemoryStatus);
-  Result := MemoryStatus.dwTotalPageFile;
+  ResetMemory(MemoryStatusEx, SizeOf(MemoryStatusEx));
+  MemoryStatusEx.dwLength := SizeOf(MemoryStatusEx);
+  if not GlobalMemoryStatusEx(MemoryStatusEx) then
+    RaiseLastOSError;
+  Result := MemoryStatusEx.ullTotalPageFile;
 end;
 
-function GetFreePageFileMemory: Cardinal;
+function GetFreePageFileMemory: Int64;
 var
-  MemoryStatus: TMemoryStatus;
+  MemoryStatusEx: TMemoryStatusEx;
 begin
-  ResetMemory(MemoryStatus, SizeOf(MemoryStatus));
-  MemoryStatus.dwLength := SizeOf(MemoryStatus);
-  GlobalMemoryStatus(MemoryStatus);
-  Result := MemoryStatus.dwAvailPageFile;
+  ResetMemory(MemoryStatusEx, SizeOf(MemoryStatusEx));
+  MemoryStatusEx.dwLength := SizeOf(MemoryStatusEx);
+  if not GlobalMemoryStatusEx(MemoryStatusEx) then
+    RaiseLastOSError;
+  Result := MemoryStatusEx.ullAvailPageFile;
 end;
 
-function GetTotalVirtualMemory: Cardinal;
+function GetTotalVirtualMemory: Int64;
 var
-  MemoryStatus: TMemoryStatus;
+  MemoryStatusEx: TMemoryStatusEx;
 begin
-  ResetMemory(MemoryStatus, SizeOf(MemoryStatus));
-  MemoryStatus.dwLength := SizeOf(MemoryStatus);
-  GlobalMemoryStatus(MemoryStatus);
-  Result := MemoryStatus.dwTotalVirtual;
+  ResetMemory(MemoryStatusEx, SizeOf(MemoryStatusEx));
+  MemoryStatusEx.dwLength := SizeOf(MemoryStatusEx);
+  if not GlobalMemoryStatusEx(MemoryStatusEx) then
+    RaiseLastOSError;
+  Result := MemoryStatusEx.ullTotalVirtual;
 end;
 
-function GetFreeVirtualMemory: Cardinal;
+function GetFreeVirtualMemory: Int64;
 var
-  MemoryStatus: TMemoryStatus;
+  MemoryStatusEx: TMemoryStatusEx;
 begin
-  ResetMemory(MemoryStatus, SizeOf(MemoryStatus));
-  MemoryStatus.dwLength := SizeOf(MemoryStatus);
-  GlobalMemoryStatus(MemoryStatus);
-  Result := MemoryStatus.dwAvailVirtual;
+  ResetMemory(MemoryStatusEx, SizeOf(MemoryStatusEx));
+  MemoryStatusEx.dwLength := SizeOf(MemoryStatusEx);
+  if not GlobalMemoryStatusEx(MemoryStatusEx) then
+    RaiseLastOSError;
+  Result := MemoryStatusEx.ullAvailVirtual;
 end;
 
 //=== Keyboard Information ===================================================

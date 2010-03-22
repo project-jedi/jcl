@@ -1,6 +1,18 @@
 {$IFDEF MSWINDOWS}
 
 type
+  TGlobalMemoryStatusEx = function (out lpBuffer: TMemoryStatusEx): BOOL; stdcall;
+
+var
+  _GlobalMemoryStatusEx: TGlobalMemoryStatusEx = nil;
+
+function GlobalMemoryStatusEx(out lpBuffer: TMemoryStatusEx): BOOL; stdcall;
+begin
+  GetProcedureAddress(Pointer(@_GlobalMemoryStatusEx), kernel32, 'GlobalMemoryStatusEx');
+  Result := _GlobalMemoryStatusEx(lpBuffer);
+end;
+
+type
   TBackupSeek = function (hFile: THandle; dwLowBytesToSeek, dwHighBytesToSeek: DWORD;
     out lpdwLowByteSeeked, lpdwHighByteSeeked: DWORD;
     var lpContext: Pointer): BOOL; stdcall;
