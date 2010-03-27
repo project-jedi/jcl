@@ -2340,15 +2340,12 @@ begin
   Assert(FBufferSize > 0);
 
   // Initialize ZLib StreamRecord
-  with ZLibRecord do
-  begin
-    zalloc := nil; // Use build-in memory allocation functionality
-    zfree := nil;
-    next_in := nil;
-    avail_in := 0;
-    next_out := FBuffer;
-    avail_out := FBufferSize;
-  end;
+  ZLibRecord.zalloc := nil; // Use build-in memory allocation functionality
+  ZLibRecord.zfree := nil;
+  ZLibRecord.next_in := nil;
+  ZLibRecord.avail_in := 0;
+  ZLibRecord.next_out := FBuffer;
+  ZLibRecord.avail_out := FBufferSize;
 
   FWindowBits := DEF_WBITS;
   FMemLevel := DEF_MEM_LEVEL;
@@ -2500,15 +2497,12 @@ begin
   LoadZLib;
 
   // Initialize ZLib StreamRecord
-  with ZLibRecord do
-  begin
-    zalloc := nil; // Use build-in memory allocation functionality
-    zfree := nil;
-    next_in := nil;
-    avail_in := 0;
-    next_out := FBuffer;
-    avail_out := FBufferSize;
-  end;
+  ZLibRecord.zalloc := nil; // Use build-in memory allocation functionality
+  ZLibRecord.zfree := nil;
+  ZLibRecord.next_in := nil;
+  ZLibRecord.avail_in := 0;
+  ZLibRecord.next_out := FBuffer;
+  ZLibRecord.avail_out := FBufferSize;
 
   FInflateInitialized := False;
   FWindowBits := WindowBits;
@@ -3933,19 +3927,19 @@ begin
   begin
     CheckSetProperty(ipPackedName);
     if FArchive is TJclCompressArchive then
-      with FArchive as TJclCompressArchive do
+    begin
+      PackedNamesIndex := -1;
+      if (TJclCompressArchive(FArchive).FPackedNames <> nil) and
+         TJclCompressArchive(FArchive).FPackedNames.Find(FPackedName, PackedNamesIndex) then
       begin
-        PackedNamesIndex := -1;
-        if (FPackedNames <> nil) and FPackedNames.Find(FPackedName, PackedNamesIndex) then
-        begin
-          FPackedNames.Delete(PackedNamesIndex);
-          try
-            FPackedNames.Add(Value);
-          except
-            raise EJclCompressionError(Format(LoadResString(@RsCompressionDuplicate), [Value]));
-          end;
+        TJclCompressArchive(FArchive).FPackedNames.Delete(PackedNamesIndex);
+        try
+          TJclCompressArchive(FArchive).FPackedNames.Add(Value);
+        except
+          raise EJclCompressionError(Format(LoadResString(@RsCompressionDuplicate), [Value]));
         end;
       end;
+    end;
     FPackedName := Value;
     Include(FModifiedProperties, ipPackedName);
     Include(FValidProperties, ipPackedName);
