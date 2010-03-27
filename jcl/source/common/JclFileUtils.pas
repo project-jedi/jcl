@@ -3207,14 +3207,11 @@ var
   SH: SHFILEOPSTRUCT;
 begin
   ResetMemory(SH, SizeOf(SH));
-  with SH do
-  begin
-    Wnd    := 0;
-    wFunc  := FO_COPY;
-    pFrom  := PChar(PathRemoveSeparator(ExistingDirectoryName) + #0);
-    pTo    := PChar(PathRemoveSeparator(NewDirectoryName) + #0);
-    fFlags := FOF_ALLOWUNDO or FOF_NOCONFIRMATION or FOF_NOCONFIRMMKDIR or FOF_SILENT;
-  end;
+  SH.Wnd    := 0;
+  SH.wFunc  := FO_COPY;
+  SH.pFrom  := PChar(PathRemoveSeparator(ExistingDirectoryName) + #0);
+  SH.pTo    := PChar(PathRemoveSeparator(NewDirectoryName) + #0);
+  SH.fFlags := FOF_ALLOWUNDO or FOF_NOCONFIRMATION or FOF_NOCONFIRMMKDIR or FOF_SILENT;
   Result := SHFileOperation(SH) = 0;
 end;
 
@@ -3223,14 +3220,11 @@ var
   SH: SHFILEOPSTRUCT;
 begin
   ResetMemory(SH, SizeOf(SH));
-  with SH do
-  begin
-    Wnd    := 0;
-    wFunc  := FO_MOVE;
-    pFrom  := PChar(PathRemoveSeparator(ExistingDirectoryName) + #0);
-    pTo    := PChar(PathRemoveSeparator(NewDirectoryName) + #0);
-    fFlags := FOF_ALLOWUNDO or FOF_NOCONFIRMATION or FOF_NOCONFIRMMKDIR or FOF_SILENT;
-  end;
+  SH.Wnd    := 0;
+  SH.wFunc  := FO_MOVE;
+  SH.pFrom  := PChar(PathRemoveSeparator(ExistingDirectoryName) + #0);
+  SH.pTo    := PChar(PathRemoveSeparator(NewDirectoryName) + #0);
+  SH.fFlags := FOF_ALLOWUNDO or FOF_NOCONFIRMATION or FOF_NOCONFIRMMKDIR or FOF_SILENT;
   Result := SHFileOperation(SH) = 0;
 end;
 
@@ -4171,11 +4165,8 @@ end;
 function GetSizeOfFile(const FileInfo: TSearchRec): Int64;
 {$IFDEF MSWINDOWS}
 begin
-  with Int64Rec(Result) do
-  begin
-    Lo := FileInfo.FindData.nFileSizeLow;
-    Hi := FileInfo.FindData.nFileSizeHigh;
-  end;
+  Int64Rec(Result).Lo := FileInfo.FindData.nFileSizeLow;
+  Int64Rec(Result).Hi := FileInfo.FindData.nFileSizeHigh;
 end;
 {$ENDIF MSWINDOWS}
 {$IFDEF UNIX}
@@ -4695,14 +4686,13 @@ end;
 
 function FormatVersionString(const FixedInfo: TVSFixedFileInfo; VersionFormat: TFileVersionFormat): string;
 begin
-  with FixedInfo do
-    case VersionFormat of
-      vfMajorMinor:
-        Result := Format('%u.%u', [HiWord(dwFileVersionMS), LoWord(dwFileVersionMS)]);
-      vfFull:
-        Result := Format('%u.%u.%u.%u', [HiWord(dwFileVersionMS), LoWord(dwFileVersionMS),
-          HiWord(dwFileVersionLS), LoWord(dwFileVersionLS)]);
-    end;
+  case VersionFormat of
+    vfMajorMinor:
+      Result := Format('%u.%u', [HiWord(FixedInfo.dwFileVersionMS), LoWord(FixedInfo.dwFileVersionMS)]);
+    vfFull:
+      Result := Format('%u.%u.%u.%u', [HiWord(FixedInfo.dwFileVersionMS), LoWord(FixedInfo.dwFileVersionMS),
+        HiWord(FixedInfo.dwFileVersionLS), LoWord(FixedInfo.dwFileVersionLS)]);
+  end;
 end;
 
 // Version Info extracting
@@ -5078,17 +5068,16 @@ end;
 
 function TJclFileVersionInfo.GetBinFileVersion: string;
 begin
-  with FFixedInfo^ do
-    Result := Format('%u.%u.%u.%u', [HiWord(dwFileVersionMS),
-      LoWord(dwFileVersionMS), HiWord(dwFileVersionLS), LoWord(dwFileVersionLS)]);
+  Result := Format('%u.%u.%u.%u', [HiWord(FFixedInfo^.dwFileVersionMS),
+    LoWord(FFixedInfo^.dwFileVersionMS), HiWord(FFixedInfo^.dwFileVersionLS),
+    LoWord(FFixedInfo^.dwFileVersionLS)]);
 end;
 
 function TJclFileVersionInfo.GetBinProductVersion: string;
 begin
-  with FFixedInfo^ do
-    Result := Format('%u.%u.%u.%u', [HiWord(dwProductVersionMS),
-      LoWord(dwProductVersionMS), HiWord(dwProductVersionLS),
-      LoWord(dwProductVersionLS)]);
+  Result := Format('%u.%u.%u.%u', [HiWord(FFixedInfo^.dwProductVersionMS),
+    LoWord(FFixedInfo^.dwProductVersionMS), HiWord(FFixedInfo^.dwProductVersionLS),
+    LoWord(FFixedInfo^.dwProductVersionLS)]);
 end;
 
 function TJclFileVersionInfo.GetCustomFieldValue(const FieldName: string): string;
@@ -6498,11 +6487,10 @@ var
   I: Integer;
 begin
   for I := 0 to FTasks.Count - 1 do
-    with TEnumFileThread(FTasks[I]) do
-    begin
-      FNotifyOnTermination := not Silently;
-      Terminate;
-    end;
+  begin
+    TEnumFileThread(FTasks[I]).FNotifyOnTermination := not Silently;
+    TEnumFileThread(FTasks[I]).Terminate;
+  end;
 end;
 
 procedure TJclFileEnumerator.TaskTerminated(Sender: TObject);
@@ -6510,8 +6498,7 @@ begin
   FTasks.Remove(Sender);
   try
     if Assigned(FOnTerminateTask) then
-      with TEnumFileThread(Sender) do
-        FOnTerminateTask(ID, Terminated);
+      FOnTerminateTask(TEnumFileThread(Sender).ID, TEnumFileThread(Sender).Terminated);
   finally
     if FRefCount > 0 then
       _Release;
