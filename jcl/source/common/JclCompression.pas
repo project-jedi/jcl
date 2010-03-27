@@ -2059,6 +2059,12 @@ procedure Load7zFileAttribute(AInArchive: IInArchive; ItemIndex: Integer;
 procedure GetSevenzipArchiveCompressionProperties(AJclArchive: IInterface; ASevenzipArchive: IInterface);
 procedure SetSevenzipArchiveCompressionProperties(AJclArchive: IInterface; ASevenzipArchive: IInterface);
 
+
+function Create7zFile(SourceFiles: TStrings; const DestinationFile: TFileName; VolumeSize: Int64 = 0; Password: String
+    = ''; OnArchiveProgress: TJclCompressionProgressEvent = nil): Boolean; overload;
+function Create7zFile(const SourceFile, DestinationFile: TFileName; VolumeSize: Int64 = 0; Password: String = '';
+    OnArchiveProgress: TJclCompressionProgressEvent = nil): Boolean; overload;
+
 {$ENDIF MSWINDOWS}
 
 {$IFDEF UNITVERSIONING}
@@ -5756,6 +5762,69 @@ begin
     end;
     if Length(PropNames) > 0 then
       SevenZipCheck(PropertySetter.SetProperties(@PropNames[0], @PropValues[0], Length(PropNames)));
+  end;
+end;
+
+function Create7zFile(SourceFiles: TStrings; const DestinationFile: TFileName; VolumeSize: Int64 = 0; Password: String
+    = ''; OnArchiveProgress: TJclCompressionProgressEvent = nil): Boolean;
+var
+  ArchiveFileName: string;
+  SourceFile : String;
+  AFormat: TJclUpdateArchiveClass;
+  Archive : TJclCompressionArchive;
+  i: Integer;
+  InnerList : tStringList;
+  j: Integer;
+begin
+  Result := False;
+  ArchiveFileName := DestinationFile;
+
+  AFormat := GetArchiveFormats.FindUpdateFormat(ArchiveFileName);
+
+  if AFormat <> nil then
+  begin
+
+    if VolumeSize <> 0 then
+      ArchiveFileName := ArchiveFileName + '.%.3d';
+
+    Archive := AFormat.Create(ArchiveFileName, VolumeSize, VolumeSize <> 0);
+    try
+      Archive.Password := Password;
+      Archive.OnProgress := OnArchiveProgress;
+
+      InnerList := tStringList.Create;
+      try
+        for i := 0 to SourceFiles.Count - 1 do
+        begin
+          InnerList.Clear;
+          BuildFileList(SourceFiles[i], faAnyFile, InnerList, True);
+          for j := 0 to InnerList.Count - 1 do
+          begin
+            SourceFile:=InnerList[j];
+            (Archive as TJclCompressArchive).AddFile(ExtractFileName(SourceFile), SourceFile);
+            Result := True;
+          end;
+        end;
+      finally
+        InnerList.Free;
+      end;
+      (Archive as TJclCompressArchive).Compress;
+    finally
+      Archive.Free;
+    end;
+  end;
+end;
+
+function Create7zFile(const SourceFile, DestinationFile: TFileName; VolumeSize: Int64 = 0; Password: String = '';
+    OnArchiveProgress: TJclCompressionProgressEvent = nil): Boolean;
+var SourceFiles : TStringList;
+begin
+  SourceFiles := TStringList.Create;
+  try
+    SourceFiles.Add(SourceFile);
+    Result := Create7zFile(SourceFiles, DestinationFile, VolumeSize, Password, OnArchiveProgress);
+  finally
+    SourceFiles.Free;
   end;
 end;
 
