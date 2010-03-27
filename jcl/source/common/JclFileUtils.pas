@@ -172,7 +172,8 @@ type
   TFileHandlerEx = procedure (const Directory: string; const FileInfo: TSearchRec) of object;
   TFileInfoHandlerEx = procedure (const FileInfo: TSearchRec) of object;
 
-function BuildFileList(const Path: string; const Attr: Integer; const List: TStrings): Boolean;
+function BuildFileList(const Path: string; const Attr: Integer; const List: TStrings; IncludeDirectoryName: Boolean =
+    False): Boolean;
 function AdvBuildFileList(const Path: string; const Attr: Integer; const Files: TStrings;
   const AttributeMatch: TJclAttributeMatch = amSuperSetOf; const Options: TFileListOptions = [];
   const SubfoldersMask: string = ''; const FileMatchFunc: TFileMatchFunc = nil): Boolean;
@@ -3099,8 +3100,8 @@ end;
    FileMask Seperator = ';'
  *}
 
-function BuildFileList(const Path: string; const Attr: Integer;
-  const List: TStrings): Boolean;
+function BuildFileList(const Path: string; const Attr: Integer; const List: TStrings; IncludeDirectoryName: Boolean =
+    False): Boolean;
 var
   SearchRec: TSearchRec;
   IndexMask: Integer;
@@ -3139,7 +3140,10 @@ begin
             and ((SearchRec.Attr and Attr) = (SearchRec.Attr and faAnyFile))
             and IsFileNameMatch(SearchRec.Name, MaskList.Strings[IndexMask]) then
         begin
-          List.Add(SearchRec.Name);
+          if IncludeDirectoryName then
+            List.Add(Directory+SearchRec.Name)
+          else
+            List.Add(SearchRec.Name);
           Break;
         end;
 
