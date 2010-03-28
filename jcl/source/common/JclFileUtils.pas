@@ -712,8 +712,9 @@ type
 function OSIdentToString(const OSIdent: DWORD): string;
 function OSFileTypeToString(const OSFileType: DWORD; const OSFileSubType: DWORD = 0): string;
 
-function VersionResourceAvailable(const FileName: string): Boolean;
-
+function VersionResourceAvailable(const FileName: string): Boolean; Overload;
+function VersionResourceAvailable(const Window: HWND): Boolean; Overload;
+function VersionResourceAvailable(const Module: HMODULE): Boolean; Overload;
 {$ENDIF MSWINDOWS}
 
 // Version Info formatting
@@ -4667,6 +4668,72 @@ begin
     SetLength(Buffer, Size);
     Result := GetFileVersionInfo(PChar(FileName), Handle, Size, PChar(Buffer));
   end;
+end;
+
+function VersionResourceAvailable(const Window: HWND): Boolean;
+type
+  {$IFDEF SUPPORTS_UNICODE}
+  TGetModuleFileNameEx =function(hProcess: THandle; hModule: HMODULE; FileName: PWideChar; nSize: DWORD): DWORD; stdcall;
+  {$ELSE ~SUPPORTS_UNICODE}
+  TGetModuleFileNameEx =function(hProcess: THandle; hModule: HMODULE; FileName: PAnsiChar; nSize: DWORD): DWORD; stdcall;
+  {$ENDIF ~SUPPORTS_UNICODE}
+var
+  FileName: array[0..300] of Char;
+  DllHinst: HMODULE;
+  ProcessID: DWORD;
+  HProcess: THandle;
+  GetModuleFileNameExAddress: TGetModuleFileNameEx;
+begin
+result :=false;
+        if Window <>0 then
+        begin
+                       Windows.GetWindowThreadProcessId(Window, @ProcessID);
+    hProcess := Windows.OpenProcess(PROCESS_QUERY_INFORMATION or PROCESS_VM_READ, false, ProcessID);
+    if hProcess <> 0 then
+    begin
+      if GetWindowsVersion() < WVWin2000 then
+        raise EJclWin32Error.CreateRes(@RsEWindowsVersionNotSupported)
+      else
+      begin
+        DllHinst := LoadLibrary('Psapi.dll');
+        if DllHinst < HINSTANCE_ERROR then
+        begin
+          try
+            {$IFDEF SUPPORTS_UNICODE}
+            GetModuleFileNameExAddress := GetProcAddress(DllHinst, 'GetModuleFileNameExW');
+            {$ELSE ~SUPPORTS_UNICODE}
+            GetModuleFileNameExAddress := GetProcAddress(DllHinst, 'GetModuleFileNameExA');
+            {$ENDIF ~SUPPORTS_UNICODE}
+            if Assigned(GetModuleFileNameExAddress) then
+            begin
+              GetModuleFileNameExAddress(hProcess, 0, FileName, sizeof(FileName));
+result :=VersionResourceAvailable(FileName);
+            end
+            else
+            begin
+              raise EJclError.CreateResFmt(@RsEFunctionNotFound, ['Psapi.dll', 'GetModuleFileNameEx']);
+            end
+          finally
+            FreeLibrary(DllHinst);
+          end;
+        end
+        else
+          raise EJclError.CreateResFmt(@RsELibraryNotFound, ['Psapi.dll']);
+      end;
+    end
+    else
+      raise EJclError.CreateResFmt(@RsEProcessNotValid, [ProcessID]);
+        end
+          else
+    raise EJclError.CreateResFmt(@RsEWindowNotValid, [Window]);
+        end;
+
+ function VersionResourceAvailable(const Module: HMODULE): Boolean;
+begin
+if Module <> 0 then
+                   result :=VersionResourceAvailable(GetModulePath(Module))
+                   else
+    raise EJclError.CreateResFmt(@RsEModuleNotValid, [Module]);
 end;
 
 {$ENDIF MSWINDOWS}
