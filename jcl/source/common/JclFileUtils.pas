@@ -4684,10 +4684,10 @@ var
   HProcess: THandle;
   GetModuleFileNameExAddress: TGetModuleFileNameEx;
 begin
-result :=false;
-        if Window <>0 then
-        begin
-                       Windows.GetWindowThreadProcessId(Window, @ProcessID);
+  Result := False;
+  if Window <> 0 then
+  begin
+    Windows.GetWindowThreadProcessId(Window, @ProcessID);
     hProcess := Windows.OpenProcess(PROCESS_QUERY_INFORMATION or PROCESS_VM_READ, false, ProcessID);
     if hProcess <> 0 then
     begin
@@ -4707,7 +4707,7 @@ result :=false;
             if Assigned(GetModuleFileNameExAddress) then
             begin
               GetModuleFileNameExAddress(hProcess, 0, FileName, sizeof(FileName));
-result :=VersionResourceAvailable(FileName);
+              Result :=VersionResourceAvailable(FileName);
             end
             else
             begin
@@ -4723,16 +4723,16 @@ result :=VersionResourceAvailable(FileName);
     end
     else
       raise EJclError.CreateResFmt(@RsEProcessNotValid, [ProcessID]);
-        end
-          else
+  end
+  else
     raise EJclError.CreateResFmt(@RsEWindowNotValid, [Window]);
-        end;
+end;
 
- function VersionResourceAvailable(const Module: HMODULE): Boolean;
+function VersionResourceAvailable(const Module: HMODULE): Boolean;
 begin
-if Module <> 0 then
-                   result :=VersionResourceAvailable(GetModulePath(Module))
-                   else
+  if Module <> 0 then
+    Result :=VersionResourceAvailable(GetModulePath(Module))
+  else
     raise EJclError.CreateResFmt(@RsEModuleNotValid, [Module]);
 end;
 
