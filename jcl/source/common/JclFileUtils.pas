@@ -4689,8 +4689,10 @@ function WindowToModuleFileName(const Window: HWND): string;
 type
   {$IFDEF SUPPORTS_UNICODE}
   TGetModuleFileNameEx = function(hProcess: THandle; hModule: HMODULE; FileName: PWideChar; nSize: DWORD): DWORD; stdcall;
+  TQueryFullProcessImageName = function(HProcess: THandle; dwFlags: DWORD; lpExeName: PWideChar; lpdwSize: PDWORD): integer; stdcall;
   {$ELSE ~SUPPORTS_UNICODE}
   TGetModuleFileNameEx = function(hProcess: THandle; hModule: HMODULE; FileName: PAnsiChar; nSize: DWORD): DWORD; stdcall;
+  TQueryFullProcessImageName = function(HProcess: THandle; dwFlags: DWORD; lpExeName: PAnsiChar; lpdwSize: PDWORD): integer; stdcall;
   {$ENDIF ~SUPPORTS_UNICODE}
 var
   FileName: array[0..300] of Char;
@@ -4698,6 +4700,7 @@ var
   ProcessID: DWORD;
   HProcess: THandle;
   GetModuleFileNameExAddress: TGetModuleFileNameEx;
+  QueryFullProcessImageNameAddress: TQueryFullProcessImageName;
 begin
   Result := '';
   if Window <> 0 then
@@ -4708,6 +4711,33 @@ begin
     begin
       if GetWindowsVersion() < WVWin2000 then
         raise EJclWin32Error.CreateRes(@RsEWindowsVersionNotSupported)
+      else if GetWindowsVersion >=WvWinVista then
+      begin
+        DllHinst := LoadLibrary('Kernel32.dll');
+        if DllHinst < HINSTANCE_ERROR then
+        begin
+          try
+            {$IFDEF SUPPORTS_UNICODE}
+            QueryFullProcessImageNameAddress := GetProcAddress(DllHinst, 'QueryFullProcessImageNameW');
+            {$ELSE ~SUPPORTS_UNICODE}
+            QueryFullProcessImageNameAddress := GetProcAddress(DllHinst, 'QueryFullProcessImageNameA');
+            {$ENDIF ~SUPPORTS_UNICODE}
+            if Assigned(QueryFullProcessImageNameAddress) then
+            begin
+              QueryFullProcessImageNameAddress(hProcess, 0, FileName, PDWORD(sizeof(FileName)));
+              Result := FileName;
+            end
+            else
+            begin
+              raise EJclError.CreateResFmt(@RsEFunctionNotFound, ['Kernel32.dll', 'QueryFullProcessImageName']);
+            end
+          finally
+            FreeLibrary(DllHinst);
+          end;
+        end
+        else
+          raise EJclError.CreateResFmt(@RsELibraryNotFound, ['Kernel32.dll']);
+      end
       else
       begin
         DllHinst := LoadLibrary('Psapi.dll');
