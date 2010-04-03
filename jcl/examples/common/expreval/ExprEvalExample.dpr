@@ -4,7 +4,7 @@ program ExprEvalExample;
 
 uses
   Forms,
-  ExprEvalExampleMain in 'ExprEvalExampleMain.pas' {Form1},
+  ExprEvalExampleMain in 'ExprEvalExampleMain.pas' {ExprEvalForm},
   JclExprEval in '..\..\..\source\common\JclExprEval.pas',
   JclStrHashMap in '..\..\..\source\common\JclStrHashMap.pas',
   ExprEvalExampleLogic in 'ExprEvalExampleLogic.pas';
@@ -14,6 +14,6 @@ uses
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TExprEvalForm, ExprEvalForm);
   Application.Run;
 end.
