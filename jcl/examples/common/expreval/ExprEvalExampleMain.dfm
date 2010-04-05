@@ -13,9 +13,6 @@ object ExprEvalForm: TExprEvalForm
   OldCreateOrder = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  DesignSize = (
-    479
-    321)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
