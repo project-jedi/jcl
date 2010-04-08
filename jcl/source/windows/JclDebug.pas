@@ -1404,7 +1404,7 @@ var
     end;
   end;
 
-  function ReadHexValue: Integer;
+  function ReadHexValue: DWORD;
   var
     C: Char;
   begin
