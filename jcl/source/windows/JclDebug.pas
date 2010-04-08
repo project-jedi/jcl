@@ -224,7 +224,7 @@ type
     FProcNamesCnt: Integer;
     FSegmentCnt: Integer;
   protected
-    function AddrToVA(const Addr: DWORD): DWORD;
+    function MAPAddrToVA(const Addr: DWORD): DWORD;
     procedure ClassTableItem(const Address: TJclMapAddress; Len: Integer; SectionName, GroupName: PJclMapString); override;
     procedure SegmentItem(const Address: TJclMapAddress; Len: Integer; GroupName, UnitName: PJclMapString); override;
     procedure PublicsByNameItem(const Address: TJclMapAddress; Name: PJclMapString); override;
@@ -1654,17 +1654,17 @@ begin
   Scan;
 end;
 
-function TJclMapScanner.AddrToVA(const Addr: DWORD): DWORD;
+function TJclMapScanner.MAPAddrToVA(const Addr: DWORD): DWORD;
 begin
   // MAP file format was changed in Delphi 2005
   // before Delphi 2005: segments started at offset 0
   //                     only one segment of code
   // after Delphi 2005: segments started at code base address (module base address + $10000)
   //                    2 segments of code
-  if (Length(FSegmentClasses) > 0) and (FSegmentClasses[0].Start > 0) and (Addr > FSegmentClasses[0].Addr) then
+  if (Length(FSegmentClasses) > 0) and (FSegmentClasses[0].Start > 0) and (Addr > FSegmentClasses[0].Start) then
     // Delphi 2005 and later
     // The first segment should be code starting at module base address + $10000
-    Result := Addr - FSegmentClasses[0].Addr
+    Result := Addr - FSegmentClasses[0].Start
   else
     // before Delphi 2005
     Result := Addr;
@@ -1681,7 +1681,7 @@ begin
   FSegmentClasses[C].Segment := Address.Segment;
   FSegmentClasses[C].Start := Address.Offset;
   FSegmentClasses[C].Addr := Address.Offset; // will be fixed below while considering module mapped address
-  FSegmentClasses[C].VA := AddrToVA(Address.Offset);
+  FSegmentClasses[C].VA := MAPAddrToVA(FSegmentClasses[C].Start);
   FSegmentClasses[C].Len := Len;
   FSegmentClasses[C].SectionName := SectionName;
   FSegmentClasses[C].GroupName := GroupName;
@@ -1741,7 +1741,7 @@ begin
     if (FSegmentClasses[SegIndex].Segment = Address.Segment)
       and (DWORD(Address.Offset) < FSegmentClasses[SegIndex].Len) then
   begin
-    VA := AddrToVA(Address.Offset + FSegmentClasses[SegIndex].Addr);
+    VA := MAPAddrToVA(Address.Offset + FSegmentClasses[SegIndex].Start);
     { Starting with Delphi 2005, "empty" units are listes with the last line and
       the VA 0001:00000000. When we would accept 0 VAs here, System.pas functions
       could be mapped to other units and line numbers. Discaring such items should
@@ -1846,7 +1846,7 @@ begin
     if FProcNamesCnt mod 256 = 0 then
       SetLength(FProcNames, FProcNamesCnt + 256);
     FProcNames[FProcNamesCnt].Segment := FSegmentClasses[SegIndex].Segment;
-    FProcNames[FProcNamesCnt].VA := AddrToVA(Address.Offset + FSegmentClasses[SegIndex].Addr);
+    FProcNames[FProcNamesCnt].VA := MAPAddrToVA(Address.Offset + FSegmentClasses[SegIndex].Start);
     FProcNames[FProcNamesCnt].ProcName := Name;
     Inc(FProcNamesCnt);
     Break;
@@ -1893,7 +1893,7 @@ begin
     if (FSegmentClasses[SegIndex].Segment = Address.Segment)
       and (DWORD(Address.Offset) < FSegmentClasses[SegIndex].Len) then
   begin
-    VA := AddrToVA(Address.Offset + FSegmentClasses[SegIndex].Addr);
+    VA := MAPAddrToVA(Address.Offset + FSegmentClasses[SegIndex].Start);
     if FSegmentCnt mod 16 = 0 then
       SetLength(FSegments, FSegmentCnt + 16);
     FSegments[FSegmentCnt].Segment := FSegmentClasses[SegIndex].Segment;
