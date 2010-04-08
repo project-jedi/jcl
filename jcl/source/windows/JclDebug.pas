@@ -180,10 +180,11 @@ type
   // MAP file scanner
   PJclMapSegmentClass = ^TJclMapSegmentClass;
   TJclMapSegmentClass = record
-    Segment: Word;
-    Addr: DWORD;
-    VA: DWORD;
-    Len: DWORD;
+    Segment: Word; // segment ID
+    Start: DWORD;  // start as in the map file
+    Addr: DWORD;   // start as in process memory
+    VA: DWORD;     // position relative to module base adress
+    Len: DWORD;    // segment length
     SectionName: PJclMapString;
     GroupName: PJclMapString;
   end;
@@ -1660,7 +1661,7 @@ begin
   //                     only one segment of code
   // after Delphi 2005: segments started at code base address (module base address + $10000)
   //                    2 segments of code
-  if (Length(FSegmentClasses) > 0) and (FSegmentClasses[0].Addr > 0) and (Addr > 0) then
+  if (Length(FSegmentClasses) > 0) and (FSegmentClasses[0].Start > 0) and (Addr > FSegmentClasses[0].Addr) then
     // Delphi 2005 and later
     // The first segment should be code starting at module base address + $10000
     Result := Addr - FSegmentClasses[0].Addr
@@ -1678,7 +1679,8 @@ begin
   C := Length(FSegmentClasses);
   SetLength(FSegmentClasses, C + 1);
   FSegmentClasses[C].Segment := Address.Segment;
-  FSegmentClasses[C].Addr := Address.Offset;
+  FSegmentClasses[C].Start := Address.Offset;
+  FSegmentClasses[C].Addr := Address.Offset; // will be fixed below while considering module mapped address
   FSegmentClasses[C].VA := AddrToVA(Address.Offset);
   FSegmentClasses[C].Len := Len;
   FSegmentClasses[C].SectionName := SectionName;
