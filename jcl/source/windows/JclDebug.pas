@@ -539,7 +539,7 @@ procedure ClearLocationData;
 
 function FileByLevel(const Level: Integer = 0): string;
 function ModuleByLevel(const Level: Integer = 0): string;
-function ProcByLevel(const Level: Integer = 0): string;
+function ProcByLevel(const Level: Integer = 0; OnlyProcedureName: boolean =false): string;
 function LineByLevel(const Level: Integer = 0): Integer;
 function MapByLevel(const Level: Integer; var File_, Module_, Proc_: string; var Line_: Integer): Boolean;
 
@@ -4097,12 +4097,17 @@ begin
   Result := GetLocationInfo(Caller(Level + 1)).UnitName;
 end;
 
-function ProcByLevel(const Level: Integer): string;
+function ProcByLevel(const Level: Integer; OnlyProcedureName: boolean): string;
 begin
   Result := GetLocationInfo(Caller(Level + 1)).ProcedureName;
+  if OnlyProcedureName = true then
+  begin
+    if StrILastPos('.', Result) > 0 then
+      Result :=StrRestOf(Result, StrILastPos('.', Result)+1);
+  end;
 end;
 
-function LineByLevel(const Level: Integer): Integer;
+  function LineByLevel(const Level: Integer): Integer;
 begin
   Result := GetLocationInfo(Caller(Level + 1)).LineNumber;
 end;
