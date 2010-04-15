@@ -2817,17 +2817,17 @@ var
       HeaderCRC := crc32(HeaderCRC, @Byte(Buffer), SizeOfBuffer);
   end;
 
-  function ReadCString: string;
+  function ReadCString: AnsiString;
   var
-    Dummy: Char;
+    Buf: AnsiChar;
   begin
     Result := '';
+    Buf := #0;
     repeat
-      Dummy := #0;
-      Source.ReadBuffer(Dummy, SizeOf(Dummy));
-      Result := Result + Dummy;
-    until Dummy = #0;
-    SetLength(Result, Length(Result) - 1);
+      Source.ReadBuffer(Buf, SizeOf(Buf));
+      if Buf = #0 then Break;
+      Result := Result + Buf;
+    until False;
   end;
 
 begin
@@ -2855,7 +2855,7 @@ begin
   end;
 
   if (FHeader.Flags and JCL_GZIP_FLAG_NAME) <> 0 then
-    FOriginalFileName := ReadCString;
+    FOriginalFileName := TFileName(ReadCString);
   if (FHeader.Flags and JCL_GZIP_FLAG_COMMENT) <> 0 then
     FComment := ReadCString;
 
