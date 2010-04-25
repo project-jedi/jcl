@@ -98,7 +98,7 @@ The dates are presented according to the ISO standard (YYYY-MM-DD) and the hours
 Should you have any problems with those files, please do not hesitate
 to contact us on our newsgroup here:<br>
 <br>
-<a href="news://forums.talkto.net/jedi.jcl">news://forums.talkto.net/jedi.jcl</a><br>
+<a href="news://news.delphi-jedi.org/jedi.jcl">news://news.delphi-jedi.org/jedi.jcl</a><br>
 <br>
 Thank you for considering the JCL.<br>
 <br>
