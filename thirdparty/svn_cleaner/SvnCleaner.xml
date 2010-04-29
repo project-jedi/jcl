@@ -418,7 +418,9 @@
         <value>*.dcu</value>
         <value>CaseFolding.txt</value>
         <value>SpecialCasing.txt</value>
+        <value>DerivedNormalizationProps.txt</value>
         <value>UnicodeData.txt</value>
+        <value>PropList.txt</value>
         <value>UDExtract.exe</value>
         <value>JclUnicode.rc</value>
       </property>

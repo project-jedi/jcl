@@ -262,7 +262,7 @@ type
     ccRightToLeft,
     ccRightToLeftArabic,
     ccRightToLeftEmbedding,
-    ccRightToLeftoverride,
+    ccRightToLeftOverride,
     ccPopDirectionalFormat,
     ccEuropeanNumber,
     ccEuropeanNumberSeparator,
@@ -271,17 +271,46 @@ type
     ccCommonNumberSeparator,
     ccBoundaryNeutral,
     ccSegmentSeparator,      // this includes tab and vertical tab
-    ccWhiteSpace,
+    ccWhiteSpace,            // Separator characters and control characters which should be treated by programming languages as "white space" for the purpose of parsing elements.
     ccOtherNeutrals,
     // self defined categories, they do not appear in the Unicode data file
     ccComposed,              // can be decomposed
     ccNonBreaking,
     ccSymmetric,             // has left and right forms
-    ccHexDigit,
-    ccQuotationMark,
+    ccHexDigit,              // Characters commonly used for the representation of hexadecimal numbers, plus their compatibility equivalents.
+    ccQuotationMark,         // Punctuation characters that function as quotation marks.
     ccMirroring,
     ccSpaceOther,
-    ccAssigned               // means there is a definition in the Unicode standard
+    ccAssigned,              // means there is a definition in the Unicode standard
+    ccASCIIHexDigit,         // ASCII characters commonly used for the representation of hexadecimal numbers
+    ccBidiControl,           // Format control characters which have specific functions in the Unicode Bidirectional Algorithm [UAX9].
+    ccDash,                  // Punctuation characters explicitly called out as dashes in the Unicode Standard, plus their compatibility equivalents. Most of these have the General_Category value Pd, but some have the General_Category value Sm because of their use in mathematics.
+    ccDeprecated,            // For a machine-readable list of deprecated characters. No characters will ever be removed from the standard, but the usage of deprecated characters is strongly discouraged.
+    ccDiacritic,             //	Characters that linguistically modify the meaning of another character to which they apply. Some diacritics are not combining characters, and some combining characters are not diacritics.
+    ccExtender,              // Characters whose principal function is to extend the value or shape of a preceding alphabetic character. Typical of these are length and iteration marks.
+    ccHyphen,                // Dashes which are used to mark connections between pieces of words, plus the Katakana middle dot. The Katakana middle dot functions like a hyphen, but is shaped like a dot rather than a dash.
+    ccIdeographic,           // Characters considered to be CJKV (Chinese, Japanese, Korean, and Vietnamese) ideographs.
+    ccIDSBinaryOperator,     // Used in Ideographic Description Sequences.
+    ccIDSTrinaryOperator,    // Used in Ideographic Description Sequences.
+    ccJoinControl,           // Format control characters which have specific functions for control of cursive joining and ligation.
+    ccLogicalOrderException, // There are a small number of characters that do not use logical order. These characters require special handling in most processing.
+    ccNonCharacterCodePoint, // Code points permanently reserved for internal use.
+    ccOtherAlphabetic,       // Used in deriving the Alphabetic property.
+    ccOtherDefaultIgnorableCodePoint, // Used in deriving the Default_Ignorable_Code_Point property.
+    ccOtherGraphemeExtend,   // Used in deriving  the Grapheme_Extend property.
+    ccOtherIDContinue,       // Used for backward compatibility of ID_Continue.
+    ccOtherIDStart,          // Used for backward compatibility of ID_Start.
+    ccOtherLowercase,        // Used in deriving the Lowercase property.
+    ccOtherMath,             // Used in deriving the Math property.
+    ccOtherUppercase,        //	Used in deriving the Uppercase property.
+    ccPatternSyntax,         // Used for pattern syntax as described in UAX #31: Unicode Identifier and Pattern Syntax [UAX31].
+    ccPatternWhiteSpace,
+    ccRadical,               // Used in Ideographic Description Sequences.
+    ccSoftDotted,            // Characters with a "soft dot", like i or j. An accent placed on these characters causes the dot to disappear. An explicit dot above can be added where required, such as in Lithuanian.
+    ccSTerm,                 // Sentence Terminal. Used in UAX #29: Unicode Text Segmentation [UAX29].
+    ccTerminalPunctuation,   // Punctuation characters that generally mark the end of textual units.
+    ccUnifiedIdeograph,      // Used in Ideographic Description Sequences.
+    ccVariationSelector     // Indicates characters that are Variation Selectors. For details on the behavior of these characters, see StandardizedVariants.html, Section 16.4, "Variation Selectors" in [Unicode], and the Unicode Ideographic Variation Database [UTS37].
   );
   TCharacterCategories = set of TCharacterCategory;
 
@@ -1171,6 +1200,7 @@ function UnicodeToTitle(Code: UCS4): TUCS4Array;
 function UnicodeIsAlpha(C: UCS4): Boolean;
 function UnicodeIsDigit(C: UCS4): Boolean;
 function UnicodeIsAlphaNum(C: UCS4): Boolean;
+function UnicodeIsNumberOther(C: UCS4): Boolean;
 function UnicodeIsCased(C: UCS4): Boolean;
 function UnicodeIsControl(C: UCS4): Boolean;
 function UnicodeIsSpace(C: UCS4): Boolean;
@@ -1228,6 +1258,59 @@ function UnicodeIsDefined(C: UCS4): Boolean;
 function UnicodeIsUndefined(C: UCS4): Boolean;
 function UnicodeIsHan(C: UCS4): Boolean;
 function UnicodeIsHangul(C: UCS4): Boolean;
+
+function UnicodeIsSeparatorLine(C: UCS4): Boolean;
+function UnicodeIsSeparatorParagraph(C: UCS4): Boolean;
+function UnicodeIsUnassigned(C: UCS4): Boolean;
+function UnicodeIsLetterModifier(C: UCS4): Boolean;
+function UnicodeIsLetterOther(C: UCS4): Boolean;
+function UnicodeIsPunctuationOther(C: UCS4): Boolean;
+function UnicodeIsSymbolModifier(C: UCS4): Boolean;
+function UnicodeIsSymbolOther(C: UCS4): Boolean;
+function UnicodeIsLeftToRightEmbedding(C: UCS4): Boolean;
+function UnicodeIsLeftToRightOverride(C: UCS4): Boolean;
+function UnicodeIsRightToLeftArabic(C: UCS4): Boolean;
+function UnicodeIsRightToLeftEmbedding(C: UCS4): Boolean;
+function UnicodeIsRightToLeftOverride(C: UCS4): Boolean;
+function UnicodeIsPopDirectionalFormat(C: UCS4): Boolean;
+function UnicodeIsEuropeanNumber(C: UCS4): Boolean;
+function UnicodeIsEuropeanNumberSeparator(C: UCS4): Boolean;
+function UnicodeIsEuropeanNumberTerminator(C: UCS4): Boolean;
+function UnicodeIsArabicNumber(C: UCS4): Boolean;
+function UnicodeIsCommonNumberSeparator(C: UCS4): Boolean;
+function UnicodeIsBoundaryNeutral(C: UCS4): Boolean;
+function UnicodeIsSegmentSeparator(C: UCS4): Boolean;
+function UnicodeIsOtherNeutrals(C: UCS4): Boolean;
+function UnicodeIsSpaceOther(C: UCS4): Boolean;
+function UnicodeIsAssigned(C: UCS4): Boolean;
+function UnicodeIsASCIIHexDigit(C: UCS4): Boolean;
+function UnicodeIsBidiControl(C: UCS4): Boolean;
+function UnicodeIsDeprecated(C: UCS4): Boolean;
+function UnicodeIsDiacritic(C: UCS4): Boolean;
+function UnicodeIsExtender(C: UCS4): Boolean;
+function UnicodeIsHyphen(C: UCS4): Boolean;
+function UnicodeIsIdeographic(C: UCS4): Boolean;
+function UnicodeIsIDSBinaryOperator(C: UCS4): Boolean;
+function UnicodeIsIDSTrinaryOperator(C: UCS4): Boolean;
+function UnicodeIsJoinControl(C: UCS4): Boolean;
+function UnicodeIsLogicalOrderException(C: UCS4): Boolean;
+function UnicodeIsNonCharacterCodePoint(C: UCS4): Boolean;
+function UnicodeIsOtherAlphabetic(C: UCS4): Boolean;
+function UnicodeIsOtherDefaultIgnorableCodePoint(C: UCS4): Boolean;
+function UnicodeIsOtherGraphemeExtend(C: UCS4): Boolean;
+function UnicodeIsOtherIDContinue(C: UCS4): Boolean;
+function UnicodeIsOtherIDStart(C: UCS4): Boolean;
+function UnicodeIsOtherLowercase(C: UCS4): Boolean;
+function UnicodeIsOtherMath(C: UCS4): Boolean;
+function UnicodeIsOtherUppercase(C: UCS4): Boolean;
+function UnicodeIsPatternSyntax(C: UCS4): Boolean;
+function UnicodeIsPatternWhiteSpace(C: UCS4): Boolean;
+function UnicodeIsRadical(C: UCS4): Boolean;
+function UnicodeIsSoftDotted(C: UCS4): Boolean;
+function UnicodeIsSTerm(C: UCS4): Boolean;
+function UnicodeIsTerminalPunctuation(C: UCS4): Boolean;
+function UnicodeIsUnifiedIdeograph(C: UCS4): Boolean;
+function UnicodeIsVariationSelector(C: UCS4): Boolean;
 
 // Utility functions
 function CharSetFromLocale(Language: LCID): Byte;
@@ -6357,6 +6440,11 @@ begin
   Result := CategoryLookup(C, ClassLetter + [ccNumberDecimalDigit]);
 end;
 
+function UnicodeIsNumberOther(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccNumberOther]);
+end;
+
 function UnicodeIsCased(C: UCS4): Boolean;
 // Is the character a "cased" character, i.e. either lower case, title case or upper case
 begin
@@ -6676,6 +6764,271 @@ function UnicodeIsHangul(C: UCS4): Boolean;
 // Is the character a pre-composed Hangul syllable?
 begin
   Result := (C >= $AC00) and (C <= $D7FF);
+end;
+
+function UnicodeIsSeparatorLine(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccSeparatorLine]);
+end;
+
+function UnicodeIsSeparatorParagraph(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccSeparatorParagraph]);
+end;
+
+function UnicodeIsUnassigned(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccOtherUnassigned]);
+end;
+
+function UnicodeIsLetterModifier(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccLetterModifier]);
+end;
+
+function UnicodeIsLetterOther(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccLetterOther]);
+end;
+
+function UnicodeIsConnector(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccPunctuationConnector]);
+end;
+
+function UnicodeIsPunctuationOther(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccPunctuationOther]);
+end;
+
+function UnicodeIsSymbolModifier(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccSymbolModifier]);
+end;
+
+function UnicodeIsSymbolOther(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccSymbolOther]);
+end;
+
+function UnicodeIsLeftToRightEmbedding(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccLeftToRightEmbedding]);
+end;
+
+function UnicodeIsLeftToRightOverride(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccLeftToRightOverride]);
+end;
+
+function UnicodeIsRightToLeftArabic(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccRightToLeftArabic]);
+end;
+
+function UnicodeIsRightToLeftEmbedding(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccRightToLeftEmbedding]);
+end;
+
+function UnicodeIsRightToLeftOverride(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccRightToLeftOverride]);
+end;
+
+function UnicodeIsPopDirectionalFormat(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccPopDirectionalFormat]);
+end;
+
+function UnicodeIsEuropeanNumber(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccEuropeanNumber]);
+end;
+
+function UnicodeIsEuropeanNumberSeparator(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccEuropeanNumberSeparator]);
+end;
+
+function UnicodeIsEuropeanNumberTerminator(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccEuropeanNumberTerminator]);
+end;
+
+function UnicodeIsArabicNumber(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccArabicNumber]);
+end;
+
+function UnicodeIsCommonNumberSeparator(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccCommonNumberSeparator]);
+end;
+
+function UnicodeIsBoundaryNeutral(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccBoundaryNeutral]);
+end;
+
+function UnicodeIsSegmentSeparator(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccSegmentSeparator]);
+end;
+
+function UnicodeIsOtherNeutrals(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccOtherNeutrals]);
+end;
+
+function UnicodeIsSpaceOther(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccSpaceOther]);
+end;
+
+function UnicodeIsAssigned(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccAssigned]);
+end;
+
+function UnicodeIsASCIIHexDigit(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccASCIIHexDigit]);
+end;
+
+function UnicodeIsBidiControl(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccBidiControl]);
+end;
+
+function UnicodeIsDeprecated(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccDeprecated]);
+end;
+
+function UnicodeIsDiacritic(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccDiacritic]);
+end;
+
+function UnicodeIsExtender(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccExtender]);
+end;
+
+function UnicodeIsHyphen(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccHyphen]);
+end;
+
+function UnicodeIsIdeographic(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccIdeographic]);
+end;
+
+function UnicodeIsIDSBinaryOperator(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccIDSBinaryOperator]);
+end;
+
+function UnicodeIsIDSTrinaryOperator(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccIDSTrinaryOperator]);
+end;
+
+function UnicodeIsJoinControl(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccJoinControl]);
+end;
+
+function UnicodeIsLogicalOrderException(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccLogicalOrderException]);
+end;
+
+function UnicodeIsNonCharacterCodePoint(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccNonCharacterCodePoint]);
+end;
+
+function UnicodeIsOtherAlphabetic(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccOtherAlphabetic]);
+end;
+
+function UnicodeIsOtherDefaultIgnorableCodePoint(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccOtherDefaultIgnorableCodePoint]);
+end;
+
+function UnicodeIsOtherGraphemeExtend(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccOtherGraphemeExtend]);
+end;
+
+function UnicodeIsOtherIDContinue(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccOtherIDContinue]);
+end;
+
+function UnicodeIsOtherIDStart(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccOtherIDStart]);
+end;
+
+function UnicodeIsOtherLowercase(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccOtherLowercase]);
+end;
+
+function UnicodeIsOtherMath(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccOtherMath]);
+end;
+
+function UnicodeIsOtherUppercase(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccOtherUppercase]);
+end;
+
+function UnicodeIsPatternSyntax(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccPatternSyntax]);
+end;
+
+function UnicodeIsPatternWhiteSpace(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccPatternWhiteSpace]);
+end;
+
+function UnicodeIsRadical(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccRadical]);
+end;
+
+function UnicodeIsSoftDotted(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccSoftDotted]);
+end;
+
+function UnicodeIsSTerm(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccSTerm]);
+end;
+
+function UnicodeIsTerminalPunctuation(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccTerminalPunctuation]);
+end;
+
+function UnicodeIsUnifiedIdeograph(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccUnifiedIdeograph]);
+end;
+
+function UnicodeIsVariationSelector(C: UCS4): Boolean;
+begin
+  Result := CategoryLookup(C, [ccVariationSelector]);
 end;
 
 // I need to fix a problem (introduced by MS) here. The first parameter can be a pointer

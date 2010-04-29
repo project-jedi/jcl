@@ -4,5 +4,7 @@
 	CaseFolding.txt
 	SpecialCasing.txt
 	UnicodeData.txt
+	DerivedNormalizationProps.txt
+	PropList.txt
 2. Set the current directory to this directory
 3. Execute make_jclunicode.bat

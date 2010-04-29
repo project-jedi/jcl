@@ -65,7 +65,7 @@ const
   //       These are:
   //       - Mn, NSM for non-spacing mark
   //       - Zp, B for paragraph separator
-  CategoriesStrings: array[0..56] of CategoryString = (
+  CategoriesStrings: array[0..88] of CategoryString = (
     // normative categories
     (Name: 'Lu';  Category: ccLetterUppercase),           // letter, upper case
     (Name: 'Ll';  Category: ccLetterLowercase),           // letter, lower case
@@ -91,6 +91,7 @@ const
     (Name: 'Lo';  Category: ccLetterOther),               // letter, other
     (Name: 'Pc';  Category: ccPunctuationConnector),      // punctuation, connector
     (Name: 'Pd';  Category: ccPunctuationDash),           // punctuation, dash
+    (Name: 'Dash'; Category: ccPunctuationDash),
     (Name: 'Ps';  Category: ccPunctuationOpen),           // punctuation, open
     (Name: 'Pe';  Category: ccPunctuationClose),          // punctuation, close
     (Name: 'Pi';  Category: ccPunctuationInitialQuote),   // punctuation, initial quote
@@ -117,17 +118,48 @@ const
     (Name: 'BN';  Category: ccBoundaryNeutral),           // boundary neutral
     (Name: 'S';   Category: ccSegmentSeparator),          // segment separator
     (Name: 'WS';  Category: ccWhiteSpace),                // white space
+    (Name: 'White_Space'; Category: ccWhiteSpace), 
     (Name: 'ON';  Category: ccOtherNeutrals),             // other neutrals
     // self defined categories, they do not appear in the Unicode data file
     (Name: 'Cm';  Category: ccComposed),                  // composed (can be decomposed)
     (Name: 'Nb';  Category: ccNonBreaking),               // non-breaking
     (Name: 'Sy';  Category: ccSymmetric),                 // symmetric (has left and right forms)
     (Name: 'Hd';  Category: ccHexDigit),                  // hex digit
+    (Name: 'Hex_Digit'; Category: ccHexDigit),
     (Name: 'Qm';  Category: ccQuotationMark),             // quote marks
+    (Name: 'Quotation_Mark'; Category: ccQuotationMark),
     (Name: 'Mr';  Category: ccMirroring),                 // mirroring
     (Name: 'Ss';  Category: ccSpaceOther),                // space, other
-    (Name: 'Cp';  Category: ccAssigned)                   // assigned character (there is a definition in the Unicode standard)
+    (Name: 'Cp';  Category: ccAssigned),                  // assigned character (there is a definition in the Unicode standard)
     //'Luu' // letter unique upper case
+    (Name: 'Bidi_Control'; Category: ccBidiControl),
+    (Name: 'Join_Control'; Category: ccJoinControl),
+    (Name: 'Hyphen'; Category: ccHyphen),
+    (Name: 'Terminal_Punctuation'; Category: ccTerminalPunctuation),
+    (Name: 'Other_Math'; Category: ccOtherMath),
+    (Name: 'ASCII_Hex_Digit'; Category: ccHexDigit),
+    (Name: 'Other_Alphabetic'; Category: ccOtherAlphabetic),
+    (Name: 'Ideographic'; Category: ccIdeographic),
+    (Name: 'Diacritic'; Category: ccDiacritic),
+    (Name: 'Extender'; Category: ccExtender),
+    (Name: 'Other_Lowercase'; Category: ccOtherLowercase),
+    (Name: 'Other_Uppercase'; Category: ccOtherUppercase),
+    (Name: 'Noncharacter_Code_Point'; Category: ccNonCharacterCodePoint),
+    (Name: 'Other_Grapheme_Extend'; Category: ccOtherGraphemeExtend),
+    (Name: 'IDS_Binary_Operator'; Category: ccIDSBinaryOperator),
+    (Name: 'IDS_Trinary_Operator'; Category: ccIDSTrinaryOperator),
+    (Name: 'Radical'; Category: ccRadical),
+    (Name: 'Unified_Ideograph'; Category: ccUnifiedIdeograph),
+    (Name: 'Other_Default_Ignorable_Code_Point'; Category: ccOtherDefaultIgnorableCodePoint),
+    (Name: 'Deprecated'; Category: ccDeprecated),
+    (Name: 'Soft_Dotted'; Category: ccSoftDotted),
+    (Name: 'Logical_Order_Exception'; Category: ccLogicalOrderException),
+    (Name: 'Other_ID_Start'; Category: ccOtherIDStart),
+    (Name: 'Other_ID_Continue'; Category: ccOtherIDContinue),
+    (Name: 'STerm'; Category: ccSTerm),
+    (Name: 'Variation_Selector'; Category: ccVariationSelector),
+    (Name: 'Pattern_White_Space'; Category: ccPatternWhiteSpace),
+    (Name: 'Pattern_Syntax'; Category: ccPatternSyntax)
     );
 
 var
@@ -135,6 +167,7 @@ var
   SpecialCasingFileName,
   CaseFoldingFileName,
   DerivedNormalizationPropsFileName,
+  PropListFileName,
   TargetFileName: TFileName;
   Verbose: Boolean;
   ZLibCompress: Boolean;
@@ -1057,6 +1090,57 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
+procedure ParsePropList;
+
+var
+ Lines,
+ Line: TStringList;
+ I, SeparatorPos: Integer;
+ Start, Stop: Cardinal;
+
+begin
+  Lines := TStringList.Create;
+  try
+    Lines.LoadFromFile(PropListFileName);
+    Line := TStringList.Create;
+    try
+      for I := 0 to Lines.Count - 1 do
+      begin
+        // Layout of one line is:
+        // <range> or <char>; <property>
+        SplitLine(Lines[I], Line);
+        // continue only if the line is not empty
+        if (Line.Count > 0) and (Length(Line[0]) > 1) then
+        begin
+          // the range currently being under consideration
+          SeparatorPos := Pos('..', Line[0]);
+          if SeparatorPos > 0 then
+          begin
+            Start := StrToInt('$' + Copy(Line[0], 1, SeparatorPos - 1));
+            Stop := StrToInt('$' + Copy(Line[0], SeparatorPos + 2, MaxInt));
+            AddRangeToCategories(Start, Stop, Line[1]);
+          end
+          else
+          begin
+            Start := StrToInt('$' + Line[0]);
+            AddToCategories(Start, Line[1]);
+          end;
+        end;
+        if not Verbose then
+          Write(Format(#13'  %d%% done', [Round(100 * I / Lines.Count)]));
+      end;
+    finally
+      Line.Free;
+    end;
+  finally
+    Lines.Free;
+  end;
+  if not Verbose then
+    Writeln;
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
 function FindDecomposition(Code: Cardinal): Integer;
 
 var
@@ -1509,6 +1593,8 @@ begin
   Writeln('    '#9#9'mappings (e.g. CaseFolding-5.0.0.txt)');
   WriteLn('    /d=filename'#9'specifies an optional file containing derived normalization');
   WriteLn('    '#9#9'props (e.g. DerivedNormalizationProps-5.0.0.txt)');
+  WriteLn('    /p=filename'#9'specifies an optional file containing the list of');
+  WriteLn('    '#9#9'character properties (e.g. PropList-5.0.0.txt)');
   Writeln('    /v'#9#9'verbose mode; no warnings, errors etc. are shown, no user input is required');
   WriteLn('    /z'#9#9'compress resource streams using zlib');
   WriteLn('    /bz'#9#9'compress resource streams using bzip2');
@@ -1586,6 +1672,17 @@ begin
         DerivedNormalizationPropsFileName := Trim(AnsiExtractQuotedStr(Run, DerivedNormalizationPropsFileName[1]));
       end;
       CheckExtension(DerivedNormalizationPropsFileName, '.txt');
+    end
+    else
+    if SameText(Copy(S, 1, 3), '/p=') then
+    begin
+      PropListFileName := Trim(Copy(S, 4, MaxInt));
+      if (PropListFileName[1] = '''') or (PropListFileName[1] = '"') then
+      begin
+        Run := PChar(PropListFileName);
+        PropListFileName := Trim(AnsiExtractQuotedStr(Run, PropListFileName[1]));
+      end;
+      CheckExtension(PropListFileName, '.txt');
     end
     else
     begin
@@ -1689,6 +1786,24 @@ begin
             WriteLn('Reading derived normalization props from ' + DerivedNormalizationPropsFileName + ':');
           end;
           ParseDerivedNormalizationProps;
+        end;
+      end;
+
+      if Length(PropListFileName) > 0 then
+      begin
+        if not FileExists(PropListFileName) then
+        begin
+          WriteLn;
+          Warning(PropListFileName + ' not found, ignoring property list');
+        end
+        else
+        begin
+          if not Verbose then
+          begin
+            WriteLn;
+            WriteLn('Reading property list from ' + PropListFileName + ':');
+          end;
+          ParsePropList;
         end;
       end;
 
