@@ -217,7 +217,7 @@ begin
 
     // optimize the case of adding the range to the end
     I := High(Categories[Category]);
-    if Start > Categories[Category][I].Stop then
+    if Start > Categories[Category][I].Stop + 1 then
     begin
       Inc(I);
       SetLength(Categories[Category], I + 1);
