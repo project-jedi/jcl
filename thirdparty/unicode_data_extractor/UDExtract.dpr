@@ -52,6 +52,11 @@ type
 
   TRangeArray = array of TRange;
 
+  CategoryString = record
+    Name: AnsiString;
+    Category: TCharacterCategory;
+  end;
+
 const
   // List of categories expected to be found in the Unicode Character Database
   // including some implementation specific properties.
@@ -60,68 +65,68 @@ const
   //       These are:
   //       - Mn, NSM for non-spacing mark
   //       - Zp, B for paragraph separator
-  CategoriesStrings: array[TCharacterCategory] of AnsiString = (
+  CategoriesStrings: array[0..54] of CategoryString = (
     // normative categories
-    'Lu', // letter, upper case
-    'Ll', // letter, lower case
-    'Lt', // letter, title case
-    'Mn', // mark, non spacing
-    'Mc', // mark, spacing combining
-    'Me', // mark, enclosing
-    'Nd', // number, decimal digit
-    'Nl', // number, letter
-    'No', // number, other
-    'Zs', // separator, space
-    'Zl', // separator, line
-    'Zp', // separator, paragraph
-    'Cc', // other, control
-    'Cf', // other, format
-    'Cs', // other, surrogate
-    'Co', // other, private use
-    'Cn', // other, not assigned
+    (Name: 'Lu';  Category: ccLetterUppercase),           // letter, upper case
+    (Name: 'Ll';  Category: ccLetterLowercase),           // letter, lower case
+    (Name: 'Lt';  Category: ccLetterTitlecase),           // letter, title case
+    (Name: 'Mn';  Category: ccMarkNonSpacing),            // mark, non spacing
+    (Name: 'Mc';  Category: ccMarkSpacingCombining),      // mark, spacing combining
+    (Name: 'Me';  Category: ccMarkEnclosing),             // mark, enclosing
+    (Name: 'Nd';  Category: ccNumberDecimalDigit),        // number, decimal digit
+    (Name: 'Nl';  Category: ccNumberLetter),              // number, letter
+    (Name: 'No';  Category: ccNumberOther),               // number, other
+    (Name: 'Zs';  Category: ccSeparatorSpace),            // separator, space
+    (Name: 'Zl';  Category: ccSeparatorLine),             // separator, line
+    (Name: 'Zp';  Category: ccSeparatorParagraph),        // separator, paragraph
+    (Name: 'Cc';  Category: ccOtherControl),              // other, control
+    (Name: 'Cf';  Category: ccOtherFormat),               // other, format
+    (Name: 'Cs';  Category: ccOtherSurrogate),            // other, surrogate
+    (Name: 'Co';  Category: ccOtherPrivate),              // other, private use
+    (Name: 'Cn';  Category: ccOtherUnassigned),           // other, not assigned
     // informative categories
-    'Lm', // letter, modifier
-    'Lo', // letter, other
-    'Pc', // punctuation, connector
-    'Pd', // punctuation, dash
-    'Ps', // punctuation, open
-    'Pe', // punctuation, close
-    'Pi', // punctuation, initial quote
-    'Pf', // punctuation, final quote
-    'Po', // punctuation, other
-    'Sm', // symbol, math
-    'Sc', // symbol, currency
-    'Sk', // symbol, modifier
-    'So', // symbol, other
+    (Name: 'Lm';  Category: ccLetterModifier),            // letter, modifier
+    (Name: 'Lo';  Category: ccLetterOther),               // letter, other
+    (Name: 'Pc';  Category: ccPunctuationConnector),      // punctuation, connector
+    (Name: 'Pd';  Category: ccPunctuationDash),           // punctuation, dash
+    (Name: 'Ps';  Category: ccPunctuationOpen),           // punctuation, open
+    (Name: 'Pe';  Category: ccPunctuationClose),          // punctuation, close
+    (Name: 'Pi';  Category: ccPunctuationInitialQuote),   // punctuation, initial quote
+    (Name: 'Pf';  Category: ccPunctuationFinalQuote),     // punctuation, final quote
+    (Name: 'Po';  Category: ccPunctuationOther),          // punctuation, other
+    (Name: 'Sm';  Category: ccSymbolMath),                // symbol, math
+    (Name: 'Sc';  Category: ccSymbolCurrency),            // symbol, currency
+    (Name: 'Sk';  Category: ccSymbolModifier),            // symbol, modifier
+    (Name: 'So';  Category: ccSymbolOther),               // symbol, other
     // bidirectional categories
-    'L',   // left-to-right
-    'LRE', // left-to-right embedding
-    'LRO', // left-to-right override
-    'R',   // right-to-left
-    'AL',  // right-to-left arabic
-    'RLE', // right-to-left embedding
-    'RLO', // right-to-left override
-    'PDF', // pop directional format
-    'EN',  // european number
-    'ES',  // european number separator
-    'ET',  // european number terminator
-    'AN',  // arabic number
-    'CS',  // common number separator
+    (Name: 'L';   Category: ccLeftToRight),               // left-to-right
+    (Name: 'LRE'; Category: ccLeftToRightEmbedding),      // left-to-right embedding
+    (Name: 'LRO'; Category: ccLeftToRightOverride),       // left-to-right override
+    (Name: 'R';   Category: ccRightToLeft),               // right-to-left
+    (Name: 'AL';  Category: ccRightToLeftArabic),         // right-to-left arabic
+    (Name: 'RLE'; Category: ccRightToLeftEmbedding),      // right-to-left embedding
+    (Name: 'RLO'; Category: ccRightToLeftOverride),       // right-to-left override
+    (Name: 'PDF'; Category: ccPopDirectionalFormat),      // pop directional format
+    (Name: 'EN';  Category: ccEuropeanNumber),            // european number
+    (Name: 'ES';  Category: ccEuropeanNumberSeparator),   // european number separator
+    (Name: 'ET';  Category: ccEuropeanNumberTerminator),  // european number terminator
+    (Name: 'AN';  Category: ccArabicNumber),              // arabic number
+    (Name: 'CS';  Category: ccCommonNumberSeparator),     // common number separator
       // 'NSM' non-spacing (see comment above)
-    'BN',  // boundary neutral
+    (Name: 'BN';  Category: ccBoundaryNeutral),           // boundary neutral
       // 'B' paragraph separator  (see comment above)
-    'S',   // segment separator
-    'WS',  // white space
-    'ON',  // other neutrals
+    (Name: 'S';   Category: ccSegmentSeparator),          // segment separator
+    (Name: 'WS';  Category: ccWhiteSpace),                // white space
+    (Name: 'ON';  Category: ccOtherNeutrals),             // other neutrals
     // self defined categories, they do not appear in the Unicode data file
-    'Cm', // composed (can be decomposed)
-    'Nb', // non-breaking
-    'Sy', // symmetric (has left and right forms)
-    'Hd', // hex digit
-    'Qm', // quote marks
-    'Mr', // mirroring
-    'Ss', // space, other
-    'Cp' // assigned character (there is a definition in the Unicode standard)
+    (Name: 'Cm';  Category: ccComposed),                  // composed (can be decomposed)
+    (Name: 'Nb';  Category: ccNonBreaking),               // non-breaking
+    (Name: 'Sy';  Category: ccSymmetric),                 // symmetric (has left and right forms)
+    (Name: 'Hd';  Category: ccHexDigit),                  // hex digit
+    (Name: 'Qm';  Category: ccQuotationMark),             // quote marks
+    (Name: 'Mr';  Category: ccMirroring),                 // mirroring
+    (Name: 'Ss';  Category: ccSpaceOther),                // space, other
+    (Name: 'Cp';  Category: ccAssigned)                   // assigned character (there is a definition in the Unicode standard)
     //'Luu' // letter unique upper case
     );
 
@@ -252,14 +257,14 @@ procedure AddRangeToCategories(Start, Stop: Cardinal; CategoryID: AnsiString); o
 // Adds a range of code points to the categories structure.
 
 var
-  Category: TCharacterCategory;
+  Index: Integer;
 
 begin
   // find category
-  for Category := Low(TCharacterCategory) to High(TCharacterCategory) do
-    if CategoriesStrings[Category] = CategoryID then
+  for Index := Low(CategoriesStrings) to High(CategoriesStrings) do
+    if CategoriesStrings[Index].Name = CategoryID then
     begin
-      AddRangeToCategories(Start, Stop, Category);
+      AddRangeToCategories(Start, Stop, CategoriesStrings[Index].Category);
       Break;
     end;
 end;
@@ -344,14 +349,14 @@ procedure AddToCategories(Code: Cardinal; CategoryID: AnsiString); overload;
 // Adds a range of code points to the categories structure.
 
 var
-  Category: TCharacterCategory;
+  Index: Integer;
 
 begin
   // find category
-  for Category := Low(TCharacterCategory) to High(TCharacterCategory) do
-    if CategoriesStrings[Category] = CategoryID then
+  for Index := Low(CategoriesStrings) to High(CategoriesStrings) do
+    if CategoriesStrings[Index].Name = CategoryID then
     begin
-      AddToCategories(Code, Category);
+      AddToCategories(Code, CategoriesStrings[Index].Category);
       Break;
     end;
 end;
