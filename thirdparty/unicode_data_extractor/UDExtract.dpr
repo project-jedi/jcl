@@ -65,12 +65,13 @@ const
   //       These are:
   //       - Mn, NSM for non-spacing mark
   //       - Zp, B for paragraph separator
-  CategoriesStrings: array[0..54] of CategoryString = (
+  CategoriesStrings: array[0..56] of CategoryString = (
     // normative categories
     (Name: 'Lu';  Category: ccLetterUppercase),           // letter, upper case
     (Name: 'Ll';  Category: ccLetterLowercase),           // letter, lower case
     (Name: 'Lt';  Category: ccLetterTitlecase),           // letter, title case
     (Name: 'Mn';  Category: ccMarkNonSpacing),            // mark, non spacing
+    (Name: 'NSM'; Category: ccMarkNonSpacing),
     (Name: 'Mc';  Category: ccMarkSpacingCombining),      // mark, spacing combining
     (Name: 'Me';  Category: ccMarkEnclosing),             // mark, enclosing
     (Name: 'Nd';  Category: ccNumberDecimalDigit),        // number, decimal digit
@@ -79,6 +80,7 @@ const
     (Name: 'Zs';  Category: ccSeparatorSpace),            // separator, space
     (Name: 'Zl';  Category: ccSeparatorLine),             // separator, line
     (Name: 'Zp';  Category: ccSeparatorParagraph),        // separator, paragraph
+    (Name: 'B';   Category: ccSeparatorParagraph),
     (Name: 'Cc';  Category: ccOtherControl),              // other, control
     (Name: 'Cf';  Category: ccOtherFormat),               // other, format
     (Name: 'Cs';  Category: ccOtherSurrogate),            // other, surrogate
@@ -112,9 +114,7 @@ const
     (Name: 'ET';  Category: ccEuropeanNumberTerminator),  // european number terminator
     (Name: 'AN';  Category: ccArabicNumber),              // arabic number
     (Name: 'CS';  Category: ccCommonNumberSeparator),     // common number separator
-      // 'NSM' non-spacing (see comment above)
     (Name: 'BN';  Category: ccBoundaryNeutral),           // boundary neutral
-      // 'B' paragraph separator  (see comment above)
     (Name: 'S';   Category: ccSegmentSeparator),          // segment separator
     (Name: 'WS';  Category: ccWhiteSpace),                // white space
     (Name: 'ON';  Category: ccOtherNeutrals),             // other neutrals
@@ -265,8 +265,9 @@ begin
     if CategoriesStrings[Index].Name = CategoryID then
     begin
       AddRangeToCategories(Start, Stop, CategoriesStrings[Index].Category);
-      Break;
+      Exit;
     end;
+  FatalError('No unicode category for ID "' + CategoryID + '"');
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -357,8 +358,9 @@ begin
     if CategoriesStrings[Index].Name = CategoryID then
     begin
       AddToCategories(Code, CategoriesStrings[Index].Category);
-      Break;
+      Exit;
     end;
+  FatalError('No unicode category for ID "' + CategoryID + '"');
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
