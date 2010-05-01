@@ -137,7 +137,7 @@ const
     (Name: 'Hyphen'; Category: ccHyphen),
     (Name: 'Terminal_Punctuation'; Category: ccTerminalPunctuation),
     (Name: 'Other_Math'; Category: ccOtherMath),
-    (Name: 'ASCII_Hex_Digit'; Category: ccHexDigit),
+    (Name: 'ASCII_Hex_Digit'; Category: ccASCIIHexDigit),
     (Name: 'Other_Alphabetic'; Category: ccOtherAlphabetic),
     (Name: 'Ideographic'; Category: ccIdeographic),
     (Name: 'Diacritic'; Category: ccDiacritic),
