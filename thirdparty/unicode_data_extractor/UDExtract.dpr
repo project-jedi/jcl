@@ -14,6 +14,7 @@ uses
   ZLibh,
   JclBase,
   JclAnsiStrings,
+  JclLogic,
   JclStrings,
   JclUnicode,
   JclStreams;
@@ -43,6 +44,9 @@ type
     Numerator,
     Denominator: Integer;
   end;
+
+  // start and stop of a range of code points
+  TCharacterSet = array [0..$1000000 div BitsPerByte] of Byte;
 
   // start and stop of a range of code points
   TRange = record
@@ -118,7 +122,7 @@ const
     (Name: 'BN';  Category: ccBoundaryNeutral),           // boundary neutral
     (Name: 'S';   Category: ccSegmentSeparator),          // segment separator
     (Name: 'WS';  Category: ccWhiteSpace),                // white space
-    (Name: 'White_Space'; Category: ccWhiteSpace), 
+    (Name: 'White_Space'; Category: ccWhiteSpace),
     (Name: 'ON';  Category: ccOtherNeutrals),             // other neutrals
     // self defined categories, they do not appear in the Unicode data file
     (Name: 'Cm';  Category: ccComposed),                  // composed (can be decomposed)
@@ -178,9 +182,9 @@ var
   DecompTempSize: Integer;
 
   // character category ranges
-  Categories: array[TCharacterCategory] of TRangeArray;
+  Categories: array[TCharacterCategory] of TCharacterSet;
   // canonical combining classes
-  CCCs: array[Byte] of TRangeArray;
+  CCCs: array[Byte] of TCharacterSet;
   // list of decomposition
   Decompositions: array of TDecomposition;
   // array to hold the number equivalents for specific codes (sorted by code)
@@ -192,7 +196,7 @@ var
   // array of compositions (somehow the same as Decompositions except sorted by decompositions and removed elements)
   Compositions: array of TDecomposition;
   // array of composition exception ranges
-  CompositionExceptions: array of TRange;
+  CompositionExceptions: TCharacterSet;
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -230,57 +234,93 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure AddRangeToCategories(Start, Stop: Cardinal; Category: TCharacterCategory); overload;
-
-var
-  I, J: Integer;
-
+procedure SetCharacter(var CharacterSet: TCharacterSet; Code: Cardinal);
 begin
-  // Is this the first entry for this category?
-  if Categories[Category] = nil then
+  SetBitBuffer(CharacterSet[0], Code);
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+function TestCharacter(const CharacterSet: TCharacterSet; Code: Cardinal): Boolean;
+begin
+  Result := TestBitBuffer(CharacterSet[0], Code);
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+function FindNextCharacterRange(const CharacterSet: TCharacterSet; var Start, Stop: Cardinal): Boolean;
+var
+  ByteIndex: Cardinal;
+begin
+  ByteIndex := Start div BitsPerByte;
+  if (ByteIndex < ($1000000 div BitsPerByte)) and (CharacterSet[ByteIndex] = 0) then
   begin
-    // first entry, just add it
-    SetLength(Categories[Category], 1);
-    Categories[Category][0].Start := Start;
-    Categories[Category][0].Stop := Stop;
+    while (ByteIndex < ($1000000 div BitsPerByte)) and (CharacterSet[ByteIndex] = 0) do
+      Inc(ByteIndex);
+    Start := ByteIndex * BitsPerByte;
+  end;
+
+  while (Start < $1000000) and not TestBitBuffer(CharacterSet[0], Start) do
+    Inc(Start);
+
+  if Start < $1000000 then
+  begin
+    Result := True;
+    Stop := Start;
+
+    ByteIndex := Stop div BitsPerByte;
+    if (ByteIndex < ($1000000 div BitsPerByte)) and (CharacterSet[ByteIndex] = $FF) then
+    begin
+      while (ByteIndex < ($1000000 div BitsPerByte)) and (CharacterSet[ByteIndex] = $FF) do
+        Inc(ByteIndex);
+      Stop := ByteIndex * BitsPerByte;
+    end;
+
+    while (Stop < $1000000) and TestBitBuffer(CharacterSet[0], Stop) do
+      Inc(Stop);
+    if Stop <= $1000000 then
+      Dec(Stop);
   end
   else
+    Result := False;
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+function FindCharacterRanges(const CharacterSet: TCharacterSet): TRangeArray;
+
+var
+  Capacity, Index: Integer;
+  Start, Stop: Cardinal;
+
+begin
+  Capacity := 0;
+  Index := 0;
+  Start := 0;
+  Stop := 0;
+  while FindNextCharacterRange(CharacterSet, Start, Stop) do
   begin
-    // there are already entries for this category
-
-    // optimize the case of adding the range to the end
-    I := High(Categories[Category]);
-    if Start > Categories[Category][I].Stop + 1 then
+    if Index >= Capacity then
     begin
-      Inc(I);
-      SetLength(Categories[Category], I + 1);
-      Categories[Category][I].Start := Start;
-      Categories[Category][I].Stop := Stop;
-    end
-    else
-    begin
-      // need to locate the insertion point
-      I := 0;
-      while (I < Length(Categories[Category])) and (Start > Categories[Category][I].Start) do
-        Inc(I);
-
-      // If the start value lies in the current range, then simply set the
-      // new end point of the range to the end value passed as a parameter.
-      if (Categories[Category][I].Start <= Start) and (Start <= Categories[Category][I].Stop + 1) then
-        Categories[Category][I].Stop := Stop
-      else
-      begin
-        // shift following values up
-        J := Length(Categories[Category]);
-        SetLength(Categories[Category], J + 1);
-        Move(Categories[Category][I], Categories[Category][I + 1], (J - I) * SizeOf(TRange));
-
-        // Add the new range at the insertion point.
-        Categories[Category][I].Start := Start;
-        Categories[Category][I].Stop := Stop;
-      end;
+      Inc(Capacity, 64);
+      SetLength(Result, Capacity);
     end;
+    Result[Index].Start := Start;
+    Result[Index].Stop := Stop;
+    Start := Stop + 1;
+    Inc(Index);
   end;
+  SetLength(Result, Index);
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+procedure AddRangeToCategories(Start, Stop: Cardinal; Category: TCharacterCategory); overload;
+var
+  Code: Integer;
+begin
+  for Code := Start to Stop do
+    SetCharacter(Categories[Category], Code);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -306,74 +346,8 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 procedure AddToCategories(Code: Cardinal; Category: TCharacterCategory); overload;
-
-var
-  I, J: Integer;
-  S, E: Cardinal;
-  
 begin
-  // Is this the first entry for this category?
-  if Categories[Category] = nil then
-  begin
-    // first entry, just add it
-    SetLength(Categories[Category], 1);
-    Categories[Category][0].Start := Code;
-    Categories[Category][0].Stop := Code;
-  end
-  else
-  begin
-    // there are already entries for this category
-
-    // Optimize the cases of extending the last range and adding new ranges to the end.
-    I := High(Categories[Category]);
-    E := Categories[Category][I].Stop;
-    S := Categories[Category][I].Start;
-
-    if Code = E + 1 then
-      // extend the last range
-      Categories[Category][I].Stop := Code
-    else
-    begin
-      if Code > E + 1 then
-      begin
-        // start another range on the end
-        Inc(I);
-        SetLength(Categories[Category], I + 1);
-        Categories[Category][I].Start := Code;
-        Categories[Category][I].Stop := Code;
-      end
-      else
-      begin
-        // continue only if the given code is not already in the last range
-        if Code < S then
-        begin
-          // The Code should be inserted somewhere before the last range in the
-          // list, locate the insertion point.
-          I := 0;
-          while (I < Length(Categories[Category])) and (Code > Categories[Category][I].Stop + 1) do
-            Inc(I);
-          E := Categories[Category][I].Stop;
-          S := Categories[Category][I].Start;
-
-          if Code = E + 1 then
-            Categories[Category][I].Stop := Code // simply extend the current range
-          else
-            if Code < S then
-            begin
-              // Add a new entry before the current location.  Shift all entries
-              // before the current one up by one to make room.
-              J := Length(Categories[Category]);
-              SetLength(Categories[Category], J + 1);
-              Move(Categories[Category][I], Categories[Category][I + 1], (J - I) * SizeOf(TRange));
-
-              // add the new range at the insertion point
-              Categories[Category][I].Start := Code;
-              Categories[Category][I].Stop := Code;
-          end;
-        end;
-      end;
-    end;
-  end;
+  SetCharacter(Categories[Category], Code);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -399,68 +373,11 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 procedure AddCanonicalCombiningClass(Code, CCClass: Cardinal);
-
-var
-  I, J: Integer;
-  E: Cardinal;
-
 begin
   // most of the code points have a combining class of 0 (so to speak the default class)
   // hence we don't need to store them
   if CCClass > 0 then
-  begin
-    // optimize adding the first item
-    if CCCs[CCClass] = nil then
-    begin
-      SetLength(CCCs[CCClass], 1);
-      CCCs[CCClass][0].Start := Code;
-      CCCs[CCClass][0].Stop := Code;
-    end
-    else
-    begin
-      // Handle the special case of extending the range on the end.
-      I := High(CCCs[CCClass]);
-      E := CCCs[CCClass][I].Stop;
-      if Code = E + 1 then
-        CCCs[CCClass][I].Stop := Code
-      else
-      begin
-        // Handle the special case of adding another range on the end.
-        if Code > E + 1 then
-        begin
-          Inc(I);
-          SetLength(CCCs[CCClass], I + 1);
-          CCCs[CCClass][I].Start := Code;
-          CCCs[CCClass][I].Stop := Code;
-        end
-        else
-        begin
-          // Locate either the insertion point or range for the Code.
-          I := 0;
-          while (I < Length(CCCs[CCClass])) and (Code > CCCs[CCClass][I].Stop + 1) do
-            Inc(I);
-
-          if Code = CCCs[CCClass][I].Stop + 1 then
-            // extend an existing range
-            CCCs[CCClass][I].Stop := Code
-          else
-          begin
-            if Code < CCCs[CCClass][I].Start then
-            begin
-              // start a new range before the current location
-              J := Length(CCCs[CCClass]);
-              SetLength(CCCs[CCClass], J + 1);
-              Move(CCCs[CCClass][I], CCCs[CCClass][I + 1], (J - I) * SizeOf(TRange));
-
-              // add the new range at the insertion point
-              CCCs[CCClass][I].Start := Code;
-              CCCs[CCClass][I].Stop := Code;
-            end;
-          end;
-        end;
-      end;
-    end;
-  end;
+    SetCharacter(CCCs[CCClass], Code);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -565,10 +482,11 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 procedure AddRangeToCompositionExclusions(Start, Stop: Cardinal);
+var
+  Code: Integer;
 begin
-  SetLength(CompositionExceptions, Length(CompositionExceptions) + 1);
-  CompositionExceptions[High(CompositionExceptions)].Start := Start;
-  CompositionExceptions[High(CompositionExceptions)].Stop := Stop;
+  for Code := Start to Stop do
+    SetCharacter(CompositionExceptions, Code);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -1212,17 +1130,8 @@ function IsCompositionExcluded(Code: Cardinal): Boolean;
 
 // checks if composition is excluded to this code (decomposition cannot be recomposed)
 
-var
-  I: Integer;
 begin
-  Result := False;
-  for I := 0 to High(CompositionExceptions) do
-    with CompositionExceptions[I] do
-      if (Start <= Code) and (Code <= Stop) then
-      begin
-        Result := True;
-        Break;
-      end;
+  Result := TestCharacter(CompositionExceptions, Code);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -1409,6 +1318,7 @@ var
 
 var
   I, J: Integer;
+  Ranges: TRangeArray;
   Category: TCharacterCategory;
 
 begin
@@ -1435,20 +1345,23 @@ begin
     CreateResource;
     // write out only used categories
     for Category := Low(TCharacterCategory) to High(TCharacterCategory) do
-      if Assigned(Categories[Category]) then
+    begin
+      Ranges := FindCharacterRanges(Categories[Category]);
+      if Length(Ranges) > 0 then
       begin
         // a) record what category it is actually (the cast assumes there will never
         //    be more than 256 categories)
         WriteResourceByte(Ord(Category));
         // b) tell how many ranges are assigned
-        WriteResourceLong(Length(Categories[Category]));
+        WriteResourceLong(Length(Ranges));
         // c) write start and stop code of each range
-        for I := 0 to High(Categories[Category]) do
+        for J := Low(Ranges) to High(Ranges) do
         begin
-          WriteResourceLong(Categories[Category][I].Start);
-          WriteResourceLong(Categories[Category][I].Stop);
+          WriteResourceLong(Ranges[J].Start);
+          WriteResourceLong(Ranges[J].Stop);
         end;
       end;
+    end;
 
     FlushResource;
     WriteTextLine('}');
@@ -1510,19 +1423,22 @@ begin
     WriteTextLine('{');
     CreateResource;
     for I := 0 to 255 do
-      if Assigned(CCCs[I]) then
+    begin
+      Ranges := FindCharacterRanges(CCCs[I]);
+      if Length(Ranges) > 0 then
       begin
         // a) record which class is stored here
         WriteResourceLong(I);
         // b) tell how many ranges are assigned
-        WriteResourceLong(Length(CCCs[I]));
+        WriteResourceLong(Length(Ranges));
         // c) write start and stop code of each range
-        for J := 0 to High(CCCs[I]) do
+        for J := Low(Ranges) to High(Ranges) do
         begin
-          WriteResourceLong(CCCs[I][J].Start);
-          WriteResourceLong(CCCs[I][J].Stop);
+          WriteResourceLong(Ranges[J].Start);
+          WriteResourceLong(Ranges[J].Stop);
         end;
       end;
+    end;
 
     FlushResource;
     WriteTextLine('}');
